@@ -1,0 +1,143 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "gaussian_splatting_basic_v1",
+  "title": "3D Gaussian Splatting from multi-view (basic)",
+  "modality": "gaussian_splatting",
+  "tags": [
+    "3dgs",
+    "gaussian-splatting",
+    "multi-view",
+    "reconstruction",
+    "3d"
+  ],
+  "keywords": [
+    "3dgs",
+    "gaussian-splatting",
+    "multi-view",
+    "reconstruction",
+    "3d",
+    "gaussian_splatting"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "gaussian_splatting_basic_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "gaussian_splatting"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 1200.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.12,
+              "rho": 1.2,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "physics": {
+        "dims": {
+          "x": [
+            "gaussian_cloud"
+          ],
+          "y": [
+            "images"
+          ]
+        },
+        "rendering": {
+          "model": "3dgs",
+          "rays_per_step": 8192
+        }
+      },
+      "budget": {
+        "measurement_budget": {
+          "num_views": 60,
+          "image_res": [
+            960,
+            540
+          ]
+        }
+      },
+      "calibration": {
+        "camera": {
+          "known_poses": false,
+          "sfm_init": true
+        }
+      },
+      "task": {
+        "kind": "reconstruct_only"
+      }
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "3dgs_train",
+            "params": {
+              "steps": 1500,
+              "lr": 0.01,
+              "sh_degree": 3
+            }
+          }
+        ]
+      }
+    }
+  },
+  "notes": "Template for 3D Gaussian Splatting. In PWM, this would live under physics/rendering adapters.",
+  "created": "2026-02-01",
+  "benchmark_results": {
+    "psnr_db": 30.47,
+    "ssim": null,
+    "reference_psnr_db": 30.0,
+    "status": "pass"
+  }
+}

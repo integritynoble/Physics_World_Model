@@ -1,0 +1,127 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "confocal_3d_stack_attenuation_v1",
+  "title": "Confocal 3D stack + attenuation",
+  "modality": "confocal",
+  "tags": [
+    "microscopy",
+    "confocal",
+    "3d",
+    "stack",
+    "attenuation",
+    "depth"
+  ],
+  "keywords": [
+    "microscopy",
+    "confocal",
+    "3d",
+    "stack",
+    "attenuation",
+    "depth",
+    "confocal"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "confocal_3d_stack_attenuation_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "confocal"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 1200.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.12,
+              "rho": 1.2,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "physics": {
+        "dims": {
+          "x": [
+            128,
+            128,
+            32
+          ]
+        }
+      },
+      "environment": {
+        "attenuation": {
+          "model": "exp",
+          "alpha_per_um": 0.01,
+          "depth_um": 150
+        }
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 600.0
+        }
+      },
+      "calibration": {
+        "psf": {
+          "model": "depth_variant_gaussian",
+          "sigma0_px": 1.1,
+          "sigma_slope": 0.01
+        }
+      }
+    }
+  },
+  "notes": "Adds depth-dependent attenuation and depth-varying PSF.",
+  "created": "2026-02-01",
+  "benchmark_results": {
+    "psnr_db": 29.01,
+    "ssim": null,
+    "reference_psnr_db": 26.0,
+    "status": "pass"
+  }
+}

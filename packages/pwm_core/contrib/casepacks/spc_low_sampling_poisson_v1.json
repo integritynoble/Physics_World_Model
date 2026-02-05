@@ -1,0 +1,130 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "spc_low_sampling_poisson_v1",
+  "title": "Single-Pixel Camera low sampling + Poisson",
+  "modality": "spc",
+  "tags": [
+    "spc",
+    "single-pixel",
+    "compressed-sensing",
+    "hadamard",
+    "poisson",
+    "education"
+  ],
+  "keywords": [
+    "spc",
+    "single-pixel",
+    "compressed-sensing",
+    "hadamard",
+    "poisson",
+    "education",
+    "spc"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "spc_low_sampling_poisson_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "spc"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 1200.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "tval3",
+            "params": {
+              "iters": 150,
+              "mu": 128,
+              "beta": 32
+            }
+          },
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.15,
+              "rho": 1.5,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "physics": {
+        "dims": {
+          "x": [
+            64,
+            64
+          ]
+        }
+      },
+      "budget": {
+        "measurement_budget": {
+          "sampling_rate": 0.15
+        },
+        "photon_budget": {
+          "max_photons": 800.0
+        }
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      }
+    }
+  },
+  "notes": "Classic demo: reconstruct image from few measurements with shot noise.",
+  "created": "2026-02-01",
+  "benchmark_results": {
+    "psnr_db": 30.90,
+    "ssim": null,
+    "reference_psnr_db": 32.0,
+    "status": "pass"
+  }
+}

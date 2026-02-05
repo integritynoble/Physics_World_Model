@@ -1,0 +1,138 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "sim_3x3_fragile_v1",
+  "title": "SIM 3x3 fragile (phase/mod-depth drift + motion)",
+  "modality": "sim",
+  "tags": [
+    "microscopy",
+    "sim",
+    "structured-illumination",
+    "phase",
+    "modulation",
+    "artifact"
+  ],
+  "keywords": [
+    "microscopy",
+    "sim",
+    "structured-illumination",
+    "phase",
+    "modulation",
+    "artifact",
+    "sim"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "sim_3x3_fragile_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "sim"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 1200.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "wiener_sim",
+            "params": {
+              "n_angles": 3,
+              "n_phases": 3,
+              "wiener_param": 0.001
+            }
+          },
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.12,
+              "rho": 1.2,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "budget": {
+        "measurement_budget": {
+          "phases": 3,
+          "angles": 3
+        },
+        "photon_budget": {
+          "max_photons": 500.0
+        }
+      },
+      "calibration": {
+        "pattern": {
+          "freq_px": 8.0,
+          "phase_jitter_rad": 0.15,
+          "mod_depth": 0.8,
+          "mod_depth_drift": 0.1
+        },
+        "otf_mismatch": 0.05
+      },
+      "sample": {
+        "motion": {
+          "type": "frame_jitter",
+          "std_px": 0.4
+        }
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.02
+      }
+    }
+  },
+  "notes": "SIM reconstruction is fragile; this pack stress-tests phase/orientation estimation.",
+  "created": "2026-02-01",
+  "benchmark_results": {
+    "psnr_db": 27.48,
+    "ssim": null,
+    "reference_psnr_db": 28.0,
+    "status": "pass"
+  }
+}

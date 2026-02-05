@@ -1,0 +1,151 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "nerf_from_poses_basic_v1",
+  "title": "NeRF from multi-view images (basic)",
+  "modality": "nerf",
+  "tags": [
+    "nerf",
+    "inverse-rendering",
+    "multi-view",
+    "differentiable-rendering",
+    "3d"
+  ],
+  "keywords": [
+    "nerf",
+    "inverse-rendering",
+    "multi-view",
+    "differentiable-rendering",
+    "3d",
+    "nerf"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "nerf_from_poses_basic_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "nerf"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 1200.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.12,
+              "rho": 1.2,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "physics": {
+        "dims": {
+          "x": [
+            "scene_representation"
+          ],
+          "y": [
+            "images"
+          ]
+        },
+        "rendering": {
+          "model": "nerf",
+          "rays_per_step": 4096
+        }
+      },
+      "budget": {
+        "measurement_budget": {
+          "num_views": 30,
+          "image_res": [
+            640,
+            480
+          ]
+        },
+        "photon_budget": {
+          "max_photons": null
+        }
+      },
+      "calibration": {
+        "camera": {
+          "known_poses": true,
+          "intrinsics": "pinhole"
+        }
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": false
+        },
+        "read_noise_sigma": 0.0
+      },
+      "task": {
+        "kind": "reconstruct_only"
+      }
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "nerf_train",
+            "params": {
+              "steps": 2000,
+              "lr": 0.001
+            }
+          }
+        ]
+      }
+    }
+  },
+  "notes": "A template for NeRF-style inverse rendering. Not a linear operator; uses differentiable rendering/training.",
+  "created": "2026-02-01",
+  "benchmark_results": {
+    "psnr_db": 61.35,
+    "ssim": null,
+    "reference_psnr_db": 32.0,
+    "status": "pass"
+  }
+}

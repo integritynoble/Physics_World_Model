@@ -1,0 +1,129 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "cacti_video_sci_v1",
+  "title": "CACTI Video Snapshot Compressive Imaging",
+  "modality": "cacti",
+  "tags": [
+    "cacti",
+    "sci",
+    "video",
+    "snapshot",
+    "compressive",
+    "temporal",
+    "coded-aperture"
+  ],
+  "keywords": [
+    "cacti",
+    "sci",
+    "video",
+    "snapshot",
+    "compressive",
+    "temporal",
+    "coded-aperture",
+    "video-sci",
+    "snapshot-compressive-imaging"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "cacti_video_sci_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "cacti"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 1000.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 5.0
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "gap_tv",
+            "params": {
+              "iters": 50,
+              "lam": 0.05,
+              "acc": 1.0
+            }
+          },
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.12,
+              "rho": 1.2,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "physics": {
+        "dims": {
+          "H": 64,
+          "W": 64,
+          "T": 8
+        }
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 800.0
+        }
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 5.0
+      }
+    }
+  },
+  "notes": "CACTI: Coded Aperture Compressive Temporal Imaging - compress 8 video frames into single snapshot.",
+  "created": "2026-02-03",
+  "benchmark_results": {
+    "psnr_db": 32.79,
+    "ssim": 0.855,
+    "reference_psnr_db": 26.8,
+    "status": "pass"
+  }
+}

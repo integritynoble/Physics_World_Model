@@ -1,0 +1,128 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "confocal_livecell_lowdose_drift_v1",
+  "title": "Confocal live-cell low-dose + drift",
+  "modality": "confocal",
+  "tags": [
+    "microscopy",
+    "confocal",
+    "live-cell",
+    "drift",
+    "low-dose",
+    "scan"
+  ],
+  "keywords": [
+    "microscopy",
+    "confocal",
+    "live-cell",
+    "drift",
+    "low-dose",
+    "scan",
+    "confocal"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "confocal_livecell_lowdose_drift_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "confocal"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 1200.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.12,
+              "rho": 1.2,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "budget": {
+        "photon_budget": {
+          "max_photons": 400.0
+        },
+        "measurement_budget": {
+          "scan_speed": "fast"
+        }
+      },
+      "sample": {
+        "motion": {
+          "type": "drift",
+          "amp_px": 1.0,
+          "freq_hz": 0.2
+        }
+      },
+      "calibration": {
+        "pinhole_um": 1.0,
+        "psf": {
+          "model": "gaussian",
+          "sigma_px": 1.2
+        }
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.015
+      }
+    }
+  },
+  "notes": "Good for diagnosing drift-limited vs dose-limited confocal scans.",
+  "created": "2026-02-01",
+  "benchmark_results": {
+    "psnr_db": 26.27,
+    "ssim": null,
+    "reference_psnr_db": 26.0,
+    "status": "pass"
+  }
+}

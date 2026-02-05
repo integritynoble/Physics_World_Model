@@ -1,0 +1,29 @@
+{
+  "param_pack_version": "0.2.1",
+  "id": "cassi_mask_disp_demo_v1",
+  "type": "cassi",
+  "payload": "cassi_mask_disp_demo_v1.npz",
+  "params": {
+    "H": 32,
+    "W": 32,
+    "L": 8,
+    "dispersion_model": "poly1"
+  },
+  "units": {
+    "disp_poly": "pixels per band (toy)"
+  },
+  "valid_ranges": {
+    "disp_poly": [
+      [
+        -4.0,
+        4.0
+      ],
+      [
+        -4.0,
+        4.0
+      ]
+    ]
+  },
+  "notes": "Toy CASSI mask + 1st-order dispersion polynomial. Replace with real mask/LUT.",
+  "created": "2026-02-01"
+}
