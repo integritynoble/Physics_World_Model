@@ -1,0 +1,147 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "holography_offaxis_phase_v1",
+  "title": "Off-axis holography phase reconstruction",
+  "modality": "holography",
+  "tags": [
+    "holography",
+    "off-axis",
+    "phase",
+    "carrier",
+    "fourier"
+  ],
+  "keywords": [
+    "holography",
+    "off-axis",
+    "phase",
+    "carrier",
+    "fourier",
+    "holography"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "holography_offaxis_phase_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "holography"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 1200.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.12,
+              "rho": 1.2,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "physics": {
+        "dims": {
+          "x": [
+            128,
+            128
+          ]
+        }
+      },
+      "calibration": {
+        "carrier_freq_px": [
+          18,
+          0
+        ],
+        "reference_amp": 1.0
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 800.0
+        }
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      }
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "holography",
+            "params": {
+              "wavelength": 633e-9,
+              "pixel_size": 5e-6,
+              "output": "amplitude"
+            }
+          },
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 30,
+              "sigma": 0.1,
+              "rho": 1.0,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "notes": "Holography is a great credibility modality; output is phase + amplitude.",
+  "created": "2026-02-01",
+  "benchmark_results": {
+    "psnr_db": 42.52,
+    "ssim": null,
+    "reference_psnr_db": 35.0,
+    "status": "pass"
+  }
+}

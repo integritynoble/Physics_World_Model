@@ -1,0 +1,119 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "generic_matrix_yA_fit_gain_shift_v1",
+  "title": "Generic measured y + matrix A: fit gain/bias + reconstruct",
+  "modality": "generic_linear",
+  "tags": [
+    "yA",
+    "matrix",
+    "operator-fit",
+    "gain",
+    "bias",
+    "generic"
+  ],
+  "keywords": [
+    "measured y",
+    "matrix A",
+    "fit gain",
+    "fit bias",
+    "calibrate"
+  ],
+  "required_user_inputs": [
+    {
+      "name": "y_source",
+      "type": "required",
+      "hint": "Measured y vector/tensor."
+    },
+    {
+      "name": "A_source",
+      "type": "required",
+      "hint": "Measurement matrix A (dense/sparse)."
+    },
+    {
+      "name": "x_dims",
+      "type": "required",
+      "hint": "Latent x dims or N."
+    }
+  ],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "generic_matrix_yA_fit_gain_shift_v1_base",
+    "input": {
+      "mode": "measured",
+      "operator": {
+        "kind": "matrix"
+      }
+    },
+    "states": {
+      "physics": {
+        "modality": "generic_linear"
+      },
+      "task": {
+        "kind": "calibrate_and_reconstruct"
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": false
+        },
+        "read_noise_sigma": 0.0
+      }
+    },
+    "mismatch": {
+      "fit_operator": {
+        "enabled": true,
+        "theta_space": {
+          "gain_scale": {
+            "min": 0.8,
+            "max": 1.2
+          },
+          "gain_bias": {
+            "min": -0.05,
+            "max": 0.05
+          }
+        },
+        "search": {
+          "candidates": 10,
+          "refine_top_k": 2,
+          "refine_steps": 6
+        },
+        "proxy_recon": {
+          "solver_id": "tv_fista",
+          "budget": {
+            "iters": 30
+          }
+        },
+        "stop": {
+          "max_evals": 15,
+          "plateau_delta": 0.001,
+          "verify_required": false
+        }
+      }
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.12,
+              "rho": 1.2,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "residual_tests": [
+        "whiteness"
+      ],
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    }
+  },
+  "notes": "For explicit A, easiest operator correction is gain/bias. More complex corrections should use parametric operators.",
+  "created": "2026-02-01"
+}

@@ -1,0 +1,133 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "ct_conebeam_lowdose_scatter_v1",
+  "title": "CT cone-beam low dose + scatter",
+  "modality": "ct",
+  "tags": [
+    "ct",
+    "tomography",
+    "cone-beam",
+    "low-dose",
+    "scatter",
+    "radon"
+  ],
+  "keywords": [
+    "ct",
+    "tomography",
+    "cone-beam",
+    "low-dose",
+    "scatter",
+    "radon",
+    "ct"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "ct_conebeam_lowdose_scatter_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "ct"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 1200.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "fbp",
+            "params": {
+              "filter": "ramlak"
+            }
+          },
+          {
+            "id": "sart",
+            "params": {
+              "iters": 15,
+              "relaxation": 0.25
+            }
+          },
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.12,
+              "rho": 1.2,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "budget": {
+        "measurement_budget": {
+          "views": 180
+        },
+        "photon_budget": {
+          "max_photons": 250.0
+        }
+      },
+      "environment": {
+        "scatter": {
+          "enabled": true,
+          "strength": 0.15
+        }
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.005
+      }
+    }
+  },
+  "notes": "Low-dose + scatter are key CT bottlenecks; includes a simple scatter model.",
+  "created": "2026-02-01",
+  "benchmark_results": {
+    "psnr_db": 27.97,
+    "ssim": null,
+    "reference_psnr_db": 28.0,
+    "status": "pass"
+  }
+}

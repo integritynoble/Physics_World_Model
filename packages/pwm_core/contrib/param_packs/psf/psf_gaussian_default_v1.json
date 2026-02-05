@@ -1,0 +1,24 @@
+{
+  "param_pack_version": "0.2.1",
+  "id": "psf_gaussian_default_v1",
+  "type": "psf",
+  "model": "gaussian",
+  "params": {
+    "sigma_px": 1.5,
+    "anisotropy": [
+      1.0,
+      1.0
+    ]
+  },
+  "units": {
+    "sigma_px": "pixel"
+  },
+  "valid_ranges": {
+    "sigma_px": [
+      0.5,
+      5.0
+    ]
+  },
+  "notes": "Simple PSF for demos; replace with measured PSF for serious microscopy.",
+  "created": "2026-02-01"
+}

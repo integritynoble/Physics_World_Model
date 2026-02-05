@@ -1,0 +1,119 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "mri_cartesian_accelerated_v1",
+  "title": "MRI Cartesian accelerated (undersampled k-space)",
+  "modality": "mri",
+  "tags": [
+    "mri",
+    "k-space",
+    "undersampling",
+    "compressed-sensing",
+    "parallel-imaging"
+  ],
+  "keywords": [
+    "mri",
+    "k-space",
+    "undersampling",
+    "compressed-sensing",
+    "parallel-imaging",
+    "mri"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "mri_cartesian_accelerated_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "mri"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 1200.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "cs_mri",
+            "params": {
+              "method": "cs",
+              "iters": 50,
+              "lam": 0.01
+            }
+          },
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.12,
+              "rho": 1.2,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "budget": {
+        "measurement_budget": {
+          "sampling_rate": 0.25
+        }
+      },
+      "calibration": {
+        "coils": 8
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": false
+        },
+        "read_noise_sigma": 0.005
+      }
+    }
+  },
+  "notes": "Accelerated MRI via k-space undersampling; fits compressed sensing / PnP workflows.",
+  "created": "2026-02-01",
+  "benchmark_results": {
+    "psnr_db": 48.25,
+    "ssim": 1.0,
+    "reference_psnr_db": 34.2,
+    "status": "pass"
+  }
+}

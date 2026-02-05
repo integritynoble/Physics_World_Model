@@ -1,0 +1,14 @@
+{
+  "dataset_id": "tiny_spc_demo_v1",
+  "modality": "spc",
+  "description": "Tiny synthetic SPC demo dataset for smoke tests",
+  "samples": [
+    {
+      "id": "sample0",
+      "path": "examples/tiny_spc_demo_v1.npz",
+      "split": "test"
+    }
+  ],
+  "license": "CC-BY-4.0 or synthetic",
+  "created": "2026-02-01"
+}

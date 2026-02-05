@@ -1,0 +1,153 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "ptychography_phase_retrieval_v1",
+  "title": "Ptychography phase retrieval (scan-grid)",
+  "modality": "ptychography",
+  "tags": [
+    "ptychography",
+    "phase-retrieval",
+    "diffraction",
+    "scan-grid",
+    "nonlinear"
+  ],
+  "keywords": [
+    "ptychography",
+    "phase-retrieval",
+    "diffraction",
+    "scan-grid",
+    "nonlinear",
+    "ptychography"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "ptychography_phase_retrieval_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "ptychography"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 1200.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.12,
+              "rho": 1.2,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "physics": {
+        "dims": {
+          "x": [
+            64,
+            64
+          ]
+        }
+      },
+      "calibration": {
+        "probe": {
+          "sigma_px": 3.0
+        },
+        "scan": {
+          "grid": [
+            6,
+            6
+          ],
+          "overlap": 0.6
+        }
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 900.0
+        }
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      }
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "epie",
+            "params": {
+              "iters": 100,
+              "alpha": 1.0,
+              "beta": 1.0,
+              "update_probe": true
+            }
+          },
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.1,
+              "rho": 1.0,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "notes": "Nonlinear inverse problem; includes classic GS-style solver placeholder.",
+  "created": "2026-02-01",
+  "benchmark_results": {
+    "psnr_db": 59.47,
+    "ssim": null,
+    "reference_psnr_db": 35.0,
+    "status": "pass"
+  }
+}

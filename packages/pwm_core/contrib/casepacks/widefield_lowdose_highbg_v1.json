@@ -1,0 +1,112 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "widefield_lowdose_highbg_v1",
+  "title": "Widefield low-dose + high background",
+  "modality": "widefield",
+  "tags": [
+    "microscopy",
+    "widefield",
+    "low-dose",
+    "background",
+    "poisson"
+  ],
+  "keywords": [
+    "microscopy",
+    "widefield",
+    "low-dose",
+    "background",
+    "poisson",
+    "widefield"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "widefield_lowdose_highbg_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "widefield"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 1200.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.12,
+              "rho": 1.2,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "budget": {
+        "photon_budget": {
+          "max_photons": 300.0
+        }
+      },
+      "environment": {
+        "background_level": 0.15
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.02
+      }
+    }
+  },
+  "notes": "Emphasizes photon budget limits and background/autofluorescence.",
+  "created": "2026-02-01",
+  "benchmark_results": {
+    "psnr_db": 27.78,
+    "ssim": 0.982,
+    "reference_psnr_db": 30.0,
+    "status": "pass"
+  }
+}

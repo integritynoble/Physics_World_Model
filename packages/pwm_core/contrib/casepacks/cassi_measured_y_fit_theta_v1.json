@@ -1,0 +1,139 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "cassi_measured_y_fit_theta_v1",
+  "title": "CASSI measured y: fit theta + reconstruct",
+  "modality": "cassi",
+  "tags": [
+    "cassi",
+    "sci-spectral",
+    "operator-fit",
+    "calibration",
+    "measured-y",
+    "theta"
+  ],
+  "keywords": [
+    "cassi",
+    "measured y",
+    "fit theta",
+    "dispersion",
+    "mask shift",
+    "psf"
+  ],
+  "required_user_inputs": [
+    {
+      "name": "y_source",
+      "type": "required",
+      "hint": "Measured coded snapshot (2D) or stack, depending on instrument."
+    },
+    {
+      "name": "x_dims",
+      "type": "required",
+      "hint": "Latent cube dims (H,W,L) expected."
+    },
+    {
+      "name": "mask_or_param_pack",
+      "type": "optional",
+      "hint": "If available, provide mask / dispersion LUT."
+    }
+  ],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "cassi_measured_y_fit_theta_v1_base",
+    "input": {
+      "mode": "measured",
+      "operator": {
+        "kind": "parametric",
+        "parametric": {
+          "operator_id": "cassi"
+        }
+      }
+    },
+    "states": {
+      "physics": {
+        "modality": "cassi"
+      },
+      "task": {
+        "kind": "calibrate_and_reconstruct"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": null
+        },
+        "measurement_budget": {
+          "sampling_rate": 1.0
+        }
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      }
+    },
+    "mismatch": {
+      "fit_operator": {
+        "enabled": true,
+        "search": {
+          "candidates": 12,
+          "refine_top_k": 3,
+          "refine_steps": 8
+        },
+        "proxy_recon": {
+          "solver_id": "tv_fista",
+          "budget": {
+            "iters": 40
+          }
+        },
+        "scoring": {
+          "terms": [
+            {
+              "name": "data_fidelity",
+              "weight": 1.0
+            },
+            {
+              "name": "residual_whiteness",
+              "weight": 0.5
+            },
+            {
+              "name": "theta_prior",
+              "weight": 0.2
+            }
+          ]
+        },
+        "stop": {
+          "max_evals": 20,
+          "plateau_delta": 0.001,
+          "verify_required": true
+        }
+      }
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.12,
+              "rho": 1.2,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "residual_tests": [
+        "whiteness",
+        "fourier_structure"
+      ],
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    }
+  },
+  "notes": "Designed for 'y + A(theta)' mode: fit operator parameters then reconstruct with best theta.",
+  "created": "2026-02-01"
+}

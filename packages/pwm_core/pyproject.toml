@@ -1,0 +1,80 @@
+[build-system]
+requires = ["hatchling>=1.24.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pwm-core"
+version = "0.2.1"
+description = "PWM Core: public Physics World Model for computational imaging (simulate/reconstruct/diagnose/operator-fit)"
+readme = "../../README.md"
+requires-python = ">=3.10"
+license = {file = "../../LICENSE"}
+authors = [
+  {name = "PWM Contributors"}
+]
+keywords = [
+  "computational-imaging",
+  "inverse-problems",
+  "simulation",
+  "reconstruction",
+  "deepinv",
+  "microscopy",
+  "tomography",
+  "cassi",
+  "single-pixel",
+  "physics"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: Other/Proprietary License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Image Processing",
+  "Topic :: Scientific/Engineering :: Physics"
+]
+
+dependencies = [
+  "numpy>=1.24",
+  "scipy>=1.10",
+  "pydantic>=2.4",
+  "pyyaml>=6.0",
+  "tqdm>=4.66",
+  "rich>=13.7",
+  "typer>=0.12",
+  "matplotlib>=3.7",
+  "torch>=2.1",
+  # IO / formats (optional at runtime; kept as light defaults)
+  "imageio>=2.31",
+]
+
+[project.optional-dependencies]
+# DeepInv is optional: PWM runs classical solvers without it.
+deepinv = ["deepinv>=0.2.0"]
+# Streamlit viewer
+viewer = ["streamlit>=1.31"]
+# Zarr/HDF5/OME-TIFF ecosystem
+io = ["zarr>=2.16", "h5py>=3.9", "tifffile>=2023.7.10", "nibabel>=5.1"]
+# Dev tooling
+dev = ["pytest>=7.4", "ruff>=0.2.0"]
+
+[project.scripts]
+pwm = "pwm_core.cli.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["pwm_core"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E203", "E266", "E501"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+addopts = "-q"

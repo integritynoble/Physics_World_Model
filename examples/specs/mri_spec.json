@@ -1,0 +1,27 @@
+{
+  "version": "0.2.1",
+  "id": "mri_example",
+  "input": {
+    "mode": "simulate"
+  },
+  "states": {
+    "physics": {
+      "modality": "mri"
+    },
+    "budget": {
+      "photon_budget": {"max_photons": 1000}
+    },
+    "sensor": {
+      "shot_noise": {"enabled": true, "model": "poisson"},
+      "read_noise_sigma": 5.0
+    },
+    "task": {
+      "kind": "simulate_recon_analyze"
+    }
+  },
+  "recon": {
+    "portfolio": {
+      "solvers": [{"id": "tv_fista", "params": {"lam": 0.02, "iters": 200}}]
+    }
+  }
+}

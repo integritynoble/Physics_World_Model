@@ -1,0 +1,164 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "matrix_generic_linear_v1",
+  "title": "Generic Linear Operator (Matrix)",
+  "modality": "matrix",
+  "tags": [
+    "matrix",
+    "linear-operator",
+    "compressed-sensing",
+    "generic",
+    "fista",
+    "tv-regularization"
+  ],
+  "keywords": [
+    "matrix",
+    "linear-operator",
+    "compressed-sensing",
+    "generic",
+    "fista",
+    "tv-regularization",
+    "inverse-problem",
+    "regularization"
+  ],
+  "required_user_inputs": [
+    {
+      "name": "A_matrix",
+      "type": "required",
+      "hint": "Forward operator matrix (m x n) as numpy array or callable"
+    },
+    {
+      "name": "y_measurement",
+      "type": "required",
+      "hint": "Measurement vector (m,) as numpy array"
+    }
+  ],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "matrix_generic_linear_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "matrix"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 1200.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "fista_tv",
+            "params": {
+              "iters": 200,
+              "lambda_tv": 0.01
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "physics": {
+        "dims": {
+          "x": [64, 64],
+          "y": ["measurements"]
+        },
+        "operator": {
+          "type": "matrix",
+          "structure": "dense_or_sparse"
+        }
+      },
+      "budget": {
+        "measurement_budget": {
+          "sampling_rate": 0.25,
+          "num_measurements": "auto"
+        },
+        "photon_budget": {
+          "max_photons": null
+        }
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "gaussian"
+        },
+        "read_noise_sigma": 0.02
+      }
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "fista_tv",
+            "params": {
+              "iters": 200,
+              "lambda_tv": 0.01,
+              "step_size": "auto"
+            }
+          },
+          {
+            "id": "admm_tv",
+            "params": {
+              "iters": 100,
+              "rho": 1.0,
+              "lambda_tv": 0.01
+            }
+          },
+          {
+            "id": "conjugate_gradient",
+            "params": {
+              "iters": 100,
+              "tol": 1e-6
+            }
+          }
+        ]
+      }
+    }
+  },
+  "notes": "Generic linear inverse problem y = Ax + noise. Supports any matrix operator (dense, sparse, or callable). Uses FISTA with TV regularization as default solver. Good for custom measurement matrices and general compressed sensing.",
+  "created": "2026-02-04",
+  "benchmark_results": {
+    "psnr_db": 25.79,
+    "ssim": null,
+    "reference_psnr_db": 25.0,
+    "status": "pass"
+  }
+}

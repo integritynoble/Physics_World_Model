@@ -1,0 +1,137 @@
+PWM NONCOMMERCIAL SHARE-ALIKE LICENSE v1.0
+======================================
+
+Copyright (c) 2026 PWM Contributors
+
+This license governs use of the PWM software and associated documentation,
+examples, configuration files (including CasePacks), and any other materials
+distributed with the PWM repository (collectively, the "Software").
+
+IMPORTANT: This is a source-available license. It permits non-commercial use
+and requires that modifications be published under the same terms.
+
+1. Definitions
+--------------
+1.1 "You" (or "Your") means an individual or legal entity exercising
+    permissions granted by this License.
+
+1.2 "Source Code" means the preferred form of the Software for making
+    modifications, including all files required to build, run, and test it,
+    and any scripts used to control compilation and installation.
+
+1.3 "Modified Version" means any work that is based on (derived from) the
+    Software, including any modifications, adaptations, translations, or
+    additions to the Software.
+
+1.4 "Non-Commercial Use" means use that is not primarily intended for or
+    directed toward commercial advantage, monetary compensation, or other
+    business benefit.
+
+1.5 "Commercial Use" includes, without limitation:
+    (a) selling, licensing, or otherwise monetizing the Software or any
+        Modified Version;
+    (b) providing the Software or any Modified Version as part of a paid
+        product or service (including SaaS, hosted APIs, consulting packages
+        where the Software is a material component, or embedded offerings);
+    (c) using the Software or any Modified Version in internal business
+        operations where the primary purpose is commercial advantage,
+        including in production workflows that directly support revenue-
+        generating activities;
+    (d) redistributing the Software or any Modified Version for a fee.
+
+    For clarity, the following are generally considered Non-Commercial Use:
+    academic research, teaching, personal projects, and evaluation, provided
+    they are not part of a paid offering or revenue-generating service.
+
+1.6 "Publish" means to make available to the public under terms that permit
+    access and copying (for example, a public Git repository or a publicly
+    accessible archive download).
+
+2. Grant of Rights (Non-Commercial)
+-----------------------------------
+Subject to the terms and conditions of this License, the Licensor grants You
+a worldwide, royalty-free, non-exclusive license to:
+
+(a) use the Software for Non-Commercial Use;
+(b) reproduce and redistribute the Software for Non-Commercial Use;
+(c) create Modified Versions for Non-Commercial Use; and
+(d) redistribute Modified Versions for Non-Commercial Use, provided You
+    comply with Section 3 (Share-Alike / Publication) and Section 4
+    (Attribution / Notices).
+
+No rights are granted for Commercial Use. See Section 7.
+
+3. Share-Alike / Publication Requirement
+----------------------------------------
+If You create or distribute a Modified Version, You must:
+
+3.1 Publish the complete corresponding Source Code of the Modified Version
+    under this same License (PWM Noncommercial Share-Alike License v1.0),
+    including any build/run/test scripts necessary to operate the Modified
+    Version.
+
+3.2 Ensure the Published Source Code is available at no charge to recipients
+    and to the general public for at least three (3) years from the date of
+    first distribution of the Modified Version.
+
+3.3 If You distribute binaries, containers, or other non-source forms, You
+    must provide a clear, prominent notice on how to obtain the Published
+    Source Code.
+
+4. Attribution / Notices
+------------------------
+4.1 You must retain all copyright, license, attribution, and warranty
+    disclaimer notices contained in the Software.
+
+4.2 If You distribute the Software or a Modified Version, You must include
+    a copy of this License and state any significant changes You made.
+
+4.3 You may not use the names, logos, or trademarks of the Licensor or PWM
+    contributors to endorse or promote products derived from the Software
+    without prior written permission.
+
+5. No Warranty
+--------------
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE LICENSOR OR CONTRIBUTORS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING
+FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+
+6. Termination
+--------------
+6.1 This License is automatically terminated if You violate any of its terms,
+    including engaging in Commercial Use without a separate license.
+
+6.2 Upon termination, You must cease all use and distribution of the Software
+    and any Modified Version, except that Published Source Code already made
+    available under Section 3 may remain available.
+
+7. Commercial Licensing
+-----------------------
+Commercial Use is NOT permitted under this License. If You want to use the
+Software for Commercial Use, You must obtain a separate commercial license
+from the Licensor.
+
+8. Patent Grant
+---------------
+To the extent permitted by law, each contributor grants You a non-exclusive,
+worldwide, royalty-free patent license under their essential patent claims
+to make, use, and redistribute the Software for Non-Commercial Use, subject
+to the conditions of this License. This patent license does not extend to
+Commercial Use.
+
+9. Severability
+---------------
+If any provision of this License is held unenforceable, the remaining
+provisions shall remain in full force and effect.
+
+10. Entire Agreement
+--------------------
+This License is the entire agreement between You and the Licensor regarding
+the Software and supersedes any prior agreements.
+
+---
+PWM Noncommercial Share-Alike License v1.0

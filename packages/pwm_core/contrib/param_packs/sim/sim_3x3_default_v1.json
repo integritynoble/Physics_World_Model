@@ -1,0 +1,38 @@
+{
+  "param_pack_version": "0.2.1",
+  "id": "sim_3x3_default_v1",
+  "type": "illumination",
+  "model": "sinusoidal",
+  "params": {
+    "angles": [
+      0.0,
+      2.09439510239,
+      4.18879020479
+    ],
+    "phases": [
+      0.0,
+      2.09439510239,
+      4.18879020479
+    ],
+    "freq_px": 8.0,
+    "mod_depth": 0.8
+  },
+  "units": {
+    "angles": "rad",
+    "phases": "rad",
+    "freq_px": "pixel^-1 (normalized)",
+    "mod_depth": "unitless"
+  },
+  "valid_ranges": {
+    "freq_px": [
+      2.0,
+      20.0
+    ],
+    "mod_depth": [
+      0.1,
+      1.0
+    ]
+  },
+  "notes": "Basic 3x3 SIM pattern specification; operators may generate frames from this.",
+  "created": "2026-02-01"
+}

@@ -1,0 +1,53 @@
+# Root workspace pyproject.toml (optional)
+#
+# This file lets you manage PWM as a monorepo workspace:
+#   - packages/pwm_core
+#   - packages/pwm_denario
+#
+# Use it with:
+#   - uv (recommended): https://github.com/astral-sh/uv
+#   - pip editable installs
+#
+# If you want the simplest setup, you can delete this root pyproject.toml
+# and install each package directly from its own pyproject.toml.
+
+[build-system]
+requires = ["hatchling>=1.24.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pwm-workspace"
+version = "0.2.1"
+description = "PWM monorepo workspace (optional). Install packages from ./packages."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+authors = [{ name = "PWM Contributors" }]
+dependencies = []
+
+# This root project is NOT meant to be published.
+[tool.hatch.build]
+include = []
+exclude = ["*"]
+
+[tool.uv]
+managed = true
+
+[tool.uv.workspace]
+members = [
+  "packages/pwm_core",
+  "packages/pwm_denario",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E203", "E266", "E501"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["packages/pwm_core/tests"]
+addopts = "-q"
