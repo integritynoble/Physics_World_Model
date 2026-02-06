@@ -25,12 +25,19 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
-def compute_psnr(x: np.ndarray, y: np.ndarray) -> float:
-    """Compute PSNR between two arrays."""
+def compute_psnr(x: np.ndarray, y: np.ndarray, max_val: float = None) -> float:
+    """Compute PSNR between two arrays.
+
+    Args:
+        x, y: Arrays to compare.
+        max_val: Peak signal value. If None, uses max of both arrays.
+                 Use 1.0 for data normalized to [0, 1].
+    """
     mse = np.mean((x.astype(np.float64) - y.astype(np.float64)) ** 2)
     if mse < 1e-10:
         return 100.0
-    max_val = max(x.max(), y.max())
+    if max_val is None:
+        max_val = max(x.max(), y.max())
     if max_val < 1e-10:
         max_val = 1.0
     return float(10 * np.log10(max_val ** 2 / mse))
@@ -331,46 +338,182 @@ class BenchmarkRunner:
     # ========================================================================
     # MODALITY 6: CASSI (Coded Aperture Spectral Imaging)
     # ========================================================================
-    def run_cassi_benchmark(self) -> Dict:
-        """Run CASSI hyperspectral benchmark using GAP-denoise.
+    # MST-L published PSNR on TSA_simu_data (Cai et al., CVPR 2022, Table 1)
+    MST_L_REFERENCE_PSNR = {
+        "scene01": 35.40, "scene02": 35.87, "scene03": 36.51,
+        "scene04": 35.76, "scene05": 34.32, "scene06": 33.10,
+        "scene07": 36.56, "scene08": 31.33, "scene09": 35.23,
+        "scene10": 33.03, "average": 34.71,
+    }
 
-        Based on reference implementation from dvp_linear_inv_cassi.py.
-        Uses shift/shift_back for dispersion handling and GAP with TV denoising.
+    def _load_tsa_simu_data(self):
+        """Try to load TSA_simu_data (mask + truth scenes) for MST evaluation.
+
+        Searches for the TSA_simu_data folder which contains:
+        - mask.mat: 2D binary coded aperture mask (256x256)
+        - Truth/scene01.mat ... scene10.mat: ground truth HSI cubes (256x256x28)
+
+        This is the standard test dataset from TSA-Net (Meng et al., ECCV 2020)
+        used by MST and most CASSI reconstruction papers.
+
+        Returns:
+            dict with 'mask' (2D np.ndarray) and 'scenes' (OrderedDict name->cube)
+            or None if not found.
         """
-        from pwm_core.data.loaders.kaist import KAISTDataset
+        pkg_root = Path(__file__).parent.parent
+        search_paths = [
+            pkg_root / "datasets" / "TSA_simu_data",
+            pkg_root.parent.parent / "datasets" / "TSA_simu_data",
+            pkg_root / "data" / "TSA_simu_data",
+            Path(__file__).parent / "TSA_simu_data",
+        ]
 
-        results = {"modality": "cassi", "solver": "gap_hsicnn", "per_scene": []}
+        for data_dir in search_paths:
+            mask_path = data_dir / "mask.mat"
+            truth_dir = data_dir / "Truth"
+            if not (mask_path.exists() and truth_dir.exists()):
+                continue
 
-        dataset = KAISTDataset(resolution=128, num_bands=28)  # 28 bands as in reference
+            try:
+                from scipy.io import loadmat
 
-        for idx, (name, cube) in enumerate(dataset):
-            if idx >= 3:  # Test first 3 scenes
-                break
+                mask_data = loadmat(str(mask_path))
+                mask = mask_data["mask"].astype(np.float32)
 
-            h, w, nC = cube.shape
+                scenes = {}
+                for scene_file in sorted(truth_dir.glob("scene*.mat")):
+                    data = loadmat(str(scene_file))
+                    cube = None
+                    for key in ["img", "cube", "hsi", "data"]:
+                        if key in data:
+                            cube = data[key].astype(np.float32)
+                            break
+                    if cube is None:
+                        for key in data:
+                            if not key.startswith("__"):
+                                cube = data[key].astype(np.float32)
+                                break
+                    if cube is not None:
+                        # Ensure (H, W, nC) format
+                        if cube.ndim == 3 and cube.shape[0] < cube.shape[1]:
+                            cube = np.transpose(cube, (1, 2, 0))
+                        # Do NOT normalize - use data as-is to match original MST pipeline
+                        scenes[scene_file.stem] = cube
 
-            # Create coded aperture mask
-            np.random.seed(42 + idx)
-            mask = (np.random.rand(h, w) > 0.5).astype(np.float32)
+                if scenes:
+                    self.log(f"  Found TSA_simu_data at {data_dir}")
+                    return {"mask": mask, "scenes": scenes, "data_dir": data_dir}
+
+            except Exception as e:
+                self.log(f"  Failed to load TSA data from {data_dir}: {e}")
+
+        return None
+
+    def run_cassi_benchmark(self) -> Dict:
+        """Run CASSI hyperspectral benchmark using MST (default) or GAP-denoise.
+
+        Default solver is MST (Mask-aware Spectral Transformer, Cai et al. CVPR 2022).
+        Falls back to GAP-denoise if torch is unavailable or MST fails.
+        Uses shift/shift_back for dispersion handling with step=2.
+
+        For best results matching the paper, place TSA_simu_data (mask.mat + Truth/)
+        in packages/pwm_core/datasets/TSA_simu_data/.
+        Download from: https://drive.google.com/drive/folders/1BNwkGHyVO-qByXj69aCf4SWfEsOB61J-
+        """
+        # Determine solver availability
+        solver_name = "mst"
+        use_mst = True
+        try:
+            import torch
+            from pwm_core.recon.mst import MST as _MST_check
+        except ImportError:
+            use_mst = False
+            solver_name = "gap_hsicnn"
+            self.log("  MST unavailable (torch/einops missing), using GAP-TV")
+
+        step = 2  # CASSI dispersion step (pixels per band)
+        nC = 28
+        results = {"modality": "cassi", "solver": solver_name, "per_scene": []}
+
+        # Try to load TSA_simu_data (matching original MST test pipeline)
+        tsa_data = self._load_tsa_simu_data()
+
+        if tsa_data is not None:
+            mask_2d = tsa_data["mask"]
+            scenes = tsa_data["scenes"]
+            use_tsa = True
+            self.log(f"  Using TSA_simu_data: {len(scenes)} scenes, real mask ({mask_2d.shape})")
+            results["data_source"] = "TSA_simu_data"
+        else:
+            # Fall back to KAIST/synthetic data with random mask
+            from pwm_core.data.loaders.kaist import KAISTDataset
+            self.log("  TSA_simu_data not found, using synthetic data")
+            self.log("  (For paper-matching results, download TSA_simu_data to datasets/TSA_simu_data/)")
+            dataset = KAISTDataset(resolution=256, num_bands=nC)
+            scenes = {}
+            for idx, (name, cube) in enumerate(dataset):
+                if idx >= 3:
+                    break
+                scenes[name] = cube
+            mask_2d = None
+            use_tsa = False
+            results["data_source"] = "synthetic"
+
+        for name, cube in scenes.items():
+            h, w, nC_actual = cube.shape
+
+            if mask_2d is not None:
+                mask = mask_2d
+                # Ensure mask matches spatial dims
+                if mask.shape[0] != h or mask.shape[1] != w:
+                    self.log(f"  Warning: mask {mask.shape} != cube ({h},{w}), using random")
+                    np.random.seed(42)
+                    mask = (np.random.rand(h, w) > 0.5).astype(np.float32)
+            else:
+                np.random.seed(42)
+                mask = (np.random.rand(h, w) > 0.5).astype(np.float32)
 
             # Expand mask for all bands (same mask per band for SD-CASSI)
-            Phi = np.tile(mask[:, :, np.newaxis], (1, 1, nC))
+            Phi = np.tile(mask[:, :, np.newaxis], (1, 1, nC_actual))
 
             # Forward model with shift (SD-CASSI dispersion)
-            measurement = self._cassi_forward(cube, Phi)
+            measurement = self._cassi_forward(cube, Phi, step=step)
 
-            # GAP-denoise reconstruction
-            recon = self._gap_denoise_cassi(
-                measurement, Phi,
-                max_iter=50,
-                lam=1.0,
-                accelerate=True,
-                tv_weight=0.1,
-                tv_iter=5,
-            )
+            # Reconstruct: try MST first, fall back to GAP-TV
+            if use_mst:
+                try:
+                    recon = self._mst_recon_cassi(measurement, mask, h, w, nC_actual, step=step)
+                    solver_name = "mst"
+                except Exception as e:
+                    self.log(f"  MST failed ({e}), falling back to GAP-TV")
+                    recon = self._gap_denoise_cassi(
+                        measurement, Phi,
+                        max_iter=50,
+                        lam=1.0,
+                        accelerate=True,
+                        tv_weight=0.1,
+                        tv_iter=5,
+                        step=step,
+                    )
+                    solver_name = "gap_hsicnn"
+            else:
+                recon = self._gap_denoise_cassi(
+                    measurement, Phi,
+                    max_iter=50,
+                    lam=1.0,
+                    accelerate=True,
+                    tv_weight=0.1,
+                    tv_iter=5,
+                    step=step,
+                )
 
-            psnr = compute_psnr(recon, cube)
-            ref_psnr = dataset.get_reference_psnr(name)
+            # Use max_val=1.0 for TSA data (matching original MST PSNR computation)
+            psnr = compute_psnr(recon, cube, max_val=1.0 if use_tsa else None)
+            # Use MST-L reference when available, otherwise GAP-TV reference
+            if use_tsa and name in self.MST_L_REFERENCE_PSNR:
+                ref_psnr = self.MST_L_REFERENCE_PSNR[name]
+            else:
+                ref_psnr = 32.0  # default baseline
 
             results["per_scene"].append({
                 "scene": name,
@@ -378,8 +521,9 @@ class BenchmarkRunner:
                 "reference_psnr": ref_psnr,
             })
 
-            self.log(f"  {name}: PSNR={psnr:.2f} dB (ref: {ref_psnr:.1f} dB)")
+            self.log(f"  {name}: PSNR={psnr:.2f} dB (ref: {ref_psnr:.1f} dB) [{solver_name}]")
 
+        results["solver"] = solver_name
         avg_psnr = np.mean([r["psnr"] for r in results["per_scene"]])
         results["avg_psnr"] = float(avg_psnr)
         return results
@@ -401,13 +545,13 @@ class BenchmarkRunner:
             out[:, :, c] = y[:, c * step:c * step + w, c]
         return out
 
-    def _cassi_forward(self, x: np.ndarray, Phi: np.ndarray) -> np.ndarray:
+    def _cassi_forward(self, x: np.ndarray, Phi: np.ndarray, step: int = 1) -> np.ndarray:
         """CASSI forward model: A(x, Phi) = sum(shift(x * Phi), axis=2)."""
         masked = x * Phi
-        shifted = self._cassi_shift(masked)
+        shifted = self._cassi_shift(masked, step=step)
         return np.sum(shifted, axis=2)
 
-    def _cassi_adjoint(self, y: np.ndarray, Phi: np.ndarray) -> np.ndarray:
+    def _cassi_adjoint(self, y: np.ndarray, Phi: np.ndarray, step: int = 1) -> np.ndarray:
         """CASSI adjoint: At(y, Phi) = shift_back(y[:,:,None] * ones) * Phi."""
         nC = Phi.shape[2]
         h = y.shape[0]
@@ -417,10 +561,144 @@ class BenchmarkRunner:
         y_ext = np.tile(y[:, :, np.newaxis], (1, 1, nC))
 
         # Shift back
-        x = self._cassi_shift_back(y_ext)
+        x = self._cassi_shift_back(y_ext, step=step)
 
         # Apply mask
         return x * Phi
+
+    _mst_model_cache = None  # Class-level cache for loaded MST model
+
+    def _get_mst_model(self, nC: int, h: int, step: int):
+        """Load or return cached MST model with pretrained weights."""
+        import torch
+        from pwm_core.recon.mst import MST
+
+        if self._mst_model_cache is not None:
+            return self._mst_model_cache
+
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+        # Search for pretrained weights
+        state_dict = None
+        pkg_root = Path(__file__).parent.parent
+        weights_search_paths = [
+            pkg_root / "weights" / "mst" / "mst_l.pth",
+            pkg_root / "weights" / "mst_cassi.pth",
+            pkg_root.parent.parent / "weights" / "mst_cassi.pth",
+            pkg_root.parent.parent / "model_zoo" / "mst.pth",
+        ]
+        for wp in weights_search_paths:
+            if wp.exists():
+                try:
+                    checkpoint = torch.load(str(wp), map_location=device, weights_only=False)
+                    if isinstance(checkpoint, dict) and "state_dict" in checkpoint:
+                        state_dict = {
+                            k.replace("module.", ""): v
+                            for k, v in checkpoint["state_dict"].items()
+                        }
+                    else:
+                        state_dict = checkpoint
+                    self.log(f"  Loaded MST weights from {wp}")
+                    break
+                except Exception as e:
+                    self.log(f"  Failed to load weights from {wp}: {e}")
+
+        # Infer architecture from checkpoint
+        num_blocks = [4, 7, 5]  # MST-L default
+        if state_dict is not None:
+            inferred = []
+            for stage_idx in range(10):
+                prefix = f"encoder_layers.{stage_idx}.0.blocks."
+                max_blk = -1
+                for k in state_dict:
+                    if k.startswith(prefix):
+                        blk_idx = int(k[len(prefix):].split(".")[0])
+                        max_blk = max(max_blk, blk_idx)
+                if max_blk >= 0:
+                    inferred.append(max_blk + 1)
+                else:
+                    break
+            bot_prefix = "bottleneck.blocks."
+            max_bot = -1
+            for k in state_dict:
+                if k.startswith(bot_prefix):
+                    blk_idx = int(k[len(bot_prefix):].split(".")[0])
+                    max_bot = max(max_bot, blk_idx)
+            if max_bot >= 0:
+                inferred.append(max_bot + 1)
+            if len(inferred) >= 2:
+                num_blocks = inferred
+                self.log(f"  MST architecture: stage={len(inferred)-1}, num_blocks={num_blocks}")
+
+        model = MST(
+            dim=nC,
+            stage=len(num_blocks) - 1,
+            num_blocks=num_blocks,
+            in_channels=nC,
+            out_channels=nC,
+            base_resolution=h,
+            step=step,
+        ).to(device)
+
+        if state_dict is not None:
+            model.load_state_dict(state_dict, strict=True)
+        else:
+            self.log("  MST: no pretrained weights found, using random init")
+
+        model.eval()
+        self._mst_model_cache = (model, device)
+        return model, device
+
+    def _mst_recon_cassi(
+        self,
+        measurement: np.ndarray,
+        mask_2d: np.ndarray,
+        h: int,
+        w: int,
+        nC: int,
+        step: int = 2,
+    ) -> np.ndarray:
+        """Reconstruct CASSI using MST (Mask-aware Spectral Transformer).
+
+        Args:
+            measurement: 2D measurement [H, W_ext] where W_ext = W + (nC-1)*step
+            mask_2d: 2D coded aperture [H, W]
+            h, w: spatial dimensions
+            nC: number of spectral bands
+            step: dispersion step
+
+        Returns:
+            Reconstructed cube [H, W, nC]
+        """
+        import torch
+        from pwm_core.recon.mst import shift_torch, shift_back_meas_torch
+
+        model, device = self._get_mst_model(nC, h, step)
+
+        # Prepare mask: [H, W] -> [1, nC, H, W] -> shifted [1, nC, H, W_ext]
+        mask_3d = np.tile(mask_2d[:, :, np.newaxis], (1, 1, nC))
+        mask_3d_t = (
+            torch.from_numpy(mask_3d.transpose(2, 0, 1).copy())
+            .unsqueeze(0)
+            .float()
+            .to(device)
+        )
+        mask_3d_shift = shift_torch(mask_3d_t, step=step)
+
+        # Prepare initial estimate: Y2H conversion (matching original MST code)
+        meas_t = (
+            torch.from_numpy(measurement.copy()).unsqueeze(0).float().to(device)
+        )
+        x_init = shift_back_meas_torch(meas_t, step=step, nC=nC)
+        x_init = x_init / nC * 2  # Scaling from original MST code
+
+        # Forward pass
+        with torch.no_grad():
+            recon = model(x_init, mask_3d_shift)
+
+        # Convert to numpy [H, W, nC]
+        recon = recon.squeeze(0).permute(1, 2, 0).cpu().numpy()
+        return recon.astype(np.float32)
 
     def _gap_denoise_cassi(
         self,
@@ -432,6 +710,7 @@ class BenchmarkRunner:
         tv_weight: float = 6.0,
         tv_iter: int = 5,
         use_hsicnn: bool = True,
+        step: int = 1,
     ) -> np.ndarray:
         """GAP-denoise for CASSI with HSI_SDeCNN denoiser.
 
@@ -487,12 +766,12 @@ class BenchmarkRunner:
                 self.log(f"  HSI_SDeCNN load failed: {e}, using TV")
 
         # Compute Phi_sum for normalization
-        Phi_shifted = self._cassi_shift(Phi)
+        Phi_shifted = self._cassi_shift(Phi, step=step)
         Phi_sum = np.sum(Phi_shifted, axis=2)
         Phi_sum[Phi_sum == 0] = 1  # Avoid division by zero
 
         # Initialize with adjoint
-        x = self._cassi_adjoint(y, Phi)
+        x = self._cassi_adjoint(y, Phi, step=step)
 
         # Normalize by Phi_sum (approximate)
         for c in range(nC):
@@ -513,7 +792,7 @@ class BenchmarkRunner:
         for idx, nsig in enumerate(sigma_list):
             for it in range(iter_per_sigma):
                 # Forward projection
-                yb = self._cassi_forward(x, Phi)
+                yb = self._cassi_forward(x, Phi, step=step)
 
                 if accelerate:
                     # Accelerated GAP: accumulate residual
@@ -526,7 +805,7 @@ class BenchmarkRunner:
                 residual_norm = residual / Phi_sum
 
                 # Adjoint with normalized residual
-                x = x + lam * self._cassi_adjoint(residual_norm, Phi)
+                x = x + lam * self._cassi_adjoint(residual_norm, Phi, step=step)
 
                 # Apply denoiser based on iteration (exact pattern from reference)
                 # HSI_SDeCNN at iterations: 83-85, 87-89, 91-93, 95-97, 99-101,

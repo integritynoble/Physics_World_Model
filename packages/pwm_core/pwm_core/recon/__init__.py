@@ -8,7 +8,7 @@ Solvers by modality:
 - CT: FBP, SART
 - MRI: ESPIRiT, SENSE, CS-MRI
 - SPC: TVAL3, ISTA/FISTA
-- CASSI/CACTI: GAP-TV
+- CASSI/CACTI: MST (default), GAP-TV
 - SIM: Wiener-SIM
 - Ptychography: ePIE
 - Holography: Angular Spectrum
@@ -55,6 +55,18 @@ try:
 except ImportError:
     tval3 = ista = fista = tv_prox_2d = None
     run_tval3 = run_ista = None
+
+# MST (CASSI default)
+try:
+    from pwm_core.recon.mst import (
+        MST,
+        mst_recon_cassi,
+        shift_torch,
+        shift_back_meas_torch,
+    )
+except ImportError:
+    MST = mst_recon_cassi = None
+    shift_torch = shift_back_meas_torch = None
 
 # GAP-TV
 try:
@@ -145,6 +157,11 @@ __all__ = [
     "tv_prox_2d",
     "run_tval3",
     "run_ista",
+    # MST (CASSI default)
+    "MST",
+    "mst_recon_cassi",
+    "shift_torch",
+    "shift_back_meas_torch",
     # GAP-TV
     "gap_tv_cassi",
     "gap_tv_cacti",
