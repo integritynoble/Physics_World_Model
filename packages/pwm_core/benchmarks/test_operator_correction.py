@@ -16,6 +16,7 @@ import sys
 from pathlib import Path
 from typing import Dict, Any
 import numpy as np
+from typing import Any, Dict, Tuple
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -894,187 +895,503 @@ class OperatorCorrectionTester:
         return result
 
     # ========================================================================
-    # CASSI: Dispersion step calibration using benchmark GAP method
+    
+
+    # ========================================================================
+    # CASSI: Geo + dispersion-direction + noise calibration (self-contained)
+    # Replaces old dispersion-step calibration test
     # ========================================================================
     def test_cassi_correction(self) -> Dict[str, Any]:
-        """Test CASSI with dispersion step mismatch using benchmark GAP.
+        """Test CASSI mismatch calibration for geo + dispersion-direction + noise.
 
-        Dispersion step is the most critical parameter in CASSI - wrong step
-        causes severe spectral mixing. Uses the same GAP-TV method as benchmark.
+        Mismatch parameters:
+        - geo: mask affine warp (dx, dy, theta_deg)
+        - disp: dispersion direction rotation (dir_rot_deg)
+        - noise: poisson-gaussian (alpha, sigma)
 
-        Uses KAIST dataset (256x256x28) for higher quality reconstruction.
+        Uses KAIST dataset (256x256x28).
+        Uses original scene cube as ground truth (NO truth_used cropping).
         """
-        self.log("\n[CASSI] Testing dispersion step calibration (benchmark GAP)...")
+        self.log("\n[CASSI] Testing geo+disp+noise calibration (self-contained)...")
 
         from pwm_core.data.loaders.kaist import KAISTDataset
-        from scipy.ndimage import gaussian_filter
 
-        # Get hyperspectral cube - use larger resolution for better PSNR
-        dataset = KAISTDataset(resolution=256, num_bands=28)
-        name, cube = next(iter(dataset))
-        h, w, nC = cube.shape
-        self.log(f"  Using scene: {name} ({h}x{w}x{nC})")
+        # --------------------------------------------------------------------
+        # Inline "simulator_cassi_local_backup" minimal equivalents
+        # --------------------------------------------------------------------
+        class AffineParams:
+            def __init__(self, dx: float = 0.0, dy: float = 0.0, theta_deg: float = 0.0):
+                self.dx = float(dx)
+                self.dy = float(dy)
+                self.theta_deg = float(theta_deg)
 
-        # Random coded aperture mask (same seed as benchmark)
-        np.random.seed(42)
-        mask = (np.random.rand(h, w) > 0.5).astype(np.float32)
-        Phi = np.tile(mask[:, :, np.newaxis], (1, 1, nC))
+        class DispersionParams:
+            def __init__(self, dir_rot_deg: float = 0.0, scene_rot_deg: float = 0.0, edge_cut: bool = True):
+                self.dir_rot_deg = float(dir_rot_deg)
+                self.scene_rot_deg = float(scene_rot_deg)
+                self.edge_cut = bool(edge_cut)
 
-        def cassi_shift(x, step=1):
-            """Shift spectral bands for CASSI dispersion."""
-            hh, ww, nc = x.shape
-            out = np.zeros((hh, ww + (nc - 1) * step, nc), dtype=x.dtype)
-            for c in range(nc):
-                out[:, c * step:c * step + ww, c] = x[:, :, c]
-            return out
+        class NoiseParams:
+            def __init__(self, kind: str = "poisson_gaussian", alpha: float = 1000.0, sigma: float = 0.01):
+                self.kind = str(kind)
+                self.alpha = float(alpha)
+                self.sigma = float(sigma)
 
-        def cassi_shift_back(y, step=1, nc=28, ww=None):
-            """Shift back spectral bands."""
-            if ww is None:
-                ww = y.shape[1] - (nc - 1) * step
-            hh = y.shape[0]
-            out = np.zeros((hh, ww, nc), dtype=y.dtype)
-            for c in range(nc):
-                out[:, :, c] = y[:, c * step:c * step + ww, c]
-            return out
+        class RegimeParams:
+            def __init__(self, affine: AffineParams, dispersion: DispersionParams, noise: NoiseParams):
+                self.affine = affine
+                self.dispersion = dispersion
+                self.noise = noise
 
-        def cassi_forward(x, Phi, step=1):
-            """CASSI forward model."""
-            masked = x * Phi
-            shifted = cassi_shift(masked, step)
-            return np.sum(shifted, axis=2)
+        def warp_mask2d(mask2d: np.ndarray, affine: AffineParams) -> np.ndarray:
+            """Subpixel shift + small rotation about center using scipy.ndimage."""
+            from scipy.ndimage import affine_transform
 
-        def cassi_adjoint(y, Phi, step=1):
-            """CASSI adjoint."""
-            hh, ww, nc = Phi.shape
-            y_ext = np.tile(y[:, :, np.newaxis], (1, 1, nc))
-            x = cassi_shift_back(y_ext, step, nc, ww)
-            return x * Phi
+            H, W = mask2d.shape
+            theta = np.deg2rad(affine.theta_deg)
+            c, s = np.cos(theta), np.sin(theta)
 
-        def gap_denoise_cassi(y, Phi, step=1, max_iter=124, lam=1.0):
-            """GAP-denoise for CASSI matching benchmark parameters."""
+            # rotation matrix (output->input mapping for affine_transform)
+            R = np.array([[c, -s],
+                        [s,  c]], dtype=np.float32)
+
+            center = np.array([(H - 1) / 2.0, (W - 1) / 2.0], dtype=np.float32)
+
+            # We want: x_out = R*(x_in - center) + center + [dy, dx]
+            # affine_transform maps: x_in = M*x_out + offset
+            # For pure rotation+translation, M = R^{-1} = R^T
+            M = R.T
+            shift = np.array([affine.dy, affine.dx], dtype=np.float32)
+
+            # Solve offset so that center maps correctly with shift
+            # x_in = M*x_out + offset
+            # want x_out = center -> x_in = center - shift  (approx inverse translation)
+            # offset = (center - shift) - M*center
+            offset = (center - shift) - M @ center
+
+            warped = affine_transform(
+                mask2d.astype(np.float32),
+                matrix=M,
+                offset=offset,
+                output_shape=(H, W),
+                order=1,           # bilinear
+                mode="constant",
+                cval=0.0,
+            )
+            return np.clip(warped, 0.0, 1.0).astype(np.float32)
+
+        def make_dispersion_offsets_horizontal(s_nom: np.ndarray, dir_rot_deg: float) -> Tuple[np.ndarray, np.ndarray]:
+            """Rotate nominal dispersion offsets (along +x) by dir_rot_deg."""
+            theta = np.deg2rad(dir_rot_deg)
+            c, s = np.cos(theta), np.sin(theta)
+            s_nom = s_nom.astype(np.float32)
+            dx = s_nom * c
+            dy = s_nom * s
+            return dx, dy
+
+        def cassi_forward_simstyle(
+            x_hwl: np.ndarray,
+            mask2d_used: np.ndarray,
+            s_nom: np.ndarray,
+            dir_rot_deg: float,
+        ) -> np.ndarray:
+            """Forward model: place masked bands onto expanded canvas and sum."""
+            H, W, L = x_hwl.shape
+
+            dx_f, dy_f = make_dispersion_offsets_horizontal(s_nom, dir_rot_deg)
+            dx_used = np.rint(dx_f).astype(np.int32)
+            dy_used = np.rint(dy_f).astype(np.int32)
+
+            # shift to nonnegative (so canvas indices are valid)
+            if dx_used.min() < 0:
+                dx_used = dx_used - int(dx_used.min())
+            if dy_used.min() < 0:
+                dy_used = dy_used - int(dy_used.min())
+
+            Wp = W + int(dx_used.max())
+            Hp = H + int(dy_used.max())
+
+            y = np.zeros((Hp, Wp), dtype=np.float32)
+            for l in range(L):
+                oy = int(dy_used[l])
+                ox = int(dx_used[l])
+                y[oy:oy+H, ox:ox+W] += mask2d_used * x_hwl[:, :, l]
+            return y.astype(np.float32)
+
+        def simulate_cassi_measurement(
+            cube: np.ndarray,
+            mask2d_nom: np.ndarray,
+            s_nom: np.ndarray,
+            params: RegimeParams,
+            rng: np.random.Generator,
+        ):
+            """Simulate measurement y with mask geo warp + dispersion dir rot + poisson-gaussian noise."""
+            # mask geo
+            mask2d_used = warp_mask2d(mask2d_nom, params.affine)
+
+            # clean measurement
+            y_clean = cassi_forward_simstyle(cube, mask2d_used, s_nom, params.dispersion.dir_rot_deg)
+            y_clean = np.maximum(y_clean, 0.0)
+
+            # noise
+            if params.noise.kind.lower() == "poisson_gaussian":
+                alpha = max(params.noise.alpha, 1e-6)
+                sigma = max(params.noise.sigma, 0.0)
+
+                # Poisson on scaled intensity, then scale back
+                lam = alpha * y_clean
+                lam = np.clip(lam, 0.0, 1e9)
+                y_p = rng.poisson(lam=lam).astype(np.float32) / float(alpha)
+
+                # Add Gaussian read noise
+                y = y_p + rng.normal(0.0, sigma, size=y_clean.shape).astype(np.float32)
+            else:
+                # fallback: Gaussian only
+                sigma = max(params.noise.sigma, 0.0)
+                y = y_clean + rng.normal(0.0, sigma, size=y_clean.shape).astype(np.float32)
+
+            realized = {
+                "y_shape": list(y.shape),
+                "affine_used": {"dx": params.affine.dx, "dy": params.affine.dy, "theta_deg": params.affine.theta_deg},
+                "disp_used": {"dir_rot_deg": params.dispersion.dir_rot_deg},
+                "noise_used": {"kind": params.noise.kind, "alpha": params.noise.alpha, "sigma": params.noise.sigma},
+            }
+            return y.astype(np.float32), realized, mask2d_used
+
+        # --------------------------------------------------------------------
+        # Helper: GAP-TV reconstruction for expanded-canvas model
+        # --------------------------------------------------------------------
+        def gap_tv_cassi_expanded(
+            y: np.ndarray,
+            cube_shape: Tuple[int, int, int],
+            mask2d_used: np.ndarray,
+            s_nom: np.ndarray,
+            dir_rot_deg: float,
+            max_iter: int = 80,
+            lam: float = 1.0,
+            tv_weight: float = 0.4,
+            tv_iter: int = 5,
+        ) -> np.ndarray:
+            """GAP-TV reconstruction for expanded-canvas forward model."""
             try:
                 from skimage.restoration import denoise_tv_chambolle
             except ImportError:
                 denoise_tv_chambolle = None
+                from scipy.ndimage import gaussian_filter
 
-            hh, ww, nc = Phi.shape
+            H, W, L = cube_shape
 
-            # Compute Phi_sum for normalization
-            Phi_shifted = cassi_shift(Phi, step)
-            Phi_sum = np.sum(Phi_shifted, axis=2)
-            Phi_sum[Phi_sum == 0] = 1
+            dx_f, dy_f = make_dispersion_offsets_horizontal(s_nom, dir_rot_deg)
+            dx_used = np.rint(dx_f).astype(np.int32)
+            dy_used = np.rint(dy_f).astype(np.int32)
 
-            # Handle size mismatch between y and Phi_sum
-            y_w = y.shape[1]
-            phi_w = Phi_sum.shape[1]
-            if y_w != phi_w:
-                # Pad or crop to match
-                if y_w < phi_w:
-                    y_pad = np.zeros((y.shape[0], phi_w), dtype=y.dtype)
-                    y_pad[:, :y_w] = y
-                    y = y_pad
-                else:
-                    y = y[:, :phi_w]
+            if dx_used.min() < 0:
+                dx_used = dx_used - int(dx_used.min())
+            if dy_used.min() < 0:
+                dy_used = dy_used - int(dy_used.min())
 
-            # Initialize with adjoint
-            x = cassi_adjoint(y, Phi, step)
-            for c in range(nc):
-                x[:, :, c] = x[:, :, c] / (np.mean(Phi[:, :, c]) + 0.01)
+            Wp = W + int(dx_used.max())
+            Hp = H + int(dy_used.max())
 
+            # pad/crop y to expected canvas
+            y_pad = np.zeros((Hp, Wp), dtype=np.float32)
+            hh = min(Hp, y.shape[0])
+            ww = min(Wp, y.shape[1])
+            y_pad[:hh, :ww] = y[:hh, :ww]
+            y = y_pad
+
+            # Phi_sum on canvas
+            Phi_sum = np.zeros((Hp, Wp), dtype=np.float32)
+            for l in range(L):
+                oy = int(dy_used[l])
+                ox = int(dx_used[l])
+                Phi_sum[oy:oy+H, ox:ox+W] += mask2d_used
+            Phi_sum = np.maximum(Phi_sum, 1.0)
+
+            # forward / adjoint
+            def A_fwd(x_hwl: np.ndarray) -> np.ndarray:
+                return cassi_forward_simstyle(x_hwl, mask2d_used, s_nom, dir_rot_deg)
+
+            def A_adj(residual_hw: np.ndarray) -> np.ndarray:
+                x = np.zeros((H, W, L), dtype=np.float32)
+                for l in range(L):
+                    oy = int(dy_used[l])
+                    ox = int(dx_used[l])
+                    patch = residual_hw[oy:oy+H, ox:ox+W]
+                    x[:, :, l] += patch * mask2d_used
+                return x
+
+            # init
+            x = A_adj(y / Phi_sum)
             y1 = y.copy()
 
-            # Sigma schedule as in benchmark reference
-            sigma_list = [130] * 8
-            iter_per_sigma = 20
+            for _ in range(max_iter):
+                yb = A_fwd(x)
+                y1 = y1 + (y - yb)
+                residual = y1 - yb
 
-            k = 0
-            for idx, nsig in enumerate(sigma_list):
-                for it in range(iter_per_sigma):
-                    yb = cassi_forward(x, Phi, step)
+                x = x + lam * A_adj(residual / Phi_sum)
 
-                    # Handle size mismatch
-                    min_w = min(y.shape[1], yb.shape[1])
-                    y1[:, :min_w] = y1[:, :min_w] + (y[:, :min_w] - yb[:, :min_w])
-                    residual = np.zeros_like(yb)
-                    residual[:, :min_w] = y1[:, :min_w] - yb[:, :min_w]
+                # denoise per band
+                if denoise_tv_chambolle is not None:
+                    for l in range(L):
+                        x[:, :, l] = denoise_tv_chambolle(x[:, :, l], weight=tv_weight, max_num_iter=tv_iter)
+                else:
+                    for l in range(L):
+                        x[:, :, l] = gaussian_filter(x[:, :, l], sigma=0.5)
 
-                    residual_norm = residual / np.maximum(Phi_sum[:, :residual.shape[1]], 1)
-                    x = x + lam * cassi_adjoint(residual_norm, Phi, step)
-
-                    # TV denoising
-                    if denoise_tv_chambolle is not None:
-                        tv_weight = nsig / 255.0
-                        x = denoise_tv_chambolle(x, weight=tv_weight, max_num_iter=5, channel_axis=2)
-                    else:
-                        for c in range(nc):
-                            x[:, :, c] = gaussian_filter(x[:, :, c], sigma=0.5)
-
-                    x = np.clip(x, 0, 1)
-
-                    if k == 123:
-                        return x.astype(np.float32)
-                    k += 1
+                x = np.clip(x, 0, 1)
 
             return x.astype(np.float32)
 
-        # TRUE dispersion step
-        step_true = 1  # Standard dispersion
+        # --------------------------------------------------------------------
+        # Load cube (original scene is ground truth)
+        # --------------------------------------------------------------------
+        dataset = KAISTDataset(resolution=256, num_bands=28)
+        name, cube = next(iter(dataset))
+        H, W, L = cube.shape
+        self.log(f"  Using scene: {name} ({H}x{W}x{L})")
 
-        # Generate measurement with TRUE step
-        y = cassi_forward(cube, Phi, step=step_true)
-        y += np.random.randn(*y.shape).astype(np.float32) * 0.01
+        # Nominal 2D mask
+        np.random.seed(42)
+        mask2d_nom = (np.random.rand(H, W) > 0.5).astype(np.float32)
 
-        # WRONG dispersion step (significant error)
-        step_wrong = 3  # Much larger dispersion - severe spectral mixing
+        # Nominal band shifts (fallback: 2 pixels per band)
+        s_nom = (np.arange(L, dtype=np.int32) * 2).astype(np.int32)
 
-        # Reconstruct with WRONG step
-        self.log("  Reconstructing with wrong dispersion step...")
-        x_wrong = gap_denoise_cassi(y, Phi, step=step_wrong)
+        # Parameter ranges (your requested ranges)
+        geo = {"dx_min": -1.5, "dx_max": 1.5, "theta_min": -0.30, "theta_max": 0.30}
+        disp = {"dir_rot_min": -0.12, "dir_rot_max": 0.12}
+        noise = {"alpha_min": 600.0, "alpha_max": 2500.0, "sigma_min": 0.003, "sigma_max": 0.015}
+
+        rng = np.random.default_rng(123)
+
+        # TRUE params sampled in range
+        true_affine = AffineParams(
+            dx=float(rng.uniform(geo["dx_min"], geo["dx_max"])),
+            dy=float(rng.uniform(geo["dx_min"], geo["dx_max"])),
+            theta_deg=float(rng.uniform(geo["theta_min"], geo["theta_max"])),
+        )
+        true_disp = DispersionParams(
+            dir_rot_deg=float(rng.uniform(disp["dir_rot_min"], disp["dir_rot_max"])),
+            scene_rot_deg=0.0,
+            edge_cut=True,
+        )
+        true_noise = NoiseParams(
+            kind="poisson_gaussian",
+            alpha=float(rng.uniform(noise["alpha_min"], noise["alpha_max"])),
+            sigma=float(rng.uniform(noise["sigma_min"], noise["sigma_max"])),
+        )
+        true_params = RegimeParams(true_affine, true_disp, true_noise)
+
+        # Generate measurement (TRUE system)
+        y, realized, mask2d_true = simulate_cassi_measurement(cube, mask2d_nom, s_nom, true_params, rng)
+
+        # WRONG assumed params (nominal)
+        wrong_affine = AffineParams(0.0, 0.0, 0.0)
+        wrong_dir_rot = 0.0
+        mask2d_wrong = warp_mask2d(mask2d_nom, wrong_affine)
+
+        # Recon with WRONG params
+        self.log("  Reconstructing with wrong params...")
+        x_wrong = gap_tv_cassi_expanded(
+            y=y,
+            cube_shape=(H, W, L),
+            mask2d_used=mask2d_wrong,
+            s_nom=s_nom,
+            dir_rot_deg=wrong_dir_rot,
+            max_iter=80,
+            tv_weight=0.4,
+        )
         psnr_wrong = compute_psnr(x_wrong, cube)
 
-        # Reconstruct with TRUE step (oracle)
-        self.log("  Reconstructing with true dispersion step (oracle)...")
-        x_oracle = gap_denoise_cassi(y, Phi, step=step_true)
+        # Oracle recon (true geo+disp)
+        self.log("  Reconstructing with oracle params...")
+        x_oracle = gap_tv_cassi_expanded(
+            y=y,
+            cube_shape=(H, W, L),
+            mask2d_used=mask2d_true,
+            s_nom=s_nom,
+            dir_rot_deg=true_disp.dir_rot_deg,
+            max_iter=80,
+            tv_weight=0.4,
+        )
         psnr_oracle = compute_psnr(x_oracle, cube)
 
-        # CALIBRATION: Search for best dispersion step
-        self.log("  Calibrating dispersion step...")
-        best_step = step_wrong
-        best_residual = float('inf')
+        # --------------------------------------------------------------------
+        # CALIBRATION: Two-stage search (coarse + fine refinement)
+        # --------------------------------------------------------------------
+        def compute_residual(dx, dy, theta, dir_rot, iters=30):
+            """Compute reconstruction residual for given parameters."""
+            aff = AffineParams(float(dx), float(dy), float(theta))
+            mask_try = warp_mask2d(mask2d_nom, aff)
+            x_test = gap_tv_cassi_expanded(
+                y=y,
+                cube_shape=(H, W, L),
+                mask2d_used=mask_try,
+                s_nom=s_nom,
+                dir_rot_deg=float(dir_rot),
+                max_iter=iters,
+                tv_weight=0.4,
+            )
+            y_pred = cassi_forward_simstyle(x_test, mask_try, s_nom, float(dir_rot))
+            hh = min(y.shape[0], y_pred.shape[0])
+            ww = min(y.shape[1], y_pred.shape[1])
+            r = (y[:hh, :ww] - y_pred[:hh, :ww]).astype(np.float32)
+            residual = float(np.sum(r * r))
+            # Robust sigma estimate via MAD
+            med = float(np.median(r))
+            mad = float(np.median(np.abs(r - med)))
+            sigma_hat = mad / 0.6745 if mad > 0 else 0.0
+            sigma_hat = float(np.clip(sigma_hat, noise["sigma_min"], noise["sigma_max"]))
+            return residual, sigma_hat
 
-        for test_step in [1, 2, 3, 4]:
-            x_test = gap_denoise_cassi(y, Phi, step=test_step, max_iter=60)
-            y_pred = cassi_forward(x_test, Phi, step=test_step)
-            min_w = min(y.shape[1], y_pred.shape[1])
-            residual = np.sum((y[:, :min_w] - y_pred[:, :min_w])**2)
-            if residual < best_residual:
-                best_residual = residual
-                best_step = test_step
+        # Stage 1: Coarse grid search
+        self.log("  Stage 1: Coarse grid search...")
+        dx_grid = np.linspace(geo["dx_min"], geo["dx_max"], 7)
+        dy_grid = np.linspace(geo["dx_min"], geo["dx_max"], 7)
+        th_grid = np.linspace(geo["theta_min"], geo["theta_max"], 5)
+        dir_grid = np.linspace(disp["dir_rot_min"], disp["dir_rot_max"], 5)
 
-        # Reconstruct with calibrated step
-        self.log("  Reconstructing with calibrated step...")
-        x_corrected = gap_denoise_cassi(y, Phi, step=best_step)
+        best = {"residual": float("inf"), "dx": 0.0, "dy": 0.0, "theta": 0.0, "dir_rot": 0.0, "sigma_hat": None}
+
+        for dx in dx_grid:
+            for dy in dy_grid:
+                for theta in th_grid:
+                    for dir_rot in dir_grid:
+                        residual, sigma_hat = compute_residual(dx, dy, theta, dir_rot, iters=25)
+                        if residual < best["residual"]:
+                            best.update({
+                                "residual": residual,
+                                "dx": float(dx),
+                                "dy": float(dy),
+                                "theta": float(theta),
+                                "dir_rot": float(dir_rot),
+                                "sigma_hat": sigma_hat,
+                            })
+
+        self.log(f"    Coarse best: dx={best['dx']:.3f}, dy={best['dy']:.3f}, theta={best['theta']:.3f}, dir_rot={best['dir_rot']:.3f}")
+
+        # Stage 2: Fine grid refinement around coarse best
+        self.log("  Stage 2: Fine grid refinement...")
+        dx_step = (geo["dx_max"] - geo["dx_min"]) / 6 / 2
+        dy_step = (geo["dx_max"] - geo["dx_min"]) / 6 / 2
+        th_step = (geo["theta_max"] - geo["theta_min"]) / 4 / 2
+        dir_step = (disp["dir_rot_max"] - disp["dir_rot_min"]) / 4 / 2
+
+        dx_fine = np.linspace(best["dx"] - dx_step, best["dx"] + dx_step, 5)
+        dy_fine = np.linspace(best["dy"] - dy_step, best["dy"] + dy_step, 5)
+        th_fine = np.linspace(best["theta"] - th_step, best["theta"] + th_step, 3)
+        dir_fine = np.linspace(best["dir_rot"] - dir_step, best["dir_rot"] + dir_step, 3)
+
+        for dx in dx_fine:
+            for dy in dy_fine:
+                for theta in th_fine:
+                    for dir_rot in dir_fine:
+                        # Clip to valid ranges
+                        dx_c = np.clip(dx, geo["dx_min"], geo["dx_max"])
+                        dy_c = np.clip(dy, geo["dx_min"], geo["dx_max"])
+                        th_c = np.clip(theta, geo["theta_min"], geo["theta_max"])
+                        dir_c = np.clip(dir_rot, disp["dir_rot_min"], disp["dir_rot_max"])
+
+                        residual, sigma_hat = compute_residual(dx_c, dy_c, th_c, dir_c, iters=35)
+                        if residual < best["residual"]:
+                            best.update({
+                                "residual": residual,
+                                "dx": float(dx_c),
+                                "dy": float(dy_c),
+                                "theta": float(th_c),
+                                "dir_rot": float(dir_c),
+                                "sigma_hat": sigma_hat,
+                            })
+
+        self.log(f"    Fine best: dx={best['dx']:.3f}, dy={best['dy']:.3f}, theta={best['theta']:.3f}, dir_rot={best['dir_rot']:.3f}")
+
+        # Stage 3: Local coordinate descent (optional refinement)
+        self.log("  Stage 3: Local coordinate descent...")
+        step_sizes = {"dx": 0.1, "dy": 0.1, "theta": 0.02, "dir_rot": 0.01}
+        for _ in range(3):  # 3 rounds of coordinate descent
+            for param in ["dx", "dy", "theta", "dir_rot"]:
+                step = step_sizes[param]
+                current_val = best[param]
+                for delta in [-step, step]:
+                    test_val = current_val + delta
+                    # Clip to ranges
+                    if param in ["dx", "dy"]:
+                        test_val = np.clip(test_val, geo["dx_min"], geo["dx_max"])
+                    elif param == "theta":
+                        test_val = np.clip(test_val, geo["theta_min"], geo["theta_max"])
+                    else:
+                        test_val = np.clip(test_val, disp["dir_rot_min"], disp["dir_rot_max"])
+
+                    test_params = {k: best[k] for k in ["dx", "dy", "theta", "dir_rot"]}
+                    test_params[param] = test_val
+                    residual, sigma_hat = compute_residual(
+                        test_params["dx"], test_params["dy"],
+                        test_params["theta"], test_params["dir_rot"], iters=40
+                    )
+                    if residual < best["residual"]:
+                        best.update({
+                            "residual": residual,
+                            param: float(test_val),
+                            "sigma_hat": sigma_hat,
+                        })
+
+        self.log(f"    Final: dx={best['dx']:.3f}, dy={best['dy']:.3f}, theta={best['theta']:.3f}, dir_rot={best['dir_rot']:.3f}")
+
+        # Final reconstruction with calibrated params
+        self.log("  Reconstructing with calibrated params...")
+        aff_best = AffineParams(best["dx"], best["dy"], best["theta"])
+        mask_best = warp_mask2d(mask2d_nom, aff_best)
+
+        x_corrected = gap_tv_cassi_expanded(
+            y=y,
+            cube_shape=(H, W, L),
+            mask2d_used=mask_best,
+            s_nom=s_nom,
+            dir_rot_deg=best["dir_rot"],
+            max_iter=100,
+            tv_weight=0.4,
+        )
         psnr_corrected = compute_psnr(x_corrected, cube)
 
         result = {
             "modality": "cassi",
-            "mismatch_param": "dispersion_step",
-            "true_value": {"step": step_true},
-            "wrong_value": {"step": step_wrong},
-            "calibrated_value": {"step": best_step},
+            "mismatch_param": ["mask_geo", "disp_dir_rot", "noise"],
+            "true_value": {
+                "geo": {"dx": true_affine.dx, "dy": true_affine.dy, "theta_deg": true_affine.theta_deg},
+                "disp": {"dir_rot_deg": true_disp.dir_rot_deg},
+                "noise": {"alpha": true_noise.alpha, "sigma": true_noise.sigma},
+            },
+            "wrong_value": {
+                "geo": {"dx": 0.0, "dy": 0.0, "theta_deg": 0.0},
+                "disp": {"dir_rot_deg": 0.0},
+                "noise": {"alpha": None, "sigma": None},
+            },
+            "calibrated_value": {
+                "geo": {"dx": best["dx"], "dy": best["dy"], "theta_deg": best["theta"]},
+                "disp": {"dir_rot_deg": best["dir_rot"]},
+                "noise_est": {"sigma_hat": best["sigma_hat"], "alpha_hat": None},
+            },
             "oracle_psnr": psnr_oracle,
             "psnr_without_correction": psnr_wrong,
             "psnr_with_correction": psnr_corrected,
-            "improvement_db": psnr_corrected - psnr_wrong,
+            "improvement_db": float(psnr_corrected - psnr_wrong),
+            "realized_meta": realized,
         }
 
-        self.log(f"  Dispersion step: true={step_true}, wrong={step_wrong}, calibrated={best_step}")
-        self.log(f"  Without correction: PSNR={psnr_wrong:.2f} dB")
-        self.log(f"  With correction:    PSNR={psnr_corrected:.2f} dB (+{psnr_corrected - psnr_wrong:.2f} dB)")
-        self.log(f"  Oracle (true params): PSNR={psnr_oracle:.2f} dB")
+        self.log(
+            f"  True geo: dx={true_affine.dx:.3f}, dy={true_affine.dy:.3f}, theta={true_affine.theta_deg:.3f} deg | "
+            f"true dir_rot={true_disp.dir_rot_deg:.3f} deg | true noise alpha={true_noise.alpha:.1f}, sigma={true_noise.sigma:.4f}"
+        )
+        self.log(
+            f"  Calib geo: dx={best['dx']:.3f}, dy={best['dy']:.3f}, theta={best['theta']:.3f} deg | "
+            f"calib dir_rot={best['dir_rot']:.3f} deg | sigma_hat={best['sigma_hat']}"
+        )
+        self.log(f"  PSNR wrong={psnr_wrong:.2f} dB | corrected={psnr_corrected:.2f} dB | oracle={psnr_oracle:.2f} dB")
 
         return result
+
 
     # ========================================================================
     # Ptychography: Position offset calibration (neural network method)
