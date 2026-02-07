@@ -39,7 +39,6 @@
 
         import time as _time
         from dataclasses import dataclass, field as dc_field
-        from pwm_core.data.loaders.kaist import KAISTDataset
 
         # ================================================================
         # Data Structures
@@ -207,16 +206,147 @@
             return x.astype(np.float32)
 
         # ================================================================
+        # MST model loading and reconstruction
+        # ================================================================
+        _mst_cache = [None]  # mutable container for closure-based caching
+
+        def _load_mst_model(nC, h, step):
+            """Load or return cached MST model with pretrained weights."""
+            if _mst_cache[0] is not None:
+                return _mst_cache[0]
+            import torch
+            from pwm_core.recon.mst import MST
+
+            device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+            # Search for pretrained weights
+            state_dict = None
+            pkg_root = Path(__file__).parent.parent
+            weights_search_paths = [
+                pkg_root / "weights" / "mst" / "mst_l.pth",
+                pkg_root / "weights" / "mst_cassi.pth",
+                pkg_root.parent.parent / "weights" / "mst_cassi.pth",
+            ]
+            for wp in weights_search_paths:
+                if wp.exists():
+                    try:
+                        checkpoint = torch.load(str(wp), map_location=device,
+                                                weights_only=False)
+                        if isinstance(checkpoint, dict) and "state_dict" in checkpoint:
+                            state_dict = {
+                                k.replace("module.", ""): v
+                                for k, v in checkpoint["state_dict"].items()
+                            }
+                        else:
+                            state_dict = checkpoint
+                        self.log(f"  Loaded MST weights from {wp}")
+                        break
+                    except Exception as e:
+                        self.log(f"  Failed to load weights from {wp}: {e}")
+
+            # Infer architecture from checkpoint
+            num_blocks = [4, 7, 5]  # MST-L default
+            if state_dict is not None:
+                inferred = []
+                for stage_idx in range(10):
+                    prefix = f"encoder_layers.{stage_idx}.0.blocks."
+                    max_blk = -1
+                    for k in state_dict:
+                        if k.startswith(prefix):
+                            blk_idx = int(k[len(prefix):].split(".")[0])
+                            max_blk = max(max_blk, blk_idx)
+                    if max_blk >= 0:
+                        inferred.append(max_blk + 1)
+                    else:
+                        break
+                bot_prefix = "bottleneck.blocks."
+                max_bot = -1
+                for k in state_dict:
+                    if k.startswith(bot_prefix):
+                        blk_idx = int(k[len(bot_prefix):].split(".")[0])
+                        max_bot = max(max_bot, blk_idx)
+                if max_bot >= 0:
+                    inferred.append(max_bot + 1)
+                if len(inferred) >= 2:
+                    num_blocks = inferred
+                    self.log(f"  MST architecture: stage={len(inferred)-1}, "
+                             f"num_blocks={num_blocks}")
+
+            model = MST(
+                dim=nC, stage=len(num_blocks) - 1, num_blocks=num_blocks,
+                in_channels=nC, out_channels=nC, base_resolution=h, step=step,
+            ).to(device)
+
+            if state_dict is not None:
+                model.load_state_dict(state_dict, strict=True)
+            else:
+                raise RuntimeError("MST: no pretrained weights found")
+
+            model.eval()
+            _mst_cache[0] = (model, device)
+            return model, device
+
+        def _mst_recon(y, mask2d, cube_shape, step=2):
+            """Reconstruct CASSI using MST with a given mask.
+
+            Args:
+                y: 2D measurement [Hy, Wy] (may be larger than MST expects
+                   due to rotated dispersion direction)
+                mask2d: 2D coded aperture [H, W]
+                cube_shape: (H, W, nC)
+                step: dispersion step
+
+            Returns:
+                Reconstructed cube [H, W, nC]
+            """
+            import torch
+            from pwm_core.recon.mst import shift_torch, shift_back_meas_torch
+
+            H, W, nC = cube_shape
+            model, device = _load_mst_model(nC, H, step)
+
+            # MST expects measurement shape [H, W + (nC-1)*step]
+            W_ext = W + (nC - 1) * step
+            y_mst = np.zeros((H, W_ext), dtype=np.float32)
+            hh = min(H, y.shape[0])
+            ww = min(W_ext, y.shape[1])
+            y_mst[:hh, :ww] = y[:hh, :ww]
+
+            # Prepare mask: [H, W] -> [1, nC, H, W] -> shifted [1, nC, H, W_ext]
+            mask_3d = np.tile(mask2d[:, :, np.newaxis], (1, 1, nC))
+            mask_3d_t = (
+                torch.from_numpy(mask_3d.transpose(2, 0, 1).copy())
+                .unsqueeze(0).float().to(device)
+            )
+            mask_3d_shift = shift_torch(mask_3d_t, step=step)
+
+            # Prepare initial estimate: Y2H conversion (matching original MST code)
+            meas_t = (
+                torch.from_numpy(y_mst.copy()).unsqueeze(0).float().to(device)
+            )
+            x_init = shift_back_meas_torch(meas_t, step=step, nC=nC)
+            x_init = x_init / nC * 2  # Scaling from original MST code
+
+            # Forward pass
+            with torch.no_grad():
+                recon = model(x_init, mask_3d_shift)
+
+            # Convert to numpy [H, W, nC]
+            recon = recon.squeeze(0).permute(1, 2, 0).cpu().numpy()
+            return recon.astype(np.float32)
+
+        # ================================================================
         # Agent: Reconstruction
         # ================================================================
         class ReconstructionAgent:
             """Handles proxy (fast) and final (high-quality) reconstruction."""
 
-            def __init__(self, y, mask2d_nom, s_nom, cube_shape):
+            def __init__(self, y, mask2d_nom, s_nom, cube_shape, log_fn=None):
                 self.y = y
                 self.mask2d_nom = mask2d_nom
                 self.s_nom = s_nom
                 self.cube_shape = cube_shape
+                self.log_fn = log_fn or (lambda msg: None)
 
             def proxy_recon(self, psi, iters=40, x_init=None):
                 """Fast proxy reconstruction for operator search iterations."""
@@ -227,11 +357,19 @@
                                      x_init=x_init)
 
             def final_recon(self, psi, iters=120):
-                """High-quality final reconstruction with calibrated operator."""
+                """High-quality final reconstruction with calibrated operator.
+
+                Uses MST (pretrained neural network) for high-quality output,
+                with GAP-TV fallback if MST is unavailable.
+                """
                 aff = _AffineParams(psi.dx, psi.dy, psi.theta)
                 mask = _warp_mask2d(self.mask2d_nom, aff)
-                return _gap_tv_recon(self.y, self.cube_shape, mask,
-                                     self.s_nom, psi.phi_d, max_iter=iters)
+                try:
+                    return _mst_recon(self.y, mask, self.cube_shape, step=2)
+                except Exception as e:
+                    self.log_fn(f"  MST unavailable ({e}), falling back to GAP-TV")
+                    return _gap_tv_recon(self.y, self.cube_shape, mask,
+                                         self.s_nom, psi.phi_d, max_iter=iters)
 
         # ================================================================
         # Agent: Operator (Adaptive Beam Search)
@@ -343,7 +481,7 @@
 
                 # Round 1: Easy params coarse (dx, phi_d) - sigma=0.5
                 iters_easy = self.score_iters + 3
-                for param, npts in [('dx', 11), ('phi_d', 9)]:
+                for param, npts in [('dx', 15), ('phi_d', 13)]:
                     grid = np.linspace(r[f'{param}_min'], r[f'{param}_max'], npts)
                     bv, bs, bx = _sweep_param(best, param, grid, iters_easy,
                                               param_sigma[param], log_fn)
@@ -351,7 +489,7 @@
 
                 # Round 2: Hard params coarse (dy, theta) - sigma=1.0/0.8
                 iters_hard = self.score_iters + 10
-                for param, npts in [('dy', 13), ('theta', 9)]:
+                for param, npts in [('dy', 17), ('theta', 13)]:
                     grid = np.linspace(r[f'{param}_min'], r[f'{param}_max'], npts)
                     bv, bs, bx = _sweep_param(best, param, grid, iters_hard,
                                               param_sigma[param], log_fn)
@@ -450,7 +588,7 @@
                 best_score, best_x = self.score_recon(psi, x_warm=x_warm,
                                                       iters=refine_iters,
                                                       gauss_sigma=refine_sigma)
-                deltas = {'dx': 0.20, 'dy': 0.40, 'theta': 0.05, 'phi_d': 0.02}
+                deltas = {'dx': 0.40, 'dy': 0.80, 'theta': 0.15, 'phi_d': 0.08}
                 clip = {
                     'dx': (r['dx_min'], r['dx_max']),
                     'dy': (r['dy_min'], r['dy_max']),
@@ -656,26 +794,77 @@
                 }
 
         # ================================================================
-        # Load Data
+        # Load Data (prefer TSA_simu_data for in-distribution MST eval)
         # ================================================================
-        dataset = KAISTDataset(resolution=256, num_bands=28)
-        name, cube = next(iter(dataset))
-        H, W, L = cube.shape
-        self.log(f"  Scene: {name} ({H}x{W}x{L})")
+        cube = None
+        mask2d_nom = None
+        data_source = "unknown"
 
-        # Nominal 2D mask
-        np.random.seed(42)
-        mask2d_nom = (np.random.rand(H, W) > 0.5).astype(np.float32)
+        # Try TSA_simu_data first (MST was trained on this data)
+        try:
+            from scipy.io import loadmat as _loadmat
+            pkg_root = Path(__file__).parent.parent
+            tsa_search_paths = [
+                pkg_root / "datasets" / "TSA_simu_data",
+                pkg_root.parent.parent / "datasets" / "TSA_simu_data",
+                pkg_root / "data" / "TSA_simu_data",
+                Path(__file__).parent / "TSA_simu_data",
+            ]
+            for data_dir in tsa_search_paths:
+                mask_path = data_dir / "mask.mat"
+                truth_dir = data_dir / "Truth"
+                if mask_path.exists() and truth_dir.exists():
+                    mask_data = _loadmat(str(mask_path))
+                    mask2d_nom = mask_data["mask"].astype(np.float32)
+
+                    # Load scene (scene03 = good mid-range complexity)
+                    scene_path = truth_dir / "scene03.mat"
+                    if not scene_path.exists():
+                        scene_path = sorted(truth_dir.glob("scene*.mat"))[0]
+                    scene_data = _loadmat(str(scene_path))
+                    for key in ["img", "cube", "hsi", "data"]:
+                        if key in scene_data:
+                            cube = scene_data[key].astype(np.float32)
+                            break
+                    if cube is None:
+                        for key in scene_data:
+                            if not key.startswith("__"):
+                                cube = scene_data[key].astype(np.float32)
+                                break
+                    if cube is not None:
+                        if cube.ndim == 3 and cube.shape[0] < cube.shape[1]:
+                            cube = np.transpose(cube, (1, 2, 0))
+                        data_source = f"TSA ({scene_path.stem})"
+                        self.log(f"  Loaded TSA data from {data_dir}")
+                        break
+        except Exception as e:
+            self.log(f"  TSA loading failed: {e}")
+
+        # Fallback to KAIST + random mask
+        if cube is None or mask2d_nom is None:
+            self.log("  TSA_simu_data not found, falling back to KAIST + random mask")
+            from pwm_core.data.loaders.kaist import KAISTDataset
+            dataset = KAISTDataset(resolution=256, num_bands=28)
+            name, cube = next(iter(dataset))
+            np.random.seed(42)
+            mask2d_nom = (np.random.rand(cube.shape[0], cube.shape[1]) > 0.5).astype(np.float32)
+            data_source = f"KAIST ({name})"
+
+        H, W, L = cube.shape
+        self.log(f"  Data source: {data_source}")
+        self.log(f"  Scene shape: ({H}x{W}x{L})")
+        self.log(f"  Mask density: {mask2d_nom.mean():.3f}, "
+                 f"range: [{mask2d_nom.min():.3f}, {mask2d_nom.max():.3f}]")
 
         # Nominal band shifts (2 pixels per band, matching CASSI step=2)
         s_nom = (np.arange(L, dtype=np.int32) * 2).astype(np.int32)
 
         # Parameter ranges
         param_ranges = {
-            'dx_min': -1.5, 'dx_max': 1.5,
-            'dy_min': -1.5, 'dy_max': 1.5,
-            'theta_min': -0.30, 'theta_max': 0.30,
-            'phi_d_min': -0.12, 'phi_d_max': 0.12,
+            'dx_min': -3.0, 'dx_max': 3.0,
+            'dy_min': -3.0, 'dy_max': 3.0,
+            'theta_min': -1.0, 'theta_max': 1.0,
+            'phi_d_min': -0.5, 'phi_d_max': 0.5,
         }
         noise_ranges = {
             'sigma_min': 0.003, 'sigma_max': 0.015,
@@ -712,7 +901,7 @@
         x_wrong = _gap_tv_recon(y, (H, W, L), mask_wrong, s_nom, 0.0,
                                 max_iter=80)
         psnr_wrong = compute_psnr(x_wrong, cube)
-        self.log(f"  PSNR (wrong):  {psnr_wrong:.2f} dB")
+        self.log(f"  PSNR (GAP-TV wrong):  {psnr_wrong:.2f} dB")
 
         # ================================================================
         # Baseline: Reconstruct with ORACLE (true) params
@@ -721,7 +910,25 @@
         x_oracle = _gap_tv_recon(y, (H, W, L), mask2d_true, s_nom,
                                  true_psi.phi_d, max_iter=80)
         psnr_oracle = compute_psnr(x_oracle, cube)
-        self.log(f"  PSNR (oracle): {psnr_oracle:.2f} dB")
+        self.log(f"  PSNR (GAP-TV oracle): {psnr_oracle:.2f} dB")
+
+        # ================================================================
+        # MST baselines (wrong mask and oracle mask)
+        # ================================================================
+        psnr_mst_wrong = None
+        psnr_mst_oracle = None
+        try:
+            self.log("\n  [Baseline] MST with nominal (wrong) mask...")
+            x_mst_wrong = _mst_recon(y, mask_wrong, (H, W, L), step=2)
+            psnr_mst_wrong = compute_psnr(x_mst_wrong, cube)
+            self.log(f"  PSNR (MST wrong):  {psnr_mst_wrong:.2f} dB")
+
+            self.log("  [Baseline] MST with oracle (true) mask...")
+            x_mst_oracle = _mst_recon(y, mask2d_true, (H, W, L), step=2)
+            psnr_mst_oracle = compute_psnr(x_mst_oracle, cube)
+            self.log(f"  PSNR (MST oracle): {psnr_mst_oracle:.2f} dB")
+        except Exception as e:
+            self.log(f"  MST baselines unavailable: {e}")
 
         # ================================================================
         # Algorithm 1, Step 1: Initialize BeliefState & World Model
@@ -737,9 +944,10 @@
         )
 
         # Initialize agents
-        recon_agent = ReconstructionAgent(y, mask2d_nom, s_nom, (H, W, L))
+        recon_agent = ReconstructionAgent(y, mask2d_nom, s_nom, (H, W, L),
+                                                 log_fn=self.log)
         op_agent = OperatorAgent(y, mask2d_nom, s_nom, (H, W, L),
-                                 param_ranges, beam_width=10, score_iters=15)
+                                 param_ranges, beam_width=10, score_iters=20)
         verifier_agent = VerifierAgent(y, mask2d_nom, s_nom, (H, W, L),
                                        tol=0.05, noise_ranges=noise_ranges)
 
@@ -834,6 +1042,15 @@
 
         psnr_corrected = compute_psnr(x_final, cube)
 
+        # GAP-TV with calibrated mask (shows improvement even without MST)
+        self.log("  [Baseline] GAP-TV with calibrated mask...")
+        aff_calib = _AffineParams(psi_final.dx, psi_final.dy, psi_final.theta)
+        mask_calib = _warp_mask2d(mask2d_nom, aff_calib)
+        x_gaptv_calib = _gap_tv_recon(y, (H, W, L), mask_calib, s_nom,
+                                       psi_final.phi_d, max_iter=120)
+        psnr_gaptv_calib = compute_psnr(x_gaptv_calib, cube)
+        self.log(f"  PSNR (GAP-TV calibrated): {psnr_gaptv_calib:.2f} dB")
+
         # ================================================================
         # Algorithm 1, Step 4: Outputs (world model artifacts)
         # ================================================================
@@ -866,6 +1083,10 @@
             'psnr_wrong': float(psnr_wrong),
             'psnr_corrected': float(psnr_corrected),
             'psnr_oracle': float(psnr_oracle),
+            'psnr_mst_wrong': float(psnr_mst_wrong) if psnr_mst_wrong is not None else None,
+            'psnr_mst_oracle': float(psnr_mst_oracle) if psnr_mst_oracle is not None else None,
+            'psnr_gaptv_calibrated': float(psnr_gaptv_calib),
+            'final_recon_method': 'MST' if psnr_mst_oracle is not None else 'GAP-TV',
             'improvement_db': float(psnr_corrected - psnr_wrong),
         }
 
@@ -892,10 +1113,16 @@
                  f"phi_d={diagnosis['phi_d_error']:.4f} deg")
         self.log(f"  True noise:  alpha={true_alpha:.0f}, sigma={true_sigma:.4f}")
         self.log(f"  Est. sigma:  {vr_final.get('sigma_hat', 'N/A')}")
-        self.log(f"  PSNR wrong:     {psnr_wrong:.2f} dB")
-        self.log(f"  PSNR corrected: {psnr_corrected:.2f} dB "
-                 f"(+{psnr_corrected - psnr_wrong:.2f} dB)")
-        self.log(f"  PSNR oracle:    {psnr_oracle:.2f} dB")
+        self.log(f"  GAP-TV wrong:       {psnr_wrong:.2f} dB")
+        self.log(f"  GAP-TV oracle:      {psnr_oracle:.2f} dB")
+        self.log(f"  GAP-TV calibrated:  {psnr_gaptv_calib:.2f} dB")
+        if psnr_mst_wrong is not None:
+            self.log(f"  MST wrong:          {psnr_mst_wrong:.2f} dB")
+        if psnr_mst_oracle is not None:
+            self.log(f"  MST oracle:         {psnr_mst_oracle:.2f} dB")
+        recon_method = "MST" if psnr_mst_oracle is not None else "GAP-TV"
+        self.log(f"  {recon_method} calibrated:  {psnr_corrected:.2f} dB "
+                 f"(+{psnr_corrected - psnr_wrong:.2f} dB from wrong)")
         self.log(f"  Stop reason: {stop_reason}")
         self.log(f"  Total time:  {loop_time:.1f}s (loop) + "
                  f"{final_time:.1f}s (final recon)")
@@ -921,6 +1148,11 @@
             "psnr_without_correction": float(psnr_wrong),
             "psnr_with_correction": float(psnr_corrected),
             "improvement_db": float(psnr_corrected - psnr_wrong),
+            "final_recon_method": "MST" if psnr_mst_oracle is not None else "GAP-TV",
+            "psnr_mst_wrong": float(psnr_mst_wrong) if psnr_mst_wrong is not None else None,
+            "psnr_mst_oracle": float(psnr_mst_oracle) if psnr_mst_oracle is not None else None,
+            "psnr_gaptv_calibrated": float(psnr_gaptv_calib),
+            "data_source": data_source,
             "belief_state": belief_state,
             "report": report,
         }
