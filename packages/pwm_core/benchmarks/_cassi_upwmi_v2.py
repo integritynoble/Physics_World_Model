@@ -770,7 +770,7 @@ def test_cassi_correction_v2(self) -> Dict[str, Any]:
     self.log("\n  Stage 0: Full-range coarse 3D grid (GPU-accelerated)")
     t_stage0 = _time.time()
 
-    n_dx, n_dy, n_theta = 11, 11, 9
+    n_dx, n_dy, n_theta = 9, 9, 7
     dx_grid = np.linspace(param_ranges['dx_min'], param_ranges['dx_max'], n_dx)
     dy_grid = np.linspace(param_ranges['dy_min'], param_ranges['dy_max'], n_dy)
     theta_grid = np.linspace(param_ranges['theta_min'], param_ranges['theta_max'], n_theta)
@@ -824,12 +824,12 @@ def test_cassi_correction_v2(self) -> Dict[str, Any]:
     n_fine_eval = 0
 
     for _, dx_c, dy_c, th_c in top_k[:5]:
-        # 5x5x5 fine grid centered on each top candidate
+        # 5x5x3 fine grid centered on each top candidate
         for ddx in np.linspace(-dx_step, dx_step, 5):
             dxv = np.clip(dx_c + ddx, param_ranges['dx_min'], param_ranges['dx_max'])
             for ddy in np.linspace(-dy_step, dy_step, 5):
                 dyv = np.clip(dy_c + ddy, param_ranges['dy_min'], param_ranges['dy_max'])
-                for dth in np.linspace(-th_step, th_step, 5):
+                for dth in np.linspace(-th_step, th_step, 3):
                     thv = np.clip(th_c + dth, param_ranges['theta_min'],
                                   param_ranges['theta_max'])
                     sc = _gpu_score(float(dxv), float(dyv), float(thv),

@@ -51,15 +51,10 @@ def _crop_spectrum(spectrum: np.ndarray, center: Tuple[int, int],
     cy, cx = center
     hr_size = spectrum.shape[0]
 
-    # Handle wrapping for periodic boundary
-    result = np.zeros((crop_size, crop_size), dtype=spectrum.dtype)
-    for iy in range(crop_size):
-        for ix in range(crop_size):
-            sy = (cy - half + iy) % hr_size
-            sx = (cx - half + ix) % hr_size
-            result[iy, ix] = spectrum[sy, sx]
-
-    return result
+    # Vectorized wrapping for periodic boundary
+    rows = np.arange(cy - half, cy - half + crop_size) % hr_size
+    cols = np.arange(cx - half, cx - half + crop_size) % hr_size
+    return spectrum[np.ix_(rows, cols)]
 
 
 def _place_spectrum(target: np.ndarray, patch: np.ndarray,
@@ -76,11 +71,10 @@ def _place_spectrum(target: np.ndarray, patch: np.ndarray,
     cy, cx = center
     hr_size = target.shape[0]
 
-    for iy in range(crop_size):
-        for ix in range(crop_size):
-            sy = (cy - half + iy) % hr_size
-            sx = (cx - half + ix) % hr_size
-            target[sy, sx] = patch[iy, ix]
+    # Vectorized wrapping for periodic boundary
+    rows = np.arange(cy - half, cy - half + crop_size) % hr_size
+    cols = np.arange(cx - half, cx - half + crop_size) % hr_size
+    target[np.ix_(rows, cols)] = patch
 
 
 def sequential_phase_retrieval(

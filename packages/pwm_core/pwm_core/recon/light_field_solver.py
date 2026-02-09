@@ -12,6 +12,58 @@ import numpy as np
 from typing import Any, Dict, Tuple
 
 
+def _estimate_global_disparity(light_field: np.ndarray) -> float:
+    """Estimate global disparity from a 4D light field via sharpness maximisation.
+
+    Uses a coarse-to-fine search: first evaluates disparity on a coarse grid,
+    then refines around the best candidate. Picks the disparity that maximises
+    the Laplacian energy (sharpness) of the refocused image. This is analogous
+    to autofocus in light field rendering (Ng, 2005).
+
+    Args:
+        light_field: 4D light field (sx, sy, u, v).
+
+    Returns:
+        Estimated global disparity (pixels per angular index offset).
+    """
+    from scipy.ndimage import shift as ndi_shift, laplace
+
+    sx, sy, nu, nv = light_field.shape
+    cu, cv = nu // 2, nv // 2
+
+    def _refocus_sharpness(disp_candidate: float) -> float:
+        """Compute sharpness of refocused image at given disparity."""
+        refocused = np.zeros((sx, sy), dtype=np.float64)
+        for u in range(nu):
+            for v in range(nv):
+                shift_y = -(u - cu) * disp_candidate
+                shift_x = -(v - cv) * disp_candidate
+                shifted = ndi_shift(light_field[:, :, u, v].astype(np.float64),
+                                   [shift_y, shift_x], order=1, mode='reflect')
+                refocused += shifted
+        refocused /= (nu * nv)
+        lap = laplace(refocused)
+        return float(np.sum(lap ** 2))
+
+    # Coarse search: step of 0.25 over [-1, 2]
+    best_disp = 0.0
+    best_sharpness = -np.inf
+    for d in np.arange(-1.0, 2.01, 0.25):
+        s = _refocus_sharpness(d)
+        if s > best_sharpness:
+            best_sharpness = s
+            best_disp = d
+
+    # Fine search: step of 0.05 around best coarse value
+    for d in np.arange(best_disp - 0.25, best_disp + 0.26, 0.05):
+        s = _refocus_sharpness(d)
+        if s > best_sharpness:
+            best_sharpness = s
+            best_disp = d
+
+    return float(best_disp)
+
+
 def shift_and_sum(light_field: np.ndarray, disparities: np.ndarray = None) -> np.ndarray:
     """Shift-and-Sum light field reconstruction.
 
@@ -19,37 +71,52 @@ def shift_and_sum(light_field: np.ndarray, disparities: np.ndarray = None) -> np
     to disparity and averaging. This is the simplest light field rendering
     algorithm.
 
+    When disparities is None, the function automatically estimates the global
+    disparity via sharpness maximisation (Laplacian energy) and uses it
+    to refocus, rather than simply averaging (which would produce motion blur).
+
     Args:
         light_field: 4D light field (sx, sy, u, v) where (sx, sy) are spatial
             and (u, v) are angular dimensions.
-        disparities: Per-pixel disparity for refocusing. If None, uses zero
-            disparity (focal plane at infinity / all-in-focus average).
+        disparities: Per-pixel disparity for refocusing. If None, auto-estimates
+            global disparity via sharpness maximisation.
 
     Returns:
         Refocused 2D image (sx, sy).
     """
-    sx, sy, nu, nv = light_field.shape
-    result = np.zeros((sx, sy), dtype=np.float64)
-
-    if disparities is None:
-        # Simple average over angular dimensions
-        result = np.mean(light_field, axis=(2, 3))
-        return result.astype(np.float32)
-
     from scipy.ndimage import shift as ndi_shift
 
+    sx, sy, nu, nv = light_field.shape
     center_u, center_v = nu // 2, nv // 2
+
+    if disparities is None:
+        # Auto-estimate global disparity
+        estimated_disp = _estimate_global_disparity(light_field)
+        if abs(estimated_disp) < 1e-6:
+            # No detectable disparity; plain average is correct
+            return np.mean(light_field, axis=(2, 3)).astype(np.float32)
+        # Use estimated disparity as a scalar for refocusing
+        disparities_scalar = estimated_disp
+    else:
+        disparities_scalar = None
+
+    result = np.zeros((sx, sy), dtype=np.float64)
     count = 0
 
     for u in range(nu):
         for v in range(nv):
-            du = (u - center_u) * disparities
-            dv = (v - center_v) * disparities
-            # Average shift for this view
-            mean_du = float(np.mean(du))
-            mean_dv = float(np.mean(dv))
+            if disparities_scalar is not None:
+                # Global disparity: shift back to undo the view shift
+                shift_y = -(u - center_u) * disparities_scalar
+                shift_x = -(v - center_v) * disparities_scalar
+            else:
+                du = (u - center_u) * disparities
+                dv = (v - center_v) * disparities
+                shift_y = float(np.mean(du))
+                shift_x = float(np.mean(dv))
+
             shifted = ndi_shift(light_field[:, :, u, v].astype(np.float64),
-                               [mean_du, mean_dv], order=1, mode='constant')
+                               [shift_y, shift_x], order=3, mode='reflect')
             result += shifted
             count += 1
 
