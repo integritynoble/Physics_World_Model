@@ -1,0 +1,2300 @@
+# =============================================================================
+# PWM Master Modality Registry
+# All 26 imaging modalities with optical element chains, forward models,
+# default solvers, and upload templates for operator correction mode.
+# =============================================================================
+
+version: "1.0"
+
+modalities:
+
+  # ===========================================================================
+  # MICROSCOPY
+  # ===========================================================================
+
+  widefield:
+    display_name: "Widefield Fluorescence Microscopy"
+    category: "microscopy"
+    keywords: [fluorescence, widefield, deconvolution, PSF, epifluorescence]
+    description: >
+      Standard widefield epi-fluorescence microscopy where the entire field of view
+      is illuminated simultaneously and the image is formed by convolution of the
+      specimen fluorescence distribution with the system point spread function.
+      Out-of-focus blur is the primary degradation. Deconvolution via
+      Richardson-Lucy or learned priors (CARE) restores resolution.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = PSF ** x + n"
+    default_solver: "richardson_lucy"
+    wavelength_range_nm: [400, 700]
+    elements:
+      - name: "Mercury / LED Source"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "LED"
+          power_mw: 50
+          spectral_width_nm: 30
+      - name: "Excitation Filter"
+        element_type: filter
+        transfer_kind: modulation
+        throughput: 0.85
+        noise_kinds: []
+        parameters:
+          center_nm: 488
+          bandwidth_nm: 25
+      - name: "Objective Lens (20x / 0.75 NA)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.80
+        noise_kinds: [aberration]
+        parameters:
+          magnification: 20
+          numerical_aperture: 0.75
+          psf_sigma_px: 2.0
+          immersion: "air"
+      - name: "Emission Filter"
+        element_type: filter
+        transfer_kind: modulation
+        throughput: 0.90
+        noise_kinds: []
+        parameters:
+          center_nm: 525
+          bandwidth_nm: 50
+      - name: "sCMOS Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.82
+        noise_kinds: [shot_poisson, read_gaussian, fixed_pattern]
+        parameters:
+          pixel_size_um: 6.5
+          read_noise_e: 1.6
+          quantum_efficiency: 0.82
+          full_well_e: 30000
+          bit_depth: 16
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "Widefield fluorescence image (2D grayscale or RGB TIFF/PNG)"
+          shape: "[H, W] or [H, W, C]"
+      required_params:
+        - name: "emission_wavelength_nm"
+          type: "float"
+          description: "Central emission wavelength in nanometers"
+        - name: "numerical_aperture"
+          type: "float"
+          description: "Objective numerical aperture"
+        - name: "pixel_size_um"
+          type: "float"
+          description: "Effective pixel size at the sample plane in micrometers"
+      optional:
+        - name: "psf"
+          description: "Measured PSF image (2D TIFF). If absent, theoretical Gaussian PSF is generated."
+        - name: "background"
+          description: "Background / dark frame image for subtraction"
+
+  widefield_lowdose:
+    display_name: "Low-Dose Widefield Microscopy"
+    category: "microscopy"
+    keywords: [low_dose, denoising, fluorescence, photon_limited, low_snr]
+    description: >
+      Widefield fluorescence microscopy operated at very low illumination power or
+      short exposure time to reduce phototoxicity and photobleaching. Images are
+      dominated by shot noise and read noise. Reconstruction requires denoising
+      (BM3D, Noise2Void, CARE) before or jointly with deconvolution.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = Poisson(alpha * PSF ** x) / alpha + N(0, sigma^2)"
+    default_solver: "pnp_hqs"
+    wavelength_range_nm: [400, 700]
+    elements:
+      - name: "Attenuated LED Source"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "LED"
+          power_mw: 2
+          spectral_width_nm: 30
+          attenuation_factor: 0.04
+      - name: "Excitation Filter"
+        element_type: filter
+        transfer_kind: modulation
+        throughput: 0.85
+        noise_kinds: []
+        parameters:
+          center_nm: 488
+          bandwidth_nm: 25
+      - name: "Objective Lens (40x / 1.3 NA Oil)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.78
+        noise_kinds: [aberration]
+        parameters:
+          magnification: 40
+          numerical_aperture: 1.3
+          psf_sigma_px: 1.2
+          immersion: "oil"
+      - name: "Emission Filter"
+        element_type: filter
+        transfer_kind: modulation
+        throughput: 0.90
+        noise_kinds: []
+        parameters:
+          center_nm: 525
+          bandwidth_nm: 50
+      - name: "sCMOS Detector (Low Exposure)"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.82
+        noise_kinds: [shot_poisson, read_gaussian, fixed_pattern]
+        parameters:
+          pixel_size_um: 6.5
+          read_noise_e: 1.6
+          quantum_efficiency: 0.82
+          exposure_ms: 5
+          photon_count_mean: 20
+          bit_depth: 16
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "Low-dose widefield image (2D TIFF, typically noisy)"
+          shape: "[H, W]"
+      required_params:
+        - name: "emission_wavelength_nm"
+          type: "float"
+          description: "Central emission wavelength in nanometers"
+        - name: "numerical_aperture"
+          type: "float"
+          description: "Objective numerical aperture"
+        - name: "pixel_size_um"
+          type: "float"
+          description: "Effective pixel size at sample plane in micrometers"
+      optional:
+        - name: "psf"
+          description: "Measured PSF image (2D TIFF)"
+        - name: "noise_estimate"
+          description: "JSON with estimated read noise sigma and gain (alpha)"
+
+  confocal_livecell:
+    display_name: "Confocal Live-Cell Microscopy"
+    category: "microscopy"
+    keywords: [confocal, live_cell, scanning, pinhole, fluorescence]
+    description: >
+      Laser scanning confocal microscopy for live-cell imaging. A focused laser
+      scans the specimen point by point, and a pinhole rejects out-of-focus
+      light. The image formation is modelled as convolution with the confocal
+      PSF (product of excitation and detection PSFs). Fast acquisition rates for
+      live cells often sacrifice SNR.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = PSF_confocal ** x + n"
+    default_solver: "richardson_lucy"
+    wavelength_range_nm: [400, 650]
+    elements:
+      - name: "Laser Source (488 nm)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "laser"
+          wavelength_nm: 488
+          power_mw: 5
+          line_width_nm: 0.1
+      - name: "Scanning Mirrors (Galvo)"
+        element_type: modulator
+        transfer_kind: sampling
+        throughput: 0.92
+        noise_kinds: [alignment]
+        parameters:
+          scan_rate_hz: 8000
+          pixels_per_line: 512
+          bidirectional: true
+      - name: "Objective Lens (60x / 1.4 NA Oil)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.75
+        noise_kinds: [aberration]
+        parameters:
+          magnification: 60
+          numerical_aperture: 1.4
+          psf_sigma_lateral_px: 1.0
+          psf_sigma_axial_px: 3.5
+          immersion: "oil"
+      - name: "Confocal Pinhole (1 AU)"
+        element_type: filter
+        transfer_kind: modulation
+        throughput: 0.70
+        noise_kinds: [alignment]
+        parameters:
+          pinhole_au: 1.0
+          pinhole_diameter_um: 60
+      - name: "PMT Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.25
+        noise_kinds: [shot_poisson, read_gaussian, thermal]
+        parameters:
+          type: "PMT"
+          quantum_efficiency: 0.25
+          dark_current_cps: 50
+          bit_depth: 12
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "Confocal image (2D single-slice TIFF)"
+          shape: "[H, W]"
+      required_params:
+        - name: "excitation_wavelength_nm"
+          type: "float"
+          description: "Laser excitation wavelength in nanometers"
+        - name: "numerical_aperture"
+          type: "float"
+          description: "Objective numerical aperture"
+        - name: "pinhole_au"
+          type: "float"
+          description: "Pinhole diameter in Airy units"
+      optional:
+        - name: "psf"
+          description: "Measured confocal PSF (2D TIFF)"
+        - name: "pixel_dwell_time_us"
+          description: "Pixel dwell time in microseconds"
+
+  confocal_3d:
+    display_name: "Confocal 3D Z-Stack"
+    category: "microscopy"
+    keywords: [confocal, 3d, z_stack, volumetric, deconvolution]
+    description: >
+      Three-dimensional confocal imaging by acquiring a z-stack of optical
+      sections. Each slice is convolved with the 3D confocal PSF. The
+      anisotropic PSF (worse axial resolution) is a key challenge.
+      3D Richardson-Lucy or CARE-3D are used for volumetric deconvolution.
+    signal_dims:
+      x: [256, 256, 64]
+      y: [256, 256, 64]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y(x,y,z) = PSF_3d(x,y,z) *** x(x,y,z) + n"
+    default_solver: "richardson_lucy_3d"
+    wavelength_range_nm: [400, 650]
+    elements:
+      - name: "Laser Source (561 nm)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "laser"
+          wavelength_nm: 561
+          power_mw: 3
+      - name: "Scanning Mirrors (Galvo)"
+        element_type: modulator
+        transfer_kind: sampling
+        throughput: 0.92
+        noise_kinds: [alignment]
+        parameters:
+          scan_rate_hz: 8000
+          z_step_um: 0.3
+      - name: "Objective Lens (63x / 1.4 NA Oil)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.75
+        noise_kinds: [aberration]
+        parameters:
+          magnification: 63
+          numerical_aperture: 1.4
+          psf_sigma_lateral_px: 1.0
+          psf_sigma_axial_px: 3.5
+          immersion: "oil"
+      - name: "Confocal Pinhole (1 AU)"
+        element_type: filter
+        transfer_kind: modulation
+        throughput: 0.70
+        noise_kinds: [alignment]
+        parameters:
+          pinhole_au: 1.0
+      - name: "PMT Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.25
+        noise_kinds: [shot_poisson, read_gaussian, thermal]
+        parameters:
+          type: "PMT"
+          quantum_efficiency: 0.25
+          dark_current_cps: 50
+          bit_depth: 12
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "3D confocal z-stack (multi-page TIFF or .npy)"
+          shape: "[H, W, Z]"
+      required_params:
+        - name: "excitation_wavelength_nm"
+          type: "float"
+          description: "Laser excitation wavelength in nanometers"
+        - name: "numerical_aperture"
+          type: "float"
+          description: "Objective numerical aperture"
+        - name: "voxel_size_um"
+          type: "list[float]"
+          description: "Voxel dimensions [dz, dy, dx] in micrometers"
+      optional:
+        - name: "psf_3d"
+          description: "Measured 3D PSF stack (multi-page TIFF or .npy)"
+        - name: "refractive_index"
+          description: "Immersion medium refractive index (float)"
+
+  sim:
+    display_name: "Structured Illumination Microscopy"
+    category: "microscopy"
+    keywords: [SIM, super_resolution, patterned_illumination, frequency_mixing]
+    description: >
+      Structured Illumination Microscopy achieves approximately 2x lateral
+      resolution improvement by illuminating the sample with sinusoidal
+      patterns at multiple orientations and phases. Frequency mixing between
+      the illumination pattern and sample structure shifts high-frequency
+      information into the passband. Reconstruction (Wiener-SIM or DL-SIM)
+      separates and reassembles frequency components.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512, 9]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y_k = PSF ** (I_k * x) + n,  k = 1..N_patterns"
+    default_solver: "wiener_sim"
+    wavelength_range_nm: [400, 650]
+    elements:
+      - name: "Coherent Laser (488 nm)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "laser"
+          wavelength_nm: 488
+          power_mw: 20
+          coherence_length_mm: 50
+      - name: "Spatial Light Modulator (Pattern Generator)"
+        element_type: modulator
+        transfer_kind: modulation
+        throughput: 0.60
+        noise_kinds: [alignment, fixed_pattern]
+        parameters:
+          n_angles: 3
+          n_phases: 3
+          pattern_frequency_cycles_per_px: 0.1
+          pixel_pitch_um: 3.74
+      - name: "Objective Lens (100x / 1.49 NA Oil)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.70
+        noise_kinds: [aberration]
+        parameters:
+          magnification: 100
+          numerical_aperture: 1.49
+          psf_sigma_px: 1.5
+          immersion: "oil"
+      - name: "Emission Filter"
+        element_type: filter
+        transfer_kind: modulation
+        throughput: 0.90
+        noise_kinds: []
+        parameters:
+          center_nm: 525
+          bandwidth_nm: 50
+      - name: "sCMOS Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.82
+        noise_kinds: [shot_poisson, read_gaussian, fixed_pattern]
+        parameters:
+          pixel_size_um: 6.5
+          read_noise_e: 1.6
+          quantum_efficiency: 0.82
+          bit_depth: 16
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "SIM raw image stack with all pattern orientations and phases (multi-page TIFF)"
+          shape: "[H, W, N_patterns] where N_patterns = n_angles * n_phases"
+      required_params:
+        - name: "emission_wavelength_nm"
+          type: "float"
+          description: "Central emission wavelength in nanometers"
+        - name: "numerical_aperture"
+          type: "float"
+          description: "Objective numerical aperture"
+        - name: "pixel_size_um"
+          type: "float"
+          description: "Effective pixel size at sample plane in micrometers"
+        - name: "n_angles"
+          type: "int"
+          description: "Number of pattern orientations (typically 3)"
+        - name: "n_phases"
+          type: "int"
+          description: "Number of phase steps per orientation (typically 3 or 5)"
+      optional:
+        - name: "otf"
+          description: "Measured optical transfer function (complex .npy)"
+        - name: "pattern_vectors"
+          description: "JSON with pattern frequency vectors [kx, ky] for each orientation"
+
+  lightsheet:
+    display_name: "Light-Sheet Fluorescence Microscopy"
+    category: "microscopy"
+    keywords: [lightsheet, SPIM, LSFM, stripe_artifacts, optical_sectioning]
+    description: >
+      Light-sheet fluorescence microscopy (LSFM / SPIM) illuminates the sample
+      with a thin sheet of light perpendicular to the detection axis, providing
+      intrinsic optical sectioning. The primary artifacts are stripe patterns
+      caused by absorption and scattering in the illumination path, plus
+      anisotropic PSF blur. Reconstruction involves destriping followed by
+      optional deconvolution.
+    signal_dims:
+      x: [512, 512, 128]
+      y: [512, 512, 128]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = S(z) * (PSF_3d *** x) + n"
+    default_solver: "fourier_notch_destripe"
+    wavelength_range_nm: [400, 700]
+    elements:
+      - name: "Laser Source (488 nm)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "laser"
+          wavelength_nm: 488
+          power_mw: 10
+      - name: "Cylindrical Lens (Sheet Former)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.90
+        noise_kinds: [alignment]
+        parameters:
+          sheet_thickness_um: 4.0
+          sheet_width_um: 500
+          rayleigh_length_um: 200
+      - name: "Sample Medium"
+        element_type: medium
+        transfer_kind: modulation
+        throughput: 0.85
+        noise_kinds: [aberration]
+        parameters:
+          refractive_index: 1.33
+          scattering_mean_free_path_um: 100
+          stripe_strength: 0.2
+          attenuation_coef: 0.02
+      - name: "Detection Objective (20x / 1.0 NA Water)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.78
+        noise_kinds: [aberration]
+        parameters:
+          magnification: 20
+          numerical_aperture: 1.0
+          psf_sigma_lateral_px: 1.5
+          psf_sigma_axial_px: 1.0
+          immersion: "water"
+      - name: "sCMOS Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.82
+        noise_kinds: [shot_poisson, read_gaussian, fixed_pattern]
+        parameters:
+          pixel_size_um: 6.5
+          read_noise_e: 1.6
+          quantum_efficiency: 0.82
+          bit_depth: 16
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "Light-sheet 3D volume (multi-page TIFF or .npy)"
+          shape: "[H, W, Z]"
+      required_params:
+        - name: "emission_wavelength_nm"
+          type: "float"
+          description: "Central emission wavelength in nanometers"
+        - name: "voxel_size_um"
+          type: "list[float]"
+          description: "Voxel dimensions [dz, dy, dx] in micrometers"
+      optional:
+        - name: "psf_3d"
+          description: "Measured detection PSF (multi-page TIFF or .npy)"
+        - name: "dark_frame"
+          description: "Camera dark frame for background subtraction"
+
+  # ===========================================================================
+  # COMPRESSIVE IMAGING
+  # ===========================================================================
+
+  cassi:
+    display_name: "Coded Aperture Snapshot Spectral Imaging (CASSI)"
+    category: "compressive"
+    keywords: [CASSI, hyperspectral, coded_aperture, spectral_imaging, compressive_sensing]
+    description: >
+      CASSI compresses a 3D hyperspectral data cube (x, y, lambda) into a single
+      2D snapshot measurement. A binary coded aperture mask spatially modulates
+      each spectral band, and a dispersive element (prism or grating) shifts bands
+      laterally before they integrate on the detector. The forward model is
+      y = sum_l mask(x,y) * x(x,y,l) shifted by s(l). Reconstruction via MST,
+      GAP-TV, or HDNet recovers the full spectral cube.
+    signal_dims:
+      x: [256, 256, 28]
+      y: [283, 256]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y(x,y) = sum_l M(x,y) * X(x, y-s(l), l)"
+    default_solver: "mst"
+    wavelength_range_nm: [450, 650]
+    elements:
+      - name: "Broadband Illumination Source"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "halogen"
+          spectral_range_nm: [450, 650]
+          n_bands: 28
+          band_spacing_nm: 7.14
+      - name: "Coded Aperture Mask"
+        element_type: mask
+        transfer_kind: modulation
+        throughput: 0.50
+        noise_kinds: [fixed_pattern, alignment]
+        parameters:
+          mask_type: "binary_random"
+          density: 0.5
+          feature_size_um: 50
+          substrate_material: "glass"
+      - name: "Relay Lens"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.90
+        noise_kinds: [aberration]
+        parameters:
+          focal_length_mm: 75
+          f_number: 4.0
+      - name: "Dispersive Prism"
+        element_type: disperser
+        transfer_kind: dispersion
+        throughput: 0.88
+        noise_kinds: [alignment]
+        parameters:
+          dispersion_step_px: 2
+          dispersion_direction_deg: 0.0
+          prism_material: "SF11"
+          total_shift_px: 54
+      - name: "Imaging Lens"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.90
+        noise_kinds: [aberration]
+        parameters:
+          focal_length_mm: 75
+          f_number: 4.0
+      - name: "CCD / CMOS Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.75
+        noise_kinds: [shot_poisson, read_gaussian, quantization]
+        parameters:
+          pixel_size_um: 12.0
+          read_noise_e: 5.0
+          quantum_efficiency: 0.75
+          full_well_e: 20000
+          bit_depth: 12
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "2D CASSI snapshot measurement (TIFF, .mat, or .npy)"
+          shape: "[H + (n_bands-1)*step, W]"
+        - name: "mask"
+          description: "2D coded aperture mask pattern (.mat or .npy)"
+          shape: "[H, W]"
+      required_params:
+        - name: "n_bands"
+          type: "int"
+          description: "Number of spectral bands to reconstruct"
+        - name: "dispersion_step_px"
+          type: "int"
+          description: "Pixel shift between adjacent spectral bands"
+      optional:
+        - name: "dispersion_calibration"
+          description: "JSON with per-band pixel offsets if non-uniform dispersion"
+        - name: "ground_truth"
+          description: "Ground truth hyperspectral cube for evaluation (.mat or .npy)"
+
+  spc:
+    display_name: "Single-Pixel Camera"
+    category: "compressive"
+    keywords: [single_pixel, compressive_sensing, DMD, measurement_matrix, CS]
+    description: >
+      A single-pixel camera acquires an image by projecting a sequence of spatial
+      patterns (Hadamard, random, or learned) onto the scene and measuring total
+      intensity with a single photodetector. The measurement model is y = A*x
+      where A is the pattern matrix and x is the vectorized image. Compressed
+      sensing algorithms (FISTA, ISTA-Net) recover x from M << N measurements.
+    signal_dims:
+      x: [64, 64]
+      y: [614]
+    forward_model_type: "explicit_matrix"
+    forward_model_equation: "y = A @ vec(x)"
+    default_solver: "pnp_fista"
+    wavelength_range_nm: [400, 1000]
+    elements:
+      - name: "Scene Illumination (Ambient or Active)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "broadband"
+          spectral_range_nm: [400, 1000]
+      - name: "Collection Lens"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.92
+        noise_kinds: [aberration]
+        parameters:
+          focal_length_mm: 50
+          f_number: 2.8
+      - name: "Digital Micromirror Device (DMD)"
+        element_type: modulator
+        transfer_kind: modulation
+        throughput: 0.68
+        noise_kinds: [fixed_pattern, alignment]
+        parameters:
+          resolution: [1024, 768]
+          mirror_pitch_um: 10.8
+          tilt_angle_deg: 12
+          pattern_type: "hadamard"
+          sampling_rate: 0.15
+      - name: "Condensing Lens"
+        element_type: lens
+        transfer_kind: projection
+        throughput: 0.90
+        noise_kinds: []
+        parameters:
+          focal_length_mm: 25
+      - name: "Single-Pixel Photodiode"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.90
+        noise_kinds: [shot_poisson, read_gaussian, thermal]
+        parameters:
+          type: "InGaAs_photodiode"
+          responsivity_a_per_w: 0.95
+          nep_pw_per_sqrt_hz: 3.0
+          bandwidth_khz: 100
+          bit_depth: 16
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "1D measurement vector (.npy or .csv)"
+          shape: "[M]"
+        - name: "measurement_matrix"
+          description: "Sensing matrix A (.npy or .mat)"
+          shape: "[M, N]"
+      required_params:
+        - name: "image_height"
+          type: "int"
+          description: "Reconstructed image height in pixels"
+        - name: "image_width"
+          type: "int"
+          description: "Reconstructed image width in pixels"
+      optional:
+        - name: "ground_truth"
+          description: "Ground truth image for evaluation"
+        - name: "noise_variance"
+          description: "Estimated measurement noise variance (float)"
+
+  cacti:
+    display_name: "Coded Aperture Compressive Temporal Imaging (CACTI)"
+    category: "compressive"
+    keywords: [CACTI, video_compressive, snapshot, temporal_coding, SCI]
+    description: >
+      CACTI (also known as Snapshot Compressive Imaging for video) captures
+      multiple video frames in a single 2D exposure using time-varying coded
+      aperture masks. Each video frame is multiplied by a different shifted
+      version of a base mask, and all frames sum on the detector. The forward
+      model is y = sum_t mask_t * x_t. GAP-TV or EfficientSCI reconstructs
+      the video sequence from the single snapshot.
+    signal_dims:
+      x: [256, 256, 8]
+      y: [256, 256]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y(x,y) = sum_t M_t(x,y) * X(x,y,t)"
+    default_solver: "gap_tv"
+    wavelength_range_nm: [400, 700]
+    elements:
+      - name: "Scene Illumination"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "ambient"
+          frame_rate_equiv_fps: 240
+      - name: "Objective Lens"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.88
+        noise_kinds: [aberration]
+        parameters:
+          focal_length_mm: 50
+          f_number: 2.0
+      - name: "Coded Aperture (Shifting Mask)"
+        element_type: mask
+        transfer_kind: modulation
+        throughput: 0.50
+        noise_kinds: [fixed_pattern, alignment]
+        parameters:
+          mask_type: "binary_random"
+          density: 0.5
+          n_frames: 8
+          shift_type: "vertical"
+          shift_step_px: 1
+      - name: "Relay Optics"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.90
+        noise_kinds: []
+        parameters:
+          focal_length_mm: 75
+      - name: "CMOS Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.78
+        noise_kinds: [shot_poisson, read_gaussian, quantization]
+        parameters:
+          pixel_size_um: 5.5
+          read_noise_e: 3.0
+          quantum_efficiency: 0.78
+          exposure_ms: 33
+          bit_depth: 10
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "2D snapshot compressive measurement (TIFF or .npy)"
+          shape: "[H, W]"
+        - name: "masks"
+          description: "3D mask array with one mask per coded frame (.npy or .mat)"
+          shape: "[H, W, T]"
+      required_params:
+        - name: "n_frames"
+          type: "int"
+          description: "Number of temporal frames to reconstruct"
+      optional:
+        - name: "ground_truth_video"
+          description: "Ground truth video frames for evaluation (.npy)"
+        - name: "mask_shift_type"
+          description: "Mask shift strategy: vertical, horizontal, or random"
+
+  matrix:
+    display_name: "Generic Matrix Sensing"
+    category: "compressive"
+    keywords: [matrix, generic, linear_inverse, compressed_sensing, FISTA]
+    description: >
+      A generic linear inverse problem defined by an explicit measurement
+      matrix A. The forward model is y = A*x where A is an arbitrary M-by-N
+      matrix. This modality serves as a universal fallback for any linear
+      sensing system that can be expressed in matrix form, including random
+      projections, subsampling, and learned measurement operators. FISTA-TV
+      or LISTA are the default solvers.
+    signal_dims:
+      x: [64, 64]
+      y: [614]
+    forward_model_type: "explicit_matrix"
+    forward_model_equation: "y = A @ x + n"
+    default_solver: "fista_l2"
+    wavelength_range_nm: [0, 0]
+    elements:
+      - name: "Signal Source"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "generic"
+      - name: "Linear Measurement Operator"
+        element_type: modulator
+        transfer_kind: projection
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          matrix_type: "gaussian_random"
+          M: 614
+          N: 4096
+          sampling_rate: 0.15
+      - name: "Additive Noise Channel"
+        element_type: medium
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: [read_gaussian]
+        parameters:
+          noise_sigma: 0.01
+      - name: "Digital Readout"
+        element_type: detector
+        transfer_kind: sampling
+        throughput: 1.0
+        noise_kinds: [quantization]
+        parameters:
+          bit_depth: 16
+          type: "ideal_adc"
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "1D measurement vector y (.npy or .csv)"
+          shape: "[M]"
+        - name: "measurement_matrix"
+          description: "Sensing matrix A (.npy or .mat)"
+          shape: "[M, N]"
+      required_params:
+        - name: "signal_shape"
+          type: "list[int]"
+          description: "Shape of the signal to reconstruct, e.g. [64, 64]"
+      optional:
+        - name: "ground_truth"
+          description: "Ground truth signal for evaluation (.npy)"
+        - name: "regularization_weight"
+          description: "TV or L1 regularization weight (float)"
+
+  # ===========================================================================
+  # MEDICAL IMAGING
+  # ===========================================================================
+
+  ct:
+    display_name: "X-ray Computed Tomography"
+    category: "medical"
+    keywords: [CT, tomography, Radon, sinogram, FBP, medical_imaging]
+    description: >
+      X-ray Computed Tomography acquires a sinogram of projection measurements
+      at multiple angles around the patient. Each projection is a line integral
+      of the attenuation coefficient along X-ray paths (Radon transform). The
+      inverse problem recovers the 2D attenuation map from the sinogram.
+      Filtered Back-Projection (FBP) is the classical solver; iterative
+      methods (SART) and learned priors (RED-CNN) improve low-dose quality.
+    signal_dims:
+      x: [256, 256]
+      y: [180, 256]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y(theta, s) = integral x(r) dl,  Radon transform"
+    default_solver: "fbp"
+    wavelength_range_nm: [0, 0]
+    elements:
+      - name: "X-ray Tube"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          tube_voltage_kvp: 120
+          tube_current_ma: 200
+          focal_spot_mm: 0.6
+          spectrum: "polychromatic"
+      - name: "Beam Collimator"
+        element_type: filter
+        transfer_kind: modulation
+        throughput: 0.85
+        noise_kinds: []
+        parameters:
+          type: "fan_beam"
+          fan_angle_deg: 50
+          slice_thickness_mm: 1.0
+      - name: "Patient (Attenuating Medium)"
+        element_type: medium
+        transfer_kind: projection
+        throughput: 0.10
+        noise_kinds: [shot_poisson]
+        parameters:
+          mean_attenuation_coefficient: 0.2
+          n_angles: 180
+          angular_range_deg: 180
+      - name: "Anti-scatter Grid"
+        element_type: filter
+        transfer_kind: modulation
+        throughput: 0.70
+        noise_kinds: []
+        parameters:
+          grid_ratio: 12
+      - name: "Scintillator + Photodiode Array Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.85
+        noise_kinds: [shot_poisson, read_gaussian, quantization]
+        parameters:
+          n_detectors: 512
+          detector_pitch_mm: 1.0
+          scintillator: "CsI"
+          bit_depth: 20
+    upload_template:
+      required:
+        - name: "sinogram"
+          description: "2D sinogram (n_angles x n_detectors) as TIFF or .npy"
+          shape: "[n_angles, n_detectors]"
+      required_params:
+        - name: "n_angles"
+          type: "int"
+          description: "Number of projection angles"
+        - name: "angular_range_deg"
+          type: "float"
+          description: "Total angular range in degrees (typically 180 or 360)"
+      optional:
+        - name: "geometry"
+          description: "JSON with source-to-detector and source-to-object distances (for fan-beam)"
+        - name: "ground_truth"
+          description: "Ground truth attenuation image for evaluation"
+
+  mri:
+    display_name: "Magnetic Resonance Imaging"
+    category: "medical"
+    keywords: [MRI, Fourier, k_space, undersampling, parallel_imaging]
+    description: >
+      MRI acquires data in the spatial frequency domain (k-space) by applying
+      gradient magnetic fields. Accelerated MRI undersamples k-space using
+      variable-density or Cartesian masks. The forward model is y = M * F * x
+      where F is the 2D Fourier transform and M is the undersampling mask.
+      Multi-coil parallel imaging uses sensitivity maps S_c for each coil.
+      SENSE, CS-MRI, VarNet, and MoDL are standard reconstruction methods.
+    signal_dims:
+      x: [320, 320]
+      y: [320, 320]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y_c = M * F * S_c * x + n_c,  c = 1..N_coils"
+    default_solver: "sense"
+    wavelength_range_nm: [0, 0]
+    elements:
+      - name: "Main Magnet (3T)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          field_strength_T: 3.0
+          homogeneity_ppm: 0.5
+          bore_diameter_cm: 60
+      - name: "RF Excitation Coil"
+        element_type: transducer
+        transfer_kind: modulation
+        throughput: 0.95
+        noise_kinds: []
+        parameters:
+          type: "body_coil"
+          flip_angle_deg: 90
+          pulse_shape: "sinc"
+          bandwidth_hz: 2000
+      - name: "Gradient Coils (k-space Traversal)"
+        element_type: modulator
+        transfer_kind: sampling
+        throughput: 1.0
+        noise_kinds: [alignment]
+        parameters:
+          max_gradient_mt_per_m: 45
+          slew_rate_t_per_m_per_s: 200
+          undersampling_pattern: "variable_density"
+          sampling_rate: 0.25
+          center_fraction: 0.08
+      - name: "Receive Coil Array"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.90
+        noise_kinds: [thermal, read_gaussian]
+        parameters:
+          n_coils: 8
+          coil_type: "phased_array"
+          noise_figure_db: 0.5
+          bandwidth_hz: 125000
+          bit_depth: 16
+    upload_template:
+      required:
+        - name: "kspace"
+          description: "Complex k-space data (.npy or .h5), single or multi-coil"
+          shape: "[n_coils, H, W] or [H, W]"
+        - name: "undersampling_mask"
+          description: "Binary k-space sampling mask (.npy)"
+          shape: "[H, W]"
+      required_params:
+        - name: "image_size"
+          type: "list[int]"
+          description: "Target image dimensions [H, W]"
+      optional:
+        - name: "sensitivity_maps"
+          description: "Coil sensitivity maps (.npy), shape [n_coils, H, W]"
+        - name: "ground_truth"
+          description: "Fully-sampled ground truth image for evaluation"
+
+  # ===========================================================================
+  # COHERENT IMAGING
+  # ===========================================================================
+
+  ptychography:
+    display_name: "Ptychographic Imaging"
+    category: "coherent"
+    keywords: [ptychography, phase_retrieval, scanning, coherent, CDI, ePIE]
+    description: >
+      Ptychography is a coherent diffractive imaging technique that scans a
+      localized probe beam across the sample with overlapping positions. At
+      each position, the far-field diffraction intensity is recorded. The
+      forward model for position j is I_j = |F(P * O_j)|^2 where P is the
+      probe function, O_j is the sample exit wave at position j, and F is the
+      Fourier transform. Iterative phase retrieval algorithms (ePIE, PIE) or
+      neural networks (PtychoNN) recover both amplitude and phase of the sample.
+    signal_dims:
+      x: [256, 256]
+      y: [16, 128, 128]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "I_j = |FFT(P(r) * O(r - r_j))|^2,  j = 1..N_pos"
+    default_solver: "epie"
+    wavelength_range_nm: [0.01, 0.5]
+    elements:
+      - name: "Coherent X-ray or Electron Source"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "synchrotron"
+          photon_energy_kev: 8.0
+          wavelength_nm: 0.155
+          coherence_length_um: 10
+      - name: "Zone Plate / Fresnel Lens (Probe Former)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.15
+        noise_kinds: [aberration]
+        parameters:
+          type: "fresnel_zone_plate"
+          outermost_zone_nm: 50
+          diameter_um: 100
+          focal_length_mm: 25
+      - name: "Scanning Stage"
+        element_type: modulator
+        transfer_kind: sampling
+        throughput: 1.0
+        noise_kinds: [alignment]
+        parameters:
+          n_positions: 16
+          step_size_um: 2.0
+          overlap_fraction: 0.6
+          scan_pattern: "raster"
+      - name: "Sample"
+        element_type: sample
+        transfer_kind: modulation
+        throughput: 0.80
+        noise_kinds: []
+        parameters:
+          type: "thin_sample"
+          max_phase_shift_rad: 1.5
+          max_absorption: 0.3
+      - name: "Pixel Array Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.90
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          type: "photon_counting"
+          pixel_size_um: 75
+          n_pixels: [128, 128]
+          dynamic_range: 1000000
+          bit_depth: 24
+    upload_template:
+      required:
+        - name: "diffraction_patterns"
+          description: "Stack of diffraction intensity patterns (.npy or .h5)"
+          shape: "[N_positions, Dp, Dp]"
+        - name: "scan_positions"
+          description: "Probe scan positions in micrometers (.csv or .npy)"
+          shape: "[N_positions, 2]"
+      required_params:
+        - name: "wavelength_nm"
+          type: "float"
+          description: "Illumination wavelength in nanometers"
+        - name: "detector_distance_mm"
+          type: "float"
+          description: "Sample-to-detector distance in millimeters"
+        - name: "pixel_size_um"
+          type: "float"
+          description: "Detector pixel size in micrometers"
+      optional:
+        - name: "probe_guess"
+          description: "Initial probe function estimate (complex .npy)"
+        - name: "object_support"
+          description: "Binary support mask for the object"
+
+  holography:
+    display_name: "Digital Holographic Microscopy"
+    category: "coherent"
+    keywords: [holography, off_axis, phase_retrieval, interference, DHM]
+    description: >
+      Digital holography records the interference pattern between an object
+      wave and a reference wave on a 2D sensor. In off-axis geometry, a tilted
+      reference separates the twin image and DC terms in Fourier space.
+      Numerical reconstruction propagates the wavefield back to the sample
+      plane using the angular spectrum method. Both amplitude and quantitative
+      phase are recovered, enabling label-free cell imaging.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "I = |U_obj * exp(i*phi) + U_ref * exp(i*k*sin(theta)*r)|^2"
+    default_solver: "angular_spectrum"
+    wavelength_range_nm: [400, 700]
+    elements:
+      - name: "Coherent Laser Source (633 nm)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "HeNe_laser"
+          wavelength_nm: 633
+          power_mw: 5
+          coherence_length_m: 0.3
+      - name: "Beam Splitter"
+        element_type: beamsplitter
+        transfer_kind: interference
+        throughput: 0.50
+        noise_kinds: []
+        parameters:
+          splitting_ratio: 0.5
+          type: "cube"
+      - name: "Microscope Objective (40x / 0.65 NA)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.80
+        noise_kinds: [aberration]
+        parameters:
+          magnification: 40
+          numerical_aperture: 0.65
+          immersion: "air"
+      - name: "Off-Axis Reference Beam"
+        element_type: source
+        transfer_kind: interference
+        throughput: 1.0
+        noise_kinds: [alignment]
+        parameters:
+          carrier_frequency_cycles_per_px: 0.2
+          reference_amplitude: 1.0
+          tilt_angle_deg: 2.5
+      - name: "CCD Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.70
+        noise_kinds: [shot_poisson, read_gaussian, quantization]
+        parameters:
+          pixel_size_um: 4.65
+          read_noise_e: 8.0
+          quantum_efficiency: 0.70
+          full_well_e: 18000
+          bit_depth: 12
+    upload_template:
+      required:
+        - name: "hologram"
+          description: "2D hologram image (intensity pattern, TIFF or .npy)"
+          shape: "[H, W]"
+      required_params:
+        - name: "wavelength_nm"
+          type: "float"
+          description: "Illumination wavelength in nanometers"
+        - name: "pixel_size_um"
+          type: "float"
+          description: "Camera pixel size in micrometers"
+        - name: "propagation_distance_um"
+          type: "float"
+          description: "Distance from sample to sensor plane in micrometers"
+      optional:
+        - name: "reference_hologram"
+          description: "Reference hologram for background subtraction"
+        - name: "carrier_frequency"
+          description: "JSON with carrier frequency [fx, fy] in cycles/pixel"
+
+  # ===========================================================================
+  # NEURAL RENDERING
+  # ===========================================================================
+
+  nerf:
+    display_name: "Neural Radiance Fields (NeRF)"
+    category: "neural_rendering"
+    keywords: [NeRF, neural_radiance, volumetric_rendering, novel_view, 3D_reconstruction]
+    description: >
+      Neural Radiance Fields represent a 3D scene as a continuous volumetric
+      function mapping 3D coordinates and viewing direction to color and
+      density, parameterized by a neural network. Multi-view posed images
+      supervise training. The forward model integrates color and density along
+      camera rays using volume rendering: C(r) = integral T(t) * sigma(t) *
+      c(t) dt where T(t) is the transmittance. NeRF, Instant-NGP, and
+      Mip-NeRF 360 are standard architectures.
+    signal_dims:
+      x: [128, 128, 64]
+      y: [10, 128, 128, 3]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "C(r) = integral_0^inf T(t) * sigma(r(t)) * c(r(t),d) dt"
+    default_solver: "nerf_mlp"
+    wavelength_range_nm: [380, 780]
+    elements:
+      - name: "Multi-View Camera Rig"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          n_views: 10
+          image_resolution: [128, 128]
+          field_of_view_deg: 60
+          angular_coverage_deg: 360
+      - name: "Camera Lens"
+        element_type: lens
+        transfer_kind: projection
+        throughput: 0.90
+        noise_kinds: [aberration]
+        parameters:
+          focal_length_mm: 50
+          aperture: "f/2.0"
+          distortion_model: "pinhole"
+      - name: "3D Scene Volume"
+        element_type: medium
+        transfer_kind: nonlinear
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          volume_resolution: [128, 128, 64]
+          density_activation: "softplus"
+          color_activation: "sigmoid"
+          positional_encoding_levels: 10
+      - name: "Volume Rendering Integrator"
+        element_type: modulator
+        transfer_kind: integration
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          n_samples_per_ray: 64
+          n_importance_samples: 128
+          near_plane: 0.1
+          far_plane: 10.0
+          stratified_sampling: true
+      - name: "RGB Image Sensor"
+        element_type: detector
+        transfer_kind: sampling
+        throughput: 0.85
+        noise_kinds: [shot_poisson, read_gaussian, quantization]
+        parameters:
+          bit_depth: 8
+          color_channels: 3
+          gamma: 2.2
+    upload_template:
+      required:
+        - name: "images"
+          description: "Multi-view RGB images (folder of PNGs or .npy stack)"
+          shape: "[N_views, H, W, 3]"
+        - name: "camera_poses"
+          description: "Camera extrinsics as 4x4 matrices (.npy or .json)"
+          shape: "[N_views, 4, 4]"
+      required_params:
+        - name: "focal_length_px"
+          type: "float"
+          description: "Camera focal length in pixels"
+        - name: "image_height"
+          type: "int"
+          description: "Image height in pixels"
+        - name: "image_width"
+          type: "int"
+          description: "Image width in pixels"
+      optional:
+        - name: "camera_intrinsics"
+          description: "Camera intrinsic matrix K (.npy), shape [3, 3]"
+        - name: "point_cloud"
+          description: "Sparse SfM point cloud for initialization (.ply)"
+
+  gaussian_splatting:
+    display_name: "3D Gaussian Splatting"
+    category: "neural_rendering"
+    keywords: [gaussian_splatting, 3DGS, real_time, novel_view, point_cloud]
+    description: >
+      3D Gaussian Splatting represents a scene as a collection of oriented 3D
+      Gaussians, each with position, covariance, opacity, and spherical
+      harmonics color coefficients. Rendering projects each Gaussian onto the
+      image plane as a 2D Gaussian via the EWA splatting equation, then
+      alpha-composites them front to back. The differentiable rasterizer enables
+      end-to-end optimization of Gaussian parameters from multi-view images
+      with real-time rendering capability.
+    signal_dims:
+      x: [128, 128, 64]
+      y: [10, 128, 128, 3]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "C(p) = sum_i alpha_i * c_i * prod_{j<i}(1 - alpha_j),  alpha_i = o_i * G_2d(p; mu_i, Sigma_i)"
+    default_solver: "gaussian_splatting_3dgs"
+    wavelength_range_nm: [380, 780]
+    elements:
+      - name: "Multi-View Camera Rig"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          n_views: 10
+          image_resolution: [128, 128]
+          field_of_view_deg: 60
+      - name: "Camera Lens"
+        element_type: lens
+        transfer_kind: projection
+        throughput: 0.90
+        noise_kinds: [aberration]
+        parameters:
+          focal_length_mm: 50
+          distortion_model: "pinhole"
+      - name: "3D Gaussian Point Cloud"
+        element_type: medium
+        transfer_kind: nonlinear
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          n_gaussians_initial: 100000
+          n_gaussians_max: 5000000
+          sh_degree: 3
+          opacity_activation: "sigmoid"
+          scale_activation: "exp"
+      - name: "Differentiable Tile-Based Rasterizer"
+        element_type: modulator
+        transfer_kind: projection
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          tile_size_px: 16
+          sort_method: "radix"
+          alpha_compositing: "front_to_back"
+          splat_sigma: 2.0
+      - name: "RGB Image Sensor"
+        element_type: detector
+        transfer_kind: sampling
+        throughput: 0.85
+        noise_kinds: [shot_poisson, read_gaussian, quantization]
+        parameters:
+          bit_depth: 8
+          color_channels: 3
+          gamma: 2.2
+    upload_template:
+      required:
+        - name: "images"
+          description: "Multi-view RGB images (folder of PNGs or .npy stack)"
+          shape: "[N_views, H, W, 3]"
+        - name: "camera_poses"
+          description: "Camera extrinsics as 4x4 matrices (.npy or .json)"
+          shape: "[N_views, 4, 4]"
+      required_params:
+        - name: "focal_length_px"
+          type: "float"
+          description: "Camera focal length in pixels"
+        - name: "image_height"
+          type: "int"
+          description: "Image height in pixels"
+        - name: "image_width"
+          type: "int"
+          description: "Image width in pixels"
+      optional:
+        - name: "camera_intrinsics"
+          description: "Camera intrinsic matrix K (.npy), shape [3, 3]"
+        - name: "initial_point_cloud"
+          description: "Sparse SfM point cloud for Gaussian initialization (.ply)"
+        - name: "colmap_workspace"
+          description: "Path to COLMAP workspace with pre-computed SfM results"
+
+  # ===========================================================================
+  # COMPUTATIONAL PHOTOGRAPHY
+  # ===========================================================================
+
+  lensless:
+    display_name: "Lensless (Diffuser Camera) Imaging"
+    category: "computational_photography"
+    keywords: [lensless, diffuser_camera, mask_based, PSF_engineering, computational]
+    description: >
+      Lensless cameras replace the conventional lens with a thin optical
+      element (diffuser, phase mask, or coded aperture) placed directly on the
+      sensor. The captured image is a convolution of the scene with the system
+      PSF, which is typically a large, structured caustic pattern. The forward
+      model is y = PSF ** x + n. Because the PSF is known (measured via
+      calibration), computational reconstruction via ADMM-TV or FlatNet
+      recovers the scene image.
+    signal_dims:
+      x: [256, 256, 3]
+      y: [256, 256, 3]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = PSF ** x + n"
+    default_solver: "admm_tv"
+    wavelength_range_nm: [400, 700]
+    elements:
+      - name: "Scene Illumination"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "ambient"
+      - name: "Phase Diffuser"
+        element_type: mask
+        transfer_kind: convolution
+        throughput: 0.70
+        noise_kinds: [fixed_pattern, alignment]
+        parameters:
+          type: "random_phase_diffuser"
+          material: "polycarbonate"
+          thickness_um: 500
+          feature_size_um: 100
+          psf_sigma_px: 10.0
+          psf_support_px: 256
+      - name: "Spacer / Air Gap"
+        element_type: medium
+        transfer_kind: propagation
+        throughput: 0.98
+        noise_kinds: []
+        parameters:
+          distance_mm: 2.0
+          refractive_index: 1.0
+      - name: "CMOS Image Sensor"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.78
+        noise_kinds: [shot_poisson, read_gaussian, fixed_pattern, quantization]
+        parameters:
+          pixel_size_um: 1.4
+          read_noise_e: 2.5
+          quantum_efficiency: 0.78
+          bit_depth: 10
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "Raw lensless capture (2D or 3D color image, TIFF or .npy)"
+          shape: "[H, W] or [H, W, 3]"
+        - name: "psf"
+          description: "Measured point spread function (TIFF or .npy)"
+          shape: "[H, W] or [H, W, 3]"
+      required_params:
+        - name: "pixel_size_um"
+          type: "float"
+          description: "Sensor pixel size in micrometers"
+      optional:
+        - name: "background"
+          description: "Dark frame for background subtraction"
+        - name: "diffuser_to_sensor_mm"
+          description: "Distance from diffuser to sensor in millimeters (float)"
+
+  panorama:
+    display_name: "Panorama Multi-Focus Fusion"
+    category: "computational_photography"
+    keywords: [panorama, multi_focus, image_fusion, all_in_focus, depth_of_field]
+    description: >
+      Panoramic multi-focus fusion combines multiple images captured at
+      different focal distances into a single all-in-focus composite. Each
+      input image has a different depth plane in focus while others are blurred
+      by the defocus PSF. The forward model for each image is
+      y_k = PSF(d_k) ** x + n where d_k is the defocus distance. Fusion
+      algorithms (Laplacian pyramid, guided filter, IFCNN) detect sharp regions
+      in each input and blend them seamlessly.
+    signal_dims:
+      x: [512, 512, 3]
+      y: [512, 512, 3]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y_k = PSF(d_k) ** x + n,  k = 1..N_focus"
+    default_solver: "laplacian_pyramid_fusion"
+    wavelength_range_nm: [400, 700]
+    elements:
+      - name: "Scene Illumination"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "ambient"
+      - name: "Camera Lens (Variable Focus)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.88
+        noise_kinds: [aberration]
+        parameters:
+          focal_length_mm: 50
+          aperture: "f/2.8"
+          n_focus_planes: 5
+          focus_range_m: [0.3, 10.0]
+      - name: "Focus Bracketing Controller"
+        element_type: modulator
+        transfer_kind: modulation
+        throughput: 1.0
+        noise_kinds: [alignment]
+        parameters:
+          n_images: 5
+          focus_step_diopters: 0.5
+          alignment_method: "feature_based"
+      - name: "RGB Image Sensor"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.82
+        noise_kinds: [shot_poisson, read_gaussian, quantization]
+        parameters:
+          pixel_size_um: 4.0
+          read_noise_e: 3.0
+          quantum_efficiency: 0.82
+          bit_depth: 14
+          color_filter: "Bayer_RGGB"
+    upload_template:
+      required:
+        - name: "images"
+          description: "Stack of multi-focus images at different focal distances (folder of TIFFs or .npy)"
+          shape: "[N_focus, H, W, 3] or list of [H, W, 3]"
+      required_params:
+        - name: "n_images"
+          type: "int"
+          description: "Number of focal-distance images in the stack"
+      optional:
+        - name: "focus_distances"
+          description: "JSON list of focus distances in meters for each image"
+        - name: "alignment_transforms"
+          description: "JSON with inter-frame homographies for pre-alignment"
+        - name: "depth_map"
+          description: "Estimated depth map for guided fusion"
+
+  # ===========================================================================
+  # COMPUTATIONAL IMAGING
+  # ===========================================================================
+
+  light_field:
+    display_name: "Light Field Imaging"
+    category: "computational"
+    keywords: [light_field, plenoptic, microlens_array, 4D, refocusing, depth_estimation]
+    description: >
+      Light field imaging captures the full 4D light field L(x,y,u,v) encoding
+      both spatial (x,y) and angular (u,v) information about the scene. A
+      microlens array placed at the sensor focal plane redirects rays from
+      different directions to different pixels, sampling the angular domain.
+      The 4D light field is compressed into a single 2D sensor image. Digital
+      refocusing, depth estimation, and view synthesis are enabled by
+      computational reconstruction via shift-and-sum or learning-based methods.
+    signal_dims:
+      x: [512, 512, 9, 9]
+      y: [512, 512]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y(x,y) = sum_{u,v} L(x,y,u,v) * MLA(x,y,u,v)"
+    default_solver: "shift_and_sum"
+    wavelength_range_nm: [400, 700]
+    elements:
+      - name: "Scene Illumination"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "ambient"
+          spectral_range_nm: [400, 700]
+      - name: "Main Lens"
+        element_type: lens
+        transfer_kind: projection
+        throughput: 0.90
+        noise_kinds: [aberration]
+        parameters:
+          focal_length_mm: 50
+          f_number: 2.0
+          distortion_model: "pinhole"
+      - name: "Microlens Array"
+        element_type: modulator
+        transfer_kind: sampling
+        throughput: 0.75
+        noise_kinds: [alignment, fixed_pattern]
+        parameters:
+          microlens_pitch_um: 125
+          microlens_focal_length_mm: 0.5
+          n_angular_samples: [9, 9]
+          array_size: [512, 512]
+          fill_factor: 0.98
+      - name: "CMOS Image Sensor"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.80
+        noise_kinds: [shot_poisson, read_gaussian, fixed_pattern, quantization]
+        parameters:
+          pixel_size_um: 1.4
+          read_noise_e: 2.0
+          quantum_efficiency: 0.80
+          full_well_e: 10000
+          bit_depth: 12
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "Raw light field image from plenoptic camera (TIFF or .npy)"
+          shape: "[H_sensor, W_sensor]"
+      required_params:
+        - name: "n_angular_u"
+          type: "int"
+          description: "Number of angular samples in u direction"
+        - name: "n_angular_v"
+          type: "int"
+          description: "Number of angular samples in v direction"
+        - name: "microlens_pitch_um"
+          type: "float"
+          description: "Microlens array pitch in micrometers"
+      optional:
+        - name: "microlens_centers"
+          description: "Pre-calibrated microlens center positions (.npy or .csv)"
+        - name: "white_image"
+          description: "White calibration image for vignetting correction (TIFF)"
+        - name: "ground_truth"
+          description: "Ground truth 4D light field for evaluation (.npy or .h5)"
+
+  # ===========================================================================
+  # MEDICAL IMAGING (continued)
+  # ===========================================================================
+
+  dot:
+    display_name: "Diffuse Optical Tomography"
+    category: "medical"
+    keywords: [DOT, diffuse_optical, NIR, tissue_imaging, absorption, scattering]
+    description: >
+      Diffuse Optical Tomography (DOT) reconstructs spatial maps of optical
+      absorption (mu_a) and reduced scattering (mu_s') coefficients inside
+      biological tissue from boundary measurements of near-infrared light.
+      NIR laser sources illuminate the tissue surface at multiple positions,
+      and photodetectors on the boundary measure transmitted and reflected
+      light intensity. The forward model is governed by the diffusion
+      equation: y = J(mu_a, mu_s') * x where J is the Jacobian (sensitivity
+      matrix) mapping internal optical property changes to boundary
+      measurement changes. Born approximation or L-BFGS with total variation
+      regularization are standard reconstruction methods.
+    signal_dims:
+      x: [64, 64, 64]
+      y: [256]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = J(mu_a, mu_s') * x"
+    default_solver: "born_approx"
+    wavelength_range_nm: [750, 850]
+    elements:
+      - name: "NIR Laser Sources"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "laser_diode"
+          wavelengths_nm: [750, 800, 850]
+          power_mw: 20
+          n_sources: 16
+          modulation: "continuous_wave"
+      - name: "Tissue Medium"
+        element_type: medium
+        transfer_kind: projection
+        throughput: 0.01
+        noise_kinds: [shot_poisson]
+        parameters:
+          background_mu_a_per_mm: 0.01
+          background_mu_s_prime_per_mm: 1.0
+          refractive_index: 1.37
+          diffusion_model: "frequency_domain"
+          tissue_thickness_mm: 60
+      - name: "Boundary Photodetectors"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.70
+        noise_kinds: [shot_poisson, read_gaussian, thermal]
+        parameters:
+          type: "APD"
+          n_detectors: 16
+          responsivity_a_per_w: 0.5
+          nep_pw_per_sqrt_hz: 10.0
+          bandwidth_mhz: 200
+          bit_depth: 16
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "Boundary measurement vector from source-detector pairs (.npy or .csv)"
+          shape: "[N_source_detector_pairs]"
+        - name: "geometry"
+          description: "Source and detector positions on tissue surface (.json or .csv)"
+          shape: "[N_sources, 3] and [N_detectors, 3]"
+      required_params:
+        - name: "n_sources"
+          type: "int"
+          description: "Number of illumination source positions"
+        - name: "n_detectors"
+          type: "int"
+          description: "Number of detector positions"
+        - name: "wavelengths_nm"
+          type: "list[float]"
+          description: "Illumination wavelengths in nanometers"
+      optional:
+        - name: "jacobian"
+          description: "Pre-computed Jacobian sensitivity matrix (.npy or .mat)"
+        - name: "mesh"
+          description: "FEM mesh for the tissue geometry (.vtk or .msh)"
+        - name: "ground_truth"
+          description: "Ground truth optical property map for evaluation (.npy)"
+
+  photoacoustic:
+    display_name: "Photoacoustic Imaging"
+    category: "medical"
+    keywords: [photoacoustic, optoacoustic, PAI, laser_ultrasound, absorption_contrast]
+    description: >
+      Photoacoustic imaging (PAI) combines optical absorption contrast with
+      ultrasonic detection resolution. A short-pulsed laser illuminates the
+      tissue, and optical absorption generates an initial pressure distribution
+      p0 = Gamma * mu_a * Phi, where Gamma is the Grueneisen parameter, mu_a
+      is the absorption coefficient, and Phi is the local optical fluence.
+      The initial pressure propagates as acoustic waves detected by an
+      ultrasound transducer array. The forward model is y = R * p0 where R
+      is the acoustic propagation operator. Back-projection or time-reversal
+      algorithms reconstruct the initial pressure distribution from the
+      measured RF data.
+    signal_dims:
+      x: [256, 256]
+      y: [128, 2048]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = R * p0,  p0 = Gamma * mu_a * Phi"
+    default_solver: "back_projection"
+    wavelength_range_nm: [532, 1064]
+    elements:
+      - name: "Pulsed Laser Source"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "Nd:YAG"
+          wavelengths_nm: [532, 1064]
+          pulse_energy_mj: 20
+          pulse_duration_ns: 5
+          repetition_rate_hz: 10
+      - name: "Tissue Absorption"
+        element_type: medium
+        transfer_kind: modulation
+        throughput: 0.30
+        noise_kinds: []
+        parameters:
+          grueneisen_parameter: 0.8
+          background_mu_a_per_cm: 0.1
+          fluence_model: "diffusion"
+          tissue_depth_mm: 30
+      - name: "Acoustic Propagation"
+        element_type: medium
+        transfer_kind: propagation
+        throughput: 0.85
+        noise_kinds: []
+        parameters:
+          speed_of_sound_m_per_s: 1540
+          attenuation_db_per_cm_per_mhz: 0.5
+          medium: "soft_tissue"
+      - name: "Ultrasound Transducer Array"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.75
+        noise_kinds: [shot_poisson, read_gaussian, thermal]
+        parameters:
+          type: "linear_array"
+          n_elements: 128
+          element_pitch_mm: 0.3
+          center_frequency_mhz: 5.0
+          bandwidth_percent: 60
+          sampling_rate_mhz: 40
+          time_samples: 2048
+          bit_depth: 14
+    upload_template:
+      required:
+        - name: "rf_data"
+          description: "RF data from ultrasound transducer array (.npy or .mat)"
+          shape: "[N_transducers, N_time_samples]"
+      required_params:
+        - name: "speed_of_sound_m_per_s"
+          type: "float"
+          description: "Speed of sound in the imaging medium in meters per second"
+        - name: "sampling_rate_mhz"
+          type: "float"
+          description: "RF data sampling rate in MHz"
+        - name: "transducer_positions"
+          type: "str"
+          description: "Path to transducer element positions (.csv or .npy)"
+      optional:
+        - name: "speed_of_sound_map"
+          description: "Spatially varying speed of sound map (.npy)"
+        - name: "ground_truth"
+          description: "Ground truth initial pressure distribution for evaluation (.npy)"
+
+  oct:
+    display_name: "Optical Coherence Tomography"
+    category: "medical"
+    keywords: [OCT, interferometry, low_coherence, retinal_imaging, cross_sectional]
+    description: >
+      Optical Coherence Tomography (OCT) is an interferometric imaging
+      technique that produces high-resolution cross-sectional images of
+      biological tissue. A broadband or swept-source light source is split
+      into sample and reference arms. Backscattered light from the sample
+      interferes with the reference beam, producing spectral fringes.
+      The forward model is y(k) = |E_r + E_s(k)|^2 which expands to
+      DC + cross-correlation + autocorrelation terms. The depth profile
+      (A-scan) is obtained by Fourier transforming the spectral
+      interferogram after DC removal and dispersion compensation. B-scans
+      and volumetric C-scans are formed by lateral scanning.
+    signal_dims:
+      x: [512, 512, 512]
+      y: [512, 512, 1024]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y(k) = |E_r + E_s(k)|^2 = DC + cross-correlation + autocorrelation"
+    default_solver: "fft_recon"
+    wavelength_range_nm: [840, 1060]
+    elements:
+      - name: "SLD / Swept Source"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "swept_source"
+          center_wavelength_nm: 1060
+          bandwidth_nm: 100
+          sweep_rate_khz: 100
+          power_mw: 20
+          coherence_length_mm: 6
+      - name: "Beam Splitter (Interferometer)"
+        element_type: beamsplitter
+        transfer_kind: interference
+        throughput: 0.50
+        noise_kinds: []
+        parameters:
+          splitting_ratio: 0.5
+          type: "fiber_coupler"
+      - name: "Sample Arm (Scanning + Objective)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.75
+        noise_kinds: [aberration, alignment]
+        parameters:
+          scan_type: "galvo_xy"
+          numerical_aperture: 0.05
+          lateral_resolution_um: 15
+          scan_range_mm: 6
+          working_distance_mm: 25
+      - name: "Reference Arm"
+        element_type: source
+        transfer_kind: interference
+        throughput: 0.90
+        noise_kinds: []
+        parameters:
+          reference_amplitude: 1.0
+          dispersion_compensation: true
+          path_length_matching_um: 0.1
+      - name: "Spectrometer / Balanced Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.80
+        noise_kinds: [shot_poisson, read_gaussian, thermal]
+        parameters:
+          type: "balanced_photodetector"
+          n_spectral_samples: 1024
+          dynamic_range_db: 105
+          sensitivity_dbm: -95
+          bit_depth: 14
+    upload_template:
+      required:
+        - name: "interferograms"
+          description: "Raw spectral interferograms (3D volume, .npy or .h5)"
+          shape: "[N_bscans, N_ascans, N_spectral_samples]"
+      required_params:
+        - name: "center_wavelength_nm"
+          type: "float"
+          description: "Source center wavelength in nanometers"
+        - name: "bandwidth_nm"
+          type: "float"
+          description: "Source spectral bandwidth in nanometers"
+        - name: "axial_pixel_size_um"
+          type: "float"
+          description: "Axial pixel spacing in micrometers"
+      optional:
+        - name: "reference_spectrum"
+          description: "Reference arm spectrum for background subtraction (.npy)"
+        - name: "dispersion_coefficients"
+          description: "Dispersion compensation polynomial coefficients (JSON)"
+        - name: "ground_truth"
+          description: "Ground truth tissue structure for evaluation (.npy)"
+
+  # ===========================================================================
+  # MICROSCOPY (continued)
+  # ===========================================================================
+
+  flim:
+    display_name: "Fluorescence Lifetime Imaging"
+    category: "microscopy"
+    keywords: [FLIM, fluorescence_lifetime, TCSPC, phasor, decay_fitting]
+    description: >
+      Fluorescence Lifetime Imaging Microscopy (FLIM) measures the
+      fluorescence decay kinetics at each pixel, providing contrast based on
+      the excited-state lifetime rather than intensity alone. A pulsed laser
+      excites fluorophores, and the time-correlated single photon counting
+      (TCSPC) detector records arrival-time histograms. The forward model is
+      y(t) = IRF(t) * [sum_i a_i * exp(-t/tau_i)] + background, where IRF
+      is the instrument response function and tau_i are the lifetime
+      components. Phasor analysis or maximum likelihood fitting recover the
+      lifetime parameters at each pixel.
+    signal_dims:
+      x: [256, 256, 2]
+      y: [256, 256, 256]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y(t) = IRF(t) * [sum_i a_i * exp(-t/tau_i)] + background"
+    default_solver: "phasor"
+    wavelength_range_nm: [405, 488]
+    elements:
+      - name: "Pulsed Laser Source"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "pulsed_laser_diode"
+          wavelengths_nm: [405, 488]
+          pulse_width_ps: 70
+          repetition_rate_mhz: 80
+          average_power_mw: 1
+      - name: "Dichroic Mirror"
+        element_type: filter
+        transfer_kind: modulation
+        throughput: 0.95
+        noise_kinds: []
+        parameters:
+          type: "long_pass_dichroic"
+          edge_wavelength_nm: 500
+          reflection_band_nm: [400, 490]
+          transmission_band_nm: [510, 700]
+      - name: "Objective Lens (60x / 1.4 NA Oil)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.75
+        noise_kinds: [aberration]
+        parameters:
+          magnification: 60
+          numerical_aperture: 1.4
+          immersion: "oil"
+          psf_sigma_px: 1.0
+      - name: "Emission Filter"
+        element_type: filter
+        transfer_kind: modulation
+        throughput: 0.88
+        noise_kinds: []
+        parameters:
+          type: "bandpass"
+          center_nm: 530
+          bandwidth_nm: 40
+      - name: "TCSPC Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.20
+        noise_kinds: [shot_poisson, thermal]
+        parameters:
+          type: "SPAD"
+          time_resolution_ps: 50
+          n_time_bins: 256
+          time_range_ns: 12.5
+          dark_count_rate_cps: 25
+          dead_time_ns: 50
+          quantum_efficiency: 0.20
+          bit_depth: 16
+    upload_template:
+      required:
+        - name: "tcspc_data"
+          description: "TCSPC histogram data (spatial x spatial x time bins, .npy or .sdt)"
+          shape: "[H, W, N_time_bins]"
+      required_params:
+        - name: "time_resolution_ps"
+          type: "float"
+          description: "Time bin width in picoseconds"
+        - name: "excitation_wavelength_nm"
+          type: "float"
+          description: "Pulsed laser excitation wavelength in nanometers"
+        - name: "n_time_bins"
+          type: "int"
+          description: "Number of time bins in the decay histogram"
+      optional:
+        - name: "irf"
+          description: "Measured instrument response function (.npy or .csv)"
+        - name: "intensity_image"
+          description: "Integrated fluorescence intensity image for reference (TIFF)"
+        - name: "ground_truth_lifetimes"
+          description: "Ground truth lifetime map for evaluation (.npy)"
+
+  fpm:
+    display_name: "Fourier Ptychographic Microscopy"
+    category: "microscopy"
+    keywords: [FPM, fourier_ptychography, synthetic_aperture, LED_array, high_resolution]
+    description: >
+      Fourier Ptychographic Microscopy (FPM) achieves high-resolution, wide
+      field-of-view, and quantitative phase imaging by illuminating the sample
+      with an LED array at variable angles and capturing low-resolution
+      intensity images through a low-NA objective. Each LED angle shifts the
+      sample's Fourier spectrum, and the low-NA objective acts as a pupil
+      filter. The forward model for illumination angle j is
+      y_j = |F^{-1}{P(k - k_j) * O(k)}|^2, where P is the pupil function,
+      O(k) is the object's Fourier spectrum, and k_j is the illumination
+      wave vector. Sequential phase retrieval or gradient descent algorithms
+      stitch together the Fourier components to recover a high-resolution
+      complex image with both amplitude and phase.
+    signal_dims:
+      x: [1024, 1024]
+      y: [256, 256, 225]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y_j = |F^{-1}{P(k - k_j) * O(k)}|^2,  j = 1..N_angles"
+    default_solver: "sequential_phase_retrieval"
+    wavelength_range_nm: [450, 650]
+    elements:
+      - name: "LED Array (Variable Angle Illumination)"
+        element_type: source
+        transfer_kind: modulation
+        throughput: 0.90
+        noise_kinds: [alignment]
+        parameters:
+          type: "LED_array"
+          array_size: [15, 15]
+          n_leds: 225
+          led_pitch_mm: 4.0
+          center_wavelength_nm: 530
+          spectral_width_nm: 20
+          array_to_sample_distance_mm: 80
+      - name: "Sample (Thin Specimen)"
+        element_type: sample
+        transfer_kind: modulation
+        throughput: 0.80
+        noise_kinds: []
+        parameters:
+          type: "thin_sample"
+          max_phase_shift_rad: 2.0
+          max_absorption: 0.5
+      - name: "Objective Lens (4x / 0.1 NA)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.85
+        noise_kinds: [aberration]
+        parameters:
+          magnification: 4
+          numerical_aperture: 0.1
+          immersion: "air"
+          synthetic_na: 0.5
+          resolution_gain_factor: 5
+      - name: "CMOS Camera"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.78
+        noise_kinds: [shot_poisson, read_gaussian, quantization]
+        parameters:
+          pixel_size_um: 6.5
+          read_noise_e: 2.0
+          quantum_efficiency: 0.78
+          full_well_e: 30000
+          bit_depth: 12
+    upload_template:
+      required:
+        - name: "image_stack"
+          description: "Stack of low-resolution images for each LED angle (.npy or multi-page TIFF)"
+          shape: "[N_angles, H_low, W_low]"
+        - name: "led_positions"
+          description: "LED array positions or illumination angles (.csv or .json)"
+          shape: "[N_angles, 2] or [N_angles, 3]"
+      required_params:
+        - name: "objective_na"
+          type: "float"
+          description: "Objective numerical aperture"
+        - name: "wavelength_nm"
+          type: "float"
+          description: "Central illumination wavelength in nanometers"
+        - name: "pixel_size_um"
+          type: "float"
+          description: "Effective pixel size at the sample plane in micrometers"
+      optional:
+        - name: "pupil_function"
+          description: "Pre-calibrated pupil function estimate (complex .npy)"
+        - name: "led_intensity_correction"
+          description: "Per-LED intensity calibration factors (.json or .csv)"
+        - name: "ground_truth"
+          description: "Ground truth high-resolution complex image for evaluation (.npy)"
+
+  # ===========================================================================
+  # COHERENT IMAGING (continued)
+  # ===========================================================================
+
+  phase_retrieval:
+    display_name: "Coherent Diffractive Imaging / Phase Retrieval"
+    category: "coherent"
+    keywords: [CDI, phase_retrieval, diffraction, lensless, coherent, HIO, oversampling]
+    description: >
+      Coherent Diffractive Imaging (CDI) recovers both amplitude and phase of
+      a specimen from a single far-field diffraction intensity pattern. A
+      coherent source (X-ray or laser) illuminates the sample, and the
+      scattered wavefield propagates to a detector in the far field without
+      any intervening lens. The measured quantity is y = |F{x}|^2 where F is
+      the Fourier transform; the phase information is lost. The phase
+      retrieval problem is solved by iterative projection algorithms
+      (Hybrid Input-Output, Error Reduction, RAAR) that alternate between
+      enforcing the measured Fourier magnitude and a real-space support
+      constraint. Sufficient oversampling (at least 2x Nyquist) is required
+      for unique recovery.
+    signal_dims:
+      x: [256, 256]
+      y: [256, 256]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = |F{x}|^2"
+    default_solver: "hio"
+    wavelength_range_nm: [0.01, 700]
+    elements:
+      - name: "Coherent Source (X-ray or Laser)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "coherent"
+          wavelength_nm: 0.155
+          coherence_length_um: 50
+          beam_diameter_um: 10
+          source_options: ["synchrotron_xray", "xfel", "HeNe_laser"]
+      - name: "Sample"
+        element_type: sample
+        transfer_kind: modulation
+        throughput: 0.80
+        noise_kinds: []
+        parameters:
+          type: "isolated_object"
+          max_phase_shift_rad: 2.0
+          max_absorption: 0.5
+          oversampling_ratio: 2.0
+          support_diameter_px: 128
+      - name: "Free-Space Propagation (Far Field)"
+        element_type: medium
+        transfer_kind: propagation
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          propagation_type: "far_field"
+          fresnel_number: 0.001
+          sample_to_detector_mm: 500
+      - name: "Pixel Array Detector (No Lens)"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.85
+        noise_kinds: [shot_poisson, read_gaussian, quantization]
+        parameters:
+          type: "photon_counting"
+          pixel_size_um: 75
+          n_pixels: [256, 256]
+          dynamic_range: 1000000
+          bit_depth: 24
+    upload_template:
+      required:
+        - name: "diffraction_pattern"
+          description: "Far-field diffraction intensity pattern (.npy or TIFF)"
+          shape: "[H, W]"
+        - name: "support"
+          description: "Binary support constraint mask (.npy or TIFF)"
+          shape: "[H, W]"
+      required_params:
+        - name: "wavelength_nm"
+          type: "float"
+          description: "Illumination wavelength in nanometers"
+        - name: "detector_distance_mm"
+          type: "float"
+          description: "Sample-to-detector distance in millimeters"
+        - name: "pixel_size_um"
+          type: "float"
+          description: "Detector pixel size in micrometers"
+      optional:
+        - name: "initial_guess"
+          description: "Initial complex-valued object estimate (.npy)"
+        - name: "ground_truth"
+          description: "Ground truth complex object for evaluation (.npy)"
+
+  # ===========================================================================
+  # COMPUTATIONAL IMAGING (continued)
+  # ===========================================================================
+
+  integral:
+    display_name: "Integral Photography"
+    category: "computational"
+    keywords: [integral_photography, elemental_images, microlens, 3D_display, depth_estimation]
+    description: >
+      Integral photography (also known as integral imaging) captures and
+      reproduces three-dimensional scenes using a microlens array. Each
+      microlens records an elemental image corresponding to a slightly
+      different perspective of the scene, encoding depth information. The
+      forward model is I(x,y) = integral of L(x,y,u,v) * T(u,v) dudv where
+      L is the 4D light field, T is the microlens transmission function, and
+      the integral is over the angular domain. Depth estimation from
+      disparity analysis and depth-image-based rendering (DIBR) enable 3D
+      visualization and computational refocusing from the captured elemental
+      image array.
+    signal_dims:
+      x: [512, 512, 64]
+      y: [512, 512]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "I(x,y) = integral L(x,y,u,v) * T(u,v) dudv"
+    default_solver: "depth_estimation"
+    wavelength_range_nm: [400, 700]
+    elements:
+      - name: "Scene Illumination"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "ambient"
+          spectral_range_nm: [400, 700]
+      - name: "Main Lens"
+        element_type: lens
+        transfer_kind: projection
+        throughput: 0.90
+        noise_kinds: [aberration]
+        parameters:
+          focal_length_mm: 50
+          f_number: 2.8
+          distortion_model: "pinhole"
+      - name: "Microlens Array"
+        element_type: modulator
+        transfer_kind: sampling
+        throughput: 0.72
+        noise_kinds: [alignment, fixed_pattern]
+        parameters:
+          microlens_pitch_um: 150
+          microlens_focal_length_mm: 0.7
+          n_depth_planes: 64
+          array_size: [512, 512]
+          fill_factor: 0.95
+      - name: "CMOS Image Sensor"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.80
+        noise_kinds: [shot_poisson, read_gaussian, fixed_pattern, quantization]
+        parameters:
+          pixel_size_um: 1.4
+          read_noise_e: 2.0
+          quantum_efficiency: 0.80
+          full_well_e: 10000
+          bit_depth: 12
+    upload_template:
+      required:
+        - name: "elemental_images"
+          description: "Elemental image array captured through microlens array (TIFF or .npy)"
+          shape: "[H_sensor, W_sensor]"
+      required_params:
+        - name: "microlens_pitch_um"
+          type: "float"
+          description: "Microlens array pitch in micrometers"
+        - name: "n_elemental_images_x"
+          type: "int"
+          description: "Number of elemental images in x direction"
+        - name: "n_elemental_images_y"
+          type: "int"
+          description: "Number of elemental images in y direction"
+      optional:
+        - name: "depth_range_mm"
+          description: "JSON with near and far depth range in millimeters"
+        - name: "microlens_centers"
+          description: "Pre-calibrated microlens center positions (.npy or .csv)"
+        - name: "ground_truth"
+          description: "Ground truth 3D scene or depth map for evaluation (.npy)"

@@ -53,7 +53,6 @@ def _inner_product_test(A, At, x, y, rtol=1e-3, atol=1e-3):
     assert rel_err <= rtol or abs(lhs - rhs) <= atol
 
 
-@pytest.mark.xfail(reason="MatrixOperator.from_dense not yet implemented")
 def test_matrix_operator_dense_forward_shapes():
     M, N = 32, 64
     A = torch.randn(M, N)
@@ -67,7 +66,6 @@ def test_matrix_operator_dense_forward_shapes():
     assert x2.shape == (N,)
 
 
-@pytest.mark.xfail(reason="MatrixOperator.from_dense not yet implemented")
 def test_matrix_operator_dense_adjoint_consistency():
     M, N = 25, 40
     A = torch.randn(M, N)
@@ -79,7 +77,6 @@ def test_matrix_operator_dense_adjoint_consistency():
     _inner_product_test(op.forward, op.adjoint, x, y, rtol=2e-3, atol=2e-3)
 
 
-@pytest.mark.xfail(reason="MatrixOperator.from_sparse not yet implemented")
 def test_matrix_operator_sparse_adjoint_consistency():
     # Build a random sparse matrix in CSR using scipy-style indices, then convert to torch sparse
     M, N = 50, 80
@@ -103,7 +100,6 @@ def test_matrix_operator_sparse_adjoint_consistency():
     _inner_product_test(op.forward, op.adjoint, x, y, rtol=3e-3, atol=3e-3)
 
 
-@pytest.mark.xfail(reason="MatrixOperator.from_dense not yet implemented")
 def test_matrix_operator_shape_mismatch_raises():
     M, N = 10, 20
     A = torch.randn(M, N)
@@ -118,7 +114,6 @@ def test_matrix_operator_shape_mismatch_raises():
         _ = op.adjoint(bad_y)
 
 
-@pytest.mark.xfail(reason="CallableOperator signature mismatch")
 def test_callable_operator_forward_adjoint_consistency():
     # A simple linear operator: y = Bx where B is dense
     M, N = 16, 24
@@ -146,7 +141,6 @@ def test_callable_operator_forward_adjoint_consistency():
     _inner_product_test(op.forward, op.adjoint, x, y, rtol=2e-3, atol=2e-3)
 
 
-@pytest.mark.xfail(reason="CallableOperator signature mismatch")
 def test_callable_operator_requires_shapes():
     with pytest.raises(ValueError):
         _ = CallableOperator(
@@ -158,8 +152,6 @@ def test_callable_operator_requires_shapes():
         )
 
 
-@pytest.mark.skipif(not _HAS_DEEPINV_BRIDGE, reason="deepinv_bridge not available")
-@pytest.mark.xfail(reason="MatrixOperator.from_dense not yet implemented")
 def test_deepinv_bridge_smoke():
     # This is a smoke test: ensure conversion does not crash for a simple MatrixOperator.
     M, N = 8, 12

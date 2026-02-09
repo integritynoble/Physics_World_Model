@@ -2,18 +2,26 @@
 
 Pipeline orchestrator - wires all components together.
 
-Prompt/Spec -> Resolve -> Build operator(s) -> (Sim or Load) y -> Recon -> Diagnose -> Recommend -> RunBundle
+v3: Added agent pre-flight step (Plan v3, Section 12).
+
+Flow:
+  Prompt/Spec -> [Agent Pre-flight] -> Build operator -> (Sim or Load) y
+    -> Recon -> Diagnose -> Recommend -> RunBundle
 
 This file provides the stable "spine" connecting:
+- Agent system (pre-flight analysis, photon/mismatch/recoverability agents)
 - Physics factory (operator construction)
 - Simulator (phantom generation, forward model, noise)
 - Reconstruction portfolio (solver selection and execution)
 - Analysis (metrics, residual tests, bottleneck classification, design advisor)
-- RunBundle artifacts (saving results)
+- RunBundle artifacts (saving results + agent reports + expanded provenance)
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
+import logging
 import os
 import time
 from typing import Any, Dict, Optional, Tuple
@@ -43,6 +51,8 @@ from pwm_core.analysis.metrics import mse, psnr, no_reference_energy
 from pwm_core.analysis.residual_tests import residual_diagnostics, as_dict as residual_as_dict
 from pwm_core.analysis.bottleneck import classify_bottleneck
 from pwm_core.analysis.design_advisor import recommend_actions
+
+logger = logging.getLogger(__name__)
 
 
 def _get_recon_config(spec: ExperimentSpec) -> Dict[str, Any]:
@@ -208,21 +218,110 @@ def _convert_advisor_actions(advisor_result: Any) -> list:
     return api_actions
 
 
-def run_pipeline(spec: ExperimentSpec, out_dir: Optional[str] = None) -> CalibReconResult:
-    """Run the full PWM pipeline: simulate/load -> reconstruct -> analyze -> save.
+def _save_agent_reports(rb_dir: str, agent_results: Dict[str, Any]) -> None:
+    """Save agent reports to the agents/ subdirectory of the RunBundle."""
+    agents_dir = os.path.join(rb_dir, "agents")
+    os.makedirs(agents_dir, exist_ok=True)
 
-    Args:
-        spec: ExperimentSpec defining the experiment.
-        out_dir: Output directory for RunBundle. Defaults to current directory.
+    for name, report in agent_results.items():
+        if report is None:
+            continue
+        path = os.path.join(agents_dir, f"{name}.json")
+        try:
+            if hasattr(report, "model_dump"):
+                data = report.model_dump()
+            elif hasattr(report, "__dict__"):
+                data = {k: v for k, v in report.__dict__.items()
+                        if not k.startswith("_")}
+            else:
+                data = report
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2, default=str)
+        except Exception as exc:
+            logger.warning("Failed to save agent report '%s': %s", name, exc)
 
-    Returns:
-        CalibReconResult with reconstruction results, metrics, and diagnosis.
+
+def _hash_array(arr: np.ndarray) -> str:
+    """Compute SHA256 of a numpy array's raw bytes."""
+    return hashlib.sha256(np.ascontiguousarray(arr).tobytes()).hexdigest()
+
+
+def run_agent_preflight(
+    prompt: str,
+    permit_mode: str = "auto_proceed",
+) -> Optional[Dict[str, Any]]:
+    """Run the agent pre-flight pipeline (optional).
+
+    Attempts to import and run the PlanAgent. Returns agent results dict
+    or None if the agent system is not available.
+
+    Parameters
+    ----------
+    prompt : str
+        User-facing prompt describing the imaging task.
+    permit_mode : str
+        One of ``"interactive"``, ``"auto_proceed"``, ``"force"``.
+
+    Returns
+    -------
+    dict or None
+        Agent pipeline results, or None if agents not available.
+    """
+    try:
+        from pwm_core.agents.plan_agent import PlanAgent
+        from pwm_core.agents.preflight import PermitMode
+
+        mode = PermitMode(permit_mode)
+        agent = PlanAgent()
+        results = agent.run_pipeline(prompt, permit_mode=mode)
+        return results
+    except ImportError:
+        logger.info("Agent system not available; skipping pre-flight.")
+        return None
+    except Exception as exc:
+        logger.warning("Agent pre-flight failed: %s; continuing without.", exc)
+        return None
+
+
+def run_pipeline(
+    spec: ExperimentSpec,
+    out_dir: Optional[str] = None,
+    prompt: Optional[str] = None,
+    permit_mode: str = "auto_proceed",
+    seeds: Optional[list] = None,
+) -> CalibReconResult:
+    """Run the full PWM pipeline: [pre-flight] -> simulate/load -> reconstruct -> analyze -> save.
+
+    Parameters
+    ----------
+    spec : ExperimentSpec
+        Experiment specification.
+    out_dir : str, optional
+        Output directory for RunBundle. Defaults to current directory.
+    prompt : str, optional
+        User prompt for agent pre-flight analysis. If provided, the agent
+        pipeline runs before reconstruction.
+    permit_mode : str
+        Agent permit mode: ``"interactive"``, ``"auto_proceed"``, ``"force"``.
+    seeds : list[int], optional
+        Random seeds for provenance tracking.
+
+    Returns
+    -------
+    CalibReconResult
+        Reconstruction results, metrics, and diagnosis.
     """
     out_dir = out_dir or os.getcwd()
 
+    # 0. Agent pre-flight (optional)
+    agent_results: Optional[Dict[str, Any]] = None
+    if prompt:
+        agent_results = run_agent_preflight(prompt, permit_mode)
+        if agent_results and not agent_results.get("permitted", True):
+            logger.warning("Agent pre-flight denied. Proceeding anyway (spec-driven).")
+
     # 1. Create RunBundle skeleton
     rb_dir = write_runbundle_skeleton(out_dir, spec_id=spec.id)
-    capture_provenance(rb_dir)
 
     task = spec.states.task.kind
     res = CalibReconResult(spec_id=spec.id, runbundle_path=rb_dir)
@@ -308,7 +407,32 @@ def run_pipeline(spec: ExperimentSpec, out_dir: Optional[str] = None) -> CalibRe
         recon_info=recon_info,
     )
 
-    # 12. Build recon result
+    # 12. Save agent reports (if available)
+    if agent_results:
+        _save_agent_reports(rb_dir, agent_results)
+
+    # 13. Capture expanded provenance
+    array_hashes = {"y": _hash_array(y), "x_hat": _hash_array(x_hat)}
+    if x_true is not None:
+        array_hashes["x_true"] = _hash_array(x_true)
+
+    agent_reports_dict = None
+    if agent_results:
+        agent_reports_dict = {
+            k: (v.model_dump() if hasattr(v, "model_dump") else str(v))
+            for k, v in agent_results.items()
+            if v is not None
+        }
+
+    capture_provenance(
+        rb_dir,
+        seeds=seeds,
+        array_hashes=array_hashes,
+        agent_reports=agent_reports_dict,
+        spec_dict=spec.model_dump() if hasattr(spec, "model_dump") else None,
+    )
+
+    # 14. Build recon result
     solver_id = recon_info.get("solver", "unknown")
     recon_result = create_recon_result(
         solver_id=solver_id,

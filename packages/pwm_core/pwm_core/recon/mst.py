@@ -464,6 +464,84 @@ if HAS_TORCH:
 # ============================================================================
 
 
+MST_CONFIGS = {
+    "mst_s": {
+        "dim": 28, "stage": 1, "num_blocks": [2, 2],
+        "description": "MST-S: Small variant (~0.9M params)",
+    },
+    "mst_m": {
+        "dim": 28, "stage": 2, "num_blocks": [2, 2, 2],
+        "description": "MST-M: Medium variant (~1.5M params)",
+    },
+    "mst_l": {
+        "dim": 28, "stage": 2, "num_blocks": [2, 4, 2],
+        "description": "MST-L: Large variant (default, ~2.0M params)",
+    },
+    "mst_plus_plus": {
+        "dim": 28, "stage": 2, "num_blocks": [4, 7, 5],
+        "description": "MST++: NTIRE 2022 winner (~1.33M params, 35.99 dB)",
+    },
+}
+
+
+def create_mst(
+    variant: str = "mst_l",
+    in_channels: int = 28,
+    out_channels: int = 28,
+    base_resolution: int = 256,
+    step: int = 2,
+) -> "MST":
+    """Create MST model with a named variant configuration.
+
+    Supported variants: mst_s, mst_m, mst_l, mst_plus_plus
+
+    Args:
+        variant: Model variant name
+        in_channels: Number of input spectral channels
+        out_channels: Number of output spectral channels
+        base_resolution: Spatial resolution
+        step: CASSI dispersion step
+
+    Returns:
+        MST model instance
+    """
+    _require_torch()
+    cfg = MST_CONFIGS.get(variant, MST_CONFIGS["mst_l"])
+    return MST(
+        dim=cfg["dim"],
+        stage=cfg["stage"],
+        num_blocks=cfg["num_blocks"],
+        in_channels=in_channels,
+        out_channels=out_channels,
+        base_resolution=base_resolution,
+        step=step,
+    )
+
+
+def _find_mst_weights(variant: str = "mst_l", weights_path: Optional[str] = None) -> Optional[str]:
+    """Search for MST weights in standard locations.
+
+    Args:
+        variant: Model variant name
+        weights_path: Explicit path (takes priority)
+
+    Returns:
+        Path to weights file or None
+    """
+    if weights_path is not None and Path(weights_path).exists():
+        return weights_path
+
+    pkg_root = Path(__file__).resolve().parent.parent
+    search_paths = [
+        pkg_root / f"weights/mst/{variant}.pth",
+        pkg_root / "weights/mst/mst_l.pth",  # fallback to mst_l
+    ]
+    for p in search_paths:
+        if p.exists():
+            return str(p)
+    return None
+
+
 def mst_recon_cassi(
     measurement: np.ndarray,
     mask_2d: np.ndarray,
@@ -471,6 +549,7 @@ def mst_recon_cassi(
     step: int = 2,
     weights_path: Optional[str] = None,
     device: Optional[str] = None,
+    variant: str = "mst_l",
 ) -> np.ndarray:
     """Reconstruct CASSI hyperspectral cube using MST.
 
@@ -481,6 +560,7 @@ def mst_recon_cassi(
         step: dispersion step
         weights_path: path to pretrained weights (optional)
         device: torch device string
+        variant: MST variant ('mst_s', 'mst_m', 'mst_l', 'mst_plus_plus')
 
     Returns:
         Reconstructed cube [H, W, nC]
@@ -493,11 +573,9 @@ def mst_recon_cassi(
 
     H, W = mask_2d.shape
 
-    # Create model
-    model = MST(
-        dim=nC,
-        stage=2,
-        num_blocks=[2, 4, 2],
+    # Create model from variant config
+    model = create_mst(
+        variant=variant,
         in_channels=nC,
         out_channels=nC,
         base_resolution=H,
@@ -505,8 +583,9 @@ def mst_recon_cassi(
     ).to(device)
 
     # Load pretrained weights if available
-    if weights_path is not None and Path(weights_path).exists():
-        checkpoint = torch.load(weights_path, map_location=device, weights_only=False)
+    resolved_path = _find_mst_weights(variant, weights_path)
+    if resolved_path is not None:
+        checkpoint = torch.load(resolved_path, map_location=device, weights_only=False)
         if isinstance(checkpoint, dict) and "state_dict" in checkpoint:
             state_dict = {
                 k.replace("module.", ""): v

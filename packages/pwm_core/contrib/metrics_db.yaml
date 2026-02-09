@@ -1,0 +1,48 @@
+version: "1.0"
+
+metric_sets:
+  intensity_2d:
+    description: "Standard 2D intensity images"
+    metrics: [psnr, ssim, nrmse]
+    modalities: [widefield, widefield_lowdose, confocal_livecell, confocal_3d,
+                 sim, lensless, lightsheet, matrix, panorama]
+
+  hyperspectral:
+    description: "Spectral datacubes"
+    metrics: [psnr, ssim, sam, ergas]
+    modalities: [cassi]
+
+  video_temporal:
+    description: "Video / temporal sequences"
+    metrics: [psnr, ssim, temporal_consistency]
+    modalities: [cacti]
+
+  compressive_spatial:
+    description: "Compressive sensing (spatial)"
+    metrics: [psnr, ssim, nrmse]
+    modalities: [spc]
+
+  medical_volumetric:
+    description: "Medical imaging (CT/MRI)"
+    metrics: [psnr, ssim, nrmse]
+    modalities: [ct, mri]
+
+  phase_imaging:
+    description: "Complex-valued / phase objects"
+    metrics: [phase_rmse, magnitude_psnr, wrapped_phase_error, ssim]
+    modalities: [ptychography, holography, phase_retrieval, fpm]
+
+  neural_rendering:
+    description: "Novel view synthesis"
+    metrics: [psnr, ssim, lpips]
+    modalities: [nerf, gaussian_splatting, light_field, integral]
+
+  volumetric_medical:
+    description: "Volumetric medical imaging (DOT, photoacoustic, OCT)"
+    metrics: [psnr, ssim, cnr, dice]
+    modalities: [dot, photoacoustic, oct]
+
+  lifetime:
+    description: "Fluorescence lifetime imaging"
+    metrics: [psnr, lifetime_error, chi_squared]
+    modalities: [flim]

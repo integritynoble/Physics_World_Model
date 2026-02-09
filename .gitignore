@@ -54,6 +54,10 @@ _ul
 # Claude settings (user-specific)
 .claude/
 
+# Environment / secrets
+.env
+.env.*
+
 # OS files
 .DS_Store
 Thumbs.db

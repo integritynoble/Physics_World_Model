@@ -1,0 +1,254 @@
+version: "1.0"
+
+modalities:
+  widefield:
+    model_id: "microscopy_fluorescence"
+    parameters:
+      power_w: 0.001
+      wavelength_nm: 525
+      na: 0.75
+      n_medium: 1.0
+      qe: 0.72
+      exposure_s: 0.05
+    description: "Standard widefield fluorescence microscopy"
+
+  widefield_lowdose:
+    model_id: "microscopy_fluorescence"
+    parameters:
+      power_w: 0.0001
+      wavelength_nm: 525
+      na: 0.75
+      n_medium: 1.0
+      qe: 0.72
+      exposure_s: 0.01
+    description: "Low-dose widefield fluorescence for photosensitive samples"
+
+  confocal_livecell:
+    model_id: "microscopy_fluorescence"
+    parameters:
+      power_w: 0.0005
+      wavelength_nm: 488
+      na: 1.4
+      n_medium: 1.515
+      qe: 0.45
+      exposure_s: 0.001
+    description: "Confocal microscopy optimized for live-cell imaging with oil immersion"
+
+  confocal_3d:
+    model_id: "microscopy_fluorescence"
+    parameters:
+      power_w: 0.001
+      wavelength_nm: 488
+      na: 1.2
+      n_medium: 1.33
+      qe: 0.45
+      exposure_s: 0.01
+    description: "Confocal microscopy for 3D volumetric acquisition with water immersion"
+
+  sim:
+    model_id: "microscopy_fluorescence"
+    parameters:
+      power_w: 0.005
+      wavelength_nm: 488
+      na: 1.2
+      n_medium: 1.515
+      qe: 0.72
+      exposure_s: 0.02
+    description: "Structured illumination microscopy with oil immersion"
+
+  cassi:
+    model_id: "microscopy_fluorescence"
+    parameters:
+      power_w: 0.01
+      wavelength_nm: 550
+      na: 0.25
+      n_medium: 1.0
+      qe: 0.80
+      exposure_s: 0.1
+    description: "Coded aperture snapshot spectral imaging"
+
+  spc:
+    model_id: "generic_detector"
+    parameters:
+      source_photons: 1.0e+06
+      qe: 0.85
+      exposure_s: 0.01
+    description: "Single-pixel camera with high quantum efficiency detector"
+
+  cacti:
+    model_id: "generic_detector"
+    parameters:
+      source_photons: 1.0e+05
+      qe: 0.70
+      exposure_s: 0.033
+    description: "Coded aperture compressive temporal imaging"
+
+  lensless:
+    model_id: "microscopy_fluorescence"
+    parameters:
+      power_w: 0.005
+      wavelength_nm: 550
+      na: 0.1
+      n_medium: 1.0
+      qe: 0.60
+      exposure_s: 0.1
+    description: "Lensless imaging with low NA mask-based encoding"
+
+  lightsheet:
+    model_id: "microscopy_fluorescence"
+    parameters:
+      power_w: 0.002
+      wavelength_nm: 488
+      na: 0.3
+      n_medium: 1.33
+      qe: 0.72
+      exposure_s: 0.05
+    description: "Light-sheet fluorescence microscopy for volumetric biological imaging"
+
+  ct:
+    model_id: "ct_xray"
+    parameters:
+      tube_current_photons: 1.0e+07
+      mu: 0.2
+      L: 20.0
+      eta_det: 0.85
+    description: "X-ray computed tomography with Beer-Lambert attenuation model"
+
+  mri:
+    model_id: "mri_thermal"
+    parameters:
+      B0: 3.0
+      voxel_mm3: 1.0
+      n_averages: 1
+      bandwidth_hz: 200000
+    description: "Magnetic resonance imaging with thermal noise model"
+
+  ptychography:
+    model_id: "generic_detector"
+    parameters:
+      source_photons: 1.0e+08
+      qe: 0.90
+      exposure_s: 0.1
+    description: "Ptychographic coherent diffraction imaging"
+
+  holography:
+    model_id: "generic_detector"
+    parameters:
+      source_photons: 1.0e+07
+      qe: 0.85
+      exposure_s: 0.01
+    description: "Digital holographic imaging with coherent illumination"
+
+  nerf:
+    model_id: "generic_detector"
+    parameters:
+      source_photons: 1.0e+09
+      qe: 0.95
+      exposure_s: 0.016
+    description: "Neural radiance field from multi-view photographs"
+
+  gaussian_splatting:
+    model_id: "generic_detector"
+    parameters:
+      source_photons: 1.0e+09
+      qe: 0.95
+      exposure_s: 0.016
+    description: "3D Gaussian splatting from multi-view photographs"
+
+  matrix:
+    model_id: "generic_detector"
+    parameters:
+      source_photons: 1.0e+06
+      qe: 0.80
+      exposure_s: 0.01
+    description: "Generic matrix-based forward model imaging"
+
+  panorama:
+    model_id: "generic_detector"
+    parameters:
+      source_photons: 1.0e+08
+      qe: 0.90
+      exposure_s: 0.033
+    description: "Panoramic image stitching from multi-view captures"
+
+  light_field:
+    model_id: "generic_detector"
+    parameters:
+      power_w: 0.1
+      wavelength_nm: 550
+      na: 0.125
+      qe: 0.70
+      exposure_s: 0.033
+    description: "Light-field imaging with low NA microlens array"
+
+  dot:
+    model_id: "nir_tomography"
+    parameters:
+      power_w: 0.05
+      wavelength_nm: 800
+      na: 0.5
+      n_medium: 1.4
+      qe: 0.60
+      exposure_s: 1.0
+    description: "Diffuse optical tomography with NIR tissue transillumination"
+
+  photoacoustic:
+    model_id: "pulsed_laser"
+    parameters:
+      power_w: 10.0
+      wavelength_nm: 532
+      na: 0.3
+      qe: 0.85
+      exposure_s: 0.00001
+    description: "Photoacoustic imaging with pulsed laser excitation and piezoelectric detection"
+
+  oct:
+    model_id: "interferometric"
+    parameters:
+      power_w: 0.002
+      wavelength_nm: 840
+      na: 0.05
+      qe: 0.75
+      exposure_s: 0.00003
+    description: "Optical coherence tomography with low-coherence interferometry"
+
+  flim:
+    model_id: "microscopy_fluorescence"
+    parameters:
+      power_w: 0.0001
+      wavelength_nm: 488
+      na: 1.4
+      n_medium: 1.515
+      qe: 0.45
+      exposure_s: 60.0
+    description: "Fluorescence lifetime imaging microscopy with TCSPC detection"
+
+  phase_retrieval:
+    model_id: "coherent_source"
+    parameters:
+      power_w: 0.001
+      wavelength_nm: 0.1
+      na: 0.01
+      qe: 0.90
+      exposure_s: 1.0
+    description: "Phase retrieval from intensity-only measurements at X-ray energies (~12 keV)"
+
+  integral:
+    model_id: "generic_detector"
+    parameters:
+      power_w: 0.1
+      wavelength_nm: 550
+      na: 0.125
+      qe: 0.70
+      exposure_s: 0.033
+    description: "Integral imaging with microlens array for 3D scene capture"
+
+  fpm:
+    model_id: "led_array"
+    parameters:
+      power_w: 0.05
+      wavelength_nm: 632
+      na: 0.1
+      qe: 0.70
+      exposure_s: 0.05
+    description: "Fourier ptychographic microscopy with LED array illumination"

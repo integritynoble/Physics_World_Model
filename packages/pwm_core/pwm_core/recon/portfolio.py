@@ -69,6 +69,127 @@ try:
 except ImportError:
     run_holography_reconstruction = None
 
+# New DL solvers
+try:
+    from pwm_core.recon.care_unet import run_care
+except ImportError:
+    run_care = None
+
+try:
+    from pwm_core.recon.noise2void import run_noise2void
+except ImportError:
+    run_noise2void = None
+
+try:
+    from pwm_core.recon.hdnet import run_hdnet
+except ImportError:
+    run_hdnet = None
+
+try:
+    from pwm_core.recon.hsi_sdecnn import run_hsi_sdecnn
+except ImportError:
+    run_hsi_sdecnn = None
+
+try:
+    from pwm_core.recon.efficientsci import run_efficientsci
+except ImportError:
+    run_efficientsci = None
+
+try:
+    from pwm_core.recon.elp_unfolding import run_elp_unfolding
+except ImportError:
+    run_elp_unfolding = None
+
+try:
+    from pwm_core.recon.hatnet import run_hatnet
+except ImportError:
+    run_hatnet = None
+
+try:
+    from pwm_core.recon.ista_net import run_ista_net
+except ImportError:
+    run_ista_net = None
+
+try:
+    from pwm_core.recon.redcnn import run_redcnn
+except ImportError:
+    run_redcnn = None
+
+try:
+    from pwm_core.recon.varnet import run_varnet
+except ImportError:
+    run_varnet = None
+
+try:
+    from pwm_core.recon.modl import run_modl
+except ImportError:
+    run_modl = None
+
+try:
+    from pwm_core.recon.ptychonn import run_ptychonn
+except ImportError:
+    run_ptychonn = None
+
+try:
+    from pwm_core.recon.phasenet import run_phasenet
+except ImportError:
+    run_phasenet = None
+
+try:
+    from pwm_core.recon.dl_sim import run_dl_sim
+except ImportError:
+    run_dl_sim = None
+
+try:
+    from pwm_core.recon.lensless_solver import run_lensless
+except ImportError:
+    run_lensless = None
+
+try:
+    from pwm_core.recon.flatnet import run_flatnet
+except ImportError:
+    run_flatnet = None
+
+try:
+    from pwm_core.recon.lightsheet_solver import run_lightsheet
+except ImportError:
+    run_lightsheet = None
+
+try:
+    from pwm_core.recon.destripe_net import run_destripe
+except ImportError:
+    run_destripe = None
+
+try:
+    from pwm_core.recon.lista import run_lista
+except ImportError:
+    run_lista = None
+
+try:
+    from pwm_core.recon.ifcnn import run_ifcnn
+except ImportError:
+    run_ifcnn = None
+
+try:
+    from pwm_core.recon.diffusion_posterior import run_diffusion_posterior
+except ImportError:
+    run_diffusion_posterior = None
+
+try:
+    from pwm_core.recon.nerf_solver import run_nerf
+except ImportError:
+    run_nerf = None
+
+try:
+    from pwm_core.recon.gaussian_splatting_solver import run_gaussian_splatting
+except ImportError:
+    run_gaussian_splatting = None
+
+try:
+    from pwm_core.recon.panorama_solver import run_panorama_fusion
+except ImportError:
+    run_panorama_fusion = None
+
 
 @dataclass
 class PortfolioConfig:
@@ -242,6 +363,160 @@ def _run_operator_solver(
             if run_holography_reconstruction is not None:
                 return run_holography_reconstruction(y, physics, cfg)
             return None, {"error": "holography_solver not available"}
+
+        # CARE (widefield, confocal)
+        elif solver_id == "care":
+            if run_care is not None:
+                return run_care(y, physics, cfg)
+            return None, {"error": "care not available"}
+
+        # Noise2Void
+        elif solver_id == "noise2void":
+            if run_noise2void is not None:
+                return run_noise2void(y, physics, cfg)
+            return None, {"error": "noise2void not available"}
+
+        # HDNet (CASSI)
+        elif solver_id == "hdnet":
+            if run_hdnet is not None:
+                return run_hdnet(y, physics, cfg)
+            return None, {"error": "hdnet not available"}
+
+        # HSI-SDeCNN (CASSI PnP denoiser)
+        elif solver_id == "hsi_sdecnn":
+            if run_hsi_sdecnn is not None:
+                return run_hsi_sdecnn(y, physics, cfg)
+            return None, {"error": "hsi_sdecnn not available"}
+
+        # EfficientSCI (CACTI)
+        elif solver_id == "efficientsci":
+            if run_efficientsci is not None:
+                return run_efficientsci(y, physics, cfg)
+            return None, {"error": "efficientsci not available"}
+
+        # ELP-Unfolding (CACTI)
+        elif solver_id == "elp_unfolding":
+            if run_elp_unfolding is not None:
+                return run_elp_unfolding(y, physics, cfg)
+            return None, {"error": "elp_unfolding not available"}
+
+        # HATNet (SPC)
+        elif solver_id == "hatnet":
+            if run_hatnet is not None:
+                return run_hatnet(y, physics, cfg)
+            return None, {"error": "hatnet not available"}
+
+        # ISTA-Net (SPC)
+        elif solver_id == "ista_net":
+            if run_ista_net is not None:
+                return run_ista_net(y, physics, cfg)
+            return None, {"error": "ista_net not available"}
+
+        # RED-CNN (CT)
+        elif solver_id == "redcnn":
+            if run_redcnn is not None:
+                return run_redcnn(y, physics, cfg)
+            return None, {"error": "redcnn not available"}
+
+        # VarNet (MRI)
+        elif solver_id == "varnet":
+            if run_varnet is not None:
+                return run_varnet(y, physics, cfg)
+            return None, {"error": "varnet not available"}
+
+        # MoDL (MRI)
+        elif solver_id == "modl":
+            if run_modl is not None:
+                return run_modl(y, physics, cfg)
+            return None, {"error": "modl not available"}
+
+        # PtychoNN (ptychography)
+        elif solver_id == "ptychonn":
+            if run_ptychonn is not None:
+                return run_ptychonn(y, physics, cfg)
+            return None, {"error": "ptychonn not available"}
+
+        # PhaseNet (holography DL)
+        elif solver_id == "phasenet":
+            if run_phasenet is not None:
+                return run_phasenet(y, physics, cfg)
+            return None, {"error": "phasenet not available"}
+
+        # DL-SIM
+        elif solver_id == "dl_sim":
+            if run_dl_sim is not None:
+                return run_dl_sim(y, physics, cfg)
+            return None, {"error": "dl_sim not available"}
+
+        # Lensless (ADMM-TV)
+        elif solver_id == "lensless":
+            if run_lensless is not None:
+                return run_lensless(y, physics, cfg)
+            return None, {"error": "lensless not available"}
+
+        # FlatNet (lensless DL)
+        elif solver_id == "flatnet":
+            if run_flatnet is not None:
+                return run_flatnet(y, physics, cfg)
+            return None, {"error": "flatnet not available"}
+
+        # Light-sheet (destriping)
+        elif solver_id == "lightsheet":
+            if run_lightsheet is not None:
+                return run_lightsheet(y, physics, cfg)
+            return None, {"error": "lightsheet not available"}
+
+        # DeStripe (light-sheet DL)
+        elif solver_id == "destripe":
+            if run_destripe is not None:
+                return run_destripe(y, physics, cfg)
+            return None, {"error": "destripe not available"}
+
+        # LISTA (generic linear DL)
+        elif solver_id == "lista":
+            if run_lista is not None:
+                return run_lista(y, physics, cfg)
+            return None, {"error": "lista not available"}
+
+        # IFCNN (image fusion)
+        elif solver_id == "ifcnn":
+            if run_ifcnn is not None:
+                return run_ifcnn(y, physics, cfg)
+            return None, {"error": "ifcnn not available"}
+
+        # Diffusion posterior sampling
+        elif solver_id == "diffusion_posterior":
+            if run_diffusion_posterior is not None:
+                return run_diffusion_posterior(y, physics, cfg)
+            return None, {"error": "diffusion_posterior not available"}
+
+        # MST (CASSI, explicit solver ID)
+        elif solver_id == "mst":
+            from pwm_core.recon.mst import mst_recon_cassi
+            if mst_recon_cassi is not None:
+                mask = getattr(physics, "mask", None)
+                n_bands = getattr(physics, "n_bands", 28)
+                result = mst_recon_cassi(y, mask, n_bands)
+                return result, {"solver": "mst"}
+            return None, {"error": "mst not available"}
+
+        # NeRF
+        elif solver_id == "nerf":
+            if run_nerf is not None:
+                return run_nerf(y, physics, cfg)
+            return None, {"error": "nerf not available"}
+
+        # Gaussian Splatting
+        elif solver_id == "gaussian_splatting":
+            if run_gaussian_splatting is not None:
+                return run_gaussian_splatting(y, physics, cfg)
+            return None, {"error": "gaussian_splatting not available"}
+
+        # Panorama / Multi-Focus Fusion
+        elif solver_id in ("panorama", "multifocus"):
+            if run_panorama_fusion is not None:
+                return run_panorama_fusion(y, physics, cfg)
+            return None, {"error": "panorama_solver not available"}
 
     except Exception as e:
         return None, {"error": str(e)}

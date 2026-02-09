@@ -1,0 +1,711 @@
+# PWM Solver Registry
+# Maps each of 18 imaging modalities to 4 tiers of reconstruction algorithms.
+# Tiers: traditional_cpu, best_quality, famous_dl, small_gpu (GTX 1660 Ti, 6GB)
+
+widefield:
+  traditional_cpu:
+    name: Richardson-Lucy
+    module: pwm_core.recon.richardson_lucy
+    function: richardson_lucy_2d
+    params: 0
+    gpu: false
+  best_quality:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    params: 2M
+    gpu: true
+    reference: "Weigert et al. 2018, Nature Methods"
+  famous_dl:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    params: 2M
+  small_gpu:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    vram_gb: 0.8
+    fits_1660ti: true
+
+widefield_lowdose:
+  traditional_cpu:
+    name: BM3D + RL
+    module: pwm_core.recon.richardson_lucy
+    function: richardson_lucy_2d
+    params: 0
+    gpu: false
+  best_quality:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    params: 2M
+    gpu: true
+  famous_dl:
+    name: Noise2Void
+    module: pwm_core.recon.noise2void
+    function: noise2void_denoise
+    params: 1M
+    reference: "Krull et al. CVPR 2019"
+  small_gpu:
+    name: Noise2Void
+    module: pwm_core.recon.noise2void
+    function: noise2void_denoise
+    vram_gb: 0.5
+    fits_1660ti: true
+
+confocal_livecell:
+  traditional_cpu:
+    name: Richardson-Lucy
+    module: pwm_core.recon.richardson_lucy
+    function: richardson_lucy_2d
+    params: 0
+    gpu: false
+  best_quality:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    params: 2M
+    gpu: true
+  famous_dl:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    params: 2M
+  small_gpu:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    vram_gb: 0.8
+    fits_1660ti: true
+
+confocal_3d:
+  traditional_cpu:
+    name: 3D Richardson-Lucy
+    module: pwm_core.recon.richardson_lucy
+    function: richardson_lucy_3d
+    params: 0
+    gpu: false
+  best_quality:
+    name: 3D CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_3d
+    params: 2M
+    gpu: true
+  famous_dl:
+    name: CARE-3D
+    module: pwm_core.recon.care_unet
+    function: care_restore_3d
+    params: 2M
+  small_gpu:
+    name: CARE-3D (slice-wise)
+    module: pwm_core.recon.care_unet
+    function: care_restore_3d
+    vram_gb: 2.0
+    fits_1660ti: true
+
+sim:
+  traditional_cpu:
+    name: Wiener-SIM
+    module: pwm_core.recon.sim_solver
+    function: wiener_sim_2d
+    params: 0
+    gpu: false
+  best_quality:
+    name: HiFi-SIM
+    module: pwm_core.recon.sim_solver
+    function: hifi_sim_2d
+    params: 0
+    gpu: false
+    reference: "Wen et al. 2021, Light: S&A"
+  famous_dl:
+    name: DL-SIM
+    module: pwm_core.recon.dl_sim
+    function: dl_sim_reconstruct
+    params: 3M
+    reference: "Jin et al. 2020, Nature Comm."
+  small_gpu:
+    name: DL-SIM
+    module: pwm_core.recon.dl_sim
+    function: dl_sim_reconstruct
+    vram_gb: 1.0
+    fits_1660ti: true
+
+cassi:
+  traditional_cpu:
+    name: GAP-TV
+    module: pwm_core.recon.gap_tv
+    function: gap_tv_cassi
+    params: 0
+    gpu: false
+  best_quality:
+    name: HDNet
+    module: pwm_core.recon.hdnet
+    function: hdnet_recon_cassi
+    psnr_db: 34.97
+    params: 2.37M
+    reference: "Hu et al. CVPR 2022"
+  famous_dl:
+    name: MST-L
+    module: pwm_core.recon.mst
+    function: mst_recon_cassi
+    psnr_db: 34.81
+    reference: "Cai et al. CVPR 2022"
+  small_gpu:
+    name: MST++
+    module: pwm_core.recon.mst
+    function: mst_recon_cassi
+    config: {variant: "mst_plus_plus"}
+    params: 1.33M
+    psnr_db: 35.99
+    vram_gb: 0.8
+    fits_1660ti: true
+  pnp_baseline:
+    name: GAP+HSI-SDeCNN
+    module: pwm_core.recon.gap_tv
+    function: run_gap_denoise
+    config: {denoiser: "hsi_sdecnn"}
+    psnr_db: 29.22
+    params: 0.56M
+
+spc:
+  traditional_cpu:
+    name: TVAL3
+    module: pwm_core.recon.cs_solvers
+    function: tval3
+    params: 0
+    gpu: false
+  best_quality:
+    name: HATNet
+    module: pwm_core.recon.hatnet
+    function: hatnet_reconstruct
+    psnr_db: 31.49
+    params: 8M
+    reference: "Qu et al. CVPR 2024"
+  famous_dl:
+    name: ISTA-Net+
+    module: pwm_core.recon.ista_net
+    function: ista_net_reconstruct
+    psnr_db: 31.85
+    params: 3M
+    reference: "Zhang & Ghanem, CVPR 2018"
+  small_gpu:
+    name: ISTA-Net+
+    module: pwm_core.recon.ista_net
+    function: ista_net_reconstruct
+    vram_gb: 1.5
+    fits_1660ti: true
+
+cacti:
+  traditional_cpu:
+    name: GAP-TV
+    module: pwm_core.recon.gap_tv
+    function: gap_tv_cacti
+    psnr_db: 31.93
+    params: 0
+    gpu: false
+  best_quality:
+    name: EfficientSCI
+    module: pwm_core.recon.efficientsci
+    function: efficientsci_recon
+    psnr_db: 36.78
+    params: 12.05M
+    reference: "Wang et al. CVPR 2023"
+  famous_dl:
+    name: ELP-Unfolding
+    module: pwm_core.recon.elp_unfolding
+    function: elp_recon
+    psnr_db: 34.57
+    params: 10M
+    reference: "Yang et al. ECCV 2022"
+  small_gpu:
+    name: EfficientSCI-T
+    module: pwm_core.recon.efficientsci
+    function: efficientsci_recon
+    config: {variant: "tiny"}
+    params: 3.78M
+    vram_gb: 3.0
+    fits_1660ti: true
+
+lensless:
+  traditional_cpu:
+    name: ADMM-TV
+    module: pwm_core.recon.lensless_solver
+    function: admm_tv_lensless
+    params: 0
+    gpu: false
+    reference: "Antipa et al. 2018"
+  best_quality:
+    name: FlatNet
+    module: pwm_core.recon.flatnet
+    function: flatnet_reconstruct
+    params: 59M
+    reference: "Khan et al. TPAMI 2020"
+  famous_dl:
+    name: FlatNet
+    module: pwm_core.recon.flatnet
+    function: flatnet_reconstruct
+    params: 59M
+  small_gpu:
+    name: FlatNet-Lite
+    module: pwm_core.recon.flatnet
+    function: flatnet_reconstruct
+    vram_gb: 4.0
+    fits_1660ti: tight
+
+lightsheet:
+  traditional_cpu:
+    name: Fourier Notch Filter
+    module: pwm_core.recon.lightsheet_solver
+    function: fourier_notch_destripe
+    params: 0
+    gpu: false
+  best_quality:
+    name: VSNR
+    module: pwm_core.recon.lightsheet_solver
+    function: vsnr_destripe
+    params: 0
+    gpu: false
+  famous_dl:
+    name: DeStripe
+    module: pwm_core.recon.destripe_net
+    function: destripe_denoise
+    params: 2M
+    reference: "Liang et al. 2022"
+  small_gpu:
+    name: DeStripe
+    module: pwm_core.recon.destripe_net
+    function: destripe_denoise
+    vram_gb: 1.0
+    fits_1660ti: true
+
+ct:
+  traditional_cpu:
+    name: FBP
+    module: pwm_core.recon.ct_solvers
+    function: fbp_2d
+    params: 0
+    gpu: false
+  best_quality:
+    name: PnP-ADMM + RED-CNN
+    module: pwm_core.recon.pnp
+    function: pnp_admm
+    config: {denoiser: "redcnn"}
+    params: 1.5M
+  famous_dl:
+    name: RED-CNN
+    module: pwm_core.recon.redcnn
+    function: redcnn_denoise
+    params: 1.5M
+    reference: "Chen et al. 2017, IEEE TMI"
+  small_gpu:
+    name: RED-CNN
+    module: pwm_core.recon.redcnn
+    function: redcnn_denoise
+    vram_gb: 0.5
+    fits_1660ti: true
+
+mri:
+  traditional_cpu:
+    name: SENSE
+    module: pwm_core.recon.mri_solvers
+    function: sense_reconstruction
+    params: 0
+    gpu: false
+  best_quality:
+    name: VarNet
+    module: pwm_core.recon.varnet
+    function: varnet_recon
+    params: 30M
+    reference: "Sriram et al. 2020, MICCAI"
+  famous_dl:
+    name: MoDL
+    module: pwm_core.recon.modl
+    function: modl_recon
+    params: 2M
+    reference: "Aggarwal et al. 2019, IEEE TMI"
+  small_gpu:
+    name: MoDL (5 unrolls)
+    module: pwm_core.recon.modl
+    function: modl_recon
+    config: {n_iter: 5}
+    vram_gb: 2.0
+    fits_1660ti: true
+
+ptychography:
+  traditional_cpu:
+    name: ePIE
+    module: pwm_core.recon.ptychography_solver
+    function: epie
+    params: 0
+    gpu: false
+  best_quality:
+    name: PtychoNN
+    module: pwm_core.recon.ptychonn
+    function: ptychonn_reconstruct
+    params: 4.7M
+    reference: "Cherukara et al. 2020"
+  famous_dl:
+    name: PtychoNN
+    module: pwm_core.recon.ptychonn
+    function: ptychonn_reconstruct
+    params: 4.7M
+  small_gpu:
+    name: PtychoNN 2.0
+    module: pwm_core.recon.ptychonn
+    function: ptychonn_reconstruct
+    config: {variant: "lightweight"}
+    params: 0.7M
+    vram_gb: 0.5
+    fits_1660ti: true
+
+holography:
+  traditional_cpu:
+    name: Angular Spectrum
+    module: pwm_core.recon.holography_solver
+    function: reconstruct_offaxis_hologram
+    params: 0
+    gpu: false
+  best_quality:
+    name: PhaseNet
+    module: pwm_core.recon.phasenet
+    function: phasenet_reconstruct
+    params: 2M
+    reference: "Rivenson et al. 2018, Light: S&A"
+  famous_dl:
+    name: PhaseNet
+    module: pwm_core.recon.phasenet
+    function: phasenet_reconstruct
+    params: 2M
+  small_gpu:
+    name: PhaseNet
+    module: pwm_core.recon.phasenet
+    function: phasenet_reconstruct
+    vram_gb: 1.0
+    fits_1660ti: true
+
+nerf:
+  traditional_cpu:
+    name: SfM + MVS
+    module: pwm_core.recon.nerf_solver
+    function: nerf_reconstruct
+    config: {mode: "voxel_grid"}
+    params: 0
+    gpu: false
+  best_quality:
+    name: Mip-NeRF 360
+    module: pwm_core.recon.nerf_solver
+    function: nerf_reconstruct
+    config: {mode: "mip_nerf_360"}
+    params: 9M
+    gpu: true
+    vram_gb: 24
+    reference: "Barron et al. CVPR 2022"
+  famous_dl:
+    name: NeRF (original MLP)
+    module: pwm_core.recon.nerf_solver
+    function: nerf_reconstruct
+    params: 1.2M
+    reference: "Mildenhall et al. 2020"
+  small_gpu:
+    name: Instant-NGP
+    module: pwm_core.recon.nerf_solver
+    function: nerf_reconstruct
+    config: {mode: "instant_ngp"}
+    params: 5M
+    vram_gb: 3.0
+    fits_1660ti: true
+    reference: "Muller et al. 2022"
+
+gaussian_splatting:
+  traditional_cpu:
+    name: EWA Splatting
+    module: pwm_core.recon.gaussian_splatting_solver
+    function: gaussian_splatting_reconstruct
+    config: {mode: "ewa_baseline"}
+    params: 0
+    gpu: false
+  best_quality:
+    name: 3DGS (full)
+    module: pwm_core.recon.gaussian_splatting_solver
+    function: gaussian_splatting_reconstruct
+    params: variable
+    gpu: true
+    vram_gb: 8
+    reference: "Kerbl et al. SIGGRAPH 2023"
+  famous_dl:
+    name: NeRF (baseline comparison)
+    module: pwm_core.recon.nerf_solver
+    function: nerf_reconstruct
+    params: 1.2M
+  small_gpu:
+    name: 3DGS (compact)
+    module: pwm_core.recon.gaussian_splatting_solver
+    function: gaussian_splatting_reconstruct
+    config: {max_gaussians: 500000}
+    vram_gb: 4.0
+    fits_1660ti: tight
+
+matrix:
+  traditional_cpu:
+    name: Tikhonov / FISTA-L2
+    module: pwm_core.recon.classical
+    function: fista_l2
+    params: 0
+    gpu: false
+  best_quality:
+    name: Diffusion Posterior Sampling
+    module: pwm_core.recon.diffusion_posterior
+    function: diffusion_posterior_sample
+    params: 60M
+    gpu: true
+    reference: "Song et al. 2023"
+  famous_dl:
+    name: LISTA
+    module: pwm_core.recon.lista
+    function: lista_reconstruct
+    params: 0.5M
+    reference: "Gregor & LeCun, ICML 2010"
+  small_gpu:
+    name: LISTA
+    module: pwm_core.recon.lista
+    function: lista_reconstruct
+    vram_gb: 0.5
+    fits_1660ti: true
+
+panorama:
+  traditional_cpu:
+    name: Laplacian Pyramid Fusion
+    module: pwm_core.recon.panorama_solver
+    function: multifocus_fusion_laplacian
+    params: 0
+    gpu: false
+  best_quality:
+    name: Guided Filter Fusion
+    module: pwm_core.recon.panorama_solver
+    function: multifocus_fusion_guided
+    params: 0
+    gpu: false
+  famous_dl:
+    name: IFCNN
+    module: pwm_core.recon.ifcnn
+    function: ifcnn_fuse
+    params: 0.3M
+    reference: "Zhang et al. 2020"
+  small_gpu:
+    name: IFCNN
+    module: pwm_core.recon.ifcnn
+    function: ifcnn_fuse
+    vram_gb: 0.5
+    fits_1660ti: true
+
+light_field:
+  traditional_cpu:
+    name: Shift-and-Sum
+    module: pwm_core.recon.light_field_solver
+    function: shift_and_sum_recon
+    params: 0
+    gpu: false
+  best_quality:
+    name: LFBM5D
+    module: pwm_core.recon.light_field_solver
+    function: lfbm5d_recon
+    params: 0
+    gpu: false
+    reference: "Alain et al. 2017, Signal Processing: Image Communication"
+  famous_dl:
+    name: LFSSR
+    module: pwm_core.recon.light_field_solver
+    function: lfssr_recon
+    params: 1.5M
+    reference: "Yeung et al. ECCV 2018"
+  small_gpu:
+    name: LFSSR
+    module: pwm_core.recon.light_field_solver
+    function: lfssr_recon
+    vram_gb: 2.0
+    fits_1660ti: true
+
+dot:
+  traditional_cpu:
+    name: Born Approximation
+    module: pwm_core.recon.dot_solver
+    function: born_approx_recon
+    params: 0
+    gpu: false
+  best_quality:
+    name: L-BFGS-TV
+    module: pwm_core.recon.dot_solver
+    function: lbfgs_tv_recon
+    params: 0
+    gpu: false
+    reference: "Schweiger & Arridge 2005, PMB"
+  pnp_baseline:
+    name: PnP-Diffusion
+    module: pwm_core.recon.dot_solver
+    function: pnp_diffusion_recon
+    params: 30M
+    gpu: true
+    vram_gb: 6.0
+
+photoacoustic:
+  traditional_cpu:
+    name: Back Projection
+    module: pwm_core.recon.photoacoustic_solver
+    function: back_projection_recon
+    params: 0
+    gpu: false
+  best_quality:
+    name: Time Reversal
+    module: pwm_core.recon.photoacoustic_solver
+    function: time_reversal_recon
+    params: 0
+    gpu: false
+    reference: "Treeby et al. 2010, J. Biomed. Optics"
+  famous_dl:
+    name: Deep-PAT
+    module: pwm_core.recon.photoacoustic_solver
+    function: deep_pat_recon
+    params: 8M
+    reference: "Antholzer et al. 2019, Inverse Problems"
+  small_gpu:
+    name: Deep-PAT
+    module: pwm_core.recon.photoacoustic_solver
+    function: deep_pat_recon
+    vram_gb: 2.5
+    fits_1660ti: true
+
+oct:
+  traditional_cpu:
+    name: FFT Recon
+    module: pwm_core.recon.oct_solver
+    function: fft_recon
+    params: 0
+    gpu: false
+  best_quality:
+    name: Spectral Estimation
+    module: pwm_core.recon.oct_solver
+    function: spectral_estimation_recon
+    params: 0
+    gpu: false
+    reference: "Leitgeb et al. 2003, Optics Express"
+  famous_dl:
+    name: OCT Denoising Net
+    module: pwm_core.recon.oct_solver
+    function: oct_denoising_net_recon
+    params: 5M
+    reference: "Devalla et al. 2019, Biomed. Optics Express"
+  small_gpu:
+    name: OCT Denoising Net
+    module: pwm_core.recon.oct_solver
+    function: oct_denoising_net_recon
+    vram_gb: 1.5
+    fits_1660ti: true
+
+flim:
+  traditional_cpu:
+    name: Phasor Analysis
+    module: pwm_core.recon.flim_solver
+    function: phasor_recon
+    params: 0
+    gpu: false
+  best_quality:
+    name: MLE Fit
+    module: pwm_core.recon.flim_solver
+    function: mle_fit_recon
+    params: 0
+    gpu: false
+    reference: "Becker 2012, J. Microscopy"
+  famous_dl:
+    name: FLIMNet
+    module: pwm_core.recon.flim_solver
+    function: flimnet_recon
+    params: 3M
+    reference: "Smith et al. 2019, Biomed. Optics Express"
+  small_gpu:
+    name: FLIMNet
+    module: pwm_core.recon.flim_solver
+    function: flimnet_recon
+    vram_gb: 1.0
+    fits_1660ti: true
+
+phase_retrieval:
+  traditional_cpu:
+    name: HIO
+    module: pwm_core.recon.phase_retrieval_solver
+    function: hio_recon
+    params: 0
+    gpu: false
+  best_quality:
+    name: RAAR
+    module: pwm_core.recon.phase_retrieval_solver
+    function: raar_recon
+    params: 0
+    gpu: false
+    reference: "Luke 2005, Inverse Problems"
+  famous_dl:
+    name: prDeep
+    module: pwm_core.recon.phase_retrieval_solver
+    function: prdeep_recon
+    params: 6M
+    reference: "Metzler et al. NeurIPS 2018"
+  small_gpu:
+    name: prDeep
+    module: pwm_core.recon.phase_retrieval_solver
+    function: prdeep_recon
+    vram_gb: 1.5
+    fits_1660ti: true
+
+integral:
+  traditional_cpu:
+    name: Depth Estimation
+    module: pwm_core.recon.integral_solver
+    function: depth_estimation_recon
+    params: 0
+    gpu: false
+  best_quality:
+    name: DIBR
+    module: pwm_core.recon.integral_solver
+    function: dibr_recon
+    params: 0
+    gpu: false
+    reference: "Fehn 2004, Proc. SPIE"
+  famous_dl:
+    name: EPINet
+    module: pwm_core.recon.integral_solver
+    function: epinet_recon
+    params: 5M
+    reference: "Shin et al. CVPR 2018"
+  small_gpu:
+    name: EPINet
+    module: pwm_core.recon.integral_solver
+    function: epinet_recon
+    vram_gb: 2.0
+    fits_1660ti: true
+
+fpm:
+  traditional_cpu:
+    name: Sequential Phase Retrieval
+    module: pwm_core.recon.fpm_solver
+    function: sequential_phase_retrieval_recon
+    params: 0
+    gpu: false
+  best_quality:
+    name: Gradient Descent FPM
+    module: pwm_core.recon.fpm_solver
+    function: gradient_descent_fpm_recon
+    params: 0
+    gpu: false
+    reference: "Tian et al. 2014, Biomed. Optics Express"
+  famous_dl:
+    name: Fourier Ptychnet
+    module: pwm_core.recon.fpm_solver
+    function: fourier_ptychnet_recon
+    params: 7M
+    reference: "Jiang et al. 2018, Biomed. Optics Express"
+  small_gpu:
+    name: Fourier Ptychnet
+    module: pwm_core.recon.fpm_solver
+    function: fourier_ptychnet_recon
+    vram_gb: 2.5
+    fits_1660ti: true
