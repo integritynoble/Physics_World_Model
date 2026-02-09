@@ -163,3 +163,85 @@ def test_deepinv_bridge_smoke():
     x = torch.randn(N)
     y = physics(x)
     assert y.shape[-1] == M or y.numel() == M  # allow flexibility in deepinv wrapper conventions
+
+
+# ============================================================================
+# OCT and Light Field operator tests (numpy-based, no torch dependency)
+# ============================================================================
+
+from pwm_core.physics.oct.oct_operator import OCTOperator
+from pwm_core.physics.light_field.lf_operator import LightFieldOperator
+
+
+@pytest.mark.filterwarnings("ignore::pytest.PytestUnraisableExceptionWarning")
+class TestOCTOperator:
+    """Tests for OCTOperator adjoint and shape consistency."""
+
+    def test_oct_adjoint_check(self):
+        op = OCTOperator(n_alines=16, n_depth=32, n_spectral=64)
+        report = op.check_adjoint(n_trials=3, tol=1e-4)
+        assert report.passed, report.summary()
+
+    def test_oct_forward_adjoint_shapes(self):
+        op = OCTOperator(n_alines=8, n_depth=16, n_spectral=32)
+        rng = np.random.default_rng(0)
+
+        x = rng.standard_normal(op.x_shape).astype(np.float32)
+        y = op.forward(x)
+        assert y.shape == op.y_shape, f"forward shape {y.shape} != {op.y_shape}"
+
+        y2 = rng.standard_normal(op.y_shape).astype(np.float32)
+        x2 = op.adjoint(y2)
+        assert x2.shape == op.x_shape, f"adjoint shape {x2.shape} != {op.x_shape}"
+
+    def test_oct_metadata(self):
+        op = OCTOperator(n_alines=128, n_depth=256, n_spectral=512)
+        meta = op.metadata()
+        assert meta.modality == "oct"
+        assert meta.is_linear is True
+        assert meta.x_shape == [128, 256]
+        assert meta.y_shape == [128, 512]
+
+    def test_oct_serialize_roundtrip(self):
+        op = OCTOperator(n_alines=8, n_depth=16, n_spectral=32)
+        data = op.serialize()
+        assert data["operator_id"] == "oct"
+        assert data["x_shape"] == [8, 16]
+        assert data["y_shape"] == [8, 32]
+
+
+@pytest.mark.filterwarnings("ignore::pytest.PytestUnraisableExceptionWarning")
+class TestLightFieldOperator:
+    """Tests for LightFieldOperator adjoint and shape consistency."""
+
+    def test_light_field_adjoint_check(self):
+        op = LightFieldOperator(sx=16, sy=16, nu=3, nv=3, disparity=0.5)
+        report = op.check_adjoint(n_trials=3, tol=1e-4)
+        assert report.passed, report.summary()
+
+    def test_light_field_forward_adjoint_shapes(self):
+        op = LightFieldOperator(sx=8, sy=8, nu=3, nv=3)
+        rng = np.random.default_rng(0)
+
+        x = rng.standard_normal(op.x_shape).astype(np.float32)
+        y = op.forward(x)
+        assert y.shape == op.y_shape, f"forward shape {y.shape} != {op.y_shape}"
+
+        y2 = rng.standard_normal(op.y_shape).astype(np.float32)
+        x2 = op.adjoint(y2)
+        assert x2.shape == op.x_shape, f"adjoint shape {x2.shape} != {op.x_shape}"
+
+    def test_light_field_metadata(self):
+        op = LightFieldOperator(sx=64, sy=64, nu=5, nv=5)
+        meta = op.metadata()
+        assert meta.modality == "light_field"
+        assert meta.is_linear is True
+        assert meta.x_shape == [64, 64, 5, 5]
+        assert meta.y_shape == [64, 64]
+
+    def test_light_field_serialize_roundtrip(self):
+        op = LightFieldOperator(sx=8, sy=8, nu=3, nv=3)
+        data = op.serialize()
+        assert data["operator_id"] == "light_field"
+        assert data["x_shape"] == [8, 8, 3, 3]
+        assert data["y_shape"] == [8, 8]

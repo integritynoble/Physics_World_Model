@@ -1,0 +1,116 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "light_field_plenoptic_basic_v1",
+  "title": "Light field plenoptic basic reconstruction",
+  "modality": "light_field",
+  "tags": [
+    "light-field",
+    "plenoptic",
+    "microlens-array",
+    "refocusing",
+    "4d-imaging"
+  ],
+  "keywords": [
+    "light-field",
+    "plenoptic",
+    "microlens",
+    "refocusing",
+    "shift-and-sum",
+    "lfbm5d"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "light_field_plenoptic_basic_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "light_field"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 2000.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "gaussian"
+        },
+        "read_noise_sigma": 0.02
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "shift_and_sum",
+            "params": {}
+          },
+          {
+            "id": "lfbm5d",
+            "params": {
+              "sigma": 0.05,
+              "patch_size": 4
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "environment": {
+        "microlens_pitch_error": {
+          "enabled": true,
+          "error_percent": 2.0
+        },
+        "rotation": {
+          "enabled": true,
+          "angle_deg": 0.5
+        }
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "gaussian"
+        },
+        "read_noise_sigma": 0.02
+      }
+    }
+  },
+  "notes": "Basic plenoptic camera with microlens array; microlens pitch error and rotation are common real-world mismatches.",
+  "created": "2026-02-09",
+  "benchmark_results": {
+    "psnr_db": 30.35,
+    "ssim": null,
+    "reference_psnr_db": 28.0,
+    "status": "pass"
+  }
+}

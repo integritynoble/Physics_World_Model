@@ -303,10 +303,14 @@ try:
     from pwm_core.recon.light_field_solver import (
         shift_and_sum,
         lfbm5d,
+        shift_and_sum_recon,
+        lfbm5d_recon,
+        lfssr_recon,
         run_light_field,
     )
 except ImportError:
     shift_and_sum = lfbm5d = run_light_field = None
+    shift_and_sum_recon = lfbm5d_recon = lfssr_recon = None
 
 # Integral Photography
 try:
@@ -354,10 +358,13 @@ try:
     from pwm_core.recon.oct_solver import (
         fft_recon,
         spectral_estimation,
+        spectral_estimation_recon,
+        oct_denoising_net_recon,
         run_oct,
     )
 except ImportError:
     fft_recon = spectral_estimation = run_oct = None
+    spectral_estimation_recon = oct_denoising_net_recon = None
 
 # FPM
 try:
@@ -460,6 +467,7 @@ __all__ = [
     "run_panorama_fusion",
     # Light Field
     "shift_and_sum", "lfbm5d", "run_light_field",
+    "shift_and_sum_recon", "lfbm5d_recon", "lfssr_recon",
     # Integral Photography
     "depth_estimation", "dibr", "run_integral",
     # Phase Retrieval / CDI
@@ -470,6 +478,7 @@ __all__ = [
     "back_projection", "time_reversal", "run_photoacoustic",
     # OCT
     "fft_recon", "spectral_estimation", "run_oct",
+    "spectral_estimation_recon", "oct_denoising_net_recon",
     # FPM
     "sequential_phase_retrieval", "gradient_descent_fpm", "run_fpm",
     # DOT

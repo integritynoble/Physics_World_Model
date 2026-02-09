@@ -153,6 +153,24 @@ def spectral_estimation(
     return b_scan.astype(np.float32)
 
 
+def spectral_estimation_recon(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Registry-compatible wrapper for spectral estimation OCT solver."""
+    return run_oct(y, physics, {"method": "spectral_estimation", **cfg})
+
+
+def oct_denoising_net_recon(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Registry-compatible stub for DL OCT denoising (falls back to FFT)."""
+    return run_oct(y, physics, {"method": "fft", **cfg})
+
+
 def run_oct(
     y: np.ndarray,
     physics: Any,
