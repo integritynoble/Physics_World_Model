@@ -107,17 +107,32 @@ class OperatorCorrectionTester:
         x_oracle = lsq_recon(y, Phi, gain_true, bias_true, block_size)
         psnr_oracle = compute_psnr(x_oracle.reshape(block_size, block_size), x_2d)
 
-        # CALIBRATION: Grid search for best gain/bias
+        reg = 0.001
+        # CALIBRATION: Cross-validation grid search for best gain/bias.
+        # Split measurements into train/test. Reconstruct from train,
+        # predict test. The correct gain/bias gives lowest prediction error.
+        # This avoids the circular metric where gain/bias trivially cancel.
+        n_test = m // 4
+        idx = np.random.permutation(m)
+        idx_test, idx_train = idx[:n_test], idx[n_test:]
+        Phi_train, y_train = Phi[idx_train], y[idx_train]
+        Phi_test, y_test_held = Phi[idx_test], y[idx_test]
+
         best_gain, best_bias = gain_wrong, bias_wrong
-        best_residual = float('inf')
+        best_cv_err = float('inf')
 
         for test_gain in np.linspace(0.5, 1.5, 21):
             for test_bias in np.linspace(-0.2, 0.2, 21):
-                x_test = lsq_recon(y, Phi, test_gain, test_bias, block_size)
-                y_test = test_gain * (Phi @ x_test) + test_bias
-                residual = np.sum((y - y_test)**2)
-                if residual < best_residual:
-                    best_residual = residual
+                y_c_train = (y_train - test_bias) / max(test_gain, 0.01)
+                AtA = Phi_train.T @ Phi_train + reg * np.eye(n_pix)
+                Aty = Phi_train.T @ y_c_train
+                x_cv = np.linalg.solve(AtA, Aty)
+                x_cv = np.clip(x_cv, 0, 1)
+                # Predict test measurements (in original domain)
+                y_pred_test = test_gain * (Phi_test @ x_cv) + test_bias
+                cv_err = np.sum((y_test_held - y_pred_test) ** 2)
+                if cv_err < best_cv_err:
+                    best_cv_err = cv_err
                     best_gain, best_bias = test_gain, test_bias
 
         gain_est, bias_est = best_gain, best_bias
@@ -3268,3 +3283,88 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# ======================================================================
+# Pytest-discoverable wrappers
+# Each test instantiates the tester, runs one calibration method,
+# and asserts positive improvement (>0 dB).
+# ======================================================================
+
+import pytest
+
+_MIN_IMPROVEMENT_DB = 0.5  # Minimum acceptable improvement
+
+
+def _run_and_check(method_name: str) -> Dict[str, Any]:
+    tester = OperatorCorrectionTester(verbose=True)
+    result = getattr(tester, method_name)()
+    imp = result["improvement_db"]
+    assert imp > _MIN_IMPROVEMENT_DB, (
+        f"{method_name}: improvement {imp:.2f} dB < {_MIN_IMPROVEMENT_DB} dB"
+    )
+    return result
+
+
+def test_matrix_correction():
+    _run_and_check("test_matrix_correction")
+
+
+def test_ct_correction():
+    _run_and_check("test_ct_correction")
+
+
+def test_cacti_correction():
+    _run_and_check("test_cacti_correction")
+
+
+def test_lensless_correction():
+    _run_and_check("test_lensless_correction")
+
+
+def test_mri_correction():
+    _run_and_check("test_mri_correction")
+
+
+def test_spc_correction():
+    _run_and_check("test_spc_correction")
+
+
+def test_cassi_correction():
+    _run_and_check("test_cassi_correction")
+
+
+def test_ptychography_correction():
+    _run_and_check("test_ptychography_correction")
+
+
+def test_oct_correction():
+    _run_and_check("test_oct_correction")
+
+
+def test_lf_correction():
+    _run_and_check("test_lf_correction")
+
+
+def test_dot_correction():
+    _run_and_check("test_dot_correction")
+
+
+def test_pa_correction():
+    _run_and_check("test_pa_correction")
+
+
+def test_flim_correction():
+    _run_and_check("test_flim_correction")
+
+
+def test_cdi_correction():
+    _run_and_check("test_cdi_correction")
+
+
+def test_integral_correction():
+    _run_and_check("test_integral_correction")
+
+
+def test_fpm_correction():
+    _run_and_check("test_fpm_correction")
