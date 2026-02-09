@@ -28,6 +28,31 @@ from .contracts import (
 )
 from .base import BaseAgent, AgentContext
 from .registry import RegistryBuilder, RegistryKeyError
+from .upwmi import (
+    UPWMIBudget,
+    ScoringWeights,
+    upwmi_score,
+    residual_features,
+    CandidateCache,
+    ActiveLearningSearch,
+)
+from .self_improvement import DesignAlternative, SelfImprovementLoop
+from .what_if_precomputer import (
+    SensitivityPoint,
+    SensitivityCurve,
+    WhatIfPrecomputer,
+)
+from .asset_manager import (
+    AssetLicense,
+    AssetEntry,
+    AssetManifest,
+    AssetManager,
+)
+from .hybrid import (
+    HybridModalitySpec,
+    FusionResult,
+    HybridModalityManager,
+)
 
 __all__ = [
     "StrictBaseModel",
@@ -54,4 +79,22 @@ __all__ = [
     "AgentContext",
     "RegistryBuilder",
     "RegistryKeyError",
+    "UPWMIBudget",
+    "ScoringWeights",
+    "upwmi_score",
+    "residual_features",
+    "CandidateCache",
+    "ActiveLearningSearch",
+    "DesignAlternative",
+    "SelfImprovementLoop",
+    "SensitivityPoint",
+    "SensitivityCurve",
+    "WhatIfPrecomputer",
+    "AssetLicense",
+    "AssetEntry",
+    "AssetManifest",
+    "AssetManager",
+    "HybridModalitySpec",
+    "FusionResult",
+    "HybridModalityManager",
 ]
