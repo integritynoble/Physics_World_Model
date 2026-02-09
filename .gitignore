@@ -42,6 +42,7 @@ packages/pwm_core/benchmarks/results/
 
 # Data directories
 data/
+!packages/pwm_core/pwm_core/data/
 *.mat
 *.h5
 *.hdf5
