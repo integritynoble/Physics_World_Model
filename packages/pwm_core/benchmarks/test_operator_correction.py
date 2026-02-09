@@ -264,17 +264,19 @@ class OperatorCorrectionTester:
         x_oracle = sart_tv_recon(sinogram, angles, n, cor_true)
         psnr_oracle = compute_psnr(x_oracle, phantom)
 
-        # CALIBRATION: Find center that minimizes TV (fewer ring artifacts)
-        def tv_norm(img):
-            return np.sum(np.abs(np.diff(img, axis=0))) + np.sum(np.abs(np.diff(img, axis=1)))
+        # CALIBRATION: Find center that minimizes reprojection error
+        def reproj_error(recon, sino, angles_arr, cor):
+            """||sinogram - forward(recon)||^2 with given center of rotation."""
+            sino_pred = radon_forward(recon, angles_arr, cor)
+            return float(np.sum((sino - sino_pred) ** 2))
 
         best_cor = cor_wrong
-        best_tv = float('inf')
+        best_err = float('inf')
         for test_cor in range(-6, 7):
-            x_test = sart_tv_recon(sinogram, angles, n, test_cor, iters=15)
-            tv = tv_norm(x_test)
-            if tv < best_tv:
-                best_tv = tv
+            x_test = sart_tv_recon(sinogram, angles, n, test_cor, iters=30)
+            err = reproj_error(x_test, sinogram, angles, test_cor)
+            if err < best_err:
+                best_err = err
                 best_cor = test_cor
 
         # Reconstruct with calibrated center
@@ -1295,7 +1297,7 @@ class OperatorCorrectionTester:
             """
 
             def __init__(self, y, mask2d_nom, s_nom, cube_shape, ranges,
-                         beam_width=10, score_iters=15):
+                         beam_width=10, score_iters=25):
                 self.y = y
                 self.mask2d_nom = mask2d_nom
                 self.s_nom = s_nom
@@ -1358,7 +1360,7 @@ class OperatorCorrectionTester:
                 # Per-parameter regularization strength:
                 #   dx, phi_d: sigma=0.5 (needs fine spatial detail)
                 #   dy, theta: sigma=1.0 (prevents error absorption)
-                param_sigma = {'dx': 0.5, 'dy': 1.0, 'theta': 0.8, 'phi_d': 0.5}
+                param_sigma = {'dx': 0.5, 'dy': 0.5, 'theta': 0.8, 'phi_d': 0.5}
 
                 def _sweep_param(psi, param, grid, iters, sigma, log_fn=None):
                     """Sweep single param, return best val/score/recon."""
@@ -1394,7 +1396,7 @@ class OperatorCorrectionTester:
 
                 # Round 2: Hard params coarse (dy, theta) - sigma=1.0/0.8
                 iters_hard = self.score_iters + 10
-                for param, npts in [('dy', 17), ('theta', 13)]:
+                for param, npts in [('dy', 25), ('theta', 13)]:
                     grid = np.linspace(r[f'{param}_min'], r[f'{param}_max'], npts)
                     bv, bs, bx = _sweep_param(best, param, grid, iters_hard,
                                               param_sigma[param], log_fn)
@@ -1479,7 +1481,7 @@ class OperatorCorrectionTester:
 
                 return beam
 
-            def _local_refine(self, psi, x_warm, n_rounds=4, log_fn=None):
+            def _local_refine(self, psi, x_warm, n_rounds=6, log_fn=None):
                 """Stage 3: Coordinate descent refinement with reconstruction scoring.
 
                 Uses a CONSISTENT sigma=0.7 for all params to ensure score
@@ -1493,7 +1495,7 @@ class OperatorCorrectionTester:
                 best_score, best_x = self.score_recon(psi, x_warm=x_warm,
                                                       iters=refine_iters,
                                                       gauss_sigma=refine_sigma)
-                deltas = {'dx': 0.40, 'dy': 0.80, 'theta': 0.15, 'phi_d': 0.08}
+                deltas = {'dx': 0.40, 'dy': 1.50, 'theta': 0.15, 'phi_d': 0.08}
                 clip = {
                     'dx': (r['dx_min'], r['dx_max']),
                     'dy': (r['dy_min'], r['dy_max']),
@@ -1531,7 +1533,7 @@ class OperatorCorrectionTester:
             def sensitivity_sweep(self, psi, x_warm, n_pts=9):
                 """Sweep each parameter for sensitivity curves (for VerifierAgent)."""
                 r = self.ranges
-                param_sigma = {'dx': 0.5, 'dy': 1.0, 'theta': 0.8, 'phi_d': 0.5}
+                param_sigma = {'dx': 0.5, 'dy': 0.5, 'theta': 0.8, 'phi_d': 0.5}
                 param_bounds = {
                     'dx': (r['dx_min'], r['dx_max']),
                     'dy': (r['dy_min'], r['dy_max']),
@@ -1852,7 +1854,7 @@ class OperatorCorrectionTester:
         recon_agent = ReconstructionAgent(y, mask2d_nom, s_nom, (H, W, L),
                                                  log_fn=self.log)
         op_agent = OperatorAgent(y, mask2d_nom, s_nom, (H, W, L),
-                                 param_ranges, beam_width=10, score_iters=20)
+                                 param_ranges, beam_width=10, score_iters=25)
         verifier_agent = VerifierAgent(y, mask2d_nom, s_nom, (H, W, L),
                                        tol=0.05, noise_ranges=noise_ranges)
 
@@ -2293,6 +2295,7 @@ class OperatorCorrectionTester:
         results["ct"] = self.test_ct_correction()
         results["cacti"] = self.test_cacti_correction()
         results["cassi"] = self.test_cassi_correction()
+        results["cassi_v2"] = self.test_cassi_correction_v2()
         results["lensless"] = self.test_lensless_correction()
         results["mri"] = self.test_mri_correction()
         results["spc"] = self.test_spc_correction()
@@ -2307,7 +2310,10 @@ class OperatorCorrectionTester:
 
         total_improvement = 0
         for mod, res in results.items():
-            param = res.get("mismatch_param", "N/A")[:18]
+            param = res.get("mismatch_param", "N/A")
+            if isinstance(param, list):
+                param = ",".join(str(p) for p in param)
+            param = str(param)[:18]
             psnr_wo = res["psnr_without_correction"]
             psnr_w = res["psnr_with_correction"]
             imp = res["improvement_db"]
@@ -2321,6 +2327,15 @@ class OperatorCorrectionTester:
 
         self.results = results
         return results
+
+
+# Attach Algorithm 2 (differentiable CASSI calibration) from external file
+import importlib.util as _ilu
+_v2_spec = _ilu.spec_from_file_location(
+    "_cassi_upwmi_v2", str(Path(__file__).parent / "_cassi_upwmi_v2.py"))
+_v2_mod = _ilu.module_from_spec(_v2_spec)
+_v2_spec.loader.exec_module(_v2_mod)
+OperatorCorrectionTester.test_cassi_correction_v2 = _v2_mod.test_cassi_correction_v2
 
 
 def main():
@@ -2341,6 +2356,7 @@ def main():
             "ct": tester.test_ct_correction,
             "cacti": tester.test_cacti_correction,
             "cassi": tester.test_cassi_correction,
+            "cassi_v2": tester.test_cassi_correction_v2,
             "lensless": tester.test_lensless_correction,
             "mri": tester.test_mri_correction,
             "ptychography": tester.test_ptychography_correction,

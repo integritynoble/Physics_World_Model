@@ -187,6 +187,101 @@ def pie(
     return obj
 
 
+def ml_epie(
+    diffraction_patterns: np.ndarray,
+    positions: np.ndarray,
+    object_shape: Tuple[int, int],
+    probe_init: Optional[np.ndarray] = None,
+    iterations: int = 100,
+    alpha: float = 1.0,
+    beta: float = 1.0,
+    update_probe: bool = True,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Maximum-Likelihood ePIE (Poisson noise model).
+
+    Instead of the standard amplitude constraint, uses Poisson ML update
+    that better handles low-count data.
+
+    References:
+    - Thibault, P. & Guizar-Sicairos, M. (2012). "Maximum-likelihood refinement
+      for coherent diffractive imaging", New J. of Physics.
+
+    The key difference from standard ePIE is the exit-wave update rule:
+    - Standard: replace amplitude with sqrt(measured intensity)
+    - ML: psi_corrected = psi * sqrt(I_meas / (|Psi|^2 + eps))
+    This is the gradient of the Poisson log-likelihood.
+
+    Args:
+        diffraction_patterns: Measured intensities (n_positions, det_size, det_size)
+        positions: Scan positions (n_positions, 2)
+        object_shape: Object size (H, W)
+        probe_init: Initial probe estimate
+        iterations: Number of iterations
+        alpha: Object update strength
+        beta: Probe update strength
+        update_probe: Whether to update probe
+
+    Returns:
+        Tuple of (recovered_object, recovered_probe)
+    """
+    n_positions, det_h, det_w = diffraction_patterns.shape
+    obj_h, obj_w = object_shape
+
+    # Initialize object and probe
+    obj = np.ones(object_shape, dtype=np.complex64)
+    if probe_init is not None:
+        probe = probe_init.astype(np.complex64)
+    else:
+        probe = create_probe(det_h)
+
+    eps = 1e-10
+
+    for it in range(iterations):
+        order = np.random.permutation(n_positions)
+
+        for idx in order:
+            pos_y, pos_x = int(positions[idx, 0]), int(positions[idx, 1])
+
+            y_slice = slice(pos_y, pos_y + det_h)
+            x_slice = slice(pos_x, pos_x + det_w)
+
+            if pos_y + det_h > obj_h or pos_x + det_w > obj_w:
+                continue
+            if pos_y < 0 or pos_x < 0:
+                continue
+
+            obj_patch = obj[y_slice, x_slice]
+
+            # Exit wave
+            psi = probe * obj_patch
+
+            # Propagate to detector
+            Psi = fft2(psi)
+
+            # ML (Poisson) amplitude update
+            I_model = np.abs(Psi)**2 + eps
+            I_meas = diffraction_patterns[idx] + eps
+            ml_ratio = np.sqrt(I_meas / I_model)
+            Psi_corrected = Psi * ml_ratio
+
+            # Back-propagate
+            psi_corrected = ifft2(Psi_corrected)
+
+            # Update
+            diff = psi_corrected - psi
+
+            probe_conj = np.conj(probe)
+            probe_norm = np.max(np.abs(probe)**2)
+            obj[y_slice, x_slice] = obj_patch + alpha * probe_conj / (probe_norm + eps) * diff
+
+            if update_probe:
+                obj_conj = np.conj(obj_patch)
+                obj_norm = np.max(np.abs(obj_patch)**2)
+                probe = probe + beta * obj_conj / (obj_norm + eps) * diff
+
+    return obj, probe
+
+
 def run_epie(
     y: np.ndarray,
     physics: Any,

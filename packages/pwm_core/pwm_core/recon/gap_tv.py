@@ -417,6 +417,18 @@ def run_gap_denoise(
     acc = cfg.get("acc", 1.0)
     denoiser_type = cfg.get("denoiser", "auto")
 
+    # HSI-SDeCNN integration: use as PnP denoiser for CASSI spectral data
+    if denoiser_type == "hsi_sdecnn":
+        try:
+            from pwm_core.recon.hsi_sdecnn import hsi_sdecnn_denoise
+
+            def denoiser_fn(x_slice, sigma_unused):
+                return hsi_sdecnn_denoise(x_slice, device=cfg.get("device", None))
+
+            denoiser_type = denoiser_fn  # Override with HSI-SDeCNN callable
+        except ImportError:
+            pass  # Fall through to default denoiser
+
     info = {
         "solver": "gap_pnp",
         "iters": iters,
@@ -435,8 +447,11 @@ def run_gap_denoise(
             if 'x_shape' in op_info:
                 x_shape = tuple(op_info['x_shape'])
 
-        # Get denoiser
-        denoiser = get_denoiser(denoiser_type)
+        # Get denoiser (supports callable override from HSI-SDeCNN)
+        if callable(denoiser_type):
+            denoiser = denoiser_type
+        else:
+            denoiser = get_denoiser(denoiser_type)
 
         # Initialize
         x = physics.adjoint(y).reshape(x_shape).astype(np.float32)
