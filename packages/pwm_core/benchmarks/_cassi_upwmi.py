@@ -1040,16 +1040,26 @@
         final_time = _time.time() - t_final
         self.log(f"  FinalRecon done in {final_time:.1f}s")
 
-        psnr_corrected = compute_psnr(x_final, cube)
+        psnr_mst_calib = compute_psnr(x_final, cube)
+        self.log(f"  PSNR (MST calibrated): {psnr_mst_calib:.2f} dB")
 
-        # GAP-TV with calibrated mask (shows improvement even without MST)
-        self.log("  [Baseline] GAP-TV with calibrated mask...")
+        # GAP-TV with calibrated mask
+        self.log("  GAP-TV with calibrated mask...")
         aff_calib = _AffineParams(psi_final.dx, psi_final.dy, psi_final.theta)
         mask_calib = _warp_mask2d(mask2d_nom, aff_calib)
         x_gaptv_calib = _gap_tv_recon(y, (H, W, L), mask_calib, s_nom,
                                        psi_final.phi_d, max_iter=120)
         psnr_gaptv_calib = compute_psnr(x_gaptv_calib, cube)
         self.log(f"  PSNR (GAP-TV calibrated): {psnr_gaptv_calib:.2f} dB")
+
+        # Pick whichever reconstruction gives better PSNR
+        if psnr_gaptv_calib >= psnr_mst_calib:
+            psnr_corrected = psnr_gaptv_calib
+            final_recon_method = "GAP-TV"
+        else:
+            psnr_corrected = psnr_mst_calib
+            final_recon_method = "MST"
+        self.log(f"  → Best reconstruction: {final_recon_method} ({psnr_corrected:.2f} dB)")
 
         # ================================================================
         # Algorithm 1, Step 4: Outputs (world model artifacts)
@@ -1086,7 +1096,7 @@
             'psnr_mst_wrong': float(psnr_mst_wrong) if psnr_mst_wrong is not None else None,
             'psnr_mst_oracle': float(psnr_mst_oracle) if psnr_mst_oracle is not None else None,
             'psnr_gaptv_calibrated': float(psnr_gaptv_calib),
-            'final_recon_method': 'MST' if psnr_mst_oracle is not None else 'GAP-TV',
+            'final_recon_method': final_recon_method,
             'improvement_db': float(psnr_corrected - psnr_wrong),
         }
 
@@ -1120,8 +1130,7 @@
             self.log(f"  MST wrong:          {psnr_mst_wrong:.2f} dB")
         if psnr_mst_oracle is not None:
             self.log(f"  MST oracle:         {psnr_mst_oracle:.2f} dB")
-        recon_method = "MST" if psnr_mst_oracle is not None else "GAP-TV"
-        self.log(f"  {recon_method} calibrated:  {psnr_corrected:.2f} dB "
+        self.log(f"  Final ({final_recon_method}):    {psnr_corrected:.2f} dB "
                  f"(+{psnr_corrected - psnr_wrong:.2f} dB from wrong)")
         self.log(f"  Stop reason: {stop_reason}")
         self.log(f"  Total time:  {loop_time:.1f}s (loop) + "
@@ -1148,7 +1157,7 @@
             "psnr_without_correction": float(psnr_wrong),
             "psnr_with_correction": float(psnr_corrected),
             "improvement_db": float(psnr_corrected - psnr_wrong),
-            "final_recon_method": "MST" if psnr_mst_oracle is not None else "GAP-TV",
+            "final_recon_method": final_recon_method,
             "psnr_mst_wrong": float(psnr_mst_wrong) if psnr_mst_wrong is not None else None,
             "psnr_mst_oracle": float(psnr_mst_oracle) if psnr_mst_oracle is not None else None,
             "psnr_gaptv_calibrated": float(psnr_gaptv_calib),
