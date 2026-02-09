@@ -1,11 +1,13 @@
 """Generate _generated_literals.py from YAML registries.
 
 Usage:
-    python -m pwm_core.agents._generate_literals
+    python -m pwm_core.agents._generate_literals          # regenerate
+    python -m pwm_core.agents._generate_literals --check   # verify up-to-date
 """
 from __future__ import annotations
 
 import pathlib
+import sys
 import yaml
 
 
@@ -62,10 +64,23 @@ def generate(contrib_dir: pathlib.Path | None = None) -> str:
 
 
 def main() -> None:
+    check_mode = "--check" in sys.argv
     out = pathlib.Path(__file__).resolve().parent / "_generated_literals.py"
     src = generate()
-    out.write_text(src)
-    print(f"Generated {out} ({len(src)} bytes)")
+
+    if check_mode:
+        if not out.exists():
+            print(f"FAIL: {out} does not exist. Run without --check to generate.")
+            sys.exit(1)
+        existing = out.read_text()
+        if existing == src:
+            print(f"OK: {out} is up-to-date.")
+        else:
+            print(f"FAIL: {out} is stale. Regenerate with: python -m pwm_core.agents._generate_literals")
+            sys.exit(1)
+    else:
+        out.write_text(src)
+        print(f"Generated {out} ({len(src)} bytes)")
 
 
 if __name__ == "__main__":
