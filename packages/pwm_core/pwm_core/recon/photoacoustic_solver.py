@@ -38,6 +38,24 @@ def _compute_distance_matrix(
     return dist
 
 
+def _precompute_time_indices(
+    grid_shape: Tuple[int, int],
+    transducer_positions: np.ndarray,
+    n_times: int,
+    speed_of_sound: float = 1.0,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Precompute time indices and validity masks.
+
+    Returns:
+        time_indices: (n_trans, ny, nx) integer time bin indices.
+        valid_mask: (n_trans, ny, nx) boolean mask for in-range indices.
+    """
+    dist = _compute_distance_matrix(grid_shape, transducer_positions)
+    time_indices = np.round(dist / speed_of_sound).astype(np.int64)
+    valid_mask = (time_indices >= 0) & (time_indices < n_times)
+    return time_indices, valid_mask
+
+
 def _forward_photoacoustic(
     p0: np.ndarray,
     transducer_positions: np.ndarray,
@@ -77,16 +95,58 @@ def _forward_photoacoustic(
     return sinogram.astype(np.float32)
 
 
+def _adjoint_backproject(
+    sinogram: np.ndarray,
+    transducer_positions: np.ndarray,
+    grid_shape: Tuple[int, int],
+    speed_of_sound: float = 1.0,
+) -> np.ndarray:
+    """Adjoint of the forward photoacoustic operator (un-normalized).
+
+    This is the true adjoint A^T satisfying <Ax, y> = <x, A^T y>.
+    No normalization is applied so it can be used correctly in iterative
+    solvers (CG, Landweber, etc.).
+
+    Args:
+        sinogram: (n_transducers, n_times).
+        transducer_positions: (n_transducers, 2) positions.
+        grid_shape: (ny, nx) reconstruction grid.
+        speed_of_sound: Speed of sound.
+
+    Returns:
+        Back-projected image (ny, nx) as float64.
+    """
+    n_trans, n_times = sinogram.shape
+    ny, nx = grid_shape
+
+    dist = _compute_distance_matrix(grid_shape, transducer_positions)
+    time_indices = np.round(dist / speed_of_sound).astype(np.int64)
+
+    recon = np.zeros((ny, nx), dtype=np.float64)
+    for i in range(n_trans):
+        ti = time_indices[i]
+        valid = (ti >= 0) & (ti < n_times)
+        values = np.zeros((ny, nx), dtype=np.float64)
+        values[valid] = sinogram[i, ti[valid]]
+        recon += values
+
+    return recon
+
+
 def back_projection(
     sinogram: np.ndarray,
     transducer_positions: np.ndarray,
     grid_shape: Tuple[int, int],
     speed_of_sound: float = 1.0,
 ) -> np.ndarray:
-    """Delay-and-sum back-projection for photoacoustic reconstruction.
+    """Count-weighted delay-and-sum back-projection for photoacoustic
+    reconstruction.
 
-    For each pixel, sums the sinogram values at the appropriate time
-    delay from each transducer.
+    For each pixel, sums the sinogram values at the appropriate time delay
+    from each transducer, then divides by the number of pixels that
+    contributed to that sinogram bin (count weighting). This properly
+    inverts the many-to-one forward mapping where multiple pixels at the
+    same distance from a transducer accumulate into one time bin.
 
     Args:
         sinogram: Measured sinogram (n_transducers, n_times).
@@ -100,24 +160,28 @@ def back_projection(
     n_trans, n_times = sinogram.shape
     ny, nx = grid_shape
 
-    # Compute distance matrix
     dist = _compute_distance_matrix(grid_shape, transducer_positions)
-
-    # Convert to time indices
     time_indices = np.round(dist / speed_of_sound).astype(np.int64)
 
-    # Back-project: sum sinogram values at computed delays
-    recon = np.zeros((ny, nx), dtype=np.float64)
-
+    # Compute count matrix: how many pixels map to each (transducer, time) bin.
+    # sinogram[i, t] = sum of p0 over all pixels at distance t from transducer i,
+    # so dividing by count gives the average pixel value on that arc.
+    count_matrix = np.zeros((n_trans, n_times), dtype=np.float64)
     for i in range(n_trans):
-        ti = time_indices[i]  # (ny, nx)
+        ti = time_indices[i]
         valid = (ti >= 0) & (ti < n_times)
-        # Gather values from sinogram
+        np.add.at(count_matrix[i], ti[valid], 1.0)
+
+    # Back-project with count weighting
+    recon = np.zeros((ny, nx), dtype=np.float64)
+    for i in range(n_trans):
+        ti = time_indices[i]
+        valid = (ti >= 0) & (ti < n_times)
         values = np.zeros((ny, nx), dtype=np.float64)
-        values[valid] = sinogram[i, ti[valid]]
+        counts = np.maximum(count_matrix[i, ti[valid]], 1.0)
+        values[valid] = sinogram[i, ti[valid]] / counts
         recon += values
 
-    # Normalize by number of transducers
     recon /= n_trans
 
     return np.clip(recon, 0, None).astype(np.float32)
@@ -128,49 +192,67 @@ def time_reversal(
     transducer_positions: np.ndarray,
     grid_shape: Tuple[int, int],
     speed_of_sound: float = 1.0,
-    n_iters: int = 20,
+    n_iters: int = 30,
 ) -> np.ndarray:
-    """Iterative time-reversal photoacoustic reconstruction.
+    """Iterative photoacoustic reconstruction via Conjugate Gradient on
+    Normal Equations (CGNR).
 
-    Refines the back-projection estimate by iterating forward-backward
-    projections.
+    Solves  min_x ||Ax - b||^2  using CG applied to  A^T A x = A^T b,
+    where A is the forward circular Radon transform and A^T is the
+    (un-normalized) adjoint back-projection.
+
+    A non-negativity projection is applied after convergence since
+    initial pressure p0 >= 0.
 
     Args:
         sinogram: Measured sinogram (n_transducers, n_times).
         transducer_positions: (n_transducers, 2) positions.
         grid_shape: (ny, nx) reconstruction grid size.
         speed_of_sound: Speed of sound.
-        n_iters: Number of refinement iterations.
+        n_iters: Number of CG iterations.
 
     Returns:
         Reconstructed initial pressure (ny, nx).
     """
     n_trans, n_times = sinogram.shape
 
-    # Initial estimate via back-projection
-    recon = back_projection(sinogram, transducer_positions, grid_shape, speed_of_sound)
+    b = sinogram.astype(np.float64)
 
-    step_size = 0.5
+    # Right-hand side: A^T b
+    ATb = _adjoint_backproject(b.astype(np.float32), transducer_positions,
+                               grid_shape, speed_of_sound)
 
-    for it in range(n_iters):
-        # Forward project current estimate
-        sino_est = _forward_photoacoustic(recon, transducer_positions,
-                                          n_times, speed_of_sound)
+    # CG iteration
+    x = np.zeros(grid_shape, dtype=np.float64)
+    r = ATb.copy()
+    p = r.copy()
+    rs_old = np.sum(r * r)
 
-        # Compute residual sinogram
-        residual = sinogram - sino_est
+    for _ in range(n_iters):
+        if rs_old < 1e-20:
+            break
 
-        # Back-project residual
-        correction = back_projection(residual, transducer_positions,
-                                     grid_shape, speed_of_sound)
+        # Compute A^T A p
+        Ap = _forward_photoacoustic(p.astype(np.float32), transducer_positions,
+                                    n_times, speed_of_sound)
+        ATAp = _adjoint_backproject(Ap, transducer_positions,
+                                    grid_shape, speed_of_sound)
 
-        # Update
-        recon = recon + step_size * correction
+        pATAp = np.sum(p * ATAp)
+        if abs(pATAp) < 1e-20:
+            break
 
-        # Non-negativity constraint
-        recon = np.clip(recon, 0, None)
+        alpha = rs_old / pATAp
+        x = x + alpha * p
+        r = r - alpha * ATAp
+        rs_new = np.sum(r * r)
 
-    return recon.astype(np.float32)
+        beta = rs_new / rs_old
+        p = r + beta * p
+        rs_old = rs_new
+
+    # Non-negativity constraint
+    return np.clip(x, 0, None).astype(np.float32)
 
 
 def run_photoacoustic(
@@ -201,7 +283,7 @@ def run_photoacoustic(
             return y.astype(np.float32), info
 
         if method == "time_reversal":
-            n_iters = cfg.get("n_iters", 20)
+            n_iters = cfg.get("n_iters", 30)
             result = time_reversal(y, trans_pos, grid_shape, sos, n_iters=n_iters)
         else:
             result = back_projection(y, trans_pos, grid_shape, sos)
