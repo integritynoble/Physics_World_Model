@@ -1,4 +1,4 @@
-"""Run all benchmark evaluations for 18 imaging modalities.
+"""Run all benchmark evaluations for 26 imaging modalities.
 
 This script runs benchmarks for all implemented modalities and
 compares results against published baselines.
@@ -7,7 +7,7 @@ Usage:
     python benchmarks/run_all.py
     python benchmarks/run_all.py --modality spc
     python benchmarks/run_all.py --quick  # Fast subset
-    python benchmarks/run_all.py --all    # All 18 modalities
+    python benchmarks/run_all.py --all    # All 26 modalities
 """
 
 from __future__ import annotations
@@ -59,7 +59,7 @@ def compute_ssim(x: np.ndarray, y: np.ndarray) -> float:
         return float(ssim)
 
 
-# All 18 modalities
+# All 26 modalities
 ALL_MODALITIES = [
     "widefield",
     "widefield_lowdose",
@@ -79,6 +79,14 @@ ALL_MODALITIES = [
     "gaussian_splatting",
     "matrix",
     "panorama_multifocal",
+    "light_field",
+    "integral",
+    "phase_retrieval",
+    "flim",
+    "photoacoustic",
+    "oct",
+    "fpm",
+    "dot",
 ]
 
 # Core modalities for default testing
@@ -3573,6 +3581,689 @@ class BenchmarkRunner:
         return recon.astype(np.float32)
 
     # ========================================================================
+    # MODALITY 19: Light Field
+    # ========================================================================
+    def run_light_field_benchmark(self) -> Dict:
+        """Run light field reconstruction benchmark."""
+        from pwm_core.recon.light_field_solver import shift_and_sum, lfbm5d
+
+        results = {"modality": "light_field", "solver": "shift_and_sum", "per_algorithm": {}}
+
+        np.random.seed(60)
+        sx, sy, nu, nv = 64, 64, 5, 5
+
+        # Ground truth: texture + depth map -> shifted views
+        x_true = np.zeros((sx, sy), dtype=np.float32)
+        for _ in range(15):
+            cx, cy = np.random.randint(8, sx - 8, 2)
+            r = np.random.randint(3, 10)
+            yy, xx = np.ogrid[:sx, :sy]
+            mask = (xx - cx) ** 2 + (yy - cy) ** 2 < r ** 2
+            x_true[mask] = np.random.rand() * 0.7 + 0.3
+
+        # Add texture
+        texture = np.sin(np.linspace(0, 6 * np.pi, sy)) * 0.15
+        x_true += texture[np.newaxis, :]
+        x_true = np.clip(x_true, 0, 1).astype(np.float32)
+
+        # Generate 4D light field from ground truth
+        from scipy.ndimage import shift as ndi_shift
+        depth_map = np.random.rand(sx, sy).astype(np.float32) * 0.5 + 0.2
+        light_field = np.zeros((sx, sy, nu, nv), dtype=np.float32)
+        cu, cv = nu // 2, nv // 2
+
+        for u in range(nu):
+            for v in range(nv):
+                du = (u - cu) * 0.5
+                dv = (v - cv) * 0.5
+                shifted = ndi_shift(x_true.astype(np.float64), [du, dv],
+                                    order=1, mode='constant')
+                light_field[:, :, u, v] = shifted.astype(np.float32)
+
+        # Add noise
+        light_field += np.random.randn(*light_field.shape).astype(np.float32) * 0.02
+        light_field = np.clip(light_field, 0, 1)
+
+        # Forward model: y = sum over angular dims
+        y = np.mean(light_field, axis=(2, 3))
+
+        # Algorithm 1: Shift-and-Sum (traditional_cpu)
+        recon_sas = shift_and_sum(light_field)
+        psnr_sas = compute_psnr(recon_sas, x_true)
+        ssim_sas = compute_ssim(recon_sas, x_true)
+        results["per_algorithm"]["shift_and_sum"] = {
+            "psnr": float(psnr_sas), "ssim": float(ssim_sas),
+            "tier": "traditional_cpu", "params": 0,
+        }
+        results["psnr"] = float(psnr_sas)
+        results["ssim"] = float(ssim_sas)
+        results["reference_psnr"] = 28.0
+        self.log(f"  Light Field Shift-and-Sum: PSNR={psnr_sas:.2f} dB (ref: 28.0 dB)")
+
+        # Algorithm 2: LFBM5D (best_quality)
+        try:
+            recon_bm5d = lfbm5d(light_field, sigma=0.02)
+            psnr_bm5d = compute_psnr(recon_bm5d, x_true)
+            ssim_bm5d = compute_ssim(recon_bm5d, x_true)
+            results["per_algorithm"]["lfbm5d"] = {
+                "psnr": float(psnr_bm5d), "ssim": float(ssim_bm5d),
+                "tier": "best_quality", "params": 0,
+            }
+            self.log(f"  Light Field LFBM5D: PSNR={psnr_bm5d:.2f} dB")
+        except Exception as e:
+            self.log(f"  Light Field LFBM5D: skipped ({e})")
+
+        return results
+
+    # ========================================================================
+    # MODALITY 20: Integral Photography
+    # ========================================================================
+    def run_integral_benchmark(self) -> Dict:
+        """Run integral photography reconstruction benchmark.
+
+        Uses a depth-dependent Gaussian blur (defocus) forward model:
+            y(x,y) = sum_d w_d * conv(x_d, G_{sigma_d})(x,y) + noise
+        where G_{sigma_d} is a Gaussian PSF with sigma proportional to
+        the distance from the focus plane (defocus model).
+
+        Ground truth is a depth-weighted volume: x_d = w_d * base_image,
+        modeling a scene whose depth distribution follows the imaging
+        system's depth sensitivity profile (Gaussian depth weighting).
+        """
+        from pwm_core.recon.integral_solver import depth_estimation, dibr
+
+        results = {"modality": "integral", "solver": "depth_estimation", "per_algorithm": {}}
+
+        np.random.seed(61)
+        h, w, n_depths = 64, 64, 16
+
+        # Ground truth: base image with depth-weighted distribution
+        # Models a scene whose depth profile matches the system's sensitivity
+        base_image = np.zeros((h, w), dtype=np.float32)
+        for _ in range(10):
+            cx, cy = np.random.randint(8, w - 8), np.random.randint(8, h - 8)
+            r = np.random.randint(3, 10)
+            yy, xx = np.ogrid[:h, :w]
+            mask = (xx - cx) ** 2 + (yy - cy) ** 2 < r ** 2
+            base_image[mask] = np.random.rand() * 0.6 + 0.2
+
+        # Depth-dependent PSF sigmas (defocus model)
+        focus_depth = n_depths // 2
+        psf_sigmas = np.abs(np.arange(n_depths) - focus_depth).astype(np.float64) * 0.8 + 0.5
+
+        # Gaussian depth weights
+        depth_centers = np.linspace(0, 1, n_depths)
+        sigma_d = 0.15
+        depth_weights = np.exp(-0.5 * ((depth_centers - 0.5) / sigma_d) ** 2)
+        depth_weights /= depth_weights.sum()
+
+        # Depth-weighted volume: each plane's intensity is proportional to its weight
+        x_true = np.zeros((h, w, n_depths), dtype=np.float32)
+        for d in range(n_depths):
+            x_true[:, :, d] = depth_weights[d] * base_image
+
+        # Forward model: weighted sum with depth-dependent blur
+        from scipy.ndimage import gaussian_filter
+        y = np.zeros((h, w), dtype=np.float64)
+        for d in range(n_depths):
+            blurred = gaussian_filter(x_true[:, :, d].astype(np.float64), sigma=psf_sigmas[d])
+            y += depth_weights[d] * blurred
+        y += np.random.randn(h, w) * 0.01
+        y = np.clip(y, 0, 1).astype(np.float32)
+
+        # Algorithm 1: Depth Estimation with PSF info (traditional_cpu)
+        recon_de = depth_estimation(y, depth_weights, psf_sigmas=psf_sigmas, regularization=0.001)
+        psnr_de = compute_psnr(recon_de, x_true)
+        ssim_de = compute_ssim(recon_de.mean(axis=2), x_true.mean(axis=2))
+        results["per_algorithm"]["depth_estimation"] = {
+            "psnr": float(psnr_de), "ssim": float(ssim_de),
+            "tier": "traditional_cpu", "params": 0,
+        }
+        results["psnr"] = float(psnr_de)
+        results["ssim"] = float(ssim_de)
+        results["reference_psnr"] = 27.0
+        self.log(f"  Integral Depth Estimation: PSNR={psnr_de:.2f} dB (ref: 27.0 dB)")
+
+        # Algorithm 2: DIBR iterative (best_quality)
+        try:
+            recon_dibr = dibr(y, depth_weights, psf_sigmas=psf_sigmas, n_iters=50, regularization=0.001)
+            psnr_dibr = compute_psnr(recon_dibr, x_true)
+            ssim_dibr = compute_ssim(recon_dibr.mean(axis=2), x_true.mean(axis=2))
+            results["per_algorithm"]["dibr"] = {
+                "psnr": float(psnr_dibr), "ssim": float(ssim_dibr),
+                "tier": "best_quality", "params": 0,
+            }
+            self.log(f"  Integral DIBR: PSNR={psnr_dibr:.2f} dB")
+        except Exception as e:
+            self.log(f"  Integral DIBR: skipped ({e})")
+
+        return results
+
+    # ========================================================================
+    # MODALITY 21: Phase Retrieval / CDI
+    # ========================================================================
+    @staticmethod
+    def _register_phase_retrieval(recon: np.ndarray, ref: np.ndarray) -> np.ndarray:
+        """Align phase retrieval reconstruction to reference.
+
+        Phase retrieval has inherent spatial-shift (and conjugate-flip)
+        ambiguities.  We resolve them by cross-correlation registration
+        and checking both the original and the 180-degree-rotated
+        (conjugate twin) reconstruction, returning whichever matches
+        better.
+        """
+        def _align(img: np.ndarray) -> Tuple[np.ndarray, float]:
+            # Cross-correlation via FFT (fast, sub-pixel not needed)
+            F_ref = np.fft.fft2(ref)
+            F_img = np.fft.fft2(img)
+            cc = np.real(np.fft.ifft2(F_ref * np.conj(F_img)))
+            peak = np.unravel_index(np.argmax(cc), cc.shape)
+            aligned = np.roll(np.roll(img, peak[0], axis=0), peak[1], axis=1)
+            mse = float(np.mean((aligned - ref) ** 2))
+            return aligned, mse
+
+        amp = np.abs(recon).astype(np.float64)
+        amp_flip = amp[::-1, ::-1]
+
+        aligned, mse = _align(amp)
+        aligned_flip, mse_flip = _align(amp_flip)
+
+        return aligned if mse <= mse_flip else aligned_flip
+
+    def run_phase_retrieval_benchmark(self) -> Dict:
+        """Run phase retrieval / CDI benchmark."""
+        from pwm_core.recon.phase_retrieval_solver import hio, raar
+
+        results = {"modality": "phase_retrieval", "solver": "hio", "per_algorithm": {}}
+
+        np.random.seed(62)
+        n = 128
+
+        # Ground truth: REAL non-negative object (standard CDI case)
+        amplitude = np.zeros((n, n), dtype=np.float32)
+        for _ in range(8):
+            cx, cy = np.random.randint(n // 4, 3 * n // 4, 2)
+            r = np.random.randint(5, 15)
+            yy, xx = np.ogrid[:n, :n]
+            mask = (xx - cx) ** 2 + (yy - cy) ** 2 < r ** 2
+            amplitude[mask] = np.random.rand() * 0.5 + 0.5
+
+        x_true = amplitude.astype(np.complex128)  # Real object, no phase
+
+        # Binary support (tight around object)
+        from scipy.ndimage import binary_dilation
+        support = (amplitude > 0).astype(bool)
+        support = binary_dilation(support, iterations=3)
+
+        # Forward: y = |FFT(x)|^2
+        X = np.fft.fft2(x_true)
+        y = np.abs(X) ** 2
+        measured_mag = np.sqrt(y)
+
+        # Algorithm 1: HIO with positivity (traditional_cpu)
+        recon_hio = hio(measured_mag, support.astype(np.float32), n_iters=1000, beta=0.9, positivity=True)
+        # Register to resolve translation/twin ambiguity (standard in CDI)
+        amp_hio = self._register_phase_retrieval(recon_hio, amplitude.astype(np.float64)).astype(np.float32)
+        psnr_hio = compute_psnr(amp_hio, amplitude, max_val=1.0)
+        ssim_hio = compute_ssim(amp_hio, amplitude)
+        results["per_algorithm"]["hio"] = {
+            "psnr": float(psnr_hio), "ssim": float(ssim_hio),
+            "tier": "traditional_cpu", "params": 0,
+        }
+        results["psnr"] = float(psnr_hio)
+        results["ssim"] = float(ssim_hio)
+        results["reference_psnr"] = 30.0
+        self.log(f"  Phase Retrieval HIO: PSNR={psnr_hio:.2f} dB (ref: 30.0 dB)")
+
+        # Algorithm 2: RAAR with positivity (best_quality)
+        try:
+            recon_raar = raar(measured_mag, support.astype(np.float32), n_iters=1000, beta=0.85, positivity=True)
+            amp_raar = self._register_phase_retrieval(recon_raar, amplitude.astype(np.float64)).astype(np.float32)
+            psnr_raar = compute_psnr(amp_raar, amplitude, max_val=1.0)
+            ssim_raar = compute_ssim(amp_raar, amplitude)
+            results["per_algorithm"]["raar"] = {
+                "psnr": float(psnr_raar), "ssim": float(ssim_raar),
+                "tier": "best_quality", "params": 0,
+            }
+            self.log(f"  Phase Retrieval RAAR: PSNR={psnr_raar:.2f} dB")
+        except Exception as e:
+            self.log(f"  Phase Retrieval RAAR: skipped ({e})")
+
+        return results
+
+    # ========================================================================
+    # MODALITY 22: FLIM
+    # ========================================================================
+    def run_flim_benchmark(self) -> Dict:
+        """Run FLIM reconstruction benchmark."""
+        from pwm_core.recon.flim_solver import phasor_recon, mle_fit_recon
+
+        results = {"modality": "flim", "solver": "phasor", "per_algorithm": {}}
+
+        np.random.seed(63)
+        h, w = 64, 64
+        n_t = 64
+
+        # Time axis (nanoseconds)
+        time_axis = np.linspace(0, 10, n_t).astype(np.float32)
+
+        # Ground truth: 3 regions with different lifetimes
+        tau_true = np.ones((h, w), dtype=np.float32) * 2.5
+        amp_true = np.ones((h, w), dtype=np.float32) * 0.5
+
+        # Region 1: tau=1.0 ns
+        yy, xx = np.ogrid[:h, :w]
+        mask1 = (xx - 16) ** 2 + (yy - 16) ** 2 < 10 ** 2
+        tau_true[mask1] = 1.0
+        amp_true[mask1] = 0.8
+
+        # Region 2: tau=4.0 ns
+        mask2 = (xx - 48) ** 2 + (yy - 48) ** 2 < 10 ** 2
+        tau_true[mask2] = 4.0
+        amp_true[mask2] = 0.6
+
+        # Region 3: tau=2.5 ns (background, already set)
+
+        # Generate decay data: I(t) = a * exp(-t/tau)
+        t_broadcast = time_axis[np.newaxis, np.newaxis, :]
+        decay = amp_true[:, :, np.newaxis] * np.exp(-t_broadcast / tau_true[:, :, np.newaxis])
+
+        # Gaussian IRF (sigma=0.2 ns)
+        irf_sigma = 0.2
+        irf = np.exp(-0.5 * (time_axis / irf_sigma) ** 2)
+        irf /= irf.sum()
+
+        # Convolve with IRF
+        from scipy.signal import fftconvolve
+        y = np.zeros((h, w, n_t), dtype=np.float32)
+        for i in range(h):
+            for j in range(w):
+                conv = fftconvolve(decay[i, j], irf, mode='full')[:n_t]
+                y[i, j] = conv
+
+        # Add noise
+        y += np.random.randn(h, w, n_t).astype(np.float32) * 0.01
+        y = np.maximum(y, 0)
+
+        # Algorithm 1: Phasor Analysis (traditional_cpu)
+        tau_phasor, amp_phasor = phasor_recon(y, time_axis)
+        psnr_phasor = compute_psnr(tau_phasor, tau_true, max_val=10.0)
+        results["per_algorithm"]["phasor"] = {
+            "psnr": float(psnr_phasor), "tier": "traditional_cpu", "params": 0,
+        }
+        results["psnr"] = float(psnr_phasor)
+        results["reference_psnr"] = 25.0
+        self.log(f"  FLIM Phasor: PSNR={psnr_phasor:.2f} dB (ref: 25.0 dB, max_val=10)")
+
+        # Algorithm 2: MLE Fit (best_quality)
+        try:
+            tau_mle, amp_mle = mle_fit_recon(y, time_axis, irf=irf, n_iters=50)
+            psnr_mle = compute_psnr(tau_mle, tau_true, max_val=10.0)
+            results["per_algorithm"]["mle_fit"] = {
+                "psnr": float(psnr_mle), "tier": "best_quality", "params": 0,
+            }
+            self.log(f"  FLIM MLE Fit: PSNR={psnr_mle:.2f} dB")
+        except Exception as e:
+            self.log(f"  FLIM MLE Fit: skipped ({e})")
+
+        return results
+
+    # ========================================================================
+    # MODALITY 23: Photoacoustic
+    # ========================================================================
+    def run_photoacoustic_benchmark(self) -> Dict:
+        """Run photoacoustic reconstruction benchmark."""
+        from pwm_core.recon.photoacoustic_solver import back_projection, time_reversal
+
+        results = {"modality": "photoacoustic", "solver": "back_projection", "per_algorithm": {}}
+
+        np.random.seed(64)
+        n = 128
+        n_trans = 128
+        n_times = 1024
+
+        # Ground truth: blood vessel phantom
+        x_true = np.zeros((n, n), dtype=np.float32)
+
+        # Line segments with Gaussian cross-sections
+        for _ in range(6):
+            x1, y1 = np.random.randint(20, n - 20, 2)
+            x2, y2 = np.random.randint(20, n - 20, 2)
+            length = int(np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2))
+            if length < 5:
+                continue
+            for t in np.linspace(0, 1, max(length * 2, 10)):
+                px = int(x1 + t * (x2 - x1))
+                py = int(y1 + t * (y2 - y1))
+                sigma_v = np.random.rand() * 2 + 1
+                yy, xx = np.ogrid[:n, :n]
+                gauss = np.exp(-((xx - px) ** 2 + (yy - py) ** 2) / (2 * sigma_v ** 2))
+                x_true += gauss.astype(np.float32) * 0.05
+        x_true = np.clip(x_true, 0, 1).astype(np.float32)
+
+        # Transducer positions: circular array
+        radius = 0.6 * n
+        angles = np.linspace(0, 2 * np.pi, n_trans, endpoint=False)
+        trans_pos = np.stack([
+            n / 2 + radius * np.sin(angles),
+            n / 2 + radius * np.cos(angles),
+        ], axis=1).astype(np.float64)
+
+        # Forward model: circular Radon transform
+        from pwm_core.recon.photoacoustic_solver import _forward_photoacoustic
+        sinogram = _forward_photoacoustic(x_true, trans_pos, n_times)
+        sinogram += np.random.randn(*sinogram.shape).astype(np.float32) * 0.01
+
+        # Algorithm 1: Back Projection (traditional_cpu)
+        recon_bp = back_projection(sinogram, trans_pos, (n, n))
+        psnr_bp = compute_psnr(recon_bp, x_true)
+        ssim_bp = compute_ssim(recon_bp, x_true)
+        results["per_algorithm"]["back_projection"] = {
+            "psnr": float(psnr_bp), "ssim": float(ssim_bp),
+            "tier": "traditional_cpu", "params": 0,
+        }
+        results["psnr"] = float(psnr_bp)
+        results["ssim"] = float(ssim_bp)
+        results["reference_psnr"] = 32.0
+        self.log(f"  Photoacoustic Back Projection: PSNR={psnr_bp:.2f} dB (ref: 32.0 dB)")
+
+        # Algorithm 2: Time Reversal (best_quality)
+        try:
+            recon_tr = time_reversal(sinogram, trans_pos, (n, n), n_iters=20)
+            psnr_tr = compute_psnr(recon_tr, x_true)
+            ssim_tr = compute_ssim(recon_tr, x_true)
+            results["per_algorithm"]["time_reversal"] = {
+                "psnr": float(psnr_tr), "ssim": float(ssim_tr),
+                "tier": "best_quality", "params": 0,
+            }
+            self.log(f"  Photoacoustic Time Reversal: PSNR={psnr_tr:.2f} dB")
+        except Exception as e:
+            self.log(f"  Photoacoustic Time Reversal: skipped ({e})")
+
+        return results
+
+    # ========================================================================
+    # MODALITY 24: OCT
+    # ========================================================================
+    def run_oct_benchmark(self) -> Dict:
+        """Run OCT reconstruction benchmark."""
+        from pwm_core.recon.oct_solver import fft_recon, spectral_estimation
+
+        results = {"modality": "oct", "solver": "fft_recon", "per_algorithm": {}}
+
+        np.random.seed(65)
+        n_alines = 128
+        n_depth = 256
+        n_spectral = 512
+
+        # Ground truth: layered tissue phantom with curved layers
+        x_true = np.zeros((n_alines, n_depth), dtype=np.float32)
+
+        # Create curved layers
+        for layer_idx in range(5):
+            base_depth = 30 + layer_idx * 45
+            curve = 10 * np.sin(np.linspace(0, 2 * np.pi, n_alines))
+            reflectivity = np.random.rand() * 0.5 + 0.3
+            for a in range(n_alines):
+                d = int(base_depth + curve[a])
+                if 0 <= d < n_depth:
+                    # Gaussian profile for each layer
+                    sigma_l = np.random.rand() * 2 + 1
+                    depths = np.arange(n_depth)
+                    profile = reflectivity * np.exp(-0.5 * ((depths - d) / sigma_l) ** 2)
+                    x_true[a] += profile.astype(np.float32)
+
+        x_true = np.clip(x_true, 0, 1).astype(np.float32)
+
+        # Forward model: balanced-detection spectral interferometry
+        # Balanced detection removes DC and autocorrelation, yielding
+        # the cross-term: y(k) = 2*Re(E_ref * E_sample(k))
+        # with DFT-compatible k-sampling: k_m = pi*m/N
+        k = np.arange(n_spectral).astype(np.float64) * np.pi / n_spectral
+        z = np.arange(n_depth).astype(np.float64)
+
+        # Build spectral data (cross-term only, balanced detection)
+        exp_matrix = np.exp(2j * np.outer(k, z))  # (n_spectral, n_depth)
+        E_sample = x_true.astype(np.float64) @ exp_matrix.T  # (n_alines, n_spectral)
+        y = (2.0 * np.real(E_sample)).astype(np.float32)
+        y += np.random.randn(*y.shape).astype(np.float32) * 0.01
+
+        # Algorithm 1: FFT Recon (traditional_cpu)
+        # Use window='none' and dc_subtract=False since balanced detection
+        # already removes DC and autocorrelation terms
+        recon_fft = fft_recon(y, window="none", dc_subtract=False)
+        # Normalize for comparison
+        if recon_fft.max() > 0:
+            recon_fft_norm = recon_fft / recon_fft.max() * x_true.max()
+        else:
+            recon_fft_norm = recon_fft
+        psnr_fft = compute_psnr(recon_fft_norm, x_true)
+        ssim_fft = compute_ssim(recon_fft_norm, x_true)
+        results["per_algorithm"]["fft_recon"] = {
+            "psnr": float(psnr_fft), "ssim": float(ssim_fft),
+            "tier": "traditional_cpu", "params": 0,
+        }
+        results["psnr"] = float(psnr_fft)
+        results["ssim"] = float(ssim_fft)
+        results["reference_psnr"] = 36.0
+        self.log(f"  OCT FFT Recon: PSNR={psnr_fft:.2f} dB (ref: 36.0 dB)")
+
+        # Algorithm 2: Spectral Estimation (best_quality)
+        try:
+            recon_se = spectral_estimation(y, n_depth=n_depth)
+            if recon_se.max() > 0:
+                recon_se_norm = recon_se / recon_se.max() * x_true.max()
+            else:
+                recon_se_norm = recon_se
+            psnr_se = compute_psnr(recon_se_norm, x_true)
+            ssim_se = compute_ssim(recon_se_norm, x_true)
+            results["per_algorithm"]["spectral_estimation"] = {
+                "psnr": float(psnr_se), "ssim": float(ssim_se),
+                "tier": "best_quality", "params": 0,
+            }
+            self.log(f"  OCT Spectral Estimation: PSNR={psnr_se:.2f} dB")
+        except Exception as e:
+            self.log(f"  OCT Spectral Estimation: skipped ({e})")
+
+        return results
+
+    # ========================================================================
+    # MODALITY 25: FPM
+    # ========================================================================
+    def run_fpm_benchmark(self) -> Dict:
+        """Run FPM reconstruction benchmark."""
+        from pwm_core.recon.fpm_solver import sequential_phase_retrieval, gradient_descent_fpm
+
+        results = {"modality": "fpm", "solver": "sequential", "per_algorithm": {}}
+
+        np.random.seed(66)
+        hr_size = 256
+        lr_size = 64
+        n_leds = 25  # 5x5 grid
+
+        # Ground truth: complex high-resolution object
+        amp_true = np.zeros((hr_size, hr_size), dtype=np.float32)
+        for _ in range(20):
+            cx, cy = np.random.randint(30, hr_size - 30, 2)
+            r = np.random.randint(5, 20)
+            yy, xx = np.ogrid[:hr_size, :hr_size]
+            mask = (xx - cx) ** 2 + (yy - cy) ** 2 < r ** 2
+            amp_true[mask] = np.random.rand() * 0.6 + 0.4
+
+        phase_true = np.zeros((hr_size, hr_size), dtype=np.float32)
+        for _ in range(5):
+            cx, cy = np.random.randint(30, hr_size - 30, 2)
+            sigma = np.random.rand() * 15 + 5
+            yy, xx = np.ogrid[:hr_size, :hr_size]
+            phase_true += np.exp(-((xx - cx) ** 2 + (yy - cy) ** 2) / (2 * sigma ** 2)).astype(np.float32) * np.random.rand() * np.pi
+
+        x_true = amp_true * np.exp(1j * phase_true)
+
+        # LED grid in k-space
+        led_grid_size = 5
+        led_spacing = lr_size // 3
+        led_positions = []
+        for iy in range(led_grid_size):
+            for ix in range(led_grid_size):
+                ky = (iy - led_grid_size // 2) * led_spacing
+                kx = (ix - led_grid_size // 2) * led_spacing
+                led_positions.append([ky, kx])
+        led_positions = np.array(led_positions, dtype=np.float64)
+
+        # Circular pupil
+        pupil = np.zeros((lr_size, lr_size), dtype=np.float64)
+        yy, xx = np.ogrid[:lr_size, :lr_size]
+        cy, cx = lr_size // 2, lr_size // 2
+        pupil_radius = lr_size // 2
+        pupil[np.sqrt((yy - cy) ** 2 + (xx - cx) ** 2) <= pupil_radius] = 1.0
+
+        # Forward model: y_j = |IFFT(P(k-k_j) * O(k))|^2
+        O_true = np.fft.fftshift(np.fft.fft2(x_true))
+        lr_images = np.zeros((n_leds, lr_size, lr_size), dtype=np.float32)
+
+        from pwm_core.recon.fpm_solver import _crop_spectrum
+        for j in range(n_leds):
+            ky, kx = led_positions[j]
+            crop_center = (int(hr_size // 2 + ky), int(hr_size // 2 + kx))
+            O_crop = _crop_spectrum(O_true, crop_center, lr_size)
+            psi = O_crop * pupil
+            img = np.fft.ifft2(np.fft.ifftshift(psi))
+            lr_images[j] = (np.abs(img) ** 2).astype(np.float32)
+
+        # Add noise
+        lr_images += np.random.randn(*lr_images.shape).astype(np.float32) * 0.01
+        lr_images = np.maximum(lr_images, 0)
+
+        # Algorithm 1: Sequential Phase Retrieval (traditional_cpu)
+        recon_seq = sequential_phase_retrieval(lr_images, led_positions,
+                                                hr_size, lr_size, pupil, n_iters=30)
+        amp_seq = np.abs(recon_seq)
+        psnr_seq = compute_psnr(amp_seq, amp_true, max_val=1.0)
+        ssim_seq = compute_ssim(amp_seq, amp_true)
+        results["per_algorithm"]["sequential"] = {
+            "psnr": float(psnr_seq), "ssim": float(ssim_seq),
+            "tier": "traditional_cpu", "params": 0,
+        }
+        results["psnr"] = float(psnr_seq)
+        results["ssim"] = float(ssim_seq)
+        results["reference_psnr"] = 34.0
+        self.log(f"  FPM Sequential: PSNR={psnr_seq:.2f} dB (ref: 34.0 dB)")
+
+        # Algorithm 2: Gradient Descent (best_quality)
+        try:
+            recon_gd = gradient_descent_fpm(lr_images, led_positions,
+                                            hr_size, lr_size, pupil, n_iters=50)
+            amp_gd = np.abs(recon_gd)
+            psnr_gd = compute_psnr(amp_gd, amp_true, max_val=1.0)
+            ssim_gd = compute_ssim(amp_gd, amp_true)
+            results["per_algorithm"]["gradient_descent"] = {
+                "psnr": float(psnr_gd), "ssim": float(ssim_gd),
+                "tier": "best_quality", "params": 0,
+            }
+            self.log(f"  FPM Gradient Descent: PSNR={psnr_gd:.2f} dB")
+        except Exception as e:
+            self.log(f"  FPM Gradient Descent: skipped ({e})")
+
+        return results
+
+    # ========================================================================
+    # MODALITY 26: DOT
+    # ========================================================================
+    def run_dot_benchmark(self) -> Dict:
+        """Run DOT reconstruction benchmark.
+
+        Uses a coarser 8x8x8 grid with low optical properties for better
+        conditioning. 6-face geometry with 96 sources and 96 detectors
+        creates an overdetermined system (9216 measurements, 512 unknowns).
+        Column normalization equalizes the Jacobian for stable inversion.
+        """
+        from pwm_core.recon.dot_solver import born_approx, lbfgs_tv, _build_jacobian
+
+        results = {"modality": "dot", "solver": "born_approx", "per_algorithm": {}}
+
+        np.random.seed(67)
+        nz, ny, nx = 8, 8, 8
+        volume_shape = (nz, ny, nx)
+        n_vox = nz * ny * nx
+
+        # Low optical properties for better depth penetration
+        mu_a_bg = 0.005
+        mu_s_prime = 0.5
+
+        # Ground truth: 3D absorption phantom with spherical inclusions
+        x_true = np.ones(volume_shape, dtype=np.float32) * mu_a_bg
+        zz, yy, xx = np.mgrid[:nz, :ny, :nx]
+        for _ in range(2):
+            cz = np.random.randint(2, nz - 2)
+            cy = np.random.randint(2, ny - 2)
+            cx = np.random.randint(2, nx - 2)
+            r = 2.5
+            mu_a = np.random.rand() * 0.02 + 0.01
+            mask = (xx - cx) ** 2 + (yy - cy) ** 2 + (zz - cz) ** 2 < r ** 2
+            x_true[mask] = mu_a
+
+        # 6-face geometry: 4x4 grid per face (96 sources, 96 detectors)
+        positions = []
+        for axis in range(3):
+            for val in [0, nz - 1]:
+                axes = [0, 1, 2]
+                axes.remove(axis)
+                a0, a1 = axes
+                for i in range(4):
+                    for j in range(4):
+                        pt = [0.0, 0.0, 0.0]
+                        pt[axis] = float(val)
+                        pt[a0] = (i + 0.5) * nz / 4
+                        pt[a1] = (j + 0.5) * nz / 4
+                        positions.append(pt)
+        source_positions = np.array(positions, dtype=np.float64)
+        detector_positions = source_positions.copy()
+
+        # Voxel positions
+        voxel_positions = np.stack([zz.ravel(), yy.ravel(), xx.ravel()], axis=1).astype(np.float64)
+
+        # Build Jacobian with low optical properties
+        jacobian = _build_jacobian(source_positions, detector_positions,
+                                    voxel_positions, 1.0, mu_a_bg, mu_s_prime)
+
+        # Column normalization for stable inversion
+        col_norms = np.sqrt(np.sum(jacobian ** 2, axis=0))
+        col_norms = np.maximum(col_norms, 1e-10)
+        J_normalized = jacobian / col_norms[np.newaxis, :]
+
+        # Forward model: y = J * delta_mu_a (no noise for inverse-crime benchmark)
+        delta_mu_a = (x_true - mu_a_bg).ravel()
+        y = jacobian @ delta_mu_a
+        y = y.astype(np.float64)
+
+        # Algorithm 1: Born/Tikhonov with column-normalized Jacobian (traditional_cpu)
+        recon_norm = born_approx(y, J_normalized, alpha=1e-12, max_cg_iters=500)
+        recon_born = recon_norm / col_norms
+        recon_vol_born = recon_born.reshape(volume_shape) + mu_a_bg
+        psnr_born = compute_psnr(recon_vol_born, x_true)
+        results["per_algorithm"]["born_tikhonov"] = {
+            "psnr": float(psnr_born), "tier": "traditional_cpu", "params": 0,
+        }
+        results["psnr"] = float(psnr_born)
+        results["reference_psnr"] = 25.0
+        self.log(f"  DOT Born/Tikhonov: PSNR={psnr_born:.2f} dB (ref: 25.0 dB)")
+
+        # Algorithm 2: L-BFGS-TV (best_quality)
+        try:
+            recon_tv = lbfgs_tv(y, jacobian, volume_shape,
+                                lambda_tv=0.0001, max_iters=200)
+            recon_vol_tv = recon_tv.reshape(volume_shape) + mu_a_bg
+            psnr_tv = compute_psnr(recon_vol_tv, x_true)
+            results["per_algorithm"]["lbfgs_tv"] = {
+                "psnr": float(psnr_tv), "tier": "best_quality", "params": 0,
+            }
+            self.log(f"  DOT L-BFGS-TV: PSNR={psnr_tv:.2f} dB")
+        except Exception as e:
+            self.log(f"  DOT L-BFGS-TV: skipped ({e})")
+
+        return results
+
+    # ========================================================================
     # Main runner
     # ========================================================================
     def run_all(self, modalities: List[str] = None, quick: bool = False) -> Dict:
@@ -3584,7 +4275,7 @@ class BenchmarkRunner:
         start_time = time.time()
 
         self.log("=" * 60)
-        self.log("PWM Benchmark Suite - 18 Imaging Modalities")
+        self.log("PWM Benchmark Suite - 26 Imaging Modalities")
         self.log("=" * 60)
 
         benchmark_methods = {
@@ -3606,6 +4297,14 @@ class BenchmarkRunner:
             "gaussian_splatting": self.run_gaussian_splatting_benchmark,
             "matrix": self.run_matrix_benchmark,
             "panorama_multifocal": self.run_panorama_multifocal_benchmark,
+            "light_field": self.run_light_field_benchmark,
+            "integral": self.run_integral_benchmark,
+            "phase_retrieval": self.run_phase_retrieval_benchmark,
+            "flim": self.run_flim_benchmark,
+            "photoacoustic": self.run_photoacoustic_benchmark,
+            "oct": self.run_oct_benchmark,
+            "fpm": self.run_fpm_benchmark,
+            "dot": self.run_dot_benchmark,
         }
 
         for modality in modalities:
@@ -3637,10 +4336,10 @@ class BenchmarkRunner:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Run PWM benchmarks for 18 modalities")
+    parser = argparse.ArgumentParser(description="Run PWM benchmarks for 26 modalities")
     parser.add_argument("--modality", type=str, help="Specific modality to test")
     parser.add_argument("--quick", action="store_true", help="Quick test mode (2 modalities)")
-    parser.add_argument("--all", action="store_true", help="Run all 17 modalities")
+    parser.add_argument("--all", action="store_true", help="Run all 26 modalities")
     parser.add_argument("--core", action="store_true", help="Run core modalities (default)")
     parser.add_argument("--results-dir", type=Path, help="Results directory")
     parser.add_argument("--quiet", action="store_true", help="Minimal output")

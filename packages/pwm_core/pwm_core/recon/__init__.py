@@ -19,6 +19,14 @@ Solvers by modality:
 - Gaussian Splatting: 3DGS
 - Matrix/Generic: FISTA-L2, LISTA, Diffusion Posterior
 - Panorama/Multi-Focus: Laplacian Pyramid, Guided Filter, IFCNN
+- Light Field: Shift-and-Sum, LFBM5D
+- Integral Photography: Depth Estimation, DIBR
+- Phase Retrieval / CDI: HIO, RAAR, Gerchberg-Saxton
+- FLIM: Phasor Analysis, MLE Fit
+- Photoacoustic: Back Projection, Time Reversal
+- OCT: FFT Recon, Spectral Estimation
+- FPM: Sequential Phase Retrieval, Gradient Descent
+- DOT: Born/Tikhonov, L-BFGS-TV
 """
 
 from pwm_core.recon.portfolio import run_portfolio
@@ -290,6 +298,87 @@ except ImportError:
     multifocus_fusion_laplacian = multifocus_fusion_guided = None
     run_panorama_fusion = None
 
+# Light Field
+try:
+    from pwm_core.recon.light_field_solver import (
+        shift_and_sum,
+        lfbm5d,
+        run_light_field,
+    )
+except ImportError:
+    shift_and_sum = lfbm5d = run_light_field = None
+
+# Integral Photography
+try:
+    from pwm_core.recon.integral_solver import (
+        depth_estimation,
+        dibr,
+        run_integral,
+    )
+except ImportError:
+    depth_estimation = dibr = run_integral = None
+
+# Phase Retrieval / CDI
+try:
+    from pwm_core.recon.phase_retrieval_solver import (
+        hio,
+        raar,
+        gerchberg_saxton,
+        run_phase_retrieval,
+    )
+except ImportError:
+    hio = raar = gerchberg_saxton = run_phase_retrieval = None
+
+# FLIM
+try:
+    from pwm_core.recon.flim_solver import (
+        phasor_recon,
+        mle_fit_recon,
+        run_flim,
+    )
+except ImportError:
+    phasor_recon = mle_fit_recon = run_flim = None
+
+# Photoacoustic
+try:
+    from pwm_core.recon.photoacoustic_solver import (
+        back_projection,
+        time_reversal,
+        run_photoacoustic,
+    )
+except ImportError:
+    back_projection = time_reversal = run_photoacoustic = None
+
+# OCT
+try:
+    from pwm_core.recon.oct_solver import (
+        fft_recon,
+        spectral_estimation,
+        run_oct,
+    )
+except ImportError:
+    fft_recon = spectral_estimation = run_oct = None
+
+# FPM
+try:
+    from pwm_core.recon.fpm_solver import (
+        sequential_phase_retrieval,
+        gradient_descent_fpm,
+        run_fpm,
+    )
+except ImportError:
+    sequential_phase_retrieval = gradient_descent_fpm = run_fpm = None
+
+# DOT
+try:
+    from pwm_core.recon.dot_solver import (
+        born_approx,
+        lbfgs_tv,
+        run_dot,
+    )
+except ImportError:
+    born_approx = lbfgs_tv = run_dot = None
+
 __all__ = [
     # Portfolio
     "run_portfolio",
@@ -369,4 +458,20 @@ __all__ = [
     # Panorama/Multi-Focus
     "multifocus_fusion_laplacian", "multifocus_fusion_guided",
     "run_panorama_fusion",
+    # Light Field
+    "shift_and_sum", "lfbm5d", "run_light_field",
+    # Integral Photography
+    "depth_estimation", "dibr", "run_integral",
+    # Phase Retrieval / CDI
+    "hio", "raar", "gerchberg_saxton", "run_phase_retrieval",
+    # FLIM
+    "phasor_recon", "mle_fit_recon", "run_flim",
+    # Photoacoustic
+    "back_projection", "time_reversal", "run_photoacoustic",
+    # OCT
+    "fft_recon", "spectral_estimation", "run_oct",
+    # FPM
+    "sequential_phase_retrieval", "gradient_descent_fpm", "run_fpm",
+    # DOT
+    "born_approx", "lbfgs_tv", "run_dot",
 ]
