@@ -225,6 +225,33 @@ def lfbm5d(light_field: np.ndarray, sigma: float = 0.05,
     return np.clip(estimate, 0, None).astype(np.float32)
 
 
+def shift_and_sum_recon(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Registry-compatible wrapper for shift-and-sum light field solver."""
+    return run_light_field(y, physics, {"method": "shift_and_sum", **cfg})
+
+
+def lfbm5d_recon(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Registry-compatible wrapper for LFBM5D light field solver."""
+    return run_light_field(y, physics, {"method": "lfbm5d", **cfg})
+
+
+def lfssr_recon(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Registry-compatible stub for LFSSR (falls back to shift-and-sum)."""
+    return run_light_field(y, physics, {"method": "shift_and_sum", **cfg})
+
+
 def run_light_field(
     y: np.ndarray,
     physics: Any,

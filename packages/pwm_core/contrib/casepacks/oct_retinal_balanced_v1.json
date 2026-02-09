@@ -1,0 +1,118 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "oct_retinal_balanced_v1",
+  "title": "OCT retinal balanced-detection imaging",
+  "modality": "oct",
+  "tags": [
+    "oct",
+    "optical-coherence-tomography",
+    "retinal",
+    "balanced-detection",
+    "spectral-domain"
+  ],
+  "keywords": [
+    "oct",
+    "optical-coherence-tomography",
+    "retinal",
+    "balanced-detection",
+    "spectral-domain",
+    "interferometry"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "oct_retinal_balanced_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "oct"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 5000.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "gaussian"
+        },
+        "read_noise_sigma": 0.01
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "fft_recon",
+            "params": {
+              "window": "hann",
+              "dc_subtract": true
+            }
+          },
+          {
+            "id": "spectral_estimation",
+            "params": {
+              "n_components": 10
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "environment": {
+        "dispersion_mismatch": {
+          "enabled": true,
+          "coeffs": [0.001, 0.0001]
+        },
+        "reference_offset": {
+          "enabled": true,
+          "offset_um": 5.0
+        }
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "gaussian"
+        },
+        "read_noise_sigma": 0.01
+      }
+    }
+  },
+  "notes": "Balanced-detection OCT removes DC and autocorrelation; dispersion mismatch and reference offset are key real-world mismatches.",
+  "created": "2026-02-09",
+  "benchmark_results": {
+    "psnr_db": 64.84,
+    "ssim": null,
+    "reference_psnr_db": 36.0,
+    "status": "pass"
+  }
+}

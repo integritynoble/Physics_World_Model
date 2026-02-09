@@ -17,6 +17,8 @@ Routes to appropriate operator based on modality:
 - holography: HolographyOperator (off-axis holography)
 - nerf: NeRFOperator (neural radiance fields)
 - gaussian_splatting: GaussianSplattingOperator (3D Gaussian splatting)
+- oct: OCTOperator (optical coherence tomography)
+- light_field: LightFieldOperator (microlens array light field)
 - matrix: MatrixOperator (explicit matrix A)
 - callable: CallableOperator (user-provided forward/adjoint)
 - identity: fallback for testing
@@ -181,6 +183,14 @@ def _build_operator_by_id(
     # Gaussian Splatting
     elif operator_id == "gaussian_splatting":
         return _build_gaussian_splatting_operator(dims, theta)
+
+    # OCT (Optical Coherence Tomography)
+    elif operator_id == "oct":
+        return _build_oct_operator(dims, theta)
+
+    # Light Field
+    elif operator_id == "light_field":
+        return _build_light_field_operator(dims, theta)
 
     # Matrix operator
     elif operator_id == "matrix":
@@ -416,4 +426,44 @@ def _build_gaussian_splatting_operator(dims: Tuple[int, ...], theta: Dict[str, A
         x_shape=x_shape,
         n_views=theta.get("n_views", 10),
         splat_sigma=theta.get("splat_sigma", 2.0),
+    )
+
+
+def _build_oct_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build an OCT (Optical Coherence Tomography) operator."""
+    from pwm_core.physics.oct.oct_operator import OCTOperator
+
+    n_alines = theta.get("n_alines", dims[0] if len(dims) >= 1 else 128)
+    n_depth = theta.get("n_depth", dims[1] if len(dims) >= 2 else 256)
+    n_spectral = theta.get("n_spectral", n_depth * 2)
+    dispersion_coeffs = theta.get("dispersion_coeffs", None)
+
+    return OCTOperator(
+        operator_id="oct",
+        theta=theta,
+        n_alines=n_alines,
+        n_depth=n_depth,
+        n_spectral=n_spectral,
+        dispersion_coeffs=dispersion_coeffs,
+    )
+
+
+def _build_light_field_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build a Light Field operator."""
+    from pwm_core.physics.light_field.lf_operator import LightFieldOperator
+
+    sx = dims[0] if len(dims) >= 1 else 64
+    sy = dims[1] if len(dims) >= 2 else 64
+    nu = theta.get("nu", 5)
+    nv = theta.get("nv", 5)
+    disparity = theta.get("disparity", 0.5)
+
+    return LightFieldOperator(
+        operator_id="light_field",
+        theta=theta,
+        sx=sx,
+        sy=sy,
+        nu=nu,
+        nv=nv,
+        disparity=disparity,
     )
