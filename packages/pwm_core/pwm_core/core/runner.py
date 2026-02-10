@@ -283,6 +283,37 @@ def run_agent_preflight(
         return None
 
 
+def _build_calib_config(fit_spec) -> "MCalibConfig":
+    """Extract CalibConfig from MismatchFitOperator spec fields."""
+    from pwm_core.mismatch.calibrators import CalibConfig as MCalibConfig
+
+    if fit_spec is None:
+        return MCalibConfig()
+
+    kwargs = {}
+    if fit_spec.search:
+        if "num_candidates" in fit_spec.search:
+            kwargs["num_candidates"] = fit_spec.search["num_candidates"]
+        if "max_evals" in fit_spec.search:
+            kwargs["max_evals"] = fit_spec.search["max_evals"]
+        if "seed" in fit_spec.search:
+            kwargs["seed"] = fit_spec.search["seed"]
+
+    if fit_spec.scoring:
+        if "noise_model" in fit_spec.scoring:
+            kwargs["noise_model"] = fit_spec.scoring["noise_model"]
+
+    if fit_spec.stop:
+        if "max_evals" in fit_spec.stop:
+            kwargs["max_evals"] = fit_spec.stop["max_evals"]
+        if "convergence_tol" in fit_spec.stop:
+            kwargs["convergence_tol"] = fit_spec.stop["convergence_tol"]
+        if "patience" in fit_spec.stop:
+            kwargs["patience"] = fit_spec.stop["patience"]
+
+    return MCalibConfig(**kwargs)
+
+
 def run_pipeline(
     spec: ExperimentSpec,
     out_dir: Optional[str] = None,
@@ -341,21 +372,73 @@ def run_pipeline(
 
     # 4. Handle calibration tasks
     if task in (TaskKind.fit_operator_only, TaskKind.calibrate_and_reconstruct):
-        # Placeholder for actual calibration
+        from pwm_core.mismatch.calibrators import calibrate as mismatch_calibrate, CalibConfig as MCalibConfig, get_theta_space
+        from pwm_core.mismatch.parameterizations import graph_theta_space
+
+        # Build calibration config from spec
+        fit_spec = spec.mismatch.fit_operator if spec.mismatch else None
+        calib_cfg = _build_calib_config(fit_spec)
+
+        # Get theta space - try graph-based first
+        op_id = operator.info().get("operator_id", "unknown")
+        try:
+            from pwm_core.graph.adapter import GraphOperatorAdapter
+            if isinstance(operator, GraphOperatorAdapter):
+                theta_space = graph_theta_space(operator)
+            else:
+                theta_space = get_theta_space(op_id)
+        except ImportError:
+            theta_space = get_theta_space(op_id)
+
+        # Build a proxy x for calibration when x_true is unavailable
+        if x_true is not None:
+            _calib_x = x_true
+        else:
+            # Infer x shape from operator info or y shape
+            op_info = operator.info()
+            x_shape = op_info.get("x_shape", None)
+            if x_shape is not None:
+                _calib_x = np.zeros(tuple(x_shape), dtype=np.float32)
+            elif operator._x_shape != (1,):
+                _calib_x = np.zeros(operator._x_shape, dtype=np.float32)
+            else:
+                # Fallback: use adjoint of y as proxy
+                try:
+                    _calib_x = operator.adjoint(y)
+                except Exception:
+                    _calib_x = np.zeros_like(y)
+
+        # Forward function: set_theta -> forward (robust to shape errors)
+        def _forward_fn(theta):
+            operator.set_theta(theta)
+            try:
+                return operator.forward(_calib_x)
+            except (ValueError, RuntimeError):
+                # Shape mismatch between operator and data — return y-shaped noise
+                return np.full_like(y, fill_value=1e6)
+
+        calib_result = mismatch_calibrate(y, _forward_fn, theta_space, calib_cfg)
+
+        # Apply best theta
+        operator.set_theta(calib_result.best_theta)
+
         res.calib = CalibResult(
-            operator_id=operator.info().get("operator_id", "unknown"),
-            theta_best=operator.get_theta(),
-            best_score=0.0,
-            num_evals=0,
-            logs=[],
+            operator_id=op_id,
+            theta_best=calib_result.best_theta,
+            best_score=calib_result.best_score,
+            num_evals=calib_result.num_evals,
+            logs=[{"step": l.step, "score": l.best_score} for l in calib_result.logs],
         )
 
         if task == TaskKind.fit_operator_only:
-            # Only fit operator, no reconstruction
             res.diagnosis = DiagnosisResult(
                 verdict="calibration_only",
                 confidence=0.8,
-                evidence={"task": "fit_operator_only"},
+                evidence={
+                    "task": "fit_operator_only",
+                    "calib_status": calib_result.status,
+                    "num_evals": calib_result.num_evals,
+                },
                 suggested_actions=[],
             )
             return res
