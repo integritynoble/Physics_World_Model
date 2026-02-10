@@ -1,0 +1,32 @@
+{
+  "version": "0.3.0",
+  "spec_id": "pwmi_cassi_families_disp_step_mild",
+  "timestamp": "2026-02-10T01:54:29Z",
+  "provenance": {
+    "git_hash": "cb94dea",
+    "seeds": [
+      12602
+    ],
+    "platform": "Linux-6.14.0-1021-gcp-x86_64-with-glibc2.39",
+    "pwm_version": "0.3.0"
+  },
+  "metrics": {
+    "psnr_gain_db_mean": -0.8923122100831868,
+    "psnr_gain_db_std": 0.0,
+    "psnr_gain_db_ci_low": -0.8923122100831868,
+    "psnr_gain_db_ci_high": -0.8923122100831868,
+    "psnr_cal_db_mean": 16.6684333878836,
+    "ssim_cal_mean": 0.21986377944798963,
+    "theta_error_before_mean": 0.11338934190276818,
+    "theta_error_after_mean": 1.1182835220615055,
+    "theta_error_reduction": -1.0048941801587372,
+    "runtime_s_mean": 3.425361394882202,
+    "n_trials": 1
+  },
+  "artifacts": {
+    "trial_results": "pwmi_cassi_families_disp_step_mild_trials.json"
+  },
+  "hashes": {
+    "trial_results": "sha256:1d39ba67353e7a769cb6439060035d8b42b35efa1b67280f8e3f634cbaffdee2"
+  }
+}

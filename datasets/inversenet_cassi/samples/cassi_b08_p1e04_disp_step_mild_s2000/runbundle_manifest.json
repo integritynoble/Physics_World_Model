@@ -1,0 +1,28 @@
+{
+  "version": "0.3.0",
+  "spec_id": "cassi_b08_p1e04_disp_step_mild_s2000",
+  "timestamp": "2026-02-10T00:40:33Z",
+  "provenance": {
+    "git_hash": "cb94dea",
+    "seeds": [
+      2000
+    ],
+    "platform": "Linux-6.14.0-1021-gcp-x86_64-with-glibc2.39",
+    "pwm_version": "0.3.0"
+  },
+  "metrics": {
+    "psnr_db": 0.0,
+    "ssim": 0.0,
+    "runtime_s": 0.0
+  },
+  "artifacts": {
+    "x_gt": "x_gt.npy",
+    "y": "y.npy",
+    "x_hat": "x_gt.npy"
+  },
+  "hashes": {
+    "x_gt": "sha256:8ffdb67d1923374aeab96c38dcbb91b545c05da82a654a58c3818af6dc2a3aaa",
+    "y": "sha256:6083e400f007ceedbdf548c6ff801fa0bb74e7b6bbbbd81fe8b32727cc69c655",
+    "x_hat": "sha256:8ffdb67d1923374aeab96c38dcbb91b545c05da82a654a58c3818af6dc2a3aaa"
+  }
+}

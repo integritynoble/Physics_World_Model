@@ -1,0 +1,71 @@
+{
+  "total_templates": 5,
+  "compiled": 5,
+  "schema_valid": 5,
+  "serializable": 5,
+  "adjoint_applicable": 0,
+  "adjoint_pass": 0,
+  "all_pass": true,
+  "results": [
+    {
+      "template_id": "cacti_graph_v1",
+      "compiled": true,
+      "schema_valid": true,
+      "serializable": true,
+      "adjoint_pass": null,
+      "adjoint_rel_err": null,
+      "all_linear": false,
+      "n_nodes": 2,
+      "n_edges": 1,
+      "error": null
+    },
+    {
+      "template_id": "cassi_graph_v1",
+      "compiled": true,
+      "schema_valid": true,
+      "serializable": true,
+      "adjoint_pass": null,
+      "adjoint_rel_err": null,
+      "all_linear": false,
+      "n_nodes": 4,
+      "n_edges": 3,
+      "error": null
+    },
+    {
+      "template_id": "confocal_3d_graph_v1",
+      "compiled": true,
+      "schema_valid": true,
+      "serializable": true,
+      "adjoint_pass": null,
+      "adjoint_rel_err": null,
+      "all_linear": false,
+      "n_nodes": 2,
+      "n_edges": 1,
+      "error": null
+    },
+    {
+      "template_id": "confocal_livecell_graph_v1",
+      "compiled": true,
+      "schema_valid": true,
+      "serializable": true,
+      "adjoint_pass": null,
+      "adjoint_rel_err": null,
+      "all_linear": false,
+      "n_nodes": 2,
+      "n_edges": 1,
+      "error": null
+    },
+    {
+      "template_id": "ct_graph_v1",
+      "compiled": true,
+      "schema_valid": true,
+      "serializable": true,
+      "adjoint_pass": null,
+      "adjoint_rel_err": null,
+      "all_linear": false,
+      "n_nodes": 2,
+      "n_edges": 1,
+      "error": null
+    }
+  ]
+}

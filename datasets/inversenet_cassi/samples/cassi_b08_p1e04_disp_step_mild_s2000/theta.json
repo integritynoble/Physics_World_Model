@@ -1,0 +1,14 @@
+{
+  "dispersion_model": "poly",
+  "disp_poly_x": [
+    0.0,
+    1.0,
+    0.0
+  ],
+  "disp_poly_y": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "L": 8
+}

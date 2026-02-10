@@ -1,0 +1,51 @@
+{
+  "results": [
+    {
+      "modality": "spc",
+      "ablation": "no_photon",
+      "baseline_psnr_db": 5.864081199560538,
+      "baseline_std_db": 0.8444919130625665,
+      "ablation_psnr_db": 5.183938596569978,
+      "ablation_std_db": 0.9151837972452173,
+      "degradation_db": 0.6801426029905606,
+      "degradation_ci": [
+        0.6801426029905606,
+        0.6801426029905606
+      ],
+      "n_trials": 2
+    },
+    {
+      "modality": "spc",
+      "ablation": "no_recoverability",
+      "baseline_psnr_db": 5.864081199560538,
+      "baseline_std_db": 0.8444919130625665,
+      "ablation_psnr_db": 4.23801818108087,
+      "ablation_std_db": 0.8680564356924951,
+      "degradation_db": 1.6260630184796687,
+      "degradation_ci": [
+        1.6260630184796687,
+        1.6260630184796687
+      ],
+      "n_trials": 2
+    }
+  ],
+  "bundle": {
+    "version": "0.3.0",
+    "spec_id": "flagship_ablations",
+    "timestamp": "2026-02-10T03:55:23Z",
+    "provenance": {
+      "git_hash": "cb94dea",
+      "seeds": [
+        6000
+      ],
+      "platform": "Linux-6.14.0-1021-gcp-x86_64-with-glibc2.39",
+      "pwm_version": "0.3.0"
+    },
+    "metrics": {
+      "n_ablations": 2,
+      "n_modalities": 1
+    },
+    "artifacts": {},
+    "hashes": {}
+  }
+}

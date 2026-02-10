@@ -1,0 +1,38 @@
+{
+  "version": "0.3.0",
+  "spec_id": "spc_flagship_cr025_p1e04_gain_mild_s7059",
+  "timestamp": "2026-02-10T03:55:02Z",
+  "provenance": {
+    "git_hash": "cb94dea",
+    "seeds": [
+      7059
+    ],
+    "platform": "Linux-6.14.0-1021-gcp-x86_64-with-glibc2.39",
+    "pwm_version": "0.3.0"
+  },
+  "metrics": {
+    "psnr_oracle_db": 6.709881373634143,
+    "psnr_wrong_db": 6.709881373634143,
+    "psnr_cal_db": 6.857412800188197,
+    "psnr_gain_db": 0.14753142655405327,
+    "ssim_oracle": 0.050232662393487386,
+    "ssim_wrong": 0.050232662393487386,
+    "ssim_cal": 0.0582460102151684,
+    "runtime_s": 58.63583731651306,
+    "cal_improvement_db": 0.7570496265740658,
+    "est_gain": 0.8778627115295,
+    "est_bias": 0.0032964332335347468
+  },
+  "artifacts": {
+    "x_gt": "x_gt.npy",
+    "x_oracle": "x_oracle.npy",
+    "x_wrong": "x_wrong.npy",
+    "x_cal": "x_cal.npy"
+  },
+  "hashes": {
+    "x_gt": "sha256:5c0e4c837be45234b0cfa18a38c502ceeb51534c0448cc2873a46a9a0332c53e",
+    "x_oracle": "sha256:1bbc2767c8dcffdae37177b14df8ba11a5f1ef2ad0e190ce7ff8fdbf4324d711",
+    "x_wrong": "sha256:1bbc2767c8dcffdae37177b14df8ba11a5f1ef2ad0e190ce7ff8fdbf4324d711",
+    "x_cal": "sha256:4788ed0705ec5d3190b187c849d68d0a73f0c55ef5d18f8d10e34d9d2ccd86b4"
+  }
+}

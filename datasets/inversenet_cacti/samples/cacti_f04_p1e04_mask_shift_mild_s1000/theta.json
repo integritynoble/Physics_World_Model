@@ -1,0 +1,8 @@
+{
+  "n_frames": 4,
+  "shift_type": "vertical",
+  "spatial_size": [
+    64,
+    64
+  ]
+}
