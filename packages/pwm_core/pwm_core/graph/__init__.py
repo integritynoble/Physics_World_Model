@@ -8,6 +8,7 @@ Modules
 -------
 primitives       PrimitiveOp protocol + ~30 primitive implementations
 graph_spec       OperatorGraphSpec Pydantic models (DAG of primitives)
+ir_types         NodeTags, TensorSpec, ParameterSpec formal IR types
 compiler         GraphCompiler: validate -> bind -> plan -> export
 graph_operator   GraphOperator: forward/adjoint over compiled graph
 introspection    Deterministic graph explanation without LLM
@@ -17,6 +18,11 @@ from pwm_core.graph.primitives import (
     PrimitiveOp,
     PRIMITIVE_REGISTRY,
     get_primitive,
+)
+from pwm_core.graph.ir_types import (
+    NodeTags,
+    TensorSpec,
+    ParameterSpec,
 )
 from pwm_core.graph.graph_spec import (
     GraphEdge,
@@ -32,6 +38,9 @@ __all__ = [
     "PrimitiveOp",
     "PRIMITIVE_REGISTRY",
     "get_primitive",
+    "NodeTags",
+    "TensorSpec",
+    "ParameterSpec",
     "GraphEdge",
     "GraphNode",
     "NoiseSpec",

@@ -10,6 +10,8 @@ from typing import Any, Dict, Optional, Protocol, Tuple
 
 import numpy as np
 
+from pwm_core.recon.protocols import LinearLikeOperator
+
 
 @dataclass
 class ReconResult:
@@ -21,4 +23,4 @@ class ReconResult:
 
 class ReconSolver(Protocol):
     solver_id: str
-    def run(self, y: np.ndarray, physics: Any, cfg: Dict[str, Any]) -> Tuple[np.ndarray, Dict[str, Any]]: ...
+    def run(self, y: np.ndarray, physics: LinearLikeOperator, cfg: Dict[str, Any]) -> Tuple[np.ndarray, Dict[str, Any]]: ...

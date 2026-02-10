@@ -18,6 +18,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
+from pwm_core.graph.ir_types import NodeTags
 from pwm_core.graph.primitives import BasePrimitive
 
 logger = logging.getLogger(__name__)
@@ -91,6 +92,7 @@ class GraphOperator:
     metadata: Dict[str, Any] = field(default_factory=dict)
     edges: List[Tuple[str, str]] = field(default_factory=list)
     learnable_params: Dict[str, List[str]] = field(default_factory=dict)
+    node_tags: Dict[str, NodeTags] = field(default_factory=dict)
 
     # ---- Forward ----
 
@@ -150,12 +152,21 @@ class GraphOperator:
         for node_id, primitive in self.forward_plan:
             prim_data = primitive.serialize()
             prim_data["node_id"] = node_id
+            # Include NodeTags if available
+            if node_id in self.node_tags:
+                prim_data["tags"] = self.node_tags[node_id].model_dump()
             all_blobs.extend(prim_data.pop("blobs", []))
             nodes_ser.append(prim_data)
 
         # Compute a graph-level hash from the deterministic JSON of node data
         graph_json = json.dumps(nodes_ser, sort_keys=True, default=str)
         graph_hash = hashlib.sha256(graph_json.encode()).hexdigest()
+
+        # Serialize node_tags
+        tags_ser = {
+            nid: tags.model_dump()
+            for nid, tags in self.node_tags.items()
+        }
 
         return {
             "graph_id": self.graph_id,
@@ -170,6 +181,7 @@ class GraphOperator:
             "blobs": all_blobs,
             "metadata": self.metadata,
             "learnable_params": self.learnable_params,
+            "node_tags": tags_ser,
         }
 
     # ---- Check Adjoint ----
