@@ -1217,9 +1217,11 @@ class BenchmarkRunner:
                 self.log("  Using DnCNN denoiser (DRUNet fallback)")
 
         except ImportError as e:
-            self.log(f"  deepinv not available, using basic FISTA: {e}")
+            self.log(f"  deepinv not available, using ADMM-DCT-TV: {e}")
+            results["solver"] = "admm_dct_tv"
         except Exception as e:
-            self.log(f"  Denoiser loading failed, using basic FISTA: {e}")
+            self.log(f"  Denoiser loading failed, using ADMM-DCT-TV: {e}")
+            results["solver"] = "admm_dct_tv"
 
         for rate in sampling_rates:
             rate_results = []
@@ -1238,9 +1240,6 @@ class BenchmarkRunner:
             dataset = Set11Dataset(resolution=block_size)
 
             for idx, (name, image) in enumerate(dataset):
-                if idx >= 3:  # Limit for speed
-                    break
-
                 # Ensure image is correct size
                 if image.shape != (block_size, block_size):
                     from scipy.ndimage import zoom
@@ -1254,16 +1253,12 @@ class BenchmarkRunner:
                 noise_level = 0.01
                 y += np.random.randn(m).astype(np.float32) * noise_level
 
-                # Estimate Lipschitz constant via power iteration
-                L = self._estimate_lipschitz(Phi_norm, n_iters=20)
-                tau = 0.9 / max(L, 1e-8)
-
-                # Backprojection initialization
-                x0 = Phi_norm.T @ y
-                x0 = np.clip((x0 - x0.min()) / (x0.max() - x0.min() + 1e-8), 0, 1)
-
                 if use_drunet and denoiser is not None:
                     # PnP-FISTA with DRUNet (as in reference)
+                    L = self._estimate_lipschitz(Phi_norm, n_iters=20)
+                    tau = 0.9 / max(L, 1e-8)
+                    x0 = Phi_norm.T @ y
+                    x0 = np.clip((x0 - x0.min()) / (x0.max() - x0.min() + 1e-8), 0, 1)
                     recon = self._pnp_fista_drunet(
                         y, Phi_norm, x0, denoiser, device,
                         block_size=block_size,
@@ -1274,11 +1269,8 @@ class BenchmarkRunner:
                         pad_mult=8,
                     )
                 else:
-                    # Fallback to FISTA with TV proximal
-                    recon = self._basic_fista(
-                        y, Phi_norm, x0, block_size, tau, max_iter=400,
-                        use_tv=True,
-                    )
+                    # ADMM-TV: proper splitting solver for underdetermined CS
+                    recon = self._admm_tv_cs(y, Phi_norm, block_size)
 
                 recon_img = recon.reshape(block_size, block_size)
                 psnr = compute_psnr(recon_img, image)
@@ -1297,27 +1289,23 @@ class BenchmarkRunner:
             ref_psnr = {10: 27.0, 25: 32.0, 50: 38.0}.get(int(rate * 100), 25.0)
             self.log(f"  SPC {int(rate*100)}%: PSNR={avg_psnr:.2f} dB (ref: {ref_psnr:.1f} dB)")
 
-            # Also run TVAL3 proxy (basic FISTA) for comparison
+            # Also run ADMM-TV proxy for comparison (uses same solver as primary)
             rate_basic_results = []
             dataset2 = Set11Dataset(resolution=block_size)
             for idx2, (name2, image2) in enumerate(dataset2):
-                if idx2 >= 3:
-                    break
                 if image2.shape != (block_size, block_size):
                     from scipy.ndimage import zoom
                     scale2 = block_size / max(image2.shape)
                     image2 = zoom(image2, scale2, order=1)[:block_size, :block_size]
                 x_gt2 = image2.flatten().astype(np.float32)
                 y2 = Phi_norm @ x_gt2 + np.random.randn(m).astype(np.float32) * 0.01
-                x02 = Phi_norm.T @ y2
-                x02 = np.clip((x02 - x02.min()) / (x02.max() - x02.min() + 1e-8), 0, 1)
-                recon_basic = self._basic_fista(y2, Phi_norm, x02, block_size, tau, max_iter=400, use_tv=True)
+                recon_basic = self._admm_tv_cs(y2, Phi_norm, block_size)
                 psnr_basic = compute_psnr(recon_basic.reshape(block_size, block_size), image2)
                 rate_basic_results.append(psnr_basic)
             if rate_basic_results:
                 avg_basic = float(np.mean(rate_basic_results))
-                results["per_algorithm"].setdefault("tval3_fista", {})[f"{int(rate*100)}pct"] = avg_basic
-                self.log(f"  SPC {int(rate*100)}% TVAL3(FISTA): PSNR={avg_basic:.2f} dB")
+                results["per_algorithm"].setdefault("admm_tv", {})[f"{int(rate*100)}pct"] = avg_basic
+                self.log(f"  SPC {int(rate*100)}% ADMM-TV: PSNR={avg_basic:.2f} dB")
 
             # LISTA (quick-trained)
             try:
@@ -1326,8 +1314,6 @@ class BenchmarkRunner:
                 y_all, x_all = [], []
                 dataset3 = Set11Dataset(resolution=block_size)
                 for idx3, (name3, image3) in enumerate(dataset3):
-                    if idx3 >= 3:
-                        break
                     if image3.shape != (block_size, block_size):
                         from scipy.ndimage import zoom
                         scale3 = block_size / max(image3.shape)
@@ -1345,7 +1331,7 @@ class BenchmarkRunner:
                     rate_lista_results = []
                     dataset3b = Set11Dataset(resolution=block_size)
                     for idx3b, (name3b, image3b) in enumerate(dataset3b):
-                        if idx3b >= 3:
+                        if idx3b >= len(x_batch):
                             break
                         psnr_lista = compute_psnr(
                             recon_batch[idx3b].reshape(block_size, block_size),
@@ -1359,6 +1345,26 @@ class BenchmarkRunner:
                 self.log(f"  SPC ISTA-Net+: skipped ({e})")
 
         return results
+
+    def _admm_tv_cs(
+        self,
+        y: np.ndarray,
+        Phi: np.ndarray,
+        block_size: int,
+        mu_tv: float = 0.002,
+        mu_dct: float = 0.008,
+        rho: float = 1.0,
+        max_iters: int = 500,
+        tv_inner_iters: int = 15,
+    ) -> np.ndarray:
+        """ADMM DCT+TV solver for block-based CS reconstruction."""
+        from pwm_core.recon.cs_solvers import admm_tv
+        return admm_tv(
+            y, Phi, (block_size, block_size),
+            mu_tv=mu_tv, mu_dct=mu_dct, rho=rho,
+            max_iters=max_iters,
+            tv_inner_iters=tv_inner_iters,
+        )
 
     def _estimate_lipschitz(self, Phi: np.ndarray, n_iters: int = 20) -> float:
         """Estimate Lipschitz constant via power iteration."""

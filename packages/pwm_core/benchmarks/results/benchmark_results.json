@@ -1,83 +1,26 @@
 {
-  "cacti": {
-    "modality": "cacti",
-    "solver": "gap_denoise",
-    "per_video": [
-      {
-        "video": "kobe",
-        "psnr": 26.84721104193646,
-        "reference_psnr": 26.5,
-        "per_algorithm": {
-          "gap_tv": 26.700316934905437,
-          "gap_denoise": 26.84721104193646,
-          "efficientsci": 6.722167108279178
-        }
+  "spc": {
+    "modality": "spc",
+    "solver": "pnp_fista_drunet",
+    "per_rate": {
+      "10pct": {
+        "avg_psnr": 17.452052305957565,
+        "use_drunet": true
       },
-      {
-        "video": "traffic",
-        "psnr": 20.753205832063514,
-        "reference_psnr": 20.5,
-        "per_algorithm": {
-          "gap_tv": 20.730892849181444,
-          "gap_denoise": 20.753205832063514,
-          "efficientsci": 7.381087914937711
-        }
-      },
-      {
-        "video": "runner",
-        "psnr": 29.412926900122983,
-        "reference_psnr": 28.5,
-        "per_algorithm": {
-          "gap_tv": 29.343727175555877,
-          "gap_denoise": 29.412926900122983,
-          "efficientsci": 7.516911987637785
-        }
-      },
-      {
-        "video": "drop",
-        "psnr": 34.35957263829457,
-        "reference_psnr": 34.3,
-        "per_algorithm": {
-          "gap_tv": 34.215581032937635,
-          "gap_denoise": 34.35957263829457,
-          "efficientsci": 4.376893636021032
-        }
-      },
-      {
-        "video": "crash",
-        "psnr": 24.741035158919765,
-        "reference_psnr": 24.2,
-        "per_algorithm": {
-          "gap_tv": 24.79596540729007,
-          "gap_denoise": 24.741035158919765,
-          "efficientsci": 6.273041757206221
-        }
-      },
-      {
-        "video": "aerial",
-        "psnr": 25.18130940493979,
-        "reference_psnr": 24.8,
-        "per_algorithm": {
-          "gap_tv": 25.220793152879622,
-          "gap_denoise": 25.18130940493979,
-          "efficientsci": 8.32521707040025
-        }
-      }
-    ],
-    "per_algorithm": {
-      "gap_tv": {
-        "avg_psnr": 26.751792861352023,
-        "tier": "traditional_cpu"
-      },
-      "gap_denoise": {
-        "avg_psnr": 26.802141253844745,
-        "tier": "default"
-      },
-      "efficientsci": {
-        "avg_psnr": 6.751330691123677,
-        "tier": "best_quality"
+      "25pct": {
+        "avg_psnr": 32.16558329064349,
+        "use_drunet": true
       }
     },
-    "avg_psnr": 26.882543496046182
+    "per_algorithm": {
+      "admm_tv": {
+        "10pct": 19.99065586631362,
+        "25pct": 28.422013915854027
+      },
+      "lista": {
+        "10pct": 15.752186107877812,
+        "25pct": 14.210995366687667
+      }
+    }
   }
 }

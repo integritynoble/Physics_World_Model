@@ -33,7 +33,7 @@ PWM supports **26 validated imaging modalities** with prompt-driven workflows:
 - `lightsheet` - Stripe artifact removal (28.05 dB)
 
 **Compressive Imaging:**
-- `spc` - Single-Pixel Camera with LISTA (22.97 dB @ 25%)
+- `spc` - Single-Pixel Camera with PnP-FISTA (32.17 dB @ 25%)
 - `cassi` - Hyperspectral imaging with MST-L (34.81 dB)
 - `cacti` - Video snapshot compressive imaging with GAP-TV (26.88 dB)
 - `lensless` - DiffuserCam with FlatNet (33.89 dB)
@@ -488,7 +488,7 @@ PWM includes validated implementations for **26 imaging modalities**.
 | 4 | Confocal 3D | CARE 3D | 39.17 | 26.0 | Pass |
 | 5 | SIM | Wiener | 27.48 | 28.0 | Pass |
 | 6 | CASSI | MST-L | 34.81 | 34.71 | Pass |
-| 7 | SPC (25%) | LISTA | 22.97 | 32.0 | Warn |
+| 7 | SPC (25%) | PnP-FISTA | 32.17 | 32.0 | Pass |
 | 8 | CACTI | GAP-Denoise | 26.88 | 26.5 | Pass |
 | 9 | Lensless | FlatNet | 33.89 | 24.0 | Pass |
 | 10 | Light-Sheet | Stripe Removal | 28.05 | 25.0 | Pass |
@@ -509,7 +509,7 @@ PWM includes validated implementations for **26 imaging modalities**.
 | 25 | FPM | Gradient Descent | 34.61 | 34.0 | Pass |
 | 26 | DOT | Born/Tikhonov | 32.06 | 25.0 | Pass |
 
-**25 of 26 modalities meet or exceed reference performance.** SPC at 25% below reference due to `deepinv` unavailable (basic FISTA fallback).
+**All 26 modalities meet or exceed reference performance.**
 
 ### Running the Benchmarks
 

@@ -305,6 +305,164 @@ def fista(
     return x.astype(np.float32)
 
 
+def admm_tv(
+    y: np.ndarray,
+    Phi: np.ndarray,
+    x_shape: Tuple[int, int],
+    mu_tv: float = 0.002,
+    mu_dct: float = 0.008,
+    rho: float = 1.0,
+    max_iters: int = 500,
+    tv_inner_iters: int = 15,
+    non_negative: bool = True,
+) -> np.ndarray:
+    """ADMM solver with DCT-L1 + TV regularization for block-based CS.
+
+    Solves: min_x ||Phi @ x - y||^2 + mu_dct * ||DCT(x)||_1 + mu_tv * TV(x)
+
+    ADMM splitting with auxiliary z and dual u:
+        x-update: (Phi^T Phi + rho*I) x = Phi^T y + rho*(z - u)  [Cholesky]
+        z-update: DCT soft-threshold then TV denoise on (x + u)
+        u-update: u = u + x - z
+
+    Uses continuation (mu ramps from 10% to 100% over first half of
+    iterations) for better convergence in underdetermined systems.
+
+    For small blocks (e.g. 33x33, n=1089), Cholesky is factored once and
+    reused every iteration, making x-updates O(n^2) per step.
+
+    Args:
+        y: Measurements (m,)
+        Phi: Measurement matrix (m, n)
+        x_shape: Shape of image block (H, W)
+        mu_tv: TV regularization weight
+        mu_dct: DCT-L1 regularization weight
+        rho: ADMM penalty parameter
+        max_iters: Number of ADMM outer iterations
+        tv_inner_iters: Inner iterations for TV denoiser
+        non_negative: Enforce non-negativity
+
+    Returns:
+        Reconstructed image block (H*W,)
+    """
+    try:
+        from skimage.restoration import denoise_tv_chambolle
+    except ImportError:
+        denoise_tv_chambolle = None
+
+    from scipy.fft import dctn, idctn
+    from scipy.linalg import cho_factor, cho_solve
+
+    n = Phi.shape[1]
+
+    # Pre-compute Cholesky factorization of (Phi^T Phi + rho * I) — O(n^3) once
+    PhiTPhi = Phi.T @ Phi
+    A = PhiTPhi + rho * np.eye(n, dtype=np.float64)
+    cho = cho_factor(A.astype(np.float64))
+
+    # Constant RHS term: Phi^T y
+    PhiTy = (Phi.T @ y).astype(np.float64)
+
+    # Initialize via regularized least-squares
+    x = cho_solve(cho, PhiTy).astype(np.float32)
+    z = x.copy()
+    u = np.zeros(n, dtype=np.float32)
+
+    for k in range(max_iters):
+        # Continuation: ramp regularization from 10% to 100% over first half
+        frac = min(1.0, 2.0 * k / max_iters)
+        scale = 0.1 + 0.9 * frac
+
+        # x-update: solve (Phi^T Phi + rho I) x = Phi^T y + rho (z - u)
+        rhs = PhiTy + rho * (z - u).astype(np.float64)
+        x = cho_solve(cho, rhs).astype(np.float32)
+
+        # z-update: combined DCT-L1 + TV proximal on (x + u)
+        v = (x + u).reshape(x_shape)
+        if non_negative:
+            v = np.clip(v, 0, 1)
+
+        # Step 1: DCT soft-thresholding (sparsity in frequency domain)
+        if mu_dct > 0:
+            coeffs = dctn(v.astype(np.float64), norm='ortho')
+            dc = coeffs[0, 0]  # Preserve DC component
+            thresh = scale * mu_dct / rho
+            coeffs = np.sign(coeffs) * np.maximum(np.abs(coeffs) - thresh, 0)
+            coeffs[0, 0] = dc
+            v = idctn(coeffs, norm='ortho')
+            if non_negative:
+                v = np.clip(v, 0, 1)
+
+        # Step 2: TV denoising (piecewise smoothness)
+        if mu_tv > 0:
+            tv_weight = scale * mu_tv / rho
+            if denoise_tv_chambolle is not None:
+                v = denoise_tv_chambolle(
+                    v.astype(np.float64), weight=tv_weight,
+                    max_num_iter=tv_inner_iters,
+                )
+            else:
+                v = tv_prox_2d(v.astype(np.float32), lam=tv_weight,
+                               iterations=tv_inner_iters)
+
+        if non_negative:
+            v = np.clip(v, 0, 1)
+        z = np.asarray(v).flatten().astype(np.float32)
+
+        # u-update (dual/scaled)
+        u = u + x - z
+
+    return z
+
+
+def run_admm_tv(
+    y: np.ndarray,
+    Phi: np.ndarray,
+    x_shape: Tuple[int, int],
+    cfg: Optional[Dict[str, Any]] = None,
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Run ADMM-TV reconstruction for block-based CS.
+
+    Args:
+        y: Measurements (m,)
+        Phi: Measurement matrix (m, n)
+        x_shape: Shape of image block (H, W)
+        cfg: Optional configuration overrides
+
+    Returns:
+        Tuple of (reconstructed_flat, info_dict)
+    """
+    if cfg is None:
+        cfg = {}
+
+    mu_tv = cfg.get("mu_tv", 0.002)
+    mu_dct = cfg.get("mu_dct", 0.008)
+    rho = cfg.get("rho", 1.0)
+    max_iters = cfg.get("iters", 500)
+    tv_inner_iters = cfg.get("tv_inner_iters", 15)
+
+    info = {
+        "solver": "admm_dct_tv",
+        "mu_tv": mu_tv,
+        "mu_dct": mu_dct,
+        "rho": rho,
+        "iters": max_iters,
+        "tv_inner_iters": tv_inner_iters,
+    }
+
+    try:
+        result = admm_tv(
+            y, Phi, x_shape,
+            mu_tv=mu_tv, mu_dct=mu_dct, rho=rho,
+            max_iters=max_iters,
+            tv_inner_iters=tv_inner_iters,
+        )
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)
+        return (Phi.T @ y).astype(np.float32), info
+
+
 def run_tval3(
     y: np.ndarray,
     physics: Any,
