@@ -35,7 +35,7 @@ PWM supports **26 validated imaging modalities** with prompt-driven workflows:
 **Compressive Imaging:**
 - `spc` - Single-Pixel Camera with LISTA (22.97 dB @ 25%)
 - `cassi` - Hyperspectral imaging with MST-L (34.81 dB)
-- `cacti` - Video snapshot compressive imaging with GAP-TV (50.83 dB)
+- `cacti` - Video snapshot compressive imaging with GAP-TV (26.88 dB)
 - `lensless` - DiffuserCam with FlatNet (33.89 dB)
 
 **Medical Imaging:**
@@ -127,16 +127,18 @@ PWM includes a **multi-agent orchestration system** with 17 agent modules:
 Every run exports a **RunBundle** with full reproducibility:
 
 ```
-runbundle/
-  spec_resolved.json      # Full experiment specification
-  data_manifest.json      # Input checksums + provenance
-  internal_state/         # Seeds, perturbations, calibration
-  outputs/
-    recon.npy             # Reconstructed result
+run_{spec_id}_{uuid}/
+  artifacts/
+    x_hat.npy             # Reconstructed signal
+    y.npy                 # Measurements
+    x_true.npy            # Ground truth (if available)
     metrics.json          # PSNR, SSIM, runtime
-    figures/              # Visualizations
-  report.md               # Diagnosis + suggested_actions
-  reproduce.py            # Generated script for reproduction
+    images/               # PNG visualizations
+  internal_state/
+    diagnosis.json        # Diagnosis result
+    recon_info.json       # Reconstruction metadata
+  agents/                 # Agent report snapshots
+  logs/                   # Run logs
 ```
 
 The **Streamlit viewer** (`pwm view`) provides:
@@ -182,7 +184,7 @@ pwm/
       benchmarks/
         run_all.py         # 26-modality benchmark suite
         test_operator_correction.py  # 16 calibration tests
-      tests/               # 45 unit tests
+      tests/               # 570+ unit tests
     pwm_denario/           # Denario adapter (thin)
 ```
 
@@ -313,7 +315,7 @@ python benchmarks/run_all.py --modality photoacoustic
 # Run operator correction tests (16 tests, ~63 min)
 python -m pytest benchmarks/test_operator_correction.py -v
 
-# Run unit tests (45 tests, ~8 sec)
+# Run unit tests (570+ tests)
 python -m pytest tests/ -v
 ```
 
@@ -445,18 +447,17 @@ python benchmarks/test_operator_correction.py --modality flim
 ### What gets saved
 
 ```
-runs/calibration_run/
-  theta_best.json           # Best-fit operator parameters
-  belief_state.json         # Candidate history + scores
-  calibration_trajectory/   # Parameter evolution
-  verification/
-    residual_tests.json     # Statistical tests
-    stability_proxies.json
-  outputs/
-    recon.npy               # Final reconstruction
+run_{spec_id}_{uuid}/
+  artifacts/
+    x_hat.npy               # Final reconstruction
+    y.npy                   # Measurements
     metrics.json            # PSNR, SSIM
-  report.md                 # Diagnosis + suggested_actions
-  reproduce.py              # Generated script
+    images/                 # PNG visualizations
+  internal_state/
+    diagnosis.json          # Diagnosis + calibration results
+    recon_info.json         # Reconstruction metadata
+  agents/                   # Agent report snapshots
+  logs/                     # Run logs
 ```
 
 See: `docs/operator_mode.md`.
@@ -469,7 +470,7 @@ PWM supports solver portfolios, including:
 - **DeepInv** PnP / unrolled methods / diffusion adapters (optional)
 - classical solvers (TV-FISTA, ADMM-TV, primal-dual, RL)
 
-`pwm_core/recon/deepinv_adapter.py` maps `PhysicsState` to DeepInv operators when possible.
+`pwm_core/recon/deepinv_adapter.py` provides a stub adapter that passes through existing DeepInv physics objects; custom PWM-to-DeepInv operator wrapping is not yet implemented.
 
 ---
 
@@ -488,7 +489,7 @@ PWM includes validated implementations for **26 imaging modalities**.
 | 5 | SIM | Wiener | 27.48 | 28.0 | Pass |
 | 6 | CASSI | MST-L | 34.81 | 34.71 | Pass |
 | 7 | SPC (25%) | LISTA | 22.97 | 32.0 | Warn |
-| 8 | CACTI | GAP-TV | 50.83 | 26.0 | Pass |
+| 8 | CACTI | GAP-Denoise | 26.88 | 26.5 | Pass |
 | 9 | Lensless | FlatNet | 33.89 | 24.0 | Pass |
 | 10 | Light-Sheet | Stripe Removal | 28.05 | 25.0 | Pass |
 | 11 | CT | RED-CNN | 26.77 | 28.0 | Pass |
@@ -533,7 +534,7 @@ python benchmarks/run_all.py --modality fpm
 ```bash
 cd packages/pwm_core
 
-# Unit tests (45 tests, ~8 sec)
+# Unit tests (570+ tests)
 python -m pytest tests/ -v
 
 # Operator correction tests (16 tests, ~63 min)
