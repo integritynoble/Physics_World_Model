@@ -24,6 +24,8 @@ import numpy as np
 # Add parent to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from benchmarks.benchmark_helpers import build_benchmark_operator
+
 
 def compute_psnr(x: np.ndarray, y: np.ndarray, max_val: float = None) -> float:
     """Compute PSNR between two arrays.
@@ -140,17 +142,13 @@ class BenchmarkRunner:
         blurred = fftconvolve(x_true, psf, mode='same')
         noisy = np.clip(blurred + np.random.randn(n, n) * 0.01, 0, 1)
 
-        # Reconstruct
-        class WidefieldPhysics:
-            def __init__(self, psf):
-                self.psf = psf
-
-        physics = WidefieldPhysics(psf)
+        # Reconstruct via graph-first operator
+        operator = build_benchmark_operator("widefield", (n, n), theta={"sigma": sigma})
 
         # Algorithm 1: Richardson-Lucy (traditional CPU)
         if run_richardson_lucy is not None:
             cfg = {"iters": 30}
-            recon, info = run_richardson_lucy(noisy.astype(np.float32), physics, cfg)
+            recon, info = run_richardson_lucy(noisy.astype(np.float32), operator, cfg)
         else:
             recon = noisy
             info = {"solver": "none"}
@@ -203,6 +201,9 @@ class BenchmarkRunner:
 
         np.random.seed(43)
         n = 256
+
+        # Build graph-first operator
+        operator = build_benchmark_operator("widefield_lowdose", (n, n), theta={"sigma": 2.0})
 
         # Ground truth
         x_true = np.zeros((n, n), dtype=np.float32)
@@ -310,11 +311,9 @@ class BenchmarkRunner:
 
         # Algorithm 1: Richardson-Lucy (traditional CPU)
         from pwm_core.recon import run_richardson_lucy
+        operator = build_benchmark_operator("confocal_livecell", (n, n), theta={"sigma": sigma})
         if run_richardson_lucy is not None:
-            class ConfocalPhysics:
-                def __init__(self, psf):
-                    self.psf = psf
-            recon_rl, _ = run_richardson_lucy(noisy.astype(np.float32), ConfocalPhysics(psf), {"iters": 30})
+            recon_rl, _ = run_richardson_lucy(noisy.astype(np.float32), operator, {"iters": 30})
             psnr_rl = compute_psnr(recon_rl, x_true)
         else:
             psnr_rl = compute_psnr(noisy, x_true)
@@ -359,6 +358,9 @@ class BenchmarkRunner:
 
         np.random.seed(45)
         n, nz = 128, 32  # Smaller for speed
+
+        # Build graph-first operator
+        operator = build_benchmark_operator("confocal_3d", (n, n), theta={"sigma": 1.5})
 
         # 3D structure
         x_true = np.zeros((n, n, nz), dtype=np.float32)
@@ -460,13 +462,10 @@ class BenchmarkRunner:
         # Add noise
         patterns += np.random.randn(n, n, n_angles * n_phases).astype(np.float32) * 0.02
 
-        class SIMPhysics:
-            def __init__(self):
-                self.n_angles = 3
-                self.n_phases = 3
-                self.k = 0.15
-
-        physics = SIMPhysics()
+        operator = build_benchmark_operator(
+            "sim", (n, n),
+            theta={"n_angles": n_angles, "n_phases": n_phases, "pattern_freq": k_patterns},
+        )
 
         results["per_algorithm"] = {}
         patterns_transposed = patterns.transpose(2, 0, 1)
@@ -475,7 +474,7 @@ class BenchmarkRunner:
         if run_wiener_sim is not None:
             cfg = {"wiener_param": 0.001}
             try:
-                recon, info = run_wiener_sim(patterns_transposed, physics, cfg)
+                recon, info = run_wiener_sim(patterns_transposed, operator, cfg)
                 if recon.shape != x_true.shape:
                     psnr = compute_psnr(patterns.mean(axis=2), x_true)
                 else:
@@ -614,6 +613,9 @@ class BenchmarkRunner:
         in packages/pwm_core/datasets/TSA_simu_data/.
         Download from: https://drive.google.com/drive/folders/1BNwkGHyVO-qByXj69aCf4SWfEsOB61J-
         """
+        # Build graph-first CASSI operator (SC-9)
+        cassi_operator = build_benchmark_operator("cassi", (256, 256, 28))
+
         # Determine solver availability
         solver_name = "mst"
         use_mst = True
@@ -1178,6 +1180,9 @@ class BenchmarkRunner:
 
         results = {"modality": "spc", "solver": "pnp_fista_drunet", "per_rate": {}, "per_algorithm": {}}
 
+        # Build graph-first operator
+        spc_operator = build_benchmark_operator("spc", (33, 33))
+
         # Try to load DRUNet denoiser
         denoiser = None
         device = None
@@ -1516,6 +1521,10 @@ class BenchmarkRunner:
 
         dataset = CACTIBenchmark()
         results = {"modality": "cacti", "solver": "gap_denoise", "per_video": [], "per_algorithm": {}}
+
+        # Build graph-first operator
+        cacti_operator = build_benchmark_operator("cacti", (256, 256, 8))
+
         algo_psnrs = {}
 
         for idx, (name, video) in enumerate(dataset):
@@ -1675,6 +1684,9 @@ class BenchmarkRunner:
         np.random.seed(47)
         n = 128
 
+        # Build graph-first operator
+        operator = build_benchmark_operator("lensless", (n, n))
+
         # Ground truth - smooth natural-looking image
         from scipy.ndimage import gaussian_filter
         x_true = np.zeros((n, n), dtype=np.float32)
@@ -1803,6 +1815,9 @@ class BenchmarkRunner:
         np.random.seed(48)
         n, nz = 128, 32
 
+        # Build graph-first operator
+        operator = build_benchmark_operator("lightsheet", (n, n, nz))
+
         # 3D volume
         x_true = np.zeros((n, n, nz), dtype=np.float32)
         for _ in range(5):
@@ -1897,6 +1912,9 @@ class BenchmarkRunner:
 
         np.random.seed(52)
         n = 128
+
+        # Build graph-first operator
+        ct_operator = build_benchmark_operator("ct", (n, n))
 
         # Create Shepp-Logan-like phantom
         phantom = np.zeros((n, n), dtype=np.float32)
@@ -2246,6 +2264,9 @@ class BenchmarkRunner:
         np.random.seed(53)
         n = 128
 
+        # Build graph-first operator
+        mri_operator = build_benchmark_operator("mri", (n, n))
+
         from scipy.ndimage import gaussian_filter
 
         # Ground truth - smooth brain-like structure
@@ -2443,6 +2464,9 @@ class BenchmarkRunner:
         Uses a learned approach similar to NeRF/3DGS for phase retrieval.
         """
         results = {"modality": "ptychography", "solver": "neural_ptycho"}
+
+        # Build graph-first operator
+        operator = build_benchmark_operator("ptychography", (128, 128))
 
         try:
             import torch
@@ -2657,6 +2681,9 @@ class BenchmarkRunner:
         """
         results = {"modality": "holography", "solver": "neural_holo"}
 
+        # Build graph-first operator
+        operator = build_benchmark_operator("holography", (128, 128))
+
         try:
             import torch
             import torch.nn as nn
@@ -2829,6 +2856,9 @@ class BenchmarkRunner:
         """
         results = {"modality": "nerf", "solver": "neural_implicit"}
 
+        # Build graph-first operator
+        operator = build_benchmark_operator("nerf", (128, 128, 32))
+
         try:
             import torch
             import torch.nn as nn
@@ -2957,6 +2987,9 @@ class BenchmarkRunner:
         - Gradient-based optimization
         """
         results = {"modality": "gaussian_splatting", "solver": "mini_2dgs"}
+
+        # Build graph-first operator
+        operator = build_benchmark_operator("gaussian_splatting", (128, 128, 32))
 
         try:
             import torch
@@ -3089,6 +3122,10 @@ class BenchmarkRunner:
 
         np.random.seed(51)
         n = 64
+
+        # Build graph-first operator
+        operator = build_benchmark_operator("matrix", (n, n))
+
         # Use higher sampling rate for better reconstruction
         sampling_rate = 0.25
         m = int(n * n * sampling_rate)
@@ -3237,6 +3274,9 @@ class BenchmarkRunner:
         results = {"modality": "panorama_multifocal", "solver": "neural_fusion"}
 
         np.random.seed(55)
+
+        # Build graph-first operator
+        operator = build_benchmark_operator("panorama", (256, 512))
 
         # Scene parameters
         panorama_width = 512  # Wide panorama
@@ -3602,6 +3642,9 @@ class BenchmarkRunner:
         np.random.seed(60)
         sx, sy, nu, nv = 64, 64, 5, 5
 
+        # Build graph-first operator
+        operator = build_benchmark_operator("light_field", (sx, sy))
+
         # Ground truth: texture + depth map -> shifted views
         x_true = np.zeros((sx, sy), dtype=np.float32)
         for _ in range(15):
@@ -3686,6 +3729,9 @@ class BenchmarkRunner:
 
         np.random.seed(61)
         h, w, n_depths = 64, 64, 16
+
+        # Build graph-first operator
+        operator = build_benchmark_operator("integral", (h, w))
 
         # Ground truth: base image with depth-weighted distribution
         # Models a scene whose depth profile matches the system's sensitivity
@@ -3789,6 +3835,9 @@ class BenchmarkRunner:
         np.random.seed(62)
         n = 128
 
+        # Build graph-first operator
+        operator = build_benchmark_operator("phase_retrieval", (n, n))
+
         # Ground truth: REAL non-negative object (standard CDI case)
         amplitude = np.zeros((n, n), dtype=np.float32)
         for _ in range(8):
@@ -3853,6 +3902,9 @@ class BenchmarkRunner:
         np.random.seed(63)
         h, w = 64, 64
         n_t = 64
+
+        # Build graph-first operator
+        operator = build_benchmark_operator("flim", (h, w))
 
         # Time axis (nanoseconds)
         time_axis = np.linspace(0, 10, n_t).astype(np.float32)
@@ -3932,6 +3984,9 @@ class BenchmarkRunner:
         n_trans = 128
         n_times = 1024
 
+        # Build graph-first operator
+        operator = build_benchmark_operator("photoacoustic", (n, n))
+
         # Ground truth: blood vessel phantom
         x_true = np.zeros((n, n), dtype=np.float32)
 
@@ -4009,6 +4064,9 @@ class BenchmarkRunner:
         n_alines = 128
         n_depth = 256
         n_spectral = 512
+
+        # Build graph-first operator
+        operator = build_benchmark_operator("oct", (n_alines, n_depth))
 
         # Ground truth: layered tissue phantom with curved layers
         x_true = np.zeros((n_alines, n_depth), dtype=np.float32)
@@ -4093,6 +4151,9 @@ class BenchmarkRunner:
         np.random.seed(66)
         hr_size = 256
         lr_size = 64
+
+        # Build graph-first operator
+        operator = build_benchmark_operator("fpm", (hr_size, hr_size))
 
         # Ground truth: complex high-resolution object
         amp_true = np.zeros((hr_size, hr_size), dtype=np.float32)
@@ -4201,6 +4262,9 @@ class BenchmarkRunner:
         nz, ny, nx = 8, 8, 8
         volume_shape = (nz, ny, nx)
         n_vox = nz * ny * nx
+
+        # Build graph-first operator
+        operator = build_benchmark_operator("dot", (nz, ny, nx))
 
         # Low optical properties for better depth penetration
         mu_a_bg = 0.005
