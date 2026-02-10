@@ -191,6 +191,10 @@ def build_parser():
     from pwm_core.cli.demo import add_demo_subparser, cmd_demo
     add_demo_subparser(sub)
 
+    # --- doctor subcommand ---
+    from pwm_core.cli.doctor import add_doctor_subparser
+    add_doctor_subparser(sub)
+
     return p
 
 
