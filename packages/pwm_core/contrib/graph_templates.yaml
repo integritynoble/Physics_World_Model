@@ -1,0 +1,737 @@
+# =============================================================================
+# PWM Graph Templates Registry
+# Skeleton graphs for all 26 modalities.
+# Each template: graph_id, description, nodes, edges, learnable params.
+#
+# CT + Widefield templates are complete enough to compile and pass adjoint checks.
+#
+# ID format: <modality>_graph_v<N> (lowercase, underscores only)
+# See docs/contracts/registry_conventions.md
+# =============================================================================
+
+version: "1.0"
+
+templates:
+
+  # ===========================================================================
+  # MICROSCOPY
+  # ===========================================================================
+
+  widefield_graph_v1:
+    description: "Widefield fluorescence microscopy: PSF convolution + noise"
+    metadata:
+      modality: widefield
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: blur
+        primitive_id: conv2d
+        params:
+          sigma: 2.0
+          mode: reflect
+        learnable: [sigma]
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: blur
+        target: noise
+
+  widefield_lowdose_graph_v1:
+    description: "Low-dose widefield microscopy: heavy PSF blur + high noise"
+    metadata:
+      modality: widefield_lowdose
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: blur
+        primitive_id: conv2d
+        params:
+          sigma: 3.0
+          mode: reflect
+        learnable: [sigma]
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 1000.0
+          read_sigma: 0.05
+          seed: 0
+    edges:
+      - source: blur
+        target: noise
+
+  confocal_livecell_graph_v1:
+    description: "Live-cell confocal microscopy: tight PSF + low photon budget"
+    metadata:
+      modality: confocal_livecell
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: blur
+        primitive_id: conv2d
+        params:
+          sigma: 1.2
+          mode: reflect
+        learnable: [sigma]
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 5000.0
+          read_sigma: 0.02
+          seed: 0
+    edges:
+      - source: blur
+        target: noise
+
+  confocal_3d_graph_v1:
+    description: "3D confocal microscopy: volumetric PSF convolution"
+    metadata:
+      modality: confocal_3d
+      x_shape: [32, 64, 64]
+      y_shape: [32, 64, 64]
+    nodes:
+      - node_id: blur_3d
+        primitive_id: conv3d
+        params:
+          sigma: [3.0, 1.5, 1.5]
+          mode: reflect
+        learnable: [sigma]
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 8000.0
+          read_sigma: 0.02
+          seed: 0
+    edges:
+      - source: blur_3d
+        target: noise
+
+  sim_graph_v1:
+    description: "Structured illumination microscopy: pattern modulation + PSF + integration"
+    metadata:
+      modality: sim
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: pattern
+        primitive_id: sim_pattern
+        params:
+          H: 64
+          W: 64
+          freq: 0.1
+          angle: 0.0
+          phase: 0.0
+        learnable: [freq, angle, phase]
+      - node_id: blur
+        primitive_id: conv2d
+        params:
+          sigma: 1.5
+          mode: reflect
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: pattern
+        target: blur
+      - source: blur
+        target: noise
+
+  lightsheet_graph_v1:
+    description: "Light-sheet microscopy: axial sectioning + lateral PSF"
+    metadata:
+      modality: lightsheet
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: blur
+        primitive_id: conv2d
+        params:
+          sigma: 1.0
+          mode: reflect
+        learnable: [sigma]
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 15000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: blur
+        target: noise
+
+  # ===========================================================================
+  # COMPRESSIVE / SPECTRAL
+  # ===========================================================================
+
+  cassi_graph_v1:
+    description: "Single-disperser CASSI: coded mask + spectral dispersion + integration + noise"
+    metadata:
+      modality: cassi
+      x_shape: [64, 64, 8]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: modulate
+        primitive_id: coded_mask
+        params:
+          seed: 42
+          H: 64
+          W: 64
+        learnable: []
+      - node_id: disperse
+        primitive_id: spectral_dispersion
+        params:
+          disp_step: 1.0
+        learnable: [disp_step]
+      - node_id: integrate
+        primitive_id: frame_integration
+        params:
+          axis: -1
+          T: 8
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: modulate
+        target: disperse
+      - source: disperse
+        target: integrate
+      - source: integrate
+        target: noise
+
+  spc_graph_v1:
+    description: "Single-pixel camera: random measurement matrix"
+    metadata:
+      modality: spc
+      x_shape: [64, 64]
+      y_shape: [614]
+    nodes:
+      - node_id: measure
+        primitive_id: random_mask
+        params:
+          seed: 42
+          H: 64
+          W: 64
+          sampling_rate: 0.15
+      - node_id: noise
+        primitive_id: gaussian
+        params:
+          sigma: 0.01
+          seed: 0
+    edges:
+      - source: measure
+        target: noise
+
+  cacti_graph_v1:
+    description: "CACTI snapshot compressive imaging: temporal coded mask + integration"
+    metadata:
+      modality: cacti
+      x_shape: [64, 64, 8]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: mask
+        primitive_id: temporal_mask
+        params:
+          H: 64
+          W: 64
+          T: 8
+          seed: 42
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: mask
+        target: noise
+
+  matrix_graph_v1:
+    description: "Generic matrix operator (A @ x): random measurement"
+    metadata:
+      modality: matrix
+      x_shape: [64, 64]
+      y_shape: [1024]
+    nodes:
+      - node_id: project
+        primitive_id: random_mask
+        params:
+          seed: 42
+          H: 64
+          W: 64
+          sampling_rate: 0.25
+      - node_id: noise
+        primitive_id: gaussian
+        params:
+          sigma: 0.01
+          seed: 0
+    edges:
+      - source: project
+        target: noise
+
+  # ===========================================================================
+  # TOMOGRAPHY / MRI
+  # ===========================================================================
+
+  ct_graph_v1:
+    description: "CT: Radon transform (sinogram projection) + noise"
+    metadata:
+      modality: ct
+      x_shape: [64, 64]
+      y_shape: [180, 64]
+    nodes:
+      - node_id: radon
+        primitive_id: ct_radon
+        params:
+          n_angles: 180
+          H: 64
+          W: 64
+        learnable: []
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 100000.0
+          read_sigma: 0.005
+          seed: 0
+    edges:
+      - source: radon
+        target: noise
+
+  mri_graph_v1:
+    description: "MRI: k-space undersampling + noise"
+    metadata:
+      modality: mri
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: kspace
+        primitive_id: mri_kspace
+        params:
+          H: 64
+          W: 64
+          sampling_rate: 0.25
+          seed: 42
+        learnable: []
+      - node_id: noise
+        primitive_id: gaussian
+        params:
+          sigma: 0.005
+          seed: 0
+    edges:
+      - source: kspace
+        target: noise
+
+  # ===========================================================================
+  # PHASE / HOLOGRAPHY / COHERENT
+  # ===========================================================================
+
+  ptychography_graph_v1:
+    description: "Ptychography: probe modulation + Fresnel propagation + intensity detection"
+    metadata:
+      modality: ptychography
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: probe
+        primitive_id: coded_mask
+        params:
+          seed: 42
+          H: 64
+          W: 64
+        learnable: []
+      - node_id: propagate
+        primitive_id: fresnel_prop
+        params:
+          wavelength: 0.5e-6
+          distance: 1.0e-3
+          pixel_size: 1.0e-6
+        learnable: [distance]
+      - node_id: detect
+        primitive_id: magnitude_sq
+        params: {}
+      - node_id: noise
+        primitive_id: poisson
+        params:
+          peak_photons: 10000.0
+          seed: 0
+    edges:
+      - source: probe
+        target: propagate
+      - source: propagate
+        target: detect
+      - source: detect
+        target: noise
+
+  holography_graph_v1:
+    description: "Off-axis digital holography: propagation + reference interference + detection"
+    metadata:
+      modality: holography
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: propagate
+        primitive_id: fresnel_prop
+        params:
+          wavelength: 0.633e-6
+          distance: 5.0e-3
+          pixel_size: 3.45e-6
+        learnable: [distance]
+      - node_id: detect
+        primitive_id: magnitude_sq
+        params: {}
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 50000.0
+          read_sigma: 0.005
+          seed: 0
+    edges:
+      - source: propagate
+        target: detect
+      - source: detect
+        target: noise
+
+  phase_retrieval_graph_v1:
+    description: "Phase retrieval (CDI): Fourier modulus measurement"
+    metadata:
+      modality: phase_retrieval
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: propagate
+        primitive_id: angular_spectrum
+        params:
+          wavelength: 0.5e-6
+          distance: 1.0e-3
+          pixel_size: 1.0e-6
+      - node_id: detect
+        primitive_id: magnitude_sq
+        params: {}
+      - node_id: noise
+        primitive_id: poisson
+        params:
+          peak_photons: 10000.0
+          seed: 0
+    edges:
+      - source: propagate
+        target: detect
+      - source: detect
+        target: noise
+
+  fpm_graph_v1:
+    description: "Fourier ptychographic microscopy: multi-angle illumination + low-NA capture"
+    metadata:
+      modality: fpm
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: illuminate
+        primitive_id: sim_pattern
+        params:
+          H: 64
+          W: 64
+          freq: 0.05
+          angle: 0.0
+          phase: 0.0
+        learnable: [freq, angle]
+      - node_id: blur
+        primitive_id: conv2d
+        params:
+          sigma: 3.0
+          mode: reflect
+      - node_id: detect
+        primitive_id: magnitude_sq
+        params: {}
+      - node_id: noise
+        primitive_id: poisson
+        params:
+          peak_photons: 10000.0
+          seed: 0
+    edges:
+      - source: illuminate
+        target: blur
+      - source: blur
+        target: detect
+      - source: detect
+        target: noise
+
+  # ===========================================================================
+  # RENDERING / 3D
+  # ===========================================================================
+
+  nerf_graph_v1:
+    description: "NeRF volumetric rendering: ray tracing + integration"
+    metadata:
+      modality: nerf
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: trace
+        primitive_id: ray_trace
+        params:
+          focal_length: 50.0
+          magnification: 1.0
+      - node_id: noise
+        primitive_id: gaussian
+        params:
+          sigma: 0.01
+          seed: 0
+    edges:
+      - source: trace
+        target: noise
+
+  gaussian_splatting_graph_v1:
+    description: "3D Gaussian splatting: projection + PSF + noise"
+    metadata:
+      modality: gaussian_splatting
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: project
+        primitive_id: ray_trace
+        params:
+          focal_length: 35.0
+          magnification: 1.0
+      - node_id: blur
+        primitive_id: conv2d
+        params:
+          sigma: 1.0
+          mode: constant
+      - node_id: noise
+        primitive_id: gaussian
+        params:
+          sigma: 0.01
+          seed: 0
+    edges:
+      - source: project
+        target: blur
+      - source: blur
+        target: noise
+
+  # ===========================================================================
+  # LENSLESS / COMPUTATIONAL
+  # ===========================================================================
+
+  lensless_graph_v1:
+    description: "Lensless imaging: PSF convolution (from calibrated mask/diffuser)"
+    metadata:
+      modality: lensless
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: psf_conv
+        primitive_id: conv2d
+        params:
+          sigma: 5.0
+          mode: constant
+        learnable: [sigma]
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 20000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: psf_conv
+        target: noise
+
+  panorama_graph_v1:
+    description: "Panoramic imaging: geometric warping + stitching blur"
+    metadata:
+      modality: panorama
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: warp
+        primitive_id: motion_warp
+        params:
+          dx: 2.0
+          dy: 1.0
+        learnable: [dx, dy]
+      - node_id: blur
+        primitive_id: conv2d
+        params:
+          sigma: 1.0
+          mode: reflect
+      - node_id: noise
+        primitive_id: gaussian
+        params:
+          sigma: 0.01
+          seed: 0
+    edges:
+      - source: warp
+        target: blur
+      - source: blur
+        target: noise
+
+  light_field_graph_v1:
+    description: "Light field: multi-view integration + disparity shift"
+    metadata:
+      modality: light_field
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: shift
+        primitive_id: motion_warp
+        params:
+          dx: 0.5
+          dy: 0.5
+        learnable: [dx, dy]
+      - node_id: blur
+        primitive_id: conv2d
+        params:
+          sigma: 1.5
+          mode: reflect
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 20000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: shift
+        target: blur
+      - source: blur
+        target: noise
+
+  # ===========================================================================
+  # BIOMEDICAL IMAGING
+  # ===========================================================================
+
+  dot_graph_v1:
+    description: "Diffuse optical tomography: diffusion + boundary detection"
+    metadata:
+      modality: dot
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: diffuse
+        primitive_id: conv2d
+        params:
+          sigma: 8.0
+          mode: constant
+        learnable: [sigma]
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 5000.0
+          read_sigma: 0.02
+          seed: 0
+    edges:
+      - source: diffuse
+        target: noise
+
+  photoacoustic_graph_v1:
+    description: "Photoacoustic imaging: optical absorption + acoustic propagation"
+    metadata:
+      modality: photoacoustic
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: absorb
+        primitive_id: identity
+        params: {}
+      - node_id: propagate
+        primitive_id: conv2d
+        params:
+          sigma: 3.0
+          mode: constant
+        learnable: [sigma]
+      - node_id: noise
+        primitive_id: gaussian
+        params:
+          sigma: 0.02
+          seed: 0
+    edges:
+      - source: absorb
+        target: propagate
+      - source: propagate
+        target: noise
+
+  oct_graph_v1:
+    description: "OCT: spectral interferometry + log compression"
+    metadata:
+      modality: oct
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: interfere
+        primitive_id: identity
+        params: {}
+      - node_id: blur
+        primitive_id: conv2d
+        params:
+          sigma: 1.0
+          mode: reflect
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 50000.0
+          read_sigma: 0.005
+          seed: 0
+    edges:
+      - source: interfere
+        target: blur
+      - source: blur
+        target: noise
+
+  flim_graph_v1:
+    description: "Fluorescence lifetime imaging: temporal decay + gated detection"
+    metadata:
+      modality: flim
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: blur
+        primitive_id: conv2d
+        params:
+          sigma: 2.0
+          mode: reflect
+        learnable: [sigma]
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 3000.0
+          read_sigma: 0.03
+          seed: 0
+    edges:
+      - source: blur
+        target: noise
+
+  integral_graph_v1:
+    description: "Integral imaging: microlens array + multi-view integration"
+    metadata:
+      modality: integral
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: shift
+        primitive_id: motion_warp
+        params:
+          dx: 0.3
+          dy: 0.3
+        learnable: [dx, dy]
+      - node_id: blur
+        primitive_id: conv2d
+        params:
+          sigma: 2.0
+          mode: reflect
+      - node_id: noise
+        primitive_id: poisson_gaussian
+        params:
+          peak_photons: 15000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: shift
+        target: blur
+      - source: blur
+        target: noise
