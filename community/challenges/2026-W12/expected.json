@@ -1,0 +1,25 @@
+{
+  "challenge_version": "1.0.0",
+  "week_id": "2026-W12",
+  "modality": "ct",
+  "casepack_id": "ct_conebeam_lowdose_scatter_v1",
+  "primary_metric": "psnr_db",
+  "secondary_metric": "ssim",
+  "reference_metrics": {
+    "psnr_db": 27.97,
+    "ssim": 0.85,
+    "runtime_s": 15.0
+  },
+  "thresholds": {
+    "psnr_db_min": 18.0,
+    "ssim_min": 0.4,
+    "runtime_s_max": 180.0
+  },
+  "data_generation": {
+    "script": "generate_data.py",
+    "seed": 42,
+    "dims": {"H": 128, "W": 128},
+    "n_angles": 30,
+    "notes": "Sparse-angle parallel-beam CT with Poisson noise"
+  }
+}

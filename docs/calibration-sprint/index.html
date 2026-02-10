@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWM Calibration Sprint - Physics World Model</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-bg: #fafbfc;
+      --color-surface: #ffffff;
+      --color-primary: #1a56db;
+      --color-primary-light: #e8eefb;
+      --color-text: #1f2937;
+      --color-text-muted: #6b7280;
+      --color-border: #e5e7eb;
+      --color-accent: #059669;
+      --max-width: 960px;
+      --radius: 8px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+    }
+
+    /* ---- Header ---- */
+    header {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    header p {
+      font-size: 1.15rem;
+      opacity: 0.9;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    /* ---- Container ---- */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* ---- Section ---- */
+    section { margin-bottom: 3rem; }
+    section h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--color-primary);
+    }
+    section p, section li {
+      color: var(--color-text);
+      margin-bottom: 0.5rem;
+    }
+
+    /* ---- Cards ---- */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+    .card h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .card p {
+      font-size: 0.95rem;
+      color: var(--color-text-muted);
+    }
+
+    /* ---- Pricing ---- */
+    .pricing-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    .pricing-table th, .pricing-table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .pricing-table th {
+      background: var(--color-primary-light);
+      font-weight: 600;
+    }
+    .pricing-table tr:last-child td { border-bottom: none; }
+
+    /* ---- Steps ---- */
+    .steps {
+      list-style: none;
+      counter-reset: step-counter;
+      margin-top: 1rem;
+    }
+    .steps li {
+      counter-increment: step-counter;
+      padding: 0.75rem 0 0.75rem 3rem;
+      position: relative;
+    }
+    .steps li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0.65rem;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: var(--color-primary);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ---- CTA ---- */
+    .cta {
+      display: inline-block;
+      background: var(--color-primary);
+      color: #fff;
+      padding: 0.75rem 2rem;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+    .cta:hover { background: #1444b3; }
+
+    .cta-section {
+      text-align: center;
+      padding: 2rem 0;
+    }
+
+    /* ---- Footer ---- */
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      color: var(--color-text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--color-border);
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 640px) {
+      header h1 { font-size: 1.75rem; }
+      header p { font-size: 1rem; }
+      .cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>PWM Calibration Sprint</h1>
+  <p>
+    Expert calibration and operator tuning for your computational imaging
+    system, delivered as a reproducible RunBundle in 5 business days.
+  </p>
+</header>
+
+<div class="container">
+
+  <section>
+    <h2>What Is a Calibration Sprint?</h2>
+    <p>
+      A Calibration Sprint is a focused engagement where our team takes your
+      imaging system's measurement data, calibrates the physics forward model,
+      and delivers tuned operator parameters that maximize reconstruction
+      quality.
+    </p>
+    <p>
+      You receive a complete RunBundle (v0.3.0) with calibrated parameters,
+      reconstruction results, quality metrics, and actionable recommendations
+      for your specific hardware and application.
+    </p>
+  </section>
+
+  <section>
+    <h2>What's Included</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Operator Calibration</h3>
+        <p>
+          Fit forward-model parameters (dispersion, PSF, gain, shift, mask
+          alignment) to your measured data using PWM's UPWMI calibration loop.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Solver Benchmarking</h3>
+        <p>
+          Run your data through multiple solver portfolios (GAP-TV, PnP-HQS,
+          FISTA-TV, etc.) and identify the best solver + hyperparameters.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Quality Report</h3>
+        <p>
+          Detailed report with PSNR, SSIM, runtime, parameter sensitivity
+          analysis, and before/after comparisons.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Reproducible RunBundle</h3>
+        <p>
+          All results packaged as a RunBundle with full provenance: git hash,
+          seeds, platform info, SHA256 artifact hashes.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Recommendations</h3>
+        <p>
+          Actionable next steps: measurement protocol improvements, suggested
+          hardware changes, advanced solver configurations.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Follow-Up Support</h3>
+        <p>
+          30-minute debrief call to walk through results and answer questions
+          about integrating calibrated parameters into your pipeline.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>How It Works</h2>
+    <ol class="steps">
+      <li>
+        <strong>Intake:</strong> Fill out the
+        <a href="intake-form.html">intake form</a> with your system
+        description and upload measurement data.
+      </li>
+      <li>
+        <strong>Assessment:</strong> We review your data and confirm scope,
+        timeline, and pricing within 1 business day.
+      </li>
+      <li>
+        <strong>Calibration:</strong> Our team runs the calibration pipeline,
+        benchmarks solvers, and tunes parameters (3-4 business days).
+      </li>
+      <li>
+        <strong>Delivery:</strong> You receive the RunBundle, quality report,
+        and recommendations. We schedule a debrief call.
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Supported Modalities</h2>
+    <p>We support all 26 imaging modalities in the PWM framework, including:</p>
+    <div class="cards">
+      <div class="card">
+        <h3>Compressive Imaging</h3>
+        <p>CASSI, SPC, CACTI, Lensless</p>
+      </div>
+      <div class="card">
+        <h3>Microscopy</h3>
+        <p>Widefield, Confocal, SIM, Light-Sheet</p>
+      </div>
+      <div class="card">
+        <h3>Medical</h3>
+        <p>CT, MRI, OCT, Photoacoustic</p>
+      </div>
+      <div class="card">
+        <h3>Coherent &amp; Neural</h3>
+        <p>Ptychography, Holography, NeRF, 3DGS, FPM</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Pricing</h2>
+    <table class="pricing-table">
+      <thead>
+        <tr>
+          <th>Tier</th>
+          <th>Scope</th>
+          <th>Turnaround</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Standard</strong></td>
+          <td>Single modality, 1 dataset, up to 3 solver configs</td>
+          <td>5 business days</td>
+          <td>Contact us</td>
+        </tr>
+        <tr>
+          <td><strong>Extended</strong></td>
+          <td>Single modality, up to 5 datasets, full solver sweep</td>
+          <td>10 business days</td>
+          <td>Contact us</td>
+        </tr>
+        <tr>
+          <td><strong>Enterprise</strong></td>
+          <td>Multiple modalities, custom integration, ongoing support</td>
+          <td>Custom</td>
+          <td>Contact us</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Example Deliverable</h2>
+    <p>
+      See an anonymized example of a completed Calibration Sprint report:
+      <a href="example-report/report.md">Example Report</a>.
+    </p>
+  </section>
+
+  <section class="cta-section">
+    <a href="intake-form.html" class="cta">Start Your Calibration Sprint</a>
+  </section>
+
+</div>
+
+<footer>
+  Physics World Model (PWM) &mdash; Calibration Sprint Service
+</footer>
+
+</body>
+</html>

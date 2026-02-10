@@ -1,0 +1,24 @@
+{
+  "challenge_version": "1.0.0",
+  "week_id": "2026-W10",
+  "modality": "cassi",
+  "casepack_id": "cassi_spectral_imaging_v1",
+  "primary_metric": "psnr_db",
+  "secondary_metric": "ssim",
+  "reference_metrics": {
+    "psnr_db": 30.60,
+    "ssim": 0.91,
+    "runtime_s": 12.0
+  },
+  "thresholds": {
+    "psnr_db_min": 20.0,
+    "ssim_min": 0.5,
+    "runtime_s_max": 300.0
+  },
+  "data_generation": {
+    "script": "generate_data.py",
+    "seed": 42,
+    "dims": {"H": 64, "W": 64, "L": 8},
+    "notes": "Synthetic CASSI snapshot with Poisson noise and read noise sigma=5.0"
+  }
+}
