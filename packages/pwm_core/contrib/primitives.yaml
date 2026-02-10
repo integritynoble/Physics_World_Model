@@ -1,0 +1,571 @@
+# =============================================================================
+# PWM Primitive Operator Registry
+# ~30 primitives with: primitive_id, family, description, parameter_schema,
+# is_linear flag, adjoint_available flag.
+#
+# ID format: <family>_<name> (lowercase, underscores only)
+# See docs/contracts/registry_conventions.md
+# =============================================================================
+
+version: "1.0"
+
+primitives:
+
+  # ===========================================================================
+  # PROPAGATION FAMILY
+  # ===========================================================================
+
+  fresnel_prop:
+    family: propagation
+    description: >
+      Fresnel propagation via single-FFT method. Simulates free-space
+      wave propagation under the paraxial (Fresnel) approximation.
+    parameter_schema:
+      wavelength:
+        type: float
+        default: 0.5e-6
+        description: "Wavelength in meters"
+      distance:
+        type: float
+        default: 1.0e-3
+        description: "Propagation distance in meters"
+      pixel_size:
+        type: float
+        default: 1.0e-6
+        description: "Pixel pitch in meters"
+    is_linear: true
+    adjoint_available: true
+
+  angular_spectrum:
+    family: propagation
+    description: >
+      Angular-spectrum propagation using the full transfer function.
+      Valid for arbitrary propagation distances (no paraxial restriction).
+    parameter_schema:
+      wavelength:
+        type: float
+        default: 0.5e-6
+        description: "Wavelength in meters"
+      distance:
+        type: float
+        default: 1.0e-3
+        description: "Propagation distance in meters"
+      pixel_size:
+        type: float
+        default: 1.0e-6
+        description: "Pixel pitch in meters"
+    is_linear: true
+    adjoint_available: true
+
+  ray_trace:
+    family: propagation
+    description: >
+      Simplified ray-tracing as geometric warping (thin-lens model).
+      Approximates geometric optics with magnification scaling.
+    parameter_schema:
+      focal_length:
+        type: float
+        default: 50.0
+        description: "Focal length in mm"
+      magnification:
+        type: float
+        default: 1.0
+        description: "Geometric magnification factor"
+    is_linear: true
+    adjoint_available: true
+
+  # ===========================================================================
+  # PSF / CONVOLUTION FAMILY
+  # ===========================================================================
+
+  conv2d:
+    family: psf_convolution
+    description: >
+      2D convolution with symmetric Gaussian PSF. Self-adjoint when
+      the PSF kernel is real and symmetric.
+    parameter_schema:
+      sigma:
+        type: float
+        default: 2.0
+        description: "Gaussian blur sigma in pixels"
+      mode:
+        type: str
+        default: "reflect"
+        description: "Boundary handling mode"
+    is_linear: true
+    adjoint_available: true
+
+  conv3d:
+    family: psf_convolution
+    description: >
+      3D convolution with isotropic Gaussian PSF. Used for volumetric
+      microscopy modalities (confocal, light-sheet).
+    parameter_schema:
+      sigma:
+        type: list_float
+        default: [2.0, 2.0, 2.0]
+        description: "Gaussian blur sigma per axis in pixels"
+      mode:
+        type: str
+        default: "reflect"
+        description: "Boundary handling mode"
+    is_linear: true
+    adjoint_available: true
+
+  deconv_rl:
+    family: psf_convolution
+    description: >
+      Richardson-Lucy deconvolution (iterative, non-linear). Used as
+      a reconstruction primitive for widefield microscopy.
+    parameter_schema:
+      sigma:
+        type: float
+        default: 2.0
+        description: "PSF sigma in pixels"
+      n_iter:
+        type: int
+        default: 10
+        description: "Number of RL iterations"
+      mode:
+        type: str
+        default: "reflect"
+        description: "Boundary handling mode"
+    is_linear: false
+    adjoint_available: false
+
+  # ===========================================================================
+  # MODULATION FAMILY
+  # ===========================================================================
+
+  coded_mask:
+    family: modulation
+    description: >
+      Element-wise coded aperture masking. Multiplies the signal by a
+      binary/float 2D mask pattern (e.g. CASSI coded aperture).
+    parameter_schema:
+      mask:
+        type: ndarray
+        default: null
+        description: "(H, W) mask array. If null, random binary mask is generated."
+      seed:
+        type: int
+        default: 42
+        description: "Random seed for mask generation"
+      H:
+        type: int
+        default: 64
+        description: "Mask height"
+      W:
+        type: int
+        default: 64
+        description: "Mask width"
+    is_linear: true
+    adjoint_available: true
+
+  dmd_pattern:
+    family: modulation
+    description: >
+      DMD (digital micromirror device) pattern modulation. Binary +/-1
+      pattern used in single-pixel camera and structured illumination.
+    parameter_schema:
+      pattern:
+        type: ndarray
+        default: null
+        description: "(H, W) DMD pattern. If null, random +/-1 pattern generated."
+      seed:
+        type: int
+        default: 42
+        description: "Random seed"
+      H:
+        type: int
+        default: 64
+        description: "Pattern height"
+      W:
+        type: int
+        default: 64
+        description: "Pattern width"
+    is_linear: true
+    adjoint_available: true
+
+  sim_pattern:
+    family: modulation
+    description: >
+      Structured illumination microscopy (SIM) sinusoidal pattern.
+      Generates cos(2*pi*freq*(x*cos(angle)+y*sin(angle))+phase) pattern.
+    parameter_schema:
+      H:
+        type: int
+        default: 64
+        description: "Image height"
+      W:
+        type: int
+        default: 64
+        description: "Image width"
+      freq:
+        type: float
+        default: 0.1
+        description: "Pattern spatial frequency (cycles/pixel)"
+      angle:
+        type: float
+        default: 0.0
+        description: "Pattern angle in radians"
+      phase:
+        type: float
+        default: 0.0
+        description: "Pattern phase offset in radians"
+    is_linear: true
+    adjoint_available: true
+
+  # ===========================================================================
+  # WARP / DISPERSION FAMILY
+  # ===========================================================================
+
+  spectral_dispersion:
+    family: warp_dispersion
+    description: >
+      Spectral dispersion shift: each wavelength band is shifted by
+      disp_step * band_index pixels along the spatial axis.
+    parameter_schema:
+      disp_step:
+        type: float
+        default: 1.0
+        description: "Dispersion step in pixels per spectral band"
+    is_linear: true
+    adjoint_available: true
+
+  chromatic_warp:
+    family: warp_dispersion
+    description: >
+      Wavelength-dependent geometric warping (chromatic aberration).
+      Each spectral band is zoomed by a band-dependent factor.
+    parameter_schema:
+      warp_coeff:
+        type: float
+        default: 0.01
+        description: "Chromatic warp coefficient"
+    is_linear: true
+    adjoint_available: true
+
+  # ===========================================================================
+  # SAMPLING FAMILY
+  # ===========================================================================
+
+  random_mask:
+    family: sampling
+    description: >
+      Random measurement matrix (Hadamard-like +/-1 patterns normalized
+      by sqrt(N)). Used for single-pixel camera and compressed sensing.
+    parameter_schema:
+      seed:
+        type: int
+        default: 42
+        description: "Random seed for measurement matrix"
+      H:
+        type: int
+        default: 64
+        description: "Image height"
+      W:
+        type: int
+        default: 64
+        description: "Image width"
+      sampling_rate:
+        type: float
+        default: 0.25
+        description: "Fraction of measurements (M/N)"
+    is_linear: true
+    adjoint_available: true
+
+  ct_radon:
+    family: sampling
+    description: >
+      Radon transform (CT sinogram projection). Computes line integrals
+      at multiple angles to produce a sinogram.
+    parameter_schema:
+      n_angles:
+        type: int
+        default: 180
+        description: "Number of projection angles"
+      H:
+        type: int
+        default: 64
+        description: "Image height"
+      W:
+        type: int
+        default: 64
+        description: "Image width"
+    is_linear: true
+    adjoint_available: true
+
+  mri_kspace:
+    family: sampling
+    description: >
+      MRI k-space undersampling. FFT followed by binary mask with
+      fully-sampled calibration center region.
+    parameter_schema:
+      H:
+        type: int
+        default: 64
+        description: "Image height"
+      W:
+        type: int
+        default: 64
+        description: "Image width"
+      sampling_rate:
+        type: float
+        default: 0.25
+        description: "k-space sampling rate"
+      seed:
+        type: int
+        default: 42
+        description: "Random seed for mask"
+    is_linear: true
+    adjoint_available: true
+
+  temporal_mask:
+    family: sampling
+    description: >
+      Time-varying coded aperture masking (CACTI-style). Each temporal
+      frame is modulated by a shifted version of a base binary mask.
+    parameter_schema:
+      H:
+        type: int
+        default: 64
+        description: "Image height"
+      W:
+        type: int
+        default: 64
+        description: "Image width"
+      T:
+        type: int
+        default: 8
+        description: "Number of temporal frames"
+      seed:
+        type: int
+        default: 42
+        description: "Random seed for base mask"
+    is_linear: true
+    adjoint_available: true
+
+  # ===========================================================================
+  # NONLINEARITY FAMILY
+  # ===========================================================================
+
+  magnitude_sq:
+    family: nonlinearity
+    description: >
+      Compute |x|^2 (intensity from complex field). Used in holography,
+      phase retrieval, and interferometric modalities.
+    parameter_schema: {}
+    is_linear: false
+    adjoint_available: false
+
+  saturation:
+    family: nonlinearity
+    description: >
+      Soft saturation: clips signal to [0, max_val] range. Models
+      detector saturation.
+    parameter_schema:
+      max_val:
+        type: float
+        default: 1.0
+        description: "Maximum saturation value"
+    is_linear: false
+    adjoint_available: false
+
+  log_compress:
+    family: nonlinearity
+    description: >
+      Logarithmic compression: log(1 + alpha * x). Used in OCT
+      and ultrasound for dynamic range compression.
+    parameter_schema:
+      alpha:
+        type: float
+        default: 1.0
+        description: "Compression coefficient"
+    is_linear: false
+    adjoint_available: false
+
+  # ===========================================================================
+  # NOISE FAMILY
+  # ===========================================================================
+
+  poisson:
+    family: noise
+    description: >
+      Poisson (shot) noise model. Signal-dependent noise that dominates
+      in photon-limited imaging.
+    parameter_schema:
+      peak_photons:
+        type: float
+        default: 10000.0
+        description: "Peak photon count for scaling"
+      seed:
+        type: int
+        default: 0
+        description: "Random seed"
+    is_linear: false
+    adjoint_available: false
+
+  gaussian:
+    family: noise
+    description: >
+      Additive Gaussian noise. Models read noise in electronic detectors.
+    parameter_schema:
+      sigma:
+        type: float
+        default: 0.01
+        description: "Noise standard deviation"
+      seed:
+        type: int
+        default: 0
+        description: "Random seed"
+    is_linear: false
+    adjoint_available: false
+
+  poisson_gaussian:
+    family: noise
+    description: >
+      Mixed Poisson-Gaussian noise (shot + read noise). Standard
+      camera noise model for scientific detectors.
+    parameter_schema:
+      peak_photons:
+        type: float
+        default: 10000.0
+        description: "Peak photon count"
+      read_sigma:
+        type: float
+        default: 0.01
+        description: "Read noise sigma"
+      seed:
+        type: int
+        default: 0
+        description: "Random seed"
+    is_linear: false
+    adjoint_available: false
+
+  fpn:
+    family: noise
+    description: >
+      Fixed-pattern noise (multiplicative gain + additive offset).
+      Models pixel-to-pixel detector non-uniformity.
+    parameter_schema:
+      H:
+        type: int
+        default: 64
+        description: "Image height"
+      W:
+        type: int
+        default: 64
+        description: "Image width"
+      gain_sigma:
+        type: float
+        default: 0.02
+        description: "Gain variation sigma"
+      offset_sigma:
+        type: float
+        default: 0.01
+        description: "Offset variation sigma"
+      seed:
+        type: int
+        default: 42
+        description: "Random seed"
+    is_linear: false
+    adjoint_available: false
+
+  # ===========================================================================
+  # TEMPORAL FAMILY
+  # ===========================================================================
+
+  frame_integration:
+    family: temporal
+    description: >
+      Sum (integrate) along the temporal or spectral axis. Models
+      detector integration over exposure time.
+    parameter_schema:
+      axis:
+        type: int
+        default: -1
+        description: "Axis to sum along"
+      T:
+        type: int
+        default: 8
+        description: "Number of frames (for adjoint expansion)"
+    is_linear: true
+    adjoint_available: true
+
+  motion_warp:
+    family: temporal
+    description: >
+      Shift image by (dx, dy) to simulate inter-frame motion.
+      Models sample drift or scanner movement.
+    parameter_schema:
+      dx:
+        type: float
+        default: 0.0
+        description: "Horizontal shift in pixels"
+      dy:
+        type: float
+        default: 0.0
+        description: "Vertical shift in pixels"
+    is_linear: true
+    adjoint_available: true
+
+  # ===========================================================================
+  # READOUT FAMILY
+  # ===========================================================================
+
+  quantize:
+    family: readout
+    description: >
+      ADC quantization to fixed bit depth. Rounds the signal to
+      discrete levels determined by bit_depth.
+    parameter_schema:
+      bit_depth:
+        type: int
+        default: 16
+        description: "ADC bit depth"
+    is_linear: false
+    adjoint_available: false
+
+  adc_clip:
+    family: readout
+    description: >
+      Clip signal to ADC range [0, full_well]. Models detector
+      full-well capacity.
+    parameter_schema:
+      full_well:
+        type: float
+        default: 1.0
+        description: "Full well capacity"
+    is_linear: false
+    adjoint_available: false
+
+  # ===========================================================================
+  # UTILITY
+  # ===========================================================================
+
+  identity:
+    family: utility
+    description: >
+      Identity / pass-through primitive. No-op that copies input to output.
+      Useful as a placeholder in graph templates.
+    parameter_schema: {}
+    is_linear: true
+    adjoint_available: true
+
+  sum_axis:
+    family: utility
+    description: >
+      Sum (reduce) along a specified axis. General-purpose reduction
+      used in multi-band integration.
+    parameter_schema:
+      axis:
+        type: int
+        default: -1
+        description: "Axis to sum along"
+      n:
+        type: int
+        default: 8
+        description: "Size along axis (for adjoint expansion)"
+    is_linear: true
+    adjoint_available: true

@@ -8,6 +8,7 @@ Commands (starter):
 - pwm fit-operator --y y.npy --operator cassi --out out_dir
 - pwm calib-recon --y y.npy --operator cassi --out out_dir
 - pwm view <runbundle_dir>
+- pwm demo <modality> [--preset NAME] [--run] [--open-viewer] [--export-sharepack]
 """
 
 from __future__ import annotations
@@ -185,6 +186,10 @@ def build_parser():
     p_view = sub.add_parser("view", help="Launch local viewer for a RunBundle")
     p_view.add_argument("runbundle_dir", help="Path to RunBundle directory")
     p_view.set_defaults(func=cmd_view)
+
+    # --- demo subcommand ---
+    from pwm_core.cli.demo import add_demo_subparser, cmd_demo
+    add_demo_subparser(sub)
 
     return p
 
