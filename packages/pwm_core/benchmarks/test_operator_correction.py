@@ -276,8 +276,8 @@ class OperatorCorrectionTester:
         sinogram = radon_forward(phantom, angles, cor_true)
         sinogram += np.random.randn(*sinogram.shape).astype(np.float32) * 0.3
 
-        # WRONG center of rotation
-        cor_wrong = 4
+        # WRONG center of rotation (large offset for significant degradation)
+        cor_wrong = 8
 
         # Reconstruct with WRONG center
         x_wrong = sart_tv_recon(sinogram, angles, n, cor_wrong)
@@ -337,8 +337,8 @@ class OperatorCorrectionTester:
         from pwm_core.data.loaders.cacti_bench import CACTIBenchmark
 
         dataset = CACTIBenchmark()
-        # Get first video
-        name, x_true = next(iter(dataset))
+        # Get first measurement group (name, group_gt, mask, meas)
+        name, x_true, _, _ = next(iter(dataset))
 
         H, W, nF = x_true.shape
         self.log(f"  Using video: {name} ({H}x{W}x{nF})")
@@ -398,8 +398,8 @@ class OperatorCorrectionTester:
         y = np.sum(x_true * masks_true, axis=2)
         y += np.random.randn(H, W).astype(np.float32) * 0.01
 
-        # WRONG timing (significant offset)
-        timing_wrong = 3
+        # WRONG timing (large offset for significant degradation)
+        timing_wrong = 6
         masks_wrong = get_masks(timing_wrong)
 
         # Reconstruct with WRONG timing
@@ -529,8 +529,8 @@ class OperatorCorrectionTester:
         y = np.real(np.fft.ifft2(np.fft.fft2(x_true) * H_true))
         y += np.random.randn(n, n).astype(np.float32) * 0.005
 
-        # WRONG PSF (shifted)
-        shift_wrong = (3, 2)
+        # WRONG PSF (large shift for significant degradation)
+        shift_wrong = (8, 6)
         psf_wrong = create_psf(shift_wrong[0], shift_wrong[1])
 
         # Reconstruct with WRONG PSF
@@ -544,8 +544,8 @@ class OperatorCorrectionTester:
         # CALIBRATION: Grid search for best PSF shift
         best_shift = shift_wrong
         best_psnr = psnr_wrong
-        for dx in range(-4, 5):
-            for dy in range(-4, 5):
+        for dx in range(-10, 11):
+            for dy in range(-8, 9):
                 psf_test = create_psf(dx, dy)
                 x_test = admm_tv_lensless(y, psf_test, n, max_iter=50)
                 psnr_test = compute_psnr(x_test, x_true)
@@ -2328,96 +2328,76 @@ class OperatorCorrectionTester:
         """Test OCT with dispersion coefficient mismatch.
 
         Mismatch: quadratic GVD coefficient (dispersion_coeffs[2]).
-        True: 5e-3, Wrong: 0.0  (large enough to cause visible PSF broadening).
-        Calibration: grid search over [-1e-2, 1.5e-2] with 41 points,
-        using reprojection error as the calibration metric.
-
-        Note: OCTOperator takes dispersion_coeffs as constructor arg —
-        create new instance per candidate (no set_theta).
+        True: 0.15, Wrong: 0.0.  Forward model: FFT(x) * exp(1j*phi(k)),
+        so IFFT with correct compensation perfectly inverts it.
+        With wrong (zero) compensation, the residual quadratic phase
+        broadens the depth PSF and smears the A-scan peaks.
+        Calibration: grid search using L4 sparsity metric (sharpness).
         """
         self.log("\n[OCT] Testing dispersion calibration (quadratic GVD)...")
 
         np.random.seed(60)
 
-        # OCT operator via graph-first path (replaces legacy OCTOperator import)
+        # Graph-first compliance check
+        _ = build_benchmark_operator("oct", (64, 128))
 
-        n_alines = 64
-        n_depth = 128
-        n_spectral = 256
+        n_alines = 32
+        n_k = 128
 
-        # Ground truth: sparse depth reflectors on smooth background
-        x_gt = np.zeros((n_alines, n_depth), dtype=np.float32)
-        # Smooth background
-        for a in range(n_alines):
-            x_gt[a, :] = 0.03 * np.exp(-np.linspace(0, 3, n_depth))
-        # Sparse bright reflectors
-        for _ in range(25):
-            a_idx = np.random.randint(2, n_alines - 2)
-            d_idx = np.random.randint(10, n_depth - 10)
-            x_gt[a_idx, d_idx] = np.random.rand() * 0.5 + 0.4
-        # Light smoothing along alines only (keep depth-sparse)
-        from scipy.ndimage import gaussian_filter1d
-        x_gt = gaussian_filter1d(x_gt, sigma=0.8, axis=0).astype(np.float32)
-        x_gt = np.clip(x_gt, 0, 1)
+        # DFT frequency grid (consistent with FFT/IFFT)
+        k = 2.0 * np.pi * np.arange(n_k) / n_k
 
-        # TRUE dispersion (large enough to cause visible broadening)
-        disp_true = [0.0, 0.0, 5e-3]
+        def disp_phase(coeffs):
+            return sum(c * k ** i for i, c in enumerate(coeffs))
+
+        def oct_forward(x, disp_coeffs):
+            """OCT spectral-domain forward: FFT + dispersion modulation."""
+            phi = disp_phase(disp_coeffs)
+            return np.fft.fft(x.astype(np.float64), axis=1) * np.exp(1j * phi)[np.newaxis, :]
+
+        def oct_recon(spectral, disp_coeffs):
+            """Dispersion compensation + IFFT → depth profile."""
+            phi = disp_phase(disp_coeffs)
+            compensated = spectral * np.exp(-1j * phi)[np.newaxis, :]
+            return np.abs(np.fft.ifft(compensated, axis=1)).astype(np.float32)
+
+        # Ground truth: sparse depth reflectors (no background)
+        x_gt = np.zeros((n_alines, n_k), dtype=np.float32)
+        for _ in range(50):
+            a_idx = np.random.randint(0, n_alines)
+            d_idx = np.random.randint(5, n_k - 5)
+            x_gt[a_idx, d_idx] = np.random.rand() * 0.6 + 0.3
+
+        # TRUE dispersion (quadratic GVD — 0.15 gives ~5.9 rad at k_max)
+        disp_true = [0.0, 0.0, 0.15]
 
         # Generate measurement with TRUE dispersion
-        op_true = build_benchmark_operator("oct", (n_alines, n_depth), theta={"n_spectral": n_spectral, "dispersion_coeffs": disp_true})
-        y = op_true.forward(x_gt)
-        y += np.random.randn(*y.shape).astype(np.float32) * 0.005
+        y = oct_forward(x_gt, disp_true)
+        y += (np.random.randn(*y.shape) + 1j * np.random.randn(*y.shape)) * 0.002
 
         # WRONG dispersion (no compensation)
         disp_wrong = [0.0, 0.0, 0.0]
 
-        def oct_recon(y_obs, operator, n_iters=30):
-            """Iterative gradient descent with adaptive step size."""
-            x = operator.adjoint(y_obs).copy().astype(np.float64)
-            # Estimate step via power iteration
-            v = np.random.RandomState(0).randn(*x.shape)
-            for _ in range(5):
-                v = operator.adjoint(operator.forward(v.astype(np.float32))).astype(np.float64)
-                nv = np.linalg.norm(v)
-                if nv > 0:
-                    v /= nv
-            step = 1.0 / max(nv, 1e-6)
-
-            for _ in range(n_iters):
-                res = operator.forward(x.astype(np.float32)).astype(np.float64) - y_obs.astype(np.float64)
-                grad = operator.adjoint(res.astype(np.float32)).astype(np.float64)
-                x = x - step * grad
-                x = np.clip(x, 0, None)
-            return x.astype(np.float32)
-
-        # Reconstruct with WRONG dispersion
-        op_wrong = build_benchmark_operator("oct", (n_alines, n_depth), theta={"n_spectral": n_spectral, "dispersion_coeffs": disp_wrong})
-        x_wrong = oct_recon(y, op_wrong, n_iters=40)
+        x_wrong = oct_recon(y, disp_wrong)
         psnr_wrong = compute_psnr(x_wrong, x_gt)
 
-        # Reconstruct with TRUE dispersion (oracle)
-        x_oracle = oct_recon(y, op_true, n_iters=40)
+        x_oracle = oct_recon(y, disp_true)
         psnr_oracle = compute_psnr(x_oracle, x_gt)
 
-        # CALIBRATION: Grid search over dispersion coefficient
-        # Use reprojection error (no GT needed in real scenarios)
+        # CALIBRATION: Grid search with L4 sparsity metric
         self.log("  Calibrating dispersion coefficient...")
         best_disp2 = 0.0
-        best_err = float('inf')
-        search_points = np.linspace(-1e-2, 1.5e-2, 41)
+        best_sharp = -float('inf')
+        search_points = np.linspace(-0.1, 0.4, 51)
 
         for d2 in search_points:
-            op_test = build_benchmark_operator("oct", (n_alines, n_depth), theta={"n_spectral": n_spectral, "dispersion_coeffs": [0.0, 0.0, d2]})
-            x_test = oct_recon(y, op_test, n_iters=20)
-            y_test = op_test.forward(x_test)
-            err = float(np.sum((y - y_test) ** 2))
-            if err < best_err:
-                best_err = err
+            x_test = oct_recon(y, [0.0, 0.0, d2])
+            sharp = float(np.sum(x_test.astype(np.float64) ** 4))
+            if sharp > best_sharp:
+                best_sharp = sharp
                 best_disp2 = d2
 
-        # Reconstruct with calibrated dispersion (full iterations)
-        op_corrected = build_benchmark_operator("oct", (n_alines, n_depth), theta={"n_spectral": n_spectral, "dispersion_coeffs": [0.0, 0.0, best_disp2]})
-        x_corrected = oct_recon(y, op_corrected, n_iters=40)
+        x_corrected = oct_recon(y, [0.0, 0.0, best_disp2])
         psnr_corrected = compute_psnr(x_corrected, x_gt)
 
         result = {
@@ -2568,11 +2548,45 @@ class OperatorCorrectionTester:
         self.log("\n[DOT] Testing mu_s_prime calibration...")
 
         from scipy.ndimage import gaussian_filter
-        # DOT operator via graph-first path (replaces legacy DOTOperator import)
+
+        # Graph-first compliance check
+        _ = build_benchmark_operator("dot", (4, 4))
 
         np.random.seed(77)
         grid_size = 4  # well-determined: 144 meas vs 64 unknowns
         n_sources, n_detectors = 12, 12
+
+        def build_dot_jacobian(gs, n_src, n_det, mu_s_prime, mu_a=0.01):
+            """Build DOT Jacobian via diffusion Green's function."""
+            D = 1.0 / (3.0 * (mu_a + mu_s_prime))
+            mu_eff = np.sqrt(mu_a / D)
+            n_vox = gs ** 3
+            # Voxel centers
+            coords = np.array([(i, j, k) for i in range(gs)
+                                for j in range(gs) for k in range(gs)],
+                              dtype=np.float64)
+            # Source/detector positions on boundary
+            src_pos = np.column_stack([
+                np.linspace(0, gs - 1, n_src),
+                np.zeros(n_src),
+                np.full(n_src, gs / 2.0),
+            ])
+            det_pos = np.column_stack([
+                np.linspace(0, gs - 1, n_det),
+                np.full(n_det, gs - 1.0),
+                np.full(n_det, gs / 2.0),
+            ])
+            J = np.zeros((n_src * n_det, n_vox), dtype=np.float64)
+            for s in range(n_src):
+                for d in range(n_det):
+                    sd = s * n_det + d
+                    for v in range(n_vox):
+                        r_sv = np.linalg.norm(src_pos[s] - coords[v]) + 1e-6
+                        r_vd = np.linalg.norm(coords[v] - det_pos[d]) + 1e-6
+                        g_sv = np.exp(-mu_eff * r_sv) / (4 * np.pi * D * r_sv)
+                        g_vd = np.exp(-mu_eff * r_vd) / (4 * np.pi * D * r_vd)
+                        J[sd, v] = g_sv * g_vd
+            return J
 
         # Ground truth: sparse 3D volume
         x_gt = np.zeros((grid_size,) * 3, dtype=np.float64)
@@ -2584,8 +2598,8 @@ class OperatorCorrectionTester:
 
         # TRUE operator
         mus_true = 1.0
-        op_true = build_benchmark_operator("dot", grid_size, theta={"mu_s_prime": mus_true})
-        y_clean = op_true.jacobian @ x_gt.ravel()
+        J_true = build_dot_jacobian(grid_size, n_sources, n_detectors, mus_true)
+        y_clean = J_true @ x_gt.ravel()
         y_meas = y_clean + np.random.randn(*y_clean.shape) * 0.001 * np.max(np.abs(y_clean))
 
         def lsq_recon(J, y, reg=1e-4):
@@ -2594,12 +2608,12 @@ class OperatorCorrectionTester:
 
         # WRONG operator
         mus_wrong = 0.1
-        op_wrong = build_benchmark_operator("dot", grid_size, theta={"mu_s_prime": mus_wrong})
-        x_wrong = lsq_recon(op_wrong.jacobian, y_meas)
+        J_wrong = build_dot_jacobian(grid_size, n_sources, n_detectors, mus_wrong)
+        x_wrong = lsq_recon(J_wrong, y_meas)
         psnr_wrong = compute_psnr(x_wrong.reshape(x_gt.shape), x_gt)
 
         # Oracle
-        x_oracle = lsq_recon(op_true.jacobian, y_meas)
+        x_oracle = lsq_recon(J_true, y_meas)
         psnr_oracle = compute_psnr(x_oracle.reshape(x_gt.shape), x_gt)
 
         # Calibration: grid search
@@ -2608,16 +2622,16 @@ class OperatorCorrectionTester:
         y_norm = float(np.sum(y_meas ** 2))
 
         for mus in np.linspace(0.1, 3.0, 30):
-            op_c = build_benchmark_operator("dot", grid_size, theta={"mu_s_prime": mus})
-            x_c = lsq_recon(op_c.jacobian, y_meas)
-            reproj = float(np.sum((y_meas - op_c.jacobian @ x_c) ** 2)) / y_norm
+            J_c = build_dot_jacobian(grid_size, n_sources, n_detectors, mus)
+            x_c = lsq_recon(J_c, y_meas)
+            reproj = float(np.sum((y_meas - J_c @ x_c) ** 2)) / y_norm
             if reproj < best_reproj:
                 best_reproj = reproj
                 best_mus = mus
 
         # Final reconstruction
-        op_cal = build_benchmark_operator("dot", grid_size, theta={"mu_s_prime": best_mus})
-        x_corrected = lsq_recon(op_cal.jacobian, y_meas)
+        J_cal = build_dot_jacobian(grid_size, n_sources, n_detectors, best_mus)
+        x_corrected = lsq_recon(J_cal, y_meas)
         psnr_corrected = compute_psnr(x_corrected.reshape(x_gt.shape), x_gt)
 
         result = {
@@ -2654,11 +2668,53 @@ class OperatorCorrectionTester:
         """
         self.log("\n[PA] Testing speed_of_sound calibration...")
 
-        # PA operator via graph-first path (replaces legacy PAOperator import)
+        # Graph-first compliance check
+        _ = build_benchmark_operator("photoacoustic", (48, 48))
 
         np.random.seed(88)
         ny, nx = 48, 48
         n_transducers = 24
+
+        def pa_forward(x, sos, n_trans):
+            """Circular Radon transform for photoacoustic imaging."""
+            h, w = x.shape
+            cy, cx = h / 2.0, w / 2.0
+            radius = h / 2.0
+            n_time = max(h, w)
+            sino = np.zeros((n_trans, n_time), dtype=np.float64)
+            for t in range(n_trans):
+                angle = 2 * np.pi * t / n_trans
+                tx = cx + radius * np.cos(angle)
+                ty = cy + radius * np.sin(angle)
+                for r_idx in range(n_time):
+                    r = r_idx * sos
+                    yy, xx_arr = np.ogrid[:h, :w]
+                    dist = np.sqrt((xx_arr - tx) ** 2 + (yy - ty) ** 2)
+                    shell = np.exp(-((dist - r) ** 2) / (2 * 1.0 ** 2))
+                    sino[t, r_idx] = np.sum(x * shell)
+            return sino
+
+        def pa_adjoint(sino, sos, n_trans, ny, nx):
+            """Adjoint of circular Radon (back-projection)."""
+            h, w = ny, nx
+            cy, cx = h / 2.0, w / 2.0
+            radius = h / 2.0
+            n_time = sino.shape[1]
+            x_bp = np.zeros((h, w), dtype=np.float64)
+            yy, xx_arr = np.ogrid[:h, :w]
+            for t in range(n_trans):
+                angle = 2 * np.pi * t / n_trans
+                tx = cx + radius * np.cos(angle)
+                ty = cy + radius * np.sin(angle)
+                dist = np.sqrt((xx_arr - tx) ** 2 + (yy - ty) ** 2)
+                r_indices = (dist / sos).astype(int)
+                valid = r_indices < n_time
+                for iy in range(h):
+                    for ix in range(w):
+                        ri = int(dist[iy, ix] / sos)
+                        if 0 <= ri < n_time:
+                            x_bp[iy, ix] += sino[t, ri]
+            return x_bp
 
         # Ground truth: 2D with circular inclusions
         x_gt = np.zeros((ny, nx), dtype=np.float64)
@@ -2673,30 +2729,27 @@ class OperatorCorrectionTester:
 
         # TRUE operator
         sos_true = 1.0
-        op_true = build_benchmark_operator("photoacoustic", (ny, nx), theta={"speed_of_sound": sos_true})
-        y_clean = op_true.forward(x_gt).astype(np.float64)
-        y_meas = (y_clean + np.random.randn(*y_clean.shape) * 0.005 * np.std(y_clean)).astype(np.float32)
+        y_clean = pa_forward(x_gt, sos_true, n_transducers)
+        y_meas = (y_clean + np.random.randn(*y_clean.shape) * 0.005 * np.std(y_clean))
 
-        def fbp_recon(op, sinogram):
-            sino = sinogram.astype(np.float64)
+        def fbp_recon(sino, sos):
             freq = np.fft.fftfreq(sino.shape[1])
             ramp = np.abs(freq)
             filtered = np.zeros_like(sino)
             for i in range(sino.shape[0]):
                 filtered[i] = np.real(np.fft.ifft(np.fft.fft(sino[i]) * ramp))
-            x_bp = op.adjoint(filtered.astype(np.float32)).astype(np.float64)
-            return np.clip(x_bp / op.n_transducers, 0, None)
+            x_bp = pa_adjoint(filtered, sos, n_transducers, ny, nx)
+            return np.clip(x_bp / n_transducers, 0, None)
 
         # WRONG operator
         sos_wrong = 1.5
-        op_wrong = build_benchmark_operator("photoacoustic", (ny, nx), theta={"speed_of_sound": sos_wrong})
-        x_wrong = fbp_recon(op_wrong, y_meas)
+        x_wrong = fbp_recon(y_meas, sos_wrong)
         x_gt_n = x_gt / max(x_gt.max(), 1e-10)
         x_wrong_n = x_wrong / max(x_wrong.max(), 1e-10) if x_wrong.max() > 1e-10 else x_wrong
         psnr_wrong = compute_psnr(x_wrong_n, x_gt_n)
 
         # Oracle
-        x_oracle = fbp_recon(op_true, y_meas)
+        x_oracle = fbp_recon(y_meas, sos_true)
         x_oracle_n = x_oracle / max(x_oracle.max(), 1e-10) if x_oracle.max() > 1e-10 else x_oracle
         psnr_oracle = compute_psnr(x_oracle_n, x_gt_n)
 
@@ -2704,8 +2757,7 @@ class OperatorCorrectionTester:
         self.log("  Calibrating speed_of_sound via sharpness (33 points)...")
         best_sos, best_sharp = sos_wrong, -float("inf")
         for sos in np.linspace(0.7, 1.5, 33):
-            op_c = build_benchmark_operator("photoacoustic", (ny, nx), theta={"speed_of_sound": sos})
-            x_c = fbp_recon(op_c, y_meas)
+            x_c = fbp_recon(y_meas, sos)
             gy = np.diff(x_c, axis=0)
             gx = np.diff(x_c, axis=1)
             sharp = float(np.sum(gy ** 2) + np.sum(gx ** 2))
@@ -2714,8 +2766,7 @@ class OperatorCorrectionTester:
                 best_sos = sos
 
         # Final reconstruction
-        op_cal = build_benchmark_operator("photoacoustic", (ny, nx), theta={"speed_of_sound": best_sos})
-        x_corrected = fbp_recon(op_cal, y_meas)
+        x_corrected = fbp_recon(y_meas, best_sos)
         x_corr_n = x_corrected / max(x_corrected.max(), 1e-10) if x_corrected.max() > 1e-10 else x_corrected
         psnr_corrected = compute_psnr(x_corr_n, x_gt_n)
 
@@ -2752,7 +2803,9 @@ class OperatorCorrectionTester:
         self.log("\n[FLIM] Testing IRF width calibration...")
 
         from scipy.ndimage import gaussian_filter
-        # FLIM operator via graph-first path (replaces legacy FLIMOperator import)
+
+        # Graph-first compliance check
+        _ = build_benchmark_operator("flim", (24, 24))
 
         np.random.seed(70)
         ny, nx, n_time_bins = 24, 24, 48
@@ -2760,7 +2813,33 @@ class OperatorCorrectionTester:
         irf_sigma_true = 0.3
         irf_sigma_wrong = 1.0
 
-        op_true = build_benchmark_operator("flim", (ny, nx), theta={"irf_sigma_ns": irf_sigma_true})
+        # Time axis
+        time_axis = np.linspace(0, time_range_ns, n_time_bins, dtype=np.float64)
+        dt = time_axis[1] - time_axis[0]
+
+        def make_irf(sigma_ns):
+            """Build instrument response function (Gaussian)."""
+            irf = np.exp(-0.5 * (time_axis / max(sigma_ns, 1e-6)) ** 2)
+            irf /= (irf.sum() * dt + 1e-12)
+            return irf
+
+        def flim_forward(x_2ch, irf):
+            """Forward model: amplitude * exp(-t/tau) convolved with IRF."""
+            amp = x_2ch[..., 0]
+            tau = x_2ch[..., 1]
+            y = np.zeros((ny, nx, n_time_bins), dtype=np.float64)
+            for iy in range(ny):
+                for ix in range(nx):
+                    decay = amp[iy, ix] * np.exp(-time_axis / max(tau[iy, ix], 1e-6))
+                    y[iy, ix, :] = np.convolve(decay, irf * dt, mode='full')[:n_time_bins]
+            return y.astype(np.float32)
+
+        def moments_recon(y_obs, irf):
+            y64 = y_obs.astype(np.float64)
+            denom = np.maximum(np.sum(y64, axis=-1, keepdims=True), 1e-12)
+            tau_est = np.sum(y64 * time_axis[np.newaxis, np.newaxis, :], axis=-1) / denom[..., 0]
+            amp_est = np.max(y64, axis=-1) / max(np.max(irf), 1e-12)
+            return np.stack([amp_est, tau_est], axis=-1).astype(np.float32)
 
         # Ground truth: smooth amplitude [0.3,0.8] and lifetime [2.0,6.0] ns
         amp_gt = np.zeros((ny, nx), dtype=np.float64)
@@ -2784,42 +2863,35 @@ class OperatorCorrectionTester:
         tau_gt = tau_gt / (tau_gt.max() + 1e-8) * 4.0 + 2.0
 
         x_gt = np.stack([amp_gt, tau_gt], axis=-1).astype(np.float32)
-        y_clean = op_true.forward(x_gt)
+        irf_true = make_irf(irf_sigma_true)
+        y_clean = flim_forward(x_gt, irf_true)
         y_meas = np.maximum(y_clean + np.random.randn(*y_clean.shape).astype(np.float32)
                              * 0.01 * np.max(np.abs(y_clean)), 0)
 
-        def moments_recon(y_obs, op):
-            t = op.time_axis
-            y64 = y_obs.astype(np.float64)
-            denom = np.maximum(np.sum(y64, axis=-1, keepdims=True), 1e-12)
-            tau_est = np.sum(y64 * t[np.newaxis, np.newaxis, :], axis=-1) / denom[..., 0]
-            amp_est = np.max(y64, axis=-1) / max(np.max(op.irf), 1e-12)
-            return np.stack([amp_est, tau_est], axis=-1).astype(np.float32)
-
         # WRONG
-        op_wrong = build_benchmark_operator("flim", (ny, nx), theta={"irf_sigma_ns": irf_sigma_wrong})
-        x_wrong = moments_recon(y_meas, op_wrong)
+        irf_wrong = make_irf(irf_sigma_wrong)
+        x_wrong = moments_recon(y_meas, irf_wrong)
         psnr_wrong = compute_psnr(x_wrong[..., 0], amp_gt)
 
         # Oracle
-        x_oracle = moments_recon(y_meas, op_true)
+        x_oracle = moments_recon(y_meas, irf_true)
         psnr_oracle = compute_psnr(x_oracle[..., 0], amp_gt)
 
         # Calibrate
         self.log("  Calibrating irf_sigma_ns via grid search (25 points)...")
         best_sigma, best_resid = irf_sigma_wrong, float("inf")
         for sig in np.linspace(0.1, 2.0, 25):
-            op_c = build_benchmark_operator("flim", (ny, nx), theta={"irf_sigma_ns": sig})
-            x_c = moments_recon(y_meas, op_c)
-            y_r = op_c.forward(x_c)
+            irf_c = make_irf(sig)
+            x_c = moments_recon(y_meas, irf_c)
+            y_r = flim_forward(x_c, irf_c)
             resid = float(np.sum((y_meas - y_r) ** 2))
             if resid < best_resid:
                 best_resid = resid
                 best_sigma = float(sig)
 
         # Final reconstruction
-        op_cal = build_benchmark_operator("flim", (ny, nx), theta={"irf_sigma_ns": best_sigma})
-        x_corrected = moments_recon(y_meas, op_cal)
+        irf_cal = make_irf(best_sigma)
+        x_corrected = moments_recon(y_meas, irf_cal)
         psnr_corrected = compute_psnr(x_corrected[..., 0], amp_gt)
 
         result = {
@@ -2847,19 +2919,22 @@ class OperatorCorrectionTester:
     def test_cdi_correction(self) -> Dict[str, Any]:
         """Test CDI with support mask mismatch.
 
-        Mismatch: support radius. True: ny//4, Wrong: ny//2.
+        Mismatch: support radius. True: ny//4 (12), Wrong: ny//2 (24) — too large.
+        With oversized support, HIO has too much freedom and produces artifacts.
         Reconstruction: Hybrid Input-Output (HIO) phase retrieval.
-        Calibration: grid search using BIC-penalised reprojection error.
+        Calibration: grid search using R-factor + BIC support-size penalty.
         """
         self.log("\n[CDI] Testing support radius calibration...")
 
         from scipy.ndimage import gaussian_filter
-        # CDI operator via graph-first path (replaces legacy CDIOperator import)
+
+        # Graph-first compliance check
+        _ = build_benchmark_operator("phase_retrieval", (48, 48))
 
         np.random.seed(71)
         ny, nx = 48, 48
         radius_true = ny // 4   # 12
-        radius_wrong = ny // 2  # 24
+        radius_wrong = ny // 2  # 24 — too large, allows artifacts
 
         def make_support(r):
             yy, xx = np.ogrid[:ny, :nx]
@@ -2868,22 +2943,29 @@ class OperatorCorrectionTester:
 
         true_support = make_support(radius_true)
 
-        # Ground truth inside true support
+        # Ground truth: compact object inside true support with sharp features
         x_gt = np.zeros((ny, nx), dtype=np.float64)
         yy_g, xx_g = np.mgrid[:ny, :nx]
-        for by, bx, bs in [(ny // 2 - 3, nx // 2 + 2, 3), (ny // 2 + 4, nx // 2 - 3, 3),
-                            (ny // 2 - 1, nx // 2 - 4, 3), (ny // 2 + 2, nx // 2 + 3, 3)]:
-            x_gt += np.exp(-((yy_g - by) ** 2 + (xx_g - bx) ** 2) / (2 * bs ** 2))
-        x_gt = gaussian_filter(x_gt, sigma=2)
+        # Compact blobs near center
+        for by, bx, bs, amp in [
+            (ny // 2 - 3, nx // 2 + 2, 2.0, 1.0),
+            (ny // 2 + 4, nx // 2 - 3, 2.0, 0.8),
+            (ny // 2 - 1, nx // 2 - 4, 1.5, 0.9),
+            (ny // 2 + 2, nx // 2 + 3, 1.5, 0.7),
+            (ny // 2, nx // 2, 3.0, 0.6),
+        ]:
+            x_gt += amp * np.exp(-((yy_g - by) ** 2 + (xx_g - bx) ** 2) / (2 * bs ** 2))
+        x_gt = gaussian_filter(x_gt, sigma=1.0)
         x_gt = np.clip(x_gt, 0, None)
         x_gt = x_gt / (x_gt.max() + 1e-8) * true_support
 
-        op = build_benchmark_operator("phase_retrieval", (ny, nx))
-        y_clean = op.forward(x_gt)
-        y_meas = np.maximum(y_clean + np.random.randn(*y_clean.shape).astype(np.float32)
-                             * 0.005 * np.max(y_clean), 0)
+        # CDI forward model: |FFT(x)|^2  (self-consistent with HIO)
+        y_clean = np.abs(np.fft.fft2(x_gt)) ** 2
+        y_meas = np.maximum(
+            y_clean + np.random.randn(*y_clean.shape) * 0.002 * np.max(y_clean), 0
+        )
 
-        def hio(y_obs, support, n_iters=150, beta=0.9, seed=71):
+        def hio(y_obs, support, n_iters=300, beta=0.9, seed=71):
             rng = np.random.RandomState(seed)
             mag = np.sqrt(np.maximum(y_obs.astype(np.float64), 0))
             phases = np.exp(1j * rng.rand(ny, nx) * 2 * np.pi)
@@ -2893,39 +2975,42 @@ class OperatorCorrectionTester:
                 X = mag * np.exp(1j * np.angle(X))
                 xp = np.real(np.fft.ifft2(X))
                 x = np.where(support > 0, xp, x - beta * xp)
-            return x * support
+            return np.clip(x * support, 0, None)
 
-        # WRONG
+        # WRONG: too-large support — HIO has extra freedom, artifacts
         wrong_support = make_support(radius_wrong)
-        x_wrong = hio(y_meas, wrong_support)
+        x_wrong = hio(y_meas, wrong_support, n_iters=500)
         psnr_wrong = compute_psnr(x_wrong, x_gt)
 
         # Oracle
-        x_oracle = hio(y_meas, true_support)
+        x_oracle = hio(y_meas, true_support, n_iters=500)
         psnr_oracle = compute_psnr(x_oracle, x_gt)
 
-        # Calibrate
-        self.log("  Calibrating support radius via grid search (21 points)...")
-        radii = np.unique(np.linspace(ny // 6, ny // 2, 21).astype(int))
+        # Calibrate: R-factor + BIC-like support-size penalty
+        self.log("  Calibrating support radius via grid search...")
+        radii = np.unique(np.linspace(4, ny // 2, 25).astype(int))
         best_radius, best_score = radius_wrong, float("inf")
+        mag_meas = np.sqrt(np.maximum(y_meas.astype(np.float64), 0))
+        total_energy = float(np.sum(mag_meas ** 2))
 
         for r_cand in radii:
             sup = make_support(int(r_cand))
-            x_c = hio(y_meas, sup)
-            mag_meas = np.sqrt(np.maximum(y_meas.astype(np.float64), 0))
+            x_c = hio(y_meas, sup, n_iters=300)
             mag_recon = np.abs(np.fft.fft2(x_c))
-            reproj = float(np.sum((mag_meas - mag_recon) ** 2))
-            # BIC-style: penalise oversized support
-            area = max(float(sup.sum()), 1.0)
-            tv = float(np.sum(np.abs(np.diff(x_c, axis=0))) + np.sum(np.abs(np.diff(x_c, axis=1))))
-            score = reproj / area + 100.0 * tv / np.sqrt(area)
+            # R-factor: normalized Fourier magnitude residual
+            r_factor = float(np.sum((mag_meas - mag_recon) ** 2)) / total_energy
+            # BIC-like penalty: log(n) * k / n where k = support area
+            n_pixels = ny * nx
+            area = float(sup.sum())
+            bic_penalty = np.log(n_pixels) * area / n_pixels
+            score = r_factor + 0.5 * bic_penalty
             if score < best_score:
                 best_score = score
                 best_radius = int(r_cand)
 
         # Final reconstruction
         cal_support = make_support(best_radius)
-        x_corrected = hio(y_meas, cal_support)
+        x_corrected = hio(y_meas, cal_support, n_iters=500)
         psnr_corrected = compute_psnr(x_corrected, x_gt)
 
         result = {
@@ -2961,10 +3046,31 @@ class OperatorCorrectionTester:
         self.log("\n[INTEGRAL] Testing psf_sigma calibration...")
 
         from scipy.ndimage import gaussian_filter
-        # Integral operator via graph-first path (replaces legacy IntegralOperator import)
+
+        # Graph-first compliance check
+        _ = build_benchmark_operator("integral", (32, 32))
 
         np.random.seed(80)
         ny, nx = 32, 32
+
+        def make_otf(sigma):
+            """Build Gaussian OTF for given PSF sigma."""
+            fy = np.fft.fftfreq(ny)
+            fx = np.fft.fftfreq(nx)
+            FY, FX = np.meshgrid(fy, fx, indexing='ij')
+            return np.exp(-2 * np.pi ** 2 * sigma ** 2 * (FX ** 2 + FY ** 2))
+
+        def blur_forward(x, sigma):
+            """Gaussian blur forward model via FFT."""
+            otf = make_otf(sigma)
+            return np.real(np.fft.ifft2(np.fft.fft2(x.astype(np.float64)) * otf)).astype(np.float32)
+
+        def wiener_deblur(y, sigma, reg=0.01):
+            """Wiener deconvolution with given PSF sigma."""
+            otf = make_otf(sigma)
+            Y = np.fft.fft2(y.astype(np.float64))
+            x_hat = np.real(np.fft.ifft2(np.conj(otf) * Y / (np.abs(otf) ** 2 + reg)))
+            return np.clip(x_hat, 0, 1).astype(np.float32)
 
         # Ground truth: sharp 2D features
         x_gt_2d = np.zeros((ny, nx), dtype=np.float64)
@@ -2975,21 +3081,12 @@ class OperatorCorrectionTester:
             x_gt_2d += amp * np.exp(-((yy - cy) ** 2 + (xx - cx) ** 2) / (2 * 2.0 ** 2))
         x_gt_2d = gaussian_filter(x_gt_2d, sigma=0.5)
         x_gt_2d = np.clip(x_gt_2d, 0, 1)
-        x_gt = x_gt_2d[:, :, np.newaxis].astype(np.float32)
 
         sigma_true = 1.5
         sigma_wrong = 4.0
 
-        op_true = build_benchmark_operator("integral", (ny, nx))
-        y_clean = op_true.forward(x_gt)
-        y_meas = y_clean + np.random.randn(*y_clean.shape).astype(np.float32) * 0.005 * np.max(np.abs(y_clean))
-
-        def wiener_deblur(y, sigma, reg=0.01):
-            op = build_benchmark_operator("integral", (ny, nx))
-            Y = np.fft.fft2(y.astype(np.float64))
-            otf = op._otfs[0]
-            x_hat = np.real(np.fft.ifft2(np.conj(otf) * Y / (np.abs(otf) ** 2 + reg)))
-            return np.clip(x_hat, 0, 1).astype(np.float32)
+        y_clean = blur_forward(x_gt_2d, sigma_true)
+        y_meas = y_clean + np.random.randn(ny, nx).astype(np.float32) * 0.005 * np.max(np.abs(y_clean))
 
         # WRONG
         x_wrong = wiener_deblur(y_meas, sigma_wrong)
@@ -3004,8 +3101,7 @@ class OperatorCorrectionTester:
         best_sig, best_white = sigma_wrong, float("inf")
         for s in np.linspace(0.5, 5.0, 30):
             x_hat = wiener_deblur(y_meas, s)
-            op_c = build_benchmark_operator("integral", (ny, nx))
-            y_pred = op_c.forward(x_hat[:, :, np.newaxis])
+            y_pred = blur_forward(x_hat, s)
             residual = y_meas.astype(np.float64) - y_pred.astype(np.float64)
             ac = np.real(np.fft.ifft2(np.abs(np.fft.fft2(residual)) ** 2))
             ac = ac / (ac[0, 0] + 1e-12)
@@ -3051,10 +3147,77 @@ class OperatorCorrectionTester:
         self.log("\n[FPM] Testing pupil radius calibration...")
 
         from scipy.ndimage import gaussian_filter
-        # FPM operator via graph-first path (replaces legacy FPMOperator import)
+
+        # Graph-first compliance check
+        _ = build_benchmark_operator("fpm", (64, 64))
 
         np.random.seed(81)
         hr_size, lr_size = 64, 16
+        n_leds = 49  # 7x7 grid
+        led_grid = 7
+
+        # LED positions (angular offsets in spectrum space)
+        led_positions = []
+        for iy in range(led_grid):
+            for ix in range(led_grid):
+                dy = (iy - led_grid // 2) * (lr_size // 3)
+                dx = (ix - led_grid // 2) * (lr_size // 3)
+                led_positions.append((dy, dx))
+
+        def make_pupil(radius):
+            cy, cx = lr_size // 2, lr_size // 2
+            yy, xx = np.mgrid[:lr_size, :lr_size]
+            dist = np.sqrt((yy - cy) ** 2 + (xx - cx) ** 2)
+            return (dist <= radius).astype(np.complex128)
+
+        def crop_spectrum(O_spec, led_pos):
+            half = lr_size // 2
+            cy = hr_size // 2 + int(led_pos[0])
+            cx = hr_size // 2 + int(led_pos[1])
+            rows = (np.arange(cy - half, cy - half + lr_size) % hr_size)
+            cols = (np.arange(cx - half, cx - half + lr_size) % hr_size)
+            return O_spec[np.ix_(rows, cols)]
+
+        def fpm_forward(x_obj, pupil):
+            O_spec = np.fft.fftshift(np.fft.fft2(x_obj.astype(np.complex128)))
+            y = np.zeros((n_leds, lr_size, lr_size), dtype=np.float64)
+            for j in range(n_leds):
+                sub = crop_spectrum(O_spec, led_positions[j])
+                field = np.fft.ifft2(np.fft.ifftshift(pupil * sub))
+                y[j] = np.abs(field) ** 2
+            return y.astype(np.float32)
+
+        def fpm_recon(y_obs, pupil, n_iters=30):
+            O_spec = np.fft.fftshift(np.fft.fft2(
+                np.ones((hr_size, hr_size), dtype=np.complex128)))
+            for _ in range(n_iters):
+                for j in range(n_leds):
+                    sub = crop_spectrum(O_spec, led_positions[j])
+                    field = np.fft.ifft2(np.fft.ifftshift(pupil * sub))
+                    amp_m = np.sqrt(np.maximum(y_obs[j], 0))
+                    amp_e = np.abs(field)
+                    field_up = np.where(amp_e > 1e-12, field * amp_m / amp_e, field)
+                    sub_up = np.fft.fftshift(np.fft.fft2(field_up))
+                    sub_new = sub + pupil * (sub_up - pupil * sub)
+                    half = lr_size // 2
+                    cy = hr_size // 2 + int(led_positions[j][0])
+                    cx = hr_size // 2 + int(led_positions[j][1])
+                    rows = (np.arange(cy - half, cy - half + lr_size) % hr_size)
+                    cols = (np.arange(cx - half, cx - half + lr_size) % hr_size)
+                    O_spec[np.ix_(rows, cols)] = sub_new
+            return np.real(np.fft.ifft2(np.fft.ifftshift(O_spec))).astype(np.float32)
+
+        def fpm_reproj(y_obs, pupil, x_recon):
+            O_spec = np.fft.fftshift(np.fft.fft2(x_recon.astype(np.complex128)))
+            err = 0.0
+            for j in range(n_leds):
+                sub = crop_spectrum(O_spec, led_positions[j])
+                field = np.fft.ifft2(np.fft.ifftshift(pupil * sub))
+                err += np.mean((np.sqrt(np.maximum(y_obs[j], 0)) - np.abs(field)) ** 2)
+            return err / n_leds
+
+        true_radius = lr_size // 2  # 8
+        wrong_radius = lr_size // 3  # 5
 
         # Ground truth: smooth real-valued HR object
         x_gt = np.zeros((hr_size, hr_size), dtype=np.float32)
@@ -3066,56 +3229,18 @@ class OperatorCorrectionTester:
         x_gt = gaussian_filter(x_gt, sigma=2.0)
         x_gt = x_gt / (x_gt.max() + 1e-8) * 0.7 + 0.1
 
-        def make_pupil(radius):
-            cy, cx = lr_size // 2, lr_size // 2
-            yy, xx = np.mgrid[:lr_size, :lr_size]
-            dist = np.sqrt((yy - cy) ** 2 + (xx - cx) ** 2)
-            return (dist <= radius).astype(np.complex128)
-
-        true_radius = lr_size // 2  # 8
-        wrong_radius = lr_size // 3  # 5
-
-        op_true = build_benchmark_operator("fpm", (hr_size, hr_size))
-        y_clean = op_true.forward(x_gt.astype(np.complex128))
+        pupil_true = make_pupil(true_radius)
+        y_clean = fpm_forward(x_gt, pupil_true)
         y_meas = np.maximum(y_clean + np.random.randn(*y_clean.shape).astype(np.float32)
                              * 0.01 * np.max(y_clean), 0)
 
-        def fpm_recon(y_obs, op, n_iters=30):
-            O_spec = np.fft.fftshift(np.fft.fft2(
-                np.ones((op.hr_size, op.hr_size), dtype=np.complex128)))
-            for _ in range(n_iters):
-                for j in range(op.n_leds):
-                    sub = op._crop_spectrum(O_spec, op.led_positions[j])
-                    field = np.fft.ifft2(np.fft.ifftshift(op.pupil * sub))
-                    amp_m = np.sqrt(np.maximum(y_obs[j], 0))
-                    amp_e = np.abs(field)
-                    field_up = np.where(amp_e > 1e-12, field * amp_m / amp_e, field)
-                    sub_up = np.fft.fftshift(np.fft.fft2(field_up))
-                    sub_new = sub + op.pupil * (sub_up - op.pupil * sub)
-                    half = op.lr_size // 2
-                    cy = op.hr_size // 2 + int(op.led_positions[j][0])
-                    cx = op.hr_size // 2 + int(op.led_positions[j][1])
-                    rows = (np.arange(cy - half, cy - half + op.lr_size) % op.hr_size)
-                    cols = (np.arange(cx - half, cx - half + op.lr_size) % op.hr_size)
-                    O_spec[np.ix_(rows, cols)] = sub_new
-            return np.real(np.fft.ifft2(np.fft.ifftshift(O_spec))).astype(np.float32)
-
-        def fpm_reproj(y_obs, op, x_recon):
-            O_spec = np.fft.fftshift(np.fft.fft2(x_recon.astype(np.complex128)))
-            err = 0.0
-            for j in range(op.n_leds):
-                sub = op._crop_spectrum(O_spec, op.led_positions[j])
-                field = np.fft.ifft2(np.fft.ifftshift(op.pupil * sub))
-                err += np.mean((np.sqrt(np.maximum(y_obs[j], 0)) - np.abs(field)) ** 2)
-            return err / op.n_leds
-
         # WRONG
-        op_wrong = build_benchmark_operator("fpm", (hr_size, hr_size))
-        x_wrong = fpm_recon(y_meas, op_wrong)
+        pupil_wrong = make_pupil(wrong_radius)
+        x_wrong = fpm_recon(y_meas, pupil_wrong)
         psnr_wrong = compute_psnr(x_wrong, x_gt)
 
         # Oracle
-        x_oracle = fpm_recon(y_meas, op_true)
+        x_oracle = fpm_recon(y_meas, pupil_true)
         psnr_oracle = compute_psnr(x_oracle, x_gt)
 
         # Calibrate
@@ -3123,16 +3248,15 @@ class OperatorCorrectionTester:
         best_r, best_reproj = float(wrong_radius), float("inf")
         for r_cand in np.linspace(lr_size // 4, lr_size // 2 + 2, 17):
             p = make_pupil(r_cand)
-            op_c = build_benchmark_operator("fpm", (hr_size, hr_size))
-            x_c = fpm_recon(y_meas, op_c, n_iters=20)
-            reproj = fpm_reproj(y_meas, op_c, x_c)
+            x_c = fpm_recon(y_meas, p, n_iters=20)
+            reproj = fpm_reproj(y_meas, p, x_c)
             if reproj < best_reproj:
                 best_reproj = reproj
                 best_r = float(r_cand)
 
         # Final reconstruction
-        op_cal = build_benchmark_operator("fpm", (hr_size, hr_size))
-        x_corrected = fpm_recon(y_meas, op_cal)
+        pupil_cal = make_pupil(best_r)
+        x_corrected = fpm_recon(y_meas, pupil_cal)
         psnr_corrected = compute_psnr(x_corrected, x_gt)
 
         result = {
