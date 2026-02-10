@@ -346,24 +346,25 @@ This mode is for real experiments where the forward model is imperfect.
 
 | Modality | Calibration Parameters | Typical Improvement |
 |----------|------------------------|--------------------|
+| Widefield | background/gain | +4.5 dB |
 | CASSI | dx, dy, theta, phi_d | +4.8 dB (UPWMI beam search) |
-| CT | center of rotation | +16 dB |
-| MRI | coil sensitivities | +48 dB |
-| CACTI | mask timing | +26 dB |
+| CT | center of rotation | +13.0 dB |
+| MRI | coil sensitivities | +48.3 dB |
+| CACTI | mask timing | +12.6 dB |
 | SPC | gain/bias | +24 dB |
-| Lensless | PSF shift | +9 dB |
-| Ptychography | position offset | +7 dB |
-| OCT | dispersion coefficients | >0.5 dB |
-| Light Field | disparity | >0.5 dB |
-| DOT | scattering coefficient | >0.5 dB |
-| Photoacoustic | speed of sound | >0.5 dB |
-| FLIM | IRF width | >0.5 dB |
-| CDI | support mask | >0.5 dB |
-| Integral | baseline | >0.5 dB |
-| FPM | pupil radius | >0.5 dB |
-| Matrix | gain/bias | >0.5 dB |
+| Lensless | PSF shift | +10.2 dB |
+| Ptychography | position offset | +7.1 dB |
+| OCT | dispersion coefficients | +50.5 dB |
+| Light Field | disparity | +6.9 dB |
+| DOT | scattering coefficient | +0.8 dB |
+| Photoacoustic | speed of sound | +9.9 dB |
+| FLIM | IRF width | +15.4 dB |
+| CDI | support mask | +1.4 dB |
+| Integral | PSF sigma | +21.0 dB |
+| FPM | pupil radius | +8.9 dB |
+| Matrix | gain/bias | +1.7 dB |
 
-**Note:** Improvement depends on mismatch severity and calibration search quality. Results above use grid search with benchmark-quality reconstruction algorithms.
+**Note:** Improvement depends on mismatch severity and calibration search quality. Results above use grid search with benchmark-quality reconstruction algorithms. SPC and CASSI tests require extended runtime (~50 min each).
 
 ### CLI Examples
 

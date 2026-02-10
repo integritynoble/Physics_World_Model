@@ -1512,10 +1512,12 @@ class BenchmarkRunner:
     # MODALITY 8: CACTI (Video Snapshot Compressive Imaging)
     # ========================================================================
     def run_cacti_benchmark(self) -> Dict:
-        """Run CACTI (6 videos) benchmark using GAP-denoise.
+        """Run CACTI (6 real videos) benchmark using GAP-denoise.
 
-        Based on reference implementation from pnp_sci.py.
-        Uses GAP (Generalized Alternating Projection) with TV denoising.
+        Loads standard SCI benchmark videos (Kobe, Traffic, Runner, Drop,
+        Crash, Aerial) from .mat files with real coded-aperture masks and
+        pre-computed measurements. Reconstructs each 8-frame group using
+        GAP-TV, GAP-denoise, and EfficientSCI.
         """
         from pwm_core.data.loaders.cacti_bench import CACTIBenchmark
 
@@ -1525,37 +1527,25 @@ class BenchmarkRunner:
         # Build graph-first operator
         cacti_operator = build_benchmark_operator("cacti", (256, 256, 8))
 
-        algo_psnrs = {}
+        # Collect per-video, per-algorithm PSNRs across measurement groups
+        video_algo_psnrs = {}  # {video_name: {algo: [psnrs]}}
+        algo_all_psnrs = {}  # {algo: [psnrs]} across all videos
 
-        for idx, (name, video) in enumerate(dataset):
-            if idx >= 3:  # Limit for speed
-                break
+        for name, group_gt, mask, meas in dataset:
+            h, w, nF = group_gt.shape  # (256, 256, 8)
+            Phi = mask   # (256, 256, 8) real coded-aperture mask
+            y = meas     # (256, 256) pre-computed compressed measurement
 
-            h, w, nF = video.shape  # (H, W, num_frames)
+            group_algos = {}
 
-            # Create shifting masks (circular shift pattern)
-            np.random.seed(42)
-            mask_base = (np.random.rand(h, w) > 0.5).astype(np.float32)
-
-            Phi = np.zeros((h, w, nF), dtype=np.float32)
-            for f in range(nF):
-                Phi[:, :, f] = np.roll(mask_base, shift=f, axis=1)
-
-            y = np.sum(Phi * video, axis=2)
-            noise_level = 0.01
-            y = y + np.random.randn(h, w).astype(np.float32) * noise_level
-
-            video_algos = {}
-
-            # Algorithm 1: GAP-TV (traditional CPU) - use internal implementation
+            # Algorithm 1: GAP-TV (traditional CPU)
             try:
                 recon_gaptv = self._gap_denoise_cacti(
                     y, Phi, max_iter=100, lam=1.0,
                     accelerate=True, tv_weight=0.1, tv_iter=5,
                 )
-                psnr_gaptv = compute_psnr(recon_gaptv, video)
-                video_algos["gap_tv"] = float(psnr_gaptv)
-                self.log(f"  {name} GAP-TV: PSNR={psnr_gaptv:.2f} dB")
+                psnr_gaptv = compute_psnr(recon_gaptv, group_gt, max_val=1.0)
+                group_algos["gap_tv"] = float(psnr_gaptv)
             except Exception as e:
                 self.log(f"  {name} GAP-TV: skipped ({e})")
 
@@ -1564,39 +1554,49 @@ class BenchmarkRunner:
                 y, Phi, max_iter=100, lam=1.0,
                 accelerate=True, tv_weight=0.15, tv_iter=5,
             )
-            psnr = compute_psnr(recon, video)
-            video_algos["gap_denoise"] = float(psnr)
-            ref_psnr = dataset.get_reference_psnr(name)
+            psnr = compute_psnr(recon, group_gt, max_val=1.0)
+            group_algos["gap_denoise"] = float(psnr)
 
             # Algorithm 3: EfficientSCI (best_quality)
             try:
                 from pwm_core.recon.efficientsci import efficientsci_recon
                 recon_esci = efficientsci_recon(y, Phi, variant="tiny")
-                # efficientsci returns (B, H, W); convert to (H, W, B)
                 if recon_esci.ndim == 3 and recon_esci.shape[0] == nF:
                     recon_esci = recon_esci.transpose(1, 2, 0)
-                psnr_esci = compute_psnr(recon_esci, video)
-                video_algos["efficientsci"] = float(psnr_esci)
-                self.log(f"  {name} EfficientSCI: PSNR={psnr_esci:.2f} dB")
+                psnr_esci = compute_psnr(recon_esci, group_gt, max_val=1.0)
+                group_algos["efficientsci"] = float(psnr_esci)
             except Exception as e:
                 self.log(f"  {name} EfficientSCI: skipped ({e})")
 
+            # Accumulate per-video
+            video_algo_psnrs.setdefault(name, {})
+            for algo, p in group_algos.items():
+                video_algo_psnrs[name].setdefault(algo, []).append(p)
+                algo_all_psnrs.setdefault(algo, []).append(p)
+
+        # Aggregate per video
+        for name in dataset.video_names:
+            algos = video_algo_psnrs.get(name, {})
+            avg_denoise = float(np.mean(algos.get("gap_denoise", [0])))
+            ref_psnr = dataset.get_reference_psnr(name)
+
+            per_algo = {}
+            for algo, psnrs in algos.items():
+                per_algo[algo] = float(np.mean(psnrs))
+
             results["per_video"].append({
                 "video": name,
-                "psnr": float(psnr),
+                "psnr": avg_denoise,
                 "reference_psnr": ref_psnr,
-                "per_algorithm": video_algos,
+                "per_algorithm": per_algo,
             })
-            self.log(f"  {name} GAP-denoise: PSNR={psnr:.2f} dB (ref: {ref_psnr:.1f} dB)")
-
-            for algo, p in video_algos.items():
-                algo_psnrs.setdefault(algo, []).append(p)
+            self.log(f"  {name}: GAP-denoise={avg_denoise:.2f} dB (ref: {ref_psnr:.1f} dB)")
 
         avg_psnr = np.mean([r["psnr"] for r in results["per_video"]])
         results["avg_psnr"] = float(avg_psnr)
 
         tier_map = {"gap_tv": "traditional_cpu", "gap_denoise": "default", "efficientsci": "best_quality"}
-        for algo, psnrs in algo_psnrs.items():
+        for algo, psnrs in algo_all_psnrs.items():
             results["per_algorithm"][algo] = {
                 "avg_psnr": float(np.mean(psnrs)),
                 "tier": tier_map.get(algo, ""),
