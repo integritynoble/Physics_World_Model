@@ -6,6 +6,7 @@ Verifies that basic demo operations complete within acceptable time bounds.
 from __future__ import annotations
 
 import time
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -69,7 +70,14 @@ def test_casepack_loading_under_2s():
 
 def test_gallery_data_completeness():
     """Gallery should have data for all 26 modalities."""
-    from docs.gallery.generate_gallery import BENCHMARK_DATA
+    import importlib.util, sys
+    spec = importlib.util.spec_from_file_location(
+        "generate_gallery",
+        str(Path(__file__).resolve().parents[3] / "docs" / "gallery" / "generate_gallery.py"),
+    )
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    BENCHMARK_DATA = mod.BENCHMARK_DATA
 
     assert len(BENCHMARK_DATA) == 26, "Expected 26 modalities, got {}".format(len(BENCHMARK_DATA))
 
