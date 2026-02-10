@@ -62,6 +62,9 @@ class BasePrimitive:
 
     primitive_id: str = "base"
     _is_linear: bool = True
+    _is_stochastic: bool = False
+    _is_differentiable: bool = True
+    _is_stateful: bool = False
     _params: Dict[str, Any]
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
@@ -78,6 +81,18 @@ class BasePrimitive:
     @property
     def is_linear(self) -> bool:
         return self._is_linear
+
+    @property
+    def is_stochastic(self) -> bool:
+        return self._is_stochastic
+
+    @property
+    def is_differentiable(self) -> bool:
+        return self._is_differentiable
+
+    @property
+    def is_stateful(self) -> bool:
+        return self._is_stateful
 
     def serialize(self) -> Dict[str, Any]:
         result: Dict[str, Any] = {
@@ -245,6 +260,7 @@ class DeconvRL(BasePrimitive):
 
     primitive_id = "deconv_rl"
     _is_linear = False
+    _is_differentiable = False
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sigma = self._params.get("sigma", 2.0)
@@ -643,6 +659,8 @@ class PoissonNoise(BasePrimitive):
 
     primitive_id = "poisson"
     _is_linear = False
+    _is_stochastic = True
+    _is_differentiable = False
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         peak = self._params.get("peak_photons", 1e4)
@@ -658,6 +676,8 @@ class GaussianNoise(BasePrimitive):
 
     primitive_id = "gaussian"
     _is_linear = False
+    _is_stochastic = True
+    _is_differentiable = True
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sigma = self._params.get("sigma", 0.01)
@@ -671,6 +691,8 @@ class PoissonGaussianNoise(BasePrimitive):
 
     primitive_id = "poisson_gaussian"
     _is_linear = False
+    _is_stochastic = True
+    _is_differentiable = False
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         peak = self._params.get("peak_photons", 1e4)
@@ -687,6 +709,8 @@ class FPN(BasePrimitive):
 
     primitive_id = "fpn"
     _is_linear = False
+    _is_stochastic = True
+    _is_differentiable = True
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -752,6 +776,7 @@ class Quantize(BasePrimitive):
 
     primitive_id = "quantize"
     _is_linear = False
+    _is_differentiable = False
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         bit_depth = self._params.get("bit_depth", 16)

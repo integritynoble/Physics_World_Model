@@ -20,6 +20,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from pwm_core.graph.graph_operator import GraphOperator
 from pwm_core.graph.graph_spec import OperatorGraphSpec
+from pwm_core.graph.ir_types import NodeTags
 from pwm_core.graph.primitives import PRIMITIVE_REGISTRY, BasePrimitive, get_primitive
 
 logger = logging.getLogger(__name__)
@@ -104,6 +105,16 @@ class GraphCompiler:
             if node.learnable:
                 learnable_params[node.node_id] = list(node.learnable)
 
+        # Derive NodeTags from primitive attributes
+        node_tags: Dict[str, NodeTags] = {}
+        for node_id, prim in node_map.items():
+            node_tags[node_id] = NodeTags(
+                is_linear=prim.is_linear,
+                is_stochastic=prim.is_stochastic,
+                is_differentiable=prim.is_differentiable,
+                is_stateful=prim.is_stateful,
+            )
+
         # Collect edges
         edges_list = [(e.source, e.target) for e in spec.edges]
 
@@ -118,6 +129,7 @@ class GraphCompiler:
             metadata=spec.metadata,
             edges=edges_list,
             learnable_params=learnable_params,
+            node_tags=node_tags,
         )
 
         logger.info(
