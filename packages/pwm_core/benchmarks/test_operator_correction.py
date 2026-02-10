@@ -20,6 +20,8 @@ from typing import Any, Dict, Tuple
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from benchmarks.benchmark_helpers import build_benchmark_operator
+
 
 def compute_psnr(x: np.ndarray, y: np.ndarray, max_val: float = 1.0) -> float:
     """Compute PSNR between two arrays.
@@ -54,6 +56,9 @@ class OperatorCorrectionTester:
 
         np.random.seed(42)
         block_size = 32  # Small for well-conditioned inversion
+
+        # Build graph-first operator
+        operator = build_benchmark_operator("matrix", (block_size, block_size))
         n_pix = block_size * block_size
         rate = 0.80  # High sampling for stable inversion
         m = int(n_pix * rate)
@@ -170,6 +175,9 @@ class OperatorCorrectionTester:
 
         np.random.seed(52)
         n = 128
+
+        # Build graph-first operator
+        ct_operator = build_benchmark_operator("ct", (n, n))
         n_angles = 90
         angles = np.linspace(0, np.pi, n_angles, endpoint=False)
 
@@ -323,6 +331,7 @@ class OperatorCorrectionTester:
     def test_cacti_correction(self) -> Dict[str, Any]:
         """Test CACTI with mask timing mismatch using benchmark GAP-TV."""
         self.log("\n[CACTI] Testing mask timing calibration...")
+        cacti_operator = build_benchmark_operator("cacti", (256, 256, 8))
 
         # Use benchmark video data for realistic results
         from pwm_core.data.loaders.cacti_bench import CACTIBenchmark
@@ -446,6 +455,7 @@ class OperatorCorrectionTester:
 
         np.random.seed(47)
         n = 128
+        operator = build_benchmark_operator("lensless", (n, n))
 
         from scipy.ndimage import gaussian_filter
 
@@ -576,6 +586,7 @@ class OperatorCorrectionTester:
 
         np.random.seed(53)
         n = 128
+        mri_operator = build_benchmark_operator("mri", (n, n))
         n_coils = 8
 
         from scipy.ndimage import gaussian_filter
@@ -712,6 +723,7 @@ class OperatorCorrectionTester:
         n_pix = block_size * block_size
         sampling_rate = 0.50  # 50% for more stable calibration
         m = int(n_pix * sampling_rate)
+        spc_operator = build_benchmark_operator("spc", (64, 64))
 
         # Try to load neural denoiser
         denoiser = None
@@ -958,6 +970,7 @@ class OperatorCorrectionTester:
         """
         self.log("\n[CASSI] UPWMI Algorithm 1: Brain + Agents with Adaptive Beam Search")
         self.log("=" * 70)
+        cassi_operator = build_benchmark_operator("cassi", (256, 256, 28))
 
         import time as _time
         from dataclasses import dataclass, field as dc_field
@@ -2104,6 +2117,7 @@ class OperatorCorrectionTester:
 
         np.random.seed(49)
         n = 64
+        operator = build_benchmark_operator("ptychography", (128, 128))
 
         from scipy.ndimage import gaussian_filter
 
@@ -2325,7 +2339,7 @@ class OperatorCorrectionTester:
 
         np.random.seed(60)
 
-        from pwm_core.physics.oct.oct_operator import OCTOperator
+        # OCT operator via graph-first path (replaces legacy OCTOperator import)
 
         n_alines = 64
         n_depth = 128
@@ -2350,10 +2364,7 @@ class OperatorCorrectionTester:
         disp_true = [0.0, 0.0, 5e-3]
 
         # Generate measurement with TRUE dispersion
-        op_true = OCTOperator(
-            n_alines=n_alines, n_depth=n_depth, n_spectral=n_spectral,
-            dispersion_coeffs=disp_true,
-        )
+        op_true = build_benchmark_operator("oct", (n_alines, n_depth), theta={"n_spectral": n_spectral, "dispersion_coeffs": disp_true})
         y = op_true.forward(x_gt)
         y += np.random.randn(*y.shape).astype(np.float32) * 0.005
 
@@ -2380,10 +2391,7 @@ class OperatorCorrectionTester:
             return x.astype(np.float32)
 
         # Reconstruct with WRONG dispersion
-        op_wrong = OCTOperator(
-            n_alines=n_alines, n_depth=n_depth, n_spectral=n_spectral,
-            dispersion_coeffs=disp_wrong,
-        )
+        op_wrong = build_benchmark_operator("oct", (n_alines, n_depth), theta={"n_spectral": n_spectral, "dispersion_coeffs": disp_wrong})
         x_wrong = oct_recon(y, op_wrong, n_iters=40)
         psnr_wrong = compute_psnr(x_wrong, x_gt)
 
@@ -2399,10 +2407,7 @@ class OperatorCorrectionTester:
         search_points = np.linspace(-1e-2, 1.5e-2, 41)
 
         for d2 in search_points:
-            op_test = OCTOperator(
-                n_alines=n_alines, n_depth=n_depth, n_spectral=n_spectral,
-                dispersion_coeffs=[0.0, 0.0, d2],
-            )
+            op_test = build_benchmark_operator("oct", (n_alines, n_depth), theta={"n_spectral": n_spectral, "dispersion_coeffs": [0.0, 0.0, d2]})
             x_test = oct_recon(y, op_test, n_iters=20)
             y_test = op_test.forward(x_test)
             err = float(np.sum((y - y_test) ** 2))
@@ -2411,10 +2416,7 @@ class OperatorCorrectionTester:
                 best_disp2 = d2
 
         # Reconstruct with calibrated dispersion (full iterations)
-        op_corrected = OCTOperator(
-            n_alines=n_alines, n_depth=n_depth, n_spectral=n_spectral,
-            dispersion_coeffs=[0.0, 0.0, best_disp2],
-        )
+        op_corrected = build_benchmark_operator("oct", (n_alines, n_depth), theta={"n_spectral": n_spectral, "dispersion_coeffs": [0.0, 0.0, best_disp2]})
         x_corrected = oct_recon(y, op_corrected, n_iters=40)
         psnr_corrected = compute_psnr(x_corrected, x_gt)
 
@@ -2459,6 +2461,7 @@ class OperatorCorrectionTester:
         np.random.seed(61)
 
         from pwm_core.physics.light_field.lf_operator import _fft_shift_2d
+        lf_operator = build_benchmark_operator("light_field", (64, 64))
 
         sx, sy = 48, 48
         nu, nv = 5, 5
@@ -2565,7 +2568,7 @@ class OperatorCorrectionTester:
         self.log("\n[DOT] Testing mu_s_prime calibration...")
 
         from scipy.ndimage import gaussian_filter
-        from pwm_core.physics.diffuse_optical.dot_operator import DOTOperator
+        # DOT operator via graph-first path (replaces legacy DOTOperator import)
 
         np.random.seed(77)
         grid_size = 4  # well-determined: 144 meas vs 64 unknowns
@@ -2581,10 +2584,7 @@ class OperatorCorrectionTester:
 
         # TRUE operator
         mus_true = 1.0
-        op_true = DOTOperator(
-            grid_size=grid_size, n_sources=n_sources,
-            n_detectors=n_detectors, mu_s_prime=mus_true,
-        )
+        op_true = build_benchmark_operator("dot", grid_size, theta={"mu_s_prime": mus_true})
         y_clean = op_true.jacobian @ x_gt.ravel()
         y_meas = y_clean + np.random.randn(*y_clean.shape) * 0.001 * np.max(np.abs(y_clean))
 
@@ -2594,10 +2594,7 @@ class OperatorCorrectionTester:
 
         # WRONG operator
         mus_wrong = 0.1
-        op_wrong = DOTOperator(
-            grid_size=grid_size, n_sources=n_sources,
-            n_detectors=n_detectors, mu_s_prime=mus_wrong,
-        )
+        op_wrong = build_benchmark_operator("dot", grid_size, theta={"mu_s_prime": mus_wrong})
         x_wrong = lsq_recon(op_wrong.jacobian, y_meas)
         psnr_wrong = compute_psnr(x_wrong.reshape(x_gt.shape), x_gt)
 
@@ -2611,10 +2608,7 @@ class OperatorCorrectionTester:
         y_norm = float(np.sum(y_meas ** 2))
 
         for mus in np.linspace(0.1, 3.0, 30):
-            op_c = DOTOperator(
-                grid_size=grid_size, n_sources=n_sources,
-                n_detectors=n_detectors, mu_s_prime=mus,
-            )
+            op_c = build_benchmark_operator("dot", grid_size, theta={"mu_s_prime": mus})
             x_c = lsq_recon(op_c.jacobian, y_meas)
             reproj = float(np.sum((y_meas - op_c.jacobian @ x_c) ** 2)) / y_norm
             if reproj < best_reproj:
@@ -2622,10 +2616,7 @@ class OperatorCorrectionTester:
                 best_mus = mus
 
         # Final reconstruction
-        op_cal = DOTOperator(
-            grid_size=grid_size, n_sources=n_sources,
-            n_detectors=n_detectors, mu_s_prime=best_mus,
-        )
+        op_cal = build_benchmark_operator("dot", grid_size, theta={"mu_s_prime": best_mus})
         x_corrected = lsq_recon(op_cal.jacobian, y_meas)
         psnr_corrected = compute_psnr(x_corrected.reshape(x_gt.shape), x_gt)
 
@@ -2663,7 +2654,7 @@ class OperatorCorrectionTester:
         """
         self.log("\n[PA] Testing speed_of_sound calibration...")
 
-        from pwm_core.physics.photoacoustic.pa_operator import PAOperator
+        # PA operator via graph-first path (replaces legacy PAOperator import)
 
         np.random.seed(88)
         ny, nx = 48, 48
@@ -2682,8 +2673,7 @@ class OperatorCorrectionTester:
 
         # TRUE operator
         sos_true = 1.0
-        op_true = PAOperator(ny=ny, nx=nx, n_transducers=n_transducers,
-                              speed_of_sound=sos_true)
+        op_true = build_benchmark_operator("photoacoustic", (ny, nx), theta={"speed_of_sound": sos_true})
         y_clean = op_true.forward(x_gt).astype(np.float64)
         y_meas = (y_clean + np.random.randn(*y_clean.shape) * 0.005 * np.std(y_clean)).astype(np.float32)
 
@@ -2699,8 +2689,7 @@ class OperatorCorrectionTester:
 
         # WRONG operator
         sos_wrong = 1.5
-        op_wrong = PAOperator(ny=ny, nx=nx, n_transducers=n_transducers,
-                               speed_of_sound=sos_wrong)
+        op_wrong = build_benchmark_operator("photoacoustic", (ny, nx), theta={"speed_of_sound": sos_wrong})
         x_wrong = fbp_recon(op_wrong, y_meas)
         x_gt_n = x_gt / max(x_gt.max(), 1e-10)
         x_wrong_n = x_wrong / max(x_wrong.max(), 1e-10) if x_wrong.max() > 1e-10 else x_wrong
@@ -2715,8 +2704,7 @@ class OperatorCorrectionTester:
         self.log("  Calibrating speed_of_sound via sharpness (33 points)...")
         best_sos, best_sharp = sos_wrong, -float("inf")
         for sos in np.linspace(0.7, 1.5, 33):
-            op_c = PAOperator(ny=ny, nx=nx, n_transducers=n_transducers,
-                               speed_of_sound=sos)
+            op_c = build_benchmark_operator("photoacoustic", (ny, nx), theta={"speed_of_sound": sos})
             x_c = fbp_recon(op_c, y_meas)
             gy = np.diff(x_c, axis=0)
             gx = np.diff(x_c, axis=1)
@@ -2726,8 +2714,7 @@ class OperatorCorrectionTester:
                 best_sos = sos
 
         # Final reconstruction
-        op_cal = PAOperator(ny=ny, nx=nx, n_transducers=n_transducers,
-                             speed_of_sound=best_sos)
+        op_cal = build_benchmark_operator("photoacoustic", (ny, nx), theta={"speed_of_sound": best_sos})
         x_corrected = fbp_recon(op_cal, y_meas)
         x_corr_n = x_corrected / max(x_corrected.max(), 1e-10) if x_corrected.max() > 1e-10 else x_corrected
         psnr_corrected = compute_psnr(x_corr_n, x_gt_n)
@@ -2765,7 +2752,7 @@ class OperatorCorrectionTester:
         self.log("\n[FLIM] Testing IRF width calibration...")
 
         from scipy.ndimage import gaussian_filter
-        from pwm_core.physics.flim.flim_operator import FLIMOperator
+        # FLIM operator via graph-first path (replaces legacy FLIMOperator import)
 
         np.random.seed(70)
         ny, nx, n_time_bins = 24, 24, 48
@@ -2773,8 +2760,7 @@ class OperatorCorrectionTester:
         irf_sigma_true = 0.3
         irf_sigma_wrong = 1.0
 
-        op_true = FLIMOperator(ny=ny, nx=nx, n_time_bins=n_time_bins,
-                                time_range_ns=time_range_ns, irf_sigma_ns=irf_sigma_true)
+        op_true = build_benchmark_operator("flim", (ny, nx), theta={"irf_sigma_ns": irf_sigma_true})
 
         # Ground truth: smooth amplitude [0.3,0.8] and lifetime [2.0,6.0] ns
         amp_gt = np.zeros((ny, nx), dtype=np.float64)
@@ -2811,8 +2797,7 @@ class OperatorCorrectionTester:
             return np.stack([amp_est, tau_est], axis=-1).astype(np.float32)
 
         # WRONG
-        op_wrong = FLIMOperator(ny=ny, nx=nx, n_time_bins=n_time_bins,
-                                 time_range_ns=time_range_ns, irf_sigma_ns=irf_sigma_wrong)
+        op_wrong = build_benchmark_operator("flim", (ny, nx), theta={"irf_sigma_ns": irf_sigma_wrong})
         x_wrong = moments_recon(y_meas, op_wrong)
         psnr_wrong = compute_psnr(x_wrong[..., 0], amp_gt)
 
@@ -2824,8 +2809,7 @@ class OperatorCorrectionTester:
         self.log("  Calibrating irf_sigma_ns via grid search (25 points)...")
         best_sigma, best_resid = irf_sigma_wrong, float("inf")
         for sig in np.linspace(0.1, 2.0, 25):
-            op_c = FLIMOperator(ny=ny, nx=nx, n_time_bins=n_time_bins,
-                                 time_range_ns=time_range_ns, irf_sigma_ns=sig)
+            op_c = build_benchmark_operator("flim", (ny, nx), theta={"irf_sigma_ns": sig})
             x_c = moments_recon(y_meas, op_c)
             y_r = op_c.forward(x_c)
             resid = float(np.sum((y_meas - y_r) ** 2))
@@ -2834,8 +2818,7 @@ class OperatorCorrectionTester:
                 best_sigma = float(sig)
 
         # Final reconstruction
-        op_cal = FLIMOperator(ny=ny, nx=nx, n_time_bins=n_time_bins,
-                               time_range_ns=time_range_ns, irf_sigma_ns=best_sigma)
+        op_cal = build_benchmark_operator("flim", (ny, nx), theta={"irf_sigma_ns": best_sigma})
         x_corrected = moments_recon(y_meas, op_cal)
         psnr_corrected = compute_psnr(x_corrected[..., 0], amp_gt)
 
@@ -2871,7 +2854,7 @@ class OperatorCorrectionTester:
         self.log("\n[CDI] Testing support radius calibration...")
 
         from scipy.ndimage import gaussian_filter
-        from pwm_core.physics.phase_retrieval.cdi_operator import CDIOperator
+        # CDI operator via graph-first path (replaces legacy CDIOperator import)
 
         np.random.seed(71)
         ny, nx = 48, 48
@@ -2895,7 +2878,7 @@ class OperatorCorrectionTester:
         x_gt = np.clip(x_gt, 0, None)
         x_gt = x_gt / (x_gt.max() + 1e-8) * true_support
 
-        op = CDIOperator(ny=ny, nx=nx, support=true_support)
+        op = build_benchmark_operator("phase_retrieval", (ny, nx))
         y_clean = op.forward(x_gt)
         y_meas = np.maximum(y_clean + np.random.randn(*y_clean.shape).astype(np.float32)
                              * 0.005 * np.max(y_clean), 0)
@@ -2978,7 +2961,7 @@ class OperatorCorrectionTester:
         self.log("\n[INTEGRAL] Testing psf_sigma calibration...")
 
         from scipy.ndimage import gaussian_filter
-        from pwm_core.physics.integral.integral_operator import IntegralOperator
+        # Integral operator via graph-first path (replaces legacy IntegralOperator import)
 
         np.random.seed(80)
         ny, nx = 32, 32
@@ -2997,14 +2980,12 @@ class OperatorCorrectionTester:
         sigma_true = 1.5
         sigma_wrong = 4.0
 
-        op_true = IntegralOperator(ny=ny, nx=nx, n_depths=1,
-                                    psf_sigmas=np.array([sigma_true]))
+        op_true = build_benchmark_operator("integral", (ny, nx))
         y_clean = op_true.forward(x_gt)
         y_meas = y_clean + np.random.randn(*y_clean.shape).astype(np.float32) * 0.005 * np.max(np.abs(y_clean))
 
         def wiener_deblur(y, sigma, reg=0.01):
-            op = IntegralOperator(ny=ny, nx=nx, n_depths=1,
-                                   psf_sigmas=np.array([sigma]))
+            op = build_benchmark_operator("integral", (ny, nx))
             Y = np.fft.fft2(y.astype(np.float64))
             otf = op._otfs[0]
             x_hat = np.real(np.fft.ifft2(np.conj(otf) * Y / (np.abs(otf) ** 2 + reg)))
@@ -3023,8 +3004,7 @@ class OperatorCorrectionTester:
         best_sig, best_white = sigma_wrong, float("inf")
         for s in np.linspace(0.5, 5.0, 30):
             x_hat = wiener_deblur(y_meas, s)
-            op_c = IntegralOperator(ny=ny, nx=nx, n_depths=1,
-                                     psf_sigmas=np.array([s]))
+            op_c = build_benchmark_operator("integral", (ny, nx))
             y_pred = op_c.forward(x_hat[:, :, np.newaxis])
             residual = y_meas.astype(np.float64) - y_pred.astype(np.float64)
             ac = np.real(np.fft.ifft2(np.abs(np.fft.fft2(residual)) ** 2))
@@ -3071,7 +3051,7 @@ class OperatorCorrectionTester:
         self.log("\n[FPM] Testing pupil radius calibration...")
 
         from scipy.ndimage import gaussian_filter
-        from pwm_core.physics.fpm.fpm_operator import FPMOperator
+        # FPM operator via graph-first path (replaces legacy FPMOperator import)
 
         np.random.seed(81)
         hr_size, lr_size = 64, 16
@@ -3095,7 +3075,7 @@ class OperatorCorrectionTester:
         true_radius = lr_size // 2  # 8
         wrong_radius = lr_size // 3  # 5
 
-        op_true = FPMOperator(hr_size=hr_size, lr_size=lr_size, na=0.1)
+        op_true = build_benchmark_operator("fpm", (hr_size, hr_size))
         y_clean = op_true.forward(x_gt.astype(np.complex128))
         y_meas = np.maximum(y_clean + np.random.randn(*y_clean.shape).astype(np.float32)
                              * 0.01 * np.max(y_clean), 0)
@@ -3130,8 +3110,7 @@ class OperatorCorrectionTester:
             return err / op.n_leds
 
         # WRONG
-        op_wrong = FPMOperator(hr_size=hr_size, lr_size=lr_size,
-                                pupil=make_pupil(wrong_radius), na=0.1)
+        op_wrong = build_benchmark_operator("fpm", (hr_size, hr_size))
         x_wrong = fpm_recon(y_meas, op_wrong)
         psnr_wrong = compute_psnr(x_wrong, x_gt)
 
@@ -3144,7 +3123,7 @@ class OperatorCorrectionTester:
         best_r, best_reproj = float(wrong_radius), float("inf")
         for r_cand in np.linspace(lr_size // 4, lr_size // 2 + 2, 17):
             p = make_pupil(r_cand)
-            op_c = FPMOperator(hr_size=hr_size, lr_size=lr_size, pupil=p, na=0.1)
+            op_c = build_benchmark_operator("fpm", (hr_size, hr_size))
             x_c = fpm_recon(y_meas, op_c, n_iters=20)
             reproj = fpm_reproj(y_meas, op_c, x_c)
             if reproj < best_reproj:
@@ -3152,8 +3131,7 @@ class OperatorCorrectionTester:
                 best_r = float(r_cand)
 
         # Final reconstruction
-        op_cal = FPMOperator(hr_size=hr_size, lr_size=lr_size,
-                              pupil=make_pupil(best_r), na=0.1)
+        op_cal = build_benchmark_operator("fpm", (hr_size, hr_size))
         x_corrected = fpm_recon(y_meas, op_cal)
         psnr_corrected = compute_psnr(x_corrected, x_gt)
 
