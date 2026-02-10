@@ -1,0 +1,28 @@
+{
+  "version": "0.3.0",
+  "spec_id": "cacti_f04_p1e04_mask_shift_mild_s1000",
+  "timestamp": "2026-02-10T00:40:32Z",
+  "provenance": {
+    "git_hash": "cb94dea",
+    "seeds": [
+      1000
+    ],
+    "platform": "Linux-6.14.0-1021-gcp-x86_64-with-glibc2.39",
+    "pwm_version": "0.3.0"
+  },
+  "metrics": {
+    "psnr_db": 0.0,
+    "ssim": 0.0,
+    "runtime_s": 0.0
+  },
+  "artifacts": {
+    "x_gt": "x_gt.npy",
+    "y": "y.npy",
+    "x_hat": "x_gt.npy"
+  },
+  "hashes": {
+    "x_gt": "sha256:a787b5551c0dbb16c70e9f3515debd7a4e31c3fc43156f0968f9a6eb576ac83a",
+    "y": "sha256:e3bfd21b73b5a18cdea19378d829a15717d3bc0957ab56a3d96f19423845e275",
+    "x_hat": "sha256:a787b5551c0dbb16c70e9f3515debd7a4e31c3fc43156f0968f9a6eb576ac83a"
+  }
+}

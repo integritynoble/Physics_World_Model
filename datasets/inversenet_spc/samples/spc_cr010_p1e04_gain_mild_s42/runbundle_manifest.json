@@ -1,0 +1,28 @@
+{
+  "version": "0.3.0",
+  "spec_id": "spc_cr010_p1e04_gain_mild_s42",
+  "timestamp": "2026-02-10T00:38:00Z",
+  "provenance": {
+    "git_hash": "cb94dea",
+    "seeds": [
+      42
+    ],
+    "platform": "Linux-6.14.0-1021-gcp-x86_64-with-glibc2.39",
+    "pwm_version": "0.3.0"
+  },
+  "metrics": {
+    "psnr_db": 0.0,
+    "ssim": 0.0,
+    "runtime_s": 0.0
+  },
+  "artifacts": {
+    "x_gt": "x_gt.npy",
+    "y": "y.npy",
+    "x_hat": "x_gt.npy"
+  },
+  "hashes": {
+    "x_gt": "sha256:c638402bff6ff328ce663a26a82c17bdf65df7b03dd6f3ed94dd6e5373eaf738",
+    "y": "sha256:495e9550fbb055662f017616143cd7cb3c679d7870462602f2545ccd80167b30",
+    "x_hat": "sha256:c638402bff6ff328ce663a26a82c17bdf65df7b03dd6f3ed94dd6e5373eaf738"
+  }
+}

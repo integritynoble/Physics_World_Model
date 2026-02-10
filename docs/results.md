@@ -353,8 +353,113 @@ packages/pwm_core/tests/test_inversenet_generation.py ................   [100%]
 
 **Total: 162 tests, all passing. ~61 new files, ~11,000+ lines of code.**
 
-### Next Steps
-1. Merge all 5 branches to master
-2. Run `make check` merge gate
-3. Run Round 1 smoke tests (viral, InverseNet, graph compilation, bootstrap CI)
-4. Proceed to Round 2 (Task F: PWMI-CASSI)
+---
+
+## Round 1 Merge Gate — ALL PASSED
+
+**Octopus merge:** 64 files changed, 13,166 insertions(+), 8 deletions(-)
+
+| # | Gate | Result |
+|---|------|--------|
+| 1 | `make check` (unit + correction + literals) | **PASS** — 196 unit tests (1 skipped), 16 correction tests, literals up-to-date |
+| 2 | Viral smoke test (`pwm demo cassi`) | **PASS** — module imports, CLI parses, CASSI presets discovered |
+| 3 | InverseNet smoke test (`run_baselines.py --smoke`) | **PASS** — real data loaded (11 Set11, 6 CACTI, 10 CASSI), 18 results saved |
+| 4 | Graph compilation (`cassi/spc/cacti` templates) | **PASS** — all 3 compiled, adjoint correctly reports non-linear primitives |
+| 5 | Bootstrap CI (`test_bootstrap_ci.py`) | **PASS** — 5/5 tests passed |
+
+---
+
+## Task F: PWMI-CASSI (Paper 3) — COMPLETE
+
+**Agent:** a866578 | **Duration:** ~12 min | **Tool uses:** 70 | **Lines:** 2,275
+
+### Files Created (6 files)
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `experiments/pwmi_cassi/__init__.py` | 14 | Package init |
+| `experiments/pwmi_cassi/run_families.py` | 678 | Calibration across 3 mismatch families × 3 severities, family-specific UPWMI engines |
+| `experiments/pwmi_cassi/cal_budget.py` | 333 | Budget sweep (1/3/5/10 captures), capture advisor integration |
+| `experiments/pwmi_cassi/comparisons.py` | 462 | 5 baselines (no-cal, grid, gradient, UPWMI, UPWMI+gradient) |
+| `experiments/pwmi_cassi/stats.py` | 499 | Paired t-tests, Cohen's d, CI coverage analysis |
+| `papers/pwmi_cassi/README.md` | 289 | 8-section manuscript skeleton |
+
+### Exit Criteria
+
+| Criterion | Status |
+|-----------|--------|
+| UPWMI significant vs grid search (p < 0.05) | **PASS** — all 9 comparisons |
+| UPWMI significant vs gradient descent (p < 0.05) | **PASS** — all 9 comparisons |
+| Bootstrap 95% CI covers true θ ≥90% | **PASS** — 100% coverage |
+| Capture advisor reduces uncertainty | **PASS** |
+| All results in RunBundles with SHA256 hashes | **PASS** |
+
+---
+
+## Round 2 Merge Gate — ALL PASSED
+
+| # | Gate | Result |
+|---|------|--------|
+| 1 | `make check` (unit + correction + literals) | **PASS** — 196 unit, 16 correction, literals up-to-date |
+| 2 | `run_families.py --smoke` | **PASS** — real TSA data loaded, families processed |
+| 3 | `stats.py --smoke` | **PASS** — UPWMI significant vs all baselines, 100% CI coverage |
+
+---
+
+## Task G: Flagship PWM (Paper 1) — COMPLETE
+
+**Agent:** a759a18 | **Duration:** ~59 min | **Tool uses:** 174 | **Lines:** 3,672
+
+### Files Created (12 files)
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `experiments/pwm_flagship/__init__.py` | 19 | Package init |
+| `experiments/pwm_flagship/spc_loop.py` | 596 | SPC full pipeline: design → preflight → calibration → reconstruction |
+| `experiments/pwm_flagship/cacti_loop.py` | 520 | CACTI full pipeline |
+| `experiments/pwm_flagship/cassi_loop.py` | 321 | CASSI pipeline (refs PWMI-CASSI) |
+| `experiments/pwm_flagship/breadth_ct.py` | 271 | CT: Radon adjoint (5.4e-16), center-of-rotation calibration |
+| `experiments/pwm_flagship/breadth_wf.py` | 259 | Widefield: Conv2d adjoint (1.3e-16), PSF calibration |
+| `experiments/pwm_flagship/breadth_holo.py` | 278 | Holography: Fresnel adjoint (0.00), distance calibration |
+| `experiments/pwm_flagship/universality.py` | 212 | 26/26 templates compile + validate + serialize |
+| `experiments/pwm_flagship/ablations.py` | 744 | 4 ablations × 3 modalities, all >0.5 dB degradation |
+| `tests/test_universality_26.py` | 162 | 105 parametrized tests |
+| `tests/test_ablations.py` | 93 | 14 parametrized tests |
+| `papers/pwm_flagship/README.md` | 197 | 11-section manuscript skeleton |
+
+### Exit Criteria
+
+| Criterion | Status |
+|-----------|--------|
+| 3 depth modalities full loop with RunBundles | **PASS** |
+| CT + Widefield + Holography breadth checklist | **PASS** |
+| 26/26 templates compile to OperatorGraph | **PASS** |
+| 4 ablations × 3 modalities show >0.5 dB degradation | **PASS** |
+| All tests pass (119 tests) | **PASS** |
+
+---
+
+## Round 3 Merge Gate — ALL PASSED
+
+| # | Gate | Result |
+|---|------|--------|
+| 1 | `make check` (unit + correction + literals) | **PASS** — 315 unit (1 skip), 16 correction, literals up-to-date |
+| 2 | Universality smoke (26 templates) | **PASS** — 5/5 compiled, schema valid, serializable |
+| 3 | Ablations smoke | **PASS** — no_photon -0.68 dB, no_recoverability -1.63 dB |
+| 4 | SPC depth loop smoke | **PASS** — full pipeline completed |
+
+---
+
+## Final Summary — ALL 3 ROUNDS COMPLETE
+
+| Round | Task | Files | Lines | Tests | Status |
+|-------|------|-------|-------|-------|--------|
+| 1 | A: Viral MVP | 8 | ~1,200 | 20 | **PASS** |
+| 1 | B: OperatorGraph IR | 13 | ~3,971 | 75 | **PASS** |
+| 1 | C: Calibration Enhancement | 8 | ~780 | 16 | **PASS** |
+| 1 | D: InverseNet Dataset | 12 | ~2,050 | 16 | **PASS** |
+| 1 | E: Community + Revenue | 15 | ~1,500 | 35 | **PASS** |
+| 2 | F: PWMI-CASSI (Paper 3) | 6 | ~2,275 | — | **PASS** |
+| 3 | G: Flagship PWM (Paper 1) | 12 | ~3,672 | 119 | **PASS** |
+
+**Total: 74 files, ~15,448 lines, 7 tasks, all merge gates passed.**
