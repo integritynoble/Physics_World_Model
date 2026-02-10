@@ -55,7 +55,8 @@ logger = logging.getLogger(__name__)
 MISMATCH_FAMILIES = ["disp_step", "mask_shift", "PSF_blur"]
 SEVERITIES = [Severity.mild, Severity.moderate, Severity.severe]
 N_BANDS = 8
-PHOTON_LEVEL = 1e4
+PHOTON_LEVELS = [1e3, 1e4, 1e5]
+PHOTON_LEVEL = 1e4  # default single-level (backwards compat)
 N_TRIALS = 5
 BASE_SEED = 5000
 BOOTSTRAP_K = 20
@@ -516,6 +517,7 @@ def run_family_experiment(
     family: str,
     out_dir: str,
     smoke: bool = False,
+    photon_level: float = PHOTON_LEVEL,
 ) -> List[Dict[str, Any]]:
     """Run all severity levels for one mismatch family with bootstrap CI."""
     from pwm_core.mismatch.uncertainty import bootstrap_correction
@@ -534,7 +536,7 @@ def run_family_experiment(
         for trial_idx in range(n_trials):
             seed = BASE_SEED + hash((family, sev.value, trial_idx)) % 10000
             trial = run_one_trial(
-                family, sev, seed, N_BANDS, PHOTON_LEVEL, gap_tv_iters,
+                family, sev, seed, N_BANDS, photon_level, gap_tv_iters,
             )
             trial_results.append(trial)
 
@@ -637,16 +639,35 @@ def run_family_experiment(
 def run_all_families(
     out_dir: str,
     smoke: bool = False,
+    photon_levels: Optional[List[float]] = None,
 ) -> List[Dict[str, Any]]:
-    """Run calibration experiments across all mismatch families."""
+    """Run calibration experiments across all mismatch families.
+
+    Parameters
+    ----------
+    photon_levels : list of float, optional
+        Photon levels to sweep (F.5). Defaults to [PHOTON_LEVEL].
+        Use PHOTON_LEVELS for the full sweep: [1e3, 1e4, 1e5].
+    """
     os.makedirs(out_dir, exist_ok=True)
     families = [MISMATCH_FAMILIES[0]] if smoke else MISMATCH_FAMILIES
+    levels = photon_levels or [PHOTON_LEVEL]
 
     all_results: List[Dict[str, Any]] = []
-    for fam in families:
-        logger.info(f"Running family: {fam}")
-        fam_results = run_family_experiment(fam, out_dir, smoke=smoke)
-        all_results.extend(fam_results)
+    for pl in levels:
+        level_tag = f"photon_{pl:.0e}"
+        level_dir = os.path.join(out_dir, level_tag) if len(levels) > 1 else out_dir
+        os.makedirs(level_dir, exist_ok=True)
+        logger.info(f"Photon level: {pl:.0e}")
+
+        for fam in families:
+            logger.info(f"  Running family: {fam}")
+            fam_results = run_family_experiment(
+                fam, level_dir, smoke=smoke, photon_level=pl,
+            )
+            for r in fam_results:
+                r["photon_level"] = pl
+            all_results.extend(fam_results)
 
     # Save combined summary
     summary_path = os.path.join(out_dir, "families_summary.json")
@@ -668,10 +689,14 @@ def main():
         "--smoke", action="store_true",
         help="Quick validation run (1 family, 1 severity, 1 trial)",
     )
+    parser.add_argument(
+        "--photon_levels", type=float, nargs="+", default=None,
+        help="Photon levels to sweep (F.5). E.g. --photon_levels 1e3 1e4 1e5",
+    )
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
-    run_all_families(args.out_dir, smoke=args.smoke)
+    run_all_families(args.out_dir, smoke=args.smoke, photon_levels=args.photon_levels)
 
 
 if __name__ == "__main__":
