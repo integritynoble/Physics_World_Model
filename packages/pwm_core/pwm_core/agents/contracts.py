@@ -456,6 +456,91 @@ class InterpolatedResult(StrictBaseModel):
 # ---------------------------------------------------------------------------
 
 
+class CorrectionResult(StrictBaseModel):
+    """Result of operator parameter correction with uncertainty.
+
+    Produced by the bootstrap_correction() pipeline in
+    ``mismatch.uncertainty``.  Stores corrected parameters, their 95%
+    confidence intervals, convergence history, and the full set of
+    bootstrap bookkeeping needed for deterministic reproducibility
+    (seeds + resampling indices), suitable for storage in a RunBundle.
+    """
+
+    theta_corrected: Dict[str, float]
+    """Corrected operator parameters.  Keys are parameter names."""
+
+    theta_uncertainty: Dict[str, List[float]]
+    """95% confidence interval per parameter.  Keys match theta_corrected.
+    Each value is [lower_bound, upper_bound]."""
+
+    improvement_db: float
+    """PSNR improvement in dB (corrected - uncorrected)."""
+
+    n_evaluations: int = Field(gt=0)
+    """Total number of forward model evaluations during correction."""
+
+    convergence_curve: List[float]
+    """PSNR (or loss) at each major iteration.  Length = number of
+    iterations."""
+
+    bootstrap_seeds: List[int]
+    """RNG seeds used for each bootstrap resample.  Length = K (typically
+    20).  Stored for deterministic reproducibility."""
+
+    resampling_indices: List[List[int]]
+    """Bootstrap resampling indices.  ``resampling_indices[k]`` is the
+    list of sample indices used in bootstrap resample *k*.  Stored in
+    RunBundle."""
+
+    @field_validator("convergence_curve")
+    @classmethod
+    def _convergence_non_empty(cls, v: List[float]) -> List[float]:
+        if not v:
+            raise ValueError("convergence_curve must be non-empty.")
+        for i, val in enumerate(v):
+            if not isinstance(val, (int, float)) or math.isnan(val) or math.isinf(val):
+                raise ValueError(
+                    f"convergence_curve[{i}] = {val!r} is not a finite number."
+                )
+        return v
+
+    @model_validator(mode="after")
+    def _validate_correction_result(self) -> "CorrectionResult":
+        """Cross-field validation per the CorrectionResult schema contract."""
+        # theta_uncertainty keys must be a superset of theta_corrected keys
+        corrected_keys = set(self.theta_corrected.keys())
+        uncertainty_keys = set(self.theta_uncertainty.keys())
+        if not corrected_keys.issubset(uncertainty_keys):
+            missing = corrected_keys - uncertainty_keys
+            raise ValueError(
+                f"theta_uncertainty is missing keys present in "
+                f"theta_corrected: {missing}"
+            )
+
+        # Each CI must be [lower, upper] with lower <= upper
+        for param, ci in self.theta_uncertainty.items():
+            if len(ci) != 2:
+                raise ValueError(
+                    f"theta_uncertainty['{param}'] must have exactly 2 "
+                    f"elements [lower, upper], got {len(ci)}."
+                )
+            lo, hi = ci
+            if lo > hi:
+                raise ValueError(
+                    f"theta_uncertainty['{param}']: lower ({lo}) > "
+                    f"upper ({hi})."
+                )
+
+        # bootstrap_seeds and resampling_indices must have the same length
+        if len(self.bootstrap_seeds) != len(self.resampling_indices):
+            raise ValueError(
+                f"len(bootstrap_seeds) = {len(self.bootstrap_seeds)} != "
+                f"len(resampling_indices) = {len(self.resampling_indices)}."
+            )
+
+        return self
+
+
 class LLMSelectionResult(StrictBaseModel):
     """What the LLM returns when choosing domain concepts.
 

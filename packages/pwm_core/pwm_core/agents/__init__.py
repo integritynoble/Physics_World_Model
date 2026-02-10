@@ -23,6 +23,7 @@ from .contracts import (
     TransferKind,
     NoiseKind,
     ForwardModelType,
+    CorrectionResult,
     LLMSelectionResult,
     InterpolatedResult,
 )
@@ -73,6 +74,7 @@ __all__ = [
     "TransferKind",
     "NoiseKind",
     "ForwardModelType",
+    "CorrectionResult",
     "LLMSelectionResult",
     "InterpolatedResult",
     "BaseAgent",
