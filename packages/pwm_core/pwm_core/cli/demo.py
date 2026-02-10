@@ -16,6 +16,56 @@ from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
+
+def _write_manifest_from_pipeline(
+    rb_dir: Path, casepack: Dict[str, Any], result: Dict[str, Any]
+) -> None:
+    """Write runbundle_manifest.json for sharepack compatibility.
+
+    The real pipeline creates provenance.json but sharepack expects
+    runbundle_manifest.json. This bridges the gap.
+    """
+    import hashlib
+
+    modality = casepack.get("modality", "unknown")
+    metrics = {}
+    for r in result.get("recon", []):
+        if isinstance(r, dict):
+            metrics.update(r.get("metrics", {}))
+    diagnosis = result.get("diagnosis", {})
+
+    # Build hashes from artifacts if they exist
+    hashes = {}
+    artifacts_dir = rb_dir / "artifacts"
+    for name in ["x_hat.npy", "y.npy", "x_true.npy"]:
+        p = artifacts_dir / name
+        if p.exists():
+            sha = hashlib.sha256(p.read_bytes()).hexdigest()
+            hashes[name.replace(".npy", "")] = "sha256:" + sha
+
+    manifest = {
+        "version": "0.3.0",
+        "spec_id": result.get("spec_id", "demo_" + modality),
+        "timestamp": "2026-02-10T00:00:00Z",
+        "modality": modality,
+        "provenance": {
+            "git_hash": "0000000",
+            "seeds": [42],
+            "platform": sys.platform,
+            "pwm_version": "0.3.0",
+        },
+        "metrics": metrics,
+        "artifacts": {
+            "x_hat": "artifacts/x_hat.npy",
+            "y": "artifacts/y.npy",
+        },
+        "hashes": hashes,
+    }
+    (rb_dir / "runbundle_manifest.json").write_text(
+        json.dumps(manifest, indent=2), encoding="utf-8"
+    )
+
+
 # ---------------------------------------------------------------------------
 # CasePack discovery
 # ---------------------------------------------------------------------------
@@ -124,6 +174,13 @@ def _run_pipeline(casepack: Dict[str, Any], out_dir: Path) -> Path:
         from pwm_core.api import endpoints
         spec = casepack.get("base_spec", {})
         result = endpoints.run(spec=spec, out_dir=str(rb_dir))
+        # Use the actual RunBundle path if available
+        actual_rb = result.get("runbundle_path") if isinstance(result, dict) else None
+        if actual_rb:
+            actual_rb = Path(actual_rb)
+            # Write runbundle_manifest.json for sharepack compatibility
+            _write_manifest_from_pipeline(actual_rb, casepack, result)
+            return actual_rb
         return rb_dir
     except Exception as exc:
         logger.info(
@@ -215,16 +272,16 @@ def cmd_demo(args):
     )
 
     rb_dir = None
+    out_dir = Path("runs") / ("demo_" + modality)
 
     if do_run:
-        out_dir = Path("runs") / ("demo_" + modality)
         rb_dir = _run_pipeline(casepack, out_dir)
         print("RunBundle at: {}".format(rb_dir), file=sys.stderr)
 
     if do_sharepack:
         if rb_dir is None:
             # Try to find an existing RunBundle
-            default_rb = Path("runs") / ("demo_" + modality) / "runbundle"
+            default_rb = out_dir / "runbundle"
             if default_rb.exists():
                 rb_dir = default_rb
             else:
@@ -236,7 +293,7 @@ def cmd_demo(args):
 
         from pwm_core.export.sharepack import export_sharepack
 
-        sp_dir = rb_dir.parent / "sharepack"
+        sp_dir = out_dir / "sharepack"
         export_sharepack(
             runbundle_dir=str(rb_dir),
             output_dir=str(sp_dir),

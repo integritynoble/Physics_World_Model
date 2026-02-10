@@ -32,6 +32,7 @@ from pwm_core.graph.graph_spec import (
 )
 from pwm_core.graph.compiler import GraphCompiler
 from pwm_core.graph.graph_operator import GraphOperator
+from pwm_core.graph.adapter import GraphOperatorAdapter
 from pwm_core.graph.introspection import explain_graph
 
 __all__ = [
@@ -47,5 +48,6 @@ __all__ = [
     "OperatorGraphSpec",
     "GraphCompiler",
     "GraphOperator",
+    "GraphOperatorAdapter",
     "explain_graph",
 ]

@@ -26,12 +26,17 @@ Routes to appropriate operator based on modality:
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional, Tuple
+import logging
+import os
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
+import yaml
 
 from pwm_core.api.types import ExperimentSpec, OperatorKind
 from pwm_core.physics.base import BaseOperator
+
+logger = logging.getLogger(__name__)
 
 
 class IdentityOperator(BaseOperator):
@@ -75,8 +80,133 @@ def _get_dims_from_spec(spec: ExperimentSpec) -> Tuple[int, ...]:
     return (64, 64)
 
 
+# Stochastic primitive IDs that should be stripped from graph templates
+# before compiling the reconstruction operator. Noise is handled separately
+# by simulator.py.
+_STOCHASTIC_PRIMITIVE_IDS = frozenset({"poisson", "gaussian", "poisson_gaussian", "fpn"})
+
+
+def _load_graph_templates() -> Dict[str, Any]:
+    """Load graph_templates.yaml from the contrib directory."""
+    contrib_dir = os.path.join(
+        os.path.dirname(__file__), os.pardir, os.pardir, "contrib"
+    )
+    templates_path = os.path.normpath(
+        os.path.join(contrib_dir, "graph_templates.yaml")
+    )
+    if not os.path.exists(templates_path):
+        return {}
+    with open(templates_path, "r", encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+    return data.get("templates", {}) if data else {}
+
+
+def _strip_stochastic_nodes(template: Dict[str, Any]) -> Dict[str, Any]:
+    """Remove stochastic nodes and their edges from a graph template.
+
+    Returns a copy with stochastic nodes (noise primitives) removed,
+    since noise is applied separately by simulator.py.
+    """
+    template = dict(template)  # shallow copy
+    nodes = list(template.get("nodes", []))
+    edges = list(template.get("edges", []))
+
+    # Find stochastic node IDs
+    stochastic_ids = set()
+    kept_nodes = []
+    for node in nodes:
+        if node.get("primitive_id") in _STOCHASTIC_PRIMITIVE_IDS:
+            stochastic_ids.add(node["node_id"])
+        else:
+            kept_nodes.append(node)
+
+    # Remove edges referencing stochastic nodes
+    kept_edges = [
+        e for e in edges
+        if e["source"] not in stochastic_ids and e["target"] not in stochastic_ids
+    ]
+
+    template["nodes"] = kept_nodes
+    template["edges"] = kept_edges
+    return template
+
+
+def _try_build_graph_operator(
+    modality: str, dims: Tuple[int, ...]
+) -> Optional[BaseOperator]:
+    """Try to build an operator from graph templates (SC-9 graph-first path).
+
+    Looks up a graph template matching the modality, strips stochastic nodes,
+    compiles via GraphCompiler, and wraps in GraphOperatorAdapter.
+
+    Returns None on any failure (missing template, compilation error, etc.),
+    allowing the caller to fall back to the modality-specific operator.
+    """
+    try:
+        from pwm_core.graph.adapter import GraphOperatorAdapter
+        from pwm_core.graph.compiler import GraphCompiler
+        from pwm_core.graph.graph_spec import OperatorGraphSpec
+
+        templates = _load_graph_templates()
+        if not templates:
+            return None
+
+        # Find first template where metadata.modality matches
+        matched_template = None
+        for _tmpl_id, tmpl in templates.items():
+            tmpl_modality = (tmpl.get("metadata") or {}).get("modality", "")
+            if tmpl_modality.lower() == modality:
+                matched_template = dict(tmpl)
+                matched_template.setdefault("graph_id", _tmpl_id)
+                break
+
+        if matched_template is None:
+            return None
+
+        # Strip stochastic nodes (noise handled by simulator.py)
+        stripped = _strip_stochastic_nodes(matched_template)
+
+        # Remove extra fields not in OperatorGraphSpec (strict model)
+        _SPEC_FIELDS = {"graph_id", "nodes", "edges", "noise_model", "metadata"}
+        stripped = {k: v for k, v in stripped.items() if k in _SPEC_FIELDS}
+
+        # Override x_shape/y_shape from dims if provided and non-default
+        if dims != (64, 64):
+            meta = dict(stripped.get("metadata", {}))
+            meta["x_shape"] = list(dims)
+            stripped["metadata"] = meta
+
+        # Parse into OperatorGraphSpec
+        spec = OperatorGraphSpec.model_validate(stripped)
+
+        # Compile
+        compiler = GraphCompiler()
+        x_shape = tuple(stripped.get("metadata", {}).get("x_shape", [64, 64]))
+        y_shape = tuple(stripped.get("metadata", {}).get("y_shape", list(x_shape)))
+        graph_op = compiler.compile(spec, x_shape=x_shape, y_shape=y_shape)
+
+        # Wrap in adapter
+        adapter = GraphOperatorAdapter(graph_op, modality=modality)
+        logger.info(
+            "Built graph operator for '%s' from template '%s' (%d nodes)",
+            modality, spec.graph_id, len(graph_op.forward_plan),
+        )
+        return adapter
+
+    except Exception as exc:
+        logger.debug(
+            "Graph-first build failed for '%s': %s; falling back to modality-specific.",
+            modality, exc,
+        )
+        return None
+
+
 def build_operator(spec: ExperimentSpec) -> BaseOperator:
     """Build a physics operator from ExperimentSpec.
+
+    Tries the graph-first path (SC-9) first: load graph template, strip
+    stochastic nodes, compile via GraphCompiler, wrap in GraphOperatorAdapter.
+    Falls back to modality-specific operator on failure.
 
     Args:
         spec: ExperimentSpec containing physics modality and operator config.
@@ -86,6 +216,11 @@ def build_operator(spec: ExperimentSpec) -> BaseOperator:
     """
     modality = spec.states.physics.modality.lower()
     dims = _get_dims_from_spec(spec)
+
+    # Try graph-first path (SC-9)
+    graph_op = _try_build_graph_operator(modality, dims)
+    if graph_op is not None:
+        return graph_op
 
     # Check if operator is explicitly specified in input
     if spec.input.operator is not None:
