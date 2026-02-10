@@ -1,0 +1,24 @@
+{
+  "challenge_version": "1.0.0",
+  "week_id": "2026-W13",
+  "modality": "widefield",
+  "casepack_id": "widefield_lowdose_highbg_v1",
+  "primary_metric": "psnr_db",
+  "secondary_metric": "ssim",
+  "reference_metrics": {
+    "psnr_db": 27.78,
+    "ssim": 0.82,
+    "runtime_s": 5.0
+  },
+  "thresholds": {
+    "psnr_db_min": 15.0,
+    "ssim_min": 0.3,
+    "runtime_s_max": 60.0
+  },
+  "data_generation": {
+    "script": "generate_data.py",
+    "seed": 42,
+    "dims": {"H": 128, "W": 128},
+    "notes": "Low-dose widefield with Gaussian PSF, Poisson noise, and high background"
+  }
+}
