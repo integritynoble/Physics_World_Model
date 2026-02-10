@@ -59,3 +59,43 @@ def generic_gain_shift_space() -> ThetaSpace:
             "bias": {"type": "float", "low": -1.0, "high": 1.0, "unit": "scalar"},
         },
     )
+
+
+def graph_theta_space(adapter) -> ThetaSpace:
+    """Auto-generate ThetaSpace from graph operator node parameters.
+
+    Parameters
+    ----------
+    adapter : GraphOperatorAdapter
+        Adapter wrapping a compiled GraphOperator.
+
+    Returns
+    -------
+    ThetaSpace
+        Search space derived from graph node parameters.
+    """
+    params: Dict[str, Dict[str, Any]] = {}
+    theta = adapter.get_theta()
+
+    for key, val in theta.items():
+        try:
+            fval = float(val)
+        except (TypeError, ValueError):
+            continue
+
+        # Build bounded range: current value +/- factor
+        abs_val = abs(fval) if abs(fval) > 1e-6 else 1.0
+        factor = 2.0  # search within 2x of current value
+
+        params[key] = {
+            "type": "float",
+            "low": fval - abs_val * factor,
+            "high": fval + abs_val * factor,
+            "unit": "auto",
+        }
+
+    modality = getattr(adapter, "_modality", "unknown")
+    return ThetaSpace(
+        name=f"graph_{modality}_auto_v1",
+        params=params,
+    )

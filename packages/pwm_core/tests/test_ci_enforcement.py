@@ -174,3 +174,67 @@ class TestAdjointGate:
             f"max_rel_err={report.max_relative_error:.2e}, "
             f"tol={report.tolerance:.2e}"
         )
+
+
+# ---------------------------------------------------------------------------
+# E.6: Template stability test
+# ---------------------------------------------------------------------------
+
+
+class TestTemplateStability:
+    """Verify graph_templates.yaml structure doesn't regress."""
+
+    def test_minimum_template_count(self) -> None:
+        """Must have at least 26 templates."""
+        assert len(TEMPLATES) >= 26, (
+            f"Expected >= 26 templates, got {len(TEMPLATES)}"
+        )
+
+    def test_all_templates_have_metadata(self) -> None:
+        """Every template must have a metadata section."""
+        missing = [tid for tid in TEMPLATE_IDS if "metadata" not in TEMPLATES[tid]]
+        assert not missing, (
+            f"Templates missing 'metadata': {missing}"
+        )
+
+    def test_all_templates_have_modality(self) -> None:
+        """Every template metadata must include a modality field."""
+        missing = []
+        for tid in TEMPLATE_IDS:
+            meta = TEMPLATES[tid].get("metadata", {})
+            if not meta.get("modality"):
+                missing.append(tid)
+        assert not missing, (
+            f"Templates missing 'metadata.modality': {missing}"
+        )
+
+    def test_known_modalities_have_templates(self) -> None:
+        """Key modalities must have at least one template."""
+        modalities = set()
+        for tid, tmpl in TEMPLATES.items():
+            meta = tmpl.get("metadata", {})
+            if meta.get("modality"):
+                modalities.add(meta["modality"])
+
+        required = ["cassi", "widefield", "ct", "spc"]
+        missing = [m for m in required if m not in modalities]
+        assert not missing, (
+            f"Required modalities without templates: {missing}. "
+            f"Found modalities: {sorted(modalities)}"
+        )
+
+    def test_all_templates_have_nodes(self) -> None:
+        """Every template must have at least one node."""
+        empty = [tid for tid in TEMPLATE_IDS if not TEMPLATES[tid].get("nodes")]
+        assert not empty, f"Templates with no nodes: {empty}"
+
+    def test_all_templates_have_edges_or_single_node(self) -> None:
+        """Templates with >1 node must have edges."""
+        bad = []
+        for tid in TEMPLATE_IDS:
+            tmpl = TEMPLATES[tid]
+            nodes = tmpl.get("nodes", [])
+            edges = tmpl.get("edges", [])
+            if len(nodes) > 1 and not edges:
+                bad.append(tid)
+        assert not bad, f"Multi-node templates without edges: {bad}"
