@@ -129,13 +129,8 @@ def _cacti_forward(video: np.ndarray, masks: np.ndarray) -> np.ndarray:
 def _apply_photon_noise(
     y: np.ndarray, photon_level: float, rng: np.random.Generator
 ) -> np.ndarray:
-    scale = photon_level / (np.abs(y).max() + 1e-10)
-    y_scaled = np.maximum(y * scale, 0)
-    y_noisy = rng.poisson(y_scaled).astype(np.float32)
-    read_sigma = np.sqrt(photon_level) * 0.01
-    y_noisy += rng.normal(0, read_sigma, size=y.shape).astype(np.float32)
-    y_noisy /= scale
-    return y_noisy
+    from pwm_core.noise.apply import apply_photon_noise
+    return apply_photon_noise(y, photon_level, rng)
 
 
 def _generate_calibration_captures(

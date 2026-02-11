@@ -6,6 +6,7 @@
 #   range          - physically plausible error interval [min, max]
 #   typical_error  - commonly encountered magnitude in practice
 #   unit           - physical unit of the parameter
+#   param_type     - category: spatial_shift | rotation | scale | blur | offset | timing | position
 #   description    - what the mismatch represents
 #
 # severity_weights indicate relative impact on reconstruction quality
@@ -27,21 +28,25 @@ modalities:
         range: [0.5, 3.0]
         typical_error: 0.3
         unit: "pixels"
+        param_type: "blur"
         description: "Gaussian PSF width error from incorrect NA or wavelength assumption"
       defocus:
         range: [-2.0, 2.0]
         typical_error: 0.5
         unit: "um"
+        param_type: "offset"
         description: "Axial focus offset from coverslip tilt or stage drift"
       background:
         range: [0.0, 0.15]
         typical_error: 0.03
         unit: "normalized"
+        param_type: "offset"
         description: "Additive background from autofluorescence or stray light"
       gain:
         range: [0.5, 1.5]
         typical_error: 0.1
         unit: "unitless"
+        param_type: "scale"
         description: "Detector gain mismatch from camera calibration error"
     severity_weights:
       psf_sigma: 0.40
@@ -56,21 +61,25 @@ modalities:
         range: [0.5, 3.0]
         typical_error: 0.3
         unit: "pixels"
+        param_type: "blur"
         description: "Gaussian PSF width error from incorrect NA or wavelength assumption"
       defocus:
         range: [-2.0, 2.0]
         typical_error: 0.5
         unit: "um"
+        param_type: "offset"
         description: "Axial focus offset from coverslip tilt or stage drift"
       background:
         range: [0.0, 0.20]
         typical_error: 0.05
         unit: "normalized"
+        param_type: "offset"
         description: "Additive background (larger at low dose due to poor SNR estimation)"
       gain:
         range: [0.4, 1.6]
         typical_error: 0.15
         unit: "unitless"
+        param_type: "scale"
         description: "Detector gain error amplified by low photon counts"
     severity_weights:
       psf_sigma: 0.30
@@ -85,21 +94,25 @@ modalities:
         range: [0.3, 2.5]
         typical_error: 0.2
         unit: "pixels"
+        param_type: "blur"
         description: "Confocal PSF width error from pinhole-NA mismatch"
       defocus:
         range: [-1.5, 1.5]
         typical_error: 0.4
         unit: "um"
+        param_type: "offset"
         description: "Focal drift during live-cell time-lapse acquisition"
       background:
         range: [0.0, 0.10]
         typical_error: 0.02
         unit: "normalized"
+        param_type: "offset"
         description: "Out-of-focus fluorescence leaking through pinhole"
       gain:
         range: [0.6, 1.4]
         typical_error: 0.08
         unit: "unitless"
+        param_type: "scale"
         description: "PMT gain drift over time during acquisition"
     severity_weights:
       psf_sigma: 0.35
@@ -114,21 +127,25 @@ modalities:
         range: [0.3, 2.5]
         typical_error: 0.25
         unit: "pixels"
+        param_type: "blur"
         description: "Lateral PSF width error from refractive-index mismatch"
       defocus:
         range: [-3.0, 3.0]
         typical_error: 0.8
         unit: "um"
+        param_type: "offset"
         description: "Depth-dependent spherical aberration causing axial focus shift"
       background:
         range: [0.0, 0.12]
         typical_error: 0.03
         unit: "normalized"
+        param_type: "offset"
         description: "Scattered light background increasing with depth"
       gain:
         range: [0.5, 1.5]
         typical_error: 0.1
         unit: "unitless"
+        param_type: "scale"
         description: "Depth-dependent attenuation compensation error"
     severity_weights:
       psf_sigma: 0.30
@@ -143,21 +160,25 @@ modalities:
         range: [0.3, 2.0]
         typical_error: 0.15
         unit: "pixels"
+        param_type: "blur"
         description: "OTF width error affecting frequency-space reconstruction"
       defocus:
         range: [-1.0, 1.0]
         typical_error: 0.3
         unit: "um"
+        param_type: "offset"
         description: "Axial focus offset causing OTF zero-crossing shift"
       background:
         range: [0.0, 0.10]
         typical_error: 0.02
         unit: "normalized"
+        param_type: "offset"
         description: "DC background bias causing stripe artifacts in SIM"
       gain:
         range: [0.7, 1.3]
         typical_error: 0.05
         unit: "unitless"
+        param_type: "scale"
         description: "Illumination pattern modulation depth error"
     severity_weights:
       psf_sigma: 0.35
@@ -172,21 +193,25 @@ modalities:
         range: [0.5, 3.0]
         typical_error: 0.3
         unit: "pixels"
+        param_type: "blur"
         description: "Detection PSF width error from misaligned sheet-detection focus"
       defocus:
         range: [-2.0, 2.0]
         typical_error: 0.6
         unit: "um"
+        param_type: "offset"
         description: "Light sheet waist offset from detection focal plane"
       background:
         range: [0.0, 0.15]
         typical_error: 0.04
         unit: "normalized"
+        param_type: "offset"
         description: "Scattered light from thick tissue producing stripe artifacts"
       gain:
         range: [0.5, 1.5]
         typical_error: 0.1
         unit: "unitless"
+        param_type: "scale"
         description: "sCMOS fixed-pattern noise and gain non-uniformity"
     severity_weights:
       psf_sigma: 0.30
@@ -205,26 +230,31 @@ modalities:
         range: [-3.0, 3.0]
         typical_error: 0.5
         unit: "pixels"
+        param_type: "spatial_shift"
         description: "Coded aperture horizontal registration error"
       mask_dy:
         range: [-3.0, 3.0]
         typical_error: 0.5
         unit: "pixels"
+        param_type: "spatial_shift"
         description: "Coded aperture vertical registration error"
       dispersion_step:
         range: [0.8, 1.2]
         typical_error: 0.03
         unit: "pixels/channel"
+        param_type: "scale"
         description: "Prism dispersion rate error per spectral channel"
       psf_sigma:
         range: [0.3, 2.5]
         typical_error: 0.3
         unit: "pixels"
+        param_type: "blur"
         description: "Optical PSF blur from relay lens aberrations"
       gain:
         range: [0.5, 1.5]
         typical_error: 0.1
         unit: "unitless"
+        param_type: "scale"
         description: "Detector gain mismatch across spectral bands"
     severity_weights:
       mask_dx: 0.30
@@ -240,16 +270,19 @@ modalities:
         range: [0.0, 0.10]
         typical_error: 0.02
         unit: "normalized"
+        param_type: "offset"
         description: "Additive measurement noise from detector electronics"
       pattern_misalignment:
         range: [-2.0, 2.0]
         typical_error: 0.5
         unit: "pixels"
+        param_type: "spatial_shift"
         description: "DMD pattern registration error relative to detection"
       gain:
         range: [0.5, 1.5]
         typical_error: 0.15
         unit: "unitless"
+        param_type: "scale"
         description: "Photodetector gain drift over acquisition sequence"
     severity_weights:
       measurement_noise: 0.25
@@ -263,21 +296,31 @@ modalities:
         range: [-4, 4]
         typical_error: 1.0
         unit: "pixels"
+        param_type: "spatial_shift"
         description: "Spatial mask shift from imprecise mechanical translation"
+      mask_rotation:
+        range: [-3.0, 3.0]
+        typical_error: 0.5
+        unit: "degrees"
+        param_type: "rotation"
+        description: "Mask rotation error from encoder jitter or mounting"
       temporal_jitter:
         range: [-2, 2]
         typical_error: 0.5
         unit: "frames"
+        param_type: "timing"
         description: "Mask-detector timing synchronization error"
       psf_sigma:
         range: [0.3, 2.0]
         typical_error: 0.3
         unit: "pixels"
+        param_type: "blur"
         description: "Optical blur from relay lens defocus"
     severity_weights:
-      mask_shift: 0.45
-      temporal_jitter: 0.35
-      psf_sigma: 0.20
+      mask_shift: 0.30
+      mask_rotation: 0.10
+      temporal_jitter: 0.30
+      psf_sigma: 0.30
     correction_method: "grid_search"
 
   # ==========================================================================
@@ -290,21 +333,25 @@ modalities:
         range: [0.5, 5.0]
         typical_error: 0.5
         unit: "pixels"
+        param_type: "blur"
         description: "PSF blur kernel width error from diffuser characterization"
       psf_shift_x:
         range: [-5.0, 5.0]
         typical_error: 1.0
         unit: "pixels"
+        param_type: "spatial_shift"
         description: "Horizontal PSF registration error from sensor-mask alignment"
       psf_shift_y:
         range: [-5.0, 5.0]
         typical_error: 1.0
         unit: "pixels"
+        param_type: "spatial_shift"
         description: "Vertical PSF registration error from sensor-mask alignment"
       background:
         range: [0.0, 0.10]
         typical_error: 0.02
         unit: "normalized"
+        param_type: "offset"
         description: "Ambient light leakage and sensor dark current"
     severity_weights:
       psf_sigma: 0.25
@@ -323,16 +370,19 @@ modalities:
         range: [-2.0, 2.0]
         typical_error: 0.5
         unit: "degrees"
+        param_type: "rotation"
         description: "Gantry angular encoder offset causing view angle errors"
       detector_offset:
         range: [-5.0, 5.0]
         typical_error: 1.5
         unit: "pixels"
+        param_type: "spatial_shift"
         description: "Center of rotation shift from detector misalignment"
       beam_hardening_coeff:
         range: [0.0, 0.3]
         typical_error: 0.05
         unit: "unitless"
+        param_type: "scale"
         description: "Polychromatic beam hardening correction coefficient error"
     severity_weights:
       projection_angle_offset: 0.30
@@ -346,16 +396,19 @@ modalities:
         range: [0.0, 0.5]
         typical_error: 0.1
         unit: "normalized"
+        param_type: "scale"
         description: "Coil sensitivity map estimation error (ESPIRiT residual)"
       k_space_trajectory_error:
         range: [0.0, 0.05]
         typical_error: 0.01
         unit: "1/FOV"
+        param_type: "spatial_shift"
         description: "Gradient timing error causing k-space trajectory deviation"
       B0_inhomogeneity:
         range: [0.0, 100.0]
         typical_error: 20.0
         unit: "Hz"
+        param_type: "offset"
         description: "Static field inhomogeneity causing geometric distortion"
     severity_weights:
       coil_sensitivity_error: 0.45
@@ -373,16 +426,19 @@ modalities:
         range: [-5.0, 5.0]
         typical_error: 1.0
         unit: "pixels"
+        param_type: "position"
         description: "Horizontal scan position error from stage hysteresis"
       probe_position_error_y:
         range: [-5.0, 5.0]
         typical_error: 1.0
         unit: "pixels"
+        param_type: "position"
         description: "Vertical scan position error from stage hysteresis"
       probe_defocus:
         range: [-2.0, 2.0]
         typical_error: 0.5
         unit: "um"
+        param_type: "offset"
         description: "Probe defocus from incorrect sample-condenser distance"
     severity_weights:
       probe_position_error_x: 0.35
@@ -396,16 +452,19 @@ modalities:
         range: [-500.0, 500.0]
         typical_error: 50.0
         unit: "um"
+        param_type: "offset"
         description: "Numerical propagation distance error for refocusing"
       wavelength_error:
         range: [-5.0, 5.0]
         typical_error: 1.0
         unit: "nm"
+        param_type: "scale"
         description: "Illumination wavelength uncertainty from source bandwidth"
       tilt_angle:
         range: [-2.0, 2.0]
         typical_error: 0.3
         unit: "degrees"
+        param_type: "rotation"
         description: "Reference beam tilt error in off-axis holography"
     severity_weights:
       propagation_distance_error: 0.45
@@ -423,11 +482,13 @@ modalities:
         range: [0.0, 5.0]
         typical_error: 0.5
         unit: "pixels (reprojection)"
+        param_type: "position"
         description: "Camera extrinsic error from SfM/COLMAP pose estimation"
       focal_length_error:
         range: [-50.0, 50.0]
         typical_error: 10.0
         unit: "pixels"
+        param_type: "scale"
         description: "Intrinsic focal length error from imprecise calibration"
     severity_weights:
       camera_pose_error: 0.60
@@ -440,11 +501,13 @@ modalities:
         range: [0.0, 0.1]
         typical_error: 0.02
         unit: "scene_units"
+        param_type: "position"
         description: "SfM point cloud position noise propagated to Gaussian centers"
       scale_error:
         range: [0.5, 2.0]
         typical_error: 0.15
         unit: "unitless"
+        param_type: "scale"
         description: "Initial Gaussian scale error from sparse point density"
     severity_weights:
       position_noise: 0.55
@@ -461,11 +524,13 @@ modalities:
         range: [0.0, 0.10]
         typical_error: 0.02
         unit: "normalized"
+        param_type: "offset"
         description: "Additive measurement noise from detector or quantization"
       matrix_perturbation:
         range: [0.0, 0.20]
         typical_error: 0.05
         unit: "Frobenius (relative)"
+        param_type: "scale"
         description: "Forward matrix calibration error (element-wise perturbation)"
     severity_weights:
       noise_level: 0.40
@@ -478,11 +543,13 @@ modalities:
         range: [0.0, 5.0]
         typical_error: 1.0
         unit: "pixels"
+        param_type: "spatial_shift"
         description: "Inter-frame registration error from imprecise homography"
       vignetting:
         range: [0.0, 0.30]
         typical_error: 0.08
         unit: "normalized"
+        param_type: "scale"
         description: "Radial intensity falloff from lens vignetting"
     severity_weights:
       registration_error: 0.60
@@ -499,16 +566,19 @@ modalities:
         range: [-2.0, 2.0]
         typical_error: 0.3
         unit: "um"
+        param_type: "scale"
         description: "Microlens array pitch calibration error causing sub-image misalignment"
       rotation:
         range: [-1.0, 1.0]
         typical_error: 0.15
         unit: "degrees"
+        param_type: "rotation"
         description: "In-plane rotation of microlens array relative to sensor pixel grid"
       vignetting:
         range: [0.0, 0.35]
         typical_error: 0.08
         unit: "normalized"
+        param_type: "scale"
         description: "Intensity falloff at sub-aperture boundaries from chief ray angle mismatch"
     severity_weights:
       microlens_pitch_error: 0.45
@@ -526,16 +596,19 @@ modalities:
         range: [-3.0, 3.0]
         typical_error: 0.5
         unit: "mm"
+        param_type: "position"
         description: "Illumination fiber tip position error from optode placement uncertainty"
       detector_position:
         range: [-3.0, 3.0]
         typical_error: 0.5
         unit: "mm"
+        param_type: "position"
         description: "Detection fiber position error from optode-tissue coupling variation"
       scattering_coeff:
         range: [0.5, 2.0]
         typical_error: 0.2
         unit: "1/mm"
+        param_type: "scale"
         description: "Reduced scattering coefficient error from tissue heterogeneity assumption"
     severity_weights:
       source_position: 0.30
@@ -553,16 +626,19 @@ modalities:
         range: [1400.0, 1600.0]
         typical_error: 20.0
         unit: "m/s"
+        param_type: "scale"
         description: "Sound speed error from tissue composition assumption (fat vs. muscle)"
       transducer_position:
         range: [-2.0, 2.0]
         typical_error: 0.3
         unit: "mm"
+        param_type: "position"
         description: "Ultrasound transducer element position error from array manufacturing tolerance"
       laser_fluence:
         range: [0.5, 1.5]
         typical_error: 0.15
         unit: "normalized"
+        param_type: "scale"
         description: "Optical fluence distribution error from tissue absorption heterogeneity"
     severity_weights:
       speed_of_sound: 0.45
@@ -580,16 +656,19 @@ modalities:
         range: [-500.0, 500.0]
         typical_error: 50.0
         unit: "fs^2"
+        param_type: "scale"
         description: "Group velocity dispersion mismatch between sample and reference arms"
       reference_offset:
         range: [-100.0, 100.0]
         typical_error: 15.0
         unit: "um"
+        param_type: "offset"
         description: "Reference mirror position error causing depth offset in A-scan"
       galvo_nonlinearity:
         range: [0.0, 0.05]
         typical_error: 0.01
         unit: "normalized"
+        param_type: "scale"
         description: "Galvanometer scanner nonlinearity causing lateral distortion in B-scan"
     severity_weights:
       dispersion_mismatch: 0.45
@@ -607,16 +686,19 @@ modalities:
         range: [-0.5, 0.5]
         typical_error: 0.05
         unit: "ns"
+        param_type: "timing"
         description: "Instrument response function temporal shift from electronics timing jitter"
       irf_width:
         range: [0.02, 0.5]
         typical_error: 0.03
         unit: "ns"
+        param_type: "blur"
         description: "IRF FWHM error from detector transit time spread characterization"
       background_offset:
         range: [0.0, 0.10]
         typical_error: 0.02
         unit: "normalized"
+        param_type: "offset"
         description: "Additive background from detector dark counts and ambient light leakage"
     severity_weights:
       irf_shift: 0.40
@@ -634,16 +716,19 @@ modalities:
         range: [-10.0, 10.0]
         typical_error: 2.0
         unit: "pixels"
+        param_type: "scale"
         description: "Object support constraint boundary error from autocorrelation estimate"
       detector_distance:
         range: [-500.0, 500.0]
         typical_error: 100.0
         unit: "um"
+        param_type: "offset"
         description: "Sample-to-detector propagation distance error in coherent diffraction"
       beam_center:
         range: [-5.0, 5.0]
         typical_error: 1.0
         unit: "pixels"
+        param_type: "spatial_shift"
         description: "Incident beam center position error on detector from alignment drift"
     severity_weights:
       support_error: 0.35
@@ -661,16 +746,19 @@ modalities:
         range: [-2.0, 2.0]
         typical_error: 0.25
         unit: "um"
+        param_type: "scale"
         description: "Microlens pitch error from array fabrication tolerance or thermal expansion"
       rotation:
         range: [-1.0, 1.0]
         typical_error: 0.1
         unit: "degrees"
+        param_type: "rotation"
         description: "In-plane rotation of microlens array relative to display pixel grid"
       depth_range:
         range: [-50.0, 50.0]
         typical_error: 10.0
         unit: "mm"
+        param_type: "scale"
         description: "Depth reconstruction range error from incorrect focal length assumption"
     severity_weights:
       microlens_pitch: 0.40
@@ -688,16 +776,19 @@ modalities:
         range: [-2.0, 2.0]
         typical_error: 0.3
         unit: "mm"
+        param_type: "position"
         description: "LED position error in illumination array from PCB manufacturing tolerance"
       objective_na_error:
         range: [-0.05, 0.05]
         typical_error: 0.01
         unit: "unitless"
+        param_type: "scale"
         description: "Objective numerical aperture calibration error affecting pupil function"
       defocus:
         range: [-5.0, 5.0]
         typical_error: 1.0
         unit: "um"
+        param_type: "offset"
         description: "Sample defocus from incorrect axial positioning or stage drift"
     severity_weights:
       led_position_xy: 0.45

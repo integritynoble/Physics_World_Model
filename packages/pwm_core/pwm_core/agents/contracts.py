@@ -257,6 +257,8 @@ class PhotonReport(StrictBaseModel):
     throughput_chain: List[Dict[str, float]]
     noise_model: Literal["poisson", "gaussian", "mixed_poisson_gaussian"]
     explanation: str = ""
+    recommended_levels: Optional[Dict[str, Dict[str, Any]]] = None
+    noise_recipe: Optional[Dict[str, Any]] = None
 
 
 class MismatchReport(StrictBaseModel):
@@ -272,6 +274,8 @@ class MismatchReport(StrictBaseModel):
     correction_method: str
     expected_improvement_db: float
     explanation: str = ""
+    param_types: Optional[Dict[str, str]] = None
+    subpixel_warnings: Optional[List[str]] = None
 
 
 class RecoverabilityReport(StrictBaseModel):

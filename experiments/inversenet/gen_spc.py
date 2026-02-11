@@ -143,17 +143,9 @@ def _build_measurement_matrix(
 def _apply_photon_noise(
     y: np.ndarray, photon_level: float, rng: np.random.Generator
 ) -> np.ndarray:
-    """Poisson + Gaussian noise model scaled to photon_level."""
-    # Scale signal so that max intensity maps to photon_level
-    scale = photon_level / (np.abs(y).max() + 1e-10)
-    y_scaled = np.maximum(y * scale, 0)
-    y_noisy = rng.poisson(y_scaled).astype(np.float32)
-    # Add read noise (sigma ~ sqrt(photon_level) * 0.01)
-    read_sigma = np.sqrt(photon_level) * 0.01
-    y_noisy += rng.normal(0, read_sigma, size=y.shape).astype(np.float32)
-    # Scale back
-    y_noisy /= scale
-    return y_noisy
+    """Poisson + Gaussian noise (canonical implementation)."""
+    from pwm_core.noise.apply import apply_photon_noise
+    return apply_photon_noise(y, photon_level, rng)
 
 
 def _generate_calibration_captures(

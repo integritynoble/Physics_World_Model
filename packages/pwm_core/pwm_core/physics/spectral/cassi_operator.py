@@ -22,6 +22,7 @@ from typing import Any, Dict, Tuple
 
 import numpy as np
 
+from pwm_core.mismatch.subpixel import subpixel_shift_2d
 from pwm_core.physics.base import BaseOperator
 from pwm_core.physics.spectral.dispersion_models import dispersion_shift
 
@@ -53,8 +54,7 @@ class CASSIOperator(BaseOperator):
         for l in range(L):
             dx, dy = dispersion_shift(self.theta, band=l)
             band = x_3d[:, :, l]
-            # naive roll as placeholder for shift
-            band_s = np.roll(np.roll(band, int(dy), axis=0), int(dx), axis=1)
+            band_s = subpixel_shift_2d(band, dx, dy)
             y += band_s * self.mask
         return y
 
@@ -68,6 +68,6 @@ class CASSIOperator(BaseOperator):
         for l in range(L):
             dx, dy = dispersion_shift(self.theta, band=l)
             back = y * self.mask
-            back_s = np.roll(np.roll(back, -int(dy), axis=0), -int(dx), axis=1)
+            back_s = subpixel_shift_2d(back, -dx, -dy)
             x[:, :, l] = back_s
         return x

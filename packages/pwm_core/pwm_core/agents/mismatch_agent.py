@@ -121,6 +121,18 @@ class MismatchAgent(BaseAgent):
             expected_improvement_db, param_details,
         )
 
+        # --- Step 7: Collect param_types and subpixel_warnings ----------
+        param_types: Dict[str, str] = {}
+        subpixel_warnings: List[str] = []
+        for name, detail in param_details.items():
+            pt = detail.get("param_type", "scale")
+            param_types[name] = pt
+            fc = detail.get("fidelity_check", {})
+            if fc and not fc.get("effective", True):
+                warn = fc.get("warning")
+                if warn:
+                    subpixel_warnings.append(warn)
+
         return MismatchReport(
             modality_key=modality_key,
             mismatch_family=mismatch_family,
@@ -129,7 +141,97 @@ class MismatchAgent(BaseAgent):
             correction_method=correction_method,
             expected_improvement_db=float(expected_improvement_db),
             explanation=explanation,
+            param_types=param_types if param_types else None,
+            subpixel_warnings=subpixel_warnings if subpixel_warnings else None,
         )
+
+    # ------------------------------------------------------------------
+    # Parameter physics classification
+    # ------------------------------------------------------------------
+
+    _VALID_PARAM_TYPES = frozenset({
+        "spatial_shift", "rotation", "scale", "blur",
+        "offset", "timing", "position",
+    })
+
+    _APPLY_METHODS = {
+        "spatial_shift": "subpixel_shift_2d",
+        "rotation": "subpixel_warp_2d",
+        "scale": "scalar_multiply",
+        "blur": "gaussian_filter",
+        "offset": "scalar_add",
+        "timing": "index_permutation",
+        "position": "coordinate_perturbation",
+    }
+
+    @staticmethod
+    def classify_param_physics(name: str, param_spec: Any) -> str:
+        """Classify a mismatch parameter by its physics type.
+
+        If ``param_spec.param_type`` is set and valid, return it.
+        Otherwise infer from the parameter name and unit.
+        """
+        pt = getattr(param_spec, "param_type", None)
+        if pt is not None and pt in MismatchAgent._VALID_PARAM_TYPES:
+            return pt
+
+        name_lower = name.lower()
+        unit = getattr(param_spec, "unit", "").lower()
+
+        if any(k in name_lower for k in ("_dx", "_dy", "shift_x", "shift_y",
+                                          "detector_offset")) and "pixel" in unit:
+            return "spatial_shift"
+        if "shift" in name_lower and "pixel" in unit:
+            return "spatial_shift"
+        if any(k in name_lower for k in ("rotation", "tilt", "angle")) and \
+           any(u in unit for u in ("degree", "radian")):
+            return "rotation"
+        if any(k in name_lower for k in ("gain", "scale")):
+            return "scale"
+        if "dispersion" in name_lower and "step" in name_lower:
+            return "scale"
+        if any(k in name_lower for k in ("psf", "blur", "irf_width", "sigma")) and \
+           any(u in unit for u in ("pixel", "um")):
+            return "blur"
+        if any(k in name_lower for k in ("background", "defocus", "bias",
+                                          "b0_inhomogeneity")):
+            return "offset"
+        if any(k in name_lower for k in ("temporal", "timing", "jitter",
+                                          "irf_shift")):
+            return "timing"
+        if any(k in name_lower for k in ("position", "probe")):
+            return "position"
+
+        return "scale"
+
+    @staticmethod
+    def validate_mismatch_effect(
+        name: str, param_type: str, typical_error: float,
+    ) -> Dict[str, Any]:
+        """Check whether a mismatch parameter produces a measurable effect."""
+        warning = None
+        effective = True
+
+        if param_type == "spatial_shift" and abs(typical_error) < 0.5:
+            effective = False
+            warning = (
+                f"Parameter '{name}' has typical_error={typical_error} px "
+                f"which rounds to 0 with np.roll -- use subpixel_shift_2d."
+            )
+        elif param_type == "rotation" and abs(typical_error) < 0.01:
+            effective = False
+            warning = (
+                f"Parameter '{name}' has typical_error={typical_error} deg "
+                f"which is below measurable threshold."
+            )
+
+        return {
+            "effective": effective,
+            "warning": warning,
+            "recommended_method": MismatchAgent._APPLY_METHODS.get(
+                param_type, "unknown"
+            ),
+        }
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -198,6 +300,11 @@ class MismatchAgent(BaseAgent):
                 else 0.0
             )
 
+            pt = MismatchAgent.classify_param_physics(name, param)
+            fidelity = MismatchAgent.validate_mismatch_effect(
+                name, pt, param.typical_error,
+            )
+
             details[name] = {
                 "typical_error": param.typical_error,
                 "range": param_range,
@@ -205,6 +312,9 @@ class MismatchAgent(BaseAgent):
                 "unit": param.unit,
                 "description": param.description,
                 "normalised_error": float(normalised_error),
+                "param_type": pt,
+                "apply_method": fidelity["recommended_method"],
+                "fidelity_check": fidelity,
             }
         return details
 
@@ -414,9 +524,24 @@ class MismatchAgent(BaseAgent):
             ne = detail.get("normalised_error", 0.0)
             te = detail.get("typical_error", 0.0)
             unit = detail.get("unit", "")
+            pt = detail.get("param_type", "")
             lines.append(
                 f"    {name}: typical_error={te} {unit}, "
-                f"normalised={ne:.3f}"
+                f"normalised={ne:.3f} [{pt}]"
             )
+
+        # Fidelity warnings
+        fidelity_warnings = []
+        for name, detail in param_details.items():
+            fc = detail.get("fidelity_check", {})
+            if fc and not fc.get("effective", True):
+                warn = fc.get("warning", "")
+                if warn:
+                    fidelity_warnings.append(warn)
+        if fidelity_warnings:
+            lines.append("")
+            lines.append("  Fidelity warnings:")
+            for w in fidelity_warnings:
+                lines.append(f"    - {w}")
 
         return "\n".join(lines)

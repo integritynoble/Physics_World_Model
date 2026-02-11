@@ -11,6 +11,20 @@ modalities:
       qe: 0.72
       exposure_s: 0.05
     description: "Standard widefield fluorescence microscopy"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "Standard fluorescence, 50ms exposure"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Moderate illumination"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Low power, photosensitive sample"
+        read_sigma_fraction: 0.02
 
   widefield_lowdose:
     model_id: "microscopy_fluorescence"
@@ -22,6 +36,20 @@ modalities:
       qe: 0.72
       exposure_s: 0.01
     description: "Low-dose widefield fluorescence for photosensitive samples"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+04
+        scenario: "Maximum low-dose budget"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+03
+        scenario: "Typical low-dose imaging"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+02
+        scenario: "Extreme low-dose"
+        read_sigma_fraction: 0.02
 
   confocal_livecell:
     model_id: "microscopy_fluorescence"
@@ -33,6 +61,20 @@ modalities:
       qe: 0.45
       exposure_s: 0.001
     description: "Confocal microscopy optimized for live-cell imaging with oil immersion"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 5.0e+04
+        scenario: "High-speed confocal, short dwell"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 5.0e+03
+        scenario: "Typical live-cell confocal"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 5.0e+02
+        scenario: "Minimal phototoxicity confocal"
+        read_sigma_fraction: 0.02
 
   confocal_3d:
     model_id: "microscopy_fluorescence"
@@ -44,6 +86,20 @@ modalities:
       qe: 0.45
       exposure_s: 0.01
     description: "Confocal microscopy for 3D volumetric acquisition with water immersion"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 5.0e+04
+        scenario: "Dense 3D stack, long exposure"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Typical 3D confocal"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Deep tissue, low signal"
+        read_sigma_fraction: 0.02
 
   sim:
     model_id: "microscopy_fluorescence"
@@ -55,6 +111,20 @@ modalities:
       qe: 0.72
       exposure_s: 0.02
     description: "Structured illumination microscopy with oil immersion"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "SIM with high illumination"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Typical SIM acquisition"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Low-power SIM for live cells"
+        read_sigma_fraction: 0.02
 
   cassi:
     model_id: "microscopy_fluorescence"
@@ -66,6 +136,20 @@ modalities:
       qe: 0.80
       exposure_s: 0.1
     description: "Coded aperture snapshot spectral imaging"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "Standard fluorescence, 100ms exposure"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Moderate illumination"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Photosensitive sample, low power"
+        read_sigma_fraction: 0.02
 
   spc:
     model_id: "generic_detector"
@@ -74,6 +158,20 @@ modalities:
       qe: 0.85
       exposure_s: 0.01
     description: "Single-pixel camera with high quantum efficiency detector"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "High-power single-pixel"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard single-pixel"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 5.0e+02
+        scenario: "Low-flux single-pixel"
+        read_sigma_fraction: 0.02
 
   cacti:
     model_id: "generic_detector"
@@ -82,6 +180,20 @@ modalities:
       qe: 0.70
       exposure_s: 0.033
     description: "Coded aperture compressive temporal imaging"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "Standard video, 30fps"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Moderate-speed video"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "High-speed, low-exposure video"
+        read_sigma_fraction: 0.02
 
   lensless:
     model_id: "microscopy_fluorescence"
@@ -93,6 +205,20 @@ modalities:
       qe: 0.60
       exposure_s: 0.1
     description: "Lensless imaging with low NA mask-based encoding"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 5.0e+04
+        scenario: "Lensless with long exposure"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 5.0e+03
+        scenario: "Standard lensless"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 5.0e+02
+        scenario: "Low-light lensless"
+        read_sigma_fraction: 0.02
 
   lightsheet:
     model_id: "microscopy_fluorescence"
@@ -104,6 +230,20 @@ modalities:
       qe: 0.72
       exposure_s: 0.05
     description: "Light-sheet fluorescence microscopy for volumetric biological imaging"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "Bright lightsheet, thick section"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard lightsheet"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Deep tissue lightsheet"
+        read_sigma_fraction: 0.02
 
   ct:
     model_id: "ct_xray"
@@ -113,6 +253,20 @@ modalities:
       L: 20.0
       eta_det: 0.85
     description: "X-ray computed tomography with Beer-Lambert attenuation model"
+    noise_model: "poisson"
+    photon_levels:
+      bright:
+        n_photons: 5.0e+06
+        scenario: "Standard clinical CT dose"
+        read_sigma_fraction: 0.0
+      standard:
+        n_photons: 1.0e+06
+        scenario: "Low-dose CT"
+        read_sigma_fraction: 0.0
+      low_light:
+        n_photons: 2.0e+05
+        scenario: "Ultra-low-dose CT"
+        read_sigma_fraction: 0.0
 
   mri:
     model_id: "mri_thermal"
@@ -122,6 +276,26 @@ modalities:
       n_averages: 1
       bandwidth_hz: 200000
     description: "Magnetic resonance imaging with thermal noise model"
+    noise_model: "gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1000.0
+        snr_proxy: 30.0
+        scenario: "SNR=30dB, multiple averages"
+        read_sigma_fraction: 0.0
+        sigma: 0.033
+      standard:
+        n_photons: 100.0
+        snr_proxy: 20.0
+        scenario: "SNR=20dB, single average"
+        read_sigma_fraction: 0.0
+        sigma: 0.1
+      low_light:
+        n_photons: 10.0
+        snr_proxy: 10.0
+        scenario: "SNR=10dB, fast acquisition"
+        read_sigma_fraction: 0.0
+        sigma: 0.316
 
   ptychography:
     model_id: "generic_detector"
@@ -130,6 +304,20 @@ modalities:
       qe: 0.90
       exposure_s: 0.1
     description: "Ptychographic coherent diffraction imaging"
+    noise_model: "poisson"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+08
+        scenario: "Synchrotron ptychography"
+        read_sigma_fraction: 0.0
+      standard:
+        n_photons: 1.0e+06
+        scenario: "Lab ptychography"
+        read_sigma_fraction: 0.0
+      low_light:
+        n_photons: 1.0e+04
+        scenario: "Low-flux ptychography"
+        read_sigma_fraction: 0.0
 
   holography:
     model_id: "generic_detector"
@@ -138,6 +326,20 @@ modalities:
       qe: 0.85
       exposure_s: 0.01
     description: "Digital holographic imaging with coherent illumination"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+07
+        scenario: "High-power holography"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+05
+        scenario: "Standard holography"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Low-coherence holography"
+        read_sigma_fraction: 0.02
 
   nerf:
     model_id: "generic_detector"
@@ -146,6 +348,20 @@ modalities:
       qe: 0.95
       exposure_s: 0.016
     description: "Neural radiance field from multi-view photographs"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+09
+        scenario: "Well-lit studio capture"
+        read_sigma_fraction: 0.001
+      standard:
+        n_photons: 1.0e+07
+        scenario: "Indoor capture"
+        read_sigma_fraction: 0.005
+      low_light:
+        n_photons: 1.0e+05
+        scenario: "Dim environment"
+        read_sigma_fraction: 0.01
 
   gaussian_splatting:
     model_id: "generic_detector"
@@ -154,6 +370,20 @@ modalities:
       qe: 0.95
       exposure_s: 0.016
     description: "3D Gaussian splatting from multi-view photographs"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+09
+        scenario: "Well-lit studio capture"
+        read_sigma_fraction: 0.001
+      standard:
+        n_photons: 1.0e+07
+        scenario: "Indoor capture"
+        read_sigma_fraction: 0.005
+      low_light:
+        n_photons: 1.0e+05
+        scenario: "Dim environment"
+        read_sigma_fraction: 0.01
 
   matrix:
     model_id: "generic_detector"
@@ -162,6 +392,20 @@ modalities:
       qe: 0.80
       exposure_s: 0.01
     description: "Generic matrix-based forward model imaging"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "High-SNR matrix sensing"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard matrix sensing"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Low-SNR matrix sensing"
+        read_sigma_fraction: 0.02
 
   panorama:
     model_id: "generic_detector"
@@ -170,6 +414,20 @@ modalities:
       qe: 0.90
       exposure_s: 0.033
     description: "Panoramic image stitching from multi-view captures"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+07
+        scenario: "Daylight panorama"
+        read_sigma_fraction: 0.001
+      standard:
+        n_photons: 1.0e+05
+        scenario: "Indoor panorama"
+        read_sigma_fraction: 0.005
+      low_light:
+        n_photons: 1.0e+04
+        scenario: "Low-light panorama"
+        read_sigma_fraction: 0.01
 
   light_field:
     model_id: "generic_detector"
@@ -180,6 +438,20 @@ modalities:
       qe: 0.70
       exposure_s: 0.033
     description: "Light-field imaging with low NA microlens array"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "Well-lit light field"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard light field"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Dim light field"
+        read_sigma_fraction: 0.02
 
   dot:
     model_id: "nir_tomography"
@@ -191,6 +463,20 @@ modalities:
       qe: 0.60
       exposure_s: 1.0
     description: "Diffuse optical tomography with NIR tissue transillumination"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 5.0e+04
+        scenario: "Long-exposure DOT"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 5.0e+03
+        scenario: "Standard DOT"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 5.0e+02
+        scenario: "Fast DOT scan"
+        read_sigma_fraction: 0.02
 
   photoacoustic:
     model_id: "pulsed_laser"
@@ -201,6 +487,20 @@ modalities:
       qe: 0.85
       exposure_s: 0.00001
     description: "Photoacoustic imaging with pulsed laser excitation and piezoelectric detection"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+06
+        scenario: "High-energy pulse"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard photoacoustic"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Low-energy safe pulse"
+        read_sigma_fraction: 0.02
 
   oct:
     model_id: "interferometric"
@@ -211,6 +511,20 @@ modalities:
       qe: 0.75
       exposure_s: 0.00003
     description: "Optical coherence tomography with low-coherence interferometry"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "High-speed OCT"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard OCT"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Deep-tissue OCT"
+        read_sigma_fraction: 0.02
 
   flim:
     model_id: "microscopy_fluorescence"
@@ -222,6 +536,20 @@ modalities:
       qe: 0.45
       exposure_s: 60.0
     description: "Fluorescence lifetime imaging microscopy with TCSPC detection"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "Long integration FLIM"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard FLIM"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Fast FLIM"
+        read_sigma_fraction: 0.02
 
   phase_retrieval:
     model_id: "coherent_source"
@@ -232,6 +560,20 @@ modalities:
       qe: 0.90
       exposure_s: 1.0
     description: "Phase retrieval from intensity-only measurements at X-ray energies (~12 keV)"
+    noise_model: "poisson"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+07
+        scenario: "Synchrotron source"
+        read_sigma_fraction: 0.0
+      standard:
+        n_photons: 1.0e+05
+        scenario: "Lab X-ray source"
+        read_sigma_fraction: 0.0
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Low-flux source"
+        read_sigma_fraction: 0.0
 
   integral:
     model_id: "generic_detector"
@@ -242,6 +584,20 @@ modalities:
       qe: 0.70
       exposure_s: 0.033
     description: "Integral imaging with microlens array for 3D scene capture"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "Well-lit integral imaging"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard integral imaging"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Dim integral imaging"
+        read_sigma_fraction: 0.02
 
   fpm:
     model_id: "led_array"
@@ -252,3 +608,17 @@ modalities:
       qe: 0.70
       exposure_s: 0.05
     description: "Fourier ptychographic microscopy with LED array illumination"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "Dense LED array"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard FPM"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Sparse LED array"
+        read_sigma_fraction: 0.02

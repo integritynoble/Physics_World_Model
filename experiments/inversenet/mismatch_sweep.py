@@ -25,6 +25,11 @@ class Severity(str, Enum):
     severe = "severe"
 
 
+# ── Sub-pixel imports ──────────────────────────────────────────────────
+
+from pwm_core.mismatch.subpixel import subpixel_shift_2d, subpixel_shift_3d_spatial, subpixel_warp_2d
+
+
 # ── Per-family severity tables ──────────────────────────────────────────
 
 # SPC mismatch families
@@ -41,10 +46,16 @@ SPC_MASK_ERROR_TABLE: Dict[Severity, Dict[str, float]] = {
 }
 
 # CACTI mismatch families
-CACTI_MASK_SHIFT_TABLE: Dict[Severity, Dict[str, int]] = {
-    Severity.mild:     {"shift_px": 1},
-    Severity.moderate: {"shift_px": 3},
-    Severity.severe:   {"shift_px": 6},
+CACTI_MASK_SHIFT_TABLE: Dict[Severity, Dict[str, float]] = {
+    Severity.mild:     {"shift_px": 1.0},
+    Severity.moderate: {"shift_px": 3.0},
+    Severity.severe:   {"shift_px": 6.0},
+}
+
+CACTI_MASK_ROTATION_TABLE: Dict[Severity, Dict[str, float]] = {
+    Severity.mild:     {"angle_deg": 0.5},
+    Severity.moderate: {"angle_deg": 1.5},
+    Severity.severe:   {"angle_deg": 3.0},
 }
 
 CACTI_TEMPORAL_JITTER_TABLE: Dict[Severity, Dict[str, int]] = {
@@ -81,6 +92,7 @@ _TABLES = {
     ("spc", "mask_error"):      SPC_MASK_ERROR_TABLE,
     # CACTI
     ("cacti", "mask_shift"):    CACTI_MASK_SHIFT_TABLE,
+    ("cacti", "mask_rotation"): CACTI_MASK_ROTATION_TABLE,
     ("cacti", "temporal_jitter"): CACTI_TEMPORAL_JITTER_TABLE,
     # CASSI
     ("cassi", "disp_step"):     CASSI_DISP_STEP_TABLE,
@@ -138,12 +150,25 @@ def apply_spc_mask_error(
 
 def apply_cacti_mask_shift(
     masks: np.ndarray,
-    delta: Dict[str, int],
+    delta: Dict[str, float],
     rng: np.random.Generator,
 ) -> np.ndarray:
-    """Spatially shift CACTI masks by shift_px pixels vertically."""
-    shift = delta.get("shift_px", 0)
-    return np.roll(masks, shift, axis=0)
+    """Spatially shift CACTI masks by shift_px pixels vertically (sub-pixel)."""
+    shift = delta.get("shift_px", 0.0)
+    return subpixel_shift_3d_spatial(masks, 0.0, float(shift))
+
+
+def apply_cacti_rotation(
+    masks: np.ndarray,
+    delta: Dict[str, float],
+    rng: np.random.Generator,
+) -> np.ndarray:
+    """Rotate CACTI masks by angle_deg degrees (sub-pixel)."""
+    angle = delta.get("angle_deg", 0.0)
+    out = np.empty_like(masks, dtype=np.float64)
+    for t in range(masks.shape[2]):
+        out[:, :, t] = subpixel_warp_2d(masks[:, :, t], 0.0, 0.0, angle)
+    return out
 
 
 def apply_cacti_temporal_jitter(
@@ -175,10 +200,10 @@ def apply_cassi_mask_shift(
     delta: Dict[str, float],
     rng: np.random.Generator,
 ) -> np.ndarray:
-    """Spatially shift the CASSI coded aperture."""
-    dx = int(round(delta.get("mask_dx", 0.0)))
-    dy = int(round(delta.get("mask_dy", 0.0)))
-    return np.roll(np.roll(mask, dy, axis=0), dx, axis=1)
+    """Spatially shift the CASSI coded aperture (sub-pixel)."""
+    dx = delta.get("mask_dx", 0.0)
+    dy = delta.get("mask_dy", 0.0)
+    return subpixel_shift_2d(mask, float(dx), float(dy))
 
 
 def apply_cassi_psf_blur(
@@ -230,6 +255,8 @@ def apply_mismatch(
     elif modality == "cacti":
         if mismatch_family == "mask_shift" and masks is not None:
             result["masks"] = apply_cacti_mask_shift(masks, delta, rng)
+        elif mismatch_family == "mask_rotation" and masks is not None:
+            result["masks"] = apply_cacti_rotation(masks, delta, rng)
         elif mismatch_family == "temporal_jitter" and masks is not None:
             result["masks"] = apply_cacti_temporal_jitter(masks, delta, rng)
 
