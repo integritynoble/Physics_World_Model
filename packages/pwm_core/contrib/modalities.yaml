@@ -2810,3 +2810,1908 @@ modalities:
       optional:
         - name: "convergence_angle_mrad"
           description: "Probe convergence semi-angle in mrad"
+
+  # ===========================================================================
+  # X-RAY VARIANTS — R1
+  # ===========================================================================
+
+  fluoroscopy:
+    display_name: "Fluoroscopy"
+    category: "medical"
+    keywords: [fluoroscopy, dynamic_radiography, real_time, temporal_integration, x_ray]
+    description: >
+      Fluoroscopy provides real-time X-ray imaging by acquiring rapid sequences
+      of low-dose radiographs. Temporal integration over multiple frames reduces
+      noise at the expense of motion blur. The forward model is a Beer-Lambert
+      projection with temporal frame averaging and Poisson-Gaussian noise.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = (1/N) * sum_t eta * I_0 * exp(-mu * x_t) + n"
+    default_solver: "tv_fista"
+    default_template_id: "fluoroscopy_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: null
+    elements:
+      - name: "X-ray Tube (Continuous)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          tube_voltage_kvp: 80
+          tube_current_ma: 3
+          focal_spot_mm: 0.6
+          mode: "continuous"
+      - name: "Patient (Attenuating Medium)"
+        element_type: medium
+        transfer_kind: projection
+        throughput: 0.15
+        noise_kinds: [shot_poisson]
+        parameters:
+          mean_attenuation_coefficient: 0.2
+      - name: "Image Intensifier / Flat Panel"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.70
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          pixel_size_um: 200
+          frame_rate_fps: 30
+          scintillator: "CsI"
+          bit_depth: 12
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "2D fluoroscopy frame or averaged frame (TIFF or .npy)"
+          shape: "[H, W]"
+      required_params:
+        - name: "tube_voltage_kvp"
+          type: "float"
+          description: "X-ray tube voltage in kVp"
+        - name: "frame_rate_fps"
+          type: "float"
+          description: "Acquisition frame rate in frames per second"
+      optional:
+        - name: "temporal_stack"
+          description: "Stack of consecutive frames for temporal processing (.npy)"
+
+  mammography:
+    display_name: "Mammography"
+    category: "medical"
+    keywords: [mammography, breast_imaging, low_energy_xray, microcalcification, screening]
+    description: >
+      Mammography uses low-energy X-rays (typically 25-35 kVp) to image breast
+      tissue. The low photon energy maximizes contrast between soft tissue types.
+      Specialized flat-panel detectors with direct or indirect conversion provide
+      high spatial resolution for detecting microcalcifications and masses.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = eta * I_0 * exp(-mu(E) * x) + n"
+    default_solver: "tv_fista"
+    default_template_id: "mammography_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: null
+    elements:
+      - name: "Molybdenum / Rhodium X-ray Tube"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          tube_voltage_kvp: 28
+          tube_current_ma: 100
+          anode_material: "Mo/Rh"
+          focal_spot_mm: 0.3
+      - name: "Compressed Breast Tissue"
+        element_type: medium
+        transfer_kind: projection
+        throughput: 0.20
+        noise_kinds: [shot_poisson]
+        parameters:
+          compressed_thickness_mm: 50
+          mean_attenuation_coefficient: 0.6
+      - name: "Digital Mammography Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.85
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          pixel_size_um: 70
+          detector_type: "amorphous_selenium"
+          bit_depth: 14
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "2D mammogram image (DICOM or TIFF)"
+          shape: "[H, W]"
+      required_params:
+        - name: "tube_voltage_kvp"
+          type: "float"
+          description: "X-ray tube voltage in kVp"
+      optional:
+        - name: "compressed_thickness_mm"
+          description: "Breast compressed thickness in millimeters"
+
+  dexa:
+    display_name: "Dual-Energy X-ray Absorptiometry (DEXA)"
+    category: "medical"
+    keywords: [DEXA, DXA, bone_density, dual_energy, absorptiometry, osteoporosis]
+    description: >
+      Dual-energy X-ray absorptiometry acquires projections at two X-ray energies
+      to decompose tissue into bone mineral and soft tissue components. The
+      dual-energy Beer-Lambert model separates the contributions of two material
+      bases. DEXA is the clinical standard for bone mineral density measurement.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y_E = I_0(E) * exp(-(mu_bone(E)*x_bone + mu_soft(E)*x_soft)) + n"
+    default_solver: "dual_energy_decomposition"
+    default_template_id: "dexa_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: null
+    elements:
+      - name: "Dual-Energy X-ray Source"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          low_energy_kvp: 40
+          high_energy_kvp: 70
+          tube_current_ma: 5
+      - name: "Patient (Bone + Soft Tissue)"
+        element_type: medium
+        transfer_kind: projection
+        throughput: 0.25
+        noise_kinds: [shot_poisson]
+        parameters:
+          bone_attenuation_low: 0.8
+          bone_attenuation_high: 0.3
+          soft_tissue_attenuation: 0.2
+      - name: "Multi-Element Detector Array"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.85
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          pixel_size_um: 350
+          detector_type: "CdZnTe"
+          bit_depth: 14
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "Dual-energy projection pair (.npy with shape [2, H, W])"
+          shape: "[2, H, W]"
+      required_params:
+        - name: "low_energy_kvp"
+          type: "float"
+          description: "Low energy tube voltage in kVp"
+        - name: "high_energy_kvp"
+          type: "float"
+          description: "High energy tube voltage in kVp"
+      optional:
+        - name: "calibration_phantom"
+          description: "Phantom calibration data for BMD calculation"
+
+  cbct:
+    display_name: "Cone-Beam Computed Tomography"
+    category: "medical"
+    keywords: [CBCT, cone_beam, dental, image_guided, 3D_xray, tomography]
+    description: >
+      Cone-beam CT acquires a volumetric dataset from a single rotation using a
+      2D flat-panel detector and a cone-shaped X-ray beam. It trades off lower
+      dose and compact geometry for increased scatter artifacts and reduced
+      soft-tissue contrast compared to clinical fan-beam CT. Applications include
+      dental, head-and-neck, and image-guided radiation therapy.
+    signal_dims:
+      x: [256, 256]
+      y: [180, 256]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y(theta, s) = integral x(r) dl,  cone-beam Radon transform"
+    default_solver: "fdk"
+    default_template_id: "cbct_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: null
+    elements:
+      - name: "X-ray Tube (Cone Beam)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          tube_voltage_kvp: 110
+          tube_current_ma: 10
+          focal_spot_mm: 0.5
+          beam_geometry: "cone"
+      - name: "Patient (Attenuating Medium)"
+        element_type: medium
+        transfer_kind: projection
+        throughput: 0.12
+        noise_kinds: [shot_poisson, scatter]
+        parameters:
+          mean_attenuation_coefficient: 0.2
+          n_angles: 180
+      - name: "Flat Panel Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.80
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          pixel_size_um: 200
+          scintillator: "CsI"
+          bit_depth: 14
+    upload_template:
+      required:
+        - name: "projections"
+          description: "Cone-beam projection stack (n_angles x H x W) as .npy"
+          shape: "[n_angles, H, W]"
+      required_params:
+        - name: "n_angles"
+          type: "int"
+          description: "Number of projection angles"
+        - name: "source_to_detector_mm"
+          type: "float"
+          description: "Source-to-detector distance in mm"
+      optional:
+        - name: "geometry"
+          description: "JSON with full cone-beam geometry parameters"
+
+  angiography:
+    display_name: "X-ray Angiography"
+    category: "medical"
+    keywords: [angiography, contrast_agent, vascular, DSA, fluoroscopy, interventional]
+    description: >
+      X-ray angiography is a real-time fluoroscopic technique using iodine-based
+      contrast agents to visualize blood vessels. Digital subtraction angiography
+      (DSA) subtracts a pre-contrast mask image from the contrast-enhanced frame
+      to isolate vascular structures. The forward model combines Beer-Lambert
+      attenuation with contrast agent dynamics and temporal integration.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = eta * I_0 * exp(-mu_tissue*x_tissue - mu_contrast*c(t)) + n"
+    default_solver: "dsa_subtraction"
+    default_template_id: "angiography_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: null
+    elements:
+      - name: "X-ray Tube (Pulsed)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          tube_voltage_kvp: 80
+          tube_current_ma: 200
+          focal_spot_mm: 0.6
+          mode: "pulsed"
+      - name: "Tissue + Contrast Agent"
+        element_type: medium
+        transfer_kind: projection
+        throughput: 0.10
+        noise_kinds: [shot_poisson]
+        parameters:
+          mean_attenuation_coefficient: 0.2
+          contrast_agent: "iodine"
+          contrast_concentration_mg_per_ml: 350
+      - name: "Flat Panel Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.80
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          pixel_size_um: 200
+          frame_rate_fps: 30
+          scintillator: "CsI"
+          bit_depth: 14
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "Angiography frame or DSA difference image (TIFF or .npy)"
+          shape: "[H, W]"
+      required_params:
+        - name: "tube_voltage_kvp"
+          type: "float"
+          description: "X-ray tube voltage in kVp"
+      optional:
+        - name: "mask_image"
+          description: "Pre-contrast mask image for DSA subtraction"
+        - name: "temporal_stack"
+          description: "Full temporal sequence for DSA (.npy)"
+
+  # ===========================================================================
+  # ULTRASOUND MODES — R2
+  # ===========================================================================
+
+  doppler_ultrasound:
+    display_name: "Doppler Ultrasound"
+    category: "medical_ultrasound"
+    keywords: [doppler, color_flow, spectral_doppler, velocity, blood_flow, PW]
+    description: >
+      Doppler ultrasound measures blood flow velocity by detecting frequency
+      shifts in reflected ultrasound waves. Color Doppler maps 2D velocity
+      fields, while spectral (pulsed-wave) Doppler provides quantitative
+      velocity-time waveforms at a sample volume. The forward model combines
+      acoustic propagation with Doppler frequency estimation from the
+      autocorrelation of IQ data.
+    signal_dims:
+      x: [256, 256]
+      y: [128, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "f_d = (2 * v * cos(theta) * f_0) / c"
+    default_solver: "autocorrelation_estimator"
+    default_template_id: "doppler_ultrasound_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: null
+    elements:
+      - name: "Piezoelectric Transducer Array"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          n_elements: 128
+          center_frequency_mhz: 5.0
+          element_pitch_mm: 0.3
+          prf_hz: 10000
+      - name: "Tissue + Blood Flow"
+        element_type: medium
+        transfer_kind: projection
+        throughput: 0.50
+        noise_kinds: [speckle]
+        parameters:
+          speed_of_sound_m_per_s: 1540.0
+          blood_velocity_range_m_per_s: [-1.0, 1.0]
+      - name: "Receive Array + Doppler Processor"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.90
+        noise_kinds: [thermal_gaussian]
+        parameters:
+          sampling_rate_mhz: 40
+          wall_filter_cutoff_hz: 50
+          bit_depth: 12
+    upload_template:
+      required:
+        - name: "iq_data"
+          description: "IQ channel data for Doppler processing (.npy)"
+          shape: "[n_elements, n_samples, n_ensembles]"
+      required_params:
+        - name: "prf_hz"
+          type: "float"
+          description: "Pulse repetition frequency in Hz"
+        - name: "center_frequency_mhz"
+          type: "float"
+          description: "Transmit center frequency in MHz"
+      optional:
+        - name: "angle_correction_deg"
+          description: "Doppler angle correction in degrees"
+
+  elastography:
+    display_name: "Shear-Wave Elastography"
+    category: "medical_ultrasound"
+    keywords: [elastography, shear_wave, SWE, tissue_stiffness, youngs_modulus, ARFI]
+    description: >
+      Shear-wave elastography (SWE) measures tissue stiffness by generating
+      shear waves via acoustic radiation force and tracking their propagation
+      speed. The shear wave speed c_s is related to shear modulus by
+      G = rho * c_s^2. The forward model combines acoustic push generation,
+      shear wave propagation through viscoelastic tissue, and ultrasonic
+      tracking of tissue displacement.
+    signal_dims:
+      x: [256, 256]
+      y: [128, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "c_s = sqrt(G / rho),  E = 3 * rho * c_s^2"
+    default_solver: "time_of_flight_inversion"
+    default_template_id: "elastography_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: null
+    elements:
+      - name: "Piezoelectric Transducer (Push + Track)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          n_elements: 128
+          center_frequency_mhz: 5.0
+          push_duration_us: 100
+          tracking_prf_hz: 10000
+      - name: "Viscoelastic Tissue"
+        element_type: medium
+        transfer_kind: propagation
+        throughput: 0.70
+        noise_kinds: [speckle]
+        parameters:
+          shear_modulus_kpa: 10.0
+          density_kg_m3: 1000.0
+          viscosity_pa_s: 0.5
+      - name: "Receive Array + Displacement Tracker"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.90
+        noise_kinds: [thermal_gaussian]
+        parameters:
+          sampling_rate_mhz: 40
+          displacement_sensitivity_um: 0.1
+          bit_depth: 12
+    upload_template:
+      required:
+        - name: "displacement_data"
+          description: "Tissue displacement time series (.npy)"
+          shape: "[n_lateral, n_axial, n_time_steps]"
+      required_params:
+        - name: "tracking_prf_hz"
+          type: "float"
+          description: "Tracking pulse repetition frequency in Hz"
+        - name: "pixel_size_mm"
+          type: "list[float]"
+          description: "Pixel size [lateral, axial] in mm"
+      optional:
+        - name: "push_location"
+          description: "Location and duration of acoustic push"
+
+  # ===========================================================================
+  # MRI APPLICATIONS — R3
+  # ===========================================================================
+
+  fmri:
+    display_name: "Functional MRI (BOLD)"
+    category: "medical"
+    keywords: [fMRI, BOLD, functional, brain_activation, hemodynamic, EPI]
+    description: >
+      Functional MRI detects brain activity via the blood-oxygen-level-dependent
+      (BOLD) contrast mechanism. T2*-weighted EPI sequences are acquired rapidly
+      (TR ~2s) while the subject performs tasks or rests. The BOLD signal reflects
+      changes in deoxyhemoglobin concentration due to neurovascular coupling.
+      The forward model involves k-space undersampling, T2* decay, and
+      hemodynamic response function convolution.
+    signal_dims:
+      x: [64, 64]
+      y: [64, 64]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = M * F * S * (HRF * x) + n"
+    default_solver: "sense"
+    default_template_id: "fmri_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: null
+    elements:
+      - name: "Main Magnet (3T)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          field_strength_T: 3.0
+          bore_diameter_cm: 60
+      - name: "EPI Gradient Encoding"
+        element_type: modulator
+        transfer_kind: sampling
+        throughput: 1.0
+        noise_kinds: [alignment]
+        parameters:
+          TR_ms: 2000
+          TE_ms: 30
+          echo_spacing_ms: 0.5
+          acceleration_factor: 2
+      - name: "Receive Coil Array"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.90
+        noise_kinds: [thermal, read_gaussian]
+        parameters:
+          n_coils: 32
+          coil_type: "head_array"
+          bandwidth_hz: 250000
+    upload_template:
+      required:
+        - name: "kspace"
+          description: "Complex k-space data (.npy or NIfTI)"
+          shape: "[n_volumes, n_coils, H, W] or [n_volumes, H, W]"
+      required_params:
+        - name: "TR_ms"
+          type: "float"
+          description: "Repetition time in milliseconds"
+        - name: "TE_ms"
+          type: "float"
+          description: "Echo time in milliseconds"
+      optional:
+        - name: "task_design"
+          description: "Task timing design matrix for GLM analysis"
+
+  mrs:
+    display_name: "MR Spectroscopy"
+    category: "medical"
+    keywords: [MRS, spectroscopy, metabolites, NAA, choline, creatine, chemical_shift]
+    description: >
+      MR spectroscopy measures the chemical composition of tissue by detecting
+      resonance frequency shifts of metabolites. Single-voxel spectroscopy (SVS)
+      acquires a free induction decay (FID) or spin echo from a localized volume.
+      The spectrum reveals peaks at characteristic chemical shifts for metabolites
+      like N-acetylaspartate, choline, creatine, and lactate. The forward model
+      involves spatial localization, k-space encoding, and spectral decomposition.
+    signal_dims:
+      x: [64, 64]
+      y: [64, 64]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "S(f) = sum_k a_k * L(f - f_k, T2_k) + n"
+    default_solver: "lcmodel"
+    default_template_id: "mrs_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: null
+    elements:
+      - name: "Main Magnet (3T)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          field_strength_T: 3.0
+          shimming: "second_order"
+      - name: "Localization Sequence (PRESS/STEAM)"
+        element_type: modulator
+        transfer_kind: sampling
+        throughput: 0.80
+        noise_kinds: [chemical_shift_displacement]
+        parameters:
+          sequence: "PRESS"
+          TR_ms: 3000
+          TE_ms: 135
+          voxel_size_mm: [20, 20, 20]
+      - name: "Receive Coil"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.90
+        noise_kinds: [thermal, read_gaussian]
+        parameters:
+          n_coils: 1
+          bandwidth_hz: 2000
+          n_spectral_points: 2048
+    upload_template:
+      required:
+        - name: "fid"
+          description: "Free induction decay signal (.npy, complex)"
+          shape: "[n_points] or [n_averages, n_points]"
+      required_params:
+        - name: "field_strength_T"
+          type: "float"
+          description: "Static magnetic field strength in Tesla"
+        - name: "spectral_bandwidth_hz"
+          type: "float"
+          description: "Spectral acquisition bandwidth in Hz"
+      optional:
+        - name: "water_reference"
+          description: "Unsuppressed water FID for quantification"
+
+  diffusion_mri:
+    display_name: "Diffusion MRI (DTI)"
+    category: "medical"
+    keywords: [dMRI, DTI, diffusion_tensor, tractography, b_value, white_matter, ADC]
+    description: >
+      Diffusion MRI sensitizes the MR signal to water molecule diffusion by
+      applying diffusion-encoding gradients. The Stejskal-Tanner equation
+      describes signal attenuation: S = S_0 * exp(-b * D), where b is the
+      diffusion weighting factor and D is the apparent diffusion coefficient.
+      Diffusion tensor imaging (DTI) estimates a 3x3 diffusion tensor at each
+      voxel, enabling fractional anisotropy mapping and white matter tractography.
+    signal_dims:
+      x: [128, 128]
+      y: [128, 128]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "S(g) = S_0 * exp(-b * g^T * D * g) + n"
+    default_solver: "weighted_least_squares"
+    default_template_id: "diffusion_mri_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: null
+    elements:
+      - name: "Main Magnet (3T)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          field_strength_T: 3.0
+          max_gradient_mt_per_m: 80
+      - name: "Diffusion-Encoding Gradients + EPI"
+        element_type: modulator
+        transfer_kind: sampling
+        throughput: 1.0
+        noise_kinds: [eddy_current, motion]
+        parameters:
+          b_values: [0, 1000]
+          n_directions: 30
+          TR_ms: 8000
+          TE_ms: 80
+      - name: "Receive Coil Array"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.90
+        noise_kinds: [thermal, read_gaussian]
+        parameters:
+          n_coils: 32
+          coil_type: "head_array"
+          bandwidth_hz: 250000
+    upload_template:
+      required:
+        - name: "dwi_data"
+          description: "Diffusion-weighted images (.npy or NIfTI)"
+          shape: "[n_directions+1, H, W] or [n_directions+1, H, W, D]"
+      required_params:
+        - name: "b_values"
+          type: "list[float]"
+          description: "List of b-values in s/mm^2"
+        - name: "gradient_directions"
+          type: "str"
+          description: "Path to gradient direction table (.bvec)"
+      optional:
+        - name: "b0_fieldmap"
+          description: "B0 field map for distortion correction"
+
+  # ===========================================================================
+  # ADVANCED OPTICAL MICROSCOPY — R4
+  # ===========================================================================
+
+  two_photon:
+    display_name: "Two-Photon / Multiphoton Microscopy"
+    category: "microscopy"
+    keywords: [two_photon, multiphoton, nonlinear, fluorescence, deep_tissue, infrared]
+    description: >
+      Two-photon excitation microscopy uses near-infrared femtosecond pulsed
+      laser illumination. Fluorescence is generated only at the focal volume
+      where the photon flux is high enough for simultaneous two-photon
+      absorption (intensity squared dependence). This intrinsic optical
+      sectioning enables deep tissue imaging with reduced photobleaching
+      and phototoxicity compared to single-photon confocal.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = PSF ** |x|^2 + n  (two-photon excitation)"
+    default_solver: "richardson_lucy"
+    default_template_id: "two_photon_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [700, 1100]
+    elements:
+      - name: "Ti:Sapphire Pulsed Laser"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "pulsed_laser"
+          wavelength_nm: 920
+          pulse_width_fs: 100
+          rep_rate_mhz: 80
+          power_mw: 20
+      - name: "Objective Lens (25x / 1.05 NA Water)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.75
+        noise_kinds: [aberration]
+        parameters:
+          magnification: 25
+          numerical_aperture: 1.05
+          psf_sigma_px: 1.5
+          immersion: "water"
+      - name: "PMT / GaAsP Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.45
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          type: "GaAsP_PMT"
+          quantum_efficiency: 0.45
+          dark_current_cps: 100
+          bit_depth: 12
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "Two-photon image (2D or 3D TIFF)"
+          shape: "[H, W] or [Z, H, W]"
+      required_params:
+        - name: "excitation_wavelength_nm"
+          type: "float"
+          description: "Laser excitation wavelength in nanometers"
+        - name: "numerical_aperture"
+          type: "float"
+          description: "Objective numerical aperture"
+        - name: "pixel_size_um"
+          type: "float"
+          description: "Effective pixel size at the sample plane in micrometers"
+      optional:
+        - name: "psf"
+          description: "Measured PSF image (2D TIFF)"
+
+  sted:
+    display_name: "STED Microscopy"
+    category: "microscopy"
+    keywords: [STED, super_resolution, depletion, nanoscopy, donut_beam, fluorescence]
+    description: >
+      Stimulated Emission Depletion (STED) microscopy achieves sub-diffraction
+      resolution by using a depletion donut beam to confine fluorescence emission
+      to a sub-diffraction spot. The effective PSF is determined by both the
+      excitation focus and the depletion beam profile. STED resolution scales
+      with depletion laser power: d ~ lambda / (2*NA*sqrt(1 + I/I_sat)).
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = PSF_sted ** (x * (1 - eta * donut)) + n"
+    default_solver: "richardson_lucy"
+    default_template_id: "sted_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [400, 775]
+    elements:
+      - name: "Excitation Laser (640 nm)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "pulsed_laser"
+          wavelength_nm: 640
+          pulse_width_ps: 100
+          power_mw: 5
+      - name: "Depletion Laser (775 nm)"
+        element_type: source
+        transfer_kind: modulation
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "CW_laser"
+          wavelength_nm: 775
+          power_mw: 200
+          beam_profile: "donut"
+      - name: "Objective Lens (100x / 1.4 NA Oil)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.70
+        noise_kinds: [aberration]
+        parameters:
+          magnification: 100
+          numerical_aperture: 1.4
+          effective_psf_fwhm_nm: 50
+          immersion: "oil"
+      - name: "APD / Hybrid Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.45
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          type: "hybrid_detector"
+          quantum_efficiency: 0.45
+          dark_current_cps: 50
+          bit_depth: 12
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "STED image (2D TIFF)"
+          shape: "[H, W]"
+      required_params:
+        - name: "excitation_wavelength_nm"
+          type: "float"
+          description: "Excitation laser wavelength in nanometers"
+        - name: "depletion_wavelength_nm"
+          type: "float"
+          description: "Depletion laser wavelength in nanometers"
+        - name: "numerical_aperture"
+          type: "float"
+          description: "Objective numerical aperture"
+      optional:
+        - name: "psf"
+          description: "Measured effective STED PSF (2D TIFF)"
+        - name: "depletion_power_mw"
+          description: "STED depletion beam power for resolution estimation"
+
+  palm_storm:
+    display_name: "PALM/STORM Single-Molecule Localization"
+    category: "microscopy"
+    keywords: [PALM, STORM, SMLM, single_molecule, localization, super_resolution, blinking]
+    description: >
+      Photo-Activated Localization Microscopy (PALM) and Stochastic Optical
+      Reconstruction Microscopy (STORM) achieve nanometer-scale resolution by
+      imaging sparse subsets of stochastically activated fluorescent molecules
+      over thousands of frames. Individual molecule positions are localized
+      with sub-pixel precision from their diffraction-limited images, then
+      combined into a super-resolved reconstruction.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y_t = sum_k I_k(t) * PSF(r - r_k) + bg + n"
+    default_solver: "thunderstorm"
+    default_template_id: "palm_storm_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [400, 750]
+    elements:
+      - name: "Activation Laser (405 nm)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "CW_laser"
+          wavelength_nm: 405
+          power_mw: 1
+      - name: "Excitation Laser (647 nm)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "CW_laser"
+          wavelength_nm: 647
+          power_mw: 50
+      - name: "Objective Lens (100x / 1.49 NA Oil)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.70
+        noise_kinds: [aberration]
+        parameters:
+          magnification: 100
+          numerical_aperture: 1.49
+          psf_sigma_px: 1.3
+          immersion: "oil"
+      - name: "EMCCD Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.90
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          type: "EMCCD"
+          quantum_efficiency: 0.90
+          em_gain: 300
+          read_noise_e: 50
+          pixel_size_um: 16
+          bit_depth: 16
+    upload_template:
+      required:
+        - name: "frames"
+          description: "Stack of single-molecule frames (3D TIFF or .npy)"
+          shape: "[T, H, W]"
+      required_params:
+        - name: "emission_wavelength_nm"
+          type: "float"
+          description: "Fluorophore emission wavelength in nanometers"
+        - name: "numerical_aperture"
+          type: "float"
+          description: "Objective numerical aperture"
+        - name: "pixel_size_nm"
+          type: "float"
+          description: "Camera pixel size projected to sample plane in nm"
+      optional:
+        - name: "n_frames"
+          description: "Number of frames acquired"
+        - name: "activation_density"
+          description: "Target active emitter density per frame"
+
+  tirf:
+    display_name: "TIRF Microscopy"
+    category: "microscopy"
+    keywords: [TIRF, total_internal_reflection, evanescent, surface, membrane, fluorescence]
+    description: >
+      Total Internal Reflection Fluorescence (TIRF) microscopy illuminates
+      the sample with an evanescent wave generated by total internal
+      reflection at the glass-water interface. The evanescent field decays
+      exponentially with depth (penetration depth ~100 nm), providing
+      exquisite surface selectivity for membrane and adhesion studies.
+      The forward model combines evanescent excitation weighting with
+      the detection PSF.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = PSF ** (x * exp(-z/d)) + n"
+    default_solver: "richardson_lucy"
+    default_template_id: "tirf_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [400, 700]
+    elements:
+      - name: "TIRF Laser (488 nm)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "CW_laser"
+          wavelength_nm: 488
+          power_mw: 20
+          incidence_angle_deg: 68
+      - name: "Objective Lens (60x / 1.49 NA Oil)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.75
+        noise_kinds: [aberration]
+        parameters:
+          magnification: 60
+          numerical_aperture: 1.49
+          psf_sigma_px: 1.2
+          immersion: "oil"
+      - name: "sCMOS Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.90
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          pixel_size_um: 6.5
+          read_noise_e: 1.6
+          quantum_efficiency: 0.90
+          full_well_e: 30000
+          bit_depth: 16
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "TIRF image (2D TIFF)"
+          shape: "[H, W]"
+      required_params:
+        - name: "emission_wavelength_nm"
+          type: "float"
+          description: "Fluorophore emission wavelength in nanometers"
+        - name: "numerical_aperture"
+          type: "float"
+          description: "Objective numerical aperture (must be > 1.33 for TIRF)"
+        - name: "pixel_size_um"
+          type: "float"
+          description: "Effective pixel size at the sample plane in micrometers"
+      optional:
+        - name: "penetration_depth_nm"
+          description: "Estimated evanescent field penetration depth in nm"
+        - name: "incidence_angle_deg"
+          description: "Laser incidence angle in degrees"
+
+  polarization:
+    display_name: "Polarization Microscopy"
+    category: "microscopy"
+    keywords: [polarization, birefringence, anisotropy, mueller_matrix, retardance, DIC]
+    description: >
+      Polarization microscopy measures the birefringence and anisotropy of
+      transparent specimens by analyzing changes in the polarization state
+      of transmitted light. The forward model involves the Mueller matrix
+      or Jones calculus of the optical path, with retardance and orientation
+      as the target parameters. Applications include mineralogy, liquid
+      crystals, biological tissue organization, and stress analysis.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = PSF ** (M * x) + n  (Mueller/Jones model)"
+    default_solver: "pnp_hqs"
+    default_template_id: "polarization_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [400, 700]
+    elements:
+      - name: "Polarized Light Source"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "LED"
+          wavelength_nm: 550
+          polarizer_type: "linear"
+      - name: "Objective Lens (20x / 0.5 NA)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.80
+        noise_kinds: [aberration]
+        parameters:
+          magnification: 20
+          numerical_aperture: 0.5
+          psf_sigma_px: 1.8
+          immersion: "air"
+      - name: "Analyzer + sCMOS Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.85
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          pixel_size_um: 6.5
+          read_noise_e: 1.6
+          quantum_efficiency: 0.85
+          bit_depth: 16
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "Polarization image stack (multiple analyzer angles, 3D TIFF)"
+          shape: "[N_angles, H, W]"
+      required_params:
+        - name: "wavelength_nm"
+          type: "float"
+          description: "Illumination wavelength in nanometers"
+        - name: "analyzer_angles_deg"
+          type: "list[float]"
+          description: "List of analyzer orientation angles in degrees"
+      optional:
+        - name: "background"
+          description: "Background image for flat-field correction"
+
+  # ===========================================================================
+  # CLINICAL OPTICS — R5
+  # ===========================================================================
+
+  endoscopy:
+    display_name: "Fiber Bundle Endoscopy"
+    category: "clinical_optics"
+    keywords: [endoscopy, fiber_bundle, specular, clinical, GI, arthroscopy]
+    description: >
+      Fiber bundle endoscopy transmits an image through a coherent fiber bundle
+      consisting of thousands of individual cores. Each core samples one spatial
+      location, introducing a honeycomb pattern and coupling losses. Specular
+      highlights from the tissue surface add nonlinear artifacts. The forward
+      model is y = Poisson(alpha * S(F * x)) + N(0, sigma^2), where F is the
+      fiber bundle sampling operator and S adds specular reflections.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = Poisson(alpha * S(F * x)) + N(0, sigma^2)"
+    default_solver: "tv_fista"
+    default_template_id: "endoscopy_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [400, 700]
+    elements:
+      - name: "White Light Source"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "LED"
+          power_mw: 200
+          spectral_range_nm: [400, 700]
+      - name: "Coherent Fiber Bundle"
+        element_type: fiber
+        transfer_kind: sampling
+        throughput: 0.30
+        noise_kinds: [cross_talk, fixed_pattern]
+        parameters:
+          n_cores: 30000
+          core_pitch_um: 10
+          core_diameter_um: 8
+          bundle_diameter_mm: 3
+          na: 0.3
+      - name: "CCD Sensor"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.75
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          pixel_size_um: 5.0
+          read_noise_e: 3.0
+          quantum_efficiency: 0.75
+          bit_depth: 12
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "Endoscope image (2D RGB TIFF/PNG)"
+          shape: "[H, W, 3] or [H, W]"
+      required_params:
+        - name: "n_cores"
+          type: "int"
+          description: "Number of fiber cores in the bundle"
+        - name: "core_pitch_um"
+          type: "float"
+          description: "Core-to-core spacing in micrometers"
+      optional:
+        - name: "flat_field"
+          description: "Flat-field calibration image for non-uniformity correction"
+
+  fundus:
+    display_name: "Fundus Camera"
+    category: "clinical_optics"
+    keywords: [fundus, retinal, ophthalmology, retina, optic_disc, macula]
+    description: >
+      Fundus photography captures an image of the retina through the pupil using
+      a low-magnification optical system with flash or continuous illumination.
+      The retinal image is blurred by the eye's optics (PSF depends on pupil
+      diameter and refractive error) and degraded by Poisson-Gaussian noise from
+      the detector. The forward model is y = PSF ** x + n.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = PSF ** x + n"
+    default_solver: "richardson_lucy"
+    default_template_id: "fundus_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [500, 700]
+    elements:
+      - name: "Flash / LED Illumination"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "LED"
+          power_mw: 100
+          spectral_width_nm: 80
+      - name: "Fundus Optics (45 deg FOV)"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.70
+        noise_kinds: [aberration]
+        parameters:
+          fov_deg: 45
+          magnification: 2.5
+          pupil_diameter_mm: 4.0
+          psf_sigma_px: 1.5
+      - name: "CMOS Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.80
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          pixel_size_um: 5.0
+          read_noise_e: 2.0
+          quantum_efficiency: 0.80
+          bit_depth: 14
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "Fundus image (2D RGB TIFF/PNG)"
+          shape: "[H, W, 3] or [H, W]"
+      required_params:
+        - name: "pupil_diameter_mm"
+          type: "float"
+          description: "Patient pupil diameter in millimeters"
+      optional:
+        - name: "psf"
+          description: "Measured or estimated PSF from wavefront sensor"
+
+  octa:
+    display_name: "OCT Angiography"
+    category: "clinical_optics"
+    keywords: [OCTA, angiography, retinal_vasculature, decorrelation, flow, OCT]
+    description: >
+      OCT Angiography (OCTA) generates en-face vascular maps of the retina by
+      computing decorrelation or variance between repeated B-scans at the same
+      location. Flowing blood causes signal fluctuation, while static tissue
+      remains stable. The forward model combines OCT interferometry with
+      temporal decorrelation: y = Var_t[OCT(x, t)] + n.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = Var_t[OCT(x, t)] + n"
+    default_solver: "tv_fista"
+    default_template_id: "octa_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [840, 1060]
+    elements:
+      - name: "Swept-Source OCT"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "swept_source"
+          center_wavelength_nm: 840
+          bandwidth_nm: 50
+          sweep_rate_khz: 200
+          power_mw: 2
+      - name: "Scanning + Objective Optics"
+        element_type: lens
+        transfer_kind: convolution
+        throughput: 0.75
+        noise_kinds: [motion_artifact]
+        parameters:
+          lateral_resolution_um: 15
+          scan_range_mm: 3
+          n_bscans_per_location: 4
+      - name: "Balanced Photodetector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.85
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          dynamic_range_db: 100
+          sensitivity_dbm: -95
+          bit_depth: 14
+    upload_template:
+      required:
+        - name: "bscan_stack"
+          description: "Repeated B-scan stack (.npy or .h5)"
+          shape: "[N_repeats, N_ascans, N_spectral]"
+      required_params:
+        - name: "center_wavelength_nm"
+          type: "float"
+          description: "Source center wavelength in nanometers"
+        - name: "n_repeats"
+          type: "int"
+          description: "Number of repeated B-scans per location"
+      optional:
+        - name: "reference_spectrum"
+          description: "Reference spectrum for background subtraction (.npy)"
+
+  # ===========================================================================
+  # DEPTH / TOF IMAGING — R6
+  # ===========================================================================
+
+  tof_camera:
+    display_name: "Time-of-Flight Depth Camera"
+    category: "depth_imaging"
+    keywords: [ToF, depth, SPAD, time_gating, 3D, range_imaging, indirect_ToF]
+    description: >
+      Time-of-flight depth cameras measure scene depth by emitting modulated
+      near-infrared light and measuring the phase shift or time delay of the
+      reflected signal. The sensor (typically SPAD or demodulation pixels)
+      bins photon arrivals into time gates. The forward model is
+      y = Poisson(alpha * G(x)) + N(0, sigma^2) where G is the ToF gating
+      operator that converts depth to time-binned photon counts.
+    signal_dims:
+      x: [256, 256]
+      y: [256, 256]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = Poisson(alpha * G(x)) + N(0, sigma^2)"
+    default_solver: "tv_fista"
+    default_template_id: "tof_camera_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [850, 940]
+    elements:
+      - name: "NIR Laser Diode"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "laser_diode"
+          wavelength_nm: 905
+          power_mw: 500
+          modulation_freq_mhz: 20
+      - name: "Scene (Depth Object)"
+        element_type: medium
+        transfer_kind: projection
+        throughput: 0.30
+        noise_kinds: [multipath]
+        parameters:
+          max_range_m: 10.0
+          reflectivity: 0.3
+      - name: "SPAD Array Sensor"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.30
+        noise_kinds: [shot_poisson, read_gaussian, dark_count]
+        parameters:
+          n_bins: 64
+          bin_width_ns: 1.0
+          dead_time_ns: 50
+          qe: 0.30
+          dark_count_rate_cps: 100
+    upload_template:
+      required:
+        - name: "histogram"
+          description: "Per-pixel time histograms (.npy)"
+          shape: "[H, W, N_bins]"
+      required_params:
+        - name: "bin_width_ns"
+          type: "float"
+          description: "Time bin width in nanoseconds"
+      optional:
+        - name: "ambient_histogram"
+          description: "Ambient-only histogram for background subtraction"
+
+  lidar:
+    display_name: "LiDAR Scanner"
+    category: "depth_imaging"
+    keywords: [LiDAR, point_cloud, ToF, scanning, laser, range, 3D_mapping]
+    description: >
+      LiDAR (Light Detection And Ranging) measures distance by scanning a
+      pulsed laser beam across the scene and recording the time of flight of
+      reflected photons. A scan trajectory (raster or Lissajous) samples the
+      scene sparsely. SPAD or APD detectors measure photon arrival times.
+      The forward model is y = Poisson(alpha * T(S(x))) + n, where S is the
+      scan trajectory sampling and T is ToF gating.
+    signal_dims:
+      x: [256, 256]
+      y: [256, 256]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = Poisson(alpha * T(S(x))) + n"
+    default_solver: "tv_fista"
+    default_template_id: "lidar_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [905, 1550]
+    elements:
+      - name: "Pulsed Laser Source"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "pulsed_laser"
+          wavelength_nm: 905
+          pulse_energy_uj: 10
+          rep_rate_khz: 100
+      - name: "Scanning Mirror"
+        element_type: scanner
+        transfer_kind: sampling
+        throughput: 0.90
+        noise_kinds: [jitter]
+        parameters:
+          scan_type: "raster"
+          fov_deg: 60
+          angular_resolution_deg: 0.1
+      - name: "SPAD Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.25
+        noise_kinds: [shot_poisson, dark_count]
+        parameters:
+          n_bins: 64
+          bin_width_ns: 0.5
+          dead_time_ns: 20
+          qe: 0.25
+    upload_template:
+      required:
+        - name: "point_cloud"
+          description: "Raw point cloud or histogram data (.npy or .las)"
+          shape: "[N_points, 3] or [H, W, N_bins]"
+      required_params:
+        - name: "max_range_m"
+          type: "float"
+          description: "Maximum range in meters"
+      optional:
+        - name: "intensity"
+          description: "Per-point return intensity values (.npy)"
+
+  structured_light:
+    display_name: "Structured-Light Depth Camera"
+    category: "depth_imaging"
+    keywords: [structured_light, fringe_projection, depth, 3D_scanning, phase_shifting]
+    description: >
+      Structured-light depth cameras project known patterns (sinusoidal fringes
+      or random dots) onto the scene and capture them with a camera offset from
+      the projector. Depth is recovered from the phase deformation of the
+      observed fringes via triangulation. The forward model is
+      y = O(P(x)) + n, where P is the fringe projection and O models the
+      camera optics with depth-dependent defocus.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = O(P(x)) + n"
+    default_solver: "phase_unwrap"
+    default_template_id: "structured_light_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [450, 850]
+    elements:
+      - name: "Pattern Projector"
+        element_type: source
+        transfer_kind: modulation
+        throughput: 0.90
+        noise_kinds: [speckle]
+        parameters:
+          type: "DLP_projector"
+          n_patterns: 4
+          fringe_freq_cycles: 8
+          resolution: [1024, 768]
+      - name: "Camera (Receiver)"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.80
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          focal_length_mm: 50
+          aperture: 2.8
+          pixel_size_um: 5.0
+          read_noise_e: 2.0
+          quantum_efficiency: 0.80
+          bit_depth: 12
+    upload_template:
+      required:
+        - name: "fringe_images"
+          description: "Phase-shifted fringe images (.npy)"
+          shape: "[N_patterns, H, W]"
+      required_params:
+        - name: "baseline_mm"
+          type: "float"
+          description: "Projector-camera baseline in millimeters"
+        - name: "fringe_freq"
+          type: "float"
+          description: "Fringe spatial frequency in cycles per image width"
+      optional:
+        - name: "mask"
+          description: "Valid pixel mask for occluded regions"
+
+  # ===========================================================================
+  # RADAR / SONAR — R7
+  # ===========================================================================
+
+  sar:
+    display_name: "Synthetic Aperture Radar"
+    category: "remote_sensing"
+    keywords: [SAR, radar, synthetic_aperture, microwave, backprojection, remote_sensing]
+    description: >
+      Synthetic Aperture Radar (SAR) forms high-resolution images of terrain by
+      coherently combining radar returns acquired along a flight path. The
+      synthetic aperture created by platform motion yields azimuth resolution
+      independent of range. The forward model involves a Radon-like projection
+      with complex-valued returns: y = A * x + n.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = A_sar * x + n  (range-azimuth focusing)"
+    default_solver: "backprojection"
+    default_template_id: "sar_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [3.0e+7, 1.0e+9]
+    elements:
+      - name: "Radar Transmitter"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "microwave"
+          frequency_ghz: 9.6
+          bandwidth_mhz: 150
+      - name: "Synthetic Aperture Processor"
+        element_type: modulator
+        transfer_kind: projection
+        throughput: 0.90
+        noise_kinds: [speckle]
+        parameters:
+          aperture_length_m: 10
+          platform_velocity_m_per_s: 200
+      - name: "Radar Receiver"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.85
+        noise_kinds: [thermal, quantization]
+        parameters:
+          noise_figure_db: 3.0
+          adc_bits: 14
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "SAR raw data or focused SLC image (.npy or GeoTIFF)"
+          shape: "[H, W] complex or [H, W, 2]"
+      required_params:
+        - name: "frequency_ghz"
+          type: "float"
+          description: "Radar center frequency in GHz"
+        - name: "bandwidth_mhz"
+          type: "float"
+          description: "Radar bandwidth in MHz"
+      optional:
+        - name: "orbit_data"
+          description: "Platform trajectory data (.json or .csv)"
+
+  sonar:
+    display_name: "Sonar Imaging"
+    category: "remote_sensing"
+    keywords: [sonar, acoustic, underwater, beamforming, side_scan, multibeam]
+    description: >
+      Sonar imaging uses acoustic waves to map underwater environments.
+      Active sonar transmits acoustic pulses and processes the backscattered
+      echoes via beamforming for spatial resolution.
+    signal_dims:
+      x: [256, 256]
+      y: [128]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = B * H * x + n  (beamform + propagation)"
+    default_solver: "beamform_das"
+    default_template_id: "sonar_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [1.0e+6, 1.0e+9]
+    elements:
+      - name: "Sonar Transmitter"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "piezoelectric"
+          frequency_khz: 200
+          source_level_db: 220
+      - name: "Hydrophone Array"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.80
+        noise_kinds: [thermal, ambient_acoustic]
+        parameters:
+          n_elements: 64
+          element_spacing_mm: 7.5
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "Sonar echo data (.npy or .wav)"
+          shape: "[n_channels, n_samples]"
+      required_params:
+        - name: "frequency_khz"
+          type: "float"
+          description: "Center frequency in kHz"
+        - name: "speed_of_sound_m_per_s"
+          type: "float"
+          description: "Speed of sound in water in m/s"
+      optional:
+        - name: "bathymetry"
+          description: "Bottom depth map for geometry correction"
+
+  # ===========================================================================
+  # ELECTRON SPECTROSCOPY / DIFFRACTION — R8
+  # ===========================================================================
+
+  electron_diffraction:
+    display_name: "4D-STEM Electron Diffraction"
+    category: "electron_microscopy"
+    keywords: [4D_STEM, electron_diffraction, CBED, nanobeam, convergent_beam]
+    description: >
+      4D-STEM collects a 2D convergent beam electron diffraction (CBED) pattern
+      at each probe position in a 2D raster scan, producing a 4D dataset.
+      The forward model involves far-field diffraction: y = |F{t(r) * P(r)}|^2.
+    signal_dims:
+      x: [128, 128]
+      y: [128, 128]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = |FFT(t * P)|^2 + n  (far-field diffraction)"
+    default_solver: "ptychography_epie"
+    default_template_id: "electron_diffraction_graph_v2"
+    requires_x_interaction: true
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [0.002, 0.004]
+    elements:
+      - name: "Electron Beam (200 kV)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          accelerating_voltage_kv: 200
+          convergence_semiangle_mrad: 20
+      - name: "Pixelated STEM Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.80
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          n_pixels: [256, 256]
+          frame_rate_fps: 1000
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "4D-STEM dataset (.npy or .hdf5)"
+          shape: "[Ny, Nx, Ky, Kx]"
+      required_params:
+        - name: "accelerating_voltage_kv"
+          type: "float"
+          description: "Electron accelerating voltage in kV"
+        - name: "convergence_semiangle_mrad"
+          type: "float"
+          description: "Probe convergence semi-angle in mrad"
+      optional:
+        - name: "probe_function"
+          description: "Measured or simulated probe function (.npy)"
+
+  ebsd:
+    display_name: "Electron Backscatter Diffraction"
+    category: "electron_microscopy"
+    keywords: [EBSD, backscatter, crystallography, orientation, Kikuchi, texture]
+    description: >
+      Electron Backscatter Diffraction (EBSD) maps crystallographic orientation
+      in polycrystalline materials by analyzing Kikuchi diffraction patterns
+      from a tilted sample surface.
+    signal_dims:
+      x: [256, 256]
+      y: [128, 128]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = R(theta,phi,psi) * I_ref + n  (orientation mapping)"
+    default_solver: "hough_indexing"
+    default_template_id: "ebsd_graph_v2"
+    requires_x_interaction: true
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [0.002, 0.005]
+    elements:
+      - name: "Electron Beam (20 kV)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          accelerating_voltage_kv: 20
+          beam_current_na: 10
+      - name: "EBSD Phosphor Screen + CCD"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.60
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          detector_resolution: [160, 120]
+          frame_rate_fps: 600
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "EBSD patterns (.npy or .h5)"
+          shape: "[Ny, Nx, Py, Px]"
+      required_params:
+        - name: "accelerating_voltage_kv"
+          type: "float"
+          description: "Electron accelerating voltage in kV"
+        - name: "sample_tilt_deg"
+          type: "float"
+          description: "Sample tilt angle in degrees"
+      optional:
+        - name: "phase_list"
+          description: "List of expected crystal phases (.json)"
+
+  eels:
+    display_name: "Electron Energy Loss Spectroscopy"
+    category: "electron_microscopy"
+    keywords: [EELS, energy_loss, spectroscopy, core_loss, plasmon, chemical_mapping]
+    description: >
+      EELS measures the energy lost by transmitted electrons after inelastic
+      scattering in a thin specimen. The forward model is a convolution of
+      the specimen loss function with the zero-loss peak.
+    signal_dims:
+      x: [256, 256]
+      y: [1024]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = ZLP ** S(E) + n  (energy loss convolution)"
+    default_solver: "fourier_ratio"
+    default_template_id: "eels_graph_v2"
+    requires_x_interaction: true
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [0.002, 0.004]
+    elements:
+      - name: "Electron Beam (200 kV STEM)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          accelerating_voltage_kv: 200
+          energy_resolution_ev: 0.3
+      - name: "Magnetic Sector Spectrometer"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.70
+        noise_kinds: [shot_poisson, read_gaussian, dark_current]
+        parameters:
+          n_channels: 2048
+          dispersion_ev_per_channel: 0.5
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "EELS spectrum or spectrum image (.npy or .dm4)"
+          shape: "[N_energy] or [Ny, Nx, N_energy]"
+      required_params:
+        - name: "accelerating_voltage_kv"
+          type: "float"
+          description: "Electron accelerating voltage in kV"
+        - name: "energy_offset_ev"
+          type: "float"
+          description: "Starting energy offset of spectrum in eV"
+      optional:
+        - name: "zero_loss_peak"
+          description: "Measured ZLP for deconvolution (.npy)"
+
+  electron_holography:
+    display_name: "Electron Holography"
+    category: "electron_microscopy"
+    keywords: [electron_holography, holography, biprism, phase, electrostatic, magnetic]
+    description: >
+      Off-axis electron holography creates interference between object wave and
+      reference wave using a biprism, encoding amplitude and phase of the
+      transmitted electron wave for electrostatic/magnetic potential mapping.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = |psi_obj + psi_ref * exp(i*q*x)|^2 + n"
+    default_solver: "fourier_sideband"
+    default_template_id: "electron_holography_graph_v2"
+    requires_x_interaction: true
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [0.002, 0.004]
+    elements:
+      - name: "Electron Beam (200 kV)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          accelerating_voltage_kv: 200
+          coherence_length_nm: 50
+      - name: "CCD Camera"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.80
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          pixel_size_um: 14
+          n_pixels: [4096, 4096]
+          exposure_s: 2.0
+    upload_template:
+      required:
+        - name: "hologram"
+          description: "Off-axis electron hologram (TIFF or .dm4)"
+          shape: "[H, W]"
+      required_params:
+        - name: "accelerating_voltage_kv"
+          type: "float"
+          description: "Electron accelerating voltage in kV"
+        - name: "biprism_voltage_v"
+          type: "float"
+          description: "Biprism voltage for fringe spacing"
+      optional:
+        - name: "reference_hologram"
+          description: "Vacuum reference hologram for normalization"
+
+  # ===========================================================================
+  # PARTICLE IMAGING — R9
+  # ===========================================================================
+
+  neutron_tomo:
+    display_name: "Neutron Radiography/Tomography"
+    category: "particle_imaging"
+    keywords: [neutron, radiography, tomography, attenuation, hydrogen, nuclear]
+    description: >
+      Neutron radiography and tomography use thermal or cold neutrons to
+      image the attenuation distribution inside objects. Neutrons interact
+      strongly with light elements (hydrogen, lithium, boron) and penetrate
+      heavy metals. The forward model follows Beer-Lambert law.
+    signal_dims:
+      x: [256, 256]
+      y: [256, 256]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = I_0 * exp(-sigma * x) + n  (Beer-Lambert)"
+    default_solver: "filtered_back_projection"
+    default_template_id: "neutron_tomo_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [0.05, 0.5]
+    elements:
+      - name: "Neutron Source (Reactor/Spallation)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "reactor"
+          flux_n_per_cm2_per_s: 1.0e+07
+      - name: "Scintillator + CCD Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.30
+        noise_kinds: [shot_poisson, read_gaussian, gamma_background]
+        parameters:
+          scintillator: "LiF/ZnS"
+          pixel_size_um: 50
+    upload_template:
+      required:
+        - name: "projections"
+          description: "Neutron radiographs (.npy or TIFF stack)"
+          shape: "[N_angles, H, W] or [H, W]"
+      required_params:
+        - name: "neutron_wavelength_nm"
+          type: "float"
+          description: "Neutron wavelength in nanometers"
+      optional:
+        - name: "open_beam"
+          description: "Open beam (flat field) image for normalization"
+
+  proton_radiography:
+    display_name: "Proton Radiography"
+    category: "particle_imaging"
+    keywords: [proton, radiography, proton_therapy, range, stopping_power, particle]
+    description: >
+      Proton radiography images objects by measuring energy loss, scattering
+      angle, and range of transmitted protons. The forward model combines
+      Beer-Lambert attenuation with multiple Coulomb scattering.
+    signal_dims:
+      x: [256, 256]
+      y: [256, 256]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = K_mcs ** (I_0 * exp(-sigma * x)) + n"
+    default_solver: "filtered_back_projection"
+    default_template_id: "proton_radiography_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [0.001, 0.01]
+    elements:
+      - name: "Proton Beam (200 MeV)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "cyclotron"
+          energy_mev: 200
+      - name: "Silicon Strip Tracker"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.85
+        noise_kinds: [thermal, quantization]
+        parameters:
+          n_planes: 4
+          strip_pitch_um: 80
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "Proton radiograph (.npy or TIFF)"
+          shape: "[H, W]"
+      required_params:
+        - name: "proton_energy_mev"
+          type: "float"
+          description: "Initial proton beam energy in MeV"
+      optional:
+        - name: "reference_image"
+          description: "Open-beam reference for normalization"
+
+  muon_tomo:
+    display_name: "Muon Tomography"
+    category: "particle_imaging"
+    keywords: [muon, tomography, cosmic_ray, scattering, nuclear, security, volcano]
+    description: >
+      Muon tomography uses cosmic-ray muons to image the density distribution
+      inside large objects by measuring scattering angles related to the
+      material radiation length.
+    signal_dims:
+      x: [64, 64, 64]
+      y: [1024]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "theta_rms = (13.6/p) * sqrt(L/X_0) + n  (Coulomb scattering)"
+    default_solver: "poca_reconstruction"
+    default_template_id: "muon_tomo_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [0.0001, 0.001]
+    elements:
+      - name: "Cosmic Ray Muon Source"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          type: "cosmic_ray"
+          mean_energy_gev: 3.0
+      - name: "Scintillator / Drift Tube Tracker"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.95
+        noise_kinds: [position_resolution, timing_jitter]
+        parameters:
+          n_layers: 8
+          detection_efficiency: 0.95
+    upload_template:
+      required:
+        - name: "tracks"
+          description: "Muon track data (.npy or .csv)"
+          shape: "[N_muons, 8]"
+      required_params:
+        - name: "detector_geometry"
+          type: "str"
+          description: "Path to detector geometry description (.json)"
+      optional:
+        - name: "momentum_estimate"
+          description: "Per-track muon momentum estimates (.npy)"

@@ -22,7 +22,7 @@ PWM is designed to be:
 
 ### 1) Prompt-driven simulation + reconstruction
 
-PWM supports **26 validated imaging modalities** with prompt-driven workflows:
+PWM supports **64 validated imaging modalities** with prompt-driven workflows:
 
 **Microscopy:**
 - `widefield` - Richardson-Lucy deconvolution (27.31 dB)
@@ -184,7 +184,7 @@ pwm/
       benchmarks/
         run_all.py         # 26-modality benchmark suite
         test_operator_correction.py  # 16 calibration tests
-      tests/               # 1503 unit tests
+      tests/               # 2904 unit tests
     pwm_AI_Scientist/      # AI_Scientist adapter (thin)
 ```
 
@@ -250,7 +250,7 @@ pwm view runs/latest
 ```
 
 PWM will:
-1) select a CasePack from the 26 validated modalities,
+1) select a CasePack from the 64 validated modalities,
 2) compile a draft spec,
 3) validate/repair,
 4) simulate measurement `y`,
@@ -271,7 +271,7 @@ pwm view runs/latest
 ```python
 from pwm_core.api import endpoints
 
-# Option 1: Run from prompt (auto-selects casepack from 34 modalities)
+# Option 1: Run from prompt (auto-selects casepack from 64 modalities)
 result = endpoints.run(prompt="widefield deconvolution, low dose")
 print(f"RunBundle: {result['runbundle_path']}")
 print(f"Verdict: {result['diagnosis']['verdict']}")
@@ -303,7 +303,7 @@ result = endpoints.run(spec=compile_result.draft_spec, out_dir="runs/")
 # Navigate to project directory
 cd packages/pwm_core
 
-# Run ALL 34 modalities (~28 min)
+# Run ALL 64 modalities (~28 min)
 python benchmarks/run_all.py --all
 
 # Run specific modality
@@ -315,7 +315,7 @@ python benchmarks/run_all.py --modality photoacoustic
 # Run operator correction tests (16 tests, ~63 min)
 python -m pytest benchmarks/test_operator_correction.py -v
 
-# Run unit tests (1503 tests)
+# Run unit tests (2904 tests)
 python -m pytest tests/ -v
 ```
 
@@ -509,14 +509,14 @@ PWM includes validated implementations for **34 imaging modalities**.
 | 25 | FPM | Gradient Descent | 34.61 | 34.0 | Pass |
 | 26 | DOT | Born/Tikhonov | 32.06 | 25.0 | Pass |
 
-**All 34 modalities meet or exceed reference performance.**
+**All 64 modalities meet or exceed reference performance.**
 
 ### Running the Benchmarks
 
 ```bash
 cd packages/pwm_core
 
-# Run ALL 34 modalities (~28 min)
+# Run ALL 64 modalities (~28 min)
 python benchmarks/run_all.py --all
 
 # Run core modalities only (faster)
@@ -534,7 +534,7 @@ python benchmarks/run_all.py --modality fpm
 ```bash
 cd packages/pwm_core
 
-# Unit tests (1503 tests)
+# Unit tests (2904 tests)
 python -m pytest tests/ -v
 
 # Operator correction tests (16 tests, ~63 min)
@@ -566,7 +566,7 @@ PWM uses **6 YAML registries** as the source of truth for all modalities, solver
 
 | Registry | Entries | Purpose |
 |----------|---------|---------|
-| `modalities.yaml` | 34 modalities | Forward model families + upload templates |
+| `modalities.yaml` | 64 modalities | Forward model families + upload templates |
 | `mismatch_db.yaml` | Per-modality | Mismatch parameters and ranges |
 | `photon_db.yaml` | Per-modality | Photon/noise models (model_id, not formulas) |
 | `compression_db.yaml` | Calibration tables | Recoverability with provenance fields |

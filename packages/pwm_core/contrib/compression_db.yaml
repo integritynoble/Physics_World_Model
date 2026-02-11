@@ -1444,3 +1444,1005 @@ calibration_tables:
           solver_version: "pwm_core.recon.fpm_solver@0.1.0"
           date_generated: "2025-11-01"
           notes: "Deep learning FPM with physics-informed network, learned pupil function"
+
+  # ===================================================================
+  # 35. Fluoroscopy
+  # ===================================================================
+  fluoroscopy:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "detector_limited"
+        solver: "tv_fista"
+        recoverability: 0.80
+        expected_psnr_db: 30.5
+        provenance:
+          dataset_id: "fluoro_cardiac_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_fluoroscopy_v1.0"
+          solver_version: "pwm_core.recon.xray_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "TV-FISTA denoising of low-dose fluoroscopy frames, cardiac phantom"
+      - cr: 1.0
+        noise: "photon_starved"
+        solver: "pnp_drunet"
+        recoverability: 0.72
+        expected_psnr_db: 27.3
+        provenance:
+          dataset_id: "fluoro_cardiac_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_fluoroscopy_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "PnP denoising for ultra-low-dose pediatric fluoroscopy"
+      - cr: 1.0
+        noise: "detector_limited"
+        solver: "temporal_average"
+        recoverability: 0.85
+        expected_psnr_db: 33.1
+        provenance:
+          dataset_id: "fluoro_cardiac_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_fluoroscopy_v1.0"
+          solver_version: "pwm_core.recon.xray_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "Recursive temporal averaging over 8 frames, trades motion blur for SNR"
+
+  # ===================================================================
+  # 36. Mammography
+  # ===================================================================
+  mammography:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "detector_limited"
+        solver: "tv_fista"
+        recoverability: 0.88
+        expected_psnr_db: 35.8
+        provenance:
+          dataset_id: "inbreast_mammo_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_mammography_v1.0"
+          solver_version: "pwm_core.recon.xray_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "TV denoising of clinical mammograms, scatter-corrected"
+      - cr: 1.0
+        noise: "photon_starved"
+        solver: "pnp_drunet"
+        recoverability: 0.78
+        expected_psnr_db: 31.2
+        provenance:
+          dataset_id: "inbreast_mammo_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_mammography_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "PnP denoising for low-dose mammography screening"
+
+  # ===================================================================
+  # 37. DEXA
+  # ===================================================================
+  dexa:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "detector_limited"
+        solver: "dual_energy_decomposition"
+        recoverability: 0.85
+        expected_psnr_db: 34.2
+        provenance:
+          dataset_id: "dexa_phantom_calibration_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_dexa_v1.0"
+          solver_version: "pwm_core.recon.dexa_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "Standard dual-energy decomposition, European spine phantom"
+      - cr: 1.0
+        noise: "photon_starved"
+        solver: "dual_energy_decomposition"
+        recoverability: 0.72
+        expected_psnr_db: 28.5
+        provenance:
+          dataset_id: "dexa_phantom_calibration_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_dexa_v1.0"
+          solver_version: "pwm_core.recon.dexa_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "Low-dose pediatric DEXA, higher decomposition noise"
+
+  # ===================================================================
+  # 38. Cone-Beam CT
+  # ===================================================================
+  cbct:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 0.10
+        noise: "detector_limited"
+        solver: "fdk"
+        recoverability: 0.60
+        expected_psnr_db: 24.1
+        provenance:
+          dataset_id: "cbct_dental_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_cbct_v1.0"
+          solver_version: "pwm_core.recon.cbct_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "FDK reconstruction from sparse-view CBCT, 18 projections"
+      - cr: 0.25
+        noise: "detector_limited"
+        solver: "pnp_sart"
+        recoverability: 0.78
+        expected_psnr_db: 28.5
+        provenance:
+          dataset_id: "cbct_dental_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_cbct_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "PnP-SART 50 iterations, 45 projections"
+      - cr: 0.50
+        noise: "detector_limited"
+        solver: "pnp_sart"
+        recoverability: 0.88
+        expected_psnr_db: 32.3
+        provenance:
+          dataset_id: "cbct_dental_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_cbct_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "PnP-SART with 90 projections, near-clinical quality"
+
+  # ===================================================================
+  # 39. Angiography
+  # ===================================================================
+  angiography:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "detector_limited"
+        solver: "dsa_subtraction"
+        recoverability: 0.82
+        expected_psnr_db: 32.5
+        provenance:
+          dataset_id: "angio_vascular_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_angiography_v1.0"
+          solver_version: "pwm_core.recon.xray_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "Digital subtraction angiography with motion correction"
+      - cr: 1.0
+        noise: "photon_starved"
+        solver: "pnp_drunet"
+        recoverability: 0.70
+        expected_psnr_db: 28.1
+        provenance:
+          dataset_id: "angio_vascular_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_angiography_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "PnP denoising for low-dose angiography"
+
+  # ===================================================================
+  # 40. Doppler Ultrasound
+  # ===================================================================
+  doppler_ultrasound:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "speckle"
+        solver: "autocorrelation_estimator"
+        recoverability: 0.75
+        expected_psnr_db: 29.2
+        provenance:
+          dataset_id: "picmus_doppler_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_doppler_v1.0"
+          solver_version: "pwm_core.recon.doppler_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "Standard autocorrelation Doppler estimator, carotid flow phantom"
+      - cr: 1.0
+        noise: "speckle"
+        solver: "mv_doppler"
+        recoverability: 0.82
+        expected_psnr_db: 32.8
+        provenance:
+          dataset_id: "picmus_doppler_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_doppler_v1.0"
+          solver_version: "pwm_core.recon.doppler_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "Minimum variance Doppler estimator, improved velocity resolution"
+
+  # ===================================================================
+  # 41. Elastography
+  # ===================================================================
+  elastography:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "speckle"
+        solver: "time_of_flight_inversion"
+        recoverability: 0.78
+        expected_psnr_db: 30.5
+        provenance:
+          dataset_id: "cirs_elastography_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_elastography_v1.0"
+          solver_version: "pwm_core.recon.elastography_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "Time-of-flight shear wave speed inversion, CIRS phantom"
+      - cr: 1.0
+        noise: "speckle"
+        solver: "helmholtz_inversion"
+        recoverability: 0.85
+        expected_psnr_db: 33.1
+        provenance:
+          dataset_id: "cirs_elastography_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_elastography_v1.0"
+          solver_version: "pwm_core.recon.elastography_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "Helmholtz equation inversion for shear modulus, improved accuracy"
+
+  # ===================================================================
+  # 42. Functional MRI (fMRI)
+  # ===================================================================
+  fmri:
+    signal_prior_class: "deep_prior"
+    entries:
+      - cr: 0.50
+        noise: "read_limited"
+        solver: "sense"
+        recoverability: 0.85
+        expected_psnr_db: 35.2
+        provenance:
+          dataset_id: "hcp_fmri_motor_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_fmri_v1.0"
+          solver_version: "pwm_core.recon.mri_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "SENSE reconstruction 2x acceleration, 3mm isotropic, motor task"
+      - cr: 0.25
+        noise: "read_limited"
+        solver: "grappa"
+        recoverability: 0.78
+        expected_psnr_db: 31.5
+        provenance:
+          dataset_id: "hcp_fmri_motor_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_fmri_v1.0"
+          solver_version: "pwm_core.recon.mri_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "GRAPPA 4x acceleration, g-factor noise amplification"
+
+  # ===================================================================
+  # 43. MR Spectroscopy
+  # ===================================================================
+  mrs:
+    signal_prior_class: "wavelet_sparse"
+    entries:
+      - cr: 1.0
+        noise: "read_limited"
+        solver: "lcmodel"
+        recoverability: 0.88
+        expected_psnr_db: 36.5
+        provenance:
+          dataset_id: "mrs_brain_metabolite_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_mrs_v1.0"
+          solver_version: "pwm_core.recon.mrs_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "LCModel fitting, 128 averages, PRESS TE=135ms, brain metabolites"
+      - cr: 1.0
+        noise: "photon_starved"
+        solver: "lcmodel"
+        recoverability: 0.65
+        expected_psnr_db: 28.2
+        provenance:
+          dataset_id: "mrs_brain_metabolite_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_mrs_v1.0"
+          solver_version: "pwm_core.recon.mrs_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "Single average MRS, low SNR, poor metabolite quantification"
+
+  # ===================================================================
+  # 44. Diffusion MRI
+  # ===================================================================
+  diffusion_mri:
+    signal_prior_class: "deep_prior"
+    entries:
+      - cr: 0.50
+        noise: "read_limited"
+        solver: "weighted_least_squares"
+        recoverability: 0.82
+        expected_psnr_db: 33.8
+        provenance:
+          dataset_id: "hcp_diffusion_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_diffusion_mri_v1.0"
+          solver_version: "pwm_core.recon.diffusion_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "WLS tensor fitting, 30 directions b=1000, 2mm isotropic"
+      - cr: 0.50
+        noise: "photon_starved"
+        solver: "weighted_least_squares"
+        recoverability: 0.68
+        expected_psnr_db: 28.1
+        provenance:
+          dataset_id: "hcp_diffusion_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_diffusion_mri_v1.0"
+          solver_version: "pwm_core.recon.diffusion_solver@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "High b-value (b=3000) with low SNR, tensor fitting unreliable"
+      - cr: 0.50
+        noise: "read_limited"
+        solver: "deep_dti"
+        recoverability: 0.90
+        expected_psnr_db: 37.5
+        provenance:
+          dataset_id: "hcp_diffusion_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_diffusion_mri_v1.0"
+          solver_version: "pwm_core.recon.deep_dti@0.1.0"
+          date_generated: "2025-12-15"
+          notes: "Deep learning DTI with self-supervised denoising, MPPCA baseline"
+
+  # ===================================================================
+  # 45. Two-Photon / Multiphoton Microscopy
+  # ===================================================================
+  two_photon:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "richardson_lucy"
+        recoverability: 0.80
+        expected_psnr_db: 27.5
+        provenance:
+          dataset_id: "allen_brain_2p_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_two_photon_v1.0"
+          solver_version: "pwm_core.recon.richardson_lucy@0.1.0"
+          date_generated: "2026-01-15"
+          notes: "RL 50 iterations, 920nm excitation, GCaMP6f calcium imaging"
+      - cr: 1.0
+        noise: "photon_starved"
+        solver: "pnp_drunet"
+        recoverability: 0.72
+        expected_psnr_db: 24.8
+        provenance:
+          dataset_id: "allen_brain_2p_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_two_photon_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2026-01-15"
+          notes: "Deep tissue two-photon, ~50 photons/pixel, PnP denoising"
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "care_restore_2d"
+        recoverability: 0.88
+        expected_psnr_db: 31.2
+        provenance:
+          dataset_id: "allen_brain_2p_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_two_photon_v1.0"
+          solver_version: "pwm_core.recon.care_unet@0.1.0"
+          date_generated: "2026-01-15"
+          notes: "CARE U-Net trained on matched two-photon pairs, standard dose"
+
+  # ===================================================================
+  # 46. STED Microscopy
+  # ===================================================================
+  sted:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "richardson_lucy"
+        recoverability: 0.78
+        expected_psnr_db: 26.8
+        provenance:
+          dataset_id: "sted_atto647n_tubulin_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_sted_v1.0"
+          solver_version: "pwm_core.recon.richardson_lucy@0.1.0"
+          date_generated: "2026-01-15"
+          notes: "RL deconvolution with measured STED PSF, tubulin labeled with Atto647N"
+      - cr: 1.0
+        noise: "photon_starved"
+        solver: "pnp_drunet"
+        recoverability: 0.68
+        expected_psnr_db: 23.5
+        provenance:
+          dataset_id: "sted_atto647n_tubulin_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_sted_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2026-01-15"
+          notes: "Low photon count STED, ~30 photons/pixel, PnP denoising"
+
+  # ===================================================================
+  # 47. PALM/STORM Single-Molecule Localization
+  # ===================================================================
+  palm_storm:
+    signal_prior_class: "deep_prior"
+    entries:
+      - cr: 0.001
+        noise: "shot_limited"
+        solver: "thunderstorm"
+        recoverability: 0.85
+        expected_psnr_db: 32.5
+        provenance:
+          dataset_id: "smlm_challenge_mt_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_palm_storm_v1.0"
+          solver_version: "pwm_core.recon.smlm_solver@0.1.0"
+          date_generated: "2026-01-15"
+          notes: "ThunderSTORM MLE fitting, ~1000 photons/molecule, microtubule phantom"
+      - cr: 0.001
+        noise: "photon_starved"
+        solver: "thunderstorm"
+        recoverability: 0.65
+        expected_psnr_db: 26.2
+        provenance:
+          dataset_id: "smlm_challenge_mt_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_palm_storm_v1.0"
+          solver_version: "pwm_core.recon.smlm_solver@0.1.0"
+          date_generated: "2026-01-15"
+          notes: "Low photon budget ~200 photons/molecule, poor localization precision"
+      - cr: 0.001
+        noise: "shot_limited"
+        solver: "decode_deep_smlm"
+        recoverability: 0.92
+        expected_psnr_db: 36.8
+        provenance:
+          dataset_id: "smlm_challenge_mt_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_palm_storm_v1.0"
+          solver_version: "pwm_core.recon.decode@0.1.0"
+          date_generated: "2026-01-15"
+          notes: "DECODE deep learning SMLM, Speiser et al. Nat Methods 2021, handles high density"
+
+  # ===================================================================
+  # 48. TIRF Microscopy
+  # ===================================================================
+  tirf:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "richardson_lucy"
+        recoverability: 0.84
+        expected_psnr_db: 29.1
+        provenance:
+          dataset_id: "tirf_membrane_dynamics_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_tirf_v1.0"
+          solver_version: "pwm_core.recon.richardson_lucy@0.1.0"
+          date_generated: "2026-01-15"
+          notes: "RL deconvolution, TIRF PSF, cell membrane adhesion dynamics"
+      - cr: 1.0
+        noise: "photon_starved"
+        solver: "pnp_drunet"
+        recoverability: 0.75
+        expected_psnr_db: 26.3
+        provenance:
+          dataset_id: "tirf_membrane_dynamics_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_tirf_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2026-01-15"
+          notes: "Fast TIRF acquisition, reduced exposure for live-cell imaging"
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "care_restore_2d"
+        recoverability: 0.90
+        expected_psnr_db: 32.5
+        provenance:
+          dataset_id: "tirf_membrane_dynamics_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_tirf_v1.0"
+          solver_version: "pwm_core.recon.care_unet@0.1.0"
+          date_generated: "2026-01-15"
+          notes: "CARE U-Net trained on matched TIRF pairs, surface-selective imaging"
+
+  # ===================================================================
+  # 49. Polarization Microscopy
+  # ===================================================================
+  polarization:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "pnp_hqs"
+        recoverability: 0.82
+        expected_psnr_db: 28.8
+        provenance:
+          dataset_id: "polscope_collagen_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_polarization_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2026-01-15"
+          notes: "PnP-HQS for birefringence estimation, collagen fiber orientation"
+      - cr: 1.0
+        noise: "read_limited"
+        solver: "pnp_hqs"
+        recoverability: 0.74
+        expected_psnr_db: 25.6
+        provenance:
+          dataset_id: "polscope_collagen_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_polarization_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2026-01-15"
+          notes: "Read noise dominated, low birefringence samples"
+
+  # ===================================================================
+  # 50. Endoscopy
+  # ===================================================================
+  endoscopy:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "tv_fista"
+        recoverability: 0.78
+        expected_psnr_db: 26.5
+        provenance:
+          dataset_id: "endoscopy_gi_polyp_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_endoscopy_v1.0"
+          solver_version: "pwm_core.recon.tv_fista@0.1.0"
+          date_generated: "2026-02-10"
+          notes: "TV-FISTA denoising on white-light endoscopy, polyp detection dataset"
+      - cr: 1.0
+        noise: "photon_starved"
+        solver: "pnp_drunet"
+        recoverability: 0.70
+        expected_psnr_db: 23.2
+        provenance:
+          dataset_id: "endoscopy_gi_polyp_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_endoscopy_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2026-02-10"
+          notes: "Low-light narrow-band imaging mode, PnP-DRUNet denoiser"
+
+  # ===================================================================
+  # 51. Fundus Camera
+  # ===================================================================
+  fundus:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "richardson_lucy"
+        recoverability: 0.83
+        expected_psnr_db: 28.1
+        provenance:
+          dataset_id: "drive_retinal_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_fundus_v1.0"
+          solver_version: "pwm_core.recon.richardson_lucy@0.1.0"
+          date_generated: "2026-02-10"
+          notes: "RL deconvolution of retinal PSF, DRIVE vessel segmentation benchmark"
+      - cr: 1.0
+        noise: "read_limited"
+        solver: "pnp_drunet"
+        recoverability: 0.86
+        expected_psnr_db: 30.5
+        provenance:
+          dataset_id: "drive_retinal_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_fundus_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2026-02-10"
+          notes: "PnP-DRUNet fundus enhancement, non-mydriatic camera with read noise"
+
+  # ===================================================================
+  # 52. OCT Angiography
+  # ===================================================================
+  octa:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "tv_fista"
+        recoverability: 0.80
+        expected_psnr_db: 27.8
+        provenance:
+          dataset_id: "octa_retinal_vessel_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_octa_v1.0"
+          solver_version: "pwm_core.recon.tv_fista@0.1.0"
+          date_generated: "2026-02-10"
+          notes: "TV denoising of decorrelation maps, 4 repeat B-scans"
+      - cr: 1.0
+        noise: "photon_starved"
+        solver: "pnp_drunet"
+        recoverability: 0.72
+        expected_psnr_db: 24.5
+        provenance:
+          dataset_id: "octa_retinal_vessel_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_octa_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2026-02-10"
+          notes: "Deep retinal layer OCTA, low signal, PnP denoising"
+
+  # ===================================================================
+  # 53. Time-of-Flight Camera
+  # ===================================================================
+  tof_camera:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "tv_fista"
+        recoverability: 0.82
+        expected_psnr_db: 28.5
+        provenance:
+          dataset_id: "tof_indoor_depth_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_tof_v1.0"
+          solver_version: "pwm_core.recon.tv_fista@0.1.0"
+          date_generated: "2026-02-10"
+          notes: "TV-regularized depth estimation from SPAD histograms, indoor scene"
+      - cr: 1.0
+        noise: "photon_starved"
+        solver: "pnp_drunet"
+        recoverability: 0.68
+        expected_psnr_db: 23.8
+        provenance:
+          dataset_id: "tof_indoor_depth_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_tof_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2026-02-10"
+          notes: "Long-range low-photon ToF, PnP-DRUNet depth denoising"
+
+  # ===================================================================
+  # 54. LiDAR
+  # ===================================================================
+  lidar:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 0.50
+        noise: "shot_limited"
+        solver: "tv_fista"
+        recoverability: 0.79
+        expected_psnr_db: 27.2
+        provenance:
+          dataset_id: "lidar_outdoor_urban_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_lidar_v1.0"
+          solver_version: "pwm_core.recon.tv_fista@0.1.0"
+          date_generated: "2026-02-10"
+          notes: "Sparse LiDAR point cloud densification, urban driving dataset"
+      - cr: 0.50
+        noise: "photon_starved"
+        solver: "pnp_drunet"
+        recoverability: 0.65
+        expected_psnr_db: 22.8
+        provenance:
+          dataset_id: "lidar_outdoor_urban_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_lidar_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2026-02-10"
+          notes: "Long-range sparse LiDAR, few photon returns per pixel"
+
+  # ===================================================================
+  # 55. Structured Light
+  # ===================================================================
+  structured_light:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "phase_unwrap"
+        recoverability: 0.88
+        expected_psnr_db: 32.1
+        provenance:
+          dataset_id: "structured_light_face_scan_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_structured_light_v1.0"
+          solver_version: "pwm_core.recon.phase_unwrap@0.1.0"
+          date_generated: "2026-02-10"
+          notes: "4-step phase shifting with temporal unwrapping, face scanning"
+      - cr: 1.0
+        noise: "read_limited"
+        solver: "pnp_drunet"
+        recoverability: 0.80
+        expected_psnr_db: 28.4
+        provenance:
+          dataset_id: "structured_light_face_scan_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_structured_light_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2026-02-10"
+          notes: "Dark surface scanning, read noise dominant, PnP denoising"
+
+  # ===================================================================
+  # 56. SAR (R7)
+  # ===================================================================
+  sar:
+    signal_prior_class: "wavelet_sparse"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "backprojection"
+        recoverability: 0.85
+        expected_psnr_db: 30.5
+        provenance:
+          dataset_id: "sar_alos2_terrain_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_sar_v1.0"
+          solver_version: "pwm_core.recon.sar_bp@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "Time-domain backprojection, X-band SAR, terrain scene"
+      - cr: 0.50
+        noise: "shot_limited"
+        solver: "sparse_recon"
+        recoverability: 0.78
+        expected_psnr_db: 27.2
+        provenance:
+          dataset_id: "sar_alos2_terrain_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_sar_v1.0"
+          solver_version: "pwm_core.recon.sparse@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "Sparse SAR with 50% azimuth samples, TV regularization"
+
+  # ===================================================================
+  # 57. Sonar (R7)
+  # ===================================================================
+  sonar:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "beamform_das"
+        recoverability: 0.82
+        expected_psnr_db: 28.3
+        provenance:
+          dataset_id: "sonar_seafloor_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_sonar_v1.0"
+          solver_version: "pwm_core.recon.beamform@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "Delay-and-sum beamforming, 200 kHz side-scan sonar"
+      - cr: 1.0
+        noise: "read_limited"
+        solver: "capon_beamform"
+        recoverability: 0.75
+        expected_psnr_db: 25.8
+        provenance:
+          dataset_id: "sonar_seafloor_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_sonar_v1.0"
+          solver_version: "pwm_core.recon.capon@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "Capon (MVDR) beamforming in noisy conditions"
+
+  # ===================================================================
+  # 58. Electron Diffraction (R8)
+  # ===================================================================
+  electron_diffraction:
+    signal_prior_class: "deep_prior"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "ptychography_epie"
+        recoverability: 0.88
+        expected_psnr_db: 32.5
+        provenance:
+          dataset_id: "4dstem_srtio3_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_electron_diffraction_v1.0"
+          solver_version: "pwm_core.recon.epie@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "ePIE ptychographic reconstruction, SrTiO3 crystal"
+      - cr: 0.50
+        noise: "shot_limited"
+        solver: "dpc"
+        recoverability: 0.80
+        expected_psnr_db: 28.7
+        provenance:
+          dataset_id: "4dstem_srtio3_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_electron_diffraction_v1.0"
+          solver_version: "pwm_core.recon.dpc@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "Differential phase contrast, 50% scan positions"
+
+  # ===================================================================
+  # 59. EBSD (R8)
+  # ===================================================================
+  ebsd:
+    signal_prior_class: "deep_prior"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "hough_indexing"
+        recoverability: 0.85
+        expected_psnr_db: 30.0
+        provenance:
+          dataset_id: "ebsd_steel_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_ebsd_v1.0"
+          solver_version: "pwm_core.recon.hough@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "Hough transform indexing, dual-phase steel"
+      - cr: 1.0
+        noise: "read_limited"
+        solver: "dictionary_indexing"
+        recoverability: 0.90
+        expected_psnr_db: 33.5
+        provenance:
+          dataset_id: "ebsd_steel_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_ebsd_v1.0"
+          solver_version: "pwm_core.recon.dict_index@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "Dictionary-based indexing with simulated patterns"
+
+  # ===================================================================
+  # 60. EELS (R8)
+  # ===================================================================
+  eels:
+    signal_prior_class: "wavelet_sparse"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "fourier_ratio"
+        recoverability: 0.83
+        expected_psnr_db: 29.5
+        provenance:
+          dataset_id: "eels_graphene_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_eels_v1.0"
+          solver_version: "pwm_core.recon.fourier_ratio@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "Fourier-ratio deconvolution, graphene plasmon edge"
+      - cr: 1.0
+        noise: "read_limited"
+        solver: "maximum_entropy"
+        recoverability: 0.78
+        expected_psnr_db: 27.1
+        provenance:
+          dataset_id: "eels_graphene_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_eels_v1.0"
+          solver_version: "pwm_core.recon.maxent@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "Maximum entropy deconvolution, noisy core-loss spectrum"
+
+  # ===================================================================
+  # 61. Electron Holography (R8)
+  # ===================================================================
+  electron_holography:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "fourier_sideband"
+        recoverability: 0.90
+        expected_psnr_db: 35.2
+        provenance:
+          dataset_id: "eholography_fept_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_electron_holography_v1.0"
+          solver_version: "pwm_core.recon.fourier_sideband@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "Fourier sideband filtering, FePt nanoparticle phase retrieval"
+      - cr: 1.0
+        noise: "read_limited"
+        solver: "fourier_sideband"
+        recoverability: 0.82
+        expected_psnr_db: 30.8
+        provenance:
+          dataset_id: "eholography_fept_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_electron_holography_v1.0"
+          solver_version: "pwm_core.recon.fourier_sideband@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "Low electron dose, noisy hologram, Wiener-filtered sideband"
+
+  # ===================================================================
+  # 62. Neutron Tomography (R9)
+  # ===================================================================
+  neutron_tomo:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "filtered_back_projection"
+        recoverability: 0.84
+        expected_psnr_db: 29.8
+        provenance:
+          dataset_id: "neutron_fuel_cell_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_neutron_tomo_v1.0"
+          solver_version: "pwm_core.recon.fbp@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "FBP reconstruction, PEM fuel cell water distribution"
+      - cr: 0.50
+        noise: "shot_limited"
+        solver: "tv_fista"
+        recoverability: 0.78
+        expected_psnr_db: 27.0
+        provenance:
+          dataset_id: "neutron_fuel_cell_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_neutron_tomo_v1.0"
+          solver_version: "pwm_core.recon.fista_tv@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "Sparse angular sampling, TV-regularized FISTA"
+
+  # ===================================================================
+  # 63. Proton Radiography (R9)
+  # ===================================================================
+  proton_radiography:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "filtered_back_projection"
+        recoverability: 0.82
+        expected_psnr_db: 28.5
+        provenance:
+          dataset_id: "proton_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_proton_radiography_v1.0"
+          solver_version: "pwm_core.recon.fbp@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "FBP with MCS correction, PMMA phantom"
+      - cr: 1.0
+        noise: "read_limited"
+        solver: "tv_fista"
+        recoverability: 0.76
+        expected_psnr_db: 26.2
+        provenance:
+          dataset_id: "proton_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_proton_radiography_v1.0"
+          solver_version: "pwm_core.recon.fista_tv@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "Low statistics, TV-regularized reconstruction"
+
+  # ===================================================================
+  # 64. Muon Tomography (R9)
+  # ===================================================================
+  muon_tomo:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "poca_reconstruction"
+        recoverability: 0.75
+        expected_psnr_db: 24.5
+        provenance:
+          dataset_id: "muon_cargo_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_muon_tomo_v1.0"
+          solver_version: "pwm_core.recon.poca@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "PoCA reconstruction, cargo container with shielded material"
+      - cr: 1.0
+        noise: "read_limited"
+        solver: "mlsd_reconstruction"
+        recoverability: 0.80
+        expected_psnr_db: 27.3
+        provenance:
+          dataset_id: "muon_cargo_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_muon_tomo_v1.0"
+          solver_version: "pwm_core.recon.mlsd@0.1.0"
+          date_generated: "2026-02-11"
+          notes: "Maximum likelihood scattering density, long acquisition time"

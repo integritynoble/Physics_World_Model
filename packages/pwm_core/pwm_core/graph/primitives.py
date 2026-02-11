@@ -1938,6 +1938,718 @@ class ScatterModel(BasePrimitive):
 
 
 # =========================================================================
+# Phase v4+: Extended modality primitives — Element family
+# =========================================================================
+
+
+class ScanTrajectory(BasePrimitive):
+    """Raster/spiral scan pattern sampling.
+
+    Subsamples the input according to a scan pattern (raster, spiral, etc.).
+    """
+
+    primitive_id = "scan_trajectory"
+    _is_linear = True
+    _node_role = "element"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        scan_type = self._params.get("scan_type", "raster")
+        n_points = self._params.get("n_points", 64)
+        dwell_time = self._params.get("dwell_time", 1.0)
+        x = np.asarray(x, dtype=np.float64)
+        total = int(np.prod(x.shape))
+        step = max(1, total // n_points)
+        flat = x.ravel()
+        indices = np.arange(0, total, step)[:n_points]
+        return flat[indices] * dwell_time
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        n_points = self._params.get("n_points", 64)
+        dwell_time = self._params.get("dwell_time", 1.0)
+        x_shape = self._params.get("x_shape", (64, 64))
+        total = int(np.prod(x_shape))
+        step = max(1, total // n_points)
+        indices = np.arange(0, total, step)[:n_points]
+        out = np.zeros(total, dtype=np.float64)
+        out[indices] = np.asarray(y, dtype=np.float64).ravel()[:len(indices)] * dwell_time
+        return out.reshape(x_shape)
+
+
+class TimeOfFlightGate(BasePrimitive):
+    """Time-of-flight binning with optional timing jitter.
+
+    Bins input signal along first axis; applies Gaussian blur for jitter.
+    """
+
+    primitive_id = "tof_gate"
+    _is_linear = True
+    _node_role = "element"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        n_bins = self._params.get("n_bins", 64)
+        bin_width_ns = self._params.get("bin_width_ns", 1.0)
+        timing_jitter_ns = self._params.get("timing_jitter_ns", 0.0)
+        x = np.asarray(x, dtype=np.float64)
+        if x.ndim >= 2:
+            # Bin along first axis
+            H = x.shape[0]
+            bin_size = max(1, H // n_bins)
+            n_out = min(n_bins, H)
+            out = np.zeros((n_out,) + x.shape[1:], dtype=np.float64)
+            for i in range(n_out):
+                start = i * bin_size
+                end = min(start + bin_size, H)
+                out[i] = np.sum(x[start:end], axis=0) * bin_width_ns
+            result = out
+        else:
+            result = x * bin_width_ns
+        if timing_jitter_ns > 0:
+            result = ndimage.gaussian_filter1d(result, sigma=timing_jitter_ns, axis=0)
+        return result
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        bin_width_ns = self._params.get("bin_width_ns", 1.0)
+        return np.asarray(y, dtype=np.float64) * bin_width_ns
+
+
+class CollimatorModel(BasePrimitive):
+    """Acceptance cone filtering (collimator geometry).
+
+    Applies Gaussian blur with sigma proportional to hole_diameter / collimator_length.
+    """
+
+    primitive_id = "collimator_model"
+    _is_linear = True
+    _node_role = "element"
+    _physics_tier = "tier1_wave"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        hole_diameter = self._params.get("hole_diameter", 1.5)
+        septal_thickness = self._params.get("septal_thickness", 0.2)
+        collimator_length = self._params.get("collimator_length", 25.0)
+        sigma = hole_diameter / max(collimator_length, 1e-12)
+        return ndimage.gaussian_filter(
+            np.asarray(x, dtype=np.float64), sigma=sigma, mode="reflect"
+        )
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        hole_diameter = self._params.get("hole_diameter", 1.5)
+        collimator_length = self._params.get("collimator_length", 25.0)
+        sigma = hole_diameter / max(collimator_length, 1e-12)
+        return ndimage.gaussian_filter(
+            np.asarray(y, dtype=np.float64), sigma=sigma, mode="reflect"
+        )
+
+
+class FluoroTemporalIntegrator(BasePrimitive):
+    """Motion blur + frame integration for fluoroscopy.
+
+    If 3D (T,H,W), sums along T axis; if 2D, applies Gaussian blur
+    with motion_sigma.
+    """
+
+    primitive_id = "fluoro_temporal_integrator"
+    _is_linear = True
+    _node_role = "element"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        n_frames = self._params.get("n_frames", 8)
+        motion_sigma = self._params.get("motion_sigma", 0.0)
+        x = np.asarray(x, dtype=np.float64)
+        if x.ndim == 3:
+            return np.sum(x, axis=0)
+        if motion_sigma > 0:
+            return ndimage.gaussian_filter(x, sigma=motion_sigma, mode="reflect")
+        return x.copy()
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        n_frames = self._params.get("n_frames", 8)
+        y = np.asarray(y, dtype=np.float64)
+        return np.stack([y] * n_frames, axis=0)
+
+
+class FluorescenceKinetics(BasePrimitive):
+    """Fluorescence lifetime/blinking model.
+
+    Forward: x * exp(-t/lifetime). If blinking_rate > 0, multiplies by
+    random on/off mask. Non-linear due to exponential and stochastic blinking.
+    """
+
+    primitive_id = "fluorescence_kinetics"
+    _is_linear = False
+    _node_role = "element"
+    _physics_tier = "tier1_wave"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        lifetime_ns = self._params.get("lifetime_ns", 3.0)
+        blinking_rate = self._params.get("blinking_rate", 0.0)
+        saturation_intensity = self._params.get("saturation_intensity", float("inf"))
+        x = np.asarray(x, dtype=np.float64)
+        t = 1.0  # simplified single time point
+        decay = np.exp(-t / max(lifetime_ns, 1e-12))
+        result = x * decay
+        if blinking_rate > 0:
+            seed = self._params.get("seed", 0)
+            rng = np.random.default_rng(seed)
+            mask = (rng.random(x.shape) > blinking_rate).astype(np.float64)
+            result = result * mask
+        if np.isfinite(saturation_intensity):
+            result = result * saturation_intensity / (np.abs(result) + saturation_intensity)
+        return result
+
+
+class NonlinearExcitation(BasePrimitive):
+    """Multi-photon excitation: intensity^n.
+
+    Forward: |x|^n_photons. Non-linear.
+    """
+
+    primitive_id = "nonlinear_excitation"
+    _is_linear = False
+    _node_role = "element"
+    _physics_tier = "tier1_wave"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        n_photons = self._params.get("n_photons", 2)
+        return np.power(np.abs(np.asarray(x, dtype=np.float64)), n_photons)
+
+
+class SaturationDepletion(BasePrimitive):
+    """STED-style depletion with donut PSF approximation.
+
+    Forward: x * (1 - depletion_factor * (1 - exp(-r^2 / (2*sigma^2)))).
+    Non-linear.
+    """
+
+    primitive_id = "saturation_depletion"
+    _is_linear = False
+    _node_role = "element"
+    _physics_tier = "tier1_wave"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        depletion_factor = self._params.get("depletion_factor", 0.5)
+        psf_sigma = self._params.get("psf_sigma", 1.0)
+        x = np.asarray(x, dtype=np.float64)
+        H, W = x.shape[-2], x.shape[-1]
+        cy, cx = H / 2.0, W / 2.0
+        yy, xx = np.mgrid[0:H, 0:W]
+        r2 = (yy - cy) ** 2 + (xx - cx) ** 2
+        donut = 1.0 - np.exp(-r2 / (2.0 * psf_sigma ** 2))
+        if x.ndim > 2:
+            donut = donut.reshape((1,) * (x.ndim - 2) + (H, W))
+        return x * (1.0 - depletion_factor * donut)
+
+
+class BlinkingEmitterModel(BasePrimitive):
+    """PALM/STORM single-molecule blinking emitter model.
+
+    Generates sparse point emitters from input (threshold above mean).
+    Stochastic and non-linear.
+    """
+
+    primitive_id = "blinking_emitter"
+    _is_linear = False
+    _is_stochastic = True
+    _node_role = "element"
+    _physics_tier = "tier1_wave"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        density = self._params.get("density", 0.1)
+        photons_per_emitter = self._params.get("photons_per_emitter", 1000)
+        seed = self._params.get("seed", 0)
+        x = np.asarray(x, dtype=np.float64)
+        rng = np.random.default_rng(seed)
+        threshold = np.mean(x)
+        emitter_mask = (x > threshold).astype(np.float64)
+        active = (rng.random(x.shape) < density).astype(np.float64)
+        return emitter_mask * active * photons_per_emitter
+
+
+class EvanescentFieldDecay(BasePrimitive):
+    """TIRF exponential evanescent field decay.
+
+    If 3D (Z,H,W), weights each z-slice by exp(-z / penetration_depth).
+    If 2D, passthrough.
+    """
+
+    primitive_id = "evanescent_decay"
+    _is_linear = True
+    _node_role = "element"
+    _physics_tier = "tier1_wave"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        penetration_depth = self._params.get("penetration_depth", 100.0)
+        x = np.asarray(x, dtype=np.float64)
+        if x.ndim == 3:
+            Z = x.shape[0]
+            weights = np.exp(-np.arange(Z, dtype=np.float64) / max(penetration_depth, 1e-12))
+            return x * weights[:, np.newaxis, np.newaxis]
+        return x.copy()
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        penetration_depth = self._params.get("penetration_depth", 100.0)
+        y = np.asarray(y, dtype=np.float64)
+        if y.ndim == 3:
+            Z = y.shape[0]
+            weights = np.exp(-np.arange(Z, dtype=np.float64) / max(penetration_depth, 1e-12))
+            return y * weights[:, np.newaxis, np.newaxis]
+        return y.copy()
+
+
+class DopplerEstimator(BasePrimitive):
+    """Velocity estimation from slow-time Doppler samples.
+
+    If 3D (ensemble,H,W), computes mean phase difference between consecutive
+    frames. If 2D, returns zeros. Non-linear.
+    """
+
+    primitive_id = "doppler_estimator"
+    _is_linear = False
+    _node_role = "element"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        prf = self._params.get("prf", 1000.0)
+        n_ensembles = self._params.get("n_ensembles", 8)
+        x = np.asarray(x, dtype=np.float64)
+        if x.ndim == 3 and x.shape[0] >= 2:
+            # Phase difference between consecutive frames
+            diffs = np.diff(x, axis=0)
+            return np.mean(diffs, axis=0)
+        return np.zeros(x.shape[-2:] if x.ndim >= 2 else x.shape, dtype=np.float64)
+
+
+class ElasticWaveModel(BasePrimitive):
+    """Shear wave propagation for elastography.
+
+    Scales input by wave_speed factor (simplified real-valued model).
+    """
+
+    primitive_id = "elastic_wave_model"
+    _is_linear = True
+    _node_role = "element"
+    _physics_tier = "tier1_wave"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        wave_speed = self._params.get("wave_speed", 1.5)
+        frequency = self._params.get("frequency", 100.0)
+        x = np.asarray(x, dtype=np.float64)
+        return x * wave_speed
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        wave_speed = self._params.get("wave_speed", 1.5)
+        return np.asarray(y, dtype=np.float64) * wave_speed
+
+
+class DualEnergyBeerLambert(BasePrimitive):
+    """Dual-energy Beer-Lambert attenuation for DEXA.
+
+    Forward: stacks [I_0_low * exp(-mu_low * x), I_0_high * exp(-mu_high * x)]
+    along new first axis. Non-linear.
+    """
+
+    primitive_id = "dual_energy_beer_lambert"
+    _is_linear = False
+    _node_role = "element"
+    _physics_tier = "tier1_wave"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        I_0_low = self._params.get("I_0_low", 1000.0)
+        I_0_high = self._params.get("I_0_high", 1000.0)
+        mu_low = self._params.get("mu_low", 0.2)
+        mu_high = self._params.get("mu_high", 0.1)
+        x = np.asarray(x, dtype=np.float64)
+        low = I_0_low * np.exp(-mu_low * x)
+        high = I_0_high * np.exp(-mu_high * x)
+        return np.stack([low, high], axis=0)
+
+
+class DepthOptics(BasePrimitive):
+    """Thin lens + distortion model for depth-dependent blur.
+
+    Simplified: Gaussian blur with sigma proportional to aperture.
+    Non-linear due to depth-dependent CoC.
+    """
+
+    primitive_id = "depth_optics"
+    _is_linear = False
+    _node_role = "element"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        focal_length = self._params.get("focal_length", 50.0)
+        aperture = self._params.get("aperture", 2.8)
+        x = np.asarray(x, dtype=np.float64)
+        sigma = aperture / max(focal_length, 1e-12)
+        return ndimage.gaussian_filter(x, sigma=sigma, mode="reflect")
+
+
+class DiffractionCamera(BasePrimitive):
+    """Far-field diffraction: |FFT(x)|^2 + optional detector PSF.
+
+    Non-linear due to squared magnitude.
+    """
+
+    primitive_id = "diffraction_camera"
+    _is_linear = False
+    _node_role = "element"
+    _physics_tier = "tier1_wave"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        detector_psf_sigma = self._params.get("detector_psf_sigma", 0.0)
+        x = np.asarray(x, dtype=np.complex128)
+        y = np.abs(np.fft.fftshift(np.fft.fft2(x))) ** 2
+        if detector_psf_sigma > 0:
+            y = ndimage.gaussian_filter(y.astype(np.float64), sigma=detector_psf_sigma)
+        return y.astype(np.float64)
+
+
+class SARBackprojection(BasePrimitive):
+    """SAR time-domain backprojection (Radon-like projection).
+
+    Forward: Radon-like projection. Adjoint: back-projection.
+    """
+
+    primitive_id = "sar_backprojection"
+    _is_linear = True
+    _node_role = "element"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        n_pulses = self._params.get("n_pulses", 64)
+        swath_width = self._params.get("swath_width", 100.0)
+        x = np.asarray(x, dtype=np.float64)
+        if x.ndim < 2:
+            return x.copy()
+        H, W = x.shape[-2], x.shape[-1]
+        angles = np.linspace(0, 180, n_pulses, endpoint=False)
+        sino = np.zeros((n_pulses, W), dtype=np.float64)
+        for i, angle in enumerate(angles):
+            rotated = ndimage.rotate(x, angle, reshape=False, mode="constant", order=1)
+            sino[i, :] = rotated.sum(axis=0)
+        return sino
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        n_pulses = self._params.get("n_pulses", 64)
+        x_shape = self._params.get("x_shape", (64, 64))
+        H, W = x_shape[-2], x_shape[-1]
+        angles = np.linspace(0, 180, n_pulses, endpoint=False)
+        y2d = np.asarray(y, dtype=np.float64).reshape(n_pulses, -1)
+        bp = np.zeros((H, W), dtype=np.float64)
+        for i, angle in enumerate(angles):
+            proj = y2d[i, :W]
+            smeared = np.tile(proj, (H, 1))
+            bp += ndimage.rotate(smeared, -angle, reshape=False, mode="constant", order=1)
+        return bp
+
+
+class ParticleAttenuation(BasePrimitive):
+    """Beer-Lambert attenuation for particles.
+
+    Forward: I_0 * exp(-cross_section * x). Non-linear.
+    """
+
+    primitive_id = "particle_attenuation"
+    _is_linear = False
+    _node_role = "element"
+    _physics_tier = "tier1_wave"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        I_0 = self._params.get("I_0", 1000.0)
+        cross_section = self._params.get("cross_section", 0.1)
+        x = np.asarray(x, dtype=np.float64)
+        return I_0 * np.exp(-cross_section * x)
+
+
+class MultipleScatteringKernel(BasePrimitive):
+    """Multiple scattering blur kernel.
+
+    Forward: Gaussian blur with given sigma. Self-adjoint.
+    """
+
+    primitive_id = "multiple_scattering"
+    _is_linear = True
+    _node_role = "element"
+    _physics_tier = "tier1_wave"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        sigma = self._params.get("sigma", 2.0)
+        return ndimage.gaussian_filter(
+            np.asarray(x, dtype=np.float64), sigma=sigma, mode="reflect"
+        )
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        sigma = self._params.get("sigma", 2.0)
+        return ndimage.gaussian_filter(
+            np.asarray(y, dtype=np.float64), sigma=sigma, mode="reflect"
+        )
+
+
+class VesselFlowContrast(BasePrimitive):
+    """OCTA-style vessel flow decorrelation contrast.
+
+    If 3D (T,H,W), computes variance along T axis. If 2D, passthrough.
+    Non-linear.
+    """
+
+    primitive_id = "vessel_flow_contrast"
+    _is_linear = False
+    _node_role = "element"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        n_frames = self._params.get("n_frames", 4)
+        threshold = self._params.get("threshold", 0.1)
+        x = np.asarray(x, dtype=np.float64)
+        if x.ndim == 3:
+            return np.var(x, axis=0)
+        return x.copy()
+
+
+class SpecularReflectionModel(BasePrimitive):
+    """Endoscopy specular highlights (simplified Phong model).
+
+    Forward: x + specular_strength * |x|^(1/roughness). Non-linear.
+    """
+
+    primitive_id = "specular_reflection"
+    _is_linear = False
+    _node_role = "element"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        specular_strength = self._params.get("specular_strength", 0.1)
+        roughness = self._params.get("roughness", 0.5)
+        x = np.asarray(x, dtype=np.float64)
+        exponent = 1.0 / max(roughness, 1e-12)
+        return x + specular_strength * np.power(np.abs(x), exponent)
+
+
+class StructuredLightProjector(BasePrimitive):
+    """Pattern projection for structured-light depth sensing.
+
+    Multiplies input by sinusoidal fringe pattern.
+    """
+
+    primitive_id = "structured_light_projector"
+    _is_linear = True
+    _node_role = "element"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        n_patterns = self._params.get("n_patterns", 4)
+        fringe_freq = self._params.get("fringe_freq", 8.0)
+        x = np.asarray(x, dtype=np.float64)
+        H, W = x.shape[-2], x.shape[-1]
+        xx = np.arange(W, dtype=np.float64)
+        pattern = 0.5 + 0.5 * np.cos(2.0 * np.pi * fringe_freq * xx / W)
+        if x.ndim == 2:
+            return x * pattern[np.newaxis, :]
+        return x * pattern.reshape((1,) * (x.ndim - 1) + (W,))
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        fringe_freq = self._params.get("fringe_freq", 8.0)
+        y = np.asarray(y, dtype=np.float64)
+        W = y.shape[-1]
+        xx = np.arange(W, dtype=np.float64)
+        pattern = 0.5 + 0.5 * np.cos(2.0 * np.pi * fringe_freq * xx / W)
+        if y.ndim == 2:
+            return y * pattern[np.newaxis, :]
+        return y * pattern.reshape((1,) * (y.ndim - 1) + (W,))
+
+
+class SequenceBlock(BasePrimitive):
+    """MRI sequence parameterization (TE/TR weighting).
+
+    Simplified: scales by exp(-TE/T2star) where T2star is derived from TR.
+    """
+
+    primitive_id = "sequence_block"
+    _is_linear = True
+    _node_role = "element"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        sequence_type = self._params.get("sequence_type", "epi")
+        TE_ms = self._params.get("TE_ms", 30.0)
+        TR_ms = self._params.get("TR_ms", 2000.0)
+        x = np.asarray(x, dtype=np.float64)
+        # Simplified T2* weighting: T2star ~ TR / 50
+        T2star = max(TR_ms / 50.0, 1e-6)
+        weight = np.exp(-TE_ms / T2star)
+        return x * weight
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        TE_ms = self._params.get("TE_ms", 30.0)
+        TR_ms = self._params.get("TR_ms", 2000.0)
+        T2star = max(TR_ms / 50.0, 1e-6)
+        weight = np.exp(-TE_ms / T2star)
+        return np.asarray(y, dtype=np.float64) * weight
+
+
+class PhysiologyDrift(BasePrimitive):
+    """Low-rank temporal drift for fMRI / long scans.
+
+    If 3D (T,H,W), adds sinusoidal drift along T axis. If 2D, passthrough.
+    """
+
+    primitive_id = "physiology_drift"
+    _is_linear = True
+    _node_role = "element"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        drift_amplitude = self._params.get("drift_amplitude", 0.01)
+        n_components = self._params.get("n_components", 3)
+        x = np.asarray(x, dtype=np.float64)
+        if x.ndim == 3:
+            T = x.shape[0]
+            t = np.arange(T, dtype=np.float64)
+            drift = np.zeros(T, dtype=np.float64)
+            for k in range(1, n_components + 1):
+                drift += np.sin(2.0 * np.pi * k * t / max(T, 1)) / k
+            drift = drift_amplitude * drift / max(np.max(np.abs(drift)), 1e-12)
+            return x + drift[:, np.newaxis, np.newaxis]
+        return x.copy()
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        # Drift is additive constant; adjoint is identity
+        return np.asarray(y, dtype=np.float64).copy()
+
+
+class ReciprocalSpaceGeometry(BasePrimitive):
+    """EBSD/diffraction reciprocal-space geometric distortion.
+
+    Applies tilt-dependent scaling via affine_transform. Non-linear.
+    """
+
+    primitive_id = "reciprocal_space_geometry"
+    _is_linear = False
+    _node_role = "element"
+    _physics_tier = "tier1_wave"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        sample_tilt_deg = self._params.get("sample_tilt_deg", 70.0)
+        detector_distance = self._params.get("detector_distance", 15.0)
+        x = np.asarray(x, dtype=np.float64)
+        tilt_rad = np.deg2rad(sample_tilt_deg)
+        scale_y = np.cos(tilt_rad)
+        # Apply affine scaling (stretch along y)
+        if x.ndim >= 2:
+            matrix = np.array([[1.0 / max(scale_y, 0.01), 0], [0, 1.0]])
+            offset = np.array([x.shape[-2] * (1 - 1.0 / max(scale_y, 0.01)) / 2.0, 0])
+            return ndimage.affine_transform(
+                x, matrix, offset=offset, order=1, mode="constant"
+            )
+        return x.copy()
+
+
+# =========================================================================
+# Phase v4+: Extended modality primitives — Sensor family
+# =========================================================================
+
+
+class SPADToFSensor(BasePrimitive):
+    """SPAD time-of-flight histogram sensor.
+
+    Forward: x * qe (simplified time-binned detection).
+    """
+
+    primitive_id = "spad_tof_sensor"
+    _is_linear = True
+    _node_role = "sensor"
+    _carrier_type = "photon"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        n_bins = self._params.get("n_bins", 64)
+        dead_time_ns = self._params.get("dead_time_ns", 50.0)
+        qe = self._params.get("qe", 0.3)
+        return np.asarray(x, dtype=np.float64) * qe
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        qe = self._params.get("qe", 0.3)
+        return np.asarray(y, dtype=np.float64) * qe
+
+
+class EnergyResolvingDetector(BasePrimitive):
+    """Energy-resolving detector for EELS.
+
+    Forward: x * qe.
+    """
+
+    primitive_id = "energy_resolving_detector"
+    _is_linear = True
+    _node_role = "sensor"
+    _carrier_type = "electron"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        n_channels = self._params.get("n_channels", 256)
+        energy_range_ev = self._params.get("energy_range_ev", [0, 2000])
+        qe = self._params.get("qe", 0.8)
+        return np.asarray(x, dtype=np.float64) * qe
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        qe = self._params.get("qe", 0.8)
+        return np.asarray(y, dtype=np.float64) * qe
+
+
+class FiberBundleSensor(BasePrimitive):
+    """Endoscope fiber bundle sensor.
+
+    Subsamples input at random core positions and multiplies by
+    coupling_efficiency. Non-linear due to random subsampling.
+    """
+
+    primitive_id = "fiber_bundle_sensor"
+    _is_linear = False
+    _node_role = "sensor"
+    _carrier_type = "photon"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        n_cores = self._params.get("n_cores", 10000)
+        core_pitch = self._params.get("core_pitch", 10.0)
+        coupling_efficiency = self._params.get("coupling_efficiency", 0.3)
+        seed = self._params.get("seed", 0)
+        x = np.asarray(x, dtype=np.float64)
+        rng = np.random.default_rng(seed)
+        H, W = x.shape[-2], x.shape[-1]
+        n_sample = min(n_cores, H * W)
+        indices = rng.choice(H * W, size=n_sample, replace=False)
+        flat = x.ravel()[:H * W]
+        sampled = flat[indices] * coupling_efficiency
+        # Return as 1D sampled vector
+        return sampled
+
+
+class TrackDetectorSensor(BasePrimitive):
+    """Muon/particle track detector.
+
+    Forward: x * efficiency.
+    """
+
+    primitive_id = "track_detector_sensor"
+    _is_linear = True
+    _node_role = "sensor"
+    _carrier_type = "abstract"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        n_layers = self._params.get("n_layers", 8)
+        efficiency = self._params.get("efficiency", 0.95)
+        return np.asarray(x, dtype=np.float64) * efficiency
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        efficiency = self._params.get("efficiency", 0.95)
+        return np.asarray(y, dtype=np.float64) * efficiency
+
+
+# =========================================================================
 # Registry
 # =========================================================================
 
@@ -2025,6 +2737,35 @@ _ALL_PRIMITIVES: List[type] = [
     BeamformDelay,
     EmissionProjection,
     ScatterModel,
+    # Phase v4+: Extended modality primitives
+    ScanTrajectory,
+    TimeOfFlightGate,
+    CollimatorModel,
+    FluoroTemporalIntegrator,
+    FluorescenceKinetics,
+    NonlinearExcitation,
+    SaturationDepletion,
+    BlinkingEmitterModel,
+    EvanescentFieldDecay,
+    DopplerEstimator,
+    ElasticWaveModel,
+    DualEnergyBeerLambert,
+    DepthOptics,
+    DiffractionCamera,
+    SARBackprojection,
+    ParticleAttenuation,
+    MultipleScatteringKernel,
+    VesselFlowContrast,
+    SpecularReflectionModel,
+    StructuredLightProjector,
+    SequenceBlock,
+    PhysiologyDrift,
+    ReciprocalSpaceGeometry,
+    # Phase v4+: Extended sensors
+    SPADToFSensor,
+    EnergyResolvingDetector,
+    FiberBundleSensor,
+    TrackDetectorSensor,
 ]
 
 PRIMITIVE_REGISTRY: Dict[str, type] = {

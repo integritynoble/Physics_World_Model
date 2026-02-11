@@ -810,3 +810,752 @@ modalities:
         n_photons: 1.0e+03
         scenario: "Sparse LED array"
         read_sigma_fraction: 0.02
+
+  # ===================================================================
+  # X-ray Variants (R1)
+  # ===================================================================
+
+  fluoroscopy:
+    model_id: "xray_tube"
+    parameters:
+      tube_current_photons: 1.0e+06
+      mu: 0.2
+      L: 25.0
+      eta_det: 0.70
+    description: "Real-time fluoroscopy with continuous low-dose X-ray exposure"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+06
+        scenario: "Standard fluoroscopy dose"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+05
+        scenario: "Low-dose fluoroscopy"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+04
+        scenario: "Ultra-low-dose pediatric fluoroscopy"
+        read_sigma_fraction: 0.02
+
+  mammography:
+    model_id: "xray_tube"
+    parameters:
+      tube_current_photons: 5.0e+07
+      mu: 0.6
+      L: 50.0
+      eta_det: 0.85
+    description: "Low-energy mammography with high-resolution detector"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 5.0e+06
+        scenario: "Standard mammography dose"
+        read_sigma_fraction: 0.003
+      standard:
+        n_photons: 1.0e+06
+        scenario: "Low-dose mammography"
+        read_sigma_fraction: 0.005
+      low_light:
+        n_photons: 2.0e+05
+        scenario: "Ultra-low-dose screening"
+        read_sigma_fraction: 0.01
+
+  dexa:
+    model_id: "xray_tube"
+    parameters:
+      tube_current_photons: 1.0e+07
+      mu_low: 0.8
+      mu_high: 0.3
+      eta_det: 0.85
+    description: "Dual-energy X-ray absorptiometry for bone density measurement"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 5.0e+06
+        scenario: "Standard DEXA scan"
+        read_sigma_fraction: 0.003
+      standard:
+        n_photons: 1.0e+06
+        scenario: "Low-dose DEXA"
+        read_sigma_fraction: 0.005
+      low_light:
+        n_photons: 2.0e+05
+        scenario: "Pediatric DEXA"
+        read_sigma_fraction: 0.01
+
+  cbct:
+    model_id: "ct_xray"
+    parameters:
+      tube_current_photons: 5.0e+06
+      mu: 0.2
+      L: 20.0
+      eta_det: 0.80
+    description: "Cone-beam CT with flat-panel detector"
+    noise_model: "poisson"
+    photon_levels:
+      bright:
+        n_photons: 2.0e+06
+        scenario: "Standard dental CBCT"
+        read_sigma_fraction: 0.0
+      standard:
+        n_photons: 5.0e+05
+        scenario: "Low-dose CBCT"
+        read_sigma_fraction: 0.0
+      low_light:
+        n_photons: 1.0e+05
+        scenario: "Ultra-low-dose CBCT"
+        read_sigma_fraction: 0.0
+
+  angiography:
+    model_id: "xray_tube"
+    parameters:
+      tube_current_photons: 5.0e+07
+      mu: 0.2
+      L: 25.0
+      eta_det: 0.80
+    description: "X-ray angiography with iodine contrast enhancement"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 5.0e+06
+        scenario: "Standard DSA dose"
+        read_sigma_fraction: 0.003
+      standard:
+        n_photons: 1.0e+06
+        scenario: "Reduced-dose angiography"
+        read_sigma_fraction: 0.005
+      low_light:
+        n_photons: 2.0e+05
+        scenario: "Low-dose roadmapping"
+        read_sigma_fraction: 0.01
+
+  # ===================================================================
+  # Ultrasound Modes (R2)
+  # ===================================================================
+
+  doppler_ultrasound:
+    model_id: "piezo_transducer"
+    parameters:
+      center_freq_hz: 5.0e+06
+      bandwidth_frac: 0.6
+      n_elements: 128
+      sampling_rate_hz: 40.0e+06
+    description: "Doppler ultrasound for blood flow velocity measurement"
+    noise_model: "gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1000.0
+        snr_proxy: 35.0
+        scenario: "High-SNR shallow Doppler"
+        read_sigma_fraction: 0.0
+        sigma: 0.018
+      standard:
+        n_photons: 100.0
+        snr_proxy: 22.0
+        scenario: "Standard color Doppler"
+        read_sigma_fraction: 0.0
+        sigma: 0.079
+      low_light:
+        n_photons: 10.0
+        snr_proxy: 12.0
+        scenario: "Deep vessel Doppler"
+        read_sigma_fraction: 0.0
+        sigma: 0.251
+
+  elastography:
+    model_id: "piezo_transducer"
+    parameters:
+      center_freq_hz: 5.0e+06
+      bandwidth_frac: 0.6
+      n_elements: 128
+      sampling_rate_hz: 40.0e+06
+    description: "Shear-wave elastography for tissue stiffness measurement"
+    noise_model: "gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1000.0
+        snr_proxy: 35.0
+        scenario: "High-SNR superficial elastography"
+        read_sigma_fraction: 0.0
+        sigma: 0.018
+      standard:
+        n_photons: 100.0
+        snr_proxy: 20.0
+        scenario: "Standard liver elastography"
+        read_sigma_fraction: 0.0
+        sigma: 0.1
+      low_light:
+        n_photons: 10.0
+        snr_proxy: 10.0
+        scenario: "Deep tissue elastography"
+        read_sigma_fraction: 0.0
+        sigma: 0.316
+
+  # ===================================================================
+  # MRI Applications (R3)
+  # ===================================================================
+
+  fmri:
+    model_id: "mri_thermal"
+    parameters:
+      B0: 3.0
+      voxel_mm3: 27.0
+      n_averages: 1
+      bandwidth_hz: 250000
+    description: "Functional MRI with BOLD contrast at 3T"
+    noise_model: "gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1000.0
+        snr_proxy: 25.0
+        scenario: "SNR=25dB, 3mm isotropic voxel"
+        read_sigma_fraction: 0.0
+        sigma: 0.056
+      standard:
+        n_photons: 100.0
+        snr_proxy: 15.0
+        scenario: "SNR=15dB, standard EPI"
+        read_sigma_fraction: 0.0
+        sigma: 0.178
+      low_light:
+        n_photons: 10.0
+        snr_proxy: 8.0
+        scenario: "SNR=8dB, high-resolution fMRI"
+        read_sigma_fraction: 0.0
+        sigma: 0.398
+
+  mrs:
+    model_id: "mri_thermal"
+    parameters:
+      B0: 3.0
+      voxel_mm3: 8000.0
+      n_averages: 128
+      bandwidth_hz: 2000
+    description: "MR spectroscopy with single-voxel localization"
+    noise_model: "gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1000.0
+        snr_proxy: 30.0
+        scenario: "SNR=30dB, 128 averages"
+        read_sigma_fraction: 0.0
+        sigma: 0.033
+      standard:
+        n_photons: 100.0
+        snr_proxy: 18.0
+        scenario: "SNR=18dB, 32 averages"
+        read_sigma_fraction: 0.0
+        sigma: 0.126
+      low_light:
+        n_photons: 10.0
+        snr_proxy: 8.0
+        scenario: "SNR=8dB, single average"
+        read_sigma_fraction: 0.0
+        sigma: 0.398
+
+  diffusion_mri:
+    model_id: "mri_thermal"
+    parameters:
+      B0: 3.0
+      voxel_mm3: 8.0
+      n_averages: 1
+      bandwidth_hz: 250000
+    description: "Diffusion-weighted MRI with EPI readout"
+    noise_model: "gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1000.0
+        snr_proxy: 20.0
+        scenario: "SNR=20dB, b=1000, 2mm isotropic"
+        read_sigma_fraction: 0.0
+        sigma: 0.1
+      standard:
+        n_photons: 100.0
+        snr_proxy: 12.0
+        scenario: "SNR=12dB, standard DTI"
+        read_sigma_fraction: 0.0
+        sigma: 0.251
+      low_light:
+        n_photons: 10.0
+        snr_proxy: 6.0
+        scenario: "SNR=6dB, high b-value"
+        read_sigma_fraction: 0.0
+        sigma: 0.501
+
+  # ===================================================================
+  # Advanced Optical Microscopy (R4)
+  # ===================================================================
+
+  two_photon:
+    model_id: "microscopy_fluorescence"
+    parameters:
+      power_w: 0.02
+      wavelength_nm: 920
+      na: 1.05
+      n_medium: 1.33
+      qe: 0.45
+      exposure_s: 0.001
+    description: "Two-photon multiphoton microscopy with femtosecond pulsed laser"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 5.0e+04
+        scenario: "High power two-photon, slow scan"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 5.0e+03
+        scenario: "Standard two-photon imaging"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 5.0e+02
+        scenario: "Deep tissue two-photon, low signal"
+        read_sigma_fraction: 0.02
+
+  sted:
+    model_id: "microscopy_fluorescence"
+    parameters:
+      power_w: 0.005
+      wavelength_nm: 640
+      na: 1.4
+      n_medium: 1.515
+      qe: 0.45
+      exposure_s: 0.0001
+    description: "STED super-resolution microscopy with depletion beam"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 3.0e+04
+        scenario: "High depletion power STED"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 3.0e+03
+        scenario: "Standard STED imaging"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 3.0e+02
+        scenario: "Low power STED, reduced photobleaching"
+        read_sigma_fraction: 0.03
+
+  palm_storm:
+    model_id: "microscopy_fluorescence"
+    parameters:
+      power_w: 0.05
+      wavelength_nm: 647
+      na: 1.49
+      n_medium: 1.515
+      qe: 0.90
+      exposure_s: 0.03
+    description: "PALM/STORM single-molecule localization microscopy"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 5.0e+03
+        scenario: "Bright emitter, high photon count per molecule"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+03
+        scenario: "Standard SMLM, ~1000 photons per localization"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 2.0e+02
+        scenario: "Weak emitters, poor localization precision"
+        read_sigma_fraction: 0.05
+
+  tirf:
+    model_id: "microscopy_fluorescence"
+    parameters:
+      power_w: 0.02
+      wavelength_nm: 488
+      na: 1.49
+      n_medium: 1.515
+      qe: 0.90
+      exposure_s: 0.05
+    description: "TIRF microscopy with evanescent field excitation"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "High-power TIRF, bright surface signal"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard TIRF imaging"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Low-power TIRF, photosensitive sample"
+        read_sigma_fraction: 0.02
+
+  polarization:
+    model_id: "generic_detector"
+    parameters:
+      source_photons: 1.0e+06
+      qe: 0.85
+      exposure_s: 0.05
+    description: "Polarization microscopy for birefringence and anisotropy imaging"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "Bright polarization imaging, high extinction"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard polarization microscopy"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Low-light polarization, weak birefringence"
+        read_sigma_fraction: 0.02
+
+  # Clinical Optics — R5
+
+  endoscopy:
+    model_id: "clinical_endoscope"
+    parameters:
+      power_w: 0.2
+      wavelength_nm: 550
+      na: 0.3
+      n_medium: 1.0
+      qe: 0.75
+      exposure_s: 0.033
+    description: "Fiber bundle endoscopy with white light illumination"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "High-power illumination, close distance"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard clinical endoscopy"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Low-power, narrow-band imaging mode"
+        read_sigma_fraction: 0.02
+
+  fundus:
+    model_id: "clinical_camera"
+    parameters:
+      power_w: 0.1
+      wavelength_nm: 570
+      na: 0.05
+      n_medium: 1.336
+      qe: 0.80
+      exposure_s: 0.01
+    description: "Fundus camera for retinal imaging through dilated pupil"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "Flash photography, dilated pupil"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard fundus photography"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Non-mydriatic, small pupil"
+        read_sigma_fraction: 0.02
+
+  octa:
+    model_id: "interferometric"
+    parameters:
+      power_w: 0.002
+      wavelength_nm: 840
+      na: 0.05
+      qe: 0.85
+      exposure_s: 0.00005
+    description: "OCT angiography with swept-source and decorrelation contrast"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "High-speed OCTA, large vessels"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard OCTA acquisition"
+        read_sigma_fraction: 0.008
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Deep retinal layer OCTA"
+        read_sigma_fraction: 0.02
+
+  # Depth / ToF Imaging — R6
+
+  tof_camera:
+    model_id: "spad_array"
+    parameters:
+      laser_power_w: 0.5
+      wavelength_nm: 905
+      qe: 0.30
+      bin_width_ns: 1.0
+    description: "Time-of-flight depth camera with SPAD array sensor"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+04
+        scenario: "Close range, high reflectance"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+03
+        scenario: "Indoor depth imaging, 5m range"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+02
+        scenario: "Long range, low reflectance"
+        read_sigma_fraction: 0.03
+
+  lidar:
+    model_id: "spad_scanner"
+    parameters:
+      pulse_energy_j: 1.0e-05
+      wavelength_nm: 905
+      qe: 0.25
+      bin_width_ns: 0.5
+    description: "LiDAR scanning with pulsed laser and SPAD detection"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+04
+        scenario: "Short range, retro-reflective target"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+03
+        scenario: "Outdoor scanning, 50m range"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+02
+        scenario: "Long range (>100m), diffuse target"
+        read_sigma_fraction: 0.03
+
+  structured_light:
+    model_id: "generic_detector"
+    parameters:
+      source_photons: 1.0e+06
+      qe: 0.80
+      exposure_s: 0.01
+    description: "Structured-light depth camera with fringe projection"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "High-power projection, close range"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard structured light scanning"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Dark surface, ambient light interference"
+        read_sigma_fraction: 0.02
+
+  # Radar / Sonar — R7
+
+  sar:
+    model_id: "radar_receiver"
+    parameters:
+      transmit_power_kw: 5.0
+      frequency_ghz: 9.6
+      bandwidth_mhz: 150
+      noise_figure_db: 3.0
+    description: "Synthetic Aperture Radar with coherent detection"
+    noise_model: "gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+06
+        scenario: "Strong backscatter, short range"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Moderate terrain reflectivity"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+02
+        scenario: "Weak scatterer, long range"
+        read_sigma_fraction: 0.03
+
+  sonar:
+    model_id: "acoustic_receiver"
+    parameters:
+      source_level_db: 220
+      frequency_khz: 200
+      noise_floor_db: -60
+    description: "Active sonar with hydrophone array detection"
+    noise_model: "gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "Short range, hard target"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+03
+        scenario: "Medium range, soft sediment"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+01
+        scenario: "Long range, high absorption"
+        read_sigma_fraction: 0.03
+
+  # Electron Spectroscopy / Diffraction — R8
+
+  electron_diffraction:
+    model_id: "electron_detector"
+    parameters:
+      accelerating_voltage_kv: 200
+      probe_current_pa: 50
+      qe: 0.80
+    description: "4D-STEM electron diffraction with pixelated detector"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "High current, thick specimen"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard 4D-STEM conditions"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Low-dose for beam-sensitive materials"
+        read_sigma_fraction: 0.02
+
+  ebsd:
+    model_id: "electron_detector"
+    parameters:
+      accelerating_voltage_kv: 20
+      beam_current_na: 10
+      qe: 0.60
+    description: "EBSD with phosphor screen and CCD camera"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "High current, long exposure"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard EBSD mapping"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Fast mapping, low dwell time"
+        read_sigma_fraction: 0.02
+
+  eels:
+    model_id: "electron_detector"
+    parameters:
+      accelerating_voltage_kv: 200
+      probe_current_pa: 100
+      qe: 0.70
+    description: "EELS with magnetic sector spectrometer and CCD"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "High current, core-loss edges"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard EELS, low-loss region"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Low-dose, beam-sensitive specimen"
+        read_sigma_fraction: 0.02
+
+  electron_holography:
+    model_id: "electron_detector"
+    parameters:
+      accelerating_voltage_kv: 200
+      beam_current_na: 0.1
+      qe: 0.80
+    description: "Off-axis electron holography with CCD recording"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+06
+        scenario: "Long exposure, stable biprism"
+        read_sigma_fraction: 0.003
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard holographic recording"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Short exposure, vibration environment"
+        read_sigma_fraction: 0.02
+
+  # Particle Imaging — R9
+
+  neutron_tomo:
+    model_id: "particle_detector"
+    parameters:
+      flux_n_per_cm2_per_s: 1.0e+07
+      exposure_s: 30.0
+      qe: 0.30
+    description: "Neutron radiography/tomography with scintillator detector"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "Reactor source, long exposure"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard neutron imaging"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Spallation source, fast acquisition"
+        read_sigma_fraction: 0.02
+
+  proton_radiography:
+    model_id: "particle_detector"
+    parameters:
+      beam_energy_mev: 200
+      beam_current_na: 1.0
+      qe: 0.85
+    description: "Proton radiography with silicon strip tracker"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+06
+        scenario: "High-flux proton beam"
+        read_sigma_fraction: 0.003
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard proton radiography"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Single-proton tracking mode"
+        read_sigma_fraction: 0.02
+
+  muon_tomo:
+    model_id: "particle_detector"
+    parameters:
+      flux_per_cm2_per_min: 1.0
+      exposure_min: 60.0
+      qe: 0.95
+    description: "Muon tomography with cosmic-ray muon flux"
+    noise_model: "poisson"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+04
+        scenario: "Long exposure (hours), large area"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+03
+        scenario: "Standard 1-hour acquisition"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+02
+        scenario: "Short acquisition, low statistics"
+        read_sigma_fraction: 0.02
