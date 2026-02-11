@@ -1592,6 +1592,352 @@ class GaussianSensorNoise(BasePrimitive):
 
 
 # =========================================================================
+# Phase 1: Extended node families (v4)
+# =========================================================================
+
+
+# P1.2: ExplicitLinearOperator
+class ExplicitLinearOperator(BasePrimitive):
+    """Accepts a provided A as dense/sparse/callback for operator correction."""
+    primitive_id = "explicit_linear_operator"
+    _is_linear = True
+    _node_role = "transport"
+    _physics_tier = "tier0_geometry"
+    _physics_subrole = "relay"
+
+    def __init__(self, params=None):
+        super().__init__(params)
+        self._matrix = self._params.get("matrix", None)
+        self._forward_fn = self._params.get("forward_fn", None)
+        self._adjoint_fn = self._params.get("adjoint_fn", None)
+        if self._matrix is not None:
+            self._matrix = np.asarray(self._matrix)
+
+    def forward(self, x, **params):
+        if self._matrix is not None:
+            return (self._matrix @ x.ravel()).reshape(self._params.get("y_shape", (-1,)))
+        elif self._forward_fn is not None:
+            return self._forward_fn(x)
+        return x
+
+    def adjoint(self, y, **params):
+        if self._matrix is not None:
+            return (self._matrix.T @ y.ravel()).reshape(self._params.get("x_shape", (-1,)))
+        elif self._adjoint_fn is not None:
+            return self._adjoint_fn(y)
+        return y
+
+    def compute_hash(self):
+        if self._matrix is not None:
+            return hashlib.sha256(self._matrix.tobytes()).hexdigest()[:16]
+        return "callback"
+
+
+# P1.3: Electron source + sensor (D2-compliant)
+class ElectronBeamSource(BasePrimitive):
+    """Electron beam source -- does NOT consume x (Pattern B).
+    Outputs incident beam state scaled by beam_current.
+    """
+    primitive_id = "electron_beam_source"
+    _is_linear = True
+    _node_role = "source"
+    _physics_tier = "tier0_geometry"
+    _physics_subrole = None
+    _carrier_type = "electron"
+
+    def forward(self, x, **params):
+        current = self._params.get("beam_current_na", 1.0)
+        return current * np.ones_like(x)
+
+    def adjoint(self, y, **params):
+        current = self._params.get("beam_current_na", 1.0)
+        return current * y
+
+
+class ElectronDetectorSensor(BasePrimitive):
+    """Electron detector sensor (SE/BSE/BF/ADF/HAADF)."""
+    primitive_id = "electron_detector_sensor"
+    _is_linear = True
+    _node_role = "sensor"
+    _physics_tier = "tier0_geometry"
+    _carrier_type = "electron"
+
+    def forward(self, x, **params):
+        ce = self._params.get("collection_efficiency", 0.5)
+        gain = self._params.get("gain", 1.0)
+        return ce * gain * np.asarray(x, dtype=np.float64)
+
+    def adjoint(self, y, **params):
+        ce = self._params.get("collection_efficiency", 0.5)
+        gain = self._params.get("gain", 1.0)
+        return ce * gain * np.asarray(y, dtype=np.float64)
+
+
+# P1.4: Specialized sensors
+class SinglePixelSensor(BasePrimitive):
+    """Single-pixel detector for SPC modality."""
+    primitive_id = "single_pixel_sensor"
+    _is_linear = True
+    _node_role = "sensor"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x, **params):
+        n_patterns = self._params.get("n_patterns", 64)
+        rng = np.random.RandomState(self._params.get("seed", 0))
+        x_flat = np.asarray(x, dtype=np.float64).ravel()
+        N = len(x_flat)
+        patterns = rng.randn(n_patterns, N)
+        return patterns @ x_flat
+
+    def adjoint(self, y, **params):
+        n_patterns = self._params.get("n_patterns", 64)
+        rng = np.random.RandomState(self._params.get("seed", 0))
+        x_shape = self._params.get("x_shape", (64, 64))
+        N = int(np.prod(x_shape))
+        patterns = rng.randn(n_patterns, N)
+        return (patterns.T @ np.asarray(y).ravel()).reshape(x_shape)
+
+
+class XRayDetectorSensor(BasePrimitive):
+    """X-ray flat panel detector with scintillator."""
+    primitive_id = "xray_detector_sensor"
+    _is_linear = True
+    _node_role = "sensor"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x, **params):
+        eff = self._params.get("scintillator_efficiency", 0.8)
+        gain = self._params.get("gain", 1.0)
+        offset = self._params.get("offset", 0.0)
+        return gain * eff * np.asarray(x, dtype=np.float64) + offset
+
+    def adjoint(self, y, **params):
+        eff = self._params.get("scintillator_efficiency", 0.8)
+        gain = self._params.get("gain", 1.0)
+        return gain * eff * np.asarray(y, dtype=np.float64)
+
+
+class AcousticReceiveSensor(BasePrimitive):
+    """Ultrasound receive array sensor."""
+    primitive_id = "acoustic_receive_sensor"
+    _is_linear = True
+    _node_role = "sensor"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x, **params):
+        sensitivity = self._params.get("sensitivity", 1.0)
+        return sensitivity * np.asarray(x, dtype=np.float64)
+
+    def adjoint(self, y, **params):
+        sensitivity = self._params.get("sensitivity", 1.0)
+        return sensitivity * np.asarray(y, dtype=np.float64)
+
+
+# P1.5: Correlated noise (simulation-only)
+class CorrelatedNoiseSensor(BasePrimitive):
+    """Correlated noise -- simulation-only, blocks Mode C until whitening."""
+    primitive_id = "correlated_noise_sensor"
+    _is_linear = False
+    _is_stochastic = True
+    _node_role = "noise"
+    _physics_tier = "tier1_approx"
+    _simulation_only = True
+
+    def forward(self, x, **params):
+        sigma = self._params.get("base_sigma", 0.1)
+        corr_type = self._params.get("correlation_type", "none")
+        seed = self._params.get("seed", 0)
+        rng = np.random.RandomState(seed)
+        noise = rng.randn(*np.asarray(x).shape).astype(np.float64) * sigma
+
+        if corr_type == "spatial":
+            length = self._params.get("correlation_length", 2.0)
+            noise = ndimage.gaussian_filter(noise, sigma=length)
+            noise = noise * sigma / max(np.std(noise), 1e-12)
+        elif corr_type == "1_over_f":
+            f_noise = np.fft.fftn(noise)
+            shape = noise.shape
+            freqs = [np.fft.fftfreq(s) for s in shape]
+            grid = np.meshgrid(*freqs, indexing='ij')
+            f_mag = np.sqrt(sum(g**2 for g in grid))
+            f_mag[f_mag == 0] = 1.0
+            f_noise = f_noise / f_mag
+            noise = np.real(np.fft.ifftn(f_noise)) * sigma
+
+        return np.asarray(x, dtype=np.float64) + noise
+
+    def adjoint(self, y, **params):
+        raise NotImplementedError("Correlated noise has no adjoint")
+
+    def likelihood(self, y, y_clean):
+        raise NotImplementedError(
+            "Correlated noise likelihood requires whitening. "
+            "Use simulation-only mode."
+        )
+
+
+# P1.6: Element primitives for new modalities
+
+class ThinObjectPhase(BasePrimitive):
+    """TEM thin-object phase approximation -- multi-input (incident, x)."""
+    primitive_id = "thin_object_phase"
+    _is_linear = False
+    _node_role = "interaction"
+    _physics_subrole = "interaction"
+    _physics_tier = "tier1_approx"
+    _carrier_type = "electron"
+    _n_inputs = 2
+    _physics_validity_regime = "thin_sample, weak_phase_approx"
+
+    def forward(self, x, **params):
+        sigma = self._params.get("sigma", 0.01)
+        return np.asarray(x, dtype=np.float64) * np.exp(-sigma * np.abs(x))
+
+    def forward_multi(self, inputs):
+        incident = inputs.get("incident", inputs.get("0", np.ones((1,))))
+        x = inputs.get("x", inputs.get("1", np.zeros_like(incident)))
+        sigma = self._params.get("sigma", 0.01)
+        transmission = np.exp(-sigma * np.abs(x))
+        return np.asarray(incident, dtype=np.float64) * transmission
+
+    def adjoint(self, y, **params):
+        return np.asarray(y, dtype=np.float64)
+
+
+class CTFTransfer(BasePrimitive):
+    """TEM Contrast Transfer Function in Fourier domain."""
+    primitive_id = "ctf_transfer"
+    _is_linear = True
+    _node_role = "transport"
+    _physics_subrole = "propagation"
+    _physics_tier = "tier1_approx"
+    _carrier_type = "electron"
+    _physics_validity_regime = "isoplanatic, no_spatial_incoherence"
+
+    def forward(self, x, **params):
+        defocus = self._params.get("defocus_nm", 100.0)
+        Cs = self._params.get("Cs_mm", 1.0)
+        wl = self._params.get("wavelength_pm", 2.51)  # 200kV
+        x = np.asarray(x, dtype=np.float64)
+        fx = np.fft.fft2(x)
+        ny, nx = x.shape[-2:]
+        fy = np.fft.fftfreq(ny)
+        fxx = np.fft.fftfreq(nx)
+        FY, FX = np.meshgrid(fy, fxx, indexing='ij')
+        q2 = FY**2 + FX**2
+        wl_nm = wl * 1e-3
+        chi = np.pi * wl_nm * defocus * q2 - 0.5 * np.pi * Cs * 1e6 * wl_nm**3 * q2**2
+        ctf = np.sin(chi)
+        return np.real(np.fft.ifft2(fx * ctf))
+
+    def adjoint(self, y, **params):
+        return self.forward(y, **params)  # CTF is self-adjoint for real CTF
+
+
+class YieldModel(BasePrimitive):
+    """SEM yield model -- multi-input (incident, x)."""
+    primitive_id = "yield_model"
+    _is_linear = True
+    _node_role = "interaction"
+    _physics_subrole = "interaction"
+    _physics_tier = "tier0_geometry"
+    _carrier_type = "electron"
+    _n_inputs = 2
+    _physics_validity_regime = "homogeneous_material, normal_incidence"
+
+    def forward(self, x, **params):
+        yc = self._params.get("yield_coeff", 0.3)
+        return yc * np.asarray(x, dtype=np.float64)
+
+    def forward_multi(self, inputs):
+        incident = inputs.get("incident", inputs.get("0", np.ones((1,))))
+        x = inputs.get("x", inputs.get("1", np.zeros_like(incident)))
+        yc = self._params.get("yield_coeff", 0.3)
+        return yc * np.asarray(incident, dtype=np.float64) * np.asarray(x, dtype=np.float64)
+
+    def adjoint(self, y, **params):
+        yc = self._params.get("yield_coeff", 0.3)
+        return yc * np.asarray(y, dtype=np.float64)
+
+
+class BeamformDelay(BasePrimitive):
+    """Ultrasound delay-and-sum beamforming."""
+    primitive_id = "beamform_delay"
+    _is_linear = True
+    _node_role = "transport"
+    _physics_subrole = "propagation"
+    _physics_tier = "tier1_approx"
+
+    def forward(self, x, **params):
+        x = np.asarray(x, dtype=np.float64)
+        if x.ndim >= 2:
+            return np.mean(x, axis=0)
+        return x
+
+    def adjoint(self, y, **params):
+        n_elements = self._params.get("n_elements", 32)
+        y = np.asarray(y, dtype=np.float64)
+        return np.tile(y, (n_elements, 1)) if y.ndim >= 1 else y
+
+
+class EmissionProjection(BasePrimitive):
+    """PET/SPECT emission projection (system matrix)."""
+    primitive_id = "emission_projection"
+    _is_linear = True
+    _node_role = "transport"
+    _physics_subrole = "sampling"
+    _physics_tier = "tier1_approx"
+
+    def forward(self, x, **params):
+        n_angles = self._params.get("n_angles", 32)
+        x = np.asarray(x, dtype=np.float64)
+        if x.ndim >= 2:
+            sinogram = np.zeros((n_angles, x.shape[-1]))
+            angles = np.linspace(0, 180, n_angles, endpoint=False)
+            for i, angle in enumerate(angles):
+                rotated = ndimage.rotate(x, angle, reshape=False, order=1)
+                sinogram[i] = np.sum(rotated, axis=0)
+            return sinogram
+        return x
+
+    def adjoint(self, y, **params):
+        n_angles = self._params.get("n_angles", 32)
+        x_shape = self._params.get("x_shape", (64, 64))
+        y = np.asarray(y, dtype=np.float64)
+        if y.ndim >= 2:
+            result = np.zeros(x_shape, dtype=np.float64)
+            angles = np.linspace(0, 180, n_angles, endpoint=False)
+            for i, angle in enumerate(angles):
+                back = np.tile(y[i], (x_shape[0], 1))
+                result += ndimage.rotate(back, -angle, reshape=False, order=1)
+            return result
+        return y
+
+
+class ScatterModel(BasePrimitive):
+    """Additive scatter estimation for X-ray/CT/PET."""
+    primitive_id = "scatter_model"
+    _is_linear = True
+    _node_role = "transport"
+    _physics_subrole = "interaction"
+    _physics_tier = "tier1_approx"
+
+    def forward(self, x, **params):
+        fraction = self._params.get("scatter_fraction", 0.1)
+        sigma = self._params.get("kernel_sigma", 3.0)
+        x = np.asarray(x, dtype=np.float64)
+        scatter = ndimage.gaussian_filter(x, sigma=sigma)
+        return x + fraction * scatter
+
+    def adjoint(self, y, **params):
+        fraction = self._params.get("scatter_fraction", 0.1)
+        sigma = self._params.get("kernel_sigma", 3.0)
+        y = np.asarray(y, dtype=np.float64)
+        scatter_adj = ndimage.gaussian_filter(y, sigma=sigma)
+        return y + fraction * scatter_adj
+
+
+# =========================================================================
 # Registry
 # =========================================================================
 
@@ -1665,6 +2011,20 @@ _ALL_PRIMITIVES: List[type] = [
     VolumeRenderingStub,
     GaussianSplattingStub,
     GaussianSensorNoise,
+    # Phase 1 v4: Extended node families
+    ExplicitLinearOperator,
+    ElectronBeamSource,
+    ElectronDetectorSensor,
+    SinglePixelSensor,
+    XRayDetectorSensor,
+    AcousticReceiveSensor,
+    CorrelatedNoiseSensor,
+    ThinObjectPhase,
+    CTFTransfer,
+    YieldModel,
+    BeamformDelay,
+    EmissionProjection,
+    ScatterModel,
 ]
 
 PRIMITIVE_REGISTRY: Dict[str, type] = {

@@ -25,7 +25,7 @@ metric_sets:
   medical_volumetric:
     description: "Medical imaging (CT/MRI)"
     metrics: [psnr, ssim, nrmse]
-    modalities: [ct, mri]
+    modalities: [ct, mri, xray_radiography]
 
   phase_imaging:
     description: "Complex-valued / phase objects"
@@ -40,7 +40,17 @@ metric_sets:
   volumetric_medical:
     description: "Volumetric medical imaging (DOT, photoacoustic, OCT)"
     metrics: [psnr, ssim, cnr, dice]
-    modalities: [dot, photoacoustic, oct]
+    modalities: [dot, photoacoustic, oct, ultrasound]
+
+  nuclear_medical:
+    description: "Nuclear medicine imaging (PET, SPECT)"
+    metrics: [psnr, ssim, crc, cnr]
+    modalities: [pet, spect]
+
+  electron_microscopy:
+    description: "Electron microscopy (SEM, TEM, STEM, ET)"
+    metrics: [psnr, ssim, frc, nrmse]
+    modalities: [sem, tem, electron_tomography, stem]
 
   lifetime:
     description: "Fluorescence lifetime imaging"

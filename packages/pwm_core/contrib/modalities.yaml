@@ -2298,3 +2298,515 @@ modalities:
           description: "Pre-calibrated microlens center positions (.npy or .csv)"
         - name: "ground_truth"
           description: "Ground truth 3D scene or depth map for evaluation (.npy)"
+
+  # ===========================================================================
+  # MEDICAL MODALITIES — Phase 3 additions
+  # ===========================================================================
+
+  xray_radiography:
+    display_name: "X-ray Radiography"
+    category: "medical"
+    keywords: [xray, radiography, projection, beer_lambert, scatter, chest_xray]
+    description: >
+      Planar X-ray radiography acquires a 2D projection of tissue attenuation
+      via the Beer-Lambert law. The source emits a polychromatic X-ray beam
+      that is attenuated exponentially through the body. Scatter, detector
+      efficiency, and Poisson-Gaussian noise are the primary degradations.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = eta * I_0 * exp(-mu * x) + scatter + n"
+    default_solver: "tv_fista"
+    default_template_id: "xray_radiography_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [0, 0]
+    elements:
+      - name: "X-ray Tube Source"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          tube_voltage_kvp: 80
+          tube_current_ma: 100
+          focal_spot_mm: 0.6
+      - name: "Patient (Attenuating Medium)"
+        element_type: medium
+        transfer_kind: projection
+        throughput: 0.10
+        noise_kinds: [shot_poisson]
+        parameters:
+          mean_attenuation_coefficient: 0.2
+      - name: "Flat Panel Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.80
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          pixel_size_um: 150
+          scintillator: "CsI"
+          bit_depth: 14
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "2D radiograph image (TIFF or .npy)"
+          shape: "[H, W]"
+      required_params:
+        - name: "tube_voltage_kvp"
+          type: "float"
+          description: "X-ray tube voltage in kVp"
+      optional:
+        - name: "scatter_estimate"
+          description: "Pre-computed scatter image for correction"
+
+  ultrasound:
+    display_name: "Ultrasound Imaging"
+    category: "medical"
+    keywords: [ultrasound, B_mode, beamforming, delay_and_sum, acoustic, RF]
+    description: >
+      Pulse-echo ultrasound imaging transmits acoustic pulses into tissue and
+      records reflected echoes on a transducer array. Beamforming (delay-and-sum)
+      converts RF channel data into a B-mode image. The forward model involves
+      acoustic propagation, receive sensitivity, and thermal noise.
+    signal_dims:
+      x: [256, 256]
+      y: [128, 512]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = DAS(H * x) + n"
+    default_solver: "tv_fista"
+    default_template_id: "ultrasound_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [0, 0]
+    elements:
+      - name: "Piezoelectric Transducer Array"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          n_elements: 128
+          center_frequency_mhz: 5.0
+          element_pitch_mm: 0.3
+          fractional_bandwidth: 0.6
+      - name: "Tissue Medium"
+        element_type: medium
+        transfer_kind: projection
+        throughput: 0.50
+        noise_kinds: [speckle]
+        parameters:
+          speed_of_sound_m_per_s: 1540.0
+          attenuation_db_per_cm_mhz: 0.5
+      - name: "Receive Array + ADC"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.90
+        noise_kinds: [thermal_gaussian]
+        parameters:
+          sampling_rate_mhz: 40
+          bit_depth: 12
+    upload_template:
+      required:
+        - name: "rf_data"
+          description: "RF channel data (n_elements x n_samples) as .npy"
+          shape: "[n_elements, n_samples]"
+      required_params:
+        - name: "speed_of_sound"
+          type: "float"
+          description: "Speed of sound in tissue (m/s)"
+        - name: "sampling_rate_mhz"
+          type: "float"
+          description: "ADC sampling rate in MHz"
+      optional:
+        - name: "element_positions"
+          description: "Transducer element coordinates (.npy)"
+
+  pet:
+    display_name: "Positron Emission Tomography"
+    category: "medical"
+    keywords: [PET, emission, positron, annihilation, MLEM, OSEM, sinogram]
+    description: >
+      PET detects coincident 511 keV annihilation photon pairs from a
+      positron-emitting radiotracer. The system matrix projects the activity
+      distribution into sinogram space. Attenuation correction, scatter
+      estimation, and MLEM/OSEM reconstruction are standard.
+    signal_dims:
+      x: [128, 128]
+      y: [180, 128]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = Poisson(A * x + scatter)"
+    default_solver: "mlem"
+    default_template_id: "pet_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [0, 0]
+    elements:
+      - name: "Radiotracer Source (positron emitter)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          isotope: "F-18"
+          half_life_min: 109.77
+          activity_mbq: 370
+      - name: "Patient (Attenuating Medium)"
+        element_type: medium
+        transfer_kind: projection
+        throughput: 0.30
+        noise_kinds: [attenuation, scatter]
+        parameters:
+          mean_attenuation_coefficient: 0.096
+      - name: "Scintillator Ring Detector (LSO/LYSO)"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.85
+        noise_kinds: [shot_poisson, random_coincidences]
+        parameters:
+          n_rings: 4
+          n_detectors_per_ring: 512
+          crystal: "LYSO"
+          timing_resolution_ps: 300
+    upload_template:
+      required:
+        - name: "sinogram"
+          description: "PET sinogram (n_angles x n_detectors) as .npy"
+          shape: "[n_angles, n_detectors]"
+      required_params:
+        - name: "n_angles"
+          type: "int"
+          description: "Number of angular projections"
+      optional:
+        - name: "attenuation_map"
+          description: "CT-derived attenuation map for AC (.npy)"
+        - name: "scatter_estimate"
+          description: "Pre-computed scatter sinogram (.npy)"
+
+  spect:
+    display_name: "Single Photon Emission Computed Tomography"
+    category: "medical"
+    keywords: [SPECT, emission, gamma_camera, collimator, MLEM, OSEM]
+    description: >
+      SPECT images the distribution of a gamma-emitting radiotracer by
+      acquiring projections through a parallel-hole collimator rotated around
+      the patient. The collimator response function (depth-dependent blur)
+      is a key component. MLEM/OSEM with attenuation and collimator-detector
+      response modelling are standard reconstruction methods.
+    signal_dims:
+      x: [128, 128]
+      y: [120, 128]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = Poisson(C * A * x)"
+    default_solver: "mlem"
+    default_template_id: "spect_graph_v2"
+    requires_x_interaction: false
+    acceptance_tier: "tier1"
+    wavelength_range_nm: [0, 0]
+    elements:
+      - name: "Radiotracer Source (gamma emitter)"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: []
+        parameters:
+          isotope: "Tc-99m"
+          half_life_hr: 6.0
+          activity_mbq: 740
+          gamma_energy_kev: 140
+      - name: "Parallel-Hole Collimator"
+        element_type: filter
+        transfer_kind: modulation
+        throughput: 0.01
+        noise_kinds: []
+        parameters:
+          hole_diameter_mm: 1.5
+          septal_thickness_mm: 0.2
+          hole_length_mm: 25
+      - name: "NaI(Tl) Gamma Camera"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.85
+        noise_kinds: [shot_poisson]
+        parameters:
+          crystal_thickness_mm: 9.5
+          pixel_size_mm: 4.4
+          energy_resolution_percent: 10
+    upload_template:
+      required:
+        - name: "sinogram"
+          description: "SPECT sinogram (n_angles x n_detectors) as .npy"
+          shape: "[n_angles, n_detectors]"
+      required_params:
+        - name: "n_angles"
+          type: "int"
+          description: "Number of angular projections"
+      optional:
+        - name: "attenuation_map"
+          description: "CT-derived attenuation map for AC (.npy)"
+
+  # ===========================================================================
+  # ELECTRON MICROSCOPY — Phase 4 additions
+  # ===========================================================================
+
+  sem:
+    display_name: "Scanning Electron Microscopy"
+    category: "electron_microscopy"
+    keywords: [SEM, secondary_electron, backscatter, surface_imaging, electron_beam]
+    description: >
+      Scanning electron microscopy rasters a focused electron beam across the
+      specimen surface. Secondary electrons (SE) and backscattered electrons (BSE)
+      emitted from the interaction volume are collected by dedicated detectors.
+      SE signal is sensitive to surface topography, while BSE signal encodes
+      compositional (Z-contrast) information. The forward model is
+      y = detector(yield(beam, material_map)) + noise.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = G * eta(E_0) * I_b * x + n"
+    default_solver: "direct_imaging"
+    wavelength_range_nm: null
+    elements:
+      - name: "Electron Gun"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: [beam_current_fluctuation]
+        parameters:
+          type: "field_emission"
+          accelerating_voltage_kv: 15.0
+          beam_current_na: 1.0
+          probe_size_nm: 2.0
+      - name: "Specimen Interaction"
+        element_type: interaction
+        transfer_kind: yield_model
+        throughput: 0.1
+        noise_kinds: [charging, contamination]
+        parameters:
+          yield_type: "SE"
+          yield_coeff: 0.1
+      - name: "Everhart-Thornley Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.5
+        noise_kinds: [shot_poisson, electronic_gaussian]
+        parameters:
+          collection_efficiency: 0.5
+          gain: 100.0
+          bias_voltage_v: 300.0
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "SEM image (2D grayscale TIFF/PNG)"
+          shape: "[H, W]"
+      required_params:
+        - name: "accelerating_voltage_kv"
+          type: "float"
+          description: "Accelerating voltage in kilovolts"
+        - name: "detector_type"
+          type: "string"
+          description: "Detector type: SE, BSE, InLens"
+      optional:
+        - name: "working_distance_mm"
+          description: "Working distance in millimeters"
+
+  tem:
+    display_name: "Transmission Electron Microscopy"
+    category: "electron_microscopy"
+    keywords: [TEM, transmission, CTF, phase_contrast, thin_specimen, electron_diffraction]
+    description: >
+      Transmission electron microscopy passes a broad or focused electron beam
+      through a thin specimen (<100 nm). The transmitted electrons form an image
+      via the objective lens, modulated by the contrast transfer function (CTF).
+      Phase contrast dominates for biological/organic specimens. The forward model
+      involves thin-object phase approximation followed by CTF modulation:
+      y = |IFFT(FFT(T(x) * beam) * CTF(q))|^2 + noise, where T(x) is the
+      transmission function.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "nonlinear_operator"
+    forward_model_equation: "y = |IFFT(CTF * FFT(exp(i*sigma*V*x) * beam))|^2 + n"
+    default_solver: "ctf_correction"
+    wavelength_range_nm: null
+    elements:
+      - name: "Electron Gun"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: [beam_current_fluctuation]
+        parameters:
+          type: "field_emission"
+          accelerating_voltage_kv: 200.0
+          beam_current_na: 0.1
+          wavelength_pm: 2.51
+      - name: "Thin Specimen"
+        element_type: interaction
+        transfer_kind: phase_modulation
+        throughput: 0.95
+        noise_kinds: [radiation_damage]
+        parameters:
+          sigma: 0.00729
+          thickness_nm: 10.0
+      - name: "Objective Lens + CTF"
+        element_type: lens
+        transfer_kind: ctf_transfer
+        throughput: 0.80
+        noise_kinds: [aberration]
+        parameters:
+          defocus_nm: -50.0
+          Cs_mm: 1.0
+          wavelength_pm: 2.51
+      - name: "CCD/CMOS Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.8
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          pixel_size_um: 14.0
+          quantum_efficiency: 0.8
+          gain: 1.0
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "TEM micrograph (2D grayscale TIFF)"
+          shape: "[H, W]"
+      required_params:
+        - name: "accelerating_voltage_kv"
+          type: "float"
+          description: "Accelerating voltage in kilovolts"
+        - name: "defocus_nm"
+          type: "float"
+          description: "Defocus value in nanometers"
+      optional:
+        - name: "Cs_mm"
+          description: "Spherical aberration coefficient in mm"
+        - name: "ctf_params"
+          description: "JSON with full CTF parameters"
+
+  electron_tomography:
+    display_name: "Electron Tomography"
+    category: "electron_microscopy"
+    keywords: [electron_tomography, tilt_series, 3D_reconstruction, SIRT, cryo_ET]
+    description: >
+      Electron tomography acquires a series of TEM images at different tilt
+      angles (typically +/- 60-70 degrees). The tilt series is used to
+      reconstruct a 3D volume of the specimen via backprojection or iterative
+      methods (SIRT, ART, ADMM). The forward model for each projection is
+      y_i = project(volume, angle_i) + noise. The missing wedge due to limited
+      tilt range causes anisotropic resolution in the reconstruction.
+    signal_dims:
+      x: [64, 64, 64]
+      y: [64, 64]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y_i = R(angle_i) * volume + n_i"
+    default_solver: "sirt"
+    wavelength_range_nm: null
+    elements:
+      - name: "Electron Gun"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: [beam_current_fluctuation]
+        parameters:
+          type: "field_emission"
+          accelerating_voltage_kv: 300.0
+          beam_current_na: 0.1
+      - name: "Thin Specimen on Tilt Stage"
+        element_type: interaction
+        transfer_kind: projection
+        throughput: 0.90
+        noise_kinds: [radiation_damage, stage_drift]
+        parameters:
+          sigma: 0.00729
+          thickness_nm: 50.0
+          tilt_range_deg: [-60, 60]
+          tilt_increment_deg: 2.0
+      - name: "CCD/CMOS Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.7
+        noise_kinds: [shot_poisson, read_gaussian]
+        parameters:
+          pixel_size_um: 14.0
+          quantum_efficiency: 0.7
+          gain: 1.0
+    upload_template:
+      required:
+        - name: "tilt_series"
+          description: "Tilt series stack (n_angles x H x W) as .npy or .mrc"
+          shape: "[n_angles, H, W]"
+      required_params:
+        - name: "tilt_angles_deg"
+          type: "list[float]"
+          description: "List of tilt angles in degrees"
+      optional:
+        - name: "alignment_shifts"
+          description: "Pre-computed alignment shifts (dx, dy) per tilt (.csv)"
+
+  stem:
+    display_name: "Scanning Transmission Electron Microscopy"
+    category: "electron_microscopy"
+    keywords: [STEM, HAADF, annular_dark_field, Z_contrast, atomic_resolution]
+    description: >
+      Scanning transmission electron microscopy rasters a converged electron
+      probe across a thin specimen. Different angular ranges of scattered
+      electrons are collected by annular detectors: bright-field (BF), annular
+      bright-field (ABF), annular dark-field (ADF), and high-angle annular
+      dark-field (HAADF). HAADF-STEM provides Z-contrast imaging where
+      intensity scales approximately as Z^1.7. The forward model is
+      y = detector_response * probe_convolution(x) + noise.
+    signal_dims:
+      x: [512, 512]
+      y: [512, 512]
+    forward_model_type: "linear_operator"
+    forward_model_equation: "y = G * eta * (probe ** x) + n"
+    default_solver: "direct_imaging"
+    wavelength_range_nm: null
+    elements:
+      - name: "Electron Gun + Probe Forming"
+        element_type: source
+        transfer_kind: identity
+        throughput: 1.0
+        noise_kinds: [beam_current_fluctuation, scan_noise]
+        parameters:
+          type: "cold_field_emission"
+          accelerating_voltage_kv: 200.0
+          beam_current_pa: 20.0
+          probe_size_angstrom: 0.8
+          convergence_angle_mrad: 21.0
+      - name: "Thin Specimen"
+        element_type: interaction
+        transfer_kind: scattering
+        throughput: 0.85
+        noise_kinds: [radiation_damage]
+        parameters:
+          thickness_nm: 20.0
+          z_contrast_exponent: 1.7
+      - name: "HAADF Detector"
+        element_type: detector
+        transfer_kind: integration
+        throughput: 0.6
+        noise_kinds: [shot_poisson, electronic_gaussian]
+        parameters:
+          inner_angle_mrad: 68.0
+          outer_angle_mrad: 200.0
+          collection_efficiency: 0.6
+          gain: 1.0
+    upload_template:
+      required:
+        - name: "measurement"
+          description: "STEM image (2D grayscale TIFF)"
+          shape: "[H, W]"
+      required_params:
+        - name: "accelerating_voltage_kv"
+          type: "float"
+          description: "Accelerating voltage in kilovolts"
+        - name: "detector_type"
+          type: "string"
+          description: "Detector type: BF, ABF, ADF, HAADF"
+      optional:
+        - name: "convergence_angle_mrad"
+          description: "Probe convergence semi-angle in mrad"

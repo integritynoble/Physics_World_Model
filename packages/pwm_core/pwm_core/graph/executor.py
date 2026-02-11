@@ -242,6 +242,14 @@ class GraphExecutor:
         if y is None:
             raise ValueError("Mode C requires measurement y")
 
+        # Check for simulation-only noise
+        if self._noise_prim is not None and getattr(self._noise_prim, '_simulation_only', False):
+            raise ValueError(
+                f"Noise primitive '{self._noise_prim.primitive_id}' is simulation-only. "
+                "Cannot use Mode C (calibrate) without a correct likelihood. "
+                "Either implement whitening or switch to an i.i.d. noise model."
+            )
+
         from pwm_core.mismatch.calibrators import calibrate, CalibConfig
         from pwm_core.graph.adapter import GraphOperatorAdapter
 

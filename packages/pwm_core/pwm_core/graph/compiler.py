@@ -70,6 +70,7 @@ class GraphCompiler:
         # Step 1: Validate
         self._validate_dag(spec)
         self._validate_primitive_ids(spec)
+        self._validate_shapes(spec)  # P0.1: shape compatibility
 
         # Step 1b: Canonical chain validation (opt-in via metadata flag)
         if spec.metadata.get("canonical_chain", False):
@@ -92,16 +93,19 @@ class GraphCompiler:
                 edge_map[edge.target] = []
             edge_map[edge.target].append(edge.source)
 
-        # Validate: for multi-input nodes, incoming edge count must match _n_inputs
+        # Validate: for multi-input nodes, incoming edge count must not exceed _n_inputs.
+        # When n_incoming < n_inputs, the primitive uses its single-input forward()
+        # path (sequential pipeline mode). When n_incoming == n_inputs, the compiler
+        # can wire forward_multi().
         for node_id, prim in node_map.items():
             n_inputs = getattr(prim, '_n_inputs', 1)
             n_incoming = len(edge_map.get(node_id, []))
             # Only validate for multi-input primitives
             if n_inputs > 1:
-                if n_incoming != n_inputs:
+                if n_incoming > n_inputs:
                     raise GraphCompilationError(
                         f"Node '{node_id}' has {n_incoming} incoming edges but "
-                        f"primitive '{prim.primitive_id}' expects {n_inputs} inputs"
+                        f"primitive '{prim.primitive_id}' expects at most {n_inputs} inputs"
                     )
 
         # Step 4: Build forward and adjoint plans
@@ -231,6 +235,40 @@ class GraphCompiler:
                     f"primitive_id '{node.primitive_id}'. "
                     f"Available: {sorted(PRIMITIVE_REGISTRY.keys())}"
                 )
+
+    def _validate_shapes(self, spec: OperatorGraphSpec) -> None:
+        """Validate TensorSpec shape compatibility across edges.
+
+        For each edge (src -> dst), if both nodes declare TensorSpec on
+        output/input ports, verify shape compatibility. -1 means dynamic axis.
+        """
+        # Build node params lookup
+        node_params = {n.node_id: n.params for n in spec.nodes}
+
+        for edge in spec.edges:
+            src_params = node_params.get(edge.source, {})
+            dst_params = node_params.get(edge.target, {})
+
+            src_shape = src_params.get("output_shape") if src_params else None
+            dst_shape = dst_params.get("input_shape") if dst_params else None
+
+            if src_shape is not None and dst_shape is not None:
+                src_shape = list(src_shape)
+                dst_shape = list(dst_shape)
+                if len(src_shape) != len(dst_shape):
+                    raise GraphCompilationError(
+                        f"Edge {edge.source}->{edge.target}: output ndim "
+                        f"{len(src_shape)} != input ndim {len(dst_shape)}"
+                    )
+                for i, (s, d) in enumerate(zip(src_shape, dst_shape)):
+                    if s == -1 or d == -1:
+                        continue
+                    if s != d:
+                        raise GraphCompilationError(
+                            f"Edge {edge.source}->{edge.target}: "
+                            f"output shape {src_shape} incompatible "
+                            f"with input shape {dst_shape} at axis {i}"
+                        )
 
     def _topological_sort(self, spec: OperatorGraphSpec) -> List[str]:
         """Return node_ids in topological order (Kahn's algorithm).

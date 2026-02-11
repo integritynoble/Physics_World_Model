@@ -1923,3 +1923,302 @@ templates:
         target: sensor
       - source: sensor
         target: noise
+
+  # ---------------------------------------------------------------------------
+  # MEDICAL MODALITIES (v2) — Phase 3
+  # ---------------------------------------------------------------------------
+
+  xray_radiography_graph_v2:
+    description: "X-ray radiography: Source→Beer-Lambert→Scatter(opt)→XRayDetector→PoissonGaussianNoise"
+    metadata:
+      modality: xray_radiography
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: xray_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: transmission
+        primitive_id: beer_lambert
+        role: transport
+        params:
+          I_0: 10000.0
+      - node_id: scatter
+        primitive_id: scatter_model
+        role: transport
+        params:
+          scatter_fraction: 0.1
+          kernel_sigma: 5.0
+      - node_id: sensor
+        primitive_id: xray_detector_sensor
+        role: sensor
+        params:
+          scintillator_efficiency: 0.8
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 50000.0
+          read_sigma: 0.005
+          seed: 0
+    edges:
+      - source: source
+        target: transmission
+      - source: transmission
+        target: scatter
+      - source: scatter
+        target: sensor
+      - source: sensor
+        target: noise
+
+  ultrasound_graph_v2:
+    description: "Ultrasound: AcousticSource→AcousticPropagation→BeamformDelay→AcousticReceive→GaussianNoise"
+    metadata:
+      modality: ultrasound
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64]
+    nodes:
+      - node_id: source
+        primitive_id: acoustic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: propagate
+        primitive_id: acoustic_propagation
+        role: transport
+        params:
+          speed_of_sound: 1540.0
+          n_sensors: 32
+          x_shape: [64, 64]
+      - node_id: beamform
+        primitive_id: beamform_delay
+        role: transport
+        params:
+          n_elements: 32
+      - node_id: sensor
+        primitive_id: acoustic_receive_sensor
+        role: sensor
+        params:
+          sensitivity: 1.0
+      - node_id: noise
+        primitive_id: gaussian_sensor_noise
+        role: noise
+        params:
+          sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: propagate
+      - source: propagate
+        target: beamform
+      - source: beamform
+        target: sensor
+      - source: sensor
+        target: noise
+
+  pet_graph_v2:
+    description: "PET: GenericSource(emission)→EmissionProjection→ScatterModel→PhotonSensor→PoissonOnlyNoise"
+    metadata:
+      modality: pet
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [32, 64]
+    nodes:
+      - node_id: source
+        primitive_id: generic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: projection
+        primitive_id: emission_projection
+        role: transport
+        params:
+          n_angles: 32
+          x_shape: [64, 64]
+      - node_id: scatter
+        primitive_id: scatter_model
+        role: transport
+        params:
+          scatter_fraction: 0.15
+          kernel_sigma: 3.0
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.85
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_only_sensor
+        role: noise
+        params:
+          peak_photons: 100000.0
+          seed: 0
+    edges:
+      - source: source
+        target: projection
+      - source: projection
+        target: scatter
+      - source: scatter
+        target: sensor
+      - source: sensor
+        target: noise
+
+  spect_graph_v2:
+    description: "SPECT: GenericSource(emission)→EmissionProjection→PhotonSensor→PoissonOnlyNoise"
+    metadata:
+      modality: spect
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [32, 64]
+    nodes:
+      - node_id: source
+        primitive_id: generic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: projection
+        primitive_id: emission_projection
+        role: transport
+        params:
+          n_angles: 32
+          x_shape: [64, 64]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.85
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_only_sensor
+        role: noise
+        params:
+          peak_photons: 100000.0
+          seed: 0
+    edges:
+      - source: source
+        target: projection
+      - source: projection
+        target: sensor
+      - source: sensor
+        target: noise
+
+  # ---------------------------------------------------------------------------
+  # ELECTRON MICROSCOPY (v2) — Phase 4
+  # ---------------------------------------------------------------------------
+
+  sem_graph_v2:
+    description: "SEM: ElectronBeamSource→YieldModel(SE)→ElectronDetector→GaussianNoise"
+    metadata:
+      modality: sem
+      canonical_chain: true
+      requires_x_interaction: true
+      physics_fidelity:
+        tier: tier0_geometry
+        validity_regime: "homogeneous_material, normal_incidence, no_charging"
+        known_limitations: ["No Monte Carlo scattering", "No topographic contrast model"]
+        upgrade_path: "tier1_approx: angular-dependent yield; tier2_full: MC electron transport"
+    nodes:
+      - node_id: source
+        primitive_id: electron_beam_source
+        role: source
+        params: {accelerating_voltage_kv: 15.0, beam_current_na: 1.0}
+      - node_id: interaction
+        primitive_id: yield_model
+        role: transport
+        params: {yield_coeff: 0.1, detector_type: "SE"}
+      - node_id: sensor
+        primitive_id: electron_detector_sensor
+        role: sensor
+        params: {detector_type: "SE", collection_efficiency: 0.5, gain: 100.0}
+      - node_id: noise
+        primitive_id: gaussian_sensor_noise
+        role: noise
+        params: {sigma: 0.01}
+    edges:
+      - source: source
+        target: interaction
+      - source: interaction
+        target: sensor
+      - source: sensor
+        target: noise
+
+  tem_graph_v2:
+    description: "TEM: ElectronBeamSource→ThinObjectPhase→CTFTransfer→ElectronDetector→GaussianNoise"
+    metadata:
+      modality: tem
+      canonical_chain: true
+      requires_x_interaction: true
+      physics_fidelity:
+        tier: tier1_approx
+        validity_regime: "thin_sample, weak_phase, isoplanatic_CTF"
+        known_limitations: ["No multislice (dynamical)", "No partial coherence envelope"]
+        upgrade_path: "tier2_full: multislice + partial coherence"
+    nodes:
+      - node_id: source
+        primitive_id: electron_beam_source
+        role: source
+        params: {accelerating_voltage_kv: 200.0, beam_current_na: 0.1}
+      - node_id: interaction
+        primitive_id: thin_object_phase
+        role: transport
+        params: {sigma: 0.00729, thickness_nm: 10.0}
+      - node_id: ctf
+        primitive_id: ctf_transfer
+        role: transport
+        params: {defocus_nm: -50.0, Cs_mm: 1.0, wavelength_pm: 2.5}
+      - node_id: sensor
+        primitive_id: electron_detector_sensor
+        role: sensor
+        params: {detector_type: "BF", collection_efficiency: 0.8, gain: 1.0}
+      - node_id: noise
+        primitive_id: gaussian_sensor_noise
+        role: noise
+        params: {sigma: 0.01}
+    edges:
+      - source: source
+        target: interaction
+      - source: interaction
+        target: ctf
+      - source: ctf
+        target: sensor
+      - source: sensor
+        target: noise
+
+  electron_tomography_graph_v2:
+    description: "Electron Tomography: ElectronBeamSource→ThinObjectPhase→ElectronDetector→GaussianNoise"
+    metadata:
+      modality: electron_tomography
+      canonical_chain: true
+      requires_x_interaction: true
+      physics_fidelity:
+        tier: tier1_approx
+        validity_regime: "thin_sample, weak_phase, single_tilt_axis"
+    nodes:
+      - node_id: source
+        primitive_id: electron_beam_source
+        role: source
+        params: {accelerating_voltage_kv: 300.0, beam_current_na: 0.1}
+      - node_id: interaction
+        primitive_id: thin_object_phase
+        role: transport
+        params: {sigma: 0.00729, thickness_nm: 50.0}
+      - node_id: sensor
+        primitive_id: electron_detector_sensor
+        role: sensor
+        params: {detector_type: "BF", collection_efficiency: 0.7, gain: 1.0}
+      - node_id: noise
+        primitive_id: gaussian_sensor_noise
+        role: noise
+        params: {sigma: 0.02}
+    edges:
+      - source: source
+        target: interaction
+      - source: interaction
+        target: sensor
+      - source: sensor
+        target: noise

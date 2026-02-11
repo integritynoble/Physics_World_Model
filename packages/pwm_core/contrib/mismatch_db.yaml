@@ -770,6 +770,250 @@ modalities:
   # Fourier Ptychographic Microscopy
   # ==========================================================================
 
+  # ==========================================================================
+  # X-ray Radiography
+  # ==========================================================================
+
+  xray_radiography:
+    parameters:
+      source_position:
+        range: [-5.0, 5.0]
+        typical_error: 1.0
+        unit: "mm"
+        param_type: "position"
+        description: "X-ray focal spot position error from tube alignment"
+      detector_tilt:
+        range: [-2.0, 2.0]
+        typical_error: 0.3
+        unit: "degrees"
+        param_type: "rotation"
+        description: "Flat-panel detector tilt relative to beam axis"
+      scatter_fraction:
+        range: [0.0, 0.3]
+        typical_error: 0.05
+        unit: "normalized"
+        param_type: "scale"
+        description: "Scatter-to-primary ratio estimation error"
+    severity_weights:
+      source_position: 0.35
+      detector_tilt: 0.30
+      scatter_fraction: 0.35
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # Ultrasound
+  # ==========================================================================
+
+  ultrasound:
+    parameters:
+      speed_of_sound:
+        range: [1400.0, 1600.0]
+        typical_error: 25.0
+        unit: "m/s"
+        param_type: "scale"
+        description: "Sound speed error from tissue heterogeneity assumption"
+      element_position:
+        range: [-1.0, 1.0]
+        typical_error: 0.1
+        unit: "mm"
+        param_type: "position"
+        description: "Transducer element position error from array manufacturing"
+      attenuation_coeff:
+        range: [0.3, 0.7]
+        typical_error: 0.1
+        unit: "dB/cm/MHz"
+        param_type: "scale"
+        description: "Frequency-dependent attenuation coefficient error"
+    severity_weights:
+      speed_of_sound: 0.45
+      element_position: 0.30
+      attenuation_coeff: 0.25
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # Positron Emission Tomography (PET)
+  # ==========================================================================
+
+  pet:
+    parameters:
+      attenuation_map:
+        range: [0.0, 0.3]
+        typical_error: 0.05
+        unit: "1/cm"
+        param_type: "scale"
+        description: "Attenuation map error from CT-based mu-map conversion"
+      scatter_estimate:
+        range: [0.0, 0.4]
+        typical_error: 0.08
+        unit: "normalized"
+        param_type: "offset"
+        description: "Single-scatter simulation estimation error"
+      normalization:
+        range: [0.8, 1.2]
+        typical_error: 0.05
+        unit: "unitless"
+        param_type: "scale"
+        description: "Detector normalization coefficient error from blank scan"
+    severity_weights:
+      attenuation_map: 0.40
+      scatter_estimate: 0.35
+      normalization: 0.25
+    correction_method: "gradient_descent"
+
+  # ==========================================================================
+  # Single-Photon Emission CT (SPECT)
+  # ==========================================================================
+
+  spect:
+    parameters:
+      collimator_response:
+        range: [0.5, 2.0]
+        typical_error: 0.2
+        unit: "mm FWHM"
+        param_type: "blur"
+        description: "Collimator-detector response function width error"
+      attenuation_map:
+        range: [0.0, 0.3]
+        typical_error: 0.05
+        unit: "1/cm"
+        param_type: "scale"
+        description: "Attenuation map error from CT co-registration"
+      center_of_rotation:
+        range: [-3.0, 3.0]
+        typical_error: 0.5
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Center of rotation offset from mechanical misalignment"
+    severity_weights:
+      collimator_response: 0.35
+      attenuation_map: 0.35
+      center_of_rotation: 0.30
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # Scanning Electron Microscopy (SEM)
+  # ==========================================================================
+
+  sem:
+    parameters:
+      beam_stigmatism:
+        range: [-0.5, 0.5]
+        typical_error: 0.1
+        unit: "unitless"
+        param_type: "blur"
+        description: "Beam astigmatism from imperfect stigmator correction"
+      scan_drift:
+        range: [-5.0, 5.0]
+        typical_error: 1.0
+        unit: "nm"
+        param_type: "spatial_shift"
+        description: "Spatial drift during slow scan acquisition"
+      working_distance:
+        range: [-0.5, 0.5]
+        typical_error: 0.1
+        unit: "mm"
+        param_type: "offset"
+        description: "Working distance error from sample height variation"
+    severity_weights:
+      beam_stigmatism: 0.35
+      scan_drift: 0.40
+      working_distance: 0.25
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # Transmission Electron Microscopy (TEM)
+  # ==========================================================================
+
+  tem:
+    parameters:
+      defocus:
+        range: [-500.0, 500.0]
+        typical_error: 50.0
+        unit: "nm"
+        param_type: "offset"
+        description: "Objective lens defocus for CTF determination"
+      spherical_aberration:
+        range: [0.5, 2.0]
+        typical_error: 0.1
+        unit: "mm"
+        param_type: "scale"
+        description: "Cs coefficient error from lens calibration"
+      beam_tilt:
+        range: [-2.0, 2.0]
+        typical_error: 0.3
+        unit: "mrad"
+        param_type: "rotation"
+        description: "Beam tilt from condenser alignment error"
+    severity_weights:
+      defocus: 0.45
+      spherical_aberration: 0.30
+      beam_tilt: 0.25
+    correction_method: "gradient_descent"
+
+  # ==========================================================================
+  # Electron Tomography
+  # ==========================================================================
+
+  electron_tomography:
+    parameters:
+      tilt_angle_error:
+        range: [-2.0, 2.0]
+        typical_error: 0.5
+        unit: "degrees"
+        param_type: "rotation"
+        description: "Goniometer tilt angle error from mechanical backlash"
+      alignment_shift:
+        range: [-10.0, 10.0]
+        typical_error: 2.0
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Inter-projection alignment error from fiducial tracking"
+      missing_wedge:
+        range: [0.0, 0.5]
+        typical_error: 0.2
+        unit: "normalized"
+        param_type: "scale"
+        description: "Missing wedge artifact severity from limited tilt range"
+    severity_weights:
+      tilt_angle_error: 0.30
+      alignment_shift: 0.40
+      missing_wedge: 0.30
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # Scanning TEM (STEM)
+  # ==========================================================================
+
+  stem:
+    parameters:
+      probe_aberration:
+        range: [-0.5, 0.5]
+        typical_error: 0.1
+        unit: "unitless"
+        param_type: "blur"
+        description: "Probe-forming lens aberration from corrector mistuning"
+      scan_distortion:
+        range: [-3.0, 3.0]
+        typical_error: 0.5
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Scan coil hysteresis causing image distortion"
+      detector_collection_angle:
+        range: [-5.0, 5.0]
+        typical_error: 1.0
+        unit: "mrad"
+        param_type: "scale"
+        description: "HAADF detector inner angle calibration error"
+    severity_weights:
+      probe_aberration: 0.40
+      scan_distortion: 0.35
+      detector_collection_angle: 0.25
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # Fourier Ptychographic Microscopy
+  # ==========================================================================
+
   fpm:
     parameters:
       led_position_xy:

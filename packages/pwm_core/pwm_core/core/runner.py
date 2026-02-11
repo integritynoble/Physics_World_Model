@@ -3,13 +3,15 @@
 Pipeline orchestrator - wires all components together.
 
 v3: Added agent pre-flight step (Plan v3, Section 12).
+v4: Added modality registry integration (Phase 5).
 
 Flow:
-  Prompt/Spec -> [Agent Pre-flight] -> Build operator -> (Sim or Load) y
-    -> Recon -> Diagnose -> Recommend -> RunBundle
+  Prompt/Spec -> [Agent Pre-flight] -> Validate modality -> Build operator
+    -> (Sim or Load) y -> Recon -> Diagnose -> Recommend -> RunBundle
 
 This file provides the stable "spine" connecting:
 - Agent system (pre-flight analysis, photon/mismatch/recoverability agents)
+- Modality registry (validation, default solver/template lookup)
 - Physics factory (operator construction)
 - Simulator (phantom generation, forward model, noise)
 - Reconstruction portfolio (solver selection and execution)
@@ -55,17 +57,80 @@ from pwm_core.analysis.design_advisor import recommend_actions
 logger = logging.getLogger(__name__)
 
 
+# ---------------------------------------------------------------------------
+# Modality registry integration
+# ---------------------------------------------------------------------------
+
+
+def validate_modality(modality: str) -> bool:
+    """Validate that a modality exists in the modality registry.
+
+    Parameters
+    ----------
+    modality : str
+        Modality key to validate (e.g. "ct", "mri").
+
+    Returns
+    -------
+    bool
+        True if the modality is known, False otherwise.
+    """
+    try:
+        from pwm_core.core.modality_registry import load_modalities
+        mods = load_modalities()
+        return modality in mods
+    except (ImportError, FileNotFoundError):
+        logger.debug("Modality registry not available; skipping validation.")
+        return True  # Permissive when registry is unavailable
+
+
+def get_modality_defaults(modality: str) -> Dict[str, Any]:
+    """Look up default solver and template from the modality registry.
+
+    Parameters
+    ----------
+    modality : str
+        Modality key (e.g. "ct", "mri").
+
+    Returns
+    -------
+    dict
+        Keys: ``default_solver``, ``default_template_id``.
+        Empty strings if the registry is unavailable or modality is unknown.
+    """
+    try:
+        from pwm_core.core.modality_registry import get_modality
+        info = get_modality(modality)
+        return {
+            "default_solver": info.default_solver,
+            "default_template_id": info.default_template_id,
+        }
+    except (ImportError, FileNotFoundError, KeyError):
+        return {"default_solver": "", "default_template_id": ""}
+
+
 def _get_recon_config(spec: ExperimentSpec) -> Dict[str, Any]:
-    """Extract reconstruction configuration from spec."""
+    """Extract reconstruction configuration from spec.
+
+    If no solvers are specified and a modality is known, falls back
+    to the default solver from the modality registry.
+    """
     candidates = []
 
     if spec.recon.portfolio.solvers:
         for solver in spec.recon.portfolio.solvers:
             candidates.append(solver.id)
 
-    # Default candidates if none specified
+    # Default candidates: try modality registry, then hardcoded fallback
     if not candidates:
-        candidates = ["lsq", "fista"]
+        modality = spec.states.physics.modality if spec.states.physics else None
+        if modality and modality != "unknown":
+            defaults = get_modality_defaults(modality)
+            default_solver = defaults.get("default_solver", "")
+            if default_solver:
+                candidates = [default_solver]
+        if not candidates:
+            candidates = ["lsq", "fista"]
 
     return {
         "candidates": candidates,
@@ -350,6 +415,15 @@ def run_pipeline(
         agent_results = run_agent_preflight(prompt, permit_mode)
         if agent_results and not agent_results.get("permitted", True):
             logger.warning("Agent pre-flight denied. Proceeding anyway (spec-driven).")
+
+    # 0b. Validate modality against registry (advisory, not blocking)
+    modality = spec.states.physics.modality if spec.states.physics else None
+    if modality and modality != "unknown":
+        if not validate_modality(modality):
+            logger.warning(
+                "Modality '%s' not found in modality registry. "
+                "Proceeding with spec-driven defaults.", modality
+            )
 
     # 1. Create RunBundle skeleton
     rb_dir = write_runbundle_skeleton(out_dir, spec_id=spec.id)

@@ -1,0 +1,145 @@
+# =============================================================================
+# PWM Acceptance Thresholds Registry
+# Per-modality acceptance thresholds for staged acceptance testing.
+#
+# Tier A: Must pass -- 8 core modalities with full S1.1-S1.4.
+# Tier B: Must pass before release -- 4 modalities with S1.1-S1.2.
+# Tier C: Smoke test -- 22 modalities: forward_ok + no crash.
+#
+# Fields:
+#   tier: A | B | C
+#   primary_metric: metric name from metric_registry
+#   quick_threshold: minimal bar for CI quick checks
+#   full_threshold: bar for full acceptance (release gate)
+#   secondary_metric: optional second metric
+#   secondary_quick: threshold for secondary metric (quick mode)
+#   calib_required: whether calibration data is needed for real deployment
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# Tier A -- must pass (8 modalities)
+# ---------------------------------------------------------------------------
+spc:
+  tier: A
+  primary_metric: psnr
+  quick_threshold: 18
+  full_threshold: 22
+  calib_required: true
+
+cacti:
+  tier: A
+  primary_metric: psnr
+  quick_threshold: 18
+  full_threshold: 22
+  calib_required: true
+
+cassi:
+  tier: A
+  primary_metric: spectral_angle
+  quick_threshold: 0.85
+  full_threshold: 0.92
+  secondary_metric: psnr
+  secondary_quick: 20
+  calib_required: true
+
+ct:
+  tier: A
+  primary_metric: psnr
+  quick_threshold: 25
+  full_threshold: 30
+  secondary_metric: ssim
+  calib_required: true
+
+mri:
+  tier: A
+  primary_metric: psnr
+  quick_threshold: 22
+  full_threshold: 28
+  secondary_metric: ssim
+  calib_required: true
+
+ultrasound:
+  tier: A
+  primary_metric: cnr
+  quick_threshold: 1.5
+  full_threshold: 3.0
+  secondary_metric: psnr
+  secondary_quick: 12
+  calib_required: true
+
+sem:
+  tier: A
+  primary_metric: frc
+  quick_threshold: 0.5
+  full_threshold: 0.7
+  secondary_metric: psnr
+  secondary_quick: 12
+  calib_required: true
+
+tem:
+  tier: A
+  primary_metric: frc
+  quick_threshold: 0.5
+  full_threshold: 0.7
+  secondary_metric: psnr
+  secondary_quick: 12
+  calib_required: true
+
+# ---------------------------------------------------------------------------
+# Tier B -- must pass before release (4 modalities)
+# ---------------------------------------------------------------------------
+pet:
+  tier: B
+  primary_metric: crc
+  quick_threshold: 0.3
+  full_threshold: 0.6
+  secondary_metric: psnr
+  secondary_quick: 10
+  calib_required: false
+
+spect:
+  tier: B
+  primary_metric: crc
+  quick_threshold: 0.3
+  full_threshold: 0.6
+  calib_required: false
+
+electron_tomography:
+  tier: B
+  primary_metric: psnr
+  quick_threshold: 12
+  full_threshold: 18
+  calib_required: false
+
+stem:
+  tier: B
+  primary_metric: frc
+  quick_threshold: 0.4
+  full_threshold: 0.6
+  calib_required: false
+
+# ---------------------------------------------------------------------------
+# Tier C -- smoke test (22 modalities): forward_ok + no crash
+# ---------------------------------------------------------------------------
+widefield: {tier: C, primary_metric: psnr, quick_threshold: 20, calib_required: false}
+widefield_low_dose: {tier: C, primary_metric: psnr, quick_threshold: 15, calib_required: false}
+confocal_live: {tier: C, primary_metric: psnr, quick_threshold: 20, calib_required: false}
+confocal_3d: {tier: C, primary_metric: psnr, quick_threshold: 20, calib_required: false}
+sim: {tier: C, primary_metric: psnr, quick_threshold: 18, calib_required: false}
+lensless: {tier: C, primary_metric: psnr, quick_threshold: 15, calib_required: false}
+light_sheet: {tier: C, primary_metric: psnr, quick_threshold: 18, calib_required: false}
+ptychography: {tier: C, primary_metric: psnr, quick_threshold: 15, calib_required: false}
+holography: {tier: C, primary_metric: psnr, quick_threshold: 18, calib_required: false}
+nerf: {tier: C, primary_metric: psnr, quick_threshold: 10, calib_required: false}
+gaussian_splatting: {tier: C, primary_metric: psnr, quick_threshold: 10, calib_required: false}
+matrix: {tier: C, primary_metric: psnr, quick_threshold: 20, calib_required: false}
+panorama_multifocal: {tier: C, primary_metric: psnr, quick_threshold: 15, calib_required: false}
+light_field: {tier: C, primary_metric: psnr, quick_threshold: 15, calib_required: false}
+integral: {tier: C, primary_metric: psnr, quick_threshold: 15, calib_required: false}
+phase_retrieval: {tier: C, primary_metric: psnr, quick_threshold: 12, calib_required: false}
+flim: {tier: C, primary_metric: psnr, quick_threshold: 15, calib_required: false}
+photoacoustic: {tier: C, primary_metric: psnr, quick_threshold: 15, calib_required: false}
+oct: {tier: C, primary_metric: psnr, quick_threshold: 15, calib_required: false}
+fpm: {tier: C, primary_metric: psnr, quick_threshold: 12, calib_required: false}
+dot: {tier: C, primary_metric: psnr, quick_threshold: 12, calib_required: false}
+xray_radiography: {tier: C, primary_metric: psnr, quick_threshold: 15, calib_required: false}
