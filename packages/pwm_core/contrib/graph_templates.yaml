@@ -2222,3 +2222,1366 @@ templates:
         target: sensor
       - source: sensor
         target: noise
+
+  # ---------------------------------------------------------------------------
+  # X-RAY VARIANTS (v2) — R1
+  # ---------------------------------------------------------------------------
+
+  fluoroscopy_graph_v2:
+    description: "Fluoroscopy: XRaySource→BeerLambert→TemporalIntegrator→XRayDetector→PoissonGaussianNoise"
+    metadata:
+      modality: fluoroscopy
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: xray_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: transmission
+        primitive_id: beer_lambert
+        role: transport
+        params:
+          I_0: 5000.0
+      - node_id: temporal_int
+        primitive_id: fluoro_temporal_integrator
+        role: transport
+        params:
+          n_frames: 8
+          decay: 0.9
+      - node_id: sensor
+        primitive_id: xray_detector_sensor
+        role: sensor
+        params:
+          scintillator_efficiency: 0.7
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 20000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: transmission
+      - source: transmission
+        target: temporal_int
+      - source: temporal_int
+        target: sensor
+      - source: sensor
+        target: noise
+
+  mammography_graph_v2:
+    description: "Mammography: XRaySource→BeerLambert→PhotonSensor→PoissonGaussianNoise"
+    metadata:
+      modality: mammography
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: xray_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: transmission
+        primitive_id: beer_lambert
+        role: transport
+        params:
+          I_0: 8000.0
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.85
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 30000.0
+          read_sigma: 0.008
+          seed: 0
+    edges:
+      - source: source
+        target: transmission
+      - source: transmission
+        target: sensor
+      - source: sensor
+        target: noise
+
+  dexa_graph_v2:
+    description: "DEXA: XRaySource→DualEnergyBeerLambert→PhotonSensor→PoissonGaussianNoise"
+    metadata:
+      modality: dexa
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: xray_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: dual_transmission
+        primitive_id: dual_energy_beer_lambert
+        role: transport
+        params:
+          I_0_low: 5000.0
+          I_0_high: 8000.0
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.85
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 25000.0
+          read_sigma: 0.008
+          seed: 0
+    edges:
+      - source: source
+        target: dual_transmission
+      - source: dual_transmission
+        target: sensor
+      - source: sensor
+        target: noise
+
+  cbct_graph_v2:
+    description: "CBCT: XRaySource→Radon→BeerLambert→PhotonSensor→PoissonOnlyNoise"
+    metadata:
+      modality: cbct
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [180, 64]
+    nodes:
+      - node_id: source
+        primitive_id: xray_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: radon
+        primitive_id: ct_radon
+        role: transport
+        params:
+          n_angles: 180
+          H: 64
+          W: 64
+        learnable: []
+      - node_id: beer_lambert
+        primitive_id: beer_lambert
+        role: transport
+        params:
+          I_0: 8000.0
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.85
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_only_sensor
+        role: noise
+        params:
+          peak_photons: 50000.0
+          seed: 0
+    edges:
+      - source: source
+        target: radon
+      - source: radon
+        target: beer_lambert
+      - source: beer_lambert
+        target: sensor
+      - source: sensor
+        target: noise
+
+  angiography_graph_v2:
+    description: "Angiography: XRaySource→BeerLambert→TemporalIntegrator→XRayDetector→PoissonGaussianNoise"
+    metadata:
+      modality: angiography
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: xray_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: transmission
+        primitive_id: beer_lambert
+        role: transport
+        params:
+          I_0: 6000.0
+      - node_id: temporal_int
+        primitive_id: fluoro_temporal_integrator
+        role: transport
+        params:
+          n_frames: 4
+          decay: 0.85
+      - node_id: sensor
+        primitive_id: xray_detector_sensor
+        role: sensor
+        params:
+          scintillator_efficiency: 0.75
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 30000.0
+          read_sigma: 0.008
+          seed: 0
+    edges:
+      - source: source
+        target: transmission
+      - source: transmission
+        target: temporal_int
+      - source: temporal_int
+        target: sensor
+      - source: sensor
+        target: noise
+
+  # ---------------------------------------------------------------------------
+  # ULTRASOUND MODES (v2) — R2
+  # ---------------------------------------------------------------------------
+
+  doppler_ultrasound_graph_v2:
+    description: "Doppler Ultrasound: AcousticSource→AcousticPropagation→DopplerEstimator→AcousticReceive→GaussianNoise"
+    metadata:
+      modality: doppler_ultrasound
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64]
+    nodes:
+      - node_id: source
+        primitive_id: acoustic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: propagate
+        primitive_id: acoustic_propagation
+        role: transport
+        params:
+          speed_of_sound: 1540.0
+          n_sensors: 32
+          x_shape: [64, 64]
+      - node_id: doppler
+        primitive_id: doppler_estimator
+        role: transport
+        params:
+          prf_hz: 10000.0
+          wall_filter_cutoff: 50.0
+      - node_id: sensor
+        primitive_id: acoustic_receive_sensor
+        role: sensor
+        params:
+          sensitivity: 1.0
+      - node_id: noise
+        primitive_id: gaussian_sensor_noise
+        role: noise
+        params:
+          sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: propagate
+      - source: propagate
+        target: doppler
+      - source: doppler
+        target: sensor
+      - source: sensor
+        target: noise
+
+  elastography_graph_v2:
+    description: "Elastography: AcousticSource→ElasticWaveModel→AcousticPropagation→AcousticReceive→GaussianNoise"
+    metadata:
+      modality: elastography
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64]
+    nodes:
+      - node_id: source
+        primitive_id: acoustic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: elastic
+        primitive_id: elastic_wave_model
+        role: transport
+        params:
+          shear_speed_m_per_s: 3.0
+          push_duration_us: 100.0
+      - node_id: propagate
+        primitive_id: acoustic_propagation
+        role: transport
+        params:
+          speed_of_sound: 1540.0
+          n_sensors: 32
+          x_shape: [64, 64]
+      - node_id: sensor
+        primitive_id: acoustic_receive_sensor
+        role: sensor
+        params:
+          sensitivity: 1.0
+      - node_id: noise
+        primitive_id: gaussian_sensor_noise
+        role: noise
+        params:
+          sigma: 0.015
+          seed: 0
+    edges:
+      - source: source
+        target: elastic
+      - source: elastic
+        target: propagate
+      - source: propagate
+        target: sensor
+      - source: sensor
+        target: noise
+
+  # ---------------------------------------------------------------------------
+  # MRI APPLICATIONS (v2) — R3
+  # ---------------------------------------------------------------------------
+
+  fmri_graph_v2:
+    description: "fMRI: SpinSource→MRIkSpace→SequenceBlock→CoilSensor→ComplexGaussianNoise"
+    metadata:
+      modality: fmri
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: spin_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: kspace
+        primitive_id: mri_kspace
+        role: transport
+        params:
+          H: 64
+          W: 64
+          sampling_rate: 0.50
+          seed: 42
+        learnable: []
+      - node_id: sequence
+        primitive_id: sequence_block
+        role: transport
+        params:
+          TR_ms: 2000.0
+          TE_ms: 30.0
+          flip_angle_deg: 90.0
+      - node_id: sensor
+        primitive_id: coil_sensor
+        role: sensor
+        params:
+          sensitivity: 1.0
+      - node_id: noise
+        primitive_id: complex_gaussian_sensor
+        role: noise
+        params:
+          sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: kspace
+      - source: kspace
+        target: sequence
+      - source: sequence
+        target: sensor
+      - source: sensor
+        target: noise
+
+  mrs_graph_v2:
+    description: "MRS: SpinSource→MRIkSpace→SequenceBlock→CoilSensor→ComplexGaussianNoise"
+    metadata:
+      modality: mrs
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: spin_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: kspace
+        primitive_id: mri_kspace
+        role: transport
+        params:
+          H: 64
+          W: 64
+          sampling_rate: 1.0
+          seed: 42
+        learnable: []
+      - node_id: sequence
+        primitive_id: sequence_block
+        role: transport
+        params:
+          TR_ms: 3000.0
+          TE_ms: 135.0
+          flip_angle_deg: 90.0
+      - node_id: sensor
+        primitive_id: coil_sensor
+        role: sensor
+        params:
+          sensitivity: 1.0
+      - node_id: noise
+        primitive_id: complex_gaussian_sensor
+        role: noise
+        params:
+          sigma: 0.02
+          seed: 0
+    edges:
+      - source: source
+        target: kspace
+      - source: kspace
+        target: sequence
+      - source: sequence
+        target: sensor
+      - source: sensor
+        target: noise
+
+  diffusion_mri_graph_v2:
+    description: "Diffusion MRI: SpinSource→MRIkSpace→CoilSensor→ComplexGaussianNoise"
+    metadata:
+      modality: diffusion_mri
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: spin_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: kspace
+        primitive_id: mri_kspace
+        role: transport
+        params:
+          H: 64
+          W: 64
+          sampling_rate: 0.30
+          seed: 42
+        learnable: []
+      - node_id: sensor
+        primitive_id: coil_sensor
+        role: sensor
+        params:
+          sensitivity: 1.0
+      - node_id: noise
+        primitive_id: complex_gaussian_sensor
+        role: noise
+        params:
+          sigma: 0.015
+          seed: 0
+    edges:
+      - source: source
+        target: kspace
+      - source: kspace
+        target: sensor
+      - source: sensor
+        target: noise
+
+  # ---------------------------------------------------------------------------
+  # ADVANCED OPTICAL MICROSCOPY (v2) — R4
+  # ---------------------------------------------------------------------------
+
+  two_photon_graph_v2:
+    description: "Two-photon microscopy: Source→NonlinearExcitation→PSF→Sensor→Noise"
+    metadata:
+      modality: two_photon
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: excitation
+        primitive_id: nonlinear_excitation
+        role: transport
+        params:
+          n_photons: 2
+      - node_id: blur
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 1.5
+          mode: reflect
+        learnable: [sigma]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.45
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 5000.0
+          read_sigma: 0.02
+          seed: 0
+    edges:
+      - source: source
+        target: excitation
+      - source: excitation
+        target: blur
+      - source: blur
+        target: sensor
+      - source: sensor
+        target: noise
+
+  sted_graph_v2:
+    description: "STED microscopy: Source→SaturationDepletion→PSF→Sensor→Noise"
+    metadata:
+      modality: sted
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: depletion
+        primitive_id: saturation_depletion
+        role: transport
+        params:
+          depletion_factor: 0.5
+          psf_sigma: 1.0
+      - node_id: blur
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 0.8
+          mode: reflect
+        learnable: [sigma]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.45
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 3000.0
+          read_sigma: 0.03
+          seed: 0
+    edges:
+      - source: source
+        target: depletion
+      - source: depletion
+        target: blur
+      - source: blur
+        target: sensor
+      - source: sensor
+        target: noise
+
+  palm_storm_graph_v2:
+    description: "PALM/STORM: Source→BlinkingEmitterModel→Sensor→Noise"
+    metadata:
+      modality: palm_storm
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: emitters
+        primitive_id: blinking_emitter
+        role: transport
+        params:
+          density: 0.1
+          photons_per_emitter: 1000
+          seed: 42
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.90
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 1000.0
+          read_sigma: 0.05
+          seed: 0
+    edges:
+      - source: source
+        target: emitters
+      - source: emitters
+        target: sensor
+      - source: sensor
+        target: noise
+
+  tirf_graph_v2:
+    description: "TIRF microscopy: Source→EvanescentFieldDecay→PSF→Sensor→Noise"
+    metadata:
+      modality: tirf
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: evanescent
+        primitive_id: evanescent_decay
+        role: transport
+        params:
+          penetration_depth: 100.0
+      - node_id: blur
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 1.2
+          mode: reflect
+        learnable: [sigma]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.90
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 8000.0
+          read_sigma: 0.015
+          seed: 0
+    edges:
+      - source: source
+        target: evanescent
+      - source: evanescent
+        target: blur
+      - source: blur
+        target: sensor
+      - source: sensor
+        target: noise
+
+  polarization_graph_v2:
+    description: "Polarization microscopy: Source→PSF→Sensor→Noise"
+    metadata:
+      modality: polarization
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: blur
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 1.8
+          mode: reflect
+        learnable: [sigma]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.85
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 12000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: blur
+      - source: blur
+        target: sensor
+      - source: sensor
+        target: noise
+
+  # ---------------------------------------------------------------------------
+  # CLINICAL OPTICS (v2) — R5
+  # ---------------------------------------------------------------------------
+
+  endoscopy_graph_v2:
+    description: "Endoscopy: Source→FiberBundle→SpecularReflection→PhotonSensor→PoissonGaussianNoise"
+    metadata:
+      modality: endoscopy
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: fiber_bundle
+        primitive_id: fiber_bundle_sensor
+        role: transport
+        params:
+          n_cores: 10000
+          core_pitch: 10.0
+          coupling_efficiency: 0.3
+          seed: 42
+      - node_id: specular
+        primitive_id: specular_reflection
+        role: transport
+        params:
+          specular_strength: 0.1
+          roughness: 0.5
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.75
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 8000.0
+          read_sigma: 0.02
+          seed: 0
+    edges:
+      - source: source
+        target: fiber_bundle
+      - source: fiber_bundle
+        target: specular
+      - source: specular
+        target: sensor
+      - source: sensor
+        target: noise
+
+  fundus_graph_v2:
+    description: "Fundus camera: Source→RetinalPSF→PhotonSensor→PoissonGaussianNoise"
+    metadata:
+      modality: fundus
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: retinal_psf
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 1.5
+          mode: reflect
+        learnable: [sigma]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.80
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 15000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: retinal_psf
+      - source: retinal_psf
+        target: sensor
+      - source: sensor
+        target: noise
+
+  octa_graph_v2:
+    description: "OCT Angiography: Source→AngularSpectrum→VesselFlowContrast→PhotonSensor→PoissonGaussianNoise"
+    metadata:
+      modality: octa
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: propagate
+        primitive_id: angular_spectrum
+        role: transport
+        params:
+          wavelength: 0.84e-6
+          distance: 1.0e-3
+          pixel_size: 5.0e-6
+      - node_id: flow_contrast
+        primitive_id: vessel_flow_contrast
+        role: transport
+        params:
+          n_frames: 4
+          threshold: 0.1
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.85
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 30000.0
+          read_sigma: 0.008
+          seed: 0
+    edges:
+      - source: source
+        target: propagate
+      - source: propagate
+        target: flow_contrast
+      - source: flow_contrast
+        target: sensor
+      - source: sensor
+        target: noise
+
+  # ---------------------------------------------------------------------------
+  # DEPTH / TOF IMAGING (v2) — R6
+  # ---------------------------------------------------------------------------
+
+  tof_camera_graph_v2:
+    description: "ToF Camera: Source→TimeOfFlightGate→SPADToFSensor→PoissonGaussianNoise"
+    metadata:
+      modality: tof_camera
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: tof_gate
+        primitive_id: tof_gate
+        role: transport
+        params:
+          n_bins: 64
+          bin_width_ns: 1.0
+          timing_jitter_ns: 0.1
+      - node_id: sensor
+        primitive_id: spad_tof_sensor
+        role: sensor
+        params:
+          n_bins: 64
+          dead_time_ns: 50.0
+          qe: 0.3
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 5000.0
+          read_sigma: 0.02
+          seed: 0
+    edges:
+      - source: source
+        target: tof_gate
+      - source: tof_gate
+        target: sensor
+      - source: sensor
+        target: noise
+
+  lidar_graph_v2:
+    description: "LiDAR: Source→ScanTrajectory→TimeOfFlightGate→SPADToFSensor→PoissonGaussianNoise"
+    metadata:
+      modality: lidar
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: scan
+        primitive_id: scan_trajectory
+        role: transport
+        params:
+          scan_type: raster
+          n_points: 64
+          dwell_time: 1.0
+      - node_id: tof_gate
+        primitive_id: tof_gate
+        role: transport
+        params:
+          n_bins: 64
+          bin_width_ns: 0.5
+          timing_jitter_ns: 0.05
+      - node_id: sensor
+        primitive_id: spad_tof_sensor
+        role: sensor
+        params:
+          n_bins: 64
+          dead_time_ns: 20.0
+          qe: 0.25
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 3000.0
+          read_sigma: 0.03
+          seed: 0
+    edges:
+      - source: source
+        target: scan
+      - source: scan
+        target: tof_gate
+      - source: tof_gate
+        target: sensor
+      - source: sensor
+        target: noise
+
+  structured_light_graph_v2:
+    description: "Structured Light: Source→StructuredLightProjector→DepthOptics→PhotonSensor→PoissonGaussianNoise"
+    metadata:
+      modality: structured_light
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: projector
+        primitive_id: structured_light_projector
+        role: transport
+        params:
+          n_patterns: 4
+          fringe_freq: 8.0
+      - node_id: depth_optics
+        primitive_id: depth_optics
+        role: transport
+        params:
+          focal_length: 50.0
+          aperture: 2.8
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.80
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 20000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: projector
+      - source: projector
+        target: depth_optics
+      - source: depth_optics
+        target: sensor
+      - source: sensor
+        target: noise
+
+  # ---------------------------------------------------------------------------
+  # RADAR / SONAR (v2) — R7
+  # ---------------------------------------------------------------------------
+
+  sar_graph_v2:
+    description: "SAR: GenericSource→SARBackprojection→GenericSensor→ComplexGaussianNoise"
+    metadata:
+      modality: sar
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: generic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: backproject
+        primitive_id: sar_backprojection
+        role: transport
+        params:
+          n_pulses: 64
+          swath_width: 100.0
+      - node_id: sensor
+        primitive_id: generic_sensor
+        role: sensor
+        params:
+          gain: 1.0
+      - node_id: noise
+        primitive_id: complex_gaussian_sensor
+        role: noise
+        params:
+          sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: backproject
+      - source: backproject
+        target: sensor
+      - source: sensor
+        target: noise
+
+  sonar_graph_v2:
+    description: "Sonar: AcousticSource→BeamformDelay→TransducerSensor→PoissonGaussianNoise"
+    metadata:
+      modality: sonar
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64]
+    nodes:
+      - node_id: source
+        primitive_id: acoustic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: beamform
+        primitive_id: beamform_delay
+        role: transport
+        params:
+          n_elements: 32
+      - node_id: sensor
+        primitive_id: transducer_sensor
+        role: sensor
+        params:
+          sensitivity: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.02
+          seed: 0
+    edges:
+      - source: source
+        target: beamform
+      - source: beamform
+        target: sensor
+      - source: sensor
+        target: noise
+
+  # ---------------------------------------------------------------------------
+  # ELECTRON SPECTROSCOPY / DIFFRACTION (v2) — R8
+  # ---------------------------------------------------------------------------
+
+  electron_diffraction_graph_v2:
+    description: "4D-STEM: GenericSource→DiffractionCamera→EnergyResolvingDetector→PoissonGaussianNoise"
+    metadata:
+      modality: electron_diffraction
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: generic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: diffract
+        primitive_id: diffraction_camera
+        role: transport
+        params:
+          detector_psf_sigma: 0.5
+      - node_id: sensor
+        primitive_id: energy_resolving_detector
+        role: sensor
+        params:
+          n_channels: 256
+          energy_range_ev: [0, 2000]
+          qe: 0.8
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: diffract
+      - source: diffract
+        target: sensor
+      - source: sensor
+        target: noise
+
+  ebsd_graph_v2:
+    description: "EBSD: GenericSource→ReciprocalSpaceGeometry→EnergyResolvingDetector→PoissonGaussianNoise"
+    metadata:
+      modality: ebsd
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: generic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: geometry
+        primitive_id: reciprocal_space_geometry
+        role: transport
+        params:
+          sample_tilt_deg: 70.0
+          detector_distance: 15.0
+      - node_id: sensor
+        primitive_id: energy_resolving_detector
+        role: sensor
+        params:
+          n_channels: 256
+          energy_range_ev: [0, 2000]
+          qe: 0.8
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 8000.0
+          read_sigma: 0.015
+          seed: 0
+    edges:
+      - source: source
+        target: geometry
+      - source: geometry
+        target: sensor
+      - source: sensor
+        target: noise
+
+  eels_graph_v2:
+    description: "EELS: GenericSource→EnergyResolvingDetector(filter)→GenericSensor→PoissonGaussianNoise"
+    metadata:
+      modality: eels
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: generic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: spectrometer
+        primitive_id: energy_resolving_detector
+        role: transport
+        params:
+          n_channels: 1024
+          energy_range_ev: [0, 3000]
+          qe: 0.7
+      - node_id: sensor
+        primitive_id: generic_sensor
+        role: sensor
+        params:
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 5000.0
+          read_sigma: 0.02
+          seed: 0
+    edges:
+      - source: source
+        target: spectrometer
+      - source: spectrometer
+        target: sensor
+      - source: sensor
+        target: noise
+
+  electron_holography_graph_v2:
+    description: "Electron holography: GenericSource→FresnelProp→PhotonSensor→PoissonGaussianNoise"
+    metadata:
+      modality: electron_holography
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: generic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: propagate
+        primitive_id: fresnel_prop
+        role: transport
+        params:
+          wavelength: 2.5e-12
+          distance: 1.0e-3
+          pixel_size: 1.0e-10
+        learnable: [distance]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.8
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 20000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: propagate
+      - source: propagate
+        target: sensor
+      - source: sensor
+        target: noise
+
+  # ---------------------------------------------------------------------------
+  # PARTICLE IMAGING (v2) — R9
+  # ---------------------------------------------------------------------------
+
+  neutron_tomo_graph_v2:
+    description: "Neutron tomo: GenericSource→ParticleAttenuation→GenericSensor→PoissonGaussianNoise"
+    metadata:
+      modality: neutron_tomo
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: generic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: attenuation
+        primitive_id: particle_attenuation
+        role: transport
+        params:
+          I_0: 5000.0
+          cross_section: 0.05
+      - node_id: sensor
+        primitive_id: generic_sensor
+        role: sensor
+        params:
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 20000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: attenuation
+      - source: attenuation
+        target: sensor
+      - source: sensor
+        target: noise
+
+  proton_radiography_graph_v2:
+    description: "Proton radiography: GenericSource→ParticleAttenuation→MultipleScattering→GenericSensor→PoissonGaussianNoise"
+    metadata:
+      modality: proton_radiography
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: generic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: attenuation
+        primitive_id: particle_attenuation
+        role: transport
+        params:
+          I_0: 10000.0
+          cross_section: 0.03
+      - node_id: scatter
+        primitive_id: multiple_scattering
+        role: transport
+        params:
+          sigma: 1.5
+      - node_id: sensor
+        primitive_id: generic_sensor
+        role: sensor
+        params:
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 30000.0
+          read_sigma: 0.008
+          seed: 0
+    edges:
+      - source: source
+        target: attenuation
+      - source: attenuation
+        target: scatter
+      - source: scatter
+        target: sensor
+      - source: sensor
+        target: noise
+
+  muon_tomo_graph_v2:
+    description: "Muon tomo: GenericSource→MultipleScattering→TrackDetectorSensor→PoissonGaussianNoise"
+    metadata:
+      modality: muon_tomo
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: generic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: scatter
+        primitive_id: multiple_scattering
+        role: transport
+        params:
+          sigma: 2.0
+      - node_id: sensor
+        primitive_id: track_detector_sensor
+        role: sensor
+        params:
+          n_layers: 8
+          efficiency: 0.95
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 15000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: scatter
+      - source: scatter
+        target: sensor
+      - source: sensor
+        target: noise

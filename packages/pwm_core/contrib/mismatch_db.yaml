@@ -1039,3 +1039,843 @@ modalities:
       objective_na_error: 0.25
       defocus: 0.30
     correction_method: "gradient_descent"
+
+  # ==========================================================================
+  # X-ray Variants (R1)
+  # ==========================================================================
+
+  fluoroscopy:
+    parameters:
+      source_position:
+        range: [-5.0, 5.0]
+        typical_error: 1.0
+        unit: "mm"
+        param_type: "position"
+        description: "X-ray focal spot position error from C-arm mechanical flex"
+      detector_tilt:
+        range: [-2.0, 2.0]
+        typical_error: 0.3
+        unit: "degrees"
+        param_type: "rotation"
+        description: "Image intensifier tilt relative to beam axis"
+      temporal_lag:
+        range: [0.0, 0.05]
+        typical_error: 0.01
+        unit: "seconds"
+        param_type: "timing"
+        description: "Detector temporal lag causing ghosting from previous frames"
+    severity_weights:
+      source_position: 0.35
+      detector_tilt: 0.30
+      temporal_lag: 0.35
+    correction_method: "grid_search"
+
+  mammography:
+    parameters:
+      scatter_fraction:
+        range: [0.0, 0.5]
+        typical_error: 0.10
+        unit: "normalized"
+        param_type: "scale"
+        description: "Scatter-to-primary ratio error from breast thickness variation"
+      detector_gain:
+        range: [0.7, 1.3]
+        typical_error: 0.05
+        unit: "unitless"
+        param_type: "scale"
+        description: "Detector gain non-uniformity across the flat panel"
+      compression_thickness:
+        range: [-10.0, 10.0]
+        typical_error: 3.0
+        unit: "mm"
+        param_type: "offset"
+        description: "Breast compressed thickness measurement error"
+    severity_weights:
+      scatter_fraction: 0.40
+      detector_gain: 0.25
+      compression_thickness: 0.35
+    correction_method: "grid_search"
+
+  dexa:
+    parameters:
+      energy_calibration:
+        range: [-5.0, 5.0]
+        typical_error: 1.0
+        unit: "keV"
+        param_type: "scale"
+        description: "Effective photon energy calibration error for dual-energy decomposition"
+      soft_tissue_baseline:
+        range: [-0.1, 0.1]
+        typical_error: 0.03
+        unit: "g/cm^2"
+        param_type: "offset"
+        description: "Soft tissue composition assumption error affecting BMD"
+      positioning:
+        range: [-5.0, 5.0]
+        typical_error: 1.5
+        unit: "mm"
+        param_type: "position"
+        description: "Patient positioning error between serial measurements"
+    severity_weights:
+      energy_calibration: 0.40
+      soft_tissue_baseline: 0.35
+      positioning: 0.25
+    correction_method: "grid_search"
+
+  cbct:
+    parameters:
+      projection_angle_offset:
+        range: [-2.0, 2.0]
+        typical_error: 0.5
+        unit: "degrees"
+        param_type: "rotation"
+        description: "Gantry angular encoder offset from mechanical flex"
+      detector_offset:
+        range: [-5.0, 5.0]
+        typical_error: 2.0
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Detector panel lateral offset from isocenter"
+      scatter_fraction:
+        range: [0.0, 0.4]
+        typical_error: 0.10
+        unit: "normalized"
+        param_type: "scale"
+        description: "Cone-beam scatter estimation error (higher than fan-beam)"
+    severity_weights:
+      projection_angle_offset: 0.30
+      detector_offset: 0.40
+      scatter_fraction: 0.30
+    correction_method: "grid_search"
+
+  angiography:
+    parameters:
+      source_position:
+        range: [-5.0, 5.0]
+        typical_error: 1.0
+        unit: "mm"
+        param_type: "position"
+        description: "X-ray tube focal spot position error from C-arm flex"
+      motion_blur:
+        range: [0.0, 3.0]
+        typical_error: 0.5
+        unit: "pixels"
+        param_type: "blur"
+        description: "Patient or organ motion between mask and contrast frames"
+      contrast_timing:
+        range: [-1.0, 1.0]
+        typical_error: 0.2
+        unit: "seconds"
+        param_type: "timing"
+        description: "Contrast bolus arrival time estimation error"
+    severity_weights:
+      source_position: 0.30
+      motion_blur: 0.40
+      contrast_timing: 0.30
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # Ultrasound Modes (R2)
+  # ==========================================================================
+
+  doppler_ultrasound:
+    parameters:
+      angle_estimation:
+        range: [-15.0, 15.0]
+        typical_error: 5.0
+        unit: "degrees"
+        param_type: "rotation"
+        description: "Doppler angle estimation error affecting velocity calculation"
+      wall_filter_cutoff:
+        range: [20.0, 200.0]
+        typical_error: 30.0
+        unit: "Hz"
+        param_type: "scale"
+        description: "Wall motion filter cutoff frequency error removing low-velocity flow"
+      prf_aliasing:
+        range: [-0.2, 0.2]
+        typical_error: 0.05
+        unit: "m/s"
+        param_type: "scale"
+        description: "Velocity aliasing from insufficient PRF for high-velocity flow"
+    severity_weights:
+      angle_estimation: 0.45
+      wall_filter_cutoff: 0.30
+      prf_aliasing: 0.25
+    correction_method: "grid_search"
+
+  elastography:
+    parameters:
+      shear_wave_speed:
+        range: [0.5, 8.0]
+        typical_error: 0.3
+        unit: "m/s"
+        param_type: "scale"
+        description: "Shear wave speed estimation error from tissue heterogeneity"
+      push_beam_position:
+        range: [-2.0, 2.0]
+        typical_error: 0.5
+        unit: "mm"
+        param_type: "position"
+        description: "Acoustic radiation force push beam location error"
+      tissue_viscosity:
+        range: [0.0, 2.0]
+        typical_error: 0.3
+        unit: "Pa*s"
+        param_type: "scale"
+        description: "Tissue viscosity assumption error affecting shear wave dispersion"
+    severity_weights:
+      shear_wave_speed: 0.45
+      push_beam_position: 0.25
+      tissue_viscosity: 0.30
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # MRI Applications (R3)
+  # ==========================================================================
+
+  fmri:
+    parameters:
+      head_motion:
+        range: [0.0, 3.0]
+        typical_error: 0.5
+        unit: "mm"
+        param_type: "spatial_shift"
+        description: "Head motion during functional scan causing signal corruption"
+      B0_inhomogeneity:
+        range: [0.0, 200.0]
+        typical_error: 30.0
+        unit: "Hz"
+        param_type: "offset"
+        description: "B0 field inhomogeneity causing EPI geometric distortion"
+      hrf_model:
+        range: [-2.0, 2.0]
+        typical_error: 0.5
+        unit: "seconds"
+        param_type: "timing"
+        description: "Hemodynamic response function timing model error"
+    severity_weights:
+      head_motion: 0.40
+      B0_inhomogeneity: 0.35
+      hrf_model: 0.25
+    correction_method: "gradient_descent"
+
+  mrs:
+    parameters:
+      B0_drift:
+        range: [0.0, 20.0]
+        typical_error: 3.0
+        unit: "Hz"
+        param_type: "offset"
+        description: "B0 field drift during long spectral acquisition"
+      phase_error:
+        range: [-30.0, 30.0]
+        typical_error: 5.0
+        unit: "degrees"
+        param_type: "offset"
+        description: "Zero-order and first-order phase correction error"
+      linewidth_broadening:
+        range: [0.0, 10.0]
+        typical_error: 2.0
+        unit: "Hz"
+        param_type: "blur"
+        description: "Spectral linewidth broadening from poor shimming"
+    severity_weights:
+      B0_drift: 0.35
+      phase_error: 0.30
+      linewidth_broadening: 0.35
+    correction_method: "gradient_descent"
+
+  diffusion_mri:
+    parameters:
+      eddy_current_distortion:
+        range: [0.0, 3.0]
+        typical_error: 0.5
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Eddy current-induced geometric distortion in EPI readout"
+      gradient_direction_error:
+        range: [-3.0, 3.0]
+        typical_error: 0.5
+        unit: "degrees"
+        param_type: "rotation"
+        description: "Diffusion gradient direction calibration error"
+      b_value_error:
+        range: [-50.0, 50.0]
+        typical_error: 10.0
+        unit: "s/mm^2"
+        param_type: "scale"
+        description: "Effective b-value error from gradient non-linearity"
+    severity_weights:
+      eddy_current_distortion: 0.40
+      gradient_direction_error: 0.35
+      b_value_error: 0.25
+    correction_method: "gradient_descent"
+
+  # ==========================================================================
+  # Advanced Optical Microscopy (R4)
+  # ==========================================================================
+
+  two_photon:
+    parameters:
+      psf_sigma:
+        range: [0.5, 3.0]
+        typical_error: 0.3
+        unit: "pixels"
+        param_type: "blur"
+        description: "Two-photon PSF width error from wavelength or NA mismatch"
+      defocus:
+        range: [-3.0, 3.0]
+        typical_error: 0.8
+        unit: "um"
+        param_type: "offset"
+        description: "Axial focus drift in deep tissue from refractive index mismatch"
+      power_fluctuation:
+        range: [0.7, 1.3]
+        typical_error: 0.1
+        unit: "normalized"
+        param_type: "scale"
+        description: "Laser power fluctuation affecting nonlinear excitation intensity"
+    severity_weights:
+      psf_sigma: 0.35
+      defocus: 0.35
+      power_fluctuation: 0.30
+    correction_method: "grid_search"
+
+  sted:
+    parameters:
+      depletion_alignment:
+        range: [-2.0, 2.0]
+        typical_error: 0.3
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Misalignment between excitation and STED depletion donut beam"
+      depletion_power:
+        range: [0.5, 2.0]
+        typical_error: 0.2
+        unit: "normalized"
+        param_type: "scale"
+        description: "STED depletion laser power error affecting effective resolution"
+      psf_sigma:
+        range: [0.2, 2.0]
+        typical_error: 0.15
+        unit: "pixels"
+        param_type: "blur"
+        description: "Effective STED PSF width error from imperfect donut zero"
+    severity_weights:
+      depletion_alignment: 0.35
+      depletion_power: 0.35
+      psf_sigma: 0.30
+    correction_method: "grid_search"
+
+  palm_storm:
+    parameters:
+      localization_precision:
+        range: [5.0, 50.0]
+        typical_error: 10.0
+        unit: "nm"
+        param_type: "blur"
+        description: "Single-molecule localization precision from photon count and background"
+      drift:
+        range: [-5.0, 5.0]
+        typical_error: 1.0
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Stage drift during long acquisition causing systematic position error"
+      density_estimation:
+        range: [0.5, 2.0]
+        typical_error: 0.3
+        unit: "normalized"
+        param_type: "scale"
+        description: "Active emitter density error causing overlapping PSFs in dense regions"
+    severity_weights:
+      localization_precision: 0.40
+      drift: 0.35
+      density_estimation: 0.25
+    correction_method: "grid_search"
+
+  tirf:
+    parameters:
+      penetration_depth:
+        range: [50.0, 300.0]
+        typical_error: 30.0
+        unit: "nm"
+        param_type: "scale"
+        description: "Evanescent field penetration depth error from incidence angle uncertainty"
+      psf_sigma:
+        range: [0.3, 2.5]
+        typical_error: 0.2
+        unit: "pixels"
+        param_type: "blur"
+        description: "Detection PSF width error from NA or wavelength mismatch"
+      background:
+        range: [0.0, 0.15]
+        typical_error: 0.03
+        unit: "normalized"
+        param_type: "offset"
+        description: "Scattered excitation light and autofluorescence background"
+    severity_weights:
+      penetration_depth: 0.40
+      psf_sigma: 0.30
+      background: 0.30
+    correction_method: "grid_search"
+
+  polarization:
+    parameters:
+      analyzer_angle:
+        range: [-2.0, 2.0]
+        typical_error: 0.3
+        unit: "degrees"
+        param_type: "rotation"
+        description: "Analyzer orientation error from rotary encoder imprecision"
+      psf_sigma:
+        range: [0.5, 3.0]
+        typical_error: 0.25
+        unit: "pixels"
+        param_type: "blur"
+        description: "PSF width error from objective lens aberrations"
+      extinction_ratio:
+        range: [0.8, 1.0]
+        typical_error: 0.03
+        unit: "normalized"
+        param_type: "scale"
+        description: "Polarizer extinction ratio degradation from stress birefringence"
+    severity_weights:
+      analyzer_angle: 0.40
+      psf_sigma: 0.30
+      extinction_ratio: 0.30
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # Clinical Optics — R5
+  # ==========================================================================
+
+  endoscopy:
+    parameters:
+      fiber_coupling:
+        range: [0.1, 0.5]
+        typical_error: 0.05
+        unit: "normalized"
+        param_type: "scale"
+        description: "Fiber coupling efficiency error from core-to-pixel alignment drift"
+      core_pitch:
+        range: [8.0, 12.0]
+        typical_error: 0.5
+        unit: "um"
+        param_type: "scale"
+        description: "Core spacing error from fiber bundle manufacturing tolerance"
+      specular_strength:
+        range: [0.0, 0.3]
+        typical_error: 0.05
+        unit: "normalized"
+        param_type: "offset"
+        description: "Specular highlight intensity from surface reflection estimation error"
+    severity_weights:
+      fiber_coupling: 0.35
+      core_pitch: 0.35
+      specular_strength: 0.30
+    correction_method: "grid_search"
+
+  fundus:
+    parameters:
+      psf_sigma:
+        range: [0.5, 3.0]
+        typical_error: 0.3
+        unit: "pixels"
+        param_type: "blur"
+        description: "Retinal PSF width error from refractive error and pupil size variation"
+      pupil_diameter:
+        range: [2.0, 8.0]
+        typical_error: 0.5
+        unit: "mm"
+        param_type: "scale"
+        description: "Patient pupil diameter estimation error affecting PSF"
+      background:
+        range: [0.0, 0.15]
+        typical_error: 0.03
+        unit: "normalized"
+        param_type: "offset"
+        description: "Scattered light and media opacity causing additive background"
+    severity_weights:
+      psf_sigma: 0.40
+      pupil_diameter: 0.30
+      background: 0.30
+    correction_method: "grid_search"
+
+  octa:
+    parameters:
+      motion_artifact:
+        range: [-3.0, 3.0]
+        typical_error: 0.5
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Inter-frame eye motion causing vessel displacement artifacts"
+      bulk_motion_threshold:
+        range: [0.05, 0.3]
+        typical_error: 0.05
+        unit: "normalized"
+        param_type: "scale"
+        description: "Bulk motion decorrelation threshold error causing false flow signal"
+      propagation_distance:
+        range: [-200.0, 200.0]
+        typical_error: 50.0
+        unit: "um"
+        param_type: "offset"
+        description: "OCT sample arm propagation distance error from focus drift"
+    severity_weights:
+      motion_artifact: 0.40
+      bulk_motion_threshold: 0.35
+      propagation_distance: 0.25
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # Depth / ToF Imaging — R6
+  # ==========================================================================
+
+  tof_camera:
+    parameters:
+      timing_jitter:
+        range: [0.0, 1.0]
+        typical_error: 0.1
+        unit: "ns"
+        param_type: "timing"
+        description: "SPAD timing jitter causing depth measurement uncertainty"
+      multipath:
+        range: [0.0, 0.2]
+        typical_error: 0.05
+        unit: "normalized"
+        param_type: "offset"
+        description: "Multipath interference causing erroneous depth readings"
+      dark_count:
+        range: [0.0, 500.0]
+        typical_error: 50.0
+        unit: "cps"
+        param_type: "offset"
+        description: "SPAD dark count rate error adding noise floor to histograms"
+    severity_weights:
+      timing_jitter: 0.40
+      multipath: 0.35
+      dark_count: 0.25
+    correction_method: "grid_search"
+
+  lidar:
+    parameters:
+      timing_jitter:
+        range: [0.0, 0.5]
+        typical_error: 0.05
+        unit: "ns"
+        param_type: "timing"
+        description: "Detector timing jitter causing range measurement error"
+      scan_angle:
+        range: [-0.5, 0.5]
+        typical_error: 0.05
+        unit: "degrees"
+        param_type: "rotation"
+        description: "Scanning mirror angular calibration error"
+      beam_divergence:
+        range: [0.1, 1.0]
+        typical_error: 0.1
+        unit: "mrad"
+        param_type: "blur"
+        description: "Laser beam divergence error causing spot size uncertainty"
+    severity_weights:
+      timing_jitter: 0.40
+      scan_angle: 0.30
+      beam_divergence: 0.30
+    correction_method: "grid_search"
+
+  structured_light:
+    parameters:
+      fringe_freq:
+        range: [4.0, 16.0]
+        typical_error: 0.5
+        unit: "cycles/image"
+        param_type: "scale"
+        description: "Projected fringe frequency error from projector calibration"
+      baseline:
+        range: [-5.0, 5.0]
+        typical_error: 0.5
+        unit: "mm"
+        param_type: "position"
+        description: "Projector-camera baseline distance error from mechanical misalignment"
+      defocus:
+        range: [-2.0, 2.0]
+        typical_error: 0.3
+        unit: "mm"
+        param_type: "blur"
+        description: "Camera defocus causing depth-dependent blur in fringe images"
+    severity_weights:
+      fringe_freq: 0.35
+      baseline: 0.35
+      defocus: 0.30
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # Synthetic Aperture Radar (R7)
+  # ==========================================================================
+
+  sar:
+    parameters:
+      phase_error:
+        range: [-3.14, 3.14]
+        typical_error: 0.3
+        unit: "radians"
+        param_type: "offset"
+        description: "Residual phase error from autofocus imperfections"
+      motion_compensation:
+        range: [-5.0, 5.0]
+        typical_error: 1.0
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Platform motion compensation error causing defocus"
+      range_cell_migration:
+        range: [-2.0, 2.0]
+        typical_error: 0.5
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Range cell migration correction residual"
+    severity_weights:
+      phase_error: 0.40
+      motion_compensation: 0.35
+      range_cell_migration: 0.25
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # Sonar Imaging (R7)
+  # ==========================================================================
+
+  sonar:
+    parameters:
+      speed_of_sound:
+        range: [1400.0, 1600.0]
+        typical_error: 15.0
+        unit: "m/s"
+        param_type: "scale"
+        description: "Sound speed error from water temperature/salinity variation"
+      array_position:
+        range: [-3.0, 3.0]
+        typical_error: 0.5
+        unit: "mm"
+        param_type: "position"
+        description: "Hydrophone element position error from array manufacturing"
+      multipath_delay:
+        range: [0.0, 5.0]
+        typical_error: 1.0
+        unit: "samples"
+        param_type: "timing"
+        description: "Multipath reflection delay from sea surface/bottom"
+    severity_weights:
+      speed_of_sound: 0.40
+      array_position: 0.30
+      multipath_delay: 0.30
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # 4D-STEM Electron Diffraction (R8)
+  # ==========================================================================
+
+  electron_diffraction:
+    parameters:
+      beam_tilt:
+        range: [-5.0, 5.0]
+        typical_error: 0.5
+        unit: "mrad"
+        param_type: "rotation"
+        description: "Convergent beam tilt error from alignment imperfection"
+      camera_length:
+        range: [-10.0, 10.0]
+        typical_error: 2.0
+        unit: "percent"
+        param_type: "scale"
+        description: "Effective camera length calibration error"
+      scan_distortion:
+        range: [-3.0, 3.0]
+        typical_error: 0.5
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Scan coil hysteresis causing position error"
+    severity_weights:
+      beam_tilt: 0.35
+      camera_length: 0.35
+      scan_distortion: 0.30
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # EBSD (R8)
+  # ==========================================================================
+
+  ebsd:
+    parameters:
+      pattern_center_shift:
+        range: [-5.0, 5.0]
+        typical_error: 1.0
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Pattern center calibration error on phosphor screen"
+      sample_tilt:
+        range: [-2.0, 2.0]
+        typical_error: 0.5
+        unit: "degrees"
+        param_type: "rotation"
+        description: "Sample tilt angle deviation from nominal 70 degrees"
+      detector_distance:
+        range: [-2.0, 2.0]
+        typical_error: 0.5
+        unit: "mm"
+        param_type: "scale"
+        description: "Sample-to-detector distance calibration error"
+    severity_weights:
+      pattern_center_shift: 0.35
+      sample_tilt: 0.35
+      detector_distance: 0.30
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # EELS (R8)
+  # ==========================================================================
+
+  eels:
+    parameters:
+      energy_drift:
+        range: [-2.0, 2.0]
+        typical_error: 0.3
+        unit: "eV"
+        param_type: "offset"
+        description: "Spectrometer energy drift during acquisition"
+      dispersion_error:
+        range: [-5.0, 5.0]
+        typical_error: 1.0
+        unit: "percent"
+        param_type: "scale"
+        description: "Energy dispersion calibration error"
+      zlp_shift:
+        range: [-1.0, 1.0]
+        typical_error: 0.2
+        unit: "eV"
+        param_type: "offset"
+        description: "Zero-loss peak position drift from lens instability"
+    severity_weights:
+      energy_drift: 0.35
+      dispersion_error: 0.30
+      zlp_shift: 0.35
+    correction_method: "gradient_descent"
+
+  # ==========================================================================
+  # Electron Holography (R8)
+  # ==========================================================================
+
+  electron_holography:
+    parameters:
+      fringe_drift:
+        range: [-3.0, 3.0]
+        typical_error: 0.5
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Holographic fringe drift from biprism vibration"
+      biprism_voltage:
+        range: [-10.0, 10.0]
+        typical_error: 2.0
+        unit: "V"
+        param_type: "scale"
+        description: "Biprism voltage instability affecting fringe spacing"
+      defocus:
+        range: [-500.0, 500.0]
+        typical_error: 50.0
+        unit: "nm"
+        param_type: "offset"
+        description: "Defocus error affecting spatial resolution"
+    severity_weights:
+      fringe_drift: 0.35
+      biprism_voltage: 0.30
+      defocus: 0.35
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # Neutron Tomography (R9)
+  # ==========================================================================
+
+  neutron_tomo:
+    parameters:
+      cross_section_error:
+        range: [-20.0, 20.0]
+        typical_error: 5.0
+        unit: "percent"
+        param_type: "scale"
+        description: "Neutron cross section calibration error for sample material"
+      rotation_axis_offset:
+        range: [-5.0, 5.0]
+        typical_error: 1.0
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Rotation axis misalignment for tomographic reconstruction"
+      beam_nonuniformity:
+        range: [0.0, 0.15]
+        typical_error: 0.05
+        unit: "normalized"
+        param_type: "scale"
+        description: "Neutron beam spatial non-uniformity from collimation"
+    severity_weights:
+      cross_section_error: 0.40
+      rotation_axis_offset: 0.35
+      beam_nonuniformity: 0.25
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # Proton Radiography (R9)
+  # ==========================================================================
+
+  proton_radiography:
+    parameters:
+      energy_spread:
+        range: [-5.0, 5.0]
+        typical_error: 1.0
+        unit: "percent"
+        param_type: "scale"
+        description: "Initial beam energy spread causing range straggling"
+      scattering_model:
+        range: [-10.0, 10.0]
+        typical_error: 3.0
+        unit: "percent"
+        param_type: "scale"
+        description: "Multiple Coulomb scattering model parameter error"
+      detector_alignment:
+        range: [-3.0, 3.0]
+        typical_error: 0.5
+        unit: "mm"
+        param_type: "position"
+        description: "Tracker plane alignment error"
+    severity_weights:
+      energy_spread: 0.35
+      scattering_model: 0.35
+      detector_alignment: 0.30
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # Muon Tomography (R9)
+  # ==========================================================================
+
+  muon_tomo:
+    parameters:
+      momentum_estimate:
+        range: [-30.0, 30.0]
+        typical_error: 10.0
+        unit: "percent"
+        param_type: "scale"
+        description: "Muon momentum estimation error from track curvature"
+      detector_resolution:
+        range: [0.1, 2.0]
+        typical_error: 0.5
+        unit: "mm"
+        param_type: "blur"
+        description: "Spatial resolution of muon tracking detectors"
+      angular_acceptance:
+        range: [-5.0, 5.0]
+        typical_error: 1.0
+        unit: "degrees"
+        param_type: "scale"
+        description: "Angular acceptance cone error from detector geometry"
+    severity_weights:
+      momentum_estimate: 0.40
+      detector_resolution: 0.30
+      angular_acceptance: 0.30
+    correction_method: "grid_search"

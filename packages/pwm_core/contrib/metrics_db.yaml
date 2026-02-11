@@ -56,3 +56,48 @@ metric_sets:
     description: "Fluorescence lifetime imaging"
     metrics: [psnr, lifetime_error, chi_squared]
     modalities: [flim]
+
+  xray_variants:
+    description: "X-ray projection imaging variants"
+    metrics: [psnr, ssim, nrmse, cnr]
+    modalities: [fluoroscopy, mammography, dexa, cbct, angiography]
+
+  ultrasound_advanced:
+    description: "Advanced ultrasound modes (Doppler, elastography)"
+    metrics: [psnr, ssim, velocity_rmse, modulus_error]
+    modalities: [doppler_ultrasound, elastography]
+
+  mri_advanced:
+    description: "Advanced MRI applications (fMRI, MRS, diffusion)"
+    metrics: [psnr, ssim, nrmse, snr]
+    modalities: [fmri, mrs, diffusion_mri]
+
+  advanced_microscopy:
+    description: "Advanced optical microscopy (two-photon, STED, PALM/STORM, TIRF, polarization)"
+    metrics: [psnr, ssim, frc, nrmse]
+    modalities: [two_photon, sted, palm_storm, tirf, polarization]
+
+  radar_sonar:
+    description: "Radar and sonar imaging modalities"
+    metrics: [psnr, ssim, sar_resolution, cnr]
+    modalities: [sar, sonar]
+
+  electron_spectroscopy:
+    description: "Electron spectroscopy and diffraction modalities"
+    metrics: [psnr, ssim, spectral_fidelity, frc]
+    modalities: [electron_diffraction, ebsd, eels, electron_holography]
+
+  particle_imaging:
+    description: "Particle imaging modalities (neutron, proton, muon)"
+    metrics: [psnr, ssim, nrmse, cnr]
+    modalities: [neutron_tomo, proton_radiography, muon_tomo]
+
+  clinical_optics:
+    description: "Clinical optics (endoscopy, fundus, OCTA)"
+    metrics: [psnr, ssim, cnr, nrmse]
+    modalities: [endoscopy, fundus, octa]
+
+  depth_imaging:
+    description: "Depth / ToF imaging (ToF camera, LiDAR, structured light)"
+    metrics: [mae_depth, rmse_depth, ssim, completeness]
+    modalities: [tof_camera, lidar, structured_light]
