@@ -65,6 +65,12 @@ def _get_dims_from_spec(spec: ExperimentSpec) -> Tuple[int, ...]:
 
     # Handle various dims formats
     if isinstance(dims, dict):
+        # Format: {"x": [H, W, L], "y": [H, W]} — use x dims
+        if "x" in dims:
+            x_dims = dims["x"]
+            if isinstance(x_dims, (list, tuple)):
+                return tuple(int(d) for d in x_dims)
+        # Format: {"H": ..., "W": ..., "L": ...}
         h = dims.get('H', dims.get('height', 64))
         w = dims.get('W', dims.get('width', 64))
         d = dims.get('D', dims.get('depth', None))
@@ -217,12 +223,7 @@ def build_operator(spec: ExperimentSpec) -> BaseOperator:
     modality = spec.states.physics.modality.lower()
     dims = _get_dims_from_spec(spec)
 
-    # Try graph-first path (SC-9)
-    graph_op = _try_build_graph_operator(modality, dims)
-    if graph_op is not None:
-        return graph_op
-
-    # Check if operator is explicitly specified in input
+    # Explicit operator specification takes priority over graph-first path
     if spec.input.operator is not None:
         op_input = spec.input.operator
 
@@ -247,6 +248,11 @@ def build_operator(spec: ExperimentSpec) -> BaseOperator:
             theta = op_input.parametric.theta_init or {}
 
             return _build_operator_by_id(operator_id, dims, theta, op_input.parametric.assets)
+
+    # Try graph-first path (SC-9) when no explicit operator specified
+    graph_op = _try_build_graph_operator(modality, dims)
+    if graph_op is not None:
+        return graph_op
 
     # Route by modality name
     return _build_operator_by_id(modality, dims, {}, None)

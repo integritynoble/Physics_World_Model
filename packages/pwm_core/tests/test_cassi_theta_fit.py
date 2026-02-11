@@ -29,10 +29,16 @@ except Exception:  # pragma: no cover
 pytestmark = pytest.mark.skipif(torch is None, reason="torch not installed")
 
 from pwm_core.api.endpoints import resolve_validate, calibrate_recon
+from pwm_core.mismatch.subpixel import subpixel_shift_2d
 
 
 def _make_tiny_cassi_problem(H=16, W=16, L=8, seed=0):
-    """Create a tiny synthetic CASSI measurement."""
+    """Create a tiny synthetic CASSI measurement matching CASSIOperator.forward().
+
+    Uses the same shift-within-grid model as CASSIOperator:
+    y = sum_l subpixel_shift(x[:,:,l] * mask, dx=l, dy=0)
+    Output shape: (H, W), NOT (H, W+L-1).
+    """
     rng = np.random.default_rng(seed)
 
     # Sparse spectral cube
@@ -43,11 +49,13 @@ def _make_tiny_cassi_problem(H=16, W=16, L=8, seed=0):
     # Binary coded aperture mask
     mask = (rng.random((H, W)) > 0.5).astype(np.float32)
 
-    # Simplified CASSI forward: y = sum_l shift(x[:,:,l] * mask, l)
-    y = np.zeros((H, W + L - 1), dtype=np.float32)
+    # CASSI forward matching CASSIOperator: shift within (H, W) grid
+    # Default dispersion model: dx = band_index, dy = 0
+    y = np.zeros((H, W), dtype=np.float32)
     for l_idx in range(L):
         band = x[:, :, l_idx] * mask
-        y[:, l_idx:l_idx + W] += band
+        band_shifted = subpixel_shift_2d(band, float(l_idx), 0.0)
+        y += band_shifted.astype(np.float32)
 
     # Add mild noise
     y += 0.01 * rng.standard_normal(y.shape).astype(np.float32)
