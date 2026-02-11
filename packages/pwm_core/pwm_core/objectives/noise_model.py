@@ -161,6 +161,41 @@ class PoissonOnlyNoiseModel(NoiseModel):
         return ObjectiveSpec(kind="poisson")
 
 
+class CorrelatedNoiseModel(NoiseModel):
+    """Correlated noise -- simulation-only until whitening is implemented."""
+
+    def __init__(self, base_sigma: float = 0.1, correlation_type: str = "none",
+                 correlation_length: float = 2.0, **kwargs):
+        self.base_sigma = base_sigma
+        self.correlation_type = correlation_type
+        self.correlation_length = correlation_length
+
+    def sample(self, y_clean: np.ndarray, rng=None) -> np.ndarray:
+        sigma = self.base_sigma
+        if rng is None:
+            rng = np.random.RandomState(0)
+        noise = rng.randn(*y_clean.shape) * sigma
+        corr_type = self.correlation_type
+        if corr_type == "spatial":
+            from scipy import ndimage
+            length = self.correlation_length
+            noise = ndimage.gaussian_filter(noise, sigma=length)
+            noise = noise * sigma / max(np.std(noise), 1e-12)
+        return y_clean + noise
+
+    def log_likelihood(self, y: np.ndarray, y_clean: np.ndarray) -> float:
+        raise RuntimeError(
+            "CorrelatedNoiseModel does not support NLL. "
+            "Mark as simulation-only or implement whitening."
+        )
+
+    def default_objective(self) -> "ObjectiveSpec":
+        raise RuntimeError(
+            "CorrelatedNoiseModel does not support NLL. "
+            "Mark as simulation-only or implement whitening."
+        )
+
+
 # ---------------------------------------------------------------------------
 # Registry
 # ---------------------------------------------------------------------------
@@ -170,10 +205,12 @@ NOISE_MODEL_REGISTRY: Dict[str, Type[NoiseModel]] = {
     "gaussian": GaussianNoiseModel,
     "complex_gaussian": ComplexGaussianNoiseModel,
     "poisson_only": PoissonOnlyNoiseModel,
+    "correlated": CorrelatedNoiseModel,
     # Aliases matching primitive_ids
     "poisson_gaussian_sensor": PoissonGaussianNoiseModel,
     "complex_gaussian_sensor": ComplexGaussianNoiseModel,
     "poisson_only_sensor": PoissonOnlyNoiseModel,
+    "correlated_noise_sensor": CorrelatedNoiseModel,
 }
 
 
@@ -191,6 +228,7 @@ _PRIMITIVE_TO_NOISE_MODEL: Dict[str, str] = {
     "poisson_gaussian_sensor": "poisson_gaussian",
     "complex_gaussian_sensor": "complex_gaussian",
     "poisson_only_sensor": "poisson_only",
+    "correlated_noise_sensor": "correlated",
     "poisson_gaussian": "poisson_gaussian",
     "poisson": "poisson_only",
     "gaussian": "gaussian",

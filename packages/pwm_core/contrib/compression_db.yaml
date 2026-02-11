@@ -1143,7 +1143,267 @@ calibration_tables:
           notes: "TV regularization baseline, ADMM 300 iterations, angular consistency prior"
 
   # ===================================================================
-  # 26. Fourier Ptychographic Microscopy (FPM)
+  # 26. X-ray Radiography
+  # ===================================================================
+  xray_radiography:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "detector_limited"
+        solver: "fbp_ramp"
+        recoverability: 0.88
+        expected_psnr_db: 35.2
+        provenance:
+          dataset_id: "nih_chest_xray_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_xray_radiography_v1.0"
+          solver_version: "pwm_core.recon.xray_solver@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "Direct projection imaging, scatter correction, flat-field normalization"
+      - cr: 1.0
+        noise: "photon_starved"
+        solver: "pnp_drunet"
+        recoverability: 0.75
+        expected_psnr_db: 30.1
+        provenance:
+          dataset_id: "nih_chest_xray_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_xray_radiography_v1.0"
+          solver_version: "pwm_core.recon.pnp@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "Low-dose pediatric radiograph, PnP denoising post-processing"
+
+  # ===================================================================
+  # 27. Ultrasound
+  # ===================================================================
+  ultrasound:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "speckle"
+        solver: "das_beamform"
+        recoverability: 0.72
+        expected_psnr_db: 28.5
+        provenance:
+          dataset_id: "picmus_simulation_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_ultrasound_v1.0"
+          solver_version: "pwm_core.recon.ultrasound_solver@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "Delay-and-sum beamforming, 128-element linear array, 5 MHz center frequency"
+      - cr: 1.0
+        noise: "speckle"
+        solver: "mv_beamform"
+        recoverability: 0.82
+        expected_psnr_db: 32.1
+        provenance:
+          dataset_id: "picmus_simulation_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_ultrasound_v1.0"
+          solver_version: "pwm_core.recon.ultrasound_solver@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "Minimum variance beamforming with spatial smoothing, improved lateral resolution"
+
+  # ===================================================================
+  # 28. Positron Emission Tomography (PET)
+  # ===================================================================
+  pet:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 0.01
+        noise: "shot_limited"
+        solver: "mlem"
+        recoverability: 0.70
+        expected_psnr_db: 28.3
+        provenance:
+          dataset_id: "nema_iq_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_pet_v1.0"
+          solver_version: "pwm_core.recon.pet_solver@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "MLEM 50 iterations, attenuation+scatter corrected, NEMA IQ phantom"
+      - cr: 0.01
+        noise: "shot_limited"
+        solver: "osem"
+        recoverability: 0.72
+        expected_psnr_db: 29.1
+        provenance:
+          dataset_id: "nema_iq_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_pet_v1.0"
+          solver_version: "pwm_core.recon.pet_solver@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "OSEM 4 iterations 8 subsets, PSF modeling, clinical reconstruction standard"
+      - cr: 0.01
+        noise: "photon_starved"
+        solver: "deep_pet"
+        recoverability: 0.80
+        expected_psnr_db: 31.5
+        provenance:
+          dataset_id: "nema_iq_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_pet_v1.0"
+          solver_version: "pwm_core.recon.deep_pet@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "Deep learning PET reconstruction from low-count sinograms, U-Net backbone"
+
+  # ===================================================================
+  # 29. Single-Photon Emission CT (SPECT)
+  # ===================================================================
+  spect:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 0.02
+        noise: "shot_limited"
+        solver: "osem_spect"
+        recoverability: 0.65
+        expected_psnr_db: 26.8
+        provenance:
+          dataset_id: "jaszczak_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_spect_v1.0"
+          solver_version: "pwm_core.recon.spect_solver@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "OSEM 8 iterations 8 subsets, attenuation correction, parallel-hole collimator"
+      - cr: 0.02
+        noise: "photon_starved"
+        solver: "osem_spect"
+        recoverability: 0.52
+        expected_psnr_db: 23.1
+        provenance:
+          dataset_id: "jaszczak_phantom_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_spect_v1.0"
+          solver_version: "pwm_core.recon.spect_solver@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "Low-count brain SPECT, OSEM with post-filter 8mm FWHM Gaussian"
+
+  # ===================================================================
+  # 30. Scanning Electron Microscopy (SEM)
+  # ===================================================================
+  sem:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "wiener_sem"
+        recoverability: 0.85
+        expected_psnr_db: 33.2
+        provenance:
+          dataset_id: "sem_nist_reference_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_sem_v1.0"
+          solver_version: "pwm_core.recon.sem_solver@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "Wiener deconvolution of beam broadening, standard slow-scan SEM"
+      - cr: 1.0
+        noise: "photon_starved"
+        solver: "deep_sem"
+        recoverability: 0.78
+        expected_psnr_db: 29.5
+        provenance:
+          dataset_id: "sem_nist_reference_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_sem_v1.0"
+          solver_version: "pwm_core.recon.deep_sem@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "Deep learning SEM denoising for fast scan, 64x dose reduction"
+
+  # ===================================================================
+  # 31. Transmission Electron Microscopy (TEM)
+  # ===================================================================
+  tem:
+    signal_prior_class: "low_rank"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "ctf_correction"
+        recoverability: 0.88
+        expected_psnr_db: 35.6
+        provenance:
+          dataset_id: "empiar_apoferritin_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_tem_v1.0"
+          solver_version: "pwm_core.recon.tem_solver@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "CTF correction + Wiener filter, 200kV cryo-EM apoferritin dataset"
+      - cr: 1.0
+        noise: "photon_starved"
+        solver: "ctf_correction"
+        recoverability: 0.65
+        expected_psnr_db: 28.1
+        provenance:
+          dataset_id: "empiar_apoferritin_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_tem_v1.0"
+          solver_version: "pwm_core.recon.tem_solver@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "Ultra-low-dose cryo-EM, ~2 e-/A^2, heavy CTF dampening"
+
+  # ===================================================================
+  # 32. Electron Tomography
+  # ===================================================================
+  electron_tomography:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 0.016
+        noise: "shot_limited"
+        solver: "sirt_et"
+        recoverability: 0.72
+        expected_psnr_db: 29.3
+        provenance:
+          dataset_id: "etdb_ribosome_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_et_v1.0"
+          solver_version: "pwm_core.recon.et_solver@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "SIRT 30 iterations, 61 tilts from -60 to +60 deg, 2 deg steps"
+      - cr: 0.016
+        noise: "photon_starved"
+        solver: "sirt_et"
+        recoverability: 0.58
+        expected_psnr_db: 25.4
+        provenance:
+          dataset_id: "etdb_ribosome_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_et_v1.0"
+          solver_version: "pwm_core.recon.et_solver@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "Low-dose cryo-ET, ~1 e-/A^2 per tilt, missing wedge artifact prominent"
+
+  # ===================================================================
+  # 33. Scanning TEM (STEM)
+  # ===================================================================
+  stem:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "haadf_deconv"
+        recoverability: 0.90
+        expected_psnr_db: 36.2
+        provenance:
+          dataset_id: "stem_srtio3_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_stem_v1.0"
+          solver_version: "pwm_core.recon.stem_solver@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "HAADF-STEM deconvolution, aberration-corrected probe, SrTiO3 reference"
+      - cr: 1.0
+        noise: "photon_starved"
+        solver: "deep_stem"
+        recoverability: 0.80
+        expected_psnr_db: 31.8
+        provenance:
+          dataset_id: "stem_srtio3_2024"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_stem_v1.0"
+          solver_version: "pwm_core.recon.deep_stem@0.1.0"
+          date_generated: "2025-12-01"
+          notes: "Deep learning STEM denoiser for fast scan beam-sensitive samples"
+
+  # ===================================================================
+  # 34. Fourier Ptychographic Microscopy (FPM)
   # ===================================================================
   fpm:
     signal_prior_class: "deep_prior"

@@ -34,7 +34,7 @@ from pwm_core.api.types import (
 
 
 # ---------------------------------------------------------------------------
-# Modality keyword map (26 modalities)
+# Modality keyword map (33 modalities)
 # ---------------------------------------------------------------------------
 
 _MODALITY_KEYWORDS: Dict[str, List[str]] = {
@@ -64,6 +64,14 @@ _MODALITY_KEYWORDS: Dict[str, List[str]] = {
     "oct": [" oct ", "optical coherence tomography"],
     "fpm": ["fourier ptychograph", " fpm "],
     "dot": ["diffuse optical", " dot "],
+    # Phase 5: additional modalities
+    "xray_radiography": ["x-ray", "radiograph", "chest x-ray", "xray radiograph"],
+    "ultrasound": ["ultrasound", "b-mode", "sonography", "b mode"],
+    "pet": [" pet ", "positron emission"],
+    "spect": ["spect", "single photon emission"],
+    "sem": [" sem ", "scanning electron microscop"],
+    "tem": [" tem ", "transmission electron microscop"],
+    "electron_tomography": ["electron tomography", "cryo-et", "electron tomo"],
 }
 
 # ---------------------------------------------------------------------------

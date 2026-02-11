@@ -180,7 +180,45 @@ def validate_canonical_chain(spec: OperatorGraphSpec) -> None:
                 f"Found subroles: {element_subroles}"
             )
 
+    # D2: Source-to-x wiring validation
+    requires_x = spec.metadata.get("requires_x_interaction", False)
+    _validate_x_wiring(spec, requires_x_interaction=requires_x)
+
     logger.debug(
         f"Canonical chain validated: {source_id} -> "
         f"[{', '.join(elements)}] -> {sensor_id} -> {noise_id}"
     )
+
+
+def _validate_x_wiring(
+    spec: OperatorGraphSpec,
+    requires_x_interaction: bool = False,
+) -> None:
+    """Validate that x (the sample) enters the physics chain (D2).
+
+    Pattern A: Source node has an incoming edge (consumes x directly).
+    Pattern B: Source produces incident field, and at least one
+               interaction/transduction node exists.
+
+    When requires_x_interaction=True, at least one node with subrole
+    'interaction' or 'transduction' must exist.
+    """
+    if not requires_x_interaction:
+        return
+
+    # Check for interaction/transduction subrole nodes
+    interaction_nodes = []
+    for node in spec.nodes:
+        prim_cls = PRIMITIVE_REGISTRY.get(node.primitive_id)
+        if prim_cls is not None:
+            subrole = getattr(prim_cls, "_physics_subrole", None)
+            if subrole in ("interaction", "transduction"):
+                interaction_nodes.append(node.node_id)
+
+    if not interaction_nodes:
+        raise GraphCompilationError(
+            f"Modality requires x-interaction (D2) but no node has "
+            f"physics_subrole in ('interaction', 'transduction'). "
+            f"The sample x must enter the physics chain via an "
+            f"interaction or transduction node."
+        )

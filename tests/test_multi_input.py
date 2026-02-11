@@ -20,10 +20,13 @@ class TestMultiInput:
         assert prim._n_inputs == 2
 
     def test_base_primitive_default_n_inputs(self):
-        """All existing primitives should have _n_inputs = 1."""
+        """All existing primitives should have _n_inputs = 1 (except multi-input ones)."""
         from pwm_core.graph.primitives import PRIMITIVE_REGISTRY
+        _MULTI_INPUT_PRIMITIVES = {
+            "interference", "thin_object_phase", "yield_model",
+        }
         for pid, cls in PRIMITIVE_REGISTRY.items():
-            if pid == "interference":
+            if pid in _MULTI_INPUT_PRIMITIVES:
                 continue
             inst = cls()
             assert getattr(inst, '_n_inputs', 1) == 1, f"{pid} has unexpected _n_inputs"
@@ -70,18 +73,39 @@ class TestMultiInput:
         assert "b" in graph.edge_map
         assert graph.edge_map["b"] == ["a"]
 
-    def test_multi_input_validation_fails(self):
-        """Compiler should reject graphs with wrong number of inputs for multi-input nodes."""
+    def test_multi_input_under_wiring_allowed(self):
+        """Compiler allows multi-input node with fewer edges (falls back to forward())."""
         spec = OperatorGraphSpec.model_validate({
-            "graph_id": "test_bad_multi",
+            "graph_id": "test_under_multi",
             "nodes": [
                 {"node_id": "a", "primitive_id": "identity", "params": {}},
                 {"node_id": "b", "primitive_id": "interference", "params": {}},
             ],
-            "edges": [{"source": "a", "target": "b"}],  # Only 1 edge, but interference needs 2
+            "edges": [{"source": "a", "target": "b"}],  # 1 edge, interference needs 2 for multi
         })
         compiler = GraphCompiler()
-        with pytest.raises(GraphCompilationError, match="expects 2 inputs"):
+        # Should compile successfully -- single-input forward() path is used
+        graph = compiler.compile(spec)
+        assert graph is not None
+
+    def test_multi_input_over_wiring_fails(self):
+        """Compiler rejects multi-input node with more edges than _n_inputs."""
+        spec = OperatorGraphSpec.model_validate({
+            "graph_id": "test_over_multi",
+            "nodes": [
+                {"node_id": "a", "primitive_id": "identity", "params": {}},
+                {"node_id": "b", "primitive_id": "identity", "params": {}},
+                {"node_id": "c", "primitive_id": "identity", "params": {}},
+                {"node_id": "d", "primitive_id": "interference", "params": {}},
+            ],
+            "edges": [
+                {"source": "a", "target": "d"},
+                {"source": "b", "target": "d"},
+                {"source": "c", "target": "d"},  # 3 edges, interference needs at most 2
+            ],
+        })
+        compiler = GraphCompiler()
+        with pytest.raises(GraphCompilationError, match="at most 2 inputs"):
             compiler.compile(spec)
 
     def test_multi_input_dag_execution(self):

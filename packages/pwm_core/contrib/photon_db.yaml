@@ -599,6 +599,194 @@ modalities:
         scenario: "Dim integral imaging"
         read_sigma_fraction: 0.02
 
+  xray_radiography:
+    model_id: "xray_tube"
+    parameters:
+      tube_current_photons: 1.0e+08
+      mu: 0.2
+      L: 30.0
+      eta_det: 0.80
+    description: "X-ray radiography with flat-panel detector"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+07
+        scenario: "Standard clinical radiograph"
+        read_sigma_fraction: 0.002
+      standard:
+        n_photons: 1.0e+06
+        scenario: "Low-dose radiograph"
+        read_sigma_fraction: 0.005
+      low_light:
+        n_photons: 1.0e+05
+        scenario: "Ultra-low-dose pediatric"
+        read_sigma_fraction: 0.01
+
+  ultrasound:
+    model_id: "piezo_transducer"
+    parameters:
+      center_freq_hz: 5.0e+06
+      bandwidth_frac: 0.6
+      n_elements: 128
+      sampling_rate_hz: 40.0e+06
+    description: "Medical B-mode ultrasound with linear array transducer"
+    noise_model: "gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1000.0
+        snr_proxy: 40.0
+        scenario: "High-SNR shallow imaging"
+        read_sigma_fraction: 0.0
+        sigma: 0.01
+      standard:
+        n_photons: 100.0
+        snr_proxy: 25.0
+        scenario: "Standard abdominal imaging"
+        read_sigma_fraction: 0.0
+        sigma: 0.056
+      low_light:
+        n_photons: 10.0
+        snr_proxy: 15.0
+        scenario: "Deep tissue, low signal"
+        read_sigma_fraction: 0.0
+        sigma: 0.178
+
+  pet:
+    model_id: "scintillator_ring"
+    parameters:
+      activity_mbq: 370.0
+      scan_time_s: 120
+      n_detectors: 576
+      coincidence_window_ns: 6.0
+    description: "PET scanner with BGO/LYSO crystal ring detector"
+    noise_model: "poisson"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+07
+        scenario: "High-activity FDG scan"
+        read_sigma_fraction: 0.0
+      standard:
+        n_photons: 1.0e+06
+        scenario: "Standard clinical PET"
+        read_sigma_fraction: 0.0
+      low_light:
+        n_photons: 1.0e+05
+        scenario: "Low-dose PET"
+        read_sigma_fraction: 0.0
+
+  spect:
+    model_id: "gamma_camera"
+    parameters:
+      activity_mbq: 740.0
+      scan_time_s: 300
+      n_projections: 64
+      energy_window_kev: [126, 154]
+    description: "SPECT with parallel-hole collimator gamma camera"
+    noise_model: "poisson"
+    photon_levels:
+      bright:
+        n_photons: 5.0e+06
+        scenario: "High-activity bone scan"
+        read_sigma_fraction: 0.0
+      standard:
+        n_photons: 5.0e+05
+        scenario: "Standard myocardial perfusion"
+        read_sigma_fraction: 0.0
+      low_light:
+        n_photons: 5.0e+04
+        scenario: "Low-dose brain SPECT"
+        read_sigma_fraction: 0.0
+
+  sem:
+    model_id: "electron_gun"
+    parameters:
+      beam_energy_kev: 15.0
+      beam_current_pa: 100
+      dwell_time_us: 10.0
+      working_distance_mm: 10.0
+    description: "Scanning electron microscopy with secondary electron detection"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "High-current slow scan"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard SEM imaging"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Low-dose beam-sensitive sample"
+        read_sigma_fraction: 0.02
+
+  tem:
+    model_id: "electron_gun"
+    parameters:
+      beam_energy_kev: 200.0
+      dose_e_per_A2: 20.0
+      pixel_size_A: 1.0
+    description: "Transmission electron microscopy with direct electron detector"
+    noise_model: "poisson"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+06
+        scenario: "High-dose materials TEM"
+        read_sigma_fraction: 0.0
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard cryo-EM"
+        read_sigma_fraction: 0.0
+      low_light:
+        n_photons: 1.0e+02
+        scenario: "Ultra-low-dose cryo-EM"
+        read_sigma_fraction: 0.0
+
+  electron_tomography:
+    model_id: "electron_gun"
+    parameters:
+      beam_energy_kev: 200.0
+      total_dose_e_per_A2: 100.0
+      n_tilts: 61
+      tilt_range_deg: [-60, 60]
+    description: "Electron tomography tilt series acquisition"
+    noise_model: "poisson"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "High-dose materials ET"
+        read_sigma_fraction: 0.0
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard cryo-ET"
+        read_sigma_fraction: 0.0
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Low-dose cryo-ET"
+        read_sigma_fraction: 0.0
+
+  stem:
+    model_id: "electron_gun"
+    parameters:
+      beam_energy_kev: 200.0
+      probe_current_pa: 50
+      convergence_semi_angle_mrad: 21.4
+    description: "Scanning TEM with HAADF detector"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "High-current STEM"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard HAADF-STEM"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Low-dose 4D-STEM"
+        read_sigma_fraction: 0.02
+
   fpm:
     model_id: "led_array"
     parameters:

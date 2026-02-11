@@ -162,6 +162,9 @@ class ModalityYaml(StrictBaseModel):
     elements: List[ElementYaml]
     wavelength_range_nm: Optional[List[float]] = None
     upload_template: Optional[UploadTemplateYaml] = None
+    default_template_id: Optional[str] = None
+    requires_x_interaction: Optional[bool] = None
+    acceptance_tier: Optional[str] = None
 
 
 class ModalitiesFileYaml(StrictBaseModel):
