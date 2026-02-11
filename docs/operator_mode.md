@@ -252,7 +252,7 @@ PWM expresses these as structured actions in `report.json`:
 }
 ```
 
-This enables Denario or other agents to iterate specs safely.
+This enables AI_Scientist or other agents to iterate specs safely.
 
 ---
 

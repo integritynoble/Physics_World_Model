@@ -1,9 +1,9 @@
-"""pwm_denario.tools
+"""pwm_AI_Scientist.tools
 
-Thin wrappers that expose pwm_core.api.endpoints as Denario-callable tools.
+Thin wrappers that expose pwm_core.api.endpoints as AI_Scientist-callable tools.
 
-This file intentionally has no Denario imports to keep it reusable;
-Denario integration can call these functions directly.
+This file intentionally has no AI_Scientist imports to keep it reusable;
+AI_Scientist integration can call these functions directly.
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""pwm_denario.graph_nodes (optional)
+"""pwm_AI_Scientist.graph_nodes (optional)
 
 Optional LangGraph-style nodes. You can ignore this file if not using LangGraph.
 """
@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import Any, Dict
 
-from pwm_denario.tools import pwm_run, pwm_fit_operator, pwm_calibrate_recon
+from pwm_AI_Scientist.tools import pwm_run, pwm_fit_operator, pwm_calibrate_recon
 
 
 def node_run(state: Dict[str, Any]) -> Dict[str, Any]:

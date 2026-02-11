@@ -2,7 +2,7 @@
 #
 # This file lets you manage PWM as a monorepo workspace:
 #   - packages/pwm_core
-#   - packages/pwm_denario
+#   - packages/pwm_AI_Scientist
 #
 # Use it with:
 #   - uv (recommended): https://github.com/astral-sh/uv
@@ -36,7 +36,7 @@ managed = true
 [tool.uv.workspace]
 members = [
   "packages/pwm_core",
-  "packages/pwm_denario",
+  "packages/pwm_AI_Scientist",
 ]
 
 [tool.ruff]

@@ -1,6 +1,6 @@
-"""pwm_denario.report_bridge
+"""pwm_AI_Scientist.report_bridge
 
-Helper to embed PWM report artifacts into Denario's artifact system.
+Helper to embed PWM report artifacts into AI_Scientist's artifact system.
 In this starter: just return paths and markdown.
 """
 

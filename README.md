@@ -14,7 +14,7 @@ into a fully reproducible run:
 PWM is designed to be:
 - **Public and extensible** (plugins, CasePacks, dataset adapters)
 - **Deterministic by default** (bounded search, reproducible seeds)
-- **Embeddable** into agent systems like **Denario** (via `pwm_denario`)
+- **Embeddable** into agent systems like **AI_Scientist** (via `pwm_AI_Scientist`)
 
 ---
 
@@ -167,7 +167,7 @@ pwm/
   pyproject.toml
 
   packages/
-    pwm_core/              # public core library (no Denario deps)
+    pwm_core/              # public core library (no AI_Scientist deps)
       pwm_core/
         agents/            # 17 agent modules + contracts + registry
         physics/           # 26 modality operators
@@ -185,7 +185,7 @@ pwm/
         run_all.py         # 26-modality benchmark suite
         test_operator_correction.py  # 16 calibration tests
       tests/               # 570+ unit tests
-    pwm_denario/           # Denario adapter (thin)
+    pwm_AI_Scientist/      # AI_Scientist adapter (thin)
 ```
 
 ---
@@ -202,7 +202,7 @@ pwm/
 ```bash
 pip install -U pip
 pip install -e packages/pwm_core
-pip install -e packages/pwm_denario
+pip install -e packages/pwm_AI_Scientist
 ```
 
 If you want the viewer:
@@ -577,7 +577,7 @@ All registries are validated by Pydantic schemas with cross-reference integrity 
 
 ---
 
-## Embedding into Denario
+## Embedding into AI_Scientist
 
 PWM exposes stable endpoints:
 - `compile(prompt)` -> draft spec
@@ -586,10 +586,10 @@ PWM exposes stable endpoints:
 - `fit_operator(...)` / `calibrate_recon(...)`
 - `export(runbundle)` / `view(runbundle)`
 
-Use `packages/pwm_denario/` as the thin adapter layer.
+Use `packages/pwm_AI_Scientist/` as the thin adapter layer.
 
 > You do **not** need AG2/LangGraph to run PWM.
-> If you want autonomy loops later (planner<->reviewer, tool-using multi-step agents), implement them in `pwm_denario` without changing `pwm_core`.
+> If you want autonomy loops later (planner<->reviewer, tool-using multi-step agents), implement them in `pwm_AI_Scientist` without changing `pwm_core`.
 
 ---
 
