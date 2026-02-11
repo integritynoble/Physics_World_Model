@@ -31,6 +31,7 @@ from pwm_core.graph.ir_types import NodeRole
 from pwm_core.graph.primitives import BasePrimitive, PRIMITIVE_REGISTRY
 from pwm_core.mismatch.belief_state import BeliefState, build_belief_from_graph
 from pwm_core.objectives.base import ObjectiveSpec
+from pwm_core.objectives.noise_model import NoiseModel, noise_model_from_primitive
 
 logger = logging.getLogger(__name__)
 
@@ -93,6 +94,13 @@ class GraphExecutor:
                 self._noise_idx = i
                 self._noise_prim = prim
 
+        # Build NoiseModel from noise primitive
+        self._noise_model: Optional[NoiseModel] = None
+        if self._noise_prim is not None:
+            self._noise_model = noise_model_from_primitive(
+                self._noise_prim.primitive_id, self._noise_prim._params
+            )
+
     @property
     def belief_state(self) -> BeliefState:
         return self._belief_state
@@ -123,22 +131,54 @@ class GraphExecutor:
         if x is None:
             raise ValueError("Mode S requires input x")
 
-        current = x.copy().astype(np.float64)
+        outputs: Dict[str, np.ndarray] = {}
+        edge_map = self._graph.edge_map
+        y_clean = None
 
-        # Forward through all nodes except noise -> y_clean
-        y_clean = current
         for i, (node_id, prim) in enumerate(self._graph.forward_plan):
+            # Skip noise node if add_noise=False
             if i == self._noise_idx and not config.add_noise:
+                # Store the output before noise as both y_clean and final output for this node
+                predecessors = edge_map.get(node_id, [])
+                if predecessors:
+                    pred_id = predecessors[0]
+                    y_clean = outputs[pred_id].copy()
+                    outputs[node_id] = y_clean.copy()
                 continue
+
+            # Capture y_clean right before noise node
             if i == self._noise_idx:
-                # Store y_clean before noise
-                y_clean = current.copy()
-            current = prim.forward(current)
+                predecessors = edge_map.get(node_id, [])
+                if predecessors:
+                    pred_id = predecessors[0]
+                    y_clean = outputs[pred_id].copy()
+
+            predecessors = edge_map.get(node_id, [])
+            n_inputs = getattr(prim, '_n_inputs', 1)
+
+            if not predecessors:
+                # Source node: receives pipeline input x
+                current = prim.forward(x.copy().astype(np.float64))
+            elif n_inputs > 1 and len(predecessors) > 1:
+                # Multi-input node
+                inputs = {pred: outputs[pred] for pred in predecessors if pred in outputs}
+                current = prim.forward_multi(inputs)
+            else:
+                # Single-input: take the one predecessor's output
+                pred_id = predecessors[0] if predecessors else None
+                pred_out = outputs[pred_id] if pred_id and pred_id in outputs else x.copy().astype(np.float64)
+                current = prim.forward(pred_out)
+
+            outputs[node_id] = current
+
+        # Final output is the last node
+        last_node = self._graph.forward_plan[-1][0]
+        y = outputs[last_node]
 
         return ExecutionResult(
             mode=ExecutionMode.simulate,
-            y=current,
-            diagnostics={"y_clean": y_clean},
+            y=y,
+            diagnostics={"y_clean": y_clean if y_clean is not None else y},
         )
 
     # ------------------------------------------------------------------
@@ -151,13 +191,26 @@ class GraphExecutor:
 
         # Build forward operator A (graph without noise)
         if config.provided_operator is not None:
-            # Operator correction mode
+            # Operator correction mode (deprecated in favour of graph correction nodes)
+            import warnings
+            warnings.warn(
+                "ExecutionConfig.provided_operator is deprecated. "
+                "Use graph-based correction nodes (affine_correction, residual_correction, "
+                "field_map_correction) instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
             operator = config.provided_operator
         else:
             operator = _StrippedGraphOp(self._graph, self._noise_idx)
 
-        # Infer objective from noise node type
-        obj_spec = config.objective_spec or self._infer_objective_from_noise()
+        # Determine objective: user override > noise model default > gaussian fallback
+        if config.objective_spec is not None:
+            obj_spec = config.objective_spec
+        elif self._noise_model is not None:
+            obj_spec = self._noise_model.default_objective()
+        else:
+            obj_spec = ObjectiveSpec(kind="gaussian")
 
         # Run solver portfolio
         from pwm_core.recon.portfolio import run_portfolio
@@ -283,6 +336,7 @@ class _StrippedGraphOp:
     def __init__(self, graph: GraphOperator, noise_idx: Optional[int]) -> None:
         self._graph = graph
         self._noise_idx = noise_idx
+        self._edge_map = graph.edge_map
 
         # Build stripped forward/adjoint plans
         self._fwd_plan = [
@@ -293,10 +347,30 @@ class _StrippedGraphOp:
         self._all_linear = all(p.is_linear for _, p in self._fwd_plan)
 
     def forward(self, x: np.ndarray) -> np.ndarray:
-        current = x.copy()
+        outputs: Dict[str, np.ndarray] = {}
+
         for node_id, prim in self._fwd_plan:
-            current = prim.forward(current)
-        return current
+            predecessors = self._edge_map.get(node_id, [])
+            n_inputs = getattr(prim, '_n_inputs', 1)
+
+            if not predecessors:
+                # Source node
+                current = prim.forward(x.copy().astype(np.float64))
+            elif n_inputs > 1 and len(predecessors) > 1:
+                # Multi-input node
+                inputs = {pred: outputs[pred] for pred in predecessors if pred in outputs}
+                current = prim.forward_multi(inputs)
+            else:
+                # Single-input
+                pred_id = predecessors[0] if predecessors else None
+                pred_out = outputs[pred_id] if pred_id and pred_id in outputs else x.copy().astype(np.float64)
+                current = prim.forward(pred_out)
+
+            outputs[node_id] = current
+
+        # Return output from last node
+        last_node = self._fwd_plan[-1][0]
+        return outputs[last_node]
 
     def adjoint(self, y: np.ndarray) -> np.ndarray:
         if not self._all_linear:

@@ -65,9 +65,10 @@ def validate_canonical_chain(spec: OperatorGraphSpec) -> None:
     sources = [nid for nid, r in role_map.items() if r == NodeRole.source]
     sensors = [nid for nid, r in role_map.items() if r == NodeRole.sensor]
     noises = [nid for nid, r in role_map.items() if r == NodeRole.noise]
+    corrections = [nid for nid, r in role_map.items() if r == NodeRole.correction]
     elements = [
         nid for nid, r in role_map.items()
-        if r not in (NodeRole.source, NodeRole.sensor, NodeRole.noise)
+        if r not in (NodeRole.source, NodeRole.sensor, NodeRole.noise, NodeRole.correction)
     ]
 
     # Check: exactly 1 source
@@ -77,7 +78,14 @@ def validate_canonical_chain(spec: OperatorGraphSpec) -> None:
             f"found {len(sources)}: {sources}"
         )
 
-    # Check: at least 1 element
+    # Check: at most 1 correction node
+    if len(corrections) > 1:
+        raise GraphCompilationError(
+            f"Canonical chain allows at most 1 correction node, "
+            f"found {len(corrections)}: {corrections}"
+        )
+
+    # Check: at least 1 element (correction nodes do NOT count)
     if len(elements) < 1:
         raise GraphCompilationError(
             f"Canonical chain requires at least 1 element/transport node, "
@@ -145,6 +153,32 @@ def validate_canonical_chain(spec: OperatorGraphSpec) -> None:
             f"No directed path from source '{source_id}' to "
             f"noise '{noise_id}'"
         )
+
+    # ---------------------------------------------------------------
+    # Carrier-transition enforcement (R2)
+    # ---------------------------------------------------------------
+    carrier_transitions = spec.metadata.get("carrier_transitions", None)
+    if carrier_transitions:
+        # Build set of physics_subroles present in element nodes
+        element_subroles: set = set()
+        for node in spec.nodes:
+            if node.node_id in elements:
+                # Check explicit physics_subrole on node
+                if node.physics_subrole is not None:
+                    element_subroles.add(node.physics_subrole.value if hasattr(node.physics_subrole, 'value') else str(node.physics_subrole))
+                # Check primitive class attribute
+                prim_cls = PRIMITIVE_REGISTRY.get(node.primitive_id)
+                if prim_cls is not None:
+                    sr = getattr(prim_cls, "_physics_subrole", None)
+                    if sr is not None:
+                        element_subroles.add(sr)
+        transition_subroles = {"interaction", "transduction"}
+        if not element_subroles & transition_subroles:
+            raise GraphCompilationError(
+                f"carrier_transitions declared {carrier_transitions} but no "
+                f"element node has physics_subrole in {transition_subroles}. "
+                f"Found subroles: {element_subroles}"
+            )
 
     logger.debug(
         f"Canonical chain validated: {source_id} -> "

@@ -40,6 +40,7 @@ from pwm_core.graph.adapter import GraphOperatorAdapter
 from pwm_core.graph.canonical import validate_canonical_chain
 from pwm_core.graph.executor import GraphExecutor, ExecutionConfig, ExecutionResult
 from pwm_core.graph.introspection import explain_graph
+from pwm_core.graph.tier_policy import TierPolicy, TierBudget
 
 __all__ = [
     "PrimitiveOp",
@@ -62,4 +63,6 @@ __all__ = [
     "ExecutionConfig",
     "ExecutionResult",
     "explain_graph",
+    "TierPolicy",
+    "TierBudget",
 ]

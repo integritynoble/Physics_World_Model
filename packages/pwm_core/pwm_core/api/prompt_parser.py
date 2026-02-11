@@ -4,15 +4,33 @@
 Prompt -> ExperimentSpec parser.
 
 Extracts modality, photon budget, execution mode, and solver preferences
-from a natural-language prompt string.
+from a natural-language prompt string, then assembles a validated
+ExperimentSpec (v0.2.1).
 """
 
 from __future__ import annotations
 
 import re
+import uuid
 from typing import Any, Dict, List, Optional, Tuple
 
 from pwm_core.core.enums import ExecutionMode
+from pwm_core.api.types import (
+    ExperimentSpec,
+    ExperimentInput,
+    ExperimentStates,
+    InputMode,
+    PhysicsState,
+    BudgetState,
+    TaskState,
+    TaskKind,
+    ReconSpec,
+    ReconPortfolio,
+    SolverSpec,
+    OperatorInput,
+    OperatorKind,
+    OperatorParametric,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -89,12 +107,12 @@ _SOLVER_KEYWORDS: Dict[str, List[str]] = {
 
 
 # ---------------------------------------------------------------------------
-# Public API
+# Internal parsed fields (renamed from ParsedPrompt)
 # ---------------------------------------------------------------------------
 
 
-class ParsedPrompt:
-    """Result of parsing a natural-language prompt.
+class _ParsedFields:
+    """Internal result of keyword extraction from a natural-language prompt.
 
     Attributes
     ----------
@@ -133,8 +151,28 @@ class ParsedPrompt:
         }
 
 
-def parse_prompt(prompt: str) -> ParsedPrompt:
-    """Parse a natural-language prompt into structured fields.
+# Backward-compatible alias
+ParsedPrompt = _ParsedFields
+
+
+# ---------------------------------------------------------------------------
+# ExecutionMode -> TaskKind / InputMode mapping
+# ---------------------------------------------------------------------------
+
+_MODE_TO_TASK: Dict[ExecutionMode, TaskKind] = {
+    ExecutionMode.simulate: TaskKind.simulate_recon_analyze,
+    ExecutionMode.invert: TaskKind.reconstruct_only,
+    ExecutionMode.calibrate: TaskKind.calibrate_and_reconstruct,
+}
+
+
+# ---------------------------------------------------------------------------
+# Public API
+# ---------------------------------------------------------------------------
+
+
+def parse_prompt_raw(prompt: str) -> _ParsedFields:
+    """Parse a prompt into raw keyword-extracted fields (backward compat).
 
     Parameters
     ----------
@@ -143,7 +181,7 @@ def parse_prompt(prompt: str) -> ParsedPrompt:
 
     Returns
     -------
-    ParsedPrompt
+    _ParsedFields
         Parsed result with modality, mode, budget, and solver preferences.
     """
     text = prompt.lower()
@@ -189,10 +227,83 @@ def parse_prompt(prompt: str) -> ParsedPrompt:
                 solver_ids.append(solver_id)
                 break
 
-    return ParsedPrompt(
+    return _ParsedFields(
         modality=modality,
         mode=mode,
         photon_budget=photon_budget,
         solver_ids=solver_ids,
         raw=prompt,
     )
+
+
+def parse_prompt(prompt: str) -> ExperimentSpec:
+    """Parse a natural-language prompt into a validated ExperimentSpec.
+
+    Parameters
+    ----------
+    prompt : str
+        User prompt describing the imaging task.
+
+    Returns
+    -------
+    ExperimentSpec
+        Fully validated experiment specification (v0.2.1).
+    """
+    fields = parse_prompt_raw(prompt)
+
+    # Map mode -> TaskKind
+    task_kind = _MODE_TO_TASK.get(fields.mode, TaskKind.reconstruct_only)
+
+    # Map mode -> InputMode
+    input_mode = (
+        InputMode.simulate
+        if fields.mode == ExecutionMode.simulate
+        else InputMode.measured
+    )
+
+    # Build graph_template_id
+    template_id = f"{fields.modality}_graph_v2" if fields.modality else None
+
+    # Build operator
+    operator = None
+    if template_id:
+        operator = OperatorInput(
+            kind=OperatorKind.parametric,
+            parametric=OperatorParametric(operator_id=template_id),
+        )
+
+    # Build budget
+    budget = None
+    if fields.photon_budget is not None:
+        budget = BudgetState(
+            photon_budget={"max_photons": fields.photon_budget},
+        )
+
+    # Build recon portfolio
+    portfolio = (
+        ReconPortfolio(solvers=[SolverSpec(id=s) for s in fields.solver_ids])
+        if fields.solver_ids
+        else ReconPortfolio()
+    )
+
+    # Build modality string (fallback to "unknown")
+    modality_str = fields.modality or "unknown"
+
+    spec = ExperimentSpec(
+        id=f"prompt_{uuid.uuid4().hex[:8]}",
+        input=ExperimentInput(
+            mode=input_mode,
+            operator=operator,
+        ),
+        states=ExperimentStates(
+            physics=PhysicsState(
+                modality=modality_str,
+                graph_template_id=template_id,
+            ),
+            budget=budget,
+            task=TaskState(kind=task_kind),
+        ),
+        recon=ReconSpec(portfolio=portfolio),
+    )
+
+    return spec

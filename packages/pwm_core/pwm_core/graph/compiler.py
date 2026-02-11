@@ -85,6 +85,25 @@ class GraphCompiler:
             prim = get_primitive(node.primitive_id, params=node.params)
             node_map[node.node_id] = prim
 
+        # Step 3b: Build edge_map and validate multi-input constraints
+        edge_map: Dict[str, List[str]] = {}
+        for edge in spec.edges:
+            if edge.target not in edge_map:
+                edge_map[edge.target] = []
+            edge_map[edge.target].append(edge.source)
+
+        # Validate: for multi-input nodes, incoming edge count must match _n_inputs
+        for node_id, prim in node_map.items():
+            n_inputs = getattr(prim, '_n_inputs', 1)
+            n_incoming = len(edge_map.get(node_id, []))
+            # Only validate for multi-input primitives
+            if n_inputs > 1:
+                if n_incoming != n_inputs:
+                    raise GraphCompilationError(
+                        f"Node '{node_id}' has {n_incoming} incoming edges but "
+                        f"primitive '{prim.primitive_id}' expects {n_inputs} inputs"
+                    )
+
         # Step 4: Build forward and adjoint plans
         forward_plan: List[Tuple[str, BasePrimitive]] = [
             (nid, node_map[nid]) for nid in topo_order
@@ -113,11 +132,31 @@ class GraphCompiler:
         # Derive NodeTags from primitive attributes
         node_tags: Dict[str, NodeTags] = {}
         for node_id, prim in node_map.items():
+            _tier_str = getattr(prim, '_physics_tier', None)
+            _physics_tier = None
+            if _tier_str is not None:
+                from pwm_core.graph.ir_types import PhysicsTier as _PT
+                try:
+                    _physics_tier = _PT(_tier_str)
+                except ValueError:
+                    pass
+
+            _subrole_str = getattr(prim, '_physics_subrole', None)
+            _physics_subrole = None
+            if _subrole_str is not None:
+                from pwm_core.graph.ir_types import PhysicsSubrole as _PSR
+                try:
+                    _physics_subrole = _PSR(_subrole_str)
+                except ValueError:
+                    pass
+
             node_tags[node_id] = NodeTags(
                 is_linear=prim.is_linear,
                 is_stochastic=prim.is_stochastic,
                 is_differentiable=prim.is_differentiable,
                 is_stateful=prim.is_stateful,
+                physics_tier=_physics_tier,
+                physics_subrole=_physics_subrole,
             )
 
         # Collect edges
@@ -135,6 +174,8 @@ class GraphCompiler:
             edges=edges_list,
             learnable_params=learnable_params,
             node_tags=node_tags,
+            edge_map=edge_map,
+            spec=spec,
         )
 
         logger.info(

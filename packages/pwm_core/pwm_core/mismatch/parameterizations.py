@@ -62,18 +62,15 @@ def generic_gain_shift_space() -> ThetaSpace:
 
 
 def graph_theta_space(adapter) -> ThetaSpace:
-    """Auto-generate ThetaSpace from graph operator node parameters.
+    """Auto-generate ThetaSpace from graph operator, using primitive-aware defaults."""
+    # Try to use belief_state logic if we have a graph_op
+    if hasattr(adapter, '_graph_op') and adapter._graph_op is not None:
+        from pwm_core.mismatch.belief_state import build_belief_from_graph
+        bs = build_belief_from_graph(adapter._graph_op)
+        return bs.to_theta_space()
 
-    Parameters
-    ----------
-    adapter : GraphOperatorAdapter
-        Adapter wrapping a compiled GraphOperator.
-
-    Returns
-    -------
-    ThetaSpace
-        Search space derived from graph node parameters.
-    """
+    # Fallback: use existing theta extraction with improved bounds
+    from pwm_core.mismatch.belief_state import _PARAM_DEFAULTS
     params: Dict[str, Dict[str, Any]] = {}
     theta = adapter.get_theta()
 
@@ -83,16 +80,33 @@ def graph_theta_space(adapter) -> ThetaSpace:
         except (TypeError, ValueError):
             continue
 
-        # Build bounded range: current value +/- factor
-        abs_val = abs(fval) if abs(fval) > 1e-6 else 1.0
-        factor = 2.0  # search within 2x of current value
+        # Extract param name from "node_id.param_name" key
+        param_name = key.split(".")[-1] if "." in key else key
 
-        params[key] = {
-            "type": "float",
-            "low": fval - abs_val * factor,
-            "high": fval + abs_val * factor,
-            "unit": "auto",
-        }
+        if param_name in _PARAM_DEFAULTS:
+            defaults = _PARAM_DEFAULTS[param_name]
+            params[key] = {
+                "type": "float",
+                "low": defaults["lower"],
+                "high": defaults["upper"],
+                "unit": defaults.get("units", "auto"),
+            }
+        else:
+            abs_val = abs(fval) if abs(fval) > 1e-6 else 1.0
+            if fval > 0:
+                params[key] = {
+                    "type": "float",
+                    "low": max(fval / 10.0, 1e-6),
+                    "high": fval * 10.0,
+                    "unit": "auto",
+                }
+            else:
+                params[key] = {
+                    "type": "float",
+                    "low": fval - abs_val * 2.0,
+                    "high": fval + abs_val * 2.0,
+                    "unit": "auto",
+                }
 
     modality = getattr(adapter, "_modality", "unknown")
     return ThetaSpace(
