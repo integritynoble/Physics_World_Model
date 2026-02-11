@@ -839,38 +839,309 @@ class SumAxis(BasePrimitive):
 
 
 # =========================================================================
+# Source family (role=source, is_linear=True)
+# =========================================================================
+
+
+class PhotonSource(BasePrimitive):
+    """Photon illumination source: scales input by strength, applies spatial profile."""
+
+    primitive_id = "photon_source"
+    _is_linear = True
+    _node_role = "source"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        strength = self._params.get("strength", 1.0)
+        return (x.astype(np.float64) * strength)
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        strength = self._params.get("strength", 1.0)
+        return (y.astype(np.float64) * strength)
+
+
+class XRaySource(BasePrimitive):
+    """X-ray source: photon source with keV spectrum hint."""
+
+    primitive_id = "xray_source"
+    _is_linear = True
+    _node_role = "source"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        strength = self._params.get("strength", 1.0)
+        return (x.astype(np.float64) * strength)
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        strength = self._params.get("strength", 1.0)
+        return (y.astype(np.float64) * strength)
+
+
+class AcousticSource(BasePrimitive):
+    """Acoustic carrier emission source."""
+
+    primitive_id = "acoustic_source"
+    _is_linear = True
+    _node_role = "source"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        strength = self._params.get("strength", 1.0)
+        return (x.astype(np.float64) * strength)
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        strength = self._params.get("strength", 1.0)
+        return (y.astype(np.float64) * strength)
+
+
+class SpinSource(BasePrimitive):
+    """RF excitation source for MRI/NMR."""
+
+    primitive_id = "spin_source"
+    _is_linear = True
+    _node_role = "source"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        strength = self._params.get("strength", 1.0)
+        return (x.astype(np.float64) * strength)
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        strength = self._params.get("strength", 1.0)
+        return (y.astype(np.float64) * strength)
+
+
+class GenericSource(BasePrimitive):
+    """Identity-like fallback source for Matrix/NeRF/3DGS modalities."""
+
+    primitive_id = "generic_source"
+    _is_linear = True
+    _node_role = "source"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        strength = self._params.get("strength", 1.0)
+        return (x.astype(np.float64) * strength)
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        strength = self._params.get("strength", 1.0)
+        return (y.astype(np.float64) * strength)
+
+
+# =========================================================================
+# Sensor family (role=sensor, is_linear=True)
+# =========================================================================
+
+
+class PhotonSensor(BasePrimitive):
+    """Photon sensor: QE * gain + dark_current -> expected electron count."""
+
+    primitive_id = "photon_sensor"
+    _is_linear = True
+    _node_role = "sensor"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        qe = self._params.get("quantum_efficiency", 0.9)
+        gain = self._params.get("gain", 1.0)
+        dark_current = self._params.get("dark_current", 0.0)
+        return (x.astype(np.float64) * qe * gain + dark_current)
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        qe = self._params.get("quantum_efficiency", 0.9)
+        gain = self._params.get("gain", 1.0)
+        return (y.astype(np.float64) * qe * gain)
+
+
+class CoilSensor(BasePrimitive):
+    """MRI coil sensitivity: complex multiply by coil map."""
+
+    primitive_id = "coil_sensor"
+    _is_linear = True
+    _node_role = "sensor"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        sensitivity = self._params.get("sensitivity", 1.0)
+        return (x.astype(np.complex128) * sensitivity)
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        sensitivity = self._params.get("sensitivity", 1.0)
+        return (y.astype(np.complex128) * np.conj(sensitivity))
+
+
+class TransducerSensor(BasePrimitive):
+    """Acoustic-to-voltage conversion for ultrasound/photoacoustic."""
+
+    primitive_id = "transducer_sensor"
+    _is_linear = True
+    _node_role = "sensor"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        sensitivity = self._params.get("sensitivity", 1.0)
+        return (x.astype(np.float64) * sensitivity)
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        sensitivity = self._params.get("sensitivity", 1.0)
+        return (y.astype(np.float64) * sensitivity)
+
+
+class GenericSensor(BasePrimitive):
+    """Identity sensor with gain for Matrix/NeRF/3DGS modalities."""
+
+    primitive_id = "generic_sensor"
+    _is_linear = True
+    _node_role = "sensor"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        gain = self._params.get("gain", 1.0)
+        return (x.astype(np.float64) * gain)
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        gain = self._params.get("gain", 1.0)
+        return (y.astype(np.float64) * gain)
+
+
+# =========================================================================
+# Sensor noise family (role=noise, is_linear=False, is_stochastic=True)
+# =========================================================================
+
+
+class PoissonGaussianSensorNoise(BasePrimitive):
+    """Poisson shot + Gaussian read noise with likelihood method.
+
+    Forward: shot(peak * x_clean) / peak + N(0, read_sigma)
+    """
+
+    primitive_id = "poisson_gaussian_sensor"
+    _is_linear = False
+    _is_stochastic = True
+    _is_differentiable = False
+    _node_role = "noise"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        peak = self._params.get("peak_photons", 1e4)
+        read_sigma = self._params.get("read_sigma", 0.01)
+        seed = self._params.get("seed", 0)
+        rng = np.random.default_rng(seed)
+        scaled = np.maximum(x.astype(np.float64) * peak, 0.0)
+        shot = rng.poisson(scaled).astype(np.float64) / peak
+        return shot + rng.normal(0, read_sigma, size=x.shape)
+
+    def likelihood(self, y: np.ndarray, y_clean: np.ndarray) -> float:
+        """Mixed Poisson-Gaussian NLL."""
+        peak = self._params.get("peak_photons", 1e4)
+        read_sigma = self._params.get("read_sigma", 0.01)
+        eps = 1e-10
+        lam = np.maximum(y_clean.ravel().astype(np.float64) * peak, eps)
+        y_flat = y.ravel().astype(np.float64) * peak
+        # Poisson contribution + Gaussian read noise
+        poisson_nll = float(np.sum(lam - y_flat * np.log(lam)))
+        gauss_nll = float(0.5 * np.sum(
+            (y.ravel() - y_clean.ravel()) ** 2 / (read_sigma ** 2)
+        ))
+        return poisson_nll + gauss_nll
+
+
+class ComplexGaussianSensorNoise(BasePrimitive):
+    """Complex Gaussian noise for MRI k-space data."""
+
+    primitive_id = "complex_gaussian_sensor"
+    _is_linear = False
+    _is_stochastic = True
+    _is_differentiable = True
+    _node_role = "noise"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        sigma = self._params.get("sigma", 0.01)
+        seed = self._params.get("seed", 0)
+        rng = np.random.default_rng(seed)
+        noise = rng.normal(0, sigma, x.shape) + 1j * rng.normal(0, sigma, x.shape)
+        return x.astype(np.complex128) + noise
+
+    def likelihood(self, y: np.ndarray, y_clean: np.ndarray) -> float:
+        """Complex Gaussian NLL."""
+        sigma = self._params.get("sigma", 0.01)
+        r = (y.ravel() - y_clean.ravel()).astype(np.complex128)
+        return float(np.sum(np.abs(r) ** 2 / (sigma ** 2)).real)
+
+
+class PoissonOnlySensorNoise(BasePrimitive):
+    """Poisson-only noise for photon-counting detectors (CT)."""
+
+    primitive_id = "poisson_only_sensor"
+    _is_linear = False
+    _is_stochastic = True
+    _is_differentiable = False
+    _node_role = "noise"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        peak = self._params.get("peak_photons", 1e5)
+        seed = self._params.get("seed", 0)
+        rng = np.random.default_rng(seed)
+        scaled = np.maximum(x.astype(np.float64) * peak, 0.0)
+        return rng.poisson(scaled).astype(np.float64) / peak
+
+    def likelihood(self, y: np.ndarray, y_clean: np.ndarray) -> float:
+        """Poisson NLL."""
+        peak = self._params.get("peak_photons", 1e5)
+        eps = 1e-10
+        lam = np.maximum(y_clean.ravel().astype(np.float64) * peak, eps)
+        y_flat = y.ravel().astype(np.float64) * peak
+        return float(np.sum(lam - y_flat * np.log(lam)))
+
+
+# =========================================================================
 # Registry
 # =========================================================================
 
 _ALL_PRIMITIVES: List[type] = [
+    # Propagation
     FresnelProp,
     AngularSpectrum,
     RayTrace,
+    # PSF / Convolution
     Conv2d,
     Conv3d,
     DeconvRL,
+    # Modulation
     CodedMask,
     DMDPattern,
     SIMPattern,
+    # Warp / Dispersion
     SpectralDispersion,
     ChromaticWarp,
+    # Sampling
     RandomMask,
     CTRadon,
     MRIKspace,
     TemporalMask,
+    # Nonlinearity
     MagnitudeSq,
     Saturation,
     LogCompress,
+    # Noise (legacy)
     PoissonNoise,
     GaussianNoise,
     PoissonGaussianNoise,
     FPN,
+    # Temporal
     FrameIntegration,
     MotionWarp,
+    # Readout
     Quantize,
     ADCClip,
+    # Identity
     Identity,
     SumAxis,
+    # Source family
+    PhotonSource,
+    XRaySource,
+    AcousticSource,
+    SpinSource,
+    GenericSource,
+    # Sensor family
+    PhotonSensor,
+    CoilSensor,
+    TransducerSensor,
+    GenericSensor,
+    # Sensor noise family
+    PoissonGaussianSensorNoise,
+    ComplexGaussianSensorNoise,
+    PoissonOnlySensorNoise,
 ]
 
 PRIMITIVE_REGISTRY: Dict[str, type] = {

@@ -71,6 +71,11 @@ class GraphCompiler:
         self._validate_dag(spec)
         self._validate_primitive_ids(spec)
 
+        # Step 1b: Canonical chain validation (opt-in via metadata flag)
+        if spec.metadata.get("canonical_chain", False):
+            from pwm_core.graph.canonical import validate_canonical_chain
+            validate_canonical_chain(spec)
+
         # Step 2: Topological sort
         topo_order = self._topological_sort(spec)
 

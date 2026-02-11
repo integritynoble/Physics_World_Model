@@ -360,6 +360,21 @@ def run_pipeline(
     # 2. Build physics operator
     operator = build_operator(spec)
 
+    # 2b. If canonical graph, wrap in GraphExecutor for unified S/I/C
+    graph_executor = None
+    try:
+        from pwm_core.graph.adapter import GraphOperatorAdapter
+        from pwm_core.graph.executor import GraphExecutor, ExecutionConfig, ExecutionResult
+        from pwm_core.core.enums import ExecutionMode
+
+        if isinstance(operator, GraphOperatorAdapter):
+            graph_meta = operator.graph_op.metadata
+            if graph_meta.get("canonical_chain", False):
+                graph_executor = GraphExecutor(operator.graph_op)
+                logger.info("Using GraphExecutor for canonical graph '%s'", operator.graph_op.graph_id)
+    except ImportError:
+        pass
+
     # 3. Get or simulate measurements
     x_true: Optional[np.ndarray] = None
 
