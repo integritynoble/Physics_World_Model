@@ -13,9 +13,60 @@ ParameterSpec     Bounds, prior, parameterization, identifiability hint for lear
 from __future__ import annotations
 
 import math
+from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+
+# ---------------------------------------------------------------------------
+# Enums for universal Source/Transport/Sensor/Noise decomposition (v3)
+# ---------------------------------------------------------------------------
+
+
+class PhysicsTier(str, Enum):
+    """Level of physical fidelity for a primitive or graph node."""
+
+    tier0_geometry = "tier0_geometry"
+    tier1_approx = "tier1_approx"
+    tier2_full = "tier2_full"
+    tier3_learned = "tier3_learned"
+
+
+class NodeRole(str, Enum):
+    """Semantic role of a node in the universal forward model decomposition.
+
+    The universal rule is: y ~ Noise(Sensor(Transport/Interaction(Source(x))))
+    """
+
+    source = "source"
+    transport = "transport"
+    interaction = "interaction"
+    sensor = "sensor"
+    noise = "noise"
+    readout = "readout"
+    utility = "utility"
+
+
+class CarrierType(str, Enum):
+    """Physical carrier for the signal propagating through the imaging system."""
+
+    photon = "photon"
+    electron = "electron"
+    acoustic = "acoustic"
+    spin = "spin"
+    particle_other = "particle_other"
+    abstract = "abstract"
+
+
+class DiffMode(str, Enum):
+    """Differentiability mode of a primitive or node."""
+
+    none = "none"
+    forward_ad = "forward_ad"
+    reverse_ad = "reverse_ad"
+    both = "both"
+    finite_diff = "finite_diff"
 
 
 # ---------------------------------------------------------------------------
@@ -67,6 +118,38 @@ class NodeTags(StrictBaseModel):
     is_stochastic: bool = False
     is_differentiable: bool = True
     is_stateful: bool = False
+    physics_tier: Optional[PhysicsTier] = None
+    node_role: Optional[NodeRole] = None
+    carrier_type: Optional[CarrierType] = None
+    diff_mode: Optional[DiffMode] = None
+    supports_vjp: bool = False
+    supports_jvp: bool = False
+
+
+# ---------------------------------------------------------------------------
+# DriftModel
+# ---------------------------------------------------------------------------
+
+
+class DriftModel(StrictBaseModel):
+    """Model for parameter drift over time (e.g. thermal drift, bleaching).
+
+    Attributes
+    ----------
+    kind : str
+        Drift type: ``none``, ``linear``, ``exponential``, ``brownian``.
+    rate : float
+        Drift rate (units depend on kind).
+    time_constant_s : float
+        Characteristic time constant in seconds.
+    amplitude : float
+        Drift amplitude scaling factor.
+    """
+
+    kind: str = "none"
+    rate: float = 0.0
+    time_constant_s: float = 0.0
+    amplitude: float = 0.0
 
 
 # ---------------------------------------------------------------------------
@@ -93,6 +176,8 @@ class TensorSpec(StrictBaseModel):
     dtype: str = "float64"
     unit: str = "arbitrary"
     domain: str = "real"
+    carrier_type: Optional[CarrierType] = None
+    axes_labels: List[str] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -126,3 +211,5 @@ class ParameterSpec(StrictBaseModel):
     prior: str = "uniform"
     parameterization: str = "identity"
     identifiability_hint: str = "unknown"
+    drift_model: Optional[DriftModel] = None
+    units: str = "dimensionless"
