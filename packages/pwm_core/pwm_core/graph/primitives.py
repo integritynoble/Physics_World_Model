@@ -67,6 +67,8 @@ class BasePrimitive:
     _is_stochastic: bool = False
     _is_differentiable: bool = True
     _is_stateful: bool = False
+    _n_inputs: int = 1
+    _physics_subrole: Optional[str] = None
     _params: Dict[str, Any]
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
@@ -74,6 +76,10 @@ class BasePrimitive:
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         raise NotImplementedError
+
+    def forward_multi(self, inputs: Dict[str, np.ndarray]) -> np.ndarray:
+        """Forward pass for multi-input nodes. Default delegates to forward()."""
+        return self.forward(next(iter(inputs.values())))
 
     def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
         raise NotImplementedError(
@@ -131,6 +137,8 @@ class FresnelProp(BasePrimitive):
 
     primitive_id = "fresnel_prop"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "propagation"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         wavelength = self._params.get("wavelength", 0.5e-6)
@@ -164,6 +172,8 @@ class AngularSpectrum(BasePrimitive):
 
     primitive_id = "angular_spectrum"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "propagation"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         wavelength = self._params.get("wavelength", 0.5e-6)
@@ -197,6 +207,8 @@ class RayTrace(BasePrimitive):
 
     primitive_id = "ray_trace"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "propagation"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         focal_length = self._params.get("focal_length", 50.0)
@@ -220,6 +232,8 @@ class Conv2d(BasePrimitive):
 
     primitive_id = "conv2d"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "propagation"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sigma = self._params.get("sigma", 2.0)
@@ -241,6 +255,8 @@ class Conv3d(BasePrimitive):
 
     primitive_id = "conv3d"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "propagation"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sigma = self._params.get("sigma", [2.0, 2.0, 2.0])
@@ -263,6 +279,8 @@ class DeconvRL(BasePrimitive):
     primitive_id = "deconv_rl"
     _is_linear = False
     _is_differentiable = False
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "propagation"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sigma = self._params.get("sigma", 2.0)
@@ -293,6 +311,8 @@ class CodedMask(BasePrimitive):
 
     primitive_id = "coded_mask"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "modulation"
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -330,6 +350,8 @@ class DMDPattern(BasePrimitive):
 
     primitive_id = "dmd_pattern"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "modulation"
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -355,6 +377,8 @@ class SIMPattern(BasePrimitive):
 
     primitive_id = "sim_pattern"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "modulation"
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -390,6 +414,8 @@ class SpectralDispersion(BasePrimitive):
 
     primitive_id = "spectral_dispersion"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "encoding"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         disp_step = self._params.get("disp_step", 1.0)
@@ -419,6 +445,8 @@ class ChromaticWarp(BasePrimitive):
 
     primitive_id = "chromatic_warp"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "propagation"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         warp_coeff = self._params.get("warp_coeff", 0.01)
@@ -459,6 +487,8 @@ class RandomMask(BasePrimitive):
 
     primitive_id = "random_mask"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "sampling"
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -493,6 +523,8 @@ class CTRadon(BasePrimitive):
 
     primitive_id = "ct_radon"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "sampling"
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -559,6 +591,8 @@ class MRIKspace(BasePrimitive):
 
     primitive_id = "mri_kspace"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "sampling"
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -585,6 +619,8 @@ class TemporalMask(BasePrimitive):
 
     primitive_id = "temporal_mask"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "encoding"
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -624,6 +660,8 @@ class MagnitudeSq(BasePrimitive):
 
     primitive_id = "magnitude_sq"
     _is_linear = False
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "transduction"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         return np.abs(x.astype(np.complex128)) ** 2
@@ -634,6 +672,8 @@ class Saturation(BasePrimitive):
 
     primitive_id = "saturation"
     _is_linear = False
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "transduction"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         max_val = self._params.get("max_val", 1.0)
@@ -645,6 +685,8 @@ class LogCompress(BasePrimitive):
 
     primitive_id = "log_compress"
     _is_linear = False
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "transduction"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         alpha = self._params.get("alpha", 1.0)
@@ -663,6 +705,7 @@ class PoissonNoise(BasePrimitive):
     _is_linear = False
     _is_stochastic = True
     _is_differentiable = False
+    _physics_tier = "tier1_approx"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         peak = self._params.get("peak_photons", 1e4)
@@ -680,6 +723,7 @@ class GaussianNoise(BasePrimitive):
     _is_linear = False
     _is_stochastic = True
     _is_differentiable = True
+    _physics_tier = "tier1_approx"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sigma = self._params.get("sigma", 0.01)
@@ -695,6 +739,7 @@ class PoissonGaussianNoise(BasePrimitive):
     _is_linear = False
     _is_stochastic = True
     _is_differentiable = False
+    _physics_tier = "tier1_approx"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         peak = self._params.get("peak_photons", 1e4)
@@ -713,6 +758,7 @@ class FPN(BasePrimitive):
     _is_linear = False
     _is_stochastic = True
     _is_differentiable = True
+    _physics_tier = "tier1_approx"
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -741,6 +787,8 @@ class FrameIntegration(BasePrimitive):
 
     primitive_id = "frame_integration"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "encoding"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         axis = self._params.get("axis", -1)
@@ -756,6 +804,8 @@ class MotionWarp(BasePrimitive):
 
     primitive_id = "motion_warp"
     _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "propagation"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         dx = self._params.get("dx", 0.0)
@@ -779,6 +829,8 @@ class Quantize(BasePrimitive):
     primitive_id = "quantize"
     _is_linear = False
     _is_differentiable = False
+    _physics_tier = "tier0_geometry"
+    _physics_subrole = "transduction"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         bit_depth = self._params.get("bit_depth", 16)
@@ -793,6 +845,8 @@ class ADCClip(BasePrimitive):
 
     primitive_id = "adc_clip"
     _is_linear = False
+    _physics_tier = "tier0_geometry"
+    _physics_subrole = "transduction"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         full_well = self._params.get("full_well", 1.0)
@@ -809,6 +863,8 @@ class Identity(BasePrimitive):
 
     primitive_id = "identity"
     _is_linear = True
+    _physics_tier = "tier0_geometry"
+    _physics_subrole = "relay"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         return x.copy().astype(np.float64)
@@ -827,6 +883,8 @@ class SumAxis(BasePrimitive):
 
     primitive_id = "sum_axis"
     _is_linear = True
+    _physics_tier = "tier0_geometry"
+    _physics_subrole = "encoding"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         axis = self._params.get("axis", -1)
@@ -849,6 +907,7 @@ class PhotonSource(BasePrimitive):
     primitive_id = "photon_source"
     _is_linear = True
     _node_role = "source"
+    _physics_tier = "tier0_geometry"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         strength = self._params.get("strength", 1.0)
@@ -865,6 +924,7 @@ class XRaySource(BasePrimitive):
     primitive_id = "xray_source"
     _is_linear = True
     _node_role = "source"
+    _physics_tier = "tier0_geometry"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         strength = self._params.get("strength", 1.0)
@@ -881,6 +941,7 @@ class AcousticSource(BasePrimitive):
     primitive_id = "acoustic_source"
     _is_linear = True
     _node_role = "source"
+    _physics_tier = "tier0_geometry"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         strength = self._params.get("strength", 1.0)
@@ -897,6 +958,7 @@ class SpinSource(BasePrimitive):
     primitive_id = "spin_source"
     _is_linear = True
     _node_role = "source"
+    _physics_tier = "tier0_geometry"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         strength = self._params.get("strength", 1.0)
@@ -913,6 +975,7 @@ class GenericSource(BasePrimitive):
     primitive_id = "generic_source"
     _is_linear = True
     _node_role = "source"
+    _physics_tier = "tier0_geometry"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         strength = self._params.get("strength", 1.0)
@@ -929,37 +992,98 @@ class GenericSource(BasePrimitive):
 
 
 class PhotonSensor(BasePrimitive):
-    """Photon sensor: QE * gain + dark_current -> expected electron count."""
+    """Photon sensor: QE * gain + dark_current -> expected electron count.
+
+    Supports multi-channel output via n_channels parameter.
+    """
 
     primitive_id = "photon_sensor"
     _is_linear = True
     _node_role = "sensor"
+    _physics_tier = "tier0_geometry"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         qe = self._params.get("quantum_efficiency", 0.9)
         gain = self._params.get("gain", 1.0)
         dark_current = self._params.get("dark_current", 0.0)
-        return (x.astype(np.float64) * qe * gain + dark_current)
+        n_channels = int(self._params.get("n_channels", 1))
+
+        base = x.astype(np.float64) * qe * gain + dark_current
+
+        if n_channels > 1:
+            channel_responses = self._params.get("channel_responses", None)
+            if channel_responses is not None:
+                # Apply per-channel response
+                result = np.stack([base * r for r in channel_responses[:n_channels]], axis=0)
+            else:
+                # Replicate across channels
+                result = np.stack([base] * n_channels, axis=0)
+            return result
+        return base
 
     def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
         qe = self._params.get("quantum_efficiency", 0.9)
         gain = self._params.get("gain", 1.0)
+        n_channels = int(self._params.get("n_channels", 1))
+
+        if n_channels > 1:
+            channel_responses = self._params.get("channel_responses", None)
+            if channel_responses is not None:
+                result = sum(y[c] * channel_responses[c] for c in range(min(n_channels, y.shape[0])))
+            else:
+                result = np.sum(y, axis=0)
+            return result.astype(np.float64) * qe * gain
         return (y.astype(np.float64) * qe * gain)
 
 
 class CoilSensor(BasePrimitive):
-    """MRI coil sensitivity: complex multiply by coil map."""
+    """MRI coil sensitivity: complex multiply by coil map.
+
+    Supports multi-coil output via n_coils parameter.
+    """
 
     primitive_id = "coil_sensor"
     _is_linear = True
     _node_role = "sensor"
+    _physics_tier = "tier0_geometry"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sensitivity = self._params.get("sensitivity", 1.0)
-        return (x.astype(np.complex128) * sensitivity)
+        n_coils = int(self._params.get("n_coils", 1))
+
+        x_c = x.astype(np.complex128)
+
+        if n_coils > 1:
+            sensitivity_maps = self._params.get("sensitivity_maps", None)
+            if sensitivity_maps is not None:
+                # sensitivity_maps: (n_coils, *spatial_shape) complex
+                maps = np.asarray(sensitivity_maps, dtype=np.complex128)
+                return maps[:n_coils] * x_c
+            else:
+                # Default: generate random-phase sensitivities
+                rng = np.random.RandomState(42)
+                phases = np.exp(2j * np.pi * rng.rand(n_coils, 1, 1))
+                return np.stack([x_c * sensitivity * phases[c, 0, 0] for c in range(n_coils)], axis=0)
+        return x_c * sensitivity
 
     def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
         sensitivity = self._params.get("sensitivity", 1.0)
+        n_coils = int(self._params.get("n_coils", 1))
+
+        if n_coils > 1:
+            sensitivity_maps = self._params.get("sensitivity_maps", None)
+            if sensitivity_maps is not None:
+                maps = np.asarray(sensitivity_maps, dtype=np.complex128)
+                return np.sum(np.conj(maps[:n_coils]) * y[:n_coils], axis=0)
+            else:
+                rng = np.random.RandomState(42)
+                phases = np.exp(2j * np.pi * rng.rand(n_coils, 1, 1))
+                conj_phases = np.conj(phases)
+                return np.sum(
+                    np.stack([y[c] * np.conj(sensitivity) * conj_phases[c, 0, 0]
+                             for c in range(min(n_coils, y.shape[0]))], axis=0),
+                    axis=0
+                )
         return (y.astype(np.complex128) * np.conj(sensitivity))
 
 
@@ -969,6 +1093,7 @@ class TransducerSensor(BasePrimitive):
     primitive_id = "transducer_sensor"
     _is_linear = True
     _node_role = "sensor"
+    _physics_tier = "tier0_geometry"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sensitivity = self._params.get("sensitivity", 1.0)
@@ -980,18 +1105,29 @@ class TransducerSensor(BasePrimitive):
 
 
 class GenericSensor(BasePrimitive):
-    """Identity sensor with gain for Matrix/NeRF/3DGS modalities."""
+    """Identity sensor with gain for Matrix/NeRF/3DGS modalities.
+
+    Supports multi-channel output via n_channels parameter.
+    """
 
     primitive_id = "generic_sensor"
     _is_linear = True
     _node_role = "sensor"
+    _physics_tier = "tier0_geometry"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         gain = self._params.get("gain", 1.0)
-        return (x.astype(np.float64) * gain)
+        n_channels = int(self._params.get("n_channels", 1))
+        base = x.astype(np.float64) * gain
+        if n_channels > 1:
+            return np.stack([base] * n_channels, axis=0)
+        return base
 
     def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
         gain = self._params.get("gain", 1.0)
+        n_channels = int(self._params.get("n_channels", 1))
+        if n_channels > 1:
+            return np.sum(y, axis=0).astype(np.float64) * gain
         return (y.astype(np.float64) * gain)
 
 
@@ -1011,6 +1147,7 @@ class PoissonGaussianSensorNoise(BasePrimitive):
     _is_stochastic = True
     _is_differentiable = False
     _node_role = "noise"
+    _physics_tier = "tier1_approx"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         peak = self._params.get("peak_photons", 1e4)
@@ -1044,6 +1181,7 @@ class ComplexGaussianSensorNoise(BasePrimitive):
     _is_stochastic = True
     _is_differentiable = True
     _node_role = "noise"
+    _physics_tier = "tier1_approx"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sigma = self._params.get("sigma", 0.01)
@@ -1067,6 +1205,7 @@ class PoissonOnlySensorNoise(BasePrimitive):
     _is_stochastic = True
     _is_differentiable = False
     _node_role = "noise"
+    _physics_tier = "tier1_approx"
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         peak = self._params.get("peak_photons", 1e5)
@@ -1082,6 +1221,374 @@ class PoissonOnlySensorNoise(BasePrimitive):
         lam = np.maximum(y_clean.ravel().astype(np.float64) * peak, eps)
         y_flat = y.ravel().astype(np.float64) * peak
         return float(np.sum(lam - y_flat * np.log(lam)))
+
+
+# =========================================================================
+# Multi-input family
+# =========================================================================
+
+
+class Interference(BasePrimitive):
+    """Two-beam interference: signal + reference."""
+    primitive_id = "interference"
+    _is_linear = True
+    _n_inputs = 2
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "interaction"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        # Single-input fallback: identity
+        return x
+
+    def forward_multi(self, inputs: Dict[str, np.ndarray]) -> np.ndarray:
+        signal = inputs.get("signal", next(iter(inputs.values())))
+        ref = inputs.get("reference", np.zeros_like(signal))
+        return np.abs(signal + ref) ** 2
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        raise NotImplementedError("Adjoint not available for non-linear interference")
+
+
+class FourierRelay(BasePrimitive):
+    """Fourier-domain relay: FFT -> transfer function -> IFFT.
+
+    Tier-1 approximation for free-space propagation, low-pass filtering,
+    or band-pass filtering in the frequency domain.
+    """
+    primitive_id = "fourier_relay"
+    _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "relay"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        transfer_function = self._params.get("transfer_function", "free_space")
+        wavelength = self._params.get("wavelength_m", 0.5e-6)
+        distance = self._params.get("propagation_distance_m", 1e-3)
+        pixel_size = self._params.get("pixel_size_m", 1e-6)
+
+        H, W = x.shape[-2], x.shape[-1]
+        fy = np.fft.fftfreq(H, d=pixel_size).reshape(-1, 1)
+        fx = np.fft.fftfreq(W, d=pixel_size).reshape(1, -1)
+
+        if transfer_function == "free_space":
+            kz_sq = np.maximum(1.0 / wavelength**2 - fx**2 - fy**2, 0.0)
+            H_tf = np.exp(2j * np.pi * distance * np.sqrt(kz_sq))
+        elif transfer_function == "low_pass":
+            cutoff = self._params.get("cutoff_freq", 0.5 / pixel_size)
+            H_tf = ((fx**2 + fy**2) <= cutoff**2).astype(np.complex128)
+        elif transfer_function == "band_pass":
+            low = self._params.get("low_freq", 0.1 / pixel_size)
+            high = self._params.get("high_freq", 0.4 / pixel_size)
+            r2 = fx**2 + fy**2
+            H_tf = ((r2 >= low**2) & (r2 <= high**2)).astype(np.complex128)
+        else:
+            H_tf = np.ones((H, W), dtype=np.complex128)
+
+        self._H_tf = H_tf  # Cache for adjoint
+        X = np.fft.fft2(x.astype(np.complex128))
+        result = np.fft.ifft2(X * H_tf)
+        return np.real(result) if np.isrealobj(x) else result
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        if not hasattr(self, '_H_tf'):
+            # Build transfer function (in case adjoint called without forward first)
+            dummy = np.zeros(y.shape)
+            self.forward(dummy)
+        H_tf_conj = np.conj(self._H_tf)
+        Y = np.fft.fft2(y.astype(np.complex128))
+        result = np.fft.ifft2(Y * H_tf_conj)
+        return np.real(result) if np.isrealobj(y) else result
+
+
+class MaxwellInterface(BasePrimitive):
+    """Tier-2 Maxwell solver interface stub (FDTD/BPM).
+
+    Defines the correct input/output interface for full-wave electromagnetic
+    simulation but raises NotImplementedError until a backend is integrated.
+    """
+    primitive_id = "maxwell_interface"
+    _is_linear = True
+    _physics_tier = "tier2_full"
+    _physics_subrole = "propagation"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        backend = self._params.get("backend", "none")
+        raise NotImplementedError(
+            f"Maxwell solver (FDTD/BPM) not yet integrated. "
+            f"Set up via MaxwellInterface.configure(backend='meep'|'tidy3d'|'custom'). "
+            f"Current backend='{backend}'"
+        )
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        raise NotImplementedError(
+            "Maxwell adjoint requires full-wave solver backend."
+        )
+
+
+# =========================================================================
+# Correction family (role=correction)
+# =========================================================================
+
+
+class AffineCorrectionNode(BasePrimitive):
+    """Per-element affine correction: y_corrected = gain * y + offset."""
+
+    primitive_id = "affine_correction"
+    _is_linear = True
+    _node_role = "correction"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x, **params):
+        gain = self._params.get("gain", 1.0)
+        offset = self._params.get("offset", 0.0)
+        if isinstance(gain, (list, np.ndarray)):
+            gain = np.asarray(gain, dtype=np.float64)
+        if isinstance(offset, (list, np.ndarray)):
+            offset = np.asarray(offset, dtype=np.float64)
+        return x.astype(np.float64) * gain + offset
+
+    def adjoint(self, y, **params):
+        gain = self._params.get("gain", 1.0)
+        if isinstance(gain, (list, np.ndarray)):
+            gain = np.asarray(gain, dtype=np.float64)
+        return y.astype(np.float64) * gain  # adjoint of affine: gain^T * y
+
+
+class ResidualCorrectionNode(BasePrimitive):
+    """Additive residual correction: y_corrected = y + residual."""
+
+    primitive_id = "residual_correction"
+    _is_linear = True
+    _node_role = "correction"
+    _physics_tier = "tier0_geometry"
+
+    def forward(self, x, **params):
+        residual = self._params.get("residual", 0.0)
+        if isinstance(residual, (list, np.ndarray)):
+            residual = np.asarray(residual, dtype=np.float64)
+        return x.astype(np.float64) + residual
+
+    def adjoint(self, y, **params):
+        return y.astype(np.float64)  # adjoint of identity + constant = identity
+
+
+class FieldMapCorrectionNode(BasePrimitive):
+    """Multiplicative field map correction (e.g., B0 inhomogeneity)."""
+
+    primitive_id = "field_map_correction"
+    _is_linear = True
+    _node_role = "correction"
+    _physics_tier = "tier1_approx"
+
+    def forward(self, x, **params):
+        field_map = self._params.get("field_map", 1.0)
+        if isinstance(field_map, (list, np.ndarray)):
+            field_map = np.asarray(field_map, dtype=np.float64)
+        return x.astype(np.float64) * field_map
+
+    def adjoint(self, y, **params):
+        field_map = self._params.get("field_map", 1.0)
+        if isinstance(field_map, (list, np.ndarray)):
+            field_map = np.asarray(field_map, dtype=np.float64)
+        return y.astype(np.float64) * field_map  # self-adjoint for real field map
+
+
+# =========================================================================
+# R6: Physically-correct primitives for CT, Photoacoustic, NeRF, 3DGS
+# =========================================================================
+
+
+class BeerLambert(BasePrimitive):
+    """Beer-Lambert transmission: I = I_0 * exp(-sinogram).
+
+    Models photon transmission through an attenuating medium.
+    Input is attenuation line-integral (sinogram), output is transmitted
+    photon intensity.  Non-linear (exponential).
+    """
+
+    primitive_id = "beer_lambert"
+    _is_linear = False
+    _node_role = "transport"
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "transduction"
+
+    def forward(self, x, **params):
+        I_0 = self._params.get("I_0", 10000.0)
+        x = np.asarray(x, dtype=np.float64)
+        self._cached_sinogram = x
+        return I_0 * np.exp(-x)
+
+    def adjoint(self, y, **params):
+        I_0 = self._params.get("I_0", 10000.0)
+        sinogram = getattr(self, "_cached_sinogram", np.zeros_like(y))
+        return -I_0 * np.exp(-sinogram) * y
+
+
+class OpticalAbsorption(BasePrimitive):
+    """Photoacoustic optical absorption: p0 = grueneisen * mu_a * fluence.
+
+    Converts absorbed optical energy to initial acoustic pressure via
+    the Grüneisen parameter.  Linear in fluence.
+    Carrier transition: photon → acoustic.
+    """
+
+    primitive_id = "optical_absorption"
+    _is_linear = True
+    _node_role = "interaction"
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "interaction"
+    _carrier_type = "acoustic"
+
+    def forward(self, x, **params):
+        grueneisen = self._params.get("grueneisen", 0.8)
+        mu_a = self._params.get("mu_a", 1.0)
+        return grueneisen * mu_a * np.asarray(x, dtype=np.float64)
+
+    def adjoint(self, y, **params):
+        grueneisen = self._params.get("grueneisen", 0.8)
+        mu_a = self._params.get("mu_a", 1.0)
+        return grueneisen * mu_a * np.asarray(y, dtype=np.float64)
+
+
+class AcousticPropagation(BasePrimitive):
+    """Simplified acoustic wave propagation (circular mean projection).
+
+    Initial implementation: simplified projection operator modeling
+    acoustic wave detection at transducer elements.
+    """
+
+    primitive_id = "acoustic_propagation"
+    _is_linear = True
+    _node_role = "transport"
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "propagation"
+    _carrier_type = "acoustic"
+
+    def forward(self, x, **params):
+        x = np.asarray(x, dtype=np.float64)
+        speed = self._params.get("speed_of_sound", 1500.0)
+        n_sensors = self._params.get("n_sensors", x.shape[0])
+        # Simplified: project initial pressure onto sensor lines
+        # Use Radon-like projection as proxy for time-of-flight integration
+        n_angles = n_sensors
+        angles = np.linspace(0, 180, n_angles, endpoint=False)
+        H, W = x.shape[-2], x.shape[-1]
+        result = np.zeros((n_angles, max(H, W)), dtype=np.float64)
+        for i, angle in enumerate(angles):
+            rotated = ndimage.rotate(x, angle, reshape=False, order=1, mode="constant")
+            result[i, :H] = rotated.sum(axis=1)[:max(H, W)]
+        return result
+
+    def adjoint(self, y, **params):
+        # Back-projection (time-reversal approximation)
+        x_shape = self._params.get("x_shape", (64, 64))
+        H, W = x_shape[-2], x_shape[-1]
+        n_angles = y.shape[0]
+        angles = np.linspace(0, 180, n_angles, endpoint=False)
+        result = np.zeros((H, W), dtype=np.float64)
+        for i, angle in enumerate(angles):
+            proj = y[i, :H]
+            bp = np.tile(proj[:, None], (1, W))
+            result += ndimage.rotate(bp, -angle, reshape=False, order=1, mode="constant")
+        return result / max(n_angles, 1)
+
+
+class VolumeRenderingStub(BasePrimitive):
+    """Volume rendering stub (tier3_learned).
+
+    Initial implementation: maximum intensity projection (MIP).
+    Full differentiable volume rendering requires PyTorch/JAX backend.
+    """
+
+    primitive_id = "volume_rendering_stub"
+    _is_linear = False
+    _node_role = "transport"
+    _physics_tier = "tier3_learned"
+    _physics_subrole = "propagation"
+
+    def forward(self, x, **params):
+        x = np.asarray(x, dtype=np.float64)
+        render_mode = self._params.get("render_mode", "mip")
+        if render_mode == "mip":
+            if x.ndim == 3:
+                return x.max(axis=0)
+            return x
+        elif render_mode == "quadrature":
+            raise NotImplementedError(
+                "Full volume rendering requires PyTorch/JAX backend"
+            )
+        return x
+
+    def adjoint(self, y, **params):
+        raise NotImplementedError(
+            "Volume rendering adjoint requires differentiable backend"
+        )
+
+
+class GaussianSplattingStub(BasePrimitive):
+    """3D Gaussian splatting projection stub (tier3_learned).
+
+    Initial implementation: weighted sum of 2D Gaussians.
+    Full differentiable splatting requires CUDA/PyTorch backend.
+    """
+
+    primitive_id = "gaussian_splatting_stub"
+    _is_linear = False
+    _node_role = "transport"
+    _physics_tier = "tier3_learned"
+    _physics_subrole = "propagation"
+
+    def forward(self, x, **params):
+        x = np.asarray(x, dtype=np.float64)
+        image_size = self._params.get("image_size", [64, 64])
+        H, W = image_size[0], image_size[1]
+        # Stub: render as blurred version of input
+        if x.ndim == 3:
+            rendered = x.sum(axis=0)
+        else:
+            rendered = x.copy()
+        # Resize to target
+        if rendered.shape != (H, W):
+            zoom_h = H / max(rendered.shape[0], 1)
+            zoom_w = W / max(rendered.shape[1], 1)
+            rendered = ndimage.zoom(rendered, (zoom_h, zoom_w), order=1)
+        return rendered
+
+    def adjoint(self, y, **params):
+        raise NotImplementedError(
+            "Gaussian splatting adjoint requires differentiable backend"
+        )
+
+
+class GaussianSensorNoise(BasePrimitive):
+    """Real-valued Gaussian sensor noise (thermal + electronic).
+
+    Unlike ComplexGaussianSensorNoise, this operates in the real domain only.
+    Suitable for acoustic/electronic imaging modalities (PA, ultrasound).
+    """
+
+    primitive_id = "gaussian_sensor_noise"
+    _is_linear = False
+    _is_stochastic = True
+    _node_role = "noise"
+    _physics_tier = "tier1_approx"
+    _physics_subrole = None
+
+    def forward(self, x, **params):
+        x = np.asarray(x, dtype=np.float64)
+        sigma = self._params.get("sigma", 0.01)
+        seed = self._params.get("seed", 0)
+        rng = np.random.RandomState(seed)
+        return x + sigma * rng.randn(*x.shape)
+
+    def adjoint(self, y, **params):
+        return np.asarray(y, dtype=np.float64)
+
+    def likelihood(self, y, y_clean):
+        """Gaussian negative log-likelihood."""
+        sigma = self._params.get("sigma", 0.01)
+        diff = np.asarray(y, dtype=np.float64) - np.asarray(y_clean, dtype=np.float64)
+        return 0.5 * np.sum(diff**2) / (sigma**2)
 
 
 # =========================================================================
@@ -1142,6 +1649,22 @@ _ALL_PRIMITIVES: List[type] = [
     PoissonGaussianSensorNoise,
     ComplexGaussianSensorNoise,
     PoissonOnlySensorNoise,
+    # Multi-input family
+    Interference,
+    # Tier-based primitives
+    FourierRelay,
+    MaxwellInterface,
+    # Correction family
+    AffineCorrectionNode,
+    ResidualCorrectionNode,
+    FieldMapCorrectionNode,
+    # R6: Physically-correct primitives
+    BeerLambert,
+    OpticalAbsorption,
+    AcousticPropagation,
+    VolumeRenderingStub,
+    GaussianSplattingStub,
+    GaussianSensorNoise,
 ]
 
 PRIMITIVE_REGISTRY: Dict[str, type] = {

@@ -20,7 +20,7 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from pwm_core.graph.ir_types import NodeRole, NodeTags, ParameterSpec
+from pwm_core.graph.ir_types import NodeRole, NodeTags, ParameterSpec, PhysicsSubrole
 
 
 # ---------------------------------------------------------------------------
@@ -94,6 +94,7 @@ class GraphNode(StrictBaseModel):
     learnable: List[str] = Field(default_factory=list)
     tags: Optional[NodeTags] = None
     role: Optional[NodeRole] = None
+    physics_subrole: Optional[PhysicsSubrole] = None
     parameter_specs: List[ParameterSpec] = Field(default_factory=list)
 
 

@@ -123,6 +123,7 @@ class PhysicsState(BaseModel):
     modality: str
     dims: Optional[JSON] = None
     rendering: Optional[JSON] = None  # for NeRF/3DGS style
+    graph_template_id: Optional[str] = None
 
 
 class BudgetState(BaseModel):

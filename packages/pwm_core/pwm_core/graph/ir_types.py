@@ -46,6 +46,28 @@ class NodeRole(str, Enum):
     noise = "noise"
     readout = "readout"
     utility = "utility"
+    correction = "correction"
+
+
+class CorrectionKind(str, Enum):
+    """Kind of operator correction applied."""
+
+    affine = "affine"
+    residual = "residual"
+    lut = "lut"
+    field_map = "field_map"
+
+
+class PhysicsSubrole(str, Enum):
+    """Fine-grained subrole for element nodes in the canonical chain."""
+
+    propagation = "propagation"      # free-space propagation (Fresnel, angular spectrum, acoustic wave)
+    modulation = "modulation"        # coded mask, DMD, SIM pattern
+    sampling = "sampling"            # Radon, k-space, random mask
+    interaction = "interaction"      # carrier-type transition (photon->acoustic, photon->electron)
+    transduction = "transduction"    # domain change within same carrier
+    encoding = "encoding"            # temporal/spectral encoding (FLIM, spectral dispersion)
+    relay = "relay"                  # Fourier relay, identity propagation segment
 
 
 class CarrierType(str, Enum):
@@ -124,6 +146,7 @@ class NodeTags(StrictBaseModel):
     diff_mode: Optional[DiffMode] = None
     supports_vjp: bool = False
     supports_jvp: bool = False
+    physics_subrole: Optional[PhysicsSubrole] = None
 
 
 # ---------------------------------------------------------------------------
@@ -178,6 +201,18 @@ class TensorSpec(StrictBaseModel):
     domain: str = "real"
     carrier_type: Optional[CarrierType] = None
     axes_labels: List[str] = Field(default_factory=list)
+
+
+# ---------------------------------------------------------------------------
+# PortSpec
+# ---------------------------------------------------------------------------
+
+
+class PortSpec(StrictBaseModel):
+    """Named input/output port for multi-input nodes."""
+    name: str = "default"
+    tensor_spec: Optional[TensorSpec] = None
+    required: bool = True
 
 
 # ---------------------------------------------------------------------------

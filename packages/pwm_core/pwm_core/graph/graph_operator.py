@@ -93,6 +93,8 @@ class GraphOperator:
     edges: List[Tuple[str, str]] = field(default_factory=list)
     learnable_params: Dict[str, List[str]] = field(default_factory=dict)
     node_tags: Dict[str, NodeTags] = field(default_factory=dict)
+    edge_map: Dict[str, List[str]] = field(default_factory=dict)  # node_id -> list of predecessor node_ids
+    spec: Optional[Any] = None  # Original OperatorGraphSpec (set by compiler)
 
     # ---- Forward ----
 

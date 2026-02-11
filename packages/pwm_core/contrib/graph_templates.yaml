@@ -1370,7 +1370,7 @@ templates:
   # ---------------------------------------------------------------------------
 
   ct_graph_v2:
-    description: "CT: Source→Radon transform→Sensor→Noise"
+    description: "CT: Source→Radon(sampling)→Beer-Lambert(transduction)→Sensor→Noise"
     metadata:
       modality: ct
       canonical_chain: true
@@ -1390,6 +1390,11 @@ templates:
           H: 64
           W: 64
         learnable: []
+      - node_id: beer_lambert
+        primitive_id: beer_lambert
+        role: transport
+        params:
+          I_0: 10000.0
       - node_id: sensor
         primitive_id: photon_sensor
         role: sensor
@@ -1406,6 +1411,8 @@ templates:
       - source: source
         target: radon
       - source: radon
+        target: beer_lambert
+      - source: beer_lambert
         target: sensor
       - source: sensor
         target: noise
@@ -1654,11 +1661,12 @@ templates:
   # ---------------------------------------------------------------------------
 
   nerf_graph_v2:
-    description: "NeRF volumetric rendering: Source→ray trace→Sensor→Noise"
+    description: "NeRF volumetric rendering: Source→volume rendering(tier3)→Sensor→Noise"
     metadata:
       modality: nerf
       canonical_chain: true
-      x_shape: [64, 64]
+      physics_tier: tier3_learned
+      x_shape: [16, 64, 64]
       y_shape: [64, 64]
     nodes:
       - node_id: source
@@ -1666,38 +1674,38 @@ templates:
         role: source
         params:
           strength: 1.0
-      - node_id: trace
-        primitive_id: ray_trace
+      - node_id: volume_render
+        primitive_id: volume_rendering_stub
         role: transport
         params:
-          focal_length: 50.0
-          magnification: 1.0
+          n_views: 1
+          render_mode: mip
       - node_id: sensor
         primitive_id: generic_sensor
         role: sensor
         params:
           gain: 1.0
       - node_id: noise
-        primitive_id: poisson_gaussian_sensor
+        primitive_id: gaussian_sensor_noise
         role: noise
         params:
-          peak_photons: 10000.0
-          read_sigma: 0.01
+          sigma: 0.01
           seed: 0
     edges:
       - source: source
-        target: trace
-      - source: trace
+        target: volume_render
+      - source: volume_render
         target: sensor
       - source: sensor
         target: noise
 
   gaussian_splatting_graph_v2:
-    description: "3D Gaussian splatting: Source→ray trace+PSF→Sensor→Noise"
+    description: "3D Gaussian splatting: Source→splatting(tier3)→Sensor→Noise"
     metadata:
       modality: gaussian_splatting
       canonical_chain: true
-      x_shape: [64, 64]
+      physics_tier: tier3_learned
+      x_shape: [16, 64, 64]
       y_shape: [64, 64]
     nodes:
       - node_id: source
@@ -1705,36 +1713,27 @@ templates:
         role: source
         params:
           strength: 1.0
-      - node_id: project
-        primitive_id: ray_trace
+      - node_id: splat
+        primitive_id: gaussian_splatting_stub
         role: transport
         params:
-          focal_length: 35.0
-          magnification: 1.0
-      - node_id: blur
-        primitive_id: conv2d
-        role: transport
-        params:
-          sigma: 1.0
-          mode: constant
+          n_views: 1
+          image_size: [64, 64]
       - node_id: sensor
         primitive_id: generic_sensor
         role: sensor
         params:
           gain: 1.0
       - node_id: noise
-        primitive_id: poisson_gaussian_sensor
+        primitive_id: gaussian_sensor_noise
         role: noise
         params:
-          peak_photons: 10000.0
-          read_sigma: 0.01
+          sigma: 0.01
           seed: 0
     edges:
       - source: source
-        target: project
-      - source: project
-        target: blur
-      - source: blur
+        target: splat
+      - source: splat
         target: sensor
       - source: sensor
         target: noise
@@ -1795,10 +1794,11 @@ templates:
         target: noise
 
   photoacoustic_graph_v2:
-    description: "Photoacoustic imaging: Source→absorption/acoustic PSF→Transducer→Noise"
+    description: "Photoacoustic: Source→OpticalAbsorption(photon→acoustic)→AcousticProp→Transducer→GaussianNoise"
     metadata:
       modality: photoacoustic
       canonical_chain: true
+      carrier_transitions: ["photon->acoustic"]
       x_shape: [64, 64]
       y_shape: [64, 64]
     nodes:
@@ -1807,29 +1807,37 @@ templates:
         role: source
         params:
           strength: 1.0
-      - node_id: absorb_propagate
-        primitive_id: conv2d
+      - node_id: absorption
+        primitive_id: optical_absorption
+        role: interaction
+        params:
+          grueneisen: 0.8
+          mu_a: 1.0
+        learnable: [grueneisen, mu_a]
+      - node_id: propagate
+        primitive_id: acoustic_propagation
         role: transport
         params:
-          sigma: 3.0
-          mode: constant
-        learnable: [sigma]
+          speed_of_sound: 1500.0
+          n_sensors: 64
+          x_shape: [64, 64]
       - node_id: sensor
         primitive_id: transducer_sensor
         role: sensor
         params:
           sensitivity: 1.0
       - node_id: noise
-        primitive_id: poisson_gaussian_sensor
+        primitive_id: gaussian_sensor_noise
         role: noise
         params:
-          peak_photons: 10000.0
-          read_sigma: 0.01
+          sigma: 0.01
           seed: 0
     edges:
       - source: source
-        target: absorb_propagate
-      - source: absorb_propagate
+        target: absorption
+      - source: absorption
+        target: propagate
+      - source: propagate
         target: sensor
       - source: sensor
         target: noise

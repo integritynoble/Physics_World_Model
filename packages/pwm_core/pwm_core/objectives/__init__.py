@@ -22,6 +22,17 @@ from pwm_core.objectives.base import (
     build_objective,
 )
 from pwm_core.objectives.prior import PriorSpec
+from pwm_core.objectives.noise_model import (
+    NoiseModel,
+    NoiseModelSpec,
+    PoissonGaussianNoiseModel,
+    GaussianNoiseModel,
+    ComplexGaussianNoiseModel,
+    PoissonOnlyNoiseModel,
+    NOISE_MODEL_REGISTRY,
+    build_noise_model,
+    noise_model_from_primitive,
+)
 
 __all__ = [
     "ObjectiveSpec",
@@ -35,4 +46,13 @@ __all__ = [
     "OBJECTIVE_REGISTRY",
     "build_objective",
     "PriorSpec",
+    "NoiseModel",
+    "NoiseModelSpec",
+    "PoissonGaussianNoiseModel",
+    "GaussianNoiseModel",
+    "ComplexGaussianNoiseModel",
+    "PoissonOnlyNoiseModel",
+    "NOISE_MODEL_REGISTRY",
+    "build_noise_model",
+    "noise_model_from_primitive",
 ]
