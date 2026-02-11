@@ -20,7 +20,7 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from pwm_core.graph.ir_types import NodeTags, ParameterSpec
+from pwm_core.graph.ir_types import NodeRole, NodeTags, ParameterSpec
 
 
 # ---------------------------------------------------------------------------
@@ -93,6 +93,7 @@ class GraphNode(StrictBaseModel):
     params: Dict[str, Any] = Field(default_factory=dict)
     learnable: List[str] = Field(default_factory=list)
     tags: Optional[NodeTags] = None
+    role: Optional[NodeRole] = None
     parameter_specs: List[ParameterSpec] = Field(default_factory=list)
 
 

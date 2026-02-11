@@ -735,3 +735,1183 @@ templates:
         target: blur
       - source: blur
         target: noise
+
+  # ===========================================================================
+  # V2 TEMPLATES — Canonical Chain: Source → Element(s) → Sensor → Noise
+  # All 26 modalities with explicit source/sensor/noise nodes.
+  # ===========================================================================
+
+  # ---------------------------------------------------------------------------
+  # MICROSCOPY (v2)
+  # ---------------------------------------------------------------------------
+
+  widefield_graph_v2:
+    description: "Widefield fluorescence microscopy: Source→PSF→Sensor→Noise"
+    metadata:
+      modality: widefield
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: blur
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 2.0
+          mode: reflect
+        learnable: [sigma]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: blur
+      - source: blur
+        target: sensor
+      - source: sensor
+        target: noise
+
+  widefield_lowdose_graph_v2:
+    description: "Low-dose widefield microscopy: Source→heavy PSF→Sensor→high Noise"
+    metadata:
+      modality: widefield_lowdose
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: blur
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 3.0
+          mode: reflect
+        learnable: [sigma]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 1000.0
+          read_sigma: 0.05
+          seed: 0
+    edges:
+      - source: source
+        target: blur
+      - source: blur
+        target: sensor
+      - source: sensor
+        target: noise
+
+  confocal_livecell_graph_v2:
+    description: "Live-cell confocal microscopy: Source→tight PSF→Sensor→Noise"
+    metadata:
+      modality: confocal_livecell
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: blur
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 1.2
+          mode: reflect
+        learnable: [sigma]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 5000.0
+          read_sigma: 0.02
+          seed: 0
+    edges:
+      - source: source
+        target: blur
+      - source: blur
+        target: sensor
+      - source: sensor
+        target: noise
+
+  confocal_3d_graph_v2:
+    description: "3D confocal microscopy: Source→volumetric PSF→Sensor→Noise"
+    metadata:
+      modality: confocal_3d
+      canonical_chain: true
+      x_shape: [32, 64, 64]
+      y_shape: [32, 64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: blur_3d
+        primitive_id: conv3d
+        role: transport
+        params:
+          sigma: [3.0, 1.5, 1.5]
+          mode: reflect
+        learnable: [sigma]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 8000.0
+          read_sigma: 0.02
+          seed: 0
+    edges:
+      - source: source
+        target: blur_3d
+      - source: blur_3d
+        target: sensor
+      - source: sensor
+        target: noise
+
+  sim_graph_v2:
+    description: "Structured illumination microscopy: Source→pattern+PSF→Sensor→Noise"
+    metadata:
+      modality: sim
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: pattern
+        primitive_id: sim_pattern
+        role: transport
+        params:
+          H: 64
+          W: 64
+          freq: 0.1
+          angle: 0.0
+          phase: 0.0
+        learnable: [freq, angle, phase]
+      - node_id: blur
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 1.5
+          mode: reflect
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: pattern
+      - source: pattern
+        target: blur
+      - source: blur
+        target: sensor
+      - source: sensor
+        target: noise
+
+  lightsheet_graph_v2:
+    description: "Light-sheet microscopy: Source→lateral PSF→Sensor→Noise"
+    metadata:
+      modality: lightsheet
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: blur
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 1.0
+          mode: reflect
+        learnable: [sigma]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 15000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: blur
+      - source: blur
+        target: sensor
+      - source: sensor
+        target: noise
+
+  # ---------------------------------------------------------------------------
+  # COMPRESSIVE / SPECTRAL (v2)
+  # ---------------------------------------------------------------------------
+
+  cassi_graph_v2:
+    description: "Single-disperser CASSI: Source→mask+dispersion+integration→Sensor→Noise"
+    metadata:
+      modality: cassi
+      canonical_chain: true
+      x_shape: [64, 64, 8]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: modulate
+        primitive_id: coded_mask
+        role: transport
+        params:
+          seed: 42
+          H: 64
+          W: 64
+        learnable: []
+      - node_id: disperse
+        primitive_id: spectral_dispersion
+        role: transport
+        params:
+          disp_step: 1.0
+        learnable: [disp_step]
+      - node_id: integrate
+        primitive_id: frame_integration
+        role: transport
+        params:
+          axis: -1
+          T: 8
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: modulate
+      - source: modulate
+        target: disperse
+      - source: disperse
+        target: integrate
+      - source: integrate
+        target: sensor
+      - source: sensor
+        target: noise
+
+  spc_graph_v2:
+    description: "Single-pixel camera: Source→random mask→Sensor→Noise"
+    metadata:
+      modality: spc
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [614]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: measure
+        primitive_id: random_mask
+        role: transport
+        params:
+          seed: 42
+          H: 64
+          W: 64
+          sampling_rate: 0.15
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: measure
+      - source: measure
+        target: sensor
+      - source: sensor
+        target: noise
+
+  cacti_graph_v2:
+    description: "CACTI snapshot compressive imaging: Source→temporal mask→Sensor→Noise"
+    metadata:
+      modality: cacti
+      canonical_chain: true
+      x_shape: [64, 64, 8]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: mask
+        primitive_id: temporal_mask
+        role: transport
+        params:
+          H: 64
+          W: 64
+          T: 8
+          seed: 42
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: mask
+      - source: mask
+        target: sensor
+      - source: sensor
+        target: noise
+
+  matrix_graph_v2:
+    description: "Generic matrix operator: Source→random mask→Sensor→Noise"
+    metadata:
+      modality: matrix
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [1024]
+    nodes:
+      - node_id: source
+        primitive_id: generic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: project
+        primitive_id: random_mask
+        role: transport
+        params:
+          seed: 42
+          H: 64
+          W: 64
+          sampling_rate: 0.25
+      - node_id: sensor
+        primitive_id: generic_sensor
+        role: sensor
+        params:
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: project
+      - source: project
+        target: sensor
+      - source: sensor
+        target: noise
+
+  # ---------------------------------------------------------------------------
+  # LENSLESS / COMPUTATIONAL (v2)
+  # ---------------------------------------------------------------------------
+
+  lensless_graph_v2:
+    description: "Lensless imaging: Source→PSF convolution→Sensor→Noise"
+    metadata:
+      modality: lensless
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: psf_conv
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 5.0
+          mode: constant
+        learnable: [sigma]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 20000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: psf_conv
+      - source: psf_conv
+        target: sensor
+      - source: sensor
+        target: noise
+
+  panorama_graph_v2:
+    description: "Panoramic imaging: Source→defocus+integration→Sensor→Noise"
+    metadata:
+      modality: panorama
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: defocus
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 1.0
+          mode: reflect
+        learnable: [sigma]
+      - node_id: integrate
+        primitive_id: frame_integration
+        role: transport
+        params:
+          axis: 0
+          T: 1
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: defocus
+      - source: defocus
+        target: integrate
+      - source: integrate
+        target: sensor
+      - source: sensor
+        target: noise
+
+  light_field_graph_v2:
+    description: "Light field imaging: Source→microlens PSF→Sensor→Noise"
+    metadata:
+      modality: light_field
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: blur
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 1.5
+          mode: reflect
+        learnable: [sigma]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 20000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: blur
+      - source: blur
+        target: sensor
+      - source: sensor
+        target: noise
+
+  integral_graph_v2:
+    description: "Integral imaging: Source→lenslet PSF→Sensor→Noise"
+    metadata:
+      modality: integral
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: blur
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 2.0
+          mode: reflect
+        learnable: [sigma]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 15000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: blur
+      - source: blur
+        target: sensor
+      - source: sensor
+        target: noise
+
+  # ---------------------------------------------------------------------------
+  # TOMOGRAPHY / MRI (v2)
+  # ---------------------------------------------------------------------------
+
+  ct_graph_v2:
+    description: "CT: Source→Radon transform→Sensor→Noise"
+    metadata:
+      modality: ct
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [180, 64]
+    nodes:
+      - node_id: source
+        primitive_id: xray_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: radon
+        primitive_id: ct_radon
+        role: transport
+        params:
+          n_angles: 180
+          H: 64
+          W: 64
+        learnable: []
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_only_sensor
+        role: noise
+        params:
+          peak_photons: 100000.0
+          seed: 0
+    edges:
+      - source: source
+        target: radon
+      - source: radon
+        target: sensor
+      - source: sensor
+        target: noise
+
+  mri_graph_v2:
+    description: "MRI: Source→k-space undersampling→Coil sensor→Complex noise"
+    metadata:
+      modality: mri
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: spin_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: kspace
+        primitive_id: mri_kspace
+        role: transport
+        params:
+          H: 64
+          W: 64
+          sampling_rate: 0.25
+          seed: 42
+        learnable: []
+      - node_id: sensor
+        primitive_id: coil_sensor
+        role: sensor
+        params:
+          sensitivity: 1.0
+      - node_id: noise
+        primitive_id: complex_gaussian_sensor
+        role: noise
+        params:
+          sigma: 0.005
+          seed: 0
+    edges:
+      - source: source
+        target: kspace
+      - source: kspace
+        target: sensor
+      - source: sensor
+        target: noise
+
+  # ---------------------------------------------------------------------------
+  # PHASE / HOLOGRAPHY / COHERENT (v2)
+  # ---------------------------------------------------------------------------
+
+  ptychography_graph_v2:
+    description: "Ptychography: Source→probe+propagation+intensity→Sensor→Noise"
+    metadata:
+      modality: ptychography
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: probe
+        primitive_id: coded_mask
+        role: transport
+        params:
+          seed: 42
+          H: 64
+          W: 64
+        learnable: []
+      - node_id: propagate
+        primitive_id: fresnel_prop
+        role: transport
+        params:
+          wavelength: 0.5e-6
+          distance: 1.0e-3
+          pixel_size: 1.0e-6
+        learnable: [distance]
+      - node_id: detect
+        primitive_id: magnitude_sq
+        role: transport
+        params: {}
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: probe
+      - source: probe
+        target: propagate
+      - source: propagate
+        target: detect
+      - source: detect
+        target: sensor
+      - source: sensor
+        target: noise
+
+  holography_graph_v2:
+    description: "Digital holography: Source→Fresnel propagation→Sensor→Noise"
+    metadata:
+      modality: holography
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: propagate
+        primitive_id: fresnel_prop
+        role: transport
+        params:
+          wavelength: 0.633e-6
+          distance: 5.0e-3
+          pixel_size: 3.45e-6
+        learnable: [distance]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 50000.0
+          read_sigma: 0.005
+          seed: 0
+    edges:
+      - source: source
+        target: propagate
+      - source: propagate
+        target: sensor
+      - source: sensor
+        target: noise
+
+  phase_retrieval_graph_v2:
+    description: "Phase retrieval (CDI): Source→angular spectrum+intensity→Sensor→Noise"
+    metadata:
+      modality: phase_retrieval
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: propagate
+        primitive_id: angular_spectrum
+        role: transport
+        params:
+          wavelength: 0.5e-6
+          distance: 1.0e-3
+          pixel_size: 1.0e-6
+      - node_id: detect
+        primitive_id: magnitude_sq
+        role: transport
+        params: {}
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: propagate
+      - source: propagate
+        target: detect
+      - source: detect
+        target: sensor
+      - source: sensor
+        target: noise
+
+  fpm_graph_v2:
+    description: "Fourier ptychographic microscopy: Source→angular spectrum+intensity→Sensor→Noise"
+    metadata:
+      modality: fpm
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: propagate
+        primitive_id: angular_spectrum
+        role: transport
+        params:
+          wavelength: 0.5e-6
+          distance: 1.0e-3
+          pixel_size: 1.0e-6
+      - node_id: detect
+        primitive_id: magnitude_sq
+        role: transport
+        params: {}
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: propagate
+      - source: propagate
+        target: detect
+      - source: detect
+        target: sensor
+      - source: sensor
+        target: noise
+
+  # ---------------------------------------------------------------------------
+  # RENDERING / 3D (v2)
+  # ---------------------------------------------------------------------------
+
+  nerf_graph_v2:
+    description: "NeRF volumetric rendering: Source→ray trace→Sensor→Noise"
+    metadata:
+      modality: nerf
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: generic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: trace
+        primitive_id: ray_trace
+        role: transport
+        params:
+          focal_length: 50.0
+          magnification: 1.0
+      - node_id: sensor
+        primitive_id: generic_sensor
+        role: sensor
+        params:
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: trace
+      - source: trace
+        target: sensor
+      - source: sensor
+        target: noise
+
+  gaussian_splatting_graph_v2:
+    description: "3D Gaussian splatting: Source→ray trace+PSF→Sensor→Noise"
+    metadata:
+      modality: gaussian_splatting
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: generic_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: project
+        primitive_id: ray_trace
+        role: transport
+        params:
+          focal_length: 35.0
+          magnification: 1.0
+      - node_id: blur
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 1.0
+          mode: constant
+      - node_id: sensor
+        primitive_id: generic_sensor
+        role: sensor
+        params:
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: project
+      - source: project
+        target: blur
+      - source: blur
+        target: sensor
+      - source: sensor
+        target: noise
+
+  # ---------------------------------------------------------------------------
+  # BIOMEDICAL IMAGING (v2)
+  # ---------------------------------------------------------------------------
+
+  flim_graph_v2:
+    description: "Fluorescence lifetime imaging: Source→PSF+temporal gate→Sensor→Noise"
+    metadata:
+      modality: flim
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: blur
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 2.0
+          mode: reflect
+        learnable: [sigma]
+      - node_id: gate
+        primitive_id: temporal_mask
+        role: transport
+        params:
+          H: 64
+          W: 64
+          T: 1
+          seed: 42
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 3000.0
+          read_sigma: 0.03
+          seed: 0
+    edges:
+      - source: source
+        target: blur
+      - source: blur
+        target: gate
+      - source: gate
+        target: sensor
+      - source: sensor
+        target: noise
+
+  photoacoustic_graph_v2:
+    description: "Photoacoustic imaging: Source→absorption/acoustic PSF→Transducer→Noise"
+    metadata:
+      modality: photoacoustic
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: absorb_propagate
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 3.0
+          mode: constant
+        learnable: [sigma]
+      - node_id: sensor
+        primitive_id: transducer_sensor
+        role: sensor
+        params:
+          sensitivity: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 10000.0
+          read_sigma: 0.01
+          seed: 0
+    edges:
+      - source: source
+        target: absorb_propagate
+      - source: absorb_propagate
+        target: sensor
+      - source: sensor
+        target: noise
+
+  oct_graph_v2:
+    description: "OCT: Source→angular spectrum propagation→Sensor→Noise"
+    metadata:
+      modality: oct
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: propagate
+        primitive_id: angular_spectrum
+        role: transport
+        params:
+          wavelength: 1.3e-6
+          distance: 1.0e-3
+          pixel_size: 5.0e-6
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 50000.0
+          read_sigma: 0.005
+          seed: 0
+    edges:
+      - source: source
+        target: propagate
+      - source: propagate
+        target: sensor
+      - source: sensor
+        target: noise
+
+  dot_graph_v2:
+    description: "Diffuse optical tomography: Source→diffusion PSF→Sensor→Noise"
+    metadata:
+      modality: dot
+      canonical_chain: true
+      x_shape: [64, 64]
+      y_shape: [64, 64]
+    nodes:
+      - node_id: source
+        primitive_id: photon_source
+        role: source
+        params:
+          strength: 1.0
+      - node_id: diffuse
+        primitive_id: conv2d
+        role: transport
+        params:
+          sigma: 8.0
+          mode: constant
+        learnable: [sigma]
+      - node_id: sensor
+        primitive_id: photon_sensor
+        role: sensor
+        params:
+          quantum_efficiency: 0.9
+          gain: 1.0
+      - node_id: noise
+        primitive_id: poisson_gaussian_sensor
+        role: noise
+        params:
+          peak_photons: 5000.0
+          read_sigma: 0.02
+          seed: 0
+    edges:
+      - source: source
+        target: diffuse
+      - source: diffuse
+        target: sensor
+      - source: sensor
+        target: noise
