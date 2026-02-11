@@ -184,7 +184,7 @@ pwm/
       benchmarks/
         run_all.py         # 26-modality benchmark suite
         test_operator_correction.py  # 16 calibration tests
-      tests/               # 2904 unit tests
+      tests/               # 1551 unit tests
     pwm_AI_Scientist/      # AI_Scientist adapter (thin)
 ```
 
@@ -315,7 +315,7 @@ python benchmarks/run_all.py --modality photoacoustic
 # Run operator correction tests (16 tests, ~63 min)
 python -m pytest benchmarks/test_operator_correction.py -v
 
-# Run unit tests (2904 tests)
+# Run unit tests (1551 tests)
 python -m pytest tests/ -v
 ```
 
@@ -534,7 +534,7 @@ python benchmarks/run_all.py --modality fpm
 ```bash
 cd packages/pwm_core
 
-# Unit tests (2904 tests)
+# Unit tests (1551 tests)
 python -m pytest tests/ -v
 
 # Operator correction tests (16 tests, ~63 min)
