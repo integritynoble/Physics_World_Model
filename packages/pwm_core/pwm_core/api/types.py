@@ -10,7 +10,7 @@ These models are intentionally "transport-friendly":
 
 They are used by:
 - CLI (`pwm run`, `pwm calib-recon`, `pwm fit-operator`)
-- Denario adapter (`pwm_denario`)
+- AI_Scientist adapter (`pwm_AI_Scientist`)
 - Viewer (`pwm view`)
 """
 

@@ -1,4 +1,4 @@
-"""pwm_denario.policy_bridge
+"""pwm_AI_Scientist.policy_bridge
 
 Maps DiagnosisResult.suggested_actions -> next ExperimentSpec patch.
 """

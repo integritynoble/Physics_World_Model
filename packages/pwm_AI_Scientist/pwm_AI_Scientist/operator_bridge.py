@@ -1,8 +1,8 @@
-"""pwm_denario.operator_bridge
+"""pwm_AI_Scientist.operator_bridge
 
-Maps Denario inputs (y, A) into PWM endpoints for operator-fit and calibration+reconstruction.
+Maps AI_Scientist inputs (y, A) into PWM endpoints for operator-fit and calibration+reconstruction.
 
-This module is optional; if Denario already stores y/A on disk, you can call pwm_fit_operator directly.
+This module is optional; if AI_Scientist already stores y/A on disk, you can call pwm_fit_operator directly.
 """
 
 from __future__ import annotations

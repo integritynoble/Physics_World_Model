@@ -7,7 +7,7 @@ RunBundles are designed to:
 - preserve **reproducibility** (spec + seeds + code + internal state),
 - support **big data** without copying (reference mode),
 - support **sharing & inspection** (viewer + report),
-- enable **Denario/agents** to programmatically iterate via `suggested_actions`.
+- enable **AI_Scientist/agents** to programmatically iterate via `suggested_actions`.
 
 ---
 

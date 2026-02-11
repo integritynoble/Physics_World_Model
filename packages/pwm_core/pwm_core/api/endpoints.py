@@ -10,7 +10,7 @@ Stable entrypoints for:
 - fit_operator
 - calibrate_recon
 
-These are "library-level endpoints" (callable from CLI, Denario, notebooks).
+These are "library-level endpoints" (callable from CLI, AI_Scientist, notebooks).
 They should avoid global state.
 """
 
