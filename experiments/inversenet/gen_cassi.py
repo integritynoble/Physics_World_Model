@@ -46,6 +46,7 @@ from typing import Any, Dict, List
 import numpy as np
 
 from experiments.inversenet.manifest_schema import ManifestRecord, Modality, Severity
+from pwm_core.mismatch.subpixel import subpixel_shift_2d
 from experiments.inversenet.mismatch_sweep import (
     apply_mismatch,
     get_delta_theta,
@@ -179,10 +180,7 @@ def _cassi_forward(
     for l_idx in range(L):
         dx, dy = dispersion_shift(theta, band=l_idx)
         band = cube[:, :, l_idx]
-        band_shifted = np.roll(
-            np.roll(band, int(round(dy)), axis=0),
-            int(round(dx)), axis=1,
-        )
+        band_shifted = subpixel_shift_2d(band, dx, dy)
         y += band_shifted * mask
     return y
 
@@ -190,14 +188,9 @@ def _cassi_forward(
 def _apply_photon_noise(
     y: np.ndarray, photon_level: float, rng: np.random.Generator
 ) -> np.ndarray:
-    """Poisson + Gaussian noise."""
-    scale = photon_level / (np.abs(y).max() + 1e-10)
-    y_scaled = np.maximum(y * scale, 0)
-    y_noisy = rng.poisson(y_scaled).astype(np.float32)
-    read_sigma = np.sqrt(photon_level) * 0.01
-    y_noisy += rng.normal(0, read_sigma, size=y.shape).astype(np.float32)
-    y_noisy /= scale
-    return y_noisy
+    """Poisson + Gaussian noise (canonical implementation)."""
+    from pwm_core.noise.apply import apply_photon_noise
+    return apply_photon_noise(y, photon_level, rng)
 
 
 def _generate_calibration_captures(

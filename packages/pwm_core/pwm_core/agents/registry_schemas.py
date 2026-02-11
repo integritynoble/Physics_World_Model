@@ -197,12 +197,17 @@ class MismatchParamYaml(StrictBaseModel):
         Physical unit (e.g. ``"pixels"``, ``"radians"``).
     description : str
         Human-readable explanation of this mismatch source.
+    param_type : str or None
+        Physics type classification.  Valid values:
+        ``"spatial_shift"``, ``"rotation"``, ``"scale"``, ``"blur"``,
+        ``"offset"``, ``"timing"``, ``"position"``.
     """
 
     range: List[float]
     typical_error: float
     unit: str
     description: str = ""
+    param_type: Optional[str] = None
 
 
 class MismatchModalityYaml(StrictBaseModel):
@@ -341,6 +346,30 @@ class CompressionDbFileYaml(StrictBaseModel):
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
+class PhotonLevelYaml(StrictBaseModel):
+    """One photon-level entry (bright / standard / low_light).
+
+    Parameters
+    ----------
+    n_photons : float or None
+        Target photon count for photon-based modalities.
+    snr_proxy : float or None
+        SNR proxy for thermal-noise modalities (MRI).
+    scenario : str
+        Human-readable scenario description.
+    read_sigma_fraction : float
+        Read-noise sigma as a fraction of sqrt(n_photons).
+    sigma : float or None
+        Direct sigma for gaussian noise model.
+    """
+
+    n_photons: Optional[float] = None
+    snr_proxy: Optional[float] = None
+    scenario: str = ""
+    read_sigma_fraction: float = 0.01
+    sigma: Optional[float] = None
+
+
 class PhotonModelYaml(StrictBaseModel):
     """Photon-budget model specification for one modality.
 
@@ -356,11 +385,18 @@ class PhotonModelYaml(StrictBaseModel):
         Model-specific parameters (free-form).
     description : str
         Human-readable explanation of the photon model.
+    noise_model : str or None
+        Noise model override (``"poisson_gaussian"``, ``"poisson"``,
+        ``"gaussian"``).
+    photon_levels : dict[str, PhotonLevelYaml] or None
+        Per-scenario photon levels (bright / standard / low_light).
     """
 
     model_id: str
     parameters: Dict[str, Any]
     description: str = ""
+    noise_model: Optional[str] = None
+    photon_levels: Optional[Dict[str, PhotonLevelYaml]] = None
 
 
 class PhotonDbFileYaml(StrictBaseModel):

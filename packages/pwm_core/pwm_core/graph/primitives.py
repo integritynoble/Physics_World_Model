@@ -26,6 +26,8 @@ from typing import Any, Dict, List, Optional, Protocol, Tuple, runtime_checkable
 import numpy as np
 from scipy import ndimage
 
+from pwm_core.mismatch.subpixel import subpixel_shift_2d
+
 
 # ---------------------------------------------------------------------------
 # PrimitiveOp protocol
@@ -396,8 +398,8 @@ class SpectralDispersion(BasePrimitive):
             return x.copy()
         out = np.zeros_like(x, dtype=np.float64)
         for l in range(L):
-            shift = int(round(disp_step * l))
-            out[:, :, l] = np.roll(x[:, :, l].astype(np.float64), shift, axis=1)
+            shift = disp_step * l
+            out[:, :, l] = subpixel_shift_2d(x[:, :, l].astype(np.float64), shift, 0.0)
         return out
 
     def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
@@ -407,8 +409,8 @@ class SpectralDispersion(BasePrimitive):
             return y.copy()
         out = np.zeros_like(y, dtype=np.float64)
         for l in range(L):
-            shift = -int(round(disp_step * l))
-            out[:, :, l] = np.roll(y[:, :, l].astype(np.float64), shift, axis=1)
+            shift = -(disp_step * l)
+            out[:, :, l] = subpixel_shift_2d(y[:, :, l].astype(np.float64), shift, 0.0)
         return out
 
 

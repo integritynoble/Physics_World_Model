@@ -496,7 +496,35 @@ class PhotonAgent(BaseAgent):
             cumulative_throughput=cumulative_throughput,
         )
 
-        # --- 12. Build report ---------------------------------------------
+        # --- 12. Look up recommended photon levels from registry ----------
+        recommended_levels = None
+        noise_recipe = None
+        if self.registry is not None:
+            try:
+                photon_meta = self._lookup_registry_photon_model(
+                    context.modality_key
+                )
+                if photon_meta is not None:
+                    raw_levels = photon_meta.get("photon_levels")
+                    if raw_levels:
+                        recommended_levels = {
+                            k: dict(v) if isinstance(v, dict) else v.model_dump()
+                            for k, v in raw_levels.items()
+                        }
+                    nm = photon_meta.get("noise_model")
+                    if nm:
+                        noise_recipe = {
+                            "noise_model": nm,
+                            "default_level": "standard",
+                        }
+            except Exception:
+                logger.debug(
+                    "Photon level lookup failed for '%s'; skipping.",
+                    context.modality_key,
+                    exc_info=True,
+                )
+
+        # --- 13. Build report ---------------------------------------------
         report = PhotonReport(
             n_photons_per_pixel=n_photons,
             snr_db=round(snr_db, 2),
@@ -509,6 +537,8 @@ class PhotonAgent(BaseAgent):
             throughput_chain=throughput_chain,
             noise_model=noise_model,
             explanation=explanation,
+            recommended_levels=recommended_levels,
+            noise_recipe=noise_recipe,
         )
 
         logger.info(
@@ -611,10 +641,15 @@ class PhotonAgent(BaseAgent):
                 modalities = photon_db.modalities
                 if modality_key in modalities:
                     entry = modalities[modality_key]
-                    return {
+                    result = {
                         "model_id": entry.model_id,
                         "parameters": dict(entry.parameters),
                     }
+                    if hasattr(entry, "noise_model") and entry.noise_model is not None:
+                        result["noise_model"] = entry.noise_model
+                    if hasattr(entry, "photon_levels") and entry.photon_levels is not None:
+                        result["photon_levels"] = entry.photon_levels
+                    return result
 
         # Try dict-style access
         if hasattr(registry, "get_photon_model"):
