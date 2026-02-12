@@ -410,7 +410,17 @@ class SIMPattern(BasePrimitive):
 
 
 class SpectralDispersion(BasePrimitive):
-    """Spectral dispersion shift per wavelength band."""
+    """Spectral dispersion shift per wavelength band.
+
+    Supports two modes via ``extended_output``:
+    - False (default): shift within the original (H, W) grid (legacy).
+    - True: output is (H, W_ext, L) with W_ext = W + (L-1)*step when
+      disp_axis=1, or (H_ext, W, L) with H_ext = H + (L-1)*step when
+      disp_axis=0.  This matches the SD-CASSI paper output shape.
+
+    ``disp_axis``: 0 = shift along rows (default, legacy), 1 = shift along
+    columns (ECCV-2020 SD-CASSI convention).
+    """
 
     primitive_id = "spectral_dispersion"
     _is_linear = True
@@ -419,24 +429,192 @@ class SpectralDispersion(BasePrimitive):
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         disp_step = self._params.get("disp_step", 1.0)
+        extended = self._params.get("extended_output", False)
+        disp_axis = int(self._params.get("disp_axis", 0))
         L = x.shape[-1] if x.ndim >= 3 else 1
         if x.ndim < 3:
             return x.copy()
-        out = np.zeros_like(x, dtype=np.float64)
-        for l in range(L):
-            shift = disp_step * l
-            out[:, :, l] = subpixel_shift_2d(x[:, :, l].astype(np.float64), shift, 0.0)
+        H, W = x.shape[0], x.shape[1]
+        if not extended:
+            out = np.zeros_like(x, dtype=np.float64)
+            for l in range(L):
+                shift = disp_step * l
+                if disp_axis == 1:
+                    out[:, :, l] = subpixel_shift_2d(
+                        x[:, :, l].astype(np.float64), 0.0, shift
+                    )
+                else:
+                    out[:, :, l] = subpixel_shift_2d(
+                        x[:, :, l].astype(np.float64), shift, 0.0
+                    )
+            return out
+        # Extended output: allocate larger grid
+        ext = int(round(disp_step * (L - 1)))
+        if disp_axis == 1:
+            out = np.zeros((H, W + ext, L), dtype=np.float64)
+            for l in range(L):
+                d = int(round(disp_step * l))
+                out[:, d: d + W, l] = x[:, :, l].astype(np.float64)
+        else:
+            out = np.zeros((H + ext, W, L), dtype=np.float64)
+            for l in range(L):
+                d = int(round(disp_step * l))
+                out[d: d + H, :, l] = x[:, :, l].astype(np.float64)
         return out
 
     def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
         disp_step = self._params.get("disp_step", 1.0)
+        extended = self._params.get("extended_output", False)
+        disp_axis = int(self._params.get("disp_axis", 0))
         L = y.shape[-1] if y.ndim >= 3 else 1
         if y.ndim < 3:
             return y.copy()
+        if not extended:
+            out = np.zeros_like(y, dtype=np.float64)
+            for l in range(L):
+                shift = -(disp_step * l)
+                if disp_axis == 1:
+                    out[:, :, l] = subpixel_shift_2d(
+                        y[:, :, l].astype(np.float64), 0.0, shift
+                    )
+                else:
+                    out[:, :, l] = subpixel_shift_2d(
+                        y[:, :, l].astype(np.float64), shift, 0.0
+                    )
+            return out
+        # Extended adjoint: extract from larger grid back to (H, W, L)
+        ext = int(round(disp_step * (L - 1)))
+        if disp_axis == 1:
+            W_orig = y.shape[1] - ext
+            out = np.zeros((y.shape[0], W_orig, L), dtype=np.float64)
+            for l in range(L):
+                d = int(round(disp_step * l))
+                out[:, :, l] = y[:, d: d + W_orig, l].astype(np.float64)
+        else:
+            H_orig = y.shape[0] - ext
+            out = np.zeros((H_orig, y.shape[1], L), dtype=np.float64)
+            for l in range(L):
+                d = int(round(disp_step * l))
+                out[:, :, l] = y[d: d + H_orig, :, l].astype(np.float64)
+        return out
+
+
+# =========================================================================
+# SD-CASSI optical family (ECCV-2020)
+# =========================================================================
+
+
+class ObjectiveLens(BasePrimitive):
+    """Objective lens: throughput scaling + optional PSF blur.
+
+    Models the first imaging element in an SD-CASSI system that focuses
+    the scene onto the coded aperture plane.
+    """
+
+    primitive_id = "objective_lens"
+    _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "imaging"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        throughput = self._params.get("throughput", 0.92)
+        psf_sigma = self._params.get("psf_sigma", 0.0)
+        out = x.astype(np.float64) * throughput
+        if psf_sigma > 0:
+            if out.ndim == 3:
+                for l in range(out.shape[-1]):
+                    out[:, :, l] = ndimage.gaussian_filter(
+                        out[:, :, l], sigma=psf_sigma, mode="reflect"
+                    )
+            else:
+                out = ndimage.gaussian_filter(out, sigma=psf_sigma, mode="reflect")
+        return out
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        throughput = self._params.get("throughput", 0.92)
+        psf_sigma = self._params.get("psf_sigma", 0.0)
+        out = y.astype(np.float64) * throughput
+        if psf_sigma > 0:
+            if out.ndim == 3:
+                for l in range(out.shape[-1]):
+                    out[:, :, l] = ndimage.gaussian_filter(
+                        out[:, :, l], sigma=psf_sigma, mode="reflect"
+                    )
+            else:
+                out = ndimage.gaussian_filter(out, sigma=psf_sigma, mode="reflect")
+        return out
+
+
+class RelayLens(BasePrimitive):
+    """Relay lens: throughput scaling for 4f transport stage.
+
+    Models relay optics (e.g. 45mm or 50mm relay) in an SD-CASSI system.
+    """
+
+    primitive_id = "relay_lens"
+    _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "transport"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        throughput = self._params.get("throughput", 0.90)
+        return x.astype(np.float64) * throughput
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        throughput = self._params.get("throughput", 0.90)
+        return y.astype(np.float64) * throughput
+
+
+class ImbalancedResponse(BasePrimitive):
+    """SD-CASSI imbalanced response / spatial distortion.
+
+    Models wavelength-dependent geometric warp caused by path length
+    differences between spectral channels in the prism disperser
+    (ECCV-2020 SD-CASSI hardware limitation).
+
+    Dispersion model:  d(l) = a1*(l - l_c) + a2*(l - l_c)^2
+    Optional per-channel affine: y_out(l) = s_l * y_in(l) + t_l
+    """
+
+    primitive_id = "imbalanced_response"
+    _is_linear = True  # approximately linear per-channel
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "distortion"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        if x.ndim < 3:
+            return x.copy().astype(np.float64)
+        L = x.shape[-1]
+        a2 = self._params.get("a2", 0.0)
+        disp_axis = int(self._params.get("disp_axis", 1))
+        l_c = (L - 1) / 2.0
+        out = np.zeros_like(x, dtype=np.float64)
+        for l in range(L):
+            dl = l - l_c
+            warp_shift = a2 * dl * dl  # quadratic distortion only (a1 is in DisperserNode)
+            band = x[:, :, l].astype(np.float64)
+            if disp_axis == 1:
+                out[:, :, l] = subpixel_shift_2d(band, 0.0, warp_shift)
+            else:
+                out[:, :, l] = subpixel_shift_2d(band, warp_shift, 0.0)
+        return out
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        if y.ndim < 3:
+            return y.copy().astype(np.float64)
+        L = y.shape[-1]
+        a2 = self._params.get("a2", 0.0)
+        disp_axis = int(self._params.get("disp_axis", 1))
+        l_c = (L - 1) / 2.0
         out = np.zeros_like(y, dtype=np.float64)
         for l in range(L):
-            shift = -(disp_step * l)
-            out[:, :, l] = subpixel_shift_2d(y[:, :, l].astype(np.float64), shift, 0.0)
+            dl = l - l_c
+            warp_shift = -(a2 * dl * dl)
+            band = y[:, :, l].astype(np.float64)
+            if disp_axis == 1:
+                out[:, :, l] = subpixel_shift_2d(band, 0.0, warp_shift)
+            else:
+                out[:, :, l] = subpixel_shift_2d(band, warp_shift, 0.0)
         return out
 
 
@@ -2766,6 +2944,10 @@ _ALL_PRIMITIVES: List[type] = [
     EnergyResolvingDetector,
     FiberBundleSensor,
     TrackDetectorSensor,
+    # SD-CASSI optical family (ECCV-2020)
+    ObjectiveLens,
+    RelayLens,
+    ImbalancedResponse,
 ]
 
 PRIMITIVE_REGISTRY: Dict[str, type] = {
