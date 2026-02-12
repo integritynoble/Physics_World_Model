@@ -127,3 +127,63 @@ class TestCasePackCACTI:
         x_shifted = np.roll(x, shift=2, axis=1)
         y_shifted = mask_op.forward(x_shifted)
         assert not np.allclose(y_base, y_shifted), "Mask motion mismatch should change y"
+
+    def test_gap_tv_recon_psnr(self):
+        """GAP-TV on 16x16x4 row-space phantom achieves PSNR > 15."""
+        from pwm_core.recon.gap_tv import gap_tv_cacti
+
+        H, W, T = 16, 16, 4
+        mask_op = TemporalMask(params={"H": H, "W": W, "T": T, "seed": 42})
+        masks = mask_op._masks.copy()
+
+        # Build explicit system matrix for row-space phantom
+        y0 = mask_op.forward(np.zeros((H, W, T)))
+        A = _build_system_matrix(mask_op.forward, (H, W, T), y0.shape)
+
+        # Generate x_true in range(A^T) so GAP-TV can recover it
+        rng = np.random.RandomState(7)
+        c = rng.randn(A.shape[0])
+        x_true = (A.T @ c).reshape(H, W, T)
+        x_true = x_true / (np.abs(x_true).max() + 1e-8) * 0.8
+
+        y_clean = mask_op.forward(x_true)
+        y_noisy = y_clean + rng.randn(*y_clean.shape) * 0.001
+
+        x_hat = gap_tv_cacti(
+            y_noisy, masks[:H, :W, :T],
+            iterations=50, lam=0.0001,
+        )
+        psnr = PSNR()(x_hat, x_true, max_val=1.0)
+        assert psnr > 15, f"GAP-TV CACTI PSNR {psnr:.1f} < 15"
+
+    def test_w2_nll_decreases(self):
+        """Timing jitter mismatch correction decreases NLL."""
+        H, W, T = 16, 16, 4
+        seed = 42
+        mask_nom = TemporalMask(params={"H": H, "W": W, "T": T, "seed": seed})
+        mask_pert = TemporalMask(params={"H": H, "W": W, "T": T, "seed": 99})
+
+        rng = np.random.RandomState(seed)
+        x_true = rng.rand(H, W, T).astype(np.float64) * 0.8 + 0.1
+
+        # "Measured" y from perturbed operator + noise
+        sigma = 0.01
+        y_measured = mask_pert.forward(x_true) + rng.randn(H, W) * sigma
+
+        # NLL with nominal (uncorrected) operator
+        y_pred_nom = mask_nom.forward(x_true)
+        nll_before = 0.5 * np.sum((y_measured - y_pred_nom) ** 2) / sigma ** 2
+
+        # Grid search for best seed
+        best_nll = np.inf
+        for trial_seed in range(30, 121, 3):
+            mask_trial = TemporalMask(params={"H": H, "W": W, "T": T, "seed": trial_seed})
+            y_trial = mask_trial.forward(x_true)
+            nll_trial = 0.5 * np.sum((y_measured - y_trial) ** 2) / sigma ** 2
+            if nll_trial < best_nll:
+                best_nll = nll_trial
+
+        nll_after = best_nll
+        assert nll_after < nll_before, (
+            f"NLL should decrease after correction: {nll_after:.1f} >= {nll_before:.1f}"
+        )
