@@ -41,7 +41,7 @@ modalities:
     w2_a_extraction_method: graph_stripped
     runbundle_path: runs/run_cassi_exp_ae82e30c
     report_path: pwm/reports/cassi.md
-    commit_sha: null
+    commit_sha: 5c72a02
     completed_at: "2026-02-12T14:00:00"
 
   cacti:
