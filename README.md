@@ -18,6 +18,31 @@ PWM is designed to be:
 
 ---
 
+## Physics Fidelity Ladder
+
+PWM is not "one physics model per modality."
+Every modality is compiled into a canonical **OperatorGraph**, and **each node can run at a different physics tier** depending on budget and accuracy needs. The same four-tier ladder applies across all physical carriers — photons, electrons, spins, acoustic waves, and particles.
+
+| Tier | Code label | Physics regime | Carriers & examples |
+|------|-----------|----------------|---------------------|
+| 0 | `tier0_geometry` | **Ray / ballistic** — geometric optics, projection, coordinate transforms | Photon rays (CT, X-ray), electron beam geometry (SEM/TEM), acoustic ray tracing, scan trajectories |
+| 1 | `tier1_approx` | **Wave / field approximations** — Fourier optics, paraxial propagation, linearized transport | Fresnel / angular spectrum (photon), Bloch equations (spin/MRI), Born approximation (acoustic/DOT), paraxial electron optics |
+| 2 | `tier2_full` | **Full transport / scattering** — Maxwell, wave equation, Monte Carlo, quantum corrections | Full-wave EM (photon), electron–matter scattering (EELS, diffraction), acoustic FWI, spin dynamics (diffusion MRI), particle Monte Carlo (neutron/muon) |
+| 3 | `tier3_learned` | **Learned surrogates with uncertainty** — neural operators trained to emulate Tier 2 | NeRF / 3DGS (photon), learned scattering kernels, diffusion priors; must provide calibrated error bars |
+
+**Rule:** Tier is selected **per node**, not globally. This keeps PWM universal while allowing realistic accuracy when needed.
+
+**How it maps to code:**
+Every primitive carries a `_physics_tier` class attribute (e.g. `FresnelProp._physics_tier = "tier1_approx"`).
+The graph compiler copies this into `NodeSpec.tags["physics_tier"]` so the runner can enforce a `TierPolicy` — selecting the cheapest tier that meets the requested accuracy and compute budget.
+See `pwm_core/graph/tier_policy.py` and `tests/test_tier_policy.py`.
+
+**Tie to execution modes:**
+- **Mode S** (simulate) and **Mode I** (infer) default to Tier 0/1 for fast turnaround.
+- **Mode C** (calibrate) starts at Tier 0/1, then validates the corrected operator at a higher tier when budget allows.
+
+---
+
 ## What PWM can do
 
 ### 1) Prompt-driven simulation + reconstruction
@@ -170,19 +195,19 @@ pwm/
     pwm_core/              # public core library (no AI_Scientist deps)
       pwm_core/
         agents/            # 17 agent modules + contracts + registry
-        physics/           # 26 modality operators
+        physics/           # 64 modality operators
         analysis/          # Metrics, bottleneck, uncertainty
         core/              # Runner, RunBundle, simulator
         api/               # Pydantic types, endpoints
       contrib/
-        modalities.yaml    # 26-modality source of truth
+        modalities.yaml    # 64-modality source of truth
         mismatch_db.yaml   # Mismatch parameters per modality
         photon_db.yaml     # Photon models
         compression_db.yaml # Recoverability calibration tables
         metrics_db.yaml    # Per-modality metric sets
         solver_registry.yaml # 43+ solvers
       benchmarks/
-        run_all.py         # 26-modality benchmark suite
+        run_all.py         # 64-modality benchmark suite
         test_operator_correction.py  # 16 calibration tests
       tests/               # 3743 unit tests
     pwm_AI_Scientist/      # AI_Scientist adapter (thin)
@@ -474,11 +499,56 @@ PWM supports solver portfolios, including:
 
 ---
 
-## 34 Imaging Modalities Benchmark
+## Modality Coverage
 
-PWM includes validated implementations for **34 imaging modalities**.
+PWM's registry contains **64 imaging modalities** spanning microscopy, medical imaging, coherent/computational optics, electron microscopy, remote sensing, and more.
 
-### Summary
+- **64** modalities in `contrib/modalities.yaml` with forward-model templates and solver portfolios
+- **26** modalities with quantitative PSNR benchmark results (table below)
+- **16** modalities with operator-correction calibration tests (see [Operator correction mode](#operator-correction-mode-measured-y--a---fitcorrect-operator---reconstruct))
+
+## Modality Catalog (64)
+
+<details>
+<summary>All 64 modalities grouped by execution tier (click to expand)</summary>
+
+*Catalog generated from `contrib/modalities.yaml`. Tier groupings follow `docs/PLAN_v4_report_contract.md` §5.2.*
+
+**Tier 1 — Core compressive (5)**
+`spc` · `cassi` · `cacti` · `ct` · `mri`
+
+**Tier 2 — Microscopy fundamentals (8)**
+`widefield` · `widefield_lowdose` · `confocal_livecell` · `confocal_3d` · `sim` · `lensless` · `lightsheet` · `flim`
+
+**Tier 3 — Coherent imaging (5)**
+`ptychography` · `holography` · `phase_retrieval` · `fpm` · `oct`
+
+**Tier 4 — Medical imaging (10)**
+`xray_radiography` · `ultrasound` · `photoacoustic` · `dot` · `pet` · `spect` · `fluoroscopy` · `mammography` · `dexa` · `cbct`
+
+**Tier 5 — Neural rendering + computational (6)**
+`nerf` · `gaussian_splatting` · `matrix` · `panorama` · `light_field` · `integral`
+
+**Tier 6 — Electron microscopy (7)**
+`sem` · `tem` · `stem` · `electron_tomography` · `electron_diffraction` · `ebsd` · `eels`
+
+**Tier 7 — Advanced medical (6)**
+`angiography` · `doppler_ultrasound` · `elastography` · `fmri` · `mrs` · `diffusion_mri`
+
+**Tier 8 — Advanced microscopy (5)**
+`two_photon` · `sted` · `palm_storm` · `tirf` · `polarization`
+
+**Tier 9 — Clinical optics + depth (6)**
+`endoscopy` · `fundus` · `octa` · `tof_camera` · `lidar` · `structured_light`
+
+**Tier 10 — Remote sensing + exotic (6)**
+`sar` · `sonar` · `electron_holography` · `neutron_tomo` · `proton_radiography` · `muon_tomo`
+
+See `docs/PLAN_v4_report_contract.md` for full per-modality reports.
+
+</details>
+
+## Benchmark Results (26 modalities with PSNR table)
 
 | # | Modality | Best Solver | PSNR (dB) | Ref (dB) | Status |
 |---|----------|-------------|-----------|----------|--------|
@@ -508,8 +578,6 @@ PWM includes validated implementations for **34 imaging modalities**.
 | 24 | OCT | FFT Recon | 64.84 | 36.0 | Pass |
 | 25 | FPM | Gradient Descent | 34.61 | 34.0 | Pass |
 | 26 | DOT | Born/Tikhonov | 32.06 | 25.0 | Pass |
-
-**All 64 modalities meet or exceed reference performance.**
 
 ### Running the Benchmarks
 
