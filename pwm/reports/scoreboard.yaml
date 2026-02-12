@@ -73,7 +73,7 @@ modalities:
     w2_a_extraction_method: graph_stripped
     runbundle_path: runs/run_ct_exp_5d826f74
     report_path: pwm/reports/ct.md
-    commit_sha: pending
+    commit_sha: b42945c
     completed_at: "2026-02-12T17:00:00"
 
   mri:
