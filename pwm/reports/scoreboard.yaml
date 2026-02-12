@@ -6,9 +6,9 @@
 version: "1.0"
 last_updated: "2026-02-12T12:00:00"
 total_modalities: 64
-done_count: 8
+done_count: 9
 partial_count: 0
-pending_count: 56
+pending_count: 55
 
 modalities:
 
@@ -141,20 +141,20 @@ modalities:
     completed_at: "2026-02-12T20:00:00"
 
   confocal_3d:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: care_tribolium
+    w1_psnr: 24.99
+    w1_ssim: 0.8414
+    w1_nrmse: 0.0602
+    w2_nll_before: 9063.4
+    w2_nll_after: 8192.8
+    w2_nll_decrease_pct: 9.6
+    w2_psnr_corrected: 25.14
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_confocal_3d_exp_19a529c3
+    report_path: pwm/reports/confocal_3d.md
+    commit_sha: pending
+    completed_at: "2026-02-12T20:30:00"
 
   sim:
     status: PENDING
