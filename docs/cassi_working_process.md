@@ -70,7 +70,7 @@ system = plan_agent.build_imaging_system("cassi")
 # ImagingSystem(
 #   modality_key="cassi",
 #   display_name="Single-Disperser CASSI (SD-CASSI)",
-#   signal_dims={"x": [256, 256, 28], "y": [256, 283]},  # Nx × (Ny + Nλ - 1)
+#   signal_dims={"x": [256, 256, 28], "y": [256, 310]},  # Nx × (Ny + (Nλ-1)·s)
 #   forward_model_type=ForwardModelType.linear_operator,
 #   elements=[...8 elements...],
 #   default_solver="mst"
@@ -109,7 +109,7 @@ SensorNode: DetectorNode (QE(λ), pixel integration, ADC quantization)
 ↓
 NoiseNode: Poisson shot + read noise + quantization noise
 ↓
-y (2D coded measurement, shape Nx × (Ny + Nλ − 1))
+y (2D coded measurement, shape Nx × (Ny + (Nλ − 1) · s))
 ```
 
 **Cumulative throughput:** `0.92 × 0.50 × 0.90 × 0.88 × 1.0 × 0.90 × 0.75 = 0.244`
@@ -183,7 +183,7 @@ y = Φ f + g
 
 where `Φ ∈ R^{M × N}` is the SD-CASSI sensing matrix, `f ∈ R^N` is the
 vectorized spectral cube (N = Nx · Ny · Nλ), `y ∈ R^M` is the vectorized
-measurement (M = Nx · (Ny + Nλ − 1)), and `g` is noise.
+measurement (M = Nx · (Ny + (Nλ − 1) · s)), and `g` is noise.
 
 ### 3.4 Measurement Shape
 
@@ -193,10 +193,11 @@ The dispersion extends the measurement along the y-axis:
 Y ∈ R^{Nx × (Ny + (Nλ − 1) · s)}
 ```
 
-For the standard benchmark: `Nx=256, Ny=256, Nλ=28, s=1`:
+For the standard benchmark: `Nx=256, Ny=256, Nλ=28, s=2` (54-pixel total dispersion
+from 30° apex prism across 450–650 nm, 28 channels):
 
 ```
-Y ∈ R^{256 × 283}    where 283 = 256 + (28 − 1) × 1
+Y ∈ R^{256 × 310}    where 310 = 256 + (28 − 1) × 2
 ```
 
 > **Axis convention:** Dispersion is along the **y-axis** (axis=1 in row-major
@@ -519,8 +520,8 @@ MismatchReport(
 
 ```python
 # 1. Compression ratio (updated for correct measurement shape)
-# Y ∈ R^{256 × 283}, X ∈ R^{256 × 256 × 28}
-CR = (256 * 283) / (256 * 256 * 28) = 0.039
+# Y ∈ R^{256 × 310}, X ∈ R^{256 × 256 × 28}
+CR = (256 * 310) / (256 * 256 * 28) = 0.043
 
 # 2. Operator diversity (mask density heuristic)
 density = 0.5  # binary random mask
@@ -542,7 +543,7 @@ kappa = 1 / (1 + diversity) = 0.5
 
 ```python
 RecoverabilityReport(
-  compression_ratio=0.039,
+  compression_ratio=0.043,
   noise_regime=NoiseRegime.shot_limited,
   signal_prior_class=SignalPriorClass.joint_spatio_spectral,
   operator_diversity_score=1.0,
@@ -650,7 +651,7 @@ NegotiationResult(
 total_pixels = 256 * 256 * 28 = 1,835,008
 dim_factor   = total_pixels / (256 * 256) = 28.0
 solver_complexity = 2.5  # MST (transformer-based)
-cr_factor    = max(0.039, 1.0) / 8.0 = 0.125
+cr_factor    = max(0.043, 1.0) / 8.0 = 0.125
 
 runtime_s = 2.0 * 28.0 * 2.5 * 0.125 = 17.5 seconds
 ```
@@ -692,8 +693,8 @@ After the pre-flight report is approved (interactively or auto), the pipeline ru
 #   n_bands: 28
 #
 # Input:  x = (256, 256, 28) hyperspectral cube
-# Output: y = (256, 283) compressed snapshot
-#         where 283 = 256 + (28-1)*1   (step=1 for standard benchmark)
+# Output: y = (256, 310) compressed snapshot
+#         where 310 = 256 + (28-1)*2   (step=2, 54-pixel dispersion)
 
 operator = SDCASSIOperator(
     mask=np.load("mask.npy"),   # (256, 256)
@@ -708,11 +709,11 @@ operator.check_adjoint()  # Passes: <Ax,y> ≈ <x,A*y>, rel_error < 1e-10
 
 ```python
 # If user provided measurement.npy:
-y = np.load("measurement.npy")    # (256, 283) — Nx × (Ny + Nλ - 1)
+y = np.load("measurement.npy")    # (256, 310) — Nx × (Ny + Nλ - 1)
 
 # If simulating:
 x_true = load_ground_truth()       # (256, 256, 28) from KAIST dataset
-y_clean = operator.forward(x_true) # (256, 283)
+y_clean = operator.forward(x_true) # (256, 310)
 
 # Noise: Poisson shot + read + quantization (paper-consistent)
 y_shot = np.random.poisson(lam=y_clean * peak_photons) / peak_photons
@@ -726,7 +727,7 @@ y = np.round(y_noisy * 4095) / 4095  # 12-bit quantization
 from pwm_core.recon.mst import mst_recon_cassi
 
 x_hat = mst_recon_cassi(
-    y=y,                    # (256, 283) compressed measurement
+    y=y,                    # (256, 310) compressed measurement
     mask=mask,              # (256, 256) coded aperture
     dispersion_step=2,      # pixels per spectral shift (along y)
     n_bands=28,
@@ -776,7 +777,7 @@ run_bundle/
 │   ├── negotiation_result.json
 │   └── preflight_report.json
 ├── arrays/
-│   ├── y.npy              # Measurement (256, 283) + SHA256 hash
+│   ├── y.npy              # Measurement (256, 310) + SHA256 hash
 │   ├── x_hat.npy          # Reconstruction (256, 256, 28) + SHA256 hash
 │   └── x_true.npy         # Ground truth (if available) + SHA256 hash
 ├── metrics.json           # PSNR, SSIM, SAM per band + average
@@ -1067,7 +1068,7 @@ MismatchReport(
 
 ```python
 # Compression ratio unchanged
-CR = 0.039
+CR = 0.043
 
 # But noise regime is now "detector_limited" due to mismatch-induced artifacts
 # The mismatch acts like structured noise that the solver can't separate
@@ -1080,7 +1081,7 @@ CR = 0.039
 
 ```python
 RecoverabilityReport(
-  compression_ratio=0.039,
+  compression_ratio=0.043,
   noise_regime=NoiseRegime.shot_limited,
   signal_prior_class=SignalPriorClass.joint_spatio_spectral,
   operator_diversity_score=1.0,
@@ -1341,7 +1342,7 @@ x_refined_mst = mst_recon_cassi(y_lab, mask_refined, step=2.0 - 0.093)
                                   ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  PLAN AGENT   mode = operator_correction                                    │
-│  → "cassi" (0.95) → 8 elements, CR=0.039                                   │
+│  → "cassi" (0.95) → 8 elements, CR=0.043                                   │
 │  → SD-CASSI layout: Obj→Mask→RL1→Prism→SD_Distort→RL2→Det                  │
 └─────────────────────────────────┬───────────────────────────────────────────┘
                                   │
@@ -1350,7 +1351,7 @@ x_refined_mst = mst_recon_cassi(y_lab, mask_refined, step=2.0 - 0.093)
 ┌─────────────────┐  ┌──────────────────────┐  ┌──────────────────────────┐
 │  PHOTON AGENT   │  │  MISMATCH AGENT      │  │  RECOVERABILITY AGENT    │
 │                 │  │                      │  │                          │
-│  N = 1.84e10    │  │  S = 0.315 (mod)     │  │  CR = 0.039              │
+│  N = 1.84e10    │  │  S = 0.315 (mod)     │  │  CR = 0.043              │
 │  SNR = 102.6 dB │  │  dy=2.7px dominant   │  │  Rec = 0.58 (marginal)   │
 │  Tier: excellent│  │  SD a2=0.008         │  │  PSNR → 26.34 dB        │
 │                 │  │  Gain: +3.15 dB      │  │  *** DEGRADED ***        │
@@ -1420,7 +1421,7 @@ x_refined_mst = mst_recon_cassi(y_lab, mask_refined, step=2.0 - 0.093)
 | **Optical Chain** | | |
 | Layout | SD-CASSI (ECCV-2020) | SD-CASSI (ECCV-2020) |
 | Elements | 8 (incl. SD distortion) | 8 (incl. SD distortion) |
-| Measurement shape | 256 × 283 | 256 × 283 |
+| Measurement shape | 256 × 310 | 256 × 310 |
 | Dispersion axis | y (columns) | y (columns) |
 | **PhotonAgent** | | |
 | N_effective | 2.68e12 | 1.84e10 |

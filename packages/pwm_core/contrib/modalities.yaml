@@ -550,7 +550,7 @@ modalities:
       GAP-TV, or HDNet recovers the full spectral cube.
     signal_dims:
       x: [256, 256, 28]
-      y: [283, 256]
+      y: [256, 310]
     forward_model_type: "linear_operator"
     forward_model_equation: "y(x,y) = sum_l M(x,y) * X(x, y-s(l), l)"
     default_solver: "mst"

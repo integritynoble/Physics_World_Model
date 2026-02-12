@@ -1007,18 +1007,28 @@ templates:
   # ---------------------------------------------------------------------------
 
   cassi_graph_v2:
-    description: "Single-disperser CASSI: Source→mask+dispersion+integration→Sensor→Noise"
+    description: >
+      SD-CASSI (ECCV-2020): Source→ObjectiveLens→CodedMask→RelayLens1→
+      SpectralDispersion→ImbalancedResponse→RelayLens2→FrameIntegration→
+      Sensor→Noise.  Extended output Nx×(Ny+(Nλ-1)·step).
     metadata:
       modality: cassi
       canonical_chain: true
+      sd_cassi_eccv2020: true
       x_shape: [64, 64, 8]
-      y_shape: [64, 64]
+      y_shape: [64, 78]
     nodes:
       - node_id: source
         primitive_id: photon_source
         role: source
         params:
           strength: 1.0
+      - node_id: objective
+        primitive_id: objective_lens
+        role: transport
+        params:
+          throughput: 0.92
+          psf_sigma: 0.0
       - node_id: modulate
         primitive_id: coded_mask
         role: transport
@@ -1027,12 +1037,30 @@ templates:
           H: 64
           W: 64
         learnable: []
+      - node_id: relay1
+        primitive_id: relay_lens
+        role: transport
+        params:
+          throughput: 0.90
       - node_id: disperse
         primitive_id: spectral_dispersion
         role: transport
         params:
-          disp_step: 1.0
+          disp_step: 2.0
+          disp_axis: 1
+          extended_output: true
         learnable: [disp_step]
+      - node_id: sd_distortion
+        primitive_id: imbalanced_response
+        role: transport
+        params:
+          a2: 0.0
+          disp_axis: 1
+      - node_id: relay2
+        primitive_id: relay_lens
+        role: transport
+        params:
+          throughput: 0.90
       - node_id: integrate
         primitive_id: frame_integration
         role: transport
@@ -1054,10 +1082,18 @@ templates:
           seed: 0
     edges:
       - source: source
+        target: objective
+      - source: objective
         target: modulate
       - source: modulate
+        target: relay1
+      - source: relay1
         target: disperse
       - source: disperse
+        target: sd_distortion
+      - source: sd_distortion
+        target: relay2
+      - source: relay2
         target: integrate
       - source: integrate
         target: sensor
