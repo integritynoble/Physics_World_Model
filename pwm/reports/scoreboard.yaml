@@ -57,7 +57,7 @@ modalities:
     w2_a_extraction_method: graph_stripped
     runbundle_path: runs/run_cacti_exp_fb9cb1ac
     report_path: pwm/reports/cacti.md
-    commit_sha: pending
+    commit_sha: d6ca815
     completed_at: "2026-02-12T16:00:00"
 
   ct:
