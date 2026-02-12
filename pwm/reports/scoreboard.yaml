@@ -6,9 +6,9 @@
 version: "1.0"
 last_updated: "2026-02-12T12:00:00"
 total_modalities: 64
-done_count: 4
+done_count: 5
 partial_count: 0
-pending_count: 60
+pending_count: 59
 
 modalities:
 
@@ -77,20 +77,20 @@ modalities:
     completed_at: "2026-02-12T17:00:00"
 
   mri:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: fastmri_knee
+    w1_psnr: 29.37
+    w1_ssim: 0.9944
+    w1_nrmse: 0.0340
+    w2_nll_before: 943026991.6
+    w2_nll_after: 8235.0
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 29.23
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_mri_exp_f5f0882a
+    report_path: pwm/reports/mri.md
+    commit_sha: pending
+    completed_at: "2026-02-12T18:00:00"
 
   widefield:
     status: PENDING
