@@ -59,8 +59,8 @@ PWM supports **64 validated imaging modalities** with prompt-driven workflows:
 
 **Compressive Imaging:**
 - `spc` - Single-Pixel Camera with PnP-FISTA (32.17 dB @ 25%)
-- `cassi` - Hyperspectral imaging with MST-L (34.81 dB)
-- `cacti` - Video snapshot compressive imaging with GAP-TV (26.88 dB)
+- `cassi` - Hyperspectral imaging, 4 solvers: HDNet (35.06 dB), MST-L (34.99 dB), MST-S (34.09 dB), GAP-TV (14.92 dB)
+- `cacti` - Video snapshot compressive imaging, 4 solvers: EfficientSCI (36.28 dB), ELP (33.94 dB), PnP-FFDNet (29.36 dB), GAP-TV (26.62 dB)
 - `lensless` - DiffuserCam with FlatNet (33.89 dB)
 
 **Medical Imaging:**
@@ -557,9 +557,9 @@ See `docs/PLAN_v4_report_contract.md` for full per-modality reports.
 | 3 | Confocal Live-Cell | CARE | 30.04 | 26.0 | Pass |
 | 4 | Confocal 3D | CARE 3D | 39.17 | 26.0 | Pass |
 | 5 | SIM | Wiener | 27.48 | 28.0 | Pass |
-| 6 | CASSI | MST-L | 34.81 | 34.71 | Pass |
+| 6 | CASSI | HDNet | 35.06 | 34.71 | Pass |
 | 7 | SPC (25%) | PnP-FISTA | 32.17 | 32.0 | Pass |
-| 8 | CACTI | GAP-Denoise | 26.88 | 26.5 | Pass |
+| 8 | CACTI | EfficientSCI | 36.28 | 26.5 | Pass |
 | 9 | Lensless | FlatNet | 33.89 | 24.0 | Pass |
 | 10 | Light-Sheet | Stripe Removal | 28.05 | 25.0 | Pass |
 | 11 | CT | RED-CNN | 26.77 | 28.0 | Pass |
@@ -578,6 +578,82 @@ See `docs/PLAN_v4_report_contract.md` for full per-modality reports.
 | 24 | OCT | FFT Recon | 64.84 | 36.0 | Pass |
 | 25 | FPM | Gradient Descent | 34.61 | 34.0 | Pass |
 | 26 | DOT | Born/Tikhonov | 32.06 | 25.0 | Pass |
+
+### CASSI Real-Data Benchmark (10 scenes, 4 solvers)
+
+TSA simulation benchmark: 10 hyperspectral scenes (256×256×28, step=2 dispersion), evaluated with GAP-TV (classical), HDNet, MST-S, MST-L (CVPR 2022 deep spectral transformers).
+
+**PSNR (dB)**
+
+| Scene | GAP-TV | HDNet | MST-S | MST-L |
+|-------|--------|-------|-------|-------|
+| scene01 | 15.41 | 35.17 | 34.78 | 35.43 |
+| scene02 | 15.33 | 35.73 | 34.42 | 35.90 |
+| scene03 | 14.42 | 36.13 | 33.82 | 34.91 |
+| scene04 | 15.86 | 42.78 | 42.10 | 42.23 |
+| scene05 | 14.53 | 32.72 | 31.79 | 32.51 |
+| scene06 | 14.77 | 34.53 | 33.74 | 34.75 |
+| scene07 | 14.41 | 33.70 | 32.38 | 33.44 |
+| scene08 | 15.07 | 32.49 | 31.88 | 32.91 |
+| scene09 | 14.42 | 34.93 | 34.11 | 35.04 |
+| scene10 | 15.02 | 32.39 | 31.88 | 32.75 |
+| **Average** | **14.92** | **35.06** | **34.09** | **34.99** |
+
+**SSIM**
+
+| Scene | GAP-TV | HDNet | MST-S | MST-L |
+|-------|--------|-------|-------|-------|
+| scene01 | 0.1917 | 0.9358 | 0.9295 | 0.9419 |
+| scene02 | 0.1844 | 0.9421 | 0.9233 | 0.9452 |
+| scene03 | 0.1711 | 0.9421 | 0.9271 | 0.9480 |
+| scene04 | 0.2389 | 0.9764 | 0.9692 | 0.9750 |
+| scene05 | 0.1793 | 0.9457 | 0.9271 | 0.9448 |
+| scene06 | 0.2131 | 0.9542 | 0.9407 | 0.9541 |
+| scene07 | 0.1685 | 0.9232 | 0.9056 | 0.9222 |
+| scene08 | 0.2224 | 0.9467 | 0.9362 | 0.9511 |
+| scene09 | 0.1658 | 0.9409 | 0.9272 | 0.9375 |
+| scene10 | 0.2107 | 0.9441 | 0.9287 | 0.9460 |
+| **Average** | **0.1946** | **0.9451** | **0.9315** | **0.9466** |
+
+GAP-TV's low 14.92 dB reflects the extreme 28:1 spectral compression ratio. HDNet leads at 35.06 dB, with MST-L comparable at 34.99 dB. W2 mask-shift correction recovers exact 2px injected shift (NLL decrease 100.0%).
+
+```bash
+PYTHONPATH="$PWD:$PWD/packages/pwm_core" python scripts/run_cassi_benchmark.py
+```
+
+### CACTI Real-Data Benchmark (6 scenes, 4 solvers)
+
+Grayscale SCI video benchmark: 6 scenes (256×256, 8:1 temporal compression), evaluated with GAP-TV (classical), PnP-FFDNet (plug-and-play), ELP-Unfolding (ECCV 2022), EfficientSCI (CVPR 2023).
+
+**PSNR (dB)**
+
+| Scene | GAP-TV | PnP-FFDNet | ELP-Unfolding | EfficientSCI |
+|-------|--------|------------|---------------|-------------|
+| kobe32 | 24.00 | 30.33 | 34.08 | 35.76 |
+| crash32 | 25.40 | 24.69 | 29.39 | 31.12 |
+| aerial32 | 26.13 | 24.36 | 30.54 | 31.50 |
+| traffic48 | 21.06 | 23.88 | 31.34 | 32.29 |
+| runner40 | 28.70 | 32.97 | 38.17 | 41.89 |
+| drop40 | 34.42 | 39.91 | 40.09 | 45.10 |
+| **Average** | **26.62** | **29.36** | **33.94** | **36.28** |
+
+**SSIM**
+
+| Scene | GAP-TV | PnP-FFDNet | ELP-Unfolding | EfficientSCI |
+|-------|--------|------------|---------------|-------------|
+| kobe32 | 0.7461 | 0.9253 | 0.9644 | 0.9758 |
+| crash32 | 0.8649 | 0.8332 | 0.9537 | 0.9726 |
+| aerial32 | 0.8510 | 0.8200 | 0.9398 | 0.9542 |
+| traffic48 | 0.7063 | 0.8299 | 0.9623 | 0.9691 |
+| runner40 | 0.8908 | 0.9357 | 0.9744 | 0.9868 |
+| drop40 | 0.9654 | 0.9863 | 0.9798 | 0.9950 |
+| **Average** | **0.8374** | **0.8884** | **0.9624** | **0.9756** |
+
+EfficientSCI leads at 36.28 dB average, followed by ELP-Unfolding at 33.94 dB. W2 mask-shift correction recovers exact 2px injected shift (+8.24 dB PSNR gain).
+
+```bash
+PYTHONPATH="$PWD:$PWD/packages/pwm_core" python scripts/run_cacti_benchmark.py
+```
 
 ### Running the Benchmarks
 
