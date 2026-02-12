@@ -120,3 +120,56 @@ class TestCT:
         center_val = np.mean(recon[12:20, 12:20])
         corner_val = np.mean(recon[:4, :4])
         assert center_val > corner_val
+
+    def test_fbp_recon_psnr(self):
+        """FBP reconstruction of a simple phantom achieves PSNR > 8."""
+        from pwm_core.recon.ct_solvers import fbp_2d
+        from pwm_core.core.metric_registry import PSNR
+
+        radon = get_primitive("ct_radon", {"n_angles": 90, "H": 32, "W": 32})
+        # Simple disk phantom
+        yy, xx = np.meshgrid(np.linspace(-1, 1, 32), np.linspace(-1, 1, 32), indexing='ij')
+        x_true = np.zeros((32, 32), dtype=np.float64)
+        x_true[xx ** 2 + yy ** 2 <= 0.5 ** 2] = 0.5
+        sinogram = radon.forward(x_true)
+        angles_rad = np.deg2rad(np.linspace(0, 180, 90, endpoint=False))
+        x_hat = fbp_2d(sinogram, angles_rad, filter_type="ramlak", output_size=32)
+        x_hat = np.clip(x_hat, 0, None)
+        psnr = PSNR()(x_hat, x_true, max_val=float(x_true.max()))
+        assert psnr > 8, f"FBP PSNR {psnr:.1f} < 8"
+
+    def test_w2_nll_decreases(self):
+        """I_0 drift mismatch correction decreases NLL."""
+        from pwm_core.graph.primitives import BeerLambert, PhotonSensor
+
+        radon = get_primitive("ct_radon", {"n_angles": 90, "H": 32, "W": 32})
+        rng = np.random.RandomState(42)
+        x_true = np.zeros((32, 32), dtype=np.float64)
+        x_true[8:24, 8:24] = rng.rand(16, 16) * 0.5
+
+        I0_nom = 10000.0
+        I0_pert = 12000.0
+        sigma = 0.01
+
+        def _fwd(x, I0):
+            beer = BeerLambert(params={"I_0": I0})
+            sensor = PhotonSensor(params={"quantum_efficiency": 0.9, "gain": 1.0})
+            return sensor.forward(beer.forward(radon.forward(x)))
+
+        y_measured = _fwd(x_true, I0_pert) + rng.randn(90, 32) * sigma * 1000
+
+        # NLL with nominal I_0
+        y_pred_nom = _fwd(x_true, I0_nom)
+        nll_before = 0.5 * np.sum((y_measured - y_pred_nom) ** 2) / (sigma * 1000) ** 2
+
+        # Grid search
+        best_nll = np.inf
+        for trial_I0 in np.linspace(5000, 20000, 16):
+            y_trial = _fwd(x_true, trial_I0)
+            nll_trial = 0.5 * np.sum((y_measured - y_trial) ** 2) / (sigma * 1000) ** 2
+            if nll_trial < best_nll:
+                best_nll = nll_trial
+
+        assert best_nll < nll_before, (
+            f"NLL should decrease after correction: {best_nll:.1f} >= {nll_before:.1f}"
+        )
