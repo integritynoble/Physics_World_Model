@@ -6,9 +6,9 @@
 version: "1.0"
 last_updated: "2026-02-12T12:00:00"
 total_modalities: 64
-done_count: 18
+done_count: 24
 partial_count: 0
-pending_count: 46
+pending_count: 40
 
 modalities:
 
@@ -301,100 +301,100 @@ modalities:
     completed_at: "2026-02-12T22:00:00"
 
   xray_radiography:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: xray_benchmark
+    w1_psnr: 20.67
+    w1_ssim: 0.8779
+    w1_nrmse: 0.1001
+    w2_nll_before: 54855769425.5
+    w2_nll_after: 2048.2
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 29.86
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_xray_radiography_exp_bca7c215
+    report_path: pwm/reports/xray_radiography.md
+    commit_sha: pending
+    completed_at: "2026-02-12T23:00:00"
 
   ultrasound:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: ultrasound_benchmark
+    w1_psnr: 10.31
+    w1_ssim: 0.5827
+    w1_nrmse: 0.3304
+    w2_nll_before: 3193209.8
+    w2_nll_after: 27.0
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 10.31
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_ultrasound_exp_01555214
+    report_path: pwm/reports/ultrasound.md
+    commit_sha: pending
+    completed_at: "2026-02-12T23:00:00"
 
   photoacoustic:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: photoacoustic_benchmark
+    w1_psnr: 10.65
+    w1_ssim: 0.6226
+    w1_nrmse: 0.3176
+    w2_nll_before: 133491935.2
+    w2_nll_after: 1997.0
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 10.65
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_photoacoustic_exp_8d6eb958
+    report_path: pwm/reports/photoacoustic.md
+    commit_sha: pending
+    completed_at: "2026-02-12T23:00:00"
 
   dot:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: diffuse_phantom
+    w1_psnr: 17.13
+    w1_ssim: 0.8211
+    w1_nrmse: 0.1507
+    w2_nll_before: 11477.7
+    w2_nll_after: 2048.3
+    w2_nll_decrease_pct: 82.2
+    w2_psnr_corrected: 19.29
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_dot_exp_ce1180b2
+    report_path: pwm/reports/dot.md
+    commit_sha: pending
+    completed_at: "2026-02-12T23:00:00"
 
   pet:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: pet_benchmark
+    w1_psnr: 10.53
+    w1_ssim: 0.6160
+    w1_nrmse: 0.3219
+    w2_nll_before: 89448782.7
+    w2_nll_after: 1024.1
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 76.29
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_pet_exp_8d3e857b
+    report_path: pwm/reports/pet.md
+    commit_sha: pending
+    completed_at: "2026-02-12T23:00:00"
 
   spect:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: spect_benchmark
+    w1_psnr: 10.64
+    w1_ssim: 0.6227
+    w1_nrmse: 0.3178
+    w2_nll_before: 78186639.1
+    w2_nll_after: 1024.1
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 74.10
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_spect_exp_17579c0a
+    report_path: pwm/reports/spect.md
+    commit_sha: pending
+    completed_at: "2026-02-12T23:00:00"
 
   fluoroscopy:
     status: PENDING
