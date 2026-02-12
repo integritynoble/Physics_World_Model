@@ -6,9 +6,9 @@
 version: "1.0"
 last_updated: "2026-02-12T12:00:00"
 total_modalities: 64
-done_count: 2
+done_count: 3
 partial_count: 0
-pending_count: 62
+pending_count: 61
 
 modalities:
 
@@ -45,20 +45,20 @@ modalities:
     completed_at: "2026-02-12T14:00:00"
 
   cacti:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: davis_video
+    w1_psnr: 17.43
+    w1_ssim: 0.3999
+    w1_nrmse: 0.1493
+    w2_nll_before: 2317467.2
+    w2_nll_after: 1997.0
+    w2_nll_decrease_pct: 99.9
+    w2_psnr_corrected: 17.36
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_cacti_exp_fb9cb1ac
+    report_path: pwm/reports/cacti.md
+    commit_sha: pending
+    completed_at: "2026-02-12T16:00:00"
 
   ct:
     status: PENDING
