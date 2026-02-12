@@ -1,0 +1,1161 @@
+# =============================================================================
+# PWM Dataset Registry
+# Maps each modality to its standard benchmark dataset.
+# All 64 modalities covered.
+# =============================================================================
+
+version: "1.0"
+
+datasets:
+
+  # ---------------------------------------------------------------------------
+  # 1. spc -> set11
+  # ---------------------------------------------------------------------------
+  set11:
+    display_name: "Set11 Natural Images"
+    modalities: [spc]
+    source_url: "https://github.com/jianzhangcs/SCSNet"
+    citation: "Kulkarni et al., ReconNet: Non-Iterative Reconstruction of Images from Compressively Sensed Measurements, CVPR 2016"
+    license: "Public domain"
+    size:
+      images: 11
+      dimensions: "256x256 grayscale"
+    download:
+      method: url
+      url: "https://github.com/jianzhangcs/SCSNet/tree/master/data/Set11"
+      sha256: "pending"
+    notes: "Standard 11-image test set for single-pixel camera and CS reconstruction benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 2. cassi -> kaist_mst_10scenes
+  # ---------------------------------------------------------------------------
+  kaist_mst_10scenes:
+    display_name: "KAIST MST 10 Scenes"
+    modalities: [cassi]
+    source_url: "https://github.com/caiyuanhao1998/MST"
+    citation: "Cai et al., Mask-guided Spectral-wise Transformer for Efficient Hyperspectral Image Reconstruction, CVPR 2022"
+    license: "MIT"
+    size:
+      images: 10
+      dimensions: "256x256x28 spectral"
+    download:
+      method: url
+      url: "https://github.com/caiyuanhao1998/MST/tree/main/simulation/test_datasets"
+      sha256: "pending"
+    notes: "10 hyperspectral scenes used as the standard CASSI reconstruction benchmark."
+
+  # ---------------------------------------------------------------------------
+  # 3. cacti -> sci_6gray
+  # ---------------------------------------------------------------------------
+  sci_6gray:
+    display_name: "SCI 6 Grayscale Videos"
+    modalities: [cacti]
+    source_url: "https://github.com/liuyang12/SCI"
+    citation: "Liu et al., Rank Minimization for Snapshot Compressive Imaging, IEEE TPAMI 2019"
+    license: "BSD-3-Clause"
+    size:
+      images: 6
+      dimensions: "256x256x8 video frames"
+    download:
+      method: url
+      url: "https://github.com/liuyang12/SCI/tree/master/data"
+      sha256: "pending"
+    notes: "6 grayscale video sequences for snapshot compressive imaging (CACTI) benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 4. ct -> lodopab_ct
+  # ---------------------------------------------------------------------------
+  lodopab_ct:
+    display_name: "LoDoPaB-CT"
+    modalities: [ct]
+    source_url: "https://zenodo.org/record/3384092"
+    citation: "Leuschner et al., LoDoPaB-CT, a benchmark dataset for low-dose computed tomography reconstruction, Scientific Data 2021"
+    license: "CC-BY-4.0"
+    size:
+      images: 42895
+      dimensions: "362x362 sinograms -> 362x362 reconstructions"
+    download:
+      method: zenodo
+      url: "https://zenodo.org/record/3384092"
+      sha256: "pending"
+    notes: "Large-scale low-dose parallel-beam CT benchmark. Train/val/test splits provided."
+
+  # ---------------------------------------------------------------------------
+  # 5. mri -> fastmri_knee
+  # ---------------------------------------------------------------------------
+  fastmri_knee:
+    display_name: "fastMRI Knee"
+    modalities: [mri]
+    source_url: "https://fastmri.med.nyu.edu/"
+    citation: "Zbontar et al., fastMRI: An Open Dataset and Benchmarks for Accelerated MRI, arXiv 2018"
+    license: "fastMRI Dataset License"
+    size:
+      images: 10000
+      dimensions: "320x320 k-space slices"
+    download:
+      method: url
+      url: "https://fastmri.med.nyu.edu/"
+      sha256: "pending"
+    notes: "Knee MRI k-space data for accelerated MRI reconstruction. Requires registration."
+
+  # ---------------------------------------------------------------------------
+  # 6. widefield -> biosr_factin
+  # ---------------------------------------------------------------------------
+  biosr_factin:
+    display_name: "BioSR F-Actin"
+    modalities: [widefield]
+    source_url: "https://figshare.com/articles/dataset/BioSR/13744429"
+    citation: "Qiao et al., Evaluation and development of deep neural networks for image super-resolution in optical microscopy, Nature Methods 2021"
+    license: "CC-BY-4.0"
+    size:
+      images: 400
+      dimensions: "502x502 fluorescence"
+    download:
+      method: url
+      url: "https://figshare.com/articles/dataset/BioSR/13744429"
+      sha256: "pending"
+    notes: "F-Actin channel from BioSR for widefield deconvolution and super-resolution."
+
+  # ---------------------------------------------------------------------------
+  # 7. widefield_lowdose -> biosr_lowsnr
+  # ---------------------------------------------------------------------------
+  biosr_lowsnr:
+    display_name: "BioSR Low-SNR"
+    modalities: [widefield_lowdose]
+    source_url: "https://figshare.com/articles/dataset/BioSR/13744429"
+    citation: "Qiao et al., Evaluation and development of deep neural networks for image super-resolution in optical microscopy, Nature Methods 2021"
+    license: "CC-BY-4.0"
+    size:
+      images: 400
+      dimensions: "502x502 fluorescence (low photon count)"
+    download:
+      method: url
+      url: "https://figshare.com/articles/dataset/BioSR/13744429"
+      sha256: "pending"
+    notes: "Low-SNR variant of BioSR for low-dose widefield denoising and reconstruction."
+
+  # ---------------------------------------------------------------------------
+  # 8. confocal_livecell -> deepbacs_fluor
+  # ---------------------------------------------------------------------------
+  deepbacs_fluor:
+    display_name: "DeepBacs Fluorescence"
+    modalities: [confocal_livecell]
+    source_url: "https://zenodo.org/record/5764540"
+    citation: "Spahn et al., DeepBacs for multi-task bacterial image analysis using open-source deep learning approaches, Communications Biology 2022"
+    license: "CC-BY-4.0"
+    size:
+      images: 900
+      dimensions: "512x512 confocal"
+    download:
+      method: zenodo
+      url: "https://zenodo.org/record/5764540"
+      sha256: "pending"
+    notes: "Confocal fluorescence images of live bacteria for denoising and segmentation."
+
+  # ---------------------------------------------------------------------------
+  # 9. confocal_3d -> care_tribolium
+  # ---------------------------------------------------------------------------
+  care_tribolium:
+    display_name: "CARE Tribolium"
+    modalities: [confocal_3d]
+    source_url: "https://publications.mpi-cbg.de/publications-sites/7207/"
+    citation: "Weigert et al., Content-aware image restoration: pushing the limits of fluorescence microscopy, Nature Methods 2018"
+    license: "CC-BY-4.0"
+    size:
+      images: 200
+      dimensions: "256x256x64 3D confocal stacks"
+    download:
+      method: url
+      url: "https://publications.mpi-cbg.de/publications-sites/7207/"
+      sha256: "pending"
+    notes: "3D confocal stacks of Tribolium castaneum embryo for volumetric denoising."
+
+  # ---------------------------------------------------------------------------
+  # 10. sim -> biosr_sim
+  # ---------------------------------------------------------------------------
+  biosr_sim:
+    display_name: "BioSR SIM"
+    modalities: [sim]
+    source_url: "https://figshare.com/articles/dataset/BioSR/13744429"
+    citation: "Qiao et al., Evaluation and development of deep neural networks for image super-resolution in optical microscopy, Nature Methods 2021"
+    license: "CC-BY-4.0"
+    size:
+      images: 400
+      dimensions: "502x502 (9 raw SIM frames per image)"
+    download:
+      method: url
+      url: "https://figshare.com/articles/dataset/BioSR/13744429"
+      sha256: "pending"
+    notes: "Structured illumination microscopy raw frames and corresponding SR ground truth."
+
+  # ---------------------------------------------------------------------------
+  # 11. lensless -> diffusercam
+  # ---------------------------------------------------------------------------
+  diffusercam:
+    display_name: "DiffuserCam Lensless"
+    modalities: [lensless]
+    source_url: "https://waller-lab.github.io/LenslessLearning/"
+    citation: "Monakhova et al., Learned reconstructions for practical mask-based lensless imaging, Optics Express 2019"
+    license: "BSD-3-Clause"
+    size:
+      images: 25000
+      dimensions: "270x480 lensless captures"
+    download:
+      method: url
+      url: "https://waller-lab.github.io/LenslessLearning/dataset.html"
+      sha256: "pending"
+    notes: "Lensless camera dataset using a diffuser as the optical element."
+
+  # ---------------------------------------------------------------------------
+  # 12. lightsheet -> openspim_demo
+  # ---------------------------------------------------------------------------
+  openspim_demo:
+    display_name: "OpenSPIM Demo"
+    modalities: [lightsheet]
+    source_url: "https://openspim.org/table_of_contents"
+    citation: "Pitrone et al., OpenSPIM: an open-access light-sheet microscopy platform, Nature Methods 2013"
+    license: "CC-BY-SA-4.0"
+    size:
+      images: 50
+      dimensions: "512x512x200 3D lightsheet stacks"
+    download:
+      method: url
+      url: "https://openspim.org/downloads"
+      sha256: "pending"
+    notes: "Demo lightsheet microscopy data from the OpenSPIM project."
+
+  # ---------------------------------------------------------------------------
+  # 13. flim -> flim_fret_benchmark
+  # ---------------------------------------------------------------------------
+  flim_fret_benchmark:
+    display_name: "FLIM-FRET Benchmark"
+    modalities: [flim]
+    source_url: "https://zenodo.org/record/8139025"
+    citation: "Bhatt et al., FLIM-FRET benchmark dataset for fluorescence lifetime imaging, Scientific Data 2023"
+    license: "CC-BY-4.0"
+    size:
+      images: 100
+      dimensions: "256x256 with lifetime decay curves"
+    download:
+      method: zenodo
+      url: "https://zenodo.org/record/8139025"
+      sha256: "pending"
+    notes: "Benchmark dataset for fluorescence lifetime imaging microscopy with FRET."
+
+  # ---------------------------------------------------------------------------
+  # 14. ptychography -> ptychonn_benchmark
+  # ---------------------------------------------------------------------------
+  ptychonn_benchmark:
+    display_name: "PtychoNN Benchmark"
+    modalities: [ptychography]
+    source_url: "https://github.com/mcherukara/PtychoNN"
+    citation: "Cherukara et al., AI-enabled high-resolution scanning coherent diffraction imaging, Applied Physics Letters 2020"
+    license: "BSD-2-Clause"
+    size:
+      images: 5000
+      dimensions: "128x128 diffraction patterns"
+    download:
+      method: url
+      url: "https://github.com/mcherukara/PtychoNN/tree/master/data"
+      sha256: "pending"
+    notes: "Ptychographic diffraction patterns for phase retrieval benchmarking."
+
+  # ---------------------------------------------------------------------------
+  # 15. holography -> sipi_offaxis
+  # ---------------------------------------------------------------------------
+  sipi_offaxis:
+    display_name: "SIPI Off-Axis Holography"
+    modalities: [holography]
+    source_url: "https://sipi.usc.edu/database/"
+    citation: "Weber, The USC-SIPI Image Database, 1997"
+    license: "Public domain"
+    size:
+      images: 20
+      dimensions: "512x512 hologram interferograms"
+    download:
+      method: url
+      url: "https://sipi.usc.edu/database/"
+      sha256: "pending"
+    notes: "Off-axis holography interferograms for phase recovery benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 16. phase_retrieval -> cdp_synthetic
+  # ---------------------------------------------------------------------------
+  cdp_synthetic:
+    display_name: "CDP Synthetic Phase Retrieval"
+    modalities: [phase_retrieval]
+    source_url: "https://github.com/swing-research/phase-retrieval"
+    citation: "Candes et al., Phase Retrieval via Wirtinger Flow, IEEE Trans. Information Theory 2015"
+    license: "MIT"
+    size:
+      images: 1000
+      dimensions: "64x64 complex-valued synthetic"
+    download:
+      method: url
+      url: "https://github.com/swing-research/phase-retrieval"
+      sha256: "pending"
+    notes: "Synthetic coded diffraction pattern data for phase retrieval algorithms."
+
+  # ---------------------------------------------------------------------------
+  # 17. fpm -> fpm_led_benchmark
+  # ---------------------------------------------------------------------------
+  fpm_led_benchmark:
+    display_name: "FPM LED Array Benchmark"
+    modalities: [fpm]
+    source_url: "https://github.com/zhenglab/FPM"
+    citation: "Zheng et al., Wide-field, high-resolution Fourier ptychographic microscopy, Nature Photonics 2013"
+    license: "BSD-3-Clause"
+    size:
+      images: 225
+      dimensions: "128x128 per LED angle (15x15 grid)"
+    download:
+      method: url
+      url: "https://github.com/zhenglab/FPM/tree/master/data"
+      sha256: "pending"
+    notes: "LED array images at multiple illumination angles for Fourier ptychographic reconstruction."
+
+  # ---------------------------------------------------------------------------
+  # 18. oct -> retouch_oct
+  # ---------------------------------------------------------------------------
+  retouch_oct:
+    display_name: "RETOUCH OCT Challenge"
+    modalities: [oct]
+    source_url: "https://retouch.grand-challenge.org/"
+    citation: "Bogunovic et al., RETOUCH: The Retinal OCT Fluid Detection and Segmentation Benchmark and Challenge, IEEE TMI 2019"
+    license: "Research use only"
+    size:
+      images: 112
+      dimensions: "512x496 B-scans (volumes)"
+    download:
+      method: url
+      url: "https://retouch.grand-challenge.org/"
+      sha256: "pending"
+    notes: "Retinal OCT volumes from three vendors for fluid segmentation and reconstruction."
+
+  # ---------------------------------------------------------------------------
+  # 19. xray_radiography -> chestxray14
+  # ---------------------------------------------------------------------------
+  chestxray14:
+    display_name: "ChestX-ray14"
+    modalities: [xray_radiography]
+    source_url: "https://nihcc.app.box.com/v/ChestXray-NIHCC"
+    citation: "Wang et al., ChestX-ray8: Hospital-scale Chest X-ray Database and Benchmarks, CVPR 2017"
+    license: "CC0 1.0"
+    size:
+      images: 112120
+      dimensions: "1024x1024 grayscale X-ray"
+    download:
+      method: url
+      url: "https://nihcc.app.box.com/v/ChestXray-NIHCC"
+      sha256: "pending"
+    notes: "Large-scale chest X-ray dataset with 14 disease labels. Used for radiography reconstruction benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 20. ultrasound -> picmus_challenge
+  # ---------------------------------------------------------------------------
+  picmus_challenge:
+    display_name: "PICMUS Ultrasound Challenge"
+    modalities: [ultrasound]
+    source_url: "https://www.creatis.insa-lyon.fr/Challenge/IEEE_IUS_2016/"
+    citation: "Liebgott et al., Plane-Wave Imaging Challenge in Medical Ultrasound, IEEE IUS 2016"
+    license: "Research use"
+    size:
+      images: 12
+      dimensions: "RF channel data, variable geometry"
+    download:
+      method: url
+      url: "https://www.creatis.insa-lyon.fr/Challenge/IEEE_IUS_2016/download.html"
+      sha256: "pending"
+    notes: "Plane-wave ultrasound RF data for beamforming and image reconstruction benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 21. photoacoustic -> ipasc_phantom
+  # ---------------------------------------------------------------------------
+  ipasc_phantom:
+    display_name: "IPASC Phantom"
+    modalities: [photoacoustic]
+    source_url: "https://www.ipasc.science/phantoms"
+    citation: "Grohl et al., IPASC: A data-driven benchmark for photoacoustic imaging, Photoacoustics 2022"
+    license: "CC-BY-4.0"
+    size:
+      images: 50
+      dimensions: "Variable resolution photoacoustic signals"
+    download:
+      method: url
+      url: "https://www.ipasc.science/phantoms"
+      sha256: "pending"
+    notes: "Standardized photoacoustic phantom data for image reconstruction benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 22. dot -> toast_phantom
+  # ---------------------------------------------------------------------------
+  toast_phantom:
+    display_name: "TOAST++ Phantom"
+    modalities: [dot]
+    source_url: "http://web4.cs.ucl.ac.uk/research/vis/toast/"
+    citation: "Schweiger and Arridge, The Toast++ software suite for forward and inverse modeling in optical tomography, J. Biomed. Optics 2014"
+    license: "LGPL-2.1"
+    size:
+      images: 30
+      dimensions: "Mesh-based diffuse optical tomography"
+    download:
+      method: url
+      url: "http://web4.cs.ucl.ac.uk/research/vis/toast/download.html"
+      sha256: "pending"
+    notes: "Simulated diffuse optical tomography phantom data using TOAST++ forward model."
+
+  # ---------------------------------------------------------------------------
+  # 23. pet -> brainweb_pet
+  # ---------------------------------------------------------------------------
+  brainweb_pet:
+    display_name: "BrainWeb PET"
+    modalities: [pet]
+    source_url: "https://brainweb.bic.mni.mcgill.ca/"
+    citation: "Cocosco et al., BrainWeb: Online Interface to a 3D MRI Simulated Brain Database, NeuroImage 1997"
+    license: "Research use"
+    size:
+      images: 20
+      dimensions: "181x217x181 PET volumes"
+    download:
+      method: url
+      url: "https://brainweb.bic.mni.mcgill.ca/brainweb/"
+      sha256: "pending"
+    notes: "Simulated brain PET data with known ground truth for reconstruction validation."
+
+  # ---------------------------------------------------------------------------
+  # 24. spect -> zubal_spect
+  # ---------------------------------------------------------------------------
+  zubal_spect:
+    display_name: "Zubal SPECT Phantom"
+    modalities: [spect]
+    source_url: "http://noodle.med.yale.edu/zubal/"
+    citation: "Zubal et al., Computerized three-dimensional segmented human anatomy, Medical Physics 1994"
+    license: "Research use"
+    size:
+      images: 10
+      dimensions: "128x128x128 SPECT projections"
+    download:
+      method: url
+      url: "http://noodle.med.yale.edu/zubal/"
+      sha256: "pending"
+    notes: "Digital Zubal phantom for SPECT reconstruction with known activity distributions."
+
+  # ---------------------------------------------------------------------------
+  # 25. fluoroscopy -> xcat_phantom
+  # ---------------------------------------------------------------------------
+  xcat_phantom:
+    display_name: "XCAT Phantom"
+    modalities: [fluoroscopy]
+    source_url: "https://otc.duke.edu/technology/xcat/"
+    citation: "Segars et al., 4D XCAT phantom for multimodality imaging research, Medical Physics 2010"
+    license: "Research license (Duke)"
+    size:
+      images: 100
+      dimensions: "512x512 dynamic fluoroscopy frames"
+    download:
+      method: url
+      url: "https://otc.duke.edu/technology/xcat/"
+      sha256: "pending"
+    notes: "4D XCAT digital phantom for dynamic fluoroscopy simulation and reconstruction."
+
+  # ---------------------------------------------------------------------------
+  # 26. mammography -> cbis_ddsm
+  # ---------------------------------------------------------------------------
+  cbis_ddsm:
+    display_name: "CBIS-DDSM"
+    modalities: [mammography]
+    source_url: "https://wiki.cancerimagingarchive.net/display/Public/CBIS-DDSM"
+    citation: "Lee et al., A curated mammography data set for use in computer-aided detection and diagnosis research, Scientific Data 2017"
+    license: "CC-BY-3.0"
+    size:
+      images: 2620
+      dimensions: "Variable resolution mammograms"
+    download:
+      method: url
+      url: "https://wiki.cancerimagingarchive.net/display/Public/CBIS-DDSM"
+      sha256: "pending"
+    notes: "Curated breast imaging subset of DDSM for mammography reconstruction and enhancement."
+
+  # ---------------------------------------------------------------------------
+  # 27. dexa -> dexa_synth_phantom
+  # ---------------------------------------------------------------------------
+  dexa_synth_phantom:
+    display_name: "DEXA Synthetic Phantom"
+    modalities: [dexa]
+    source_url: "https://github.com/pwm-project/dexa-synth"
+    citation: "PWM Project, Synthetic DEXA phantom generator, 2026"
+    license: "MIT"
+    size:
+      images: 200
+      dimensions: "256x256 dual-energy projections"
+    download:
+      method: url
+      url: "https://github.com/pwm-project/dexa-synth"
+      sha256: "pending"
+    notes: "Synthetically generated dual-energy X-ray absorptiometry phantom data."
+
+  # ---------------------------------------------------------------------------
+  # 28. cbct -> aapm_cbct
+  # ---------------------------------------------------------------------------
+  aapm_cbct:
+    display_name: "AAPM CBCT Challenge"
+    modalities: [cbct]
+    source_url: "https://www.aapm.org/grandchallenge/lowdosect/"
+    citation: "McCollough et al., Low Dose CT Grand Challenge, AAPM 2016"
+    license: "Research use"
+    size:
+      images: 4000
+      dimensions: "512x512 cone-beam projections"
+    download:
+      method: url
+      url: "https://www.aapm.org/grandchallenge/lowdosect/"
+      sha256: "pending"
+    notes: "Cone-beam CT data from AAPM low-dose CT challenge for CBCT reconstruction."
+
+  # ---------------------------------------------------------------------------
+  # 29. nerf -> nerf_blender_synth
+  # ---------------------------------------------------------------------------
+  nerf_blender_synth:
+    display_name: "NeRF Blender Synthetic"
+    modalities: [nerf]
+    source_url: "https://drive.google.com/drive/folders/128yBriW1IG_3NJ5Rp7APSTZsJqdJdfc1"
+    citation: "Mildenhall et al., NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis, ECCV 2020"
+    license: "MIT"
+    size:
+      images: 800
+      dimensions: "800x800 RGB multi-view"
+    download:
+      method: url
+      url: "https://drive.google.com/drive/folders/128yBriW1IG_3NJ5Rp7APSTZsJqdJdfc1"
+      sha256: "pending"
+    notes: "8 synthetic Blender scenes (lego, chair, drums, etc.) for NeRF benchmarking."
+
+  # ---------------------------------------------------------------------------
+  # 30. gaussian_splatting -> mipnerf360
+  # ---------------------------------------------------------------------------
+  mipnerf360:
+    display_name: "Mip-NeRF 360"
+    modalities: [gaussian_splatting]
+    source_url: "https://jonbarron.info/mipnerf360/"
+    citation: "Barron et al., Mip-NeRF 360: Unbounded Anti-Aliased Neural Radiance Fields, CVPR 2022"
+    license: "CC-BY-4.0"
+    size:
+      images: 1200
+      dimensions: "Variable resolution multi-view captures"
+    download:
+      method: url
+      url: "https://jonbarron.info/mipnerf360/"
+      sha256: "pending"
+    notes: "Indoor and outdoor 360-degree scenes for 3D Gaussian splatting benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 31. matrix -> shepp_logan_synth
+  # ---------------------------------------------------------------------------
+  shepp_logan_synth:
+    display_name: "Shepp-Logan Synthetic"
+    modalities: [matrix]
+    source_url: "https://en.wikipedia.org/wiki/Shepp%E2%80%93Logan_phantom"
+    citation: "Shepp and Logan, The Fourier reconstruction of a head section, IEEE TNS 1974"
+    license: "Public domain"
+    size:
+      images: 100
+      dimensions: "256x256 synthetic phantoms"
+    download:
+      method: url
+      url: "https://github.com/pwm-project/shepp-logan-synth"
+      sha256: "pending"
+    notes: "Procedurally generated Shepp-Logan phantom variants for generic matrix inversion tests."
+
+  # ---------------------------------------------------------------------------
+  # 32. panorama -> div2k_multicrop
+  # ---------------------------------------------------------------------------
+  div2k_multicrop:
+    display_name: "DIV2K Multi-Crop"
+    modalities: [panorama]
+    source_url: "https://data.vision.ee.ethz.ch/cvl/DIV2K/"
+    citation: "Agustsson and Timofte, NTIRE 2017 Challenge on Single Image Super-Resolution: Dataset and Study, CVPRW 2017"
+    license: "Research use"
+    size:
+      images: 900
+      dimensions: "2K resolution RGB (multi-crop panoramic strips)"
+    download:
+      method: url
+      url: "https://data.vision.ee.ethz.ch/cvl/DIV2K/"
+      sha256: "pending"
+    notes: "DIV2K images cropped into overlapping panoramic strips for stitching reconstruction."
+
+  # ---------------------------------------------------------------------------
+  # 33. light_field -> epfl_lightfield
+  # ---------------------------------------------------------------------------
+  epfl_lightfield:
+    display_name: "EPFL Light Field"
+    modalities: [light_field]
+    source_url: "https://www.epfl.ch/labs/mmspg/downloads/light-field-image-dataset/"
+    citation: "Rerabek and Ebrahimi, New Light Field Image Dataset, QoMEX 2016"
+    license: "CC-BY-NC-SA-4.0"
+    size:
+      images: 118
+      dimensions: "625 sub-aperture views per scene (25x25)"
+    download:
+      method: url
+      url: "https://www.epfl.ch/labs/mmspg/downloads/light-field-image-dataset/"
+      sha256: "pending"
+    notes: "Dense light field images from Lytro Illum camera for view synthesis and depth estimation."
+
+  # ---------------------------------------------------------------------------
+  # 34. integral -> stanford_lytro
+  # ---------------------------------------------------------------------------
+  stanford_lytro:
+    display_name: "Stanford Lytro Archive"
+    modalities: [integral]
+    source_url: "http://lightfields.stanford.edu/LF2016.html"
+    citation: "Stanford Computer Graphics Lab, The (New) Stanford Light Field Archive, 2016"
+    license: "Research use"
+    size:
+      images: 30
+      dimensions: "Lytro raw (micro-lens array captures)"
+    download:
+      method: url
+      url: "http://lightfields.stanford.edu/LF2016.html"
+      sha256: "pending"
+    notes: "Lytro light field camera raw captures for integral imaging reconstruction."
+
+  # ---------------------------------------------------------------------------
+  # 35. sem -> nist_sem
+  # ---------------------------------------------------------------------------
+  nist_sem:
+    display_name: "NIST SEM Dataset"
+    modalities: [sem]
+    source_url: "https://www.nist.gov/programs-projects/scanning-electron-microscopy"
+    citation: "NIST, SEM Calibration and Measurement Standards, 2020"
+    license: "Public domain (US Government)"
+    size:
+      images: 200
+      dimensions: "1024x1024 SEM micrographs"
+    download:
+      method: url
+      url: "https://www.nist.gov/programs-projects/scanning-electron-microscopy"
+      sha256: "pending"
+    notes: "Reference SEM images for resolution, noise, and contrast benchmarking."
+
+  # ---------------------------------------------------------------------------
+  # 36. tem -> empiar_10028
+  # ---------------------------------------------------------------------------
+  empiar_10028:
+    display_name: "EMPIAR-10028 (T20S Proteasome)"
+    modalities: [tem]
+    source_url: "https://www.ebi.ac.uk/empiar/EMPIAR-10028/"
+    citation: "Campbell et al., Movies of ice-embedded particles enhance resolution in electron cryo-microscopy, Structure 2012"
+    license: "CC0 1.0"
+    size:
+      images: 1081
+      dimensions: "4096x4096 cryo-EM micrographs"
+    download:
+      method: url
+      url: "https://www.ebi.ac.uk/empiar/EMPIAR-10028/"
+      sha256: "pending"
+    notes: "Cryo-EM micrographs of T20S proteasome for TEM reconstruction benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 37. stem -> stem_dl_benchmark
+  # ---------------------------------------------------------------------------
+  stem_dl_benchmark:
+    display_name: "STEM Deep Learning Benchmark"
+    modalities: [stem]
+    source_url: "https://github.com/pycroscopy/AICrystallographer"
+    citation: "Ziatdinov et al., Deep Learning of Atomically Resolved Scanning Transmission Electron Microscopy Images, ACS Nano 2017"
+    license: "MIT"
+    size:
+      images: 500
+      dimensions: "256x256 STEM images"
+    download:
+      method: url
+      url: "https://github.com/pycroscopy/AICrystallographer"
+      sha256: "pending"
+    notes: "Atomically resolved STEM images for denoising and atom detection benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 38. electron_tomography -> empiar_10045
+  # ---------------------------------------------------------------------------
+  empiar_10045:
+    display_name: "EMPIAR-10045 (HIV Tilt Series)"
+    modalities: [electron_tomography]
+    source_url: "https://www.ebi.ac.uk/empiar/EMPIAR-10045/"
+    citation: "Schur et al., An atomic model of HIV-1 capsid-SP1, Nature 2016"
+    license: "CC0 1.0"
+    size:
+      images: 5
+      dimensions: "Tilt series (4096x4096 x ~40 tilts)"
+    download:
+      method: url
+      url: "https://www.ebi.ac.uk/empiar/EMPIAR-10045/"
+      sha256: "pending"
+    notes: "Electron tomography tilt series for 3D reconstruction of HIV capsid."
+
+  # ---------------------------------------------------------------------------
+  # 39. electron_diffraction -> py4dstem_tutorial
+  # ---------------------------------------------------------------------------
+  py4dstem_tutorial:
+    display_name: "py4DSTEM Tutorial Data"
+    modalities: [electron_diffraction]
+    source_url: "https://github.com/py4dstem/py4DSTEM_tutorials"
+    citation: "Savitzky et al., py4DSTEM: A Software Package for Four-Dimensional Scanning Transmission Electron Microscopy, Microscopy and Microanalysis 2021"
+    license: "GPL-3.0"
+    size:
+      images: 10
+      dimensions: "256x256 4D-STEM diffraction patterns"
+    download:
+      method: url
+      url: "https://github.com/py4dstem/py4DSTEM_tutorials"
+      sha256: "pending"
+    notes: "4D-STEM datasets for electron diffraction analysis and strain mapping."
+
+  # ---------------------------------------------------------------------------
+  # 40. ebsd -> mtex_ebsd
+  # ---------------------------------------------------------------------------
+  mtex_ebsd:
+    display_name: "MTEX EBSD Samples"
+    modalities: [ebsd]
+    source_url: "https://mtex-toolbox.github.io/"
+    citation: "Bachmann et al., Texture Analysis with MTEX, Solid State Phenomena 2010"
+    license: "BSD-3-Clause"
+    size:
+      images: 20
+      dimensions: "Variable resolution EBSD maps"
+    download:
+      method: url
+      url: "https://mtex-toolbox.github.io/files/data/"
+      sha256: "pending"
+    notes: "Electron backscatter diffraction orientation maps for crystal structure analysis."
+
+  # ---------------------------------------------------------------------------
+  # 41. eels -> eelsdb_reference
+  # ---------------------------------------------------------------------------
+  eelsdb_reference:
+    display_name: "EELS Database Reference"
+    modalities: [eels]
+    source_url: "https://eelsdb.eu/"
+    citation: "Ewels et al., EELS Data Base, 2016"
+    license: "CC-BY-4.0"
+    size:
+      images: 300
+      dimensions: "Variable length spectra (1D)"
+    download:
+      method: url
+      url: "https://eelsdb.eu/api/"
+      sha256: "pending"
+    notes: "Reference electron energy loss spectra for spectral denoising and decomposition."
+
+  # ---------------------------------------------------------------------------
+  # 42. angiography -> xcad_angiography
+  # ---------------------------------------------------------------------------
+  xcad_angiography:
+    display_name: "XCAD Coronary Angiography"
+    modalities: [angiography]
+    source_url: "https://github.com/Benny0323/XCAD"
+    citation: "Ma et al., Self-supervised Vessel Segmentation via Adversarial Learning, ICCV 2021"
+    license: "MIT"
+    size:
+      images: 1621
+      dimensions: "512x512 X-ray angiograms"
+    download:
+      method: url
+      url: "https://github.com/Benny0323/XCAD"
+      sha256: "pending"
+    notes: "Coronary angiography images for vessel enhancement and reconstruction."
+
+  # ---------------------------------------------------------------------------
+  # 43. doppler_ultrasound -> flow_phantom_synth
+  # ---------------------------------------------------------------------------
+  flow_phantom_synth:
+    display_name: "Flow Phantom Synthetic"
+    modalities: [doppler_ultrasound]
+    source_url: "https://github.com/pwm-project/flow-phantom-synth"
+    citation: "PWM Project, Synthetic Doppler flow phantom generator, 2026"
+    license: "MIT"
+    size:
+      images: 500
+      dimensions: "256x256 Doppler RF data"
+    download:
+      method: url
+      url: "https://github.com/pwm-project/flow-phantom-synth"
+      sha256: "pending"
+    notes: "Synthetic Doppler ultrasound flow phantom data for velocity estimation benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 44. elastography -> cirs_phantom_synth
+  # ---------------------------------------------------------------------------
+  cirs_phantom_synth:
+    display_name: "CIRS Elastography Phantom Synthetic"
+    modalities: [elastography]
+    source_url: "https://github.com/pwm-project/cirs-phantom-synth"
+    citation: "PWM Project, Synthetic elastography phantom generator, 2026"
+    license: "MIT"
+    size:
+      images: 200
+      dimensions: "256x256 displacement fields"
+    download:
+      method: url
+      url: "https://github.com/pwm-project/cirs-phantom-synth"
+      sha256: "pending"
+    notes: "Synthetic tissue-mimicking phantom data for shear-wave elastography reconstruction."
+
+  # ---------------------------------------------------------------------------
+  # 45. fmri -> hcp_resting_fmri
+  # ---------------------------------------------------------------------------
+  hcp_resting_fmri:
+    display_name: "HCP Resting-State fMRI"
+    modalities: [fmri]
+    source_url: "https://www.humanconnectome.org/study/hcp-young-adult"
+    citation: "Van Essen et al., The WU-Minn Human Connectome Project: An overview, NeuroImage 2013"
+    license: "HCP Open Access Data Use Terms"
+    size:
+      images: 1200
+      dimensions: "91x109x91 x 1200 time points"
+    download:
+      method: url
+      url: "https://db.humanconnectome.org/"
+      sha256: "pending"
+    notes: "Resting-state fMRI data for functional connectivity and temporal denoising benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 46. mrs -> ismrmrd_mrs
+  # ---------------------------------------------------------------------------
+  ismrmrd_mrs:
+    display_name: "ISMRMRD MRS"
+    modalities: [mrs]
+    source_url: "https://ismrmrd.github.io/"
+    citation: "Inati et al., ISMRM Raw Data Format, MRM 2017"
+    license: "MIT"
+    size:
+      images: 50
+      dimensions: "Variable length FID/spectra"
+    download:
+      method: url
+      url: "https://ismrmrd.github.io/"
+      sha256: "pending"
+    notes: "MR spectroscopy raw data in ISMRMRD format for spectral fitting benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 47. diffusion_mri -> hcp_diffusion
+  # ---------------------------------------------------------------------------
+  hcp_diffusion:
+    display_name: "HCP Diffusion MRI"
+    modalities: [diffusion_mri]
+    source_url: "https://www.humanconnectome.org/study/hcp-young-adult"
+    citation: "Van Essen et al., The WU-Minn Human Connectome Project: An overview, NeuroImage 2013"
+    license: "HCP Open Access Data Use Terms"
+    size:
+      images: 1065
+      dimensions: "145x174x145 x 288 diffusion directions"
+    download:
+      method: url
+      url: "https://db.humanconnectome.org/"
+      sha256: "pending"
+    notes: "Multi-shell diffusion MRI for tractography and microstructure benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 48. two_photon -> allen_twophoton
+  # ---------------------------------------------------------------------------
+  allen_twophoton:
+    display_name: "Allen Brain Two-Photon"
+    modalities: [two_photon]
+    source_url: "https://observatory.brain-map.org/visualcoding"
+    citation: "de Vries et al., A large-scale standardized physiological survey reveals functional organization of the mouse visual cortex, Nature Neuroscience 2020"
+    license: "Allen Institute Terms of Use"
+    size:
+      images: 500
+      dimensions: "512x512 calcium imaging frames"
+    download:
+      method: url
+      url: "https://observatory.brain-map.org/visualcoding"
+      sha256: "pending"
+    notes: "Two-photon calcium imaging recordings for denoising and deconvolution benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 49. sted -> abberior_sted
+  # ---------------------------------------------------------------------------
+  abberior_sted:
+    display_name: "Abberior STED Demo"
+    modalities: [sted]
+    source_url: "https://abberior.com/sted-microscopy/"
+    citation: "Hell and Wichmann, Breaking the diffraction resolution limit by stimulated emission, Optics Letters 1994"
+    license: "Research use"
+    size:
+      images: 50
+      dimensions: "512x512 STED super-resolution"
+    download:
+      method: url
+      url: "https://abberior.com/sted-microscopy/"
+      sha256: "pending"
+    notes: "STED nanoscopy images for super-resolution deconvolution and denoising."
+
+  # ---------------------------------------------------------------------------
+  # 50. palm_storm -> smlm_challenge_2016
+  # ---------------------------------------------------------------------------
+  smlm_challenge_2016:
+    display_name: "SMLM Challenge 2016"
+    modalities: [palm_storm]
+    source_url: "http://bigwww.epfl.ch/smlm/challenge2016/"
+    citation: "Sage et al., Super-resolution fight club: assessment of 2D and 3D single-molecule localization microscopy software, Nature Methods 2019"
+    license: "CC-BY-4.0"
+    size:
+      images: 12
+      dimensions: "6400 frames x 64x64 per sequence"
+    download:
+      method: url
+      url: "http://bigwww.epfl.ch/smlm/challenge2016/datasets/"
+      sha256: "pending"
+    notes: "Single-molecule localization microscopy challenge data for PALM/STORM benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 51. tirf -> tirf_sim_benchmark
+  # ---------------------------------------------------------------------------
+  tirf_sim_benchmark:
+    display_name: "TIRF-SIM Benchmark"
+    modalities: [tirf]
+    source_url: "https://github.com/pwm-project/tirf-sim-benchmark"
+    citation: "PWM Project, TIRF-SIM synthetic benchmark dataset, 2026"
+    license: "MIT"
+    size:
+      images: 200
+      dimensions: "512x512 TIRF frames (evanescent wave)"
+    download:
+      method: url
+      url: "https://github.com/pwm-project/tirf-sim-benchmark"
+      sha256: "pending"
+    notes: "Synthetic TIRF and TIRF-SIM data for evanescent-wave super-resolution benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 52. polarization -> polarimetric_synth
+  # ---------------------------------------------------------------------------
+  polarimetric_synth:
+    display_name: "Polarimetric Synthetic"
+    modalities: [polarization]
+    source_url: "https://github.com/pwm-project/polarimetric-synth"
+    citation: "PWM Project, Synthetic Stokes/Mueller polarimetric dataset, 2026"
+    license: "MIT"
+    size:
+      images: 300
+      dimensions: "256x256 x 4 Stokes parameters"
+    download:
+      method: url
+      url: "https://github.com/pwm-project/polarimetric-synth"
+      sha256: "pending"
+    notes: "Synthetic polarimetric images with known Stokes vectors for Mueller matrix reconstruction."
+
+  # ---------------------------------------------------------------------------
+  # 53. endoscopy -> hyper_kvasir
+  # ---------------------------------------------------------------------------
+  hyper_kvasir:
+    display_name: "HyperKvasir"
+    modalities: [endoscopy]
+    source_url: "https://datasets.simula.no/hyper-kvasir/"
+    citation: "Borgli et al., HyperKvasir, a comprehensive multi-class image and video dataset for gastrointestinal endoscopy, Scientific Data 2020"
+    license: "CC-BY-4.0"
+    size:
+      images: 110079
+      dimensions: "Variable resolution endoscopy frames"
+    download:
+      method: url
+      url: "https://datasets.simula.no/hyper-kvasir/"
+      sha256: "pending"
+    notes: "Large-scale GI endoscopy dataset for image enhancement and reconstruction."
+
+  # ---------------------------------------------------------------------------
+  # 54. fundus -> drive_retinal
+  # ---------------------------------------------------------------------------
+  drive_retinal:
+    display_name: "DRIVE Retinal Vessel"
+    modalities: [fundus]
+    source_url: "https://drive.grand-challenge.org/"
+    citation: "Staal et al., Ridge-based vessel segmentation in color images of the retina, IEEE TMI 2004"
+    license: "Research use"
+    size:
+      images: 40
+      dimensions: "565x584 RGB fundus"
+    download:
+      method: url
+      url: "https://drive.grand-challenge.org/"
+      sha256: "pending"
+    notes: "Digital retinal images for vessel extraction and fundus image enhancement."
+
+  # ---------------------------------------------------------------------------
+  # 55. octa -> rose1_octa
+  # ---------------------------------------------------------------------------
+  rose1_octa:
+    display_name: "ROSE-1 OCTA"
+    modalities: [octa]
+    source_url: "https://imed.nimte.ac.cn/dataofrose.html"
+    citation: "Ma et al., ROSE: A Retinal OCT-Angiography Vessel Segmentation Dataset, IEEE TMI 2021"
+    license: "Research use"
+    size:
+      images: 117
+      dimensions: "304x304 OCTA en-face projections"
+    download:
+      method: url
+      url: "https://imed.nimte.ac.cn/dataofrose.html"
+      sha256: "pending"
+    notes: "OCT-Angiography vessel segmentation data for OCTA image reconstruction."
+
+  # ---------------------------------------------------------------------------
+  # 56. tof_camera -> nyu_depth_v2
+  # ---------------------------------------------------------------------------
+  nyu_depth_v2:
+    display_name: "NYU Depth V2"
+    modalities: [tof_camera]
+    source_url: "https://cs.nyu.edu/~fergus/datasets/nyu_depth_v2.html"
+    citation: "Silberman et al., Indoor Segmentation and Support Inference from RGBD Images, ECCV 2012"
+    license: "Research use"
+    size:
+      images: 1449
+      dimensions: "640x480 RGB-D"
+    download:
+      method: url
+      url: "https://cs.nyu.edu/~fergus/datasets/nyu_depth_v2.html"
+      sha256: "pending"
+    notes: "Indoor RGB-D dataset from Kinect ToF sensor for depth completion and denoising."
+
+  # ---------------------------------------------------------------------------
+  # 57. lidar -> kitti_lidar
+  # ---------------------------------------------------------------------------
+  kitti_lidar:
+    display_name: "KITTI LiDAR"
+    modalities: [lidar]
+    source_url: "https://www.cvlibs.net/datasets/kitti/"
+    citation: "Geiger et al., Are we ready for autonomous driving? The KITTI Vision Benchmark Suite, CVPR 2012"
+    license: "CC-BY-NC-SA-3.0"
+    size:
+      images: 15000
+      dimensions: "Variable point clouds (~120K points)"
+    download:
+      method: url
+      url: "https://www.cvlibs.net/datasets/kitti/eval_depth.php"
+      sha256: "pending"
+    notes: "Velodyne LiDAR point clouds for 3D reconstruction and depth completion."
+
+  # ---------------------------------------------------------------------------
+  # 58. structured_light -> middlebury_sl
+  # ---------------------------------------------------------------------------
+  middlebury_sl:
+    display_name: "Middlebury Structured Light"
+    modalities: [structured_light]
+    source_url: "https://vision.middlebury.edu/stereo/"
+    citation: "Scharstein and Szeliski, A Taxonomy and Evaluation of Dense Two-Frame Stereo Correspondence Algorithms, IJCV 2002"
+    license: "Research use"
+    size:
+      images: 30
+      dimensions: "Variable resolution stereo/SL captures"
+    download:
+      method: url
+      url: "https://vision.middlebury.edu/stereo/data/"
+      sha256: "pending"
+    notes: "Structured light and stereo depth datasets for 3D surface reconstruction."
+
+  # ---------------------------------------------------------------------------
+  # 59. sar -> mstar_sar
+  # ---------------------------------------------------------------------------
+  mstar_sar:
+    display_name: "MSTAR SAR"
+    modalities: [sar]
+    source_url: "https://www.sdms.afrl.af.mil/index.php?collection=mstar"
+    citation: "Ross et al., Standard SAR ATR Evaluation Experiments using the MSTAR Public Release Data Set, SPIE 1998"
+    license: "Public domain (US Government)"
+    size:
+      images: 5950
+      dimensions: "128x128 SAR magnitude images"
+    download:
+      method: url
+      url: "https://www.sdms.afrl.af.mil/index.php?collection=mstar"
+      sha256: "pending"
+    notes: "Moving and Stationary Target Acquisition and Recognition SAR dataset."
+
+  # ---------------------------------------------------------------------------
+  # 60. sonar -> sonar_synth
+  # ---------------------------------------------------------------------------
+  sonar_synth:
+    display_name: "Sonar Synthetic"
+    modalities: [sonar]
+    source_url: "https://github.com/pwm-project/sonar-synth"
+    citation: "PWM Project, Synthetic side-scan sonar benchmark, 2026"
+    license: "MIT"
+    size:
+      images: 400
+      dimensions: "256x512 side-scan sonar images"
+    download:
+      method: url
+      url: "https://github.com/pwm-project/sonar-synth"
+      sha256: "pending"
+    notes: "Synthetic side-scan sonar images for underwater imaging reconstruction benchmarks."
+
+  # ---------------------------------------------------------------------------
+  # 61. electron_holography -> eholography_synth
+  # ---------------------------------------------------------------------------
+  eholography_synth:
+    display_name: "Electron Holography Synthetic"
+    modalities: [electron_holography]
+    source_url: "https://github.com/pwm-project/eholography-synth"
+    citation: "PWM Project, Synthetic electron holography dataset, 2026"
+    license: "MIT"
+    size:
+      images: 100
+      dimensions: "512x512 electron holograms"
+    download:
+      method: url
+      url: "https://github.com/pwm-project/eholography-synth"
+      sha256: "pending"
+    notes: "Synthetic off-axis electron holograms for phase and amplitude retrieval."
+
+  # ---------------------------------------------------------------------------
+  # 62. neutron_tomo -> nexus_neutron
+  # ---------------------------------------------------------------------------
+  nexus_neutron:
+    display_name: "NeXus Neutron Tomography"
+    modalities: [neutron_tomo]
+    source_url: "https://www.nexusformat.org/"
+    citation: "Kockelmann et al., Energy-selective neutron transmission imaging, Nuclear Instruments and Methods 2007"
+    license: "CC-BY-4.0"
+    size:
+      images: 180
+      dimensions: "512x512 neutron projections"
+    download:
+      method: url
+      url: "https://www.nexusformat.org/"
+      sha256: "pending"
+    notes: "Neutron tomography projection data in NeXus/HDF5 format for 3D reconstruction."
+
+  # ---------------------------------------------------------------------------
+  # 63. proton_radiography -> pct_synth
+  # ---------------------------------------------------------------------------
+  pct_synth:
+    display_name: "Proton CT Synthetic"
+    modalities: [proton_radiography]
+    source_url: "https://github.com/pwm-project/pct-synth"
+    citation: "PWM Project, Synthetic proton radiography benchmark, 2026"
+    license: "MIT"
+    size:
+      images: 200
+      dimensions: "256x256 proton projection images"
+    download:
+      method: url
+      url: "https://github.com/pwm-project/pct-synth"
+      sha256: "pending"
+    notes: "Synthetic proton radiography data with known stopping power maps for pCT reconstruction."
+
+  # ---------------------------------------------------------------------------
+  # 64. muon_tomo -> muontomo_synth
+  # ---------------------------------------------------------------------------
+  muontomo_synth:
+    display_name: "Muon Tomography Synthetic"
+    modalities: [muon_tomo]
+    source_url: "https://github.com/pwm-project/muontomo-synth"
+    citation: "PWM Project, Synthetic muon scattering tomography benchmark, 2026"
+    license: "MIT"
+    size:
+      images: 100
+      dimensions: "64x64x64 voxel volumes"
+    download:
+      method: url
+      url: "https://github.com/pwm-project/muontomo-synth"
+      sha256: "pending"
+    notes: "Synthetic muon scattering tomography data for radiation-length reconstruction."

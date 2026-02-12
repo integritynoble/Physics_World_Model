@@ -34,7 +34,7 @@ from pwm_core.api.types import (
 
 
 # ---------------------------------------------------------------------------
-# Modality keyword map (33 modalities)
+# Modality keyword map (64 modalities)
 # ---------------------------------------------------------------------------
 
 _MODALITY_KEYWORDS: Dict[str, List[str]] = {
@@ -72,6 +72,38 @@ _MODALITY_KEYWORDS: Dict[str, List[str]] = {
     "sem": [" sem ", "scanning electron microscop"],
     "tem": [" tem ", "transmission electron microscop"],
     "electron_tomography": ["electron tomography", "cryo-et", "electron tomo"],
+    # v4+ modalities
+    "stem": ["stem", "scanning transmission electron"],
+    "fluoroscopy": ["fluoroscop", "dynamic radiograph"],
+    "mammography": ["mammograph", "breast imaging"],
+    "dexa": ["dexa", "dual-energy x-ray", "bone density"],
+    "cbct": ["cbct", "cone-beam ct", "cone beam"],
+    "angiography": ["angiograph", "vascular imaging"],
+    "doppler_ultrasound": ["doppler", "color doppler", "spectral doppler"],
+    "elastography": ["elastograph", "shear wave", "tissue stiffness"],
+    "fmri": ["fmri", "functional mri", "bold"],
+    "mrs": [" mrs ", "mr spectroscopy", "magnetic resonance spectroscop"],
+    "diffusion_mri": ["diffusion mri", "dti", "diffusion tensor", "dwi"],
+    "two_photon": ["two-photon", "two photon", "multiphoton", "2-photon"],
+    "sted": ["sted", "stimulated emission depletion"],
+    "palm_storm": ["palm", "storm", "single molecule localization", "smlm"],
+    "tirf": ["tirf", "total internal reflection"],
+    "polarization": ["polarization microscop", "mueller", "jones matrix"],
+    "endoscopy": ["endoscop", "fiber bundle imaging"],
+    "fundus": ["fundus", "retinal imaging", "ophthalmoscop"],
+    "octa": ["octa", "oct angiograph", "optical coherence tomography angiograph"],
+    "tof_camera": ["tof camera", "time-of-flight camera", "tof sensor"],
+    "lidar": ["lidar", "laser scanning", "point cloud"],
+    "structured_light": ["structured light", "fringe projection", "structured illumination depth"],
+    "sar": [" sar ", "synthetic aperture radar"],
+    "sonar": ["sonar", "acoustic imaging underwater"],
+    "electron_diffraction": ["electron diffraction", "4d-stem", "4d stem"],
+    "ebsd": ["ebsd", "electron backscatter diffraction"],
+    "eels": ["eels", "electron energy loss"],
+    "electron_holography": ["electron hologra", "biprism"],
+    "neutron_tomo": ["neutron tomograph", "neutron radiograph", "neutron imaging"],
+    "proton_radiography": ["proton radiograph", "proton imaging", "proton therapy qa"],
+    "muon_tomo": ["muon tomograph", "muon imaging", "cosmic ray imaging"],
 }
 
 # ---------------------------------------------------------------------------

@@ -326,6 +326,135 @@ def _diagnosis_to_dict(diagnosis: DiagnosisResult) -> Dict[str, Any]:
     return result
 
 
+def save_trace(rb_dir: str, trace: Dict[str, np.ndarray]) -> Dict[str, str]:
+    """Save node-by-node trace arrays and PNG visualizations.
+
+    Args:
+        rb_dir: RunBundle directory path.
+        trace: Dict mapping "{idx:02d}_{node_id}" to numpy arrays.
+
+    Returns:
+        Dict mapping trace keys to saved file paths.
+    """
+    trace_dir = os.path.join(rb_dir, "artifacts", "trace")
+    png_dir = os.path.join(trace_dir, "png")
+    Path(trace_dir).mkdir(parents=True, exist_ok=True)
+    Path(png_dir).mkdir(parents=True, exist_ok=True)
+
+    saved = {}
+    for key, arr in trace.items():
+        # Save .npy
+        npy_path = os.path.join(trace_dir, f"{key}.npy")
+        save_array(npy_path, arr)
+        saved[f"trace_{key}_npy"] = npy_path
+
+        # Save .png visualization
+        png_path = os.path.join(png_dir, f"{key}.png")
+        _save_trace_png(png_path, arr, title=key)
+        saved[f"trace_{key}_png"] = png_path
+
+    return saved
+
+
+def _save_trace_png(path: str, arr: np.ndarray, title: str = "") -> None:
+    """Save trace array as PNG with appropriate visualization.
+
+    Rules:
+    - 2D array -> grayscale image
+    - 3D array (H,W,C) -> RGB or first 3 channels
+    - 1D array -> line plot
+    - Complex array -> magnitude + phase side-by-side
+    - 4D+ -> slice through first 2 spatial dims
+    """
+    try:
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+
+        if np.iscomplexobj(arr):
+            # Magnitude + phase side-by-side
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+            mag = _normalize_for_display(_prepare_for_display(np.abs(arr)))
+            phase = _prepare_for_display(np.angle(arr))
+            ax1.imshow(mag, cmap='gray', aspect='auto')
+            ax1.set_title(f'{title} (magnitude)')
+            ax1.axis('off')
+            ax2.imshow(phase, cmap='twilight', aspect='auto')
+            ax2.set_title(f'{title} (phase)')
+            ax2.axis('off')
+        elif arr.ndim == 1:
+            # Line plot
+            fig, ax = plt.subplots(figsize=(8, 4))
+            ax.plot(arr[:min(len(arr), 2000)])
+            ax.set_title(title)
+            ax.set_xlabel('index')
+            ax.set_ylabel('value')
+        else:
+            # 2D/3D/4D+ -> image
+            fig, ax = plt.subplots(figsize=(6, 6))
+            display_arr = _normalize_for_display(_prepare_for_display(arr))
+            ax.imshow(display_arr, cmap='gray', aspect='auto')
+            ax.set_title(title)
+            ax.axis('off')
+
+        fig.savefig(path, dpi=100, bbox_inches='tight', pad_inches=0.1)
+        plt.close(fig)
+    except ImportError:
+        pass
+    except Exception:
+        pass
+
+
+def save_operator_meta(rb_dir: str, meta: Dict[str, Any]) -> str:
+    """Save W2 operator metadata to RunBundle.
+
+    Args:
+        rb_dir: RunBundle directory path.
+        meta: Operator metadata dict with keys:
+            a_definition, a_extraction_method, a_shape, a_dtype,
+            a_sha256, a_nnz, a_sparsity, linearity,
+            linearization_notes, mismatch_type, mismatch_params,
+            correction_family, nll_before, nll_after,
+            nll_decrease_pct, timestamp
+
+    Returns:
+        Path to saved JSON file.
+    """
+    meta_path = os.path.join(rb_dir, "artifacts", "w2_operator_meta.json")
+    save_json(meta_path, meta)
+    return meta_path
+
+
+def compute_operator_hash(operator) -> str:
+    """Compute SHA-256 hash of an operator's data.
+
+    Handles dense arrays, sparse matrices, and callables.
+
+    Args:
+        operator: numpy array, scipy sparse matrix, or callable.
+
+    Returns:
+        SHA-256 hex digest, or "N/A (callable)" for pure callables.
+    """
+    import hashlib
+
+    if hasattr(operator, 'tobytes'):
+        # Dense numpy array
+        return hashlib.sha256(operator.tobytes()).hexdigest()
+    elif hasattr(operator, 'data') and hasattr(operator, 'indices') and hasattr(operator, 'indptr'):
+        # CSR/CSC sparse matrix
+        h = hashlib.sha256()
+        h.update(operator.data.tobytes())
+        h.update(operator.indices.tobytes())
+        h.update(operator.indptr.tobytes())
+        return h.hexdigest()
+    elif hasattr(operator, 'toarray'):
+        # Other sparse format - convert to dense
+        return hashlib.sha256(operator.toarray().tobytes()).hexdigest()
+    else:
+        return "N/A (callable)"
+
+
 def load_artifacts(rb_dir: str) -> Dict[str, Any]:
     """Load artifacts from a RunBundle directory.
 
