@@ -4,29 +4,29 @@
 # =============================================================================
 
 version: "1.0"
-last_updated: "2026-02-12T00:00:00"
+last_updated: "2026-02-12T12:00:00"
 total_modalities: 64
-done_count: 0
+done_count: 1
 partial_count: 0
-pending_count: 64
+pending_count: 63
 
 modalities:
 
   spc:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: set11
+    w1_psnr: 30.20
+    w1_ssim: 0.9070
+    w1_nrmse: 0.0311
+    w2_nll_before: 377.5
+    w2_nll_after: 40.1
+    w2_nll_decrease_pct: 89.4
+    w2_psnr_corrected: 41.35
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_spc_exp_4b56ea18
+    report_path: pwm/reports/spc.md
+    commit_sha: pending
+    completed_at: "2026-02-12T12:00:00"
 
   cassi:
     status: PENDING
