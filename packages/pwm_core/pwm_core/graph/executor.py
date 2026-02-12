@@ -53,6 +53,7 @@ class ExecutionConfig:
     objective_spec: Optional[ObjectiveSpec] = None
     calibration_config: Optional[Dict[str, Any]] = None
     provided_operator: Optional[Any] = None  # PhysicsOperator for correction mode
+    capture_trace: bool = True
 
 
 @dataclass
@@ -134,6 +135,9 @@ class GraphExecutor:
         outputs: Dict[str, np.ndarray] = {}
         edge_map = self._graph.edge_map
         y_clean = None
+        trace: Dict[str, np.ndarray] = {}
+        if config.capture_trace:
+            trace["00_input_x"] = x.copy()
 
         for i, (node_id, prim) in enumerate(self._graph.forward_plan):
             # Skip noise node if add_noise=False
@@ -170,6 +174,8 @@ class GraphExecutor:
                 current = prim.forward(pred_out)
 
             outputs[node_id] = current
+            if config.capture_trace:
+                trace[f"{i+1:02d}_{node_id}"] = current.copy()
 
         # Final output is the last node
         last_node = self._graph.forward_plan[-1][0]
@@ -178,7 +184,7 @@ class GraphExecutor:
         return ExecutionResult(
             mode=ExecutionMode.simulate,
             y=y,
-            diagnostics={"y_clean": y_clean if y_clean is not None else y},
+            diagnostics={"y_clean": y_clean if y_clean is not None else y, "trace": trace},
         )
 
     # ------------------------------------------------------------------

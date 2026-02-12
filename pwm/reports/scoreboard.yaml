@@ -1,0 +1,1037 @@
+# =============================================================================
+# PWM Report Scoreboard
+# Tracks completion status and key metrics for all 64 modalities.
+# =============================================================================
+
+version: "1.0"
+last_updated: "2026-02-12T00:00:00"
+total_modalities: 64
+done_count: 0
+partial_count: 0
+pending_count: 64
+
+modalities:
+
+  spc:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  cassi:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  cacti:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  ct:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  mri:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  widefield:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  widefield_lowdose:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  confocal_livecell:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  confocal_3d:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  sim:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  lensless:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  lightsheet:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  flim:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  ptychography:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  holography:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  phase_retrieval:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  fpm:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  oct:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  xray_radiography:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  ultrasound:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  photoacoustic:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  dot:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  pet:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  spect:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  fluoroscopy:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  mammography:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  dexa:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  cbct:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  nerf:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  gaussian_splatting:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  matrix:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  panorama:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  light_field:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  integral:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  sem:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  tem:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  stem:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  electron_tomography:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  electron_diffraction:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  ebsd:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  eels:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  angiography:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  doppler_ultrasound:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  elastography:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  fmri:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  mrs:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  diffusion_mri:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  two_photon:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  sted:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  palm_storm:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  tirf:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  polarization:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  endoscopy:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  fundus:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  octa:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  tof_camera:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  lidar:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  structured_light:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  sar:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  sonar:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  electron_holography:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  neutron_tomo:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  proton_radiography:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null
+
+  muon_tomo:
+    status: PENDING
+    dataset_id: null
+    w1_psnr: null
+    w1_ssim: null
+    w1_nrmse: null
+    w2_nll_before: null
+    w2_nll_after: null
+    w2_nll_decrease_pct: null
+    w2_psnr_corrected: null
+    w2_a_extraction_method: null
+    runbundle_path: null
+    report_path: null
+    commit_sha: null
+    completed_at: null

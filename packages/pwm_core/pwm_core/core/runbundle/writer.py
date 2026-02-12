@@ -41,6 +41,8 @@ def write_runbundle_skeleton(out_dir: str, spec_id: str) -> str:
     Path(rb_dir).mkdir(parents=True, exist_ok=True)
     Path(os.path.join(rb_dir, "artifacts")).mkdir(exist_ok=True)
     Path(os.path.join(rb_dir, "artifacts", "images")).mkdir(exist_ok=True)
+    Path(os.path.join(rb_dir, "artifacts", "trace")).mkdir(exist_ok=True)
+    Path(os.path.join(rb_dir, "artifacts", "trace", "png")).mkdir(exist_ok=True)
     Path(os.path.join(rb_dir, "internal_state")).mkdir(exist_ok=True)
     Path(os.path.join(rb_dir, "agents")).mkdir(exist_ok=True)
     Path(os.path.join(rb_dir, "logs")).mkdir(exist_ok=True)

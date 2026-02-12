@@ -195,6 +195,10 @@ def build_parser():
     from pwm_core.cli.doctor import add_doctor_subparser
     add_doctor_subparser(sub)
 
+    # --- next-modality subcommand ---
+    from pwm_core.cli.modality_gate import add_next_modality_subparser
+    add_next_modality_subparser(sub)
+
     return p
 
 
