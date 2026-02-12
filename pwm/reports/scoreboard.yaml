@@ -6,9 +6,9 @@
 version: "1.0"
 last_updated: "2026-02-12T12:00:00"
 total_modalities: 64
-done_count: 13
+done_count: 18
 partial_count: 0
-pending_count: 51
+pending_count: 46
 
 modalities:
 
@@ -221,84 +221,84 @@ modalities:
     completed_at: "2026-02-12T21:30:00"
 
   ptychography:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: ptychonn_benchmark
+    w1_psnr: 14.00
+    w1_ssim: 0.4759
+    w1_nrmse: 0.2161
+    w2_nll_before: 13147.7
+    w2_nll_after: 2048.0
+    w2_nll_decrease_pct: 84.4
+    w2_psnr_corrected: 14.50
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_ptychography_exp_7c7fedcf
+    report_path: pwm/reports/ptychography.md
+    commit_sha: pending
+    completed_at: "2026-02-12T22:00:00"
 
   holography:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: dhm_benchmark
+    w1_psnr: 20.99
+    w1_ssim: 0.8519
+    w1_nrmse: 0.0967
+    w2_nll_before: 37181.1
+    w2_nll_after: 968.2
+    w2_nll_decrease_pct: 97.4
+    w2_psnr_corrected: 20.99
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_holography_exp_56423a8b
+    report_path: pwm/reports/holography.md
+    commit_sha: pending
+    completed_at: "2026-02-12T22:00:00"
 
   phase_retrieval:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: cdi_benchmark
+    w1_psnr: 16.17
+    w1_ssim: 0.5812
+    w1_nrmse: 0.1676
+    w2_nll_before: 11367.1
+    w2_nll_after: 2504.2
+    w2_nll_decrease_pct: 77.9
+    w2_psnr_corrected: 16.17
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_phase_retrieval_exp_78129139
+    report_path: pwm/reports/phase_retrieval.md
+    commit_sha: pending
+    completed_at: "2026-02-12T22:00:00"
 
   fpm:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: fpm_benchmark
+    w1_psnr: 16.17
+    w1_ssim: 0.5812
+    w1_nrmse: 0.1676
+    w2_nll_before: 11367.1
+    w2_nll_after: 2504.2
+    w2_nll_decrease_pct: 77.9
+    w2_psnr_corrected: 16.17
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_fpm_exp_9ef7de4a
+    report_path: pwm/reports/fpm.md
+    commit_sha: pending
+    completed_at: "2026-02-12T22:00:00"
 
   oct:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: oct_benchmark
+    w1_psnr: 11.81
+    w1_ssim: 0.2962
+    w1_nrmse: 0.2778
+    w2_nll_before: 2067619.9
+    w2_nll_after: 7994.5
+    w2_nll_decrease_pct: 99.6
+    w2_psnr_corrected: 11.81
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_oct_exp_d64324bd
+    report_path: pwm/reports/oct.md
+    commit_sha: pending
+    completed_at: "2026-02-12T22:00:00"
 
   xray_radiography:
     status: PENDING
