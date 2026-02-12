@@ -6,9 +6,9 @@
 version: "1.0"
 last_updated: "2026-02-12T12:00:00"
 total_modalities: 64
-done_count: 9
+done_count: 10
 partial_count: 0
-pending_count: 55
+pending_count: 54
 
 modalities:
 
@@ -137,7 +137,7 @@ modalities:
     w2_a_extraction_method: graph_stripped
     runbundle_path: runs/run_confocal_livecell_exp_335a8198
     report_path: pwm/reports/confocal_livecell.md
-    commit_sha: pending
+    commit_sha: 977db9d
     completed_at: "2026-02-12T20:00:00"
 
   confocal_3d:
@@ -153,24 +153,24 @@ modalities:
     w2_a_extraction_method: graph_stripped
     runbundle_path: runs/run_confocal_3d_exp_19a529c3
     report_path: pwm/reports/confocal_3d.md
-    commit_sha: pending
+    commit_sha: dc3dfdc
     completed_at: "2026-02-12T20:30:00"
 
   sim:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: biosr_sim
+    w1_psnr: 15.88
+    w1_ssim: 0.4612
+    w1_nrmse: 0.1711
+    w2_nll_before: 39455.3
+    w2_nll_after: 2048.3
+    w2_nll_decrease_pct: 94.8
+    w2_psnr_corrected: 15.88
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_sim_exp_0975ab5f
+    report_path: pwm/reports/sim.md
+    commit_sha: pending
+    completed_at: "2026-02-12T21:00:00"
 
   lensless:
     status: PENDING
