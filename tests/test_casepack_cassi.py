@@ -143,3 +143,77 @@ class TestCasePackCASSI:
         y_a = integ.forward(disp_a.forward(mask.forward(x)))
         y_b = integ.forward(disp_b.forward(mask.forward(x)))
         assert not np.allclose(y_a, y_b), "Dispersion slope mismatch should change measurements"
+
+    def test_gap_tv_recon_psnr(self):
+        """GAP-TV on 16x16x4 row-space phantom achieves PSNR > 15."""
+        from pwm_core.recon.gap_tv import gap_tv_operator
+
+        H, W, L = 16, 16, 4
+        mask = CodedMask(params={"seed": 42, "H": H, "W": W})
+        disp = SpectralDispersion(params={"disp_step": 1.0})
+        integ = FrameIntegration(params={"axis": -1, "T": L})
+
+        def fwd(x):
+            return integ.forward(disp.forward(mask.forward(x)))
+
+        def adj(y):
+            return mask.adjoint(disp.adjoint(integ.adjoint(y)))
+
+        # Build system matrix for row-space phantom
+        A = _build_system_matrix(fwd, (H, W, L), fwd(np.zeros((H, W, L))).shape)
+
+        # Generate x_true in range(A^T) so GAP-TV can recover it
+        rng = np.random.RandomState(7)
+        c = rng.randn(A.shape[0])
+        x_true = (A.T @ c).reshape(H, W, L)
+        x_true = x_true / (np.abs(x_true).max() + 1e-8) * 0.8
+
+        y_clean = fwd(x_true)
+        y_noisy = y_clean + rng.randn(*y_clean.shape) * 0.001
+
+        x_hat = gap_tv_operator(
+            y_noisy, fwd, adj, (H, W, L),
+            iterations=50, lam=0.0001,
+        )
+        psnr = PSNR()(x_hat, x_true, max_val=1.0)
+        assert psnr > 15, f"GAP-TV PSNR {psnr:.1f} < 15"
+
+    def test_w2_nll_decreases(self):
+        """Dispersion mismatch correction decreases NLL."""
+        H, W, L = 16, 16, 4
+        seed = 42
+        mask = CodedMask(params={"seed": seed, "H": H, "W": W})
+        integ = FrameIntegration(params={"axis": -1, "T": L})
+
+        def _make_fwd(ds):
+            d = SpectralDispersion(params={"disp_step": ds})
+            return lambda x: integ.forward(d.forward(mask.forward(x)))
+
+        # Nominal and perturbed operators
+        fwd_nom = _make_fwd(1.0)
+        fwd_pert = _make_fwd(1.15)
+
+        rng = np.random.RandomState(seed)
+        x_true = rng.rand(H, W, L).astype(np.float64) * 0.8 + 0.1
+
+        # "Measured" y from perturbed operator + noise
+        sigma = 0.01
+        y_measured = fwd_pert(x_true) + rng.randn(H, W) * sigma
+
+        # NLL with nominal (uncorrected) operator
+        y_pred_nom = fwd_nom(x_true)
+        nll_before = 0.5 * np.sum((y_measured - y_pred_nom) ** 2) / sigma ** 2
+
+        # Grid search for best disp_step
+        best_nll = np.inf
+        for ds in np.linspace(0.8, 1.3, 26):
+            fwd_trial = _make_fwd(ds)
+            y_trial = fwd_trial(x_true)
+            nll_trial = 0.5 * np.sum((y_measured - y_trial) ** 2) / sigma ** 2
+            if nll_trial < best_nll:
+                best_nll = nll_trial
+
+        nll_after = best_nll
+        assert nll_after < nll_before, (
+            f"NLL should decrease after correction: {nll_after:.1f} >= {nll_before:.1f}"
+        )

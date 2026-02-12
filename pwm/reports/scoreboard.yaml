@@ -6,9 +6,9 @@
 version: "1.0"
 last_updated: "2026-02-12T12:00:00"
 total_modalities: 64
-done_count: 1
+done_count: 2
 partial_count: 0
-pending_count: 63
+pending_count: 62
 
 modalities:
 
@@ -29,20 +29,20 @@ modalities:
     completed_at: "2026-02-12T12:00:00"
 
   cassi:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
+    status: DONE
+    dataset_id: kaist_hsi
+    w1_psnr: 9.78
+    w1_ssim: 0.1118
+    w1_nrmse: 0.3606
+    w2_nll_before: 1249775.7
+    w2_nll_after: 15758.8
+    w2_nll_decrease_pct: 98.7
+    w2_psnr_corrected: 9.71
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_cassi_exp_ae82e30c
+    report_path: pwm/reports/cassi.md
     commit_sha: null
-    completed_at: null
+    completed_at: "2026-02-12T14:00:00"
 
   cacti:
     status: PENDING
