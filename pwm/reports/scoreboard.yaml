@@ -6,9 +6,9 @@
 version: "1.0"
 last_updated: "2026-02-12T12:00:00"
 total_modalities: 64
-done_count: 10
+done_count: 13
 partial_count: 0
-pending_count: 54
+pending_count: 51
 
 modalities:
 
@@ -173,52 +173,52 @@ modalities:
     completed_at: "2026-02-12T21:00:00"
 
   lensless:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: diffusercam
+    w1_psnr: 23.34
+    w1_ssim: 0.9335
+    w1_nrmse: 0.0719
+    w2_nll_before: 63265.6
+    w2_nll_after: 2048.2
+    w2_nll_decrease_pct: 96.8
+    w2_psnr_corrected: 23.34
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_lensless_exp_7eec75c8
+    report_path: pwm/reports/lensless.md
+    commit_sha: pending
+    completed_at: "2026-02-12T21:30:00"
 
   lightsheet:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: openspim_demo
+    w1_psnr: 24.78
+    w1_ssim: 0.9634
+    w1_nrmse: 0.0621
+    w2_nll_before: 3796.9
+    w2_nll_after: 2048.2
+    w2_nll_decrease_pct: 46.1
+    w2_psnr_corrected: 24.78
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_lightsheet_exp_5f9f97c7
+    report_path: pwm/reports/lightsheet.md
+    commit_sha: pending
+    completed_at: "2026-02-12T21:30:00"
 
   flim:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: flim_fret_benchmark
+    w1_psnr: 13.54
+    w1_ssim: 0.4600
+    w1_nrmse: 0.2266
+    w2_nll_before: 8036.8
+    w2_nll_after: 2048.3
+    w2_nll_decrease_pct: 74.5
+    w2_psnr_corrected: 13.54
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_flim_exp_9360bf8f
+    report_path: pwm/reports/flim.md
+    commit_sha: pending
+    completed_at: "2026-02-12T21:30:00"
 
   ptychography:
     status: PENDING
