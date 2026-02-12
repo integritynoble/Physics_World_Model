@@ -89,7 +89,7 @@ modalities:
     w2_a_extraction_method: graph_stripped
     runbundle_path: runs/run_mri_exp_f5f0882a
     report_path: pwm/reports/mri.md
-    commit_sha: pending
+    commit_sha: 6a54a86
     completed_at: "2026-02-12T18:00:00"
 
   widefield:
