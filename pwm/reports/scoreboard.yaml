@@ -1,22 +1,15 @@
-# =============================================================================
-# PWM Report Scoreboard
-# Tracks completion status and key metrics for all 64 modalities.
-# =============================================================================
-
-version: "1.0"
-last_updated: "2026-02-12T12:00:00"
+version: '1.0'
+last_updated: '2026-02-12T16:00:00'
 total_modalities: 64
-done_count: 24
+done_count: 64
 partial_count: 0
-pending_count: 40
-
+pending_count: 0
 modalities:
-
   spc:
     status: DONE
     dataset_id: set11
-    w1_psnr: 30.20
-    w1_ssim: 0.9070
+    w1_psnr: 30.2
+    w1_ssim: 0.907
     w1_nrmse: 0.0311
     w2_nll_before: 377.5
     w2_nll_after: 40.1
@@ -26,8 +19,7 @@ modalities:
     runbundle_path: runs/run_spc_exp_4b56ea18
     report_path: pwm/reports/spc.md
     commit_sha: 6cb6439
-    completed_at: "2026-02-12T12:00:00"
-
+    completed_at: '2026-02-12T12:00:00'
   cassi:
     status: DONE
     dataset_id: kaist_hsi
@@ -42,8 +34,7 @@ modalities:
     runbundle_path: runs/run_cassi_exp_ae82e30c
     report_path: pwm/reports/cassi.md
     commit_sha: 5c72a02
-    completed_at: "2026-02-12T14:00:00"
-
+    completed_at: '2026-02-12T14:00:00'
   cacti:
     status: DONE
     dataset_id: davis_video
@@ -58,8 +49,7 @@ modalities:
     runbundle_path: runs/run_cacti_exp_fb9cb1ac
     report_path: pwm/reports/cacti.md
     commit_sha: d6ca815
-    completed_at: "2026-02-12T16:00:00"
-
+    completed_at: '2026-02-12T16:00:00'
   ct:
     status: DONE
     dataset_id: lodopab_ct
@@ -69,19 +59,18 @@ modalities:
     w2_nll_before: 68248415.6
     w2_nll_after: 5834.0
     w2_nll_decrease_pct: 100.0
-    w2_psnr_corrected: 9.60
+    w2_psnr_corrected: 9.6
     w2_a_extraction_method: graph_stripped
     runbundle_path: runs/run_ct_exp_5d826f74
     report_path: pwm/reports/ct.md
     commit_sha: b42945c
-    completed_at: "2026-02-12T17:00:00"
-
+    completed_at: '2026-02-12T17:00:00'
   mri:
     status: DONE
     dataset_id: fastmri_knee
     w1_psnr: 29.37
     w1_ssim: 0.9944
-    w1_nrmse: 0.0340
+    w1_nrmse: 0.034
     w2_nll_before: 943026991.6
     w2_nll_after: 8235.0
     w2_nll_decrease_pct: 100.0
@@ -90,8 +79,7 @@ modalities:
     runbundle_path: runs/run_mri_exp_f5f0882a
     report_path: pwm/reports/mri.md
     commit_sha: 6a54a86
-    completed_at: "2026-02-12T18:00:00"
-
+    completed_at: '2026-02-12T18:00:00'
   widefield:
     status: DONE
     dataset_id: biosr_factin
@@ -106,8 +94,7 @@ modalities:
     runbundle_path: runs/run_widefield_exp_985bcedd
     report_path: pwm/reports/widefield.md
     commit_sha: af26b05
-    completed_at: "2026-02-12T19:00:00"
-
+    completed_at: '2026-02-12T19:00:00'
   widefield_lowdose:
     status: DONE
     dataset_id: biosr_lowsnr
@@ -122,8 +109,7 @@ modalities:
     runbundle_path: runs/run_widefield_lowdose_exp_2c006df8
     report_path: pwm/reports/widefield_lowdose.md
     commit_sha: 65e5739
-    completed_at: "2026-02-12T19:30:00"
-
+    completed_at: '2026-02-12T19:30:00'
   confocal_livecell:
     status: DONE
     dataset_id: deepbacs_fluor
@@ -138,8 +124,7 @@ modalities:
     runbundle_path: runs/run_confocal_livecell_exp_335a8198
     report_path: pwm/reports/confocal_livecell.md
     commit_sha: 977db9d
-    completed_at: "2026-02-12T20:00:00"
-
+    completed_at: '2026-02-12T20:00:00'
   confocal_3d:
     status: DONE
     dataset_id: care_tribolium
@@ -154,8 +139,7 @@ modalities:
     runbundle_path: runs/run_confocal_3d_exp_19a529c3
     report_path: pwm/reports/confocal_3d.md
     commit_sha: dc3dfdc
-    completed_at: "2026-02-12T20:30:00"
-
+    completed_at: '2026-02-12T20:30:00'
   sim:
     status: DONE
     dataset_id: biosr_sim
@@ -170,8 +154,7 @@ modalities:
     runbundle_path: runs/run_sim_exp_0975ab5f
     report_path: pwm/reports/sim.md
     commit_sha: pending
-    completed_at: "2026-02-12T21:00:00"
-
+    completed_at: '2026-02-12T21:00:00'
   lensless:
     status: DONE
     dataset_id: diffusercam
@@ -186,8 +169,7 @@ modalities:
     runbundle_path: runs/run_lensless_exp_7eec75c8
     report_path: pwm/reports/lensless.md
     commit_sha: pending
-    completed_at: "2026-02-12T21:30:00"
-
+    completed_at: '2026-02-12T21:30:00'
   lightsheet:
     status: DONE
     dataset_id: openspim_demo
@@ -202,13 +184,12 @@ modalities:
     runbundle_path: runs/run_lightsheet_exp_5f9f97c7
     report_path: pwm/reports/lightsheet.md
     commit_sha: pending
-    completed_at: "2026-02-12T21:30:00"
-
+    completed_at: '2026-02-12T21:30:00'
   flim:
     status: DONE
     dataset_id: flim_fret_benchmark
     w1_psnr: 13.54
-    w1_ssim: 0.4600
+    w1_ssim: 0.46
     w1_nrmse: 0.2266
     w2_nll_before: 8036.8
     w2_nll_after: 2048.3
@@ -218,24 +199,22 @@ modalities:
     runbundle_path: runs/run_flim_exp_9360bf8f
     report_path: pwm/reports/flim.md
     commit_sha: pending
-    completed_at: "2026-02-12T21:30:00"
-
+    completed_at: '2026-02-12T21:30:00'
   ptychography:
     status: DONE
     dataset_id: ptychonn_benchmark
-    w1_psnr: 14.00
+    w1_psnr: 14.0
     w1_ssim: 0.4759
     w1_nrmse: 0.2161
     w2_nll_before: 13147.7
     w2_nll_after: 2048.0
     w2_nll_decrease_pct: 84.4
-    w2_psnr_corrected: 14.50
+    w2_psnr_corrected: 14.5
     w2_a_extraction_method: graph_stripped
     runbundle_path: runs/run_ptychography_exp_7c7fedcf
     report_path: pwm/reports/ptychography.md
     commit_sha: pending
-    completed_at: "2026-02-12T22:00:00"
-
+    completed_at: '2026-02-12T22:00:00'
   holography:
     status: DONE
     dataset_id: dhm_benchmark
@@ -250,8 +229,7 @@ modalities:
     runbundle_path: runs/run_holography_exp_56423a8b
     report_path: pwm/reports/holography.md
     commit_sha: pending
-    completed_at: "2026-02-12T22:00:00"
-
+    completed_at: '2026-02-12T22:00:00'
   phase_retrieval:
     status: DONE
     dataset_id: cdi_benchmark
@@ -266,8 +244,7 @@ modalities:
     runbundle_path: runs/run_phase_retrieval_exp_78129139
     report_path: pwm/reports/phase_retrieval.md
     commit_sha: pending
-    completed_at: "2026-02-12T22:00:00"
-
+    completed_at: '2026-02-12T22:00:00'
   fpm:
     status: DONE
     dataset_id: fpm_benchmark
@@ -282,8 +259,7 @@ modalities:
     runbundle_path: runs/run_fpm_exp_9ef7de4a
     report_path: pwm/reports/fpm.md
     commit_sha: pending
-    completed_at: "2026-02-12T22:00:00"
-
+    completed_at: '2026-02-12T22:00:00'
   oct:
     status: DONE
     dataset_id: oct_benchmark
@@ -298,8 +274,7 @@ modalities:
     runbundle_path: runs/run_oct_exp_d64324bd
     report_path: pwm/reports/oct.md
     commit_sha: pending
-    completed_at: "2026-02-12T22:00:00"
-
+    completed_at: '2026-02-12T22:00:00'
   xray_radiography:
     status: DONE
     dataset_id: xray_benchmark
@@ -314,8 +289,7 @@ modalities:
     runbundle_path: runs/run_xray_radiography_exp_bca7c215
     report_path: pwm/reports/xray_radiography.md
     commit_sha: pending
-    completed_at: "2026-02-12T23:00:00"
-
+    completed_at: '2026-02-12T23:00:00'
   ultrasound:
     status: DONE
     dataset_id: ultrasound_benchmark
@@ -330,8 +304,7 @@ modalities:
     runbundle_path: runs/run_ultrasound_exp_01555214
     report_path: pwm/reports/ultrasound.md
     commit_sha: pending
-    completed_at: "2026-02-12T23:00:00"
-
+    completed_at: '2026-02-12T23:00:00'
   photoacoustic:
     status: DONE
     dataset_id: photoacoustic_benchmark
@@ -346,8 +319,7 @@ modalities:
     runbundle_path: runs/run_photoacoustic_exp_8d6eb958
     report_path: pwm/reports/photoacoustic.md
     commit_sha: pending
-    completed_at: "2026-02-12T23:00:00"
-
+    completed_at: '2026-02-12T23:00:00'
   dot:
     status: DONE
     dataset_id: diffuse_phantom
@@ -362,13 +334,12 @@ modalities:
     runbundle_path: runs/run_dot_exp_ce1180b2
     report_path: pwm/reports/dot.md
     commit_sha: pending
-    completed_at: "2026-02-12T23:00:00"
-
+    completed_at: '2026-02-12T23:00:00'
   pet:
     status: DONE
     dataset_id: pet_benchmark
     w1_psnr: 10.53
-    w1_ssim: 0.6160
+    w1_ssim: 0.616
     w1_nrmse: 0.3219
     w2_nll_before: 89448782.7
     w2_nll_after: 1024.1
@@ -378,8 +349,7 @@ modalities:
     runbundle_path: runs/run_pet_exp_8d3e857b
     report_path: pwm/reports/pet.md
     commit_sha: pending
-    completed_at: "2026-02-12T23:00:00"
-
+    completed_at: '2026-02-12T23:00:00'
   spect:
     status: DONE
     dataset_id: spect_benchmark
@@ -389,649 +359,609 @@ modalities:
     w2_nll_before: 78186639.1
     w2_nll_after: 1024.1
     w2_nll_decrease_pct: 100.0
-    w2_psnr_corrected: 74.10
+    w2_psnr_corrected: 74.1
     w2_a_extraction_method: graph_stripped
     runbundle_path: runs/run_spect_exp_17579c0a
     report_path: pwm/reports/spect.md
     commit_sha: pending
-    completed_at: "2026-02-12T23:00:00"
-
+    completed_at: '2026-02-12T23:00:00'
   fluoroscopy:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: fluoroscopy_benchmark
+    w1_psnr: 72.28
+    w1_ssim: 1.0
+    w1_nrmse: 0.0003
+    w2_nll_before: 8732844959.8
+    w2_nll_after: 2048.2
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 72.28
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_fluoroscopy_exp_56ee32d4
+    report_path: pwm/reports/fluoroscopy.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   mammography:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: mammography_benchmark
+    w1_psnr: 76.92
+    w1_ssim: 1.0
+    w1_nrmse: 0.0002
+    w2_nll_before: 25448981813.8
+    w2_nll_after: 2048.2
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 76.92
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_mammography_exp_2e52d989
+    report_path: pwm/reports/mammography.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   dexa:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: dexa_benchmark
+    w1_psnr: 59.65
+    w1_ssim: 1.0
+    w1_nrmse: 0.0011
+    w2_nll_before: 19078073641.2
+    w2_nll_after: 2048.1
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 140.76
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_dexa_exp_95127813
+    report_path: pwm/reports/dexa.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   cbct:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: cbct_benchmark
+    w1_psnr: 7.38
+    w1_ssim: -0.5592
+    w1_nrmse: 0.463
+    w2_nll_before: 19735511206.1
+    w2_nll_after: 5761.1
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 7.38
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_cbct_exp_a328448e
+    report_path: pwm/reports/cbct.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   nerf:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: nerf_benchmark
+    w1_psnr: 36.28
+    w1_ssim: 0.9976
+    w1_nrmse: 0.0166
+    w2_nll_before: 82244.3
+    w2_nll_after: 2048.1
+    w2_nll_decrease_pct: 97.5
+    w2_psnr_corrected: 58.7
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_nerf_exp_daf02bfb
+    report_path: pwm/reports/nerf.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   gaussian_splatting:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: gaussian_splatting_benchmark
+    w1_psnr: 54.09
+    w1_ssim: 1.0
+    w1_nrmse: 0.0021
+    w2_nll_before: 5146968.1
+    w2_nll_after: 2048.1
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 94.71
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_gaussian_splatting_exp_07ebfce2
+    report_path: pwm/reports/gaussian_splatting.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   matrix:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: matrix_benchmark
+    w1_psnr: 10.41
+    w1_ssim: -0.0059
+    w1_nrmse: 0.3266
+    w2_nll_before: 600.3
+    w2_nll_after: 424.6
+    w2_nll_decrease_pct: 29.3
+    w2_psnr_corrected: 10.12
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_matrix_exp_5298bf5b
+    report_path: pwm/reports/matrix.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   panorama:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: panorama_benchmark
+    w1_psnr: 8.26
+    w1_ssim: 0.4152
+    w1_nrmse: 0.4184
+    w2_nll_before: 259080.4
+    w2_nll_after: 32.1
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 8.26
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_panorama_exp_c92db02b
+    report_path: pwm/reports/panorama.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   light_field:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: light_field_benchmark
+    w1_psnr: 23.76
+    w1_ssim: 0.9548
+    w1_nrmse: 0.0702
+    w2_nll_before: 57462.0
+    w2_nll_after: 2048.2
+    w2_nll_decrease_pct: 96.4
+    w2_psnr_corrected: 26.76
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_light_field_exp_26370f0f
+    report_path: pwm/reports/light_field.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   integral:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: integral_benchmark
+    w1_psnr: 23.05
+    w1_ssim: 0.9472
+    w1_nrmse: 0.0762
+    w2_nll_before: 55190.6
+    w2_nll_after: 2048.1
+    w2_nll_decrease_pct: 96.3
+    w2_psnr_corrected: 26.02
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_integral_exp_96091347
+    report_path: pwm/reports/integral.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   sem:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: sem_benchmark
+    w1_psnr: 1.92
+    w1_ssim: 0.0065
+    w1_nrmse: 0.8677
+    w2_nll_before: 47256305.2
+    w2_nll_after: 2048.1
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 1.92
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_sem_exp_622b2059
+    report_path: pwm/reports/sem.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   tem:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: tem_benchmark
+    w1_psnr: 10.52
+    w1_ssim: 0.003
+    w1_nrmse: 0.3224
+    w2_nll_before: 2048.1
+    w2_nll_after: 2048.1
+    w2_nll_decrease_pct: 0.0
+    w2_psnr_corrected: 10.52
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_tem_exp_2f4dbc39
+    report_path: pwm/reports/tem.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   stem:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: stem_benchmark
+    w1_psnr: 10.6
+    w1_ssim: -0.0039
+    w1_nrmse: 0.3194
+    w2_nll_before: 104027.3
+    w2_nll_after: 2048.1
+    w2_nll_decrease_pct: 98.0
+    w2_psnr_corrected: 10.6
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_stem_exp_e7848a42
+    report_path: pwm/reports/stem.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   electron_tomography:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: electron_tomo_benchmark
+    w1_psnr: 8.83
+    w1_ssim: 0.0039
+    w1_nrmse: 0.3917
+    w2_nll_before: 4331.6
+    w2_nll_after: 2048.1
+    w2_nll_decrease_pct: 52.7
+    w2_psnr_corrected: 8.83
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_electron_tomography_exp_f969255f
+    report_path: pwm/reports/electron_tomography.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   electron_diffraction:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: electron_diff_benchmark
+    w1_psnr: 10.1
+    w1_ssim: 0.0003
+    w1_nrmse: 0.3383
+    w2_nll_before: 96431598809.8
+    w2_nll_after: 2048.2
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 10.1
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_electron_diffraction_exp_3f4ff4f9
+    report_path: pwm/reports/electron_diffraction.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   ebsd:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: ebsd_benchmark
+    w1_psnr: 13.02
+    w1_ssim: 0.3874
+    w1_nrmse: 0.2417
+    w2_nll_before: 9326.5
+    w2_nll_after: 2048.4
+    w2_nll_decrease_pct: 78.0
+    w2_psnr_corrected: 13.02
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_ebsd_exp_ecfbdefd
+    report_path: pwm/reports/ebsd.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   eels:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: eels_benchmark
+    w1_psnr: 26.69
+    w1_ssim: 0.9772
+    w1_nrmse: 0.0501
+    w2_nll_before: 10698.0
+    w2_nll_after: 2048.3
+    w2_nll_decrease_pct: 80.9
+    w2_psnr_corrected: 26.69
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_eels_exp_32adf4d4
+    report_path: pwm/reports/eels.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   angiography:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: angiography_benchmark
+    w1_psnr: 75.13
+    w1_ssim: 1.0
+    w1_nrmse: 0.0002
+    w2_nll_before: 16841762012.9
+    w2_nll_after: 2048.2
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 75.13
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_angiography_exp_b86daf42
+    report_path: pwm/reports/angiography.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   doppler_ultrasound:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: doppler_us_benchmark
+    w1_psnr: 10.53
+    w1_ssim: -0.0083
+    w1_nrmse: 0.3219
+    w2_nll_before: 1024.2
+    w2_nll_after: 1024.2
+    w2_nll_decrease_pct: 0.0
+    w2_psnr_corrected: 11.34
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_doppler_ultrasound_exp_fb1b0f37
+    report_path: pwm/reports/doppler_ultrasound.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   elastography:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: elastography_benchmark
+    w1_psnr: 10.64
+    w1_ssim: 0.6226
+    w1_nrmse: 0.3179
+    w2_nll_before: 106396960.8
+    w2_nll_after: 1024.2
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 53.81
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_elastography_exp_26f87d54
+    report_path: pwm/reports/elastography.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   fmri:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: fmri_benchmark
+    w1_psnr: 22.73
+    w1_ssim: 0.9548
+    w1_nrmse: 0.079
+    w2_nll_before: 165364987.8
+    w2_nll_after: 9708.8
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 32.5
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_fmri_exp_f4043a13
+    report_path: pwm/reports/fmri.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   mrs:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: mrs_benchmark
+    w1_psnr: 22.89
+    w1_ssim: 0.9562
+    w1_nrmse: 0.0776
+    w2_nll_before: 2066595.3
+    w2_nll_after: 9708.8
+    w2_nll_decrease_pct: 99.5
+    w2_psnr_corrected: 35.4
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_mrs_exp_59fd660e
+    report_path: pwm/reports/mrs.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   diffusion_mri:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: diffusion_mri_benchmark
+    w1_psnr: 45.95
+    w1_ssim: 0.9997
+    w1_nrmse: 0.0055
+    w2_nll_before: 336447955.7
+    w2_nll_after: 9708.8
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 71.4
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_diffusion_mri_exp_cbbefbe1
+    report_path: pwm/reports/diffusion_mri.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   two_photon:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: two_photon_benchmark
+    w1_psnr: 11.77
+    w1_ssim: 0.1336
+    w1_nrmse: 0.2793
+    w2_nll_before: 2735.0
+    w2_nll_after: 1992.8
+    w2_nll_decrease_pct: 27.1
+    w2_psnr_corrected: 11.24
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_two_photon_exp_4d788cb1
+    report_path: pwm/reports/two_photon.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   sted:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: sted_benchmark
+    w1_psnr: 11.83
+    w1_ssim: 0.1727
+    w1_nrmse: 0.2773
+    w2_nll_before: 2492.4
+    w2_nll_after: 2048.1
+    w2_nll_decrease_pct: 17.8
+    w2_psnr_corrected: 11.4
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_sted_exp_40ed0df0
+    report_path: pwm/reports/sted.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   palm_storm:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: palm_storm_benchmark
+    w1_psnr: 9.11
+    w1_ssim: 0.096
+    w1_nrmse: 0.3791
+    w2_nll_before: 121584050.7
+    w2_nll_after: 2048.0
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 9.11
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_palm_storm_exp_e258aa18
+    report_path: pwm/reports/palm_storm.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   tirf:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: tirf_benchmark
+    w1_psnr: 22.17
+    w1_ssim: 0.9362
+    w1_nrmse: 0.0843
+    w2_nll_before: 26793.2
+    w2_nll_after: 2048.1
+    w2_nll_decrease_pct: 92.4
+    w2_psnr_corrected: 25.08
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_tirf_exp_bf740b46
+    report_path: pwm/reports/tirf.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   polarization:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: polarization_benchmark
+    w1_psnr: 21.83
+    w1_ssim: 0.9272
+    w1_nrmse: 0.0876
+    w2_nll_before: 48749.5
+    w2_nll_after: 2048.1
+    w2_nll_decrease_pct: 95.8
+    w2_psnr_corrected: 22.89
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_polarization_exp_65d56610
+    report_path: pwm/reports/polarization.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   endoscopy:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: endoscopy_benchmark
+    w1_psnr: 10.54
+    w1_ssim: -0.0157
+    w1_nrmse: 0.3217
+    w2_nll_before: 3046.6
+    w2_nll_after: 2048.0
+    w2_nll_decrease_pct: 32.8
+    w2_psnr_corrected: 9.62
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_endoscopy_exp_3f40118e
+    report_path: pwm/reports/endoscopy.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   fundus:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: fundus_benchmark
+    w1_psnr: 23.66
+    w1_ssim: 0.957
+    w1_nrmse: 0.0711
+    w2_nll_before: 45416.9
+    w2_nll_after: 2048.2
+    w2_nll_decrease_pct: 95.5
+    w2_psnr_corrected: 30.19
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_fundus_exp_1172ebf2
+    report_path: pwm/reports/fundus.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   octa:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: octa_benchmark
+    w1_psnr: 30.14
+    w1_ssim: 0.9906
+    w1_nrmse: 0.0337
+    w2_nll_before: 3261.9
+    w2_nll_after: 1998.3
+    w2_nll_decrease_pct: 38.7
+    w2_psnr_corrected: 31.72
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_octa_exp_c42e7842
+    report_path: pwm/reports/octa.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   tof_camera:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: tof_benchmark
+    w1_psnr: 35.92
+    w1_ssim: 0.9974
+    w1_nrmse: 0.0173
+    w2_nll_before: 64509.6
+    w2_nll_after: 2048.0
+    w2_nll_decrease_pct: 96.8
+    w2_psnr_corrected: 60.2
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_tof_camera_exp_05de8930
+    report_path: pwm/reports/tof_camera.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   lidar:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: lidar_benchmark
+    w1_psnr: 9.85
+    w1_ssim: -0.0032
+    w1_nrmse: 0.3482
+    w2_nll_before: 78.5
+    w2_nll_after: 32.0
+    w2_nll_decrease_pct: 59.2
+    w2_psnr_corrected: 9.63
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_lidar_exp_a3c084bd
+    report_path: pwm/reports/lidar.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   structured_light:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: structured_light_benchmark
+    w1_psnr: 12.99
+    w1_ssim: 0.3859
+    w1_nrmse: 0.2425
+    w2_nll_before: 499660.9
+    w2_nll_after: 2048.8
+    w2_nll_decrease_pct: 99.6
+    w2_psnr_corrected: 13.44
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_structured_light_exp_c1d474af
+    report_path: pwm/reports/structured_light.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   sar:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: sar_benchmark
+    w1_psnr: 10.65
+    w1_ssim: 0.6227
+    w1_nrmse: 0.3175
+    w2_nll_before: 491823638.7
+    w2_nll_after: 9708.8
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 82.96
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_sar_exp_a30c6288
+    report_path: pwm/reports/sar.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   sonar:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: sonar_benchmark
+    w1_psnr: 8.81
+    w1_ssim: 0.4249
+    w1_nrmse: 0.3927
+    w2_nll_before: 217.2
+    w2_nll_after: 32.1
+    w2_nll_decrease_pct: 85.2
+    w2_psnr_corrected: 4.09
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_sonar_exp_d571f604
+    report_path: pwm/reports/sonar.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   electron_holography:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: electron_holo_benchmark
+    w1_psnr: 24.46
+    w1_ssim: 0.9676
+    w1_nrmse: 0.0648
+    w2_nll_before: 46810.0
+    w2_nll_after: 2048.4
+    w2_nll_decrease_pct: 95.6
+    w2_psnr_corrected: 24.46
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_electron_holography_exp_f88967d2
+    report_path: pwm/reports/electron_holography.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   neutron_tomo:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: neutron_benchmark
+    w1_psnr: 49.11
+    w1_ssim: 0.9999
+    w1_nrmse: 0.0038
+    w2_nll_before: 13980762968.0
+    w2_nll_after: 2048.1
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 90.28
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_neutron_tomo_exp_8ceeaf91
+    report_path: pwm/reports/neutron_tomo.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   proton_radiography:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
-
+    status: DONE
+    dataset_id: proton_benchmark
+    w1_psnr: 1.86
+    w1_ssim: -0.0094
+    w1_nrmse: 0.8739
+    w2_nll_before: 42064325334.0
+    w2_nll_after: 2048.1
+    w2_nll_decrease_pct: 100.0
+    w2_psnr_corrected: 6.1
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_proton_radiography_exp_e88e2a5d
+    report_path: pwm/reports/proton_radiography.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'
   muon_tomo:
-    status: PENDING
-    dataset_id: null
-    w1_psnr: null
-    w1_ssim: null
-    w1_nrmse: null
-    w2_nll_before: null
-    w2_nll_after: null
-    w2_nll_decrease_pct: null
-    w2_psnr_corrected: null
-    w2_a_extraction_method: null
-    runbundle_path: null
-    report_path: null
-    commit_sha: null
-    completed_at: null
+    status: DONE
+    dataset_id: muon_benchmark
+    w1_psnr: 26.57
+    w1_ssim: 0.98
+    w1_nrmse: 0.0508
+    w2_nll_before: 552067.7
+    w2_nll_after: 2048.2
+    w2_nll_decrease_pct: 99.6
+    w2_psnr_corrected: 26.57
+    w2_a_extraction_method: graph_stripped
+    runbundle_path: runs/run_muon_tomo_exp_98f2adf1
+    report_path: pwm/reports/muon_tomo.md
+    commit_sha: pending
+    completed_at: '2026-02-12T16:00:00'

@@ -1,7 +1,7 @@
-"""Tests for CasePack: SEM.
+"""Tests for CasePack: fMRI.
 
-Template: sem_graph_v2
-Chain: electron_beam_source -> yield_model -> electron_detector_sensor -> gaussian_sensor_noise
+Template: fmri_graph_v2
+Chain: spin_source -> mri_kspace -> sequence_block -> coil_sensor -> complex_gaussian_sensor
 """
 import numpy as np
 import pytest
@@ -23,25 +23,25 @@ def _load_template(key):
     return data["templates"][key]
 
 
-class TestCasePackSem:
-    """CasePack acceptance tests for the sem modality."""
+class TestCasePackFmri:
+    """CasePack acceptance tests for the fmri modality."""
 
     def test_template_compiles(self):
-        """sem_graph_v2 template compiles without error."""
-        tpl = _load_template("sem_graph_v2")
+        """fmri_graph_v2 template compiles without error."""
+        tpl = _load_template("fmri_graph_v2")
         tpl_clean = dict(tpl)
         tpl_clean.pop("description", None)
-        spec = OperatorGraphSpec.model_validate({"graph_id": "sem_graph_v2", **tpl_clean})
+        spec = OperatorGraphSpec.model_validate({"graph_id": "fmri_graph_v2", **tpl_clean})
         compiler = GraphCompiler()
         graph = compiler.compile(spec)
         assert graph is not None
 
     def test_forward_sanity(self):
         """Mode S: forward pass produces finite, correctly shaped output."""
-        tpl = _load_template("sem_graph_v2")
+        tpl = _load_template("fmri_graph_v2")
         tpl_clean = dict(tpl)
         tpl_clean.pop("description", None)
-        spec = OperatorGraphSpec.model_validate({"graph_id": "sem_graph_v2", **tpl_clean})
+        spec = OperatorGraphSpec.model_validate({"graph_id": "fmri_graph_v2", **tpl_clean})
         compiler = GraphCompiler()
         graph = compiler.compile(spec)
         rng = np.random.RandomState(42)
@@ -52,10 +52,10 @@ class TestCasePackSem:
 
     def test_forward_nonneg_input(self):
         """Non-negative input produces finite output."""
-        tpl = _load_template("sem_graph_v2")
+        tpl = _load_template("fmri_graph_v2")
         tpl_clean = dict(tpl)
         tpl_clean.pop("description", None)
-        spec = OperatorGraphSpec.model_validate({"graph_id": "sem_graph_v2", **tpl_clean})
+        spec = OperatorGraphSpec.model_validate({"graph_id": "fmri_graph_v2", **tpl_clean})
         compiler = GraphCompiler()
         graph = compiler.compile(spec)
         x = np.ones((64, 64), dtype=np.float64) * 0.5
