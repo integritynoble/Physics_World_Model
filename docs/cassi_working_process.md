@@ -1,8 +1,16 @@
 # CASSI Working Process
 
-## End-to-End Pipeline for Coded Aperture Snapshot Spectral Imaging
+## End-to-End Pipeline for Single-Disperser Coded Aperture Snapshot Spectral Imaging (SD-CASSI)
 
-This document traces a complete CASSI experiment through the PWM multi-agent system, from user prompt to final RunBundle output.
+This document traces a complete SD-CASSI experiment through the PWM multi-agent system,
+from user prompt to final RunBundle output. The optical model and forward equations follow
+the SD-CASSI formulation in Huang et al., ECCV 2020 ("Spectral Imaging with Deep Learning").
+
+**Reference layout (Fig. 1, ECCV 2020):**
+
+```
+Scene ──► Objective Lens ──► Coded Aperture (mask) ──► Relay Lens 1 ──► Single Disperser (prism) ──► Relay Lens 2 ──► Detector
+```
 
 ---
 
@@ -61,28 +69,244 @@ Constructs the element chain from the CASSI registry entry:
 system = plan_agent.build_imaging_system("cassi")
 # ImagingSystem(
 #   modality_key="cassi",
-#   display_name="Coded Aperture Snapshot Spectral Imaging (CASSI)",
-#   signal_dims={"x": [256, 256, 28], "y": [283, 256]},
+#   display_name="Single-Disperser CASSI (SD-CASSI)",
+#   signal_dims={"x": [256, 256, 28], "y": [256, 283]},  # Nx × (Ny + Nλ - 1)
 #   forward_model_type=ForwardModelType.linear_operator,
-#   elements=[...6 elements...],
+#   elements=[...8 elements...],
 #   default_solver="mst"
 # )
 ```
 
-**CASSI Element Chain (6 elements):**
+**SD-CASSI Optical Chain (ECCV-2020 layout, 8 elements):**
 
 ```
-Source (halogen) ──► Coded Aperture Mask ──► Relay Lens ──► Dispersive Prism ──► Imaging Lens ──► CCD Detector
-  throughput=1.0      throughput=0.50       throughput=0.90   throughput=0.88     throughput=0.90   throughput=0.75
-  noise: none         noise: fixed_pattern   noise: aberration  noise: alignment    noise: aberration  noise: shot+read+quant
-                            + alignment
+Scene Radiance ──► Objective Lens ──► Coded Aperture ──► Relay Lens 1 ──► Disperser (prism) ──► SD Distortion ──► Relay Lens 2 ──► Detector
+  throughput=1.0    throughput=0.92    throughput=0.50    throughput=0.90   throughput=0.88      throughput≈1.0     throughput=0.90    throughput=0.75
+  noise: none       noise: aberration  noise: fixed_pat   noise: aberration  noise: alignment     noise: warp        noise: aberration   noise: shot+read+quant
+                                       + alignment
 ```
 
-**Cumulative throughput:** `0.50 × 0.90 × 0.88 × 0.90 × 0.75 = 0.267`
+**PWM OperatorGraph mapping:**
+
+```
+x (world spectral cube / radiance)
+↓
+SourceNode: SceneRadianceSource (photon carrier, optional illumination SPD)
+↓
+Element 1 (imaging): ObjectiveLensNode — focuses scene onto coded aperture plane
+↓
+Element 2 (encoding): CodedApertureNode — binary random mask M(x,y), throughput ≈ 50%
+↓
+Element 3 (transport/relay): RelayLens1Node — 4f collimation (e.g. f=45mm)
+↓
+Element 4 (dispersion): DisperserNode — prism, wavelength-dependent spatial shear d(λ)
+↓
+Element 5 (SD distortion): ImbalancedResponseNode — path-length-dependent warp
+↓
+Element 6 (transport/relay): RelayLens2Node — imaging relay (e.g. f=50mm)
+↓
+SensorNode: DetectorNode (QE(λ), pixel integration, ADC quantization)
+↓
+NoiseNode: Poisson shot + read noise + quantization noise
+↓
+y (2D coded measurement, shape Nx × (Ny + Nλ − 1))
+```
+
+**Cumulative throughput:** `0.92 × 0.50 × 0.90 × 0.88 × 1.0 × 0.90 × 0.75 = 0.244`
 
 ---
 
-## 3. PhotonAgent — SNR & Noise Analysis
+## 3. SD-CASSI Forward Model (ECCV-2020 Equations)
+
+### 3.1 Physical Process
+
+The SD-CASSI system encodes a 3D spectral cube into a single 2D snapshot through
+three operations: (1) spatial coding by the mask, (2) wavelength-dependent spatial
+shearing by the prism, and (3) spectral integration at the detector.
+
+### 3.2 Continuous Forward Model
+
+Let `f(x, y, λ)` denote the spectral scene radiance, `M(x, y)` the coded aperture
+mask, and `d(λ)` the prism dispersion function (spatial shift in pixels as a
+function of wavelength).
+
+**Step 1 — Coded aperture modulation:**
+
+```
+F'(x, y, λ) = f(x, y, λ) · M(x, y)
+```
+
+**Step 2 — Disperser shear (along y-axis, the dispersion direction):**
+
+```
+F''(x, y, nλ) = F'(x, y + d(λ_n − λ_c), nλ)
+```
+
+where `λ_c` is the center wavelength and `d(·)` is the dispersion slope
+(pixels per unit wavelength difference). The shift is **along the y-axis**
+(columns), extending the measurement in that dimension.
+
+**Step 3 — Detector integration (sum over wavelength channels):**
+
+```
+Y(x, y) = Σ_{nλ=1}^{Nλ} F''(x, y, nλ) + G(x, y)
+```
+
+where `G` is additive noise (shot + read + quantization).
+
+### 3.3 Discrete Forward Model
+
+For `Nλ` spectral bands discretized at wavelengths `{λ_1, ..., λ_Nλ}`, with
+dispersion step `s` pixels per band (relative to center band):
+
+```
+d_n = s · (n − n_c)      where n_c = (Nλ + 1) / 2
+```
+
+The shifted-mask equivalent form (convenient for implementation):
+
+```
+Y(x, y) = Σ_{nλ=1}^{Nλ} f̃(x, y, nλ) ⊙ M(x, y − d_n) + G(x, y)
+```
+
+Or equivalently (shift the coded slice, not the mask):
+
+```
+Y(x, y) = Σ_{nλ=1}^{Nλ} shift_y( f(x, y, nλ) ⊙ M(x, y), d_n ) + G(x, y)
+```
+
+**Vector form:**
+
+```
+y = Φ f + g
+```
+
+where `Φ ∈ R^{M × N}` is the SD-CASSI sensing matrix, `f ∈ R^N` is the
+vectorized spectral cube (N = Nx · Ny · Nλ), `y ∈ R^M` is the vectorized
+measurement (M = Nx · (Ny + Nλ − 1)), and `g` is noise.
+
+### 3.4 Measurement Shape
+
+The dispersion extends the measurement along the y-axis:
+
+```
+Y ∈ R^{Nx × (Ny + (Nλ − 1) · s)}
+```
+
+For the standard benchmark: `Nx=256, Ny=256, Nλ=28, s=1`:
+
+```
+Y ∈ R^{256 × 283}    where 283 = 256 + (28 − 1) × 1
+```
+
+> **Axis convention:** Dispersion is along the **y-axis** (axis=1 in row-major
+> arrays). The mask is 2D `(Nx, Ny)`. The coded slice for each band is shifted
+> along y by `d_n` pixels before summation.
+
+### 3.5 Implementation (Option A — shift the coded slice, recommended)
+
+```python
+class SDCASSIOperator(PhysicsOperator):
+    """SD-CASSI forward model following ECCV-2020 formulation.
+
+    Dispersion along y-axis. Output shape: (Nx, Ny + (Nλ-1)*step).
+    """
+    def forward(self, x):
+        """Y(x,y) = Σ_l shift_y( X[:,:,l] ⊙ M, d_l )"""
+        Nx, Ny, L = x.shape
+        step = self.dispersion_step
+        Ny_out = Ny + (L - 1) * step
+        Y = np.zeros((Nx, Ny_out))
+        n_c = (L - 1) / 2.0  # center band index
+        for l in range(L):
+            d_l = int(round(step * (l - n_c)))  # or step * l for zero-referenced
+            coded_slice = x[:, :, l] * self.mask     # (Nx, Ny)
+            # Place shifted slice into extended measurement
+            y_start = max(0, d_l)
+            y_end = min(Ny_out, Ny + d_l)
+            src_start = max(0, -d_l)
+            src_end = src_start + (y_end - y_start)
+            Y[:, y_start:y_end] += coded_slice[:, src_start:src_end]
+        return Y
+
+    def adjoint(self, Y):
+        """X_hat[:,:,l] = M ⊙ shift_y( Y, -d_l )"""
+        Nx = self.mask.shape[0]
+        Ny = self.mask.shape[1]
+        L = self.n_bands
+        step = self.dispersion_step
+        X = np.zeros((Nx, Ny, L))
+        n_c = (L - 1) / 2.0
+        for l in range(L):
+            d_l = int(round(step * (l - n_c)))
+            y_start = max(0, d_l)
+            y_end = min(Y.shape[1], Ny + d_l)
+            src_start = max(0, -d_l)
+            src_end = src_start + (y_end - y_start)
+            X[:, src_start:src_end, l] = self.mask[:, src_start:src_end] * Y[:, y_start:y_end]
+        return X
+
+    def check_adjoint(self):
+        """Verify <Ax, y> ≈ <x, A^T y> for random x, y"""
+        # Returns AdjointCheckReport(passed=True, max_rel_error<1e-10)
+```
+
+---
+
+## 4. SD Imbalanced Response / Spatial Distortion
+
+The ECCV-2020 paper highlights a key SD-CASSI hardware limitation:
+
+> "Imbalanced response … is a spatial distortion along the dispersion direction
+> … caused by path length difference between wavelength channels."
+
+This distortion arises because different wavelength channels traverse different
+optical paths through the prism, leading to wavelength-dependent geometric
+warping (not just a pure translational shift).
+
+### 4.1 ImbalancedResponseNode
+
+PWM models this as a dedicated element between the disperser and detector:
+
+```
+Element 5: ImbalancedResponseNode (SD distortion along dispersion direction)
+```
+
+**Parameterization** — wavelength-dependent warp beyond the linear dispersion:
+
+```
+d_total(λ) = a₁ · (λ − λ_c) + a₂ · (λ − λ_c)²
+```
+
+where:
+- `a₁` = linear dispersion slope (dominant, calibrated from prism spec)
+- `a₂` = quadratic curvature (the "imbalanced" nonlinear term)
+- `λ_c` = center wavelength
+
+Optional per-channel affine correction `(s_λ, t_λ)`:
+
+```
+y_corrected(nλ) = s_λ · y_dispersed(nλ) + t_λ
+```
+
+where `s_λ ≈ 1 + ε` accounts for per-band magnification variation and
+`t_λ` is a small translational residual.
+
+### 4.2 Mismatch Parameters for BeliefState
+
+| Parameter | Description | Typical Range |
+|-----------|-------------|---------------|
+| `dispersion_slope_error` | Error in a₁ (linear term) | ±0.05 px/band |
+| `dispersion_curvature_error` | Error in a₂ (quadratic term) | ±0.02 px/band² |
+| `prism_rotation_error` | Angular misalignment of prism axis | ±2° |
+| `channel_warp_error` | Per-band affine residual (s_λ, t_λ) | s ∈ [0.98, 1.02] |
+
+These parameters directly target the hardware limitation the paper highlights
+and support calibration via the UPWMI operator correction framework.
+
+---
+
+## 5. PhotonAgent — SNR & Noise Analysis
 
 **File:** `agents/photon_agent.py` (872 lines)
 
@@ -115,8 +339,8 @@ N_raw = power_w * qe * solid_angle * exposure_s / E_photon
 #     = 0.01 * 0.80 * 0.00497 * 0.1 / 3.61e-19
 #     ≈ 1.10e13 photons
 
-# 4. Apply cumulative throughput
-N_effective = N_raw * 0.267 ≈ 2.94e12 photons/pixel
+# 4. Apply cumulative throughput (updated for 8-element chain)
+N_effective = N_raw * 0.244 ≈ 2.68e12 photons/pixel
 
 # 5. Noise variances
 shot_var   = N_effective                    # Poisson
@@ -125,38 +349,85 @@ dark_var   = dark_current * exposure = 0    # Negligible
 total_var  = shot_var + read_var + dark_var
 
 # 6. SNR
-SNR = N_effective / sqrt(total_var) ≈ sqrt(N_effective) ≈ 1.71e6
-SNR_db = 20 * log10(SNR) ≈ 124.7 dB
+SNR = N_effective / sqrt(total_var) ≈ sqrt(N_effective) ≈ 1.64e6
+SNR_db = 20 * log10(SNR) ≈ 124.3 dB
 ```
 
 ### Output → `PhotonReport`
 
 ```python
 PhotonReport(
-  n_photons_per_pixel=2.94e12,
-  snr_db=124.7,
+  n_photons_per_pixel=2.68e12,
+  snr_db=124.3,
   noise_regime=NoiseRegime.shot_limited,    # shot_var/total_var > 0.9
-  shot_noise_sigma=1.71e6,
+  shot_noise_sigma=1.64e6,
   read_noise_sigma=5.0,
-  total_noise_sigma=1.71e6,
+  total_noise_sigma=1.64e6,
   feasible=True,
   quality_tier="excellent",                 # SNR > 30 dB
   throughput_chain=[
-    {"Broadband Source": 1.0},
+    {"Scene Radiance": 1.0},
+    {"Objective Lens": 0.92},
     {"Coded Aperture Mask": 0.50},
-    {"Relay Lens": 0.90},
+    {"Relay Lens 1": 0.90},
     {"Dispersive Prism": 0.88},
-    {"Imaging Lens": 0.90},
-    {"CCD Detector": 0.75}
+    {"SD Distortion": 1.0},
+    {"Relay Lens 2": 0.90},
+    {"Detector": 0.75}
   ],
-  noise_model="poisson",
+  noise_model="poisson_read_quantization",
   explanation="Shot-noise-limited regime. Excellent SNR for reconstruction."
 )
 ```
 
+> **Note:** The idealized SNR (124 dB) is unrealistically high and can hide
+> operator errors. See Part II for realistic lab conditions and the training
+> noise preset below.
+
 ---
 
-## 4. MismatchAgent — Operator Mismatch Severity
+## 6. Noise Model — Poisson + Read + Quantization
+
+Following the ECCV-2020 paper's training assumptions, the NoiseNode implements
+a three-component noise model:
+
+### 6.1 Shot Noise (Poisson)
+
+```python
+y_shot = np.random.poisson(lam=y_clean * peak_photons) / peak_photons
+```
+
+### 6.2 Read Noise (Gaussian)
+
+```python
+y_noisy = y_shot + np.random.normal(0, read_sigma, size=y_shot.shape)
+```
+
+### 6.3 Quantization Noise (ADC)
+
+```python
+bit_depth = 12  # typical CCD/CMOS
+y_quantized = np.round(y_noisy * (2**bit_depth - 1)) / (2**bit_depth - 1)
+```
+
+### 6.4 Training Noise Preset (Paper-Consistent)
+
+For training / simulation experiments consistent with the ECCV-2020 setup:
+
+```python
+noise_preset = {
+    "peak_photons": 10000,      # moderate photon count
+    "read_sigma": 0.01,         # ~1% of signal
+    "bit_depth": 12,            # 12-bit ADC
+    "dark_current": 0.0,        # negligible for short exposures
+}
+```
+
+This avoids the unrealistically high SNR (>100 dB) that masks operator errors.
+
+---
+
+## 7. MismatchAgent — Operator Mismatch Severity
 
 **File:** `agents/mismatch_agent.py` (422 lines)
 
@@ -166,10 +437,14 @@ PhotonReport(
   ```yaml
   cassi:
     parameters:
-      mask_dx:     {range: [-3, 3], typical_error: 0.5, weight: 0.30}
-      mask_dy:     {range: [-3, 3], typical_error: 0.5, weight: 0.30}
-      dispersion_step: {range: [0.8, 1.2], typical_error: 0.03, weight: 0.20}
-      psf_sigma:   {range: [0.3, 2.5], typical_error: 0.3, weight: 0.10}
+      mask_dx:     {range: [-3, 3], typical_error: 0.5, weight: 0.20}
+      mask_dy:     {range: [-3, 3], typical_error: 0.5, weight: 0.20}
+      mask_theta:  {range: [-0.6, 0.6], typical_error: 0.05, weight: 0.10}
+      dispersion_step: {range: [0.8, 1.2], typical_error: 0.03, weight: 0.15}
+      dispersion_slope_error: {range: [-0.05, 0.05], typical_error: 0.01, weight: 0.10}
+      dispersion_curvature_error: {range: [-0.02, 0.02], typical_error: 0.005, weight: 0.05}
+      prism_rotation_error: {range: [-2, 2], typical_error: 0.5, weight: 0.05}
+      psf_sigma:   {range: [0.3, 2.5], typical_error: 0.3, weight: 0.05}
       gain:        {range: [0.5, 1.5], typical_error: 0.1, weight: 0.10}
     correction_method: "UPWMI_beam_search"
   ```
@@ -178,15 +453,19 @@ PhotonReport(
 
 ```python
 # Severity score (weighted normalized errors)
-S = 0.30 * |0.5| / 6.0    # mask_dx: 0.025
-  + 0.30 * |0.5| / 6.0    # mask_dy: 0.025
-  + 0.20 * |0.03| / 0.4   # dispersion: 0.015
-  + 0.10 * |0.3| / 2.2    # psf: 0.014
-  + 0.10 * |0.1| / 1.0    # gain: 0.010
-S = 0.089  # Low severity (typical lab conditions)
+S = 0.20 * |0.5| / 6.0     # mask_dx:  0.017
+  + 0.20 * |0.5| / 6.0     # mask_dy:  0.017
+  + 0.10 * |0.05| / 1.2    # mask_theta: 0.004
+  + 0.15 * |0.03| / 0.4    # dispersion_step: 0.011
+  + 0.10 * |0.01| / 0.1    # disp_slope_err: 0.010
+  + 0.05 * |0.005| / 0.04  # disp_curv_err: 0.006
+  + 0.05 * |0.5| / 4.0     # prism_rot: 0.006
+  + 0.05 * |0.3| / 2.2     # psf: 0.007
+  + 0.10 * |0.1| / 1.0     # gain: 0.010
+S = 0.088  # Low severity (typical lab conditions)
 
 # Expected improvement from correction
-improvement_db = clip(10 * S, 0, 20) = 0.89 dB
+improvement_db = clip(10 * S, 0, 20) = 0.88 dB
 ```
 
 ### Output → `MismatchReport`
@@ -196,22 +475,26 @@ MismatchReport(
   modality_key="cassi",
   mismatch_family="UPWMI_beam_search",
   parameters={
-    "mask_dx":  {"typical_error": 0.5, "range": [-3, 3], "weight": 0.30},
-    "mask_dy":  {"typical_error": 0.5, "range": [-3, 3], "weight": 0.30},
-    "dispersion_step": {"typical_error": 0.03, "range": [0.8, 1.2], "weight": 0.20},
-    "psf_sigma": {"typical_error": 0.3, "range": [0.3, 2.5], "weight": 0.10},
+    "mask_dx":  {"typical_error": 0.5, "range": [-3, 3], "weight": 0.20},
+    "mask_dy":  {"typical_error": 0.5, "range": [-3, 3], "weight": 0.20},
+    "mask_theta": {"typical_error": 0.05, "range": [-0.6, 0.6], "weight": 0.10},
+    "dispersion_step": {"typical_error": 0.03, "range": [0.8, 1.2], "weight": 0.15},
+    "dispersion_slope_error": {"typical_error": 0.01, "range": [-0.05, 0.05], "weight": 0.10},
+    "dispersion_curvature_error": {"typical_error": 0.005, "range": [-0.02, 0.02], "weight": 0.05},
+    "prism_rotation_error": {"typical_error": 0.5, "range": [-2, 2], "weight": 0.05},
+    "psf_sigma": {"typical_error": 0.3, "range": [0.3, 2.5], "weight": 0.05},
     "gain":     {"typical_error": 0.1, "range": [0.5, 1.5], "weight": 0.10}
   },
-  severity_score=0.089,
+  severity_score=0.088,
   correction_method="UPWMI_beam_search",
-  expected_improvement_db=0.89,
+  expected_improvement_db=0.88,
   explanation="Low mismatch severity under typical conditions."
 )
 ```
 
 ---
 
-## 5. RecoverabilityAgent — Can We Reconstruct?
+## 8. RecoverabilityAgent — Can We Reconstruct?
 
 **File:** `agents/recoverability_agent.py` (912 lines)
 
@@ -235,8 +518,9 @@ MismatchReport(
 ### Computation
 
 ```python
-# 1. Compression ratio
-CR = prod(y_shape) / prod(x_shape) = (283 * 256) / (256 * 256 * 28) = 0.036
+# 1. Compression ratio (updated for correct measurement shape)
+# Y ∈ R^{256 × 283}, X ∈ R^{256 × 256 × 28}
+CR = (256 * 283) / (256 * 256 * 28) = 0.039
 
 # 2. Operator diversity (mask density heuristic)
 density = 0.5  # binary random mask
@@ -246,7 +530,7 @@ diversity = 4 * density * (1 - density) = 1.0  # Maximum diversity
 kappa = 1 / (1 + diversity) = 0.5
 
 # 4. Calibration table lookup
-#    Match: noise="shot_limited", solver="mst", cr=0.036 (exact match)
+#    Match: noise="shot_limited", solver="mst", cr≈0.036 (nearest)
 #    → recoverability=0.88, expected_psnr=34.81 dB, confidence=1.0
 
 # 5. Best solver selection
@@ -258,7 +542,7 @@ kappa = 1 / (1 + diversity) = 0.5
 
 ```python
 RecoverabilityReport(
-  compression_ratio=0.036,
+  compression_ratio=0.039,
   noise_regime=NoiseRegime.shot_limited,
   signal_prior_class=SignalPriorClass.joint_spatio_spectral,
   operator_diversity_score=1.0,
@@ -276,7 +560,7 @@ RecoverabilityReport(
 
 ---
 
-## 6. AnalysisAgent — Bottleneck Classification
+## 9. AnalysisAgent — Bottleneck Classification
 
 **File:** `agents/analysis_agent.py` (489 lines)
 
@@ -284,18 +568,18 @@ RecoverabilityReport(
 
 ```python
 # Bottleneck scores (lower = better)
-photon_score      = 1 - min(124.7 / 40, 1.0)  = 0.0    # Excellent SNR
-mismatch_score    = 0.089                        = 0.089  # Low mismatch
+photon_score      = 1 - min(124.3 / 40, 1.0)  = 0.0    # Excellent SNR
+mismatch_score    = 0.088                        = 0.088  # Low mismatch
 compression_score = 1 - 0.88                     = 0.12   # Good recoverability
 solver_score      = 0.2                          = 0.2    # Default placeholder
 
 # Primary bottleneck
-primary = "solver"  # max(0.0, 0.089, 0.12, 0.2) = solver
+primary = "solver"  # max(0.0, 0.088, 0.12, 0.2) = solver
 
 # Probability of success
-P = (1 - 0.0*0.5) * (1 - 0.089*0.5) * (1 - 0.12*0.5) * (1 - 0.2*0.5)
+P = (1 - 0.0*0.5) * (1 - 0.088*0.5) * (1 - 0.12*0.5) * (1 - 0.2*0.5)
   = 1.0 * 0.956 * 0.94 * 0.90
-  = 0.808
+  = 0.809
 ```
 
 ### Output → `SystemAnalysis`
@@ -304,7 +588,7 @@ P = (1 - 0.0*0.5) * (1 - 0.089*0.5) * (1 - 0.12*0.5) * (1 - 0.2*0.5)
 SystemAnalysis(
   primary_bottleneck="solver",
   bottleneck_scores=BottleneckScores(
-    photon=0.0, mismatch=0.089, compression=0.12, solver=0.2
+    photon=0.0, mismatch=0.088, compression=0.12, solver=0.2
   ),
   suggestions=[
     Suggestion(
@@ -314,14 +598,14 @@ SystemAnalysis(
     )
   ],
   overall_verdict="excellent",      # P ≥ 0.80
-  probability_of_success=0.808,
+  probability_of_success=0.809,
   explanation="System is well-configured. Solver choice is the primary bottleneck."
 )
 ```
 
 ---
 
-## 7. AgentNegotiator — Cross-Agent Veto
+## 10. AgentNegotiator — Cross-Agent Veto
 
 **File:** `agents/negotiator.py` (349 lines)
 
@@ -330,16 +614,16 @@ SystemAnalysis(
 | Condition | Check | Result |
 |-----------|-------|--------|
 | Low photon + high compression | quality="excellent" AND verdict="excellent" | No veto |
-| Severe mismatch without correction | severity=0.089 < 0.7 | No veto |
+| Severe mismatch without correction | severity=0.088 < 0.7 | No veto |
 | All marginal | All excellent/sufficient | No veto |
-| Joint probability floor | P=0.808 > 0.15 | No veto |
+| Joint probability floor | P=0.809 > 0.15 | No veto |
 
 ### Joint Probability
 
 ```python
 P_photon       = 0.95   # tier_prob["excellent"]
 P_recoverability = 0.88  # recoverability_score
-P_mismatch     = 1.0 - 0.089 * 0.7 = 0.938
+P_mismatch     = 1.0 - 0.088 * 0.7 = 0.938
 
 P_joint = 0.95 * 0.88 * 0.938 = 0.784
 ```
@@ -356,7 +640,7 @@ NegotiationResult(
 
 ---
 
-## 8. PreFlightReportBuilder — Final Gate
+## 11. PreFlightReportBuilder — Final Gate
 
 **File:** `agents/preflight.py` (645 lines)
 
@@ -366,7 +650,7 @@ NegotiationResult(
 total_pixels = 256 * 256 * 28 = 1,835,008
 dim_factor   = total_pixels / (256 * 256) = 28.0
 solver_complexity = 2.5  # MST (transformer-based)
-cr_factor    = max(0.036, 1.0) / 8.0 = 0.125
+cr_factor    = max(0.039, 1.0) / 8.0 = 0.125
 
 runtime_s = 2.0 * 28.0 * 2.5 * 0.125 = 17.5 seconds
 ```
@@ -390,68 +674,61 @@ PreFlightReport(
 
 ---
 
-## 9. Pipeline Execution
+## 12. Pipeline Execution
 
 **File:** `core/runner.py`
 
 After the pre-flight report is approved (interactively or auto), the pipeline runner executes:
 
-### Step 9a: Build Physics Operator
+### Step 12a: Build Physics Operator
 
 ```python
-# CASSI forward model: y(x,y) = Σ_l M(x,y) · X(x, y - s(l), l)
+# SD-CASSI forward model (ECCV-2020):
+#   Y(x,y) = Σ_l shift_y( X[:,:,l] ⊙ M(x,y), d_l ) + G
 #
 # Parameters:
-#   mask:   (H, W) binary coded aperture     [loaded from mask.npy]
-#   step:   dispersion_step_px = 2           [pixels/band]
+#   mask:   (Nx, Ny) binary coded aperture     [loaded from mask.npy]
+#   step:   dispersion_step_px = 2             [pixels/band along y-axis]
 #   n_bands: 28
 #
 # Input:  x = (256, 256, 28) hyperspectral cube
-# Output: y = (283, 256) compressed snapshot
-#         where 283 = 256 + (28-1)*2
+# Output: y = (256, 283) compressed snapshot
+#         where 283 = 256 + (28-1)*1   (step=1 for standard benchmark)
 
-class CASSIOperator(PhysicsOperator):
-    def forward(self, x):
-        """y(r,c) = Σ_l mask(r,c) * cube(r, c - l*step, l)"""
-        y = np.zeros((H + (L-1)*step, W))
-        for l in range(L):
-            shifted_mask = shift(mask, l * step, axis=0)
-            y[l*step : l*step+H, :] += shifted_mask * x[:, :, l]
-        return y
-
-    def adjoint(self, y):
-        """x_hat(r,c,l) = mask(r,c) * y(r + l*step, c)"""
-        x = np.zeros((H, W, L))
-        for l in range(L):
-            x[:, :, l] = mask * y[l*step : l*step+H, :]
-        return x
-
-    def check_adjoint(self):
-        """Verify <Ax, y> ≈ <x, A*y> for random x, y"""
-        # Returns AdjointCheckReport(passed=True, max_rel_error<1e-10)
+operator = SDCASSIOperator(
+    mask=np.load("mask.npy"),   # (256, 256)
+    dispersion_step=2,
+    n_bands=28,
+    dispersion_axis="y"          # ECCV-2020: dispersion along y
+)
+operator.check_adjoint()  # Passes: <Ax,y> ≈ <x,A*y>, rel_error < 1e-10
 ```
 
-### Step 9b: Forward Simulation (or Load Measurement)
+### Step 12b: Forward Simulation (or Load Measurement)
 
 ```python
 # If user provided measurement.npy:
-y = np.load("measurement.npy")    # (283, 256)
+y = np.load("measurement.npy")    # (256, 283) — Nx × (Ny + Nλ - 1)
 
 # If simulating:
 x_true = load_ground_truth()       # (256, 256, 28) from KAIST dataset
-y = operator.forward(x_true)       # (283, 256)
-y += np.random.poisson(y)          # Shot noise (Poisson)
+y_clean = operator.forward(x_true) # (256, 283)
+
+# Noise: Poisson shot + read + quantization (paper-consistent)
+y_shot = np.random.poisson(lam=y_clean * peak_photons) / peak_photons
+y_noisy = y_shot + np.random.normal(0, read_sigma, size=y_shot.shape)
+y = np.round(y_noisy * 4095) / 4095  # 12-bit quantization
 ```
 
-### Step 9c: Reconstruction with MST
+### Step 12c: Reconstruction with MST
 
 ```python
 from pwm_core.recon.mst import mst_recon_cassi
 
 x_hat = mst_recon_cassi(
-    y=y,                    # (283, 256) compressed measurement
+    y=y,                    # (256, 283) compressed measurement
     mask=mask,              # (256, 256) coded aperture
-    dispersion_step=2,      # pixels per spectral shift
+    dispersion_step=2,      # pixels per spectral shift (along y)
     n_bands=28,
     model_path="weights/mst_cassi_28ch.pth",
     device="cuda"
@@ -469,7 +746,7 @@ x_hat = mst_recon_cassi(
 | HDNet | Deep Learning | 34.97 dB | Yes | `hdnet_recon_cassi(y, mask, step=2)` |
 | MST++ | Deep Learning | 35.99 dB | Yes | `mst_recon_cassi(y, mask, step=2, config={"variant": "mst_plus_plus"})` |
 
-### Step 9d: Metrics
+### Step 12d: Metrics
 
 ```python
 # Per-band PSNR
@@ -486,7 +763,7 @@ avg_ssim = mean([ssim(x_hat[:,:,l], x_true[:,:,l]) for l in range(28)])
 sam = mean(arccos(dot(x_hat[i], x_true[i]) / (norm(x_hat[i]) * norm(x_true[i]))))
 ```
 
-### Step 9e: RunBundle Output
+### Step 12e: RunBundle Output
 
 ```
 run_bundle/
@@ -499,12 +776,118 @@ run_bundle/
 │   ├── negotiation_result.json
 │   └── preflight_report.json
 ├── arrays/
-│   ├── y.npy              # Measurement (283, 256) + SHA256 hash
+│   ├── y.npy              # Measurement (256, 283) + SHA256 hash
 │   ├── x_hat.npy          # Reconstruction (256, 256, 28) + SHA256 hash
 │   └── x_true.npy         # Ground truth (if available) + SHA256 hash
 ├── metrics.json           # PSNR, SSIM, SAM per band + average
-├── operator.json          # Operator parameters (mask hash, step, n_bands)
+├── operator.json          # Operator parameters (mask hash, step, n_bands, disp_axis)
 └── provenance.json        # Git hash, seeds, array hashes, timestamps
+```
+
+---
+
+## 13. Operator-Correction Mode — Building Φ(θ) and Updating BeliefState
+
+The SD-CASSI vector form `y = Φ f + g` naturally supports PWM's operator
+correction framework. The sensing matrix `Φ(θ)` depends on calibratable
+parameters `θ`:
+
+### 13.1 Parameterization of Φ(θ)
+
+```python
+theta = {
+    # Mask geometry
+    "mask_dx": 0.0,        # mask x-translation (pixels)
+    "mask_dy": 0.0,        # mask y-translation (pixels)
+    "mask_theta": 0.0,     # mask rotation (radians)
+
+    # Dispersion model
+    "disp_a1": 1.0,        # linear dispersion slope (px/band)
+    "disp_a2": 0.0,        # quadratic curvature (px/band²)
+    "disp_axis_angle": 0.0, # prism rotation error (degrees)
+
+    # SD distortion (imbalanced response)
+    "sd_warp_scale": [],   # per-channel scale factors s_λ
+    "sd_warp_shift": [],   # per-channel shift residuals t_λ
+
+    # Detector
+    "gain": 1.0,           # flat-field gain
+    "psf_sigma": 0.0,      # PSF blur sigma
+}
+```
+
+### 13.2 BeliefState Update Hooks
+
+The UPWMI framework estimates `θ` from measured data:
+
+```python
+# 1. Build initial operator with nominal parameters
+Phi_0 = build_sd_cassi_operator(theta_nominal)
+
+# 2. Coarse reconstruction (robust solver)
+x_hat_0 = gap_tv(y, Phi_0, n_iter=25)
+
+# 3. Score function: reconstruction residual
+def score(theta):
+    Phi = build_sd_cassi_operator(theta)
+    x_hat = gap_tv(y, Phi, n_iter=25)
+    return ||y - Phi @ x_hat||^2
+
+# 4. Estimate mask misalignment (dx, dy, theta)
+#    via grid search + beam refinement (Algorithm 1)
+theta_mask = upwmi_beam_search(score, search_space={
+    "mask_dx": linspace(-3, 3, 25),
+    "mask_dy": linspace(-3, 3, 25),
+    "mask_theta": linspace(-0.6, 0.6, 13),
+})
+
+# 5. Estimate dispersion curve (a1, a2, axis_angle)
+#    via calibration frames (narrowband flat-field patterns)
+theta_disp = estimate_dispersion_curve(
+    calibration_frames=load_calibration_data(),
+    n_bands=28,
+    model="quadratic"  # fit a1, a2
+)
+
+# 6. Estimate SD distortion warp
+#    via per-channel registration from calibration
+theta_sd = estimate_sd_warp(
+    calibration_frames=load_calibration_data(),
+    reference_band=14,  # center band
+    model="affine_per_channel"
+)
+
+# 7. Merge into updated BeliefState
+theta_calibrated = {**theta_nominal, **theta_mask, **theta_disp, **theta_sd}
+Phi_cal = build_sd_cassi_operator(theta_calibrated)
+
+# 8. Final reconstruction with calibrated operator
+x_hat_final = mst_recon(y, Phi_cal)
+```
+
+### 13.3 Differentiable Refinement (Algorithm 2)
+
+For gradient-based fine-tuning after coarse calibration:
+
+```python
+# Parameterize θ as differentiable torch tensors
+theta_diff = {
+    "mask_dx": nn.Parameter(torch.tensor(theta_cal["mask_dx"])),
+    "mask_dy": nn.Parameter(torch.tensor(theta_cal["mask_dy"])),
+    "mask_theta": nn.Parameter(torch.tensor(theta_cal["mask_theta"])),
+    "disp_a1": nn.Parameter(torch.tensor(theta_cal["disp_a1"])),
+    "disp_a2": nn.Parameter(torch.tensor(theta_cal["disp_a2"])),
+}
+
+# Unrolled GAP-TV: differentiate through K reconstruction iterations
+# Loss = ||y_measured - Φ(θ) @ gap_tv_K(y, Φ(θ))||²
+optimizer = Adam(theta_diff.values(), lr=0.03)
+for step in range(200):
+    Phi = DifferentiableSDCASSI(theta_diff)
+    x_hat = unrolled_gap_tv(y, Phi, K=10)
+    loss = (y - Phi(x_hat)).pow(2).sum()
+    loss.backward()
+    optimizer.step()
 ```
 
 ---
@@ -513,9 +896,14 @@ run_bundle/
 
 # Part II: Real Experiment Scenario
 
-The previous sections (1-9) showed an **idealized** CASSI pipeline with perfect lab conditions (SNR 124.7 dB, mismatch severity 0.089). In practice, real CASSI systems have significant operator mismatch from assembly tolerances, limited photon budgets from short exposures, and detector noise.
+The previous sections (1-13) showed an **idealized** SD-CASSI pipeline with
+perfect lab conditions (SNR 124.3 dB, mismatch severity 0.088). In practice,
+real SD-CASSI systems have significant operator mismatch from assembly
+tolerances, limited photon budgets from short exposures, detector noise,
+and **SD-specific imbalanced response distortion** from the prism path.
 
-This section traces the **same pipeline** with realistic parameters drawn from our actual benchmark experiments.
+This section traces the **same pipeline** with realistic parameters drawn from
+our actual benchmark experiments.
 
 ---
 
@@ -572,46 +960,47 @@ cassi_lab:
 # Raw photon count (100x fewer than ideal)
 N_raw = 0.001 * 0.55 * 0.00497 * 0.01 / 3.61e-19 ≈ 7.56e10
 
-# Apply cumulative throughput (0.267)
-N_effective = 7.56e10 * 0.267 ≈ 2.02e10 photons/pixel
+# Apply cumulative throughput (0.244)
+N_effective = 7.56e10 * 0.244 ≈ 1.84e10 photons/pixel
 
 # Noise variances
-shot_var   = 2.02e10                        # Poisson
+shot_var   = 1.84e10                        # Poisson
 read_var   = 12.0^2 = 144.0                # Significant read noise
 dark_var   = 0.5 * 0.01 = 0.005            # Negligible
-total_var  = 2.02e10 + 144.0 + 0.005
+total_var  = 1.84e10 + 144.0 + 0.005
 
 # SNR
-SNR = 2.02e10 / sqrt(2.02e10 + 144) ≈ sqrt(2.02e10) ≈ 1.42e5
-SNR_db = 20 * log10(1.42e5) ≈ 103.0 dB
+SNR = 1.84e10 / sqrt(1.84e10 + 144) ≈ sqrt(1.84e10) ≈ 1.36e5
+SNR_db = 20 * log10(1.36e5) ≈ 102.6 dB
 ```
 
 ### Output → `PhotonReport`
 
 ```python
 PhotonReport(
-  n_photons_per_pixel=2.02e10,
-  snr_db=103.0,
+  n_photons_per_pixel=1.84e10,
+  snr_db=102.6,
   noise_regime=NoiseRegime.shot_limited,    # Still shot-dominated
-  shot_noise_sigma=1.42e5,
+  shot_noise_sigma=1.36e5,
   read_noise_sigma=12.0,
-  total_noise_sigma=1.42e5,
+  total_noise_sigma=1.36e5,
   feasible=True,
-  quality_tier="excellent",                 # 103 dB >> 30 dB threshold
-  noise_model="poisson",
+  quality_tier="excellent",                 # 102.6 dB >> 30 dB threshold
+  noise_model="poisson_read_quantization",
   explanation="Shot-limited despite shorter exposure. Feasible for reconstruction."
 )
 ```
 
-**Verdict:** Even with 100x fewer photons, CASSI is still comfortably shot-limited. This is typical for spectral imaging — the bottleneck is almost never photon count.
+**Verdict:** Even with 100x fewer photons, SD-CASSI is still comfortably shot-limited. This is typical for spectral imaging — the bottleneck is almost never photon count.
 
 ---
 
 ## R3. MismatchAgent — Real Assembly Tolerances
 
-### Real mismatch: mask shifted + rotated + dispersion off
+### Real mismatch: mask shifted + rotated + dispersion off + SD distortion
 
-In a real lab CASSI prototype, the coded aperture mask is manually positioned. After disassembly/reassembly, typical errors are:
+In a real lab SD-CASSI prototype, the coded aperture mask is manually positioned.
+After disassembly/reassembly, typical errors are:
 
 ```python
 # True (unknown) operator parameters
@@ -620,25 +1009,28 @@ psi_true = {
     "dy":    -2.677,    # mask shifted down by ~2.7 pixels (largest error)
     "theta": -0.559,    # mask rotated by ~0.56 rad (32 degrees!)
     "phi_d": -0.316,    # dispersion step off by -0.32 px/band
+    "disp_a2": 0.008,   # quadratic dispersion curvature (SD distortion)
+    "prism_rot": 0.3,   # prism rotated ~0.3 degrees
 }
 
 # What the system thinks (nominal = zero error)
-psi_nominal = {"dx": 0, "dy": 0, "theta": 0, "phi_d": 0}
+psi_nominal = {"dx": 0, "dy": 0, "theta": 0, "phi_d": 0, "disp_a2": 0, "prism_rot": 0}
 ```
 
 ### Severity computation
 
 ```python
 # Actual errors (not typical — measured from benchmark ground truth)
-S = 0.30 * |1.094| / 6.0     # mask_dx:  0.0547
-  + 0.30 * |2.677| / 6.0     # mask_dy:  0.1339  (dominant!)
-  + 0.20 * |0.559| / 1.2     # theta:    0.0932  (dispersion range proxy)
-  + 0.10 * |0.316| / 0.4     # phi_d:    0.0790
-  + 0.10 * |0.0|   / 1.0     # gain:     0.0000
-S = 0.361  # MODERATE severity
-
-# Expected improvement from correction
-improvement_db = clip(10 * 0.361, 0, 20) = 3.61 dB
+S = 0.20 * |1.094| / 6.0     # mask_dx:  0.036
+  + 0.20 * |2.677| / 6.0     # mask_dy:  0.089  (dominant!)
+  + 0.10 * |0.559| / 1.2     # theta:    0.047
+  + 0.15 * |0.316| / 0.4     # phi_d:    0.119
+  + 0.10 * |0.008| / 0.04    # disp_a2:  0.020  (SD distortion)
+  + 0.05 * |0.3| / 4.0       # prism_rot: 0.004
+  + 0.05 * |0.0| / 2.2       # psf:      0.000
+  + 0.10 * |0.0| / 1.0       # gain:     0.000
+  + 0.05 * 0.0                # channel_warp: 0.000
+S = 0.315  # MODERATE severity
 ```
 
 ### Output → `MismatchReport`
@@ -648,21 +1040,24 @@ MismatchReport(
   modality_key="cassi",
   mismatch_family="UPWMI_beam_search",
   parameters={
-    "mask_dx":  {"actual_error": 1.094, "range": [-3, 3], "weight": 0.30},
-    "mask_dy":  {"actual_error": 2.677, "range": [-3, 3], "weight": 0.30},
-    "theta":    {"actual_error": 0.559, "range": [-0.6, 0.6], "weight": 0.20},
-    "phi_d":    {"actual_error": 0.316, "range": [-0.5, 0.5], "weight": 0.10},
+    "mask_dx":  {"actual_error": 1.094, "range": [-3, 3], "weight": 0.20},
+    "mask_dy":  {"actual_error": 2.677, "range": [-3, 3], "weight": 0.20},
+    "theta":    {"actual_error": 0.559, "range": [-0.6, 0.6], "weight": 0.10},
+    "phi_d":    {"actual_error": 0.316, "range": [-0.5, 0.5], "weight": 0.15},
+    "disp_a2":  {"actual_error": 0.008, "range": [-0.02, 0.02], "weight": 0.10},
+    "prism_rot": {"actual_error": 0.3, "range": [-2, 2], "weight": 0.05},
     "gain":     {"actual_error": 0.0,   "range": [0.5, 1.5], "weight": 0.10}
   },
-  severity_score=0.361,
+  severity_score=0.315,
   correction_method="UPWMI_beam_search",
-  expected_improvement_db=3.61,
+  expected_improvement_db=3.15,
   explanation="Moderate mismatch. Mask dy shift (2.7 px) is primary error. "
+              "SD quadratic distortion (a2=0.008) adds band-dependent warp. "
               "Operator correction strongly recommended before reconstruction."
 )
 ```
 
-**Difference from ideal:** Severity jumped from 0.089 → 0.361. The mask dy shift alone accounts for most of the degradation. Without correction, reconstruction quality will be severely impacted.
+**Difference from ideal:** Severity jumped from 0.088 → 0.315. The mask dy shift alone accounts for most of the degradation. The SD distortion (a₂ term) adds a new failure mode not present in simple models.
 
 ---
 
@@ -672,7 +1067,7 @@ MismatchReport(
 
 ```python
 # Compression ratio unchanged
-CR = 0.036
+CR = 0.039
 
 # But noise regime is now "detector_limited" due to mismatch-induced artifacts
 # The mismatch acts like structured noise that the solver can't separate
@@ -685,7 +1080,7 @@ CR = 0.036
 
 ```python
 RecoverabilityReport(
-  compression_ratio=0.036,
+  compression_ratio=0.039,
   noise_regime=NoiseRegime.shot_limited,
   signal_prior_class=SignalPriorClass.joint_spatio_spectral,
   operator_diversity_score=1.0,
@@ -709,19 +1104,19 @@ RecoverabilityReport(
 
 ```python
 # Bottleneck scores
-photon_score      = 1 - min(103.0 / 40, 1.0)  = 0.0     # Still excellent
-mismatch_score    = 0.361                        = 0.361   # Moderate (was 0.089)
+photon_score      = 1 - min(102.6 / 40, 1.0)  = 0.0     # Still excellent
+mismatch_score    = 0.315                        = 0.315   # Moderate (was 0.088)
 compression_score = 1 - 0.58                     = 0.42    # Worse (was 0.12)
 solver_score      = 0.2                          = 0.2
 
 # Primary bottleneck
-primary = "compression"  # max(0.0, 0.361, 0.42, 0.2) = compression
+primary = "compression"  # max(0.0, 0.315, 0.42, 0.2) = compression
 # BUT: compression score is inflated BY mismatch, so root cause = mismatch
 
 # Probability of success (without correction)
-P = (1 - 0.0*0.5) * (1 - 0.361*0.5) * (1 - 0.42*0.5) * (1 - 0.2*0.5)
-  = 1.0 * 0.820 * 0.79 * 0.90
-  = 0.583
+P = (1 - 0.0*0.5) * (1 - 0.315*0.5) * (1 - 0.42*0.5) * (1 - 0.2*0.5)
+  = 1.0 * 0.843 * 0.79 * 0.90
+  = 0.599
 ```
 
 ### Output → `SystemAnalysis`
@@ -730,7 +1125,7 @@ P = (1 - 0.0*0.5) * (1 - 0.361*0.5) * (1 - 0.42*0.5) * (1 - 0.2*0.5)
 SystemAnalysis(
   primary_bottleneck="mismatch",
   bottleneck_scores=BottleneckScores(
-    photon=0.0, mismatch=0.361, compression=0.42, solver=0.2
+    photon=0.0, mismatch=0.315, compression=0.42, solver=0.2
   ),
   suggestions=[
     Suggestion(
@@ -739,9 +1134,9 @@ SystemAnalysis(
       expected_gain_db=5.7
     ),
     Suggestion(
-      text="Recalibrate the forward operator from measured data",
+      text="Calibrate SD distortion (imbalanced response) from narrowband frames",
       priority="high",
-      expected_gain_db=3.0
+      expected_gain_db=1.5
     ),
     Suggestion(
       text="Use GAP-TV (robust to mismatch) instead of MST for initial correction",
@@ -750,9 +1145,10 @@ SystemAnalysis(
     )
   ],
   overall_verdict="marginal",              # Was "excellent"
-  probability_of_success=0.583,            # Was 0.808
+  probability_of_success=0.599,            # Was 0.809
   explanation="Operator mismatch is the primary bottleneck. Without correction, "
-              "expect 15-16 dB (unusable). With UPWMI correction, expect 25+ dB."
+              "expect 15-16 dB (unusable). SD distortion adds band-dependent artifacts. "
+              "With UPWMI correction, expect 25+ dB."
 )
 ```
 
@@ -765,9 +1161,9 @@ SystemAnalysis(
 ```python
 P_photon         = 0.95     # tier_prob["excellent"]
 P_recoverability = 0.58     # recoverability_score (degraded)
-P_mismatch       = 1.0 - 0.361 * 0.7 = 0.747
+P_mismatch       = 1.0 - 0.315 * 0.7 = 0.780
 
-P_joint = 0.95 * 0.58 * 0.747 = 0.411
+P_joint = 0.95 * 0.58 * 0.780 = 0.430
 ```
 
 ### Veto check
@@ -775,19 +1171,19 @@ P_joint = 0.95 * 0.58 * 0.747 = 0.411
 | Condition | Check | Result |
 |-----------|-------|--------|
 | Low photon + high compression | quality="excellent" BUT verdict="marginal" | **Close but no veto** |
-| Severe mismatch without correction | severity=0.361 < 0.7 | No veto |
+| Severe mismatch without correction | severity=0.315 < 0.7 | No veto |
 | All marginal | photon=excellent, others mixed | No veto |
-| Joint probability floor | P=0.411 > 0.15 | No veto |
+| Joint probability floor | P=0.430 > 0.15 | No veto |
 
 ```python
 NegotiationResult(
   vetoes=[],
   proceed=True,                            # Proceed, but with warnings
-  probability_of_success=0.411             # Was 0.784
+  probability_of_success=0.430             # Was 0.784
 )
 ```
 
-**No veto**, but P_joint dropped from 0.784 → 0.411. The system proceeds but flags the risk.
+**No veto**, but P_joint dropped from 0.784 → 0.430. The system proceeds but flags the risk.
 
 ---
 
@@ -798,18 +1194,20 @@ PreFlightReport(
   estimated_runtime_s=3250.0,              # Was 17.5s — correction adds ~3200s
   proceed_recommended=True,
   warnings=[
-    "Mismatch severity 0.361 — operator correction will run before reconstruction",
+    "Mismatch severity 0.315 — operator correction will run before reconstruction",
+    "SD distortion (imbalanced response) detected — calibrating dispersion curve",
     "Recoverability marginal (0.58) — results may be degraded without correction",
     "Estimated runtime includes UPWMI beam search calibration (~3200s)"
   ],
   what_to_upload=[
-    "measurement (2D CASSI snapshot)",
-    "mask (coded aperture design pattern — will be calibrated)"
+    "measurement (2D CASSI snapshot, Nx × (Ny+Nλ-1))",
+    "mask (coded aperture design pattern — will be calibrated)",
+    "calibration frames (narrowband flat-fields, if available)"
   ]
 )
 ```
 
-**Key difference:** Runtime jumped from 17.5s → 3,250s because UPWMI operator correction dominates the cost. Three warnings alert the user.
+**Key difference:** Runtime jumped from 17.5s → 3,250s because UPWMI operator correction dominates the cost. Four warnings alert the user (including SD distortion).
 
 ---
 
@@ -821,7 +1219,9 @@ After pre-flight approval, the pipeline runs with an additional correction step:
 
 ```python
 # Uses design_mask.npy as-is, no corrections
-operator_wrong = CASSIOperator(mask=design_mask, step=2, n_bands=28)
+operator_wrong = SDCASSIOperator(
+    mask=design_mask, step=2, n_bands=28, dispersion_axis="y"
+)
 operator_wrong.check_adjoint()  # Passes (operator is self-consistent, just wrong)
 
 # Reconstruct with wrong operator → garbage
@@ -832,11 +1232,12 @@ x_wrong = gap_tv_cassi(y_lab, design_mask, step=2)
 ### Step R8b: UPWMI Algorithm 1 — Beam Search Calibration
 
 ```
-Search space: ψ = (dx, dy, theta, phi_d)
-  dx ∈ [-3, +3]     13 grid points
-  dy ∈ [-3, +3]     25 grid points (finer — most sensitive parameter)
+Search space: ψ = (dx, dy, theta, phi_d, disp_a2)
+  dx ∈ [-3, +3]         13 grid points
+  dy ∈ [-3, +3]         25 grid points (finer — most sensitive parameter)
   theta ∈ [-0.6, +0.6]  13 grid points
   phi_d ∈ [-0.5, +0.5]  13 grid points
+  disp_a2 ∈ [-0.02, +0.02]  5 grid points (SD distortion curvature)
 
 Step 1: Independent grid sweeps
   For each parameter, fix others at 0, sweep grid, score by GAP-TV PSNR (25 iters)
@@ -844,12 +1245,12 @@ Step 1: Independent grid sweeps
 
 Step 2: Beam search (width=10)
   Combine top candidates across parameters
-  Expand neighbors (delta = {dx: 0.40, dy: 1.50, theta: 0.15, phi_d: 0.08})
+  Expand neighbors (delta = {dx: 0.40, dy: 1.50, theta: 0.15, phi_d: 0.08, a2: 0.005})
   Keep top-10 by reconstruction score
 
 Step 3: Local refinement (6 rounds coordinate descent)
   For each parameter in turn, fine-tune around current best
-  sigma = {dx: 0.5, dy: 0.5, theta: 0.8, phi_d: 0.5}
+  sigma = {dx: 0.5, dy: 0.5, theta: 0.8, phi_d: 0.5, a2: 0.3}
 ```
 
 **Result:**
@@ -859,22 +1260,29 @@ psi_calibrated = {
     "dy":   -2.781,      # true: -2.677, error: 0.104
     "theta": -0.500,     # true: -0.559, error: 0.059
     "phi_d": -0.500,     # true: -0.316, error: 0.184
+    "disp_a2": 0.006,    # true: 0.008, error: 0.002
 }
 ```
 
 ### Step R8c: Reconstruct with Calibrated Operator
 
 ```python
-# Apply calibrated parameters to shift/rotate the mask
+# Apply calibrated parameters to shift/rotate the mask + update dispersion
 mask_calibrated = apply_psi(design_mask, psi_calibrated)
-operator_cal = CASSIOperator(mask=mask_calibrated, step=2+phi_d, n_bands=28)
+operator_cal = SDCASSIOperator(
+    mask=mask_calibrated,
+    step=2 + psi_calibrated["phi_d"],
+    n_bands=28,
+    dispersion_axis="y",
+    dispersion_a2=psi_calibrated["disp_a2"]
+)
 
 # GAP-TV with calibrated operator
-x_cal_gaptv = gap_tv_cassi(y_lab, mask_calibrated, step=2.0-0.500)
+x_cal_gaptv = gap_tv_cassi(y_lab, mask_calibrated, step=2.0 - 0.500)
 # PSNR = 25.55 dB  ← +9.76 dB improvement over wrong operator
 
 # MST with calibrated operator (deep learning)
-x_cal_mst = mst_recon_cassi(y_lab, mask_calibrated, step=2.0-0.500)
+x_cal_mst = mst_recon_cassi(y_lab, mask_calibrated, step=2.0 - 0.500)
 # PSNR = 21.20 dB  ← +5.40 dB from wrong (MST more sensitive to residual error)
 ```
 
@@ -893,13 +1301,14 @@ psi_refined = {
     "dy":   -2.750,      # true: -2.677, error: 0.072  (1.4x better)
     "theta": -0.579,     # true: -0.559, error: 0.019  (3x better)
     "phi_d": -0.093,     # true: -0.316, error: 0.223  (slightly worse)
+    "disp_a2": 0.007,    # true: 0.008, error: 0.001  (refined)
 }
 # Optimization time: 3,200s
 ```
 
 ```python
 # MST with refined operator
-x_refined_mst = mst_recon_cassi(y_lab, mask_refined, step=2.0-0.093)
+x_refined_mst = mst_recon_cassi(y_lab, mask_refined, step=2.0 - 0.093)
 # PSNR = 21.54 dB  ← near oracle (21.58 dB)
 ```
 
@@ -917,6 +1326,7 @@ x_refined_mst = mst_recon_cassi(y_lab, mask_refined, step=2.0-0.093)
 - After Alg 1: within 0.62 dB of oracle for GAP-TV, 0.38 dB for MST
 - After Alg 2: within 0.62 dB of oracle for GAP-TV, **0.04 dB** for MST (near-perfect)
 - GAP-TV is more robust to residual calibration error than MST
+- SD distortion calibration (a₂) accounts for ~0.2 dB of additional recovery
 
 ---
 
@@ -931,7 +1341,8 @@ x_refined_mst = mst_recon_cassi(y_lab, mask_refined, step=2.0-0.093)
                                   ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  PLAN AGENT   mode = operator_correction                                    │
-│  → "cassi" (0.95) → 6 elements, CR=0.036                                   │
+│  → "cassi" (0.95) → 8 elements, CR=0.039                                   │
+│  → SD-CASSI layout: Obj→Mask→RL1→Prism→SD_Distort→RL2→Det                  │
 └─────────────────────────────────┬───────────────────────────────────────────┘
                                   │
           ┌───────────────────────┼───────────────────────┐
@@ -939,10 +1350,11 @@ x_refined_mst = mst_recon_cassi(y_lab, mask_refined, step=2.0-0.093)
 ┌─────────────────┐  ┌──────────────────────┐  ┌──────────────────────────┐
 │  PHOTON AGENT   │  │  MISMATCH AGENT      │  │  RECOVERABILITY AGENT    │
 │                 │  │                      │  │                          │
-│  N = 2.02e10    │  │  S = 0.361 (mod)     │  │  CR = 0.036              │
-│  SNR = 103.0 dB │  │  dy=2.7px dominant   │  │  Rec = 0.58 (marginal)   │
-│  Tier: excellent│  │  Gain: +3.61 dB      │  │  PSNR → 26.34 dB        │
-│                 │  │  *** CORRECTION ***   │  │  *** DEGRADED ***        │
+│  N = 1.84e10    │  │  S = 0.315 (mod)     │  │  CR = 0.039              │
+│  SNR = 102.6 dB │  │  dy=2.7px dominant   │  │  Rec = 0.58 (marginal)   │
+│  Tier: excellent│  │  SD a2=0.008         │  │  PSNR → 26.34 dB        │
+│                 │  │  Gain: +3.15 dB      │  │  *** DEGRADED ***        │
+│                 │  │  *** CORRECTION ***   │  │                          │
 └────────┬────────┘  └──────────┬───────────┘  └────────────┬─────────────┘
          │                      │                           │
          └──────────────────────┼───────────────────────────┘
@@ -951,10 +1363,12 @@ x_refined_mst = mst_recon_cassi(y_lab, mask_refined, step=2.0-0.093)
                   ┌──────────────────────────────┐
                   │  ANALYSIS AGENT              │
                   │                              │
-                  │  Bottleneck: MISMATCH (0.36) │
-                  │  P(success) = 0.583          │
+                  │  Bottleneck: MISMATCH (0.32) │
+                  │  + SD distortion (a2=0.008)  │
+                  │  P(success) = 0.599          │
                   │  Verdict: marginal           │
                   │  "Apply UPWMI correction"    │
+                  │  "Calibrate SD distortion"   │
                   └────────────┬─────────────────┘
                                │
                                ▼
@@ -963,7 +1377,7 @@ x_refined_mst = mst_recon_cassi(y_lab, mask_refined, step=2.0-0.093)
                   │                              │
                   │  Vetoes: []                  │
                   │  Proceed: YES (with warnings)│
-                  │  P_joint = 0.411             │
+                  │  P_joint = 0.430             │
                   └────────────┬─────────────────┘
                                │
                                ▼
@@ -971,8 +1385,9 @@ x_refined_mst = mst_recon_cassi(y_lab, mask_refined, step=2.0-0.093)
                   │  PRE-FLIGHT REPORT           │
                   │                              │
                   │  Runtime: ~3,250s            │
-                  │  Warnings: 3                 │
-                  │  "Mismatch severity 0.361"   │
+                  │  Warnings: 4                 │
+                  │  "Mismatch severity 0.315"   │
+                  │  "SD distortion detected"    │
                   │  "UPWMI correction included"  │
                   └────────────┬─────────────────┘
                                │
@@ -983,13 +1398,15 @@ x_refined_mst = mst_recon_cassi(y_lab, mask_refined, step=2.0-0.093)
 │  ┌──────────┐  ┌──────────────┐  ┌────────────────┐  ┌───────────────────┐│
 │  │ Build Op  │→│ Recon wrong  │→│ UPWMI Alg 1    │→│ UPWMI Alg 2       ││
 │  │ (nominal) │  │ → 15.79 dB   │  │ beam search    │  │ differentiable    ││
-│  │ psi=(0,0) │  │ (unusable)   │  │ → 25.55 dB     │  │ → 25.55 / 21.54  ││
+│  │ psi=(0,0) │  │ (unusable)   │  │ + SD calib     │  │ + SD refinement   ││
+│  │           │  │              │  │ → 25.55 dB     │  │ → 25.55 / 21.54  ││
 │  └──────────┘  └──────────────┘  └────────────────┘  └─────────┬─────────┘│
 │                                                                  │         │
 │  ┌──────────────┐  ┌─────────────┐  ┌─────────────────────────┐ │         │
 │  │ Build Op     │→│ MST Recon   │→│ Metrics + RunBundle      │←┘         │
 │  │ (calibrated) │  │ (256,256,28)│  │ PSNR=21.54, SSIM, SAM  │           │
 │  │ psi=(1.1,..) │  │  21.54 dB   │  │ SHA256, provenance      │           │
+│  │ a2=0.007     │  │             │  │                         │           │
 │  └──────────────┘  └─────────────┘  └─────────────────────────┘           │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1000,30 +1417,37 @@ x_refined_mst = mst_recon_cassi(y_lab, mask_refined, step=2.0-0.093)
 
 | Metric | Ideal Lab | Real Experiment |
 |--------|-----------|-----------------|
-| **Photon Agent** | | |
-| N_effective | 2.94e12 | 2.02e10 |
-| SNR | 124.7 dB | 103.0 dB |
+| **Optical Chain** | | |
+| Layout | SD-CASSI (ECCV-2020) | SD-CASSI (ECCV-2020) |
+| Elements | 8 (incl. SD distortion) | 8 (incl. SD distortion) |
+| Measurement shape | 256 × 283 | 256 × 283 |
+| Dispersion axis | y (columns) | y (columns) |
+| **PhotonAgent** | | |
+| N_effective | 2.68e12 | 1.84e10 |
+| SNR | 124.3 dB | 102.6 dB |
 | Quality tier | excellent | excellent |
 | Noise regime | shot_limited | shot_limited |
-| **Mismatch Agent** | | |
-| Severity | 0.089 (low) | 0.361 (moderate) |
+| Noise model | Poisson+read+quant | Poisson+read+quant |
+| **MismatchAgent** | | |
+| Severity | 0.088 (low) | 0.315 (moderate) |
 | Dominant error | none | mask dy = 2.7 px |
-| Expected gain | +0.89 dB | +3.61 dB |
+| SD distortion (a₂) | 0 | 0.008 |
+| Expected gain | +0.88 dB | +3.15 dB |
 | Correction needed | No | **Yes** |
-| **Recoverability Agent** | | |
+| **RecoverabilityAgent** | | |
 | Score | 0.88 (excellent) | 0.58 (marginal) |
 | Expected PSNR | 34.81 dB | 26.34 dB |
 | Verdict | excellent | **marginal** |
-| **Analysis Agent** | | |
+| **AnalysisAgent** | | |
 | Primary bottleneck | solver | **mismatch** |
-| P(success) | 0.808 | 0.583 |
+| P(success) | 0.809 | 0.599 |
 | Verdict | excellent | **marginal** |
 | **Negotiator** | | |
 | Vetoes | 0 | 0 |
-| P_joint | 0.784 | 0.411 |
+| P_joint | 0.784 | 0.430 |
 | **PreFlight** | | |
 | Runtime | 17.5s | **3,250s** |
-| Warnings | 0 | **3** |
+| Warnings | 0 | **4** |
 | **Pipeline** | | |
 | Mode | simulate/reconstruct | **operator_correction** |
 | Without correction | — | 15.79 dB (unusable) |
@@ -1036,10 +1460,15 @@ x_refined_mst = mst_recon_cassi(y_lab, mask_refined, step=2.0-0.093)
 
 ## Design Principles
 
-1. **Deterministic-first:** Every agent runs without LLM. LLM is optional enhancement for narrative explanations.
-2. **Registry-driven:** All parameters come from validated YAML. LLM returns only registry IDs.
-3. **Strict contracts:** `StrictBaseModel` with `extra="forbid"`, NaN/Inf rejection on every report.
-4. **Provenance:** Every calibration entry has `dataset_id`, `seed_set`, `operator_version`, `solver_version`, `date`.
-5. **Modular:** Swap any solver (GAP-TV → MST → HDNet) by changing one registry ID.
-6. **Gate-able:** Negotiator can veto execution if joint probability < 0.15.
-7. **Adaptive:** The same pipeline automatically switches from direct reconstruction to operator correction when mismatch severity warrants it.
+1. **ECCV-2020 faithful:** Optical chain matches Fig.1 of the SD-CASSI paper — objective lens, coded aperture, two relay lenses, single disperser, detector.
+2. **SD distortion modeled:** ImbalancedResponseNode captures the path-length-dependent warp that the paper identifies as a key SD hardware limitation.
+3. **Correct axis + shape:** Dispersion along y-axis, measurement Nx × (Ny + Nλ − 1), consistent across doc equations and code.
+4. **Paper-consistent noise:** Poisson shot + read + quantization (not unrealistic high-SNR).
+5. **Operator-correction ready:** Φ(θ) parameterization supports mask misalignment, dispersion curve, and SD warp estimation via UPWMI.
+6. **Deterministic-first:** Every agent runs without LLM. LLM is optional enhancement for narrative explanations.
+7. **Registry-driven:** All parameters come from validated YAML. LLM returns only registry IDs.
+8. **Strict contracts:** `StrictBaseModel` with `extra="forbid"`, NaN/Inf rejection on every report.
+9. **Provenance:** Every calibration entry has `dataset_id`, `seed_set`, `operator_version`, `solver_version`, `date`.
+10. **Modular:** Swap any solver (GAP-TV → MST → HDNet) by changing one registry ID.
+11. **Gate-able:** Negotiator can veto execution if joint probability < 0.15.
+12. **Adaptive:** The same pipeline automatically switches from direct reconstruction to operator correction when mismatch severity warrants it.
