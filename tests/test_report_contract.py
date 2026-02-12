@@ -198,7 +198,7 @@ def check_pattern_a(lines: list[str]) -> list[str]:
                 last_elem_idx = i
                 break
         order_ok = (
-            0 < src_lines[0] < first_elem_idx < last_elem_idx
+            0 < src_lines[0] < first_elem_idx <= last_elem_idx
             < sensor_lines[0] < noise_lines[0] < len(lines) - 1
         )
         if not order_ok:
