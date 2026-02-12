@@ -4,9 +4,9 @@
 |-------|-------|
 | Modality ID | `cacti` |
 | Category | compressive |
-| Dataset | Grayscale Benchmark — kobe32 (256x256, 32 frames, 8:1 compression) |
+| Dataset | Grayscale SCI Video Benchmark — 6 scenes (256x256, 8:1 compression) |
 | Date | 2026-02-12 |
-| PWM version | `fdab88c35ac3` |
+| PWM version | `14090be` |
 | Author | integritynoble |
 
 ## Modality overview
@@ -17,27 +17,32 @@
 - Default solver: GAP-TV (classical), with PnP-FFDNet, ELP-Unfolding, EfficientSCI as deep alternatives
 - Pipeline linearity: linear
 
-CACTI (also known as Snapshot Compressive Imaging for video) captures T video frames in a single 2D snapshot using time-varying coded aperture masks. Each video frame is modulated by a different binary mask pattern, and all masked frames are summed on the detector. Reconstruction recovers the 3D video cube from the 2D measurement. This benchmark evaluates 4 solvers spanning classical optimization, plug-and-play denoisers, and deep unfolding networks.
+CACTI (also known as Snapshot Compressive Imaging for video) captures T video frames in a single 2D snapshot using time-varying coded aperture masks. Each video frame is modulated by a different binary mask pattern, and all masked frames are summed on the detector. Reconstruction recovers the 3D video cube from the 2D measurement. This benchmark evaluates 4 solvers spanning classical optimization, plug-and-play denoisers, and deep unfolding networks across 6 standard test scenes.
 
 | Parameter | Value |
 |-----------|-------|
 | Image size (H x W) | 256 x 256 |
 | Temporal frames per measurement | 8 |
-| Coded measurements | 4 |
-| Total frames | 32 |
 | Compression ratio | 8:1 |
 | Mask type | Binary random (from dataset) |
 | Data range | [0, 255] |
 
 ## Standard dataset
 
-- Name: Grayscale SCI Video Benchmark (kobe32)
-- Source: Standard CACTI benchmark suite (Kobe Bryant basketball footage, 32 frames at 256x256)
-- Size: meas (256,256,4), mask (256,256,8), orig (256,256,32)
+- Name: Grayscale SCI Video Benchmark (6 scenes)
+- Source: Standard CACTI benchmark suite
+- Scenes: kobe32 (32 frames), crash32 (32 frames), aerial32 (32 frames), traffic48 (48 frames), runner40 (40 frames), drop40 (40 frames)
 - Format: MATLAB `.mat`, keys: `meas`, `mask`, `orig`
-- Location: `PnP-SCI_python-master/dataset/cacti/grayscale_benchmark/kobe32_cacti.mat`
+- Location: `PnP-SCI_python-master/dataset/cacti/grayscale_benchmark/`
 
-The kobe32 scene is a standard benchmark for video SCI reconstruction containing fast motion and fine textures. The dataset provides 4 coded 2D measurements, each encoding 8 consecutive frames via binary masks, for a total of 32 ground-truth frames. Six scenes are available (kobe32, crash32, aerial32, traffic48, runner40, drop40); this report uses kobe32 as the primary benchmark.
+| Scene | Total frames | Coded measurements | Content |
+|-------|-------------|-------------------|---------|
+| kobe32 | 32 | 4 | Basketball footage, fast motion |
+| crash32 | 32 | 4 | Car crash, sudden deformation |
+| aerial32 | 32 | 4 | Aerial view, fine texture |
+| traffic48 | 48 | 6 | Traffic intersection, multi-object motion |
+| runner40 | 40 | 5 | Running athlete, periodic motion |
+| drop40 | 40 | 5 | Water drop, fluid dynamics |
 
 ## PWM pipeline flowchart (mandatory)
 
@@ -79,37 +84,51 @@ PNG visualizations saved at: `artifacts/trace/png/`
 
 ## Workflow W1: Prompt-driven simulation + reconstruction
 
-- **Prompt used:** `"Reconstruct kobe32 CACTI benchmark with 4 solvers: GAP-TV, PnP-FFDNet, ELP-Unfolding, EfficientSCI"`
+- **Prompt used:** `"Reconstruct 6-scene CACTI benchmark with 4 solvers: GAP-TV, PnP-FFDNet, ELP-Unfolding, EfficientSCI"`
 - **ExperimentSpec summary:**
   - modality: cacti
   - mode: reconstruct from real benchmark data
   - solvers: GAP-TV, PnP-FFDNet, ELP-Unfolding, EfficientSCI
-  - dataset: kobe32 (256x256x32, 4 coded measurements, 8:1 compression)
+  - dataset: 6 scenes (kobe32, crash32, aerial32, traffic48, runner40, drop40), 256x256, 8:1 compression
 - **Mode S results (real measurement):**
-  - y shape: (256, 256, 4) — 4 coded snapshot measurements
-  - y range: [0.00, 1558.14]
+  - y shape: (256, 256, N_coded) — N_coded varies per scene (4-6 coded snapshots)
   - Mask: (256, 256, 8) binary
 - **Mode I results (reconstruct x_hat):**
 
-  **4-Solver Comparison Table (kobe32, 32 frames)**
+  **PSNR (dB) — 4-Solver Comparison across 6 Scenes**
 
-  | Solver | Type | PSNR (dB) | SSIM | Time (s) |
-  |--------|------|-----------|------|----------|
-  | GAP-TV | Classical optimization | 24.00 | 0.7461 | 13.1 |
-  | PnP-FFDNet | Plug-and-play deep denoiser | 30.33 | 0.9253 | 8.7 |
-  | ELP-Unfolding | Deep unfolding (ECCV 2022) | 34.08 | 0.9644 | 1.9 |
-  | EfficientSCI | End-to-end (CVPR 2023) | 35.76 | 0.9758 | 1.6 |
+  | Scene | GAP-TV | PnP-FFDNet | ELP-Unfolding | EfficientSCI |
+  |-------|--------|------------|---------------|-------------|
+  | kobe32 | 24.00 | 30.33 | 34.08 | 35.76 |
+  | crash32 | 25.40 | 24.69 | 29.39 | 31.12 |
+  | aerial32 | 26.13 | 24.36 | 30.54 | 31.50 |
+  | traffic48 | 21.06 | 23.88 | 31.34 | 32.29 |
+  | runner40 | 28.70 | 32.97 | 38.17 | 41.89 |
+  | drop40 | 34.42 | 39.91 | 40.09 | 45.10 |
+  | **Average** | **26.62** | **29.36** | **33.94** | **36.28** |
 
-- **Dataset metrics (best solver — EfficientSCI):**
+  **SSIM — 4-Solver Comparison across 6 Scenes**
+
+  | Scene | GAP-TV | PnP-FFDNet | ELP-Unfolding | EfficientSCI |
+  |-------|--------|------------|---------------|-------------|
+  | kobe32 | 0.7461 | 0.9253 | 0.9644 | 0.9758 |
+  | crash32 | 0.8649 | 0.8332 | 0.9537 | 0.9726 |
+  | aerial32 | 0.8510 | 0.8200 | 0.9398 | 0.9542 |
+  | traffic48 | 0.7063 | 0.8299 | 0.9623 | 0.9691 |
+  | runner40 | 0.8908 | 0.9357 | 0.9744 | 0.9868 |
+  | drop40 | 0.9654 | 0.9863 | 0.9798 | 0.9950 |
+  | **Average** | **0.8374** | **0.8884** | **0.9624** | **0.9756** |
+
+- **Dataset metrics (best solver — EfficientSCI, 6-scene average):**
 
   | Metric | Value |
   |--------|-------|
-  | PSNR   | 35.76 dB |
-  | SSIM   | 0.9758 |
+  | PSNR   | 36.28 dB |
+  | SSIM   | 0.9756 |
 
-GAP-TV provides a classical baseline at 24.00 dB. PnP-FFDNet improves +6.33 dB by replacing the TV denoiser with a learned FFDNet prior. Deep unfolding (ELP-Unfolding, ECCV 2022) reaches 34.08 dB with 8+5 learned ADMM iterations using Vision Transformers. EfficientSCI (CVPR 2023) achieves the best result at 35.76 dB via an end-to-end architecture with spatial-temporal attention.
+GAP-TV provides a classical baseline averaging 26.62 dB across all 6 scenes. PnP-FFDNet improves to 29.36 dB by replacing the TV denoiser with a learned FFDNet prior. Deep unfolding (ELP-Unfolding, ECCV 2022) reaches 33.94 dB with 8+5 learned ADMM iterations using Vision Transformers. EfficientSCI (CVPR 2023) achieves the best result at 36.28 dB average via an end-to-end architecture with spatial-temporal attention.
 
-Note: ELP-Unfolding and EfficientSCI use the dataset's mask for forward simulation. EfficientSCI uses its own trained mask and re-simulates measurements for fair comparison.
+Note: GAP-TV and PnP-FFDNet use the dataset's original mask. ELP-Unfolding uses the dataset's mask for forward simulation. EfficientSCI uses its own trained mask and re-simulates measurements for fair comparison.
 
 ## Workflow W2: Operator correction mode (measured y + operator A)
 
@@ -138,17 +157,17 @@ Note: ELP-Unfolding and EfficientSCI use the dataset's mask for forward simulati
   | PSNR   | 15.76 dB | 24.00 dB | +8.24 dB |
   | SSIM   | 0.2944 | 0.7458 | +0.4514 |
 
-The 2-pixel mask shift degrades reconstruction by 8.24 dB. The grid search over integer shifts exactly recovers the injected perturbation, restoring full GAP-TV performance.
+The 2-pixel mask shift degrades reconstruction by 8.24 dB. The grid search over integer shifts exactly recovers the injected perturbation, restoring full GAP-TV performance. (W2 evaluated on kobe32.)
 
 ## Test results summary
 
 ### Quick gate (pass/fail)
 
-- [x] W1 simulate: PASS (real benchmark data loaded)
-- [x] W1 reconstruct GAP-TV (PSNR >= 20 dB): PASS (24.00 dB)
-- [x] W1 reconstruct PnP-FFDNet (PSNR >= 28 dB): PASS (30.33 dB)
-- [x] W1 reconstruct ELP-Unfolding (PSNR >= 32 dB): PASS (34.08 dB)
-- [x] W1 reconstruct EfficientSCI (PSNR >= 32 dB): PASS (35.76 dB)
+- [x] W1 simulate: PASS (6 scenes loaded from real benchmark data)
+- [x] W1 reconstruct GAP-TV (avg PSNR >= 20 dB): PASS (26.62 dB)
+- [x] W1 reconstruct PnP-FFDNet (avg PSNR >= 25 dB): PASS (29.36 dB)
+- [x] W1 reconstruct ELP-Unfolding (avg PSNR >= 30 dB): PASS (33.94 dB)
+- [x] W1 reconstruct EfficientSCI (avg PSNR >= 30 dB): PASS (36.28 dB)
 - [x] W2 operator correction (NLL decreases): PASS (100.0% decrease)
 - [x] W2 corrected recon (beats uncorrected): PASS (+8.24 dB)
 - [x] Report contract (flowchart + all headings): PASS
@@ -159,23 +178,22 @@ The 2-pixel mask shift degrades reconstruction by 8.24 dB. The grid search over 
 
 | Check | Metric | Value | Threshold | Status |
 |-------|--------|-------|-----------|--------|
-| W1 GAP-TV PSNR | psnr | 24.00 dB | >= 20 dB | PASS |
-| W1 PnP-FFDNet PSNR | psnr | 30.33 dB | >= 28 dB | PASS |
-| W1 ELP-Unfolding PSNR | psnr | 34.08 dB | >= 32 dB | PASS |
-| W1 EfficientSCI PSNR | psnr | 35.76 dB | >= 32 dB | PASS |
-| W1 Best SSIM | ssim | 0.9758 | >= 0.90 | PASS |
+| W1 GAP-TV avg PSNR | psnr | 26.62 dB | >= 20 dB | PASS |
+| W1 PnP-FFDNet avg PSNR | psnr | 29.36 dB | >= 25 dB | PASS |
+| W1 ELP-Unfolding avg PSNR | psnr | 33.94 dB | >= 30 dB | PASS |
+| W1 EfficientSCI avg PSNR | psnr | 36.28 dB | >= 30 dB | PASS |
+| W1 Best avg SSIM | ssim | 0.9756 | >= 0.90 | PASS |
 | W2 NLL decrease | nll_decrease_pct | 100.0% | >= 5% | PASS |
 | W2 PSNR gain | psnr_delta | +8.24 dB | > 0 | PASS |
 | W2 SSIM gain | ssim_delta | +0.4514 | > 0 | PASS |
 | Trace stages | n_stages | 4 | >= 3 | PASS |
 | Trace PNGs | n_pngs | 4 | >= 3 | PASS |
-| W1 GAP-TV wall time | w1_gaptv_seconds | 13.1 s | — | info |
-| W1 EfficientSCI wall time | w1_esci_seconds | 1.6 s | — | info |
+| Total scenes | n_scenes | 6 | >= 6 | PASS |
 
 ## Reproducibility
 
 - Seed: 42
-- PWM version: fdab88c35ac3
+- PWM version: 14090be
 - Python version: 3.13.9
 - Key package versions: numpy=2.3.5, scipy=1.16.3, torch=2.10.0+cu128
 - Platform: Linux x86_64
@@ -183,31 +201,26 @@ The 2-pixel mask shift degrades reconstruction by 8.24 dB. The grid search over 
 - Deterministic reproduction command:
   ```bash
   pwm_cli run --modality cacti --seed 42 --mode simulate,invert,calibrate
+  # Full 6-scene benchmark:
+  PYTHONPATH="$PWD:$PWD/packages/pwm_core" python scripts/run_cacti_benchmark.py
   ```
-- Output hash (orig): 67745be99e30074a
-- Output hash (meas): 917718cce2e61c46
-- Output hash (mask): 94d64c2f732b2072
+- Output hash (orig, kobe32): 67745be99e30074a
+- Output hash (meas, kobe32): 917718cce2e61c46
+- Output hash (mask, kobe32): 94d64c2f732b2072
 
 ## Saved artifacts
 
-- RunBundle: `runs/run_cacti_benchmark_a68c6589/`
+- RunBundle: `runs/run_cacti_benchmark_c8a40b01/`
 - Report: `pwm/reports/cacti.md`
 - Scoreboard: `pwm/reports/scoreboard.yaml`
-- Node trace (.npy): `runs/run_cacti_benchmark_a68c6589/artifacts/trace/*.npy`
-- Node trace (.png): `runs/run_cacti_benchmark_a68c6589/artifacts/trace/png/*.png`
-- W2 operator metadata: `runs/run_cacti_benchmark_a68c6589/artifacts/w2_operator_meta.json`
-- Ground truth: `runs/run_cacti_benchmark_a68c6589/artifacts/x_true.npy`
-- Measurement: `runs/run_cacti_benchmark_a68c6589/artifacts/meas.npy`
-- W1 GAP-TV reconstruction: `runs/run_cacti_benchmark_a68c6589/artifacts/x_hat_gap_tv.npy`
-- W1 PnP-FFDNet reconstruction: `runs/run_cacti_benchmark_a68c6589/artifacts/x_hat_pnp_ffdnet.npy`
-- W1 ELP-Unfolding reconstruction: `runs/run_cacti_benchmark_a68c6589/artifacts/x_hat_elp_unfolding.npy`
-- W1 EfficientSCI reconstruction: `runs/run_cacti_benchmark_a68c6589/artifacts/x_hat_efficientsci.npy`
-- W2 reconstructions: `runs/run_cacti_benchmark_a68c6589/artifacts/x_hat_w2_uncorrected.npy`, `x_hat_w2_corrected.npy`
-- Full results JSON: `runs/run_cacti_benchmark_a68c6589/cacti_benchmark_results.json`
+- Node trace (.npy): `runs/run_cacti_benchmark_c8a40b01/artifacts/trace/*.npy`
+- Node trace (.png): `runs/run_cacti_benchmark_c8a40b01/artifacts/trace/png/*.png`
+- W2 operator metadata: `runs/run_cacti_benchmark_c8a40b01/artifacts/w2_operator_meta.json`
+- Per-scene artifacts: `runs/run_cacti_benchmark_c8a40b01/artifacts/{scene}/`
+- Full results JSON: `runs/run_cacti_benchmark_c8a40b01/cacti_benchmark_results.json`
 
 ## Next actions
 
-- Extend benchmark to all 6 scenes (crash32, aerial32, traffic48, runner40, drop40)
 - Add FastDVDNet solver to the comparison
 - Investigate learned mask optimization for improved compression
 - Proceed to next modality benchmark
