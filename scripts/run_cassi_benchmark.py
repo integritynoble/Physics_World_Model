@@ -5,7 +5,8 @@ Runs GAP-TV, HDNet, MST-S, and MST-L on the TSA simulation benchmark
 (scene01–scene10, 256×256×28, step=2 dispersion).
 
 W1: 4-solver comparison on all 10 scenes
-W2: Mask-shift mismatch + correction on scene01 (GAP-TV)
+W2: 5-scenario realistic mismatch model (mask translation, rotation,
+    dispersion slope, dispersion axis, PSF blur) on scene01 (GAP-TV)
 
 Usage:
     PYTHONPATH="$PWD:$PWD/packages/pwm_core" python scripts/run_cassi_benchmark.py
@@ -55,6 +56,8 @@ NC = 28               # spectral bands
 STEP = 2              # dispersion step
 NOISE_SIGMA = 0.01    # for NLL computation
 RUNS_DIR = os.path.join(PROJECT_ROOT, "runs")
+DET_H = 256                              # fixed detector rows
+DET_W = 256 + (NC - 1) * STEP            # fixed detector cols = 310
 
 # Model weight paths
 HDNET_WEIGHTS = "/home/spiritai/MST-main/model_zoo/hdnet/hdnet.pth"
@@ -140,6 +143,163 @@ def shift_back_np(inputs: np.ndarray, step: int = STEP) -> np.ndarray:
     for i in range(nC):
         output[:, :, i] = inputs[:, i * step:i * step + W, i]
     return output
+
+
+# ── Parametric forward model ────────────────────────────────────────────
+
+def warp_mask(mask2d, dx, dy, theta):
+    """Affine-transform 2D mask: translate (dx,dy) + rotate theta (radians).
+    Uses scipy.ndimage.affine_transform with bilinear interpolation."""
+    from scipy.ndimage import affine_transform
+    H, W = mask2d.shape
+    cos_t, sin_t = np.cos(theta), np.sin(theta)
+    # Rotation matrix (inverse for pull-based affine_transform)
+    R_inv = np.array([[cos_t, sin_t], [-sin_t, cos_t]])
+    # Center of rotation
+    cy, cx = H / 2, W / 2
+    # Offset: translate center, apply inverse rotation, translate back + shift
+    offset = np.array([cy, cx]) - R_inv @ np.array([cy - dy, cx - dx])
+    return affine_transform(mask2d, R_inv, offset=offset, order=1,
+                            mode='constant', cval=0.0).astype(np.float32)
+
+
+def compute_dispersion_shifts(nC, a1, a2=0.0, alpha=0.0):
+    """Compute per-band (col, row) shifts from dispersion curve.
+    delta(l) = a1*l + a2*l^2, direction = (cos alpha, sin alpha).
+    Returns: col_shifts, row_shifts (arrays of nC floats)."""
+    bands = np.arange(nC, dtype=np.float64)
+    delta = a1 * bands + a2 * bands ** 2
+    col_shifts = delta * np.cos(alpha)
+    row_shifts = delta * np.sin(alpha)
+    return col_shifts, row_shifts
+
+
+def shift_np_parametric(inputs, col_shifts, row_shifts=None):
+    """Shift each band by fractional (col, row) offsets within fixed detector.
+    Integer col shifts with zero row shifts use fast direct placement;
+    sub-pixel or row shifts use scipy.ndimage.shift for interpolation."""
+    from scipy.ndimage import shift as ndi_shift
+    H, W, nC = inputs.shape
+    output = np.zeros((DET_H, DET_W, nC), dtype=inputs.dtype)
+    for i in range(nC):
+        cs = col_shifts[i]
+        rs = row_shifts[i] if row_shifts is not None else 0.0
+        if cs == int(cs) and rs == 0.0:
+            c = int(cs)
+            w_copy = min(W, DET_W - c)
+            h_copy = min(H, DET_H)
+            if c >= 0 and w_copy > 0:
+                output[:h_copy, c:c + w_copy, i] = inputs[:h_copy, :w_copy, i]
+        else:
+            canvas = np.zeros((DET_H, DET_W), dtype=inputs.dtype)
+            h_copy = min(H, DET_H)
+            w_copy = min(W, DET_W)
+            canvas[:h_copy, :w_copy] = inputs[:h_copy, :w_copy, i]
+            output[:, :, i] = ndi_shift(canvas, [rs, cs], order=1, mode='constant')
+    return output
+
+
+def shift_back_np_parametric(inputs, col_shifts, row_shifts=None,
+                             orig_H=256, orig_W=256):
+    """Inverse of shift_np_parametric: extract each band from its offset."""
+    from scipy.ndimage import shift as ndi_shift
+    _, _, nC = inputs.shape
+    output = np.zeros((orig_H, orig_W, nC), dtype=inputs.dtype)
+    for i in range(nC):
+        cs = col_shifts[i]
+        rs = row_shifts[i] if row_shifts is not None else 0.0
+        if cs == int(cs) and rs == 0.0:
+            c = int(cs)
+            w_copy = min(orig_W, DET_W - c)
+            if c >= 0 and w_copy > 0:
+                output[:, :w_copy, i] = inputs[:orig_H, c:c + w_copy, i]
+        else:
+            shifted = ndi_shift(inputs[:, :, i], [-rs, -cs], order=1,
+                                mode='constant')
+            output[:, :, i] = shifted[:orig_H, :orig_W]
+    return output
+
+
+def apply_psf(y, sigma):
+    """Apply Gaussian PSF blur to 2D measurement."""
+    if sigma <= 0:
+        return y
+    from scipy.ndimage import gaussian_filter
+    return gaussian_filter(y, sigma=sigma).astype(np.float32)
+
+
+def apply_poisson_read_noise(y_clean, photon_gain=1000.0, read_sigma=5.0,
+                             rng=None):
+    """Poisson shot noise + Gaussian read noise.
+    y_photon = Poisson(gain * y_clean) / gain
+    y_noisy = y_photon + N(0, read_sigma/gain)"""
+    if rng is None:
+        rng = np.random.RandomState(SEED)
+    y_photon = rng.poisson(
+        photon_gain * np.clip(y_clean, 0, None)
+    ) / photon_gain
+    y_noisy = y_photon + rng.randn(*y_clean.shape) * (read_sigma / photon_gain)
+    return y_noisy.astype(np.float32)
+
+
+def cassi_forward(truth, mask2d, a1=2.0, a2=0.0, alpha=0.0,
+                  mask_dx=0.0, mask_dy=0.0, mask_theta=0.0,
+                  psf_sigma=0.0, photon_gain=0, read_sigma=0.0, rng=None):
+    """Full parametric CASSI forward model.
+    Returns y (2D measurement) and Phi_shifted (3D shifted mask)."""
+    # 1. Warp mask
+    if mask_dx != 0 or mask_dy != 0 or mask_theta != 0:
+        mask_warped = warp_mask(mask2d, mask_dx, mask_dy, mask_theta)
+    else:
+        mask_warped = mask2d
+    # 2. Mask the spectral cube
+    mask3d = np.tile(mask_warped[:, :, np.newaxis], (1, 1, NC))
+    masked = truth * mask3d
+    # 3. Dispersion shifts
+    col_shifts, row_shifts = compute_dispersion_shifts(NC, a1, a2, alpha)
+    # 4. Shift + integrate
+    shifted = shift_np_parametric(masked, col_shifts, row_shifts)
+    y = np.sum(shifted, axis=2)
+    # 5. PSF blur
+    y = apply_psf(y, psf_sigma)
+    # 6. Noise
+    if photon_gain > 0:
+        y = apply_poisson_read_noise(y, photon_gain, read_sigma, rng)
+    # Shifted mask for reconstruction
+    Phi_shifted = shift_np_parametric(mask3d, col_shifts, row_shifts)
+    return y, Phi_shifted
+
+
+def spectral_angle_mapper(x_true, x_hat):
+    """SAM: mean spectral angle (degrees) between truth and recon."""
+    dot = np.sum(x_true * x_hat, axis=2)
+    norm_true = np.sqrt(np.sum(x_true ** 2, axis=2))
+    norm_hat = np.sqrt(np.sum(x_hat ** 2, axis=2))
+    cos_angle = dot / (norm_true * norm_hat + 1e-10)
+    cos_angle = np.clip(cos_angle, -1, 1)
+    angles = np.arccos(cos_angle) * 180 / np.pi
+    return float(np.mean(angles))
+
+
+def measurement_residual(y_meas, y_pred):
+    """||y_meas - y_pred||_2 / ||y_meas||_2 (relative residual)."""
+    return float(np.linalg.norm(y_meas - y_pred) / (np.linalg.norm(y_meas) + 1e-10))
+
+
+def wiener_deblur(y, sigma, noise_power=1e-3):
+    """Frequency-domain Wiener deblurring for Gaussian PSF."""
+    from numpy.fft import fft2, ifft2
+    H, W = y.shape
+    ax_r = np.arange(H) - H // 2
+    ax_c = np.arange(W) - W // 2
+    rr, cc = np.meshgrid(ax_r, ax_c, indexing='ij')
+    psf = np.exp(-(rr ** 2 + cc ** 2) / (2 * sigma ** 2))
+    psf /= psf.sum()
+    psf = np.roll(np.roll(psf, -H // 2, axis=0), -W // 2, axis=1)
+    PSF = fft2(psf)
+    Y = fft2(y.astype(np.float64))
+    Wiener = np.conj(PSF) / (np.abs(PSF) ** 2 + noise_power)
+    return np.real(ifft2(Y * Wiener)).astype(np.float32)
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -252,6 +412,47 @@ def gap_tv_cassi(y, Phi, step=STEP, iter_max=50, tv_weight=0.1,
 
     x_final = shift_back_np(x, step=step)
     return x_final, psnr_list, ssim_list
+
+
+def gap_tv_cassi_parametric(y, Phi, col_shifts, row_shifts=None,
+                            orig_H=256, orig_W=256,
+                            iter_max=50, tv_weight=0.1, tv_iter_max=5,
+                            _lambda=1, accelerate=True,
+                            X_orig=None, show_iqa=False):
+    """GAP-TV for parametric CASSI with potentially non-integer dispersion."""
+    x = _At_cassi(y, Phi)
+    y1 = np.zeros_like(y)
+    Phi_sum = np.sum(Phi, 2)
+    Phi_sum[Phi_sum == 0] = 1
+
+    for it in range(iter_max):
+        yb = _A_cassi(x, Phi)
+        if accelerate:
+            y1 = y1 + (y - yb)
+            x = x + _lambda * _At_cassi((y1 - yb) / Phi_sum, Phi)
+        else:
+            x = x + _lambda * _At_cassi((y - yb) / Phi_sum, Phi)
+
+        x_unshifted = shift_back_np_parametric(
+            x, col_shifts, row_shifts, orig_H=orig_H, orig_W=orig_W)
+        x_unshifted = _tv_denoiser(x_unshifted, tv_weight,
+                                   n_iter_max=tv_iter_max)
+        x = shift_np_parametric(x_unshifted, col_shifts, row_shifts)
+
+        if show_iqa and X_orig is not None:
+            from skimage.metrics import structural_similarity
+            p = psnr_band(X_orig, x_unshifted, maxval=1.0)
+            s = float(np.mean([
+                structural_similarity(
+                    X_orig[:, :, b].astype(np.float64),
+                    x_unshifted[:, :, b].astype(np.float64),
+                    data_range=1.0
+                ) for b in range(X_orig.shape[2])
+            ]))
+
+    x_final = shift_back_np_parametric(
+        x, col_shifts, row_shifts, orig_H=orig_H, orig_W=orig_W)
+    return x_final, [], []
 
 
 def run_gap_tv_scene(truth, mask2d, mask3d_shift):
@@ -391,82 +592,158 @@ def run_deep_solvers(models, truths, mask2d, mask3d_shift):
 
 
 # ══════════════════════════════════════════════════════════════════════════
-# W2: Mask-shift mismatch + correction (scene01, GAP-TV)
+# W2: Realistic mismatch model — 5 scenarios (scene01, GAP-TV)
 # ══════════════════════════════════════════════════════════════════════════
 
-def run_w2_mask_shift(truth, mask2d, mask3d_shift):
-    """W2: Inject 2px horizontal mask shift, grid search to recover, compare."""
-    shift_inject = 2
+def _make_grid(base_kw, param_name, values):
+    """Generate search grid: list of dicts, varying one param."""
+    grid = []
+    for v in values:
+        trial = dict(base_kw)
+        trial[param_name] = v
+        grid.append(trial)
+    return grid
 
-    # Perturbed mask: shift 2D mask horizontally by 2 pixels
-    mask2d_pert = np.roll(mask2d, shift_inject, axis=1)
-    mask3d_pert = make_mask3d_from_2d(mask2d_pert, step=STEP)
 
-    # Generate measurement with perturbed mask
-    truth_shift = shift_np(truth, step=STEP)
-    y_pert = _A_cassi(truth_shift, mask3d_pert)  # (256, 310)
+def _make_grid_2d(base_kw, p1_name, p1_vals, p2_name, p2_vals):
+    """Generate 2D search grid."""
+    grid = []
+    for v1 in p1_vals:
+        for v2 in p2_vals:
+            trial = dict(base_kw)
+            trial[p1_name] = v1
+            trial[p2_name] = v2
+            grid.append(trial)
+    return grid
 
-    # NLL with nominal (un-shifted) mask
-    y_pred_nominal = _A_cassi(truth_shift, mask3d_shift)
-    nll_before = compute_nll_gaussian(y_pert, y_pred_nominal, sigma=NOISE_SIGMA)
 
-    # Uncorrected reconstruction: use nominal mask on perturbed measurement
-    print("    Uncorrected reconstruction ...")
-    t0 = time.time()
-    x_uncorr, _, _ = gap_tv_cassi(
-        y_pert, mask3d_shift, step=STEP, iter_max=50,
-        tv_weight=0.1, tv_iter_max=5, _lambda=1, accelerate=True,
+def _recon_parametric(y, Phi, kw, truth, orig_H=256, orig_W=256):
+    """Run GAP-TV reconstruction using parametric shifts from kw."""
+    col_shifts, row_shifts = compute_dispersion_shifts(
+        NC, kw.get('a1', 2.0), kw.get('a2', 0.0), kw.get('alpha', 0.0))
+    x_hat, _, _ = gap_tv_cassi_parametric(
+        y, Phi, col_shifts, row_shifts,
+        orig_H=orig_H, orig_W=orig_W,
+        iter_max=50, tv_weight=0.1, tv_iter_max=5,
+        _lambda=1, accelerate=True,
         X_orig=truth, show_iqa=False,
     )
+    return np.clip(x_hat, 0, 1).astype(np.float32)
+
+
+def run_w2_scenario(name, truth, mask2d, nominal_kw, perturbed_kw,
+                    search_grid, rng):
+    """Generic W2 mismatch scenario runner.
+
+    Parameters
+    ----------
+    name : str — scenario label
+    truth : (H,W,L) array
+    mask2d : (H,W) array
+    nominal_kw : dict — cassi_forward kwargs for nominal (no noise)
+    perturbed_kw : dict — cassi_forward kwargs with mismatch + noise params
+    search_grid : list of dicts — trial params (no noise) for grid search
+    rng : np.random.RandomState
+
+    Returns dict of metrics.
+    """
+    H, W = truth.shape[:2]
+    print(f"    [{name}] Generating measurements ...")
+
+    # 1. Nominal measurement (clean)
+    y_nom, Phi_nom = cassi_forward(truth, mask2d, **nominal_kw)
+
+    # 2. Perturbed measurement (with noise)
+    y_pert, Phi_pert = cassi_forward(truth, mask2d, **perturbed_kw, rng=rng)
+
+    # 3. Nominal reconstruction (baseline: clean operator, clean measurement)
+    print(f"    [{name}] Nominal reconstruction ...")
+    t0 = time.time()
+    x_nom = _recon_parametric(y_nom, Phi_nom, nominal_kw, truth, H, W)
+    t_nom = time.time() - t0
+    m_nom = compute_metrics_allbands(truth, x_nom)
+
+    # 4. Uncorrected reconstruction (nominal operator, perturbed measurement)
+    print(f"    [{name}] Uncorrected reconstruction ...")
+    t0 = time.time()
+    x_uncorr = _recon_parametric(y_pert, Phi_nom, nominal_kw, truth, H, W)
     t_uncorr = time.time() - t0
-    x_uncorr = np.clip(x_uncorr, 0, 1).astype(np.float32)
     m_uncorr = compute_metrics_allbands(truth, x_uncorr)
 
-    # Grid search over horizontal shifts [-5, +5]
-    print("    Grid search over horizontal shifts [-5, +5] ...")
-    best_nll, best_shift = np.inf, 0
-    for trial_shift in range(-5, 6):
-        mask2d_trial = np.roll(mask2d, trial_shift, axis=1)
-        mask3d_trial = make_mask3d_from_2d(mask2d_trial, step=STEP)
-        y_pred_trial = _A_cassi(truth_shift, mask3d_trial)
-        nll_trial = compute_nll_gaussian(y_pert, y_pred_trial, sigma=NOISE_SIGMA)
-        if nll_trial < best_nll:
-            best_nll = nll_trial
-            best_shift = trial_shift
-
-    print(f"    Best shift: {best_shift} pixels (NLL={best_nll:.1f})")
-    nll_after = best_nll
-    nll_decrease_pct = (nll_before - nll_after) / (nll_before + 1e-12) * 100
-
-    # Corrected reconstruction: use best-shift mask
-    mask2d_corr = np.roll(mask2d, best_shift, axis=1)
-    mask3d_corr = make_mask3d_from_2d(mask2d_corr, step=STEP)
-
-    print("    Corrected reconstruction ...")
+    # 5. Grid search: minimize ||y_pert - y_trial||^2
+    print(f"    [{name}] Grid search ({len(search_grid)} trials) ...")
     t0 = time.time()
-    x_corr, _, _ = gap_tv_cassi(
-        y_pert, mask3d_corr, step=STEP, iter_max=50,
-        tv_weight=0.1, tv_iter_max=5, _lambda=1, accelerate=True,
-        X_orig=truth, show_iqa=False,
-    )
+    nll_nom = compute_nll_gaussian(y_pert, y_nom, sigma=NOISE_SIGMA)
+    best_nll, best_trial = np.inf, dict(nominal_kw)
+    for trial_kw in search_grid:
+        y_trial, _ = cassi_forward(truth, mask2d, **trial_kw)
+        nll = compute_nll_gaussian(y_pert, y_trial, sigma=NOISE_SIGMA)
+        if nll < best_nll:
+            best_nll, best_trial = nll, dict(trial_kw)
+    t_grid = time.time() - t0
+    nll_after = best_nll
+    nll_decrease_pct = (nll_nom - nll_after) / (nll_nom + 1e-12) * 100
+
+    print(f"    [{name}] Best params: {best_trial}")
+    print(f"    [{name}] NLL: {nll_nom:.1f} -> {nll_after:.1f} "
+          f"({nll_decrease_pct:.1f}% decrease, grid took {t_grid:.1f}s)")
+
+    # 6. Corrected reconstruction
+    print(f"    [{name}] Corrected reconstruction ...")
+    _, Phi_corr = cassi_forward(truth, mask2d, **best_trial)
+    y_recon = y_pert
+
+    # If PSF was estimated, Wiener-deblur the measurement
+    psf_sigma_best = best_trial.get('psf_sigma', 0.0)
+    if psf_sigma_best > 0:
+        y_recon = wiener_deblur(y_pert, psf_sigma_best)
+
+    t0 = time.time()
+    x_corr = _recon_parametric(y_recon, Phi_corr, best_trial, truth, H, W)
     t_corr = time.time() - t0
-    x_corr = np.clip(x_corr, 0, 1).astype(np.float32)
     m_corr = compute_metrics_allbands(truth, x_corr)
 
+    # 7. SAM + residual
+    sam_uncorr = spectral_angle_mapper(truth, x_uncorr)
+    sam_corr = spectral_angle_mapper(truth, x_corr)
+
+    y_pred_nom, _ = cassi_forward(truth, mask2d, **nominal_kw)
+    y_pred_corr, _ = cassi_forward(truth, mask2d, **best_trial)
+    res_uncorr = measurement_residual(y_pert, y_pred_nom)
+    res_corr = measurement_residual(y_pert, y_pred_corr)
+
+    print(f"    [{name}] PSNR: nom={m_nom['mean_psnr']:.2f}, "
+          f"uncorr={m_uncorr['mean_psnr']:.2f}, corr={m_corr['mean_psnr']:.2f} "
+          f"(delta={m_corr['mean_psnr'] - m_uncorr['mean_psnr']:+.2f})")
+    print(f"    [{name}] SAM:  uncorr={sam_uncorr:.2f}°, corr={sam_corr:.2f}°")
+
     return {
-        "shift_injected": shift_inject,
-        "shift_found": best_shift,
-        "nll_before": round(nll_before, 1),
+        "scenario": name,
+        "nll_before": round(nll_nom, 1),
         "nll_after": round(nll_after, 1),
         "nll_decrease_pct": round(nll_decrease_pct, 1),
+        "psnr_nominal": m_nom["mean_psnr"],
+        "ssim_nominal": m_nom["mean_ssim"],
         "psnr_uncorrected": m_uncorr["mean_psnr"],
         "ssim_uncorrected": m_uncorr["mean_ssim"],
         "psnr_corrected": m_corr["mean_psnr"],
         "ssim_corrected": m_corr["mean_ssim"],
         "psnr_delta": round(m_corr["mean_psnr"] - m_uncorr["mean_psnr"], 2),
         "ssim_delta": round(m_corr["mean_ssim"] - m_uncorr["mean_ssim"], 4),
-        "mask_nominal_hash": sha256_hex16(mask2d),
-        "mask_corrected_hash": sha256_hex16(mask2d_corr),
+        "sam_uncorrected": round(sam_uncorr, 2),
+        "sam_corrected": round(sam_corr, 2),
+        "sam_delta": round(sam_corr - sam_uncorr, 2),
+        "residual_uncorrected": round(res_uncorr, 4),
+        "residual_corrected": round(res_corr, 4),
+        "injected_params": {k: round(v, 6) if isinstance(v, float) else v
+                            for k, v in perturbed_kw.items()
+                            if k not in ('photon_gain', 'read_sigma')},
+        "recovered_params": {k: round(v, 6) if isinstance(v, float) else v
+                             for k, v in best_trial.items()},
+        "time_nominal": round(t_nom, 1),
+        "time_uncorrected": round(t_uncorr, 1),
+        "time_corrected": round(t_corr, 1),
+        "time_grid": round(t_grid, 1),
     }
 
 
@@ -577,54 +854,141 @@ def main():
     results["w1_average"] = avg_results
 
     # ══════════════════════════════════════════════════════════════════════
-    # W2: Mask-shift mismatch + correction (scene01, GAP-TV)
+    # W2: Realistic mismatch model — 5 scenarios (scene01, GAP-TV)
     # ══════════════════════════════════════════════════════════════════════
     print(f"\n{'=' * 70}")
-    print("W2: Mask-shift mismatch + correction (scene01, GAP-TV)")
+    print("W2: Realistic mismatch model (5 scenarios, scene01, GAP-TV)")
     print("=" * 70)
 
-    w2 = run_w2_mask_shift(truths[0], mask2d, mask3d_shift)
+    rng = np.random.RandomState(SEED)
+    truth01 = truths[0]
+    nominal_kw = {"a1": 2.0, "a2": 0.0, "alpha": 0.0}
+    noise_kw = {"photon_gain": 1000.0, "read_sigma": 5.0}
 
-    w2_report = {k: v for k, v in w2.items()}
-    w2_report["a_definition"] = "callable"
-    w2_report["a_extraction_method"] = "provided"
-    w2_report["linearity"] = "linear"
-    w2_report["mismatch_type"] = "synthetic_injected"
-    w2_report["mismatch_description"] = f"Mask-detector horizontal shift: {w2['shift_injected']}px"
-    w2_report["correction_family"] = "Pre"
+    w2_scenarios = {}
+
+    # W2a: Mask translation (dx=2, dy=1)
+    print("\n  W2a: Mask translation (dx=2, dy=1)")
+    grid_a = _make_grid_2d(
+        nominal_kw, "mask_dx", np.arange(-5, 6, dtype=float),
+        "mask_dy", np.arange(-3, 4, dtype=float))
+    w2_scenarios["w2a"] = run_w2_scenario(
+        "W2a", truth01, mask2d, nominal_kw,
+        {**nominal_kw, "mask_dx": 2.0, "mask_dy": 1.0, **noise_kw},
+        grid_a, rng)
+
+    # W2b: Mask rotation (theta=1.0°)
+    print("\n  W2b: Mask rotation (theta=1.0°)")
+    grid_b = _make_grid(
+        nominal_kw, "mask_theta",
+        [np.radians(t) for t in np.arange(-3.0, 3.5, 0.5)])
+    w2_scenarios["w2b"] = run_w2_scenario(
+        "W2b", truth01, mask2d, nominal_kw,
+        {**nominal_kw, "mask_theta": np.radians(1.0), **noise_kw},
+        grid_b, rng)
+
+    # W2c: Dispersion slope (a1=2.15 vs nominal 2.0)
+    print("\n  W2c: Dispersion slope (a1=2.15)")
+    grid_c = _make_grid(
+        nominal_kw, "a1",
+        np.arange(1.8, 2.325, 0.025).tolist())
+    w2_scenarios["w2c"] = run_w2_scenario(
+        "W2c", truth01, mask2d, nominal_kw,
+        {**nominal_kw, "a1": 2.15, **noise_kw},
+        grid_c, rng)
+
+    # W2d: Dispersion axis angle (alpha=2°)
+    print("\n  W2d: Dispersion axis angle (alpha=2°)")
+    grid_d = _make_grid(
+        nominal_kw, "alpha",
+        [np.radians(a) for a in np.arange(-5.0, 6.0, 1.0)])
+    w2_scenarios["w2d"] = run_w2_scenario(
+        "W2d", truth01, mask2d, nominal_kw,
+        {**nominal_kw, "alpha": np.radians(2.0), **noise_kw},
+        grid_d, rng)
+
+    # W2e: PSF blur (sigma=1.5)
+    print("\n  W2e: PSF blur (sigma=1.5)")
+    grid_e = _make_grid(
+        nominal_kw, "psf_sigma",
+        np.arange(0, 3.25, 0.25).tolist())
+    w2_scenarios["w2e"] = run_w2_scenario(
+        "W2e", truth01, mask2d, nominal_kw,
+        {**nominal_kw, "psf_sigma": 1.5, **noise_kw},
+        grid_e, rng)
+
+    # Build W2 summary for results JSON
+    w2_report = {
+        "scenarios": w2_scenarios,
+        "a_definition": "callable",
+        "a_extraction_method": "provided",
+        "linearity": "linear",
+        "mismatch_type": "synthetic_injected",
+        "mismatch_description": (
+            "5 realistic mismatch scenarios: mask translation (dx,dy), "
+            "mask rotation (theta), dispersion slope (a1), "
+            "dispersion axis angle (alpha), PSF blur (sigma)"),
+        "correction_family": "Pre",
+        "noise_model": "Poisson(gain=1000) + read(sigma=5.0)",
+    }
     results["w2"] = w2_report
 
     save_operator_meta(rb_dir, {
         "a_definition": "callable",
         "a_extraction_method": "provided",
-        "a_sha256": w2["mask_nominal_hash"],
+        "a_sha256": sha256_hex16(mask2d),
         "linearity": "linear",
         "mismatch_type": "synthetic_injected",
-        "mismatch_params": {"shift_injected": w2["shift_injected"]},
+        "n_scenarios": 5,
+        "scenarios": {k: {
+            "injected": v["injected_params"],
+            "recovered": v["recovered_params"],
+            "nll_decrease_pct": v["nll_decrease_pct"],
+            "psnr_delta": v["psnr_delta"],
+        } for k, v in w2_scenarios.items()},
         "correction_family": "Pre",
-        "fitted_params": {"shift": w2["shift_found"]},
-        "nll_before": w2["nll_before"],
-        "nll_after": w2["nll_after"],
-        "nll_decrease_pct": w2["nll_decrease_pct"],
+        "noise_model": "Poisson(gain=1000) + read(sigma=5.0)",
         "timestamp": datetime.now(timezone.utc).isoformat(),
     })
 
-    print(f"\n    Injected shift:    {w2['shift_injected']}px")
-    print(f"    Recovered shift:   {w2['shift_found']}px")
-    print(f"    NLL decrease:      {w2['nll_decrease_pct']:.1f}%")
-    print(f"    PSNR delta:        {w2['psnr_delta']:+.2f} dB")
+    # Print W2 summary table
+    print(f"\n{'=' * 70}")
+    print("W2 Summary")
+    print("=" * 70)
+    hdr = (f"{'Scenario':<12} {'NLL decr%':>10} {'PSNR uncorr':>12} "
+           f"{'PSNR corr':>10} {'ΔPSNR':>7} {'SAM uncorr':>11} "
+           f"{'SAM corr':>9}")
+    print(hdr)
+    print("-" * len(hdr))
+    for key in ["w2a", "w2b", "w2c", "w2d", "w2e"]:
+        s = w2_scenarios[key]
+        print(f"{s['scenario']:<12} {s['nll_decrease_pct']:>9.1f}% "
+              f"{s['psnr_uncorrected']:>11.2f} {s['psnr_corrected']:>10.2f} "
+              f"{s['psnr_delta']:>+6.2f} {s['sam_uncorrected']:>10.2f}° "
+              f"{s['sam_corrected']:>8.2f}°")
 
-    # ── Trace (from scene01) ─────────────────────────────────────────────
+    # ── Trace (from scene01 — 8-stage parametric pipeline) ───────────────
     truth01 = truths[0]
-    truth01_shift = shift_np(truth01, step=STEP)
-    y01 = _A_cassi(truth01_shift, mask3d_shift)
+    mask_warped = warp_mask(mask2d, 2.0, 1.0, 0.0)  # example warped mask
+    mask3d_local = np.tile(mask2d[:, :, np.newaxis], (1, 1, NC))
+    masked = truth01 * mask3d_local
+    col_shifts_nom, row_shifts_nom = compute_dispersion_shifts(NC, 2.0, 0.0, 0.0)
+    dispersed = shift_np_parametric(masked, col_shifts_nom, row_shifts_nom)
+    integrated = np.sum(dispersed, axis=2)
+    psf_blurred = apply_psf(integrated, sigma=1.5)
+    noisy_y = apply_poisson_read_noise(psf_blurred, photon_gain=1000.0,
+                                       read_sigma=5.0,
+                                       rng=np.random.RandomState(SEED))
 
     trace = {}
     trace["00_input_x"] = truth01.copy()
-    trace["01_masked"] = (truth01 * np.tile(mask2d[:, :, np.newaxis], (1, 1, NC))).astype(np.float32)
-    trace["02_shifted"] = truth01_shift.copy()
-    trace["03_measurement"] = y01.copy()
-    trace["04_recon_gaptv"] = gap_tv_recons.get(scenes[0], truth01).copy()
+    trace["01_mask_warped"] = mask_warped.copy()
+    trace["02_masked"] = masked.astype(np.float32)
+    trace["03_dispersed"] = dispersed.astype(np.float32)
+    trace["04_integrated"] = integrated.astype(np.float32)
+    trace["05_psf_blurred"] = psf_blurred.astype(np.float32)
+    trace["06_noisy_y"] = noisy_y.astype(np.float32)
+    trace["07_recon_gaptv"] = gap_tv_recons.get(scenes[0], truth01).copy()
     save_trace(rb_dir, trace)
 
     results["trace"] = []
@@ -708,8 +1072,12 @@ def main():
     print("-" * len(header))
     print(row)
 
-    print(f"\nW2 (scene01): NLL decrease {w2['nll_decrease_pct']:.1f}%, "
-          f"PSNR delta {w2['psnr_delta']:+.2f} dB")
+    print(f"\nW2 (5 scenarios on scene01):")
+    for key in ["w2a", "w2b", "w2c", "w2d", "w2e"]:
+        s = w2_scenarios[key]
+        print(f"  {s['scenario']}: NLL decrease {s['nll_decrease_pct']:.1f}%, "
+              f"PSNR delta {s['psnr_delta']:+.2f} dB")
+
     print(f"\nRunBundle: runs/{rb_name}")
     print(f"Results:   {results_path}")
     print("=" * 70)
