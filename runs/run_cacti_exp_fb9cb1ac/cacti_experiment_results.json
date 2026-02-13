@@ -1,0 +1,115 @@
+{
+  "w1": {
+    "psnr": 17.43,
+    "ssim": 0.3999,
+    "nrmse": 0.1493,
+    "solver": "gap_tv_cacti",
+    "sim_time": 0.001,
+    "inv_time": 0.59,
+    "snr_db": 36.4,
+    "y_shape": [
+      64,
+      64
+    ],
+    "y_range": [
+      -0.0155,
+      4.0376
+    ],
+    "x_hat_shape": [
+      64,
+      64,
+      8
+    ],
+    "n_trace_stages": 5
+  },
+  "w2": {
+    "a_definition": "callable",
+    "a_extraction_method": "graph_stripped",
+    "a_sha256": "4ac899bfa1fa4b47b480d1a5c20a25627362cfb5b93f500dce28deb345a8cdfa",
+    "a_corrected_sha256": "f61fb0f5332a84e83c4bade727eb65f88da4290ba40be8131a67878c1a0a4a9e",
+    "linearity": "linear",
+    "mismatch_type": "synthetic_injected",
+    "mismatch_params": {
+      "seed_nominal": 42,
+      "seed_perturbed": 99
+    },
+    "mismatch_description": "Timing jitter: mask seed 42 \u2192 99",
+    "correction_family": "Pre",
+    "fitted_seed": 99,
+    "nll_before": 2317467.2,
+    "nll_after": 1997.0,
+    "nll_decrease_pct": 99.9,
+    "psnr_uncorrected": 16.48,
+    "ssim_uncorrected": 0.3332,
+    "psnr_corrected": 17.36,
+    "ssim_corrected": 0.3891,
+    "nrmse_corrected": 0.1506,
+    "psnr_delta": 0.88,
+    "ssim_delta": 0.0559,
+    "time_uncorrected": 0.65,
+    "time_corrected": 0.65
+  },
+  "trace": [
+    {
+      "stage": 0,
+      "node_id": "input_x",
+      "output_shape": "(64, 64, 8)",
+      "dtype": "float64",
+      "range_min": 0.05,
+      "range_max": 0.95,
+      "artifact_path": "artifacts/trace/00_input_x.npy"
+    },
+    {
+      "stage": 1,
+      "node_id": "source",
+      "output_shape": "(64, 64, 8)",
+      "dtype": "float64",
+      "range_min": 0.05,
+      "range_max": 0.95,
+      "artifact_path": "artifacts/trace/01_source.npy"
+    },
+    {
+      "stage": 2,
+      "node_id": "mask",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": 0.0,
+      "range_max": 4.4849,
+      "artifact_path": "artifacts/trace/02_mask.npy"
+    },
+    {
+      "stage": 3,
+      "node_id": "sensor",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": 0.0,
+      "range_max": 4.0364,
+      "artifact_path": "artifacts/trace/03_sensor.npy"
+    },
+    {
+      "stage": 4,
+      "node_id": "noise_y",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": -0.0155,
+      "range_max": 4.0376,
+      "artifact_path": "artifacts/trace/04_noise_y.npy"
+    }
+  ],
+  "rb_dir": "/home/spiritai/PWM/test2/Physics_World_Model/runs/run_cacti_exp_fb9cb1ac",
+  "rb_name": "run_cacti_exp_fb9cb1ac",
+  "hashes": {
+    "y_hash": "894f6c79c97869d7",
+    "x_hat_w1_hash": "bac4dd1e49c09b83",
+    "x_true_hash": "f54292bc2e3a8270"
+  },
+  "env": {
+    "seed": 42,
+    "rng_state_hash": "5d6a058f2c5c262e",
+    "pwm_version": "db9aa37fbef5",
+    "python_version": "3.13.9",
+    "numpy_version": "2.3.5",
+    "scipy_version": "1.16.3",
+    "platform": "Linux x86_64"
+  }
+}

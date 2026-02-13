@@ -1,0 +1,111 @@
+{
+  "w1": {
+    "psnr": 29.37,
+    "ssim": 0.9944,
+    "nrmse": 0.034,
+    "solver": "cs_mri_wavelet",
+    "sim_time": 0.001,
+    "inv_time": 0.02,
+    "snr_db": 71.9,
+    "y_shape": [
+      64,
+      64
+    ],
+    "y_dtype": "complex128",
+    "x_hat_shape": [
+      64,
+      64
+    ],
+    "n_trace_stages": 5
+  },
+  "w2": {
+    "a_definition": "callable",
+    "a_extraction_method": "graph_stripped",
+    "a_sha256": "53daf0cd161ccb1bb3642292ef3df8867d65d7ce07ec0306e57d45f06a65991d",
+    "a_corrected_sha256": "88ed96e5730289234d4d173df3b27565548b5722901b104ce95cfe79433a54bb",
+    "linearity": "linear",
+    "mismatch_type": "synthetic_injected",
+    "mismatch_params": {
+      "seed_nominal": 42,
+      "seed_perturbed": 99
+    },
+    "mismatch_description": "K-space mask seed 42 \u2192 99",
+    "correction_family": "Pre",
+    "fitted_seed": 99,
+    "nll_before": 943026991.6,
+    "nll_after": 8235.0,
+    "nll_decrease_pct": 100.0,
+    "psnr_uncorrected": 25.02,
+    "ssim_uncorrected": 0.9847,
+    "psnr_corrected": 29.23,
+    "ssim_corrected": 0.9942,
+    "nrmse_corrected": 0.0345,
+    "psnr_delta": 4.22,
+    "ssim_delta": 0.0095,
+    "time_uncorrected": 0.02,
+    "time_corrected": 0.02
+  },
+  "trace": [
+    {
+      "stage": 0,
+      "node_id": "input_x",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": 0.0,
+      "range_max": 0.95,
+      "artifact_path": "artifacts/trace/00_input_x.npy"
+    },
+    {
+      "stage": 1,
+      "node_id": "source",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": 0.0,
+      "range_max": 0.95,
+      "artifact_path": "artifacts/trace/01_source.npy"
+    },
+    {
+      "stage": 2,
+      "node_id": "kspace",
+      "output_shape": "(64, 64)",
+      "dtype": "complex128",
+      "range_min": 0.0,
+      "range_max": 1302.15,
+      "artifact_path": "artifacts/trace/02_kspace.npy"
+    },
+    {
+      "stage": 3,
+      "node_id": "sensor",
+      "output_shape": "(64, 64)",
+      "dtype": "complex128",
+      "range_min": 0.0,
+      "range_max": 1302.15,
+      "artifact_path": "artifacts/trace/03_sensor.npy"
+    },
+    {
+      "stage": 4,
+      "node_id": "noise_y",
+      "output_shape": "(64, 64)",
+      "dtype": "complex128",
+      "range_min": 0.0001,
+      "range_max": 1302.15,
+      "artifact_path": "artifacts/trace/04_noise_y.npy"
+    }
+  ],
+  "rb_dir": "/home/spiritai/PWM/test2/Physics_World_Model/runs/run_mri_exp_f5f0882a",
+  "rb_name": "run_mri_exp_f5f0882a",
+  "hashes": {
+    "y_hash": "e954d05bee381b2a",
+    "x_hat_w1_hash": "39efbadad1acfaf2",
+    "x_true_hash": "8f386bf1868c7090"
+  },
+  "env": {
+    "seed": 42,
+    "rng_state_hash": "5d6a058f2c5c262e",
+    "pwm_version": "1dd6f76b97d6",
+    "python_version": "3.13.9",
+    "numpy_version": "2.3.5",
+    "scipy_version": "1.16.3",
+    "platform": "Linux x86_64"
+  }
+}

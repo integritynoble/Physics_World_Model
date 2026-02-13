@@ -1,0 +1,20 @@
+{
+  "a_definition": "callable",
+  "a_extraction_method": "graph_stripped",
+  "a_sha256": "53daf0cd161ccb1bb3642292ef3df8867d65d7ce07ec0306e57d45f06a65991d",
+  "linearity": "linear",
+  "linearization_notes": "N/A (linear Fourier + masking)",
+  "mismatch_type": "synthetic_injected",
+  "mismatch_params": {
+    "seed_nominal": 42,
+    "seed_perturbed": 99
+  },
+  "correction_family": "Pre",
+  "fitted_params": {
+    "seed": 99
+  },
+  "nll_before": 943026991.6,
+  "nll_after": 8235.0,
+  "nll_decrease_pct": 100.0,
+  "timestamp": "2026-02-12T05:11:00.170906+00:00"
+}

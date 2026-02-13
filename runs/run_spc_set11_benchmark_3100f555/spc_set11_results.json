@@ -1,0 +1,528 @@
+{
+  "benchmark": "spc_set11",
+  "results": {
+    "4pct": {
+      "FISTA-L1": {
+        "per_image_psnr": {
+          "gaussian_blob": 12.23,
+          "circles": 4.38,
+          "stripes_h": 4.34,
+          "checkerboard": 3.07,
+          "phantom": 7.57,
+          "gradient": 5.48,
+          "sinusoidal": 5.07,
+          "block_letter": 7.72,
+          "crosshatch": 2.62,
+          "gabor": 15.9,
+          "speckle": 4.39
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.0892,
+          "circles": 0.0022,
+          "stripes_h": 0.0015,
+          "checkerboard": 0.0017,
+          "phantom": 0.0703,
+          "gradient": 0.007,
+          "sinusoidal": 0.0003,
+          "block_letter": 0.2637,
+          "crosshatch": 0.0057,
+          "gabor": 0.1265,
+          "speckle": 0.0028
+        },
+        "avg_psnr": 6.62,
+        "avg_ssim": 0.0519,
+        "avg_time": 0.117
+      },
+      "FISTA-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 3.57,
+          "circles": 4.2,
+          "stripes_h": 4.27,
+          "checkerboard": 2.94,
+          "phantom": 3.61,
+          "gradient": 5.36,
+          "sinusoidal": 4.99,
+          "block_letter": 2.94,
+          "crosshatch": 4.11,
+          "gabor": 3.42,
+          "speckle": 5.45
+        },
+        "per_image_ssim": {
+          "gaussian_blob": -0.0001,
+          "circles": -0.0036,
+          "stripes_h": -0.0054,
+          "checkerboard": -0.0078,
+          "phantom": 0.0022,
+          "gradient": 0.0039,
+          "sinusoidal": -0.0056,
+          "block_letter": -0.0047,
+          "crosshatch": -0.0383,
+          "gabor": 0.0016,
+          "speckle": -0.0009
+        },
+        "avg_psnr": 4.08,
+        "avg_ssim": -0.0053,
+        "avg_time": 0.516
+      },
+      "TVAL3": {
+        "per_image_psnr": {
+          "gaussian_blob": 13.17,
+          "circles": 6.72,
+          "stripes_h": 6.62,
+          "checkerboard": 4.76,
+          "phantom": 8.74,
+          "gradient": 9.06,
+          "sinusoidal": 7.5,
+          "block_letter": 8.22,
+          "crosshatch": 6.31,
+          "gabor": 16.75,
+          "speckle": 8.66
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.1581,
+          "circles": 0.0053,
+          "stripes_h": 0.0047,
+          "checkerboard": 0.0026,
+          "phantom": 0.0144,
+          "gradient": 0.2442,
+          "sinusoidal": 0.01,
+          "block_letter": 0.0228,
+          "crosshatch": 0.0081,
+          "gabor": 0.212,
+          "speckle": 0.0624
+        },
+        "avg_psnr": 8.77,
+        "avg_ssim": 0.0677,
+        "avg_time": 0.215
+      },
+      "ADMM-DCT-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 19.27,
+          "circles": 8.77,
+          "stripes_h": 9.16,
+          "checkerboard": 6.44,
+          "phantom": 13.14,
+          "gradient": 20.64,
+          "sinusoidal": 12.75,
+          "block_letter": 9.88,
+          "crosshatch": 9.97,
+          "gabor": 18.69,
+          "speckle": 15.75
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.6303,
+          "circles": 0.0903,
+          "stripes_h": 0.2286,
+          "checkerboard": 0.2365,
+          "phantom": 0.3196,
+          "gradient": 0.8347,
+          "sinusoidal": 0.4825,
+          "block_letter": 0.0988,
+          "crosshatch": 0.1257,
+          "gabor": 0.3087,
+          "speckle": 0.2399
+        },
+        "avg_psnr": 13.13,
+        "avg_ssim": 0.3269,
+        "avg_time": 0.936
+      }
+    },
+    "10pct": {
+      "FISTA-L1": {
+        "per_image_psnr": {
+          "gaussian_blob": 12.4,
+          "circles": 4.31,
+          "stripes_h": 4.56,
+          "checkerboard": 3.27,
+          "phantom": 7.77,
+          "gradient": 5.43,
+          "sinusoidal": 5.12,
+          "block_letter": 7.97,
+          "crosshatch": 2.74,
+          "gabor": 16.39,
+          "speckle": 4.51
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.1198,
+          "circles": 0.0208,
+          "stripes_h": 0.0237,
+          "checkerboard": 0.0155,
+          "phantom": 0.0603,
+          "gradient": 0.0046,
+          "sinusoidal": 0.0116,
+          "block_letter": 0.1193,
+          "crosshatch": 0.0123,
+          "gabor": 0.1426,
+          "speckle": -0.0026
+        },
+        "avg_psnr": 6.77,
+        "avg_ssim": 0.048,
+        "avg_time": 0.398
+      },
+      "FISTA-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 3.53,
+          "circles": 4.18,
+          "stripes_h": 4.05,
+          "checkerboard": 2.89,
+          "phantom": 3.56,
+          "gradient": 5.26,
+          "sinusoidal": 5.01,
+          "block_letter": 2.92,
+          "crosshatch": 4.23,
+          "gabor": 3.37,
+          "speckle": 5.44
+        },
+        "per_image_ssim": {
+          "gaussian_blob": -0.003,
+          "circles": -0.0129,
+          "stripes_h": -0.053,
+          "checkerboard": -0.0258,
+          "phantom": -0.0052,
+          "gradient": 0.0033,
+          "sinusoidal": 0.0007,
+          "block_letter": -0.0069,
+          "crosshatch": -0.0122,
+          "gabor": -0.0024,
+          "speckle": 0.0066
+        },
+        "avg_psnr": 4.04,
+        "avg_ssim": -0.0101,
+        "avg_time": 0.501
+      },
+      "TVAL3": {
+        "per_image_psnr": {
+          "gaussian_blob": 13.38,
+          "circles": 8.37,
+          "stripes_h": 9.04,
+          "checkerboard": 5.85,
+          "phantom": 9.09,
+          "gradient": 13.16,
+          "sinusoidal": 10.69,
+          "block_letter": 8.43,
+          "crosshatch": 9.44,
+          "gabor": 16.77,
+          "speckle": 13.34
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.1387,
+          "circles": 0.0068,
+          "stripes_h": 0.007,
+          "checkerboard": 0.0035,
+          "phantom": 0.0178,
+          "gradient": 0.3538,
+          "sinusoidal": 0.015,
+          "block_letter": 0.0088,
+          "crosshatch": 0.0105,
+          "gabor": 0.2153,
+          "speckle": 0.0819
+        },
+        "avg_psnr": 10.69,
+        "avg_ssim": 0.0781,
+        "avg_time": 0.257
+      },
+      "ADMM-DCT-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 36.01,
+          "circles": 10.34,
+          "stripes_h": 14.32,
+          "checkerboard": 7.54,
+          "phantom": 19.9,
+          "gradient": 37.96,
+          "sinusoidal": 18.93,
+          "block_letter": 13.74,
+          "crosshatch": 11.88,
+          "gabor": 31.45,
+          "speckle": 18.56
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.9663,
+          "circles": 0.3903,
+          "stripes_h": 0.789,
+          "checkerboard": 0.4074,
+          "phantom": 0.6848,
+          "gradient": 0.9934,
+          "sinusoidal": 0.8469,
+          "block_letter": 0.3608,
+          "crosshatch": 0.3938,
+          "gabor": 0.9054,
+          "speckle": 0.5199
+        },
+        "avg_psnr": 20.06,
+        "avg_ssim": 0.6598,
+        "avg_time": 0.909
+      }
+    },
+    "25pct": {
+      "FISTA-L1": {
+        "per_image_psnr": {
+          "gaussian_blob": 13.31,
+          "circles": 4.91,
+          "stripes_h": 5.12,
+          "checkerboard": 3.84,
+          "phantom": 8.21,
+          "gradient": 5.97,
+          "sinusoidal": 5.57,
+          "block_letter": 9.08,
+          "crosshatch": 3.18,
+          "gabor": 18.63,
+          "speckle": 5.01
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.126,
+          "circles": 0.0994,
+          "stripes_h": 0.105,
+          "checkerboard": 0.0777,
+          "phantom": 0.0915,
+          "gradient": 0.0099,
+          "sinusoidal": 0.0538,
+          "block_letter": 0.1492,
+          "crosshatch": 0.037,
+          "gabor": 0.2799,
+          "speckle": 0.0248
+        },
+        "avg_psnr": 7.53,
+        "avg_ssim": 0.0958,
+        "avg_time": 0.669
+      },
+      "FISTA-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 3.62,
+          "circles": 4.09,
+          "stripes_h": 4.12,
+          "checkerboard": 2.82,
+          "phantom": 3.6,
+          "gradient": 5.17,
+          "sinusoidal": 4.93,
+          "block_letter": 2.91,
+          "crosshatch": 4.11,
+          "gabor": 3.47,
+          "speckle": 5.39
+        },
+        "per_image_ssim": {
+          "gaussian_blob": -0.003,
+          "circles": -0.0379,
+          "stripes_h": -0.0454,
+          "checkerboard": -0.0454,
+          "phantom": -0.018,
+          "gradient": 0.0014,
+          "sinusoidal": -0.0244,
+          "block_letter": -0.0193,
+          "crosshatch": -0.0164,
+          "gabor": -0.0164,
+          "speckle": 0.0014
+        },
+        "avg_psnr": 4.02,
+        "avg_ssim": -0.0203,
+        "avg_time": 0.518
+      },
+      "TVAL3": {
+        "per_image_psnr": {
+          "gaussian_blob": 13.53,
+          "circles": 8.98,
+          "stripes_h": 9.14,
+          "checkerboard": 6.02,
+          "phantom": 9.45,
+          "gradient": 13.9,
+          "sinusoidal": 12.02,
+          "block_letter": 8.65,
+          "crosshatch": 10.88,
+          "gabor": 16.91,
+          "speckle": 15.75
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.1108,
+          "circles": 0.0071,
+          "stripes_h": 0.0071,
+          "checkerboard": 0.0035,
+          "phantom": 0.0227,
+          "gradient": 0.3422,
+          "sinusoidal": 0.0158,
+          "block_letter": 0.0055,
+          "crosshatch": 0.011,
+          "gabor": 0.1475,
+          "speckle": 0.0829
+        },
+        "avg_psnr": 11.38,
+        "avg_ssim": 0.0687,
+        "avg_time": 0.382
+      },
+      "ADMM-DCT-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 43.38,
+          "circles": 16.56,
+          "stripes_h": 29.82,
+          "checkerboard": 13.13,
+          "phantom": 26.6,
+          "gradient": 44.72,
+          "sinusoidal": 35.05,
+          "block_letter": 18.61,
+          "crosshatch": 17.91,
+          "gabor": 37.72,
+          "speckle": 27.33
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.9828,
+          "circles": 0.8948,
+          "stripes_h": 0.9957,
+          "checkerboard": 0.8765,
+          "phantom": 0.8243,
+          "gradient": 0.9978,
+          "sinusoidal": 0.9975,
+          "block_letter": 0.5231,
+          "crosshatch": 0.8806,
+          "gabor": 0.9467,
+          "speckle": 0.9354
+        },
+        "avg_psnr": 28.26,
+        "avg_ssim": 0.8959,
+        "avg_time": 0.877
+      }
+    },
+    "50pct": {
+      "FISTA-L1": {
+        "per_image_psnr": {
+          "gaussian_blob": 20.41,
+          "circles": 6.26,
+          "stripes_h": 6.49,
+          "checkerboard": 5.09,
+          "phantom": 10.43,
+          "gradient": 6.96,
+          "sinusoidal": 6.8,
+          "block_letter": 32.87,
+          "crosshatch": 4.32,
+          "gabor": 26.68,
+          "speckle": 6.07
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.5061,
+          "circles": 0.2777,
+          "stripes_h": 0.2811,
+          "checkerboard": 0.275,
+          "phantom": 0.2421,
+          "gradient": 0.0185,
+          "sinusoidal": 0.1862,
+          "block_letter": 0.8802,
+          "crosshatch": 0.1233,
+          "gabor": 0.6956,
+          "speckle": 0.074
+        },
+        "avg_psnr": 12.03,
+        "avg_ssim": 0.3236,
+        "avg_time": 1.348
+      },
+      "FISTA-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 3.54,
+          "circles": 3.92,
+          "stripes_h": 3.99,
+          "checkerboard": 2.71,
+          "phantom": 3.44,
+          "gradient": 5.17,
+          "sinusoidal": 4.89,
+          "block_letter": 2.8,
+          "crosshatch": 3.93,
+          "gabor": 3.59,
+          "speckle": 5.23
+        },
+        "per_image_ssim": {
+          "gaussian_blob": -0.0202,
+          "circles": -0.0488,
+          "stripes_h": -0.073,
+          "checkerboard": -0.0639,
+          "phantom": -0.031,
+          "gradient": 0.0017,
+          "sinusoidal": -0.0233,
+          "block_letter": -0.0516,
+          "crosshatch": -0.0147,
+          "gabor": -0.0351,
+          "speckle": -0.0047
+        },
+        "avg_psnr": 3.93,
+        "avg_ssim": -0.0332,
+        "avg_time": 0.589
+      },
+      "TVAL3": {
+        "per_image_psnr": {
+          "gaussian_blob": 13.45,
+          "circles": 8.96,
+          "stripes_h": 9.16,
+          "checkerboard": 5.98,
+          "phantom": 9.4,
+          "gradient": 13.57,
+          "sinusoidal": 12.04,
+          "block_letter": 8.61,
+          "crosshatch": 10.82,
+          "gabor": 16.88,
+          "speckle": 15.77
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.0947,
+          "circles": 0.0071,
+          "stripes_h": 0.0071,
+          "checkerboard": 0.0035,
+          "phantom": 0.0164,
+          "gradient": 0.296,
+          "sinusoidal": 0.0156,
+          "block_letter": 0.0044,
+          "crosshatch": 0.011,
+          "gabor": 0.146,
+          "speckle": 0.0832
+        },
+        "avg_psnr": 11.33,
+        "avg_ssim": 0.0623,
+        "avg_time": 0.554
+      },
+      "ADMM-DCT-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 46.61,
+          "circles": 29.78,
+          "stripes_h": 38.81,
+          "checkerboard": 25.1,
+          "phantom": 36.49,
+          "gradient": 46.21,
+          "sinusoidal": 41.11,
+          "block_letter": 31.64,
+          "crosshatch": 26.3,
+          "gabor": 43.45,
+          "speckle": 36.39
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.9869,
+          "circles": 0.9961,
+          "stripes_h": 0.9995,
+          "checkerboard": 0.9938,
+          "phantom": 0.9298,
+          "gradient": 0.9977,
+          "sinusoidal": 0.9994,
+          "block_letter": 0.7058,
+          "crosshatch": 0.9866,
+          "gabor": 0.9806,
+          "speckle": 0.9911
+        },
+        "avg_psnr": 36.54,
+        "avg_ssim": 0.9607,
+        "avg_time": 0.926
+      }
+    }
+  },
+  "env": {
+    "seed": 42,
+    "resolution": 33,
+    "sampling_rates": [
+      0.04,
+      0.1,
+      0.25,
+      0.5
+    ],
+    "noise_sigma": 0.01,
+    "n_images": 11,
+    "pwm_version": "ae5106be6a89",
+    "python_version": "3.13.9",
+    "numpy_version": "2.3.5",
+    "platform": "Linux x86_64",
+    "date": "2026-02-12T23:32:17.421243+00:00",
+    "scipy_version": "1.16.3"
+  },
+  "rb_dir": "/home/spiritai/PWM/test2/Physics_World_Model/runs/run_spc_set11_benchmark_3100f555"
+}

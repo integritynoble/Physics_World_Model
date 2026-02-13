@@ -266,62 +266,234 @@ modalities:
 
   spc:
     parameters:
-      measurement_noise:
-        range: [0.0, 0.10]
-        typical_error: 0.02
-        unit: "normalized"
-        param_type: "offset"
-        description: "Additive measurement noise from detector electronics"
-      pattern_misalignment:
+      # ── A) Spatial registration (DMD → scene mapping) ──
+      mask_dx:
         range: [-2.0, 2.0]
-        typical_error: 0.5
+        typical_error: 0.4
         unit: "pixels"
         param_type: "spatial_shift"
-        description: "DMD pattern registration error relative to detection"
-      gain:
-        range: [0.5, 1.5]
-        typical_error: 0.15
-        unit: "unitless"
-        param_type: "scale"
-        description: "Photodetector gain drift over acquisition sequence"
-    severity_weights:
-      measurement_noise: 0.25
-      pattern_misalignment: 0.35
-      gain: 0.40
-    correction_method: "grid_search"
-
-  cacti:
-    parameters:
-      mask_shift:
-        range: [-4, 4]
-        typical_error: 1.0
+        description: "DMD pattern horizontal registration error from relay alignment"
+      mask_dy:
+        range: [-2.0, 2.0]
+        typical_error: 0.4
         unit: "pixels"
         param_type: "spatial_shift"
-        description: "Spatial mask shift from imprecise mechanical translation"
-      mask_rotation:
-        range: [-3.0, 3.0]
-        typical_error: 0.5
+        description: "DMD pattern vertical registration error from relay alignment"
+      mask_theta:
+        range: [-0.6, 0.6]
+        typical_error: 0.08
         unit: "degrees"
         param_type: "rotation"
-        description: "Mask rotation error from encoder jitter or mounting"
-      temporal_jitter:
-        range: [-2, 2]
-        typical_error: 0.5
-        unit: "frames"
-        param_type: "timing"
-        description: "Mask-detector timing synchronization error"
-      psf_sigma:
-        range: [0.3, 2.0]
+        description: "Small rotation between DMD grid and scene plane"
+      mask_scale:
+        range: [0.98, 1.02]
+        typical_error: 0.005
+        unit: "ratio"
+        param_type: "scale"
+        description: "Magnification error from relay lens focal mismatch"
+      # ── B) DMD non-ideality ──
+      mask_contrast:
+        range: [0.92, 1.00]
+        typical_error: 0.015
+        unit: "ratio"
+        param_type: "modulation"
+        description: "DMD contrast ratio degradation from diffraction and fill factor"
+      mask_blur_sigma:
+        range: [0.0, 1.8]
         typical_error: 0.3
         unit: "pixels"
         param_type: "blur"
-        description: "Optical blur from relay lens defocus"
+        description: "Pattern edge blur from defocus or relay PSF"
+      dead_mirror_rate:
+        range: [0.0, 0.001]
+        typical_error: 0.0002
+        unit: "fraction"
+        param_type: "dropout"
+        description: "Fraction of stuck/dead DMD mirrors"
+      # ── C) Temporal mismatch ──
+      clock_offset:
+        range: [-0.25, 0.25]
+        typical_error: 0.03
+        unit: "pattern_duration"
+        param_type: "temporal_shift"
+        description: "DMD pattern start offset relative to detector integration window"
+      timing_jitter_std:
+        range: [0.0, 0.12]
+        typical_error: 0.015
+        unit: "pattern_duration"
+        param_type: "temporal_noise"
+        description: "Pattern switching time jitter from hardware clock instability"
+      duty_cycle:
+        range: [0.75, 1.00]
+        typical_error: 0.03
+        unit: "ratio"
+        param_type: "temporal_modulation"
+        description: "Effective integration fraction per pattern (finite rise/fall time)"
+      # ── D) Sensor/readout ──
+      gain:
+        range: [0.75, 1.25]
+        typical_error: 0.06
+        unit: "ratio"
+        param_type: "scale"
+        description: "Bucket detector gain mismatch from calibration error"
+      dark_current:
+        range: [0.0, 0.04]
+        typical_error: 0.008
+        unit: "normalized"
+        param_type: "offset"
+        description: "Detector dark current contributing DC offset per measurement"
+      offset:
+        range: [-0.025, 0.025]
+        typical_error: 0.004
+        unit: "normalized"
+        param_type: "bias"
+        description: "Electronics bias offset in readout chain"
+      read_sigma:
+        range: [0.0, 0.015]
+        typical_error: 0.003
+        unit: "normalized"
+        param_type: "noise"
+        description: "Read noise standard deviation from detector electronics"
+      # ── E) Illumination drift (low-dim structured model) ──
+      illum_drift_linear:
+        range: [-0.15, 0.15]
+        typical_error: 0.02
+        unit: "fraction_per_sequence"
+        param_type: "temporal_trend"
+        description: "Linear illumination drift over pattern sequence"
+      illum_drift_sin_amp:
+        range: [0.0, 0.12]
+        typical_error: 0.02
+        unit: "fraction"
+        param_type: "temporal_modulation"
+        description: "Sinusoidal illumination fluctuation amplitude"
+      illum_drift_sin_freq:
+        range: [0.0, 5.0]
+        typical_error: 0.5
+        unit: "cycles_per_sequence"
+        param_type: "temporal_frequency"
+        description: "Sinusoidal illumination fluctuation frequency"
     severity_weights:
-      mask_shift: 0.30
-      mask_rotation: 0.10
-      temporal_jitter: 0.30
-      psf_sigma: 0.30
-    correction_method: "grid_search"
+      mask_dx: 0.12
+      mask_dy: 0.12
+      mask_theta: 0.08
+      mask_scale: 0.04
+      mask_contrast: 0.05
+      mask_blur_sigma: 0.06
+      dead_mirror_rate: 0.02
+      clock_offset: 0.10
+      timing_jitter_std: 0.07
+      duty_cycle: 0.05
+      gain: 0.08
+      dark_current: 0.04
+      offset: 0.03
+      read_sigma: 0.04
+      illum_drift_linear: 0.06
+      illum_drift_sin_amp: 0.05
+      illum_drift_sin_freq: 0.04
+    correction_method: "UPWMI_multistage_search"
+    correction_stages:
+      - name: "coarse_spatial"
+        params: [mask_dx, mask_dy]
+        search: "grid_int"
+        grid_size: [5, 5]
+      - name: "refine_spatial_temporal"
+        params: [mask_dx, mask_dy, mask_theta, clock_offset]
+        search: "grid_fine"
+        grid_size: [11, 11, 11, 9]
+      - name: "illumination_drift"
+        params: [illum_drift_linear, illum_drift_sin_amp, illum_drift_sin_freq]
+        search: "grid"
+        grid_size: [13, 9, 7]
+      - name: "sensor_calibration"
+        params: [gain, offset, dark_current]
+        search: "grid"
+        grid_size: [21, 9, 11]
+
+  cacti:
+    parameters:
+      # ── Spatial: mask–sensor registration ──
+      mask_dx:
+        range: [-3.0, 3.0]
+        typical_error: 0.5
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Coded mask horizontal registration error from mounting tolerances or relay alignment"
+      mask_dy:
+        range: [-3.0, 3.0]
+        typical_error: 0.5
+        unit: "pixels"
+        param_type: "spatial_shift"
+        description: "Coded mask vertical registration error from mounting tolerances or relay alignment"
+      mask_theta:
+        range: [-0.6, 0.6]
+        typical_error: 0.05
+        unit: "degrees"
+        param_type: "rotation"
+        description: "Small rotation between mask grid and sensor grid from assembly tolerance"
+      mask_blur_sigma:
+        range: [0.0, 2.0]
+        typical_error: 0.3
+        unit: "pixels"
+        param_type: "blur"
+        description: "Mask edge blur from defocus, relay PSF, or DMD fill factor"
+      # ── Temporal: coding mismatch (CACTI-specific) ──
+      clock_offset:
+        range: [-0.5, 0.5]
+        typical_error: 0.05
+        unit: "frames"
+        param_type: "timing"
+        description: "DMD pattern sequence start offset relative to camera integration window"
+      timing_jitter_std:
+        range: [0.0, 0.2]
+        typical_error: 0.03
+        unit: "frames"
+        param_type: "timing"
+        description: "Pattern switching time jitter from hardware clock instability"
+      duty_cycle:
+        range: [0.7, 1.0]
+        typical_error: 0.03
+        unit: "normalized"
+        param_type: "timing"
+        description: "Pattern not fully on for the full sub-exposure (finite rise/fall time, sync)"
+      temporal_response_tau:
+        range: [0.0, 2.0]
+        typical_error: 0.2
+        unit: "ms"
+        param_type: "timing"
+        description: "Effective temporal blur from camera response or DMD settling time"
+      # ── Sensor: gain/offset/noise ──
+      gain:
+        range: [0.5, 1.5]
+        typical_error: 0.1
+        unit: "unitless"
+        param_type: "scale"
+        description: "Detector gain mismatch from camera calibration error"
+      offset:
+        range: [-0.1, 0.1]
+        typical_error: 0.01
+        unit: "normalized"
+        param_type: "offset"
+        description: "Detector DC offset from dark current or electronics bias"
+      read_sigma:
+        range: [0.0, 0.05]
+        typical_error: 0.01
+        unit: "normalized"
+        param_type: "offset"
+        description: "Read noise standard deviation from detector electronics"
+    severity_weights:
+      mask_dx: 0.12
+      mask_dy: 0.12
+      mask_theta: 0.08
+      mask_blur_sigma: 0.06
+      clock_offset: 0.16
+      timing_jitter_std: 0.10
+      duty_cycle: 0.08
+      temporal_response_tau: 0.06
+      gain: 0.08
+      offset: 0.05
+      read_sigma: 0.09
+    correction_method: "UPWMI_multistage_search"
 
   # ==========================================================================
   # Lensless Imaging

@@ -1,0 +1,20 @@
+{
+  "a_definition": "callable",
+  "a_extraction_method": "graph_stripped",
+  "a_sha256": "a56d99fe6b3bc8fc43796fa452ded45f918f06789c2f838600205e58c43544f0",
+  "linearity": "nonlinear",
+  "linearization_notes": "Beer-Lambert exp(-x) is nonlinear",
+  "mismatch_type": "synthetic_injected",
+  "mismatch_params": {
+    "angle_offset_nominal": 0.0,
+    "angle_offset_perturbed": 2.0
+  },
+  "correction_family": "Pre",
+  "fitted_params": {
+    "angle_offset": 2.0
+  },
+  "nll_before": 5798004.3,
+  "nll_after": 5834.0,
+  "nll_decrease_pct": 99.9,
+  "timestamp": "2026-02-12T04:55:22.889714+00:00"
+}

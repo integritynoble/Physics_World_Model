@@ -1,0 +1,119 @@
+{
+  "w1": {
+    "psnr": 30.2,
+    "ssim": 0.907,
+    "nrmse": 0.0311,
+    "solver": "fista_l1",
+    "sim_time": 0.002,
+    "inv_time": 1.56,
+    "snr_db": 19.2,
+    "y_shape": [
+      614
+    ],
+    "y_range": [
+      -0.2793,
+      0.2878
+    ],
+    "x_hat_shape": [
+      64,
+      64
+    ],
+    "n_trace_stages": 5
+  },
+  "w2": {
+    "a_definition": "matrix",
+    "a_extraction_method": "graph_stripped",
+    "a_shape": [
+      614,
+      4096
+    ],
+    "a_sha256": "50ad8eaeb3d49ff49fe1a9ea572ce858febb62b61e7115f242ba6bb0868827e2",
+    "a_corrected_sha256": "efff142cdb0e09d2b74215076ec76060ae2a627368799781828b8f468e78d0fb",
+    "linearity": "linear",
+    "mismatch_type": "synthetic_injected",
+    "mismatch_params": {
+      "per_row_gain_range": [
+        0.9,
+        1.1
+      ]
+    },
+    "mismatch_description": "Per-row gain drift in [0.9, 1.1] (DMD nonuniformity)",
+    "correction_family": "Pre",
+    "fitted_gain_rmse": 0.1704,
+    "nll_before": 377.5,
+    "nll_after": 40.1,
+    "nll_decrease_pct": 89.4,
+    "psnr_uncorrected": 31.9,
+    "ssim_uncorrected": 0.9436,
+    "psnr_corrected": 41.35,
+    "ssim_corrected": 0.9939,
+    "nrmse_corrected": 0.0086,
+    "psnr_delta": 9.45,
+    "ssim_delta": 0.0503,
+    "time_uncorrected": 1.57,
+    "time_corrected": 1.59
+  },
+  "trace": [
+    {
+      "stage": 0,
+      "node_id": "input_x",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": 0.0,
+      "range_max": 0.9946,
+      "artifact_path": "artifacts/trace/00_input_x.npy"
+    },
+    {
+      "stage": 1,
+      "node_id": "source",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": 0.0,
+      "range_max": 0.9946,
+      "artifact_path": "artifacts/trace/01_source.npy"
+    },
+    {
+      "stage": 2,
+      "node_id": "measure",
+      "output_shape": "(614,)",
+      "dtype": "float64",
+      "range_min": -0.301,
+      "range_max": 0.3172,
+      "artifact_path": "artifacts/trace/02_measure.npy"
+    },
+    {
+      "stage": 3,
+      "node_id": "sensor",
+      "output_shape": "(614,)",
+      "dtype": "float64",
+      "range_min": -0.2709,
+      "range_max": 0.2855,
+      "artifact_path": "artifacts/trace/03_sensor.npy"
+    },
+    {
+      "stage": 4,
+      "node_id": "noise_y",
+      "output_shape": "(614,)",
+      "dtype": "float64",
+      "range_min": -0.2793,
+      "range_max": 0.2878,
+      "artifact_path": "artifacts/trace/04_noise_y.npy"
+    }
+  ],
+  "rb_dir": "/home/spiritai/PWM/test2/Physics_World_Model/runs/run_spc_exp_4b56ea18",
+  "rb_name": "run_spc_exp_4b56ea18",
+  "hashes": {
+    "y_hash": "32a6de1615ca1341",
+    "x_hat_w1_hash": "7652902db9e54ad4",
+    "x_true_hash": "b388aa57989103c6"
+  },
+  "env": {
+    "seed": 42,
+    "rng_state_hash": "5d6a058f2c5c262e",
+    "pwm_version": "ff34c58b9731",
+    "python_version": "3.13.9",
+    "numpy_version": "2.3.5",
+    "scipy_version": "1.16.3",
+    "platform": "Linux x86_64"
+  }
+}

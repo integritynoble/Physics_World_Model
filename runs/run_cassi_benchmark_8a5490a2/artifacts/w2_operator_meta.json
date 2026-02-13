@@ -1,0 +1,18 @@
+{
+  "a_definition": "callable",
+  "a_extraction_method": "provided",
+  "a_sha256": "1a9dbae46d79a133",
+  "linearity": "linear",
+  "mismatch_type": "synthetic_injected",
+  "mismatch_params": {
+    "shift_injected": 2
+  },
+  "correction_family": "Pre",
+  "fitted_params": {
+    "shift": 2
+  },
+  "nll_before": 3764967.2,
+  "nll_after": 0.0,
+  "nll_decrease_pct": 100.0,
+  "timestamp": "2026-02-12T22:25:56.373650+00:00"
+}
