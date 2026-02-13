@@ -5,7 +5,8 @@ Runs GAP-TV, PnP-FFDNet, ELP-Unfolding, and EfficientSCI on the full
 grayscale benchmark (kobe32, crash32, aerial32, traffic48, runner40, drop40).
 
 W1: 4-solver comparison on all 6 scenes
-W2: Mask-shift mismatch + correction on kobe32 (GAP-TV)
+W2: Multi-stage realistic mismatch model (spatial + temporal + sensor)
+    with Poisson+Read+Quantization noise, evaluated on 3 scenes
 
 Usage:
     PYTHONPATH="$PWD:$PWD/packages/pwm_core" python scripts/run_cacti_benchmark.py
@@ -132,6 +133,261 @@ def load_scene(scene: str) -> tuple:
     path = os.path.join(DATASET_DIR, f"{scene}_cacti.mat")
     data = sio.loadmat(path)
     return np.float32(data["meas"]), np.float32(data["mask"]), np.float32(data["orig"])
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# Parametric CACTI forward model (physically realistic)
+# ══════════════════════════════════════════════════════════════════════════
+
+def warp_mask_3d(mask3d, dx=0.0, dy=0.0, theta=0.0, blur_sigma=0.0):
+    """Affine-transform 3D mask (H,W,T): translate (dx,dy) + rotate theta (deg)
+    + optional Gaussian blur per frame.
+    Uses scipy.ndimage for sub-pixel interpolation."""
+    from scipy.ndimage import affine_transform, gaussian_filter
+    H, W, T = mask3d.shape
+    theta_rad = np.radians(theta)
+    cos_t, sin_t = np.cos(theta_rad), np.sin(theta_rad)
+    R_inv = np.array([[cos_t, sin_t], [-sin_t, cos_t]])
+    cy, cx = H / 2, W / 2
+    offset = np.array([cy, cx]) - R_inv @ np.array([cy - dy, cx - dx])
+
+    result = np.zeros_like(mask3d)
+    for t in range(T):
+        frame = affine_transform(mask3d[:, :, t], R_inv, offset=offset,
+                                 order=1, mode='constant', cval=0.0)
+        if blur_sigma > 0:
+            frame = gaussian_filter(frame, sigma=blur_sigma)
+        result[:, :, t] = frame
+    return result.astype(np.float32)
+
+
+def apply_temporal_mixing(x_cube, mask3d, clock_offset=0.0, duty_cycle=1.0,
+                          timing_jitter_std=0.0, temporal_tau=0.0, rng=None):
+    """Apply temporal coding with realistic timing mismatches.
+
+    Parameters
+    ----------
+    x_cube : (H,W,T) video cube in [0,255]
+    mask3d : (H,W,T) mask array
+    clock_offset : float, fractional frame offset (DMD vs camera sync)
+    duty_cycle : float in (0,1], effective sub-exposure fraction
+    timing_jitter_std : float, per-frame timing jitter (std, in frames)
+    temporal_tau : float, temporal blur time constant (frames)
+    rng : RandomState for jitter
+
+    Returns
+    -------
+    y : (H,W) 2D measurement
+    """
+    H, W, T = x_cube.shape
+    if rng is None:
+        rng = np.random.RandomState(SEED)
+
+    # Apply clock offset: shift effective mask in time domain
+    # This causes frame t to be partially exposed with mask t-1 and t+1
+    effective_mask = mask3d.copy()
+
+    if abs(clock_offset) > 1e-6:
+        alpha = clock_offset  # fractional shift
+        new_mask = np.zeros_like(mask3d)
+        for t in range(T):
+            t_lo = max(0, t)
+            t_hi = min(T - 1, t + 1)
+            t_prev = max(0, t - 1)
+            if alpha >= 0:
+                new_mask[:, :, t] = (1 - alpha) * mask3d[:, :, t] + alpha * mask3d[:, :, t_hi]
+            else:
+                new_mask[:, :, t] = (1 + alpha) * mask3d[:, :, t] + (-alpha) * mask3d[:, :, t_prev]
+        effective_mask = new_mask
+
+    # Apply duty cycle: scale mask transmission
+    effective_mask = effective_mask * duty_cycle
+
+    # Apply per-frame timing jitter
+    if timing_jitter_std > 0:
+        jitter = rng.randn(T) * timing_jitter_std
+        for t in range(T):
+            j = jitter[t]
+            if abs(j) > 1e-6:
+                t_lo = max(0, t - 1)
+                t_hi = min(T - 1, t + 1)
+                leak = min(abs(j), 0.5)
+                if j > 0:
+                    effective_mask[:, :, t] = (1 - leak) * effective_mask[:, :, t] + \
+                                               leak * effective_mask[:, :, t_hi]
+                else:
+                    effective_mask[:, :, t] = (1 - leak) * effective_mask[:, :, t] + \
+                                               leak * effective_mask[:, :, t_lo]
+
+    # Apply temporal response blur (exponential decay across frames)
+    if temporal_tau > 0:
+        from scipy.ndimage import uniform_filter1d
+        kernel_size = max(1, int(2 * temporal_tau + 1))
+        if kernel_size > 1:
+            for h in range(0, H, 16):
+                h_end = min(h + 16, H)
+                block = effective_mask[h:h_end, :, :]
+                effective_mask[h:h_end, :, :] = uniform_filter1d(
+                    block, size=kernel_size, axis=2, mode='nearest')
+
+    # Integrate: y = sum_t(mask_t * x_t)
+    y = np.sum(effective_mask * x_cube, axis=2)
+    return y.astype(np.float32)
+
+
+def apply_psf_2d(y, sigma):
+    """Apply Gaussian PSF blur to 2D measurement."""
+    if sigma <= 0:
+        return y
+    from scipy.ndimage import gaussian_filter
+    return gaussian_filter(y, sigma=sigma).astype(np.float32)
+
+
+def apply_poisson_read_quant_noise(y_clean, peak_photons=10000.0,
+                                    read_sigma=5.0, bit_depth=12,
+                                    rng=None):
+    """Poisson shot noise + Gaussian read noise + quantization.
+
+    Parameters
+    ----------
+    y_clean : 2D measurement (in data units, [0, ~sum_of_maxvals])
+    peak_photons : photon count at max signal level
+    read_sigma : read noise std in photon-equivalent units
+    bit_depth : ADC bit depth for quantization (0 = no quantization)
+    rng : RandomState
+
+    Returns
+    -------
+    y_noisy : noisy measurement (same scale as input)
+    """
+    if rng is None:
+        rng = np.random.RandomState(SEED)
+
+    y_max = np.max(y_clean) + 1e-10
+    # Normalize to [0,1] for photon scaling
+    y_norm = np.clip(y_clean / y_max, 0, None)
+
+    # Poisson shot noise
+    y_photon = rng.poisson(peak_photons * y_norm) / peak_photons
+
+    # Read noise
+    y_noisy = y_photon + rng.randn(*y_clean.shape) * (read_sigma / peak_photons)
+
+    # Quantization
+    if bit_depth > 0:
+        n_levels = 2 ** bit_depth
+        y_noisy = np.round(y_noisy * n_levels) / n_levels
+
+    # Scale back to original range
+    y_noisy = y_noisy * y_max
+    return y_noisy.astype(np.float32)
+
+
+def cacti_forward(orig_block, mask3d,
+                  mask_dx=0.0, mask_dy=0.0, mask_theta=0.0,
+                  mask_blur_sigma=0.0,
+                  clock_offset=0.0, duty_cycle=1.0,
+                  timing_jitter_std=0.0, temporal_response_tau=0.0,
+                  psf_sigma=0.0, gain=1.0, offset=0.0,
+                  peak_photons=0, read_sigma=5.0, bit_depth=12,
+                  rng=None):
+    """Full parametric CACTI forward model.
+
+    Parameters
+    ----------
+    orig_block : (H,W,T) video cube in [0,255]
+    mask3d : (H,W,T) mask array
+    [spatial params] mask_dx, mask_dy, mask_theta, mask_blur_sigma
+    [temporal params] clock_offset, duty_cycle, timing_jitter_std, temporal_response_tau
+    [sensor params] psf_sigma, gain, offset
+    [noise params] peak_photons (0=no noise), read_sigma, bit_depth
+
+    Returns
+    -------
+    y : (H,W) 2D measurement
+    mask_used : (H,W,T) effective mask after warping
+    """
+    # 1. Warp mask (spatial mismatches)
+    if abs(mask_dx) > 1e-6 or abs(mask_dy) > 1e-6 or abs(mask_theta) > 1e-6 \
+       or mask_blur_sigma > 1e-6:
+        mask_used = warp_mask_3d(mask3d, mask_dx, mask_dy, mask_theta,
+                                 mask_blur_sigma)
+    else:
+        mask_used = mask3d.copy()
+
+    # 2. Temporal coding with mismatches
+    y = apply_temporal_mixing(orig_block, mask_used,
+                              clock_offset=clock_offset,
+                              duty_cycle=duty_cycle,
+                              timing_jitter_std=timing_jitter_std,
+                              temporal_tau=temporal_response_tau,
+                              rng=rng)
+
+    # 3. PSF blur (objective lens)
+    y = apply_psf_2d(y, psf_sigma)
+
+    # 4. Sensor gain + offset
+    y = gain * y + offset * MAXB
+
+    # 5. Noise
+    if peak_photons > 0:
+        y = apply_poisson_read_quant_noise(y, peak_photons, read_sigma,
+                                            bit_depth, rng)
+
+    return y, mask_used
+
+
+def compute_nll_poisson_read(y_meas, y_pred, peak_photons=10000.0,
+                              read_sigma=5.0):
+    """NLL for Poisson+Read noise model (Gaussian approximation).
+    Uses combined variance: var = y_pred/gain + read_sigma^2."""
+    y_max = np.max(y_meas) + 1e-10
+    y_norm_pred = np.clip(y_pred / y_max, 1e-10, None)
+    sigma2 = y_norm_pred / peak_photons + (read_sigma / peak_photons) ** 2
+    sigma2_scaled = sigma2 * y_max ** 2
+    residual = (y_meas - y_pred) ** 2
+    # Sum of residual^2 / (2*sigma^2)
+    nll = float(0.5 * np.sum(residual / (sigma2_scaled + 1e-10)))
+    return nll
+
+
+# ── Grid search helpers ───────────────────────────────────────────────────
+
+def _make_grid_1d(base_kw, param_name, values):
+    """Generate search grid varying one param."""
+    grid = []
+    for v in values:
+        trial = dict(base_kw)
+        trial[param_name] = float(v)
+        grid.append(trial)
+    return grid
+
+
+def _make_grid_2d(base_kw, p1_name, p1_vals, p2_name, p2_vals):
+    """Generate 2D search grid."""
+    grid = []
+    for v1 in p1_vals:
+        for v2 in p2_vals:
+            trial = dict(base_kw)
+            trial[p1_name] = float(v1)
+            trial[p2_name] = float(v2)
+            grid.append(trial)
+    return grid
+
+
+def _make_grid_3d(base_kw, p1_name, p1_vals, p2_name, p2_vals,
+                  p3_name, p3_vals):
+    """Generate 3D search grid."""
+    grid = []
+    for v1 in p1_vals:
+        for v2 in p2_vals:
+            for v3 in p3_vals:
+                trial = dict(base_kw)
+                trial[p1_name] = float(v1)
+                trial[p2_name] = float(v2)
+                trial[p3_name] = float(v3)
+                grid.append(trial)
+    return grid
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -367,72 +623,243 @@ def run_efficientsci(orig, esci_model, esci_mask_t, Phi, Phi_s):
 
 
 # ══════════════════════════════════════════════════════════════════════════
-# W2: Mismatch + Correction (mask shift) — kobe32 only
+# W2: Multi-stage mismatch correction (realistic CACTI)
 # ══════════════════════════════════════════════════════════════════════════
 
-def run_w2_mask_shift(meas, mask, orig, nframe):
+# Injected mismatch parameters (physically realistic set)
+W2_INJECTED = {
+    "mask_dx": 1.5,
+    "mask_dy": 1.0,
+    "mask_theta": 0.3,
+    "mask_blur_sigma": 0.0,
+    "clock_offset": 0.08,
+    "duty_cycle": 0.92,
+    "timing_jitter_std": 0.0,
+    "temporal_response_tau": 0.0,
+    "gain": 1.05,
+    "offset": 0.005,
+}
+
+# Noise parameters (Poisson + Read + Quantization)
+W2_NOISE = {
+    "peak_photons": 10000.0,
+    "read_sigma": 5.0,
+    "bit_depth": 12,
+}
+
+W2_SCENES = ["kobe32", "crash32", "runner40"]
+
+
+def run_w2_multistage(orig, mask, scene_name, rng):
+    """Multi-stage CACTI operator correction on one scene.
+
+    Stages:
+      1. Coarse spatial: grid search mask_dx, mask_dy (integer, ±3)
+      2. Refine spatial: grid search mask_dx, mask_dy (±1 around best, 0.25 step)
+                         + mask_theta (±0.6°, 0.1° step)
+      3. Temporal: grid search clock_offset (±0.3, step 0.05)
+                   + duty_cycle (0.8–1.0, step 0.02)
+      4. Sensor: grid search gain (0.9–1.1, step 0.02)
+                 + offset (-0.02–0.02, step 0.005)
+
+    Returns dict with per-stage NLL and final recon metrics.
+    """
     _enter_pnpsci()
     from pnp_sci import admmdenoise_cacti
     from utils import A_, At_
 
-    shift_inject = 2
-    mask_perturbed = np.roll(mask, shift_inject, axis=0)
+    H, W_im = orig.shape[:2]
     n_total = orig.shape[2]
-    n_coded = n_total // 8
     nmask = mask.shape[2]
+    n_coded = n_total // nmask
 
-    y_pert = np.zeros((256, 256, n_coded), dtype=np.float32)
+    # Nominal parameters (perfect operator)
+    nominal_kw = {
+        "mask_dx": 0.0, "mask_dy": 0.0, "mask_theta": 0.0,
+        "mask_blur_sigma": 0.0,
+        "clock_offset": 0.0, "duty_cycle": 1.0,
+        "timing_jitter_std": 0.0, "temporal_response_tau": 0.0,
+        "gain": 1.0, "offset": 0.0,
+    }
+
+    # Generate perturbed measurements (all coded frames)
+    perturbed_kw = {**W2_INJECTED, **W2_NOISE}
+    y_pert = np.zeros((H, W_im, n_coded), dtype=np.float32)
     for ci in range(n_coded):
         block = orig[:, :, ci * nmask:(ci + 1) * nmask]
-        y_pert[:, :, ci] = np.sum(block * mask_perturbed, axis=2)
+        y_ci, _ = cacti_forward(block, mask, **perturbed_kw,
+                                rng=np.random.RandomState(SEED + ci))
+        y_pert[:, :, ci] = y_ci
 
-    y_pred_nominal = np.zeros_like(y_pert)
+    # Generate nominal prediction for NLL baseline
+    y_nom = np.zeros((H, W_im, n_coded), dtype=np.float32)
     for ci in range(n_coded):
         block = orig[:, :, ci * nmask:(ci + 1) * nmask]
-        y_pred_nominal[:, :, ci] = np.sum(block * mask, axis=2)
-    nll_before = compute_nll_gaussian(y_pert, y_pred_nominal, sigma=NOISE_SIGMA)
+        y_ci, _ = cacti_forward(block, mask, **nominal_kw)
+        y_nom[:, :, ci] = y_ci
 
+    nll_before = compute_nll_poisson_read(y_pert, y_nom,
+                                           W2_NOISE["peak_photons"],
+                                           W2_NOISE["read_sigma"])
+
+    # Helper: compute NLL for a given parameter set
+    def _nll_for_params(kw):
+        y_trial = np.zeros((H, W_im, n_coded), dtype=np.float32)
+        for ci in range(n_coded):
+            block = orig[:, :, ci * nmask:(ci + 1) * nmask]
+            y_ci, _ = cacti_forward(block, mask, **kw)
+            y_trial[:, :, ci] = y_ci
+        return compute_nll_poisson_read(y_pert, y_trial,
+                                         W2_NOISE["peak_photons"],
+                                         W2_NOISE["read_sigma"])
+
+    stage_results = {}
+    best_kw = dict(nominal_kw)
+
+    # ── Stage 1: Coarse spatial (integer dx, dy) ─────────────────────────
+    print(f"    [{scene_name}] Stage 1: Coarse spatial (dx,dy integer ±3) ...")
+    t0 = time.time()
+    grid_1 = _make_grid_2d(best_kw, "mask_dx", np.arange(-3, 4, dtype=float),
+                           "mask_dy", np.arange(-3, 4, dtype=float))
+    best_nll_1 = np.inf
+    for trial_kw in grid_1:
+        nll = _nll_for_params(trial_kw)
+        if nll < best_nll_1:
+            best_nll_1 = nll
+            best_kw = dict(trial_kw)
+    t1 = time.time() - t0
+    stage_results["stage1_coarse_spatial"] = {
+        "nll": round(best_nll_1, 1),
+        "params": {"mask_dx": best_kw["mask_dx"], "mask_dy": best_kw["mask_dy"]},
+        "grid_size": len(grid_1),
+        "time": round(t1, 1),
+    }
+    print(f"      Best: dx={best_kw['mask_dx']:.0f}, dy={best_kw['mask_dy']:.0f}, "
+          f"NLL={best_nll_1:.1f} ({t1:.1f}s)")
+
+    # ── Stage 2: Refine spatial (fractional dx,dy + theta) ───────────────
+    print(f"    [{scene_name}] Stage 2: Refine spatial + theta ...")
+    t0 = time.time()
+    dx_center, dy_center = best_kw["mask_dx"], best_kw["mask_dy"]
+    grid_2 = _make_grid_3d(
+        best_kw,
+        "mask_dx", np.arange(dx_center - 1, dx_center + 1.25, 0.25),
+        "mask_dy", np.arange(dy_center - 1, dy_center + 1.25, 0.25),
+        "mask_theta", np.arange(-0.6, 0.65, 0.1),
+    )
+    best_nll_2 = np.inf
+    for trial_kw in grid_2:
+        nll = _nll_for_params(trial_kw)
+        if nll < best_nll_2:
+            best_nll_2 = nll
+            best_kw = dict(trial_kw)
+    t2 = time.time() - t0
+    stage_results["stage2_refine_spatial"] = {
+        "nll": round(best_nll_2, 1),
+        "params": {
+            "mask_dx": round(best_kw["mask_dx"], 2),
+            "mask_dy": round(best_kw["mask_dy"], 2),
+            "mask_theta": round(best_kw["mask_theta"], 2),
+        },
+        "grid_size": len(grid_2),
+        "time": round(t2, 1),
+    }
+    print(f"      Best: dx={best_kw['mask_dx']:.2f}, dy={best_kw['mask_dy']:.2f}, "
+          f"theta={best_kw['mask_theta']:.2f}°, NLL={best_nll_2:.1f} ({t2:.1f}s)")
+
+    # ── Stage 3: Temporal (clock_offset + duty_cycle) ────────────────────
+    print(f"    [{scene_name}] Stage 3: Temporal (clock_offset, duty_cycle) ...")
+    t0 = time.time()
+    grid_3 = _make_grid_2d(
+        best_kw,
+        "clock_offset", np.arange(-0.3, 0.35, 0.05),
+        "duty_cycle", np.arange(0.80, 1.02, 0.02),
+    )
+    best_nll_3 = np.inf
+    for trial_kw in grid_3:
+        nll = _nll_for_params(trial_kw)
+        if nll < best_nll_3:
+            best_nll_3 = nll
+            best_kw = dict(trial_kw)
+    t3 = time.time() - t0
+    stage_results["stage3_temporal"] = {
+        "nll": round(best_nll_3, 1),
+        "params": {
+            "clock_offset": round(best_kw["clock_offset"], 3),
+            "duty_cycle": round(best_kw["duty_cycle"], 3),
+        },
+        "grid_size": len(grid_3),
+        "time": round(t3, 1),
+    }
+    print(f"      Best: clock={best_kw['clock_offset']:.3f}, duty={best_kw['duty_cycle']:.3f}, "
+          f"NLL={best_nll_3:.1f} ({t3:.1f}s)")
+
+    # ── Stage 4: Sensor (gain + offset) ──────────────────────────────────
+    print(f"    [{scene_name}] Stage 4: Sensor (gain, offset) ...")
+    t0 = time.time()
+    grid_4 = _make_grid_2d(
+        best_kw,
+        "gain", np.arange(0.90, 1.12, 0.02),
+        "offset", np.arange(-0.02, 0.025, 0.005),
+    )
+    best_nll_4 = np.inf
+    for trial_kw in grid_4:
+        nll = _nll_for_params(trial_kw)
+        if nll < best_nll_4:
+            best_nll_4 = nll
+            best_kw = dict(trial_kw)
+    t4 = time.time() - t0
+    stage_results["stage4_sensor"] = {
+        "nll": round(best_nll_4, 1),
+        "params": {
+            "gain": round(best_kw["gain"], 3),
+            "offset": round(best_kw["offset"], 4),
+        },
+        "grid_size": len(grid_4),
+        "time": round(t4, 1),
+    }
+    print(f"      Best: gain={best_kw['gain']:.3f}, offset={best_kw['offset']:.4f}, "
+          f"NLL={best_nll_4:.1f} ({t4:.1f}s)")
+
+    nll_after = best_nll_4
+    nll_decrease_pct = (nll_before - nll_after) / (nll_before + 1e-12) * 100
+
+    # ── Reconstruct: uncorrected and corrected ───────────────────────────
+    print(f"    [{scene_name}] Reconstructing (uncorrected + corrected) ...")
+
+    # Uncorrected: use nominal mask on perturbed measurement
     A_nom = lambda x: A_(x, mask)
     At_nom = lambda y: At_(y, mask)
     v_uncorr, t_uncorr, psnr_uncorr, ssim_uncorr, _ = admmdenoise_cacti(
         y_pert, mask, A_nom, At_nom,
         projmeth="gap", v0=None, orig=orig,
-        iframe=0, nframe=nframe, MAXB=MAXB,
+        iframe=0, nframe=n_coded, MAXB=MAXB,
         _lambda=1, accelerate=True,
         denoiser="tv", iter_max=40, tv_weight=0.3, tv_iter_max=5,
     )
 
-    print("    Grid search over vertical shifts [-5, +5] ...")
-    best_nll, best_shift = np.inf, 0
-    for trial_shift in range(-5, 6):
-        mask_trial = np.roll(mask, trial_shift, axis=0)
-        y_pred_trial = np.zeros_like(y_pert)
-        for ci in range(n_coded):
-            block = orig[:, :, ci * nmask:(ci + 1) * nmask]
-            y_pred_trial[:, :, ci] = np.sum(block * mask_trial, axis=2)
-        nll_trial = compute_nll_gaussian(y_pert, y_pred_trial, sigma=NOISE_SIGMA)
-        if nll_trial < best_nll:
-            best_nll = nll_trial
-            best_shift = trial_shift
-
-    print(f"    Best shift: {best_shift} pixels (NLL={best_nll:.1f})")
-    mask_corrected = np.roll(mask, best_shift, axis=0)
-    nll_after = best_nll
-    nll_decrease_pct = (nll_before - nll_after) / (nll_before + 1e-12) * 100
+    # Corrected: warp mask using best-fit parameters, undo gain/offset
+    mask_corrected = warp_mask_3d(mask,
+                                   best_kw["mask_dx"], best_kw["mask_dy"],
+                                   best_kw["mask_theta"],
+                                   best_kw.get("mask_blur_sigma", 0.0))
+    # Undo sensor gain/offset from measurement
+    y_corr_input = y_pert.copy()
+    if abs(best_kw["gain"] - 1.0) > 1e-6 or abs(best_kw["offset"]) > 1e-6:
+        y_corr_input = (y_corr_input - best_kw["offset"] * MAXB) / best_kw["gain"]
 
     A_corr = lambda x: A_(x, mask_corrected)
     At_corr = lambda y: At_(y, mask_corrected)
     v_corr, t_corr, psnr_corr, ssim_corr, _ = admmdenoise_cacti(
-        y_pert, mask_corrected, A_corr, At_corr,
+        y_corr_input, mask_corrected, A_corr, At_corr,
         projmeth="gap", v0=None, orig=orig,
-        iframe=0, nframe=nframe, MAXB=MAXB,
+        iframe=0, nframe=n_coded, MAXB=MAXB,
         _lambda=1, accelerate=True,
         denoiser="tv", iter_max=40, tv_weight=0.3, tv_iter_max=5,
     )
 
-    return {
-        "shift_injected": shift_inject,
-        "shift_found": best_shift,
+    result = {
+        "scene": scene_name,
         "nll_before": round(nll_before, 1),
         "nll_after": round(nll_after, 1),
         "nll_decrease_pct": round(nll_decrease_pct, 1),
@@ -442,9 +869,23 @@ def run_w2_mask_shift(meas, mask, orig, nframe):
         "ssim_corrected": round(mean(ssim_corr), 4),
         "psnr_delta": round(mean(psnr_corr) - mean(psnr_uncorr), 2),
         "ssim_delta": round(mean(ssim_corr) - mean(ssim_uncorr), 4),
+        "injected_params": {k: round(v, 4) for k, v in W2_INJECTED.items()},
+        "recovered_params": {k: round(v, 4) if isinstance(v, float) else v
+                             for k, v in best_kw.items()},
+        "stages": stage_results,
+        "noise_model": f"Poisson(peak={W2_NOISE['peak_photons']:.0f}) + "
+                        f"Read(sigma={W2_NOISE['read_sigma']:.1f}) + "
+                        f"Quant({W2_NOISE['bit_depth']}bit)",
         "mask_nominal_hash": sha256_hex16(mask),
         "mask_corrected_hash": sha256_hex16(mask_corrected),
     }
+
+    print(f"    [{scene_name}] NLL: {nll_before:.1f} → {nll_after:.1f} "
+          f"({nll_decrease_pct:.1f}% decrease)")
+    print(f"    [{scene_name}] PSNR: {result['psnr_uncorrected']:.2f} → "
+          f"{result['psnr_corrected']:.2f} ({result['psnr_delta']:+.2f} dB)")
+
+    return result
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -563,52 +1004,137 @@ def main():
     results["w1_average"] = avg_results
 
     # ══════════════════════════════════════════════════════════════════════
-    # W2: Mask-shift mismatch + correction (kobe32 only)
+    # W2: Multi-stage realistic mismatch correction (3 scenes)
     # ══════════════════════════════════════════════════════════════════════
     print(f"\n{'=' * 70}")
-    print("W2: Mask-shift mismatch + correction (kobe32, GAP-TV)")
+    print(f"W2: Multi-stage mismatch correction ({len(W2_SCENES)} scenes, GAP-TV)")
+    print(f"  Injected: {W2_INJECTED}")
+    print(f"  Noise: Poisson(peak={W2_NOISE['peak_photons']:.0f}) + "
+          f"Read(sigma={W2_NOISE['read_sigma']:.1f}) + "
+          f"Quant({W2_NOISE['bit_depth']}bit)")
     print("=" * 70)
 
-    meas_k, mask_k, orig_k = load_scene("kobe32")
-    n_coded_k = meas_k.shape[2]
-    w2 = run_w2_mask_shift(meas_k, mask_k, orig_k, n_coded_k)
+    rng = np.random.RandomState(SEED)
+    w2_per_scene = {}
 
-    w2_report = {k: v for k, v in w2.items()}
-    w2_report["a_definition"] = "callable"
-    w2_report["a_extraction_method"] = "provided"
-    w2_report["linearity"] = "linear"
-    w2_report["mismatch_type"] = "synthetic_injected"
-    w2_report["mismatch_description"] = f"Mask-detector vertical shift: {w2['shift_injected']}px"
-    w2_report["correction_family"] = "Pre"
+    for w2_scene in W2_SCENES:
+        print(f"\n  W2 scene: {w2_scene}")
+        meas_w2, mask_w2, orig_w2 = load_scene(w2_scene)
+        w2_result = run_w2_multistage(orig_w2, mask_w2, w2_scene, rng)
+        w2_per_scene[w2_scene] = w2_result
+
+    # Compute median metrics across scenes
+    nll_decreases = [w2_per_scene[s]["nll_decrease_pct"] for s in W2_SCENES]
+    psnr_deltas = [w2_per_scene[s]["psnr_delta"] for s in W2_SCENES]
+    ssim_deltas = [w2_per_scene[s]["ssim_delta"] for s in W2_SCENES]
+    median_nll_dec = round(float(np.median(nll_decreases)), 1)
+    median_psnr_delta = round(float(np.median(psnr_deltas)), 2)
+    median_ssim_delta = round(float(np.median(ssim_deltas)), 4)
+
+    w2_report = {
+        "per_scene": w2_per_scene,
+        "median_nll_decrease_pct": median_nll_dec,
+        "median_psnr_delta": median_psnr_delta,
+        "median_ssim_delta": median_ssim_delta,
+        "a_definition": "callable",
+        "a_extraction_method": "provided",
+        "linearity": "linear",
+        "mismatch_type": "synthetic_injected",
+        "mismatch_description": (
+            "Realistic multi-parameter mismatch: spatial (dx=1.5, dy=1.0, theta=0.3°), "
+            "temporal (clock_offset=0.08, duty_cycle=0.92), "
+            "sensor (gain=1.05, offset=0.005)"),
+        "correction_family": "Pre+PreTemporal+Post",
+        "correction_method": "UPWMI_multistage_search",
+        "noise_model": f"Poisson(peak={W2_NOISE['peak_photons']:.0f}) + "
+                        f"Read(sigma={W2_NOISE['read_sigma']:.1f}) + "
+                        f"Quant({W2_NOISE['bit_depth']}bit)",
+        "n_stages": 4,
+        "stage_names": [
+            "coarse_spatial (dx,dy integer)",
+            "refine_spatial (dx,dy,theta fractional)",
+            "temporal (clock_offset, duty_cycle)",
+            "sensor (gain, offset)",
+        ],
+    }
     results["w2"] = w2_report
 
+    # Save operator metadata (use first scene for representative hash)
+    first_scene_result = w2_per_scene[W2_SCENES[0]]
     save_operator_meta(rb_dir, {
         "a_definition": "callable",
         "a_extraction_method": "provided",
-        "a_sha256": w2["mask_nominal_hash"],
+        "a_sha256": first_scene_result["mask_nominal_hash"],
         "linearity": "linear",
         "mismatch_type": "synthetic_injected",
-        "mismatch_params": {"shift_injected": w2["shift_injected"]},
-        "correction_family": "Pre",
-        "fitted_params": {"shift": w2["shift_found"]},
-        "nll_before": w2["nll_before"],
-        "nll_after": w2["nll_after"],
-        "nll_decrease_pct": w2["nll_decrease_pct"],
+        "injected_params": W2_INJECTED,
+        "correction_family": "Pre+PreTemporal+Post",
+        "correction_method": "UPWMI_multistage_search",
+        "noise_model": w2_report["noise_model"],
+        "n_scenes": len(W2_SCENES),
+        "scenes": W2_SCENES,
+        "per_scene_nll_decrease": {s: w2_per_scene[s]["nll_decrease_pct"]
+                                    for s in W2_SCENES},
+        "per_scene_psnr_delta": {s: w2_per_scene[s]["psnr_delta"]
+                                  for s in W2_SCENES},
+        "median_nll_decrease_pct": median_nll_dec,
+        "median_psnr_delta": median_psnr_delta,
         "timestamp": datetime.now(timezone.utc).isoformat(),
     })
 
-    print(f"\n    Injected shift:    {w2['shift_injected']}px")
-    print(f"    Recovered shift:   {w2['shift_found']}px")
-    print(f"    NLL decrease:      {w2['nll_decrease_pct']:.1f}%")
-    print(f"    PSNR delta:        {w2['psnr_delta']:+.2f} dB")
+    # Print W2 summary table
+    print(f"\n{'=' * 70}")
+    print("W2 Summary — Multi-stage Correction")
+    print("=" * 70)
+    hdr = f"{'Scene':<12} {'NLL decr%':>10} {'PSNR uncorr':>12} {'PSNR corr':>10} {'ΔPSNR':>7}"
+    print(hdr)
+    print("-" * len(hdr))
+    for s in W2_SCENES:
+        r = w2_per_scene[s]
+        print(f"{s:<12} {r['nll_decrease_pct']:>9.1f}% "
+              f"{r['psnr_uncorrected']:>11.2f} {r['psnr_corrected']:>10.2f} "
+              f"{r['psnr_delta']:>+6.2f}")
+    print("-" * len(hdr))
+    print(f"{'MEDIAN':<12} {median_nll_dec:>9.1f}% "
+          f"{'':>11} {'':>10} {median_psnr_delta:>+6.2f}")
 
-    # ── Trace (from kobe32) ──────────────────────────────────────────────
+    # ── Trace (from kobe32 — full pipeline) ─────────────────────────────
+    meas_tr, mask_tr, orig_tr = load_scene("kobe32")
+    n_coded_tr = meas_tr.shape[2]
+    block_tr = orig_tr[:, :, 0:8]
+    trace_rng = np.random.RandomState(SEED)
+
+    # Stage-by-stage trace through the physically realistic pipeline
     trace = {}
-    trace["00_input_x"] = orig_k[:, :, 0:8].copy()
-    trace["01_masked"] = (orig_k[:, :, 0:8] * mask_k).astype(np.float32)
-    trace["02_measurement"] = meas_k[:, :, 0:1].copy()
-    v_tv_k, _, _, _ = run_gap_tv(meas_k, mask_k, orig_k, n_coded_k)
-    trace["03_recon_gaptv"] = v_tv_k[:, :, 0:8].copy()
+    trace["00_input_x"] = block_tr.copy()
+
+    # Objective lens (throughput + PSF)
+    trace["01_objective"] = apply_psf_2d(
+        block_tr[:, :, 0] * 0.95, sigma=0.0).reshape(256, 256, 1).repeat(8, axis=2)
+
+    # Temporal coded aperture (mask modulation)
+    mask_warped = warp_mask_3d(mask_tr, dx=1.5, dy=1.0, theta=0.3)
+    trace["02_coded_aperture"] = (block_tr * mask_warped).astype(np.float32)
+
+    # Shutter integration (temporal mixing + duty cycle)
+    y_integrated = apply_temporal_mixing(block_tr, mask_warped,
+                                          clock_offset=0.08, duty_cycle=0.92,
+                                          rng=trace_rng)
+    trace["03_shutter_integrated"] = y_integrated.copy()
+
+    # Detector (gain + offset)
+    y_detector = 1.05 * y_integrated + 0.005 * MAXB
+    trace["04_detector"] = y_detector.copy()
+
+    # Noise (Poisson + Read + Quantization)
+    y_noisy = apply_poisson_read_quant_noise(y_detector, peak_photons=10000.0,
+                                              read_sigma=5.0, bit_depth=12,
+                                              rng=np.random.RandomState(SEED))
+    trace["05_noisy_y"] = y_noisy.copy()
+
+    # Reconstruction (GAP-TV on nominal)
+    v_tv_k, _, _, _ = run_gap_tv(meas_tr, mask_tr, orig_tr, n_coded_tr)
+    trace["06_recon_gaptv"] = v_tv_k[:, :, 0:8].copy()
     save_trace(rb_dir, trace)
 
     results["trace"] = []
@@ -692,7 +1218,12 @@ def main():
     print("-" * len(header))
     print(row)
 
-    print(f"\nW2 (kobe32): NLL decrease {w2['nll_decrease_pct']:.1f}%, PSNR delta {w2['psnr_delta']:+.2f} dB")
+    print(f"\nW2 ({len(W2_SCENES)} scenes, multi-stage correction):")
+    print(f"  Median NLL decrease: {median_nll_dec:.1f}%")
+    print(f"  Median PSNR delta:   {median_psnr_delta:+.2f} dB")
+    for s in W2_SCENES:
+        r = w2_per_scene[s]
+        print(f"  {s}: NLL {r['nll_decrease_pct']:.1f}%, PSNR {r['psnr_delta']:+.2f} dB")
     print(f"\nRunBundle: runs/{rb_name}")
     print(f"Results:   {results_path}")
     print("=" * 70)

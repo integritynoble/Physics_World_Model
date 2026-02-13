@@ -1,7 +1,8 @@
 """Tests for CasePack: Coded Aperture Compressive Temporal Imaging (CACTI).
 
 Template: cacti_graph_v2
-Chain: photon_source -> temporal_mask -> photon_sensor -> poisson_gaussian_sensor
+Chain: photon_source -> objective_lens -> temporal_mask -> shutter_integration
+       -> photon_sensor -> poisson_gaussian_sensor
 """
 import numpy as np
 import pytest
@@ -50,8 +51,10 @@ class TestCasePackCACTI:
         compiler = GraphCompiler()
         graph = compiler.compile(spec)
         assert graph is not None
-        assert "mask" in graph.node_map
+        assert "coded_aperture" in graph.node_map
         assert "source" in graph.node_map
+        assert "objective" in graph.node_map
+        assert "shutter" in graph.node_map
 
     def test_forward_sanity(self):
         """Mode S: forward pass produces finite 2D output from 3D video cube."""

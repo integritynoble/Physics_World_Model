@@ -124,10 +124,19 @@ def validate_canonical_chain(spec: OperatorGraphSpec) -> None:
             f"but has edges to: {adj[noise_id]}"
         )
 
-    # Check: Sensor -> Noise edge exists
-    if noise_id not in adj.get(sensor_id, []):
+    # Check: path from Sensor to Noise exists (possibly via readout elements)
+    sensor_reachable: Set[str] = set()
+    queue2: deque[str] = deque([sensor_id])
+    sensor_reachable.add(sensor_id)
+    while queue2:
+        cur = queue2.popleft()
+        for nb in adj.get(cur, []):
+            if nb not in sensor_reachable:
+                sensor_reachable.add(nb)
+                queue2.append(nb)
+    if noise_id not in sensor_reachable:
         raise GraphCompilationError(
-            f"Canonical chain requires edge from sensor '{sensor_id}' "
+            f"Canonical chain requires a path from sensor '{sensor_id}' "
             f"to noise '{noise_id}'"
         )
 

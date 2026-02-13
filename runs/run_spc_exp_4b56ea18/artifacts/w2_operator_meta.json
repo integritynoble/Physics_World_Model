@@ -1,0 +1,29 @@
+{
+  "a_definition": "matrix",
+  "a_extraction_method": "graph_stripped",
+  "a_shape": [
+    614,
+    4096
+  ],
+  "a_dtype": "float64",
+  "a_sha256": "50ad8eaeb3d49ff49fe1a9ea572ce858febb62b61e7115f242ba6bb0868827e2",
+  "a_nnz": 2514944,
+  "a_sparsity": 0.0,
+  "linearity": "linear",
+  "linearization_notes": "N/A",
+  "mismatch_type": "synthetic_injected",
+  "mismatch_params": {
+    "per_row_gain_range": [
+      0.9,
+      1.1
+    ]
+  },
+  "correction_family": "Pre",
+  "fitted_params": {
+    "gain_rmse": 0.1704
+  },
+  "nll_before": 377.5,
+  "nll_after": 40.1,
+  "nll_decrease_pct": 89.4,
+  "timestamp": "2026-02-12T01:12:42.648495+00:00"
+}

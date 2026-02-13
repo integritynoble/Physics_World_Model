@@ -1,0 +1,13 @@
+{
+  "a_definition": "callable",
+  "a_extraction_method": "graph_stripped",
+  "a_sha256": "30f83e7c15462cdb",
+  "linearity": "nonlinear",
+  "linearization_notes": "reciprocal_space_geometry uses affine_transform",
+  "mismatch_type": "synthetic_injected",
+  "correction_family": "Pre",
+  "nll_before": 9326.5,
+  "nll_after": 2048.4,
+  "nll_decrease_pct": 78.0,
+  "timestamp": "2026-02-12T16:07:58.937427+00:00"
+}

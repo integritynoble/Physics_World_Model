@@ -1101,7 +1101,7 @@ templates:
         target: noise
 
   spc_graph_v2:
-    description: "Single-pixel camera: Source→random mask→Sensor→Noise"
+    description: "Single-pixel camera: Source→ProjectionOptics→DMDPatternSequence→BucketIntegration→Sensor→Quantize→Noise"
     metadata:
       modality: spc
       canonical_chain: true
@@ -1113,37 +1113,68 @@ templates:
         role: source
         params:
           strength: 1.0
-      - node_id: measure
-        primitive_id: random_mask
+      - node_id: projection
+        primitive_id: projection_optics
         role: transport
         params:
+          throughput: 0.95
+          psf_sigma: 0.8
+          vignetting_coeff: 0.02
+      - node_id: dmd_pattern
+        primitive_id: dmd_pattern_sequence
+        role: transport
+        params:
+          n_patterns: 614
           seed: 42
           H: 64
           W: 64
           sampling_rate: 0.15
+          contrast: 0.98
+          mask_dx: 0
+          mask_dy: 0
+          mask_theta: 0
+      - node_id: bucket_integrate
+        primitive_id: bucket_integration
+        role: transport
+        params:
+          duty_cycle: 0.95
+          clock_offset: 0.0
+          timing_jitter_std: 0.0
       - node_id: sensor
         primitive_id: photon_sensor
         role: sensor
         params:
-          quantum_efficiency: 0.9
+          quantum_efficiency: 0.85
           gain: 1.0
+          dark_current: 0.01
+      - node_id: quantize
+        primitive_id: quantize
+        role: transport
+        params:
+          bit_depth: 14
       - node_id: noise
         primitive_id: poisson_gaussian_sensor
         role: noise
         params:
-          peak_photons: 10000.0
-          read_sigma: 0.01
+          peak_photons: 50000.0
+          read_sigma: 0.005
           seed: 0
     edges:
       - source: source
-        target: measure
-      - source: measure
+        target: projection
+      - source: projection
+        target: dmd_pattern
+      - source: dmd_pattern
+        target: bucket_integrate
+      - source: bucket_integrate
         target: sensor
       - source: sensor
+        target: quantize
+      - source: quantize
         target: noise
 
   cacti_graph_v2:
-    description: "CACTI snapshot compressive imaging: Source→temporal mask→Sensor→Noise"
+    description: "CACTI snapshot compressive imaging: Source→Objective→TemporalCodedAperture→ShutterIntegration→Detector→Noise"
     metadata:
       modality: cacti
       canonical_chain: true
@@ -1155,7 +1186,14 @@ templates:
         role: source
         params:
           strength: 1.0
-      - node_id: mask
+      - node_id: objective
+        primitive_id: objective_lens
+        role: transport
+        params:
+          throughput: 0.95
+          psf_sigma: 0.0
+          vignetting: 0.0
+      - node_id: coded_aperture
         primitive_id: temporal_mask
         role: transport
         params:
@@ -1163,12 +1201,19 @@ templates:
           W: 64
           T: 8
           seed: 42
-      - node_id: sensor
+      - node_id: shutter
+        primitive_id: shutter_integration
+        role: interaction
+        params:
+          duty_cycle: 1.0
+          clock_offset: 0.0
+      - node_id: detector
         primitive_id: photon_sensor
         role: sensor
         params:
           quantum_efficiency: 0.9
           gain: 1.0
+          offset: 0.0
       - node_id: noise
         primitive_id: poisson_gaussian_sensor
         role: noise
@@ -1178,10 +1223,14 @@ templates:
           seed: 0
     edges:
       - source: source
-        target: mask
-      - source: mask
-        target: sensor
-      - source: sensor
+        target: objective
+      - source: objective
+        target: coded_aperture
+      - source: coded_aperture
+        target: shutter
+      - source: shutter
+        target: detector
+      - source: detector
         target: noise
 
   matrix_graph_v2:

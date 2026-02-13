@@ -1,0 +1,94 @@
+{
+  "w1": {
+    "psnr": 23.89,
+    "ssim": 0.9161,
+    "nrmse": 0.0675,
+    "solver": "richardson_lucy_2d",
+    "snr_db": 11.1,
+    "y_shape": [
+      64,
+      64
+    ],
+    "n_trace_stages": 5,
+    "sim_time": 0.001,
+    "inv_time": 0.01
+  },
+  "w2": {
+    "a_definition": "callable",
+    "a_extraction_method": "graph_stripped",
+    "a_sha256": "1bd4f31227c9a946a20f7ddb0d27e125c2d5455be6c331c96066233cde97aa9b",
+    "a_corrected_sha256": "76d1cc0817a12cce5a396e6322f0b4d86732d9a410309e625b94540f74c2bd2e",
+    "linearity": "linear",
+    "mismatch_type": "synthetic_injected",
+    "mismatch_description": "PSF sigma 3.0 \u2192 3.8",
+    "correction_family": "Pre",
+    "fitted_sigma": 3.7,
+    "nll_before": 2081.0,
+    "nll_after": 2047.4,
+    "nll_decrease_pct": 1.6,
+    "psnr_uncorrected": 23.3,
+    "ssim_uncorrected": 0.9011,
+    "psnr_corrected": 22.57,
+    "ssim_corrected": 0.8865,
+    "nrmse_corrected": 0.0785,
+    "psnr_delta": -0.72,
+    "ssim_delta": -0.0146
+  },
+  "trace": [
+    {
+      "stage": 0,
+      "node_id": "input_x",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": 0.05,
+      "range_max": 0.9392,
+      "artifact_path": "artifacts/trace/00_input_x.npy"
+    },
+    {
+      "stage": 1,
+      "node_id": "source",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": 0.05,
+      "range_max": 0.9392,
+      "artifact_path": "artifacts/trace/01_source.npy"
+    },
+    {
+      "stage": 2,
+      "node_id": "blur",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": 0.0501,
+      "range_max": 0.7241,
+      "artifact_path": "artifacts/trace/02_blur.npy"
+    },
+    {
+      "stage": 3,
+      "node_id": "sensor",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": 0.0451,
+      "range_max": 0.6517,
+      "artifact_path": "artifacts/trace/03_sensor.npy"
+    },
+    {
+      "stage": 4,
+      "node_id": "noise_y",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": -0.1254,
+      "range_max": 0.7114,
+      "artifact_path": "artifacts/trace/04_noise_y.npy"
+    }
+  ],
+  "rb_dir": "/home/spiritai/PWM/test2/Physics_World_Model/runs/run_widefield_lowdose_exp_be6f064e",
+  "rb_name": "run_widefield_lowdose_exp_be6f064e",
+  "env": {
+    "seed": 42,
+    "rng_state_hash": "5d6a058f2c5c262e",
+    "pwm_version": "af26b050214b",
+    "python_version": "3.13.9",
+    "numpy_version": "2.3.5",
+    "scipy_version": "1.16.3"
+  }
+}

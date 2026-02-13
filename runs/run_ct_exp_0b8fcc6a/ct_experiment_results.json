@@ -1,0 +1,123 @@
+{
+  "w1": {
+    "psnr": 9.45,
+    "ssim": 0.2929,
+    "nrmse": 0.3368,
+    "solver": "fbp_2d",
+    "sim_time": 0.052,
+    "inv_time": 0.01,
+    "snr_db": 54.7,
+    "y_shape": [
+      180,
+      64
+    ],
+    "y_range": [
+      -22.7922,
+      9018.071
+    ],
+    "x_hat_shape": [
+      64,
+      64
+    ],
+    "n_trace_stages": 6
+  },
+  "w2": {
+    "a_definition": "callable",
+    "a_extraction_method": "graph_stripped",
+    "a_sha256": "a56d99fe6b3bc8fc43796fa452ded45f918f06789c2f838600205e58c43544f0",
+    "linearity": "nonlinear",
+    "linearization_notes": "Beer-Lambert exp(-x) is nonlinear; FBP operates on log-inverted sinogram",
+    "mismatch_type": "synthetic_injected",
+    "mismatch_params": {
+      "angle_offset_nominal": 0.0,
+      "angle_offset_perturbed": 2.0
+    },
+    "mismatch_description": "Gantry angular offset 0.0 \u2192 2.0 degrees",
+    "correction_family": "Pre",
+    "fitted_angle_offset": 2.0,
+    "nll_before": 5798004.3,
+    "nll_after": 5834.0,
+    "nll_decrease_pct": 99.9,
+    "psnr_uncorrected": 9.55,
+    "ssim_uncorrected": 0.3007,
+    "psnr_corrected": 9.55,
+    "ssim_corrected": 0.3036,
+    "nrmse_corrected": 0.3329,
+    "psnr_delta": 0.0,
+    "ssim_delta": 0.003,
+    "time_uncorrected": 0.01,
+    "time_corrected": 0.01
+  },
+  "trace": [
+    {
+      "stage": 0,
+      "node_id": "input_x",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": 0.0,
+      "range_max": 0.9,
+      "artifact_path": "artifacts/trace/00_input_x.npy"
+    },
+    {
+      "stage": 1,
+      "node_id": "source",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": 0.0,
+      "range_max": 0.9,
+      "artifact_path": "artifacts/trace/01_source.npy"
+    },
+    {
+      "stage": 2,
+      "node_id": "radon",
+      "output_shape": "(180, 64)",
+      "dtype": "float64",
+      "range_min": 0.0,
+      "range_max": 31.3805,
+      "artifact_path": "artifacts/trace/02_radon.npy"
+    },
+    {
+      "stage": 3,
+      "node_id": "beer_lambert",
+      "output_shape": "(180, 64)",
+      "dtype": "float64",
+      "range_min": 0.0,
+      "range_max": 10000.0,
+      "artifact_path": "artifacts/trace/03_beer_lambert.npy"
+    },
+    {
+      "stage": 4,
+      "node_id": "sensor",
+      "output_shape": "(180, 64)",
+      "dtype": "float64",
+      "range_min": 0.0,
+      "range_max": 9000.0,
+      "artifact_path": "artifacts/trace/04_sensor.npy"
+    },
+    {
+      "stage": 5,
+      "node_id": "noise_y",
+      "output_shape": "(180, 64)",
+      "dtype": "float64",
+      "range_min": -22.7922,
+      "range_max": 9018.071,
+      "artifact_path": "artifacts/trace/05_noise_y.npy"
+    }
+  ],
+  "rb_dir": "/home/spiritai/PWM/test2/Physics_World_Model/runs/run_ct_exp_0b8fcc6a",
+  "rb_name": "run_ct_exp_0b8fcc6a",
+  "hashes": {
+    "y_hash": "d7cc801d16f32c13",
+    "x_hat_w1_hash": "218afe47601aacb7",
+    "x_true_hash": "d74f2c3a3e0e7e40"
+  },
+  "env": {
+    "seed": 42,
+    "rng_state_hash": "5d6a058f2c5c262e",
+    "pwm_version": "5461e1928764",
+    "python_version": "3.13.9",
+    "numpy_version": "2.3.5",
+    "scipy_version": "1.16.3",
+    "platform": "Linux x86_64"
+  }
+}

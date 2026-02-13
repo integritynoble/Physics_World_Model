@@ -1,0 +1,133 @@
+{
+  "w1": {
+    "psnr": -3.27,
+    "ssim": 0.0087,
+    "nrmse": 1.6184,
+    "solver": "gap_tv_operator",
+    "sim_time": 0.004,
+    "inv_time": 0.81,
+    "snr_db": 42.2,
+    "y_shape": [
+      64,
+      64
+    ],
+    "y_range": [
+      -0.0253,
+      2.7604
+    ],
+    "x_hat_shape": [
+      64,
+      64,
+      8
+    ],
+    "n_trace_stages": 7
+  },
+  "w2": {
+    "a_definition": "callable",
+    "a_extraction_method": "graph_stripped",
+    "a_sha256": "9220e589fd323bf49c932ed6c52322ede06c98170450b0f931e94fd432cdd7e2",
+    "a_corrected_sha256": "9220e589fd323bf49c932ed6c52322ede06c98170450b0f931e94fd432cdd7e2",
+    "linearity": "linear",
+    "mismatch_type": "synthetic_injected",
+    "mismatch_params": {
+      "disp_step_nominal": 1.0,
+      "disp_step_perturbed": 1.15
+    },
+    "mismatch_description": "Dispersion step drift 1.0 \u2192 1.15",
+    "correction_family": "Pre",
+    "fitted_disp_step": 1.16,
+    "nll_before": 1249775.7,
+    "nll_after": 15758.8,
+    "nll_decrease_pct": 98.7,
+    "psnr_uncorrected": -3.23,
+    "ssim_uncorrected": 0.0091,
+    "psnr_corrected": -4.0,
+    "ssim_corrected": 0.0065,
+    "nrmse_corrected": 1.7615,
+    "psnr_delta": -0.77,
+    "ssim_delta": -0.0025,
+    "time_uncorrected": 0.77,
+    "time_corrected": 0.82
+  },
+  "trace": [
+    {
+      "stage": 0,
+      "node_id": "input_x",
+      "output_shape": "(64, 64, 8)",
+      "dtype": "float64",
+      "range_min": 0.05,
+      "range_max": 0.95,
+      "artifact_path": "artifacts/trace/00_input_x.npy"
+    },
+    {
+      "stage": 1,
+      "node_id": "source",
+      "output_shape": "(64, 64, 8)",
+      "dtype": "float64",
+      "range_min": 0.05,
+      "range_max": 0.95,
+      "artifact_path": "artifacts/trace/01_source.npy"
+    },
+    {
+      "stage": 2,
+      "node_id": "modulate",
+      "output_shape": "(64, 64, 8)",
+      "dtype": "float64",
+      "range_min": 0.0,
+      "range_max": 0.95,
+      "artifact_path": "artifacts/trace/02_modulate.npy"
+    },
+    {
+      "stage": 3,
+      "node_id": "disperse",
+      "output_shape": "(64, 64, 8)",
+      "dtype": "float64",
+      "range_min": 0.0,
+      "range_max": 0.95,
+      "artifact_path": "artifacts/trace/03_disperse.npy"
+    },
+    {
+      "stage": 4,
+      "node_id": "integrate",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": 0.0,
+      "range_max": 3.0645,
+      "artifact_path": "artifacts/trace/04_integrate.npy"
+    },
+    {
+      "stage": 5,
+      "node_id": "sensor",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": 0.0,
+      "range_max": 2.7581,
+      "artifact_path": "artifacts/trace/05_sensor.npy"
+    },
+    {
+      "stage": 6,
+      "node_id": "noise_y",
+      "output_shape": "(64, 64)",
+      "dtype": "float64",
+      "range_min": -0.0253,
+      "range_max": 2.7604,
+      "artifact_path": "artifacts/trace/06_noise_y.npy"
+    }
+  ],
+  "rb_dir": "/home/spiritai/PWM/test2/Physics_World_Model/runs/run_cassi_exp_1f535091",
+  "rb_name": "run_cassi_exp_1f535091",
+  "hashes": {
+    "y_hash": "b84b425faa1bbd01",
+    "x_hat_w1_hash": "4b08476d9447d121",
+    "x_true_hash": "34047f9bfa4a6c56"
+  },
+  "env": {
+    "seed": 42,
+    "rng_state_hash": "5d6a058f2c5c262e",
+    "pwm_version": "7394757db7a4",
+    "python_version": "3.13.9",
+    "numpy_version": "2.3.5",
+    "scipy_version": "1.16.3",
+    "platform": "Linux x86_64"
+  }
+}

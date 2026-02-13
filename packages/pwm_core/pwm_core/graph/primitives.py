@@ -828,6 +828,29 @@ class TemporalMask(BasePrimitive):
         return out
 
 
+class ShutterIntegration(BasePrimitive):
+    """Shutter integration node for CACTI-style temporal imaging.
+
+    Models the exposure schedule: duty cycle (fraction of sub-exposure
+    that is active) and clock offset (DMD-camera synchronization).
+    When used standalone, acts as identity (integration is handled
+    by the TemporalMask primitive which sums the temporal axis).
+    """
+
+    primitive_id = "shutter_integration"
+    _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "integration"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        duty_cycle = self._params.get("duty_cycle", 1.0)
+        return x.astype(np.float64) * duty_cycle
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        duty_cycle = self._params.get("duty_cycle", 1.0)
+        return y.astype(np.float64) * duty_cycle
+
+
 # =========================================================================
 # Nonlinearity family
 # =========================================================================
@@ -2828,6 +2851,213 @@ class TrackDetectorSensor(BasePrimitive):
 
 
 # =========================================================================
+# SPC physical pipeline primitives
+# =========================================================================
+
+
+class ProjectionOptics(BasePrimitive):
+    """Projection optics: throughput scaling + PSF blur + vignetting.
+
+    Models the collection optics that focus the scene onto the DMD plane
+    in a single-pixel camera system.
+    """
+
+    primitive_id = "projection_optics"
+    _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "transport"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        throughput = self._params.get("throughput", 0.95)
+        psf_sigma = self._params.get("psf_sigma", 0.0)
+        vignetting_coeff = self._params.get("vignetting_coeff", 0.0)
+        out = x.astype(np.float64) * throughput
+        if psf_sigma > 0:
+            if out.ndim == 3:
+                for ch in range(out.shape[-1]):
+                    out[:, :, ch] = ndimage.gaussian_filter(
+                        out[:, :, ch], sigma=psf_sigma, mode="reflect"
+                    )
+            else:
+                out = ndimage.gaussian_filter(out, sigma=psf_sigma, mode="reflect")
+        if vignetting_coeff > 0:
+            H, W = out.shape[0], out.shape[1]
+            yy, xx = np.mgrid[:H, :W]
+            cy, cx = (H - 1) / 2.0, (W - 1) / 2.0
+            r2 = ((yy - cy) / cy) ** 2 + ((xx - cx) / cx) ** 2
+            vignette = 1.0 - vignetting_coeff * r2
+            vignette = np.clip(vignette, 0.0, 1.0)
+            if out.ndim == 3:
+                out *= vignette[:, :, np.newaxis]
+            else:
+                out *= vignette
+        return out
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        throughput = self._params.get("throughput", 0.95)
+        psf_sigma = self._params.get("psf_sigma", 0.0)
+        vignetting_coeff = self._params.get("vignetting_coeff", 0.0)
+        out = y.astype(np.float64)
+        if vignetting_coeff > 0:
+            H, W = out.shape[0], out.shape[1]
+            yy, xx = np.mgrid[:H, :W]
+            cy, cx = (H - 1) / 2.0, (W - 1) / 2.0
+            r2 = ((yy - cy) / cy) ** 2 + ((xx - cx) / cx) ** 2
+            vignette = 1.0 - vignetting_coeff * r2
+            vignette = np.clip(vignette, 0.0, 1.0)
+            if out.ndim == 3:
+                out *= vignette[:, :, np.newaxis]
+            else:
+                out *= vignette
+        if psf_sigma > 0:
+            if out.ndim == 3:
+                for ch in range(out.shape[-1]):
+                    out[:, :, ch] = ndimage.gaussian_filter(
+                        out[:, :, ch], sigma=psf_sigma, mode="reflect"
+                    )
+            else:
+                out = ndimage.gaussian_filter(out, sigma=psf_sigma, mode="reflect")
+        out *= throughput
+        return out
+
+
+class DMDPatternSequence(BasePrimitive):
+    """DMD pattern sequence for single-pixel camera.
+
+    Generates M binary measurement patterns (Bernoulli +/-1) and applies
+    them sequentially to the scene, producing M scalar measurements.
+    Supports spatial warp (dx, dy, theta, scale), contrast degradation,
+    blur, dead mirror dropout, and illumination drift.
+    """
+
+    primitive_id = "dmd_pattern_sequence"
+    _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "encoding"
+
+    def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
+        super().__init__(params)
+        seed = self._params.get("seed", 42)
+        H = self._params.get("H", 64)
+        W = self._params.get("W", 64)
+        rate = self._params.get("sampling_rate", 0.15)
+        n_patterns = self._params.get("n_patterns", None)
+        contrast = self._params.get("contrast", 1.0)
+        dead_mirror_rate = self._params.get("dead_mirror_rate", 0.0)
+        rng = np.random.default_rng(seed)
+        N = H * W
+        M = n_patterns if n_patterns is not None else max(1, int(N * rate))
+        # Generate Bernoulli +/-1 patterns normalized by 1/sqrt(N)
+        self._patterns = (rng.random((M, N)) > 0.5).astype(np.float64) * 2 - 1
+        self._patterns /= np.sqrt(N)
+        # Apply contrast degradation
+        if contrast < 1.0:
+            self._patterns *= contrast
+        # Apply dead mirrors (zero out random fraction)
+        if dead_mirror_rate > 0:
+            dead_mask = rng.random((H, W)) < dead_mirror_rate
+            dead_flat = dead_mask.ravel()
+            self._patterns[:, dead_flat] = 0.0
+        self._H = H
+        self._W = W
+
+    def _apply_spatial_warp(self, patterns: np.ndarray) -> np.ndarray:
+        """Apply spatial warp (dx, dy, theta, scale, blur) to patterns."""
+        mask_dx = self._params.get("mask_dx", 0.0)
+        mask_dy = self._params.get("mask_dy", 0.0)
+        mask_theta = self._params.get("mask_theta", 0.0)
+        mask_scale = self._params.get("mask_scale", 1.0)
+        blur_sigma = self._params.get("mask_blur_sigma", 0.0)
+        needs_warp = (abs(mask_dx) > 1e-8 or abs(mask_dy) > 1e-8 or
+                      abs(mask_theta) > 1e-8 or abs(mask_scale - 1.0) > 1e-8 or
+                      blur_sigma > 1e-8)
+        if not needs_warp:
+            return patterns
+        M = patterns.shape[0]
+        H, W = self._H, self._W
+        warped = np.zeros_like(patterns)
+        theta_rad = np.radians(mask_theta)
+        cos_t, sin_t = np.cos(theta_rad), np.sin(theta_rad)
+        cy, cx = (H - 1) / 2.0, (W - 1) / 2.0
+        for m in range(M):
+            pat_2d = patterns[m].reshape(H, W)
+            if blur_sigma > 0:
+                pat_2d = ndimage.gaussian_filter(pat_2d, sigma=blur_sigma,
+                                                 mode="constant")
+            if abs(mask_theta) > 1e-8 or abs(mask_scale - 1.0) > 1e-8:
+                # Affine transform: rotation + scale about center
+                M_rot = np.array([[cos_t / mask_scale, sin_t / mask_scale],
+                                  [-sin_t / mask_scale, cos_t / mask_scale]])
+                offset = np.array([cy, cx]) - M_rot @ np.array([cy, cx])
+                offset -= np.array([mask_dy, mask_dx])
+                pat_2d = ndimage.affine_transform(
+                    pat_2d, M_rot, offset=offset, order=1, mode="constant"
+                )
+            elif abs(mask_dx) > 1e-8 or abs(mask_dy) > 1e-8:
+                pat_2d = subpixel_shift_2d(pat_2d, mask_dy, mask_dx)
+            warped[m] = pat_2d.ravel()
+        return warped
+
+    def _illumination_drift(self, M: int) -> np.ndarray:
+        """Compute per-pattern illumination drift gain factors."""
+        a1 = self._params.get("illum_drift_linear", 0.0)
+        a2 = self._params.get("illum_drift_sin_amp", 0.0)
+        a3 = self._params.get("illum_drift_sin_freq", 0.0)
+        if abs(a1) < 1e-12 and abs(a2) < 1e-12:
+            return np.ones(M, dtype=np.float64)
+        t = np.arange(M, dtype=np.float64) / max(M - 1, 1)
+        return 1.0 + a1 * t + a2 * np.sin(2 * np.pi * t * a3)
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        patterns = self._apply_spatial_warp(self._patterns)
+        drift = self._illumination_drift(patterns.shape[0])
+        y = patterns @ x.ravel().astype(np.float64)
+        return (y * drift).astype(np.float64)
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        patterns = self._apply_spatial_warp(self._patterns)
+        drift = self._illumination_drift(patterns.shape[0])
+        y_corr = y.ravel().astype(np.float64) * drift
+        return (patterns.T @ y_corr).reshape(self._H, self._W)
+
+
+class BucketIntegration(BasePrimitive):
+    """Bucket detector temporal integration for SPC.
+
+    Models the integration duty cycle, clock offset, and timing jitter
+    of the single-pixel photodetector. Applies duty cycle scaling and
+    optional per-measurement temporal noise.
+    """
+
+    primitive_id = "bucket_integration"
+    _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "integration"
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        duty_cycle = self._params.get("duty_cycle", 1.0)
+        clock_offset = self._params.get("clock_offset", 0.0)
+        timing_jitter_std = self._params.get("timing_jitter_std", 0.0)
+        out = x.astype(np.float64) * duty_cycle
+        if abs(clock_offset) > 1e-8:
+            # Clock offset shifts effective integration window
+            out *= (1.0 - abs(clock_offset))
+        if timing_jitter_std > 0:
+            seed = self._params.get("seed", 0)
+            rng = np.random.default_rng(seed)
+            jitter = 1.0 + rng.normal(0, timing_jitter_std, size=out.shape)
+            jitter = np.clip(jitter, 0.5, 1.5)
+            out *= jitter
+        return out
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        duty_cycle = self._params.get("duty_cycle", 1.0)
+        clock_offset = self._params.get("clock_offset", 0.0)
+        scale = duty_cycle * (1.0 - abs(clock_offset)) if abs(clock_offset) > 1e-8 else duty_cycle
+        return y.astype(np.float64) * scale
+
+
+# =========================================================================
 # Registry
 # =========================================================================
 
@@ -2948,6 +3178,12 @@ _ALL_PRIMITIVES: List[type] = [
     ObjectiveLens,
     RelayLens,
     ImbalancedResponse,
+    # CACTI shutter integration
+    ShutterIntegration,
+    # SPC physical pipeline
+    ProjectionOptics,
+    DMDPatternSequence,
+    BucketIntegration,
 ]
 
 PRIMITIVE_REGISTRY: Dict[str, type] = {

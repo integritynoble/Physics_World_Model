@@ -1,0 +1,13 @@
+{
+  "a_definition": "callable",
+  "a_extraction_method": "graph_stripped",
+  "a_sha256": "a8d95564dafa7cde",
+  "linearity": "linear",
+  "linearization_notes": "N/A",
+  "mismatch_type": "synthetic_injected",
+  "correction_family": "Pre",
+  "nll_before": 106396960.8,
+  "nll_after": 1024.2,
+  "nll_decrease_pct": 100.0,
+  "timestamp": "2026-02-12T15:51:49.869216+00:00"
+}

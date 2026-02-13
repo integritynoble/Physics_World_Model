@@ -8,7 +8,7 @@ Supported modalities:
 - MRI: Coil sensitivity calibration
 - CASSI: Dispersion step calibration
 - CACTI: Mask timing calibration
-- SPC: Gain/bias calibration
+- SPC: Multistage UPWMI correction (spatial + temporal + illumination + sensor)
 - Lensless: PSF shift calibration
 - Ptychography: Position offset calibration
 """
@@ -906,3 +906,321 @@ def ptycho_calibrate_offset(
                 best_offset = (oy, ox)
 
     return best_offset
+
+
+# =============================================================================
+# SPC: Multistage UPWMI Correction
+# =============================================================================
+
+def _spc_make_grid(base_kw: Dict[str, float],
+                   param_specs: List[Tuple[str, np.ndarray]],
+                   ) -> List[Dict[str, float]]:
+    """Generate N-dimensional grid of parameter dicts for SPC correction."""
+    grid = [dict(base_kw)]
+    for pname, pvals in param_specs:
+        new_grid = []
+        for trial in grid:
+            for v in pvals:
+                d = dict(trial)
+                d[pname] = float(v)
+                new_grid.append(d)
+        grid = new_grid
+    return grid
+
+
+def spc_forward_with_params(
+    x: np.ndarray,
+    A_nominal: np.ndarray,
+    params: Dict[str, float],
+    H: int = 64,
+    W: int = 64,
+) -> np.ndarray:
+    """SPC forward model with physically grounded mismatch parameters.
+
+    Applies spatial warp, illumination drift, duty cycle, gain, offset,
+    and dark current to the nominal measurement matrix A.
+
+    Args:
+        x: Scene image (H, W) or flattened
+        A_nominal: Nominal measurement matrix (M, N)
+        params: Dict of mismatch parameters
+        H, W: Spatial dimensions
+
+    Returns:
+        Measurement vector (M,)
+    """
+    from scipy import ndimage as _ndi
+    from pwm_core.mismatch.subpixel import subpixel_shift_2d
+
+    M, N = A_nominal.shape
+    A = A_nominal.copy()
+
+    # Spatial warp: dx, dy, theta, scale, blur
+    mask_dx = params.get("mask_dx", 0.0)
+    mask_dy = params.get("mask_dy", 0.0)
+    mask_theta = params.get("mask_theta", 0.0)
+    mask_scale = params.get("mask_scale", 1.0)
+    blur_sigma = params.get("mask_blur_sigma", 0.0)
+
+    needs_warp = (abs(mask_dx) > 1e-8 or abs(mask_dy) > 1e-8 or
+                  abs(mask_theta) > 1e-8 or abs(mask_scale - 1.0) > 1e-8 or
+                  blur_sigma > 1e-8)
+
+    if needs_warp:
+        theta_rad = np.radians(mask_theta)
+        cos_t, sin_t = np.cos(theta_rad), np.sin(theta_rad)
+        cy, cx = (H - 1) / 2.0, (W - 1) / 2.0
+        for m in range(M):
+            pat = A[m].reshape(H, W)
+            if blur_sigma > 0:
+                pat = _ndi.gaussian_filter(pat, sigma=blur_sigma, mode="constant")
+            if abs(mask_theta) > 1e-8 or abs(mask_scale - 1.0) > 1e-8:
+                M_rot = np.array([[cos_t / mask_scale, sin_t / mask_scale],
+                                  [-sin_t / mask_scale, cos_t / mask_scale]])
+                offset = np.array([cy, cx]) - M_rot @ np.array([cy, cx])
+                offset -= np.array([mask_dy, mask_dx])
+                pat = _ndi.affine_transform(pat, M_rot, offset=offset,
+                                            order=1, mode="constant")
+            elif abs(mask_dx) > 1e-8 or abs(mask_dy) > 1e-8:
+                pat = subpixel_shift_2d(pat, mask_dy, mask_dx)
+            A[m] = pat.ravel()
+
+    # Illumination drift
+    a1 = params.get("illum_drift_linear", 0.0)
+    a2 = params.get("illum_drift_sin_amp", 0.0)
+    a3 = params.get("illum_drift_sin_freq", 0.0)
+    if abs(a1) > 1e-12 or abs(a2) > 1e-12:
+        t = np.arange(M, dtype=np.float64) / max(M - 1, 1)
+        drift = 1.0 + a1 * t + a2 * np.sin(2 * np.pi * t * a3)
+        A = A * drift[:, np.newaxis]
+
+    # Forward
+    x_flat = x.ravel().astype(np.float64)
+    y = A @ x_flat
+
+    # Duty cycle + clock offset
+    duty_cycle = params.get("duty_cycle", 1.0)
+    clock_offset = params.get("clock_offset", 0.0)
+    y *= duty_cycle
+    if abs(clock_offset) > 1e-8:
+        y *= (1.0 - abs(clock_offset))
+
+    # Sensor: gain, offset, dark_current
+    gain = params.get("gain", 1.0)
+    offset = params.get("offset", 0.0)
+    dark_current = params.get("dark_current", 0.0)
+    y = gain * y + offset + dark_current
+
+    return y
+
+
+def spc_compute_nll(
+    y_measured: np.ndarray,
+    y_predicted: np.ndarray,
+    peak_photons: float = 50000.0,
+    read_sigma: float = 0.005,
+) -> float:
+    """Mixed Poisson-Gaussian NLL for SPC measurements."""
+    eps = 1e-10
+    lam = np.maximum(np.abs(y_predicted) * peak_photons, eps)
+    y_scaled = np.abs(y_measured) * peak_photons
+    poisson_nll = float(np.sum(lam - y_scaled * np.log(lam)))
+    gauss_nll = float(0.5 * np.sum(
+        (y_measured - y_predicted) ** 2 / (read_sigma ** 2 + eps)
+    ))
+    return poisson_nll + gauss_nll
+
+
+def spc_multistage_correction(
+    y_measured: np.ndarray,
+    A_nominal: np.ndarray,
+    x_cal: np.ndarray,
+    H: int = 64,
+    W: int = 64,
+    peak_photons: float = 50000.0,
+    read_sigma: float = 0.005,
+    verbose: bool = True,
+) -> Tuple[Dict[str, float], Dict[str, Any]]:
+    """4-stage UPWMI correction for SPC following CACTI pattern.
+
+    Stage 1: Coarse spatial (mask_dx, mask_dy) — 5x5 integer grid
+    Stage 2: Refine spatial+temporal (mask_dx, mask_dy, mask_theta,
+             clock_offset) — 11x11x11x9 grid
+    Stage 3: Illumination drift (linear, sin_amp, sin_freq) — 13x9x7 grid
+    Stage 4: Sensor (gain, offset, dark_current) — 21x9x11 grid
+
+    Args:
+        y_measured: Measured data vector (M,)
+        A_nominal: Nominal measurement matrix (M, N)
+        x_cal: Calibration scene (H, W) — known ground truth
+        H, W: Spatial dimensions
+        peak_photons: Poisson noise level for NLL
+        read_sigma: Read noise sigma for NLL
+        verbose: Print stage progress
+
+    Returns:
+        fitted_params: Dict of corrected mismatch parameters
+        metadata: NLL trajectory, stage timings, etc.
+    """
+    import time as _time
+
+    nominal_kw: Dict[str, float] = {
+        "mask_dx": 0.0, "mask_dy": 0.0, "mask_theta": 0.0,
+        "mask_scale": 1.0, "mask_blur_sigma": 0.0,
+        "clock_offset": 0.0, "duty_cycle": 1.0,
+        "illum_drift_linear": 0.0, "illum_drift_sin_amp": 0.0,
+        "illum_drift_sin_freq": 0.0,
+        "gain": 1.0, "offset": 0.0, "dark_current": 0.0,
+    }
+
+    def _nll_for(kw):
+        y_pred = spc_forward_with_params(x_cal, A_nominal, kw, H, W)
+        return spc_compute_nll(y_measured, y_pred, peak_photons, read_sigma)
+
+    nll_before = _nll_for(nominal_kw)
+    best_kw = dict(nominal_kw)
+    stage_results: Dict[str, Any] = {}
+    nll_trajectory = [("initial", nll_before)]
+
+    # ── Stage 1: Coarse spatial (integer dx, dy) ─────────────────────
+    if verbose:
+        print("    [SPC W2] Stage 1: Coarse spatial (dx, dy integer ±2) ...")
+    t0 = _time.time()
+    grid_1 = _spc_make_grid(best_kw, [
+        ("mask_dx", np.arange(-2, 3, dtype=float)),
+        ("mask_dy", np.arange(-2, 3, dtype=float)),
+    ])
+    best_nll_1 = np.inf
+    for trial_kw in grid_1:
+        nll = _nll_for(trial_kw)
+        if nll < best_nll_1:
+            best_nll_1 = nll
+            best_kw = dict(trial_kw)
+    t1 = _time.time() - t0
+    stage_results["stage1_coarse_spatial"] = {
+        "nll": round(best_nll_1, 1),
+        "params": {"mask_dx": best_kw["mask_dx"], "mask_dy": best_kw["mask_dy"]},
+        "grid_size": len(grid_1),
+        "time": round(t1, 1),
+    }
+    nll_trajectory.append(("stage1", best_nll_1))
+    if verbose:
+        print(f"      Best: dx={best_kw['mask_dx']:.0f}, dy={best_kw['mask_dy']:.0f}, "
+              f"NLL={best_nll_1:.1f} ({t1:.1f}s)")
+
+    # ── Stage 2: Refine spatial + temporal ────────────────────────────
+    if verbose:
+        print("    [SPC W2] Stage 2: Refine spatial + theta + clock_offset ...")
+    t0 = _time.time()
+    dx_c, dy_c = best_kw["mask_dx"], best_kw["mask_dy"]
+    grid_2 = _spc_make_grid(best_kw, [
+        ("mask_dx", np.linspace(dx_c - 1, dx_c + 1, 11)),
+        ("mask_dy", np.linspace(dy_c - 1, dy_c + 1, 11)),
+        ("mask_theta", np.linspace(-0.6, 0.6, 11)),
+        ("clock_offset", np.linspace(-0.25, 0.25, 9)),
+    ])
+    best_nll_2 = np.inf
+    for trial_kw in grid_2:
+        nll = _nll_for(trial_kw)
+        if nll < best_nll_2:
+            best_nll_2 = nll
+            best_kw = dict(trial_kw)
+    t2 = _time.time() - t0
+    stage_results["stage2_refine_spatial_temporal"] = {
+        "nll": round(best_nll_2, 1),
+        "params": {
+            "mask_dx": round(best_kw["mask_dx"], 2),
+            "mask_dy": round(best_kw["mask_dy"], 2),
+            "mask_theta": round(best_kw["mask_theta"], 2),
+            "clock_offset": round(best_kw["clock_offset"], 3),
+        },
+        "grid_size": len(grid_2),
+        "time": round(t2, 1),
+    }
+    nll_trajectory.append(("stage2", best_nll_2))
+    if verbose:
+        print(f"      Best: dx={best_kw['mask_dx']:.2f}, dy={best_kw['mask_dy']:.2f}, "
+              f"theta={best_kw['mask_theta']:.2f}°, clock={best_kw['clock_offset']:.3f}, "
+              f"NLL={best_nll_2:.1f} ({t2:.1f}s)")
+
+    # ── Stage 3: Illumination drift ──────────────────────────────────
+    if verbose:
+        print("    [SPC W2] Stage 3: Illumination drift (linear, sin_amp, sin_freq) ...")
+    t0 = _time.time()
+    grid_3 = _spc_make_grid(best_kw, [
+        ("illum_drift_linear", np.linspace(-0.15, 0.15, 13)),
+        ("illum_drift_sin_amp", np.linspace(0.0, 0.12, 9)),
+        ("illum_drift_sin_freq", np.linspace(0.0, 5.0, 7)),
+    ])
+    best_nll_3 = np.inf
+    for trial_kw in grid_3:
+        nll = _nll_for(trial_kw)
+        if nll < best_nll_3:
+            best_nll_3 = nll
+            best_kw = dict(trial_kw)
+    t3 = _time.time() - t0
+    stage_results["stage3_illumination_drift"] = {
+        "nll": round(best_nll_3, 1),
+        "params": {
+            "illum_drift_linear": round(best_kw["illum_drift_linear"], 4),
+            "illum_drift_sin_amp": round(best_kw["illum_drift_sin_amp"], 4),
+            "illum_drift_sin_freq": round(best_kw["illum_drift_sin_freq"], 2),
+        },
+        "grid_size": len(grid_3),
+        "time": round(t3, 1),
+    }
+    nll_trajectory.append(("stage3", best_nll_3))
+    if verbose:
+        print(f"      Best: linear={best_kw['illum_drift_linear']:.4f}, "
+              f"sin_amp={best_kw['illum_drift_sin_amp']:.4f}, "
+              f"freq={best_kw['illum_drift_sin_freq']:.2f}, "
+              f"NLL={best_nll_3:.1f} ({t3:.1f}s)")
+
+    # ── Stage 4: Sensor calibration ──────────────────────────────────
+    if verbose:
+        print("    [SPC W2] Stage 4: Sensor (gain, offset, dark_current) ...")
+    t0 = _time.time()
+    grid_4 = _spc_make_grid(best_kw, [
+        ("gain", np.linspace(0.75, 1.25, 21)),
+        ("offset", np.linspace(-0.025, 0.025, 9)),
+        ("dark_current", np.linspace(0.0, 0.04, 11)),
+    ])
+    best_nll_4 = np.inf
+    for trial_kw in grid_4:
+        nll = _nll_for(trial_kw)
+        if nll < best_nll_4:
+            best_nll_4 = nll
+            best_kw = dict(trial_kw)
+    t4 = _time.time() - t0
+    stage_results["stage4_sensor_calibration"] = {
+        "nll": round(best_nll_4, 1),
+        "params": {
+            "gain": round(best_kw["gain"], 3),
+            "offset": round(best_kw["offset"], 4),
+            "dark_current": round(best_kw["dark_current"], 4),
+        },
+        "grid_size": len(grid_4),
+        "time": round(t4, 1),
+    }
+    nll_trajectory.append(("stage4", best_nll_4))
+    if verbose:
+        print(f"      Best: gain={best_kw['gain']:.3f}, offset={best_kw['offset']:.4f}, "
+              f"dark={best_kw['dark_current']:.4f}, NLL={best_nll_4:.1f} ({t4:.1f}s)")
+
+    nll_after = best_nll_4
+    nll_decrease_pct = (nll_before - nll_after) / (nll_before + 1e-12) * 100
+
+    if verbose:
+        print(f"    [SPC W2] NLL: {nll_before:.1f} → {nll_after:.1f} "
+              f"(decrease: {nll_decrease_pct:.1f}%)")
+
+    metadata = {
+        "nll_before": round(nll_before, 1),
+        "nll_after": round(nll_after, 1),
+        "nll_decrease_pct": round(nll_decrease_pct, 1),
+        "nll_trajectory": nll_trajectory,
+        "stages": stage_results,
+        "total_time": round(t1 + t2 + t3 + t4, 1),
+    }
+
+    return best_kw, metadata
