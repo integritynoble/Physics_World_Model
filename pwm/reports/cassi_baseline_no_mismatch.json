@@ -1,0 +1,36 @@
+{
+  "description": "CASSI Baseline: No Mismatch Results",
+  "scene": "TSA scene01 or KAIST",
+  "shape": "256x256x28",
+  "noise_model": {
+    "poisson_gain": 1000.0,
+    "gaussian_sigma": 5.0
+  },
+  "nominal_parameters": {
+    "dx_px": 0.0,
+    "dy_px": 0.0,
+    "theta_deg": 0.0,
+    "phi_d_deg": 0.0
+  },
+  "baseline_results": {
+    "psnr_db": 9.384207252977477,
+    "sam_deg": 65.41650390625,
+    "description": "Reconstruction using CORRECT (nominal) parameters"
+  },
+  "perturbation_comparison": [
+    {
+      "perturbation": "Mask shift (2,1)px",
+      "psnr_perturbed": 9.25772271673891,
+      "sam_perturbed": 66.18891906738281,
+      "delta_psnr": 0.1264845362385678,
+      "delta_sam": -0.7724151611328125
+    },
+    {
+      "perturbation": "Mask rotation 1\u00b0",
+      "psnr_perturbed": 9.034188025532995,
+      "sam_perturbed": 69.5018539428711,
+      "delta_psnr": 0.35001922744448244,
+      "delta_sam": -4.085350036621094
+    }
+  ]
+}

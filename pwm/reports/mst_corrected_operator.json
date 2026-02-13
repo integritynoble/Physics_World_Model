@@ -1,0 +1,38 @@
+{
+  "scenario": "CASSI W2d (dispersion axis misalignment)",
+  "true_mismatch": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "theta": 0.0,
+    "phi_d": 2.0
+  },
+  "corrected_params": {
+    "dx": 0.0,
+    "dy": 0.0,
+    "theta": 0.0,
+    "phi_d": 2.0
+  },
+  "mst_nominal": {
+    "psnr_db": 7.861683442754337,
+    "ssim": 0.17781385779380798,
+    "sam_deg": 73.96517944335938
+  },
+  "mst_corrected": {
+    "psnr_db": 7.861683442754337,
+    "ssim": 0.17781385779380798,
+    "sam_deg": 73.96517944335938,
+    "psnr_gain_db": 0.0
+  },
+  "mst_oracle": {
+    "psnr_db": 7.861683442754337,
+    "ssim": 0.17781385779380798,
+    "sam_deg": 73.96517944335938,
+    "psnr_gain_db": 0.0
+  },
+  "key_insights": [
+    "Nominal (wrong) MST: 7.86 dB",
+    "Corrected operator MST: 7.86 dB (\u0394 +0.00 dB)",
+    "Oracle (true) MST: 7.86 dB (\u0394 +0.00 dB)",
+    "Cannot compute"
+  ]
+}
