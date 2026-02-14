@@ -1,0 +1,83 @@
+{
+  "description": "CASSI Baseline: All 10 Scenes, No Mismatch, REDUCED NOISE",
+  "dataset": "TSA Simulation Benchmark (10 scenes, 256x256x28)",
+  "scenes_loaded": 10,
+  "noise_model": {
+    "type": "Poisson + Gaussian (REDUCED/REALISTIC)",
+    "poisson_gain": 10000.0,
+    "gaussian_sigma": 1.0,
+    "note": "More realistic than aggressive model (1000, 5.0)"
+  },
+  "comparison_to_aggressive_noise": {
+    "aggressive_model_psnr_db": 10.26,
+    "reduced_noise_psnr_db": 17.231601780292614,
+    "improvement_db": 6.971601780292614,
+    "reason": "Lower noise amplitude = higher SNR = better reconstruction"
+  },
+  "per_scene_results": {
+    "scene01": {
+      "psnr_db": 17.997766566473807,
+      "ssim": 0.17496705786854866,
+      "sam_deg": 55.820587158203125
+    },
+    "scene02": {
+      "psnr_db": 17.80000665836991,
+      "ssim": 0.1552841904374998,
+      "sam_deg": 58.40858459472656
+    },
+    "scene03": {
+      "psnr_db": 16.23017920191885,
+      "ssim": 0.16324863449504692,
+      "sam_deg": 50.75527572631836
+    },
+    "scene04": {
+      "psnr_db": 19.01131270539365,
+      "ssim": 0.24193127802604764,
+      "sam_deg": 69.43052673339844
+    },
+    "scene05": {
+      "psnr_db": 15.98958043103098,
+      "ssim": 0.1603906462763786,
+      "sam_deg": 47.62996292114258
+    },
+    "scene06": {
+      "psnr_db": 17.388088759827113,
+      "ssim": 0.20914445990795288,
+      "sam_deg": 61.0446891784668
+    },
+    "scene07": {
+      "psnr_db": 16.621880777551667,
+      "ssim": 0.14887201032156683,
+      "sam_deg": 53.178314208984375
+    },
+    "scene08": {
+      "psnr_db": 17.64863081007824,
+      "ssim": 0.2127075308744353,
+      "sam_deg": 63.977783203125
+    },
+    "scene09": {
+      "psnr_db": 16.53228646260744,
+      "ssim": 0.16495859243756653,
+      "sam_deg": 60.582489013671875
+    },
+    "scene10": {
+      "psnr_db": 17.096285429674474,
+      "ssim": 0.18769439593530965,
+      "sam_deg": 56.2551155090332
+    }
+  },
+  "overall_metrics": {
+    "mean_psnr_db": 17.231601780292614,
+    "mean_ssim": 0.18191987965803527,
+    "mean_sam_deg": 57.70833282470703,
+    "std_psnr_db": 0.877521583230492,
+    "std_ssim": 0.02876376557130651,
+    "std_sam_deg": 6.105024766476872
+  },
+  "comparison_to_published": {
+    "published_w1_gap_tv_psnr_db": 14.92,
+    "our_baseline_psnr_db": 17.231601780292614,
+    "difference_db": 2.311601780292614,
+    "note": "Still lower than published W1; likely due to parameter tuning differences"
+  }
+}
