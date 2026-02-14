@@ -30,8 +30,8 @@ This document proposes a **complete CASSI calibration strategy** based on enlarg
 
 5. **(E) Three Reconstruction Scenarios:**
    - **Scenario I (Ideal):** Ideal measurement + ideal mask + ideal forward model → x̂_ideal (oracle)
-   - **Scenario II (Assumed):** Ideal measurement + assumed perfect mask + **simulated forward model** → x̂_assumed (baseline)
-   - **Scenario III (Corrected):** Corrupted measurement + corrected mask + **simulated forward model** → x̂_corrected (practical)
+   - **Scenario II (Assumed):** **Corrupted measurement** + assumed perfect mask + **simulated forward model** → x̂_assumed (baseline, no correction)
+   - **Scenario III (Corrected):** **Corrupted measurement** + corrected mask + **simulated forward model** → x̂_corrected (practical, with correction)
 
 6. **(F) Calibration (3 Parameters Only):** Correct mask geometry via UPWMI Algorithms 1 & 2
    - **Mask shifts:** dx, dy ∈ [-3, 3] px (assembly tolerance)
@@ -278,32 +278,32 @@ x̂_ideal = solver(y_ideal, forward_ideal, mask_ideal, n_iter=50)
 
 **Metrics:** PSNR_ideal, SSIM_ideal, SAM_ideal (oracle baseline)
 
-### 3.2 Scenario II: Assumed Mask Reconstruction (Baseline)
+### 3.2 Scenario II: Assumed Mask Reconstruction (Baseline, No Correction)
 
-**Purpose:** Show impact of simulation method (enlarged grid) vs ideal forward model.
+**Purpose:** Show impact of measurement corruption + simulation method WITHOUT mismatch correction.
 
 **Forward model:** Simulated with N=4, K=2 (from Section 2.4)
 
 **Measurement generation:**
 ```
-1. Use SAME ideal measurement from Scenario I: y_ideal (256×310)
-   (No noise, no mismatch)
+1. Use CORRUPTED measurement from Scenario III: y_corrupt (256×310)
+   (Same as Scenario III: with mismatch + noise)
 
-2. Use ASSUMED perfect mask (downsampled from enlarged 1024×1024 version):
-   mask_1024 = upsample(mask_ideal, 4)
-   mask_assumed = downsample(mask_1024, 4)  # Back to 256×256
+2. Use ASSUMED perfect/ideal mask (NO mismatch correction applied):
+   mask_assumed = mask_ideal (256×256, unchanged)
 ```
 
 **Reconstruction:**
 ```
 Operator: phi_assumed = SimulatedOperator(mask_assumed, N=4, K=2)
-x̂_assumed = solver(y_ideal, phi_assumed, n_iter=50)
+x̂_assumed = solver(y_corrupt, phi_assumed, n_iter=50)
 ```
 
-**Why use same y_ideal:** To isolate the effect of simulation method vs ideal forward model.
+**Why use corrupted y_corrupt:** To measure the degradation from measurement corruption WITHOUT the benefit of mismatch correction. This shows what happens if we ignore the mismatch.
 
 **Metrics:** PSNR_assumed, SSIM_assumed, SAM_assumed
-- Compare with x̂_ideal to measure simulation fidelity loss
+- Compare with x̂_ideal to measure total loss (corruption + no correction)
+- Compare with x̂_corrected to measure gain from correction
 
 ### 3.3 Scenario III: Corrected Mask Reconstruction (Practical)
 
@@ -367,20 +367,25 @@ x̂_corrected_2 = solver(y_noisy, phi_corrected_2, n_iter=50)
 
 ### 4.1 Three-Scenario Comparison Table (Per Scene)
 
-| Scenario | Measurement | Mask | Operator | Metrics | Purpose |
-|----------|-------------|------|----------|---------|---------|
-| **I. Ideal** | y_ideal (clean) | mask_ideal (true) | Ideal direct | PSNR_ideal | Oracle upper bound |
-| **II. Assumed** | y_ideal (clean) | mask_assumed (perfect) | Simulated N=4, K=2 | PSNR_assumed | Simulation fidelity |
-| **III. Corrected** | y_noisy (corrupted+noise) | mask_corrected (est.) | Simulated N=4, K=2 | PSNR_corrected | Practical result |
+| Scenario | Measurement | Mask | Operator | Purpose |
+|----------|-------------|------|----------|---------|
+| **I. Ideal** | y_ideal (clean, perfect) | mask_ideal (perfect) | Ideal direct (stride-2) | Oracle upper bound |
+| **II. Assumed** | y_corrupt (misaligned+noise) | mask_assumed (perfect, no correction) | Simulated N=4, K=2 | Baseline: corruption without correction |
+| **III. Corrected** | y_corrupt (misaligned+noise) | mask_corrected (estimated) | Simulated N=4, K=2 | Practical: corruption with correction |
 
-**Expected gaps:**
+**Expected PSNR hierarchy:**
 ```
-PSNR_ideal ≥ PSNR_assumed ≥ PSNR_corrected
+PSNR_ideal > PSNR_corrected > PSNR_assumed
 
-Gap I→II: Impact of enlarged grid simulation (typically <1-2 dB)
-Gap II→III: Impact of mismatch + correction (typical 3-5 dB before correction)
-Gap III→I: Total loss from simulation + mismatch (typically 5-10 dB)
+Gap I→II: Impact of measurement corruption + no correction (typically 5-10 dB loss)
+Gap II→III: Gain from mismatch correction (typical 3-5 dB improvement)
+Gap III→I: Total loss from simulation + unresolved corruption (typically 2-3 dB)
 ```
+
+**Interpretation:**
+- **Scenario I (Ideal):** Best case - oracle showing reconstruction quality with perfect setup
+- **Scenario II (Assumed):** Worst case among corrected scenarios - shows impact of ignoring mismatch
+- **Scenario III (Corrected):** Practical case - shows correction effectiveness
 
 ### 4.2 Parameter Recovery Accuracy (Algorithm 1 vs 2)
 
@@ -647,13 +652,8 @@ def run_full_validation_scene(scene_idx, x_true_256, mask_ideal_256):
     x_hat_ideal = solver(y_ideal, forward_ideal, mask_ideal_256, n_iter=50)
     psnr_ideal = psnr(x_hat_ideal, x_true_256)
 
-    # ========== SCENARIO II: ASSUMED (Simulated operator) ==========
-    x_hat_assumed = solver(y_ideal, SimulatedOperator_EnlargedGrid(mask_ideal_256), n_iter=50)
-    psnr_assumed = psnr(x_hat_assumed, x_true_256)
-
-    # ========== SCENARIO III: CORRECTED ==========
-
-    # Inject mismatch
+    # ========== INJECT MISMATCH FOR SCENARIOS II & III ==========
+    # Inject same mismatch to both scene and mask
     dx_true = np.random.uniform(-3, 3)
     dy_true = np.random.uniform(-3, 3)
     theta_true = np.random.uniform(-np.pi/180, np.pi/180)
@@ -665,6 +665,13 @@ def run_full_validation_scene(scene_idx, x_true_256, mask_ideal_256):
     y_enlarged = forward_enlarged(enlarge(x_misaligned), upsample(mask_misaligned, 4))
     y_corrupt = downsample(y_enlarged, 4)
     y_noisy = add_noise(y_corrupt, peak=10000, sigma=0.01)
+
+    # ========== SCENARIO II: ASSUMED (Baseline, no correction) ==========
+    # Use corrupted measurement but perfect mask (ignoring mismatch)
+    x_hat_assumed = solver(y_noisy, SimulatedOperator_EnlargedGrid(mask_ideal_256), n_iter=50)
+    psnr_assumed = psnr(x_hat_assumed, x_true_256)
+
+    # ========== SCENARIO III: CORRECTED ==========
 
     # Generate shift-crops for Algorithm 1 & 2
     x_crops, y_crops = generate_shift_crops(x_misaligned, n_crops=4)
@@ -697,18 +704,25 @@ def run_full_validation_scene(scene_idx, x_true_256, mask_ideal_256):
         'scene_idx': scene_idx,
         'dx_true': dx_true, 'dy_true': dy_true, 'theta_true': theta_true * 180 / np.pi,
 
+        # Three scenarios
         'psnr_ideal': psnr_ideal,
-        'psnr_assumed': psnr_assumed,
+        'psnr_assumed': psnr_assumed,  # Baseline: corrupted measurement, no correction
+        'psnr_alg1': psnr_alg1,         # Corrected with Algorithm 1
+        'psnr_alg2': psnr_alg2,         # Corrected with Algorithm 2
 
-        'psnr_alg1': psnr_alg1,
+        # Algorithm 1 parameter errors
         'err_dx_alg1': err_dx_alg1, 'err_dy_alg1': err_dy_alg1, 'err_theta_alg1': err_theta_alg1,
 
-        'psnr_alg2': psnr_alg2,
+        # Algorithm 2 parameter errors
         'err_dx_alg2': err_dx_alg2, 'err_dy_alg2': err_dy_alg2, 'err_theta_alg2': err_theta_alg2,
 
-        'gap_ideal_assumed': psnr_ideal - psnr_assumed,
-        'gain_alg1_to_alg2': psnr_alg2 - psnr_alg1,
-        'gap_alg2_to_ideal': psnr_ideal - psnr_alg2,
+        # Key comparisons
+        'loss_corruption_no_correction': psnr_ideal - psnr_assumed,  # Gap I→II
+        'gain_from_alg1_correction': psnr_alg1 - psnr_assumed,       # Gap II→III (Alg1)
+        'gain_from_alg2_correction': psnr_alg2 - psnr_assumed,       # Gap II→III (Alg2)
+        'gap_alg1_to_oracle': psnr_ideal - psnr_alg1,                # Gap III→I (Alg1)
+        'gap_alg2_to_oracle': psnr_ideal - psnr_alg2,                # Gap III→I (Alg2)
+        'improvement_alg2_over_alg1': psnr_alg2 - psnr_alg1,        # Alg2 vs Alg1
     }
 ```
 
@@ -787,10 +801,17 @@ This revised plan provides:
 4. **Comprehensive metrics:** PSNR/SSIM/SAM + parameter recovery + timing
 
 **Expected outcomes:**
-- Ideal (oracle): ~28–30 dB
-- Assumed (baseline): ~27–29 dB (typically <1 dB loss from simulation)
-- Corrected (practical): ~23–25 dB after correction, gap <2–3 dB to oracle
-- Parameter accuracy: ±0.05–0.1 px (Algorithm 2)
+- **Scenario I (Ideal):** ~28–30 dB (oracle, no corruption)
+- **Scenario II (Assumed):** ~18–21 dB (baseline, corruption without correction, loss ~5-10 dB)
+- **Scenario III-Alg1:** ~22–24 dB (corrected with Algorithm 1, gain ~3-4 dB from Alg1)
+- **Scenario III-Alg2:** ~23–25 dB (corrected with Algorithm 2, gain ~4-5 dB from Alg2, gap <3 dB to oracle)
+- **Parameter accuracy:** ±0.05–0.1 px (Algorithm 2)
+
+**Key comparisons:**
+- Gap I→II: ~5-10 dB (impact of corruption without correction)
+- Gain II→III (Alg1): ~3-4 dB (correction effectiveness)
+- Gain II→III (Alg2): ~4-5 dB (better correction)
+- Gap III→I (Alg2): <3 dB (residual loss after correction)
 
 ---
 
