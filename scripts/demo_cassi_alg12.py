@@ -87,7 +87,7 @@ def demo_algorithm1():
         return None
 
 
-def demo_algorithm2(mismatch_coarse):
+def demo_algorithm2(mismatch_coarse, mask_real, y_meas, x_true, s_nom):
     """Demonstrate Algorithm 2: Joint Gradient Refinement."""
     logger.info("\n" + "="*70)
     logger.info("DEMO: Algorithm 2 - Joint Gradient Refinement")
@@ -99,19 +99,20 @@ def demo_algorithm2(mismatch_coarse):
 
     from pwm_core.calibration import Algorithm2JointGradientRefinement
 
-    # Create synthetic data (same as Algorithm 1)
-    H, W, L = 256, 256, 28
-    x_true = np.random.rand(H, W, L).astype(np.float32) * 0.8
-    y_meas = np.random.rand(H, H + 54).astype(np.float32) * 0.1
-
     logger.info("Initializing Algorithm 2...")
-    alg2 = Algorithm2JointGradientRefinement()
+    alg2 = Algorithm2JointGradientRefinement(device="cpu")  # Use CPU for demo
 
     logger.info("Running Algorithm 2 refinement...")
     start_time = time.time()
 
     try:
-        mismatch_refined = alg2.refine(mismatch_coarse, y_meas, x_true)
+        mismatch_refined = alg2.refine(
+            mismatch_coarse=mismatch_coarse,
+            y_meas=y_meas,
+            mask_real=mask_real,
+            x_true=x_true,
+            s_nom=s_nom
+        )
         elapsed = time.time() - start_time
 
         logger.info(f"✓ Algorithm 2 completed successfully in {elapsed:.2f} seconds")
@@ -134,6 +135,13 @@ def main():
     logger.info("CASSI Algorithm 1 & 2 Demonstration")
     logger.info("="*70)
 
+    # Create synthetic data for both algorithms
+    H, W, L = 256, 256, 28
+    x_true = np.random.rand(H, W, L).astype(np.float32) * 0.8
+    mask_real = np.random.rand(H, W).astype(np.float32) * 0.8 + 0.1
+    y_meas = np.random.rand(H, H + 54).astype(np.float32) * 0.1
+    s_nom = np.linspace(0, 28, L, dtype=np.float32)  # Nominal dispersion curve
+
     # Run Algorithm 1
     mismatch_coarse = demo_algorithm1()
 
@@ -142,7 +150,7 @@ def main():
         return
 
     # Run Algorithm 2
-    mismatch_refined = demo_algorithm2(mismatch_coarse)
+    mismatch_refined = demo_algorithm2(mismatch_coarse, mask_real, y_meas, x_true, s_nom)
 
     # Summary
     logger.info("\n" + "="*70)
