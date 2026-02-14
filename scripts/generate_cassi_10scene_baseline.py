@@ -114,9 +114,9 @@ def _cassi_forward(x_hwl, mask2d, s_nom, dir_rot_deg):
 
 
 def _gap_tv_recon(y, cube_shape, mask2d, s_nom, dir_rot_deg,
-                  max_iter=120, lam=1.0, tv_weight=0.4, tv_iter=5,
+                  max_iter=50, lam=1.0, tv_weight=6.0, tv_iter=5,
                   x_init=None, gauss_sigma=0.5):
-    """GAP-TV reconstruction."""
+    """GAP-TV reconstruction with improved parameters from PnP-CASSI."""
     try:
         from skimage.restoration import denoise_tv_chambolle
     except ImportError:
@@ -276,7 +276,7 @@ def main():
         # Reconstruction with nominal (correct) parameters
         print(f"Reconstructing with GAP-TV (nominal parameters)...")
         x_recon = _gap_tv_recon(y, (H, W, L), mask_used, s_nom,
-                                dir_rot_deg=0.0, max_iter=120)
+                                dir_rot_deg=0.0, max_iter=50, tv_weight=6.0)
 
         # Compute metrics
         psnr = compute_psnr(x_recon, cube_gt)
@@ -352,9 +352,9 @@ def main():
         },
         "reconstruction_parameters": {
             "algorithm": "GAP-TV",
-            "max_iterations": 120,
+            "max_iterations": 50,
             "step_size_lam": 1.0,
-            "tv_weight": 0.4,
+            "tv_weight": 6.0,
             "tv_iterations": 5,
         },
         "per_scene_results": results_by_scene,
