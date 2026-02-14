@@ -288,9 +288,17 @@ def validate_scenario_iii(scene: np.ndarray, mask_real: np.ndarray) -> Dict[str,
 
     # Algorithm 2 (using Alg1 as coarse estimate)
     logger.info("Running Algorithm 2...")
-    alg2 = Algorithm2JointGradientRefinement()
+    alg2 = Algorithm2JointGradientRefinement(device="cpu")  # Use CPU for validation
     try:
-        mismatch_alg2 = alg2.refine(mismatch_alg1, y_noisy, scene)
+        # Create dispersion curve for CASSI forward model
+        s_nom = np.linspace(0, 28, 28, dtype=np.float32)
+        mismatch_alg2 = alg2.refine(
+            mismatch_coarse=mismatch_alg1,
+            y_meas=y_noisy,
+            mask_real=mask_real,
+            x_true=scene,
+            s_nom=s_nom
+        )
         logger.info(f"Algorithm 2 result: {mismatch_alg2}")
     except Exception as e:
         logger.error(f"Algorithm 2 failed: {e}")
