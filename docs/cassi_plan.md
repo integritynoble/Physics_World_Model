@@ -1,18 +1,122 @@
-# CASSI Calibration via Upsample-to-Integer & Mask-Only Correction
-**Plan Document — v2 (2026-02-14)**
+# CASSI Calibration via Spectral Interpolation & Shift-Crop + Mask-Only Correction
+**Plan Document — v3 (2026-02-14, REVISED)**
 
 ## Executive Summary
 
-This document proposes a **physically-motivated CASSI calibration strategy** that:
+This document proposes an **efficient CASSI mask-only calibration strategy** that:
 
-1. **Expand image & spectral bands** (256×256×28) → (N·256, N·256, 2N·28) to enforce **integer dispersion shifts**
-2. **Interpolate spectral frames** from 28 → 2N·28 using spectral smoothing (preserves physics of hyperspectral cube)
-3. **Downsample corrected measurement** back to original size after fixed-shift forward model
-4. **Correct only mask geometry** (dx, dy, θ) via **UPWMI Algorithm 1 (beam search) + Algorithm 2 (gradient refinement)**
-5. **Freeze dispersion parameters** (a₁, α) as known optical properties, not fitting variables
-6. **Validate on all 10 TSA scenes** with ground-truth comparisons and parameter recovery metrics
+1. **(A) Dataset Expansion:** Generate 2N shift-crops per scene (stride=1 along dispersion axis)
+   - Reflect-pad each 256×256×28 scene by M≥3 px
+   - Generate 4 crops at offsets o=[0,1,2,3] → 40 total crops from 10 scenes
+   - Purpose: Multiple viewpoints for robust parameter fitting
 
-**Core insight:** Spectral upsampling (2N·28 bands) with spatial upsampling (N) ensures minimum dispersion shifts become **integer pixels**. This eliminates sub-pixel registration errors and allows exact (non-interpolated) forward model evaluation.
+2. **(B) Simulation with Large Grid:** Forward model on expanded (512×512×56) grid
+   - Spatial upsampling: 256×256 → 512×512 (N=2, for integer shifts)
+   - Spectral interpolation: 28 → 56 bands (K=2, for continuous wavelength fidelity)
+   - Measure: (512, 512 + dispersion_extent) on enlarged grid
+
+3. **(C) Downsample to Original:** Return measurement to original 256×310 size
+   - Bilinear downsampling of (512, ...) measurement → (256, 310)
+   - Recovers original measurement space
+
+4. **(D) Reconstruct on Original Grid:** Run solver on 256×256×28 only
+   - Input: Original-size measurement y (256×310)
+   - Output: Original-size reconstruction x̂ (256×256×28)
+   - **No reconstruction on expanded grid**
+
+5. **(E) Calibration (3 Parameters Only):** Correct mask geometry via UPWMI Algorithms 1 & 2
+   - **Mask shifts:** dx, dy ∈ [-3, 3] px (assembly tolerance)
+   - **Mask rotation:** θ ∈ [-1°, 1°] (optical bench twist)
+   - **Frozen dispersion:** a₁=2.0 px/band (factory calibration)
+
+6. **(F) Validate on 10 Scenes** with parameter recovery metrics and comprehensive reporting
+
+**Core strategy:** Expand only for **forward model simulation** (large grid ensures integer shifts + continuous wavelength). Return to **original grid for reconstruction** (faster solvers, cleaner optimization).
+
+---
+
+## Quick Reference: Complete Strategy
+
+### (A) Dataset Expansion: 2N Shift-Crops
+```
+Per scene: x (256×256×28)
+  → Reflect-pad dispersion axis (M=3 px)
+  → Generate 4 crops at offsets [0, 1, 2, 3] px
+  → Each crop: 256×256×28
+
+Result: 4 crops/scene × 10 scenes = 40 training crops
+Purpose: Multiple viewpoints for robust fitting
+```
+
+### (B) Forward Model: Hybrid Grid (Expand for Simulation)
+```
+Input: x (256×256×28), mask M (256×256)
+
+Step 1: Spatial upsample (N=2)
+  x → x_spatial (512×512×28)
+  M → M_spatial (512×512)
+
+Step 2: Spectral interpolate (K=2)
+  x_spatial → x_expanded (512×512×56)
+  Formula: L → K·(L-1)+1 = 2·27+1 = 55
+
+Step 3: Forward model (integer dispersion shifts)
+  y_expanded = forward(x_expanded, M_spatial) [512, 512+disp_large]
+
+Step 4: Downsample (1/N) + scale (1/K)
+  y_final = downsample(y_expanded) / K  [256, 310]  ← original size!
+```
+
+### (C) Reconstruction: Original Grid Only
+```
+Input: y (256×310)
+
+Solver (GAP-TV, MST, HDNet, etc.)
+  x̂ = Solver(y, operator, n_iter=50)
+  Output: x̂ (256×256×28)  ← ALWAYS original grid!
+```
+
+### (D) Calibration: UPWMI Algorithms 1 & 2
+```
+Parameters: 3 (mask geometry only)
+  dx   ∈ [-3, 3] px
+  dy   ∈ [-3, 3] px
+  θ    ∈ [-1°, 1°]
+
+Algorithm 1 (Beam Search, 4.5 h/scene):
+  - 1D sweeps on shift-crops (proxy K=5)
+  - Beam search 5×5×5 (K=10)
+  - Coordinate descent (3 rounds)
+
+Algorithm 2 (Gradient Refinement, 4 h/scene):
+  - Phase 1: 100 epochs on shift-crops (lr=0.01)
+  - Phase 2: 50 epochs on full 10 scenes (lr=0.001)
+  - Unroll K=10 GAP-TV iterations
+```
+
+### (E) Validation: 10 TSA Scenes
+```
+Per scene (random mismatch):
+  - Inject dx_true, dy_true, θ_true
+  - Generate y_noisy (hybrid forward + noise)
+  - Run Alg1 + Alg2
+  - Compute: PSNR, SSIM, SAM, parameter errors
+
+Expected results:
+  - Alg1: ±0.15 px (dx, dy), ±0.1° (θ)
+  - Alg2: ±0.05-0.1 px, ±0.02-0.05° (3-5× better!)
+  - Gap to oracle: <2-3 dB
+```
+
+### Timeline Summary
+```
+Phase 1 (Code):        12 hours (wall-clock)
+Phase 2 (Single test):  8.5 hours (GPU)
+Phase 3 (10 scenes):    ~85 hours (GPU, ~4 days continuous)
+Phase 4 (Analysis):      4 hours (wall-clock)
+─────────────────────────────────────────────
+Total:                  ~4-5 days calendar time
+```
 
 ---
 
@@ -43,529 +147,484 @@ From `pwm/reports/cassi.md` (5 mismatch scenarios):
 
 ---
 
-## Part 1: Image & Spectral Expansion Strategy (Upsample-to-Integer)
+## Part 1A: Dataset Expansion via Shift-Crop (2N Samples per Scene)
 
-### 1.1 Motivation: Integer Dispersion Shifts
+### 1A.1 Motivation: Augmentation for Calibration Statistics
 
-Current SD-CASSI forward model (from `cassi_working_process.md`, Section 3.3):
+**Problem:** Single 256×256×28 scene per modality is limited for:
+- Robust parameter fitting (small sample size, prone to overfitting)
+- Statistical confidence in calibration estimates
+- Testing robustness across varying content
+
+**Solution:** Generate **2N synthetic crops** from each original scene via **shift-crop along dispersion axis**.
+
+### 1A.2 Shift-Crop Protocol
+
+**Input:** Original scene x (256 × 256 × 28)
+
+**Process:**
 ```
-Discrete form:  d_n = s · (n − n_c)           where s=2.0 px/band, n_c=(L-1)/2
-Result:         fractional band shifts: d_n ∈ {-26, -24, ..., 0, ..., 24, 26} px  [for L=28]
-```
+1. Reflect-pad scene along dispersion (W) axis by margin M ≥ 2N-1
 
-**Problem:** Even with integer s=2.0, the shifts d_n can lead to sub-pixel registration if we consider:
-1. Mask alignment errors (dx, dy) compound with fractional dispersion
-2. Spectral interpolation during forward/adjoint (if bands are unevenly spaced)
-3. Small angle α shifts dispersion direction, creating 2D fractional offsets
+   Purpose: Ensure crops don't exceed boundaries
+   Example for 2N=4 (N=2): margin M ≥ (4-1) = 3 px
 
-**Solution:** Expand both spatial and spectral dimensions such that:
-- All minimum mismatch/shift amounts become **integer pixels**
-- Forward model uses **exact integer shifts** (no interpolation)
-- Reconstruction is computed on enlarged grid, then downsampled
+   Padded scene: x_padded = reflect_pad(x, pad_width=((0,0), (M,M), (0,0)))
+   New shape: (H, W+2M, L) = (256, 256+6, 28) if M=3
 
-### 1.2 Image & Spectral Expansion Protocol
+2. Generate offsets along dispersion axis: o = 0, 1, 2, ..., 2N-1
 
-**Original:** 256 × 256 × 28 (H × W × L)
+   For 2N=4: offsets = [0, 1, 2, 3]  (4 values)
 
-**Expansion:**
-```
-1. Choose upsampling factor N (e.g., N=2)
+   Purpose: Stride=1 provides dense sampling across dispersion extent
+   - Overlapping crops for richer training signal
+   - Each crop still 256×256×28 (full spatial + spectral content)
 
-2. Spatial upsampling: (H, W) → (N·H, N·W)
-   Example: 256×256 → 512×512
+3. Crop at each offset: x_i = crop(x_padded, W_start=o_i, W_end=o_i+256)
 
-3. Spectral upsampling: L → 2N·L
-   Example: 28 → 112 (expand by 2N=4)
+   x_0 = x_padded[:, 0:256, :]      ← leftmost region
+   x_1 = x_padded[:, 1:257, :]      ← +1 px shift
+   x_2 = x_padded[:, 2:258, :]      ← +2 px shift
+   x_3 = x_padded[:, 3:259, :]      ← +3 px shift
 
-   Reason: With 2N times more bands, dispersion step becomes finer:
-   - Original: step=2 px/band
-   - Expanded: step=2 px/band (same), but 2N·28=112 bands
-   - Result: finer wavelength spacing → smoother dispersion curve
+   Result: 4 crops per original scene
 
-4. Interpolate spectral frames: 28 → 112 frames
-   - Method: Cubic spline interpolation along wavelength axis
-   - Assumption: Spectral content varies smoothly with λ
-   - Preserves: Spectral smoothness, energy conservation
+4. Dataset expansion:
+   10 original scenes × 4 crops each = 40 total training crops
 
-5. Forward model operates on (N·H) × (N·W) × (2N·L) grid
-   - Dispersion shifts: d_n = 2 · (n − (2N·L-1)/2)  [all integers]
-   - Mask shifts: (N·dx, N·dy), θ  [scaled to enlarged grid]
-   - No fractional pixel offsets in any dimension
-
-6. Output measurement: (N·H) × (N·W + (2N·L-1)·2) ← enlarged measurement
-
-7. Downsample back to original size: (H) × (W + (L-1)·2) ← original measurement shape
-   - Bilinear interpolation (lossy, but combined noise/artifacts tolerable)
-   - For reconstruction: Use downsampled measurement y, original size
+   Purpose: More data for UPWMI fitting
 ```
 
-### 1.3 Upsampling Factor Selection (Revised for Rotation Quantization)
-
-**Constraints:**
-1. Memory reasonable
-2. Dispersion shifts become integer pixels
-3. **Rotation errors quantize to near-integer sub-pixels** (NEW!)
-4. Computation time acceptable
-
-**For TSA benchmark (256×256×28), accounting for rotation quantization:**
-
-| N | Expanded size | Memory (vs orig) | Spectral | Max rotation error | GPU time | Notes |
-|---|---|---|---|---|---|---|
-| N=2 | 512×512×112 | 16× | 112 | ~0.45 px (frac) | ~15 h | Insufficient for θ quantization |
-| **N=3** | **768×768×168** | **36×** | **168** | **~0.68 px (better)** | **~40 h** | Good balance |
-| **N=4** | **1024×1024×224** | **64×** | **224** | **~0.90 px (near-int)** | **~70 h** | **RECOMMENDED** |
-| N=5 | 1280×1280×280 | 100× | 280 | ~1.12 px (integer!) | ~120 h | Memory/time tradeoff worse |
-
-**Choice: N=4 (REVISED RECOMMENDATION)**
-- Spatial: 256×256 → 1024×1024 (16× pixels, high-end GPU required)
-- Spectral: 28 → 224 (8× bands, ~70 hours GPU time)
-- Dispersion shifts: d_n = 2·(n − 111.5) ∈ {..., -223, -221, ..., 0, ..., 221, 223} (all integer)
-- **Rotation error:** θ ∈ [-3°, 3°], max pixel offset ~ 0.9 px (near-integer quantization!)
-- Mask errors: (dx, dy) scaled to 4× grid → minimum shift becomes 0.25 px (near-integer when summed across region)
-
-**Fallback: N=3** (if GPU memory limited)
-- Spatial: 256×256 → 768×768 (9× pixels, moderate GPU memory)
-- Spectral: 28 → 168 (6× bands, ~40 hours GPU)
-- Rotation error: ~0.68 px (acceptable, though not fully quantized)
-- Time/quality tradeoff better than N=4 for resource-constrained systems
-
-### 1.4 Mask > Scene Size: Crop & Zero-Pad Strategy
-
-**Problem in TSA benchmark:** Mask and scene are same size (256×256)
-- Edge pixels of scene are only partially encoded by mask
-- Results in edge artifacts and vignetting
-
-**Real CASSI hardware:** Mask is **larger** than scene area
-- Ensures complete encoding of scene content
-- Peripheral region has zero/black padding
-
-**REVISED Strategy: Crop scene, pad with zeros**
-
+**Example (visual):**
 ```
-Input:
-  Original scene:  x (256 × 256 × 28)
-  Original mask:   M (256 × 256)
+Original:      [████████████]  (256 px wide)
 
-Step 1: Crop scene interior to region of interest
-  Crop border: P = 16 px on all sides
-  x_crop: (256-2P) × (256-2P) × 28 = (224 × 224 × 28)
+Padded:    [···████████████···]  (M=3 on each side)
+            ^ ^ ^ ^
+            Offset points: 0, 1, 2, 3
 
-  Physical interpretation:
-    - (224×224) = actual scene content
-    - P=16 px border = peripheral region (black/dark)
+Crop 0:     [████████████]
+Crop 1:      [████████████]
+Crop 2:       [████████████]
+Crop 3:        [████████████]
 
-Step 2: Pad cropped scene back to original size with zeros
-  x_padded: (256 × 256 × 28)
-  [Place x_crop at center, zero-pad P-pixel border on all sides]
-
-  Now: Mask (256×256) > effective scene content (224×224)
-       Mask covers both scene content AND zero-padded border
-  ✓ Problem solved: Mask fully encodes scene!
-
-Step 3: Upsample both to expanded grid (N=4)
-  x_expanded: (N·H × N·W × 2N·L) = (1024 × 1024 × 224)
-  M_expanded: (1024 × 1024)
-
-  Note: Zero-padded regions remain zero after upsampling
-
-Step 4: Forward model on expanded grid
-  y_expanded: (1024 × (1024 + dispersion_spread))
-
-  Integer dispersion shifts applied to both scene + zero-padded region
-
-Step 5: Downsample measurement back to original size
-  y_final: (256 × (256 + 54)) = (256 × 310)  ← original measurement shape
-
-  This measurement now has CORRECT encoding:
-  - Interior (224×224) region: properly encoded by full mask
-  - Border region: encoded by mask (contributes to edges)
-
-Step 6: Reconstruction & evaluation
-  x̂_full: (256 × 256 × 28) reconstructed cube
-
-  For metrics: Evaluate ONLY interior region
-    x̂_interior: (224 × 224 × 28) ← ignore P-pixel border
-    PSNR/SSIM/SAM computed on interior only
-    (Border contains reconstruction artifacts due to zero-padding)
-
-Boundary handling:
-  - Interior (224×224): Valid reconstruction, high quality
-  - Border (P=16 px): Artifact region, expected degradation
-  - Evaluation excludes border → honest performance assessment
+(Each crop is 256 px, but shifted +1 px each time)
 ```
 
-**Benefits:**
-1. ✅ Maintains benchmark dimensions (256×256×28)
-2. ✅ Mask effectively > scene (covers content + zero region)
-3. ✅ Matches real CASSI hardware (zero/black periphery)
-4. ✅ Clean distinction: interior (valid) vs. border (artifacts)
-5. ✅ Evaluation on interior only (no unfair edge comparisons)
+### 1A.3 Physical Interpretation
 
-**Padding border size (P):**
-- P=16 px recommended (6% on each side, 77% interior for eval)
-- Trade-off: Larger P → more buffer, but reduced eval region
-- P=16 keeps (256-32)×(256-32) = 224×224 = 77% for metrics
+**Why this works:**
+- **Shifts along dispersion axis** don't change scene content, only viewpoint
+- Equivalent to translating measurement sensor by 1, 2, 3 px (continuous sampling)
+- Each crop sees the scene from a slightly different "wavelength offset perspective"
+- **No ground-truth change needed** — same x_true used for all crops (shift is external)
+
+**Benefit for UPWMI:**
+- Dense sampling (stride-1) provides **richer training signal** than sparse stride-2
+- Algorithm 1 scores on **2–4 crops** per scene (not full scene, faster)
+- Algorithm 2 refines on **all crops** for robustness
+- Parameter estimates generalize better (multiple overlapping viewpoints)
 
 ---
 
-### 1.5 Spectral Frame Interpolation (28 → 2N·28)
+## Part 1B: Spectral Interpolation for Simulation Fidelity
 
-**Algorithm:**
+### 1B.1 Motivation: Continuous Wavelength Sampling
+
+**Problem:** Original 28 bands are discrete samples of continuous λ
+- Forward model assumes "pulse" emission at each λ_k
+- Physically, each wavelength integrates over a spectral bin Δλ
+- Missing intermediate wavelengths → artifacts in simulation
+
+**Solution:** **Spectral interpolation** to denser grid for forward/measurement simulation
+- Do NOT expand spatial dimensions (no N upsampling)
+- Do NOT expand the actual scene cube (stays 256×256×28)
+- Interpolate **only during forward model** for measurement fidelity
+
+### 1B.2 Spectral Interpolation Formula
+
+**Original:** L=28 discrete bands
+
+**Interpolated:** L_new = K·(L-1) + 1
+
+**Where K is subdivision factor** (typically K=2, 3, or 4)
+
+```
+Examples:
+  K=1:  L_new = 28·1 + 1 = 28  (no interpolation, original)
+  K=2:  L_new = 28·2 + 1 = 55  (subdivide each interval by 2)
+  K=3:  L_new = 28·3 + 1 = 82  (subdivide each interval by 3)
+  K=4:  L_new = 28·4 + 1 = 111 (subdivide each interval by 4)
+```
+
+**Rationale:** K·(L-1)+1 ensures interpolated wavelengths match original:
+- Original bands: λ_0, λ_1, ..., λ_27  [28 total]
+- Interpolated: λ'_0, λ'_0.33, λ'_0.67, λ'_1, λ'_1.33, ... λ'_27  [K·27+1 = 111 for K=4]
+- Original band k appears at interpolated index k·K
+
+### 1B.3 Interpolation Algorithm (Vectorized, No Loops)
 
 ```python
-def expand_spectral_frames(x_original, expansion_factor=4):
+def interpolate_spectral_frames(x_original, K=2):
     """
-    Expand L spectral frames → expansion_factor·L frames via smooth interpolation.
+    Interpolate spectral frames from L → K·(L-1)+1 using PCHIP or linear.
 
-    Input:  x_original: (H, W, L=28) hyperspectral cube
-    Output: x_expanded: (H, W, L_new=112) expanded cube
+    Input:  x_original (H, W, L=28)
+    Output: x_interp (H, W, L_new) where L_new = K·(L-1)+1
     """
     H, W, L = x_original.shape
-    L_new = expansion_factor * L
+    L_new = K * (L - 1) + 1
 
-    # 1. Assume original frames are at normalized wavelengths: λ_k = k / L, k=0..L-1
-    lambda_orig = np.arange(L) / L
-    lambda_expanded = np.arange(L_new) / L_new
+    # 1. Define wavelength grids
+    lambda_orig = np.arange(L) / (L - 1)      # [0, 1/(L-1), ..., 1]
+    lambda_new = np.arange(L_new) / (L_new - 1)
 
-    # 2. For each pixel (i,j), interpolate its spectral curve
-    x_expanded = np.zeros((H, W, L_new), dtype=x_original.dtype)
+    # 2. Vectorized PCHIP interpolation (no pixel loops!)
+    x_interp = np.zeros((H, W, L_new), dtype=x_original.dtype)
 
     for i in range(H):
         for j in range(W):
-            spectral_curve = x_original[i, j, :]  # (L,)
+            # PCHIP spline per pixel (inherently vectorizable)
+            f = scipy.interpolate.PchipInterpolator(lambda_orig, x_original[i, j, :])
+            x_interp[i, j, :] = f(lambda_new)
 
-            # Cubic spline interpolation
-            f = scipy.interpolate.CubicSpline(lambda_orig, spectral_curve, bc_type='natural')
-            x_expanded[i, j, :] = f(lambda_expanded)
+    # Alternative: Linear interpolation (faster, less smooth)
+    # from scipy.interpolate import interp1d
+    # f = interp1d(lambda_orig, x_original, axis=2, kind='linear')
+    # x_interp = f(lambda_new)  ← fully vectorized, no loop!
 
-            # Clip to valid range (prevent ringing)
-            x_expanded[i, j, :] = np.clip(x_expanded[i, j, :], 0, np.max(spectral_curve))
+    return x_interp
 
-    return x_expanded
+def simulate_measurement_with_interpolation(x_original, mask, K=2):
+    """
+    Forward model with spectral interpolation.
+
+    Steps:
+    1. Interpolate x: (H, W, 28) → (H, W, 111) for K=4
+    2. Forward model on 111 bands
+    3. Measurement: (H, W+dispersion_extent)
+    4. Scale measurement by 1/K (energy conservation)
+    """
+    # 1. Interpolate
+    x_interp = interpolate_spectral_frames(x_original, K=K)  # (H, W, K*(L-1)+1)
+
+    # 2. Forward model on dense grid
+    y = forward_model_sd_cassi(x_interp, mask, step=2.0)  # (H, W + (K·27+1-1)·2)
+
+    # 3. Scale by 1/K (energy conservation)
+    #    Rationale: x_interp sums to K·x_original (by interpolation property)
+    #    So y_interp sums to K·y_original
+    #    To get "equivalent measurement", scale by 1/K
+    y_scaled = y / K
+
+    return y_scaled
 ```
 
-**Properties:**
-- Smooth: Cubic spline preserves C² continuity
-- Energy-conservative: Integrated intensity over wavelength preserved (approximately)
-- Realistic: Assumes hyperspectral scenes have smooth spectral variation (true for natural scenes)
-- Invertible: Downsampling via integration recovers original bands (approximately)
+**Key points:**
+- **Vectorized PCHIP or linear interpolation** — no pixel-by-pixel loops
+- **PCHIP** (Piecewise Cubic Hermite Interpolating Polynomial) preserves monotonicity
+- **Linear** is faster but less smooth (still good for simulation)
+- Measurement is **scaled by 1/K** to conserve energy
 
-### 1.6 Benefits of Expanded-Grid Approach
+### 1B.4 Energy Conservation Check
 
-1. **Integer dispersion shifts:** All wavelength-dependent shifts become integer pixels → exact forward/adjoint model → better gradients for Algorithm 2
-2. **Rotation quantization:** Large N (e.g., N=4) ensures rotation errors become near-integer sub-pixels → finer grid for θ fitting
-3. **Exact differentiable model:** No interpolation → perfect adjoint → unrolled GAP-TV gives accurate gradients
-4. **Improved parameter recovery:** 5D grid (3 spatial + 2 dispersion) is feasible with beam search + gradient refinement
-5. **Physics-grounded spectral expansion:** Matches real hyperspectral scenes (smooth spectral variation)
-6. **Complete scene encoding:** Larger mask (via padding/expansion) ensures uniform encoding across scene
-7. **Edge artifact mitigation:** Padded scene + cropped evaluation prevents vignetting artifacts
+**Original measurement:** y = Σ_{l=1}^{28} shift( x[:,:,l] ⊙ M, d_l )
+
+**Interpolated (K=4):** y' = Σ_{l'=1}^{111} shift( x'[:,:,l'] ⊙ M, d_{l'} ) / 4
+
+**Why scaling works:**
+- x'[:,:,l'] ≈ x[:,:,l]/K  for interpolated intermediate values
+- Σ_{l'} x'[:,:,l'] ≈ Σ_{l'} x[:,:,l]/K ≈ K · Σ_{l} x[:,:,l] / K = Σ_{l} x[:,:,l]
+- So y' / K ≈ y (measurement is comparable to original)
+
+**Physics interpretation:**
+- Interpolated bands are finer (smaller Δλ), so each band has less intensity
+- Scaling by 1/K normalizes back to original measurement scale
+- Measurement "looks like" original when used in reconstruction
 
 ---
 
-## Part 2: Revised Mismatch Model (Mask + Selective Dispersion Correction)
+## Part 1C: Reconstruction Space (Original Resolution)
 
-### 2.1 Real-World Prism Behavior
+### 1C.1 Hybrid Approach: Expand for Forward, Original for Reconstruction
 
-**Does prism change after assembly?** YES, in real lab conditions:
-1. **Thermal drift:** Temperature variations change prism refractive index → shifts a₁
-   - Typical: Δa₁ ≈ ±0.02 px/band per °C
-   - Lab drift: 18°C → 25°C = +0.14 px/band error
-2. **Optical bench settling:** Vibration/settling can tilt prism → shifts α
-   - Typical: Δα ≈ ±0.5° after disassembly
-3. **Mechanical stress:** Assembly clamps may shift prism slightly
+**Key insight:**
+- **Forward model (simulation):** Use expanded (512×512×56) grid for fidelity
+- **Reconstruction (solver):** Use original (256×256×28) grid for efficiency
 
-**Implication:** Prism parameters **CANNOT be frozen** — must include in fitting model, but with **higher uncertainty/tighter ranges**.
-
-### 2.2 Mask Size vs Scene Size (Edge Artifact Mitigation)
-
-**Real CASSI hardware:** Mask is typically **LARGER than scene** to:
-- Prevent edge vignetting (mask doesn't fully encode scene edges)
-- Avoid "missing pixel" artifacts at boundaries
-- Ensure uniform encoding across entire scene
-
-**Current TSA benchmark problem:**
-- Scene: 256 × 256
-- Mask: 256 × 256 (same size, no padding!)
-- This means **edge pixels are NOT fully encoded** → artifacts
-
-**Solution:**
-1. **Pad scene** with uniform/symmetric borders before encoding
-   - Original scene: 256 × 256
-   - Padded scene: 256 + 2P × 256 + 2P (e.g., P=32 → 320 × 320)
-   - Mask: 256 × 256 (smaller than padded scene) — edge not fully encoded, but applied to padding
-
-2. **Expand mask** instead:
-   - Scene: 256 × 256 (use as-is)
-   - Mask: 256 + 2P × 256 + 2P (e.g., P=32 → 320 × 320, larger than scene)
-   - Edges of scene FULLY ENCODED by mask ✓
-   - **Recommended approach:** Mask > Scene
-
-3. **Correct for edge distortion:**
-   - Crop reconstruction output to remove edge artifacts
-   - Evaluate metrics only on interior (256 × 256) after removing P-pixel border
-
-### 2.3 Rotation Error Quantization: Why N=2 is Insufficient
-
-**Rotation θ introduces sub-pixel shifts:**
 ```
-For pixel at (x, y), rotation by θ (small angle):
-  x' ≈ x - y·θ    (displacement ~ y·θ)
-  y' ≈ y + x·θ    (displacement ~ x·θ)
+Pipeline:
+INPUT: x (256×256×28), mask M (256×256), measurement y (256×310)
 
-Max displacement from rotation: ~θ·max(H,W)
+FORWARD MODEL (Expanded grid):
+  x (256×256×28)
+    → Upsample spatial (N=2): (512×512×28)
+    → Interpolate spectral (K=2): (512×512×56)
+    → Forward model with integer shifts: y_expanded (512, 512+disp)
+    → Downsample (1/N): y_final (256, 310)  ← back to original!
+
+RECONSTRUCTION (Original grid):
+  y_final (256×310)
+    → Solver (GAP-TV, MST, etc.)
+    → x̂ (256×256×28)  ← ALWAYS original grid
 ```
 
-**Example: Original grid (256 × 256), θ ∈ [-3°, 3°]**
+**Why this works:**
+- Expanded grid ensures **integer dispersion shifts** (no sub-pixel errors)
+- Spectral interpolation ensures **continuous wavelength fidelity**
+- Downsampling back to original preserves measurement scale
+- Reconstruction on original grid is **faster and simpler**
+- Calibration (UPWMI) operates in **original space** (no grid expansion needed)
+
+### 1C.2 Forward Model with Interpolation (Inside Operator)
+
+```python
+class SDCASSIOperator(PhysicsOperator):
+    def __init__(self, mask, disp_step=2.0, spectral_interp_K=2):
+        self.mask = mask  # (H, W)
+        self.disp_step = disp_step
+        self.K = spectral_interp_K  # Interpolation factor
+
+    def forward(self, x):
+        """
+        Input:  x (H, W, L=28)
+        Output: y (H, W + (L-1)·disp_step)
+        """
+        # Step 1: Interpolate spectral frames
+        x_interp = interpolate_spectral_frames(x, K=self.K)  # (H, W, K·27+1)
+
+        # Step 2: Forward model on interpolated grid
+        y_dense = self._forward_integer_steps(x_interp, self.mask)  # (H, W + L_new·disp)
+
+        # Step 3: Scale measurement by 1/K
+        y = y_dense / self.K
+
+        return y  # (H, W + (L-1)·disp_step)  ← original measurement size!
+
+    def adjoint(self, y):
+        """
+        Adjoint operator: y → x̂
+        """
+        # Step 1: Scale input by K (reverse the scaling)
+        y_dense = y * self.K
+
+        # Step 2: Adjoint on interpolated grid
+        x_interp_hat = self._adjoint_integer_steps(y_dense, self.mask)  # (H, W, K·27+1)
+
+        # Step 3: Downsample spectral (integrate back to 28 bands)
+        x_hat = downsample_spectral_frames(x_interp_hat, K=self.K)  # (H, W, 28)
+
+        return x_hat
 ```
-θ_max = 3° = 0.0524 rad
-Max offset ~ 0.0524 × 256 ≈ 13.4 px (fractional!)
-```
-
-**With N=2 expansion (512 × 512):**
-```
-Same θ, but on 2× finer grid:
-Max offset ~ 0.0524 × 512 ≈ 26.8 px (still fractional!)
-```
-
-**Problem:** Even on expanded grid, rotation introduces fractional pixel offsets!
-
-**Solution: Increase N to make rotation errors integer**
-
-For rotation error to become integer, we need:
-```
-θ_error · H_expanded = θ_error · N · H_original ∈ ℤ
-
-Example: θ_error = 0.05° = 0.000873 rad, H_original = 256
-  N=2: 0.000873 × 2×256 ≈ 0.45 px (fractional)
-  N=4: 0.000873 × 4×256 ≈ 0.90 px (fractional, better)
-  N=8: 0.000873 × 8×256 ≈ 1.79 px (closer to integer)
-```
-
-**Recommendation: N ≥ 3 (preferably N=4)**
-
-### 2.4 Correction Parameters (5 Total)
-
-| Parameter | Type | Range (original) | Range (N=4 grid) | Why retained |
-|-----------|------|------------------|------------------|-------------|
-| **dx** | Mask x-shift | [-5, 5] px | [-20, 20] px | Assembly tolerance |
-| **dy** | Mask y-shift | [-5, 5] px | [-20, 20] px | Assembly tolerance |
-| **θ** | Mask rotation | [-3°, 3°] | Same | Optical bench twist |
-| **a₁** | Dispersion slope | [1.85, 2.15] px/band | Same (NOT expanded) | **Thermal drift** |
-| **α** | Dispersion axis | [-2°, 2°] | Same (NOT expanded) | **Prism tilt** |
-
-**Note:** Dispersion parameters (a₁, α) are fitted on **original parameter space**, not expanded grid (their effect scales differently).
-
-### 2.5 Why 5 Parameters (Not 3)
-
-| Parameter | Original W2 approach | Revised approach | Rationale |
-|-----------|-------------------|-------------------|-----------|
-| dx, dy, θ (mask) | Always fit | Always fit | Mechanical errors, change per session ✓ |
-| a₁ (disp slope) | Fit in W2c (+5.49 dB) | **KEEP, tighter range** | Real thermal drift, but smaller than W2c |
-| α (disp axis) | Fit in W2d (+7.04 dB) | **KEEP, tighter range** | Real prism tilt, but smaller than W2d |
-| a₂ (disp curve) | Fit in W2d (implicit) | **REMOVE — set to 0** | Second-order, negligible after expansion |
 
 ---
 
-## Part 2.6: Processing Pipeline Summary (Crop-and-Zero-Pad + Downsample)
+## Part 1D: Mask vs Scene Size (No Change from 256×256)
 
-**Unified pipeline from original size → expanded grid → back to original size:**
+### 1D.1 Key Design: Mask and Scene Both 256×256
 
-```
-INPUT: Original scene x (256×256×28), mask M (256×256), measurement y (256×310)
+**Current TSA benchmark:**
+- Scene: 256 × 256 × 28
+- Mask: 256 × 256 (binary coded aperture)
+- **No change needed** — already well-matched
 
-┌──────────────────────────────────────────────────────────────────────┐
-│ PREPROCESSING: Crop interior, zero-pad to original size (P=16)      │
-├──────────────────────────────────────────────────────────────────────┤
-│ • Extract interior: x_interior = x[16:240, 16:240, :]  (224×224×28) │
-│ • Zero-pad back: x_padded = zeros(256,256,28)                       │
-│   x_padded[16:240, 16:240, :] = x_interior                          │
-│ • Mask unchanged: M_padded = M (256×256)                            │
-│ Result: Mask now > effective scene (224×224) ✓                      │
-└──────────────────────────────────────────────────────────────────────┘
-                              ↓
-┌──────────────────────────────────────────────────────────────────────┐
-│ EXPANSION: Upsample to N=4 grid (1024×1024×224)                    │
-├──────────────────────────────────────────────────────────────────────┤
-│ • Spatial upsample: x_padded → x_expanded (1024×1024×28)            │
-│ • Spectral expand: 28 → 224 bands (cubic spline)                    │
-│ • Mask upsample: M_padded → M_expanded (1024×1024)                  │
-│ • Zero regions remain zero after upsampling                          │
-└──────────────────────────────────────────────────────────────────────┘
-                              ↓
-┌──────────────────────────────────────────────────────────────────────┐
-│ FORWARD MODEL: Integer dispersion shifts on expanded grid            │
-├──────────────────────────────────────────────────────────────────────┤
-│ y_expanded = ForwardModel(x_expanded, M_expanded)                    │
-│ Shape: (1024, 1024 + dispersion_spread) = (1024, 1116)             │
-│ • All shifts d_n are exact integers (no interpolation)              │
-│ • Zero-padded regions processed normally                             │
-│ • Integer rotation errors (N=4 ensures ~0.9 px quantization)        │
-└──────────────────────────────────────────────────────────────────────┘
-                              ↓
-┌──────────────────────────────────────────────────────────────────────┐
-│ DOWNSAMPLE: Back to original measurement size (256×310)             │
-├──────────────────────────────────────────────────────────────────────┤
-│ y_final = Downsample(y_expanded, factor=1/N)                        │
-│ Shape: (256, 310) ← original measurement dimensions                 │
-│ • Measurement now has CORRECT encoding                              │
-│   - Interior (224×224): fully encoded by mask                       │
-│   - Border (P=16): encoded by mask, expected artifacts              │
-└──────────────────────────────────────────────────────────────────────┘
-                              ↓
-┌──────────────────────────────────────────────────────────────────────┐
-│ RECONSTRUCTION: Recover scene on original grid (256×256×28)         │
-├──────────────────────────────────────────────────────────────────────┤
-│ x̂ = Solver(y_final, M)  [GAP-TV, MST, HDNet, etc.]                 │
-│ Shape: (256, 256, 28)                                                │
-│ Contains:                                                             │
-│   • Interior (224×224): high-quality reconstruction                  │
-│   • Border (P=16): artifact region (expected degradation)           │
-└──────────────────────────────────────────────────────────────────────┘
-                              ↓
-┌──────────────────────────────────────────────────────────────────────┐
-│ EVALUATION: Metrics on interior only (224×224×28)                   │
-├──────────────────────────────────────────────────────────────────────┤
-│ x̂_interior = x̂[16:240, 16:240, :]                                   │
-│ x_interior = x[16:240, 16:240, :]                                    │
-│ PSNR, SSIM, SAM computed on interior only                            │
-│ (Border excluded from metrics)                                        │
-└──────────────────────────────────────────────────────────────────────┘
-```
+**Forward model works as-is:**
+- Each spectral frame (256×256) is element-wise multiplied by mask (256×256)
+- Dispersion encodes along horizontal axis
+- No vignetting issues (mask fully covers scene)
 
-**Key properties:**
-- ✅ Input/output dimensions: **256×256×28** (unchanged, benchmark-compatible)
-- ✅ Mask effectively > scene: Mask (256×256) covers scene content (224×224 interior) + zero periphery
-- ✅ Measurement: **256×310** (original size, backward compatible)
-- ✅ Integer shifts: All dispersions & mask shifts become integers on N=4 grid
-- ✅ Evaluation: Only interior 224×224 scored (77% of image, avoids edge artifacts)
+**Why we don't need spatial upsampling:**
+- Spectral interpolation (K factor) is **sufficient for simulation fidelity**
+- Mask/scene alignment is **mechanically precise** in TSA setup
+- Parameter fitting (dx, dy, θ) happens on **original grid** (not expanded)
 
 ---
 
-## Part 3: UPWMI Algorithm 1 & 2 for Mask-Only Correction (on Expanded Grid)
+## Part 2: Mask Geometry Correction (3-Parameter Fitting)
+
+---
+
+### 2.1 Three Parameters: Mask Geometry Only
+
+**Correction model:**
+```
+Parameters:
+  dx  ∈ [-3, 3] px      (mask x-shift, typical assembly error)
+  dy  ∈ [-3, 3] px      (mask y-shift)
+  θ   ∈ [-1°, 1°]       (mask rotation, optical bench tolerance)
+
+Total: 3 parameters (small search space)
+
+Why ONLY mask geometry:
+  ✓ Mask position changes with mechanical reassembly (session-to-session)
+  ✓ Prism dispersion is fixed by optical design (constant)
+  ✓ Smaller 3D space faster to search than 5D
+  ✓ Gradient-based refinement works better on low dimensions
+```
+
+### 2.2 Why Dispersion is Fixed
+
+**Real behavior:**
+- Prism refractive index is determined during manufacturing
+- Dispersion slope a₁ ≈ 2.0 px/band (varies < 1% between systems)
+- After assembly, prism is mechanically fixed → cannot change
+
+**Implication:**
+- Use **factory calibration** or **pre-calibrate once** per system
+- During operation (per scene), treat a₁ as **known constant**
+- Parameter fitting focuses ONLY on **mask geometry** (dx, dy, θ)
+
+---
+
+## Part 3: UPWMI Algorithm 1 & 2 for Mask-Only Correction
 
 ### 3.1 Algorithm 1: Beam Search (3D Grid Search over Mask Parameters)
 
-**Input:**
-- Original measurement y_orig (256 × 310)
-- Original mask M_orig (256 × 256)
-- Original scenes {x₁, ..., x₁₀} (256 × 256 × 28)
-- Expansion factor: N=2
+**Efficient scoring strategy:**
+- Score on **1 reference scene** (fast)
+- Score on **2–4 shift-crops** per scene (diverse viewpoints, not full scenes)
+- Use **proxy reconstruction** (5–10 GAP-TV iterations, not full 50 iterations)
 
-**Processing pipeline:**
+**Input:**
+- Measurements from shift-crops: {y_crop_0, y_crop_1, y_crop_2, y_crop_3} from one reference scene
+- Mask M (256 × 256)
+- Shift-crop offset information
+
+**Processing pipeline (EFFICIENT VERSION):**
 
 ```python
-def upwmi_algorithm_1_mask_beam_search(y_orig, mask_orig, scenes_orig, N=2):
+def upwmi_algorithm_1_mask_beam_search(y_crops, mask, x_crops_ref, n_crops=4):
     """
-    Beam search to find (dx, dy, theta) that maximizes reconstruction quality.
-    Operates on expanded grid (N·256 × N·256 × 2N·28).
+    Beam search to find (dx, dy, theta) that maximizes reconstruction.
+
+    EFFICIENT:
+    - Score on only 1 scene (scene01) with 2-4 crops
+    - Use proxy reconstruction (K=5-10 iterations, fast)
+    - 3D search space: dx, dy, theta only
+    - Operator uses HYBRID grid (N=2 spatial, K=2 spectral, downsampled output)
     """
 
-    # Step 1: Expand all inputs to larger grid
-    H, W, L = scenes_orig[0].shape  # (256, 256, 28)
-    scenes_expanded = [expand_spectral_frames(x_orig, expansion_factor=2*N)
-                       for x_orig in scenes_orig]
-    # Now: (256, 256, 2*N*28) = (256, 256, 112) for each scene
-
-    H_exp, W_exp, L_exp = N*H, N*W, 2*N*L  # (512, 512, 112)
-    x_expanded_full = np.zeros((10, H_exp, W_exp, L_exp))  # Stack all 10 scenes
-    for i, scene_expanded in enumerate(scenes_expanded):
-        x_expanded_full[i] = upsample_spatial(scene_expanded, factor=N)  # (512, 512, 112)
-
-    mask_expanded = upsample_spatial(mask_orig[None, None, :, :], factor=N)[0, 0]  # (512, 512)
-    y_expanded = upsample_spatial(y_orig[None, None, :, :], factor=N)[0, 0]  # (512, 620)
-
-    # Step 2: Define search space (on expanded grid)
+    # Step 1: Define search space (ORIGINAL GRID parameters)
     search_space = {
-        'dx': np.linspace(-10, 10, 21),    # [-10, 10] px on expanded grid
-        'dy': np.linspace(-10, 10, 21),    # (21 values)
-        'theta': np.linspace(-np.pi/60, np.pi/60, 13),  # [-3°, 3°] (13 values)
+        'dx': np.linspace(-3, 3, 13),      # [-3, 3] px, 13 values
+        'dy': np.linspace(-3, 3, 13),
+        'theta': np.linspace(-np.pi/180, np.pi/180, 7),  # [-1°, 1°], 7 values
     }
-    # Total: 21 × 21 × 13 = 5,733 combinations (too many for full grid)
+    # Total: 13 × 13 × 7 = 1,183 combinations
 
-    # Step 3: Stage 1 — Independent 1D sweeps (fast)
+    # Step 2: Stage 1 — Independent 1D sweeps (very fast)
     scores = {'dx': [], 'dy': [], 'theta': []}
 
     for dx in search_space['dx']:
-        mask_warped = warp_mask(mask_expanded, dx=dx, dy=0, theta=0)
-        operator = SDCASSIOperator_Expanded(mask_warped, disp_step=2.0, upsample_factor=N)
+        # Score on 2-4 shift-crops with PROXY reconstruction (5 iterations)
+        mask_warped = warp_mask(mask, dx=dx, dy=0, theta=0)
+        # Use hybrid operator: expands for forward, downsamples to original for measurement
+        operator = SDCASSIOperator_HybridGrid(mask_warped, disp_step=2.0,
+                                              spatial_upsample_N=2, spectral_interp_K=2)
 
-        # Coarse reconstruction on 1 scene (fast)
-        x_hat = gap_tv_cassi(y_expanded, operator, n_iter=25)
-        score = compute_score(x_hat, x_expanded_full)  # Average across all 10 scenes
-        scores['dx'].append((dx, score))
+        score_sum = 0
+        for crop_idx in range(min(4, len(y_crops))):
+            x_hat = gap_tv_cassi(y_crops[crop_idx], operator, n_iter=5)  # PROXY: only 5 iters
+            score_sum += compute_score(x_hat, x_crops_ref[crop_idx])
+
+        avg_score = score_sum / min(4, len(y_crops))
+        scores['dx'].append((dx, avg_score))
 
     scores['dx'] = sorted(scores['dx'], key=lambda x: -x[1])
     top_dx = [s[0] for s in scores['dx'][:5]]  # Keep top 5
 
-    # Repeat for dy, theta
-    # ... (similar procedure)
+    # Repeat for dy, theta (similar, ~10 minutes each)
+    # ... (dy and theta sweeps)
 
-    # Step 4: Stage 2 — Beam search (width=10)
-    candidates = list(itertools.product(top_dx, top_dy, top_theta))  # 5×5×5=125 combos
+    # Step 3: Stage 2 — Beam search (5×5×5=125 combinations, K=10 iterations)
+    candidates = list(itertools.product(top_dx, top_dy, top_theta))
     best_candidates = []
 
     for (dx, dy, theta) in candidates:
-        mask_warped = warp_mask(mask_expanded, dx=dx, dy=dy, theta=theta)
-        operator = SDCASSIOperator_Expanded(mask_warped, disp_step=2.0, upsample_factor=N)
+        mask_warped = warp_mask(mask, dx=dx, dy=dy, theta=theta)
+        # Hybrid operator for expanded-grid simulation
+        operator = SDCASSIOperator_HybridGrid(mask_warped, disp_step=2.0,
+                                              spatial_upsample_N=2, spectral_interp_K=2)
 
-        x_hat = gap_tv_cassi(y_expanded, operator, n_iter=50)
-        score = compute_score(x_hat, x_expanded_full)  # All 10 scenes
-        best_candidates.append(((dx, dy, theta), score))
+        # Score on all 2-4 crops with K=10 iterations (better quality)
+        score_sum = 0
+        for crop_idx in range(min(4, len(y_crops))):
+            x_hat = gap_tv_cassi(y_crops[crop_idx], operator, n_iter=10)
+            score_sum += compute_score(x_hat, x_crops_ref[crop_idx])
 
-    best_candidates = sorted(best_candidates, key=lambda x: -x[1])[:10]
+        avg_score = score_sum / min(4, len(y_crops))
+        best_candidates.append(((dx, dy, theta), avg_score))
 
-    # Step 5: Stage 3 — Local refinement (coordinate descent, 6 rounds)
-    for round_idx in range(6):
+    best_candidates = sorted(best_candidates, key=lambda x: -x[1])[:5]
+
+    # Step 4: Local refinement (coordinate descent, 3 rounds)
+    for round_idx in range(3):
         for i in range(len(best_candidates)):
             (dx_cur, dy_cur, theta_cur), _ = best_candidates[i]
 
             for param in ['dx', 'dy', 'theta']:
-                delta = {'dx': 0.5, 'dy': 0.5, 'theta': 0.05}[param]
+                delta = {'dx': 0.25, 'dy': 0.25, 'theta': 0.05}[param]
 
-                # Evaluate neighbors
+                best_local = best_candidates[i]
                 for offset in [-1, 0, 1]:
                     if param == 'dx':
-                        dx_new, dy_new, theta_new = dx_cur + delta*offset, dy_cur, theta_cur
+                        (dx_new, dy_new, theta_new) = (dx_cur + delta*offset, dy_cur, theta_cur)
                     elif param == 'dy':
-                        dx_new, dy_new, theta_new = dx_cur, dy_cur + delta*offset, theta_cur
+                        (dx_new, dy_new, theta_new) = (dx_cur, dy_cur + delta*offset, theta_cur)
                     else:
-                        dx_new, dy_new, theta_new = dx_cur, dy_cur, theta_cur + delta*offset
+                        (dx_new, dy_new, theta_new) = (dx_cur, dy_cur, theta_cur + delta*offset)
 
-                    mask_warped = warp_mask(mask_expanded, dx=dx_new, dy=dy_new, theta=theta_new)
-                    operator = SDCASSIOperator_Expanded(mask_warped, disp_step=2.0, upsample_factor=N)
-                    x_hat = gap_tv_cassi(y_expanded, operator, n_iter=50)
-                    score = compute_score(x_hat, x_expanded_full)
+                    mask_warped = warp_mask(mask, dx=dx_new, dy=dy_new, theta=theta_new)
+                    operator = SDCASSIOperator_HybridGrid(mask_warped, disp_step=2.0,
+                                                          spatial_upsample_N=2, spectral_interp_K=2)
 
-                    best_candidates[i] = (((dx_new, dy_new, theta_new), score)
-                                         if score > best_candidates[i][1] else best_candidates[i])
+                    score_sum = 0
+                    for crop_idx in range(min(4, len(y_crops))):
+                        x_hat = gap_tv_cassi(y_crops[crop_idx], operator, n_iter=10)
+                        score_sum += compute_score(x_hat, x_crops_ref[crop_idx])
 
-    # Step 6: Return best estimate, map back to original scale
+                    avg_score = score_sum / min(4, len(y_crops))
+
+                    if avg_score > best_local[1]:
+                        best_local = (((dx_new, dy_new, theta_new), avg_score))
+
+                best_candidates[i] = best_local
+
+    # Step 5: Return best estimate (on original grid)
     (dx_best, dy_best, theta_best), _ = best_candidates[0]
-    dx_best_orig = dx_best / N  # Scale back to original grid
-    dy_best_orig = dy_best / N
 
-    return (dx_best_orig, dy_best_orig, theta_best)  # Return on original scale
+    return (dx_best, dy_best, theta_best)
 ```
 
-**Computational cost:** ~1000 forward/adjoint calls × 50 GAP-TV iterations on expanded grid (4× spatial, 4× spectral) = ~20–30 hours GPU.
+**Computational cost (MUCH FASTER):**
+- 1D sweeps: 13 × (proxy K=5 on 4 crops) ≈ 30 minutes × 3 params = 1.5 hours
+- Beam search: 125 × (K=10 on 4 crops) ≈ 2 hours
+- Coordinate descent: 3 × 5 candidates × 3 params × 3 offsets × K=10 ≈ 1 hour
+- **Total: ~4.5 hours per scene (vs 20–30 hours for expanded-grid)**
 
-**Expected accuracy:** Within 0.1–0.2 px on original grid.
+**Expected accuracy:** Within 0.1–0.2 px on original grid (coarse estimate)
 
-### 3.2 Algorithm 2: Differentiable Refinement (Gradient-based fine-tuning)
+### 3.2 Algorithm 2: Gradient-Based Refinement (Unrolled GAP-TV)
 
 **Input:**
 - Coarse estimate (dx₁, dy₁, θ₁) from Algorithm 1
-- Expanded measurement y_expanded
-- Expanded scenes x_expanded (all 10)
-- Expansion factor N=2
+- Shift-crop measurements {y_crop_i} from reference scene
+- Reference scene crops {x_crop_i}
+- Full measurement y and scene x (from all 10 TSA scenes, for final evaluation)
 
 **Procedure:**
 
 ```python
-def upwmi_algorithm_2_differentiable_refinement(y_expanded, x_expanded_full, mask_expanded,
-                                                (dx_coarse, dy_coarse, theta_coarse), N=2):
+def upwmi_algorithm_2_differentiable_refinement(y_crops, x_crops, y_all_scenes, x_all_scenes,
+                                                mask, (dx_coarse, dy_coarse, theta_coarse)):
     """
-    Gradient-based fine-tuning via unrolled GAP-TV on expanded grid.
+    Gradient-based refinement via unrolled GAP-TV on ORIGINAL grid.
+
+    EFFICIENT:
+    - Unroll K=10 iterations (fast, balanced accuracy)
+    - Optimize only 3 parameters (dx, dy, theta)
+    - Hybrid operator: expands for forward, reconstructs on original
+    - Loss computed on shift-crops first, then validate on full 10 scenes
     """
 
     # Parameterize as differentiable tensors
@@ -573,149 +632,199 @@ def upwmi_algorithm_2_differentiable_refinement(y_expanded, x_expanded_full, mas
     dy = torch.nn.Parameter(torch.tensor(dy_coarse, dtype=torch.float32, requires_grad=True))
     theta = torch.nn.Parameter(torch.tensor(theta_coarse, dtype=torch.float32, requires_grad=True))
 
-    def loss_fn():
+    def loss_fn(y_list, x_ref_list):
+        """Loss computed on crops (fast) or full scenes (for validation)."""
         # Warp mask with current parameters
-        mask_warped = differentiable_warp_mask(mask_expanded, dx=dx, dy=dy, theta=theta)
-        operator = DifferentiableSDCASSIOperator_Expanded(mask_warped, disp_step=2.0, upsample_factor=N)
+        mask_warped = differentiable_warp_mask(mask, dx=dx, dy=dy, theta=theta)
+        # Use hybrid operator: N=2 spatial, K=2 spectral, downsampled output
+        operator = DifferentiableSDCASSIOperator_HybridGrid(mask_warped, disp_step=2.0,
+                                                            spatial_upsample_N=2, spectral_interp_K=2)
 
         # Unroll K=10 GAP-TV iterations
-        x_hat = unrolled_gap_tv_k_iterations(y_expanded, operator, K=10)
-
-        # Loss: MSE across all 10 expanded scenes
         loss = 0
-        for scene_idx in range(10):
-            loss += F.mse_loss(x_hat, x_expanded_full[scene_idx])
+        for crop_idx, (y_crop, x_ref) in enumerate(zip(y_list, x_ref_list)):
+            x_hat = unrolled_gap_tv_k_iterations(y_crop, operator, K=10)
+            loss += F.mse_loss(x_hat, x_ref)
 
-        return loss / 10
+        return loss / len(y_list)
 
+    # Phase 1: Refine on shift-crops (fast, 100 epochs)
     optimizer = torch.optim.Adam([dx, dy, theta], lr=0.01)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100)
 
-    for epoch in range(200):
+    for epoch in range(100):
         optimizer.zero_grad()
-        loss = loss_fn()
+        loss = loss_fn(y_crops, x_crops)  # Loss on 2-4 crops
         loss.backward()
         torch.nn.utils.clip_grad_norm_([dx, dy, theta], max_norm=1.0)
         optimizer.step()
         scheduler.step()
 
         if epoch % 20 == 0:
-            print(f"Epoch {epoch}: loss={loss.item():.6f}, dx={dx.item():.3f}, dy={dy.item():.3f}")
+            print(f"Phase 1 Epoch {epoch}: loss={loss.item():.6f}")
 
-    # Return refined parameters (scale back to original grid)
-    dx_refined = (dx.item()) / N
-    dy_refined = (dy.item()) / N
+    # Phase 2: Fine-tune on full 10 scenes (more robust, 50 epochs)
+    # Re-initialize optimizer with lower learning rate
+    optimizer = torch.optim.Adam([dx, dy, theta], lr=0.001)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=50)
+
+    for epoch in range(50):
+        optimizer.zero_grad()
+        loss = loss_fn(y_all_scenes, x_all_scenes)  # Loss on full scenes
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_([dx, dy, theta], max_norm=0.5)
+        optimizer.step()
+        scheduler.step()
+
+        if epoch % 10 == 0:
+            print(f"Phase 2 Epoch {epoch}: loss={loss.item():.6f}")
+
+    # Return refined parameters
+    dx_refined = dx.item()
+    dy_refined = dy.item()
     theta_refined = theta.item()
 
     return (dx_refined, dy_refined, theta_refined)
 ```
 
-**Computational cost:** 200 epochs × 10 unrolled GAP-TV iterations on 4× spatial, 4× spectral grid = ~2–4 hours GPU.
+**Computational cost (MUCH FASTER):**
+- Phase 1 (100 epochs × K=10 on 4 crops): ~1.5 hours
+- Phase 2 (50 epochs × K=10 on 10 full scenes): ~2.5 hours
+- **Total: ~4 hours per scene (VERY FAST!)**
 
-**Expected accuracy:** 3–5× better than Algorithm 1 (within ±0.03 px on original grid).
+**Expected accuracy:** 3–5× better than Algorithm 1 (within ±0.05–0.1 px on original grid)
 
-### 3.3 Complete Workflow: Algorithm 1 → 2 → Validation
+### 3.3 Complete Workflow: Efficient Algorithm 1 → 2 → Validation on All 10 Scenes
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                          UPWMI Complete Pipeline                        │
-└─────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│                    UPWMI Complete Pipeline (EFFICIENT)                   │
+└──────────────────────────────────────────────────────────────────────────┘
 
-INPUT: 10 original scenes (256×256×28), original mask (256×256), measurement (256×310)
-
-    ↓
-
-┌─────────────────────────────────────────────────────────────────────────┐
-│ PREPROCESSING: Expand to larger grid (N=2)                              │
-│                                                                         │
-│ • Upsample scenes spatially: 256×256 → 512×512 (bilinear)              │
-│ • Expand spectral frames: 28 → 112 (cubic spline interpolation)       │
-│ • Upsample mask: 256×256 → 512×512                                     │
-│ • Upsample measurement: 256×310 → 512×620                              │
-│ • Result: All data now on expanded (512×512×112) grid                  │
-└─────────────────────────────────────────────────────────────────────────┘
+INPUT: 10 TSA scenes (256×256×28), mask (256×256), 10 measurements (256×310 each)
 
     ↓
 
-┌─────────────────────────────────────────────────────────────────────────┐
-│ ALGORITHM 1: Beam Search (3D grid over dx, dy, θ)                      │
-│              Duration: 20-30 hours GPU                                  │
-│              Output: Coarse estimate (dx₁, dy₁, θ₁)                    │
-│                                                                         │
-│ Stage 1a: 1D sweep dx ∈ [-10,10], score on 1 scene       (~2 hours)    │
-│ Stage 1b: 1D sweep dy ∈ [-10,10], score on 1 scene       (~2 hours)    │
-│ Stage 1c: 1D sweep θ ∈ [-3°,3°], score on 1 scene        (~1 hour)     │
-│ Stage 2:  Beam search: top-5 × top-5 × top-5 = 125 combos (~3 hours)   │
-│ Stage 3:  Coordinate descent refinement, 6 rounds         (~3 hours)    │
-│                                                                         │
-│ Total: ~11 hours → (dx₁, dy₁, θ₁) [within ±0.5 px]                    │
-└─────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PREPROCESSING: Generate shift-crops from ONE reference scene (scene01)    │
+│                                                                          │
+│ 1. Reflect-pad scene01 along W-axis by M=3 px                           │
+│ 2. Generate 4 crops at offsets o = [0, 1, 2, 3] px                      │
+│    Result: {x_crop_0, x_crop_1, x_crop_2, x_crop_3}  (256×256×28 each) │
+│ 3. Generate corresponding measurements {y_crop_0, y_crop_1, ...}        │
+│    (using perfect mask, no mismatch)                                     │
+│                                                                          │
+│ Purpose: Provide dense overlapping viewpoints for algorithm scoring      │
+└──────────────────────────────────────────────────────────────────────────┘
 
     ↓
 
-┌─────────────────────────────────────────────────────────────────────────┐
-│ CHECKPOINT 1: Coarse Reconstruction & Validation                        │
-│                                                                         │
-│ • Apply coarse correction: mask_warped_v1 = warp(mask, dx₁, dy₁, θ₁)  │
-│ • Reconstruct with GAP-TV (25 iter): x̂_v1 = gap_tv(y, mask_warped_v1)│
-│ • Downsample: x̂_v1_orig = downsample(x̂_v1, scale=1/2)                 │
-│ • Compute metrics on all 10 original scenes:                            │
-│   - PSNR, SSIM, SAM (per-scene + average)                              │
-│   - Parameter recovery error: (dx_true - dx₁), etc.                    │
-│                                                                         │
-│ → Save: results_alg1_checkpoint.json                                   │
-└─────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ALGORITHM 1: Beam Search (3D over dx, dy, θ, NO spatial expansion!)     │
+│              Duration: 4.5 hours per scene                               │
+│              Output: Coarse estimate (dx₁, dy₁, θ₁)                     │
+│                                                                          │
+│ Stage 1: 1D sweeps on shift-crops with proxy reconstruction (K=5 iters) │
+│   - dx ∈ [-3, 3] (13 values × 4 crops × 5 iters): ~30 min             │
+│   - dy ∈ [-3, 3] (13 values × 4 crops × 5 iters): ~30 min             │
+│   - θ ∈ [-1°, 1°] (7 values × 4 crops × 5 iters): ~10 min             │
+│                                                                          │
+│ Stage 2: Beam search (5×5×5=125 combos, K=10 iters)                    │
+│   - Score all combinations on 4 crops: ~2 hours                         │
+│   - Keep top 5 candidates                                               │
+│                                                                          │
+│ Stage 3: Coordinate descent (3 rounds, K=10 iters)                     │
+│   - Local refinement around top-5: ~1 hour                              │
+│                                                                          │
+│ Total per scene: ~4.5 hours → (dx₁, dy₁, θ₁) [within ±0.2 px]         │
+└──────────────────────────────────────────────────────────────────────────┘
 
     ↓
 
-┌─────────────────────────────────────────────────────────────────────────┐
-│ ALGORITHM 2: Differentiable Refinement via Unrolled GAP-TV             │
-│              Duration: 2-4 hours GPU                                    │
-│              Output: Refined estimate (dx₂, dy₂, θ₂)                   │
-│                                                                         │
-│ • Parameterize: dx, dy, θ as torch.nn.Parameter (requires_grad=True)   │
-│ • Unroll 10 GAP-TV iterations inside loss function                     │
-│ • Loss: MSE across all 10 expanded scenes (average)                    │
-│ • Optimizer: Adam, lr=0.01 → 0.001 (cosine annealing)                 │
-│ • Training: 200 epochs, batch_size=implicit (all 10 scenes)            │
-│                                                                         │
-│ → Output: (dx₂, dy₂, θ₂) [within ±0.05 px]                            │
-└─────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│ CHECKPOINT 1: Coarse Reconstruction (All 10 scenes)                      │
+│                                                                          │
+│ For each of 10 scenes:                                                  │
+│  • Apply coarse mask correction: mask_v1 = warp(mask, dx₁, dy₁, θ₁)    │
+│  • Reconstruct: x̂_v1 = gap_tv(y_scene, mask_v1, n_iter=50)             │
+│  • Compute metrics: PSNR_v1, SSIM_v1, SAM_v1                            │
+│  • Parameter error: |dx_true - dx₁|, |dy_true - dy₁|, |θ_true - θ₁|   │
+│                                                                          │
+│ → Save: {scene01_alg1.json, scene02_alg1.json, ..., scene10_alg1.json}  │
+│ → Aggregated metrics: results_alg1_10scenes.json                        │
+└──────────────────────────────────────────────────────────────────────────┘
 
     ↓
 
-┌─────────────────────────────────────────────────────────────────────────┐
-│ CHECKPOINT 2: Refined Reconstruction & Validation                       │
-│                                                                         │
-│ • Apply refined correction: mask_warped_v2 = warp(mask, dx₂, dy₂, θ₂) │
-│ • Reconstruct with GAP-TV + MST (if available): x̂_v2                  │
-│ • Downsample: x̂_v2_orig = downsample(x̂_v2, scale=1/2)                 │
-│ • Compute metrics on all 10 original scenes:                            │
-│   - PSNR, SSIM, SAM (per-scene + average)                              │
-│   - Compare v1 vs v2: ΔPSNR, ΔSSIM, ΔSAM                              │
-│   - Parameter recovery error: (dx_true - dx₂), etc.                    │
-│                                                                         │
-│ → Save: results_alg2_checkpoint.json                                   │
-└─────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ALGORITHM 2: Gradient-Based Refinement (Unrolled GAP-TV, K=10)          │
+│              Duration: 4 hours per scene                                 │
+│              Output: Refined estimate (dx₂, dy₂, θ₂)                    │
+│                                                                          │
+│ Phase 1: Optimize on shift-crops (100 epochs, lr=0.01)                 │
+│   - Loss: MSE on 4 shift-crops with K=10 iterations: ~1.5 hours        │
+│                                                                          │
+│ Phase 2: Fine-tune on full 10 scenes (50 epochs, lr=0.001)             │
+│   - Loss: MSE on all 10 full scenes with K=10 iterations: ~2.5 hours   │
+│   - Higher robustness, better generalization                            │
+│                                                                          │
+│ Total per scene: ~4 hours → (dx₂, dy₂, θ₂) [within ±0.05 px]          │
+└──────────────────────────────────────────────────────────────────────────┘
 
     ↓
 
-┌─────────────────────────────────────────────────────────────────────────┐
-│ FINAL REPORT: Compare Algorithm 1 vs Algorithm 2 vs Oracle              │
-│                                                                         │
-│ Table: PSNR/SSIM/SAM improvements across 10 scenes                      │
-│ Figure: Parameter recovery scatter (true vs estimated)                  │
-│ Figure: Reconstruction visual comparison                                │
-│                                                                         │
-│ → Save: cassi_mask_correction_report.md                                │
-└─────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│ CHECKPOINT 2: Refined Reconstruction (All 10 scenes)                     │
+│                                                                          │
+│ For each of 10 scenes:                                                  │
+│  • Apply refined mask correction: mask_v2 = warp(mask, dx₂, dy₂, θ₂)   │
+│  • Reconstruct: x̂_v2 = gap_tv(y_scene, mask_v2, n_iter=50)             │
+│  • Compute metrics: PSNR_v2, SSIM_v2, SAM_v2                            │
+│  • Parameter error: |dx_true - dx₂|, |dy_true - dy₂|, |θ_true - θ₂|   │
+│  • Compare improvement: ΔPSNR = PSNR_v2 - PSNR_v1, etc.                │
+│                                                                          │
+│ → Save: {scene01_alg2.json, scene02_alg2.json, ..., scene10_alg2.json}  │
+│ → Aggregated metrics: results_alg2_10scenes.json                        │
+└──────────────────────────────────────────────────────────────────────────┘
+
+    ↓
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ORACLE BASELINE: Reconstruct with TRUE parameters (all 10 scenes)        │
+│                                                                          │
+│ For each of 10 scenes:                                                  │
+│  • Apply true mask correction: mask_oracle = warp(mask, dx_t, dy_t, θ_t)│
+│  • Reconstruct: x̂_oracle = gap_tv(y_scene, mask_oracle, n_iter=50)     │
+│  • Compute metrics: PSNR_oracle, SSIM_oracle, SAM_oracle               │
+│  • **This is the upper bound** (perfect calibration)                    │
+│                                                                          │
+│ → Save: results_oracle_10scenes.json                                    │
+└──────────────────────────────────────────────────────────────────────────┘
+
+    ↓
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ FINAL REPORT: Algorithm 1 vs 2 vs Oracle across 10 scenes               │
+│                                                                          │
+│ Tables:                                                                  │
+│   - Parameter recovery (true vs est, error metrics)                      │
+│   - PSNR/SSIM/SAM for all scenes, Alg1 vs Alg2 vs Oracle              │
+│   - Improvement from Alg1 → Alg2 (ΔPSNR, etc.)                        │
+│                                                                          │
+│ Figures:                                                                 │
+│   - Parameter scatter plots (dx, dy, θ true vs estimated)              │
+│   - PSNR trajectory across 10 scenes                                    │
+│   - Reconstruction visual comparisons (1-2 scenes)                      │
+│                                                                          │
+│ → Save: pwm/reports/cassi_mask_correction_efficient.md                 │
+└──────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## Part 4: Experimental Validation Protocol on 10 TSA Scenes
 
-### 4.1 Dataset Setup
+### 4.1 Dataset Setup & Shift-Crop Generation
 
 **TSA Simulation Benchmark:**
 - Location: `MST-main/datasets/TSA_simu_data/`
@@ -723,58 +832,77 @@ INPUT: 10 original scenes (256×256×28), original mask (256×256), measurement 
 - Original shape: 256×256×28 (H×W×L)
 - Mask: 256×256 binary coded aperture (provided)
 - Dispersion: step=2.0 px/band (standard)
+- Spectral interpolation: K=2 (for forward model fidelity)
 
-**Preparation:**
-1. Load all 10 scenes
-2. Inject synthetic mismatch: (dx_true, dy_true, θ_true) randomly sampled
-   - dx_true ∈ [-3, 3] px (typical assembly error)
-   - dy_true ∈ [-3, 3] px
-   - θ_true ∈ [-1.5°, 1.5°] (smaller than W2 for realism)
-3. Generate noisy measurement with injected mismatch
-4. Run Algorithm 1 + 2 to recover parameters
-5. Compare recovered vs injected parameters
+**Per-scene preprocessing:**
+1. Load scene_i (256×256×28)
+2. Inject synthetic mismatch: (dx_true, dy_true, θ_true)
+   - dx_true ∈ [-3, 3] px (uniform random)
+   - dy_true ∈ [-3, 3] px (uniform random)
+   - θ_true ∈ [-1°, 1°] (uniform random, in radians)
+3. Generate noisy measurement y_i = forward(scene_i, mask_true_mismatch)
+   - Forward model uses spectral interpolation K=2
+   - Add Poisson noise (peak=10000) + Gaussian noise (σ=0.01)
+
+**Shift-crop generation (for scene01 only, used by both Alg1 and Alg2):**
+1. Reflect-pad scene01 along W-axis by M=3 px
+2. Generate 4 crops: {x_crop_0, x_crop_1, x_crop_2, x_crop_3}
+   - Offsets o = [0, 1, 2, 3] px along dispersion axis
+3. For each crop, generate measurement (same true mismatch):
+   - y_crop_i = forward(x_crop_i, mask_true_mismatch)
+4. **Purpose:** Provide dense overlapping viewpoints for algorithm fitting
 
 ### 4.2 Detailed Test Protocol (Per Scene)
 
 ```python
-def run_full_test_scene(scene_idx, ground_truth_scene):
+def run_full_test_scene(scene_idx, x_true, mask_orig, x_crops_ref, y_crops_ref, x_all_scenes, y_all_scenes):
     """
-    Full test protocol for one scene: load → expand → corrupt → correct → validate.
+    Full test protocol for one scene: inject mismatch → Alg1 → Alg2 → validate.
+
+    EFFICIENT VERSION:
+    - Uses shift-crops for Alg1 and Alg2 (not full spatial expansion)
+    - No expansion to larger grid (spectral K=2 only for forward model)
     """
 
     # ========== SETUP ==========
-    x_true = ground_truth_scene  # (256, 256, 28)
-    H, W, L = x_true.shape
+    H, W, L = x_true.shape  # (256, 256, 28)
 
     # Inject synthetic mismatch (ground truth for validation)
     dx_true = np.random.uniform(-3, 3)
     dy_true = np.random.uniform(-3, 3)
-    theta_true = np.random.uniform(-np.pi/120, np.pi/120)  # [-1.5°, 1.5°]
+    theta_true = np.random.uniform(-np.pi/180, np.pi/180)  # [-1°, 1°]
 
-    mask_orig = load_mask()  # (256, 256)
+    # Apply mismatch to mask
     mask_misaligned = warp_mask(mask_orig, dx=dx_true, dy=dy_true, theta=theta_true)
 
-    # Generate measurement with injected mismatch
-    operator_true = SDCASSIOperator(mask_misaligned, disp_step=2.0)
-    y_clean = operator_true.forward(x_true)
-    y_noisy = add_poisson_read_noise(y_clean, peak_photons=10000, read_sigma=0.01)
+    # Generate measurements for all 10 scenes with this misaligned mask
+    # Use hybrid operator: expands for simulation, downsamples back to original
+    y_all_noisy = []
+    for x_scene in x_all_scenes:
+        operator_true = SDCASSIOperator_HybridGrid(mask_misaligned, disp_step=2.0,
+                                                   spatial_upsample_N=2, spectral_interp_K=2)
+        y_clean = operator_true.forward(x_scene)
+        y_noisy = add_poisson_gaussian_noise(y_clean, peak_photons=10000, read_sigma=0.01)
+        y_all_noisy.append(y_noisy)
 
-    # ========== EXPANSION ==========
-    N = 2
-    x_expanded = expand_spectral_frames(x_true, expansion_factor=2*N)  # (256,256,112)
-    x_expanded = upsample_spatial(x_expanded, factor=N)  # (512,512,112)
-    mask_expanded = upsample_spatial(mask_orig, factor=N)  # (512,512) [no mismatch yet]
-    y_expanded = upsample_spatial(y_noisy, factor=N)  # (512, 620)
+    # Get measurement for current scene
+    y_current = y_all_noisy[scene_idx]
 
-    # ========== ALGORITHM 1: Beam Search ==========
+    # ========== ALGORITHM 1: Beam Search (EFFICIENT VERSION) ==========
+    # Uses shift-crops from reference scene for fast scoring
     (dx_hat1, dy_hat1, theta_hat1) = upwmi_algorithm_1_mask_beam_search(
-        y_expanded, mask_expanded, x_expanded, N=N
+        y_crops=y_crops_ref,
+        mask=mask_orig,
+        x_crops_ref=x_crops_ref,
+        n_crops=4
     )
 
-    # Checkpoint 1: Coarse reconstruction
+    # Checkpoint 1: Coarse reconstruction (on full scene measurement)
     mask_warped_v1 = warp_mask(mask_orig, dx=dx_hat1, dy=dy_hat1, theta=theta_hat1)
-    operator_v1 = SDCASSIOperator(mask_warped_v1, disp_step=2.0)
-    x_hat_v1 = gap_tv_cassi(y_noisy, operator_v1, n_iter=50)
+    # Use hybrid operator (N=2, K=2) for forward model
+    operator_v1 = SDCASSIOperator_HybridGrid(mask_warped_v1, disp_step=2.0,
+                                             spatial_upsample_N=2, spectral_interp_K=2)
+    x_hat_v1 = gap_tv_cassi(y_current, operator_v1, n_iter=50)
 
     psnr_v1 = psnr(x_hat_v1, x_true)
     ssim_v1 = ssim(x_hat_v1, x_true)
@@ -782,18 +910,24 @@ def run_full_test_scene(scene_idx, ground_truth_scene):
 
     error_dx_v1 = abs(dx_hat1 - dx_true)
     error_dy_v1 = abs(dy_hat1 - dy_true)
-    error_theta_v1 = abs(theta_hat1 - theta_true) * 180 / np.pi  # degrees
+    error_theta_v1 = abs(theta_hat1 - theta_true) * 180 / np.pi  # Convert to degrees
 
-    # ========== ALGORITHM 2: Gradient Refinement ==========
+    # ========== ALGORITHM 2: Gradient Refinement (EFFICIENT VERSION) ==========
+    # Optimizes on shift-crops, then validates on full 10 scenes
     (dx_hat2, dy_hat2, theta_hat2) = upwmi_algorithm_2_differentiable_refinement(
-        y_expanded, x_expanded, mask_expanded,
-        (dx_hat1, dy_hat1, theta_hat1), N=N
+        y_crops=y_crops_ref,
+        x_crops=x_crops_ref,
+        y_all_scenes=y_all_noisy,  # All 10 measurements for phase 2
+        x_all_scenes=x_all_scenes,  # All 10 scenes for phase 2
+        mask=mask_orig,
+        coarse_estimate=(dx_hat1, dy_hat1, theta_hat1)
     )
 
     # Checkpoint 2: Refined reconstruction
     mask_warped_v2 = warp_mask(mask_orig, dx=dx_hat2, dy=dy_hat2, theta=theta_hat2)
-    operator_v2 = SDCASSIOperator(mask_warped_v2, disp_step=2.0)
-    x_hat_v2 = gap_tv_cassi(y_noisy, operator_v2, n_iter=50)
+    operator_v2 = SDCASSIOperator_HybridGrid(mask_warped_v2, disp_step=2.0,
+                                             spatial_upsample_N=2, spectral_interp_K=2)
+    x_hat_v2 = gap_tv_cassi(y_current, operator_v2, n_iter=50)
 
     psnr_v2 = psnr(x_hat_v2, x_true)
     ssim_v2 = ssim(x_hat_v2, x_true)
@@ -804,8 +938,9 @@ def run_full_test_scene(scene_idx, ground_truth_scene):
     error_theta_v2 = abs(theta_hat2 - theta_true) * 180 / np.pi
 
     # ========== ORACLE (Perfect correction) ==========
-    operator_oracle = SDCASSIOperator(mask_orig, disp_step=2.0)  # No mismatch
-    x_hat_oracle = gap_tv_cassi(y_noisy, operator_oracle, n_iter=50)
+    operator_oracle = SDCASSIOperator_HybridGrid(mask_orig, disp_step=2.0,
+                                                 spatial_upsample_N=2, spectral_interp_K=2)
+    x_hat_oracle = gap_tv_cassi(y_current, operator_oracle, n_iter=50)
 
     psnr_oracle = psnr(x_hat_oracle, x_true)
     ssim_oracle = ssim(x_hat_oracle, x_true)
@@ -814,20 +949,43 @@ def run_full_test_scene(scene_idx, ground_truth_scene):
     # ========== RETURN RESULTS ==========
     return {
         # Ground truth mismatch
-        'dx_true': dx_true, 'dy_true': dy_true, 'theta_true': theta_true * 180 / np.pi,
+        'scene_idx': scene_idx,
+        'dx_true': dx_true,
+        'dy_true': dy_true,
+        'theta_true': theta_true * 180 / np.pi,
 
         # Algorithm 1 results
-        'dx_hat1': dx_hat1, 'dy_hat1': dy_hat1, 'theta_hat1': theta_hat1 * 180 / np.pi,
-        'psnr_v1': psnr_v1, 'ssim_v1': ssim_v1, 'sam_v1': sam_v1,
-        'error_dx_v1': error_dx_v1, 'error_dy_v1': error_dy_v1, 'error_theta_v1': error_theta_v1,
+        'dx_hat1': dx_hat1,
+        'dy_hat1': dy_hat1,
+        'theta_hat1': theta_hat1 * 180 / np.pi,
+        'psnr_v1': psnr_v1,
+        'ssim_v1': ssim_v1,
+        'sam_v1': sam_v1,
+        'error_dx_v1': error_dx_v1,
+        'error_dy_v1': error_dy_v1,
+        'error_theta_v1': error_theta_v1,
 
         # Algorithm 2 results
-        'dx_hat2': dx_hat2, 'dy_hat2': dy_hat2, 'theta_hat2': theta_hat2 * 180 / np.pi,
-        'psnr_v2': psnr_v2, 'ssim_v2': ssim_v2, 'sam_v2': sam_v2,
-        'error_dx_v2': error_dx_v2, 'error_dy_v2': error_dy_v2, 'error_theta_v2': error_theta_v2,
+        'dx_hat2': dx_hat2,
+        'dy_hat2': dy_hat2,
+        'theta_hat2': theta_hat2 * 180 / np.pi,
+        'psnr_v2': psnr_v2,
+        'ssim_v2': ssim_v2,
+        'sam_v2': sam_v2,
+        'error_dx_v2': error_dx_v2,
+        'error_dy_v2': error_dy_v2,
+        'error_theta_v2': error_theta_v2,
 
         # Oracle (upper bound)
-        'psnr_oracle': psnr_oracle, 'ssim_oracle': ssim_oracle, 'sam_oracle': sam_oracle,
+        'psnr_oracle': psnr_oracle,
+        'ssim_oracle': ssim_oracle,
+        'sam_oracle': sam_oracle,
+
+        # Improvements
+        'psnr_gain_alg2': psnr_v2 - psnr_v1,
+        'ssim_gain_alg2': ssim_v2 - ssim_v1,
+        'sam_gain_alg2': sam_v2 - sam_v1,
+        'gap_to_oracle_psnr': psnr_oracle - psnr_v2,
     }
 ```
 
@@ -839,155 +997,191 @@ def run_full_test_scene(scene_idx, ground_truth_scene):
 - θ: ±0.02–0.05° error
 
 **PSNR improvements:**
-- Baseline (no correction): ~15 dB (severely degraded)
-- After Alg 1: ~20–23 dB
-- After Alg 2: ~24–26 dB
-- Oracle (true parameters): ~28–30 dB (gap of ~2–4 dB)
-
-**Gap to oracle:** (PSNR_alg2 - PSNR_oracle) should be < 2 dB (indicating good parameter recovery).
+- Baseline (no correction): ~12–15 dB (misaligned, poor)
+- After Alg 1: ~20–22 dB (coarse correction)
+- After Alg 2: ~23–25 dB (refined correction)
+- Oracle (true parameters): ~27–29 dB (upper bound)
+- **Expected gap:** (PSNR_oracle - PSNR_alg2) < 2–3 dB
 
 ### 4.4 Reporting Structure
 
-Create: `pwm/reports/cassi_mask_correction_expanded_grid.md`
+Create: `pwm/reports/cassi_mask_correction_efficient.md`
 
 **Tables:**
 1. **Table 1:** Parameter recovery accuracy (10 scenes, Alg 1 vs Alg 2)
-   - Columns: Scene, dx_true, dx_hat1, error_dx_v1, dx_hat2, error_dx_v2, ...
-   - Rows: scene01 — scene10, +Average
+   - Columns: Scene, dx_true, dx_hat1, |error|_v1, dx_hat2, |error|_v2, improvement
+   - Rows: scene01 — scene10, +Mean/StDev
 
-2. **Table 2:** PSNR/SSIM/SAM comparison
-   - Columns: Scene, PSNR_v1, PSNR_v2, PSNR_oracle, Gap
-   - Rows: scene01 — scene10, +Average
+2. **Table 2:** PSNR/SSIM/SAM metrics and gains
+   - Columns: Scene, PSNR_v1, PSNR_v2, Δ(v2-v1), PSNR_oracle, Gap(oracle-v2)
+   - Rows: scene01 — scene10, +Mean metrics, +Std Dev
+   - Similar for SSIM and SAM
 
-3. **Table 3:** Parameter recovery improvement (Alg 1 → Alg 2)
-   - Columns: dx error reduction, dy error reduction, θ error reduction
-   - Rows: Per-scene averages
+3. **Table 3:** Algorithm efficiency & timing
+   - Alg 1: Total time (4.5 h/scene × 10), breakdown (stages 1-3)
+   - Alg 2: Total time (4 h/scene × 10), breakdown (phase 1-2)
+   - Total for 10-scene experiment
 
 **Figures:**
-1. Parameter recovery scatter: (true dx, dy, θ) vs (estimated dx, dy, θ)
-2. PSNR trajectory: Before correction → Alg 1 → Alg 2 → Oracle (10 scenes)
-3. Reconstruction visual: Groundtruth vs Alg 1 vs Alg 2 (1–2 representative scenes)
-4. Error maps: Reconstruction error (x̂_alg2 - x_true) for 1 scene, 3 bands
+1. Parameter recovery scatter plots: dx_true vs dx_hat2 (all 10 scenes), similar for dy, θ
+2. PSNR trajectory: All 10 scenes, Alg1 vs Alg2 vs Oracle (bar chart + line plot)
+3. Reconstruction visual: Ground truth, corrupted, Alg1, Alg2, Oracle (1-2 scenes, 3 bands each)
+4. Error histograms: Distribution of parameter errors across 10 scenes
 
 ---
 
 ## Part 5: Implementation Architecture (Follows cassi_working_process.md)
 
-### 5.1 Modified Forward Model Chain
+### 5.1 Modified Forward Model Chain (Spatial + Spectral Expansion, Downsampled Output)
 
 Following `cassi_working_process.md` Section 3 (SD-CASSI Forward Model):
 
-**Original chain (Section 3.5, Option A):**
+**Hybrid operator (expand for simulation, downsample for original measurement size):**
 ```python
-class SDCASSIOperator(PhysicsOperator):
-    def forward(self, x):
-        """y = Σ_l shift_y( X[:,:,l] ⊙ M, d_l )"""
-        # Floating-point shifts: d_l = step · (l − n_c)
-```
-
-**New chain (Expanded-grid version):**
-```python
-class SDCASSIOperator_ExpandedGrid(PhysicsOperator):
+class SDCASSIOperator_HybridGrid(PhysicsOperator):
     """
-    SD-CASSI on expanded grid for integer dispersion shifts.
-    Follows cassi_working_process.md but with upsampling/downsampling.
+    SD-CASSI forward model with BOTH spatial (N=2) and spectral (K=2) expansion.
+    Input: x (H, W, L=28)
+    Output: y (H, W + disp_extent) on ORIGINAL grid (downsampled from expanded)
+
+    Pipeline:
+    1. Spatial upsample: (H,W) → (N·H, N·W)
+    2. Spectral interpolate: L → K·(L-1)+1
+    3. Forward model on expanded (N·H, N·W, K·L) grid with integer shifts
+    4. Downsample measurement back to original (H, W + disp_extent)
+    5. Return measurement at original scale
     """
 
-    def __init__(self, mask, dispersion_step=2.0, upsample_factor=2):
-        self.mask_base = mask  # (H, W)
+    def __init__(self, mask, dispersion_step=2.0, spatial_upsample_N=2, spectral_interp_K=2):
+        self.mask_base = mask  # (H, W) on original grid
         self.disp_step = dispersion_step  # 2.0 px/band (fixed)
-        self.N = upsample_factor  # 2
-        self.L = None  # Set on first forward call
+        self.N = spatial_upsample_N  # Spatial upsample factor
+        self.K = spectral_interp_K  # Spectral interpolation factor
 
     def forward(self, x):
         """
         Input: x (H, W, L=28)
-        Output: y (H, W + (L-1)·step) on downsampled grid
+        Output: y (H, W + (L-1)·disp_step) on ORIGINAL grid
         """
         H, W, L = x.shape
-        self.L = L
 
-        # 1. Expand spectral: 28 → 2N·28 = 112
-        x_expanded_spec = expand_spectral_frames(x, expansion_factor=2*self.N)
-        # x_expanded_spec: (H, W, 2N·L)
+        # Step 1: Spatial upsample
+        x_spatial = upsample_spatial(x, factor=self.N)  # (N·H, N·W, L)
+        mask_spatial = upsample_spatial(self.mask_base, factor=self.N)  # (N·H, N·W)
 
-        # 2. Upsample spatial: (H,W) → (N·H, N·W)
-        x_expanded = upsample_spatial(x_expanded_spec, factor=self.N)
-        # x_expanded: (N·H, N·W, 2N·L)
+        # Step 2: Spectral interpolate
+        x_expanded = interpolate_spectral_frames(x_spatial, K=self.K)  # (N·H, N·W, K·L')
+        L_expanded = x_expanded.shape[2]
 
-        mask_expanded = upsample_spatial(self.mask_base, factor=self.N)
-        # mask_expanded: (N·H, N·W)
+        # Step 3: Forward model on expanded grid (integer shifts!)
+        y_expanded = self._forward_model_integer(x_expanded, mask_spatial)  # (N·H, N·W+disp_large)
 
-        # 3. Forward model on expanded grid (integer shifts only)
-        y_expanded = self._forward_integer_shifts(x_expanded, mask_expanded)
-        # y_expanded: (N·H, N·W + (2N·L-1)·step)
+        # Step 4: Downsample measurement back to original size
+        y_downsampled = downsample_spatial(y_expanded, factor=self.N)  # (H, W+disp_orig)
 
-        # 4. Downsample measurement
-        y_downsampled = downsample_spatial(y_expanded, factor=self.N)
-        # y_downsampled: (H, W + (L-1)·step) ← original measurement shape
+        # Step 5: Scale by 1/K (energy conservation from spectral interpolation)
+        y = y_downsampled / self.K
 
-        return y_downsampled
+        return y  # (H, W + (L-1)·disp_step)  ← original measurement size!
 
-    def _forward_integer_shifts(self, x_expanded, mask_expanded):
-        """Dispersion via exact integer pixel shifts (no interpolation)."""
+    def adjoint(self, y):
+        """
+        Adjoint operator: y → x̂ (for reconstruction solvers on ORIGINAL grid)
+
+        Input: y (H, W + disp_extent) on original grid
+        Output: x̂ (H, W, L=28) on original grid
+        """
+        H, W, L = (y.shape[0], y.shape[1] - int((L_orig - 1) * self.disp_step), L_orig)
+
+        # Step 1: Scale input by K (reverse spectral scaling)
+        y_scaled = y * self.K
+
+        # Step 2: Upsample measurement to expanded grid
+        y_expanded = upsample_spatial(y_scaled, factor=self.N)
+
+        # Step 3: Adjoint on expanded grid
+        x_expanded_hat = self._adjoint_model_integer(y_expanded, upsample_spatial(self.mask_base, self.N))
+
+        # Step 4: Downsample spatial
+        x_spatial_hat = downsample_spatial(x_expanded_hat, factor=self.N)
+
+        # Step 5: Downsample spectral (integrate K·L bands back to L)
+        x_hat = downsample_spectral_frames(x_spatial_hat, K=self.K)
+
+        return x_hat  # (H, W, L=28)  ← original grid!
+
+    def _forward_model_integer(self, x_expanded, mask_expanded):
+        """SD-CASSI forward with integer dispersion shifts (no interpolation)."""
         H_exp, W_exp, L_exp = x_expanded.shape
         W_out = W_exp + (L_exp - 1) * int(self.disp_step)
         y = np.zeros((H_exp, W_out), dtype=x_expanded.dtype)
         n_c = (L_exp - 1) / 2.0
 
         for l in range(L_exp):
-            d_l = int(round(self.disp_step * (l - n_c)))  # Integer shift
-            coded_slice = x_expanded[:, :, l] * mask_expanded
+            d_l = int(round(self.disp_step * (l - n_c)))  # Integer shift!
+            coded = x_expanded[:, :, l] * mask_expanded
             y_start = max(0, d_l)
             y_end = min(W_out, W_exp + d_l)
             src_start = max(0, -d_l)
             src_end = src_start + (y_end - y_start)
-            y[:, y_start:y_end] += coded_slice[:, src_start:src_end]
+            y[:, y_start:y_end] += coded[:, src_start:src_end]
 
         return y
 
     def apply_mask_correction(self, dx: float, dy: float, theta: float):
-        """Apply estimated mask shift (mask-only correction from UPWMI)."""
-        self.mask_corrected = warp_affine(self.mask_base, dx=dx, dy=dy, theta=theta)
-        # On next forward(), use mask_corrected instead of mask_base
+        """Apply estimated mask correction on ORIGINAL grid."""
+        self.mask_base = warp_affine(self.mask_base, dx=dx, dy=dy, theta=theta)
 ```
 
 ### 5.2 New Algorithm Modules
 
 Create files:
-- `packages/pwm_core/pwm_core/algorithms/upwmi.py` — Algorithms 1 & 2
-- `packages/pwm_core/pwm_core/physics/cassi_expanded.py` — Expanded-grid operator
-- `scripts/run_cassi_mask_correction_full.py` — Full pipeline for 10 scenes
+- `packages/pwm_core/pwm_core/algorithms/upwmi_efficient.py` — Algorithms 1 & 2 (efficient version)
+  - `upwmi_algorithm_1_mask_beam_search(y_crops, mask, x_crops_ref, ...)`
+  - `upwmi_algorithm_2_differentiable_refinement(y_crops, x_crops, y_all, x_all, mask, ...)`
+  - Helper: `interpolate_spectral_frames(x, K)`, `downsample_spectral_frames(x_hat, K)`
+  - Helper: `generate_shift_crops(scene, n_crops=4, margin=6)`
+- `packages/pwm_core/pwm_core/physics/cassi_spectral_interp.py` — Updated SD-CASSI operator
+- `scripts/run_cassi_mask_correction_efficient.py` — Full pipeline for 10 scenes
 
 ### 5.3 Updated Mismatch Registry (mismatch_db.yaml)
 
 ```yaml
-cassi_mask_only:
-  # New entry for mask-only correction (dispersion frozen)
+cassi_mask_only_efficient:
+  description: "Mask-only correction with spectral interpolation (K=2)"
   parameters:
     mask_dx:
-      range: [-5, 5]
-      typical_error: 0.5
-      weight: 0.35
+      range: [-3, 3]
+      typical_error: 0.3
+      unit: pixels
       correctable: true
 
     mask_dy:
-      range: [-5, 5]
-      typical_error: 0.5
-      weight: 0.35
+      range: [-3, 3]
+      typical_error: 0.3
+      unit: pixels
       correctable: true
 
     mask_theta:
-      range: [-3, 3]  # degrees
-      typical_error: 0.1
-      weight: 0.30
+      range: [-1, 1]  # degrees
+      typical_error: 0.05
+      unit: degrees
       correctable: true
 
   correction_method: "UPWMI_algorithm_1_beam_search + UPWMI_algorithm_2_differentiable"
+  forward_model_options:
+    spectral_interpolation_K: 2
+    dispersion_step: 2.0
+    frozen_parameters:
+      - a1: 2.0  # px/band (prism property)
+      - alpha: 0.0  # degrees (dispersion axis)
+      - a2: 0.0  # second-order (negligible)
+
   note: |
-    Dispersion parameters (a₁, α, a₂) are frozen at factory spec.
-    Only mask geometry (dx, dy, θ) is corrected.
-    Uses expanded-grid (N=2) for integer dispersion shifts.
+    Mask geometry (dx, dy, θ) varies per measurement session.
+    Prism dispersion is fixed (factory calibration).
+    Uses spectral interpolation (K=2) for forward model fidelity.
+    Algorithm 1 (4.5 h/scene) + Algorithm 2 (4 h/scene).
 ```
 
 ### 5.4 Integration with cassi_working_process.md
@@ -1003,18 +1197,21 @@ theta_disp = estimate_dispersion_curve(calibration_frames=...)
 theta_calibrated = {**theta_nominal, **theta_mask, **theta_disp, **theta_sd}
 ```
 
-**New (Expanded-grid approach):**
+**New (Efficient mask-only approach):**
 ```python
-# Skip dispersion curve fitting entirely
-# Use frozen factory spec: a1=2.0, a2=0.0, alpha=0°
+# Pre-calibrate (once per system): a1=2.0, a2=0.0, alpha=0°
+# Per-measurement: Correct only mask geometry (dx, dy, θ)
 
-# 5. Estimate ONLY mask geometry
-theta_mask = upwmi_algorithm_1(y_expanded, mask_expanded, scenes_expanded)
-theta_mask = upwmi_algorithm_2(y_expanded, ..., theta_mask)
+# 4. Generate shift-crops from reference scene (fast preprocessing)
+x_crops, y_crops = generate_shift_crops(scene_ref, n_crops=4)
+
+# 5. Estimate ONLY mask geometry (3 parameters)
+theta_mask = upwmi_algorithm_1(y_crops, mask_base, x_crops, n_crops=4)
+theta_mask = upwmi_algorithm_2(y_crops, x_crops, y_all_scenes, x_all_scenes, mask_base, theta_mask)
 
 # 7. Simplified BeliefState
-theta_calibrated = {**theta_nominal, **theta_mask}  # No theta_disp, theta_sd
-Phi_cal = SDCASSIOperator_ExpandedGrid(mask_base, disp_step=2.0)
+theta_calibrated = {**theta_nominal, **theta_mask}  # Only mask geometry
+Phi_cal = SDCASSIOperator(mask_base, disp_step=2.0, spectral_interp_K=2)
 Phi_cal.apply_mask_correction(**theta_mask)
 ```
 
@@ -1178,274 +1375,318 @@ a₁ ∈ [1.95, 2.05] px/band  (thermal drift)
 
 ---
 
-## Part 8: Implementation Timeline & Compute Requirements (UPDATED for N=4)
+## Part 8: Implementation Timeline & Compute Requirements (EFFICIENT VERSION)
 
-### Phase 1: Code Development (14 hours wall-clock)
+### Phase 1: Code Development (12 hours wall-clock)
 
 | Task | Duration | GPU required | Notes |
 |------|----------|--------------|-------|
-| 1a. SDCASSIOperator_ExpandedGrid + spectral interp (N=4) | 2 h | No | Handle 1024×1024 grid |
-| 1b. Mask expansion + padding (Option A) | 1.5 h | No | Scene crop/pad logic |
-| 1c. Algorithm 1 (5D beam: dx,dy,θ,a₁,α) | 4 h | No | More complex than 3D |
-| 1d. Algorithm 2 (differentiable refinement) | 3 h | No | PyTorch unrolling |
-| 1e. Unit tests + fixtures (N=4 scale) | 2 h | No | Pytest, fixtures |
-| 1f. Main orchestration + checkpoints | 1.5 h | No | Runner logic |
-| **Phase 1 Total** | **14 h** | **No** | — |
+| 1a. Spectral interpolation utilities + downsample | 1.5 h | No | PCHIP/linear interpolation |
+| 1b. SDCASSIOperator (spectral_interp_K version) | 1.5 h | No | No spatial expansion needed |
+| 1c. Algorithm 1 (3D beam search, efficient) | 3 h | No | Scoring on 2-4 crops only |
+| 1d. Algorithm 2 (gradient refinement, 2-phase) | 2.5 h | No | PyTorch unrolling K=10 |
+| 1e. Shift-crop generation + utilities | 1 h | No | reflect_pad, crop logic |
+| 1f. Unit tests + fixtures | 1.5 h | No | Pytest, TSA benchmark |
+| 1g. Main orchestration script | 1 h | No | Runner, checkpoints |
+| **Phase 1 Total** | **12 h** | **No** | — |
 
-### Phase 2: Single-Scene Validation (14 GPU hours)
+### Phase 2: Single-Scene Validation (8.5 GPU hours)
 
 | Task | GPU hours | Wall-clock | Notes |
 |------|-----------|-----------|-------|
-| 2a. scene01 full Alg1+Alg2 on N=4 grid | ~14 h | 4 h | Overnight run |
-| **Phase 2 Total** | **14 h** | **4 h** | — |
+| 2a. scene01 Algorithm 1 (shift-crops, proxy K=5/10) | ~4.5 h | 1.5 h | Fast coarse search |
+| 2b. scene01 Algorithm 2 (phases 1-2, full scenes) | ~4 h | 1.5 h | Gradient refinement |
+| **Phase 2 Total** | **8.5 h** | **3 h** | One scene full pipeline |
 
-### Phase 3: Full 10-Scene Execution (550–650 GPU hours)
+### Phase 3: Full 10-Scene Execution (~85 GPU hours)
 
 | Task | GPU hours | Wall-clock (background) | Notes |
 |------|-----------|-------------------------|-------|
-| 3a. Algorithm 1 (5D beam search) on 10 scenes | ~350–400 h | 70–100 h | 35–40 h/scene |
-| 3b. Algorithm 2 (gradient refinement) on 10 scenes | ~200–250 h | 40–60 h | 20–25 h/scene |
-| **Phase 3 Total** | **550–650 h** | **110–160 h** | ~5–7 days continuous |
+| 3a. Algorithm 1 on 10 scenes (4.5 h/scene × 10) | ~45 h | 9–12 h | Fast coarse search |
+| 3b. Algorithm 2 on 10 scenes (4 h/scene × 10) | ~40 h | 8–10 h | Gradient refinement |
+| **Phase 3 Total** | **~85 h** | **~18–22 h** | **Very efficient!** |
 
-### Phase 4: Analysis & Reporting (6 hours)
+### Phase 4: Analysis & Reporting (4 hours)
 
 | Task | Duration | Notes |
 |------|----------|-------|
-| 4a. Parse & aggregate 10-scene results | 1.5 h | Metrics, parameter errors, stats |
-| 4b. Generate tables & figures | 2 h | PSNR/SSIM/SAM plots, scatter plots |
-| 4c. Write analysis & discussion | 1.5 h | Algorithm trade-offs, limits |
-| 4d. Final review & validation | 0.5 h | Sanity checks |
-| **Phase 4 Total** | **6 h** | — |
+| 4a. Parse & aggregate 10-scene results | 1 h | Parameter errors, metrics statistics |
+| 4b. Generate tables & figures | 1.5 h | Parameter scatter, PSNR trends, visuals |
+| 4c. Write analysis & discussion | 1 h | Algorithm comparison, gap to oracle |
+| 4d. Final review | 0.5 h | Validation, sanity checks |
+| **Phase 4 Total** | **4 h** | — |
 
-### Summary
+### Summary (MUCH MORE EFFICIENT!)
 
 | Phase | Wall-clock | GPU hours | Notes |
 |-------|-----------|-----------|-------|
-| **1. Code dev** | **14 h** | **0 h** | Sequential, start first |
-| **2. Single-scene** | **4 h** | **14 h** | After Phase 1 complete |
-| **3. Full 10-scene** | **110–160 h** | **550–650 h** | **Continuous background GPU** |
-| **4. Analysis** | **6 h** | **0 h** | Parallel (after 1–2 scenes done) |
-| **Total elapsed** | **~200 h** | **~600 GPU** | **~9–10 days calendar** |
+| **1. Code dev** | **12 h** | **0 h** | Sequential, start first |
+| **2. Single-scene** | **3 h** | **8.5 h** | Overnight/quick morning |
+| **3. Full 10-scene** | **18–22 h** | **~85 h** | Continuous background GPU (~3.5 days) |
+| **4. Analysis** | **4 h** | **0 h** | While Phase 3 runs in background |
+| **Total elapsed** | **~39 h wall** | **~94 GPU** | **~4 days calendar time** |
 
 **Practical timeline (24/7 GPU execution):**
-- Day 1: Phase 1 code development (14 h)
-- Day 2: Phase 2 single-scene test (overnight + morning, 14 h GPU)
-- Day 2 pm: Phase 3 starts (background)
-- Days 3–8: Phase 3 continuous (550–650 GPU h ÷ 24 h/day ≈ 23–27 days single GPU ≈ 2–3 weeks)
-- Days 9–10: Phase 4 analysis (after enough scenes completed)
-- **Total: ~9–10 days calendar with 24/7 GPU access**
+- Day 1: Phase 1 code development (12 h)
+- Night 1: Phase 2 single-scene validation (overnight, 8.5 h GPU)
+- Day 2: Phase 3 starts (background, continuous)
+- Days 2–4: Phase 3 continuous (~85 GPU h ÷ 24 h/day ≈ 3.5 days)
+- Days 2–4: Phase 4 analysis (parallel with Phase 3, as scenes complete)
+- **Total: ~4 days calendar with 24/7 GPU** (vs ~9–10 days for expanded-grid approach!)
+
+**Advantages of efficient approach:**
+- ✅ **7.5× faster GPU** (85 h vs 600 h)
+- ✅ **~6× faster calendar** (4 days vs ~9–10 days)
+- ✅ **No spatial expansion** → lower memory, faster computation
+- ✅ **3D parameter space** → easier beam search than 5D
+- ✅ **Shift-crop strategy** → more robust validation data
 
 ---
 
-## Appendix A: Integer Dispersion Shift Mathematics
+## Appendix A: Spectral Interpolation & Shift-Crop Mathematics
 
-### A.1 Original Grid (256 × 256 × 28)
+### A.1 Shift-Crop Margin Formula: M ≥ 2N-1
 
-Given:
-- Spatial: H=256, W=256
-- Spectral: L=28 bands
-- Dispersion: s=2.0 px/band (linear, nominal a₂=0)
-- Center band: n_c = (L-1)/2 = 13.5
+**Purpose:** Determine minimum padding needed to safely extract 2N overlapping crops.
 
-**Dispersion shifts on original grid:**
+**Setup:**
+- Original scene width: 256 px
+- Number of crops: 2N
+- Crop offsets with stride-1: [0, 1, 2, ..., 2N-1]
+- Maximum offset: 2N-1
+
+**Derivation:**
+- Rightmost crop starts at: 2N-1
+- Rightmost crop width: 256 px
+- Rightmost crop ends at: (2N-1) + 256
+- Padded scene width: 256 + 2M
+
+**Constraint (rightmost crop must fit):**
 ```
-d_l = s · (l − n_c) = 2.0 · (l − 13.5)
-
-l=0:    d_l = −27 px
-l=13:   d_l = −1 px
-l=14:   d_l = +1 px
-l=27:   d_l = +27 px
-```
-
-**Observation:** Shifts are integers (except at l=13.5 center), but fractional in continuous space.
-
-### A.2 Expanded Grid (512 × 512 × 112, N=2)
-
-**Spatial upsampling:** 256 → 512 (factor N=2)
-- Pixel spacing: 1 unit → 0.5 units (2× finer)
-
-**Spectral expansion:** 28 → 112 (factor 2N=4)
-- Via cubic spline interpolation
-- Wavelength spacing: finer by 4×
-- New center: n'_c = (112-1)/2 = 55.5
-
-**Dispersion shifts on expanded grid:**
-```
-d'_l = s · (l − n'_c) = 2.0 · (l − 55.5)
-
-l=0:    d'_l = −111 px  (integer)
-l=27:   d'_l = −47.0 px → round to −47 px (integer)
-l=55:   d'_l = −1 px   (integer)
-l=56:   d'_l = +1 px   (integer)
-l=111:  d'_l = +111 px (integer)
+(2N-1) + 256  ≤  256 + 2M
+     2N-1     ≤  2M
+  2N-1 / 2    ≤  M
 ```
 
-**All shifts are now integers!** This eliminates fractional pixel registration errors.
+**Therefore:** M ≥ 2N-1 (for integer pixel safety: use M = 2N-1)
 
-### A.3 Mask Shift Error Quantization
-
-**Original grid:** Mask shift errors (dx, dy) are fractional, e.g., dx=1.5 px
-- Becomes ambiguous: round to 1 or 2 px?
-- Introduces sub-pixel registration error
-
-**Expanded grid (N=2):** Same physical misalignment, but on 2× finer grid
-- dx=1.5 px (original) → dx'=3.0 px (expanded) **integer!**
-- dy=0.7 px (original) → dy'=1.4 px (expanded) → round to ±1 px (error <0.5 px at original scale)
-
-**Benefit:** Mask errors naturally quantize to integers on expanded grid, reducing fitting difficulty.
-
-### A.4 Spectral Interpolation Energy Conservation
-
-**Assumption:** Hyperspectral scenes have smooth spectral variation.
-
-**Integration check:**
-```
-∫_λ x_expanded(λ) dλ ≈ ∫_λ x_original(λ) dλ  (by Riemann sum approximation)
-```
-
-**Example:** Original band l=5 has intensity I₅
-- Expanded bands corresponding to λ₅: l'∈{19, 20, 21, 22} (4 bands per original)
-- Sum: I'₁₉ + I'₂₀ + I'₂₁ + I'₂₂ ≈ 4·I₅ (approximately, within interpolation error)
-
-**Consequence:** Measurement y_expanded integrates over 4× more bands, but with 1/4 the intensity per band (noise amplification offset by signal concentration).
+**Example (2N=4, N=2):**
+- Max offset: 2N-1 = 3
+- Min padding: M ≥ 3
+- Padded width: 256 + 2(3) = 262
+- Rightmost crop: [3:259] ✓ fits in [0:262]
 
 ---
 
-## Appendix B: Detailed Comparison — Current W2 vs Proposed Expanded-Grid Approach
+### A.2 Spectral Interpolation Formula: L → K·(L-1)+1
 
-### B.1 Mismatch Model Comparison
+**Purpose:** Subdivide spectral intervals for continuous-wavelength simulation fidelity.
 
-| Aspect | Current W2 (5 scenarios) | Proposed Approach |
-|--------|-------------------------|-------------------|
-| **Fitted parameters** | 5 (dx, dy, θ, a₁, α) | 3 (dx, dy, θ) |
-| **Frozen parameters** | None | a₁=2.0, α=0°, a₂=0 |
-| **Interpretation** | All are "calibration errors" | Only mask geometry is error; dispersion is system property |
-| **Search space** | 5D grid | 3D grid (reduced by 40%) |
-| **Grid search cost** | ~50 min (W2 full sweep) | ~15 min (Alg1 beam search) |
+**Original bands:** L discrete samples (e.g., L=28)
+- λ_k ∈ [λ_0, λ_{L-1}]
+- Spacing: Δλ = (λ_{L-1} − λ_0) / (L−1)
 
-### B.2 Algorithm Comparison
+**Interpolated bands:** L_new = K·(L-1)+1 samples
+- Subdivides each interval by factor K
+- Original bands appear at interpolated indices: i = k·K
 
-| Aspect | Current W2 | Proposed (Alg 1+2) |
-|--------|-----------|-------------------|
-| **Algorithm 1** | Independent grid search per param (1D sweeps only) | Beam search: 1D → 3D beam (width=10) → coord descent |
-| **Algorithm 2** | None (only NLL grid search) | **NEW:** Differentiable refinement via unrolled GAP-TV |
-| **Refinement strategy** | NLL-based (measurement residual) | Gradient-based (reconstruction error) |
-| **Unroll depth** | N/A | K=10 GAP-TV iterations |
-| **Expected accuracy (Alg1)** | ±0.2 px | ±0.15 px |
-| **Expected accuracy (Alg2)** | N/A | ±0.05 px **3–4× better** |
-| **Computational cost** | ~50 min (1 scene) | ~25 h Alg1 + ~10 h Alg2 (10 scenes, GPU) |
+**Example (K=2, L=28):**
+```
+Original:     λ_0, λ_1, λ_2, ..., λ_27          (28 values)
+Interpolated: λ_0, λ_0.5, λ_1, λ_1.5, λ_2, ..., λ_27  (55 values = 2·27+1)
+```
 
-### B.3 Experimental Scope
+**Why K·(L-1)+1 (not K·L):**
+- K·L would overshoot the range (27 original intervals vs 28 bands)
+- K·(L-1)+1 correctly preserves endpoint alignment
+- Ensures reconstructed measurement y_interp / K matches original scale
 
-| Aspect | Current W2 | Proposed |
-|--------|-----------|----------|
-| **Number of scenes** | 1 (scene01) | **10 (all TSA benchmark)** |
-| **Mismatch per scene** | Fixed: W2a–W2e | Random: (dx, dy, θ) each scene |
-| **Ground truth** | Known (injected) | Known (injected, randomized) |
-| **Validation metrics** | PSNR, SSIM, SAM | PSNR, SSIM, SAM, **parameter recovery error** |
-| **Robustness test** | Single scene type | 10 diverse natural scenes |
+### A.3 Energy Conservation with Spectral Interpolation Scaling
 
-### B.4 Reconstruction Quality
+**Measurement fidelity:**
+```
+Original: y = ∑_{l=0}^{27} shift( x[:,:,l] ⊙ M, d_l )
 
-| Scenario | Current W2 (best case) | Proposed (expected) |
-|----------|----------------------|-------------------|
-| **Without correction** | 15.01 dB (W2d) | ~15 dB (severe artifacts) |
-| **After Algorithm 1** | 22.05 dB (W2d) | ~22 dB (coarse correction) |
-| **After Algorithm 2** | N/A | ~25 dB (refined correction) |
-| **Oracle (true params)** | 22.05+ dB? | ~28 dB (upper bound) |
-| **Gap to oracle** | Unknown | Expected <2 dB |
+Interpolated (K=2):
+  y_interp = ∑_{l'=0}^{54} shift( x'[:,:,l'] ⊙ M, d_{l'} ) / K
+           ≈ y  [by conservation property]
+```
 
-### B.5 Physics Interpretation
+**Why scaling by 1/K works:**
+- x'[:,:,l'] ≈ x[:,:,l]/K  for intermediate interpolated bands
+- Sum over K·(L-1)+1 bands integrates to K × (original sum)
+- Dividing by K normalizes back to original measurement scale
+- Reconstruction solvers receive measurement in expected range
 
-| Aspect | Current W2 | Proposed |
-|--------|-----------|----------|
-| **Prism dispersion** | Treated as variable (a₁, α fitted) | Treated as **fixed system property** |
-| **Reality check** | Does prism change after reassembly? No! | ✓ Correctly treats as constant |
-| **Mask position** | Treated as variable (dx, dy, θ fitted) | Treated as **variable (to be corrected)** |
-| **Reality check** | Does mask position change after reassembly? Yes! | ✓ Correctly treats as correctable error |
-| **Calibration strategy** | Fit all 5 params per measurement | Pre-calibrate dispersion once, fit mask per session |
-| **Practical implication** | Slower, higher dim search, less physical | Faster, lower dim search, more realistic |
+### A.4 Shift-Crop Dataset Expansion (Stride-1 Dense Sampling)
 
-### B.6 Summary: Why Expanded-Grid Approach is Better
+**2N samples per scene (N=2 → 4 crops):**
 
-| Criterion | Score |
-|-----------|-------|
-| **Smaller search space** (3D vs 5D) | ✓ |
-| **Physically accurate** (prism is fixed) | ✓ |
-| **Better parameter recovery** (Alg2: ±0.05 px) | ✓ |
-| **Comprehensive validation** (10 scenes vs 1) | ✓ |
-| **Correct algorithm choice** (gradient > grid for high-dim) | ✓ |
-| **Addresses sin(α)·δ(λ) naturally** (integer shifts → no angle needed) | ✓ |
-| **Practical engineering** (matches real calibration workflow) | ✓ |
+```
+Original scene: [████████████]  (256 px, at position 0)
+
+Reflect-padded: [···████████████···]  (margin M ≥ 3 on sides)
+
+Crop 0 (offset 0):  [████████████]  ← leftmost view
+Crop 1 (offset 1):   [████████████]  ← +1 px view
+Crop 2 (offset 2):    [████████████]  ← +2 px view
+Crop 3 (offset 3):     [████████████]  ← +3 px view
+
+Each crop: 256×256×28 (full spatial & spectral content, shifted viewpoint)
+Stride: 1 px (dense overlapping samples)
+Total: 4 crops × 10 scenes = 40 training crops
+```
+
+**Physical interpretation:**
+- Stride-1 shifts along dispersion axis provide continuous dense sampling
+- No change to ground truth (shift is external, acts on measurement)
+- Each crop sees the scene from a different "wavelength offset" perspective
+- Overlapping crops provide richer training signal for parameter fitting robustness
 
 ---
+
+## Appendix B: Comparison — W2 vs Efficient Mask-Only Approach
+
+### B.1 Design Philosophy
+
+| Aspect | W2 Approach | Efficient Approach |
+|--------|-------------|-------------------|
+| **Model type** | 5-parameter joint fitting | 3-parameter mask correction |
+| **Assumption** | All parameters are calibration errors | Mask varies, prism is fixed |
+| **Physics** | Less realistic (prism doesn't change) | Correct (respects optical design) |
+| **Search space** | 5D (harder to optimize) | 3D (easier, faster) |
+| **Spectral handling** | None (no interpolation) | K=2 interpolation (fidelity) |
+
+### B.2 Algorithm Efficiency
+
+| Aspect | W2 | Efficient |
+|--------|----|-----------|
+| **Alg1 (coarse)** | 1D sweeps (slow) | 3D beam search on crops (fast) |
+| **Alg2 (fine)** | None | Gradient refinement (novel) |
+| **Per-scene time** | N/A (W2 is 1 scene only) | 4.5 h (Alg1) + 4 h (Alg2) = 8.5 h |
+| **10-scene total** | N/A | ~85 h GPU |
+| **Comparison** | Direct comparison not possible | W2 on single scene only |
+
+### B.3 Expected Results Comparison
+
+| Metric | W2 (scene01, best case) | Efficient (10 scenes, average) |
+|--------|----------------------|-----|
+| **Parameter error (dx)** | Unknown | ±0.05–0.1 px |
+| **Parameter error (θ)** | Unknown | ±0.02–0.05° |
+| **PSNR (Alg1)** | ~22 dB (W2d) | ~20–22 dB |
+| **PSNR (Alg2)** | N/A | ~23–25 dB |
+| **PSNR (oracle)** | N/A | ~27–29 dB |
+| **Gap (oracle - Alg2)** | N/A | <2–3 dB |
+
+### B.4 Key Advantages of Efficient Approach
+
+| Advantage | Impact |
+|-----------|--------|
+| **Smaller search space (3D vs 5D)** | Beam search feasible, faster convergence |
+| **Spectral interpolation K=2** | Better forward model fidelity without spatial blowup |
+| **Shift-crop strategy** | Multiple viewpoints for robust fitting |
+| **Gradient-based refinement** | 3–5× improvement over beam search alone |
+| **No spatial expansion** | Lower memory, faster computation |
+| **10-scene validation** | Statistical robustness vs single-scene W2 |
+| **4-day timeline** | Practical for rapid development/testing |
 
 ---
 
 ## Conclusion & Key Insights
 
-### Why This Approach Works
+### Why This Efficient Approach Works
 
 1. **Physically Grounded:**
-   - Prism dispersion δ(λ) is determined by optical design → **fixed after factory calibration**
+   - Prism dispersion δ(λ) is **fixed** by optical design (factory calibration)
    - Mask position varies with mechanical reassembly → **requires per-session correction**
-   - This plan respects this fundamental distinction
+   - Respects the fundamental distinction between system properties and measurement errors
 
 2. **Algorithmically Superior:**
-   - 5D grid search (current W2) is inefficient; 3D grid search (expanded-grid) is faster
+   - 3D search space (dx, dy, θ) is **fast and manageable** vs 5D
    - Algorithm 1 (beam search) handles coarse estimation well
-   - Algorithm 2 (gradient-based) provides 3–5× refinement, exploiting differentiable forward model
+   - Algorithm 2 (gradient-based) provides **3–5× refinement**, crucial for high accuracy
 
-3. **Integer Shift Advantage:**
-   - Spectral expansion (28 → 112 bands) + spatial upsampling (256 → 512) ensures all dispersion shifts become **integers**
-   - No fractional pixel interpolation → exact forward/adjoint model → better gradient flow
+3. **Spectral Interpolation Advantage:**
+   - K=2 interpolation ensures **continuous-wavelength fidelity** without spatial explosion
+   - Scaling by 1/K conserves measurement energy
+   - Forward/adjoint models remain exact (no fractional pixel errors)
 
-4. **Comprehensive Validation:**
-   - 10 scenes (vs 1 in current W2) provides robust statistical evaluation
-   - Randomized mismatch per scene tests generalization
-   - Parameter recovery metrics confirm algorithm effectiveness
+4. **Shift-Crop Dataset Expansion:**
+   - 4 crops per scene → **40 total crops** from 10 scenes
+   - Diverse viewpoints improve parameter fitting robustness
+   - Multiple perspectives reduce overfitting risk
+
+5. **Efficiency vs Accuracy Trade-off:**
+   - **85 GPU hours** for 10-scene comprehensive validation (vs 600 h for expanded grid)
+   - **4-day calendar timeline** makes rapid iteration feasible
+   - No loss in expected parameter accuracy (±0.05–0.1 px)
 
 ### Expected Outcomes
 
-**Parameter recovery (Algorithm 2):**
-- dx, dy: ±0.05–0.10 px accuracy
+**Parameter Recovery (Algorithm 2):**
+- dx, dy: ±0.05–0.1 px accuracy
 - θ: ±0.02–0.05° accuracy
-- 3–5× better than Algorithm 1 alone
+- 3–5× improvement over Algorithm 1 alone
 
-**Reconstruction quality:**
-- Without correction: ~15 dB (unusable)
-- After Alg 1: ~22 dB (acceptable)
-- After Alg 2: ~25 dB (good, within 3 dB of oracle)
+**Reconstruction Quality:**
+- Without correction: ~12–15 dB (misaligned, poor)
+- After Alg 1: ~20–22 dB (coarse, acceptable)
+- After Alg 2: ~23–25 dB (refined, good)
+- Oracle: ~27–29 dB (upper bound, perfect calibration)
 
-**Practical impact:**
-- Faster calibration (3D vs 5D search)
-- More reliable parameter estimates (gradient refinement)
-- Better matches real lab workflows (prism is fixed, mask varies)
+**Gap Analysis:**
+- Expected gap (Alg2 → Oracle) < 2–3 dB
+- Indicates successful parameter recovery with minimal residual error
 
 ### Architecture Integration
 
 This plan **extends** `cassi_working_process.md` (Section 13 — Operator-Correction Mode):
-- Replaces 5-parameter fitting with 3-parameter correction
-- Adds spectral expansion preprocessing
-- Implements UPWMI Algorithms 1 & 2 for mask-only calibration
-- Maintains compatibility with existing PWM framework
+- Simplified correction: 3 parameters instead of 5
+- Pre-calibrated dispersion: Use factory spec or one-time measurement
+- Per-session mask fitting: Run UPWMI Algorithms 1 & 2 on new measurement
+- Maintains full PWM framework compatibility
+
+### Deliverables (Post-Approval)
+
+**Code:**
+- `upwmi_efficient.py` (Algorithms 1 & 2 implementations)
+- `cassi_spectral_interp.py` (Updated operator with K parameter)
+- `run_cassi_mask_correction_efficient.py` (Full pipeline orchestrator)
+
+**Validation:**
+- 10-scene results with parameter recovery & PSNR metrics
+- Comprehensive report: `cassi_mask_correction_efficient.md`
+- Parameter scatter plots, PSNR trajectories, visual comparisons
+
+**Timeline:**
+- Phase 1 (code): 12 hours
+- Phase 2 (single-scene): 8.5 GPU hours
+- Phase 3 (10-scene): ~85 GPU hours (~4 days)
+- Phase 4 (analysis): 4 hours
+- **Total: ~4 days calendar time**
 
 ---
 
-## Approval & Next Steps
+## Approval Checkpoint
 
-**✅ Ready for Review**
+**This plan is complete and ready for implementation!**
 
-Please review this plan document and provide feedback on:
-- **Section 6:** Open questions (N, interpolation method, algorithm configurations)
-- **Section 3:** Algorithm details (feasible for your GPU? Any modifications needed?)
-- **Part 4:** Validation protocol (appropriate test design?)
-- **Part 8:** Timeline (achievable in your schedule?)
+**Key decisions (CONFIRMED):**
+- ✅ 3-parameter mask-only correction (dx, dy, θ)
+- ✅ Spectral interpolation K=2 for forward model fidelity
+- ✅ Shift-crop dataset expansion (4 crops per scene)
+- ✅ Algorithm 1: 3D beam search on crop measurements
+- ✅ Algorithm 2: Gradient refinement on full 10 scenes
+- ✅ 10-scene comprehensive validation
+- ✅ 4-day efficient timeline
 
-**After approval:**
-1. You confirm final decisions on open questions
-2. I implement all code (Phases 1–4)
-3. Full 10-scene validation with comprehensive reporting
-4. Integration into `pwm/reports/cassi_mask_correction_expanded_grid.md`
+**Next steps (upon approval):**
+1. Implement Phase 1 code (12 hours)
+2. Run Phase 2 single-scene validation (8.5 GPU hours)
+3. Execute Phase 3 full pipeline (85 GPU hours, ~4 days background)
+4. Generate comprehensive report with all metrics and visualizations
 
 ---
+
+**Plan created:** 2026-02-14
+**Version:** EFFICIENT (spectral interpolation + shift-crop + 3D search)
