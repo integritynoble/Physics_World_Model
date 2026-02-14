@@ -1,5 +1,5 @@
 # CASSI Calibration via Enlarged Simulation Grid & Mask Correction
-**Plan Document — v4 (2026-02-15, COMPLETE REDESIGN)**
+**Plan Document — v4+ (2026-02-15, with PWM Pipeline Flowcharts)**
 
 ## Executive Summary
 
@@ -50,6 +50,170 @@ This document proposes a **complete CASSI calibration strategy** based on enlarg
 6. **(F) Validate on 10 Scenes** with comprehensive parameter recovery and three-scenario comparison
 
 **Core strategy:** Enlarged grid simulation (N=4, K=2) for accurate forward model, then correct misalignment via Algorithms 1&2, comparing ideal/assumed/corrected reconstructions.
+
+---
+
+## PWM Pipeline Flowcharts (Mandatory)
+
+### Scenario II: Assumed Mask Reconstruction (Baseline, No Correction)
+
+**Pipeline chain:** Measurement generation with mismatch, reconstruction without correction
+
+```
+x (world: 256×256×28)
+  ↓
+SourceNode: photon_source — illumination (strength=1.0)
+  ↓
+Element 1 (subrole=encoding): mask_uncorrected — real coded aperture with true mismatch
+                              (dx_true, dy_true, θ_true NOT corrected, just applied)
+  ↓
+Element 2 (subrole=encoding): parametric_dispersion — Δu(l) = a1·l + a2·l², axis angle α
+                              (nominal: a1=2.0, a2=0.0, α=0°)
+  ↓
+Element 3 (subrole=encoding): spectral_integration — sums along 217-band enlarged grid (L=217→1)
+                              Measurement: 1024×1240 (enlarged space, stride-1)
+  ↓
+Element 4 (subrole=transport): downsample_spatial — 4× downsampling (1024×1240 → 256×310)
+  ↓
+Element 5 (subrole=transport): psf_blur — Gaussian PSF convolution (σ=0, ideal)
+  ↓
+SensorNode: detector — QE=0.9, gain=1.0, photon peak=10000
+  ↓
+NoiseNode: poisson_read_quantization — Poisson shot (peak=10000) + Gaussian read (σ=1.0) + Quant(12bit)
+  ↓
+y_corrupt (256×310, with mismatch + noise)
+  ↓
+[RECONSTRUCTION WITHOUT CORRECTION]
+  ↓
+Operator: phi_assumed = SimulatedOperator_EnlargedGrid(mask_real_uncorrected, N=4, K=2)
+  ↓
+Solver: GAP-TV or other (n_iter=50) on y_corrupt with phi_assumed
+  ↓
+x̂_assumed (256×256×28, degraded reconstruction)
+```
+
+**Key mismatch factors (injected but NOT corrected):**
+| Parameter | True Value | Impact | Notes |
+|-----------|-----------|--------|-------|
+| mask_dx | ∈ [-3, 3] px | 0.12 dB | Mask x-shift from mechanical tolerance |
+| mask_dy | ∈ [-3, 3] px | 0.12 dB | Mask y-shift |
+| mask_theta | ∈ [-1°, 1°] | 3.77 dB | Mask rotation from optical bench twist |
+| disp_a1 | nominal=2.0 | — | (not perturbed in base scenario) |
+| disp_alpha | nominal=0° | — | (not perturbed in base scenario) |
+
+**Expected result:** PSNR_assumed ≈ 18–21 dB (shows degradation from corruption + no correction)
+
+---
+
+### Scenario III: Corrected Mask Reconstruction (Practical with UPWMI Correction)
+
+**Pipeline chain:** Measurement generation with mismatch, operator correction, reconstruction with corrected parameters
+
+**Phase 1: Measurement Formation with Injected Mismatch**
+
+```
+x (world: 256×256×28)
+  ↓
+SourceNode: photon_source — illumination (strength=1.0)
+  ↓
+Element 0 (subrole=encoding): scene_affine_warp — apply mismatch to scene
+                              warp(x, dx=dx_true, dy=dy_true, θ=θ_true)
+  ↓
+Element 1 (subrole=encoding): mask_affine_warp — apply mismatch to real mask
+                              warp(mask_real, dx=dx_true, dy=dy_true, θ=θ_true)
+  ↓
+Element 2 (subrole=encoding): spatial_enlarge — 4× upsampling (256 → 1024)
+                              x_expanded: 1024×1024×28 → 1024×1024×217 (spectral interp)
+                              mask_enlarged: 256×256 → 1024×1024
+  ↓
+Element 3 (subrole=encoding): parametric_dispersion — Δu(l) = a1·l + a2·l², axis angle α
+                              (nominal: a1=2.0, a2=0.0, α=0°, stride=1 in enlarged space)
+  ↓
+Element 4 (subrole=encoding): spectral_integration — sums along 217 bands
+                              Measurement: 1024×1240 (stride-1, full dispersion range ±108)
+  ↓
+Element 5 (subrole=transport): downsample_spatial — 4× downsampling (1024×1240 → 256×310)
+  ↓
+Element 6 (subrole=transport): psf_blur — Gaussian PSF convolution (σ=0, ideal)
+  ↓
+SensorNode: detector — QE=0.9, gain=1.0, photon peak=10000
+  ↓
+NoiseNode: poisson_read_quantization — Poisson shot (peak=10000) + Gaussian read (σ=1.0) + Quant(12bit)
+  ↓
+y_noisy (256×310, with mismatch + noise)
+```
+
+**Phase 2: Operator Correction via UPWMI Algorithms**
+
+```
+[Coarse estimation — Algorithm 1: Hierarchical Beam Search]
+  ↓
+Input: y_noisy, mask_real (uncorrected base), x_true (for validation)
+  ↓
+1D sweeps + 3D beam search (5×5×5) on mask affine space (dx, dy, theta)
+2D beam search (5×7) on dispersion space (a1, alpha)
+Coordinate descent refinement (3 rounds)
+  ↓
+Output: (dx̂₁, dŷ₁, θ̂₁, â₁₁, α̂₁)
+Duration: ~4.5 hours per scene
+Accuracy: ±0.1–0.2 px (mask), ±0.01 px/band (dispersion)
+  ↓
+[Fine estimation — Algorithm 2: Joint Gradient Refinement]
+  ↓
+Input: y_noisy, x_true, mask_real, coarse_estimate=(dx̂₁, dŷ₁, θ̂₁, â₁₁, α̂₁)
+  ↓
+Unrolled GAP-TV differentiable solver (K=10)
+Phase 1: 100 epochs on full measurement (lr=0.01) → ~1.5 hours
+Phase 2: 50 epochs on 10-scene ensemble (lr=0.001) → ~1 hour
+  ↓
+Output: (dx̂₂, dŷ₂, θ̂₂, â₁₂, α̂₂)
+Duration: ~2.5 hours per scene
+Accuracy: ±0.05–0.1 px (mask), ±0.001 px/band (dispersion)
+Improvement: 3–5× better than Algorithm 1
+  ↓
+[Operator Correction Step]
+  ↓
+Build corrected mask: mask_corrected = warp(mask_real, dx=dx̂₂, dy=dŷ₂, θ=θ̂₂)
+Update dispersion parameters: a1_corrected=â₁₂, alpha_corrected=α̂₂
+Build corrected operator: phi_corrected = SimulatedOperator_EnlargedGrid(
+    mask_corrected, N=4, K=2,
+    a1_override=â₁₂, alpha_override=α̂₂
+)
+  ↓
+[Reconstruction with Corrected Operator]
+  ↓
+Solver: GAP-TV on y_noisy with phi_corrected (n_iter=50)
+  ↓
+x̂_corrected (256×256×28, improved reconstruction)
+```
+
+**Element inventory for Scenario III:**
+
+| # | node_id | primitive_id | subrole | parameters | mismatch/correction | bounds | prior |
+|---|---------|-------------|---------|-----------|-------------------|--------|-------|
+| 1 | source | photon_source | source | strength=1.0 | — | — | — |
+| 2 | scene_warp | spatial_affine_warp | preprocessing | (H,W,L)=(256,256,28) | scene dx,dy,θ | [-3,3]px, [-3,3]px, [-1°,1°] | uniform |
+| 3 | mask | mask_affine_warp | encoding | mask (256,256), float [0.007,1.0] | mask dx,dy,θ → **corrected** | [-3,3]px, [-3,3]px, [-1°,1°] | uniform |
+| 4 | enlarge_spatial | spatial_upsample | preprocessing | factor N=4 | — | — | — |
+| 5 | enlarge_spectral | spectral_interpolate | preprocessing | L: 28 → 217 bands | — | — | — |
+| 6 | disperse | parametric_dispersion | encoding | a1=2.0, a2=0.0, α=0° | a1, alpha → **corrected** | [1.95,2.05], [-1°,1°] | normal |
+| 7 | integrate | spectral_integration | encoding | axis=-1, L=217 | — | — | — |
+| 8 | downsample | spatial_downsample | transport | factor N=4 (1024→256) | — | — | — |
+| 9 | psf | psf_blur | transport | sigma=0 | σ (optional) | [0, 3] px | half-normal |
+| 10 | sensor | detector | sensor | QE=0.9, gain=1.0 | — | — | — |
+| 11 | noise | poisson_read_quantization | noise | peak=10000, σ_read=1.0 | — | — | — |
+
+**Mismatch correction performance (Algorithm 2 estimates):**
+
+| Parameter | Ground Truth | Estimated | Error | Impact (from cassi.md) |
+|-----------|-------------|-----------|-------|----------------------|
+| mask_dx | ∈ [-3, 3] px | ±0.05–0.1 px | ~0.1 px | 0.12 dB |
+| mask_dy | ∈ [-3, 3] px | ±0.05–0.1 px | ~0.1 px | 0.12 dB |
+| mask_theta | ∈ [-1°, 1°] | ±0.02–0.05° | ~0.05° | 3.77 dB |
+| disp_a1 | nominal=2.0 | ±0.001 px/band | ~0.001 | 5.49 dB |
+| disp_alpha | nominal=0° | ±0.02–0.05° | ~0.05° | 7.04 dB |
+
+**Expected result:** PSNR_corrected ≈ 23–25 dB (practical reconstruction with full correction)
 
 ---
 
