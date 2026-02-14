@@ -21,8 +21,15 @@ This document proposes a **complete CASSI calibration strategy** based on enlarg
    - Measurement size after summation: 1024×1240 (width = 1024 + 2×108)
    - Downsample to original: 1024×1240 → 256×310 (factor 4)
 
-4. **(D) Real Mask Handling:** Use experimental mask from TSA dataset
-   - Load mask: `/home/spiritai/MST-main/datasets/TSA_simu_data/mask.mat` (256×256)
+4. **(D) Mask Handling - Different Sources for Each Scenario:**
+
+   **Scenario I (Ideal):** Simulation mask (TSA synthetic data)
+   - Load: `/home/spiritai/MST-main/datasets/TSA_simu_data/mask.mat` (256×256)
+   - Purpose: Perfect forward model baseline
+
+   **Scenarios II & III (Real simulation):** Real experimental mask (TSA real data)
+   - Load: `/home/spiritai/MST-main/datasets/TSA_real_data/mask.mat` (256×256)
+   - Purpose: Realistic coded aperture pattern matching real hardware
    - Upsample to 1024×1024 for enlarged simulation
    - For each of 217 frames, create shifted version (dispersion encoding)
    - Mismatch injected: apply (dx, dy, θ) to BOTH mask AND scene equally
@@ -236,14 +243,19 @@ y_final = downsample_spatial(y_meas, factor=4)  # 1024×1240 → 256×310
 
 ### 3.1 Scenario I: Ideal Reconstruction (Oracle)
 
-**Purpose:** Upper bound - best possible reconstruction without any simulation effects.
+**Purpose:** Upper bound - best possible reconstruction with perfect forward model and perfect alignment.
 
-**Forward model:** Ideal, direct (no enlargement)
+**Mask source:** TSA simulation mask (ideal, synthetic)
+- Load: `/home/spiritai/MST-main/datasets/TSA_simu_data/mask.mat`
+
+**Forward model:** Ideal, direct (no enlargement, stride=2 standard dispersion)
 ```python
 def forward_ideal(x_256, mask_256):
     """
     Ideal forward model (256×256×28 → 256×310).
-    No enlargement, no interpolation artifacts.
+    - No enlargement, no interpolation artifacts
+    - Direct stride=2 dispersion (standard SD-CASSI)
+    - Perfect mask, no mismatch
     """
     H, W, L = x_256.shape
     W_meas = W + (L - 1) * 2  # 256 + 54 = 310 (stride=2)
@@ -266,56 +278,69 @@ def forward_ideal(x_256, mask_256):
 
 **Measurement generation:**
 ```
-1. Load ideal mask: mask_ideal (256×256, no mismatch)
+1. Load ideal mask: mask_ideal from TSA_simu_data (256×256, perfect, no mismatch)
 2. Generate ideal measurement: y_ideal = forward_ideal(x_256, mask_ideal)
-   Size: 256×310, no noise
+   Size: 256×310, no noise, no corruption
 ```
 
 **Reconstruction:**
 ```
-x̂_ideal = solver(y_ideal, forward_ideal, mask_ideal, n_iter=50)
+Operator: phi_ideal = forward_ideal  (direct model, stride=2)
+x̂_ideal = solver(y_ideal, phi_ideal, mask_ideal, n_iter=50)
 ```
 
-**Metrics:** PSNR_ideal, SSIM_ideal, SAM_ideal (oracle baseline)
+**Metrics:** PSNR_ideal, SSIM_ideal, SAM_ideal (oracle baseline - best possible)
 
 ### 3.2 Scenario II: Assumed Mask Reconstruction (Baseline, No Correction)
 
-**Purpose:** Show impact of measurement corruption + simulation method WITHOUT mismatch correction.
+**Purpose:** Show impact of measurement corruption + simulation method WITHOUT mismatch correction (baseline degradation).
 
-**Forward model:** Simulated with N=4, K=2 (from Section 2.4)
+**Mask source:** TSA real experimental mask (same source as Scenario III, NO correction applied)
+- Load: `/home/spiritai/MST-main/datasets/TSA_real_data/mask.mat`
+- This is the realistic experimental mask from actual hardware
+
+**Forward model:** Simulated with N=4, K=2 (enlarged grid simulation)
 
 **Measurement generation:**
 ```
 1. Use CORRUPTED measurement from Scenario III: y_corrupt (256×310)
-   (Same as Scenario III: with mismatch + noise)
+   (Same as Scenario III: with mismatch + noise injected from real hardware mask)
 
 2. Use ASSUMED perfect/ideal mask (NO mismatch correction applied):
-   mask_assumed = mask_ideal (256×256, unchanged)
+   mask_assumed = mask_real_data (256×256, unchanged - no correction!)
 ```
 
-**Reconstruction:**
+**Reconstruction WITHOUT correction:**
 ```
-Operator: phi_assumed = SimulatedOperator(mask_assumed, N=4, K=2)
+Operator: phi_assumed = SimulatedOperator_EnlargedGrid(mask_assumed, N=4, K=2)
 x̂_assumed = solver(y_corrupt, phi_assumed, n_iter=50)
 ```
 
-**Why use corrupted y_corrupt:** To measure the degradation from measurement corruption WITHOUT the benefit of mismatch correction. This shows what happens if we ignore the mismatch.
+**Why use corrupted y_corrupt:** To measure the degradation from measurement corruption WITHOUT the benefit of mismatch correction. This shows what happens if we ignore the hardware misalignment.
 
 **Metrics:** PSNR_assumed, SSIM_assumed, SAM_assumed
-- Compare with x̂_ideal to measure total loss (corruption + no correction)
-- Compare with x̂_corrected to measure gain from correction
+- Shows worst-case reconstruction when mismatch is NOT corrected
+- Demonstrates necessity of Algorithms 1 & 2 for real hardware
 
-### 3.3 Scenario III: Corrected Mask Reconstruction (Practical)
+### 3.3 Scenario III: Corrected Mask Reconstruction (Practical with UPWMI Correction)
 
-**Purpose:** Practical scenario with mismatch correction.
+**Purpose:** Practical real-world scenario with operator mismatch correction via UPWMI algorithms (from cassi_working_process.md Section 13).
 
-**Measurement generation with mismatch:**
+**Mask source:** TSA real experimental mask (actual hardware mask)
+- Load: `/home/spiritai/MST-main/datasets/TSA_real_data/mask.mat`
+- Upsample to 1024×1024 for enlarged simulation
+
+**Forward model:** Simulated with N=4, K=2 (enlarged grid, stride-1 dispersion)
+
+**Measurement generation with synthetic mismatch (assembly tolerance):**
 ```
-1. Inject synthetic mismatch to BOTH scene and mask:
-   dx_true, dy_true, θ_true (uniformly random in ranges)
+1. Inject synthetic mismatch to BOTH scene and mask (realistic assembly errors):
+   dx_true ∈ [-3, 3] px (mask x-shift from mechanical tolerance)
+   dy_true ∈ [-3, 3] px (mask y-shift)
+   θ_true ∈ [-1°, 1°] (mask rotation from optical bench twist)
 
    x_misaligned = warp_affine(x_256, dx=dx_true, dy=dy_true, theta=θ_true)
-   mask_misaligned_256 = warp_affine(mask_256, dx=dx_true, dy=dy_true, theta=θ_true)
+   mask_misaligned_256 = warp_affine(mask_real_data, dx=dx_true, dy=dy_true, theta=θ_true)
 
 2. Generate enlarged version with mismatch:
    x_expanded_mis = enlarge(x_misaligned)  # 1024×1024×217
@@ -331,35 +356,72 @@ x̂_assumed = solver(y_corrupt, phi_assumed, n_iter=50)
    y_noisy = add_noise(y_corrupt, peak=10000, sigma=0.01)
 ```
 
-**Correction via Algorithm 1 & 2:**
+**Operator Correction via UPWMI (cassi_working_process.md Section 13):**
+
+Per the CASSI working process, when operator mismatch is detected, the system applies UPWMI operator correction framework:
+
 ```
-# Algorithm 1: Coarse beam search
+BeliefState(θ):
+  θ_nominal = { a1: 2.0 px/band, a2: 0.0, alpha: 0.0° }  # Fixed optical properties
+  θ_mismatch = { dx: ?, dy: ?, theta: ? }                 # To be estimated
+
+Mode: operator_correction  # User requests calibration
+Operator: Φ(θ) = forward_model_enlarged(mask_corrected, N=4, K=2)
+```
+
+**Algorithm 1: Coarse Parameter Estimation (Beam Search)**
+```
+# Fast coarse search on shift-crops (4 crops per scene)
 (dx_hat1, dy_hat1, theta_hat1) = upwmi_algorithm_1(
-    y_crops, mask_ideal, x_crops_ref,
-    search_space={'dx': [-3,3], 'dy': [-3,3], 'theta': [-1°,1°]}
+    y_crops,              # 4 corrupted measurements from shift-crops
+    mask_real_data,       # Real mask (uncorrected base)
+    x_crops_ref,          # 4 reference scenes (ground truth)
+    search_space={
+        'dx': np.linspace(-3, 3, 13),        # 13 values
+        'dy': np.linspace(-3, 3, 13),
+        'theta': np.linspace(-1°, 1°, 7)     # 7 values
+    }
+    # Stage 1: 1D sweeps with proxy K=5 (~30 min per param)
+    # Stage 2: Beam search 5×5×5=125 combos with K=10 (~2 hours)
+    # Stage 3: Coordinate descent refinement (~1 hour)
 )
+# Total: ~4.5 hours per scene
+# Accuracy: ±0.1-0.2 px
+```
 
-# Algorithm 2: Gradient refinement
+**Algorithm 2: Refined Parameter Estimation (Gradient-Based)**
+```
+# Gradient-based refinement using unrolled differentiable solver
 (dx_hat2, dy_hat2, theta_hat2) = upwmi_algorithm_2(
-    y_crops, x_crops_ref, y_all_scenes, x_all_scenes,
-    mask_ideal, coarse_estimate=(dx_hat1, dy_hat1, theta_hat1)
+    y_crops, x_crops_ref,                    # Phase 1: shift-crops (fast)
+    y_all_scenes, x_all_scenes,              # Phase 2: all 10 scenes (robust)
+    mask_real_data,
+    coarse_estimate=(dx_hat1, dy_hat1, theta_hat1)  # Starting point from Alg1
 )
+# Phase 1: 100 epochs on 4 shift-crops, lr=0.01 (~1.5 hours)
+# Phase 2: 50 epochs on 10 full scenes, lr=0.001 (~2.5 hours)
+# Total: ~4 hours per scene
+# Accuracy: ±0.05-0.1 px (3-5× improvement over Alg1)
 ```
 
-**Reconstruction with corrected mask:**
+**Reconstruction with Corrected Operator:**
 ```
-# Option A: Corrected mask from Algorithm 1
-mask_corrected_1 = warp_affine(mask_ideal, dx=dx_hat1, dy=dy_hat1, theta=theta_hat1)
-Operator: phi_corrected_1 = SimulatedOperator(mask_corrected_1, N=4, K=2)
-x̂_corrected_1 = solver(y_noisy, phi_corrected_1, n_iter=50)
+# Build corrected forward operator
+BeliefState(θ_corrected):
+  θ_corrected.mismatch = {dx: dx_hat2, dy: dy_hat2, theta: theta_hat2}
+  Φ_corrected = forward_model_enlarged(mask_corrected, N=4, K=2)
 
-# Option B: Corrected mask from Algorithm 2 (better)
-mask_corrected_2 = warp_affine(mask_ideal, dx=dx_hat2, dy=dy_hat2, theta=theta_hat2)
-Operator: phi_corrected_2 = SimulatedOperator(mask_corrected_2, N=4, K=2)
-x̂_corrected_2 = solver(y_noisy, phi_corrected_2, n_iter=50)
+# Reconstruct on original grid using corrected operator
+mask_corrected = warp_affine(mask_real_data, dx=dx_hat2, dy=dy_hat2, theta=theta_hat2)
+Operator: phi_corrected = SimulatedOperator_EnlargedGrid(mask_corrected, N=4, K=2)
+
+# Use one of standard solvers (GAP-TV recommended for mismatch scenarios)
+x̂_corrected = gap_tv_cassi(y_noisy, phi_corrected, n_iter=50)
 ```
 
-**Metrics:** PSNR_corrected, SSIM_corrected, SAM_corrected, parameter errors
+**Metrics:** PSNR_corrected, SSIM_corrected, SAM_corrected
+- Parameter errors: |dx_true - dx_hat2|, |dy_true - dy_hat2|, |θ_true - θ_hat2|
+- Demonstrates practical correction effectiveness for real hardware
 
 ---
 
