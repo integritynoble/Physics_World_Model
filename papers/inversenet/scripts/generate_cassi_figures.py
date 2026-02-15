@@ -210,7 +210,7 @@ def plot_gap_comparison(summary):
     """Bar chart of degradation (I->II) and recovery (II->III) gaps."""
     logger.info("Creating gap comparison plot...")
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
     x = np.arange(len(METHODS))
     labels = [METHOD_LABELS[m] for m in METHODS]
@@ -245,7 +245,7 @@ def plot_gap_comparison(summary):
     ax2.set_xticks(x)
     ax2.set_xticklabels(labels)
     ax2.grid(axis='y', alpha=0.3, linestyle='--')
-    ax2.set_ylim([0, 4])
+    ax2.set_ylim([0, 16])
 
     plt.tight_layout()
     plt.savefig(FIGURES_DIR / "gap_comparison.png", dpi=200, bbox_inches='tight')
