@@ -54,6 +54,13 @@ METHOD_LABELS = {
     'mst_l': 'MST-L'
 }
 
+# Detect available methods from results
+def get_available_methods(summary):
+    """Extract available methods from summary data."""
+    if 'scenarios' in summary and 'scenario_i' in summary['scenarios']:
+        return list(summary['scenarios']['scenario_i'].keys())
+    return ['mst_s', 'mst_l']  # fallback
+
 
 def load_results() -> tuple:
     """Load validation results from JSON files."""
@@ -71,11 +78,11 @@ def load_results() -> tuple:
 
 def plot_scenario_comparison(summary: Dict) -> None:
     """
-    Create bar chart comparing PSNR across 3 scenarios for 4 methods.
+    Create bar chart comparing PSNR across 3 scenarios for available methods.
 
     X-axis: Scenarios (I, II, IV)
     Y-axis: PSNR (dB)
-    Groups: 4 methods with different colors
+    Groups: Methods with different colors
     """
     logger.info("Creating scenario comparison plot...")
 
@@ -83,10 +90,10 @@ def plot_scenario_comparison(summary: Dict) -> None:
 
     scenarios = ['scenario_i', 'scenario_ii', 'scenario_iv']
     scenario_labels = ['Scenario I\n(Ideal)', 'Scenario II\n(Baseline)', 'Scenario IV\n(Oracle)']
-    methods = ['gap_tv', 'hdnet', 'mst_s', 'mst_l']
+    methods = get_available_methods(summary)
 
     x = np.arange(len(scenarios))
-    width = 0.2
+    width = 0.25 if len(methods) == 2 else 0.2
 
     for i, method in enumerate(methods):
         psnr_values = []
@@ -94,9 +101,9 @@ def plot_scenario_comparison(summary: Dict) -> None:
             psnr_mean = summary['scenarios'][scenario_key][method]['psnr']['mean']
             psnr_values.append(psnr_mean)
 
-        offset = (i - 1.5) * width
-        ax.bar(x + offset, psnr_values, width, label=METHOD_LABELS[method],
-               color=METHOD_COLORS[method], alpha=0.8)
+        offset = (i - (len(methods) - 1) / 2) * width
+        ax.bar(x + offset, psnr_values, width, label=METHOD_LABELS.get(method, method.upper()),
+               color=METHOD_COLORS.get(method, '#999999'), alpha=0.8)
 
     ax.set_xlabel('Scenario', fontsize=12, fontweight='bold')
     ax.set_ylabel('PSNR (dB)', fontsize=12, fontweight='bold')
@@ -116,7 +123,7 @@ def plot_scenario_comparison(summary: Dict) -> None:
 
 def plot_method_comparison_heatmap(summary: Dict) -> None:
     """
-    Create heatmap showing PSNR for 4 methods × 3 scenarios.
+    Create heatmap showing PSNR for available methods × 3 scenarios.
 
     Rows: Methods
     Cols: Scenarios
@@ -126,8 +133,8 @@ def plot_method_comparison_heatmap(summary: Dict) -> None:
 
     scenarios = ['scenario_i', 'scenario_ii', 'scenario_iv']
     scenario_labels = ['Ideal', 'Baseline', 'Oracle']
-    methods = ['gap_tv', 'hdnet', 'mst_s', 'mst_l']
-    method_labels = [METHOD_LABELS[m] for m in methods]
+    methods = get_available_methods(summary)
+    method_labels = [METHOD_LABELS.get(m, m.upper()) for m in methods]
 
     # Create data matrix
     data = np.zeros((len(methods), len(scenarios)))
@@ -177,8 +184,8 @@ def plot_gap_comparison(summary: Dict) -> None:
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
-    methods = ['gap_tv', 'hdnet', 'mst_s', 'mst_l']
-    method_labels = [METHOD_LABELS[m] for m in methods]
+    methods = get_available_methods(summary)
+    method_labels = [METHOD_LABELS.get(m, m.upper()) for m in methods]
 
     # Degradation (Gap I→II)
     gap_i_ii = [summary['gaps'][m]['gap_i_ii']['mean'] for m in methods]
@@ -219,7 +226,12 @@ def plot_psnr_distribution(detailed_results: List[Dict]) -> None:
     fig, axes = plt.subplots(1, 3, figsize=(16, 5))
     scenarios = ['scenario_i', 'scenario_ii', 'scenario_iv']
     scenario_labels = ['Ideal', 'Baseline', 'Oracle']
-    methods = ['gap_tv', 'hdnet', 'mst_s', 'mst_l']
+
+    # Get available methods from first result
+    if detailed_results and 'scenario_i' in detailed_results[0]:
+        methods = list(detailed_results[0]['scenario_i'].keys())
+    else:
+        methods = ['mst_s', 'mst_l']
 
     for scenario_idx, (scenario_key, scenario_label) in enumerate(zip(scenarios, scenario_labels)):
         ax = axes[scenario_idx]
@@ -231,12 +243,12 @@ def plot_psnr_distribution(detailed_results: List[Dict]) -> None:
                           if r[scenario_key][method]['psnr'] > 0]
             data_by_method.append(psnr_values)
 
-        bp = ax.boxplot(data_by_method, labels=[METHOD_LABELS[m] for m in methods],
+        bp = ax.boxplot(data_by_method, labels=[METHOD_LABELS.get(m, m.upper()) for m in methods],
                        patch_artist=True)
 
         # Color boxes
         for patch, method in zip(bp['boxes'], methods):
-            patch.set_facecolor(METHOD_COLORS[method])
+            patch.set_facecolor(METHOD_COLORS.get(method, '#999999'))
             patch.set_alpha(0.7)
 
         ax.set_ylabel('PSNR (dB)', fontsize=11, fontweight='bold')
@@ -260,7 +272,7 @@ def create_summary_table(summary: Dict) -> None:
     """
     logger.info("Creating summary table...")
 
-    methods = ['gap_tv', 'hdnet', 'mst_s', 'mst_l']
+    methods = get_available_methods(summary)
     scenarios = ['scenario_i', 'scenario_ii', 'scenario_iv']
 
     output_file = Path(__file__).parent.parent / "tables" / "cassi_results_table.csv"
@@ -282,7 +294,7 @@ def create_summary_table(summary: Dict) -> None:
             psnr_ii_std = summary['scenarios']['scenario_ii'][method]['psnr']['std']
             psnr_iv_std = summary['scenarios']['scenario_iv'][method]['psnr']['std']
 
-            f.write(f"{METHOD_LABELS[method]},{psnr_i:.2f}±{psnr_i_std:.2f},"
+            f.write(f"{METHOD_LABELS.get(method, method.upper())},{psnr_i:.2f}±{psnr_i_std:.2f},"
                    f"{psnr_ii:.2f}±{psnr_ii_std:.2f},{psnr_iv:.2f}±{psnr_iv_std:.2f},"
                    f"{gap_i_ii:.2f},{gap_ii_iv:.2f}\n")
 
