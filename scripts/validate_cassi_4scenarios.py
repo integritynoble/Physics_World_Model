@@ -303,25 +303,39 @@ def generate_measurement_with_noise(
 
 def gap_tv_solver_wrapper(
     y_meas: np.ndarray,
-    mask: np.ndarray,
+    mask_or_operator,
     n_iter: int = 50,
-    lam: float = 6.0
+    lam: float = 6.0,
+    n_bands: Optional[int] = None
 ) -> np.ndarray:
     """Wrapper for GAP-TV solver.
 
     Args:
-        y_meas: (256, 310) measurement
-        mask: (256, 256) mask
+        y_meas: (H, W) measurement
+        mask_or_operator: (H, W) mask OR SimulatedOperatorEnlargedGrid object
         n_iter: Number of iterations
         lam: TV regularization weight
+        n_bands: Number of spectral bands (optional, inferred if not provided)
 
     Returns:
-        x_recon: (256, 256, 28) reconstructed cube
+        x_recon: (H, W, n_bands) reconstructed cube
     """
+    # Handle both mask arrays and operator objects
+    if hasattr(mask_or_operator, 'mask_256'):
+        # It's an operator object
+        mask = mask_or_operator.mask_256
+    else:
+        # It's a mask array
+        mask = mask_or_operator
+
+    # Infer n_bands if not provided
+    if n_bands is None:
+        n_bands = y_meas.shape[1] - mask.shape[1] + 1
+
     return gap_tv_cassi(
         y_meas,
         mask,
-        n_bands=28,
+        n_bands=n_bands,
         iterations=n_iter,
         lam=lam,
         acc=1.0
@@ -349,8 +363,24 @@ def scenario_i_ideal(
     operator = SimulatedOperatorEnlargedGrid(mask_ideal, N=4, K=2, stride=1)
     y_clean = operator.forward(x_true)
 
-    # Reconstruct with ideal mask
-    x_recon = gap_tv_solver_wrapper(y_clean, mask_ideal, n_iter=50, lam=6.0)
+    # Reconstruct with ideal mask (infer n_bands from measurement size)
+    # For CASSI: y.shape = (H, W + n_bands - 1)
+    # So: n_bands = y.shape[1] - mask.shape[1] + 1
+    n_bands = y_clean.shape[1] - mask_ideal.shape[1] + 1
+    x_recon = gap_tv_solver_wrapper(y_clean, mask_ideal, n_iter=50, lam=6.0, n_bands=n_bands)
+
+    # Extract original 28 bands if reconstruction has more
+    if x_recon.shape[2] > 28:
+        # Downsample spectral dimension to original 28 bands
+        from scipy.interpolate import interp1d
+        orig_lambda = np.arange(x_recon.shape[2]) / (x_recon.shape[2] - 1)
+        target_lambda = np.arange(28) / 27
+        x_recon_28 = np.zeros((256, 256, 28), dtype=x_recon.dtype)
+        for i in range(256):
+            for j in range(256):
+                f = interp1d(orig_lambda, x_recon[i, j, :], kind='linear')
+                x_recon_28[i, j, :] = f(target_lambda)
+        x_recon = x_recon_28
 
     # Clip to valid range
     x_recon = np.clip(x_recon, 0, 1)
@@ -386,8 +416,23 @@ def scenario_ii_assumed(
     logger.info("  Scenario II: Assumed (baseline)")
     start_t = time.time()
 
+    # Infer n_bands from measurement size
+    n_bands = y_noisy.shape[1] - mask_ideal.shape[1] + 1
+
     # Reconstruct with assumed ideal mask (no correction)
-    x_recon = gap_tv_solver_wrapper(y_noisy, mask_ideal, n_iter=50, lam=6.0)
+    x_recon = gap_tv_solver_wrapper(y_noisy, mask_ideal, n_iter=50, lam=6.0, n_bands=n_bands)
+
+    # Extract original 28 bands if reconstruction has more
+    if x_recon.shape[2] > 28:
+        from scipy.interpolate import interp1d
+        orig_lambda = np.arange(x_recon.shape[2]) / (x_recon.shape[2] - 1)
+        target_lambda = np.arange(28) / 27
+        x_recon_28 = np.zeros((256, 256, 28), dtype=x_recon.dtype)
+        for i in range(256):
+            for j in range(256):
+                f = interp1d(orig_lambda, x_recon[i, j, :], kind='linear')
+                x_recon_28[i, j, :] = f(target_lambda)
+        x_recon = x_recon_28
 
     # Clip to valid range
     x_recon = np.clip(x_recon, 0, 1)
@@ -455,7 +500,8 @@ def scenario_iii_corrected(
         # Reconstruct with Algorithm 1 correction
         operator_alg1 = SimulatedOperatorEnlargedGrid(mask_real)
         operator_alg1.apply_mask_correction(mismatch_alg1)
-        x_recon = gap_tv_solver_wrapper(y_noisy, operator_alg1.mask_256, n_iter=50, lam=6.0)
+        n_bands = y_noisy.shape[1] - operator_alg1.mask_256.shape[1] + 1
+        x_recon = gap_tv_solver_wrapper(y_noisy, operator_alg1.mask_256, n_iter=50, lam=6.0, n_bands=n_bands)
 
     # Algorithm 2: Fine refinement
     if not skip_alg2 and mismatch_alg1 is not None:
@@ -482,10 +528,12 @@ def scenario_iii_corrected(
         # Reconstruct with Algorithm 2 correction
         operator_alg2 = SimulatedOperatorEnlargedGrid(mask_real)
         operator_alg2.apply_mask_correction(mismatch_alg2)
-        x_recon = gap_tv_solver_wrapper(y_noisy, operator_alg2.mask_256, n_iter=50, lam=6.0)
+        n_bands = y_noisy.shape[1] - operator_alg2.mask_256.shape[1] + 1
+        x_recon = gap_tv_solver_wrapper(y_noisy, operator_alg2.mask_256, n_iter=50, lam=6.0, n_bands=n_bands)
     elif skip_alg1:
         # Use assumed mask if algorithms skipped
-        x_recon = gap_tv_solver_wrapper(y_noisy, mask_ideal, n_iter=50, lam=6.0)
+        n_bands = y_noisy.shape[1] - mask_ideal.shape[1] + 1
+        x_recon = gap_tv_solver_wrapper(y_noisy, mask_ideal, n_iter=50, lam=6.0, n_bands=n_bands)
 
     # Clip to valid range
     x_recon = np.clip(x_recon, 0, 1)
@@ -532,7 +580,8 @@ def scenario_iv_truth_fm(
     operator_oracle.apply_mask_correction(mismatch_true)
 
     # Reconstruct with oracle correction
-    x_recon = gap_tv_solver_wrapper(y_noisy, operator_oracle.mask_256, n_iter=50, lam=6.0)
+    n_bands = y_noisy.shape[1] - operator_oracle.mask_256.shape[1] + 1
+    x_recon = gap_tv_solver_wrapper(y_noisy, operator_oracle.mask_256, n_iter=50, lam=6.0, n_bands=n_bands)
 
     # Clip to valid range
     x_recon = np.clip(x_recon, 0, 1)
