@@ -42,15 +42,15 @@ rcParams['legend.fontsize'] = 10
 
 # Colors for methods
 METHOD_COLORS = {
-    'admm': '#1f77b4',           # blue
-    'ista_net_plus': '#ff7f0e',  # orange
-    'hatnet': '#2ca02c'          # green
+    'admm_tv': '#1f77b4',        # blue
+    'pnp_fista': '#ff7f0e',      # orange
+    'ista_net_plus': '#2ca02c',   # green
 }
 
 METHOD_LABELS = {
-    'admm': 'ADMM',
+    'admm_tv': 'ADMM-TV',
+    'pnp_fista': 'PnP-FISTA',
     'ista_net_plus': 'ISTA-Net+',
-    'hatnet': 'HATNet'
 }
 
 
@@ -62,7 +62,7 @@ def get_available_methods(summary):
     """Extract available methods from summary data."""
     if 'scenarios' in summary and 'scenario_i' in summary['scenarios']:
         return list(summary['scenarios']['scenario_i'].keys())
-    return ['admm', 'ista_net_plus', 'hatnet']
+    return ['admm_tv', 'pnp_fista', 'ista_net_plus']
 
 
 def load_results() -> tuple:
@@ -152,7 +152,7 @@ def plot_method_comparison_heatmap(summary: Dict) -> None:
     # Plot heatmap
     fig, ax = plt.subplots(figsize=(10, 5))
 
-    im = ax.imshow(data, cmap='RdYlGn', aspect='auto', vmin=20, vmax=40)
+    im = ax.imshow(data, cmap='RdYlGn', aspect='auto', vmin=15, vmax=35)
 
     # Set ticks and labels
     ax.set_xticks(np.arange(len(scenarios)))
@@ -197,23 +197,23 @@ def plot_gap_comparison(summary: Dict) -> None:
     # Degradation (Gap I→II)
     gap_i_ii = [summary['gaps'][m]['gap_i_ii']['mean'] for m in methods]
     x = np.arange(len(methods))
-    ax1.bar(x, gap_i_ii, color=[METHOD_COLORS[m] for m in methods], alpha=0.8)
+    ax1.bar(x, gap_i_ii, color=[METHOD_COLORS.get(m, '#999999') for m in methods], alpha=0.8)
     ax1.set_ylabel('PSNR Drop (dB)', fontsize=11, fontweight='bold')
     ax1.set_title('Degradation Under Mismatch\n(Scenario I → II)', fontsize=12, fontweight='bold')
     ax1.set_xticks(x)
     ax1.set_xticklabels(method_labels, rotation=15, ha='right')
     ax1.grid(axis='y', alpha=0.3)
-    ax1.set_ylim([0, 5])
+    ax1.set_ylim([0, max(gap_i_ii) * 1.3])
 
     # Recovery (Gap II→IV)
     gap_ii_iv = [summary['gaps'][m]['gap_ii_iv']['mean'] for m in methods]
-    ax2.bar(x, gap_ii_iv, color=[METHOD_COLORS[m] for m in methods], alpha=0.8)
+    ax2.bar(x, gap_ii_iv, color=[METHOD_COLORS.get(m, '#999999') for m in methods], alpha=0.8)
     ax2.set_ylabel('PSNR Recovery (dB)', fontsize=11, fontweight='bold')
     ax2.set_title('Recovery with Oracle Operator\n(Scenario II → IV)', fontsize=12, fontweight='bold')
     ax2.set_xticks(x)
     ax2.set_xticklabels(method_labels, rotation=15, ha='right')
     ax2.grid(axis='y', alpha=0.3)
-    ax2.set_ylim([0, 3])
+    ax2.set_ylim([0, max(gap_ii_iv) * 1.3])
 
     plt.tight_layout()
     output_file = FIGURES_DIR / "gap_comparison.png"
@@ -238,7 +238,7 @@ def plot_psnr_distribution(detailed_results: List[Dict]) -> None:
     if detailed_results and 'scenario_i' in detailed_results[0]:
         methods = list(detailed_results[0]['scenario_i'].keys())
     else:
-        methods = ['admm', 'ista_net_plus', 'hatnet']
+        methods = ['admm_tv', 'pnp_fista', 'ista_net_plus']
 
     for scenario_idx, (scenario_key, scenario_label) in enumerate(zip(scenarios, scenario_labels)):
         ax = axes[scenario_idx]
