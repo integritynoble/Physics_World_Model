@@ -366,6 +366,9 @@ def gap_tv_solver_wrapper(
         acc=1.0
     )
 
+    # Extract spatial dimension (first 256 columns, since gap_tv_cassi returns measurement-resolution)
+    x_recon = x_recon[:, :mask.shape[1], :]
+
     # Always downsample to 28 bands for consistency with ground truth
     if x_recon.shape[2] != 28:
         H, W, L = x_recon.shape
