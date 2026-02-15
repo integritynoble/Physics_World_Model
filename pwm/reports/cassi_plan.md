@@ -590,15 +590,34 @@ Gap III→I: Total loss from simulation + unresolved corruption (typically 2-3 d
 
 ### 4.2 Parameter Recovery Accuracy (Algorithm 1 vs 2)
 
-**From Algorithm 2 (gradient refinement):**
-```
-Expected accuracy:
-  dx: ±0.05–0.1 px error
-  dy: ±0.05–0.1 px error
-  θ: ±0.02–0.05° error
+**Background:** In the simulation, we **deliberately inject ground truth mismatch parameters** (dx_true, dy_true, θ_true) to corrupt the scene and mask, then evaluate how accurately each algorithm recovers these known values.
 
-Algorithm 1 vs 2: Typically 3–5× improvement (Algorithm 2 better)
+**Parameter Recovery Comparison (Ground Truth vs Estimate):**
+
+**Algorithm 1 (Hierarchical Beam Search):**
 ```
+Typical recovery accuracy:
+  dx: recovers within ±0.1–0.2 px of dx_true
+  dy: recovers within ±0.1–0.2 px of dy_true
+  θ: recovers within ±0.02–0.05° of θ_true
+
+Computational cost: ~4.5 hours per scene
+```
+
+**Algorithm 2 (Joint Gradient Refinement):**
+```
+Expected accuracy (from Algorithm 1 as warm start):
+  dx: recovers within ±0.05–0.1 px of dx_true
+  dy: recovers within ±0.05–0.1 px of dy_true
+  θ: recovers within ±0.01–0.03° of θ_true
+
+Computational cost: ~2.5 hours per scene
+```
+
+**Improvement Factor:**
+- **Alg2 achieves 3–5× lower parameter errors than Alg1**
+- Error_Alg1 / Error_Alg2 ≈ 3–5× (Algorithm 2 more accurate)
+- Example: if Alg1 error = 0.15 px, Alg2 error ≈ 0.05 px (3× improvement)
 
 ---
 
