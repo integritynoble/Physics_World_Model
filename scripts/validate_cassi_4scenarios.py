@@ -55,10 +55,10 @@ DATASET_REAL = Path("/home/spiritai/MST-main/datasets/TSA_real_data")
 REPORTS_DIR = PROJECT_ROOT / "pwm" / "reports"
 REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
-# KAIST scene names
+# KAIST scene names (tries both formats: kaist1, scene01, etc)
 SCENE_NAMES = [
-    "kaist1", "kaist2", "kaist3", "kaist4", "kaist5",
-    "kaist6", "kaist7", "kaist8", "kaist9", "kaist10"
+    "scene01", "scene02", "scene03", "scene04", "scene05",
+    "scene06", "scene07", "scene08", "scene09", "scene10"
 ]
 
 # ============================================================================
@@ -147,13 +147,20 @@ def load_mask(path: Path) -> Optional[np.ndarray]:
 def load_scene(scene_name: str) -> Optional[np.ndarray]:
     """Load scene from MATLAB .mat file."""
     try:
-        path = DATASET_SIMU / f"{scene_name}.mat"
-        if path.exists():
-            data = sio.loadmat(str(path))
-            if 'img' in data:
-                scene = data['img'].astype(np.float32)
-                if scene.ndim == 3 and scene.shape == (256, 256, 28):
-                    return scene
+        # Try multiple possible locations
+        possible_paths = [
+            DATASET_SIMU / f"{scene_name}.mat",
+            DATASET_SIMU / "Truth" / f"{scene_name}.mat",
+        ]
+
+        for path in possible_paths:
+            if path.exists():
+                data = sio.loadmat(str(path))
+                if 'img' in data:
+                    scene = data['img'].astype(np.float32)
+                    if scene.ndim == 3 and scene.shape == (256, 256, 28):
+                        logger.info(f"Loaded {scene_name} from {path}")
+                        return scene
     except Exception as e:
         logger.warning(f"Failed to load scene {scene_name}: {e}")
     return None
