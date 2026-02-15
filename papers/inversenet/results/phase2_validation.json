@@ -1,0 +1,22 @@
+{
+  "scene": "scene01",
+  "measurement_type": "synthetic_cassi",
+  "measurement_shape": [
+    256,
+    310
+  ],
+  "models": [
+    {
+      "variant": "mst_s",
+      "psnr": 16.601456260316272,
+      "ssim": 0.4947304334136194,
+      "success": true
+    },
+    {
+      "variant": "mst_l",
+      "psnr": 18.074709603313394,
+      "ssim": 0.561955427738349,
+      "success": true
+    }
+  ]
+}
