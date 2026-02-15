@@ -8,3 +8,380 @@
 --- [1/28] kobe  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
 /home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
   recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 20:57:48,900  INFO        GAP-TV            I= 27.99  II= 16.23  IV= 26.02  gap_I-II=+11.76  rec_II-IV=+9.79
+2026-02-15 20:57:48,901  INFO        PnP-FFDNet        I= 27.96  II= 16.21  IV= 26.28  gap_I-II=+11.76  rec_II-IV=+10.08
+2026-02-15 20:57:48,901  INFO        ELP-Unfolding     I= 27.97  II= 16.21  IV= 26.49  gap_I-II=+11.76  rec_II-IV=+10.28
+2026-02-15 20:57:48,901  INFO        EfficientSCI      I= 27.93  II= 16.21  IV= 26.55  gap_I-II=+11.72  rec_II-IV=+10.34
+2026-02-15 20:57:48,901  INFO      
+--- [2/28] kobe  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 20:59:22,832  INFO        GAP-TV            I= 27.00  II= 15.29  IV= 25.39  gap_I-II=+11.70  rec_II-IV=+10.10
+2026-02-15 20:59:22,832  INFO        PnP-FFDNet        I= 27.01  II= 15.27  IV= 25.65  gap_I-II=+11.74  rec_II-IV=+10.38
+2026-02-15 20:59:22,832  INFO        ELP-Unfolding     I= 26.99  II= 15.27  IV= 25.80  gap_I-II=+11.72  rec_II-IV=+10.53
+2026-02-15 20:59:22,832  INFO        EfficientSCI      I= 26.93  II= 15.27  IV= 25.82  gap_I-II=+11.66  rec_II-IV=+10.55
+2026-02-15 20:59:22,832  INFO      
+--- [3/28] kobe  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:00:54,408  INFO        GAP-TV            I= 26.40  II= 15.66  IV= 24.91  gap_I-II=+10.74  rec_II-IV=+9.25
+2026-02-15 21:00:54,408  INFO        PnP-FFDNet        I= 26.41  II= 15.63  IV= 25.12  gap_I-II=+10.77  rec_II-IV=+9.49
+2026-02-15 21:00:54,408  INFO        ELP-Unfolding     I= 26.40  II= 15.64  IV= 25.25  gap_I-II=+10.76  rec_II-IV=+9.61
+2026-02-15 21:00:54,408  INFO        EfficientSCI      I= 26.29  II= 15.64  IV= 25.29  gap_I-II=+10.65  rec_II-IV=+9.66
+2026-02-15 21:00:54,408  INFO      
+--- [4/28] kobe  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:02:44,675  INFO        GAP-TV            I= 25.42  II= 15.24  IV= 24.16  gap_I-II=+10.18  rec_II-IV=+8.92
+2026-02-15 21:02:44,675  INFO        PnP-FFDNet        I= 25.43  II= 15.21  IV= 24.36  gap_I-II=+10.22  rec_II-IV=+9.15
+2026-02-15 21:02:44,675  INFO        ELP-Unfolding     I= 25.43  II= 15.21  IV= 24.50  gap_I-II=+10.22  rec_II-IV=+9.28
+2026-02-15 21:02:44,675  INFO        EfficientSCI      I= 25.41  II= 15.21  IV= 24.54  gap_I-II=+10.20  rec_II-IV=+9.33
+2026-02-15 21:02:44,675  INFO      
+--- [5/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:05:38,633  INFO        GAP-TV            I= 20.88  II= 12.13  IV= 19.88  gap_I-II=+8.74  rec_II-IV=+7.74
+2026-02-15 21:05:38,636  INFO        PnP-FFDNet        I= 20.82  II= 12.08  IV= 19.92  gap_I-II=+8.74  rec_II-IV=+7.84
+2026-02-15 21:05:38,636  INFO        ELP-Unfolding     I= 20.82  II= 12.09  IV= 20.03  gap_I-II=+8.73  rec_II-IV=+7.94
+2026-02-15 21:05:38,636  INFO        EfficientSCI      I= 20.81  II= 12.08  IV= 20.07  gap_I-II=+8.73  rec_II-IV=+7.99
+2026-02-15 21:05:38,636  INFO      
+--- [6/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:08:21,887  INFO        GAP-TV            I= 20.75  II= 12.19  IV= 19.72  gap_I-II=+8.56  rec_II-IV=+7.53
+2026-02-15 21:08:21,887  INFO        PnP-FFDNet        I= 20.70  II= 12.15  IV= 19.78  gap_I-II=+8.55  rec_II-IV=+7.63
+2026-02-15 21:08:21,888  INFO        ELP-Unfolding     I= 20.70  II= 12.16  IV= 19.93  gap_I-II=+8.54  rec_II-IV=+7.77
+2026-02-15 21:08:21,888  INFO        EfficientSCI      I= 20.67  II= 12.15  IV= 19.96  gap_I-II=+8.52  rec_II-IV=+7.81
+2026-02-15 21:08:21,888  INFO      
+--- [7/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:10:46,819  INFO        GAP-TV            I= 20.73  II= 12.30  IV= 19.75  gap_I-II=+8.43  rec_II-IV=+7.44
+2026-02-15 21:10:46,819  INFO        PnP-FFDNet        I= 20.69  II= 12.25  IV= 19.80  gap_I-II=+8.44  rec_II-IV=+7.55
+2026-02-15 21:10:46,819  INFO        ELP-Unfolding     I= 20.67  II= 12.26  IV= 19.93  gap_I-II=+8.41  rec_II-IV=+7.67
+2026-02-15 21:10:46,820  INFO        EfficientSCI      I= 20.63  II= 12.25  IV= 19.98  gap_I-II=+8.38  rec_II-IV=+7.73
+2026-02-15 21:10:46,820  INFO      
+--- [8/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:13:14,728  INFO        GAP-TV            I= 20.69  II= 12.15  IV= 19.70  gap_I-II=+8.54  rec_II-IV=+7.55
+2026-02-15 21:13:14,736  INFO        PnP-FFDNet        I= 20.63  II= 12.12  IV= 19.75  gap_I-II=+8.51  rec_II-IV=+7.63
+2026-02-15 21:13:14,736  INFO        ELP-Unfolding     I= 20.63  II= 12.13  IV= 19.87  gap_I-II=+8.50  rec_II-IV=+7.74
+2026-02-15 21:13:14,736  INFO        EfficientSCI      I= 20.61  II= 12.12  IV= 19.92  gap_I-II=+8.49  rec_II-IV=+7.80
+2026-02-15 21:13:14,737  INFO      
+--- [9/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:15:30,141  INFO        GAP-TV            I= 20.61  II= 12.10  IV= 19.64  gap_I-II=+8.51  rec_II-IV=+7.53
+2026-02-15 21:15:30,142  INFO        PnP-FFDNet        I= 20.57  II= 12.05  IV= 19.69  gap_I-II=+8.52  rec_II-IV=+7.64
+2026-02-15 21:15:30,142  INFO        ELP-Unfolding     I= 20.55  II= 12.06  IV= 19.81  gap_I-II=+8.49  rec_II-IV=+7.75
+2026-02-15 21:15:30,142  INFO        EfficientSCI      I= 20.53  II= 12.05  IV=  6.42  gap_I-II=+8.48  rec_II-IV=-5.63
+2026-02-15 21:15:30,142  INFO      
+--- [10/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:17:57,320  INFO        GAP-TV            I= 20.72  II= 12.09  IV= 19.73  gap_I-II=+8.63  rec_II-IV=+7.64
+2026-02-15 21:17:57,325  INFO        PnP-FFDNet        I= 20.66  II= 12.03  IV= 19.76  gap_I-II=+8.62  rec_II-IV=+7.73
+2026-02-15 21:17:57,325  INFO        ELP-Unfolding     I= 20.66  II= 12.04  IV= 19.84  gap_I-II=+8.61  rec_II-IV=+7.80
+2026-02-15 21:17:57,325  INFO        EfficientSCI      I= 20.63  II= 12.03  IV= 19.87  gap_I-II=+8.60  rec_II-IV=+7.84
+2026-02-15 21:17:57,325  INFO      
+--- [11/28] runner  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:20:18,683  INFO        GAP-TV            I= 29.81  II= 15.48  IV= 26.80  gap_I-II=+14.33  rec_II-IV=+11.32
+2026-02-15 21:20:18,683  INFO        PnP-FFDNet        I= 29.56  II= 15.43  IV= 27.13  gap_I-II=+14.13  rec_II-IV=+11.70
+2026-02-15 21:20:18,684  INFO        ELP-Unfolding     I= 29.58  II= 15.44  IV= 27.43  gap_I-II=+14.14  rec_II-IV=+11.99
+2026-02-15 21:20:18,684  INFO        EfficientSCI      I= 29.55  II= 15.43  IV= 27.20  gap_I-II=+14.12  rec_II-IV=+11.77
+2026-02-15 21:20:18,684  INFO      
+--- [12/28] runner  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:22:49,896  INFO        GAP-TV            I= 29.79  II= 15.25  IV= 26.59  gap_I-II=+14.54  rec_II-IV=+11.34
+2026-02-15 21:22:49,896  INFO        PnP-FFDNet        I= 29.57  II= 15.20  IV= 27.01  gap_I-II=+14.37  rec_II-IV=+11.81
+2026-02-15 21:22:49,896  INFO        ELP-Unfolding     I= 29.58  II= 15.21  IV= 27.34  gap_I-II=+14.37  rec_II-IV=+12.13
+2026-02-15 21:22:49,896  INFO        EfficientSCI      I= 29.55  II= 15.21  IV= 27.02  gap_I-II=+14.34  rec_II-IV=+11.82
+2026-02-15 21:22:49,897  INFO      
+--- [13/28] runner  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:25:23,549  INFO        GAP-TV            I= 28.76  II= 15.00  IV= 26.09  gap_I-II=+13.76  rec_II-IV=+11.10
+2026-02-15 21:25:23,549  INFO        PnP-FFDNet        I= 28.60  II= 14.95  IV= 26.39  gap_I-II=+13.64  rec_II-IV=+11.44
+2026-02-15 21:25:23,549  INFO        ELP-Unfolding     I= 28.61  II= 14.96  IV= 26.66  gap_I-II=+13.65  rec_II-IV=+11.70
+2026-02-15 21:25:23,549  INFO        EfficientSCI      I= 28.58  II= 14.95  IV= 26.53  gap_I-II=+13.63  rec_II-IV=+11.58
+2026-02-15 21:25:23,549  INFO      
+--- [14/28] runner  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:27:47,055  INFO        GAP-TV            I= 28.95  II= 15.52  IV= 26.04  gap_I-II=+13.43  rec_II-IV=+10.52
+2026-02-15 21:27:47,056  INFO        PnP-FFDNet        I= 28.78  II= 15.48  IV= 26.43  gap_I-II=+13.30  rec_II-IV=+10.95
+2026-02-15 21:27:47,056  INFO        ELP-Unfolding     I= 28.79  II= 15.49  IV= 26.76  gap_I-II=+13.30  rec_II-IV=+11.28
+2026-02-15 21:27:47,056  INFO        EfficientSCI      I= 28.78  II= 15.48  IV= 26.51  gap_I-II=+13.30  rec_II-IV=+11.04
+2026-02-15 21:27:47,056  INFO      
+--- [15/28] runner  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:30:16,905  INFO        GAP-TV            I= 29.40  II= 14.75  IV= 26.75  gap_I-II=+14.65  rec_II-IV=+11.99
+2026-02-15 21:30:16,909  INFO        PnP-FFDNet        I= 29.26  II= 14.71  IV= 27.08  gap_I-II=+14.55  rec_II-IV=+12.37
+2026-02-15 21:30:16,909  INFO        ELP-Unfolding     I= 29.28  II= 14.72  IV= 27.28  gap_I-II=+14.56  rec_II-IV=+12.56
+2026-02-15 21:30:16,909  INFO        EfficientSCI      I= 29.27  II= 14.71  IV= 27.01  gap_I-II=+14.55  rec_II-IV=+12.30
+2026-02-15 21:30:16,909  INFO      
+--- [16/28] drop  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:32:40,275  INFO        GAP-TV            I= 34.83  II= 11.59  IV= 24.17  gap_I-II=+23.24  rec_II-IV=+12.58
+2026-02-15 21:32:40,275  INFO        PnP-FFDNet        I= 33.83  II= 11.53  IV= 24.52  gap_I-II=+22.31  rec_II-IV=+12.99
+2026-02-15 21:32:40,275  INFO        ELP-Unfolding     I= 33.84  II= 11.54  IV= 25.50  gap_I-II=+22.30  rec_II-IV=+13.97
+2026-02-15 21:32:40,275  INFO        EfficientSCI      I= 33.79  II= 11.50  IV= 26.24  gap_I-II=+22.29  rec_II-IV=+14.74
+2026-02-15 21:32:40,276  INFO      
+--- [17/28] drop  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:35:02,177  INFO        GAP-TV            I= 34.79  II= 11.56  IV= 24.57  gap_I-II=+23.22  rec_II-IV=+13.00
+2026-02-15 21:35:02,177  INFO        PnP-FFDNet        I= 33.80  II= 11.49  IV= 24.88  gap_I-II=+22.30  rec_II-IV=+13.39
+2026-02-15 21:35:02,177  INFO        ELP-Unfolding     I= 33.83  II= 11.50  IV= 25.69  gap_I-II=+22.33  rec_II-IV=+14.19
+2026-02-15 21:35:02,177  INFO        EfficientSCI      I= 33.28  II= 11.47  IV= 26.26  gap_I-II=+21.81  rec_II-IV=+14.79
+2026-02-15 21:35:02,177  INFO      
+--- [18/28] drop  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:36:55,571  INFO        GAP-TV            I= 34.28  II= 11.49  IV= 24.59  gap_I-II=+22.79  rec_II-IV=+13.11
+2026-02-15 21:36:55,572  INFO        PnP-FFDNet        I= 33.42  II= 11.42  IV= 24.90  gap_I-II=+22.00  rec_II-IV=+13.48
+2026-02-15 21:36:55,572  INFO        ELP-Unfolding     I= 33.41  II= 11.43  IV= 25.69  gap_I-II=+21.98  rec_II-IV=+14.27
+2026-02-15 21:36:55,573  INFO        EfficientSCI      I=  5.65  II= 11.39  IV= 26.17  gap_I-II=-5.74  rec_II-IV=+14.78
+2026-02-15 21:36:55,573  INFO      
+--- [19/28] drop  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:39:09,725  INFO        GAP-TV            I= 33.61  II= 11.42  IV= 24.22  gap_I-II=+22.20  rec_II-IV=+12.80
+2026-02-15 21:39:09,725  INFO        PnP-FFDNet        I= 32.83  II= 11.35  IV= 24.52  gap_I-II=+21.49  rec_II-IV=+13.18
+2026-02-15 21:39:09,726  INFO        ELP-Unfolding     I= 32.81  II= 11.36  IV= 25.38  gap_I-II=+21.45  rec_II-IV=+14.02
+2026-02-15 21:39:09,726  INFO        EfficientSCI      I= 32.78  II= 11.32  IV= 25.94  gap_I-II=+21.46  rec_II-IV=+14.62
+2026-02-15 21:39:09,726  INFO      
+--- [20/28] drop  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:41:29,303  INFO        GAP-TV            I= 33.57  II= 11.33  IV= 24.01  gap_I-II=+22.24  rec_II-IV=+12.68
+2026-02-15 21:41:29,304  INFO        PnP-FFDNet        I= 32.76  II= 11.25  IV= 24.32  gap_I-II=+21.51  rec_II-IV=+13.07
+2026-02-15 21:41:29,304  INFO        ELP-Unfolding     I= 32.74  II= 11.26  IV= 25.23  gap_I-II=+21.48  rec_II-IV=+13.97
+2026-02-15 21:41:29,304  INFO        EfficientSCI      I= 32.66  II= 11.23  IV= 25.84  gap_I-II=+21.44  rec_II-IV=+14.61
+2026-02-15 21:41:29,304  INFO      
+--- [21/28] crash  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:43:50,850  INFO        GAP-TV            I= 25.73  II= 12.72  IV= 23.47  gap_I-II=+13.02  rec_II-IV=+10.75
+2026-02-15 21:43:50,850  INFO        PnP-FFDNet        I= 25.66  II= 12.61  IV= 23.26  gap_I-II=+13.05  rec_II-IV=+10.65
+2026-02-15 21:43:50,850  INFO        ELP-Unfolding     I= 25.66  II= 12.64  IV= 23.71  gap_I-II=+13.02  rec_II-IV=+11.07
+2026-02-15 21:43:50,850  INFO        EfficientSCI      I= 25.66  II= 12.62  IV= 23.34  gap_I-II=+13.04  rec_II-IV=+10.72
+2026-02-15 21:43:50,851  INFO      
+--- [22/28] crash  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:45:20,399  INFO        GAP-TV            I= 25.11  II= 12.71  IV= 23.12  gap_I-II=+12.40  rec_II-IV=+10.41
+2026-02-15 21:45:20,399  INFO        PnP-FFDNet        I= 25.05  II= 12.59  IV= 23.16  gap_I-II=+12.46  rec_II-IV=+10.57
+2026-02-15 21:45:20,399  INFO        ELP-Unfolding     I= 25.05  II= 12.63  IV= 23.28  gap_I-II=+12.42  rec_II-IV=+10.65
+2026-02-15 21:45:20,399  INFO        EfficientSCI      I= 25.05  II= 12.61  IV= 23.48  gap_I-II=+12.44  rec_II-IV=+10.87
+2026-02-15 21:45:20,399  INFO      
+--- [23/28] crash  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:46:45,040  INFO        GAP-TV            I= 24.48  II= 12.71  IV= 22.76  gap_I-II=+11.77  rec_II-IV=+10.05
+2026-02-15 21:46:45,040  INFO        PnP-FFDNet        I= 24.43  II= 12.61  IV= 22.66  gap_I-II=+11.82  rec_II-IV=+10.05
+2026-02-15 21:46:45,040  INFO        ELP-Unfolding     I= 24.44  II= 12.64  IV= 22.98  gap_I-II=+11.80  rec_II-IV=+10.34
+2026-02-15 21:46:45,040  INFO        EfficientSCI      I= 24.44  II= 12.62  IV= 22.93  gap_I-II=+11.81  rec_II-IV=+10.30
+2026-02-15 21:46:45,040  INFO      
+--- [24/28] crash  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:48:24,574  INFO        GAP-TV            I= 23.86  II= 12.76  IV= 22.32  gap_I-II=+11.10  rec_II-IV=+9.56
+2026-02-15 21:48:24,574  INFO        PnP-FFDNet        I= 23.82  II= 12.68  IV= 22.12  gap_I-II=+11.14  rec_II-IV=+9.44
+2026-02-15 21:48:24,574  INFO        ELP-Unfolding     I= 23.82  II= 12.69  IV= 22.50  gap_I-II=+11.13  rec_II-IV=+9.80
+2026-02-15 21:48:24,574  INFO        EfficientSCI      I= 23.82  II= 12.68  IV= 22.54  gap_I-II=+11.14  rec_II-IV=+9.86
+2026-02-15 21:48:24,574  INFO      
+--- [25/28] aerial  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:49:52,077  INFO        GAP-TV            I= 25.06  II= 14.38  IV= 23.44  gap_I-II=+10.68  rec_II-IV=+9.06
+2026-02-15 21:49:52,077  INFO        PnP-FFDNet        I= 24.94  II= 14.33  IV= 23.59  gap_I-II=+10.61  rec_II-IV=+9.26
+2026-02-15 21:49:52,077  INFO        ELP-Unfolding     I= 24.95  II= 14.34  IV= 23.82  gap_I-II=+10.60  rec_II-IV=+9.47
+2026-02-15 21:49:52,077  INFO        EfficientSCI      I= 24.92  II= 14.34  IV= 23.88  gap_I-II=+10.58  rec_II-IV=+9.54
+2026-02-15 21:49:52,077  INFO      
+--- [26/28] aerial  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:51:18,992  INFO        GAP-TV            I= 24.90  II= 14.30  IV= 23.28  gap_I-II=+10.60  rec_II-IV=+8.98
+2026-02-15 21:51:18,992  INFO        PnP-FFDNet        I= 24.79  II= 14.26  IV= 23.45  gap_I-II=+10.53  rec_II-IV=+9.20
+2026-02-15 21:51:18,992  INFO        ELP-Unfolding     I= 24.79  II= 14.26  IV= 23.63  gap_I-II=+10.52  rec_II-IV=+9.37
+2026-02-15 21:51:18,992  INFO        EfficientSCI      I= 24.76  II= 14.26  IV= 23.70  gap_I-II=+10.50  rec_II-IV=+9.44
+2026-02-15 21:51:18,992  INFO      
+--- [27/28] aerial  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:52:47,011  INFO        GAP-TV            I= 25.06  II= 14.30  IV= 23.40  gap_I-II=+10.76  rec_II-IV=+9.10
+2026-02-15 21:52:47,011  INFO        PnP-FFDNet        I= 24.95  II= 14.26  IV= 23.59  gap_I-II=+10.69  rec_II-IV=+9.33
+2026-02-15 21:52:47,011  INFO        ELP-Unfolding     I= 24.95  II= 14.27  IV= 23.69  gap_I-II=+10.68  rec_II-IV=+9.42
+2026-02-15 21:52:47,011  INFO        EfficientSCI      I= 24.92  II= 14.26  IV= 23.81  gap_I-II=+10.66  rec_II-IV=+9.55
+2026-02-15 21:52:47,012  INFO      
+--- [28/28] aerial  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)
+2026-02-15 21:54:13,744  INFO        GAP-TV            I= 25.86  II= 14.29  IV= 23.95  gap_I-II=+11.58  rec_II-IV=+9.66
+2026-02-15 21:54:13,745  INFO        PnP-FFDNet        I= 25.75  II= 14.24  IV= 24.17  gap_I-II=+11.50  rec_II-IV=+9.93
+2026-02-15 21:54:13,745  INFO        ELP-Unfolding     I= 25.75  II= 14.25  IV= 24.34  gap_I-II=+11.50  rec_II-IV=+10.09
+2026-02-15 21:54:13,745  INFO        EfficientSCI      I= 25.72  II= 14.25  IV= 24.41  gap_I-II=+11.48  rec_II-IV=+10.17
+2026-02-15 21:54:13,749  INFO      
+======================================================================
+2026-02-15 21:54:13,749  INFO      OVERALL RESULTS  (mean +/- std across all groups)
+2026-02-15 21:54:13,749  INFO      ======================================================================
+2026-02-15 21:54:13,749  INFO      
+  Scenario I  (Ideal):
+2026-02-15 21:54:13,749  INFO          GAP-TV            PSNR =  26.75 +/- 4.48 dB   SSIM = 0.8480
+2026-02-15 21:54:13,749  INFO          PnP-FFDNet        PSNR =  26.52 +/- 4.22 dB   SSIM = 0.8239
+2026-02-15 21:54:13,749  INFO          ELP-Unfolding     PSNR =  26.53 +/- 4.23 dB   SSIM = 0.8242
+2026-02-15 21:54:13,749  INFO          EfficientSCI      PSNR =  25.49 +/- 5.51 dB   SSIM = 0.7960
+2026-02-15 21:54:13,749  INFO      
+  Scenario II (Baseline):
+2026-02-15 21:54:13,749  INFO          GAP-TV            PSNR =  13.46 +/- 1.58 dB   SSIM = 0.1826
+2026-02-15 21:54:13,749  INFO          PnP-FFDNet        PSNR =  13.41 +/- 1.59 dB   SSIM = 0.1810
+2026-02-15 21:54:13,749  INFO          ELP-Unfolding     PSNR =  13.42 +/- 1.59 dB   SSIM = 0.1815
+2026-02-15 21:54:13,749  INFO          EfficientSCI      PSNR =  13.40 +/- 1.60 dB   SSIM = 0.1816
+2026-02-15 21:54:13,749  INFO      
+  Scenario IV (Oracle):
+2026-02-15 21:54:13,749  INFO          GAP-TV            PSNR =  23.52 +/- 2.30 dB   SSIM = 0.7515
+2026-02-15 21:54:13,750  INFO          PnP-FFDNet        PSNR =  23.69 +/- 2.41 dB   SSIM = 0.7420
+2026-02-15 21:54:13,750  INFO          ELP-Unfolding     PSNR =  24.01 +/- 2.51 dB   SSIM = 0.7558
+2026-02-15 21:54:13,750  INFO          EfficientSCI      PSNR =  23.62 +/- 4.08 dB   SSIM = 0.7363
+2026-02-15 21:54:13,750  INFO      
+  Gaps:
+2026-02-15 21:54:13,750  INFO          GAP-TV            I-II = +13.29 dB   II-IV = +10.05 dB
+2026-02-15 21:54:13,750  INFO          PnP-FFDNet        I-II = +13.12 dB   II-IV = +10.28 dB
+2026-02-15 21:54:13,750  INFO          ELP-Unfolding     I-II = +13.11 dB   II-IV = +10.59 dB
+2026-02-15 21:54:13,750  INFO          EfficientSCI      I-II = +12.08 dB   II-IV = +10.21 dB
+2026-02-15 21:54:13,750  INFO      
+  Total time: 3491.0s  (124.7s per group)
+2026-02-15 21:54:13,750  INFO      
+======================================================================
+2026-02-15 21:54:13,750  INFO      PER-VIDEO RESULTS  (Scenario I PSNR)
+2026-02-15 21:54:13,750  INFO      ======================================================================
+2026-02-15 21:54:13,750  INFO        kobe       ( 4 groups)  GAP-TV=26.70 PnP-FFDNet=26.70 ELP-Unfolding=26.70 EfficientSCI=26.64
+2026-02-15 21:54:13,750  INFO        traffic    ( 6 groups)  GAP-TV=20.73 PnP-FFDNet=20.68 ELP-Unfolding=20.67 EfficientSCI=20.65
+2026-02-15 21:54:13,750  INFO        runner     ( 5 groups)  GAP-TV=29.34 PnP-FFDNet=29.16 ELP-Unfolding=29.17 EfficientSCI=29.14
+2026-02-15 21:54:13,750  INFO        drop       ( 5 groups)  GAP-TV=34.22 PnP-FFDNet=33.33 ELP-Unfolding=33.33 EfficientSCI=27.63
+2026-02-15 21:54:13,750  INFO        crash      ( 4 groups)  GAP-TV=24.80 PnP-FFDNet=24.74 ELP-Unfolding=24.74 EfficientSCI=24.74
+2026-02-15 21:54:13,750  INFO        aerial     ( 4 groups)  GAP-TV=25.22 PnP-FFDNet=25.11 ELP-Unfolding=25.11 EfficientSCI=25.08
+2026-02-15 21:54:13,758  INFO      
+Results -> /home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/results/cacti_validation_results.json
+2026-02-15 21:54:13,758  INFO      Summary -> /home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/results/cacti_summary.json
+2026-02-15 21:54:13,758  INFO      
+CACTI validation complete!
