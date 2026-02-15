@@ -1,33 +1,33 @@
 """Coded Aperture Compressive Temporal Imaging (CACTI) Reconstruction Solvers.
 
-All solvers are built on the proven GAP-denoise (Generalized Alternating
-Projection) framework from benchmarks/run_all.py.  They differ in the
-denoiser plugged into the proximal step:
+Uses original pretrained model implementations for benchmark-grade results:
 
-  GAP-TV          – skimage.denoise_tv_chambolle  (classical baseline)
-  PnP-FFDNet      – GAP + stronger TV, more iterations  (PnP-style)
-  ELP-Unfolding   – tries PyTorch ELP model, falls back to multi-pass GAP
-  EfficientSCI    – tries PyTorch EfficientSCI, falls back to double-pass GAP
+  GAP-TV          – skimage.denoise_tv_chambolle  (classical baseline, ~27 dB)
+  PnP-FFDNet      – GAP + FFDNet deep denoiser    (~29 dB with pretrained)
+  ELP-Unfolding   – original ECCV 2022 model       (~34.6 dB with pretrained)
+  EfficientSCI    – original CVPR 2023 model       (~35.8 dB with pretrained)
 
 References
 ----------
 - Yuan, X. (2016). "Generalized alternating projection based total variation
   minimization for compressive sensing"
-- Venkatakrishnan et al. (2013). PnP-ADMM
+- Zhang, K. et al. (2018). "FFDNet: Toward a Fast and Flexible Solution for
+  CNN-Based Image Denoising"
 - Yang, C. et al. (2022). ELP-Unfolding, ECCV 2022
 - Wang, L. et al. (2023). EfficientSCI, CVPR 2023
 
 Benchmark: SCI Video Benchmark (256x256x8, 8:1 compression)
 Expected PSNR (with pretrained weights):
-- GAP-TV:        26.6 +/- 1.2 dB
-- PnP-FFDNet:    29.4 +/- 0.8 dB
-- ELP-Unfolding: 33.9 +/- 0.6 dB
-- EfficientSCI:  36.3 +/- 0.5 dB
+- GAP-TV:        ~27 dB
+- PnP-FFDNet:    ~29 dB
+- ELP-Unfolding: ~34.6 dB
+- EfficientSCI:  ~35.8 dB
 """
 from __future__ import annotations
 
 import logging
 import os
+import sys
 import warnings
 from typing import Any, Dict, Optional, Tuple
 
@@ -35,9 +35,29 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
+try:
+    import torch
+    import torch.nn as nn
+    HAS_TORCH = True
+except ImportError:
+    HAS_TORCH = False
+
+# ---------------------------------------------------------------------------
+# External repository paths (for original pretrained models)
+# ---------------------------------------------------------------------------
+_ELP_REPO = "/home/spiritai/ELP-Unfolding-master"
+_ELP_CKPT = "/home/spiritai/ELP-Unfolding-master/trained_dataset/ckptall.pth"
+_ESCI_REPO = "/home/spiritai/EfficientSCI-main"
+_ESCI_CKPT = "/home/spiritai/EfficientSCI-main/checkpoints/efficientsci_base.pth"
+_FFDNET_PKG = "/home/spiritai/PnP-SCI_python-master/packages"
+_FFDNET_WEIGHTS = "/home/spiritai/PnP-SCI_python-master/packages/ffdnet/models/net_gray.pth"
+
+# Model cache (singleton — load once, reuse across calls)
+_cached_models: Dict[str, Any] = {}
+
 
 # ============================================================================
-# Core GAP-denoise engine  (from benchmarks/run_all.py lines 1612-1678)
+# Core GAP-denoise engine  (from benchmarks/run_all.py)
 # ============================================================================
 
 def _gap_denoise_core(
@@ -51,12 +71,6 @@ def _gap_denoise_core(
     x_init: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     """Generalized Alternating Projection with TV denoising for video SCI.
-
-    Forward : A(x, Phi) = sum(x * Phi, axis=2)
-    Adjoint : At(y, Phi) = y[:,:,None] * Phi
-
-    This is the *verbatim* algorithm from ``benchmarks/run_all.py`` (the
-    only CACTI solver proven to achieve benchmark-grade PSNR ~26-28 dB).
 
     Parameters
     ----------
@@ -81,23 +95,21 @@ def _gap_denoise_core(
     if x_init is not None:
         x = x_init.copy().astype(np.float32)
     else:
-        # Initialise with adjoint (back-projection)
         x = y[:, :, np.newaxis] * Phi / Phi_sum[:, :, np.newaxis]
 
     y1 = y.copy()
 
     for _ in range(max_iter):
-        yb = np.sum(x * Phi, axis=2)          # forward
+        yb = np.sum(x * Phi, axis=2)
 
         if accelerate:
-            y1 = y1 + (y - yb)                # acceleration
+            y1 = y1 + (y - yb)
             residual = y1 - yb
         else:
             residual = y - yb
 
         x = x + lam * (residual / Phi_sum)[:, :, np.newaxis] * Phi
 
-        # TV denoising per frame
         if denoise_tv_chambolle is not None:
             for f in range(nF):
                 x[:, :, f] = denoise_tv_chambolle(
@@ -128,9 +140,6 @@ def gap_tv_cacti(
 ) -> np.ndarray:
     """GAP-TV: Generalized Alternating Projection with Total Variation.
 
-    Classical baseline solver. Uses ``denoise_tv_chambolle`` as the proximal
-    step inside the GAP framework.
-
     Expected PSNR on SCI benchmark: ~26-27 dB (Scenario I).
     """
     return _gap_denoise_core(
@@ -141,8 +150,84 @@ def gap_tv_cacti(
 
 
 # ============================================================================
-# Method 2: PnP-FFDNet  (plug-and-play, stronger regularisation)
+# Method 2: PnP-FFDNet  (GAP + FFDNet deep denoiser)
 # ============================================================================
+
+def _load_ffdnet(device_str: str):
+    """Load FFDNet grayscale denoiser from PnP-SCI repository."""
+    cache_key = f"ffdnet_{device_str}"
+    if cache_key in _cached_models:
+        return _cached_models[cache_key]
+
+    if not HAS_TORCH or not os.path.isfile(_FFDNET_WEIGHTS):
+        return None
+
+    try:
+        if _FFDNET_PKG not in sys.path:
+            sys.path.insert(0, _FFDNET_PKG)
+        from ffdnet.models import FFDNet
+
+        dev = torch.device(device_str)
+        net = FFDNet(num_input_channels=1)
+        state_dict = torch.load(_FFDNET_WEIGHTS, map_location=dev, weights_only=False)
+        # Strip DataParallel wrapper prefix if present
+        cleaned = {k.replace("module.", ""): v for k, v in state_dict.items()}
+        net.load_state_dict(cleaned, strict=True)
+        net = net.to(dev)
+        net.eval()
+        _cached_models[cache_key] = net
+        logger.info("FFDNet loaded (%d params)", sum(p.numel() for p in net.parameters()))
+        return net
+    except Exception as e:
+        logger.warning("FFDNet load failed: %s", e)
+        return None
+
+
+def _gap_ffdnet_core(
+    y: np.ndarray,
+    Phi: np.ndarray,
+    ffdnet_model,
+    device_str: str = "cpu",
+    sigma_list=None,
+    iter_list=None,
+) -> np.ndarray:
+    """GAP with FFDNet denoiser (replaces TV with learned denoiser)."""
+    if sigma_list is None:
+        sigma_list = [50 / 255, 25 / 255, 12 / 255]
+    if iter_list is None:
+        iter_list = [10, 10, 10]
+
+    h, w, nF = Phi.shape
+    Phi_sum = np.sum(Phi, axis=2)
+    Phi_sum[Phi_sum == 0] = 1
+
+    x = y[:, :, np.newaxis] * Phi / Phi_sum[:, :, np.newaxis]
+    y1 = np.zeros_like(y)
+
+    dev = torch.device(device_str)
+    use_gpu = "cuda" in device_str
+
+    for sigma, n_iter in zip(sigma_list, iter_list):
+        for _ in range(n_iter):
+            yb = np.sum(x * Phi, axis=2)
+            y1 = y1 + (y - yb)
+            x = x + ((y1 - yb) / Phi_sum)[:, :, np.newaxis] * Phi
+
+            # FFDNet per-frame denoising
+            for f in range(nF):
+                frame_t = torch.from_numpy(x[:, :, f].copy()).unsqueeze(0).unsqueeze(0).float()
+                sigma_t = torch.FloatTensor([sigma])
+                if use_gpu:
+                    frame_t = frame_t.to(dev)
+                    sigma_t = sigma_t.to(dev)
+                with torch.no_grad():
+                    noise_est = ffdnet_model(frame_t, sigma_t)
+                x[:, :, f] = (frame_t - noise_est).squeeze().cpu().numpy()
+
+            x = np.clip(x, 0, 1)
+
+    return x.astype(np.float32)
+
 
 def pnp_ffdnet_cacti(
     y: np.ndarray,
@@ -154,17 +239,18 @@ def pnp_ffdnet_cacti(
     verbose: bool = False,
     **_kw,
 ) -> np.ndarray:
-    """PnP-FFDNet: Plug-and-Play with stronger TV denoiser.
+    """PnP-FFDNet: GAP + FFDNet deep denoiser.
 
-    Without pretrained FFDNet weights this runs GAP-denoise with heavier
-    regularisation (more iterations, higher TV weight & inner iters), which
-    empirically gives ~0.5-1 dB above plain GAP-TV.
-
-    Expected PSNR on SCI benchmark: ~27-28 dB (Scenario I).
+    Falls back to GAP-TV with heavier regularisation if FFDNet unavailable.
+    Expected PSNR: ~29 dB with pretrained FFDNet, ~27 dB fallback.
     """
+    dev_str = _resolve_device(device)
+    ffdnet = _load_ffdnet(dev_str)
+    if ffdnet is not None:
+        return _gap_ffdnet_core(y, mask, ffdnet, device_str=dev_str)
+    # Fallback: stronger GAP-TV
     return _gap_denoise_core(
-        y, mask,
-        max_iter=iterations, lam=1.0, accelerate=True,
+        y, mask, max_iter=iterations, lam=1.0, accelerate=True,
         tv_weight=tv_weight, tv_iter=tv_iter,
     )
 
@@ -173,13 +259,42 @@ def pnp_ffdnet_cacti(
 # Method 3: ELP-Unfolding  (deep unfolded, ECCV 2022)
 # ============================================================================
 
-def _has_pretrained_weights(model_name: str) -> bool:
-    """Check if pretrained weights exist for a model."""
-    pkg_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    weights_dir = os.path.join(pkg_root, "weights", model_name)
-    if not os.path.isdir(weights_dir):
-        return False
-    return any(f.endswith(".pth") for f in os.listdir(weights_dir))
+def _load_elp(device_str: str):
+    """Load original ELP-Unfolding model with pretrained weights.
+
+    The pretrained checkpoint uses init_channels=512 (565M params).
+    """
+    cache_key = f"elp_{device_str}"
+    if cache_key in _cached_models:
+        return _cached_models[cache_key]
+
+    if not HAS_TORCH or not os.path.isfile(_ELP_CKPT):
+        return None
+
+    try:
+        if _ELP_REPO not in sys.path:
+            sys.path.insert(0, _ELP_REPO)
+        from SCI_Modelcollect import SCI_backwardcollect
+
+        dev = torch.device(device_str)
+        argdict = {
+            "init_channels": 512,
+            "pres_channels": 512,
+            "init_input": 8,
+            "pres_input": 8,
+            "priors": 6,
+            "iter__number": 8,
+        }
+        model = SCI_backwardcollect(argdict).to(dev)
+        ckpt = torch.load(_ELP_CKPT, map_location=dev, weights_only=False)
+        model.load_state_dict(ckpt["color_SCI_backward_dict"], strict=False)
+        model.eval()
+        _cached_models[cache_key] = model
+        logger.info("ELP-Unfolding loaded (%d params)", sum(p.numel() for p in model.parameters()))
+        return model
+    except Exception as e:
+        logger.warning("ELP-Unfolding load failed: %s", e)
+        return None
 
 
 def elp_unfolding_cacti(
@@ -189,84 +304,124 @@ def elp_unfolding_cacti(
     verbose: bool = False,
     **_kw,
 ) -> np.ndarray:
-    """ELP-Unfolding: deep unfolded ADMM (ECCV 2022).
+    """ELP-Unfolding: deep unfolded ADMM with ensemble priors (ECCV 2022).
 
-    Tries the real PyTorch ELP model ONLY if pretrained weights exist.
-    Falls back to a two-pass GAP-denoise otherwise.
-
-    Expected PSNR on SCI benchmark: ~28-29 dB (Scenario I) with fallback,
-    ~34 dB with pretrained weights.
+    Uses the original pretrained model (init_channels=512, 565M params).
+    Falls back to two-pass GAP-denoise if model unavailable.
+    Expected PSNR: ~34.6 dB with pretrained, ~27 dB fallback.
     """
+    dev_str = _resolve_device(device)
+    model = _load_elp(dev_str)
+    if model is None:
+        x = _gap_denoise_core(y, mask, max_iter=100, tv_weight=0.12, tv_iter=5)
+        x = _gap_denoise_core(y, mask, max_iter=80, tv_weight=0.15, tv_iter=8, x_init=x)
+        return x
+
     nF = mask.shape[2]
+    H, W = y.shape[:2]
+    dev = torch.device(dev_str)
 
-    # --- try real ELP model only if weights exist ---
-    if _has_pretrained_weights("elp_unfolding"):
-        try:
-            from pwm_core.recon.elp_unfolding import elp_recon
-            recon = elp_recon(y, mask, device=device)           # (T, H, W)
-            if recon.ndim == 3 and recon.shape[0] == nF:
-                recon = recon.transpose(1, 2, 0)                # -> (H, W, T)
-            recon = np.clip(recon, 0, 1).astype(np.float32)
-            # quality check: measurement residual
-            y_check = np.sum(recon * mask, axis=2)
-            rel_res = np.linalg.norm(y - y_check) / (np.linalg.norm(y) + 1e-10)
-            if rel_res < 0.3:
-                return recon
-            logger.debug("ELP output inconsistent (rel_res=%.2f), falling back", rel_res)
-        except Exception as exc:
-            logger.debug("ELP-Unfolding error (%s), falling back to GAP-denoise", exc)
+    # mask: (H,W,T) -> (1,T,H,W)
+    mask_t = torch.from_numpy(mask.transpose(2, 0, 1).copy()).unsqueeze(0).float().to(dev)
+    # meas: (H,W) -> (1,1,H,W)
+    meas_t = torch.from_numpy(y.copy()).unsqueeze(0).unsqueeze(0).float().to(dev)
+    # initial estimate: ones (matching original training code)
+    img_out_ori = torch.ones(1, nF, H, W, device=dev)
 
-    # --- fallback: two-pass GAP-denoise ---
-    x = _gap_denoise_core(y, mask, max_iter=100, tv_weight=0.12, tv_iter=5)
-    x = _gap_denoise_core(y, mask, max_iter=80, tv_weight=0.15, tv_iter=8, x_init=x)
-    return x
+    with torch.no_grad():
+        x_list, _ = model(mask_t, meas_t, img_out_ori)
+
+    recon = x_list[-1].squeeze(0).clamp(0, 1).cpu().numpy()  # (T, H, W)
+    return recon.transpose(1, 2, 0).astype(np.float32)  # -> (H, W, T)
 
 
 # ============================================================================
 # Method 4: EfficientSCI  (end-to-end learned, CVPR 2023)
 # ============================================================================
 
+def _load_efficientsci(device_str: str):
+    """Load original EfficientSCI-base model with pretrained weights."""
+    cache_key = f"esci_{device_str}"
+    if cache_key in _cached_models:
+        return _cached_models[cache_key]
+
+    if not HAS_TORCH or not os.path.isfile(_ESCI_CKPT):
+        return None
+
+    try:
+        if _ESCI_REPO not in sys.path:
+            sys.path.insert(0, _ESCI_REPO)
+        from cacti.models.efficientsci import EfficientSCI as OrigEfficientSCI
+
+        dev = torch.device(device_str)
+        model = OrigEfficientSCI(in_ch=64, units=8, group_num=4, color_ch=1).to(dev)
+        ckpt = torch.load(_ESCI_CKPT, map_location=dev, weights_only=False)
+        if isinstance(ckpt, dict) and "model_state_dict" in ckpt:
+            state_dict = ckpt["model_state_dict"]
+        else:
+            state_dict = ckpt
+        model.load_state_dict(state_dict, strict=True)
+        model.eval()
+        _cached_models[cache_key] = model
+        logger.info("EfficientSCI-base loaded (%d params)", sum(p.numel() for p in model.parameters()))
+        return model
+    except Exception as e:
+        logger.warning("EfficientSCI load failed: %s", e)
+        return None
+
+
 def efficient_sci_cacti(
     y: np.ndarray,
     mask: np.ndarray,
     device: str = "cpu",
-    variant: str = "tiny",
+    variant: str = "base",
     verbose: bool = False,
     **_kw,
 ) -> np.ndarray:
-    """EfficientSCI: end-to-end spatial-temporal reconstruction (CVPR 2023).
+    """EfficientSCI: two-stage ResDNet + CFormer transformer (CVPR 2023).
 
-    Tries the real PyTorch EfficientSCI model ONLY if pretrained weights exist.
-    Falls back to a triple-pass GAP-denoise otherwise.
-
-    Expected PSNR on SCI benchmark: ~29-30 dB (Scenario I) with fallback,
-    ~36 dB with pretrained weights.
+    Uses the original pretrained EfficientSCI-base model.
+    Falls back to triple-pass GAP-denoise if model unavailable.
+    Expected PSNR: ~35.8 dB with pretrained, ~27 dB fallback.
     """
+    dev_str = _resolve_device(device)
+    model = _load_efficientsci(dev_str)
+    if model is None:
+        x = _gap_denoise_core(y, mask, max_iter=100, tv_weight=0.10, tv_iter=5)
+        x = _gap_denoise_core(y, mask, max_iter=80, tv_weight=0.15, tv_iter=8, x_init=x)
+        x = _gap_denoise_core(y, mask, max_iter=60, tv_weight=0.18, tv_iter=10, x_init=x)
+        return x
+
     nF = mask.shape[2]
+    H, W = y.shape[:2]
+    dev = torch.device(dev_str)
 
-    # --- try real EfficientSCI model only if weights exist ---
-    if _has_pretrained_weights("efficientsci"):
-        try:
-            from pwm_core.recon.efficientsci import efficientsci_recon
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                recon = efficientsci_recon(y, mask, variant=variant, device=device)
-            if recon.ndim == 3 and recon.shape[0] == nF:
-                recon = recon.transpose(1, 2, 0)
-            recon = np.clip(recon, 0, 1).astype(np.float32)
-            y_check = np.sum(recon * mask, axis=2)
-            rel_res = np.linalg.norm(y - y_check) / (np.linalg.norm(y) + 1e-10)
-            if rel_res < 0.3:
-                return recon
-            logger.debug("EfficientSCI output inconsistent (rel_res=%.2f), falling back", rel_res)
-        except Exception as exc:
-            logger.debug("EfficientSCI error (%s), falling back to GAP-denoise", exc)
+    # Phi: (1, T, H, W)
+    Phi = torch.from_numpy(mask.transpose(2, 0, 1).copy()).unsqueeze(0).float().to(dev)
+    # Phi_s: (1, 1, H, W) — sum over temporal dim
+    Phi_s = Phi.sum(dim=1, keepdim=True)
+    Phi_s[Phi_s == 0] = 1
+    # meas: (1, 1, H, W)
+    meas_t = torch.from_numpy(y.copy()).unsqueeze(0).unsqueeze(0).float().to(dev)
 
-    # --- fallback: triple-pass GAP-denoise ---
-    x = _gap_denoise_core(y, mask, max_iter=100, tv_weight=0.10, tv_iter=5)
-    x = _gap_denoise_core(y, mask, max_iter=80, tv_weight=0.15, tv_iter=8, x_init=x)
-    x = _gap_denoise_core(y, mask, max_iter=60, tv_weight=0.18, tv_iter=10, x_init=x)
-    return x
+    with torch.no_grad():
+        outputs = model(meas_t, Phi, Phi_s)
+
+    recon = outputs[-1].squeeze(0).clamp(0, 1).cpu().numpy()  # (T, H, W)
+    return recon.transpose(1, 2, 0).astype(np.float32)  # -> (H, W, T)
+
+
+# ============================================================================
+# Helpers
+# ============================================================================
+
+def _resolve_device(device: str) -> str:
+    """Resolve device string, preferring GPU when available."""
+    if HAS_TORCH and torch.cuda.is_available():
+        if device and device != "cpu":
+            return device
+        return "cuda:0"
+    return "cpu"
 
 
 # ============================================================================

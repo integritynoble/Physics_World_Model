@@ -1,0 +1,224 @@
+2026-02-15 22:58:53,120  INFO      ======================================================================
+2026-02-15 22:58:53,120  INFO      CACTI InverseNet Validation  (benchmark-grade GAP-denoise)
+2026-02-15 22:58:53,120  INFO      Methods: ['GAP-TV', 'PnP-FFDNet', 'ELP-Unfolding', 'EfficientSCI']
+2026-02-15 22:58:53,120  INFO      Mismatch: dx=1.5 dy=1.0 theta=0.3 deg
+2026-02-15 22:58:53,120  INFO      ======================================================================
+2026-02-15 22:58:53,972  INFO      Loaded 28 measurement groups from 6 videos
+2026-02-15 22:58:53,973  INFO      
+--- [1/28] kobe  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 22:59:00,244  INFO      FFDNet loaded (486080 params)
+/home/spiritai/PnP-SCI_python-master/packages/ffdnet/functions.py:40: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at /pytorch/torch/csrc/tensor/python_tensor.cpp:78.)
+  downsampledfeatures = torch.cuda.FloatTensor(N, Cout, Hout, Wout).fill_(0)
+2026-02-15 22:59:34,557  INFO      ELP-Unfolding loaded (565733402 params)
+2026-02-15 22:59:35,544  INFO      EfficientSCI-base loaded (8824321 params)
+2026-02-15 22:59:46,713  INFO        GAP-TV            I= 27.99  II= 16.23  III= 26.02  gap_I-II=+11.76  rec_II-III=+9.79
+2026-02-15 22:59:46,714  INFO        PnP-FFDNet        I= 31.56  II= 12.01  III= 23.03  gap_I-II=+19.54  rec_II-III=+11.01
+2026-02-15 22:59:46,714  INFO        ELP-Unfolding     I= 35.96  II= 14.96  III= 24.94  gap_I-II=+21.00  rec_II-III=+9.97
+2026-02-15 22:59:46,714  INFO        EfficientSCI      I= 37.11  II= 14.95  III= 13.17  gap_I-II=+22.16  rec_II-III=-1.78
+2026-02-15 22:59:46,714  INFO      
+--- [2/28] kobe  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:00:02,949  INFO        GAP-TV            I= 27.00  II= 15.29  III= 25.39  gap_I-II=+11.70  rec_II-III=+10.10
+2026-02-15 23:00:02,949  INFO        PnP-FFDNet        I= 30.74  II= 11.67  III= 22.88  gap_I-II=+19.07  rec_II-III=+11.21
+2026-02-15 23:00:02,949  INFO        ELP-Unfolding     I= 35.00  II= 14.33  III= 23.36  gap_I-II=+20.66  rec_II-III=+9.03
+2026-02-15 23:00:02,949  INFO        EfficientSCI      I= 36.36  II= 14.36  III= 12.71  gap_I-II=+22.00  rec_II-III=-1.64
+2026-02-15 23:00:02,949  INFO      
+--- [3/28] kobe  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:00:18,660  INFO        GAP-TV            I= 26.40  II= 15.66  III= 24.91  gap_I-II=+10.74  rec_II-III=+9.25
+2026-02-15 23:00:18,661  INFO        PnP-FFDNet        I= 29.41  II= 11.73  III= 23.06  gap_I-II=+17.68  rec_II-III=+11.33
+2026-02-15 23:00:18,661  INFO        ELP-Unfolding     I= 33.48  II= 14.56  III= 22.55  gap_I-II=+18.92  rec_II-III=+7.99
+2026-02-15 23:00:18,661  INFO        EfficientSCI      I= 35.12  II= 14.59  III= 12.42  gap_I-II=+20.53  rec_II-III=-2.17
+2026-02-15 23:00:18,661  INFO      
+--- [4/28] kobe  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:00:36,183  INFO        GAP-TV            I= 25.42  II= 15.24  III= 24.16  gap_I-II=+10.18  rec_II-III=+8.92
+2026-02-15 23:00:36,183  INFO        PnP-FFDNet        I= 28.36  II= 11.77  III= 22.42  gap_I-II=+16.60  rec_II-III=+10.65
+2026-02-15 23:00:36,184  INFO        ELP-Unfolding     I= 31.85  II= 14.30  III= 22.55  gap_I-II=+17.56  rec_II-III=+8.26
+2026-02-15 23:00:36,184  INFO        EfficientSCI      I= 33.60  II= 14.32  III= 12.49  gap_I-II=+19.28  rec_II-III=-1.83
+2026-02-15 23:00:36,184  INFO      
+--- [5/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:01:02,001  INFO        GAP-TV            I= 20.88  II= 12.13  III= 19.88  gap_I-II=+8.74  rec_II-III=+7.74
+2026-02-15 23:01:02,002  INFO        PnP-FFDNet        I= 23.85  II=  7.87  III= 19.47  gap_I-II=+15.98  rec_II-III=+11.60
+2026-02-15 23:01:02,002  INFO        ELP-Unfolding     I= 30.96  II= 11.62  III= 21.54  gap_I-II=+19.35  rec_II-III=+9.93
+2026-02-15 23:01:02,002  INFO        EfficientSCI      I= 31.68  II= 10.88  III= 13.91  gap_I-II=+20.81  rec_II-III=+3.03
+2026-02-15 23:01:02,002  INFO      
+--- [6/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:01:29,526  INFO        GAP-TV            I= 20.75  II= 12.19  III= 19.72  gap_I-II=+8.56  rec_II-III=+7.53
+2026-02-15 23:01:29,526  INFO        PnP-FFDNet        I= 23.87  II=  7.98  III= 19.28  gap_I-II=+15.89  rec_II-III=+11.30
+2026-02-15 23:01:29,527  INFO        ELP-Unfolding     I= 31.09  II= 11.66  III= 22.22  gap_I-II=+19.43  rec_II-III=+10.56
+2026-02-15 23:01:29,527  INFO        EfficientSCI      I= 31.98  II= 11.11  III= 13.70  gap_I-II=+20.87  rec_II-III=+2.59
+2026-02-15 23:01:29,527  INFO      
+--- [7/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:01:53,663  INFO        GAP-TV            I= 20.73  II= 12.30  III= 19.75  gap_I-II=+8.43  rec_II-III=+7.44
+2026-02-15 23:01:53,664  INFO        PnP-FFDNet        I= 24.16  II=  8.07  III= 19.51  gap_I-II=+16.09  rec_II-III=+11.44
+2026-02-15 23:01:53,664  INFO        ELP-Unfolding     I= 31.57  II= 11.73  III= 20.90  gap_I-II=+19.84  rec_II-III=+9.17
+2026-02-15 23:01:53,664  INFO        EfficientSCI      I= 32.44  II= 11.17  III= 13.95  gap_I-II=+21.27  rec_II-III=+2.78
+2026-02-15 23:01:53,665  INFO      
+--- [8/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:02:16,866  INFO        GAP-TV            I= 20.69  II= 12.15  III= 19.70  gap_I-II=+8.54  rec_II-III=+7.55
+2026-02-15 23:02:16,866  INFO        PnP-FFDNet        I= 24.20  II=  7.97  III= 19.44  gap_I-II=+16.23  rec_II-III=+11.48
+2026-02-15 23:02:16,866  INFO        ELP-Unfolding     I= 31.36  II= 11.63  III= 22.33  gap_I-II=+19.73  rec_II-III=+10.70
+2026-02-15 23:02:16,866  INFO        EfficientSCI      I= 32.34  II= 11.01  III= 13.97  gap_I-II=+21.33  rec_II-III=+2.96
+2026-02-15 23:02:16,866  INFO      
+--- [9/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:02:45,271  INFO        GAP-TV            I= 20.61  II= 12.10  III= 19.64  gap_I-II=+8.51  rec_II-III=+7.53
+2026-02-15 23:02:45,271  INFO        PnP-FFDNet        I= 24.14  II=  7.86  III= 19.54  gap_I-II=+16.27  rec_II-III=+11.68
+2026-02-15 23:02:45,271  INFO        ELP-Unfolding     I= 31.43  II= 11.55  III= 23.14  gap_I-II=+19.88  rec_II-III=+11.59
+2026-02-15 23:02:45,271  INFO        EfficientSCI      I= 32.23  II= 10.96  III= 15.22  gap_I-II=+21.27  rec_II-III=+4.26
+2026-02-15 23:02:45,272  INFO      
+--- [10/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:03:12,669  INFO        GAP-TV            I= 20.72  II= 12.09  III= 19.73  gap_I-II=+8.63  rec_II-III=+7.64
+2026-02-15 23:03:12,670  INFO        PnP-FFDNet        I= 24.17  II=  7.81  III= 19.45  gap_I-II=+16.37  rec_II-III=+11.64
+2026-02-15 23:03:12,670  INFO        ELP-Unfolding     I= 31.57  II= 11.59  III= 22.81  gap_I-II=+19.98  rec_II-III=+11.22
+2026-02-15 23:03:12,670  INFO        EfficientSCI      I= 32.46  II= 10.87  III= 16.15  gap_I-II=+21.58  rec_II-III=+5.28
+2026-02-15 23:03:12,670  INFO      
+--- [11/28] runner  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:03:36,544  INFO        GAP-TV            I= 29.81  II= 15.48  III= 26.80  gap_I-II=+14.33  rec_II-III=+11.32
+2026-02-15 23:03:36,546  INFO        PnP-FFDNet        I= 32.54  II= 10.36  III= 22.77  gap_I-II=+22.18  rec_II-III=+12.41
+2026-02-15 23:03:36,547  INFO        ELP-Unfolding     I= 39.66  II= 13.67  III= 26.16  gap_I-II=+25.99  rec_II-III=+12.49
+2026-02-15 23:03:36,547  INFO        EfficientSCI      I= 40.68  II= 13.22  III= 16.70  gap_I-II=+27.46  rec_II-III=+3.49
+2026-02-15 23:03:36,547  INFO      
+--- [12/28] runner  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:04:03,230  INFO        GAP-TV            I= 29.79  II= 15.25  III= 26.59  gap_I-II=+14.54  rec_II-III=+11.34
+2026-02-15 23:04:03,230  INFO        PnP-FFDNet        I= 33.21  II= 10.07  III= 23.24  gap_I-II=+23.14  rec_II-III=+13.17
+2026-02-15 23:04:03,231  INFO        ELP-Unfolding     I= 39.60  II= 13.57  III= 22.66  gap_I-II=+26.02  rec_II-III=+9.09
+2026-02-15 23:04:03,231  INFO        EfficientSCI      I= 40.37  II= 13.15  III= 14.39  gap_I-II=+27.22  rec_II-III=+1.24
+2026-02-15 23:04:03,231  INFO      
+--- [13/28] runner  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:04:32,382  INFO        GAP-TV            I= 28.76  II= 15.00  III= 26.09  gap_I-II=+13.76  rec_II-III=+11.10
+2026-02-15 23:04:32,383  INFO        PnP-FFDNet        I= 31.80  II= 10.12  III= 22.81  gap_I-II=+21.68  rec_II-III=+12.70
+2026-02-15 23:04:32,383  INFO        ELP-Unfolding     I= 35.85  II= 13.41  III= 23.45  gap_I-II=+22.44  rec_II-III=+10.04
+2026-02-15 23:04:32,383  INFO        EfficientSCI      I= 38.00  II= 12.98  III= 14.67  gap_I-II=+25.02  rec_II-III=+1.69
+2026-02-15 23:04:32,383  INFO      
+--- [14/28] runner  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:04:58,906  INFO        GAP-TV            I= 28.95  II= 15.52  III= 26.04  gap_I-II=+13.43  rec_II-III=+10.52
+2026-02-15 23:04:58,906  INFO        PnP-FFDNet        I= 32.34  II= 10.78  III= 22.88  gap_I-II=+21.57  rec_II-III=+12.10
+2026-02-15 23:04:58,906  INFO        ELP-Unfolding     I= 37.39  II= 13.67  III= 27.77  gap_I-II=+23.71  rec_II-III=+14.10
+2026-02-15 23:04:58,906  INFO        EfficientSCI      I= 38.95  II= 13.13  III= 16.24  gap_I-II=+25.83  rec_II-III=+3.11
+2026-02-15 23:04:58,906  INFO      
+--- [15/28] runner  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:05:24,538  INFO        GAP-TV            I= 29.40  II= 14.75  III= 26.75  gap_I-II=+14.65  rec_II-III=+11.99
+2026-02-15 23:05:24,538  INFO        PnP-FFDNet        I= 34.52  II= 10.40  III= 22.73  gap_I-II=+24.12  rec_II-III=+12.33
+2026-02-15 23:05:24,538  INFO        ELP-Unfolding     I= 38.23  II= 13.24  III= 25.47  gap_I-II=+24.99  rec_II-III=+12.23
+2026-02-15 23:05:24,538  INFO        EfficientSCI      I= 38.42  II= 12.94  III= 14.40  gap_I-II=+25.48  rec_II-III=+1.46
+2026-02-15 23:05:24,538  INFO      
+--- [16/28] drop  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:05:54,239  INFO        GAP-TV            I= 34.83  II= 11.59  III= 24.17  gap_I-II=+23.24  rec_II-III=+12.58
+2026-02-15 23:05:54,239  INFO        PnP-FFDNet        I= 38.51  II=  6.28  III= 21.89  gap_I-II=+32.23  rec_II-III=+15.61
+2026-02-15 23:05:54,239  INFO        ELP-Unfolding     I= 39.76  II= 11.58  III= 23.98  gap_I-II=+28.18  rec_II-III=+12.40
+2026-02-15 23:05:54,240  INFO        EfficientSCI      I= 42.25  II=  8.98  III= 15.09  gap_I-II=+33.27  rec_II-III=+6.11
+2026-02-15 23:05:54,240  INFO      
+--- [17/28] drop  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:06:18,808  INFO        GAP-TV            I= 34.79  II= 11.56  III= 24.57  gap_I-II=+23.22  rec_II-III=+13.00
+2026-02-15 23:06:18,808  INFO        PnP-FFDNet        I= 38.86  II=  6.27  III= 21.99  gap_I-II=+32.59  rec_II-III=+15.72
+2026-02-15 23:06:18,808  INFO        ELP-Unfolding     I= 40.41  II= 11.53  III= 21.36  gap_I-II=+28.88  rec_II-III=+9.83
+2026-02-15 23:06:18,809  INFO        EfficientSCI      I= 42.60  II=  8.92  III= 13.98  gap_I-II=+33.67  rec_II-III=+5.06
+2026-02-15 23:06:18,809  INFO      
+--- [18/28] drop  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:06:41,823  INFO        GAP-TV            I= 34.28  II= 11.49  III= 24.59  gap_I-II=+22.79  rec_II-III=+13.11
+2026-02-15 23:06:41,823  INFO        PnP-FFDNet        I= 39.09  II=  6.19  III= 21.94  gap_I-II=+32.90  rec_II-III=+15.75
+2026-02-15 23:06:41,823  INFO        ELP-Unfolding     I= 40.69  II= 11.44  III= 23.06  gap_I-II=+29.25  rec_II-III=+11.62
+2026-02-15 23:06:41,823  INFO        EfficientSCI      I= 43.13  II=  8.89  III= 14.07  gap_I-II=+34.24  rec_II-III=+5.18
+2026-02-15 23:06:41,823  INFO      
+--- [19/28] drop  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:07:09,983  INFO        GAP-TV            I= 33.61  II= 11.42  III= 24.22  gap_I-II=+22.20  rec_II-III=+12.80
+2026-02-15 23:07:09,983  INFO        PnP-FFDNet        I= 38.89  II=  6.09  III= 21.96  gap_I-II=+32.79  rec_II-III=+15.87
+2026-02-15 23:07:09,983  INFO        ELP-Unfolding     I= 39.84  II= 11.37  III= 24.69  gap_I-II=+28.47  rec_II-III=+13.32
+2026-02-15 23:07:09,983  INFO        EfficientSCI      I= 42.27  II=  8.81  III= 15.55  gap_I-II=+33.46  rec_II-III=+6.73
+2026-02-15 23:07:09,984  INFO      
+--- [20/28] drop  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:07:35,429  INFO        GAP-TV            I= 33.57  II= 11.33  III= 24.01  gap_I-II=+22.24  rec_II-III=+12.68
+2026-02-15 23:07:35,429  INFO        PnP-FFDNet        I= 38.21  II=  6.03  III= 22.04  gap_I-II=+32.18  rec_II-III=+16.00
+2026-02-15 23:07:35,429  INFO        ELP-Unfolding     I= 39.68  II= 11.34  III= 23.37  gap_I-II=+28.34  rec_II-III=+12.03
+2026-02-15 23:07:35,429  INFO        EfficientSCI      I= 41.56  II=  8.84  III= 14.41  gap_I-II=+32.72  rec_II-III=+5.57
+2026-02-15 23:07:35,429  INFO      
+--- [21/28] crash  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:08:00,689  INFO        GAP-TV            I= 25.73  II= 12.72  III= 23.47  gap_I-II=+13.02  rec_II-III=+10.75
+2026-02-15 23:08:00,689  INFO        PnP-FFDNet        I= 25.45  II=  7.88  III= 20.49  gap_I-II=+17.57  rec_II-III=+12.60
+2026-02-15 23:08:00,689  INFO        ELP-Unfolding     I= 30.48  II= 12.62  III= 21.13  gap_I-II=+17.87  rec_II-III=+8.52
+2026-02-15 23:08:00,690  INFO        EfficientSCI      I= 31.75  II= 11.02  III= 13.68  gap_I-II=+20.73  rec_II-III=+2.66
+2026-02-15 23:08:00,690  INFO      
+--- [22/28] crash  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:08:26,233  INFO        GAP-TV            I= 25.11  II= 12.71  III= 23.12  gap_I-II=+12.40  rec_II-III=+10.41
+2026-02-15 23:08:26,233  INFO        PnP-FFDNet        I= 24.99  II=  7.95  III= 20.58  gap_I-II=+17.04  rec_II-III=+12.62
+2026-02-15 23:08:26,233  INFO        ELP-Unfolding     I= 29.57  II= 12.55  III= 22.41  gap_I-II=+17.03  rec_II-III=+9.86
+2026-02-15 23:08:26,233  INFO        EfficientSCI      I= 30.86  II= 11.26  III= 14.27  gap_I-II=+19.60  rec_II-III=+3.01
+2026-02-15 23:08:26,234  INFO      
+--- [23/28] crash  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:08:56,055  INFO        GAP-TV            I= 24.48  II= 12.71  III= 22.76  gap_I-II=+11.77  rec_II-III=+10.05
+2026-02-15 23:08:56,055  INFO        PnP-FFDNet        I= 24.51  II=  8.02  III= 20.56  gap_I-II=+16.49  rec_II-III=+12.54
+2026-02-15 23:08:56,056  INFO        ELP-Unfolding     I= 28.72  II= 12.52  III= 22.68  gap_I-II=+16.20  rec_II-III=+10.16
+2026-02-15 23:08:56,056  INFO        EfficientSCI      I= 29.96  II= 11.33  III= 14.18  gap_I-II=+18.63  rec_II-III=+2.85
+2026-02-15 23:08:56,056  INFO      
+--- [24/28] crash  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:09:19,858  INFO        GAP-TV            I= 23.86  II= 12.76  III= 22.32  gap_I-II=+11.10  rec_II-III=+9.56
+2026-02-15 23:09:19,858  INFO        PnP-FFDNet        I= 24.29  II=  8.10  III= 20.44  gap_I-II=+16.19  rec_II-III=+12.34
+2026-02-15 23:09:19,858  INFO        ELP-Unfolding     I= 28.74  II= 12.50  III= 24.30  gap_I-II=+16.24  rec_II-III=+11.79
+2026-02-15 23:09:19,858  INFO        EfficientSCI      I= 29.91  II= 11.44  III= 17.07  gap_I-II=+18.47  rec_II-III=+5.62
+2026-02-15 23:09:19,858  INFO      
+--- [25/28] aerial  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:09:45,351  INFO        GAP-TV            I= 25.06  II= 14.38  III= 23.44  gap_I-II=+10.68  rec_II-III=+9.06
+2026-02-15 23:09:45,351  INFO        PnP-FFDNet        I= 24.27  II=  9.56  III= 20.53  gap_I-II=+14.71  rec_II-III=+10.96
+2026-02-15 23:09:45,351  INFO        ELP-Unfolding     I= 30.44  II= 13.35  III= 24.58  gap_I-II=+17.09  rec_II-III=+11.23
+2026-02-15 23:09:45,352  INFO        EfficientSCI      I= 31.25  II= 13.09  III= 17.03  gap_I-II=+18.16  rec_II-III=+3.95
+2026-02-15 23:09:45,352  INFO      
+--- [26/28] aerial  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:10:15,033  INFO        GAP-TV            I= 24.90  II= 14.30  III= 23.28  gap_I-II=+10.60  rec_II-III=+8.98
+2026-02-15 23:10:15,034  INFO        PnP-FFDNet        I= 24.23  II=  9.54  III= 20.52  gap_I-II=+14.69  rec_II-III=+10.99
+2026-02-15 23:10:15,034  INFO        ELP-Unfolding     I= 29.85  II= 13.23  III= 23.44  gap_I-II=+16.62  rec_II-III=+10.22
+2026-02-15 23:10:15,034  INFO        EfficientSCI      I= 30.88  II= 13.06  III= 16.07  gap_I-II=+17.82  rec_II-III=+3.01
+2026-02-15 23:10:15,034  INFO      
+--- [27/28] aerial  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:10:40,783  INFO        GAP-TV            I= 25.06  II= 14.30  III= 23.40  gap_I-II=+10.76  rec_II-III=+9.10
+2026-02-15 23:10:40,784  INFO        PnP-FFDNet        I= 24.59  II=  9.53  III= 20.50  gap_I-II=+15.06  rec_II-III=+10.97
+2026-02-15 23:10:40,785  INFO        ELP-Unfolding     I= 30.46  II= 13.23  III= 23.87  gap_I-II=+17.23  rec_II-III=+10.64
+2026-02-15 23:10:40,785  INFO        EfficientSCI      I= 31.26  II= 13.11  III= 14.54  gap_I-II=+18.15  rec_II-III=+1.43
+2026-02-15 23:10:40,785  INFO      
+--- [28/28] aerial  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 23:11:05,089  INFO        GAP-TV            I= 25.86  II= 14.29  III= 23.95  gap_I-II=+11.58  rec_II-III=+9.66
+2026-02-15 23:11:05,090  INFO        PnP-FFDNet        I= 25.16  II=  9.58  III= 20.83  gap_I-II=+15.58  rec_II-III=+11.24
+2026-02-15 23:11:05,090  INFO        ELP-Unfolding     I= 30.97  II= 13.21  III= 22.67  gap_I-II=+17.76  rec_II-III=+9.46
+2026-02-15 23:11:05,090  INFO        EfficientSCI      I= 31.59  II= 13.06  III= 14.74  gap_I-II=+18.53  rec_II-III=+1.68
+2026-02-15 23:11:05,098  INFO      
+======================================================================
+2026-02-15 23:11:05,098  INFO      OVERALL RESULTS  (mean +/- std across all groups)
+2026-02-15 23:11:05,099  INFO      ======================================================================
+2026-02-15 23:11:05,099  INFO      
+  Scenario I  (Ideal):
+2026-02-15 23:11:05,099  INFO          GAP-TV            PSNR =  26.75 +/- 4.48 dB   SSIM = 0.8480
+2026-02-15 23:11:05,099  INFO          PnP-FFDNet        PSNR =  29.28 +/- 5.53 dB   SSIM = 0.8903
+2026-02-15 23:11:05,100  INFO          ELP-Unfolding     PSNR =  34.09 +/- 4.11 dB   SSIM = 0.9650
+2026-02-15 23:11:05,100  INFO          EfficientSCI      PSNR =  35.39 +/- 4.46 dB   SSIM = 0.9729
+2026-02-15 23:11:05,100  INFO      
+  Scenario II (Baseline):
+2026-02-15 23:11:05,100  INFO          GAP-TV            PSNR =  13.46 +/- 1.58 dB   SSIM = 0.1826
+2026-02-15 23:11:05,101  INFO          PnP-FFDNet        PSNR =   8.84 +/- 1.81 dB   SSIM = 0.0968
+2026-02-15 23:11:05,101  INFO          ELP-Unfolding     PSNR =  12.71 +/- 1.09 dB   SSIM = 0.1720
+2026-02-15 23:11:05,101  INFO          EfficientSCI      PSNR =  11.84 +/- 1.82 dB   SSIM = 0.1611
+2026-02-15 23:11:05,101  INFO      
+  Scenario III (Oracle):
+2026-02-15 23:11:05,101  INFO          GAP-TV            PSNR =  23.52 +/- 2.30 dB   SSIM = 0.7515
+2026-02-15 23:11:05,102  INFO          PnP-FFDNet        PSNR =  21.31 +/- 1.34 dB   SSIM = 0.7564
+2026-02-15 23:11:05,102  INFO          ELP-Unfolding     PSNR =  23.33 +/- 1.51 dB   SSIM = 0.8731
+2026-02-15 23:11:05,102  INFO          EfficientSCI      PSNR =  14.60 +/- 1.25 dB   SSIM = 0.5878
+2026-02-15 23:11:05,102  INFO      
+  Gaps:
+2026-02-15 23:11:05,102  INFO          GAP-TV            I-II = +13.29 dB   II-III = +10.05 dB
+2026-02-15 23:11:05,102  INFO          PnP-FFDNet        I-II = +20.44 dB   II-III = +12.47 dB
+2026-02-15 23:11:05,102  INFO          ELP-Unfolding     I-II = +21.38 dB   II-III = +10.62 dB
+2026-02-15 23:11:05,103  INFO          EfficientSCI      I-II = +23.56 dB   II-III = +2.76 dB
+2026-02-15 23:11:05,103  INFO      
+  Total time: 731.1s  (26.1s per group)
+2026-02-15 23:11:05,103  INFO      
+======================================================================
+2026-02-15 23:11:05,103  INFO      PER-VIDEO RESULTS  (Scenario I PSNR)
+2026-02-15 23:11:05,103  INFO      ======================================================================
+2026-02-15 23:11:05,103  INFO        kobe       ( 4 groups)  GAP-TV=26.70 PnP-FFDNet=30.02 ELP-Unfolding=34.07 EfficientSCI=35.55
+2026-02-15 23:11:05,103  INFO        traffic    ( 6 groups)  GAP-TV=20.73 PnP-FFDNet=24.06 ELP-Unfolding=31.33 EfficientSCI=32.19
+2026-02-15 23:11:05,103  INFO        runner     ( 5 groups)  GAP-TV=29.34 PnP-FFDNet=32.88 ELP-Unfolding=38.14 EfficientSCI=39.28
+2026-02-15 23:11:05,103  INFO        drop       ( 5 groups)  GAP-TV=34.22 PnP-FFDNet=38.71 ELP-Unfolding=40.08 EfficientSCI=42.36
+2026-02-15 23:11:05,103  INFO        crash      ( 4 groups)  GAP-TV=24.80 PnP-FFDNet=24.81 ELP-Unfolding=29.38 EfficientSCI=30.62
+2026-02-15 23:11:05,103  INFO        aerial     ( 4 groups)  GAP-TV=25.22 PnP-FFDNet=24.56 ELP-Unfolding=30.43 EfficientSCI=31.24
+2026-02-15 23:11:05,113  INFO      
+Results -> /home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/results/cacti_validation_results.json
+2026-02-15 23:11:05,113  INFO      Summary -> /home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/results/cacti_summary.json
+2026-02-15 23:11:05,114  INFO      
+CACTI validation complete!
