@@ -40,6 +40,10 @@ test_pnp_all/
 # Benchmark results (regenerated)
 packages/pwm_core/benchmarks/results/
 
+# Model weights (local symlinks)
+packages/pwm_core/pwm_core/weights/
+packages/pwm_core/weights/
+
 # Data directories
 data/
 !packages/pwm_core/pwm_core/data/
