@@ -168,6 +168,8 @@ def load_scene(scene_name: str) -> Optional[np.ndarray]:
 
 def find_mask_files() -> Tuple[Optional[np.ndarray], Optional[np.ndarray]]:
     """Find ideal and real mask files."""
+    from scipy.ndimage import zoom
+
     mask_ideal = None
     mask_real = None
 
@@ -182,6 +184,13 @@ def find_mask_files() -> Tuple[Optional[np.ndarray], Optional[np.ndarray]]:
     if real_masks:
         mask_real = load_mask(real_masks[0])
         logger.info(f"Loaded real mask from {real_masks[0]}: shape {mask_real.shape if mask_real is not None else 'None'}")
+
+        # Resize real mask to match ideal mask size if needed
+        if mask_real is not None and mask_ideal is not None:
+            if mask_real.shape != mask_ideal.shape:
+                scale = mask_ideal.shape[0] / mask_real.shape[0]
+                mask_real = zoom(mask_real, scale, order=1).astype(np.float32)
+                logger.info(f"Resized real mask to match ideal mask: new shape {mask_real.shape}")
 
     return mask_ideal, mask_real
 
