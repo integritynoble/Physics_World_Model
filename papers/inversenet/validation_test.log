@@ -1,0 +1,434 @@
+2026-02-15 15:12:15,282 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:12:15,282 - __main__ - INFO - CASSI Validation for InverseNet ECCV Paper
+2026-02-15 15:12:15,282 - __main__ - INFO - 3 Scenarios × 4 Methods × 10 Scenes = 120 Reconstructions
+2026-02-15 15:12:15,282 - __main__ - INFO - ======================================================================
+2026-02-15 15:12:15,307 - __main__ - INFO - Ideal mask shape: (256, 256)
+2026-02-15 15:12:15,307 - __main__ - INFO - Real mask shape: (660, 660)
+2026-02-15 15:12:15,308 - __main__ - INFO - Mismatch parameters: dx=0.5 px, dy=0.3 px, θ=0.1°
+2026-02-15 15:12:15,368 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:12:15,368 - __main__ - INFO - Scene 1/10
+2026-02-15 15:12:15,368 - __main__ - INFO - ======================================================================
+2026-02-15 15:12:15,368 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:12:15,369 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+/home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/scripts/validate_cassi_inversenet.py:246: UserWarning: HDNet: no pretrained weights found; using random initialization. Results will be poor without training.
+  return hdnet_recon_cassi(y, mask, device=device)
+2026-02-15 15:12:17,199 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:17,199 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,199 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,199 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:12:17,301 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,349 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:17,350 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,350 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,350 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:12:17,426 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,480 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:17,480 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,480 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,480 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:12:17,481 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:17,481 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:17,481 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:17,481 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:12:17,481 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:17,481 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:17,481 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:17,481 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:12:17,481 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:17,481 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:17,481 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:17,481 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:12:17,481 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:17,481 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:17,481 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:17,572 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:12:17,572 - __main__ - INFO - Scene 2/10
+2026-02-15 15:12:17,572 - __main__ - INFO - ======================================================================
+2026-02-15 15:12:17,572 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:12:17,573 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,640 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:17,640 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,640 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,640 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:12:17,722 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,773 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:17,773 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,773 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,773 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:12:17,843 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,889 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:17,889 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,889 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,889 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:12:17,889 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:17,889 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:17,889 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:17,889 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:12:17,890 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:17,890 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:17,890 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:17,890 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:12:17,890 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:17,890 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:17,890 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:17,890 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:12:17,890 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:17,890 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:17,890 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:17,944 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:12:17,944 - __main__ - INFO - Scene 3/10
+2026-02-15 15:12:17,944 - __main__ - INFO - ======================================================================
+2026-02-15 15:12:17,944 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:12:17,945 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,993 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:17,994 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,994 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:17,994 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:12:18,071 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,120 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:18,120 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,120 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,121 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:12:18,191 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,250 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:18,250 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,250 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,250 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:12:18,250 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:18,251 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:18,251 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:18,251 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:12:18,251 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:18,251 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:18,251 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:18,251 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:12:18,251 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:18,251 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:18,251 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:18,251 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:12:18,251 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:18,251 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:18,251 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:18,334 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:12:18,334 - __main__ - INFO - Scene 4/10
+2026-02-15 15:12:18,334 - __main__ - INFO - ======================================================================
+2026-02-15 15:12:18,334 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:12:18,335 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,425 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:18,426 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,426 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,426 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:12:18,505 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,553 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:18,553 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,553 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,553 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:12:18,623 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,668 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:18,668 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,668 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,669 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:12:18,669 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:18,669 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:18,669 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:18,669 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:12:18,669 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:18,669 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:18,669 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:18,669 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:12:18,669 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:18,669 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:18,669 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:18,669 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:12:18,669 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:18,669 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:18,669 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:18,724 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:12:18,724 - __main__ - INFO - Scene 5/10
+2026-02-15 15:12:18,724 - __main__ - INFO - ======================================================================
+2026-02-15 15:12:18,724 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:12:18,725 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,774 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:18,774 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,775 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,775 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:12:18,856 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,901 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:18,901 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,901 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:18,901 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:12:18,972 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,018 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:19,018 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,018 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,018 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:12:19,018 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:19,018 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:19,018 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:19,018 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:12:19,018 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:19,018 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:19,018 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:19,018 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:12:19,019 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:19,019 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:19,019 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:19,019 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:12:19,019 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:19,019 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:19,019 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:19,070 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:12:19,070 - __main__ - INFO - Scene 6/10
+2026-02-15 15:12:19,070 - __main__ - INFO - ======================================================================
+2026-02-15 15:12:19,070 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:12:19,070 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,122 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:19,122 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,122 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,122 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:12:19,205 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,263 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:19,263 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,263 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,263 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:12:19,346 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,393 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:19,394 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,394 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,394 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:12:19,394 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:19,394 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:19,394 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:19,394 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:12:19,394 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:19,394 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:19,394 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:19,394 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:12:19,394 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:19,395 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:19,395 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:19,395 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:12:19,395 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:19,395 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:19,395 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:19,447 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:12:19,447 - __main__ - INFO - Scene 7/10
+2026-02-15 15:12:19,447 - __main__ - INFO - ======================================================================
+2026-02-15 15:12:19,447 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:12:19,448 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,496 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:19,497 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,497 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,497 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:12:19,578 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,625 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:19,626 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,626 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,626 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:12:19,701 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,748 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:19,749 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,749 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,749 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:12:19,749 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:19,749 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:19,749 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:19,749 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:12:19,749 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:19,749 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:19,749 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:19,749 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:12:19,749 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:19,750 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:19,750 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:19,750 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:12:19,750 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:19,750 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:19,750 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:19,801 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:12:19,801 - __main__ - INFO - Scene 8/10
+2026-02-15 15:12:19,801 - __main__ - INFO - ======================================================================
+2026-02-15 15:12:19,801 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:12:19,802 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,849 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:19,849 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,849 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,849 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:12:19,931 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,980 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:19,980 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,980 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:19,980 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:12:20,053 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,104 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:20,105 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,105 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,105 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:12:20,105 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:20,106 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:20,106 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:20,106 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:12:20,106 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:20,106 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:20,106 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:20,106 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:12:20,106 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:20,106 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:20,106 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:20,106 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:12:20,106 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:20,106 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:20,106 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:20,157 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:12:20,157 - __main__ - INFO - Scene 9/10
+2026-02-15 15:12:20,157 - __main__ - INFO - ======================================================================
+2026-02-15 15:12:20,157 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:12:20,158 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,206 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:20,207 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,207 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,207 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:12:20,321 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,371 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:20,371 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,371 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,371 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:12:20,446 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,493 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:20,494 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,494 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,494 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:12:20,494 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:20,494 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:20,494 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:20,494 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:12:20,494 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:20,494 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:20,494 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:20,494 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:12:20,494 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:20,494 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:20,494 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:20,495 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:12:20,495 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:20,495 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:20,495 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:20,545 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:12:20,545 - __main__ - INFO - Scene 10/10
+2026-02-15 15:12:20,545 - __main__ - INFO - ======================================================================
+2026-02-15 15:12:20,545 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:12:20,546 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,591 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:20,592 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,592 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,592 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:12:20,671 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,722 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:20,723 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,723 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,723 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:12:20,792 - __main__ - ERROR -     gap_tv failed: reconstruct_gap_tv() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,839 - __main__ - ERROR -     hdnet failed: axes don't match array
+2026-02-15 15:12:20,840 - __main__ - ERROR -     mst_s failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,840 - __main__ - ERROR -     mst_l failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 15:12:20,840 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:12:20,840 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:20,840 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:20,840 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:20,840 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:12:20,840 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:20,840 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:20,840 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:20,840 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:12:20,840 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:20,841 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:20,841 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:20,841 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:12:20,841 - __main__ - INFO -     I (Ideal):   0.00 dB
+2026-02-15 15:12:20,841 - __main__ - INFO -     II (Assumed): 0.00 dB (gap 0.00 dB)
+2026-02-15 15:12:20,841 - __main__ - INFO -     IV (Oracle):  0.00 dB (recovery 0.00 dB)
+2026-02-15 15:12:20,841 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:12:20,841 - __main__ - INFO - SUMMARY STATISTICS
+2026-02-15 15:12:20,841 - __main__ - INFO - ======================================================================
+2026-02-15 15:12:20,842 - __main__ - INFO - 
+SCENARIO I:
+2026-02-15 15:12:20,842 - __main__ - INFO -   GAP_TV  : 0.00 ± 0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO -   HDNET   : 0.00 ± 0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO -   MST_S   : 0.00 ± 0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO -   MST_L   : 0.00 ± 0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO - 
+SCENARIO II:
+2026-02-15 15:12:20,842 - __main__ - INFO -   GAP_TV  : 0.00 ± 0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO -   HDNET   : 0.00 ± 0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO -   MST_S   : 0.00 ± 0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO -   MST_L   : 0.00 ± 0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO - 
+SCENARIO IV:
+2026-02-15 15:12:20,842 - __main__ - INFO -   GAP_TV  : 0.00 ± 0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO -   HDNET   : 0.00 ± 0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO -   MST_S   : 0.00 ± 0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO -   MST_L   : 0.00 ± 0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO - 
+Gaps (PSNR degradation/recovery):
+2026-02-15 15:12:20,842 - __main__ - INFO -   GAP_TV  : Gap I→II=0.00 dB, Recovery II→IV=0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO -   HDNET   : Gap I→II=0.00 dB, Recovery II→IV=0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO -   MST_S   : Gap I→II=0.00 dB, Recovery II→IV=0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO -   MST_L   : Gap I→II=0.00 dB, Recovery II→IV=0.00 dB
+2026-02-15 15:12:20,842 - __main__ - INFO - 
+Execution time: 0.00 hours (0.0 min/scene)
+2026-02-15 15:12:20,844 - __main__ - INFO - Detailed results saved to: /home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/results/cassi_validation_results.json
+2026-02-15 15:12:20,845 - __main__ - INFO - Summary saved to: /home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/results/cassi_summary.json
+2026-02-15 15:12:20,845 - __main__ - INFO - 
+✅ Validation complete!
