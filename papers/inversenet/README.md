@@ -103,20 +103,73 @@ identification, calibration, and reconstruction.
 
 ```
 papers/inversenet/
-    README.md           -- this file (manuscript skeleton)
-    figures/            -- (TBD) generated figures
-    tables/             -- (TBD) generated tables
+    README.md                    -- this file (manuscript skeleton)
+    README_CASSI.md              -- CASSI validation guide & quick start
+    cassi_plan_inversenet.md     -- Detailed CASSI validation plan (1000+ lines)
+    scripts/
+        validate_cassi_inversenet.py    -- Main CASSI validation script
+        generate_cassi_figures.py       -- CASSI visualization generation
+        run_all.sh                      -- Complete validation pipeline
+    results/
+        cassi_validation_results.json   -- Per-scene detailed results
+        cassi_summary.json              -- Aggregated statistics
+    figures/                            -- Generated figures
+        cassi/
+            scenario_comparison.png
+            method_comparison_heatmap.png
+            gap_comparison.png
+            psnr_distribution.png
+    tables/                             -- Generated tables
+        cassi_results_table.csv
+```
+
+## CASSI Validation (3. InverseNet Dataset - CASSI Section)
+
+Comprehensive CASSI validation comparing 4 reconstruction methods under operator mismatch.
+
+**See `README_CASSI.md` for detailed documentation.**
+
+### Quick Start
+
+```bash
+# Run complete validation pipeline
+cd papers/inversenet
+bash scripts/run_all.sh --device cuda:0
+
+# Or run individually:
+python scripts/validate_cassi_inversenet.py --device cuda:0  # ~2 hours
+python scripts/generate_cassi_figures.py                     # ~30 sec
+```
+
+### CASSI Benchmark Summary
+
+- **Methods:** GAP-TV, HDNet, MST-S, MST-L
+- **Scenarios:** I (Ideal), II (Baseline), IV (Oracle)
+- **Scenes:** 10 KAIST hyperspectral (256×256×28)
+- **Total Reconstructions:** 120
+- **Mismatch:** dx=0.5 px, dy=0.3 px, θ=0.1° (moderate)
+
+**Expected PSNR Hierarchy:**
+```
+Scenario I (Ideal)    > Scenario IV (Oracle) > Scenario II (Baseline)
+    ~36 dB (MST-L)          ~33.6 dB                ~32.3 dB
+Gap I→II: ~3.7 dB (mismatch impact)
+Gap II→IV: ~1.3 dB (recovery with oracle)
 ```
 
 ## Reproducing results
 
 ```bash
-# Generate datasets
+# CASSI Validation (NEW - recommended starting point)
+cd papers/inversenet
+bash scripts/run_all.sh
+
+# Legacy: Generate full InverseNet datasets (SPC, CACTI, CASSI)
 python -m experiments.inversenet.gen_spc   --out_dir datasets/inversenet_spc
 python -m experiments.inversenet.gen_cacti --out_dir datasets/inversenet_cacti
 python -m experiments.inversenet.gen_cassi --out_dir datasets/inversenet_cassi
 
-# Run baselines
+# Run full baselines
 python -m experiments.inversenet.run_baselines
 
 # Generate leaderboard
