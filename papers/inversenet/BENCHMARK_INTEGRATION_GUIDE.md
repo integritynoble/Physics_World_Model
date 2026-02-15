@@ -18,7 +18,7 @@ from pwm_core.api import ExperimentSpec, build_operator
 # 1. Create CASSI operator
 operator = build_benchmark_operator("cassi", (256, 256, 28))
 
-# 2. Apply mismatch parameters (for Scenario IV)
+# 2. Apply mismatch parameters (for Scenario III)
 mismatch_params = {
     'mask_dx': 0.5,      # pixels
     'mask_dy': 0.3,      # pixels
@@ -72,7 +72,7 @@ y_ideal = op_ideal.forward(scene)
 op_real = build_benchmark_operator("cassi", (256, 256, 28))
 y_baseline = op_real.forward(scene)  # Uses real mask
 
-# Scenario IV: Oracle with known mismatch
+# Scenario III: Oracle with known mismatch
 op_oracle = build_benchmark_operator("cassi", (256, 256, 28))
 op_oracle.set_theta({'mask_dx': 0.5, 'mask_dy': 0.3, 'mask_theta': 0.1})
 y_corrupt = op_oracle.forward(scene)
@@ -91,7 +91,7 @@ y_corrupt = op_oracle.forward(scene)
 **For InverseNet Scenarios:**
 - Scenario I: Oracle baseline (no wrong assumptions)
 - Scenario II: Wrong parameters assumed (uncorrected mismatch)
-- Scenario IV: Correct parameters known (oracle correction)
+- Scenario III: Correct parameters known (oracle correction)
 
 **Key insight:** The framework demonstrates that operator knowledge improves reconstruction when applied correctly.
 
@@ -150,7 +150,7 @@ class InverseNetCassiValidator:
         results = {
             'scenario_i': self.scenario_i(scene),
             'scenario_ii': self.scenario_ii(scene),
-            'scenario_iv': self.scenario_iv(scene),
+            'scenario_iii': self.scenario_iii(scene),
         }
         return results
 ```
@@ -276,7 +276,7 @@ class CassiValidator:
         psnr = compute_psnr(self.scene, x_recon)
         return {'psnr': psnr, 'measurement': y_noisy}
 
-    def scenario_iv(self):
+    def scenario_iii(self):
         """Oracle: known mismatch parameters."""
         op = build_benchmark_operator("cassi", (256, 256, 28))
         op.set_theta({'mask_dx': 0.5, 'mask_dy': 0.3, 'mask_theta': 0.1})
@@ -309,7 +309,7 @@ for scene_name in SCENES:
     for method in ['mst_s', 'mst_l']:
         results_i = scenario_i(scene, method)
         results_ii = scenario_ii(scene, method)
-        results_iv = scenario_iv(scene, method)
+        results_iv = scenario_iii(scene, method)
 
         save_results(scene_name, method, {
             'i': results_i,
@@ -333,7 +333,7 @@ aggregate_results()
 
 ### Scenario Configuration
 
-| Parameter | Scenario I | Scenario II | Scenario IV |
+| Parameter | Scenario I | Scenario II | Scenario III |
 |-----------|-----------|-----------|-----------|
 | **Mask** | Ideal | Real | Real |
 | **Mismatch** | dx=0, dy=0, θ=0 | None (but measurement has it) | dx=0.5, dy=0.3, θ=0.1 |
@@ -376,7 +376,7 @@ If results look wrong:
 - [ ] **Scenario gaps wrong?**
   - Scenario I should be highest PSNR
   - Scenario II should be middle
-  - Scenario IV should be between II and I
+  - Scenario III should be between II and I
   - If not, check scenario implementations
 
 - [ ] **Results not reproducible?**
@@ -391,7 +391,7 @@ If results look wrong:
 **Final Results** (per plan):
 
 ```
-| Method | Scenario I | Scenario II | Scenario IV | Gap I→II |
+| Method | Scenario I | Scenario II | Scenario III | Gap I→II |
 |--------|-----------|-----------|-----------|---------|
 | MST-L  | 36.0 dB   | 32.3 dB   | 33.6 dB   | 3.7 dB  |
 | MST-S  | 34.2 dB   | 30.5 dB   | 31.8 dB   | 3.7 dB  |

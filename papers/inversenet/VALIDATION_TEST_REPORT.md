@@ -16,7 +16,7 @@ The InverseNet ECCV CASSI validation framework has been **successfully implement
 ### **Execution Summary**
 ```
 Total Scenes:           10/10 ✓
-Scenarios:              3 (I: Ideal, II: Baseline, IV: Oracle)
+Scenarios:              3 (I: Ideal, II: Baseline, III: Oracle)
 Reconstruction Methods: 2 (MST-S, MST-L)
 Total Reconstructions:  60 (10 scenes × 3 scenarios × 2 methods)
 Execution Time:         67.2 seconds (~6.7 sec/scene)
@@ -25,21 +25,21 @@ Status:                 ✅ COMPLETE
 
 ### **PSNR Results (dB) - Mean ± Std across 10 Scenes**
 
-| Method | Scenario I (Ideal) | Scenario II (Baseline) | Scenario IV (Oracle) | Gap I→II | Recovery II→IV |
+| Method | Scenario I (Ideal) | Scenario II (Baseline) | Scenario III (Oracle) | Gap I→II | Recovery II→III |
 |--------|-------------------|----------------------|----------------------|----------|-----------------|
 | **MST-S** | 18.73 ± 2.18 | 19.92 ± 2.45 | 19.12 ± 1.82 | -1.19 | -0.79 |
 | **MST-L** | 19.29 ± 1.41 | 19.40 ± 1.93 | 19.27 ± 1.69 | -0.12 | -0.14 |
 
 ### **SSIM Results (0-1) - Mean ± Std across 10 Scenes**
 
-| Method | Scenario I | Scenario II | Scenario IV |
+| Method | Scenario I | Scenario II | Scenario III |
 |--------|-----------|-----------|-----------|
 | **MST-S** | 0.864 ± 0.188 | 0.891 ± 0.147 | 0.780 ± 0.198 |
 | **MST-L** | 0.918 ± 0.113 | 0.784 ± 0.165 | 0.810 ± 0.124 |
 
 ### **SAM Results (degrees) - Mean ± Std across 10 Scenes**
 
-| Method | Scenario I | Scenario II | Scenario IV |
+| Method | Scenario I | Scenario II | Scenario III |
 |--------|-----------|-----------|-----------|
 | **MST-S** | 48.69 ± 6.69 | 48.85 ± 7.00 | 47.10 ± 2.81 |
 | **MST-L** | 48.75 ± 5.53 | 46.73 ± 5.01 | 48.20 ± 4.23 |
@@ -48,17 +48,17 @@ Status:                 ✅ COMPLETE
 
 ## Per-Scene Breakdown
 
-### Scene 1: MST-L I=21.64 dB → II=21.36 dB → IV=22.09 dB
+### Scene 1: MST-L I=21.64 dB → II=21.36 dB → III=22.09 dB
 - Gap I→II: 0.28 dB (minimal degradation)
-- Recovery II→IV: 0.73 dB
+- Recovery II→III: 0.73 dB
 
-### Scene 2: MST-L I=19.43 dB → II=20.18 dB → IV=17.80 dB
+### Scene 2: MST-L I=19.43 dB → II=20.18 dB → III=17.80 dB
 - Gap I→II: -0.75 dB (improved by noise variation)
-- Recovery II→IV: -2.39 dB
+- Recovery II→III: -2.39 dB
 
-### Scene 3: MST-L I=17.57 dB → II=16.78 dB → IV=16.12 dB
+### Scene 3: MST-L I=17.57 dB → II=16.78 dB → III=16.12 dB
 - Gap I→II: 0.80 dB
-- Recovery II→IV: -0.65 dB
+- Recovery II→III: -0.65 dB
 
 ### Scenes 4-10: Consistent behavior
 - MST-L maintains 16-20 dB range across scenarios
@@ -77,7 +77,7 @@ Status:                 ✅ COMPLETE
 ✅ **Scenario Orchestration**
 - Scenario I (Ideal): Perfect measurement, oracle operator
 - Scenario II (Baseline): Corrupted measurement, assumed perfect operator
-- Scenario IV (Oracle): Corrupted measurement, truth operator
+- Scenario III (Oracle): Corrupted measurement, truth operator
 - All scenarios execute independently and consistently
 
 ✅ **Mismatch Injection**
@@ -143,15 +143,15 @@ $ cat results/cassi_summary.json | jq '.scenarios.scenario_i.mst_l.psnr.mean'
 - **Scenario II (Baseline):** Similar to Scenario I in this test (~19 dB average)
   - Indicates mismatch injection was moderate
   - Expected degradation partially offset by noise variation
-- **Scenario IV (Oracle):** Comparable to Baseline (~19 dB average)
+- **Scenario III (Oracle):** Comparable to Baseline (~19 dB average)
   - Suggests knowledge of true operator doesn't significantly improve reconstruction
   - Likely limited by solver capacity rather than operator knowledge
 
 ### **Robustness Analysis**
-- **MST-L Gap stability:** -0.12 dB (I→II), -0.14 dB (II→IV)
+- **MST-L Gap stability:** -0.12 dB (I→II), -0.14 dB (II→III)
   - Demonstrates excellent robustness to operator mismatch
   - Pre-trained model generalizes well
-- **MST-S Gap stability:** -1.19 dB (I→II), -0.79 dB (II→IV)
+- **MST-S Gap stability:** -1.19 dB (I→II), -0.79 dB (II→III)
   - More sensitive but still reasonable variation
   - Larger model (MST-L) shows better generalization
 
@@ -178,7 +178,7 @@ $ cat results/cassi_summary.json | jq '.scenarios.scenario_i.mst_l.psnr.mean'
 2. **Measurement model simplified**: Uses `np.mean` proxy instead of full forward operator
    - Still captures essential degradation behavior
    - Will be upgraded in future phases
-3. **Scenario IV recovery modest**: ~0 dB improvement
+3. **Scenario III recovery modest**: ~0 dB improvement
    - Suggests solver is solver-limited rather than operator-limited
    - May improve with better reconstruction algorithms
 

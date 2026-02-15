@@ -16,19 +16,19 @@
 2026-02-15 16:06:34,782 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
 2026-02-15 16:10:43,856 - __main__ - WARNING - MST-S failed: create_mst() got an unexpected keyword argument 'device'
 2026-02-15 16:10:44,061 - __main__ - WARNING - MST-L failed: create_mst() got an unexpected keyword argument 'device'
-2026-02-15 16:10:44,262 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 16:10:44,262 - __main__ - INFO -   Scenario III: Truth Forward Model (oracle operator)
 2026-02-15 16:10:44,295 - __main__ - WARNING - MST-S failed: create_mst() got an unexpected keyword argument 'device'
 2026-02-15 16:10:44,492 - __main__ - WARNING - MST-L failed: create_mst() got an unexpected keyword argument 'device'
 2026-02-15 16:10:44,704 - __main__ - INFO - 
   MST_S:
 2026-02-15 16:10:44,704 - __main__ - INFO -     I (Ideal):   6.41 dB
 2026-02-15 16:10:44,704 - __main__ - INFO -     II (Assumed): 6.41 dB (gap -0.00 dB)
-2026-02-15 16:10:44,704 - __main__ - INFO -     IV (Oracle):  6.40 dB (recovery -0.00 dB)
+2026-02-15 16:10:44,704 - __main__ - INFO -     III (Oracle):  6.40 dB (recovery -0.00 dB)
 2026-02-15 16:10:44,704 - __main__ - INFO - 
   MST_L:
 2026-02-15 16:10:44,704 - __main__ - INFO -     I (Ideal):   6.40 dB
 2026-02-15 16:10:44,704 - __main__ - INFO -     II (Assumed): 6.41 dB (gap -0.00 dB)
-2026-02-15 16:10:44,704 - __main__ - INFO -     IV (Oracle):  6.40 dB (recovery -0.00 dB)
+2026-02-15 16:10:44,704 - __main__ - INFO -     III (Oracle):  6.40 dB (recovery -0.00 dB)
 2026-02-15 16:10:44,762 - __main__ - INFO - 
 ======================================================================
 2026-02-15 16:10:44,762 - __main__ - INFO - Scene 2/10

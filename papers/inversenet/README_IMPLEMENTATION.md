@@ -24,7 +24,7 @@ The InverseNet ECCV paper requires comprehensive validation of CASSI (Coded Aper
 
 ### 1. **Complete Specification** ✅
 **File:** `cassi_plan_inversenet.md`
-- 3 scenarios: I (Ideal), II (Baseline), IV (Oracle)
+- 3 scenarios: I (Ideal), II (Baseline), III (Oracle)
 - 4 methods: GAP-TV, HDNet, MST-S, MST-L
 - 10 KAIST scenes with 256×256×28 resolution
 - Forward model spec (SimulatedOperatorEnlargedGrid)
@@ -34,7 +34,7 @@ The InverseNet ECCV paper requires comprehensive validation of CASSI (Coded Aper
 ### 2. **Validation Scripts**
 **Primary:** `validate_cassi_inversenet_v2.py` (400 lines)
 - Operator construction via `build_benchmark_operator()`
-- Scenario I/II/IV implementations
+- Scenario I/II/III implementations
 - MST reconstruction integration
 - Results aggregation and JSON serialization
 
@@ -113,7 +113,7 @@ y = op_ideal.forward(scene)
 op_real = build_benchmark_operator("cassi", (256, 256, 28))
 y = op_real.forward(scene)
 
-# Scenario IV: Oracle with known mismatch
+# Scenario III: Oracle with known mismatch
 op_oracle = build_benchmark_operator("cassi", (256, 256, 28))
 op_oracle.set_theta({'mask_dx': 0.5, 'mask_dy': 0.3, 'mask_theta': 0.1})
 y = op_oracle.forward(scene)
@@ -191,7 +191,7 @@ Follow the code examples in `BENCHMARK_INTEGRATION_GUIDE.md` Phase 1
 Scenario I (Ideal)           36.0 dB  ┐
                              34.2 dB  │ Expected:
                                       │ 32-36 dB
-Scenario IV (Oracle)         33.6 dB  │
+Scenario III (Oracle)         33.6 dB  │
                              31.8 dB  │
                                       │
 Scenario II (Baseline)       32.3 dB  │
@@ -199,7 +199,7 @@ Scenario II (Baseline)       32.3 dB  │
 
 Gaps:
 - I→II (mismatch impact): ~3.7 dB (fundamental degradation)
-- II→IV (operator knowledge): ~1.3 dB (solver robustness)
+- II→III (operator knowledge): ~1.3 dB (solver robustness)
 ```
 
 **Method Ranking:**

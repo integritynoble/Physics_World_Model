@@ -11,7 +11,7 @@
 This document details the validation framework for CASSI (Coded Aperture Snapshot Spectral Imaging) reconstruction methods in the context of the InverseNet ECCV paper. The benchmark compares **4 reconstruction methods** across **3 scenarios** using **10 KAIST hyperspectral scenes**, evaluating reconstruction quality under realistic operator mismatch without calibration.
 
 **Key Features:**
-- **3 Scenarios:** I (Ideal), II (Assumed/Baseline), IV (Truth Forward Model)
+- **3 Scenarios:** I (Ideal), II (Assumed/Baseline), III (Truth Forward Model)
 - **Skip Scenario III:** Calibration algorithms (Alg1 & Alg2) not needed for Inversenet
 - **4 Methods:** GAP-TV (classical), HDNet, MST-S, MST-L (deep learning)
 - **10 Scenes:** 256×256×28 hyperspectral KAIST dataset
@@ -52,7 +52,7 @@ In practice, the reconstruction operator `H_assumed` differs from truth `H_true`
 
 ### 1.3 Measurement Generation
 
-For Scenarios II & IV, we inject mismatch into the measurement:
+For Scenarios II & III, we inject mismatch into the measurement:
 
 ```
 y_corrupt = H_mismatch(x) + n
@@ -96,7 +96,7 @@ Where H_mismatch applies true misalignment parameters, creating degradation that
 - All methods degrade ~3-5 dB compared to Scenario I
 - Example: GAP-TV ~28 dB, HDNet ~31 dB, MST-S ~30 dB, MST-L ~32 dB
 
-### Scenario IV: Truth Forward Model (Oracle Operator)
+### Scenario III: Truth Forward Model (Oracle Operator)
 
 **Purpose:** Upper bound for corrupted measurements when true mismatch is known
 
@@ -110,7 +110,7 @@ Where H_mismatch applies true misalignment parameters, creating degradation that
 
 **Expected PSNR:**
 - Partial recovery from Scenario II (better than baseline but worse than ideal)
-- Gap II→IV: ~1-2 dB (method-dependent robustness)
+- Gap II→III: ~1-2 dB (method-dependent robustness)
 - Example: GAP-TV ~30 dB, HDNet ~32 dB, MST-S ~32 dB, MST-L ~33 dB
 
 ### Comparison: Scenario Hierarchy
@@ -122,8 +122,8 @@ PSNR_I (ideal) > PSNR_IV (oracle mismatch) > PSNR_II (baseline uncorrected)
 
 **Gaps quantify:**
 - **Gap I→II:** Mismatch impact (how much measurement quality degrades)
-- **Gap II→IV:** Operator awareness (how much better with true operator)
-- **Gap IV→I:** Residual noise/solver limitation
+- **Gap II→III:** Operator awareness (how much better with true operator)
+- **Gap III→I:** Residual noise/solver limitation
 
 ---
 
@@ -170,7 +170,7 @@ a₁ ∈ [1.95, 2.05]     → not corrected in this benchmark
 **Expected Performance:**
 - Scenario I: 32.1 ± 0.02 dB
 - Scenario II: 28.5 ± 0.05 dB (gap 3.6 dB)
-- Scenario IV: 29.8 ± 0.04 dB (recovery 1.3 dB)
+- Scenario III: 29.8 ± 0.04 dB (recovery 1.3 dB)
 
 **Rationale:** Established baseline, no deep learning dependency, widely used in HSI reconstruction
 
@@ -190,7 +190,7 @@ a₁ ∈ [1.95, 2.05]     → not corrected in this benchmark
 **Expected Performance:**
 - Scenario I: 35.0 ± 0.03 dB
 - Scenario II: 31.2 ± 0.06 dB (gap 3.8 dB)
-- Scenario IV: 32.5 ± 0.05 dB (recovery 1.3 dB)
+- Scenario III: 32.5 ± 0.05 dB (recovery 1.3 dB)
 
 **Rationale:** Deep unrolling preserves interpretability while leveraging learned priors
 
@@ -210,7 +210,7 @@ a₁ ∈ [1.95, 2.05]     → not corrected in this benchmark
 **Expected Performance:**
 - Scenario I: 34.2 ± 0.02 dB
 - Scenario II: 30.5 ± 0.04 dB (gap 3.7 dB)
-- Scenario IV: 31.8 ± 0.03 dB (recovery 1.3 dB)
+- Scenario III: 31.8 ± 0.03 dB (recovery 1.3 dB)
 
 **Rationale:** Lightweight transformer, good speed/accuracy trade-off
 
@@ -231,7 +231,7 @@ a₁ ∈ [1.95, 2.05]     → not corrected in this benchmark
 **Expected Performance:**
 - Scenario I: 36.0 ± 0.02 dB
 - Scenario II: 32.3 ± 0.05 dB (gap 3.7 dB)
-- Scenario IV: 33.6 ± 0.04 dB (recovery 1.3 dB)
+- Scenario III: 33.6 ± 0.04 dB (recovery 1.3 dB)
 
 **Rationale:** Highest capacity model, best baseline reconstruction quality
 
@@ -256,10 +256,10 @@ a₁ ∈ [1.95, 2.05]     → not corrected in this benchmark
 - No mismatch: dx=0, dy=0, θ=0
 - Represents perfect laboratory setup
 
-**Scenarios II & IV (Real/Corrupted):**
+**Scenarios II & III (Real/Corrupted):**
 - Mask source: TSA real data mask (`TSA_real_data/mask.mat`)
 - For Scenario II: Used as-is (assumes perfect alignment)
-- For Scenario IV: Warped by (dx=0.5, dy=0.3, θ=0.1°)
+- For Scenario III: Warped by (dx=0.5, dy=0.3, θ=0.1°)
 - Represents hardware with realistic misalignment
 
 ### Noise Model
@@ -326,7 +326,7 @@ SAM = arccos(x_true · x_recon / (||x_true|| ||x_recon||))  [degrees]
 
 ### PSNR Hierarchy (Mean ± Std across 10 scenes)
 
-| Method | Scenario I | Scenario II | Scenario IV | Gap I→II | Gap II→IV |
+| Method | Scenario I | Scenario II | Scenario III | Gap I→II | Gap II→III |
 |--------|-----------|-----------|-----------|---------|----------|
 | GAP-TV | 32.10±0.02 | 28.50±0.05 | 29.80±0.04 | 3.60 | 1.30 |
 | HDNet | 35.00±0.03 | 31.20±0.06 | 32.50±0.05 | 3.80 | 1.30 |
@@ -337,7 +337,7 @@ SAM = arccos(x_true · x_recon / (||x_true|| ||x_recon||))  [degrees]
 
 1. **Deep learning advantage persistent:** MST-L maintains ~3-4 dB edge over GAP-TV even under mismatch
 2. **Mismatch impact uniform:** Gap I→II is ~3.6-3.8 dB across all methods (mismatch is fundamental)
-3. **Solver robustness:** Gap II→IV ~1.3 dB (moderate recovery with known operator)
+3. **Solver robustness:** Gap II→III ~1.3 dB (moderate recovery with known operator)
 4. **Method ranking stable:** MST-L > HDNet > MST-S > GAP-TV in all scenarios
 
 ---
@@ -359,13 +359,13 @@ SAM = arccos(x_true · x_recon / (||x_true|| ||x_recon||))  [degrees]
 ### Visualization Files
 
 3. **figures/cassi/scenario_comparison.png** (bar chart)
-   - X-axis: Scenarios (I, II, IV)
+   - X-axis: Scenarios (I, II, III)
    - Y-axis: PSNR (dB)
    - Groups: 4 methods (different colors)
 
 4. **figures/cassi/method_comparison.png** (heatmap)
    - Rows: 4 methods (GAP-TV, HDNet, MST-S, MST-L)
-   - Cols: 3 scenarios (I, II, IV)
+   - Cols: 3 scenarios (I, II, III)
    - Values: PSNR (dB, color-coded)
 
 5. **figures/cassi/scene{01-10}_*.png** (120 images)
@@ -406,7 +406,7 @@ For each of 10 scenes:
 
 1. **Scenario I:** Ideal measurement & reconstruction
 2. **Scenario II:** Corrupted measurement, uncorrected operator
-3. **Scenario IV:** Corrupted measurement, truth operator
+3. **Scenario III:** Corrupted measurement, truth operator
 
 For each scenario, reconstruct with all 4 methods, compute PSNR/SSIM/SAM
 
@@ -459,7 +459,7 @@ Create all PNG and CSV output files as specified in Deliverables section
 ### Verification Checks
 
 1. **Dataset Loading:** All 10 scenes load correctly (256×256×28)
-2. **PSNR Hierarchy:** Verify I > IV > II for all methods
+2. **PSNR Hierarchy:** Verify I > III > II for all methods
 3. **Consistency:** Std dev < 0.1 dB across scenes (low noise in results)
 4. **Method Ranking:** MST-L > HDNet > MST-S > GAP-TV (established order)
 5. **Gap Similarity:** Gap I→II ~3.6-3.8 dB for all methods (uniform mismatch effect)

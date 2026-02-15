@@ -56,8 +56,8 @@ Two-panel comparison showing degradation and recovery.
 - MST-L: -0.12 dB (minimal)
 - MST-S: -1.19 dB (moderate)
 
-**Panel 2 - Recovery (Gap II→IV):**
-- Bar chart showing PSNR improvement from Scenario II to IV with oracle operator
+**Panel 2 - Recovery (Gap II→III):**
+- Bar chart showing PSNR improvement from Scenario II to III with oracle operator
 - MST-L: -0.14 dB (minimal recovery)
 - MST-S: -0.79 dB
 
@@ -91,7 +91,7 @@ Boxplot showing PSNR distribution across 10 scenes for each method and scenario.
 - MST-S: 19.92 dB (15.02-23.11 range)
 - MST-L: 19.40 dB (15.92-21.76 range)
 
-**Scenario IV (Oracle):**
+**Scenario III (Oracle):**
 - MST-S: 19.12 dB (15.88-22.51 range)
 - MST-L: 19.27 dB (16.12-22.09 range)
 
@@ -110,7 +110,7 @@ Boxplot showing PSNR distribution across 10 scenes for each method and scenario.
 **Format:** LaTeX-compatible CSV
 
 ```
-Method,Scenario I,Scenario II,Scenario IV,Gap I→II,Gap II→IV
+Method,Scenario I,Scenario II,Scenario III,Gap I→II,Gap II→III
 MST-S,18.73±2.18,19.92±2.45,19.12±1.82,-1.19,-0.79
 MST-L,19.29±1.41,19.40±1.93,19.27±1.69,-0.12,-0.14
 ```

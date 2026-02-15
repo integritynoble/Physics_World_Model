@@ -38,7 +38,7 @@
           "ssim": 0.07339493467958158
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 26.01937324902257,
           "ssim": 0.8382835584759174
@@ -60,23 +60,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 11.7583,
-        "gap_ii_iv": 9.7884,
-        "gap_iv_i": 1.9699
+        "gap_ii_iii": 9.7884,
+        "gap_iii_i": 1.9699
       },
       "gap_denoise": {
         "gap_i_ii": 12.1031,
-        "gap_ii_iv": 10.3966,
-        "gap_iv_i": 1.7065
+        "gap_ii_iii": 10.3966,
+        "gap_iii_i": 1.7065
       },
       "pnp_ffdnet": {
         "gap_i_ii": 12.0614,
-        "gap_ii_iv": 10.595,
-        "gap_iv_i": 1.4664
+        "gap_ii_iii": 10.595,
+        "gap_iii_i": 1.4664
       },
       "efficientsci": {
         "gap_i_ii": 1.58,
-        "gap_ii_iv": -3.5972,
-        "gap_iv_i": 5.1772
+        "gap_ii_iii": -3.5972,
+        "gap_iii_i": 5.1772
       }
     }
   },
@@ -119,7 +119,7 @@
           "ssim": 0.06069082049607431
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 25.390308216502568,
           "ssim": 0.8027994649810548
@@ -141,23 +141,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 11.7028,
-        "gap_ii_iv": 10.0969,
-        "gap_iv_i": 1.6059
+        "gap_ii_iii": 10.0969,
+        "gap_iii_i": 1.6059
       },
       "gap_denoise": {
         "gap_i_ii": 12.0022,
-        "gap_ii_iv": 10.6054,
-        "gap_iv_i": 1.3968
+        "gap_ii_iii": 10.6054,
+        "gap_iii_i": 1.3968
       },
       "pnp_ffdnet": {
         "gap_i_ii": 11.8556,
-        "gap_ii_iv": 10.6141,
-        "gap_iv_i": 1.2416
+        "gap_ii_iii": 10.6141,
+        "gap_iii_i": 1.2416
       },
       "efficientsci": {
         "gap_i_ii": 6.5573,
-        "gap_ii_iv": 6.3415,
-        "gap_iv_i": 0.2158
+        "gap_ii_iii": 6.3415,
+        "gap_iii_i": 0.2158
       }
     }
   },
@@ -200,7 +200,7 @@
           "ssim": 0.04833987857811156
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 24.91038251680909,
           "ssim": 0.7880960398774396
@@ -222,23 +222,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 10.7406,
-        "gap_ii_iv": 9.2509,
-        "gap_iv_i": 1.4897
+        "gap_ii_iii": 9.2509,
+        "gap_iii_i": 1.4897
       },
       "gap_denoise": {
         "gap_i_ii": 11.0109,
-        "gap_ii_iv": 9.6831,
-        "gap_iv_i": 1.3278
+        "gap_ii_iii": 9.6831,
+        "gap_iii_i": 1.3278
       },
       "pnp_ffdnet": {
         "gap_i_ii": 10.8629,
-        "gap_ii_iv": 9.6841,
-        "gap_iv_i": 1.1788
+        "gap_ii_iii": 9.6841,
+        "gap_iii_i": 1.1788
       },
       "efficientsci": {
         "gap_i_ii": 0.4404,
-        "gap_ii_iv": -4.3837,
-        "gap_iv_i": 4.824
+        "gap_ii_iii": -4.3837,
+        "gap_iii_i": 4.824
       }
     }
   },
@@ -281,7 +281,7 @@
           "ssim": 0.030900401812682332
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 24.157734902471482,
           "ssim": 0.7767682916708242
@@ -303,23 +303,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 10.1778,
-        "gap_ii_iv": 8.9199,
-        "gap_iv_i": 1.2579
+        "gap_ii_iii": 8.9199,
+        "gap_iii_i": 1.2579
       },
       "gap_denoise": {
         "gap_i_ii": 10.4149,
-        "gap_ii_iv": 9.3385,
-        "gap_iv_i": 1.0764
+        "gap_ii_iii": 9.3385,
+        "gap_iii_i": 1.0764
       },
       "pnp_ffdnet": {
         "gap_i_ii": 10.3356,
-        "gap_ii_iv": 9.345,
-        "gap_iv_i": 0.9905
+        "gap_ii_iii": 9.345,
+        "gap_iii_i": 0.9905
       },
       "efficientsci": {
         "gap_i_ii": -1.5505,
-        "gap_ii_iv": -0.9231,
-        "gap_iv_i": -0.6274
+        "gap_ii_iii": -0.9231,
+        "gap_iii_i": -0.6274
       }
     }
   },
@@ -362,7 +362,7 @@
           "ssim": 0.06642870513609286
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 19.87504815528597,
           "ssim": 0.6724172053427432
@@ -384,23 +384,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 8.7406,
-        "gap_ii_iv": 7.7404,
-        "gap_iv_i": 1.0002
+        "gap_ii_iii": 7.7404,
+        "gap_iii_i": 1.0002
       },
       "gap_denoise": {
         "gap_i_ii": 8.8638,
-        "gap_ii_iv": 7.9006,
-        "gap_iv_i": 0.9631
+        "gap_ii_iii": 7.9006,
+        "gap_iii_i": 0.9631
       },
       "pnp_ffdnet": {
         "gap_i_ii": 8.8078,
-        "gap_ii_iv": 7.9503,
-        "gap_iv_i": 0.8575
+        "gap_ii_iii": 7.9503,
+        "gap_iii_i": 0.8575
       },
       "efficientsci": {
         "gap_i_ii": 1.1146,
-        "gap_ii_iv": 1.8616,
-        "gap_iv_i": -0.747
+        "gap_ii_iii": 1.8616,
+        "gap_iii_i": -0.747
       }
     }
   },
@@ -443,7 +443,7 @@
           "ssim": 0.01523993070128556
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 19.716548496732532,
           "ssim": 0.6656900254115165
@@ -465,23 +465,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 8.5615,
-        "gap_ii_iv": 7.5263,
-        "gap_iv_i": 1.0351
+        "gap_ii_iii": 7.5263,
+        "gap_iii_i": 1.0351
       },
       "gap_denoise": {
         "gap_i_ii": 8.6707,
-        "gap_ii_iv": 7.6889,
-        "gap_iv_i": 0.9818
+        "gap_ii_iii": 7.6889,
+        "gap_iii_i": 0.9818
       },
       "pnp_ffdnet": {
         "gap_i_ii": 8.6135,
-        "gap_ii_iv": 7.7628,
-        "gap_iv_i": 0.8506
+        "gap_ii_iii": 7.7628,
+        "gap_iii_i": 0.8506
       },
       "efficientsci": {
         "gap_i_ii": -0.6304,
-        "gap_ii_iv": 0.3568,
-        "gap_iv_i": -0.9871
+        "gap_ii_iii": 0.3568,
+        "gap_iii_i": -0.9871
       }
     }
   },
@@ -524,7 +524,7 @@
           "ssim": 0.03139933160579606
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 19.745646850771013,
           "ssim": 0.6700390216623713
@@ -546,23 +546,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 8.4317,
-        "gap_ii_iv": 7.4425,
-        "gap_iv_i": 0.9892
+        "gap_ii_iii": 7.4425,
+        "gap_iii_i": 0.9892
       },
       "gap_denoise": {
         "gap_i_ii": 8.5736,
-        "gap_ii_iv": 7.6368,
-        "gap_iv_i": 0.9368
+        "gap_ii_iii": 7.6368,
+        "gap_iii_i": 0.9368
       },
       "pnp_ffdnet": {
         "gap_i_ii": 8.499,
-        "gap_ii_iv": 7.6727,
-        "gap_iv_i": 0.8263
+        "gap_ii_iii": 7.6727,
+        "gap_iii_i": 0.8263
       },
       "efficientsci": {
         "gap_i_ii": 1.1208,
-        "gap_ii_iv": 0.5394,
-        "gap_iv_i": 0.5813
+        "gap_ii_iii": 0.5394,
+        "gap_iii_i": 0.5813
       }
     }
   },
@@ -605,7 +605,7 @@
           "ssim": 0.030288645895165334
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 19.69920966919235,
           "ssim": 0.6703777416519074
@@ -627,23 +627,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 8.5392,
-        "gap_ii_iv": 7.5451,
-        "gap_iv_i": 0.9941
+        "gap_ii_iii": 7.5451,
+        "gap_iii_i": 0.9941
       },
       "gap_denoise": {
         "gap_i_ii": 8.6634,
-        "gap_ii_iv": 7.6834,
-        "gap_iv_i": 0.9801
+        "gap_ii_iii": 7.6834,
+        "gap_iii_i": 0.9801
       },
       "pnp_ffdnet": {
         "gap_i_ii": 8.5797,
-        "gap_ii_iv": 7.7419,
-        "gap_iv_i": 0.8379
+        "gap_ii_iii": 7.7419,
+        "gap_iii_i": 0.8379
       },
       "efficientsci": {
         "gap_i_ii": -0.2834,
-        "gap_ii_iv": 1.3618,
-        "gap_iv_i": -1.6451
+        "gap_ii_iii": 1.3618,
+        "gap_iii_i": -1.6451
       }
     }
   },
@@ -686,7 +686,7 @@
           "ssim": 0.0248201736869893
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 19.63748025420187,
           "ssim": 0.6663833959659143
@@ -708,23 +708,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 8.507,
-        "gap_ii_iv": 7.5344,
-        "gap_iv_i": 0.9726
+        "gap_ii_iii": 7.5344,
+        "gap_iii_i": 0.9726
       },
       "gap_denoise": {
         "gap_i_ii": 8.6402,
-        "gap_ii_iv": 7.7155,
-        "gap_iv_i": 0.9247
+        "gap_ii_iii": 7.7155,
+        "gap_iii_i": 0.9247
       },
       "pnp_ffdnet": {
         "gap_i_ii": 8.5642,
-        "gap_ii_iv": 7.7508,
-        "gap_iv_i": 0.8134
+        "gap_ii_iii": 7.7508,
+        "gap_iii_i": 0.8134
       },
       "efficientsci": {
         "gap_i_ii": -0.8596,
-        "gap_ii_iv": -0.6745,
-        "gap_iv_i": -0.1852
+        "gap_ii_iii": -0.6745,
+        "gap_iii_i": -0.1852
       }
     }
   },
@@ -767,7 +767,7 @@
           "ssim": 0.05330269279587047
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 19.72768456542095,
           "ssim": 0.6674272565234136
@@ -789,23 +789,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 8.6288,
-        "gap_ii_iv": 7.6364,
-        "gap_iv_i": 0.9925
+        "gap_ii_iii": 7.6364,
+        "gap_iii_i": 0.9925
       },
       "gap_denoise": {
         "gap_i_ii": 8.7551,
-        "gap_ii_iv": 7.8106,
-        "gap_iv_i": 0.9446
+        "gap_ii_iii": 7.8106,
+        "gap_iii_i": 0.9446
       },
       "pnp_ffdnet": {
         "gap_i_ii": 8.6904,
-        "gap_ii_iv": 7.8189,
-        "gap_iv_i": 0.8715
+        "gap_ii_iii": 7.8189,
+        "gap_iii_i": 0.8715
       },
       "efficientsci": {
         "gap_i_ii": -0.2191,
-        "gap_ii_iv": -0.9721,
-        "gap_iv_i": 0.7529
+        "gap_ii_iii": -0.9721,
+        "gap_iii_i": 0.7529
       }
     }
   },
@@ -848,7 +848,7 @@
           "ssim": 0.01679939375285847
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 26.802432379137528,
           "ssim": 0.8426353715615866
@@ -870,23 +870,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 14.3292,
-        "gap_ii_iv": 11.3225,
-        "gap_iv_i": 3.0067
+        "gap_ii_iii": 11.3225,
+        "gap_iii_i": 3.0067
       },
       "gap_denoise": {
         "gap_i_ii": 14.5425,
-        "gap_ii_iv": 11.8253,
-        "gap_iv_i": 2.7172
+        "gap_ii_iii": 11.8253,
+        "gap_iii_i": 2.7172
       },
       "pnp_ffdnet": {
         "gap_i_ii": 14.0567,
-        "gap_ii_iv": 11.841,
-        "gap_iv_i": 2.2156
+        "gap_ii_iii": 11.841,
+        "gap_iii_i": 2.2156
       },
       "efficientsci": {
         "gap_i_ii": -0.875,
-        "gap_ii_iv": -3.1704,
-        "gap_iv_i": 2.2953
+        "gap_ii_iii": -3.1704,
+        "gap_iii_i": 2.2953
       }
     }
   },
@@ -929,7 +929,7 @@
           "ssim": 0.05375608852230378
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 26.590746261719023,
           "ssim": 0.8390896344657592
@@ -951,23 +951,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 14.5429,
-        "gap_ii_iv": 11.3389,
-        "gap_iv_i": 3.2041
+        "gap_ii_iii": 11.3389,
+        "gap_iii_i": 3.2041
       },
       "gap_denoise": {
         "gap_i_ii": 14.7528,
-        "gap_ii_iv": 11.9305,
-        "gap_iv_i": 2.8222
+        "gap_ii_iii": 11.9305,
+        "gap_iii_i": 2.8222
       },
       "pnp_ffdnet": {
         "gap_i_ii": 14.2856,
-        "gap_ii_iv": 11.9851,
-        "gap_iv_i": 2.3006
+        "gap_ii_iii": 11.9851,
+        "gap_iii_i": 2.3006
       },
       "efficientsci": {
         "gap_i_ii": -1.7038,
-        "gap_ii_iv": 0.6308,
-        "gap_iv_i": -2.3345
+        "gap_ii_iii": 0.6308,
+        "gap_iii_i": -2.3345
       }
     }
   },
@@ -1010,7 +1010,7 @@
           "ssim": 0.09835138635404468
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 26.094476428631236,
           "ssim": 0.8276947388209802
@@ -1032,23 +1032,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 13.7632,
-        "gap_ii_iv": 11.0986,
-        "gap_iv_i": 2.6646
+        "gap_ii_iii": 11.0986,
+        "gap_iii_i": 2.6646
       },
       "gap_denoise": {
         "gap_i_ii": 13.9926,
-        "gap_ii_iv": 11.5847,
-        "gap_iv_i": 2.4079
+        "gap_ii_iii": 11.5847,
+        "gap_iii_i": 2.4079
       },
       "pnp_ffdnet": {
         "gap_i_ii": 13.6086,
-        "gap_ii_iv": 11.5972,
-        "gap_iv_i": 2.0114
+        "gap_ii_iii": 11.5972,
+        "gap_iii_i": 2.0114
       },
       "efficientsci": {
         "gap_i_ii": 0.94,
-        "gap_ii_iv": 1.9096,
-        "gap_iv_i": -0.9696
+        "gap_ii_iii": 1.9096,
+        "gap_iii_i": -0.9696
       }
     }
   },
@@ -1091,7 +1091,7 @@
           "ssim": 0.048062804879030085
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 26.040157401025294,
           "ssim": 0.8184224664242834
@@ -1113,23 +1113,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 13.4292,
-        "gap_ii_iv": 10.5164,
-        "gap_iv_i": 2.9127
+        "gap_ii_iii": 10.5164,
+        "gap_iii_i": 2.9127
       },
       "gap_denoise": {
         "gap_i_ii": 13.6588,
-        "gap_ii_iv": 11.1437,
-        "gap_iv_i": 2.5151
+        "gap_ii_iii": 11.1437,
+        "gap_iii_i": 2.5151
       },
       "pnp_ffdnet": {
         "gap_i_ii": 13.237,
-        "gap_ii_iv": 11.1744,
-        "gap_iv_i": 2.0626
+        "gap_ii_iii": 11.1744,
+        "gap_iii_i": 2.0626
       },
       "efficientsci": {
         "gap_i_ii": -3.6518,
-        "gap_ii_iv": -1.4492,
-        "gap_iv_i": -2.2026
+        "gap_ii_iii": -1.4492,
+        "gap_iii_i": -2.2026
       }
     }
   },
@@ -1172,7 +1172,7 @@
           "ssim": 0.03483431050405009
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 26.745800289060575,
           "ssim": 0.826192854098829
@@ -1194,23 +1194,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 14.6512,
-        "gap_ii_iv": 11.9943,
-        "gap_iv_i": 2.6569
+        "gap_ii_iii": 11.9943,
+        "gap_iii_i": 2.6569
       },
       "gap_denoise": {
         "gap_i_ii": 14.8963,
-        "gap_ii_iv": 12.4907,
-        "gap_iv_i": 2.4056
+        "gap_ii_iii": 12.4907,
+        "gap_iii_i": 2.4056
       },
       "pnp_ffdnet": {
         "gap_i_ii": 14.494,
-        "gap_ii_iv": 12.4681,
-        "gap_iv_i": 2.0259
+        "gap_ii_iii": 12.4681,
+        "gap_iii_i": 2.0259
       },
       "efficientsci": {
         "gap_i_ii": 0.6404,
-        "gap_ii_iv": -4.6635,
-        "gap_iv_i": 5.3039
+        "gap_ii_iii": -4.6635,
+        "gap_iii_i": 5.3039
       }
     }
   },
@@ -1253,7 +1253,7 @@
           "ssim": 0.034022686427875384
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 24.165520077434323,
           "ssim": 0.744411524647826
@@ -1275,23 +1275,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 23.2375,
-        "gap_ii_iv": 12.5752,
-        "gap_iv_i": 10.6623
+        "gap_ii_iii": 12.5752,
+        "gap_iii_i": 10.6623
       },
       "gap_denoise": {
         "gap_i_ii": 23.398,
-        "gap_ii_iv": 13.2926,
-        "gap_iv_i": 10.1054
+        "gap_ii_iii": 13.2926,
+        "gap_iii_i": 10.1054
       },
       "pnp_ffdnet": {
         "gap_i_ii": 21.7349,
-        "gap_ii_iv": 13.4984,
-        "gap_iv_i": 8.2365
+        "gap_ii_iii": 13.4984,
+        "gap_iii_i": 8.2365
       },
       "efficientsci": {
         "gap_i_ii": -1.4104,
-        "gap_ii_iv": -1.4795,
-        "gap_iv_i": 0.0691
+        "gap_ii_iii": -1.4795,
+        "gap_iii_i": 0.0691
       }
     }
   },
@@ -1334,7 +1334,7 @@
           "ssim": 0.18764745298480012
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 24.567997036224757,
           "ssim": 0.7445380124091538
@@ -1356,23 +1356,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 23.2216,
-        "gap_ii_iv": 13.0033,
-        "gap_iv_i": 10.2183
+        "gap_ii_iii": 13.0033,
+        "gap_iii_i": 10.2183
       },
       "gap_denoise": {
         "gap_i_ii": 23.4197,
-        "gap_ii_iv": 13.6182,
-        "gap_iv_i": 9.8015
+        "gap_ii_iii": 13.6182,
+        "gap_iii_i": 9.8015
       },
       "pnp_ffdnet": {
         "gap_i_ii": 21.6969,
-        "gap_ii_iv": 13.8091,
-        "gap_iv_i": 7.8878
+        "gap_ii_iii": 13.8091,
+        "gap_iii_i": 7.8878
       },
       "efficientsci": {
         "gap_i_ii": -0.7322,
-        "gap_ii_iv": 0.0976,
-        "gap_iv_i": -0.8298
+        "gap_ii_iii": 0.0976,
+        "gap_iii_i": -0.8298
       }
     }
   },
@@ -1415,7 +1415,7 @@
           "ssim": 0.18570290332080824
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 24.59340605211887,
           "ssim": 0.7396173734330102
@@ -1437,23 +1437,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 22.7943,
-        "gap_ii_iv": 13.1069,
-        "gap_iv_i": 9.6874
+        "gap_ii_iii": 13.1069,
+        "gap_iii_i": 9.6874
       },
       "gap_denoise": {
         "gap_i_ii": 23.0198,
-        "gap_ii_iv": 13.7082,
-        "gap_iv_i": 9.3116
+        "gap_ii_iii": 13.7082,
+        "gap_iii_i": 9.3116
       },
       "pnp_ffdnet": {
         "gap_i_ii": 21.5182,
-        "gap_ii_iv": 13.9099,
-        "gap_iv_i": 7.6084
+        "gap_ii_iii": 13.9099,
+        "gap_iii_i": 7.6084
       },
       "efficientsci": {
         "gap_i_ii": -0.7968,
-        "gap_ii_iv": 1.47,
-        "gap_iv_i": -2.2668
+        "gap_ii_iii": 1.47,
+        "gap_iii_i": -2.2668
       }
     }
   },
@@ -1496,7 +1496,7 @@
           "ssim": 0.04126207447804829
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 24.218032041465168,
           "ssim": 0.7316630122216637
@@ -1518,23 +1518,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 22.1962,
-        "gap_ii_iv": 12.8005,
-        "gap_iv_i": 9.3957
+        "gap_ii_iii": 12.8005,
+        "gap_iii_i": 9.3957
       },
       "gap_denoise": {
         "gap_i_ii": 22.4253,
-        "gap_ii_iv": 13.4437,
-        "gap_iv_i": 8.9816
+        "gap_ii_iii": 13.4437,
+        "gap_iii_i": 8.9816
       },
       "pnp_ffdnet": {
         "gap_i_ii": 21.0954,
-        "gap_ii_iv": 13.6451,
-        "gap_iv_i": 7.4502
+        "gap_ii_iii": 13.6451,
+        "gap_iii_i": 7.4502
       },
       "efficientsci": {
         "gap_i_ii": 0.4185,
-        "gap_ii_iv": 0.7599,
-        "gap_iv_i": -0.3413
+        "gap_ii_iii": 0.7599,
+        "gap_iii_i": -0.3413
       }
     }
   },
@@ -1577,7 +1577,7 @@
           "ssim": 0.038070640363939916
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 24.00803747813089,
           "ssim": 0.7257817878763501
@@ -1599,23 +1599,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 22.244,
-        "gap_ii_iv": 12.6829,
-        "gap_iv_i": 9.5612
+        "gap_ii_iii": 12.6829,
+        "gap_iii_i": 9.5612
       },
       "gap_denoise": {
         "gap_i_ii": 22.4654,
-        "gap_ii_iv": 13.3637,
-        "gap_iv_i": 9.1017
+        "gap_ii_iii": 13.3637,
+        "gap_iii_i": 9.1017
       },
       "pnp_ffdnet": {
         "gap_i_ii": 21.0977,
-        "gap_ii_iv": 13.5589,
-        "gap_iv_i": 7.5388
+        "gap_ii_iii": 13.5589,
+        "gap_iii_i": 7.5388
       },
       "efficientsci": {
         "gap_i_ii": 1.1301,
-        "gap_ii_iv": 0.1034,
-        "gap_iv_i": 1.0268
+        "gap_ii_iii": 0.1034,
+        "gap_iii_i": 1.0268
       }
     }
   },
@@ -1658,7 +1658,7 @@
           "ssim": 0.019097702591367945
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 23.472711701455445,
           "ssim": 0.7495226805089693
@@ -1680,23 +1680,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 13.0154,
-        "gap_ii_iv": 10.754,
-        "gap_iv_i": 2.2615
+        "gap_ii_iii": 10.754,
+        "gap_iii_i": 2.2615
       },
       "gap_denoise": {
         "gap_i_ii": 13.0336,
-        "gap_ii_iv": 10.8852,
-        "gap_iv_i": 2.1484
+        "gap_ii_iii": 10.8852,
+        "gap_iii_i": 2.1484
       },
       "pnp_ffdnet": {
         "gap_i_ii": 12.9014,
-        "gap_ii_iv": 11.1214,
-        "gap_iv_i": 1.78
+        "gap_ii_iii": 11.1214,
+        "gap_iii_i": 1.78
       },
       "efficientsci": {
         "gap_i_ii": 0.3155,
-        "gap_ii_iv": 0.7944,
-        "gap_iv_i": -0.4789
+        "gap_ii_iii": 0.7944,
+        "gap_iii_i": -0.4789
       }
     }
   },
@@ -1739,7 +1739,7 @@
           "ssim": 0.11785515367055752
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 23.121048144497504,
           "ssim": 0.7409038678941463
@@ -1761,23 +1761,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 12.402,
-        "gap_ii_iv": 10.415,
-        "gap_iv_i": 1.987
+        "gap_ii_iii": 10.415,
+        "gap_iii_i": 1.987
       },
       "gap_denoise": {
         "gap_i_ii": 12.4438,
-        "gap_ii_iv": 10.589,
-        "gap_iv_i": 1.8547
+        "gap_ii_iii": 10.589,
+        "gap_iii_i": 1.8547
       },
       "pnp_ffdnet": {
         "gap_i_ii": 12.4727,
-        "gap_ii_iv": 10.7847,
-        "gap_iv_i": 1.688
+        "gap_ii_iii": 10.7847,
+        "gap_iii_i": 1.688
       },
       "efficientsci": {
         "gap_i_ii": 1.4865,
-        "gap_ii_iv": 0.4484,
-        "gap_iv_i": 1.038
+        "gap_ii_iii": 0.4484,
+        "gap_iii_i": 1.038
       }
     }
   },
@@ -1820,7 +1820,7 @@
           "ssim": 0.02852285761244625
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 22.75854147139499,
           "ssim": 0.7305112882542942
@@ -1842,23 +1842,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 11.768,
-        "gap_ii_iv": 10.0456,
-        "gap_iv_i": 1.7225
+        "gap_ii_iii": 10.0456,
+        "gap_iii_i": 1.7225
       },
       "gap_denoise": {
         "gap_i_ii": 11.8211,
-        "gap_ii_iv": 10.2013,
-        "gap_iv_i": 1.6198
+        "gap_ii_iii": 10.2013,
+        "gap_iii_i": 1.6198
       },
       "pnp_ffdnet": {
         "gap_i_ii": 11.8019,
-        "gap_ii_iv": 10.3077,
-        "gap_iv_i": 1.4942
+        "gap_ii_iii": 10.3077,
+        "gap_iii_i": 1.4942
       },
       "efficientsci": {
         "gap_i_ii": 1.216,
-        "gap_ii_iv": 0.133,
-        "gap_iv_i": 1.083
+        "gap_ii_iii": 0.133,
+        "gap_iii_i": 1.083
       }
     }
   },
@@ -1901,7 +1901,7 @@
           "ssim": 0.04507398099683034
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 22.31967903863257,
           "ssim": 0.7272574704683871
@@ -1923,23 +1923,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 11.098,
-        "gap_ii_iv": 9.5571,
-        "gap_iv_i": 1.5409
+        "gap_ii_iii": 9.5571,
+        "gap_iii_i": 1.5409
       },
       "gap_denoise": {
         "gap_i_ii": 11.1654,
-        "gap_ii_iv": 9.721,
-        "gap_iv_i": 1.4444
+        "gap_ii_iii": 9.721,
+        "gap_iii_i": 1.4444
       },
       "pnp_ffdnet": {
         "gap_i_ii": 11.1293,
-        "gap_ii_iv": 9.8064,
-        "gap_iv_i": 1.3229
+        "gap_ii_iii": 9.8064,
+        "gap_iii_i": 1.3229
       },
       "efficientsci": {
         "gap_i_ii": 0.2487,
-        "gap_ii_iv": 0.1116,
-        "gap_iv_i": 0.137
+        "gap_ii_iii": 0.1116,
+        "gap_iii_i": 0.137
       }
     }
   },
@@ -1982,7 +1982,7 @@
           "ssim": 0.05964552305748475
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 23.43574746440777,
           "ssim": 0.75111636601858
@@ -2004,23 +2004,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 10.6813,
-        "gap_ii_iv": 9.0551,
-        "gap_iv_i": 1.6261
+        "gap_ii_iii": 9.0551,
+        "gap_iii_i": 1.6261
       },
       "gap_denoise": {
         "gap_i_ii": 10.7749,
-        "gap_ii_iv": 9.3727,
-        "gap_iv_i": 1.4022
+        "gap_ii_iii": 9.3727,
+        "gap_iii_i": 1.4022
       },
       "pnp_ffdnet": {
         "gap_i_ii": 10.6043,
-        "gap_ii_iv": 9.4391,
-        "gap_iv_i": 1.1652
+        "gap_ii_iii": 9.4391,
+        "gap_iii_i": 1.1652
       },
       "efficientsci": {
         "gap_i_ii": -0.0352,
-        "gap_ii_iv": -1.4596,
-        "gap_iv_i": 1.4244
+        "gap_ii_iii": -1.4596,
+        "gap_iii_i": 1.4244
       }
     }
   },
@@ -2063,7 +2063,7 @@
           "ssim": 0.054724083861778676
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 23.278135025820443,
           "ssim": 0.7494034361503148
@@ -2085,23 +2085,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 10.5974,
-        "gap_ii_iv": 8.9794,
-        "gap_iv_i": 1.618
+        "gap_ii_iii": 8.9794,
+        "gap_iii_i": 1.618
       },
       "gap_denoise": {
         "gap_i_ii": 10.7152,
-        "gap_ii_iv": 9.3294,
-        "gap_iv_i": 1.3858
+        "gap_ii_iii": 9.3294,
+        "gap_iii_i": 1.3858
       },
       "pnp_ffdnet": {
         "gap_i_ii": 10.5448,
-        "gap_ii_iv": 9.355,
-        "gap_iv_i": 1.1898
+        "gap_ii_iii": 9.355,
+        "gap_iii_i": 1.1898
       },
       "efficientsci": {
         "gap_i_ii": -1.8441,
-        "gap_ii_iv": -0.7535,
-        "gap_iv_i": -1.0906
+        "gap_ii_iii": -0.7535,
+        "gap_iii_i": -1.0906
       }
     }
   },
@@ -2144,7 +2144,7 @@
           "ssim": 0.02843942362539871
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 23.40025085667291,
           "ssim": 0.7579425282654972
@@ -2166,23 +2166,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 10.7583,
-        "gap_ii_iv": 9.097,
-        "gap_iv_i": 1.6613
+        "gap_ii_iii": 9.097,
+        "gap_iii_i": 1.6613
       },
       "gap_denoise": {
         "gap_i_ii": 10.8863,
-        "gap_ii_iv": 9.4368,
-        "gap_iv_i": 1.4495
+        "gap_ii_iii": 9.4368,
+        "gap_iii_i": 1.4495
       },
       "pnp_ffdnet": {
         "gap_i_ii": 10.6967,
-        "gap_ii_iv": 9.4724,
-        "gap_iv_i": 1.2243
+        "gap_ii_iii": 9.4724,
+        "gap_iii_i": 1.2243
       },
       "efficientsci": {
         "gap_i_ii": -1.609,
-        "gap_ii_iv": -2.2903,
-        "gap_iv_i": 0.6813
+        "gap_ii_iii": -2.2903,
+        "gap_iii_i": 0.6813
       }
     }
   },
@@ -2225,7 +2225,7 @@
           "ssim": 0.0359455426406754
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr": 23.949034646025936,
           "ssim": 0.7775839763117461
@@ -2247,23 +2247,23 @@
     "gaps": {
       "gap_tv": {
         "gap_i_ii": 11.5752,
-        "gap_ii_iv": 9.6606,
-        "gap_iv_i": 1.9146
+        "gap_ii_iii": 9.6606,
+        "gap_iii_i": 1.9146
       },
       "gap_denoise": {
         "gap_i_ii": 11.6943,
-        "gap_ii_iv": 10.0267,
-        "gap_iv_i": 1.6676
+        "gap_ii_iii": 10.0267,
+        "gap_iii_i": 1.6676
       },
       "pnp_ffdnet": {
         "gap_i_ii": 11.3245,
-        "gap_ii_iv": 10.0548,
-        "gap_iv_i": 1.2698
+        "gap_ii_iii": 10.0548,
+        "gap_iii_i": 1.2698
       },
       "efficientsci": {
         "gap_i_ii": -1.5541,
-        "gap_ii_iv": -1.7487,
-        "gap_iv_i": 0.1946
+        "gap_ii_iii": -1.7487,
+        "gap_iii_i": 0.1946
       }
     }
   }

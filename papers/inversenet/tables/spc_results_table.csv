@@ -1,4 +1,4 @@
-Method,Scenario I,Scenario II,Scenario IV,Gap I→II,Gap II→IV
+Method,Scenario I,Scenario II,Scenario III,Gap I→II,Gap II→III
 ADMM-TV,25.02±4.04,20.91±2.04,26.55±3.69,4.11,5.64
 PnP-FISTA,25.02±4.04,20.91±2.04,26.55±3.69,4.11,5.64
 ISTA-Net+,25.02±4.04,20.91±2.04,26.55±3.69,4.11,5.64
