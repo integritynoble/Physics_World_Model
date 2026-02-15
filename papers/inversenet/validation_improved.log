@@ -1,0 +1,36 @@
+2026-02-15 15:34:30,450 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:34:30,450 - __main__ - INFO - CASSI Validation for InverseNet ECCV Paper
+2026-02-15 15:34:30,450 - __main__ - INFO - 3 Scenarios × 4 Methods × 10 Scenes = 120 Reconstructions
+2026-02-15 15:34:30,450 - __main__ - INFO - ======================================================================
+2026-02-15 15:34:30,467 - __main__ - INFO - Ideal mask shape: (256, 256)
+2026-02-15 15:34:30,467 - __main__ - INFO - Real mask shape: (660, 660)
+2026-02-15 15:34:30,467 - __main__ - INFO - Mismatch parameters: dx=0.5 px, dy=0.3 px, θ=0.1°
+2026-02-15 15:34:30,523 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:34:30,523 - __main__ - INFO - Scene 1/10
+2026-02-15 15:34:30,523 - __main__ - INFO - ======================================================================
+2026-02-15 15:34:30,524 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:38:44,543 - __main__ - WARNING - MST-S failed: too many values to unpack (expected 3)
+2026-02-15 15:38:44,847 - __main__ - WARNING - MST-L failed: too many values to unpack (expected 3)
+2026-02-15 15:38:45,081 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+Traceback (most recent call last):
+  File "/home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/scripts/validate_cassi_inversenet.py", line 836, in <module>
+    main()
+    ~~~~^^
+  File "/home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/scripts/validate_cassi_inversenet.py", line 786, in main
+    result = validate_scene(scene_idx, scene, mask_ideal, mask_real,
+                           mismatch, RECONSTRUCTION_METHODS, args.device)
+  File "/home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/scripts/validate_cassi_inversenet.py", line 619, in validate_scene
+    res_ii, y_corrupt = validate_scenario_ii(scene, mask_real, mismatch, methods, device)
+                        ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/scripts/validate_cassi_inversenet.py", line 506, in validate_scenario_ii
+    y_corrupt = add_poisson_gaussian_noise(y_corrupt, peak=10000, sigma=1.0)
+  File "/home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/scripts/validate_cassi_inversenet.py", line 199, in add_poisson_gaussian_noise
+    y_poisson = np.random.poisson(y_scaled).astype(np.float32)
+                ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "numpy/random/mtrand.pyx", line 3687, in numpy.random.mtrand.RandomState.poisson
+  File "numpy/random/_common.pyx", line 902, in numpy.random._common.disc
+  File "numpy/random/_common.pyx", line 699, in numpy.random._common.discrete_broadcast_d
+  File "numpy/random/_common.pyx", line 416, in numpy.random._common.check_array_constraint
+ValueError: lam < 0 or lam contains NaNs

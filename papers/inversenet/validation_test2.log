@@ -1,0 +1,434 @@
+2026-02-15 15:12:57,969 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:12:57,969 - __main__ - INFO - CASSI Validation for InverseNet ECCV Paper
+2026-02-15 15:12:57,969 - __main__ - INFO - 3 Scenarios × 4 Methods × 10 Scenes = 120 Reconstructions
+2026-02-15 15:12:57,969 - __main__ - INFO - ======================================================================
+2026-02-15 15:12:57,987 - __main__ - INFO - Ideal mask shape: (256, 256)
+2026-02-15 15:12:57,987 - __main__ - INFO - Real mask shape: (660, 660)
+2026-02-15 15:12:57,987 - __main__ - INFO - Mismatch parameters: dx=0.5 px, dy=0.3 px, θ=0.1°
+2026-02-15 15:12:58,080 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:12:58,080 - __main__ - INFO - Scene 1/10
+2026-02-15 15:12:58,080 - __main__ - INFO - ======================================================================
+2026-02-15 15:12:58,080 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:12:59,708 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (256,256) (256,229) 
+/home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/scripts/validate_cassi_inversenet.py:253: UserWarning: HDNet: no pretrained weights found; using random initialization. Results will be poor without training.
+  return hdnet_recon_cassi(y, mask_3d, nC=28, step=2, device=device)
+2026-02-15 15:13:00,200 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 202 but got size 256 for tensor number 1 in the list.
+2026-02-15 15:13:00,417 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:00,746 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:00,964 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:13:01,070 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:01,414 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:01,615 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:01,856 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:02,084 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:13:02,161 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:02,496 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:02,703 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:02,954 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:03,208 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:13:03,208 - __main__ - INFO -     I (Ideal):   12.59 dB
+2026-02-15 15:13:03,208 - __main__ - INFO -     II (Assumed): 12.60 dB (gap -0.01 dB)
+2026-02-15 15:13:03,208 - __main__ - INFO -     IV (Oracle):  12.59 dB (recovery -0.01 dB)
+2026-02-15 15:13:03,208 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:13:03,208 - __main__ - INFO -     I (Ideal):   12.58 dB
+2026-02-15 15:13:03,208 - __main__ - INFO -     II (Assumed): 12.59 dB (gap -0.01 dB)
+2026-02-15 15:13:03,208 - __main__ - INFO -     IV (Oracle):  12.59 dB (recovery -0.00 dB)
+2026-02-15 15:13:03,208 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:13:03,208 - __main__ - INFO -     I (Ideal):   12.60 dB
+2026-02-15 15:13:03,208 - __main__ - INFO -     II (Assumed): 12.59 dB (gap 0.00 dB)
+2026-02-15 15:13:03,208 - __main__ - INFO -     IV (Oracle):  12.59 dB (recovery -0.00 dB)
+2026-02-15 15:13:03,208 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:13:03,208 - __main__ - INFO -     I (Ideal):   12.59 dB
+2026-02-15 15:13:03,208 - __main__ - INFO -     II (Assumed): 12.59 dB (gap -0.00 dB)
+2026-02-15 15:13:03,208 - __main__ - INFO -     IV (Oracle):  12.59 dB (recovery 0.00 dB)
+2026-02-15 15:13:03,263 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:13:03,263 - __main__ - INFO - Scene 2/10
+2026-02-15 15:13:03,263 - __main__ - INFO - ======================================================================
+2026-02-15 15:13:03,264 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:13:03,265 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (256,256) (256,229) 
+2026-02-15 15:13:03,527 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 202 but got size 256 for tensor number 1 in the list.
+2026-02-15 15:13:03,739 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:04,012 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:04,263 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:13:04,342 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:04,689 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:04,890 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:05,156 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:05,406 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:13:05,481 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:05,854 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:06,070 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:06,332 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:06,581 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:13:06,582 - __main__ - INFO -     I (Ideal):   12.06 dB
+2026-02-15 15:13:06,582 - __main__ - INFO -     II (Assumed): 12.06 dB (gap -0.00 dB)
+2026-02-15 15:13:06,582 - __main__ - INFO -     IV (Oracle):  12.06 dB (recovery -0.00 dB)
+2026-02-15 15:13:06,582 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:13:06,582 - __main__ - INFO -     I (Ideal):   12.06 dB
+2026-02-15 15:13:06,582 - __main__ - INFO -     II (Assumed): 12.06 dB (gap -0.00 dB)
+2026-02-15 15:13:06,582 - __main__ - INFO -     IV (Oracle):  12.05 dB (recovery -0.00 dB)
+2026-02-15 15:13:06,582 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:13:06,582 - __main__ - INFO -     I (Ideal):   12.06 dB
+2026-02-15 15:13:06,582 - __main__ - INFO -     II (Assumed): 12.06 dB (gap -0.01 dB)
+2026-02-15 15:13:06,582 - __main__ - INFO -     IV (Oracle):  12.06 dB (recovery -0.01 dB)
+2026-02-15 15:13:06,582 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:13:06,582 - __main__ - INFO -     I (Ideal):   12.06 dB
+2026-02-15 15:13:06,582 - __main__ - INFO -     II (Assumed): 12.06 dB (gap -0.00 dB)
+2026-02-15 15:13:06,582 - __main__ - INFO -     IV (Oracle):  12.06 dB (recovery -0.00 dB)
+2026-02-15 15:13:06,633 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:13:06,634 - __main__ - INFO - Scene 3/10
+2026-02-15 15:13:06,634 - __main__ - INFO - ======================================================================
+2026-02-15 15:13:06,634 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:13:06,635 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (256,256) (256,229) 
+2026-02-15 15:13:06,896 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 202 but got size 256 for tensor number 1 in the list.
+2026-02-15 15:13:07,107 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:07,344 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:07,547 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:13:07,633 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:07,976 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:08,190 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:08,415 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:08,622 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:13:08,706 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:09,046 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:09,268 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:09,495 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:09,703 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:13:09,703 - __main__ - INFO -     I (Ideal):   11.90 dB
+2026-02-15 15:13:09,703 - __main__ - INFO -     II (Assumed): 11.91 dB (gap -0.01 dB)
+2026-02-15 15:13:09,703 - __main__ - INFO -     IV (Oracle):  11.91 dB (recovery -0.00 dB)
+2026-02-15 15:13:09,703 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:13:09,703 - __main__ - INFO -     I (Ideal):   11.90 dB
+2026-02-15 15:13:09,703 - __main__ - INFO -     II (Assumed): 11.90 dB (gap 0.00 dB)
+2026-02-15 15:13:09,703 - __main__ - INFO -     IV (Oracle):  11.90 dB (recovery 0.00 dB)
+2026-02-15 15:13:09,703 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:13:09,703 - __main__ - INFO -     I (Ideal):   11.91 dB
+2026-02-15 15:13:09,703 - __main__ - INFO -     II (Assumed): 11.90 dB (gap 0.00 dB)
+2026-02-15 15:13:09,703 - __main__ - INFO -     IV (Oracle):  11.91 dB (recovery 0.00 dB)
+2026-02-15 15:13:09,703 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:13:09,703 - __main__ - INFO -     I (Ideal):   11.90 dB
+2026-02-15 15:13:09,703 - __main__ - INFO -     II (Assumed): 11.90 dB (gap 0.00 dB)
+2026-02-15 15:13:09,703 - __main__ - INFO -     IV (Oracle):  11.90 dB (recovery 0.00 dB)
+2026-02-15 15:13:09,759 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:13:09,759 - __main__ - INFO - Scene 4/10
+2026-02-15 15:13:09,759 - __main__ - INFO - ======================================================================
+2026-02-15 15:13:09,759 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:13:09,761 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (256,256) (256,229) 
+2026-02-15 15:13:10,021 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 202 but got size 256 for tensor number 1 in the list.
+2026-02-15 15:13:10,259 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:10,537 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:10,759 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:13:10,861 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:11,257 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:11,477 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:11,716 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:11,921 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:13:12,003 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:12,431 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:12,727 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:13,032 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:13,342 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:13:13,342 - __main__ - INFO -     I (Ideal):   11.31 dB
+2026-02-15 15:13:13,342 - __main__ - INFO -     II (Assumed): 11.31 dB (gap 0.00 dB)
+2026-02-15 15:13:13,342 - __main__ - INFO -     IV (Oracle):  11.30 dB (recovery -0.00 dB)
+2026-02-15 15:13:13,342 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:13:13,342 - __main__ - INFO -     I (Ideal):   11.30 dB
+2026-02-15 15:13:13,342 - __main__ - INFO -     II (Assumed): 11.31 dB (gap -0.00 dB)
+2026-02-15 15:13:13,342 - __main__ - INFO -     IV (Oracle):  11.31 dB (recovery -0.00 dB)
+2026-02-15 15:13:13,342 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:13:13,343 - __main__ - INFO -     I (Ideal):   11.31 dB
+2026-02-15 15:13:13,343 - __main__ - INFO -     II (Assumed): 11.31 dB (gap -0.00 dB)
+2026-02-15 15:13:13,343 - __main__ - INFO -     IV (Oracle):  11.30 dB (recovery -0.00 dB)
+2026-02-15 15:13:13,343 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:13:13,343 - __main__ - INFO -     I (Ideal):   11.30 dB
+2026-02-15 15:13:13,343 - __main__ - INFO -     II (Assumed): 11.30 dB (gap -0.00 dB)
+2026-02-15 15:13:13,343 - __main__ - INFO -     IV (Oracle):  11.30 dB (recovery -0.00 dB)
+2026-02-15 15:13:13,398 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:13:13,398 - __main__ - INFO - Scene 5/10
+2026-02-15 15:13:13,398 - __main__ - INFO - ======================================================================
+2026-02-15 15:13:13,398 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:13:13,399 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (256,256) (256,229) 
+2026-02-15 15:13:13,709 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 202 but got size 256 for tensor number 1 in the list.
+2026-02-15 15:13:14,059 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:14,380 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:14,634 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:13:14,732 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:15,129 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:15,393 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:15,655 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:15,909 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:13:15,985 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:16,365 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:16,570 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:16,879 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:17,154 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:13:17,154 - __main__ - INFO -     I (Ideal):   12.90 dB
+2026-02-15 15:13:17,154 - __main__ - INFO -     II (Assumed): 12.90 dB (gap 0.00 dB)
+2026-02-15 15:13:17,155 - __main__ - INFO -     IV (Oracle):  12.89 dB (recovery -0.01 dB)
+2026-02-15 15:13:17,155 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:13:17,155 - __main__ - INFO -     I (Ideal):   12.89 dB
+2026-02-15 15:13:17,155 - __main__ - INFO -     II (Assumed): 12.89 dB (gap 0.00 dB)
+2026-02-15 15:13:17,155 - __main__ - INFO -     IV (Oracle):  12.89 dB (recovery -0.00 dB)
+2026-02-15 15:13:17,155 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:13:17,155 - __main__ - INFO -     I (Ideal):   12.90 dB
+2026-02-15 15:13:17,155 - __main__ - INFO -     II (Assumed): 12.90 dB (gap -0.00 dB)
+2026-02-15 15:13:17,155 - __main__ - INFO -     IV (Oracle):  12.90 dB (recovery 0.00 dB)
+2026-02-15 15:13:17,155 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:13:17,155 - __main__ - INFO -     I (Ideal):   12.89 dB
+2026-02-15 15:13:17,155 - __main__ - INFO -     II (Assumed): 12.89 dB (gap 0.01 dB)
+2026-02-15 15:13:17,155 - __main__ - INFO -     IV (Oracle):  12.89 dB (recovery 0.01 dB)
+2026-02-15 15:13:17,227 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:13:17,227 - __main__ - INFO - Scene 6/10
+2026-02-15 15:13:17,227 - __main__ - INFO - ======================================================================
+2026-02-15 15:13:17,228 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:13:17,229 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (256,256) (256,229) 
+2026-02-15 15:13:17,554 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 202 but got size 256 for tensor number 1 in the list.
+2026-02-15 15:13:17,760 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:18,023 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:18,393 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:13:18,516 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:18,879 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:19,101 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:19,422 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:19,673 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:13:19,746 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:20,078 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:20,303 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:20,555 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:20,768 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:13:20,768 - __main__ - INFO -     I (Ideal):   11.53 dB
+2026-02-15 15:13:20,768 - __main__ - INFO -     II (Assumed): 11.53 dB (gap 0.00 dB)
+2026-02-15 15:13:20,768 - __main__ - INFO -     IV (Oracle):  11.54 dB (recovery 0.00 dB)
+2026-02-15 15:13:20,768 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:13:20,768 - __main__ - INFO -     I (Ideal):   11.53 dB
+2026-02-15 15:13:20,768 - __main__ - INFO -     II (Assumed): 11.54 dB (gap -0.00 dB)
+2026-02-15 15:13:20,768 - __main__ - INFO -     IV (Oracle):  11.54 dB (recovery 0.00 dB)
+2026-02-15 15:13:20,768 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:13:20,768 - __main__ - INFO -     I (Ideal):   11.54 dB
+2026-02-15 15:13:20,768 - __main__ - INFO -     II (Assumed): 11.53 dB (gap 0.00 dB)
+2026-02-15 15:13:20,768 - __main__ - INFO -     IV (Oracle):  11.54 dB (recovery 0.00 dB)
+2026-02-15 15:13:20,768 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:13:20,768 - __main__ - INFO -     I (Ideal):   11.53 dB
+2026-02-15 15:13:20,768 - __main__ - INFO -     II (Assumed): 11.54 dB (gap -0.01 dB)
+2026-02-15 15:13:20,769 - __main__ - INFO -     IV (Oracle):  11.54 dB (recovery -0.00 dB)
+2026-02-15 15:13:20,825 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:13:20,825 - __main__ - INFO - Scene 7/10
+2026-02-15 15:13:20,825 - __main__ - INFO - ======================================================================
+2026-02-15 15:13:20,825 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:13:20,827 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (256,256) (256,229) 
+2026-02-15 15:13:21,076 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 202 but got size 256 for tensor number 1 in the list.
+2026-02-15 15:13:21,286 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:21,507 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:21,710 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:13:21,793 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:22,147 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:22,356 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:22,603 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:22,805 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:13:22,882 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:23,215 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:23,487 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:23,753 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:23,974 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:13:23,974 - __main__ - INFO -     I (Ideal):   12.62 dB
+2026-02-15 15:13:23,974 - __main__ - INFO -     II (Assumed): 12.62 dB (gap -0.00 dB)
+2026-02-15 15:13:23,974 - __main__ - INFO -     IV (Oracle):  12.62 dB (recovery -0.00 dB)
+2026-02-15 15:13:23,974 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:13:23,974 - __main__ - INFO -     I (Ideal):   12.62 dB
+2026-02-15 15:13:23,974 - __main__ - INFO -     II (Assumed): 12.62 dB (gap -0.00 dB)
+2026-02-15 15:13:23,974 - __main__ - INFO -     IV (Oracle):  12.62 dB (recovery 0.00 dB)
+2026-02-15 15:13:23,974 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:13:23,974 - __main__ - INFO -     I (Ideal):   12.62 dB
+2026-02-15 15:13:23,974 - __main__ - INFO -     II (Assumed): 12.62 dB (gap 0.00 dB)
+2026-02-15 15:13:23,974 - __main__ - INFO -     IV (Oracle):  12.62 dB (recovery 0.01 dB)
+2026-02-15 15:13:23,975 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:13:23,975 - __main__ - INFO -     I (Ideal):   12.62 dB
+2026-02-15 15:13:23,975 - __main__ - INFO -     II (Assumed): 12.61 dB (gap 0.00 dB)
+2026-02-15 15:13:23,975 - __main__ - INFO -     IV (Oracle):  12.62 dB (recovery 0.01 dB)
+2026-02-15 15:13:24,028 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:13:24,028 - __main__ - INFO - Scene 8/10
+2026-02-15 15:13:24,028 - __main__ - INFO - ======================================================================
+2026-02-15 15:13:24,028 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:13:24,030 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (256,256) (256,229) 
+2026-02-15 15:13:24,284 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 202 but got size 256 for tensor number 1 in the list.
+2026-02-15 15:13:24,492 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:24,758 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:25,002 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:13:25,081 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:25,419 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:25,619 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:25,932 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:26,146 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:13:26,222 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:26,567 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:26,768 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:27,014 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:27,244 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:13:27,244 - __main__ - INFO -     I (Ideal):   11.40 dB
+2026-02-15 15:13:27,244 - __main__ - INFO -     II (Assumed): 11.40 dB (gap 0.00 dB)
+2026-02-15 15:13:27,244 - __main__ - INFO -     IV (Oracle):  11.41 dB (recovery 0.01 dB)
+2026-02-15 15:13:27,244 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:13:27,244 - __main__ - INFO -     I (Ideal):   11.41 dB
+2026-02-15 15:13:27,244 - __main__ - INFO -     II (Assumed): 11.40 dB (gap 0.01 dB)
+2026-02-15 15:13:27,244 - __main__ - INFO -     IV (Oracle):  11.41 dB (recovery 0.00 dB)
+2026-02-15 15:13:27,244 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:13:27,244 - __main__ - INFO -     I (Ideal):   11.41 dB
+2026-02-15 15:13:27,245 - __main__ - INFO -     II (Assumed): 11.41 dB (gap 0.00 dB)
+2026-02-15 15:13:27,245 - __main__ - INFO -     IV (Oracle):  11.40 dB (recovery -0.00 dB)
+2026-02-15 15:13:27,245 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:13:27,245 - __main__ - INFO -     I (Ideal):   11.41 dB
+2026-02-15 15:13:27,245 - __main__ - INFO -     II (Assumed): 11.41 dB (gap 0.00 dB)
+2026-02-15 15:13:27,245 - __main__ - INFO -     IV (Oracle):  11.40 dB (recovery -0.00 dB)
+2026-02-15 15:13:27,297 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:13:27,297 - __main__ - INFO - Scene 9/10
+2026-02-15 15:13:27,297 - __main__ - INFO - ======================================================================
+2026-02-15 15:13:27,297 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:13:27,299 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (256,256) (256,229) 
+2026-02-15 15:13:27,554 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 202 but got size 256 for tensor number 1 in the list.
+2026-02-15 15:13:27,760 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:28,010 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:28,242 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:13:28,326 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:28,664 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:28,870 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:29,135 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:29,370 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:13:29,440 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:29,774 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:29,983 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:30,324 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:30,585 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:13:30,585 - __main__ - INFO -     I (Ideal):   11.85 dB
+2026-02-15 15:13:30,586 - __main__ - INFO -     II (Assumed): 11.86 dB (gap -0.01 dB)
+2026-02-15 15:13:30,586 - __main__ - INFO -     IV (Oracle):  11.86 dB (recovery -0.00 dB)
+2026-02-15 15:13:30,586 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:13:30,586 - __main__ - INFO -     I (Ideal):   11.86 dB
+2026-02-15 15:13:30,586 - __main__ - INFO -     II (Assumed): 11.85 dB (gap 0.00 dB)
+2026-02-15 15:13:30,586 - __main__ - INFO -     IV (Oracle):  11.85 dB (recovery 0.00 dB)
+2026-02-15 15:13:30,586 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:13:30,586 - __main__ - INFO -     I (Ideal):   11.85 dB
+2026-02-15 15:13:30,586 - __main__ - INFO -     II (Assumed): 11.85 dB (gap 0.00 dB)
+2026-02-15 15:13:30,586 - __main__ - INFO -     IV (Oracle):  11.86 dB (recovery 0.01 dB)
+2026-02-15 15:13:30,586 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:13:30,586 - __main__ - INFO -     I (Ideal):   11.86 dB
+2026-02-15 15:13:30,586 - __main__ - INFO -     II (Assumed): 11.86 dB (gap 0.00 dB)
+2026-02-15 15:13:30,586 - __main__ - INFO -     IV (Oracle):  11.86 dB (recovery 0.00 dB)
+2026-02-15 15:13:30,640 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:13:30,640 - __main__ - INFO - Scene 10/10
+2026-02-15 15:13:30,640 - __main__ - INFO - ======================================================================
+2026-02-15 15:13:30,640 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 15:13:30,641 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (256,256) (256,229) 
+2026-02-15 15:13:30,901 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 202 but got size 256 for tensor number 1 in the list.
+2026-02-15 15:13:31,100 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:31,334 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:31,530 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 15:13:31,616 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:31,971 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:32,197 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:32,473 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:32,678 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 15:13:32,751 - __main__ - WARNING - GAP-TV failed: operands could not be broadcast together with shapes (660,660) (256,229) 
+2026-02-15 15:13:33,086 - __main__ - WARNING - HDNet failed: Sizes of tensors must match except in dimension 1. Expected size 256 but got size 660 for tensor number 1 in the list.
+2026-02-15 15:13:33,286 - __main__ - WARNING - MST-S failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:33,507 - __main__ - WARNING - MST-L failed: Given groups=1, weight of size [28, 28, 3, 3], expected input[1, 1, 256, 256] to have 28 channels, but got 1 channels instead
+2026-02-15 15:13:33,722 - __main__ - INFO - 
+  GAP_TV:
+2026-02-15 15:13:33,722 - __main__ - INFO -     I (Ideal):   12.00 dB
+2026-02-15 15:13:33,722 - __main__ - INFO -     II (Assumed): 12.00 dB (gap 0.00 dB)
+2026-02-15 15:13:33,722 - __main__ - INFO -     IV (Oracle):  12.00 dB (recovery -0.00 dB)
+2026-02-15 15:13:33,722 - __main__ - INFO - 
+  HDNET:
+2026-02-15 15:13:33,722 - __main__ - INFO -     I (Ideal):   12.00 dB
+2026-02-15 15:13:33,722 - __main__ - INFO -     II (Assumed): 12.00 dB (gap 0.00 dB)
+2026-02-15 15:13:33,722 - __main__ - INFO -     IV (Oracle):  11.99 dB (recovery -0.01 dB)
+2026-02-15 15:13:33,722 - __main__ - INFO - 
+  MST_S:
+2026-02-15 15:13:33,722 - __main__ - INFO -     I (Ideal):   12.00 dB
+2026-02-15 15:13:33,722 - __main__ - INFO -     II (Assumed): 12.00 dB (gap 0.00 dB)
+2026-02-15 15:13:33,722 - __main__ - INFO -     IV (Oracle):  11.99 dB (recovery -0.00 dB)
+2026-02-15 15:13:33,722 - __main__ - INFO - 
+  MST_L:
+2026-02-15 15:13:33,722 - __main__ - INFO -     I (Ideal):   12.00 dB
+2026-02-15 15:13:33,722 - __main__ - INFO -     II (Assumed): 11.99 dB (gap 0.00 dB)
+2026-02-15 15:13:33,722 - __main__ - INFO -     IV (Oracle):  12.00 dB (recovery 0.00 dB)
+2026-02-15 15:13:33,722 - __main__ - INFO - 
+======================================================================
+2026-02-15 15:13:33,723 - __main__ - INFO - SUMMARY STATISTICS
+2026-02-15 15:13:33,723 - __main__ - INFO - ======================================================================
+2026-02-15 15:13:33,725 - __main__ - INFO - 
+SCENARIO I:
+2026-02-15 15:13:33,725 - __main__ - INFO -   GAP_TV  : 12.02 ± 0.51 dB
+2026-02-15 15:13:33,725 - __main__ - INFO -   HDNET   : 12.02 ± 0.51 dB
+2026-02-15 15:13:33,725 - __main__ - INFO -   MST_S   : 12.02 ± 0.51 dB
+2026-02-15 15:13:33,725 - __main__ - INFO -   MST_L   : 12.01 ± 0.51 dB
+2026-02-15 15:13:33,725 - __main__ - INFO - 
+SCENARIO II:
+2026-02-15 15:13:33,725 - __main__ - INFO -   GAP_TV  : 12.02 ± 0.51 dB
+2026-02-15 15:13:33,725 - __main__ - INFO -   HDNET   : 12.02 ± 0.51 dB
+2026-02-15 15:13:33,725 - __main__ - INFO -   MST_S   : 12.02 ± 0.51 dB
+2026-02-15 15:13:33,725 - __main__ - INFO -   MST_L   : 12.01 ± 0.51 dB
+2026-02-15 15:13:33,725 - __main__ - INFO - 
+SCENARIO IV:
+2026-02-15 15:13:33,725 - __main__ - INFO -   GAP_TV  : 12.02 ± 0.51 dB
+2026-02-15 15:13:33,725 - __main__ - INFO -   HDNET   : 12.02 ± 0.51 dB
+2026-02-15 15:13:33,725 - __main__ - INFO -   MST_S   : 12.02 ± 0.51 dB
+2026-02-15 15:13:33,725 - __main__ - INFO -   MST_L   : 12.02 ± 0.51 dB
+2026-02-15 15:13:33,725 - __main__ - INFO - 
+Gaps (PSNR degradation/recovery):
+2026-02-15 15:13:33,725 - __main__ - INFO -   GAP_TV  : Gap I→II=-0.00 dB, Recovery II→IV=-0.00 dB
+2026-02-15 15:13:33,725 - __main__ - INFO -   HDNET   : Gap I→II=-0.00 dB, Recovery II→IV=-0.00 dB
+2026-02-15 15:13:33,726 - __main__ - INFO -   MST_S   : Gap I→II=0.00 dB, Recovery II→IV=0.00 dB
+2026-02-15 15:13:33,726 - __main__ - INFO -   MST_L   : Gap I→II=0.00 dB, Recovery II→IV=0.00 dB
+2026-02-15 15:13:33,726 - __main__ - INFO - 
+Execution time: 0.01 hours (0.1 min/scene)
+2026-02-15 15:13:33,728 - __main__ - INFO - Detailed results saved to: /home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/results/cassi_validation_results.json
+2026-02-15 15:13:33,729 - __main__ - INFO - Summary saved to: /home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/results/cassi_summary.json
+2026-02-15 15:13:33,729 - __main__ - INFO - 
+✅ Validation complete!
