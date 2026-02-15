@@ -1,218 +1,533 @@
 {
-  "num_scenes": 6,
-  "scenarios": {
+  "per_video": [
+    {
+      "video": "kobe",
+      "n_groups": 4,
+      "scenario_i": {
+        "gap_tv": {
+          "psnr_mean": 26.7,
+          "psnr_std": 0.93,
+          "ssim_mean": 0.854
+        },
+        "gap_denoise": {
+          "psnr_mean": 26.85,
+          "psnr_std": 0.97,
+          "ssim_mean": 0.8541
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 26.71,
+          "psnr_std": 0.89,
+          "ssim_mean": 0.799
+        },
+        "efficientsci": {
+          "psnr_mean": 9.82,
+          "psnr_std": 1.06,
+          "ssim_mean": 0.0561
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr_mean": 15.61,
+          "psnr_std": 0.4,
+          "ssim_mean": 0.2897
+        },
+        "gap_denoise": {
+          "psnr_mean": 15.46,
+          "psnr_std": 0.39,
+          "ssim_mean": 0.2811
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 15.43,
+          "psnr_std": 0.29,
+          "ssim_mean": 0.272
+        },
+        "efficientsci": {
+          "psnr_mean": 9.79,
+          "psnr_std": 1.94,
+          "ssim_mean": 0.0544
+        }
+      },
+      "scenario_iv": {
+        "gap_tv": {
+          "psnr_mean": 25.12,
+          "psnr_std": 0.68,
+          "ssim_mean": 0.8015
+        },
+        "gap_denoise": {
+          "psnr_mean": 25.47,
+          "psnr_std": 0.75,
+          "ssim_mean": 0.8057
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 25.49,
+          "psnr_std": 0.73,
+          "ssim_mean": 0.7788
+        },
+        "efficientsci": {
+          "psnr_mean": 7.96,
+          "psnr_std": 2.67,
+          "ssim_mean": 0.0561
+        }
+      }
+    },
+    {
+      "video": "traffic",
+      "n_groups": 6,
+      "scenario_i": {
+        "gap_tv": {
+          "psnr_mean": 20.73,
+          "psnr_std": 0.08,
+          "ssim_mean": 0.7168
+        },
+        "gap_denoise": {
+          "psnr_mean": 20.75,
+          "psnr_std": 0.07,
+          "ssim_mean": 0.7145
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 20.68,
+          "psnr_std": 0.08,
+          "ssim_mean": 0.7051
+        },
+        "efficientsci": {
+          "psnr_mean": 6.75,
+          "psnr_std": 0.64,
+          "ssim_mean": 0.0366
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr_mean": 12.16,
+          "psnr_std": 0.07,
+          "ssim_mean": 0.1585
+        },
+        "gap_denoise": {
+          "psnr_mean": 12.06,
+          "psnr_std": 0.07,
+          "ssim_mean": 0.1547
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 12.05,
+          "psnr_std": 0.07,
+          "ssim_mean": 0.1551
+        },
+        "efficientsci": {
+          "psnr_mean": 6.97,
+          "psnr_std": 0.46,
+          "ssim_mean": 0.0469
+        }
+      },
+      "scenario_iv": {
+        "gap_tv": {
+          "psnr_mean": 19.73,
+          "psnr_std": 0.07,
+          "ssim_mean": 0.6687
+        },
+        "gap_denoise": {
+          "psnr_mean": 19.8,
+          "psnr_std": 0.07,
+          "ssim_mean": 0.6586
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 19.84,
+          "psnr_std": 0.07,
+          "ssim_mean": 0.6633
+        },
+        "efficientsci": {
+          "psnr_mean": 7.05,
+          "psnr_std": 0.49,
+          "ssim_mean": 0.0352
+        }
+      }
+    },
+    {
+      "video": "runner",
+      "n_groups": 5,
+      "scenario_i": {
+        "gap_tv": {
+          "psnr_mean": 29.34,
+          "psnr_std": 0.43,
+          "ssim_mean": 0.9042
+        },
+        "gap_denoise": {
+          "psnr_mean": 29.41,
+          "psnr_std": 0.42,
+          "ssim_mean": 0.9016
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 29.0,
+          "psnr_std": 0.39,
+          "ssim_mean": 0.8528
+        },
+        "efficientsci": {
+          "psnr_mean": 8.1,
+          "psnr_std": 1.09,
+          "ssim_mean": 0.0605
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr_mean": 15.2,
+          "psnr_std": 0.29,
+          "ssim_mean": 0.1735
+        },
+        "gap_denoise": {
+          "psnr_mean": 15.04,
+          "psnr_std": 0.29,
+          "ssim_mean": 0.1674
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 15.07,
+          "psnr_std": 0.29,
+          "ssim_mean": 0.1698
+        },
+        "efficientsci": {
+          "psnr_mean": 7.76,
+          "psnr_std": 1.71,
+          "ssim_mean": 0.0829
+        }
+      },
+      "scenario_iv": {
+        "gap_tv": {
+          "psnr_mean": 26.45,
+          "psnr_std": 0.32,
+          "ssim_mean": 0.8308
+        },
+        "gap_denoise": {
+          "psnr_mean": 26.84,
+          "psnr_std": 0.31,
+          "ssim_mean": 0.8281
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 26.88,
+          "psnr_std": 0.3,
+          "ssim_mean": 0.8046
+        },
+        "efficientsci": {
+          "psnr_mean": 7.92,
+          "psnr_std": 1.37,
+          "ssim_mean": 0.0597
+        }
+      }
+    },
+    {
+      "video": "drop",
+      "n_groups": 5,
+      "scenario_i": {
+        "gap_tv": {
+          "psnr_mean": 34.22,
+          "psnr_std": 0.54,
+          "ssim_mean": 0.9646
+        },
+        "gap_denoise": {
+          "psnr_mean": 34.36,
+          "psnr_std": 0.53,
+          "ssim_mean": 0.9644
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 32.77,
+          "psnr_std": 0.38,
+          "ssim_mean": 0.8785
+        },
+        "efficientsci": {
+          "psnr_mean": 4.42,
+          "psnr_std": 1.01,
+          "ssim_mean": 0.0866
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr_mean": 11.48,
+          "psnr_std": 0.1,
+          "ssim_mean": 0.1196
+        },
+        "gap_denoise": {
+          "psnr_mean": 11.41,
+          "psnr_std": 0.1,
+          "ssim_mean": 0.1164
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 11.34,
+          "psnr_std": 0.1,
+          "ssim_mean": 0.1135
+        },
+        "efficientsci": {
+          "psnr_mean": 4.42,
+          "psnr_std": 1.78,
+          "ssim_mean": 0.0629
+        }
+      },
+      "scenario_iv": {
+        "gap_tv": {
+          "psnr_mean": 24.31,
+          "psnr_std": 0.23,
+          "ssim_mean": 0.7372
+        },
+        "gap_denoise": {
+          "psnr_mean": 24.9,
+          "psnr_std": 0.2,
+          "ssim_mean": 0.7472
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 25.02,
+          "psnr_std": 0.2,
+          "ssim_mean": 0.7506
+        },
+        "efficientsci": {
+          "psnr_mean": 4.49,
+          "psnr_std": 0.72,
+          "ssim_mean": 0.1318
+        }
+      }
+    },
+    {
+      "video": "crash",
+      "n_groups": 4,
+      "scenario_i": {
+        "gap_tv": {
+          "psnr_mean": 24.8,
+          "psnr_std": 0.7,
+          "ssim_mean": 0.8342
+        },
+        "gap_denoise": {
+          "psnr_mean": 24.74,
+          "psnr_std": 0.68,
+          "ssim_mean": 0.8266
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 24.61,
+          "psnr_std": 0.61,
+          "ssim_mean": 0.7781
+        },
+        "efficientsci": {
+          "psnr_mean": 6.22,
+          "psnr_std": 0.4,
+          "ssim_mean": 0.0641
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr_mean": 12.73,
+          "psnr_std": 0.02,
+          "ssim_mean": 0.1763
+        },
+        "gap_denoise": {
+          "psnr_mean": 12.63,
+          "psnr_std": 0.02,
+          "ssim_mean": 0.172
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 12.53,
+          "psnr_std": 0.07,
+          "ssim_mean": 0.1675
+        },
+        "efficientsci": {
+          "psnr_mean": 6.2,
+          "psnr_std": 0.33,
+          "ssim_mean": 0.0704
+        }
+      },
+      "scenario_iv": {
+        "gap_tv": {
+          "psnr_mean": 22.92,
+          "psnr_std": 0.43,
+          "ssim_mean": 0.737
+        },
+        "gap_denoise": {
+          "psnr_mean": 22.97,
+          "psnr_std": 0.42,
+          "ssim_mean": 0.7263
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 23.04,
+          "psnr_std": 0.43,
+          "ssim_mean": 0.714
+        },
+        "efficientsci": {
+          "psnr_mean": 6.23,
+          "psnr_std": 0.19,
+          "ssim_mean": 0.0478
+        }
+      }
+    },
+    {
+      "video": "aerial",
+      "n_groups": 4,
+      "scenario_i": {
+        "gap_tv": {
+          "psnr_mean": 25.22,
+          "psnr_std": 0.38,
+          "ssim_mean": 0.8364
+        },
+        "gap_denoise": {
+          "psnr_mean": 25.18,
+          "psnr_std": 0.38,
+          "ssim_mean": 0.8326
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 24.98,
+          "psnr_std": 0.3,
+          "ssim_mean": 0.7668
+        },
+        "efficientsci": {
+          "psnr_mean": 7.81,
+          "psnr_std": 0.63,
+          "ssim_mean": 0.0761
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr_mean": 14.32,
+          "psnr_std": 0.04,
+          "ssim_mean": 0.208
+        },
+        "gap_denoise": {
+          "psnr_mean": 14.16,
+          "psnr_std": 0.04,
+          "ssim_mean": 0.2016
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 14.19,
+          "psnr_std": 0.04,
+          "ssim_mean": 0.203
+        },
+        "efficientsci": {
+          "psnr_mean": 8.15,
+          "psnr_std": 1.39,
+          "ssim_mean": 0.0443
+        }
+      },
+      "scenario_iv": {
+        "gap_tv": {
+          "psnr_mean": 23.52,
+          "psnr_std": 0.26,
+          "ssim_mean": 0.759
+        },
+        "gap_denoise": {
+          "psnr_mean": 23.71,
+          "psnr_std": 0.27,
+          "ssim_mean": 0.754
+        },
+        "pnp_ffdnet": {
+          "psnr_mean": 23.77,
+          "psnr_std": 0.26,
+          "ssim_mean": 0.7314
+        },
+        "efficientsci": {
+          "psnr_mean": 7.73,
+          "psnr_std": 0.92,
+          "ssim_mean": 0.0536
+        }
+      }
+    }
+  ],
+  "overall": {
     "scenario_i": {
       "gap_tv": {
-        "psnr": {
-          "mean": 4.923695166905721,
-          "std": 0.016742093395542848,
-          "min": 4.894775867462158,
-          "max": 4.940209865570068
-        },
-        "ssim": {
-          "mean": 0.1678884634542006,
-          "std": 0.01741770284761427
-        }
+        "psnr_mean": 26.75,
+        "psnr_std": 4.48,
+        "ssim_mean": 0.848,
+        "ssim_std": 0.0829
+      },
+      "gap_denoise": {
+        "psnr_mean": 26.8,
+        "psnr_std": 4.53,
+        "ssim_mean": 0.8454,
+        "ssim_std": 0.0836
       },
       "pnp_ffdnet": {
-        "psnr": {
-          "mean": 5.904670159022014,
-          "std": 0.15161808010316358,
-          "min": 5.7076096534729,
-          "max": 6.057610988616943
-        },
-        "ssim": {
-          "mean": 0.2870434232611557,
-          "std": 0.016922128996643603
-        }
+        "psnr_mean": 26.36,
+        "psnr_std": 4.06,
+        "ssim_mean": 0.7951,
+        "ssim_std": 0.0618
       },
-      "elp_unfolding": {
-        "psnr": {
-          "mean": 4.7721859614054365,
-          "std": 0.002342388831648767,
-          "min": 4.76805305480957,
-          "max": 4.775171279907227
-        },
-        "ssim": {
-          "mean": 0.23242907226234744,
-          "std": 0.026174346960469067
-        }
-      },
-      "efficient_sci": {
-        "psnr": {
-          "mean": 4.77279806137085,
-          "std": 0.0025843039311056596,
-          "min": 4.768459320068359,
-          "max": 4.777194023132324
-        },
-        "ssim": {
-          "mean": 0.0012628897757759748,
-          "std": 0.00017780002847609565
-        }
+      "efficientsci": {
+        "psnr_mean": 7.09,
+        "psnr_std": 1.85,
+        "ssim_mean": 0.0621,
+        "ssim_std": 0.0361
       }
     },
     "scenario_ii": {
       "gap_tv": {
-        "psnr": {
-          "mean": 4.868572473526001,
-          "std": 0.009592835112178847,
-          "min": 4.852899551391602,
-          "max": 4.881465435028076
-        },
-        "ssim": {
-          "mean": 0.16930644333882183,
-          "std": 0.015262259437417875
-        }
+        "psnr_mean": 13.46,
+        "psnr_std": 1.58,
+        "ssim_mean": 0.1826,
+        "ssim_std": 0.054
+      },
+      "gap_denoise": {
+        "psnr_mean": 13.34,
+        "psnr_std": 1.55,
+        "ssim_mean": 0.1774,
+        "ssim_std": 0.0523
       },
       "pnp_ffdnet": {
-        "psnr": {
-          "mean": 6.131711641947429,
-          "std": 0.25665289703610555,
-          "min": 5.76506233215332,
-          "max": 6.383941650390625
-        },
-        "ssim": {
-          "mean": 0.26203265107608215,
-          "std": 0.0034866686245643742
-        }
+        "psnr_mean": 13.32,
+        "psnr_std": 1.57,
+        "ssim_mean": 0.1756,
+        "ssim_std": 0.0491
       },
-      "elp_unfolding": {
-        "psnr": {
-          "mean": 4.794189850489299,
-          "std": 0.0047061635592204505,
-          "min": 4.789474964141846,
-          "max": 4.801315784454346
-        },
-        "ssim": {
-          "mean": 0.22825846873663555,
-          "std": 0.022913868191386393
-        }
-      },
-      "efficient_sci": {
-        "psnr": {
-          "mean": 4.77260176340739,
-          "std": 0.0025871426055118253,
-          "min": 4.768291473388672,
-          "max": 4.7770256996154785
-        },
-        "ssim": {
-          "mean": 0.0012453181001496184,
-          "std": 0.00017292550953642135
-        }
+      "efficientsci": {
+        "psnr_mean": 7.12,
+        "psnr_std": 2.15,
+        "ssim_mean": 0.0602,
+        "ssim_std": 0.0323
       }
     },
     "scenario_iv": {
       "gap_tv": {
-        "psnr": {
-          "mean": 4.894390344619751,
-          "std": 0.01074100586447243,
-          "min": 4.879184722900391,
-          "max": 4.907578468322754
-        },
-        "ssim": {
-          "mean": 0.18900906027373401,
-          "std": 0.024050721007965608
-        }
+        "psnr_mean": 23.52,
+        "psnr_std": 2.3,
+        "ssim_mean": 0.7515,
+        "ssim_std": 0.0562
+      },
+      "gap_denoise": {
+        "psnr_mean": 23.79,
+        "psnr_std": 2.44,
+        "ssim_mean": 0.749,
+        "ssim_std": 0.0594
       },
       "pnp_ffdnet": {
-        "psnr": {
-          "mean": 5.332133690516154,
-          "std": 0.12324977379539877,
-          "min": 5.159189701080322,
-          "max": 5.455158233642578
-        },
-        "ssim": {
-          "mean": 0.2715281400697384,
-          "std": 0.00402152286173891
-        }
+        "psnr_mean": 23.85,
+        "psnr_std": 2.44,
+        "ssim_mean": 0.7376,
+        "ssim_std": 0.0493
       },
-      "elp_unfolding": {
-        "psnr": {
-          "mean": 4.7721859614054365,
-          "std": 0.002342388831648767,
-          "min": 4.76805305480957,
-          "max": 4.775171279907227
-        },
-        "ssim": {
-          "mean": 0.2324290569777104,
-          "std": 0.026174320755801013
-        }
-      },
-      "efficient_sci": {
-        "psnr": {
-          "mean": 4.772829532623291,
-          "std": 0.0025837037910357817,
-          "min": 4.768486976623535,
-          "max": 4.777221202850342
-        },
-        "ssim": {
-          "mean": 0.0012658050305739772,
-          "std": 0.00017858355619849558
-        }
+      "efficientsci": {
+        "psnr_mean": 6.86,
+        "psnr_std": 1.78,
+        "ssim_mean": 0.0642,
+        "ssim_std": 0.0499
       }
     }
   },
   "gaps": {
     "gap_tv": {
-      "gap_i_ii": {
-        "mean": 0.055122693379720054,
-        "std": 0.007659475355696446
-      },
-      "gap_ii_iv": {
-        "mean": 0.02581787109375,
-        "std": 0.004828517804950887
-      },
-      "gap_iv_i": {
-        "mean": 0.02930482228597005,
-        "std": 0.007346495350179263
-      }
+      "gap_i_ii_mean": 13.29,
+      "gap_ii_iv_mean": 10.05
+    },
+    "gap_denoise": {
+      "gap_i_ii_mean": 13.46,
+      "gap_ii_iv_mean": 10.44
     },
     "pnp_ffdnet": {
-      "gap_i_ii": {
-        "mean": -0.22704148292541504,
-        "std": 0.10603801938703543
-      },
-      "gap_ii_iv": {
-        "mean": -0.7995779514312744,
-        "std": 0.13345054223033712
-      },
-      "gap_iv_i": {
-        "mean": 0.5725364685058594,
-        "std": 0.029460755588190328
-      }
+      "gap_i_ii_mean": 13.04,
+      "gap_ii_iv_mean": 10.53
     },
-    "elp_unfolding": {
-      "gap_i_ii": {
-        "mean": -0.022003889083862305,
-        "std": 0.0041177491644361925
-      },
-      "gap_ii_iv": {
-        "mean": -0.022003889083862305,
-        "std": 0.0041177491644361925
-      },
-      "gap_iv_i": {
-        "mean": 0.0,
-        "std": 0.0
-      }
-    },
-    "efficient_sci": {
-      "gap_i_ii": {
-        "mean": 0.00019629796346028647,
-        "std": 3.096832089858662e-05
-      },
-      "gap_ii_iv": {
-        "mean": 0.00022776921590169272,
-        "std": 3.5649933951703244e-05
-      },
-      "gap_iv_i": {
-        "mean": -3.147125244140625e-05,
-        "std": 4.76837158203125e-06
-      }
+    "efficientsci": {
+      "gap_i_ii_mean": -0.03,
+      "gap_ii_iv_mean": -0.26
     }
   },
-  "execution_time": {
-    "total_seconds": 338.752512216568,
-    "total_hours": 0.09409792006015777,
-    "per_scene_avg_seconds": 56.458752036094666
+  "execution_seconds": 1567.0,
+  "mismatch": {
+    "mask_dx": 1.5,
+    "mask_dy": 1.0,
+    "mask_theta": 0.3,
+    "mask_blur_sigma": 0.3,
+    "clock_offset": 0.08,
+    "duty_cycle": 0.92,
+    "gain": 1.05,
+    "offset": 0.005
   }
 }

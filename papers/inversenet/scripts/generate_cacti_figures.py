@@ -1,449 +1,258 @@
 #!/usr/bin/env python3
-"""
-Generate visualization figures for CACTI (Coded Aperture Compressive Temporal Imaging)
-InverseNet validation results.
+"""Generate CACTI InverseNet validation figures.
 
-Creates:
-1. Scenario comparison bar chart (3 scenarios × 4 methods)
-2. Method comparison heatmap (4 methods × 3 scenarios)
-3. Per-scene PSNR boxplot (distribution across 6 scenes)
-4. Gap comparison (degradation vs recovery)
-5. SSIM comparison across scenarios
-6. Summary CSV table for LaTeX
+Reads cacti_summary.json + cacti_validation_results.json produced by
+validate_cacti_inversenet.py and creates publication-quality plots.
 
 Usage:
     python generate_cacti_figures.py
 """
-
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List
 
 import numpy as np
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 from matplotlib import rcParams
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Paths
+# -- paths ----------------------------------------------------------------
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
 FIGURES_DIR = PROJECT_ROOT / "figures" / "cacti"
+TABLES_DIR  = PROJECT_ROOT / "tables"
 FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+TABLES_DIR.mkdir(parents=True, exist_ok=True)
 
-# Style
-rcParams['font.size'] = 11
-rcParams['figure.figsize'] = (12, 6)
-rcParams['axes.labelsize'] = 12
-rcParams['axes.titlesize'] = 13
-rcParams['legend.fontsize'] = 10
+# -- style ----------------------------------------------------------------
+rcParams.update({
+    "font.size": 11, "axes.labelsize": 12, "axes.titlesize": 13,
+    "legend.fontsize": 10, "figure.figsize": (12, 6),
+})
 
-# Colors for methods
-METHOD_COLORS = {
-    'gap_tv': '#1f77b4',      # blue
-    'pnp_ffdnet': '#ff7f0e',  # orange
-    'elp_unfolding': '#2ca02c',  # green
-    'efficient_sci': '#d62728'  # red
+COLORS = {
+    "gap_tv":       "#1f77b4",
+    "gap_denoise":  "#2ca02c",
+    "pnp_ffdnet":   "#ff7f0e",
+    "efficientsci": "#d62728",
+}
+LABELS = {
+    "gap_tv":       "GAP-TV",
+    "gap_denoise":  "GAP-denoise",
+    "pnp_ffdnet":   "PnP-FFDNet",
+    "efficientsci": "EfficientSCI",
 }
 
-METHOD_LABELS = {
-    'gap_tv': 'GAP-TV',
-    'pnp_ffdnet': 'PnP-FFDNet',
-    'elp_unfolding': 'ELP-Unfolding',
-    'efficient_sci': 'EfficientSCI'
-}
-
-# Scene names
-SCENE_NAMES = ['kobe32', 'crash32', 'aerial32', 'traffic48', 'runner40', 'drop40']
+SCENARIOS = ["scenario_i", "scenario_ii", "scenario_iv"]
+SCEN_LABELS = ["Scenario I\n(Ideal)", "Scenario II\n(Baseline)", "Scenario IV\n(Oracle)"]
+SCEN_SHORT  = ["Ideal", "Baseline", "Oracle"]
 
 
-# ============================================================================
-# Utility Functions
-# ============================================================================
+def _col(m):
+    return COLORS.get(m, "#999999")
 
-def get_available_methods(summary):
-    """Extract available methods from summary data."""
-    if 'scenarios' in summary and 'scenario_i' in summary['scenarios']:
-        return list(summary['scenarios']['scenario_i'].keys())
-    return ['gap_tv', 'pnp_ffdnet', 'elp_unfolding', 'efficient_sci']
+def _lab(m):
+    return LABELS.get(m, m.upper())
 
 
-def load_results() -> tuple:
-    """Load validation results from JSON files."""
-    try:
-        with open(RESULTS_DIR / "cacti_validation_results.json") as f:
-            detailed_results = json.load(f)
-        with open(RESULTS_DIR / "cacti_summary.json") as f:
-            summary = json.load(f)
-        logger.info("Results loaded successfully")
-        return detailed_results, summary
-    except FileNotFoundError as e:
-        logger.error(f"Results not found: {e}")
-        return None, None
+# =========================================================================
+# loaders
+# =========================================================================
+def load():
+    with open(RESULTS_DIR / "cacti_summary.json") as f:
+        summary = json.load(f)
+    with open(RESULTS_DIR / "cacti_validation_results.json") as f:
+        detail = json.load(f)
+    return summary, detail
 
 
-# ============================================================================
-# Visualization Functions
-# ============================================================================
-
-def plot_scenario_comparison(summary: Dict) -> None:
-    """
-    Create bar chart comparing PSNR across 3 scenarios for available methods.
-
-    X-axis: Scenarios (I, II, IV)
-    Y-axis: PSNR (dB)
-    Groups: Methods with different colors
-    """
+# =========================================================================
+# 1. scenario comparison bar chart
+# =========================================================================
+def plot_scenario_comparison(summary):
     logger.info("Creating scenario comparison plot...")
-
+    methods = list(summary["overall"]["scenario_i"].keys())
     fig, ax = plt.subplots(figsize=(12, 6))
-
-    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iv']
-    scenario_labels = ['Scenario I\n(Ideal)', 'Scenario II\n(Baseline)', 'Scenario IV\n(Oracle)']
-    methods = get_available_methods(summary)
-
-    x = np.arange(len(scenarios))
-    width = 0.2
-
-    for i, method in enumerate(methods):
-        psnr_values = []
-        for scenario_key in scenarios:
-            psnr_mean = summary['scenarios'][scenario_key][method]['psnr']['mean']
-            psnr_values.append(psnr_mean)
-
-        offset = (i - (len(methods) - 1) / 2) * width
-        ax.bar(x + offset, psnr_values, width, label=METHOD_LABELS.get(method, method.upper()),
-               color=METHOD_COLORS.get(method, '#999999'), alpha=0.8)
-
-    ax.set_xlabel('Scenario', fontsize=12, fontweight='bold')
-    ax.set_ylabel('PSNR (dB)', fontsize=12, fontweight='bold')
-    ax.set_title('CACTI Reconstruction: Scenario Comparison (SCI Benchmark)', fontsize=14, fontweight='bold')
-    ax.set_xticks(x)
-    ax.set_xticklabels(scenario_labels)
-    ax.legend(loc='lower left', ncol=4)
-    ax.grid(axis='y', alpha=0.3)
-    ax.set_ylim([0, 40])
-
+    x = np.arange(len(SCENARIOS))
+    w = 0.8 / len(methods)
+    for i, m in enumerate(methods):
+        vals = [summary["overall"][s][m]["psnr_mean"] for s in SCENARIOS]
+        off = (i - (len(methods) - 1) / 2) * w
+        ax.bar(x + off, vals, w, label=_lab(m), color=_col(m), alpha=0.85)
+    ax.set_xticks(x); ax.set_xticklabels(SCEN_LABELS)
+    ax.set_ylabel("PSNR (dB)"); ax.set_title("CACTI Reconstruction: Scenario Comparison (SCI Benchmark)")
+    ax.legend(loc="upper right"); ax.grid(axis="y", alpha=0.3)
+    ax.set_ylim(0, max(vals) * 1.3)
     plt.tight_layout()
-    output_file = FIGURES_DIR / "scenario_comparison.png"
-    plt.savefig(output_file, dpi=150, bbox_inches='tight')
-    logger.info(f"Saved: {output_file}")
-    plt.close()
+    out = FIGURES_DIR / "scenario_comparison.png"
+    plt.savefig(out, dpi=150, bbox_inches="tight"); plt.close()
+    logger.info(f"Saved: {out}")
 
 
-def plot_method_comparison_heatmap(summary: Dict) -> None:
-    """
-    Create heatmap showing PSNR for available methods × 3 scenarios.
-
-    Rows: Methods
-    Cols: Scenarios
-    Values: PSNR (dB)
-    """
+# =========================================================================
+# 2. heatmap
+# =========================================================================
+def plot_heatmap(summary):
     logger.info("Creating method comparison heatmap...")
-
-    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iv']
-    scenario_labels = ['Ideal', 'Baseline', 'Oracle']
-    methods = get_available_methods(summary)
-    method_labels = [METHOD_LABELS.get(m, m.upper()) for m in methods]
-
-    # Create data matrix
-    data = np.zeros((len(methods), len(scenarios)))
-    for i, method in enumerate(methods):
-        for j, scenario_key in enumerate(scenarios):
-            data[i, j] = summary['scenarios'][scenario_key][method]['psnr']['mean']
-
-    # Plot heatmap
-    fig, ax = plt.subplots(figsize=(10, 6))
-
-    im = ax.imshow(data, cmap='RdYlGn', aspect='auto', vmin=15, vmax=40)
-
-    # Set ticks and labels
-    ax.set_xticks(np.arange(len(scenarios)))
-    ax.set_yticks(np.arange(len(methods)))
-    ax.set_xticklabels(scenario_labels)
-    ax.set_yticklabels(method_labels)
-
-    # Add text annotations
+    methods = list(summary["overall"]["scenario_i"].keys())
+    data = np.array([[summary["overall"][s][m]["psnr_mean"] for s in SCENARIOS] for m in methods])
+    fig, ax = plt.subplots(figsize=(10, 5))
+    vmin, vmax = max(0, data.min() - 2), data.max() + 2
+    im = ax.imshow(data, cmap="RdYlGn", aspect="auto", vmin=vmin, vmax=vmax)
+    ax.set_xticks(range(3)); ax.set_xticklabels(SCEN_SHORT)
+    ax.set_yticks(range(len(methods))); ax.set_yticklabels([_lab(m) for m in methods])
     for i in range(len(methods)):
-        for j in range(len(scenarios)):
-            text = ax.text(j, i, f'{data[i, j]:.1f}',
-                          ha="center", va="center", color="black", fontweight='bold')
-
-    ax.set_xlabel('Scenario', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Reconstruction Method', fontsize=12, fontweight='bold')
-    ax.set_title('CACTI PSNR Heatmap: Methods × Scenarios', fontsize=14, fontweight='bold')
-
-    cbar = plt.colorbar(im, ax=ax)
-    cbar.set_label('PSNR (dB)', fontsize=11, fontweight='bold')
-
+        for j in range(3):
+            ax.text(j, i, f"{data[i,j]:.1f}", ha="center", va="center", fontweight="bold")
+    plt.colorbar(im, ax=ax, label="PSNR (dB)")
+    ax.set_title("CACTI PSNR Heatmap: Methods x Scenarios")
     plt.tight_layout()
-    output_file = FIGURES_DIR / "method_comparison_heatmap.png"
-    plt.savefig(output_file, dpi=150, bbox_inches='tight')
-    logger.info(f"Saved: {output_file}")
-    plt.close()
+    out = FIGURES_DIR / "method_comparison_heatmap.png"
+    plt.savefig(out, dpi=150, bbox_inches="tight"); plt.close()
+    logger.info(f"Saved: {out}")
 
 
-def plot_gap_comparison(summary: Dict) -> None:
-    """
-    Create comparison of degradation (Gap I→II) and recovery (Gap II→IV).
-
-    Shows how much each method degrades under mismatch and how much
-    it recovers when oracle operator is available.
-    """
+# =========================================================================
+# 3. gap comparison
+# =========================================================================
+def plot_gaps(summary):
     logger.info("Creating gap comparison plot...")
-
+    methods = list(summary["gaps"].keys())
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
-
-    methods = get_available_methods(summary)
-    method_labels = [METHOD_LABELS.get(m, m.upper()) for m in methods]
-
-    # Degradation (Gap I→II)
-    gap_i_ii = [summary['gaps'][m]['gap_i_ii']['mean'] for m in methods]
     x = np.arange(len(methods))
-    ax1.bar(x, gap_i_ii, color=[METHOD_COLORS[m] for m in methods], alpha=0.8)
-    ax1.set_ylabel('PSNR Drop (dB)', fontsize=11, fontweight='bold')
-    ax1.set_title('Degradation Under Mismatch\n(Scenario I → II)', fontsize=12, fontweight='bold')
-    ax1.set_xticks(x)
-    ax1.set_xticklabels(method_labels, rotation=15, ha='right')
-    ax1.grid(axis='y', alpha=0.3)
-    ax1.set_ylim([0, 5])
 
-    # Recovery (Gap II→IV)
-    gap_ii_iv = [summary['gaps'][m]['gap_ii_iv']['mean'] for m in methods]
-    ax2.bar(x, gap_ii_iv, color=[METHOD_COLORS[m] for m in methods], alpha=0.8)
-    ax2.set_ylabel('PSNR Recovery (dB)', fontsize=11, fontweight='bold')
-    ax2.set_title('Recovery with Oracle Operator\n(Scenario II → IV)', fontsize=12, fontweight='bold')
-    ax2.set_xticks(x)
-    ax2.set_xticklabels(method_labels, rotation=15, ha='right')
-    ax2.grid(axis='y', alpha=0.3)
-    ax2.set_ylim([0, 3])
+    g1 = [summary["gaps"][m]["gap_i_ii_mean"] for m in methods]
+    ax1.bar(x, g1, color=[_col(m) for m in methods], alpha=0.85)
+    ax1.set_xticks(x); ax1.set_xticklabels([_lab(m) for m in methods], rotation=15, ha="right")
+    ax1.set_ylabel("PSNR Drop (dB)"); ax1.set_title("Degradation Under Mismatch\n(Scenario I → II)")
+    ax1.grid(axis="y", alpha=0.3)
+
+    g2 = [summary["gaps"][m]["gap_ii_iv_mean"] for m in methods]
+    ax2.bar(x, g2, color=[_col(m) for m in methods], alpha=0.85)
+    ax2.set_xticks(x); ax2.set_xticklabels([_lab(m) for m in methods], rotation=15, ha="right")
+    ax2.set_ylabel("PSNR Recovery (dB)"); ax2.set_title("Recovery with Oracle Operator\n(Scenario II → IV)")
+    ax2.grid(axis="y", alpha=0.3)
 
     plt.tight_layout()
-    output_file = FIGURES_DIR / "gap_comparison.png"
-    plt.savefig(output_file, dpi=150, bbox_inches='tight')
-    logger.info(f"Saved: {output_file}")
-    plt.close()
+    out = FIGURES_DIR / "gap_comparison.png"
+    plt.savefig(out, dpi=150, bbox_inches="tight"); plt.close()
+    logger.info(f"Saved: {out}")
 
 
-def plot_psnr_distribution(detailed_results: List[Dict]) -> None:
-    """
-    Create boxplot showing PSNR distribution across 6 scenes for each method.
-
-    Shows per-method robustness and consistency across different scenes.
-    """
+# =========================================================================
+# 4. boxplot PSNR distribution across measurement groups
+# =========================================================================
+def plot_psnr_boxplot(detail):
     logger.info("Creating PSNR distribution boxplot...")
-
+    methods = list(detail[0]["scenarios"]["scenario_i"].keys())
     fig, axes = plt.subplots(1, 3, figsize=(16, 5))
-    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iv']
-    scenario_labels = ['Ideal', 'Baseline', 'Oracle']
-
-    # Get available methods from first result
-    if detailed_results and 'scenario_i' in detailed_results[0]:
-        methods = list(detailed_results[0]['scenario_i'].keys())
-    else:
-        methods = ['gap_tv', 'pnp_ffdnet', 'elp_unfolding', 'efficient_sci']
-
-    for scenario_idx, (scenario_key, scenario_label) in enumerate(zip(scenarios, scenario_labels)):
-        ax = axes[scenario_idx]
-
-        # Collect PSNR values for each method across scenes
-        data_by_method = []
-        for method in methods:
-            psnr_values = [r[scenario_key][method]['psnr'] for r in detailed_results
-                          if r[scenario_key][method]['psnr'] > 0]
-            data_by_method.append(psnr_values)
-
-        bp = ax.boxplot(data_by_method, labels=[METHOD_LABELS.get(m, m.upper()) for m in methods],
-                       patch_artist=True)
-
-        # Color boxes
-        for patch, method in zip(bp['boxes'], methods):
-            patch.set_facecolor(METHOD_COLORS.get(method, '#999999'))
-            patch.set_alpha(0.7)
-
-        ax.set_ylabel('PSNR (dB)', fontsize=11, fontweight='bold')
-        ax.set_title(f'Scenario {scenario_label}', fontsize=12, fontweight='bold')
-        ax.grid(axis='y', alpha=0.3)
-        ax.tick_params(axis='x', rotation=15)
-
+    for si, (skey, slab) in enumerate(zip(SCENARIOS, SCEN_SHORT)):
+        ax = axes[si]
+        data = [[g["scenarios"][skey][m]["psnr"] for g in detail] for m in methods]
+        bp = ax.boxplot(data, tick_labels=[_lab(m) for m in methods], patch_artist=True)
+        for patch, m in zip(bp["boxes"], methods):
+            patch.set_facecolor(_col(m)); patch.set_alpha(0.7)
+        ax.set_ylabel("PSNR (dB)"); ax.set_title(f"Scenario {slab}")
+        ax.grid(axis="y", alpha=0.3); ax.tick_params(axis="x", rotation=15)
     plt.tight_layout()
-    output_file = FIGURES_DIR / "psnr_distribution.png"
-    plt.savefig(output_file, dpi=150, bbox_inches='tight')
-    logger.info(f"Saved: {output_file}")
-    plt.close()
+    out = FIGURES_DIR / "psnr_distribution.png"
+    plt.savefig(out, dpi=150, bbox_inches="tight"); plt.close()
+    logger.info(f"Saved: {out}")
 
 
-def plot_ssim_comparison(summary: Dict) -> None:
-    """
-    Create bar chart comparing SSIM across 3 scenarios for available methods.
-
-    X-axis: Scenarios (I, II, IV)
-    Y-axis: SSIM (0-1)
-    Groups: Methods with different colors
-    """
+# =========================================================================
+# 5. SSIM comparison
+# =========================================================================
+def plot_ssim(summary):
     logger.info("Creating SSIM comparison plot...")
-
+    methods = list(summary["overall"]["scenario_i"].keys())
     fig, ax = plt.subplots(figsize=(12, 6))
-
-    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iv']
-    scenario_labels = ['Scenario I\n(Ideal)', 'Scenario II\n(Baseline)', 'Scenario IV\n(Oracle)']
-    methods = get_available_methods(summary)
-
-    x = np.arange(len(scenarios))
-    width = 0.2
-
-    for i, method in enumerate(methods):
-        ssim_values = []
-        for scenario_key in scenarios:
-            ssim_mean = summary['scenarios'][scenario_key][method]['ssim']['mean']
-            ssim_values.append(ssim_mean)
-
-        offset = (i - (len(methods) - 1) / 2) * width
-        ax.bar(x + offset, ssim_values, width, label=METHOD_LABELS.get(method, method.upper()),
-               color=METHOD_COLORS.get(method, '#999999'), alpha=0.8)
-
-    ax.set_xlabel('Scenario', fontsize=12, fontweight='bold')
-    ax.set_ylabel('SSIM (0-1)', fontsize=12, fontweight='bold')
-    ax.set_title('CACTI Reconstruction: SSIM Comparison', fontsize=14, fontweight='bold')
-    ax.set_xticks(x)
-    ax.set_xticklabels(scenario_labels)
-    ax.legend(loc='lower left', ncol=4)
-    ax.grid(axis='y', alpha=0.3)
-    ax.set_ylim([0, 1.0])
-
+    x = np.arange(len(SCENARIOS))
+    w = 0.8 / len(methods)
+    for i, m in enumerate(methods):
+        vals = [summary["overall"][s][m]["ssim_mean"] for s in SCENARIOS]
+        off = (i - (len(methods) - 1) / 2) * w
+        ax.bar(x + off, vals, w, label=_lab(m), color=_col(m), alpha=0.85)
+    ax.set_xticks(x); ax.set_xticklabels(SCEN_LABELS)
+    ax.set_ylabel("SSIM"); ax.set_title("CACTI Reconstruction: SSIM Comparison")
+    ax.legend(loc="upper right"); ax.grid(axis="y", alpha=0.3); ax.set_ylim(0, 1.0)
     plt.tight_layout()
-    output_file = FIGURES_DIR / "ssim_comparison.png"
-    plt.savefig(output_file, dpi=150, bbox_inches='tight')
-    logger.info(f"Saved: {output_file}")
-    plt.close()
+    out = FIGURES_DIR / "ssim_comparison.png"
+    plt.savefig(out, dpi=150, bbox_inches="tight"); plt.close()
+    logger.info(f"Saved: {out}")
 
 
-def plot_per_scene_psnr(detailed_results: List[Dict]) -> None:
-    """
-    Create line plot showing PSNR for each scene across all methods.
-
-    X-axis: Scene names
-    Y-axis: PSNR (dB)
-    Lines: Methods
-    Shows per-method consistency across different content
-    """
-    logger.info("Creating per-scene PSNR plot...")
+# =========================================================================
+# 6. per-video PSNR (Scenario I)
+# =========================================================================
+def plot_per_video(summary):
+    logger.info("Creating per-video PSNR plot...")
+    pvid = summary["per_video"]
+    methods = list(pvid[0]["scenario_i"].keys())
+    vid_names = [v["video"] for v in pvid]
 
     fig, axes = plt.subplots(1, 3, figsize=(18, 5))
-    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iv']
-    scenario_labels = ['Ideal', 'Baseline', 'Oracle']
-
-    # Get available methods from first result
-    if detailed_results and 'scenario_i' in detailed_results[0]:
-        methods = list(detailed_results[0]['scenario_i'].keys())
-    else:
-        methods = ['gap_tv', 'pnp_ffdnet', 'elp_unfolding', 'efficient_sci']
-
-    for scenario_idx, (scenario_key, scenario_label) in enumerate(zip(scenarios, scenario_labels)):
-        ax = axes[scenario_idx]
-
-        # Collect PSNR values for each method per scene
-        for method in methods:
-            psnr_per_scene = []
-            scene_labels = []
-
-            for result in detailed_results:
-                if 'scene_name' in result:
-                    scene_labels.append(result['scene_name'])
-                else:
-                    scene_labels.append(f"Scene {result['scene_idx']}")
-                psnr_per_scene.append(result[scenario_key][method]['psnr'])
-
-            ax.plot(range(len(psnr_per_scene)), psnr_per_scene, marker='o',
-                   label=METHOD_LABELS.get(method, method.upper()),
-                   color=METHOD_COLORS.get(method, '#999999'), linewidth=2, markersize=8)
-
-        ax.set_ylabel('PSNR (dB)', fontsize=11, fontweight='bold')
-        ax.set_xlabel('Scene', fontsize=11, fontweight='bold')
-        ax.set_title(f'Scenario {scenario_label}', fontsize=12, fontweight='bold')
-        ax.set_xticks(range(len(scene_labels)))
-        ax.set_xticklabels(scene_labels, rotation=45, ha='right')
+    for si, (skey, slab) in enumerate(zip(SCENARIOS, SCEN_SHORT)):
+        ax = axes[si]
+        for m in methods:
+            vals = [v[skey][m]["psnr_mean"] for v in pvid]
+            ax.plot(range(len(vals)), vals, "o-", label=_lab(m), color=_col(m), lw=2, ms=7)
+        ax.set_xticks(range(len(vid_names)))
+        ax.set_xticklabels(vid_names, rotation=30, ha="right")
+        ax.set_ylabel("PSNR (dB)"); ax.set_title(f"Scenario {slab}")
         ax.grid(alpha=0.3)
-        if scenario_idx == 0:
-            ax.legend(loc='lower left', fontsize=9)
-
+        if si == 0:
+            ax.legend(fontsize=9)
     plt.tight_layout()
-    output_file = FIGURES_DIR / "per_scene_psnr.png"
-    plt.savefig(output_file, dpi=150, bbox_inches='tight')
-    logger.info(f"Saved: {output_file}")
-    plt.close()
+    out = FIGURES_DIR / "per_video_psnr.png"
+    plt.savefig(out, dpi=150, bbox_inches="tight"); plt.close()
+    logger.info(f"Saved: {out}")
 
 
-def create_summary_table(summary: Dict) -> None:
-    """
-    Create CSV file with results suitable for LaTeX table.
-
-    Format:
-    Method,Scenario I,Scenario II,Scenario IV,Gap I→II,Gap II→IV
-    """
+# =========================================================================
+# 7. summary CSV
+# =========================================================================
+def create_csv(summary):
     logger.info("Creating summary table...")
-
-    methods = get_available_methods(summary)
-    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iv']
-
-    output_file = Path(__file__).parent.parent / "tables" / "cacti_results_table.csv"
-    output_file.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(output_file, 'w') as f:
-        # Header
-        f.write("Method,Scenario I,Scenario II,Scenario IV,Gap I→II,Gap II→IV\n")
-
-        # Rows
-        for method in methods:
-            psnr_i = summary['scenarios']['scenario_i'][method]['psnr']['mean']
-            psnr_ii = summary['scenarios']['scenario_ii'][method]['psnr']['mean']
-            psnr_iv = summary['scenarios']['scenario_iv'][method]['psnr']['mean']
-            gap_i_ii = summary['gaps'][method]['gap_i_ii']['mean']
-            gap_ii_iv = summary['gaps'][method]['gap_ii_iv']['mean']
-
-            psnr_i_std = summary['scenarios']['scenario_i'][method]['psnr']['std']
-            psnr_ii_std = summary['scenarios']['scenario_ii'][method]['psnr']['std']
-            psnr_iv_std = summary['scenarios']['scenario_iv'][method]['psnr']['std']
-
-            f.write(f"{METHOD_LABELS.get(method, method.upper())},{psnr_i:.2f}±{psnr_i_std:.2f},"
-                   f"{psnr_ii:.2f}±{psnr_ii_std:.2f},{psnr_iv:.2f}±{psnr_iv_std:.2f},"
-                   f"{gap_i_ii:.2f},{gap_ii_iv:.2f}\n")
-
-    logger.info(f"Saved: {output_file}")
+    methods = list(summary["overall"]["scenario_i"].keys())
+    out = TABLES_DIR / "cacti_results_table.csv"
+    with open(out, "w") as f:
+        f.write("Method,Scenario I,Scenario II,Scenario IV,Gap I-II,Recovery II-IV\n")
+        for m in methods:
+            ov = summary["overall"]
+            g  = summary["gaps"][m]
+            f.write(f"{_lab(m)},"
+                    f"{ov['scenario_i'][m]['psnr_mean']:.2f}+/-{ov['scenario_i'][m]['psnr_std']:.2f},"
+                    f"{ov['scenario_ii'][m]['psnr_mean']:.2f}+/-{ov['scenario_ii'][m]['psnr_std']:.2f},"
+                    f"{ov['scenario_iv'][m]['psnr_mean']:.2f}+/-{ov['scenario_iv'][m]['psnr_std']:.2f},"
+                    f"{g['gap_i_ii_mean']:.2f},{g['gap_ii_iv_mean']:.2f}\n")
+    logger.info(f"Saved: {out}")
 
 
-# ============================================================================
-# Main
-# ============================================================================
-
+# =========================================================================
+# main
+# =========================================================================
 def main():
-    """Generate all figures and tables."""
-    logger.info("="*70)
+    logger.info("=" * 70)
     logger.info("CACTI InverseNet Figure Generation")
-    logger.info("="*70)
+    logger.info("=" * 70)
+    summary, detail = load()
+    logger.info("Results loaded successfully")
 
-    # Load results
-    detailed_results, summary = load_results()
-    if summary is None:
-        logger.error("Failed to load results")
-        return
-
-    # Generate visualizations
     plot_scenario_comparison(summary)
-    plot_method_comparison_heatmap(summary)
-    plot_gap_comparison(summary)
-    plot_psnr_distribution(detailed_results)
-    plot_ssim_comparison(summary)
-    plot_per_scene_psnr(detailed_results)
-    create_summary_table(summary)
+    plot_heatmap(summary)
+    plot_gaps(summary)
+    plot_psnr_boxplot(detail)
+    plot_ssim(summary)
+    plot_per_video(summary)
+    create_csv(summary)
 
-    logger.info("\n✅ All figures generated!")
-    logger.info(f"Output directory: {FIGURES_DIR}")
+    logger.info(f"\n✅ All figures generated! → {FIGURES_DIR}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
