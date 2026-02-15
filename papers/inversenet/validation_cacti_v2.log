@@ -1,0 +1,221 @@
+2026-02-15 17:48:04,170  INFO      ======================================================================
+2026-02-15 17:48:04,171  INFO      CACTI InverseNet Validation  (benchmark-grade GAP-denoise)
+2026-02-15 17:48:04,171  INFO      Methods: ['gap_tv', 'gap_denoise', 'pnp_ffdnet', 'efficientsci']
+2026-02-15 17:48:04,171  INFO      Mismatch: dx=1.5 dy=1.0 θ=0.3°
+2026-02-15 17:48:04,171  INFO      ======================================================================
+2026-02-15 17:48:06,911  INFO      Loaded 28 measurement groups from 6 videos
+2026-02-15 17:48:06,912  INFO      
+--- [1/28] kobe  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/scripts/validate_cacti_inversenet.py:137: UserWarning: No pretrained weights found for EfficientSCI-tiny. Running with random initialization.
+  out = efficientsci_recon(y, Phi, variant="tiny")
+2026-02-15 17:50:28,762  INFO        gap_tv            I= 27.99  II= 16.23  IV= 26.02  gap_I→II=+11.76  rec_II→IV=+9.79
+2026-02-15 17:50:28,763  INFO        gap_denoise       I= 28.19  II= 16.08  IV= 26.48  gap_I→II=+12.10  rec_II→IV=+10.40
+2026-02-15 17:50:28,763  INFO        pnp_ffdnet        I= 27.92  II= 15.86  IV= 26.45  gap_I→II=+12.06  rec_II→IV=+10.60
+2026-02-15 17:50:28,763  INFO        efficientsci      I= 10.54  II=  9.48  IV=  7.87  gap_I→II=+1.06  rec_II→IV=-1.60
+2026-02-15 17:50:28,763  INFO      
+--- [2/28] kobe  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 17:52:32,156  INFO        gap_tv            I= 27.00  II= 15.29  IV= 25.39  gap_I→II=+11.70  rec_II→IV=+10.10
+2026-02-15 17:52:32,156  INFO        gap_denoise       I= 27.15  II= 15.15  IV= 25.76  gap_I→II=+12.00  rec_II→IV=+10.61
+2026-02-15 17:52:32,156  INFO        pnp_ffdnet        I= 27.04  II= 15.18  IV= 25.80  gap_I→II=+11.86  rec_II→IV=+10.61
+2026-02-15 17:52:32,156  INFO        efficientsci      I=  8.00  II= 11.38  IV= 11.69  gap_I→II=-3.39  rec_II→IV=+0.31
+2026-02-15 17:52:32,156  INFO      
+--- [3/28] kobe  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 17:54:44,243  INFO        gap_tv            I= 26.40  II= 15.66  IV= 24.91  gap_I→II=+10.74  rec_II→IV=+9.25
+2026-02-15 17:54:44,244  INFO        gap_denoise       I= 26.53  II= 15.52  IV= 25.20  gap_I→II=+11.01  rec_II→IV=+9.68
+2026-02-15 17:54:44,244  INFO        pnp_ffdnet        I= 26.41  II= 15.55  IV= 25.23  gap_I→II=+10.86  rec_II→IV=+9.68
+2026-02-15 17:54:44,246  INFO        efficientsci      I= 10.49  II=  6.75  IV=  4.15  gap_I→II=+3.74  rec_II→IV=-2.60
+2026-02-15 17:54:44,246  INFO      
+--- [4/28] kobe  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 17:56:35,550  INFO        gap_tv            I= 25.42  II= 15.24  IV= 24.16  gap_I→II=+10.18  rec_II→IV=+8.92
+2026-02-15 17:56:35,551  INFO        gap_denoise       I= 25.52  II= 15.11  IV= 24.45  gap_I→II=+10.41  rec_II→IV=+9.34
+2026-02-15 17:56:35,551  INFO        pnp_ffdnet        I= 25.47  II= 15.13  IV= 24.48  gap_I→II=+10.34  rec_II→IV=+9.35
+2026-02-15 17:56:35,551  INFO        efficientsci      I= 10.25  II= 11.56  IV=  8.15  gap_I→II=-1.30  rec_II→IV=-3.41
+2026-02-15 17:56:35,551  INFO      
+--- [5/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 17:57:30,569  INFO        gap_tv            I= 20.88  II= 12.13  IV= 19.88  gap_I→II=+8.74  rec_II→IV=+7.74
+2026-02-15 17:57:30,570  INFO        gap_denoise       I= 20.89  II= 12.02  IV= 19.92  gap_I→II=+8.86  rec_II→IV=+7.90
+2026-02-15 17:57:30,570  INFO        pnp_ffdnet        I= 20.82  II= 12.02  IV= 19.97  gap_I→II=+8.81  rec_II→IV=+7.95
+2026-02-15 17:57:30,570  INFO        efficientsci      I=  5.61  II=  7.47  IV=  6.71  gap_I→II=-1.86  rec_II→IV=-0.76
+2026-02-15 17:57:30,570  INFO      
+--- [6/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 17:58:24,714  INFO        gap_tv            I= 20.75  II= 12.19  IV= 19.72  gap_I→II=+8.56  rec_II→IV=+7.53
+2026-02-15 17:58:24,715  INFO        gap_denoise       I= 20.77  II= 12.10  IV= 19.79  gap_I→II=+8.67  rec_II→IV=+7.69
+2026-02-15 17:58:24,715  INFO        pnp_ffdnet        I= 20.70  II= 12.09  IV= 19.85  gap_I→II=+8.61  rec_II→IV=+7.76
+2026-02-15 17:58:24,715  INFO        efficientsci      I=  7.41  II=  6.62  IV=  6.13  gap_I→II=+0.79  rec_II→IV=-0.49
+2026-02-15 17:58:24,715  INFO      
+--- [7/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 17:59:15,670  INFO        gap_tv            I= 20.73  II= 12.30  IV= 19.75  gap_I→II=+8.43  rec_II→IV=+7.44
+2026-02-15 17:59:15,670  INFO        gap_denoise       I= 20.76  II= 12.19  IV= 19.83  gap_I→II=+8.57  rec_II→IV=+7.64
+2026-02-15 17:59:15,671  INFO        pnp_ffdnet        I= 20.69  II= 12.19  IV= 19.86  gap_I→II=+8.50  rec_II→IV=+7.67
+2026-02-15 17:59:15,671  INFO        efficientsci      I=  6.17  II=  6.94  IV=  7.43  gap_I→II=-0.77  rec_II→IV=+0.49
+2026-02-15 17:59:15,671  INFO      
+--- [8/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:00:07,073  INFO        gap_tv            I= 20.69  II= 12.15  IV= 19.70  gap_I→II=+8.54  rec_II→IV=+7.55
+2026-02-15 18:00:07,073  INFO        gap_denoise       I= 20.72  II= 12.06  IV= 19.74  gap_I→II=+8.66  rec_II→IV=+7.68
+2026-02-15 18:00:07,074  INFO        pnp_ffdnet        I= 20.64  II= 12.06  IV= 19.80  gap_I→II=+8.58  rec_II→IV=+7.74
+2026-02-15 18:00:07,074  INFO        efficientsci      I=  7.12  II=  6.62  IV=  7.52  gap_I→II=+0.50  rec_II→IV=+0.90
+2026-02-15 18:00:07,074  INFO      
+--- [9/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:01:00,170  INFO        gap_tv            I= 20.61  II= 12.10  IV= 19.64  gap_I→II=+8.51  rec_II→IV=+7.53
+2026-02-15 18:01:00,171  INFO        gap_denoise       I= 20.63  II= 11.99  IV= 19.71  gap_I→II=+8.64  rec_II→IV=+7.72
+2026-02-15 18:01:00,171  INFO        pnp_ffdnet        I= 20.55  II= 11.99  IV= 19.74  gap_I→II=+8.56  rec_II→IV=+7.75
+2026-02-15 18:01:00,171  INFO        efficientsci      I=  7.07  II=  6.46  IV=  7.26  gap_I→II=+0.62  rec_II→IV=+0.81
+2026-02-15 18:01:00,171  INFO      
+--- [10/28] traffic  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:01:50,623  INFO        gap_tv            I= 20.72  II= 12.09  IV= 19.73  gap_I→II=+8.63  rec_II→IV=+7.64
+2026-02-15 18:01:50,624  INFO        gap_denoise       I= 20.74  II= 11.98  IV= 19.79  gap_I→II=+8.76  rec_II→IV=+7.81
+2026-02-15 18:01:50,624  INFO        pnp_ffdnet        I= 20.66  II= 11.97  IV= 19.79  gap_I→II=+8.69  rec_II→IV=+7.82
+2026-02-15 18:01:50,625  INFO        efficientsci      I=  7.15  II=  7.69  IV=  7.27  gap_I→II=-0.55  rec_II→IV=-0.43
+2026-02-15 18:01:50,625  INFO      
+--- [11/28] runner  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:02:40,237  INFO        gap_tv            I= 29.81  II= 15.48  IV= 26.80  gap_I→II=+14.33  rec_II→IV=+11.32
+2026-02-15 18:02:40,237  INFO        gap_denoise       I= 29.86  II= 15.32  IV= 27.14  gap_I→II=+14.54  rec_II→IV=+11.83
+2026-02-15 18:02:40,237  INFO        pnp_ffdnet        I= 29.39  II= 15.34  IV= 27.18  gap_I→II=+14.06  rec_II→IV=+11.84
+2026-02-15 18:02:40,237  INFO        efficientsci      I=  7.14  II=  5.67  IV=  9.29  gap_I→II=+1.47  rec_II→IV=+3.62
+2026-02-15 18:02:40,237  INFO      
+--- [12/28] runner  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:03:33,233  INFO        gap_tv            I= 29.79  II= 15.25  IV= 26.59  gap_I→II=+14.54  rec_II→IV=+11.34
+2026-02-15 18:03:33,233  INFO        gap_denoise       I= 29.84  II= 15.09  IV= 27.02  gap_I→II=+14.75  rec_II→IV=+11.93
+2026-02-15 18:03:33,234  INFO        pnp_ffdnet        I= 29.40  II= 15.11  IV= 27.10  gap_I→II=+14.29  rec_II→IV=+11.99
+2026-02-15 18:03:33,234  INFO        efficientsci      I=  9.43  II=  8.13  IV=  8.01  gap_I→II=+1.30  rec_II→IV=-0.12
+2026-02-15 18:03:33,234  INFO      
+--- [13/28] runner  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:04:25,712  INFO        gap_tv            I= 28.76  II= 15.00  IV= 26.09  gap_I→II=+13.76  rec_II→IV=+11.10
+2026-02-15 18:04:25,713  INFO        gap_denoise       I= 28.83  II= 14.84  IV= 26.42  gap_I→II=+13.99  rec_II→IV=+11.58
+2026-02-15 18:04:25,713  INFO        pnp_ffdnet        I= 28.47  II= 14.86  IV= 26.46  gap_I→II=+13.61  rec_II→IV=+11.60
+2026-02-15 18:04:25,713  INFO        efficientsci      I=  6.55  II= 10.79  IV=  8.72  gap_I→II=-4.24  rec_II→IV=-2.08
+2026-02-15 18:04:25,714  INFO      
+--- [14/28] runner  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:05:20,564  INFO        gap_tv            I= 28.95  II= 15.52  IV= 26.04  gap_I→II=+13.43  rec_II→IV=+10.52
+2026-02-15 18:05:20,564  INFO        gap_denoise       I= 29.03  II= 15.37  IV= 26.51  gap_I→II=+13.66  rec_II→IV=+11.14
+2026-02-15 18:05:20,564  INFO        pnp_ffdnet        I= 28.63  II= 15.39  IV= 26.57  gap_I→II=+13.24  rec_II→IV=+11.17
+2026-02-15 18:05:20,564  INFO        efficientsci      I=  8.96  II=  6.97  IV=  8.24  gap_I→II=+1.99  rec_II→IV=+1.28
+2026-02-15 18:05:20,564  INFO      
+--- [15/28] runner  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:06:10,351  INFO        gap_tv            I= 29.40  II= 14.75  IV= 26.75  gap_I→II=+14.65  rec_II→IV=+11.99
+2026-02-15 18:06:10,352  INFO        gap_denoise       I= 29.50  II= 14.60  IV= 27.09  gap_I→II=+14.90  rec_II→IV=+12.49
+2026-02-15 18:06:10,352  INFO        pnp_ffdnet        I= 29.12  II= 14.62  IV= 27.09  gap_I→II=+14.49  rec_II→IV=+12.47
+2026-02-15 18:06:10,352  INFO        efficientsci      I=  8.39  II=  7.26  IV=  5.33  gap_I→II=+1.13  rec_II→IV=-1.93
+2026-02-15 18:06:10,352  INFO      
+--- [16/28] drop  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:06:56,851  INFO        gap_tv            I= 34.83  II= 11.59  IV= 24.17  gap_I→II=+23.24  rec_II→IV=+12.58
+2026-02-15 18:06:56,852  INFO        gap_denoise       I= 34.93  II= 11.53  IV= 24.83  gap_I→II=+23.40  rec_II→IV=+13.29
+2026-02-15 18:06:56,852  INFO        pnp_ffdnet        I= 33.20  II= 11.46  IV= 24.96  gap_I→II=+21.73  rec_II→IV=+13.50
+2026-02-15 18:06:56,852  INFO        efficientsci      I=  5.54  II=  4.18  IV=  4.11  gap_I→II=+1.36  rec_II→IV=-0.07
+2026-02-15 18:06:56,852  INFO      
+--- [17/28] drop  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:07:43,051  INFO        gap_tv            I= 34.79  II= 11.56  IV= 24.57  gap_I→II=+23.22  rec_II→IV=+13.00
+2026-02-15 18:07:43,052  INFO        gap_denoise       I= 34.92  II= 11.50  IV= 25.12  gap_I→II=+23.42  rec_II→IV=+13.62
+2026-02-15 18:07:43,052  INFO        pnp_ffdnet        I= 33.12  II= 11.43  IV= 25.24  gap_I→II=+21.70  rec_II→IV=+13.81
+2026-02-15 18:07:43,052  INFO        efficientsci      I=  3.75  II=  3.72  IV=  4.53  gap_I→II=+0.03  rec_II→IV=+0.81
+2026-02-15 18:07:43,052  INFO      
+--- [18/28] drop  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:08:26,030  INFO        gap_tv            I= 34.28  II= 11.49  IV= 24.59  gap_I→II=+22.79  rec_II→IV=+13.11
+2026-02-15 18:08:26,030  INFO        gap_denoise       I= 34.44  II= 11.42  IV= 25.13  gap_I→II=+23.02  rec_II→IV=+13.71
+2026-02-15 18:08:26,030  INFO        pnp_ffdnet        I= 32.87  II= 11.35  IV= 25.26  gap_I→II=+21.52  rec_II→IV=+13.91
+2026-02-15 18:08:26,030  INFO        efficientsci      I=  5.42  II=  7.87  IV=  5.45  gap_I→II=-2.45  rec_II→IV=-2.41
+2026-02-15 18:08:26,030  INFO      
+--- [19/28] drop  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:08:59,279  INFO        gap_tv            I= 33.61  II= 11.42  IV= 24.22  gap_I→II=+22.20  rec_II→IV=+12.80
+2026-02-15 18:08:59,279  INFO        gap_denoise       I= 33.78  II= 11.35  IV= 24.80  gap_I→II=+22.43  rec_II→IV=+13.44
+2026-02-15 18:08:59,280  INFO        pnp_ffdnet        I= 32.37  II= 11.28  IV= 24.92  gap_I→II=+21.10  rec_II→IV=+13.65
+2026-02-15 18:08:59,280  INFO        efficientsci      I=  4.52  II=  3.43  IV=  3.35  gap_I→II=+1.09  rec_II→IV=-0.08
+2026-02-15 18:08:59,280  INFO      
+--- [20/28] drop  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:09:32,806  INFO        gap_tv            I= 33.57  II= 11.33  IV= 24.01  gap_I→II=+22.24  rec_II→IV=+12.68
+2026-02-15 18:09:32,807  INFO        gap_denoise       I= 33.72  II= 11.26  IV= 24.62  gap_I→II=+22.47  rec_II→IV=+13.36
+2026-02-15 18:09:32,807  INFO        pnp_ffdnet        I= 32.28  II= 11.18  IV= 24.74  gap_I→II=+21.10  rec_II→IV=+13.56
+2026-02-15 18:09:32,807  INFO        efficientsci      I=  2.89  II=  2.89  IV=  4.99  gap_I→II=+0.00  rec_II→IV=+2.10
+2026-02-15 18:09:32,807  INFO      
+--- [21/28] crash  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:10:07,977  INFO        gap_tv            I= 25.73  II= 12.72  IV= 23.47  gap_I→II=+13.02  rec_II→IV=+10.75
+2026-02-15 18:10:07,978  INFO        gap_denoise       I= 25.65  II= 12.62  IV= 23.51  gap_I→II=+13.03  rec_II→IV=+10.89
+2026-02-15 18:10:07,978  INFO        pnp_ffdnet        I= 25.35  II= 12.45  IV= 23.57  gap_I→II=+12.90  rec_II→IV=+11.12
+2026-02-15 18:10:07,978  INFO        efficientsci      I=  5.89  II=  6.29  IV=  6.47  gap_I→II=-0.40  rec_II→IV=+0.18
+2026-02-15 18:10:07,978  INFO      
+--- [22/28] crash  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:10:43,442  INFO        gap_tv            I= 25.11  II= 12.71  IV= 23.12  gap_I→II=+12.40  rec_II→IV=+10.41
+2026-02-15 18:10:43,442  INFO        gap_denoise       I= 25.05  II= 12.61  IV= 23.19  gap_I→II=+12.44  rec_II→IV=+10.59
+2026-02-15 18:10:43,442  INFO        pnp_ffdnet        I= 24.96  II= 12.49  IV= 23.27  gap_I→II=+12.47  rec_II→IV=+10.78
+2026-02-15 18:10:43,442  INFO        efficientsci      I=  5.86  II=  6.17  IV=  6.36  gap_I→II=-0.31  rec_II→IV=+0.18
+2026-02-15 18:10:43,442  INFO      
+--- [23/28] crash  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:11:19,304  INFO        gap_tv            I= 24.48  II= 12.71  IV= 22.76  gap_I→II=+11.77  rec_II→IV=+10.05
+2026-02-15 18:11:19,304  INFO        gap_denoise       I= 24.44  II= 12.61  IV= 22.82  gap_I→II=+11.82  rec_II→IV=+10.20
+2026-02-15 18:11:19,304  INFO        pnp_ffdnet        I= 24.36  II= 12.56  IV= 22.87  gap_I→II=+11.80  rec_II→IV=+10.31
+2026-02-15 18:11:19,304  INFO        efficientsci      I=  6.84  II=  5.71  IV=  5.99  gap_I→II=+1.13  rec_II→IV=+0.28
+2026-02-15 18:11:19,304  INFO      
+--- [24/28] crash  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:11:55,011  INFO        gap_tv            I= 23.86  II= 12.76  IV= 22.32  gap_I→II=+11.10  rec_II→IV=+9.56
+2026-02-15 18:11:55,011  INFO        gap_denoise       I= 23.82  II= 12.66  IV= 22.38  gap_I→II=+11.17  rec_II→IV=+9.72
+2026-02-15 18:11:55,011  INFO        pnp_ffdnet        I= 23.75  II= 12.62  IV= 22.43  gap_I→II=+11.13  rec_II→IV=+9.81
+2026-02-15 18:11:55,011  INFO        efficientsci      I=  6.28  II=  6.62  IV=  6.13  gap_I→II=-0.33  rec_II→IV=-0.49
+2026-02-15 18:11:55,011  INFO      
+--- [25/28] aerial  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:12:30,224  INFO        gap_tv            I= 25.06  II= 14.38  IV= 23.44  gap_I→II=+10.68  rec_II→IV=+9.06
+2026-02-15 18:12:30,224  INFO        gap_denoise       I= 25.00  II= 14.23  IV= 23.60  gap_I→II=+10.77  rec_II→IV=+9.37
+2026-02-15 18:12:30,224  INFO        pnp_ffdnet        I= 24.85  II= 14.25  IV= 23.68  gap_I→II=+10.60  rec_II→IV=+9.44
+2026-02-15 18:12:30,224  INFO        efficientsci      I=  7.44  II=  7.78  IV=  7.72  gap_I→II=-0.34  rec_II→IV=-0.06
+2026-02-15 18:12:30,224  INFO      
+--- [26/28] aerial  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:13:05,161  INFO        gap_tv            I= 24.90  II= 14.30  IV= 23.28  gap_I→II=+10.60  rec_II→IV=+8.98
+2026-02-15 18:13:05,161  INFO        gap_denoise       I= 24.86  II= 14.14  IV= 23.47  gap_I→II=+10.72  rec_II→IV=+9.33
+2026-02-15 18:13:05,161  INFO        pnp_ffdnet        I= 24.71  II= 14.17  IV= 23.52  gap_I→II=+10.54  rec_II→IV=+9.36
+2026-02-15 18:13:05,161  INFO        efficientsci      I=  7.99  II=  9.54  IV=  8.86  gap_I→II=-1.55  rec_II→IV=-0.68
+2026-02-15 18:13:05,161  INFO      
+--- [27/28] aerial  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:13:39,684  INFO        gap_tv            I= 25.06  II= 14.30  IV= 23.40  gap_I→II=+10.76  rec_II→IV=+9.10
+2026-02-15 18:13:39,684  INFO        gap_denoise       I= 25.04  II= 14.15  IV= 23.59  gap_I→II=+10.89  rec_II→IV=+9.44
+2026-02-15 18:13:39,684  INFO        pnp_ffdnet        I= 24.87  II= 14.17  IV= 23.64  gap_I→II=+10.70  rec_II→IV=+9.47
+2026-02-15 18:13:39,684  INFO        efficientsci      I=  7.07  II=  9.24  IV=  8.02  gap_I→II=-2.17  rec_II→IV=-1.22
+2026-02-15 18:13:39,684  INFO      
+--- [28/28] aerial  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+2026-02-15 18:14:13,887  INFO        gap_tv            I= 25.86  II= 14.29  IV= 23.95  gap_I→II=+11.58  rec_II→IV=+9.66
+2026-02-15 18:14:13,887  INFO        gap_denoise       I= 25.83  II= 14.13  IV= 24.16  gap_I→II=+11.69  rec_II→IV=+10.03
+2026-02-15 18:14:13,887  INFO        pnp_ffdnet        I= 25.48  II= 14.16  IV= 24.21  gap_I→II=+11.32  rec_II→IV=+10.05
+2026-02-15 18:14:13,887  INFO        efficientsci      I=  8.73  II=  6.03  IV=  6.30  gap_I→II=+2.70  rec_II→IV=+0.27
+2026-02-15 18:14:13,892  INFO      
+======================================================================
+2026-02-15 18:14:13,892  INFO      OVERALL RESULTS  (mean ± std across all groups)
+2026-02-15 18:14:13,892  INFO      ======================================================================
+2026-02-15 18:14:13,892  INFO      
+  Scenario I  (Ideal):
+2026-02-15 18:14:13,892  INFO          gap_tv            PSNR =  26.75 ± 4.48 dB   SSIM = 0.8480
+2026-02-15 18:14:13,892  INFO          gap_denoise       PSNR =  26.80 ± 4.53 dB   SSIM = 0.8454
+2026-02-15 18:14:13,892  INFO          pnp_ffdnet        PSNR =  26.36 ± 4.06 dB   SSIM = 0.7951
+2026-02-15 18:14:13,892  INFO          efficientsci      PSNR =   7.09 ± 1.85 dB   SSIM = 0.0621
+2026-02-15 18:14:13,892  INFO      
+  Scenario II (Baseline):
+2026-02-15 18:14:13,892  INFO          gap_tv            PSNR =  13.46 ± 1.58 dB   SSIM = 0.1826
+2026-02-15 18:14:13,892  INFO          gap_denoise       PSNR =  13.34 ± 1.55 dB   SSIM = 0.1774
+2026-02-15 18:14:13,892  INFO          pnp_ffdnet        PSNR =  13.32 ± 1.57 dB   SSIM = 0.1756
+2026-02-15 18:14:13,892  INFO          efficientsci      PSNR =   7.12 ± 2.15 dB   SSIM = 0.0602
+2026-02-15 18:14:13,892  INFO      
+  Scenario IV (Oracle):
+2026-02-15 18:14:13,892  INFO          gap_tv            PSNR =  23.52 ± 2.30 dB   SSIM = 0.7515
+2026-02-15 18:14:13,892  INFO          gap_denoise       PSNR =  23.79 ± 2.44 dB   SSIM = 0.7490
+2026-02-15 18:14:13,892  INFO          pnp_ffdnet        PSNR =  23.85 ± 2.44 dB   SSIM = 0.7376
+2026-02-15 18:14:13,892  INFO          efficientsci      PSNR =   6.86 ± 1.78 dB   SSIM = 0.0642
+2026-02-15 18:14:13,892  INFO      
+  Gaps:
+2026-02-15 18:14:13,892  INFO          gap_tv            I→II = +13.29 dB   II→IV = +10.05 dB
+2026-02-15 18:14:13,892  INFO          gap_denoise       I→II = +13.46 dB   II→IV = +10.44 dB
+2026-02-15 18:14:13,892  INFO          pnp_ffdnet        I→II = +13.04 dB   II→IV = +10.53 dB
+2026-02-15 18:14:13,892  INFO          efficientsci      I→II = -0.03 dB   II→IV = -0.26 dB
+2026-02-15 18:14:13,892  INFO      
+  Total time: 1567.0s  (56.0s per group)
+2026-02-15 18:14:13,892  INFO      
+======================================================================
+2026-02-15 18:14:13,892  INFO      PER-VIDEO RESULTS  (Scenario I PSNR)
+2026-02-15 18:14:13,892  INFO      ======================================================================
+2026-02-15 18:14:13,892  INFO        kobe       ( 4 groups)  gap_tv=26.70 gap_denoise=26.85 pnp_ffdnet=26.71 efficientsci=9.82
+2026-02-15 18:14:13,892  INFO        traffic    ( 6 groups)  gap_tv=20.73 gap_denoise=20.75 pnp_ffdnet=20.68 efficientsci=6.75
+2026-02-15 18:14:13,893  INFO        runner     ( 5 groups)  gap_tv=29.34 gap_denoise=29.41 pnp_ffdnet=29.00 efficientsci=8.10
+2026-02-15 18:14:13,893  INFO        drop       ( 5 groups)  gap_tv=34.22 gap_denoise=34.36 pnp_ffdnet=32.77 efficientsci=4.42
+2026-02-15 18:14:13,893  INFO        crash      ( 4 groups)  gap_tv=24.80 gap_denoise=24.74 pnp_ffdnet=24.61 efficientsci=6.22
+2026-02-15 18:14:13,893  INFO        aerial     ( 4 groups)  gap_tv=25.22 gap_denoise=25.18 pnp_ffdnet=24.98 efficientsci=7.81
+2026-02-15 18:14:13,898  INFO      
+Results → /home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/results/cacti_validation_results.json
+2026-02-15 18:14:13,898  INFO      Summary → /home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/results/cacti_summary.json
+2026-02-15 18:14:13,898  INFO      
+✅  CACTI validation complete!
