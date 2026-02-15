@@ -35,20 +35,20 @@ rcParams.update({
 })
 
 COLORS = {
-    "gap_tv":       "#1f77b4",
-    "gap_denoise":  "#2ca02c",
-    "pnp_ffdnet":   "#ff7f0e",
-    "efficientsci": "#d62728",
+    "gap_tv":        "#1f77b4",
+    "pnp_ffdnet":    "#2ca02c",
+    "elp_unfolding": "#ff7f0e",
+    "efficientsci":  "#d62728",
 }
 LABELS = {
-    "gap_tv":       "GAP-TV",
-    "gap_denoise":  "GAP-denoise",
-    "pnp_ffdnet":   "PnP-FFDNet",
-    "efficientsci": "EfficientSCI",
+    "gap_tv":        "GAP-TV",
+    "pnp_ffdnet":    "PnP-FFDNet",
+    "elp_unfolding": "ELP-Unfolding",
+    "efficientsci":  "EfficientSCI",
 }
 
-SCENARIOS = ["scenario_i", "scenario_ii", "scenario_iv"]
-SCEN_LABELS = ["Scenario I\n(Ideal)", "Scenario II\n(Baseline)", "Scenario IV\n(Oracle)"]
+SCENARIOS = ["scenario_i", "scenario_ii", "scenario_iii"]
+SCEN_LABELS = ["Scenario I\n(Ideal)", "Scenario II\n(Baseline)", "Scenario III\n(Oracle)"]
 SCEN_SHORT  = ["Ideal", "Baseline", "Oracle"]
 
 
@@ -128,13 +128,13 @@ def plot_gaps(summary):
     g1 = [summary["gaps"][m]["gap_i_ii_mean"] for m in methods]
     ax1.bar(x, g1, color=[_col(m) for m in methods], alpha=0.85)
     ax1.set_xticks(x); ax1.set_xticklabels([_lab(m) for m in methods], rotation=15, ha="right")
-    ax1.set_ylabel("PSNR Drop (dB)"); ax1.set_title("Degradation Under Mismatch\n(Scenario I → II)")
+    ax1.set_ylabel("PSNR Drop (dB)"); ax1.set_title("Degradation Under Mismatch\n(Scenario I -> II)")
     ax1.grid(axis="y", alpha=0.3)
 
-    g2 = [summary["gaps"][m]["gap_ii_iv_mean"] for m in methods]
+    g2 = [summary["gaps"][m]["gap_ii_iii_mean"] for m in methods]
     ax2.bar(x, g2, color=[_col(m) for m in methods], alpha=0.85)
     ax2.set_xticks(x); ax2.set_xticklabels([_lab(m) for m in methods], rotation=15, ha="right")
-    ax2.set_ylabel("PSNR Recovery (dB)"); ax2.set_title("Recovery with Oracle Operator\n(Scenario II → IV)")
+    ax2.set_ylabel("PSNR Recovery (dB)"); ax2.set_title("Recovery with Oracle Operator\n(Scenario II -> III)")
     ax2.grid(axis="y", alpha=0.3)
 
     plt.tight_layout()
@@ -221,15 +221,15 @@ def create_csv(summary):
     methods = list(summary["overall"]["scenario_i"].keys())
     out = TABLES_DIR / "cacti_results_table.csv"
     with open(out, "w") as f:
-        f.write("Method,Scenario I,Scenario II,Scenario IV,Gap I-II,Recovery II-IV\n")
+        f.write("Method,Scenario I,Scenario II,Scenario III,Gap I-II,Recovery II-III\n")
         for m in methods:
             ov = summary["overall"]
             g  = summary["gaps"][m]
             f.write(f"{_lab(m)},"
                     f"{ov['scenario_i'][m]['psnr_mean']:.2f}+/-{ov['scenario_i'][m]['psnr_std']:.2f},"
                     f"{ov['scenario_ii'][m]['psnr_mean']:.2f}+/-{ov['scenario_ii'][m]['psnr_std']:.2f},"
-                    f"{ov['scenario_iv'][m]['psnr_mean']:.2f}+/-{ov['scenario_iv'][m]['psnr_std']:.2f},"
-                    f"{g['gap_i_ii_mean']:.2f},{g['gap_ii_iv_mean']:.2f}\n")
+                    f"{ov['scenario_iii'][m]['psnr_mean']:.2f}+/-{ov['scenario_iii'][m]['psnr_std']:.2f},"
+                    f"{g['gap_i_ii_mean']:.2f},{g['gap_ii_iii_mean']:.2f}\n")
     logger.info(f"Saved: {out}")
 
 
@@ -251,7 +251,7 @@ def main():
     plot_per_video(summary)
     create_csv(summary)
 
-    logger.info(f"\n✅ All figures generated! → {FIGURES_DIR}")
+    logger.info(f"\nAll figures generated! -> {FIGURES_DIR}")
 
 
 if __name__ == "__main__":

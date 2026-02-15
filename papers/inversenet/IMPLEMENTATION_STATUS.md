@@ -39,7 +39,7 @@ Complete implementation of SPC and CACTI validation frameworks for the InverseNe
   - Image size: 33×33 blocks (1089 pixels)
   - Dataset: Set11 natural images with synthetic fallback
   - Measurement matrix: Row-normalized Gaussian
-  - Scenarios: I (Ideal), II (Baseline/Uncorrected), IV (Oracle)
+  - Scenarios: I (Ideal), II (Baseline/Uncorrected), III (Oracle)
   - Methods: ADMM ✅, FISTA ✅
   - Output: JSON results + summary statistics
 
@@ -53,7 +53,7 @@ SCENARIO II (Assumed/Baseline):
   ADMM:  6.56 ± 3.99 dB (0.00 dB gap from I)
   FISTA: 4.52 ± 1.91 dB (0.09 dB gap from I)
 
-SCENARIO IV (Oracle):
+SCENARIO III (Oracle):
   ADMM:  6.56 ± 3.99 dB (0.00 dB recovery)
   FISTA: 4.60 ± 2.07 dB (0.08 dB recovery)
 
@@ -87,13 +87,13 @@ SCENARIO II:
   FISTA: 19.39 ± 3.42 dB, SSIM: 0.567 ± 0.182
   ...similar for stubs...
 
-SCENARIO IV:
+SCENARIO III:
   ADMM:  27.44 ± 2.38 dB, SSIM: 0.781 ± 0.089
   FISTA: 19.44 ± 3.42 dB, SSIM: 0.569 ± 0.182
   ...similar for stubs...
 
 Gap I→II: ADMM 0.14 dB, FISTA 0.08 dB
-Recovery II→IV: ADMM 0.06 dB, FISTA 0.05 dB
+Recovery II→III: ADMM 0.06 dB, FISTA 0.05 dB
 ```
 
 ### 5. Figure Generation (COMPLETE)
@@ -271,7 +271,7 @@ packages/pwm_core/pwm_core/recon/
 2. **Three-Scenario Framework**
    - Cleanly separates measurement corruption from operator error
    - Enables fair comparison across methods
-   - Quantifies calibration value (Gap II→IV)
+   - Quantifies calibration value (Gap II→III)
 
 3. **Graceful Degradation**
    - All scripts work without deep learning libraries

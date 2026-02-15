@@ -7,11 +7,11 @@ Implements 3 scenarios across 4 methods (GAP-TV, HDNet, MST-S, MST-L) on test sc
 Scenarios:
   I  - Ideal:    Ideal mask for measurement AND reconstruction
   II - Baseline: Corrupted mask for measurement, IDEAL mask for reconstruction (mismatch!)
-  IV - Oracle:   Corrupted mask for measurement, CORRUPTED mask for reconstruction (oracle)
+  III - Oracle:   Corrupted mask for measurement, CORRUPTED mask for reconstruction (oracle)
 
 Key insight: MST/HDNet models take mask as input → scenario differentiation via mask.
 GAP-TV takes mask directly as argument.
-Scenario II vs IV differ by which mask is passed to the reconstruction.
+Scenario II vs III differ by which mask is passed to the reconstruction.
 
 Usage:
     python phase3_scenario_implementation.py --device cuda:0 --quick
@@ -226,7 +226,7 @@ def mst_reconstruct(y: np.ndarray, mask2d: np.ndarray,
     """Reconstruct CASSI using MST with a given mask.
 
     The mask determines which operator the model "assumes" was used.
-    This is the key to differentiating Scenario II (ideal mask) vs IV (true mask).
+    This is the key to differentiating Scenario II (ideal mask) vs III (true mask).
 
     Args:
         y: (H, W_ext) measurement
@@ -531,11 +531,11 @@ def run_scenario_ii(scene: np.ndarray, mask_ideal: np.ndarray,
     return results, y_corrupt
 
 
-def run_scenario_iv(scene: np.ndarray, y_corrupt: np.ndarray,
+def run_scenario_iii(scene: np.ndarray, y_corrupt: np.ndarray,
                     mask_corrupt: np.ndarray, methods: List[str],
                     device: str) -> Dict:
-    """Scenario IV: Same corrupted measurement + TRUE reconstruction mask (oracle)."""
-    logger.info("  Scenario IV: Oracle (true mask)")
+    """Scenario III: Same corrupted measurement + TRUE reconstruction mask (oracle)."""
+    logger.info("  Scenario III: Oracle (true mask)")
 
     # Reconstruct using TRUE CORRUPTED mask (oracle knowledge → better reconstruction)
     results = {}
@@ -564,7 +564,7 @@ def validate_scene(scene_idx: int, scene_name: str, scene: np.ndarray,
 
     res_i = run_scenario_i(scene, mask_ideal, methods, device)
     res_ii, y_corrupt = run_scenario_ii(scene, mask_ideal, mask_corrupt, methods, device)
-    res_iv = run_scenario_iv(scene, y_corrupt, mask_corrupt, methods, device)
+    res_iii = run_scenario_iii(scene, y_corrupt, mask_corrupt, methods, device)
 
     elapsed = time.time() - t0
 
@@ -573,22 +573,22 @@ def validate_scene(scene_idx: int, scene_name: str, scene: np.ndarray,
     for method in methods:
         pi = res_i[method]['psnr']
         pii = res_ii[method]['psnr']
-        piv = res_iv[method]['psnr']
+        piv = res_iii[method]['psnr']
         gaps[method] = {
             'gap_i_ii': pi - pii,     # Mismatch degradation
-            'gap_ii_iv': piv - pii,   # Oracle recovery
-            'gap_iv_i': pi - piv      # Residual gap
+            'gap_ii_iii': piv - pii,   # Oracle recovery
+            'gap_iii_i': pi - piv      # Residual gap
         }
 
     # Print summary
     for method in methods:
         pi = res_i[method]['psnr']
         pii = res_ii[method]['psnr']
-        piv = res_iv[method]['psnr']
+        piv = res_iii[method]['psnr']
         logger.info(f"\n  {method.upper()}:")
         logger.info(f"    I:  {pi:6.2f} dB")
         logger.info(f"    II: {pii:6.2f} dB  (I→II gap: {gaps[method]['gap_i_ii']:+.2f} dB)")
-        logger.info(f"    IV: {piv:6.2f} dB  (II→IV gain: {gaps[method]['gap_ii_iv']:+.2f} dB)")
+        logger.info(f"    III: {piv:6.2f} dB  (II→III gain: {gaps[method]['gap_ii_iii']:+.2f} dB)")
 
     logger.info(f"\n  Scene time: {elapsed:.1f}s")
 
@@ -598,7 +598,7 @@ def validate_scene(scene_idx: int, scene_name: str, scene: np.ndarray,
         'elapsed_s': elapsed,
         'scenario_i': res_i,
         'scenario_ii': res_ii,
-        'scenario_iv': res_iv,
+        'scenario_iii': res_iii,
         'gaps': gaps,
         'mismatch': {'dx': MISMATCH_DX, 'dy': MISMATCH_DY, 'theta': MISMATCH_THETA}
     }
@@ -613,7 +613,7 @@ def compute_summary(all_results: List[Dict], methods: List[str]) -> Dict:
         'noise': {'alpha': NOISE_ALPHA, 'sigma': NOISE_SIGMA},
     }
 
-    for scenario in ['scenario_i', 'scenario_ii', 'scenario_iv']:
+    for scenario in ['scenario_i', 'scenario_ii', 'scenario_iii']:
         summary[scenario] = {}
         for method in methods:
             psnr_vals = [r[scenario][method]['psnr'] for r in all_results if method in r[scenario]]
@@ -629,13 +629,13 @@ def compute_summary(all_results: List[Dict], methods: List[str]) -> Dict:
     summary['gaps'] = {}
     for method in methods:
         gap_i_ii = [r['gaps'][method]['gap_i_ii'] for r in all_results if method in r['gaps']]
-        gap_ii_iv = [r['gaps'][method]['gap_ii_iv'] for r in all_results if method in r['gaps']]
+        gap_ii_iii = [r['gaps'][method]['gap_ii_iii'] for r in all_results if method in r['gaps']]
         if gap_i_ii:
             summary['gaps'][method] = {
                 'gap_i_ii_mean': float(np.mean(gap_i_ii)),
                 'gap_i_ii_std': float(np.std(gap_i_ii)),
-                'gap_ii_iv_mean': float(np.mean(gap_ii_iv)),
-                'gap_ii_iv_std': float(np.std(gap_ii_iv)),
+                'gap_ii_iii_mean': float(np.mean(gap_ii_iii)),
+                'gap_ii_iii_std': float(np.std(gap_ii_iii)),
             }
 
     return summary
@@ -656,7 +656,7 @@ def main():
     logger.info("\n" + "=" * 70)
     logger.info("PHASE 3: SCENARIO IMPLEMENTATION")
     logger.info("=" * 70)
-    logger.info(f"Scenarios: I (Ideal), II (Baseline), IV (Oracle)")
+    logger.info(f"Scenarios: I (Ideal), II (Baseline), III (Oracle)")
     logger.info(f"Methods: {methods}")
     logger.info(f"Mismatch: dx={MISMATCH_DX}, dy={MISMATCH_DY}, θ={MISMATCH_THETA}°")
     logger.info(f"Noise: α={NOISE_ALPHA}, σ={NOISE_SIGMA}")
@@ -710,7 +710,7 @@ def main():
 
     for method in methods:
         logger.info(f"\n{method.upper()}:")
-        for scenario in ['scenario_i', 'scenario_ii', 'scenario_iv']:
+        for scenario in ['scenario_i', 'scenario_ii', 'scenario_iii']:
             if method in summary.get(scenario, {}):
                 m = summary[scenario][method]
                 label = scenario.replace('scenario_', '').upper()
@@ -720,7 +720,7 @@ def main():
         if method in summary.get('gaps', {}):
             g = summary['gaps'][method]
             logger.info(f"  I→II gap:  {g['gap_i_ii_mean']:+.2f} ± {g['gap_i_ii_std']:.2f} dB")
-            logger.info(f"  II→IV gain: {g['gap_ii_iv_mean']:+.2f} ± {g['gap_ii_iv_std']:.2f} dB")
+            logger.info(f"  II→III gain: {g['gap_ii_iii_mean']:+.2f} ± {g['gap_ii_iii_std']:.2f} dB")
 
     logger.info(f"\nTotal time: {total_time:.1f}s ({total_time/60:.1f} min)")
 

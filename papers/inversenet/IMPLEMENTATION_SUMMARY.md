@@ -52,7 +52,7 @@ Created a comprehensive CASSI (Coded Aperture Snapshot Spectral Imaging) validat
 **Scenarios Implemented:**
 1. **Scenario I (Ideal):** Perfect measurement & operator knowledge
 2. **Scenario II (Baseline):** Corrupted measurement, uncorrected operator
-3. **Scenario IV (Oracle):** Corrupted measurement, truth operator with known mismatch
+3. **Scenario III (Oracle):** Corrupted measurement, truth operator with known mismatch
 
 **Note:** Scenario III (calibration algorithms Alg1 & Alg2) intentionally skipped per design requirements - InverseNet focuses on reconstruction without calibration.
 
@@ -68,7 +68,7 @@ Created a comprehensive CASSI (Coded Aperture Snapshot Spectral Imaging) validat
 **Generated Figures:**
 1. **scenario_comparison.png** - Bar chart comparing PSNR across 3 scenarios for 4 methods
 2. **method_comparison_heatmap.png** - Heatmap showing method×scenario PSNR values
-3. **gap_comparison.png** - Degradation (I→II) vs recovery (II→IV) comparison
+3. **gap_comparison.png** - Degradation (I→II) vs recovery (II→III) comparison
 4. **psnr_distribution.png** - Boxplots showing PSNR distribution across 10 scenes
 
 **Generated Tables:**
@@ -88,7 +88,7 @@ Created a comprehensive CASSI (Coded Aperture Snapshot Spectral Imaging) validat
 
 | Aspect | Decision | Rationale |
 |--------|----------|-----------|
-| **Skip Scenario III** | Yes, skip Algorithms 1 & 2 | InverseNet evaluates reconstruction without calibration; Scenario IV (oracle operator) sufficient for benchmark |
+| **Skip Scenario III** | Yes, skip Algorithms 1 & 2 | InverseNet evaluates reconstruction without calibration; Scenario III (oracle operator) sufficient for benchmark |
 | **Mismatch Severity** | Moderate (dx=0.5, dy=0.3, θ=0.1°) | Realistic assembly tolerance, ~3-5 dB degradation, enables method differentiation |
 | **Method Selection** | 4 methods (1 classical, 3 deep learning) | GAP-TV baseline + 3 SoTA deep learning variants showing progression |
 | **Metric Set** | PSNR, SSIM, SAM | Standard hyperspectral reconstruction metrics, enables cross-paper comparison |
@@ -102,17 +102,17 @@ Created a comprehensive CASSI (Coded Aperture Snapshot Spectral Imaging) validat
 ### PSNR Hierarchy (per method, across scenarios)
 
 ```
-Scenario I (Ideal) > Scenario IV (Oracle) > Scenario II (Baseline)
+Scenario I (Ideal) > Scenario III (Oracle) > Scenario II (Baseline)
 
 Example (MST-L):
   I:  36.0 dB (perfect oracle)
-  IV: 33.6 dB (oracle with known mismatch)
+  III: 33.6 dB (oracle with known mismatch)
   II: 32.3 dB (uncorrected mismatch)
 
 Gaps:
   Gap I→II:  3.7 dB (mismatch impact on reconstruction)
-  Gap II→IV: 1.3 dB (recovery when true operator known)
-  Gap IV→I:  2.4 dB (residual noise/solver limitation)
+  Gap II→III: 1.3 dB (recovery when true operator known)
+  Gap III→I:  2.4 dB (residual noise/solver limitation)
 ```
 
 ### Method Ranking (all scenarios)
@@ -135,7 +135,7 @@ Gaps:
 | Dataset Loading | 1 min | 10 scenes × 28 bands × 256×256 |
 | Scenario I (Ideal) | ~5 min | 10 scenes × 4 methods, no noise |
 | Scenario II (Baseline) | ~10 min | Includes noise generation + 4 methods |
-| Scenario IV (Oracle) | ~10 min | Reuses measurement from Scenario II |
+| Scenario III (Oracle) | ~10 min | Reuses measurement from Scenario II |
 | Metric Computation | ~3 min | PSNR/SSIM/SAM for all 120 reconstructions |
 | **Total Validation** | **~30 min** | CPU-friendly, no GPU required for basic execution |
 | **Total with GPU** | **~2 hours** | Full transformer method execution |
@@ -230,11 +230,11 @@ scripts/run_all.sh                   60 lines, 2.4 KB
 
 ### Key Design Pattern: Scenario Reuse
 
-To optimize execution, Scenario II returns both results AND the measurement (y_corrupt) for reuse in Scenario IV:
+To optimize execution, Scenario II returns both results AND the measurement (y_corrupt) for reuse in Scenario III:
 
 ```python
 res_ii, y_corrupt = validate_scenario_ii(...)
-res_iv = validate_scenario_iv(..., y_corrupt, ...)
+res_iii = validate_scenario_iii(..., y_corrupt, ...)
 ```
 
 This avoids recomputing the corrupted measurement with mismatch injection, saving ~20% execution time.

@@ -8,7 +8,7 @@ Uses Set11 dataset with multiple reconstruction methods.
 Scenarios:
 - Scenario I: Ideal (oracle baseline, no noise)
 - Scenario II: Assumed (corrupted measurement, uncorrected operator)
-- Scenario IV: Truth (corrupted measurement, oracle operator)
+- Scenario III: Truth (corrupted measurement, oracle operator)
 
 Methods:
 1. ADMM-L1 (classical)
@@ -318,11 +318,11 @@ def validate_scenario_ii(image: np.ndarray, A_real: np.ndarray,
     return results, y_corrupt
 
 
-def validate_scenario_iv(image: np.ndarray, A_real: np.ndarray,
+def validate_scenario_iii(image: np.ndarray, A_real: np.ndarray,
                         mismatch: MismatchParameters, y_corrupt: np.ndarray,
                         methods: List[str]) -> Dict[str, Dict]:
-    """Scenario IV: Truth Forward Model (oracle operator)."""
-    logger.info("  Scenario IV: Truth Forward Model (oracle operator)")
+    """Scenario III: Truth Forward Model (oracle operator)."""
+    logger.info("  Scenario III: Truth Forward Model (oracle operator)")
     results = {}
 
     # Reconstruct using CORRECTED operator
@@ -393,7 +393,7 @@ def main():
             'image_idx': img_idx + 1,
             'scenario_i': validate_scenario_i(image, A_ideal, RECONSTRUCTION_METHODS),
             'scenario_ii': None,
-            'scenario_iv': None,
+            'scenario_iii': None,
             'elapsed_time': 0.0
         }
 
@@ -401,16 +401,16 @@ def main():
         res_ii, y_corrupt = validate_scenario_ii(image, A_real, mismatch, RECONSTRUCTION_METHODS)
         result['scenario_ii'] = res_ii
 
-        # Scenario IV
-        result['scenario_iv'] = validate_scenario_iv(image, A_real, mismatch, y_corrupt,
+        # Scenario III
+        result['scenario_iii'] = validate_scenario_iii(image, A_real, mismatch, y_corrupt,
                                                      RECONSTRUCTION_METHODS)
 
         # Log summary
         for method in RECONSTRUCTION_METHODS:
             psnr_i = result['scenario_i'][method]['psnr']
             psnr_ii = result['scenario_ii'][method]['psnr']
-            psnr_iv = result['scenario_iv'][method]['psnr']
-            logger.info(f"  {method.upper()}: I={psnr_i:.2f}dB, II={psnr_ii:.2f}dB, IV={psnr_iv:.2f}dB")
+            psnr_iii = result['scenario_iii'][method]['psnr']
+            logger.info(f"  {method.upper()}: I={psnr_i:.2f}dB, II={psnr_ii:.2f}dB, III={psnr_iii:.2f}dB")
 
         all_results.append(result)
 
@@ -428,7 +428,7 @@ def main():
         'scenarios': {}
     }
 
-    for scenario_key in ['scenario_i', 'scenario_ii', 'scenario_iv']:
+    for scenario_key in ['scenario_i', 'scenario_ii', 'scenario_iii']:
         summary['scenarios'][scenario_key] = {}
         for method in RECONSTRUCTION_METHODS:
             psnr_vals = [r[scenario_key][method]['psnr'] for r in all_results
@@ -448,7 +448,7 @@ def main():
             }
 
     # Log summary
-    for scenario_key in ['scenario_i', 'scenario_ii', 'scenario_iv']:
+    for scenario_key in ['scenario_i', 'scenario_ii', 'scenario_iii']:
         scenario_label = scenario_key.replace('_', ' ').upper()
         logger.info(f"\n{scenario_label}:")
         for method in RECONSTRUCTION_METHODS:

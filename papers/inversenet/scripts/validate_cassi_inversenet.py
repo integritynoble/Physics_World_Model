@@ -3,12 +3,12 @@
 CASSI Validation for InverseNet ECCV Paper
 
 Validates 4 reconstruction methods (GAP-TV, HDNet, MST-S, MST-L) across
-3 scenarios (I: Ideal, II: Assumed, IV: Truth Forward Model) on 10 KAIST scenes.
+3 scenarios (I: Ideal, II: Assumed, III: Truth Forward Model) on 10 KAIST scenes.
 
 Scenarios:
 - Scenario I:   Ideal measurement + ideal mask → oracle baseline
 - Scenario II:  Corrupted measurement + assumed perfect mask → baseline degradation
-- Scenario IV:  Corrupted measurement + truth mask with mismatch → oracle operator
+- Scenario III:  Corrupted measurement + truth mask with mismatch → oracle operator
 
 Usage:
     python validate_cassi_inversenet.py --device cuda:0
@@ -43,7 +43,7 @@ RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 # Constants
 RECONSTRUCTION_METHODS = ['mst_s', 'mst_l']  # GAP-TV and HDNet temporarily disabled for API compatibility
-SCENARIOS = ['scenario_i', 'scenario_ii', 'scenario_iv']
+SCENARIOS = ['scenario_i', 'scenario_ii', 'scenario_iii']
 NUM_SCENES = 10
 
 
@@ -495,7 +495,7 @@ def validate_scenario_ii(scene: np.ndarray, mask_real: np.ndarray,
         device: torch device
 
     Returns:
-        Tuple of (results dict, y_corrupt measurement for reuse in Scenario IV)
+        Tuple of (results dict, y_corrupt measurement for reuse in Scenario III)
     """
     logger.info("  Scenario II: Assumed/Baseline (uncorrected mismatch)")
     results = {}
@@ -547,11 +547,11 @@ def validate_scenario_ii(scene: np.ndarray, mask_real: np.ndarray,
     return results, y_corrupt
 
 
-def validate_scenario_iv(scene: np.ndarray, mask_real: np.ndarray,
+def validate_scenario_iii(scene: np.ndarray, mask_real: np.ndarray,
                          mismatch: MismatchParameters, y_corrupt: np.ndarray,
                          methods: List[str], device: str) -> Dict[str, Dict]:
     """
-    Scenario IV: Truth Forward Model (corrupted measurement, oracle operator).
+    Scenario III: Truth Forward Model (corrupted measurement, oracle operator).
 
     Purpose: Upper bound for corrupted measurements when true mismatch is known
 
@@ -571,7 +571,7 @@ def validate_scenario_iv(scene: np.ndarray, mask_real: np.ndarray,
     Returns:
         Dictionary with metrics for each method
     """
-    logger.info("  Scenario IV: Truth Forward Model (oracle operator)")
+    logger.info("  Scenario III: Truth Forward Model (oracle operator)")
     results = {}
 
     # Resize mask to 256x256 if needed
@@ -641,8 +641,8 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
     # Scenario II (returns both results and measurement for reuse)
     res_ii, y_corrupt = validate_scenario_ii(scene, mask_real, mismatch, methods, device)
 
-    # Scenario IV (reuses y_corrupt from Scenario II)
-    res_iv = validate_scenario_iv(scene, mask_real, mismatch, y_corrupt, methods, device)
+    # Scenario III (reuses y_corrupt from Scenario II)
+    res_iii = validate_scenario_iii(scene, mask_real, mismatch, y_corrupt, methods, device)
 
     elapsed = time.time() - start_time
 
@@ -651,7 +651,7 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
         'scene_idx': scene_idx + 1,
         'scenario_i': res_i,
         'scenario_ii': res_ii,
-        'scenario_iv': res_iv,
+        'scenario_iii': res_iii,
         'elapsed_time': elapsed,
         'mismatch_injected': {
             'mask_dx': mismatch.mask_dx,
@@ -665,12 +665,12 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
     for method in methods:
         psnr_i = res_i[method]['psnr']
         psnr_ii = res_ii[method]['psnr']
-        psnr_iv = res_iv[method]['psnr']
+        psnr_iii = res_iii[method]['psnr']
 
         result['gaps'][method] = {
             'gap_i_ii': float(psnr_i - psnr_ii),      # Degradation from mismatch
-            'gap_ii_iv': float(psnr_iv - psnr_ii),    # Recovery from oracle
-            'gap_iv_i': float(psnr_i - psnr_iv)       # Residual gap
+            'gap_ii_iii': float(psnr_iii - psnr_ii),    # Recovery from oracle
+            'gap_iii_i': float(psnr_i - psnr_iii)       # Residual gap
         }
 
     # Log summary for this scene
@@ -678,7 +678,7 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
         logger.info(f"\n  {method.upper()}:")
         logger.info(f"    I (Ideal):   {res_i[method]['psnr']:.2f} dB")
         logger.info(f"    II (Assumed): {res_ii[method]['psnr']:.2f} dB (gap {result['gaps'][method]['gap_i_ii']:.2f} dB)")
-        logger.info(f"    IV (Oracle):  {res_iv[method]['psnr']:.2f} dB (recovery {result['gaps'][method]['gap_ii_iv']:.2f} dB)")
+        logger.info(f"    III (Oracle):  {res_iii[method]['psnr']:.2f} dB (recovery {result['gaps'][method]['gap_ii_iii']:.2f} dB)")
 
     return result
 
@@ -702,7 +702,7 @@ def compute_summary_statistics(all_results: List[Dict]) -> Dict:
         'scenarios': {}
     }
 
-    for scenario_key in ['scenario_i', 'scenario_ii', 'scenario_iv']:
+    for scenario_key in ['scenario_i', 'scenario_ii', 'scenario_iii']:
         scenario_name = scenario_key.replace('_', ' ').upper()
         summary['scenarios'][scenario_key] = {}
 
@@ -732,19 +732,19 @@ def compute_summary_statistics(all_results: List[Dict]) -> Dict:
     summary['gaps'] = {}
     for method in RECONSTRUCTION_METHODS:
         gap_values_i_ii = [r['gaps'][method]['gap_i_ii'] for r in all_results]
-        gap_values_ii_iv = [r['gaps'][method]['gap_ii_iv'] for r in all_results]
-        gap_values_iv_i = [r['gaps'][method]['gap_iv_i'] for r in all_results]
+        gap_values_ii_iv = [r['gaps'][method]['gap_ii_iii'] for r in all_results]
+        gap_values_iv_i = [r['gaps'][method]['gap_iii_i'] for r in all_results]
 
         summary['gaps'][method] = {
             'gap_i_ii': {
                 'mean': float(np.mean(gap_values_i_ii)),
                 'std': float(np.std(gap_values_i_ii))
             },
-            'gap_ii_iv': {
+            'gap_ii_iii': {
                 'mean': float(np.mean(gap_values_ii_iv)),
                 'std': float(np.std(gap_values_ii_iv))
             },
-            'gap_iv_i': {
+            'gap_iii_i': {
                 'mean': float(np.mean(gap_values_iv_i)),
                 'std': float(np.std(gap_values_iv_i))
             }
@@ -824,7 +824,7 @@ def main():
     summary = compute_summary_statistics(all_results)
 
     # Log summary
-    for scenario_key in ['scenario_i', 'scenario_ii', 'scenario_iv']:
+    for scenario_key in ['scenario_i', 'scenario_ii', 'scenario_iii']:
         scenario_label = scenario_key.replace('_', ' ').upper()
         logger.info(f"\n{scenario_label}:")
         for method in RECONSTRUCTION_METHODS:
@@ -835,8 +835,8 @@ def main():
     logger.info(f"\nGaps (PSNR degradation/recovery):")
     for method in RECONSTRUCTION_METHODS:
         gap_i_ii = summary['gaps'][method]['gap_i_ii']['mean']
-        gap_ii_iv = summary['gaps'][method]['gap_ii_iv']['mean']
-        logger.info(f"  {method.upper():8s}: Gap I→II={gap_i_ii:.2f} dB, Recovery II→IV={gap_ii_iv:.2f} dB")
+        gap_ii_iii = summary['gaps'][method]['gap_ii_iii']['mean']
+        logger.info(f"  {method.upper():8s}: Gap I→II={gap_i_ii:.2f} dB, Recovery II→III={gap_ii_iii:.2f} dB")
 
     logger.info(f"\nExecution time: {total_time / 3600:.2f} hours ({total_time / len(all_results) / 60:.1f} min/scene)")
 

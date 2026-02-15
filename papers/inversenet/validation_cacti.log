@@ -24,162 +24,162 @@ Generating/loading masks...
 2026-02-15 17:18:15,430 - __main__ - INFO - ======================================================================
 2026-02-15 17:18:15,430 - __main__ - INFO -   Scenario I: Ideal (oracle)
 2026-02-15 17:18:33,491 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
-2026-02-15 17:18:54,325 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 17:18:54,325 - __main__ - INFO -   Scenario III: Truth Forward Model (oracle operator)
 2026-02-15 17:19:11,711 - __main__ - INFO - 
   GAP_TV:
 2026-02-15 17:19:11,712 - __main__ - INFO -     I (Ideal):    4.94 dB
 2026-02-15 17:19:11,712 - __main__ - INFO -     II (Assumed):  4.88 dB (gap 0.06 dB)
-2026-02-15 17:19:11,712 - __main__ - INFO -     IV (Oracle):   4.90 dB (recovery 0.02 dB)
+2026-02-15 17:19:11,712 - __main__ - INFO -     III (Oracle):   4.90 dB (recovery 0.02 dB)
 2026-02-15 17:19:11,712 - __main__ - INFO - 
   PNP_FFDNET:
 2026-02-15 17:19:11,712 - __main__ - INFO -     I (Ideal):    6.05 dB
 2026-02-15 17:19:11,712 - __main__ - INFO -     II (Assumed):  6.38 dB (gap -0.33 dB)
-2026-02-15 17:19:11,712 - __main__ - INFO -     IV (Oracle):   5.45 dB (recovery -0.93 dB)
+2026-02-15 17:19:11,712 - __main__ - INFO -     III (Oracle):   5.45 dB (recovery -0.93 dB)
 2026-02-15 17:19:11,712 - __main__ - INFO - 
   ELP_UNFOLDING:
 2026-02-15 17:19:11,712 - __main__ - INFO -     I (Ideal):    4.77 dB
 2026-02-15 17:19:11,712 - __main__ - INFO -     II (Assumed):  4.79 dB (gap -0.03 dB)
-2026-02-15 17:19:11,712 - __main__ - INFO -     IV (Oracle):   4.77 dB (recovery -0.03 dB)
+2026-02-15 17:19:11,712 - __main__ - INFO -     III (Oracle):   4.77 dB (recovery -0.03 dB)
 2026-02-15 17:19:11,712 - __main__ - INFO - 
   EFFICIENT_SCI:
 2026-02-15 17:19:11,712 - __main__ - INFO -     I (Ideal):    4.78 dB
 2026-02-15 17:19:11,712 - __main__ - INFO -     II (Assumed):  4.78 dB (gap 0.00 dB)
-2026-02-15 17:19:11,712 - __main__ - INFO -     IV (Oracle):   4.78 dB (recovery 0.00 dB)
+2026-02-15 17:19:11,712 - __main__ - INFO -     III (Oracle):   4.78 dB (recovery 0.00 dB)
 2026-02-15 17:19:11,712 - __main__ - INFO - 
 ======================================================================
 2026-02-15 17:19:11,712 - __main__ - INFO - Scene 2/6: crash32
 2026-02-15 17:19:11,712 - __main__ - INFO - ======================================================================
 2026-02-15 17:19:11,712 - __main__ - INFO -   Scenario I: Ideal (oracle)
 2026-02-15 17:19:27,196 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
-2026-02-15 17:19:47,840 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 17:19:47,840 - __main__ - INFO -   Scenario III: Truth Forward Model (oracle operator)
 2026-02-15 17:20:06,545 - __main__ - INFO - 
   GAP_TV:
 2026-02-15 17:20:06,545 - __main__ - INFO -     I (Ideal):    4.94 dB
 2026-02-15 17:20:06,546 - __main__ - INFO -     II (Assumed):  4.87 dB (gap 0.06 dB)
-2026-02-15 17:20:06,546 - __main__ - INFO -     IV (Oracle):   4.90 dB (recovery 0.03 dB)
+2026-02-15 17:20:06,546 - __main__ - INFO -     III (Oracle):   4.90 dB (recovery 0.03 dB)
 2026-02-15 17:20:06,546 - __main__ - INFO - 
   PNP_FFDNET:
 2026-02-15 17:20:06,546 - __main__ - INFO -     I (Ideal):    6.06 dB
 2026-02-15 17:20:06,547 - __main__ - INFO -     II (Assumed):  6.38 dB (gap -0.33 dB)
-2026-02-15 17:20:06,547 - __main__ - INFO -     IV (Oracle):   5.45 dB (recovery -0.93 dB)
+2026-02-15 17:20:06,547 - __main__ - INFO -     III (Oracle):   5.45 dB (recovery -0.93 dB)
 2026-02-15 17:20:06,547 - __main__ - INFO - 
   ELP_UNFOLDING:
 2026-02-15 17:20:06,547 - __main__ - INFO -     I (Ideal):    4.77 dB
 2026-02-15 17:20:06,547 - __main__ - INFO -     II (Assumed):  4.80 dB (gap -0.03 dB)
-2026-02-15 17:20:06,548 - __main__ - INFO -     IV (Oracle):   4.77 dB (recovery -0.03 dB)
+2026-02-15 17:20:06,548 - __main__ - INFO -     III (Oracle):   4.77 dB (recovery -0.03 dB)
 2026-02-15 17:20:06,548 - __main__ - INFO - 
   EFFICIENT_SCI:
 2026-02-15 17:20:06,548 - __main__ - INFO -     I (Ideal):    4.77 dB
 2026-02-15 17:20:06,548 - __main__ - INFO -     II (Assumed):  4.77 dB (gap 0.00 dB)
-2026-02-15 17:20:06,548 - __main__ - INFO -     IV (Oracle):   4.77 dB (recovery 0.00 dB)
+2026-02-15 17:20:06,548 - __main__ - INFO -     III (Oracle):   4.77 dB (recovery 0.00 dB)
 2026-02-15 17:20:06,548 - __main__ - INFO - 
 ======================================================================
 2026-02-15 17:20:06,549 - __main__ - INFO - Scene 3/6: aerial32
 2026-02-15 17:20:06,549 - __main__ - INFO - ======================================================================
 2026-02-15 17:20:06,549 - __main__ - INFO -   Scenario I: Ideal (oracle)
 2026-02-15 17:20:23,766 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
-2026-02-15 17:20:46,104 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 17:20:46,104 - __main__ - INFO -   Scenario III: Truth Forward Model (oracle operator)
 2026-02-15 17:21:04,677 - __main__ - INFO - 
   GAP_TV:
 2026-02-15 17:21:04,677 - __main__ - INFO -     I (Ideal):    4.94 dB
 2026-02-15 17:21:04,677 - __main__ - INFO -     II (Assumed):  4.87 dB (gap 0.06 dB)
-2026-02-15 17:21:04,677 - __main__ - INFO -     IV (Oracle):   4.91 dB (recovery 0.03 dB)
+2026-02-15 17:21:04,677 - __main__ - INFO -     III (Oracle):   4.91 dB (recovery 0.03 dB)
 2026-02-15 17:21:04,678 - __main__ - INFO - 
   PNP_FFDNET:
 2026-02-15 17:21:04,678 - __main__ - INFO -     I (Ideal):    6.06 dB
 2026-02-15 17:21:04,678 - __main__ - INFO -     II (Assumed):  6.38 dB (gap -0.32 dB)
-2026-02-15 17:21:04,678 - __main__ - INFO -     IV (Oracle):   5.46 dB (recovery -0.93 dB)
+2026-02-15 17:21:04,678 - __main__ - INFO -     III (Oracle):   5.46 dB (recovery -0.93 dB)
 2026-02-15 17:21:04,678 - __main__ - INFO - 
   ELP_UNFOLDING:
 2026-02-15 17:21:04,679 - __main__ - INFO -     I (Ideal):    4.78 dB
 2026-02-15 17:21:04,679 - __main__ - INFO -     II (Assumed):  4.80 dB (gap -0.03 dB)
-2026-02-15 17:21:04,679 - __main__ - INFO -     IV (Oracle):   4.78 dB (recovery -0.03 dB)
+2026-02-15 17:21:04,679 - __main__ - INFO -     III (Oracle):   4.78 dB (recovery -0.03 dB)
 2026-02-15 17:21:04,679 - __main__ - INFO - 
   EFFICIENT_SCI:
 2026-02-15 17:21:04,679 - __main__ - INFO -     I (Ideal):    4.77 dB
 2026-02-15 17:21:04,680 - __main__ - INFO -     II (Assumed):  4.77 dB (gap 0.00 dB)
-2026-02-15 17:21:04,680 - __main__ - INFO -     IV (Oracle):   4.77 dB (recovery 0.00 dB)
+2026-02-15 17:21:04,680 - __main__ - INFO -     III (Oracle):   4.77 dB (recovery 0.00 dB)
 2026-02-15 17:21:04,680 - __main__ - INFO - 
 ======================================================================
 2026-02-15 17:21:04,680 - __main__ - INFO - Scene 4/6: traffic48
 2026-02-15 17:21:04,680 - __main__ - INFO - ======================================================================
 2026-02-15 17:21:04,681 - __main__ - INFO -   Scenario I: Ideal (oracle)
 2026-02-15 17:21:22,756 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
-2026-02-15 17:21:42,282 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 17:21:42,282 - __main__ - INFO -   Scenario III: Truth Forward Model (oracle operator)
 2026-02-15 17:21:57,457 - __main__ - INFO - 
   GAP_TV:
 2026-02-15 17:21:57,457 - __main__ - INFO -     I (Ideal):    4.89 dB
 2026-02-15 17:21:57,457 - __main__ - INFO -     II (Assumed):  4.85 dB (gap 0.04 dB)
-2026-02-15 17:21:57,458 - __main__ - INFO -     IV (Oracle):   4.88 dB (recovery 0.03 dB)
+2026-02-15 17:21:57,458 - __main__ - INFO -     III (Oracle):   4.88 dB (recovery 0.03 dB)
 2026-02-15 17:21:57,458 - __main__ - INFO - 
   PNP_FFDNET:
 2026-02-15 17:21:57,458 - __main__ - INFO -     I (Ideal):    5.71 dB
 2026-02-15 17:21:57,458 - __main__ - INFO -     II (Assumed):  5.77 dB (gap -0.06 dB)
-2026-02-15 17:21:57,458 - __main__ - INFO -     IV (Oracle):   5.16 dB (recovery -0.61 dB)
+2026-02-15 17:21:57,458 - __main__ - INFO -     III (Oracle):   5.16 dB (recovery -0.61 dB)
 2026-02-15 17:21:57,459 - __main__ - INFO - 
   ELP_UNFOLDING:
 2026-02-15 17:21:57,459 - __main__ - INFO -     I (Ideal):    4.77 dB
 2026-02-15 17:21:57,459 - __main__ - INFO -     II (Assumed):  4.79 dB (gap -0.02 dB)
-2026-02-15 17:21:57,459 - __main__ - INFO -     IV (Oracle):   4.77 dB (recovery -0.02 dB)
+2026-02-15 17:21:57,459 - __main__ - INFO -     III (Oracle):   4.77 dB (recovery -0.02 dB)
 2026-02-15 17:21:57,459 - __main__ - INFO - 
   EFFICIENT_SCI:
 2026-02-15 17:21:57,460 - __main__ - INFO -     I (Ideal):    4.77 dB
 2026-02-15 17:21:57,460 - __main__ - INFO -     II (Assumed):  4.77 dB (gap 0.00 dB)
-2026-02-15 17:21:57,460 - __main__ - INFO -     IV (Oracle):   4.77 dB (recovery 0.00 dB)
+2026-02-15 17:21:57,460 - __main__ - INFO -     III (Oracle):   4.77 dB (recovery 0.00 dB)
 2026-02-15 17:21:57,460 - __main__ - INFO - 
 ======================================================================
 2026-02-15 17:21:57,460 - __main__ - INFO - Scene 5/6: runner40
 2026-02-15 17:21:57,461 - __main__ - INFO - ======================================================================
 2026-02-15 17:21:57,461 - __main__ - INFO -   Scenario I: Ideal (oracle)
 2026-02-15 17:22:13,566 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
-2026-02-15 17:22:39,451 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 17:22:39,451 - __main__ - INFO -   Scenario III: Truth Forward Model (oracle operator)
 2026-02-15 17:23:00,248 - __main__ - INFO - 
   GAP_TV:
 2026-02-15 17:23:00,248 - __main__ - INFO -     I (Ideal):    4.92 dB
 2026-02-15 17:23:00,249 - __main__ - INFO -     II (Assumed):  4.87 dB (gap 0.05 dB)
-2026-02-15 17:23:00,249 - __main__ - INFO -     IV (Oracle):   4.88 dB (recovery 0.02 dB)
+2026-02-15 17:23:00,249 - __main__ - INFO -     III (Oracle):   4.88 dB (recovery 0.02 dB)
 2026-02-15 17:23:00,249 - __main__ - INFO - 
   PNP_FFDNET:
 2026-02-15 17:23:00,249 - __main__ - INFO -     I (Ideal):    5.78 dB
 2026-02-15 17:23:00,249 - __main__ - INFO -     II (Assumed):  5.94 dB (gap -0.16 dB)
-2026-02-15 17:23:00,249 - __main__ - INFO -     IV (Oracle):   5.24 dB (recovery -0.70 dB)
+2026-02-15 17:23:00,249 - __main__ - INFO -     III (Oracle):   5.24 dB (recovery -0.70 dB)
 2026-02-15 17:23:00,249 - __main__ - INFO - 
   ELP_UNFOLDING:
 2026-02-15 17:23:00,249 - __main__ - INFO -     I (Ideal):    4.77 dB
 2026-02-15 17:23:00,249 - __main__ - INFO -     II (Assumed):  4.79 dB (gap -0.02 dB)
-2026-02-15 17:23:00,249 - __main__ - INFO -     IV (Oracle):   4.77 dB (recovery -0.02 dB)
+2026-02-15 17:23:00,249 - __main__ - INFO -     III (Oracle):   4.77 dB (recovery -0.02 dB)
 2026-02-15 17:23:00,249 - __main__ - INFO - 
   EFFICIENT_SCI:
 2026-02-15 17:23:00,249 - __main__ - INFO -     I (Ideal):    4.77 dB
 2026-02-15 17:23:00,249 - __main__ - INFO -     II (Assumed):  4.77 dB (gap 0.00 dB)
-2026-02-15 17:23:00,249 - __main__ - INFO -     IV (Oracle):   4.77 dB (recovery 0.00 dB)
+2026-02-15 17:23:00,249 - __main__ - INFO -     III (Oracle):   4.77 dB (recovery 0.00 dB)
 2026-02-15 17:23:00,249 - __main__ - INFO - 
 ======================================================================
 2026-02-15 17:23:00,249 - __main__ - INFO - Scene 6/6: drop40
 2026-02-15 17:23:00,249 - __main__ - INFO - ======================================================================
 2026-02-15 17:23:00,249 - __main__ - INFO -   Scenario I: Ideal (oracle)
 2026-02-15 17:23:20,093 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
-2026-02-15 17:23:39,511 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 17:23:39,511 - __main__ - INFO -   Scenario III: Truth Forward Model (oracle operator)
 2026-02-15 17:23:54,197 - __main__ - INFO - 
   GAP_TV:
 2026-02-15 17:23:54,197 - __main__ - INFO -     I (Ideal):    4.91 dB
 2026-02-15 17:23:54,198 - __main__ - INFO -     II (Assumed):  4.86 dB (gap 0.05 dB)
-2026-02-15 17:23:54,198 - __main__ - INFO -     IV (Oracle):   4.89 dB (recovery 0.03 dB)
+2026-02-15 17:23:54,198 - __main__ - INFO -     III (Oracle):   4.89 dB (recovery 0.03 dB)
 2026-02-15 17:23:54,198 - __main__ - INFO - 
   PNP_FFDNET:
 2026-02-15 17:23:54,198 - __main__ - INFO -     I (Ideal):    5.78 dB
 2026-02-15 17:23:54,198 - __main__ - INFO -     II (Assumed):  5.94 dB (gap -0.16 dB)
-2026-02-15 17:23:54,199 - __main__ - INFO -     IV (Oracle):   5.24 dB (recovery -0.70 dB)
+2026-02-15 17:23:54,199 - __main__ - INFO -     III (Oracle):   5.24 dB (recovery -0.70 dB)
 2026-02-15 17:23:54,199 - __main__ - INFO - 
   ELP_UNFOLDING:
 2026-02-15 17:23:54,199 - __main__ - INFO -     I (Ideal):    4.77 dB
 2026-02-15 17:23:54,199 - __main__ - INFO -     II (Assumed):  4.79 dB (gap -0.02 dB)
-2026-02-15 17:23:54,199 - __main__ - INFO -     IV (Oracle):   4.77 dB (recovery -0.02 dB)
+2026-02-15 17:23:54,199 - __main__ - INFO -     III (Oracle):   4.77 dB (recovery -0.02 dB)
 2026-02-15 17:23:54,199 - __main__ - INFO - 
   EFFICIENT_SCI:
 2026-02-15 17:23:54,200 - __main__ - INFO -     I (Ideal):    4.77 dB
 2026-02-15 17:23:54,200 - __main__ - INFO -     II (Assumed):  4.77 dB (gap 0.00 dB)
-2026-02-15 17:23:54,200 - __main__ - INFO -     IV (Oracle):   4.77 dB (recovery 0.00 dB)
+2026-02-15 17:23:54,200 - __main__ - INFO -     III (Oracle):   4.77 dB (recovery 0.00 dB)
 2026-02-15 17:23:54,200 - __main__ - INFO - 
 ======================================================================
 2026-02-15 17:23:54,200 - __main__ - INFO - SUMMARY STATISTICS
@@ -197,17 +197,17 @@ SCENARIO II:
 2026-02-15 17:23:54,206 - __main__ - INFO -   ELP_UNFOLDING       : 4.79 ± 0.00 dB
 2026-02-15 17:23:54,207 - __main__ - INFO -   EFFICIENT_SCI       : 4.77 ± 0.00 dB
 2026-02-15 17:23:54,207 - __main__ - INFO - 
-SCENARIO IV:
+SCENARIO III:
 2026-02-15 17:23:54,207 - __main__ - INFO -   GAP_TV              : 4.89 ± 0.01 dB
 2026-02-15 17:23:54,207 - __main__ - INFO -   PNP_FFDNET          : 5.33 ± 0.12 dB
 2026-02-15 17:23:54,207 - __main__ - INFO -   ELP_UNFOLDING       : 4.77 ± 0.00 dB
 2026-02-15 17:23:54,207 - __main__ - INFO -   EFFICIENT_SCI       : 4.77 ± 0.00 dB
 2026-02-15 17:23:54,208 - __main__ - INFO - 
 Gaps (PSNR degradation/recovery):
-2026-02-15 17:23:54,208 - __main__ - INFO -   GAP_TV              : Gap I→II=0.06 dB, Recovery II→IV=0.03 dB
-2026-02-15 17:23:54,208 - __main__ - INFO -   PNP_FFDNET          : Gap I→II=-0.23 dB, Recovery II→IV=-0.80 dB
-2026-02-15 17:23:54,208 - __main__ - INFO -   ELP_UNFOLDING       : Gap I→II=-0.02 dB, Recovery II→IV=-0.02 dB
-2026-02-15 17:23:54,208 - __main__ - INFO -   EFFICIENT_SCI       : Gap I→II=0.00 dB, Recovery II→IV=0.00 dB
+2026-02-15 17:23:54,208 - __main__ - INFO -   GAP_TV              : Gap I→II=0.06 dB, Recovery II→III=0.03 dB
+2026-02-15 17:23:54,208 - __main__ - INFO -   PNP_FFDNET          : Gap I→II=-0.23 dB, Recovery II→III=-0.80 dB
+2026-02-15 17:23:54,208 - __main__ - INFO -   ELP_UNFOLDING       : Gap I→II=-0.02 dB, Recovery II→III=-0.02 dB
+2026-02-15 17:23:54,208 - __main__ - INFO -   EFFICIENT_SCI       : Gap I→II=0.00 dB, Recovery II→III=0.00 dB
 2026-02-15 17:23:54,208 - __main__ - INFO - 
 Execution time: 0.09 hours (0.9 min/scene)
 2026-02-15 17:23:54,211 - __main__ - INFO - Detailed results saved to: /home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/results/cacti_validation_results.json

@@ -144,17 +144,17 @@ python scripts/generate_cassi_figures.py                     # ~30 sec
 ### CASSI Benchmark Summary
 
 - **Methods:** GAP-TV, HDNet, MST-S, MST-L
-- **Scenarios:** I (Ideal), II (Baseline), IV (Oracle)
+- **Scenarios:** I (Ideal), II (Baseline), III (Oracle)
 - **Scenes:** 10 KAIST hyperspectral (256×256×28)
 - **Total Reconstructions:** 120
 - **Mismatch:** dx=0.5 px, dy=0.3 px, θ=0.1° (moderate)
 
 **Expected PSNR Hierarchy:**
 ```
-Scenario I (Ideal)    > Scenario IV (Oracle) > Scenario II (Baseline)
+Scenario I (Ideal)    > Scenario III (Oracle) > Scenario II (Baseline)
     ~36 dB (MST-L)          ~33.6 dB                ~32.3 dB
 Gap I→II: ~3.7 dB (mismatch impact)
-Gap II→IV: ~1.3 dB (recovery with oracle)
+Gap II→III: ~1.3 dB (recovery with oracle)
 ```
 
 ## Reproducing results

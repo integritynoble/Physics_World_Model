@@ -59,16 +59,16 @@ METHOD_LABELS = {
 SCENARIO_LABELS = {
     'scenario_i': 'Scenario I\n(Ideal)',
     'scenario_ii': 'Scenario II\n(Baseline)',
-    'scenario_iv': 'Scenario IV\n(Oracle)'
+    'scenario_iii': 'Scenario III\n(Oracle)'
 }
 
 SCENARIO_SHORT = {
     'scenario_i': 'Ideal',
     'scenario_ii': 'Baseline',
-    'scenario_iv': 'Oracle'
+    'scenario_iii': 'Oracle'
 }
 
-SCENARIOS = ['scenario_i', 'scenario_ii', 'scenario_iv']
+SCENARIOS = ['scenario_i', 'scenario_ii', 'scenario_iii']
 METHODS = ['gap_tv', 'hdnet', 'mst_s', 'mst_l']
 
 
@@ -103,12 +103,12 @@ def get_ssim_std(summary, scenario, method):
 
 
 def get_gap_mean(summary, method, gap_key):
-    """Get gap mean from summary. gap_key is 'gap_i_ii' or 'gap_ii_iv'."""
+    """Get gap mean from summary. gap_key is 'gap_i_ii' or 'gap_ii_iii'."""
     return summary['gaps'][method][f'{gap_key}_mean']
 
 
 def get_gap_std(summary, method, gap_key):
-    """Get gap std from summary. gap_key is 'gap_i_ii' or 'gap_ii_iv'."""
+    """Get gap std from summary. gap_key is 'gap_i_ii' or 'gap_ii_iii'."""
     return summary['gaps'][method][f'{gap_key}_std']
 
 
@@ -207,7 +207,7 @@ def plot_method_comparison_heatmap(summary):
 
 
 def plot_gap_comparison(summary):
-    """Bar chart of degradation (I->II) and recovery (II->IV) gaps."""
+    """Bar chart of degradation (I->II) and recovery (II->III) gaps."""
     logger.info("Creating gap comparison plot...")
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
@@ -231,17 +231,17 @@ def plot_gap_comparison(summary):
     ax1.grid(axis='y', alpha=0.3, linestyle='--')
     ax1.set_ylim([0, 18])
 
-    # Recovery (Gap II->IV)
-    gap_ii_iv = [get_gap_mean(summary, m, 'gap_ii_iv') for m in METHODS]
-    gap_ii_iv_std = [get_gap_std(summary, m, 'gap_ii_iv') for m in METHODS]
-    bars2 = ax2.bar(x, gap_ii_iv, color=[METHOD_COLORS[m] for m in METHODS],
-                    alpha=0.85, yerr=gap_ii_iv_std, capsize=5,
+    # Recovery (Gap II->III)
+    gap_ii_iii = [get_gap_mean(summary, m, 'gap_ii_iii') for m in METHODS]
+    gap_ii_iii_std = [get_gap_std(summary, m, 'gap_ii_iii') for m in METHODS]
+    bars2 = ax2.bar(x, gap_ii_iii, color=[METHOD_COLORS[m] for m in METHODS],
+                    alpha=0.85, yerr=gap_ii_iii_std, capsize=5,
                     edgecolor='black', linewidth=0.5)
-    for bar, val in zip(bars2, gap_ii_iv):
+    for bar, val in zip(bars2, gap_ii_iii):
         ax2.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.15,
                  f'{val:.2f} dB', ha='center', fontsize=9, fontweight='bold')
     ax2.set_ylabel('PSNR Recovery (dB)', fontsize=11, fontweight='bold')
-    ax2.set_title('Oracle Recovery\n(Scenario II -> IV)', fontsize=12, fontweight='bold')
+    ax2.set_title('Oracle Recovery\n(Scenario II -> III)', fontsize=12, fontweight='bold')
     ax2.set_xticks(x)
     ax2.set_xticklabels(labels)
     ax2.grid(axis='y', alpha=0.3, linestyle='--')
@@ -361,7 +361,7 @@ def plot_ssim_comparison(summary):
 
 
 def plot_oracle_gain_per_scene(detailed):
-    """Bar chart showing oracle gain (II->IV) for each scene."""
+    """Bar chart showing oracle gain (II->III) for each scene."""
     logger.info("Creating oracle gain per-scene plot...")
 
     fig, ax = plt.subplots(figsize=(14, 5))
@@ -372,7 +372,7 @@ def plot_oracle_gain_per_scene(detailed):
     width = 0.2
 
     for i, method in enumerate(METHODS):
-        gains = [r['gaps'][method]['gap_ii_iv'] for r in detailed]
+        gains = [r['gaps'][method]['gap_ii_iii'] for r in detailed]
         offset = (i - (n_methods - 1) / 2) * width
         ax.bar(x + offset, gains, width, label=METHOD_LABELS[method],
                color=METHOD_COLORS[method], alpha=0.85,
@@ -380,7 +380,7 @@ def plot_oracle_gain_per_scene(detailed):
 
     ax.set_xlabel('Scene', fontsize=11, fontweight='bold')
     ax.set_ylabel('Oracle Gain (dB)', fontsize=11, fontweight='bold')
-    ax.set_title('Oracle Recovery (II -> IV) Per Scene', fontsize=13, fontweight='bold')
+    ax.set_title('Oracle Recovery (II -> III) Per Scene', fontsize=13, fontweight='bold')
     ax.set_xticks(x)
     ax.set_xticklabels(scenes)
     ax.legend()
@@ -401,24 +401,24 @@ def create_summary_table(summary):
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
     with open(output_file, 'w') as f:
-        f.write("Method,Scenario I (PSNR),Scenario II (PSNR),Scenario IV (PSNR),"
-                "Scenario I (SSIM),Scenario II (SSIM),Scenario IV (SSIM),"
-                "Gap I->II,Gap II->IV\n")
+        f.write("Method,Scenario I (PSNR),Scenario II (PSNR),Scenario III (PSNR),"
+                "Scenario I (SSIM),Scenario II (SSIM),Scenario III (SSIM),"
+                "Gap I->II,Gap II->III\n")
         for method in METHODS:
             pi_m = get_psnr_mean(summary, 'scenario_i', method)
             pi_s = get_psnr_std(summary, 'scenario_i', method)
             pii_m = get_psnr_mean(summary, 'scenario_ii', method)
             pii_s = get_psnr_std(summary, 'scenario_ii', method)
-            piv_m = get_psnr_mean(summary, 'scenario_iv', method)
-            piv_s = get_psnr_std(summary, 'scenario_iv', method)
+            piv_m = get_psnr_mean(summary, 'scenario_iii', method)
+            piv_s = get_psnr_std(summary, 'scenario_iii', method)
             si_m = get_ssim_mean(summary, 'scenario_i', method)
             si_s = get_ssim_std(summary, 'scenario_i', method)
             sii_m = get_ssim_mean(summary, 'scenario_ii', method)
             sii_s = get_ssim_std(summary, 'scenario_ii', method)
-            siv_m = get_ssim_mean(summary, 'scenario_iv', method)
-            siv_s = get_ssim_std(summary, 'scenario_iv', method)
+            siv_m = get_ssim_mean(summary, 'scenario_iii', method)
+            siv_s = get_ssim_std(summary, 'scenario_iii', method)
             g_i_ii = get_gap_mean(summary, method, 'gap_i_ii')
-            g_ii_iv = get_gap_mean(summary, method, 'gap_ii_iv')
+            g_ii_iv = get_gap_mean(summary, method, 'gap_ii_iii')
 
             f.write(f"{METHOD_LABELS[method]},"
                     f"{pi_m:.2f}+/-{pi_s:.2f},"

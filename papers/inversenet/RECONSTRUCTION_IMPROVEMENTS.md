@@ -114,7 +114,7 @@ ln -s /home/spiritai/MST-main/model_zoo/mst/mst_s.pth \
 |--------|--------|-------|-------|
 | **Scenario I PSNR** | 18-19 dB | 25-35 dB | Proper forward model & trained model |
 | **Scenario II PSNR** | 18-19 dB | 20-30 dB | Shows realistic mismatch degradation |
-| **Scenario IV PSNR** | 18-19 dB | 22-32 dB | Oracle knowledge advantage visible |
+| **Scenario III PSNR** | 18-19 dB | 22-32 dB | Oracle knowledge advantage visible |
 | **MST-L Robustness** | -0.12 dB | 3-8 dB gap | Realistic degradation from mismatch |
 
 ---
@@ -124,7 +124,7 @@ ln -s /home/spiritai/MST-main/model_zoo/mst/mst_s.pth \
 1. **validate_cassi_inversenet.py** (1000+ lines)
    - Updated Scenario I: Use `SimulatedOperatorEnlargedGrid` for proper forward model
    - Updated Scenario II: Generate proper corrupted CASSI measurement
-   - Updated Scenario IV: Use truth operator with known mismatch
+   - Updated Scenario III: Use truth operator with known mismatch
    - Fixed `reconstruct_mst_s()` and `reconstruct_mst_l()` with `shift_back_meas_torch`
    - Improved `add_poisson_gaussian_noise()` with NaN/Inf handling
    - Removed device parameter from `create_mst()` calls

@@ -67,7 +67,7 @@
       "ssim_std": 0.07238232735633916
     }
   },
-  "scenario_iv": {
+  "scenario_iii": {
     "gap_tv": {
       "psnr_mean": 24.075384415915188,
       "psnr_std": 2.0375194039564795,
@@ -97,26 +97,26 @@
     "gap_tv": {
       "gap_i_ii_mean": 5.351971430098634,
       "gap_i_ii_std": 2.412677201730504,
-      "gap_ii_iv_mean": 3.976201712454528,
-      "gap_ii_iv_std": 1.4335529342179476
+      "gap_ii_iii_mean": 3.976201712454528,
+      "gap_ii_iii_std": 1.4335529342179476
     },
     "hdnet": {
       "gap_i_ii_mean": 8.71853756132792,
       "gap_i_ii_std": 3.203545626121945,
-      "gap_ii_iv_mean": 0.0,
-      "gap_ii_iv_std": 0.0
+      "gap_ii_iii_mean": 0.0,
+      "gap_ii_iii_std": 0.0
     },
     "mst_s": {
       "gap_i_ii_mean": 15.446711213848413,
       "gap_i_ii_std": 2.5610573385040705,
-      "gap_ii_iv_mean": 12.545643539274504,
-      "gap_ii_iv_std": 0.985551649071749
+      "gap_ii_iii_mean": 12.545643539274504,
+      "gap_ii_iii_std": 0.985551649071749
     },
     "mst_l": {
       "gap_i_ii_mean": 16.358483988785824,
       "gap_i_ii_std": 2.3944092874691494,
-      "gap_ii_iv_mean": 13.676971420748421,
-      "gap_ii_iv_std": 1.3891296293493962
+      "gap_ii_iii_mean": 13.676971420748421,
+      "gap_ii_iii_std": 1.3891296293493962
     }
   }
 }

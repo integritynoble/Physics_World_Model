@@ -11,7 +11,7 @@
 This document details the validation framework for CACTI (Coded Aperture Compressive Temporal Imaging) reconstruction methods in the context of the InverseNet ECCV paper. The benchmark compares **4 reconstruction methods** across **3 scenarios** using **6 standard test scenes** from the SCI Video Benchmark, evaluating reconstruction quality under realistic operator mismatch without calibration.
 
 **Key Features:**
-- **3 Scenarios:** I (Ideal), II (Assumed/Baseline), IV (Truth Forward Model)
+- **3 Scenarios:** I (Ideal), II (Assumed/Baseline), III (Truth Forward Model)
 - **Skip Scenario III:** Calibration algorithms not needed for Inversenet
 - **4 Methods:** GAP-TV (classical), PnP-FFDNet, ELP-Unfolding, EfficientSCI (deep learning)
 - **6 Scenes:** SCI Video Benchmark (256×256×T, 8:1 compression, no cropping due to dispersion)
@@ -59,7 +59,7 @@ In practice, the reconstruction operator `H_assumed` differs from truth `H_true`
 
 ### 1.3 Measurement Generation
 
-For Scenarios II & IV, we inject mismatch into the measurement:
+For Scenarios II & III, we inject mismatch into the measurement:
 
 ```
 y_corrupt = H_mismatch(x) + n
@@ -105,7 +105,7 @@ Where H_mismatch applies true misalignment parameters, creating degradation that
 - All methods degrade ~3-5 dB compared to Scenario I
 - Example: GAP-TV ~20 dB, PnP-FFDNet ~26 dB, ELP-Unfolding ~30 dB, EfficientSCI ~32 dB
 
-### Scenario IV: Truth Forward Model (Oracle Operator)
+### Scenario III: Truth Forward Model (Oracle Operator)
 
 **Purpose:** Upper bound for corrupted measurements when true mismatch is known
 
@@ -121,7 +121,7 @@ Where H_mismatch applies true misalignment parameters, creating degradation that
 
 **Expected PSNR:**
 - Partial recovery from Scenario II (better than baseline but worse than ideal)
-- Gap II→IV: ~1-2 dB (method-dependent robustness)
+- Gap II→III: ~1-2 dB (method-dependent robustness)
 - Example: GAP-TV ~22 dB, PnP-FFDNet ~28 dB, ELP-Unfolding ~31 dB, EfficientSCI ~33 dB
 
 ### Comparison: Scenario Hierarchy
@@ -133,8 +133,8 @@ PSNR_I (ideal) > PSNR_IV (oracle mismatch) > PSNR_II (baseline uncorrected)
 
 **Gaps quantify:**
 - **Gap I→II:** Mismatch impact (how much measurement quality degrades)
-- **Gap II→IV:** Operator awareness (how much better with true operator)
-- **Gap IV→I:** Residual noise/solver limitation
+- **Gap II→III:** Operator awareness (how much better with true operator)
+- **Gap III→I:** Residual noise/solver limitation
 
 ---
 
@@ -188,7 +188,7 @@ offset ∈ [-0.1, 0.1]               → selected 0.005 (very low)
 **Expected Performance:**
 - Scenario I: 24.00 ± 0.10 dB
 - Scenario II: 20.20 ± 0.15 dB (gap 3.8 dB)
-- Scenario IV: 21.80 ± 0.12 dB (recovery 1.6 dB)
+- Scenario III: 21.80 ± 0.12 dB (recovery 1.6 dB)
 
 **Rationale:** Established classical baseline, no deep learning dependency, widely used in video reconstruction
 
@@ -209,7 +209,7 @@ offset ∈ [-0.1, 0.1]               → selected 0.005 (very low)
 **Expected Performance:**
 - Scenario I: 30.00 ± 0.08 dB
 - Scenario II: 26.20 ± 0.10 dB (gap 3.8 dB)
-- Scenario IV: 27.80 ± 0.08 dB (recovery 1.6 dB)
+- Scenario III: 27.80 ± 0.08 dB (recovery 1.6 dB)
 
 **Rationale:** Bridges classical optimization and deep learning via flexible denoiser substitution
 
@@ -230,7 +230,7 @@ offset ∈ [-0.1, 0.1]               → selected 0.005 (very low)
 **Expected Performance:**
 - Scenario I: 34.00 ± 0.05 dB
 - Scenario II: 30.20 ± 0.07 dB (gap 3.8 dB)
-- Scenario IV: 31.80 ± 0.06 dB (recovery 1.6 dB)
+- Scenario III: 31.80 ± 0.06 dB (recovery 1.6 dB)
 
 **Rationale:** Deep unfolding preserves interpretability while leveraging learned priors for video reconstruction
 
@@ -252,7 +252,7 @@ offset ∈ [-0.1, 0.1]               → selected 0.005 (very low)
 **Expected Performance:**
 - Scenario I: 36.00 ± 0.04 dB
 - Scenario II: 32.20 ± 0.06 dB (gap 3.8 dB)
-- Scenario IV: 33.60 ± 0.05 dB (recovery 1.4 dB)
+- Scenario III: 33.60 ± 0.05 dB (recovery 1.4 dB)
 
 **Rationale:** Highest capacity model, best baseline reconstruction quality with learned spatial-temporal modeling
 
@@ -285,10 +285,10 @@ offset ∈ [-0.1, 0.1]               → selected 0.005 (very low)
 - No mismatch: mask_dx=0, mask_dy=0, mask_theta=0, mask_blur_sigma=0
 - Represents perfect laboratory setup
 
-**Scenarios II & IV (Real/Corrupted):**
+**Scenarios II & III (Real/Corrupted):**
 - Mask source: Real SCI benchmark masks with potential misalignment
 - For Scenario II: Used as-is (assumes perfect alignment)
-- For Scenario IV: Warped by (mask_dx=1.5, mask_dy=1.0, mask_theta=0.3°, mask_blur_sigma=0.3)
+- For Scenario III: Warped by (mask_dx=1.5, mask_dy=1.0, mask_theta=0.3°, mask_blur_sigma=0.3)
 - Represents hardware with realistic misalignment
 
 ### Noise Model
@@ -343,7 +343,7 @@ Where:
 
 ### PSNR Hierarchy (Mean ± Std across 6 scenes)
 
-| Method | Scenario I | Scenario II | Scenario IV | Gap I→II | Gap II→IV |
+| Method | Scenario I | Scenario II | Scenario III | Gap I→II | Gap II→III |
 |--------|-----------|-----------|-----------|---------|----------|
 | GAP-TV | 24.00±0.10 | 20.20±0.15 | 21.80±0.12 | 3.80 | 1.60 |
 | PnP-FFDNet | 30.00±0.08 | 26.20±0.10 | 27.80±0.08 | 3.80 | 1.60 |
@@ -354,7 +354,7 @@ Where:
 
 1. **Deep learning advantage persistent:** EfficientSCI maintains ~12 dB edge over GAP-TV even under mismatch
 2. **Mismatch impact uniform:** Gap I→II is ~3.8 dB across all methods (mismatch is fundamental)
-3. **Solver robustness:** Gap II→IV ~1.4-1.6 dB (moderate recovery with known operator)
+3. **Solver robustness:** Gap II→III ~1.4-1.6 dB (moderate recovery with known operator)
 4. **Method ranking stable:** EfficientSCI > ELP-Unfolding > PnP-FFDNet > GAP-TV in all scenarios
 
 ---
@@ -376,13 +376,13 @@ Where:
 ### Visualization Files
 
 3. **figures/cacti/scenario_comparison.png** (bar chart)
-   - X-axis: Scenarios (I, II, IV)
+   - X-axis: Scenarios (I, II, III)
    - Y-axis: PSNR (dB)
    - Groups: 4 methods (different colors)
 
 4. **figures/cacti/method_comparison.png** (heatmap)
    - Rows: 4 methods (GAP-TV, PnP-FFDNet, ELP-Unfolding, EfficientSCI)
-   - Cols: 3 scenarios (I, II, IV)
+   - Cols: 3 scenarios (I, II, III)
    - Values: PSNR (dB, color-coded)
 
 5. **figures/cacti/scene{01-06}_*.png** (72 images)
@@ -429,7 +429,7 @@ For each of 6 scenes:
 
 1. **Scenario I:** Ideal measurement & reconstruction
 2. **Scenario II:** Corrupted measurement, uncorrected operator
-3. **Scenario IV:** Corrupted measurement, truth operator
+3. **Scenario III:** Corrupted measurement, truth operator
 
 For each scenario, reconstruct with all 4 methods, compute PSNR/SSIM
 
@@ -482,7 +482,7 @@ Create all PNG and CSV output files as specified in Deliverables section
 ### Verification Checks
 
 1. **Dataset Loading:** All 6 scenes load correctly (256×256×T)
-2. **PSNR Hierarchy:** Verify I > IV > II for all methods
+2. **PSNR Hierarchy:** Verify I > III > II for all methods
 3. **Consistency:** Std dev < 0.2 dB across scenes (low noise in results)
 4. **Method Ranking:** EfficientSCI > ELP-Unfolding > PnP-FFDNet > GAP-TV (established order)
 5. **Gap Similarity:** Gap I→II ~3.8 dB for all methods (uniform mismatch effect)

@@ -7,7 +7,7 @@ This directory contains the comprehensive CASSI (Coded Aperture Snapshot Spectra
 The CASSI validation benchmark compares 4 reconstruction methods across 3 scenarios on 10 KAIST hyperspectral scenes, evaluating reconstruction quality under realistic operator mismatch without calibration correction.
 
 **Key Components:**
-- **3 Scenarios:** I (Ideal), II (Assumed/Baseline), IV (Truth Forward Model)
+- **3 Scenarios:** I (Ideal), II (Assumed/Baseline), III (Truth Forward Model)
 - **4 Methods:** GAP-TV, HDNet, MST-S, MST-L
 - **10 Scenes:** 256×256×28 KAIST hyperspectral dataset
 - **120 Total Reconstructions:** (10 scenes × 3 scenarios × 4 methods)
@@ -90,10 +90,10 @@ papers/inversenet/
 - **Mismatch Injected:** dx=0.5 px, dy=0.3 px, θ=0.1°
 - **Expected Degradation:** ~3-5 dB from Scenario I
 
-### Scenario IV: Truth Forward Model (Oracle Operator)
+### Scenario III: Truth Forward Model (Oracle Operator)
 - **Purpose:** Upper bound for corrupted measurements when true mismatch is known
 - **Expected Recovery:** ~1-2 dB from Scenario II
-- **Gap IV→I:** Residual (~1-3 dB, noise + solver limitation)
+- **Gap III→I:** Residual (~1-3 dB, noise + solver limitation)
 
 ## Reconstruction Methods
 
@@ -126,17 +126,17 @@ papers/inversenet/
 ### PSNR Hierarchy (per method)
 
 ```
-Scenario I (Ideal) > Scenario IV (Oracle) > Scenario II (Baseline)
+Scenario I (Ideal) > Scenario III (Oracle) > Scenario II (Baseline)
 
 Example (MST-L):
   I:  36.0 dB (perfect knowledge)
-  IV: 33.6 dB (oracle with mismatch)
+  III: 33.6 dB (oracle with mismatch)
   II: 32.3 dB (uncorrected mismatch)
 
 Gaps:
   Gap I→II:  3.7 dB (mismatch impact)
-  Gap II→IV: 1.3 dB (recovery with oracle)
-  Gap IV→I:  2.4 dB (residual noise/solver)
+  Gap II→III: 1.3 dB (recovery with oracle)
+  Gap III→I:  2.4 dB (residual noise/solver)
 ```
 
 ### Method Ranking (all scenarios)
@@ -178,9 +178,9 @@ Per-scene detailed results structure:
       ...
     },
     "scenario_ii": {...},
-    "scenario_iv": {...},
+    "scenario_iii": {...},
     "gaps": {
-      "gap_tv": {"gap_i_ii": 3.6, "gap_ii_iv": 1.3, ...},
+      "gap_tv": {"gap_i_ii": 3.6, "gap_ii_iii": 1.3, ...},
       ...
     }
   },
@@ -219,11 +219,11 @@ After running validation:
 # 1. Check results exist
 ls -lh results/cassi_*.json
 
-# 2. Verify PSNR hierarchy (I > IV > II for all methods)
+# 2. Verify PSNR hierarchy (I > III > II for all methods)
 python -c "import json; s=json.load(open('results/cassi_summary.json')); \
-  print('PSNR I > IV > II:', \
+  print('PSNR I > III > II:', \
     all(s['scenarios']['scenario_i'][m]['psnr']['mean'] > \
-        s['scenarios']['scenario_iv'][m]['psnr']['mean'] > \
+        s['scenarios']['scenario_iii'][m]['psnr']['mean'] > \
         s['scenarios']['scenario_ii'][m]['psnr']['mean'] \
       for m in ['gap_tv', 'hdnet', 'mst_s', 'mst_l']))"
 

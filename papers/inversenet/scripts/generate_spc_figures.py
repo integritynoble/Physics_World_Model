@@ -87,7 +87,7 @@ def plot_scenario_comparison(summary: Dict) -> None:
     """
     Create bar chart comparing PSNR across 3 scenarios for available methods.
 
-    X-axis: Scenarios (I, II, IV)
+    X-axis: Scenarios (I, II, III)
     Y-axis: PSNR (dB)
     Groups: Methods with different colors
     """
@@ -95,8 +95,8 @@ def plot_scenario_comparison(summary: Dict) -> None:
 
     fig, ax = plt.subplots(figsize=(12, 6))
 
-    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iv']
-    scenario_labels = ['Scenario I\n(Ideal)', 'Scenario II\n(Baseline)', 'Scenario IV\n(Oracle)']
+    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iii']
+    scenario_labels = ['Scenario I\n(Ideal)', 'Scenario II\n(Baseline)', 'Scenario III\n(Oracle)']
     methods = get_available_methods(summary)
 
     x = np.arange(len(scenarios))
@@ -138,7 +138,7 @@ def plot_method_comparison_heatmap(summary: Dict) -> None:
     """
     logger.info("Creating method comparison heatmap...")
 
-    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iv']
+    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iii']
     scenario_labels = ['Ideal', 'Baseline', 'Oracle']
     methods = get_available_methods(summary)
     method_labels = [METHOD_LABELS.get(m, m.upper()) for m in methods]
@@ -182,7 +182,7 @@ def plot_method_comparison_heatmap(summary: Dict) -> None:
 
 def plot_gap_comparison(summary: Dict) -> None:
     """
-    Create comparison of degradation (Gap I→II) and recovery (Gap II→IV).
+    Create comparison of degradation (Gap I→II) and recovery (Gap II→III).
 
     Shows how much each method degrades under mismatch and how much
     it recovers when oracle operator is available.
@@ -205,15 +205,15 @@ def plot_gap_comparison(summary: Dict) -> None:
     ax1.grid(axis='y', alpha=0.3)
     ax1.set_ylim([0, max(gap_i_ii) * 1.3])
 
-    # Recovery (Gap II→IV)
-    gap_ii_iv = [summary['gaps'][m]['gap_ii_iv']['mean'] for m in methods]
-    ax2.bar(x, gap_ii_iv, color=[METHOD_COLORS.get(m, '#999999') for m in methods], alpha=0.8)
+    # Recovery (Gap II→III)
+    gap_ii_iii = [summary['gaps'][m]['gap_ii_iii']['mean'] for m in methods]
+    ax2.bar(x, gap_ii_iii, color=[METHOD_COLORS.get(m, '#999999') for m in methods], alpha=0.8)
     ax2.set_ylabel('PSNR Recovery (dB)', fontsize=11, fontweight='bold')
-    ax2.set_title('Recovery with Oracle Operator\n(Scenario II → IV)', fontsize=12, fontweight='bold')
+    ax2.set_title('Recovery with Oracle Operator\n(Scenario II → III)', fontsize=12, fontweight='bold')
     ax2.set_xticks(x)
     ax2.set_xticklabels(method_labels, rotation=15, ha='right')
     ax2.grid(axis='y', alpha=0.3)
-    ax2.set_ylim([0, max(gap_ii_iv) * 1.3])
+    ax2.set_ylim([0, max(gap_ii_iii) * 1.3])
 
     plt.tight_layout()
     output_file = FIGURES_DIR / "gap_comparison.png"
@@ -231,7 +231,7 @@ def plot_psnr_distribution(detailed_results: List[Dict]) -> None:
     logger.info("Creating PSNR distribution boxplot...")
 
     fig, axes = plt.subplots(1, 3, figsize=(16, 5))
-    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iv']
+    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iii']
     scenario_labels = ['Ideal', 'Baseline', 'Oracle']
 
     # Get available methods from first result
@@ -274,7 +274,7 @@ def plot_ssim_comparison(summary: Dict) -> None:
     """
     Create bar chart comparing SSIM across 3 scenarios for available methods.
 
-    X-axis: Scenarios (I, II, IV)
+    X-axis: Scenarios (I, II, III)
     Y-axis: SSIM (0-1)
     Groups: Methods with different colors
     """
@@ -282,8 +282,8 @@ def plot_ssim_comparison(summary: Dict) -> None:
 
     fig, ax = plt.subplots(figsize=(12, 6))
 
-    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iv']
-    scenario_labels = ['Scenario I\n(Ideal)', 'Scenario II\n(Baseline)', 'Scenario IV\n(Oracle)']
+    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iii']
+    scenario_labels = ['Scenario I\n(Ideal)', 'Scenario II\n(Baseline)', 'Scenario III\n(Oracle)']
     methods = get_available_methods(summary)
 
     x = np.arange(len(scenarios))
@@ -320,35 +320,35 @@ def create_summary_table(summary: Dict) -> None:
     Create CSV file with results suitable for LaTeX table.
 
     Format:
-    Method,Scenario I,Scenario II,Scenario IV,Gap I→II,Gap II→IV
+    Method,Scenario I,Scenario II,Scenario III,Gap I→II,Gap II→III
     """
     logger.info("Creating summary table...")
 
     methods = get_available_methods(summary)
-    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iv']
+    scenarios = ['scenario_i', 'scenario_ii', 'scenario_iii']
 
     output_file = Path(__file__).parent.parent / "tables" / "spc_results_table.csv"
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
     with open(output_file, 'w') as f:
         # Header
-        f.write("Method,Scenario I,Scenario II,Scenario IV,Gap I→II,Gap II→IV\n")
+        f.write("Method,Scenario I,Scenario II,Scenario III,Gap I→II,Gap II→III\n")
 
         # Rows
         for method in methods:
             psnr_i = summary['scenarios']['scenario_i'][method]['psnr']['mean']
             psnr_ii = summary['scenarios']['scenario_ii'][method]['psnr']['mean']
-            psnr_iv = summary['scenarios']['scenario_iv'][method]['psnr']['mean']
+            psnr_iii = summary['scenarios']['scenario_iii'][method]['psnr']['mean']
             gap_i_ii = summary['gaps'][method]['gap_i_ii']['mean']
-            gap_ii_iv = summary['gaps'][method]['gap_ii_iv']['mean']
+            gap_ii_iii = summary['gaps'][method]['gap_ii_iii']['mean']
 
             psnr_i_std = summary['scenarios']['scenario_i'][method]['psnr']['std']
             psnr_ii_std = summary['scenarios']['scenario_ii'][method]['psnr']['std']
-            psnr_iv_std = summary['scenarios']['scenario_iv'][method]['psnr']['std']
+            psnr_iii_std = summary['scenarios']['scenario_iii'][method]['psnr']['std']
 
             f.write(f"{METHOD_LABELS.get(method, method.upper())},{psnr_i:.2f}±{psnr_i_std:.2f},"
-                   f"{psnr_ii:.2f}±{psnr_ii_std:.2f},{psnr_iv:.2f}±{psnr_iv_std:.2f},"
-                   f"{gap_i_ii:.2f},{gap_ii_iv:.2f}\n")
+                   f"{psnr_ii:.2f}±{psnr_ii_std:.2f},{psnr_iii:.2f}±{psnr_iii_std:.2f},"
+                   f"{gap_i_ii:.2f},{gap_ii_iii:.2f}\n")
 
     logger.info(f"Saved: {output_file}")
 

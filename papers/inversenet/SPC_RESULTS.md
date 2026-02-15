@@ -21,9 +21,9 @@ Complete validation results for SPC reconstruction under three scenarios (Ideal,
 |----------|-------------|-------------|----------|---------|
 | **I (Ideal)** | Perfect oracle baseline | No mismatch, no noise | Ideal parameters | Upper bound performance |
 | **II (Baseline)** | Realistic uncorrected | With mismatch + noise | Assumed ideal | Practical baseline |
-| **IV (Oracle)** | Truth forward model | Same as II | True parameters | Calibration potential |
+| **III (Oracle)** | Truth forward model | Same as II | True parameters | Calibration potential |
 
-### Mismatch Parameters (Scenarios II & IV)
+### Mismatch Parameters (Scenarios II & III)
 
 - **Sensor gain error:** 1.08 (8% miscalibration)
 - **DC offset:** 0.005 mV
@@ -52,7 +52,7 @@ ISTA-Net+       6.69 ± 1.31   3.82     8.65  (fallback to ADMM)
 HATNet          6.69 ± 1.31   3.82     8.65  (fallback to ADMM)
 ```
 
-#### Scenario IV: Oracle (Truth Forward Model)
+#### Scenario III: Oracle (Truth Forward Model)
 ```
 Method          Mean ± Std    Min      Max
 ADMM            7.09 ± 1.29   4.25     9.00
@@ -78,7 +78,7 @@ ISTA-Net+       0.034 ± 0.012
 HATNet          0.034 ± 0.012
 ```
 
-#### Scenario IV: Oracle
+#### Scenario III: Oracle
 ```
 Method          Mean ± Std
 ADMM            0.045 ± 0.015
@@ -100,7 +100,7 @@ HATNet          0.045 ± 0.015
 
 **Interpretation:** Minimal degradation (0.42 dB) indicates robust reconstruction even with 8% gain miscalibration and realistic sensor noise.
 
-### Recovery with Oracle Operator (Scenario II → IV)
+### Recovery with Oracle Operator (Scenario II → III)
 
 | Method | PSNR Gain | SSIM Gain | Interpretation |
 |--------|-----------|-----------|----------------|
@@ -110,11 +110,11 @@ HATNet          0.045 ± 0.015
 
 **Interpretation:** 0.39 dB recovery demonstrates that calibration can improve reconstruction quality by correcting operator mismatch.
 
-### Overall Gap (Scenario I → IV via II)
+### Overall Gap (Scenario I → III via II)
 
 - **Ideal vs. Baseline:** 0.42 dB drop (mismatch impact)
 - **Baseline vs. Oracle:** 0.39 dB gain (calibration benefit)
-- **Net Gap (I vs IV):** 0.03 dB (residual solver limitation)
+- **Net Gap (I vs III):** 0.03 dB (residual solver limitation)
 
 ---
 
@@ -124,99 +124,99 @@ HATNet          0.045 ± 0.015
 ```
 Scenario I:   ADMM: 8.95 dB, SSIM: 0.072
 Scenario II:  ADMM: 8.48 dB, SSIM: 0.048
-Scenario IV:  ADMM: 8.90 dB, SSIM: 0.065
+Scenario III:  ADMM: 8.90 dB, SSIM: 0.065
 Gap I→II:     0.47 dB
-Recovery II→IV: 0.42 dB
+Recovery II→III: 0.42 dB
 ```
 
 ### Image 2: Parrots
 ```
 Scenario I:   ADMM: 6.21 dB, SSIM: 0.045
 Scenario II:  ADMM: 5.89 dB, SSIM: 0.031
-Scenario IV:  ADMM: 6.15 dB, SSIM: 0.041
+Scenario III:  ADMM: 6.15 dB, SSIM: 0.041
 Gap I→II:     0.32 dB
-Recovery II→IV: 0.26 dB
+Recovery II→III: 0.26 dB
 ```
 
 ### Image 3: Barbara
 ```
 Scenario I:   ADMM: 8.10 dB, SSIM: 0.055
 Scenario II:  ADMM: 7.65 dB, SSIM: 0.037
-Scenario IV:  ADMM: 8.05 dB, SSIM: 0.050
+Scenario III:  ADMM: 8.05 dB, SSIM: 0.050
 Gap I→II:     0.45 dB
-Recovery II→IV: 0.40 dB
+Recovery II→III: 0.40 dB
 ```
 
 ### Image 4: Boats
 ```
 Scenario I:   ADMM: 6.85 dB, SSIM: 0.048
 Scenario II:  ADMM: 6.42 dB, SSIM: 0.033
-Scenario IV:  ADMM: 6.80 dB, SSIM: 0.044
+Scenario III:  ADMM: 6.80 dB, SSIM: 0.044
 Gap I→II:     0.43 dB
-Recovery II→IV: 0.38 dB
+Recovery II→III: 0.38 dB
 ```
 
 ### Image 5: Cameraman
 ```
 Scenario I:   ADMM: 7.34 dB, SSIM: 0.058
 Scenario II:  ADMM: 6.92 dB, SSIM: 0.039
-Scenario IV:  ADMM: 7.29 dB, SSIM: 0.054
+Scenario III:  ADMM: 7.29 dB, SSIM: 0.054
 Gap I→II:     0.42 dB
-Recovery II→IV: 0.37 dB
+Recovery II→III: 0.37 dB
 ```
 
 ### Image 6: Fingerprint
 ```
 Scenario I:   ADMM: 8.67 dB, SSIM: 0.062
 Scenario II:  ADMM: 8.21 dB, SSIM: 0.043
-Scenario IV:  ADMM: 8.62 dB, SSIM: 0.058
+Scenario III:  ADMM: 8.62 dB, SSIM: 0.058
 Gap I→II:     0.46 dB
-Recovery II→IV: 0.41 dB
+Recovery II→III: 0.41 dB
 ```
 
 ### Image 7: Flinstones
 ```
 Scenario I:   ADMM: 5.98 dB, SSIM: 0.041
 Scenario II:  ADMM: 5.62 dB, SSIM: 0.028
-Scenario IV:  ADMM: 5.94 dB, SSIM: 0.038
+Scenario III:  ADMM: 5.94 dB, SSIM: 0.038
 Gap I→II:     0.36 dB
-Recovery II→IV: 0.32 dB
+Recovery II→III: 0.32 dB
 ```
 
 ### Image 8: Foreman
 ```
 Scenario I:   ADMM: 7.72 dB, SSIM: 0.052
 Scenario II:  ADMM: 7.28 dB, SSIM: 0.035
-Scenario IV:  ADMM: 7.67 dB, SSIM: 0.048
+Scenario III:  ADMM: 7.67 dB, SSIM: 0.048
 Gap I→II:     0.44 dB
-Recovery II→IV: 0.39 dB
+Recovery II→III: 0.39 dB
 ```
 
 ### Image 9: House
 ```
 Scenario I:   ADMM: 6.42 dB, SSIM: 0.044
 Scenario II:  ADMM: 6.05 dB, SSIM: 0.030
-Scenario IV:  ADMM: 6.38 dB, SSIM: 0.041
+Scenario III:  ADMM: 6.38 dB, SSIM: 0.041
 Gap I→II:     0.37 dB
-Recovery II→IV: 0.33 dB
+Recovery II→III: 0.33 dB
 ```
 
 ### Image 10: Lena256
 ```
 Scenario I:   ADMM: 8.56 dB, SSIM: 0.065
 Scenario II:  ADMM: 8.11 dB, SSIM: 0.045
-Scenario IV:  ADMM: 8.51 dB, SSIM: 0.061
+Scenario III:  ADMM: 8.51 dB, SSIM: 0.061
 Gap I→II:     0.45 dB
-Recovery II→IV: 0.40 dB
+Recovery II→III: 0.40 dB
 ```
 
 ### Image 11: Peppers256
 ```
 Scenario I:   ADMM: 6.89 dB, SSIM: 0.050
 Scenario II:  ADMM: 6.48 dB, SSIM: 0.034
-Scenario IV:  ADMM: 6.84 dB, SSIM: 0.046
+Scenario III:  ADMM: 6.84 dB, SSIM: 0.046
 Gap I→II:     0.41 dB
-Recovery II→IV: 0.36 dB
+Recovery II→III: 0.36 dB
 ```
 
 ---
@@ -225,7 +225,7 @@ Recovery II→IV: 0.36 dB
 
 ### PSNR Statistics Across All Images
 
-| Metric | Scenario I | Scenario II | Scenario IV |
+| Metric | Scenario I | Scenario II | Scenario III |
 |--------|-----------|-----------|-----------|
 | **Mean (all)** | 7.11 dB | 6.69 dB | 7.09 dB |
 | **Std Dev** | ±1.33 dB | ±1.31 dB | ±1.29 dB |
@@ -238,8 +238,8 @@ Recovery II→IV: 0.36 dB
 | Gap Type | Mean | Std Dev | Min | Max |
 |----------|------|---------|-----|-----|
 | **I → II (Mismatch Impact)** | 0.42 dB | ±0.035 dB | 0.32 dB | 0.47 dB |
-| **II → IV (Calibration Benefit)** | 0.39 dB | ±0.034 dB | 0.26 dB | 0.42 dB |
-| **IV → I (Residual Error)** | 0.03 dB | ±0.065 dB | -0.04 dB | 0.11 dB |
+| **II → III (Calibration Benefit)** | 0.39 dB | ±0.034 dB | 0.26 dB | 0.42 dB |
+| **III → I (Residual Error)** | 0.03 dB | ±0.065 dB | -0.04 dB | 0.11 dB |
 
 ---
 
@@ -290,7 +290,7 @@ Recovery II→IV: 0.36 dB
 ### Figure 3: Gap Analysis
 - Side-by-side comparison of degradation and recovery
 - Left: Scenario I → II (mismatch impact)
-- Right: Scenario II → IV (calibration benefit)
+- Right: Scenario II → III (calibration benefit)
 
 ### Figure 4: PSNR Distribution (Boxplots)
 - Distribution across 11 images for each scenario

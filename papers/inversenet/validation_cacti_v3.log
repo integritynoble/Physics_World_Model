@@ -1,0 +1,10 @@
+2026-02-15 20:56:02,079  INFO      ======================================================================
+2026-02-15 20:56:02,079  INFO      CACTI InverseNet Validation  (benchmark-grade GAP-denoise)
+2026-02-15 20:56:02,079  INFO      Methods: ['GAP-TV', 'PnP-FFDNet', 'ELP-Unfolding', 'EfficientSCI']
+2026-02-15 20:56:02,079  INFO      Mismatch: dx=1.5 dy=1.0 theta=0.3 deg
+2026-02-15 20:56:02,079  INFO      ======================================================================
+2026-02-15 20:56:02,704  INFO      Loaded 28 measurement groups from 6 videos
+2026-02-15 20:56:02,704  INFO      
+--- [1/28] kobe  gt=(256, 256, 8)  mask=(256, 256, 8)  meas=(256, 256)
+/home/spiritai/PWM/test2/Physics_World_Model/packages/pwm_core/pwm_core/recon/cacti_solvers.py:196: UserWarning: No pretrained weights found for ELP-Unfolding. Running with random initialization.
+  recon = elp_recon(y, mask, device=device)           # (T, H, W)

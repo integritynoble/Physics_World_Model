@@ -47,7 +47,7 @@
           "ssim_mean": 0.0533
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr_mean": 25.12,
           "psnr_std": 0.68,
@@ -117,7 +117,7 @@
           "ssim_mean": 0.0369
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr_mean": 19.73,
           "psnr_std": 0.07,
@@ -187,7 +187,7 @@
           "ssim_mean": 0.0504
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr_mean": 26.45,
           "psnr_std": 0.32,
@@ -257,7 +257,7 @@
           "ssim_mean": 0.0973
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr_mean": 24.31,
           "psnr_std": 0.23,
@@ -327,7 +327,7 @@
           "ssim_mean": 0.0526
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr_mean": 22.92,
           "psnr_std": 0.43,
@@ -397,7 +397,7 @@
           "ssim_mean": 0.0447
         }
       },
-      "scenario_iv": {
+      "scenario_iii": {
         "gap_tv": {
           "psnr_mean": 23.52,
           "psnr_std": 0.26,
@@ -474,7 +474,7 @@
         "ssim_std": 0.0428
       }
     },
-    "scenario_iv": {
+    "scenario_iii": {
       "gap_tv": {
         "psnr_mean": 23.52,
         "psnr_std": 2.3,
@@ -504,19 +504,19 @@
   "gaps": {
     "gap_tv": {
       "gap_i_ii_mean": 13.29,
-      "gap_ii_iv_mean": 10.05
+      "gap_ii_iii_mean": 10.05
     },
     "gap_denoise": {
       "gap_i_ii_mean": 13.46,
-      "gap_ii_iv_mean": 10.44
+      "gap_ii_iii_mean": 10.44
     },
     "pnp_ffdnet": {
       "gap_i_ii_mean": 13.04,
-      "gap_ii_iv_mean": 10.53
+      "gap_ii_iii_mean": 10.53
     },
     "efficientsci": {
       "gap_i_ii_mean": -0.02,
-      "gap_ii_iv_mean": -0.38
+      "gap_ii_iii_mean": -0.38
     }
   },
   "execution_seconds": 1251.3,

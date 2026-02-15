@@ -52,7 +52,7 @@ HDNet, MST-S, and MST-L use pretrained weights from their respective publication
 |----------|-------------|-------------------|---------|
 | I (Ideal) | Ideal mask, no noise | Ideal mask | Upper bound |
 | II (Baseline) | Corrupted mask + noise | Ideal mask (wrong!) | Mismatch degradation |
-| IV (Oracle) | Corrupted mask + noise | Corrupted mask (true) | Oracle recovery |
+| III (Oracle) | Corrupted mask + noise | Corrupted mask (true) | Oracle recovery |
 
 ---
 
@@ -60,7 +60,7 @@ HDNet, MST-S, and MST-L use pretrained weights from their respective publication
 
 ### 2.1 Summary Table (PSNR, dB)
 
-| Method | Scenario I | Scenario II | Scenario IV | Gap I->II | Gap II->IV |
+| Method | Scenario I | Scenario II | Scenario III | Gap I->II | Gap II->III |
 |--------|-----------|------------|------------|----------|----------|
 | GAP-TV | 25.45 +/- 2.81 | 20.10 +/- 1.54 | 24.08 +/- 2.04 | 5.35 | **+3.98** |
 | HDNet | 34.66 +/- 2.62 | 25.94 +/- 1.97 | 25.94 +/- 1.97 | 8.72 | **+0.00** |
@@ -69,7 +69,7 @@ HDNet, MST-S, and MST-L use pretrained weights from their respective publication
 
 ### 2.2 SSIM Results
 
-| Method | Scenario I | Scenario II | Scenario IV |
+| Method | Scenario I | Scenario II | Scenario III |
 |--------|-----------|------------|------------|
 | GAP-TV | 0.755 +/- 0.082 | 0.598 +/- 0.081 | 0.733 +/- 0.084 |
 | HDNet | 0.965 +/- 0.011 | 0.836 +/- 0.049 | 0.836 +/- 0.049 |
@@ -80,7 +80,7 @@ HDNet, MST-S, and MST-L use pretrained weights from their respective publication
 
 #### GAP-TV
 
-| Scene | Scenario I | Scenario II | Scenario IV | Gap I->II | Gap II->IV |
+| Scene | Scenario I | Scenario II | Scenario III | Gap I->II | Gap II->III |
 |-------|-----------|------------|------------|----------|----------|
 | S01 | 26.84 | 22.77 | 26.06 | 4.07 | 3.29 |
 | S02 | 25.33 | 20.80 | 24.53 | 4.53 | 3.73 |
@@ -95,7 +95,7 @@ HDNet, MST-S, and MST-L use pretrained weights from their respective publication
 
 #### HDNet
 
-| Scene | Scenario I | Scenario II | Scenario IV | Gap I->II | Gap II->IV |
+| Scene | Scenario I | Scenario II | Scenario III | Gap I->II | Gap II->III |
 |-------|-----------|------------|------------|----------|----------|
 | S01 | 34.95 | 29.42 | 29.42 | 5.52 | 0.00 |
 | S02 | 35.65 | 27.22 | 27.22 | 8.43 | 0.00 |
@@ -110,7 +110,7 @@ HDNet, MST-S, and MST-L use pretrained weights from their respective publication
 
 #### MST-S
 
-| Scene | Scenario I | Scenario II | Scenario IV | Gap I->II | Gap II->IV |
+| Scene | Scenario I | Scenario II | Scenario III | Gap I->II | Gap II->III |
 |-------|-----------|------------|------------|----------|----------|
 | S01 | 34.73 | 21.25 | 32.88 | 13.48 | 11.63 |
 | S02 | 34.59 | 20.56 | 31.69 | 14.03 | 11.13 |
@@ -125,7 +125,7 @@ HDNet, MST-S, and MST-L use pretrained weights from their respective publication
 
 #### MST-L
 
-| Scene | Scenario I | Scenario II | Scenario IV | Gap I->II | Gap II->IV |
+| Scene | Scenario I | Scenario II | Scenario III | Gap I->II | Gap II->III |
 |-------|-----------|------------|------------|----------|----------|
 | S01 | 35.29 | 21.18 | 32.86 | 14.12 | 11.69 |
 | S02 | 36.14 | 20.41 | 32.67 | 15.72 | 12.26 |
@@ -144,15 +144,15 @@ HDNet, MST-S, and MST-L use pretrained weights from their respective publication
 
 ### 3.1 Scenario Hierarchy Verification
 
-The expected hierarchy **PSNR_I > PSNR_IV > PSNR_II** is confirmed for mask-aware methods (GAP-TV, MST-S, MST-L) across all 10 scenes.
+The expected hierarchy **PSNR_I > PSNR_III > PSNR_II** is confirmed for mask-aware methods (GAP-TV, MST-S, MST-L) across all 10 scenes.
 
-For HDNet (mask-oblivious), Scenario IV = Scenario II for all scenes, since HDNet does not use the reconstruction mask as input.
+For HDNet (mask-oblivious), Scenario III = Scenario II for all scenes, since HDNet does not use the reconstruction mask as input.
 
 ### 3.2 Mask-Awareness Classification
 
 A key finding is the distinction between **mask-aware** and **mask-oblivious** reconstruction methods:
 
-| Method | Mask Input | Oracle Gain (II->IV) | Classification |
+| Method | Mask Input | Oracle Gain (II->III) | Classification |
 |--------|-----------|---------------------|----------------|
 | GAP-TV | Yes (Phi) | +3.98 dB | Mask-aware |
 | HDNet | No | +0.00 dB | Mask-oblivious |
@@ -174,9 +174,9 @@ A key finding is the distinction between **mask-aware** and **mask-oblivious** r
 
 MST models suffer the largest degradation (15-16 dB) because their learned features are tightly coupled to the mask input. When the assumed mask differs significantly from the true measurement mask, MST's attention mechanism produces highly corrupted reconstructions. GAP-TV, as a classical iterative method, is more robust to mismatch but has lower overall capacity.
 
-### 3.4 Oracle Recovery (Gap II -> IV)
+### 3.4 Oracle Recovery (Gap II -> III)
 
-| Method | Gap II->IV (dB) | Recovery as % of degradation |
+| Method | Gap II->III (dB) | Recovery as % of degradation |
 |--------|----------------|------------------------------|
 | GAP-TV | +3.98 +/- 1.43 | 74% of 5.35 dB loss |
 | HDNet | +0.00 +/- 0.00 | 0% (mask-oblivious) |
@@ -189,7 +189,7 @@ This is the central result. When provided with the true (oracle) mask parameters
 - **GAP-TV recovers 74%** (+3.98 dB), showing classical methods also benefit substantially from correct operator knowledge.
 - **HDNet recovers 0%**, confirming it is entirely mask-oblivious.
 
-### 3.5 Residual Gap (IV -> I)
+### 3.5 Residual Gap (III -> I)
 
 The residual gap between oracle and ideal represents unrecoverable losses due to noise and measurement corruption:
 
@@ -216,7 +216,7 @@ GAP-TV and MST models have small residual gaps (1.4-2.9 dB), meaning oracle perf
 3. MST-S: 18.54 dB
 4. MST-L: 18.45 dB
 
-**Scenario IV (Oracle mask):**
+**Scenario III (Oracle mask):**
 1. MST-L: 32.13 dB
 2. MST-S: 31.08 dB
 3. HDNet: 25.94 dB
@@ -229,7 +229,7 @@ Under ideal conditions, MST-L leads. Under mismatch without correction, HDNet is
 SSIM trends mirror PSNR findings:
 - MST models achieve near-ideal SSIM (0.92-0.93) under oracle correction, recovering from 0.65 under mismatch
 - GAP-TV SSIM recovery: 0.60 -> 0.73 (+0.14)
-- HDNet SSIM unchanged: 0.84 in both scenarios II and IV
+- HDNet SSIM unchanged: 0.84 in both scenarios II and III
 - The SSIM recovery for MST-L (+0.28, from 0.65 to 0.93) represents a dramatic structural quality improvement
 
 ---
@@ -244,7 +244,7 @@ SSIM trends mirror PSNR findings:
 
 4. **GAP-TV provides a balanced classical baseline** with moderate mismatch sensitivity (5.35 dB) and meaningful oracle recovery (+3.98 dB, 74%). Its performance is consistent and predictable.
 
-5. **The scenario hierarchy I > IV > II holds universally** for mask-aware methods across all 10 scenes, validating the experimental framework. The large gaps (especially 13.68 dB for MST-L) provide strong motivation for operator calibration in CASSI systems.
+5. **The scenario hierarchy I > III > II holds universally** for mask-aware methods across all 10 scenes, validating the experimental framework. The large gaps (especially 13.68 dB for MST-L) provide strong motivation for operator calibration in CASSI systems.
 
 6. **Residual gaps are small for mask-aware methods** (1.4-2.9 dB), confirming that mismatch -- not noise -- is the dominant source of degradation. This validates the low-noise experimental design.
 
