@@ -98,13 +98,13 @@ Documentation               █████████████████�
 ### Expected Results
 
 #### SPC Benchmark (Set11, 33×33, 15% sampling)
-| Method | Scenario I | Scenario II | Scenario IV | Gap I→II | Recovery II→IV |
+| Method | Scenario I | Scenario II | Scenario III | Gap I→II | Recovery II→III |
 |--------|-----------|-----------|-----------|----------|----------------|
 | ADMM | 28.5 dB | 25.2 dB | 26.8 dB | 3.3 dB | 1.6 dB |
 | FISTA | 28.0 dB | 24.8 dB | 26.2 dB | 3.2 dB | 1.4 dB |
 
 #### CACTI Benchmark (SCI, 256×256×8, 8:1 compression)
-| Method | Scenario I | Scenario II | Scenario IV | Gap I→II | Recovery II→IV |
+| Method | Scenario I | Scenario II | Scenario III | Gap I→II | Recovery II→III |
 |--------|-----------|-----------|-----------|----------|----------------|
 | GAP-TV | 26.6 dB | 20.2 dB | 21.8 dB | 6.4 dB | 1.6 dB |
 | SART-TV | 25.0 dB | 19.5 dB | 20.9 dB | 5.5 dB | 1.4 dB |
@@ -236,7 +236,7 @@ All results saved to JSON with this structure:
     "method_name": {"psnr": 28.5, "ssim": 0.85}
   },
   "scenario_ii": { ... },
-  "scenario_iv": { ... },
+  "scenario_iii": { ... },
   "elapsed_time": 12.5
 }
 ```

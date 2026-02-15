@@ -1,4 +1,4 @@
-Method,Scenario I,Scenario II,Scenario IV,Gap I-II,Recovery II-IV
+Method,Scenario I,Scenario II,Scenario III,Gap I-II,Recovery II-III
 GAP-TV,26.75+/-4.48,13.46+/-1.58,23.52+/-2.30,13.29,10.05
 GAP-denoise,26.80+/-4.53,13.34+/-1.55,23.79+/-2.44,13.46,10.44
 PnP-FFDNet,26.36+/-4.06,13.32+/-1.57,23.85+/-2.44,13.04,10.53

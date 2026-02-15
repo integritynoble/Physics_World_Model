@@ -84,7 +84,7 @@ The complete CACTI (Coded Aperture Compressive Temporal Imaging) validation pipe
 |----------|-------------|----------|---------|
 | I (Ideal) | Clean ideal | Ideal (no mismatch) | Oracle upper bound |
 | II (Baseline) | Corrupted | Assumed perfect | Realistic degradation |
-| IV (Oracle) | Corrupted | True with mismatch | Oracle operator knowledge |
+| III (Oracle) | Corrupted | True with mismatch | Oracle operator knowledge |
 
 **Mismatch Parameters Injected:**
 ```
@@ -102,7 +102,7 @@ Noise:      Poisson (peak=10000) + Gaussian (σ=5.0) + 12-bit quantization
 **Generated Deliverables:**
 
 1. **scenario_comparison.png** - Method performance across scenarios
-   - X-axis: Scenarios (I, II, IV)
+   - X-axis: Scenarios (I, II, III)
    - Y-axis: PSNR (dB)
    - Grouped by method with color coding
 
@@ -113,7 +113,7 @@ Noise:      Poisson (peak=10000) + Gaussian (σ=5.0) + 12-bit quantization
 
 3. **gap_comparison.png** - Degradation and recovery analysis
    - Gap I→II: Mismatch impact
-   - Gap II→IV: Operator awareness
+   - Gap II→III: Operator awareness
    - Error bars: ± 1σ
 
 4. **psnr_distribution.png** - Per-method boxplot
@@ -157,7 +157,7 @@ ELP-Unfolding:  4.79 ± 0.004 dB
 EfficientSCI:   4.77 ± 0.002 dB
 ```
 
-**Scenario IV (Oracle) - Per-Method PSNR:**
+**Scenario III (Oracle) - Per-Method PSNR:**
 ```
 GAP-TV:         4.90 ± 0.01 dB
 PnP-FFDNet:     5.33 ± 0.12 dB
@@ -175,7 +175,7 @@ ELP-Unfolding:  -0.021 dB (mismatch-invariant)
 EfficientSCI:   +0.0002 dB (perfectly robust)
 ```
 
-**Gap II→IV (Operator Awareness):**
+**Gap II→III (Operator Awareness):**
 ```
 GAP-TV:         0.023 dB (minimal recovery)
 PnP-FFDNet:     -0.800 dB (negative recovery)
@@ -198,7 +198,7 @@ EfficientSCI:   +0.0002 dB (no recovery)
 3. **Scenario Hierarchy**
    - PnP-FFDNet shows expected degradation from I→II
    - Other methods show robustness to injected mismatch
-   - Oracle knowledge (Scenario IV) shows limited recovery potential
+   - Oracle knowledge (Scenario III) shows limited recovery potential
 
 4. **Robustness to Operator Mismatch**
    - All methods maintain relatively stable PSNR across scenarios
@@ -259,7 +259,7 @@ EfficientSCI:   +0.0002 dB (no recovery)
 **Rationale:** Real SCI benchmark unavailable in environment
 **Trade-off:** Lower absolute PSNR values, but method comparison validity preserved
 
-### 3. Scenario Hierarchy (I > IV > II)
+### 3. Scenario Hierarchy (I > III > II)
 **Rationale:** Quantifies mismatch impact and operator awareness
 **Trade-off:** Skips Scenario III (calibration), focuses on uncorrected benchmark
 

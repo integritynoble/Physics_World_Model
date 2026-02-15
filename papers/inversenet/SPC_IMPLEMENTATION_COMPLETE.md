@@ -23,7 +23,7 @@ Created a complete SPC (Single-Pixel Camera) benchmark implementation following 
 ### Three Scenarios
 1. **Scenario I (Ideal):** Oracle baseline - perfect measurements, no noise
 2. **Scenario II (Baseline):** Uncorrected mismatch - corrupted measurement, assumed perfect operator
-3. **Scenario IV (Oracle):** Truth forward model - corrupted measurement, oracle operator
+3. **Scenario III (Oracle):** Truth forward model - corrupted measurement, oracle operator
 
 ### Reconstruction Methods
 ✅ **ADMM-L1** - Classical optimization, fully implemented
@@ -63,7 +63,7 @@ The script generates:
     "fista": {"psnr": 28.0, "ssim": 0.84}
   },
   "scenario_ii": { ... },
-  "scenario_iv": { ... },
+  "scenario_iii": { ... },
   "elapsed_time": 12.5
 }
 ```
@@ -90,15 +90,15 @@ The script generates:
 
 ### SPC Benchmark (Set11, 33×33 blocks, 15% sampling)
 
-| Method | Scenario I (Ideal) | Scenario II (Baseline) | Scenario IV (Oracle) | Gap I→II | Gap II→IV |
+| Method | Scenario I (Ideal) | Scenario II (Baseline) | Scenario III (Oracle) | Gap I→II | Gap II→III |
 |--------|-------------------|----------------------|----------------------|----------|-----------|
 | ADMM-L1 | 28.5 ± 0.8 dB | 25.2 ± 0.9 dB | 26.8 ± 0.8 dB | 3.3 dB | 1.6 dB |
 | FISTA-L1 | 28.0 ± 0.9 dB | 24.8 ± 1.0 dB | 26.2 ± 0.9 dB | 3.2 dB | 1.4 dB |
 
 **Interpretation:**
 - **Gap I→II (3.2-3.3 dB):** Impact of sensor mismatch on measurement quality
-- **Gap II→IV (1.4-1.6 dB):** Recovery gain when using oracle operator parameters
-- **Scenario IV Gap:** 1.5 dB shows solver limitation (noise + quantization)
+- **Gap II→III (1.4-1.6 dB):** Recovery gain when using oracle operator parameters
+- **Scenario III Gap:** 1.5 dB shows solver limitation (noise + quantization)
 
 ## Integration with Validation Framework
 
@@ -189,7 +189,7 @@ Steps:
 
 ✅ **Three-scenario validation framework**
 - Separates measurement corruption from operator error
-- Quantifies calibration value (Gap II→IV)
+- Quantifies calibration value (Gap II→III)
 - Fair comparison across methods
 
 ✅ **Comprehensive logging and diagnostics**

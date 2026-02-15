@@ -8,7 +8,7 @@ Validates 4 methods across 3 scenarios on 10 KAIST scenes.
 Scenarios:
 - I (Ideal): Perfect measurements, oracle operator
 - II (Assumed): Corrupted measurements, assumed perfect operator
-- IV (Oracle): Corrupted measurements, truth operator with known mismatch
+- III (Oracle): Corrupted measurements, truth operator with known mismatch
 
 Usage:
     python validate_cassi_inversenet_v2.py --device cuda:0
@@ -48,7 +48,7 @@ RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 # Constants
 SCENES = [f"scene{i:02d}" for i in range(1, 11)]
 METHODS = ['mst_s', 'mst_l']  # Using MST-S and MST-L
-SCENARIOS = ['scenario_i', 'scenario_ii', 'scenario_iv']
+SCENARIOS = ['scenario_i', 'scenario_ii', 'scenario_iii']
 
 @dataclass
 class MismatchParameters:
@@ -215,10 +215,10 @@ def validate_scenario_ii(scene: np.ndarray, operator, operator_real,
     return results, y_corrupt
 
 
-def validate_scenario_iv(scene: np.ndarray, y_corrupt: np.ndarray,
+def validate_scenario_iii(scene: np.ndarray, y_corrupt: np.ndarray,
                         mismatch: MismatchParameters, device: str) -> Dict[str, Dict]:
-    """Scenario IV: Truth Forward Model (corrupted measurement, oracle operator)."""
-    logger.info("  Scenario IV: Truth Forward Model")
+    """Scenario III: Truth Forward Model (corrupted measurement, oracle operator)."""
+    logger.info("  Scenario III: Truth Forward Model")
     results = {}
 
     # Use TRUE operator with known mismatch
@@ -265,7 +265,7 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
     try:
         res_i = validate_scenario_i(scene, operator)
         res_ii, y_corrupt = validate_scenario_ii(scene, operator, operator_real, mismatch, device)
-        res_iv = validate_scenario_iv(scene, y_corrupt, mismatch, device)
+        res_iii = validate_scenario_iii(scene, y_corrupt, mismatch, device)
     except Exception as e:
         logger.error(f"✗ Scenario validation failed: {e}")
         return {'scene_idx': scene_idx, 'error': str(e)}
@@ -276,7 +276,7 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
         'mismatch': asdict(mismatch),
         'scenario_i': res_i,
         'scenario_ii': res_ii,
-        'scenario_iv': res_iv,
+        'scenario_iii': res_iii,
     }
 
     # Calculate gaps
@@ -284,11 +284,11 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
     for method in METHODS:
         psnr_i = res_i[method]['psnr']
         psnr_ii = res_ii[method]['psnr']
-        psnr_iv = res_iv[method]['psnr']
+        psnr_iii = res_iii[method]['psnr']
 
         result['gaps'][method] = {
             'gap_i_ii': psnr_i - psnr_ii,
-            'gap_ii_iv': psnr_iv - psnr_ii,
+            'gap_ii_iii': psnr_iii - psnr_ii,
         }
 
     # Print summary
@@ -296,7 +296,7 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
         logger.info(f"\n  {method.upper()}:")
         logger.info(f"    I:  {res_i[method]['psnr']:6.2f} dB")
         logger.info(f"    II: {res_ii[method]['psnr']:6.2f} dB (gap {result['gaps'][method]['gap_i_ii']:6.2f} dB)")
-        logger.info(f"    IV: {res_iv[method]['psnr']:6.2f} dB (gap {result['gaps'][method]['gap_ii_iv']:6.2f} dB)")
+        logger.info(f"    III: {res_iii[method]['psnr']:6.2f} dB (gap {result['gaps'][method]['gap_ii_iii']:6.2f} dB)")
 
     return result
 
@@ -309,7 +309,7 @@ def main():
 
     logger.info("=" * 70)
     logger.info("InverseNet ECCV CASSI Validation v2")
-    logger.info(f"Scenarios: 3 (I, II, IV) | Methods: {len(METHODS)} | Scenes: {len(SCENES)}")
+    logger.info(f"Scenarios: 3 (I, II, III) | Methods: {len(METHODS)} | Scenes: {len(SCENES)}")
     logger.info("=" * 70)
 
     # Mismatch parameters
@@ -359,13 +359,13 @@ def compute_summary(all_results: List[Dict]) -> Dict[str, Any]:
         'scenarios': {
             'scenario_i': {},
             'scenario_ii': {},
-            'scenario_iv': {},
+            'scenario_iii': {},
         },
         'gaps': {},
     }
 
     for method in METHODS:
-        for scenario_key in ['scenario_i', 'scenario_ii', 'scenario_iv']:
+        for scenario_key in ['scenario_i', 'scenario_ii', 'scenario_iii']:
             psnr_vals = []
             ssim_vals = []
             sam_vals = []
@@ -398,16 +398,16 @@ def compute_summary(all_results: List[Dict]) -> Dict[str, Any]:
 
         # Gaps
         gap_i_ii = []
-        gap_ii_iv = []
+        gap_ii_iii = []
         for result in all_results:
             if 'gaps' in result and method in result['gaps']:
                 gap_i_ii.append(result['gaps'][method]['gap_i_ii'])
-                gap_ii_iv.append(result['gaps'][method]['gap_ii_iv'])
+                gap_ii_iii.append(result['gaps'][method]['gap_ii_iii'])
 
         if gap_i_ii:
             summary['gaps'][method] = {
                 'gap_i_ii': {'mean': float(np.mean(gap_i_ii)), 'std': float(np.std(gap_i_ii))},
-                'gap_ii_iv': {'mean': float(np.mean(gap_ii_iv)), 'std': float(np.std(gap_ii_iv))},
+                'gap_ii_iii': {'mean': float(np.mean(gap_ii_iii)), 'std': float(np.std(gap_ii_iii))},
             }
 
     return summary

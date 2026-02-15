@@ -68,7 +68,7 @@ The complete CACTI (Coded Aperture Compressive Temporal Imaging) validation pipe
 - ✅ 3 scenario support:
   - **Scenario I:** Ideal measurement + ideal masks (oracle)
   - **Scenario II:** Corrupted measurement + assumed perfect masks (baseline)
-  - **Scenario IV:** Corrupted measurement + truth masks with mismatch (oracle operator)
+  - **Scenario III:** Corrupted measurement + truth masks with mismatch (oracle operator)
 - ✅ Complete mismatch parameter injection
 - ✅ Per-scene and aggregated statistics computation
 - ✅ PSNR and SSIM metric evaluation
@@ -111,7 +111,7 @@ offset = 0.005         # detector bias
 #### Measurement Scenarios
 1. **Scenario I (Ideal):** Clean measurement, ideal masks
 2. **Scenario II (Baseline):** Corrupted measurement, perfect operator assumption
-3. **Scenario IV (Oracle):** Corrupted measurement, true mismatch knowledge
+3. **Scenario III (Oracle):** Corrupted measurement, true mismatch knowledge
 
 ---
 
@@ -125,11 +125,11 @@ Per-scenario statistics:
 
 Gap analysis:
 - **Gap I→II:** Mismatch impact (measurement degradation)
-- **Gap II→IV:** Operator awareness (recovery with true knowledge)
+- **Gap II→III:** Operator awareness (recovery with true knowledge)
 
 Expected results:
 ```
-Method          │ Scenario I │ Scenario II │ Scenario IV │ Gap I→II │ Gap II→IV
+Method          │ Scenario I │ Scenario II │ Scenario III │ Gap I→II │ Gap II→III
 ─────────────────┼────────────┼─────────────┼─────────────┼──────────┼──────────
 GAP-TV          │ 24.00 ± 0.10 │ 20.20 ± 0.15 │ 21.80 ± 0.12 │ 3.80 dB │ 1.60 dB
 PnP-FFDNet      │ 30.00 ± 0.08 │ 26.20 ± 0.10 │ 27.80 ± 0.08 │ 3.80 dB │ 1.60 dB
@@ -147,7 +147,7 @@ EfficientSCI    │ 36.00 ± 0.04 │ 32.20 ± 0.06 │ 33.60 ± 0.05 │ 3.80 d
 1. **scenario_comparison.png** - Bar chart comparing all methods across 3 scenarios
 2. **method_comparison.png** - Heatmap showing method×scenario PSNR matrix
 3. **per_scene_boxplot.png** - Distribution of PSNR across 6 scenes per method
-4. **gap_comparison.png** - Gap I→II vs recovery II→IV visualization
+4. **gap_comparison.png** - Gap I→II vs recovery II→III visualization
 5. **ssim_comparison.png** - SSIM metrics across scenarios
 6. **results_table.csv** - LaTeX-ready summary table
 
@@ -163,7 +163,7 @@ Start Time:     2026-02-15 17:18:15
 Timeout:        1800 seconds (30 minutes)
 Status:         RUNNING
 Scenes:         6 (kobe32, crash32, aerial32, traffic48, runner40, drop40)
-Scenarios:      3 (I, II, IV)
+Scenarios:      3 (I, II, III)
 Methods:        4 (gap_tv, pnp_ffdnet, elp_unfolding, efficient_sci)
 Total Tasks:    72 reconstructions
 ```
@@ -203,7 +203,7 @@ Total Tasks:    72 reconstructions
 
 ### 4. **Scenario Design**
 - Skip Scenario III (calibration-based methods)
-- Focus on Scenario IV (oracle operator knowledge)
+- Focus on Scenario III (oracle operator knowledge)
 - Rationale: Evaluates solver robustness without calibration algorithms
 
 ---
@@ -255,7 +255,7 @@ packages/pwm_core/pwm_core/recon/
 EfficientSCI (36.0 dB) > ELP-Unfolding (34.0 dB)
     > PnP-FFDNet (30.0 dB) > GAP-TV (24.0 dB)
 ```
-✅ Maintained across all scenarios (I, II, IV)
+✅ Maintained across all scenarios (I, II, III)
 
 ### Uniform Mismatch Impact
 ```
@@ -265,7 +265,7 @@ Gap I→II ≈ 3.8 dB for all methods
 
 ### Solver Robustness
 ```
-Gap II→IV ≈ 1.4-1.6 dB for all methods
+Gap II→III ≈ 1.4-1.6 dB for all methods
 ```
 ✅ Expected (moderate recovery with true operator)
 

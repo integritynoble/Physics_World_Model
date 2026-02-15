@@ -47,7 +47,7 @@
         }
       }
     },
-    "scenario_iv": {
+    "scenario_iii": {
       "admm": {
         "psnr": {
           "mean": 6.5564726482738145,

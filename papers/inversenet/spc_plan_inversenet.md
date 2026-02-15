@@ -11,7 +11,7 @@
 This document details the validation framework for Single-Pixel Camera (SPC) reconstruction methods in the context of the InverseNet ECCV paper. The benchmark compares **3 reconstruction methods** across **3 scenarios** using **Set11 natural images** (11 standard images at 256×256 resolution), evaluating reconstruction quality under realistic operator mismatch without calibration.
 
 **Key Features:**
-- **3 Scenarios:** I (Ideal), II (Assumed/Baseline), IV (Truth Forward Model)
+- **3 Scenarios:** I (Ideal), II (Assumed/Baseline), III (Truth Forward Model)
 - **Skip Scenario III:** Calibration algorithms not needed for Inversenet
 - **3 Methods:** ISTA-Net+, HATNet, ADMM (classical)
 - **11 Images:** Set11 benchmark (256×256 native resolution, no cropping needed)
@@ -62,7 +62,7 @@ In practice, the reconstruction operator `A_assumed` differs from truth `A_true`
 
 ### 1.3 Measurement Generation
 
-For Scenarios II & IV, we inject mismatch into the measurement:
+For Scenarios II & III, we inject mismatch into the measurement:
 
 ```
 y_corrupt_b = A_mismatch(x_b) + n    for each block b = 1, ..., 16
@@ -106,7 +106,7 @@ Where A_mismatch applies true misalignment parameters, creating degradation that
 - All methods degrade ~2-4 dB compared to Scenario I
 - Example: ADMM ~27 dB, ISTA-Net+ ~31 dB, HATNet ~32 dB
 
-### Scenario IV: Truth Forward Model (Oracle Operator)
+### Scenario III: Truth Forward Model (Oracle Operator)
 
 **Purpose:** Upper bound for corrupted measurements when true mismatch is known
 
@@ -122,7 +122,7 @@ Where A_mismatch applies true misalignment parameters, creating degradation that
 
 **Expected PSNR (25% sampling):**
 - Partial recovery from Scenario II (better than baseline but worse than ideal)
-- Gap II→IV: ~1-2 dB (method-dependent robustness)
+- Gap II→III: ~1-2 dB (method-dependent robustness)
 - Example: ADMM ~29 dB, ISTA-Net+ ~32.5 dB, HATNet ~33.5 dB
 
 ### Comparison: Scenario Hierarchy
@@ -134,8 +134,8 @@ PSNR_I (ideal) > PSNR_IV (oracle mismatch) > PSNR_II (baseline uncorrected)
 
 **Gaps quantify:**
 - **Gap I→II:** Mismatch impact (how much measurement quality degrades)
-- **Gap II→IV:** Operator awareness (how much better with true operator)
-- **Gap IV→I:** Residual noise/solver limitation
+- **Gap II→III:** Operator awareness (how much better with true operator)
+- **Gap III→I:** Residual noise/solver limitation
 
 ---
 
@@ -186,7 +186,7 @@ gain ∈ [0.75, 1.25]            → selected 1.08 (low-moderate)
 **Expected Performance (25% sampling, 256×256 images):**
 - Scenario I: 30.0 ± 1.5 dB
 - Scenario II: 27.0 ± 1.5 dB (gap 3.0 dB)
-- Scenario IV: 29.0 ± 1.5 dB (recovery 2.0 dB)
+- Scenario III: 29.0 ± 1.5 dB (recovery 2.0 dB)
 
 **Rationale:** Established classical baseline, no deep learning dependency, well-understood convergence
 
@@ -208,7 +208,7 @@ gain ∈ [0.75, 1.25]            → selected 1.08 (low-moderate)
 **Expected Performance (25% sampling, 256×256 images):**
 - Scenario I: 34.0 ± 1.0 dB
 - Scenario II: 31.0 ± 1.2 dB (gap 3.0 dB)
-- Scenario IV: 32.5 ± 1.0 dB (recovery 1.5 dB)
+- Scenario III: 32.5 ± 1.0 dB (recovery 1.5 dB)
 
 **Rationale:** Deep unrolling maintains interpretability while leveraging learned priors for signal sparsity
 
@@ -230,7 +230,7 @@ gain ∈ [0.75, 1.25]            → selected 1.08 (low-moderate)
 **Expected Performance (25% sampling, 256×256 images):**
 - Scenario I: 35.0 ± 0.8 dB
 - Scenario II: 32.0 ± 1.0 dB (gap 3.0 dB)
-- Scenario IV: 33.5 ± 0.9 dB (recovery 1.5 dB)
+- Scenario III: 33.5 ± 0.9 dB (recovery 1.5 dB)
 
 **Rationale:** Transformer-based architecture captures long-range dependencies in sparse reconstruction
 
@@ -291,10 +291,10 @@ Same Φ matrix is used for all blocks (shared DMD pattern set).
 - No mismatch: mask_dx=0, mask_dy=0, mask_theta=0
 - Represents perfect laboratory setup
 
-**Scenarios II & IV (Real/Corrupted):**
+**Scenarios II & III (Real/Corrupted):**
 - Mask source: Real DMD pattern set with potential misalignment
 - For Scenario II: Used as-is (assumes perfect alignment)
-- For Scenario IV: Warped by (mask_dx=0.4, mask_dy=0.4, mask_theta=0.08°)
+- For Scenario III: Warped by (mask_dx=0.4, mask_dy=0.4, mask_theta=0.08°)
 - Represents hardware with realistic misalignment
 - Mismatch applied uniformly across all 16 blocks (same DMD shift affects entire field)
 
@@ -350,7 +350,7 @@ Where:
 
 ### PSNR Hierarchy (Mean ± Std across 11 images, 25% sampling, 256×256)
 
-| Method | Scenario I | Scenario II | Scenario IV | Gap I→II | Gap II→IV |
+| Method | Scenario I | Scenario II | Scenario III | Gap I→II | Gap II→III |
 |--------|-----------|-----------|-----------|---------|----------|
 | ADMM | 30.0±1.5 | 27.0±1.5 | 29.0±1.5 | 3.0 | 2.0 |
 | ISTA-Net+ | 34.0±1.0 | 31.0±1.2 | 32.5±1.0 | 3.0 | 1.5 |
@@ -360,7 +360,7 @@ Where:
 
 1. **Deep learning advantage persistent:** HATNet maintains ~5 dB edge over ADMM even under mismatch
 2. **Mismatch impact uniform:** Gap I→II is ~3.0 dB across all methods (mismatch is fundamental)
-3. **Solver robustness:** Gap II→IV ~1.5-2.0 dB (moderate recovery with known operator)
+3. **Solver robustness:** Gap II→III ~1.5-2.0 dB (moderate recovery with known operator)
 4. **Method ranking stable:** HATNet > ISTA-Net+ > ADMM in all scenarios
 5. **25% sampling advantage:** Higher compression ratio (vs 15%) gives ~2 dB improvement across all methods
 
@@ -383,13 +383,13 @@ Where:
 ### Visualization Files
 
 3. **figures/spc/scenario_comparison.png** (bar chart)
-   - X-axis: Scenarios (I, II, IV)
+   - X-axis: Scenarios (I, II, III)
    - Y-axis: PSNR (dB)
    - Groups: 3 methods (different colors)
 
 4. **figures/spc/method_comparison.png** (heatmap)
    - Rows: 3 methods (ADMM, ISTA-Net+, HATNet)
-   - Cols: 3 scenarios (I, II, IV)
+   - Cols: 3 scenarios (I, II, III)
    - Values: PSNR (dB, color-coded)
 
 5. **figures/spc/image{01-11}_*.png** (99 images)
@@ -450,7 +450,7 @@ For each of 11 images (all 16 blocks per image):
 
 1. **Scenario I:** Ideal measurement & reconstruction (per block)
 2. **Scenario II:** Corrupted measurement, uncorrected operator (per block)
-3. **Scenario IV:** Corrupted measurement, truth operator (per block)
+3. **Scenario III:** Corrupted measurement, truth operator (per block)
 
 For each scenario, reconstruct all 16 blocks with all 3 methods, stitch into 256×256, compute PSNR/SSIM on full image
 
@@ -506,7 +506,7 @@ Create all PNG and CSV output files as specified in Deliverables section
 
 1. **Dataset Loading:** All 11 images load correctly at 256×256
 2. **Block Partitioning:** 16 non-overlapping 64×64 blocks per image, no border artifacts
-3. **PSNR Hierarchy:** Verify I > IV > II for all methods
+3. **PSNR Hierarchy:** Verify I > III > II for all methods
 4. **Consistency:** Std dev < 2.0 dB across images (reasonable variance for natural images)
 5. **Method Ranking:** HATNet > ISTA-Net+ > ADMM (established order)
 6. **Gap Similarity:** Gap I→II ~3.0 dB for all methods (uniform mismatch effect)
