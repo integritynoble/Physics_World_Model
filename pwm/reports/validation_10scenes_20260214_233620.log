@@ -1,0 +1,1080 @@
+2026-02-14 23:36:21,766 - __main__ - INFO - 
+======================================================================
+2026-02-14 23:36:21,766 - __main__ - INFO - CASSI Algorithm 1 & 2 Validation on 10 Scenes
+2026-02-14 23:36:21,766 - __main__ - INFO - ======================================================================
+2026-02-14 23:36:21,783 - __main__ - WARNING - Real mask has wrong shape (660, 660), resizing to (256, 256)
+2026-02-14 23:36:21,811 - __main__ - INFO - Ideal mask shape: (256, 256)
+2026-02-14 23:36:21,812 - __main__ - INFO - Real mask shape: (256, 256)
+2026-02-14 23:36:21,812 - __main__ - INFO - scene01 not found, using synthetic scene
+2026-02-14 23:36:21,838 - __main__ - INFO - Using scene01: (256, 256, 28)
+2026-02-14 23:36:21,838 - __main__ - INFO - 
+======================================================================
+2026-02-14 23:36:21,838 - __main__ - INFO - Scene 1/10
+2026-02-14 23:36:21,838 - __main__ - INFO - ======================================================================
+2026-02-14 23:36:21,838 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-14 23:36:22,086 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-14 23:36:22,320 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-14 23:36:23,960 - __main__ - INFO - Running Algorithm 1...
+2026-02-14 23:36:23,961 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-14 23:36:23,961 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-14 23:36:26,400 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=0.5000, mse=0.186362
+2026-02-14 23:36:29,709 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=0.0000, mse=0.186335
+2026-02-14 23:36:31,018 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=-1.0000, mse=0.186365
+2026-02-14 23:36:56,270 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186320
+2026-02-14 23:36:56,271 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=0.7500, dy=-0.2500, theta=-1.1000
+2026-02-14 23:36:56,271 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-14 23:37:03,328 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=1.9750, alpha=-1.0000
+2026-02-14 23:37:03,328 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 39.4 seconds
+2026-02-14 23:37:03,329 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=0.750, dy=-0.250, θ=-1.100°, a1=1.9750, α=-1.000°)
+2026-02-14 23:37:03,329 - __main__ - INFO - Running Algorithm 2...
+2026-02-14 23:37:03,330 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+2026-02-14 23:37:03,331 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Note: phi_d unidentifiable at integer rounding precision
+2026-02-14 23:37:03,331 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -         → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+2026-02-14 23:37:03,331 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+2026-02-14 23:37:03,332 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+2026-02-14 23:38:44,624 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Coarse grid (567 evals, 101.3s):
+2026-02-14 23:38:44,624 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=413.35
+2026-02-14 23:38:44,624 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Top-3: (0.00,0.00,0.00)=413.4; (-3.00,0.00,0.00)=416.1; (3.00,0.00,0.00)=416.1
+2026-02-14 23:38:44,624 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 1: Fine grid around top-5 candidates (GPU)
+2026-02-14 23:40:18,781 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Fine grid (375 evals, 94.2s):
+2026-02-14 23:40:18,782 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=405.94
+2026-02-14 23:40:18,782 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+2026-02-14 23:40:21,558 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/50: loss=0.005120, dx=0.0500, dy=0.0000, theta=0.0000
+2026-02-14 23:40:52,063 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/50: loss=0.005121, dx=0.0102, dy=0.0000, theta=0.0000
+2026-02-14 23:41:27,119 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/50: loss=0.005120, dx=-0.0003, dy=0.0000, theta=0.0000
+2026-02-14 23:41:27,122 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2A done: dx=-0.0003, dy=0.0000, theta=0.0000, loss=0.005120 (68.3s)
+2026-02-14 23:41:27,122 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+2026-02-14 23:41:28,469 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/60: loss=0.006749, dx=-0.0003, dy=0.0300, theta=0.0100
+2026-02-14 23:41:59,100 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/60: loss=0.006764, dx=-0.0003, dy=-0.0070, theta=-0.0016
+2026-02-14 23:42:30,980 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/60: loss=0.006750, dx=-0.0003, dy=-0.0002, theta=0.0005
+2026-02-14 23:42:43,666 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2B done: dx=-0.0003, dy=0.0002, theta=0.0002, loss=0.006750 (76.5s)
+2026-02-14 23:42:43,666 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+2026-02-14 23:42:45,199 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/80: loss=0.005537, dx=0.0097, dy=-0.0098, theta=-0.0048
+2026-02-14 23:43:22,597 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/80: loss=0.005540, dx=0.0006, dy=-0.0016, theta=-0.0012
+2026-02-14 23:44:01,401 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/80: loss=0.005537, dx=0.0007, dy=-0.0005, theta=-0.0005
+2026-02-14 23:44:40,962 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  75/80: loss=0.005536, dx=-0.0001, dy=0.0001, theta=0.0000
+2026-02-14 23:44:49,398 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2C done: dx=-0.0001, dy=0.0001, theta=-0.0000, loss=0.005536 (125.7s)
+2026-02-14 23:44:49,740 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Score comparison: grid=402.50, grad=402.51
+2026-02-14 23:44:49,740 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   → Using grid result (gradient didn't improve)
+2026-02-14 23:44:49,740 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2 completed in 466.4 seconds
+2026-02-14 23:44:49,740 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=0.000, dy=0.000, θ=0.000°, a1=2.0000, α=0.000°)
+2026-02-14 23:44:49,951 - __main__ - INFO - Scene I (Ideal) PSNR: 40.03 dB
+2026-02-14 23:44:49,952 - __main__ - INFO - Scene II (Assumed) PSNR: 23.43 dB
+2026-02-14 23:44:49,952 - __main__ - INFO - Scene III (Corrected) PSNR: 28.50 dB
+2026-02-14 23:44:49,952 - __main__ - INFO - Gap I→II: 16.59 dB (degradation)
+2026-02-14 23:44:49,952 - __main__ - INFO - Gain II→III: 5.06 dB (correction)
+2026-02-14 23:44:49,952 - __main__ - INFO - Gap III→I: 11.53 dB (residual)
+2026-02-14 23:44:49,952 - __main__ - INFO - scene02 not found, using synthetic scene
+2026-02-14 23:44:49,971 - __main__ - INFO - Using scene02: (256, 256, 28)
+2026-02-14 23:44:49,971 - __main__ - INFO - 
+======================================================================
+2026-02-14 23:44:49,971 - __main__ - INFO - Scene 2/10
+2026-02-14 23:44:49,972 - __main__ - INFO - ======================================================================
+2026-02-14 23:44:49,972 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-14 23:44:50,181 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-14 23:44:50,391 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-14 23:44:50,394 - __main__ - INFO - Running Algorithm 1...
+2026-02-14 23:44:50,394 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-14 23:44:50,394 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-14 23:44:52,824 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=1.0000, mse=0.186270
+2026-02-14 23:44:55,232 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=-2.5000, mse=0.186297
+2026-02-14 23:44:56,533 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=0.0000, mse=0.186274
+2026-02-14 23:45:19,946 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186218
+2026-02-14 23:45:19,946 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=0.5000, dy=-3.0000, theta=-0.1000
+2026-02-14 23:45:19,946 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-14 23:45:26,454 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=2.0000, alpha=-0.6667
+2026-02-14 23:45:26,454 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 36.1 seconds
+2026-02-14 23:45:26,454 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=0.500, dy=-3.000, θ=-0.100°, a1=2.0000, α=-0.667°)
+2026-02-14 23:45:26,454 - __main__ - INFO - Running Algorithm 2...
+2026-02-14 23:45:26,454 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+2026-02-14 23:45:26,455 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Note: phi_d unidentifiable at integer rounding precision
+2026-02-14 23:45:26,455 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -         → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+2026-02-14 23:45:26,455 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+2026-02-14 23:45:26,455 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+2026-02-14 23:46:17,755 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Coarse grid (567 evals, 51.3s):
+2026-02-14 23:46:17,755 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=409.63
+2026-02-14 23:46:17,755 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Top-3: (0.00,0.00,0.00)=409.6; (-3.00,0.00,0.00)=412.6; (3.00,0.00,0.00)=412.9
+2026-02-14 23:46:17,755 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 1: Fine grid around top-5 candidates (GPU)
+2026-02-14 23:47:07,309 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Fine grid (375 evals, 49.6s):
+2026-02-14 23:47:07,309 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=402.19
+2026-02-14 23:47:07,309 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+2026-02-14 23:47:08,507 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/50: loss=0.005069, dx=0.0500, dy=0.0000, theta=0.0000
+2026-02-14 23:47:38,585 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/50: loss=0.005070, dx=0.0033, dy=0.0000, theta=0.0000
+2026-02-14 23:48:28,178 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/50: loss=0.005069, dx=0.0005, dy=0.0000, theta=0.0000
+2026-02-14 23:48:28,184 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2A done: dx=0.0005, dy=0.0000, theta=0.0000, loss=0.005069 (80.9s)
+2026-02-14 23:48:28,184 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+2026-02-14 23:48:29,970 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/60: loss=0.006703, dx=0.0005, dy=0.0300, theta=0.0100
+2026-02-14 23:49:13,499 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/60: loss=0.006712, dx=0.0005, dy=-0.0042, theta=0.0003
+2026-02-14 23:49:58,509 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/60: loss=0.006704, dx=0.0005, dy=-0.0003, theta=0.0002
+2026-02-14 23:50:13,342 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2B done: dx=0.0005, dy=0.0001, theta=-0.0000, loss=0.006703 (105.2s)
+2026-02-14 23:50:13,342 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+2026-02-14 23:50:15,006 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/80: loss=0.005485, dx=-0.0095, dy=-0.0099, theta=0.0050
+2026-02-14 23:51:05,195 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/80: loss=0.005487, dx=-0.0005, dy=-0.0004, theta=-0.0002
+2026-02-14 23:51:43,703 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/80: loss=0.005487, dx=0.0002, dy=0.0002, theta=-0.0005
+2026-02-14 23:52:22,077 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  75/80: loss=0.005485, dx=0.0000, dy=0.0000, theta=0.0000
+2026-02-14 23:52:29,827 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2C done: dx=-0.0001, dy=-0.0000, theta=0.0000, loss=0.005485 (136.5s)
+2026-02-14 23:52:30,161 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Score comparison: grid=398.77, grad=398.78
+2026-02-14 23:52:30,161 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   → Using grid result (gradient didn't improve)
+2026-02-14 23:52:30,161 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2 completed in 423.7 seconds
+2026-02-14 23:52:30,161 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=0.000, dy=0.000, θ=0.000°, a1=2.0000, α=0.000°)
+2026-02-14 23:52:30,372 - __main__ - INFO - Scene I (Ideal) PSNR: 40.03 dB
+2026-02-14 23:52:30,373 - __main__ - INFO - Scene II (Assumed) PSNR: 23.44 dB
+2026-02-14 23:52:30,373 - __main__ - INFO - Scene III (Corrected) PSNR: 28.50 dB
+2026-02-14 23:52:30,373 - __main__ - INFO - Gap I→II: 16.60 dB (degradation)
+2026-02-14 23:52:30,373 - __main__ - INFO - Gain II→III: 5.07 dB (correction)
+2026-02-14 23:52:30,373 - __main__ - INFO - Gap III→I: 11.53 dB (residual)
+2026-02-14 23:52:30,373 - __main__ - INFO - scene03 not found, using synthetic scene
+2026-02-14 23:52:30,392 - __main__ - INFO - Using scene03: (256, 256, 28)
+2026-02-14 23:52:30,392 - __main__ - INFO - 
+======================================================================
+2026-02-14 23:52:30,392 - __main__ - INFO - Scene 3/10
+2026-02-14 23:52:30,392 - __main__ - INFO - ======================================================================
+2026-02-14 23:52:30,392 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-14 23:52:30,601 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-14 23:52:30,815 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-14 23:52:30,817 - __main__ - INFO - Running Algorithm 1...
+2026-02-14 23:52:30,817 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-14 23:52:30,818 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-14 23:52:33,215 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=2.0000, mse=0.186439
+2026-02-14 23:52:35,607 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=2.0000, mse=0.186526
+2026-02-14 23:52:36,906 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=0.3333, mse=0.186497
+2026-02-14 23:53:00,228 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186433
+2026-02-14 23:53:00,229 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=2.2500, dy=2.2500, theta=0.4333
+2026-02-14 23:53:00,229 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-14 23:53:06,745 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=2.0000, alpha=1.0000
+2026-02-14 23:53:06,745 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 35.9 seconds
+2026-02-14 23:53:06,745 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=2.250, dy=2.250, θ=0.433°, a1=2.0000, α=1.000°)
+2026-02-14 23:53:06,745 - __main__ - INFO - Running Algorithm 2...
+2026-02-14 23:53:06,745 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+2026-02-14 23:53:06,746 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Note: phi_d unidentifiable at integer rounding precision
+2026-02-14 23:53:06,746 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -         → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+2026-02-14 23:53:06,746 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+2026-02-14 23:53:06,746 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+2026-02-14 23:53:58,324 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Coarse grid (567 evals, 51.6s):
+2026-02-14 23:53:58,324 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=408.53
+2026-02-14 23:53:58,324 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Top-3: (0.00,0.00,0.00)=408.5; (0.00,3.00,0.00)=411.6; (-3.00,0.00,0.00)=411.8
+2026-02-14 23:53:58,325 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 1: Fine grid around top-5 candidates (GPU)
+2026-02-14 23:54:50,312 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Fine grid (375 evals, 52.0s):
+2026-02-14 23:54:50,312 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=401.08
+2026-02-14 23:54:50,312 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+2026-02-14 23:54:51,534 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/50: loss=0.005056, dx=0.0500, dy=0.0000, theta=0.0000
+2026-02-14 23:55:20,970 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/50: loss=0.005057, dx=0.0001, dy=0.0000, theta=0.0000
+2026-02-14 23:55:51,689 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/50: loss=0.005056, dx=0.0012, dy=0.0000, theta=0.0000
+2026-02-14 23:55:51,693 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2A done: dx=0.0012, dy=0.0000, theta=0.0000, loss=0.005056 (61.4s)
+2026-02-14 23:55:51,693 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+2026-02-14 23:55:52,929 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/60: loss=0.006691, dx=0.0012, dy=0.0300, theta=0.0100
+2026-02-14 23:56:23,029 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/60: loss=0.006697, dx=0.0012, dy=-0.0007, theta=0.0009
+2026-02-14 23:56:54,000 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/60: loss=0.006692, dx=0.0012, dy=-0.0003, theta=-0.0002
+2026-02-14 23:57:06,581 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2B done: dx=0.0012, dy=0.0003, theta=-0.0001, loss=0.006692 (74.9s)
+2026-02-14 23:57:06,581 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+2026-02-14 23:57:08,115 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/80: loss=0.005471, dx=-0.0088, dy=-0.0097, theta=0.0049
+2026-02-14 23:57:45,398 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/80: loss=0.005471, dx=-0.0012, dy=-0.0014, theta=0.0005
+2026-02-14 23:58:23,891 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/80: loss=0.005471, dx=-0.0003, dy=0.0009, theta=0.0006
+2026-02-14 23:59:02,582 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  75/80: loss=0.005470, dx=-0.0000, dy=-0.0000, theta=-0.0000
+2026-02-14 23:59:10,273 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2C done: dx=-0.0000, dy=0.0002, theta=0.0000, loss=0.005470 (123.7s)
+2026-02-14 23:59:10,605 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Score comparison: grid=397.65, grad=397.67
+2026-02-14 23:59:10,605 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   → Using grid result (gradient didn't improve)
+2026-02-14 23:59:10,605 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2 completed in 363.9 seconds
+2026-02-14 23:59:10,605 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=0.000, dy=0.000, θ=0.000°, a1=2.0000, α=0.000°)
+2026-02-14 23:59:10,815 - __main__ - INFO - Scene I (Ideal) PSNR: 40.02 dB
+2026-02-14 23:59:10,815 - __main__ - INFO - Scene II (Assumed) PSNR: 23.43 dB
+2026-02-14 23:59:10,815 - __main__ - INFO - Scene III (Corrected) PSNR: 28.50 dB
+2026-02-14 23:59:10,815 - __main__ - INFO - Gap I→II: 16.59 dB (degradation)
+2026-02-14 23:59:10,815 - __main__ - INFO - Gain II→III: 5.07 dB (correction)
+2026-02-14 23:59:10,815 - __main__ - INFO - Gap III→I: 11.52 dB (residual)
+2026-02-14 23:59:10,816 - __main__ - INFO - scene04 not found, using synthetic scene
+2026-02-14 23:59:10,834 - __main__ - INFO - Using scene04: (256, 256, 28)
+2026-02-14 23:59:10,835 - __main__ - INFO - 
+======================================================================
+2026-02-14 23:59:10,835 - __main__ - INFO - Scene 4/10
+2026-02-14 23:59:10,835 - __main__ - INFO - ======================================================================
+2026-02-14 23:59:10,835 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-14 23:59:11,046 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-14 23:59:11,256 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-14 23:59:11,259 - __main__ - INFO - Running Algorithm 1...
+2026-02-14 23:59:11,259 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-14 23:59:11,259 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-14 23:59:13,728 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=0.5000, mse=0.186500
+2026-02-14 23:59:16,161 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=3.0000, mse=0.186516
+2026-02-14 23:59:17,471 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=1.0000, mse=0.186544
+2026-02-14 23:59:40,833 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186472
+2026-02-14 23:59:40,833 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=0.0000, dy=3.2500, theta=1.1000
+2026-02-14 23:59:40,833 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-14 23:59:47,393 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=1.9750, alpha=0.3333
+2026-02-14 23:59:47,393 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 36.1 seconds
+2026-02-14 23:59:47,393 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=0.000, dy=3.250, θ=1.100°, a1=1.9750, α=0.333°)
+2026-02-14 23:59:47,393 - __main__ - INFO - Running Algorithm 2...
+2026-02-14 23:59:47,393 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+2026-02-14 23:59:47,394 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Note: phi_d unidentifiable at integer rounding precision
+2026-02-14 23:59:47,394 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -         → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+2026-02-14 23:59:47,394 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+2026-02-14 23:59:47,394 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+2026-02-15 00:00:39,656 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Coarse grid (567 evals, 52.3s):
+2026-02-15 00:00:39,656 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=408.84
+2026-02-15 00:00:39,656 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Top-3: (0.00,0.00,0.00)=408.8; (-3.00,0.00,0.00)=411.6; (0.00,-3.00,0.00)=412.0
+2026-02-15 00:00:39,656 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 1: Fine grid around top-5 candidates (GPU)
+2026-02-15 00:01:29,642 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Fine grid (375 evals, 50.0s):
+2026-02-15 00:01:29,642 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=401.26
+2026-02-15 00:01:29,642 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+2026-02-15 00:01:30,864 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/50: loss=0.005055, dx=0.0500, dy=0.0000, theta=0.0000
+2026-02-15 00:02:00,406 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/50: loss=0.005056, dx=-0.0121, dy=0.0000, theta=0.0000
+2026-02-15 00:02:31,000 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/50: loss=0.005055, dx=0.0013, dy=0.0000, theta=0.0000
+2026-02-15 00:02:31,003 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2A done: dx=0.0013, dy=0.0000, theta=0.0000, loss=0.005055 (61.4s)
+2026-02-15 00:02:31,004 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+2026-02-15 00:02:32,211 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/60: loss=0.006702, dx=0.0013, dy=0.0300, theta=0.0100
+2026-02-15 00:03:01,974 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/60: loss=0.006710, dx=0.0013, dy=-0.0025, theta=0.0003
+2026-02-15 00:03:33,311 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/60: loss=0.006704, dx=0.0013, dy=-0.0007, theta=0.0001
+2026-02-15 00:03:45,946 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2B done: dx=0.0013, dy=-0.0002, theta=0.0001, loss=0.006703 (74.9s)
+2026-02-15 00:03:45,946 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+2026-02-15 00:03:47,427 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/80: loss=0.005472, dx=-0.0087, dy=0.0098, theta=-0.0049
+2026-02-15 00:04:24,117 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/80: loss=0.005474, dx=0.0018, dy=-0.0007, theta=-0.0013
+2026-02-15 00:05:03,362 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/80: loss=0.005472, dx=-0.0003, dy=-0.0003, theta=0.0001
+2026-02-15 00:05:41,740 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  75/80: loss=0.005471, dx=-0.0002, dy=-0.0001, theta=-0.0001
+2026-02-15 00:05:49,498 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2C done: dx=0.0001, dy=0.0002, theta=0.0001, loss=0.005471 (123.6s)
+2026-02-15 00:05:49,841 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Score comparison: grid=397.75, grad=397.77
+2026-02-15 00:05:49,841 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   → Using grid result (gradient didn't improve)
+2026-02-15 00:05:49,841 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2 completed in 362.4 seconds
+2026-02-15 00:05:49,841 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=0.000, dy=0.000, θ=0.000°, a1=2.0000, α=0.000°)
+2026-02-15 00:05:50,052 - __main__ - INFO - Scene I (Ideal) PSNR: 40.03 dB
+2026-02-15 00:05:50,053 - __main__ - INFO - Scene II (Assumed) PSNR: 23.43 dB
+2026-02-15 00:05:50,053 - __main__ - INFO - Scene III (Corrected) PSNR: 28.49 dB
+2026-02-15 00:05:50,053 - __main__ - INFO - Gap I→II: 16.60 dB (degradation)
+2026-02-15 00:05:50,053 - __main__ - INFO - Gain II→III: 5.06 dB (correction)
+2026-02-15 00:05:50,053 - __main__ - INFO - Gap III→I: 11.54 dB (residual)
+2026-02-15 00:05:50,053 - __main__ - INFO - scene05 not found, using synthetic scene
+2026-02-15 00:05:50,072 - __main__ - INFO - Using scene05: (256, 256, 28)
+2026-02-15 00:05:50,072 - __main__ - INFO - 
+======================================================================
+2026-02-15 00:05:50,072 - __main__ - INFO - Scene 5/10
+2026-02-15 00:05:50,072 - __main__ - INFO - ======================================================================
+2026-02-15 00:05:50,072 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-15 00:05:50,282 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-15 00:05:50,492 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-15 00:05:50,495 - __main__ - INFO - Running Algorithm 1...
+2026-02-15 00:05:50,495 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-15 00:05:50,495 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-15 00:05:52,930 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=-2.0000, mse=0.186506
+2026-02-15 00:05:55,384 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=-2.5000, mse=0.186498
+2026-02-15 00:05:56,678 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=1.0000, mse=0.186493
+2026-02-15 00:06:20,103 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186477
+2026-02-15 00:06:20,103 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=-2.0000, dy=-2.2500, theta=1.0500
+2026-02-15 00:06:20,103 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-15 00:06:26,662 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=1.9500, alpha=0.3333
+2026-02-15 00:06:26,662 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 36.2 seconds
+2026-02-15 00:06:26,662 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=-2.000, dy=-2.250, θ=1.050°, a1=1.9500, α=0.333°)
+2026-02-15 00:06:26,662 - __main__ - INFO - Running Algorithm 2...
+2026-02-15 00:06:26,663 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+2026-02-15 00:06:26,663 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Note: phi_d unidentifiable at integer rounding precision
+2026-02-15 00:06:26,663 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -         → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+2026-02-15 00:06:26,664 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+2026-02-15 00:06:26,664 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+2026-02-15 00:07:18,611 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Coarse grid (567 evals, 51.9s):
+2026-02-15 00:07:18,611 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=410.28
+2026-02-15 00:07:18,611 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Top-3: (0.00,0.00,0.00)=410.3; (3.00,0.00,0.00)=413.4; (-3.00,0.00,0.00)=413.4
+2026-02-15 00:07:18,611 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 1: Fine grid around top-5 candidates (GPU)
+2026-02-15 00:08:08,801 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Fine grid (375 evals, 50.2s):
+2026-02-15 00:08:08,801 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=402.77
+2026-02-15 00:08:08,801 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+  Note: phi_d unidentifiable at integer rounding precision
+        → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+    Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+    Coarse grid (567 evals, 101.3s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=413.35
+      Top-3: (0.00,0.00,0.00)=413.4; (-3.00,0.00,0.00)=416.1; (3.00,0.00,0.00)=416.1
+
+  Stage 1: Fine grid around top-5 candidates (GPU)
+    Fine grid (375 evals, 94.2s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=405.94
+
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+    step   1/50: loss=0.005120, dx=0.0500, dy=0.0000, theta=0.0000
+    step  25/50: loss=0.005121, dx=0.0102, dy=0.0000, theta=0.0000
+    step  50/50: loss=0.005120, dx=-0.0003, dy=0.0000, theta=0.0000
+  Stage 2A done: dx=-0.0003, dy=0.0000, theta=0.0000, loss=0.005120 (68.3s)
+
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+    step   1/60: loss=0.006749, dx=-0.0003, dy=0.0300, theta=0.0100
+    step  25/60: loss=0.006764, dx=-0.0003, dy=-0.0070, theta=-0.0016
+    step  50/60: loss=0.006750, dx=-0.0003, dy=-0.0002, theta=0.0005
+  Stage 2B done: dx=-0.0003, dy=0.0002, theta=0.0002, loss=0.006750 (76.5s)
+
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+    step   1/80: loss=0.005537, dx=0.0097, dy=-0.0098, theta=-0.0048
+    step  25/80: loss=0.005540, dx=0.0006, dy=-0.0016, theta=-0.0012
+    step  50/80: loss=0.005537, dx=0.0007, dy=-0.0005, theta=-0.0005
+    step  75/80: loss=0.005536, dx=-0.0001, dy=0.0001, theta=0.0000
+  Stage 2C done: dx=-0.0001, dy=0.0001, theta=-0.0000, loss=0.005536 (125.7s)
+
+  Score comparison: grid=402.50, grad=402.51
+  → Using grid result (gradient didn't improve)
+
+Algorithm 2 completed in 466.4 seconds
+
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+  Note: phi_d unidentifiable at integer rounding precision
+        → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+    Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+    Coarse grid (567 evals, 51.3s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=409.63
+      Top-3: (0.00,0.00,0.00)=409.6; (-3.00,0.00,0.00)=412.6; (3.00,0.00,0.00)=412.9
+
+  Stage 1: Fine grid around top-5 candidates (GPU)
+    Fine grid (375 evals, 49.6s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=402.19
+
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+    step   1/50: loss=0.005069, dx=0.0500, dy=0.0000, theta=0.0000
+    step  25/50: loss=0.005070, dx=0.0033, dy=0.0000, theta=0.0000
+    step  50/50: loss=0.005069, dx=0.0005, dy=0.0000, theta=0.0000
+  Stage 2A done: dx=0.0005, dy=0.0000, theta=0.0000, loss=0.005069 (80.9s)
+
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+    step   1/60: loss=0.006703, dx=0.0005, dy=0.0300, theta=0.0100
+    step  25/60: loss=0.006712, dx=0.0005, dy=-0.0042, theta=0.0003
+    step  50/60: loss=0.006704, dx=0.0005, dy=-0.0003, theta=0.0002
+  Stage 2B done: dx=0.0005, dy=0.0001, theta=-0.0000, loss=0.006703 (105.2s)
+
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+    step   1/80: loss=0.005485, dx=-0.0095, dy=-0.0099, theta=0.0050
+    step  25/80: loss=0.005487, dx=-0.0005, dy=-0.0004, theta=-0.0002
+    step  50/80: loss=0.005487, dx=0.0002, dy=0.0002, theta=-0.0005
+    step  75/80: loss=0.005485, dx=0.0000, dy=0.0000, theta=0.0000
+  Stage 2C done: dx=-0.0001, dy=-0.0000, theta=0.0000, loss=0.005485 (136.5s)
+
+  Score comparison: grid=398.77, grad=398.78
+  → Using grid result (gradient didn't improve)
+
+Algorithm 2 completed in 423.7 seconds
+
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+  Note: phi_d unidentifiable at integer rounding precision
+        → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+    Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+    Coarse grid (567 evals, 51.6s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=408.53
+      Top-3: (0.00,0.00,0.00)=408.5; (0.00,3.00,0.00)=411.6; (-3.00,0.00,0.00)=411.8
+
+  Stage 1: Fine grid around top-5 candidates (GPU)
+    Fine grid (375 evals, 52.0s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=401.08
+
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+    step   1/50: loss=0.005056, dx=0.0500, dy=0.0000, theta=0.0000
+    step  25/50: loss=0.005057, dx=0.0001, dy=0.0000, theta=0.0000
+    step  50/50: loss=0.005056, dx=0.0012, dy=0.0000, theta=0.0000
+  Stage 2A done: dx=0.0012, dy=0.0000, theta=0.0000, loss=0.005056 (61.4s)
+
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+    step   1/60: loss=0.006691, dx=0.0012, dy=0.0300, theta=0.0100
+    step  25/60: loss=0.006697, dx=0.0012, dy=-0.0007, theta=0.0009
+    step  50/60: loss=0.006692, dx=0.0012, dy=-0.0003, theta=-0.0002
+  Stage 2B done: dx=0.0012, dy=0.0003, theta=-0.0001, loss=0.006692 (74.9s)
+
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+    step   1/80: loss=0.005471, dx=-0.0088, dy=-0.0097, theta=0.0049
+    step  25/80: loss=0.005471, dx=-0.0012, dy=-0.0014, theta=0.0005
+    step  50/80: loss=0.005471, dx=-0.0003, dy=0.0009, theta=0.0006
+    step  75/80: loss=0.005470, dx=-0.0000, dy=-0.0000, theta=-0.0000
+  Stage 2C done: dx=-0.0000, dy=0.0002, theta=0.0000, loss=0.005470 (123.7s)
+
+  Score comparison: grid=397.65, grad=397.67
+  → Using grid result (gradient didn't improve)
+
+Algorithm 2 completed in 363.9 seconds
+
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+  Note: phi_d unidentifiable at integer rounding precision
+        → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+    Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+    Coarse grid (567 evals, 52.3s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=408.84
+      Top-3: (0.00,0.00,0.00)=408.8; (-3.00,0.00,0.00)=411.6; (0.00,-3.00,0.00)=412.0
+
+  Stage 1: Fine grid around top-5 candidates (GPU)
+    Fine grid (375 evals, 50.0s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=401.26
+
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+    step   1/50: loss=0.005055, dx=0.0500, dy=0.0000, theta=0.0000
+    step  25/50: loss=0.005056, dx=-0.0121, dy=0.0000, theta=0.0000
+    step  50/50: loss=0.005055, dx=0.0013, dy=0.0000, theta=0.0000
+  Stage 2A done: dx=0.0013, dy=0.0000, theta=0.0000, loss=0.005055 (61.4s)
+
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+    step   1/60: loss=0.006702, dx=0.0013, dy=0.0300, theta=0.0100
+    step  25/60: loss=0.006710, dx=0.0013, dy=-0.0025, theta=0.0003
+    step  50/60: loss=0.006704, dx=0.0013, dy=-0.0007, theta=0.0001
+  Stage 2B done: dx=0.0013, dy=-0.0002, theta=0.0001, loss=0.006703 (74.9s)
+
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+    step   1/80: loss=0.005472, dx=-0.0087, dy=0.0098, theta=-0.0049
+    step  25/80: loss=0.005474, dx=0.0018, dy=-0.0007, theta=-0.0013
+    step  50/80: loss=0.005472, dx=-0.0003, dy=-0.0003, theta=0.0001
+    step  75/80: loss=0.005471, dx=-0.0002, dy=-0.0001, theta=-0.0001
+  Stage 2C done: dx=0.0001, dy=0.0002, theta=0.0001, loss=0.005471 (123.6s)
+
+  Score comparison: grid=397.75, grad=397.77
+  → Using grid result (gradient didn't improve)
+
+Algorithm 2 completed in 362.4 seconds
+
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+  Note: phi_d unidentifiable at integer rounding precision
+        → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+    Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+    Coarse grid (567 evals, 51.9s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=410.28
+      Top-3: (0.00,0.00,0.00)=410.3; (3.00,0.00,0.00)=413.4; (-3.00,0.00,0.00)=413.4
+
+  Stage 1: Fine grid around top-5 candidates (GPU)
+    Fine grid (375 evals, 50.2s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=402.77
+
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters2026-02-15 00:08:10,018 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/50: loss=0.005073, dx=0.0500, dy=0.0000, theta=0.0000
+2026-02-15 00:08:39,216 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/50: loss=0.005074, dx=0.0046, dy=0.0000, theta=0.0000
+2026-02-15 00:09:09,795 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/50: loss=0.005074, dx=-0.0009, dy=0.0000, theta=0.0000
+2026-02-15 00:09:09,798 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2A done: dx=-0.0009, dy=0.0000, theta=0.0000, loss=0.005074 (61.0s)
+2026-02-15 00:09:09,798 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+2026-02-15 00:09:11,006 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/60: loss=0.006732, dx=-0.0009, dy=0.0300, theta=-0.0100
+2026-02-15 00:09:40,667 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/60: loss=0.006739, dx=-0.0009, dy=-0.0021, theta=-0.0009
+2026-02-15 00:10:11,761 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/60: loss=0.006733, dx=-0.0009, dy=-0.0001, theta=-0.0004
+2026-02-15 00:10:24,206 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2B done: dx=-0.0009, dy=0.0001, theta=-0.0002, loss=0.006733 (74.4s)
+2026-02-15 00:10:24,207 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+2026-02-15 00:10:25,701 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/80: loss=0.005493, dx=0.0091, dy=-0.0099, theta=0.0048
+2026-02-15 00:11:02,245 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/80: loss=0.005495, dx=0.0001, dy=-0.0024, theta=-0.0001
+2026-02-15 00:11:40,456 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/80: loss=0.005493, dx=-0.0002, dy=0.0003, theta=-0.0002
+2026-02-15 00:12:18,737 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  75/80: loss=0.005492, dx=-0.0001, dy=-0.0000, theta=-0.0000
+2026-02-15 00:12:26,311 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2C done: dx=-0.0000, dy=0.0001, theta=-0.0000, loss=0.005492 (122.1s)
+2026-02-15 00:12:26,665 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Score comparison: grid=399.27, grad=399.28
+2026-02-15 00:12:26,665 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   → Using grid result (gradient didn't improve)
+2026-02-15 00:12:26,666 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2 completed in 360.0 seconds
+2026-02-15 00:12:26,666 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=0.000, dy=0.000, θ=0.000°, a1=2.0000, α=0.000°)
+2026-02-15 00:12:26,879 - __main__ - INFO - Scene I (Ideal) PSNR: 40.03 dB
+2026-02-15 00:12:26,880 - __main__ - INFO - Scene II (Assumed) PSNR: 23.44 dB
+2026-02-15 00:12:26,880 - __main__ - INFO - Scene III (Corrected) PSNR: 28.50 dB
+2026-02-15 00:12:26,880 - __main__ - INFO - Gap I→II: 16.59 dB (degradation)
+2026-02-15 00:12:26,880 - __main__ - INFO - Gain II→III: 5.06 dB (correction)
+2026-02-15 00:12:26,880 - __main__ - INFO - Gap III→I: 11.53 dB (residual)
+2026-02-15 00:12:26,880 - __main__ - INFO - scene06 not found, using synthetic scene
+2026-02-15 00:12:26,899 - __main__ - INFO - Using scene06: (256, 256, 28)
+2026-02-15 00:12:26,899 - __main__ - INFO - 
+======================================================================
+2026-02-15 00:12:26,899 - __main__ - INFO - Scene 6/10
+2026-02-15 00:12:26,899 - __main__ - INFO - ======================================================================
+2026-02-15 00:12:26,899 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-15 00:12:27,107 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-15 00:12:27,317 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-15 00:12:27,320 - __main__ - INFO - Running Algorithm 1...
+2026-02-15 00:12:27,320 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-15 00:12:27,320 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-15 00:12:29,742 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=0.5000, mse=0.186429
+2026-02-15 00:12:32,187 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=0.0000, mse=0.186420
+2026-02-15 00:12:33,510 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=0.6667, mse=0.186431
+2026-02-15 00:12:57,057 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186391
+2026-02-15 00:12:57,057 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=0.0000, dy=0.5000, theta=0.7167
+2026-02-15 00:12:57,057 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-15 00:13:03,626 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=1.9750, alpha=-0.3333
+2026-02-15 00:13:03,626 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 36.3 seconds
+2026-02-15 00:13:03,626 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=0.000, dy=0.500, θ=0.717°, a1=1.9750, α=-0.333°)
+2026-02-15 00:13:03,626 - __main__ - INFO - Running Algorithm 2...
+2026-02-15 00:13:03,626 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+2026-02-15 00:13:03,627 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Note: phi_d unidentifiable at integer rounding precision
+2026-02-15 00:13:03,627 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -         → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+2026-02-15 00:13:03,627 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+2026-02-15 00:13:03,627 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+2026-02-15 00:13:56,032 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Coarse grid (567 evals, 52.4s):
+2026-02-15 00:13:56,033 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=416.45
+2026-02-15 00:13:56,033 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Top-3: (0.00,0.00,0.00)=416.5; (-3.00,0.00,0.00)=419.4; (3.00,0.00,0.00)=419.7
+2026-02-15 00:13:56,033 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 1: Fine grid around top-5 candidates (GPU)
+2026-02-15 00:14:48,364 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Fine grid (375 evals, 52.3s):
+2026-02-15 00:14:48,365 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=408.83
+2026-02-15 00:14:48,365 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+2026-02-15 00:14:49,580 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/50: loss=0.005151, dx=0.0500, dy=0.0000, theta=0.0000
+2026-02-15 00:15:18,884 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/50: loss=0.005152, dx=-0.0036, dy=0.0000, theta=0.0000
+2026-02-15 00:15:49,752 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/50: loss=0.005152, dx=-0.0006, dy=0.0000, theta=0.0000
+2026-02-15 00:15:49,756 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2A done: dx=-0.0006, dy=0.0000, theta=0.0000, loss=0.005152 (61.4s)
+2026-02-15 00:15:49,756 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+2026-02-15 00:15:50,977 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/60: loss=0.006821, dx=-0.0006, dy=0.0300, theta=0.0100
+2026-02-15 00:16:20,624 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/60: loss=0.006827, dx=-0.0006, dy=-0.0009, theta=0.0012
+2026-02-15 00:16:51,508 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/60: loss=0.006824, dx=-0.0006, dy=-0.0012, theta=0.0000
+2026-02-15 00:17:03,876 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2B done: dx=-0.0006, dy=-0.0002, theta=0.0003, loss=0.006822 (74.1s)
+2026-02-15 00:17:03,877 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+2026-02-15 00:17:05,356 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/80: loss=0.005576, dx=0.0094, dy=0.0098, theta=-0.0047
+2026-02-15 00:17:41,963 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/80: loss=0.005578, dx=-0.0005, dy=-0.0003, theta=-0.0002
+2026-02-15 00:18:20,019 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/80: loss=0.005576, dx=0.0001, dy=0.0002, theta=0.0001
+2026-02-15 00:18:58,324 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  75/80: loss=0.005575, dx=0.0000, dy=0.0001, theta=0.0001
+2026-02-15 00:19:05,980 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2C done: dx=0.0000, dy=-0.0000, theta=0.0001, loss=0.005575 (122.1s)
+2026-02-15 00:19:06,308 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Score comparison: grid=405.30, grad=405.31
+2026-02-15 00:19:06,308 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   → Using grid result (gradient didn't improve)
+2026-02-15 00:19:06,308 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2 completed in 362.7 seconds
+2026-02-15 00:19:06,308 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=0.000, dy=0.000, θ=0.000°, a1=2.0000, α=0.000°)
+2026-02-15 00:19:06,518 - __main__ - INFO - Scene I (Ideal) PSNR: 40.03 dB
+2026-02-15 00:19:06,518 - __main__ - INFO - Scene II (Assumed) PSNR: 23.43 dB
+2026-02-15 00:19:06,518 - __main__ - INFO - Scene III (Corrected) PSNR: 28.49 dB
+2026-02-15 00:19:06,518 - __main__ - INFO - Gap I→II: 16.59 dB (degradation)
+2026-02-15 00:19:06,518 - __main__ - INFO - Gain II→III: 5.06 dB (correction)
+2026-02-15 00:19:06,518 - __main__ - INFO - Gap III→I: 11.53 dB (residual)
+2026-02-15 00:19:06,518 - __main__ - INFO - scene07 not found, using synthetic scene
+2026-02-15 00:19:06,537 - __main__ - INFO - Using scene07: (256, 256, 28)
+2026-02-15 00:19:06,537 - __main__ - INFO - 
+======================================================================
+2026-02-15 00:19:06,537 - __main__ - INFO - Scene 7/10
+2026-02-15 00:19:06,537 - __main__ - INFO - ======================================================================
+2026-02-15 00:19:06,537 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-15 00:19:06,749 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-15 00:19:06,960 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-15 00:19:06,962 - __main__ - INFO - Running Algorithm 1...
+2026-02-15 00:19:06,963 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-15 00:19:06,963 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-15 00:19:09,400 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=3.0000, mse=0.186262
+2026-02-15 00:19:11,846 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=-1.0000, mse=0.186260
+2026-02-15 00:19:13,151 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=0.0000, mse=0.186271
+2026-02-15 00:19:36,763 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186216
+2026-02-15 00:19:36,763 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=2.7500, dy=-0.5000, theta=0.1000
+2026-02-15 00:19:36,763 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-15 00:19:43,358 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=2.0000, alpha=0.6667
+2026-02-15 00:19:43,358 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 36.4 seconds
+2026-02-15 00:19:43,358 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=2.750, dy=-0.500, θ=0.100°, a1=2.0000, α=0.667°)
+2026-02-15 00:19:43,358 - __main__ - INFO - Running Algorithm 2...
+2026-02-15 00:19:43,358 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+2026-02-15 00:19:43,359 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Note: phi_d unidentifiable at integer rounding precision
+2026-02-15 00:19:43,359 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -         → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+2026-02-15 00:19:43,359 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+2026-02-15 00:19:43,359 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+2026-02-15 00:20:35,331 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Coarse grid (567 evals, 52.0s):
+2026-02-15 00:20:35,332 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=411.30
+2026-02-15 00:20:35,332 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Top-3: (0.00,0.00,0.00)=411.3; (3.00,0.00,0.00)=414.1; (-3.00,0.00,0.00)=414.1
+2026-02-15 00:20:35,332 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 1: Fine grid around top-5 candidates (GPU)
+2026-02-15 00:21:25,409 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Fine grid (375 evals, 50.1s):
+2026-02-15 00:21:25,409 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=403.68
+2026-02-15 00:21:25,409 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+2026-02-15 00:21:26,606 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/50: loss=0.005081, dx=0.0500, dy=0.0000, theta=0.0000
+2026-02-15 00:21:55,958 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/50: loss=0.005081, dx=-0.0015, dy=0.0000, theta=0.0000
+2026-02-15 00:22:26,753 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/50: loss=0.005081, dx=0.0014, dy=0.0000, theta=0.0000
+2026-02-15 00:22:26,760 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2A done: dx=0.0014, dy=0.0000, theta=0.0000, loss=0.005081 (61.4s)
+2026-02-15 00:22:26,760 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+2026-02-15 00:22:27,994 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/60: loss=0.006754, dx=0.0014, dy=0.0300, theta=-0.0100
+2026-02-15 00:22:57,560 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/60: loss=0.006764, dx=0.0014, dy=-0.0047, theta=0.0008
+2026-02-15 00:23:28,829 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/60: loss=0.006755, dx=0.0014, dy=0.0005, theta=-0.0003
+2026-02-15 00:23:41,496 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2B done: dx=0.0014, dy=0.0002, theta=-0.0002, loss=0.006754 (74.7s)
+2026-02-15 00:23:41,496 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+2026-02-15 00:23:42,992 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/80: loss=0.005506, dx=-0.0086, dy=-0.0098, theta=0.0048
+2026-02-15 00:24:19,751 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/80: loss=0.005506, dx=0.0002, dy=-0.0011, theta=-0.0002
+2026-02-15 00:24:59,510 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/80: loss=0.005505, dx=0.0000, dy=0.0002, theta=-0.0003
+2026-02-15 00:25:37,375 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  75/80: loss=0.005504, dx=0.0001, dy=-0.0000, theta=-0.0001
+2026-02-15 00:25:45,066 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2C done: dx=0.0001, dy=-0.0000, theta=-0.0000, loss=0.005504 (123.6s)
+2026-02-15 00:25:45,395 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Score comparison: grid=400.18, grad=400.19
+2026-02-15 00:25:45,395 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   → Using grid result (gradient didn't improve)
+2026-02-15 00:25:45,395 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2 completed in 362.0 seconds
+2026-02-15 00:25:45,395 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=0.000, dy=0.000, θ=0.000°, a1=2.0000, α=0.000°)
+2026-02-15 00:25:45,604 - __main__ - INFO - Scene I (Ideal) PSNR: 40.03 dB
+2026-02-15 00:25:45,604 - __main__ - INFO - Scene II (Assumed) PSNR: 23.44 dB
+2026-02-15 00:25:45,604 - __main__ - INFO - Scene III (Corrected) PSNR: 28.49 dB
+2026-02-15 00:25:45,604 - __main__ - INFO - Gap I→II: 16.60 dB (degradation)
+2026-02-15 00:25:45,604 - __main__ - INFO - Gain II→III: 5.05 dB (correction)
+2026-02-15 00:25:45,604 - __main__ - INFO - Gap III→I: 11.55 dB (residual)
+2026-02-15 00:25:45,604 - __main__ - INFO - scene08 not found, using synthetic scene
+2026-02-15 00:25:45,623 - __main__ - INFO - Using scene08: (256, 256, 28)
+2026-02-15 00:25:45,623 - __main__ - INFO - 
+======================================================================
+2026-02-15 00:25:45,623 - __main__ - INFO - Scene 8/10
+2026-02-15 00:25:45,623 - __main__ - INFO - ======================================================================
+2026-02-15 00:25:45,623 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-15 00:25:45,833 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-15 00:25:46,044 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-15 00:25:46,046 - __main__ - INFO - Running Algorithm 1...
+2026-02-15 00:25:46,046 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-15 00:25:46,047 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-15 00:25:48,504 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=-2.0000, mse=0.186281
+2026-02-15 00:25:50,927 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=-3.0000, mse=0.186251
+2026-02-15 00:25:52,255 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=-1.0000, mse=0.186270
+2026-02-15 00:26:15,497 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186260
+2026-02-15 00:26:15,497 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=-2.2500, dy=-3.5000, theta=-0.9500
+2026-02-15 00:26:15,497 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-15 00:26:22,016 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=2.0500, alpha=0.0000
+2026-02-15 00:26:22,016 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 36.0 seconds
+2026-02-15 00:26:22,016 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=-2.250, dy=-3.500, θ=-0.950°, a1=2.0500, α=0.000°)
+2026-02-15 00:26:22,016 - __main__ - INFO - Running Algorithm 2...
+2026-02-15 00:26:22,016 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+2026-02-15 00:26:22,017 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Note: phi_d unidentifiable at integer rounding precision
+2026-02-15 00:26:22,017 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -         → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+2026-02-15 00:26:22,017 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+2026-02-15 00:26:22,017 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+2026-02-15 00:27:13,582 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Coarse grid (567 evals, 51.6s):
+2026-02-15 00:27:13,582 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=406.68
+2026-02-15 00:27:13,582 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Top-3: (0.00,0.00,0.00)=406.7; (-3.00,0.00,0.00)=410.1; (0.00,3.00,0.00)=410.1
+2026-02-15 00:27:13,582 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 1: Fine grid around top-5 candidates (GPU)
+2026-02-15 00:28:03,096 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Fine grid (375 evals, 49.5s):
+2026-02-15 00:28:03,096 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=399.22
+2026-02-15 00:28:03,096 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+2026-02-15 00:28:04,287 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/50: loss=0.005026, dx=0.0500, dy=0.0000, theta=0.0000
+2026-02-15 00:28:33,578 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/50: loss=0.005026, dx=0.0024, dy=0.0000, theta=0.0000
+2026-02-15 00:29:04,028 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/50: loss=0.005026, dx=-0.0001, dy=0.0000, theta=0.0000
+2026-02-15 00:29:04,031 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2A done: dx=-0.0001, dy=0.0000, theta=0.0000, loss=0.005026 (60.9s)
+2026-02-15 00:29:04,031 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+2026-02-15 00:29:05,253 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/60: loss=0.006678, dx=-0.0001, dy=0.0300, theta=-0.0100
+2026-02-15 00:29:34,824 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/60: loss=0.006692, dx=-0.0001, dy=-0.0069, theta=0.0017
+2026-02-15 00:30:05,599 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/60: loss=0.006679, dx=-0.0001, dy=-0.0005, theta=-0.0004
+2026-02-15 00:30:17,970 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2B done: dx=-0.0001, dy=-0.0002, theta=0.0001, loss=0.006678 (73.9s)
+2026-02-15 00:30:17,971 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+2026-02-15 00:30:19,449 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/80: loss=0.005444, dx=0.0099, dy=0.0098, theta=-0.0049
+2026-02-15 00:30:55,868 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/80: loss=0.005445, dx=0.0008, dy=0.0005, theta=-0.0003
+2026-02-15 00:31:33,786 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/80: loss=0.005445, dx=0.0003, dy=0.0003, theta=-0.0001
+2026-02-15 00:32:11,785 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  75/80: loss=0.005444, dx=-0.0001, dy=0.0001, theta=-0.0000
+2026-02-15 00:32:19,380 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2C done: dx=0.0000, dy=0.0001, theta=0.0000, loss=0.005444 (121.4s)
+2026-02-15 00:32:19,714 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Score comparison: grid=395.78, grad=395.78
+2026-02-15 00:32:19,714 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   → Using grid result (gradient didn't improve)
+2026-02-15 00:32:19,714 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2 completed in 357.7 seconds
+2026-02-15 00:32:19,714 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=0.000, dy=0.000, θ=0.000°, a1=2.0000, α=0.000°)
+2026-02-15 00:32:19,935 - __main__ - INFO - Scene I (Ideal) PSNR: 40.04 dB
+2026-02-15 00:32:19,935 - __main__ - INFO - Scene II (Assumed) PSNR: 23.43 dB
+2026-02-15 00:32:19,935 - __main__ - INFO - Scene III (Corrected) PSNR: 28.49 dB
+2026-02-15 00:32:19,935 - __main__ - INFO - Gap I→II: 16.60 dB (degradation)
+2026-02-15 00:32:19,935 - __main__ - INFO - Gain II→III: 5.06 dB (correction)
+2026-02-15 00:32:19,935 - __main__ - INFO - Gap III→I: 11.54 dB (residual)
+2026-02-15 00:32:19,935 - __main__ - INFO - scene09 not found, using synthetic scene
+2026-02-15 00:32:19,954 - __main__ - INFO - Using scene09: (256, 256, 28)
+2026-02-15 00:32:19,955 - __main__ - INFO - 
+======================================================================
+2026-02-15 00:32:19,955 - __main__ - INFO - Scene 9/10
+2026-02-15 00:32:19,955 - __main__ - INFO - ======================================================================
+2026-02-15 00:32:19,955 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-15 00:32:20,165 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-15 00:32:20,374 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-15 00:32:20,377 - __main__ - INFO - Running Algorithm 1...
+2026-02-15 00:32:20,377 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-15 00:32:20,377 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-15 00:32:22,786 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=-2.0000, mse=0.186116
+2026-02-15 00:32:25,207 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=0.5000, mse=0.186148
+2026-02-15 00:32:26,491 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=0.0000, mse=0.186175
+2026-02-15 00:32:49,928 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186118
+2026-02-15 00:32:49,928 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=-1.5000, dy=0.5000, theta=0.0000
+2026-02-15 00:32:49,928 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-15 00:32:56,515 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=2.0000, alpha=0.6667
+2026-02-15 00:32:56,515 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 36.1 seconds
+2026-02-15 00:32:56,515 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=-1.500, dy=0.500, θ=0.000°, a1=2.0000, α=0.667°)
+2026-02-15 00:32:56,516 - __main__ - INFO - Running Algorithm 2...
+2026-02-15 00:32:56,516 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+2026-02-15 00:32:56,516 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Note: phi_d unidentifiable at integer rounding precision
+2026-02-15 00:32:56,516 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -         → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+2026-02-15 00:32:56,517 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+2026-02-15 00:32:56,517 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+2026-02-15 00:33:48,043 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Coarse grid (567 evals, 51.5s):
+2026-02-15 00:33:48,043 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=410.95
+2026-02-15 00:33:48,043 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Top-3: (0.00,0.00,0.00)=410.9; (-3.00,0.00,0.00)=413.5; (0.00,3.00,0.00)=414.3
+2026-02-15 00:33:48,043 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 1: Fine grid around top-5 candidates (GPU)
+2026-02-15 00:34:41,276 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Fine grid (375 evals, 53.2s):
+2026-02-15 00:34:41,276 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=403.49
+2026-02-15 00:34:41,276 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+2026-02-15 00:34:43,066 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/50: loss=0.005081, dx=0.0500, dy=0.0000, theta=0.0000
+2026-02-15 00:35:14,704 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/50: loss=0.005082, dx=0.0010, dy=0.0000, theta=0.0000
+2026-02-15 00:35:45,277 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/50: loss=0.005082, dx=-0.0024, dy=0.0000, theta=0.0000
+2026-02-15 00:35:45,281 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2A done: dx=-0.0024, dy=0.0000, theta=0.0000, loss=0.005082 (64.0s)
+2026-02-15 00:35:45,281 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+2026-02-15 00:35:46,507 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/60: loss=0.006733, dx=-0.0024, dy=0.0300, theta=0.0100
+2026-02-15 00:36:16,077 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/60: loss=0.006739, dx=-0.0024, dy=-0.0020, theta=0.0006
+2026-02-15 00:36:48,681 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/60: loss=0.006734, dx=-0.0024, dy=0.0004, theta=-0.0002
+2026-02-15 00:37:01,904 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2B done: dx=-0.0024, dy=0.0003, theta=-0.0000, loss=0.006734 (76.6s)
+
+    step   1/50: loss=0.005073, dx=0.0500, dy=0.0000, theta=0.0000
+    step  25/50: loss=0.005074, dx=0.0046, dy=0.0000, theta=0.0000
+    step  50/50: loss=0.005074, dx=-0.0009, dy=0.0000, theta=0.0000
+  Stage 2A done: dx=-0.0009, dy=0.0000, theta=0.0000, loss=0.005074 (61.0s)
+
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+    step   1/60: loss=0.006732, dx=-0.0009, dy=0.0300, theta=-0.0100
+    step  25/60: loss=0.006739, dx=-0.0009, dy=-0.0021, theta=-0.0009
+    step  50/60: loss=0.006733, dx=-0.0009, dy=-0.0001, theta=-0.0004
+  Stage 2B done: dx=-0.0009, dy=0.0001, theta=-0.0002, loss=0.006733 (74.4s)
+
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+    step   1/80: loss=0.005493, dx=0.0091, dy=-0.0099, theta=0.0048
+    step  25/80: loss=0.005495, dx=0.0001, dy=-0.0024, theta=-0.0001
+    step  50/80: loss=0.005493, dx=-0.0002, dy=0.0003, theta=-0.0002
+    step  75/80: loss=0.005492, dx=-0.0001, dy=-0.0000, theta=-0.0000
+  Stage 2C done: dx=-0.0000, dy=0.0001, theta=-0.0000, loss=0.005492 (122.1s)
+
+  Score comparison: grid=399.27, grad=399.28
+  → Using grid result (gradient didn't improve)
+
+Algorithm 2 completed in 360.0 seconds
+
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+  Note: phi_d unidentifiable at integer rounding precision
+        → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+    Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+    Coarse grid (567 evals, 52.4s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=416.45
+      Top-3: (0.00,0.00,0.00)=416.5; (-3.00,0.00,0.00)=419.4; (3.00,0.00,0.00)=419.7
+
+  Stage 1: Fine grid around top-5 candidates (GPU)
+    Fine grid (375 evals, 52.3s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=408.83
+
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+    step   1/50: loss=0.005151, dx=0.0500, dy=0.0000, theta=0.0000
+    step  25/50: loss=0.005152, dx=-0.0036, dy=0.0000, theta=0.0000
+    step  50/50: loss=0.005152, dx=-0.0006, dy=0.0000, theta=0.0000
+  Stage 2A done: dx=-0.0006, dy=0.0000, theta=0.0000, loss=0.005152 (61.4s)
+
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+    step   1/60: loss=0.006821, dx=-0.0006, dy=0.0300, theta=0.0100
+    step  25/60: loss=0.006827, dx=-0.0006, dy=-0.0009, theta=0.0012
+    step  50/60: loss=0.006824, dx=-0.0006, dy=-0.0012, theta=0.0000
+  Stage 2B done: dx=-0.0006, dy=-0.0002, theta=0.0003, loss=0.006822 (74.1s)
+
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+    step   1/80: loss=0.005576, dx=0.0094, dy=0.0098, theta=-0.0047
+    step  25/80: loss=0.005578, dx=-0.0005, dy=-0.0003, theta=-0.0002
+    step  50/80: loss=0.005576, dx=0.0001, dy=0.0002, theta=0.0001
+    step  75/80: loss=0.005575, dx=0.0000, dy=0.0001, theta=0.0001
+  Stage 2C done: dx=0.0000, dy=-0.0000, theta=0.0001, loss=0.005575 (122.1s)
+
+  Score comparison: grid=405.30, grad=405.31
+  → Using grid result (gradient didn't improve)
+
+Algorithm 2 completed in 362.7 seconds
+
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+  Note: phi_d unidentifiable at integer rounding precision
+        → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+    Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+    Coarse grid (567 evals, 52.0s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=411.30
+      Top-3: (0.00,0.00,0.00)=411.3; (3.00,0.00,0.00)=414.1; (-3.00,0.00,0.00)=414.1
+
+  Stage 1: Fine grid around top-5 candidates (GPU)
+    Fine grid (375 evals, 50.1s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=403.68
+
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+    step   1/50: loss=0.005081, dx=0.0500, dy=0.0000, theta=0.0000
+    step  25/50: loss=0.005081, dx=-0.0015, dy=0.0000, theta=0.0000
+    step  50/50: loss=0.005081, dx=0.0014, dy=0.0000, theta=0.0000
+  Stage 2A done: dx=0.0014, dy=0.0000, theta=0.0000, loss=0.005081 (61.4s)
+
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+    step   1/60: loss=0.006754, dx=0.0014, dy=0.0300, theta=-0.0100
+    step  25/60: loss=0.006764, dx=0.0014, dy=-0.0047, theta=0.0008
+    step  50/60: loss=0.006755, dx=0.0014, dy=0.0005, theta=-0.0003
+  Stage 2B done: dx=0.0014, dy=0.0002, theta=-0.0002, loss=0.006754 (74.7s)
+
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+    step   1/80: loss=0.005506, dx=-0.0086, dy=-0.0098, theta=0.0048
+    step  25/80: loss=0.005506, dx=0.0002, dy=-0.0011, theta=-0.0002
+    step  50/80: loss=0.005505, dx=0.0000, dy=0.0002, theta=-0.0003
+    step  75/80: loss=0.005504, dx=0.0001, dy=-0.0000, theta=-0.0001
+  Stage 2C done: dx=0.0001, dy=-0.0000, theta=-0.0000, loss=0.005504 (123.6s)
+
+  Score comparison: grid=400.18, grad=400.19
+  → Using grid result (gradient didn't improve)
+
+Algorithm 2 completed in 362.0 seconds
+
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+  Note: phi_d unidentifiable at integer rounding precision
+        → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+    Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+    Coarse grid (567 evals, 51.6s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=406.68
+      Top-3: (0.00,0.00,0.00)=406.7; (-3.00,0.00,0.00)=410.1; (0.00,3.00,0.00)=410.1
+
+  Stage 1: Fine grid around top-5 candidates (GPU)
+    Fine grid (375 evals, 49.5s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=399.22
+
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+    step   1/50: loss=0.005026, dx=0.0500, dy=0.0000, theta=0.0000
+    step  25/50: loss=0.005026, dx=0.0024, dy=0.0000, theta=0.0000
+    step  50/50: loss=0.005026, dx=-0.0001, dy=0.0000, theta=0.0000
+  Stage 2A done: dx=-0.0001, dy=0.0000, theta=0.0000, loss=0.005026 (60.9s)
+
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+    step   1/60: loss=0.006678, dx=-0.0001, dy=0.0300, theta=-0.0100
+    step  25/60: loss=0.006692, dx=-0.0001, dy=-0.0069, theta=0.0017
+    step  50/60: loss=0.006679, dx=-0.0001, dy=-0.0005, theta=-0.0004
+  Stage 2B done: dx=-0.0001, dy=-0.0002, theta=0.0001, loss=0.006678 (73.9s)
+
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+    step   1/80: loss=0.005444, dx=0.0099, dy=0.0098, theta=-0.0049
+    step  25/80: loss=0.005445, dx=0.0008, dy=0.0005, theta=-0.0003
+    step  50/80: loss=0.005445, dx=0.0003, dy=0.0003, theta=-0.0001
+    step  75/80: loss=0.005444, dx=-0.0001, dy=0.0001, theta=-0.0000
+  Stage 2C done: dx=0.0000, dy=0.0001, theta=0.0000, loss=0.005444 (121.4s)
+
+  Score comparison: grid=395.78, grad=395.78
+  → Using grid result (gradient didn't improve)
+
+Algorithm 2 completed in 357.7 seconds
+
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+  Note: phi_d unidentifiable at integer rounding precision
+        → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+    Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+    Coarse grid (567 evals, 51.5s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=410.95
+      Top-3: (0.00,0.00,0.00)=410.9; (-3.00,0.00,0.00)=413.5; (0.00,3.00,0.00)=414.3
+
+  Stage 1: Fine grid around top-5 candidates (GPU)
+    Fine grid (375 evals, 53.2s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=403.49
+
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+    step   1/50: loss=0.005081, dx=0.0500, dy=0.0000, theta=0.0000
+    step  25/50: loss=0.005082, dx=0.0010, dy=0.0000, theta=0.0000
+    step  50/50: loss=0.005082, dx=-0.0024, dy=0.0000, theta=0.0000
+  Stage 2A done: dx=-0.0024, dy=0.0000, theta=0.0000, loss=0.005082 (64.0s)
+
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+    step   1/60: loss=0.006733, dx=-0.0024, dy=0.0300, theta=0.0100
+    step  25/60: loss=0.006739, dx=-0.0024, dy=-0.0020, theta=0.0006
+    step  50/60: loss=0.006734, dx=-0.0024, dy=0.0004, theta=-0.0002
+  Stage 2B done: dx=-0.0024, dy=0.0003, theta=-0.0000, loss=0.006734 (76.6s)2026-02-15 00:37:01,904 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+2026-02-15 00:37:03,483 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/80: loss=0.005504, dx=0.0076, dy=-0.0097, theta=-0.0050
+2026-02-15 00:37:42,131 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/80: loss=0.005506, dx=-0.0011, dy=0.0009, theta=0.0002
+2026-02-15 00:38:22,229 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/80: loss=0.005503, dx=-0.0004, dy=0.0003, theta=0.0006
+2026-02-15 00:39:02,542 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  75/80: loss=0.005502, dx=-0.0001, dy=0.0000, theta=0.0001
+2026-02-15 00:39:10,487 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2C done: dx=0.0001, dy=0.0000, theta=-0.0000, loss=0.005502 (128.6s)
+2026-02-15 00:39:10,829 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Score comparison: grid=400.01, grad=400.02
+2026-02-15 00:39:10,829 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   → Using grid result (gradient didn't improve)
+2026-02-15 00:39:10,829 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2 completed in 374.3 seconds
+2026-02-15 00:39:10,830 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=0.000, dy=0.000, θ=0.000°, a1=2.0000, α=0.000°)
+2026-02-15 00:39:11,039 - __main__ - INFO - Scene I (Ideal) PSNR: 40.04 dB
+2026-02-15 00:39:11,040 - __main__ - INFO - Scene II (Assumed) PSNR: 23.44 dB
+2026-02-15 00:39:11,040 - __main__ - INFO - Scene III (Corrected) PSNR: 28.51 dB
+2026-02-15 00:39:11,040 - __main__ - INFO - Gap I→II: 16.59 dB (degradation)
+2026-02-15 00:39:11,040 - __main__ - INFO - Gain II→III: 5.06 dB (correction)
+2026-02-15 00:39:11,040 - __main__ - INFO - Gap III→I: 11.53 dB (residual)
+2026-02-15 00:39:11,040 - __main__ - INFO - scene10 not found, using synthetic scene
+2026-02-15 00:39:11,059 - __main__ - INFO - Using scene10: (256, 256, 28)
+2026-02-15 00:39:11,059 - __main__ - INFO - 
+======================================================================
+2026-02-15 00:39:11,059 - __main__ - INFO - Scene 10/10
+2026-02-15 00:39:11,059 - __main__ - INFO - ======================================================================
+2026-02-15 00:39:11,059 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-15 00:39:11,269 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-15 00:39:11,479 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-15 00:39:11,482 - __main__ - INFO - Running Algorithm 1...
+2026-02-15 00:39:11,482 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-15 00:39:11,482 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-15 00:39:13,895 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=-1.0000, mse=0.186372
+2026-02-15 00:39:16,357 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=2.0000, mse=0.186369
+2026-02-15 00:39:17,670 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=0.3333, mse=0.186382
+2026-02-15 00:39:41,761 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186365
+2026-02-15 00:39:41,762 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=-0.5000, dy=2.5000, theta=0.3333
+2026-02-15 00:39:41,762 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-15 00:39:48,554 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=1.9500, alpha=0.0000
+2026-02-15 00:39:48,554 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 37.1 seconds
+2026-02-15 00:39:48,555 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=-0.500, dy=2.500, θ=0.333°, a1=1.9500, α=0.000°)
+2026-02-15 00:39:48,555 - __main__ - INFO - Running Algorithm 2...
+2026-02-15 00:39:48,555 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+2026-02-15 00:39:48,555 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Note: phi_d unidentifiable at integer rounding precision
+2026-02-15 00:39:48,555 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -         → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+2026-02-15 00:39:48,555 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+2026-02-15 00:39:48,555 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+2026-02-15 00:40:42,822 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Coarse grid (567 evals, 54.3s):
+2026-02-15 00:40:42,822 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=408.89
+2026-02-15 00:40:42,822 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Top-3: (0.00,0.00,0.00)=408.9; (0.00,-3.00,0.00)=412.1; (0.00,3.00,0.00)=412.6
+2026-02-15 00:40:42,822 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 1: Fine grid around top-5 candidates (GPU)
+2026-02-15 00:41:35,340 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     Fine grid (375 evals, 52.5s):
+2026-02-15 00:41:35,340 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -       Best: dx=0.00, dy=0.00, theta=0.00, score=401.41
+2026-02-15 00:41:35,340 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+2026-02-15 00:41:36,576 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/50: loss=0.005056, dx=0.0500, dy=0.0000, theta=0.0000
+2026-02-15 00:42:07,355 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/50: loss=0.005056, dx=0.0015, dy=0.0000, theta=0.0000
+2026-02-15 00:42:39,550 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/50: loss=0.005056, dx=-0.0010, dy=0.0000, theta=0.0000
+2026-02-15 00:42:39,553 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2A done: dx=-0.0010, dy=0.0000, theta=0.0000, loss=0.005056 (64.2s)
+2026-02-15 00:42:39,553 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+2026-02-15 00:42:40,819 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/60: loss=0.006708, dx=-0.0010, dy=0.0300, theta=0.0100
+2026-02-15 00:43:11,636 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/60: loss=0.006716, dx=-0.0010, dy=-0.0026, theta=0.0004
+2026-02-15 00:43:43,931 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/60: loss=0.006709, dx=-0.0010, dy=0.0007, theta=-0.0001
+2026-02-15 00:43:56,918 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2B done: dx=-0.0010, dy=0.0000, theta=-0.0001, loss=0.006708 (77.4s)
+2026-02-15 00:43:56,918 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+2026-02-15 00:43:58,491 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step   1/80: loss=0.005474, dx=0.0090, dy=0.0100, theta=0.0049
+2026-02-15 00:44:36,664 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  25/80: loss=0.005474, dx=0.0007, dy=0.0015, theta=-0.0000
+2026-02-15 00:45:18,027 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  50/80: loss=0.005474, dx=0.0004, dy=0.0000, theta=-0.0001
+2026-02-15 00:45:57,414 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -     step  75/80: loss=0.005474, dx=-0.0001, dy=0.0001, theta=-0.0001
+2026-02-15 00:46:05,353 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   Stage 2C done: dx=-0.0001, dy=-0.0000, theta=0.0000, loss=0.005473 (128.4s)
+2026-02-15 00:46:05,707 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+  Score comparison: grid=397.93, grad=397.94
+2026-02-15 00:46:05,707 - pwm_core.calibration.cassi_upwmi_alg12 - INFO -   → Using grid result (gradient didn't improve)
+2026-02-15 00:46:05,707 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 
+Algorithm 2 completed in 377.2 seconds
+2026-02-15 00:46:05,707 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=0.000, dy=0.000, θ=0.000°, a1=2.0000, α=0.000°)
+2026-02-15 00:46:05,931 - __main__ - INFO - Scene I (Ideal) PSNR: 40.03 dB
+2026-02-15 00:46:05,932 - __main__ - INFO - Scene II (Assumed) PSNR: 23.42 dB
+2026-02-15 00:46:05,932 - __main__ - INFO - Scene III (Corrected) PSNR: 28.49 dB
+2026-02-15 00:46:05,932 - __main__ - INFO - Gap I→II: 16.60 dB (degradation)
+2026-02-15 00:46:05,932 - __main__ - INFO - Gain II→III: 5.07 dB (correction)
+2026-02-15 00:46:05,932 - __main__ - INFO - Gap III→I: 11.54 dB (residual)
+2026-02-15 00:46:05,932 - __main__ - INFO - 
+======================================================================
+2026-02-15 00:46:05,932 - __main__ - INFO - SUMMARY STATISTICS (10 Scenes)
+2026-02-15 00:46:05,932 - __main__ - INFO - ======================================================================
+2026-02-15 00:46:05,933 - __main__ - INFO - 
+Scenario I (Ideal):
+2026-02-15 00:46:05,933 - __main__ - INFO -   Mean PSNR: 40.03 ± 0.00 dB
+2026-02-15 00:46:05,933 - __main__ - INFO - 
+Scenario II (Assumed, No Correction):
+2026-02-15 00:46:05,933 - __main__ - INFO -   Mean PSNR: 23.43 ± 0.00 dB
+2026-02-15 00:46:05,933 - __main__ - INFO - 
+Scenario III (Corrected with Alg1 & Alg2):
+2026-02-15 00:46:05,933 - __main__ - INFO -   Mean PSNR: 28.50 ± 0.01 dB
+2026-02-15 00:46:05,933 - __main__ - INFO - 
+Gaps and Gains:
+2026-02-15 00:46:05,933 - __main__ - INFO -   Gap I→II (degradation): 16.60 ± 0.00 dB
+2026-02-15 00:46:05,933 - __main__ - INFO -   Gain II→III (correction): 5.06 ± 0.00 dB
+2026-02-15 00:46:05,933 - __main__ - INFO -   Gap III→I (residual): 11.53 ± 0.01 dB
+2026-02-15 00:46:05,933 - __main__ - INFO - 
+Total execution time: 1.16 hours
+2026-02-15 00:46:05,933 - __main__ - INFO - Average time per scene: 7.0 minutes
+2026-02-15 00:46:05,934 - __main__ - INFO - 
+Results saved to: /home/spiritai/PWM/test2/Physics_World_Model/pwm/reports/cassi_validation_alg12.json
+
+
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+    step   1/80: loss=0.005504, dx=0.0076, dy=-0.0097, theta=-0.0050
+    step  25/80: loss=0.005506, dx=-0.0011, dy=0.0009, theta=0.0002
+    step  50/80: loss=0.005503, dx=-0.0004, dy=0.0003, theta=0.0006
+    step  75/80: loss=0.005502, dx=-0.0001, dy=0.0000, theta=0.0001
+  Stage 2C done: dx=0.0001, dy=0.0000, theta=-0.0000, loss=0.005502 (128.6s)
+
+  Score comparison: grid=400.01, grad=400.02
+  → Using grid result (gradient didn't improve)
+
+Algorithm 2 completed in 374.3 seconds
+
+Algorithm 2: Joint Gradient Refinement (PyTorch) starting...
+  Note: phi_d unidentifiable at integer rounding precision
+        → fixing phi_d=0.0, optimizing (dx, dy, theta) only
+
+  Stage 0: Full-range coarse 3D grid (GPU-accelerated)
+    Grid: 9×9×7 = 567 candidates, 8-iter GPU GAP-TV, sigma=0.7
+    Coarse grid (567 evals, 54.3s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=408.89
+      Top-3: (0.00,0.00,0.00)=408.9; (0.00,-3.00,0.00)=412.1; (0.00,3.00,0.00)=412.6
+
+  Stage 1: Fine grid around top-5 candidates (GPU)
+    Fine grid (375 evals, 52.5s):
+      Best: dx=0.00, dy=0.00, theta=0.00, score=401.41
+
+  Stage 2A (easy: dx): ['dx'], sigma=0.5, 50 steps, 12 iters
+    step   1/50: loss=0.005056, dx=0.0500, dy=0.0000, theta=0.0000
+    step  25/50: loss=0.005056, dx=0.0015, dy=0.0000, theta=0.0000
+    step  50/50: loss=0.005056, dx=-0.0010, dy=0.0000, theta=0.0000
+  Stage 2A done: dx=-0.0010, dy=0.0000, theta=0.0000, loss=0.005056 (64.2s)
+
+  Stage 2B (hard: dy, theta): ['dy', 'theta'], sigma=1.0, 60 steps, 12 iters
+    step   1/60: loss=0.006708, dx=-0.0010, dy=0.0300, theta=0.0100
+    step  25/60: loss=0.006716, dx=-0.0010, dy=-0.0026, theta=0.0004
+    step  50/60: loss=0.006709, dx=-0.0010, dy=0.0007, theta=-0.0001
+  Stage 2B done: dx=-0.0010, dy=0.0000, theta=-0.0001, loss=0.006708 (77.4s)
+
+  Stage 2C (joint refinement): ['dx', 'dy', 'theta'], sigma=0.7, 80 steps, 15 iters
+    step   1/80: loss=0.005474, dx=0.0090, dy=0.0100, theta=0.0049
+    step  25/80: loss=0.005474, dx=0.0007, dy=0.0015, theta=-0.0000
+    step  50/80: loss=0.005474, dx=0.0004, dy=0.0000, theta=-0.0001
+    step  75/80: loss=0.005474, dx=-0.0001, dy=0.0001, theta=-0.0001
+  Stage 2C done: dx=-0.0001, dy=-0.0000, theta=0.0000, loss=0.005473 (128.4s)
+
+  Score comparison: grid=397.93, grad=397.94
+  → Using grid result (gradient didn't improve)
+
+Algorithm 2 completed in 377.2 seconds
