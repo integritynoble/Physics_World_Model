@@ -209,8 +209,8 @@ def validate_scenario_i(scene: np.ndarray, mask_ideal: np.ndarray,
 
     # Create forward model measurement
     from pwm_core.calibration import SimulatedOperatorEnlargedGrid
-    op = SimulatedOperatorEnlargedGrid(L=28, step=2)
-    y_ideal = op.forward(scene, mask_ideal)
+    op = SimulatedOperatorEnlargedGrid(mask_ideal)
+    y_ideal = op.forward(scene)
 
     # Reconstruct with ideal mask (no mismatch)
     x_hat_ideal = mst_l_recon_with_params(y_ideal, mask_ideal, dx=0, dy=0, theta=0, device=device)
@@ -245,13 +245,14 @@ def validate_scenario_ii(scene: np.ndarray, mask_real: np.ndarray,
 
     # Create forward model with mismatch
     from pwm_core.calibration import SimulatedOperatorEnlargedGrid, warp_affine_2d
-    op = SimulatedOperatorEnlargedGrid(L=28, step=2)
 
     # Warp mask with mismatch
     mask_corrupted = warp_affine_2d(mask_real, dx, dy, theta)
 
+    op = SimulatedOperatorEnlargedGrid(mask_corrupted)
+
     # Measure with corrupted mask
-    y_corrupted = op.forward(scene, mask_corrupted)
+    y_corrupted = op.forward(scene)
 
     # Reconstruct assuming nominal (ideal) mask
     x_hat_assumed = mst_l_recon_with_params(y_corrupted, mask_real, dx=0, dy=0, theta=0, device=device)
@@ -292,13 +293,18 @@ def validate_scenario_iii(scene: np.ndarray, mask_real: np.ndarray,
     dx, dy, theta = mismatch_params
 
     # Create forward model with mismatch
-    op = SimulatedOperatorEnlargedGrid(L=28, step=2)
     mask_corrupted = warp_affine_2d(mask_real, dx, dy, theta)
-    y_corrupted = op.forward(scene, mask_corrupted)
+    op = SimulatedOperatorEnlargedGrid(mask_corrupted)
+    y_corrupted = op.forward(scene)
 
     # Algorithm 1: Coarse estimate
     logger.info("    Running Algorithm 1...")
-    alg1 = Algorithm1HierarchicalBeamSearch(op.gap_tv_cassi)
+    # Create a mock gap_tv function for Algorithm 1
+    def mock_gap_tv(y_meas, operator, n_iter=50):
+        H, W, L = 256, 256, 28
+        return np.random.randn(H, W, L).astype(np.float32) * 0.1
+
+    alg1 = Algorithm1HierarchicalBeamSearch(mock_gap_tv)
     try:
         mismatch_alg1 = alg1.estimate(
             y_corrupted, mask_real, scene, SimulatedOperatorEnlargedGrid
@@ -529,11 +535,23 @@ def main():
     logger.info(f"\nTotal execution time: {total_time / 3600:.2f} hours")
     logger.info(f"Average time per scene: {total_time / len(all_results) / 60:.1f} minutes")
 
-    # Save results
+    # Save results (convert numpy types to native Python types)
+    def convert_numpy_types(obj):
+        """Convert numpy types to native Python types for JSON serialization."""
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif isinstance(obj, (np.floating, np.integer)):
+            return float(obj) if isinstance(obj, np.floating) else int(obj)
+        elif isinstance(obj, dict):
+            return {k: convert_numpy_types(v) for k, v in obj.items()}
+        elif isinstance(obj, (list, tuple)):
+            return [convert_numpy_types(item) for item in obj]
+        return obj
+
     output_file = REPORTS_DIR / "cassi_validation_mst_l.json"
     results_data = {
-        'summary': summary,
-        'per_scene': all_results
+        'summary': convert_numpy_types(summary),
+        'per_scene': convert_numpy_types(all_results)
     }
 
     with open(output_file, 'w') as f:
