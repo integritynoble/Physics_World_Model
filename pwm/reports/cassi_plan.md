@@ -572,26 +572,26 @@ x̂_corrected = gap_tv_cassi(y_noisy, phi_corrected, n_iter=50)
 |----------|-------------|------|----------|---------|
 | **I. Ideal** | y_ideal (clean, perfect) | mask_ideal (perfect) | Ideal direct (stride-2) | Oracle upper bound (perfect measurement) |
 | **II. Assumed** | y_corrupt (misaligned+noise) | mask_assumed (perfect, no correction) | Simulated N=4, K=2 | Baseline: corruption without correction |
-| **TFM. Truth Forward Model** | y_corrupt (misaligned+noise) | mask_truth (known mismatch) | Simulated N=4, K=2 | Oracle for corrupted measurement (knows true mismatch) |
+| **IV. Truth Forward Model** | y_corrupt (misaligned+noise) | mask_truth (known mismatch) | Simulated N=4, K=2 | Oracle for corrupted measurement (knows true mismatch) |
 | **III. Corrected** | y_corrupt (misaligned+noise) | mask_corrected (estimated via Alg1/2) | Simulated N=4, K=2 | Practical: corruption with estimated correction |
 
 **Expected PSNR hierarchy:**
 ```
-PSNR_ideal ≥ PSNR_truth_fm > PSNR_corrected ≥ PSNR_assumed
+PSNR_ideal ≥ PSNR_iv > PSNR_corrected ≥ PSNR_assumed
 
-Gap I→TFM: Impact of measurement corruption (noise + quantization)
-Gap TFM→II: Impact of ignoring true mismatch (no correction)
+Gap I→IV: Impact of measurement corruption (noise + quantization)
+Gap IV→II: Impact of ignoring true mismatch (no correction)
 Gap II→III: Gain from estimated mismatch correction (Alg1/2)
-Gap III→TFM: Residual error from parameter estimation inaccuracy
-Gap TFM→I: Irreducible loss from measurement corruption
+Gap III→IV: Residual error from parameter estimation inaccuracy
+Gap IV→I: Irreducible loss from measurement corruption
 ```
 
 **Interpretation:**
 - **Scenario I (Ideal):** Oracle showing best possible - clean measurement with perfect setup
 - **Scenario II (Assumed):** Worst case - shows impact of ignoring mismatch entirely
-- **Scenario TFM (Truth FM):** Oracle for corrupted measurement - best achievable given measurement corruption, using known ground truth mismatch
+- **Scenario IV (Truth Forward Model):** Oracle for corrupted measurement - best achievable given measurement corruption, using known ground truth mismatch
 - **Scenario III (Corrected):** Practical case - shows correction effectiveness when estimating mismatch parameters
-- **Validation metric:** Gap III→TFM measures how close estimated correction gets to truth (Alg1/2 accuracy)
+- **Validation metric:** Gap III→IV measures how close estimated correction gets to truth (Alg1/2 accuracy)
 
 ### 4.2 Parameter Recovery Accuracy (Algorithm 1 vs 2)
 
@@ -907,7 +907,7 @@ def upwmi_algorithm_2_joint_gradient_refinement(y_meas, x_true, mask_real,
 ```python
 def run_full_validation_scene(scene_idx, x_true_256, mask_ideal_256):
     """
-    Complete validation for one scene: all 4 scenarios (Ideal, Assumed, Truth FM, Corrected).
+    Complete validation for one scene: all 4 scenarios (Ideal, Assumed, IV, Corrected).
 
     Returns:
         dict with PSNR values for all 4 scenarios, parameter errors, and gap metrics.
@@ -937,13 +937,13 @@ def run_full_validation_scene(scene_idx, x_true_256, mask_ideal_256):
     x_hat_assumed = solver(y_noisy, SimulatedOperator_EnlargedGrid(mask_ideal_256), n_iter=50)
     psnr_assumed = psnr(x_hat_assumed, x_true_256)
 
-    # ========== SCENARIO TFM: TRUTH FORWARD MODEL (Oracle for corrupted measurement) ==========
+    # ========== SCENARIO IV: TRUTH FORWARD MODEL (Oracle for corrupted measurement) ==========
     # Use corrupted measurement with TRUE forward model that knows the exact mismatch
     # This is an oracle: knows ground truth dx_true, dy_true, theta_true
     mask_truth = warp_affine(mask_real_data, dx=dx_true, dy=dy_true, theta=theta_true)
     operator_truth = SimulatedOperator_EnlargedGrid(mask_truth, N=4, K=2)
-    x_hat_truth_fm = gap_tv_cassi(y_noisy, operator_truth, n_iter=50)
-    psnr_truth_fm = psnr(x_hat_truth_fm, x_true_256)
+    x_hat_iv = gap_tv_cassi(y_noisy, operator_truth, n_iter=50)
+    psnr_iv = psnr(x_hat_iv, x_true_256)
 
     # ========== SCENARIO III: CORRECTED ==========
 
@@ -993,7 +993,7 @@ def run_full_validation_scene(scene_idx, x_true_256, mask_ideal_256):
         # Four scenarios
         'psnr_ideal': psnr_ideal,                 # Scenario I: ideal measurement, ideal mask
         'psnr_assumed': psnr_assumed,             # Scenario II: corrupted measurement, assumed perfect mask
-        'psnr_truth_fm': psnr_truth_fm,           # Scenario TFM: corrupted measurement, true forward model
+        'psnr_iv': psnr_iv,                       # Scenario IV: corrupted measurement, true forward model
         'psnr_alg1': psnr_alg1,                   # Scenario III: corrupted measurement, Alg1-corrected mask
         'psnr_alg2': psnr_alg2,                   # Scenario III: corrupted measurement, Alg2-corrected mask
 
@@ -1005,12 +1005,12 @@ def run_full_validation_scene(scene_idx, x_true_256, mask_ideal_256):
 
         # Key comparisons
         'loss_corruption_no_correction': psnr_ideal - psnr_assumed,  # Gap I→II (impact of corruption)
-        'gap_truth_fm_to_ideal': psnr_ideal - psnr_truth_fm,         # Gap TFM→I (irreducible corruption loss)
-        'gap_assumed_to_truth_fm': psnr_truth_fm - psnr_assumed,     # Gap II→TFM (impact of ignoring true mismatch)
+        'gap_iv_to_ideal': psnr_ideal - psnr_iv,                     # Gap IV→I (irreducible corruption loss)
+        'gap_assumed_to_iv': psnr_iv - psnr_assumed,                 # Gap II→IV (impact of ignoring true mismatch)
         'gain_from_alg1_correction': psnr_alg1 - psnr_assumed,       # Gap II→III (Alg1 correction gain)
-        'residual_error_alg1': psnr_truth_fm - psnr_alg1,            # Gap III→TFM (Alg1 estimation error)
+        'residual_error_alg1': psnr_iv - psnr_alg1,                  # Gap III→IV (Alg1 estimation error)
         'gain_from_alg2_correction': psnr_alg2 - psnr_assumed,       # Gap II→III (Alg2 correction gain)
-        'residual_error_alg2': psnr_truth_fm - psnr_alg2,            # Gap III→TFM (Alg2 estimation error)
+        'residual_error_alg2': psnr_iv - psnr_alg2,                  # Gap III→IV (Alg2 estimation error)
         'gap_alg1_to_oracle': psnr_ideal - psnr_alg1,                # Gap III→I (Alg1 total gap to ideal)
         'gap_alg2_to_oracle': psnr_ideal - psnr_alg2,                # Gap III→I (Alg2 total gap to ideal)
         'improvement_alg2_over_alg1': psnr_alg2 - psnr_alg1,         # Alg2 vs Alg1 comparison
@@ -1023,27 +1023,27 @@ Create comprehensive report: `pwm/reports/cassi_enlarged_grid_complete.md`
 
 **Tables:**
 1. **Four-scenario PSNR comparison** (10 scenes)
-   - PSNR_ideal, PSNR_assumed, PSNR_truth_fm, PSNR_alg1, PSNR_alg2
-   - Gap metrics: I→TFM, II→TFM, III(Alg1/Alg2)→TFM, III→I
+   - PSNR_ideal, PSNR_assumed, PSNR_iv, PSNR_alg1, PSNR_alg2
+   - Gap metrics: I→IV, II→IV, III(Alg1/Alg2)→IV, III→I
 
 2. **Parameter recovery accuracy** (Algorithm 1 vs 2)
    - Ground truth (dx_true, dy_true, θ_true) vs estimates
    - Parameter errors for Alg1 and Alg2
-   - Residual error (TFM - reconstruction PSNR)
+   - Residual error (IV - reconstruction PSNR)
 
 3. **Scenario comparison metrics**
    - Loss from corruption without correction (Gap I→II)
-   - Loss from ignoring true mismatch (Gap II→TFM)
+   - Loss from ignoring true mismatch (Gap II→IV)
    - Gain from Alg1/Alg2 correction (Gap II→III)
-   - Residual estimation error (Gap III→TFM)
+   - Residual estimation error (Gap III→IV)
 
 4. **Timing breakdown**
    - Forward model time, Algorithm 1 time, Algorithm 2 time, total per scene
 
 **Figures:**
-1. PSNR trajectory across 10 scenes (ideal / assumed / truth_fm / alg1 / alg2)
+1. PSNR trajectory across 10 scenes (ideal / assumed / iv / alg1 / alg2)
 2. Parameter error scatter plots (dx, dy, θ true vs Alg1 vs Alg2 estimated)
-3. Gap hierarchy visualization (shows I→TFM→II and III→TFM→I relationships)
+3. Gap hierarchy visualization (shows I→IV→II and III→IV→I relationships)
 4. Reconstruction visual comparisons (2-3 scenes, 3 bands, all 4 scenarios)
 
 ---
@@ -1079,11 +1079,11 @@ Create comprehensive report: `pwm/reports/cassi_enlarged_grid_complete.md`
 ### Phase 2: Single-Scene Validation (GPU: 13 hours)
 - Scenario I (ideal): 1 h
 - Scenario II (assumed): 2 h
-- Scenario TFM (truth forward model): 2 h
+- Scenario IV (truth forward model): 2 h
 - Scenario III + Alg1 + Alg2: 8 h
 
 ### Phase 3: Full 10-Scene Execution (GPU: ~130 hours)
-- Scenarios I, II, & TFM: 15 h (quick, just forward models with known ground truth)
+- Scenarios I, II, & IV: 15 h (quick, just forward models with known ground truth)
 - Algorithm 1 (10 scenes): 45 h
 - Algorithm 2 (10 scenes): 70 h
 
@@ -1098,26 +1098,26 @@ Create comprehensive report: `pwm/reports/cassi_enlarged_grid_complete.md`
 
 This revised plan provides:
 1. **Realistic simulation:** N=4 enlargement + real mask + 217-frame dispersion
-2. **Four-scenario validation:** Ideal / Assumed / Truth FM / Corrected (clear benchmarking with oracle for corrupted measurement)
+2. **Four-scenario validation:** Ideal / Assumed / IV / Corrected (clear benchmarking with oracle for corrupted measurement)
 3. **Robust mismatch correction:** Algorithms 1 & 2 with proper gradient refinement
 4. **Comprehensive metrics:** PSNR/SSIM/SAM + parameter recovery + timing + residual estimation error
 
 **Expected outcomes:**
 - **Scenario I (Ideal):** ~28–30 dB (oracle, clean measurement + perfect setup)
 - **Scenario II (Assumed):** ~18–21 dB (corrupted measurement, ignored mismatch, worst case)
-- **Scenario TFM (Truth FM):** ~23–26 dB (corrupted measurement, known ground truth mismatch, oracle for corrupted case)
-- **Scenario III-Alg1:** ~22–24 dB (corrupted measurement, Alg1-estimated correction, residual error ~1-2 dB vs TFM)
-- **Scenario III-Alg2:** ~23–25 dB (corrupted measurement, Alg2-estimated correction, residual error ~0.5-1.5 dB vs TFM)
+- **Scenario IV (Truth Forward Model):** ~23–26 dB (corrupted measurement, known ground truth mismatch, oracle for corrupted case)
+- **Scenario III-Alg1:** ~22–24 dB (corrupted measurement, Alg1-estimated correction, residual error ~1-2 dB vs IV)
+- **Scenario III-Alg2:** ~23–25 dB (corrupted measurement, Alg2-estimated correction, residual error ~0.5-1.5 dB vs IV)
 - **Parameter accuracy:** Alg1: ±0.1-0.2 px, Alg2: ±0.05-0.1 px (recovery of ground truth mismatch)
 
 **Key comparisons:**
-- Gap I→TFM: ~2-4 dB (irreducible loss from measurement corruption)
-- Gap II→TFM: ~4-6 dB (impact of ignoring true mismatch)
+- Gap I→IV: ~2-4 dB (irreducible loss from measurement corruption)
+- Gap II→IV: ~4-6 dB (impact of ignoring true mismatch)
 - Gain II→III (Alg1): ~3-4 dB (Alg1 correction effectiveness)
-- Residual III→TFM (Alg1): ~1-2 dB (Alg1 parameter estimation error)
+- Residual III→IV (Alg1): ~1-2 dB (Alg1 parameter estimation error)
 - Gain II→III (Alg2): ~4-5 dB (Alg2 correction effectiveness)
-- Residual III→TFM (Alg2): ~0.5-1.5 dB (Alg2 parameter estimation error, closer to truth)
-- Gap TFM→I (Alg2): ~2-4 dB (total loss from simulation + corruption)
+- Residual III→IV (Alg2): ~0.5-1.5 dB (Alg2 parameter estimation error, closer to truth)
+- Gap IV→I (Alg2): ~2-4 dB (total loss from simulation + corruption)
 
 ---
 
