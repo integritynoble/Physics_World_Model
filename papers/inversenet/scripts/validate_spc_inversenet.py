@@ -3,21 +3,21 @@
 SPC (Single-Pixel Camera) Validation for InverseNet ECCV Paper — v3.0
 
 Block-based CS on 256×256 Set11 images with 64×64 blocks, 25% compression.
-Uses Hadamard measurement matrix + ADMM-DCT-TV solver (primary) and
-PnP-FISTA with DRUNet denoiser (deep learning proxy).
+Uses Hadamard measurement matrix + FISTA-TV solver (primary) and
+PnP-FISTA with DRUNet denoiser (ISTA-Net+, HATNet proxies).
 
 Key parameters (matching spc_plan_inversenet.md v2.0):
   - Full image size: 256×256 (native Set11 resolution, no cropping)
-  - Block size: 64×64 (N=4096 pixels per block, N=2^12 ✓ Hadamard-compatible)
+  - Block size: 64×64 (N=4096 pixels per block, N=2^12 Hadamard-compatible)
   - Blocks per image: 16 (4×4 non-overlapping grid)
   - Compression ratio: 25% (M=1024 measurements per block)
   - Measurement matrix: Hadamard (subsampled rows, orthonormal)
-  - Solvers: ADMM-DCT-TV (classical), PnP-FISTA+DRUNet (deep learning proxy)
+  - Solvers: FISTA-TV (classical), PnP-FISTA+DRUNet (deep learning proxy)
 
 Scenarios:
-  - Scenario I:   Ideal measurement + ideal operator → oracle baseline
-  - Scenario II:  Corrupted measurement + assumed perfect operator → baseline
-  - Scenario III:  Corrupted measurement + truth operator → oracle operator
+  - Scenario I:   Ideal measurement + ideal operator
+  - Scenario II:  Corrupted measurement + assumed perfect operator (baseline)
+  - Scenario III: Corrupted measurement + truth operator (oracle calibration)
 
 Usage:
     python validate_spc_inversenet.py
@@ -26,6 +26,7 @@ Usage:
 
 import json
 import logging
+import math
 import time
 import argparse
 import sys
@@ -34,12 +35,7 @@ from dataclasses import dataclass
 from typing import Dict, List, Tuple, Optional
 
 import numpy as np
-from scipy.linalg import cho_factor, cho_solve, hadamard
-
-try:
-    from scipy.fft import dctn, idctn
-except ImportError:
-    from scipy.fftpack import dctn, idctn
+from scipy.linalg import hadamard
 
 try:
     from skimage.restoration import denoise_tv_chambolle
@@ -69,7 +65,7 @@ RESULTS_DIR = PROJECT_ROOT / "papers" / "inversenet" / "results"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 # ============================================================================
-# Plan v2.0 Constants
+# Constants
 # ============================================================================
 FULL_IMAGE_SIZE = 256       # Full Set11 image resolution
 BLOCK_SIZE = 64             # Block size for block-based CS
@@ -180,8 +176,7 @@ def create_measurement_matrix(m: int, n: int, seed: int = 42) -> np.ndarray:
     """Create Hadamard measurement matrix (subsampled rows).
 
     Hadamard is the standard for SPC: orthonormal rows give better incoherence
-    and conditioning than random Gaussian, leading to ~5-10 dB improvement.
-    N=4096=2^12, so scipy.linalg.hadamard is exact.
+    and conditioning than random Gaussian. N=4096=2^12.
     """
     H = hadamard(n).astype(np.float64) / np.sqrt(n)
     np.random.seed(seed)
@@ -225,6 +220,23 @@ def apply_mismatch_to_matrix(Phi: np.ndarray, mismatch: MismatchParameters) -> n
 
 
 # ============================================================================
+# Lipschitz Constant Estimation
+# ============================================================================
+def estimate_lipschitz(Phi: np.ndarray, n_iters: int = 20) -> float:
+    """Estimate Lipschitz constant of Phi^T @ Phi via power iteration."""
+    n = Phi.shape[1]
+    v = np.random.randn(n).astype(np.float32)
+    v = v / (np.linalg.norm(v) + 1e-12)
+    for _ in range(n_iters):
+        w = Phi.T @ (Phi @ v)
+        w_norm = np.linalg.norm(w) + 1e-12
+        v = w / w_norm
+    w = Phi @ v
+    s = np.linalg.norm(w)
+    return float(s * s)
+
+
+# ============================================================================
 # Metrics
 # ============================================================================
 def compute_psnr(x_true: np.ndarray, x_recon: np.ndarray) -> float:
@@ -255,137 +267,128 @@ def compute_ssim(x_true: np.ndarray, x_recon: np.ndarray) -> float:
 
 
 # ============================================================================
-# Pre-computed Cholesky ADMM-DCT-TV Solver
+# FISTA-TV Solver (following run_all.py:_basic_fista pattern)
 # ============================================================================
-class ADMMSolverCached:
-    """ADMM-DCT-TV solver with pre-computed Cholesky factorization.
+class FISTATVSolver:
+    """FISTA with TV proximal for block-based CS reconstruction.
 
-    Computes Phi^T @ Phi and Cholesky factor once, then reuses across blocks.
-    This gives ~100x speedup vs recomputing for each block.
+    Following the pattern from run_all.py:1467-1515 and cs_solvers.py:254-305.
+    Uses Nesterov-accelerated gradient descent with TV denoising as proximal.
+    No Cholesky needed — just matrix-vector products per iteration.
     """
 
-    def __init__(self, Phi: np.ndarray, rho: float = 1.0):
-        """Pre-compute Cholesky factorization for Phi."""
-        self.Phi = Phi.astype(np.float64)
-        self.rho = rho
-        self.m, self.n = Phi.shape
-
-        logger.info(f"  Pre-computing Cholesky for {self.m}×{self.n} matrix...")
-        t0 = time.time()
-        PhiTPhi = self.Phi.T @ self.Phi
-        A = PhiTPhi + rho * np.eye(self.n, dtype=np.float64)
-        self.cho = cho_factor(A)
-        logger.info(f"  Cholesky done in {time.time()-t0:.2f}s")
-
-    def solve(self, y: np.ndarray,
-              mu_tv: float = 0.0005, mu_dct: float = 0.002,
-              max_iters: int = 500, tv_inner_iters: int = 15) -> np.ndarray:
-        """Reconstruct one 64×64 block from measurements y."""
-        PhiTy = (self.Phi.T @ y.astype(np.float64))
-
-        x = cho_solve(self.cho, PhiTy).astype(np.float32)
-        z = x.copy()
-        u = np.zeros(self.n, dtype=np.float32)
-
-        for k in range(max_iters):
-            frac = min(1.0, 2.0 * k / max_iters)
-            scale = 0.1 + 0.9 * frac
-
-            rhs = PhiTy + self.rho * (z - u).astype(np.float64)
-            x = cho_solve(self.cho, rhs).astype(np.float32)
-
-            v = np.clip((x + u).reshape(BLOCK_SIZE, BLOCK_SIZE), 0, 1)
-
-            # DCT soft-thresholding
-            if mu_dct > 0:
-                coeffs = dctn(v.astype(np.float64), norm='ortho')
-                dc = coeffs[0, 0]
-                thresh = scale * mu_dct / self.rho
-                coeffs = np.sign(coeffs) * np.maximum(np.abs(coeffs) - thresh, 0)
-                coeffs[0, 0] = dc
-                v = np.clip(idctn(coeffs, norm='ortho'), 0, 1)
-
-            # TV denoising
-            if mu_tv > 0 and denoise_tv_chambolle is not None:
-                tv_weight = scale * mu_tv / self.rho
-                v = denoise_tv_chambolle(v.astype(np.float64), weight=tv_weight,
-                                         max_num_iter=tv_inner_iters)
-
-            z = np.clip(v, 0, 1).flatten().astype(np.float32)
-            u = u + x - z
-
-        return np.clip(z.reshape(BLOCK_SIZE, BLOCK_SIZE), 0, 1).astype(np.float32)
-
-
-# ============================================================================
-# PnP-FISTA with DRUNet Denoiser
-# ============================================================================
-class PnPFISTASolver:
-    """PnP-FISTA solver with DRUNet denoiser for deep learning reconstruction.
-
-    Following the pattern from run_all.py:1384-1466. Uses FISTA momentum
-    with annealed DRUNet denoising as the proximal operator.
-    """
-
-    def __init__(self, Phi: np.ndarray, denoiser, device,
-                 max_iter: int = 100, sigma_end: float = 0.02,
-                 sigma_anneal_mult: float = 3.0, pad_mult: int = 8):
+    def __init__(self, Phi: np.ndarray, lam: float = 0.01,
+                 max_iter: int = 300, tv_inner_iters: int = 10):
         self.Phi = Phi.astype(np.float32)
-        self.denoiser = denoiser
-        self.device = device
+        self.m, self.n = Phi.shape
+        self.lam = lam
         self.max_iter = max_iter
-        self.sigma_end = sigma_end
-        self.sigma_anneal_mult = sigma_anneal_mult
-        self.pad_mult = pad_mult
+        self.tv_inner_iters = tv_inner_iters
 
         # Estimate Lipschitz constant for step size
-        self.L = self._estimate_lipschitz(Phi, n_iters=20)
+        self.L = estimate_lipschitz(Phi, n_iters=20)
         self.tau = 0.9 / max(self.L, 1e-8)
-        logger.info(f"  PnP-FISTA: L={self.L:.2f}, tau={self.tau:.6f}, "
-                    f"iters={max_iter}, sigma_end={sigma_end}")
-
-    @staticmethod
-    def _estimate_lipschitz(Phi: np.ndarray, n_iters: int = 20) -> float:
-        """Estimate Lipschitz constant via power iteration."""
-        n = Phi.shape[1]
-        v = np.random.randn(n).astype(np.float32)
-        v = v / (np.linalg.norm(v) + 1e-12)
-        for _ in range(n_iters):
-            w = Phi.T @ (Phi @ v)
-            w_norm = np.linalg.norm(w) + 1e-12
-            v = w / w_norm
-        w = Phi @ v
-        s = np.linalg.norm(w)
-        return float(s * s)
+        logger.info(f"  FISTA-TV: L={self.L:.4f}, tau={self.tau:.6f}, "
+                    f"lam={lam}, iters={max_iter}")
 
     def solve(self, y: np.ndarray, **kwargs) -> np.ndarray:
-        """Reconstruct one 64x64 block using PnP-FISTA + DRUNet."""
-        import math
+        """Reconstruct one 64×64 block using FISTA-TV."""
+        max_iters = kwargs.get('max_iters', self.max_iter)
 
-        Phi_t = torch.from_numpy(self.Phi).float().to(self.device)
-        y_t = torch.from_numpy(y.astype(np.float32)).float().to(self.device)
-
-        # Initialize: x0 = Phi^T @ y, normalized to [0,1]
-        x0 = self.Phi.T @ y.astype(np.float32)
-        x0 = np.clip((x0 - x0.min()) / (x0.max() - x0.min() + 1e-8), 0, 1)
+        # Initialize with backprojection, normalized to [0,1]
+        x0 = (self.Phi.T @ y.astype(np.float32))
+        x0_min, x0_max = x0.min(), x0.max()
+        if x0_max - x0_min > 1e-8:
+            x0 = (x0 - x0_min) / (x0_max - x0_min)
+        x0 = np.clip(x0, 0, 1)
 
         x = x0.copy()
         z = x0.copy()
         t = 1.0
 
-        sigma_start = self.sigma_anneal_mult * self.sigma_end
+        for k in range(max_iters):
+            # Gradient step on z
+            residual = self.Phi @ z - y.astype(np.float32)
+            grad = self.Phi.T @ residual
+            u = z - self.tau * grad
+
+            # TV proximal step
+            u_img = np.clip(u.reshape(BLOCK_SIZE, BLOCK_SIZE), 0, 1)
+            if denoise_tv_chambolle is not None:
+                z_new_img = denoise_tv_chambolle(
+                    u_img.astype(np.float64),
+                    weight=self.tau * self.lam,
+                    max_num_iter=self.tv_inner_iters)
+            else:
+                z_new_img = u_img  # fallback: no TV
+            z_new = np.clip(z_new_img, 0, 1).flatten().astype(np.float32)
+
+            # FISTA momentum (Nesterov acceleration)
+            t_new = 0.5 * (1.0 + math.sqrt(1.0 + 4.0 * t * t))
+            x_new = z_new + ((t - 1.0) / t_new) * (z_new - x)
+            x_new = np.clip(x_new, 0, 1)
+
+            x = z_new
+            z = x_new
+            t = t_new
+
+        return np.clip(x.reshape(BLOCK_SIZE, BLOCK_SIZE), 0, 1).astype(np.float32)
+
+
+# ============================================================================
+# PnP-FISTA with DRUNet Denoiser (for ISTA-Net+ / HATNet proxy)
+# ============================================================================
+class PnPFISTASolver:
+    """PnP-FISTA solver with DRUNet denoiser for deep learning reconstruction.
+
+    Following run_all.py:1384-1466 and test_operator_correction.py:774-852.
+    Uses FISTA momentum with annealed DRUNet denoising as the proximal operator.
+    """
+
+    def __init__(self, Phi: np.ndarray, denoiser, device,
+                 max_iter: int = 200, sigma_start: float = 0.08,
+                 sigma_end: float = 0.02, pad_mult: int = 8):
+        self.Phi = Phi.astype(np.float32)
+        self.denoiser = denoiser
+        self.device = device
+        self.max_iter = max_iter
+        self.sigma_start = sigma_start
+        self.sigma_end = sigma_end
+        self.pad_mult = pad_mult
+
+        # Estimate Lipschitz constant for step size
+        self.L = estimate_lipschitz(Phi, n_iters=20)
+        self.tau = 0.9 / max(self.L, 1e-8)
+        logger.info(f"  PnP-FISTA: L={self.L:.4f}, tau={self.tau:.6f}, "
+                    f"iters={max_iter}, sigma=[{sigma_start}→{sigma_end}]")
+
+    def solve(self, y: np.ndarray, **kwargs) -> np.ndarray:
+        """Reconstruct one 64x64 block using PnP-FISTA + DRUNet."""
+        # Initialize with backprojection, normalized to [0,1]
+        x0 = self.Phi.T @ y.astype(np.float32)
+        x0_min, x0_max = x0.min(), x0.max()
+        if x0_max - x0_min > 1e-8:
+            x0 = (x0 - x0_min) / (x0_max - x0_min)
+        x0 = np.clip(x0, 0, 1)
+
+        Phi_t = torch.from_numpy(self.Phi).float().to(self.device)
+        y_t = torch.from_numpy(y.astype(np.float32)).float().to(self.device)
+
+        x = x0.copy()
+        z = x0.copy()
+        t = 1.0
 
         with torch.no_grad():
             for k in range(self.max_iter):
                 # Annealing sigma
                 a = k / max(self.max_iter - 1, 1)
-                sigma_k = (1 - a) * sigma_start + a * self.sigma_end
+                sigma_k = (1 - a) * self.sigma_start + a * self.sigma_end
 
-                # Gradient step
-                x_t = torch.from_numpy(x).float().to(self.device)
-                residual = Phi_t @ x_t - y_t
+                # Gradient step on z
+                z_t = torch.from_numpy(z).float().to(self.device)
+                residual = Phi_t @ z_t - y_t
                 grad = Phi_t.T @ residual
-                u = x_t - self.tau * grad
+                u = z_t - self.tau * grad
 
                 # Reshape for denoiser (BCHW)
                 u_img = u.reshape(1, 1, BLOCK_SIZE, BLOCK_SIZE)
@@ -420,13 +423,14 @@ class PnPFISTASolver:
 
                 # FISTA momentum
                 t_new = 0.5 * (1.0 + math.sqrt(1.0 + 4.0 * t * t))
-                x = z_new + ((t - 1.0) / t_new) * (z_new - z)
-                x = np.clip(x, 0, 1)
+                x_new = z_new + ((t - 1.0) / t_new) * (z_new - x)
+                x_new = np.clip(x_new, 0, 1)
 
-                z = z_new
+                x = z_new
+                z = x_new
                 t = t_new
 
-        return z.reshape(BLOCK_SIZE, BLOCK_SIZE).astype(np.float32)
+        return x.reshape(BLOCK_SIZE, BLOCK_SIZE).astype(np.float32)
 
 
 def load_drunet_denoiser():
@@ -471,7 +475,7 @@ def load_drunet_denoiser():
 # ============================================================================
 def reconstruct_image_blockwise(y_blocks: List[np.ndarray],
                                 solver,
-                                max_iters: int = 500) -> np.ndarray:
+                                max_iters: int = 300) -> np.ndarray:
     """Reconstruct all 16 blocks and stitch into 256×256 image."""
     recon_blocks = []
     for y_block in y_blocks:
@@ -500,7 +504,7 @@ def validate_image(image_idx: int, name: str, image: np.ndarray,
                    Phi_ideal: np.ndarray, Phi_real: np.ndarray,
                    solvers_ideal: Dict, solvers_real: Dict,
                    methods: List[str],
-                   max_iters: int = 500) -> Dict:
+                   max_iters: int = 300) -> Dict:
     """Validate one 256×256 image across all 3 scenarios with multiple solvers."""
     logger.info(f"\n{'='*70}")
     logger.info(f"Image {image_idx+1}/{NUM_IMAGES}: {name}")
@@ -624,12 +628,12 @@ def compute_summary(all_results: List[Dict], methods: List[str],
 
     for method in methods:
         gaps_i_ii = [r['gaps'][method]['gap_i_ii'] for r in all_results]
-        gaps_ii_iv = [r['gaps'][method]['gap_ii_iii'] for r in all_results]
-        gaps_iv_i = [r['gaps'][method]['gap_iii_i'] for r in all_results]
+        gaps_ii_iii = [r['gaps'][method]['gap_ii_iii'] for r in all_results]
+        gaps_iii_i = [r['gaps'][method]['gap_iii_i'] for r in all_results]
         summary['gaps'][method] = {
             'gap_i_ii': {'mean': float(np.mean(gaps_i_ii)), 'std': float(np.std(gaps_i_ii))},
-            'gap_ii_iii': {'mean': float(np.mean(gaps_ii_iv)), 'std': float(np.std(gaps_ii_iv))},
-            'gap_iii_i': {'mean': float(np.mean(gaps_iv_i)), 'std': float(np.std(gaps_iv_i))},
+            'gap_ii_iii': {'mean': float(np.mean(gaps_ii_iii)), 'std': float(np.std(gaps_ii_iii))},
+            'gap_iii_i': {'mean': float(np.mean(gaps_iii_i)), 'std': float(np.std(gaps_iii_i))},
         }
 
     total_time = sum(r['elapsed_time'] for r in all_results)
@@ -649,8 +653,8 @@ def main():
     parser = argparse.ArgumentParser(description='SPC Validation v3.0 for InverseNet ECCV')
     parser.add_argument('--sampling-rate', type=float, default=0.25,
                         help='Compression ratio (default: 0.25)')
-    parser.add_argument('--max-iters', type=int, default=500,
-                        help='ADMM-TV iterations (default: 500)')
+    parser.add_argument('--max-iters', type=int, default=300,
+                        help='FISTA-TV iterations (default: 300)')
     args = parser.parse_args()
 
     sampling_rate = args.sampling_rate
@@ -665,7 +669,7 @@ def main():
                 f"M={m_measurements} measurements/block | "
                 f"N={N_PIX} pixels/block")
     logger.info(f"Measurement matrix: Hadamard (subsampled rows)")
-    logger.info(f"ADMM-TV iterations: {args.max_iters}")
+    logger.info(f"FISTA-TV iterations: {args.max_iters}")
     logger.info("="*70)
 
     # 1. Load images
@@ -674,65 +678,69 @@ def main():
     logger.info(f"Loaded {len(images)} images")
 
     # 2. Create measurement matrices
-    logger.info(f"\nCreating Hadamard measurement matrix: Φ ∈ ℝ^{{{m_measurements}×{N_PIX}}}")
+    logger.info(f"\nCreating Hadamard measurement matrix: Phi in R^{{{m_measurements}x{N_PIX}}}")
     Phi_ideal = create_measurement_matrix(m_measurements, N_PIX, seed=42)
-    logger.info(f"Ideal Φ shape: {Phi_ideal.shape}")
+    logger.info(f"Ideal Phi shape: {Phi_ideal.shape}")
 
     # 3. Create mismatched operator
     mismatch = MismatchParameters()
     logger.info(f"Mismatch: dx={mismatch.mask_dx} px, dy={mismatch.mask_dy} px, "
-                f"θ={mismatch.mask_theta}°, gain={mismatch.gain}")
+                f"theta={mismatch.mask_theta} deg, gain={mismatch.gain}")
     Phi_real = apply_mismatch_to_matrix(Phi_ideal, mismatch)
     diff = np.linalg.norm(Phi_real - Phi_ideal) / np.linalg.norm(Phi_ideal)
     logger.info(f"Relative operator difference: {diff:.4f}")
 
     # 4. Create solvers per method
-    logger.info("\nPre-computing solvers...")
-    admm_ideal = ADMMSolverCached(Phi_ideal)
-    admm_real = ADMMSolverCached(Phi_real)
+    logger.info("\nCreating solvers...")
 
-    # Try to load DRUNet for PnP-FISTA solvers
+    # FISTA-TV: classical solver (primary)
+    fista_ideal = FISTATVSolver(Phi_ideal, lam=0.01, max_iter=args.max_iters,
+                                 tv_inner_iters=10)
+    fista_real = FISTATVSolver(Phi_real, lam=0.01, max_iter=args.max_iters,
+                                tv_inner_iters=10)
+
+    methods = ['fista_tv']
+    solvers_ideal = {'fista_tv': fista_ideal}
+    solvers_real = {'fista_tv': fista_real}
+
+    # Try to load DRUNet for PnP-FISTA (ISTA-Net+ / HATNet proxies)
     denoiser, device = load_drunet_denoiser()
-
-    methods = ['admm_tv']
-    solvers_ideal = {'admm_tv': admm_ideal}
-    solvers_real = {'admm_tv': admm_real}
 
     if denoiser is not None:
         # ISTA-Net+ proxy: PnP-FISTA with standard params
         pnp_ideal = PnPFISTASolver(Phi_ideal, denoiser, device,
-                                    max_iter=100, sigma_end=0.02,
-                                    sigma_anneal_mult=3.0)
+                                    max_iter=200, sigma_start=0.08,
+                                    sigma_end=0.02)
         pnp_real = PnPFISTASolver(Phi_real, denoiser, device,
-                                   max_iter=100, sigma_end=0.02,
-                                   sigma_anneal_mult=3.0)
+                                   max_iter=200, sigma_start=0.08,
+                                   sigma_end=0.02)
         solvers_ideal['ista_net_plus'] = pnp_ideal
         solvers_real['ista_net_plus'] = pnp_real
         methods.append('ista_net_plus')
 
-        # HATNet proxy: PnP-FISTA with more iterations + finer sigma
+        # HATNet proxy: PnP-FISTA with more iterations + wider anneal
         hat_ideal = PnPFISTASolver(Phi_ideal, denoiser, device,
-                                    max_iter=150, sigma_end=0.01,
-                                    sigma_anneal_mult=4.0)
+                                    max_iter=200, sigma_start=0.10,
+                                    sigma_end=0.015)
         hat_real = PnPFISTASolver(Phi_real, denoiser, device,
-                                   max_iter=150, sigma_end=0.01,
-                                   sigma_anneal_mult=4.0)
+                                   max_iter=200, sigma_start=0.10,
+                                   sigma_end=0.015)
         solvers_ideal['hatnet'] = hat_ideal
         solvers_real['hatnet'] = hat_real
         methods.append('hatnet')
     else:
-        # Fallback: use tuned ADMM for all methods
-        logger.info("  Deep learning unavailable, all methods use ADMM-TV")
-        solvers_ideal['ista_net_plus'] = admm_ideal
-        solvers_real['ista_net_plus'] = admm_real
+        # Fallback: use FISTA-TV for all methods
+        logger.info("  Deep learning unavailable, all methods use FISTA-TV")
+        solvers_ideal['ista_net_plus'] = fista_ideal
+        solvers_real['ista_net_plus'] = fista_real
         methods.append('ista_net_plus')
-        solvers_ideal['hatnet'] = admm_ideal
-        solvers_real['hatnet'] = admm_real
+        solvers_ideal['hatnet'] = fista_ideal
+        solvers_real['hatnet'] = fista_real
         methods.append('hatnet')
 
     logger.info(f"Methods: {methods}")
-    logger.info(f"Total block reconstructions: {NUM_IMAGES} × {BLOCKS_PER_IMAGE} × "
-                f"{len(methods)} methods × 3 scenarios = "
+    logger.info(f"Total block reconstructions: {NUM_IMAGES} x {BLOCKS_PER_IMAGE} x "
+                f"{len(methods)} methods x 3 scenarios = "
                 f"{NUM_IMAGES * BLOCKS_PER_IMAGE * len(methods) * 3}")
 
     # 5. Validate all images
@@ -761,14 +769,14 @@ def main():
         logger.info(f"\n{label}:")
         for method in methods:
             s = summary['scenarios'][scenario_key][method]
-            logger.info(f"  {method:15s}: {s['psnr']['mean']:.2f} ± {s['psnr']['std']:.2f} dB, "
+            logger.info(f"  {method:15s}: {s['psnr']['mean']:.2f} +/- {s['psnr']['std']:.2f} dB, "
                         f"SSIM: {s['ssim']['mean']:.4f}")
 
     logger.info(f"\nGap Analysis:")
     for method in methods:
         g = summary['gaps'][method]
-        logger.info(f"  {method:15s}: Gap I→II={g['gap_i_ii']['mean']:.2f} dB, "
-                    f"Recovery II→III={g['gap_ii_iii']['mean']:.2f} dB")
+        logger.info(f"  {method:15s}: Gap I->II={g['gap_i_ii']['mean']:.2f} dB, "
+                    f"Recovery II->III={g['gap_ii_iii']['mean']:.2f} dB")
 
     logger.info(f"\nTotal time: {total_time/60:.1f} min "
                 f"({total_time/len(all_results):.1f}s per image)")
