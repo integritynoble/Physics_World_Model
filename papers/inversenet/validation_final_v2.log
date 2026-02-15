@@ -1,0 +1,15 @@
+2026-02-15 16:22:06,853 - __main__ - INFO - 
+======================================================================
+2026-02-15 16:22:06,853 - __main__ - INFO - CASSI Validation for InverseNet ECCV Paper
+2026-02-15 16:22:06,853 - __main__ - INFO - 3 Scenarios × 4 Methods × 10 Scenes = 120 Reconstructions
+2026-02-15 16:22:06,853 - __main__ - INFO - ======================================================================
+2026-02-15 16:22:06,870 - __main__ - INFO - Ideal mask shape: (256, 256)
+2026-02-15 16:22:06,870 - __main__ - INFO - Real mask shape: (660, 660)
+2026-02-15 16:22:06,870 - __main__ - INFO - Mismatch parameters: dx=0.5 px, dy=0.3 px, θ=0.1°
+2026-02-15 16:22:06,929 - __main__ - INFO - 
+======================================================================
+2026-02-15 16:22:06,929 - __main__ - INFO - Scene 1/10
+2026-02-15 16:22:06,929 - __main__ - INFO - ======================================================================
+2026-02-15 16:22:06,929 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 16:28:10,163 - __main__ - WARNING - MST-L failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 16:28:10,376 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)

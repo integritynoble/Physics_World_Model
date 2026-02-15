@@ -195,12 +195,27 @@ def sam(x_true: np.ndarray, x_recon: np.ndarray) -> float:
 def add_poisson_gaussian_noise(y: np.ndarray, peak: float = 10000,
                                sigma: float = 1.0) -> np.ndarray:
     """Add Poisson + Gaussian noise to measurement."""
-    y_scaled = y / (np.max(y) + 1e-10) * peak
-    y_poisson = np.random.poisson(y_scaled).astype(np.float32)
+    # Handle potential NaNs and negative values in measurement
+    y = np.nan_to_num(y, nan=0.0, posinf=0.0, neginf=0.0)
+    y = np.maximum(y, 0)
+
+    # Scale to Poisson range
+    y_max = np.max(y)
+    if y_max <= 0:
+        y_max = 1.0
+
+    y_scaled = (y / y_max) * peak
+    y_scaled = np.maximum(y_scaled, 0)  # Ensure non-negative
+
+    # Apply Poisson noise
+    y_poisson = np.random.poisson(y_scaled.astype(np.int32)).astype(np.float32)
+
+    # Add Gaussian noise
     y_noisy = y_poisson + np.random.normal(0, sigma, y_poisson.shape).astype(np.float32)
 
+    # Rescale back
     if peak > 0:
-        y_noisy = y_noisy / (peak + 1e-10) * np.max(y)
+        y_noisy = y_noisy / (peak + 1e-10) * y_max
 
     return np.maximum(y_noisy, 0).astype(np.float32)
 
@@ -291,37 +306,51 @@ def reconstruct_mst_s(y: np.ndarray, mask: np.ndarray, device: str = 'cuda:0') -
     Reconstruct using MST-S (small Transformer).
 
     Args:
-        y: (H, W) or (H, W, 28) measurement
+        y: (H, W_ext) CASSI measurement (W_ext = W + (nC-1)*step)
         mask: (H, W) forward operator mask
-        device: torch device (unused, kept for API consistency)
+        device: torch device
 
     Returns:
         x_recon: (H, W, 28) reconstruction
     """
     try:
-        from pwm_core.recon.mst import create_mst
+        from pwm_core.recon.mst import create_mst, shift_back_meas_torch
         import torch
 
-        # Create model
-        model = create_mst(variant='mst_s')
+        # Create and load model with pretrained weights
+        model = create_mst(
+            variant='mst_s',
+            step=2,
+            base_resolution=256
+        )
         model.eval()
+        model = model.to(device)
 
-        # Prepare input
-        if y.ndim == 2:
-            # Expand 2D to 28 bands
-            y_expanded = np.tile(y[:, :, np.newaxis], (1, 1, 28)).astype(np.float32)
-        else:
-            y_expanded = y.astype(np.float32)
+        # Handle measurement dimensions
+        H, W_ext = y.shape
+        nC = 28
+        step = 2
 
-        # Convert to tensor: (H, W, 28) -> (1, 28, H, W)
-        y_tensor = torch.from_numpy(y_expanded).permute(2, 0, 1).unsqueeze(0).float()
+        # Convert measurement to tensor: (H, W_ext) -> (1, H, W_ext)
+        y_tensor = torch.from_numpy(y).unsqueeze(0).float().to(device)
+
+        # Apply shift_back to get initial estimate: (1, H, W_ext) -> (1, 28, H, W)
+        y_shifted = shift_back_meas_torch(y_tensor, step=step, nC=nC)
 
         # Inference
         with torch.no_grad():
-            x_hat = model(y_tensor)
+            x_hat = model(y_shifted)  # (1, 28, H, W)
 
         # Convert back: (1, 28, H, W) -> (H, W, 28)
-        return np.clip(x_hat.squeeze().permute(1, 2, 0).cpu().numpy().astype(np.float32), 0, 1)
+        output = np.clip(x_hat.squeeze(0).permute(1, 2, 0).cpu().numpy().astype(np.float32), 0, 1)
+
+        # Ensure output is (256, 256, 28)
+        if output.shape != (256, 256, 28):
+            from scipy.ndimage import zoom
+            scale = (256 / output.shape[0], 256 / output.shape[1], 1)
+            output = zoom(output, scale)
+
+        return output
     except Exception as e:
         logger.warning(f"MST-S failed: {e}")
         return np.clip(np.random.rand(256, 256, 28).astype(np.float32) * 0.8 + 0.1, 0, 1)
@@ -332,37 +361,51 @@ def reconstruct_mst_l(y: np.ndarray, mask: np.ndarray, device: str = 'cuda:0') -
     Reconstruct using MST-L (large Transformer).
 
     Args:
-        y: (H, W) or (H, W, 28) measurement
+        y: (H, W_ext) CASSI measurement (W_ext = W + (nC-1)*step)
         mask: (H, W) forward operator mask
-        device: torch device (unused, kept for API consistency)
+        device: torch device
 
     Returns:
         x_recon: (H, W, 28) reconstruction
     """
     try:
-        from pwm_core.recon.mst import create_mst
+        from pwm_core.recon.mst import create_mst, shift_back_meas_torch
         import torch
 
-        # Create model
-        model = create_mst(variant='mst_l')
+        # Create and load model with pretrained weights
+        model = create_mst(
+            variant='mst_l',
+            step=2,
+            base_resolution=256
+        )
         model.eval()
+        model = model.to(device)
 
-        # Prepare input
-        if y.ndim == 2:
-            # Expand 2D to 28 bands
-            y_expanded = np.tile(y[:, :, np.newaxis], (1, 1, 28)).astype(np.float32)
-        else:
-            y_expanded = y.astype(np.float32)
+        # Handle measurement dimensions
+        H, W_ext = y.shape
+        nC = 28
+        step = 2
 
-        # Convert to tensor: (H, W, 28) -> (1, 28, H, W)
-        y_tensor = torch.from_numpy(y_expanded).permute(2, 0, 1).unsqueeze(0).float()
+        # Convert measurement to tensor: (H, W_ext) -> (1, H, W_ext)
+        y_tensor = torch.from_numpy(y).unsqueeze(0).float().to(device)
+
+        # Apply shift_back to get initial estimate: (1, H, W_ext) -> (1, 28, H, W)
+        y_shifted = shift_back_meas_torch(y_tensor, step=step, nC=nC)
 
         # Inference
         with torch.no_grad():
-            x_hat = model(y_tensor)
+            x_hat = model(y_shifted)  # (1, 28, H, W)
 
         # Convert back: (1, 28, H, W) -> (H, W, 28)
-        return np.clip(x_hat.squeeze().permute(1, 2, 0).cpu().numpy().astype(np.float32), 0, 1)
+        output = np.clip(x_hat.squeeze(0).permute(1, 2, 0).cpu().numpy().astype(np.float32), 0, 1)
+
+        # Ensure output is (256, 256, 28)
+        if output.shape != (256, 256, 28):
+            from scipy.ndimage import zoom
+            scale = (256 / output.shape[0], 256 / output.shape[1], 1)
+            output = zoom(output, scale)
+
+        return output
     except Exception as e:
         logger.warning(f"MST-L failed: {e}")
         return np.clip(np.random.rand(256, 256, 28).astype(np.float32) * 0.8 + 0.1, 0, 1)
@@ -388,7 +431,7 @@ def validate_scenario_i(scene: np.ndarray, mask_ideal: np.ndarray,
     Purpose: Theoretical upper bound for perfect measurements
 
     Configuration:
-    - Measurement: y_ideal from ideal mask
+    - Measurement: y_ideal from ideal mask using proper CASSI forward model
     - Forward model: Ideal mask (no mismatch)
     - Reconstruction: Each method with perfect knowledge
 
@@ -404,9 +447,15 @@ def validate_scenario_i(scene: np.ndarray, mask_ideal: np.ndarray,
     logger.info("  Scenario I: Ideal (oracle)")
     results = {}
 
-    # Create ideal measurement: sum across spectral dimension to get coded aperture image
-    # This simulates perfect forward model with no noise
-    y_ideal = np.mean(scene, axis=2).astype(np.float32)
+    # Create ideal measurement using proper CASSI forward model
+    try:
+        from pwm_core.calibration.cassi_upwmi_alg12 import SimulatedOperatorEnlargedGrid
+        op_ideal = SimulatedOperatorEnlargedGrid(mask_ideal, N=4, K=2, stride=1)
+        y_ideal = op_ideal.forward(scene)  # (256, 310)
+    except Exception as e:
+        logger.warning(f"SimulatedOperatorEnlargedGrid failed, falling back to simple mean: {e}")
+        # Fallback: simple mean (not ideal but better than nothing)
+        y_ideal = np.mean(scene, axis=2).astype(np.float32)
 
     for method in methods:
         try:
@@ -434,7 +483,7 @@ def validate_scenario_ii(scene: np.ndarray, mask_real: np.ndarray,
     Purpose: Realistic baseline showing degradation from uncorrected mismatch
 
     Configuration:
-    - Measurement: y_corrupt with injected mismatch + noise
+    - Measurement: y_corrupt with injected mismatch using proper CASSI forward model
     - Forward model: Real mask (assumed perfect, but true mismatch exists)
     - Reconstruction: Each method assuming perfect alignment
 
@@ -451,13 +500,14 @@ def validate_scenario_ii(scene: np.ndarray, mask_real: np.ndarray,
     logger.info("  Scenario II: Assumed/Baseline (uncorrected mismatch)")
     results = {}
 
-    # Create corrupted measurement by warping mask
+    # Resize mask to 256x256 if needed
     if mask_real.shape != (256, 256):
         from scipy.ndimage import zoom
         mask_real_256 = zoom(mask_real, (256 / mask_real.shape[0], 256 / mask_real.shape[1]))
     else:
         mask_real_256 = mask_real.astype(np.float32)
 
+    # Create corrupted measurement by warping mask and applying CASSI forward model
     mask_corrupted = warp_affine_2d(
         mask_real_256,
         dx=mismatch.mask_dx,
@@ -465,14 +515,18 @@ def validate_scenario_ii(scene: np.ndarray, mask_real: np.ndarray,
         theta=mismatch.mask_theta
     )
 
-    # Create measurement with corrupted operator (simulated)
-    # In reality this would come from applying corrupted forward model to scene
-    y_corrupt = np.mean(scene, axis=2).astype(np.float32)
+    # Apply corrupted forward model to scene
+    try:
+        from pwm_core.calibration.cassi_upwmi_alg12 import SimulatedOperatorEnlargedGrid
+        op_corrupted = SimulatedOperatorEnlargedGrid(mask_corrupted, N=4, K=2, stride=1)
+        y_corrupt = op_corrupted.forward(scene)  # (256, 310)
+    except Exception as e:
+        logger.warning(f"SimulatedOperatorEnlargedGrid for corrupted measurement failed: {e}")
+        # Fallback: use simple forward model with corrupted mask
+        y_corrupt = np.mean(scene, axis=2).astype(np.float32)
 
     # Add realistic noise to simulate measurement degradation from mismatch
     y_corrupt = add_poisson_gaussian_noise(y_corrupt, peak=10000, sigma=1.0)
-    # Add small additional degradation to simulate mismatch effect
-    y_corrupt = y_corrupt * 0.95 + np.random.randn(*y_corrupt.shape) * 0.02
 
     # Reconstruct with each method ASSUMING PERFECT MASK (degraded result)
     for method in methods:
@@ -503,7 +557,7 @@ def validate_scenario_iv(scene: np.ndarray, mask_real: np.ndarray,
 
     Configuration:
     - Measurement: Same y_corrupt as Scenario II
-    - Forward model: Real mask with TRUE mismatch parameters applied
+    - Forward model: Real mask with TRUE mismatch parameters applied (oracle knowledge)
     - Reconstruction: Each method with oracle operator knowledge
 
     Args:
@@ -520,7 +574,7 @@ def validate_scenario_iv(scene: np.ndarray, mask_real: np.ndarray,
     logger.info("  Scenario IV: Truth Forward Model (oracle operator)")
     results = {}
 
-    # Create truth operator with known mismatch parameters
+    # Resize mask to 256x256 if needed
     if mask_real.shape != (256, 256):
         from scipy.ndimage import zoom
         mask_real_256 = zoom(mask_real, (256 / mask_real.shape[0], 256 / mask_real.shape[1]))

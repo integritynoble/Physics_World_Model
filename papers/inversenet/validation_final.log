@@ -1,0 +1,36 @@
+2026-02-15 16:02:17,565 - __main__ - INFO - 
+======================================================================
+2026-02-15 16:02:17,565 - __main__ - INFO - CASSI Validation for InverseNet ECCV Paper
+2026-02-15 16:02:17,565 - __main__ - INFO - 3 Scenarios × 4 Methods × 10 Scenes = 120 Reconstructions
+2026-02-15 16:02:17,565 - __main__ - INFO - ======================================================================
+2026-02-15 16:02:17,589 - __main__ - INFO - Ideal mask shape: (256, 256)
+2026-02-15 16:02:17,589 - __main__ - INFO - Real mask shape: (660, 660)
+2026-02-15 16:02:17,589 - __main__ - INFO - Mismatch parameters: dx=0.5 px, dy=0.3 px, θ=0.1°
+2026-02-15 16:02:17,687 - __main__ - INFO - 
+======================================================================
+2026-02-15 16:02:17,687 - __main__ - INFO - Scene 1/10
+2026-02-15 16:02:17,687 - __main__ - INFO - ======================================================================
+2026-02-15 16:02:17,687 - __main__ - INFO -   Scenario I: Ideal (oracle)
+2026-02-15 16:06:34,396 - __main__ - WARNING - MST-S failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 16:06:34,584 - __main__ - WARNING - MST-L failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 16:06:34,782 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 16:10:43,856 - __main__ - WARNING - MST-S failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 16:10:44,061 - __main__ - WARNING - MST-L failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 16:10:44,262 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 16:10:44,295 - __main__ - WARNING - MST-S failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 16:10:44,492 - __main__ - WARNING - MST-L failed: create_mst() got an unexpected keyword argument 'device'
+2026-02-15 16:10:44,704 - __main__ - INFO - 
+  MST_S:
+2026-02-15 16:10:44,704 - __main__ - INFO -     I (Ideal):   6.41 dB
+2026-02-15 16:10:44,704 - __main__ - INFO -     II (Assumed): 6.41 dB (gap -0.00 dB)
+2026-02-15 16:10:44,704 - __main__ - INFO -     IV (Oracle):  6.40 dB (recovery -0.00 dB)
+2026-02-15 16:10:44,704 - __main__ - INFO - 
+  MST_L:
+2026-02-15 16:10:44,704 - __main__ - INFO -     I (Ideal):   6.40 dB
+2026-02-15 16:10:44,704 - __main__ - INFO -     II (Assumed): 6.41 dB (gap -0.00 dB)
+2026-02-15 16:10:44,704 - __main__ - INFO -     IV (Oracle):  6.40 dB (recovery -0.00 dB)
+2026-02-15 16:10:44,762 - __main__ - INFO - 
+======================================================================
+2026-02-15 16:10:44,762 - __main__ - INFO - Scene 2/10
+2026-02-15 16:10:44,762 - __main__ - INFO - ======================================================================
+2026-02-15 16:10:44,762 - __main__ - INFO -   Scenario I: Ideal (oracle)
