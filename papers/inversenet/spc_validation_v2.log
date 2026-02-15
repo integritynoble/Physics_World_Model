@@ -1,0 +1,174 @@
+2026-02-15 18:15:46,436 - __main__ - INFO - 
+======================================================================
+2026-02-15 18:15:46,436 - __main__ - INFO - SPC Validation v2.0 for InverseNet ECCV Paper
+2026-02-15 18:15:46,436 - __main__ - INFO - Image: 256×256 | Block: 64×64 | Blocks/image: 16
+2026-02-15 18:15:46,436 - __main__ - INFO - Sampling: 25% | M=1024 measurements/block | N=4096 pixels/block
+2026-02-15 18:15:46,436 - __main__ - INFO - ADMM-TV iterations: 200
+2026-02-15 18:15:46,436 - __main__ - INFO - Total block reconstructions: 11 × 16 × 3 = 528
+2026-02-15 18:15:46,436 - __main__ - INFO - ======================================================================
+2026-02-15 18:15:46,436 - __main__ - INFO - 
+Loading Set11 images (256×256)...
+2026-02-15 18:15:46,528 - __main__ - INFO -   Loaded: Monarch ((256, 256))
+2026-02-15 18:15:46,532 - __main__ - INFO -   Loaded: Parrots ((256, 256))
+2026-02-15 18:15:46,534 - __main__ - INFO -   Loaded: barbara ((256, 256))
+2026-02-15 18:15:46,539 - __main__ - INFO -   Loaded: boats ((256, 256))
+2026-02-15 18:15:46,543 - __main__ - INFO -   Loaded: cameraman ((256, 256))
+2026-02-15 18:15:46,572 - __main__ - INFO -   Loaded: fingerprint ((256, 256))
+2026-02-15 18:15:46,602 - __main__ - INFO -   Loaded: flinstones ((256, 256))
+2026-02-15 18:15:46,604 - __main__ - INFO -   Loaded: foreman ((256, 256))
+2026-02-15 18:15:46,605 - __main__ - INFO -   Loaded: house ((256, 256))
+2026-02-15 18:15:46,607 - __main__ - INFO -   Loaded: lena256 ((256, 256))
+2026-02-15 18:15:46,609 - __main__ - INFO -   Loaded: peppers256 ((256, 256))
+2026-02-15 18:15:46,609 - __main__ - INFO - Loaded 11 images
+2026-02-15 18:15:46,609 - __main__ - INFO - 
+Creating measurement matrix: Φ ∈ ℝ^{1024×4096}
+2026-02-15 18:15:46,768 - __main__ - INFO - Ideal Φ shape: (1024, 4096)
+2026-02-15 18:15:46,769 - __main__ - INFO - Mismatch: dx=0.4 px, dy=0.4 px, θ=0.08°, gain=1.08
+2026-02-15 18:15:47,133 - __main__ - INFO - Relative operator difference: 0.7446
+2026-02-15 18:15:47,134 - __main__ - INFO - 
+Pre-computing solvers...
+2026-02-15 18:15:47,144 - __main__ - INFO -   Pre-computing Cholesky for 1024×4096 matrix...
+2026-02-15 18:15:48,318 - __main__ - INFO -   Cholesky done in 1.17s
+2026-02-15 18:15:48,330 - __main__ - INFO -   Pre-computing Cholesky for 1024×4096 matrix...
+2026-02-15 18:15:49,613 - __main__ - INFO -   Cholesky done in 1.28s
+2026-02-15 18:15:49,620 - __main__ - INFO - 
+======================================================================
+2026-02-15 18:15:49,620 - __main__ - INFO - Image 1/11: Monarch
+2026-02-15 18:15:49,620 - __main__ - INFO - ======================================================================
+2026-02-15 18:15:49,620 - __main__ - INFO -   Scenario I: Ideal
+2026-02-15 18:17:12,543 - __main__ - INFO -   Scenario II: Baseline (corrupted meas, ideal operator)
+2026-02-15 18:18:40,501 - __main__ - INFO -   Scenario IV: Oracle (corrupted meas, truth operator)
+2026-02-15 18:20:15,603 - __main__ - INFO -   ADMM-TV: I=23.86 dB | II=21.24 dB | IV=25.99 dB | Gap=2.63 | Recovery=4.75
+2026-02-15 18:20:15,603 - __main__ - INFO -   SSIM:    I=0.7711 | II=0.6785 | IV=0.8494
+2026-02-15 18:20:15,603 - __main__ - INFO -   Time: 266.0s
+2026-02-15 18:20:15,603 - __main__ - INFO - 
+======================================================================
+2026-02-15 18:20:15,603 - __main__ - INFO - Image 2/11: Parrots
+2026-02-15 18:20:15,603 - __main__ - INFO - ======================================================================
+2026-02-15 18:20:15,603 - __main__ - INFO -   Scenario I: Ideal
+2026-02-15 18:21:52,300 - __main__ - INFO -   Scenario II: Baseline (corrupted meas, ideal operator)
+2026-02-15 18:23:33,453 - __main__ - INFO -   Scenario IV: Oracle (corrupted meas, truth operator)
+2026-02-15 18:25:03,971 - __main__ - INFO -   ADMM-TV: I=25.62 dB | II=21.72 dB | IV=27.97 dB | Gap=3.91 | Recovery=6.25
+2026-02-15 18:25:03,972 - __main__ - INFO -   SSIM:    I=0.8149 | II=0.6662 | IV=0.8605
+2026-02-15 18:25:03,972 - __main__ - INFO -   Time: 288.4s
+2026-02-15 18:25:03,972 - __main__ - INFO - 
+======================================================================
+2026-02-15 18:25:03,972 - __main__ - INFO - Image 3/11: barbara
+2026-02-15 18:25:03,972 - __main__ - INFO - ======================================================================
+2026-02-15 18:25:03,972 - __main__ - INFO -   Scenario I: Ideal
+2026-02-15 18:26:33,953 - __main__ - INFO -   Scenario II: Baseline (corrupted meas, ideal operator)
+2026-02-15 18:28:05,259 - __main__ - INFO -   Scenario IV: Oracle (corrupted meas, truth operator)
+2026-02-15 18:29:43,325 - __main__ - INFO -   ADMM-TV: I=25.18 dB | II=21.47 dB | IV=25.97 dB | Gap=3.71 | Recovery=4.50
+2026-02-15 18:29:43,325 - __main__ - INFO -   SSIM:    I=0.7447 | II=0.5930 | IV=0.7804
+2026-02-15 18:29:43,325 - __main__ - INFO -   Time: 279.4s
+2026-02-15 18:29:43,325 - __main__ - INFO - 
+======================================================================
+2026-02-15 18:29:43,325 - __main__ - INFO - Image 4/11: boats
+2026-02-15 18:29:43,325 - __main__ - INFO - ======================================================================
+2026-02-15 18:29:43,326 - __main__ - INFO -   Scenario I: Ideal
+2026-02-15 18:31:32,348 - __main__ - INFO -   Scenario II: Baseline (corrupted meas, ideal operator)
+2026-02-15 18:33:30,007 - __main__ - INFO -   Scenario IV: Oracle (corrupted meas, truth operator)
+2026-02-15 18:35:22,862 - __main__ - INFO -   ADMM-TV: I=27.09 dB | II=22.20 dB | IV=28.46 dB | Gap=4.88 | Recovery=6.26
+2026-02-15 18:35:22,874 - __main__ - INFO -   SSIM:    I=0.7836 | II=0.6370 | IV=0.8306
+2026-02-15 18:35:22,875 - __main__ - INFO -   Time: 339.5s
+2026-02-15 18:35:22,875 - __main__ - INFO - 
+======================================================================
+2026-02-15 18:35:22,875 - __main__ - INFO - Image 5/11: cameraman
+2026-02-15 18:35:22,875 - __main__ - INFO - ======================================================================
+2026-02-15 18:35:22,876 - __main__ - INFO -   Scenario I: Ideal
+2026-02-15 18:38:07,714 - __main__ - INFO -   Scenario II: Baseline (corrupted meas, ideal operator)
+2026-02-15 18:40:02,716 - __main__ - INFO -   Scenario IV: Oracle (corrupted meas, truth operator)
+2026-02-15 18:42:34,152 - __main__ - INFO -   ADMM-TV: I=23.93 dB | II=20.98 dB | IV=25.36 dB | Gap=2.95 | Recovery=4.38
+2026-02-15 18:42:34,153 - __main__ - INFO -   SSIM:    I=0.6682 | II=0.5674 | IV=0.7538
+2026-02-15 18:42:34,153 - __main__ - INFO -   Time: 431.3s
+2026-02-15 18:42:34,153 - __main__ - INFO - 
+======================================================================
+2026-02-15 18:42:34,153 - __main__ - INFO - Image 6/11: fingerprint
+2026-02-15 18:42:34,153 - __main__ - INFO - ======================================================================
+2026-02-15 18:42:34,154 - __main__ - INFO -   Scenario I: Ideal
+2026-02-15 18:44:21,702 - __main__ - INFO -   Scenario II: Baseline (corrupted meas, ideal operator)
+2026-02-15 18:46:04,567 - __main__ - INFO -   Scenario IV: Oracle (corrupted meas, truth operator)
+2026-02-15 18:47:42,948 - __main__ - INFO -   ADMM-TV: I=18.87 dB | II=17.32 dB | IV=20.93 dB | Gap=1.55 | Recovery=3.61
+2026-02-15 18:47:42,948 - __main__ - INFO -   SSIM:    I=0.6363 | II=0.5145 | IV=0.7542
+2026-02-15 18:47:42,948 - __main__ - INFO -   Time: 308.8s
+2026-02-15 18:47:42,948 - __main__ - INFO - 
+======================================================================
+2026-02-15 18:47:42,949 - __main__ - INFO - Image 7/11: flinstones
+2026-02-15 18:47:42,949 - __main__ - INFO - ======================================================================
+2026-02-15 18:47:42,949 - __main__ - INFO -   Scenario I: Ideal
+2026-02-15 18:49:43,040 - __main__ - INFO -   Scenario II: Baseline (corrupted meas, ideal operator)
+2026-02-15 18:52:10,373 - __main__ - INFO -   Scenario IV: Oracle (corrupted meas, truth operator)
+2026-02-15 18:54:11,269 - __main__ - INFO -   ADMM-TV: I=16.75 dB | II=16.13 dB | IV=19.14 dB | Gap=0.62 | Recovery=3.00
+2026-02-15 18:54:11,269 - __main__ - INFO -   SSIM:    I=0.5063 | II=0.4521 | IV=0.6511
+2026-02-15 18:54:11,269 - __main__ - INFO -   Time: 388.3s
+2026-02-15 18:54:11,269 - __main__ - INFO - 
+======================================================================
+2026-02-15 18:54:11,269 - __main__ - INFO - Image 8/11: foreman
+2026-02-15 18:54:11,269 - __main__ - INFO - ======================================================================
+2026-02-15 18:54:11,269 - __main__ - INFO -   Scenario I: Ideal
+2026-02-15 18:55:49,115 - __main__ - INFO -   Scenario II: Baseline (corrupted meas, ideal operator)
+2026-02-15 18:58:05,188 - __main__ - INFO -   Scenario IV: Oracle (corrupted meas, truth operator)
+2026-02-15 19:00:45,715 - __main__ - INFO -   ADMM-TV: I=31.14 dB | II=22.28 dB | IV=32.56 dB | Gap=8.86 | Recovery=10.28
+2026-02-15 19:00:45,720 - __main__ - INFO -   SSIM:    I=0.8570 | II=0.6335 | IV=0.8922
+2026-02-15 19:00:45,721 - __main__ - INFO -   Time: 394.4s
+2026-02-15 19:00:45,721 - __main__ - INFO - 
+======================================================================
+2026-02-15 19:00:45,721 - __main__ - INFO - Image 9/11: house
+2026-02-15 19:00:45,721 - __main__ - INFO - ======================================================================
+2026-02-15 19:00:45,721 - __main__ - INFO -   Scenario I: Ideal
+2026-02-15 19:03:18,417 - __main__ - INFO -   Scenario II: Baseline (corrupted meas, ideal operator)
+2026-02-15 19:05:54,626 - __main__ - INFO -   Scenario IV: Oracle (corrupted meas, truth operator)
+2026-02-15 19:08:45,860 - __main__ - INFO -   ADMM-TV: I=29.92 dB | II=22.45 dB | IV=30.71 dB | Gap=7.47 | Recovery=8.25
+2026-02-15 19:08:45,861 - __main__ - INFO -   SSIM:    I=0.8136 | II=0.6337 | IV=0.8381
+2026-02-15 19:08:45,861 - __main__ - INFO -   Time: 480.1s
+2026-02-15 19:08:45,861 - __main__ - INFO - 
+======================================================================
+2026-02-15 19:08:45,861 - __main__ - INFO - Image 10/11: lena256
+2026-02-15 19:08:45,862 - __main__ - INFO - ======================================================================
+2026-02-15 19:08:45,862 - __main__ - INFO -   Scenario I: Ideal
+2026-02-15 19:10:47,626 - __main__ - INFO -   Scenario II: Baseline (corrupted meas, ideal operator)
+2026-02-15 19:13:32,078 - __main__ - INFO -   Scenario IV: Oracle (corrupted meas, truth operator)
+2026-02-15 19:16:24,342 - __main__ - INFO -   ADMM-TV: I=26.80 dB | II=22.37 dB | IV=28.01 dB | Gap=4.42 | Recovery=5.63
+2026-02-15 19:16:24,350 - __main__ - INFO -   SSIM:    I=0.7851 | II=0.6396 | IV=0.8372
+2026-02-15 19:16:24,350 - __main__ - INFO -   Time: 458.5s
+2026-02-15 19:16:24,351 - __main__ - INFO - 
+======================================================================
+2026-02-15 19:16:24,351 - __main__ - INFO - Image 11/11: peppers256
+2026-02-15 19:16:24,351 - __main__ - INFO - ======================================================================
+2026-02-15 19:16:24,351 - __main__ - INFO -   Scenario I: Ideal
+2026-02-15 19:19:14,669 - __main__ - INFO -   Scenario II: Baseline (corrupted meas, ideal operator)
+2026-02-15 19:22:10,715 - __main__ - INFO -   Scenario IV: Oracle (corrupted meas, truth operator)
+2026-02-15 19:25:11,410 - __main__ - INFO -   ADMM-TV: I=26.10 dB | II=21.85 dB | IV=26.96 dB | Gap=4.25 | Recovery=5.11
+2026-02-15 19:25:11,414 - __main__ - INFO -   SSIM:    I=0.7560 | II=0.6372 | IV=0.8193
+2026-02-15 19:25:11,416 - __main__ - INFO -   Time: 527.1s
+2026-02-15 19:25:11,416 - __main__ - INFO - 
+======================================================================
+2026-02-15 19:25:11,416 - __main__ - INFO - SUMMARY STATISTICS
+2026-02-15 19:25:11,417 - __main__ - INFO - ======================================================================
+2026-02-15 19:25:11,418 - __main__ - INFO - 
+SCENARIO I (Ideal):
+2026-02-15 19:25:11,420 - __main__ - INFO -   admm_tv        : 25.02 ± 4.04 dB, SSIM: 0.7397
+2026-02-15 19:25:11,421 - __main__ - INFO -   pnp_fista      : 25.02 ± 4.04 dB, SSIM: 0.7397
+2026-02-15 19:25:11,421 - __main__ - INFO -   ista_net_plus  : 25.02 ± 4.04 dB, SSIM: 0.7397
+2026-02-15 19:25:11,421 - __main__ - INFO - 
+SCENARIO II (Baseline):
+2026-02-15 19:25:11,421 - __main__ - INFO -   admm_tv        : 20.91 ± 2.04 dB, SSIM: 0.6048
+2026-02-15 19:25:11,421 - __main__ - INFO -   pnp_fista      : 20.91 ± 2.04 dB, SSIM: 0.6048
+2026-02-15 19:25:11,422 - __main__ - INFO -   ista_net_plus  : 20.91 ± 2.04 dB, SSIM: 0.6048
+2026-02-15 19:25:11,423 - __main__ - INFO - 
+SCENARIO IV (Oracle):
+2026-02-15 19:25:11,423 - __main__ - INFO -   admm_tv        : 26.55 ± 3.69 dB, SSIM: 0.8061
+2026-02-15 19:25:11,423 - __main__ - INFO -   pnp_fista      : 26.55 ± 3.69 dB, SSIM: 0.8061
+2026-02-15 19:25:11,424 - __main__ - INFO -   ista_net_plus  : 26.55 ± 3.69 dB, SSIM: 0.8061
+2026-02-15 19:25:11,424 - __main__ - INFO - 
+Gap Analysis:
+2026-02-15 19:25:11,424 - __main__ - INFO -   admm_tv        : Gap I→II=4.11 dB, Recovery II→IV=5.64 dB
+2026-02-15 19:25:11,424 - __main__ - INFO -   pnp_fista      : Gap I→II=4.11 dB, Recovery II→IV=5.64 dB
+2026-02-15 19:25:11,424 - __main__ - INFO -   ista_net_plus  : Gap I→II=4.11 dB, Recovery II→IV=5.64 dB
+2026-02-15 19:25:11,424 - __main__ - INFO - 
+Total time: 69.4 min (378.3s per image)
+2026-02-15 19:25:11,430 - __main__ - INFO - 
+Detailed results: /home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/results/spc_validation_results.json
+2026-02-15 19:25:11,434 - __main__ - INFO - Summary: /home/spiritai/PWM/test2/Physics_World_Model/papers/inversenet/results/spc_summary.json
+2026-02-15 19:25:11,434 - __main__ - INFO - 
+SPC Validation v2.0 complete!
