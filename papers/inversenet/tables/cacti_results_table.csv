@@ -1,5 +1,5 @@
-Method,Scenario I,Scenario II,Scenario IV,Gap I→II,Gap II→IV
-GAP-TV,4.92±0.02,4.87±0.01,4.89±0.01,0.06,0.03
-PnP-FFDNet,5.90±0.15,6.13±0.26,5.33±0.12,-0.23,-0.80
-ELP-Unfolding,4.77±0.00,4.79±0.00,4.77±0.00,-0.02,-0.02
-EfficientSCI,4.77±0.00,4.77±0.00,4.77±0.00,0.00,0.00
+Method,Scenario I,Scenario II,Scenario IV,Gap I-II,Recovery II-IV
+GAP-TV,26.75+/-4.48,13.46+/-1.58,23.52+/-2.30,13.29,10.05
+GAP-denoise,26.80+/-4.53,13.34+/-1.55,23.79+/-2.44,13.46,10.44
+PnP-FFDNet,26.36+/-4.06,13.32+/-1.57,23.85+/-2.44,13.04,10.53
+EfficientSCI,7.09+/-1.85,7.12+/-2.15,6.86+/-1.78,-0.03,-0.26
