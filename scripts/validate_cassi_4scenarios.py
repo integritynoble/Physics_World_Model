@@ -343,10 +343,11 @@ def gap_tv_solver_wrapper(
     if n_bands is None:
         n_bands = y_meas.shape[1] - mask.shape[1] + 1
 
-    # Pad mask to match measurement width for gap_tv_cassi compatibility
-    meas_width = y_meas.shape[1]
-    if mask.shape[1] != meas_width:
-        pad_width = meas_width - mask.shape[1]
+    # Pad mask to match expected measurement width for n_bands
+    # For CASSI with n_bands spectral bands: meas_width = spatial_width + (n_bands - 1)
+    expected_meas_width = mask.shape[1] + (n_bands - 1)
+    if mask.shape[1] != expected_meas_width:
+        pad_width = expected_meas_width - mask.shape[1]
         # Pad with 1.0 (full transmission) for spectral dispersion region
         mask_padded = np.pad(mask.astype(np.float32),
                              ((0, 0), (0, pad_width)),
