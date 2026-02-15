@@ -40,6 +40,7 @@ try:
         DifferentiableCassiForwardSTE,
         DifferentiableGAPTV,
     )
+    from .cassi_mst_modules import DifferentiableMST
     HAS_TORCH = True
 except ImportError:
     pass
@@ -996,11 +997,499 @@ class Algorithm2JointGradientRefinement:
             return mismatch_coarse.copy()
 
 
+class Algorithm2JointGradientRefinementMST:
+    """Algorithm 2 with MST-L Reconstruction (PyTorch-based fine-tuning).
+
+    Identical to Algorithm2JointGradientRefinement but uses DifferentiableMST
+    instead of DifferentiableGAPTV for reconstruction. Enables comparison
+    between learned (MST-L) vs iterative (GAP-TV) reconstruction.
+
+    Pipeline (identical to Algorithm 2):
+    1. Stage 0: Coarse 3D grid search (9×9×7 = 567 candidates)
+    2. Stage 1: Fine 3D grid (5×5×3 per top-5 candidate)
+    3. Stage 2A: Gradient optimization of dx only (50 steps)
+    4. Stage 2B: Gradient optimization of dy, theta (60 steps)
+    5. Stage 2C: Joint gradient optimization (80 steps)
+    6. Final selection: grid-best vs gradient-best via GPU scoring
+
+    Attributes:
+        device: PyTorch device ('cuda', 'cpu', or 'auto')
+        use_checkpointing: Enable gradient checkpointing for memory efficiency
+        logger: Logging function for progress tracking
+    """
+
+    def __init__(self, device: str = "auto", use_checkpointing: bool = True):
+        """Initialize Algorithm 2 MST with PyTorch backend.
+
+        Args:
+            device: Device to use ('cuda', 'cpu', or 'auto' for auto-detection).
+            use_checkpointing: Enable gradient checkpointing (reduces memory usage).
+        """
+        if not HAS_TORCH:
+            logger.warning(
+                "Algorithm 2 MST requires PyTorch - will fallback to Algorithm 1 results"
+            )
+            self.device = None
+            self.use_checkpointing = False
+        else:
+            self.device = self._resolve_device(device)
+            self.use_checkpointing = use_checkpointing
+        self.logger = self._make_logger()
+
+    @staticmethod
+    def _resolve_device(device_str: str) -> torch.device:
+        """Resolve device string to torch.device."""
+        if device_str == "auto":
+            return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        return torch.device(device_str)
+
+    @staticmethod
+    def _make_logger():
+        """Create a logging function for output."""
+        def log(msg):
+            logger.info(msg)
+            print(msg)
+        return log
+
+    def refine(
+        self,
+        mismatch_coarse: MismatchParameters,
+        y_meas: np.ndarray,
+        mask_real: np.ndarray,
+        x_true: np.ndarray,
+        s_nom: np.ndarray,
+        operator_class: type = None,
+    ) -> MismatchParameters:
+        """Refine coarse mismatch parameters using gradient descent with MST-L.
+
+        Args:
+            mismatch_coarse: Algorithm 1 coarse estimate
+            y_meas: Measurement (256, 310) or similar
+            mask_real: Real mask (256, 256)
+            x_true: Ground truth scene (256, 256, L)
+            s_nom: Nominal dispersion curve [L]
+            operator_class: SimulatedOperatorEnlargedGrid (unused, for compatibility)
+
+        Returns:
+            Refined MismatchParameters with improved accuracy
+        """
+        if not HAS_TORCH:
+            self.logger(
+                "Algorithm 2 MST: PyTorch unavailable - returning Algorithm 1 estimate"
+            )
+            return mismatch_coarse.copy()
+
+        self.logger("\nAlgorithm 2 MST: Joint Gradient Refinement with MST-L starting...")
+        start_time = time.time()
+
+        try:
+            H, W, L = x_true.shape
+            y_t = (
+                torch.from_numpy(y_meas.copy())
+                .unsqueeze(0)
+                .float()
+                .to(self.device)
+            )
+            mask2d_nom = mask_real.astype(np.float32)
+
+            self.logger(
+                "  Note: phi_d unidentifiable at integer rounding precision"
+            )
+            self.logger(
+                "        → fixing phi_d=0.0, optimizing (dx, dy, theta) only"
+            )
+
+            # Build parameter ranges
+            param_ranges = {
+                "dx_min": -3.0,
+                "dx_max": 3.0,
+                "dy_min": -3.0,
+                "dy_max": 3.0,
+                "theta_min": -1.0,
+                "theta_max": 1.0,
+            }
+
+            # GPU scoring cache for forward operator and MST
+            _shared_fwd = DifferentiableCassiForwardSTE(s_nom).to(self.device)
+            _mst_cache = {}
+            _gaptv_cache = {}
+
+            def _gpu_score(dx_v, dy_v, theta_v, n_iter=10, gauss_sigma=0.7):
+                """Score (dx, dy, theta) using GPU differentiable MST-L."""
+                # For compatibility, we'll use MST but accept n_iter parameter
+                mst = DifferentiableMST(
+                    H=H, W=W, L=L, step=2, variant="mst_l",
+                    frozen_weights=True, device=self.device
+                )
+                mst.eval()
+
+                warp = DifferentiableMaskWarpFixed(
+                    mask2d_nom, dx_init=dx_v, dy_init=dy_v, theta_init=theta_v
+                ).to(self.device)
+
+                with torch.no_grad():
+                    mask_w = warp()
+                    phi_d_t = torch.tensor(
+                        0.0, dtype=torch.float32, device=self.device
+                    )
+                    x_recon = mst(y_t, mask_w, phi_d_t)
+                    y_pred = _shared_fwd(x_recon, mask_w, phi_d_t)
+                    hh = min(y_t.shape[1], y_pred.shape[1])
+                    ww = min(y_t.shape[2], y_pred.shape[2])
+                    res = y_t[:, :hh, :ww] - y_pred[:, :hh, :ww]
+                    score = torch.sum(res * res).item()
+                return score
+
+            # Stage 0: Full-range coarse 3D grid
+            self.logger("\n  Stage 0: Full-range coarse 3D grid (GPU-accelerated MST-L)")
+            t_stage0 = time.time()
+
+            n_dx, n_dy, n_theta = 9, 9, 7
+            dx_grid = np.linspace(
+                param_ranges["dx_min"], param_ranges["dx_max"], n_dx
+            )
+            dy_grid = np.linspace(
+                param_ranges["dy_min"], param_ranges["dy_max"], n_dy
+            )
+            theta_grid = np.linspace(
+                param_ranges["theta_min"], param_ranges["theta_max"], n_theta
+            )
+            n_total = n_dx * n_dy * n_theta
+            self.logger(
+                f"    Grid: {n_dx}×{n_dy}×{n_theta} = {n_total} candidates, MST-L"
+            )
+
+            coarse_best_score = float("inf")
+            coarse_best = (0.0, 0.0, 0.0)
+            top_k = []
+
+            for dx_v in dx_grid:
+                for dy_v in dy_grid:
+                    for th_v in theta_grid:
+                        sc = _gpu_score(
+                            float(dx_v),
+                            float(dy_v),
+                            float(th_v),
+                            n_iter=8,
+                            gauss_sigma=0.7,
+                        )
+                        if sc < coarse_best_score:
+                            coarse_best_score = sc
+                            coarse_best = (float(dx_v), float(dy_v), float(th_v))
+                        top_k.append((sc, float(dx_v), float(dy_v), float(th_v)))
+                        if len(top_k) > 50:
+                            top_k.sort(key=lambda x: x[0])
+                            top_k = top_k[:10]
+
+            top_k.sort(key=lambda x: x[0])
+            top_k = top_k[:10]
+            stage0_time = time.time() - t_stage0
+            self.logger(
+                f"    Coarse grid ({len(dx_grid) * len(dy_grid) * len(theta_grid)} evals, {stage0_time:.1f}s):"
+            )
+            self.logger(
+                f"      Best: dx={coarse_best[0]:.2f}, dy={coarse_best[1]:.2f}, "
+                f"theta={coarse_best[2]:.2f}, score={coarse_best_score:.2f}"
+            )
+            self.logger(
+                f"      Top-3: "
+                + "; ".join(
+                    f"({t[1]:.2f},{t[2]:.2f},{t[3]:.2f})={t[0]:.1f}"
+                    for t in top_k[:3]
+                )
+            )
+
+            # Stage 1: Fine 3D grid around top-5
+            self.logger("\n  Stage 1: Fine grid around top-5 candidates (MST-L)")
+            t_stage1 = time.time()
+
+            dx_step = (param_ranges["dx_max"] - param_ranges["dx_min"]) / (n_dx - 1)
+            dy_step = (param_ranges["dy_max"] - param_ranges["dy_min"]) / (n_dy - 1)
+            th_step = (param_ranges["theta_max"] - param_ranges["theta_min"]) / (
+                n_theta - 1
+            )
+
+            fine_best_score = float("inf")
+            fine_best = coarse_best
+            n_fine_eval = 0
+
+            for _, dx_c, dy_c, th_c in top_k[:5]:
+                for ddx in np.linspace(-dx_step, dx_step, 5):
+                    dxv = np.clip(
+                        dx_c + ddx,
+                        param_ranges["dx_min"],
+                        param_ranges["dx_max"],
+                    )
+                    for ddy in np.linspace(-dy_step, dy_step, 5):
+                        dyv = np.clip(
+                            dy_c + ddy,
+                            param_ranges["dy_min"],
+                            param_ranges["dy_max"],
+                        )
+                        for dth in np.linspace(-th_step, th_step, 3):
+                            thv = np.clip(
+                                th_c + dth,
+                                param_ranges["theta_min"],
+                                param_ranges["theta_max"],
+                            )
+                            sc = _gpu_score(
+                                float(dxv),
+                                float(dyv),
+                                float(thv),
+                                n_iter=12,
+                                gauss_sigma=0.7,
+                            )
+                            if sc < fine_best_score:
+                                fine_best_score = sc
+                                fine_best = (float(dxv), float(dyv), float(thv))
+                            n_fine_eval += 1
+
+            stage1_time = time.time() - t_stage1
+            self.logger(
+                f"    Fine grid ({n_fine_eval} evals, {stage1_time:.1f}s): "
+                f"best={fine_best_score:.2f} @ ({fine_best[0]:.2f}, {fine_best[1]:.2f}, {fine_best[2]:.2f})"
+            )
+
+            best_sweep = fine_best
+
+            # Stage 2: Gradient refinement with MST
+            def _run_opt_stage(
+                name="Stage X",
+                init_dx=0.0,
+                init_dy=0.0,
+                init_theta=0.0,
+                opt_params=None,
+                freeze_params=None,
+                n_steps=50,
+                lr_dict=None,
+                lr_min=0.001,
+                gauss_sigma=0.7,
+                n_iter=10,
+                grad_clip_val=0.5,
+            ):
+                """Run single optimization stage with MST-L."""
+                self.logger(f"\n  {name}")
+                if opt_params is None:
+                    opt_params = ["dx", "dy", "theta"]
+                if freeze_params is None:
+                    freeze_params = []
+                if lr_dict is None:
+                    lr_dict = {}
+
+                mst = DifferentiableMST(
+                    H=H, W=W, L=L, step=2, variant="mst_l",
+                    frozen_weights=True, device=self.device
+                )
+                mst.eval()
+
+                warp = DifferentiableMaskWarpFixed(
+                    mask2d_nom,
+                    dx_init=init_dx,
+                    dy_init=init_dy,
+                    theta_init=init_theta,
+                ).to(self.device)
+                phi_d_local = torch.tensor(
+                    0.0, dtype=torch.float32, device=self.device
+                )
+
+                param_map = {
+                    "dx": warp.dx,
+                    "dy": warp.dy,
+                    "theta": warp.theta_deg,
+                }
+
+                for pname in freeze_params:
+                    if pname in param_map:
+                        param_map[pname].requires_grad_(False)
+
+                param_groups = []
+                for pname in opt_params:
+                    if pname not in param_map:
+                        continue
+                    p = param_map[pname]
+                    p.requires_grad_(True)
+                    param_groups.append(
+                        {
+                            "params": [p],
+                            "lr": lr_dict.get(pname, 0.01),
+                        }
+                    )
+
+                if not param_groups:
+                    return init_dx, init_dy, init_theta, 0.0
+
+                optimizer = torch.optim.Adam(param_groups)
+                scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+                    optimizer, T_max=n_steps, eta_min=lr_min
+                )
+
+                fwd_op = DifferentiableCassiForwardSTE(s_nom).to(self.device)
+                loss_history = []
+
+                for step_i in range(n_steps):
+                    optimizer.zero_grad()
+                    mask_w = warp()
+                    x_recon = mst(y_t, mask_w, phi_d_local)
+                    y_pred = fwd_op(x_recon, mask_w, phi_d_local)
+                    hh = min(y_t.shape[1], y_pred.shape[1])
+                    ww = min(y_t.shape[2], y_pred.shape[2])
+                    loss = torch.mean(
+                        (y_t[:, :hh, :ww] - y_pred[:, :hh, :ww]) ** 2
+                    )
+                    loss.backward()
+
+                    active_params = [
+                        param_map[p] for p in opt_params if p in param_map
+                    ]
+                    if active_params:
+                        torch.nn.utils.clip_grad_norm_(
+                            active_params, grad_clip_val
+                        )
+
+                    optimizer.step()
+                    scheduler.step()
+
+                    with torch.no_grad():
+                        warp.dx.clamp_(
+                            param_ranges["dx_min"], param_ranges["dx_max"]
+                        )
+                        warp.dy.clamp_(
+                            param_ranges["dy_min"], param_ranges["dy_max"]
+                        )
+                        warp.theta_deg.clamp_(
+                            param_ranges["theta_min"],
+                            param_ranges["theta_max"],
+                        )
+
+                    loss_val = loss.item()
+                    loss_history.append(loss_val)
+                    if step_i == 0 or (step_i + 1) % 25 == 0:
+                        self.logger(
+                            f"    step {step_i+1:3d}/{n_steps}: loss={loss_val:.6f}, "
+                            f"dx={warp.dx.item():.4f}, dy={warp.dy.item():.4f}, "
+                            f"theta={warp.theta_deg.item():.4f}"
+                        )
+
+                return (
+                    warp.dx.item(),
+                    warp.dy.item(),
+                    warp.theta_deg.item(),
+                    loss_history[-1] if loss_history else 0.0,
+                )
+
+            # Stage 2A: Easy params (dx only)
+            t_stageA = time.time()
+            dx_A, dy_A, theta_A, loss_A = _run_opt_stage(
+                name="Stage 2A (easy: dx)",
+                init_dx=best_sweep[0],
+                init_dy=best_sweep[1],
+                init_theta=best_sweep[2],
+                opt_params=["dx"],
+                freeze_params=["dy", "theta"],
+                n_steps=50,
+                lr_dict={"dx": 0.05},
+                lr_min=0.002,
+                gauss_sigma=0.5,
+                n_iter=12,
+                grad_clip_val=0.5,
+            )
+            stageA_time = time.time() - t_stageA
+            self.logger(
+                f"  Stage 2A done: dx={dx_A:.4f}, dy={dy_A:.4f}, "
+                f"theta={theta_A:.4f}, loss={loss_A:.6f} ({stageA_time:.1f}s)"
+            )
+
+            # Stage 2B: Hard params (dy, theta)
+            t_stageB = time.time()
+            dx_B, dy_B, theta_B, loss_B = _run_opt_stage(
+                name="Stage 2B (hard: dy, theta)",
+                init_dx=dx_A,
+                init_dy=dy_A,
+                init_theta=theta_A,
+                opt_params=["dy", "theta"],
+                freeze_params=["dx"],
+                n_steps=60,
+                lr_dict={"dy": 0.03, "theta": 0.01},
+                lr_min=0.001,
+                gauss_sigma=1.0,
+                n_iter=12,
+                grad_clip_val=0.5,
+            )
+            stageB_time = time.time() - t_stageB
+            self.logger(
+                f"  Stage 2B done: dx={dx_B:.4f}, dy={dy_B:.4f}, "
+                f"theta={theta_B:.4f}, loss={loss_B:.6f} ({stageB_time:.1f}s)"
+            )
+
+            # Stage 2C: Joint refinement
+            t_stageC = time.time()
+            dx_C, dy_C, theta_C, loss_C = _run_opt_stage(
+                name="Stage 2C (joint refinement)",
+                init_dx=dx_B,
+                init_dy=dy_B,
+                init_theta=theta_B,
+                opt_params=["dx", "dy", "theta"],
+                freeze_params=[],
+                n_steps=80,
+                lr_dict={"dx": 0.01, "dy": 0.01, "theta": 0.005},
+                lr_min=0.0005,
+                gauss_sigma=0.7,
+                n_iter=15,
+                grad_clip_val=0.5,
+            )
+            stageC_time = time.time() - t_stageC
+            self.logger(
+                f"  Stage 2C done: dx={dx_C:.4f}, dy={dy_C:.4f}, "
+                f"theta={theta_C:.4f}, loss={loss_C:.6f} ({stageC_time:.1f}s)"
+            )
+
+            # Final selection: grid vs gradient
+            score_grid = _gpu_score(
+                best_sweep[0],
+                best_sweep[1],
+                best_sweep[2],
+                n_iter=15,
+                gauss_sigma=0.7,
+            )
+            score_grad = _gpu_score(
+                dx_C, dy_C, theta_C, n_iter=15, gauss_sigma=0.7
+            )
+            self.logger(
+                f"\n  Score comparison: grid={score_grid:.2f}, grad={score_grad:.2f}"
+            )
+
+            if score_grad < score_grid:
+                psi_final = (dx_C, dy_C, theta_C)
+                self.logger("  → Using gradient-refined result")
+            else:
+                psi_final = best_sweep
+                self.logger("  → Using grid result (gradient didn't improve)")
+
+            elapsed = time.time() - start_time
+            self.logger(
+                f"\nAlgorithm 2 MST completed in {elapsed:.1f} seconds"
+            )
+
+            return MismatchParameters(
+                mask_dx=psi_final[0],
+                mask_dy=psi_final[1],
+                mask_theta=psi_final[2],
+                disp_a1=2.0,  # Not optimized
+                disp_alpha=0.0,  # Fixed per design
+            )
+
+        except Exception as e:
+            self.logger(f"Algorithm 2 MST failed: {e}. Falling back to coarse estimate.")
+            logger.exception("Algorithm 2 MST exception:")
+            return mismatch_coarse.copy()
+
+
 __all__ = [
     'MismatchParameters',
     'SimulatedOperatorEnlargedGrid',
     'Algorithm1HierarchicalBeamSearch',
     'Algorithm2JointGradientRefinement',
+    'Algorithm2JointGradientRefinementMST',
     'warp_affine_2d',
     'forward_model_enlarged',
     'upsample_spatial',

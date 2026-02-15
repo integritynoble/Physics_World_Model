@@ -6,6 +6,7 @@ Provides operator mismatch correction algorithms for computational imaging modal
 from .cassi_upwmi_alg12 import (
     Algorithm1HierarchicalBeamSearch,
     Algorithm2JointGradientRefinement,
+    Algorithm2JointGradientRefinementMST,
     MismatchParameters,
     SimulatedOperatorEnlargedGrid,
     downsample_spatial,
@@ -13,12 +14,15 @@ from .cassi_upwmi_alg12 import (
     upsample_spatial,
     warp_affine_2d,
 )
+from .cassi_mst_modules import DifferentiableMST
 
 __all__ = [
     'Algorithm1HierarchicalBeamSearch',
     'Algorithm2JointGradientRefinement',
+    'Algorithm2JointGradientRefinementMST',
     'MismatchParameters',
     'SimulatedOperatorEnlargedGrid',
+    'DifferentiableMST',
     'downsample_spatial',
     'forward_model_enlarged',
     'upsample_spatial',
