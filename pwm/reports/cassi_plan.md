@@ -562,6 +562,43 @@ x̂_corrected = gap_tv_cassi(y_noisy, phi_corrected, n_iter=50)
 - Parameter errors: |dx_true - dx_hat2|, |dy_true - dy_hat2|, |θ_true - θ_hat2|
 - Demonstrates practical correction effectiveness for real hardware
 
+### 3.4 Scenario IV: Truth Forward Model (Oracle for Corrupted Measurement)
+
+**Purpose:** Oracle scenario showing the best achievable reconstruction when the exact ground truth mismatch parameters (dx_true, dy_true, θ_true) are known. This serves as an upper bound for Scenarios II and III, allowing us to quantify the gap to ideal performance.
+
+**Mask source:** TSA real experimental mask, warped with KNOWN ground truth mismatch
+- Load: `/home/spiritai/MST-main/datasets/TSA_real_data/mask.mat`
+- Apply TRUE mismatch transformation: `mask_truth = warp_affine(mask_real, dx=dx_true, dy=dy_true, theta=theta_true)`
+
+**Forward model:** Simulated with N=4, K=2 (enlarged grid, stride-1 dispersion)
+
+**Measurement generation:**
+```
+1. Use SAME corrupted measurement y_noisy as Scenarios II & III:
+   y_noisy = measurement with injected mismatch + noise (from section 3.3, step 5)
+
+2. Build Truth Forward Model operator:
+   mask_truth = warp_affine(mask_real_data, dx=dx_true, dy=dy_true, theta=theta_true)
+   operator_truth = SimulatedOperator_EnlargedGrid(mask_truth, N=4, K=2)
+
+3. Reconstruct using truth forward model:
+   x̂_iv = gap_tv_cassi(y_noisy, operator_truth, n_iter=50)
+```
+
+**Key Property:** This scenario uses the EXACT true mismatch parameters, making it an oracle that shows what's theoretically achievable given measurement corruption. The gap between Scenario IV and Scenario III (Gap III→IV) quantifies the parameter estimation error from Algorithms 1 and 2.
+
+**Reconstruction:**
+```
+Operator: phi_iv = SimulatedOperator_EnlargedGrid(mask_truth, N=4, K=2)
+x̂_iv = gap_tv_cassi(y_noisy, phi_iv, n_iter=50)
+```
+
+**Metrics:** PSNR_iv, SSIM_iv, SAM_iv
+- Gap III→IV (Alg1): Residual error from Alg1 parameter estimation (~1-2 dB)
+- Gap III→IV (Alg2): Residual error from Alg2 parameter estimation (~0.5-1.5 dB)
+- Gap IV→I: Irreducible loss from measurement corruption (~2-4 dB)
+- Demonstrates how close the estimated corrections approach the truth
+
 ---
 
 ## Part 4: Comparison & Analysis
@@ -572,8 +609,8 @@ x̂_corrected = gap_tv_cassi(y_noisy, phi_corrected, n_iter=50)
 |----------|-------------|------|----------|---------|
 | **I. Ideal** | y_ideal (clean, perfect) | mask_ideal (perfect) | Ideal direct (stride-2) | Oracle upper bound (perfect measurement) |
 | **II. Assumed** | y_corrupt (misaligned+noise) | mask_assumed (perfect, no correction) | Simulated N=4, K=2 | Baseline: corruption without correction |
-| **IV. Truth Forward Model** | y_corrupt (misaligned+noise) | mask_truth (known mismatch) | Simulated N=4, K=2 | Oracle for corrupted measurement (knows true mismatch) |
 | **III. Corrected** | y_corrupt (misaligned+noise) | mask_corrected (estimated via Alg1/2) | Simulated N=4, K=2 | Practical: corruption with estimated correction |
+| **IV. Truth Forward Model** | y_corrupt (misaligned+noise) | mask_truth (known mismatch) | Simulated N=4, K=2 | Oracle for corrupted measurement (knows true mismatch) |
 
 **Expected PSNR hierarchy:**
 ```
@@ -589,8 +626,8 @@ Gap IV→I: Irreducible loss from measurement corruption
 **Interpretation:**
 - **Scenario I (Ideal):** Oracle showing best possible - clean measurement with perfect setup
 - **Scenario II (Assumed):** Worst case - shows impact of ignoring mismatch entirely
-- **Scenario IV (Truth Forward Model):** Oracle for corrupted measurement - best achievable given measurement corruption, using known ground truth mismatch
 - **Scenario III (Corrected):** Practical case - shows correction effectiveness when estimating mismatch parameters
+- **Scenario IV (Truth Forward Model):** Oracle for corrupted measurement - best achievable given measurement corruption, using known ground truth mismatch
 - **Validation metric:** Gap III→IV measures how close estimated correction gets to truth (Alg1/2 accuracy)
 
 ### 4.2 Parameter Recovery Accuracy (Algorithm 1 vs 2)
@@ -990,12 +1027,12 @@ def run_full_validation_scene(scene_idx, x_true_256, mask_ideal_256):
         'scene_idx': scene_idx,
         'dx_true': dx_true, 'dy_true': dy_true, 'theta_true': theta_true * 180 / np.pi,
 
-        # Four scenarios
+        # Four scenarios (in order I, II, III, IV)
         'psnr_ideal': psnr_ideal,                 # Scenario I: ideal measurement, ideal mask
         'psnr_assumed': psnr_assumed,             # Scenario II: corrupted measurement, assumed perfect mask
-        'psnr_iv': psnr_iv,                       # Scenario IV: corrupted measurement, true forward model
         'psnr_alg1': psnr_alg1,                   # Scenario III: corrupted measurement, Alg1-corrected mask
         'psnr_alg2': psnr_alg2,                   # Scenario III: corrupted measurement, Alg2-corrected mask
+        'psnr_iv': psnr_iv,                       # Scenario IV: corrupted measurement, true forward model (oracle)
 
         # Algorithm 1 parameter errors
         'err_dx_alg1': err_dx_alg1, 'err_dy_alg1': err_dy_alg1, 'err_theta_alg1': err_theta_alg1,
