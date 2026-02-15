@@ -12,3 +12,19 @@
 2026-02-15 16:38:50,194 - __main__ - INFO - ======================================================================
 2026-02-15 16:38:50,194 - __main__ - INFO -   Scenario I: Ideal (oracle)
 2026-02-15 16:45:41,642 - __main__ - INFO -   Scenario II: Assumed/Baseline (uncorrected mismatch)
+2026-02-15 16:51:59,172 - __main__ - INFO -   Scenario IV: Truth Forward Model (oracle operator)
+2026-02-15 16:51:59,684 - __main__ - INFO - 
+  MST_S:
+2026-02-15 16:51:59,684 - __main__ - INFO -     I (Ideal):   1.07 dB
+2026-02-15 16:51:59,684 - __main__ - INFO -     II (Assumed): 1.07 dB (gap -0.01 dB)
+2026-02-15 16:51:59,684 - __main__ - INFO -     IV (Oracle):  1.10 dB (recovery 0.03 dB)
+2026-02-15 16:51:59,684 - __main__ - INFO - 
+  MST_L:
+2026-02-15 16:51:59,684 - __main__ - INFO -     I (Ideal):   1.07 dB
+2026-02-15 16:51:59,684 - __main__ - INFO -     II (Assumed): 1.08 dB (gap -0.01 dB)
+2026-02-15 16:51:59,685 - __main__ - INFO -     IV (Oracle):  1.09 dB (recovery 0.01 dB)
+2026-02-15 16:51:59,745 - __main__ - INFO - 
+======================================================================
+2026-02-15 16:51:59,745 - __main__ - INFO - Scene 2/10
+2026-02-15 16:51:59,745 - __main__ - INFO - ======================================================================
+2026-02-15 16:51:59,745 - __main__ - INFO -   Scenario I: Ideal (oracle)
