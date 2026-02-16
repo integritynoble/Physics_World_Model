@@ -170,13 +170,18 @@ def validate_group(
     mis: MismatchParams,
     method_names: List[str],
     device: str,
+    save_recon: bool = False,
 ) -> Dict:
-    """Run 3 scenarios for one measurement group."""
+    """Run 3 scenarios for one measurement group.
+
+    If save_recon=True, also returns 'recon' dict with all reconstruction
+    arrays and intermediate data for paper figures.
+    """
 
     results: Dict = {"name": name, "scenarios": {}}
+    recon: Dict = {}  # reconstruction arrays for saving
 
     # ---- Scenario I — ideal measurement, ideal mask -----------------
-    # Use the pre-computed measurement (from .mat) and real mask
     res_i = {}
     for mn in method_names:
         x_hat = METHODS[mn](meas, mask, device=device)
@@ -184,30 +189,37 @@ def validate_group(
             "psnr": compute_psnr(x_hat, group_gt),
             "ssim": compute_ssim(x_hat, group_gt),
         }
+        if save_recon:
+            recon[f"scenario_i_{mn}"] = x_hat.astype(np.float32)
     results["scenarios"]["scenario_i"] = res_i
 
     # ---- build corrupted measurement --------------------------------
-    # Use binarized warped mask for measurement generation so that all
-    # methods (including DL models that need binary masks) get a fair
-    # oracle scenario with an exactly matching operator.
     mask_warped = warp_mask(mask, mis.mask_dx, mis.mask_dy,
                             mis.mask_theta, mis.mask_blur_sigma)
     mask_warped_bin = (mask_warped > 0.5).astype(np.float32)
     y_corrupt = np.sum(group_gt * mask_warped_bin, axis=2) * mis.gain + mis.offset
     y_corrupt = add_noise(y_corrupt, peak=10000, sigma=mis.noise_sigma)
 
+    if save_recon:
+        recon["gt"] = group_gt.astype(np.float32)
+        recon["mask_ideal"] = mask.astype(np.float32)
+        recon["mask_warped"] = mask_warped_bin.astype(np.float32)
+        recon["meas_ideal"] = meas.astype(np.float32)
+        recon["meas_corrupt"] = y_corrupt.astype(np.float32)
+
     # ---- Scenario II — corrupted meas, assumed-ideal mask -----------
     res_ii = {}
     for mn in method_names:
-        x_hat = METHODS[mn](y_corrupt, mask, device=device)   # original mask
+        x_hat = METHODS[mn](y_corrupt, mask, device=device)
         res_ii[mn] = {
             "psnr": compute_psnr(x_hat, group_gt),
             "ssim": compute_ssim(x_hat, group_gt),
         }
+        if save_recon:
+            recon[f"scenario_ii_{mn}"] = x_hat.astype(np.float32)
     results["scenarios"]["scenario_ii"] = res_ii
 
     # ---- Scenario III — corrupted meas, oracle operator --------------
-    # Oracle knows ALL mismatch params: undo gain/offset + use true mask.
     y_oracle = (y_corrupt - mis.offset) / mis.gain
     res_iii = {}
     for mn in method_names:
@@ -216,6 +228,8 @@ def validate_group(
             "psnr": compute_psnr(x_hat, group_gt),
             "ssim": compute_ssim(x_hat, group_gt),
         }
+        if save_recon:
+            recon[f"scenario_iii_{mn}"] = x_hat.astype(np.float32)
     results["scenarios"]["scenario_iii"] = res_iii
 
     # gaps
@@ -229,6 +243,9 @@ def validate_group(
             "gap_ii_iii": round(piv - pii, 4),
             "gap_iii_i":  round(pi - piv, 4),
         }
+
+    if save_recon:
+        results["recon"] = recon
 
     return results
 
@@ -295,6 +312,8 @@ def aggregate(all_groups: List[Dict], method_names: List[str]) -> Dict:
 def main():
     parser = argparse.ArgumentParser(description="CACTI InverseNet Validation")
     parser.add_argument("--device", default="cpu")
+    parser.add_argument("--save-recon", action="store_true",
+                        help="Save all reconstruction arrays to .npz files")
     args = parser.parse_args()
 
     method_names = list(METHODS.keys())
@@ -304,6 +323,7 @@ def main():
     logger.info("CACTI InverseNet Validation  (benchmark-grade GAP-denoise)")
     logger.info(f"Methods: {[LABELS[m] for m in method_names]}")
     logger.info(f"Mismatch: dx={mis.mask_dx} dy={mis.mask_dy} theta={mis.mask_theta} deg")
+    logger.info(f"Save reconstructions: {args.save_recon}")
     logger.info("=" * 70)
 
     # ---- load real benchmark data -----------------------------------
@@ -313,7 +333,13 @@ def main():
 
     np.random.seed(42)
 
+    # reconstruction save directory
+    RECON_DIR = RESULTS_DIR / "cacti_reconstructions"
+    if args.save_recon:
+        RECON_DIR.mkdir(parents=True, exist_ok=True)
+
     all_groups: List[Dict] = []
+    video_recon: Dict[str, List[Dict]] = {}  # video -> list of recon dicts
     t0 = time.time()
     group_idx = 0
 
@@ -323,7 +349,13 @@ def main():
                      f"gt={group_gt.shape}  mask={mask.shape}  meas={meas.shape}")
 
         res = validate_group(name, group_gt, mask, meas, mis,
-                             method_names, args.device)
+                             method_names, args.device,
+                             save_recon=args.save_recon)
+
+        # extract and collect recon data before stripping it
+        if args.save_recon and "recon" in res:
+            video_recon.setdefault(name, []).append(res.pop("recon"))
+
         all_groups.append(res)
 
         # quick per-group summary
@@ -335,6 +367,18 @@ def main():
                         f"gap_I-II={pi-pii:+.2f}  rec_II-III={piv-pii:+.2f}")
 
     elapsed = time.time() - t0
+
+    # ---- save reconstruction data per video --------------------------
+    if args.save_recon:
+        for vname, groups in video_recon.items():
+            npz_data = {}
+            for gi, recon in enumerate(groups):
+                for key, arr in recon.items():
+                    npz_data[f"g{gi}_{key}"] = arr
+            out_npz = RECON_DIR / f"{vname}.npz"
+            np.savez_compressed(out_npz, **npz_data)
+            sz_mb = out_npz.stat().st_size / 1024 / 1024
+            logger.info(f"  Saved reconstructions: {out_npz}  ({sz_mb:.1f} MB)")
 
     # ---- aggregate & save -------------------------------------------
     summary = aggregate(all_groups, method_names)
@@ -383,6 +427,8 @@ def main():
 
     logger.info(f"\nResults -> {out_detail}")
     logger.info(f"Summary -> {out_summary}")
+    if args.save_recon:
+        logger.info(f"Reconstructions -> {RECON_DIR}/")
     logger.info("\nCACTI validation complete!")
 
 
