@@ -28,6 +28,7 @@
 \begin{document}
 
 \title{InverseNet: Benchmarking Operator Mismatch and Calibration Across Compressive Imaging Modalities}
+\titlerunning{InverseNet: Operator Mismatch Benchmark}
 
 \author{Anonymous}
 \authorrunning{Anonymous}
@@ -242,14 +243,40 @@ We report three standard image quality metrics:
 \section{Experimental Results}
 \label{sec:results}
 
+\begin{figure}[t]
+\centering
+\begin{subfigure}[t]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/cassi/scenario_comparison.png}
+    \caption{CASSI (4 methods)}
+    \label{fig:scenario_cassi}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/cacti/scenario_comparison.png}
+    \caption{CACTI (4 methods)}
+    \label{fig:scenario_cacti}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/spc/scenario_comparison.png}
+    \caption{SPC (3 methods)}
+    \label{fig:scenario_spc}
+\end{subfigure}
+\caption{PSNR across three scenarios for all modalities. Scenario~I (Ideal): perfect operator. Scenario~II (Baseline): mismatched operator. Scenario~III (Oracle): true operator used for reconstruction. The collapse of deep learning methods under Scenario~II is visible across all modalities, with CACTI showing the most severe degradation.}
+\label{fig:scenario_comparison}
+\end{figure}
+
 \subsection{CASSI Results}
 \label{sec:cassi_results}
 
-\Cref{tab:cassi} presents the CASSI benchmark results across 10 KAIST scenes.
+\Cref{tab:cassi} presents the CASSI benchmark results across 10 KAIST scenes (\cref{fig:scenario_cassi}).
 
 \begin{table}[t]
 \centering
-\caption{CASSI reconstruction results (10 KAIST scenes, $256 \times 256 \times 28$). PSNR (dB) / SSIM reported as mean $\pm$ std. $\Delta_{\text{deg}}$: degradation (I$\rightarrow$II). $\Delta_{\text{rec}}$: oracle recovery (II$\rightarrow$III). $\rho$: recovery ratio. Best recovery in \best{green}.}
+\caption{CASSI reconstruction results (10 KAIST scenes, $256 \times 256 \times 28$). PSNR (dB) / SSIM reported as mean $\pm$ std. $\Delta_{\text{deg}}$: degradation (I$\rightarrow$II). $\Delta_{\text{rec}}$: oracle recovery (II$\rightarrow$III). $\rho$: recovery ratio. Best recovery in \best{green}. $^\dagger$Recovery ratio undefined due to near-zero degradation.}
 \label{tab:cassi}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lcccccc@{}}
@@ -260,7 +287,7 @@ GAP-TV~\cite{yuan2016gaptv}
  & 20.37{\scriptsize$\pm$1.84} / .620
  & 20.28{\scriptsize$\pm$1.83} / .602
  & 20.38{\scriptsize$\pm$1.84} / .620
- & 0.08 & 0.09 & -- \\
+ & 0.08 & 0.09 & N/A$^\dagger$ \\
 HDNet~\cite{hu2022hdnet}
  & 34.66{\scriptsize$\pm$2.62} / .970
  & 24.05{\scriptsize$\pm$1.85} / .813
@@ -294,10 +321,17 @@ MST-L recovers from 0.808 to 0.941 SSIM under oracle correction, while HDNet rem
 For SAM, MST-L improves from 15.93$^\circ$ (Scenario~II) to 8.22$^\circ$ (Scenario~III), approaching the ideal value of 7.44$^\circ$.
 This indicates that operator mismatch corrupts spectral fidelity, which mask-aware methods can recover.
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/cassi/gap_comparison.png}
+\caption{CASSI mismatch degradation (left, $\Delta_{\text{deg}}$) and oracle recovery (right, $\Delta_{\text{rec}}$) per method. HDNet shows zero recovery due to its mask-oblivious architecture. MST-L achieves the highest recovery (+7.99\,dB), demonstrating the value of mask-aware reconstruction when calibration is available.}
+\label{fig:cassi_gap}
+\end{figure}
+
 \subsection{CACTI Results}
 \label{sec:cacti_results}
 
-\Cref{tab:cacti} presents the CACTI benchmark results across 6 standard benchmark videos.
+\Cref{tab:cacti} presents the CACTI benchmark results across 6 standard benchmark videos (\cref{fig:scenario_cacti}).
 
 \begin{table}[t]
 \centering
@@ -350,7 +384,7 @@ This suggests that higher-capacity learned representations encode stronger impli
 \subsection{SPC Results}
 \label{sec:spc_results}
 
-\Cref{tab:spc} presents the SPC benchmark results across 11 Set11 images.
+\Cref{tab:spc} presents the SPC benchmark results across 11 Set11 images (\cref{fig:scenario_spc}).
 
 \begin{table}[t]
 \centering
