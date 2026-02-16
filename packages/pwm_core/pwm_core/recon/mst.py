@@ -466,16 +466,16 @@ if HAS_TORCH:
 
 MST_CONFIGS = {
     "mst_s": {
-        "dim": 28, "stage": 1, "num_blocks": [2, 2],
-        "description": "MST-S: Small variant (~0.9M params)",
+        "dim": 28, "stage": 2, "num_blocks": [2, 2, 2],
+        "description": "MST-S: Small variant (~0.93M params)",
     },
     "mst_m": {
-        "dim": 28, "stage": 2, "num_blocks": [2, 2, 2],
+        "dim": 28, "stage": 2, "num_blocks": [2, 4, 2],
         "description": "MST-M: Medium variant (~1.5M params)",
     },
     "mst_l": {
-        "dim": 28, "stage": 2, "num_blocks": [2, 4, 2],
-        "description": "MST-L: Large variant (default, ~2.0M params)",
+        "dim": 28, "stage": 2, "num_blocks": [4, 7, 5],
+        "description": "MST-L: Large variant (default, ~2.03M params)",
     },
     "mst_plus_plus": {
         "dim": 28, "stage": 2, "num_blocks": [4, 7, 5],
