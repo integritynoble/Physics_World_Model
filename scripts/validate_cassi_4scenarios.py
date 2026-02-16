@@ -99,7 +99,7 @@ def ssim(x_true: np.ndarray, x_recon: np.ndarray, window_size: int = 11) -> floa
     sigma_cross = correlate2d(x_true * x_recon, window, mode='same', boundary='symm') - mu_cross
 
     # SSIM
-    ssim_map = ((2 * mu_cross + C2) * (2 * sigma_cross + C2)) / \
+    ssim_map = ((2 * mu_cross + C1) * (2 * sigma_cross + C2)) / \
                ((mu_true_sq + mu_recon_sq + C1) * (sigma_true_sq + sigma_recon_sq + C2))
 
     return np.mean(ssim_map)
@@ -281,8 +281,8 @@ def add_poisson_gaussian_noise(
 def generate_measurement_with_noise(
     x_scene: np.ndarray,
     mask: np.ndarray,
-    peak: float = 10000,
-    sigma: float = 1.0,
+    peak: float = 100000,
+    sigma: float = 0.01,
     seed: Optional[int] = None
 ) -> np.ndarray:
     """Generate measurement from scene with noise.
@@ -300,9 +300,13 @@ def generate_measurement_with_noise(
     if seed is not None:
         np.random.seed(seed)
 
-    # Create operator and run forward model
-    operator = SimulatedOperatorEnlargedGrid(mask, N=4, K=2, stride=1)
-    y_clean = operator.forward(x_scene)
+    # Simple CASSI forward model with step=2
+    H, W, nC = x_scene.shape
+    step = 2
+    W_ext = W + (nC - 1) * step
+    y_clean = np.zeros((H, W_ext), dtype=np.float32)
+    for k in range(nC):
+        y_clean[:, k * step:k * step + W] += mask * x_scene[:, :, k]
 
     # Add noise
     y_noisy = add_poisson_gaussian_noise(y_clean, peak=peak, sigma=sigma)
@@ -310,82 +314,34 @@ def generate_measurement_with_noise(
     return y_noisy
 
 
-def gap_tv_solver_wrapper(
-    y_meas: np.ndarray,
-    mask_or_operator,
-    n_iter: int = 50,
-    lam: float = 6.0,
-    n_bands: Optional[int] = None
-) -> np.ndarray:
-    """Wrapper for GAP-TV solver.
+def reconstruct(method: str, y_meas: np.ndarray, mask: np.ndarray,
+                device: str = 'cuda:0') -> np.ndarray:
+    """Multi-method reconstruction dispatch.
 
     Args:
-        y_meas: (H, W) measurement
-        mask_or_operator: (H, W) mask OR SimulatedOperatorEnlargedGrid object
-        n_iter: Number of iterations
-        lam: TV regularization weight
-        n_bands: Number of spectral bands (optional, inferred if not provided)
+        method: One of 'gap_tv', 'hdnet', 'mst_s', 'mst_l'
+        y_meas: (H, W_ext) measurement where W_ext = W + (nC-1)*step
+        mask: (H, W) coded aperture mask
+        device: torch device for deep learning methods
 
     Returns:
-        x_recon: (H, W, 28) reconstructed cube (always 28 bands)
+        x_recon: (H, W, 28) reconstructed cube
     """
-    from scipy.interpolate import interp1d
-
-    # Handle both mask arrays and operator objects
-    if hasattr(mask_or_operator, 'mask_256'):
-        # It's an operator object
-        mask = mask_or_operator.mask_256
+    if method == 'gap_tv':
+        return gap_tv_cassi(y_meas, mask, n_bands=28, iterations=50, lam=0.05, step=2)
+    elif method == 'hdnet':
+        from pwm_core.recon.hdnet import hdnet_recon_cassi
+        mask_3d = np.repeat(mask[:, :, np.newaxis], 28, axis=2).astype(np.float32)
+        return hdnet_recon_cassi(y_meas, mask_3d, nC=28, step=2, device=device, dim=28)
+    elif method in ('mst_s', 'mst_l'):
+        from pwm_core.recon.mst import mst_recon_cassi
+        return mst_recon_cassi(y_meas, mask, nC=28, step=2, device=device, variant=method)
     else:
-        # It's a mask array
-        mask = mask_or_operator
+        raise ValueError(f"Unknown method: {method}")
 
-    # Infer n_bands if not provided
-    if n_bands is None:
-        n_bands = y_meas.shape[1] - mask.shape[1] + 1
 
-    # Pad mask to match expected measurement width for n_bands
-    # For CASSI with n_bands spectral bands: meas_width = spatial_width + (n_bands - 1)
-    expected_meas_width = mask.shape[1] + (n_bands - 1)
-    if mask.shape[1] != expected_meas_width:
-        pad_width = expected_meas_width - mask.shape[1]
-        # Pad with 1.0 (full transmission) for spectral dispersion region
-        mask_padded = np.pad(mask.astype(np.float32),
-                             ((0, 0), (0, pad_width)),
-                             mode='constant',
-                             constant_values=1.0)
-    else:
-        mask_padded = mask
-
-    # Call GAP-TV solver
-    x_recon = gap_tv_cassi(
-        y_meas,
-        mask_padded,
-        n_bands=n_bands,
-        iterations=n_iter,
-        lam=lam,
-        acc=1.0
-    )
-
-    # Extract spatial dimension (first 256 columns, since gap_tv_cassi returns measurement-resolution)
-    x_recon = x_recon[:, :mask.shape[1], :]
-
-    # Always downsample to 28 bands for consistency with ground truth
-    if x_recon.shape[2] != 28:
-        H, W, L = x_recon.shape
-        orig_lambda = np.arange(L) / (L - 1) if L > 1 else np.array([0])
-        target_lambda = np.arange(28) / 27 if 28 > 1 else np.array([0])
-
-        x_recon_28 = np.zeros((H, W, 28), dtype=x_recon.dtype)
-        for i in range(H):
-            for j in range(W):
-                if L > 1:
-                    f = interp1d(orig_lambda, x_recon[i, j, :], kind='linear', fill_value='extrapolate')
-                    x_recon_28[i, j, :] = f(target_lambda)
-                else:
-                    x_recon_28[i, j, :] = x_recon[i, j, 0]
-        x_recon = x_recon_28
-
-    return x_recon
+# Available reconstruction methods
+RECONSTRUCTION_METHODS = ['gap_tv', 'hdnet', 'mst_s', 'mst_l']
 
 
 # ============================================================================
@@ -395,79 +351,80 @@ def gap_tv_solver_wrapper(
 def scenario_i_ideal(
     x_true: np.ndarray,
     mask_ideal: np.ndarray,
-    seed: int
+    seed: int,
+    methods: List[str] = None,
+    device: str = 'cuda:0'
 ) -> Dict:
     """Scenario I: Ideal reconstruction (oracle).
 
     Uses ideal mask and clean measurement (no noise).
     """
+    if methods is None:
+        methods = RECONSTRUCTION_METHODS
     logger.info("  Scenario I: Ideal (oracle)")
     start_t = time.time()
 
-    # Generate clean measurement with ideal mask
+    # Generate clean measurement with ideal mask (simple CASSI forward, step=2)
     np.random.seed(seed)
-    operator = SimulatedOperatorEnlargedGrid(mask_ideal, N=4, K=2, stride=1)
-    y_clean = operator.forward(x_true)
+    H, W, nC = x_true.shape
+    step = 2
+    W_ext = W + (nC - 1) * step
+    y_clean = np.zeros((H, W_ext), dtype=np.float32)
+    for k in range(nC):
+        y_clean[:, k * step:k * step + W] += mask_ideal * x_true[:, :, k]
 
-    # Reconstruct with ideal mask
-    x_recon = gap_tv_solver_wrapper(y_clean, mask_ideal, n_iter=50, lam=6.0, n_bands=28)
+    # Reconstruct with each method
+    results = {'y_meas': y_clean}
+    for method in methods:
+        try:
+            x_recon = np.clip(reconstruct(method, y_clean, mask_ideal, device=device), 0, 1)
+            results[method] = {
+                'psnr': float(psnr(x_true, x_recon)),
+                'ssim': float(ssim(np.mean(x_true, axis=2), np.mean(x_recon, axis=2))),
+                'sam': float(sam(x_true, x_recon)),
+            }
+            logger.info(f"    {method}: PSNR={results[method]['psnr']:.2f} dB")
+        except Exception as e:
+            logger.error(f"    {method} failed: {e}")
+            results[method] = {'psnr': 0.0, 'ssim': 0.0, 'sam': 180.0}
 
-    # Clip to valid range
-    x_recon = np.clip(x_recon, 0, 1)
-
-    # Compute metrics
-    psnr_val = psnr(x_true, x_recon)
-    ssim_val = ssim(np.mean(x_true, axis=2), np.mean(x_recon, axis=2))
-    sam_val = sam(x_true, x_recon)
-
-    elapsed = time.time() - start_t
-    logger.info(f"    PSNR: {psnr_val:.2f} dB, SSIM: {ssim_val:.4f}, SAM: {sam_val:.2f}°, time: {elapsed:.1f}s")
-
-    return {
-        'x_recon': x_recon,
-        'y_meas': y_clean,
-        'psnr': float(psnr_val),
-        'ssim': float(ssim_val),
-        'sam': float(sam_val),
-        'time': float(elapsed)
-    }
+    results['time'] = float(time.time() - start_t)
+    return results
 
 
 def scenario_ii_assumed(
     x_true: np.ndarray,
     y_noisy: np.ndarray,
-    mask_ideal: np.ndarray
+    mask_ideal: np.ndarray,
+    methods: List[str] = None,
+    device: str = 'cuda:0'
 ) -> Dict:
     """Scenario II: Assumed mask (baseline, no correction).
 
     Uses ideal mask with corrupted measurement (no correction applied).
     This shows the PSNR degradation from mismatch alone.
     """
+    if methods is None:
+        methods = RECONSTRUCTION_METHODS
     logger.info("  Scenario II: Assumed (baseline)")
     start_t = time.time()
 
-    # Reconstruct with assumed ideal mask (no correction)
-    x_recon = gap_tv_solver_wrapper(y_noisy, mask_ideal, n_iter=50, lam=6.0, n_bands=28)
+    results = {'y_meas': y_noisy}
+    for method in methods:
+        try:
+            x_recon = np.clip(reconstruct(method, y_noisy, mask_ideal, device=device), 0, 1)
+            results[method] = {
+                'psnr': float(psnr(x_true, x_recon)),
+                'ssim': float(ssim(np.mean(x_true, axis=2), np.mean(x_recon, axis=2))),
+                'sam': float(sam(x_true, x_recon)),
+            }
+            logger.info(f"    {method}: PSNR={results[method]['psnr']:.2f} dB")
+        except Exception as e:
+            logger.error(f"    {method} failed: {e}")
+            results[method] = {'psnr': 0.0, 'ssim': 0.0, 'sam': 180.0}
 
-    # Clip to valid range
-    x_recon = np.clip(x_recon, 0, 1)
-
-    # Compute metrics
-    psnr_val = psnr(x_true, x_recon)
-    ssim_val = ssim(np.mean(x_true, axis=2), np.mean(x_recon, axis=2))
-    sam_val = sam(x_true, x_recon)
-
-    elapsed = time.time() - start_t
-    logger.info(f"    PSNR: {psnr_val:.2f} dB, SSIM: {ssim_val:.4f}, SAM: {sam_val:.2f}°, time: {elapsed:.1f}s")
-
-    return {
-        'x_recon': x_recon,
-        'y_meas': y_noisy,
-        'psnr': float(psnr_val),
-        'ssim': float(ssim_val),
-        'sam': float(sam_val),
-        'time': float(elapsed)
-    }
+    results['time'] = float(time.time() - start_t)
+    return results
 
 
 def scenario_iii_corrected(
@@ -476,25 +433,30 @@ def scenario_iii_corrected(
     mask_ideal: np.ndarray,
     mask_real: np.ndarray,
     skip_alg1: bool = False,
-    skip_alg2: bool = False
+    skip_alg2: bool = False,
+    methods: List[str] = None,
+    device: str = 'cuda:0'
 ) -> Dict:
     """Scenario III: Corrected (Alg1+Alg2 estimated correction).
 
-    Estimates mismatch using Algorithm 1 (coarse) then Algorithm 2 (fine).
+    Estimates mismatch using Algorithm 1 (coarse) then Algorithm 2 (fine),
+    then reconstructs with the corrected mask using all methods.
     """
+    if methods is None:
+        methods = RECONSTRUCTION_METHODS
     logger.info("  Scenario III: Corrected (Alg1+Alg2)")
     start_t = time.time()
 
-    x_recon = None
     mismatch_alg1 = None
     mismatch_alg2 = None
     time_alg1 = 0
     time_alg2 = 0
+    corrected_mask = mask_ideal  # fallback
 
-    # Create a solver function wrapper that always enforces 28 spectral bands
-    def solver_fn_28bands(y_meas, mask_or_operator, n_iter=50, lam=6.0):
-        """Wrapper that always uses 28 spectral bands."""
-        return gap_tv_solver_wrapper(y_meas, mask_or_operator, n_iter=n_iter, lam=lam, n_bands=28)
+    # Create a solver function for Algorithm 1
+    def solver_fn(y_meas, mask_or_op, n_iter=50, lam=0.05):
+        mask = mask_or_op.mask_256 if hasattr(mask_or_op, 'mask_256') else mask_or_op
+        return gap_tv_cassi(y_meas, mask, n_bands=28, iterations=n_iter, lam=lam, step=2)
 
     # Algorithm 1: Coarse estimation
     if not skip_alg1:
@@ -502,7 +464,7 @@ def scenario_iii_corrected(
         alg1_start = time.time()
 
         alg1 = Algorithm1HierarchicalBeamSearch(
-            solver_fn=solver_fn_28bands,
+            solver_fn=solver_fn,
             n_iter_proxy=5,
             n_iter_beam=10
         )
@@ -517,10 +479,13 @@ def scenario_iii_corrected(
         time_alg1 = time.time() - alg1_start
         logger.info(f"    Algorithm 1 complete: {mismatch_alg1}, time: {time_alg1:.1f}s")
 
-        # Reconstruct with Algorithm 1 correction
-        operator_alg1 = SimulatedOperatorEnlargedGrid(mask_real)
-        operator_alg1.apply_mask_correction(mismatch_alg1)
-        x_recon = gap_tv_solver_wrapper(y_noisy, operator_alg1.mask_256, n_iter=50, lam=6.0, n_bands=28)
+        # Apply correction to get corrected mask
+        corrected_mask = warp_affine_2d(
+            mask_ideal,
+            dx=mismatch_alg1.mask_dx,
+            dy=mismatch_alg1.mask_dy,
+            theta=mismatch_alg1.mask_theta
+        )
 
     # Algorithm 2: Fine refinement
     if not skip_alg2 and mismatch_alg1 is not None:
@@ -528,8 +493,6 @@ def scenario_iii_corrected(
         alg2_start = time.time()
 
         alg2 = Algorithm2JointGradientRefinement(device="auto", use_checkpointing=True)
-
-        # Dispersion curve for Algorithm 2
         s_nom = np.array([2.0] * 28)
 
         mismatch_alg2 = alg2.refine(
@@ -544,37 +507,34 @@ def scenario_iii_corrected(
         time_alg2 = time.time() - alg2_start
         logger.info(f"    Algorithm 2 complete: {mismatch_alg2}, time: {time_alg2:.1f}s")
 
-        # Reconstruct with Algorithm 2 correction
-        operator_alg2 = SimulatedOperatorEnlargedGrid(mask_real)
-        operator_alg2.apply_mask_correction(mismatch_alg2)
-        x_recon = gap_tv_solver_wrapper(y_noisy, operator_alg2.mask_256, n_iter=50, lam=6.0, n_bands=28)
-    elif skip_alg1:
-        # Use assumed mask if algorithms skipped
-        x_recon = gap_tv_solver_wrapper(y_noisy, mask_ideal, n_iter=50, lam=6.0, n_bands=28)
+        corrected_mask = warp_affine_2d(
+            mask_ideal,
+            dx=mismatch_alg2.mask_dx,
+            dy=mismatch_alg2.mask_dy,
+            theta=mismatch_alg2.mask_theta
+        )
 
-    # Clip to valid range
-    x_recon = np.clip(x_recon, 0, 1)
+    # Reconstruct with corrected mask using all methods
+    results = {'y_meas': y_noisy}
+    for method in methods:
+        try:
+            x_recon = np.clip(reconstruct(method, y_noisy, corrected_mask, device=device), 0, 1)
+            results[method] = {
+                'psnr': float(psnr(x_true, x_recon)),
+                'ssim': float(ssim(np.mean(x_true, axis=2), np.mean(x_recon, axis=2))),
+                'sam': float(sam(x_true, x_recon)),
+            }
+            logger.info(f"    {method}: PSNR={results[method]['psnr']:.2f} dB")
+        except Exception as e:
+            logger.error(f"    {method} failed: {e}")
+            results[method] = {'psnr': 0.0, 'ssim': 0.0, 'sam': 180.0}
 
-    # Compute metrics
-    psnr_val = psnr(x_true, x_recon)
-    ssim_val = ssim(np.mean(x_true, axis=2), np.mean(x_recon, axis=2))
-    sam_val = sam(x_true, x_recon)
-
-    elapsed = time.time() - start_t
-    logger.info(f"    PSNR: {psnr_val:.2f} dB, SSIM: {ssim_val:.4f}, SAM: {sam_val:.2f}°, time: {elapsed:.1f}s")
-
-    return {
-        'x_recon': x_recon,
-        'y_meas': y_noisy,
-        'psnr': float(psnr_val),
-        'ssim': float(ssim_val),
-        'sam': float(sam_val),
-        'time': float(elapsed),
-        'time_alg1': float(time_alg1),
-        'time_alg2': float(time_alg2),
-        'mismatch_alg1': mismatch_alg1.__repr__() if mismatch_alg1 else None,
-        'mismatch_alg2': mismatch_alg2.__repr__() if mismatch_alg2 else None
-    }
+    results['time'] = float(time.time() - start_t)
+    results['time_alg1'] = float(time_alg1)
+    results['time_alg2'] = float(time_alg2)
+    results['mismatch_alg1'] = mismatch_alg1.__repr__() if mismatch_alg1 else None
+    results['mismatch_alg2'] = mismatch_alg2.__repr__() if mismatch_alg2 else None
+    return results
 
 
 def scenario_iv_truth_fm(
@@ -582,43 +542,46 @@ def scenario_iv_truth_fm(
     y_noisy: np.ndarray,
     mask_ideal: np.ndarray,
     mask_real: np.ndarray,
-    mismatch_true: MismatchParameters
+    mismatch_true: MismatchParameters,
+    methods: List[str] = None,
+    device: str = 'cuda:0'
 ) -> Dict:
     """Scenario IV: Truth Forward Model (oracle mismatch correction).
 
     Uses the true mismatch parameters to apply oracle correction.
     Shows the upper bound of what calibration can achieve.
     """
+    if methods is None:
+        methods = RECONSTRUCTION_METHODS
     logger.info("  Scenario IV: Truth Forward Model (oracle)")
     start_t = time.time()
 
     # Apply oracle mismatch correction using true parameters
-    operator_oracle = SimulatedOperatorEnlargedGrid(mask_real)
-    operator_oracle.apply_mask_correction(mismatch_true)
+    oracle_mask = warp_affine_2d(
+        mask_ideal,
+        dx=mismatch_true.mask_dx,
+        dy=mismatch_true.mask_dy,
+        theta=mismatch_true.mask_theta
+    )
 
-    # Reconstruct with oracle correction
-    x_recon = gap_tv_solver_wrapper(y_noisy, operator_oracle.mask_256, n_iter=50, lam=6.0, n_bands=28)
+    # Reconstruct with oracle correction using all methods
+    results = {'y_meas': y_noisy}
+    for method in methods:
+        try:
+            x_recon = np.clip(reconstruct(method, y_noisy, oracle_mask, device=device), 0, 1)
+            results[method] = {
+                'psnr': float(psnr(x_true, x_recon)),
+                'ssim': float(ssim(np.mean(x_true, axis=2), np.mean(x_recon, axis=2))),
+                'sam': float(sam(x_true, x_recon)),
+            }
+            logger.info(f"    {method}: PSNR={results[method]['psnr']:.2f} dB")
+        except Exception as e:
+            logger.error(f"    {method} failed: {e}")
+            results[method] = {'psnr': 0.0, 'ssim': 0.0, 'sam': 180.0}
 
-    # Clip to valid range
-    x_recon = np.clip(x_recon, 0, 1)
-
-    # Compute metrics
-    psnr_val = psnr(x_true, x_recon)
-    ssim_val = ssim(np.mean(x_true, axis=2), np.mean(x_recon, axis=2))
-    sam_val = sam(x_true, x_recon)
-
-    elapsed = time.time() - start_t
-    logger.info(f"    PSNR: {psnr_val:.2f} dB, SSIM: {ssim_val:.4f}, SAM: {sam_val:.2f}°, time: {elapsed:.1f}s")
-
-    return {
-        'x_recon': x_recon,
-        'y_meas': y_noisy,
-        'psnr': float(psnr_val),
-        'ssim': float(ssim_val),
-        'sam': float(sam_val),
-        'time': float(elapsed),
-        'mismatch_true': mismatch_true.__repr__()
-    }
+    results['time'] = float(time.time() - start_t)
+    results['mismatch_true'] = mismatch_true.__repr__()
+    return results
 
 
 # ============================================================================
@@ -633,7 +596,9 @@ def validate_scene_4scenarios(
     mask_real: np.ndarray,
     seed: int,
     skip_alg1: bool = False,
-    skip_alg2: bool = False
+    skip_alg2: bool = False,
+    methods: List[str] = None,
+    device: str = 'cuda:0'
 ) -> Dict:
     """Run 4-scenario validation for a single scene.
 
@@ -646,10 +611,14 @@ def validate_scene_4scenarios(
         seed: Random seed for reproducibility
         skip_alg1: Skip Algorithm 1
         skip_alg2: Skip Algorithm 2
+        methods: List of reconstruction methods
+        device: Torch device
 
     Returns:
         Dictionary with results for all 4 scenarios
     """
+    if methods is None:
+        methods = RECONSTRUCTION_METHODS
     logger.info(f"\n{'='*70}")
     logger.info(f"Scene {scene_idx + 1}/10: {scene_name}")
     logger.info(f"{'='*70}")
@@ -657,60 +626,63 @@ def validate_scene_4scenarios(
     scene_start = time.time()
 
     # Step 1: Scenario I (ideal)
-    result_i = scenario_i_ideal(x_true, mask_ideal, seed=seed)
+    result_i = scenario_i_ideal(x_true, mask_ideal, seed=seed, methods=methods, device=device)
 
     # Step 2: Inject mismatch and generate noisy measurement
     logger.info("Injecting synthetic mismatch and generating noisy measurement...")
     x_corrupted, mask_corrupted, mismatch_true = inject_mismatch(x_true, mask_real, seed=seed)
-    y_noisy = generate_measurement_with_noise(x_true, mask_corrupted, peak=10000, sigma=1.0, seed=seed)
+    y_noisy = generate_measurement_with_noise(x_true, mask_corrupted, peak=100000, sigma=0.01, seed=seed)
 
     # Step 3: Scenario II (assumed, baseline)
-    result_ii = scenario_ii_assumed(x_true, y_noisy, mask_ideal)
+    result_ii = scenario_ii_assumed(x_true, y_noisy, mask_ideal, methods=methods, device=device)
 
     # Step 4: Scenario III (corrected)
     result_iii = scenario_iii_corrected(
         x_true, y_noisy, mask_ideal, mask_real,
-        skip_alg1=skip_alg1, skip_alg2=skip_alg2
+        skip_alg1=skip_alg1, skip_alg2=skip_alg2,
+        methods=methods, device=device
     )
 
     # Step 5: Scenario IV (truth FM)
-    result_iv = scenario_iv_truth_fm(x_true, y_noisy, mask_ideal, mask_real, mismatch_true)
+    result_iv = scenario_iv_truth_fm(
+        x_true, y_noisy, mask_ideal, mask_real, mismatch_true,
+        methods=methods, device=device
+    )
 
-    # Compute gaps
-    gap_i_to_ii = result_i['psnr'] - result_ii['psnr']
-    gap_ii_to_iii = result_iii['psnr'] - result_ii['psnr']
-    gap_ii_to_iv = result_iv['psnr'] - result_ii['psnr']
-    gap_iii_to_iv = result_iv['psnr'] - result_iii['psnr']
-    gap_iv_to_i = result_i['psnr'] - result_iv['psnr']
+    # Compute per-method gaps
+    gaps = {}
+    for method in methods:
+        psnr_i = result_i.get(method, {}).get('psnr', 0)
+        psnr_ii = result_ii.get(method, {}).get('psnr', 0)
+        psnr_iii = result_iii.get(method, {}).get('psnr', 0)
+        psnr_iv = result_iv.get(method, {}).get('psnr', 0)
+        gaps[method] = {
+            'i_to_ii': float(psnr_i - psnr_ii),
+            'ii_to_iii': float(psnr_iii - psnr_ii),
+            'ii_to_iv': float(psnr_iv - psnr_ii),
+            'iii_to_iv': float(psnr_iv - psnr_iii),
+            'iv_to_i': float(psnr_i - psnr_iv),
+        }
 
     elapsed = time.time() - scene_start
 
     logger.info(f"\nScene {scene_idx + 1} Summary:")
-    logger.info(f"  Scenario I (Ideal):     PSNR={result_i['psnr']:.2f} dB")
-    logger.info(f"  Scenario II (Assumed):  PSNR={result_ii['psnr']:.2f} dB")
-    logger.info(f"  Scenario III (Correct): PSNR={result_iii['psnr']:.2f} dB")
-    logger.info(f"  Scenario IV (Truth FM): PSNR={result_iv['psnr']:.2f} dB")
-    logger.info(f"\n  Gap I→II (degradation):     {gap_i_to_ii:.2f} dB")
-    logger.info(f"  Gap II→III (calibration):   {gap_ii_to_iii:.2f} dB")
-    logger.info(f"  Gap II→IV (oracle):         {gap_ii_to_iv:.2f} dB")
-    logger.info(f"  Gap III→IV (residual):      {gap_iii_to_iv:.2f} dB")
-    logger.info(f"  Gap IV→I (solver limit):    {gap_iv_to_i:.2f} dB")
+    for method in methods:
+        pi = result_i.get(method, {}).get('psnr', 0)
+        pii = result_ii.get(method, {}).get('psnr', 0)
+        piii = result_iii.get(method, {}).get('psnr', 0)
+        piv = result_iv.get(method, {}).get('psnr', 0)
+        logger.info(f"  {method}: I={pi:.2f} | II={pii:.2f} | III={piii:.2f} | IV={piv:.2f} dB")
     logger.info(f"  Total time: {elapsed:.1f}s")
 
     return {
         'scene_idx': scene_idx,
         'scene_name': scene_name,
-        'scenario_i': result_i,
-        'scenario_ii': result_ii,
-        'scenario_iii': result_iii,
-        'scenario_iv': result_iv,
-        'gaps': {
-            'i_to_ii': float(gap_i_to_ii),
-            'ii_to_iii': float(gap_ii_to_iii),
-            'ii_to_iv': float(gap_ii_to_iv),
-            'iii_to_iv': float(gap_iii_to_iv),
-            'iv_to_i': float(gap_iv_to_i)
-        },
+        'scenario_i': {k: v for k, v in result_i.items() if k != 'y_meas'},
+        'scenario_ii': {k: v for k, v in result_ii.items() if k != 'y_meas'},
+        'scenario_iii': {k: v for k, v in result_iii.items() if k != 'y_meas'},
+        'scenario_iv': {k: v for k, v in result_iv.items() if k != 'y_meas'},
+        'gaps': gaps,
         'mismatch_true': mismatch_true.__repr__(),
         'total_time': float(elapsed)
     }
@@ -727,9 +699,16 @@ def main():
     parser = argparse.ArgumentParser(description='CASSI 4-scenario validation')
     parser.add_argument('--skip-alg1', action='store_true', help='Skip Algorithm 1')
     parser.add_argument('--skip-alg2', action='store_true', help='Skip Algorithm 2')
+    parser.add_argument('--device', default='cuda:0', help='Torch device')
+    parser.add_argument('--methods', nargs='+', default=None,
+                        choices=['gap_tv', 'hdnet', 'mst_s', 'mst_l'],
+                        help='Reconstruction methods (default: all)')
     args = parser.parse_args()
 
+    methods = args.methods or RECONSTRUCTION_METHODS
+
     logger.info("CASSI 4-Scenario Validation Protocol")
+    logger.info(f"Methods: {methods}")
     logger.info(f"{'='*70}")
 
     # Load masks
@@ -753,13 +732,11 @@ def main():
 
     for scene_idx, scene_name in enumerate(SCENE_NAMES):
         try:
-            # Load scene
             x_true = load_scene(scene_name)
             if x_true is None:
                 logger.error(f"Failed to load scene {scene_name}")
                 continue
 
-            # Run 4-scenario validation
             result = validate_scene_4scenarios(
                 scene_idx,
                 scene_name,
@@ -768,7 +745,9 @@ def main():
                 mask_real,
                 seed=42 + scene_idx,
                 skip_alg1=args.skip_alg1,
-                skip_alg2=args.skip_alg2
+                skip_alg2=args.skip_alg2,
+                methods=methods,
+                device=args.device
             )
 
             all_results.append(result)
@@ -779,86 +758,71 @@ def main():
 
     total_elapsed = time.time() - total_start
 
-    # Compute summary statistics
-    if all_results:
-        logger.info(f"\n{'='*70}")
-        logger.info("Summary Statistics (All Scenes)")
-        logger.info(f"{'='*70}")
-
-        psnr_i = [r['scenario_i']['psnr'] for r in all_results]
-        psnr_ii = [r['scenario_ii']['psnr'] for r in all_results]
-        psnr_iii = [r['scenario_iii']['psnr'] for r in all_results]
-        psnr_iv = [r['scenario_iv']['psnr'] for r in all_results]
-
-        gaps_i_ii = [r['gaps']['i_to_ii'] for r in all_results]
-        gaps_ii_iii = [r['gaps']['ii_to_iii'] for r in all_results]
-        gaps_ii_iv = [r['gaps']['ii_to_iv'] for r in all_results]
-        gaps_iii_iv = [r['gaps']['iii_to_iv'] for r in all_results]
-        gaps_iv_i = [r['gaps']['iv_to_i'] for r in all_results]
-
-        logger.info(f"Scenario I   (Ideal):     {np.mean(psnr_i):.2f} ± {np.std(psnr_i):.4f} dB")
-        logger.info(f"Scenario II  (Assumed):   {np.mean(psnr_ii):.2f} ± {np.std(psnr_ii):.4f} dB")
-        logger.info(f"Scenario III (Corrected): {np.mean(psnr_iii):.2f} ± {np.std(psnr_iii):.4f} dB")
-        logger.info(f"Scenario IV  (Truth FM):  {np.mean(psnr_iv):.2f} ± {np.std(psnr_iv):.4f} dB")
-
-        logger.info(f"\nGap I→II   (degradation):   {np.mean(gaps_i_ii):.2f} ± {np.std(gaps_i_ii):.4f} dB")
-        logger.info(f"Gap II→III (calibration):   {np.mean(gaps_ii_iii):.2f} ± {np.std(gaps_ii_iii):.4f} dB")
-        logger.info(f"Gap II→IV  (oracle):        {np.mean(gaps_ii_iv):.2f} ± {np.std(gaps_ii_iv):.4f} dB")
-        logger.info(f"Gap III→IV (residual):      {np.mean(gaps_iii_iv):.2f} ± {np.std(gaps_iii_iv):.4f} dB")
-        logger.info(f"Gap IV→I   (solver limit):  {np.mean(gaps_iv_i):.2f} ± {np.std(gaps_iv_i):.4f} dB")
-
-        logger.info(f"\nTotal execution time: {total_elapsed:.1f}s ({total_elapsed/3600:.2f} hours)")
-        logger.info(f"Average per scene: {total_elapsed/len(all_results):.1f}s")
-
-        # Save results to JSON (strip large arrays)
-        output_file = REPORTS_DIR / "cassi_validation_4scenarios.json"
-
-        # Remove x_recon and y_meas arrays from results before saving
-        clean_results = []
-        for r in all_results:
-            cr = {k: v for k, v in r.items()}
-            for scenario_key in ['scenario_i', 'scenario_ii', 'scenario_iii', 'scenario_iv']:
-                if scenario_key in cr:
-                    cr[scenario_key] = {k: v for k, v in cr[scenario_key].items()
-                                        if k not in ('x_recon', 'y_meas')}
-            clean_results.append(cr)
-
-        summary = {
-            'num_scenes': len(all_results),
-            'total_time': float(total_elapsed),
-            'timestamp': str(Path(__file__).parent.parent),
-            'summary': {
-                'scenario_i_psnr': float(np.mean(psnr_i)),
-                'scenario_ii_psnr': float(np.mean(psnr_ii)),
-                'scenario_iii_psnr': float(np.mean(psnr_iii)),
-                'scenario_iv_psnr': float(np.mean(psnr_iv)),
-                'gap_i_to_ii': float(np.mean(gaps_i_ii)),
-                'gap_ii_to_iii': float(np.mean(gaps_ii_iii)),
-                'gap_ii_to_iv': float(np.mean(gaps_ii_iv)),
-                'gap_iii_to_iv': float(np.mean(gaps_iii_iv)),
-                'gap_iv_to_i': float(np.mean(gaps_iv_i))
-            },
-            'per_scene': clean_results
-        }
-
-        class NumpyEncoder(json.JSONEncoder):
-            def default(self, obj):
-                if isinstance(obj, np.ndarray):
-                    return obj.tolist()
-                if isinstance(obj, (np.floating, np.float32, np.float64)):
-                    return float(obj)
-                if isinstance(obj, (np.integer, np.int32, np.int64)):
-                    return int(obj)
-                return super().default(obj)
-
-        with open(output_file, 'w') as f:
-            json.dump(summary, f, indent=2, cls=NumpyEncoder)
-
-        logger.info(f"\nResults saved to {output_file}")
-        return 0
-    else:
+    if not all_results:
         logger.error("No scenes validated successfully")
         return 1
+
+    # Compute per-method summary statistics
+    logger.info(f"\n{'='*70}")
+    logger.info("Summary Statistics (All Scenes)")
+    logger.info(f"{'='*70}")
+
+    summary_methods = {}
+    for method in methods:
+        for scenario_key in ['scenario_i', 'scenario_ii', 'scenario_iii', 'scenario_iv']:
+            pvals = [r[scenario_key].get(method, {}).get('psnr', 0) for r in all_results]
+            label = scenario_key.replace('_', ' ').upper()
+            logger.info(f"  {method} {label}: {np.mean(pvals):.2f} ± {np.std(pvals):.2f} dB")
+
+        # Gaps
+        gaps_i_ii = [r['gaps'][method]['i_to_ii'] for r in all_results]
+        gaps_ii_iii = [r['gaps'][method]['ii_to_iii'] for r in all_results]
+        gaps_ii_iv = [r['gaps'][method]['ii_to_iv'] for r in all_results]
+        logger.info(f"  {method} Gap I→II: {np.mean(gaps_i_ii):.2f}, II→III: {np.mean(gaps_ii_iii):.2f}, II→IV: {np.mean(gaps_ii_iv):.2f} dB")
+
+    logger.info(f"\nTotal execution time: {total_elapsed:.1f}s ({total_elapsed/3600:.2f} hours)")
+    logger.info(f"Average per scene: {total_elapsed/len(all_results):.1f}s")
+
+    # Save results to JSON
+    output_file = REPORTS_DIR / "cassi_validation_4scenarios.json"
+
+    # Build summary
+    summary_data = {}
+    for method in methods:
+        summary_data[method] = {}
+        for scenario_key in ['scenario_i', 'scenario_ii', 'scenario_iii', 'scenario_iv']:
+            pvals = [r[scenario_key].get(method, {}).get('psnr', 0) for r in all_results]
+            svals = [r[scenario_key].get(method, {}).get('ssim', 0) for r in all_results]
+            summary_data[method][scenario_key] = {
+                'psnr_mean': float(np.mean(pvals)),
+                'psnr_std': float(np.std(pvals)),
+                'ssim_mean': float(np.mean(svals)),
+                'ssim_std': float(np.std(svals)),
+            }
+
+    output = {
+        'num_scenes': len(all_results),
+        'methods': methods,
+        'total_time': float(total_elapsed),
+        'summary': summary_data,
+        'per_scene': all_results
+    }
+
+    class NumpyEncoder(json.JSONEncoder):
+        def default(self, obj):
+            if isinstance(obj, np.ndarray):
+                return obj.tolist()
+            if isinstance(obj, (np.floating, np.float32, np.float64)):
+                return float(obj)
+            if isinstance(obj, (np.integer, np.int32, np.int64)):
+                return int(obj)
+            return super().default(obj)
+
+    with open(output_file, 'w') as f:
+        json.dump(output, f, indent=2, cls=NumpyEncoder)
+
+    logger.info(f"\nResults saved to {output_file}")
+    return 0
 
 
 if __name__ == '__main__':
