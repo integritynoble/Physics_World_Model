@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Sensitivity sweep: vary mismatch magnitude and measure calibration gain.
 
-Runs MST-L and GAP-TV across 7 mismatch scales for 10 KAIST scenes.
+Runs GAP-TV, MST-L, HDNet, and PnP-HSICNN across 7 mismatch scales for 10 KAIST scenes.
 Base mismatch: dx=1.5, dy=1.0, theta=0.3
 Scales: [0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0]
 
@@ -41,7 +41,7 @@ RESULTS_DIR = PROJECT_ROOT / "results"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 SCALES = [0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0]
-METHODS = ["gap_tv", "mst_l"]
+METHODS = ["gap_tv", "mst_l", "hdnet", "pnp_hsicnn"]
 BASE_DX, BASE_DY, BASE_THETA = 1.5, 1.0, 0.3
 
 
@@ -138,12 +138,17 @@ def main():
     logger.info(f"Scenes: {n_scenes}")
     logger.info("=" * 70)
 
-    mask_ideal = load_mask(DATASET_REAL / "mask.mat")
+    mask_ideal = load_mask(DATASET_SIMU / "mask.mat")
     if mask_ideal is None:
-        mask_ideal = load_mask(DATASET_SIMU / "mask.mat")
+        mask_ideal = load_mask(DATASET_REAL / "mask.mat")
     if mask_ideal is None:
         logger.error("No mask found!")
         return
+
+    if mask_ideal.shape[0] != 256 or mask_ideal.shape[1] != 256:
+        h, w = mask_ideal.shape
+        r0, c0 = (h - 256) // 2, (w - 256) // 2
+        mask_ideal = mask_ideal[r0:r0+256, c0:c0+256].copy()
 
     np.random.seed(42)
 

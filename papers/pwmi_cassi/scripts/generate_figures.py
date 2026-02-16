@@ -2,7 +2,7 @@
 """Generate publication-quality figures for PWMI-CASSI paper.
 
 Creates:
-1. fig3_scenario_comparison.pdf    -- grouped bar (4 scenarios x 3 methods)
+1. fig3_scenario_comparison.pdf    -- grouped bar (4 scenarios x 5 methods)
 2. fig4_visual_comparison.pdf      -- RGB renderings (3 scenes x 4 scenarios)
 3. fig5_parameter_recovery.pdf     -- scatter: estimated vs true
 4. fig6_sensitivity_curves.pdf     -- PSNR vs mismatch magnitude
@@ -46,12 +46,16 @@ METHOD_COLORS = {
     "gap_tv": "#1f77b4",
     "mst_s": "#2ca02c",
     "mst_l": "#d62728",
+    "hdnet": "#9467bd",
+    "pnp_hsicnn": "#ff7f0e",
 }
 
 METHOD_LABELS = {
     "gap_tv": "GAP-TV",
     "mst_s": "MST-S",
     "mst_l": "MST-L",
+    "hdnet": "HDNet",
+    "pnp_hsicnn": "PnP-HSICNN",
 }
 
 SCENARIO_LABELS = {
@@ -69,7 +73,7 @@ SCENARIO_COLORS = {
 }
 
 SCENARIOS = ["scenario_i", "scenario_ii", "scenario_iii", "scenario_iv"]
-METHODS = ["gap_tv", "mst_s", "mst_l"]
+METHODS = ["gap_tv", "mst_s", "mst_l", "hdnet", "pnp_hsicnn"]
 
 
 def load_main_results():
@@ -108,11 +112,11 @@ def fig3_scenario_comparison(summary):
     """Grouped bar chart: 4 scenarios x 3 methods, PSNR + error bars."""
     logger.info("Creating fig3_scenario_comparison...")
 
-    fig, ax = plt.subplots(figsize=(10, 5.5))
+    fig, ax = plt.subplots(figsize=(12, 5.5))
 
     x = np.arange(len(SCENARIOS))
     n_methods = len(METHODS)
-    width = 0.22
+    width = 0.15
 
     for i, method in enumerate(METHODS):
         means = [summary[sc][method]["psnr_mean"] for sc in SCENARIOS]
@@ -196,18 +200,23 @@ def fig6_sensitivity_curves(sensitivity_data):
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 
-    for method, color, marker in [("mst_l", "#d62728", "o"), ("gap_tv", "#1f77b4", "s")]:
+    markers = ["o", "s", "D", "^", "v"]
+    sweep_methods = [m for m in scales_summary[0].keys()
+                     if m not in ("scale", "n_scenes") and isinstance(scales_summary[0][m], dict)]
+    for method, marker in zip(sweep_methods, markers):
         psnr_ii = [s[method]["psnr_ii_mean"] for s in scales_summary]
         psnr_iii = [s[method]["psnr_iii_mean"] for s in scales_summary]
         gains = [s[method]["gain_mean"] for s in scales_summary]
+        color = METHOD_COLORS.get(method, "#333333")
+        label = METHOD_LABELS.get(method, method)
 
         ax1.plot(scales, psnr_ii, f"{marker}--", color=color, markersize=6,
-                 label=f"{METHOD_LABELS[method]} (Sc. II)", alpha=0.7)
+                 label=f"{label} (Sc. II)", alpha=0.7)
         ax1.plot(scales, psnr_iii, f"{marker}-", color=color, markersize=6,
-                 label=f"{METHOD_LABELS[method]} (Sc. III)")
+                 label=f"{label} (Sc. III)")
 
         ax2.plot(scales, gains, f"{marker}-", color=color, markersize=6,
-                 label=METHOD_LABELS[method])
+                 label=label)
 
     ax1.set_xlabel("Mismatch Scale", fontweight="bold")
     ax1.set_ylabel("PSNR (dB)", fontweight="bold")
@@ -277,13 +286,17 @@ def fig8_per_scene(detailed):
     """Per-scene PSNR trajectories across 4 scenarios for each method."""
     logger.info("Creating fig8_per_scene...")
 
-    fig, axes = plt.subplots(1, 3, figsize=(14, 4.5))
+    n_methods = len(METHODS)
+    ncols = min(n_methods, 3)
+    nrows = (n_methods + ncols - 1) // ncols
+    fig, axes = plt.subplots(nrows, ncols, figsize=(5 * ncols, 4.5 * nrows))
+    axes = np.atleast_2d(axes)
 
     scenes = [f"S{r['scene_idx']:02d}" for r in detailed]
     x = np.arange(len(scenes))
 
     for ax_idx, method in enumerate(METHODS):
-        ax = axes[ax_idx]
+        ax = axes[ax_idx // ncols, ax_idx % ncols]
         for sc, marker, ls in zip(SCENARIOS, ["o", "s", "D", "^"], ["-", "--", "-.", ":"]):
             vals = [r[sc][method]["psnr"] for r in detailed]
             ax.plot(x, vals, ls, marker=marker, markersize=5, linewidth=1.5,
@@ -296,6 +309,10 @@ def fig8_per_scene(detailed):
         ax.set_xticklabels(scenes, rotation=45)
         ax.legend(loc="lower left", fontsize=8)
         ax.grid(alpha=0.3, linestyle="--")
+
+    # Hide unused subplots
+    for ax_idx in range(n_methods, nrows * ncols):
+        axes[ax_idx // ncols, ax_idx % ncols].set_visible(False)
 
     plt.suptitle("Per-Scene PSNR Across 4 Scenarios", fontweight="bold", y=1.02)
     plt.tight_layout()

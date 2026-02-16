@@ -58,7 +58,7 @@ papers/pwmi_cassi/
 - **Mask:** TSA real mask
 - **Mismatch:** dx=1.5 px, dy=1.0 px, theta=0.3 deg
 - **Noise:** Poisson (alpha=100000) + Gaussian (sigma=0.01)
-- **Methods:** GAP-TV, MST-S, MST-L
+- **Methods:** GAP-TV, MST-S, MST-L, HDNet, PnP-HSICNN
 - **Dispersion:** s_nom = np.arange(28) * 2 = [0, 2, 4, ..., 54]
 
 ## Critical Bug Fix

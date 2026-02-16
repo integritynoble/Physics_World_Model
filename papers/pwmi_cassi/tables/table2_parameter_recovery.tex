@@ -1,0 +1,24 @@
+\begin{table}[t]
+\centering
+\caption{Mismatch parameter recovery across 10 KAIST scenes. True mismatch: $\Delta x=1.5$\,px, $\Delta y=1.0$\,px, $\theta=0.3^\circ$.}
+\label{tab:param_recovery}
+\small
+\begin{tabular}{c ccc ccc}
+\toprule
+Scene & $\hat{\Delta x}$ & $\hat{\Delta y}$ & $\hat{\theta}$ & $|\epsilon_x|$ & $|\epsilon_y|$ & $|\epsilon_\theta|$ \\
+\midrule
+S01 & 1.007 & 1.609 & -0.379 & 0.493 & 0.609 & 0.679 \\
+S02 & 0.938 & 1.569 & -0.380 & 0.562 & 0.569 & 0.680 \\
+S03 & 1.006 & 1.522 & -0.300 & 0.494 & 0.522 & 0.600 \\
+S04 & 3.000 & 1.500 & -0.333 & 1.500 & 0.500 & 0.633 \\
+S05 & 0.998 & 1.655 & -0.334 & 0.502 & 0.655 & 0.634 \\
+S06 & 1.152 & 1.478 & -0.395 & 0.348 & 0.478 & 0.695 \\
+S07 & 0.990 & 1.455 & -0.324 & 0.510 & 0.455 & 0.624 \\
+S08 & 3.000 & 1.513 & -0.351 & 1.500 & 0.513 & 0.651 \\
+S09 & 3.000 & 1.500 & -0.333 & 1.500 & 0.500 & 0.633 \\
+S10 & 3.000 & 1.379 & -0.364 & 1.500 & 0.379 & 0.664 \\
+\midrule
+\textbf{RMSE} & -- & -- & -- & \textbf{1.022} & \textbf{0.523} & \textbf{0.650} \\
+\bottomrule
+\end{tabular}
+\end{table}
