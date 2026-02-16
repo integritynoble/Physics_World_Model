@@ -65,6 +65,7 @@ except ImportError:
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 RESULTS_DIR = PROJECT_ROOT / "papers" / "inversenet" / "results"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+RECON_DIR = RESULTS_DIR / "spc_reconstructions"
 
 ISTA_ROOT = Path("/home/spiritai/ISTA-Net-PyTorch-master")
 HATNET_ROOT = Path("/home/spiritai/HATNet-SPI-master")
@@ -470,6 +471,7 @@ def process_image_ista_fista(
     gain_alpha: float,
     sigma_y: float,
     noise_seed: int,
+    save_recon: bool = False,
 ) -> Dict[str, Any]:
     """Process one image with ISTA-Net and FISTA-TV.
 
@@ -553,6 +555,17 @@ def process_image_ista_fista(
                           "ssim": ssim_255(rec_fista_iii * 255, gt)},
     }
 
+    if save_recon:
+        results["recon"] = {
+            "gt": gt.copy(),
+            "scenario_i_fista_tv": (rec_fista_i * 255).astype(np.float32),
+            "scenario_i_ista_net": (rec_ista_i * 255).astype(np.float32),
+            "scenario_ii_fista_tv": (rec_fista_ii * 255).astype(np.float32),
+            "scenario_ii_ista_net": (rec_ista_ii * 255).astype(np.float32),
+            "scenario_iii_fista_tv": (rec_fista_iii * 255).astype(np.float32),
+            "scenario_iii_ista_net": (rec_ista_iii * 255).astype(np.float32),
+        }
+
     return results
 
 
@@ -564,6 +577,7 @@ def process_image_hatnet(
     gain_alpha_w: float,
     sigma_y_hat: float,
     noise_seed: int,
+    save_recon: bool = False,
 ) -> Dict[str, Any]:
     """Process one image with HATNet.
 
@@ -699,10 +713,18 @@ def process_image_hatnet(
         "scenario_iii": {"psnr": psnr_255(rec_iii * 255, gt),
                           "ssim": ssim_255(rec_iii * 255, gt)},
     }
+
+    if save_recon:
+        results["recon"] = {
+            "scenario_i_hatnet": (rec_i * 255).astype(np.float32),
+            "scenario_ii_hatnet": (rec_ii * 255).astype(np.float32),
+            "scenario_iii_hatnet": (rec_iii * 255).astype(np.float32),
+        }
+
     return results
 
 
-def run_validation(quick: bool = False, tune: bool = False):
+def run_validation(quick: bool = False, tune: bool = False, save_recon: bool = False):
     """Run full SPC validation."""
     print("=" * 70)
     print("SPC Validation v4.0 — Pretrained ISTA-Net + HATNet")
@@ -749,6 +771,10 @@ def run_validation(quick: bool = False, tune: bool = False):
     print(f"  HATNet:     gain_alpha_h={gain_alpha_h}, gain_alpha_w={gain_alpha_w}, "
           f"sigma_y_hat={sigma_y_hat}")
 
+    if save_recon:
+        RECON_DIR.mkdir(parents=True, exist_ok=True)
+        print(f"\nSaving reconstructions to: {RECON_DIR}")
+
     # ---- Process images ----
     all_results = []
     methods = ["fista_tv", "ista_net", "hatnet"]
@@ -765,13 +791,29 @@ def run_validation(quick: bool = False, tune: bool = False):
         res_ista_fista = process_image_ista_fista(
             img_path, ista_model, Phi_np, Phi_t, Qinit_t,
             fista_solver, gain_alpha, sigma_y,
-            noise_seed=2026001 + img_no)
+            noise_seed=2026001 + img_no,
+            save_recon=save_recon)
 
         # HATNet (full image)
         res_hatnet = process_image_hatnet(
             img_path, hatnet_model, EucProj,
             gain_alpha_h, gain_alpha_w, sigma_y_hat,
-            noise_seed=2026100 + img_no)
+            noise_seed=2026100 + img_no,
+            save_recon=save_recon)
+
+        # Save per-image .npz
+        if save_recon:
+            npz_data = {}
+            if "recon" in res_ista_fista:
+                npz_data.update(res_ista_fista.pop("recon"))
+            if "recon" in res_hatnet:
+                npz_data.update(res_hatnet.pop("recon"))
+            npz_path = RECON_DIR / f"{img_name}.npz"
+            np.savez_compressed(str(npz_path), **npz_data)
+            n_arrays = len(npz_data)
+            size_mb = sum(v.nbytes for v in npz_data.values()) / 1e6
+            print(f"  Saved {npz_path.name}: {n_arrays} arrays, {size_mb:.1f} MB uncompressed")
+            del npz_data
 
         # Combine
         result = {
@@ -855,6 +897,12 @@ def run_validation(quick: bool = False, tune: bool = False):
         json.dump(summary, f, indent=2)
     print(f"Summary: {out_summary}")
 
+    if save_recon:
+        npz_files = sorted(RECON_DIR.glob("*.npz"))
+        total_size = sum(f.stat().st_size for f in npz_files) / 1e6
+        print(f"\nReconstruction data -> {RECON_DIR}")
+        print(f"  {len(npz_files)} files, {total_size:.0f} MB total (compressed)")
+
     print("\nSPC Validation v4.0 complete!")
     return all_results, summary
 
@@ -866,5 +914,7 @@ if __name__ == "__main__":
                         help="Quick mode: 3 images only")
     parser.add_argument("--tune", action="store_true",
                         help="Parameter tuning mode")
+    parser.add_argument("--save-recon", action="store_true",
+                        help="Save reconstruction arrays to .npz files")
     args = parser.parse_args()
-    run_validation(quick=args.quick, tune=args.tune)
+    run_validation(quick=args.quick, tune=args.tune, save_recon=args.save_recon)
