@@ -328,7 +328,7 @@ def reconstruct(method: str, y_meas: np.ndarray, mask: np.ndarray,
         x_recon: (H, W, 28) reconstructed cube
     """
     if method == 'gap_tv':
-        return gap_tv_cassi(y_meas, mask, n_bands=28, iterations=50, lam=0.05, step=2)
+        return gap_tv_cassi(y_meas, mask, n_bands=28, iterations=50, lam=0.01, step=2)
     elif method == 'hdnet':
         from pwm_core.recon.hdnet import hdnet_recon_cassi
         mask_3d = np.repeat(mask[:, :, np.newaxis], 28, axis=2).astype(np.float32)
@@ -454,7 +454,7 @@ def scenario_iii_corrected(
     corrected_mask = mask_ideal  # fallback
 
     # Create a solver function for Algorithm 1
-    def solver_fn(y_meas, mask_or_op, n_iter=50, lam=0.05):
+    def solver_fn(y_meas, mask_or_op, n_iter=50, lam=0.01):
         mask = mask_or_op.mask_256 if hasattr(mask_or_op, 'mask_256') else mask_or_op
         return gap_tv_cassi(y_meas, mask, n_bands=28, iterations=n_iter, lam=lam, step=2)
 

@@ -260,7 +260,7 @@ def reconstruct_gap_tv(y: np.ndarray, mask: np.ndarray, device: str = 'cuda:0') 
     """
     try:
         from pwm_core.recon.gap_tv import gap_tv_cassi
-        return gap_tv_cassi(y, mask, n_bands=28, iterations=50, lam=0.05, step=2)
+        return gap_tv_cassi(y, mask, n_bands=28, iterations=50, lam=0.01, step=2)
     except Exception as e:
         logger.warning(f"GAP-TV failed: {e}")
         return np.clip(np.random.rand(256, 256, 28).astype(np.float32) * 0.8 + 0.1, 0, 1)
