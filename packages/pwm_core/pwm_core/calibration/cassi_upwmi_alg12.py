@@ -128,7 +128,7 @@ def warp_affine_2d(image: np.ndarray, dx: float, dy: float, theta: float) -> np.
         cval=0.0
     )
 
-    return np.clip(output, 0, np.max(image))
+    return output
 
 
 def forward_model_enlarged(x_expanded: np.ndarray, mask_enlarged: np.ndarray,
