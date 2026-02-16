@@ -810,8 +810,19 @@ def main():
         logger.info(f"\nTotal execution time: {total_elapsed:.1f}s ({total_elapsed/3600:.2f} hours)")
         logger.info(f"Average per scene: {total_elapsed/len(all_results):.1f}s")
 
-        # Save results to JSON
+        # Save results to JSON (strip large arrays)
         output_file = REPORTS_DIR / "cassi_validation_4scenarios.json"
+
+        # Remove x_recon and y_meas arrays from results before saving
+        clean_results = []
+        for r in all_results:
+            cr = {k: v for k, v in r.items()}
+            for scenario_key in ['scenario_i', 'scenario_ii', 'scenario_iii', 'scenario_iv']:
+                if scenario_key in cr:
+                    cr[scenario_key] = {k: v for k, v in cr[scenario_key].items()
+                                        if k not in ('x_recon', 'y_meas')}
+            clean_results.append(cr)
+
         summary = {
             'num_scenes': len(all_results),
             'total_time': float(total_elapsed),
@@ -827,7 +838,7 @@ def main():
                 'gap_iii_to_iv': float(np.mean(gaps_iii_iv)),
                 'gap_iv_to_i': float(np.mean(gaps_iv_i))
             },
-            'per_scene': all_results
+            'per_scene': clean_results
         }
 
         class NumpyEncoder(json.JSONEncoder):

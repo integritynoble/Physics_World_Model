@@ -1,0 +1,96 @@
+{
+  "metadata": {
+    "description": "CASSI 4-Scenario Validation Results (MST-L, 10 KAIST Scenes)",
+    "date": "2026-02-16",
+    "solver": "MST-L",
+    "num_scenes": 10,
+    "scenarios": {
+      "I": "Ideal (oracle, no mismatch)",
+      "II": "Assumed (baseline, realistic mismatch)",
+      "III": "Corrected (Alg1+Alg2 calibration)",
+      "IV": "Truth Forward Model (ground truth mismatch reconstruction)"
+    },
+    "total_time_seconds": 23330.9,
+    "total_time_hours": 6.5
+  },
+  "per_scene": [
+    {
+      "scene": 1,
+      "psnr_db": { "I": 9.12, "II": 9.18, "III": 9.56, "IV": 9.56 },
+      "gaps_db": { "i_ii": -0.07, "ii_iii": 0.38, "ii_iv": 0.38, "iii_iv": 0.00, "iv_i": -0.45 },
+      "time_seconds": 2335.2
+    },
+    {
+      "scene": 2,
+      "psnr_db": { "I": 9.04, "II": 9.09, "III": 9.47, "IV": 9.47 },
+      "gaps_db": { "i_ii": -0.05, "ii_iii": 0.38, "ii_iv": 0.38, "iii_iv": 0.00, "iv_i": -0.43 },
+      "time_seconds": 2765.9
+    },
+    {
+      "scene": 3,
+      "psnr_db": { "I": 8.49, "II": 8.54, "III": 8.81, "IV": 8.81 },
+      "gaps_db": { "i_ii": -0.05, "ii_iii": 0.27, "ii_iv": 0.27, "iii_iv": 0.00, "iv_i": -0.32 },
+      "time_seconds": 2555.0
+    },
+    {
+      "scene": 4,
+      "psnr_db": { "I": 8.93, "II": 9.02, "III": 9.41, "IV": 9.41 },
+      "gaps_db": { "i_ii": -0.09, "ii_iii": 0.39, "ii_iv": 0.39, "iii_iv": 0.00, "iv_i": -0.49 },
+      "time_seconds": 2269.2
+    },
+    {
+      "scene": 5,
+      "psnr_db": { "I": 8.70, "II": 8.74, "III": 9.04, "IV": 9.04 },
+      "gaps_db": { "i_ii": -0.04, "ii_iii": 0.30, "ii_iv": 0.30, "iii_iv": 0.00, "iv_i": -0.34 },
+      "time_seconds": 1842.3
+    },
+    {
+      "scene": 6,
+      "psnr_db": { "I": 8.77, "II": 8.87, "III": 9.20, "IV": 9.20 },
+      "gaps_db": { "i_ii": -0.10, "ii_iii": 0.34, "ii_iv": 0.34, "iii_iv": 0.00, "iv_i": -0.44 },
+      "time_seconds": 2625.8
+    },
+    {
+      "scene": 7,
+      "psnr_db": { "I": 8.95, "II": 9.01, "III": 9.36, "IV": 9.36 },
+      "gaps_db": { "i_ii": -0.06, "ii_iii": 0.35, "ii_iv": 0.35, "iii_iv": 0.00, "iv_i": -0.41 },
+      "time_seconds": 2282.9
+    },
+    {
+      "scene": 8,
+      "psnr_db": { "I": 8.79, "II": 8.86, "III": 9.22, "IV": 9.22 },
+      "gaps_db": { "i_ii": -0.08, "ii_iii": 0.36, "ii_iv": 0.36, "iii_iv": 0.00, "iv_i": -0.44 },
+      "time_seconds": 2243.1
+    },
+    {
+      "scene": 9,
+      "psnr_db": { "I": 8.79, "II": 8.84, "III": 9.18, "IV": 9.18 },
+      "gaps_db": { "i_ii": -0.06, "ii_iii": 0.34, "ii_iv": 0.34, "iii_iv": 0.00, "iv_i": -0.39 },
+      "time_seconds": 2298.3
+    },
+    {
+      "scene": 10,
+      "psnr_db": { "I": 8.78, "II": 8.83, "III": 9.17, "IV": 9.17 },
+      "gaps_db": { "i_ii": -0.06, "ii_iii": 0.34, "ii_iv": 0.34, "iii_iv": 0.00, "iv_i": -0.39 },
+      "time_seconds": 2313.2
+    }
+  ],
+  "summary": {
+    "psnr_mean_db": { "I": 8.84, "II": 8.90, "III": 9.25, "IV": 9.25 },
+    "psnr_std_db": { "I": 0.17, "II": 0.17, "III": 0.21, "IV": 0.21 },
+    "gap_mean_db": {
+      "i_ii": -0.07,
+      "ii_iii": 0.34,
+      "ii_iv": 0.34,
+      "iii_iv": 0.00,
+      "iv_i": -0.41
+    },
+    "gap_std_db": {
+      "i_ii": 0.02,
+      "ii_iii": 0.04,
+      "ii_iv": 0.04,
+      "iii_iv": 0.00,
+      "iv_i": 0.05
+    }
+  }
+}
