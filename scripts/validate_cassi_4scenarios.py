@@ -830,8 +830,18 @@ def main():
             'per_scene': all_results
         }
 
+        class NumpyEncoder(json.JSONEncoder):
+            def default(self, obj):
+                if isinstance(obj, np.ndarray):
+                    return obj.tolist()
+                if isinstance(obj, (np.floating, np.float32, np.float64)):
+                    return float(obj)
+                if isinstance(obj, (np.integer, np.int32, np.int64)):
+                    return int(obj)
+                return super().default(obj)
+
         with open(output_file, 'w') as f:
-            json.dump(summary, f, indent=2)
+            json.dump(summary, f, indent=2, cls=NumpyEncoder)
 
         logger.info(f"\nResults saved to {output_file}")
         return 0
