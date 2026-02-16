@@ -26,8 +26,11 @@ RESULTS_DIR = PROJECT_ROOT / "results"
 TABLES_DIR = PROJECT_ROOT / "tables"
 TABLES_DIR.mkdir(parents=True, exist_ok=True)
 
-METHODS = ["gap_tv", "mst_s", "mst_l"]
-METHOD_LABELS = {"gap_tv": "GAP-TV", "mst_s": "MST-S", "mst_l": "MST-L"}
+METHODS = ["gap_tv", "mst_s", "mst_l", "hdnet", "pnp_hsicnn"]
+METHOD_LABELS = {
+    "gap_tv": "GAP-TV", "mst_s": "MST-S", "mst_l": "MST-L",
+    "hdnet": "HDNet", "pnp_hsicnn": "PnP-HSICNN",
+}
 
 
 def load_json(name):
@@ -212,7 +215,7 @@ def table4_computational_cost(summary):
         f"Stage 2C: Joint refinement & $\\sim$128 & 80 Adam steps \\\\",
         r"\midrule",
         f"\\textbf{{Total calibration}} & \\textbf{{{calib_mean:.0f}}} & Alg1+Alg2 pipeline \\\\",
-        f"Reconstruction (3 methods) & {recon_mean:.0f} & GAP-TV + MST-S + MST-L \\\\",
+        f"Reconstruction (5 methods) & {recon_mean:.0f} & GAP-TV, MST-S/L, HDNet, PnP \\\\",
         r"\midrule",
         f"\\textbf{{Total per scene}} & \\textbf{{{total_mean:.0f}}} & End-to-end \\\\",
         r"\bottomrule",

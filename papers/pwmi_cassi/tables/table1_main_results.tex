@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\caption{Reconstruction quality (PSNR/SSIM) across four scenarios on 10 KAIST scenes. Calibration gain measures improvement from Scenario~II to III.}
+\label{tab:main_results}
+\small
+\begin{tabular}{l cccc c}
+\toprule
+Method & Sc.~I (Ideal) & Sc.~II (Assumed) & Sc.~III (Corrected) & Sc.~IV (Oracle) & Gain (II$\to$III) \\
+\midrule
+GAP-TV & 20.37$\pm$1.84 & 19.97$\pm$1.79 & 20.16$\pm$1.84 & 20.35$\pm$1.84 & \textbf{+0.20}$\pm$0.15 \\
+MST-S & 33.98$\pm$2.50 & 18.49$\pm$2.08 & 21.64$\pm$2.08 & 31.42$\pm$2.45 & \textbf{+3.15}$\pm$1.17 \\
+MST-L & 34.81$\pm$2.11 & 18.41$\pm$1.97 & 21.42$\pm$2.02 & 32.45$\pm$2.41 & \textbf{+3.01}$\pm$1.15 \\
+HDNet & 34.79$\pm$2.65 & 26.00$\pm$2.48 & 26.20$\pm$2.44 & 26.45$\pm$2.66 & \textbf{+0.20}$\pm$0.16 \\
+PnP-HSICNN & 21.70$\pm$6.16 & 14.54$\pm$2.21 & 17.53$\pm$2.98 & 22.11$\pm$5.49 & \textbf{+2.99}$\pm$2.22 \\
+\bottomrule
+\end{tabular}
+\end{table}

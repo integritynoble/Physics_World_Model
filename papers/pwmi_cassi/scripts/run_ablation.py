@@ -159,12 +159,17 @@ def main():
     logger.info(f"Scenes: {n_scenes}")
     logger.info("=" * 70)
 
-    mask_ideal = load_mask(DATASET_REAL / "mask.mat")
+    mask_ideal = load_mask(DATASET_SIMU / "mask.mat")
     if mask_ideal is None:
-        mask_ideal = load_mask(DATASET_SIMU / "mask.mat")
+        mask_ideal = load_mask(DATASET_REAL / "mask.mat")
     if mask_ideal is None:
         logger.error("No mask found!")
         return
+
+    if mask_ideal.shape[0] != 256 or mask_ideal.shape[1] != 256:
+        h, w = mask_ideal.shape
+        r0, c0 = (h - 256) // 2, (w - 256) // 2
+        mask_ideal = mask_ideal[r0:r0+256, c0:c0+256].copy()
 
     np.random.seed(42)
     mismatch = MismatchSpec()
