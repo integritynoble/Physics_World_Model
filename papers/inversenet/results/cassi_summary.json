@@ -9,7 +9,7 @@
   "scenarios": [
     "scenario_i",
     "scenario_ii",
-    "scenario_iv"
+    "scenario_iii"
   ],
   "mismatch": {
     "dx": 0.5,
@@ -88,7 +88,7 @@
       "sam_std": 2.09
     }
   },
-  "scenario_iv": {
+  "scenario_iii": {
     "gap_tv": {
       "psnr_mean": 20.38,
       "psnr_std": 1.84,
@@ -126,27 +126,27 @@
     "gap_tv": {
       "gap_i_ii_mean": 0.08,
       "gap_i_ii_std": 0.08,
-      "gap_ii_iv_mean": 0.09,
-      "gap_ii_iv_std": 0.06
+      "gap_ii_iii_mean": 0.09,
+      "gap_ii_iii_std": 0.06
     },
     "hdnet": {
       "gap_i_ii_mean": 10.61,
       "gap_i_ii_std": 2.14,
-      "gap_ii_iv_mean": 0.0,
-      "gap_ii_iv_std": 0.0
+      "gap_ii_iii_mean": 0.0,
+      "gap_ii_iii_std": 0.0
     },
     "mst_s": {
       "gap_i_ii_mean": 9.59,
       "gap_i_ii_std": 2.24,
-      "gap_ii_iv_mean": 6.4,
-      "gap_ii_iv_std": 0.76
+      "gap_ii_iii_mean": 6.4,
+      "gap_ii_iii_std": 0.76
     },
     "mst_l": {
       "gap_i_ii_mean": 10.58,
       "gap_i_ii_std": 2.03,
-      "gap_ii_iv_mean": 7.99,
-      "gap_ii_iv_std": 1.44
+      "gap_ii_iii_mean": 7.99,
+      "gap_ii_iii_std": 1.44
     }
   },
-  "execution_seconds": 1067.2
+  "execution_seconds": 1068.2
 }

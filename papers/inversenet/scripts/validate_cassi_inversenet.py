@@ -2,15 +2,12 @@
 """CASSI InverseNet Validation -- benchmark-grade reconstruction.
 
 Validates 4 reconstruction methods (GAP-TV, HDNet, MST-S, MST-L) across
-3 scenarios (I: Ideal, II: Assumed, IV: Truth Forward Model) on 10 KAIST scenes.
-
-Scenario III (operator correction via Algorithms 1 & 2) is intentionally skipped
-for the InverseNet benchmark, which focuses on reconstruction comparison.
+3 scenarios (I: Ideal, II: Assumed, III: Truth Forward Model) on 10 KAIST scenes.
 
 Scenarios:
-  Scenario I  : ideal measurement + ideal mask          (oracle upper bound)
-  Scenario II : corrupted measurement + ideal mask      (baseline degradation)
-  Scenario IV : corrupted measurement + truth mask      (oracle operator)
+  Scenario I   : ideal measurement + ideal mask          (oracle upper bound)
+  Scenario II  : corrupted measurement + ideal mask      (baseline degradation)
+  Scenario III : corrupted measurement + truth mask      (oracle operator)
 
 Methods:
   GAP-TV   -- classical iterative (mask-aware)    (~32 dB ideal)
@@ -19,7 +16,7 @@ Methods:
   MST-L    -- mask-guided Transformer (large)     (~36 dB ideal)
 
 Usage:
-    python validate_cassi_inversenet.py [--device cuda:0]
+    python validate_cassi_inversenet.py [--device cuda:0] [--save-recon]
 """
 from __future__ import annotations
 
@@ -47,6 +44,7 @@ DATASET_SIMU = Path("/home/spiritai/MST-main/datasets/TSA_simu_data")
 DATASET_REAL = Path("/home/spiritai/MST-main/datasets/TSA_real_data")
 RESULTS_DIR = PROJECT_ROOT / "papers" / "inversenet" / "results"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+RECON_DIR = RESULTS_DIR / "cassi_reconstructions"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -58,7 +56,7 @@ logger = logging.getLogger(__name__)
 # constants
 # ---------------------------------------------------------------------------
 RECONSTRUCTION_METHODS = ["gap_tv", "hdnet", "mst_s", "mst_l"]
-SCENARIOS = ["scenario_i", "scenario_ii", "scenario_iv"]
+SCENARIOS = ["scenario_i", "scenario_ii", "scenario_iii"]
 NUM_SCENES = 10
 
 METHOD_LABELS = {
@@ -403,7 +401,8 @@ RECONSTRUCTION_FUNCTIONS = {
 # scenario validation
 # ===================================================================
 def validate_scenario_i(scene: np.ndarray, mask_ideal: np.ndarray,
-                        methods: List[str], device: str) -> Dict[str, Dict]:
+                        methods: List[str], device: str,
+                        save_recon: bool = False) -> Dict[str, Dict]:
     """Scenario I: Ideal (perfect forward model, no mismatch, no noise).
 
     Args:
@@ -411,14 +410,18 @@ def validate_scenario_i(scene: np.ndarray, mask_ideal: np.ndarray,
         mask_ideal: (256, 256) ideal mask
         methods: list of method names
         device: torch device
+        save_recon: if True, include reconstruction arrays and measurement
 
     Returns:
-        Dictionary with metrics for each method
+        Dictionary with metrics for each method (and 'recon' dict if save_recon)
     """
     logger.info("  Scenario I: Ideal (oracle)")
     results = {}
+    recon_data = {}
 
     y_ideal = cassi_forward(scene, mask_ideal, step=2)
+    if save_recon:
+        recon_data["meas_ideal"] = y_ideal.copy()
 
     for method in methods:
         t0 = time.time()
@@ -430,18 +433,23 @@ def validate_scenario_i(scene: np.ndarray, mask_ideal: np.ndarray,
                 "ssim": float(compute_ssim(np.mean(scene, axis=2), np.mean(x_hat, axis=2))),
                 "sam": float(compute_sam(scene, x_hat)),
             }
+            if save_recon:
+                recon_data[f"scenario_i_{method}"] = x_hat.copy()
         except Exception as e:
             logger.error(f"    {method} failed: {e}")
             results[method] = {"psnr": 0.0, "ssim": 0.0, "sam": 180.0}
         dt = time.time() - t0
         logger.info(f"    {METHOD_LABELS[method]:8s}: PSNR={results[method]['psnr']:.2f} dB  ({dt:.1f}s)")
 
+    if save_recon:
+        results["recon"] = recon_data
     return results
 
 
 def validate_scenario_ii(scene: np.ndarray, mask_ideal: np.ndarray,
                          mismatch: MismatchParameters,
-                         methods: List[str], device: str) -> Tuple[Dict[str, Dict], np.ndarray]:
+                         methods: List[str], device: str,
+                         save_recon: bool = False) -> Tuple[Dict[str, Dict], np.ndarray, Optional[np.ndarray]]:
     """Scenario II: Assumed/Baseline (corrupted measurement, uncorrected operator).
 
     Args:
@@ -450,12 +458,14 @@ def validate_scenario_ii(scene: np.ndarray, mask_ideal: np.ndarray,
         mismatch: MismatchParameters for injection
         methods: list of method names
         device: torch device
+        save_recon: if True, include reconstruction arrays
 
     Returns:
-        Tuple of (results dict, y_corrupt measurement for reuse in Scenario IV)
+        Tuple of (results dict, y_corrupt, mask_warped or None)
     """
     logger.info("  Scenario II: Assumed/Baseline (uncorrected mismatch)")
     results = {}
+    recon_data = {}
 
     # Create corrupted measurement: warp ideal mask, then forward
     mask_corrupted = warp_affine_2d(
@@ -466,6 +476,10 @@ def validate_scenario_ii(scene: np.ndarray, mask_ideal: np.ndarray,
     )
     y_corrupt = cassi_forward(scene, mask_corrupted, step=2)
     y_corrupt = add_poisson_gaussian_noise(y_corrupt, peak=100000, sigma=0.01)
+
+    if save_recon:
+        recon_data["mask_warped"] = mask_corrupted.copy()
+        recon_data["meas_corrupt"] = y_corrupt.copy()
 
     # Reconstruct with each method ASSUMING PERFECT (ideal) MASK
     for method in methods:
@@ -478,19 +492,24 @@ def validate_scenario_ii(scene: np.ndarray, mask_ideal: np.ndarray,
                 "ssim": float(compute_ssim(np.mean(scene, axis=2), np.mean(x_hat, axis=2))),
                 "sam": float(compute_sam(scene, x_hat)),
             }
+            if save_recon:
+                recon_data[f"scenario_ii_{method}"] = x_hat.copy()
         except Exception as e:
             logger.error(f"    {method} failed: {e}")
             results[method] = {"psnr": 0.0, "ssim": 0.0, "sam": 180.0}
         dt = time.time() - t0
         logger.info(f"    {METHOD_LABELS[method]:8s}: PSNR={results[method]['psnr']:.2f} dB  ({dt:.1f}s)")
 
-    return results, y_corrupt
+    if save_recon:
+        results["recon"] = recon_data
+    return results, y_corrupt, mask_corrupted if save_recon else None
 
 
-def validate_scenario_iv(scene: np.ndarray, mask_ideal: np.ndarray,
+def validate_scenario_iii(scene: np.ndarray, mask_ideal: np.ndarray,
                          mismatch: MismatchParameters, y_corrupt: np.ndarray,
-                         methods: List[str], device: str) -> Dict[str, Dict]:
-    """Scenario IV: Truth Forward Model (corrupted measurement, oracle operator).
+                         methods: List[str], device: str,
+                         save_recon: bool = False) -> Dict[str, Dict]:
+    """Scenario III: Truth Forward Model (corrupted measurement, oracle operator).
 
     Args:
         scene: (256, 256, 28) ground truth
@@ -499,12 +518,14 @@ def validate_scenario_iv(scene: np.ndarray, mask_ideal: np.ndarray,
         y_corrupt: measurement from Scenario II
         methods: list of method names
         device: torch device
+        save_recon: if True, include reconstruction arrays
 
     Returns:
-        Dictionary with metrics for each method
+        Dictionary with metrics for each method (and 'recon' dict if save_recon)
     """
-    logger.info("  Scenario IV: Truth Forward Model (oracle operator)")
+    logger.info("  Scenario III: Truth Forward Model (oracle operator)")
     results = {}
+    recon_data = {}
 
     # Apply true mismatch to ideal mask -> oracle knows the corruption
     mask_truth = warp_affine_2d(
@@ -525,12 +546,16 @@ def validate_scenario_iv(scene: np.ndarray, mask_ideal: np.ndarray,
                 "ssim": float(compute_ssim(np.mean(scene, axis=2), np.mean(x_hat, axis=2))),
                 "sam": float(compute_sam(scene, x_hat)),
             }
+            if save_recon:
+                recon_data[f"scenario_iii_{method}"] = x_hat.copy()
         except Exception as e:
             logger.error(f"    {method} failed: {e}")
             results[method] = {"psnr": 0.0, "ssim": 0.0, "sam": 180.0}
         dt = time.time() - t0
         logger.info(f"    {METHOD_LABELS[method]:8s}: PSNR={results[method]['psnr']:.2f} dB  ({dt:.1f}s)")
 
+    if save_recon:
+        results["recon"] = recon_data
     return results
 
 
@@ -540,7 +565,8 @@ def validate_scenario_iv(scene: np.ndarray, mask_ideal: np.ndarray,
 def validate_scene(scene_idx: int, scene: np.ndarray,
                    mask_ideal: np.ndarray,
                    mismatch: MismatchParameters,
-                   methods: List[str], device: str) -> Dict:
+                   methods: List[str], device: str,
+                   save_recon: bool = False) -> Dict:
     """Validate one scene across all 3 scenarios and all methods.
 
     Args:
@@ -550,9 +576,10 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
         mismatch: MismatchParameters
         methods: list of method names
         device: torch device
+        save_recon: if True, collect reconstruction arrays
 
     Returns:
-        Dictionary with complete results
+        Dictionary with complete results (and 'recon' dict if save_recon)
     """
     logger.info(f"\n{'='*70}")
     logger.info(f"Scene {scene_idx + 1}/10")
@@ -561,22 +588,30 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
     start_time = time.time()
 
     # Scenario I
-    res_i = validate_scenario_i(scene, mask_ideal, methods, device)
+    res_i = validate_scenario_i(scene, mask_ideal, methods, device, save_recon=save_recon)
 
     # Scenario II (returns both results and measurement for reuse)
-    res_ii, y_corrupt = validate_scenario_ii(scene, mask_ideal, mismatch, methods, device)
+    res_ii, y_corrupt, _ = validate_scenario_ii(scene, mask_ideal, mismatch, methods, device, save_recon=save_recon)
 
-    # Scenario IV (reuses y_corrupt from Scenario II)
-    res_iv = validate_scenario_iv(scene, mask_ideal, mismatch, y_corrupt, methods, device)
+    # Scenario III (reuses y_corrupt from Scenario II)
+    res_iii = validate_scenario_iii(scene, mask_ideal, mismatch, y_corrupt, methods, device, save_recon=save_recon)
 
     elapsed = time.time() - start_time
+
+    # Collect recon data before stripping from results
+    scene_recon = None
+    if save_recon:
+        scene_recon = {"gt": scene.copy(), "mask_ideal": mask_ideal.copy()}
+        for res in [res_i, res_ii, res_iii]:
+            if "recon" in res:
+                scene_recon.update(res.pop("recon"))
 
     # Compile results
     result = {
         "scene_idx": scene_idx + 1,
         "scenario_i": res_i,
         "scenario_ii": res_ii,
-        "scenario_iv": res_iv,
+        "scenario_iii": res_iii,
         "elapsed_time": round(elapsed, 2),
         "mismatch_injected": {
             "mask_dx": mismatch.mask_dx,
@@ -584,18 +619,20 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
             "mask_theta": mismatch.mask_theta,
         },
     }
+    if scene_recon is not None:
+        result["recon"] = scene_recon
 
     # Calculate gaps for each method
     result["gaps"] = {}
     for method in methods:
         psnr_i = res_i[method]["psnr"]
         psnr_ii = res_ii[method]["psnr"]
-        psnr_iv = res_iv[method]["psnr"]
+        psnr_iii = res_iii[method]["psnr"]
 
         result["gaps"][method] = {
             "gap_i_ii": round(psnr_i - psnr_ii, 4),     # Degradation from mismatch
-            "gap_ii_iv": round(psnr_iv - psnr_ii, 4),   # Recovery from oracle
-            "gap_iv_i": round(psnr_i - psnr_iv, 4),     # Residual gap
+            "gap_ii_iii": round(psnr_iii - psnr_ii, 4),   # Recovery from oracle
+            "gap_iii_i": round(psnr_i - psnr_iii, 4),     # Residual gap
         }
 
     # Log summary for this scene
@@ -603,10 +640,10 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
     for method in methods:
         pi = res_i[method]["psnr"]
         pii = res_ii[method]["psnr"]
-        piv = res_iv[method]["psnr"]
+        piii = res_iii[method]["psnr"]
         logger.info(
-            f"    {METHOD_LABELS[method]:8s}  I={pi:6.2f}  II={pii:6.2f}  IV={piv:6.2f}  "
-            f"gap_I-II={pi-pii:+.2f}  rec_II-IV={piv-pii:+.2f}"
+            f"    {METHOD_LABELS[method]:8s}  I={pi:6.2f}  II={pii:6.2f}  III={piii:6.2f}  "
+            f"gap_I-II={pi-pii:+.2f}  rec_II-III={piii-pii:+.2f}"
         )
 
     return result
@@ -620,12 +657,12 @@ def compute_summary_statistics(all_results: List[Dict]) -> Dict:
     summary = {
         "num_scenes": len(all_results),
         "methods": list(RECONSTRUCTION_METHODS),
-        "scenarios": ["scenario_i", "scenario_ii", "scenario_iv"],
+        "scenarios": ["scenario_i", "scenario_ii", "scenario_iii"],
         "mismatch": {"dx": 0.5, "dy": 0.3, "theta": 0.1},
         "noise": {"alpha": 100000, "sigma": 0.01},
     }
 
-    for scenario_key in ["scenario_i", "scenario_ii", "scenario_iv"]:
+    for scenario_key in ["scenario_i", "scenario_ii", "scenario_iii"]:
         summary[scenario_key] = {}
 
         for method in RECONSTRUCTION_METHODS:
@@ -649,13 +686,13 @@ def compute_summary_statistics(all_results: List[Dict]) -> Dict:
     summary["gaps"] = {}
     for method in RECONSTRUCTION_METHODS:
         gap_i_ii = [r["gaps"][method]["gap_i_ii"] for r in all_results]
-        gap_ii_iv = [r["gaps"][method]["gap_ii_iv"] for r in all_results]
+        gap_ii_iii = [r["gaps"][method]["gap_ii_iii"] for r in all_results]
 
         summary["gaps"][method] = {
             "gap_i_ii_mean": round(float(np.mean(gap_i_ii)), 2),
             "gap_i_ii_std": round(float(np.std(gap_i_ii)), 2),
-            "gap_ii_iv_mean": round(float(np.mean(gap_ii_iv)), 2),
-            "gap_ii_iv_std": round(float(np.std(gap_ii_iv)), 2),
+            "gap_ii_iii_mean": round(float(np.mean(gap_ii_iii)), 2),
+            "gap_ii_iii_std": round(float(np.std(gap_ii_iii)), 2),
         }
 
     return summary
@@ -667,11 +704,13 @@ def compute_summary_statistics(all_results: List[Dict]) -> Dict:
 def main():
     parser = argparse.ArgumentParser(description="CASSI InverseNet Validation")
     parser.add_argument("--device", default="cuda:0", help="Torch device")
+    parser.add_argument("--save-recon", action="store_true",
+                        help="Save reconstruction arrays to .npz files")
     args = parser.parse_args()
 
     logger.info("=" * 70)
     logger.info("CASSI Validation for InverseNet ECCV Paper")
-    logger.info("3 Scenarios (I, II, IV) x 4 Methods x 10 Scenes = 120 Reconstructions")
+    logger.info("3 Scenarios (I, II, III) x 4 Methods x 10 Scenes = 120 Reconstructions")
     logger.info(f"Mismatch: dx=0.5 px, dy=0.3 px, theta=0.1 deg")
     logger.info(f"Device: {args.device}")
     logger.info("=" * 70)
@@ -696,6 +735,10 @@ def main():
 
     np.random.seed(42)
 
+    if args.save_recon:
+        RECON_DIR.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Saving reconstructions to: {RECON_DIR}")
+
     # Validate all scenes
     all_results = []
     start_total = time.time()
@@ -711,7 +754,19 @@ def main():
         result = validate_scene(
             scene_idx, scene, mask_ideal,
             mismatch, RECONSTRUCTION_METHODS, args.device,
+            save_recon=args.save_recon,
         )
+
+        # Save per-scene .npz immediately (free memory)
+        if args.save_recon and "recon" in result:
+            npz_path = RECON_DIR / f"{scene_name}.npz"
+            recon_data = result.pop("recon")
+            np.savez_compressed(str(npz_path), **recon_data)
+            n_arrays = len(recon_data)
+            size_mb = sum(v.nbytes for v in recon_data.values()) / 1e6
+            logger.info(f"  Saved {npz_path.name}: {n_arrays} arrays, {size_mb:.0f} MB uncompressed")
+            del recon_data
+
         all_results.append(result)
 
     total_time = time.time() - start_total
@@ -732,7 +787,7 @@ def main():
     for scen_label, scen_key in [
         ("Scenario I  (Ideal)",    "scenario_i"),
         ("Scenario II (Baseline)", "scenario_ii"),
-        ("Scenario IV (Oracle)",   "scenario_iv"),
+        ("Scenario III (Oracle)",   "scenario_iii"),
     ]:
         logger.info(f"\n  {scen_label}:")
         for method in RECONSTRUCTION_METHODS:
@@ -750,7 +805,7 @@ def main():
         logger.info(
             f"    {METHOD_LABELS[method]:8s}  "
             f"I-II = {g['gap_i_ii_mean']:+.2f} dB   "
-            f"II-IV = {g['gap_ii_iv_mean']:+.2f} dB"
+            f"II-III = {g['gap_ii_iii_mean']:+.2f} dB"
         )
 
     logger.info(f"\n  Total time: {total_time:.1f}s ({total_time/len(all_results):.1f}s per scene)")
@@ -766,7 +821,14 @@ def main():
 
     logger.info(f"\nResults  -> {out_detail}")
     logger.info(f"Summary  -> {out_summary}")
-    logger.info("\nCASI validation complete!")
+
+    if args.save_recon:
+        npz_files = sorted(RECON_DIR.glob("scene*.npz"))
+        total_size = sum(f.stat().st_size for f in npz_files) / 1e6
+        logger.info(f"\nReconstruction data -> {RECON_DIR}")
+        logger.info(f"  {len(npz_files)} files, {total_size:.0f} MB total (compressed)")
+
+    logger.info("\nCASSI validation complete!")
 
 
 if __name__ == "__main__":
