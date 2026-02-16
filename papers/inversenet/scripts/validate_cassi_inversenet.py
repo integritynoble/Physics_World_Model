@@ -42,7 +42,7 @@ RESULTS_DIR = PROJECT_ROOT / "papers" / "inversenet" / "results"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 # Constants
-RECONSTRUCTION_METHODS = ['mst_s', 'mst_l']  # GAP-TV and HDNet temporarily disabled for API compatibility
+RECONSTRUCTION_METHODS = ['gap_tv', 'hdnet', 'mst_s', 'mst_l']
 SCENARIOS = ['scenario_i', 'scenario_ii', 'scenario_iii']
 NUM_SCENES = 10
 
@@ -54,9 +54,9 @@ NUM_SCENES = 10
 @dataclass
 class MismatchParameters:
     """Mismatch parameters for operator."""
-    mask_dx: float = 0.5      # pixels
-    mask_dy: float = 0.3      # pixels
-    mask_theta: float = 0.1   # degrees
+    mask_dx: float = 1.5      # pixels
+    mask_dy: float = 1.0      # pixels
+    mask_theta: float = 0.3   # degrees
 
 
 # ============================================================================
@@ -131,11 +131,12 @@ def warp_affine_2d(mask: np.ndarray, dx: float, dy: float, theta: float) -> np.n
         [-sin_t, cos_t, center_x * sin_t - center_y * cos_t + center_y + dy]
     ])
 
-    # Apply affine transform (scipy uses inverse)
+    # Apply affine transform (scipy uses inverse, order=1 for no overshoot)
     inv_matrix = np.linalg.inv(np.vstack([matrix, [0, 0, 1]]))[:2, :]
-    warped = affine_transform(mask, inv_matrix[:2, :2], offset=inv_matrix[:2, 2], cval=0)
+    warped = affine_transform(mask, inv_matrix[:2, :2], offset=inv_matrix[:2, 2], cval=0, order=1)
 
-    return warped.astype(np.float32)
+    # Clip to valid mask range (interpolation can overshoot)
+    return np.clip(warped, 0, 1).astype(np.float32)
 
 
 def psnr(x_true: np.ndarray, x_recon: np.ndarray) -> float:
@@ -168,7 +169,7 @@ def ssim(x_true: np.ndarray, x_recon: np.ndarray, window_size: int = 11) -> floa
     sigma_recon_sq = correlate2d(x_recon ** 2, window, mode='same', boundary='symm') - mu_recon_sq
     sigma_cross = correlate2d(x_true * x_recon, window, mode='same', boundary='symm') - mu_cross
 
-    ssim_map = ((2 * mu_cross + C2) * (2 * sigma_cross + C2)) / \
+    ssim_map = ((2 * mu_cross + C1) * (2 * sigma_cross + C2)) / \
                ((mu_true_sq + mu_recon_sq + C1) * (sigma_true_sq + sigma_recon_sq + C2))
 
     return np.mean(ssim_map)
@@ -220,6 +221,27 @@ def add_poisson_gaussian_noise(y: np.ndarray, peak: float = 10000,
     return np.maximum(y_noisy, 0).astype(np.float32)
 
 
+def cassi_forward(scene: np.ndarray, mask: np.ndarray, step: int = 2) -> np.ndarray:
+    """Simple CASSI forward model with spectral dispersion.
+
+    y[:, k*step : k*step + W] += mask * scene[:, :, k]
+
+    Args:
+        scene: (H, W, nC) spectral cube
+        mask: (H, W) coded aperture
+        step: dispersion step in pixels per band
+
+    Returns:
+        y: (H, W + (nC-1)*step) 2D measurement
+    """
+    H, W, nC = scene.shape
+    W_ext = W + (nC - 1) * step
+    y = np.zeros((H, W_ext), dtype=np.float32)
+    for k in range(nC):
+        y[:, k * step:k * step + W] += mask * scene[:, :, k]
+    return y
+
+
 # ============================================================================
 # Reconstruction Methods (Wrapper Functions)
 # ============================================================================
@@ -229,7 +251,7 @@ def reconstruct_gap_tv(y: np.ndarray, mask: np.ndarray, device: str = 'cuda:0') 
     Reconstruct using GAP-TV.
 
     Args:
-        y: (H, W) measurement (or (H, W, 28) multi-spectral)
+        y: (H, W_ext) CASSI measurement where W_ext = W + (nC-1)*step
         mask: (H, W) forward operator mask
         device: torch device (unused for GAP-TV, kept for API consistency)
 
@@ -238,26 +260,9 @@ def reconstruct_gap_tv(y: np.ndarray, mask: np.ndarray, device: str = 'cuda:0') 
     """
     try:
         from pwm_core.recon.gap_tv import gap_tv_cassi
-        # Handle measurement - if 2D, expand to simple 28-band version
-        if y.ndim == 2:
-            # Create simple 28-band measurement from 2D
-            y_expanded = np.tile(y[:, :, np.newaxis], (1, 1, 28)).astype(np.float32)
-            y_expanded = y_expanded + np.random.randn(256, 256, 28) * 0.01
-        else:
-            y_expanded = y.astype(np.float32)
-
-        # Resize mask to match measurement if needed
-        if mask.ndim == 2 and mask.shape != (256, 256):
-            from scipy.ndimage import zoom
-            mask_resized = zoom(mask, (256 / mask.shape[0], 256 / mask.shape[1]))
-        else:
-            mask_resized = mask[:256, :256] if mask.shape[0] > 256 else mask
-
-        n_bands = 28
-        return gap_tv_cassi(y_expanded, mask_resized, n_bands=n_bands, iterations=30, lam=0.05)
+        return gap_tv_cassi(y, mask, n_bands=28, iterations=50, lam=0.05, step=2)
     except Exception as e:
         logger.warning(f"GAP-TV failed: {e}")
-        # Return synthetic reconstruction with proper shape
         return np.clip(np.random.rand(256, 256, 28).astype(np.float32) * 0.8 + 0.1, 0, 1)
 
 
@@ -266,7 +271,7 @@ def reconstruct_hdnet(y: np.ndarray, mask: np.ndarray, device: str = 'cuda:0') -
     Reconstruct using HDNet.
 
     Args:
-        y: (H, W) or (H, W, 28) measurement
+        y: (H, W_ext) CASSI measurement where W_ext = W + (nC-1)*step
         mask: (H, W) forward operator mask
         device: torch device
 
@@ -276,25 +281,10 @@ def reconstruct_hdnet(y: np.ndarray, mask: np.ndarray, device: str = 'cuda:0') -
     try:
         from pwm_core.recon.hdnet import hdnet_recon_cassi
 
-        # Prepare measurement
-        if y.ndim == 2:
-            # Expand to 3D measurement matrix matching CASSI size
-            y_3d = np.tile(y[:, :, np.newaxis], (1, 1, 28)).astype(np.float32)
-        else:
-            y_3d = y.astype(np.float32)
+        # Expand mask to 3D for HDNet: (H, W) -> (H, W, 28)
+        mask_3d = np.repeat(mask[:, :, np.newaxis], 28, axis=2).astype(np.float32)
 
-        # Resize mask to 256x256 if needed
-        if mask.shape != (256, 256):
-            from scipy.ndimage import zoom
-            mask_256 = zoom(mask, (256 / mask.shape[0], 256 / mask.shape[1]))
-        else:
-            mask_256 = mask.astype(np.float32)
-
-        # Expand mask to 3D for HDNet
-        mask_3d = np.repeat(mask_256[:, :, np.newaxis], 28, axis=2).astype(np.float32)
-
-        # Call HDNet
-        result = hdnet_recon_cassi(y_3d, mask_3d, nC=28, step=2, device=device)
+        result = hdnet_recon_cassi(y, mask_3d, nC=28, step=2, device=device, dim=28)
         return np.clip(result, 0, 1).astype(np.float32)
     except Exception as e:
         logger.warning(f"HDNet failed: {e}")
@@ -314,43 +304,8 @@ def reconstruct_mst_s(y: np.ndarray, mask: np.ndarray, device: str = 'cuda:0') -
         x_recon: (H, W, 28) reconstruction
     """
     try:
-        from pwm_core.recon.mst import create_mst, shift_back_meas_torch
-        import torch
-
-        # Create and load model with pretrained weights
-        model = create_mst(
-            variant='mst_s',
-            step=2,
-            base_resolution=256
-        )
-        model.eval()
-        model = model.to(device)
-
-        # Handle measurement dimensions
-        H, W_ext = y.shape
-        nC = 28
-        step = 2
-
-        # Convert measurement to tensor: (H, W_ext) -> (1, H, W_ext)
-        y_tensor = torch.from_numpy(y).unsqueeze(0).float().to(device)
-
-        # Apply shift_back to get initial estimate: (1, H, W_ext) -> (1, 28, H, W)
-        y_shifted = shift_back_meas_torch(y_tensor, step=step, nC=nC)
-
-        # Inference
-        with torch.no_grad():
-            x_hat = model(y_shifted)  # (1, 28, H, W)
-
-        # Convert back: (1, 28, H, W) -> (H, W, 28)
-        output = np.clip(x_hat.squeeze(0).permute(1, 2, 0).cpu().numpy().astype(np.float32), 0, 1)
-
-        # Ensure output is (256, 256, 28)
-        if output.shape != (256, 256, 28):
-            from scipy.ndimage import zoom
-            scale = (256 / output.shape[0], 256 / output.shape[1], 1)
-            output = zoom(output, scale)
-
-        return output
+        from pwm_core.recon.mst import mst_recon_cassi
+        return mst_recon_cassi(y, mask, nC=28, step=2, device=device, variant='mst_s')
     except Exception as e:
         logger.warning(f"MST-S failed: {e}")
         return np.clip(np.random.rand(256, 256, 28).astype(np.float32) * 0.8 + 0.1, 0, 1)
@@ -369,43 +324,8 @@ def reconstruct_mst_l(y: np.ndarray, mask: np.ndarray, device: str = 'cuda:0') -
         x_recon: (H, W, 28) reconstruction
     """
     try:
-        from pwm_core.recon.mst import create_mst, shift_back_meas_torch
-        import torch
-
-        # Create and load model with pretrained weights
-        model = create_mst(
-            variant='mst_l',
-            step=2,
-            base_resolution=256
-        )
-        model.eval()
-        model = model.to(device)
-
-        # Handle measurement dimensions
-        H, W_ext = y.shape
-        nC = 28
-        step = 2
-
-        # Convert measurement to tensor: (H, W_ext) -> (1, H, W_ext)
-        y_tensor = torch.from_numpy(y).unsqueeze(0).float().to(device)
-
-        # Apply shift_back to get initial estimate: (1, H, W_ext) -> (1, 28, H, W)
-        y_shifted = shift_back_meas_torch(y_tensor, step=step, nC=nC)
-
-        # Inference
-        with torch.no_grad():
-            x_hat = model(y_shifted)  # (1, 28, H, W)
-
-        # Convert back: (1, 28, H, W) -> (H, W, 28)
-        output = np.clip(x_hat.squeeze(0).permute(1, 2, 0).cpu().numpy().astype(np.float32), 0, 1)
-
-        # Ensure output is (256, 256, 28)
-        if output.shape != (256, 256, 28):
-            from scipy.ndimage import zoom
-            scale = (256 / output.shape[0], 256 / output.shape[1], 1)
-            output = zoom(output, scale)
-
-        return output
+        from pwm_core.recon.mst import mst_recon_cassi
+        return mst_recon_cassi(y, mask, nC=28, step=2, device=device, variant='mst_l')
     except Exception as e:
         logger.warning(f"MST-L failed: {e}")
         return np.clip(np.random.rand(256, 256, 28).astype(np.float32) * 0.8 + 0.1, 0, 1)
@@ -447,15 +367,8 @@ def validate_scenario_i(scene: np.ndarray, mask_ideal: np.ndarray,
     logger.info("  Scenario I: Ideal (oracle)")
     results = {}
 
-    # Create ideal measurement using proper CASSI forward model
-    try:
-        from pwm_core.calibration.cassi_upwmi_alg12 import SimulatedOperatorEnlargedGrid
-        op_ideal = SimulatedOperatorEnlargedGrid(mask_ideal, N=4, K=2, stride=1)
-        y_ideal = op_ideal.forward(scene)  # (256, 310)
-    except Exception as e:
-        logger.warning(f"SimulatedOperatorEnlargedGrid failed, falling back to simple mean: {e}")
-        # Fallback: simple mean (not ideal but better than nothing)
-        y_ideal = np.mean(scene, axis=2).astype(np.float32)
+    # Create ideal measurement using simple CASSI forward model (step=2)
+    y_ideal = cassi_forward(scene, mask_ideal, step=2)  # (256, 310)
 
     for method in methods:
         try:
@@ -474,7 +387,7 @@ def validate_scenario_i(scene: np.ndarray, mask_ideal: np.ndarray,
     return results
 
 
-def validate_scenario_ii(scene: np.ndarray, mask_real: np.ndarray,
+def validate_scenario_ii(scene: np.ndarray, mask_ideal: np.ndarray,
                          mismatch: MismatchParameters,
                          methods: List[str], device: str) -> Tuple[Dict[str, Dict], np.ndarray]:
     """
@@ -483,13 +396,13 @@ def validate_scenario_ii(scene: np.ndarray, mask_real: np.ndarray,
     Purpose: Realistic baseline showing degradation from uncorrected mismatch
 
     Configuration:
-    - Measurement: y_corrupt with injected mismatch using proper CASSI forward model
-    - Forward model: Real mask (assumed perfect, but true mismatch exists)
+    - Measurement: y_corrupt from mask with injected mismatch using CASSI forward model
+    - Forward model: Ideal mask (assumed perfect)
     - Reconstruction: Each method assuming perfect alignment
 
     Args:
         scene: (256, 256, 28) ground truth
-        mask_real: (256, 256) real mask
+        mask_ideal: (256, 256) ideal mask
         mismatch: MismatchParameters for injection
         methods: list of method names
         device: torch device
@@ -500,39 +413,24 @@ def validate_scenario_ii(scene: np.ndarray, mask_real: np.ndarray,
     logger.info("  Scenario II: Assumed/Baseline (uncorrected mismatch)")
     results = {}
 
-    # Resize mask to 256x256 if needed
-    if mask_real.shape != (256, 256):
-        from scipy.ndimage import zoom
-        mask_real_256 = zoom(mask_real, (256 / mask_real.shape[0], 256 / mask_real.shape[1]))
-    else:
-        mask_real_256 = mask_real.astype(np.float32)
-
-    # Create corrupted measurement by warping mask and applying CASSI forward model
+    # Create corrupted measurement: warp the ideal mask, use simple CASSI forward
     mask_corrupted = warp_affine_2d(
-        mask_real_256,
+        mask_ideal,
         dx=mismatch.mask_dx,
         dy=mismatch.mask_dy,
         theta=mismatch.mask_theta
     )
 
-    # Apply corrupted forward model to scene
-    try:
-        from pwm_core.calibration.cassi_upwmi_alg12 import SimulatedOperatorEnlargedGrid
-        op_corrupted = SimulatedOperatorEnlargedGrid(mask_corrupted, N=4, K=2, stride=1)
-        y_corrupt = op_corrupted.forward(scene)  # (256, 310)
-    except Exception as e:
-        logger.warning(f"SimulatedOperatorEnlargedGrid for corrupted measurement failed: {e}")
-        # Fallback: use simple forward model with corrupted mask
-        y_corrupt = np.mean(scene, axis=2).astype(np.float32)
+    # Generate measurement with corrupted mask (step=2)
+    y_corrupt = cassi_forward(scene, mask_corrupted, step=2)
 
-    # Add realistic noise to simulate measurement degradation from mismatch
-    y_corrupt = add_poisson_gaussian_noise(y_corrupt, peak=10000, sigma=1.0)
+    # Add realistic noise
+    y_corrupt = add_poisson_gaussian_noise(y_corrupt, peak=100000, sigma=0.01)
 
-    # Reconstruct with each method ASSUMING PERFECT MASK (degraded result)
+    # Reconstruct with each method ASSUMING PERFECT (ideal) MASK
     for method in methods:
         try:
-            # Use real mask (assumed perfect), but measurement is corrupted
-            x_hat = RECONSTRUCTION_FUNCTIONS[method](y_corrupt, mask_real_256, device=device)
+            x_hat = RECONSTRUCTION_FUNCTIONS[method](y_corrupt, mask_ideal, device=device)
             x_hat = np.clip(x_hat, 0, 1)
 
             results[method] = {
@@ -547,7 +445,7 @@ def validate_scenario_ii(scene: np.ndarray, mask_real: np.ndarray,
     return results, y_corrupt
 
 
-def validate_scenario_iii(scene: np.ndarray, mask_real: np.ndarray,
+def validate_scenario_iii(scene: np.ndarray, mask_ideal: np.ndarray,
                          mismatch: MismatchParameters, y_corrupt: np.ndarray,
                          methods: List[str], device: str) -> Dict[str, Dict]:
     """
@@ -557,12 +455,12 @@ def validate_scenario_iii(scene: np.ndarray, mask_real: np.ndarray,
 
     Configuration:
     - Measurement: Same y_corrupt as Scenario II
-    - Forward model: Real mask with TRUE mismatch parameters applied (oracle knowledge)
+    - Forward model: Ideal mask with TRUE mismatch applied (oracle knowledge)
     - Reconstruction: Each method with oracle operator knowledge
 
     Args:
         scene: (256, 256, 28) ground truth
-        mask_real: (256, 256) real mask
+        mask_ideal: (256, 256) ideal mask
         mismatch: MismatchParameters (ground truth for this scenario)
         y_corrupt: measurement from Scenario II
         methods: list of method names
@@ -574,21 +472,15 @@ def validate_scenario_iii(scene: np.ndarray, mask_real: np.ndarray,
     logger.info("  Scenario III: Truth Forward Model (oracle operator)")
     results = {}
 
-    # Resize mask to 256x256 if needed
-    if mask_real.shape != (256, 256):
-        from scipy.ndimage import zoom
-        mask_real_256 = zoom(mask_real, (256 / mask_real.shape[0], 256 / mask_real.shape[1]))
-    else:
-        mask_real_256 = mask_real.astype(np.float32)
-
+    # Apply true mismatch to ideal mask → oracle knows the corruption
     mask_truth = warp_affine_2d(
-        mask_real_256,
+        mask_ideal,
         dx=mismatch.mask_dx,
         dy=mismatch.mask_dy,
         theta=mismatch.mask_theta
     )
 
-    # Reconstruct with each method using TRUE OPERATOR
+    # Reconstruct with each method using TRUE (corrupted) MASK
     for method in methods:
         try:
             x_hat = RECONSTRUCTION_FUNCTIONS[method](y_corrupt, mask_truth, device=device)
@@ -639,10 +531,10 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
     res_i = validate_scenario_i(scene, mask_ideal, methods, device)
 
     # Scenario II (returns both results and measurement for reuse)
-    res_ii, y_corrupt = validate_scenario_ii(scene, mask_real, mismatch, methods, device)
+    res_ii, y_corrupt = validate_scenario_ii(scene, mask_ideal, mismatch, methods, device)
 
     # Scenario III (reuses y_corrupt from Scenario II)
-    res_iii = validate_scenario_iii(scene, mask_real, mismatch, y_corrupt, methods, device)
+    res_iii = validate_scenario_iii(scene, mask_ideal, mismatch, y_corrupt, methods, device)
 
     elapsed = time.time() - start_time
 
@@ -691,6 +583,10 @@ def compute_summary_statistics(all_results: List[Dict]) -> Dict:
     """
     Compute aggregated statistics across all scenes.
 
+    Output format matches cassi_summary.json:
+    - scenario_i/ii/iii each have per-method psnr_mean/std, ssim_mean/std
+    - gaps have per-method gap_i_ii_mean/std, gap_ii_iii_mean/std
+
     Args:
         all_results: List of per-scene results
 
@@ -699,64 +595,44 @@ def compute_summary_statistics(all_results: List[Dict]) -> Dict:
     """
     summary = {
         'num_scenes': len(all_results),
-        'scenarios': {}
+        'methods': list(RECONSTRUCTION_METHODS),
+        'mismatch': {
+            'dx': 1.5,
+            'dy': 1.0,
+            'theta': 0.3
+        },
+        'noise': {
+            'alpha': 100000,
+            'sigma': 0.01
+        }
     }
 
     for scenario_key in ['scenario_i', 'scenario_ii', 'scenario_iii']:
-        scenario_name = scenario_key.replace('_', ' ').upper()
-        summary['scenarios'][scenario_key] = {}
+        summary[scenario_key] = {}
 
         for method in RECONSTRUCTION_METHODS:
             psnr_values = [r[scenario_key][method]['psnr'] for r in all_results if r[scenario_key][method]['psnr'] > 0]
             ssim_values = [r[scenario_key][method]['ssim'] for r in all_results if r[scenario_key][method]['ssim'] > 0]
-            sam_values = [r[scenario_key][method]['sam'] for r in all_results if r[scenario_key][method]['sam'] < 180]
 
-            summary['scenarios'][scenario_key][method] = {
-                'psnr': {
-                    'mean': float(np.mean(psnr_values)) if psnr_values else 0.0,
-                    'std': float(np.std(psnr_values)) if psnr_values else 0.0,
-                    'min': float(np.min(psnr_values)) if psnr_values else 0.0,
-                    'max': float(np.max(psnr_values)) if psnr_values else 0.0
-                },
-                'ssim': {
-                    'mean': float(np.mean(ssim_values)) if ssim_values else 0.0,
-                    'std': float(np.std(ssim_values)) if ssim_values else 0.0
-                },
-                'sam': {
-                    'mean': float(np.mean(sam_values)) if sam_values else 180.0,
-                    'std': float(np.std(sam_values)) if sam_values else 0.0
-                }
+            summary[scenario_key][method] = {
+                'psnr_mean': float(np.mean(psnr_values)) if psnr_values else 0.0,
+                'psnr_std': float(np.std(psnr_values)) if psnr_values else 0.0,
+                'ssim_mean': float(np.mean(ssim_values)) if ssim_values else 0.0,
+                'ssim_std': float(np.std(ssim_values)) if ssim_values else 0.0,
             }
 
     # Compute gaps across scenarios
     summary['gaps'] = {}
     for method in RECONSTRUCTION_METHODS:
         gap_values_i_ii = [r['gaps'][method]['gap_i_ii'] for r in all_results]
-        gap_values_ii_iv = [r['gaps'][method]['gap_ii_iii'] for r in all_results]
-        gap_values_iv_i = [r['gaps'][method]['gap_iii_i'] for r in all_results]
+        gap_values_ii_iii = [r['gaps'][method]['gap_ii_iii'] for r in all_results]
 
         summary['gaps'][method] = {
-            'gap_i_ii': {
-                'mean': float(np.mean(gap_values_i_ii)),
-                'std': float(np.std(gap_values_i_ii))
-            },
-            'gap_ii_iii': {
-                'mean': float(np.mean(gap_values_ii_iv)),
-                'std': float(np.std(gap_values_ii_iv))
-            },
-            'gap_iii_i': {
-                'mean': float(np.mean(gap_values_iv_i)),
-                'std': float(np.std(gap_values_iv_i))
-            }
+            'gap_i_ii_mean': float(np.mean(gap_values_i_ii)),
+            'gap_i_ii_std': float(np.std(gap_values_i_ii)),
+            'gap_ii_iii_mean': float(np.mean(gap_values_ii_iii)),
+            'gap_ii_iii_std': float(np.std(gap_values_ii_iii)),
         }
-
-    # Execution time
-    total_time = sum(r['elapsed_time'] for r in all_results)
-    summary['execution_time'] = {
-        'total_seconds': float(total_time),
-        'total_hours': float(total_time / 3600),
-        'per_scene_avg_seconds': float(total_time / len(all_results))
-    }
 
     return summary
 
@@ -791,7 +667,7 @@ def main():
     logger.info(f"Real mask shape: {mask_real.shape}")
 
     # Mismatch parameters
-    mismatch = MismatchParameters(mask_dx=0.5, mask_dy=0.3, mask_theta=0.1)
+    mismatch = MismatchParameters(mask_dx=1.5, mask_dy=1.0, mask_theta=0.3)
     logger.info(f"Mismatch parameters: dx={mismatch.mask_dx} px, dy={mismatch.mask_dy} px, θ={mismatch.mask_theta}°")
 
     # Validate all scenes
@@ -828,14 +704,14 @@ def main():
         scenario_label = scenario_key.replace('_', ' ').upper()
         logger.info(f"\n{scenario_label}:")
         for method in RECONSTRUCTION_METHODS:
-            psnr_mean = summary['scenarios'][scenario_key][method]['psnr']['mean']
-            psnr_std = summary['scenarios'][scenario_key][method]['psnr']['std']
+            psnr_mean = summary[scenario_key][method]['psnr_mean']
+            psnr_std = summary[scenario_key][method]['psnr_std']
             logger.info(f"  {method.upper():8s}: {psnr_mean:.2f} ± {psnr_std:.2f} dB")
 
     logger.info(f"\nGaps (PSNR degradation/recovery):")
     for method in RECONSTRUCTION_METHODS:
-        gap_i_ii = summary['gaps'][method]['gap_i_ii']['mean']
-        gap_ii_iii = summary['gaps'][method]['gap_ii_iii']['mean']
+        gap_i_ii = summary['gaps'][method]['gap_i_ii_mean']
+        gap_ii_iii = summary['gaps'][method]['gap_ii_iii_mean']
         logger.info(f"  {method.upper():8s}: Gap I→II={gap_i_ii:.2f} dB, Recovery II→III={gap_ii_iii:.2f} dB")
 
     logger.info(f"\nExecution time: {total_time / 3600:.2f} hours ({total_time / len(all_results) / 60:.1f} min/scene)")

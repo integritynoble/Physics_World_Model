@@ -109,56 +109,67 @@ def gap_tv_cassi(
     iterations: int = 50,
     lam: float = 0.05,
     acc: float = 1.0,
+    step: int = 1,
 ) -> np.ndarray:
     """GAP-TV for CASSI (Coded Aperture Snapshot Spectral Imaging).
 
     CASSI model: y = sum_k shift_k(mask * x_k)
-    where shift_k shifts band k by k pixels (spectral dispersion).
+    where shift_k shifts band k by k*step pixels (spectral dispersion).
 
     Args:
-        y: 2D measurement (H, W + n_bands - 1)
+        y: 2D measurement (H, W + (n_bands - 1) * step)
         mask: 2D coded aperture (H, W)
         n_bands: Number of spectral bands
         iterations: Number of GAP iterations
         lam: TV regularization weight
         acc: Acceleration parameter
+        step: Dispersion step in pixels per band (1 for stride-1, 2 for standard CASSI)
 
     Returns:
         Reconstructed 3D spectral cube (H, W, n_bands)
     """
     h, w_meas = y.shape
-    w = w_meas - n_bands + 1  # Object width
+    w = w_meas - (n_bands - 1) * step  # Object width
+
+    # Clip mask to [0, 1] for numerical stability (warped masks may overshoot)
+    mask = np.clip(mask, 0, 1).astype(np.float32)
 
     # Initialize estimate
     x = np.zeros((h, w, n_bands), dtype=np.float32)
 
+    # Compute proper normalization: A^T(A(ones))
+    # This correctly handles step>1 dispersion overlap patterns
+    y_ones = np.zeros((h, w_meas), dtype=np.float32)
+    for k in range(n_bands):
+        y_ones[:, k * step:k * step + w] += mask
+    mask_sum = np.zeros((h, w, n_bands), dtype=np.float32)
+    for k in range(n_bands):
+        mask_sum[:, :, k] = mask * y_ones[:, k * step:k * step + w]
+    mask_sum = np.maximum(mask_sum, 1e-6)
+
     # Initialize with back-projection
     for k in range(n_bands):
-        y_shifted = y[:, k:k+w]
-        x[:, :, k] = mask * y_shifted
-
-    # Normalize
-    mask_sum = n_bands * mask**2 + 1e-10
-    for k in range(n_bands):
-        x[:, :, k] /= mask_sum
-
-    y_err = y.copy()
+        x[:, :, k] = mask * y[:, k * step:k * step + w]
+    x /= mask_sum
 
     for it in range(iterations):
         # Gap step: compute residual
         y_est = np.zeros_like(y)
         for k in range(n_bands):
-            y_est[:, k:k+w] += mask * x[:, :, k]
+            y_est[:, k * step:k * step + w] += mask * x[:, :, k]
 
         residual = y - y_est
 
         # Back-project residual
         x_update = np.zeros_like(x)
         for k in range(n_bands):
-            x_update[:, :, k] = mask * residual[:, k:k+w]
+            x_update[:, :, k] = mask * residual[:, k * step:k * step + w]
 
         # Update with acceleration
-        x = x + acc * x_update / mask_sum[:, :, np.newaxis]
+        x = x + acc * x_update / mask_sum
+
+        # Clip to prevent overflow in TV denoiser
+        x = np.nan_to_num(x, nan=0.0, posinf=1.0, neginf=0.0)
 
         # TV denoising step
         x = tv_denoiser_3d(x, lam, iterations=5)
@@ -350,7 +361,12 @@ def run_gap_tv(
 
         # CASSI case
         if modality == 'cassi' or (mask is not None and n_bands is not None):
-            result = gap_tv_cassi(y, mask, n_bands, iters, lam, acc)
+            step = 1
+            if hasattr(physics, 'step'):
+                step = physics.step
+            elif hasattr(physics, 'info'):
+                step = op_info.get('step', 1)
+            result = gap_tv_cassi(y, mask, n_bands, iters, lam, acc, step=step)
             info["modality"] = "cassi"
             return result, info
 
