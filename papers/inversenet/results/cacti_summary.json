@@ -519,7 +519,7 @@
       "gap_ii_iii_mean": 12.57
     }
   },
-  "execution_seconds": 512.2,
+  "execution_seconds": 467.2,
   "mismatch": {
     "mask_dx": 0.5,
     "mask_dy": 0.3,

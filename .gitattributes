@@ -1,1 +1,2 @@
 papers/inversenet/data/spc/models/hatnet/*.pth filter=lfs diff=lfs merge=lfs -text
+*.npz filter=lfs diff=lfs merge=lfs -text

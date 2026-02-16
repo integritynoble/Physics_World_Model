@@ -1,4 +1,4 @@
-Method,Scenario I (PSNR),Scenario II (PSNR),Scenario IV (PSNR),Scenario I (SSIM),Scenario II (SSIM),Scenario IV (SSIM),Gap I->II,Gap II->IV
+Method,Scenario I (PSNR),Scenario II (PSNR),Scenario III (PSNR),Scenario I (SSIM),Scenario II (SSIM),Scenario III (SSIM),Gap I-II,Gap II-III
 GAP-TV,20.37+/-1.84,20.28+/-1.83,20.38+/-1.84,0.6202+/-0.0916,0.6017+/-0.0923,0.6201+/-0.0920,0.08,0.09
 HDNet,34.66+/-2.62,24.05+/-1.85,24.05+/-1.85,0.9695+/-0.0090,0.8127+/-0.0673,0.8127+/-0.0673,10.61,0.00
 MST-S,33.98+/-2.50,24.39+/-2.02,30.79+/-2.13,0.9646+/-0.0114,0.8269+/-0.0557,0.9335+/-0.0234,9.59,6.40
