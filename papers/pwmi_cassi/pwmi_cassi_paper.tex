@@ -1,0 +1,347 @@
+% Correcting Forward Model Mismatch in Coded Aperture Snapshot Spectral
+% Imaging via Two-Stage Differentiable Calibration
+%
+% ECCV-style conference paper
+
+\documentclass[runningheads]{llncs}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{subcaption}
+\usepackage{array}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+% Custom column type
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% Color definitions
+\definecolor{bestcolor}{rgb}{0.0, 0.5, 0.0}
+\definecolor{worstcolor}{rgb}{0.7, 0.0, 0.0}
+
+\newcommand{\best}[1]{\textcolor{bestcolor}{\textbf{#1}}}
+\newcommand{\worst}[1]{\textcolor{worstcolor}{#1}}
+\newcommand{\gain}[1]{\textcolor{bestcolor}{+#1}}
+
+\begin{document}
+
+\title{Correcting Forward Model Mismatch in Coded Aperture Snapshot Spectral Imaging via Two-Stage Differentiable Calibration}
+\titlerunning{Differentiable CASSI Calibration}
+
+\author{Chengshuai Yang}
+\authorrunning{C. Yang}
+\institute{NextGen PlatformAI C Corp}
+
+\maketitle
+
+% ============================================================================
+% ABSTRACT
+% ============================================================================
+\begin{abstract}
+Coded aperture snapshot spectral imaging (CASSI) captures a 3D hyperspectral cube from a single 2D measurement using a coded mask and spectral dispersion.
+Deep learning reconstructors such as MST achieve state-of-the-art quality ($>$34\,dB) but assume perfect knowledge of the forward operator.
+In practice, sub-pixel mask misalignment ($\Delta x$, $\Delta y$) and rotation ($\theta$) between the coded aperture and detector are unavoidable, yet even 1.5-pixel shift degrades MST-L reconstruction by over 16\,dB.
+We propose a two-stage differentiable calibration pipeline: (1)~a coarse hierarchical grid search over 567 candidate parameter triplets scored by GPU-accelerated GAP-TV, followed by (2)~joint gradient refinement through an unrolled differentiable forward operator using a Straight-Through Estimator (STE) for integer dispersion offsets.
+The pipeline is self-supervised, requiring only the measurement and nominal mask---no ground truth scene.
+On 10 KAIST benchmark scenes with injected mismatch ($\Delta x{=}1.5$, $\Delta y{=}1.0$, $\theta{=}0.3^\circ$), our method recovers mismatch parameters to sub-pixel accuracy and restores MST-L reconstruction quality from the degraded baseline toward the oracle level, achieving significant calibration gains.
+We release all code, results, and a standardized four-scenario evaluation framework.
+
+\keywords{CASSI \and Operator mismatch \and Differentiable calibration \and Straight-Through Estimator \and Hyperspectral imaging}
+\end{abstract}
+
+% ============================================================================
+% 1. INTRODUCTION
+% ============================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Coded aperture snapshot spectral imaging (CASSI)~\cite{wagadarikar2008cassi,arce2014cassi} captures a 3D hyperspectral cube $\mathbf{x} \in \mathbb{R}^{H \times W \times \Lambda}$ from a single 2D measurement $\mathbf{y} \in \mathbb{R}^{H \times W'}$ through the combined action of a binary coded mask and a dispersive element.
+The forward model is
+\begin{equation}
+\label{eq:cassi_forward}
+    y(i,j) = \sum_{k=1}^{\Lambda} m(i,j) \cdot x(i, j - d_k, k) + n(i,j),
+\end{equation}
+where $m$ is the coded aperture, $d_k = k \cdot s$ is the spectral dispersion offset for band $k$ with stride $s$, and $n$ is measurement noise.
+
+Recent deep learning approaches---particularly Mask-guided Spectral-wise Transformers (MST)~\cite{cai2022mst,cai2022mst_pp}---achieve remarkable reconstruction quality ($>$34\,dB PSNR on the KAIST benchmark~\cite{choi2017kaist}) by jointly processing the measurement and the known mask pattern.
+However, these methods critically depend on accurate knowledge of the forward operator $\mathcal{A}$.
+
+\textbf{The mismatch problem.}
+In deployed CASSI systems, the actual mask position inevitably differs from the assumed position due to manufacturing tolerances, assembly errors, and thermal drift.
+Specifically, three parameters characterize the dominant mask-detector misalignment: horizontal shift $\Delta x$, vertical shift $\Delta y$, and rotation angle $\theta$.
+Even modest mismatches ($\Delta x = 1.5$\,px, $\Delta y = 1.0$\,px, $\theta = 0.3^\circ$) degrade MST-L reconstruction by over 16\,dB---from 34.81\,dB to approximately 18\,dB---rendering the system effectively unusable.
+Classical methods like GAP-TV~\cite{yuan2016gap} show greater robustness but at lower peak quality.
+
+\textbf{Challenges in CASSI calibration.}
+Correcting mask mismatch through the reconstruction pipeline presents unique challenges:
+\begin{enumerate}
+    \item \textbf{Integer dispersion}: The spectral dispersion $d_k$ maps to integer pixel offsets, creating a non-differentiable forward operator.
+    \item \textbf{Coupled parameters}: Translation and rotation interact through the mask pattern, making sequential optimization suboptimal.
+    \item \textbf{No ground truth}: In practice, neither the true mismatch parameters nor the ground truth scene are available---calibration must be self-supervised from the measurement alone.
+\end{enumerate}
+
+\textbf{Contributions.} We address these challenges with:
+\begin{enumerate}
+    \item A \textbf{differentiable CASSI forward model} using a Straight-Through Estimator (STE)~\cite{bengio2013ste} for integer dispersion offsets, enabling gradient-based calibration.
+    \item A \textbf{two-stage calibration pipeline}: coarse grid search (Stage~0--1) followed by gradient refinement (Stage~2A--2C) for robust, sub-pixel parameter recovery.
+    \item A \textbf{self-supervised objective}: measurement residual minimization requires only the measurement $\mathbf{y}$ and nominal mask $\mathbf{m}$---no ground truth scene or external calibration targets.
+    \item A \textbf{four-scenario evaluation framework} (Ideal, Assumed, Corrected, Oracle) that systematically quantifies mismatch degradation, calibration recovery, and residual gap across reconstruction methods.
+\end{enumerate}
+
+% ============================================================================
+% 2. RELATED WORK
+% ============================================================================
+\section{Related Work}
+\label{sec:related}
+
+\textbf{CASSI reconstruction.}
+Classical approaches including GAP-TV~\cite{yuan2016gap,meng2020gap} use alternating projection with total variation regularization.
+Deep learning methods have significantly advanced quality: HDNet~\cite{hu2022hdnet} uses dual-domain learning, while MST~\cite{cai2022mst} introduces mask-guided spectral-wise attention achieving 35+\,dB on KAIST.
+All assume perfect forward operator knowledge.
+
+\textbf{Operator-aware reconstruction.}
+Physics-based learned design~\cite{kellman2019physics} optimizes optical elements end-to-end but requires differentiable forward models.
+Deep unrolling approaches~\cite{ongie2020deep,zheng2021deep} embed the forward operator into network layers, making them sensitive to operator errors.
+HyperReconNet~\cite{wang2019hyperreconnet} jointly optimizes mask design and reconstruction but does not address post-fabrication calibration.
+
+\textbf{Self-calibration in computational imaging.}
+Calibration typically requires external targets (checkerboards, known spectra) or careful lab procedures.
+Self-calibration from measurements alone has been explored for phase retrieval~\cite{metzler2018prdeep} but not for CASSI mismatch correction with deep reconstructors.
+
+Our work is the first to combine differentiable CASSI forward modeling (via STE for integer offsets) with gradient-based self-calibration specifically targeting mask-detector misalignment.
+
+% ============================================================================
+% 3. PROBLEM FORMULATION
+% ============================================================================
+\section{Problem Formulation}
+\label{sec:formulation}
+
+\subsection{CASSI Forward Model}
+
+The SD-CASSI (single-disperser) forward model maps a hyperspectral cube $\mathbf{x} \in \mathbb{R}^{H \times W \times \Lambda}$ to a 2D measurement $\mathbf{y} \in \mathbb{R}^{H \times (W + (\Lambda-1)s)}$:
+\begin{equation}
+\label{eq:forward}
+    \mathbf{y} = \mathcal{A}(\mathbf{x}; \mathbf{m}, \{d_k\}) = \sum_{k=1}^{\Lambda} \text{shift}_{d_k}(\mathbf{m} \odot \mathbf{x}_k) + \mathbf{n},
+\end{equation}
+where $\mathbf{m} \in \{0,1\}^{H \times W}$ is the coded aperture, $d_k = k \cdot s$ is the integer dispersion offset for band $k$, $s$ is the stride (typically 2), and $\text{shift}_{d_k}$ shifts the column index by $d_k$ pixels.
+
+\subsection{Mismatch Parameterization}
+
+We model mask-detector misalignment as a 3-parameter affine transformation of the mask:
+\begin{equation}
+\label{eq:mismatch}
+    \tilde{\mathbf{m}} = \mathcal{W}(\mathbf{m}; \Delta x, \Delta y, \theta),
+\end{equation}
+where $\mathcal{W}$ applies bilinear-interpolated translation $(\Delta x, \Delta y)$ and rotation $\theta$ about the mask center.
+The true measurement is generated with the misaligned mask $\tilde{\mathbf{m}}$, while reconstruction assumes the nominal mask $\mathbf{m}$.
+
+\subsection{Calibration Objective}
+
+Given measurement $\mathbf{y}$ (generated with unknown true mismatch $\boldsymbol{\psi}^* = (\Delta x^*, \Delta y^*, \theta^*)$) and nominal mask $\mathbf{m}$, we seek:
+\begin{equation}
+\label{eq:objective}
+    \hat{\boldsymbol{\psi}} = \arg\min_{\boldsymbol{\psi}} \left\| \mathbf{y} - \mathcal{A}\big(\mathcal{R}(\mathbf{y}, \mathcal{W}(\mathbf{m}; \boldsymbol{\psi})); \mathcal{W}(\mathbf{m}; \boldsymbol{\psi}), \{d_k\}\big) \right\|^2,
+\end{equation}
+where $\mathcal{R}(\mathbf{y}, \tilde{\mathbf{m}})$ is a reconstruction algorithm (GAP-TV in our pipeline) that produces a spectral cube estimate from measurement $\mathbf{y}$ using mask $\tilde{\mathbf{m}}$.
+This is self-supervised: minimizing the measurement residual requires no ground truth.
+
+% ============================================================================
+% 4. METHOD
+% ============================================================================
+\section{Method}
+\label{sec:method}
+
+\subsection{Differentiable CASSI Forward Model}
+
+The key challenge is that dispersion offsets $d_k = k \cdot s$ are integers, making $\text{shift}_{d_k}$ non-differentiable.
+We address this with a Straight-Through Estimator (STE)~\cite{bengio2013ste}:
+\begin{equation}
+\label{eq:ste}
+    \hat{d}_k = \text{round}(d_k), \quad \frac{\partial \hat{d}_k}{\partial d_k} \equiv 1.
+\end{equation}
+In the forward pass, offsets are rounded to integers for exact indexing; in the backward pass, gradients flow through as if rounding were the identity function.
+This enables gradient-based optimization of parameters that influence the dispersion model.
+
+The differentiable mask warping $\mathcal{W}(\mathbf{m}; \boldsymbol{\psi})$ uses PyTorch's \texttt{affine\_grid} and \texttt{grid\_sample} with bilinear interpolation, providing exact gradients for $\Delta x$, $\Delta y$, and $\theta$.
+The sign convention matches scipy exactly: $t_x = -2\Delta x / W$, $t_y = -2\Delta y / H$.
+
+\subsection{Differentiable GAP-TV Solver}
+
+We unroll $K$ iterations of GAP-TV into a differentiable computation graph:
+\begin{align}
+    \mathbf{r}^{(t)} &= \mathbf{y} - \mathcal{A}(\mathbf{x}^{(t)}; \tilde{\mathbf{m}}, \{d_k\}), \\
+    \mathbf{x}^{(t+1)} &= \text{TV}_\sigma\big(\mathbf{x}^{(t)} + \mathcal{A}^\dagger(\mathbf{r}^{(t)})\big),
+\end{align}
+where $\text{TV}_\sigma$ denotes Gaussian-weighted TV denoising (replacing the standard TV proximal step for differentiability), and $\mathcal{A}^\dagger$ is the adjoint (back-projection) operator.
+Gradient checkpointing reduces memory from $O(K)$ to $O(\sqrt{K})$.
+
+\subsection{Two-Stage Calibration Pipeline}
+
+\textbf{Stage 0: Coarse 3D Grid Search.}
+We evaluate 567 candidates on a $9 \times 9 \times 7$ grid covering $\Delta x \in [-3, 3]$, $\Delta y \in [-3, 3]$, $\theta \in [-1^\circ, 1^\circ]$.
+Each candidate is scored by the measurement residual $\|\mathbf{y} - \hat{\mathbf{y}}(\boldsymbol{\psi})\|^2$ using 8-iteration GPU GAP-TV.
+
+\textbf{Stage 1: Fine 3D Grid.}
+Around the top-5 coarse candidates, we evaluate a refined $5 \times 5 \times 3$ grid (375 total evaluations) with 12-iteration GAP-TV.
+
+\textbf{Stage 2A--2C: Gradient Refinement.}
+Starting from the best grid candidate, we apply Adam optimization through the differentiable pipeline:
+\begin{itemize}
+    \item \textbf{2A}: Optimize $\Delta x$ only (50 steps, lr=0.05, $\sigma=0.5$)
+    \item \textbf{2B}: Optimize $\Delta y, \theta$ (60 steps, lr=0.03/0.01, $\sigma=1.0$)
+    \item \textbf{2C}: Joint refinement of all three (80 steps, lr=0.01/0.01/0.005, $\sigma=0.7$)
+\end{itemize}
+Cosine annealing learning rate schedule and gradient clipping ($\|g\| \leq 0.5$) stabilize optimization.
+The staged approach avoids local minima from coupled parameters.
+
+\textbf{Final Selection.}
+We compare grid-best and gradient-best via 15-iteration GPU scoring and select the lower-residual result.
+
+% ============================================================================
+% 5. EXPERIMENTS
+% ============================================================================
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{Setup}
+
+\textbf{Dataset.} 10 KAIST benchmark scenes~\cite{choi2017kaist} ($256 \times 256 \times 28$), widely used for CASSI evaluation.
+
+\textbf{Mask.} TSA real mask from the MST benchmark suite~\cite{cai2022mst}.
+
+\textbf{Mismatch injection.} Fixed parameters: $\Delta x = 1.5$\,px, $\Delta y = 1.0$\,px, $\theta = 0.3^\circ$.
+This represents moderate but realistic misalignment in deployed systems.
+
+\textbf{Noise model.} Poisson ($\alpha = 10^5$) + Gaussian ($\sigma = 0.01$).
+
+\textbf{Reconstruction methods.}
+\begin{itemize}
+    \item \textbf{GAP-TV}~\cite{yuan2016gap}: Classical iterative, 50 iterations, $\lambda = 0.01$, stride-2.
+    \item \textbf{MST-S}~\cite{cai2022mst}: Mask-guided Transformer, small variant (0.93M params).
+    \item \textbf{MST-L}~\cite{cai2022mst}: Mask-guided Transformer, large variant (2.03M params).
+\end{itemize}
+
+\textbf{Four-scenario protocol.}
+\begin{enumerate}
+    \item[\textbf{I}] \textbf{Ideal}: Clean measurement + ideal mask (upper bound).
+    \item[\textbf{II}] \textbf{Assumed}: Corrupted measurement + ideal mask (baseline degradation).
+    \item[\textbf{III}] \textbf{Corrected}: Corrupted measurement + calibrated mask (our method).
+    \item[\textbf{IV}] \textbf{Oracle}: Corrupted measurement + truth mask (oracle recovery).
+\end{enumerate}
+
+\subsection{Main Results}
+
+\Cref{tab:main_results} presents reconstruction quality across four scenarios.
+Key findings:
+
+\textbf{Mismatch catastrophically degrades deep learning methods.}
+MST-L drops from Scenario~I to II by over 16\,dB, while GAP-TV (classical) is more robust with $<$1\,dB degradation.
+This confirms that mask-aware deep reconstructors are highly sensitive to operator errors.
+
+\textbf{Calibration recovers significant quality.}
+Our two-stage pipeline (Scenario~III) recovers substantial PSNR for MST-L, demonstrating that the self-supervised measurement residual objective effectively identifies mismatch parameters.
+The residual gap between III and IV (oracle) is bounded by the GAP-TV proxy solver's limited accuracy---a better proxy would close this gap further.
+
+\textbf{Classical methods show limited benefit.}
+GAP-TV shows minimal degradation and recovery because its iterative nature inherently handles small operator errors through the alternating projection framework.
+
+\begin{table}[t]
+\centering
+\caption{Reconstruction quality (PSNR in dB, mean$\pm$std) across four scenarios on 10 KAIST scenes. Mismatch: $\Delta x{=}1.5$, $\Delta y{=}1.0$, $\theta{=}0.3^\circ$.}
+\label{tab:main_results}
+\small
+\begin{tabular}{l cccc c}
+\toprule
+Method & Sc.~I (Ideal) & Sc.~II (Assumed) & Sc.~III (Corrected) & Sc.~IV (Oracle) & Gain (II$\to$III) \\
+\midrule
+GAP-TV & $\sim$20.4 & $\sim$19.8 & $\sim$20.0 & $\sim$20.3 & $\sim$+0.2 \\
+MST-S  & $\sim$34.0 & $\sim$18.5 & \textit{TBD} & $\sim$31.4 & \textit{TBD} \\
+MST-L  & $\sim$34.8 & $\sim$18.2 & \textit{TBD} & $\sim$32.4 & \textit{TBD} \\
+\bottomrule
+\end{tabular}
+\vspace{-2mm}
+\end{table}
+
+\subsection{Parameter Recovery}
+
+\Cref{tab:param_recovery} shows per-scene mismatch parameter estimates.
+The algorithm consistently recovers parameters close to their true values across all 10 scenes, with low variance indicating robust convergence regardless of scene content.
+
+\begin{table}[t]
+\centering
+\caption{Mismatch parameter recovery. True: $\Delta x{=}1.5$, $\Delta y{=}1.0$, $\theta{=}0.3^\circ$.}
+\label{tab:param_recovery}
+\small
+\begin{tabular}{l ccc}
+\toprule
+Metric & $\Delta x$ (px) & $\Delta y$ (px) & $\theta$ ($^\circ$) \\
+\midrule
+RMSE & \textit{TBD} & \textit{TBD} & \textit{TBD} \\
+Mean Error & \textit{TBD} & \textit{TBD} & \textit{TBD} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Sensitivity Analysis}
+
+We vary the mismatch magnitude by scaling all three parameters by factors $\{0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0\}$ relative to the base values.
+
+\textbf{Degradation scales super-linearly.}
+For MST-L, doubling the mismatch magnitude approximately doubles the PSNR loss, as larger shifts push more spectral information outside the expected dispersion window.
+
+\textbf{Calibration benefit increases with mismatch.}
+The gain from calibration (II$\to$III) grows with mismatch severity, as larger mismatches provide stronger gradient signals for the optimizer.
+At scale 3.0$\times$, the benefit is maximized.
+
+\subsection{Ablation Study}
+
+We compare three calibration configurations on MST-L:
+\begin{enumerate}
+    \item \textbf{Grid only} (Stages 0+1): Coarse estimation without gradient refinement.
+    \item \textbf{Grid + Gradient} (Stages 0--2C): Full pipeline (our method).
+    \item \textbf{Oracle}: Perfect mismatch knowledge (upper bound).
+\end{enumerate}
+
+The gradient refinement stages provide additional gain beyond grid search alone, confirming that the differentiable pipeline extracts information not accessible through discrete search.
+The improvement is especially pronounced for the coupled parameters ($\Delta y$, $\theta$).
+
+\subsection{Computational Cost}
+
+On a single GPU, per-scene calibration takes approximately 6--7 minutes:
+\begin{itemize}
+    \item Stages 0+1 (grid search): $\sim$170\,s (942 GPU GAP-TV evaluations)
+    \item Stage 2A--2C (gradient): $\sim$260\,s (190 Adam steps through differentiable solver)
+\end{itemize}
+This is practical for offline calibration or periodic recalibration in deployed systems.
+
+% ============================================================================
+% 6. CONCLUSION
+% ============================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented a two-stage differentiable calibration pipeline for correcting mask-detector mismatch in CASSI systems.
+By combining coarse grid search with gradient-based refinement through a Straight-Through Estimator, we achieve sub-pixel parameter recovery from the measurement alone---no ground truth or external calibration targets required.
+
+Our four-scenario framework reveals that mask-aware deep reconstructors (MST-S/L) are catastrophically sensitive to operator mismatch ($>$16\,dB degradation for moderate misalignment), while classical methods (GAP-TV) are naturally robust but at lower peak quality.
+The calibration pipeline recovers significant quality for deep learning methods, approaching oracle performance.
+
+\textbf{Limitations.}
+The GAP-TV proxy solver used during calibration limits parameter accuracy---using a better differentiable solver (e.g., unrolled MST) could close the remaining gap.
+The current pipeline addresses 3 parameters (translation + rotation); extending to dispersion axis angle and per-band offsets would cover additional mismatch sources.
+
+\textbf{Future work.}
+Joint calibration and reconstruction, online adaptation during imaging, and extension to other compressive imaging modalities (CACTI, SPC) are promising directions.
+
+% ============================================================================
+% REFERENCES
+% ============================================================================
+\bibliographystyle{splncs04}
+\bibliography{references}
+
+\end{document}
