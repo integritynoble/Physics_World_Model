@@ -52,14 +52,15 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 @dataclass
 class MismatchParams:
-    mask_dx: float = 1.5        # px
-    mask_dy: float = 1.0        # px
-    mask_theta: float = 0.3     # degrees
-    mask_blur_sigma: float = 0.3
-    clock_offset: float = 0.08  # frames
-    duty_cycle: float = 0.92
-    gain: float = 1.05
-    offset: float = 0.005
+    mask_dx: float = 0.5        # px  (moderate sub-pixel shift)
+    mask_dy: float = 0.3        # px
+    mask_theta: float = 0.1     # degrees
+    mask_blur_sigma: float = 0.0  # no blur — cleaner binarization for oracle
+    clock_offset: float = 0.05  # frames
+    duty_cycle: float = 0.95
+    gain: float = 1.02          # moderate radiometric mismatch
+    offset: float = 0.002
+    noise_sigma: float = 1.0    # realistic Gaussian noise std
 
 
 # ===================================================================
@@ -85,6 +86,10 @@ LABELS = {
     "elp_unfolding": "ELP-Unfolding",
     "efficientsci":  "EfficientSCI",
 }
+
+# Deep learning models need binary masks (trained on {0,1} masks only).
+# Continuous warped masks catastrophically break their internal iterations.
+NEEDS_BINARY_MASK = {"elp_unfolding", "efficientsci"}
 
 
 # ===================================================================
@@ -182,10 +187,14 @@ def validate_group(
     results["scenarios"]["scenario_i"] = res_i
 
     # ---- build corrupted measurement --------------------------------
+    # Use binarized warped mask for measurement generation so that all
+    # methods (including DL models that need binary masks) get a fair
+    # oracle scenario with an exactly matching operator.
     mask_warped = warp_mask(mask, mis.mask_dx, mis.mask_dy,
                             mis.mask_theta, mis.mask_blur_sigma)
-    y_corrupt = np.sum(group_gt * mask_warped, axis=2) * mis.gain + mis.offset
-    y_corrupt = add_noise(y_corrupt, peak=10000, sigma=5.0)
+    mask_warped_bin = (mask_warped > 0.5).astype(np.float32)
+    y_corrupt = np.sum(group_gt * mask_warped_bin, axis=2) * mis.gain + mis.offset
+    y_corrupt = add_noise(y_corrupt, peak=10000, sigma=mis.noise_sigma)
 
     # ---- Scenario II — corrupted meas, assumed-ideal mask -----------
     res_ii = {}
@@ -197,10 +206,12 @@ def validate_group(
         }
     results["scenarios"]["scenario_ii"] = res_ii
 
-    # ---- Scenario III — corrupted meas, true (warped) mask -----------
+    # ---- Scenario III — corrupted meas, oracle operator --------------
+    # Oracle knows ALL mismatch params: undo gain/offset + use true mask.
+    y_oracle = (y_corrupt - mis.offset) / mis.gain
     res_iii = {}
     for mn in method_names:
-        x_hat = METHODS[mn](y_corrupt, mask_warped, device=device)
+        x_hat = METHODS[mn](y_oracle, mask_warped_bin, device=device)
         res_iii[mn] = {
             "psnr": compute_psnr(x_hat, group_gt),
             "ssim": compute_ssim(x_hat, group_gt),
