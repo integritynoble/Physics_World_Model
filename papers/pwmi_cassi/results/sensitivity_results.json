@@ -1,0 +1,1318 @@
+{
+  "per_scene": [
+    {
+      "scene_idx": 1,
+      "scale": 0.25,
+      "mismatch": {
+        "dx": 0.375,
+        "dy": 0.25,
+        "theta": 0.075
+      },
+      "estimated": {
+        "dx": 0.2821812331676483,
+        "dy": 0.20550185441970825,
+        "theta": -0.07860536873340607,
+        "a1": 1.93,
+        "alpha": 0.0
+      },
+      "calibration_time": 252.7,
+      "gap_tv": {
+        "psnr_i": 24.16,
+        "psnr_ii": 24.05,
+        "psnr_iii": 24.12,
+        "psnr_iv": 24.15,
+        "degradation": 0.11,
+        "calibration_gain": 0.07,
+        "oracle_gain": 0.1
+      },
+      "mst_l": {
+        "psnr_i": 35.29,
+        "psnr_ii": 28.65,
+        "psnr_iii": 31.03,
+        "psnr_iv": 33.12,
+        "degradation": 6.65,
+        "calibration_gain": 2.38,
+        "oracle_gain": 4.47
+      },
+      "hdnet": {
+        "psnr_i": 34.95,
+        "psnr_ii": 27.13,
+        "psnr_iii": 27.13,
+        "psnr_iv": 27.13,
+        "degradation": 7.82,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 25.55,
+        "psnr_ii": 19.85,
+        "psnr_iii": 21.02,
+        "psnr_iv": 20.57,
+        "degradation": 5.7,
+        "calibration_gain": 1.17,
+        "oracle_gain": 0.72
+      }
+    },
+    {
+      "scene_idx": 1,
+      "scale": 0.5,
+      "mismatch": {
+        "dx": 0.75,
+        "dy": 0.5,
+        "theta": 0.15
+      },
+      "estimated": {
+        "dx": 0.3516054153442383,
+        "dy": 0.9359123706817627,
+        "theta": -0.27974405884742737,
+        "a1": 1.91,
+        "alpha": 0.0
+      },
+      "calibration_time": 243.9,
+      "gap_tv": {
+        "psnr_i": 24.16,
+        "psnr_ii": 23.82,
+        "psnr_iii": 24.0,
+        "psnr_iv": 24.14,
+        "degradation": 0.34,
+        "calibration_gain": 0.18,
+        "oracle_gain": 0.31
+      },
+      "mst_l": {
+        "psnr_i": 35.29,
+        "psnr_ii": 24.15,
+        "psnr_iii": 26.76,
+        "psnr_iv": 33.04,
+        "degradation": 11.15,
+        "calibration_gain": 2.61,
+        "oracle_gain": 8.89
+      },
+      "hdnet": {
+        "psnr_i": 34.95,
+        "psnr_ii": 27.42,
+        "psnr_iii": 27.42,
+        "psnr_iv": 27.42,
+        "degradation": 7.52,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 25.55,
+        "psnr_ii": 17.42,
+        "psnr_iii": 23.44,
+        "psnr_iv": 24.7,
+        "degradation": 8.13,
+        "calibration_gain": 6.02,
+        "oracle_gain": 7.27
+      }
+    },
+    {
+      "scene_idx": 1,
+      "scale": 0.75,
+      "mismatch": {
+        "dx": 1.125,
+        "dy": 0.75,
+        "theta": 0.22499999999999998
+      },
+      "estimated": {
+        "dx": 0.7461977005004883,
+        "dy": 1.0572384595870972,
+        "theta": -0.22061458230018616,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 234.7,
+      "gap_tv": {
+        "psnr_i": 24.16,
+        "psnr_ii": 23.53,
+        "psnr_iii": 24.0,
+        "psnr_iv": 24.1,
+        "degradation": 0.63,
+        "calibration_gain": 0.48,
+        "oracle_gain": 0.57
+      },
+      "mst_l": {
+        "psnr_i": 35.29,
+        "psnr_ii": 22.11,
+        "psnr_iii": 27.47,
+        "psnr_iv": 32.8,
+        "degradation": 13.18,
+        "calibration_gain": 5.36,
+        "oracle_gain": 10.69
+      },
+      "hdnet": {
+        "psnr_i": 34.95,
+        "psnr_ii": 29.78,
+        "psnr_iii": 29.78,
+        "psnr_iv": 29.78,
+        "degradation": 5.16,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 25.55,
+        "psnr_ii": 17.13,
+        "psnr_iii": 22.92,
+        "psnr_iv": 24.96,
+        "degradation": 8.42,
+        "calibration_gain": 5.79,
+        "oracle_gain": 7.83
+      }
+    },
+    {
+      "scene_idx": 1,
+      "scale": 1.0,
+      "mismatch": {
+        "dx": 1.5,
+        "dy": 1.0,
+        "theta": 0.3
+      },
+      "estimated": {
+        "dx": 1.0005055665969849,
+        "dy": 1.6137990951538086,
+        "theta": -0.3772159516811371,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 242.1,
+      "gap_tv": {
+        "psnr_i": 24.16,
+        "psnr_ii": 23.36,
+        "psnr_iii": 23.88,
+        "psnr_iv": 24.09,
+        "degradation": 0.8,
+        "calibration_gain": 0.52,
+        "oracle_gain": 0.73
+      },
+      "mst_l": {
+        "psnr_i": 35.29,
+        "psnr_ii": 20.97,
+        "psnr_iii": 25.14,
+        "psnr_iv": 32.82,
+        "degradation": 14.33,
+        "calibration_gain": 4.17,
+        "oracle_gain": 11.85
+      },
+      "hdnet": {
+        "psnr_i": 34.95,
+        "psnr_ii": 27.02,
+        "psnr_iii": 27.02,
+        "psnr_iv": 27.02,
+        "degradation": 7.92,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 25.55,
+        "psnr_ii": 18.03,
+        "psnr_iii": 21.19,
+        "psnr_iv": 24.93,
+        "degradation": 7.52,
+        "calibration_gain": 3.16,
+        "oracle_gain": 6.9
+      }
+    },
+    {
+      "scene_idx": 1,
+      "scale": 1.5,
+      "mismatch": {
+        "dx": 2.25,
+        "dy": 1.5,
+        "theta": 0.44999999999999996
+      },
+      "estimated": {
+        "dx": 1.635347843170166,
+        "dy": 2.0628111362457275,
+        "theta": -0.3648882806301117,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 240.3,
+      "gap_tv": {
+        "psnr_i": 24.16,
+        "psnr_ii": 23.06,
+        "psnr_iii": 23.79,
+        "psnr_iv": 24.05,
+        "degradation": 1.1,
+        "calibration_gain": 0.72,
+        "oracle_gain": 0.99
+      },
+      "mst_l": {
+        "psnr_i": 35.29,
+        "psnr_ii": 20.05,
+        "psnr_iii": 24.93,
+        "psnr_iv": 32.42,
+        "degradation": 15.24,
+        "calibration_gain": 4.88,
+        "oracle_gain": 12.37
+      },
+      "hdnet": {
+        "psnr_i": 34.95,
+        "psnr_ii": 27.45,
+        "psnr_iii": 27.45,
+        "psnr_iv": 27.45,
+        "degradation": 7.49,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 25.55,
+        "psnr_ii": 16.69,
+        "psnr_iii": 22.14,
+        "psnr_iv": 25.27,
+        "degradation": 8.86,
+        "calibration_gain": 5.45,
+        "oracle_gain": 8.58
+      }
+    },
+    {
+      "scene_idx": 1,
+      "scale": 2.0,
+      "mismatch": {
+        "dx": 3.0,
+        "dy": 2.0,
+        "theta": 0.6
+      },
+      "estimated": {
+        "dx": 2.0422258377075195,
+        "dy": 2.9323644638061523,
+        "theta": -0.5931656956672668,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 238.5,
+      "gap_tv": {
+        "psnr_i": 24.16,
+        "psnr_ii": 22.93,
+        "psnr_iii": 23.58,
+        "psnr_iv": 24.01,
+        "degradation": 1.23,
+        "calibration_gain": 0.66,
+        "oracle_gain": 1.08
+      },
+      "mst_l": {
+        "psnr_i": 35.29,
+        "psnr_ii": 19.98,
+        "psnr_iii": 23.08,
+        "psnr_iv": 32.23,
+        "degradation": 15.31,
+        "calibration_gain": 3.1,
+        "oracle_gain": 12.25
+      },
+      "hdnet": {
+        "psnr_i": 34.95,
+        "psnr_ii": 27.87,
+        "psnr_iii": 27.87,
+        "psnr_iv": 27.87,
+        "degradation": 7.07,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 25.55,
+        "psnr_ii": 15.66,
+        "psnr_iii": 20.45,
+        "psnr_iv": 24.77,
+        "degradation": 9.9,
+        "calibration_gain": 4.8,
+        "oracle_gain": 9.12
+      }
+    },
+    {
+      "scene_idx": 1,
+      "scale": 3.0,
+      "mismatch": {
+        "dx": 4.5,
+        "dy": 3.0,
+        "theta": 0.8999999999999999
+      },
+      "estimated": {
+        "dx": 1.875,
+        "dy": 3.0,
+        "theta": -1.0,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 244.3,
+      "gap_tv": {
+        "psnr_i": 24.16,
+        "psnr_ii": 22.86,
+        "psnr_iii": 23.28,
+        "psnr_iv": 23.92,
+        "degradation": 1.3,
+        "calibration_gain": 0.42,
+        "oracle_gain": 1.06
+      },
+      "mst_l": {
+        "psnr_i": 35.29,
+        "psnr_ii": 19.89,
+        "psnr_iii": 21.38,
+        "psnr_iv": 31.59,
+        "degradation": 15.41,
+        "calibration_gain": 1.5,
+        "oracle_gain": 11.71
+      },
+      "hdnet": {
+        "psnr_i": 34.95,
+        "psnr_ii": 26.71,
+        "psnr_iii": 26.71,
+        "psnr_iv": 26.71,
+        "degradation": 8.23,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 25.55,
+        "psnr_ii": 16.49,
+        "psnr_iii": 13.36,
+        "psnr_iv": 24.31,
+        "degradation": 9.07,
+        "calibration_gain": -3.12,
+        "oracle_gain": 7.83
+      }
+    },
+    {
+      "scene_idx": 2,
+      "scale": 0.25,
+      "mismatch": {
+        "dx": 0.375,
+        "dy": 0.25,
+        "theta": 0.075
+      },
+      "estimated": {
+        "dx": 0.2720879316329956,
+        "dy": 0.18189217150211334,
+        "theta": -0.048789069056510925,
+        "a1": 1.92,
+        "alpha": 0.0
+      },
+      "calibration_time": 242.3,
+      "gap_tv": {
+        "psnr_i": 21.3,
+        "psnr_ii": 21.29,
+        "psnr_iii": 21.31,
+        "psnr_iv": 21.32,
+        "degradation": 0.01,
+        "calibration_gain": 0.02,
+        "oracle_gain": 0.03
+      },
+      "mst_l": {
+        "psnr_i": 36.14,
+        "psnr_ii": 27.21,
+        "psnr_iii": 31.3,
+        "psnr_iv": 33.22,
+        "degradation": 8.93,
+        "calibration_gain": 4.09,
+        "oracle_gain": 6.01
+      },
+      "hdnet": {
+        "psnr_i": 35.65,
+        "psnr_ii": 25.85,
+        "psnr_iii": 25.85,
+        "psnr_iv": 25.85,
+        "degradation": 9.79,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 25.2,
+        "psnr_ii": 19.17,
+        "psnr_iii": 23.9,
+        "psnr_iv": 24.04,
+        "degradation": 6.03,
+        "calibration_gain": 4.73,
+        "oracle_gain": 4.87
+      }
+    },
+    {
+      "scene_idx": 2,
+      "scale": 0.5,
+      "mismatch": {
+        "dx": 0.75,
+        "dy": 0.5,
+        "theta": 0.15
+      },
+      "estimated": {
+        "dx": 0.3845030665397644,
+        "dy": 0.8797711133956909,
+        "theta": -0.23251695930957794,
+        "a1": 1.91,
+        "alpha": 0.0
+      },
+      "calibration_time": 240.4,
+      "gap_tv": {
+        "psnr_i": 21.3,
+        "psnr_ii": 21.21,
+        "psnr_iii": 21.26,
+        "psnr_iv": 21.31,
+        "degradation": 0.09,
+        "calibration_gain": 0.06,
+        "oracle_gain": 0.11
+      },
+      "mst_l": {
+        "psnr_i": 36.14,
+        "psnr_ii": 22.54,
+        "psnr_iii": 26.84,
+        "psnr_iv": 33.31,
+        "degradation": 13.59,
+        "calibration_gain": 4.3,
+        "oracle_gain": 10.76
+      },
+      "hdnet": {
+        "psnr_i": 35.65,
+        "psnr_ii": 26.31,
+        "psnr_iii": 26.31,
+        "psnr_iv": 26.31,
+        "degradation": 9.33,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 25.2,
+        "psnr_ii": 16.94,
+        "psnr_iii": 21.98,
+        "psnr_iv": 24.12,
+        "degradation": 8.26,
+        "calibration_gain": 5.04,
+        "oracle_gain": 7.18
+      }
+    },
+    {
+      "scene_idx": 2,
+      "scale": 0.75,
+      "mismatch": {
+        "dx": 1.125,
+        "dy": 0.75,
+        "theta": 0.22499999999999998
+      },
+      "estimated": {
+        "dx": 0.77506422996521,
+        "dy": 1.0680961608886719,
+        "theta": -0.1993260234594345,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 234.4,
+      "gap_tv": {
+        "psnr_i": 21.3,
+        "psnr_ii": 21.11,
+        "psnr_iii": 21.26,
+        "psnr_iv": 21.3,
+        "degradation": 0.19,
+        "calibration_gain": 0.15,
+        "oracle_gain": 0.19
+      },
+      "mst_l": {
+        "psnr_i": 36.14,
+        "psnr_ii": 20.86,
+        "psnr_iii": 27.67,
+        "psnr_iv": 33.61,
+        "degradation": 15.28,
+        "calibration_gain": 6.81,
+        "oracle_gain": 12.75
+      },
+      "hdnet": {
+        "psnr_i": 35.65,
+        "psnr_ii": 28.74,
+        "psnr_iii": 28.74,
+        "psnr_iv": 28.74,
+        "degradation": 6.9,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 25.2,
+        "psnr_ii": 16.05,
+        "psnr_iii": 22.67,
+        "psnr_iv": 24.38,
+        "degradation": 9.15,
+        "calibration_gain": 6.62,
+        "oracle_gain": 8.33
+      }
+    },
+    {
+      "scene_idx": 2,
+      "scale": 1.0,
+      "mismatch": {
+        "dx": 1.5,
+        "dy": 1.0,
+        "theta": 0.3
+      },
+      "estimated": {
+        "dx": 0.9410519003868103,
+        "dy": 1.5674864053726196,
+        "theta": -0.37875401973724365,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 235.9,
+      "gap_tv": {
+        "psnr_i": 21.3,
+        "psnr_ii": 21.05,
+        "psnr_iii": 21.21,
+        "psnr_iv": 21.3,
+        "degradation": 0.25,
+        "calibration_gain": 0.16,
+        "oracle_gain": 0.25
+      },
+      "mst_l": {
+        "psnr_i": 36.14,
+        "psnr_ii": 20.05,
+        "psnr_iii": 24.37,
+        "psnr_iv": 32.99,
+        "degradation": 16.09,
+        "calibration_gain": 4.32,
+        "oracle_gain": 12.94
+      },
+      "hdnet": {
+        "psnr_i": 35.65,
+        "psnr_ii": 26.42,
+        "psnr_iii": 26.42,
+        "psnr_iv": 26.42,
+        "degradation": 9.22,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 25.2,
+        "psnr_ii": 16.04,
+        "psnr_iii": 20.99,
+        "psnr_iv": 24.17,
+        "degradation": 9.16,
+        "calibration_gain": 4.96,
+        "oracle_gain": 8.14
+      }
+    },
+    {
+      "scene_idx": 2,
+      "scale": 1.5,
+      "mismatch": {
+        "dx": 2.25,
+        "dy": 1.5,
+        "theta": 0.44999999999999996
+      },
+      "estimated": {
+        "dx": 1.5445963144302368,
+        "dy": 2.160815477371216,
+        "theta": -0.39873865246772766,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 232.1,
+      "gap_tv": {
+        "psnr_i": 21.3,
+        "psnr_ii": 20.95,
+        "psnr_iii": 21.18,
+        "psnr_iv": 21.3,
+        "degradation": 0.35,
+        "calibration_gain": 0.23,
+        "oracle_gain": 0.35
+      },
+      "mst_l": {
+        "psnr_i": 36.14,
+        "psnr_ii": 19.63,
+        "psnr_iii": 23.65,
+        "psnr_iv": 33.04,
+        "degradation": 16.51,
+        "calibration_gain": 4.02,
+        "oracle_gain": 13.41
+      },
+      "hdnet": {
+        "psnr_i": 35.65,
+        "psnr_ii": 27.24,
+        "psnr_iii": 27.24,
+        "psnr_iv": 27.24,
+        "degradation": 8.41,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 25.2,
+        "psnr_ii": 11.49,
+        "psnr_iii": 21.07,
+        "psnr_iv": 24.13,
+        "degradation": 13.71,
+        "calibration_gain": 9.58,
+        "oracle_gain": 12.64
+      }
+    },
+    {
+      "scene_idx": 2,
+      "scale": 2.0,
+      "mismatch": {
+        "dx": 3.0,
+        "dy": 2.0,
+        "theta": 0.6
+      },
+      "estimated": {
+        "dx": 1.875,
+        "dy": 3.0,
+        "theta": -0.6666666666666667,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 238.6,
+      "gap_tv": {
+        "psnr_i": 21.3,
+        "psnr_ii": 20.88,
+        "psnr_iii": 21.09,
+        "psnr_iv": 21.28,
+        "degradation": 0.42,
+        "calibration_gain": 0.21,
+        "oracle_gain": 0.41
+      },
+      "mst_l": {
+        "psnr_i": 36.14,
+        "psnr_ii": 19.59,
+        "psnr_iii": 21.56,
+        "psnr_iv": 32.75,
+        "degradation": 16.54,
+        "calibration_gain": 1.97,
+        "oracle_gain": 13.15
+      },
+      "hdnet": {
+        "psnr_i": 35.65,
+        "psnr_ii": 27.27,
+        "psnr_iii": 27.27,
+        "psnr_iv": 27.27,
+        "degradation": 8.37,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 25.2,
+        "psnr_ii": 10.92,
+        "psnr_iii": 19.44,
+        "psnr_iv": 24.3,
+        "degradation": 14.28,
+        "calibration_gain": 8.52,
+        "oracle_gain": 13.38
+      }
+    },
+    {
+      "scene_idx": 2,
+      "scale": 3.0,
+      "mismatch": {
+        "dx": 4.5,
+        "dy": 3.0,
+        "theta": 0.8999999999999999
+      },
+      "estimated": {
+        "dx": 3.0,
+        "dy": 2.4163053035736084,
+        "theta": -0.9313970804214478,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 237.4,
+      "gap_tv": {
+        "psnr_i": 21.3,
+        "psnr_ii": 20.87,
+        "psnr_iii": 21.03,
+        "psnr_iv": 21.27,
+        "degradation": 0.43,
+        "calibration_gain": 0.16,
+        "oracle_gain": 0.4
+      },
+      "mst_l": {
+        "psnr_i": 36.14,
+        "psnr_ii": 19.4,
+        "psnr_iii": 20.18,
+        "psnr_iv": 32.2,
+        "degradation": 16.73,
+        "calibration_gain": 0.77,
+        "oracle_gain": 12.8
+      },
+      "hdnet": {
+        "psnr_i": 35.65,
+        "psnr_ii": 25.43,
+        "psnr_iii": 25.43,
+        "psnr_iv": 25.43,
+        "degradation": 10.22,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 25.2,
+        "psnr_ii": 13.55,
+        "psnr_iii": 20.12,
+        "psnr_iv": 23.32,
+        "degradation": 11.65,
+        "calibration_gain": 6.56,
+        "oracle_gain": 9.76
+      }
+    },
+    {
+      "scene_idx": 3,
+      "scale": 0.25,
+      "mismatch": {
+        "dx": 0.375,
+        "dy": 0.25,
+        "theta": 0.075
+      },
+      "estimated": {
+        "dx": 0.20002900063991547,
+        "dy": 0.4260542392730713,
+        "theta": -0.04420168697834015,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 241.1,
+      "gap_tv": {
+        "psnr_i": 17.3,
+        "psnr_ii": 17.23,
+        "psnr_iii": 17.26,
+        "psnr_iv": 17.29,
+        "degradation": 0.07,
+        "calibration_gain": 0.03,
+        "oracle_gain": 0.06
+      },
+      "mst_l": {
+        "psnr_i": 35.66,
+        "psnr_ii": 23.36,
+        "psnr_iii": 26.57,
+        "psnr_iv": 30.99,
+        "degradation": 12.3,
+        "calibration_gain": 3.21,
+        "oracle_gain": 7.63
+      },
+      "hdnet": {
+        "psnr_i": 35.54,
+        "psnr_ii": 22.3,
+        "psnr_iii": 22.3,
+        "psnr_iv": 22.3,
+        "degradation": 13.24,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 15.24,
+        "psnr_ii": 11.28,
+        "psnr_iii": 23.22,
+        "psnr_iv": 25.81,
+        "degradation": 3.96,
+        "calibration_gain": 11.95,
+        "oracle_gain": 14.53
+      }
+    },
+    {
+      "scene_idx": 3,
+      "scale": 0.5,
+      "mismatch": {
+        "dx": 0.75,
+        "dy": 0.5,
+        "theta": 0.15
+      },
+      "estimated": {
+        "dx": 0.49865657091140747,
+        "dy": 1.0556732416152954,
+        "theta": -0.03853929042816162,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 231.1,
+      "gap_tv": {
+        "psnr_i": 17.3,
+        "psnr_ii": 17.09,
+        "psnr_iii": 17.22,
+        "psnr_iv": 17.29,
+        "degradation": 0.21,
+        "calibration_gain": 0.13,
+        "oracle_gain": 0.19
+      },
+      "mst_l": {
+        "psnr_i": 35.66,
+        "psnr_ii": 17.39,
+        "psnr_iii": 22.69,
+        "psnr_iv": 30.86,
+        "degradation": 18.27,
+        "calibration_gain": 5.3,
+        "oracle_gain": 13.47
+      },
+      "hdnet": {
+        "psnr_i": 35.54,
+        "psnr_ii": 21.36,
+        "psnr_iii": 21.36,
+        "psnr_iv": 21.36,
+        "degradation": 14.18,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 15.24,
+        "psnr_ii": 12.56,
+        "psnr_iii": 20.68,
+        "psnr_iv": 25.92,
+        "degradation": 2.67,
+        "calibration_gain": 8.11,
+        "oracle_gain": 13.35
+      }
+    },
+    {
+      "scene_idx": 3,
+      "scale": 0.75,
+      "mismatch": {
+        "dx": 1.125,
+        "dy": 0.75,
+        "theta": 0.22499999999999998
+      },
+      "estimated": {
+        "dx": 0.7877222895622253,
+        "dy": 1.2569257020950317,
+        "theta": -0.18382611870765686,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 221.9,
+      "gap_tv": {
+        "psnr_i": 17.3,
+        "psnr_ii": 16.99,
+        "psnr_iii": 17.13,
+        "psnr_iv": 17.28,
+        "degradation": 0.32,
+        "calibration_gain": 0.14,
+        "oracle_gain": 0.3
+      },
+      "mst_l": {
+        "psnr_i": 35.66,
+        "psnr_ii": 15.17,
+        "psnr_iii": 21.69,
+        "psnr_iv": 31.78,
+        "degradation": 20.48,
+        "calibration_gain": 6.52,
+        "oracle_gain": 16.61
+      },
+      "hdnet": {
+        "psnr_i": 35.54,
+        "psnr_ii": 23.84,
+        "psnr_iii": 23.84,
+        "psnr_iv": 23.84,
+        "degradation": 11.7,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 15.24,
+        "psnr_ii": 11.96,
+        "psnr_iii": 19.99,
+        "psnr_iv": 26.09,
+        "degradation": 3.28,
+        "calibration_gain": 8.03,
+        "oracle_gain": 14.14
+      }
+    },
+    {
+      "scene_idx": 3,
+      "scale": 1.0,
+      "mismatch": {
+        "dx": 1.5,
+        "dy": 1.0,
+        "theta": 0.3
+      },
+      "estimated": {
+        "dx": 1.005387783050537,
+        "dy": 1.5171458721160889,
+        "theta": -0.30276474356651306,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 222.2,
+      "gap_tv": {
+        "psnr_i": 17.3,
+        "psnr_ii": 16.86,
+        "psnr_iii": 17.05,
+        "psnr_iv": 17.24,
+        "degradation": 0.44,
+        "calibration_gain": 0.19,
+        "oracle_gain": 0.38
+      },
+      "mst_l": {
+        "psnr_i": 35.66,
+        "psnr_ii": 14.2,
+        "psnr_iii": 19.24,
+        "psnr_iv": 31.25,
+        "degradation": 21.45,
+        "calibration_gain": 5.04,
+        "oracle_gain": 17.05
+      },
+      "hdnet": {
+        "psnr_i": 35.54,
+        "psnr_ii": 24.78,
+        "psnr_iii": 24.78,
+        "psnr_iv": 24.78,
+        "degradation": 10.76,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 15.24,
+        "psnr_ii": 11.97,
+        "psnr_iii": 16.31,
+        "psnr_iv": 26.1,
+        "degradation": 3.26,
+        "calibration_gain": 4.34,
+        "oracle_gain": 14.13
+      }
+    },
+    {
+      "scene_idx": 3,
+      "scale": 1.5,
+      "mismatch": {
+        "dx": 2.25,
+        "dy": 1.5,
+        "theta": 0.44999999999999996
+      },
+      "estimated": {
+        "dx": 1.5443817377090454,
+        "dy": 2.414902448654175,
+        "theta": -0.4032926857471466,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 221.8,
+      "gap_tv": {
+        "psnr_i": 17.3,
+        "psnr_ii": 16.77,
+        "psnr_iii": 16.93,
+        "psnr_iv": 17.24,
+        "degradation": 0.53,
+        "calibration_gain": 0.16,
+        "oracle_gain": 0.47
+      },
+      "mst_l": {
+        "psnr_i": 35.66,
+        "psnr_ii": 13.83,
+        "psnr_iii": 17.82,
+        "psnr_iv": 30.26,
+        "degradation": 21.82,
+        "calibration_gain": 3.98,
+        "oracle_gain": 16.43
+      },
+      "hdnet": {
+        "psnr_i": 35.54,
+        "psnr_ii": 22.55,
+        "psnr_iii": 22.55,
+        "psnr_iv": 22.55,
+        "degradation": 12.99,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 15.24,
+        "psnr_ii": 10.85,
+        "psnr_iii": 11.08,
+        "psnr_iv": 26.05,
+        "degradation": 4.39,
+        "calibration_gain": 0.23,
+        "oracle_gain": 15.2
+      }
+    },
+    {
+      "scene_idx": 3,
+      "scale": 2.0,
+      "mismatch": {
+        "dx": 3.0,
+        "dy": 2.0,
+        "theta": 0.6
+      },
+      "estimated": {
+        "dx": 2.028158187866211,
+        "dy": 3.0,
+        "theta": -0.5915805101394653,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 223.6,
+      "gap_tv": {
+        "psnr_i": 17.3,
+        "psnr_ii": 16.68,
+        "psnr_iii": 16.86,
+        "psnr_iv": 17.2,
+        "degradation": 0.62,
+        "calibration_gain": 0.17,
+        "oracle_gain": 0.52
+      },
+      "mst_l": {
+        "psnr_i": 35.66,
+        "psnr_ii": 13.91,
+        "psnr_iii": 16.69,
+        "psnr_iv": 30.08,
+        "degradation": 21.74,
+        "calibration_gain": 2.77,
+        "oracle_gain": 16.16
+      },
+      "hdnet": {
+        "psnr_i": 35.54,
+        "psnr_ii": 22.99,
+        "psnr_iii": 22.99,
+        "psnr_iv": 22.99,
+        "degradation": 12.55,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 15.24,
+        "psnr_ii": 9.74,
+        "psnr_iii": 14.28,
+        "psnr_iv": 26.01,
+        "degradation": 5.5,
+        "calibration_gain": 4.54,
+        "oracle_gain": 16.28
+      }
+    },
+    {
+      "scene_idx": 3,
+      "scale": 3.0,
+      "mismatch": {
+        "dx": 4.5,
+        "dy": 3.0,
+        "theta": 0.8999999999999999
+      },
+      "estimated": {
+        "dx": 1.875,
+        "dy": 3.0,
+        "theta": -1.0,
+        "a1": 1.9,
+        "alpha": 0.0
+      },
+      "calibration_time": 226.0,
+      "gap_tv": {
+        "psnr_i": 17.3,
+        "psnr_ii": 16.6,
+        "psnr_iii": 16.8,
+        "psnr_iv": 17.15,
+        "degradation": 0.71,
+        "calibration_gain": 0.21,
+        "oracle_gain": 0.56
+      },
+      "mst_l": {
+        "psnr_i": 35.66,
+        "psnr_ii": 13.81,
+        "psnr_iii": 15.41,
+        "psnr_iv": 28.95,
+        "degradation": 21.84,
+        "calibration_gain": 1.59,
+        "oracle_gain": 15.14
+      },
+      "hdnet": {
+        "psnr_i": 35.54,
+        "psnr_ii": 21.71,
+        "psnr_iii": 21.71,
+        "psnr_iv": 21.71,
+        "degradation": 13.83,
+        "calibration_gain": 0.0,
+        "oracle_gain": 0.0
+      },
+      "pnp_hsicnn": {
+        "psnr_i": 15.24,
+        "psnr_ii": 12.0,
+        "psnr_iii": 12.65,
+        "psnr_iv": 25.66,
+        "degradation": 3.24,
+        "calibration_gain": 0.65,
+        "oracle_gain": 13.67
+      }
+    }
+  ],
+  "summary": {
+    "scales": [
+      {
+        "scale": 0.25,
+        "n_scenes": 3,
+        "gap_tv": {
+          "psnr_ii_mean": 20.86,
+          "psnr_iii_mean": 20.9,
+          "gain_mean": 0.04,
+          "gain_std": 0.02
+        },
+        "mst_l": {
+          "psnr_ii_mean": 26.41,
+          "psnr_iii_mean": 29.63,
+          "gain_mean": 3.23,
+          "gain_std": 0.7
+        },
+        "hdnet": {
+          "psnr_ii_mean": 25.09,
+          "psnr_iii_mean": 25.09,
+          "gain_mean": 0.0,
+          "gain_std": 0.0
+        },
+        "pnp_hsicnn": {
+          "psnr_ii_mean": 16.77,
+          "psnr_iii_mean": 22.71,
+          "gain_mean": 5.95,
+          "gain_std": 4.48
+        }
+      },
+      {
+        "scale": 0.5,
+        "n_scenes": 3,
+        "gap_tv": {
+          "psnr_ii_mean": 20.71,
+          "psnr_iii_mean": 20.83,
+          "gain_mean": 0.12,
+          "gain_std": 0.05
+        },
+        "mst_l": {
+          "psnr_ii_mean": 21.36,
+          "psnr_iii_mean": 25.43,
+          "gain_mean": 4.07,
+          "gain_std": 1.11
+        },
+        "hdnet": {
+          "psnr_ii_mean": 25.03,
+          "psnr_iii_mean": 25.03,
+          "gain_mean": 0.0,
+          "gain_std": 0.0
+        },
+        "pnp_hsicnn": {
+          "psnr_ii_mean": 15.64,
+          "psnr_iii_mean": 22.03,
+          "gain_mean": 6.39,
+          "gain_std": 1.28
+        }
+      },
+      {
+        "scale": 0.75,
+        "n_scenes": 3,
+        "gap_tv": {
+          "psnr_ii_mean": 20.54,
+          "psnr_iii_mean": 20.8,
+          "gain_mean": 0.26,
+          "gain_std": 0.16
+        },
+        "mst_l": {
+          "psnr_ii_mean": 19.38,
+          "psnr_iii_mean": 25.61,
+          "gain_mean": 6.23,
+          "gain_std": 0.63
+        },
+        "hdnet": {
+          "psnr_ii_mean": 27.45,
+          "psnr_iii_mean": 27.45,
+          "gain_mean": 0.0,
+          "gain_std": 0.0
+        },
+        "pnp_hsicnn": {
+          "psnr_ii_mean": 15.05,
+          "psnr_iii_mean": 21.86,
+          "gain_mean": 6.81,
+          "gain_std": 0.92
+        }
+      },
+      {
+        "scale": 1.0,
+        "n_scenes": 3,
+        "gap_tv": {
+          "psnr_ii_mean": 20.42,
+          "psnr_iii_mean": 20.71,
+          "gain_mean": 0.29,
+          "gain_std": 0.16
+        },
+        "mst_l": {
+          "psnr_ii_mean": 18.41,
+          "psnr_iii_mean": 22.92,
+          "gain_mean": 4.51,
+          "gain_std": 0.38
+        },
+        "hdnet": {
+          "psnr_ii_mean": 26.07,
+          "psnr_iii_mean": 26.07,
+          "gain_mean": 0.0,
+          "gain_std": 0.0
+        },
+        "pnp_hsicnn": {
+          "psnr_ii_mean": 15.35,
+          "psnr_iii_mean": 19.5,
+          "gain_mean": 4.15,
+          "gain_std": 0.75
+        }
+      },
+      {
+        "scale": 1.5,
+        "n_scenes": 3,
+        "gap_tv": {
+          "psnr_ii_mean": 20.26,
+          "psnr_iii_mean": 20.63,
+          "gain_mean": 0.37,
+          "gain_std": 0.25
+        },
+        "mst_l": {
+          "psnr_ii_mean": 17.84,
+          "psnr_iii_mean": 22.13,
+          "gain_mean": 4.29,
+          "gain_std": 0.42
+        },
+        "hdnet": {
+          "psnr_ii_mean": 25.75,
+          "psnr_iii_mean": 25.75,
+          "gain_mean": 0.0,
+          "gain_std": 0.0
+        },
+        "pnp_hsicnn": {
+          "psnr_ii_mean": 13.01,
+          "psnr_iii_mean": 18.1,
+          "gain_mean": 5.09,
+          "gain_std": 3.83
+        }
+      },
+      {
+        "scale": 2.0,
+        "n_scenes": 3,
+        "gap_tv": {
+          "psnr_ii_mean": 20.16,
+          "psnr_iii_mean": 20.51,
+          "gain_mean": 0.35,
+          "gain_std": 0.22
+        },
+        "mst_l": {
+          "psnr_ii_mean": 17.83,
+          "psnr_iii_mean": 20.44,
+          "gain_mean": 2.61,
+          "gain_std": 0.47
+        },
+        "hdnet": {
+          "psnr_ii_mean": 26.04,
+          "psnr_iii_mean": 26.04,
+          "gain_mean": 0.0,
+          "gain_std": 0.0
+        },
+        "pnp_hsicnn": {
+          "psnr_ii_mean": 12.11,
+          "psnr_iii_mean": 18.06,
+          "gain_mean": 5.95,
+          "gain_std": 1.82
+        }
+      },
+      {
+        "scale": 3.0,
+        "n_scenes": 3,
+        "gap_tv": {
+          "psnr_ii_mean": 20.11,
+          "psnr_iii_mean": 20.37,
+          "gain_mean": 0.26,
+          "gain_std": 0.11
+        },
+        "mst_l": {
+          "psnr_ii_mean": 17.7,
+          "psnr_iii_mean": 18.99,
+          "gain_mean": 1.29,
+          "gain_std": 0.37
+        },
+        "hdnet": {
+          "psnr_ii_mean": 24.62,
+          "psnr_iii_mean": 24.62,
+          "gain_mean": 0.0,
+          "gain_std": 0.0
+        },
+        "pnp_hsicnn": {
+          "psnr_ii_mean": 14.01,
+          "psnr_iii_mean": 15.38,
+          "gain_mean": 1.36,
+          "gain_std": 3.98
+        }
+      }
+    ],
+    "total_time": 12626.7
+  }
+}

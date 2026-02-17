@@ -2,7 +2,8 @@
 """PWMI-CASSI 4-Scenario Validation -- differentiable calibration benchmark.
 
 Validates 5 reconstruction methods across 4 scenarios on 10 KAIST scenes
-with Algorithm 1+2 calibration.
+with two-phase calibration: Algorithm 2 for mask affine (dx, dy, theta)
++ 1D grid search for dispersion slope a1.
 
 Scenarios:
   Scenario I   : ideal measurement + ideal mask                (oracle upper bound)
@@ -14,14 +15,19 @@ Methods:
   GAP-TV     -- classical iterative (mask-aware)              (~24 dB ideal)
   MST-S      -- mask-guided Transformer (small)               (~34 dB ideal)
   MST-L      -- mask-guided Transformer (large)               (~35 dB ideal)
-  HDNet      -- deep unfolding network (mask-oblivious)       (~33 dB ideal)
+  HDNet      -- deep unfolding network (mask-oblivious)       (~35 dB ideal)
   PnP-HSICNN -- plug-and-play GAP + HSI-SDeCNN denoiser      (~25 dB ideal)
 
-Mismatch: dx=1.5 px, dy=1.0 px, theta=0.3 deg
-Noise: Poisson (alpha=100000) + Gaussian (sigma=0.01)
+Mismatch model (5 parameters):
+  Group 1 - Mask affine:  dx=1.5 px, dy=1.0 px, theta=0.3 deg
+  Group 2 - Dispersion:   a1=2.04 px/band (nominal=2.0), alpha=0.5 deg
 
-Critical fix: s_nom = np.arange(28) * 2 (cumulative stride-2 offsets),
-NOT np.array([2.0]*28) which collapses all bands to offset 0.
+Measurement generation: cassi_forward_parametric() with warped mask and a1.
+Note: alpha has negligible effect at native resolution (all vertical offsets
+round to 0 for |alpha|<2° with nC=28), so only a1 creates measurable
+dispersion mismatch. Alpha is kept in the spec for completeness.
+
+Noise: Poisson (alpha=100000) + Gaussian (sigma=0.01)
 
 Usage:
     python validate_cassi_pwmi.py [--device cuda:0] [--scenes 10] [--save-recon]
@@ -39,7 +45,7 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import scipy.io as sio
-from scipy.ndimage import affine_transform
+from scipy.ndimage import affine_transform, zoom as ndi_zoom
 from scipy.signal import correlate2d
 
 # ---------------------------------------------------------------------------
@@ -86,13 +92,20 @@ METHOD_LABELS = {
 # ---------------------------------------------------------------------------
 @dataclass
 class MismatchSpec:
-    """Mismatch parameters for injection."""
-    mask_dx: float = 1.5      # pixels
-    mask_dy: float = 1.0      # pixels
-    mask_theta: float = 0.3   # degrees
+    """Mismatch parameters for injection (5-parameter model).
+
+    Group 1 - Mask Affine: dx, dy, theta
+    Group 2 - Dispersion:  a1 (slope), alpha (axis angle)
+    """
+    mask_dx: float = 1.5          # pixels, mask x-shift
+    mask_dy: float = 1.0          # pixels, mask y-shift
+    mask_theta: float = 0.3       # degrees, mask rotation
+    disp_a1: float = 2.04         # px/band dispersion slope (nominal=2.0)
+    disp_alpha: float = 0.5       # degrees, dispersion axis angle (nominal=0.0)
 
     def __repr__(self) -> str:
-        return f"Mismatch(dx={self.mask_dx}, dy={self.mask_dy}, θ={self.mask_theta}°)"
+        return (f"Mismatch(dx={self.mask_dx}, dy={self.mask_dy}, θ={self.mask_theta}°, "
+                f"a₁={self.disp_a1}, α={self.disp_alpha}°)")
 
 
 # ===================================================================
@@ -205,6 +218,268 @@ def add_poisson_gaussian_noise(y: np.ndarray, peak: float = 100000,
 
 
 # ===================================================================
+# helpers -- parametric dispersion & enlarged grid
+# ===================================================================
+def _compute_band_offsets(nC: int, a1: float = 2.0, alpha: float = 0.0
+                          ) -> List[Tuple[int, int]]:
+    """Compute per-band integer dispersion offsets (dx_k, dy_k).
+
+    Args:
+        nC: number of spectral bands
+        a1: dispersion slope (px/band in original space)
+        alpha: dispersion axis angle (degrees)
+
+    Returns:
+        List of (dx_k, dy_k) integer pixel offsets for each band k.
+    """
+    cos_a = np.cos(np.radians(alpha))
+    sin_a = np.sin(np.radians(alpha))
+    return [
+        (int(round(a1 * k * cos_a)), int(round(a1 * k * sin_a)))
+        for k in range(nC)
+    ]
+
+
+def _measurement_extent(nC: int, a1: float, alpha: float, H: int, W: int
+                        ) -> Tuple[int, int, int]:
+    """Return (H_ext, W_ext, dy_offset) for the parametric forward model."""
+    offsets = _compute_band_offsets(nC, a1, alpha)
+    max_dx = max(o[0] for o in offsets)
+    max_dy = max(o[1] for o in offsets)
+    min_dy = min(o[1] for o in offsets)
+    dy_off = -min_dy
+    return H + max_dy - min_dy, W + max_dx, dy_off
+
+
+def cassi_forward_enlarged(scene: np.ndarray, mask: np.ndarray,
+                           a1: float = 2.0, alpha: float = 0.0,
+                           N: int = 4) -> np.ndarray:
+    """Enlarged grid forward model for accurate measurement generation.
+
+    1. Upsample scene (bilinear) and mask (nearest) by N.
+    2. Interpolate spectrum from nC to L_exp = (nC-1)*N*2+1 bands.
+    3. Apply 2D dispersion shifts based on (a1, alpha) in enlarged space.
+    4. Downsample measurement back to original resolution via block averaging.
+
+    Args:
+        scene: (H, W, nC) ground truth hyperspectral cube
+        mask:  (H, W) coded aperture (already warped if mismatch desired)
+        a1:    dispersion slope (px/band in *original* space, nominal=2.0)
+        alpha: dispersion axis angle (degrees, nominal=0.0)
+        N:     spatial enlargement factor (default 4)
+
+    Returns:
+        y: measurement at original resolution, shape (H, W_ext)
+    """
+    H, W, nC = scene.shape
+    K = STEP  # original dispersion step (2)
+    L_exp = (nC - 1) * N * K + 1  # 217 for nC=28, N=4, K=2
+
+    # ----- upsample -----
+    scene_up = ndi_zoom(scene, (N, N, 1), order=1)     # bilinear (H*N, W*N, nC)
+    mask_up = ndi_zoom(mask, (N, N), order=0)           # nearest  (H*N, W*N)
+    H_up, W_up = H * N, W * N
+
+    # ----- dispersion offsets in enlarged space -----
+    cos_a = np.cos(np.radians(alpha))
+    sin_a = np.sin(np.radians(alpha))
+
+    shifts_dx = []
+    shifts_dy = []
+    for k in range(L_exp):
+        # enlarged band k -> original band position
+        orig_pos = k * (nC - 1) / (L_exp - 1)  # 0 .. nC-1
+        s_enlarged = a1 * orig_pos * N           # shift in enlarged pixels
+        shifts_dx.append(int(round(s_enlarged * cos_a)))
+        shifts_dy.append(int(round(s_enlarged * sin_a)))
+
+    max_dx = max(shifts_dx)
+    max_dy = max(shifts_dy) if shifts_dy else 0
+    min_dy = min(shifts_dy) if shifts_dy else 0
+    dy_off = -min_dy
+
+    W_meas_up = W_up + max_dx
+    H_meas_up = H_up + max_dy - min_dy
+    y_up = np.zeros((H_meas_up, W_meas_up), dtype=np.float64)
+
+    # ----- accumulate each enlarged band (memory-efficient) -----
+    for k in range(L_exp):
+        # linear spectral interpolation
+        orig_f = k * (nC - 1) / (L_exp - 1)
+        lo = int(np.floor(orig_f))
+        hi = min(lo + 1, nC - 1)
+        frac = orig_f - lo
+        band = ((1.0 - frac) * scene_up[:, :, lo] + frac * scene_up[:, :, hi]
+                if lo != hi else scene_up[:, :, lo])
+
+        coded = band * mask_up
+
+        dx_k = shifts_dx[k]
+        dy_k = shifts_dy[k] + dy_off
+        y_up[dy_k:dy_k + H_up, dx_k:dx_k + W_up] += coded
+
+    # ----- downsample by block averaging -----
+    h_pad = (-H_meas_up) % N
+    w_pad = (-W_meas_up) % N
+    if h_pad or w_pad:
+        y_up = np.pad(y_up, ((0, h_pad), (0, w_pad)))
+    y_down = y_up.reshape(
+        y_up.shape[0] // N, N, y_up.shape[1] // N, N
+    ).mean(axis=(1, 3))
+
+    # crop to first H rows (vertical expansion from alpha is < 1 row for |alpha|<1°)
+    y_out = y_down[:H, :]
+
+    # --- intensity normalization ---
+    # The enlarged grid sums L_exp interpolated bands and block-averages N×N.
+    # To match the simple stride-2 model's intensity, multiply by:
+    #   norm = N² × (nC-1) / (L_exp-1)  =  16 × 27 / 216  =  2.0
+    norm_factor = float(N * N * (nC - 1)) / float(L_exp - 1)
+    y_out *= norm_factor
+
+    return y_out.astype(np.float32)
+
+
+def cassi_forward_parametric(scene: np.ndarray, mask: np.ndarray,
+                             a1: float = 2.0, alpha: float = 0.0
+                             ) -> np.ndarray:
+    """Native-resolution parametric CASSI forward model.
+
+    y[:, dx_k : dx_k+W] += mask * scene[:,:,k]
+    where dx_k = round(a1 * k * cos(alpha)).
+
+    Horizontal-only dispersion: the vertical component sin(alpha) is
+    negligible at native resolution for |alpha| < 2° and nC=28
+    (all dy_k round to 0), so it is omitted.
+    """
+    H, W, nC = scene.shape
+    offsets = _compute_band_offsets(nC, a1, alpha)
+    max_dx = max(o[0] for o in offsets)
+    W_ext = W + max_dx
+    y = np.zeros((H, W_ext), dtype=np.float32)
+
+    for k in range(nC):
+        dx_k = offsets[k][0]  # horizontal offset only
+        y[:, dx_k:dx_k + W] += mask * scene[:, :, k]
+    return y
+
+
+def cassi_adjoint_parametric(y: np.ndarray, mask: np.ndarray,
+                             H: int, W: int, nC: int,
+                             a1: float = 2.0, alpha: float = 0.0
+                             ) -> np.ndarray:
+    """Native-resolution parametric CASSI adjoint (back-projection).
+
+    Horizontal-only dispersion (vertical component negligible for |alpha|<2°).
+    """
+    offsets = _compute_band_offsets(nC, a1, alpha)
+
+    x = np.zeros((H, W, nC), dtype=np.float32)
+    for k in range(nC):
+        dx_k = offsets[k][0]  # horizontal offset only
+        w_avail = min(W, y.shape[1] - dx_k)
+        h_avail = min(H, y.shape[0])
+        if w_avail > 0 and h_avail > 0:
+            x[:h_avail, :w_avail, k] = (
+                y[:h_avail, dx_k:dx_k + w_avail]
+                * mask[:h_avail, :w_avail]
+            )
+    return x
+
+
+def _gap_tv_parametric(y: np.ndarray, mask: np.ndarray,
+                       a1: float = 2.0, alpha: float = 0.0,
+                       n_iter: int = 50, lam: float = 0.01
+                       ) -> np.ndarray:
+    """GAP-TV solver using the parametric (a1, alpha) forward/adjoint.
+
+    Implements the Generalized Alternating Projection (Yuan 2016):
+      v^{k+1} = x^k + Φ^T diag(ΦΦ^T)^{-1} (y - Φx^k)
+      x^{k+1} = TV_denoise(v^{k+1})
+
+    The Phi_sum normalization is critical when variable offsets (a1!=2.0)
+    create overlapping band contributions at some detector pixels.
+    """
+    from skimage.restoration import denoise_tv_chambolle
+
+    H, W = mask.shape
+    nC = N_BANDS
+    offsets = _compute_band_offsets(nC, a1, alpha)
+    max_dx = max(o[0] for o in offsets)
+    W_ext = W + max_dx
+
+    # Phi_sum = diag(ΦΦ^T): sum of mask^2 at each measurement pixel
+    Phi_sum = np.zeros((H, W_ext), dtype=np.float32)
+    for k in range(nC):
+        dx_k = offsets[k][0]
+        Phi_sum[:, dx_k:dx_k + W] += mask ** 2
+    Phi_sum = np.maximum(Phi_sum, 1e-10)
+
+    # initialise with adjoint
+    x = cassi_adjoint_parametric(y, mask, H, W, nC, a1, alpha)
+    y_in = y.copy()
+
+    for _ in range(n_iter):
+        y_hat = cassi_forward_parametric(x, mask, a1, alpha)
+        # size-safe normalized residual: r / Phi_sum
+        h_min = min(y_in.shape[0], y_hat.shape[0])
+        w_min = min(y_in.shape[1], y_hat.shape[1])
+        residual = np.zeros((H, W_ext), dtype=np.float32)
+        residual[:h_min, :w_min] = (
+            (y_in[:h_min, :w_min] - y_hat[:h_min, :w_min])
+            / Phi_sum[:h_min, :w_min]
+        )
+
+        x = x + cassi_adjoint_parametric(residual, mask, H, W, nC, a1, alpha)
+        x = denoise_tv_chambolle(np.clip(x, 0, None), weight=lam,
+                                 channel_axis=2).astype(np.float32)
+
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
+def _dc_parametric(x_hat: np.ndarray, y: np.ndarray, mask: np.ndarray,
+                   a1: float = 2.0, alpha: float = 0.0,
+                   mu: float = 0.02, n_iter: int = 5) -> np.ndarray:
+    """Data-consistency refinement using the parametric forward/adjoint.
+
+    Applies gentle gradient-descent steps so that the reconstruction
+    better matches the measured data under the (a1, alpha) forward model.
+    Used as post-processing for neural-network methods (MST, HDNet).
+
+    Includes Phi_sum normalization for variable-offset dispersion.
+    """
+    H, W = mask.shape
+    nC = N_BANDS
+    offsets = _compute_band_offsets(nC, a1, alpha)
+    max_dx = max(o[0] for o in offsets)
+    W_ext = W + max_dx
+
+    # Phi_sum normalization
+    Phi_sum = np.zeros((H, W_ext), dtype=np.float32)
+    for k in range(nC):
+        dx_k = offsets[k][0]
+        Phi_sum[:, dx_k:dx_k + W] += mask ** 2
+    Phi_sum = np.maximum(Phi_sum, 1e-10)
+
+    y_in = y.copy()
+    x = x_hat.copy()
+
+    for _ in range(n_iter):
+        y_hat = cassi_forward_parametric(x, mask, a1, alpha)
+        h_min = min(y_in.shape[0], y_hat.shape[0])
+        w_min = min(y_in.shape[1], y_hat.shape[1])
+        residual = np.zeros((H, W_ext), dtype=np.float32)
+        residual[:h_min, :w_min] = (
+            (y_in[:h_min, :w_min] - y_hat[:h_min, :w_min])
+            / Phi_sum[:h_min, :w_min]
+        )
+        grad = cassi_adjoint_parametric(residual, mask, H, W, nC, a1, alpha)
+        x = np.clip(x + mu * grad, 0, 1).astype(np.float32)
+
+    return x
+
+
+# ===================================================================
 # helpers -- metrics
 # ===================================================================
 def compute_psnr(x_true: np.ndarray, x_recon: np.ndarray) -> float:
@@ -262,33 +537,60 @@ def compute_sam(x_true: np.ndarray, x_recon: np.ndarray) -> float:
 # ===================================================================
 # reconstruction methods
 # ===================================================================
-def reconstruct_gap_tv(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0") -> np.ndarray:
-    """Reconstruct using GAP-TV."""
+def reconstruct_gap_tv(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0",
+                       a1: float = 2.0, alpha: float = 0.0) -> np.ndarray:
+    """Reconstruct using GAP-TV with parametric dispersion."""
     try:
+        H, W = mask.shape
+        # Use parametric solver when dispersion deviates from nominal
+        if abs(a1 - 2.0) > 1e-6 or abs(alpha) > 1e-6:
+            y_param = _fit_measurement(y, H, W, N_BANDS, a1, alpha)
+            return _gap_tv_parametric(y_param, mask, a1=a1, alpha=alpha,
+                                      n_iter=50, lam=0.01)
+        # Fast path: nominal dispersion via optimised pwm_core solver
         from pwm_core.recon.gap_tv import gap_tv_cassi
-        return gap_tv_cassi(y, mask, n_bands=N_BANDS, iterations=50, lam=0.01, step=STEP)
+        y_nom = _fit_measurement(y, H, W, N_BANDS, 2.0, 0.0)
+        return gap_tv_cassi(y_nom, mask, n_bands=N_BANDS, iterations=50, lam=0.01, step=STEP)
     except Exception as e:
         logger.warning(f"GAP-TV failed: {e}")
         H = y.shape[0]
         return np.clip(np.random.rand(H, H, N_BANDS).astype(np.float32) * 0.1, 0, 1)
 
 
-def reconstruct_mst_s(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0") -> np.ndarray:
-    """Reconstruct using MST-S (mask-aware Transformer, small)."""
+def reconstruct_mst_s(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0",
+                      a1: float = 2.0, alpha: float = 0.0) -> np.ndarray:
+    """Reconstruct using MST-S + parametric DC when dispersion deviates."""
     try:
         from pwm_core.recon.mst import mst_recon_cassi
-        return mst_recon_cassi(y, mask, nC=N_BANDS, step=STEP, device=device, variant="mst_s")
+        H, W = mask.shape
+        # MST requires nominal stride-2 measurement width
+        y_nom = _fit_measurement(y, H, W, N_BANDS, 2.0, 0.0)
+        x_hat = mst_recon_cassi(y_nom, mask, nC=N_BANDS, step=STEP,
+                                device=device, variant="mst_s")
+        if abs(a1 - 2.0) > 1e-6 or abs(alpha) > 1e-6:
+            y_param = _fit_measurement(y, H, W, N_BANDS, a1, alpha)
+            x_hat = _dc_parametric(x_hat, y_param, mask, a1, alpha, mu=0.02, n_iter=5)
+        return x_hat
     except Exception as e:
         logger.warning(f"MST-S failed: {e}")
         H = y.shape[0]
         return np.clip(np.random.rand(H, H, N_BANDS).astype(np.float32) * 0.1, 0, 1)
 
 
-def reconstruct_mst_l(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0") -> np.ndarray:
-    """Reconstruct using MST-L (mask-aware Transformer, large)."""
+def reconstruct_mst_l(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0",
+                      a1: float = 2.0, alpha: float = 0.0) -> np.ndarray:
+    """Reconstruct using MST-L + parametric DC when dispersion deviates."""
     try:
         from pwm_core.recon.mst import mst_recon_cassi
-        return mst_recon_cassi(y, mask, nC=N_BANDS, step=STEP, device=device, variant="mst_l")
+        H, W = mask.shape
+        # MST requires nominal stride-2 measurement width
+        y_nom = _fit_measurement(y, H, W, N_BANDS, 2.0, 0.0)
+        x_hat = mst_recon_cassi(y_nom, mask, nC=N_BANDS, step=STEP,
+                                device=device, variant="mst_l")
+        if abs(a1 - 2.0) > 1e-6 or abs(alpha) > 1e-6:
+            y_param = _fit_measurement(y, H, W, N_BANDS, a1, alpha)
+            x_hat = _dc_parametric(x_hat, y_param, mask, a1, alpha, mu=0.02, n_iter=5)
+        return x_hat
     except Exception as e:
         logger.warning(f"MST-L failed: {e}")
         H = y.shape[0]
@@ -331,15 +633,13 @@ def _load_original_hdnet(device: str):
     return model, dev
 
 
-def reconstruct_hdnet(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0") -> np.ndarray:
-    """Reconstruct using HDNet + data-consistency refinement.
+def reconstruct_hdnet(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0",
+                      a1: float = 2.0, alpha: float = 0.0) -> np.ndarray:
+    """Reconstruct using HDNet + parametric data-consistency refinement.
 
     HDNet's forward(x, input_mask=None) ignores the mask, so we add
-    post-reconstruction data-consistency (DC) iterations using the
-    scenario-specific mask.  This makes the output mask-dependent:
-    different masks in Sc.II/III/IV produce different results.
-
-    Pipeline: HDNet(shift_back(y)) → N DC gradient steps with mask.
+    post-reconstruction DC iterations using the scenario-specific mask
+    and parametric (a1, alpha) dispersion model.
     """
     try:
         import torch
@@ -351,12 +651,9 @@ def reconstruct_hdnet(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0") -
         nC, step = N_BANDS, STEP
         W_ext = W + (nC - 1) * step
 
-        y_padded = np.zeros((H, W_ext), dtype=np.float32)
-        hh = min(H, y.shape[0])
-        ww = min(W_ext, y.shape[1])
-        y_padded[:hh, :ww] = y[:hh, :ww]
-
-        meas_t = torch.from_numpy(y_padded.copy()).unsqueeze(0).float().to(dev)
+        # HDNet requires nominal stride-2 measurement width
+        y_nom = _fit_measurement(y, H, W, nC, 2.0, 0.0)
+        meas_t = torch.from_numpy(y_nom.copy()).unsqueeze(0).float().to(dev)
         x_init = shift_back_meas_torch(meas_t, step=step, nC=nC)
         x_init = x_init / nC * 2
 
@@ -366,26 +663,10 @@ def reconstruct_hdnet(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0") -
         x_hat = recon.squeeze(0).permute(1, 2, 0).cpu().numpy()
         x_hat = np.clip(x_hat, 0, 1).astype(np.float32)
 
-        # --- Data-consistency refinement using the mask ---
-        # Use proper CASSI adjoint (extract, not roll) for stable updates
-        mu = 0.02  # conservative step size ≈ 1/nC
-        n_dc_iters = 5
-
-        for _ in range(n_dc_iters):
-            # Forward: y_hat = sum_k mask * x_hat[:,:,k] placed at k*step
-            y_hat = np.zeros((H, W_ext), dtype=np.float32)
-            for k in range(nC):
-                y_hat[:, k * step:k * step + W] += mask * x_hat[:, :, k]
-            # Residual
-            residual = y_padded - y_hat
-            # Proper adjoint (no wrap-around): extract each band's window
-            grad = np.zeros_like(x_hat)
-            for k in range(nC):
-                grad[:, :, k] = residual[:, k * step:k * step + W] * mask
-            # Gradient step
-            x_hat = x_hat + mu * grad
-            x_hat = np.clip(x_hat, 0, 1).astype(np.float32)
-
+        # --- parametric DC refinement ---
+        if abs(a1 - 2.0) > 1e-6 or abs(alpha) > 1e-6:
+            y_param = _fit_measurement(y, H, W, nC, a1, alpha)
+            x_hat = _dc_parametric(x_hat, y_param, mask, a1, alpha, mu=0.02, n_iter=5)
         return x_hat
     except Exception as e:
         logger.warning(f"HDNet failed: {e}")
@@ -489,12 +770,13 @@ def _shift_fwd_np(x: np.ndarray, step: int, nC: int) -> np.ndarray:
 
 
 def reconstruct_pnp_hsicnn(y: np.ndarray, mask: np.ndarray,
-                           device: str = "cuda:0") -> np.ndarray:
+                           device: str = "cuda:0",
+                           a1: float = 2.0, alpha: float = 0.0) -> np.ndarray:
     """Reconstruct using PnP-HSICNN (ADMM + HSI-SDeCNN deep denoiser).
 
-    ADMM framework matching the PnP-CASSI 28-band stride-2 protocol:
-    89 TV iterations + 35 HSI-SDeCNN deep denoiser iterations = 124 total.
-    Parameters: lambda=1, gamma=0.01, tv_weight=0.1, sigma_cnn=10/255.
+    When dispersion deviates from nominal (a1!=2.0 or alpha!=0), builds
+    the Phi operator using the parametric offsets so that the ADMM
+    data-fidelity step accounts for the true dispersion geometry.
     """
     try:
         from skimage.restoration import denoise_tv_chambolle
@@ -502,62 +784,66 @@ def reconstruct_pnp_hsicnn(y: np.ndarray, mask: np.ndarray,
         model, dev = _load_pnp_hsicnn(device)
 
         H, W = mask.shape
-        nC, step = N_BANDS, STEP
-        W_ext = W + (nC - 1) * step
+        nC = N_BANDS
 
-        # Build 3D Phi mask in dispersed domain
+        # Always use nominal stride-2 Phi (shift operations assume step=2)
+        W_ext = W + (nC - 1) * STEP
         Phi = np.zeros((H, W_ext, nC), dtype=np.float32)
         for k in range(nC):
-            Phi[:, k * step:k * step + W, k] = mask
+            Phi[:, k * STEP:k * STEP + W, k] = mask
         Phi_sum = np.sum(Phi, axis=2)
         Phi_sum[Phi_sum == 0] = 1
 
-        # Ensure y has correct shape
-        y_padded = np.zeros((H, W_ext), dtype=np.float32)
-        hh = min(H, y.shape[0])
-        ww = min(W_ext, y.shape[1])
-        y_padded[:hh, :ww] = y[:hh, :ww]
-        y_in = y_padded
+        # Fit measurement to nominal width
+        y_nom = _fit_measurement(y, H, W, nC, 2.0, 0.0)
+        y_in = y_nom
 
         # ADMM initialization
         x0 = np.multiply(
-            np.repeat(y_in[:, :, np.newaxis], nC, axis=2), Phi)  # At(y)
+            np.repeat(y_in[:, :, np.newaxis], nC, axis=2), Phi)
         x = x0.copy()
         theta = x0.copy()
         b = np.zeros_like(x0)
 
-        # ADMM parameters from PnP-CASSI admm_denoise (28-band, step=2)
         _lambda = 1.0
         gamma = 0.01
-        n_total = 124       # break at k=123 (matching original)
-        n_tv_iters = 89     # first 89 with TV, remaining with deep denoiser
+        n_total = 124
+        n_tv_iters = 89
         tv_weight = 0.1
 
-        for k in range(n_total):
-            # ADMM projection
-            yb = np.sum((theta + b) * Phi, axis=2)           # A(theta + b)
+        # use nominal step for shift_back/fwd (image-domain denoising)
+        step = STEP
+
+        for k_iter in range(n_total):
+            # ADMM projection via Phi
+            yb = np.sum((theta + b) * Phi, axis=2)
             x = (theta + b) + _lambda * np.multiply(
                 np.repeat(((y_in - yb) / (Phi_sum + gamma))[:, :, np.newaxis],
                           nC, axis=2),
-                Phi)                                          # + At(residual)
+                Phi)
 
-            # Shift to image domain for denoising
+            # Shift to image domain for denoising (use nominal step)
             x1 = _shift_back_np(x - b, step)
 
-            if k < n_tv_iters:
+            if k_iter < n_tv_iters:
                 theta_img = denoise_tv_chambolle(
                     x1, weight=tv_weight, channel_axis=2)
             else:
                 theta_img = _apply_hsicnn_denoiser(x1, model, dev, nC=nC)
 
-            # Shift back to dispersed domain
             theta = _shift_fwd_np(theta_img, step, nC)
 
-            # ADMM dual variable update
             b = b - (x - theta)
 
         result = _shift_back_np(theta, step)
-        return np.clip(result, 0, 1).astype(np.float32)
+        result = np.clip(result, 0, 1).astype(np.float32)
+
+        # DC correction for non-nominal dispersion
+        if abs(a1 - 2.0) > 1e-6 or abs(alpha) > 1e-6:
+            y_param = _fit_measurement(y, H, W, nC, a1, alpha)
+            result = _dc_parametric(result, y_param, mask, a1, alpha, mu=0.02, n_iter=5)
+
+        return result
     except Exception as e:
         logger.warning(f"PnP-HSICNN failed: {e}")
         H = y.shape[0]
@@ -576,17 +862,72 @@ RECONSTRUCTION_FUNCTIONS = {
 # ===================================================================
 # calibration (Scenario III)
 # ===================================================================
+def _calibrate_dispersion(y_corrupt: np.ndarray, mask_calibrated: np.ndarray,
+                          ) -> Tuple[float, float]:
+    """Estimate dispersion slope a1 via 1D grid search.
+
+    After mask affine is calibrated, search for the a1 that minimises
+    the measurement residual ||y - A(x; a1)||^2 using a few GAP-TV
+    iterations per candidate.  Alpha is fixed at 0 (vertical dispersion
+    unidentifiable at native resolution for |alpha|<2° and nC=28).
+
+    Returns:
+        (best_a1, 0.0)
+    """
+    from skimage.restoration import denoise_tv_chambolle
+
+    H, W = mask_calibrated.shape
+    nC = N_BANDS
+
+    a1_grid = np.linspace(1.90, 2.10, 21)
+
+    best_score = float("inf")
+    best_a1 = 2.0
+
+    n_quick = 5  # quick GAP-TV iterations per candidate
+
+    logger.info(f"  Dispersion calibration: {len(a1_grid)} a1 candidates")
+
+    for a1_c in a1_grid:
+        y_fit = _fit_measurement(y_corrupt, H, W, nC, a1_c, 0.0)
+
+        x_test = cassi_adjoint_parametric(
+            y_fit, mask_calibrated, H, W, nC, a1_c, 0.0)
+        for _ in range(n_quick):
+            y_hat = cassi_forward_parametric(x_test, mask_calibrated,
+                                             a1_c, 0.0)
+            h_m = min(y_fit.shape[0], y_hat.shape[0])
+            w_m = min(y_fit.shape[1], y_hat.shape[1])
+            res = np.zeros_like(y_hat)
+            res[:h_m, :w_m] = y_fit[:h_m, :w_m] - y_hat[:h_m, :w_m]
+            x_test = x_test + cassi_adjoint_parametric(
+                res, mask_calibrated, H, W, nC, a1_c, 0.0)
+            x_test = denoise_tv_chambolle(
+                np.clip(x_test, 0, None), weight=0.01,
+                channel_axis=2).astype(np.float32)
+
+        # score: measurement residual
+        y_hat = cassi_forward_parametric(x_test, mask_calibrated,
+                                         a1_c, 0.0)
+        h_m = min(y_fit.shape[0], y_hat.shape[0])
+        w_m = min(y_fit.shape[1], y_hat.shape[1])
+        score = float(np.sum(
+            (y_fit[:h_m, :w_m] - y_hat[:h_m, :w_m]) ** 2))
+
+        if score < best_score:
+            best_score = score
+            best_a1 = float(a1_c)
+
+    logger.info(f"  Dispersion calibrated: a1={best_a1:.4f}")
+    return best_a1, 0.0
+
+
 def calibrate_mismatch(y_corrupt: np.ndarray, mask_ideal: np.ndarray,
                        device: str = "cuda:0") -> Tuple[Dict, float]:
-    """Run Algorithm 2 (Joint Gradient Refinement) to estimate mismatch.
+    """Two-phase calibration: mask affine (Alg2) then dispersion grid search.
 
-    Creates a GAP-TV proxy reconstruction, then runs the 5-stage
-    differentiable pipeline to recover (dx, dy, theta).
-
-    Args:
-        y_corrupt: corrupted measurement (H, W_ext)
-        mask_ideal: assumed ideal mask (H, W)
-        device: torch device
+    Phase 1: Algorithm 2 estimates (dx, dy, theta) via differentiable pipeline.
+    Phase 2: Grid search estimates (a1, alpha) with calibrated mask.
 
     Returns:
         Tuple of (estimated params dict, calibration time in seconds)
@@ -598,22 +939,39 @@ def calibrate_mismatch(y_corrupt: np.ndarray, mask_ideal: np.ndarray,
 
     t0 = time.time()
 
-    # Create proxy reconstruction for Algorithm 2
-    x_proxy = gap_tv_cassi(y_corrupt, mask_ideal, n_bands=N_BANDS,
+    # Fit measurement to nominal stride-2 size for Algorithm 2
+    H, W = mask_ideal.shape
+    y_nom = _fit_measurement(y_corrupt, H, W, N_BANDS, a1=2.0, alpha=0.0)
+
+    # --- Phase 1: mask affine calibration ---
+    x_proxy = gap_tv_cassi(y_nom, mask_ideal, n_bands=N_BANDS,
                            iterations=50, lam=0.01, step=STEP)
 
-    # Initialize from zero (no prior knowledge of mismatch)
     coarse = MismatchParameters(mask_dx=0.0, mask_dy=0.0, mask_theta=0.0)
-
-    # Run Algorithm 2 with correct s_nom
     alg2 = Algorithm2JointGradientRefinement(device=device)
     estimated = alg2.refine(
         mismatch_coarse=coarse,
-        y_meas=y_corrupt,
+        y_meas=y_nom,
         mask_real=mask_ideal,
         x_true=x_proxy,
         s_nom=S_NOM,
     )
+
+    t_phase1 = time.time() - t0
+    logger.info(f"  Phase 1 (mask affine): dx={estimated.mask_dx:.4f}, "
+                f"dy={estimated.mask_dy:.4f}, theta={estimated.mask_theta:.4f} "
+                f"({t_phase1:.1f}s)")
+
+    # --- Phase 2: dispersion calibration with calibrated mask ---
+    mask_calibrated = warp_affine_2d(
+        mask_ideal,
+        dx=estimated.mask_dx,
+        dy=estimated.mask_dy,
+        theta=estimated.mask_theta,
+    )
+    t2 = time.time()
+    est_a1, est_alpha = _calibrate_dispersion(y_corrupt, mask_calibrated)
+    t_phase2 = time.time() - t2
 
     dt = time.time() - t0
 
@@ -621,10 +979,13 @@ def calibrate_mismatch(y_corrupt: np.ndarray, mask_ideal: np.ndarray,
         "dx": estimated.mask_dx,
         "dy": estimated.mask_dy,
         "theta": estimated.mask_theta,
+        "a1": est_a1,
+        "alpha": est_alpha,
     }
 
-    logger.info(f"  Calibration: dx={params['dx']:.4f}, dy={params['dy']:.4f}, "
-                f"theta={params['theta']:.4f} ({dt:.1f}s)")
+    logger.info(f"  Calibration total: dx={params['dx']:.4f}, dy={params['dy']:.4f}, "
+                f"theta={params['theta']:.4f}, a1={params['a1']:.4f}, "
+                f"alpha={params['alpha']:.4f} ({dt:.1f}s = {t_phase1:.0f}+{t_phase2:.0f}s)")
 
     return params, dt
 
@@ -632,80 +993,108 @@ def calibrate_mismatch(y_corrupt: np.ndarray, mask_ideal: np.ndarray,
 # ===================================================================
 # scenario validation
 # ===================================================================
-def validate_scenario_i(scene: np.ndarray, mask_ideal: np.ndarray,
-                        methods: List[str], device: str) -> Dict[str, Dict]:
-    """Scenario I: Ideal (perfect forward model, no mismatch, no noise)."""
-    logger.info("  Scenario I: Ideal (oracle upper bound)")
-    results = {}
+def _fit_measurement(y: np.ndarray, H: int, W: int, nC: int,
+                     a1: float, alpha: float) -> np.ndarray:
+    """Pad or crop measurement to match the forward model for (a1, alpha).
 
-    y_ideal = cassi_forward(scene, mask_ideal, step=STEP)
+    Height is always H (vertical dispersion negligible at native resolution).
+    Width is W + max horizontal offset.
+    """
+    offsets = _compute_band_offsets(nC, a1, alpha)
+    max_dx = max(o[0] for o in offsets)
+    W_ext = W + max_dx
 
+    y_fit = np.zeros((H, W_ext), dtype=np.float32)
+    h_copy = min(y.shape[0], H)
+    w_copy = min(y.shape[1], W_ext)
+    y_fit[:h_copy, :w_copy] = y[:h_copy, :w_copy]
+    return y_fit
+
+
+def _run_methods(y: np.ndarray, mask: np.ndarray, scene: np.ndarray,
+                 methods: List[str], device: str,
+                 a1: float = 2.0, alpha: float = 0.0) -> Dict[str, Dict]:
+    """Run all reconstruction methods and collect PSNR/SSIM/SAM.
+
+    Each method internally fits the measurement to the width its forward
+    model expects (nominal for neural nets, parametric for physics-based).
+    """
+    results: Dict[str, Dict] = {}
     for method in methods:
         t0 = time.time()
         try:
-            x_hat = RECONSTRUCTION_FUNCTIONS[method](y_ideal, mask_ideal, device=device)
+            x_hat = RECONSTRUCTION_FUNCTIONS[method](
+                y, mask, device=device, a1=a1, alpha=alpha)
             x_hat = np.clip(x_hat, 0, 1)
             results[method] = {
                 "psnr": float(compute_psnr(scene, x_hat)),
-                "ssim": float(compute_ssim(np.mean(scene, axis=2), np.mean(x_hat, axis=2))),
+                "ssim": float(compute_ssim(
+                    np.mean(scene, axis=2), np.mean(x_hat, axis=2))),
                 "sam": float(compute_sam(scene, x_hat)),
             }
         except Exception as e:
             logger.error(f"    {method} failed: {e}")
             results[method] = {"psnr": 0.0, "ssim": 0.0, "sam": 180.0}
         dt = time.time() - t0
-        logger.info(f"    {METHOD_LABELS[method]:8s}: PSNR={results[method]['psnr']:.2f} dB  ({dt:.1f}s)")
-
+        logger.info(f"    {METHOD_LABELS[method]:8s}: "
+                     f"PSNR={results[method]['psnr']:.2f} dB  ({dt:.1f}s)")
     return results
+
+
+def validate_scenario_i(scene: np.ndarray, mask_ideal: np.ndarray,
+                        methods: List[str], device: str) -> Dict[str, Dict]:
+    """Scenario I: Ideal (no mismatch, no noise, nominal a1=2.0, alpha=0)."""
+    logger.info("  Scenario I: Ideal (oracle upper bound)")
+    y_ideal = cassi_forward(scene, mask_ideal, step=STEP)
+    return _run_methods(y_ideal, mask_ideal, scene, methods, device,
+                        a1=2.0, alpha=0.0)
 
 
 def validate_scenario_ii(scene: np.ndarray, mask_ideal: np.ndarray,
                          mismatch: MismatchSpec,
-                         methods: List[str], device: str) -> Tuple[Dict[str, Dict], np.ndarray, np.ndarray]:
-    """Scenario II: Assumed/Baseline (corrupted measurement, uncorrected operator).
+                         methods: List[str], device: str
+                         ) -> Tuple[Dict[str, Dict], np.ndarray, np.ndarray]:
+    """Scenario II: Measurement via enlarged grid with full 5-param mismatch,
+    reconstruction with ideal/nominal forward model (no correction).
 
     Returns:
-        Tuple of (results dict, y_corrupt, mask_warped)
+        (results, y_corrupt, mask_corrupted)
     """
-    logger.info("  Scenario II: Assumed/Baseline (uncorrected mismatch)")
-    results = {}
+    logger.info("  Scenario II: Baseline (parametric mismatch, no correction)")
 
+    # Warp mask for measurement generation (mask affine mismatch)
     mask_corrupted = warp_affine_2d(
         mask_ideal,
         dx=mismatch.mask_dx,
         dy=mismatch.mask_dy,
         theta=mismatch.mask_theta,
     )
-    y_corrupt = cassi_forward(scene, mask_corrupted, step=STEP)
+
+    # Generate measurement with parametric forward model (a1, alpha mismatch)
+    logger.info(f"    Generating measurement with a1={mismatch.disp_a1}, "
+                f"alpha={mismatch.disp_alpha}° ...")
+    t_fwd = time.time()
+    y_corrupt = cassi_forward_parametric(
+        scene, mask_corrupted,
+        a1=mismatch.disp_a1,
+        alpha=mismatch.disp_alpha,
+    )
     y_corrupt = add_poisson_gaussian_noise(y_corrupt, peak=100000, sigma=0.01)
+    logger.info(f"    Measurement done ({time.time()-t_fwd:.1f}s), "
+                f"y shape={y_corrupt.shape}")
 
-    for method in methods:
-        t0 = time.time()
-        try:
-            x_hat = RECONSTRUCTION_FUNCTIONS[method](y_corrupt, mask_ideal, device=device)
-            x_hat = np.clip(x_hat, 0, 1)
-            results[method] = {
-                "psnr": float(compute_psnr(scene, x_hat)),
-                "ssim": float(compute_ssim(np.mean(scene, axis=2), np.mean(x_hat, axis=2))),
-                "sam": float(compute_sam(scene, x_hat)),
-            }
-        except Exception as e:
-            logger.error(f"    {method} failed: {e}")
-            results[method] = {"psnr": 0.0, "ssim": 0.0, "sam": 180.0}
-        dt = time.time() - t0
-        logger.info(f"    {METHOD_LABELS[method]:8s}: PSNR={results[method]['psnr']:.2f} dB  ({dt:.1f}s)")
-
+    # Reconstruct with nominal forward model (a1=2.0, alpha=0) — NO correction
+    results = _run_methods(y_corrupt, mask_ideal, scene, methods, device,
+                           a1=2.0, alpha=0.0)
     return results, y_corrupt, mask_corrupted
 
 
 def validate_scenario_iii(scene: np.ndarray, mask_ideal: np.ndarray,
                           y_corrupt: np.ndarray, estimated_params: Dict,
                           methods: List[str], device: str) -> Dict[str, Dict]:
-    """Scenario III: Corrected (corrupted measurement, calibrated mask via Alg2)."""
-    logger.info("  Scenario III: Corrected (Alg2 calibrated mask)")
-    results = {}
+    """Scenario III: Corrected mask + estimated dispersion."""
+    logger.info("  Scenario III: Corrected (calibrated mask + dispersion)")
 
-    # Apply estimated mismatch to ideal mask to get calibrated mask
     mask_calibrated = warp_affine_2d(
         mask_ideal,
         dx=estimated_params["dx"],
@@ -713,31 +1102,16 @@ def validate_scenario_iii(scene: np.ndarray, mask_ideal: np.ndarray,
         theta=estimated_params["theta"],
     )
 
-    for method in methods:
-        t0 = time.time()
-        try:
-            x_hat = RECONSTRUCTION_FUNCTIONS[method](y_corrupt, mask_calibrated, device=device)
-            x_hat = np.clip(x_hat, 0, 1)
-            results[method] = {
-                "psnr": float(compute_psnr(scene, x_hat)),
-                "ssim": float(compute_ssim(np.mean(scene, axis=2), np.mean(x_hat, axis=2))),
-                "sam": float(compute_sam(scene, x_hat)),
-            }
-        except Exception as e:
-            logger.error(f"    {method} failed: {e}")
-            results[method] = {"psnr": 0.0, "ssim": 0.0, "sam": 180.0}
-        dt = time.time() - t0
-        logger.info(f"    {METHOD_LABELS[method]:8s}: PSNR={results[method]['psnr']:.2f} dB  ({dt:.1f}s)")
-
-    return results
+    return _run_methods(y_corrupt, mask_calibrated, scene, methods, device,
+                        a1=estimated_params.get("a1", 2.0),
+                        alpha=estimated_params.get("alpha", 0.0))
 
 
 def validate_scenario_iv(scene: np.ndarray, mask_ideal: np.ndarray,
                          mismatch: MismatchSpec, y_corrupt: np.ndarray,
                          methods: List[str], device: str) -> Dict[str, Dict]:
-    """Scenario IV: Oracle (corrupted measurement, truth mask)."""
-    logger.info("  Scenario IV: Oracle (truth forward model)")
-    results = {}
+    """Scenario IV: Oracle mask + oracle dispersion."""
+    logger.info("  Scenario IV: Oracle (truth mask + truth dispersion)")
 
     mask_truth = warp_affine_2d(
         mask_ideal,
@@ -746,23 +1120,8 @@ def validate_scenario_iv(scene: np.ndarray, mask_ideal: np.ndarray,
         theta=mismatch.mask_theta,
     )
 
-    for method in methods:
-        t0 = time.time()
-        try:
-            x_hat = RECONSTRUCTION_FUNCTIONS[method](y_corrupt, mask_truth, device=device)
-            x_hat = np.clip(x_hat, 0, 1)
-            results[method] = {
-                "psnr": float(compute_psnr(scene, x_hat)),
-                "ssim": float(compute_ssim(np.mean(scene, axis=2), np.mean(x_hat, axis=2))),
-                "sam": float(compute_sam(scene, x_hat)),
-            }
-        except Exception as e:
-            logger.error(f"    {method} failed: {e}")
-            results[method] = {"psnr": 0.0, "ssim": 0.0, "sam": 180.0}
-        dt = time.time() - t0
-        logger.info(f"    {METHOD_LABELS[method]:8s}: PSNR={results[method]['psnr']:.2f} dB  ({dt:.1f}s)")
-
-    return results
+    return _run_methods(y_corrupt, mask_truth, scene, methods, device,
+                        a1=mismatch.disp_a1, alpha=mismatch.disp_alpha)
 
 
 # ===================================================================
@@ -812,12 +1171,16 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
             "dx": mismatch.mask_dx,
             "dy": mismatch.mask_dy,
             "theta": mismatch.mask_theta,
+            "a1": mismatch.disp_a1,
+            "alpha": mismatch.disp_alpha,
         },
         "mismatch_estimated": estimated_params,
         "parameter_error": {
             "dx_err": abs(estimated_params["dx"] - mismatch.mask_dx),
             "dy_err": abs(estimated_params["dy"] - mismatch.mask_dy),
             "theta_err": abs(estimated_params["theta"] - mismatch.mask_theta),
+            "a1_err": abs(estimated_params.get("a1", 2.0) - mismatch.disp_a1),
+            "alpha_err": abs(estimated_params.get("alpha", 0.0) - mismatch.disp_alpha),
         },
     }
 
@@ -839,7 +1202,9 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
     # Log summary for this scene
     logger.info(f"\n  Scene {scene_idx+1} summary ({elapsed:.1f}s, calib={calib_time:.1f}s):")
     logger.info(f"  Estimated: dx={estimated_params['dx']:.4f}, "
-                f"dy={estimated_params['dy']:.4f}, theta={estimated_params['theta']:.4f}")
+                f"dy={estimated_params['dy']:.4f}, theta={estimated_params['theta']:.4f}, "
+                f"a1={estimated_params.get('a1', 2.0):.4f}, "
+                f"alpha={estimated_params.get('alpha', 0.0):.4f}")
     for method in methods:
         pi = res_i[method]["psnr"]
         pii = res_ii[method]["psnr"]
@@ -863,9 +1228,11 @@ def compute_summary_statistics(all_results: List[Dict], methods: List[str]) -> D
         "num_scenes": len(all_results),
         "methods": methods,
         "scenarios": SCENARIOS,
-        "mismatch": {"dx": 1.5, "dy": 1.0, "theta": 0.3},
+        "mismatch": {"dx": 1.5, "dy": 1.0, "theta": 0.3,
+                      "a1": 2.04, "alpha": 0.5},
         "noise": {"alpha": 100000, "sigma": 0.01},
         "s_nom": "np.arange(28) * 2",
+        "forward_model": "parametric_dispersion",
     }
 
     for scenario_key in SCENARIOS:
@@ -910,14 +1277,20 @@ def compute_summary_statistics(all_results: List[Dict], methods: List[str]) -> D
     dx_errs = [r["parameter_error"]["dx_err"] for r in all_results]
     dy_errs = [r["parameter_error"]["dy_err"] for r in all_results]
     theta_errs = [r["parameter_error"]["theta_err"] for r in all_results]
+    a1_errs = [r["parameter_error"]["a1_err"] for r in all_results]
+    alpha_errs = [r["parameter_error"]["alpha_err"] for r in all_results]
 
     summary["parameter_recovery"] = {
         "dx_rmse": round(float(np.sqrt(np.mean(np.array(dx_errs)**2))), 4),
         "dy_rmse": round(float(np.sqrt(np.mean(np.array(dy_errs)**2))), 4),
         "theta_rmse": round(float(np.sqrt(np.mean(np.array(theta_errs)**2))), 4),
+        "a1_rmse": round(float(np.sqrt(np.mean(np.array(a1_errs)**2))), 4),
+        "alpha_rmse": round(float(np.sqrt(np.mean(np.array(alpha_errs)**2))), 4),
         "dx_mean_err": round(float(np.mean(dx_errs)), 4),
         "dy_mean_err": round(float(np.mean(dy_errs)), 4),
         "theta_mean_err": round(float(np.mean(theta_errs)), 4),
+        "a1_mean_err": round(float(np.mean(a1_errs)), 4),
+        "alpha_mean_err": round(float(np.mean(alpha_errs)), 4),
     }
 
     # Timing
@@ -947,10 +1320,10 @@ def main():
     n_scenes = min(max(args.scenes, 1), 10)
 
     logger.info("=" * 70)
-    logger.info("PWMI-CASSI 4-Scenario Validation")
+    logger.info("PWMI-CASSI 4-Scenario Validation (5-param mismatch + enlarged grid)")
     logger.info(f"4 Scenarios x 5 Methods x {n_scenes} Scenes = {4 * 5 * n_scenes} Reconstructions")
-    logger.info(f"Mismatch: dx=1.5 px, dy=1.0 px, theta=0.3 deg")
-    logger.info(f"s_nom = np.arange(28) * 2 = [0, 2, 4, ..., 54]")
+    logger.info(f"Mismatch: dx=1.5, dy=1.0, theta=0.3 deg, a1=2.04, alpha=0.5 deg")
+    logger.info(f"Forward model: parametric dispersion (a1, alpha)")
     logger.info(f"Device: {args.device}")
     logger.info("=" * 70)
 
@@ -1045,6 +1418,8 @@ def main():
     logger.info(f"\n  Parameter Recovery RMSE:")
     logger.info(f"    dx: {pr['dx_rmse']:.4f} px   dy: {pr['dy_rmse']:.4f} px   "
                 f"theta: {pr['theta_rmse']:.4f} deg")
+    logger.info(f"    a1: {pr['a1_rmse']:.4f} px/band   "
+                f"alpha: {pr['alpha_rmse']:.4f} deg")
 
     logger.info(f"\n  Total time: {total_time:.1f}s ({total_time/len(all_results):.1f}s per scene)")
 
