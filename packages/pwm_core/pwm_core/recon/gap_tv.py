@@ -110,6 +110,7 @@ def gap_tv_cassi(
     lam: float = 0.05,
     acc: float = 1.0,
     step: int = 1,
+    accelerate: bool = False,
 ) -> np.ndarray:
     """GAP-TV for CASSI (Coded Aperture Snapshot Spectral Imaging).
 
@@ -122,8 +123,11 @@ def gap_tv_cassi(
         n_bands: Number of spectral bands
         iterations: Number of GAP iterations
         lam: TV regularization weight
-        acc: Acceleration parameter
+        acc: Acceleration parameter (lambda in Yuan 2016)
         step: Dispersion step in pixels per band (1 for stride-1, 2 for standard CASSI)
+        accelerate: Enable Nesterov-like acceleration via accumulated residual
+            (Yuan 2016, Eq. 8). Accumulates y1 = y1 + (y - A(x)) across
+            iterations for faster convergence.
 
     Returns:
         Reconstructed 3D spectral cube (H, W, n_bands)
@@ -137,36 +141,53 @@ def gap_tv_cassi(
     # Initialize estimate
     x = np.zeros((h, w, n_bands), dtype=np.float32)
 
-    # Compute proper normalization: A^T(A(ones))
-    # This correctly handles step>1 dispersion overlap patterns
-    y_ones = np.zeros((h, w_meas), dtype=np.float32)
+    # Phi_sum: sum of mask^2 at each measurement pixel (2D normalization)
+    Phi_sum = np.zeros((h, w_meas), dtype=np.float32)
     for k in range(n_bands):
-        y_ones[:, k * step:k * step + w] += mask
-    mask_sum = np.zeros((h, w, n_bands), dtype=np.float32)
-    for k in range(n_bands):
-        mask_sum[:, :, k] = mask * y_ones[:, k * step:k * step + w]
-    mask_sum = np.maximum(mask_sum, 1e-6)
+        Phi_sum[:, k * step:k * step + w] += mask ** 2
+    Phi_sum = np.maximum(Phi_sum, 1e-6)
 
-    # Initialize with back-projection
+    # Also compute per-band normalization for non-accelerated path
+    if not accelerate:
+        y_ones = np.zeros((h, w_meas), dtype=np.float32)
+        for k in range(n_bands):
+            y_ones[:, k * step:k * step + w] += mask
+        mask_sum = np.zeros((h, w, n_bands), dtype=np.float32)
+        for k in range(n_bands):
+            mask_sum[:, :, k] = mask * y_ones[:, k * step:k * step + w]
+        mask_sum = np.maximum(mask_sum, 1e-6)
+
+    # Initialize with back-projection (normalized)
     for k in range(n_bands):
         x[:, :, k] = mask * y[:, k * step:k * step + w]
-    x /= mask_sum
+    if not accelerate:
+        x /= mask_sum
+    else:
+        # Normalize using Phi_sum for accelerated path
+        for k in range(n_bands):
+            x[:, :, k] /= np.maximum(Phi_sum[:, k * step:k * step + w], 1e-6)
+
+    # Accumulated residual for acceleration (Yuan 2016)
+    y1 = np.zeros_like(y) if accelerate else None
 
     for it in range(iterations):
-        # Gap step: compute residual
+        # Forward: compute estimated measurement
         y_est = np.zeros_like(y)
         for k in range(n_bands):
             y_est[:, k * step:k * step + w] += mask * x[:, :, k]
 
-        residual = y - y_est
-
-        # Back-project residual
-        x_update = np.zeros_like(x)
-        for k in range(n_bands):
-            x_update[:, :, k] = mask * residual[:, k * step:k * step + w]
-
-        # Update with acceleration
-        x = x + acc * x_update / mask_sum
+        if accelerate:
+            # Nesterov acceleration: accumulate residual
+            y1 += (y - y_est)
+            norm_r = (y1 - y_est) / Phi_sum
+            for k in range(n_bands):
+                x[:, :, k] += acc * mask * norm_r[:, k * step:k * step + w]
+        else:
+            residual = y - y_est
+            x_update = np.zeros_like(x)
+            for k in range(n_bands):
+                x_update[:, :, k] = mask * residual[:, k * step:k * step + w]
+            x = x + acc * x_update / mask_sum
 
         # Clip to prevent overflow in TV denoiser
         x = np.nan_to_num(x, nan=0.0, posinf=1.0, neginf=0.0)

@@ -389,13 +389,18 @@ def cassi_adjoint_parametric(y: np.ndarray, mask: np.ndarray,
 
 def _gap_tv_parametric(y: np.ndarray, mask: np.ndarray,
                        a1: float = 2.0, alpha: float = 0.0,
-                       n_iter: int = 50, lam: float = 0.01
+                       n_iter: int = 50, lam: float = 0.5,
+                       accelerate: bool = True,
                        ) -> np.ndarray:
     """GAP-TV solver using the parametric (a1, alpha) forward/adjoint.
 
     Implements the Generalized Alternating Projection (Yuan 2016):
       v^{k+1} = x^k + Φ^T diag(ΦΦ^T)^{-1} (y - Φx^k)
       x^{k+1} = TV_denoise(v^{k+1})
+
+    With acceleration (Yuan 2016, Eq. 8):
+      y1 = y1 + (y - Φx^k)
+      v^{k+1} = x^k + Φ^T diag(ΦΦ^T)^{-1} (y1 - Φx^k)
 
     The Phi_sum normalization is critical when variable offsets (a1!=2.0)
     create overlapping band contributions at some detector pixels.
@@ -419,18 +424,35 @@ def _gap_tv_parametric(y: np.ndarray, mask: np.ndarray,
     x = cassi_adjoint_parametric(y, mask, H, W, nC, a1, alpha)
     y_in = y.copy()
 
+    # Accumulated residual for Nesterov acceleration
+    y1 = np.zeros((H, W_ext), dtype=np.float32) if accelerate else None
+
     for _ in range(n_iter):
         y_hat = cassi_forward_parametric(x, mask, a1, alpha)
-        # size-safe normalized residual: r / Phi_sum
+        # size-safe residual computation
         h_min = min(y_in.shape[0], y_hat.shape[0])
         w_min = min(y_in.shape[1], y_hat.shape[1])
-        residual = np.zeros((H, W_ext), dtype=np.float32)
-        residual[:h_min, :w_min] = (
-            (y_in[:h_min, :w_min] - y_hat[:h_min, :w_min])
-            / Phi_sum[:h_min, :w_min]
+
+        raw_residual = np.zeros((H, W_ext), dtype=np.float32)
+        raw_residual[:h_min, :w_min] = (
+            y_in[:h_min, :w_min] - y_hat[:h_min, :w_min]
         )
 
-        x = x + cassi_adjoint_parametric(residual, mask, H, W, nC, a1, alpha)
+        if accelerate:
+            y1 += raw_residual
+            norm_r = np.zeros((H, W_ext), dtype=np.float32)
+            norm_r[:h_min, :w_min] = (
+                (y1[:h_min, :w_min] - y_hat[:h_min, :w_min])
+                / Phi_sum[:h_min, :w_min]
+            )
+        else:
+            norm_r = np.zeros((H, W_ext), dtype=np.float32)
+            norm_r[:h_min, :w_min] = (
+                raw_residual[:h_min, :w_min]
+                / Phi_sum[:h_min, :w_min]
+            )
+
+        x = x + cassi_adjoint_parametric(norm_r, mask, H, W, nC, a1, alpha)
         x = denoise_tv_chambolle(np.clip(x, 0, None), weight=lam,
                                  channel_axis=2).astype(np.float32)
 
@@ -539,18 +561,17 @@ def compute_sam(x_true: np.ndarray, x_recon: np.ndarray) -> float:
 # ===================================================================
 def reconstruct_gap_tv(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0",
                        a1: float = 2.0, alpha: float = 0.0) -> np.ndarray:
-    """Reconstruct using GAP-TV with parametric dispersion."""
+    """Reconstruct using GAP-TV with acceleration and parametric dispersion.
+
+    Always uses the parametric solver with skimage's denoise_tv_chambolle
+    and Nesterov acceleration (Yuan 2016). TV weight ~0.5 matches the
+    PnP-CASSI reference implementation.
+    """
     try:
         H, W = mask.shape
-        # Use parametric solver when dispersion deviates from nominal
-        if abs(a1 - 2.0) > 1e-6 or abs(alpha) > 1e-6:
-            y_param = _fit_measurement(y, H, W, N_BANDS, a1, alpha)
-            return _gap_tv_parametric(y_param, mask, a1=a1, alpha=alpha,
-                                      n_iter=50, lam=0.01)
-        # Fast path: nominal dispersion via optimised pwm_core solver
-        from pwm_core.recon.gap_tv import gap_tv_cassi
-        y_nom = _fit_measurement(y, H, W, N_BANDS, 2.0, 0.0)
-        return gap_tv_cassi(y_nom, mask, n_bands=N_BANDS, iterations=50, lam=0.01, step=STEP)
+        y_param = _fit_measurement(y, H, W, N_BANDS, a1, alpha)
+        return _gap_tv_parametric(y_param, mask, a1=a1, alpha=alpha,
+                                  n_iter=50, lam=0.5, accelerate=True)
     except Exception as e:
         logger.warning(f"GAP-TV failed: {e}")
         H = y.shape[0]
@@ -769,14 +790,27 @@ def _shift_fwd_np(x: np.ndarray, step: int, nC: int) -> np.ndarray:
     return out
 
 
+def _is_hsicnn_iter(k: int) -> bool:
+    """Check if iteration k should use HSICNN denoiser.
+
+    Follows the PnP-CASSI reference pattern: from iteration 83 onwards,
+    alternate 3 HSICNN iterations + 1 TV iteration in a cycle.
+    """
+    if k < 83:
+        return False
+    return (k - 83) % 4 < 3
+
+
 def reconstruct_pnp_hsicnn(y: np.ndarray, mask: np.ndarray,
                            device: str = "cuda:0",
                            a1: float = 2.0, alpha: float = 0.0) -> np.ndarray:
-    """Reconstruct using PnP-HSICNN (ADMM + HSI-SDeCNN deep denoiser).
+    """Reconstruct using PnP-HSICNN (GAP + HSI-SDeCNN deep denoiser).
 
-    When dispersion deviates from nominal (a1!=2.0 or alpha!=0), builds
-    the Phi operator using the parametric offsets so that the ADMM
-    data-fidelity step accounts for the true dispersion geometry.
+    Uses the GAP framework with Nesterov acceleration matching the
+    PnP-CASSI reference (Zheng et al.):
+    - Iterations 0-82: TV denoising (weight = 130/255 ~= 0.51)
+    - Iterations 83-123: Alternating HSICNN (3 iters) / TV (1 iter)
+    - Total: 124 iterations with accumulated residual acceleration
     """
     try:
         from skimage.restoration import denoise_tv_chambolle
@@ -785,58 +819,54 @@ def reconstruct_pnp_hsicnn(y: np.ndarray, mask: np.ndarray,
 
         H, W = mask.shape
         nC = N_BANDS
+        step = STEP
+        W_ext = W + (nC - 1) * step
 
-        # Always use nominal stride-2 Phi (shift operations assume step=2)
-        W_ext = W + (nC - 1) * STEP
-        Phi = np.zeros((H, W_ext, nC), dtype=np.float32)
+        # Phi_sum: sum of mask^2 at each measurement pixel (2D)
+        Phi_sum = np.zeros((H, W_ext), dtype=np.float32)
         for k in range(nC):
-            Phi[:, k * STEP:k * STEP + W, k] = mask
-        Phi_sum = np.sum(Phi, axis=2)
-        Phi_sum[Phi_sum == 0] = 1
+            Phi_sum[:, k * step:k * step + W] += mask ** 2
+        Phi_sum = np.maximum(Phi_sum, 1.0)
 
         # Fit measurement to nominal width
         y_nom = _fit_measurement(y, H, W, nC, 2.0, 0.0)
-        y_in = y_nom
 
-        # ADMM initialization
-        x0 = np.multiply(
-            np.repeat(y_in[:, :, np.newaxis], nC, axis=2), Phi)
-        x = x0.copy()
-        theta = x0.copy()
-        b = np.zeros_like(x0)
+        # Initialize with adjoint (image domain)
+        x = np.zeros((H, W, nC), dtype=np.float32)
+        for k in range(nC):
+            x[:, :, k] = mask * y_nom[:, k * step:k * step + W]
+
+        # Accumulated residual for Nesterov acceleration
+        y1 = np.zeros_like(y_nom)
 
         _lambda = 1.0
-        gamma = 0.01
         n_total = 124
-        n_tv_iters = 89
-        tv_weight = 0.1
-
-        # use nominal step for shift_back/fwd (image-domain denoising)
-        step = STEP
+        nsig_tv = 130  # TV weight = nsig/255 (matching reference)
 
         for k_iter in range(n_total):
-            # ADMM projection via Phi
-            yb = np.sum((theta + b) * Phi, axis=2)
-            x = (theta + b) + _lambda * np.multiply(
-                np.repeat(((y_in - yb) / (Phi_sum + gamma))[:, :, np.newaxis],
-                          nC, axis=2),
-                Phi)
+            # Forward model: A(x)
+            y_est = np.zeros((H, W_ext), dtype=np.float32)
+            for k in range(nC):
+                y_est[:, k * step:k * step + W] += mask * x[:, :, k]
 
-            # Shift to image domain for denoising (use nominal step)
-            x1 = _shift_back_np(x - b, step)
+            # GAP with Nesterov acceleration
+            y1 += (y_nom - y_est)
+            norm_r = (y1 - y_est) / Phi_sum
 
-            if k_iter < n_tv_iters:
-                theta_img = denoise_tv_chambolle(
-                    x1, weight=tv_weight, channel_axis=2)
+            # Adjoint: back-project to image domain
+            for k in range(nC):
+                x[:, :, k] += _lambda * mask * norm_r[:, k * step:k * step + W]
+
+            # Denoising step (image domain)
+            if _is_hsicnn_iter(k_iter):
+                x = _apply_hsicnn_denoiser(
+                    np.clip(x, 0, None), model, dev, nC=nC, sigma_val=10.0)
             else:
-                theta_img = _apply_hsicnn_denoiser(x1, model, dev, nC=nC)
+                x = denoise_tv_chambolle(
+                    np.clip(x, 0, None), weight=nsig_tv / 255.0,
+                    channel_axis=2).astype(np.float32)
 
-            theta = _shift_fwd_np(theta_img, step, nC)
-
-            b = b - (x - theta)
-
-        result = _shift_back_np(theta, step)
-        result = np.clip(result, 0, 1).astype(np.float32)
+        result = np.clip(x, 0, 1).astype(np.float32)
 
         # DC correction for non-nominal dispersion
         if abs(a1 - 2.0) > 1e-6 or abs(alpha) > 1e-6:
@@ -945,7 +975,7 @@ def calibrate_mismatch(y_corrupt: np.ndarray, mask_ideal: np.ndarray,
 
     # --- Phase 1: mask affine calibration ---
     x_proxy = gap_tv_cassi(y_nom, mask_ideal, n_bands=N_BANDS,
-                           iterations=50, lam=0.01, step=STEP)
+                           iterations=50, lam=0.5, step=STEP, accelerate=True)
 
     coarse = MismatchParameters(mask_dx=0.0, mask_dy=0.0, mask_theta=0.0)
     alg2 = Algorithm2JointGradientRefinement(device=device)

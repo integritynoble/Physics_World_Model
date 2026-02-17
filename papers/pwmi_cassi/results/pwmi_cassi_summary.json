@@ -28,12 +28,12 @@
   "forward_model": "parametric_dispersion",
   "scenario_i": {
     "gap_tv": {
-      "psnr_mean": 20.37,
-      "psnr_std": 1.84,
-      "ssim_mean": 0.6202,
-      "ssim_std": 0.0916,
-      "sam_mean": 25.11,
-      "sam_std": 3.51
+      "psnr_mean": 22.26,
+      "psnr_std": 1.5,
+      "ssim_mean": 0.638,
+      "ssim_std": 0.0788,
+      "sam_mean": 21.56,
+      "sam_std": 2.99
     },
     "mst_s": {
       "psnr_mean": 33.98,
@@ -60,22 +60,22 @@
       "sam_std": 0.96
     },
     "pnp_hsicnn": {
-      "psnr_mean": 21.7,
-      "psnr_std": 6.16,
-      "ssim_mean": 0.7124,
-      "ssim_std": 0.0957,
-      "sam_mean": 19.89,
-      "sam_std": 5.4
+      "psnr_mean": 20.67,
+      "psnr_std": 1.66,
+      "ssim_mean": 0.5806,
+      "ssim_std": 0.0753,
+      "sam_mean": 24.6,
+      "sam_std": 2.78
     }
   },
   "scenario_ii": {
     "gap_tv": {
-      "psnr_mean": 19.95,
-      "psnr_std": 1.78,
-      "ssim_mean": 0.5583,
-      "ssim_std": 0.094,
-      "sam_mean": 26.14,
-      "sam_std": 3.33
+      "psnr_mean": 19.98,
+      "psnr_std": 1.75,
+      "ssim_mean": 0.5438,
+      "ssim_std": 0.0916,
+      "sam_mean": 26.72,
+      "sam_std": 3.48
     },
     "mst_s": {
       "psnr_mean": 18.01,
@@ -102,22 +102,22 @@
       "sam_std": 1.96
     },
     "pnp_hsicnn": {
-      "psnr_mean": 14.92,
-      "psnr_std": 2.28,
-      "ssim_mean": 0.3851,
-      "ssim_std": 0.118,
-      "sam_mean": 36.55,
-      "sam_std": 3.62
+      "psnr_mean": 18.5,
+      "psnr_std": 1.69,
+      "ssim_mean": 0.4515,
+      "ssim_std": 0.1109,
+      "sam_mean": 29.98,
+      "sam_std": 2.93
     }
   },
   "scenario_iii": {
     "gap_tv": {
-      "psnr_mean": 20.43,
-      "psnr_std": 1.74,
-      "ssim_mean": 0.6012,
-      "ssim_std": 0.0914,
-      "sam_mean": 24.25,
-      "sam_std": 3.26
+      "psnr_mean": 20.42,
+      "psnr_std": 1.68,
+      "ssim_mean": 0.5748,
+      "ssim_std": 0.0881,
+      "sam_mean": 26.56,
+      "sam_std": 3.59
     },
     "mst_s": {
       "psnr_mean": 21.47,
@@ -144,22 +144,22 @@
       "sam_std": 1.91
     },
     "pnp_hsicnn": {
-      "psnr_mean": 17.13,
-      "psnr_std": 3.15,
-      "ssim_mean": 0.4938,
-      "ssim_std": 0.1218,
-      "sam_mean": 30.22,
-      "sam_std": 4.17
+      "psnr_mean": 18.91,
+      "psnr_std": 1.73,
+      "ssim_mean": 0.472,
+      "ssim_std": 0.1102,
+      "sam_mean": 28.36,
+      "sam_std": 2.88
     }
   },
   "scenario_iv": {
     "gap_tv": {
-      "psnr_mean": 21.2,
-      "psnr_std": 1.74,
-      "ssim_mean": 0.6488,
-      "ssim_std": 0.0872,
-      "sam_mean": 21.76,
-      "sam_std": 3.0
+      "psnr_mean": 21.91,
+      "psnr_std": 1.45,
+      "ssim_mean": 0.6292,
+      "ssim_std": 0.0794,
+      "sam_mean": 23.49,
+      "sam_std": 3.84
     },
     "mst_s": {
       "psnr_mean": 24.12,
@@ -186,24 +186,24 @@
       "sam_std": 1.93
     },
     "pnp_hsicnn": {
-      "psnr_mean": 20.89,
-      "psnr_std": 4.51,
-      "ssim_mean": 0.6493,
-      "ssim_std": 0.0861,
-      "sam_mean": 22.86,
-      "sam_std": 5.51
+      "psnr_mean": 19.68,
+      "psnr_std": 1.68,
+      "ssim_mean": 0.523,
+      "ssim_std": 0.0892,
+      "sam_mean": 26.3,
+      "sam_std": 3.12
     }
   },
   "gaps": {
     "gap_tv": {
-      "degradation_mean": 0.42,
-      "degradation_std": 0.26,
-      "calibration_gain_mean": 0.48,
-      "calibration_gain_std": 0.19,
-      "residual_gap_mean": 0.77,
-      "residual_gap_std": 0.28,
-      "oracle_gain_mean": 1.25,
-      "oracle_gain_std": 0.26
+      "degradation_mean": 2.28,
+      "degradation_std": 0.63,
+      "calibration_gain_mean": 0.44,
+      "calibration_gain_std": 0.28,
+      "residual_gap_mean": 1.49,
+      "residual_gap_std": 0.73,
+      "oracle_gain_mean": 1.93,
+      "oracle_gain_std": 0.62
     },
     "mst_s": {
       "degradation_mean": 15.97,
@@ -236,14 +236,14 @@
       "oracle_gain_std": 0.03
     },
     "pnp_hsicnn": {
-      "degradation_mean": 6.78,
-      "degradation_std": 5.42,
-      "calibration_gain_mean": 2.21,
-      "calibration_gain_std": 2.1,
-      "residual_gap_mean": 3.76,
-      "residual_gap_std": 2.76,
-      "oracle_gain_mean": 5.97,
-      "oracle_gain_std": 4.27
+      "degradation_mean": 2.17,
+      "degradation_std": 0.66,
+      "calibration_gain_mean": 0.41,
+      "calibration_gain_std": 0.13,
+      "residual_gap_mean": 0.78,
+      "residual_gap_std": 0.45,
+      "oracle_gain_mean": 1.18,
+      "oracle_gain_std": 0.44
     }
   },
   "parameter_recovery": {
@@ -259,10 +259,10 @@
     "alpha_mean_err": 0.5
   },
   "timing": {
-    "calibration_mean": 251.5,
-    "calibration_std": 20.9,
-    "total_mean": 667.9,
-    "total_std": 144.8
+    "calibration_mean": 284.0,
+    "calibration_std": 28.0,
+    "total_mean": 1055.4,
+    "total_std": 130.5
   },
-  "execution_seconds": 6679.4
+  "execution_seconds": 10659.0
 }
