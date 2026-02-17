@@ -1013,11 +1013,16 @@ def _fit_measurement(y: np.ndarray, H: int, W: int, nC: int,
 
 def _run_methods(y: np.ndarray, mask: np.ndarray, scene: np.ndarray,
                  methods: List[str], device: str,
-                 a1: float = 2.0, alpha: float = 0.0) -> Dict[str, Dict]:
+                 a1: float = 2.0, alpha: float = 0.0,
+                 recon_out: Optional[Dict[str, np.ndarray]] = None,
+                 ) -> Dict[str, Dict]:
     """Run all reconstruction methods and collect PSNR/SSIM/SAM.
 
     Each method internally fits the measurement to the width its forward
     model expects (nominal for neural nets, parametric for physics-based).
+
+    Args:
+        recon_out: if provided, stores {method: x_hat} for each reconstruction.
     """
     results: Dict[str, Dict] = {}
     for method in methods:
@@ -1032,6 +1037,8 @@ def _run_methods(y: np.ndarray, mask: np.ndarray, scene: np.ndarray,
                     np.mean(scene, axis=2), np.mean(x_hat, axis=2))),
                 "sam": float(compute_sam(scene, x_hat)),
             }
+            if recon_out is not None:
+                recon_out[method] = x_hat.copy()
         except Exception as e:
             logger.error(f"    {method} failed: {e}")
             results[method] = {"psnr": 0.0, "ssim": 0.0, "sam": 180.0}
@@ -1042,17 +1049,20 @@ def _run_methods(y: np.ndarray, mask: np.ndarray, scene: np.ndarray,
 
 
 def validate_scenario_i(scene: np.ndarray, mask_ideal: np.ndarray,
-                        methods: List[str], device: str) -> Dict[str, Dict]:
+                        methods: List[str], device: str,
+                        recon_out: Optional[Dict[str, np.ndarray]] = None,
+                        ) -> Dict[str, Dict]:
     """Scenario I: Ideal (no mismatch, no noise, nominal a1=2.0, alpha=0)."""
     logger.info("  Scenario I: Ideal (oracle upper bound)")
     y_ideal = cassi_forward(scene, mask_ideal, step=STEP)
     return _run_methods(y_ideal, mask_ideal, scene, methods, device,
-                        a1=2.0, alpha=0.0)
+                        a1=2.0, alpha=0.0, recon_out=recon_out)
 
 
 def validate_scenario_ii(scene: np.ndarray, mask_ideal: np.ndarray,
                          mismatch: MismatchSpec,
-                         methods: List[str], device: str
+                         methods: List[str], device: str,
+                         recon_out: Optional[Dict[str, np.ndarray]] = None,
                          ) -> Tuple[Dict[str, Dict], np.ndarray, np.ndarray]:
     """Scenario II: Measurement via enlarged grid with full 5-param mismatch,
     reconstruction with ideal/nominal forward model (no correction).
@@ -1085,13 +1095,15 @@ def validate_scenario_ii(scene: np.ndarray, mask_ideal: np.ndarray,
 
     # Reconstruct with nominal forward model (a1=2.0, alpha=0) — NO correction
     results = _run_methods(y_corrupt, mask_ideal, scene, methods, device,
-                           a1=2.0, alpha=0.0)
+                           a1=2.0, alpha=0.0, recon_out=recon_out)
     return results, y_corrupt, mask_corrupted
 
 
 def validate_scenario_iii(scene: np.ndarray, mask_ideal: np.ndarray,
                           y_corrupt: np.ndarray, estimated_params: Dict,
-                          methods: List[str], device: str) -> Dict[str, Dict]:
+                          methods: List[str], device: str,
+                          recon_out: Optional[Dict[str, np.ndarray]] = None,
+                          ) -> Dict[str, Dict]:
     """Scenario III: Corrected mask + estimated dispersion."""
     logger.info("  Scenario III: Corrected (calibrated mask + dispersion)")
 
@@ -1104,12 +1116,15 @@ def validate_scenario_iii(scene: np.ndarray, mask_ideal: np.ndarray,
 
     return _run_methods(y_corrupt, mask_calibrated, scene, methods, device,
                         a1=estimated_params.get("a1", 2.0),
-                        alpha=estimated_params.get("alpha", 0.0))
+                        alpha=estimated_params.get("alpha", 0.0),
+                        recon_out=recon_out)
 
 
 def validate_scenario_iv(scene: np.ndarray, mask_ideal: np.ndarray,
                          mismatch: MismatchSpec, y_corrupt: np.ndarray,
-                         methods: List[str], device: str) -> Dict[str, Dict]:
+                         methods: List[str], device: str,
+                         recon_out: Optional[Dict[str, np.ndarray]] = None,
+                         ) -> Dict[str, Dict]:
     """Scenario IV: Oracle mask + oracle dispersion."""
     logger.info("  Scenario IV: Oracle (truth mask + truth dispersion)")
 
@@ -1121,7 +1136,8 @@ def validate_scenario_iv(scene: np.ndarray, mask_ideal: np.ndarray,
     )
 
     return _run_methods(y_corrupt, mask_truth, scene, methods, device,
-                        a1=mismatch.disp_a1, alpha=mismatch.disp_alpha)
+                        a1=mismatch.disp_a1, alpha=mismatch.disp_alpha,
+                        recon_out=recon_out)
 
 
 # ===================================================================
@@ -1130,31 +1146,48 @@ def validate_scenario_iv(scene: np.ndarray, mask_ideal: np.ndarray,
 def validate_scene(scene_idx: int, scene: np.ndarray,
                    mask_ideal: np.ndarray,
                    mismatch: MismatchSpec,
-                   methods: List[str], device: str) -> Dict:
-    """Validate one scene across all 4 scenarios and all methods."""
+                   methods: List[str], device: str,
+                   save_recon: bool = False) -> Tuple[Dict, Optional[Dict[str, np.ndarray]]]:
+    """Validate one scene across all 4 scenarios and all methods.
+
+    Returns:
+        Tuple of (result_dict, recon_data_or_None).
+        recon_data keys: 'gt', 'mask_ideal', 'mask_warped',
+        'scenario_i_{method}', 'scenario_ii_{method}', etc.
+    """
     logger.info(f"\n{'='*70}")
     logger.info(f"Scene {scene_idx + 1}/{NUM_SCENES}")
     logger.info(f"{'='*70}")
 
     start_time = time.time()
 
+    # Prepare recon storage dicts per scenario
+    recon_i = {} if save_recon else None
+    recon_ii = {} if save_recon else None
+    recon_iii = {} if save_recon else None
+    recon_iv = {} if save_recon else None
+
     # Scenario I: Ideal
-    res_i = validate_scenario_i(scene, mask_ideal, methods, device)
+    res_i = validate_scenario_i(scene, mask_ideal, methods, device,
+                                recon_out=recon_i)
 
     # Scenario II: Assumed (returns y_corrupt for reuse)
     res_ii, y_corrupt, mask_warped = validate_scenario_ii(
-        scene, mask_ideal, mismatch, methods, device)
+        scene, mask_ideal, mismatch, methods, device,
+        recon_out=recon_ii)
 
     # Calibration: Run Algorithm 2 to estimate mismatch from y_corrupt
     estimated_params, calib_time = calibrate_mismatch(y_corrupt, mask_ideal, device)
 
     # Scenario III: Corrected (use calibrated mask)
     res_iii = validate_scenario_iii(
-        scene, mask_ideal, y_corrupt, estimated_params, methods, device)
+        scene, mask_ideal, y_corrupt, estimated_params, methods, device,
+        recon_out=recon_iii)
 
     # Scenario IV: Oracle (use truth mask)
     res_iv = validate_scenario_iv(
-        scene, mask_ideal, mismatch, y_corrupt, methods, device)
+        scene, mask_ideal, mismatch, y_corrupt, methods, device,
+        recon_out=recon_iv)
 
     elapsed = time.time() - start_time
 
@@ -1216,7 +1249,24 @@ def validate_scene(scene_idx: int, scene: np.ndarray,
             f"III={piii:6.2f}  IV={piv:6.2f}  gain={gain:+.2f} dB"
         )
 
-    return result
+    # Collect reconstruction data for saving
+    recon_data = None
+    if save_recon:
+        recon_data = {
+            "gt": scene.copy(),
+            "mask_ideal": mask_ideal.copy(),
+            "mask_warped": mask_warped.copy(),
+        }
+        for method, arr in recon_i.items():
+            recon_data[f"scenario_i_{method}"] = arr
+        for method, arr in recon_ii.items():
+            recon_data[f"scenario_ii_{method}"] = arr
+        for method, arr in recon_iii.items():
+            recon_data[f"scenario_iii_{method}"] = arr
+        for method, arr in recon_iv.items():
+            recon_data[f"scenario_iv_{method}"] = arr
+
+    return result, recon_data
 
 
 # ===================================================================
@@ -1366,12 +1416,18 @@ def main():
             logger.warning(f"{scene_name} not found, skipping")
             continue
 
-        result = validate_scene(
+        result, recon_data = validate_scene(
             scene_idx, scene, mask_ideal,
             mismatch, RECONSTRUCTION_METHODS, args.device,
+            save_recon=args.save_recon,
         )
 
         all_results.append(result)
+
+        if args.save_recon and recon_data is not None:
+            npz_path = RECON_DIR / f"scene{scene_idx + 1:02d}.npz"
+            np.savez_compressed(str(npz_path), **recon_data)
+            logger.info(f"  Saved reconstructions -> {npz_path}")
 
     total_time = time.time() - start_total
 
