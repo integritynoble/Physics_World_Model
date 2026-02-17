@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\caption{Ablation study: calibration pipeline components (MST-L on 10 KAIST scenes).}
+\label{tab:ablation}
+\small
+\begin{tabular}{l cccc}
+\toprule
+Configuration & PSNR (dB) & Gain over II & \% Oracle Recovery \\
+\midrule
+No Correction (II) & 18.41 & -- & -- \\
+Alg1 Only (Grid) & 21.51 & +3.09 & 22\% \\
+Alg1+Alg2 (Ours) & 21.42 & +3.01 & 21\% \\
+Oracle (IV) & 32.45 & +14.04 & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table}
