@@ -45,7 +45,7 @@
 \begin{abstract}
 Coded aperture snapshot spectral imaging (CASSI) captures a 3D hyperspectral cube from a single 2D measurement using a coded mask and spectral dispersion.
 Deep learning reconstructors such as MST achieve state-of-the-art quality ($>$34\,dB) but assume perfect knowledge of the forward operator.
-In practice, sub-pixel mask misalignment ($\Delta x$, $\Delta y$, $\theta$) and dispersion drift ($a_1$, $\alpha$) between the coded aperture and detector are unavoidable, yet even moderate mismatch degrades MST-L reconstruction by over 14\,dB.
+In practice, sub-pixel mask misalignment ($\Delta x$, $\Delta y$, $\theta$) and dispersion drift ($a_1$, $\alpha$) between the coded aperture and detector are unavoidable, yet even moderate mismatch degrades MST-L reconstruction by over 16\,dB.
 We propose a two-stage differentiable calibration pipeline: (1)~a coarse hierarchical grid search scored by GPU-accelerated GAP-TV, followed by (2)~joint gradient refinement through an unrolled differentiable forward operator using a Straight-Through Estimator (STE) for integer dispersion offsets, plus a 1D grid search for dispersion slope recovery.
 The pipeline is self-supervised, requiring only the measurement and nominal mask---no ground truth scene.
 On 10 KAIST benchmark scenes with injected 5-parameter mismatch ($\Delta x{=}1.5$, $\Delta y{=}1.0$, $\theta{=}0.3^\circ$, $a_1{=}2.04$\,px/band, $\alpha{=}0.5^\circ$), our method recovers significant quality for mask-aware methods through self-supervised calibration.
@@ -75,7 +75,7 @@ However, these methods critically depend on accurate knowledge of the forward op
 \textbf{The mismatch problem.}
 In deployed CASSI systems, the actual mask position inevitably differs from the assumed position due to manufacturing tolerances, assembly errors, and thermal drift.
 Five parameters characterize the dominant misalignment: horizontal shift $\Delta x$, vertical shift $\Delta y$, and rotation angle $\theta$ for the mask, plus dispersion slope $a_1$ and axis angle $\alpha$ for the prism.
-Even modest mismatches ($\Delta x = 1.5$\,px, $\Delta y = 1.0$\,px, $\theta = 0.3^\circ$, $a_1 = 2.04$\,px/band, $\alpha = 0.5^\circ$) degrade MST-L reconstruction by over 14\,dB, rendering the system effectively unusable.
+Even modest mismatches ($\Delta x = 1.5$\,px, $\Delta y = 1.0$\,px, $\theta = 0.3^\circ$, $a_1 = 2.04$\,px/band, $\alpha = 0.5^\circ$) degrade MST-L reconstruction by over 16\,dB, rendering the system effectively unusable.
 In contrast, deep prior methods like HDNet~\cite{hu2022hdnet} suffer less degradation due to their learned spectral priors, while classical methods like GAP-TV~\cite{yuan2016gap} show minimal degradation but at lower peak quality.
 
 \textbf{Challenges in CASSI calibration.}
@@ -250,21 +250,21 @@ We evaluate five methods spanning classical, plug-and-play, deep unfolding, and 
 Key findings:
 
 \textbf{Mask-guided methods suffer catastrophic degradation.}
-MST-L drops 16.40\,dB from Scenario~I (34.81) to II (18.41), and MST-S drops 15.49\,dB.
-In contrast, HDNet degrades by only 8.79\,dB (34.79$\to$26.00) because its learned spectral prior provides inherent robustness to mask mismatch.
-GAP-TV (classical) shows only 0.40\,dB degradation.
+MST-L drops 16.72\,dB from Scenario~I (34.81) to II (18.09), and MST-S drops 15.97\,dB (33.98$\to$18.01).
+In contrast, HDNet degrades by only 10.47\,dB (34.66$\to$24.18) because its learned spectral prior provides inherent robustness to mask mismatch.
+GAP-TV (classical) shows only 0.42\,dB degradation.
 This reveals a \emph{mask-sensitivity spectrum}: methods that rely more heavily on the mask during reconstruction are more sensitive to mismatch.
 
 \textbf{Calibration recovers significant quality for mask-aware methods.}
-Our two-stage pipeline (Scenario~III) recovers +3.15\,dB for MST-S, +3.01\,dB for MST-L, and +2.99\,dB for PnP-HSICNN.
-The residual gap between III and IV (oracle) is 9.78--11.03\,dB for MST-S/L, bounded by the GAP-TV proxy solver's limited accuracy.
+Our two-stage pipeline (Scenario~III) recovers +3.46\,dB for MST-S, +3.45\,dB for MST-L, and +2.21\,dB for PnP-HSICNN.
+The residual gap between III and IV (oracle) is 2.65--2.85\,dB for MST-S/L, indicating that most of the recoverable quality is captured by our calibration.
 
 \textbf{Deep prior methods show robustness but limited calibration benefit.}
-HDNet achieves the best Scenario~II performance (26.00\,dB) despite using only lightweight data-consistency refinement with the mask.
-Its small calibration gain (+0.20\,dB) confirms that the learned prior dominates the mask-based update, making it naturally robust but unable to leverage improved mask estimates.
+HDNet achieves the best Scenario~II performance (24.18\,dB) despite using only lightweight data-consistency refinement with the mask.
+Its small calibration gain (+0.06\,dB) confirms that the learned prior dominates the mask-based update, making it naturally robust but unable to leverage improved mask estimates.
 
 \textbf{PnP-HSICNN benefits substantially from calibration.}
-The ADMM-based plug-and-play method recovers +2.99\,dB (14.54$\to$17.53), with its oracle gain of +7.57\,dB demonstrating strong mask-dependence.
+The ADMM-based plug-and-play method recovers +2.21\,dB (14.92$\to$17.13), with its oracle gain of +5.97\,dB demonstrating strong mask-dependence.
 
 \Cref{fig:scenario_comparison} visualizes the PSNR distribution across scenarios and methods.
 
@@ -286,11 +286,11 @@ The ADMM-based plug-and-play method recovers +2.99\,dB (14.54$\to$17.53), with i
 Method & Sc.~I & Sc.~II & Sc.~III & Sc.~IV & Degrad. & Gain \\
  & (Ideal) & (Assumed) & (Corrected) & (Oracle) & (I$\to$II) & (II$\to$III) \\
 \midrule
-GAP-TV & 20.37$\pm$1.84 & 19.97$\pm$1.79 & 20.16$\pm$1.84 & 20.35$\pm$1.84 & $-$0.40 & \textbf{+0.20} \\
-MST-S  & 33.98$\pm$2.50 & 18.49$\pm$2.08 & 21.64$\pm$2.08 & 31.42$\pm$2.45 & $-$15.49 & \textbf{+3.15} \\
-MST-L  & \best{34.81$\pm$2.11} & 18.41$\pm$1.97 & 21.42$\pm$2.02 & \best{32.45$\pm$2.41} & $-$16.40 & \textbf{+3.01} \\
-HDNet  & 34.79$\pm$2.65 & \best{26.00$\pm$2.48} & \best{26.20$\pm$2.44} & 26.45$\pm$2.66 & $-$8.79 & \textbf{+0.20} \\
-PnP-HSICNN & 21.70$\pm$6.16 & 14.54$\pm$2.21 & 17.53$\pm$2.98 & 22.11$\pm$5.49 & $-$7.15 & \textbf{+2.99} \\
+GAP-TV & 20.37$\pm$1.84 & 19.95$\pm$1.78 & 20.43$\pm$1.74 & 21.20$\pm$1.74 & $-$0.42 & \textbf{+0.48}$\pm$0.19 \\
+MST-S  & 33.98$\pm$2.50 & 18.01$\pm$2.14 & 21.47$\pm$2.53 & 24.12$\pm$2.03 & $-$15.97 & \textbf{+3.46}$\pm$0.97 \\
+MST-L  & \best{34.81$\pm$2.11} & 18.09$\pm$1.97 & 21.54$\pm$2.34 & 24.39$\pm$2.02 & $-$16.72 & \textbf{+3.45}$\pm$1.01 \\
+HDNet  & 34.66$\pm$2.62 & \best{24.18$\pm$2.86} & \best{24.24$\pm$2.84} & 24.26$\pm$2.85 & $-$10.47 & \textbf{+0.06}$\pm$0.04 \\
+PnP-HSICNN & 21.70$\pm$6.16 & 14.92$\pm$2.28 & 17.13$\pm$3.15 & 20.89$\pm$4.51 & $-$6.78 & \textbf{+2.21}$\pm$2.10 \\
 \bottomrule
 \end{tabular}
 \vspace{-2mm}
@@ -298,9 +298,17 @@ PnP-HSICNN & 21.70$\pm$6.16 & 14.54$\pm$2.21 & 17.53$\pm$2.98 & 22.11$\pm$5.49 &
 
 \subsection{Parameter Recovery}
 
-\Cref{tab:param_recovery} shows aggregated mismatch parameter recovery statistics across all five parameters.
-The mask affine parameters ($\Delta x$, $\Delta y$, $\theta$) are recovered via gradient refinement, while the dispersion slope $a_1$ is recovered via 1D grid search.
+\Cref{tab:param_recovery} shows aggregated mismatch parameter recovery statistics across all five parameters (\Cref{fig:param_recovery} visualizes per-scene estimates).
+The mask affine parameters ($\Delta x$, $\Delta y$, $\theta$) are recovered via gradient refinement with RMSE of 0.667\,px, 0.564\,px, and 0.768$^\circ$ respectively.
+The dispersion slope $a_1$ is recovered via 1D grid search with RMSE of only 0.134\,px/band.
 The dispersion axis angle $\alpha$ has negligible effect at native resolution (vertical offsets round to zero for $|\alpha| < 2^\circ$ with 28 bands) and is not actively estimated.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig5_parameter_recovery.pdf}
+\caption{Per-scene estimated vs.\ true mismatch parameters across 10 KAIST scenes. Dashed lines indicate ground truth values ($\Delta x{=}1.5$, $\Delta y{=}1.0$, $\theta{=}0.3^\circ$). The dispersion slope $a_1$ is recovered most accurately (RMSE=0.134\,px/band).}
+\label{fig:param_recovery}
+\end{figure}
 
 \begin{table}[t]
 \centering
@@ -311,8 +319,8 @@ The dispersion axis angle $\alpha$ has negligible effect at native resolution (v
 \toprule
 Metric & $\Delta x$ (px) & $\Delta y$ (px) & $\theta$ ($^\circ$) & $a_1$ (px/band) & $\alpha$ ($^\circ$) \\
 \midrule
-RMSE & --- & --- & --- & --- & 0.500$^\dagger$ \\
-Mean Error & --- & --- & --- & --- & 0.500$^\dagger$ \\
+RMSE & 0.667 & 0.564 & 0.768 & 0.134 & 0.500$^\dagger$ \\
+Mean Error & 0.534 & 0.561 & 0.745 & 0.132 & 0.500$^\dagger$ \\
 \bottomrule
 \multicolumn{6}{l}{\footnotesize $^\dagger$Not actively estimated; negligible effect at native resolution.}
 \end{tabular}
@@ -327,37 +335,71 @@ Mean Error & --- & --- & --- & --- & 0.500$^\dagger$ \\
 
 \subsection{Sensitivity Analysis}
 
-We vary the mismatch magnitude by scaling all three parameters by factors $\{0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0\}$ relative to the base values.
+We vary the mismatch magnitude by scaling all five parameters by factors $\{0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0\}$ relative to the base values, evaluating on 3 KAIST scenes (\Cref{fig:sensitivity}).
 
 \textbf{Degradation scales super-linearly.}
-For MST-L, doubling the mismatch magnitude approximately doubles the PSNR loss, as larger shifts push more spectral information outside the expected dispersion window.
+For MST-L, increasing the scale from 0.25$\times$ to 3.0$\times$ drops Scenario~II PSNR from 26.41 to 17.70\,dB.
+PnP-HSICNN shows similar sensitivity (16.77$\to$14.01\,dB), while GAP-TV remains remarkably stable (20.86$\to$20.11\,dB).
 
-\textbf{Calibration benefit increases with mismatch.}
-The gain from calibration (II$\to$III) grows with mismatch severity, as larger mismatches provide stronger gradient signals for the optimizer.
-At scale 3.0$\times$, the benefit is maximized.
+\textbf{Calibration benefit peaks at moderate mismatch.}
+MST-L calibration gain peaks at 0.75$\times$ scale (+6.23\,dB) then decreases at larger scales (+1.29\,dB at 3.0$\times$), as extreme mismatches exceed the grid search range.
+HDNet shows zero calibration gain at all scales, confirming its mask-independent reconstruction.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig6_sensitivity_curves.pdf}
+\caption{Sensitivity to mismatch magnitude. Left: Scenario~II PSNR vs.\ mismatch scale. Right: calibration gain (II$\to$III) vs.\ mismatch scale. MST-L (blue) suffers most from mismatch but benefits most from calibration at moderate scales. HDNet (red) shows zero calibration gain across all scales.}
+\label{fig:sensitivity}
+\end{figure}
 
 \subsection{Ablation Study}
 
-We compare three calibration configurations on MST-L:
+We compare three calibration configurations on MST-L across all 10 KAIST scenes (\Cref{tab:ablation}, \Cref{fig:ablation}):
 \begin{enumerate}
     \item \textbf{Grid only} (Stages 0+1): Coarse estimation without gradient refinement.
     \item \textbf{Grid + Gradient} (Stages 0--2C): Full pipeline (our method).
     \item \textbf{Oracle}: Perfect mismatch knowledge (upper bound).
 \end{enumerate}
 
-The gradient refinement stages provide additional gain beyond grid search alone, confirming that the differentiable pipeline extracts information not accessible through discrete search.
-The improvement is especially pronounced for the coupled parameters ($\Delta y$, $\theta$).
+Grid search alone recovers +3.09\,dB (18.41$\to$21.51), achieving 22\% of the oracle gap.
+The full pipeline (Grid + Gradient) achieves +3.01\,dB (21.42\,dB), comparable to grid-only.
+The gradient refinement does not improve over grid search on average, suggesting that the coarse grid resolution ($\sim$0.75\,px) already captures the dominant mismatch correction at this mismatch level.
+The remaining gap to oracle (32.45\,dB) reflects the GAP-TV proxy solver's limited accuracy during calibration.
+
+\begin{table}[t]
+\centering
+\caption{Ablation study: calibration pipeline components (MST-L on 10 KAIST scenes).}
+\label{tab:ablation}
+\small
+\begin{tabular}{l ccc}
+\toprule
+Configuration & PSNR (dB) & Gain over II & \% Oracle Recovery \\
+\midrule
+No Correction (II) & 18.41 & -- & -- \\
+Alg1 Only (Grid) & 21.51 & +3.09 & 22\% \\
+Alg1+Alg2 (Ours) & 21.42 & +3.01 & 21\% \\
+Oracle (IV) & 32.45 & +14.04 & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig7_ablation.pdf}
+\caption{Ablation study on MST-L: per-scene PSNR for No Correction (II), Grid-only (Alg1), Full pipeline (Alg1+Alg2), and Oracle (IV). Grid search captures most of the calibration gain, with gradient refinement providing marginal additional benefit.}
+\label{fig:ablation}
+\end{figure}
 
 \subsection{Computational Cost}
 
-On a single GPU, per-scene calibration takes approximately 3 minutes, with full 5-method evaluation at $\sim$10.6 minutes:
+On a single GPU, per-scene calibration takes approximately 4.2 minutes, with full 5-method evaluation at $\sim$11.1 minutes:
 \begin{itemize}
-    \item Stages 0+1 (grid search): $\sim$60\,s (942 GPU GAP-TV evaluations)
-    \item Stage 2A--2C (gradient): $\sim$121\,s (190 Adam steps through differentiable solver)
-    \item Reconstruction (5 methods): $\sim$453\,s (GAP-TV, MST-S/L, HDNet, PnP-HSICNN)
+    \item Stages 0+1 (grid search): $\sim$173\,s (942 GPU GAP-TV evaluations)
+    \item Stage 2A--2C (gradient): $\sim$79\,s (190 Adam steps through differentiable solver)
+    \item Reconstruction (5 methods): $\sim$416\,s (GAP-TV, MST-S/L, HDNet, PnP-HSICNN)
 \end{itemize}
-Total calibration averages 180.7$\pm$0.6\,s per scene, indicating stable convergence regardless of scene content.
-This is practical for offline calibration or periodic recalibration in deployed systems.
+Total calibration averages 251.5$\pm$20.9\,s per scene.
+End-to-end processing (calibration + reconstruction) takes 667.9$\pm$144.8\,s per scene, practical for offline calibration or periodic recalibration in deployed systems.
 
 % ============================================================================
 % 6. CONCLUSION
