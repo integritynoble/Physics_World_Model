@@ -1,18 +1,19 @@
 # InverseNet ECCV: CASSI Validation Plan
 
-**Document Version:** 3.0
-**Date:** 2026-02-16
-**Status:** IN PROGRESS -- Updated for Scenario IV naming
-**Purpose:** Comprehensive validation of CASSI reconstruction methods under operator mismatch
+**Document Version:** 4.0
+**Date:** 2026-02-17
+**Status:** IN PROGRESS -- 5-parameter mismatch (mask affine + dispersion)
+**Purpose:** Comprehensive validation of CASSI reconstruction methods under full 5-parameter operator mismatch
 
 ---
 
 ## Executive Summary
 
-This document details the validation framework for CASSI (Coded Aperture Snapshot Spectral Imaging) reconstruction methods in the context of the InverseNet ECCV paper. The benchmark compares **4 reconstruction methods** across **3 scenarios** using **10 KAIST hyperspectral scenes**, evaluating reconstruction quality under realistic operator mismatch without calibration.
+This document details the validation framework for CASSI (Coded Aperture Snapshot Spectral Imaging) reconstruction methods in the context of the InverseNet ECCV paper. The benchmark compares **4 reconstruction methods** across **3 scenarios** using **10 KAIST hyperspectral scenes**, evaluating reconstruction quality under realistic **5-parameter operator mismatch** (mask affine + dispersion) without calibration.
 
 **Key Features:**
 - **3 Scenarios:** I (Ideal), II (Assumed/Baseline), IV (Truth Forward Model / Oracle)
+- **5 Mismatch Parameters:** mask_dx, mask_dy, mask_theta, disp_a1, disp_alpha
 - **4 Methods:** GAP-TV (classical), HDNet, MST-S, MST-L (deep learning)
 - **10 Scenes:** 256x256x28 hyperspectral KAIST dataset
 - **Metrics:** PSNR (dB), SSIM (0-1), SAM (degrees)
@@ -42,23 +43,35 @@ Where:
 
 ### 1.2 Operator Mismatch
 
-In practice, the reconstruction operator `H_assumed` differs from truth `H_true` due to:
+In practice, the reconstruction operator `H_assumed` differs from truth `H_true` due to 5 mismatch factors from W1-W5 analysis (cassi_plan.md):
 
-| Factor | Parameter | Range | Impact |
-|--------|-----------|-------|--------|
-| Mask x-shift | dx | +/-3 px | ~0.12 dB/px |
-| Mask y-shift | dy | +/-3 px | ~0.12 dB/px |
-| Mask rotation | theta | +/-1 deg | ~3.77 dB/degree |
+| Factor | Parameter | Range | Impact (dB) | Source |
+|--------|-----------|-------|-------------|--------|
+| Mask x-shift | mask_dx | [-3, 3] px | 0.12 | W1: mechanical assembly tolerance |
+| Mask y-shift | mask_dy | [-3, 3] px | 0.12 | W1: mechanical assembly tolerance |
+| Mask rotation | mask_theta | [-1, 1] deg | 3.77 | W2: optical bench rotation |
+| Dispersion slope | disp_a1 | [1.95, 2.05] px/band | 5.49 | W4: prism slope / thermal drift |
+| Dispersion angle | disp_alpha | [-1, 1] deg | 7.04 | W5: dispersion axis offset / prism settling |
+
+**Total potential mismatch impact:** ~16.54 dB (sum of all 5 factors at worst case)
+
+**Parameter grouping:**
+- **Group 1 (Mask Affine):** mask_dx, mask_dy, mask_theta -- combined into one affine warp
+- **Group 2 (Dispersion):** disp_a1, disp_alpha -- modify spectral dispersion encoding
 
 ### 1.3 Measurement Generation
 
-For Scenarios II & IV, we inject mismatch into the measurement:
+For Scenarios II & IV, we inject all 5 mismatch parameters into the measurement:
 
 ```
 y_corrupt = H_mismatch(x) + n
 ```
 
-Where H_mismatch applies true misalignment parameters (dx=0.5, dy=0.3, theta=0.1), creating degradation that reconstructors must overcome.
+Where H_mismatch applies:
+- **Mask affine:** dx=0.5 px, dy=0.3 px, theta=0.1 deg (mask misalignment)
+- **Dispersion:** a1=2.02 px/band (2% slope drift), alpha=0.15 deg (axis offset)
+
+This creates degradation from both mask misalignment AND dispersion model error.
 
 ---
 
@@ -71,27 +84,30 @@ Where H_mismatch applies true misalignment parameters (dx=0.5, dy=0.3, theta=0.1
 **Configuration:**
 - **Measurement:** y_ideal from ideal mask (TSA simulation data), no noise
 - **Reconstruction:** Each method using ideal mask
-- **Mismatch:** None (dx=0, dy=0, theta=0)
+- **Mismatch:** None (dx=0, dy=0, theta=0, a1=2.0, alpha=0)
 
 ### Scenario II: Assumed/Baseline (Uncorrected Mismatch)
 
 **Purpose:** Realistic baseline showing degradation from uncorrected operator mismatch
 
 **Configuration:**
-- **Measurement:** y_corrupt with injected mismatch + low noise
-  - Mismatch: dx=0.5 px, dy=0.3 px, theta=0.1 deg
+- **Measurement:** y_corrupt with injected 5-parameter mismatch + low noise
+  - Mask affine: dx=0.5 px, dy=0.3 px, theta=0.1 deg
+  - Dispersion: a1=2.02 px/band (nominal 2.0 + 1% drift), alpha=0.15 deg (axis offset)
   - Noise: Poisson (alpha=100,000) + Gaussian (sigma=0.01)
-- **Reconstruction:** Each method assuming ideal mask (dx=0, dy=0, theta=0)
-- **Key insight:** Methods don't "know" about mismatch, so reconstruction is degraded
+- **Reconstruction:** Each method assuming ideal parameters (dx=0, dy=0, theta=0, a1=2.0, alpha=0)
+- **Key insight:** Methods don't "know" about ANY mismatch (mask OR dispersion), so reconstruction is degraded
 
 ### Scenario IV: Truth Forward Model (Oracle)
 
-**Purpose:** Upper bound for corrupted measurements when true mismatch is known
+**Purpose:** Upper bound for corrupted measurements when all 5 true mismatch parameters are known
 
 **Configuration:**
-- **Measurement:** Same y_corrupt as Scenario II
-- **Reconstruction:** Each method using the TRUE corrupted mask (with mismatch applied)
-- **Key insight:** Shows recovery possible if system were perfectly characterized
+- **Measurement:** Same y_corrupt as Scenario II (all 5 mismatch factors applied)
+- **Reconstruction:** Each method using TRUE parameters:
+  - Mask warped with true (dx=0.5, dy=0.3, theta=0.1)
+  - Dispersion with true (a1=2.02, alpha=0.15)
+- **Key insight:** Shows recovery possible if system were perfectly characterized (all 5 parameters known)
 
 **Note:** Scenario III (operator correction via Algorithms 1 & 2) is intentionally skipped for the InverseNet benchmark, which focuses on reconstruction comparison rather than calibration.
 
@@ -105,27 +121,48 @@ PSNR_I (ideal) > PSNR_IV (oracle) > PSNR_II (baseline)
 For mask-oblivious HDNet: PSNR_IV = PSNR_II (no oracle benefit)
 
 **Gaps quantify:**
-- **Gap I->II:** Mismatch impact (method-dependent)
-- **Gap II->IV:** Oracle recovery (depends on mask-awareness)
+- **Gap I->II:** Full 5-parameter mismatch impact (mask affine + dispersion, method-dependent)
+- **Gap II->IV:** Oracle recovery when all 5 true parameters are known (depends on mask/dispersion-awareness)
 - **Gap IV->I:** Residual noise/solver limitation
 
 ---
 
-## 3. Mismatch Parameters
+## 3. Mismatch Parameters (5 Factors)
 
 ### Injected Mismatch
 
-| Parameter | Value | Rationale |
-|-----------|-------|-----------|
-| dx | 0.5 px | Moderate sub-pixel horizontal shift |
-| dy | 0.3 px | Moderate sub-pixel vertical shift |
-| theta | 0.1 deg | Moderate rotation |
+**Group 1: Mask Affine (W1-W2 factors)**
+
+| Parameter | Value | Range | Impact | Rationale |
+|-----------|-------|-------|--------|-----------|
+| mask_dx | 0.5 px | [-3, 3] px | 0.12 dB | Moderate sub-pixel horizontal shift (mechanical tolerance) |
+| mask_dy | 0.3 px | [-3, 3] px | 0.12 dB | Moderate sub-pixel vertical shift |
+| mask_theta | 0.1 deg | [-1, 1] deg | 3.77 dB | Moderate rotation (optical bench twist) |
+
+**Group 2: Dispersion (W4-W5 factors)**
+
+| Parameter | Value | Range | Impact | Rationale |
+|-----------|-------|-------|--------|-----------|
+| disp_a1 | 2.02 px/band | [1.95, 2.05] | 5.49 dB | 1% drift from nominal (thermal drift on prism slope) |
+| disp_alpha | 0.15 deg | [-1, 1] deg | 7.04 dB | Dispersion axis offset (prism settling after assembly) |
+
+**Combined mismatch impact table (from cassi_plan.md Algorithm 2 estimates):**
+
+| Parameter | Ground Truth | Estimated | Error | Impact (dB) |
+|-----------|-------------|-----------|-------|-------------|
+| mask_dx | in [-3, 3] px | +/-0.05-0.1 px | ~0.1 px | 0.12 |
+| mask_dy | in [-3, 3] px | +/-0.05-0.1 px | ~0.1 px | 0.12 |
+| mask_theta | in [-1, 1] deg | +/-0.02-0.05 deg | ~0.05 deg | 3.77 |
+| disp_a1 | nominal=2.0 | +/-0.001 px/band | ~0.001 | 5.49 |
+| disp_alpha | nominal=0 deg | +/-0.02-0.05 deg | ~0.05 deg | 7.04 |
 
 **Design rationale:**
-- Moderate mismatch from W1-W3 factors (realistic assembly tolerance)
-- Expected impact: ~3-5 dB PSNR degradation
-- Physically realistic: corresponds to sub-pixel mechanical alignment errors at typical pixel pitch
-- Strong enough to show meaningful scenario separation but not so severe that all methods collapse
+- All 5 mismatch factors from W1-W5 analysis are now included
+- Mask affine parameters (dx, dy, theta) capture mechanical assembly tolerance
+- Dispersion parameters (a1, alpha) capture prism/grating optical drift
+- Dispersion mismatch has HIGHER individual impact (5.49 + 7.04 = 12.53 dB) than mask affine (0.12 + 0.12 + 3.77 = 4.01 dB)
+- Selected values are moderate (not worst-case) to show meaningful but realistic degradation
+- Strong enough to demonstrate that dispersion mismatch is the dominant degradation source
 
 ### Noise Model
 
@@ -134,17 +171,20 @@ For mask-oblivious HDNet: PSNR_IV = PSNR_II (no oracle benefit)
 | Photon peak (alpha) | 100,000 | Low noise to isolate mismatch effect |
 | Read noise (sigma) | 0.01 | Minimal read noise |
 
-**Design rationale:** Low noise regime ensures the dominant degradation source is operator mismatch, not photon noise.
+**Design rationale:** Low noise regime ensures the dominant degradation source is operator mismatch (5 parameters), not photon noise.
 
 ### Bounds and Uncertainty
 
-From cassi_plan.md W1-W5 analysis:
+From cassi_plan.md W1-W5 analysis (ALL 5 parameters now active):
 ```
-dx in [-3, 3] px       -> selected 0.5 px (moderate)
-dy in [-3, 3] px       -> selected 0.3 px (moderate)
-theta in [-1, 1] deg   -> selected 0.1 deg (moderate)
-a1 in [1.95, 2.05]     -> not corrected in this benchmark
-alpha in [-1, 1] deg   -> not corrected in this benchmark
+Group 1 (Mask Affine):
+  mask_dx    in [-3, 3] px       -> selected 0.5 px (moderate)
+  mask_dy    in [-3, 3] px       -> selected 0.3 px (moderate)
+  mask_theta in [-1, 1] deg      -> selected 0.1 deg (moderate)
+
+Group 2 (Dispersion):
+  disp_a1    in [1.95, 2.05]     -> selected 2.02 (1% drift from nominal 2.0)
+  disp_alpha in [-1, 1] deg      -> selected 0.15 deg (moderate axis offset)
 ```
 
 ---
@@ -211,28 +251,44 @@ alpha in [-1, 1] deg   -> not corrected in this benchmark
 
 ## 5. Forward Model Specification
 
-### Fast CASSI Forward (Step=2)
+### Fast CASSI Forward (Step=2, with Dispersion Parameters)
 
-**Dispersion model:**
+**Ideal dispersion model (a1=2.0, alpha=0):**
 ```
 y[:, 2k:2k+W] += mask * x[:,:,k]   for k = 0..27
 ```
 
+**Corrupted dispersion model (a1=2.02, alpha=0.15 deg):**
+```
+For band k:
+  shift_k = round(a1 * (k - k_center))                         # Dispersion with modified slope
+  Rotate dispersion axis by alpha degrees                        # Axis offset
+  y[:, shift_k:shift_k+W] += warp(mask, dx, dy, theta) * x[:,:,k]
+```
+
 **Measurement size:** (256, 310) where W_ext = W + (nC-1)*step = 256 + 27*2 = 310
 
-### Mask Handling
+**Dispersion parameter effects:**
+- `disp_a1` controls pixels-per-band shift: nominal=2.0, corrupted=2.02 (cumulative error grows with band index)
+- `disp_alpha` rotates the dispersion axis: nominal=0, corrupted=0.15 deg (creates 2D spectral spread instead of purely horizontal)
+
+### Mask and Dispersion Handling
 
 **Scenario I (Ideal):**
 - Mask source: TSA simulation mask (`TSA_simu_data/mask.mat`)
-- No mismatch: dx=0, dy=0, theta=0
+- No mismatch: dx=0, dy=0, theta=0, a1=2.0, alpha=0
 
 **Scenario II (Baseline):**
-- Measurement: generated with corrupted mask (warped by dx=0.5, dy=0.3, theta=0.1)
-- Reconstruction: uses ideal mask (assumes no mismatch)
+- Measurement: generated with ALL 5 mismatch factors:
+  - Corrupted mask (warped by dx=0.5, dy=0.3, theta=0.1)
+  - Corrupted dispersion (a1=2.02, alpha=0.15 deg)
+- Reconstruction: uses ideal parameters (assumes no mismatch in mask OR dispersion)
 
 **Scenario IV (Oracle):**
 - Measurement: same y_corrupt as Scenario II
-- Reconstruction: uses corrupted mask (true mismatch applied)
+- Reconstruction: uses TRUE mismatch parameters for both mask AND dispersion
+  - Mask: warped with true (dx=0.5, dy=0.3, theta=0.1)
+  - Dispersion: a1=2.02, alpha=0.15 deg
 
 ### Noise Model
 
@@ -275,22 +331,28 @@ Computed per-pixel, averaged over all spatial locations.
 
 ### PSNR Hierarchy (per method)
 
-- **Gap I->II:** 3-5 dB degradation (mismatch impact)
-- **Gap II->IV:** 1-2 dB recovery (solver robustness to known mismatch)
+With all 5 mismatch parameters active (mask affine + dispersion), degradation is significantly larger than mask-only:
+
+- **Gap I->II:** 5-10 dB degradation (combined mask + dispersion mismatch impact)
+- **Gap II->IV:** 3-6 dB recovery (oracle knows all 5 true parameters)
 - **Gap IV->I:** 1-3 dB residual (noise + measurement corruption)
+
+**Note:** Dispersion mismatch (a1, alpha) contributes more degradation than mask affine (dx, dy, theta) due to cumulative error across 28 bands.
 
 ### Method Ranking (all scenarios)
 
-1. **MST-L:** ~36 dB (I), ~32 dB (II), ~33 dB (IV)
-2. **HDNet:** ~35 dB (I), ~31 dB (II), ~32 dB (IV)
-3. **MST-S:** ~34 dB (I), ~30 dB (II), ~31 dB (IV)
-4. **GAP-TV:** ~32 dB (I), ~28 dB (II), ~29 dB (IV)
+1. **MST-L:** ~36 dB (I), ~28 dB (II), ~33 dB (IV)
+2. **HDNet:** ~35 dB (I), ~27 dB (II), ~27 dB (IV) -- mask-oblivious, no oracle benefit
+3. **MST-S:** ~34 dB (I), ~26 dB (II), ~31 dB (IV)
+4. **GAP-TV:** ~32 dB (I), ~24 dB (II), ~29 dB (IV)
 
 ### Key Insights for Paper
 
-- Deep learning methods maintain ~1-2 dB advantage even under mismatch
-- Scenario IV validates that all methods can utilize corrected operators effectively
-- Gap II->IV quantifies solver-level robustness (vs. calibration-level correction in Scenario III)
+- **Dispersion mismatch dominates:** disp_a1 (5.49 dB) and disp_alpha (7.04 dB) have higher individual impact than all 3 mask parameters combined (4.01 dB)
+- Deep learning methods maintain advantage even under 5-parameter mismatch
+- Scenario IV validates that methods can utilize corrected operators for BOTH mask and dispersion
+- Gap II->IV is larger with dispersion mismatch, quantifying the importance of dispersion calibration
+- **Mask-oblivious methods (HDNet):** Scenario IV = Scenario II, as they don't use mask or dispersion parameters in reconstruction
 
 ---
 
@@ -339,6 +401,8 @@ Computed per-pixel, averaged over all spatial locations.
 |--------|-------|
 | Total scenes | 10 KAIST TSA simulated |
 | Total reconstructions | 120 (10 x 3 x 4) |
+| Mismatch parameters | 5 (mask_dx, mask_dy, mask_theta, disp_a1, disp_alpha) |
+| Mismatch values | dx=0.5, dy=0.3, theta=0.1, a1=2.02, alpha=0.15 |
 | Device | NVIDIA CUDA GPU |
 | GAP-TV config | 50 iter, lam=0.01, step=2 |
 | DL models | Pretrained weights, inference only |
@@ -374,5 +438,5 @@ Computed per-pixel, averaged over all spatial locations.
 
 ---
 
-**Document prepared for InverseNet ECCV benchmark -- Version 3.0**
-*Updated 2026-02-16: Scenario IV naming, mismatch params (0.5, 0.3, 0.1)*
+**Document prepared for InverseNet ECCV benchmark -- Version 4.0**
+*Updated 2026-02-17: Full 5-parameter mismatch (mask_dx=0.5, mask_dy=0.3, mask_theta=0.1, disp_a1=2.02, disp_alpha=0.15)*
