@@ -45,7 +45,7 @@ In practice, manufacturing tolerances, assembly errors, and environmental drift 
 Despite this, existing benchmarks evaluate reconstruction methods exclusively under ideal operator assumptions.
 We present \textbf{InverseNet}, a unified benchmark for quantifying operator mismatch degradation and oracle calibration recovery across three compressive imaging modalities: coded aperture snapshot spectral imaging (CASSI), coded aperture compressive temporal imaging (CACTI), and single-pixel camera (SPC).
 Our benchmark evaluates 11 reconstruction methods---spanning classical optimization and deep learning---under a standardized three-scenario protocol: (I)~ideal operator, (II)~mismatched operator, and (III)~oracle-corrected operator.
-Across 27 test scenes and 11 methods, we find that operator mismatch degrades deep learning methods by 10--21\,dB, with mask-aware architectures both the most sensitive and the most recoverable through calibration (up to 75\% recovery for CASSI, 90\% for SPC).
+Across 27 test scenes and 11 methods, we find that operator mismatch degrades deep learning methods by 10--21\,dB, with mask-aware architectures both the most sensitive and the most recoverable through calibration (up to 47\% recovery for CASSI, 90\% for SPC).
 Classical methods show greater robustness but lower peak quality.
 We release all reconstruction arrays, metrics, and figure-generation code to support reproducible research in operator-aware computational imaging.
 
@@ -63,7 +63,7 @@ This paradigm underlies diverse modalities including hyperspectral imaging via c
 In all cases, reconstruction quality depends critically on knowledge of the forward measurement operator---the mapping from scene to measurements.
 
 In practice, the assumed forward operator inevitably differs from the true physical operator.
-For CASSI systems, mask misalignment of even 0.5 pixels and 0.1$^\circ$ rotation between the coded aperture and the detector can degrade peak signal-to-noise ratio (PSNR) by over 10\,dB~\cite{wagadarikar2008cassi}.
+For CASSI systems, mask misalignment of even 0.5 pixels and 0.1$^\circ$ rotation, combined with dispersion slope drift of 1\% and axis offset of 0.15$^\circ$, can degrade peak signal-to-noise ratio (PSNR) by over 13\,dB~\cite{wagadarikar2008cassi}.
 For CACTI, clock drift, duty cycle variations, and detector gain offsets collectively introduce multi-parameter mismatch.
 For single-pixel cameras, gain drift in the digital micromirror device or photodetector causes systematic measurement errors.
 These \textit{operator mismatches} are ubiquitous in deployed systems yet are systematically ignored in reconstruction benchmarks.
@@ -83,7 +83,7 @@ We address this gap with InverseNet, which makes three contributions:
     \item \textbf{Open dataset.} We release all reconstruction arrays, per-scene metrics (PSNR, SSIM, SAM), and analysis code to enable reproducible operator-mismatch research.
 \end{enumerate}
 
-Our key findings include: (a)~operator mismatch degrades deep learning methods by 10--21\,dB while classical methods lose only 0.1--11\,dB; (b)~mask-aware architectures (MST, ELP-Unfolding) are simultaneously the most sensitive to mismatch and the most recoverable through calibration; (c)~mask-oblivious architectures (HDNet) show zero calibration benefit; (d)~CACTI exhibits the most severe mismatch degradation (up to 20.58\,dB) due to its multi-parameter mismatch space.
+Our key findings include: (a)~operator mismatch degrades deep learning methods by 10--21\,dB while classical methods lose only 0.1--11\,dB; (b)~mask-aware architectures (MST, ELP-Unfolding) are simultaneously the most sensitive to mismatch and the most recoverable through calibration; (c)~mask-oblivious architectures (HDNet) show zero calibration benefit; (d)~CACTI exhibits the most severe mismatch degradation (up to 20.58\,dB) due to its multi-parameter mismatch space; (e)~dispersion mismatch in CASSI creates larger degradation than mask spatial mismatch alone, with limited oracle recoverability due to fixed-step architectural assumptions.
 
 % ============================================================================
 % 2. RELATED WORK
@@ -155,12 +155,12 @@ The measurement at pixel $(i, j)$ is:
 where $d(\lambda)$ is the dispersion shift for spectral band $\lambda$ and $W' = W + (\Lambda - 1) \cdot s$ with dispersion step $s$.
 
 \paragraph{Mismatch model.}
-We model CASSI operator mismatch as a 3-parameter spatial perturbation of the coded aperture mask:
+We model CASSI operator mismatch as a 5-parameter perturbation combining mask misalignment and dispersion drift:
 \begin{equation}
-    \mathbf{\Phi} = \mathcal{T}(dx, dy, \theta) \circ \hat{\mathbf{\Phi}},
+    \mathbf{\Phi} = \mathcal{D}(a_1, \alpha) \circ \mathcal{T}(dx, dy, \theta) \circ \hat{\mathbf{\Phi}},
 \end{equation}
-where $dx, dy$ are subpixel translational shifts and $\theta$ is a rotational misalignment.
-We use $dx = 0.5$\,px, $dy = 0.3$\,px, $\theta = 0.1^\circ$, representing moderate assembly tolerances.
+where $dx, dy$ are subpixel translational shifts, $\theta$ is a rotational misalignment of the coded aperture mask, $a_1$ is the dispersion slope (nominal $s = 2.0$\,px/band), and $\alpha$ is the dispersion axis angular offset.
+We use $dx = 0.5$\,px, $dy = 0.3$\,px, $\theta = 0.1^\circ$ for mask misalignment, and $a_1 = 2.02$\,px/band (1\% drift from nominal) and $\alpha = 0.15^\circ$ for dispersion mismatch, representing moderate assembly and optical tolerances.
 
 \paragraph{Reconstruction methods.}
 We evaluate four methods:
@@ -276,7 +276,7 @@ We report three standard image quality metrics:
 
 \begin{table}[t]
 \centering
-\caption{CASSI reconstruction results (10 KAIST scenes, $256 \times 256 \times 28$). PSNR (dB) / SSIM reported as mean $\pm$ std. $\Delta_{\text{deg}}$: degradation (I$\rightarrow$II). $\Delta_{\text{rec}}$: oracle recovery (II$\rightarrow$III). $\rho$: recovery ratio. Best recovery in \best{green}. $^\dagger$Recovery ratio undefined due to near-zero degradation.}
+\caption{CASSI reconstruction results (10 KAIST scenes, $256 \times 256 \times 28$, 5-parameter mismatch). PSNR (dB) / SSIM reported as mean $\pm$ std. $\Delta_{\text{deg}}$: degradation (I$\rightarrow$II). $\Delta_{\text{rec}}$: oracle recovery (II$\rightarrow$III). $\rho$: recovery ratio. Best recovery in \best{green}. $^\dagger$Recovery ratio undefined due to near-zero degradation.}
 \label{tab:cassi}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lcccccc@{}}
@@ -285,46 +285,47 @@ We report three standard image quality metrics:
 \midrule
 GAP-TV~\cite{yuan2016gaptv}
  & 20.37{\scriptsize$\pm$1.84} / .620
- & 20.28{\scriptsize$\pm$1.83} / .602
- & 20.38{\scriptsize$\pm$1.84} / .620
- & 0.08 & 0.09 & N/A$^\dagger$ \\
+ & 20.27{\scriptsize$\pm$1.83} / .598
+ & 20.38{\scriptsize$\pm$1.84} / .619
+ & 0.10 & 0.11 & N/A$^\dagger$ \\
 HDNet~\cite{hu2022hdnet}
  & 34.66{\scriptsize$\pm$2.62} / .970
- & 24.05{\scriptsize$\pm$1.85} / .813
- & 24.05{\scriptsize$\pm$1.85} / .813
- & 10.61 & 0.00 & 0\% \\
+ & 21.88{\scriptsize$\pm$1.72} / .756
+ & 21.88{\scriptsize$\pm$1.72} / .756
+ & 12.78 & 0.00 & 0\% \\
 MST-S~\cite{cai2022mst}
  & 33.98{\scriptsize$\pm$2.50} / .965
- & 24.39{\scriptsize$\pm$2.02} / .827
- & 30.79{\scriptsize$\pm$2.13} / .934
- & 9.59 & 6.40 & 66.7\% \\
+ & 20.99{\scriptsize$\pm$2.08} / .771
+ & 26.28{\scriptsize$\pm$1.88} / .870
+ & 12.99 & 5.29 & 40.7\% \\
 MST-L~\cite{cai2022mst}
  & \textbf{34.81}{\scriptsize$\pm$2.11} / \textbf{.973}
- & 24.23{\scriptsize$\pm$1.97} / .808
- & \textbf{32.22}{\scriptsize$\pm$2.04} / \textbf{.941}
- & 10.58 & \best{7.99} & \best{75.5\%} \\
+ & 20.83{\scriptsize$\pm$2.01} / .744
+ & \textbf{27.33}{\scriptsize$\pm$1.86} / \textbf{.881}
+ & 13.98 & \best{6.50} & \best{46.5\%} \\
 \bottomrule
 \end{tabular}%
 }
 \end{table}
 
 \paragraph{Key findings.}
-The CASSI results reveal a striking dichotomy between mask-aware and mask-oblivious architectures.
-\textbf{MST-L} achieves the best ideal performance (34.81\,dB) and the highest oracle recovery (+7.99\,dB, $\rho = 75.5\%$), making it the optimal choice when calibration is available.
+The CASSI results under the 5-parameter mismatch model reveal a striking dichotomy between mask-aware and mask-oblivious architectures, with dispersion mismatch creating significantly larger degradation than mask spatial mismatch alone.
+\textbf{MST-L} achieves the best ideal performance (34.81\,dB) and the highest oracle recovery (+6.50\,dB, $\rho = 46.5\%$), making it the optimal choice when calibration is available.
+However, the moderate recovery ratio reflects the limitation that current architectures assume fixed integer dispersion steps and cannot fully correct sub-pixel dispersion drift even with oracle mask knowledge.
 \textbf{HDNet}, which processes only the initial spectral estimate without mask input, shows \textit{zero} oracle gain ($\Delta_{\text{rec}} = 0.00$\,dB), confirming that mask-oblivious architectures cannot benefit from operator calibration.
-\textbf{GAP-TV} shows negligible mismatch degradation ($\Delta_{\text{deg}} = 0.08$\,dB) due to its low overall reconstruction quality (20.37\,dB)---the operator mismatch is dominated by the reconstruction noise floor.
-Under Scenario~II (uncorrected mismatch), all deep learning methods converge to a similar performance range (24.05--24.39\,dB), erasing the 10\,dB advantage they hold under ideal conditions.
+\textbf{GAP-TV} shows negligible mismatch degradation ($\Delta_{\text{deg}} = 0.10$\,dB) due to its low overall reconstruction quality (20.37\,dB)---the operator mismatch is dominated by the reconstruction noise floor.
+Under Scenario~II (uncorrected mismatch), all deep learning methods converge to a narrow performance range (20.83--21.88\,dB), erasing the 14\,dB advantage they hold under ideal conditions.
 
 \paragraph{SSIM and SAM analysis.}
 SSIM trends mirror PSNR findings.
-MST-L recovers from 0.808 to 0.941 SSIM under oracle correction, while HDNet remains fixed at 0.813.
-For SAM, MST-L improves from 15.93$^\circ$ (Scenario~II) to 8.22$^\circ$ (Scenario~III), approaching the ideal value of 7.44$^\circ$.
-This indicates that operator mismatch corrupts spectral fidelity, which mask-aware methods can recover.
+MST-L recovers from 0.744 to 0.881 SSIM under oracle correction, while HDNet remains fixed at 0.756.
+For SAM, MST-L improves from 23.92$^\circ$ (Scenario~II) to 11.74$^\circ$ (Scenario~III), compared to the ideal value of 7.44$^\circ$.
+The residual SAM gap (11.74$^\circ$ vs.\ 7.44$^\circ$) reflects the spectral distortion from uncorrected dispersion mismatch, which mask-only oracle correction cannot fully address.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.85\textwidth]{figures/cassi/gap_comparison.png}
-\caption{CASSI mismatch degradation (left, $\Delta_{\text{deg}}$) and oracle recovery (right, $\Delta_{\text{rec}}$) per method. HDNet shows zero recovery due to its mask-oblivious architecture. MST-L achieves the highest recovery (+7.99\,dB), demonstrating the value of mask-aware reconstruction when calibration is available.}
+\caption{CASSI mismatch degradation (left, $\Delta_{\text{deg}}$) and oracle recovery (right, $\Delta_{\text{rec}}$) per method under 5-parameter mismatch. HDNet shows zero recovery due to its mask-oblivious architecture. MST-L achieves the highest recovery (+6.50\,dB), though the moderate recovery ratio (46.5\%) reflects the difficulty of correcting dispersion mismatch with current fixed-step architectures.}
 \label{fig:cassi_gap}
 \end{figure}
 
@@ -438,7 +439,7 @@ This is consistent with the multiplicative nature of gain drift, which affects a
 \toprule
 \textbf{Modality} & \textbf{Mismatch dim.} & $\boldsymbol{\Delta}_{\textbf{deg}}$ \textbf{range} & $\boldsymbol{\Delta}_{\textbf{rec}}$ \textbf{range} & $\boldsymbol{\rho}_{\textbf{best}}$ & \textbf{Best method} \\
 \midrule
-CASSI  & 3 & 0.08--10.61 & 0.00--7.99 & 75.5\% & MST-L \\
+CASSI  & 5 & 0.10--13.98 & 0.00--6.50 & 46.5\% & MST-L \\
 CACTI  & 8 & 10.94--20.58 & 10.21--13.96 & 93.3\% & GAP-TV \\
 SPC    & 1 & 9.55--12.83 & 7.71--10.38 & 89.6\% & HATNet \\
 \bottomrule
@@ -447,15 +448,17 @@ SPC    & 1 & 9.55--12.83 & 7.71--10.38 & 89.6\% & HATNet \\
 
 \begin{table}[t]
 \centering
-\caption{Mismatch parameters per modality. CASSI: mask spatial misalignment. CACTI: spatial + temporal + radiometric mismatch (8 parameters). SPC: multiplicative gain drift.}
+\caption{Mismatch parameters per modality. CASSI: mask spatial misalignment + dispersion drift (5 parameters). CACTI: spatial + temporal + radiometric mismatch (8 parameters). SPC: multiplicative gain drift.}
 \label{tab:mismatch_params}
 \begin{tabular}{@{}llll@{}}
 \toprule
 \textbf{Modality} & \textbf{Parameter} & \textbf{Value} & \textbf{Physical interpretation} \\
 \midrule
-\multirow{3}{*}{CASSI} & $dx$ & 0.5\,px & Horizontal mask shift \\
+\multirow{5}{*}{CASSI} & $dx$ & 0.5\,px & Horizontal mask shift \\
  & $dy$ & 0.3\,px & Vertical mask shift \\
  & $\theta$ & $0.1^\circ$ & Mask rotation \\
+ & $a_1$ & 2.02\,px/band & Dispersion slope (nominal 2.0) \\
+ & $\alpha$ & $0.15^\circ$ & Dispersion axis offset \\
 \midrule
 \multirow{8}{*}{CACTI} & $dx$ & 0.5\,px & Horizontal mask shift \\
  & $dy$ & 0.3\,px & Vertical mask shift \\
@@ -473,13 +476,15 @@ SPC    & 1 & 9.55--12.83 & 7.71--10.38 & 89.6\% & HATNet \\
 \end{table}
 
 \paragraph{Mismatch severity ranking.}
-CACTI suffers the most severe degradation (10.94--20.58\,dB), followed by SPC (9.55--12.83\,dB) and CASSI (0.08--10.61\,dB).
-The CACTI severity is driven by its high-dimensional mismatch space (8~parameters vs.\ 3 for CASSI and effectively 1 for SPC), where spatial, temporal, and radiometric errors compound.
-For CASSI, the wide range reflects the architectural divide: GAP-TV's low baseline quality makes it insensitive (0.08\,dB), while mask-aware deep networks lose over 10\,dB.
+CACTI suffers the most severe degradation (10.94--20.58\,dB), followed by CASSI (0.10--13.98\,dB) and SPC (9.55--12.83\,dB).
+The CACTI severity is driven by its high-dimensional mismatch space (8~parameters vs.\ 5 for CASSI and effectively 1 for SPC), where spatial, temporal, and radiometric errors compound.
+With the 5-parameter mismatch model, CASSI now surpasses SPC in maximum degradation, driven by the dispersion parameters ($a_1$, $\alpha$) which create cumulative sub-pixel shifts across spectral bands.
+For CASSI, the wide range reflects the architectural divide: GAP-TV's low baseline quality makes it insensitive (0.10\,dB), while mask-aware deep networks lose over 13\,dB.
 
 \paragraph{Recovery potential.}
-The best recovery ratio varies by modality: GAP-TV achieves 93.3\% on CACTI, HATNet achieves 89.6\% on SPC, and MST-L achieves 75.5\% on CASSI.
-This suggests that the recovery potential depends on both the method architecture and the mismatch structure.
+The best recovery ratio varies by modality: GAP-TV achieves 93.3\% on CACTI, HATNet achieves 89.6\% on SPC, and MST-L achieves 46.5\% on CASSI.
+The lower CASSI recovery ratio reflects the fundamental challenge of dispersion mismatch: current architectures assume fixed integer dispersion steps ($s = 2$\,px/band) and cannot adapt to the true dispersion slope ($a_1 = 2.02$\,px/band) even when oracle mask knowledge is provided.
+This suggests that the recovery potential depends on both the method architecture and the mismatch structure, with dispersion-type mismatches being significantly harder to correct than spatial mismatches alone.
 Notably, the best-recovering method is not always the one with the highest ideal performance---a finding with practical implications for system design.
 
 \paragraph{Architectural patterns.}
@@ -497,7 +502,7 @@ This three-way classification provides a practical taxonomy for selecting recons
 
 \paragraph{Classical vs.\ deep learning robustness.}
 A consistent finding across all modalities is that classical optimization methods are more robust to operator mismatch than deep learning methods.
-GAP-TV loses only 0.08\,dB on CASSI and 10.94\,dB on CACTI (vs.\ 10.58\,dB and 20.58\,dB for the best deep networks).
+GAP-TV loses only 0.10\,dB on CASSI and 10.94\,dB on CACTI (vs.\ 13.98\,dB and 20.58\,dB for the best deep networks).
 However, this robustness comes at the cost of significantly lower ideal performance (20.37\,dB vs.\ 34.81\,dB on CASSI).
 The practical implication is that when calibration is unavailable or imperfect, classical methods may outperform deep learning: on CACTI Scenario~II, GAP-TV (15.81\,dB) outperforms PnP-FFDNet (11.43\,dB) by 4.38\,dB despite being 2.53\,dB worse under ideal conditions.
 
@@ -505,7 +510,7 @@ The practical implication is that when calibration is unavailable or imperfect, 
 Our results reveal that reconstruction methods exist on a spectrum of mask-awareness:
 \begin{itemize}
     \item \textit{Mask-oblivious} (HDNet): The mask is not an input; reconstruction quality depends only on the measurement. No calibration benefit is possible ($\rho = 0\%$).
-    \item \textit{Mask-conditioned} (MST-S, MST-L, HATNet): The mask explicitly conditions the reconstruction network. These methods achieve high calibration gains ($\rho = 67$--$90\%$) but suffer the largest mismatch degradation.
+    \item \textit{Mask-conditioned} (MST-S, MST-L, HATNet): The mask explicitly conditions the reconstruction network. These methods achieve moderate-to-high calibration gains ($\rho = 41$--$90\%$) but suffer the largest mismatch degradation. The recovery ratio depends on mismatch type: spatial mask mismatch is highly recoverable (SPC HATNet: 90\%), while dispersion mismatch limits recovery (CASSI MST-L: 47\%).
     \item \textit{Operator-iterative} (GAP-TV, FISTA-TV): The forward operator is used in each optimization iteration. These methods achieve moderate-to-high recovery ratios ($\rho = 81$--$93\%$) with moderate ideal performance.
 \end{itemize}
 
@@ -514,16 +519,18 @@ This taxonomy has design implications: mask-conditioned architectures are optima
 \paragraph{Oracle recovery as calibration upper bound.}
 Scenario~III provides the upper bound for calibration benefit, achievable only with perfect knowledge of the true operator.
 In practice, calibration algorithms estimate the mismatch parameters with finite precision, so the actual calibration gain will be less than $\Delta_{\text{rec}}$.
-The large recovery values we observe (up to 13.96\,dB for CACTI, 10.38\,dB for SPC, 7.99\,dB for CASSI) strongly motivate the development of practical calibration methods, even if they recover only a fraction of the oracle bound.
+The large recovery values we observe (up to 13.96\,dB for CACTI, 10.38\,dB for SPC, 6.50\,dB for CASSI) strongly motivate the development of practical calibration methods, even if they recover only a fraction of the oracle bound.
+The CASSI results further suggest that dispersion-aware reconstruction architectures---which can adapt their spectral shifting to the true dispersion parameters---could significantly improve recovery beyond the 46.5\% achieved by current fixed-step methods.
 
 \paragraph{Residual gap analysis.}
-The residual gap $\Delta_{\text{res}} = \text{PSNR}_{\text{I}} - \text{PSNR}_{\text{III}}$ represents unrecoverable losses due to measurement corruption (noise from the mismatched acquisition).
-For CASSI MST-L, $\Delta_{\text{res}} = 2.59$\,dB; for CACTI GAP-TV, $\Delta_{\text{res}} = 0.74$\,dB; for SPC HATNet, $\Delta_{\text{res}} = 1.20$\,dB.
-These small residual gaps confirm that operator mismatch---not measurement noise---is the dominant degradation source, validating our low-noise experimental design.
+The residual gap $\Delta_{\text{res}} = \text{PSNR}_{\text{I}} - \text{PSNR}_{\text{III}}$ represents unrecoverable losses due to measurement corruption and architectural limitations in the oracle correction.
+For CASSI MST-L, $\Delta_{\text{res}} = 7.48$\,dB; for CACTI GAP-TV, $\Delta_{\text{res}} = 0.74$\,dB; for SPC HATNet, $\Delta_{\text{res}} = 1.20$\,dB.
+The larger CASSI residual gap reflects the dispersion mismatch that oracle mask correction alone cannot address: current architectures (MST, HDNet) use fixed integer dispersion steps, so the 1\% slope drift ($a_1 = 2.02$ vs.\ nominal 2.0\,px/band) creates cumulative sub-pixel errors across 28 spectral bands that persist even with perfect mask knowledge.
+The small residual gaps for CACTI and SPC confirm that for spatial and gain-type mismatches, oracle correction nearly recovers ideal performance.
 
 \paragraph{Method-specific insights.}
 \textbf{HDNet} presents an instructive case: its mask-oblivious architecture processes only the initial spectral estimate (28 channels from the shift-back operation), making it inherently insensitive to the reconstruction mask.
-While this provides stability under mismatch (24.05\,dB in both Scenarios~II and III), it permanently forfeits the 10.61\,dB that calibration could recover.
+While this provides stability under mismatch (21.88\,dB in both Scenarios~II and III), it permanently forfeits the 12.78\,dB that calibration could recover.
 \textbf{EfficientSCI} on CACTI reveals that state-of-the-art performance under ideal conditions can be a liability: its 35.39\,dB ideal performance drops to 14.81\,dB under mismatch, a 20.58\,dB loss that is only 61.1\% recoverable.
 This suggests that EfficientSCI encodes strong implicit assumptions about the CACTI operator that extend beyond what oracle mask knowledge can correct.
 
@@ -536,7 +543,7 @@ This suggests that EfficientSCI encodes strong implicit assumptions about the CA
 We have presented InverseNet, the first cross-modality benchmark for operator mismatch in compressive imaging.
 By evaluating 11 reconstruction methods across CASSI, CACTI, and SPC under a standardized three-scenario protocol, we establish several key findings:
 (1)~operator mismatch degrades deep learning methods by 10--21\,dB, collapsing the performance advantage over classical methods;
-(2)~mask-aware architectures can recover 65--90\% of mismatch losses through oracle calibration;
+(2)~mask-aware architectures can recover 40--90\% of mismatch losses through oracle calibration, with recovery depending on mismatch type;
 (3)~mask-oblivious architectures provide mismatch stability at the cost of zero calibration benefit;
 (4)~CACTI's high-dimensional mismatch space creates the most severe degradation across modalities.
 
@@ -550,6 +557,7 @@ The benchmark is extensible: new modalities, methods, and mismatch models can be
 
 \textbf{Future directions.}
 InverseNet evaluates oracle (perfect) calibration; a natural extension is to benchmark practical calibration algorithms, measuring how close they come to the oracle bound.
+Our CASSI results highlight a specific opportunity: dispersion-aware architectures that parameterize the spectral shift function (rather than assuming fixed integer steps) could significantly improve recovery from dispersion mismatch.
 Additionally, incorporating learned robustness through mismatch-aware training could bridge the gap between mask-conditioned and mask-oblivious architectures.
 
 % ============================================================================
