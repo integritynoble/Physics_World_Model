@@ -1,6 +1,6 @@
-# PWM — Physics World Model for Computational Imaging
+# PWM — Physics World Model for Imaging System Autonomy
 
-PWM is an open, reproducible **physics + reconstruction + diagnosis** toolkit for computational imaging.
+PWM is an open, reproducible **physics + reconstruction + diagnosis** toolkit that aims to make any imaging system **self-specifying, self-diagnosing, and self-correcting**.
 
 It turns **either**:
 - a **natural-language prompt** ("SIM live-cell, low dose, 9 frames...") **or**
@@ -9,12 +9,14 @@ It turns **either**:
 
 into a fully reproducible run:
 
-**Prompt/Spec -> PhysicsState + WorldStates -> (Sim or Load) y -> (Fit operator theta) -> Reconstruct x_hat -> Diagnose -> Recommend actions -> RunBundle + Viewer**
+**Prompt/Spec -> OperatorGraph -> (Sim or Load) y -> (Fit operator theta) -> Reconstruct x_hat -> TriadReport -> RunBundle**
 
 PWM is designed to be:
 - **Public and extensible** (plugins, CasePacks, dataset adapters)
 - **Deterministic by default** (bounded search, reproducible seeds)
+- **Audit-grade** (every run produces a RunBundle with TriadReport, decision records, and uncertainty estimates)
 - **Embeddable** into agent systems like **AI_Scientist** (via `pwm_AI_Scientist`)
+- **Evaluated by LIP-Arena** (Live Imaging Physics Arena) -- a prospective, blinded, adversarial targeting system (see `docs/targeting_system.md`)
 
 ---
 
@@ -45,7 +47,28 @@ See `pwm_core/graph/tier_policy.py` and `tests/test_tier_policy.py`.
 
 ## What PWM can do
 
-### 1) Prompt-driven simulation + reconstruction
+PWM operates in two modes. Each mode hosts two LIP-Arena evaluation tracks (see `docs/targeting_system.md`):
+
+| Mode | Input | LIP-Arena Tracks | ISA Capability |
+|------|-------|-----------------|----------------|
+| **1. Prompt-driven simulation + reconstruction** | Natural-language prompt or ExperimentSpec | **Track 4 (Design):** requirements -> robust OperatorGraph | Self-specify |
+| | | **Track 2 (Diagnose):** Triad gate attribution under shift | Self-diagnose |
+| **2. Operator correction** | Measured `y` + operator/matrix `A` | **Track 1 (Correct):** infer $\hat{H}$, correct mismatch, reconstruct | Self-correct |
+| | | **Track 3 (No-GT):** correct without ground truth via consistency + invariants | Self-correct (blind) |
+
+Every run in both modes produces the four mandatory ISA artifacts:
+- **Reconstruction** $\hat{x}$
+- **Operator estimate** $\hat{\theta} \pm \sigma_\theta$ with identifiability flags
+- **TriadReport** (dominant gate attribution + evidence + recommended action)
+- **RunBundle** (full audit trail with DR-IS decision records)
+
+---
+
+### 1) Prompt-driven simulation + reconstruction (LIP-Arena Tracks 2 + 4)
+
+**Track 4 (Design):** Given requirements (prompt or spec), PWM selects the optimal modality, compiles an OperatorGraph, and predicts performance bounds -- scored on constraint satisfaction, Pareto efficiency, robustness margin, and calibration cost.
+
+**Track 2 (Diagnose):** After reconstruction, PWM attributes failure to the dominant Triad gate (sampling, noise, or operator mismatch) -- scored on attribution accuracy, evidence quality, and robustness under gate-flip scenarios.
 
 PWM supports **64 validated imaging modalities** with prompt-driven workflows:
 
@@ -96,12 +119,17 @@ Each modality includes:
 - **Solver portfolio** (classical + PnP + neural methods)
 - **Diagnosis + actionable recommendations**
 
-### 2) Operator correction mode (measured `y` + operator/matrix `A`)
+### 2) Operator correction mode (measured `y` + operator/matrix `A`) (LIP-Arena Tracks 1 + 3)
+
+**Track 1 (Correct):** Given measurement `y` and nominal operator `H_nom` with unknown mismatch, PWM infers the effective operator, corrects mismatch parameters, and reconstructs -- scored on recovery ratio, parameter recovery, uncertainty calibration, tail-risk performance, and compute efficiency (RoIC).
+
+**Track 3 (No-GT):** When ground truth is unavailable (the realistic deployment case), PWM corrects using self-consistency (re-projection error), physical invariants (energy conservation, spectral smoothness), and held-out measurement channels -- ensuring correction works in real laboratories, not just simulations.
 
 For real experiments where the forward model is imperfect, PWM can:
 - **fit/correct** forward-model parameters (theta) with a bounded calibration loop
 - reconstruct with the corrected operator
-- export a reproducible **RunBundle** including calibration trajectory and evidence
+- output a **TriadReport** attributing failure to sampling, noise, or operator mismatch
+- export a reproducible **RunBundle** including calibration trajectory, DR-IS decision records, and uncertainty estimates
 
 **16 modalities support operator correction**, all verified with >0.5 dB improvement:
 
@@ -181,6 +209,8 @@ pwm/
   README.md
   LICENSE
   docs/
+    purpose.md            # Stage 1 purpose: Imaging System Autonomy
+    targeting_system.md   # LIP-Arena: Live Imaging Physics Arena
     plan.md               # Master plan v3 (hardened, fully implemented)
     spec_v0.2.1.md
     runbundle_format.md
@@ -367,7 +397,24 @@ See: `docs/spec_v0.2.1.md`.
 
 ## Operator correction mode: measured y + A -> fit/correct operator -> reconstruct
 
-This mode is for real experiments where the forward model is imperfect.
+This mode is for real experiments where the forward model is imperfect. It implements the core ISA loop:
+
+1. **Infer** the effective operator $\hat{H}$ from measurements
+2. **Diagnose** the dominant Triad gate (sampling / noise / operator mismatch)
+3. **Correct** via minimal feasible intervention
+4. **Verify** via re-projection consistency and physical invariants
+5. **Export** RunBundle with full decision trail
+
+**4-Scenario Evaluation Protocol** (used for all validated modalities):
+
+| Scenario | Measurement | Reconstruction Operator | Purpose |
+|----------|-------------|------------------------|---------|
+| I (Ideal) | True H | True H | Oracle upper bound |
+| II (Assumed) | True H | Nominal H_nom | Mismatch impact baseline |
+| III (Corrected) | True H | Calibrated H_hat | Calibration benefit |
+| IV (Oracle Mask) | True H | Partial oracle | Partial upper bound |
+
+**Key metric:** Recovery ratio $\rho$ = (PSNR_III - PSNR_II) / (PSNR_I - PSNR_II)
 
 ### Supported modalities for calibration (16 tested)
 
