@@ -267,6 +267,7 @@ Its small calibration gain (+0.06\,dB) confirms that the learned prior dominates
 The ADMM-based plug-and-play method recovers +2.21\,dB (14.92$\to$17.13), with its oracle gain of +5.97\,dB demonstrating strong mask-dependence.
 
 \Cref{fig:scenario_comparison} visualizes the PSNR distribution across scenarios and methods.
+\Cref{fig:visual_comparison} shows qualitative reconstructions for MST-L and HDNet on Scene~1: MST-L exhibits severe artefacts under mismatch (Sc.~II, 20.8\,dB) that are substantially reduced by calibration (Sc.~III, 24.5\,dB), whereas HDNet maintains consistent quality across all scenarios ($\sim$25.7\,dB), confirming the mask-sensitivity spectrum.
 
 \begin{figure}[t]
 \centering
@@ -295,6 +296,13 @@ PnP-HSICNN & 21.70$\pm$6.16 & 14.92$\pm$2.28 & 17.13$\pm$3.15 & 20.89$\pm$4.51 &
 \end{tabular}
 \vspace{-2mm}
 \end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig4_visual_comparison.pdf}
+\caption{Qualitative comparison on Scene~1 (KAIST). \textbf{Top two rows}: MST-L reconstructions (pseudo-RGB and per-pixel MAE). Mismatch (Sc.~II) causes severe artefacts (20.8\,dB); calibration (Sc.~III) recovers +3.7\,dB; oracle (Sc.~IV) reaches 28.0\,dB. \textbf{Bottom two rows}: HDNet reconstructions remain visually consistent across scenarios ($\sim$25.7\,dB), confirming its mask-oblivious robustness. Error maps share a common colorbar (MAE scale 0--0.16).}
+\label{fig:visual_comparison}
+\end{figure}
 
 \subsection{Parameter Recovery}
 
