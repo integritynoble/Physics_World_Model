@@ -384,7 +384,7 @@ class Harness:
 
         spec = GraphCompiler.from_dict(spec_data)
 
-        # Sandbox: override to tiny shapes
+        # Sandbox: override to tiny shapes and propagate to primitive params
         if self.sandbox:
             meta = spec.metadata.copy()
             orig_x = tuple(meta.get("x_shape", [64, 64]))
@@ -392,6 +392,18 @@ class Harness:
             sandbox_x = tuple(min(d, 32) for d in orig_x)
             sandbox_y = tuple(min(d, 32) for d in tuple(meta.get("y_shape", list(orig_x))))
             x_shape = x_shape or sandbox_x
+
+            # Propagate sandbox spatial dims to primitive params that
+            # hardcode H/W (e.g. coded_mask). Without this, the mask
+            # shape (64x64) mismatches the sandbox scene shape (32x32).
+            sb_h, sb_w = x_shape[0], x_shape[1] if len(x_shape) > 1 else x_shape[0]
+            for node in spec.nodes:
+                if node.params:
+                    if "H" in node.params:
+                        node.params["H"] = sb_h
+                    if "W" in node.params:
+                        node.params["W"] = sb_w
+
             return self.compiler.compile(spec, x_shape=x_shape, y_shape=sandbox_y)
 
         return self.compiler.compile(spec, x_shape=x_shape)
