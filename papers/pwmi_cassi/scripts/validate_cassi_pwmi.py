@@ -389,8 +389,9 @@ def cassi_adjoint_parametric(y: np.ndarray, mask: np.ndarray,
 
 def _gap_tv_parametric(y: np.ndarray, mask: np.ndarray,
                        a1: float = 2.0, alpha: float = 0.0,
-                       n_iter: int = 50, lam: float = 0.5,
+                       n_iter: int = 100, lam: float = 0.1,
                        accelerate: bool = True,
+                       tv_max_iter: int = 5,
                        ) -> np.ndarray:
     """GAP-TV solver using the parametric (a1, alpha) forward/adjoint.
 
@@ -454,6 +455,7 @@ def _gap_tv_parametric(y: np.ndarray, mask: np.ndarray,
 
         x = x + cassi_adjoint_parametric(norm_r, mask, H, W, nC, a1, alpha)
         x = denoise_tv_chambolle(np.clip(x, 0, None), weight=lam,
+                                 max_num_iter=tv_max_iter,
                                  channel_axis=2).astype(np.float32)
 
     return np.clip(x, 0, 1).astype(np.float32)
@@ -564,14 +566,15 @@ def reconstruct_gap_tv(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0",
     """Reconstruct using GAP-TV with acceleration and parametric dispersion.
 
     Always uses the parametric solver with skimage's denoise_tv_chambolle
-    and Nesterov acceleration (Yuan 2016). TV weight ~0.5 matches the
-    PnP-CASSI reference implementation.
+    and Nesterov acceleration (Yuan 2016). Parameters tuned for step=2
+    grayscale TSA mask: weight=0.1, max_num_iter=5, 100 GAP iterations.
     """
     try:
         H, W = mask.shape
         y_param = _fit_measurement(y, H, W, N_BANDS, a1, alpha)
         return _gap_tv_parametric(y_param, mask, a1=a1, alpha=alpha,
-                                  n_iter=50, lam=0.5, accelerate=True)
+                                  n_iter=100, lam=0.1, accelerate=True,
+                                  tv_max_iter=5)
     except Exception as e:
         logger.warning(f"GAP-TV failed: {e}")
         H = y.shape[0]
@@ -806,9 +809,9 @@ def reconstruct_pnp_hsicnn(y: np.ndarray, mask: np.ndarray,
                            a1: float = 2.0, alpha: float = 0.0) -> np.ndarray:
     """Reconstruct using PnP-HSICNN (GAP + HSI-SDeCNN deep denoiser).
 
-    Uses the GAP framework with Nesterov acceleration matching the
-    PnP-CASSI reference (Zheng et al.):
-    - Iterations 0-82: TV denoising (weight = 130/255 ~= 0.51)
+    Uses the GAP framework with Nesterov acceleration based on
+    PnP-CASSI reference (Yuan et al.), tuned for step=2 grayscale mask:
+    - Iterations 0-82: TV denoising (weight ≈ 0.05, max_num_iter=5)
     - Iterations 83-123: Alternating HSICNN (3 iters) / TV (1 iter)
     - Total: 124 iterations with accumulated residual acceleration
     """
@@ -841,7 +844,7 @@ def reconstruct_pnp_hsicnn(y: np.ndarray, mask: np.ndarray,
 
         _lambda = 1.0
         n_total = 124
-        nsig_tv = 130  # TV weight = nsig/255 (matching reference)
+        nsig_tv = 12.75  # TV weight = nsig/255 ≈ 0.05 (tuned for step=2 grayscale mask)
 
         for k_iter in range(n_total):
             # Forward model: A(x)
@@ -864,6 +867,7 @@ def reconstruct_pnp_hsicnn(y: np.ndarray, mask: np.ndarray,
             else:
                 x = denoise_tv_chambolle(
                     np.clip(x, 0, None), weight=nsig_tv / 255.0,
+                    max_num_iter=5,
                     channel_axis=2).astype(np.float32)
 
         result = np.clip(x, 0, 1).astype(np.float32)
