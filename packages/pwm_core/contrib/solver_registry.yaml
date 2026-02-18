@@ -135,7 +135,7 @@ cassi:
   traditional_cpu:
     name: GAP-TV
     module: pwm_core.recon.gap_tv
-    function: gap_tv_cassi
+    function: run_gap_tv
     params: 0
     gpu: false
   best_quality:
@@ -200,7 +200,7 @@ cacti:
   traditional_cpu:
     name: GAP-TV
     module: pwm_core.recon.gap_tv
-    function: gap_tv_cacti
+    function: run_gap_tv
     psnr_db: 31.93
     params: 0
     gpu: false
