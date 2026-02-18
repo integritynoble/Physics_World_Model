@@ -40,14 +40,13 @@
 % ABSTRACT
 % ============================================================================
 \begin{abstract}
-Compressive imaging systems rely on accurate knowledge of the forward measurement operator for high-quality reconstruction.
-In practice, manufacturing tolerances, assembly errors, and environmental drift introduce mismatch between the assumed and true operators, degrading reconstruction quality by 10--20\,dB.
-Despite this, existing benchmarks evaluate reconstruction methods exclusively under ideal operator assumptions.
-We present \textbf{InverseNet}, a unified benchmark for quantifying operator mismatch degradation and oracle calibration recovery across three compressive imaging modalities: coded aperture snapshot spectral imaging (CASSI), coded aperture compressive temporal imaging (CACTI), and single-pixel camera (SPC).
-Our benchmark evaluates 11 reconstruction methods---spanning classical optimization and deep learning---under a standardized three-scenario protocol: (I)~ideal operator, (II)~mismatched operator, and (III)~oracle-corrected operator.
-Across 27 test scenes and 11 methods, we find that operator mismatch degrades deep learning methods by 10--21\,dB, with mask-aware architectures both the most sensitive and the most recoverable through calibration (up to 47\% recovery for CASSI, 90\% for SPC).
-Classical methods show greater robustness but lower peak quality.
-We release all reconstruction arrays, metrics, and figure-generation code to support reproducible research in operator-aware computational imaging.
+Operator mismatch---the discrepancy between assumed and true forward measurement operators---degrades compressive imaging reconstruction by 10--21\,dB, yet no existing benchmark measures this effect.
+We introduce \textbf{InverseNet}, the first cross-modality benchmark for operator mismatch in compressive imaging, spanning coded aperture snapshot spectral imaging (CASSI), coded aperture compressive temporal imaging (CACTI), and single-pixel camera (SPC).
+InverseNet evaluates 11 reconstruction methods under a standardized three-scenario protocol---ideal~(I), mismatched~(II), and oracle-corrected~(III)---across 27 test scenes and over 240 experiments.
+We discover an inverse performance--robustness relationship: methods achieving the highest ideal PSNR suffer the largest mismatch degradation.
+On CACTI, state-of-the-art EfficientSCI loses 20.58\,dB under mismatch, yet 93\% of this loss is recoverable through oracle calibration via classical GAP-TV.
+We further establish a mask-awareness taxonomy---mask-oblivious architectures show zero calibration benefit ($\rho = 0\%$), while mask-conditioned methods recover 41--90\% of mismatch losses depending on mismatch type.
+All reconstruction arrays, per-scene metrics, and analysis code are publicly released to enable reproducible operator-mismatch research.
 
 \keywords{Compressive imaging \and Operator mismatch \and Calibration \and Benchmark \and Spectral imaging \and Video compressive sensing \and Single-pixel camera}
 \end{abstract}
@@ -69,7 +68,7 @@ For single-pixel cameras, gain drift in the digital micromirror device or photod
 These \textit{operator mismatches} are ubiquitous in deployed systems yet are systematically ignored in reconstruction benchmarks.
 
 \textbf{The benchmark gap.}
-Existing benchmarks for compressive imaging reconstruction---such as the KAIST hyperspectral dataset for CASSI~\cite{choi2017kaist} and the SCI video benchmark for CACTI~\cite{yuan2021snapshot}---assume perfect operator knowledge.
+Existing benchmarks for compressive imaging reconstruction---such as the KAIST hyperspectral dataset for CASSI~\cite{choi2017kaist} and the video compressive sensing benchmark for CACTI~\cite{yuan2021snapshot}---assume perfect operator knowledge.
 Methods are evaluated only under Scenario~I (ideal operator), providing no information about robustness to operator mismatch or the potential benefit of calibration.
 This creates a critical blind spot: a method that achieves state-of-the-art PSNR under ideal conditions may catastrophically fail in practice if it is highly sensitive to operator errors.
 
@@ -95,7 +94,9 @@ Our key findings include: (a)~operator mismatch degrades deep learning methods b
 Classical reconstruction methods for compressive imaging employ convex optimization with sparsity-promoting regularization.
 GAP-TV~\cite{yuan2016gaptv} uses the generalized alternating projection framework with total variation (TV) regularization, applicable to both CASSI and CACTI.
 FISTA~\cite{beck2009fista} and ADMM~\cite{boyd2011admm} provide efficient solvers for $\ell_1$-regularized inverse problems.
-Deep learning methods have dramatically improved reconstruction quality: MST~\cite{cai2022mst} introduces mask-guided spectral transformers for CASSI; HDNet~\cite{hu2022hdnet} uses dual-domain processing; EfficientSCI~\cite{wang2023efficientsci} and ELP-Unfolding~\cite{yang2023elp} target video compressive sensing; ISTA-Net~\cite{zhang2018istanet} and HATNet~\cite{song2023hatnet} address single-pixel imaging.
+Deep learning methods have dramatically improved reconstruction quality: MST~\cite{cai2022mst} introduces mask-guided spectral transformers for CASSI; HDNet~\cite{hu2022hdnet} uses dual-domain processing; DAUHST~\cite{cai2022dauhst} combines deep unfolding with hierarchical spectral transformers; CST~\cite{cai2022cst} leverages cross-stage spectral attention.
+For video compressive sensing, EfficientSCI~\cite{wang2023efficientsci} and ELP-Unfolding~\cite{yang2023elp} achieve state-of-the-art results, while STFormer~\cite{wang2022stformer} introduces spatial-temporal transformers.
+ISTA-Net~\cite{zhang2018istanet} and HATNet~\cite{song2023hatnet} address single-pixel imaging.
 All these methods are developed and evaluated assuming perfect forward operators.
 
 \paragraph{Calibration and operator mismatch.}
@@ -103,11 +104,12 @@ Operator mismatch has been studied in specific modalities but not systematically
 For CASSI, Wagadarikar~et~al.~\cite{wagadarikar2008cassi} identified mask misalignment as a key error source, and subsequent work~\cite{arguello2013cassi_calib} proposed calibration procedures.
 For MRI, the fastMRI benchmark~\cite{zbontar2018fastmri} evaluates undersampling patterns but assumes known coil sensitivities.
 Phase retrieval literature has examined model mismatch in coherent imaging~\cite{elser2003phase}.
+Recent work on robust reconstruction has explored distributional robustness and uncertainty quantification in inverse problems~\cite{adler2018learned}, and plug-and-play methods with convergence guarantees~\cite{ryu2019pnp} provide frameworks for handling model uncertainty.
 However, no prior work provides a unified cross-modality benchmark quantifying both the degradation from mismatch and the recovery potential from calibration.
 
 \paragraph{Reconstruction benchmarks.}
 The KAIST TSA dataset~\cite{choi2017kaist} provides 10 simulated hyperspectral scenes for CASSI evaluation.
-The SCI video benchmark~\cite{yuan2021snapshot} provides grayscale video sequences for CACTI.
+The video compressive sensing benchmark~\cite{yuan2021snapshot} provides grayscale video sequences for CACTI.
 The Set11 dataset~\cite{kulkarni2016reconnet} is standard for single-pixel camera evaluation.
 These benchmarks evaluate reconstruction quality under ideal conditions only.
 InverseNet extends them by introducing controlled operator mismatch and measuring calibration recovery, creating the first cross-modality operator-mismatch benchmark.
@@ -194,10 +196,10 @@ We evaluate four methods:
 \textbf{GAP-TV}~\cite{yuan2016gaptv}: classical iterative with TV regularization;
 \textbf{PnP-FFDNet}~\cite{yuan2020pnp}: plug-and-play with FFDNet denoiser;
 \textbf{ELP-Unfolding}~\cite{yang2023elp}: efficient long-range perception unfolding network (pretrained);
-\textbf{EfficientSCI}~\cite{wang2023efficientsci}: efficient deep learning for SCI (pretrained).
+\textbf{EfficientSCI}~\cite{wang2023efficientsci}: efficient deep learning for snapshot compressive imaging (pretrained).
 
 \paragraph{Dataset.}
-We use 6 standard benchmark videos (\textit{kobe}, \textit{traffic}, \textit{runner}, \textit{drop}, \textit{crash}, \textit{aerial}) at $256 \times 256$ resolution with $B = 8$ temporal frames per snapshot, following the standard SCI evaluation protocol~\cite{yuan2021snapshot}.
+We use 6 standard benchmark videos (\textit{kobe}, \textit{traffic}, \textit{runner}, \textit{drop}, \textit{crash}, \textit{aerial}) at $256 \times 256$ resolution with $B = 8$ temporal frames per snapshot, following the standard video compressive sensing evaluation protocol~\cite{yuan2021snapshot}.
 
 \subsection{SPC: Single-Pixel Camera}
 \label{sec:spc}
@@ -269,9 +271,17 @@ We report three standard image quality metrics:
 \label{fig:scenario_comparison}
 \end{figure}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/visual_comparison.pdf}
+\caption{Qualitative reconstruction comparison across three modalities. Each row shows a representative scene for one modality (CASSI: Scene~1 band~14, MST-L; CACTI: \textit{kobe} frame~4, ELP-Unfolding; SPC: \textit{cameraman}, HATNet). Error maps (jet colormap, same scale per row) highlight how mismatch (Scenario~II) introduces spatially structured artifacts that oracle correction (Scenario~III) largely removes.}
+\label{fig:visual_comparison}
+\end{figure}
+
 \subsection{CASSI Results}
 \label{sec:cassi_results}
 
+\Cref{fig:visual_comparison} provides qualitative examples of reconstruction degradation and recovery across all three modalities.
 \Cref{tab:cassi} presents the CASSI benchmark results across 10 KAIST scenes (\cref{fig:scenario_cassi}).
 
 \begin{table}[t]
@@ -378,7 +388,7 @@ This demonstrates that classical iterative methods, which directly incorporate t
 \textbf{EfficientSCI}, despite achieving the best ideal performance (35.39\,dB), has the lowest recovery ratio (61.1\%), suggesting that its learned features are partially coupled to the ideal operator in ways that oracle mask knowledge cannot fully address.
 
 \paragraph{An inverse relationship.}
-A notable pattern emerges: methods with higher ideal performance suffer larger mismatch degradation and achieve lower recovery ratios.
+A notable pattern emerges, also visible in the cross-modality scatter plot (\cref{fig:rho_scatter}): methods with higher ideal performance suffer larger mismatch degradation and achieve lower recovery ratios.
 EfficientSCI (best ideal: 35.39\,dB) loses 20.58\,dB and recovers 61.1\%; GAP-TV (worst ideal: 26.75\,dB) loses 10.94\,dB and recovers 93.3\%.
 This suggests that higher-capacity learned representations encode stronger implicit assumptions about the operator, making them more fragile when those assumptions are violated.
 
@@ -475,6 +485,13 @@ SPC    & 1 & 9.55--12.83 & 7.71--10.38 & 89.6\% & HATNet \\
 \end{tabular}
 \end{table}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/rho_scatter.pdf}
+\caption{Recovery ratio ($\rho$) vs.\ ideal PSNR (Scenario~I) for all 11 methods across three modalities. Color indicates modality; shape indicates method type (classical, mask-aware, mask-oblivious). An inverse trend is visible: higher-performing methods tend to have lower recovery ratios, suggesting that stronger learned priors create greater operator dependence.}
+\label{fig:rho_scatter}
+\end{figure}
+
 \paragraph{Mismatch severity ranking.}
 CACTI suffers the most severe degradation (10.94--20.58\,dB), followed by CASSI (0.10--13.98\,dB) and SPC (9.55--12.83\,dB).
 The CACTI severity is driven by its high-dimensional mismatch space (8~parameters vs.\ 5 for CASSI and effectively 1 for SPC), where spatial, temporal, and radiometric errors compound.
@@ -482,6 +499,7 @@ With the 5-parameter mismatch model, CASSI now surpasses SPC in maximum degradat
 For CASSI, the wide range reflects the architectural divide: GAP-TV's low baseline quality makes it insensitive (0.10\,dB), while mask-aware deep networks lose over 13\,dB.
 
 \paragraph{Recovery potential.}
+\Cref{fig:rho_scatter} visualizes the recovery ratio versus ideal performance for all methods.
 The best recovery ratio varies by modality: GAP-TV achieves 93.3\% on CACTI, HATNet achieves 89.6\% on SPC, and MST-L achieves 46.5\% on CASSI.
 The lower CASSI recovery ratio reflects the fundamental challenge of dispersion mismatch: current architectures assume fixed integer dispersion steps ($s = 2$\,px/band) and cannot adapt to the true dispersion slope ($a_1 = 2.02$\,px/band) even when oracle mask knowledge is provided.
 This suggests that the recovery potential depends on both the method architecture and the mismatch structure, with dispersion-type mismatches being significantly harder to correct than spatial mismatches alone.
@@ -523,10 +541,17 @@ The large recovery values we observe (up to 13.96\,dB for CACTI, 10.38\,dB for S
 The CASSI results further suggest that dispersion-aware reconstruction architectures---which can adapt their spectral shifting to the true dispersion parameters---could significantly improve recovery beyond the 46.5\% achieved by current fixed-step methods.
 
 \paragraph{Residual gap analysis.}
-The residual gap $\Delta_{\text{res}} = \text{PSNR}_{\text{I}} - \text{PSNR}_{\text{III}}$ represents unrecoverable losses due to measurement corruption and architectural limitations in the oracle correction.
+\Cref{fig:residual_gap} visualizes the residual gap $\Delta_{\text{res}} = \text{PSNR}_{\text{I}} - \text{PSNR}_{\text{III}}$, which represents unrecoverable losses due to measurement corruption and architectural limitations in the oracle correction.
 For CASSI MST-L, $\Delta_{\text{res}} = 7.48$\,dB; for CACTI GAP-TV, $\Delta_{\text{res}} = 0.74$\,dB; for SPC HATNet, $\Delta_{\text{res}} = 1.20$\,dB.
 The larger CASSI residual gap reflects the dispersion mismatch that oracle mask correction alone cannot address: current architectures (MST, HDNet) use fixed integer dispersion steps, so the 1\% slope drift ($a_1 = 2.02$ vs.\ nominal 2.0\,px/band) creates cumulative sub-pixel errors across 28 spectral bands that persist even with perfect mask knowledge.
 The small residual gaps for CACTI and SPC confirm that for spatial and gain-type mismatches, oracle correction nearly recovers ideal performance.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/residual_gap.pdf}
+\caption{Residual gap ($\Delta_{\text{res}} = \text{PSNR}_{\text{I}} - \text{PSNR}_{\text{III}}$) per method, grouped by modality. CASSI exhibits the largest residual gaps due to dispersion mismatch that oracle mask correction alone cannot address. CACTI and SPC residual gaps are small, confirming high recoverability of spatial and gain-type mismatches.}
+\label{fig:residual_gap}
+\end{figure}
 
 \paragraph{Method-specific insights.}
 \textbf{HDNet} presents an instructive case: its mask-oblivious architecture processes only the initial spectral estimate (28 channels from the shift-back operation), making it inherently insensitive to the reconstruction mask.
@@ -559,6 +584,11 @@ The benchmark is extensible: new modalities, methods, and mismatch models can be
 InverseNet evaluates oracle (perfect) calibration; a natural extension is to benchmark practical calibration algorithms, measuring how close they come to the oracle bound.
 Our CASSI results highlight a specific opportunity: dispersion-aware architectures that parameterize the spectral shift function (rather than assuming fixed integer steps) could significantly improve recovery from dispersion mismatch.
 Additionally, incorporating learned robustness through mismatch-aware training could bridge the gap between mask-conditioned and mask-oblivious architectures.
+To prevent overfitting to known test scenes, future InverseNet rounds will include sealed non-public test sets generated after solver submission deadlines, enabling blind evaluation of calibration and reconstruction methods.
+
+\textbf{Broader context.}
+InverseNet serves as the targeting system rail for the Physics World Model (PWM), providing a durable evaluation infrastructure for computational imaging.
+While reconstruction solvers are continuously replaced with improved methods, the three-scenario protocol, scoring formulas, and benchmark datasets remain fixed, ensuring fair longitudinal comparison.
 
 % ============================================================================
 % REFERENCES
@@ -675,6 +705,31 @@ Applied Optics \textbf{52}(10), D12--D21 (2013)
 Wang, Z., Bovik, A.C., Sheikh, H.R., Simoncelli, E.P.:
 Image quality assessment: from error visibility to structural similarity.
 IEEE Transactions on Image Processing \textbf{13}(4), 600--612 (2004)
+
+\bibitem{cai2022dauhst}
+Cai, Y., Lin, J., Wang, H., Yuan, X., Ding, H., Zhang, Y., Timofte, R., Van Gool, L.:
+Degradation-aware unfolding half-shuffle transformer for spectral compressive imaging.
+In: NeurIPS (2022)
+
+\bibitem{cai2022cst}
+Cai, Y., Lin, J., Hu, X., Wang, H., Yuan, X., Zhang, Y., Timofte, R., Van Gool, L.:
+Coarse-to-fine sparse transformer for hyperspectral image reconstruction.
+In: ECCV. pp.~686--704 (2022)
+
+\bibitem{wang2022stformer}
+Wang, L., Cao, M., Zhong, Y., Yuan, X.:
+Spatial-temporal transformer for video snapshot compressive imaging.
+IEEE Transactions on Pattern Analysis and Machine Intelligence \textbf{45}(7), 9072--9089 (2023)
+
+\bibitem{adler2018learned}
+Adler, J., {\"O}ktem, O.:
+Learned primal-dual reconstruction.
+IEEE Transactions on Medical Imaging \textbf{37}(6), 1322--1332 (2018)
+
+\bibitem{ryu2019pnp}
+Ryu, E., Liu, J., Wang, S., Chen, X., Wang, Z., Yin, W.:
+Plug-and-play methods provably converge with properly trained denoisers.
+In: ICML. pp.~5546--5557 (2019)
 
 \end{thebibliography}
 
