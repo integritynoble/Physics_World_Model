@@ -1,0 +1,33 @@
+{
+  "description": "Expected output from registering the example_deconv modality",
+  "steps": [
+    {
+      "step": 1,
+      "command": "pwm evaluate --sandbox --modality example_deconv --solver traditional_cpu",
+      "expected": {
+        "compiles": true,
+        "runs_4_scenarios": true,
+        "rho_range": [0.30, 0.80],
+        "note": "Modality should compile from graph.yaml and run with any registered solver"
+      }
+    },
+    {
+      "step": 2,
+      "command": "pwm contrib check example_deconv --type modality",
+      "expected_checks": [
+        "graph.yaml validates against OperatorGraphSpec",
+        "All referenced primitives exist in PRIMITIVE_REGISTRY",
+        "mismatch.yaml parameters match graph.yaml learnable params",
+        "Registry integrity test passes after insertion",
+        "Sandbox evaluation completes without error"
+      ]
+    }
+  ],
+  "validation": {
+    "graph_compiles": true,
+    "adjoint_available": true,
+    "noise_model_valid": true,
+    "mismatch_sampleable": true,
+    "all_5_registries_consistent": true
+  }
+}

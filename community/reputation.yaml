@@ -1,0 +1,57 @@
+# Contributor Reputation Tracking
+# ================================
+#
+# Tracks contributions, leaderboard positions, and recognition for all
+# PWM contributors. Updated automatically on PR merge via CI.
+#
+# This file is the source of truth for:
+# - Contributor profiles on pwm.ai/contributors
+# - CISP proceedings author lists
+# - Leaderboard attribution
+# - "Top Contributors" recognition
+#
+# Schema:
+#   github:         GitHub handle (required)
+#   name:           Display name
+#   affiliation:    Institution/company
+#   contributions:  Lists of contribution IDs by type
+#   score:          Total accepted contributions count
+#   first_contribution: Date of first accepted PR
+#   leaderboard_positions: Best rho per modality
+#
+# To add yourself: submit a PR adding your entry after your first
+# contribution is merged.
+
+contributors: []
+
+# Example entry (uncomment and fill in after first contribution):
+#
+# - github: "@alice_optics"
+#   name: "Alice Chen"
+#   affiliation: "MIT"
+#   orcid: "0000-0001-2345-6789"
+#   contributions:
+#     solvers: ["pnp_alice_v1"]
+#     calibrators: []
+#     modalities: ["4dstem"]
+#     primitives: ["multislice_v2"]
+#   score: 4
+#   first_contribution: "2026-03-15"
+#   leaderboard_positions:
+#     cassi: 0.82
+#     spc: 0.91
+#   badges:
+#     - "reproducible"
+#     - "cisp-2026-track1-2nd"
+
+# ---- Metadata ----
+
+schema_version: "1.0"
+last_updated: "2026-01-01"
+
+# Automatic update rules:
+# 1. On PR merge (fast-lane): add solver/calibrator to contributor entry
+# 2. On PR merge (review-lane): add modality/primitive to contributor entry
+# 3. On leaderboard update: update leaderboard_positions
+# 4. On CISP results: add CISP badges
+# 5. Score = count of unique accepted contributions

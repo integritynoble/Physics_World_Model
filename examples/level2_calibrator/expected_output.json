@@ -1,0 +1,21 @@
+{
+  "description": "Expected output from running the grid-search calibrator example",
+  "command": "python examples/level2_calibrator/calibrator.py",
+  "expected": {
+    "self_test": {
+      "original_param": 3.5,
+      "true_param": 2.0,
+      "calibrated_param_range": [1.5, 2.5],
+      "note": "Should recover sigma close to 2.0 from initial 3.5"
+    },
+    "scenario_improvement": {
+      "psnr_gain_range": [2.0, 8.0],
+      "note": "Scenario III should improve over Scenario II by this amount (dB)"
+    },
+    "oracle_gap_reduction": {
+      "before_calibration_range": [5.0, 15.0],
+      "after_calibration_range": [1.0, 5.0],
+      "note": "Oracle gap should decrease after calibration"
+    }
+  }
+}

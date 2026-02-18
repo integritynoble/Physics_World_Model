@@ -1,0 +1,32 @@
+# Level 2 Example: Grid-search calibrator configuration
+# Calibrates operator parameters by grid search over perturbations.
+
+calibrator:
+  name: example_grid_search
+  version: "1.0.0"
+  module: examples.level2_calibrator.calibrator
+  function: calibrate_grid_search
+
+parameters:
+  grid_points: 11
+  search_range: [-1.0, 1.0]
+  budget_fraction: 0.9     # use 90% of budget, save 10% margin
+
+# Budget declaration
+budget:
+  wall_clock_s: 60
+  gpu_required: false
+
+# What this calibrator targets
+targets:
+  - parameter_type: blur
+    search_strategy: grid
+  - parameter_type: shift
+    search_strategy: grid
+
+# Registry entry
+registry_entry:
+  calibrator_id: example_grid_search
+  description: "Grid-search over parameter perturbations, minimizing re-projection error"
+  requires_gpu: false
+  typical_runtime_s: 10

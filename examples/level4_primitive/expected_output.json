@@ -1,0 +1,35 @@
+{
+  "description": "Expected output from running the Level 4 primitive example",
+  "adjoint_test": {
+    "command": "python examples/level4_primitive/adjoint_test.py",
+    "expected_output": {
+      "dot_product_test": {
+        "status": "PASS",
+        "max_relative_error_bound": 1e-6,
+        "note": "Verifies <Ax, y> == <x, A^T y>"
+      },
+      "energy_conservation": {
+        "status": "PASS",
+        "max_energy_ratio_bound": 2.0,
+        "note": "Gaussian blur should not amplify energy"
+      },
+      "linearity_test": {
+        "status": "PASS",
+        "max_relative_error_bound": 1e-6,
+        "note": "Verifies A(ax + by) == aA(x) + bA(y)"
+      },
+      "overall": "ALL PASSED"
+    }
+  },
+  "self_test": {
+    "command": "python examples/level4_primitive/primitive.py",
+    "expected_output": "Adjoint test [PASS]: max_rel_err = X.XXe-XX, tol = 1.00e-06"
+  },
+  "contribution_path": {
+    "step_1": "Open RFC issue with physics justification",
+    "step_2": "Pass adjoint_test.py with tol < 1e-6",
+    "step_3": "Pass linearity test (if primitive is linear)",
+    "step_4": "Submit PR to graph/primitives.py (governance lane)",
+    "step_5": "Steward review required"
+  }
+}

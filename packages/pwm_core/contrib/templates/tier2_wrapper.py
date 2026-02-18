@@ -20,6 +20,14 @@ from typing import Any, Dict, Optional, Tuple
 import numpy as np
 
 
+# The Tier2Adapter class is provided by the graph.adapters package.
+# Import it here for convenience so contributors can use this template directly.
+try:
+    from pwm_core.graph.adapters import Tier2Adapter as _Tier2Base
+except ImportError:
+    _Tier2Base = None
+
+
 class Tier2Adapter:
     """Wraps raw physics kernels into valid PrimitiveOps.
 
@@ -32,6 +40,10 @@ class Tier2Adapter:
     - Shape checking and dtype normalization
     - Physics tier tag injection
     - Serialization boilerplate
+
+    NOTE: If pwm_core.graph.adapters is available, prefer using the full
+    adapter directly: ``from pwm_core.graph.adapters import Tier2Adapter``.
+    This template version is self-contained for standalone use.
     """
 
     def __init__(

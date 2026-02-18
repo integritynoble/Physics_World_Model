@@ -1,0 +1,30 @@
+# Level 1 Example: FISTA solver configuration
+# This config produces rho ~0.55 on CASSI with moderate mismatch.
+# Copy and modify for your own solver.
+
+solver:
+  name: example_fista
+  family: proximal
+  version: "1.0.0"
+  module: examples.level1_solver.solver
+  function: run_example_fista
+  supported_modalities: ["*"]  # works on any modality
+
+parameters:
+  iters: 100
+  step_size: 0.01
+  lambda: 0.001
+  momentum: true
+
+# Budget declaration (honest estimate of compute)
+budget:
+  wall_clock_s: 30
+  gpu_required: false
+
+# Registry entry (copy to contrib/solver_registry.yaml to register)
+registry_entry:
+  solver_id: example_fista
+  family: proximal
+  description: "FISTA with L1 proximal and Nesterov momentum"
+  requires_gpu: false
+  typical_runtime_s: 5

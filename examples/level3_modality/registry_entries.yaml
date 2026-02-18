@@ -1,0 +1,59 @@
+# Level 3 Example: Registry entries for a new modality
+#
+# When contributing a new modality, you need entries in 5 registries.
+# This file shows all 5 entries for the example_deconv modality.
+# Copy each section to the corresponding YAML file in contrib/.
+
+# --- 1. modalities.yaml entry ---
+modalities_entry:
+  modality_id: example_deconv
+  family: microscopy
+  description: "Simple 2D deconvolution with Gaussian PSF"
+  graph_template: example_deconv  # matches graph.yaml graph_id
+  x_shape: [64, 64]
+  y_shape: [64, 64]
+  spectral_channels: 1
+  typical_snr_db: 25
+  reference_paper: "N/A (example modality)"
+
+# --- 2. mismatch_db.yaml entry ---
+mismatch_entry:
+  modality: example_deconv
+  parameters:
+    psf_sigma:
+      range: [0.5, 3.0]
+      typical_error: 0.3
+      unit: "pixels"
+      param_type: blur
+      description: "Gaussian PSF width error"
+  severity_weights:
+    psf_sigma: 1.0
+  correction_method: grid_search
+
+# --- 3. photon_db.yaml entry ---
+photon_entry:
+  modality: example_deconv
+  noise_model: poisson_gaussian
+  parameters:
+    peak_photons: 10000.0
+    read_sigma: 0.01
+  snr_range_db: [15, 35]
+
+# --- 4. metrics_db.yaml entry ---
+metrics_entry:
+  modality: example_deconv
+  primary: [psnr, ssim]
+  secondary: [mse, sam]
+  track_specific:
+    correct: [rho, oracle_gap, roic]
+
+# --- 5. solver_registry.yaml entry ---
+# (Only needed if you also contribute a modality-specific solver)
+solver_entry:
+  solver_id: example_deconv_fista
+  family: proximal
+  description: "FISTA tuned for deconvolution"
+  module: examples.level1_solver.solver
+  function: run_example_fista
+  supported_modalities: ["example_deconv", "*"]
+  requires_gpu: false
