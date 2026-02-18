@@ -1,0 +1,38 @@
+# MST-L Baseline (Frozen)
+# Mask-guided Spectral-wise Transformer (Large)
+#
+# Reference: Cai et al., "Mask-guided Spectral-wise Transformer for
+# Efficient Hyperspectral Image Reconstruction" (CVPR 2022)
+#
+# WARNING: This configuration is FROZEN. Do not modify.
+
+name: mst_l
+version: 1.0.0
+family: deep_learning
+solver_type: transformer
+
+parameters:
+  model: mst_l
+  pretrained: true
+  checkpoint: "mst_l_cassi_v1.pth"
+  input_channels: 28
+  output_channels: 28
+  embed_dim: 64
+  num_heads: 8
+  depth: 6
+
+seeds:
+  evaluation: 42
+  scene_generation: 42
+
+supported_modalities:
+  - cassi
+  - cacti
+
+frozen: true
+frozen_date: "2026-02-18"
+frozen_by: "PWM Core Team"
+
+notes: >
+  Deep learning baseline. Requires GPU and pretrained weights.
+  Weights are not included in the repository; download separately.

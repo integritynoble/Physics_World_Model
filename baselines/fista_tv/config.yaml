@@ -1,0 +1,34 @@
+# FISTA-TV Baseline (Frozen)
+# Fast Iterative Shrinkage-Thresholding Algorithm with Total Variation
+#
+# Reference: Beck & Teboulle, "A Fast Iterative Shrinkage-Thresholding
+# Algorithm for Linear Inverse Problems" (SIAM J. Imaging Sci, 2009)
+#
+# WARNING: This configuration is FROZEN. Do not modify.
+
+name: fista_tv
+version: 1.0.0
+family: classical
+solver_type: proximal_gradient
+
+parameters:
+  iters: 300
+  lambda_tv: 0.005
+  lambda_l1: 0.001
+  step_size: 0.01
+  momentum: true
+  restart: true
+  restart_threshold: 0.999
+
+seeds:
+  evaluation: 42
+  scene_generation: 42
+
+supported_modalities:
+  - spc
+  - widefield
+  - cassi
+
+frozen: true
+frozen_date: "2026-02-18"
+frozen_by: "PWM Core Team"

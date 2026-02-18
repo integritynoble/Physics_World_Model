@@ -1,0 +1,31 @@
+{
+  "baseline": "mst_l",
+  "version": "1.0.0",
+  "frozen": true,
+  "scores": {
+    "cassi": {
+      "rho": 0.47,
+      "oracle_gap_db": 12.3,
+      "roic_db_per_gpu_hour": 5.8,
+      "psnr_i_db": 32.1,
+      "psnr_ii_db": 24.5,
+      "psnr_iii_db": 28.1,
+      "n_scenes": 10,
+      "severity": "moderate",
+      "notes": "Lower rho despite higher raw PSNR due to poor calibration transfer"
+    },
+    "cacti": {
+      "rho": null,
+      "oracle_gap_db": null,
+      "roic_db_per_gpu_hour": null,
+      "status": "pending"
+    }
+  },
+  "metadata": {
+    "evaluation_date": "2026-02-18",
+    "harness_version": "1.0.0",
+    "seed": 42,
+    "gpu": "NVIDIA RTX 4090",
+    "notes": "MST-L scores lower rho than classical methods because rho measures calibration-awareness, not raw reconstruction quality"
+  }
+}

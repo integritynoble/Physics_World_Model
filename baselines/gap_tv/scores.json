@@ -1,0 +1,38 @@
+{
+  "baseline": "gap_tv",
+  "version": "1.0.0",
+  "frozen": true,
+  "scores": {
+    "cassi": {
+      "rho": 0.60,
+      "oracle_gap_db": 8.2,
+      "roic_db_per_gpu_hour": 12.5,
+      "psnr_i_db": 32.1,
+      "psnr_ii_db": 24.5,
+      "psnr_iii_db": 29.1,
+      "n_scenes": 10,
+      "severity": "moderate"
+    },
+    "cacti": {
+      "rho": 0.55,
+      "oracle_gap_db": 9.1,
+      "roic_db_per_gpu_hour": 11.0,
+      "psnr_i_db": 30.8,
+      "psnr_ii_db": 23.2,
+      "psnr_iii_db": 27.4,
+      "n_scenes": 10,
+      "severity": "moderate"
+    },
+    "spc": {
+      "rho": null,
+      "oracle_gap_db": null,
+      "roic_db_per_gpu_hour": null,
+      "status": "pending"
+    }
+  },
+  "metadata": {
+    "evaluation_date": "2026-02-18",
+    "harness_version": "1.0.0",
+    "seed": 42
+  }
+}

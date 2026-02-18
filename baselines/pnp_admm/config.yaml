@@ -1,0 +1,38 @@
+# PnP-ADMM Baseline (Frozen)
+# Plug-and-Play ADMM with pretrained denoiser
+#
+# Reference: Chan et al., "Plug-and-Play ADMM for Image Restoration:
+# Fixed-Point Convergence and Applications" (IEEE TCI 2017)
+#
+# WARNING: This configuration is FROZEN. Do not modify.
+
+name: pnp_admm
+version: 1.0.0
+family: plug_and_play
+solver_type: admm
+
+parameters:
+  iters: 50
+  rho_admm: 0.1
+  denoiser: bm3d
+  denoiser_sigma: 0.05
+  warm_start: true
+  adaptive_rho: false
+
+seeds:
+  evaluation: 42
+  scene_generation: 42
+
+supported_modalities:
+  - cassi
+  - spc
+  - widefield
+  - cacti
+
+frozen: true
+frozen_date: "2026-02-18"
+frozen_by: "PWM Core Team"
+
+notes: >
+  Plug-and-Play baseline bridging classical and deep learning.
+  Uses BM3D denoiser (no GPU required for denoiser, but slower).

@@ -1,0 +1,38 @@
+{
+  "baseline": "fista_tv",
+  "version": "1.0.0",
+  "frozen": true,
+  "scores": {
+    "spc": {
+      "rho": 0.81,
+      "oracle_gap_db": 4.3,
+      "roic_db_per_gpu_hour": 18.2,
+      "psnr_i_db": 34.5,
+      "psnr_ii_db": 26.1,
+      "psnr_iii_db": 32.9,
+      "n_scenes": 10,
+      "severity": "moderate"
+    },
+    "widefield": {
+      "rho": 0.78,
+      "oracle_gap_db": 3.8,
+      "roic_db_per_gpu_hour": 22.1,
+      "psnr_i_db": 36.2,
+      "psnr_ii_db": 28.5,
+      "psnr_iii_db": 34.5,
+      "n_scenes": 10,
+      "severity": "moderate"
+    },
+    "cassi": {
+      "rho": null,
+      "oracle_gap_db": null,
+      "roic_db_per_gpu_hour": null,
+      "status": "pending"
+    }
+  },
+  "metadata": {
+    "evaluation_date": "2026-02-18",
+    "harness_version": "1.0.0",
+    "seed": 42
+  }
+}

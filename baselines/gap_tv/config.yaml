@@ -1,0 +1,32 @@
+# GAP-TV Baseline (Frozen)
+# Generalized Alternating Projection with Total Variation regularization
+#
+# Reference: Yuan et al., "Generalized alternating projection based total
+# variation minimization for compressive sensing" (ICIP 2016)
+#
+# WARNING: This configuration is FROZEN. Do not modify.
+
+name: gap_tv
+version: 1.0.0
+family: classical
+solver_type: proximal_gradient
+
+parameters:
+  iters: 200
+  lambda_tv: 0.01
+  step_size: 0.5
+  tv_type: isotropic
+  warm_start: false
+
+seeds:
+  evaluation: 42
+  scene_generation: 42
+
+supported_modalities:
+  - cassi
+  - cacti
+  - spc
+
+frozen: true
+frozen_date: "2026-02-18"
+frozen_by: "PWM Core Team"

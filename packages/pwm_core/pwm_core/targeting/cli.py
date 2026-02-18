@@ -2,7 +2,7 @@
 ==========================
 
 CLI for ``pwm evaluate``, ``pwm scaffold``, ``pwm contrib check``,
-``pwm submit``, and ``pwm install``.
+``pwm submit``, ``pwm install``, ``pwm uninstall``, and ``pwm plugins``.
 
 Usage::
 
@@ -12,6 +12,11 @@ Usage::
     pwm scaffold modality my_modality
     pwm contrib check my_solver
     pwm submit runbundle.zip
+    pwm install https://github.com/alice/my_solver
+    pwm install ./my_solver_dir --tier community
+    pwm uninstall my_solver
+    pwm plugins
+    pwm plugins --tier local
 """
 
 from __future__ import annotations
@@ -161,6 +166,22 @@ def build_parser() -> argparse.ArgumentParser:
     sm = sub.add_parser("submit", help="Submit a RunBundle")
     sm.add_argument("path", help="Path to RunBundle zip or directory")
 
+    # --- install ---
+    ins = sub.add_parser("install", help="Install a solver/calibrator plugin")
+    ins.add_argument("source", help="Git URL or local directory path")
+    ins.add_argument("--type", default="solver", choices=["solver", "calibrator"])
+    ins.add_argument("--tier", default="local", choices=["local", "community"])
+    ins.add_argument("--name", default=None, help="Override plugin name")
+
+    # --- uninstall ---
+    un = sub.add_parser("uninstall", help="Remove an installed plugin")
+    un.add_argument("name", help="Plugin name to remove")
+    un.add_argument("--tier", default="local", choices=["local", "community"])
+
+    # --- plugins ---
+    pl = sub.add_parser("plugins", help="List installed plugins")
+    pl.add_argument("--tier", default=None, choices=["local", "community", "official"])
+
     return parser
 
 
@@ -181,6 +202,15 @@ def main(argv: Optional[list] = None) -> int:
             return 1
     elif args.command == "submit":
         return cmd_submit(args)
+    elif args.command == "install":
+        from pwm_core.targeting.plugin_loader import cmd_install
+        return cmd_install(args)
+    elif args.command == "uninstall":
+        from pwm_core.targeting.plugin_loader import cmd_uninstall
+        return cmd_uninstall(args)
+    elif args.command == "plugins":
+        from pwm_core.targeting.plugin_loader import cmd_plugins
+        return cmd_plugins(args)
     else:
         parser.print_help()
         return 0
