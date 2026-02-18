@@ -1,0 +1,25 @@
+{
+  "challenge_version": "1.0.0",
+  "week_id": "2026-W11",
+  "modality": "spc",
+  "casepack_id": "spc_low_sampling_poisson_v1",
+  "primary_metric": "psnr_db",
+  "secondary_metric": "ssim",
+  "reference_metrics": {
+    "psnr_db": 30.90,
+    "ssim": 0.88,
+    "runtime_s": 8.0
+  },
+  "thresholds": {
+    "psnr_db_min": 18.0,
+    "ssim_min": 0.4,
+    "runtime_s_max": 120.0
+  },
+  "data_generation": {
+    "script": "generate_data.py",
+    "seed": 42,
+    "dims": {"H": 64, "W": 64},
+    "sampling_ratio": 0.25,
+    "notes": "Hadamard patterns at 25% sampling with Poisson noise"
+  }
+}

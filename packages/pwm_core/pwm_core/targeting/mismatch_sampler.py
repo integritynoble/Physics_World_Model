@@ -1,0 +1,159 @@
+"""pwm_core.targeting.mismatch_sampler
+=======================================
+
+Sample mismatch parameters from ``contrib/mismatch_db.yaml`` and inject
+them into a compiled GraphOperator to create H_nom.
+"""
+
+from __future__ import annotations
+
+import copy
+import logging
+from pathlib import Path
+from typing import Any, Dict, Optional, Tuple
+
+import numpy as np
+
+logger = logging.getLogger(__name__)
+
+_CONTRIB_DIR = Path(__file__).resolve().parents[2] / "contrib"
+
+
+def _load_yaml(path: Path) -> Dict[str, Any]:
+    """Load a YAML file, trying yaml first."""
+    try:
+        import yaml
+    except ImportError:
+        raise ImportError("PyYAML is required: pip install pyyaml")
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+
+def load_mismatch_db(path: Optional[Path] = None) -> Dict[str, Any]:
+    """Load the mismatch parameter database."""
+    if path is None:
+        path = _CONTRIB_DIR / "mismatch_db.yaml"
+    data = _load_yaml(path)
+    return data.get("modalities", data)
+
+
+def sample_mismatch(
+    modality: str,
+    severity: str = "moderate",
+    rng: Optional[np.random.Generator] = None,
+    mismatch_db: Optional[Dict[str, Any]] = None,
+) -> Dict[str, float]:
+    """Sample mismatch parameters for a modality.
+
+    Parameters
+    ----------
+    modality : str
+        Modality name (e.g., 'cassi', 'widefield').
+    severity : str
+        One of 'mild', 'moderate', 'severe', 'catastrophic'.
+        Controls the range of sampled parameters.
+    rng : numpy Generator, optional
+        Random number generator for reproducibility.
+    mismatch_db : dict, optional
+        Pre-loaded mismatch database. If None, loads from contrib/.
+
+    Returns
+    -------
+    dict
+        Parameter name -> sampled mismatch value.
+    """
+    if rng is None:
+        rng = np.random.default_rng()
+
+    if mismatch_db is None:
+        mismatch_db = load_mismatch_db()
+
+    if modality not in mismatch_db:
+        logger.warning(
+            f"Modality '{modality}' not in mismatch_db. "
+            f"Available: {sorted(mismatch_db.keys())}. "
+            f"Returning empty mismatch."
+        )
+        return {}
+
+    mod_entry = mismatch_db[modality]
+    params = mod_entry.get("parameters", {})
+
+    severity_scale = {
+        "mild": 0.25,
+        "moderate": 0.50,
+        "severe": 1.0,
+        "catastrophic": 2.0,
+    }
+    scale = severity_scale.get(severity, 0.5)
+
+    sampled: Dict[str, float] = {}
+    for pname, pspec in params.items():
+        prange = pspec.get("range", [0, 0])
+        low, high = float(prange[0]), float(prange[1])
+        center = (low + high) / 2.0
+        half_range = (high - low) / 2.0
+
+        # Scale range by severity
+        scaled_low = center - half_range * scale
+        scaled_high = center + half_range * scale
+
+        sampled[pname] = float(rng.uniform(scaled_low, scaled_high))
+
+    return sampled
+
+
+def inject_mismatch(
+    H_true: Any,
+    theta_mismatch: Dict[str, float],
+) -> Any:
+    """Create H_nom by applying mismatch to H_true's parameters.
+
+    Parameters
+    ----------
+    H_true : GraphOperator or GraphOperatorAdapter
+        The true (ideal) operator.
+    theta_mismatch : dict
+        Parameter name -> mismatch value to apply.
+
+    Returns
+    -------
+    H_nom
+        A copy of H_true with mismatched parameters (the nominal operator).
+    """
+    H_nom = copy.deepcopy(H_true)
+
+    # Try GraphOperatorAdapter's set_theta interface
+    if hasattr(H_nom, "set_theta") and hasattr(H_nom, "get_theta"):
+        theta = H_nom.get_theta()
+        for key, val in theta_mismatch.items():
+            # Try direct match
+            if key in theta:
+                theta[key] = val
+            else:
+                # Try node_id.param_name pattern
+                for theta_key in theta:
+                    if theta_key.endswith(f".{key}"):
+                        theta[theta_key] = val
+                        break
+        H_nom.set_theta(theta)
+    elif hasattr(H_nom, "node_map"):
+        # Direct GraphOperator: inject into node params
+        for pname, pval in theta_mismatch.items():
+            for node_id, prim in H_nom.node_map.items():
+                if pname in prim._params:
+                    prim._params[pname] = pval
+    else:
+        logger.warning(
+            "Cannot inject mismatch: operator has no set_theta() or node_map"
+        )
+
+    return H_nom
+
+
+def compute_mismatch_magnitude(theta_mismatch: Dict[str, float]) -> float:
+    """Compute the L2 magnitude of the mismatch vector."""
+    if not theta_mismatch:
+        return 0.0
+    values = np.array(list(theta_mismatch.values()), dtype=np.float64)
+    return float(np.linalg.norm(values))

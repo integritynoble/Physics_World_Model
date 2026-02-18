@@ -1,0 +1,184 @@
+{
+  "description": "CASSI Baseline: All 10 Scenes, No Mismatch Reconstruction",
+  "dataset": "TSA Simulation Benchmark (10 scenes, 256x256x28, step=2 dispersion)",
+  "scenes_loaded": 10,
+  "noise_model": {
+    "poisson_gain": 1000.0,
+    "gaussian_sigma": 5.0
+  },
+  "nominal_parameters": {
+    "mask_dx_px": 0.0,
+    "mask_dy_px": 0.0,
+    "mask_theta_deg": 0.0,
+    "disp_a1": 2.0,
+    "disp_a2": 0.0,
+    "disp_alpha_deg": 0.0,
+    "psf_sigma_px": 0.0
+  },
+  "reconstruction_parameters": {
+    "algorithm": "GAP-TV",
+    "max_iterations": 50,
+    "step_size_lam": 1.0,
+    "tv_weight": 6.0,
+    "tv_iterations": 5
+  },
+  "per_scene_results": {
+    "scene01": {
+      "psnr_db": 10.118153334933403,
+      "ssim": 0.027260684467370233,
+      "sam_deg": 64.31905364990234,
+      "measurement_shape": [
+        256,
+        310
+      ],
+      "gt_shape": [
+        256,
+        256,
+        28
+      ]
+    },
+    "scene02": {
+      "psnr_db": 10.198528989706295,
+      "ssim": 0.025293919112300316,
+      "sam_deg": 67.11461639404297,
+      "measurement_shape": [
+        256,
+        310
+      ],
+      "gt_shape": [
+        256,
+        256,
+        28
+      ]
+    },
+    "scene03": {
+      "psnr_db": 9.216501603999955,
+      "ssim": 0.024650067815313443,
+      "sam_deg": 64.26158142089844,
+      "measurement_shape": [
+        256,
+        310
+      ],
+      "gt_shape": [
+        256,
+        256,
+        28
+      ]
+    },
+    "scene04": {
+      "psnr_db": 10.74039782082796,
+      "ssim": 0.04241089543871033,
+      "sam_deg": 70.23202514648438,
+      "measurement_shape": [
+        256,
+        310
+      ],
+      "gt_shape": [
+        256,
+        256,
+        28
+      ]
+    },
+    "scene05": {
+      "psnr_db": 9.241560128885654,
+      "ssim": 0.02270249153812145,
+      "sam_deg": 60.410552978515625,
+      "measurement_shape": [
+        256,
+        310
+      ],
+      "gt_shape": [
+        256,
+        256,
+        28
+      ]
+    },
+    "scene06": {
+      "psnr_db": 10.030634890657232,
+      "ssim": 0.03565967167856594,
+      "sam_deg": 66.10586547851562,
+      "measurement_shape": [
+        256,
+        310
+      ],
+      "gt_shape": [
+        256,
+        256,
+        28
+      ]
+    },
+    "scene07": {
+      "psnr_db": 9.712653349645727,
+      "ssim": 0.023297690519484323,
+      "sam_deg": 64.81336975097656,
+      "measurement_shape": [
+        256,
+        310
+      ],
+      "gt_shape": [
+        256,
+        256,
+        28
+      ]
+    },
+    "scene08": {
+      "psnr_db": 10.260867113932335,
+      "ssim": 0.03910919557155347,
+      "sam_deg": 67.21257781982422,
+      "measurement_shape": [
+        256,
+        310
+      ],
+      "gt_shape": [
+        256,
+        256,
+        28
+      ]
+    },
+    "scene09": {
+      "psnr_db": 9.654442535094894,
+      "ssim": 0.025957880599098208,
+      "sam_deg": 67.35881042480469,
+      "measurement_shape": [
+        256,
+        310
+      ],
+      "gt_shape": [
+        256,
+        256,
+        28
+      ]
+    },
+    "scene10": {
+      "psnr_db": 9.720296469119534,
+      "ssim": 0.030880715398997543,
+      "sam_deg": 63.95347213745117,
+      "measurement_shape": [
+        256,
+        310
+      ],
+      "gt_shape": [
+        256,
+        256,
+        28
+      ]
+    }
+  },
+  "overall_metrics": {
+    "mean_psnr_db": 9.889403623680298,
+    "mean_ssim": 0.02972232121395153,
+    "mean_sam_deg": 65.5781925201416,
+    "std_psnr_db": 0.449171500135751,
+    "std_ssim": 0.006647032347273177,
+    "std_sam_deg": 2.517678985078681
+  },
+  "comparison_to_published_w1": {
+    "note": "Published W1 GAP-TV results from cassi.md",
+    "published_gap_tv_psnr_db": 14.92,
+    "published_gap_tv_ssim": 0.1946,
+    "our_baseline_psnr_db": 9.889403623680298,
+    "our_baseline_ssim": 0.02972232121395153,
+    "difference_psnr_db": -5.030596376319702,
+    "difference_ssim": -0.16487767878604848
+  }
+}

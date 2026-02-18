@@ -1,0 +1,16 @@
+{
+  "a_definition": "callable",
+  "a_extraction_method": "graph_stripped",
+  "a_sha256": "1bd4f31227c9a946a20f7ddb0d27e125c2d5455be6c331c96066233cde97aa9b",
+  "linearity": "linear",
+  "linearization_notes": "N/A (linear Gaussian convolution)",
+  "mismatch_type": "synthetic_injected",
+  "correction_family": "Pre",
+  "fitted_params": {
+    "sigma": 3.7
+  },
+  "nll_before": 2081.0,
+  "nll_after": 2047.4,
+  "nll_decrease_pct": 1.6,
+  "timestamp": "2026-02-12T05:41:00.860562+00:00"
+}

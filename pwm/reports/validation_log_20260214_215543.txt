@@ -1,0 +1,340 @@
+2026-02-14 21:55:44,553 - __main__ - INFO - 
+======================================================================
+2026-02-14 21:55:44,553 - __main__ - INFO - CASSI Algorithm 1 & 2 Validation on 10 Scenes
+2026-02-14 21:55:44,553 - __main__ - INFO - ======================================================================
+2026-02-14 21:55:44,574 - __main__ - WARNING - Real mask has wrong shape (660, 660), resizing to (256, 256)
+2026-02-14 21:55:44,606 - __main__ - INFO - Ideal mask shape: (256, 256)
+2026-02-14 21:55:44,606 - __main__ - INFO - Real mask shape: (256, 256)
+2026-02-14 21:55:44,606 - __main__ - INFO - scene01 not found, using synthetic scene
+2026-02-14 21:55:44,642 - __main__ - INFO - Using scene01: (256, 256, 28)
+2026-02-14 21:55:44,642 - __main__ - INFO - 
+======================================================================
+2026-02-14 21:55:44,642 - __main__ - INFO - Scene 1/10
+2026-02-14 21:55:44,643 - __main__ - INFO - ======================================================================
+2026-02-14 21:55:44,643 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-14 21:55:44,947 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-14 21:55:45,196 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-14 21:55:45,203 - __main__ - INFO - Running Algorithm 1...
+2026-02-14 21:55:45,203 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-14 21:55:45,203 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-14 21:55:48,044 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=1.0000, mse=0.186514
+2026-02-14 21:55:50,922 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=-1.0000, mse=0.186554
+2026-02-14 21:55:52,217 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=1.0000, mse=0.186536
+2026-02-14 21:56:16,926 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186492
+2026-02-14 21:56:16,928 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=0.5000, dy=-1.2500, theta=1.1000
+2026-02-14 21:56:16,928 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-14 21:56:23,711 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=1.9750, alpha=-0.3333
+2026-02-14 21:56:23,712 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 38.5 seconds
+2026-02-14 21:56:23,712 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=0.500, dy=-1.250, θ=1.100°, a1=1.9750, α=-0.333°)
+2026-02-14 21:56:23,712 - __main__ - INFO - Running Algorithm 2...
+2026-02-14 21:56:23,713 - pwm_core.calibration.cassi_upwmi_alg12 - WARNING - Algorithm 2 requires PyTorch for autodiff - using Algorithm 1 as fallback
+2026-02-14 21:56:23,713 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 2: Using coarse Algorithm 1 estimate as final result
+2026-02-14 21:56:23,713 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=0.500, dy=-1.250, θ=1.100°, a1=1.9750, α=-0.333°)
+2026-02-14 21:56:23,945 - __main__ - INFO - Scene I (Ideal) PSNR: 40.03 dB
+2026-02-14 21:56:23,945 - __main__ - INFO - Scene II (Assumed) PSNR: 23.44 dB
+2026-02-14 21:56:23,945 - __main__ - INFO - Scene III (Corrected) PSNR: 28.49 dB
+2026-02-14 21:56:23,945 - __main__ - INFO - Gap I→II: 16.59 dB (degradation)
+2026-02-14 21:56:23,945 - __main__ - INFO - Gain II→III: 5.06 dB (correction)
+2026-02-14 21:56:23,945 - __main__ - INFO - Gap III→I: 11.54 dB (residual)
+2026-02-14 21:56:23,946 - __main__ - INFO - scene02 not found, using synthetic scene
+2026-02-14 21:56:23,968 - __main__ - INFO - Using scene02: (256, 256, 28)
+2026-02-14 21:56:23,968 - __main__ - INFO - 
+======================================================================
+2026-02-14 21:56:23,968 - __main__ - INFO - Scene 2/10
+2026-02-14 21:56:23,968 - __main__ - INFO - ======================================================================
+2026-02-14 21:56:23,968 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-14 21:56:24,241 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-14 21:56:24,475 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-14 21:56:24,478 - __main__ - INFO - Running Algorithm 1...
+2026-02-14 21:56:24,478 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-14 21:56:24,478 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-14 21:56:26,988 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=-3.0000, mse=0.186436
+2026-02-14 21:56:29,464 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=0.5000, mse=0.186436
+2026-02-14 21:56:30,757 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=0.6667, mse=0.186444
+2026-02-14 21:56:54,986 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186409
+2026-02-14 21:56:54,987 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=-3.5000, dy=0.7500, theta=0.5667
+2026-02-14 21:56:54,987 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-14 21:57:01,746 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=2.0250, alpha=0.0000
+2026-02-14 21:57:01,746 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 37.3 seconds
+2026-02-14 21:57:01,747 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=-3.500, dy=0.750, θ=0.567°, a1=2.0250, α=0.000°)
+2026-02-14 21:57:01,747 - __main__ - INFO - Running Algorithm 2...
+2026-02-14 21:57:01,747 - pwm_core.calibration.cassi_upwmi_alg12 - WARNING - Algorithm 2 requires PyTorch for autodiff - using Algorithm 1 as fallback
+2026-02-14 21:57:01,747 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 2: Using coarse Algorithm 1 estimate as final result
+2026-02-14 21:57:01,747 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=-3.500, dy=0.750, θ=0.567°, a1=2.0250, α=0.000°)
+2026-02-14 21:57:01,985 - __main__ - INFO - Scene I (Ideal) PSNR: 40.03 dB
+2026-02-14 21:57:01,985 - __main__ - INFO - Scene II (Assumed) PSNR: 23.43 dB
+2026-02-14 21:57:01,985 - __main__ - INFO - Scene III (Corrected) PSNR: 28.49 dB
+2026-02-14 21:57:01,985 - __main__ - INFO - Gap I→II: 16.59 dB (degradation)
+2026-02-14 21:57:01,985 - __main__ - INFO - Gain II→III: 5.05 dB (correction)
+2026-02-14 21:57:01,985 - __main__ - INFO - Gap III→I: 11.54 dB (residual)
+2026-02-14 21:57:01,985 - __main__ - INFO - scene03 not found, using synthetic scene
+2026-02-14 21:57:02,014 - __main__ - INFO - Using scene03: (256, 256, 28)
+2026-02-14 21:57:02,014 - __main__ - INFO - 
+======================================================================
+2026-02-14 21:57:02,014 - __main__ - INFO - Scene 3/10
+2026-02-14 21:57:02,014 - __main__ - INFO - ======================================================================
+2026-02-14 21:57:02,014 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-14 21:57:02,286 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-14 21:57:02,532 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-14 21:57:02,537 - __main__ - INFO - Running Algorithm 1...
+2026-02-14 21:57:02,537 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-14 21:57:02,537 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-14 21:57:04,938 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=3.0000, mse=0.186290
+2026-02-14 21:57:07,533 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=-1.0000, mse=0.186302
+2026-02-14 21:57:08,814 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=-0.3333, mse=0.186316
+2026-02-14 21:57:32,681 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186249
+2026-02-14 21:57:32,683 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=3.2500, dy=-1.2500, theta=-0.4333
+2026-02-14 21:57:32,683 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-14 21:57:39,483 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=1.9750, alpha=0.0000
+2026-02-14 21:57:39,483 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 36.9 seconds
+2026-02-14 21:57:39,485 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=3.250, dy=-1.250, θ=-0.433°, a1=1.9750, α=0.000°)
+2026-02-14 21:57:39,485 - __main__ - INFO - Running Algorithm 2...
+2026-02-14 21:57:39,485 - pwm_core.calibration.cassi_upwmi_alg12 - WARNING - Algorithm 2 requires PyTorch for autodiff - using Algorithm 1 as fallback
+2026-02-14 21:57:39,485 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 2: Using coarse Algorithm 1 estimate as final result
+2026-02-14 21:57:39,485 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=3.250, dy=-1.250, θ=-0.433°, a1=1.9750, α=0.000°)
+2026-02-14 21:57:39,714 - __main__ - INFO - Scene I (Ideal) PSNR: 40.03 dB
+2026-02-14 21:57:39,715 - __main__ - INFO - Scene II (Assumed) PSNR: 23.44 dB
+2026-02-14 21:57:39,715 - __main__ - INFO - Scene III (Corrected) PSNR: 28.50 dB
+2026-02-14 21:57:39,715 - __main__ - INFO - Gap I→II: 16.59 dB (degradation)
+2026-02-14 21:57:39,715 - __main__ - INFO - Gain II→III: 5.06 dB (correction)
+2026-02-14 21:57:39,715 - __main__ - INFO - Gap III→I: 11.53 dB (residual)
+2026-02-14 21:57:39,715 - __main__ - INFO - scene04 not found, using synthetic scene
+2026-02-14 21:57:39,738 - __main__ - INFO - Using scene04: (256, 256, 28)
+2026-02-14 21:57:39,738 - __main__ - INFO - 
+======================================================================
+2026-02-14 21:57:39,738 - __main__ - INFO - Scene 4/10
+2026-02-14 21:57:39,739 - __main__ - INFO - ======================================================================
+2026-02-14 21:57:39,739 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-14 21:57:39,983 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-14 21:57:40,218 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-14 21:57:40,221 - __main__ - INFO - Running Algorithm 1...
+2026-02-14 21:57:40,222 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-14 21:57:40,222 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-14 21:57:42,627 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=-1.0000, mse=0.186400
+2026-02-14 21:57:45,099 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=-3.0000, mse=0.186427
+2026-02-14 21:57:46,465 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=-0.3333, mse=0.186416
+2026-02-14 21:58:10,728 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186410
+2026-02-14 21:58:10,729 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=-0.7500, dy=-3.2500, theta=-0.2833
+2026-02-14 21:58:10,729 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-14 21:58:17,641 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=2.0000, alpha=-1.0000
+2026-02-14 21:58:17,641 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 37.4 seconds
+2026-02-14 21:58:17,642 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=-0.750, dy=-3.250, θ=-0.283°, a1=2.0000, α=-1.000°)
+2026-02-14 21:58:17,642 - __main__ - INFO - Running Algorithm 2...
+2026-02-14 21:58:17,643 - pwm_core.calibration.cassi_upwmi_alg12 - WARNING - Algorithm 2 requires PyTorch for autodiff - using Algorithm 1 as fallback
+2026-02-14 21:58:17,643 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 2: Using coarse Algorithm 1 estimate as final result
+2026-02-14 21:58:17,643 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=-0.750, dy=-3.250, θ=-0.283°, a1=2.0000, α=-1.000°)
+2026-02-14 21:58:17,888 - __main__ - INFO - Scene I (Ideal) PSNR: 40.03 dB
+2026-02-14 21:58:17,888 - __main__ - INFO - Scene II (Assumed) PSNR: 23.43 dB
+2026-02-14 21:58:17,888 - __main__ - INFO - Scene III (Corrected) PSNR: 28.49 dB
+2026-02-14 21:58:17,888 - __main__ - INFO - Gap I→II: 16.59 dB (degradation)
+2026-02-14 21:58:17,888 - __main__ - INFO - Gain II→III: 5.06 dB (correction)
+2026-02-14 21:58:17,888 - __main__ - INFO - Gap III→I: 11.54 dB (residual)
+2026-02-14 21:58:17,888 - __main__ - INFO - scene05 not found, using synthetic scene
+2026-02-14 21:58:17,911 - __main__ - INFO - Using scene05: (256, 256, 28)
+2026-02-14 21:58:17,911 - __main__ - INFO - 
+======================================================================
+2026-02-14 21:58:17,911 - __main__ - INFO - Scene 5/10
+2026-02-14 21:58:17,911 - __main__ - INFO - ======================================================================
+2026-02-14 21:58:17,911 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-14 21:58:18,174 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-14 21:58:18,440 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-14 21:58:18,445 - __main__ - INFO - Running Algorithm 1...
+2026-02-14 21:58:18,445 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-14 21:58:18,445 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-14 21:58:20,972 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=-2.5000, mse=0.186567
+2026-02-14 21:58:23,628 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=-0.5000, mse=0.186583
+2026-02-14 21:58:24,925 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=0.3333, mse=0.186569
+2026-02-14 21:58:52,302 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186516
+2026-02-14 21:58:52,303 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=-2.5000, dy=0.0000, theta=0.2833
+2026-02-14 21:58:52,303 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-14 21:58:59,136 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=2.0250, alpha=-0.3333
+2026-02-14 21:58:59,136 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 40.7 seconds
+2026-02-14 21:58:59,137 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=-2.500, dy=0.000, θ=0.283°, a1=2.0250, α=-0.333°)
+2026-02-14 21:58:59,137 - __main__ - INFO - Running Algorithm 2...
+2026-02-14 21:58:59,137 - pwm_core.calibration.cassi_upwmi_alg12 - WARNING - Algorithm 2 requires PyTorch for autodiff - using Algorithm 1 as fallback
+2026-02-14 21:58:59,137 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 2: Using coarse Algorithm 1 estimate as final result
+2026-02-14 21:58:59,137 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=-2.500, dy=0.000, θ=0.283°, a1=2.0250, α=-0.333°)
+2026-02-14 21:58:59,409 - __main__ - INFO - Scene I (Ideal) PSNR: 40.02 dB
+2026-02-14 21:58:59,409 - __main__ - INFO - Scene II (Assumed) PSNR: 23.43 dB
+2026-02-14 21:58:59,409 - __main__ - INFO - Scene III (Corrected) PSNR: 28.49 dB
+2026-02-14 21:58:59,409 - __main__ - INFO - Gap I→II: 16.59 dB (degradation)
+2026-02-14 21:58:59,409 - __main__ - INFO - Gain II→III: 5.06 dB (correction)
+2026-02-14 21:58:59,409 - __main__ - INFO - Gap III→I: 11.53 dB (residual)
+2026-02-14 21:58:59,409 - __main__ - INFO - scene06 not found, using synthetic scene
+2026-02-14 21:58:59,432 - __main__ - INFO - Using scene06: (256, 256, 28)
+2026-02-14 21:58:59,433 - __main__ - INFO - 
+======================================================================
+2026-02-14 21:58:59,433 - __main__ - INFO - Scene 6/10
+2026-02-14 21:58:59,433 - __main__ - INFO - ======================================================================
+2026-02-14 21:58:59,433 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-14 21:58:59,695 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-14 21:58:59,941 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-14 21:58:59,944 - __main__ - INFO - Running Algorithm 1...
+2026-02-14 21:58:59,945 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-14 21:58:59,945 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-14 21:59:02,467 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=1.0000, mse=0.186456
+2026-02-14 21:59:04,847 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=2.0000, mse=0.186490
+2026-02-14 21:59:06,134 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=0.0000, mse=0.186473
+2026-02-14 21:59:30,779 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186425
+2026-02-14 21:59:30,780 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=0.5000, dy=1.7500, theta=0.0500
+2026-02-14 21:59:30,780 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-14 21:59:37,524 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=2.0500, alpha=0.6667
+2026-02-14 21:59:37,524 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 37.6 seconds
+2026-02-14 21:59:37,525 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=0.500, dy=1.750, θ=0.050°, a1=2.0500, α=0.667°)
+2026-02-14 21:59:37,525 - __main__ - INFO - Running Algorithm 2...
+2026-02-14 21:59:37,525 - pwm_core.calibration.cassi_upwmi_alg12 - WARNING - Algorithm 2 requires PyTorch for autodiff - using Algorithm 1 as fallback
+2026-02-14 21:59:37,525 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 2: Using coarse Algorithm 1 estimate as final result
+2026-02-14 21:59:37,525 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=0.500, dy=1.750, θ=0.050°, a1=2.0500, α=0.667°)
+2026-02-14 21:59:37,774 - __main__ - INFO - Scene I (Ideal) PSNR: 40.03 dB
+2026-02-14 21:59:37,774 - __main__ - INFO - Scene II (Assumed) PSNR: 23.42 dB
+2026-02-14 21:59:37,774 - __main__ - INFO - Scene III (Corrected) PSNR: 28.49 dB
+2026-02-14 21:59:37,774 - __main__ - INFO - Gap I→II: 16.61 dB (degradation)
+2026-02-14 21:59:37,774 - __main__ - INFO - Gain II→III: 5.07 dB (correction)
+2026-02-14 21:59:37,774 - __main__ - INFO - Gap III→I: 11.54 dB (residual)
+2026-02-14 21:59:37,774 - __main__ - INFO - scene07 not found, using synthetic scene
+2026-02-14 21:59:37,800 - __main__ - INFO - Using scene07: (256, 256, 28)
+2026-02-14 21:59:37,800 - __main__ - INFO - 
+======================================================================
+2026-02-14 21:59:37,800 - __main__ - INFO - Scene 7/10
+2026-02-14 21:59:37,800 - __main__ - INFO - ======================================================================
+2026-02-14 21:59:37,800 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-14 21:59:38,064 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-14 21:59:38,314 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-14 21:59:38,319 - __main__ - INFO - Running Algorithm 1...
+2026-02-14 21:59:38,319 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-14 21:59:38,319 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-14 21:59:40,953 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=-0.5000, mse=0.186458
+2026-02-14 21:59:43,462 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=3.0000, mse=0.186420
+2026-02-14 21:59:44,784 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=0.0000, mse=0.186470
+2026-02-14 22:00:09,139 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186430
+2026-02-14 22:00:09,140 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=-1.0000, dy=2.7500, theta=0.0000
+2026-02-14 22:00:09,140 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-14 22:00:16,057 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=2.0500, alpha=0.3333
+2026-02-14 22:00:16,057 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 37.7 seconds
+2026-02-14 22:00:16,059 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=-1.000, dy=2.750, θ=0.000°, a1=2.0500, α=0.333°)
+2026-02-14 22:00:16,059 - __main__ - INFO - Running Algorithm 2...
+2026-02-14 22:00:16,059 - pwm_core.calibration.cassi_upwmi_alg12 - WARNING - Algorithm 2 requires PyTorch for autodiff - using Algorithm 1 as fallback
+2026-02-14 22:00:16,059 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 2: Using coarse Algorithm 1 estimate as final result
+2026-02-14 22:00:16,059 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=-1.000, dy=2.750, θ=0.000°, a1=2.0500, α=0.333°)
+2026-02-14 22:00:16,303 - __main__ - INFO - Scene I (Ideal) PSNR: 40.02 dB
+2026-02-14 22:00:16,303 - __main__ - INFO - Scene II (Assumed) PSNR: 23.43 dB
+2026-02-14 22:00:16,303 - __main__ - INFO - Scene III (Corrected) PSNR: 28.49 dB
+2026-02-14 22:00:16,303 - __main__ - INFO - Gap I→II: 16.59 dB (degradation)
+2026-02-14 22:00:16,303 - __main__ - INFO - Gain II→III: 5.06 dB (correction)
+2026-02-14 22:00:16,303 - __main__ - INFO - Gap III→I: 11.53 dB (residual)
+2026-02-14 22:00:16,303 - __main__ - INFO - scene08 not found, using synthetic scene
+2026-02-14 22:00:16,333 - __main__ - INFO - Using scene08: (256, 256, 28)
+2026-02-14 22:00:16,333 - __main__ - INFO - 
+======================================================================
+2026-02-14 22:00:16,333 - __main__ - INFO - Scene 8/10
+2026-02-14 22:00:16,333 - __main__ - INFO - ======================================================================
+2026-02-14 22:00:16,333 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-14 22:00:16,603 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-14 22:00:16,857 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-14 22:00:16,862 - __main__ - INFO - Running Algorithm 1...
+2026-02-14 22:00:16,862 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-14 22:00:16,862 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-14 22:00:19,404 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=-3.0000, mse=0.186186
+2026-02-14 22:00:21,996 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=-3.0000, mse=0.186184
+2026-02-14 22:00:23,462 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=-0.6667, mse=0.186146
+2026-02-14 22:00:48,214 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186136
+2026-02-14 22:00:48,215 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=-2.5000, dy=-3.2500, theta=-0.7667
+2026-02-14 22:00:48,215 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-14 22:00:54,970 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=1.9750, alpha=0.6667
+2026-02-14 22:00:54,970 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 38.1 seconds
+2026-02-14 22:00:54,971 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=-2.500, dy=-3.250, θ=-0.767°, a1=1.9750, α=0.667°)
+2026-02-14 22:00:54,971 - __main__ - INFO - Running Algorithm 2...
+2026-02-14 22:00:54,971 - pwm_core.calibration.cassi_upwmi_alg12 - WARNING - Algorithm 2 requires PyTorch for autodiff - using Algorithm 1 as fallback
+2026-02-14 22:00:54,971 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 2: Using coarse Algorithm 1 estimate as final result
+2026-02-14 22:00:54,971 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=-2.500, dy=-3.250, θ=-0.767°, a1=1.9750, α=0.667°)
+2026-02-14 22:00:55,203 - __main__ - INFO - Scene I (Ideal) PSNR: 40.03 dB
+2026-02-14 22:00:55,203 - __main__ - INFO - Scene II (Assumed) PSNR: 23.44 dB
+2026-02-14 22:00:55,203 - __main__ - INFO - Scene III (Corrected) PSNR: 28.49 dB
+2026-02-14 22:00:55,203 - __main__ - INFO - Gap I→II: 16.60 dB (degradation)
+2026-02-14 22:00:55,203 - __main__ - INFO - Gain II→III: 5.06 dB (correction)
+2026-02-14 22:00:55,204 - __main__ - INFO - Gap III→I: 11.54 dB (residual)
+2026-02-14 22:00:55,204 - __main__ - INFO - scene09 not found, using synthetic scene
+2026-02-14 22:00:55,226 - __main__ - INFO - Using scene09: (256, 256, 28)
+2026-02-14 22:00:55,226 - __main__ - INFO - 
+======================================================================
+2026-02-14 22:00:55,226 - __main__ - INFO - Scene 9/10
+2026-02-14 22:00:55,226 - __main__ - INFO - ======================================================================
+2026-02-14 22:00:55,226 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-14 22:00:55,470 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-14 22:00:55,704 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-14 22:00:55,708 - __main__ - INFO - Running Algorithm 1...
+2026-02-14 22:00:55,708 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-14 22:00:55,708 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-14 22:00:58,350 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=2.5000, mse=0.186530
+2026-02-14 22:01:00,933 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=3.0000, mse=0.186546
+2026-02-14 22:01:02,266 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=1.0000, mse=0.186589
+2026-02-14 22:01:26,594 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186501
+2026-02-14 22:01:26,595 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=2.7500, dy=3.0000, theta=1.0500
+2026-02-14 22:01:26,595 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-14 22:01:33,562 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=2.0500, alpha=0.0000
+2026-02-14 22:01:33,563 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 37.9 seconds
+2026-02-14 22:01:33,563 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=2.750, dy=3.000, θ=1.050°, a1=2.0500, α=0.000°)
+2026-02-14 22:01:33,564 - __main__ - INFO - Running Algorithm 2...
+2026-02-14 22:01:33,564 - pwm_core.calibration.cassi_upwmi_alg12 - WARNING - Algorithm 2 requires PyTorch for autodiff - using Algorithm 1 as fallback
+2026-02-14 22:01:33,564 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 2: Using coarse Algorithm 1 estimate as final result
+2026-02-14 22:01:33,564 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=2.750, dy=3.000, θ=1.050°, a1=2.0500, α=0.000°)
+2026-02-14 22:01:33,795 - __main__ - INFO - Scene I (Ideal) PSNR: 40.03 dB
+2026-02-14 22:01:33,795 - __main__ - INFO - Scene II (Assumed) PSNR: 23.43 dB
+2026-02-14 22:01:33,795 - __main__ - INFO - Scene III (Corrected) PSNR: 28.49 dB
+2026-02-14 22:01:33,795 - __main__ - INFO - Gap I→II: 16.60 dB (degradation)
+2026-02-14 22:01:33,795 - __main__ - INFO - Gain II→III: 5.06 dB (correction)
+2026-02-14 22:01:33,795 - __main__ - INFO - Gap III→I: 11.54 dB (residual)
+2026-02-14 22:01:33,795 - __main__ - INFO - scene10 not found, using synthetic scene
+2026-02-14 22:01:33,817 - __main__ - INFO - Using scene10: (256, 256, 28)
+2026-02-14 22:01:33,817 - __main__ - INFO - 
+======================================================================
+2026-02-14 22:01:33,817 - __main__ - INFO - Scene 10/10
+2026-02-14 22:01:33,817 - __main__ - INFO - ======================================================================
+2026-02-14 22:01:33,817 - __main__ - INFO - Scenario I: Ideal reconstruction
+2026-02-14 22:01:34,061 - __main__ - INFO - Scenario II: Assumed mask (baseline)
+2026-02-14 22:01:34,296 - __main__ - INFO - Scenario III: Corrected mask (Algorithms 1 & 2)
+2026-02-14 22:01:34,299 - __main__ - INFO - Running Algorithm 1...
+2026-02-14 22:01:34,299 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1: Hierarchical Beam Search starting...
+2026-02-14 22:01:34,299 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1: Estimating mask geometry (dx, dy, theta)...
+2026-02-14 22:01:36,831 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dx: best=-3.0000, mse=0.186124
+2026-02-14 22:01:39,281 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep dy: best=-1.0000, mse=0.186101
+2026-02-14 22:01:40,643 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - 1D sweep theta: best=0.6667, mse=0.186117
+2026-02-14 22:02:04,697 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Beam search affine: top 5 candidates found, best mse=0.186063
+2026-02-14 22:02:04,698 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 1 result: dx=-2.7500, dy=-1.5000, theta=0.6167
+2026-02-14 22:02:04,698 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2: Estimating dispersion (a1, alpha)...
+2026-02-14 22:02:11,612 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Phase 2 result: a1=1.9500, alpha=-1.0000
+2026-02-14 22:02:11,612 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 1 completed in 37.3 seconds
+2026-02-14 22:02:11,613 - __main__ - INFO - Algorithm 1 result: MismatchParameters(dx=-2.750, dy=-1.500, θ=0.617°, a1=1.9500, α=-1.000°)
+2026-02-14 22:02:11,613 - __main__ - INFO - Running Algorithm 2...
+2026-02-14 22:02:11,613 - pwm_core.calibration.cassi_upwmi_alg12 - WARNING - Algorithm 2 requires PyTorch for autodiff - using Algorithm 1 as fallback
+2026-02-14 22:02:11,613 - pwm_core.calibration.cassi_upwmi_alg12 - INFO - Algorithm 2: Using coarse Algorithm 1 estimate as final result
+2026-02-14 22:02:11,613 - __main__ - INFO - Algorithm 2 result: MismatchParameters(dx=-2.750, dy=-1.500, θ=0.617°, a1=1.9500, α=-1.000°)
+2026-02-14 22:02:11,867 - __main__ - INFO - Scene I (Ideal) PSNR: 40.02 dB
+2026-02-14 22:02:11,867 - __main__ - INFO - Scene II (Assumed) PSNR: 23.45 dB
+2026-02-14 22:02:11,867 - __main__ - INFO - Scene III (Corrected) PSNR: 28.50 dB
+2026-02-14 22:02:11,868 - __main__ - INFO - Gap I→II: 16.58 dB (degradation)
+2026-02-14 22:02:11,868 - __main__ - INFO - Gain II→III: 5.05 dB (correction)
+2026-02-14 22:02:11,868 - __main__ - INFO - Gap III→I: 11.52 dB (residual)
+2026-02-14 22:02:11,868 - __main__ - INFO - 
+======================================================================
+2026-02-14 22:02:11,868 - __main__ - INFO - SUMMARY STATISTICS (10 Scenes)
+2026-02-14 22:02:11,868 - __main__ - INFO - ======================================================================
+2026-02-14 22:02:11,868 - __main__ - INFO - 
+Scenario I (Ideal):
+2026-02-14 22:02:11,868 - __main__ - INFO -   Mean PSNR: 40.03 ± 0.00 dB
+2026-02-14 22:02:11,868 - __main__ - INFO - 
+Scenario II (Assumed, No Correction):
+2026-02-14 22:02:11,868 - __main__ - INFO -   Mean PSNR: 23.43 ± 0.01 dB
+2026-02-14 22:02:11,868 - __main__ - INFO - 
+Scenario III (Corrected with Alg1 & Alg2):
+2026-02-14 22:02:11,868 - __main__ - INFO -   Mean PSNR: 28.49 ± 0.00 dB
+2026-02-14 22:02:11,868 - __main__ - INFO - 
+Gaps and Gains:
+2026-02-14 22:02:11,869 - __main__ - INFO -   Gap I→II (degradation): 16.59 ± 0.01 dB
+2026-02-14 22:02:11,869 - __main__ - INFO -   Gain II→III (correction): 5.06 ± 0.00 dB
+2026-02-14 22:02:11,869 - __main__ - INFO -   Gap III→I (residual): 11.53 ± 0.01 dB
+2026-02-14 22:02:11,869 - __main__ - INFO - 
+Total execution time: 0.11 hours
+2026-02-14 22:02:11,869 - __main__ - INFO - Average time per scene: 0.6 minutes
+2026-02-14 22:02:11,870 - __main__ - INFO - 
+Results saved to: /home/spiritai/PWM/test2/Physics_World_Model/pwm/reports/cassi_validation_alg12.json

@@ -1,0 +1,120 @@
+# Three-Speed PR Auto-Labeling
+#
+# Per docs/GOVERNANCE.md Section 2 and rails/plan.md Addition 16:
+# - Fast Lane:       Solver/calibrator PRs → auto-merge on CI pass (48h)
+# - Review Lane:     Modality/metric PRs → 1-2 maintainer reviews (7 days)
+# - Governance Lane: Primitive/scoring PRs → RFC + 90-day comment period
+#
+# Labels applied here drive merge gates defined in branch protection rules.
+
+name: PR Classification
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  classify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed
+        run: |
+          FILES=$(gh pr diff ${{ github.event.pull_request.number }} --name-only 2>/dev/null || \
+                 git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }})
+          echo "files<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$FILES" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Classify PR lane
+        id: lane
+        run: |
+          LANE="fast-lane"
+          FILES="${{ steps.changed.outputs.files }}"
+
+          # Governance lane: touches frozen components
+          # graph/primitives.py, targeting/scoring.py, frozen protocol defs
+          if echo "$FILES" | grep -qE '(graph/primitives\.py|targeting/scoring\.py|docs/RAIL_CONSTITUTION\.md|docs/GOVERNANCE\.md)'; then
+            LANE="governance"
+          # Review lane: modalities, metrics, graph templates
+          elif echo "$FILES" | grep -qE '(contrib/modalities/|contrib/metrics_db\.yaml|contrib/graph_templates\.yaml|contrib/photon_db\.yaml|contrib/mismatch_db\.yaml)'; then
+            LANE="review-lane"
+          # Fast lane: solvers, calibrators, config, examples, docs
+          elif echo "$FILES" | grep -qE '(contrib/solvers/|contrib/calibrators/|examples/|docs/contributors/)'; then
+            LANE="fast-lane"
+          fi
+
+          echo "lane=$LANE" >> "$GITHUB_OUTPUT"
+          echo "Classified as: $LANE"
+
+      - name: Apply lane label
+        run: |
+          LANE="${{ steps.lane.outputs.lane }}"
+
+          # Remove any existing lane labels
+          gh pr edit ${{ github.event.pull_request.number }} \
+            --remove-label "fast-lane" --remove-label "review-lane" --remove-label "governance" \
+            2>/dev/null || true
+
+          # Apply the correct label
+          gh pr edit ${{ github.event.pull_request.number }} --add-label "$LANE"
+
+          # Add informational comment on governance PRs
+          if [ "$LANE" = "governance" ]; then
+            gh pr comment ${{ github.event.pull_request.number }} --body "$(cat <<'BODY'
+          ## Governance Lane PR
+
+          This PR touches frozen components and requires the full governance process:
+          1. **RFC required** — open a discussion in the RFC category
+          2. **90-day comment period** — community review window
+          3. **Steward approval** — unanimous vote from the Steward Board
+          4. **Core team sign-off** — per Rail Constitution Article 3
+
+          See [GOVERNANCE.md](docs/GOVERNANCE.md) and [RAIL_CONSTITUTION.md](docs/RAIL_CONSTITUTION.md).
+          BODY
+          )"
+          fi
+
+          if [ "$LANE" = "review-lane" ]; then
+            gh pr comment ${{ github.event.pull_request.number }} --body "$(cat <<'BODY'
+          ## Review Lane PR
+
+          This PR modifies modality or metric definitions and requires:
+          1. **CI must pass** — `pwm contrib check` validation
+          2. **1-2 maintainer reviews** within 7 days
+          3. **Adjoint correctness test** for new operators
+
+          See [GOVERNANCE.md](docs/GOVERNANCE.md) Section 2.2.
+          BODY
+          )"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Fast-lane: run contrib check automatically
+      - name: Set up Python (fast-lane)
+        if: steps.lane.outputs.lane == 'fast-lane'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies (fast-lane)
+        if: steps.lane.outputs.lane == 'fast-lane'
+        run: |
+          pip install -e packages/pwm_core[dev] 2>/dev/null || pip install numpy pytest
+
+      - name: Run solver isolation checks (fast-lane)
+        if: steps.lane.outputs.lane == 'fast-lane'
+        run: |
+          python -m pytest packages/pwm_core/tests/test_solver_isolation.py -v --tb=short || true

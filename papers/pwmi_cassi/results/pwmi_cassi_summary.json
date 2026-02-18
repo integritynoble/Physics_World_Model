@@ -1,0 +1,268 @@
+{
+  "num_scenes": 10,
+  "methods": [
+    "gap_tv",
+    "mst_s",
+    "mst_l",
+    "hdnet",
+    "pnp_hsicnn"
+  ],
+  "scenarios": [
+    "scenario_i",
+    "scenario_ii",
+    "scenario_iii",
+    "scenario_iv"
+  ],
+  "mismatch": {
+    "dx": 1.5,
+    "dy": 1.0,
+    "theta": 0.3,
+    "a1": 2.04,
+    "alpha": 0.5
+  },
+  "noise": {
+    "alpha": 100000,
+    "sigma": 0.01
+  },
+  "s_nom": "np.arange(28) * 2",
+  "forward_model": "parametric_dispersion",
+  "scenario_i": {
+    "gap_tv": {
+      "psnr_mean": 24.22,
+      "psnr_std": 1.82,
+      "ssim_mean": 0.7216,
+      "ssim_std": 0.0864,
+      "sam_mean": 16.81,
+      "sam_std": 3.24
+    },
+    "mst_s": {
+      "psnr_mean": 33.98,
+      "psnr_std": 2.5,
+      "ssim_mean": 0.9646,
+      "ssim_std": 0.0114,
+      "sam_mean": 8.75,
+      "sam_std": 1.77
+    },
+    "mst_l": {
+      "psnr_mean": 34.81,
+      "psnr_std": 2.11,
+      "ssim_mean": 0.973,
+      "ssim_std": 0.0086,
+      "sam_mean": 7.44,
+      "sam_std": 1.24
+    },
+    "hdnet": {
+      "psnr_mean": 34.66,
+      "psnr_std": 2.62,
+      "ssim_mean": 0.9695,
+      "ssim_std": 0.009,
+      "sam_mean": 6.67,
+      "sam_std": 0.96
+    },
+    "pnp_hsicnn": {
+      "psnr_mean": 25.12,
+      "psnr_std": 1.88,
+      "ssim_mean": 0.7582,
+      "ssim_std": 0.0819,
+      "sam_mean": 16.1,
+      "sam_std": 3.25
+    }
+  },
+  "scenario_ii": {
+    "gap_tv": {
+      "psnr_mean": 19.66,
+      "psnr_std": 1.75,
+      "ssim_mean": 0.5468,
+      "ssim_std": 0.0931,
+      "sam_mean": 27.36,
+      "sam_std": 3.18
+    },
+    "mst_s": {
+      "psnr_mean": 18.01,
+      "psnr_std": 2.14,
+      "ssim_mean": 0.6093,
+      "ssim_std": 0.0909,
+      "sam_mean": 32.3,
+      "sam_std": 2.94
+    },
+    "mst_l": {
+      "psnr_mean": 18.09,
+      "psnr_std": 1.97,
+      "ssim_mean": 0.6147,
+      "ssim_std": 0.0831,
+      "sam_mean": 31.38,
+      "sam_std": 4.13
+    },
+    "hdnet": {
+      "psnr_mean": 24.18,
+      "psnr_std": 2.86,
+      "ssim_mean": 0.7909,
+      "ssim_std": 0.066,
+      "sam_mean": 14.43,
+      "sam_std": 1.96
+    },
+    "pnp_hsicnn": {
+      "psnr_mean": 19.1,
+      "psnr_std": 1.81,
+      "ssim_mean": 0.5117,
+      "ssim_std": 0.0996,
+      "sam_mean": 26.49,
+      "sam_std": 3.14
+    }
+  },
+  "scenario_iii": {
+    "gap_tv": {
+      "psnr_mean": 20.16,
+      "psnr_std": 1.85,
+      "ssim_mean": 0.5796,
+      "ssim_std": 0.0891,
+      "sam_mean": 26.17,
+      "sam_std": 3.56
+    },
+    "mst_s": {
+      "psnr_mean": 21.01,
+      "psnr_std": 2.78,
+      "ssim_mean": 0.6989,
+      "ssim_std": 0.0925,
+      "sam_mean": 22.69,
+      "sam_std": 4.83
+    },
+    "mst_l": {
+      "psnr_mean": 21.1,
+      "psnr_std": 2.64,
+      "ssim_mean": 0.6907,
+      "ssim_std": 0.0888,
+      "sam_mean": 21.23,
+      "sam_std": 4.83
+    },
+    "hdnet": {
+      "psnr_mean": 24.24,
+      "psnr_std": 2.84,
+      "ssim_mean": 0.7902,
+      "ssim_std": 0.0659,
+      "sam_mean": 14.66,
+      "sam_std": 1.92
+    },
+    "pnp_hsicnn": {
+      "psnr_mean": 19.81,
+      "psnr_std": 1.94,
+      "ssim_mean": 0.5471,
+      "ssim_std": 0.0988,
+      "sam_mean": 24.82,
+      "sam_std": 3.57
+    }
+  },
+  "scenario_iv": {
+    "gap_tv": {
+      "psnr_mean": 23.65,
+      "psnr_std": 1.78,
+      "ssim_mean": 0.7044,
+      "ssim_std": 0.0899,
+      "sam_mean": 18.58,
+      "sam_std": 3.21
+    },
+    "mst_s": {
+      "psnr_mean": 24.12,
+      "psnr_std": 2.03,
+      "ssim_mean": 0.7972,
+      "ssim_std": 0.0442,
+      "sam_mean": 15.46,
+      "sam_std": 1.96
+    },
+    "mst_l": {
+      "psnr_mean": 24.39,
+      "psnr_std": 2.02,
+      "ssim_mean": 0.8029,
+      "ssim_std": 0.0515,
+      "sam_mean": 15.05,
+      "sam_std": 2.49
+    },
+    "hdnet": {
+      "psnr_mean": 24.26,
+      "psnr_std": 2.85,
+      "ssim_mean": 0.7911,
+      "ssim_std": 0.0661,
+      "sam_mean": 14.49,
+      "sam_std": 1.93
+    },
+    "pnp_hsicnn": {
+      "psnr_mean": 22.14,
+      "psnr_std": 1.46,
+      "ssim_mean": 0.6663,
+      "ssim_std": 0.0673,
+      "sam_mean": 20.57,
+      "sam_std": 2.81
+    }
+  },
+  "gaps": {
+    "gap_tv": {
+      "degradation_mean": 4.56,
+      "degradation_std": 1.68,
+      "calibration_gain_mean": 0.51,
+      "calibration_gain_std": 0.41,
+      "residual_gap_mean": 3.48,
+      "residual_gap_std": 1.7,
+      "oracle_gain_mean": 3.99,
+      "oracle_gain_std": 1.51
+    },
+    "mst_s": {
+      "degradation_mean": 15.97,
+      "degradation_std": 2.39,
+      "calibration_gain_mean": 3.0,
+      "calibration_gain_std": 1.33,
+      "residual_gap_mean": 3.11,
+      "residual_gap_std": 1.61,
+      "oracle_gain_mean": 6.11,
+      "oracle_gain_std": 1.17
+    },
+    "mst_l": {
+      "degradation_mean": 16.72,
+      "degradation_std": 2.26,
+      "calibration_gain_mean": 3.01,
+      "calibration_gain_std": 1.38,
+      "residual_gap_mean": 3.3,
+      "residual_gap_std": 1.6,
+      "oracle_gain_mean": 6.3,
+      "oracle_gain_std": 0.96
+    },
+    "hdnet": {
+      "degradation_mean": 10.47,
+      "degradation_std": 1.22,
+      "calibration_gain_mean": 0.05,
+      "calibration_gain_std": 0.04,
+      "residual_gap_mean": 0.02,
+      "residual_gap_std": 0.02,
+      "oracle_gain_mean": 0.07,
+      "oracle_gain_std": 0.03
+    },
+    "pnp_hsicnn": {
+      "degradation_mean": 6.02,
+      "degradation_std": 2.02,
+      "calibration_gain_mean": 0.71,
+      "calibration_gain_std": 0.42,
+      "residual_gap_mean": 2.33,
+      "residual_gap_std": 1.03,
+      "oracle_gain_mean": 3.04,
+      "oracle_gain_std": 0.94
+    }
+  },
+  "parameter_recovery": {
+    "dx_rmse": 0.8056,
+    "dy_rmse": 0.6232,
+    "theta_rmse": 0.7465,
+    "a1_rmse": 0.1342,
+    "alpha_rmse": 0.5,
+    "dx_mean_err": 0.6381,
+    "dy_mean_err": 0.6062,
+    "theta_mean_err": 0.7104,
+    "a1_mean_err": 0.132,
+    "alpha_mean_err": 0.5
+  },
+  "timing": {
+    "calibration_mean": 305.5,
+    "calibration_std": 37.9,
+    "total_mean": 484.0,
+    "total_std": 44.7
+  },
+  "execution_seconds": 4945.4
+}

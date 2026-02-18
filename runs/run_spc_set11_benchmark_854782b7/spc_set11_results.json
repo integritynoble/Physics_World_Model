@@ -1,0 +1,528 @@
+{
+  "benchmark": "spc_set11",
+  "results": {
+    "4pct": {
+      "FISTA-L1": {
+        "per_image_psnr": {
+          "gaussian_blob": 12.25,
+          "circles": 4.38,
+          "stripes_h": 4.34,
+          "checkerboard": 3.09,
+          "phantom": 7.58,
+          "gradient": 5.49,
+          "sinusoidal": 5.09,
+          "block_letter": 7.75,
+          "crosshatch": 2.64,
+          "gabor": 15.88,
+          "speckle": 4.43
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.0883,
+          "circles": 0.0022,
+          "stripes_h": 0.0001,
+          "checkerboard": 0.0023,
+          "phantom": 0.0671,
+          "gradient": 0.0072,
+          "sinusoidal": 0.0005,
+          "block_letter": 0.191,
+          "crosshatch": 0.0063,
+          "gabor": 0.1272,
+          "speckle": 0.0039
+        },
+        "avg_psnr": 6.63,
+        "avg_ssim": 0.0451,
+        "avg_time": 0.075
+      },
+      "FISTA-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 10.31,
+          "circles": 5.19,
+          "stripes_h": 5.41,
+          "checkerboard": 3.75,
+          "phantom": 7.62,
+          "gradient": 6.9,
+          "sinusoidal": 6.33,
+          "block_letter": 7.08,
+          "crosshatch": 3.76,
+          "gabor": 12.42,
+          "speckle": 5.93
+        },
+        "per_image_ssim": {
+          "gaussian_blob": -0.015,
+          "circles": -0.0221,
+          "stripes_h": -0.0194,
+          "checkerboard": -0.0182,
+          "phantom": -0.0132,
+          "gradient": 0.0125,
+          "sinusoidal": -0.0109,
+          "block_letter": -0.0185,
+          "crosshatch": -0.0124,
+          "gabor": -0.0029,
+          "speckle": -0.0061
+        },
+        "avg_psnr": 6.79,
+        "avg_ssim": -0.0115,
+        "avg_time": 0.422
+      },
+      "TVAL3": {
+        "per_image_psnr": {
+          "gaussian_blob": NaN,
+          "circles": NaN,
+          "stripes_h": NaN,
+          "checkerboard": NaN,
+          "phantom": NaN,
+          "gradient": NaN,
+          "sinusoidal": NaN,
+          "block_letter": NaN,
+          "crosshatch": NaN,
+          "gabor": NaN,
+          "speckle": NaN
+        },
+        "per_image_ssim": {
+          "gaussian_blob": NaN,
+          "circles": NaN,
+          "stripes_h": NaN,
+          "checkerboard": NaN,
+          "phantom": NaN,
+          "gradient": NaN,
+          "sinusoidal": NaN,
+          "block_letter": NaN,
+          "crosshatch": NaN,
+          "gabor": NaN,
+          "speckle": NaN
+        },
+        "avg_psnr": NaN,
+        "avg_ssim": NaN,
+        "avg_time": 0.214
+      },
+      "ADMM-DCT-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 19.27,
+          "circles": 8.77,
+          "stripes_h": 9.16,
+          "checkerboard": 6.44,
+          "phantom": 13.14,
+          "gradient": 20.64,
+          "sinusoidal": 12.75,
+          "block_letter": 9.88,
+          "crosshatch": 9.97,
+          "gabor": 18.69,
+          "speckle": 15.75
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.6303,
+          "circles": 0.0903,
+          "stripes_h": 0.2286,
+          "checkerboard": 0.2365,
+          "phantom": 0.3196,
+          "gradient": 0.8347,
+          "sinusoidal": 0.4825,
+          "block_letter": 0.0988,
+          "crosshatch": 0.1257,
+          "gabor": 0.3087,
+          "speckle": 0.2399
+        },
+        "avg_psnr": 13.13,
+        "avg_ssim": 0.3269,
+        "avg_time": 0.882
+      }
+    },
+    "10pct": {
+      "FISTA-L1": {
+        "per_image_psnr": {
+          "gaussian_blob": 12.51,
+          "circles": 4.38,
+          "stripes_h": 4.67,
+          "checkerboard": 3.34,
+          "phantom": 7.83,
+          "gradient": 5.49,
+          "sinusoidal": 5.19,
+          "block_letter": 8.08,
+          "crosshatch": 2.82,
+          "gabor": 16.38,
+          "speckle": 4.58
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.1242,
+          "circles": 0.0257,
+          "stripes_h": 0.0304,
+          "checkerboard": 0.0195,
+          "phantom": 0.0609,
+          "gradient": 0.0053,
+          "sinusoidal": 0.0117,
+          "block_letter": 0.0847,
+          "crosshatch": 0.0155,
+          "gabor": 0.1433,
+          "speckle": -0.0011
+        },
+        "avg_psnr": 6.84,
+        "avg_ssim": 0.0473,
+        "avg_time": 0.179
+      },
+      "FISTA-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 9.82,
+          "circles": 5.24,
+          "stripes_h": 5.41,
+          "checkerboard": 3.91,
+          "phantom": 7.32,
+          "gradient": 6.8,
+          "sinusoidal": 6.31,
+          "block_letter": 6.78,
+          "crosshatch": 3.89,
+          "gabor": 11.08,
+          "speckle": 5.92
+        },
+        "per_image_ssim": {
+          "gaussian_blob": -0.0352,
+          "circles": -0.007,
+          "stripes_h": -0.0301,
+          "checkerboard": -0.0017,
+          "phantom": -0.0328,
+          "gradient": 0.0097,
+          "sinusoidal": -0.0301,
+          "block_letter": -0.0454,
+          "crosshatch": 0.0002,
+          "gabor": -0.0596,
+          "speckle": 0.0039
+        },
+        "avg_psnr": 6.59,
+        "avg_ssim": -0.0207,
+        "avg_time": 0.342
+      },
+      "TVAL3": {
+        "per_image_psnr": {
+          "gaussian_blob": NaN,
+          "circles": NaN,
+          "stripes_h": NaN,
+          "checkerboard": NaN,
+          "phantom": NaN,
+          "gradient": NaN,
+          "sinusoidal": NaN,
+          "block_letter": NaN,
+          "crosshatch": NaN,
+          "gabor": NaN,
+          "speckle": NaN
+        },
+        "per_image_ssim": {
+          "gaussian_blob": NaN,
+          "circles": NaN,
+          "stripes_h": NaN,
+          "checkerboard": NaN,
+          "phantom": NaN,
+          "gradient": NaN,
+          "sinusoidal": NaN,
+          "block_letter": NaN,
+          "crosshatch": NaN,
+          "gabor": NaN,
+          "speckle": NaN
+        },
+        "avg_psnr": NaN,
+        "avg_ssim": NaN,
+        "avg_time": 0.262
+      },
+      "ADMM-DCT-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 36.01,
+          "circles": 10.34,
+          "stripes_h": 14.32,
+          "checkerboard": 7.54,
+          "phantom": 19.9,
+          "gradient": 37.96,
+          "sinusoidal": 18.93,
+          "block_letter": 13.74,
+          "crosshatch": 11.88,
+          "gabor": 31.45,
+          "speckle": 18.56
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.9663,
+          "circles": 0.3903,
+          "stripes_h": 0.789,
+          "checkerboard": 0.4074,
+          "phantom": 0.6848,
+          "gradient": 0.9934,
+          "sinusoidal": 0.8469,
+          "block_letter": 0.3608,
+          "crosshatch": 0.3938,
+          "gabor": 0.9054,
+          "speckle": 0.5199
+        },
+        "avg_psnr": 20.06,
+        "avg_ssim": 0.6598,
+        "avg_time": 0.853
+      }
+    },
+    "25pct": {
+      "FISTA-L1": {
+        "per_image_psnr": {
+          "gaussian_blob": 13.42,
+          "circles": 5.0,
+          "stripes_h": 5.2,
+          "checkerboard": 3.95,
+          "phantom": 8.33,
+          "gradient": 6.14,
+          "sinusoidal": 5.68,
+          "block_letter": 9.1,
+          "crosshatch": 3.26,
+          "gabor": 18.63,
+          "speckle": 5.1
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.1344,
+          "circles": 0.102,
+          "stripes_h": 0.1121,
+          "checkerboard": 0.0894,
+          "phantom": 0.1022,
+          "gradient": 0.0114,
+          "sinusoidal": 0.0638,
+          "block_letter": 0.141,
+          "crosshatch": 0.0391,
+          "gabor": 0.2813,
+          "speckle": 0.0267
+        },
+        "avg_psnr": 7.62,
+        "avg_ssim": 0.1003,
+        "avg_time": 0.426
+      },
+      "FISTA-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 9.95,
+          "circles": 5.44,
+          "stripes_h": 5.6,
+          "checkerboard": 4.16,
+          "phantom": 7.42,
+          "gradient": 6.86,
+          "sinusoidal": 6.41,
+          "block_letter": 6.9,
+          "crosshatch": 4.23,
+          "gabor": 11.09,
+          "speckle": 6.07
+        },
+        "per_image_ssim": {
+          "gaussian_blob": -0.0359,
+          "circles": 0.0216,
+          "stripes_h": 0.0053,
+          "checkerboard": 0.0496,
+          "phantom": -0.0056,
+          "gradient": 0.0071,
+          "sinusoidal": -0.0017,
+          "block_letter": -0.0254,
+          "crosshatch": 0.0451,
+          "gabor": -0.0674,
+          "speckle": 0.0042
+        },
+        "avg_psnr": 6.74,
+        "avg_ssim": -0.0003,
+        "avg_time": 0.339
+      },
+      "TVAL3": {
+        "per_image_psnr": {
+          "gaussian_blob": NaN,
+          "circles": NaN,
+          "stripes_h": NaN,
+          "checkerboard": NaN,
+          "phantom": NaN,
+          "gradient": NaN,
+          "sinusoidal": NaN,
+          "block_letter": NaN,
+          "crosshatch": NaN,
+          "gabor": NaN,
+          "speckle": NaN
+        },
+        "per_image_ssim": {
+          "gaussian_blob": NaN,
+          "circles": NaN,
+          "stripes_h": NaN,
+          "checkerboard": NaN,
+          "phantom": NaN,
+          "gradient": NaN,
+          "sinusoidal": NaN,
+          "block_letter": NaN,
+          "crosshatch": NaN,
+          "gabor": NaN,
+          "speckle": NaN
+        },
+        "avg_psnr": NaN,
+        "avg_ssim": NaN,
+        "avg_time": 0.413
+      },
+      "ADMM-DCT-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 43.38,
+          "circles": 16.56,
+          "stripes_h": 29.82,
+          "checkerboard": 13.13,
+          "phantom": 26.6,
+          "gradient": 44.72,
+          "sinusoidal": 35.05,
+          "block_letter": 18.61,
+          "crosshatch": 17.91,
+          "gabor": 37.72,
+          "speckle": 27.33
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.9828,
+          "circles": 0.8948,
+          "stripes_h": 0.9957,
+          "checkerboard": 0.8765,
+          "phantom": 0.8243,
+          "gradient": 0.9978,
+          "sinusoidal": 0.9975,
+          "block_letter": 0.5231,
+          "crosshatch": 0.8806,
+          "gabor": 0.9467,
+          "speckle": 0.9354
+        },
+        "avg_psnr": 28.26,
+        "avg_ssim": 0.8959,
+        "avg_time": 0.83
+      }
+    },
+    "50pct": {
+      "FISTA-L1": {
+        "per_image_psnr": {
+          "gaussian_blob": 20.38,
+          "circles": 6.36,
+          "stripes_h": 6.69,
+          "checkerboard": 5.33,
+          "phantom": 10.45,
+          "gradient": 7.15,
+          "sinusoidal": 7.06,
+          "block_letter": 35.2,
+          "crosshatch": 4.57,
+          "gabor": 26.68,
+          "speckle": 6.13
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.5016,
+          "circles": 0.2833,
+          "stripes_h": 0.3014,
+          "checkerboard": 0.3058,
+          "phantom": 0.2409,
+          "gradient": 0.0201,
+          "sinusoidal": 0.2098,
+          "block_letter": 0.9103,
+          "crosshatch": 0.139,
+          "gabor": 0.6969,
+          "speckle": 0.0746
+        },
+        "avg_psnr": 12.36,
+        "avg_ssim": 0.3349,
+        "avg_time": 0.813
+      },
+      "FISTA-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 9.48,
+          "circles": 5.95,
+          "stripes_h": 5.97,
+          "checkerboard": 4.65,
+          "phantom": 7.26,
+          "gradient": 6.98,
+          "sinusoidal": 6.67,
+          "block_letter": 6.72,
+          "crosshatch": 4.89,
+          "gabor": 10.77,
+          "speckle": 6.44
+        },
+        "per_image_ssim": {
+          "gaussian_blob": -0.018,
+          "circles": 0.1492,
+          "stripes_h": 0.1148,
+          "checkerboard": 0.1745,
+          "phantom": 0.0336,
+          "gradient": 0.0087,
+          "sinusoidal": 0.0685,
+          "block_letter": 0.0359,
+          "crosshatch": 0.1104,
+          "gabor": -0.0561,
+          "speckle": 0.0363
+        },
+        "avg_psnr": 6.89,
+        "avg_ssim": 0.0598,
+        "avg_time": 0.355
+      },
+      "TVAL3": {
+        "per_image_psnr": {
+          "gaussian_blob": NaN,
+          "circles": NaN,
+          "stripes_h": NaN,
+          "checkerboard": NaN,
+          "phantom": NaN,
+          "gradient": NaN,
+          "sinusoidal": NaN,
+          "block_letter": NaN,
+          "crosshatch": NaN,
+          "gabor": NaN,
+          "speckle": NaN
+        },
+        "per_image_ssim": {
+          "gaussian_blob": NaN,
+          "circles": NaN,
+          "stripes_h": NaN,
+          "checkerboard": NaN,
+          "phantom": NaN,
+          "gradient": NaN,
+          "sinusoidal": NaN,
+          "block_letter": NaN,
+          "crosshatch": NaN,
+          "gabor": NaN,
+          "speckle": NaN
+        },
+        "avg_psnr": NaN,
+        "avg_ssim": NaN,
+        "avg_time": 0.595
+      },
+      "ADMM-DCT-TV": {
+        "per_image_psnr": {
+          "gaussian_blob": 46.61,
+          "circles": 29.78,
+          "stripes_h": 38.81,
+          "checkerboard": 25.1,
+          "phantom": 36.49,
+          "gradient": 46.21,
+          "sinusoidal": 41.11,
+          "block_letter": 31.64,
+          "crosshatch": 26.3,
+          "gabor": 43.45,
+          "speckle": 36.39
+        },
+        "per_image_ssim": {
+          "gaussian_blob": 0.9869,
+          "circles": 0.9961,
+          "stripes_h": 0.9995,
+          "checkerboard": 0.9938,
+          "phantom": 0.9298,
+          "gradient": 0.9977,
+          "sinusoidal": 0.9994,
+          "block_letter": 0.7058,
+          "crosshatch": 0.9866,
+          "gabor": 0.9806,
+          "speckle": 0.9911
+        },
+        "avg_psnr": 36.54,
+        "avg_ssim": 0.9607,
+        "avg_time": 0.899
+      }
+    }
+  },
+  "env": {
+    "seed": 42,
+    "resolution": 33,
+    "sampling_rates": [
+      0.04,
+      0.1,
+      0.25,
+      0.5
+    ],
+    "noise_sigma": 0.01,
+    "n_images": 11,
+    "pwm_version": "ae5106be6a89",
+    "python_version": "3.13.9",
+    "numpy_version": "2.3.5",
+    "platform": "Linux x86_64",
+    "date": "2026-02-12T23:11:14.289755+00:00",
+    "scipy_version": "1.16.3"
+  },
+  "rb_dir": "/home/spiritai/PWM/test2/Physics_World_Model/runs/run_spc_set11_benchmark_854782b7"
+}

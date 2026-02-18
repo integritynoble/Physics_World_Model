@@ -1,0 +1,15 @@
+# Mismatch parameters for example_deconv modality
+modality: example_deconv
+
+parameters:
+  psf_sigma:
+    range: [0.5, 3.0]
+    typical_error: 0.3
+    unit: "pixels"
+    param_type: "blur"
+    description: "Gaussian PSF width error"
+
+severity_weights:
+  psf_sigma: 1.0
+
+correction_method: "grid_search"

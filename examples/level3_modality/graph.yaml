@@ -1,0 +1,27 @@
+# Level 3 Example: Simple deconvolution modality
+# This is a complete, working modality definition.
+
+description: "Simple 2D deconvolution: Gaussian blur + Poisson-Gaussian noise"
+metadata:
+  modality: example_deconv
+  x_shape: [64, 64]
+  y_shape: [64, 64]
+
+nodes:
+  - node_id: blur
+    primitive_id: conv2d
+    params:
+      sigma: 2.0
+      mode: reflect
+    learnable: [sigma]
+
+  - node_id: noise
+    primitive_id: poisson_gaussian
+    params:
+      peak_photons: 10000.0
+      read_sigma: 0.01
+      seed: 0
+
+edges:
+  - source: blur
+    target: noise

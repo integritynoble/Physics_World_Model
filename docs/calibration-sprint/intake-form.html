@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calibration Sprint - Intake Form</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-bg: #fafbfc;
+      --color-surface: #ffffff;
+      --color-primary: #1a56db;
+      --color-primary-light: #e8eefb;
+      --color-text: #1f2937;
+      --color-text-muted: #6b7280;
+      --color-border: #e5e7eb;
+      --color-error: #dc2626;
+      --max-width: 720px;
+      --radius: 8px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+    header h1 { font-size: 1.75rem; font-weight: 700; }
+    header p { opacity: 0.9; margin-top: 0.5rem; }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .form-intro {
+      margin-bottom: 2rem;
+      color: var(--color-text-muted);
+    }
+
+    form { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    fieldset {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+    legend {
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 0 0.5rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+      margin-top: 1rem;
+    }
+    label:first-of-type { margin-top: 0.5rem; }
+
+    .hint {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-family: inherit;
+      background: var(--color-surface);
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.15);
+    }
+    textarea { min-height: 100px; resize: vertical; }
+
+    .required::after {
+      content: " *";
+      color: var(--color-error);
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--color-primary);
+      color: #fff;
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: #1444b3; }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .actions a {
+      color: var(--color-text-muted);
+      text-decoration: none;
+    }
+    .actions a:hover { text-decoration: underline; }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      color: var(--color-text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--color-border);
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 640px) {
+      header h1 { font-size: 1.4rem; }
+      fieldset { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Calibration Sprint Intake Form</h1>
+  <p>Tell us about your imaging system so we can scope your calibration engagement.</p>
+</header>
+
+<div class="container">
+
+  <p class="form-intro">
+    Please fill out this form with details about your system, measurement data,
+    and calibration goals. Fields marked with <span style="color:#dc2626">*</span>
+    are required.
+  </p>
+
+  <form action="#" method="post" id="intake-form">
+
+    <fieldset>
+      <legend>Contact Information</legend>
+      <label class="required" for="name">Full Name</label>
+      <input type="text" id="name" name="name" required>
+
+      <label class="required" for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="org">Organization</label>
+      <input type="text" id="org" name="org">
+    </fieldset>
+
+    <fieldset>
+      <legend>Imaging System</legend>
+
+      <label class="required" for="modality">Modality</label>
+      <select id="modality" name="modality" required>
+        <option value="">-- Select --</option>
+        <option value="cassi">CASSI (Spectral Imaging)</option>
+        <option value="spc">SPC (Single-Pixel Camera)</option>
+        <option value="cacti">CACTI (Temporal Imaging)</option>
+        <option value="ct">CT (Computed Tomography)</option>
+        <option value="mri">MRI</option>
+        <option value="widefield">Widefield Microscopy</option>
+        <option value="confocal">Confocal Microscopy</option>
+        <option value="sim">Structured Illumination (SIM)</option>
+        <option value="lightsheet">Light-Sheet Microscopy</option>
+        <option value="lensless">Lensless Imaging</option>
+        <option value="ptychography">Ptychography</option>
+        <option value="holography">Holography</option>
+        <option value="oct">OCT</option>
+        <option value="photoacoustic">Photoacoustic</option>
+        <option value="fpm">FPM</option>
+        <option value="nerf">NeRF</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label class="required" for="system-desc">System Description</label>
+      <p class="hint">Describe your hardware, detector, illumination source, and optical path.</p>
+      <textarea id="system-desc" name="system_description" required></textarea>
+
+      <label for="data-dims">Data Dimensions</label>
+      <p class="hint">E.g., "256x256 spatial, 31 spectral bands" or "512x512, 8 temporal frames".</p>
+      <input type="text" id="data-dims" name="data_dims">
+
+      <label for="noise-model">Noise Model</label>
+      <p class="hint">E.g., Poisson + Gaussian read noise (sigma ~5 DN).</p>
+      <input type="text" id="noise-model" name="noise_model">
+    </fieldset>
+
+    <fieldset>
+      <legend>Measurement Data</legend>
+
+      <label class="required" for="data-format">Data Format</label>
+      <p class="hint">E.g., .npy, .mat, .tiff, .h5</p>
+      <input type="text" id="data-format" name="data_format" required>
+
+      <label for="data-size">Approximate Data Size</label>
+      <input type="text" id="data-size" name="data_size" placeholder="e.g., 50 MB">
+
+      <label for="data-notes">Additional Data Notes</label>
+      <textarea id="data-notes" name="data_notes"
+        placeholder="Any preprocessing already applied, known artifacts, etc."></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>Calibration Goals</legend>
+
+      <label class="required" for="goals">What Do You Want Calibrated?</label>
+      <p class="hint">
+        E.g., dispersion angle, PSF parameters, mask alignment, gain/offset,
+        or "full operator fit."
+      </p>
+      <textarea id="goals" name="goals" required></textarea>
+
+      <label for="constraints">Known Constraints</label>
+      <p class="hint">
+        E.g., max runtime, must run on CPU only, specific solver preference.
+      </p>
+      <textarea id="constraints" name="constraints"></textarea>
+
+      <label for="tier">Preferred Tier</label>
+      <select id="tier" name="tier">
+        <option value="standard">Standard (1 dataset, 5 days)</option>
+        <option value="extended">Extended (up to 5 datasets, 10 days)</option>
+        <option value="enterprise">Enterprise (custom scope)</option>
+      </select>
+    </fieldset>
+
+    <div class="actions">
+      <button type="submit" class="btn">Submit Intake Form</button>
+      <a href="index.html">Back to service overview</a>
+    </div>
+
+  </form>
+
+</div>
+
+<footer>
+  Physics World Model (PWM) &mdash; Calibration Sprint Intake
+</footer>
+
+</body>
+</html>

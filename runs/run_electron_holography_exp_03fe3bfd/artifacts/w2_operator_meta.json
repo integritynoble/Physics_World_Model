@@ -1,0 +1,13 @@
+{
+  "a_definition": "callable",
+  "a_extraction_method": "graph_stripped",
+  "a_sha256": "f9d5922030a61817",
+  "linearity": "linear",
+  "linearization_notes": "fresnel_prop is linear with adjoint",
+  "mismatch_type": "synthetic_injected",
+  "correction_family": "Pre",
+  "nll_before": 46810.0,
+  "nll_after": 2048.4,
+  "nll_decrease_pct": 95.6,
+  "timestamp": "2026-02-12T15:50:12.652028+00:00"
+}

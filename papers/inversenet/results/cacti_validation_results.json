@@ -1,0 +1,2270 @@
+[
+  {
+    "name": "kobe",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 27.989304819224703,
+          "ssim": 0.8918817504120876
+        },
+        "pnp_ffdnet": {
+          "psnr": 31.555092058383103,
+          "ssim": 0.9300072042719925
+        },
+        "elp_unfolding": {
+          "psnr": 35.960458868353605,
+          "ssim": 0.9759480676246404
+        },
+        "efficientsci": {
+          "psnr": 37.113424545009096,
+          "ssim": 0.9819102100126937
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 19.535619634076028,
+          "ssim": 0.5159736181679242
+        },
+        "pnp_ffdnet": {
+          "psnr": 16.016596464978903,
+          "ssim": 0.4352174226547506
+        },
+        "elp_unfolding": {
+          "psnr": 18.742181206412898,
+          "ssim": 0.5210296699519126
+        },
+        "efficientsci": {
+          "psnr": 18.62975312523514,
+          "ssim": 0.5208034938876542
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 27.786447502748896,
+          "ssim": 0.8790413303806233
+        },
+        "pnp_ffdnet": {
+          "psnr": 30.49423051161659,
+          "ssim": 0.9094732583886374
+        },
+        "elp_unfolding": {
+          "psnr": 34.042763035712014,
+          "ssim": 0.9560504367521181
+        },
+        "efficientsci": {
+          "psnr": 33.584731952656966,
+          "ssim": 0.9639915910372474
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 8.4537,
+        "gap_ii_iii": 8.2508,
+        "gap_iii_i": 0.2029
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 15.5385,
+        "gap_ii_iii": 14.4776,
+        "gap_iii_i": 1.0609
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 17.2183,
+        "gap_ii_iii": 15.3006,
+        "gap_iii_i": 1.9177
+      },
+      "efficientsci": {
+        "gap_i_ii": 18.4837,
+        "gap_ii_iii": 14.955,
+        "gap_iii_i": 3.5287
+      }
+    }
+  },
+  {
+    "name": "kobe",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 26.996226259000036,
+          "ssim": 0.8536416189233776
+        },
+        "pnp_ffdnet": {
+          "psnr": 30.738426193975435,
+          "ssim": 0.9192931769971106
+        },
+        "elp_unfolding": {
+          "psnr": 34.99517110482577,
+          "ssim": 0.9696788002945786
+        },
+        "efficientsci": {
+          "psnr": 36.356541893900875,
+          "ssim": 0.9775546844540874
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 18.855827762020414,
+          "ssim": 0.4223122605190286
+        },
+        "pnp_ffdnet": {
+          "psnr": 16.062244659453203,
+          "ssim": 0.36336263890212317
+        },
+        "elp_unfolding": {
+          "psnr": 18.274714196119774,
+          "ssim": 0.4298585503901383
+        },
+        "efficientsci": {
+          "psnr": 18.19490545177411,
+          "ssim": 0.42960265980766177
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 26.770597637363256,
+          "ssim": 0.842383034219518
+        },
+        "pnp_ffdnet": {
+          "psnr": 29.835850877719178,
+          "ssim": 0.9037733829429724
+        },
+        "elp_unfolding": {
+          "psnr": 33.328752953681075,
+          "ssim": 0.9510838132114554
+        },
+        "efficientsci": {
+          "psnr": 32.71131337629296,
+          "ssim": 0.9586536573445467
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 8.1404,
+        "gap_ii_iii": 7.9148,
+        "gap_iii_i": 0.2256
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 14.6762,
+        "gap_ii_iii": 13.7736,
+        "gap_iii_i": 0.9026
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 16.7205,
+        "gap_ii_iii": 15.054,
+        "gap_iii_i": 1.6664
+      },
+      "efficientsci": {
+        "gap_i_ii": 18.1616,
+        "gap_ii_iii": 14.5164,
+        "gap_iii_i": 3.6452
+      }
+    }
+  },
+  {
+    "name": "kobe",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 26.400058597896468,
+          "ssim": 0.8432774095802527
+        },
+        "pnp_ffdnet": {
+          "psnr": 29.408238818988334,
+          "ssim": 0.9043045188914635
+        },
+        "elp_unfolding": {
+          "psnr": 33.482923179461494,
+          "ssim": 0.9621908798917769
+        },
+        "efficientsci": {
+          "psnr": 35.12219458868219,
+          "ssim": 0.9730187396472497
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 19.01120370974048,
+          "ssim": 0.42671929976670875
+        },
+        "pnp_ffdnet": {
+          "psnr": 16.057275482884442,
+          "ssim": 0.3626082629248423
+        },
+        "elp_unfolding": {
+          "psnr": 18.28291545683382,
+          "ssim": 0.4353195324073156
+        },
+        "efficientsci": {
+          "psnr": 18.16890283127825,
+          "ssim": 0.43079594415556743
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 26.193103403673955,
+          "ssim": 0.8288503686601787
+        },
+        "pnp_ffdnet": {
+          "psnr": 28.699175430983782,
+          "ssim": 0.8857699961334549
+        },
+        "elp_unfolding": {
+          "psnr": 32.14042711992867,
+          "ssim": 0.9406870782573059
+        },
+        "efficientsci": {
+          "psnr": 32.01075621584171,
+          "ssim": 0.9524062656466331
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 7.3889,
+        "gap_ii_iii": 7.1819,
+        "gap_iii_i": 0.207
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 13.351,
+        "gap_ii_iii": 12.6419,
+        "gap_iii_i": 0.7091
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 15.2,
+        "gap_ii_iii": 13.8575,
+        "gap_iii_i": 1.3425
+      },
+      "efficientsci": {
+        "gap_i_ii": 16.9533,
+        "gap_ii_iii": 13.8419,
+        "gap_iii_i": 3.1114
+      }
+    }
+  },
+  {
+    "name": "kobe",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 25.41567806350053,
+          "ssim": 0.8273850366992155
+        },
+        "pnp_ffdnet": {
+          "psnr": 28.361209585786817,
+          "ssim": 0.900369008554398
+        },
+        "elp_unfolding": {
+          "psnr": 31.854368579658463,
+          "ssim": 0.9556653784527006
+        },
+        "efficientsci": {
+          "psnr": 33.60247330538903,
+          "ssim": 0.9704746673533606
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 18.467153989289894,
+          "ssim": 0.42221944228518266
+        },
+        "pnp_ffdnet": {
+          "psnr": 15.856147540099723,
+          "ssim": 0.36916853989280257
+        },
+        "elp_unfolding": {
+          "psnr": 17.95571990669988,
+          "ssim": 0.44073889648019304
+        },
+        "efficientsci": {
+          "psnr": 17.845868460016156,
+          "ssim": 0.4335263179975838
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 25.24335534296465,
+          "ssim": 0.8146935012544654
+        },
+        "pnp_ffdnet": {
+          "psnr": 27.765358685156368,
+          "ssim": 0.8827499474754603
+        },
+        "elp_unfolding": {
+          "psnr": 30.99799137905182,
+          "ssim": 0.9382593505602175
+        },
+        "efficientsci": {
+          "psnr": 31.43286258735394,
+          "ssim": 0.9521071033959749
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 6.9485,
+        "gap_ii_iii": 6.7762,
+        "gap_iii_i": 0.1723
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 12.5051,
+        "gap_ii_iii": 11.9092,
+        "gap_iii_i": 0.5959
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 13.8986,
+        "gap_ii_iii": 13.0423,
+        "gap_iii_i": 0.8564
+      },
+      "efficientsci": {
+        "gap_i_ii": 15.7566,
+        "gap_ii_iii": 13.587,
+        "gap_iii_i": 2.1696
+      }
+    }
+  },
+  {
+    "name": "traffic",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 20.875294488025776,
+          "ssim": 0.7151829973129578
+        },
+        "pnp_ffdnet": {
+          "psnr": 23.846527604138306,
+          "ssim": 0.829143132182554
+        },
+        "elp_unfolding": {
+          "psnr": 30.96348125201827,
+          "ssim": 0.959890206771665
+        },
+        "efficientsci": {
+          "psnr": 31.68405910184169,
+          "ssim": 0.9655994161806534
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 14.006814427442468,
+          "ssim": 0.2959861815685573
+        },
+        "pnp_ffdnet": {
+          "psnr": 9.996286075270348,
+          "ssim": 0.19790989782586638
+        },
+        "elp_unfolding": {
+          "psnr": 13.961732684544115,
+          "ssim": 0.31877748158270064
+        },
+        "efficientsci": {
+          "psnr": 13.250889310624208,
+          "ssim": 0.312777629392174
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 20.679332702545857,
+          "ssim": 0.6898332474036335
+        },
+        "pnp_ffdnet": {
+          "psnr": 23.338935648967684,
+          "ssim": 0.7997476066495162
+        },
+        "elp_unfolding": {
+          "psnr": 28.931966154929682,
+          "ssim": 0.9311724341783036
+        },
+        "efficientsci": {
+          "psnr": 26.955234585732768,
+          "ssim": 0.9283499355064212
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 6.8685,
+        "gap_ii_iii": 6.6725,
+        "gap_iii_i": 0.196
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 13.8502,
+        "gap_ii_iii": 13.3426,
+        "gap_iii_i": 0.5076
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 17.0017,
+        "gap_ii_iii": 14.9702,
+        "gap_iii_i": 2.0315
+      },
+      "efficientsci": {
+        "gap_i_ii": 18.4332,
+        "gap_ii_iii": 13.7043,
+        "gap_iii_i": 4.7288
+      }
+    }
+  },
+  {
+    "name": "traffic",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 20.751672648638596,
+          "ssim": 0.7122781787114658
+        },
+        "pnp_ffdnet": {
+          "psnr": 23.86941520029466,
+          "ssim": 0.8334425231053796
+        },
+        "elp_unfolding": {
+          "psnr": 31.08761283215206,
+          "ssim": 0.9632365218884735
+        },
+        "efficientsci": {
+          "psnr": 31.981255688457658,
+          "ssim": 0.9690194111143594
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 13.965280746125082,
+          "ssim": 0.30437714009319283
+        },
+        "pnp_ffdnet": {
+          "psnr": 10.039739821675663,
+          "ssim": 0.20673438330407767
+        },
+        "elp_unfolding": {
+          "psnr": 13.852325406434314,
+          "ssim": 0.32323015310875575
+        },
+        "efficientsci": {
+          "psnr": 13.298166051776425,
+          "ssim": 0.32289738756484576
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 20.615975683341,
+          "ssim": 0.6888498350234566
+        },
+        "pnp_ffdnet": {
+          "psnr": 23.135389900254893,
+          "ssim": 0.8004317927402445
+        },
+        "elp_unfolding": {
+          "psnr": 28.689971259510724,
+          "ssim": 0.9332233568293472
+        },
+        "efficientsci": {
+          "psnr": 26.4691486059354,
+          "ssim": 0.9294124345454259
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 6.7864,
+        "gap_ii_iii": 6.6507,
+        "gap_iii_i": 0.1357
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 13.8297,
+        "gap_ii_iii": 13.0957,
+        "gap_iii_i": 0.734
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 17.2353,
+        "gap_ii_iii": 14.8376,
+        "gap_iii_i": 2.3976
+      },
+      "efficientsci": {
+        "gap_i_ii": 18.6831,
+        "gap_ii_iii": 13.171,
+        "gap_iii_i": 5.5121
+      }
+    }
+  },
+  {
+    "name": "traffic",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 20.734836325101192,
+          "ssim": 0.7178754510472358
+        },
+        "pnp_ffdnet": {
+          "psnr": 24.16490105301243,
+          "ssim": 0.8425793508627533
+        },
+        "elp_unfolding": {
+          "psnr": 31.568583853260694,
+          "ssim": 0.9661816460810349
+        },
+        "efficientsci": {
+          "psnr": 32.436530553694986,
+          "ssim": 0.9718220797416401
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 14.032440190734153,
+          "ssim": 0.30506319979500446
+        },
+        "pnp_ffdnet": {
+          "psnr": 9.974585699649056,
+          "ssim": 0.20549468494870643
+        },
+        "elp_unfolding": {
+          "psnr": 13.910592535052418,
+          "ssim": 0.32403177392207916
+        },
+        "efficientsci": {
+          "psnr": 13.236434750378628,
+          "ssim": 0.3203619150629554
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 20.60807915978538,
+          "ssim": 0.6925891081272515
+        },
+        "pnp_ffdnet": {
+          "psnr": 23.512929129090722,
+          "ssim": 0.8098805684284998
+        },
+        "elp_unfolding": {
+          "psnr": 29.160978935701053,
+          "ssim": 0.9359534249962225
+        },
+        "efficientsci": {
+          "psnr": 27.37364685353354,
+          "ssim": 0.933565475255056
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 6.7024,
+        "gap_ii_iii": 6.5756,
+        "gap_iii_i": 0.1268
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 14.1903,
+        "gap_ii_iii": 13.5383,
+        "gap_iii_i": 0.652
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 17.658,
+        "gap_ii_iii": 15.2504,
+        "gap_iii_i": 2.4076
+      },
+      "efficientsci": {
+        "gap_i_ii": 19.2001,
+        "gap_ii_iii": 14.1372,
+        "gap_iii_i": 5.0629
+      }
+    }
+  },
+  {
+    "name": "traffic",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 20.693291726960467,
+          "ssim": 0.7172603716843156
+        },
+        "pnp_ffdnet": {
+          "psnr": 24.196669384709764,
+          "ssim": 0.8416583162971705
+        },
+        "elp_unfolding": {
+          "psnr": 31.359175752774398,
+          "ssim": 0.9650069397570714
+        },
+        "efficientsci": {
+          "psnr": 32.33759752542967,
+          "ssim": 0.9714601099489819
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 13.963132558070676,
+          "ssim": 0.29577287952729303
+        },
+        "pnp_ffdnet": {
+          "psnr": 9.93757773936384,
+          "ssim": 0.19339987102217795
+        },
+        "elp_unfolding": {
+          "psnr": 13.879472484879333,
+          "ssim": 0.3153606635732431
+        },
+        "efficientsci": {
+          "psnr": 13.261960437383546,
+          "ssim": 0.3140510418494917
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 20.534067604851302,
+          "ssim": 0.6934241495664853
+        },
+        "pnp_ffdnet": {
+          "psnr": 23.49613281041483,
+          "ssim": 0.8076017015224313
+        },
+        "elp_unfolding": {
+          "psnr": 29.18246612230576,
+          "ssim": 0.9374592352253772
+        },
+        "efficientsci": {
+          "psnr": 27.378404647199996,
+          "ssim": 0.9342588057285613
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 6.7302,
+        "gap_ii_iii": 6.5709,
+        "gap_iii_i": 0.1592
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 14.2591,
+        "gap_ii_iii": 13.5586,
+        "gap_iii_i": 0.7005
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 17.4797,
+        "gap_ii_iii": 15.303,
+        "gap_iii_i": 2.1767
+      },
+      "efficientsci": {
+        "gap_i_ii": 19.0756,
+        "gap_ii_iii": 14.1164,
+        "gap_iii_i": 4.9592
+      }
+    }
+  },
+  {
+    "name": "traffic",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 20.61008108881248,
+          "ssim": 0.7167787547683202
+        },
+        "pnp_ffdnet": {
+          "psnr": 24.137777685578087,
+          "ssim": 0.8391407038034657
+        },
+        "elp_unfolding": {
+          "psnr": 31.426318231409343,
+          "ssim": 0.9643772754767472
+        },
+        "efficientsci": {
+          "psnr": 32.23001564560265,
+          "ssim": 0.9700744003545787
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 13.955297798555094,
+          "ssim": 0.2904567338126149
+        },
+        "pnp_ffdnet": {
+          "psnr": 9.964529065129163,
+          "ssim": 0.18810734432663048
+        },
+        "elp_unfolding": {
+          "psnr": 13.921732030853695,
+          "ssim": 0.30843497533291653
+        },
+        "efficientsci": {
+          "psnr": 13.375035367534704,
+          "ssim": 0.31155980866759
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 20.44940547205334,
+          "ssim": 0.6903680998318877
+        },
+        "pnp_ffdnet": {
+          "psnr": 23.370071123376324,
+          "ssim": 0.8049376881112257
+        },
+        "elp_unfolding": {
+          "psnr": 29.24952459645929,
+          "ssim": 0.9354571795353646
+        },
+        "efficientsci": {
+          "psnr": 27.31031599659172,
+          "ssim": 0.9323647902023715
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 6.6548,
+        "gap_ii_iii": 6.4941,
+        "gap_iii_i": 0.1607
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 14.1732,
+        "gap_ii_iii": 13.4055,
+        "gap_iii_i": 0.7677
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 17.5046,
+        "gap_ii_iii": 15.3278,
+        "gap_iii_i": 2.1768
+      },
+      "efficientsci": {
+        "gap_i_ii": 18.855,
+        "gap_ii_iii": 13.9353,
+        "gap_iii_i": 4.9197
+      }
+    }
+  },
+  {
+    "name": "traffic",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 20.72018081755015,
+          "ssim": 0.7217008212910043
+        },
+        "pnp_ffdnet": {
+          "psnr": 24.171335257274727,
+          "ssim": 0.8384036300752147
+        },
+        "elp_unfolding": {
+          "psnr": 31.572018575312097,
+          "ssim": 0.9649327840060269
+        },
+        "efficientsci": {
+          "psnr": 32.45668904425557,
+          "ssim": 0.9714987900607568
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 14.009293468309302,
+          "ssim": 0.2945717732031179
+        },
+        "pnp_ffdnet": {
+          "psnr": 9.791968337433373,
+          "ssim": 0.18747271621146946
+        },
+        "elp_unfolding": {
+          "psnr": 13.898797867136135,
+          "ssim": 0.3132528565473258
+        },
+        "efficientsci": {
+          "psnr": 13.367110626484083,
+          "ssim": 0.31546710715774007
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 20.507154822721716,
+          "ssim": 0.6890942827362297
+        },
+        "pnp_ffdnet": {
+          "psnr": 23.391767528954013,
+          "ssim": 0.8005133638418478
+        },
+        "elp_unfolding": {
+          "psnr": 29.038069571541087,
+          "ssim": 0.9309595141055638
+        },
+        "efficientsci": {
+          "psnr": 26.96707373452845,
+          "ssim": 0.9287625461055207
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 6.7109,
+        "gap_ii_iii": 6.4979,
+        "gap_iii_i": 0.213
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 14.3794,
+        "gap_ii_iii": 13.5998,
+        "gap_iii_i": 0.7796
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 17.6732,
+        "gap_ii_iii": 15.1393,
+        "gap_iii_i": 2.5339
+      },
+      "efficientsci": {
+        "gap_i_ii": 19.0896,
+        "gap_ii_iii": 13.6,
+        "gap_iii_i": 5.4896
+      }
+    }
+  },
+  {
+    "name": "runner",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 29.809124626401328,
+          "ssim": 0.9140091447324699
+        },
+        "pnp_ffdnet": {
+          "psnr": 32.53846130542457,
+          "ssim": 0.9278465905769266
+        },
+        "elp_unfolding": {
+          "psnr": 39.65815279758636,
+          "ssim": 0.9804509050949197
+        },
+        "efficientsci": {
+          "psnr": 40.67911997946992,
+          "ssim": 0.9819420874065183
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 17.9725912976538,
+          "ssim": 0.3262150066221748
+        },
+        "pnp_ffdnet": {
+          "psnr": 13.36528984465403,
+          "ssim": 0.21097697579012625
+        },
+        "elp_unfolding": {
+          "psnr": 17.242064346157566,
+          "ssim": 0.3119058965653164
+        },
+        "efficientsci": {
+          "psnr": 16.99180311852857,
+          "ssim": 0.3067808906135558
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 29.30562448862875,
+          "ssim": 0.8765902303873053
+        },
+        "pnp_ffdnet": {
+          "psnr": 30.888113855850968,
+          "ssim": 0.8909071391705615
+        },
+        "elp_unfolding": {
+          "psnr": 34.61783645664556,
+          "ssim": 0.9506397807306297
+        },
+        "efficientsci": {
+          "psnr": 31.09316643447634,
+          "ssim": 0.9434392948028512
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 11.8365,
+        "gap_ii_iii": 11.333,
+        "gap_iii_i": 0.5035
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 19.1732,
+        "gap_ii_iii": 17.5228,
+        "gap_iii_i": 1.6503
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 22.4161,
+        "gap_ii_iii": 17.3758,
+        "gap_iii_i": 5.0403
+      },
+      "efficientsci": {
+        "gap_i_ii": 23.6873,
+        "gap_ii_iii": 14.1014,
+        "gap_iii_i": 9.586
+      }
+    }
+  },
+  {
+    "name": "runner",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 29.794798132108454,
+          "ssim": 0.9126606468124776
+        },
+        "pnp_ffdnet": {
+          "psnr": 33.20814058369937,
+          "ssim": 0.9309645173073955
+        },
+        "elp_unfolding": {
+          "psnr": 39.59635239857124,
+          "ssim": 0.9777162442925936
+        },
+        "efficientsci": {
+          "psnr": 40.369793842449596,
+          "ssim": 0.9797241474773293
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 17.680103161854802,
+          "ssim": 0.3210273035095959
+        },
+        "pnp_ffdnet": {
+          "psnr": 13.15520676381497,
+          "ssim": 0.21209852447282215
+        },
+        "elp_unfolding": {
+          "psnr": 16.966765964287152,
+          "ssim": 0.3068701911299255
+        },
+        "efficientsci": {
+          "psnr": 16.74440915969544,
+          "ssim": 0.3014535424567329
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 29.205951724190335,
+          "ssim": 0.8739559689858392
+        },
+        "pnp_ffdnet": {
+          "psnr": 30.994972969367673,
+          "ssim": 0.8926211624185765
+        },
+        "elp_unfolding": {
+          "psnr": 34.251329184067615,
+          "ssim": 0.9486229119318168
+        },
+        "efficientsci": {
+          "psnr": 30.65170220598403,
+          "ssim": 0.9409490316692188
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 12.1147,
+        "gap_ii_iii": 11.5258,
+        "gap_iii_i": 0.5888
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 20.0529,
+        "gap_ii_iii": 17.8398,
+        "gap_iii_i": 2.2132
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 22.6296,
+        "gap_ii_iii": 17.2846,
+        "gap_iii_i": 5.345
+      },
+      "efficientsci": {
+        "gap_i_ii": 23.6254,
+        "gap_ii_iii": 13.9073,
+        "gap_iii_i": 9.7181
+      }
+    }
+  },
+  {
+    "name": "runner",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 28.759114724308823,
+          "ssim": 0.9000957481430565
+        },
+        "pnp_ffdnet": {
+          "psnr": 31.798761634458366,
+          "ssim": 0.9284463499593197
+        },
+        "elp_unfolding": {
+          "psnr": 35.84928595783513,
+          "ssim": 0.972050194186849
+        },
+        "efficientsci": {
+          "psnr": 37.995845414929015,
+          "ssim": 0.9760391292184065
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 17.455466841624,
+          "ssim": 0.31509538339426163
+        },
+        "pnp_ffdnet": {
+          "psnr": 13.130045297005804,
+          "ssim": 0.20916516944836844
+        },
+        "elp_unfolding": {
+          "psnr": 16.765684818600356,
+          "ssim": 0.2974812937135025
+        },
+        "efficientsci": {
+          "psnr": 16.437655893257073,
+          "ssim": 0.2916946870130555
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 28.360282536481062,
+          "ssim": 0.863213602907558
+        },
+        "pnp_ffdnet": {
+          "psnr": 30.520552638881004,
+          "ssim": 0.8922122872800846
+        },
+        "elp_unfolding": {
+          "psnr": 33.42311322138246,
+          "ssim": 0.9429796235063227
+        },
+        "efficientsci": {
+          "psnr": 31.494752862886077,
+          "ssim": 0.9383944768142272
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 11.3036,
+        "gap_ii_iii": 10.9048,
+        "gap_iii_i": 0.3988
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 18.6687,
+        "gap_ii_iii": 17.3905,
+        "gap_iii_i": 1.2782
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 19.0836,
+        "gap_ii_iii": 16.6574,
+        "gap_iii_i": 2.4262
+      },
+      "efficientsci": {
+        "gap_i_ii": 21.5582,
+        "gap_ii_iii": 15.0571,
+        "gap_iii_i": 6.5011
+      }
+    }
+  },
+  {
+    "name": "runner",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 28.952876345119563,
+          "ssim": 0.8963002384537633
+        },
+        "pnp_ffdnet": {
+          "psnr": 32.34472455686925,
+          "ssim": 0.9316527318268271
+        },
+        "elp_unfolding": {
+          "psnr": 37.385369484686485,
+          "ssim": 0.9728377129255548
+        },
+        "efficientsci": {
+          "psnr": 38.95186332221538,
+          "ssim": 0.9768844499361036
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 17.892340313390807,
+          "ssim": 0.30492814638555266
+        },
+        "pnp_ffdnet": {
+          "psnr": 13.857738677738258,
+          "ssim": 0.21468665434678547
+        },
+        "elp_unfolding": {
+          "psnr": 17.21762022549282,
+          "ssim": 0.2913872672443731
+        },
+        "efficientsci": {
+          "psnr": 16.548054632744872,
+          "ssim": 0.2813528049627545
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 28.46813027930996,
+          "ssim": 0.8578812594585701
+        },
+        "pnp_ffdnet": {
+          "psnr": 30.99418856439754,
+          "ssim": 0.8926816462432055
+        },
+        "elp_unfolding": {
+          "psnr": 34.018726543937866,
+          "ssim": 0.9420408742398644
+        },
+        "efficientsci": {
+          "psnr": 31.79705953119643,
+          "ssim": 0.9375463429844009
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 11.0605,
+        "gap_ii_iii": 10.5758,
+        "gap_iii_i": 0.4847
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 18.487,
+        "gap_ii_iii": 17.1364,
+        "gap_iii_i": 1.3505
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 20.1677,
+        "gap_ii_iii": 16.8011,
+        "gap_iii_i": 3.3666
+      },
+      "efficientsci": {
+        "gap_i_ii": 22.4038,
+        "gap_ii_iii": 15.249,
+        "gap_iii_i": 7.1548
+      }
+    }
+  },
+  {
+    "name": "runner",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 29.40272204984121,
+          "ssim": 0.8977238264067033
+        },
+        "pnp_ffdnet": {
+          "psnr": 34.524817192887724,
+          "ssim": 0.9396503079492167
+        },
+        "elp_unfolding": {
+          "psnr": 38.22776903103749,
+          "ssim": 0.9752029529911628
+        },
+        "efficientsci": {
+          "psnr": 38.42255425267952,
+          "ssim": 0.9786233706770315
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 17.47856235663302,
+          "ssim": 0.2837991328395492
+        },
+        "pnp_ffdnet": {
+          "psnr": 13.486907281922708,
+          "ssim": 0.19799227797479102
+        },
+        "elp_unfolding": {
+          "psnr": 16.80027590107165,
+          "ssim": 0.2667595544539833
+        },
+        "efficientsci": {
+          "psnr": 16.54900664549024,
+          "ssim": 0.2640017082228643
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 28.93349969286655,
+          "ssim": 0.8583801256172754
+        },
+        "pnp_ffdnet": {
+          "psnr": 32.51258842344222,
+          "ssim": 0.9021206682382009
+        },
+        "elp_unfolding": {
+          "psnr": 33.9924109770414,
+          "ssim": 0.9426945116636951
+        },
+        "efficientsci": {
+          "psnr": 30.70185069624811,
+          "ssim": 0.9371536697137504
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 11.9242,
+        "gap_ii_iii": 11.4549,
+        "gap_iii_i": 0.4692
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 21.0379,
+        "gap_ii_iii": 19.0257,
+        "gap_iii_i": 2.0122
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 21.4275,
+        "gap_ii_iii": 17.1921,
+        "gap_iii_i": 4.2354
+      },
+      "efficientsci": {
+        "gap_i_ii": 21.8735,
+        "gap_ii_iii": 14.1528,
+        "gap_iii_i": 7.7207
+      }
+    }
+  },
+  {
+    "name": "drop",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 34.82779862442509,
+          "ssim": 0.9715193046339737
+        },
+        "pnp_ffdnet": {
+          "psnr": 38.51259462639723,
+          "ssim": 0.9849233118907095
+        },
+        "elp_unfolding": {
+          "psnr": 39.75676069814652,
+          "ssim": 0.9801672757912023
+        },
+        "efficientsci": {
+          "psnr": 42.24534477782165,
+          "ssim": 0.9899243928975667
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 13.809295765402766,
+          "ssim": 0.2346478036519959
+        },
+        "pnp_ffdnet": {
+          "psnr": 7.64886843854593,
+          "ssim": 0.14434186264018953
+        },
+        "elp_unfolding": {
+          "psnr": 13.663246532184024,
+          "ssim": 0.2220716590105219
+        },
+        "efficientsci": {
+          "psnr": 11.729267801418079,
+          "ssim": 0.20815655937959915
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 31.700818466641035,
+          "ssim": 0.8361158466284759
+        },
+        "pnp_ffdnet": {
+          "psnr": 21.867634153993922,
+          "ssim": 0.7582356453948312
+        },
+        "elp_unfolding": {
+          "psnr": 25.102630141104644,
+          "ssim": 0.9073678038237869
+        },
+        "efficientsci": {
+          "psnr": 21.950971442548003,
+          "ssim": 0.9069694127777823
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 21.0185,
+        "gap_ii_iii": 17.8915,
+        "gap_iii_i": 3.127
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 30.8637,
+        "gap_ii_iii": 14.2188,
+        "gap_iii_i": 16.645
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 26.0935,
+        "gap_ii_iii": 11.4394,
+        "gap_iii_i": 14.6541
+      },
+      "efficientsci": {
+        "gap_i_ii": 30.5161,
+        "gap_ii_iii": 10.2217,
+        "gap_iii_i": 20.2944
+      }
+    }
+  },
+  {
+    "name": "drop",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 34.78634251764804,
+          "ssim": 0.967503583667242
+        },
+        "pnp_ffdnet": {
+          "psnr": 38.86039645476751,
+          "ssim": 0.985153387064649
+        },
+        "elp_unfolding": {
+          "psnr": 40.412196384866455,
+          "ssim": 0.9814558674042204
+        },
+        "efficientsci": {
+          "psnr": 42.59770180519052,
+          "ssim": 0.9903090134019581
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 13.754314337578531,
+          "ssim": 0.2161883408218338
+        },
+        "pnp_ffdnet": {
+          "psnr": 7.640286890116029,
+          "ssim": 0.12761295603536776
+        },
+        "elp_unfolding": {
+          "psnr": 13.627742475156484,
+          "ssim": 0.20350046030791993
+        },
+        "efficientsci": {
+          "psnr": 11.709942695078986,
+          "ssim": 0.19000306151115381
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 31.828728883248175,
+          "ssim": 0.8323317259079888
+        },
+        "pnp_ffdnet": {
+          "psnr": 21.969427196928415,
+          "ssim": 0.7593890072991364
+        },
+        "elp_unfolding": {
+          "psnr": 25.22651709564912,
+          "ssim": 0.9062614170134415
+        },
+        "efficientsci": {
+          "psnr": 21.99422019505587,
+          "ssim": 0.9053572830225113
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 21.032,
+        "gap_ii_iii": 18.0744,
+        "gap_iii_i": 2.9576
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 31.2201,
+        "gap_ii_iii": 14.3291,
+        "gap_iii_i": 16.891
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 26.7845,
+        "gap_ii_iii": 11.5988,
+        "gap_iii_i": 15.1857
+      },
+      "efficientsci": {
+        "gap_i_ii": 30.8878,
+        "gap_ii_iii": 10.2843,
+        "gap_iii_i": 20.6035
+      }
+    }
+  },
+  {
+    "name": "drop",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 34.280846773658446,
+          "ssim": 0.9616944626402384
+        },
+        "pnp_ffdnet": {
+          "psnr": 39.08544349382211,
+          "ssim": 0.9850293862038327
+        },
+        "elp_unfolding": {
+          "psnr": 40.688006993056696,
+          "ssim": 0.9818663803186538
+        },
+        "efficientsci": {
+          "psnr": 43.12969585374251,
+          "ssim": 0.9903329406075669
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 13.64176720960047,
+          "ssim": 0.20731245737561038
+        },
+        "pnp_ffdnet": {
+          "psnr": 7.581279608071815,
+          "ssim": 0.12035749217600353
+        },
+        "elp_unfolding": {
+          "psnr": 13.515150991928502,
+          "ssim": 0.19216081189566542
+        },
+        "efficientsci": {
+          "psnr": 11.66062230243833,
+          "ssim": 0.1806524031016947
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 31.488540060608862,
+          "ssim": 0.8263176058472314
+        },
+        "pnp_ffdnet": {
+          "psnr": 21.883788679967353,
+          "ssim": 0.7610362940381393
+        },
+        "elp_unfolding": {
+          "psnr": 25.180433082514075,
+          "ssim": 0.9062444718859108
+        },
+        "efficientsci": {
+          "psnr": 21.98651007507831,
+          "ssim": 0.9056026686453397
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 20.6391,
+        "gap_ii_iii": 17.8468,
+        "gap_iii_i": 2.7923
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 31.5042,
+        "gap_ii_iii": 14.3025,
+        "gap_iii_i": 17.2017
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 27.1729,
+        "gap_ii_iii": 11.6653,
+        "gap_iii_i": 15.5076
+      },
+      "efficientsci": {
+        "gap_i_ii": 31.4691,
+        "gap_ii_iii": 10.3259,
+        "gap_iii_i": 21.1432
+      }
+    }
+  },
+  {
+    "name": "drop",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 33.61371492046493,
+          "ssim": 0.9596890710692367
+        },
+        "pnp_ffdnet": {
+          "psnr": 38.885658033850866,
+          "ssim": 0.9854879831636196
+        },
+        "elp_unfolding": {
+          "psnr": 39.84454539417721,
+          "ssim": 0.9803054668291159
+        },
+        "efficientsci": {
+          "psnr": 42.2693261544616,
+          "ssim": 0.9894720892164576
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 13.526478745325768,
+          "ssim": 0.20690146958688116
+        },
+        "pnp_ffdnet": {
+          "psnr": 7.4794042031496275,
+          "ssim": 0.12148288808384144
+        },
+        "elp_unfolding": {
+          "psnr": 13.411676956510508,
+          "ssim": 0.19423011185045513
+        },
+        "efficientsci": {
+          "psnr": 11.571176809662717,
+          "ssim": 0.1832992591289894
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 31.151887621766384,
+          "ssim": 0.8218280289345035
+        },
+        "pnp_ffdnet": {
+          "psnr": 21.905521528467897,
+          "ssim": 0.7578416760347231
+        },
+        "elp_unfolding": {
+          "psnr": 25.061505031594486,
+          "ssim": 0.9064398003468912
+        },
+        "efficientsci": {
+          "psnr": 21.932916502892326,
+          "ssim": 0.9061610634280712
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 20.0872,
+        "gap_ii_iii": 17.6254,
+        "gap_iii_i": 2.4618
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 31.4063,
+        "gap_ii_iii": 14.4261,
+        "gap_iii_i": 16.9801
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 26.4329,
+        "gap_ii_iii": 11.6498,
+        "gap_iii_i": 14.783
+      },
+      "efficientsci": {
+        "gap_i_ii": 30.6981,
+        "gap_ii_iii": 10.3617,
+        "gap_iii_i": 20.3364
+      }
+    }
+  },
+  {
+    "name": "drop",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 33.56920232849165,
+          "ssim": 0.9625795249760876
+        },
+        "pnp_ffdnet": {
+          "psnr": 38.2113277148569,
+          "ssim": 0.9837861316641829
+        },
+        "elp_unfolding": {
+          "psnr": 39.67949515586611,
+          "ssim": 0.9805466783635004
+        },
+        "efficientsci": {
+          "psnr": 41.56006981173279,
+          "ssim": 0.9889195117716469
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 13.470206760356938,
+          "ssim": 0.20174122284117108
+        },
+        "pnp_ffdnet": {
+          "psnr": 7.410628103866658,
+          "ssim": 0.11729198302010353
+        },
+        "elp_unfolding": {
+          "psnr": 13.368954226326352,
+          "ssim": 0.18870553808590323
+        },
+        "efficientsci": {
+          "psnr": 11.489150413211233,
+          "ssim": 0.17770166373620488
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 30.97919999112699,
+          "ssim": 0.8217514274494191
+        },
+        "pnp_ffdnet": {
+          "psnr": 21.906742844152465,
+          "ssim": 0.754311926593872
+        },
+        "elp_unfolding": {
+          "psnr": 25.01069288329223,
+          "ssim": 0.9030969186592122
+        },
+        "efficientsci": {
+          "psnr": 21.903850218073032,
+          "ssim": 0.9028948674387574
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 20.099,
+        "gap_ii_iii": 17.509,
+        "gap_iii_i": 2.59
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 30.8007,
+        "gap_ii_iii": 14.4961,
+        "gap_iii_i": 16.3046
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 26.3105,
+        "gap_ii_iii": 11.6417,
+        "gap_iii_i": 14.6688
+      },
+      "efficientsci": {
+        "gap_i_ii": 30.0709,
+        "gap_ii_iii": 10.4147,
+        "gap_iii_i": 19.6562
+      }
+    }
+  },
+  {
+    "name": "crash",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 25.734178799558578,
+          "ssim": 0.8514894320343541
+        },
+        "pnp_ffdnet": {
+          "psnr": 25.44971059816064,
+          "ssim": 0.8479677810396834
+        },
+        "elp_unfolding": {
+          "psnr": 30.48344407139669,
+          "ssim": 0.9642949141896171
+        },
+        "efficientsci": {
+          "psnr": 31.749908753911363,
+          "ssim": 0.9751771761355912
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 14.740783842851666,
+          "ssim": 0.2643802017197741
+        },
+        "pnp_ffdnet": {
+          "psnr": 9.886005492244234,
+          "ssim": 0.1817687463058194
+        },
+        "elp_unfolding": {
+          "psnr": 14.86141977303759,
+          "ssim": 0.26966377415988385
+        },
+        "efficientsci": {
+          "psnr": 14.228171862405304,
+          "ssim": 0.26299231640200327
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 25.293295316512605,
+          "ssim": 0.7818221755533012
+        },
+        "pnp_ffdnet": {
+          "psnr": 23.573329649371843,
+          "ssim": 0.7872388706035333
+        },
+        "elp_unfolding": {
+          "psnr": 27.257458496358026,
+          "ssim": 0.916196606860634
+        },
+        "efficientsci": {
+          "psnr": 25.162771404372904,
+          "ssim": 0.9196112286036001
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 10.9934,
+        "gap_ii_iii": 10.5525,
+        "gap_iii_i": 0.4409
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 15.5637,
+        "gap_ii_iii": 13.6873,
+        "gap_iii_i": 1.8764
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 15.622,
+        "gap_ii_iii": 12.396,
+        "gap_iii_i": 3.226
+      },
+      "efficientsci": {
+        "gap_i_ii": 17.5217,
+        "gap_ii_iii": 10.9346,
+        "gap_iii_i": 6.5871
+      }
+    }
+  },
+  {
+    "name": "crash",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 25.10805472886592,
+          "ssim": 0.8395966471645723
+        },
+        "pnp_ffdnet": {
+          "psnr": 24.99064521105658,
+          "ssim": 0.8413797937629948
+        },
+        "elp_unfolding": {
+          "psnr": 29.574799447558693,
+          "ssim": 0.9582566580695854
+        },
+        "efficientsci": {
+          "psnr": 30.857394028174273,
+          "ssim": 0.9699186707401166
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 14.75760037957831,
+          "ssim": 0.26486175691327574
+        },
+        "pnp_ffdnet": {
+          "psnr": 10.050735739269562,
+          "ssim": 0.18675385200045325
+        },
+        "elp_unfolding": {
+          "psnr": 14.825120778311085,
+          "ssim": 0.27113333958636104
+        },
+        "efficientsci": {
+          "psnr": 14.237455372198193,
+          "ssim": 0.26591601213946736
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 24.75772606968922,
+          "ssim": 0.7733724765422223
+        },
+        "pnp_ffdnet": {
+          "psnr": 23.542501473360552,
+          "ssim": 0.7897045275206296
+        },
+        "elp_unfolding": {
+          "psnr": 26.877698246446972,
+          "ssim": 0.911888835524636
+        },
+        "efficientsci": {
+          "psnr": 25.067244475034002,
+          "ssim": 0.915492891747704
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 10.3505,
+        "gap_ii_iii": 10.0001,
+        "gap_iii_i": 0.3503
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 14.9399,
+        "gap_ii_iii": 13.4918,
+        "gap_iii_i": 1.4481
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 14.7497,
+        "gap_ii_iii": 12.0526,
+        "gap_iii_i": 2.6971
+      },
+      "efficientsci": {
+        "gap_i_ii": 16.6199,
+        "gap_ii_iii": 10.8298,
+        "gap_iii_i": 5.7901
+      }
+    }
+  },
+  {
+    "name": "crash",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 24.48100472607503,
+          "ssim": 0.8271376995594726
+        },
+        "pnp_ffdnet": {
+          "psnr": 24.5097139153819,
+          "ssim": 0.833379579845824
+        },
+        "elp_unfolding": {
+          "psnr": 28.719318260921256,
+          "ssim": 0.9491302056178332
+        },
+        "efficientsci": {
+          "psnr": 29.96097479604007,
+          "ssim": 0.9639485385936302
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 14.799753189948534,
+          "ssim": 0.276662574811123
+        },
+        "pnp_ffdnet": {
+          "psnr": 10.185123103618166,
+          "ssim": 0.1938582670671619
+        },
+        "elp_unfolding": {
+          "psnr": 14.80408756755108,
+          "ssim": 0.28141496909446706
+        },
+        "efficientsci": {
+          "psnr": 14.263421500038726,
+          "ssim": 0.27335026182779104
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 24.183003092353438,
+          "ssim": 0.7657837755673536
+        },
+        "pnp_ffdnet": {
+          "psnr": 23.178114748607808,
+          "ssim": 0.7829594404521452
+        },
+        "elp_unfolding": {
+          "psnr": 26.456083879182994,
+          "ssim": 0.9087713221907421
+        },
+        "efficientsci": {
+          "psnr": 24.918370876059743,
+          "ssim": 0.9139145809345638
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 9.6813,
+        "gap_ii_iii": 9.3832,
+        "gap_iii_i": 0.298
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 14.3246,
+        "gap_ii_iii": 12.993,
+        "gap_iii_i": 1.3316
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 13.9152,
+        "gap_ii_iii": 11.652,
+        "gap_iii_i": 2.2632
+      },
+      "efficientsci": {
+        "gap_i_ii": 15.6976,
+        "gap_ii_iii": 10.6549,
+        "gap_iii_i": 5.0426
+      }
+    }
+  },
+  {
+    "name": "crash",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 23.86062337466075,
+          "ssim": 0.8187072186702967
+        },
+        "pnp_ffdnet": {
+          "psnr": 24.288344137810757,
+          "ssim": 0.8308928202337831
+        },
+        "elp_unfolding": {
+          "psnr": 28.744661805473942,
+          "ssim": 0.9507281212725021
+        },
+        "efficientsci": {
+          "psnr": 29.908954259765437,
+          "ssim": 0.9632871834304616
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 14.788339734020026,
+          "ssim": 0.28240353742156277
+        },
+        "pnp_ffdnet": {
+          "psnr": 10.331238566595133,
+          "ssim": 0.19996212274410605
+        },
+        "elp_unfolding": {
+          "psnr": 14.80396118889167,
+          "ssim": 0.2876123790491023
+        },
+        "efficientsci": {
+          "psnr": 14.257712605996321,
+          "ssim": 0.2833371651700259
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 23.571220972028314,
+          "ssim": 0.7594849227732483
+        },
+        "pnp_ffdnet": {
+          "psnr": 22.999394462415136,
+          "ssim": 0.7824236195313885
+        },
+        "elp_unfolding": {
+          "psnr": 26.7532146086834,
+          "ssim": 0.911953942946125
+        },
+        "efficientsci": {
+          "psnr": 25.112591825507092,
+          "ssim": 0.9147160921463845
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 9.0723,
+        "gap_ii_iii": 8.7829,
+        "gap_iii_i": 0.2894
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 13.9571,
+        "gap_ii_iii": 12.6682,
+        "gap_iii_i": 1.2889
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 13.9407,
+        "gap_ii_iii": 11.9493,
+        "gap_iii_i": 1.9914
+      },
+      "efficientsci": {
+        "gap_i_ii": 15.6512,
+        "gap_ii_iii": 10.8549,
+        "gap_iii_i": 4.7964
+      }
+    }
+  },
+  {
+    "name": "aerial",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 25.06186912041178,
+          "ssim": 0.8264844396633484
+        },
+        "pnp_ffdnet": {
+          "psnr": 24.274957857531852,
+          "ssim": 0.8120695650722771
+        },
+        "elp_unfolding": {
+          "psnr": 30.435379834399164,
+          "ssim": 0.9390910165700652
+        },
+        "efficientsci": {
+          "psnr": 31.24762901428435,
+          "ssim": 0.9487267670239616
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 16.79870399742031,
+          "ssim": 0.3151479064035192
+        },
+        "pnp_ffdnet": {
+          "psnr": 12.847955026069698,
+          "ssim": 0.22726933562526735
+        },
+        "elp_unfolding": {
+          "psnr": 16.23913107415897,
+          "ssim": 0.33582763492373646
+        },
+        "efficientsci": {
+          "psnr": 16.05203293382654,
+          "ssim": 0.3326265907717558
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 24.81128608312361,
+          "ssim": 0.7852266719522281
+        },
+        "pnp_ffdnet": {
+          "psnr": 23.49405130815546,
+          "ssim": 0.770029883826816
+        },
+        "elp_unfolding": {
+          "psnr": 28.82301015467119,
+          "ssim": 0.9100355977680137
+        },
+        "efficientsci": {
+          "psnr": 27.20738607663906,
+          "ssim": 0.9082498560555958
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 8.2632,
+        "gap_ii_iii": 8.0126,
+        "gap_iii_i": 0.2506
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 11.427,
+        "gap_ii_iii": 10.6461,
+        "gap_iii_i": 0.7809
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 14.1962,
+        "gap_ii_iii": 12.5839,
+        "gap_iii_i": 1.6124
+      },
+      "efficientsci": {
+        "gap_i_ii": 15.1956,
+        "gap_ii_iii": 11.1554,
+        "gap_iii_i": 4.0402
+      }
+    }
+  },
+  {
+    "name": "aerial",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 24.896150784164625,
+          "ssim": 0.8269907921563364
+        },
+        "pnp_ffdnet": {
+          "psnr": 24.23073433223435,
+          "ssim": 0.8162798535744333
+        },
+        "elp_unfolding": {
+          "psnr": 29.846790835934847,
+          "ssim": 0.9347981184416446
+        },
+        "efficientsci": {
+          "psnr": 30.880606593423614,
+          "ssim": 0.9464770127648722
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 16.71850912790672,
+          "ssim": 0.3121067644331123
+        },
+        "pnp_ffdnet": {
+          "psnr": 12.808191042139994,
+          "ssim": 0.22021230851763118
+        },
+        "elp_unfolding": {
+          "psnr": 16.075348175429028,
+          "ssim": 0.3229645309683181
+        },
+        "efficientsci": {
+          "psnr": 15.873244646424592,
+          "ssim": 0.3202897194719545
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 24.678552127870752,
+          "ssim": 0.7858861279631093
+        },
+        "pnp_ffdnet": {
+          "psnr": 23.40802182674527,
+          "ssim": 0.774140321017772
+        },
+        "elp_unfolding": {
+          "psnr": 28.206079934893907,
+          "ssim": 0.9054335293707539
+        },
+        "efficientsci": {
+          "psnr": 26.800543857161045,
+          "ssim": 0.9084399049051195
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 8.1776,
+        "gap_ii_iii": 7.96,
+        "gap_iii_i": 0.2176
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 11.4225,
+        "gap_ii_iii": 10.5998,
+        "gap_iii_i": 0.8227
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 13.7714,
+        "gap_ii_iii": 12.1307,
+        "gap_iii_i": 1.6407
+      },
+      "efficientsci": {
+        "gap_i_ii": 15.0074,
+        "gap_ii_iii": 10.9273,
+        "gap_iii_i": 4.0801
+      }
+    }
+  },
+  {
+    "name": "aerial",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 25.061516895154924,
+          "ssim": 0.8349237249069341
+        },
+        "pnp_ffdnet": {
+          "psnr": 24.591007813644552,
+          "ssim": 0.8312182331476754
+        },
+        "elp_unfolding": {
+          "psnr": 30.46166519724981,
+          "ssim": 0.9448397233998491
+        },
+        "efficientsci": {
+          "psnr": 31.258741556943377,
+          "ssim": 0.9534683156799675
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 16.716029530704155,
+          "ssim": 0.3143514822048697
+        },
+        "pnp_ffdnet": {
+          "psnr": 12.774567781881935,
+          "ssim": 0.22302455532510929
+        },
+        "elp_unfolding": {
+          "psnr": 16.101074608423275,
+          "ssim": 0.33121630021027526
+        },
+        "efficientsci": {
+          "psnr": 15.873839910303897,
+          "ssim": 0.32707409784979363
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 24.738365691909607,
+          "ssim": 0.7894783869483711
+        },
+        "pnp_ffdnet": {
+          "psnr": 23.700623970602667,
+          "ssim": 0.7861343669804286
+        },
+        "elp_unfolding": {
+          "psnr": 28.65775968195183,
+          "ssim": 0.913104033347085
+        },
+        "efficientsci": {
+          "psnr": 27.040629559315427,
+          "ssim": 0.9116909772458293
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 8.3455,
+        "gap_ii_iii": 8.0223,
+        "gap_iii_i": 0.3232
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 11.8164,
+        "gap_ii_iii": 10.9261,
+        "gap_iii_i": 0.8904
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 14.3606,
+        "gap_ii_iii": 12.5567,
+        "gap_iii_i": 1.8039
+      },
+      "efficientsci": {
+        "gap_i_ii": 15.3849,
+        "gap_ii_iii": 11.1668,
+        "gap_iii_i": 4.2181
+      }
+    }
+  },
+  {
+    "name": "aerial",
+    "scenarios": {
+      "scenario_i": {
+        "gap_tv": {
+          "psnr": 25.86363581178717,
+          "ssim": 0.8573665524096392
+        },
+        "pnp_ffdnet": {
+          "psnr": 25.160801811915636,
+          "ssim": 0.8527672289420558
+        },
+        "elp_unfolding": {
+          "psnr": 30.96677347759472,
+          "ssim": 0.9493660823088499
+        },
+        "efficientsci": {
+          "psnr": 31.587042101738916,
+          "ssim": 0.9559808191424715
+        }
+      },
+      "scenario_ii": {
+        "gap_tv": {
+          "psnr": 16.79924359517565,
+          "ssim": 0.31074692752082766
+        },
+        "pnp_ffdnet": {
+          "psnr": 12.715685705868369,
+          "ssim": 0.2203887451103495
+        },
+        "elp_unfolding": {
+          "psnr": 16.12918558185306,
+          "ssim": 0.32609564654745576
+        },
+        "efficientsci": {
+          "psnr": 15.890571371456158,
+          "ssim": 0.3234482438390289
+        }
+      },
+      "scenario_iii": {
+        "gap_tv": {
+          "psnr": 25.552406024516294,
+          "ssim": 0.8149204898035652
+        },
+        "pnp_ffdnet": {
+          "psnr": 24.47906431704314,
+          "ssim": 0.81016014913169
+        },
+        "elp_unfolding": {
+          "psnr": 29.52024506239324,
+          "ssim": 0.9225868585939665
+        },
+        "efficientsci": {
+          "psnr": 27.661153732700686,
+          "ssim": 0.9198429069997432
+        }
+      }
+    },
+    "gaps": {
+      "gap_tv": {
+        "gap_i_ii": 9.0644,
+        "gap_ii_iii": 8.7532,
+        "gap_iii_i": 0.3112
+      },
+      "pnp_ffdnet": {
+        "gap_i_ii": 12.4451,
+        "gap_ii_iii": 11.7634,
+        "gap_iii_i": 0.6817
+      },
+      "elp_unfolding": {
+        "gap_i_ii": 14.8376,
+        "gap_ii_iii": 13.3911,
+        "gap_iii_i": 1.4465
+      },
+      "efficientsci": {
+        "gap_i_ii": 15.6965,
+        "gap_ii_iii": 11.7706,
+        "gap_iii_i": 3.9259
+      }
+    }
+  }
+]

@@ -1,0 +1,132 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "lightsheet_tissue_stripes_scatter_v1",
+  "title": "Light-sheet tissue (stripes + scattering)",
+  "modality": "lightsheet",
+  "tags": [
+    "microscopy",
+    "lightsheet",
+    "tissue",
+    "stripes",
+    "scatter",
+    "big-data"
+  ],
+  "keywords": [
+    "microscopy",
+    "lightsheet",
+    "tissue",
+    "stripes",
+    "scatter",
+    "big-data",
+    "lightsheet"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "lightsheet_tissue_stripes_scatter_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "lightsheet"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 1200.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "pnp_hqs",
+            "params": {
+              "iters": 50,
+              "sigma": 0.12,
+              "rho": 1.2,
+              "denoiser": "auto"
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "physics": {
+        "dims": {
+          "x": [
+            128,
+            128,
+            64
+          ]
+        }
+      },
+      "environment": {
+        "scattering": {
+          "model": "depth",
+          "strength": 0.4
+        },
+        "stripe_artifacts": {
+          "enabled": true,
+          "period_px": 18,
+          "strength": 0.25
+        }
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 450.0
+        }
+      },
+      "compute": {
+        "streaming": true,
+        "tile_size": [
+          64,
+          64,
+          16
+        ]
+      }
+    }
+  },
+  "notes": "Includes stripe/shadow artifacts + scattering; designed for scale and QC.",
+  "created": "2026-02-01",
+  "benchmark_results": {
+    "psnr_db": 28.05,
+    "ssim": null,
+    "reference_psnr_db": 25.0,
+    "status": "pass"
+  }
+}

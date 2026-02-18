@@ -1,0 +1,155 @@
+{
+  "casepack_version": "0.2.1",
+  "id": "panorama_multifocal_fusion_v1",
+  "title": "Panorama Multifocal Fusion (Neural)",
+  "modality": "panorama_multifocal",
+  "tags": [
+    "panorama",
+    "multifocal",
+    "focus-stacking",
+    "neural-fusion",
+    "computational-photography",
+    "all-in-focus"
+  ],
+  "keywords": [
+    "panorama",
+    "multifocal",
+    "focus-stacking",
+    "neural-fusion",
+    "computational-photography",
+    "all-in-focus",
+    "depth-of-field",
+    "multi-view"
+  ],
+  "required_user_inputs": [],
+  "base_spec": {
+    "version": "0.2.1",
+    "id": "panorama_multifocal_fusion_v1_base",
+    "input": {
+      "mode": "simulate"
+    },
+    "states": {
+      "physics": {
+        "modality": "panorama_multifocal"
+      },
+      "budget": {
+        "photon_budget": {
+          "max_photons": 1200.0
+        },
+        "measurement_budget": {}
+      },
+      "calibration": {},
+      "environment": {},
+      "sample": {},
+      "sensor": {
+        "shot_noise": {
+          "enabled": true,
+          "model": "poisson"
+        },
+        "read_noise_sigma": 0.01
+      },
+      "task": {
+        "kind": "simulate_recon_analyze"
+      }
+    },
+    "mismatch": {
+      "enabled": true
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "neural_fusion",
+            "params": {
+              "iters": 500,
+              "lr": 0.01,
+              "fourier_features": true
+            }
+          }
+        ]
+      }
+    },
+    "analysis": {
+      "advisor": {
+        "enabled": true,
+        "output_actions": true
+      }
+    },
+    "export": {
+      "runbundle": {
+        "data_policy": {
+          "mode": "auto",
+          "copy_threshold_mb": 100
+        }
+      }
+    }
+  },
+  "overrides": {
+    "states": {
+      "physics": {
+        "dims": {
+          "x": [256, 512],
+          "y": ["multi_view_images"]
+        },
+        "panorama": {
+          "num_views": 5,
+          "overlap_fraction": 0.4,
+          "focal_depths": [0.0, 0.25, 0.5, 0.75, 1.0]
+        }
+      },
+      "budget": {
+        "measurement_budget": {
+          "num_views": 5,
+          "image_res": [256, 256]
+        },
+        "photon_budget": {
+          "max_photons": null
+        }
+      },
+      "calibration": {
+        "camera": {
+          "known_poses": true,
+          "intrinsics": "pinhole"
+        },
+        "focus": {
+          "defocus_model": "gaussian_blur",
+          "depth_dependent": true
+        }
+      },
+      "sensor": {
+        "shot_noise": {
+          "enabled": false
+        },
+        "read_noise_sigma": 0.0
+      },
+      "task": {
+        "kind": "reconstruct_only"
+      }
+    },
+    "recon": {
+      "portfolio": {
+        "solvers": [
+          {
+            "id": "neural_fusion",
+            "params": {
+              "steps": 500,
+              "lr": 0.01,
+              "hidden_dim": 256,
+              "num_layers": 4,
+              "fourier_scale": 10.0,
+              "sharpness_weighting": true
+            }
+          }
+        ]
+      }
+    }
+  },
+  "notes": "Multi-view panoramic capture with different focal depths per view. Uses neural network with Fourier features for all-in-focus reconstruction. Sharpness-weighted fusion selects in-focus regions from each view.",
+  "created": "2026-02-04",
+  "benchmark_results": {
+    "psnr_db": 27.78,
+    "ssim": 0.993,
+    "reference_psnr_db": 28.0,
+    "status": "pass"
+  }
+}

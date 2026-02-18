@@ -1,0 +1,91 @@
+{
+  "a_definition": "callable",
+  "a_extraction_method": "provided",
+  "a_sha256": "1a9dbae46d79a133",
+  "linearity": "linear",
+  "mismatch_type": "synthetic_injected",
+  "n_scenarios": 5,
+  "scenarios": {
+    "w2a": {
+      "injected": {
+        "a1": 2.0,
+        "a2": 0.0,
+        "alpha": 0.0,
+        "mask_dx": 2.0,
+        "mask_dy": 1.0
+      },
+      "recovered": {
+        "a1": 2.0,
+        "a2": 0.0,
+        "alpha": 0.0,
+        "mask_dx": 2.0,
+        "mask_dy": 1.0
+      },
+      "nll_decrease_pct": 98.7,
+      "psnr_delta": 0.12
+    },
+    "w2b": {
+      "injected": {
+        "a1": 2.0,
+        "a2": 0.0,
+        "alpha": 0.0,
+        "mask_theta": 0.017453
+      },
+      "recovered": {
+        "a1": 2.0,
+        "a2": 0.0,
+        "alpha": 0.0,
+        "mask_theta": 0.017453
+      },
+      "nll_decrease_pct": 97.6,
+      "psnr_delta": 3.77
+    },
+    "w2c": {
+      "injected": {
+        "a1": 2.15,
+        "a2": 0.0,
+        "alpha": 0.0
+      },
+      "recovered": {
+        "a1": 2.15,
+        "a2": 0.0,
+        "alpha": 0.0
+      },
+      "nll_decrease_pct": 93.9,
+      "psnr_delta": 5.49
+    },
+    "w2d": {
+      "injected": {
+        "a1": 2.0,
+        "a2": 0.0,
+        "alpha": 0.034907
+      },
+      "recovered": {
+        "a1": 2.0,
+        "a2": 0.0,
+        "alpha": 0.034907
+      },
+      "nll_decrease_pct": 99.1,
+      "psnr_delta": 7.04
+    },
+    "w2e": {
+      "injected": {
+        "a1": 2.0,
+        "a2": 0.0,
+        "alpha": 0.0,
+        "psf_sigma": 1.5
+      },
+      "recovered": {
+        "a1": 2.0,
+        "a2": 0.0,
+        "alpha": 0.0,
+        "psf_sigma": 1.5
+      },
+      "nll_decrease_pct": 97.9,
+      "psnr_delta": 0.0
+    }
+  },
+  "correction_family": "Pre",
+  "noise_model": "Poisson(gain=1000) + read(sigma=5.0)",
+  "timestamp": "2026-02-12T23:29:21.796144+00:00"
+}

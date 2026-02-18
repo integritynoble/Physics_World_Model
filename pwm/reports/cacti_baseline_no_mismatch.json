@@ -1,0 +1,59 @@
+{
+  "description": "CACTI Baseline: No Mismatch Reconstruction Results",
+  "dataset": "CACTI Grayscale SCI Video Benchmark (6 scenes, 8:1 compression)",
+  "noise_model": {
+    "poisson_gain": 1000.0,
+    "gaussian_sigma": 5.0
+  },
+  "reconstruction_parameters": {
+    "algorithm": "GAP-TV",
+    "max_iterations": 100,
+    "step_size_lam": 0.5,
+    "tv_weight": 0.1,
+    "tv_iterations": 5
+  },
+  "per_scene_averages": {
+    "aerial": {
+      "psnr_db": 10.445050548865503,
+      "ssim": 0.04319723608062566,
+      "num_groups": 4
+    },
+    "crash": {
+      "psnr_db": 7.229811323988226,
+      "ssim": 0.037720384450845856,
+      "num_groups": 4
+    },
+    "drop": {
+      "psnr_db": 4.287632027762049,
+      "ssim": 0.03183738548000266,
+      "num_groups": 5
+    },
+    "kobe": {
+      "psnr_db": 12.320501515430934,
+      "ssim": 0.04983722984615835,
+      "num_groups": 4
+    },
+    "runner": {
+      "psnr_db": 11.464539765462508,
+      "ssim": 0.04339518937524765,
+      "num_groups": 5
+    },
+    "traffic": {
+      "psnr_db": 8.318036455948828,
+      "ssim": 0.03701994173948448,
+      "num_groups": 6
+    }
+  },
+  "overall_metrics": {
+    "mean_psnr_db": 8.880376116248371,
+    "mean_ssim": 0.04004649736513134,
+    "std_psnr_db": 2.7349939073468614,
+    "std_ssim": 0.005766874426738372
+  },
+  "comparison_to_published_results": {
+    "note": "Published GAP-TV results from cacti.md",
+    "gap_tv_average_psnr_db": 26.62,
+    "our_baseline_psnr_db": 8.880376116248371,
+    "difference_db": -17.73962388375163
+  }
+}

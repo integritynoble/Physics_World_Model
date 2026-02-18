@@ -1,0 +1,43 @@
+{
+  "summary": {
+    "num_scenes": 10,
+    "total_time_hours": 2.5561774620082645,
+    "avg_time_per_scene": 920.2238863229752,
+    "reconstruction_method": "MST-L (learned)",
+    "mismatch_injected": [
+      0.5,
+      0.3,
+      0.1
+    ],
+    "psnr": {
+      "ideal": {
+        "mean": 4.027581214904785,
+        "std": 0.005850763060152531
+      },
+      "assumed": {
+        "mean": 6.324309349060059,
+        "std": 0.08170635998249054
+      },
+      "corrected": {
+        "mean": 6.371248722076416,
+        "std": 0.08428086340427399
+      }
+    },
+    "gap_i_ii": {
+      "mean": -2.2967281341552734,
+      "std": 0.08272457122802734
+    },
+    "gain_ii_iii": {
+      "mean": 0.04693951457738876,
+      "std": 0.13798829913139343
+    },
+    "gap_iii_i": {
+      "mean": -2.34366774559021,
+      "std": 0.08393654227256775
+    }
+  },
+  "per_scene": [
+    {
+      "scene_idx": 1,
+      "scene_i": {
+        "psnr": 

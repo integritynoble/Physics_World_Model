@@ -1,0 +1,131 @@
+# PWM Steward Board
+#
+# Per docs/GOVERNANCE.md Section 3: External stewards provide independent
+# oversight of the rail. They review governance-lane PRs, vote on Rail
+# Constitution changes, validate CISP challenges, and publish annual
+# rail health reports.
+#
+# Requirements (from docs/GOVERNANCE.md Section 3.1):
+#   - 3-5 external stewards
+#   - No steward employed by or funded by PWM core team's institution
+#   - At least 2 different institutions
+#   - At least 2 different countries
+#   - Each steward must have published in computational imaging,
+#     inverse problems, or a related field
+
+stewards:
+  - id: steward_spectral_001
+    name: TBD
+    role: Spectral Imaging Expert
+    affiliation: TBD
+    country: TBD
+    expertise:
+      - spectral imaging
+      - hyperspectral reconstruction
+      - coded aperture systems
+    term_start: null
+    term_end: null
+    term_number: 1
+    orcid: null
+    contact_email: null
+    status: vacant
+    notes: >
+      Seeking a researcher with deep expertise in spectral imaging systems
+      (CASSI, CACTI, or similar coded aperture spectral imagers). Must have
+      published in a top venue (Optica, Optics Express, CVPR, or equivalent).
+
+  - id: steward_medical_002
+    name: TBD
+    role: Medical Imaging Expert
+    affiliation: TBD
+    country: TBD
+    expertise:
+      - medical imaging
+      - CT reconstruction
+      - MRI reconstruction
+      - clinical validation
+    term_start: null
+    term_end: null
+    term_number: 1
+    orcid: null
+    contact_email: null
+    status: vacant
+    notes: >
+      Seeking a researcher with expertise in medical imaging reconstruction
+      (CT, MRI, PET, or ultrasound). Must understand clinical validation
+      requirements and regulatory considerations for imaging algorithms.
+
+  - id: steward_optimization_003
+    name: TBD
+    role: Optimization / ML Expert
+    affiliation: TBD
+    country: TBD
+    expertise:
+      - convex optimization
+      - proximal algorithms
+      - deep unrolling
+      - plug-and-play methods
+    term_start: null
+    term_end: null
+    term_number: 1
+    orcid: null
+    contact_email: null
+    status: vacant
+    notes: >
+      Seeking a researcher with deep expertise in optimization for inverse
+      problems. Should be familiar with proximal methods, ADMM, deep
+      unrolling, and plug-and-play approaches. Must have published in a
+      top venue (SIAM, JMLR, NeurIPS, ICML, or equivalent).
+
+# -----------------------------------------------------------------------
+# Governance rules for the steward board
+# -----------------------------------------------------------------------
+
+governance:
+  min_stewards: 3
+  max_stewards: 5
+  term_years: 2
+  max_consecutive_terms: 2
+  mandatory_gap_years: 2
+  min_institutions: 2
+  min_countries: 2
+
+  responsibilities:
+    - Review all governance-lane PRs (touching graph/primitives.py, targeting/scoring.py, or frozen protocol definitions)
+    - Vote on Rail Constitution changes per Article 3.2 (RFC + 90-day comment + unanimous vote)
+    - Validate CISP challenge design, sealed data integrity, and results
+    - Publish annual public report on rail health (scoring drift, safety brake triggers, community growth)
+    - Mediate disputes between contributors and maintainers per GOVERNANCE.md Section 4
+
+  vacancy_process:
+    description: >
+      If a steward resigns or is removed, the remaining stewards plus
+      the core team appoint a replacement by majority vote within 60 days.
+    deadline_days: 60
+    vote_type: majority
+
+  removal_process:
+    description: >
+      A steward may be removed for misconduct by majority vote of the
+      remaining stewards. Removal requires documented evidence.
+    vote_type: majority_of_remaining
+
+  compensation:
+    monetary: false
+    co_authorship: true
+    travel_support: true  # when funded
+    acknowledgment: true
+
+  staggered_rotation:
+    description: >
+      Terms are staggered so that no more than 2 stewards rotate in the
+      same year. This ensures continuity of institutional knowledge.
+    max_rotating_per_year: 2
+
+# -----------------------------------------------------------------------
+# References
+# -----------------------------------------------------------------------
+# - docs/GOVERNANCE.md -- Full governance document
+# - docs/RAIL_CONSTITUTION.md -- Frozen components and change process
+# - docs/RAIL_CHARTER.md -- 5 trust commitments
+# - docs/contributors/CREDITS.md -- Steward recognition policy

@@ -1,0 +1,24 @@
+{
+  "challenge_version": "1.0.0",
+  "week_id": "{{WEEK_ID}}",
+  "modality": "{{MODALITY}}",
+  "casepack_id": "{{CASEPACK_ID}}",
+  "primary_metric": "psnr_db",
+  "secondary_metric": "ssim",
+  "reference_metrics": {
+    "psnr_db": 0.0,
+    "ssim": 0.0,
+    "runtime_s": 0.0
+  },
+  "thresholds": {
+    "psnr_db_min": 20.0,
+    "ssim_min": 0.5,
+    "runtime_s_max": 600.0
+  },
+  "data_generation": {
+    "script": "generate_data.py",
+    "seed": 42,
+    "dims": {},
+    "notes": "{{DATA_NOTES}}"
+  }
+}
