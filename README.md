@@ -46,6 +46,28 @@ pwm evaluate --method my_solver --modality cassi --scenarios I,II,III,IV
 
 ---
 
+## The Rails: SolveEverything Implementation
+
+PWM implements the [SolveEverything.org](https://solveeverything.org/) framework's 10 gears
+as a concrete reference trail. See [`rails/`](rails/) for the complete mapping:
+
+| Gear | Status | PWM Implementation |
+|------|--------|--------------------|
+| 1. Targeting System | **BUILT** | LIP-Arena, 4-scenario protocol, `pwm evaluate` |
+| 2. Outcome Contracts | **PARTIAL** | Recovery ratio, oracle gap, RoIC metrics |
+| 3. Compute Escrow | **PARTIAL** | BudgetState, 2x enforcement |
+| 4. Action Networks | **PLANNED** | Software actuation for 16 modalities |
+| 5. Data Trusts | **FOUNDATION** | Dataset registry, synthetic-first |
+| 6. Decision Logs | **BUILT** | DR-IS, RunBundle v0.3.0, SHA-256 |
+| 7. Two-Source Rule | **PARTIAL** | Multi-solver portfolio, safety brakes |
+| 8. Compute + Energy | **OUT OF SCOPE** | RoIC makes compute measurable |
+| 9. Fairness Targets | **PARTIAL** | Tail-risk scoring, anti-Goodhart |
+| 10. Literacy | **PARTIAL** | 26 working-process docs, quickstart |
+
+Also in `rails/`: [maturity levels (L0-L5)](rails/maturity_levels.md) and [industrial stack (9 layers)](rails/industrial_stack.md).
+
+---
+
 ## Physics Fidelity Ladder
 
 PWM is not "one physics model per modality."
@@ -234,6 +256,11 @@ The **Streamlit viewer** (`pwm view`) provides:
 pwm/
   README.md
   LICENSE
+  rails/                   # SolveEverything 10-gear implementation map
+    README.md              # Trail overview + status table
+    gear01_targeting_system.md .. gear10_literacy.md
+    maturity_levels.md     # L0-L5 maturation framework
+    industrial_stack.md    # 9-layer stack reference
   docs/
     purpose.md            # Stage 1 purpose: Imaging System Autonomy
     targeting_system.md   # LIP-Arena: PWM's built-in evaluation harness
