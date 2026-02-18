@@ -1,6 +1,6 @@
 # PWM — Physics World Model for Imaging System Autonomy
 
-PWM is an open, reproducible **physics + reconstruction + diagnosis** toolkit that aims to make any imaging system **self-specifying, self-diagnosing, and self-correcting**.
+PWM is the **evaluation harness + current best methods** for computational imaging -- an open, reproducible toolkit that aims to make any imaging system **self-specifying, self-diagnosing, and self-correcting**.
 
 It turns **either**:
 - a **natural-language prompt** ("SIM live-cell, low dose, 9 frames...") **or**
@@ -16,7 +16,33 @@ PWM is designed to be:
 - **Deterministic by default** (bounded search, reproducible seeds)
 - **Audit-grade** (every run produces a RunBundle with TriadReport, decision records, and uncertainty estimates)
 - **Embeddable** into agent systems like **AI_Scientist** (via `pwm_AI_Scientist`)
-- **Evaluated by LIP-Arena** (Live Imaging Physics Arena) -- a prospective, blinded, adversarial targeting system (see `docs/targeting_system.md`)
+- **Includes LIP-Arena** (Live Imaging Physics Arena) -- PWM's built-in prospective, blinded, adversarial evaluation harness; run `pwm evaluate` locally (see `docs/targeting_system.md`)
+
+---
+
+## PWM = Harness + Best Methods
+
+One repo, one install -- you get both the evaluation infrastructure and the methods that currently win on it.
+
+| Component | Role | Durability |
+|-----------|------|------------|
+| **Harness** (OperatorGraph IR, 4-scenario protocol, Triad scoring, LIP-Arena) | Defines *how* methods are tested | Durable -- the railroad |
+| **Current best methods** (GAP-TV, MST-L, Alg 1/2, HDNet, EfficientSCI, ...) | The methods that currently score highest | Replaceable -- the trains |
+
+**Evaluate any method on the harness:**
+
+```bash
+# Score a method against a modality
+pwm evaluate --method my_solver --modality cassi --track correct
+
+# Compare two methods head-to-head
+pwm evaluate --method my_solver --method mst_l --modality cassi
+
+# Run the full 4-scenario protocol
+pwm evaluate --method my_solver --modality cassi --scenarios I,II,III,IV
+```
+
+**Submit a better method:** Implement the `ReconSolver` protocol, register in `contrib/solver_registry.yaml`, beat the current default on the harness, and open a PR. See `docs/targeting_system.md` for details.
 
 ---
 
@@ -45,11 +71,11 @@ See `pwm_core/graph/tier_policy.py` and `tests/test_tier_policy.py`.
 
 ---
 
-## What PWM can do
+## What PWM can do (harness + current best methods)
 
-PWM operates in two modes. Each mode hosts two LIP-Arena evaluation tracks (see `docs/targeting_system.md`):
+PWM operates in two modes. Each mode hosts two built-in evaluation tracks (see `docs/targeting_system.md`):
 
-| Mode | Input | LIP-Arena Tracks | ISA Capability |
+| Mode | Input | Evaluation Tracks (built-in) | ISA Capability |
 |------|-------|-----------------|----------------|
 | **1. Prompt-driven simulation + reconstruction** | Natural-language prompt or ExperimentSpec | **Track 4 (Design):** requirements -> robust OperatorGraph | Self-specify |
 | | | **Track 2 (Diagnose):** Triad gate attribution under shift | Self-diagnose |
@@ -64,7 +90,7 @@ Every run in both modes produces the four mandatory ISA artifacts:
 
 ---
 
-### 1) Prompt-driven simulation + reconstruction (LIP-Arena Tracks 2 + 4)
+### 1) Prompt-driven simulation + reconstruction (Harness Tracks 2 + 4)
 
 **Track 4 (Design):** Given requirements (prompt or spec), PWM selects the optimal modality, compiles an OperatorGraph, and predicts performance bounds -- scored on constraint satisfaction, Pareto efficiency, robustness margin, and calibration cost.
 
@@ -119,7 +145,7 @@ Each modality includes:
 - **Solver portfolio** (classical + PnP + neural methods)
 - **Diagnosis + actionable recommendations**
 
-### 2) Operator correction mode (measured `y` + operator/matrix `A`) (LIP-Arena Tracks 1 + 3)
+### 2) Operator correction mode (measured `y` + operator/matrix `A`) (Harness Tracks 1 + 3)
 
 **Track 1 (Correct):** Given measurement `y` and nominal operator `H_nom` with unknown mismatch, PWM infers the effective operator, corrects mismatch parameters, and reconstructs -- scored on recovery ratio, parameter recovery, uncertainty calibration, tail-risk performance, and compute efficiency (RoIC).
 
@@ -210,7 +236,7 @@ pwm/
   LICENSE
   docs/
     purpose.md            # Stage 1 purpose: Imaging System Autonomy
-    targeting_system.md   # LIP-Arena: Live Imaging Physics Arena
+    targeting_system.md   # LIP-Arena: PWM's built-in evaluation harness
     plan.md               # Master plan v3 (hardened, fully implemented)
     spec_v0.2.1.md
     runbundle_format.md
@@ -350,6 +376,19 @@ print(f"Modality: {compile_result.draft_spec['states']['physics']['modality']}")
 
 # Run with the compiled spec
 result = endpoints.run(spec=compile_result.draft_spec, out_dir="runs/")
+```
+
+### E) Evaluate a method on the harness
+
+```bash
+# Score a method against the built-in harness
+pwm evaluate --method my_solver --modality cassi --track correct
+
+# Run the full 4-scenario protocol
+pwm evaluate --method my_solver --modality cassi --scenarios I,II,III,IV
+
+# Compare your method against the current default
+pwm evaluate --method my_solver --method mst_l --modality cassi
 ```
 
 ### D) Run benchmarks directly
@@ -798,6 +837,14 @@ PWM is intended to be extended by the community.
 Templates:
 - `pwm_core/contrib/templates/new_operator_template.py`
 - `pwm_core/contrib/templates/new_calibrator_template.py`
+
+### Submit a better method
+1) Implement the `ReconSolver` protocol (accept `y`, `H`, return `x_hat` with uncertainty)
+2) Register your solver in `contrib/solver_registry.yaml`
+3) Run `pwm evaluate --method my_solver --modality <target>` and beat the current default
+4) Open a PR with your method code and RunBundle artifacts demonstrating the improvement
+
+When your method scores higher on the harness, it becomes PWM's new shipped default.
 
 ### Add a dataset adapter
 - Implement loader in `pwm_core/io/datasets.py` and format handler in `io/formats.py`

@@ -26,6 +26,16 @@ Stage 1 culminates in **Imaging System Autonomy**: the ability of any instrument
 
 > Stage 1 of PWM turns computational imaging into a self-explanatory, self-correcting physical system, enabling universal generalization across modalities and conditions through operator-level inference.
 
+### PWM = Harness + Current Best Methods
+
+> **One repo, one install -- customers get both the evaluation harness and the best available methods.**
+
+PWM is simultaneously:
+- **The evaluation harness** (OperatorGraph IR, 4-scenario protocol, Triad scoring, LIP-Arena) -- durable infrastructure that defines *how* imaging methods are tested.
+- **The current best methods** (GAP-TV, MST-L, Alg 1/2, HDNet, EfficientSCI, ...) -- replaceable components that currently win on the harness.
+
+The harness is the railroad; the methods are the trains. When someone builds a better train, it replaces the current default -- but the railroad endures. Install PWM, and you get both.
+
 ---
 
 ## Formal Stage-1 Objective
@@ -140,11 +150,11 @@ PWM's nervous system consists of:
 
 If a metric is not logged, it does not exist. Every TriadReport, every parameter estimate, every uncertainty bound is persisted and auditable.
 
-### Layer 4: The Targeting System (The Harness)
+### Layer 4: The Targeting System (LIP-Arena, Built into PWM)
 
 **The engine that makes truth cheap to verify and channels progress toward measurable outcomes.**
 
-This is the most critical layer. The targeting system is not a competition -- it is the **quality control infrastructure** that continuously stress-tests every claim PWM makes. It must exist before the agent ships.
+This is the most critical layer. LIP-Arena is **not** a separate system -- it is PWM's built-in evaluation harness. Users run `pwm evaluate` locally to score any method against the same protocol used for official benchmarks. The targeting system is not a competition -- it is the **quality control infrastructure** that continuously stress-tests every claim PWM makes. It must exist before the agent ships.
 
 > **Principle: Publish the harness before shipping the agent.** Build the counterfactual pack (adversarial test cases) first; the agent comes second. This proves domain understanding and makes cheating mechanically impossible.
 
@@ -249,14 +259,15 @@ Pre-committed thresholds that trigger automatic flags:
 | Compute budget exceeded | > 2x declared GPU-hours | Submission disqualified for that scenario |
 | Consistency violation | Re-projection error > 3x median | Output quarantined pending review |
 
-### Layer 5: The Model Layer
+### Layer 5: The Model Layer (Current Best Methods)
 
-PWM's agent: the OperatorGraph compiler, Triad diagnostics, calibration algorithms (grid search, gradient refinement), and reconstruction solvers (GAP-TV, MST, HDNet, etc.). The model is scaffolded by the management workflow:
+The methods that currently win on the harness, shipped as PWM's defaults: the OperatorGraph compiler, Triad diagnostics, calibration algorithms (Alg 1 grid search, Alg 2 gradient refinement), and reconstruction solvers (GAP-TV, MST-L, HDNet, EfficientSCI, etc.). These are the current best methods, scaffolded by the management workflow:
 
 - Multiple calibration strategies propose corrections
 - Triad diagnosis validates each proposal
 - Best correction is selected by measurable evidence, not by model confidence alone
-- The model is the least durable part of the stack -- it will be replaced; the harness endures
+- When someone submits a method that scores higher on the harness, it becomes the new default
+- The methods are the least durable part of the stack -- they will be replaced; the harness endures
 
 ### Layer 6: Actuation
 
@@ -283,7 +294,7 @@ Aligning effort with outcomes:
 - **Outcome-based evaluation**: Methods are judged by recovery ratio and oracle gap, not by publication count or novelty claims
 - **Compute escrow**: GPU budgets allocated to calibration tasks are tracked. Efficiency (RoIC) is a first-class metric. Brute-force approaches that burn compute without proportional quality gain are penalized.
 - **Prestige shift**: The hero is not the person who solves one modality -- it is the person who builds a harness that makes all modalities testable. Infrastructure builders outrank individual solver authors.
-- **Open harness, competitive agents**: The targeting system (counterfactual packs, evaluation code, RunBundle format) is fully open. Agents (specific calibration methods) compete on the open harness.
+- **Open harness, competitive methods**: The targeting system (counterfactual packs, evaluation code, RunBundle format) ships with PWM. Third-party methods compete on the same protocol via `pwm evaluate`, and winning methods become PWM's new defaults.
 
 ### Layer 9: Distribution and Maintenance
 
@@ -359,8 +370,8 @@ Multiple providers deliver identical calibration quality at competitive prices. 
 | 1. Purpose | Defined | Recovery ratio, oracle gap, RoIC targets declared |
 | 2. Task Taxonomy | Built | OperatorGraph IR, 64 modalities, 89 templates, atomic task decomposition |
 | 3. Observability | Partial | RunBundle exists, DR-IS not yet implemented, drift monitor planned |
-| 4. Targeting System | Early | 4-scenario protocol operational, counterfactual packs not yet curated, no blinded external submissions |
-| 5. Model Layer | Active | Alg 1 + Alg 2 calibration, 5 reconstruction solvers, Triad diagnosis prototype |
+| 4. Targeting System | Built into PWM | LIP-Arena harness ships with PWM; 4-scenario protocol operational; `pwm evaluate` runs locally; counterfactual packs not yet curated |
+| 5. Model Layer (Current Best) | Active | Current best methods shipped: Alg 1 + Alg 2 calibration, 5 reconstruction solvers, Triad diagnosis prototype; replaceable when beaten |
 | 6. Actuation | Software only | Corrected operator feeds reconstruction; no hardware actuation yet |
 | 7. Verification | Strong | 2900+ tests, regression suite, cross-validation on 10 KAIST scenes |
 | 8. Governance | Not started | No compute escrow, no outcome-based allocation |
@@ -433,7 +444,7 @@ Multiple providers deliver identical calibration quality at competitive prices. 
 1. Expand to 20+ calibrated modalities with validated recovery ratios
 2. Automated Triad diagnosis operational across all modalities
 3. Cross-modality transfer: calibration trained on one modality applied to another
-4. Launch first external harness submissions (open counterfactual packs + blinded evaluation)
+4. Open PWM harness to external method submissions (open counterfactual packs + blinded evaluation)
 5. Achieve $\rho \geq 0.80$ on 10+ modalities
 6. Implement Track C (no-ground-truth) evaluation
 7. Out-of-family detection on 5+ modalities
@@ -449,6 +460,6 @@ Multiple providers deliver identical calibration quality at competitive prices. 
 3. Full Track A: natural language $\to$ validated pipeline in minutes
 4. 100+ modalities with validated calibration
 5. Hardware API integration for closed-loop actuation
-6. Multiple competing agents on the open harness
+6. Multiple competing methods on the PWM harness; protocol extractable as standalone standard
 7. Imaging calibration purchased as a service, not performed as research
 8. Stage 1 complete: **Imaging System Autonomy achieved at L5**
