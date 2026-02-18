@@ -1,4 +1,4 @@
-# LIP-Arena: Live Imaging Physics Arena
+# LIP-Arena: PWM's Built-in Evaluation Harness
 
 **The Targeting System for Imaging System Autonomy (ISA)**
 
@@ -10,7 +10,13 @@
 
 ## 1. What LIP-Arena Is
 
-LIP-Arena is the targeting system (Layer 4 of the Industrial Intelligence Stack) for PWM Stage 1. It is **not** a static benchmark. It is a live, prospective, adversarial evaluation harness that continuously stress-tests every claim Imaging System Autonomy makes.
+LIP-Arena is PWM's built-in evaluation harness (Layer 4 of the Industrial Intelligence Stack). It is **not** a separate system and **not** a static benchmark. It ships with PWM, runs locally via `pwm evaluate`, and continuously stress-tests every claim Imaging System Autonomy makes using a live, prospective, adversarial protocol.
+
+```bash
+# Score any method against the built-in harness
+pwm evaluate --method my_solver --modality cassi --track correct
+pwm evaluate --method gap_tv --modality spc --track no-gt
+```
 
 **"Live"** encodes the core SolveEverything principle: measurements are created *after* the submission deadline. No memorization. No overfitting. No gaming.
 
@@ -51,16 +57,16 @@ This is the core innovation. Instead of releasing static datasets, LIP-Arena run
 
 ### Phase 1: Commit
 
-Teams submit:
-- **Container image** with their full pipeline (inference, calibration, reconstruction, diagnosis)
+Method submissions include:
+- **Container image** with the full pipeline (inference, calibration, reconstruction, diagnosis)
 - **Declared compute budget** (GPU-hours, peak memory, wall-clock limit per scenario)
-- **Operator family declarations** (which OperatorGraph families the system claims to handle)
+- **Operator family declarations** (which OperatorGraph families the method claims to handle)
 
 After the deadline, submissions are cryptographically sealed. No modifications permitted.
 
 ### Phase 2: Measure
 
-LIP-Arena custodians generate new measurement sets from two sources:
+The PWM harness generates new measurement sets from two sources:
 
 **(A) Live-Lab Prospective Sets**
 
@@ -76,7 +82,7 @@ The same public OperatorGraph families, but with new random seeds and parameter 
 - Mismatch parameters drawn from declared tolerance envelopes (with adversarial tails -- see Red Team)
 - Scene content drawn from held-out image databases
 - Noise realizations freshly sampled
-- The simulator code is never downloadable; only the measurement outputs are used for scoring
+- The sealed simulator ships with PWM but runs sandboxed; only the measurement outputs are used for scoring
 
 Both sources are used every round. A submission must perform well on both to rank.
 
@@ -369,8 +375,8 @@ Pre-committed thresholds that trigger automatic flags. These are mechanical, not
 | 1. Purpose & Payoff | Recovery ratio $\geq 0.80$, oracle gap $\leq 2$ dB, RoIC tracked |
 | 2. Task Taxonomy | 4 tracks (Correct, Diagnose, No-GT, Design), each with atomic actions |
 | 3. Observability | RunBundle, DR-IS, TriadReport, RoIC dashboards |
-| **4. Targeting System** | **LIP-Arena itself: Commit-Measure-Score protocol + Red Team** |
-| 5. Model Layer | Submitted containers (agents); the harness outlasts any individual model |
+| **4. Targeting System** | **LIP-Arena module within PWM: Commit-Measure-Score protocol + Red Team; runs via `pwm evaluate`** |
+| 5. Model Layer | PWM's shipped default methods (current best) + submitted methods; the harness outlasts any individual method |
 | 6. Actuation | Corrected operators fed to reconstruction; future: hardware-in-the-loop |
 | 7. Verification | Red Team, DR-IS audit trail, gaming penalties, safety brakes |
 | 8. Governance | Outcome-based ranking, compute escrow via declared budgets, open harness |
@@ -384,6 +390,7 @@ LIP-Arena does not launch fully formed. It matures alongside PWM:
 
 ### Phase A: Internal Harness (0-6 months)
 
+- All evaluation runs locally via `pwm evaluate`
 - Sealed-simulator prospective sets only (no partner labs yet)
 - 3 modalities (CASSI, SPC, CACTI)
 - Red Team = PWM development team (adversarial self-testing)
@@ -392,10 +399,10 @@ LIP-Arena does not launch fully formed. It matures alongside PWM:
 
 ### Phase B: Pilot External Rounds (6-12 months)
 
-- First live-lab partner (1-2 labs)
+- First live-lab partner (1-2 labs); live-lab prospective sets begin
 - 10+ modalities in sealed simulator
 - Independent Red Team budget allocated
-- First external submissions accepted
+- PWM harness opened to third-party method submissions
 - Round reports published publicly
 
 ### Phase C: Full Operation (12-24 months)
@@ -410,7 +417,7 @@ LIP-Arena does not launch fully formed. It matures alongside PWM:
 
 - Rolling submissions (not just quarterly)
 - Hardware-in-the-loop scenarios (live instruments)
-- Multiple competing harness operators (LIP-Arena protocol is open; anyone can run an instance)
+- LIP-Arena protocol extractable as a standalone standard; anyone can run an instance
 - Imaging calibration becomes a commodity evaluated by LIP-Arena scores
 
 ---
@@ -427,5 +434,32 @@ LIP-Arena does not launch fully formed. It matures alongside PWM:
 | Gaming rewarded (optimize PSNR, ignore understanding) | Gaming penalized (wrong diagnosis = rank loss) |
 | One-shot evaluation | Rolling, quarterly, evolving benchmark |
 | Closed evaluation | Open round reports, public RunBundles, published failure taxonomies |
+| Benchmark separate from methods | Ships with the methods it evaluates |
 
-**The harness is published before the agent ships. The counterfactual pack is built first; the model comes second. This is how you industrialize imaging.**
+**The harness ships with the agent. The counterfactual pack is built first; the model comes second. Install one repo, get both. This is how you industrialize imaging.**
+
+---
+
+## 10. Submitting a New Method
+
+PWM ships with the current best methods. To replace one:
+
+1. **Implement the `ReconSolver` protocol** -- your method must accept a measurement `y`, an operator `H`, and return a reconstruction `x_hat` with uncertainty estimates.
+
+2. **Register in the solver YAML** -- add an entry to `contrib/solver_registry.yaml` with your solver's parameters, tier classification, and supported modalities.
+
+3. **Run the harness locally**:
+   ```bash
+   # Score your method on a specific modality
+   pwm evaluate --method my_solver --modality cassi --track correct
+
+   # Run the full 4-scenario protocol
+   pwm evaluate --method my_solver --modality cassi --scenarios I,II,III,IV
+
+   # Compare against the current default
+   pwm evaluate --method my_solver --method mst_l --modality cassi
+   ```
+
+4. **Beat the current default** -- if your method achieves a higher recovery ratio, lower oracle gap, or better RoIC than the shipped default on the harness, it is a candidate to become the new default.
+
+5. **Open a PR** -- submit your method with RunBundle artifacts demonstrating the improvement. The PR review verifies that the harness results are reproducible.
