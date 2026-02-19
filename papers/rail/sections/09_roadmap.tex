@@ -7,7 +7,7 @@
 \epigraph{Within the next 18 months, that metal will cool and harden.
 The decisions we make today regarding technical standards, data rights,
 and supply chains will set path dependencies: permanent tracks that
-will guide or constrain the economy for decades.}{SolveEverything.org}
+will guide or constrain the economy for decades.}{SolveEverything.org~\cite{wissner2024solveeverything}}
 
 \subsection{Why Now: The Absence of Standards}
 
@@ -121,7 +121,7 @@ Observability
   & 26-modality benchmark \\
 Targeting
   & CASP (biennial competition)
-  & LIP-Arena / CISP \\
+  & LIP-Arena \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -161,7 +161,7 @@ Zero-shot generalization & 0\%     & 50\%+    & 90\%+    \\
 \noindent
 \textbf{Recovery ratio} $\rho$ measures the fraction of the mismatch-induced
 degradation that is recovered by operator correction, as defined in
-Eq.~\ref{eq:recovery}; the range varies widely by modality (e.g., CASSI $\approx 0.30$, CACTI $> 1.0$).  \textbf{Oracle gap} is the PSNR difference between Scenario~I
+Eq.~\ref{eq:recovery}; the range varies widely by modality (e.g., CASSI $\approx 0.18$, reflecting the challenging nature of CASSI mismatch correction---notably below the 0.30 safety brake threshold, which applies to arena submissions rather than inherent modality limitations; CACTI $> 1.0$).  \textbf{Oracle gap} is the PSNR difference between Scenario~I
 (Ideal) and Scenario~III (Corrected).  \textbf{Zero-shot generalization} measures reconstruction
 quality on a modality unseen during solver training, evaluated via the
 mask-sensitivity spectrum transfer protocol.

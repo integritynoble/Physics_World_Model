@@ -323,6 +323,7 @@ future registry refinement), \texttt{PhysicsStageVisualizer} (generates
 intermediate visualizations at each pipeline stage), and
 \texttt{UPWMI} (Universal Physics World Model Interface, the top-level
 entry point that wires all agents together).
+The remaining three agents handle asset management (\texttt{AssetManager}), system discernment (\texttt{SystemDiscern}), and pre-flight validation (\texttt{PreflightChecker}).
 
 \paragraph{Contract system.}
 Inter-agent communication uses 25 Pydantic v2 contract models.  All
@@ -372,7 +373,7 @@ The algorithm proceeds as follows:
     five 1D cost curves from which coarse optima are extracted.
   \item \textbf{3D beam search.}  The mask affine subspace
     $(dx, dy, \theta)$ is searched over a $5 \times 5 \times 5$ grid
-    centerd on the 1D optima.  The top-$k$ ($k = 5$) candidates by
+    centered on the 1D optima.  The top-$k$ ($k = 5$) candidates by
     reconstruction PSNR are retained.
   \item \textbf{2D beam search.}  For each retained mask candidate,
     the dispersion subspace $(a_1, \varphi_d)$ is searched over a
@@ -389,7 +390,7 @@ $\pm 0.05^\circ$ for angular parameters.
 
 \paragraph{Algorithm~2: Joint Gradient Refinement.}
 The fine correction phase uses a differentiable forward model to jointly
-optimise all mismatch parameters via gradient descent.  The key components
+optimize all mismatch parameters via gradient descent.  The key components
 are:
 
 \begin{enumerate}
@@ -449,11 +450,10 @@ isolate different sources of quality degradation:
     $\hat{\boldsymbol{\theta}}$ is estimated by Algorithms~1 and~2.
     This quantifies the benefit of mismatch calibration.
   \item[Scenario~IV (Oracle):]
-    $\yobs = \Htrue\, \xgt$; reconstruct with $\Htrue$ applied to
-    the mismatched data.
-    This provides an upper bound on what model correction alone can
-    achieve, isolating the operator-mismatch contribution from solver
-    and noise limitations.
+    $\yobs = \Htrue\, \xgt$; reconstruct with $\Htrue$.
+    A sanity-check scenario that verifies pipeline consistency by
+    confirming that reconstruction with the true operator reproduces
+    Scenario~I results.
 \end{description}
 
 \paragraph{Metrics.}
