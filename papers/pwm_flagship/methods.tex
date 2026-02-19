@@ -84,8 +84,8 @@ The compiler executes a four-stage pipeline:
   \item \textbf{Plan adjoint.}  For graphs where
     \texttt{all\_linear = True}, the adjoint plan reverses the
     topological order and applies each node's individual adjoint in
-    sequence, implementing the chain rule $A^* = A_{|\mathcal{V}|}^*
-    \circ \cdots \circ A_1^*$ for a composition $A = A_{|\mathcal{V}|}
+    sequence, implementing the chain rule $A^* = A_1^*
+    \circ \cdots \circ A_{|\mathcal{V}|}^*$ for a composition $A = A_{|\mathcal{V}|}
     \circ \cdots \circ A_1$.  For graphs containing nonlinear nodes,
     the adjoint plan is not generated, and any call to
     \texttt{adjoint()} raises \texttt{NotImplementedError} at runtime.
@@ -525,7 +525,7 @@ The coded aperture compressive temporal imaging system uses binary
 temporal masks of dimensions $256 \times 256$, encoding 8 video frames
 into a single snapshot measurement.  Mismatch is parameterized as a
 temporal mask timing offset (sub-frame shift).  The default solver is
-GAP-TV with total-variation regularization.
+EfficientSCI~\cite{wang2023efficientsci}.
 
 \paragraph{SPC configuration.}
 The single-pixel camera uses random binary measurement patterns at three
