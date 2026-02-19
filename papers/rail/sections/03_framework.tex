@@ -117,8 +117,8 @@ infrastructure that makes reconstruction algorithms measurable.
 
 SolveEverything defines a nine-layer stack that organizes the
 components needed for industrializing AI in any domain.
-\Cref{fig:stack} visualizes the stack, and \cref{tab:stack_mapping}
-provides the detailed mapping to PWM.
+\Cref{tab:stack_mapping}
+provides the detailed mapping of each layer to the corresponding PWM component.
 
 \begin{table}[t]
 \centering
@@ -251,8 +251,9 @@ L5 & Commoditized    & Universal self-calibration.  Every imaging system
 \paragraph{Current position: L1 $\to$ L2.}
 The InverseNet benchmark~\cite{yang2024inversenet} established L1 by
 demonstrating that mismatch is measurable and defining a 3-scenario
-protocol across three modalities (CASSI, CACTI, SPC).
-PWM extends this to a 4-scenario protocol across 64 modalities and
+protocol (Ideal, Assumed, Oracle) across three modalities (CASSI, CACTI, SPC).
+PWM extends this to a 4-scenario protocol---adding a Corrected scenario
+that measures calibration effectiveness---across 64 modalities and
 provides the OperatorGraph IR, RunBundle infrastructure, and LIP-Arena
 governance needed to reach L2 (repeatability) and begin the transition
 to L3 (automation).

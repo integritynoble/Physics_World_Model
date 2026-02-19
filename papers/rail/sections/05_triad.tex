@@ -4,8 +4,8 @@
 \section{The Triad Law: Diagnosing Imaging Failure}
 \label{sec:triad}
 
-Every imaging failure, regardless of modality, can be traced to exactly
-three root causes.  We formalize this claim as the \emph{Triad Law} and
+We identify three principal root causes that account for the vast majority of
+imaging failures across modalities.  We formalize this diagnostic framework as the \emph{Triad Law} and
 encode it through three sequential \emph{gates} that every measurement
 must pass before reconstruction can succeed.
 
@@ -131,20 +131,7 @@ solver upgrade benefit.
 % ============================================================
 \subsection{Mathematical Formulation: Recovery Ratio}
 
-We define the \emph{recovery ratio} $\rho$ to quantify how much of the
-mismatch-induced degradation can be recovered through operator
-correction:
-%
-\begin{equation}
-    \rho \;=\; \frac{\text{PSNR}_{\text{III}} - \text{PSNR}_{\text{II}}}
-                    {\text{PSNR}_{\text{I}}   - \text{PSNR}_{\text{II}}}
-    \label{eq:recovery_ratio}
-\end{equation}
-%
-where Scenario~I uses the ideal (true) operator, Scenario~II uses the
-mismatched (nominal) operator, and Scenario~III applies the \pwm{}
-operator correction pipeline.  A value of $\rho = 1$ indicates full
-recovery; $\rho = 0$ indicates that correction had no effect.
+We define the \emph{recovery ratio} $\rho$ (Eq.~\ref{eq:recovery} in \cref{sec:scenarios}) to quantify how much of the mismatch-induced degradation can be recovered through operator correction.  A value of $\rho = 1$ indicates full recovery; $\rho = 0$ indicates that correction had no effect.
 
 % ============================================================
 %  Gate binding analysis table
@@ -187,7 +174,7 @@ Ptychography         & 42.06 & ---   & ---           & Gate 3 \\
 
 \noindent
 The pattern is consistent: across all seven modalities in
-\cref{tab:gate_binding}, Gate~3 is binding.  This motivates the \pwm{}
+\cref{tab:gate_binding}, Gate~3 is binding.  For CASSI, where multiple solvers are available, the mismatch penalty ($16.72$~dB) exceeds the solver upgrade gain ($10.59$~dB) by a factor of $1.58\times$.  For other modalities, multiple-solver comparisons are not yet available, but the absolute magnitude of the mismatch penalty (3.37--42.06~dB) strongly suggests Gate~3 dominance in every case.  This motivates the \pwm{}
 design decision to invest first in operator correction infrastructure
 before pursuing solver improvements --- a principle we term
 \emph{``fix the physics before upgrading the math.''}
