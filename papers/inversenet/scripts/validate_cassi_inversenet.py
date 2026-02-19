@@ -289,8 +289,8 @@ def reconstruct_gap_tv_with_dispersion(
 ) -> np.ndarray:
     """GAP-TV reconstruction using true dispersion parameters.
 
-    Uses gap_tv_operator with custom forward/adjoint that match
-    the true dispersion slope and angle.
+    Uses Chambolle TV with custom forward/adjoint matching the true
+    dispersion slope and angle (oracle Scenario III).
 
     Args:
         y: (H, W_ext) CASSI measurement
@@ -302,22 +302,50 @@ def reconstruct_gap_tv_with_dispersion(
     Returns:
         x_recon: (H, W, 28) reconstruction
     """
-    from pwm_core.recon.gap_tv import gap_tv_operator
+    from skimage.restoration import denoise_tv_chambolle
 
     H, W = mask.shape
     nC = 28
+    mask = np.clip(mask, 0, 1).astype(np.float32)
 
-    def fwd(x):
-        return cassi_forward_with_dispersion(
-            x.reshape(H, W, nC), mask, a1=a1, alpha_deg=alpha_deg)
+    # Compute Phi_sum using the parametric forward model
+    # Build it by accumulating mask^2 at each band's true offset
+    alpha_rad = np.radians(alpha_deg)
+    W_ext = W + (nC - 1) * 2  # standard output width
 
-    def adj(y_in):
-        return cassi_adjoint_with_dispersion(
-            y_in, mask, nC=nC, a1=a1, alpha_deg=alpha_deg).ravel()
+    Phi_sum = np.zeros((H, W_ext), dtype=np.float32)
+    for k in range(nC):
+        shift_x = int(np.round(a1 * k * np.cos(alpha_rad)))
+        if 0 <= shift_x and shift_x + W <= W_ext:
+            Phi_sum[:, shift_x:shift_x + W] += mask ** 2
+    Phi_sum = np.maximum(Phi_sum, 1e-10)
 
-    x_hat = gap_tv_operator(y, fwd, adj, (H, W, nC),
-                            iterations=50, lam=0.01, acc=1.0)
-    return np.clip(x_hat, 0, 1).astype(np.float32)
+    # Initialise with adjoint
+    x = cassi_adjoint_with_dispersion(y, mask, nC=nC, a1=a1, alpha_deg=alpha_deg)
+
+    # Nesterov accumulated residual
+    y1 = np.zeros((H, W_ext), dtype=np.float32)
+
+    for _ in range(100):
+        y_est = cassi_forward_with_dispersion(x, mask, a1=a1, alpha_deg=alpha_deg)
+
+        h_min = min(y.shape[0], y_est.shape[0])
+        w_min = min(y.shape[1], y_est.shape[1], W_ext)
+
+        raw_residual = np.zeros((H, W_ext), dtype=np.float32)
+        raw_residual[:h_min, :w_min] = y[:h_min, :w_min] - y_est[:h_min, :w_min]
+
+        y1 += raw_residual
+        norm_r = np.zeros((H, W_ext), dtype=np.float32)
+        norm_r[:h_min, :w_min] = (y1[:h_min, :w_min] - y_est[:h_min, :w_min]) / Phi_sum[:h_min, :w_min]
+
+        x = x + cassi_adjoint_with_dispersion(norm_r, mask, nC=nC, a1=a1, alpha_deg=alpha_deg)
+        x = denoise_tv_chambolle(
+            np.clip(x, 0, None), weight=0.1,
+            max_num_iter=5, channel_axis=2,
+        ).astype(np.float32)
+
+    return np.clip(x, 0, 1).astype(np.float32)
 
 
 def add_poisson_gaussian_noise(y: np.ndarray, peak: float = 100000,
@@ -398,8 +426,71 @@ def compute_sam(x_true: np.ndarray, x_recon: np.ndarray) -> float:
 # ===================================================================
 # reconstruction methods
 # ===================================================================
+def _gap_tv_cassi_chambolle(
+    y: np.ndarray, mask: np.ndarray, n_bands: int = 28,
+    step: int = 2, iterations: int = 100,
+    tv_weight: float = 0.1, tv_iter: int = 5,
+) -> np.ndarray:
+    """GAP-TV for CASSI using skimage Chambolle TV denoiser.
+
+    Matches the implementation in validate_cassi_pwmi.py that achieves
+    ~24 dB mean PSNR on KAIST.  Uses Nesterov acceleration (Yuan 2016,
+    Eq. 8) and 2-D per-channel TV denoising.
+
+    Args:
+        y: (H, W_ext) CASSI measurement
+        mask: (H, W) coded aperture
+        n_bands: number of spectral bands
+        step: dispersion step (pixels per band)
+        iterations: GAP iterations
+        tv_weight: weight for TV denoising
+        tv_iter: inner TV iterations per GAP step
+
+    Returns:
+        x: (H, W, n_bands) reconstructed cube
+    """
+    from skimage.restoration import denoise_tv_chambolle
+
+    H, W = mask.shape
+    nC = n_bands
+    W_ext = W + (nC - 1) * step
+    mask = np.clip(mask, 0, 1).astype(np.float32)
+
+    # Phi_sum = diag(Phi Phi^T)
+    Phi_sum = np.zeros((H, W_ext), dtype=np.float32)
+    for k in range(nC):
+        Phi_sum[:, k * step:k * step + W] += mask ** 2
+    Phi_sum = np.maximum(Phi_sum, 1e-10)
+
+    # Initialise with normalised back-projection
+    x = np.zeros((H, W, nC), dtype=np.float32)
+    for k in range(nC):
+        x[:, :, k] = mask * y[:, k * step:k * step + W] / np.maximum(
+            Phi_sum[:, k * step:k * step + W], 1e-6)
+
+    # Nesterov accumulated residual
+    y1 = np.zeros((H, W_ext), dtype=np.float32)
+
+    for _ in range(iterations):
+        y_est = np.zeros((H, W_ext), dtype=np.float32)
+        for k in range(nC):
+            y_est[:, k * step:k * step + W] += mask * x[:, :, k]
+
+        y1 += (y[:, :W_ext] - y_est)
+        norm_r = (y1 - y_est) / Phi_sum
+        for k in range(nC):
+            x[:, :, k] += mask * norm_r[:, k * step:k * step + W]
+
+        x = denoise_tv_chambolle(
+            np.clip(x, 0, None), weight=tv_weight,
+            max_num_iter=tv_iter, channel_axis=2,
+        ).astype(np.float32)
+
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
 def reconstruct_gap_tv(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0") -> np.ndarray:
-    """Reconstruct using GAP-TV.
+    """Reconstruct using GAP-TV (Chambolle TV, accelerated).
 
     Args:
         y: (H, W_ext) CASSI measurement
@@ -410,8 +501,8 @@ def reconstruct_gap_tv(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0") 
         x_recon: (H, W, 28) reconstruction
     """
     try:
-        from pwm_core.recon.gap_tv import gap_tv_cassi
-        return gap_tv_cassi(y, mask, n_bands=28, iterations=50, lam=0.01, step=2)
+        return _gap_tv_cassi_chambolle(y, mask, n_bands=28, step=2,
+                                       iterations=100, tv_weight=0.1, tv_iter=5)
     except Exception as e:
         logger.warning(f"GAP-TV failed: {e}")
         H = y.shape[0]
@@ -705,14 +796,17 @@ def validate_scenario_iii(scene: np.ndarray, mask_ideal: np.ndarray,
     for method in methods:
         t0 = time.time()
         try:
-            # All methods: use true warped mask with standard step=2
-            # GAP-TV, MST-S, MST-L: mask-aware, benefit from true mask
-            # HDNet: mask-oblivious, Scenario III = Scenario II
-            # Note: dispersion oracle (a1/alpha) is captured via the mask warp;
-            # the step=2 approximation is sufficient since a1=2.02 differs by
-            # only ~0.54 px at band 27 (sub-pixel, within interpolation error)
-            x_hat = RECONSTRUCTION_FUNCTIONS[method](
-                y_corrupt, mask_truth, device=device)
+            if method == "gap_tv":
+                # GAP-TV: use dispersion-aware forward/adjoint with true a1, alpha
+                x_hat = reconstruct_gap_tv_with_dispersion(
+                    y_corrupt, mask_truth,
+                    a1=mismatch.disp_a1, alpha_deg=mismatch.disp_alpha,
+                    device=device)
+            else:
+                # MST-S/MST-L: mask-aware, benefit from true warped mask
+                # HDNet: mask-oblivious, Scenario III ≈ Scenario II
+                x_hat = RECONSTRUCTION_FUNCTIONS[method](
+                    y_corrupt, mask_truth, device=device)
 
             x_hat = np.clip(x_hat, 0, 1)
             results[method] = {

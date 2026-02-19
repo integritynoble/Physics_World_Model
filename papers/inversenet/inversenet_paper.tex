@@ -290,7 +290,7 @@ We report three standard image quality metrics:
 
 \begin{table}[t]
 \centering
-\caption{CASSI reconstruction results (10 KAIST scenes, $256 \times 256 \times 28$, 5-parameter mismatch). PSNR (dB) / SSIM reported as mean $\pm$ std. $\Delta_{\text{deg}}$: degradation (I$\rightarrow$II). $\Delta_{\text{rec}}$: oracle recovery (II$\rightarrow$III). $\rho$: recovery ratio. Best recovery in \best{green}. $^\dagger$Recovery ratio undefined due to near-zero degradation.}
+\caption{CASSI reconstruction results (10 KAIST scenes, $256 \times 256 \times 28$, 5-parameter mismatch). PSNR (dB) / SSIM reported as mean $\pm$ std. $\Delta_{\text{deg}}$: degradation (I$\rightarrow$II). $\Delta_{\text{rec}}$: oracle recovery (II$\rightarrow$III). $\rho$: recovery ratio. Best recovery in \best{green}.}
 \label{tab:cassi}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lcccccc@{}}
@@ -298,10 +298,10 @@ We report three standard image quality metrics:
 \textbf{Method} & \textbf{Scenario I} & \textbf{Scenario II} & \textbf{Scenario III} & $\boldsymbol{\Delta}_{\textbf{deg}}$ & $\boldsymbol{\Delta}_{\textbf{rec}}$ & $\boldsymbol{\rho}$ \\
 \midrule
 GAP-TV~\cite{yuan2016gaptv}
- & 20.37{\scriptsize$\pm$1.84} / .620
- & 20.27{\scriptsize$\pm$1.83} / .598
- & 20.38{\scriptsize$\pm$1.84} / .619
- & 0.10 & 0.11 & N/A$^\dagger$ \\
+ & 24.34{\scriptsize$\pm$1.90} / .722
+ & 20.96{\scriptsize$\pm$1.62} / .611
+ & 21.72{\scriptsize$\pm$1.48} / .687
+ & 3.38 & 0.76 & 22.5\% \\
 HDNet~\cite{hu2022hdnet}
  & 34.66{\scriptsize$\pm$2.62} / .970
  & 21.88{\scriptsize$\pm$1.72} / .756
@@ -327,7 +327,7 @@ The CASSI results under the 5-parameter mismatch model reveal a striking dichoto
 \textbf{MST-L} achieves the best ideal performance (34.81\,dB) and the highest oracle recovery (+6.50\,dB, $\rho = 46.5\%$), making it the optimal choice when calibration is available.
 However, the moderate recovery ratio reflects the limitation that current architectures assume fixed integer dispersion steps and cannot fully correct sub-pixel dispersion drift even with oracle mask knowledge.
 \textbf{HDNet}, which processes only the initial spectral estimate without mask input, shows \textit{zero} oracle gain ($\Delta_{\text{rec}} = 0.00$\,dB), confirming that mask-oblivious architectures cannot benefit from operator calibration.
-\textbf{GAP-TV} shows negligible mismatch degradation ($\Delta_{\text{deg}} = 0.10$\,dB) due to its low overall reconstruction quality (20.37\,dB)---the operator mismatch is dominated by the reconstruction noise floor.
+\textbf{GAP-TV} shows moderate mismatch degradation ($\Delta_{\text{deg}} = 3.38$\,dB) with a 22.5\% recovery ratio, demonstrating that even classical iterative solvers benefit from oracle calibration when tuned to competitive strength (24.34\,dB ideal).
 Under Scenario~II (uncorrected mismatch), all deep learning methods converge to a narrow performance range (20.83--21.88\,dB), erasing the 14\,dB advantage they hold under ideal conditions.
 
 \paragraph{SSIM and SAM analysis.}
@@ -497,10 +497,10 @@ SPC    & 1 & 9.55--12.83 & 7.71--10.38 & 89.6\% & HATNet \\
 \end{figure}
 
 \paragraph{Mismatch severity ranking.}
-CACTI suffers the most severe degradation (10.94--20.58\,dB), followed by CASSI (0.10--13.98\,dB) and SPC (9.55--12.83\,dB).
+CACTI suffers the most severe degradation (10.94--20.58\,dB), followed by CASSI (3.38--13.98\,dB) and SPC (9.55--12.83\,dB).
 The CACTI severity is driven by its high-dimensional mismatch space (8~parameters vs.\ 5 for CASSI and effectively 1 for SPC), where spatial, temporal, and radiometric errors compound.
 With the 5-parameter mismatch model, CASSI now surpasses SPC in maximum degradation, driven by the dispersion parameters ($a_1$, $\alpha$) which create cumulative sub-pixel shifts across spectral bands.
-For CASSI, the wide range reflects the architectural divide: GAP-TV's low baseline quality makes it insensitive (0.10\,dB), while mask-aware deep networks lose over 13\,dB.
+For CASSI, the range reflects the architectural divide: GAP-TV's iterative optimization adapts partially to the corrupted measurement (3.38\,dB loss), while mask-aware deep networks lose over 13\,dB.
 
 \paragraph{Recovery potential.}
 \Cref{fig:rho_scatter} visualizes the recovery ratio versus ideal performance for all methods.
@@ -524,8 +524,8 @@ This three-way classification provides a practical taxonomy for selecting recons
 
 \paragraph{Classical vs.\ deep learning robustness.}
 A consistent finding across all modalities is that classical optimization methods are more robust to operator mismatch than deep learning methods.
-GAP-TV loses only 0.10\,dB on CASSI and 10.94\,dB on CACTI (vs.\ 13.98\,dB and 20.58\,dB for the best deep networks).
-However, this robustness comes at the cost of significantly lower ideal performance (20.37\,dB vs.\ 34.81\,dB on CASSI).
+GAP-TV loses 3.38\,dB on CASSI and 10.94\,dB on CACTI (vs.\ 13.98\,dB and 20.58\,dB for the best deep networks).
+However, this robustness comes at the cost of lower ideal performance (24.34\,dB vs.\ 34.81\,dB on CASSI).
 The practical implication is that when calibration is unavailable or imperfect, classical methods may outperform deep learning: on CACTI Scenario~II, GAP-TV (15.81\,dB) outperforms PnP-FFDNet (11.43\,dB) by 4.38\,dB despite being 2.53\,dB worse under ideal conditions.
 
 \paragraph{The sim-to-real collapse.}

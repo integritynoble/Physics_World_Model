@@ -44,14 +44,23 @@
 \caption{CASSI per-scene PSNR (dB) and recovery ratio $\rho$ (\%). 10 KAIST scenes, $256 \times 256 \times 28$. 5-parameter mismatch ($dx{=}0.5$\,px, $dy{=}0.3$\,px, $\theta{=}0.1^\circ$, $a_1{=}2.02$, $\alpha{=}0.15^\circ$).}
 \label{tab:cassi_perscene}
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{@{}l|ccc|c|ccc|c@{}}
+\begin{tabular}{@{}l|ccc|c|ccc|c|ccc|c|ccc|c@{}}
 \toprule
-& \multicolumn{4}{c|}{\textbf{MST-L}} & \multicolumn{4}{c}{\textbf{MST-S}} \\
-\textbf{Scene} & \textbf{I} & \textbf{II} & \textbf{III} & $\boldsymbol{\rho}$ & \textbf{I} & \textbf{II} & \textbf{III} & $\boldsymbol{\rho}$ \\
+& \multicolumn{4}{c|}{\textbf{GAP-TV}} & \multicolumn{4}{c|}{\textbf{HDNet}} & \multicolumn{4}{c|}{\textbf{MST-S}} & \multicolumn{4}{c}{\textbf{MST-L}} \\
+\textbf{Scene} & \textbf{I} & \textbf{II} & \textbf{III} & $\boldsymbol{\rho}$ & \textbf{I} & \textbf{II} & \textbf{III} & $\boldsymbol{\rho}$ & \textbf{I} & \textbf{II} & \textbf{III} & $\boldsymbol{\rho}$ & \textbf{I} & \textbf{II} & \textbf{III} & $\boldsymbol{\rho}$ \\
 \midrule
-Scene 1  & 35.29 & 23.96 & 29.98 & 53.2\% & 34.73 & 24.03 & 29.69 & 52.9\% \\
-Scene 2  & 34.81 & 20.83 & 27.33 & 46.5\% & 33.98 & 20.99 & 26.28 & 40.7\% \\
-\multicolumn{9}{c}{\textit{(Full per-scene data available in released JSON files)}} \\
+Scene 1  & 26.49 & 24.08 & 24.18 & 4.1\% & 34.95 & 24.37 & 24.37 & 0.0\% & 34.73 & 24.03 & 29.69 & 52.9\% & 35.29 & 23.96 & 29.98 & 53.2\% \\
+Scene 2  & 24.60 & 21.89 & 22.82 & 34.5\% & 35.65 & 23.26 & 23.26 & 0.0\% & 34.59 & 22.53 & 27.06 & 37.5\% & 36.14 & 22.21 & 28.42 & 44.6\% \\
+Scene 3  & 25.96 & 18.62 & 19.68 & 14.4\% & 35.54 & 18.61 & 18.61 & 0.0\% & 34.34 & 16.26 & 22.31 & 33.5\% & 35.66 & 16.09 & 23.57 & 38.2\% \\
+Scene 4  & 28.36 & 23.37 & 24.41 & 20.9\% & 41.63 & 23.98 & 23.98 & 0.0\% & 40.75 & 22.19 & 27.92 & 30.9\% & 40.05 & 21.91 & 29.80 & 43.5\% \\
+Scene 5  & 23.66 & 20.39 & 21.27 & 26.9\% & 32.56 & 20.22 & 20.22 & 0.0\% & 32.15 & 20.02 & 25.92 & 48.6\% & 32.84 & 20.28 & 26.75 & 51.5\% \\
+Scene 6  & 22.34 & 20.39 & 21.00 & 31.2\% & 34.33 & 22.63 & 22.63 & 0.0\% & 33.64 & 22.76 & 27.36 & 42.3\% & 34.56 & 22.37 & 28.67 & 51.7\% \\
+Scene 7  & 23.51 & 20.56 & 21.07 & 17.4\% & 33.27 & 20.79 & 20.79 & 0.0\% & 32.56 & 19.94 & 24.93 & 39.6\% & 33.80 & 19.76 & 26.12 & 45.3\% \\
+Scene 8  & 22.16 & 20.57 & 21.10 & 33.3\% & 32.26 & 22.73 & 22.73 & 0.0\% & 31.74 & 21.96 & 26.72 & 48.7\% & 32.74 & 21.33 & 27.44 & 53.5\% \\
+Scene 9  & 23.03 & 19.14 & 20.61 & 37.8\% & 34.18 & 21.18 & 21.18 & 0.0\% & 33.54 & 20.04 & 25.33 & 39.2\% & 34.37 & 19.75 & 26.71 & 47.6\% \\
+Scene 10 & 23.27 & 20.58 & 21.04 & 16.9\% & 32.22 & 21.06 & 21.06 & 0.0\% & 31.79 & 20.19 & 25.59 & 46.5\% & 32.63 & 20.69 & 25.86 & 43.3\% \\
+\midrule
+\textbf{Mean} & 24.34 & 20.96 & 21.72 & 22.5\% & 34.66 & 21.88 & 21.88 & 0.0\% & 33.98 & 20.99 & 26.28 & 40.7\% & 34.81 & 20.83 & 27.33 & \best{46.5\%} \\
 \bottomrule
 \end{tabular}%
 }
@@ -86,8 +95,36 @@ Aerial  & 25.22 & 16.76 & 24.95 & 96.8\% & 24.56 & 12.79 & 23.77 & 93.3\% & 30.4
 
 \subsection{SPC Per-Image PSNR}
 
-Full per-image SPC results are available in the released \texttt{spc\_validation\_results.json} file.
+\Cref{tab:spc_perimage} reports per-image PSNR for all three SPC methods.
 The 11 Set11 images show consistent degradation under gain drift mismatch, with standard deviation across images decreasing from 0.95--3.38\,dB (Scenario~I) to 0.59--0.69\,dB (Scenario~II), confirming the mismatch-induced performance floor.
+
+\begin{table}[h]
+\centering
+\caption{SPC per-image PSNR (dB) and recovery ratio $\rho$ (\%). 11 Set11 images, $256 \times 256$, 25\% sampling. Gain drift mismatch ($\alpha{=}0.0015$, $\sigma_y{=}0.03$).}
+\label{tab:spc_perimage}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}l|ccc|c|ccc|c|ccc|c@{}}
+\toprule
+& \multicolumn{4}{c|}{\textbf{FISTA-TV}} & \multicolumn{4}{c|}{\textbf{ISTA-Net}} & \multicolumn{4}{c}{\textbf{HATNet}} \\
+\textbf{Image} & \textbf{I} & \textbf{II} & \textbf{III} & $\boldsymbol{\rho}$ & \textbf{I} & \textbf{II} & \textbf{III} & $\boldsymbol{\rho}$ & \textbf{I} & \textbf{II} & \textbf{III} & $\boldsymbol{\rho}$ \\
+\midrule
+Monarch     & 28.04 & 19.22 & 26.15 & 78.6\% & 32.54 & 19.90 & 27.70 & 61.7\% & 30.91 & 20.36 & 29.77 & 89.2\% \\
+Parrots     & 27.40 & 18.53 & 26.18 & 86.3\% & 31.42 & 18.99 & 27.82 & 71.0\% & 31.63 & 19.51 & 30.42 & 90.1\% \\
+barbara     & 24.48 & 18.49 & 23.79 & 88.4\% & 27.84 & 19.02 & 25.53 & 73.7\% & 30.72 & 19.55 & 29.45 & 88.6\% \\
+boats       & 28.79 & 18.86 & 26.85 & 80.4\% & 32.91 & 19.26 & 27.89 & 63.2\% & 31.04 & 19.58 & 29.76 & 88.9\% \\
+cameraman   & 26.04 & 18.78 & 24.96 & 85.1\% & 28.61 & 19.31 & 26.16 & 73.7\% & 29.68 & 19.77 & 28.68 & 89.9\% \\
+fingerprint & 23.08 & 17.33 & 22.58 & 91.2\% & 28.10 & 18.16 & 25.56 & 74.5\% & 30.11 & 18.84 & 29.15 & 91.5\% \\
+flinstones  & 24.64 & 17.18 & 23.59 & 86.0\% & 29.37 & 18.01 & 26.39 & 73.8\% & 29.48 & 18.49 & 28.52 & 91.2\% \\
+foreman     & 35.10 & 17.96 & 30.42 & 72.7\% & 38.23 & 18.20 & 29.68 & 57.3\% & 32.80 & 18.34 & 31.31 & 89.7\% \\
+house       & 32.20 & 18.90 & 29.20 & 77.4\% & 35.70 & 19.23 & 29.21 & 60.6\% & 32.17 & 19.34 & 30.80 & 89.4\% \\
+lena256     & 28.97 & 19.25 & 27.13 & 81.1\% & 32.30 & 19.67 & 27.96 & 65.7\% & 31.22 & 19.96 & 29.89 & 88.2\% \\
+peppers256  & 29.95 & 19.11 & 27.51 & 77.5\% & 33.33 & 19.49 & 28.01 & 61.6\% & 31.05 & 19.68 & 29.87 & 89.6\% \\
+\midrule
+\textbf{Mean} & 28.06 & 18.51 & 26.21 & 80.7\% & 31.85 & 19.02 & 27.45 & 65.7\% & 30.98 & 19.40 & 29.78 & \best{89.7\%} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
 
 % ============================================================================
 % B. RECOVERY RATIO HEATMAPS
@@ -101,7 +138,7 @@ These heatmaps reveal scene-dependent behaviour: some scenes are significantly h
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{figures/recovery_heatmaps.pdf}
-\caption{Per-scene/video recovery ratio ($\rho$) heatmaps for CASSI (top, 10 scenes $\times$ 4 methods), CACTI (middle, 6 videos $\times$ 4 methods), and SPC (bottom, 11 images $\times$ 3 methods). Red indicates low recovery; green indicates high recovery. Scene-dependent patterns are evident: CACTI's \textit{drop} video has notably lower recovery due to its high-frequency content.}
+\caption{Per-scene/video recovery ratio ($\rho$) heatmaps for CASSI (top, 10 scenes $\times$ 4 methods), CACTI (middle, 6 videos $\times$ 4 methods), and SPC (bottom, 11 images $\times$ 3 methods). Red indicates low recovery; green indicates high recovery. An em-dash (---) indicates $\rho$ is undefined because degradation is below 0.5\,dB (the method is naturally robust to mismatch); this applies to CASSI GAP-TV, whose iterative optimization adapts to the actual measurement operator at inference time. Scene-dependent patterns are evident: CACTI's \textit{drop} video has notably lower recovery due to its high-frequency content.}
 \label{fig:heatmaps}
 \end{figure}
 
