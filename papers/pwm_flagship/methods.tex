@@ -61,7 +61,7 @@ dot-product test.  For a primitive $A$ with forward map $A:\mathbb{R}^n
 \end{equation}
 where $\epsilon = 10^{-12}$ guards against division by zero.  The test
 is repeated $n_{\text{trials}} = 5$ times with independent random draws;
-the primitive passes if $\delta_{\max} < 10^{-5}$.  At the graph level,
+the primitive passes if $\delta_{\max} < 10^{-6}$.  At the graph level,
 a compiled \texttt{GraphOperator} composed entirely of linear nodes
 executes the same test over the composed forward--adjoint chain.  A
 \texttt{GraphAdjointCheckReport} records $n_{\text{trials}}$,
@@ -243,7 +243,7 @@ calibration fully closes the mismatch gap.
 \subsection*{Agent System Architecture}
 \label{sec:methods:agents}
 
-The PWM agent system comprises 7 specialist agents, 1 optional hybrid agent,
+The PWM agent system comprises 6 specialist agents, 1 optional hybrid agent,
 and 8 support classes totalling 10,545 lines of Python.  All agents execute
 deterministically; no large language model (LLM) is required for pipeline
 operation.
@@ -364,7 +364,7 @@ The coarse correction phase employs a hierarchical search strategy to
 rapidly explore the mismatch parameter space.  For CASSI, the six-parameter
 mismatch model comprises mask affine parameters (spatial shifts $dx$, $dy$
 and rotation $\theta$) and dispersion parameters (slope $a_1$ and axis
-angle $\varphi_d$), plus an optional PSF width $\sigma_{\text{psf}}$.
+angle $\alpha$), plus an optional PSF width $\sigma_{\text{psf}}$.
 The algorithm proceeds as follows:
 
 \begin{enumerate}
@@ -376,7 +376,7 @@ The algorithm proceeds as follows:
     centered on the 1D optima.  The top-$k$ ($k = 5$) candidates by
     reconstruction PSNR are retained.
   \item \textbf{2D beam search.}  For each retained mask candidate,
-    the dispersion subspace $(a_1, \varphi_d)$ is searched over a
+    the dispersion subspace $(a_1, \alpha)$ is searched over a
     $5 \times 7$ grid.  The joint top-$k$ candidates are retained.
   \item \textbf{Coordinate descent refinement.}  Three rounds of
     univariate refinement on each parameter, shrinking the search
@@ -504,10 +504,10 @@ same GPU.
 The coded aperture snapshot spectral imaging (CASSI) system uses a TSA-Net
 binary mask of dimensions $256 \times 256$, with 28 spectral bands
 dispersed along the spatial dimension.  The six-parameter mismatch model
-$\mismatchparam = (dx, dy, \theta, a_1, \varphi_d, \sigma_{\text{psf}})$
+$\mismatchparam = (dx, dy, \theta, a_1, \alpha, \sigma_{\text{psf}})$
 describes: mask spatial shift in $x$ ($dx$, pixels), mask spatial shift in
 $y$ ($dy$, pixels), mask rotation angle ($\theta$, degrees), dispersion
-slope ($a_1$, pixels per band), dispersion axis angle ($\varphi_d$,
+slope ($a_1$, pixels per band), dispersion axis angle ($\alpha$,
 degrees), and PSF blur width ($\sigma_{\text{psf}}$, pixels).
 For the primary mismatch experiment (validated by InverseNet), the true mismatch parameters are
 $\mismatchparam_{\text{true}} = (dx = 0.5\;\text{px},\; dy = 0.3\;\text{px},\;

@@ -134,7 +134,7 @@ We define the \emph{recovery ratio} as
 \begin{equation}
   \rho
   = \frac{\mathrm{PSNR}_{\mathrm{achieved}} - \mathrm{PSNR}_{\mathrm{mismatch}}}
-         {\mathrm{PSNR}_{\mathrm{oracle}} - \mathrm{PSNR}_{\mathrm{mismatch}}},
+         {\mathrm{PSNR}_{\mathrm{ideal}} - \mathrm{PSNR}_{\mathrm{mismatch}}},
   \qquad 0 \leq \rho \leq 1.
   \label{eq:rho}
 \end{equation}
@@ -381,7 +381,8 @@ five representative methods under four scenarios.\footnote{The solver subset use
 \begin{longtable}{l l r r r r}
 \caption{CASSI per-scene PSNR (dB).  Sc.~I = ideal forward model;
 Sc.~II = mismatched (baseline); Sc.~III-A1 = correction Algorithm~1; Sc.~IV (Oracle) = ground-truth operator through full pipeline.
-GAP-TV values for Sc.~I, Sc.~II, and Sc.~IV are updated from InverseNet validation (mismatch: $dx{=}0.5$~px, $dy{=}0.3$~px, $\theta{=}0.1^{\circ}$, $a_1{=}2.02$, $\alpha{=}0.15^{\circ}$). Entries marked $^*$ use the oracle value as an upper bound for Algorithm~1 correction (Algorithm~1 re-validation with the new mismatch is pending).
+GAP-TV values for Sc.~I, Sc.~II, and Sc.~IV are from InverseNet validation~\cite{yang2026inversenet}. Sc.~III-A1 entries marked $^*$ use InverseNet Oracle Mask values (true operator on mismatched data) as upper bounds; Algorithm~1 re-validation under the 5-parameter mismatch is pending. Sc.~IV reproduces Sc.~I by design ($\pm 0.01$~dB).
+Other methods (TwIST, DeSCI, MST, HDNet) have \emph{not} been re-validated under the InverseNet mismatch and retain values from prior experiments with a different mismatch configuration.
 Algorithm~2 results are reported in the correction parameter table (Table~\ref{tab:correction_params}).}
 \label{tab:cassi_scenes} \\
 \toprule
@@ -397,70 +398,70 @@ Algorithm~2 results are reported in the correction parameter table (Table~\ref{t
 \bottomrule
 \endlastfoot
 %% Scene 1
-scene01 & GAP-TV        & 26.84 & 22.77 & 26.06$^*$ & 26.06 \\
+scene01 & GAP-TV        & 26.49 & 24.08 & 24.18$^*$ & 26.49 \\
 scene01 & TwIST         & 27.18 & 15.79 & 21.34 & 27.18 \\
 scene01 & DeSCI         & 28.01 & 14.92 & 20.15 & 28.01 \\
 scene01 & MST           & 33.47 & 16.84 & 22.61 & 33.47 \\
 scene01 & HDNet         & 34.12 & 17.02 & 23.10 & 34.12 \\
 \midrule
 %% Scene 2
-scene02 & GAP-TV        & 25.33 & 20.80 & 24.53$^*$ & 24.53 \\
+scene02 & GAP-TV        & 24.60 & 21.89 & 22.82$^*$ & 24.60 \\
 scene02 & TwIST         & 25.73 & 15.21 & 20.48 & 25.73 \\
 scene02 & DeSCI         & 26.95 & 14.38 & 19.54 & 26.95 \\
 scene02 & MST           & 31.84 & 16.12 & 21.73 & 31.84 \\
 scene02 & HDNet         & 32.56 & 16.45 & 22.01 & 32.56 \\
 \midrule
 %% Scene 3
-scene03 & GAP-TV        & 25.70 & 17.17 & 22.89$^*$ & 22.89 \\
+scene03 & GAP-TV        & 25.96 & 18.62 & 19.68$^*$ & 25.96 \\
 scene03 & TwIST         & 28.04 & 16.35 & 21.87 & 28.04 \\
 scene03 & DeSCI         & 29.22 & 15.64 & 20.93 & 29.22 \\
 scene03 & MST           & 34.67 & 17.48 & 23.25 & 34.67 \\
 scene03 & HDNet         & 35.31 & 17.71 & 23.68 & 35.31 \\
 \midrule
 %% Scene 4
-scene04 & GAP-TV        & 33.21 & 22.26 & 29.32$^*$ & 29.32 \\
+scene04 & GAP-TV        & 28.36 & 23.37 & 24.41$^*$ & 28.36 \\
 scene04 & TwIST         & 31.09 & 18.02 & 23.75 & 31.09 \\
 scene04 & DeSCI         & 32.14 & 17.11 & 22.64 & 32.14 \\
 scene04 & MST           & 37.82 & 19.33 & 25.47 & 37.82 \\
 scene04 & HDNet         & 38.45 & 19.68 & 25.94 & 38.45 \\
 \midrule
 %% Scene 5
-scene05 & GAP-TV        & 24.09 & 19.53 & 23.12$^*$ & 23.12 \\
+scene05 & GAP-TV        & 23.66 & 20.39 & 21.27$^*$ & 23.66 \\
 scene05 & TwIST         & 26.54 & 15.53 & 20.84 & 26.54 \\
 scene05 & DeSCI         & 27.68 & 14.72 & 19.87 & 27.68 \\
 scene05 & MST           & 32.91 & 16.67 & 22.14 & 32.91 \\
 scene05 & HDNet         & 33.58 & 16.94 & 22.53 & 33.58 \\
 \midrule
 %% Scene 6
-scene06 & GAP-TV        & 23.12 & 19.72 & 22.52$^*$ & 22.52 \\
+scene06 & GAP-TV        & 22.34 & 20.39 & 21.00$^*$ & 22.34 \\
 scene06 & TwIST         & 29.18 & 16.74 & 22.31 & 29.18 \\
 scene06 & DeSCI         & 30.42 & 15.97 & 21.24 & 30.42 \\
 scene06 & MST           & 35.89 & 18.05 & 23.87 & 35.89 \\
 scene06 & HDNet         & 36.54 & 18.32 & 24.25 & 36.54 \\
 \midrule
 %% Scene 7
-scene07 & GAP-TV        & 24.20 & 19.87 & 23.24$^*$ & 23.24 \\
+scene07 & GAP-TV        & 23.51 & 20.56 & 21.07$^*$ & 23.51 \\
 scene07 & TwIST         & 24.76 & 14.32 & 19.64 & 24.76 \\
 scene07 & DeSCI         & 25.84 & 13.55 & 18.73 & 25.84 \\
 scene07 & MST           & 30.72 & 15.48 & 21.02 & 30.72 \\
 scene07 & HDNet         & 31.35 & 15.73 & 21.38 & 31.35 \\
 \midrule
 %% Scene 8
-scene08 & GAP-TV        & 22.98 & 20.55 & 22.22$^*$ & 22.22 \\
+scene08 & GAP-TV        & 22.16 & 20.57 & 21.10$^*$ & 22.16 \\
 scene08 & TwIST         & 28.53 & 16.52 & 22.04 & 28.53 \\
 scene08 & DeSCI         & 29.71 & 15.78 & 21.12 & 29.71 \\
 scene08 & MST           & 35.14 & 17.83 & 23.55 & 35.14 \\
 scene08 & HDNet         & 35.79 & 18.08 & 23.94 & 35.79 \\
 \midrule
 %% Scene 9
-scene09 & GAP-TV        & 24.59 & 18.75 & 23.17$^*$ & 23.17 \\
+scene09 & GAP-TV        & 23.03 & 19.14 & 20.61$^*$ & 23.03 \\
 scene09 & TwIST         & 26.89 & 15.64 & 21.02 & 26.89 \\
 scene09 & DeSCI         & 28.04 & 14.91 & 20.08 & 28.04 \\
 scene09 & MST           & 33.28 & 16.87 & 22.35 & 33.28 \\
 scene09 & HDNet         & 33.94 & 17.12 & 22.71 & 33.94 \\
 \midrule
 %% Scene 10
-scene10 & GAP-TV        & 24.44 & 19.57 & 23.67$^*$ & 23.67 \\
+scene10 & GAP-TV        & 23.27 & 20.58 & 21.04$^*$ & 23.27 \\
 scene10 & TwIST         & 30.34 & 17.54 & 23.21 & 30.34 \\
 scene10 & DeSCI         & 31.52 & 16.73 & 22.14 & 31.52 \\
 scene10 & MST           & 37.05 & 18.89 & 24.91 & 37.05 \\
@@ -501,8 +502,8 @@ where available.}
 %% Group 1: Incoherent light
 1  & Matrix (toy)         & Incoherent     & 23.35 & ---   & Validated & ADMM-TV \\
 2  & SPC                  & Incoherent     & 23.35 & 24.1  & Validated & ADMM-TV \\
-3  & CASSI                & Incoherent     & 21.54 & 34.2  & Validated & GAP-TV / MST-L \\
-4  & CACTI                & Incoherent     & 37.42 & 33.4  & Validated & GAP-TV \\
+3  & CASSI                & Incoherent     & 24.34 & 34.2  & Validated & GAP-TV / MST-L \\
+4  & CACTI                & Incoherent     & 35.33 & 33.4  & Validated & GAP-TV \\
 5  & Lensless             & Incoherent     & 27.03 & 28.5  & Validated & ADMM-TV \\
 6  & Fluorescence         & Incoherent     & ---   & 30.1  & Phase 4   & --- \\
 %% Group 2: Coherent light
