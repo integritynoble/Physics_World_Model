@@ -1,0 +1,31 @@
+\begin{thebibliography}{1}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\providecommand{\bibinfo}[2]{#2}
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem{yang2026inversenet}
+\bibinfo{author}{Yang, C.}
+\newblock \bibinfo{title}{{InverseNet}: Benchmarking operator mismatch in
+  snapshot compressive imaging}.
+\newblock \bibinfo{type}{Technical Report}, \bibinfo{institution}{NextGen
+  PlatformAI C Corp} (\bibinfo{year}{2026}).
+
+\bibitem{boyd2011admm}
+\bibinfo{author}{Boyd, S.}, \bibinfo{author}{Parikh, N.}, \bibinfo{author}{Chu,
+  E.}, \bibinfo{author}{Peleato, B.} \& \bibinfo{author}{Eckstein, J.}
+\newblock \bibinfo{title}{Distributed optimization and statistical learning via
+  the alternating direction method of multipliers}.
+\newblock \emph{\bibinfo{journal}{Foundations and Trends in Machine Learning}}
+  \textbf{\bibinfo{volume}{3}}, \bibinfo{pages}{1--122} (\bibinfo{year}{2011}).
+
+\bibitem{beck2009fista}
+\bibinfo{author}{Beck, A.} \& \bibinfo{author}{Teboulle, M.}
+\newblock \bibinfo{title}{A fast iterative shrinkage-thresholding algorithm for
+  linear inverse problems}.
+\newblock \emph{\bibinfo{journal}{SIAM Journal on Imaging Sciences}}
+  \textbf{\bibinfo{volume}{2}}, \bibinfo{pages}{183--202}
+  (\bibinfo{year}{2009}).
+
+\end{thebibliography}
