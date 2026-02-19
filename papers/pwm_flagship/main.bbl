@@ -1,0 +1,211 @@
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\providecommand{\bibinfo}[2]{#2}
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem{candes2008compressed}
+\bibinfo{author}{Cand{\`e}s, E.~J.} \& \bibinfo{author}{Wakin, M.~B.}
+\newblock \bibinfo{title}{An introduction to compressive sampling}.
+\newblock \emph{\bibinfo{journal}{IEEE Signal Processing Magazine}}
+  \textbf{\bibinfo{volume}{25}}, \bibinfo{pages}{21--30}
+  (\bibinfo{year}{2008}).
+
+\bibitem{donoho2006compressed}
+\bibinfo{author}{Donoho, D.~L.}
+\newblock \bibinfo{title}{Compressed sensing}.
+\newblock \emph{\bibinfo{journal}{IEEE Transactions on Information Theory}}
+  \textbf{\bibinfo{volume}{52}}, \bibinfo{pages}{1289--1306}
+  (\bibinfo{year}{2006}).
+
+\bibitem{venkatakrishnan2013pnp}
+\bibinfo{author}{Venkatakrishnan, S.~V.}, \bibinfo{author}{Bouman, C.~A.} \&
+  \bibinfo{author}{Wohlberg, B.}
+\newblock \bibinfo{title}{Plug-and-play priors for model based reconstruction}.
+\newblock In \emph{\bibinfo{booktitle}{Proceedings of the IEEE Global
+  Conference on Signal and Information Processing (GlobalSIP)}},
+  \bibinfo{pages}{945--948} (\bibinfo{year}{2013}).
+
+\bibitem{monga2021unrolling}
+\bibinfo{author}{Monga, V.}, \bibinfo{author}{Li, Y.} \&
+  \bibinfo{author}{Eldar, Y.~C.}
+\newblock \bibinfo{title}{Algorithm unrolling: Interpretable, efficient deep
+  learning for signal and image processing}.
+\newblock \emph{\bibinfo{journal}{IEEE Signal Processing Magazine}}
+  \textbf{\bibinfo{volume}{38}}, \bibinfo{pages}{18--44}
+  (\bibinfo{year}{2021}).
+
+\bibitem{cai2022mst}
+\bibinfo{author}{Cai, Y.} \emph{et~al.}
+\newblock \bibinfo{title}{Mask-guided spectral-wise transformer for efficient
+  hyperspectral image reconstruction}.
+\newblock In \emph{\bibinfo{booktitle}{Proceedings of the IEEE/CVF Conference
+  on Computer Vision and Pattern Recognition (CVPR)}},
+  \bibinfo{pages}{17502--17511} (\bibinfo{year}{2022}).
+
+\bibitem{choi2017kaist}
+\bibinfo{author}{Choi, I.}, \bibinfo{author}{Jeon, D.~S.},
+  \bibinfo{author}{Nam, G.}, \bibinfo{author}{Gutierrez, D.} \&
+  \bibinfo{author}{Kim, M.~H.}
+\newblock \bibinfo{title}{High-quality hyperspectral reconstruction using a
+  spectral prior}.
+\newblock \emph{\bibinfo{journal}{ACM Transactions on Graphics (Proceedings of
+  SIGGRAPH Asia)}} \textbf{\bibinfo{volume}{36}},
+  \bibinfo{pages}{218:1--218:13} (\bibinfo{year}{2017}).
+
+\bibitem{lustig2007sparse}
+\bibinfo{author}{Lustig, M.}, \bibinfo{author}{Donoho, D.} \&
+  \bibinfo{author}{Pauly, J.~M.}
+\newblock \bibinfo{title}{Sparse {MRI}: The application of compressed sensing
+  for rapid {MR} imaging}.
+\newblock \emph{\bibinfo{journal}{Magnetic Resonance in Medicine}}
+  \textbf{\bibinfo{volume}{58}}, \bibinfo{pages}{1182--1195}
+  (\bibinfo{year}{2007}).
+
+\bibitem{zbontar2018fastmri}
+\bibinfo{author}{Zbontar, J.} \emph{et~al.}
+\newblock \bibinfo{title}{{fastMRI}: An open dataset and benchmarks for
+  accelerated {MRI}}.
+\newblock \emph{\bibinfo{journal}{arXiv preprint arXiv:1811.08839}}
+  (\bibinfo{year}{2018}).
+
+\bibitem{chen2017redcnn}
+\bibinfo{author}{Chen, H.} \emph{et~al.}
+\newblock \bibinfo{title}{Low-dose {CT} with a residual encoder-decoder
+  convolutional neural network}.
+\newblock \emph{\bibinfo{journal}{IEEE Transactions on Medical Imaging}}
+  \textbf{\bibinfo{volume}{36}}, \bibinfo{pages}{2524--2535}
+  (\bibinfo{year}{2017}).
+
+\bibitem{uecker2014espirit}
+\bibinfo{author}{Uecker, M.} \emph{et~al.}
+\newblock \bibinfo{title}{{ESPIRiT} --- an eigenvalue approach to
+  autocalibrating parallel {MRI}: where {SENSE} meets {GRAPPA}}.
+\newblock \emph{\bibinfo{journal}{Magnetic Resonance in Medicine}}
+  \textbf{\bibinfo{volume}{71}}, \bibinfo{pages}{990--1001}
+  (\bibinfo{year}{2014}).
+
+\bibitem{maiden2009ptychography}
+\bibinfo{author}{Maiden, A.~M.} \& \bibinfo{author}{Rodenburg, J.~M.}
+\newblock \bibinfo{title}{An improved ptychographical phase retrieval algorithm
+  for diffractive imaging}.
+\newblock \emph{\bibinfo{journal}{Ultramicroscopy}}
+  \textbf{\bibinfo{volume}{109}}, \bibinfo{pages}{1256--1262}
+  (\bibinfo{year}{2009}).
+
+\bibitem{antun2020instabilities}
+\bibinfo{author}{Antun, V.}, \bibinfo{author}{Renna, F.},
+  \bibinfo{author}{Poon, C.}, \bibinfo{author}{Adcock, B.} \&
+  \bibinfo{author}{Hansen, A.~C.}
+\newblock \bibinfo{title}{On instabilities of deep learning in image
+  reconstruction and the potential costs of {AI}}.
+\newblock \emph{\bibinfo{journal}{Proceedings of the National Academy of
+  Sciences}} \textbf{\bibinfo{volume}{117}}, \bibinfo{pages}{30088--30098}
+  (\bibinfo{year}{2020}).
+
+\bibitem{wagadarikar2008cassi}
+\bibinfo{author}{Wagadarikar, A.~A.}, \bibinfo{author}{John, R.},
+  \bibinfo{author}{Willett, R.} \& \bibinfo{author}{Brady, D.~J.}
+\newblock \bibinfo{title}{Single disperser design for coded aperture snapshot
+  spectral imaging}.
+\newblock \emph{\bibinfo{journal}{Applied Optics}}
+  \textbf{\bibinfo{volume}{47}}, \bibinfo{pages}{B44--B51}
+  (\bibinfo{year}{2008}).
+
+\bibitem{rodenburg2004ptychography}
+\bibinfo{author}{Rodenburg, J.~M.} \& \bibinfo{author}{Faulkner, H. M.~L.}
+\newblock \bibinfo{title}{A phase retrieval algorithm for shifting
+  illumination}.
+\newblock \emph{\bibinfo{journal}{Applied Physics Letters}}
+  \textbf{\bibinfo{volume}{85}}, \bibinfo{pages}{4795--4797}
+  (\bibinfo{year}{2004}).
+
+\bibitem{pruessmann1999sense}
+\bibinfo{author}{Pruessmann, K.~P.}, \bibinfo{author}{Weiger, M.},
+  \bibinfo{author}{Scheidegger, M.~B.} \& \bibinfo{author}{Boesiger, P.}
+\newblock \bibinfo{title}{{SENSE}: Sensitivity encoding for fast {MRI}}.
+\newblock \emph{\bibinfo{journal}{Magnetic Resonance in Medicine}}
+  \textbf{\bibinfo{volume}{42}}, \bibinfo{pages}{952--962}
+  (\bibinfo{year}{1999}).
+
+\bibitem{feldkamp1984practical}
+\bibinfo{author}{Feldkamp, L.~A.}, \bibinfo{author}{Davis, L.~C.} \&
+  \bibinfo{author}{Kress, J.~W.}
+\newblock \bibinfo{title}{Practical cone-beam algorithm}.
+\newblock \emph{\bibinfo{journal}{Journal of the Optical Society of America A}}
+  \textbf{\bibinfo{volume}{1}}, \bibinfo{pages}{612--619}
+  (\bibinfo{year}{1984}).
+
+\bibitem{bioucasdias2007twist}
+\bibinfo{author}{Bioucas-Dias, J.~M.} \& \bibinfo{author}{Figueiredo, M. A.~T.}
+\newblock \bibinfo{title}{A new {TwIST}: Two-step iterative
+  shrinkage/thresholding algorithms for image restoration}.
+\newblock \emph{\bibinfo{journal}{IEEE Transactions on Image Processing}}
+  \textbf{\bibinfo{volume}{16}}, \bibinfo{pages}{2992--3004}
+  (\bibinfo{year}{2007}).
+
+\bibitem{yuan2016gaptv}
+\bibinfo{author}{Yuan, X.}
+\newblock \bibinfo{title}{Generalized alternating projection based total
+  variation minimization for compressive sensing}.
+\newblock In \emph{\bibinfo{booktitle}{Proceedings of the IEEE International
+  Conference on Image Processing (ICIP)}}, \bibinfo{pages}{2539--2543}
+  (\bibinfo{year}{2016}).
+
+\bibitem{huang2021dgsmp}
+\bibinfo{author}{Huang, T.}, \bibinfo{author}{Dong, W.}, \bibinfo{author}{Yuan,
+  X.}, \bibinfo{author}{Wu, J.} \& \bibinfo{author}{Shi, G.}
+\newblock \bibinfo{title}{Deep gaussian scale mixture prior for spectral
+  compressive imaging}.
+\newblock In \emph{\bibinfo{booktitle}{Proceedings of the IEEE/CVF Conference
+  on Computer Vision and Pattern Recognition (CVPR)}},
+  \bibinfo{pages}{16216--16225} (\bibinfo{year}{2021}).
+
+\bibitem{cai2022cst}
+\bibinfo{author}{Cai, Y.} \emph{et~al.}
+\newblock \bibinfo{title}{{CST}: Compact spectral transformer for hyperspectral
+  image reconstruction}.
+\newblock In \emph{\bibinfo{booktitle}{Proceedings of the European Conference
+  on Computer Vision (ECCV)}} (\bibinfo{year}{2022}).
+
+\bibitem{llull2013cacti}
+\bibinfo{author}{Llull, P.} \emph{et~al.}
+\newblock \bibinfo{title}{Coded aperture compressive temporal imaging}.
+\newblock \emph{\bibinfo{journal}{Optics Express}}
+  \textbf{\bibinfo{volume}{21}}, \bibinfo{pages}{10526--10545}
+  (\bibinfo{year}{2013}).
+
+\bibitem{wang2023efficientsci}
+\bibinfo{author}{Wang, L.}, \bibinfo{author}{Cao, M.} \& \bibinfo{author}{Yuan,
+  X.}
+\newblock \bibinfo{title}{{EfficientSCI}: Densely connected network with
+  space-time factorization for large-scale video snapshot compressive imaging}.
+\newblock In \emph{\bibinfo{booktitle}{Proceedings of the IEEE/CVF Conference
+  on Computer Vision and Pattern Recognition (CVPR)}},
+  \bibinfo{pages}{18477--18486} (\bibinfo{year}{2023}).
+
+\bibitem{duarte2008spc}
+\bibinfo{author}{Duarte, M.~F.} \emph{et~al.}
+\newblock \bibinfo{title}{Single-pixel imaging via compressive sampling}.
+\newblock \emph{\bibinfo{journal}{IEEE Signal Processing Magazine}}
+  \textbf{\bibinfo{volume}{25}}, \bibinfo{pages}{83--91}
+  (\bibinfo{year}{2008}).
+
+\bibitem{hu2022hdnet}
+\bibinfo{author}{Hu, X.} \emph{et~al.}
+\newblock \bibinfo{title}{{HDNet}: High-resolution dual-domain learning for
+  spectral compressive imaging}.
+\newblock In \emph{\bibinfo{booktitle}{Proceedings of the IEEE/CVF Conference
+  on Computer Vision and Pattern Recognition (CVPR)}},
+  \bibinfo{pages}{17542--17551} (\bibinfo{year}{2022}).
+
+\bibitem{liu2019rank}
+\bibinfo{author}{Liu, Y.}, \bibinfo{author}{Yuan, X.}, \bibinfo{author}{Suo,
+  J.}, \bibinfo{author}{Brady, D.~J.} \& \bibinfo{author}{Dai, Q.}
+\newblock \bibinfo{title}{Rank minimization for snapshot compressive imaging}.
+\newblock \emph{\bibinfo{journal}{IEEE Transactions on Pattern Analysis and
+  Machine Intelligence}} \textbf{\bibinfo{volume}{41}},
+  \bibinfo{pages}{2990--3006} (\bibinfo{year}{2019}).
+
+\end{thebibliography}

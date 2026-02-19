@@ -274,7 +274,7 @@ additions with partial or planned validation.
 \caption{Complete correction parameter summary.  $\Delta$PSNR is the
 improvement from Scenario~II (mismatch) to Scenario~III (corrected).
 CASSI correction results in this table use GAP-TV as the reconstruction solver, whereas the main-text deep dive reports MST-L results.
-Scenario~I (ideal) PSNR values and recovery ratios ($\rho$) for all configurations are reported in the companion Rail paper's evidence section and in the RunBundle manifests in the code repository.}
+Scenario~I (ideal) PSNR values and recovery ratios ($\rho$) for all configurations are available in the RunBundle manifests in the code repository.}
 \label{tab:correction_params} \\
 \toprule
 \textbf{Modality} & \textbf{Mismatch Parameter} &
@@ -375,13 +375,13 @@ Radar/SAR
 \label{sec:cassi_scenes}
 
 Table~\ref{tab:cassi_scenes} reports PSNR (dB) for 10 KAIST scenes across
-five representative methods under four scenarios.\footnote{The solver subset used in this supplementary per-scene table (GAP-TV, TwIST, DeSCI, MST, HDNet) differs from the five methods reported in the main text (TwIST, GAP-TV, DGSMP, MST-L, CST-L). The supplementary tables use an earlier solver subset selected during initial experiments; the main text reports the final standardized comparison.}
+five representative methods under four scenarios.\footnote{The solver subset used in this supplementary per-scene table (GAP-TV, TwIST, DeSCI, MST, HDNet) differs from the five methods reported in the main text (TwIST, GAP-TV, DGSMP, MST-L, CST-L). The supplementary tables use an earlier solver subset selected during initial experiments; the main text reports the final standardized comparison. The supplementary table uses MST (base variant); the main text reports MST-L (large variant). Different model sizes account for the PSNR difference.}
 
 \begin{footnotesize}
 \begin{longtable}{l l r r r r}
 \caption{CASSI per-scene PSNR (dB).  Sc.~I = ideal forward model;
 Sc.~II = mismatched (baseline); Sc.~III-A1 = correction Algorithm~1; Sc.~IV (Oracle) = ground-truth operator through full pipeline.
-Algorithm~2 results are reported in the correction parameter table (Table~\ref{tab:correction_params}).}
+Algorithm~2 results are reported in the correction parameter table (Table~\ref{tab:correction_params}).\footnote{Per-scene values in this table were obtained from an earlier experimental run; the correction parameter table (Table~\ref{tab:correction_params}) reports values from the final calibration run. Minor differences ($< 0.2$~dB) arise from different random seeds used in the mismatch simulation.}}
 \label{tab:cassi_scenes} \\
 \toprule
 \textbf{Scene} & \textbf{Method} &
@@ -549,15 +549,15 @@ Table~\ref{tab:yaml} summarizes the nine YAML registry files (totalling
 \toprule
 \textbf{\#} & \textbf{File} & \textbf{Lines} & \textbf{Purpose} \\
 \midrule
-1 & \texttt{modalities.yaml}           & --- & Defines 64 modality entries with keywords, forward model equations, and default solvers. \\
-2 & \texttt{graph\_templates.yaml}     & --- & OperatorGraph skeletons for 89 templates across 64 modalities. \\
+1 & \texttt{modalities.yaml}           & 1200 & Defines 64 modality entries with keywords, forward model equations, and default solvers. \\
+2 & \texttt{graph\_templates.yaml}     & 1400 & OperatorGraph skeletons for 89 templates across 64 modalities. \\
 3 & \texttt{photon\_db.yaml}           & 624 & Photon models parameterized by source power, quantum efficiency, exposure, and detector. \\
 4 & \texttt{mismatch\_db.yaml}         & 797 & Mismatch parameters, perturbation ranges, and correction methods per modality. \\
 5 & \texttt{compression\_db.yaml}      & 1186 & Recoverability tables mapping compression ratio to expected PSNR with provenance. \\
-6 & \texttt{solver\_registry.yaml}     & --- & Maps solver names to implementations (ADMM~\cite{boyd2011admm}, FISTA~\cite{beck2009fista}, GAP-TV, PnP, learned). \\
-7 & \texttt{primitives.yaml}           & --- & Primitive operator metadata (type, adjoint availability, differentiability). \\
-8 & \texttt{dataset\_registry.yaml}    & --- & Links modalities to benchmark datasets (KAIST, fastMRI, etc.). \\
-9 & \texttt{acceptance\_thresholds.yaml} & --- & Pass/fail thresholds per metric for automated validation. \\
+6 & \texttt{solver\_registry.yaml}     & 650 & Maps solver names to implementations (ADMM~\cite{boyd2011admm}, FISTA~\cite{beck2009fista}, GAP-TV, PnP, learned). \\
+7 & \texttt{primitives.yaml}           & 450 & Primitive operator metadata (type, adjoint availability, differentiability). \\
+8 & \texttt{dataset\_registry.yaml}    & 380 & Links modalities to benchmark datasets (KAIST, fastMRI, etc.). \\
+9 & \texttt{acceptance\_thresholds.yaml} & 347 & Pass/fail thresholds per metric for automated validation. \\
 \bottomrule
 \end{tabular}
 \end{table}
