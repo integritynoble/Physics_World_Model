@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.18)  19 FEB 2026 06:26
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.18)  19 FEB 2026 06:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -804,7 +804,7 @@ Underfull \hbox (badness 1448) in paragraph at lines 177--179
  []
 
 [11] [12] [13]
-Overfull \hbox (1.65176pt too wide) in paragraph at lines 299--303
+Overfull \hbox (1.65176pt too wide) in paragraph at lines 298--302
 []\OT1/cmr/bx/n/10.95 Diagnose\OT1/cmr/m/n/10.95 : Given mis-matched mea-sure-m
 ents, iden-tify which mis-match pa-ram-e-ters are present
  []
@@ -892,7 +892,7 @@ integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C
 /cm/cmti10.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public
 /amsfonts/cm/cmtt10.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/typ
 e1/public/amsfonts/cm/cmtt12.pfb>
-Output written on main.pdf (31 pages, 482375 bytes).
+Output written on main.pdf (31 pages, 482005 bytes).
 PDF statistics:
  801 PDF objects out of 1000 (max. 8388607)
  219 named destinations out of 1000 (max. 500000)

@@ -202,7 +202,7 @@ expected PSNR gain from correction.
 
 \paragraph{Gate binding determination.}
 Given reconstruction results under the four-scenario protocol
-(Section~\ref{sec:methods:eval}), PWM identifies the dominant gate by
+(the Evaluation Protocol section below), PWM identifies the dominant gate by
 comparing three cost terms:
 \begin{align}
   C_{\text{mismatch}} &= \psnr_{\text{I}} - \psnr_{\text{II}} \label{eq:cost_mismatch} \\
@@ -233,14 +233,10 @@ We define the \emph{recovery ratio}
                         {\psnr_{\text{I}} - \psnr_{\text{II}}}
   \label{eq:recovery_ratio}
 \end{equation}
-which is bounded $\recoveryratio \in [0, 1]$ in the typical case.
+which lies in $[0, 1]$ under standard convexity conditions (see Supplementary Note~1 for formal analysis; values $\recoveryratio > 1$ are possible when the corrected operator provides beneficial regularization).
 $\recoveryratio = 0$ indicates that calibration yields no benefit (mismatch
 is not the bottleneck), while $\recoveryratio = 1$ indicates that
-calibration fully closes the mismatch gap.  Values $\recoveryratio > 1$
-are occasionally observed when the corrected operator, combined with
-reconstruction regularization, produces slightly higher PSNR than the
-ideal oracle---a rare phenomenon attributable to beneficial regularization
-bias.
+calibration fully closes the mismatch gap.
 
 
 %% =========================================================================
@@ -442,7 +438,7 @@ isolate different sources of quality degradation:
     $\yobs = \Htrue\, \xgt$; reconstruct with $\Htrue$.
     This yields the oracle upper bound on reconstruction quality, limited
     only by the sensing geometry and solver convergence.
-  \item[Scenario~II (Assumed/Baseline):]
+  \item[Scenario~II (Mismatch):]
     $\yobs = \Htrue\, \xgt$; reconstruct with $\Hnom$
     ($\Hnom \neq \Htrue$).
     This is the standard operating condition in practice: the measurement
@@ -517,7 +513,7 @@ For the primary mismatch experiment, the true mismatch parameters are
 $\mismatchparam_{\text{true}} = (dx = 1.094,\; dy = -2.677,\;
 \theta = -0.559^\circ,\; a_1 = \text{default},\;
 \varphi_d = -0.316^\circ)$.
-Solvers evaluated include TwIST~\cite{bioucasdias2007twist}, GAP-TV~\cite{yuan2016gaptv}, DGSMP~\cite{huang2021dgsmp}, MST-L~\cite{cai2022mst}, and CST-L~\cite{cai2022cst}, all of which receive the same operator and differ only in their reconstruction algorithm. The supplementary per-scene analysis additionally includes DeSCI and HDNet~\cite{hu2022hdnet}.
+Solvers evaluated include TwIST~\cite{bioucasdias2007twist}, GAP-TV~\cite{yuan2016gaptv}, DGSMP~\cite{huang2021dgsmp}, MST-L~\cite{cai2022mst}, and CST-L~\cite{cai2022cst}, all of which receive the same operator and differ only in their reconstruction algorithm. The supplementary per-scene analysis additionally includes DeSCI~\cite{liu2019rank} and HDNet~\cite{hu2022hdnet}.
 
 \paragraph{CACTI configuration.}
 The coded aperture compressive temporal imaging system uses binary
