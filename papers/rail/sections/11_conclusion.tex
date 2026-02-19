@@ -13,7 +13,7 @@ that achieve 35+\,dB on simulated benchmarks collapse by 3.38--13.98\,dB under
 realistic operator mismatch (\cref{tab:sensitivity}).  The gap is not a solver problem.
 It is an infrastructure problem.
 
-For more than a decade, the field has been optimizing the wrong layer.  It has
+For years, the field has been optimizing the wrong layer.  It has
 poured resources into the \emph{train}---faster architectures, cleverer
 loss functions, larger training sets---while neglecting the
 \emph{rail}: the calibrated forward operators, standardized evaluation
@@ -45,7 +45,7 @@ The evidence is unambiguous.  Across the 26-modality benchmark,
 operator correction alone improved reconstruction quality by $+0.54$ to
 $+48.25$\,dB across 9 correction configurations spanning 7 distinct modalities (16 registered)---gains that no solver upgrade can
 replicate.  The CASSI deep-dive was particularly revealing: the mismatch
-penalty ($13.98$~dB) exceeded the solver upgrade gain ($10.47$~dB) by
+penalty ($13.98$\,dB) exceeded the solver upgrade gain ($10.47$\,dB) by
 $1.34\times$.  The bottleneck was never the
 algorithm.  It was the physics encoding.
 

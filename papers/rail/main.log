@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.18)  19 FEB 2026 08:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.18)  19 FEB 2026 09:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -827,7 +827,7 @@ Overfull \hbox (57.72816pt too wide) in paragraph at lines 79--106
  []
 
 [19] [20]
-Overfull \hbox (28.32858pt too wide) in paragraph at lines 160--175
+Overfull \hbox (28.32858pt too wide) in paragraph at lines 159--174
  [][] 
  []
 
@@ -865,7 +865,7 @@ Here is how much of TeX's memory you used:
  51912 multiletter control sequences out of 15000+600000
  644171 words of font info for 102 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 89i,13n,97p,577b,1192s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 89i,13n,97p,578b,1192s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\integ\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm
 1095.pk><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
 ts/cm/cmbx10.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/publ
@@ -894,7 +894,7 @@ amsfonts/cm/cmsy9.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1
 /public/amsfonts/cm/cmti10.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fo
 nts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/integ/AppData/Local/Programs/
 MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on main.pdf (31 pages, 509715 bytes).
+Output written on main.pdf (31 pages, 509716 bytes).
 PDF statistics:
  825 PDF objects out of 1000 (max. 8388607)
  220 named destinations out of 1000 (max. 500000)
