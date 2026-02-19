@@ -24,7 +24,7 @@
 \definecolor{bestcolor}{rgb}{0.0, 0.5, 0.0}
 \definecolor{worstcolor}{rgb}{0.7, 0.0, 0.0}
 
-\newcommand{\best}[1]{\textcolor{bestcolor}{\textbf{#1}}}
+\newcommand{\best}[1]{\textbf{#1}}
 \newcommand{\worst}[1]{\textcolor{worstcolor}{#1}}
 \newcommand{\gain}[1]{\textcolor{bestcolor}{+#1}}
 
@@ -46,8 +46,7 @@
 Forward model mismatch---sub-pixel mask misalignment and dispersion drift between the coded aperture and detector---is unavoidable in deployed CASSI systems, yet even moderate perturbations degrade state-of-the-art mask-guided transformers (MST) by over 16\,dB.
 We present a self-supervised two-stage differentiable calibration pipeline that recovers 5-parameter mismatch from a single measurement and nominal mask alone, requiring no ground truth.
 Stage~1 performs a coarse hierarchical grid search scored by GPU-accelerated GAP-TV; Stage~2 applies gradient refinement through an unrolled differentiable forward operator using a Straight-Through Estimator (STE) for integer dispersion offsets.
-Evaluating five reconstruction methods across four scenarios on 10 KAIST scenes, we uncover a \emph{mask-sensitivity spectrum}: mask-guided transformers (MST-S/L) suffer catastrophic degradation ($>$15\,dB) but recover ${\sim}48$\% of the oracle gap ($\rho \approx 48$\%), deep prior methods (HDNet) show inherent robustness ($\rho \approx 0$\%), and iterative methods show intermediate sensitivity ($\rho \approx 13$--$23$\%).
-This spectrum provides a practical design guideline: deployed systems with limited calibration infrastructure should prefer robust reconstructors, while well-calibrated systems benefit most from mask-guided architectures.
+Evaluating five reconstruction methods across four scenarios on 10 KAIST scenes, we uncover a \emph{mask-sensitivity spectrum}: mask-guided transformers suffer catastrophic degradation ($>$15\,dB) yet recover ${\sim}48$\% of the oracle gap after calibration, while deep prior methods show inherent robustness with negligible absolute gain.
 Code and results are publicly available.
 
 \keywords{CASSI \and Operator mismatch \and Differentiable calibration \and Straight-Through Estimator \and Hyperspectral imaging}
@@ -63,13 +62,8 @@ Deep learning has transformed hyperspectral image reconstruction, with mask-guid
 Yet these reconstructors depend on accurate knowledge of the forward operator---a dependency that creates a \emph{sim-to-real gap} between the idealized model used during training and the physical system at deployment~\cite{ongie2020deep}.
 In coded aperture snapshot spectral imaging (CASSI)~\cite{wagadarikar2008cassi,arce2014cassi}, this gap manifests as mask-detector misalignment and dispersion drift, degrading MST-L by over 16\,dB (\Cref{fig:scenario_comparison}).
 
-The CASSI forward model maps a hyperspectral cube $\mathbf{x} \in \mathbb{R}^{H \times W \times \Lambda}$ to a 2D measurement $\mathbf{y} \in \mathbb{R}^{H \times W'}$:
-\begin{equation}
-\label{eq:cassi_forward}
-    y(i,j) = \sum_{k=1}^{\Lambda} m(i,j) \cdot x(i, j - d_k, k) + n(i,j),
-\end{equation}
-where $m$ is the coded aperture, $d_k = k \cdot s$ is the spectral dispersion offset for band $k$ with stride $s$, and $n$ is measurement noise.
-In practice, five parameters characterize the dominant misalignment: mask translation $(\Delta x, \Delta y)$, rotation $\theta$, dispersion slope $a_1$, and axis angle $\alpha$.
+The CASSI forward model (\Cref{sec:formulation}) maps a hyperspectral cube through a coded aperture and spectral disperser to a 2D measurement.
+In practice, five parameters characterize the dominant misalignment between the assumed and actual forward operator: mask translation $(\Delta x, \Delta y)$, rotation $\theta$, dispersion slope $a_1$, and axis angle $\alpha$.
 
 \textbf{The calibration challenge.}
 Correcting this mismatch is difficult because: (1)~spectral dispersion offsets $d_k$ are integers, making the forward operator non-differentiable; (2)~mask affine and dispersion parameters interact through the measurement model; and (3)~in deployment, neither the true parameters nor the ground truth scene are available---calibration must be self-supervised from the measurement alone.
@@ -91,7 +85,7 @@ Correcting this mismatch is difficult because: (1)~spectral dispersion offsets $
 \textbf{CASSI reconstruction.}
 Classical approaches including GAP-TV~\cite{yuan2016gap,meng2020gap} use alternating projection with total variation regularization.
 Plug-and-play methods replace the hand-crafted prior with learned denoisers~\cite{yuan2020pnpcassi,zheng2021deep}, combining ADMM/GAP optimization with deep spectral denoisers.
-End-to-end deep networks have significantly advanced quality: HDNet~\cite{hu2022hdnet} uses dual-domain unfolding, MST~\cite{cai2022mst,cai2022mst_pp} introduces mask-guided spectral-wise attention, CST~\cite{cai2022cst} applies coarse-to-fine sparse transformers, and DAUHST~\cite{cai2022dauhst} combines degradation-aware unfolding with half-shuffle attention; see Yuan et al.~\cite{yuan2021snapshot} for a survey.
+End-to-end deep networks have advanced quality through dual-domain unfolding (HDNet~\cite{hu2022hdnet}), mask-guided attention (MST~\cite{cai2022mst,cai2022mst_pp}), sparse transformers (CST~\cite{cai2022cst}), and degradation-aware unfolding (DAUHST~\cite{cai2022dauhst}); see~\cite{yuan2021snapshot} for a survey.
 All assume perfect forward operator knowledge.
 
 \textbf{Calibration in computational imaging.}
@@ -239,11 +233,11 @@ This represents moderate but realistic misalignment in deployed systems, combini
 \textbf{Reconstruction methods.}
 We evaluate five methods spanning classical, plug-and-play, deep unfolding, and mask-guided transformer architectures:
 \begin{itemize}
-    \item \textbf{GAP-TV}~\cite{yuan2016gap}: Classical iterative with Nesterov acceleration, 100 iterations, Chambolle TV ($\lambda{=}0.1$, 5 inner iterations), stride-2. Mask-aware.
-    \item \textbf{MST-S}~\cite{cai2022mst}: Mask-guided Spectral-wise Transformer, small variant (0.93M params). Mask-aware.
-    \item \textbf{MST-L}~\cite{cai2022mst}: Mask-guided Spectral-wise Transformer, large variant (2.03M params). Mask-aware.
-    \item \textbf{HDNet}~\cite{hu2022hdnet}: Dual-domain deep unfolding network (2.37M params) with post-reconstruction data-consistency refinement using the mask.
-    \item \textbf{PnP-HSICNN}~\cite{yuan2020pnpcassi}: GAP framework with Nesterov acceleration, Chambolle TV warmup ($\lambda{=}0.05$, 5 inner iterations), and HSI-SDeCNN deep spectral denoiser ($\sigma{=}10/255$). 83 TV-only + 41 alternating (3 DNN + 1 TV) iterations. Mask-aware.
+    \item \textbf{GAP-TV}~\cite{yuan2016gap}: Classical iterative with Nesterov acceleration, 100 iterations, Chambolle TV ($\lambda{=}0.1$, 5 inner iterations), stride-2. Mask-refined.
+    \item \textbf{MST-S}~\cite{cai2022mst}: Mask-guided Spectral-wise Transformer, small variant (0.93M params).
+    \item \textbf{MST-L}~\cite{cai2022mst}: Mask-guided Spectral-wise Transformer, large variant (2.03M params).
+    \item \textbf{HDNet}~\cite{hu2022hdnet}: Dual-domain deep unfolding (2.37M params) with mask-based data-consistency refinement. Mask-oblivious.
+    \item \textbf{PnP-HSICNN}~\cite{yuan2020pnpcassi}: GAP framework with Nesterov acceleration, Chambolle TV warmup ($\lambda{=}0.05$, 5 inner iterations), and HSI-SDeCNN deep spectral denoiser ($\sigma{=}10/255$). 83 TV-only + 41 alternating (3 DNN + 1 TV) iterations. Mask-refined.
 \end{itemize}
 
 \textbf{Four-scenario protocol.}
@@ -267,7 +261,8 @@ GAP-TV ($-$4.56\,dB) and PnP-HSICNN ($-$6.02\,dB) show intermediate degradation.
 \textbf{Calibration recovers significant quality for mask-guided methods.}
 Our pipeline recovers +3.01\,dB for MST-L and +3.00\,dB for MST-S, with recovery ratios of $\rho = 47.8$\% and $49.1$\% respectively---the highest among all methods.
 SSIM improvements corroborate: MST-S gains +0.090 and MST-L gains +0.076, compared to +0.033 for GAP-TV and +0.035 for PnP-HSICNN.
-HDNet shows negligible calibration benefit ($\rho \approx 0$\%, +0.05\,dB), confirming that the mask plays a marginal role in its reconstruction.
+HDNet shows negligible calibration benefit (+0.05\,dB; $\rho$ is indeterminate due to the near-zero oracle gap), confirming that the mask plays a marginal role in its reconstruction.
+Spectral angle mapper (SAM) trends corroborate: MST-L achieves 7.44$^\circ$ under ideal conditions but degrades to 31.38$^\circ$ under mismatch, while HDNet maintains ${\sim}$14.5$^\circ$ across all scenarios.
 
 \Cref{fig:scenario_comparison} visualizes the PSNR distribution across scenarios and methods.
 \Cref{fig:visual_comparison} shows qualitative reconstructions for MST-L and HDNet on Scene~1: MST-L exhibits severe artefacts under mismatch (Sc.~II, 20.8\,dB) that are substantially reduced by calibration (Sc.~III, 24.5\,dB), whereas HDNet maintains consistent quality across all scenarios ($\sim$25.7\,dB).
@@ -331,7 +326,7 @@ Degradation is moderate (4.6--6.0\,dB), and calibration recovery is limited ($\r
 
 \textbf{Mask-oblivious} (HDNet): Methods where learned spectral priors dominate and the mask serves only a lightweight data-consistency role.
 Degradation remains substantial ($\sim$10\,dB) but absolute mismatch performance is highest (24.18\,dB).
-Calibration gain is negligible ($\rho \approx 0$\%), confirming the prior's independence from mask accuracy.
+Calibration gain is negligible in absolute terms (+0.05\,dB; $\rho$ is indeterminate due to the near-zero oracle gap), confirming the prior's independence from mask accuracy.
 
 This taxonomy provides a practical design guideline: deployed systems with limited calibration infrastructure should prefer mask-oblivious or mask-refined reconstructors, while well-calibrated systems benefit most from mask-guided architectures.
 
@@ -345,7 +340,7 @@ The dispersion axis angle $\alpha$ has negligible effect at native resolution (v
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig5_parameter_recovery.pdf}
-\caption{Per-scene estimated vs.\ true mismatch parameters across 10 KAIST scenes. Dashed lines indicate ground truth values ($\Delta x{=}1.5$, $\Delta y{=}1.0$, $\theta{=}0.3^\circ$). The dispersion slope $a_1$ is recovered most accurately (RMSE\,=\,0.134\,px/band).}
+\caption{Per-scene estimated vs.\ true mismatch parameters across 10 KAIST scenes. Dashed lines indicate ground truth values ($\Delta x{=}1.5$, $\Delta y{=}1.0$, $\theta{=}0.3^\circ$).}
 \label{fig:param_recovery}
 \end{figure}
 
@@ -435,7 +430,7 @@ On a single GPU, per-scene calibration takes approximately 5.1 minutes, with ful
 \begin{itemize}
     \item Stages 0+1 (grid search): $\sim$173\,s (942 GPU GAP-TV evaluations)
     \item Stage 2A--2C (gradient): $\sim$79\,s (190 Adam steps through differentiable solver)
-    \item Dispersion grid search: $\sim$55\,s (21 $a_1$ candidates)
+    \item Dispersion grid search: $\sim$55\,s (11 $a_1$ candidates)
     \item Reconstruction (5 methods $\times$ 4 scenarios): $\sim$178\,s
 \end{itemize}
 Total calibration averages 305.5$\pm$37.9\,s per scene.
@@ -451,8 +446,7 @@ We presented a two-stage differentiable calibration pipeline for CASSI that reco
 The pipeline combines coarse grid search (capturing 46\% of the oracle gap) with STE-enabled gradient refinement (reaching 48\%), achieving +3.0\,dB recovery for MST-L at $\sim$5 minutes per scene on a single GPU.
 
 Our principal finding is the \emph{mask-sensitivity spectrum}: the degree to which a reconstructor depends on mask accuracy determines both its vulnerability to mismatch and its benefit from calibration.
-Mask-guided transformers (MST-S/L, $\rho \approx 48$\%) and mask-refined iterative methods (GAP-TV/PnP-HSICNN, $\rho \approx 13$--$23$\%) represent two distinct operating regimes, while deep prior methods (HDNet, $\rho \approx 0$\%) achieve inherent robustness at the cost of calibration-agnostic reconstruction.
-This taxonomy provides a design guideline: system builders should match reconstructor choice to available calibration quality.
+Mask-guided transformers (MST-S/L, $\rho \approx 48$\%) and mask-refined iterative methods (GAP-TV/PnP-HSICNN, $\rho \approx 13$--$23$\%) represent two distinct operating regimes, while deep prior methods (HDNet, negligible absolute gain) achieve inherent robustness at the cost of calibration-agnostic reconstruction.
 
 \textbf{Limitations and future work.}
 The GAP-TV proxy solver limits calibration accuracy---unrolling a stronger solver could close the remaining gap.
