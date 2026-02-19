@@ -121,23 +121,23 @@ Each template is parameterised by a fidelity tier that controls the
 degree of physical realism in the simulated forward model:
 
 \begin{description}
-  \item[Tier~1 (Ideal):]  Noiseless measurement with perfectly known
-    operator parameters.  Establishes the upper-bound reconstruction
-    quality limited only by the sensing geometry.
-  \item[Tier~2 (Noisy):]  Adds a modality-appropriate noise model
-    (Poisson shot noise plus Gaussian read noise for photon-counting
-    modalities, Rician noise for MRI, Poisson noise for CT).
-    The noise model parameters are drawn from the \texttt{photon\_db.yaml}
-    registry.
-  \item[Tier~3 (Mismatched):]  Perturbs operator parameters
-    $\boldsymbol{\theta}_{\text{true}} \neq \boldsymbol{\theta}_{\text{nom}}$
-    while adding noise.  Perturbation families and ranges are specified in
-    \texttt{perturbation\_families.yaml} and \texttt{mismatch\_db.yaml}.
-  \item[Tier~4 (Full-wave):]  Complete physical simulation including
-    wave-optical propagation, spatially varying aberrations, detector
-    nonlinearities, and environmental drift.  Currently implemented for
-    holography and ptychography; other modalities degrade gracefully to
-    Tier~3.
+  \item[Tier~1 (Linear, shift-invariant):]  The forward model is a
+    linear, spatially uniform operator---the simplest approximation,
+    suitable for initial diagnostics and rapid prototyping.
+  \item[Tier~2 (Linear, shift-variant):]  Spatially varying operator
+    parameters (e.g.\ non-uniform illumination, position-dependent PSF,
+    multi-coil sensitivity maps in MRI).  Adds a modality-appropriate
+    noise model (Poisson shot noise plus Gaussian read noise for
+    photon-counting modalities, Rician noise for MRI, Poisson for CT).
+  \item[Tier~3 (Nonlinear, ray/wave-based):]  Includes nonlinear
+    effects such as wavefront curvature, diffraction, and scattering.
+    Perturbation families and ranges are specified in
+    \texttt{mismatch\_db.yaml}.
+  \item[Tier~4 (Full-wave / Monte Carlo):]  Complete physical
+    simulation including wave-optical propagation, spatially varying
+    aberrations, detector nonlinearities, and environmental drift.
+    Currently implemented for holography and ptychography; other
+    modalities degrade gracefully to Tier~3.
 \end{description}
 
 

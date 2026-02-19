@@ -50,9 +50,10 @@ All 26/26 modalities pass.  Average PSNR $\approx 38.2$~dB; range
 \end{table}
 
 The range spans nearly 75~dB, reflecting the diversity of forward models
---- from the heavily ill-posed diffuse optical tomography (DOT,
-25.46~dB) to the analytically invertible phase retrieval
-(100.00~dB).  The average of ${\approx}\,38.2$~dB confirms that the
+--- from the heavily ill-posed computed tomography (CT,
+25.46~dB) to phase retrieval, where the analytically invertible
+forward model yields an identity reconstruction
+(100.00~dB, a numerical ceiling rather than a measured value).  The average of ${\approx}\,38.2$~dB confirms that the
 unified pipeline delivers competitive reconstruction quality across
 fundamentally different physics.
 
@@ -86,7 +87,7 @@ CT                   & center\_of\_rotation   & 13.41 & 24.09 & $+$10.67 \\
 CACTI                & mask\_timing           & 14.48 & 37.42 & \best{$+$22.94} \\
 Lensless             & psf\_shift             & 23.48 & 27.03 & \worst{$+$3.55}  \\
 MRI                  & coil\_sensitivities    &  6.94 & 55.19 & \best{$+$48.25} \\
-SPC                  & gain\_bias             & 11.14 & 23.35 & $+$12.21 \\
+SPC\textsuperscript{$\dagger$} & gain\_bias   & 11.14 & 23.35 & $+$12.21 \\
 CASSI (Alg~1)        & mask\_geo+dispersion   & 15.79 & 21.20 & $+$5.40  \\
 CASSI (Alg~2)        & mask\_geo+dispersion   & 15.79 & 21.54 & $+$5.74  \\
 Ptychography         & position\_offset       & 17.35 & 24.44 & $+$7.09  \\
@@ -105,11 +106,19 @@ FPM                  & led\_position          & \multicolumn{3}{c}{registered} \
 \end{tabular}
 \end{table}
 
+{\footnotesize $\dagger$~SPC uses the same gain-bias operator template
+as the generic Matrix modality, yielding identical correction
+performance.}
+
+\medskip
+\noindent
 The most dramatic improvement is MRI coil-sensitivity correction at
-$+48.25$~dB: without correction the reconstruction is essentially
-noise, while with correction it reaches 55.19~dB.  Even the smallest
-gain (Lensless PSF shift, $+3.55$~dB) represents a visually significant
-improvement.  These results confirm that operator correction is not a
+$+48.25$~dB.  This large gain reflects a severe mismatch scenario
+(Scenario~II at 6.94~dB is near the noise floor); the corrected
+55.19~dB exceeds published baselines (42.3~dB) because the mismatch
+was synthetically injected on a high-quality forward model.
+Even the smallest gain (Lensless PSF shift, $+3.55$~dB) represents a
+visually significant improvement.  These results confirm that operator correction is not a
 marginal refinement but a \emph{first-order} determinant of
 reconstruction quality.
 

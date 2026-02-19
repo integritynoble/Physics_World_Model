@@ -16,8 +16,8 @@ Yet when the coded aperture mask is shifted by a single pixel---a
 perturbation well within the manufacturing and alignment tolerances of
 any real optical system---the same method collapses to 18.09\,dB, a loss
 of \textbf{16.72\,dB}.
-Even under a conservative 1-pixel-shift-plus-rotation model, the
-degradation exceeds 14.5\,dB (\cref{tab:sensitivity}).
+Under a 1-pixel-shift-plus-rotation model, neural solvers lose
+10--17\,dB (\cref{tab:sensitivity}).
 To put this in perspective, the entire history of deep-learning-based
 CASSI reconstruction---from GAP-TV's 24.22\,dB in 2016 to MST-L's
 34.81\,dB in 2022---spans only 10.59\,dB.
@@ -65,7 +65,7 @@ methods under realistic physical conditions.
 % ------------------------------------------------------------------
 
 \paragraph{SolveEverything framing.}
-Our design follows the SolveEverything.org framework~\cite{solveeverything},
+Our design follows the SolveEverything.org framework~\cite{wissner2024solveeverything},
 which identifies a recurring pattern across domains---from protein
 folding to chip design to weather prediction---in which transformative
 progress requires not just better models but better infrastructure.
@@ -146,12 +146,14 @@ Our specific contributions are:
         (GAP-TV) to 16.72\,dB (MST-L) on CASSI alone
         (\cref{sec:problem}).
 
-  \item \textbf{16-modality operator correction results.}
+  \item \textbf{Operator correction across 9 validated modalities
+        (16 registered).}
         We show that calibrating the forward operator---even with
         classical methods---recovers a substantial fraction of mismatch
-        loss across 16 modalities, confirming that the dominant failure
-        mode in deployed imaging systems is not solver quality but
-        operator fidelity.
+        loss across 9 numerically validated modalities (with 7 additional
+        modalities registered for future evaluation), confirming that the
+        dominant failure mode in deployed imaging systems is not solver
+        quality but operator fidelity.
 
   \item \textbf{LIP-Arena prospective evaluation protocol.}
         We introduce the first Commit-Measure-Score competition for
@@ -166,5 +168,5 @@ CASSI as a case study.
 \Cref{sec:framework} maps the SolveEverything framework to
 computational imaging.
 \Cref{sec:architecture} presents the PWM architecture in detail.
-Subsequent sections describe experiments, ablations, and implications
-for the field.
+Subsequent sections describe the Triad Law diagnostic framework,
+multi-agent orchestration, experiments, and implications for the field.
