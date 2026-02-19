@@ -3,7 +3,7 @@
 
 Scatter plot of rho (y-axis) vs Scenario I PSNR (x-axis) for all 11 methods
 across 3 modalities. Color-coded by modality, shape-coded by method type
-(classical/mask-aware/mask-oblivious).
+(classical/operator-aware/mask-oblivious).
 """
 
 import os
@@ -42,7 +42,7 @@ def main():
         rec = piii - pii
         rho = (rec / deg * 100) if deg > 0.5 else None  # skip near-zero deg
         mtype = {"gap_tv": "classical", "hdnet": "mask-oblivious",
-                 "mst_s": "mask-aware", "mst_l": "mask-aware"}[m]
+                 "mst_s": "operator-aware", "mst_l": "operator-aware"}[m]
         label = {"gap_tv": "GAP-TV", "hdnet": "HDNet",
                  "mst_s": "MST-S", "mst_l": "MST-L"}[m]
         methods.append(("CASSI", label, pi, rho, mtype))
@@ -56,8 +56,8 @@ def main():
         rec = piii - pii
         rho = (rec / deg * 100) if deg > 0.5 else None
         mtype = {"gap_tv": "classical", "pnp_ffdnet": "classical",
-                 "elp_unfolding": "mask-aware",
-                 "efficientsci": "mask-aware"}[m]
+                 "elp_unfolding": "operator-aware",
+                 "efficientsci": "operator-aware"}[m]
         label = {"gap_tv": "GAP-TV", "pnp_ffdnet": "PnP-FFDNet",
                  "elp_unfolding": "ELP-Unf.",
                  "efficientsci": "Eff.SCI"}[m]
@@ -74,8 +74,8 @@ def main():
         deg = pi - pii
         rec = piii - pii
         rho = (rec / deg * 100) if deg > 0.5 else None
-        mtype = {"fista_tv": "classical", "ista_net": "mask-aware",
-                 "hatnet": "mask-aware"}[m]
+        mtype = {"fista_tv": "classical", "ista_net": "operator-aware",
+                 "hatnet": "operator-aware"}[m]
         label = {"fista_tv": "FISTA-TV", "ista_net": "ISTA-Net",
                  "hatnet": "HATNet"}[m]
         methods.append(("SPC", label, pi, rho, mtype))
@@ -86,8 +86,8 @@ def main():
     # Color by modality
     mod_colors = {"CASSI": "#E91E63", "CACTI": "#2196F3", "SPC": "#FF9800"}
     # Marker by method type
-    type_markers = {"classical": "^", "mask-aware": "o", "mask-oblivious": "X"}
-    type_sizes = {"classical": 120, "mask-aware": 120, "mask-oblivious": 150}
+    type_markers = {"classical": "^", "operator-aware": "o", "mask-oblivious": "X"}
+    type_sizes = {"classical": 120, "operator-aware": 120, "mask-oblivious": 150}
 
     # Plot each method
     for mod, label, pi, rho, mtype in methods:
