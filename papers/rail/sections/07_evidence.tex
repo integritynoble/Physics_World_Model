@@ -87,8 +87,8 @@ CACTI~\cite{llull2013cacti,wang2023efficientsci} & mask\_timing & 14.48 & 37.42 
 Lensless             & psf\_shift             & 23.48 & 27.03 & $+$3.55  \\
 MRI                  & coil\_sensitivities    &  6.94 & 55.19 & \best{$+$48.25} \\
 SPC$^\dagger$ & gain\_bias   & 11.14 & 23.35 & $+$12.21 \\
-CASSI (Alg~1)        & mask\_geo+dispersion   & 20.96 & 21.50 & \worst{$+$0.54}  \\
-CASSI (Alg~2)        & mask\_geo+dispersion   & 20.96 & 21.72 & $+$0.76  \\
+CASSI (Alg~1, GAP-TV) & mask\_geo+dispersion  & 20.96 & 21.50 & \worst{$+$0.54}  \\
+CASSI (Alg~2, GAP-TV) & mask\_geo+dispersion  & 20.96 & 21.72 & $+$0.76  \\
 Ptychography         & position\_offset       & 17.35 & 24.44 & $+$7.09  \\
 \midrule
 \multicolumn{5}{@{}l}{\textit{Registered---validation in progress}} \\
@@ -149,12 +149,12 @@ across three scenarios plus a projected fine-tuned estimate:
           fine-tuning (projected, not a formal scenario).
 \end{itemize}
 %
-\noindent Scenario~IV (Oracle sanity check) reproduces Scenario~I by design for CASSI and is omitted for brevity.  Oracle Mask values are InverseNet-validated~\cite{yang2026inversenet}.
+\noindent Oracle Mask values are InverseNet-validated~\cite{yang2026inversenet} and correspond to Scenario~IV in the 4-Scenario Protocol.
 
 \begin{table}[t]
 \centering
 \caption{CASSI deep dive: 5~solvers $\times$ 3~scenarios + projected fine-tuned estimate.  The mismatch
-cost (I$\to$II) dominates the solver upgrade gain under ideal conditions.  Oracle Mask$^\S$ reports reconstruction with the true operator on mismatched data; Scenario~IV reproduces Scenario~I by design and is omitted for brevity.}
+cost (I$\to$II) dominates the solver upgrade gain under ideal conditions.  Oracle Mask$^\S$ (Scenario~IV) reports reconstruction with the true operator on mismatched data, providing the correction ceiling.}
 \label{tab:cassi}
 \smallskip
 \begin{tabular}{@{}lcccc@{}}
@@ -181,7 +181,7 @@ HDNet~\cite{hu2022hdnet}     & 34.66 & 21.88 & 21.88 & ${\approx}$33.0 \\
 {\footnotesize $\ddagger$~PnP-HSICNN has not been re-validated under the InverseNet 5-parameter mismatch; values shown are from prior experiments.  All other rows are InverseNet-validated~\cite{yang2026inversenet}.}
 
 \smallskip
-{\footnotesize $\S$~Oracle Mask values represent reconstruction with the true operator applied to mismatched data (InverseNet Scenario~III), providing an upper bound on what any correction algorithm can achieve.  These correspond to the formal Scenario~IV definition in the 4-Scenario Protocol.}
+{\footnotesize $\S$~Oracle Mask values represent reconstruction with the true operator applied to mismatched data (InverseNet Scenario~III / this work's Scenario~IV), providing an upper bound on what any correction algorithm can achieve.}
 
 \paragraph{Key insight.}
 The mismatch cost --- the gap from Scenario~I to Scenario~II --- is
@@ -206,7 +206,7 @@ and the Oracle Mask column), confirming that HDNet is mask-oblivious.
 % ============================================================
 \subsection{SolveEverything Implementation Status}
 
-In addition to the 9-layer Industrial Intelligence Stack (\cref{sec:stack}), the SolveEverything framework~\cite{wissner2026solveeverything} defines 10 operational gears---concrete mechanisms that drive each layer.  \Cref{tab:gears} reports the implementation status of each gear within PWM.
+In addition to the 9-layer Industrial Intelligence Stack (\cref{sec:stack}), the SolveEverything framework~\cite{wissner2026solveeverything} defines 10 operational gears---concrete mechanisms that each drive one or more layers of the stack.  While the 9 layers describe \emph{what} must be built, the 10 gears describe \emph{how} each layer operates.  \Cref{tab:gears} reports the implementation status of each gear within PWM.
 
 \begin{table}[t]
 \centering

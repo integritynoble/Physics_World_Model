@@ -173,9 +173,9 @@ II  & Assumed/Mismatch    & $\mathbf{H}$    & $\mathbf{H}_{\mathrm{nom}}$
 III & Corrected  & $\mathbf{H}$    & $\hat{\mathbf{H}}$
     & Calibration benefit: how much performance is recovered by
       estimating the true operator. \\
-IV  & Oracle Mask & $\mathbf{H}$ & $\mathbf{H}$
-    & Pipeline sanity check: reproduces Scenario~I through the full
-      pipeline, verifying no artifacts are introduced ($\pm 0.01$\,dB). \\
+IV  & Oracle Mask & $\mathbf{H}$ & $\mathbf{H}_{\mathrm{true}}$
+    & Correction ceiling: true operator applied to mismatched data,
+      providing the upper bound on what any correction can achieve. \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -211,12 +211,13 @@ calibration.
 It answers: \emph{how much does calibration help?}
 
 \paragraph{Scenario IV (Oracle Mask).}
-A partial oracle condition in which the true operator is applied to
-mismatched data, verifying pipeline integrity and providing an upper
-bound on what any correction algorithm can achieve.
-This scenario enables diagnostic analysis of which mismatch axis
-matters most.
-It answers: \emph{which operator component is the bottleneck?}
+The true operator $\mathbf{H}_{\mathrm{true}}$ is used for
+reconstruction on data generated with the mismatched system,
+providing the upper bound on what any correction algorithm can achieve.
+The gap between Scenario~IV and Scenario~I reveals the
+\emph{irreducible} loss due to mismatch-induced measurement
+degradation.
+It answers: \emph{what is the ceiling for operator correction?}
 
 \paragraph{Derived metrics.}
 From the four scenario PSNR values, we derive:
@@ -228,7 +229,7 @@ From the four scenario PSNR values, we derive:
 \end{align}
 The recovery ratio and oracle gap are the primary pass/fail metrics
 referenced in Layer~1 of the Industrial Intelligence Stack
-(\cref{tab:stack_mapping}): a recovery ratio $\rho$ (as defined in Eq.~\ref{eq:recovery}) of at least 0.80, meaning that calibration recovers at least 80\% of the mismatch-induced degradation, and an oracle
+(\cref{tab:stack_mapping}): a recovery ratio $\rho$ (\cref{eq:recovery}) of at least 0.80, meaning that calibration recovers at least 80\% of the mismatch-induced degradation, and an oracle
 gap $\leq 2$\,dB indicate that calibration is sufficient for
 deployment.
 
