@@ -361,10 +361,10 @@ MST-L, HDNet~\cite{hu2022hdnet}, CST, \etc{}) without retraining.
 
 \paragraph{Algorithm~1: Hierarchical Beam Search.}
 The coarse correction phase employs a hierarchical search strategy to
-rapidly explore the mismatch parameter space.  For CASSI, the six-parameter
+rapidly explore the mismatch parameter space.  For CASSI, the five-parameter
 mismatch model comprises mask affine parameters (spatial shifts $dx$, $dy$
 and rotation $\theta$) and dispersion parameters (slope $a_1$ and axis
-angle $\alpha$), plus an optional PSF width $\sigma_{\text{psf}}$.
+angle $\alpha$); an optional sixth parameter, PSF width $\sigma_{\text{psf}}$, is available but not used in the primary experiments.
 The algorithm proceeds as follows:
 
 \begin{enumerate}
@@ -503,12 +503,12 @@ same GPU.
 \paragraph{CASSI configuration.}
 The coded aperture snapshot spectral imaging (CASSI) system uses a TSA-Net
 binary mask of dimensions $256 \times 256$, with 28 spectral bands
-dispersed along the spatial dimension.  The six-parameter mismatch model
-$\mismatchparam = (dx, dy, \theta, a_1, \alpha, \sigma_{\text{psf}})$
+dispersed along the spatial dimension.  The five-parameter mismatch model
+$\mismatchparam = (dx, dy, \theta, a_1, \alpha)$
 describes: mask spatial shift in $x$ ($dx$, pixels), mask spatial shift in
 $y$ ($dy$, pixels), mask rotation angle ($\theta$, degrees), dispersion
-slope ($a_1$, pixels per band), dispersion axis angle ($\alpha$,
-degrees), and PSF blur width ($\sigma_{\text{psf}}$, pixels).
+slope ($a_1$, pixels per band), and dispersion axis angle ($\alpha$,
+degrees).  An optional sixth parameter, PSF blur width ($\sigma_{\text{psf}}$, pixels), is available but not used in the primary experiments.
 For the primary mismatch experiment (validated by InverseNet), the true mismatch parameters are
 $\mismatchparam_{\text{true}} = (dx = 0.5\;\text{px},\; dy = 0.3\;\text{px},\;
 \theta = 0.1^\circ,\; a_1 = 2.02,\;
