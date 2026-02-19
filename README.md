@@ -20,6 +20,38 @@ PWM is designed to be:
 
 ---
 
+## Table of Contents
+
+**Core Concepts**
+- [PWM = Harness + Best Methods](#pwm--harness--best-methods) — the rail vs the trains
+- [The Rails: SolveEverything Implementation](#the-rails-solveeverything-implementation) — 10-gear framework
+- [Physics Fidelity Ladder](#physics-fidelity-ladder) — 4-tier operator hierarchy
+- [4-Scenario Evaluation Protocol](#4-scenario-evaluation-protocol) — how methods are scored
+
+**Getting Started**
+- [Install](#install)
+- [Quickstart](#quickstart)
+
+**Capabilities (detailed)**
+- [What PWM can do](#what-pwm-can-do-harness--current-best-methods) — two modes, four tracks, 64 modalities
+- [The ExperimentSpec model](#the-experimentspec-model) — 8 state groups
+- [Operator correction mode](#operator-correction-mode-measured-y--a---fitcorrect-operator---reconstruct) — calibration pipeline
+- [DeepInv integration](#deepinv-integration)
+
+**Data & Benchmarks**
+- [Modality Coverage](#modality-coverage) — 64-modality catalog
+- [Benchmark Results](#benchmark-results-26-modalities-with-psnr-table) — PSNR/SSIM tables
+
+**Reference**
+- [Repository layout](#repository-layout)
+- [YAML Registries](#yaml-registries)
+- [Embedding into AI_Scientist](#embedding-into-ai_scientist)
+- [Community & Contributing](#community--contributing)
+- [Documentation Index](#documentation-index)
+- [License](#license) / [Citation](#citation)
+
+---
+
 ## PWM = Harness + Best Methods
 
 One repo, one install -- you get both the evaluation infrastructure and the methods that currently win on it.
@@ -90,6 +122,167 @@ See `pwm_core/graph/tier_policy.py` and `tests/test_tier_policy.py`.
 **Tie to execution modes:**
 - **Mode S** (simulate) and **Mode I** (infer) default to Tier 0/1 for fast turnaround.
 - **Mode C** (calibrate) starts at Tier 0/1, then validates the corrected operator at a higher tier when budget allows.
+
+---
+
+## 4-Scenario Evaluation Protocol
+
+Every validated modality is tested under 4 scenarios that isolate the effect of operator mismatch:
+
+| Scenario | Measurement | Reconstruction Operator | Purpose |
+|----------|-------------|------------------------|---------|
+| I (Ideal) | True H | True H | Oracle upper bound |
+| II (Assumed) | True H | Nominal H_nom | Mismatch impact baseline |
+| III (Corrected) | True H | Calibrated H_hat | Calibration benefit |
+| IV (Oracle Mask) | True H | Partial oracle | Partial upper bound |
+
+**Key metric:** Recovery ratio $\rho$ = (PSNR_III - PSNR_II) / (PSNR_I - PSNR_II) — how much of the oracle gap does calibration close?
+
+See [`docs/targeting_system.md`](docs/targeting_system.md) for the full LIP-Arena specification and scoring details.
+
+---
+
+## Install
+
+### Requirements
+- Python 3.10+ recommended
+- PyTorch (CPU or CUDA)
+- Optional: `deepinv`, `streamlit`, `opencv-python`, `scikit-image`
+
+### Workspace install (editable)
+
+```bash
+pip install -U pip
+pip install -e packages/pwm_core
+pip install -e packages/pwm_AI_Scientist
+```
+
+If you want the viewer:
+
+```bash
+pip install -e "packages/pwm_core[viewer]"
+```
+
+> Tip: If you use CUDA, install PyTorch first using the official selector for your CUDA version.
+
+---
+
+## Quickstart
+
+### A) Prompt -> auto CasePack -> simulate -> reconstruct -> analyze -> view
+
+```bash
+# Microscopy examples
+pwm run --prompt "widefield deconvolution, low dose, PSF mismatch"
+pwm run --prompt "SIM structured illumination, 3 angles, 3 phases, live cell"
+pwm run --prompt "confocal 3D stack, depth attenuation, z-drift"
+
+# Compressive imaging examples
+pwm run --prompt "CASSI spectral imaging, 28 bands, coded aperture"
+pwm run --prompt "single pixel camera, 25% sampling, Hadamard patterns"
+pwm run --prompt "CACTI video, 8 frames compressed to 1 snapshot"
+
+# Medical imaging examples
+pwm run --prompt "CT sparse view, 90 angles, low dose"
+pwm run --prompt "MRI accelerated, 4x undersampling, parallel imaging"
+
+# New modalities
+pwm run --prompt "OCT retinal scan, dispersion compensation"
+pwm run --prompt "light field microscopy, 5x5 lenslet array"
+pwm run --prompt "photoacoustic imaging, circular transducer array"
+pwm run --prompt "FLIM, two-component decay, IRF deconvolution"
+pwm run --prompt "FPM, LED array, synthetic aperture"
+
+# Neural rendering examples
+pwm run --prompt "NeRF from 30 views, synthetic scene"
+pwm run --prompt "3D Gaussian splatting, multi-view reconstruction"
+
+# View results
+pwm view runs/latest
+```
+
+PWM will:
+1) select a CasePack from the 64 validated modalities,
+2) compile a draft spec,
+3) validate/repair,
+4) simulate measurement `y`,
+5) reconstruct `x_hat` using solver portfolio,
+6) diagnose failure modes,
+7) export a RunBundle.
+
+### B) Spec -> run
+
+```bash
+# Run with custom spec file
+pwm run --spec my_experiment.json
+pwm view runs/latest
+```
+
+### C) Python API
+
+```python
+from pwm_core.api import endpoints
+
+# Option 1: Run from prompt (auto-selects casepack from 64 modalities)
+result = endpoints.run(prompt="widefield deconvolution, low dose")
+print(f"RunBundle: {result['runbundle_path']}")
+print(f"Verdict: {result['diagnosis']['verdict']}")
+print(f"PSNR: {result['recon'][0]['metrics'].get('psnr', 'N/A')}")
+
+# Option 2: Run from spec dict
+spec = {
+    "id": "my_cassi_experiment",
+    "input": {"mode": "simulate"},
+    "states": {
+        "physics": {"modality": "cassi"},
+        "budget": {"measurement_budget": {"num_bands": 28}}
+    }
+}
+result = endpoints.run(spec=spec, out_dir="runs/")
+
+# Option 3: Compile prompt first, inspect casepack, then run
+compile_result = endpoints.compile_prompt("MRI accelerated imaging")
+print(f"Selected casepack: {compile_result.casepack_id}")
+print(f"Modality: {compile_result.draft_spec['states']['physics']['modality']}")
+
+# Run with the compiled spec
+result = endpoints.run(spec=compile_result.draft_spec, out_dir="runs/")
+```
+
+### D) Run benchmarks directly
+
+```bash
+# Navigate to project directory
+cd packages/pwm_core
+
+# Run ALL 64 modalities (~28 min)
+python benchmarks/run_all.py --all
+
+# Run specific modality
+python benchmarks/run_all.py --modality mri
+python benchmarks/run_all.py --modality oct
+python benchmarks/run_all.py --modality flim
+python benchmarks/run_all.py --modality photoacoustic
+
+# Run operator correction tests (16 tests, ~63 min)
+python -m pytest benchmarks/test_operator_correction.py -v
+
+# Run unit tests (3743 tests)
+python -m pytest tests/ -v
+```
+
+### E) Evaluate a method on the harness
+
+```bash
+# Score a method against the built-in harness
+pwm evaluate --method my_solver --modality cassi --track correct
+
+# Run the full 4-scenario protocol
+pwm evaluate --method my_solver --modality cassi --scenarios I,II,III,IV
+
+# Compare your method against the current default
+pwm evaluate --method my_solver --method mst_l --modality cassi
+```
 
 ---
 
@@ -247,198 +440,6 @@ The **Streamlit viewer** (`pwm view`) provides:
 - Metrics dashboard over solver portfolio
 - Residual diagnostics and artifact analysis
 - Interactive report with recommended actions
-
----
-
-## Repository layout
-
-```text
-pwm/
-  README.md
-  LICENSE
-  rails/                   # SolveEverything 10-gear implementation map
-    README.md              # Trail overview + status table
-    gear01_targeting_system.md .. gear10_literacy.md
-    maturity_levels.md     # L0-L5 maturation framework
-    industrial_stack.md    # 9-layer stack reference
-  docs/
-    purpose.md            # Stage 1 purpose: Imaging System Autonomy
-    targeting_system.md   # LIP-Arena: PWM's built-in evaluation harness
-    plan.md               # Master plan v3 (hardened, fully implemented)
-    spec_v0.2.1.md
-    runbundle_format.md
-    operator_mode.md
-  examples/
-    prompt_to_casepack.py
-    yA_calibrate_recon_cassi.py
-    yA_calibrate_recon_generic.py
-  pyproject.toml
-
-  packages/
-    pwm_core/              # public core library (no AI_Scientist deps)
-      pwm_core/
-        agents/            # 17 agent modules + contracts + registry
-        physics/           # 64 modality operators
-        analysis/          # Metrics, bottleneck, uncertainty
-        core/              # Runner, RunBundle, simulator
-        api/               # Pydantic types, endpoints
-      contrib/
-        modalities.yaml    # 64-modality source of truth
-        mismatch_db.yaml   # Mismatch parameters per modality
-        photon_db.yaml     # Photon models
-        compression_db.yaml # Recoverability calibration tables
-        metrics_db.yaml    # Per-modality metric sets
-        solver_registry.yaml # 43+ solvers
-      benchmarks/
-        run_all.py         # 64-modality benchmark suite
-        test_operator_correction.py  # 16 calibration tests
-      tests/               # 3743 unit tests
-    pwm_AI_Scientist/      # AI_Scientist adapter (thin)
-```
-
----
-
-## Install
-
-### Requirements
-- Python 3.10+ recommended
-- PyTorch (CPU or CUDA)
-- Optional: `deepinv`, `streamlit`, `opencv-python`, `scikit-image`
-
-### Workspace install (editable)
-
-```bash
-pip install -U pip
-pip install -e packages/pwm_core
-pip install -e packages/pwm_AI_Scientist
-```
-
-If you want the viewer:
-
-```bash
-pip install -e "packages/pwm_core[viewer]"
-```
-
-> Tip: If you use CUDA, install PyTorch first using the official selector for your CUDA version.
-
----
-
-## Quickstart
-
-### A) Prompt -> auto CasePack -> simulate -> reconstruct -> analyze -> view
-
-```bash
-# Microscopy examples
-pwm run --prompt "widefield deconvolution, low dose, PSF mismatch"
-pwm run --prompt "SIM structured illumination, 3 angles, 3 phases, live cell"
-pwm run --prompt "confocal 3D stack, depth attenuation, z-drift"
-
-# Compressive imaging examples
-pwm run --prompt "CASSI spectral imaging, 28 bands, coded aperture"
-pwm run --prompt "single pixel camera, 25% sampling, Hadamard patterns"
-pwm run --prompt "CACTI video, 8 frames compressed to 1 snapshot"
-
-# Medical imaging examples
-pwm run --prompt "CT sparse view, 90 angles, low dose"
-pwm run --prompt "MRI accelerated, 4x undersampling, parallel imaging"
-
-# New modalities
-pwm run --prompt "OCT retinal scan, dispersion compensation"
-pwm run --prompt "light field microscopy, 5x5 lenslet array"
-pwm run --prompt "photoacoustic imaging, circular transducer array"
-pwm run --prompt "FLIM, two-component decay, IRF deconvolution"
-pwm run --prompt "FPM, LED array, synthetic aperture"
-
-# Neural rendering examples
-pwm run --prompt "NeRF from 30 views, synthetic scene"
-pwm run --prompt "3D Gaussian splatting, multi-view reconstruction"
-
-# View results
-pwm view runs/latest
-```
-
-PWM will:
-1) select a CasePack from the 64 validated modalities,
-2) compile a draft spec,
-3) validate/repair,
-4) simulate measurement `y`,
-5) reconstruct `x_hat` using solver portfolio,
-6) diagnose failure modes,
-7) export a RunBundle.
-
-### B) Spec -> run
-
-```bash
-# Run with custom spec file
-pwm run --spec my_experiment.json
-pwm view runs/latest
-```
-
-### C) Python API
-
-```python
-from pwm_core.api import endpoints
-
-# Option 1: Run from prompt (auto-selects casepack from 64 modalities)
-result = endpoints.run(prompt="widefield deconvolution, low dose")
-print(f"RunBundle: {result['runbundle_path']}")
-print(f"Verdict: {result['diagnosis']['verdict']}")
-print(f"PSNR: {result['recon'][0]['metrics'].get('psnr', 'N/A')}")
-
-# Option 2: Run from spec dict
-spec = {
-    "id": "my_cassi_experiment",
-    "input": {"mode": "simulate"},
-    "states": {
-        "physics": {"modality": "cassi"},
-        "budget": {"measurement_budget": {"num_bands": 28}}
-    }
-}
-result = endpoints.run(spec=spec, out_dir="runs/")
-
-# Option 3: Compile prompt first, inspect casepack, then run
-compile_result = endpoints.compile_prompt("MRI accelerated imaging")
-print(f"Selected casepack: {compile_result.casepack_id}")
-print(f"Modality: {compile_result.draft_spec['states']['physics']['modality']}")
-
-# Run with the compiled spec
-result = endpoints.run(spec=compile_result.draft_spec, out_dir="runs/")
-```
-
-### E) Evaluate a method on the harness
-
-```bash
-# Score a method against the built-in harness
-pwm evaluate --method my_solver --modality cassi --track correct
-
-# Run the full 4-scenario protocol
-pwm evaluate --method my_solver --modality cassi --scenarios I,II,III,IV
-
-# Compare your method against the current default
-pwm evaluate --method my_solver --method mst_l --modality cassi
-```
-
-### D) Run benchmarks directly
-
-```bash
-# Navigate to project directory
-cd packages/pwm_core
-
-# Run ALL 64 modalities (~28 min)
-python benchmarks/run_all.py --all
-
-# Run specific modality
-python benchmarks/run_all.py --modality mri
-python benchmarks/run_all.py --modality oct
-python benchmarks/run_all.py --modality flim
-python benchmarks/run_all.py --modality photoacoustic
-
-# Run operator correction tests (16 tests, ~63 min)
-python -m pytest benchmarks/test_operator_correction.py -v
-
-# Run unit tests (3743 tests)
-python -m pytest tests/ -v
-```
 
 ---
 
@@ -817,6 +818,54 @@ For large datasets (LoDoPaB-CT, fastMRI, KAIST), see `docs/plan.md` for details.
 
 ---
 
+## Repository layout
+
+```text
+pwm/
+  README.md
+  LICENSE
+  rails/                   # SolveEverything 10-gear implementation map
+    README.md              # Trail overview + status table
+    gear01_targeting_system.md .. gear10_literacy.md
+    maturity_levels.md     # L0-L5 maturation framework
+    industrial_stack.md    # 9-layer stack reference
+  docs/
+    purpose.md            # Stage 1 purpose: Imaging System Autonomy
+    targeting_system.md   # LIP-Arena: PWM's built-in evaluation harness
+    plan.md               # Master plan v3 (hardened, fully implemented)
+    spec_v0.2.1.md
+    runbundle_format.md
+    operator_mode.md
+  examples/
+    prompt_to_casepack.py
+    yA_calibrate_recon_cassi.py
+    yA_calibrate_recon_generic.py
+  pyproject.toml
+
+  packages/
+    pwm_core/              # public core library (no AI_Scientist deps)
+      pwm_core/
+        agents/            # 17 agent modules + contracts + registry
+        physics/           # 64 modality operators
+        analysis/          # Metrics, bottleneck, uncertainty
+        core/              # Runner, RunBundle, simulator
+        api/               # Pydantic types, endpoints
+      contrib/
+        modalities.yaml    # 64-modality source of truth
+        mismatch_db.yaml   # Mismatch parameters per modality
+        photon_db.yaml     # Photon models
+        compression_db.yaml # Recoverability calibration tables
+        metrics_db.yaml    # Per-modality metric sets
+        solver_registry.yaml # 43+ solvers
+      benchmarks/
+        run_all.py         # 64-modality benchmark suite
+        test_operator_correction.py  # 16 calibration tests
+      tests/               # 3743 unit tests
+    pwm_AI_Scientist/      # AI_Scientist adapter (thin)
+```
+
+---
+
 ## YAML Registries
 
 PWM uses **6 YAML registries** as the source of truth for all modalities, solvers, and parameters:
@@ -850,9 +899,28 @@ Use `packages/pwm_AI_Scientist/` as the thin adapter layer.
 
 ---
 
-## Contributing
+## Community & Contributing
 
 PWM is intended to be extended by the community.
+
+### 4 Levels of Contribution
+
+| Level | What You Add | Difficulty | Example |
+|-------|-------------|------------|---------|
+| **Solver** | A new `ReconSolver` for an existing modality | Easy | Beat HDNet on CASSI |
+| **Calibrator** | A new calibration method for operator correction | Medium | Better PSF estimator for lensless |
+| **Modality** | A full modality (operator + CasePack + solver + tests) | Hard | Add STED microscopy |
+| **Primitive** | A new OperatorGraph node type | Expert | New scattering kernel |
+
+### Three-Speed Merge
+
+| Lane | Scope | Timeline |
+|------|-------|----------|
+| **Fast** | Solvers, calibrators, config tweaks | Auto-merge within **48 hours** of CI pass (no human veto) |
+| **Review** | Modalities, metrics, track tweaks | **7 days**, 2 reviewers required |
+| **Governance** | Rail changes (scoring, protocol, frozen specs) | **90-day RFC**, unanimous steward vote |
+
+See [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) for full merge authority rules, steward board, and dispute resolution.
 
 ### Add a new modality/operator
 1) Create a new operator in `pwm_core/physics/<modality>/`
@@ -877,6 +945,35 @@ When your method scores higher on the harness, it becomes PWM's new shipped defa
 - Implement loader in `pwm_core/io/datasets.py` and format handler in `io/formats.py`
 - Add an example under `examples/`
 - Prefer reference-mode support for large datasets
+
+### Weekly Challenges
+
+Every week a new reconstruction challenge is posted in `community/challenges/`. Reconstruct from simulated measurements, submit a RunBundle, compete on the leaderboard. See [`community/CONTRIBUTING_CHALLENGE.md`](community/CONTRIBUTING_CHALLENGE.md) for participation details.
+
+See also: [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full contribution guide.
+
+---
+
+## Documentation Index
+
+| Document | Description |
+|----------|-------------|
+| **Architecture** | |
+| [`rails/README.md`](rails/README.md) | SolveEverything 10-gear framework + status table |
+| [`docs/purpose.md`](docs/purpose.md) | Imaging System Autonomy (ISA) discipline |
+| [`docs/spec_v0.2.1.md`](docs/spec_v0.2.1.md) | ExperimentSpec data model (8 state groups) |
+| **Specifications** | |
+| [`docs/targeting_system.md`](docs/targeting_system.md) | LIP-Arena: 4-scenario protocol, scoring, tracks |
+| [`docs/operator_mode.md`](docs/operator_mode.md) | Operator correction pipeline + 16 calibration modalities |
+| [`docs/quickstart/README.md`](docs/quickstart/README.md) | Getting started guide |
+| **Modalities & Data** | |
+| [`packages/pwm_core/contrib/modalities.yaml`](packages/pwm_core/contrib/modalities.yaml) | 64-modality registry (source of truth) |
+| [`packages/pwm_core/contrib/solver_registry.yaml`](packages/pwm_core/contrib/solver_registry.yaml) | 43+ solver registry |
+| [`docs/benchmark_results_26_modalities.md`](docs/benchmark_results_26_modalities.md) | Benchmark results (26 modalities with PSNR) |
+| **Governance** | |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | Contribution guide (modalities, solvers, datasets) |
+| [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) | Three-speed merge, steward board, dispute resolution |
+| [`community/CONTRIBUTING_CHALLENGE.md`](community/CONTRIBUTING_CHALLENGE.md) | Weekly challenge participation guide |
 
 ---
 
