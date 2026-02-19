@@ -96,7 +96,7 @@ def main():
     }
 
     # --- Plot ---
-    fig, axes = plt.subplots(1, 3, figsize=(14, 4.5), sharey=False)
+    fig, axes = plt.subplots(1, 3, figsize=(7.0, 3.5), sharey=False)
     severity_levels = ["mild", "moderate", "severe"]
     x = np.arange(3)
     colors = {"I": "#2196F3", "II": "#F44336", "III": "#4CAF50"}
@@ -106,7 +106,7 @@ def main():
         ("SPC — HATNet\n(gain drift α)", spc_proj,
          ["α=0.0005", "α=0.0015", "α=0.005"]),
         ("CASSI — MST-L\n(mask + dispersion)", cassi_proj,
-         ["dx=0.2, a₁=2.01", "dx=0.5, a₁=2.02", "dx=1.5, a₁=2.05"]),
+         ["dx=0.2\na₁=2.01", "dx=0.5\na₁=2.02", "dx=1.5\na₁=2.05"]),
         ("CACTI — ELP-Unfolding\n(multi-parameter)", cacti_proj,
          ["0.5× params", "1× params", "2× params"]),
     ]
@@ -129,18 +129,19 @@ def main():
         ax.fill_between(x, vals_ii, vals_iii, alpha=0.1, color="#4CAF50")
 
         ax.set_xticks(x)
-        ax.set_xticklabels(xlabels, fontsize=8)
-        ax.set_title(title, fontsize=10, fontweight="bold")
+        ax.set_xticklabels(xlabels, fontsize=7.5)
+        ax.set_title(title, fontsize=9, fontweight="bold")
         ax.set_ylabel("PSNR (dB)", fontsize=9)
+        ax.tick_params(axis='y', labelsize=8)
         ax.grid(True, alpha=0.3)
 
-    axes[0].legend(fontsize=7, loc="lower left")
+    axes[0].legend(fontsize=7.5, loc="lower left")
 
     # Add annotation about projected values
-    fig.text(0.5, -0.02,
+    fig.text(0.5, -0.05,
              "Note: Mild and severe values are projected from moderate-severity "
-             "experimental results using physically-motivated scaling.",
-             ha="center", fontsize=8, fontstyle="italic", color="gray")
+             "experimental results\nusing physically-motivated scaling.",
+             ha="center", fontsize=9.5, fontstyle="italic", color="gray")
 
     fig.tight_layout()
 

@@ -109,8 +109,8 @@ Classical reconstruction methods for compressive imaging employ convex optimizat
 GAP-TV~\cite{yuan2016gaptv} uses the generalized alternating projection framework with total variation (TV) regularization, applicable to both CASSI and CACTI.
 FISTA~\cite{beck2009fista} and ADMM~\cite{boyd2011admm} provide efficient solvers for $\ell_1$-regularized inverse problems.
 Deep learning methods have dramatically improved reconstruction quality: MST~\cite{cai2022mst} introduces mask-guided spectral transformers for CASSI; HDNet~\cite{hu2022hdnet} uses dual-domain processing; DAUHST~\cite{cai2022dauhst} combines deep unfolding with hierarchical spectral transformers; CST~\cite{cai2022cst} leverages cross-stage spectral attention.
-For video compressive sensing, EfficientSCI~\cite{wang2023efficientsci} and ELP-Unfolding~\cite{yang2023elp} achieve state-of-the-art results, while STFormer~\cite{wang2022stformer} introduces spatial-temporal transformers.
-ISTA-Net~\cite{zhang2018istanet} and HATNet~\cite{song2023hatnet} address single-pixel imaging.
+For video compressive sensing, EfficientSCI~\cite{wang2023efficientsci} and ELP-Unfolding~\cite{yang2022elp} achieve state-of-the-art results, while STFormer~\cite{wang2022stformer} introduces spatial-temporal transformers.
+ISTA-Net~\cite{zhang2018istanet} and HATNet~\cite{qu2024hatnet} address single-pixel imaging.
 All these methods are developed and evaluated assuming perfect forward operators.
 
 \paragraph{Calibration and operator mismatch.}
@@ -218,7 +218,7 @@ spatial shifts ($dx = 0.5$\,px, $dy = 0.3$\,px), rotation ($\theta = 0.1^\circ$)
 We evaluate four methods:
 \textbf{GAP-TV}~\cite{yuan2016gaptv}: classical iterative with TV regularization;
 \textbf{PnP-FFDNet}~\cite{yuan2020pnp}: plug-and-play with FFDNet denoiser;
-\textbf{ELP-Unfolding}~\cite{yang2023elp}: efficient long-range perception unfolding network (pretrained);
+\textbf{ELP-Unfolding}~\cite{yang2022elp}: ensemble learning priors driven deep unfolding network (pretrained);
 \textbf{EfficientSCI}~\cite{wang2023efficientsci}: efficient deep learning for snapshot compressive imaging (pretrained).
 
 \paragraph{Dataset.}
@@ -247,7 +247,7 @@ Additional measurement noise $\sigma_y = 0.03$ is applied.
 We evaluate three methods:
 \textbf{FISTA-TV}~\cite{beck2009fista}: fast iterative shrinkage-thresholding with TV regularization (500 iterations, $\lambda = 0.005$);
 \textbf{ISTA-Net}~\cite{zhang2018istanet}: learned iterative shrinkage-thresholding network (pretrained);
-\textbf{HATNet}~\cite{song2023hatnet}: hybrid attention transformer for compressed sensing (pretrained).
+\textbf{HATNet}~\cite{qu2024hatnet}: dual-scale transformer for single-pixel imaging (pretrained).
 
 \paragraph{Dataset.}
 We use the 11 standard Set11 test images (\textit{Monarch}, \textit{Parrots}, \textit{barbara}, \textit{boats}, \textit{cameraman}, \textit{fingerprint}, \textit{flinstones}, \textit{foreman}, \textit{house}, \textit{lena256}, \textit{peppers256}) at $256 \times 256$ resolution with 25\% sampling ratio.
@@ -367,7 +367,7 @@ PnP-FFDNet~\cite{yuan2020pnp}
  & 11.43{\scriptsize$\pm$2.71} / .216
  & 25.39{\scriptsize$\pm$3.52} / .820
  & 17.85 & 13.96 & 78.2\% \\
-ELP-Unfolding~\cite{yang2023elp}
+ELP-Unfolding~\cite{yang2022elp}
  & 34.09{\scriptsize$\pm$4.11} / .965
  & 15.47{\scriptsize$\pm$1.71} / .308
  & 29.40{\scriptsize$\pm$3.15} / .927
@@ -420,7 +420,7 @@ ISTA-Net~\cite{zhang2018istanet}
  & 19.02{\scriptsize$\pm$0.61} / .584
  & 27.45{\scriptsize$\pm$1.32} / .760
  & 12.83 & 8.43 & 65.7\% \\
-HATNet~\cite{song2023hatnet}
+HATNet~\cite{qu2024hatnet}
  & 30.98{\scriptsize$\pm$0.95} / .847
  & 19.40{\scriptsize$\pm$0.59} / .648
  & \textbf{29.78}{\scriptsize$\pm$0.81} / \textbf{.807}
@@ -677,20 +677,20 @@ Wang, L., Cao, M., Yuan, X.:
 EfficientSCI: Densely connected network with space-time factorization for large-scale video snapshot compressive imaging.
 In: CVPR. pp.~18477--18486 (2023)
 
-\bibitem{yang2023elp}
+\bibitem{yang2022elp}
 Yang, C., Zhang, S., Yuan, X.:
-ELP-Unfolding: Efficient long-range perception unfolding network for compressive video sensing.
-In: ECCV. pp.~238--254 (2023)
+Ensemble learning priors driven deep unfolding for scalable video snapshot compressive imaging.
+In: ECCV. pp.~600--618 (2022)
 
 \bibitem{zhang2018istanet}
 Zhang, J., Ghanem, B.:
 ISTA-Net: Interpretable optimization-inspired deep network for image compressive sensing.
 In: CVPR. pp.~1828--1837 (2018)
 
-\bibitem{song2023hatnet}
-Song, J., Chen, B., Zhang, J.:
-Memory-augmented deep unfolding network for compressive sensing.
-In: ACM MM. pp.~4249--4258 (2023)
+\bibitem{qu2024hatnet}
+Qu, G., Wang, P., Yuan, X.:
+Dual-scale transformer for large-scale single-pixel imaging.
+In: CVPR. pp.~25327--25337 (2024)
 
 \bibitem{yuan2020pnp}
 Yuan, X., Liu, Y., Suo, J., Dai, Q.:
@@ -698,7 +698,7 @@ Plug-and-play algorithms for large-scale snapshot compressive imaging.
 In: CVPR. pp.~1447--1457 (2020)
 
 \bibitem{choi2017kaist}
-Choi, I., Kim, M.H., Gutierrez, D., Jeon, D.S., Nam, G.:
+Choi, I., Jeon, D.S., Nam, G., Gutierrez, D., Kim, M.H.:
 High-quality hyperspectral reconstruction using a spectral prior.
 ACM Transactions on Graphics \textbf{36}(6), 218:1--218:13 (2017)
 

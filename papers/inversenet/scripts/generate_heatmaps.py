@@ -115,10 +115,10 @@ def plot_heatmap(ax, rho_matrix, method_labels, scene_labels, title):
     im = ax.imshow(masked, cmap=cmap_extended, aspect="auto", vmin=0, vmax=100)
 
     ax.set_xticks(np.arange(len(scene_labels)))
-    ax.set_xticklabels(scene_labels, rotation=45, ha="right", fontsize=7.5)
+    ax.set_xticklabels(scene_labels, rotation=45, ha="right", fontsize=9)
     ax.set_yticks(np.arange(len(method_labels)))
-    ax.set_yticklabels(method_labels, fontsize=8)
-    ax.set_title(title, fontsize=9, fontweight="bold")
+    ax.set_yticklabels(method_labels, fontsize=10)
+    ax.set_title(title, fontsize=11, fontweight="bold")
 
     # Annotate cells
     for i in range(rho_matrix.shape[0]):
@@ -132,7 +132,7 @@ def plot_heatmap(ax, rho_matrix, method_labels, scene_labels, title):
                 text = f"{val:.0f}%"
                 color = "white" if val < 30 or val > 85 else "black"
             ax.text(j, i, text, ha="center", va="center",
-                    fontsize=7, color=color, fontweight="bold")
+                    fontsize=9, color=color, fontweight="bold")
 
     return im
 
@@ -140,7 +140,7 @@ def plot_heatmap(ax, rho_matrix, method_labels, scene_labels, title):
 def generate_heatmap_figure():
     """Generate combined heatmap figure at LNCS print dimensions."""
     # Print width: \textwidth ~ 4.8", use 7.0" to match our other figures
-    fig, axes = plt.subplots(3, 1, figsize=(7.0, 6.5),
+    fig, axes = plt.subplots(3, 1, figsize=(7.0, 7.5),
                              gridspec_kw={"height_ratios": [4, 4, 3]})
 
     datasets = [generate_cassi_heatmap, generate_cacti_heatmap,
@@ -153,17 +153,17 @@ def generate_heatmap_figure():
     # Shared colorbar
     cbar_ax = fig.add_axes([0.92, 0.12, 0.015, 0.75])
     cbar = fig.colorbar(im, cax=cbar_ax)
-    cbar.set_label(u"Recovery Ratio \u03c1 (%)", fontsize=8)
-    cbar.ax.tick_params(labelsize=7)
+    cbar.set_label(u"Recovery Ratio \u03c1 (%)", fontsize=10)
+    cbar.ax.tick_params(labelsize=8)
 
-    fig.suptitle("Per-Scene Recovery Ratio Heatmaps", fontsize=10,
+    fig.suptitle("Per-Scene Recovery Ratio Heatmaps", fontsize=12,
                  fontweight="bold", y=0.99)
     fig.tight_layout(rect=[0, 0, 0.90, 0.96])
 
     # Add footnote explaining em-dash
     fig.text(0.02, 0.005,
              u"\u2014 = degradation < 0.5 dB (\u03c1 undefined; method is naturally robust)",
-             fontsize=6.5, color="#666666", style="italic")
+             fontsize=10, color="#666666", style="italic")
 
     out_path = os.path.join(FIGURES_DIR, "recovery_heatmaps.pdf")
     fig.savefig(out_path, dpi=300, bbox_inches="tight")
@@ -215,7 +215,7 @@ def generate_residual_gap_figure():
     groups.append(("SPC", spc_labels, spc_res))
 
     # --- Plot ---
-    fig, ax = plt.subplots(figsize=(10, 5))
+    fig, ax = plt.subplots(figsize=(7.0, 4.5))
 
     mod_colors = {"CASSI": "#E91E63", "CACTI": "#2196F3", "SPC": "#FF9800"}
     bar_positions = []
@@ -239,13 +239,13 @@ def generate_residual_gap_figure():
     # Value labels on bars
     for bar, val in zip(bars, bar_values):
         ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.15,
-                f"{val:.2f}", ha="center", va="bottom", fontsize=7.5,
+                f"{val:.2f}", ha="center", va="bottom", fontsize=8.5,
                 fontweight="bold")
 
     ax.set_xticks(bar_positions)
-    ax.set_xticklabels(bar_labels, rotation=45, ha="right", fontsize=8)
-    ax.set_ylabel("Residual Gap Δ_res (dB)", fontsize=10)
-    ax.set_title("Residual Gap: PSNR_I − PSNR_III\n(Unrecoverable Loss from Measurement Corruption)",
+    ax.set_xticklabels(bar_labels, rotation=30, ha="right", fontsize=9)
+    ax.set_ylabel(u"Residual Gap \u0394_res (dB)", fontsize=11)
+    ax.set_title(u"Residual Gap: PSNR\u1d35 \u2212 PSNR\u1d35\u1d35\u1d35 (Unrecoverable Loss)",
                  fontsize=11, fontweight="bold")
     ax.grid(True, axis="y", alpha=0.3)
 
@@ -257,17 +257,17 @@ def generate_residual_gap_figure():
         group_positions.append((center, mod_name))
         idx += len(labels)
 
-    # Add modality labels below x-axis
+    # Add modality labels below x-axis (offset further to avoid overlap)
     for center, mod_name in group_positions:
-        ax.text(center, -0.12, mod_name, transform=ax.get_xaxis_transform(),
-                ha="center", fontsize=9, fontweight="bold",
+        ax.text(center, -0.18, mod_name, transform=ax.get_xaxis_transform(),
+                ha="center", fontsize=10, fontweight="bold",
                 color=mod_colors[mod_name])
 
     # Legend
     for mod_name, color in mod_colors.items():
         ax.bar([], [], color=color, label=mod_name, edgecolor="black",
                linewidth=0.5)
-    ax.legend(fontsize=8, loc="upper right")
+    ax.legend(fontsize=9, loc="upper right")
 
     fig.tight_layout()
 
