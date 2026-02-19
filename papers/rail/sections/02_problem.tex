@@ -61,7 +61,7 @@ improvement from Scenario~II to Scenario~III.
 \midrule
 GAP-TV~\cite{yuan2016gaptv}
   & 24.22  & 19.66  & \worst{$-4.56$}   & $+0.51$ \\
-PnP-HSICNN~\cite{wang2020pnp}
+PnP-HSICNN$^\dagger$~\cite{wang2017adaptive}
   & 25.12  & 19.10  & \worst{$-6.02$}   & $+0.71$ \\
 MST-S~\cite{cai2022mst}
   & 33.98  & 18.01  & \worst{$-15.97$}  & \best{$+3.00$} \\
@@ -71,6 +71,12 @@ HDNet~\cite{hu2022hdnet}
   & 34.66  & \best{24.18}  & \worst{$-10.48$}  & $+0.05$ \\
 \bottomrule
 \end{tabular}
+
+\smallskip
+{\footnotesize $\dagger$~We use the adaptive nonlocal sparse representation method of Wang et al.\ as a plug-and-play baseline, referred to as PnP-HSICNN following common usage in the CASSI literature.}
+
+\smallskip
+{\footnotesize Scenario~IV (Oracle) reproduces Scenario~I by construction and is omitted for brevity.}
 \end{table}
 
 The results in \cref{tab:sensitivity} reveal a striking pattern.
@@ -149,7 +155,7 @@ cannot be meaningfully compared with any other paper.
 Progress appears rapid when measured within a single group's evaluation
 setup, but the aggregate state of the field is unknown.
 This is precisely the condition that the SolveEverything framework
-calls \emph{The Muddle}~\cite{wissner2024solveeverything}: everyone is working
+calls \emph{The Muddle}~\cite{wissner2026solveeverything}: everyone is working
 hard, but no one can tell whether the work is adding up.
 
 % ------------------------------------------------------------------

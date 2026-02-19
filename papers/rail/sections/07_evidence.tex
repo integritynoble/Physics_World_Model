@@ -111,6 +111,11 @@ performance.}
 
 \medskip
 \noindent
+\textbf{Note on CASSI correction algorithms.}
+In \cref{tab:correction}, Alg~1 refers to hierarchical beam search (coarse correction) and Alg~2 refers to joint gradient refinement (fine correction); see Methods in the companion paper~\cite{yang2026inversenet} for details.
+
+\medskip
+\noindent
 \textbf{Note on CASSI baselines.}
 The Scenario~II baseline for CASSI in \cref{tab:correction} (15.79~dB) is lower than the corresponding value in the sensitivity table (\cref{tab:sensitivity}, 18.09~dB for MST-L) because the correction study uses a multi-parameter mismatch (mask geometry + dispersion), which is more severe than the 1-pixel-shift-only mismatch used in the sensitivity analysis.
 
@@ -135,7 +140,7 @@ reconstruction quality.
 We conduct a detailed study of coded aperture snapshot spectral imaging
 (CASSI) to illustrate how the Triad Law (\cref{sec:triad}) manifests in
 a single modality.  \Cref{tab:cassi} reports PSNR for five solvers
-across four scenarios:
+across three scenarios plus a projected fine-tuned estimate:
 %
 \begin{itemize}
     \item \textbf{Scenario~I} --- ideal (true) operator;
@@ -144,11 +149,13 @@ across four scenarios:
     \item \textbf{Estimated} --- corrected operator with additional solver
           fine-tuning (projected, not a formal scenario).
 \end{itemize}
+%
+\noindent Scenario~IV (Oracle) reproduces Scenario~I by design for CASSI and is omitted for brevity.
 
 \begin{table}[t]
 \centering
-\caption{CASSI deep dive: 5~solvers $\times$ 4~scenarios.  The mismatch
-cost (I$\to$II) dominates the solver upgrade gain under ideal conditions.}
+\caption{CASSI deep dive: 5~solvers $\times$ 3~scenarios + projected fine-tuned estimate.  The mismatch
+cost (I$\to$II) dominates the solver upgrade gain under ideal conditions.  Scenario~IV (Oracle) reproduces Scenario~I by design and is omitted for brevity.}
 \label{tab:cassi}
 \smallskip
 \begin{tabular}{@{}lcccc@{}}
@@ -160,7 +167,7 @@ cost (I$\to$II) dominates the solver upgrade gain under ideal conditions.}
     & \textbf{Est.\ Fine-tuned}$^\dagger$ \\
 \midrule
 GAP-TV~\cite{yuan2016gaptv}   & 24.22 & 19.66 & 20.17 & ${\approx}$23.0 \\
-PnP-HSICNN~\cite{wang2020pnp} & 25.12 & 19.10 & 19.81 & ${\approx}$24.0 \\
+PnP-HSICNN~\cite{wang2017adaptive} & 25.12 & 19.10 & 19.81 & ${\approx}$24.0 \\
 MST-S~\cite{cai2022mst}     & 33.98 & 18.01 & 21.01 & ${\approx}$30.0 \\
 MST-L~\cite{cai2022mst}     & 34.81 & 18.09 & 21.10 & ${\approx}$31.0 \\
 HDNet~\cite{hu2022hdnet}     & 34.66 & 24.18 & 24.23 & ${\approx}$33.0 \\
@@ -191,10 +198,7 @@ and generalize poorly when the physical system drifts.
 % ============================================================
 \subsection{SolveEverything Implementation Status}
 
-In addition to the 9-layer Industrial Intelligence Stack (\cref{sec:stack}), the SolveEverything framework defines 10 operational gears---concrete mechanisms that drive each layer.  \Cref{tab:gears} reports the implementation status of each gear within PWM.
-
-The \pwm{} adopts the 10-gear \emph{SolveEverything} framework~\cite{wissner2024solveeverything} as its
-governance backbone.
+In addition to the 9-layer Industrial Intelligence Stack (\cref{sec:stack}), the SolveEverything framework~\cite{wissner2026solveeverything} defines 10 operational gears---concrete mechanisms that drive each layer.  \Cref{tab:gears} reports the implementation status of each gear within PWM.
 
 \begin{table}[t]
 \centering

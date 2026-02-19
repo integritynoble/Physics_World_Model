@@ -167,7 +167,7 @@ the measurement operator and the reconstruction operator.
 I   & Ideal      & $\mathbf{H}$    & $\mathbf{H}$
     & Oracle upper bound: what is achievable with perfect operator
       knowledge. \\
-II  & Assumed    & $\mathbf{H}$    & $\mathbf{H}_{\mathrm{nom}}$
+II  & Assumed/Mismatch    & $\mathbf{H}$    & $\mathbf{H}_{\mathrm{nom}}$
     & Mismatch baseline: the default deployment condition where the
       nominal operator differs from truth. \\
 III & Corrected  & $\mathbf{H}$    & $\hat{\mathbf{H}}$
@@ -188,7 +188,7 @@ work and represents the oracle upper bound on reconstruction quality.
 It answers the question: \emph{how good is this solver when the physics
 is perfectly known?}
 
-\paragraph{Scenario II (Assumed).}
+\paragraph{Scenario II (Assumed/Mismatch).}
 Measurements are generated with the true operator $\mathbf{H}$, but
 reconstruction uses the nominal operator
 $\mathbf{H}_{\mathrm{nom}}$---the operator that the system

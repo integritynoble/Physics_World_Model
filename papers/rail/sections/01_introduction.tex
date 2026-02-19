@@ -16,11 +16,10 @@ Yet when the coded aperture mask is shifted by a single pixel---a
 perturbation well within the manufacturing and alignment tolerances of
 any real optical system---the same method collapses to 18.09\,dB, a loss
 of \textbf{16.72\,dB}.
-Under a 1-pixel-shift-plus-rotation model, neural solvers lose
+Under a 1-pixel-shift-plus-rotation model, deep-learning solvers (HDNet, MST-S, MST-L) lose
 10--17\,dB (\cref{tab:sensitivity}).
 To put this in perspective, the entire history of
-CASSI reconstruction---from the classical GAP-TV's 24.22\,dB in 2016 through deep unrolling to MST-L's
-34.81\,dB in 2022---spans only 10.59\,dB.
+CASSI reconstruction---from GAP-TV~\cite{yuan2016gaptv} at 24.22\,dB to MST-L~\cite{cai2022mst} at 34.81\,dB---spans only 10.59\,dB.
 A single pixel of operator mismatch erases more than a decade of
 algorithmic improvement.
 
@@ -66,7 +65,7 @@ methods under realistic physical conditions.
 % ------------------------------------------------------------------
 
 \paragraph{SolveEverything framing.}
-Our design follows the SolveEverything.org framework~\cite{wissner2024solveeverything},
+Our design follows the SolveEverything.org framework~\cite{wissner2026solveeverything},
 which identifies a recurring pattern across domains---from protein
 folding to chip design to weather prediction---in which transformative
 progress requires not just better models but better infrastructure.
@@ -105,8 +104,8 @@ Industrial Intelligence Stack in \cref{tab:stack_mapping}):
         electrons, spins, acoustic waves, particles) using 89 validated
         templates.
   \item \textbf{4-Scenario Evaluation Protocol}---a standardized
-        framework that measures every solver under Ideal, Assumed
-        (mismatched), Corrected (calibrated), and Oracle conditions,
+        framework that measures every solver under Ideal, Mismatch,
+        Corrected (calibrated), and Oracle conditions,
         isolating the contribution of operator knowledge from solver
         architecture.
   \item \textbf{LIP-Arena}---a prospective evaluation competition using
@@ -148,11 +147,11 @@ Our specific contributions are:
         (GAP-TV) to 16.72\,dB (MST-L) on CASSI alone
         (\cref{sec:problem}).
 
-  \item \textbf{Operator correction across 9 validated modalities
-        (16 registered).}
+  \item \textbf{Operator correction across 9 correction configurations
+        spanning 7 distinct modalities (16 registered).}
         We show that calibrating the forward operator---even with
         classical methods---recovers a substantial fraction of mismatch
-        loss across 9 numerically validated modalities (with 7 additional
+        loss across 9 correction configurations spanning 7 distinct modalities (with 7 additional
         modalities registered for future evaluation), confirming that the
         dominant failure mode in deployed imaging systems is not solver
         quality but operator fidelity.

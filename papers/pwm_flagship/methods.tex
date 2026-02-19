@@ -104,14 +104,15 @@ organized across 64 modalities, grouped by physical carrier:
     tomography (OCT), lensless imaging, light field, integral imaging,
     neural radiance fields (NeRF), Gaussian splatting, fluorescence
     lifetime imaging (FLIM), diffuse optical tomography (DOT),
-    photoacoustic imaging, and phase retrieval.
+    and phase retrieval.
   \item \textbf{Electrons:}  Electron diffraction, electron backscatter
     diffraction (EBSD), electron energy loss spectroscopy (EELS), and
     electron holography.
   \item \textbf{Spins (MRI):}  Functional MRI (fMRI), diffusion-weighted
     MRI (DW-MRI), and magnetic resonance spectroscopy (MRS).
   \item \textbf{Acoustic:}  Ultrasound B-mode, Doppler ultrasound,
-    shear-wave elastography, sonar, and photoacoustic tomography.
+    shear-wave elastography, sonar, and photoacoustic tomography
+    (combines optical excitation with acoustic detection).
   \item \textbf{Particles:}  X-ray computed tomography (CT), cone-beam CT
     (CBCT), neutron tomography, proton radiography, and muon tomography.
 \end{itemize}
@@ -246,12 +247,10 @@ bias.
 \subsection*{Agent System Architecture}
 \label{sec:methods:agents}
 
-The PWM agent system comprises 9 specialist agents and 8 support classes
-totalling 10,545 lines of Python.  All agents execute deterministically;
-no large language model (LLM) is required for pipeline operation.
-An LLM may optionally be invoked via the \texttt{HybridAgent} wrapper for
-natural-language narrative generation or edge-case modality mapping, but
-all quantitative decisions are made by the deterministic code path.
+The PWM agent system comprises 7 specialist agents, 1 optional hybrid agent,
+and 8 support classes totalling 10,545 lines of Python.  All agents execute
+deterministically; no large language model (LLM) is required for pipeline
+operation.
 
 \paragraph{PlanAgent.}
 The orchestrator agent.  Given a user prompt or a structured
@@ -310,6 +309,12 @@ compression ($C_{\text{noise}}$ and $C_{\text{recover}}$ both large);
 0.15$), indicating that all three subsystems are simultaneously marginal.
 When any veto fires, reconstruction halts with an actionable explanation
 and suggested remediation.
+
+\paragraph{HybridAgent.}
+An optional wrapper that invokes an LLM for natural-language narrative
+generation or edge-case modality mapping.  All quantitative decisions
+remain on the deterministic code path; the HybridAgent is never required
+for pipeline operation.
 
 \paragraph{Support classes.}
 The remaining components include: \texttt{AssetManager} (file I/O and
@@ -512,8 +517,7 @@ For the primary mismatch experiment, the true mismatch parameters are
 $\mismatchparam_{\text{true}} = (dx = 1.094,\; dy = -2.677,\;
 \theta = -0.559^\circ,\; a_1 = \text{default},\;
 \varphi_d = -0.316^\circ)$.
-Solvers evaluated include GAP-TV, MST-L, and HDNet, all of which receive
-the same operator and differ only in their reconstruction algorithm.
+Solvers evaluated include TwIST~\cite{bioucasdias2007twist}, GAP-TV~\cite{yuan2016gaptv}, DGSMP~\cite{huang2021dgsmp}, MST-L~\cite{cai2022mst}, and CST-L~\cite{cai2022cst}, all of which receive the same operator and differ only in their reconstruction algorithm. The supplementary per-scene analysis additionally includes DeSCI and HDNet~\cite{hu2022hdnet}.
 
 \paragraph{CACTI configuration.}
 The coded aperture compressive temporal imaging system uses binary
@@ -527,7 +531,7 @@ The single-pixel camera uses random binary measurement patterns at three
 compression ratios: 10\%, 25\%, and 50\%
 ($r = m / n \in \{0.10, 0.25, 0.50\}$).  Mismatch is modeled as a
 multiplicative gain bias on the measurement matrix.  The default solver
-is ISTA~\cite{beck2009fista} (iterative shrinkage-thresholding algorithm) with a wavelet
+is ADMM-TV with total-variation regularization and a wavelet
 sparsifying transform.
 
 \paragraph{MRI configuration.}
