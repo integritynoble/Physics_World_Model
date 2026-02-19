@@ -22,7 +22,7 @@ benchmark threshold; no modality is excluded or deferred.
 \begin{table}[t]
 \centering
 \caption{26-modality benchmark results (Scenario~I, ideal operator).
-All 26/26 modalities pass.  Average PSNR $\approx 37.0$\,dB (excluding Phase Retrieval identity test); range 25.46--64.84\,dB over physically meaningful modalities.}
+All 26/26 modalities pass.  Average PSNR $\approx 36.2$\,dB (excluding Phase Retrieval identity test); range 25.46--64.84\,dB over physically meaningful modalities.}
 \label{tab:26mod}
 \smallskip
 \begin{tabular}{@{}rlr@{\qquad}rlr@{}}
@@ -52,7 +52,7 @@ The range spans nearly 75\,dB, reflecting the diversity of forward models
 --- from the heavily ill-posed computed tomography (CT~\cite{chen2017redcnn},
 25.46\,dB) to phase retrieval, where the analytically invertible
 forward model yields an identity reconstruction
-(100.00\,dB, a numerical ceiling rather than a measured value).  The average of ${\approx}\,37.0$\,dB (excluding the Phase Retrieval identity test) confirms that the
+(100.00\,dB, a numerical ceiling rather than a measured value).  The average of ${\approx}\,36.2$\,dB (excluding the Phase Retrieval identity test) confirms that the
 unified pipeline delivers competitive reconstruction quality across
 fundamentally different physics.
 
@@ -70,7 +70,7 @@ with the absolute improvement.
 
 \begin{table}[t]
 \centering
-\caption{Operator correction across 16~modalities.  ``Before'' is
+\caption{Operator correction across 16~configurations (9~validated, 7~registered).  ``Before'' is
 Scenario~II (mismatched operator); ``After'' is Scenario~III (corrected
 operator) except for the CASSI Alg~2 row, which reports Scenario~IV (Oracle Mask)
 as the correction ceiling.  Improvements range from $+0.54$ to $+48.25$\,dB.  Phase~2

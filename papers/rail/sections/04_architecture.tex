@@ -85,15 +85,15 @@ calibration of any mismatch parameter.
 The primitive library spans five physical carriers:
 \begin{enumerate}
   \item \textbf{Photons}: optical imaging (CASSI~\cite{wagadarikar2008cassi}, SPC~\cite{duarte2008spc}, lensless,
-        coded diffraction, \etc{}).
+        coded diffraction, \etc{}), computed tomography~\cite{feldkamp1984practical},
+        single-photon emission CT (SPECT).
   \item \textbf{Electrons}: electron microscopy (cryo-EM, STEM, SEM).
   \item \textbf{Spins}: magnetic resonance imaging~\cite{lustig2007sparse}
         (MRI, diffusion MRI, spectroscopic MRI).
   \item \textbf{Acoustic waves}: ultrasound, photoacoustic imaging,
         sonar.
-  \item \textbf{Particles}: computed tomography~\cite{feldkamp1984practical},
-        positron emission tomography (PET),
-        single-photon emission CT (SPECT), neutron imaging.
+  \item \textbf{Particles}: positron emission tomography (PET),
+        neutron imaging.
 \end{enumerate}
 
 \paragraph{Templates and coverage.}
@@ -173,7 +173,7 @@ II  & Assumed/Mismatch    & $\mathbf{H}$    & $\mathbf{H}_{\mathrm{nom}}$
 III & Corrected  & $\mathbf{H}$    & $\hat{\mathbf{H}}$
     & Calibration benefit: how much performance is recovered by
       estimating the true operator. \\
-IV  & Oracle Mask & $\mathbf{H}$ & $\mathbf{H}$$^\ast$
+IV  & Oracle Mask & $\mathbf{H}$ & $\mathbf{H}^\ast$
     & Correction ceiling: true operator given to a solver whose
       learned weights were trained on $\mathbf{H}_{\mathrm{nom}}$. \\
 \bottomrule
