@@ -102,6 +102,7 @@ casepack:
   id: "acr_ct_v1.0"
   name: "ACR CT Phantom QC"
   version: "1.0.0"
+  min_pwm_version: "0.4.0"        # prevents loading on incompatible PWM versions
   author: "PWM Clinical Team"
   phantom_type: "ACR CT 464"
 
@@ -118,6 +119,7 @@ casepack:
 
   roi_definitions:
     # Phantom geometry for ROI placement
+    orientation_method: phantom_rotation_auto  # detect phantom rotation in gantry
     water_roi:
       shape: circle
       center_method: phantom_center_auto  # auto-detect from image
@@ -222,6 +224,11 @@ threshold_layers:
       approval_date: "2026-01-15"
 ```
 
+**Threshold types**: The resolver handles two threshold forms: absolute
+`pass_range` (e.g., water HU in [-5, 5]) and relative-to-baseline
+`tolerance_from_baseline_sigma` (e.g., noise within 2σ of baseline). Both
+types can appear at any layer and are evaluated by `threshold_resolver.py`.
+
 **In reports**: always show both `(standard threshold)` and `(applied threshold)`
 so auditors can see exactly which layer determined pass/fail.
 
@@ -270,6 +277,11 @@ commissioning_bundle:
 
 Each mismatch type maps to observable artifacts, affected metrics, and
 diagnostic tests. Used by the diagnosis engine.
+
+**Scope**: v1 covers single-energy CT only. Dual-energy and spectral CT
+(material decomposition accuracy, virtual mono-energetic image consistency)
+are out-of-scope for v1 but the CasePack architecture supports adding them
+as new CasePacks without code changes.
 
 | Mismatch Parameter | Observable Artifact | QA Metric Affected | Diagnostic Test |
 |---|---|---|---|
@@ -548,9 +560,57 @@ packages/pwm_core/
     clinical_ct_mismatch.yaml              # CT mismatch library
     clinical_pet_ct.yaml                   # PET/CT CasePack (Phase 2 stub)
     clinical_spect_ct.yaml                 # SPECT/CT CasePack (Phase 3 stub)
+
+  tests/
+    clinical/
+      conftest.py                          # Shared fixtures (synthetic phantom generator)
+      fixtures/
+        synthetic_acr/                     # Generated synthetic DICOM phantom files
+      test_qa_metrics.py                   # Unit tests: metric functions
+      test_diagnosis_features.py           # Unit tests: artifact feature extraction
+      test_diagnosis_synthetic.py          # Synthetic artifact → diagnosis validation
+      test_threshold_resolver.py           # Unit tests: 4-layer threshold resolution
+      test_baseline.py                     # Unit tests: CommissioningBundle signing/versioning
+      test_casepack.py                     # CasePack schema validation + version compat
+      test_end_to_end.py                   # Integration: DICOM → metrics → report
+      test_regression.py                   # Known-good phantom → expected metrics
 ```
 
-### 4.2 Implementation Sprints (Reordered: Ingestion First)
+### 4.2 Test Data Strategy
+
+Development and testing require phantom DICOM images at each sprint:
+
+**Sprint 1–3: Synthetic ACR phantom** (no external data dependency)
+- Generate synthetic CT phantom volumes in NumPy (uniform cylinder with
+  inserts at known HU values, wire ramps for slice thickness, resolution
+  patterns for spatial resolution)
+- Wrap in pydicom DICOM files with realistic metadata (vendor, protocol,
+  slice thickness, pixel spacing)
+- Provides deterministic ground truth for all metric computations
+- Artifact injection (ring, cupping, streak patterns) for diagnosis testing
+- Located in `tests/clinical/fixtures/synthetic_acr/`
+
+**Sprint 4+: Real phantom scans** (optional, user-provided)
+- Institutional ACR phantom scans (PHI-safe: phantom-only by definition)
+- Public datasets if available (e.g., AAPM Grand Challenge data)
+- Used for integration validation, not unit testing
+
+### 4.3 Testing Plan
+
+| Layer | What | Where | When |
+|-------|------|-------|------|
+| Unit tests | Each metric function, each diagnosis feature, threshold resolver, baseline signing | `tests/clinical/test_qa_metrics.py`, `test_diagnosis_features.py`, `test_threshold_resolver.py`, `test_baseline.py` | Every sprint |
+| Integration tests | End-to-end: DICOM → metrics → thresholds → report | `tests/clinical/test_end_to_end.py` | Sprint 1+ |
+| Synthetic artifact tests | Inject known artifacts → verify diagnosis correctness | `tests/clinical/test_diagnosis_synthetic.py` | Sprint 3 |
+| Regression tests | Known-good phantom → expected metrics within tolerance | `tests/clinical/test_regression.py` | Sprint 2+ |
+| CasePack validation | Schema validation, version compatibility check | `tests/clinical/test_casepack.py` | Sprint 1+ |
+
+**Validation criteria**: Synthetic phantom metrics must match ground truth
+within 0.1 HU (CT number), 0.1 mm (geometry), and 0.1 HU (noise std).
+Diagnosis engine must correctly identify the injected artifact type in
+>95% of synthetic test cases.
+
+### 4.4 Implementation Sprints (Reordered: Ingestion First)
 
 **Sprint 1: End-to-End Skeleton (DICOM → Minimal Metrics → Report)**
 
@@ -573,7 +633,7 @@ packages/pwm_core/
 | 10 | `clinical_ct_thresholds.yaml` | 4-layer threshold definitions |
 | 11 | `threshold_resolver.py` | Resolve standard → scanner → protocol → site |
 | 12 | `baseline.py` | Immutable CommissioningBundle (versioned, signed, chained) |
-| 13 | `scanner_registry.py` | Scanner model database with default params |
+| 13 | `scanner_registry.py` | Scanner model database with default params (v1 ships with manually curated entries for 3–5 common models from published literature and vendor specs; community contributions expand the registry over time) |
 
 **Sprint 3: Diagnosis + Drift Detection**
 
@@ -590,7 +650,7 @@ packages/pwm_core/
 | Step | File | What |
 |------|------|------|
 | 19 | `operator_graph.py` | CT OperatorGraph templates (Tier 1–2 only; Tier 3+ deferred) |
-| 20 | Reprojection consistency | Estimate CoR offset from projection data |
+| 20 | Reprojection consistency | Estimate CoR offset from projection data (when raw sinograms are available; falls back to image-domain artifact features when vendor raw data is inaccessible) |
 | 21 | Integration test | `troubleshoot_mode=true` → operator correction → re-evaluate |
 
 **Sprint 5: Rail Paper + PET/CT Stubs**
@@ -612,11 +672,12 @@ New CasePacks per modality:
 - SPECT acceptance CasePack (TG-177)
 - Shared "coupled failure" logic for PET/CT (CT attenuation artifacts → PET quantification drift)
 
-### 4.3 Python Module Specs
+### 4.5 Python Module Specs
 
 #### `dicom_ingester.py`
 - **PHI safety**: Enforce phantom-only studies (check PatientName, InstitutionName patterns); opt-in `phi_filter.py` hook for future real-world use
 - **Series selection**: Apply CasePack `series_selection.rules` deterministically; log `series_selection_reason` into the RunBundle (why this series was chosen, what alternatives existed)
+- **Vendor private tags**: CasePacks can optionally specify private tag extraction rules (odd-group DICOM tags) for vendor-specific metadata (e.g., iterative reconstruction parameters, tube current modulation curves). Standard public tags (PS3.6) are always extracted; private tags are opt-in per CasePack
 - **Canonical resampling**: Resample to canonical orientation/spacing for vendor-neutral ROI placement; record resampling parameters
 - **Output**: `CTScanBundle` Pydantic model with metadata + image volumes + selection log
 
@@ -655,12 +716,13 @@ New CasePacks per modality:
 #### `report_generator.py`
 - **Triple output**: PDF + `physicist_report.json` + `evidence/` folder
 - **JSON**: Structured, versioned, with both standard and applied thresholds per metric
-- **PDF**: HTML template → weasyprint (no LaTeX dependency for clinical deployments)
+- **PDF**: HTML template → PDF renderer. Primary: `fpdf2` (pure Python, no system deps). Fallback: `weasyprint` (richer CSS but requires Cairo/Pango system libs — problematic on Windows). No LaTeX dependency for clinical deployments
 - **Evidence**: ROI overlays, trend plots, feature maps, derivation logs
 - **Extends RunBundle**: All outputs stored within the standard RunBundle structure with `task: clinical_qc`
 
 #### `threshold_resolver.py`
 - **4-layer resolution**: standard_default → scanner_model → protocol → site_override
+- **Threshold types**: Handles both absolute (`pass_range`) and relative-to-baseline (`tolerance_from_baseline_sigma`, `tolerance_from_nominal`) threshold forms; evaluator dispatches by type
 - **Audit trail**: Report shows which layer determined each threshold
 - **Validation**: Site overrides cannot weaken standard thresholds (warning if attempted)
 
@@ -720,7 +782,16 @@ Per the SolveEverything.org framework (https://solveeverything.org/):
 | 7 | Two-Source Rule | Scored diagnosis requires multiple evidence features |
 | 9 | Fairness Targets | Consistent QC across all scanners regardless of vendor |
 
-### 5.6 PET/CT and SPECT: Same Harness, New CasePacks
+### 5.6 Regulatory Scope
+
+v1 targets **research and internal QA use**, not regulated clinical deployment.
+If the tool were used in a clinical decision-making pathway, it could be
+classified as Software as a Medical Device (SaMD) under FDA 21 CFR Part 820
+or EU MDR. The copilot model (physicist retains sign-off authority) reduces
+but does not eliminate regulatory exposure. A formal SaMD classification
+analysis should precede any external clinical deployment.
+
+### 5.7 PET/CT and SPECT: Same Harness, New CasePacks
 
 Expansion to PET/CT and SPECT means:
 - Same pipeline: ingest → metrics → baseline/drift → diagnosis → report
@@ -753,6 +824,10 @@ Expansion to PET/CT and SPECT means:
 | `packages/pwm_core/contrib/clinical_ct_mismatch.yaml` | CREATE | CT mismatch library |
 | `packages/pwm_core/contrib/clinical_pet_ct.yaml` | CREATE | PET/CT CasePack stub |
 | `packages/pwm_core/contrib/clinical_spect_ct.yaml` | CREATE | SPECT/CT CasePack stub |
+| `tests/clinical/` | CREATE | Test directory with fixtures + all test modules |
+| `tests/clinical/conftest.py` | CREATE | Shared fixtures (synthetic phantom generator) |
+| `tests/clinical/fixtures/synthetic_acr/` | CREATE | Generated synthetic DICOM phantom files |
+| `tests/clinical/test_*.py` | CREATE | Unit, integration, regression, and validation tests |
 | `papers/rail/sections/09_roadmap.tex` | EDIT | Clinical medical physics subsection |
 | `papers/rail/sections/10_call_to_action.tex` | EDIT | Medical physicist call to action |
 | `papers/rail/rail_paper.bib` | EDIT | AAPM TG references |
