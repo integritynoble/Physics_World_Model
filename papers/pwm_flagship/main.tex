@@ -151,7 +151,7 @@ Across all 9 correction configurations (7 distinct modalities), we compute the d
 A key test of universality is whether the correction approach generalizes across carrier families and imaging modalities. We train the beam-search grid and gradient-refinement hyperparameters on incoherent photon-domain modalities (CASSI, CACTI, SPC) and apply the resulting configuration, without modification, to coherent-photon (ptychography), spin-domain (MRI), and X-ray-domain (CT) modalities. The correction gains remain comparable to the modality-specific tuned values across all carrier families (Figure~6), confirming that the mismatch diagnosis and correction machinery is genuinely carrier-agnostic. This zero-shot transfer is possible because the \opg{} IR abstracts away carrier-specific details, exposing a uniform perturbation interface to the correction algorithms.
 
 \paragraph{26-modality benchmark.}
-Beyond the 16 registered correction configurations (of which 9 are fully validated across 7 distinct modalities), we compile a broader benchmark of 26 modalities for which the \opg{} template and adjoint check have been established; 8 have full Scenario~I baselines with validated PSNR, while the remainder are in Phase~2 or Phase~4 validation (see Supplementary Table~S3). All 26 modalities pass the automated validation suite (adjoint consistency, gradient flow, dimensional consistency). Among the 8 fully validated modalities, Scenario~I PSNR values range from $24.09$\,dB (CT) to $55.19$\,dB (MRI). This benchmark establishes the breadth of the \opg{} IR and provides a foundation for scaling \pwm{} to the full 64-modality target.
+Beyond the 16 registered correction configurations (of which 9 are fully validated across 7 distinct modalities), we compile a broader benchmark of 26 modalities for which the \opg{} template and adjoint check have been established; 8 have full Scenario~I baselines with validated PSNR, while the remainder are in Phase~2 or Phase~4 validation (see Supplementary Table~S3). All 26 modalities pass the automated validation suite (adjoint consistency, gradient flow, dimensional consistency). Among the 8 validated modalities (including the Matrix pipeline-consistency test, which shares the SPC operator template), Scenario~I PSNR values range from $23.35$\,dB (SPC) to $55.19$\,dB (MRI). This benchmark establishes the breadth of the \opg{} IR and provides a foundation for scaling \pwm{} to the full 64-modality target.
 
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -191,7 +191,7 @@ The \pwm{} codebase, including all \opg{} templates, agent implementations, and 
 Correspondence and requests for materials should be addressed to C.Y.\ (\texttt{integrityyang@gmail.com}).
 
 %% ═══════════════════════════════════════════════════════════════════
-%%  ONLINE METHODS (placeholder)
+%%  ONLINE METHODS
 %% ═══════════════════════════════════════════════════════════════════
 \input{methods}
 
