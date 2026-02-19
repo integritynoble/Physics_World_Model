@@ -120,7 +120,7 @@ house       & 32.20 & 18.90 & 29.20 & 77.4\% & 35.70 & 19.23 & 29.21 & 60.6\% & 
 lena256     & 28.97 & 19.25 & 27.13 & 81.1\% & 32.30 & 19.67 & 27.96 & 65.7\% & 31.22 & 19.96 & 29.89 & 88.2\% \\
 peppers256  & 29.95 & 19.11 & 27.51 & 77.5\% & 33.33 & 19.49 & 28.01 & 61.6\% & 31.05 & 19.68 & 29.87 & 89.6\% \\
 \midrule
-\textbf{Mean} & 28.06 & 18.51 & 26.21 & 80.7\% & 31.85 & 19.02 & 27.45 & 65.7\% & 30.98 & 19.40 & 29.78 & \best{89.7\%} \\
+\textbf{Mean} & 28.06 & 18.51 & 26.21 & 80.7\% & 31.85 & 19.02 & 27.45 & 65.7\% & 30.98 & 19.40 & 29.78 & \best{89.6\%} \\
 \bottomrule
 \end{tabular}%
 }
@@ -138,7 +138,7 @@ These heatmaps reveal scene-dependent behaviour: some scenes are significantly h
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{figures/recovery_heatmaps.pdf}
-\caption{Per-scene/video recovery ratio ($\rho$) heatmaps for CASSI (top, 10 scenes $\times$ 4 methods), CACTI (middle, 6 videos $\times$ 4 methods), and SPC (bottom, 11 images $\times$ 3 methods). Red indicates low recovery; green indicates high recovery. An em-dash (---) indicates $\rho$ is undefined because degradation is below 0.5\,dB (the method is naturally robust to mismatch); this applies to CASSI GAP-TV, whose iterative optimization adapts to the actual measurement operator at inference time. Scene-dependent patterns are evident: CACTI's \textit{drop} video has notably lower recovery due to its high-frequency content.}
+\caption{Per-scene/video recovery ratio ($\rho$) heatmaps for CASSI (top, 10 scenes $\times$ 4 methods), CACTI (middle, 6 videos $\times$ 4 methods), and SPC (bottom, 11 images $\times$ 3 methods). Red indicates low recovery; green indicates high recovery. Scene-dependent patterns are evident: CACTI's \textit{drop} video has notably lower recovery due to its high-frequency content. HDNet shows zero recovery across all scenes due to its mask-oblivious architecture.}
 \label{fig:heatmaps}
 \end{figure}
 
@@ -218,7 +218,7 @@ All deep learning methods use pretrained checkpoints without fine-tuning.
 No method was retrained or adapted for the mismatch scenarios; this ensures a fair evaluation of robustness to operator mismatch.
 
 \begin{itemize}
-    \item \textbf{GAP-TV:} 100 iterations (CASSI, CACTI), $\lambda_{\text{TV}} = 4.0$ (CASSI), $\lambda_{\text{TV}} = 1.0$ (CACTI).
+    \item \textbf{GAP-TV:} 100 iterations (CASSI, CACTI), $\lambda_{\text{TV}} = 0.1$ (CASSI), $\lambda_{\text{TV}} = 1.0$ (CACTI).
     \item \textbf{FISTA-TV:} 500 iterations, $\lambda = 0.005$ (SPC).
     \item \textbf{PnP-FFDNet:} 50 GAP iterations with FFDNet denoiser ($\sigma = 25/255$).
     \item \textbf{MST-S/L:} 2 spectral-wise transformer stages, pretrained on KAIST training set.
