@@ -323,7 +323,6 @@ future registry refinement), \texttt{PhysicsStageVisualizer} (generates
 intermediate visualizations at each pipeline stage), and
 \texttt{UPWMI} (Universal Physics World Model Interface, the top-level
 entry point that wires all agents together).
-The remaining three agents handle asset management (\texttt{AssetManager}), system discernment (\texttt{SystemDiscern}), and pre-flight validation (\texttt{PreflightChecker}).
 
 \paragraph{Contract system.}
 Inter-agent communication uses 25 Pydantic v2 contract models.  All
@@ -449,11 +448,12 @@ isolate different sources of quality degradation:
     $\hat{H} = H(\hat{\boldsymbol{\theta}})$ where
     $\hat{\boldsymbol{\theta}}$ is estimated by Algorithms~1 and~2.
     This quantifies the benefit of mismatch calibration.
-  \item[Scenario~IV (Oracle):]
-    $\yobs = \Htrue\, \xgt$; reconstruct with $\Htrue$.
-    A sanity-check scenario that verifies pipeline consistency by
-    confirming that reconstruction with the true operator reproduces
-    Scenario~I results.
+  \item[Scenario~IV (Oracle sanity check):]
+    $\yobs = \Htrue\, \xgt$; reconstruct with $\Htrue$ through the
+    full correction pipeline (bypassing the correction step but
+    executing all pre- and post-processing stages).  Verifies that
+    the pipeline introduces no artifacts and reproduces Scenario~I
+    results to within $\pm 0.01$\,dB.
 \end{description}
 
 \paragraph{Metrics.}
