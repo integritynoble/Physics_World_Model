@@ -273,7 +273,8 @@ additions with partial or planned validation.
                   r r r r}
 \caption{Complete correction parameter summary.  $\Delta$PSNR is the
 improvement from Scenario~II (mismatch) to Scenario~III (corrected).
-CASSI correction results in this table use GAP-TV as the reconstruction solver, whereas the main-text deep dive reports MST-L results.}
+CASSI correction results in this table use GAP-TV as the reconstruction solver, whereas the main-text deep dive reports MST-L results.
+Scenario~I (ideal) PSNR values and recovery ratios ($\rho$) for all configurations are reported in the companion Rail paper's evidence section and in the RunBundle manifests in the code repository.}
 \label{tab:correction_params} \\
 \toprule
 \textbf{Modality} & \textbf{Mismatch Parameter} &
@@ -301,7 +302,7 @@ Matrix\footnote{Matrix (Generic) is a canonical test configuration that uses the
   & 0.0042 \\
 CT
   & center\_of\_rotation
-  & 13.41 & 24.09 & +10.67
+  & 13.41 & 24.09 & +10.68
   & 0.0031 \\
 CACTI
   & mask\_timing
@@ -321,7 +322,7 @@ SPC
   & 0.0042 \\
 CASSI (Alg~1)\footnote{Reported values are averaged over 10 test scenes using GAP-TV as the reconstruction solver.}
   & mask\_geo + dispersion
-  & 15.79 & 21.20 & +5.40
+  & 15.79 & 21.20 & +5.41
   & 0.0105 \\
 CASSI (Alg~2)\footnote{Note: the correction-table PSNR reflects GAP-TV reconstruction; state-of-the-art solvers (e.g., MST-L) achieve 34.11~dB under the corrected operator (see main text).}
   & mask\_geo + dispersion
@@ -370,7 +371,7 @@ Radar/SAR
 %% ============================================================
 %% SUPPLEMENTARY TABLE 1
 %% ============================================================
-\section{Supplementary Table 1: CASSI Per-Scene Results}
+\section{Supplementary Table S2: CASSI Per-Scene Results}
 \label{sec:cassi_scenes}
 
 Table~\ref{tab:cassi_scenes} reports PSNR (dB) for 10 KAIST scenes across
@@ -379,17 +380,17 @@ five representative methods under four scenarios.\footnote{The solver subset use
 \begin{footnotesize}
 \begin{longtable}{l l r r r r}
 \caption{CASSI per-scene PSNR (dB).  Sc.~I = ideal forward model;
-Sc.~II = mismatched (baseline); Sc.~III-A1 = correction Algorithm~1; Oracle = ground-truth operator.
+Sc.~II = mismatched (baseline); Sc.~III-A1 = correction Algorithm~1; Sc.~IV (Oracle) = ground-truth operator through full pipeline.
 Algorithm~2 results are reported in the correction parameter table (Table~\ref{tab:correction_params}).}
 \label{tab:cassi_scenes} \\
 \toprule
 \textbf{Scene} & \textbf{Method} &
-  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III-A1} & \textbf{Oracle} \\
+  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III-A1} & \textbf{Sc.~IV} \\
 \midrule
 \endfirsthead
 \toprule
 \textbf{Scene} & \textbf{Method} &
-  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III-A1} & \textbf{Oracle} \\
+  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III-A1} & \textbf{Sc.~IV} \\
 \midrule
 \endhead
 \bottomrule
@@ -471,7 +472,7 @@ scene10 & HDNet         & 37.68 & 19.15 & 25.34 & 37.68 \\
 %% ============================================================
 %% SUPPLEMENTARY TABLE 2
 %% ============================================================
-\section{Supplementary Table 2: Full 26-Modality Benchmark}
+\section{Supplementary Table S3: Full 26-Modality Benchmark}
 \label{sec:26mod}
 
 Table~\ref{tab:26mod} lists all 26 modalities in the PWM benchmark, grouped
@@ -483,45 +484,45 @@ by physical carrier tier.
 where available.}
 \label{tab:26mod} \\
 \toprule
-\textbf{\#} & \textbf{Modality} & \textbf{Carrier Tier} &
+\textbf{\#} & \textbf{Modality} & \textbf{Domain} &
   \textbf{PSNR} & \textbf{Ref.\ PSNR} & \textbf{Status} & \textbf{Solver} \\
   & & & \textbf{(dB)} & \textbf{(dB)} & & \\
 \midrule
 \endfirsthead
 \toprule
-\textbf{\#} & \textbf{Modality} & \textbf{Carrier Tier} &
+\textbf{\#} & \textbf{Modality} & \textbf{Domain} &
   \textbf{PSNR} & \textbf{Ref.\ PSNR} & \textbf{Status} & \textbf{Solver} \\
   & & & \textbf{(dB)} & \textbf{(dB)} & & \\
 \midrule
 \endhead
 \bottomrule
 \endlastfoot
-%% Tier 1: Incoherent light
+%% Group 1: Incoherent light
 1  & Matrix (toy)         & Incoherent     & 23.35 & ---   & Validated & ADMM-TV \\
 2  & SPC                  & Incoherent     & 23.35 & 24.1  & Validated & ADMM-TV \\
 3  & CASSI                & Incoherent     & 21.54 & 34.2  & Validated & GAP-TV / MST \\
 4  & CACTI                & Incoherent     & 37.42 & 33.4  & Validated & GAP-TV \\
 5  & Lensless             & Incoherent     & 27.03 & 28.5  & Validated & ADMM-TV \\
 6  & Fluorescence         & Incoherent     & ---   & 30.1  & Phase 4   & --- \\
-%% Tier 2: Coherent light
+%% Group 2: Coherent light
 7  & Holography           & Coherent       & ---   & 32.7  & Phase 2   & --- \\
 8  & Ptychography         & Coherent       & 24.44 & 26.8  & Validated & ePIE \\
 9  & FPM                  & Coherent       & ---   & 31.5  & Phase 2   & --- \\
 10 & Phase Retrieval      & Coherent       & ---   & 29.3  & Phase 2   & --- \\
 11 & CDI                  & Coherent       & ---   & 27.4  & Phase 4   & --- \\
 12 & OCT                  & Coherent       & ---   & 35.2  & Phase 4   & --- \\
-%% Tier 3: X-ray / electron
+%% Group 3: X-ray / electron
 13 & CT (parallel)        & X-ray          & 24.09 & 42.1  & Validated & FBP + TV \\
 14 & CT (fan-beam)        & X-ray          & ---   & 40.8  & Phase 2   & --- \\
 15 & CT (cone-beam)       & X-ray          & ---   & 39.5  & Phase 2   & --- \\
 16 & Electron Pty.        & Electron       & ---   & 25.9  & Phase 4   & --- \\
-%% Tier 4: RF / acoustic
+%% Group 4: RF / acoustic
 17 & MRI (Cartesian)      & RF             & 55.19 & 42.3  & Validated & CG-SENSE \\
 18 & MRI (radial)         & RF             & ---   & 38.7  & Phase 2   & --- \\
 19 & MRI (spiral)         & RF             & ---   & 37.2  & Phase 4   & --- \\
 20 & Ultrasound           & Acoustic       & ---   & 31.8  & Phase 4   & --- \\
 21 & Radar / SAR          & RF             & ---   & 28.4  & Phase 4   & --- \\
-%% Tier 5: Computational / hybrid
+%% Group 5: Computational / hybrid
 22 & NeRF                 & Multi-view     & ---   & 31.7  & Phase 2   & --- \\
 23 & 3DGS                 & Multi-view     & ---   & 33.2  & Phase 2   & --- \\
 24 & Light Field          & Multi-view     & ---   & 36.1  & Phase 4   & --- \\
@@ -534,7 +535,7 @@ where available.}
 %% ============================================================
 %% SUPPLEMENTARY TABLE 3
 %% ============================================================
-\section{Supplementary Table 3: YAML Registry Summary}
+\section{Supplementary Table S4: YAML Registry Summary}
 \label{sec:yaml}
 
 Table~\ref{tab:yaml} summarizes the nine YAML registry files (totalling
@@ -641,12 +642,12 @@ RoIC = dB recovered per GPU-hour.}
   \textbf{$\Delta$PSNR (dB)} & \textbf{RoIC (dB/GPU-hr)} \\
 \midrule
 Matrix           &   200 &     12 & +12.21 & 3663.0 \\
-CT               &   500 &     85 & +10.67 &  451.6 \\
+CT               &   500 &     85 & +10.68 &  452.0 \\
 CACTI            &  1000 &    180 & +22.94 &  458.8 \\
 Lensless         &   300 &     45 &  +3.55 &  284.0 \\
 MRI              &   150 &     30 & +48.25 & 5790.0 \\
 SPC              &   200 &     15 & +12.21 & 2929.6 \\
-CASSI (Alg~1)    &   500 &    300 &  +5.40 &   64.8 \\
+CASSI (Alg~1)    &   500 &    300 &  +5.41 &   64.9 \\
 CASSI (Alg~2)    &  2000 &   3200 &  +5.74 &    6.5 \\
 Ptychography     &   800 &    420 &  +7.09 &   60.8 \\
 \bottomrule

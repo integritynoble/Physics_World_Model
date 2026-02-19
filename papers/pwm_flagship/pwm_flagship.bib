@@ -1,37 +1,11 @@
 %% =================================================================
 %% PWM Flagship Nature Paper --- Bibliography
 %% =================================================================
-%% ~50 references covering: core framework, compressed sensing,
+%% 26 cited references covering: compressed sensing,
 %% deep learning for imaging, specific modalities, calibration,
-%% plug-and-play, algorithm unrolling, CT, MRI, optical, data-driven,
+%% plug-and-play, algorithm unrolling, CT, MRI, optical,
 %% hyperspectral, and miscellaneous.
 %% =================================================================
-
-%% ---------------------------------------------------------------
-%% Core framework
-%% ---------------------------------------------------------------
-
-@article{jumper2021alphafold,
-  author  = {Jumper, John and Evans, Richard and Pritzel, Alexander and Green, Tim and Figurnov, Michael and Ronneberger, Olaf and Tunyasuvunakool, Kathryn and Bates, Russ and {\v{Z}}{\'\i}dek, Augustin and Potapenko, Anna and Bridgland, Alex and Meyer, Clemens and Kohl, Simon A. A. and Ballard, Andrew J. and Cowie, Andrew and Romera-Paredes, Bernardino and Nikolov, Stanislav and Jain, Rishub and Adler, Jonas and Back, Trevor and Petersen, Stig and Reiman, David and Clancy, Ellen and Zielinski, Michal and Steinegger, Martin and Pacholska, Michalina and Berghammer, Tamas and Bodenstein, Sebastian and Silver, David and Vinyals, Oriol and Senior, Andrew W. and Kavukcuoglu, Koray and Kohli, Pushmeet and Hassabis, Demis},
-  title   = {Highly accurate protein structure prediction with {AlphaFold}},
-  journal = {Nature},
-  volume  = {596},
-  number  = {7873},
-  pages   = {583--589},
-  year    = {2021},
-  doi     = {10.1038/s41586-021-03819-2}
-}
-
-@article{moult2005casp,
-  author  = {Moult, John},
-  title   = {A decade of {CASP}: progress, bottlenecks and prognosis in protein structure prediction},
-  journal = {Current Opinion in Structural Biology},
-  volume  = {15},
-  number  = {3},
-  pages   = {285--289},
-  year    = {2005},
-  doi     = {10.1016/j.sbi.2005.05.011}
-}
 
 %% ---------------------------------------------------------------
 %% Compressed sensing
@@ -59,42 +33,9 @@
   doi     = {10.1109/TIT.2006.871582}
 }
 
-@article{candes2006robust,
-  author  = {Cand{\`e}s, Emmanuel J. and Romberg, Justin and Tao, Terence},
-  title   = {Robust uncertainty principles: exact signal reconstruction from highly incomplete frequency information},
-  journal = {IEEE Transactions on Information Theory},
-  volume  = {52},
-  number  = {2},
-  pages   = {489--509},
-  year    = {2006},
-  doi     = {10.1109/TIT.2005.862083}
-}
-
 %% ---------------------------------------------------------------
 %% Deep learning for imaging
 %% ---------------------------------------------------------------
-
-@article{ongie2020deep,
-  author  = {Ongie, Gregory and Jalal, Ajil and Metzler, Christopher A. and Baraniuk, Richard G. and Dimakis, Alexandros G. and Willett, Rebecca},
-  title   = {Deep learning techniques for inverse problems in imaging},
-  journal = {IEEE Journal of Selected Topics in Signal Processing},
-  volume  = {14},
-  number  = {6},
-  pages   = {1256--1270},
-  year    = {2020},
-  doi     = {10.1109/JSTSP.2020.3004555}
-}
-
-@article{barbastathis2019optics,
-  author  = {Barbastathis, George and Ozcan, Aydogan and Situ, Guohai},
-  title   = {On the use of deep learning for computational imaging},
-  journal = {Optica},
-  volume  = {6},
-  number  = {8},
-  pages   = {921--943},
-  year    = {2019},
-  doi     = {10.1364/OPTICA.6.000921}
-}
 
 @article{antun2020instabilities,
   author  = {Antun, Vegard and Renna, Francesco and Poon, Clarice and Adcock, Ben and Hansen, Anders C.},
@@ -133,14 +74,6 @@
   booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
   pages     = {18477--18486},
   year      = {2023}
-}
-
-@inproceedings{mildenhall2020nerf,
-  author    = {Mildenhall, Ben and Srinivasan, Pratul P. and Tancik, Matthew and Barron, Jonathan T. and Ramamoorthi, Ravi and Ng, Ren},
-  title     = {{NeRF}: Representing Scenes as Neural Radiance Fields for View Synthesis},
-  booktitle = {Proceedings of the European Conference on Computer Vision (ECCV)},
-  pages     = {405--421},
-  year      = {2020}
 }
 
 @article{zbontar2018fastmri,
@@ -192,17 +125,6 @@
   doi     = {10.1109/MSP.2007.914730}
 }
 
-@article{kerbl2023gaussiansplatting,
-  author  = {Kerbl, Bernhard and Kopanas, Georgios and Leimk{\"u}hler, Thomas and Drettakis, George},
-  title   = {3{D} {G}aussian Splatting for Real-Time Radiance Field Rendering},
-  journal = {ACM Transactions on Graphics (Proceedings of SIGGRAPH)},
-  volume  = {42},
-  number  = {4},
-  pages   = {1--14},
-  year    = {2023},
-  doi     = {10.1145/3592433}
-}
-
 %% ---------------------------------------------------------------
 %% Calibration
 %% ---------------------------------------------------------------
@@ -229,19 +151,8 @@
   doi     = {10.1016/j.ultramic.2009.05.012}
 }
 
-@article{thibault2009probe,
-  author  = {Thibault, Pierre and Dierolf, Martin and Bunk, Oliver and Menzel, Andreas and Pfeiffer, Franz},
-  title   = {Probe retrieval in ptychographic coherent diffractive imaging},
-  journal = {Ultramicroscopy},
-  volume  = {109},
-  number  = {4},
-  pages   = {338--343},
-  year    = {2009},
-  doi     = {10.1016/j.ultramic.2008.12.011}
-}
-
 %% ---------------------------------------------------------------
-%% Plug-and-play / RED
+%% Plug-and-play
 %% ---------------------------------------------------------------
 
 @inproceedings{venkatakrishnan2013pnp,
@@ -251,28 +162,6 @@
   pages     = {945--948},
   year      = {2013},
   doi       = {10.1109/GlobalSIP.2013.6737048}
-}
-
-@article{chan2017pnp,
-  author  = {Chan, Stanley H. and Wang, Xiran and Elgendy, Omar A.},
-  title   = {Plug-and-Play {ADMM} for Image Restoration: Fixed-Point Convergence and Applications},
-  journal = {IEEE Transactions on Computational Imaging},
-  volume  = {3},
-  number  = {1},
-  pages   = {84--98},
-  year    = {2017},
-  doi     = {10.1109/TCI.2016.2629286}
-}
-
-@article{romano2017red,
-  author  = {Romano, Yaniv and Elad, Michael and Milanfar, Peyman},
-  title   = {The Little Engine That Could: Regularization by Denoising ({RED})},
-  journal = {SIAM Journal on Imaging Sciences},
-  volume  = {10},
-  number  = {4},
-  pages   = {1804--1844},
-  year    = {2017},
-  doi     = {10.1137/16M1102884}
 }
 
 %% ---------------------------------------------------------------
@@ -305,15 +194,6 @@
   doi     = {10.1109/TMI.2017.2715284}
 }
 
-@article{radon1917,
-  author  = {Radon, Johann},
-  title   = {{\"U}ber die {B}estimmung von {F}unktionen durch ihre {I}ntegralwerte l{\"a}ngs gewisser {M}annigfaltigkeiten},
-  journal = {Berichte {\"u}ber die Verhandlungen der K{\"o}niglich-S{\"a}chsischen Gesellschaft der Wissenschaften zu Leipzig, Mathematisch-Physische Klasse},
-  volume  = {69},
-  pages   = {262--277},
-  year    = {1917}
-}
-
 @article{feldkamp1984practical,
   author  = {Feldkamp, L. A. and Davis, L. C. and Kress, J. W.},
   title   = {Practical cone-beam algorithm},
@@ -338,17 +218,6 @@
   pages   = {1182--1195},
   year    = {2007},
   doi     = {10.1002/mrm.21391}
-}
-
-@article{griswold2002grappa,
-  author  = {Griswold, Mark A. and Jakob, Peter M. and Heidemann, Robin M. and Nittka, Mathias and Jellus, Vladimir and Wang, Jianmin and Kiefer, Berthold and Haase, Axel},
-  title   = {Generalized autocalibrating partially parallel acquisitions ({GRAPPA})},
-  journal = {Magnetic Resonance in Medicine},
-  volume  = {47},
-  number  = {6},
-  pages   = {1202--1210},
-  year    = {2002},
-  doi     = {10.1002/mrm.10171}
 }
 
 @article{pruessmann1999sense,
@@ -377,86 +246,9 @@
   doi     = {10.1063/1.1823034}
 }
 
-@book{goodman2005fourier,
-  author    = {Goodman, Joseph W.},
-  title     = {Introduction to {F}ourier Optics},
-  edition   = {3rd},
-  publisher = {Roberts and Company Publishers},
-  address   = {Englewood, CO},
-  year      = {2005},
-  isbn      = {978-0974707723}
-}
-
-@article{zheng2013fpm,
-  author  = {Zheng, Guoan and Horstmeyer, Roarke and Yang, Changhuei},
-  title   = {Wide-field, high-resolution {F}ourier ptychographic microscopy},
-  journal = {Nature Photonics},
-  volume  = {7},
-  number  = {9},
-  pages   = {739--745},
-  year    = {2013},
-  doi     = {10.1038/nphoton.2013.187}
-}
-
-@article{gabor1948holography,
-  author  = {Gabor, Dennis},
-  title   = {A new microscopic principle},
-  journal = {Nature},
-  volume  = {161},
-  number  = {4098},
-  pages   = {777--778},
-  year    = {1948},
-  doi     = {10.1038/161777a0}
-}
-
-%% ---------------------------------------------------------------
-%% Data-driven reconstruction
-%% ---------------------------------------------------------------
-
-@article{aggarwal2018modl,
-  author  = {Aggarwal, Hemant K. and Mani, Merry P. and Jacob, Mathews},
-  title   = {{MoDL}: Model-Based Deep Learning Architecture for Inverse Problems},
-  journal = {IEEE Transactions on Medical Imaging},
-  volume  = {38},
-  number  = {2},
-  pages   = {394--405},
-  year    = {2019},
-  note    = {First published online 2018},
-  doi     = {10.1109/TMI.2018.2865356}
-}
-
-@article{hammernik2018learning,
-  author  = {Hammernik, Kerstin and Klatzer, Teresa and Kobler, Erich and Recht, Michael P. and Sodickson, Daniel K. and Pock, Thomas and Knoll, Florian},
-  title   = {Learning a variational network for reconstruction of accelerated {MRI} data},
-  journal = {Magnetic Resonance in Medicine},
-  volume  = {79},
-  number  = {6},
-  pages   = {3055--3071},
-  year    = {2018},
-  doi     = {10.1002/mrm.26977}
-}
-
-@article{adler2018learned,
-  author  = {Adler, Jonas and {\"O}ktem, Ozan},
-  title   = {Learned Primal-Dual Reconstruction},
-  journal = {IEEE Transactions on Medical Imaging},
-  volume  = {37},
-  number  = {6},
-  pages   = {1322--1332},
-  year    = {2018},
-  doi     = {10.1109/TMI.2018.2799231}
-}
-
 %% ---------------------------------------------------------------
 %% Hyperspectral
 %% ---------------------------------------------------------------
-
-@article{meng2020gap,
-  author  = {Meng, Ziyi and Ma, Jiawei and Yuan, Xin},
-  title   = {End-to-End Low Cost Compressive Spectral Imaging with Spatial-Spectral Self-Attention},
-  journal = {arXiv preprint arXiv:2005.10631},
-  year    = {2020}
-}
 
 @article{choi2017kaist,
   author    = {Choi, Inchang and Jeon, Daniel S. and Nam, Giljoo and Gutierrez, Diego and Kim, Min H.},
@@ -469,79 +261,9 @@
   doi       = {10.1145/3130800.3130810}
 }
 
-@article{yuan2021snapshot,
-  author  = {Yuan, Xin and Brady, David J. and Katsaggelos, Aggelos K.},
-  title   = {Snapshot Compressive Imaging: Theory, Algorithms, and Applications},
-  journal = {IEEE Signal Processing Magazine},
-  volume  = {38},
-  number  = {2},
-  pages   = {65--88},
-  year    = {2021},
-  doi     = {10.1109/MSP.2020.3023869}
-}
-
 %% ---------------------------------------------------------------
 %% Miscellaneous
 %% ---------------------------------------------------------------
-
-@article{edgar2019spc_review,
-  author  = {Edgar, Matthew P. and Gibson, Graham M. and Padgett, Miles J.},
-  title   = {Principles and prospects for single-pixel imaging},
-  journal = {Nature Photonics},
-  volume  = {13},
-  number  = {1},
-  pages   = {13--20},
-  year    = {2019},
-  doi     = {10.1038/s41566-018-0300-7}
-}
-
-@article{tian2023spc,
-  author  = {Tian, Ye and Fu, Ying and Zhang, Jun},
-  title   = {Single-pixel imaging: from principles to applications},
-  journal = {Optics \& Laser Technology},
-  volume  = {162},
-  pages   = {109259},
-  year    = {2023},
-  doi     = {10.1016/j.optlastec.2023.109259}
-}
-
-@techreport{yang2024pwm,
-  author      = {Yang, Chengshuai},
-  title       = {Physics World Models: A Unified Framework for Computational Imaging},
-  institution = {NextGen PlatformAI C Corp},
-  year        = {2026},
-  type        = {Technical Report}
-}
-
-@misc{wissner2024solveeverything,
-  author       = {Wissner-Gross, Alexander D.},
-  title        = {{SolveEverything.org}: A Platform for Open Scientific Challenges},
-  howpublished = {\url{https://solveeverything.org}},
-  year         = {2026},
-  note         = {Accessed: 2026}
-}
-
-@article{rudin1992nonlinear,
-  author  = {Rudin, Leonid I. and Osher, Stanley and Fatemi, Emad},
-  title   = {Nonlinear total variation based noise removal algorithms},
-  journal = {Physica D: Nonlinear Phenomena},
-  volume  = {60},
-  number  = {1--4},
-  pages   = {259--268},
-  year    = {1992},
-  doi     = {10.1016/0167-2789(92)90242-F}
-}
-
-@article{chambolle2004algorithm,
-  author  = {Chambolle, Antonin},
-  title   = {An Algorithm for Total Variation Minimization and Applications},
-  journal = {Journal of Mathematical Imaging and Vision},
-  volume  = {20},
-  number  = {1--2},
-  pages   = {89--97},
-  year    = {2004},
-  doi     = {10.1023/B:JMIV.0000011321.19549.88}
-}
 
 @article{boyd2011admm,
   author  = {Boyd, Stephen and Parikh, Neal and Chu, Eric and Peleato, Borja and Eckstein, Jonathan},
@@ -589,24 +311,4 @@
   title     = {{CST}: Compact Spectral Transformer for Hyperspectral Image Reconstruction},
   booktitle = {Proceedings of the European Conference on Computer Vision (ECCV)},
   year      = {2022}
-}
-
-@techreport{yang2024inversenet,
-  author      = {Yang, Chengshuai},
-  title       = {{InverseNet}: Benchmarking Operator Mismatch in Snapshot Compressive Imaging},
-  institution = {NextGen PlatformAI C Corp},
-  year        = {2026},
-  type        = {Technical Report}
-}
-
-@inproceedings{ronneberger2015unet,
-  author    = {Ronneberger, Olaf and Fischer, Philipp and Brox, Thomas},
-  title     = {{U-Net}: Convolutional Networks for Biomedical Image Segmentation},
-  booktitle = {Proceedings of the International Conference on Medical Image Computing and Computer-Assisted Intervention (MICCAI)},
-  series    = {Lecture Notes in Computer Science},
-  volume    = {9351},
-  pages     = {234--241},
-  year      = {2015},
-  publisher = {Springer},
-  doi       = {10.1007/978-3-319-24574-4_28}
 }
