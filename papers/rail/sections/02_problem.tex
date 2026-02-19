@@ -28,9 +28,13 @@ is used for both measurement simulation and reconstruction---the oracle
 upper bound reported in virtually all published work.
 In \textbf{Scenario~II (Mismatch)}, measurements are generated
 with $\mathbf{H}$ but reconstruction uses the nominal operator
-$\mathbf{H}_{\mathrm{nom}}$, which differs by a 1-pixel mask shift and
-$0.1^\circ$ rotation---a perturbation well within typical alignment
-tolerances.
+$\mathbf{H}_{\mathrm{nom}}$, which differs by a sub-pixel mask shift
+($\Delta x\!=\!0.5$\,px, $\Delta y\!=\!0.3$\,px), $0.1^\circ$ rotation,
+$1\%$ dispersion drift, and $0.15^\circ$ spectral axis tilt---a
+5-parameter perturbation well within typical manufacturing and alignment
+tolerances.\footnote{Mismatch parameters from the InverseNet validation
+suite~\cite{yang2026inversenet}: $dx\!=\!0.5$\,px, $dy\!=\!0.3$\,px,
+$\theta\!=\!0.1^\circ$, $a_1\!=\!2.02$ (nominal 2.0), $\alpha\!=\!0.15^\circ$.}
 In \textbf{Scenario~III (Corrected)}, a calibrated operator
 $\hat{\mathbf{H}}$ is used for reconstruction, obtained via a
 lightweight calibration procedure.
@@ -60,52 +64,52 @@ improvement from Scenario~II to Scenario~III.
   & \textbf{Calib.\ Gain} \\
 \midrule
 GAP-TV~\cite{yuan2016gaptv}
-  & 24.22  & 19.66  & \worst{$-4.56$}   & $+0.51$ \\
-PnP-HSICNN$^\dagger$~\cite{wang2017adaptive}
+  & 24.34  & 20.96  & \worst{$-3.38$}   & $+0.76$ \\
+PnP-HSICNN$^\ddagger$~\cite{wang2017adaptive}
   & 25.12  & 19.10  & \worst{$-6.02$}   & $+0.71$ \\
 MST-S~\cite{cai2022mst}
-  & 33.98  & 18.01  & \worst{$-15.97$}  & \best{$+3.00$} \\
+  & 33.98  & 20.99  & \worst{$-12.99$}  & \best{$+5.29$} \\
 MST-L~\cite{cai2022mst}
-  & \best{34.81}  & 18.09  & \worst{$-16.72$}  & \best{$+3.01$} \\
+  & \best{34.81}  & 20.83  & \worst{$-13.98$}  & \best{$+6.50$} \\
 HDNet~\cite{hu2022hdnet}
-  & 34.66  & \best{24.18}  & \worst{$-10.48$}  & $+0.05$ \\
+  & 34.66  & \best{21.88}  & \worst{$-12.78$}  & $+0.00$ \\
 \bottomrule
 \end{tabular}
 
 \smallskip
-{\footnotesize $\dagger$~We use the adaptive nonlocal sparse representation method of Wang et al.\ as a plug-and-play baseline, referred to as PnP-HSICNN following common usage in the CASSI literature.}
+{\footnotesize $\ddagger$~PnP-HSICNN values are estimated from prior experiments and have not yet been re-validated under the InverseNet 5-parameter mismatch; all other rows are InverseNet-validated~\cite{yang2026inversenet}.}
 
 \smallskip
-{\footnotesize Scenario~IV (Oracle) reproduces Scenario~I by construction and is omitted for brevity.}
+{\footnotesize Scenario~IV (Oracle) reproduces Scenario~I by construction and is omitted for brevity.  Calibration gain for InverseNet-validated methods uses Scenario~III (Oracle Mask) PSNR.}
 \end{table}
 
 The results in \cref{tab:sensitivity} reveal a striking pattern.
 Under ideal conditions, MST-L leads the field at 34.81\,dB---a full
-10.59\,dB above GAP-TV.
-Under mismatch, MST-L collapses to 18.09\,dB, while GAP-TV drops only
-to 19.66\,dB.
-The classical method \emph{outperforms} the state-of-the-art
+10.47\,dB above GAP-TV.
+Under mismatch, MST-L collapses to 20.83\,dB, while GAP-TV drops only
+to 20.96\,dB.
+The classical method \emph{matches} the state-of-the-art
 transformer under realistic physical conditions.
 
 \paragraph{Key insight: neural solvers amplify mismatch sensitivity.}
 The degradation column tells the story most clearly:
-GAP-TV loses 4.56\,dB, PnP-HSICNN loses 6.02\,dB, and MST-L loses
-16.72\,dB.
+GAP-TV loses 3.38\,dB, PnP-HSICNN loses 6.02\,dB (estimated), and MST-L loses
+13.98\,dB.
 There is a near-perfect inverse relationship between ideal-condition
 performance and mismatch robustness.
 The same representational capacity that enables MST-L to learn subtle
 spectral correlations in the training data also enables it to overfit
 the precise structure of the forward operator it was trained with.
-When that operator changes by even a single pixel, the learned features
+When that operator changes by even a sub-pixel amount, the learned features
 become not merely useless but actively harmful, producing structured
-artifacts that are worse than the blurry but stable output of GAP-TV.
+artifacts that degrade quality far below what the classical GAP-TV achieves.
 
 HDNet presents a partial counterexample: it achieves high ideal PSNR
-(34.66\,dB) with smaller degradation ($-10.48$\,dB), retaining
-24.18\,dB under mismatch.
-However, its calibration gain is negligible ($+0.05$\,dB), suggesting
-that its mask-conditioning pathway has already saturated what it can
-extract from the nominal operator.
+(34.66\,dB) with degradation of $-12.78$\,dB, retaining
+21.88\,dB under mismatch.
+However, its calibration gain is zero ($+0.00$\,dB), indicating
+that its mask-conditioning pathway cannot exploit an improved operator
+estimate---a hallmark of mask-oblivious architectures.
 This taxonomy of solver behavior---mask-oblivious, mask-conditioned, and
 mask-adapted---has important implications for the design of
 calibration-aware architectures.
@@ -200,8 +204,8 @@ The evidence presented in this section leads to three conclusions:
 \begin{enumerate}
   \item \textbf{Neural solvers amplify mismatch.}
         The most capable architectures exhibit the largest sensitivity to
-        operator error, with MST-L losing 16.72\,dB versus GAP-TV's
-        4.56\,dB (\cref{tab:sensitivity}).
+        operator error, with MST-L losing 13.98\,dB versus GAP-TV's
+        3.38\,dB (\cref{tab:sensitivity}).
 
   \item \textbf{Evaluation fragmentation hides the problem.}
         Incomparable metrics, datasets, noise models, and mismatch

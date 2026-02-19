@@ -9,7 +9,7 @@ extraordinary power---deep unfolding networks that converge in seconds,
 diffusion priors that hallucinate plausible textures, implicit
 representations that compress entire scenes into coordinate
 functions---yet real-world deployments routinely fail.  Reconstructions
-that achieve 35+\,dB on simulated benchmarks collapse by 4--17\,dB under
+that achieve 35+\,dB on simulated benchmarks collapse by 3--14\,dB under
 realistic operator mismatch (\cref{tab:sensitivity}).  The gap is not a solver problem.
 It is an infrastructure problem.
 
@@ -42,11 +42,11 @@ computational imaging.  The contributions are concrete and measurable:
 \end{itemize}
 
 The evidence is unambiguous.  Across the 26-modality benchmark,
-operator correction alone improved reconstruction quality by $+3.55$ to
+operator correction alone improved reconstruction quality by $+0.54$ to
 $+48.25$\,dB across 9 correction configurations spanning 7 distinct modalities (16 registered)---gains that no solver upgrade can
-replicate.  The CASSI deep-dive was particularly revealing: correcting
-the operator produced a $1.58\times$ larger quality improvement than
-upgrading the solver architecture.  The bottleneck was never the
+replicate.  The CASSI deep-dive was particularly revealing: the mismatch
+penalty ($13.98$~dB) exceeded the solver upgrade gain ($10.47$~dB) by
+$1.34\times$.  The bottleneck was never the
 algorithm.  It was the physics encoding.
 
 These results carry a temporal urgency.  The foundry window described in

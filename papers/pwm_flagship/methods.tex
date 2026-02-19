@@ -509,10 +509,10 @@ describes: mask spatial shift in $x$ ($dx$, pixels), mask spatial shift in
 $y$ ($dy$, pixels), mask rotation angle ($\theta$, degrees), dispersion
 slope ($a_1$, pixels per band), dispersion axis angle ($\varphi_d$,
 degrees), and PSF blur width ($\sigma_{\text{psf}}$, pixels).
-For the primary mismatch experiment, the true mismatch parameters are
-$\mismatchparam_{\text{true}} = (dx = 1.094,\; dy = -2.677,\;
-\theta = -0.559^\circ,\; a_1 = \text{default},\;
-\varphi_d = -0.316^\circ)$.
+For the primary mismatch experiment (validated by InverseNet), the true mismatch parameters are
+$\mismatchparam_{\text{true}} = (dx = 0.5\;\text{px},\; dy = 0.3\;\text{px},\;
+\theta = 0.1^\circ,\; a_1 = 2.02,\;
+\alpha = 0.15^\circ)$.
 Solvers evaluated include TwIST~\cite{bioucasdias2007twist}, GAP-TV~\cite{yuan2016gaptv}, DGSMP~\cite{huang2021dgsmp}, MST-L~\cite{cai2022mst}, and CST-L~\cite{cai2022cst}, all of which receive the same operator and differ only in their reconstruction algorithm. The supplementary per-scene analysis additionally includes DeSCI~\cite{liu2019rank} and HDNet~\cite{hu2022hdnet}.
 
 \paragraph{CACTI configuration.}

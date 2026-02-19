@@ -12,15 +12,16 @@ In 2022, the Mask-guided Spectral-wise Transformer (MST-L)~\cite{cai2022mst}
 achieved 34.81\,dB on the standard CASSI benchmark---a number that
 represents the culmination of more than a decade of algorithmic progress in
 hyperspectral image reconstruction.
-Yet when the coded aperture mask is shifted by a single pixel---a
-perturbation well within the manufacturing and alignment tolerances of
-any real optical system---the same method collapses to 18.09\,dB, a loss
-of \textbf{16.72\,dB}.
-Under a 1-pixel-shift-plus-rotation model, deep-learning solvers (HDNet, MST-S, MST-L) lose
-10--17\,dB (\cref{tab:sensitivity}).
+Yet when the coded aperture mask is shifted by half a pixel with
+0.1\textdegree{} rotation and 1\% dispersion drift---a perturbation well
+within the manufacturing and alignment tolerances of any real optical
+system---the same method collapses to 20.83\,dB, a loss of
+\textbf{13.98\,dB}.
+Under this sub-pixel mismatch model, deep-learning solvers (HDNet, MST-S, MST-L) lose
+12.8--14.0\,dB (\cref{tab:sensitivity}).
 To put this in perspective, the entire history of
-CASSI reconstruction---from GAP-TV~\cite{yuan2016gaptv} at 24.22\,dB to MST-L~\cite{cai2022mst} at 34.81\,dB---spans only 10.59\,dB.
-A single pixel of operator mismatch erases more than a decade of
+CASSI reconstruction---from GAP-TV~\cite{yuan2016gaptv} at 24.34\,dB to MST-L~\cite{cai2022mst} at 34.81\,dB---spans only 10.47\,dB.
+A sub-pixel operator mismatch erases more than a decade of
 algorithmic improvement.
 
 This is not an isolated failure.
@@ -28,7 +29,7 @@ Across modalities---coded aperture snapshot spectral imaging (CASSI),
 coded aperture compressive temporal imaging (CACTI)~\cite{llull2013cacti}, single-pixel
 cameras (SPC)~\cite{duarte2008spc}---the pattern repeats: the most powerful neural solvers
 exhibit the \emph{largest} sensitivity to forward-model error.
-Classical methods such as GAP-TV lose only 4.56\,dB under the same
+Classical methods such as GAP-TV lose only 3.38\,dB under the same
 mismatch, precisely because they lack the capacity to overfit the
 operator.
 The paradox is stark: the field has been building faster and faster
@@ -143,8 +144,8 @@ Our specific contributions are:
   \item \textbf{26-modality benchmark evidence.}
         We present the first cross-modality sensitivity analysis
         demonstrating that neural solvers systematically amplify
-        operator mismatch, with degradation ranging from 4.56\,dB
-        (GAP-TV) to 16.72\,dB (MST-L) on CASSI alone
+        operator mismatch, with degradation ranging from 3.38\,dB
+        (GAP-TV) to 13.98\,dB (MST-L) on CASSI alone
         (\cref{sec:problem}).
 
   \item \textbf{Operator correction across 9 correction configurations

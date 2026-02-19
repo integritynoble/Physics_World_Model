@@ -137,14 +137,6 @@
   \textbf{\bibinfo{volume}{1}}, \bibinfo{pages}{612--619}
   (\bibinfo{year}{1984}).
 
-\bibitem{bioucasdias2007twist}
-\bibinfo{author}{Bioucas-Dias, J.~M.} \& \bibinfo{author}{Figueiredo, M. A.~T.}
-\newblock \bibinfo{title}{A new {TwIST}: Two-step iterative
-  shrinkage/thresholding algorithms for image restoration}.
-\newblock \emph{\bibinfo{journal}{IEEE Transactions on Image Processing}}
-  \textbf{\bibinfo{volume}{16}}, \bibinfo{pages}{2992--3004}
-  (\bibinfo{year}{2007}).
-
 \bibitem{yuan2016gaptv}
 \bibinfo{author}{Yuan, X.}
 \newblock \bibinfo{title}{Generalized alternating projection based total
@@ -153,21 +145,13 @@
   Conference on Image Processing (ICIP)}}, \bibinfo{pages}{2539--2543}
   (\bibinfo{year}{2016}).
 
-\bibitem{huang2021dgsmp}
-\bibinfo{author}{Huang, T.}, \bibinfo{author}{Dong, W.}, \bibinfo{author}{Yuan,
-  X.}, \bibinfo{author}{Wu, J.} \& \bibinfo{author}{Shi, G.}
-\newblock \bibinfo{title}{Deep gaussian scale mixture prior for spectral
-  compressive imaging}.
+\bibitem{hu2022hdnet}
+\bibinfo{author}{Hu, X.} \emph{et~al.}
+\newblock \bibinfo{title}{{HDNet}: High-resolution dual-domain learning for
+  spectral compressive imaging}.
 \newblock In \emph{\bibinfo{booktitle}{Proceedings of the IEEE/CVF Conference
   on Computer Vision and Pattern Recognition (CVPR)}},
-  \bibinfo{pages}{16216--16225} (\bibinfo{year}{2021}).
-
-\bibitem{cai2022cst}
-\bibinfo{author}{Cai, Y.} \emph{et~al.}
-\newblock \bibinfo{title}{{CST}: Compact spectral transformer for hyperspectral
-  image reconstruction}.
-\newblock In \emph{\bibinfo{booktitle}{Proceedings of the European Conference
-  on Computer Vision (ECCV)}} (\bibinfo{year}{2022}).
+  \bibinfo{pages}{17542--17551} (\bibinfo{year}{2022}).
 
 \bibitem{llull2013cacti}
 \bibinfo{author}{Llull, P.} \emph{et~al.}
@@ -192,13 +176,29 @@
   \textbf{\bibinfo{volume}{25}}, \bibinfo{pages}{83--91}
   (\bibinfo{year}{2008}).
 
-\bibitem{hu2022hdnet}
-\bibinfo{author}{Hu, X.} \emph{et~al.}
-\newblock \bibinfo{title}{{HDNet}: High-resolution dual-domain learning for
-  spectral compressive imaging}.
+\bibitem{bioucasdias2007twist}
+\bibinfo{author}{Bioucas-Dias, J.~M.} \& \bibinfo{author}{Figueiredo, M. A.~T.}
+\newblock \bibinfo{title}{A new {TwIST}: Two-step iterative
+  shrinkage/thresholding algorithms for image restoration}.
+\newblock \emph{\bibinfo{journal}{IEEE Transactions on Image Processing}}
+  \textbf{\bibinfo{volume}{16}}, \bibinfo{pages}{2992--3004}
+  (\bibinfo{year}{2007}).
+
+\bibitem{huang2021dgsmp}
+\bibinfo{author}{Huang, T.}, \bibinfo{author}{Dong, W.}, \bibinfo{author}{Yuan,
+  X.}, \bibinfo{author}{Wu, J.} \& \bibinfo{author}{Shi, G.}
+\newblock \bibinfo{title}{Deep gaussian scale mixture prior for spectral
+  compressive imaging}.
 \newblock In \emph{\bibinfo{booktitle}{Proceedings of the IEEE/CVF Conference
   on Computer Vision and Pattern Recognition (CVPR)}},
-  \bibinfo{pages}{17542--17551} (\bibinfo{year}{2022}).
+  \bibinfo{pages}{16216--16225} (\bibinfo{year}{2021}).
+
+\bibitem{cai2022cst}
+\bibinfo{author}{Cai, Y.} \emph{et~al.}
+\newblock \bibinfo{title}{{CST}: Compact spectral transformer for hyperspectral
+  image reconstruction}.
+\newblock In \emph{\bibinfo{booktitle}{Proceedings of the European Conference
+  on Computer Vision (ECCV)}} (\bibinfo{year}{2022}).
 
 \bibitem{liu2019rank}
 \bibinfo{author}{Liu, Y.}, \bibinfo{author}{Yuan, X.}, \bibinfo{author}{Suo,
