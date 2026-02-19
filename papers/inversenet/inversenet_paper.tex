@@ -338,9 +338,9 @@ The residual SAM gap (11.74$^\circ$ vs.\ 7.44$^\circ$) reflects the spectral dis
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/cassi/gap_comparison.pdf}
-\caption{CASSI mismatch degradation (left, $\Delta_{\text{deg}}$) and oracle recovery (right, $\Delta_{\text{rec}}$) per method under 5-parameter mismatch. HDNet shows zero recovery due to its mask-oblivious architecture. MST-L achieves the highest recovery (+6.50\,dB), though the moderate recovery ratio (46.5\%) reflects the difficulty of correcting dispersion mismatch with current fixed-step architectures.}
-\label{fig:cassi_gap}
+\includegraphics[width=\textwidth]{figures/fig3_gap_comparison.pdf}
+\caption{Mismatch degradation ($\Delta_{\text{deg}}$, left) and oracle recovery ($\Delta_{\text{rec}}$, right) per method across all three modalities. CACTI suffers the most severe degradation (up to 20.6\,dB) but also the highest absolute recovery. For CASSI, HDNet shows zero recovery due to its mask-oblivious architecture; MST-L achieves the best recovery (+6.50\,dB, $\rho = 46.5\%$). For SPC, HATNet recovers 10.4\,dB ($\rho = 89.6\%$).}
+\label{fig:gap_comparison}
 \end{figure}
 
 \subsection{CACTI Results}
