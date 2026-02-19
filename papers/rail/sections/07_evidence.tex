@@ -59,11 +59,11 @@ fundamentally different physics.
 % ============================================================
 %  7.2  16-Modality Operator Correction
 % ============================================================
-\subsection{16-Modality Operator Correction}
+\subsection{Operator Correction Results}
 \label{subsec:correction}
 
 \Cref{tab:correction} evaluates the \pwm{} operator-correction module
-across 16~modalities.  For each modality we report the PSNR
+across 9~validated configurations spanning 7~distinct modalities (plus 7~registered configurations awaiting validation, totaling 16~entries).  For each modality we report the PSNR
 \emph{before} correction (Scenario~II, mismatched operator) and
 \emph{after} correction (Scenario~III, corrected operator), together
 with the absolute improvement.
@@ -72,7 +72,7 @@ with the absolute improvement.
 \centering
 \caption{Operator correction across 16~modalities.  ``Before'' is
 Scenario~II (mismatched operator); ``After'' is Scenario~III (corrected
-operator) except for CASSI rows, which report Scenario~IV (Oracle Mask)
+operator) except for the CASSI Alg~2 row, which reports Scenario~IV (Oracle Mask)
 as the correction ceiling.  Improvements range from $+0.54$ to $+48.25$\,dB.  Phase~2
 and Phase~4 entries are registered but not yet numerically evaluated.}
 \label{tab:correction}
@@ -88,7 +88,7 @@ CACTI~\cite{llull2013cacti,wang2023efficientsci} & mask\_timing & 14.48 & 37.42 
 Lensless             & psf\_shift             & 23.48 & 27.03 & $+$3.55  \\
 MRI                  & coil\_sensitivities    &  6.94 & 55.19 & \best{$+$48.25} \\
 SPC$^\dagger$ & gain\_bias   & 11.14 & 23.35 & $+$12.21 \\
-CASSI (Alg~1, GAP-TV)$^\S$ & mask\_geo+dispersion  & 20.96 & 21.50 & \worst{$+$0.54}  \\
+CASSI (Alg~1, GAP-TV) & mask\_geo+dispersion  & 20.96 & 21.50 & \worst{$+$0.54}  \\
 CASSI (Alg~2, GAP-TV)$^\S$ & mask\_geo+dispersion  & 20.96 & 21.72 & $+$0.76  \\
 Ptychography         & position\_offset       & 17.35 & 24.44 & $+$7.09  \\
 \midrule
@@ -111,7 +111,7 @@ as the generic Matrix modality, yielding identical correction
 performance.}
 
 \smallskip
-{\footnotesize $\S$~CASSI ``After'' values are Scenario~IV (Oracle Mask), not Scenario~III; see note below.}
+{\footnotesize $\S$~The CASSI Alg~2 ``After'' value is Scenario~IV (Oracle Mask), not Scenario~III.  The Alg~1 ``After'' value (21.50\,dB) is Scenario~III (beam-search correction); see note below.}
 
 \medskip
 \noindent
@@ -121,7 +121,7 @@ In \cref{tab:correction}, Alg~1 refers to hierarchical beam search (coarse corre
 \medskip
 \noindent
 \textbf{Note on CASSI baselines.}
-Both \cref{tab:correction} and \cref{tab:sensitivity} now use the same InverseNet 5-parameter mismatch (sub-pixel mask shift, rotation, dispersion drift, spectral axis tilt).  The Scenario~II baseline of 20.96\,dB in \cref{tab:correction} corresponds to GAP-TV reconstruction under this mismatch; the sensitivity table reports per-solver Scenario~II values.  CASSI ``After'' values in \cref{tab:correction} are oracle upper bounds (true operator applied to mismatched data); actual calibration gains may be lower.
+Both \cref{tab:correction} and \cref{tab:sensitivity} now use the same InverseNet 5-parameter mismatch (sub-pixel mask shift, rotation, dispersion drift, spectral axis tilt).  The Scenario~II baseline of 20.96\,dB in \cref{tab:correction} corresponds to GAP-TV reconstruction under this mismatch; the sensitivity table reports per-solver Scenario~II values.  The CASSI Alg~2 ``After'' value in \cref{tab:correction} is an oracle upper bound (true operator applied to mismatched data); the Alg~1 value reflects beam-search correction (Scenario~III).  Actual calibration gains for Alg~2 may be lower than the oracle ceiling.
 
 \medskip
 \noindent

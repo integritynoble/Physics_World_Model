@@ -173,12 +173,14 @@ II  & Assumed/Mismatch    & $\mathbf{H}$    & $\mathbf{H}_{\mathrm{nom}}$
 III & Corrected  & $\mathbf{H}$    & $\hat{\mathbf{H}}$
     & Calibration benefit: how much performance is recovered by
       estimating the true operator. \\
-IV  & Oracle Mask & $\mathbf{H}$ & $\mathbf{H}_{\mathrm{true}}$
-    & Correction ceiling: true operator applied to mismatched data,
-      providing the upper bound on what any correction can achieve. \\
+IV  & Oracle Mask & $\mathbf{H}$ & $\mathbf{H}$$^\ast$
+    & Correction ceiling: true operator given to a solver whose
+      learned weights were trained on $\mathbf{H}_{\mathrm{nom}}$. \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+{\footnotesize $\ast$~For iterative solvers without learned weights (e.g., GAP-TV), the reconstruction operator in Scenario~IV is functionally identical to Scenario~I; differences in PSNR arise because the Oracle Mask may correct only a subset of the declared mismatch parameters (e.g., mask geometry but not dispersion).}
 
 \paragraph{Scenario I (Ideal).}
 The true operator $\mathbf{H}$ is used for both measurement generation
@@ -204,18 +206,24 @@ Measurements are generated with $\mathbf{H}$, but reconstruction uses a
 calibrated operator $\hat{\mathbf{H}}$ obtained by running a
 calibration procedure on the nominal operator.
 The difference between Scenario~III and Scenario~II measures the
-\emph{calibration gain}---the value added by operator correction.
+\emph{calibration gain} (\cref{eq:calib_gain})---the value added by operator correction.
 The difference between Scenario~I and Scenario~III measures the
 \emph{residual gap}---the remaining performance lost to imperfect
 calibration.
 It answers: \emph{how much does calibration help?}
 
 \paragraph{Scenario IV (Oracle Mask).}
-The true operator $\mathbf{H}_{\mathrm{true}}$ is used for
+The true operator $\mathbf{H}$ is used for
 reconstruction on data generated with the mismatched system,
 providing the upper bound on what any correction algorithm can achieve.
+Notationally, the reconstruction operator is the same $\mathbf{H}$ used in
+Scenario~I; the distinction is that for learned solvers the network weights
+retain their Scenario~II parameterization (trained on
+$\mathbf{H}_{\mathrm{nom}}$), and the Oracle Gain
+(\cref{eq:oracle_gain}) isolates how much of the mismatch penalty is
+recoverable by correcting only the explicit operator input.
 The gap between Scenario~IV and Scenario~I reveals the
-\emph{irreducible} loss due to mismatch-induced measurement
+\emph{irreducible} loss due to solver-side mismatch or information
 degradation.
 It answers: \emph{what is the ceiling for operator correction?}
 
@@ -225,8 +233,10 @@ From the four scenario PSNR values, we derive:
   \text{Degradation}     &= \text{PSNR}_\mathrm{I} - \text{PSNR}_\mathrm{II}, \label{eq:degradation} \\
   \text{Calibration Gain}&= \text{PSNR}_\mathrm{III} - \text{PSNR}_\mathrm{II}, \label{eq:calib_gain} \\
   \text{Recovery Ratio}  &= \frac{\text{PSNR}_\mathrm{III} - \text{PSNR}_\mathrm{II}}{\text{PSNR}_\mathrm{I} - \text{PSNR}_\mathrm{II}}, \label{eq:recovery} \\
-  \text{Oracle Gap}      &= \text{PSNR}_\mathrm{I} - \text{PSNR}_\mathrm{III}. \label{eq:oracle_gap}
+  \text{Oracle Gap}      &= \text{PSNR}_\mathrm{I} - \text{PSNR}_\mathrm{III}, \label{eq:oracle_gap} \\
+  \text{Oracle Gain}     &= \text{PSNR}_\mathrm{IV} - \text{PSNR}_\mathrm{II}. \label{eq:oracle_gain}
 \end{align}
+The oracle gain (\cref{eq:oracle_gain}) measures the correction ceiling achievable with perfect operator knowledge.
 The recovery ratio and oracle gap are the primary pass/fail metrics
 referenced in Layer~1 of the Industrial Intelligence Stack
 (\cref{tab:stack_mapping}): a recovery ratio $\rho$ (\cref{eq:recovery}) of at least 0.80, meaning that calibration recovers at least 80\% of the mismatch-induced degradation, and an oracle
