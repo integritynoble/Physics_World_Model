@@ -155,11 +155,11 @@ cost (I$\to$II) dominates the solver upgrade gain under ideal conditions.}
     & \textbf{III (Corrected)}
     & \textbf{IV (Corrected+)} \\
 \midrule
-GAP-TV          & 24.22 & 19.66 & 20.17 & ${\approx}$23.0 \\
-PnP-HSICNN      & 25.12 & 19.10 & 19.81 & ${\approx}$24.0 \\
-MST-S           & 33.98 & 18.01 & 21.01 & ${\approx}$30.0 \\
-MST-L           & 34.81 & 18.09 & 21.10 & ${\approx}$31.0 \\
-HDNet           & 34.66 & 24.18 & 24.23 & ${\approx}$33.0 \\
+GAP-TV~\cite{yuan2016gaptv}   & 24.22 & 19.66 & 20.17 & ${\approx}$23.0 \\
+PnP-HSICNN~\cite{wang2020pnp} & 25.12 & 19.10 & 19.81 & ${\approx}$24.0 \\
+MST-S~\cite{cai2022mst}     & 33.98 & 18.01 & 21.01 & ${\approx}$30.0 \\
+MST-L~\cite{cai2022mst}     & 34.81 & 18.09 & 21.10 & ${\approx}$31.0 \\
+HDNet~\cite{hu2022hdnet}     & 34.66 & 24.18 & 24.23 & ${\approx}$33.0 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -184,7 +184,7 @@ and generalize poorly when the physical system drifts.
 % ============================================================
 \subsection{SolveEverything Implementation Status}
 
-The \pwm{} adopts the 10-gear \emph{SolveEverything} framework as its
+The \pwm{} adopts the 10-gear \emph{SolveEverything} framework~\cite{wissner2024solveeverything} as its
 governance backbone.  \Cref{tab:gears} reports the current
 implementation status of each gear.
 

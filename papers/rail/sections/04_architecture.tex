@@ -84,14 +84,15 @@ calibration of any mismatch parameter.
 \paragraph{Physical carriers.}
 The primitive library spans five physical carriers:
 \begin{enumerate}
-  \item \textbf{Photons}: optical imaging (CASSI, SPC, lensless,
+  \item \textbf{Photons}: optical imaging (CASSI~\cite{wagadarikar2008cassi}, SPC~\cite{duarte2008spc}, lensless,
         coded diffraction, \etc{}).
   \item \textbf{Electrons}: electron microscopy (cryo-EM, STEM, SEM).
-  \item \textbf{Spins}: magnetic resonance imaging (MRI,
-        diffusion MRI, spectroscopic MRI).
+  \item \textbf{Spins}: magnetic resonance imaging~\cite{lustig2007sparse}
+        (MRI, diffusion MRI, spectroscopic MRI).
   \item \textbf{Acoustic waves}: ultrasound, photoacoustic imaging,
         sonar.
-  \item \textbf{Particles}: positron emission tomography (PET),
+  \item \textbf{Particles}: computed tomography~\cite{feldkamp1984practical},
+        positron emission tomography (PET),
         single-photon emission CT (SPECT), neutron imaging.
 \end{enumerate}
 
@@ -107,7 +108,7 @@ mismatch axes.
 
 \paragraph{Example: CASSI.}
 \Cref{fig:operatorgraph} illustrates the OperatorGraph for a standard
-single-disperser CASSI system:
+single-disperser CASSI~\cite{wagadarikar2008cassi} system:
 \begin{equation}
   \mathcal{G}_{\text{CASSI}}:
   \quad
