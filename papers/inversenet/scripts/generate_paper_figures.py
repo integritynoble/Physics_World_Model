@@ -6,7 +6,7 @@ no shrinking occurs when LaTeX includes the figure at its target width.
 
     Fig 1: Scenario comparison (3 panels)   — \textwidth   ≈ 7.0"
     Fig 2: Visual comparison (3×6 grid)     — \textwidth   ≈ 7.0"
-    Fig 3: CASSI gap comparison (2 panels)  — 0.85\textwidth ≈ 5.8"
+    Fig 3: Gap comparison (3×2 panels)      — \textwidth   ≈ 7.0"
     Fig 4: Recovery ratio scatter            — 0.75\textwidth ≈ 5.0"
     Fig 5: Residual gap bar chart            — 0.85\textwidth ≈ 5.8"
 
@@ -106,14 +106,9 @@ def fig1_scenario_comparison():
         for i, m in enumerate(methods):
             vals = [get_psnr_fn(m, s) for s in SCENARIOS]
             off = (i - (n - 1) / 2) * w
-            bars = ax.bar(x + off, vals, w, color=colors[m], alpha=0.85,
-                          edgecolor="black", linewidth=0.3,
-                          label=labels[m])
-            for bar, v in zip(bars, vals):
-                ax.text(bar.get_x() + bar.get_width() / 2,
-                        bar.get_height() + 0.4,
-                        f"{v:.1f}", ha="center", va="bottom",
-                        fontsize=5.5, fontweight="bold")
+            ax.bar(x + off, vals, w, color=colors[m], alpha=0.85,
+                   edgecolor="black", linewidth=0.3,
+                   label=labels[m])
         ax.set_xticks(x)
         ax.set_xticklabels(SCENARIO_TICK, fontsize=6)
         ax.set_title(title, fontsize=8, fontweight="bold")
@@ -237,54 +232,98 @@ def fig2_visual_comparison():
 
 
 # ###########################################################################
-#  FIG 3 — CASSI gap comparison  (2-panel bar chart)
+#  FIG 3 — Combined gap comparison  (3 rows × 2 cols, all modalities)
 # ###########################################################################
-def fig3_cassi_gap():
+def fig3_gap_comparison():
     cassi = load_json("cassi_summary.json")
+    cacti = load_json("cacti_summary.json")
+    spc = load_json("spc_summary.json")
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(5.8, 2.5))
-    x = np.arange(len(CASSI_METHODS))
-    labels = [CASSI_LABELS[m] for m in CASSI_METHODS]
+    fig, axes = plt.subplots(3, 2, figsize=(7.0, 6.0))
 
-    # Degradation
-    deg = [cassi["gaps"][m]["gap_i_ii_mean"] for m in CASSI_METHODS]
-    deg_std = [cassi["gaps"][m]["gap_i_ii_std"] for m in CASSI_METHODS]
-    bars1 = ax1.bar(x, deg, color=[CASSI_COLORS[m] for m in CASSI_METHODS],
-                    alpha=0.85, yerr=deg_std, capsize=3,
-                    edgecolor="black", linewidth=0.4, width=0.6)
-    for bar, v in zip(bars1, deg):
-        ax1.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.4,
-                 f"{v:.1f}", ha="center", fontsize=6.5, fontweight="bold")
-    ax1.set_ylabel("PSNR Drop (dB)", fontsize=8, fontweight="bold")
-    ax1.set_title("Mismatch Degradation (I→II)", fontsize=8,
-                  fontweight="bold")
-    ax1.set_xticks(x); ax1.set_xticklabels(labels, fontsize=7)
-    ax1.grid(axis="y", alpha=0.25, linewidth=0.4, linestyle="--")
-    ax1.set_ylim([0, 18])
+    def _gap_row(ax_deg, ax_rec, methods, labels, colors,
+                 get_deg, get_rec, title, deg_ylim, rec_ylim):
+        x = np.arange(len(methods))
+        xlabels = [labels[m] for m in methods]
+        w = 0.6
 
-    # Recovery
-    rec = [cassi["gaps"][m]["gap_ii_iii_mean"] for m in CASSI_METHODS]
-    rec_std = [cassi["gaps"][m]["gap_ii_iii_std"] for m in CASSI_METHODS]
-    bars2 = ax2.bar(x, rec, color=[CASSI_COLORS[m] for m in CASSI_METHODS],
-                    alpha=0.85, yerr=rec_std, capsize=3,
-                    edgecolor="black", linewidth=0.4, width=0.6)
-    for bar, v in zip(bars2, rec):
-        ax2.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.15,
-                 f"{v:.2f}", ha="center", fontsize=6.5, fontweight="bold")
-    ax2.set_ylabel("PSNR Recovery (dB)", fontsize=8, fontweight="bold")
-    ax2.set_title("Oracle Recovery (II→III)", fontsize=8,
-                  fontweight="bold")
-    ax2.set_xticks(x); ax2.set_xticklabels(labels, fontsize=7)
-    ax2.grid(axis="y", alpha=0.25, linewidth=0.4, linestyle="--")
-    ax2.set_ylim([0, 10])
+        # Degradation panel
+        deg_vals = [get_deg(m) for m in methods]
+        bars1 = ax_deg.bar(x, deg_vals,
+                           color=[colors[m] for m in methods],
+                           alpha=0.85, edgecolor="black", linewidth=0.4,
+                           width=w)
+        for bar, v in zip(bars1, deg_vals):
+            ax_deg.text(bar.get_x() + bar.get_width() / 2,
+                        bar.get_height() + deg_ylim[1] * 0.02,
+                        f"{v:.1f}", ha="center", fontsize=6, fontweight="bold")
+        ax_deg.set_xticks(x)
+        ax_deg.set_xticklabels(xlabels, fontsize=6.5)
+        ax_deg.set_ylim(deg_ylim)
+        ax_deg.grid(axis="y", alpha=0.25, linewidth=0.4, linestyle="--")
+        ax_deg.set_title(f"{title} — Degradation (I→II)", fontsize=7.5,
+                         fontweight="bold")
 
-    fig.tight_layout(w_pad=1.0)
-    out_pdf = FIGURES_DIR / "cassi" / "gap_comparison.pdf"
-    out_png = FIGURES_DIR / "cassi" / "gap_comparison.png"
-    fig.savefig(out_pdf)
-    fig.savefig(out_png, dpi=300)
+        # Recovery panel
+        rec_vals = [get_rec(m) for m in methods]
+        bars2 = ax_rec.bar(x, rec_vals,
+                           color=[colors[m] for m in methods],
+                           alpha=0.85, edgecolor="black", linewidth=0.4,
+                           width=w)
+        for bar, v in zip(bars2, rec_vals):
+            ax_rec.text(bar.get_x() + bar.get_width() / 2,
+                        bar.get_height() + rec_ylim[1] * 0.02,
+                        f"{v:.1f}", ha="center", fontsize=6, fontweight="bold")
+        ax_rec.set_xticks(x)
+        ax_rec.set_xticklabels(xlabels, fontsize=6.5)
+        ax_rec.set_ylim(rec_ylim)
+        ax_rec.grid(axis="y", alpha=0.25, linewidth=0.4, linestyle="--")
+        ax_rec.set_title(f"{title} — Recovery (II→III)", fontsize=7.5,
+                         fontweight="bold")
+
+    # Row 0: CASSI
+    _gap_row(axes[0, 0], axes[0, 1],
+             CASSI_METHODS, CASSI_LABELS, CASSI_COLORS,
+             lambda m: cassi["gaps"][m]["gap_i_ii_mean"],
+             lambda m: cassi["gaps"][m]["gap_ii_iii_mean"],
+             "CASSI", [0, 18], [0, 10])
+
+    # Row 1: CACTI
+    _gap_row(axes[1, 0], axes[1, 1],
+             CACTI_METHODS, CACTI_LABELS, CACTI_COLORS,
+             lambda m: cacti["gaps"][m]["gap_i_ii_mean"],
+             lambda m: cacti["gaps"][m]["gap_ii_iii_mean"],
+             "CACTI", [0, 24], [0, 18])
+
+    # Row 2: SPC (compute gaps from summary)
+    spc_deg = {}
+    spc_rec = {}
+    for m in SPC_METHODS:
+        pi = spc["methods"][f"{m}_scenario_i"]["psnr_mean"]
+        pii = spc["methods"][f"{m}_scenario_ii"]["psnr_mean"]
+        piii = spc["methods"][f"{m}_scenario_iii"]["psnr_mean"]
+        spc_deg[m] = pi - pii
+        spc_rec[m] = piii - pii
+    _gap_row(axes[2, 0], axes[2, 1],
+             SPC_METHODS, SPC_LABELS, SPC_COLORS,
+             lambda m: spc_deg[m],
+             lambda m: spc_rec[m],
+             "SPC", [0, 16], [0, 14])
+
+    # Shared y-axis labels on left column only
+    for row in range(3):
+        axes[row, 0].set_ylabel("PSNR Drop (dB)", fontsize=7)
+        axes[row, 1].set_ylabel("PSNR Recovery (dB)", fontsize=7)
+
+    fig.tight_layout(h_pad=1.0, w_pad=1.0)
+    out = FIGURES_DIR / "fig3_gap_comparison.pdf"
+    fig.savefig(out)
+    fig.savefig(out.with_suffix(".png"), dpi=300)
+    # Also save to cassi/ for backwards compat
+    fig.savefig(FIGURES_DIR / "cassi" / "gap_comparison.pdf")
+    fig.savefig(FIGURES_DIR / "cassi" / "gap_comparison.png", dpi=300)
     plt.close(fig)
-    print(f"Fig 3 saved: {out_pdf}")
+    print(f"Fig 3 saved: {out}")
 
 
 # ###########################################################################
@@ -342,8 +381,8 @@ def fig4_rho_scatter():
     }
 
     for mod, label, pi, rho, mtype in points:
-        if rho is None:
-            continue
+        if rho is None or label == "HDNet":
+            continue  # HDNet handled separately below
         ax.scatter(pi, rho, c=MOD_COLORS[mod], marker=type_markers[mtype],
                    s=type_sizes[mtype], edgecolors="black", linewidths=0.4,
                    zorder=5)
@@ -379,8 +418,8 @@ def fig4_rho_scatter():
     for mt, mk in type_markers.items():
         ax.scatter([], [], c="gray", marker=mk, s=30, label=mt,
                    edgecolors="black", linewidths=0.4)
-    ax.legend(fontsize=6, loc="upper right", ncol=2, framealpha=0.9,
-              handletextpad=0.3, columnspacing=0.8, borderpad=0.3)
+    ax.legend(fontsize=5.5, loc="lower left", ncol=2, framealpha=0.9,
+              handletextpad=0.3, columnspacing=0.6, borderpad=0.3)
 
     ax.set_xlabel("Scenario I PSNR (dB)", fontsize=8)
     ax.set_ylabel("Recovery Ratio ρ (%)", fontsize=8)
@@ -498,7 +537,7 @@ def main():
     print("=" * 60)
 
     fig1_scenario_comparison()
-    fig3_cassi_gap()
+    fig3_gap_comparison()
     fig4_rho_scatter()
     fig5_residual_gap()
 
