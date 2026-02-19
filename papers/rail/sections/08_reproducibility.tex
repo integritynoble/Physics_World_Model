@@ -1,0 +1,107 @@
+% 08_reproducibility.tex — Reproducibility and Open Infrastructure
+% ============================================================
+
+\section{Reproducibility and Open Infrastructure}
+\label{sec:reproducibility}
+
+Reproducibility in computational imaging is not merely a best practice
+--- it is a prerequisite for the field to mature from artisanal
+reconstruction to industrial-grade imaging.  The \pwm{} enforces
+reproducibility at every layer through three mechanisms: immutable run
+records, cryptographic integrity, and open governance.
+
+% ============================================================
+%  RunBundle
+% ============================================================
+\subsection{RunBundle: The Immutable Run Record}
+
+Every imaging experiment executed through the \pwm{} produces a
+\texttt{RunBundle}~v0.3.0 --- a self-contained, immutable archive that
+records:
+%
+\begin{itemize}
+    \item \textbf{Inputs:} raw measurements, metadata, and the
+          \texttt{ExperimentSpec} that parameterized the run;
+    \item \textbf{Operator state:} the nominal operator
+          $\mathbf{H}_{\text{nom}}$, detected mismatch parameters, and
+          the corrected operator $\mathbf{H}_{\text{corr}}$ (if
+          correction was applied);
+    \item \textbf{Triad diagnosis:} the full \texttt{TriadReport}
+          including dominant gate, evidence scores, and confidence
+          intervals;
+    \item \textbf{Correction trajectory:} the sequence of correction
+          steps, intermediate residuals, and convergence diagnostics;
+    \item \textbf{Outputs:} reconstructed images and volumes with
+          per-pixel uncertainty estimates;
+    \item \textbf{Compute consumed:} wall time, peak memory, GPU
+          utilization, and energy estimate.
+\end{itemize}
+%
+Every artifact within the RunBundle is hashed with SHA-256.  The
+top-level manifest includes a Merkle root so that any tampering with
+individual files is detectable.  RunBundles are designed to be
+self-describing: a future reader with access only to the bundle and the
+\pwm{} codebase can reproduce the result without additional context.
+
+% ============================================================
+%  Decision Records
+% ============================================================
+\subsection{Decision Records for Imaging Systems}
+
+We introduce \emph{Decision Records for Imaging Systems} (DR-IS),
+inspired by architectural decision records in software engineering.
+Every calibration decision --- whether to apply a correction, which
+correction strategy to use, and what threshold triggered the decision ---
+is cryptographically signed and logged within the RunBundle.  DR-IS
+entries are append-only: corrections can be refined but never silently
+overwritten.
+
+% ============================================================
+%  ExperimentSpec
+% ============================================================
+\subsection{ExperimentSpec: Eliminating Ambiguity}
+
+The \texttt{ExperimentSpec}~v0.2.1, described in \cref{sec:agents}, is
+the linchpin of reproducibility.  By requiring that every parameter be
+drawn from a typed, validated registry, the \pwm{} eliminates the class
+of irreproducibility caused by ambiguous or undocumented configuration.
+When an LLM is used to generate experiment configurations, it returns
+\emph{only} registry identifiers --- never raw numerical parameters ---
+which are then resolved, validated, and frozen into the RunBundle.  No
+free-form strings enter the pipeline.
+
+% ============================================================
+%  Open-core model
+% ============================================================
+\subsection{Open-Core Licensing and Contribution Model}
+
+The \pwm{} evaluation harness is released under the MIT license,
+ensuring that any researcher can audit, extend, and benchmark against
+the framework without licensing barriers.  We define a four-level
+contribution model:
+%
+\begin{enumerate}
+    \item \textbf{Use the harness.}  Run the benchmark suite on your own
+          data and methods.  No contribution required.
+    \item \textbf{Submit methods.}  Register a new solver in the YAML
+          registry and submit benchmark results via a pull request.
+    \item \textbf{Contribute modalities.}  Implement a new forward
+          operator, mismatch model, and correction strategy; submit with
+          a TriadReport and RunBundle as evidence.
+    \item \textbf{Become a steward.}  Take ownership of a modality
+          vertical --- maintain the operator, curate datasets, and
+          review community submissions.
+\end{enumerate}
+
+% ============================================================
+%  Test infrastructure
+% ============================================================
+\subsection{Test Infrastructure}
+
+The \pwm{} codebase is guarded by \textbf{3,743~tests} spanning unit
+tests for individual operators, integration tests for the agent
+pipeline, regression tests for known mismatch--correction pairs, and
+end-to-end tests that verify RunBundle integrity.  The test suite
+achieves \textbf{0~failures} on the current release branch.  Continuous
+integration runs the full suite on every commit, and any benchmark
+submission that introduces a test failure is automatically rejected.

@@ -1,0 +1,100 @@
+% 06_agents.tex — Multi-Agent Orchestration
+% ============================================================
+
+\section{Multi-Agent Orchestration}
+\label{sec:agents}
+
+The \pwm{} automates the full imaging pipeline --- from user intent to
+reproducible result --- through a multi-agent architecture comprising
+\textbf{9~agents} and \textbf{8~support classes}, totaling
+\textbf{10,545~lines of Python}.  A critical design principle: \emph{all
+agents run deterministically without requiring a large language model}.
+An LLM may optionally be attached to generate narrative explanations,
+but every gate decision, score, and recommendation is computed
+mechanically from the YAML registries and Pydantic contracts.
+
+% ============================================================
+%  Pipeline overview
+% ============================================================
+\subsection{Pipeline Overview}
+
+\Cref{fig:agents} illustrates the end-to-end flow:
+%
+\begin{center}
+\small
+\begin{tabular}{@{}r@{\;$\rightarrow$\;}l@{}}
+User Prompt       & \textbf{PlanAgent} \\
+PlanAgent         & \textbf{PhotonAgent} $+$ \textbf{MismatchAgent}
+                    $+$ \textbf{RecoverabilityAgent} \\
+Gate Agents       & \textbf{AnalysisAgent} \\
+AnalysisAgent     & \textbf{Negotiator} \\
+Negotiator        & \textbf{PreFlightReportBuilder} \\
+PreFlightReport   & \textbf{Pipeline Runner} \\
+Pipeline Runner   & \textbf{RunBundle} \\
+\end{tabular}
+\end{center}
+
+% ============================================================
+%  Agent descriptions
+% ============================================================
+\subsection{Agent Descriptions}
+
+\paragraph{PlanAgent.}
+Parses user intent, maps the request to a registered modality, and
+builds the \texttt{ImagingSystem} object.  All modality look-ups are
+resolved against \texttt{modalities.yaml} --- no free-form strings are
+accepted.
+
+\paragraph{PhotonAgent.}
+Computes the signal-to-noise ratio from the carrier budget (photon
+count, detector quantum efficiency, read noise).  Classifies the noise
+regime (shot-limited, read-limited, background-limited) and returns a
+Gate~2 feasibility score.
+
+\paragraph{MismatchAgent.}
+Scores the severity of operator mismatch by comparing
+$\mathbf{H}_{\text{nom}}$ against the expected
+$\mathbf{H}_{\text{true}}$ using residual-norm heuristics and
+registry-defined mismatch signatures.  Selects the appropriate
+correction strategy from \texttt{solver\_registry.yaml}.
+
+\paragraph{RecoverabilityAgent.}
+Performs table-driven recoverability assessment: looks up the modality's
+null-space characteristics, compression ratio, and known PSNR baselines.
+Returns a Gate~1 pass/fail decision with a predicted PSNR range.
+
+\paragraph{AnalysisAgent.}
+Receives the three gate scores and performs bottleneck classification.
+Identifies the binding gate per the Triad Law (\cref{sec:triad}) and
+generates ranked suggestions for improving reconstruction quality.
+
+\paragraph{Negotiator.}
+Implements cross-agent veto logic.  Computes the joint probability of
+success across all three gates and enforces a configurable threshold
+below which the run is aborted with a diagnostic message rather than
+producing a misleading reconstruction.
+
+\paragraph{PreFlightReportBuilder.}
+Assembles the final pre-flight report: expected PSNR, dominant gate,
+correction strategy, estimated runtime, and resource requirements.  This
+report is presented to the user (or downstream system) before committing
+compute.
+
+% ============================================================
+%  Executable contract
+% ============================================================
+\subsection{ExperimentSpec: The Executable Contract}
+
+The \texttt{ExperimentSpec}~v0.2.1, implemented as a Pydantic
+\texttt{StrictBaseModel} with \texttt{extra="forbid"}, serves as the
+executable contract between agents.  Every field is typed and validated;
+NaN and Inf values are rejected at parse time.  When an LLM is used, it
+returns \emph{only} registry IDs --- never raw parameters --- which are
+then resolved and validated mechanically.
+
+The contract ecosystem comprises \textbf{25~Pydantic models}, all
+inheriting from \texttt{StrictBaseModel}, ensuring that no unvalidated
+data enters the pipeline.  These models are backed by \textbf{9~YAML
+registries} totaling \textbf{7,034~lines}, covering modalities, solvers,
+noise profiles, mismatch types, correction strategies, metrics, hardware
+profiles, datasets, and experiment templates.

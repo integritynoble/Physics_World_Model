@@ -1,0 +1,170 @@
+% 01_introduction.tex — Rail Paper: Introduction
+% ============================================================
+
+\section{Introduction}
+\label{sec:intro}
+
+% ------------------------------------------------------------------
+%  The 14.5 dB paradox
+% ------------------------------------------------------------------
+
+In 2022, the Mask-guided Spectral-wise Transformer (MST-L)~\cite{cai2022mst}
+achieved 34.81\,dB on the standard CASSI benchmark---a number that
+represents the culmination of nearly a decade of algorithmic progress in
+hyperspectral image reconstruction.
+Yet when the coded aperture mask is shifted by a single pixel---a
+perturbation well within the manufacturing and alignment tolerances of
+any real optical system---the same method collapses to 18.09\,dB, a loss
+of \textbf{16.72\,dB}.
+Even under a conservative 1-pixel-shift-plus-rotation model, the
+degradation exceeds 14.5\,dB (\cref{tab:sensitivity}).
+To put this in perspective, the entire history of deep-learning-based
+CASSI reconstruction---from GAP-TV's 24.22\,dB in 2016 to MST-L's
+34.81\,dB in 2022---spans only 10.59\,dB.
+A single pixel of operator mismatch erases more than a decade of
+algorithmic improvement.
+
+This is not an isolated failure.
+Across modalities---coded aperture snapshot spectral imaging (CASSI),
+coded aperture compressive temporal imaging (CACTI), single-pixel
+cameras (SPC)---the pattern repeats: the most powerful neural solvers
+exhibit the \emph{largest} sensitivity to forward-model error.
+Classical methods such as GAP-TV lose only 4.56\,dB under the same
+mismatch, precisely because they lack the capacity to overfit the
+operator.
+The paradox is stark: the field has been building faster and faster
+trains while ignoring the fact that the rails are broken.
+
+% ------------------------------------------------------------------
+%  The thesis: wrong layer
+% ------------------------------------------------------------------
+
+\paragraph{The thesis.}
+We argue that the computational imaging community is optimizing the
+wrong layer.
+The bottleneck is not the \emph{solver}---the reconstruction algorithm
+that maps measurements to images---but the \emph{infrastructure} around
+it: the evaluation protocols, the physics representations, the
+calibration pipelines, and the benchmarks that determine what counts as
+progress.
+In the language of industrial revolutions, solvers are
+\emph{trains}---visible, glamorous, and destined to commoditize.
+The compounding, durable value lies in the \emph{rails}: the standards,
+metrics, and institutional infrastructure that make it possible for any
+train to run reliably.
+
+This paper presents the \textbf{\pwm{} (PWM)} as precisely such a rail
+for computational imaging.
+PWM is not a new reconstruction algorithm.
+It is an \emph{evaluation harness}---a standardized infrastructure layer
+that makes it possible to measure, compare, and improve reconstruction
+methods under realistic physical conditions.
+
+% ------------------------------------------------------------------
+%  SolveEverything.org framing
+% ------------------------------------------------------------------
+
+\paragraph{SolveEverything framing.}
+Our design follows the SolveEverything.org framework~\cite{solveeverything},
+which identifies a recurring pattern across domains---from protein
+folding to chip design to weather prediction---in which transformative
+progress requires not just better models but better infrastructure.
+SolveEverything characterizes the pre-infrastructure phase as
+\emph{The Muddle} (maturity levels L0--L1): a regime in which
+practitioners cannot agree on what to measure, how to measure it, or
+what the measurements mean.
+
+Computational imaging is firmly in The Muddle.
+Every laboratory uses different test scenes, different noise models,
+different mismatch assumptions (if any), and different metrics.
+A reconstruction method that reports 34\,dB on one benchmark may achieve
+22\,dB on another, and neither number tells us anything about real-world
+deployment.
+There is no standard forward-model representation, no common evaluation
+protocol, and no mechanism for prospective (rather than retrospective)
+assessment.
+The consequence is a literature of mutually incomparable results, an
+illusion of progress driven by leaderboard optimization, and a
+sim-to-real gap that remains invisible until hardware deployment.
+
+% ------------------------------------------------------------------
+%  Paper overview
+% ------------------------------------------------------------------
+
+\paragraph{Paper overview.}
+We present PWM as the evaluation harness that moves computational
+imaging from The Muddle toward industrialization.
+The system comprises four interlocking components (\cref{fig:stack}):
+
+\begin{enumerate}
+  \item \textbf{OperatorGraph IR}---a universal directed acyclic graph
+        (DAG) representation for forward measurement operators that
+        spans 64 modalities across 5 physical carriers (photons,
+        electrons, spins, acoustic waves, particles) using 89 validated
+        templates.
+  \item \textbf{4-Scenario Evaluation Protocol}---a standardized
+        framework that measures every solver under Ideal, Assumed
+        (mismatched), Corrected (calibrated), and Oracle conditions,
+        isolating the contribution of operator knowledge from solver
+        architecture.
+  \item \textbf{LIP-Arena}---a prospective evaluation competition using
+        a Commit-Measure-Score protocol in which test data is generated
+        \emph{after} the submission deadline, eliminating memorization
+        and overfitting to known benchmarks.
+  \item \textbf{Red Team module}---an adversarial evaluation layer that
+        probes submitted methods against novel mismatches, compound
+        perturbations, out-of-family physics, distribution shifts,
+        compute traps, and gate-flip scenarios.
+\end{enumerate}
+
+% ------------------------------------------------------------------
+%  Contributions
+% ------------------------------------------------------------------
+
+\paragraph{Contributions.}
+Our specific contributions are:
+
+\begin{enumerate}
+  \item \textbf{SolveEverything mapping to imaging.}
+        We provide the first systematic mapping of the SolveEverything
+        Industrial Intelligence Stack---all 9 layers and the L0--L5
+        maturity ladder---to the computational imaging domain, producing
+        a concrete roadmap from the current L1 state to full
+        industrialization (\cref{sec:framework}).
+
+  \item \textbf{OperatorGraph IR as universal physics representation.}
+        We define a graph-based intermediate representation for forward
+        measurement operators that unifies 64 modalities under a single
+        formalism, with 89 validated templates supporting automatic
+        differentiation, adjoint computation, and mismatch injection
+        (\cref{sec:architecture}).
+
+  \item \textbf{26-modality benchmark evidence.}
+        We present the first cross-modality sensitivity analysis
+        demonstrating that neural solvers systematically amplify
+        operator mismatch, with degradation ranging from 4.56\,dB
+        (GAP-TV) to 16.72\,dB (MST-L) on CASSI alone
+        (\cref{sec:problem}).
+
+  \item \textbf{16-modality operator correction results.}
+        We show that calibrating the forward operator---even with
+        classical methods---recovers a substantial fraction of mismatch
+        loss across 16 modalities, confirming that the dominant failure
+        mode in deployed imaging systems is not solver quality but
+        operator fidelity.
+
+  \item \textbf{LIP-Arena prospective evaluation protocol.}
+        We introduce the first Commit-Measure-Score competition for
+        computational imaging, with anti-Goodhart scoring, safety
+        brakes, and outcome-based governance, providing a sustainable
+        institutional mechanism for measuring genuine progress.
+\end{enumerate}
+
+The remainder of this paper is organized as follows.
+\Cref{sec:problem} quantifies the solver-only optimization trap using
+CASSI as a case study.
+\Cref{sec:framework} maps the SolveEverything framework to
+computational imaging.
+\Cref{sec:architecture} presents the PWM architecture in detail.
+Subsequent sections describe experiments, ablations, and implications
+for the field.

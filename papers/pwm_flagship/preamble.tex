@@ -1,0 +1,91 @@
+% preamble.tex — Nature-style formatting for PWM Flagship Paper
+% Review submission format: single column, 1.5 spacing, line numbers, wide margins
+
+\documentclass[11pt]{article}
+
+%% ——— Geometry: Nature review format (wide margins, single column) ———
+\usepackage[
+  top=2.54cm,
+  bottom=2.54cm,
+  left=3.18cm,
+  right=3.18cm
+]{geometry}
+
+%% ——— Spacing and line numbers (Nature review requirements) ———
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{lineno}
+
+%% ——— Mathematics ———
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+%% ——— Graphics and figures ———
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+%% ——— Tables ———
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+
+%% ——— Colors ———
+\usepackage[dvipsnames]{xcolor}
+
+% PWM figure palette
+\definecolor{pwmBlue}{HTML}{2E5FA1}
+\definecolor{pwmOrange}{HTML}{E8712B}
+\definecolor{pwmGreen}{HTML}{3D9E3F}
+\definecolor{pwmRed}{HTML}{C93C3C}
+\definecolor{pwmPurple}{HTML}{7B4EA3}
+\definecolor{pwmGray}{HTML}{6B6B6B}
+
+% Gate colors
+\definecolor{gateOne}{HTML}{4A90D9}    % Gate 1: Recoverability (blue)
+\definecolor{gateTwo}{HTML}{E8A838}    % Gate 2: Carrier Budget (amber)
+\definecolor{gateThree}{HTML}{D94A4A}  % Gate 3: Operator Mismatch (red)
+
+% Scenario colors
+\definecolor{scenarioI}{HTML}{2E7D32}    % Ideal (green)
+\definecolor{scenarioII}{HTML}{C62828}   % Mismatch (red)
+\definecolor{scenarioIII}{HTML}{1565C0}  % Corrected (blue)
+\definecolor{scenarioIV}{HTML}{6A1B9A}   % Oracle (purple)
+
+%% ——— Hyperlinks and cross-references ———
+\usepackage[
+  colorlinks=true,
+  linkcolor=pwmBlue,
+  citecolor=pwmBlue,
+  urlcolor=pwmBlue
+]{hyperref}
+\usepackage[capitalise,noabbrev]{cleveref}
+
+%% ——— Bibliography (Nature style) ———
+\usepackage[numbers,sort&compress,super]{natbib}
+
+%% ——— Custom commands ———
+
+% Project abbreviations
+\newcommand{\pwm}{\textsc{pwm}}
+\newcommand{\triad}{\textsc{Triad Law}}
+\newcommand{\opg}{\textsc{OperatorGraph}}
+
+% Latin abbreviations (with italic)
+\newcommand{\ie}{\textit{i.e.}}
+\newcommand{\eg}{\textit{e.g.}}
+
+% Math operators and notation
+\newcommand{\Hnom}{H_{\mathrm{nom}}}
+\newcommand{\Htrue}{H_{\mathrm{true}}}
+\newcommand{\xgt}{\mathbf{x}_{\mathrm{gt}}}
+\newcommand{\yobs}{\mathbf{y}_{\mathrm{obs}}}
+\newcommand{\psnr}{\mathrm{PSNR}}
+\newcommand{\ssim}{\mathrm{SSIM}}
+\newcommand{\recoveryratio}{\rho}
+\newcommand{\mismatchparam}{\boldsymbol{\psi}}
+\newcommand{\triadreport}{\textsc{TriadReport}}
+
+% Gate shorthand
+\newcommand{\gateone}{\textbf{Gate\,1}}
+\newcommand{\gatetwo}{\textbf{Gate\,2}}
+\newcommand{\gatethree}{\textbf{Gate\,3}}

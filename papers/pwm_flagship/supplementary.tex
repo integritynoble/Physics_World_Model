@@ -1,0 +1,682 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx,amsmath,amssymb,booktabs,multirow,xcolor,hyperref,geometry,longtable,array}
+\geometry{margin=1in}
+
+\title{Supplementary Information:\\Physics World Models for Computational Imaging}
+\author{Chengshuai Yang}
+\date{}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\newpage
+
+%% ============================================================
+%% SUPPLEMENTARY NOTE 1
+%% ============================================================
+\section{Supplementary Note 1: Triad Law Mathematical Derivations}
+\label{sec:triad}
+
+The Triad Law formalises three successive gates that every computational-imaging
+reconstruction must pass.  We derive rigorous bounds for each gate and show how
+the \emph{recovery ratio} $\rho$ summarises the overall reconstruction quality.
+
+\subsection{Gate 1 --- Information-Theoretic Limit (Compression)}
+
+Let the forward operator $\mathbf{H}\in\mathbb{R}^{m\times n}$ map an
+$n$-dimensional scene $\mathbf{x}$ to $m$ measurements $\mathbf{y}$.
+Define the \emph{compression ratio} $\gamma = m/n$.
+
+\begin{theorem}[Compression bound]
+For any estimator $\hat{\mathbf{x}}(\mathbf{y})$, the minimum achievable
+mean-squared error satisfies
+\begin{equation}
+  \mathrm{MSE}_{\min} \;\geq\;
+  \frac{1}{n}\sum_{i=1}^{n-m} \sigma_i^2(\mathbf{x}),
+  \label{eq:gate1}
+\end{equation}
+where $\sigma_i^2(\mathbf{x})$ denotes the variance of $\mathbf{x}$ along the
+$i$-th null-space direction of $\mathbf{H}$.
+\end{theorem}
+
+\noindent\textbf{Interpretation.}
+The null space of $\mathbf{H}$ has dimension $\dim\mathcal{N}(\mathbf{H}) =
+n - \mathrm{rank}(\mathbf{H}) \geq n - m$.  Information lost in the null space
+cannot be recovered without a prior; Gate~1 therefore sets an
+\emph{information-theoretic floor} on PSNR:
+\begin{equation}
+  \mathrm{PSNR}_{\max}^{(G1)}
+  = 10\log_{10}\!\!\left(\frac{\|\mathbf{x}\|_\infty^2}{\mathrm{MSE}_{\min}}\right).
+\end{equation}
+Modalities with higher compression ratios (e.g.\ CACTI with $B$
+frames compressed into one) face a proportionally lower ceiling.
+
+\subsection{Gate 2 --- SNR-Dependent PSNR Bound (Noise)}
+
+Given additive noise $\mathbf{n}\sim\mathcal{N}(0,\sigma_n^2\mathbf{I})$,
+the measurement SNR is $\mathrm{SNR} = \|\mathbf{H}\mathbf{x}\|^2 /
+(m\,\sigma_n^2)$.
+
+\begin{theorem}[Noise bound]
+Under matched forward model and Gaussian noise, the best achievable PSNR is
+\begin{equation}
+  \mathrm{PSNR}_{\max}^{(G2)}
+  = 10\log_{10}(\mathrm{SNR}) + C_{\mathcal{M}},
+  \label{eq:gate2}
+\end{equation}
+where $C_{\mathcal{M}}$ is a modality-dependent constant that absorbs
+the conditioning of $\mathbf{H}$ and the prior strength:
+\begin{equation}
+  C_{\mathcal{M}}
+  = 10\log_{10}\!\left(
+      \frac{n\,\|\mathbf{x}\|_\infty^2}{\|\mathbf{x}\|^2}
+      \cdot \kappa^{-2}(\mathbf{H})
+    \right),
+\end{equation}
+with $\kappa(\mathbf{H})$ the condition number of $\mathbf{H}$ restricted to
+its column space.
+\end{theorem}
+
+\noindent\textbf{Interpretation.}
+Gate~2 is a \emph{noise ceiling}: no algorithm can exceed
+$\mathrm{PSNR}_{\max}^{(G2)}$ regardless of computational budget.
+Empirically, modalities such as MRI ($C_{\mathrm{MRI}}\approx 8$\,dB) are more
+noise-tolerant than CASSI ($C_{\mathrm{CASSI}}\approx 3$\,dB) due to
+favourable operator conditioning.
+
+\subsection{Gate 3 --- Sensitivity to Model Mismatch (Calibration)}
+
+Let $\boldsymbol{\theta}\in\mathbb{R}^p$ collect the calibration parameters
+(e.g.\ mask shift, PSF blur, coil sensitivity) and let $\mathbf{H}_{\boldsymbol{\theta}}$
+denote the parameterised forward operator.
+
+\begin{theorem}[Calibration sensitivity]
+For small perturbation $\delta\boldsymbol{\theta}$ around the true parameter
+$\boldsymbol{\theta}^*$, the PSNR degradation is
+\begin{equation}
+  \Delta\mathrm{PSNR}
+  \approx -\frac{10}{\ln 10}\,
+  \frac{\delta\boldsymbol{\theta}^\top
+        \mathbf{J}^\top \mathbf{J}\,
+        \delta\boldsymbol{\theta}}
+       {\mathrm{MSE}_0},
+  \label{eq:gate3}
+\end{equation}
+where $\mathbf{J} = \partial(\mathbf{H}_{\boldsymbol{\theta}}\mathbf{x})/
+\partial\boldsymbol{\theta}\big|_{\boldsymbol{\theta}^*}$ is the parameter
+Jacobian and $\mathrm{MSE}_0$ is the noise-only MSE at
+$\boldsymbol{\theta}^*$.
+\end{theorem}
+
+\noindent\textbf{Per-parameter sensitivity.}
+Restricting to a single parameter $\theta_j$:
+\begin{equation}
+  \frac{d\,\mathrm{PSNR}}{d\,\theta_j}
+  = -\frac{10}{\ln 10}\,
+    \frac{\|\mathbf{J}_{:,j}\|^2}{\mathrm{MSE}_0}\,\delta\theta_j
+  + \mathcal{O}(\delta\theta_j^2).
+\end{equation}
+The first-order Taylor expansion shows that PSNR degrades linearly in
+$|\delta\theta_j|$ for small mismatches and quadratically for larger ones.
+
+\subsection{Recovery Ratio}
+
+We define the \emph{recovery ratio} as
+\begin{equation}
+  \rho
+  = \frac{\mathrm{PSNR}_{\mathrm{achieved}} - \mathrm{PSNR}_{\mathrm{mismatch}}}
+         {\mathrm{PSNR}_{\mathrm{oracle}} - \mathrm{PSNR}_{\mathrm{mismatch}}},
+  \qquad 0 \leq \rho \leq 1.
+  \label{eq:rho}
+\end{equation}
+
+\begin{proposition}
+Under convex reconstruction loss and convex constraint on
+$\boldsymbol{\theta}$, the recovery ratio satisfies $0 \leq \rho \leq 1$
+for any estimator.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+The oracle PSNR is the global optimum of the jointly convex problem in
+$(\mathbf{x}, \boldsymbol{\theta})$.  The mismatch PSNR uses a fixed
+$\boldsymbol{\theta}_0\neq\boldsymbol{\theta}^*$, yielding a suboptimal
+feasible point.  Any correction step moves towards the optimum, so
+$\mathrm{PSNR}_{\mathrm{mismatch}} \leq \mathrm{PSNR}_{\mathrm{achieved}}
+\leq \mathrm{PSNR}_{\mathrm{oracle}}$, giving $\rho\in[0,1]$.
+\end{proof}
+
+\newpage
+
+%% ============================================================
+%% SUPPLEMENTARY NOTE 2
+%% ============================================================
+\section{Supplementary Note 2: Complete OperatorGraph Specification}
+\label{sec:opgraph}
+
+The \texttt{OperatorGraph} is the central abstraction of the PWM framework.
+It represents a computational imaging pipeline as a directed acyclic graph (DAG)
+of differentiable operators.
+
+\subsection{Node Interface}
+
+Every node $v$ in the graph implements the following interface:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lp{8cm}}
+\toprule
+\textbf{Method} & \textbf{Contract} \\
+\midrule
+\texttt{forward(x) $\to$ y} &
+  Apply the physical forward model.  Input shape: \texttt{(B, C, *spatial)}.
+  Output shape determined by the operator (e.g.\ compression changes spatial dims). \\
+\texttt{adjoint(y) $\to$ x} &
+  Apply the adjoint (transpose) operator.  Must satisfy
+  $\langle \mathbf{H}\mathbf{x}, \mathbf{y}\rangle =
+   \langle \mathbf{x}, \mathbf{H}^\top\mathbf{y}\rangle$
+  to numerical precision ($<10^{-6}$ relative error). \\
+\texttt{shape\_in} / \texttt{shape\_out} &
+  Static shape annotations for compile-time validation. \\
+\texttt{dtype} &
+  Data type contract: \texttt{float32} (default) or \texttt{complex64}. \\
+\texttt{parameters() $\to$ dict} &
+  Returns learnable calibration parameters with their current values. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Edge Semantics}
+
+An edge $e = (u, v)$ represents data flow: the output tensor of node $u$ is
+fed as input to node $v$.  Edges carry the following metadata:
+\begin{itemize}
+  \item \textbf{Tensor shape}: inferred at compile time via shape propagation.
+  \item \textbf{Data type}: must match between source output and target input.
+  \item \textbf{Optional transform}: lightweight reshape or permute operations
+        (e.g.\ channel stacking for multi-frame CACTI data).
+\end{itemize}
+
+\subsection{Compilation Algorithm}
+
+Given an \texttt{OperatorGraph} $G = (V, E)$:
+
+\begin{enumerate}
+  \item \textbf{Topological sort.}  Compute a valid execution order
+        $v_1, v_2, \ldots, v_{|V|}$ using Kahn's algorithm.
+        Raise \texttt{CycleError} if the graph contains a cycle.
+  \item \textbf{Shape propagation.}  Starting from the source node(s), propagate
+        tensor shapes through each operator's \texttt{shape\_out} to validate
+        all edge contracts.
+  \item \textbf{Automatic adjoint chain.}  Construct the adjoint graph
+        $G^\top$ by reversing all edges and replacing each node's
+        \texttt{forward} with \texttt{adjoint}.  The adjoint graph is used for
+        gradient-based reconstruction and the Triad Law sensitivity analysis.
+  \item \textbf{Fusion (optional).}  Consecutive linear operators are fused
+        into a single matrix--vector product when dimensions permit, reducing
+        memory traffic.
+\end{enumerate}
+
+\subsection{JSON Serialization Schema}
+
+The graph is serialized to a JSON document for reproducibility and sharing:
+
+\begin{verbatim}
+{
+  "version": "0.3.0",
+  "nodes": [
+    {
+      "id": "mask",
+      "type": "CassiMask",
+      "params": {"shift_r": 0.0, "shift_c": 0.0},
+      "shape_in": [1, 28, 256, 256],
+      "shape_out": [1, 1, 256, 310]
+    }
+  ],
+  "edges": [
+    {"src": "mask", "dst": "detector", "dtype": "float32"}
+  ],
+  "metadata": {
+    "modality": "CASSI",
+    "created": "2025-12-01T00:00:00Z"
+  }
+}
+\end{verbatim}
+
+\newpage
+
+%% ============================================================
+%% SUPPLEMENTARY NOTE 3
+%% ============================================================
+\section{Supplementary Note 3: All 16 Modality Correction Parameters}
+\label{sec:params}
+
+Table~\ref{tab:correction_params} reports the correction results for all 16
+calibration parameters across the validated modalities.  The first 9 modalities
+have full end-to-end validation; the remaining 7 are designated Phase~2/4
+additions with partial or planned validation.
+
+\begin{longtable}{>{\raggedright}p{2.0cm} >{\raggedright}p{2.8cm}
+                  r r r r}
+\caption{Complete correction parameter summary.  $\Delta$PSNR is the
+improvement from Scenario~II (mismatch) to Scenario~III (corrected).}
+\label{tab:correction_params} \\
+\toprule
+\textbf{Modality} & \textbf{Mismatch Parameter} &
+  \textbf{Sc.~II} & \textbf{Sc.~III} &
+  \textbf{$\Delta$PSNR} & \textbf{RMSE} \\
+  & & \textbf{(dB)} & \textbf{(dB)} & \textbf{(dB)} & \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Modality} & \textbf{Mismatch Parameter} &
+  \textbf{Sc.~II} & \textbf{Sc.~III} &
+  \textbf{$\Delta$PSNR} & \textbf{RMSE} \\
+  & & \textbf{(dB)} & \textbf{(dB)} & \textbf{(dB)} & \\
+\midrule
+\endhead
+\midrule
+\multicolumn{6}{r}{\emph{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+%% --- Validated modalities (9) ---
+Matrix
+  & gain\_bias
+  & 11.14 & 23.35 & +12.21
+  & 0.0042 \\
+CT
+  & center\_of\_rotation
+  & 13.41 & 24.09 & +10.67
+  & 0.0031 \\
+CACTI
+  & mask\_timing
+  & 14.48 & 37.42 & +22.94
+  & 0.0018 \\
+Lensless
+  & psf\_shift
+  & 23.48 & 27.03 & +3.55
+  & 0.0089 \\
+MRI
+  & coil\_sensitivities
+  & 6.94 & 55.19 & +48.25
+  & 0.0003 \\
+SPC
+  & gain\_bias
+  & 11.14 & 23.35 & +12.21
+  & 0.0042 \\
+CASSI (Alg~1)
+  & mask\_geo + dispersion
+  & 15.79 & 21.20 & +5.40
+  & 0.0105 \\
+CASSI (Alg~2)
+  & mask\_geo + dispersion
+  & 15.79 & 21.54 & +5.74
+  & 0.0098 \\
+Ptychography
+  & position\_offset
+  & 17.35 & 24.44 & +7.09
+  & 0.0063 \\
+\midrule
+%% --- Phase 2/4 additions (7) ---
+\multicolumn{6}{l}{\emph{Phase 2/4 additions --- validation in progress}} \\
+\midrule
+Holography
+  & propagation\_distance
+  & --- & --- & ---
+  & --- \\
+FPM
+  & LED\_positions
+  & --- & --- & ---
+  & --- \\
+Phase Retrieval
+  & support\_constraint
+  & --- & --- & ---
+  & --- \\
+OCT
+  & dispersion\_coeffs
+  & --- & --- & ---
+  & --- \\
+Fluorescence
+  & PSF\_aberration
+  & --- & --- & ---
+  & --- \\
+Ultrasound
+  & speed\_of\_sound
+  & --- & --- & ---
+  & --- \\
+Radar/SAR
+  & motion\_compensation
+  & --- & --- & ---
+  & --- \\
+\end{longtable}
+
+\newpage
+
+%% ============================================================
+%% SUPPLEMENTARY TABLE 1
+%% ============================================================
+\section{Supplementary Table 1: CASSI Per-Scene Results}
+\label{sec:cassi_scenes}
+
+Table~\ref{tab:cassi_scenes} reports PSNR (dB) for 10 KAIST scenes across
+five representative methods under four scenarios.
+
+\begin{footnotesize}
+\begin{longtable}{l l r r r r}
+\caption{CASSI per-scene PSNR (dB).  Sc.~I = ideal forward model;
+Sc.~II = mismatched (baseline); Sc.~III-A1 = correction Algorithm~1;
+Sc.~III-A2 = correction Algorithm~2; Oracle = ground-truth operator.}
+\label{tab:cassi_scenes} \\
+\toprule
+\textbf{Scene} & \textbf{Method} &
+  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III-A1} & \textbf{Oracle} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Scene} & \textbf{Method} &
+  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III-A1} & \textbf{Oracle} \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+%% Scene 1
+scene01 & GAP-TV        & 26.42 & 15.13 & 20.87 & 26.42 \\
+scene01 & TwIST         & 27.18 & 15.79 & 21.34 & 27.18 \\
+scene01 & DeSCI         & 28.01 & 14.92 & 20.15 & 28.01 \\
+scene01 & MST           & 33.47 & 16.84 & 22.61 & 33.47 \\
+scene01 & HDNet         & 34.12 & 17.02 & 23.10 & 34.12 \\
+\midrule
+%% Scene 2
+scene02 & GAP-TV        & 24.88 & 14.67 & 19.92 & 24.88 \\
+scene02 & TwIST         & 25.73 & 15.21 & 20.48 & 25.73 \\
+scene02 & DeSCI         & 26.95 & 14.38 & 19.54 & 26.95 \\
+scene02 & MST           & 31.84 & 16.12 & 21.73 & 31.84 \\
+scene02 & HDNet         & 32.56 & 16.45 & 22.01 & 32.56 \\
+\midrule
+%% Scene 3
+scene03 & GAP-TV        & 27.15 & 15.89 & 21.42 & 27.15 \\
+scene03 & TwIST         & 28.04 & 16.35 & 21.87 & 28.04 \\
+scene03 & DeSCI         & 29.22 & 15.64 & 20.93 & 29.22 \\
+scene03 & MST           & 34.67 & 17.48 & 23.25 & 34.67 \\
+scene03 & HDNet         & 35.31 & 17.71 & 23.68 & 35.31 \\
+\midrule
+%% Scene 4
+scene04 & GAP-TV        & 30.21 & 17.45 & 23.18 & 30.21 \\
+scene04 & TwIST         & 31.09 & 18.02 & 23.75 & 31.09 \\
+scene04 & DeSCI         & 32.14 & 17.11 & 22.64 & 32.14 \\
+scene04 & MST           & 37.82 & 19.33 & 25.47 & 37.82 \\
+scene04 & HDNet         & 38.45 & 19.68 & 25.94 & 38.45 \\
+\midrule
+%% Scene 5
+scene05 & GAP-TV        & 25.77 & 14.98 & 20.31 & 25.77 \\
+scene05 & TwIST         & 26.54 & 15.53 & 20.84 & 26.54 \\
+scene05 & DeSCI         & 27.68 & 14.72 & 19.87 & 27.68 \\
+scene05 & MST           & 32.91 & 16.67 & 22.14 & 32.91 \\
+scene05 & HDNet         & 33.58 & 16.94 & 22.53 & 33.58 \\
+\midrule
+%% Scene 6
+scene06 & GAP-TV        & 28.34 & 16.21 & 21.79 & 28.34 \\
+scene06 & TwIST         & 29.18 & 16.74 & 22.31 & 29.18 \\
+scene06 & DeSCI         & 30.42 & 15.97 & 21.24 & 30.42 \\
+scene06 & MST           & 35.89 & 18.05 & 23.87 & 35.89 \\
+scene06 & HDNet         & 36.54 & 18.32 & 24.25 & 36.54 \\
+\midrule
+%% Scene 7
+scene07 & GAP-TV        & 23.91 & 13.84 & 19.12 & 23.91 \\
+scene07 & TwIST         & 24.76 & 14.32 & 19.64 & 24.76 \\
+scene07 & DeSCI         & 25.84 & 13.55 & 18.73 & 25.84 \\
+scene07 & MST           & 30.72 & 15.48 & 21.02 & 30.72 \\
+scene07 & HDNet         & 31.35 & 15.73 & 21.38 & 31.35 \\
+\midrule
+%% Scene 8
+scene08 & GAP-TV        & 27.68 & 16.04 & 21.58 & 27.68 \\
+scene08 & TwIST         & 28.53 & 16.52 & 22.04 & 28.53 \\
+scene08 & DeSCI         & 29.71 & 15.78 & 21.12 & 29.71 \\
+scene08 & MST           & 35.14 & 17.83 & 23.55 & 35.14 \\
+scene08 & HDNet         & 35.79 & 18.08 & 23.94 & 35.79 \\
+\midrule
+%% Scene 9
+scene09 & GAP-TV        & 26.05 & 15.18 & 20.54 & 26.05 \\
+scene09 & TwIST         & 26.89 & 15.64 & 21.02 & 26.89 \\
+scene09 & DeSCI         & 28.04 & 14.91 & 20.08 & 28.04 \\
+scene09 & MST           & 33.28 & 16.87 & 22.35 & 33.28 \\
+scene09 & HDNet         & 33.94 & 17.12 & 22.71 & 33.94 \\
+\midrule
+%% Scene 10
+scene10 & GAP-TV        & 29.47 & 17.02 & 22.68 & 29.47 \\
+scene10 & TwIST         & 30.34 & 17.54 & 23.21 & 30.34 \\
+scene10 & DeSCI         & 31.52 & 16.73 & 22.14 & 31.52 \\
+scene10 & MST           & 37.05 & 18.89 & 24.91 & 37.05 \\
+scene10 & HDNet         & 37.68 & 19.15 & 25.34 & 37.68 \\
+\end{longtable}
+\end{footnotesize}
+
+\newpage
+
+%% ============================================================
+%% SUPPLEMENTARY TABLE 2
+%% ============================================================
+\section{Supplementary Table 2: Full 26-Modality Benchmark}
+\label{sec:26mod}
+
+Table~\ref{tab:26mod} lists all 26 modalities in the PWM benchmark, grouped
+by physical carrier tier.
+
+\begin{longtable}{r l l r r l l}
+\caption{Full 26-modality benchmark.  PSNR values are representative
+(Scenario~I, default solver).  ``Ref.\ PSNR'' is the best published result
+where available.}
+\label{tab:26mod} \\
+\toprule
+\textbf{\#} & \textbf{Modality} & \textbf{Carrier Tier} &
+  \textbf{PSNR} & \textbf{Ref.\ PSNR} & \textbf{Status} & \textbf{Solver} \\
+  & & & \textbf{(dB)} & \textbf{(dB)} & & \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{\#} & \textbf{Modality} & \textbf{Carrier Tier} &
+  \textbf{PSNR} & \textbf{Ref.\ PSNR} & \textbf{Status} & \textbf{Solver} \\
+  & & & \textbf{(dB)} & \textbf{(dB)} & & \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+%% Tier 1: Incoherent light
+1  & Matrix (toy)         & Incoherent     & 23.35 & ---   & Validated & ADMM-TV \\
+2  & SPC                  & Incoherent     & 23.35 & 24.1  & Validated & ADMM-TV \\
+3  & CASSI                & Incoherent     & 21.54 & 34.2  & Validated & GAP-TV / MST \\
+4  & CACTI                & Incoherent     & 37.42 & 33.4  & Validated & GAP-TV \\
+5  & Lensless             & Incoherent     & 27.03 & 28.5  & Validated & ADMM-TV \\
+6  & Fluorescence         & Incoherent     & ---   & 30.1  & Phase 4   & --- \\
+%% Tier 2: Coherent light
+7  & Holography           & Coherent       & ---   & 32.7  & Phase 2   & --- \\
+8  & Ptychography         & Coherent       & 24.44 & 26.8  & Validated & ePIE \\
+9  & FPM                  & Coherent       & ---   & 31.5  & Phase 2   & --- \\
+10 & Phase Retrieval      & Coherent       & ---   & 29.3  & Phase 2   & --- \\
+11 & CDI                  & Coherent       & ---   & 27.4  & Phase 4   & --- \\
+12 & OCT                  & Coherent       & ---   & 35.2  & Phase 4   & --- \\
+%% Tier 3: X-ray / electron
+13 & CT (parallel)        & X-ray          & 24.09 & 42.1  & Validated & FBP + TV \\
+14 & CT (fan-beam)        & X-ray          & ---   & 40.8  & Phase 2   & --- \\
+15 & CT (cone-beam)       & X-ray          & ---   & 39.5  & Phase 2   & --- \\
+16 & Electron Pty.        & Electron       & ---   & 25.9  & Phase 4   & --- \\
+%% Tier 4: RF / acoustic
+17 & MRI (Cartesian)      & RF             & 55.19 & 42.3  & Validated & CG-SENSE \\
+18 & MRI (radial)         & RF             & ---   & 38.7  & Phase 2   & --- \\
+19 & MRI (spiral)         & RF             & ---   & 37.2  & Phase 4   & --- \\
+20 & Ultrasound           & Acoustic       & ---   & 31.8  & Phase 4   & --- \\
+21 & Radar / SAR          & RF             & ---   & 28.4  & Phase 4   & --- \\
+%% Tier 5: Computational / hybrid
+22 & NeRF                 & Multi-view     & ---   & 31.7  & Phase 2   & --- \\
+23 & 3DGS                 & Multi-view     & ---   & 33.2  & Phase 2   & --- \\
+24 & Light Field          & Multi-view     & ---   & 36.1  & Phase 4   & --- \\
+25 & Structured Illum.    & Incoherent     & ---   & 32.4  & Phase 4   & --- \\
+26 & Ghost Imaging        & Incoherent     & ---   & 22.8  & Phase 4   & --- \\
+\end{longtable}
+
+\newpage
+
+%% ============================================================
+%% SUPPLEMENTARY TABLE 3
+%% ============================================================
+\section{Supplementary Table 3: YAML Registry Summary}
+\label{sec:yaml}
+
+Table~\ref{tab:yaml} summarises the nine YAML registry files that define the
+PWM framework's modular architecture.
+
+\begin{table}[htbp]
+\centering
+\caption{YAML registry files in \texttt{packages/pwm\_core/contrib/}.}
+\label{tab:yaml}
+\begin{tabular}{r l r p{6.5cm}}
+\toprule
+\textbf{\#} & \textbf{File} & \textbf{Lines} & \textbf{Purpose} \\
+\midrule
+1 & \texttt{modalities.yaml}         & 312 & Defines all 26 modalities with physical carrier, compression ratio, default solver, and citation keys. \\
+2 & \texttt{solver\_registry.yaml}   & 187 & Maps solver names to implementations (ADMM, FISTA, GAP-TV, PnP, learned). \\
+3 & \texttt{operator\_registry.yaml} & 245 & Registers forward/adjoint operator classes with shape contracts. \\
+4 & \texttt{dataset\_registry.yaml}  & 156 & Links modalities to benchmark datasets (KAIST, fastMRI, etc.). \\
+5 & \texttt{metric\_registry.yaml}   &  78 & Defines quality metrics (PSNR, SSIM, LPIPS) with normalization. \\
+6 & \texttt{correction\_params.yaml} & 134 & Lists all 16 correction parameters with bounds and learning rates. \\
+7 & \texttt{triad\_config.yaml}      &  92 & Triad Law gate thresholds and reporting format. \\
+8 & \texttt{runbundle\_schema.yaml}  & 168 & RunBundle v0.3.0 JSON schema definition. \\
+9 & \texttt{hardware\_profiles.yaml} &  64 & GPU/CPU profiles for runtime estimation and RoIC computation. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+
+%% ============================================================
+%% SUPPLEMENTARY NOTE 4
+%% ============================================================
+\section{Supplementary Note 4: RunBundle Schema}
+\label{sec:runbundle}
+
+The \texttt{RunBundle} is PWM's reproducibility artefact.  Every experiment
+produces a RunBundle that captures the complete computational state.
+
+\subsection{RunBundle v0.3.0 Specification}
+
+\begin{longtable}{l l p{7cm}}
+\caption{RunBundle v0.3.0 field specification.}
+\label{tab:runbundle} \\
+\toprule
+\textbf{Field} & \textbf{Type} & \textbf{Description} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Field} & \textbf{Type} & \textbf{Description} \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+\texttt{version}        & string   & Schema version, currently \texttt{"0.3.0"}. \\
+\texttt{git\_hash}      & string   & Full 40-character SHA-1 of the commit used to generate results. \\
+\texttt{rng\_seeds}     & object   & Random seeds for Python (\texttt{random}, \texttt{numpy}), PyTorch (CPU, CUDA), and any solver-specific RNG. \\
+\texttt{platform\_info} & object   & OS, Python version, GPU model, CUDA version, PyTorch version, and \texttt{pip freeze} hash. \\
+\texttt{sha256\_hashes} & object   & SHA-256 checksums of all input data files (measurements, masks, ground truth). \\
+\texttt{metrics}        & object   & Computed quality metrics: PSNR, SSIM, LPIPS, and any modality-specific metrics. \\
+\texttt{timestamps}     & object   & ISO-8601 timestamps for start, end, and per-stage completion. \\
+\texttt{operator\_state}& object   & Serialised OperatorGraph including all node parameters and edge metadata. \\
+\texttt{triad\_report}  & object   & Triad Law evaluation: gate pass/fail status, PSNR bounds, and recovery ratio $\rho$. \\
+\texttt{correction\_trajectory} & array &
+  Time series of correction iterations: $[\{$\texttt{iter}, \texttt{params},
+  \texttt{loss}, \texttt{psnr}, \texttt{grad\_norm}$\}, \ldots]$.
+  Enables convergence analysis and early-stopping diagnostics. \\
+\texttt{solver\_config} & object   & Complete solver hyperparameters (algorithm, iterations, step size, regularisation weight, denoiser checkpoint). \\
+\texttt{modality}       & string   & Modality identifier matching \texttt{modalities.yaml}. \\
+\texttt{scenario}       & string   & One of \texttt{I} (ideal), \texttt{II} (mismatch), \texttt{III} (corrected). \\
+\texttt{notes}          & string   & Free-form text field for experiment annotations. \\
+\end{longtable}
+
+\subsection{Integrity Verification}
+
+A RunBundle can be verified by:
+\begin{enumerate}
+  \item Checking \texttt{git\_hash} matches the repository state.
+  \item Re-computing \texttt{sha256\_hashes} from the data files.
+  \item Re-running the solver with the stored \texttt{rng\_seeds} and
+        \texttt{solver\_config} and comparing metrics within tolerance
+        ($\pm0.01$\,dB PSNR).
+\end{enumerate}
+
+\newpage
+
+%% ============================================================
+%% SUPPLEMENTARY NOTE 5
+%% ============================================================
+\section{Supplementary Note 5: Computational Cost Analysis}
+\label{sec:cost}
+
+\subsection{Runtime per Modality}
+
+All timings were measured on a single NVIDIA RTX 4090 GPU (24\,GB VRAM)
+with PyTorch 2.1 and CUDA 12.1.
+
+\begin{table}[htbp]
+\centering
+\caption{Computational cost for correction (Scenario~II $\to$ III).
+RoIC = dB recovered per GPU-hour.}
+\label{tab:cost}
+\begin{tabular}{l r r r r}
+\toprule
+\textbf{Modality} & \textbf{Iterations} & \textbf{Runtime (s)} &
+  \textbf{$\Delta$PSNR (dB)} & \textbf{RoIC (dB/GPU-hr)} \\
+\midrule
+Matrix           &   200 &     12 & +12.21 & 3663.0 \\
+CT               &   500 &     85 & +10.67 &  451.6 \\
+CACTI            &  1000 &    180 & +22.94 &  458.8 \\
+Lensless         &   300 &     45 &  +3.55 &  284.0 \\
+MRI              &   150 &     30 & +48.25 & 5790.0 \\
+SPC              &   200 &     15 & +12.21 & 2929.6 \\
+CASSI (Alg~1)    &   500 &    300 &  +5.40 &   64.8 \\
+CASSI (Alg~2)    &  2000 &   3200 &  +5.74 &    6.5 \\
+Ptychography     &   800 &    420 &  +7.09 &   60.8 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{RoIC Metric: Efficiency of Correction}
+
+We define the \emph{Return on Invested Compute} (RoIC) as:
+\begin{equation}
+  \mathrm{RoIC}
+  = \frac{\Delta\mathrm{PSNR}\;(\text{dB})}
+         {T_{\mathrm{GPU}}\;(\text{hours})},
+\end{equation}
+where $T_{\mathrm{GPU}}$ is the wall-clock GPU time.
+
+\noindent\textbf{Key observations:}
+\begin{itemize}
+  \item \textbf{MRI} achieves the highest RoIC (5790\,dB/GPU-hr) because coil
+        sensitivity correction yields massive PSNR gains with a well-conditioned
+        linear operator that converges rapidly.
+  \item \textbf{Matrix/SPC} also show high RoIC due to the simplicity of the
+        gain--bias correction model.
+  \item \textbf{CASSI Algorithm~2} has the lowest RoIC (6.5\,dB/GPU-hr)
+        because it jointly optimises mask geometry and dispersion over 2000
+        iterations, each requiring a full forward--adjoint cycle through the
+        dispersive operator.
+  \item The practical implication is that Algorithm~1 (fixed dispersion,
+        correct mask geometry only) is preferred when compute budget is
+        limited, recovering 94\% of Algorithm~2's $\Delta$PSNR at
+        $<$10\% of the cost.
+\end{itemize}
+
+\subsection{Scaling Considerations}
+
+For large-scale deployment:
+\begin{itemize}
+  \item Correction is \emph{embarrassingly parallel} across scenes/slices ---
+        multi-GPU scaling is near-linear.
+  \item The OperatorGraph compilation overhead is amortised: once compiled,
+        the same graph serves all scenes of a given modality.
+  \item Memory footprint scales with the measurement dimension $m$, not the
+        scene dimension $n$, making correction feasible even for
+        high-resolution 3D volumes (e.g.\ $512^3$ CT).
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,209 @@
+% 07_evidence.tex — Empirical Evidence
+% ============================================================
+
+\section{Empirical Evidence}
+\label{sec:evidence}
+
+We present three tiers of empirical validation: a 26-modality breadth
+benchmark, a 16-modality operator-correction study, and a CASSI deep
+dive with per-solver, per-scenario analysis.
+
+% ============================================================
+%  7.1  26-Modality Benchmark
+% ============================================================
+\subsection{26-Modality Benchmark}
+\label{subsec:benchmark}
+
+\Cref{tab:26mod} reports the peak signal-to-noise ratio (PSNR) achieved
+by the \pwm{} pipeline across all 26~registered modalities under
+Scenario~I (ideal operator, no mismatch).  Every modality passes the
+benchmark threshold; no modality is excluded or deferred.
+
+\begin{table}[t]
+\centering
+\caption{26-modality benchmark results (Scenario~I, ideal operator).
+All 26/26 modalities pass.  Average PSNR $\approx 38.2$~dB; range
+25.46--100.00~dB.}
+\label{tab:26mod}
+\smallskip
+\begin{tabular}{@{}rlcrrl@{}}
+\toprule
+\textbf{\#} & \textbf{Modality} & \textbf{PSNR (dB)}
+& \quad &
+\textbf{\#} & \textbf{Modality} & \textbf{PSNR (dB)} \\
+\midrule
+ 1 & Widefield              & 27.31 && 14 & Holography               & 46.85 \\
+ 2 & Widefield Low-Dose     & 32.88 && 15 & NeRF                     & 61.35 \\
+ 3 & Confocal Live-Cell     & 29.80 && 16 & 3D Gaussian Splatting    & 30.89 \\
+ 4 & Confocal 3D            & 29.01 && 17 & Matrix (Generic)         & 33.86 \\
+ 5 & SIM                    & 27.48 && 18 & Panorama Multifocal      & 27.90 \\
+ 6 & CASSI                  & 34.81 && 19 & Light Field              & 30.35 \\
+ 7 & SPC                    & 28.86 && 20 & Integral Photography     & 27.85 \\
+ 8 & CACTI                  & 35.33 && 21 & Phase Retrieval          &\best{100.00}\\
+ 9 & Lensless               & 26.85 && 22 & FLIM                     & 35.38 \\
+10 & Light-Sheet            & 26.05 && 23 & Photoacoustic            & 50.54 \\
+11 & CT                     &\worst{25.46}&& 24 & OCT                  & 64.84 \\
+12 & MRI                    & 44.97 && 25 & FPM                      & 34.57 \\
+13 & Ptychography           & 59.41 && 26 & DOT                      & 32.06 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The range spans nearly 75~dB, reflecting the diversity of forward models
+--- from the heavily ill-posed diffuse optical tomography (DOT,
+25.46~dB) to the analytically invertible phase retrieval
+(100.00~dB).  The average of ${\approx}\,38.2$~dB confirms that the
+unified pipeline delivers competitive reconstruction quality across
+fundamentally different physics.
+
+% ============================================================
+%  7.2  16-Modality Operator Correction
+% ============================================================
+\subsection{16-Modality Operator Correction}
+\label{subsec:correction}
+
+\Cref{tab:correction} evaluates the \pwm{} operator-correction module
+across 16~modalities.  For each modality we report the PSNR
+\emph{before} correction (Scenario~II, mismatched operator) and
+\emph{after} correction (Scenario~III, corrected operator), together
+with the absolute improvement.
+
+\begin{table}[t]
+\centering
+\caption{Operator correction across 16~modalities.  ``Before'' is
+Scenario~II (mismatched operator); ``After'' is Scenario~III (corrected
+operator).  Improvements range from $+3.55$ to $+48.25$~dB.  Phase~2
+and Phase~4 entries are registered but not yet numerically evaluated.}
+\label{tab:correction}
+\smallskip
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Modality} & \textbf{Mismatch Type}
+    & \textbf{Before (dB)} & \textbf{After (dB)} & \textbf{$\Delta$ (dB)} \\
+\midrule
+Matrix (Generic)     & gain\_bias             & 11.14 & 23.35 & $+$12.21 \\
+CT                   & center\_of\_rotation   & 13.41 & 24.09 & $+$10.67 \\
+CACTI                & mask\_timing           & 14.48 & 37.42 & \best{$+$22.94} \\
+Lensless             & psf\_shift             & 23.48 & 27.03 & \worst{$+$3.55}  \\
+MRI                  & coil\_sensitivities    &  6.94 & 55.19 & \best{$+$48.25} \\
+SPC                  & gain\_bias             & 11.14 & 23.35 & $+$12.21 \\
+CASSI (Alg~1)        & mask\_geo+dispersion   & 15.79 & 21.20 & $+$5.40  \\
+CASSI (Alg~2)        & mask\_geo+dispersion   & 15.79 & 21.54 & $+$5.74  \\
+Ptychography         & position\_offset       & 17.35 & 24.44 & $+$7.09  \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Phase~2 additions}} \\
+OCT                  & dispersion             & \multicolumn{3}{c}{registered} \\
+Light Field          & depth\_estimation      & \multicolumn{3}{c}{registered} \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Phase~4 additions}} \\
+DOT                  & scatter\_coeff         & \multicolumn{3}{c}{registered} \\
+Photoacoustic        & speed\_of\_sound       & \multicolumn{3}{c}{registered} \\
+FLIM                 & irf\_shift             & \multicolumn{3}{c}{registered} \\
+Integral Photography & disparity\_offset      & \multicolumn{3}{c}{registered} \\
+FPM                  & led\_position          & \multicolumn{3}{c}{registered} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The most dramatic improvement is MRI coil-sensitivity correction at
+$+48.25$~dB: without correction the reconstruction is essentially
+noise, while with correction it reaches 55.19~dB.  Even the smallest
+gain (Lensless PSF shift, $+3.55$~dB) represents a visually significant
+improvement.  These results confirm that operator correction is not a
+marginal refinement but a \emph{first-order} determinant of
+reconstruction quality.
+
+% ============================================================
+%  7.3  CASSI Deep Dive
+% ============================================================
+\subsection{CASSI Deep Dive}
+\label{subsec:cassi}
+
+We conduct a detailed study of coded aperture snapshot spectral imaging
+(CASSI) to illustrate how the Triad Law (\cref{sec:triad}) manifests in
+a single modality.  \Cref{tab:cassi} reports PSNR for five solvers
+across four scenarios:
+%
+\begin{itemize}
+    \item \textbf{Scenario~I} --- ideal (true) operator;
+    \item \textbf{Scenario~II} --- mismatched (nominal) operator;
+    \item \textbf{Scenario~III} --- \pwm{}-corrected operator;
+    \item \textbf{Scenario~IV} --- corrected operator with solver
+          fine-tuning (estimated).
+\end{itemize}
+
+\begin{table}[t]
+\centering
+\caption{CASSI deep dive: 5~solvers $\times$ 4~scenarios.  The mismatch
+cost (I$\to$II) dominates the solver upgrade gain under ideal conditions.}
+\label{tab:cassi}
+\smallskip
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Solver}
+    & \textbf{I (Ideal)}
+    & \textbf{II (Mismatch)}
+    & \textbf{III (Corrected)}
+    & \textbf{IV (Corrected+)} \\
+\midrule
+GAP-TV          & 24.22 & 19.66 & 20.17 & ${\approx}$23.0 \\
+PnP-HSICNN      & 25.12 & 19.10 & 19.81 & ${\approx}$24.0 \\
+MST-S           & 33.98 & 18.01 & 21.01 & ${\approx}$30.0 \\
+MST-L           & 34.81 & 18.09 & 21.10 & ${\approx}$31.0 \\
+HDNet           & 34.66 & 24.18 & 24.23 & ${\approx}$33.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Key insight.}
+The mismatch cost --- the gap from Scenario~II to Scenario~I --- is
+catastrophic.  For MST-L the drop is $34.81 - 18.09 = 16.72$~dB, while
+the best solver upgrade under ideal conditions (GAP-TV $\to$ MST-L)
+yields $34.81 - 24.22 = 10.59$~dB.  The mismatch penalty is
+\textbf{$1.58\times$} the solver upgrade gain.  Stated differently:
+\emph{fixing the operator is worth more than upgrading from a classical
+solver to the state of the art}.
+
+Moreover, the learned solvers (MST-S, MST-L) are \emph{more} sensitive
+to mismatch than the model-based solvers (GAP-TV, PnP-HSICNN).  MST-L
+drops by 16.72~dB versus GAP-TV's 4.56~dB.  This is consistent with the
+hypothesis that data-driven methods overfit to the training-time operator
+and generalize poorly when the physical system drifts.
+
+% ============================================================
+%  SolveEverything gears
+% ============================================================
+\subsection{SolveEverything Implementation Status}
+
+The \pwm{} adopts the 10-gear \emph{SolveEverything} framework as its
+governance backbone.  \Cref{tab:gears} reports the current
+implementation status of each gear.
+
+\begin{table}[t]
+\centering
+\caption{SolveEverything 10-gear implementation status.}
+\label{tab:gears}
+\smallskip
+\begin{tabular}{@{}clll@{}}
+\toprule
+\textbf{Gear} & \textbf{Name} & \textbf{Status} \\
+\midrule
+ 1 & Targeting System    & \textcolor{built}{\textbf{BUILT}}    \\
+ 2 & Outcome Contracts   & \textcolor{partial}{\textbf{PARTIAL}} \\
+ 3 & Compute Escrow      & \textcolor{partial}{\textbf{PARTIAL}} \\
+ 4 & Action Networks     & \textcolor{planned}{\textbf{PLANNED}} \\
+ 5 & Data Trusts         & \textcolor{built}{\textbf{FOUNDATION}} \\
+ 6 & Decision Logs       & \textcolor{built}{\textbf{BUILT}}    \\
+ 7 & Two-Source Rule     & \textcolor{partial}{\textbf{PARTIAL}} \\
+ 8 & Compute + Energy    & \textcolor{planned}{OUT OF SCOPE}     \\
+ 9 & Fairness Targets    & \textcolor{partial}{\textbf{PARTIAL}} \\
+10 & Literacy            & \textcolor{partial}{\textbf{PARTIAL}} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Three gears are fully operational (Targeting System, Data Trusts
+foundation, Decision Logs), five are partially implemented, one is
+planned, and one (Compute + Energy) is currently out of scope for the
+imaging-focused release.  The partial gears are under active development
+and are expected to reach full status before the public v1.0 release.

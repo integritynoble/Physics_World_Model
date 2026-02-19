@@ -1,0 +1,63 @@
+% 11_conclusion.tex — Conclusion
+% ============================================================
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+We began with a paradox: computational imaging possesses solvers of
+extraordinary power---deep unfolding networks that converge in seconds,
+diffusion priors that hallucinate plausible textures, implicit
+representations that compress entire scenes into coordinate
+functions---yet real-world deployments routinely fail.  Reconstructions
+that achieve 35+\,dB on simulated benchmarks collapse by 5--12\,dB when
+confronted with physical measurements.  The gap is not a solver problem.
+It is an infrastructure problem.
+
+For two decades, the field has been optimizing the wrong layer.  It has
+poured resources into the \emph{train}---faster architectures, cleverer
+loss functions, larger training sets---while neglecting the
+\emph{rail}: the calibrated forward operators, standardized evaluation
+protocols, and diagnostic tools that determine whether a solver's
+theoretical performance survives contact with reality.
+
+This paper introduced PWM, the Physics World Model, as the rail for
+computational imaging.  The contributions are concrete and measurable:
+
+\begin{itemize}
+  \item \textbf{64 modalities} formalized as composable
+        \texttt{OperatorGraph} templates, each encoding the physics of
+        measurement rather than approximating it.
+  \item \textbf{89 OperatorGraph templates} that decompose forward models
+        into calibratable, swappable subgraphs---making operator
+        correction a modular operation rather than a monolithic
+        reimplementation.
+  \item \textbf{The four-scenario evaluation protocol}
+        (Ideal / Baseline / Oracle / Full-Pipeline), which for the first
+        time separates solver error from operator error and quantifies
+        the recovery ratio of any pipeline.
+  \item \textbf{LIP-Arena and the Triad Law}, providing real-time
+        leaderboard ranking and a diagnostic framework that decomposes
+        reconstruction failure into sensing, inversion, and prior
+        components.
+\end{itemize}
+
+The evidence is unambiguous.  Across the 26-modality benchmark,
+operator correction alone improved reconstruction quality by +0.8 to
++48.25\,dB on 16 modalities---gains that no solver upgrade can
+replicate.  The CASSI deep-dive was particularly revealing: correcting
+the operator produced a 7$\times$ larger quality improvement than
+upgrading the solver architecture.  The bottleneck was never the
+algorithm.  It was the physics encoding.
+
+These results carry a temporal urgency.  The foundry window described in
+\cref{sec:roadmap} is open now but will not remain so.  Within
+18~months, the evaluation norms of computational imaging will
+solidify---either around principled, physics-aware infrastructure, or
+around the fragmented, simulation-only benchmarks that have defined the
+field to date.  The QWERTY effect guarantees that whichever protocol is
+adopted first by a critical mass of laboratories will become permanent.
+
+\medskip
+\noindent
+A problem is solved when the bottleneck shifts from genius to compute.
+PWM provides the infrastructure for that shift.

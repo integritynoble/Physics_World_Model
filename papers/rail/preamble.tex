@@ -1,0 +1,67 @@
+% preamble.tex — Rail Paper preamble
+% ============================================================
+
+\documentclass[11pt]{article}
+
+% ---------- Page geometry ----------
+\usepackage[margin=1in]{geometry}
+
+% ---------- Core packages ----------
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% ---------- Tables ----------
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+
+% ---------- Figures / sub-figures ----------
+\usepackage{subcaption}
+
+% ---------- Colors ----------
+\usepackage{xcolor}
+
+% ---------- Drawing / plots ----------
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% ---------- Hyperlinks & cross-references ----------
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks  = true,
+    linkcolor   = blue!70!black,
+    citecolor   = green!50!black,
+    urlcolor    = blue!60!black,
+}
+\usepackage{cleveref}
+
+% ---------- Epigraphs ----------
+\usepackage{epigraph}
+
+% ---------- Bibliography ----------
+\usepackage{natbib}
+
+% ============================================================
+%  Custom colors — status indicators
+% ============================================================
+\definecolor{built}{RGB}{34,139,34}       % forest green
+\definecolor{partial}{RGB}{230,159,0}     % orange
+\definecolor{planned}{RGB}{150,150,150}   % gray
+
+% ============================================================
+%  Custom commands
+% ============================================================
+
+% Highlight best / worst results in tables
+\newcommand{\best}[1]{\textcolor{built}{\textbf{#1}}}
+\newcommand{\worst}[1]{\textcolor{red}{#1}}
+
+% Shorthand for Physics World Model
+\newcommand{\pwm}{Physics World Model}
+
+% Common Latin abbreviations (with italic formatting)
+\newcommand{\ie}{\textit{i.e.}}
+\newcommand{\eg}{\textit{e.g.}}
+\newcommand{\etc}{\textit{etc.}}
