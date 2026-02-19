@@ -41,7 +41,7 @@
 % ============================================================================
 \begin{abstract}
 Compressive imaging faces a critical \emph{sim-to-real crisis}: models trained on idealized forward operators fail catastrophically when deployed on real hardware.
-Operator mismatch---the discrepancy between assumed and true forward measurement operators---degrades reconstruction by 10--21\,dB, yet no existing benchmark measures this effect.
+Operator mismatch---the gap between assumed and true forward operators---degrades deep learning reconstruction by 10--21\,dB, yet no existing benchmark measures this effect.
 We introduce \textbf{InverseNet}, the first cross-modality benchmark for operator mismatch in compressive imaging, spanning coded aperture snapshot spectral imaging (CASSI), coded aperture compressive temporal imaging (CACTI), and single-pixel camera (SPC).
 InverseNet evaluates 11 reconstruction methods under a standardized three-scenario protocol---ideal~(I), mismatched~(II), and oracle-corrected~(III)---across 27 test scenes and over 240 experiments.
 We discover an inverse performance--robustness relationship: methods achieving the highest ideal PSNR suffer the largest mismatch degradation---confirming that \emph{a mediocre algorithm with a correct forward model outperforms a state-of-the-art network with a wrong one}.
@@ -455,7 +455,7 @@ This is consistent with the multiplicative nature of gain drift, which affects a
 \midrule
 CASSI  & 5 & 3.38--13.98 & 0.00--6.50 & 46.5\% & MST-L \\
 CACTI  & 8 & 10.94--20.58 & 10.21--13.96 & 93.3\% & GAP-TV \\
-SPC    & 1 & 9.55--12.83 & 7.71--10.38 & 89.6\% & HATNet \\
+SPC    & 2 & 9.55--12.83 & 7.71--10.38 & 89.6\% & HATNet \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -498,7 +498,7 @@ SPC    & 1 & 9.55--12.83 & 7.71--10.38 & 89.6\% & HATNet \\
 
 \paragraph{Mismatch severity ranking.}
 CACTI suffers the most severe degradation (10.94--20.58\,dB), followed by CASSI (3.38--13.98\,dB) and SPC (9.55--12.83\,dB).
-The CACTI severity is driven by its high-dimensional mismatch space (8~parameters vs.\ 5 for CASSI and effectively 1 for SPC), where spatial, temporal, and radiometric errors compound.
+The CACTI severity is driven by its high-dimensional mismatch space (8~parameters vs.\ 5 for CASSI and 2 for SPC), where spatial, temporal, and radiometric errors compound.
 With the 5-parameter mismatch model, CASSI now surpasses SPC in maximum degradation, driven by the dispersion parameters ($a_1$, $\alpha$) which create cumulative sub-pixel shifts across spectral bands.
 For CASSI, the range reflects the architectural divide: GAP-TV's iterative optimization adapts partially to the corrupted measurement (3.38\,dB loss), while mask-aware deep networks lose over 13\,dB.
 
