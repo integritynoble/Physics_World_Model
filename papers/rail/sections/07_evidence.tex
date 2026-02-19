@@ -143,18 +143,18 @@ across three scenarios plus a projected fine-tuned estimate:
 \begin{itemize}
     \item \textbf{Scenario~I} --- ideal (true) operator;
     \item \textbf{Scenario~II} --- mismatched (nominal) operator;
-    \item \textbf{Scenario~III (Oracle Mask)} --- true operator applied to
+    \item \textbf{Oracle Mask} --- true operator applied to
           mismatched data, representing the upper bound on correction;
     \item \textbf{Estimated} --- oracle operator with additional solver
           fine-tuning (projected, not a formal scenario).
 \end{itemize}
 %
-\noindent Scenario~IV (Oracle sanity check) reproduces Scenario~I by design for CASSI and is omitted for brevity.  Scenario~III values are InverseNet-validated~\cite{yang2026inversenet}.
+\noindent Scenario~IV (Oracle sanity check) reproduces Scenario~I by design for CASSI and is omitted for brevity.  Oracle Mask values are InverseNet-validated~\cite{yang2026inversenet}.
 
 \begin{table}[t]
 \centering
 \caption{CASSI deep dive: 5~solvers $\times$ 3~scenarios + projected fine-tuned estimate.  The mismatch
-cost (I$\to$II) dominates the solver upgrade gain under ideal conditions.  Scenario~III reports Oracle Mask reconstruction (true operator on mismatched data); Scenario~IV reproduces Scenario~I by design and is omitted for brevity.}
+cost (I$\to$II) dominates the solver upgrade gain under ideal conditions.  Oracle Mask$^\S$ reports reconstruction with the true operator on mismatched data; Scenario~IV reproduces Scenario~I by design and is omitted for brevity.}
 \label{tab:cassi}
 \smallskip
 \begin{tabular}{@{}lcccc@{}}
@@ -162,7 +162,7 @@ cost (I$\to$II) dominates the solver upgrade gain under ideal conditions.  Scena
 \textbf{Solver}
     & \textbf{I (Ideal)}
     & \textbf{II (Mismatch)}
-    & \textbf{III (Oracle Mask)}
+    & \textbf{Oracle Mask$^\S$}
     & \textbf{Est.\ Fine-tuned}$^\dagger$ \\
 \midrule
 GAP-TV~\cite{yuan2016gaptv}   & 24.34 & 20.96 & 21.72 & ${\approx}$23.5 \\
@@ -180,6 +180,9 @@ HDNet~\cite{hu2022hdnet}     & 34.66 & 21.88 & 21.88 & ${\approx}$33.0 \\
 \smallskip
 {\footnotesize $\ddagger$~PnP-HSICNN has not been re-validated under the InverseNet 5-parameter mismatch; values shown are from prior experiments.  All other rows are InverseNet-validated~\cite{yang2026inversenet}.}
 
+\smallskip
+{\footnotesize $\S$~Oracle Mask values represent reconstruction with the true operator applied to mismatched data (InverseNet Scenario~III), providing an upper bound on what any correction algorithm can achieve.  These correspond to the formal Scenario~IV definition in the 4-Scenario Protocol.}
+
 \paragraph{Key insight.}
 The mismatch cost --- the gap from Scenario~I to Scenario~II --- is
 catastrophic.  For MST-L the drop is $34.81 - 20.83 = 13.98$~dB, while
@@ -194,9 +197,9 @@ to mismatch than the model-based solvers (GAP-TV, PnP-HSICNN).  MST-L
 drops by 13.98~dB versus GAP-TV's 3.38~dB.  This is consistent with the
 hypothesis that data-driven methods overfit to the training-time operator
 and generalize poorly when the physical system drifts.  Notably, the
-Oracle Mask (Scenario~III) substantially recovers MST-L to 27.33~dB
-($+6.50$~dB), while HDNet sees zero recovery (21.88~dB in both Scenarios
-II and III), confirming that HDNet is mask-oblivious.
+Oracle Mask$^\S$ substantially recovers MST-L to 27.33~dB
+($+6.50$~dB), while HDNet sees zero recovery (21.88~dB in both Scenario~II
+and the Oracle Mask column), confirming that HDNet is mask-oblivious.
 
 % ============================================================
 %  SolveEverything gears

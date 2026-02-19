@@ -173,9 +173,9 @@ II  & Assumed/Mismatch    & $\mathbf{H}$    & $\mathbf{H}_{\mathrm{nom}}$
 III & Corrected  & $\mathbf{H}$    & $\hat{\mathbf{H}}$
     & Calibration benefit: how much performance is recovered by
       estimating the true operator. \\
-IV  & Oracle Mask & $\mathbf{H}$ & $\mathbf{H}$ (mask only)
-    & Partial oracle bound: true mask with nominal dispersion, isolating
-      the mask contribution. \\
+IV  & Oracle Mask & $\mathbf{H}$ & $\mathbf{H}$
+    & Partial oracle bound: true operator applied to mismatched data,
+      verifying pipeline integrity. \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -211,11 +211,11 @@ calibration.
 It answers: \emph{how much does calibration help?}
 
 \paragraph{Scenario IV (Oracle Mask).}
-A partial oracle condition in which the true mask is provided but
-dispersion parameters remain at their nominal values.
-This scenario isolates the contribution of mask knowledge versus
-dispersion knowledge, enabling diagnostic analysis of which mismatch
-axis matters most.
+A partial oracle condition in which the true operator is applied to
+mismatched data, verifying pipeline integrity and providing an upper
+bound on what any correction algorithm can achieve.
+This scenario enables diagnostic analysis of which mismatch axis
+matters most.
 It answers: \emph{which operator component is the bottleneck?}
 
 \paragraph{Derived metrics.}
