@@ -96,7 +96,7 @@ We address this gap with InverseNet, which makes three contributions:
     \item \textbf{Open dataset.} We publicly release all reconstruction arrays, per-scene metrics (PSNR, SSIM, SAM), and analysis code at \url{https://github.com/integritynoble/Physics_World_Model} to enable reproducible operator-mismatch research. All underlying test data come from existing public datasets.
 \end{enumerate}
 
-Our key findings include: (a)~operator mismatch degrades deep learning methods by 10--21\,dB while classical methods lose only 0.1--11\,dB; (b)~mask-aware architectures (MST, ELP-Unfolding) are simultaneously the most sensitive to mismatch and the most recoverable through calibration; (c)~mask-oblivious architectures (HDNet) show zero calibration benefit; (d)~CACTI exhibits the most severe mismatch degradation (up to 20.58\,dB) due to its multi-parameter mismatch space; (e)~dispersion mismatch in CASSI creates larger degradation than mask spatial mismatch alone, with limited oracle recoverability due to fixed-step architectural assumptions.
+Our key findings include: (a)~operator mismatch degrades deep learning methods by 10--21\,dB while classical methods lose only 3--11\,dB; (b)~mask-aware architectures (MST, ELP-Unfolding) are simultaneously the most sensitive to mismatch and the most recoverable through calibration; (c)~mask-oblivious architectures (HDNet) show zero calibration benefit; (d)~CACTI exhibits the most severe mismatch degradation (up to 20.58\,dB) due to its multi-parameter mismatch space; (e)~dispersion mismatch in CASSI creates larger degradation than mask spatial mismatch alone, with limited oracle recoverability due to fixed-step architectural assumptions.
 
 % ============================================================================
 % 2. RELATED WORK
@@ -189,7 +189,7 @@ We use $dx = 0.5$\,px, $dy = 0.3$\,px, $\theta = 0.1^\circ$ for mask misalignmen
 
 \paragraph{Reconstruction methods.}
 We evaluate four methods:
-\textbf{GAP-TV}~\cite{yuan2016gaptv}: classical accelerated proximal gradient with TV regularization (100 iterations, $\lambda_{\text{TV}} = 4.0$);
+\textbf{GAP-TV}~\cite{yuan2016gaptv}: classical accelerated proximal gradient with TV regularization (100 iterations, $\lambda_{\text{TV}} = 0.1$);
 \textbf{HDNet}~\cite{hu2022hdnet}: dual-domain deep network with spectral discrimination learning (pretrained);
 \textbf{MST-S}~\cite{cai2022mst}: mask-guided spectral transformer, small variant (2 stages, blocks $[2,2,2]$, pretrained);
 \textbf{MST-L}~\cite{cai2022mst}: mask-guided spectral transformer, large variant (2 stages, blocks $[4,7,5]$, pretrained).
@@ -453,7 +453,7 @@ This is consistent with the multiplicative nature of gain drift, which affects a
 \toprule
 \textbf{Modality} & \textbf{Mismatch dim.} & $\boldsymbol{\Delta}_{\textbf{deg}}$ \textbf{range} & $\boldsymbol{\Delta}_{\textbf{rec}}$ \textbf{range} & $\boldsymbol{\rho}_{\textbf{best}}$ & \textbf{Best method} \\
 \midrule
-CASSI  & 5 & 0.10--13.98 & 0.00--6.50 & 46.5\% & MST-L \\
+CASSI  & 5 & 3.38--13.98 & 0.00--6.50 & 46.5\% & MST-L \\
 CACTI  & 8 & 10.94--20.58 & 10.21--13.96 & 93.3\% & GAP-TV \\
 SPC    & 1 & 9.55--12.83 & 7.71--10.38 & 89.6\% & HATNet \\
 \bottomrule
