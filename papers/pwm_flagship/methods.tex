@@ -437,8 +437,10 @@ isolate different sources of quality degradation:
 \begin{description}
   \item[Scenario~I (Ideal):]
     $\yobs = \Htrue\, \xgt$; reconstruct with $\Htrue$.
-    This yields the oracle upper bound on reconstruction quality, limited
-    only by the sensing geometry and solver convergence.
+    In this scenario the system is perfectly calibrated ($\Htrue = \Hnom$),
+    so the operator used for reconstruction matches the one that generated
+    the data.  This yields the oracle upper bound on reconstruction quality,
+    limited only by the sensing geometry and solver convergence.
   \item[Scenario~II (Mismatch):]
     $\yobs = \Htrue\, \xgt$; reconstruct with $\Hnom$
     ($\Hnom \neq \Htrue$).
