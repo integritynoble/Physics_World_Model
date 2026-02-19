@@ -21,9 +21,10 @@ NextGen PlatformAI C Corp\\
 \begin{abstract}
 The computational imaging community has built increasingly powerful
 reconstruction algorithms, yet real-world deployments routinely fail.
-We show that a single pixel of operator mismatch---well within
+We show that a sub-pixel operator mismatch---a 0.5-pixel mask shift
+with 0.1\textdegree{} rotation and 1\% dispersion drift, well within
 manufacturing tolerances---degrades the state-of-the-art coded aperture snapshot spectral imaging (CASSI)
-transformer (MST-L) by 16.72\,dB, erasing more than a decade of
+transformer (MST-L) by 13.98\,dB, erasing more than a decade of
 algorithmic progress.
 This paper argues that the bottleneck is not the solver but the
 infrastructure around it: evaluation protocols, physics representations,
@@ -39,7 +40,7 @@ operator fidelity;
 eliminating benchmark overfitting; and
 (iv)~a Red Team adversarial verification module.
 Across a 26-modality benchmark, we demonstrate that operator correction
-improves reconstruction by $+3.55$ to $+48.25$\,dB across 9 correction configurations spanning 7 distinct modalities, with mismatch (Gate~3) identified as the binding constraint
+improves reconstruction by $+0.54$ to $+48.25$\,dB across 9 correction configurations spanning 7 distinct modalities, with mismatch (Gate~3) identified as the binding constraint
 in every modality tested.\footnote{With full cross-solver validation for CASSI; other modalities assessed by absolute mismatch magnitude.}
 PWM provides the infrastructure to move computational imaging from
 artisanal practice to industrial standardization.

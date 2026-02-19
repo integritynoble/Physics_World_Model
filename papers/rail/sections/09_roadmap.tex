@@ -150,7 +150,7 @@ across four key performance indicators.
 \toprule
 \textbf{Metric} & \textbf{Current} & \textbf{L3 Target} & \textbf{L5 Target} \\
 \midrule
-Recovery ratio        & 0.18--1.0+ & 80\%+    & 95\%+    \\
+Recovery ratio        & 0.22--1.0+ & 80\%+    & 95\%+    \\
 Oracle gap            & 5--12\,dB  & $\leq$2\,dB   & $\leq$0.5\,dB  \\
 Modalities covered    & 64         & 100+     & 200+     \\
 Zero-shot generalization & 0\%     & 50\%+    & 90\%+    \\
@@ -161,7 +161,7 @@ Zero-shot generalization & 0\%     & 50\%+    & 90\%+    \\
 \noindent
 \textbf{Recovery ratio} $\rho$ measures the fraction of the mismatch-induced
 degradation that is recovered by operator correction, as defined in
-Eq.~\ref{eq:recovery}; the range varies widely by modality (e.g., CASSI $\approx 0.18$, reflecting the challenging nature of CASSI mismatch correction---notably below the 0.30 safety brake threshold, which applies to arena submissions rather than inherent modality limitations; CACTI $> 1.0$).  \textbf{Oracle gap} is the PSNR difference between Scenario~I
+Eq.~\ref{eq:recovery}; the range varies widely by modality (e.g., CASSI $\approx 0.225$ with Oracle Mask correction, reflecting the challenging nature of CASSI mismatch correction---notably below the 0.30 safety brake threshold, which applies to arena submissions rather than inherent modality limitations; CACTI $> 1.0$).  \textbf{Oracle gap} is the PSNR difference between Scenario~I
 (Ideal) and Scenario~III (Corrected).  \textbf{Zero-shot generalization} measures reconstruction
 quality on a modality unseen during solver training, evaluated via the
 mask-sensitivity spectrum transfer protocol.
