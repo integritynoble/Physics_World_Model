@@ -449,12 +449,13 @@ isolate different sources of quality degradation:
     $\hat{H} = H(\hat{\boldsymbol{\theta}})$ where
     $\hat{\boldsymbol{\theta}}$ is estimated by Algorithms~1 and~2.
     This quantifies the benefit of mismatch calibration.
-  \item[Scenario~IV (Oracle sanity check):]
-    $\yobs = \Htrue\, \xgt$; reconstruct with $\Htrue$ through the
-    full correction pipeline (bypassing the correction step but
-    executing all pre- and post-processing stages).  Verifies that
-    the pipeline introduces no artifacts and reproduces Scenario~I
-    results to within $\pm 0.01$\,dB.
+  \item[Scenario~IV (Oracle Mask):]
+    $\yobs = \Htrue\, \xgt$; reconstruct with $\Htrue$.
+    Provides the correction ceiling: the best reconstruction
+    achievable when the true operator is known exactly, applied to
+    data generated under mismatch conditions.  The gap between
+    Scenario~IV and Scenario~I reveals the irreducible loss from
+    mismatch-induced measurement degradation.
 \end{description}
 
 \paragraph{Metrics.}

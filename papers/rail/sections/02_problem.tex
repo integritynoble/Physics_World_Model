@@ -39,15 +39,15 @@ In \textbf{Scenario~III (Corrected)}, a calibrated operator
 $\hat{\mathbf{H}}$ is used for reconstruction, obtained via a
 lightweight calibration procedure.
 The \textbf{Degradation} column reports the drop from Scenario~I to
-Scenario~II; the \textbf{Calibration Gain} column reports the
-improvement from Scenario~II to Scenario~III.
+Scenario~II; the \textbf{Oracle Gain} column reports the
+improvement from Scenario~II to Scenario~IV (Oracle Mask).
 
 \begin{table}[t]
 \centering
 \caption{%
   \textbf{Mask-sensitivity spectrum for CASSI reconstruction methods.}
   Ideal PSNR (Scenario~I), Mismatch PSNR (Scenario~II), Degradation
-  (I$\to$II), and Calibration Gain (II$\to$III).
+  (I$\to$II), and Oracle Gain (II$\to$IV).
   All values in dB, averaged over 10 test scenes.
   Neural solvers (MST-S, MST-L, HDNet) exhibit dramatically larger
   mismatch degradation than classical methods (GAP-TV, PnP-HSICNN),
@@ -61,7 +61,7 @@ improvement from Scenario~II to Scenario~III.
   & \textbf{Ideal (I)}
   & \textbf{Mismatch (II)}
   & \textbf{Degradation}
-  & \textbf{Calib.\ Gain} \\
+  & \textbf{Oracle Gain} \\
 \midrule
 GAP-TV~\cite{yuan2016gaptv}
   & 24.34  & 20.96  & \worst{$-3.38$}   & $+0.76$ \\

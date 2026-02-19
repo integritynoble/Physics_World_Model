@@ -381,7 +381,7 @@ five representative methods under four scenarios.\footnote{The solver subset use
 \begin{longtable}{l l r r r r}
 \caption{CASSI per-scene PSNR (dB).  Sc.~I = ideal forward model;
 Sc.~II = mismatched (baseline); Sc.~III-A1 = correction Algorithm~1; Sc.~IV (Oracle) = ground-truth operator through full pipeline.
-GAP-TV values for Sc.~I, Sc.~II, and Sc.~IV are from InverseNet validation~\cite{yang2026inversenet}. Sc.~III-A1 entries marked $^*$ use InverseNet Oracle Mask values (true operator on mismatched data) as upper bounds; Algorithm~1 re-validation under the 5-parameter mismatch is pending. Sc.~IV reproduces Sc.~I by design ($\pm 0.01$~dB).
+GAP-TV values for Sc.~I, Sc.~II, and Sc.~III-A1 are from InverseNet validation~\cite{yang2026inversenet}. Sc.~III-A1 entries marked $^*$ use InverseNet Oracle Mask values (true operator on mismatched data) as upper bounds; Algorithm~1 re-validation under the 5-parameter mismatch is pending. The Sc.~IV column in this table reports a pipeline sanity check (true operator through the full pipeline), verifying no artifacts are introduced ($\pm 0.01$~dB from Sc.~I). Note: the main text defines Scenario~IV as the Oracle Mask (correction ceiling); the oracle correction values for GAP-TV are reported in the Sc.~III-A1 column.
 Other methods (TwIST, DeSCI, MST, HDNet) have \emph{not} been re-validated under the InverseNet mismatch and retain values from prior experiments with a different mismatch configuration.
 Algorithm~2 results are reported in the correction parameter table (Table~\ref{tab:correction_params}).}
 \label{tab:cassi_scenes} \\
@@ -605,7 +605,7 @@ produces a RunBundle that captures the complete computational state.
   Enables convergence analysis and early-stopping diagnostics. \\
 \texttt{solver\_config} & object   & Complete solver hyperparameters (algorithm, iterations, step size, regularization weight, denoiser checkpoint). \\
 \texttt{modality}       & string   & Modality identifier matching \texttt{modalities.yaml}. \\
-\texttt{scenario}       & string   & One of \texttt{I} (ideal), \texttt{II} (mismatch), \texttt{III} (corrected), \texttt{IV} (oracle). \\
+\texttt{scenario}       & string   & One of \texttt{I} (ideal), \texttt{II} (mismatch), \texttt{III} (corrected), \texttt{IV} (oracle\_mask). \\
 \texttt{notes}          & string   & Free-form text field for experiment annotations. \\
 \end{longtable}
 
