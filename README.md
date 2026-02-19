@@ -24,7 +24,7 @@ PWM is designed to be:
 
 **Core Concepts**
 - [PWM = Harness + Best Methods](#pwm--harness--best-methods) — the rail vs the trains
-- [The Rails: SolveEverything Implementation](#the-rails-solveeverything-implementation) — 10-gear framework
+- [The Rails: SolveEverything Implementation](#the-rails-solveeverything-implementation) — 10-gear framework + LIP-Arena targeting system
 - [Physics Fidelity Ladder](#physics-fidelity-ladder) — 4-tier operator hierarchy
 - [4-Scenario Evaluation Protocol](#4-scenario-evaluation-protocol) — how methods are scored
 
@@ -42,12 +42,14 @@ PWM is designed to be:
 - [Modality Coverage](#modality-coverage) — 64-modality catalog
 - [Benchmark Results](#benchmark-results-26-modalities-with-psnr-table) — PSNR/SSIM tables
 
+**Community**
+- [Community & Contributing](#community--contributing) — 4 contribution levels, weekly challenges, calibration sprints
+- [Documentation Index](#documentation-index)
+
 **Reference**
 - [Repository layout](#repository-layout)
 - [YAML Registries](#yaml-registries)
 - [Embedding into AI_Scientist](#embedding-into-ai_scientist)
-- [Community & Contributing](#community--contributing)
-- [Documentation Index](#documentation-index)
 - [License](#license) / [Citation](#citation)
 
 ---
@@ -80,23 +82,52 @@ pwm evaluate --method my_solver --modality cassi --scenarios I,II,III,IV
 
 ## The Rails: SolveEverything Implementation
 
-PWM implements the [SolveEverything.org](https://solveeverything.org/) framework's 10 gears
-as a concrete reference trail. See [`rails/`](rails/) for the complete mapping:
+PWM is the first repository that implements all 10 gears of the [SolveEverything.org](https://solveeverything.org/) abundance engine as a concrete, runnable reference for **computational imaging**: 64 modalities, 89 graph templates, 43+ solvers, a built-in adversarial evaluation harness (LIP-Arena), and a complete audit trail (RunBundle + DR-IS). See [`rails/`](rails/) for the complete mapping:
 
 | Gear | Status | PWM Implementation |
 |------|--------|--------------------|
-| 1. Targeting System | **BUILT** | LIP-Arena, 4-scenario protocol, `pwm evaluate` |
-| 2. Outcome Contracts | **PARTIAL** | Recovery ratio, oracle gap, RoIC metrics |
-| 3. Compute Escrow | **PARTIAL** | BudgetState, 2x enforcement |
-| 4. Action Networks | **PLANNED** | Software actuation for 16 modalities |
-| 5. Data Trusts | **FOUNDATION** | Dataset registry, synthetic-first |
-| 6. Decision Logs | **BUILT** | DR-IS, RunBundle v0.3.0, SHA-256 |
-| 7. Two-Source Rule | **PARTIAL** | Multi-solver portfolio, safety brakes |
-| 8. Compute + Energy | **OUT OF SCOPE** | RoIC makes compute measurable |
-| 9. Fairness Targets | **PARTIAL** | Tail-risk scoring, anti-Goodhart |
-| 10. Literacy | **PARTIAL** | 26 working-process docs, quickstart |
+| 1. [Targeting System](rails/gear01_targeting_system.md) | **BUILT** | LIP-Arena, 4-scenario protocol, `pwm evaluate` |
+| 2. [Outcome Contracts](rails/gear02_outcome_contracts.md) | **PARTIAL** | Recovery ratio, oracle gap, RoIC metrics |
+| 3. [Compute Escrow](rails/gear03_compute_escrow.md) | **PARTIAL** | BudgetState, 2x enforcement |
+| 4. [Action Networks](rails/gear04_action_networks.md) | **PLANNED** | Software actuation for 16 modalities |
+| 5. [Data Trusts](rails/gear05_data_trusts.md) | **FOUNDATION** | Dataset registry, synthetic-first |
+| 6. [Decision Logs](rails/gear06_decision_logs.md) | **BUILT** | DR-IS, RunBundle v0.3.0, SHA-256 |
+| 7. [Two-Source Rule](rails/gear07_two_source_rule.md) | **PARTIAL** | Multi-solver portfolio, safety brakes |
+| 8. [Compute + Energy](rails/gear08_compute_energy.md) | **OUT OF SCOPE** | RoIC makes compute measurable |
+| 9. [Fairness Targets](rails/gear09_fairness_targets.md) | **PARTIAL** | Tail-risk scoring, anti-Goodhart |
+| 10. [Literacy](rails/gear10_literacy.md) | **PARTIAL** | 26 working-process docs, quickstart |
 
 Also in `rails/`: [maturity levels (L0-L5)](rails/maturity_levels.md) and [industrial stack (9 layers)](rails/industrial_stack.md).
+
+### Gear 1: The Targeting System (LIP-Arena)
+
+The targeting system is the foundation gear -- everything else depends on it. PWM's implementation is **LIP-Arena** (Live Imaging Physics Arena), a built-in adversarial evaluation harness that ships with PWM itself. It is not a separate benchmark or a static dataset.
+
+**Core protocol -- Commit-Measure-Score:**
+
+1. **Commit**: Teams submit containerized pipelines + declared compute budgets before the measurement deadline.
+2. **Measure**: New measurement sets generated *after* the commit deadline (sealed-simulator + live-lab).
+3. **Execute**: All submissions run in a sealed environment with no ground truth access.
+4. **Score**: Fully automated scoring; all RunBundles and methodologies published.
+
+**4 Evaluation Tracks:**
+
+| Track | Goal | Key Metric |
+|-------|------|------------|
+| Track 1: Correct | Infer and correct operator mismatch | Recovery ratio $\rho$ |
+| Track 2: Diagnose | Attribute failure to Triad gate | Gate attribution accuracy |
+| Track 3: No-GT | Correct without ground truth | Self-consistency + invariants |
+| Track 4: Design | Specify robust imaging systems | Constraint satisfaction + robustness |
+
+**Anti-Goodhart scoring:** Prospective score dominates (70% weight). Gaming is penalized: wrong diagnosis, overconfident uncertainty, or missing artifacts result in rank loss.
+
+**Red Team module:** Dedicated adversarial layer injecting novel mismatch types, compound failures, out-of-family physics, gate-flip scenarios, and compute traps every round.
+
+**Safety brakes:** 5 pre-committed thresholds ($\rho$ < 0.30, uncertainty miscalibration, compute excess, etc.) that automatically block deployment.
+
+**Current maturity:** PWM is transitioning from **L1 (Measurable)** to **L2 (Repeatable)**. See [`rails/maturity_levels.md`](rails/maturity_levels.md) for the full L0-L5 framework.
+
+See [`rails/gear01_targeting_system.md`](rails/gear01_targeting_system.md) for the full targeting system specification and [`docs/targeting_system.md`](docs/targeting_system.md) for the LIP-Arena protocol.
 
 ---
 
@@ -901,28 +932,65 @@ Use `packages/pwm_AI_Scientist/` as the thin adapter layer.
 
 ## Community & Contributing
 
-PWM is intended to be extended by the community.
+PWM is intended to be extended by the community. All algorithms are open source (MIT). No algorithm is paywalled. See [`community/OPEN_CORE_BOUNDARY.md`](community/OPEN_CORE_BOUNDARY.md) for the full open-core policy.
 
 ### 4 Levels of Contribution
 
-| Level | What You Add | Difficulty | Example |
-|-------|-------------|------------|---------|
-| **Solver** | A new `ReconSolver` for an existing modality | Easy | Beat HDNet on CASSI |
-| **Calibrator** | A new calibration method for operator correction | Medium | Better PSF estimator for lensless |
-| **Modality** | A full modality (operator + CasePack + solver + tests) | Hard | Add STED microscopy |
-| **Primitive** | A new OperatorGraph node type | Expert | New scattering kernel |
+| Level | What You Add | Difficulty | Time to First Result | Merge Lane |
+|-------|-------------|------------|---------------------|------------|
+| **Solver** | A new `ReconSolver` for an existing modality | Easy | ~1 day | Fast (48h) |
+| **Calibrator** | A new calibration method for operator correction | Medium | ~3 days | Fast (48h) |
+| **Modality** | A full modality (operator + CasePack + solver + tests) | Hard | ~1 week | Review (7d) |
+| **Primitive** | A new OperatorGraph node type | Expert | ~2 weeks | Governance (90d RFC) |
 
-### Three-Speed Merge
+#### Level 1: New Solver (Easiest)
 
-| Lane | Scope | Timeline |
-|------|-------|----------|
-| **Fast** | Solvers, calibrators, config tweaks | Auto-merge within **48 hours** of CI pass (no human veto) |
-| **Review** | Modalities, metrics, track tweaks | **7 days**, 2 reviewers required |
-| **Governance** | Rail changes (scoring, protocol, frozen specs) | **90-day RFC**, unanimous steward vote |
+**Who**: Any ML researcher, PhD student, or imaging lab. **Your solver never knows what modality it's solving** -- write once, compete on all 64+ modalities.
 
-See [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) for full merge authority rules, steward board, and dispute resolution.
+```bash
+# 1. Scaffold
+pwm scaffold solver my_solver
 
-### Add a new modality/operator
+# 2. Implement (edit contrib/solvers/my_solver/solver.py)
+#    Your function: run_my_solver(y, physics, cfg) -> (x_hat, info)
+
+# 3. Test locally
+python contrib/solvers/my_solver/test_local.py
+
+# 4. Run sandbox evaluation
+pwm evaluate --sandbox --modality widefield --solver my_solver
+
+# 5. Validate for PR
+pwm contrib check my_solver
+
+# 6. Submit PR (auto-labeled: fast-lane, auto-merge in 48h if CI passes)
+```
+
+**Paper**: "Our method achieves $\rho$=0.85 across 20 modalities on LIP-Arena"
+
+#### Level 2: New Calibrator (Medium)
+
+**Who**: Self-calibration, blind deconvolution, operator learning researchers.
+
+```bash
+pwm scaffold calibrator my_calibrator
+# Implement: calibrate_my_method(y, H_nom, budget) -> (H_hat, info)
+# H_nom exposes: get_theta(), set_theta(), forward(), adjoint()
+```
+
+**Paper**: "Our blind calibrator reduces oracle gap from 12 dB to 2 dB"
+
+#### Level 3: New Modality (Medium-Hard)
+
+**Who**: Domain experts with a modality PWM doesn't cover.
+
+```bash
+pwm scaffold modality my_modality
+# Fill in: graph.yaml, mismatch.yaml, photon.yaml, metrics.yaml, meta.yaml
+pwm evaluate --sandbox --modality my_modality
+```
+
+Requires entries in all 5 YAML registries. Full checklist:
 1) Create a new operator in `pwm_core/physics/<modality>/`
 2) Add YAML entries to all 6 registries (`modalities.yaml`, `mismatch_db.yaml`, `photon_db.yaml`, `compression_db.yaml`, `metrics_db.yaml`, `solver_registry.yaml`)
 3) Add a benchmark in `benchmarks/run_all.py`
@@ -932,6 +1000,72 @@ See [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) for full merge authority rules, s
 Templates:
 - `pwm_core/contrib/templates/new_operator_template.py`
 - `pwm_core/contrib/templates/new_calibrator_template.py`
+
+**Paper**: "We formalize 4D-STEM as an OperatorGraph and benchmark 10 solvers"
+
+#### Level 4: New Primitive (Hardest -- RFC Process)
+
+**Who**: Physics experts willing to implement a new atomic operator.
+
+1) Open RFC issue with physics justification + adjoint proof
+2) Implement `PrimitiveOp` (or use `contrib/templates/tier2_wrapper.py`)
+3) Pass adjoint correctness tests
+4) Community + steward review
+5) Merge into `PRIMITIVE_REGISTRY`
+
+**Paper**: "Our full-wave primitive improves fidelity by 3 dB across 5 modalities"
+
+### Compete Without a PR
+
+Don't want to fork or submit code? Just compete on the leaderboard:
+
+```bash
+# Run locally, submit results only
+pwm evaluate --modality cassi --solver my_solver --output ./results
+pwm submit ./results/runbundle.zip
+# Score appears on leaderboard. No fork, no PR needed.
+```
+
+### Three-Speed Merge
+
+| Lane | Scope | Timeline | Human Veto? |
+|------|-------|----------|-------------|
+| **Fast** | Solvers, calibrators, config tweaks | Auto-merge within **48 hours** of CI pass | **Not allowed** -- solvers are trains, blocking a solver is blocking science |
+| **Review** | Modalities, metrics, track tweaks | **7 days**, 2 reviewers (1 maintainer + 1 domain expert) | Must provide written rationale |
+| **Governance** | Rail changes (scoring, protocol, frozen specs) | **90-day RFC**, unanimous steward vote | Required -- major version bump |
+
+See [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) for full merge authority rules, steward board, and dispute resolution.
+
+### Weekly Challenges
+
+Every week a new reconstruction challenge is posted in [`community/challenges/`](community/challenges/). Reconstruct from simulated measurements, submit a RunBundle, compete on the leaderboard.
+
+```bash
+# 1. Check the current challenge
+ls community/challenges/
+
+# 2. Read the challenge description
+cat community/challenges/2026-W10/challenge.md
+
+# 3. Generate the challenge dataset
+cd community/challenges/2026-W10
+python generate_data.py --output ./data
+
+# 4. Write your reconstruction (produces x_hat.npy)
+# ... your code here ...
+
+# 5. Package as a RunBundle and validate
+python community/validate.py my_submission.zip
+
+# 6. Check the leaderboard
+python community/leaderboard.py --week 2026-W10
+```
+
+See [`community/CONTRIBUTING_CHALLENGE.md`](community/CONTRIBUTING_CHALLENGE.md) for full participation details including RunBundle format, scoring rules, and tips.
+
+### Calibration Sprint Service
+
+Need expert help calibrating your imaging system? The [Calibration Sprint](community/calibration_sprint/) is a focused 1-2 week engagement: characterize mismatch, calibrate operator parameters, validate with bootstrap confidence intervals, and deliver a calibrated operator + RunBundle. All tools are open source -- the Sprint provides expert guidance and GPU compute. See [`community/calibration_sprint/README.md`](community/calibration_sprint/README.md).
 
 ### Submit a better method
 1) Implement the `ReconSolver` protocol (accept `y`, `H`, return `x_hat` with uncertainty)
@@ -945,10 +1079,6 @@ When your method scores higher on the harness, it becomes PWM's new shipped defa
 - Implement loader in `pwm_core/io/datasets.py` and format handler in `io/formats.py`
 - Add an example under `examples/`
 - Prefer reference-mode support for large datasets
-
-### Weekly Challenges
-
-Every week a new reconstruction challenge is posted in `community/challenges/`. Reconstruct from simulated measurements, submit a RunBundle, compete on the leaderboard. See [`community/CONTRIBUTING_CHALLENGE.md`](community/CONTRIBUTING_CHALLENGE.md) for participation details.
 
 See also: [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full contribution guide.
 
