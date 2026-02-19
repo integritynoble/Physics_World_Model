@@ -54,19 +54,29 @@ def generate_cassi_heatmap():
 
 
 def generate_cacti_heatmap():
-    """Generate CACTI per-video recovery ratio heatmap."""
+    """Generate CACTI per-video recovery ratio heatmap (averaged across groups)."""
     data = load_json("cacti_validation_results.json")
     methods = ["gap_tv", "pnp_ffdnet", "elp_unfolding", "efficientsci"]
     method_labels = ["GAP-TV", "PnP-FFDNet", "ELP-Unfolding", "EfficientSCI"]
-    video_labels = [v["name"].capitalize() for v in data]
 
-    rho_matrix = np.full((len(methods), len(data)), np.nan)
-    for j, video in enumerate(data):
+    # Average PSNR across groups per video, then compute rho
+    from collections import OrderedDict
+    video_groups = OrderedDict()
+    for v in data:
+        name = v["name"]
+        if name not in video_groups:
+            video_groups[name] = []
+        video_groups[name].append(v)
+
+    video_labels = [name.capitalize() for name in video_groups]
+    rho_matrix = np.full((len(methods), len(video_groups)), np.nan)
+
+    for j, (name, groups) in enumerate(video_groups.items()):
         for i, m in enumerate(methods):
-            pi = video["scenarios"]["scenario_i"][m]["psnr"]
-            pii = video["scenarios"]["scenario_ii"][m]["psnr"]
-            piii = video["scenarios"]["scenario_iii"][m]["psnr"]
-            rho_matrix[i, j] = compute_rho(pi, pii, piii)
+            pi_avg = np.mean([g["scenarios"]["scenario_i"][m]["psnr"] for g in groups])
+            pii_avg = np.mean([g["scenarios"]["scenario_ii"][m]["psnr"] for g in groups])
+            piii_avg = np.mean([g["scenarios"]["scenario_iii"][m]["psnr"] for g in groups])
+            rho_matrix[i, j] = compute_rho(pi_avg, pii_avg, piii_avg)
 
     return rho_matrix, method_labels, video_labels, "CACTI"
 
@@ -95,33 +105,42 @@ def plot_heatmap(ax, rho_matrix, method_labels, scene_labels, title):
     cmap = LinearSegmentedColormap.from_list(
         "rho", [(0.8, 0.2, 0.2), (1.0, 1.0, 0.4), (0.2, 0.7, 0.2)])
 
-    im = ax.imshow(rho_matrix, cmap=cmap, aspect="auto", vmin=0, vmax=100)
+    # For display, replace NaN with -1 so we can color it distinctly
+    display_matrix = rho_matrix.copy()
+    cmap_extended = LinearSegmentedColormap.from_list(
+        "rho", [(0.8, 0.2, 0.2), (1.0, 1.0, 0.4), (0.2, 0.7, 0.2)])
+    cmap_extended.set_bad(color="#CCCCCC")  # gray for NaN cells
+    masked = np.ma.masked_invalid(rho_matrix)
+
+    im = ax.imshow(masked, cmap=cmap_extended, aspect="auto", vmin=0, vmax=100)
 
     ax.set_xticks(np.arange(len(scene_labels)))
-    ax.set_xticklabels(scene_labels, rotation=45, ha="right", fontsize=7)
+    ax.set_xticklabels(scene_labels, rotation=45, ha="right", fontsize=7.5)
     ax.set_yticks(np.arange(len(method_labels)))
     ax.set_yticklabels(method_labels, fontsize=8)
-    ax.set_title(title, fontsize=10, fontweight="bold")
+    ax.set_title(title, fontsize=9, fontweight="bold")
 
     # Annotate cells
     for i in range(rho_matrix.shape[0]):
         for j in range(rho_matrix.shape[1]):
             val = rho_matrix[i, j]
             if np.isnan(val):
-                text = "N/A"
-                color = "gray"
+                # Show reason: degradation too small to define rho
+                text = u"\u2014"  # em dash meaning "not applicable"
+                color = "#666666"
             else:
                 text = f"{val:.0f}%"
                 color = "white" if val < 30 or val > 85 else "black"
             ax.text(j, i, text, ha="center", va="center",
-                    fontsize=6.5, color=color, fontweight="bold")
+                    fontsize=7, color=color, fontweight="bold")
 
     return im
 
 
 def generate_heatmap_figure():
-    """Generate combined heatmap figure."""
-    fig, axes = plt.subplots(3, 1, figsize=(12, 10),
+    """Generate combined heatmap figure at LNCS print dimensions."""
+    # Print width: \textwidth ~ 4.8", use 7.0" to match our other figures
+    fig, axes = plt.subplots(3, 1, figsize=(7.0, 6.5),
                              gridspec_kw={"height_ratios": [4, 4, 3]})
 
     datasets = [generate_cassi_heatmap, generate_cacti_heatmap,
@@ -132,13 +151,19 @@ def generate_heatmap_figure():
         im = plot_heatmap(ax, rho_matrix, method_labels, scene_labels, title)
 
     # Shared colorbar
-    cbar_ax = fig.add_axes([0.92, 0.15, 0.015, 0.7])
+    cbar_ax = fig.add_axes([0.92, 0.12, 0.015, 0.75])
     cbar = fig.colorbar(im, cax=cbar_ax)
-    cbar.set_label("Recovery Ratio ρ (%)", fontsize=9)
+    cbar.set_label(u"Recovery Ratio \u03c1 (%)", fontsize=8)
+    cbar.ax.tick_params(labelsize=7)
 
-    fig.suptitle("Per-Scene Recovery Ratio Heatmaps", fontsize=13,
-                 fontweight="bold", y=0.98)
+    fig.suptitle("Per-Scene Recovery Ratio Heatmaps", fontsize=10,
+                 fontweight="bold", y=0.99)
     fig.tight_layout(rect=[0, 0, 0.90, 0.96])
+
+    # Add footnote explaining em-dash
+    fig.text(0.02, 0.005,
+             u"\u2014 = degradation < 0.5 dB (\u03c1 undefined; method is naturally robust)",
+             fontsize=6.5, color="#666666", style="italic")
 
     out_path = os.path.join(FIGURES_DIR, "recovery_heatmaps.pdf")
     fig.savefig(out_path, dpi=300, bbox_inches="tight")
