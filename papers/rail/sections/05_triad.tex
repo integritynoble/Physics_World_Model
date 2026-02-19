@@ -33,7 +33,7 @@ distinguish the signal from stochastic fluctuations.
 
 \paragraph{Gate~3 --- Operator Mismatch (System Fidelity).}
 Does the assumed model match the true physics?  When
-$\mathbf{H}_{\text{true}} \neq \mathbf{H}_{\text{nom}}$, the
+$\mathbf{H}_{\mathrm{true}} \neq \mathbf{H}_{\mathrm{nom}}$, the
 reconstruction algorithm inverts the \emph{wrong} operator, producing
 artifacts that no amount of regularization can fully suppress.  Sources
 of mismatch include calibration drift, optical wear, thermal expansion,
@@ -70,7 +70,7 @@ is declared the \emph{binding constraint}.
         child { node [leaf] {SNR\\Photon budget\\Quantum limit} }
     }
     child { node [gate] {Gate 3\\Operator Mismatch}
-        child { node [leaf] {$\mathbf{H}_\text{true}\!\neq\!\mathbf{H}_\text{nom}$\\Calibration drift\\Wear} }
+        child { node [leaf] {$\mathbf{H}_\mathrm{true}\!\neq\!\mathbf{H}_\mathrm{nom}$\\Calibration drift\\Wear} }
     };
 \end{tikzpicture}
 
