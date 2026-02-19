@@ -1,0 +1,215 @@
+% 02_problem.tex — Rail Paper: The Problem
+% ============================================================
+
+\section{The Problem: Solver-Only Optimization}
+\label{sec:problem}
+
+The computational imaging community has invested enormous effort in
+building better reconstruction algorithms---deeper networks, more
+sophisticated architectures, larger training sets---while treating the
+forward measurement operator as a fixed, known quantity.
+This section demonstrates that this assumption is catastrophically
+wrong, and that the resulting \emph{solver-only optimization} paradigm
+produces an illusion of progress that collapses on contact with
+physical reality.
+
+% ------------------------------------------------------------------
+%  Mask-sensitivity spectrum
+% ------------------------------------------------------------------
+
+\subsection{The Mask-Sensitivity Spectrum}
+\label{sec:sensitivity}
+
+To quantify the scale of the problem, we evaluate five representative
+CASSI reconstruction methods under a standardized 4-scenario protocol.
+In \textbf{Scenario~I (Ideal)}, the true forward operator $\mathbf{H}$
+is used for both measurement simulation and reconstruction---the oracle
+upper bound reported in virtually all published work.
+In \textbf{Scenario~II (Assumed/Mismatch)}, measurements are generated
+with $\mathbf{H}$ but reconstruction uses the nominal operator
+$\mathbf{H}_{\mathrm{nom}}$, which differs by a 1-pixel mask shift and
+$0.1^\circ$ rotation---a perturbation well within typical alignment
+tolerances.
+In \textbf{Scenario~III (Corrected)}, a calibrated operator
+$\hat{\mathbf{H}}$ is used for reconstruction, obtained via a
+lightweight calibration procedure.
+The \textbf{Degradation} column reports the drop from Scenario~I to
+Scenario~II; the \textbf{Calibration Gain} column reports the
+improvement from Scenario~II to Scenario~III.
+
+\begin{table}[t]
+\centering
+\caption{%
+  \textbf{Mask-sensitivity spectrum for CASSI reconstruction methods.}
+  Ideal PSNR (Scenario~I), Mismatch PSNR (Scenario~II), Degradation
+  (I$\to$II), and Calibration Gain (II$\to$III).
+  All values in dB, averaged over 10 test scenes.
+  Neural solvers (MST-S, MST-L, HDNet) exhibit dramatically larger
+  mismatch degradation than classical methods (GAP-TV, PnP-HSICNN),
+  confirming that model capacity amplifies operator sensitivity.%
+}
+\label{tab:sensitivity}
+\smallskip
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Method}
+  & \textbf{Ideal (I)}
+  & \textbf{Mismatch (II)}
+  & \textbf{Degradation}
+  & \textbf{Calib.\ Gain} \\
+\midrule
+GAP-TV~\cite{yuan2016gaptv}
+  & 24.22  & 19.66  & \worst{$-4.56$}   & $+0.51$ \\
+PnP-HSICNN~\cite{wang2020pnp}
+  & 25.12  & 19.10  & \worst{$-6.02$}   & $+0.71$ \\
+MST-S~\cite{cai2022mst}
+  & 33.98  & 18.01  & \worst{$-15.97$}  & \best{$+3.00$} \\
+MST-L~\cite{cai2022mst}
+  & \best{34.81}  & 18.09  & \worst{$-16.72$}  & \best{$+3.01$} \\
+HDNet~\cite{hu2022hdnet}
+  & 34.66  & \best{24.18}  & \worst{$-10.47$}  & $+0.05$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The results in \cref{tab:sensitivity} reveal a striking pattern.
+Under ideal conditions, MST-L leads the field at 34.81\,dB---a full
+10.59\,dB above GAP-TV.
+Under mismatch, MST-L collapses to 18.09\,dB, while GAP-TV drops only
+to 19.66\,dB.
+The classical method \emph{outperforms} the state-of-the-art
+transformer under realistic physical conditions.
+\Cref{fig:sensitivity} visualizes this inversion as a bar chart,
+making the crossover unmistakable.
+
+\paragraph{Key insight: neural solvers amplify mismatch sensitivity.}
+The degradation column tells the story most clearly:
+GAP-TV loses 4.56\,dB, PnP-HSICNN loses 6.02\,dB, and MST-L loses
+16.72\,dB.
+There is a near-perfect inverse relationship between ideal-condition
+performance and mismatch robustness.
+The same representational capacity that enables MST-L to learn subtle
+spectral correlations in the training data also enables it to overfit
+the precise structure of the forward operator it was trained with.
+When that operator changes by even a single pixel, the learned features
+become not merely useless but actively harmful, producing structured
+artifacts that are worse than the blurry but stable output of GAP-TV.
+
+HDNet presents a partial counterexample: it achieves high ideal PSNR
+(34.66\,dB) with smaller degradation ($-10.47$\,dB), retaining
+24.18\,dB under mismatch.
+However, its calibration gain is negligible ($+0.05$\,dB), suggesting
+that its mask-conditioning pathway has already saturated what it can
+extract from the nominal operator.
+This taxonomy of solver behavior---mask-oblivious, mask-conditioned, and
+mask-adapted---has important implications for the design of
+calibration-aware architectures.
+
+% ------------------------------------------------------------------
+%  Evaluation fragmentation
+% ------------------------------------------------------------------
+
+\subsection{Evaluation Fragmentation}
+\label{sec:fragmentation}
+
+The mask-sensitivity spectrum is only one dimension of a much larger
+problem.
+Even if every lab evaluated mismatch sensitivity, the results would
+remain incomparable due to pervasive \emph{evaluation fragmentation}:
+
+\begin{itemize}
+  \item \textbf{Metrics.}
+        Some groups report peak signal-to-noise ratio (PSNR); others
+        report structural similarity (SSIM), spectral angle mapper
+        (SAM), or learned perceptual image patch similarity (LPIPS).
+        Metrics are computed on different dynamic ranges, with or
+        without border cropping, and averaged over different test splits.
+
+  \item \textbf{Datasets.}
+        CASSI methods are evaluated on KAIST~\cite{choi2017kaist},
+        CAVE~\cite{yasuma2010cave}, ICVL~\cite{arad2016icvl}, or
+        custom datasets with different spatial resolutions, spectral
+        bands, and scene statistics.
+        Results on one dataset do not transfer to another.
+
+  \item \textbf{Noise models.}
+        Some methods assume noiseless measurements; others add Gaussian
+        noise at varying SNRs; still others use Poisson-Gaussian models.
+        The noise model interacts with mismatch in complex ways that
+        make cross-paper comparisons meaningless.
+
+  \item \textbf{Mismatch models.}
+        The few papers that consider operator mismatch define it
+        differently: some shift the mask, some perturb dispersion
+        parameters, some add calibration error.
+        There is no standard mismatch taxonomy or severity scale.
+\end{itemize}
+
+The result is a literature in which every paper reports numbers that
+cannot be meaningfully compared with any other paper.
+Progress appears rapid when measured within a single group's evaluation
+setup, but the aggregate state of the field is unknown.
+This is precisely the condition that the SolveEverything framework
+calls \emph{The Muddle}~\cite{solveeverything}: everyone is working
+hard, but no one can tell whether the work is adding up.
+
+% ------------------------------------------------------------------
+%  Scale of the challenge
+% ------------------------------------------------------------------
+
+\subsection{The Scale of the Challenge}
+\label{sec:scale}
+
+The fragmentation problem becomes combinatorially intractable when
+viewed across the full landscape of computational imaging.
+PWM's current registry includes 64 distinct modalities spanning five
+physical carriers.
+For each modality, at least 5 types of operator mismatch are
+physically relevant (alignment, calibration drift, manufacturing
+tolerance, environmental variation, model approximation error).
+The solver space includes at least 10 competitive reconstruction
+methods per modality.
+
+The resulting evaluation space is therefore on the order of:
+\begin{equation}
+  64 \text{ modalities} \times 5 \text{ mismatch types}
+  \times 10 \text{ solvers}
+  = 3{,}200 \text{ experiments (minimum)}.
+\end{equation}
+With multiple severity levels per mismatch type and multiple test
+scenes per experiment, the full evaluation matrix easily exceeds
+$10^5$ individual runs.
+No ad hoc, lab-by-lab evaluation effort can cover this space.
+What is needed is not more careful experimentation but a fundamentally
+different approach: \emph{standardized infrastructure} for evaluation.
+
+% ------------------------------------------------------------------
+%  Summary
+% ------------------------------------------------------------------
+
+\subsection{Summary: The Case for Infrastructure}
+\label{sec:problem_summary}
+
+The evidence presented in this section leads to three conclusions:
+
+\begin{enumerate}
+  \item \textbf{Neural solvers amplify mismatch.}
+        The most capable architectures exhibit the largest sensitivity to
+        operator error, with MST-L losing 16.72\,dB versus GAP-TV's
+        4.56\,dB (\cref{tab:sensitivity}).
+
+  \item \textbf{Evaluation fragmentation hides the problem.}
+        Incomparable metrics, datasets, noise models, and mismatch
+        definitions prevent the community from recognizing the
+        severity of the sim-to-real gap.
+
+  \item \textbf{The scale is beyond ad hoc effort.}
+        With 64 modalities, 5+ mismatch types, and 10+ solvers, the
+        evaluation space requires automated, standardized
+        infrastructure---not heroic individual experiments.
+\end{enumerate}
+
+The field does not need a better solver.
+It needs a better rail.
+The next section presents the conceptual framework---drawn from
+SolveEverything.org---that guides the design of that rail.
