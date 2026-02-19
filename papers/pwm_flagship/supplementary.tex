@@ -10,6 +10,13 @@
 \begin{document}
 \maketitle
 
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\theequation}{S\arabic{equation}}
+\setcounter{table}{0}
+\setcounter{figure}{0}
+\setcounter{equation}{0}
+
 \tableofcontents
 \newpage
 
@@ -372,8 +379,8 @@ five representative methods under four scenarios.\footnote{The solver subset use
 \begin{footnotesize}
 \begin{longtable}{l l r r r r}
 \caption{CASSI per-scene PSNR (dB).  Sc.~I = ideal forward model;
-Sc.~II = mismatched (baseline); Sc.~III-A1 = correction Algorithm~1;
-Sc.~III-A2 = correction Algorithm~2; Oracle = ground-truth operator.}
+Sc.~II = mismatched (baseline); Sc.~III-A1 = correction Algorithm~1; Oracle = ground-truth operator.
+Algorithm~2 results are reported in the correction parameter table (Table~\ref{tab:correction_params}).}
 \label{tab:cassi_scenes} \\
 \toprule
 \textbf{Scene} & \textbf{Method} &
