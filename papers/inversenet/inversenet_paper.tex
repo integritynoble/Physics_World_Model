@@ -93,7 +93,7 @@ We address this gap with InverseNet, which makes three contributions:
 
     \item \textbf{Cross-modality benchmark.} We evaluate 11 reconstruction methods (4~CASSI, 4~CACTI, 3~SPC) spanning classical optimization (GAP-TV, FISTA-TV) and deep learning (MST, HDNet, EfficientSCI, ELP-Unfolding, ISTA-Net, HATNet) across 27 test scenes, producing over 240 reconstruction experiments.
 
-    \item \textbf{Open dataset.} We release all reconstruction arrays, per-scene metrics (PSNR, SSIM, SAM), and analysis code to enable reproducible operator-mismatch research.
+    \item \textbf{Open dataset.} We publicly release all reconstruction arrays, per-scene metrics (PSNR, SSIM, SAM), and analysis code at \url{https://github.com/integritynoble/Physics_World_Model} to enable reproducible operator-mismatch research. All underlying test data come from existing public datasets.
 \end{enumerate}
 
 Our key findings include: (a)~operator mismatch degrades deep learning methods by 10--21\,dB while classical methods lose only 0.1--11\,dB; (b)~mask-aware architectures (MST, ELP-Unfolding) are simultaneously the most sensitive to mismatch and the most recoverable through calibration; (c)~mask-oblivious architectures (HDNet) show zero calibration benefit; (d)~CACTI exhibits the most severe mismatch degradation (up to 20.58\,dB) due to its multi-parameter mismatch space; (e)~dispersion mismatch in CASSI creates larger degradation than mask spatial mismatch alone, with limited oracle recoverability due to fixed-step architectural assumptions.
@@ -601,6 +601,15 @@ Future InverseNet rounds will adopt CASP-style blind evaluation: participants su
 \textbf{Broader context.}
 InverseNet serves as the targeting system rail for the Physics World Model (PWM), providing a durable evaluation infrastructure for computational imaging.
 While reconstruction solvers are continuously replaced with improved methods, the three-scenario protocol, scoring formulas, and benchmark datasets remain fixed, ensuring fair longitudinal comparison.
+
+\paragraph{Data and code availability.}
+All InverseNet benchmark data---including 240+ reconstruction arrays (NPZ format), per-scene metrics (PSNR, SSIM, SAM), mismatch parameter configurations, and figure-generation scripts---are publicly available at \url{https://github.com/integritynoble/Physics_World_Model} under the \texttt{papers/inversenet/} directory.
+The underlying test images come from publicly available sources:
+the KAIST TSA hyperspectral dataset~\cite{choi2017kaist} (CASSI),
+the standard video compressive sensing benchmark~\cite{yuan2021snapshot} (CACTI),
+and the Set11 dataset~\cite{kulkarni2016reconnet} (SPC).
+No non-public or restricted-access datasets were used in this work.
+All pretrained model weights were obtained from the respective authors' public repositories as cited.
 
 % ============================================================================
 % REFERENCES
