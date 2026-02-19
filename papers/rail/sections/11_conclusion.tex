@@ -32,7 +32,7 @@ computational imaging.  The contributions are concrete and measurable:
         correction a modular operation rather than a monolithic
         reimplementation.
   \item \textbf{The four-scenario evaluation protocol}
-        (Ideal / Baseline / Oracle / Full-Pipeline), which for the first
+        (Ideal / Assumed / Corrected / Oracle~Mask), which for the first
         time separates solver error from operator error and quantifies
         the recovery ratio of any pipeline.
   \item \textbf{LIP-Arena and the Triad Law}, providing real-time
@@ -42,10 +42,10 @@ computational imaging.  The contributions are concrete and measurable:
 \end{itemize}
 
 The evidence is unambiguous.  Across the 26-modality benchmark,
-operator correction alone improved reconstruction quality by +0.8 to
-+48.25\,dB on 16 modalities---gains that no solver upgrade can
+operator correction alone improved reconstruction quality by $+3.55$ to
+$+48.25$\,dB on 9 validated modalities (16 registered)---gains that no solver upgrade can
 replicate.  The CASSI deep-dive was particularly revealing: correcting
-the operator produced a 7$\times$ larger quality improvement than
+the operator produced a $1.58\times$ larger quality improvement than
 upgrading the solver architecture.  The bottleneck was never the
 algorithm.  It was the physics encoding.
 

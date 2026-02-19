@@ -17,6 +17,34 @@ NextGen PlatformAI C Corp}
 \begin{document}
 \maketitle
 
+\begin{abstract}
+The computational imaging community has built increasingly powerful
+reconstruction algorithms, yet real-world deployments routinely fail.
+We show that a single pixel of operator mismatch---well within
+manufacturing tolerances---degrades the state-of-the-art CASSI
+transformer (MST-L) by 16.72\,dB, erasing more than a decade of
+algorithmic progress.
+This paper argues that the bottleneck is not the solver but the
+infrastructure around it: evaluation protocols, physics representations,
+calibration pipelines, and benchmarks.
+Drawing on the SolveEverything.org framework, we present the
+\textbf{Physics World Model (PWM)} as the ``rail'' for computational
+imaging---a standardized evaluation harness comprising:
+(i)~OperatorGraph~IR, a universal DAG representation spanning 64
+modalities across 5 physical carriers with 89 validated templates;
+(ii)~a 4-scenario evaluation protocol separating solver quality from
+operator fidelity;
+(iii)~LIP-Arena, a prospective Commit-Measure-Score competition
+eliminating benchmark overfitting; and
+(iv)~a Red Team adversarial verification module.
+Across a 26-modality benchmark, we demonstrate that operator correction
+improves reconstruction by $+3.55$ to $+48.25$\,dB on 9 validated
+modalities, with mismatch (Gate~3) identified as the binding constraint
+in every modality tested.
+PWM provides the infrastructure to move computational imaging from
+artisanal practice to industrial standardization.
+\end{abstract}
+
 % ============================================================
 %  Sections (01 – 11)
 % ============================================================

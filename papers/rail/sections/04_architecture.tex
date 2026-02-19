@@ -222,7 +222,7 @@ From the four scenario PSNR values, we derive:
 \begin{align}
   \text{Degradation}     &= \text{PSNR}_\mathrm{I} - \text{PSNR}_\mathrm{II}, \label{eq:degradation} \\
   \text{Calibration Gain}&= \text{PSNR}_\mathrm{III} - \text{PSNR}_\mathrm{II}, \label{eq:calib_gain} \\
-  \text{Recovery Ratio}  &= \text{PSNR}_\mathrm{III} \;/\; \text{PSNR}_\mathrm{I}, \label{eq:recovery} \\
+  \text{Recovery Ratio}  &= \frac{\text{PSNR}_\mathrm{III} - \text{PSNR}_\mathrm{II}}{\text{PSNR}_\mathrm{I} - \text{PSNR}_\mathrm{II}}, \label{eq:recovery} \\
   \text{Oracle Gap}      &= \text{PSNR}_\mathrm{I} - \text{PSNR}_\mathrm{III}. \label{eq:oracle_gap}
 \end{align}
 The recovery ratio and oracle gap are the primary pass/fail metrics

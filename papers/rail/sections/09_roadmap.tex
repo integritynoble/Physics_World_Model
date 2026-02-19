@@ -28,7 +28,7 @@ of shared infrastructure that enabled the AlphaFold revolution:
   \item \textbf{No universal evaluation protocol.}  PSNR on a simulated
         measurement with an ideal operator tells us almost nothing about
         deployment fidelity.  The four-scenario protocol
-        (Ideal/Baseline/Oracle/Full-Pipeline) introduced in this work is,
+        (Ideal/Assumed/Corrected/Oracle~Mask) introduced in this work is,
         to our knowledge, the first systematic attempt at standardization.
 \end{itemize}
 
@@ -163,9 +163,8 @@ Zero-shot generalization & 0\%     & 50\%+    & 90\%+    \\
 \noindent
 \textbf{Recovery ratio} measures the fraction of theoretical information
 recovered by the full pipeline (operator + solver) relative to the ideal
-operator bound.  \textbf{Oracle gap} is the PSNR difference between the
-Oracle scenario (Scenario~III) and the Full-Pipeline scenario
-(Scenario~IV).  \textbf{Zero-shot generalization} measures reconstruction
+operator bound.  \textbf{Oracle gap} is the PSNR difference between Scenario~I
+(Ideal) and Scenario~III (Corrected).  \textbf{Zero-shot generalization} measures reconstruction
 quality on a modality unseen during solver training, evaluated via the
 mask-sensitivity spectrum transfer protocol.
 
