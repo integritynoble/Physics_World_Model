@@ -80,6 +80,20 @@ correction strategy, estimated runtime, and resource requirements.  This
 report is presented to the user (or downstream system) before committing
 compute.
 
+\paragraph{Pipeline Runner.}
+Executes the end-to-end reconstruction pipeline: loads the
+\texttt{ExperimentSpec}, compiles the \texttt{OperatorGraph}, applies the
+selected correction strategy, invokes the solver, and collects all
+metrics.  The runner enforces deterministic execution and resource-budget
+compliance.
+
+\paragraph{RunBundle.}
+Packages every artifact produced by a pipeline execution---reconstructed
+images, metric scores, \texttt{TriadReport}, logs, random seeds, and
+timing data---into an immutable, content-addressed archive.  RunBundles
+serve as the unit of reproducibility: any result can be verified by
+replaying its RunBundle.
+
 % ============================================================
 %  Executable contract
 % ============================================================

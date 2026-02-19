@@ -6,7 +6,8 @@
 
 The computational imaging community has invested enormous effort in
 building better reconstruction algorithms---deeper networks, more
-sophisticated architectures, larger training sets---while treating the
+sophisticated architectures, larger training sets---rooted in the
+compressed sensing paradigm~\cite{donoho2006compressed,candes2008compressed}, while treating the
 forward measurement operator as a fixed, known quantity.
 This section demonstrates that this assumption is catastrophically
 wrong, and that the resulting \emph{solver-only optimization} paradigm
@@ -25,7 +26,7 @@ CASSI reconstruction methods under a standardized 4-scenario protocol.
 In \textbf{Scenario~I (Ideal)}, the true forward operator $\mathbf{H}$
 is used for both measurement simulation and reconstruction---the oracle
 upper bound reported in virtually all published work.
-In \textbf{Scenario~II (Assumed/Mismatch)}, measurements are generated
+In \textbf{Scenario~II (Mismatch)}, measurements are generated
 with $\mathbf{H}$ but reconstruction uses the nominal operator
 $\mathbf{H}_{\mathrm{nom}}$, which differs by a 1-pixel mask shift and
 $0.1^\circ$ rotation---a perturbation well within typical alignment
@@ -67,7 +68,7 @@ MST-S~\cite{cai2022mst}
 MST-L~\cite{cai2022mst}
   & \best{34.81}  & 18.09  & \worst{$-16.72$}  & \best{$+3.01$} \\
 HDNet~\cite{hu2022hdnet}
-  & 34.66  & \best{24.18}  & \worst{$-10.47$}  & $+0.05$ \\
+  & 34.66  & \best{24.18}  & \worst{$-10.48$}  & $+0.05$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -79,8 +80,6 @@ Under mismatch, MST-L collapses to 18.09\,dB, while GAP-TV drops only
 to 19.66\,dB.
 The classical method \emph{outperforms} the state-of-the-art
 transformer under realistic physical conditions.
-The crossover is unmistakable: the classical method surpasses the
-state-of-the-art transformer once realistic mismatch is introduced.
 
 \paragraph{Key insight: neural solvers amplify mismatch sensitivity.}
 The degradation column tells the story most clearly:
@@ -96,7 +95,7 @@ become not merely useless but actively harmful, producing structured
 artifacts that are worse than the blurry but stable output of GAP-TV.
 
 HDNet presents a partial counterexample: it achieves high ideal PSNR
-(34.66\,dB) with smaller degradation ($-10.47$\,dB), retaining
+(34.66\,dB) with smaller degradation ($-10.48$\,dB), retaining
 24.18\,dB under mismatch.
 However, its calibration gain is negligible ($+0.05$\,dB), suggesting
 that its mask-conditioning pathway has already saturated what it can

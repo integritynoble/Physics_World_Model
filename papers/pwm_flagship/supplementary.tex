@@ -1,5 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage{graphicx,amsmath,amssymb,booktabs,multirow,xcolor,hyperref,geometry,longtable,array}
+\usepackage[numbers,sort&compress,super]{natbib}
 \geometry{margin=1in}
 
 \title{Supplementary Information:\\Physics World Models for Computational Imaging}
@@ -18,9 +19,9 @@
 \section{Supplementary Note 1: Triad Law Mathematical Derivations}
 \label{sec:triad}
 
-The Triad Law formalises three successive gates that every computational-imaging
+The Triad Law formalizes three successive gates that every computational-imaging
 reconstruction must pass.  We derive rigorous bounds for each gate and show how
-the \emph{recovery ratio} $\rho$ summarises the overall reconstruction quality.
+the \emph{recovery ratio} $\rho$ summarizes the overall reconstruction quality.
 
 \subsection{Gate 1 --- Information-Theoretic Limit (Compression)}
 
@@ -83,13 +84,13 @@ Gate~2 is a \emph{noise ceiling}: no algorithm can exceed
 $\mathrm{PSNR}_{\max}^{(G2)}$ regardless of computational budget.
 Empirically, modalities such as MRI ($C_{\mathrm{MRI}}\approx 8$\,dB) are more
 noise-tolerant than CASSI ($C_{\mathrm{CASSI}}\approx 3$\,dB) due to
-favourable operator conditioning.
+favorable operator conditioning.
 
 \subsection{Gate 3 --- Sensitivity to Model Mismatch (Calibration)}
 
 Let $\boldsymbol{\theta}\in\mathbb{R}^p$ collect the calibration parameters
 (e.g.\ mask shift, PSF blur, coil sensitivity) and let $\mathbf{H}_{\boldsymbol{\theta}}$
-denote the parameterised forward operator.
+denote the parameterized forward operator.
 
 \begin{theorem}[Calibration sensitivity]
 For small perturbation $\delta\boldsymbol{\theta}$ around the true parameter
@@ -132,10 +133,10 @@ We define the \emph{recovery ratio} as
 \end{equation}
 
 \noindent In rare cases where Scenario~III exceeds Scenario~I (e.g., due to
-regularisation benefits from the corrected operator), $\rho$ may exceed~1.
+regularization benefits from the corrected operator), $\rho$ may exceed~1.
 
 \begin{proposition}
-Under convex reconstruction loss and convex constraint on
+Under convex reconstruction loss with matched regularization and convex constraint on
 $\boldsymbol{\theta}$, the recovery ratio satisfies $0 \leq \rho \leq 1$
 for any estimator.
 \end{proposition}
@@ -148,6 +149,8 @@ feasible point.  Any correction step moves towards the optimum, so
 $\mathrm{PSNR}_{\mathrm{mismatch}} \leq \mathrm{PSNR}_{\mathrm{achieved}}
 \leq \mathrm{PSNR}_{\mathrm{oracle}}$, giving $\rho\in[0,1]$.
 \end{proof}
+
+\noindent Under the conditions of Proposition~1, $0 \leq \rho \leq 1$. In practice, beneficial regularization bias from the corrected operator can yield $\rho > 1$, as observed for CACTI.
 
 \newpage
 
@@ -251,18 +254,19 @@ The graph is serialized to a JSON document for reproducibility and sharing:
 %% ============================================================
 %% SUPPLEMENTARY NOTE 3
 %% ============================================================
-\section{Supplementary Note 3: All 16 Modality Correction Parameters}
+\section{Supplementary Note 3: All 16 Correction Configurations}
 \label{sec:params}
 
 Table~\ref{tab:correction_params} reports the correction results for all 16
-calibration parameters across the validated modalities.  The first 9 modalities
+correction configurations across the validated modalities.  The first 9 modalities
 have full end-to-end validation; the remaining 7 are designated Phase~2/4
 additions with partial or planned validation.
 
 \begin{longtable}{>{\raggedright}p{2.0cm} >{\raggedright}p{2.8cm}
                   r r r r}
 \caption{Complete correction parameter summary.  $\Delta$PSNR is the
-improvement from Scenario~II (mismatch) to Scenario~III (corrected).}
+improvement from Scenario~II (mismatch) to Scenario~III (corrected).
+CASSI correction results in this table use GAP-TV as the reconstruction solver, whereas the main-text deep dive reports MST-L results.}
 \label{tab:correction_params} \\
 \toprule
 \textbf{Modality} & \textbf{Mismatch Parameter} &
@@ -284,7 +288,7 @@ improvement from Scenario~II (mismatch) to Scenario~III (corrected).}
 \bottomrule
 \endlastfoot
 %% --- Validated modalities (9) ---
-Matrix
+Matrix\footnote{Matrix (Generic) is a canonical test configuration that uses the same gain-bias operator template as SPC; identical results confirm pipeline consistency rather than representing an independent modality.}
   & gain\_bias
   & 11.14 & 23.35 & +12.21
   & 0.0042 \\
@@ -308,11 +312,11 @@ SPC
   & gain\_bias
   & 11.14 & 23.35 & +12.21
   & 0.0042 \\
-CASSI (Alg~1)
+CASSI (Alg~1)\footnote{Reported values are averaged over 10 test scenes using GAP-TV as the reconstruction solver.}
   & mask\_geo + dispersion
   & 15.79 & 21.20 & +5.40
   & 0.0105 \\
-CASSI (Alg~2)
+CASSI (Alg~2)\footnote{Note: the correction-table PSNR reflects GAP-TV reconstruction; state-of-the-art solvers (e.g., MST-L) achieve 34.11~dB under the corrected operator (see main text).}
   & mask\_geo + dispersion
   & 15.79 & 21.54 & +5.74
   & 0.0098 \\
@@ -363,7 +367,7 @@ Radar/SAR
 \label{sec:cassi_scenes}
 
 Table~\ref{tab:cassi_scenes} reports PSNR (dB) for 10 KAIST scenes across
-five representative methods under four scenarios.\footnote{The solver subset used in this supplementary per-scene table (GAP-TV, TwIST, DeSCI, MST, HDNet) differs from the five methods reported in the main text (TwIST, GAP-TV, DGSMP, MST-L, CST-L). The supplementary tables use an earlier solver subset selected during initial experiments; the main text reports the final standardised comparison.}
+five representative methods under four scenarios.\footnote{The solver subset used in this supplementary per-scene table (GAP-TV, TwIST, DeSCI, MST, HDNet) differs from the five methods reported in the main text (TwIST, GAP-TV, DGSMP, MST-L, CST-L). The supplementary tables use an earlier solver subset selected during initial experiments; the main text reports the final standardized comparison.}
 
 \begin{footnotesize}
 \begin{longtable}{l l r r r r}
@@ -526,7 +530,7 @@ where available.}
 \section{Supplementary Table 3: YAML Registry Summary}
 \label{sec:yaml}
 
-Table~\ref{tab:yaml} summarises the nine YAML registry files (totalling
+Table~\ref{tab:yaml} summarizes the nine YAML registry files (totalling
 7,034 lines) that define the PWM framework's modular architecture.
 
 \begin{table}[htbp]
@@ -539,7 +543,7 @@ Table~\ref{tab:yaml} summarises the nine YAML registry files (totalling
 \midrule
 1 & \texttt{modalities.yaml}           & --- & Defines 64 modality entries with keywords, forward model equations, and default solvers. \\
 2 & \texttt{graph\_templates.yaml}     & --- & OperatorGraph skeletons for 89 templates across 64 modalities. \\
-3 & \texttt{photon\_db.yaml}           & 624 & Photon models parameterised by source power, quantum efficiency, exposure, and detector. \\
+3 & \texttt{photon\_db.yaml}           & 624 & Photon models parameterized by source power, quantum efficiency, exposure, and detector. \\
 4 & \texttt{mismatch\_db.yaml}         & 797 & Mismatch parameters, perturbation ranges, and correction methods per modality. \\
 5 & \texttt{compression\_db.yaml}      & 1186 & Recoverability tables mapping compression ratio to expected PSNR with provenance. \\
 6 & \texttt{solver\_registry.yaml}     & --- & Maps solver names to implementations (ADMM~\cite{boyd2011admm}, FISTA~\cite{beck2009fista}, GAP-TV, PnP, learned). \\
@@ -558,7 +562,7 @@ Table~\ref{tab:yaml} summarises the nine YAML registry files (totalling
 \section{Supplementary Note 4: RunBundle Schema}
 \label{sec:runbundle}
 
-The \texttt{RunBundle} is PWM's reproducibility artefact.  Every experiment
+The \texttt{RunBundle} is PWM's reproducibility artifact.  Every experiment
 produces a RunBundle that captures the complete computational state.
 
 \subsection{RunBundle v0.3.0 Specification}
@@ -583,15 +587,15 @@ produces a RunBundle that captures the complete computational state.
 \texttt{sha256\_hashes} & object   & SHA-256 checksums of all input data files (measurements, masks, ground truth). \\
 \texttt{metrics}        & object   & Computed quality metrics: PSNR, SSIM, LPIPS, and any modality-specific metrics. \\
 \texttt{timestamps}     & object   & ISO-8601 timestamps for start, end, and per-stage completion. \\
-\texttt{operator\_state}& object   & Serialised OperatorGraph including all node parameters and edge metadata. \\
+\texttt{operator\_state}& object   & Serialized OperatorGraph including all node parameters and edge metadata. \\
 \texttt{triad\_report}  & object   & Triad Law evaluation: gate pass/fail status, PSNR bounds, and recovery ratio $\rho$. \\
 \texttt{correction\_trajectory} & array &
   Time series of correction iterations: $[\{$\texttt{iter}, \texttt{params},
   \texttt{loss}, \texttt{psnr}, \texttt{grad\_norm}$\}, \ldots]$.
   Enables convergence analysis and early-stopping diagnostics. \\
-\texttt{solver\_config} & object   & Complete solver hyperparameters (algorithm, iterations, step size, regularisation weight, denoiser checkpoint). \\
+\texttt{solver\_config} & object   & Complete solver hyperparameters (algorithm, iterations, step size, regularization weight, denoiser checkpoint). \\
 \texttt{modality}       & string   & Modality identifier matching \texttt{modalities.yaml}. \\
-\texttt{scenario}       & string   & One of \texttt{I} (ideal), \texttt{II} (mismatch), \texttt{III} (corrected). \\
+\texttt{scenario}       & string   & One of \texttt{I} (ideal), \texttt{II} (mismatch), \texttt{III} (corrected), \texttt{IV} (oracle). \\
 \texttt{notes}          & string   & Free-form text field for experiment annotations. \\
 \end{longtable}
 
@@ -660,7 +664,7 @@ where $T_{\mathrm{GPU}}$ is the wall-clock GPU time.
   \item \textbf{Matrix/SPC} also show high RoIC due to the simplicity of the
         gain--bias correction model.
   \item \textbf{CASSI Algorithm~2} has the lowest RoIC (6.5\,dB/GPU-hr)
-        because it jointly optimises mask geometry and dispersion over 2000
+        because it jointly optimizes mask geometry and dispersion over 2000
         iterations, each requiring a full forward--adjoint cycle through the
         dispersive operator.
   \item The practical implication is that Algorithm~1 (fixed dispersion,
@@ -675,7 +679,7 @@ For large-scale deployment:
 \begin{itemize}
   \item Correction is \emph{embarrassingly parallel} across scenes/slices ---
         multi-GPU scaling is near-linear.
-  \item The OperatorGraph compilation overhead is amortised: once compiled,
+  \item The OperatorGraph compilation overhead is amortized: once compiled,
         the same graph serves all scenes of a given modality.
   \item Memory footprint scales with the measurement dimension $m$, not the
         scene dimension $n$, making correction feasible even for

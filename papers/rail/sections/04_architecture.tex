@@ -392,7 +392,10 @@ safety brakes:
   \item \textbf{Recovery ratio $< 0.30$}: Automatic disqualification.
         A method that recovers less than 30\% of the oracle performance
         after calibration is either fundamentally broken or has not
-        been properly configured.
+        been properly configured.  Note: this threshold applies to
+        arena submissions, not to inherent modality limitations; some
+        modalities (e.g., CASSI) may exhibit recovery ratios below 0.30
+        due to the severity of the mismatch, which is diagnosed separately.
   \item \textbf{Uncertainty miscalibration $> 15\%$}: Flag for review.
         Methods that claim high confidence but produce large errors
         are dangerous in deployment and are flagged for manual

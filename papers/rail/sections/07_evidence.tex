@@ -16,13 +16,13 @@ dive with per-solver, per-scenario analysis.
 
 \Cref{tab:26mod} reports the peak signal-to-noise ratio (PSNR) achieved
 by the \pwm{} pipeline across all 26~registered modalities under
-Scenario~I (ideal operator, no mismatch).  Every modality passes the
+Scenario~I (ideal operator, no mismatch).  Of the 64 modalities registered in the OperatorGraph IR, 26 have been numerically benchmarked to date.  Every modality passes the
 benchmark threshold; no modality is excluded or deferred.
 
 \begin{table}[t]
 \centering
 \caption{26-modality benchmark results (Scenario~I, ideal operator).
-All 26/26 modalities pass.  Average PSNR $\approx 35.7$~dB (excluding Phase Retrieval identity test); range 25.46--61.35~dB over physically meaningful modalities.}
+All 26/26 modalities pass.  Average PSNR $\approx 37.0$~dB (excluding Phase Retrieval identity test); range 25.46--64.84~dB over physically meaningful modalities.}
 \label{tab:26mod}
 \smallskip
 \begin{tabular}{@{}rlr@{\qquad}rlr@{}}
@@ -32,8 +32,8 @@ All 26/26 modalities pass.  Average PSNR $\approx 35.7$~dB (excluding Phase Retr
 \textbf{\#} & \textbf{Modality} & \textbf{PSNR (dB)} \\
 \midrule
  1 & Widefield              & 27.31 & 14 & Holography               & 46.85 \\
- 2 & Widefield Low-Dose     & 32.88 & 15 & NeRF                     & 61.35 \\
- 3 & Confocal Live-Cell     & 29.80 & 16 & 3D Gaussian Splatting    & 30.89 \\
+ 2 & Widefield Low-Dose     & 32.88 & 15 & NeRF~\cite{mildenhall2020nerf} & 61.35 \\
+ 3 & Confocal Live-Cell     & 29.80 & 16 & 3D Gaussian Splatting~\cite{kerbl2023gaussiansplatting} & 30.89 \\
  4 & Confocal 3D            & 29.01 & 17 & Matrix (Generic)         & 33.86 \\
  5 & SIM                    & 27.48 & 18 & Panorama Multifocal      & 27.90 \\
  6 & CASSI~\cite{wagadarikar2008cassi} & 34.81 & 19 & Light Field              & 30.35 \\
@@ -52,7 +52,7 @@ The range spans nearly 75~dB, reflecting the diversity of forward models
 --- from the heavily ill-posed computed tomography (CT~\cite{chen2017redcnn},
 25.46~dB) to phase retrieval, where the analytically invertible
 forward model yields an identity reconstruction
-(100.00~dB, a numerical ceiling rather than a measured value).  The average of ${\approx}\,35.7$~dB (excluding the Phase Retrieval identity test) confirms that the
+(100.00~dB, a numerical ceiling rather than a measured value).  The average of ${\approx}\,37.0$~dB (excluding the Phase Retrieval identity test) confirms that the
 unified pipeline delivers competitive reconstruction quality across
 fundamentally different physics.
 
@@ -86,7 +86,7 @@ CT                   & center\_of\_rotation   & 13.41 & 24.09 & $+$10.67 \\
 CACTI~\cite{llull2013cacti,wang2023efficientsci} & mask\_timing & 14.48 & 37.42 & \best{$+$22.94} \\
 Lensless             & psf\_shift             & 23.48 & 27.03 & \worst{$+$3.55}  \\
 MRI                  & coil\_sensitivities    &  6.94 & 55.19 & \best{$+$48.25} \\
-SPC\textsuperscript{$\dagger$} & gain\_bias   & 11.14 & 23.35 & $+$12.21 \\
+SPC$^\dagger$ & gain\_bias   & 11.14 & 23.35 & $+$12.21 \\
 CASSI (Alg~1)        & mask\_geo+dispersion   & 15.79 & 21.20 & $+$5.40  \\
 CASSI (Alg~2)        & mask\_geo+dispersion   & 15.79 & 21.54 & $+$5.74  \\
 Ptychography         & position\_offset       & 17.35 & 24.44 & $+$7.09  \\
@@ -157,7 +157,7 @@ cost (I$\to$II) dominates the solver upgrade gain under ideal conditions.}
     & \textbf{I (Ideal)}
     & \textbf{II (Mismatch)}
     & \textbf{III (Corrected)}
-    & \textbf{Est. Fine-tuned} \\
+    & \textbf{Est.\ Fine-tuned}$^\dagger$ \\
 \midrule
 GAP-TV~\cite{yuan2016gaptv}   & 24.22 & 19.66 & 20.17 & ${\approx}$23.0 \\
 PnP-HSICNN~\cite{wang2020pnp} & 25.12 & 19.10 & 19.81 & ${\approx}$24.0 \\
@@ -167,6 +167,9 @@ HDNet~\cite{hu2022hdnet}     & 34.66 & 24.18 & 24.23 & ${\approx}$33.0 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\smallskip
+{\footnotesize $\dagger$~Projected values based on expected fine-tuning gains; not measured.}
 
 \paragraph{Key insight.}
 The mismatch cost --- the gap from Scenario~II to Scenario~I --- is
