@@ -80,7 +80,7 @@ HDNet~\cite{hu2022hdnet}
 {\footnotesize $\ddagger$~PnP-HSICNN values are estimated from prior experiments and have not yet been re-validated under the InverseNet 5-parameter mismatch; all other rows are InverseNet-validated~\cite{yang2026inversenet}.}
 
 \smallskip
-{\footnotesize Calibration gain for InverseNet-validated methods uses Scenario~IV (Oracle Mask) PSNR---the true operator applied to mismatched data---representing the upper bound on correction performance.}
+{\footnotesize Oracle Gain for InverseNet-validated methods uses Scenario~IV (Oracle Mask) PSNR---the true operator applied to mismatched data---representing the upper bound on correction performance.}
 \end{table}
 
 The results in \cref{tab:sensitivity} reveal a striking pattern.
@@ -107,7 +107,7 @@ artifacts that degrade quality far below what the classical GAP-TV achieves.
 HDNet presents a partial counterexample: it achieves high ideal PSNR
 (34.66\,dB) with degradation of $-12.78$\,dB, retaining
 21.88\,dB under mismatch.
-However, its calibration gain is zero ($+0.00$\,dB), indicating
+However, its Oracle Gain is zero ($+0.00$\,dB), indicating
 that its mask-conditioning pathway cannot exploit an improved operator
 estimate---a hallmark of mask-oblivious architectures.
 This taxonomy of solver behavior---mask-oblivious, mask-conditioned, and
