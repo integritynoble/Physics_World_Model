@@ -24,12 +24,12 @@
   },
   "scenario_i": {
     "gap_tv": {
-      "psnr_mean": 20.37,
-      "psnr_std": 1.84,
-      "ssim_mean": 0.6202,
-      "ssim_std": 0.0916,
-      "sam_mean": 25.11,
-      "sam_std": 3.51
+      "psnr_mean": 24.34,
+      "psnr_std": 1.9,
+      "ssim_mean": 0.7229,
+      "ssim_std": 0.0876,
+      "sam_mean": 16.66,
+      "sam_std": 3.32
     },
     "hdnet": {
       "psnr_mean": 34.66,
@@ -58,12 +58,12 @@
   },
   "scenario_ii": {
     "gap_tv": {
-      "psnr_mean": 20.27,
-      "psnr_std": 1.83,
-      "ssim_mean": 0.5983,
-      "ssim_std": 0.0919,
-      "sam_mean": 25.39,
-      "sam_std": 3.43
+      "psnr_mean": 20.96,
+      "psnr_std": 1.62,
+      "ssim_mean": 0.6119,
+      "ssim_std": 0.0842,
+      "sam_mean": 24.27,
+      "sam_std": 2.92
     },
     "hdnet": {
       "psnr_mean": 21.88,
@@ -92,12 +92,12 @@
   },
   "scenario_iii": {
     "gap_tv": {
-      "psnr_mean": 20.38,
-      "psnr_std": 1.84,
-      "ssim_mean": 0.6185,
-      "ssim_std": 0.0916,
-      "sam_mean": 24.97,
-      "sam_std": 3.49
+      "psnr_mean": 21.72,
+      "psnr_std": 1.48,
+      "ssim_mean": 0.6879,
+      "ssim_std": 0.0834,
+      "sam_mean": 25.97,
+      "sam_std": 2.54
     },
     "hdnet": {
       "psnr_mean": 21.88,
@@ -126,10 +126,10 @@
   },
   "gaps": {
     "gap_tv": {
-      "gap_i_ii_mean": 0.1,
-      "gap_i_ii_std": 0.09,
-      "gap_ii_iii_mean": 0.11,
-      "gap_ii_iii_std": 0.07
+      "gap_i_ii_mean": 3.38,
+      "gap_i_ii_std": 1.61,
+      "gap_ii_iii_mean": 0.76,
+      "gap_ii_iii_std": 0.37
     },
     "hdnet": {
       "gap_i_ii_mean": 12.77,
