@@ -10,10 +10,11 @@
 
 In 2022, the Mask-guided Spectral-wise Transformer (MST-L)~\cite{cai2022mst}
 achieved 34.81\,dB on the standard CASSI benchmark---a number that
-represents the culmination of more than a decade of algorithmic progress in
+represents years of sustained algorithmic progress in
 hyperspectral image reconstruction.
-Yet when the coded aperture mask is shifted by half a pixel with
-0.1\textdegree{} rotation and 1\% dispersion drift---a perturbation well
+Yet when the coded aperture mask is subjected to a 5-parameter
+perturbation (sub-pixel shift, rotation, dispersion drift, and spectral
+axis tilt; see \cref{sec:sensitivity} for details)---well
 within the manufacturing and alignment tolerances of any real optical
 system---the same method collapses to 20.83\,dB, a loss of
 \textbf{13.98\,dB}.
@@ -21,12 +22,12 @@ Under this sub-pixel mismatch model, deep-learning solvers (HDNet, MST-S, MST-L)
 12.78--13.98\,dB (\cref{tab:sensitivity}).
 To put this in perspective, the entire history of
 CASSI reconstruction---from GAP-TV~\cite{yuan2016gaptv} at 24.34\,dB to MST-L~\cite{cai2022mst} at 34.81\,dB---spans only 10.47\,dB.
-A sub-pixel operator mismatch erases more than a decade of
+A sub-pixel operator mismatch erases years of
 algorithmic improvement.
 
 This is not an isolated failure.
-Across modalities---coded aperture snapshot spectral imaging (CASSI),
-coded aperture compressive temporal imaging (CACTI)~\cite{llull2013cacti}, single-pixel
+Across modalities---CASSI,
+CACTI~\cite{llull2013cacti}, single-pixel
 cameras (SPC)~\cite{duarte2008spc}---the pattern repeats: the most powerful neural solvers
 exhibit the \emph{largest} sensitivity to forward-model error.
 Classical methods such as GAP-TV lose only 3.38\,dB under the same

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.18)  19 FEB 2026 08:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.18)  19 FEB 2026 08:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -794,27 +794,17 @@ Underfull \hbox (badness 1655) in paragraph at lines 171--173
  []
 
 
-Underfull \hbox (badness 4859) in paragraph at lines 177--179
-[]|\OT1/cmr/m/n/10.95 Pipeline san-ity check: re-
+Underfull \hbox (badness 1275) in paragraph at lines 177--179
+[]|\OT1/cmr/m/n/10.95 Correction ceil-ing: true op-
  []
 
 
-Underfull \hbox (badness 1259) in paragraph at lines 177--179
-\OT1/cmr/m/n/10.95 pro-duces Sce-nario I through
- []
-
-
-Underfull \hbox (badness 6978) in paragraph at lines 177--179
-\OT1/cmr/m/n/10.95 the full pipeline, ver-i-fy-ing
- []
-
-
-Underfull \hbox (badness 5133) in paragraph at lines 177--179
-\OT1/cmr/m/n/10.95 no ar-ti-facts are in-tro-duced
+Underfull \hbox (badness 7221) in paragraph at lines 177--179
+\OT1/cmr/m/n/10.95 data, pro-vid-ing the up-per
  []
 
 [11] [12] [13]
-Overfull \hbox (1.65176pt too wide) in paragraph at lines 298--302
+Overfull \hbox (1.65176pt too wide) in paragraph at lines 299--303
 []\OT1/cmr/bx/n/10.95 Diagnose\OT1/cmr/m/n/10.95 : Given mis-matched mea-sure-m
 ents, iden-tify which mis-match pa-ram-e-ters are present
  []
@@ -869,45 +859,44 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 7C4BD4FC5E0DFC1BD1ED9E492BE221A5;10340.
  ) 
 Here is how much of TeX's memory you used:
- 23662 strings out of 467870
- 446443 string characters out of 5418355
- 851419 words of memory out of 5000000
- 51914 multiletter control sequences out of 15000+600000
- 644506 words of font info for 103 fonts, out of 8000000 for 9000
+ 23659 strings out of 467870
+ 446407 string characters out of 5418355
+ 851420 words of memory out of 5000000
+ 51912 multiletter control sequences out of 15000+600000
+ 644171 words of font info for 102 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  89i,13n,97p,577b,1192s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\integ\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm
-1095.pk> <C:\Users\integ\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
-0\tcrm1000.pk><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/
-amsfonts/cm/cmbx10.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type
-1/public/amsfonts/cm/cmbx12.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/f
-onts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Users/integ/AppData/Local/Programs/
-MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/integ/AppData/Local/
-Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/integ/AppDa
-ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/int
-eg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/U
-sers/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmib10
-.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
-cm/cmr10.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/a
-msfonts/cm/cmr12.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/
-public/amsfonts/cm/cmr17.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/font
-s/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/integ/AppData/Local/Programs/MiKT
-eX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/integ/AppData/Local/Progra
-ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/integ/AppData/Local
-/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/integ/AppDat
-a/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss10.pfb><C:/Users/int
-eg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss8.pfb><C:/U
-sers/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.
-pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
-m/cmsy6.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/am
-sfonts/cm/cmsy8.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/p
-ublic/amsfonts/cm/cmsy9.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts
-/type1/public/amsfonts/cm/cmti10.pfb><C:/Users/integ/AppData/Local/Programs/MiK
-TeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/integ/AppData/Local/Pro
-grams/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on main.pdf (31 pages, 510845 bytes).
+1095.pk><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
+ts/cm/cmbx10.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/publ
+ic/amsfonts/cm/cmbx12.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/t
+ype1/public/amsfonts/cm/cmbx8.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX
+/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/integ/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/integ/AppData/Loc
+al/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/integ/App
+Data/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Users/i
+nteg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmib10.pfb><
+C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr
+10.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfont
+s/cm/cmr12.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public
+/amsfonts/cm/cmr17.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type
+1/public/amsfonts/cm/cmr6.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fon
+ts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/integ/AppData/Local/Programs/MiK
+TeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/integ/AppData/Local/Progr
+ams/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/integ/AppData/Loca
+l/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss10.pfb><C:/Users/integ/App
+Data/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss8.pfb><C:/Users/i
+nteg/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C
+:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy
+6.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
+/cm/cmsy8.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/
+amsfonts/cm/cmsy9.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1
+/public/amsfonts/cm/cmti10.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fo
+nts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/integ/AppData/Local/Programs/
+MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
+Output written on main.pdf (31 pages, 509715 bytes).
 PDF statistics:
- 831 PDF objects out of 1000 (max. 8388607)
+ 825 PDF objects out of 1000 (max. 8388607)
  220 named destinations out of 1000 (max. 500000)
  421 words of extra memory for PDF output out of 10000 (max. 10000000)
 
