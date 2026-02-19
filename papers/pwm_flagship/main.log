@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.18)  19 FEB 2026 06:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.2.18)  19 FEB 2026 08:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -617,12 +617,12 @@ Package rerunfilecheck Info: File `main.out' has not changed.
  ) 
 Here is how much of TeX's memory you used:
  14981 strings out of 467870
- 248518 string characters out of 5418355
+ 248524 string characters out of 5418355
  697292 words of memory out of 5000000
  43513 multiletter control sequences out of 15000+600000
  642510 words of font info for 96 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 74i,13n,87p,1711b,679s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 74i,11n,87p,1632b,679s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\integ\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm
 1095.pk><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
 ts/cm/cmbx10.pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/publ
@@ -646,9 +646,9 @@ g/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/U
 sers/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.
 pfb><C:/Users/integ/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/s
 ymbols/msbm10.pfb>
-Output written on main.pdf (26 pages, 380532 bytes).
+Output written on main.pdf (26 pages, 380292 bytes).
 PDF statistics:
- 433 PDF objects out of 1000 (max. 8388607)
+ 431 PDF objects out of 1000 (max. 8388607)
  166 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
