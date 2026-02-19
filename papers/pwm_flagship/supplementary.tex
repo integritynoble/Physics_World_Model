@@ -131,6 +131,9 @@ We define the \emph{recovery ratio} as
   \label{eq:rho}
 \end{equation}
 
+\noindent In rare cases where Scenario~III exceeds Scenario~I (e.g., due to
+regularisation benefits from the corrected operator), $\rho$ may exceed~1.
+
 \begin{proposition}
 Under convex reconstruction loss and convex constraint on
 $\boldsymbol{\theta}$, the recovery ratio satisfies $0 \leq \rho \leq 1$
@@ -360,7 +363,7 @@ Radar/SAR
 \label{sec:cassi_scenes}
 
 Table~\ref{tab:cassi_scenes} reports PSNR (dB) for 10 KAIST scenes across
-five representative methods under four scenarios.
+five representative methods under four scenarios.\footnote{The solver subset used in this supplementary per-scene table (GAP-TV, TwIST, DeSCI, MST, HDNet) differs from the five methods reported in the main text (TwIST, GAP-TV, DGSMP, MST-L, CST-L). The supplementary tables use an earlier solver subset selected during initial experiments; the main text reports the final standardised comparison.}
 
 \begin{footnotesize}
 \begin{longtable}{l l r r r r}
@@ -523,8 +526,8 @@ where available.}
 \section{Supplementary Table 3: YAML Registry Summary}
 \label{sec:yaml}
 
-Table~\ref{tab:yaml} summarises the nine YAML registry files that define the
-PWM framework's modular architecture.
+Table~\ref{tab:yaml} summarises the nine YAML registry files (totalling
+7,034 lines) that define the PWM framework's modular architecture.
 
 \begin{table}[htbp]
 \centering
@@ -534,15 +537,15 @@ PWM framework's modular architecture.
 \toprule
 \textbf{\#} & \textbf{File} & \textbf{Lines} & \textbf{Purpose} \\
 \midrule
-1 & \texttt{modalities.yaml}         & 312 & Defines all 26 modalities with physical carrier, compression ratio, default solver, and citation keys. \\
-2 & \texttt{solver\_registry.yaml}   & 187 & Maps solver names to implementations (ADMM, FISTA, GAP-TV, PnP, learned). \\
-3 & \texttt{operator\_registry.yaml} & 245 & Registers forward/adjoint operator classes with shape contracts. \\
-4 & \texttt{dataset\_registry.yaml}  & 156 & Links modalities to benchmark datasets (KAIST, fastMRI, etc.). \\
-5 & \texttt{metric\_registry.yaml}   &  78 & Defines quality metrics (PSNR, SSIM, LPIPS) with normalization. \\
-6 & \texttt{correction\_params.yaml} & 134 & Lists all 16 correction parameters with bounds and learning rates. \\
-7 & \texttt{triad\_config.yaml}      &  92 & Triad Law gate thresholds and reporting format. \\
-8 & \texttt{runbundle\_schema.yaml}  & 168 & RunBundle v0.3.0 JSON schema definition. \\
-9 & \texttt{hardware\_profiles.yaml} &  64 & GPU/CPU profiles for runtime estimation and RoIC computation. \\
+1 & \texttt{modalities.yaml}           & --- & Defines 64 modality entries with keywords, forward model equations, and default solvers. \\
+2 & \texttt{graph\_templates.yaml}     & --- & OperatorGraph skeletons for 89 templates across 64 modalities. \\
+3 & \texttt{photon\_db.yaml}           & 624 & Photon models parameterised by source power, quantum efficiency, exposure, and detector. \\
+4 & \texttt{mismatch\_db.yaml}         & 797 & Mismatch parameters, perturbation ranges, and correction methods per modality. \\
+5 & \texttt{compression\_db.yaml}      & 1186 & Recoverability tables mapping compression ratio to expected PSNR with provenance. \\
+6 & \texttt{solver\_registry.yaml}     & --- & Maps solver names to implementations (ADMM~\cite{boyd2011admm}, FISTA~\cite{beck2009fista}, GAP-TV, PnP, learned). \\
+7 & \texttt{primitives.yaml}           & --- & Primitive operator metadata (type, adjoint availability, differentiability). \\
+8 & \texttt{dataset\_registry.yaml}    & --- & Links modalities to benchmark datasets (KAIST, fastMRI, etc.). \\
+9 & \texttt{acceptance\_thresholds.yaml} & --- & Pass/fail thresholds per metric for automated validation. \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -678,5 +681,8 @@ For large-scale deployment:
         scene dimension $n$, making correction feasible even for
         high-resolution 3D volumes (e.g.\ $512^3$ CT).
 \end{itemize}
+
+\bibliographystyle{naturemag}
+\bibliography{pwm_flagship}
 
 \end{document}

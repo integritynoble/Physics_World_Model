@@ -142,9 +142,7 @@ across four key performance indicators.
 \centering
 \caption{%
   \textbf{Quantified roadmap targets.}
-  L3 and L5 refer to standardization maturity levels
-  (analogous to autonomous-driving levels), where L3 denotes
-  ``conditionally automated'' and L5 denotes ``fully autonomous.''
+  L3 and L5 refer to standardization maturity levels as defined in \cref{tab:maturity}.
 }
 \label{tab:targets}
 \small
@@ -152,7 +150,7 @@ across four key performance indicators.
 \toprule
 \textbf{Metric} & \textbf{Current} & \textbf{L3 Target} & \textbf{L5 Target} \\
 \midrule
-Recovery ratio        & 30--50\%   & 80\%+    & 95\%+    \\
+Recovery ratio        & 0.30--1.0+ & 80\%+    & 95\%+    \\
 Oracle gap            & 5--12\,dB  & $\leq$2\,dB   & $\leq$0.5\,dB  \\
 Modalities covered    & 64         & 100+     & 200+     \\
 Zero-shot generalization & 0\%     & 50\%+    & 90\%+    \\
@@ -161,9 +159,9 @@ Zero-shot generalization & 0\%     & 50\%+    & 90\%+    \\
 \end{table}
 
 \noindent
-\textbf{Recovery ratio} measures the fraction of theoretical information
-recovered by the full pipeline (operator + solver) relative to the ideal
-operator bound.  \textbf{Oracle gap} is the PSNR difference between Scenario~I
+\textbf{Recovery ratio} $\rho$ measures the fraction of the mismatch-induced
+degradation that is recovered by operator correction, as defined in
+Eq.~\ref{eq:recovery}; the range varies widely by modality (e.g., CASSI $\approx 0.30$, CACTI $> 1.0$).  \textbf{Oracle gap} is the PSNR difference between Scenario~I
 (Ideal) and Scenario~III (Corrected).  \textbf{Zero-shot generalization} measures reconstruction
 quality on a modality unseen during solver training, evaluated via the
 mask-sensitivity spectrum transfer protocol.

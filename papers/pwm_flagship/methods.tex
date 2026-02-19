@@ -18,7 +18,7 @@ is linear.  Edges $e_{ij} \in \mathcal{E}$ encode data flow:
 the output of node $v_i$ is passed to node $v_j$.
 Each node additionally exposes a set of learnable parameters
 $\boldsymbol{\theta}_i$ that may be perturbed during mismatch simulation
-or optimised during calibration, as well as read-only metadata flags
+or optimized during calibration, as well as read-only metadata flags
 (\texttt{is\_linear}, \texttt{is\_stochastic}, \texttt{is\_differentiable}).
 The graph is stored as a declarative YAML specification
 (\texttt{OperatorGraphSpec}) and compiled to an executable
@@ -41,7 +41,7 @@ Primitive operators fall into two categories:
     (\texttt{magnitude\_sq}), Poisson--Gaussian noise
     (\texttt{poisson\_gaussian}), saturation clipping
     (\texttt{saturation\_clip}), phase retrieval nonlinearity
-    (\texttt{phase\_abs}), and detector quantisation
+    (\texttt{phase\_abs}), and detector quantization
     (\texttt{quantize}).
     These set \texttt{is\_linear = False} and raise
     \texttt{NotImplementedError} on \texttt{adjoint()}, except where a
@@ -50,7 +50,7 @@ Primitive operators fall into two categories:
 \end{itemize}
 
 \paragraph{Adjoint validation.}
-Correctness of every linear primitive is verified by a randomised
+Correctness of every linear primitive is verified by a randomized
 dot-product test.  For a primitive $A$ with forward map $A:\mathbb{R}^n
 \to \mathbb{R}^m$, we draw $x \sim \mathcal{N}(0,I_n)$ and $y \sim
 \mathcal{N}(0,I_m)$ and compute
@@ -90,12 +90,12 @@ The compiler executes a four-stage pipeline:
     the adjoint plan is not generated, and any call to
     \texttt{adjoint()} raises \texttt{NotImplementedError} at runtime.
 \end{enumerate}
-The compiled \texttt{GraphOperator} is serialisable to JSON and hashable
+The compiled \texttt{GraphOperator} is serializable to JSON and hashable
 via SHA-256 for provenance tracking in RunBundle manifests.
 
 \paragraph{Template library.}
 The \texttt{graph\_templates.yaml} registry contains 89 templates
-organised across 64 modalities, grouped by physical carrier:
+organized across 64 modalities, grouped by physical carrier:
 
 \begin{itemize}
   \item \textbf{Photons (optical):}  CASSI, SPC, CACTI, structured
@@ -117,7 +117,7 @@ organised across 64 modalities, grouped by physical carrier:
 \end{itemize}
 
 \paragraph{Physics Fidelity Ladder.}
-Each template is parameterised by a fidelity tier that controls the
+Each template is parameterized by a fidelity tier that controls the
 degree of physical realism in the simulated forward model:
 
 \begin{description}
@@ -142,7 +142,7 @@ degree of physical realism in the simulated forward model:
 
 
 %% =========================================================================
-\subsection*{Triad Law Formalisation}
+\subsection*{Triad Law Formalization}
 \label{sec:methods:triad}
 
 The \triad{} asserts that the quality of any computational imaging
@@ -162,7 +162,7 @@ obtained from calibration experiments or published benchmarks.  Each entry
 carries a \texttt{provenance} field citing the source (paper DOI, internal
 experiment ID, or theoretical formula).  Additional recoverability
 indicators include the effective rank of the measurement matrix (estimated
-via randomised SVD for large operators), the dimension of the null space,
+via randomized SVD for large operators), the dimension of the null space,
 and the restricted isometry property (RIP) constant where analytically
 tractable (\eg{}, for Gaussian random projections in SPC).
 
@@ -170,7 +170,7 @@ tractable (\eg{}, for Gaussian random projections in SPC).
 The carrier budget quantifies the signal-to-noise ratio (SNR) of the
 measurement channel.  The \texttt{PhotonAgent} consumes the
 \texttt{photon\_db.yaml} registry (624 lines) which stores, per modality,
-a deterministic photon model parameterised by source power, quantum
+a deterministic photon model parameterized by source power, quantum
 efficiency, exposure time, and detector characteristics.  The agent
 classifies the noise regime into one of three categories:
 \emph{shot-limited} (Poisson-dominated, SNR $\propto \sqrt{N_{\text{photon}}}$),
@@ -185,11 +185,11 @@ regime classification, per-element photon count, and a feasibility verdict
 Operator mismatch quantifies the discrepancy between the assumed forward
 model $\Hnom$ and the true physical operator $\Htrue$.  The
 \texttt{MismatchAgent} consults \texttt{mismatch\_db.yaml} (797 lines)
-which catalogues, for each modality, the set of mismatch parameters
+which catalogs, for each modality, the set of mismatch parameters
 (spatial shifts, rotational offsets, dispersion errors, PSF deviations,
-coil sensitivity errors, centre-of-rotation offsets, \etc{}), their
+coil sensitivity errors, center-of-rotation offsets, \etc{}), their
 typical ranges, and available correction methods.  The mismatch severity
-score $s \in [0, 1]$ is computed as the normalised $\ell_2$ distance
+score $s \in [0, 1]$ is computed as the normalized $\ell_2$ distance
 $\| \boldsymbol{\theta}_{\text{true}} - \boldsymbol{\theta}_{\text{nom}} \|
 / \| \boldsymbol{\theta}_{\text{range}} \|$, where
 $\boldsymbol{\theta}_{\text{range}}$ is the per-parameter dynamic range
@@ -237,8 +237,8 @@ $\recoveryratio = 0$ indicates that calibration yields no benefit (mismatch
 is not the bottleneck), while $\recoveryratio = 1$ indicates that
 calibration fully closes the mismatch gap.  Values $\recoveryratio > 1$
 are occasionally observed when the corrected operator, combined with
-reconstruction regularisation, produces slightly higher PSNR than the
-ideal oracle---a rare phenomenon attributable to beneficial regularisation
+reconstruction regularization, produces slightly higher PSNR than the
+ideal oracle---a rare phenomenon attributable to beneficial regularization
 bias.
 
 
@@ -302,7 +302,7 @@ confidence interval.
 
 \paragraph{AgentNegotiator.}
 Implements a cross-agent veto protocol.  Before reconstruction is
-authorised, the negotiator inspects all three upstream reports and applies
+authorized, the negotiator inspects all three upstream reports and applies
 three veto conditions: (1)~low photon budget combined with aggressive
 compression ($C_{\text{noise}}$ and $C_{\text{recover}}$ both large);
 (2)~severe mismatch (severity $> 0.7$) without a planned correction step;
@@ -320,7 +320,7 @@ that sequential pipeline outputs are dimensionally consistent),
 before execution), \texttt{WhatIfPrecomputer} (evaluates counterfactual
 what-if scenarios), \texttt{SelfImprovement} (logs diagnostic events for
 future registry refinement), \texttt{PhysicsStageVisualizer} (generates
-intermediate visualisations at each pipeline stage), and
+intermediate visualizations at each pipeline stage), and
 \texttt{UPWMI} (Universal Physics World Model Interface, the top-level
 entry point that wires all agents together).
 
@@ -331,7 +331,7 @@ contracts inherit from \texttt{StrictBaseModel}, which enforces
 \texttt{validate\_assignment=True} (mutations re-validated), and a model
 validator that rejects NaN and Inf in any float field.  Bounded scores use
 \texttt{Field(ge=0.0, le=1.0)}.  Enums are string enums for human-readable
-JSON serialisation.  This design ensures that pipeline failures surface
+JSON serialization.  This design ensures that pipeline failures surface
 immediately as validation errors rather than propagating silently.
 
 \paragraph{YAML registries.}
@@ -356,7 +356,7 @@ Crucially, both algorithms operate on the forward operator parameters
 $\boldsymbol{\theta}$ rather than the reconstruction solver weights,
 making them \emph{solver-agnostic}: the corrected operator
 $H(\hat{\boldsymbol{\theta}})$ benefits any downstream solver (GAP-TV,
-MST-L, HDNet, CST, \etc{}) without retraining.
+MST-L, HDNet~\cite{hu2022hdnet}, CST, \etc{}) without retraining.
 
 \paragraph{Algorithm~1: Hierarchical Beam Search.}
 The coarse correction phase employs a hierarchical search strategy to
@@ -372,7 +372,7 @@ The algorithm proceeds as follows:
     five 1D cost curves from which coarse optima are extracted.
   \item \textbf{3D beam search.}  The mask affine subspace
     $(dx, dy, \theta)$ is searched over a $5 \times 5 \times 5$ grid
-    centred on the 1D optima.  The top-$k$ ($k = 5$) candidates by
+    centerd on the 1D optima.  The top-$k$ ($k = 5$) candidates by
     reconstruction PSNR are retained.
   \item \textbf{2D beam search.}  For each retained mask candidate,
     the dispersion subspace $(a_1, \varphi_d)$ is searched over a
@@ -403,14 +403,14 @@ are:
     $y = \texttt{CASSI}(x;\, \boldsymbol{\theta})$ is implemented as a
     differentiable PyTorch module (\texttt{DifferentiableCassiForwardSTE})
     that accepts mismatch parameters as differentiable inputs.
-  \item \textbf{GPU grid initialisation.}  A full-range 3D grid search
+  \item \textbf{GPU grid initialization.}  A full-range 3D grid search
     over $(dx, dy, \theta)$ with $9 \times 9 \times 7 = 567$ points
     provides diverse starting candidates.  The top 9 candidates seed
     multi-start gradient refinement.
   \item \textbf{Staged gradient refinement.}  Each of the 9 candidates is
-    refined using Adam optimisation (learning rate $10^{-2}$, decaying to
+    refined using Adam optimization (learning rate $10^{-2}$, decaying to
     $10^{-3}$) for 200 steps.  For each candidate, 4 random restarts with
-    jittered initialisation guard against local minima.  The loss function
+    jittered initialization guard against local minima.  The loss function
     is the negative PSNR computed via an unrolled $K$-iteration
     differentiable GAP-TV solver (\texttt{DifferentiableGAPTV}, $K=10$
     unrolled iterations).
@@ -429,7 +429,7 @@ precision.
 \label{sec:methods:eval}
 
 \paragraph{Four-Scenario Protocol.}
-We evaluate every modality under four standardised scenarios that
+We evaluate every modality under four standardized scenarios that
 isolate different sources of quality degradation:
 
 \begin{description}
@@ -448,20 +448,21 @@ isolate different sources of quality degradation:
     $\hat{H} = H(\hat{\boldsymbol{\theta}})$ where
     $\hat{\boldsymbol{\theta}}$ is estimated by Algorithms~1 and~2.
     This quantifies the benefit of mismatch calibration.
-  \item[Scenario~IV (Oracle Mask):]
-    $\yobs = \Htrue\, \xgt$; reconstruct with $\Htrue$ but using nominal
-    dispersion parameters.
-    This partial oracle isolates the contribution of mask mismatch
-    versus dispersion mismatch in CASSI, and is modality-specific.
+  \item[Scenario~IV (Oracle):]
+    $\yobs = \Htrue\, \xgt$; reconstruct with $\Htrue$ applied to
+    the mismatched data.
+    This provides an upper bound on what model correction alone can
+    achieve, isolating the operator-mismatch contribution from solver
+    and noise limitations.
 \end{description}
 
 \paragraph{Metrics.}
 Reconstruction quality is assessed using three complementary metrics:
 \begin{itemize}
   \item \textbf{PSNR} (peak signal-to-noise ratio, in dB): the primary
-    metric, computed per scene and averaged.  For signals normalised to
+    metric, computed per scene and averaged.  For signals normalized to
     $[0, 1]$, $\psnr = 10 \log_{10}(1 / \text{MSE})$.  For SPC data
-    normalised to $[0, 255]$, the peak value is 255.
+    normalized to $[0, 255]$, the peak value is 255.
   \item \textbf{SSIM} (structural similarity index): captures perceptual
     quality including luminance, contrast, and structural components,
     computed with a Gaussian window of width 11 and standard deviation
@@ -517,28 +518,28 @@ the same operator and differ only in their reconstruction algorithm.
 \paragraph{CACTI configuration.}
 The coded aperture compressive temporal imaging system uses binary
 temporal masks of dimensions $256 \times 256$, encoding 8 video frames
-into a single snapshot measurement.  Mismatch is parameterised as a
+into a single snapshot measurement.  Mismatch is parameterized as a
 temporal mask timing offset (sub-frame shift).  The default solver is
-GAP-TV with total-variation regularisation.
+GAP-TV with total-variation regularization.
 
 \paragraph{SPC configuration.}
 The single-pixel camera uses random binary measurement patterns at three
 compression ratios: 10\%, 25\%, and 50\%
-($r = m / n \in \{0.10, 0.25, 0.50\}$).  Mismatch is modelled as a
+($r = m / n \in \{0.10, 0.25, 0.50\}$).  Mismatch is modeled as a
 multiplicative gain bias on the measurement matrix.  The default solver
-is ISTA (iterative shrinkage-thresholding algorithm) with a wavelet
+is ISTA~\cite{beck2009fista} (iterative shrinkage-thresholding algorithm) with a wavelet
 sparsifying transform.
 
 \paragraph{MRI configuration.}
 Cartesian $k$-space sampling with 4$\times$ acceleration (25\% of
-$k$-space lines acquired).  Mismatch is parameterised as errors in
+$k$-space lines acquired).  Mismatch is parameterized as errors in
 the coil sensitivity maps used for parallel imaging reconstruction.
-The default solver is SENSE with $\ell_1$-wavelet regularisation.
+The default solver is SENSE with $\ell_1$-wavelet regularization.
 
 \paragraph{CT configuration.}
 Fan-beam geometry with 180 projections over $180^\circ$.  Mismatch is
-modelled as a centre-of-rotation (CoR) offset, which produces
-characteristic arc artefacts in the reconstruction.  The default solver
+modeled as a center-of-rotation (CoR) offset, which produces
+characteristic arc artifacts in the reconstruction.  The default solver
 is filtered back-projection (FBP) with a Ram-Lak filter, supplemented
 by iterative SART for comparison.
 
@@ -596,9 +597,9 @@ practical significance.
 \paragraph{Source code.}
 The complete PWM framework, including all agents, the OperatorGraph
 compiler, correction algorithms, YAML registries, and evaluation scripts,
-is released as open-source software under the MIT licence at
+is released as open-source software under the MIT license at
 \url{https://github.com/integritynoble/Physics_World_Model}.  The
-codebase is organised into two Python packages:
+codebase is organized into two Python packages:
 \texttt{pwm\_core} (core framework, agents, graph compiler, calibration
 algorithms) and \texttt{pwm\_AI\_Scientist} (automated experiment
 generation and analysis).
@@ -607,15 +608,15 @@ generation and analysis).
 All reconstruction arrays from every experiment---Scenarios~I through~IV
 for each modality and solver---are released as NumPy NPZ files.
 Files are stored using Git LFS and require \texttt{allow\_pickle=True}
-for loading.  Data ranges are standardised: CASSI and CACTI
-reconstructions are normalised to $[0, 1]$; SPC reconstructions are in
+for loading.  Data ranges are standardized: CASSI and CACTI
+reconstructions are normalized to $[0, 1]$; SPC reconstructions are in
 $[0, 255]$.
 
 \paragraph{Experiment manifests.}
 Every experiment is recorded in a RunBundle v0.3.0 manifest containing:
 the git commit hash at execution time, all random number generator seeds,
 platform information (Python version, GPU model, CUDA version), SHA-256
-hashes of all input data and output artefacts, metric values, and
+hashes of all input data and output artifacts, metric values, and
 wall-clock timestamps.  These manifests enable exact reproduction of every
 reported result.
 

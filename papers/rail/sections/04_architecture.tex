@@ -107,7 +107,7 @@ each node, the expected parameter ranges, and the physically meaningful
 mismatch axes.
 
 \paragraph{Example: CASSI.}
-\Cref{fig:operatorgraph} illustrates the OperatorGraph for a standard
+The following equation illustrates the OperatorGraph for a standard
 single-disperser CASSI~\cite{wagadarikar2008cassi} system:
 \begin{equation}
   \mathcal{G}_{\text{CASSI}}:
@@ -228,7 +228,7 @@ From the four scenario PSNR values, we derive:
 \end{align}
 The recovery ratio and oracle gap are the primary pass/fail metrics
 referenced in Layer~1 of the Industrial Intelligence Stack
-(\cref{tab:stack_mapping}): a recovery ratio $\geq 0.80$ and an oracle
+(\cref{tab:stack_mapping}): a recovery ratio $\rho$ (as defined in Eq.~\ref{eq:recovery}) of at least 0.80, meaning that calibration recovers at least 80\% of the mismatch-induced degradation, and an oracle
 gap $\leq 2$\,dB indicate that calibration is sufficient for
 deployment.
 
@@ -251,7 +251,7 @@ data is generated \emph{after} all submissions are finalized.
 The key principle is: \textbf{data created after deadline}---no
 memorization possible.
 
-\Cref{fig:cms} illustrates the four-phase Commit-Measure-Score protocol:
+The four-phase Commit-Measure-Score protocol proceeds as follows:
 
 \paragraph{Phase 1: Commit (2 weeks).}
 Participating teams submit sealed containers encapsulating their

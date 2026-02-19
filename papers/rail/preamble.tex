@@ -13,19 +13,19 @@
 
 % ---------- Tables ----------
 \usepackage{booktabs}
-\usepackage{multirow}
+%\usepackage{multirow}   % currently unused
 \usepackage{array}
 
 % ---------- Figures / sub-figures ----------
-\usepackage{subcaption}
+%\usepackage{subcaption}  % currently unused
 
 % ---------- Colors ----------
 \usepackage{xcolor}
 
 % ---------- Drawing / plots ----------
 \usepackage{tikz}
-\usepackage{pgfplots}
-\pgfplotsset{compat=1.18}
+%\usepackage{pgfplots}    % currently unused
+%\pgfplotsset{compat=1.18}
 
 % ---------- Hyperlinks & cross-references ----------
 \usepackage{hyperref}
@@ -61,7 +61,8 @@
 % Shorthand for Physics World Model
 \newcommand{\pwm}{Physics World Model}
 
-% Common Latin abbreviations (with italic formatting)
-\newcommand{\ie}{\textit{i.e.}}
-\newcommand{\eg}{\textit{e.g.}}
-\newcommand{\etc}{\textit{etc.}}
+% Common Latin abbreviations (with italic formatting and correct spacing)
+\usepackage{xspace}
+\newcommand{\ie}{\textit{i.e.}\@\xspace}
+\newcommand{\eg}{\textit{e.g.}\@\xspace}
+\newcommand{\etc}{\textit{etc.}\@\xspace}

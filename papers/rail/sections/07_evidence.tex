@@ -22,8 +22,7 @@ benchmark threshold; no modality is excluded or deferred.
 \begin{table}[t]
 \centering
 \caption{26-modality benchmark results (Scenario~I, ideal operator).
-All 26/26 modalities pass.  Average PSNR $\approx 38.2$~dB; range
-25.46--100.00~dB.}
+All 26/26 modalities pass.  Average PSNR $\approx 35.7$~dB (excluding Phase Retrieval identity test); range 25.46--61.35~dB over physically meaningful modalities.}
 \label{tab:26mod}
 \smallskip
 \begin{tabular}{@{}rlr@{\qquad}rlr@{}}
@@ -37,23 +36,23 @@ All 26/26 modalities pass.  Average PSNR $\approx 38.2$~dB; range
  3 & Confocal Live-Cell     & 29.80 & 16 & 3D Gaussian Splatting    & 30.89 \\
  4 & Confocal 3D            & 29.01 & 17 & Matrix (Generic)         & 33.86 \\
  5 & SIM                    & 27.48 & 18 & Panorama Multifocal      & 27.90 \\
- 6 & CASSI                  & 34.81 & 19 & Light Field              & 30.35 \\
- 7 & SPC                    & 28.86 & 20 & Integral Photography     & 27.85 \\
- 8 & CACTI                  & 35.33 & 21 & Phase Retrieval          &\best{100.00}\\
+ 6 & CASSI~\cite{wagadarikar2008cassi} & 34.81 & 19 & Light Field              & 30.35 \\
+ 7 & SPC~\cite{duarte2008spc}       & 28.86 & 20 & Integral Photography     & 27.85 \\
+ 8 & CACTI~\cite{llull2013cacti}     & 35.33 & 21 & Phase Retrieval          &\best{100.00}\\
  9 & Lensless               & 26.85 & 22 & FLIM                     & 35.38 \\
 10 & Light-Sheet            & 26.05 & 23 & Photoacoustic            & 50.54 \\
 11 & CT                     &\worst{25.46}& 24 & OCT                  & 64.84 \\
-12 & MRI                    & 44.97 & 25 & FPM                      & 34.57 \\
-13 & Ptychography           & 59.41 & 26 & DOT                      & 32.06 \\
+12 & MRI~\cite{zbontar2018fastmri}   & 44.97 & 25 & FPM                      & 34.57 \\
+13 & Ptychography~\cite{maiden2009ptychography} & 59.41 & 26 & DOT  & 32.06 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 The range spans nearly 75~dB, reflecting the diversity of forward models
---- from the heavily ill-posed computed tomography (CT,
+--- from the heavily ill-posed computed tomography (CT~\cite{chen2017redcnn},
 25.46~dB) to phase retrieval, where the analytically invertible
 forward model yields an identity reconstruction
-(100.00~dB, a numerical ceiling rather than a measured value).  The average of ${\approx}\,38.2$~dB confirms that the
+(100.00~dB, a numerical ceiling rather than a measured value).  The average of ${\approx}\,35.7$~dB (excluding the Phase Retrieval identity test) confirms that the
 unified pipeline delivers competitive reconstruction quality across
 fundamentally different physics.
 
@@ -84,7 +83,7 @@ and Phase~4 entries are registered but not yet numerically evaluated.}
 \midrule
 Matrix (Generic)     & gain\_bias             & 11.14 & 23.35 & $+$12.21 \\
 CT                   & center\_of\_rotation   & 13.41 & 24.09 & $+$10.67 \\
-CACTI                & mask\_timing           & 14.48 & 37.42 & \best{$+$22.94} \\
+CACTI~\cite{llull2013cacti,wang2023efficientsci} & mask\_timing & 14.48 & 37.42 & \best{$+$22.94} \\
 Lensless             & psf\_shift             & 23.48 & 27.03 & \worst{$+$3.55}  \\
 MRI                  & coil\_sensitivities    &  6.94 & 55.19 & \best{$+$48.25} \\
 SPC\textsuperscript{$\dagger$} & gain\_bias   & 11.14 & 23.35 & $+$12.21 \\
@@ -109,6 +108,11 @@ FPM                  & led\_position          & \multicolumn{3}{c}{registered} \
 {\footnotesize $\dagger$~SPC uses the same gain-bias operator template
 as the generic Matrix modality, yielding identical correction
 performance.}
+
+\medskip
+\noindent
+\textbf{Note on CASSI baselines.}
+The Scenario~II baseline for CASSI in \cref{tab:correction} (15.79~dB) is lower than the corresponding value in the sensitivity table (\cref{tab:sensitivity}, 18.09~dB for MST-L) because the correction study uses a multi-parameter mismatch (mask geometry + dispersion), which is more severe than the 1-pixel-shift-only mismatch used in the sensitivity analysis.
 
 \medskip
 \noindent
@@ -137,8 +141,8 @@ across four scenarios:
     \item \textbf{Scenario~I} --- ideal (true) operator;
     \item \textbf{Scenario~II} --- mismatched (nominal) operator;
     \item \textbf{Scenario~III} --- \pwm{}-corrected operator;
-    \item \textbf{Scenario~IV} --- corrected operator with solver
-          fine-tuning (estimated).
+    \item \textbf{Estimated} --- corrected operator with additional solver
+          fine-tuning (projected, not a formal scenario).
 \end{itemize}
 
 \begin{table}[t]
@@ -153,7 +157,7 @@ cost (I$\to$II) dominates the solver upgrade gain under ideal conditions.}
     & \textbf{I (Ideal)}
     & \textbf{II (Mismatch)}
     & \textbf{III (Corrected)}
-    & \textbf{IV (Corrected+)} \\
+    & \textbf{Est. Fine-tuned} \\
 \midrule
 GAP-TV~\cite{yuan2016gaptv}   & 24.22 & 19.66 & 20.17 & ${\approx}$23.0 \\
 PnP-HSICNN~\cite{wang2020pnp} & 25.12 & 19.10 & 19.81 & ${\approx}$24.0 \\
@@ -184,9 +188,10 @@ and generalize poorly when the physical system drifts.
 % ============================================================
 \subsection{SolveEverything Implementation Status}
 
+In addition to the 9-layer Industrial Intelligence Stack (\cref{sec:stack}), the SolveEverything framework defines 10 operational gears---concrete mechanisms that drive each layer.  \Cref{tab:gears} reports the implementation status of each gear within PWM.
+
 The \pwm{} adopts the 10-gear \emph{SolveEverything} framework~\cite{wissner2024solveeverything} as its
-governance backbone.  \Cref{tab:gears} reports the current
-implementation status of each gear.
+governance backbone.
 
 \begin{table}[t]
 \centering
@@ -211,8 +216,7 @@ implementation status of each gear.
 \end{tabular}
 \end{table}
 
-Three gears are fully operational (Targeting System, Data Trusts
-foundation, Decision Logs), five are partially implemented, one is
+Two gears are fully built (Targeting System, Decision Logs) and one has its foundation laid (Data Trusts).  Five are partially implemented, one is
 planned, and one (Compute + Energy) is currently out of scope for the
 imaging-focused release.  The partial gears are under active development
 and are expected to reach full status before the public v1.0 release.
