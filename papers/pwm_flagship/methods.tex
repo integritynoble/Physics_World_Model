@@ -98,13 +98,14 @@ The \texttt{graph\_templates.yaml} registry contains 89 templates
 organized across 64 modalities, grouped by physical carrier:
 
 \begin{itemize}
-  \item \textbf{Photons (optical):}  CASSI, SPC, CACTI, structured
+  \item \textbf{Photons (optical and X-ray):}  CASSI, SPC, CACTI, structured
     illumination microscopy (SIM), confocal, light-sheet, holography,
     ptychography, Fourier ptychographic microscopy (FPM), optical coherence
     tomography (OCT), lensless imaging, light field, integral imaging,
     neural radiance fields (NeRF), Gaussian splatting, fluorescence
     lifetime imaging (FLIM), diffuse optical tomography (DOT),
-    and phase retrieval.
+    phase retrieval, X-ray computed tomography (CT), and cone-beam CT
+    (CBCT).
   \item \textbf{Electrons:}  Electron diffraction, electron backscatter
     diffraction (EBSD), electron energy loss spectroscopy (EELS), and
     electron holography.
@@ -113,8 +114,8 @@ organized across 64 modalities, grouped by physical carrier:
   \item \textbf{Acoustic:}  Ultrasound B-mode, Doppler ultrasound,
     shear-wave elastography, sonar, and photoacoustic tomography
     (combines optical excitation with acoustic detection).
-  \item \textbf{Particles:}  X-ray computed tomography (CT), cone-beam CT
-    (CBCT), neutron tomography, proton radiography, and muon tomography.
+  \item \textbf{Particles:}  Neutron tomography, proton radiography,
+    and muon tomography.
 \end{itemize}
 
 \paragraph{Physics Fidelity Ladder.}
@@ -450,12 +451,15 @@ isolate different sources of quality degradation:
     $\hat{\boldsymbol{\theta}}$ is estimated by Algorithms~1 and~2.
     This quantifies the benefit of mismatch calibration.
   \item[Scenario~IV (Oracle Mask):]
-    $\yobs = \Htrue\, \xgt$; reconstruct with $\Htrue$.
+    Same measurements as Scenario~II
+    ($\yobs = \Htrue\, \xgt$ with $\Htrue \neq \Hnom$);
+    reconstruct with $\Htrue$ instead of $\Hnom$.
     Provides the correction ceiling: the best reconstruction
     achievable when the true operator is known exactly, applied to
-    data generated under mismatch conditions.  The gap between
+    data that were sensed by the mismatched system.  The gap between
     Scenario~IV and Scenario~I reveals the irreducible loss from
-    mismatch-induced measurement degradation.
+    the degraded sensing configuration itself (e.g., a shifted mask
+    pattern is suboptimal even when perfectly known).
 \end{description}
 
 \paragraph{Metrics.}
@@ -535,13 +539,13 @@ sparsifying transform.
 Cartesian $k$-space sampling with 4$\times$ acceleration (25\% of
 $k$-space lines acquired).  Mismatch is parameterized as a 5\% multiplicative
 error in the coil sensitivity maps used for parallel imaging reconstruction.
-The default solver is SENSE with $\ell_1$-wavelet regularization.
+The default solver is SENSE~\cite{pruessmann1999sense} with $\ell_1$-wavelet regularization.
 
 \paragraph{CT configuration.}
 Fan-beam geometry with 180 projections over $180^\circ$.  Mismatch is
 modeled as a center-of-rotation (CoR) offset, which produces
 characteristic arc artifacts in the reconstruction.  The default solver
-is filtered back-projection (FBP) with a Ram-Lak filter, supplemented
+is filtered back-projection (FBP)~\cite{feldkamp1984practical} with a Ram-Lak filter, supplemented
 by iterative SART for comparison.
 
 
@@ -587,7 +591,7 @@ Ablation studies (removal of PhotonAgent, RecoverabilityAgent,
 MismatchAgent, or RunBundle discipline) are evaluated by comparing the
 full-pipeline PSNR against each ablated variant.  We report the PSNR
 difference $\Delta\psnr$ per modality and verify that each component
-contributes $\geq 0.5$\,dB across all depth modalities, establishing
+contributes $\geq 0.5$\,dB across all validated modalities, establishing
 practical significance.
 
 

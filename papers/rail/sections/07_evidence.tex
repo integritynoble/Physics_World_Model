@@ -72,7 +72,8 @@ with the absolute improvement.
 \centering
 \caption{Operator correction across 16~modalities.  ``Before'' is
 Scenario~II (mismatched operator); ``After'' is Scenario~III (corrected
-operator).  Improvements range from $+0.54$ to $+48.25$\,dB.  Phase~2
+operator) except for CASSI rows, which report Scenario~IV (Oracle Mask)
+as the correction ceiling.  Improvements range from $+0.54$ to $+48.25$\,dB.  Phase~2
 and Phase~4 entries are registered but not yet numerically evaluated.}
 \label{tab:correction}
 \smallskip
@@ -87,8 +88,8 @@ CACTI~\cite{llull2013cacti,wang2023efficientsci} & mask\_timing & 14.48 & 37.42 
 Lensless             & psf\_shift             & 23.48 & 27.03 & $+$3.55  \\
 MRI                  & coil\_sensitivities    &  6.94 & 55.19 & \best{$+$48.25} \\
 SPC$^\dagger$ & gain\_bias   & 11.14 & 23.35 & $+$12.21 \\
-CASSI (Alg~1, GAP-TV) & mask\_geo+dispersion  & 20.96 & 21.50 & \worst{$+$0.54}  \\
-CASSI (Alg~2, GAP-TV) & mask\_geo+dispersion  & 20.96 & 21.72 & $+$0.76  \\
+CASSI (Alg~1, GAP-TV)$^\S$ & mask\_geo+dispersion  & 20.96 & 21.50 & \worst{$+$0.54}  \\
+CASSI (Alg~2, GAP-TV)$^\S$ & mask\_geo+dispersion  & 20.96 & 21.72 & $+$0.76  \\
 Ptychography         & position\_offset       & 17.35 & 24.44 & $+$7.09  \\
 \midrule
 \multicolumn{5}{@{}l}{\textit{Registered---validation in progress}} \\
@@ -108,6 +109,9 @@ FPM                  & led\_position          & \multicolumn{3}{c}{registered} \
 {\footnotesize $\dagger$~SPC uses the same gain-bias operator template
 as the generic Matrix modality, yielding identical correction
 performance.}
+
+\smallskip
+{\footnotesize $\S$~CASSI ``After'' values are Scenario~IV (Oracle Mask), not Scenario~III; see note below.}
 
 \medskip
 \noindent
@@ -180,7 +184,7 @@ HDNet~\cite{hu2022hdnet}     & 34.66 & 21.88 & 21.88 & ${\approx}$33.0 \\
 {\footnotesize $\ddagger$~PnP-HSICNN has not been re-validated under the InverseNet 5-parameter mismatch; values shown are from prior experiments.  All other rows are InverseNet-validated~\cite{yang2026inversenet}.}
 
 \smallskip
-{\footnotesize $\S$~Oracle Mask values represent reconstruction with the true operator applied to mismatched data (InverseNet Scenario~III / this work's Scenario~IV), providing an upper bound on what any correction algorithm can achieve.}
+{\footnotesize $\S$~Oracle Mask values represent reconstruction with the true operator applied to mismatched data (InverseNet's ``Oracle'' scenario, mapped to this work's Scenario~IV), providing an upper bound on what any correction algorithm can achieve.}
 
 \paragraph{Key insight.}
 The mismatch cost --- the gap from Scenario~I to Scenario~II --- is
