@@ -227,8 +227,10 @@ def _find_phantom_rotation(volume_slice: Any) -> float:
                 best_mean = local_mean
                 best_angle = float(angle)
 
-    # Expected position of bone insert is 90 degrees (from CasePack)
-    rotation = best_angle - 90.0
+    # Expected position of bone insert is at CW-from-12-o'clock 90° = 3 o'clock.
+    # In the math convention used above (y = cy + offset*sin(a), x = cx + offset*cos(a)
+    # with y-down image coordinates), 3 o'clock corresponds to 0°.
+    rotation = best_angle - 0.0
     # Normalise to [-180, 180]
     if rotation > 180.0:
         rotation -= 360.0

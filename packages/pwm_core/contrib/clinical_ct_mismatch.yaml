@@ -9,6 +9,11 @@
 # feature_name -> {expected_direction, weight} pairs used by the diagnosis
 # engine to compute a weighted mismatch likelihood score.
 #
+# IMPORTANT: All feature names MUST match the keys returned by
+# diagnosis_features.compute_all_features():
+#   ring_index, cupping_index, streak_index,
+#   hu_drift_index, noise_ratio, geometric_distortion_index
+#
 # References:
 #   - ACR CT QC Manual (2024)
 #   - AAPM TG-233: Performance Evaluation of CT Systems
@@ -46,18 +51,15 @@ mismatch_types:
       - uniformity
 
     diagnostic_features:
-      ct_number_water_shift:
-        expected_direction: "elevated"     # HU shifts positive with lower output
-        weight: 0.30
-      noise_std_increase:
-        expected_direction: "elevated"
-        weight: 0.30
-      all_insert_hu_correlated_shift:
-        expected_direction: "elevated"     # All inserts shift in same direction
+      hu_drift_index:
+        expected_direction: "elevated"     # All insert HU values shift
+        weight: 0.40
+      noise_ratio:
+        expected_direction: "elevated"     # Tube degradation increases noise
+        weight: 0.35
+      cupping_index:
+        expected_direction: "elevated"     # Subtle uniformity change
         weight: 0.25
-      uniformity_degradation:
-        expected_direction: "elevated"
-        weight: 0.15
 
     diagnostic_test: "tube_output_constancy_test"
 
@@ -101,18 +103,15 @@ mismatch_types:
       - ct_number_water
 
     diagnostic_features:
-      ring_artifact_detected:
-        expected_direction: "elevated"
-        weight: 0.45
-      uniformity_asymmetric_degradation:
-        expected_direction: "elevated"     # One peripheral ROI affected more
-        weight: 0.25
-      noise_std_increase:
-        expected_direction: "elevated"
-        weight: 0.15
-      sinogram_channel_outlier:
-        expected_direction: "elevated"
-        weight: 0.15
+      ring_index:
+        expected_direction: "elevated"     # Primary ring artifact signature
+        weight: 0.50
+      streak_index:
+        expected_direction: "elevated"     # Severe channel failure -> streaks
+        weight: 0.30
+      noise_ratio:
+        expected_direction: "elevated"     # Localized noise increase
+        weight: 0.20
 
     diagnostic_test: "detector_channel_response_map"
 
@@ -155,18 +154,15 @@ mismatch_types:
       - artifact_evaluation
 
     diagnostic_features:
-      center_peripheral_hu_gradient:
-        expected_direction: "elevated"     # |center - peripheral| increases
-        weight: 0.40
-      bone_insert_hu_deviation:
+      cupping_index:
+        expected_direction: "elevated"     # Primary cupping/capping signature
+        weight: 0.50
+      hu_drift_index:
         expected_direction: "elevated"     # Bone HU most sensitive to BH
         weight: 0.30
-      radial_noise_nonuniformity:
-        expected_direction: "elevated"
-        weight: 0.15
-      cupping_capping_profile_shape:
-        expected_direction: "elevated"
-        weight: 0.15
+      ring_index:
+        expected_direction: "elevated"     # Radial structure from BH
+        weight: 0.20
 
     diagnostic_test: "radial_profile_cupping_analysis"
 
@@ -208,18 +204,15 @@ mismatch_types:
       - slice_thickness
 
     diagnostic_features:
-      diameter_measurement_error:
-        expected_direction: "elevated"
-        weight: 0.40
-      spatial_resolution_drop:
-        expected_direction: "decreased"     # Fewer lp/cm resolved
-        weight: 0.30
-      slice_thickness_deviation:
-        expected_direction: "elevated"
-        weight: 0.15
-      edge_sharpness_degradation:
-        expected_direction: "decreased"
-        weight: 0.15
+      geometric_distortion_index:
+        expected_direction: "elevated"     # Primary geometric error signature
+        weight: 0.55
+      streak_index:
+        expected_direction: "elevated"     # Edge blur affects gradient structure
+        weight: 0.25
+      hu_drift_index:
+        expected_direction: "elevated"     # Subtle HU shifts from geometry
+        weight: 0.20
 
     diagnostic_test: "geometric_distortion_grid_analysis"
 
@@ -263,18 +256,15 @@ mismatch_types:
       - ct_number_water
 
     diagnostic_features:
-      noise_vs_resolution_anticorrelation:
-        expected_direction: "elevated"     # Sharp kernel: high noise + high resolution
-        weight: 0.40
-      kernel_name_header_mismatch:
-        expected_direction: "elevated"     # DICOM header vs protocol spec
-        weight: 0.35
-      low_contrast_shift:
-        expected_direction: "elevated"
-        weight: 0.15
-      ct_number_small_shift:
-        expected_direction: "elevated"
-        weight: 0.10
+      noise_ratio:
+        expected_direction: "elevated"     # Sharp kernel -> higher noise
+        weight: 0.45
+      streak_index:
+        expected_direction: "elevated"     # Kernel affects edge/gradient structure
+        weight: 0.30
+      hu_drift_index:
+        expected_direction: "elevated"     # Subtle HU shifts from kernel
+        weight: 0.25
 
     diagnostic_test: "dicom_header_protocol_comparison"
 
@@ -317,18 +307,18 @@ mismatch_types:
       - geometric_accuracy
 
     diagnostic_features:
-      peripheral_roi_asymmetry:
-        expected_direction: "elevated"     # Opposing peripheral ROIs differ
-        weight: 0.40
-      phantom_center_offset:
-        expected_direction: "elevated"     # Center detected away from isocenter
+      cupping_index:
+        expected_direction: "elevated"     # Bowtie mismatch -> asymmetric dose
+        weight: 0.35
+      noise_ratio:
+        expected_direction: "elevated"     # Asymmetric noise from off-center
         weight: 0.30
-      noise_directional_bias:
-        expected_direction: "elevated"
+      geometric_distortion_index:
+        expected_direction: "elevated"     # Phantom appears off-center
         weight: 0.20
-      ct_number_water_small_shift:
-        expected_direction: "elevated"
-        weight: 0.10
+      hu_drift_index:
+        expected_direction: "elevated"     # CT number shift from bowtie
+        weight: 0.15
 
     diagnostic_test: "phantom_centering_offset_measurement"
 
@@ -370,15 +360,15 @@ mismatch_types:
       - low_contrast_detectability
 
     diagnostic_features:
-      ramp_fwhm_deviation:
-        expected_direction: "elevated"
-        weight: 0.45
-      noise_thickness_correlation:
+      noise_ratio:
         expected_direction: "elevated"     # Thinner slice = more noise
+        weight: 0.50
+      hu_drift_index:
+        expected_direction: "elevated"     # Partial volume affects inserts
         weight: 0.30
-      low_contrast_target_count_change:
-        expected_direction: "decreased"    # Thinner slice -> fewer visible targets
-        weight: 0.25
+      cupping_index:
+        expected_direction: "elevated"     # Partial volume varies with position
+        weight: 0.20
 
     diagnostic_test: "wire_ramp_fwhm_measurement"
 
@@ -419,18 +409,15 @@ mismatch_types:
       - spatial_resolution
 
     diagnostic_features:
-      noise_magnitude_shift:
-        expected_direction: "decreased"    # Higher IR -> lower noise magnitude
-        weight: 0.35
-      noise_texture_nps_shift:
-        expected_direction: "elevated"     # NPS peak shifts to lower frequency
+      noise_ratio:
+        expected_direction: "decreased"    # Higher IR -> lower noise
+        weight: 0.50
+      streak_index:
+        expected_direction: "decreased"    # IR reduces streak artifacts
         weight: 0.30
-      ir_level_header_mismatch:
-        expected_direction: "elevated"     # DICOM header check
-        weight: 0.25
-      spatial_resolution_subtle_change:
-        expected_direction: "decreased"    # Higher IR may reduce resolution
-        weight: 0.10
+      hu_drift_index:
+        expected_direction: "elevated"     # Some IR implementations shift HU
+        weight: 0.20
 
     diagnostic_test: "dicom_header_ir_level_check"
 
@@ -470,18 +457,15 @@ mismatch_types:
       - ct_number_polyethylene
 
     diagnostic_features:
-      insert_hu_position_mismatch:
-        expected_direction: "elevated"     # HU values at wrong angular positions
-        weight: 0.50
-      insert_hu_values_valid_but_swapped:
-        expected_direction: "elevated"     # Values within ACR range but in wrong ROIs
-        weight: 0.30
-      water_roi_unaffected:
-        expected_direction: "decreased"    # Water ROI is rotation-invariant
-        weight: 0.10
-      uniformity_unaffected:
-        expected_direction: "decreased"
-        weight: 0.10
+      hu_drift_index:
+        expected_direction: "elevated"     # Inserts measured at wrong positions
+        weight: 0.60
+      geometric_distortion_index:
+        expected_direction: "elevated"     # Apparent position errors
+        weight: 0.25
+      noise_ratio:
+        expected_direction: "decreased"    # Water ROI unaffected -> ratio near 1
+        weight: 0.15
 
     diagnostic_test: "phantom_rotation_angle_detection"
 
@@ -529,18 +513,18 @@ mismatch_types:
       - low_contrast_detectability
 
     diagnostic_features:
-      multiple_correlated_shifts:
-        expected_direction: "elevated"     # Many metrics shift together
+      hu_drift_index:
+        expected_direction: "elevated"     # kVp change shifts all HU values
         weight: 0.35
-      dicom_header_parameter_mismatch:
-        expected_direction: "elevated"     # kVp, mAs, pitch, FOV, etc.
+      noise_ratio:
+        expected_direction: "elevated"     # mAs change affects noise
         weight: 0.35
-      ct_number_material_dependent_shift:
-        expected_direction: "elevated"     # kVp change: bone shifts more than water
-        weight: 0.20
-      noise_level_inconsistent_with_dose:
-        expected_direction: "elevated"
-        weight: 0.10
+      geometric_distortion_index:
+        expected_direction: "elevated"     # FOV change causes geometry errors
+        weight: 0.15
+      cupping_index:
+        expected_direction: "elevated"     # Dose distribution changes
+        weight: 0.15
 
     diagnostic_test: "dicom_header_full_protocol_audit"
 
