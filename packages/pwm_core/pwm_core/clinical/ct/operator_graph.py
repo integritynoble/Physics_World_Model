@@ -269,13 +269,13 @@ class CTOperatorGraph:
         image = np.asarray(image, dtype=np.float64)
         measured_sinogram = np.asarray(measured_sinogram, dtype=np.float64)
 
-        # Use noiseless forward projection for deterministic error
-        saved_noise = self.params.noise_std
-        self.params = self.params.model_copy(update={"noise_std": 0.0})
-        try:
-            predicted = self.forward(image)
-        finally:
-            self.params = self.params.model_copy(update={"noise_std": saved_noise})
+        # Use noiseless forward projection for deterministic error.
+        # Call the projection logic directly instead of self.forward() to
+        # avoid mutating self.params (which would not be thread-safe).
+        if self.params.geometry.is_parallel_beam:
+            predicted = self._radon_transform(image, self._angles)
+        else:
+            predicted = self._fan_beam_forward(image)
 
         # Handle shape mismatch gracefully
         if predicted.shape != measured_sinogram.shape:

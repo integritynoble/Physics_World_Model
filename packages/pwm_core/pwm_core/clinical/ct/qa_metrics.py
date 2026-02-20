@@ -557,6 +557,7 @@ def compute_slice_thickness(
     volume: Any,
     slice_thickness_nominal: float,
     wire_ramp_profile: Any = None,
+    pixel_spacing: float = 1.0,
 ) -> MetricResult:
     """Compute slice thickness from FWHM of wire-ramp response profile.
 
@@ -616,6 +617,8 @@ def compute_slice_thickness(
             rise = int(rise_indices[0])
             fall = int(fall_indices[-1]) if fall_indices[-1] > rise else int(fall_indices[0])
             fwhm_px = float(fall - rise)
+            if fwhm_px <= 0:
+                fwhm_px = float(np.sum(above_half))
 
         # For the ACR phantom ramp, the FWHM in pixels needs to be
         # converted to mm using the ramp geometry.  The standard ACR
@@ -630,7 +633,7 @@ def compute_slice_thickness(
         ramp_angle_rad = np.deg2rad(ramp_angle_deg)
         # In-plane FWHM in mm (assuming pixel_spacing ~ 0.5 mm typical)
         # For a pre-extracted profile, pixel spacing is already baked in
-        fwhm_mm = fwhm_px  # Assume 1:1 if no explicit spacing given
+        fwhm_mm = fwhm_px * pixel_spacing
         measured_thickness = fwhm_mm * np.tan(ramp_angle_rad)
 
         error_mm = measured_thickness - slice_thickness_nominal
@@ -643,6 +646,8 @@ def compute_slice_thickness(
             derivation={
                 "formula": "FWHM_mm * tan(ramp_angle)",
                 "fwhm_px": round(fwhm_px, 2),
+                "pixel_spacing": pixel_spacing,
+                "fwhm_mm": round(fwhm_mm, 2),
                 "ramp_angle_deg": ramp_angle_deg,
                 "nominal_mm": slice_thickness_nominal,
                 "error_mm": round(error_mm, 2),
@@ -1332,7 +1337,8 @@ def compute_all_metrics(
 
             elif metric_key == "slice_thickness":
                 metrics[metric_key] = compute_slice_thickness(
-                    volume, expected_fwhm_mm
+                    volume, expected_fwhm_mm,
+                    pixel_spacing=float(pixel_spacing[1]),
                 )
 
             elif metric_key == "uniformity":
