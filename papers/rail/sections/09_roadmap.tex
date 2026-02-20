@@ -228,16 +228,13 @@ idealized simulations while real systems fail silently.
 
 \subsection{Clinical Medical Physics Vertical}
 
-PWM's mismatch detection and four-scenario protocol map directly to
-clinical QA/QC workflows, making medical physics a natural vertical for
-the platform.  The Triad Law applies to clinical imaging with the same
-gate structure observed across 16~research modalities: Gate~1 (protocol
-design inadequacy), Gate~2 (dose/count budget), and Gate~3 (scanner
-calibration drift).  Gate~3 dominates in clinical practice---most QA
-failures trace to calibration drift, not protocol or dose
-issues---precisely mirroring the research finding that operator mismatch,
-rather than algorithmic weakness, is the primary source of
-reconstruction degradation.
+PWM's first clinical deployment is the \textbf{CT QC Copilot}---a
+metric-first QA module for diagnostic CT that implements ACR CT
+accreditation standards, AAPM TG-233 performance metrics, and Western
+Electric SPC rules for drift detection.  The module is fully built and
+tested (18~source modules, 210~tests, 76~issues resolved across 7~review
+rounds), demonstrating that the OperatorGraph IR and Triad Law extend
+from research computational imaging to clinical practice.
 
 \medskip
 \noindent
@@ -250,6 +247,22 @@ QA~\cite{aapm_tg126}, and AAPM TG-177 for
 SPECT/CT~\cite{aapm_tg177}.  Each phantom/test combination is encoded
 as a versioned \emph{CasePack}---the same abstraction that packages
 research modalities---ensuring reproducibility across sites.
+
+\medskip
+\noindent
+\textbf{Implemented components.}
+The CT QC Copilot comprises: (1)~a PHI-safe DICOM ingester with
+phantom-only validation; (2)~12~ACR CT phantom metrics with automatic
+phantom center detection and rotation correction; (3)~a 4-layer
+threshold resolver (standard default $\to$ scanner model $\to$ protocol
+$\to$ site override); (4)~scored root-cause diagnosis using a mismatch
+library with 6~artifact features; (5)~drift detection via 5~Western
+Electric SPC rules on Shewhart control charts with baseline-anchored
+limits; (6)~immutable, SHA-256 signed, version-chained commissioning
+baselines; (7)~a Tier~1/2 CT forward model (CTOperatorGraph) for
+troubleshoot-mode Triad diagnosis; and (8)~triple-output report
+generation (JSON with tamper-evident hash, PDF, and evidence directory
+with ROI overlays and trend plots).
 
 \medskip
 \noindent
@@ -268,7 +281,8 @@ slogan form: ``Autopilot for QC, Digital Twin for troubleshooting.''
 Each phantom/test combination is a versioned CasePack containing ROIs,
 metrics, thresholds, and a report template.  Adding PET/CT or SPECT
 requires a new CasePack, not new code---the same harness accommodates
-different modalities with no architectural changes.
+different modalities with no architectural changes.  Scaffold directories
+for \texttt{pet\_ct/} and \texttt{spect\_ct/} are in place.
 
 \medskip
 \noindent
