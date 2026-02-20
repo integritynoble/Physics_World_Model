@@ -443,7 +443,7 @@ Full methodological details---including dataset provenance, evaluation metric de
 \paragraph{CASSI real data.}
 We use the TSA real dataset~\cite{choi2017kaist}: 5 real scenes captured on a DD-CASSI prototype with a $660 \times 660$ coded aperture mask and 28 spectral bands (450--650\,nm).
 Measurements are $660 \times 714$ detector images.
-Since \textbf{no ground truth} exists for real CASSI captures (the true spectral cube cannot be independently measured), we use the same ground-truth-free metric as for CACTI: the normalised measurement residual $r = \|\mathbf{y} - \mathbf{\Phi}\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$.
+Since \textbf{no ground truth} exists for real CASSI captures (the true spectral cube cannot be independently measured), we use the normalised measurement residual $r = \|\mathbf{y} - \mathbf{\Phi}_{\text{cal}}\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$, always evaluated with the \emph{calibrated} mask regardless of which mask was used for reconstruction (see supplementary for why this ``cross-residual'' is essential).
 We evaluate two conditions: \emph{calibrated} (hardware mask as-is) and \emph{mismatched} (mask shifted by $dx{=}0.5$, $dy{=}0.3$\,pixels).
 \Cref{tab:cassi_real} shows the results.
 
@@ -455,22 +455,21 @@ We evaluate two conditions: \emph{calibrated} (hardware mask as-is) and \emph{mi
 \toprule
 \textbf{Method} & \textbf{Calibrated} & \textbf{Mismatched} & \textbf{Ratio} \\
 \midrule
-GAP-TV            & 0.0019 & 0.0011 & 0.6$\times$ \\
-HDNet             & 0.155  & 0.157  & 1.0$\times$ \\
-MST-S$^\dagger$   & 0.145  & 0.136  & 1.0$\times$ \\
-MST-L$^\dagger$   & 0.153  & 0.134  & 0.9$\times$ \\
+GAP-TV            & 0.0019 & 0.0033 & 1.8$\times$ \\
+HDNet             & 0.155  & 0.155  & 1.0$\times$ \\
+MST-S$^\dagger$   & 0.145  & 0.141  & 1.0$\times$ \\
+MST-L$^\dagger$   & 0.153  & 0.139  & 0.9$\times$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Spatial mask shift produces residual ratios of $0.6$--$1.0\times$---the measurement residual does \emph{not} increase under mismatch.
+GAP-TV shows the largest residual increase ($1.8\times$), because it explicitly fits the forward model during reconstruction: when reconstructed with a wrong mask, the result is inconsistent with the true measurement.
+HDNet shows ratio exactly $1.0\times$, consistent with its mask-oblivious architecture (identical output regardless of mask).
+MST-S/L show ratios $\approx 1\times$, indicating their learned spectral priors are largely insensitive to small spatial shifts.
 This contrasts sharply with CACTI (\cref{sec:cacti_real_data} below), where residuals increase $9.4$--$11.0\times$ under the same spatial shift.
-The difference arises because CASSI's dispersive forward model creates spectral overlap in each detector pixel: a small mask shift redistributes which spectral information is multiplexed, but does not break measurement consistency.
-GAP-TV, which explicitly minimises the residual during reconstruction, achieves very low absolute residuals ($\sim$0.002) and its residual actually \emph{decreases} under the shifted mask ($0.6\times$).
-HDNet shows ratio $1.0\times$, consistent with its mask-oblivious architecture.
 
 By contrast, our \emph{simulation} experiments (\cref{tab:cassi}) show 3--14\,dB PSNR degradation because they include dispersion perturbation ($a_1$, $\alpha$)---which the real-data experiment does not.
-This validates that \textbf{dispersion mismatch, not spatial shift alone, is the dominant CASSI degradation source} (\cref{fig:cassi_real}).
+The modest $1.8\times$ residual increase from spatial shift alone (vs.\ $10\times$ for CACTI) validates that \textbf{dispersion mismatch, not spatial shift, is the dominant CASSI degradation source} (\cref{fig:cassi_real}).
 
 \begin{figure}[t]
 \centering

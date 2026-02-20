@@ -158,8 +158,10 @@ Instead, we use the \textbf{normalised measurement residual} as the primary metr
 \begin{equation}
     r = \frac{\|\mathbf{y} - \sum_{\lambda} M(\cdot, \cdot - d(\lambda)) \cdot \hat{x}(\cdot, \cdot, \lambda)\|^2}{\|\mathbf{y}\|^2}.
 \end{equation}
-This metric requires \emph{only} the real measurement $\mathbf{y}$ and the assumed mask $M$---no ground truth.
-It measures how well the reconstruction, when re-measured through the assumed operator, reproduces the original detector image.
+This metric requires \emph{only} the real measurement $\mathbf{y}$ and the calibrated mask $M$---no ground truth.
+Crucially, we always evaluate the residual using the \textbf{calibrated} (hardware-provided) mask, regardless of which mask was used for reconstruction.
+This ``cross-residual'' measures whether the reconstruction is consistent with the \emph{true} forward model.
+Using the reconstruction mask instead (``self-consistent residual'') would be misleading for iterative methods like GAP-TV, which directly minimise the data fidelity term and would trivially achieve low residual even under mismatch.
 The diagnostic quantity is the \emph{ratio} of mismatched to calibrated residual: a ratio $\gg 1$ indicates the mismatch damages data fidelity.
 
 For completeness, we also report PSNR against the reference reconstructions in the per-scene table below, but this should be interpreted with caution as it measures similarity to another algorithm's output, not reconstruction accuracy.
@@ -196,26 +198,33 @@ We evaluate 4 methods:
 & \multicolumn{3}{c|}{\textbf{GAP-TV}} & \multicolumn{3}{c|}{\textbf{HDNet}} & \multicolumn{3}{c|}{\textbf{MST-S$^\dagger$}} & \multicolumn{3}{c}{\textbf{MST-L$^\dagger$}} \\
 \textbf{Scene} & \textbf{Cal.} & \textbf{Mis.} & \textbf{Ratio} & \textbf{Cal.} & \textbf{Mis.} & \textbf{Ratio} & \textbf{Cal.} & \textbf{Mis.} & \textbf{Ratio} & \textbf{Cal.} & \textbf{Mis.} & \textbf{Ratio} \\
 \midrule
-Scene 1 & 0.0015 & 0.0009 & 0.6$\times$ & 0.185 & 0.187 & 1.0$\times$ & 0.100 & 0.109 & 1.1$\times$ & 0.101 & 0.097 & 1.0$\times$ \\
-Scene 2 & 0.0021 & 0.0013 & 0.6$\times$ & 0.149 & 0.150 & 1.0$\times$ & 0.254 & 0.225 & 0.9$\times$ & 0.254 & 0.214 & 0.8$\times$ \\
-Scene 3 & 0.0020 & 0.0008 & 0.4$\times$ & 0.183 & 0.185 & 1.0$\times$ & 0.094 & 0.082 & 0.9$\times$ & 0.101 & 0.082 & 0.8$\times$ \\
-Scene 4 & 0.0015 & 0.0009 & 0.6$\times$ & 0.144 & 0.146 & 1.0$\times$ & 0.156 & 0.145 & 0.9$\times$ & 0.179 & 0.156 & 0.9$\times$ \\
-Scene 5 & 0.0023 & 0.0016 & 0.7$\times$ & 0.113 & 0.115 & 1.0$\times$ & 0.120 & 0.120 & 1.0$\times$ & 0.130 & 0.121 & 0.9$\times$ \\
+Scene 1 & 0.0015 & 0.0030 & 2.0$\times$ & 0.185 & 0.185 & 1.0$\times$ & 0.100 & 0.107 & 1.1$\times$ & 0.101 & 0.095 & 0.9$\times$ \\
+Scene 2 & 0.0021 & 0.0033 & 1.6$\times$ & 0.149 & 0.149 & 1.0$\times$ & 0.254 & 0.238 & 0.9$\times$ & 0.254 & 0.228 & 0.9$\times$ \\
+Scene 3 & 0.0020 & 0.0032 & 1.6$\times$ & 0.183 & 0.183 & 1.0$\times$ & 0.094 & 0.092 & 1.0$\times$ & 0.101 & 0.091 & 0.9$\times$ \\
+Scene 4 & 0.0015 & 0.0030 & 2.0$\times$ & 0.144 & 0.144 & 1.0$\times$ & 0.156 & 0.147 & 0.9$\times$ & 0.179 & 0.159 & 0.9$\times$ \\
+Scene 5 & 0.0023 & 0.0042 & 1.8$\times$ & 0.113 & 0.113 & 1.0$\times$ & 0.120 & 0.120 & 1.0$\times$ & 0.130 & 0.122 & 0.9$\times$ \\
 \midrule
-\textbf{Mean} & 0.0019 & 0.0011 & 0.6$\times$ & 0.155 & 0.157 & 1.0$\times$ & 0.145 & 0.136 & 1.0$\times$ & 0.153 & 0.134 & 0.9$\times$ \\
+\textbf{Mean} & 0.0019 & 0.0033 & 1.8$\times$ & 0.155 & 0.155 & 1.0$\times$ & 0.145 & 0.141 & 1.0$\times$ & 0.153 & 0.139 & 0.9$\times$ \\
 \bottomrule
 \end{tabular}%
 }
 \end{table}
 
 \subsubsection{Interpretation.}
+
+\textbf{Note on residual computation.}
+For both conditions, the measurement residual is computed using the \emph{calibrated} (hardware-provided) mask---not the mask used for reconstruction.
+This ``cross-residual'' measures whether the reconstruction is physically consistent with the true forward model.
+If we instead used the reconstruction mask (``self-consistent residual''), iterative methods like GAP-TV would trivially achieve low residual regardless of mismatch, since they directly minimise that objective.
+
 The key observations are:
 \begin{enumerate}
-    \item \textbf{Residual ratios $\leq 1$}: All methods show mismatched-to-calibrated residual ratios between 0.4$\times$ and 1.1$\times$ (mean $\leq 1.0\times$). Spatial mask shift of 0.5\,px does not increase the measurement residual on real CASSI data, confirming that spatial shift alone is not a significant degradation source.
-    \item \textbf{HDNet ratio $= 1.0\times$ everywhere}: HDNet does not take the mask as input, so changing the mask has zero effect on its output. The residual ratio of exactly 1.0$\times$ across all scenes perfectly matches the ``mask-oblivious'' classification from simulation.
-    \item \textbf{GAP-TV ratio $< 1$}: GAP-TV actually achieves \emph{lower} residual under the shifted mask (mean ratio 0.6$\times$). This is an artefact of iterative optimisation: since GAP-TV explicitly minimises the data fidelity term, a small mask shift changes the optimisation landscape and the algorithm may converge to a different minimum that happens to have lower residual but not necessarily better spectral reconstruction.
+    \item \textbf{GAP-TV ratio $\approx 1.8\times$}: GAP-TV shows the largest residual increase, because it explicitly optimises data fidelity during reconstruction. When reconstructed with a shifted mask, the result does not satisfy the \emph{true} forward model, producing a $1.6$--$2.0\times$ cross-residual increase.
+    This is notably smaller than CACTI's $10.4\times$ (Table~\ref{tab:cacti_real_perscene}), confirming that spatial shift alone is a moderate---not catastrophic---degradation source for CASSI.
+    \item \textbf{HDNet ratio $= 1.0\times$ everywhere}: HDNet does not take the mask as input, so it produces the \emph{identical} reconstruction regardless of the mask condition. The residual is therefore exactly the same for both conditions, confirming the ``mask-oblivious'' classification from simulation.
+    \item \textbf{MST-S/L ratios $\approx 0.9$--$1.0\times$}: The mask-guided transformers show near-unity ratios, indicating their learned spectral priors are largely insensitive to small spatial shifts (0.5\,px). The reconstruction changes minimally between calibrated and shifted masks.
     \item \textbf{Large absolute residual differences across methods}: GAP-TV achieves residuals $\sim$10$^{-3}$ while deep learning methods show residuals $\sim$10$^{-1}$. This reflects their fundamentally different objectives: GAP-TV directly minimises data fidelity, while HDNet/MST use learned priors that prioritise perceptual quality over measurement consistency.
-    \item \textbf{Comparison with simulation}: The simulation experiments (Table~1 of the main paper) show 3.38--13.98\,dB degradation under a \emph{5-parameter} mismatch model that includes dispersion perturbation. The near-unity residual ratios on real data (with spatial-only mismatch) confirm that \textbf{dispersion mismatch is the dominant degradation mechanism for CASSI}, consistent with the architectural analysis in the main paper.
+    \item \textbf{Comparison with simulation}: The simulation experiments (Table~1 of the main paper) show 3.38--13.98\,dB degradation under a \emph{5-parameter} mismatch model that includes dispersion perturbation. The modest $1.8\times$ GAP-TV residual increase from spatial shift alone (vs.\ $10.4\times$ for CACTI) confirms that \textbf{dispersion mismatch is the dominant degradation mechanism for CASSI}, consistent with the architectural analysis in the main paper.
 \end{enumerate}
 
 \subsection{CACTI Real Data}
@@ -295,7 +304,7 @@ WaterBalloon  & 1.4e-5 & 1.5e-4 & 10.5$\times$ & 0.0204 & 0.0266 & 1.3$\times$ \
 \quad Ground truth & True hyperspectral cube & None \\
 \quad Metric & PSNR against ground truth & Measurement residual ratio \\
 \quad Mismatch & 5 params (spatial + dispersion) & 2 params (spatial only) \\
-\quad Degradation & 3.38--13.98\,dB loss & Residual ratio $\leq 1.0\times$ \\
+\quad Degradation & 3.38--13.98\,dB loss & Residual ratio $1.8\times$ (GAP-TV) \\
 \quad Key finding & Dispersion is dominant source & Spatial shift alone is negligible \\
 \midrule
 \textbf{CACTI} & & \\
@@ -308,7 +317,7 @@ WaterBalloon  & 1.4e-5 & 1.5e-4 & 10.5$\times$ & 0.0204 & 0.0266 & 1.3$\times$ \
 \end{tabular}
 \end{table}
 
-The real hardware experiments confirm two simulation findings: (1)~mask-oblivious methods (HDNet) are completely insensitive to mask mismatch (residual ratio exactly 1.0$\times$), and (2)~the severity of spatial mismatch varies by modality---negligible for CASSI (residual ratios $\leq 1.0\times$, where dispersion dominates) but severe for CACTI (residual increases $10\times$, where the mask directly modulates each frame).
+The real hardware experiments confirm two simulation findings: (1)~mask-oblivious methods (HDNet) are completely insensitive to mask mismatch (residual ratio exactly 1.0$\times$), and (2)~the severity of spatial mismatch varies by modality---moderate for CASSI ($1.8\times$ for GAP-TV, where dispersion dominates over spatial shift) but severe for CACTI ($10.4\times$ for GAP-TV, where the mask directly modulates each frame).
 
 % ============================================================================
 % A3. SCENARIO IV PER-SCENE RESULTS
