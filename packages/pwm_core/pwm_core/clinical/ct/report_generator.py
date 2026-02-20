@@ -904,6 +904,7 @@ class ReportGenerator:
                     baseline_value = float(bl)
 
             rows.append({
+                "metric_key": metric_key,
                 "name": name,
                 "value": value,
                 "unit": unit,
@@ -948,6 +949,7 @@ class ReportGenerator:
         )
 
         for row in table_rows:
+            metric_key = row.get("metric_key", row["name"])
             name = row["name"]
             value = row["value"]
             baseline_value = row.get("baseline_value")
@@ -966,7 +968,7 @@ class ReportGenerator:
                 baseline_value=baseline_value,
                 delta=delta,
             )
-            entries[name] = entry
+            entries[metric_key] = entry
 
         return entries
 
