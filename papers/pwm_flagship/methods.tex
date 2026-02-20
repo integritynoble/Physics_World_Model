@@ -65,7 +65,7 @@ the primitive passes if $\delta_{\max} < 10^{-6}$.  At the graph level,
 a compiled \texttt{GraphOperator} composed entirely of linear nodes
 executes the same test over the composed forward--adjoint chain.  A
 \texttt{GraphAdjointCheckReport} records $n_{\text{trials}}$,
-$\delta_{\max}$, and $\bar\delta$ for audit.  All 89 graph templates
+$\delta_{\max}$, and $\bar\delta$ for audit.  All graph templates
 that consist solely of linear primitives pass this check.
 
 \paragraph{Graph compilation.}
@@ -94,8 +94,9 @@ The compiled \texttt{GraphOperator} is serializable to JSON and hashable
 via SHA-256 for provenance tracking in RunBundle manifests.
 
 \paragraph{Template library.}
-The \texttt{graph\_templates.yaml} registry contains 89 templates
-organized across 64 modalities, grouped by physical carrier:
+The \texttt{graph\_templates.yaml} registry contains templates
+organized across 26 validated modalities (with additional templates at
+various stages of validation), grouped by physical carrier:
 
 \begin{itemize}
   \item \textbf{Photons (optical and X-ray):}  CASSI, SPC, CACTI, structured
@@ -571,6 +572,48 @@ GAP-TV (50 iterations) and PnP-FFDNet (50 iterations with FFDNet denoiser).
 Mismatch is induced by shifting the mask by $dx = 0.5$\,px, $dy = 0.3$\,px.
 Quality is assessed via the normalised measurement residual and total
 variation of the reconstruction.
+
+\paragraph{Controlled hardware experiment protocol.}
+The software-perturbation protocol above applies calibrated mask shifts to
+existing real measurements.  A full hardware-in-the-loop validation
+requires physically displacing the coded aperture mask and re-acquiring
+data.  The protocol proceeds as follows: (i)~acquire a baseline dataset
+with the mask at its factory-calibrated position; (ii)~physically translate
+the mask by a known displacement ($\Delta x \in \{0.25, 0.5, 1.0\}$\,px
+equivalent, verified by micrometer stage) and re-acquire under identical
+illumination; (iii)~reconstruct both datasets with the factory mask
+specification and compute the PSNR degradation and measurement residual;
+(iv)~apply \pwm{} autonomous calibration and measure recovery.  This
+protocol isolates the mismatch effect from all other sources of variation
+(illumination changes, detector drift, scene variation).  Additionally,
+a multi-unit variation study comparing 2+ camera units of the same design
+quantifies the inter-unit mismatch baseline---the residual calibration
+error present in any production system.
+
+\paragraph{Clinical CT phantom configuration.}
+For clinical translation, \pwm{} is evaluated on CT quality assurance
+using the ACR CT accreditation phantom (Gammex 464)~\cite{chen2017redcnn}.
+The phantom contains inserts of known attenuation (bone ${\sim}955$\,HU,
+air ${\sim}{-}1000$\,HU, acrylic ${\sim}121$\,HU, polyethylene
+${\sim}{-}96$\,HU) and geometric targets for measuring spatial
+resolution, slice thickness, and low-contrast detectability.  Mismatch
+is parameterized as center-of-rotation offset ($\Delta r$, mm), beam
+hardening coefficient drift ($\Delta \mu$, \%), and detector gain
+variation ($\Delta g$, \%).  Nine ACR-aligned metrics are computed
+automatically: CT number accuracy (5 materials), geometric accuracy
+($\pm 2$\,mm tolerance), slice thickness ($\pm 1.5$\,mm), uniformity
+($\leq 5$\,HU), noise standard deviation, spatial resolution
+($\geq 5$\,lp/cm), low-contrast detectability ($\geq 4$ targets), and
+artifact score.
+
+\paragraph{Clinical MRI validation configuration.}
+For MRI clinical validation, \pwm{} processes multi-coil $k$-space data
+from public datasets (fastMRI~\cite{zbontar2018fastmri}).  Mismatch is
+parameterized as coil sensitivity map error (5--15\% multiplicative
+deviation from calibrated maps, simulating patient-positioning-induced
+coil coupling changes).  The default solver is CG-SENSE with $\ell_1$-wavelet
+regularization at $4\times$ acceleration.  Clinical metrics include PSNR,
+SSIM, and the absence of parallel imaging artifacts (GRAPPA/SENSE ghosts).
 
 
 %% =========================================================================
