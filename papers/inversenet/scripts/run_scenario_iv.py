@@ -508,7 +508,7 @@ def spc_scenario_iv(device: str = "cuda:0") -> Dict:
         from validate_spc_inversenet import PnPDRUNetSolver33
         logger.info("Loading PnP-DRUNet solver (from validate_spc_inversenet)...")
         drunet_solver = PnPDRUNetSolver33(A, dev, sigma_end=0.01,
-                                           sigma_anneal_mult=5.0, max_iter=100)
+                                           sigma_anneal_mult=10.0, max_iter=200)
         drunet_available = True
         logger.info("  PnP-DRUNet solver ready")
     except Exception as e:

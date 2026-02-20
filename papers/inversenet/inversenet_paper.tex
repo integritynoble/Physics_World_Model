@@ -220,7 +220,7 @@ Additional measurement noise $\sigma_y = 0.03$ is applied.
 \paragraph{Reconstruction methods.}
 We evaluate four methods:
 \textbf{FISTA-TV}~\cite{beck2009fista}: fast iterative shrinkage-thresholding with TV regularization (500 iterations, $\lambda = 0.005$);
-\textbf{PnP-DRUNet}~\cite{zhang2021drunet}: plug-and-play FISTA with DRUNet denoiser and sigma annealing (100 iterations, row-normalized operator);
+\textbf{PnP-DRUNet}~\cite{zhang2021drunet}: plug-and-play FISTA with DRUNet denoiser and sigma annealing (200 iterations, row-normalized operator);
 \textbf{ISTA-Net}~\cite{zhang2018istanet}: learned iterative shrinkage-thresholding network (pretrained);
 \textbf{HATNet}~\cite{qu2024hatnet}: dual-scale transformer for single-pixel imaging (pretrained).
 
@@ -378,10 +378,10 @@ FISTA-TV~\cite{beck2009fista}
  & 26.21{\scriptsize$\pm$2.28} / .759
  & 9.55 & 7.71 & 80.7\% \\
 PnP-DRUNet~\cite{zhang2021drunet}
- & 28.06{\scriptsize$\pm$5.26} / .880
- & 16.08{\scriptsize$\pm$0.89} / .402
- & 22.35{\scriptsize$\pm$2.67} / .645
- & 11.99 & 6.28 & 52.4\% \\
+ & 30.53{\scriptsize$\pm$3.36} / .899
+ & 16.29{\scriptsize$\pm$0.75} / .415
+ & 23.65{\scriptsize$\pm$1.46} / .666
+ & 14.24 & 7.37 & 51.7\% \\
 ISTA-Net~\cite{zhang2018istanet}
  & \textbf{31.85}{\scriptsize$\pm$3.11} / \textbf{.916}
  & 19.02{\scriptsize$\pm$0.61} / .584
@@ -398,9 +398,9 @@ HATNet~\cite{qu2024hatnet}
 \end{table}
 
 \paragraph{Key findings.}
-Gain drift compresses all methods to 16.08--19.40\,dB under Scenario~II despite a ${\sim}$3\,dB ideal spread.
+Gain drift compresses all methods to 16.29--19.40\,dB under Scenario~II despite a ${\sim}$4\,dB ideal spread.
 \textbf{HATNet} achieves the highest recovery ($\rho = 89.6\%$), followed by \textbf{FISTA-TV} ($\rho = 80.7\%$).
-\textbf{PnP-DRUNet} ($\rho = 52.4\%$) shows that the DRUNet denoiser prior, while effective for ideal conditions (28.06\,dB), is more fragile under gain drift mismatch, as the denoiser amplifies gain-corrupted measurement artifacts.
+\textbf{PnP-DRUNet} ($\rho = 51.7\%$) shows that the DRUNet denoiser prior, while effective for ideal conditions (30.53\,dB), is more fragile under gain drift mismatch, as the denoiser amplifies gain-corrupted measurement artifacts.
 \textbf{ISTA-Net} ($\rho = 65.7\%$) confirms the pattern that higher-capacity learned representations are more fragile under mismatch.
 
 \subsection{Cross-Modality Analysis}
@@ -418,7 +418,7 @@ Gain drift compresses all methods to 16.08--19.40\,dB under Scenario~II despite 
 \midrule
 CASSI  & 5 & 3.38--12.78 & 0.00--6.50 & 56.8\% & .574$\to$.702 & PnP-HSICNN \\
 CACTI  & 8 & 10.94--20.58 & 10.21--13.96 & 93.3\% & .305$\to$.794 & GAP-TV \\
-SPC    & 2 & 9.55--12.83 & 6.28--10.38 & 89.6\% & .648$\to$.807 & HATNet \\
+SPC    & 2 & 9.55--14.24 & 7.37--10.38 & 89.6\% & .648$\to$.807 & HATNet \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -433,7 +433,7 @@ SPC    & 2 & 9.55--12.83 & 6.28--10.38 & 89.6\% & .648$\to$.807 & HATNet \\
 \paragraph{Mismatch severity ranking.}
 CACTI suffers the most severe degradation (10.94--20.58\,dB), driven by its 8-parameter mismatch space where spatial, temporal, and radiometric errors compound.
 CASSI's 5-parameter model produces up to 13.98\,dB degradation, with dispersion parameters ($a_1$, $\alpha$) creating cumulative sub-pixel shifts across spectral bands.
-SPC shows 9.55--12.83\,dB degradation from gain drift alone.
+SPC shows 9.55--14.24\,dB degradation from gain drift alone.
 
 \paragraph{Recovery potential and architectural patterns.}
 \Cref{fig:rho_scatter} visualizes recovery ratio versus ideal performance.
@@ -560,7 +560,7 @@ This contrasts with the measurement residual, which is flat across all $\alpha$ 
 \textbf{Method} & \textbf{II} & \textbf{IV} & \textbf{III} & \textbf{Recovery} \\
 \midrule
 FISTA-TV   & 19.78 & 26.54 & 27.60 & 86\% \\
-PnP-DRUNet & 17.54 & 23.96 & 24.51 & 92\% \\
+PnP-DRUNet & 18.34 & 25.39 & 26.01 & 92\% \\
 \bottomrule
 \end{tabular}
 \end{table}

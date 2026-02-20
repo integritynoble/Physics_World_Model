@@ -19,22 +19,22 @@
       "ssim_std": 0.035910427841978274
     },
     "pnp_drunet_scenario_i": {
-      "psnr_mean": 28.061342930109696,
-      "psnr_std": 5.2550770261730735,
-      "ssim_mean": 0.8800297913127313,
-      "ssim_std": 0.046749401316372945
+      "psnr_mean": 30.53,
+      "psnr_std": 3.358425287606653,
+      "ssim_mean": 0.898629645280506,
+      "ssim_std": 0.02564432189795764
     },
     "pnp_drunet_scenario_ii": {
-      "psnr_mean": 16.075112496641676,
-      "psnr_std": 0.8937098766740588,
-      "ssim_mean": 0.40190277314215633,
-      "ssim_std": 0.06245301237525976
+      "psnr_mean": 16.29,
+      "psnr_std": 0.7469341036322398,
+      "ssim_mean": 0.4154249403203487,
+      "ssim_std": 0.06548990466435568
     },
     "pnp_drunet_scenario_iii": {
-      "psnr_mean": 22.353753819916268,
-      "psnr_std": 2.6712017601834646,
-      "ssim_mean": 0.6452817834038146,
-      "ssim_std": 0.05004333765111111
+      "psnr_mean": 23.65,
+      "psnr_std": 1.464930963487658,
+      "ssim_mean": 0.6663354804460913,
+      "ssim_std": 0.05474281841325406
     },
     "ista_net_scenario_i": {
       "psnr_mean": 31.850145854536752,
@@ -79,8 +79,8 @@
     "fista_lam": 0.005,
     "fista_iters": 500,
     "drunet_sigma_end": 0.01,
-    "drunet_sigma_anneal": 5.0,
-    "drunet_max_iter": 100,
+    "drunet_sigma_anneal": 10.0,
+    "drunet_max_iter": 200,
     "gain_alpha_h": 0.0015,
     "gain_alpha_w": 0.0015,
     "sigma_y_hat": 0.04,

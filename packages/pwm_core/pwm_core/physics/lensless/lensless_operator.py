@@ -1,6 +1,15 @@
 """Lensless (Diffuser Camera) operator.
 
-Implements PSF-based lensless imaging with large diffuser PSF.
+Implements PSF-based lensless imaging with a diffuser PSF generated from a
+random phase mask model.  The phase mask approach produces a caustic-like PSF
+whose Fourier magnitudes are approximately flat, yielding a well-conditioned
+forward operator that can be reliably inverted by Tikhonov / ADMM solvers.
+
+Previous implementation used ``gaussian_filter(random_field, sigma)`` which
+created a nearly flat (spatially uniform) PSF.  After normalization to unit
+sum the non-DC Fourier coefficients were O(1/N), making the deconvolution
+problem catastrophically ill-conditioned (condition number > 1e5) and
+causing PSNR ~ 9 dB even on noiseless data.
 """
 
 from __future__ import annotations
@@ -18,6 +27,14 @@ class LenslessOperator(BaseOperator):
 
     Forward: Convolution with diffuser PSF
     Adjoint: Correlation with PSF (transposed convolution)
+
+    The PSF is generated from a random phase mask model:
+        1. Draw random phase phi ~ U[0, 2*pi)
+        2. Smooth with Gaussian kernel of width ``psf_sigma``
+        3. PSF = |ifft2(exp(j * phi_smooth))|^2, normalized to sum=1
+
+    This produces a caustic pattern with good frequency coverage
+    (|H(f)| ~ 1 for all f), ensuring the forward model is invertible.
     """
 
     def __init__(
@@ -33,12 +50,14 @@ class LenslessOperator(BaseOperator):
         self.x_shape = x_shape
         self.psf_sigma = psf_sigma
 
-        # Generate random diffuser PSF
+        # Generate diffuser PSF via random phase mask model
         H, W = x_shape
         rng = np.random.default_rng(seed)
-        psf = rng.random((H, W)).astype(np.float32)
-        psf = ndimage.gaussian_filter(psf, sigma=psf_sigma)
-        self.psf = psf / psf.sum()  # Normalize
+        phase_raw = rng.uniform(0, 2 * np.pi, (H, W))
+        phase_smooth = ndimage.gaussian_filter(phase_raw, sigma=psf_sigma)
+        transfer = np.exp(1j * phase_smooth)
+        psf = np.abs(np.fft.ifft2(transfer)) ** 2
+        self.psf = (psf / psf.sum()).astype(np.float32)  # Normalize
 
     def forward(self, x: np.ndarray) -> np.ndarray:
         """Forward: Convolve with diffuser PSF."""

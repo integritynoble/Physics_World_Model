@@ -973,10 +973,10 @@ def run_validation(quick: bool = False, tune: bool = False, save_recon: bool = F
     fista_lam = 0.005          # FISTA-TV regularization
     fista_iters = 500          # FISTA-TV iterations
 
-    # PnP-DRUNet parameters
+    # PnP-DRUNet parameters (tuned: higher sigma_start for better CS recovery)
     drunet_sigma_end = 0.01
-    drunet_sigma_anneal = 5.0
-    drunet_max_iter = 100
+    drunet_sigma_anneal = 10.0   # sigma_start = 0.1 (was 5.0 → 0.05)
+    drunet_max_iter = 200        # (was 100)
 
     gain_alpha_h = 1.5e-3      # HATNet 2D gain drift (rows)
     gain_alpha_w = 1.5e-3      # HATNet 2D gain drift (cols)
