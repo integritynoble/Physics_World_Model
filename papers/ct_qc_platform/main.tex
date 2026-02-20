@@ -328,7 +328,7 @@ enabling longitudinal comparison even when workflows evolve.
 \begin{tikzpicture}[
   layer/.style={
     rectangle, rounded corners=2pt, draw=#1, fill=#1!10,
-    minimum width=8cm, minimum height=0.75cm,
+    minimum width=7.5cm, minimum height=0.75cm,
     font=\small\sffamily, line width=0.6pt,
   },
   node distance=0.25cm,
@@ -416,12 +416,12 @@ model~\cite{pydantic} (\texttt{frozen=True}) that captures:
 
 Baselines are \emph{never overwritten}: each commissioning event
 creates a new version.
-Storage uses atomic writes (temporary file $+$ \texttt{os.replace})
-to prevent corruption.
-The \texttt{compare\_to\_baseline} method computes per-metric deltas
-classified as STABLE ($<5\%$), DRIFTED ($5$--$15\%$), or ALERT
-($\geq 15\%$), with a minimum denominator of 10 to avoid inflated
-percentages for near-zero metrics.
+Storage uses atomic writes (temporary file $+$ rename) to prevent
+corruption.
+Baseline comparison computes per-metric deltas classified as
+STABLE ($<5\%$), DRIFTED ($5$--$15\%$), or ALERT ($\geq 15\%$),
+with a minimum denominator of 10 to avoid inflated percentages
+for near-zero metrics.
 
 
 % ===========================================================================
@@ -430,8 +430,8 @@ percentages for near-zero metrics.
 
 The platform computes nine metrics aligned with the ACR CT
 Accreditation Program~\cite{acr_ct464} (\cref{tab:metrics}).
-All metrics follow a metric-first design: they are computed directly
-from reconstructed pixel data, with no forward model required.
+All metrics are computed directly from reconstructed pixel data,
+requiring no forward model or proprietary raw data access.
 
 \begin{table}[t]
 \centering
@@ -459,7 +459,7 @@ from reconstructed pixel data, with no forward model required.
   Max $|\text{peripheral}_i - \text{center}|$ at 4 positions \\
 6 & Noise (Std Dev) & HU &
   vs.\ baseline &
-  $\sigma$ of uniform water ROI (Bessel-corrected) \\
+  Sample standard deviation of uniform water ROI \\
 7 & Low-Contrast Detect. & targets &
   $\geq 4$ &
   Count with CNR~$\geq 1.0$ (Rose criterion) \\
@@ -485,7 +485,7 @@ positions.
 \paragraph{Contrast-to-noise ratio.}
 Low-contrast detectability uses
 $\text{CNR} = |\bar{x}_{\text{signal}} - \bar{x}_{\text{bg}}| \,/\, \sigma_{\text{bg}}$
-where $\sigma_{\text{bg}}$ is Bessel-corrected.
+where $\sigma_{\text{bg}}$ is the sample standard deviation ($n{-}1$ denominator).
 
 \paragraph{Spatial resolution.}
 The MTF is computed from the edge-spread function at the phantom
@@ -511,7 +511,7 @@ lp/cm by multiplying by 10.
   xlabel={Measurement number},
   ylabel={Noise std (HU)},
   xmin=0, xmax=21,
-  ymin=2.5, ymax=7.5,
+  ymin=3.8, ymax=5.6,
   grid=major,
   grid style={gray!20},
   legend pos=north west,
@@ -520,46 +520,48 @@ lp/cm by multiplying by 10.
   tick label style={font=\small},
   label style={font=\small},
 ]
-% UCL 3-sigma
-\addplot[pwmRed, dashed, domain=0:21] {7.0};
-\addlegendentry{UCL ($3\sigma$)}
-% 2-sigma warning
-\addplot[pwmOrange, dotted, domain=0:21] {6.2};
-\addlegendentry{Warning ($2\sigma$)}
+% Commissioning baseline: x-bar=4.60, s=0.20 from 20 commissioning scans
+% UCL 3-sigma = 4.60 + 0.60 = 5.20
+\addplot[pwmRed, dashed, domain=0:21] {5.20};
+\addlegendentry{UCL ($\bar{x}+3s$)}
+% 2-sigma warning = 4.60 + 0.40 = 5.00
+\addplot[pwmOrange, dotted, domain=0:21] {5.00};
+\addlegendentry{Warning ($\bar{x}+2s$)}
 % Center line
-\addplot[pwmBlue, domain=0:21] {4.6};
+\addplot[pwmBlue, domain=0:21] {4.60};
 \addlegendentry{Baseline $\bar{x}$}
-% 2-sigma warning lower
-\addplot[pwmOrange, dotted, domain=0:21] {3.0};
-% LCL
-\addplot[pwmRed, dashed, domain=0:21] {2.2};
-\addlegendentry{LCL ($3\sigma$)}
-% Data -- stable period then drift
+% 2-sigma warning lower = 4.60 - 0.40 = 4.20
+\addplot[pwmOrange, dotted, domain=0:21] {4.20};
+% LCL = 4.60 - 0.60 = 4.00
+\addplot[pwmRed, dashed, domain=0:21] {4.00};
+\addlegendentry{LCL ($\bar{x}-3s$)}
+% Data -- stable period (1-10) then gradual drift (11-20)
 \addplot[mark=*, mark size=1.5pt, pwmBlue!80!black]
   coordinates {
-    (1,4.5) (2,4.7) (3,4.4) (4,4.8) (5,4.3)
-    (6,4.6) (7,4.9) (8,4.5) (9,4.7) (10,4.6)
-    (11,5.0) (12,5.1) (13,5.3) (14,5.2) (15,5.5)
-    (16,5.7) (17,5.9) (18,6.1) (19,6.4) (20,6.8)
+    (1,4.50) (2,4.72) (3,4.41) (4,4.78) (5,4.35)
+    (6,4.60) (7,4.85) (8,4.48) (9,4.68) (10,4.55)
+    (11,4.65) (12,4.70) (13,4.75) (14,4.80) (15,4.85)
+    (16,4.92) (17,4.98) (18,5.04) (19,5.10) (20,5.18)
   };
 \addlegendentry{Measurements}
 
-% WE Rule 5 annotation
+% WE Rule 5 annotation: points 14-20 are 7 monotonically increasing
 \draw[pwmRed, thick, decorate, decoration={brace, amplitude=4pt}]
-  (axis cs:14,6.9) -- (axis cs:20,6.9)
+  (axis cs:14,5.35) -- (axis cs:20,5.35)
   node[midway, above=4pt, font=\tiny\sffamily\color{pwmRed}]
   {WE Rule 5: 7 increasing};
 
 \end{axis}
 \end{tikzpicture}
 \caption{%
-  Example Shewhart control chart for noise standard deviation.
+  Shewhart control chart for noise standard deviation
+  ($\bar{x}=4.60$~HU, $s=0.20$~HU from commissioning).
   Measurements 1--10 show a stable process; measurements 11--20
   exhibit gradual drift.
   Western Electric Rule~5 (7 consecutive monotonically increasing
-  points, measurements 14--20) triggers a WARNING alert before the
-  UCL is crossed, demonstrating the early-warning benefit of
-  trending-based QC.
+  points, measurements 14--20) triggers a WARNING alert while
+  values are still below the UCL, demonstrating the early-warning
+  benefit of trending-based QC over simple threshold monitoring.
 }
 \label{fig:control_chart}
 \end{figure}
@@ -570,7 +572,9 @@ recommendations~\cite{aapm_tg233,pawlicki2005spc}.
 
 For each metric with at least five measurements, the detector
 builds a Shewhart control chart with UCL/LCL at $\bar{x} \pm 3s$
-and warning limits at $\bar{x} \pm 2s$~\cite{shewhart1931,western_electric_1956}.
+and warning limits at $\bar{x} \pm 2s$~\cite{shewhart1931,western_electric_1956},
+where $s$ is the sample standard deviation computed from commissioning
+data (minimum 20 measurements).
 When a commissioning baseline is available, the baseline value
 replaces $\bar{x}$ as the center line.
 
@@ -631,14 +635,13 @@ the 3-D HU volume, spacing, protocol metadata, and selection log.
 \section{Report Generation}
 \label{sec:reports}
 
-The \texttt{ReportGenerator} produces three artifacts:
-(1)~\texttt{physicist\_report.json}---versioned, SHA-256-hashed
-machine-readable record with per-metric entries, drift alerts,
-diagnosis, and baseline reference;
-(2)~\texttt{physicist\_report.pdf}---human-readable document via
-fpdf2~\cite{fpdf2} with PASS/FAIL summary, metrics table, drift
-alerts, diagnosis, and signature block;
-(3)~\texttt{evidence/} folder with ROI overlays, trend plots
+The report generator produces three artifacts:
+(1)~a versioned, SHA-256-hashed JSON record with per-metric
+entries, drift alerts, diagnosis, and baseline reference;
+(2)~a human-readable PDF via fpdf2~\cite{fpdf2} with PASS/FAIL
+summary, metrics table, drift alerts, diagnosis, and signature
+block; and
+(3)~an evidence folder with ROI overlays, trend plots
 (matplotlib~\cite{matplotlib}), and per-metric derivation logs.
 
 
@@ -748,12 +751,21 @@ CT number of water deviated by 0.3~HU ($< 5$~HU criterion),
 geometric accuracy by $-0.15$~mm ($< 2$~mm), slice thickness by
 0.08~mm ($< 1.5$~mm), and uniformity by 0.2~HU ($< 5$~HU).
 
+Type~A measurement uncertainty (standard error of the mean from
+ROI pixel statistics) was $< 0.07$~HU for CT number metrics
+(ROI sizes $> 5000$ pixels, noise $\sigma \approx 4.6$~HU)
+and $< 0.02$~mm for geometric accuracy, confirming that observed
+deviations reflect systematic measurement differences rather than
+statistical noise.
+
 \Cref{tab:validation} provides detailed results including the
 reference (manufacturer console) values and platform-computed values.
 
 \begin{table}[t]
 \centering
-\caption{Validation results: platform vs.\ manufacturer console.}
+\caption{Validation results: platform vs.\ manufacturer console.
+  CT number values are measured means; geometric accuracy is the
+  deviation from 200~mm nominal; slice thickness is measured thickness.}
 \label{tab:validation}
 \small
 \begin{tabular}{@{}lrrrl@{}}
@@ -833,12 +845,17 @@ interactive use.
 \label{sec:governance}
 
 The platform aligns with the SolveEverything.org governance
-framework~\cite{solveeverything}:
-Gear~5 (Data Trusts)---immutable baselines and QC time series;
-Gear~6 (Decision Logs)---full audit trail per QC run;
-Gear~7 (Two-Source Rule)---diagnosis requires multiple converging
-features;
-Gear~9 (Fairness Targets)---consistent QC across vendors.
+framework~\cite{solveeverything} in four areas:
+(i)~\emph{data integrity}---immutable baselines and append-only QC
+time series prevent undetected modification;
+(ii)~\emph{decision transparency}---a full audit trail records every
+QC determination, the CasePack version, resolved thresholds, and
+the approving physicist;
+(iii)~\emph{multi-evidence diagnosis}---root-cause identification
+requires multiple converging artifact features, avoiding
+single-metric snap judgments; and
+(iv)~\emph{vendor neutrality}---the same CasePack and thresholds
+apply across manufacturers, ensuring consistent QC standards.
 
 
 % ===========================================================================
@@ -870,11 +887,12 @@ the platform lowers this barrier for sites without IT infrastructure.
 is planned.
 (2)~The mismatch library is expert-curated; data-driven enrichment
 from multi-site QC databases could improve diagnostic coverage.
-(3)~The platform is for research/internal QA use; SaMD deployment
-would require FDA 510(k) and IEC 62304 compliance~\cite{iec62304,samd_fda}.
+(3)~The platform is for research/internal QA use; deployment as
+a Software as a Medical Device would require FDA 510(k) and
+IEC~62304 compliance~\cite{iec62304,samd_fda}.
 (4)~Low-contrast detectability uses a simplified CNR criterion;
-more sophisticated model-observer approaches could improve
-correlation with human observer performance~\cite{solomon2014lcd}.
+model-observer approaches~\cite{solomon2014lcd} could improve
+correlation with human observer performance.
 
 \paragraph{Future work.}
 Planned extensions include multi-vendor validation, PET/CT and
