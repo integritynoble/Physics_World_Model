@@ -1,0 +1,582 @@
+\documentclass[11pt]{article}
+
+% ---- Geometry & Spacing (JACMP style) ----
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{lineno}
+
+% ---- Mathematics ----
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% ---- Graphics & Tables ----
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+
+% ---- Colors & Links ----
+\usepackage[dvipsnames]{xcolor}
+\definecolor{pwmBlue}{HTML}{2E5FA1}
+\definecolor{pwmGreen}{HTML}{3D9E3F}
+\definecolor{pwmRed}{HTML}{C93C3C}
+\definecolor{pwmOrange}{HTML}{E8712B}
+\usepackage[colorlinks=true, linkcolor=pwmBlue, citecolor=pwmBlue, urlcolor=pwmBlue]{hyperref}
+\usepackage[capitalise,noabbrev]{cleveref}
+
+% ---- Bibliography ----
+\usepackage[numbers,sort&compress]{natbib}
+
+% ---- Listings ----
+\usepackage{listings}
+\lstset{
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  frame=single,
+  xleftmargin=1em,
+  framexleftmargin=0.5em,
+  columns=fullflexible,
+  keywordstyle=\color{pwmBlue},
+  commentstyle=\color{gray},
+}
+
+% ---- Abbreviations ----
+\newcommand{\pwm}{\textsc{pwm}}
+\newcommand{\ie}{\textit{i.e.}}
+\newcommand{\eg}{\textit{e.g.}}
+\newcommand{\etc}{\textit{etc.}}
+
+% ===========================================================================
+\title{%
+  CT QC Copilot: Clinical Implementation of an\\
+  Automated Quality-Control Decision-Support System}
+
+\author{Chengshuai Yang\\
+NextGen PlatformAI C Corp\\
+\texttt{integrityyang@gmail.com}}
+
+\date{February 2026}
+
+\begin{document}
+\maketitle
+\linenumbers
+
+% ===========================================================================
+\begin{abstract}
+We describe the clinical implementation of the CT QC Copilot, an
+automated decision-support system for computed tomography quality
+control built on the Physics World Model (\pwm{}) platform.
+The Copilot automates the end-to-end QC workflow---from DICOM
+phantom-image ingestion through nine ACR-aligned metric computations,
+four-layer threshold evaluation, statistical drift detection via
+Shewhart control charts with Western Electric rules, scored
+root-cause diagnosis, and triple-output report generation---while
+preserving the qualified medical physicist's role as the final
+decision-maker.
+In the copilot model, the system computes, the physicist decides:
+the Copilot drafts the QC report, identifies failing metrics,
+ranks root-cause hypotheses with confidence scores, recommends the
+next diagnostic test, and generates trend visualizations, but the
+physicist retains clinical judgment, accept/reject authority,
+verification responsibility, and regulatory sign-off.
+We present the clinical workflow, report structure, drift detection
+methodology, diagnostic pipeline, and discuss operational
+considerations for deployment at sites managing 10--50 CT scanners.
+The system reduces per-scanner QC analysis time from hours of
+manual work to minutes of automated computation followed by
+physicist review, enabling trending-based QC as recommended by
+AAPM Task Group 233.
+Source code is available at
+\url{https://github.com/integritynoble/Physics_World_Model}.
+\end{abstract}
+
+\noindent\textbf{Keywords:}
+CT quality control, decision support, copilot, statistical process
+control, Western Electric rules, ACR phantom, AAPM TG-233,
+clinical implementation
+
+% ===========================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Quality control of computed tomography scanners is a foundational
+responsibility of the qualified medical physicist (QMP).
+The ACR CT Accreditation Program~\cite{acr_ct_accreditation} mandates
+periodic phantom-based testing across multiple performance categories,
+and AAPM Task Group 233~\cite{aapm_tg233} recommends a shift from
+simple pass/fail testing to trending-based QC with statistical process
+control.
+Yet at most clinical sites, the QC workflow remains manual: a
+technologist acquires phantom images, the physicist opens
+vendor-specific analysis software, manually places regions of interest
+(ROIs), records values in a spreadsheet, compares against locally
+maintained thresholds, and writes a summary report.
+
+This manual process faces three scaling challenges.
+First, a single QMP may oversee 10--50 CT scanners across multiple
+sites, each requiring monthly QC with annual comprehensive
+evaluations~\cite{aapm_tg233}.
+At this scale, manual analysis consumes hours per scanner per month.
+Second, trending-based QC requires maintaining time-series databases
+and computing control-chart statistics---tasks that are error-prone
+when performed manually in spreadsheets.
+Third, when metrics fail, root-cause identification requires
+correlating multiple artifact signatures against known failure
+modes---a cognitive task that benefits from systematic computational
+support.
+
+We present the CT QC Copilot, a decision-support system that
+automates the computational aspects of CT QC while preserving the
+physicist's role as the decision-maker.
+The term ``copilot'' is deliberate: the system assists but does not
+replace the physicist.
+The copilot model is defined by a clear division of responsibility:
+
+\begin{itemize}
+  \item \textbf{The Copilot provides}: automated metric computation,
+    threshold evaluation, drift detection with control charts,
+    scored root-cause hypotheses, ``what test next?''
+    recommendations, trend visualizations, and drafted reports.
+
+  \item \textbf{The physicist provides}: clinical judgment,
+    accept/reject/investigate decisions, verification of
+    computational results, regulatory sign-off, and ultimate
+    responsibility for the QC determination.
+\end{itemize}
+
+This division ensures that automation enhances rather than replaces
+professional judgment, consistent with the role of the QMP as
+defined by ACR and AAPM.
+
+% ===========================================================================
+\section{Clinical Workflow}
+\label{sec:workflow}
+
+\Cref{fig:workflow} illustrates the end-to-end clinical workflow.
+The Copilot operates in a metric-first mode: all quality metrics are
+computed directly from reconstructed phantom images and DICOM
+metadata, with no forward model required for routine QC.
+
+\subsection{Step 1: DICOM Ingestion}
+
+The technologist acquires ACR CT~464 phantom images using the
+site's standard QC acquisition protocol.
+DICOM files are transferred to the Copilot's input directory.
+
+The ingestion module performs three safety checks before analysis:
+
+\begin{enumerate}
+  \item \textbf{PHI validation}: Twenty PHI-sensitive DICOM tags
+    (PatientName, PatientID, PatientBirthDate, \etc) are checked.
+    Seven phantom-pattern regular expressions determine whether the
+    study is a phantom scan.
+    In strict mode (default), non-phantom studies are rejected.
+
+  \item \textbf{Series selection}: CasePack-defined rules select
+    the target series from potentially multiple series in the study.
+    Selection criteria include series description keywords, slice
+    thickness range, modality, and minimum image count.
+    The first matching rule wins; the selection is logged for audit.
+
+  \item \textbf{HU rescaling}: Raw pixel values are converted to
+    Hounsfield Units via the DICOM RescaleSlope and RescaleIntercept
+    fields.
+\end{enumerate}
+
+The output is a \texttt{CTScanBundle}---a vendor-neutral
+representation containing the 3-D volume in HU, pixel spacing,
+slice thickness, protocol parameters, and the complete series
+selection audit log.
+
+\subsection{Step 2: Metric Computation}
+
+The Copilot computes nine ACR-aligned QA metrics from the ingested
+volume (\cref{tab:metrics}).
+Phantom center is auto-detected via thresholding and centroid
+computation.
+Phantom rotation is estimated from the bone-equivalent insert
+position to correct ROI placement angles.
+
+\begin{table}[t]
+\centering
+\caption{Nine QA metrics computed by the CT QC Copilot, with ACR
+criteria and clinical significance.}
+\label{tab:metrics}
+\small
+\begin{tabular}{@{}clll@{}}
+\toprule
+\# & Metric & ACR Criterion & Clinical Significance \\
+\midrule
+1 & CT Number (Water) &
+  $0 \pm 5$~HU &
+  HU calibration accuracy \\
+2 & CT Number (Inserts) &
+  Material-specific &
+  Contrast quantification \\
+3 & Geometric Accuracy &
+  $\pm 2$~mm &
+  Measurement reliability \\
+4 & Slice Thickness &
+  $\pm 1.5$~mm &
+  Z-axis resolution \\
+5 & Uniformity &
+  $\leq 5$~HU &
+  Field flatness \\
+6 & Noise (Std Dev) &
+  vs.\ baseline &
+  Dose/image quality \\
+7 & Low-Contrast Detectability &
+  $\geq 4$ targets &
+  Soft-tissue visibility \\
+8 & Artifact Evaluation &
+  0--3 score &
+  Image integrity \\
+9 & Spatial Resolution &
+  $\geq 5$~lp/cm &
+  Detail visibility \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Each metric returns a structured result containing the measured value,
+unit, a derivation record (formula, intermediate values, ACR
+criterion), and ROI spatial coordinates.
+Computation of all nine metrics completes in seconds.
+
+\subsection{Step 3: Threshold Evaluation}
+
+Each metric is evaluated against a four-layer threshold hierarchy:
+
+\begin{enumerate}
+  \item \textbf{Standard default}: ACR/AAPM tolerances.
+  \item \textbf{Scanner model}: Manufacturer-specific overrides.
+  \item \textbf{Protocol}: Acquisition-specific adjustments.
+  \item \textbf{Site override}: Institutional customizations.
+\end{enumerate}
+
+The most specific applicable threshold is used.
+Each metric receives a PASS, WARNING, or FAIL status.
+The overall QC determination is PASS if and only if every metric
+passes; a single FAIL produces an overall FAIL.
+
+\subsection{Step 4: Baseline Comparison}
+
+The Copilot compares current measurements against the scanner's
+active CommissioningBundle---an immutable, SHA-256-signed baseline
+snapshot created at commissioning.
+Per-metric deltas are classified as STABLE ($<5\%$), DRIFTED
+($5$--$15\%$), or ALERT ($\geq 15\%$).
+
+\subsection{Step 5: Drift Detection}
+
+The Copilot applies statistical process control to the scanner's
+QC time series.
+For each metric, a Shewhart control chart is built with center
+line anchored to the commissioning baseline (when available) and
+control limits at $\pm 2\sigma$ (warning) and $\pm 3\sigma$
+(control).
+
+Five Western Electric rules detect drift patterns:
+
+\begin{enumerate}
+  \item Single point outside $3\sigma$ $\Rightarrow$ FAIL.
+  \item 2 of 3 consecutive outside $2\sigma$ (same side)
+    $\Rightarrow$ ACTION\_REQUIRED.
+  \item 4 of 5 consecutive outside $1\sigma$ (same side)
+    $\Rightarrow$ WARNING.
+  \item Run of 7 on same side of mean $\Rightarrow$ WARNING.
+  \item Trend of 7 monotone $\Rightarrow$ WARNING.
+\end{enumerate}
+
+These rules detect both acute failures (Rule~1) and gradual drift
+(Rules~3--5) that would be invisible in a single-timepoint pass/fail
+evaluation.
+This is the core value proposition of trending-based QC: catching
+scanner degradation \emph{before} it crosses the action threshold.
+
+\subsection{Step 6: Root-Cause Diagnosis (Failure Path)}
+
+When one or more metrics fail, the Copilot activates the diagnostic
+pipeline:
+
+\paragraph{a) Artifact feature extraction.}
+Six quantitative artifact signatures are computed: ring index,
+cupping index, streak index, HU drift index, noise ratio, and
+geometric distortion index.
+Each captures a distinct physical degradation mode.
+
+\paragraph{b) Scored hypothesis ranking.}
+A mismatch library (\texttt{clinical\_ct\_mismatch.yaml}) defines
+known failure modes with feature weights and expected directions.
+Each hypothesis is scored as:
+\begin{equation}
+  \text{score}(h) = \underbrace{\sum_{f \in \text{match}} |v_f| w_f}_{\text{evidence}}
+  - \underbrace{\sum_{f \in \text{contradict}} |v_f| w_f}_{\text{penalty}}
+  + \underbrace{0.5 \cdot |\text{matching failed metrics}|}_{\text{bonus}}
+\end{equation}
+
+The Copilot presents the physicist with:
+\begin{itemize}
+  \item Ranked hypotheses with confidence levels
+    (high/moderate/low).
+  \item The specific artifact features that support or contradict
+    each hypothesis.
+  \item A recommended next diagnostic test when the top candidates
+    are ambiguous (within 20\% score separation).
+\end{itemize}
+
+This structured presentation transforms root-cause identification
+from an unguided cognitive task into a systematic review of
+evidence-based hypotheses.
+
+\subsection{Step 7: Report Generation}
+
+The Copilot produces three output artifacts:
+
+\paragraph{a) JSON report.}
+The \texttt{physicist\_report.json} is the canonical machine-readable
+record, containing all metric values, thresholds, baseline deltas,
+drift alerts, diagnosis results, and a SHA-256 integrity hash.
+
+\paragraph{b) PDF report.}
+The \texttt{physicist\_report.pdf} is formatted for review and
+sign-off:
+\begin{itemize}
+  \item Header with scanner ID, date, CasePack version.
+  \item Color-coded PASS/FAIL summary box.
+  \item Eight-column metrics table (metric, value, unit, baseline,
+    standard threshold, applied threshold, layer, status).
+  \item Drift alerts section with Western Electric rule details.
+  \item Diagnosis section with ranked hypotheses (failure path only).
+  \item Signature block for physicist sign-off.
+  \item Compliance footer referencing ACR and AAPM standards.
+\end{itemize}
+
+\paragraph{c) Evidence folder.}
+The \texttt{evidence/} directory contains ROI overlay images
+showing where measurements were taken, trend plots for each
+trended metric, and per-metric derivation logs in JSON.
+
+\subsection{Step 8: Physicist Review and Sign-Off}
+
+The physicist reviews the Copilot's output:
+
+\begin{enumerate}
+  \item Verifies the overall PASS/FAIL determination.
+  \item Reviews any WARNING or FAIL metrics against the evidence
+    artifacts.
+  \item For failures, evaluates the ranked hypotheses and decides
+    whether to accept the top hypothesis, investigate further, or
+    request a rescan.
+  \item Signs the PDF report, which constitutes the official QC
+    record.
+\end{enumerate}
+
+The physicist may override any Copilot determination.
+The Copilot's role ends with recommendation; the physicist's
+judgment is authoritative.
+
+% ===========================================================================
+\section{Operational Considerations}
+\label{sec:operations}
+
+\subsection{Scaling to Multi-Scanner Sites}
+
+A physicist overseeing $N$ scanners with monthly QC faces $12N$
+analysis sessions per year.
+At $N = 30$ (a typical large health system), this is 360 sessions.
+With manual analysis at 1--2 hours per session, the annual burden is
+360--720 hours of QC analysis alone.
+
+The Copilot reduces the per-session time from hours to minutes:
+automated computation completes in seconds, and physicist review of a
+PASS result requires only verification of the summary and spot-checking
+of a few metrics.
+FAIL results require more attention but benefit from the structured
+diagnostic output.
+
+\subsection{Trending-Based QC}
+
+AAPM TG-233 advocates replacing binary pass/fail testing with
+trending-based QC~\cite{aapm_tg233}.
+The Copilot implements this recommendation directly: every measurement
+is added to the scanner's time series, control charts are updated
+automatically, and drift alerts are generated based on Western Electric
+rules.
+
+The practical benefit is early warning.
+A gradual increase in noise standard deviation, for example, may not
+cross the ACR pass/fail threshold for months, but a Western Electric
+Rule~5 (monotone trend of 7 points) would flag it early, giving the
+site time to schedule preventive maintenance before the scanner fails
+accreditation criteria.
+
+\subsection{Commissioning and Service Events}
+
+The Copilot's baseline system handles the full lifecycle:
+
+\begin{itemize}
+  \item \textbf{Initial commissioning}: A new CommissioningBundle is
+    created with all metrics, acquisition parameters, and physicist
+    approval.
+
+  \item \textbf{Service events} (tube change, software upgrade):
+    A new baseline version is created and chained to the previous
+    one.  The drift detector resets its center line to the new
+    baseline while preserving the historical time series for
+    review.
+
+  \item \textbf{Annual QC}: The current measurements are compared
+    against the active baseline and the full time series.
+\end{itemize}
+
+The version chain ensures that the complete commissioning history of
+a scanner is always available, from installation through every
+service event to the present.
+
+\subsection{Regulatory Scope}
+
+The CT QC Copilot is a decision-support tool, not a standalone
+diagnostic system.
+In its current version (v1.0), it is intended for research and
+internal QA use.
+The system does not make clinical decisions, does not process patient
+data (phantom-based only), and does not replace the qualified medical
+physicist's judgment.
+
+Deployment as a regulated Software as a Medical Device (SaMD) would
+require additional validation, 510(k) or De Novo submission (depending
+on classification), and compliance with IEC~62304 software lifecycle
+requirements.
+The platform's extensive audit trails, version-controlled CasePacks,
+and SHA-256 integrity hashing provide a foundation for future
+regulatory submissions.
+
+% ===========================================================================
+\section{Integration with the Physics World Model}
+\label{sec:pwm_integration}
+
+The CT QC Copilot is one application within the Physics World Model
+(\pwm{}) framework.
+\pwm{} models physical measurement as a pipeline of operator-graph
+transformations, where each transformation can introduce mismatch
+between the assumed and actual physics.
+
+In the CT QC context, the dominant mismatch sources map to the
+Triad Law's three gates:
+
+\begin{itemize}
+  \item \textbf{Gate~1 (Protocol design)}: Inadequate scan
+    parameters---insufficient angular sampling, coverage gaps,
+    wrong reconstruction kernel.
+
+  \item \textbf{Gate~2 (Dose budget)}: Sub-optimal mAs or kVp
+    selection leading to elevated noise or contrast degradation.
+
+  \item \textbf{Gate~3 (Scanner calibration)}: Drift in HU
+    calibration, detector gain, center-of-rotation, or geometric
+    alignment---the dominant failure mode in routine clinical QC.
+\end{itemize}
+
+The Copilot's nine QA metrics directly probe Gate~3 degradation
+modes.
+When degradation is detected, the diagnosis engine identifies which
+specific calibration parameter has drifted, and the optional
+operator-graph module (\texttt{troubleshoot\_mode=True}) can
+quantify the mismatch magnitude via reprojection error analysis.
+
+% ===========================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+The CT QC Copilot addresses a practical clinical need: automated,
+reproducible, trending-based CT quality control with structured
+decision support.
+Three aspects merit discussion.
+
+\paragraph{The copilot model.}
+The decision not to fully automate QC---\ie, to keep the physicist
+in the loop---is deliberate.
+Full automation would risk de-skilling the physicist, obscuring
+failure modes that require clinical context, and creating regulatory
+complications.
+The copilot model preserves professional expertise while eliminating
+the mechanical burden of manual computation and data entry.
+
+\paragraph{Comparison with existing tools.}
+Commercial CT QC software (vendor-provided analysis packages,
+third-party tools) typically operates as a black box: the user
+places ROIs, the software computes metrics, and the results are
+displayed.
+The Copilot differs in three respects: (i)~the analysis logic is
+fully transparent via CasePacks; (ii)~drift detection and diagnosis
+are integrated rather than bolt-on; and (iii)~the triple-output
+report provides machine-readable, human-readable, and evidentiary
+records simultaneously.
+
+\paragraph{Limitations.}
+The current implementation has been designed for the ACR CT~464
+phantom.
+Extension to other phantom types (Catphan, vendor-specific phantoms)
+requires new CasePack definitions and validation.
+The diagnosis engine's mismatch library is expert-curated; a
+data-driven approach could improve coverage as multi-site QC data
+accumulates.
+The system has not been prospectively validated in a multi-site
+clinical trial; such validation is an important next step.
+
+\paragraph{Future directions.}
+Planned extensions include:
+(i)~CasePacks for CBCT and adaptive radiotherapy QA,
+expanding the Copilot's utility in the therapeutic physics domain;
+(ii)~integration with PACS and RIS for automated QC scheduling and
+result archival;
+(iii)~multi-site data aggregation for data-driven mismatch library
+enrichment; and
+(iv)~a web-based dashboard for fleet-wide scanner status monitoring.
+
+% ===========================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+The CT QC Copilot provides automated, reproducible, trending-based
+CT quality control as a decision-support system for the qualified
+medical physicist.
+By automating metric computation, threshold evaluation, drift
+detection, and root-cause diagnosis while preserving the physicist's
+decision authority, the system enables a single physicist to
+efficiently oversee large scanner fleets with consistent,
+evidence-based QC.
+The copilot model---the system computes, the physicist decides---offers
+a practical path to implementing AAPM TG-233 trending-based QC
+recommendations in clinical practice.
+
+\paragraph{Data and code availability.}
+All source code is available at
+\url{https://github.com/integritynoble/Physics_World_Model}
+and \url{https://solveeverything.org}.
+No non-public datasets were used.
+All analyses are phantom-based; no patient data were used.
+
+\paragraph{Acknowledgements.}
+The author thanks the SolveEverything.org community for governance
+framework discussions.
+
+\paragraph{Author Contributions.}
+C.Y.\ conceived the project, designed the system, implemented all
+software components, and wrote the manuscript.
+
+\paragraph{Competing Interests.}
+The author declares no competing interests.
+
+\paragraph{Correspondence.}
+Correspondence should be addressed to C.Y.\
+(\texttt{integrityyang@gmail.com}).
+
+% ===========================================================================
+\bibliographystyle{plainnat}
+\bibliography{ct_qc_copilot}
+
+\end{document}

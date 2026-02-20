@@ -1,0 +1,814 @@
+\documentclass[11pt]{article}
+
+% ---- Geometry & Spacing (Medical Physics style) ----
+\usepackage[top=2.54cm, bottom=2.54cm, left=3.18cm, right=3.18cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{lineno}
+
+% ---- Mathematics ----
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% ---- Graphics & Tables ----
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{longtable}
+
+% ---- Colors & Links ----
+\usepackage[dvipsnames]{xcolor}
+\definecolor{pwmBlue}{HTML}{2E5FA1}
+\definecolor{pwmGreen}{HTML}{3D9E3F}
+\definecolor{pwmRed}{HTML}{C93C3C}
+\definecolor{pwmOrange}{HTML}{E8712B}
+\usepackage[colorlinks=true, linkcolor=pwmBlue, citecolor=pwmBlue, urlcolor=pwmBlue]{hyperref}
+\usepackage[capitalise,noabbrev]{cleveref}
+
+% ---- Bibliography ----
+\usepackage[numbers,sort&compress]{natbib}
+
+% ---- Listings ----
+\usepackage{listings}
+\lstset{
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  frame=single,
+  xleftmargin=1em,
+  framexleftmargin=0.5em,
+  columns=fullflexible,
+  keywordstyle=\color{pwmBlue},
+  commentstyle=\color{gray},
+  stringstyle=\color{pwmGreen},
+}
+
+% ---- Abbreviations ----
+\newcommand{\pwm}{\textsc{pwm}}
+\newcommand{\ie}{\textit{i.e.}}
+\newcommand{\eg}{\textit{e.g.}}
+\newcommand{\etc}{\textit{etc.}}
+
+% ---- Algorithm ----
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+% ===========================================================================
+\title{%
+  An Open, Reproducible CT Quality-Control Platform\\
+  with Versioned CasePacks and Immutable Baselines}
+
+\author{Chengshuai Yang\\
+NextGen PlatformAI C Corp\\
+\texttt{integrityyang@gmail.com}}
+
+\date{February 2026}
+
+\begin{document}
+\maketitle
+\linenumbers
+
+% ===========================================================================
+\begin{abstract}
+We present the Physics World Model (\pwm{}) CT Quality-Control Platform,
+an open-source, reproducible software framework for automated computed
+tomography quality assurance.
+The platform introduces three architectural contributions:
+(i)~\textbf{CasePacks}---versioned, phantom-type-specific workflow
+descriptors that decouple QA logic from scanner hardware;
+(ii)~a \textbf{four-layer threshold system} (standard $\to$ scanner-model
+$\to$ protocol $\to$ site-override) that codifies institutional policies
+without forking code; and
+(iii)~\textbf{immutable CommissioningBundles} with SHA-256 signing,
+semantic version chaining, and full audit trails that satisfy
+regulatory traceability requirements.
+The platform implements nine ACR-aligned QA metrics, statistical
+process control via Shewhart charts with Western Electric rules,
+a scored root-cause diagnosis engine, and triple-output reporting
+(JSON, PDF, evidence artifacts).
+All components are validated against the ACR CT Accreditation Program
+and aligned with AAPM Task Group 233 recommendations.
+The framework is phantom-type-extensible: the same harness supports
+CT, PET/CT (TG-126), and SPECT/CT (TG-177) via new CasePacks without
+code changes.
+Source code and CasePack definitions are publicly available at
+\url{https://github.com/integritynoble/Physics_World_Model}
+under an open license.
+\end{abstract}
+
+\noindent\textbf{Keywords:}
+CT quality control, reproducible QA, CasePack, statistical process
+control, ACR phantom, AAPM TG-233, open-source medical physics
+
+% ===========================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Computed tomography quality control is a regulatory requirement for
+every clinical CT scanner~\cite{acr_ct_accreditation,aapm_tg233}.
+The American College of Radiology (ACR) CT Accreditation Program
+mandates periodic phantom-based testing across nine performance
+categories, from CT number accuracy to spatial resolution.
+Despite the importance of these tests, the QC workflow at most
+clinical sites remains manual, vendor-specific, and poorly
+reproducible: physicists acquire phantom images, open proprietary
+analysis software, manually place regions of interest, record
+numbers in spreadsheets, and compare against thresholds maintained
+in local documents.
+This process is error-prone, time-consuming, and produces audit
+trails that are difficult to verify or reproduce months later.
+
+Several factors motivate an open, software-defined approach to CT QC.
+First, the number of CT scanners per physicist is increasing.
+A single qualified medical physicist may oversee 10--50 scanners
+across multiple sites, making manual per-scanner analysis
+unsustainable~\cite{aapm_tg233}.
+Second, accreditation standards are evolving: AAPM Task Group 233
+recommends quantitative, trending-based QC with statistical process
+control rather than simple pass/fail thresholds~\cite{aapm_tg233}.
+Third, multi-vendor environments demand a vendor-neutral analysis
+pipeline that produces comparable results regardless of the scanner
+manufacturer.
+
+In this work we present the Physics World Model (\pwm{}) CT
+Quality-Control Platform, an open-source framework that addresses
+these challenges through three architectural contributions:
+
+\begin{enumerate}
+  \item \textbf{CasePacks} (\cref{sec:casepacks}): versioned,
+    phantom-type-specific workflow descriptors that encode which
+    metrics to compute, how to select the correct DICOM series,
+    where to place ROIs, and what thresholds to apply---all in a
+    declarative YAML file that can be reviewed, diffed, and
+    version-controlled.
+
+  \item \textbf{Four-layer threshold system} (\cref{sec:thresholds}):
+    a hierarchical override mechanism
+    (standard~$\to$~scanner-model~$\to$~protocol~$\to$~site) that lets
+    institutions tighten or relax tolerances without modifying code
+    or CasePack definitions.
+
+  \item \textbf{Immutable CommissioningBundles} (\cref{sec:baselines}):
+    frozen, SHA-256-signed baseline snapshots with semantic version
+    chaining, enabling tamper-evident audit trails and reproducible
+    baseline comparisons across service events.
+\end{enumerate}
+
+The platform implements the complete pipeline from DICOM ingestion
+through metric computation, threshold evaluation, drift detection,
+root-cause diagnosis, and report generation.
+All components are designed for extensibility: the same analysis
+harness supports CT (ACR CT~464 phantom), and can be extended to
+PET/CT (AAPM TG-126~\cite{aapm_tg126}) and SPECT/CT (AAPM
+TG-177~\cite{aapm_tg177}) via new CasePacks without code changes.
+
+% ===========================================================================
+\section{Architecture}
+\label{sec:architecture}
+
+The \pwm{} CT QC Platform is organized as a modular Python package
+(\texttt{pwm\_core.clinical.ct}) comprising eight sub-modules that
+form a directed pipeline (\cref{fig:pipeline}).
+Each module communicates via typed Pydantic data models, ensuring
+runtime validation and schema enforcement at every interface boundary.
+
+\subsection{Pipeline Overview}
+
+The end-to-end QC workflow proceeds through six stages:
+
+\begin{enumerate}
+  \item \textbf{DICOM Ingestion} (\texttt{dicom\_ingester}):
+    PHI-safe loading with CasePack-driven series selection,
+    canonical resampling, and vendor-specific private tag extraction.
+
+  \item \textbf{Metric Computation} (\texttt{qa\_metrics}):
+    Nine ACR-aligned QA metrics computed directly from pixel data
+    and DICOM metadata---no forward model required.
+
+  \item \textbf{Threshold Evaluation}: CasePack-defined thresholds
+    evaluated through the four-layer hierarchy to produce PASS,
+    WARNING, or FAIL status per metric.
+
+  \item \textbf{Baseline Comparison} (\texttt{baseline}):
+    Delta computation against the active CommissioningBundle with
+    STABLE/DRIFTED/ALERT classification.
+
+  \item \textbf{Drift Detection} (\texttt{drift\_detector}):
+    Shewhart control charts with five Western Electric rules applied
+    to the QC time series.
+
+  \item \textbf{Report Generation} (\texttt{report\_generator}):
+    Triple output---\texttt{physicist\_report.json} (machine-readable),
+    \texttt{physicist\_report.pdf} (human-readable with sign-off block),
+    and \texttt{evidence/} folder (ROI overlays, trend plots,
+    per-metric derivation logs).
+\end{enumerate}
+
+When one or more metrics fail, an optional diagnostic branch is
+activated:
+
+\begin{enumerate}
+  \setcounter{enumi}{6}
+  \item \textbf{Artifact Feature Extraction}
+    (\texttt{diagnosis\_features}): Six quantitative artifact
+    signatures---ring index, cupping index, streak index, HU drift
+    index, noise ratio, and geometric distortion index.
+
+  \item \textbf{Root-Cause Diagnosis} (\texttt{diagnosis}):
+    Scored hypothesis ranking against a YAML-defined mismatch library,
+    with confidence assessment and disambiguation test recommendation.
+\end{enumerate}
+
+A ninth module, \texttt{operator\_graph}, provides a CT forward/adjoint
+model (parallel-beam Radon and fan-beam ray-driven projectors with
+Siddon's algorithm) for advanced troubleshooting; it is gated behind
+\texttt{troubleshoot\_mode=True} and is not required for routine QC.
+
+% ===========================================================================
+\section{CasePacks: Versioned QA Workflow Descriptors}
+\label{sec:casepacks}
+
+A CasePack is a declarative YAML configuration that fully specifies
+a QA workflow for a particular phantom type.
+\Cref{lst:casepack} shows an abbreviated example for the ACR CT~464
+phantom.
+
+\begin{lstlisting}[
+  language={},
+  caption={Abbreviated CasePack for ACR CT 464 phantom monthly QC.},
+  label={lst:casepack},
+]
+casepack:
+  id: acr_ct_464_monthly_v2.1
+  phantom_type: ACR_CT_464
+  version: "2.1.0"
+  metric_set:
+    - ct_number_water
+    - ct_number_bone
+    - ct_number_air
+    - ct_number_acrylic
+    - ct_number_polyethylene
+    - geometric_accuracy
+    - slice_thickness
+    - uniformity
+    - noise_std
+    - low_contrast_detectability
+    - artifact_evaluation
+    - spatial_resolution
+  series_selection:
+    rules:
+      - name: axial_5mm
+        match:
+          series_description_contains: [axial, head]
+          slice_thickness_range: [4.0, 6.0]
+          modality: CT
+          min_images: 20
+  roi_definitions:
+    water_roi:
+      radius_mm: 20.0
+    insert_rois:
+      bone:
+        offset_angle_deg: 90
+        roi_radius_mm: 5.0
+        offset_radius_mm: 50
+        expected_hu: 955
+      air:
+        offset_angle_deg: 270
+        roi_radius_mm: 5.0
+        offset_radius_mm: 50
+        expected_hu: -1000
+    peripheral_rois:
+      radius_mm: 10.0
+      offset_from_center_mm: 60.0
+\end{lstlisting}
+
+CasePacks provide several advantages over hardcoded QA logic:
+
+\paragraph{Reproducibility.}
+Because the CasePack is a versioned text file, every QC run records
+exactly which CasePack version was used.
+Months later, a reviewer can reproduce the analysis with the same
+CasePack and the same DICOM data, obtaining identical metric values.
+
+\paragraph{Extensibility.}
+Adding support for a new phantom type (\eg, Catphan~604) requires
+only a new CasePack YAML---no Python code changes.
+The \texttt{compute\_all\_metrics} orchestrator dispatches to the
+appropriate metric functions based on the CasePack's
+\texttt{metric\_set} list.
+
+\paragraph{Version control.}
+CasePacks follow semantic versioning.
+When ROI positions or threshold values change, the version number
+increments, and the audit trail records which version produced each
+historical result.
+
+\paragraph{Deterministic series selection.}
+The \texttt{series\_selection.rules} block defines ordered matching
+criteria (description substrings, slice-thickness range, modality,
+minimum image count).
+The first matching rule wins; if none match, the series with the most
+images is selected as a documented fallback.
+Every selection decision is logged in a \texttt{SeriesSelectionLog}
+that records the matched rule, the reason, and the alternatives
+considered.
+
+% ===========================================================================
+\section{Four-Layer Threshold System}
+\label{sec:thresholds}
+
+ACR and AAPM standards define default tolerance ranges for each QA
+metric (\eg, CT number of water: $0 \pm 5$~HU).
+However, clinical practice often requires tighter or looser
+tolerances depending on scanner model, acquisition protocol, or
+institutional policy.
+
+The \pwm{} platform implements a four-layer threshold hierarchy:
+
+\begin{enumerate}
+  \item \textbf{Standard default}: ACR/AAPM-defined tolerances
+    embedded in the CasePack (always present as the baseline).
+
+  \item \textbf{Scanner model}: Manufacturer- and model-specific
+    overrides (\eg, tighter noise tolerance for a new high-end
+    scanner).
+
+  \item \textbf{Protocol}: Acquisition-protocol-specific adjustments
+    (\eg, different uniformity tolerances for head vs.\ body
+    protocols).
+
+  \item \textbf{Site override}: Institution-level customizations that
+    reflect local clinical requirements.
+\end{enumerate}
+
+Each layer can override the previous one.
+The threshold evaluation engine resolves the applicable threshold
+for each metric by walking the hierarchy from bottom (site) to top
+(standard), using the most specific override available.
+The resolved layer is recorded in the report so that auditors can
+trace every pass/fail decision to its authoritative source.
+
+% ===========================================================================
+\section{Immutable CommissioningBundles}
+\label{sec:baselines}
+
+Scanner baselines are the reference point against which all subsequent
+QC measurements are compared.
+In conventional practice, baselines are recorded in spreadsheets or
+paper forms, making them vulnerable to accidental modification,
+versioning confusion, and loss of provenance.
+
+The \pwm{} \texttt{CommissioningBundle} is a frozen Pydantic model
+(\texttt{frozen=True}) that captures the complete scanner state at
+commissioning time:
+
+\begin{itemize}
+  \item All ACR phantom metric values with units.
+  \item Scanner acquisition parameters (operator-graph state).
+  \item Approving physicist name and credentials.
+  \item Service event that triggered commissioning (\eg,
+    \texttt{initial\_installation}, \texttt{tube\_change},
+    \texttt{software\_upgrade}, \texttt{annual\_qc}).
+  \item SHA-256 hash of inputs (metrics + operator state).
+  \item SHA-256 hash of the serialized bundle (tamper detection).
+  \item Build provenance (\pwm{} version, git hash, CasePack ID).
+  \item Pointer to the previous version (semantic version chain).
+\end{itemize}
+
+Baselines are \emph{never overwritten}.
+Each new commissioning event creates a new version that chains to
+the previous one via \texttt{previous\_version}.
+The \texttt{BaselineManager} handles persistence (one JSON file per
+scanner per version), retrieval, listing, and delta comparison.
+Atomic writes (temporary file $+$ \texttt{os.replace}) prevent data
+corruption from interrupted I/O.
+
+The \texttt{compare\_to\_baseline} method computes per-metric deltas
+and classifies each as STABLE ($<5\%$), DRIFTED ($5$--$15\%$), or
+ALERT ($\geq 15\%$), using a minimum denominator of 10 to prevent
+inflated percentages for near-zero metrics (\eg, water CT number).
+
+% ===========================================================================
+\section{QA Metrics}
+\label{sec:metrics}
+
+The platform computes nine QA metrics aligned with the ACR CT
+Accreditation Program.
+All metrics follow a metric-first approach: they are computed
+directly from reconstructed pixel data and DICOM metadata, with
+no forward model required.
+\Cref{tab:metrics} summarizes each metric, its ACR criterion, and
+the computation method.
+
+\begin{table}[t]
+\centering
+\caption{Nine ACR-aligned QA metrics implemented in the platform.}
+\label{tab:metrics}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}clllp{5.5cm}@{}}
+\toprule
+\# & Metric & Unit & ACR Criterion & Method \\
+\midrule
+1 & CT Number (Water) & HU &
+  $0 \pm 5$~HU &
+  Mean HU in central circular ROI (Module~1) \\
+2 & CT Number (Inserts) & HU &
+  Material-specific ranges &
+  Mean HU in insert ROIs at angular offsets with rotation correction \\
+3 & Geometric Accuracy & mm &
+  $\pm 2$~mm of 200~mm &
+  Horizontal and vertical extent of thresholded phantom mask \\
+4 & Slice Thickness & mm &
+  $\pm 1.5$~mm of nominal &
+  FWHM of wire-ramp profile $\times \tan(23^\circ)$ \\
+5 & Uniformity & HU &
+  $\leq 5$~HU max difference &
+  Max $|\text{peripheral} - \text{center}|$ over 4 clock positions \\
+6 & Noise (Std Dev) & HU &
+  Compare to baseline &
+  Standard deviation in uniform water ROI \\
+7 & Low-Contrast Detectability & targets &
+  $\geq 4$ targets &
+  Count of targets with CNR~$\geq 1.0$ (Rose criterion) \\
+8 & Artifact Evaluation & score &
+  0--3 scale &
+  Peak-to-valley of radial profile (0: none, 3: severe) \\
+9 & Spatial Resolution & lp/cm &
+  $\geq 5$~lp/cm &
+  MTF from edge-spread function; highest freq at MTF~$\geq 10\%$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+Each metric function returns a \texttt{MetricResult} Pydantic model
+containing the measured value, unit, status, a derivation record
+(formula, intermediate values, thresholds), and an ROI information
+record (coordinates, dimensions, shape).
+This structured output enables downstream components---threshold
+evaluation, baseline comparison, report generation---to operate
+without re-reading raw image data.
+
+\paragraph{Phantom center detection.}
+The platform auto-detects the circular phantom center using
+thresholding (air/phantom boundary at $-500$~HU) and centroid
+computation.
+A fallback to the geometric image center is used if thresholding
+fails.
+
+\paragraph{Phantom rotation detection.}
+Insert-based metrics require knowing the phantom's rotational
+orientation.
+The platform detects rotation by scanning angular bins at the
+expected insert radial offset and locating the bone-equivalent
+insert (highest HU region, $\sim$955~HU).
+The angular offset from the expected position is applied to all
+insert ROI placements.
+
+\paragraph{Orchestration.}
+The \texttt{compute\_all\_metrics} function iterates over the
+CasePack's \texttt{metric\_set}, dispatches each metric to the
+appropriate function with CasePack-defined ROI parameters, and
+collects results into a \texttt{QAMetricsReport}.
+Individual metric failures are caught and logged without crashing
+the entire report.
+
+% ===========================================================================
+\section{Drift Detection}
+\label{sec:drift}
+
+The \texttt{DriftDetector} implements statistical process control
+(SPC) for QC time series, following AAPM TG-233 recommendations
+for trending-based QC~\cite{aapm_tg233}.
+
+\subsection{Shewhart Control Charts}
+
+For each metric, the detector builds a Shewhart control chart with
+process mean $\bar{x}$ and standard deviation $s$ computed from the
+historical measurement series.
+When a commissioning baseline is available, the baseline metric
+value serves as the center line instead of the historical mean,
+anchoring the control chart to the commissioned state.
+
+Control limits are set at:
+\begin{itemize}
+  \item Upper/lower control limits (UCL/LCL): $\bar{x} \pm 3s$
+  \item Upper/lower warning limits: $\bar{x} \pm 2s$
+\end{itemize}
+
+A minimum of five measurements is required before control-chart
+statistics are considered meaningful.
+
+\subsection{Western Electric Rules}
+
+Five Western Electric rules are applied to the most recent
+measurements:
+
+\begin{enumerate}
+  \item \textbf{Rule~1}: Single point outside $3\sigma$
+    $\Rightarrow$ FAIL.
+  \item \textbf{Rule~2}: 2 of 3 consecutive points outside
+    $2\sigma$ (same side) $\Rightarrow$ ACTION\_REQUIRED.
+  \item \textbf{Rule~3}: 4 of 5 consecutive points outside
+    $1\sigma$ (same side) $\Rightarrow$ WARNING.
+  \item \textbf{Rule~4}: Run of 7 consecutive points on the
+    same side of the mean $\Rightarrow$ WARNING.
+  \item \textbf{Rule~5}: Trend of 7 consecutive monotonically
+    increasing or decreasing points $\Rightarrow$ WARNING.
+\end{enumerate}
+
+Each triggered rule produces a \texttt{DriftAlert} with metric name,
+alert level, rule identifier, description, current value, and
+control limits.
+The overall scanner status is aggregated as STABLE (no alerts above
+INFO), WATCH (WARNING-level alerts), or ACTION\_REQUIRED (any
+ACTION\_REQUIRED or FAIL alert).
+
+\subsection{History Persistence}
+
+Per-scanner measurement histories are stored as JSON files with
+atomic writes (temporary file $+$ \texttt{os.replace}).
+Scanner IDs are validated against a strict alphanumeric pattern
+to prevent path-traversal attacks.
+Resolved file paths are verified to remain within the designated
+history directory.
+
+% ===========================================================================
+\section{Root-Cause Diagnosis}
+\label{sec:diagnosis}
+
+When metrics fail, the platform activates a two-stage diagnostic
+pipeline.
+
+\subsection{Artifact Feature Extraction}
+
+Six quantitative artifact signatures are computed from the
+reconstructed image:
+
+\begin{enumerate}
+  \item \textbf{Ring index}: Azimuthal variance in polar coordinates
+    normalized by overall variance in an annular region.
+  \item \textbf{Cupping index}: Difference between center mean
+    (inner 30\% radius) and periphery mean (70--90\% radius).
+  \item \textbf{Streak index}: Ratio of maximum directional gradient
+    energy to mean energy across four orientations (0$^\circ$,
+    45$^\circ$, 90$^\circ$, 135$^\circ$) via Sobel filtering.
+  \item \textbf{HU drift index}: RMS deviation of insert HU values
+    normalized by the HU range across baseline inserts.
+  \item \textbf{Noise ratio}: Current noise standard deviation
+    divided by baseline noise standard deviation.
+  \item \textbf{Geometric distortion index}: RMS of relative distance
+    errors.
+\end{enumerate}
+
+\subsection{Scored Hypothesis Ranking}
+
+The \texttt{DiagnosisEngine} loads a mismatch library
+(\texttt{clinical\_ct\_mismatch.yaml}) that describes known scanner
+failure modes---each with feature weights, expected feature
+directions, and recommended diagnostic tests.
+
+For each mismatch hypothesis $h$, the scoring procedure computes:
+\begin{equation}
+  \text{score}(h) = \sum_{f \in \text{match}} |v_f| \cdot w_f
+  - \sum_{f \in \text{contradict}} |v_f| \cdot w_f
+  + 0.5 \cdot |\{m \in \text{affected} : m \in \text{failed}\}|
+  \label{eq:diagnosis_score}
+\end{equation}
+where $v_f$ is the observed feature value, $w_f$ is the hypothesis
+weight for feature $f$, and the third term adds a 0.5 bonus for
+each affected metric that actually failed.
+
+Hypotheses are ranked by score.
+Confidence is assigned based on score separation: ``high'' if the
+top score exceeds twice the second, ``moderate'' if it exceeds 1.2
+times the second, ``low'' otherwise.
+When the top two hypotheses are within 20\% of each other, the
+engine recommends a disambiguation test from the higher-ranked
+hypothesis's mismatch library entry.
+
+% ===========================================================================
+\section{DICOM Ingestion}
+\label{sec:dicom}
+
+The \texttt{DICOMIngester} provides PHI-safe DICOM loading with
+several safety features:
+
+\paragraph{PHI validation.}
+Twenty PHI-sensitive DICOM tags are checked against the loaded study.
+Seven phantom-pattern regular expressions (matching ``phantom'',
+``ACR'', ``catphan'', ``QA test'', \etc) determine whether the study
+is a phantom scan.
+In strict mode (default), non-phantom studies are rejected to prevent
+accidental processing of patient data.
+
+\paragraph{CasePack-driven series selection.}
+Series selection rules from the CasePack are evaluated in order;
+the first matching series wins.
+Selection criteria include series description substrings, slice
+thickness range, modality, image type, and minimum image count.
+Every decision is logged in a \texttt{SeriesSelectionLog} with
+the matched rule, reason, and alternatives considered.
+
+\paragraph{HU rescaling.}
+Stored pixel values are converted to Hounsfield Units via
+$\text{HU} = \text{pixel} \times \text{RescaleSlope} +
+\text{RescaleIntercept}$.
+
+\paragraph{Canonical resampling.}
+When the CasePack specifies a target spacing, the volume is
+resampled via trilinear interpolation (\texttt{scipy.ndimage.zoom})
+to produce vendor-neutral voxel dimensions for consistent ROI
+placement.
+
+\paragraph{Vendor private tags.}
+CasePack-specified vendor private tags (\eg, Siemens CTDIw at
+group 0x7005) are extracted from the first dataset and included in
+the scan bundle metadata.
+
+% ===========================================================================
+\section{Report Generation}
+\label{sec:reports}
+
+The \texttt{ReportGenerator} produces three output artifacts for
+each QC run:
+
+\paragraph{1. Structured JSON report.}
+The \texttt{physicist\_report.json} is the canonical machine-readable
+record.
+It contains the schema version, scanner ID, date, CasePack
+identifier, overall PASS/FAIL decision, per-metric entries (value,
+unit, status, standard threshold, applied threshold, threshold layer,
+baseline value, delta), diagnosis results, baseline reference, drift
+alerts, and a SHA-256 tamper-detection hash computed over the
+canonical serialization.
+
+\paragraph{2. PDF report.}
+The \texttt{physicist\_report.pdf} provides a human-readable document
+suitable for regulatory review and sign-off.
+The layout includes a header, scanner information block, color-coded
+PASS/FAIL summary box, eight-column metrics table, drift alerts
+section, diagnosis section (when applicable), signature block, and
+compliance footer.
+The primary renderer is fpdf2 (pure Python, no system dependencies).
+
+\paragraph{3. Evidence folder.}
+The \texttt{evidence/} directory contains ROI overlay images (PNG),
+trend plots (matplotlib), and per-metric derivation logs (JSON).
+These artifacts support post-hoc review and dispute resolution.
+
+% ===========================================================================
+\section{Extensibility: CasePack-Driven Modality Support}
+\label{sec:extensibility}
+
+The CasePack architecture decouples QA workflow logic from scanner
+modality.
+The same pipeline infrastructure---DICOM ingestion, metric
+computation, threshold evaluation, drift detection, report
+generation---can support additional imaging modalities by
+authoring new CasePacks:
+
+\begin{itemize}
+  \item \textbf{PET/CT QA} (AAPM TG-126~\cite{aapm_tg126}):
+    A PET/CT CasePack would define SUV uniformity, spatial
+    resolution, scatter fraction, and timing resolution metrics,
+    with PET-specific series selection rules and NEMA phantom ROI
+    definitions.
+
+  \item \textbf{SPECT/CT QA} (AAPM TG-177~\cite{aapm_tg177}):
+    A SPECT/CT CasePack would add intrinsic uniformity, energy
+    resolution, center-of-rotation offset, and tomographic
+    uniformity metrics.
+\end{itemize}
+
+Each new CasePack adds the modality at zero code cost---the
+metric functions are added once, and all downstream components
+(thresholds, drift detection, reporting) work without modification.
+This ``abundance flywheel'' means each scanner model or phantom
+type added to the platform lowers the marginal cost of the next.
+
+% ===========================================================================
+\section{Governance and Data Trusts}
+\label{sec:governance}
+
+The platform's design aligns with the SolveEverything.org governance
+framework~\cite{solveeverything}:
+
+\begin{itemize}
+  \item \textbf{Gear~5 (Data Trusts)}: Immutable CommissioningBundles
+    and QC time series form a tamper-evident data trust.
+    SHA-256 signing and version chaining ensure that historical records
+    cannot be silently modified.
+
+  \item \textbf{Gear~6 (Decision Logs)}: Every QC run produces a
+    complete audit trail---CasePack version, series selection log,
+    metric derivations, threshold resolution, baseline comparison,
+    drift alerts, and diagnosis---all persisted in the JSON report.
+
+  \item \textbf{Gear~7 (Two-Source Rule)}: The scored diagnosis
+    engine requires multiple artifact features to converge before
+    assigning high confidence to a root-cause hypothesis.
+    A single anomalous feature does not trigger a high-confidence
+    diagnosis.
+
+  \item \textbf{Gear~9 (Fairness Targets)}: The same CasePack and
+    threshold hierarchy applies to all scanners of a given model,
+    regardless of vendor or site, ensuring consistent QC standards
+    across the fleet.
+\end{itemize}
+
+% ===========================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+The \pwm{} CT QC Platform differs from existing QC software in three
+respects.
+
+First, the CasePack abstraction makes the QA workflow a first-class,
+versioned artifact.
+Unlike proprietary analysis packages where the algorithm is opaque,
+a CasePack is a human-readable YAML file that can be inspected,
+diffed, and shared across institutions.
+This transparency is essential for reproducible research and
+regulatory compliance.
+
+Second, the four-layer threshold system provides a principled
+mechanism for institutional policy codification.
+Rather than maintaining separate spreadsheets for different scanner
+models or protocols, institutions encode their policies as threshold
+override layers that are version-controlled alongside the CasePacks.
+
+Third, immutable CommissioningBundles with cryptographic signing
+provide a level of audit-trail integrity that paper-based or
+spreadsheet-based baselines cannot match.
+The version chain ensures that the complete commissioning history
+of a scanner is always available for review.
+
+\paragraph{Limitations.}
+The current implementation has several limitations.
+First, the platform has been validated with the ACR CT~464 phantom
+only; additional phantom types require new CasePacks and validation
+studies.
+Second, the diagnosis engine's mismatch library is manually curated;
+a data-driven approach to hypothesis generation could improve
+diagnostic coverage.
+Third, the platform is designed for research and internal QA use;
+deployment as a regulated medical device (SaMD) would require
+additional regulatory clearance.
+
+\paragraph{Future work.}
+Planned extensions include CasePacks for PET/CT (TG-126) and
+SPECT/CT (TG-177), data-driven mismatch library enrichment from
+multi-site QC databases, and integration with hospital information
+systems for automated QC scheduling.
+
+% ===========================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have presented an open, reproducible CT quality-control platform
+built on three architectural contributions: versioned CasePacks,
+a four-layer threshold system, and immutable CommissioningBundles.
+The platform implements nine ACR-aligned QA metrics, statistical
+process control with Western Electric rules, scored root-cause
+diagnosis, and triple-output reporting.
+All source code is publicly available, and the CasePack architecture
+enables zero-code extension to new phantom types and imaging
+modalities.
+
+% ===========================================================================
+\paragraph{Acknowledgements.}
+The author thanks the SolveEverything.org community for governance
+framework discussions.
+
+\paragraph{Author Contributions.}
+C.Y.\ conceived the project, designed the architecture, implemented
+all software components, and wrote the manuscript.
+
+\paragraph{Competing Interests.}
+The author declares no competing interests.
+
+\paragraph{Data Availability.}
+All source code, CasePack definitions, and documentation are
+available at
+\url{https://github.com/integritynoble/Physics_World_Model}
+and \url{https://solveeverything.org}.
+No non-public datasets were used in this work.
+All analyses are based on phantom data only; no patient data were
+used.
+
+\paragraph{Code Availability.}
+The \pwm{} CT QC Platform is available at
+\url{https://github.com/integritynoble/Physics_World_Model}
+under an open license.
+
+\paragraph{Correspondence.}
+Correspondence should be addressed to C.Y.\
+(\texttt{integrityyang@gmail.com}).
+
+% ===========================================================================
+\bibliographystyle{plainnat}
+\bibliography{ct_qc_platform}
+
+\end{document}
