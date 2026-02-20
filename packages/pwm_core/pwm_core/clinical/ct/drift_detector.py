@@ -29,6 +29,9 @@ from __future__ import annotations
 import json
 import logging
 import math
+import os
+import re
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
@@ -588,7 +591,13 @@ class DriftDetector:
         list[dict]
             List of measurement entries.
         """
+        _sanitize_scanner_id(scanner_id)
         path = self.history_path / f"{scanner_id}.json"
+        # Ensure resolved path stays within the expected directory
+        if not path.resolve().is_relative_to(self.history_path.resolve()):
+            raise ValueError(
+                f"Resolved path '{path.resolve()}' escapes history directory."
+            )
         if not path.exists():
             return []
 
@@ -609,6 +618,9 @@ class DriftDetector:
     ) -> None:
         """Persist measurement history to the JSON file.
 
+        Uses atomic write (temp file + ``os.replace``) to prevent
+        data loss from concurrent writes or interrupted I/O.
+
         Parameters
         ----------
         scanner_id : str
@@ -616,15 +628,33 @@ class DriftDetector:
         measurements : list[dict]
             Full list of measurement entries.
         """
+        _sanitize_scanner_id(scanner_id)
         path = self.history_path / f"{scanner_id}.json"
+        # Ensure resolved path stays within the expected directory
+        if not path.resolve().is_relative_to(self.history_path.resolve()):
+            raise ValueError(
+                f"Resolved path '{path.resolve()}' escapes history directory."
+            )
         data = {
             "scanner_id": scanner_id,
             "measurements": measurements,
         }
-        path.write_text(
-            json.dumps(data, indent=2, default=str),
-            encoding="utf-8",
+        content = json.dumps(data, indent=2, default=str)
+        # Atomic write: write to temp file, then replace target
+        fd, tmp_path = tempfile.mkstemp(
+            dir=str(self.history_path), suffix=".tmp",
         )
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as tmp_f:
+                tmp_f.write(content)
+            os.replace(tmp_path, str(path))
+        except BaseException:
+            # Clean up temp file on failure
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
+            raise
 
     # ------------------------------------------------------------------
     # Status aggregation
@@ -657,6 +687,31 @@ class DriftDetector:
             return "WATCH"
         else:
             return "STABLE"
+
+
+# ---------------------------------------------------------------------------
+# Input sanitisation helpers
+# ---------------------------------------------------------------------------
+
+_SAFE_SCANNER_ID_RE = re.compile(r"^[A-Za-z0-9_\-]+$")
+
+
+def _sanitize_scanner_id(scanner_id: str) -> str:
+    """Validate that *scanner_id* is safe for use in file paths.
+
+    Only alphanumeric characters, underscores, and hyphens are allowed.
+
+    Raises
+    ------
+    ValueError
+        If the scanner_id contains unsafe characters.
+    """
+    if not scanner_id or not _SAFE_SCANNER_ID_RE.match(scanner_id):
+        raise ValueError(
+            f"Invalid scanner_id '{scanner_id}': must be non-empty and "
+            "contain only alphanumeric characters, underscores, or hyphens."
+        )
+    return scanner_id
 
 
 # ---------------------------------------------------------------------------

@@ -173,7 +173,7 @@ class CTOperatorGraph:
     # Forward projection
     # ------------------------------------------------------------------
 
-    def forward(self, image: np.ndarray) -> np.ndarray:
+    def forward(self, image: np.ndarray, *, rng_seed: int | None = None) -> np.ndarray:
         """Apply the CT forward projection (image -> sinogram).
 
         Dispatches to parallel-beam Radon (Tier 1) or fan-beam projection
@@ -183,6 +183,11 @@ class CTOperatorGraph:
         ----------
         image : np.ndarray
             2D image array (N x N) representing the attenuation map.
+        rng_seed : int | None
+            Optional seed for the noise random number generator.  If
+            provided, the noise is deterministic across calls.  If
+            ``None`` (default), a new unseeded RNG is created each call,
+            preserving the original non-deterministic behaviour.
 
         Returns
         -------
@@ -200,7 +205,7 @@ class CTOperatorGraph:
 
         # Apply noise if configured
         if self.params.noise_std > 0:
-            rng = np.random.default_rng()
+            rng = np.random.default_rng(rng_seed)
             sinogram = sinogram + rng.normal(
                 0, self.params.noise_std, sinogram.shape
             )
