@@ -214,6 +214,15 @@ class DICOMIngester:
                 resample_cfg = cp.get("resampling", None)
                 if isinstance(resample_cfg, dict):
                     target_spacing = tuple(resample_cfg.get("target_spacing", []))  # type: ignore[arg-type]
+            else:
+                # CasePackConfig or other Pydantic model
+                ss = getattr(cp, "series_selection", {})
+                if isinstance(ss, dict):
+                    rules = ss.get("rules", [])
+                private_tag_rules = getattr(cp, "private_tags", None)
+                resample_cfg = getattr(cp, "resampling", None)
+                if isinstance(resample_cfg, dict):
+                    target_spacing = tuple(resample_cfg.get("target_spacing", []))  # type: ignore[arg-type]
 
         datasets, selection_log = self._select_series(
             series_list, rules, dicom_path
