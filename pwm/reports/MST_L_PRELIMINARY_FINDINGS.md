@@ -159,6 +159,5 @@ Gain: +0.04 dB vs +5.06 dB (GAP-TV 127× more responsive)
 
 ---
 
-**Prepared by:** Claude (AI Assistant)
-**For:** integritynoble (PWM Project Developer)
+**Prepared by:** Chengshuai Yang
 **Last Updated:** 2026-02-15 14:47 UTC

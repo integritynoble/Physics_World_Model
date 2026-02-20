@@ -337,7 +337,7 @@ Std dev < 0.2 dB across 6 scenes
 
 ---
 
-**Prepared by:** Claude (Assistant)
+**Prepared by:** Chengshuai Yang
 **Project:** Physics World Model (PWM)
 **Paper:** InverseNet ECCV 2026
 **Validation Framework:** CACTI Reconstruction Benchmark
