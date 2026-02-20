@@ -46,7 +46,7 @@ We introduce \textbf{InverseNet}, the first cross-modality benchmark for operato
 InverseNet evaluates 12 reconstruction methods under a four-scenario protocol---ideal~(I), mismatched~(II), oracle-corrected~(III), and blind grid-search calibration~(IV)---across 27 simulated scenes and 9 real hardware captures, totalling over 360 experiments.
 We discover an inverse performance--robustness relationship: methods achieving the highest ideal PSNR suffer the largest mismatch degradation---confirming that \emph{a mediocre algorithm with a correct forward model outperforms a state-of-the-art network with a wrong one}.
 We further establish an operator-awareness taxonomy: \emph{mask-oblivious} architectures show zero calibration benefit ($\rho = 0\%$), while \emph{operator-conditioned} methods recover 41--90\% of mismatch losses.
-Scenario~IV provides a practical calibration baseline via self-supervised objectives (measurement residual for geometric mismatch, reconstruction sparsity for radiometric mismatch), recovering 78--100\% of the oracle bound without ground truth.
+Scenario~IV provides a practical calibration baseline via self-supervised objectives (measurement residual for geometric mismatch, reconstruction sparsity for radiometric mismatch), recovering 85--100\% of the oracle bound without ground truth.
 Real hardware experiments on 5 CASSI scenes and 4 CACTI scenes confirm that simulation-derived patterns hold on physical data.
 Code is available upon acceptance.
 
@@ -541,7 +541,7 @@ Calibration uses a subset of the data: 3 KAIST scenes for CASSI, 2 benchmark vid
 
 \paragraph{CASSI and CACTI results.}
 For CACTI, grid search over mask shifts $dx, dy \in [-1.0, 1.0]$\,px ($9 \times 9$ grid) achieves \emph{near-perfect} calibration: 26.99\,dB (matching Scenario~III), recovering the full 9.39\,dB mismatch gap.
-For CASSI ($11 \times 11$ grid), calibration recovers 78\% of the gap ($+1.36$\,dB of $+1.74$\,dB possible); the residual 22\% is attributable to dispersion parameters ($a_1$, $\alpha$) not included in the spatial-only search.
+For CASSI ($11 \times 11$ grid over $dx, dy$), calibration recovers 85\% of the spatial gap ($+1.44$\,dB of $+1.69$\,dB possible); the residual 15\% reflects spatial estimation error ($\hat{dx}{=}0.4$ vs.\ true $0.5$\,px).
 The measurement residual provides a strong signal for geometric mismatch because mask shifts cause large, structured data inconsistencies.
 
 \paragraph{SPC results.}
@@ -567,7 +567,7 @@ PnP-DRUNet & 17.54 & 23.96 & 24.51 & 92\% \\
 
 \paragraph{Criterion comparison.}
 The geometric/radiometric distinction reveals that blind calibration requires \emph{matching the objective to the mismatch type}: measurement residual for geometric mismatch (where operator errors create large data infidelities), and reconstruction sparsity for radiometric mismatch (where the operator structure is preserved but measurement values are scaled).
-Across all three modalities, Scenario~IV recovers 78--100\% of the oracle bound, demonstrating that blind calibration is practical for all mismatch types studied.
+Across all three modalities, Scenario~IV recovers 85--100\% of the oracle bound, demonstrating that blind calibration is practical for all mismatch types studied.
 
 % ============================================================================
 % 5. DISCUSSION
@@ -586,7 +586,7 @@ This taxonomy reframes the problem: the critical bottleneck is not algorithmic s
 \paragraph{Practical implications.}
 When recalibration is feasible, operator-conditioned networks should be paired with Scenario~IV-style calibration.
 When calibration is impractical, classical methods provide the most robust baseline, with degradation 3--5$\times$ smaller than deep methods.
-Scenario~IV demonstrates that simple grid-search calibration recovers 78--100\% of the oracle bound without ground truth, provided the objective matches the mismatch type: measurement residual for geometric mismatch, reconstruction sparsity for radiometric mismatch.
+Scenario~IV demonstrates that simple grid-search calibration recovers 85--100\% of the oracle bound without ground truth, provided the objective matches the mismatch type: measurement residual for geometric mismatch, reconstruction sparsity for radiometric mismatch.
 
 \paragraph{Limitations.}
 Our parametric mismatch models (affine shifts, gain drift) capture dominant error sources but do not cover spatially varying PSF errors or nonlinear detector response.
@@ -608,7 +608,7 @@ We have presented InverseNet, the first cross-modality benchmark for operator mi
 Evaluating 12 methods across CASSI, CACTI, and SPC under a four-scenario protocol, we find:
 (1)~mismatch degrades deep learning methods by 10--21\,dB, collapsing their advantage over classical methods;
 (2)~operator-conditioned architectures recover 40--90\% of losses through calibration, while mask-oblivious ones recover 0\%;
-(3)~blind grid-search calibration (Scenario~IV) recovers 78--100\% of the oracle bound without ground truth, using measurement residual for geometric and reconstruction sparsity for radiometric mismatch;
+(3)~blind grid-search calibration (Scenario~IV) recovers 85--100\% of the oracle bound without ground truth, using measurement residual for geometric and reconstruction sparsity for radiometric mismatch;
 (4)~real hardware experiments confirm simulation patterns transfer to physical data.
 When calibration is feasible, operator-conditioned networks paired with self-supervised calibration are optimal; otherwise, classical methods provide the most robust baseline.
 
