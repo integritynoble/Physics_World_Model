@@ -189,40 +189,83 @@ WaterBalloon  & 1.4e-5 & 1.5e-4 & 10.5$\times$ & 0.0204 & 0.0266 & 1.3$\times$ \
 % ============================================================================
 % A3. SCENARIO IV PER-SCENE RESULTS
 % ============================================================================
-\section{Scenario IV Per-Scene Results}
+\section{Scenario IV: Detailed Methodology}
 \label{sec:scenario_iv_perscene}
 
-\Cref{tab:scenario_iv_perscene} reports per-scene/video Scenario~IV results for representative methods across all three modalities.
-Scenario~IV applies grid-search calibration over the mismatch parameter space using measurement residual as the objective function (no ground truth required).
+\subsection{Algorithm}
+
+Scenario~IV performs blind calibration without ground truth.
+The key idea is that the correct operator should produce a reconstruction whose re-measurement matches the observed data.
+We formalise this as:
+\begin{equation}
+    \tilde{\boldsymbol{\theta}} = \arg\min_{\boldsymbol{\theta} \in \mathcal{G}} \sum_{s=1}^{S} \left\| \mathbf{y}_s - \mathbf{\Phi}(\boldsymbol{\theta})\, \hat{\mathbf{x}}_s\!\left(\mathbf{y}_s, \mathbf{\Phi}(\boldsymbol{\theta})\right) \right\|^2,
+\end{equation}
+where $\mathcal{G}$ is a discrete grid of candidate parameters, $S$ is the number of scenes used for calibration, and $\hat{\mathbf{x}}_s$ is the reconstruction obtained by a fast inner-loop solver.
+The procedure is:
+
+\begin{enumerate}
+    \item \textbf{Generate corrupted measurements}: apply the true mismatch ($\boldsymbol{\theta}_{\text{true}}$) to the ideal operator and measure scenes: $\mathbf{y}_s = \mathbf{\Phi}(\boldsymbol{\theta}_{\text{true}})\mathbf{x}_s + \mathbf{n}$.
+    \item \textbf{Grid search}: for each candidate $\boldsymbol{\theta} \in \mathcal{G}$, construct $\mathbf{\Phi}(\boldsymbol{\theta})$, run the inner-loop solver to get $\hat{\mathbf{x}}_s$, compute the measurement residual $\|\mathbf{y}_s - \mathbf{\Phi}(\boldsymbol{\theta})\hat{\mathbf{x}}_s\|^2$, and sum across scenes.
+    \item \textbf{Select best}: $\tilde{\boldsymbol{\theta}} = \arg\min_{\boldsymbol{\theta} \in \mathcal{G}} \sum_s \text{residual}_s(\boldsymbol{\theta})$.
+    \item \textbf{Final reconstruction}: run the full solver (more iterations) with the calibrated operator $\mathbf{\Phi}(\tilde{\boldsymbol{\theta}})$ and compute PSNR against ground truth.
+\end{enumerate}
+
+\subsection{Datasets and Inner-Loop Solvers}
+
+\begin{itemize}
+    \item \textbf{CASSI}: 3 scenes from the KAIST simulated dataset (same as Section~3.2 of the main paper, $256 \times 256 \times 28$). True mismatch: $dx{=}0.5$\,px, $dy{=}0.3$\,px, $\theta{=}0.1^\circ$. Search space: $dx, dy \in [-1.0, 1.0]$\,px with step~$0.2$, giving an $11 \times 11$ grid (121 points). Inner loop: GAP-TV with 30 iterations per grid point, 100 iterations for final reconstruction.
+    \item \textbf{CACTI}: 2 benchmark videos from the standard SCI dataset (same as Section~3.3, $256 \times 256 \times 8$). True mismatch: $dx{=}0.5$\,px, $dy{=}0.3$\,px. Search: $dx, dy \in [-1.0, 1.0]$\,px with step~$0.25$, giving a $9 \times 9$ grid (81 points). Inner loop: GAP-TV with 20 iterations per grid point, 50 for final.
+    \item \textbf{SPC}: 1 synthetic test image ($64 \times 64$, 25\% sampling, same measurement matrix as Section~3.4). True mismatch: $\alpha{=}0.0015$. Search: $\alpha \in [0, 0.005]$ with 21 grid points. Inner loop: FISTA-TV with 100 iterations per point, 200 for final.
+\end{itemize}
+
+\subsection{Results}
+
+\Cref{tab:scenario_iv_perscene} reports the results.
 
 \begin{table}[h]
 \centering
-\caption{Scenario IV per-scene/video PSNR (dB). Representative methods: GAP-TV (CASSI, CACTI), FISTA-TV (SPC). Recovery percentage = (IV$-$II)/(III$-$II)$\times$100\%.}
+\caption{Scenario IV results. II: mismatched (no calibration). IV: grid-search calibrated. III: oracle (true operator). Recovery = (IV$-$II)/(III$-$II)$\times$100\%.}
 \label{tab:scenario_iv_perscene}
-\begin{tabular}{@{}llcccccc@{}}
+\begin{tabular}{@{}llccccccc@{}}
 \toprule
-\textbf{Modality} & \textbf{Method} & \textbf{II} & \textbf{IV} & \textbf{III} & \textbf{IV$-$II} & \textbf{III$-$II} & \textbf{Recovery} \\
+\textbf{Modality} & \textbf{Method} & \textbf{II} & \textbf{IV} & \textbf{III} & \textbf{IV$-$II} & \textbf{III$-$II} & \textbf{Recovery} & \textbf{Grid pts} \\
 \midrule
-CASSI & GAP-TV   & 21.95 & 23.31 & 23.69 & +1.36 & +1.74 & 78\% \\
-CACTI & GAP-TV   & 17.60 & 26.99 & 26.99 & +9.39 & +9.39 & 100\% \\
-SPC   & FISTA-TV & 25.47 & 25.47 & 25.43 & +0.00 & $-$0.04 & 0\% \\
+CASSI & GAP-TV   & 21.95 & 23.31 & 23.69 & +1.36 & +1.74 & 78\% & 121 \\
+CACTI & GAP-TV   & 17.60 & 26.99 & 26.99 & +9.39 & +9.39 & 100\% & 81 \\
+SPC   & FISTA-TV & 25.47 & 25.47 & 25.43 & +0.00 & $-$0.04 & 0\% & 21 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Calibration Convergence}
+\subsection{Calibration Convergence and Parameter Estimation}
 
-The grid-search calibration in Scenario~IV explores mismatch parameters using measurement residual as a blind objective.
-For CASSI, we search over spatial shifts $dx, dy \in [-1.0, 1.0]$\,px on an $11 \times 11$ grid (121 evaluations).
-For CACTI, we search over $dx, dy \in [-1.0, 1.0]$\,px on a $9 \times 9$ grid (81 evaluations).
-For SPC, we search over gain drift $\alpha \in [0, 0.005]$ with 21 grid points.
-Each evaluation runs a fast inner-loop solver (GAP-TV with 30 iterations for CASSI/CACTI, FISTA-TV with 200 iterations for SPC) and computes the measurement residual.
-The parameter yielding the lowest residual is selected, and a final high-quality reconstruction is performed.
+\Cref{tab:scenario_iv_params} compares estimated vs.\ true mismatch parameters.
 
-The total calibration cost measured on a single CPU core: $\sim$20 minutes for CASSI (121 evaluations $\times$ 3 scenes), $\sim$1 minute for CACTI (81 evaluations $\times$ 2 groups), and $\sim$3.6 minutes for SPC (21 evaluations).
-The CASSI grid search recovered the true parameters with good accuracy (estimated $dx{=}0.40$, $dy{=}0.20$ vs.\ true $dx{=}0.50$, $dy{=}0.30$).
-CACTI achieved near-perfect recovery (estimated $dx{=}0.50$, $dy{=}0.25$ vs.\ true $dx{=}0.50$, $dy{=}0.30$).
-For SPC, the measurement residual did not provide a useful signal for gain drift calibration, estimating $\alpha{=}0$ regardless of the true value ($\alpha{=}0.0015$).
+\begin{table}[h]
+\centering
+\caption{Scenario~IV parameter estimation accuracy and computational cost (single CPU core).}
+\label{tab:scenario_iv_params}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Modality} & \textbf{Param.} & \textbf{True} & \textbf{Estimated} & \textbf{Error} & \textbf{Time} \\
+\midrule
+\multirow{2}{*}{CASSI} & $dx$ & 0.50\,px & 0.40\,px & 0.10\,px & \multirow{2}{*}{$\sim$20\,min} \\
+ & $dy$ & 0.30\,px & 0.20\,px & 0.10\,px & \\
+\midrule
+\multirow{2}{*}{CACTI} & $dx$ & 0.50\,px & 0.50\,px & 0.00\,px & \multirow{2}{*}{$\sim$1\,min} \\
+ & $dy$ & 0.30\,px & 0.25\,px & 0.05\,px & \\
+\midrule
+SPC & $\alpha$ & 0.0015 & 0.0000 & 0.0015 & $\sim$3.6\,min \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Analysis.}
+CACTI achieves the best calibration: the estimated shifts are within 0.05\,px of truth, recovering 100\% of the oracle PSNR.
+The measurement residual provides a strong signal because CACTI's simple sum-of-masked-frames forward model means any mask shift directly causes large data mismatch.
+CASSI calibration is good but imperfect: the 0.1\,px estimation error in both $dx$ and $dy$ leaves a residual gap, and the search only covers spatial parameters---the dispersion parameters ($a_1{=}2.02$, $\alpha{=}0.15^\circ$) are not searched, accounting for the remaining 22\% gap.
+SPC calibration fails because FISTA-TV's total variation regularisation absorbs the small gain-drift artefacts ($\alpha{=}0.0015$ produces gain factors in the range $[1.0, 1.0097]$---less than 1\% deviation), making the measurement residual nearly identical across all $\alpha$ values.
+This motivates alternative calibration objectives for radiometric mismatch, such as reconstruction sparsity or learned discriminators.
 
 % ============================================================================
 % A4. RESIDUAL GAP ANALYSIS
