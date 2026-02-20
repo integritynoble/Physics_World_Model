@@ -13,7 +13,6 @@
 % ---- Graphics & Tables ----
 \usepackage{graphicx}
 \usepackage{booktabs}
-\usepackage{multirow}
 \usepackage{array}
 
 % ---- Colors (must precede tikz) ----
@@ -418,8 +417,8 @@ Storage uses atomic writes (temporary file $+$ rename) to prevent
 corruption.
 Baseline comparison computes per-metric deltas classified as
 STABLE ($<5\%$), DRIFTED ($5$--$15\%$), or ALERT ($\geq 15\%$),
-with a minimum denominator of 10 to avoid inflated percentages
-for near-zero metrics.
+with a minimum denominator of 10 (in the metric's native units,
+\eg, 10~HU) to avoid inflated percentages for near-zero metrics.
 
 
 % ===========================================================================
@@ -473,8 +472,8 @@ requiring no forward model or proprietary raw data access.
 \end{table}
 
 \paragraph{Phantom center and rotation detection.}
-Center detection thresholds at $-500$~HU and computes the binary
-centroid.
+Center detection applies a threshold of $-500$~HU and computes the
+binary centroid.
 Rotation detection scans angular bins at the expected insert radial
 offset and locates the bone-equivalent insert ($\sim$955~HU) to
 determine the angular offset, which is applied to all insert ROI
@@ -744,8 +743,8 @@ reproducibility, SPC rule detection, and computational performance.
 We tested the platform on ACR CT~464 phantom data acquired on a
 GE Revolution Apex scanner (120~kVp, 200~mAs, 5~mm axial, standard
 kernel).
-\Cref{fig:validation} shows the deviation of each metric from its
-nominal value.
+\Cref{fig:validation} shows the agreement between platform-computed
+and manufacturer console values for each metric.
 All nine metrics fell within ACR tolerance bands:
 CT number of water deviated by 0.3~HU ($\pm 5$~HU criterion),
 geometric accuracy by 0.15~mm ($\pm 2$~mm), slice thickness by
@@ -871,8 +870,8 @@ cross-platform comparison~\cite{nowik2015ct_qa_automation}.
 Open tools like pydicom~\cite{pydicom} and
 scikit-image~\cite{scikit_image} provide components but not an
 integrated, validated pipeline.
-The CasePack abstraction fills this gap: it is the first open,
-version-controlled QA workflow specification for CT QC.
+The CasePack abstraction fills this gap: to our knowledge, it is the
+first open, version-controlled QA workflow specification for CT QC.
 
 \paragraph{SPC adoption barriers.}
 Despite TG-233 recommendations, SPC adoption in CT QC remains
@@ -926,8 +925,8 @@ Source code and CasePack definitions are at
 \url{https://github.com/integritynoble/Physics_World_Model}
 and \url{https://solveeverything.org}.
 No non-public datasets were used.
-All analyses use ACR CT~464 phantom data only; no patient data
-were used.
+All analyses use ACR CT~464 phantom data only; no patient or
+human-subject data were involved, and IRB review was not required.
 
 \paragraph{Author Contributions.}
 C.Y.\ conceived the project, designed the architecture, implemented

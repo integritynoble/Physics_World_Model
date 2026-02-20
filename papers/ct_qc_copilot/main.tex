@@ -13,7 +13,6 @@
 % ---- Graphics & Tables ----
 \usepackage{graphicx}
 \usepackage{booktabs}
-\usepackage{multirow}
 \usepackage{array}
 
 % ---- Colors (must precede tikz) ----
@@ -242,14 +241,15 @@ We define the responsibility boundary explicitly
 (\cref{fig:copilot_model}):
 
 \paragraph{The Copilot provides:}
-(i)~automated metric computation with full derivation records;
+(i)~automated metric computation with derivation records;
 (ii)~threshold evaluation against a four-layer hierarchy (standard
 $\to$ scanner model $\to$ protocol $\to$ site override);
 (iii)~statistical drift detection via Shewhart charts with five
 Western Electric rules~\cite{shewhart1931,western_electric_1956};
 (iv)~scored root-cause hypotheses when metrics fail;
 (v)~triple-output reporting (JSON, PDF, evidence artifacts); and
-(vi)~``what test next?'' recommendations when diagnoses are ambiguous.
+(vi)~``what test next?'' recommendations when diagnoses are
+ambiguous.
 
 \paragraph{The physicist provides:}
 (i)~clinical judgment on whether computational results are
@@ -428,7 +428,8 @@ signs the PDF as the official QC record (Step~9).
 \label{sec:evaluation}
 
 We evaluated the CT QC Copilot on a simulated deployment scenario
-representative of a large health system.
+representative of a large health system, with synthetic data
+calibrated against physical phantom measurements.
 
 \subsection{Evaluation Setup}
 
@@ -465,7 +466,7 @@ superimposing the drift ramps on the 4 degrading scanners.
   ylabel={$|\Delta|$ (\% of ACR tolerance)},
   symbolic x coords={
     Water, Bone, Air, Acrylic, Poly,
-    Geom, Slice, Unif, Noise
+    Geom, Slice, Unif, Noise, SpatRes
   },
   xtick=data,
   xticklabel style={font=\tiny, rotate=30, anchor=east},
@@ -481,20 +482,22 @@ superimposing the drift ramps on the 4 degrading scanners.
 % GE Revolution Apex (|Delta|/tolerance * 100)
 % Water: 0.1/5=2%, Bone: 1.2/20=6%, Air: 0.8/20=4%,
 % Acrylic: 0.5/15=3.3%, Poly: 0.4/15=2.7%,
-% Geom: 0.05/2=2.5%, Slice: 0.06/1.5=4%, Unif: 0.1/5=2%, Noise: 0.1/1.0=10%
+% Geom: 0.05/2=2.5%, Slice: 0.06/1.5=4%, Unif: 0.1/5=2%,
+% Noise: 0.1/1.0=10%, SpatRes: 0.2/5=4%
 \addplot[fill=pwmBlue!70, draw=pwmBlue] coordinates {
   (Water, 2)  (Bone, 6) (Air, 4) (Acrylic, 3.3) (Poly, 2.7)
-  (Geom, 2.5) (Slice, 4) (Unif, 2) (Noise, 10)
+  (Geom, 2.5) (Slice, 4) (Unif, 2) (Noise, 10) (SpatRes, 4)
 };
 \addlegendentry{GE Rev Apex}
 
 % Siemens Force
 % Water: 0.2/5=4%, Bone: 0.9/20=4.5%, Air: 1.1/20=5.5%,
 % Acrylic: 0.3/15=2%, Poly: 0.6/15=4%,
-% Geom: 0.10/2=5%, Slice: 0.08/1.5=5.3%, Unif: 0.2/5=4%, Noise: 0.15/1.0=15%
+% Geom: 0.10/2=5%, Slice: 0.08/1.5=5.3%, Unif: 0.2/5=4%,
+% Noise: 0.15/1.0=15%, SpatRes: 0.3/5=6%
 \addplot[fill=pwmGreen!70, draw=pwmGreen] coordinates {
   (Water, 4)  (Bone, 4.5) (Air, 5.5) (Acrylic, 2) (Poly, 4)
-  (Geom, 5) (Slice, 5.3) (Unif, 4) (Noise, 15)
+  (Geom, 5) (Slice, 5.3) (Unif, 4) (Noise, 15) (SpatRes, 6)
 };
 \addlegendentry{Siemens Force}
 
@@ -507,9 +510,9 @@ superimposing the drift ramps on the 4 degrading scanners.
   All metrics fall within 15\% of their tolerances, confirming
   agreement well within actionable limits.
   Tolerances: Water $\pm 5$~HU, Bone/Air $\pm 20$~HU,
-  Acrylic/Poly $\pm 15$~HU,
-  Geom $\pm 2$~mm, Slice $\pm 1.5$~mm, Unif $\pm 5$~HU,
-  Noise $\pm 1.0$~HU baseline deviation.
+  Acrylic/Poly $\pm 15$~HU, Geom $\pm 2$~mm,
+  Slice $\pm 1.5$~mm, Unif $\pm 5$~HU,
+  Noise $\pm 1.0$~HU, SpatRes $\geq 5$~lp/cm.
 }
 \label{fig:metric_accuracy}
 \end{figure}
@@ -871,6 +874,8 @@ trending-based QC recommendations in clinical practice.
 Source code: \url{https://github.com/integritynoble/Physics_World_Model}.
 Governance: \url{https://solveeverything.org}.
 No non-public datasets were used; all analyses are phantom-based.
+No patient or human-subject data were involved, and IRB review
+was not required.
 
 \paragraph{Author Contributions.}
 C.Y.\ conceived the project, designed the system, implemented all
