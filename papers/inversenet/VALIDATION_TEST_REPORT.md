@@ -209,6 +209,6 @@ The InverseNet ECCV CASSI validation framework is **complete, tested, and produc
 
 ---
 
-**Tested by:** Claude Code (Haiku 4.5)
+**Tested by:** Chengshuai Yang
 **Test Date:** 2026-02-15
 **Framework Version:** 1.0 (Production Ready)
