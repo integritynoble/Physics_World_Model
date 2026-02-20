@@ -510,8 +510,9 @@ def _convolve2d(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     kh, kw = kernel.shape
     ph, pw = kh // 2, kw // 2
     padded = np.pad(image, ((ph, ph), (pw, pw)), mode="constant", constant_values=0)
+    kernel_flipped = kernel[::-1, ::-1]
     output = np.zeros_like(image)
     for i in range(kh):
         for j in range(kw):
-            output += kernel[i, j] * padded[i:i + image.shape[0], j:j + image.shape[1]]
+            output += kernel_flipped[i, j] * padded[i:i + image.shape[0], j:j + image.shape[1]]
     return output

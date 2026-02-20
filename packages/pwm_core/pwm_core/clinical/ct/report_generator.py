@@ -358,17 +358,17 @@ class ReportGenerator:
             sha256="",  # placeholder — computed below
         )
 
-        # Compute SHA-256 over the content (excluding the hash field itself)
+        # Compute SHA-256 over canonical serialization (excluding hash itself)
         payload = report.model_dump()
         payload["sha256"] = ""
-        payload_bytes = json.dumps(
-            payload, sort_keys=True, default=str
-        ).encode("utf-8")
-        report.sha256 = hashlib.sha256(payload_bytes).hexdigest()
+        canonical = json.dumps(payload, sort_keys=True, indent=2, default=str)
+        report.sha256 = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
+        # Write using the same canonical serialization with the computed hash
+        payload["sha256"] = report.sha256
         output_path = Path(config.output_dir) / "physicist_report.json"
         output_path.write_text(
-            report.model_dump_json(indent=2),
+            json.dumps(payload, sort_keys=True, indent=2, default=str),
             encoding="utf-8",
         )
 
@@ -840,7 +840,8 @@ class ReportGenerator:
             ``"PASS"`` or ``"FAIL"``.
         """
         if not threshold_results:
-            return "PASS"
+            logger.warning("No threshold results available; defaulting to FAIL.")
+            return "FAIL"
 
         for metric_key, result in threshold_results.items():
             status = _get_status(result)

@@ -264,7 +264,7 @@ def _compute_cnr(signal_roi: Any, background_roi: Any) -> float:
     except ImportError as exc:
         raise ImportError("numpy is required.") from exc
 
-    bg_std = float(np.std(background_roi))
+    bg_std = float(np.std(background_roi, ddof=1)) if len(background_roi) > 1 else float(np.std(background_roi))
     if bg_std < 1e-12:
         return 0.0
     return float(abs(np.mean(signal_roi) - np.mean(background_roi)) / bg_std)
@@ -506,8 +506,8 @@ def compute_geometric_accuracy(
         if row_indices.size == 0 or col_indices.size == 0:
             raise ValueError("Could not detect phantom boundaries in central slice.")
 
-        vertical_extent_px = int(row_indices[-1] - row_indices[0])
-        horizontal_extent_px = int(col_indices[-1] - col_indices[0])
+        vertical_extent_px = int(row_indices[-1] - row_indices[0]) + 1
+        horizontal_extent_px = int(col_indices[-1] - col_indices[0]) + 1
 
         vertical_mm = vertical_extent_px * float(pixel_spacing[0])
         horizontal_mm = horizontal_extent_px * float(pixel_spacing[1])
@@ -816,7 +816,7 @@ def compute_noise_std(
         central_slice = volume[central_idx]
         radius_px = _mm_to_pixels(radius_mm, float(pixel_spacing[0]))
         roi_pixels = _extract_circular_roi(central_slice, center, radius_px)
-        noise_std = float(np.std(roi_pixels))
+        noise_std = float(np.std(roi_pixels, ddof=1)) if roi_pixels.size > 1 else float(np.std(roi_pixels))
         mean_hu = float(np.mean(roi_pixels))
 
         return MetricResult(
@@ -989,9 +989,9 @@ def compute_artifact_evaluation(
     """Detect ring and streak artifacts in a uniform region of the phantom.
 
     Scoring:
-    - 0: No artifacts detected
-    - 1: Minor artifacts (peak-to-valley < 3 HU in radial profile)
-    - 2: Moderate artifacts (3--8 HU)
+    - 0: No artifacts detected (peak-to-valley < 3 HU)
+    - 1: Minor artifacts (3--5 HU)
+    - 2: Moderate artifacts (5--8 HU)
     - 3: Severe artifacts (> 8 HU)
 
     Algorithm:
@@ -1270,6 +1270,7 @@ def compute_all_metrics(
     # Auto-detect phantom centre from central slice
     central_idx = volume.shape[0] // 2
     center = _find_phantom_center(volume[central_idx])
+    rotation_offset = _find_phantom_rotation(volume[central_idx])
 
     # ROI configuration defaults (from casepack or fallback)
     water_roi_cfg = roi_defs.get("water_roi", {})
@@ -1290,7 +1291,7 @@ def compute_all_metrics(
 
     # Slice thickness config
     ramp_cfg = roi_defs.get("slice_thickness_ramp", {})
-    expected_fwhm_mm: float = float(ramp_cfg.get("expected_fwhm_mm", 5.0))
+    nominal_slice_thickness = scan_bundle.slice_thickness_mm
 
     # Dispatch table
     metrics: Dict[str, MetricResult] = {}
@@ -1323,7 +1324,7 @@ def compute_all_metrics(
                     volume=volume,
                     insert_name=insert_name,
                     center=center,
-                    angle_deg=float(insert_cfg.get("offset_angle_deg", 0)),
+                    angle_deg=float(insert_cfg.get("offset_angle_deg", 0)) + rotation_offset,
                     radius_mm=float(insert_cfg.get("roi_radius_mm", 5.0)),
                     offset_mm=float(insert_cfg.get("offset_radius_mm", 50)),
                     pixel_spacing=pixel_spacing,
@@ -1337,7 +1338,7 @@ def compute_all_metrics(
 
             elif metric_key == "slice_thickness":
                 metrics[metric_key] = compute_slice_thickness(
-                    volume, expected_fwhm_mm,
+                    volume, nominal_slice_thickness,
                     pixel_spacing=float(pixel_spacing[1]),
                 )
 

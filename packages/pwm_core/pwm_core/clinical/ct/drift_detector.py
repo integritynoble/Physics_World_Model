@@ -265,12 +265,15 @@ class DriftDetector:
                         if isinstance(baseline_entry, dict)
                         else baseline_entry
                     )
+                    # Use std from early stable period when baseline is set
+                    ref_window = values[:self._MIN_MEASUREMENTS]
+                    std = _std(ref_window) if len(ref_window) >= 2 else _std(values)
                 else:
                     center = _mean(values)
+                    std = _std(values)
             else:
                 center = _mean(values)
-
-            std = _std(values)
+                std = _std(values)
 
             # Build control chart
             chart = ControlChart(

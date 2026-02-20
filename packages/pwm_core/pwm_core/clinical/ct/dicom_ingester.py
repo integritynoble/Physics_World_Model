@@ -668,6 +668,12 @@ class DICOMIngester:
 
         is_phantom = len(phantom_indicators) > 0
 
+        if is_phantom and phi_tags_present:
+            logger.warning(
+                "Phantom study contains %d PHI tag(s); consider de-identification: %s",
+                len(phi_tags_present), phi_tags_present,
+            )
+
         result = {
             "status": "pass" if is_phantom else "fail",
             "is_phantom": is_phantom,
@@ -752,9 +758,9 @@ class DICOMIngester:
         # Prefer SliceLocation if values are diverse (i.e. not all the same)
         locations = [t[0] for t in datasets_with_loc]
         if len(set(locations)) > 1:
-            datasets_with_loc.sort(key=lambda t: t[0])
+            datasets_with_loc.sort(key=lambda t: (t[0], t[1]))
         else:
-            datasets_with_loc.sort(key=lambda t: t[1])
+            datasets_with_loc.sort(key=lambda t: (t[1], t[0]))
 
         sorted_datasets = [t[2] for t in datasets_with_loc]
         slice_locations_out = [t[0] for t in datasets_with_loc]

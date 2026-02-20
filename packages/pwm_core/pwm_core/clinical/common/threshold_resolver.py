@@ -788,6 +788,11 @@ class ThresholdResolver:
     ) -> Literal["PASS", "WARNING", "FAIL"]:
         """Evaluate against a baseline +/- N sigma tolerance.
 
+        Note: ``tolerance_sigma`` is treated as an absolute tolerance in the
+        metric's natural units (e.g. HU for CT numbers), not as a multiplier
+        on the process standard deviation.  This provides consistent,
+        deterministic thresholds without requiring historical variance data.
+
         Parameters
         ----------
         value : float

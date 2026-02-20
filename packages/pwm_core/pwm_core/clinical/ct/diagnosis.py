@@ -319,10 +319,12 @@ class DiagnosisEngine:
         if "diagnostic_features" in result and "feature_weights" not in result:
             features = result["diagnostic_features"]
             result["feature_weights"] = {
-                k: v["weight"] for k, v in features.items()
+                k: v.get("weight", 0.0) for k, v in features.items()
+                if isinstance(v, dict)
             }
             result["expected_direction"] = {
-                k: v["expected_direction"] for k, v in features.items()
+                k: v.get("expected_direction", "high") for k, v in features.items()
+                if isinstance(v, dict)
             }
 
         # Normalize id -> mismatch_id
