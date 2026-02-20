@@ -442,14 +442,20 @@ def validate_scene(scene_idx: int, meas: np.ndarray,
                     x_hat = reconstruct_dl_real(meas, mask_used, method, device)
 
                 # --- Measurement residual (primary metric, no ground truth needed) ---
+                # IMPORTANT: Always use the CALIBRATED mask for residual computation,
+                # not the mask used for reconstruction. This "cross-residual" measures
+                # whether the reconstruction is consistent with the TRUE forward model.
+                # If we used the reconstruction mask (self-consistent residual), iterative
+                # methods like GAP-TV would trivially achieve low residual regardless of
+                # mismatch, since they directly minimise that objective.
                 is_mst = method in ("mst_s", "mst_l")
                 if is_mst:
                     # MST reconstructs a 256x256 crop; compute residual on that crop
-                    _, mask_crop, (r0c, c0c) = _crop_for_mst(meas, mask_used)
+                    _, mask_cal_crop, (r0c, c0c) = _crop_for_mst(meas, mask)
                     meas_crop = meas[r0c:r0c + 256, c0c:c0c + 256 + (N_BANDS - 1) * STEP]
-                    residual = compute_measurement_residual(meas_crop, x_hat, mask_crop)
+                    residual = compute_measurement_residual(meas_crop, x_hat, mask_cal_crop)
                 else:
-                    residual = compute_measurement_residual(meas, x_hat, mask_used)
+                    residual = compute_measurement_residual(meas, x_hat, mask)
 
                 # --- PSNR against reference (supplementary only) ---
                 psnr_ref = 0.0
