@@ -441,7 +441,7 @@ def spc_scenario_iv(device: str = "cuda:0") -> Dict:
 
     # Precompute AtA and its spectral norm (same for all blocks)
     AtA = A.T @ A
-    L = float(np.linalg.norm(AtA, ord=2))
+    L_fista = float(np.linalg.norm(AtA, ord=2))
 
     def fista_tv_block(y, gain, iters=200, lam=0.005):
         """FISTA-TV for a single 33x33 block."""
@@ -452,9 +452,9 @@ def spc_scenario_iv(device: str = "cuda:0") -> Dict:
         t = 1.0
         for _ in range(iters):
             grad = AtA @ x - Aty
-            x_new = x - grad / L
+            x_new = x - grad / L_fista
             x_2d = np.clip(x_new.reshape(BLOCK_SIZE, BLOCK_SIZE), 0, 1)
-            x_2d = denoise_tv_chambolle(x_2d, weight=lam / L, max_num_iter=3)
+            x_2d = denoise_tv_chambolle(x_2d, weight=lam / L_fista, max_num_iter=3)
             x_new = x_2d.ravel()
             t_new = (1 + np.sqrt(1 + 4 * t ** 2)) / 2
             x = x_new + (t - 1) / t_new * (x_new - x_prev)
@@ -468,94 +468,160 @@ def spc_scenario_iv(device: str = "cuda:0") -> Dict:
         dy = np.abs(x_2d[1:, :] - x_2d[:-1, :])
         return float(np.sum(dx) + np.sum(dy))
 
-    # Grid search over alpha using TV criterion
-    # TV criterion: correct gain -> clean reconstruction -> low TV
-    #               wrong gain -> artifacts -> higher TV
-    alpha_grid = np.linspace(0.0, 0.005, 41)
-    logger.info(f"Grid: {len(alpha_grid)} alpha values (TV criterion)")
+    # ------------------------------------------------------------------
+    # PnP-DRUNet solver (GPU) — import proven implementation
+    # ------------------------------------------------------------------
+    import torch
 
-    # Use a subset of blocks for speed during grid search
+    drunet_solver = None
+    dev = torch.device(device if torch.cuda.is_available() else "cpu")
+
+    # Import PnPDRUNetSolver33 from the validated SPC script
+    scripts_dir = Path(__file__).resolve().parent
+    if str(scripts_dir) not in sys.path:
+        sys.path.insert(0, str(scripts_dir))
+    try:
+        from validate_spc_inversenet import PnPDRUNetSolver33
+        logger.info("Loading PnP-DRUNet solver (from validate_spc_inversenet)...")
+        drunet_solver = PnPDRUNetSolver33(A, dev, sigma_end=0.01,
+                                           sigma_anneal_mult=5.0, max_iter=100)
+        drunet_available = True
+        logger.info("  PnP-DRUNet solver ready")
+    except Exception as e:
+        logger.warning(f"PnP-DRUNet not available: {e}")
+        drunet_available = False
+
+    # ------------------------------------------------------------------
+    # Helper: run grid search + evaluation for a given solver
+    # ------------------------------------------------------------------
+    alpha_grid = np.linspace(0.0, 0.005, 41)
     n_cal_blocks = min(n_blocks_total, 20)
     cal_indices = np.linspace(0, n_blocks_total - 1, n_cal_blocks, dtype=int)
 
-    best_alpha = 0.0
-    best_tv = float("inf")
-    grid_tvs = []
+    def run_method(method_name, solve_fn, grid_iters, eval_iters):
+        """Run TV grid search + Scenario II/IV/III evaluation for one method."""
+        logger.info(f"\n--- {method_name}: TV grid search ({len(alpha_grid)} points) ---")
 
-    t0 = time.time()
-    for ai, alpha_test in enumerate(alpha_grid):
-        gain_test = np.exp(-alpha_test * np.arange(m, dtype=np.float32))
-        total_tv = 0.0
-        for bi in cal_indices:
-            x_hat = fista_tv_block(all_y_corrupt[bi], gain_test, iters=100, lam=0.005)
-            total_tv += compute_tv(x_hat.reshape(BLOCK_SIZE, BLOCK_SIZE))
+        best_alpha = 0.0
+        best_tv = float("inf")
+        grid_tvs = []
 
-        grid_tvs.append({"alpha": round(float(alpha_test), 5), "tv": round(total_tv, 2)})
+        t0 = time.time()
+        for ai, alpha_test in enumerate(alpha_grid):
+            gain_test = np.exp(-alpha_test * np.arange(m, dtype=np.float32))
+            total_tv = 0.0
+            for bi in cal_indices:
+                x_hat = solve_fn(all_y_corrupt[bi:bi+1], gain_test, grid_iters)
+                x_hat_2d = x_hat[0].reshape(BLOCK_SIZE, BLOCK_SIZE)
+                total_tv += compute_tv(x_hat_2d)
+            grid_tvs.append({"alpha": round(float(alpha_test), 5),
+                             "tv": round(total_tv, 2)})
+            if total_tv < best_tv:
+                best_tv = total_tv
+                best_alpha = alpha_test
+            if (ai + 1) % 10 == 0:
+                logger.info(f"  {method_name} grid: {ai+1}/{len(alpha_grid)} done")
+        cal_time = time.time() - t0
+        logger.info(f"  {method_name} best alpha: {best_alpha:.5f} "
+                     f"(true: {true_alpha:.5f}), time: {cal_time:.1f}s")
 
-        if total_tv < best_tv:
-            best_tv = total_tv
-            best_alpha = alpha_test
+        # Evaluate Scenario II, IV, III on all blocks (batch)
+        gain_none = np.ones(m, dtype=np.float32)
+        gain_cal = np.exp(-best_alpha * np.arange(m, dtype=np.float32))
 
-        if (ai + 1) % 10 == 0:
-            logger.info(f"  Grid search: {ai+1}/{len(alpha_grid)} done")
+        psnrs = {"ii": [], "iv": [], "iii": []}
+        for label, gain in [("ii", gain_none), ("iv", gain_cal), ("iii", gain_true)]:
+            logger.info(f"  {method_name} evaluating Scenario {label.upper()}...")
+            x_all = solve_fn(all_y_corrupt, gain, eval_iters)
+            for bi in range(n_blocks_total):
+                mse = float(np.mean((all_blocks[bi] - x_all[bi]) ** 2))
+                psnrs[label].append(10 * np.log10(1.0 / max(mse, 1e-10)))
 
-    calibration_time = time.time() - t0
+        p_ii = float(np.mean(psnrs["ii"]))
+        p_iv = float(np.mean(psnrs["iv"]))
+        p_iii = float(np.mean(psnrs["iii"]))
+        gap = p_iii - p_ii
+        rec = (p_iv - p_ii) / gap * 100 if abs(gap) > 0.01 else 0.0
+        logger.info(f"  {method_name}:  II={p_ii:.2f}  IV={p_iv:.2f}  "
+                     f"III={p_iii:.2f}  Recovery={rec:.1f}%")
+        return {
+            "method": method_name.lower().replace("-", "_"),
+            "estimated_alpha": round(best_alpha, 5),
+            "scenario_ii_psnr": round(p_ii, 2),
+            "scenario_iv_psnr": round(p_iv, 2),
+            "scenario_iii_psnr": round(p_iii, 2),
+            "recovery_pct": round(rec, 1),
+            "calibration_time_s": round(cal_time, 1),
+            "grid_tvs": grid_tvs,
+        }
 
-    logger.info(f"Best alpha: {best_alpha:.5f} (true: {true_alpha:.5f})")
-    logger.info(f"Grid search time: {calibration_time:.1f}s")
+    # ------------------------------------------------------------------
+    # FISTA-TV solver wrapper (processes blocks one-by-one → returns batch)
+    # ------------------------------------------------------------------
+    def fista_tv_solve(y_batch, gain, iters):
+        results = np.zeros((y_batch.shape[0], N_PIX), dtype=np.float32)
+        for bi in range(y_batch.shape[0]):
+            results[bi] = fista_tv_block(y_batch[bi], gain, iters=iters)
+        return results
 
-    # Evaluate Scenario II, IV, III on ALL blocks
-    logger.info("Evaluating Scenario II (no correction)...")
-    gain_none = np.ones(m, dtype=np.float32)
-    psnrs_ii = []
-    for bi in range(n_blocks_total):
-        x_hat = fista_tv_block(all_y_corrupt[bi], gain_none, iters=200, lam=0.005)
-        mse = float(np.mean((all_blocks[bi] - x_hat) ** 2))
-        psnrs_ii.append(10 * np.log10(1.0 / max(mse, 1e-10)))
+    # ------------------------------------------------------------------
+    # PnP-DRUNet solver wrapper (gain correction then batch solve)
+    # ------------------------------------------------------------------
+    def pnp_drunet_solve(y_batch, gain, iters):
+        # Apply gain correction before passing to the solver
+        y_corrected = y_batch / gain[None, :]
+        # The solver handles row-normalization, init, and PnP-FISTA internally
+        # Override max_iter for this call
+        old_iter = drunet_solver.max_iter
+        drunet_solver.max_iter = iters
+        result = drunet_solver.solve_batch(y_corrected)
+        drunet_solver.max_iter = old_iter
+        return result
 
-    logger.info("Evaluating Scenario IV (TV-calibrated)...")
-    gain_cal = np.exp(-best_alpha * np.arange(m, dtype=np.float32))
-    psnrs_iv = []
-    for bi in range(n_blocks_total):
-        x_hat = fista_tv_block(all_y_corrupt[bi], gain_cal, iters=200, lam=0.005)
-        mse = float(np.mean((all_blocks[bi] - x_hat) ** 2))
-        psnrs_iv.append(10 * np.log10(1.0 / max(mse, 1e-10)))
+    # ------------------------------------------------------------------
+    # Run FISTA-TV
+    # ------------------------------------------------------------------
+    fista_result = run_method("FISTA-TV", fista_tv_solve,
+                              grid_iters=100, eval_iters=200)
 
-    logger.info("Evaluating Scenario III (oracle)...")
-    psnrs_iii = []
-    for bi in range(n_blocks_total):
-        x_hat = fista_tv_block(all_y_corrupt[bi], gain_true, iters=200, lam=0.005)
-        mse = float(np.mean((all_blocks[bi] - x_hat) ** 2))
-        psnrs_iii.append(10 * np.log10(1.0 / max(mse, 1e-10)))
+    # ------------------------------------------------------------------
+    # Run PnP-DRUNet (if available)
+    # ------------------------------------------------------------------
+    drunet_result = None
+    if drunet_available and drunet_solver is not None:
+        drunet_result = run_method("PnP-DRUNet", pnp_drunet_solve,
+                                   grid_iters=60, eval_iters=100)
 
-    psnr_ii = float(np.mean(psnrs_ii))
-    psnr_iv = float(np.mean(psnrs_iv))
-    psnr_iii = float(np.mean(psnrs_iii))
-
-    # Recovery
-    gap = psnr_iii - psnr_ii
-    recovery_db = psnr_iv - psnr_ii
-    recovery_pct = (recovery_db / gap * 100) if abs(gap) > 0.01 else 0.0
-
+    # Build combined result
     result = {
         "modality": "spc",
-        "method": "fista_tv",
         "criterion": "tv_minimisation",
         "true_params": {"alpha": true_alpha},
-        "estimated_params": {"alpha": round(best_alpha, 5)},
-        "scenario_ii_psnr": round(psnr_ii, 2),
-        "scenario_iv_psnr": round(psnr_iv, 2),
-        "scenario_iii_psnr": round(psnr_iii, 2),
-        "recovery_pct": round(recovery_pct, 1),
-        "calibration_time_s": round(calibration_time, 1),
         "n_blocks": n_blocks_total,
         "n_cal_blocks": n_cal_blocks,
         "grid_size": len(alpha_grid),
-        "grid_tvs": grid_tvs,
+        "methods": {"fista_tv": fista_result},
     }
+    if drunet_result is not None:
+        result["methods"]["pnp_drunet"] = drunet_result
 
-    logger.info(f"\nSPC FISTA-TV:  II={psnr_ii:.2f}  IV={psnr_iv:.2f}  "
-                f"III={psnr_iii:.2f}  Recovery={recovery_pct:.1f}%")
+    # Legacy top-level fields (for backward-compat with summary table)
+    result["method"] = "fista_tv"
+    result["estimated_params"] = {"alpha": fista_result["estimated_alpha"]}
+    result["scenario_ii_psnr"] = fista_result["scenario_ii_psnr"]
+    result["scenario_iv_psnr"] = fista_result["scenario_iv_psnr"]
+    result["scenario_iii_psnr"] = fista_result["scenario_iii_psnr"]
+    result["calibration_time_s"] = fista_result["calibration_time_s"]
+
+    logger.info(f"\nSPC FISTA-TV:  II={fista_result['scenario_ii_psnr']:.2f}  "
+                f"IV={fista_result['scenario_iv_psnr']:.2f}  "
+                f"III={fista_result['scenario_iii_psnr']:.2f}  "
+                f"Recovery={fista_result['recovery_pct']:.1f}%")
+    if drunet_result is not None:
+        logger.info(f"SPC PnP-DRUNet: II={drunet_result['scenario_ii_psnr']:.2f}  "
+                    f"IV={drunet_result['scenario_iv_psnr']:.2f}  "
+                    f"III={drunet_result['scenario_iii_psnr']:.2f}  "
+                    f"Recovery={drunet_result['recovery_pct']:.1f}%")
 
     return result
 
