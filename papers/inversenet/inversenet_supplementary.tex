@@ -127,47 +127,128 @@ peppers256  & 29.95 & 19.11 & 27.51 & 77.5\% & 33.33 & 19.49 & 28.01 & 61.6\% & 
 \end{table}
 
 % ============================================================================
-% A2. REAL HARDWARE PER-SCENE RESULTS
+% A2. REAL HARDWARE VALIDATION: DETAILED METHODOLOGY
 % ============================================================================
-\section{Real Hardware Per-Scene Results}
+\section{Real Hardware Validation: Detailed Methodology}
 \label{sec:real_perscene}
 
-\subsection{CASSI Real Data Per-Scene PSNR}
+This section provides full methodological details for the real hardware experiments summarised in Section~4.5 of the main paper.
 
-\Cref{tab:cassi_real_perscene} reports per-scene PSNR for real CASSI data from the TSA real dataset (Meng et al., ECCV 2020).
-Reconstructions use the hardware-provided mask (calibrated) or a shifted mask ($dx{=}0.5$, $dy{=}0.3$\,px) to simulate operator mismatch.
-PSNR is computed against reference reconstructions distributed with the dataset.
+\subsection{CASSI Real Data}
+
+\subsubsection{Dataset.}
+We use the TSA real dataset published by Meng et al.\ (ECCV 2020), which is publicly available in the MST repository.
+The dataset provides:
+\begin{itemize}
+    \item \textbf{5 real measurements}: \texttt{scene1.mat} through \texttt{scene5.mat}, each a $660 \times 714$ detector image captured on a DD-CASSI prototype. These are real photon counts from a physical coded aperture spectral imager.
+    \item \textbf{Hardware-calibrated mask}: \texttt{mask.mat}, a $660 \times 660$ binary coded aperture pattern obtained from the physical system's calibration.
+    \item \textbf{3D shifted mask}: \texttt{mask\_3d\_shift.mat}, a $660 \times 714 \times 28$ tensor representing the mask after applying the known dispersion pattern ($s{=}2$\,px/band), used directly by deep learning methods.
+    \item \textbf{Reference reconstructions}: \texttt{Recon\_scene1.mat} through \texttt{Recon\_scene5.mat}, each a $660 \times 660 \times 28$ hyperspectral cube reconstructed by the dataset authors using their best algorithm. These serve as the \emph{evaluation reference}---see below.
+\end{itemize}
+
+\subsubsection{Why reference reconstructions, not ground truth?}
+Real CASSI hardware captures a single 2D measurement from which the 3D spectral cube must be recovered.
+There is no independent sensor that captures the true $660 \times 660 \times 28$ spectral cube simultaneously.
+Therefore, \textbf{no ground truth exists} for real CASSI data.
+
+The published reference reconstructions are the best available approximation: they were produced by the dataset authors using their strongest algorithm with the calibrated hardware mask.
+We use these as an evaluation reference to compute PSNR, with two important caveats:
+\begin{enumerate}
+    \item \textbf{Absolute PSNR values are not directly comparable to simulation.} In simulation (Table~1 of the main paper), PSNR is computed against the true spectral cube; on real data, PSNR is computed against an imperfect algorithmic reconstruction. This explains why real-data PSNR values (17--26\,dB) are lower than might be expected.
+    \item \textbf{The diagnostic quantity is the \emph{difference} $\Delta$, not the absolute value.} Since both calibrated and mismatched reconstructions are compared against the \emph{same} reference, the difference $\Delta = \text{PSNR}_{\text{cal}} - \text{PSNR}_{\text{mis}}$ isolates the effect of mask mismatch, independent of reference quality.
+\end{enumerate}
+
+\subsubsection{Experimental protocol.}
+For each of the 5 real scenes, we run each reconstruction method twice:
+\begin{enumerate}
+    \item \textbf{Calibrated condition}: use the hardware-provided mask (\texttt{mask.mat} and \texttt{mask\_3d\_shift.mat}) as-is. This represents the best-case scenario where the mask used for reconstruction matches the physical mask in the camera.
+    \item \textbf{Mismatched condition}: shift the mask by $dx{=}0.5$\,px, $dy{=}0.3$\,px using bilinear interpolation before reconstruction. This simulates subpixel mask registration error, matching the spatial mismatch parameters from our simulation experiments.
+\end{enumerate}
+
+\textbf{Important distinction from simulation:} The real-data mismatch experiment applies \emph{only} spatial mask shift (2 parameters: $dx$, $dy$).
+The simulation experiments (Table~1) apply a full 5-parameter mismatch including dispersion slope drift ($a_1{=}2.02$\,px/band vs.\ nominal 2.00) and dispersion axis offset ($\alpha{=}0.15^\circ$).
+Since dispersion mismatch was identified as the dominant CASSI degradation source in simulation, the real-data experiment tests whether spatial shift alone---without dispersion perturbation---produces significant degradation.
+
+\subsubsection{Methods.}
+We evaluate 4 methods:
+\begin{itemize}
+    \item \textbf{GAP-TV}: classical iterative solver (100 iterations, $\lambda_{\text{TV}}{=}0.1$), operating on the full $660 \times 714$ measurement. Uses the 2D mask directly; mask shift is applied to the 2D mask before computing the 3D shifted version.
+    \item \textbf{HDNet}: deep network operating on the full $660 \times 714$ measurement. Mask-oblivious: does not take the mask as input, only the initial spectral estimate.
+    \item \textbf{MST-S, MST-L}: mask-guided spectral transformers. Due to a hardcoded $256 \div \text{height}$ operation in the architecture's \texttt{shift\_back()} function, MST cannot process $660 \times 660$ inputs directly. We therefore \textbf{center-crop} both measurement ($660 \times 714 \to 256 \times 310$) and mask ($660 \times 660 \to 256 \times 256$) before running MST. PSNR is computed against the corresponding crop of the reference reconstruction. This is noted with $\dagger$ in Table~5 of the main paper.
+\end{itemize}
+
+\subsubsection{Per-scene results.}
+\Cref{tab:cassi_real_perscene} reports per-scene PSNR.
 
 \begin{table}[h]
 \centering
-\caption{CASSI real data per-scene PSNR (dB). 5 real scenes ($660 \times 660 \times 28$). Calibrated uses the hardware mask; mismatched applies subpixel shift ($dx{=}0.5$, $dy{=}0.3$\,px).}
+\caption{CASSI real data per-scene PSNR~(dB) against published reference reconstructions. $\Delta$: calibrated $-$ mismatched. Mismatch: spatial shift only ($dx{=}0.5$, $dy{=}0.3$\,px, no dispersion perturbation).}
 \label{tab:cassi_real_perscene}
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{@{}l|cc|c|cc|c|cc|c@{}}
+\begin{tabular}{@{}l|cc|c|cc|c|cc|c|cc|c@{}}
 \toprule
-& \multicolumn{3}{c|}{\textbf{GAP-TV}} & \multicolumn{3}{c|}{\textbf{MST-S}} & \multicolumn{3}{c}{\textbf{MST-L}} \\
-\textbf{Scene} & \textbf{Cal.} & \textbf{Mis.} & $\boldsymbol{\Delta}$ & \textbf{Cal.} & \textbf{Mis.} & $\boldsymbol{\Delta}$ & \textbf{Cal.} & \textbf{Mis.} & $\boldsymbol{\Delta}$ \\
+& \multicolumn{3}{c|}{\textbf{GAP-TV}} & \multicolumn{3}{c|}{\textbf{HDNet}} & \multicolumn{3}{c|}{\textbf{MST-S$^\dagger$}} & \multicolumn{3}{c}{\textbf{MST-L$^\dagger$}} \\
+\textbf{Scene} & \textbf{Cal.} & \textbf{Mis.} & $\boldsymbol{\Delta}$ & \textbf{Cal.} & \textbf{Mis.} & $\boldsymbol{\Delta}$ & \textbf{Cal.} & \textbf{Mis.} & $\boldsymbol{\Delta}$ & \textbf{Cal.} & \textbf{Mis.} & $\boldsymbol{\Delta}$ \\
 \midrule
-Scene 1 & 23.83 & 24.18 & $-$0.35 & 19.39 & 20.27 & $-$0.88 & 18.74 & 18.82 & $-$0.08 \\
-Scene 2 & 21.40 & 21.52 & $-$0.12 & 20.85 & 20.82 & 0.03 & 20.40 & 20.37 & 0.03 \\
-Scene 3 & 20.48 & 20.61 & $-$0.13 & 18.23 & 18.27 & $-$0.04 & 18.09 & 18.15 & $-$0.06 \\
-Scene 4 & 21.11 & 21.20 & $-$0.09 & 16.05 & 16.13 & $-$0.08 & 15.76 & 15.70 & 0.06 \\
-Scene 5 & 21.61 & 21.71 & $-$0.10 & 16.78 & 16.93 & $-$0.15 & 16.00 & 15.97 & 0.03 \\
+Scene 1 & 23.83 & 24.18 & $-$0.35 & 25.92 & 25.92 & 0.00 & 19.39 & 20.27 & $-$0.88 & 18.74 & 18.82 & $-$0.08 \\
+Scene 2 & 21.40 & 21.52 & $-$0.12 & 26.27 & 26.27 & 0.00 & 20.85 & 20.82 & 0.03 & 20.40 & 20.37 & 0.03 \\
+Scene 3 & 20.48 & 20.61 & $-$0.13 & 24.93 & 24.93 & 0.00 & 18.23 & 18.27 & $-$0.04 & 18.09 & 18.15 & $-$0.06 \\
+Scene 4 & 21.11 & 21.20 & $-$0.09 & 26.89 & 26.89 & 0.00 & 16.05 & 16.13 & $-$0.08 & 15.76 & 15.70 & 0.06 \\
+Scene 5 & 21.61 & 21.71 & $-$0.10 & 25.35 & 25.35 & 0.00 & 16.78 & 16.93 & $-$0.15 & 16.00 & 15.97 & 0.03 \\
 \midrule
-\textbf{Mean} & 21.69 & 21.84 & $-$0.16 & 18.26 & 18.48 & $-$0.22 & 17.80 & 17.80 & $-$0.00 \\
+\textbf{Mean} & 21.69 & 21.84 & $-$0.16 & 25.87 & 25.87 & 0.00 & 18.26 & 18.48 & $-$0.22 & 17.80 & 17.80 & $-$0.00 \\
 \bottomrule
 \end{tabular}%
 }
 \end{table}
 
-\subsection{CACTI Real Data Per-Scene Residuals}
+\subsubsection{Interpretation.}
+The key observations are:
+\begin{enumerate}
+    \item \textbf{Negligible $\Delta$}: All methods show $|\Delta| \leq 0.88$\,dB (mean $|\Delta| \leq 0.22$\,dB). Spatial mask shift of 0.5\,px does not significantly degrade real CASSI reconstruction.
+    \item \textbf{HDNet $\Delta = 0$ everywhere}: HDNet does not take the mask as input, so changing the mask has zero effect on its output. This perfectly matches the ``mask-oblivious'' classification from simulation.
+    \item \textbf{Negative $\Delta$ for some methods}: Some methods actually produce slightly \emph{higher} PSNR under the shifted mask. This is possible because the reference reconstructions themselves were produced with the calibrated mask and contain their own reconstruction artefacts; a small mask shift can coincidentally reduce the distance to this imperfect reference.
+    \item \textbf{Comparison with simulation}: The simulation experiments (Table~1 of the main paper) show 3.38--13.98\,dB degradation under a \emph{5-parameter} mismatch model that includes dispersion perturbation. The near-zero $\Delta$ on real data (with spatial-only mismatch) confirms that \textbf{dispersion mismatch is the dominant degradation mechanism for CASSI}, consistent with the architectural analysis in the main paper.
+\end{enumerate}
 
-\Cref{tab:cacti_real_perscene} reports per-scene measurement residuals for real CACTI data from the EfficientSCI dataset (Wang et al., CVPR 2023) ($\text{cr}{=}10$).
-Since no ground truth exists, we report the relative measurement residual $\|y - \Phi\hat{x}\|^2 / \|y\|^2$ (lower is better) and the total variation of reconstructions.
+\subsection{CACTI Real Data}
+
+\subsubsection{Dataset.}
+We use the real CACTI dataset published by Wang et al.\ (CVPR 2023) with the EfficientSCI codebase.
+The dataset provides:
+\begin{itemize}
+    \item \textbf{4 real measurements}: \textit{duomino}, \textit{hand}, \textit{pendulumBall}, \textit{waterBalloon}. Each is a $512 \times 512$ snapshot from a CACTI prototype at compression ratio $\text{cr}{=}10$ (10 video frames encoded in a single measurement).
+    \item \textbf{Hardware-calibrated mask}: \texttt{real\_mask.mat}, a $512 \times 512 \times 50$ tensor of time-varying binary mask patterns. For $\text{cr}{=}10$, we use the first 10 frames.
+    \item \textbf{No ground truth}: Unlike CASSI, there are no reference reconstructions. The true high-speed video frames cannot be independently captured at the same spatial resolution and timing.
+\end{itemize}
+
+\subsubsection{Evaluation metric: measurement residual.}
+Without ground truth, we cannot compute PSNR.
+Instead, we use the \emph{normalised measurement residual}:
+\begin{equation}
+    r = \frac{\|\mathbf{y} - \sum_{b=1}^{B} C_b \odot \hat{\mathbf{x}}_b\|^2}{\|\mathbf{y}\|^2},
+\end{equation}
+where $\mathbf{y}$ is the real measurement, $C_b$ is the mask frame, and $\hat{\mathbf{x}}_b$ is the reconstructed video frame.
+This metric measures \emph{data fidelity}: how well the reconstruction, when re-measured through the assumed operator, reproduces the original measurement.
+A small residual indicates consistency between the assumed operator and the data; a large residual indicates operator mismatch.
+
+\textbf{Interpretation:} The residual is \emph{not} a direct measure of reconstruction quality (a trivial all-zero reconstruction also has bounded residual).
+However, the \emph{ratio} of mismatched-to-calibrated residual isolates the effect of mask mismatch on data consistency, providing a meaningful diagnostic even without ground truth.
+
+\subsubsection{Experimental protocol.}
+For each scene, we reconstruct with:
+\begin{enumerate}
+    \item \textbf{Calibrated}: hardware mask as-is.
+    \item \textbf{Mismatched}: mask shifted by $dx{=}0.5$\,px, $dy{=}0.3$\,px via bilinear interpolation (same spatial shift as CASSI).
+\end{enumerate}
+Methods: \textbf{GAP-TV} (50 iterations, $\lambda_{\text{TV}}{=}0.1$) and \textbf{EfficientSCI} (pretrained, loaded with \texttt{strict=False} since the checkpoint was trained for $\text{cr}{=}8$ while we use $\text{cr}{=}10$).
+
+\subsubsection{Per-scene results.}
+\Cref{tab:cacti_real_perscene} reports per-scene measurement residuals.
 
 \begin{table}[h]
 \centering
-\caption{CACTI real data per-scene measurement residual (lower is better). 4 real scenes ($512 \times 512$, $\text{cr}{=}10$). Calibrated uses the hardware mask; mismatched shifts the mask by ($dx{=}0.5$, $dy{=}0.3$\,px).}
+\caption{CACTI real data: normalised measurement residual $r = \|\mathbf{y} - \mathbf{\Phi}\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$ (lower is better). Ratio = mismatched / calibrated residual. 4 scenes, $512 \times 512$, $\text{cr}{=}10$.}
 \label{tab:cacti_real_perscene}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}l|cc|c|cc|c@{}}
@@ -185,6 +266,42 @@ WaterBalloon  & 1.4e-5 & 1.5e-4 & 10.5$\times$ & 0.0204 & 0.0266 & 1.3$\times$ \
 \end{tabular}%
 }
 \end{table}
+
+\subsubsection{Interpretation.}
+\begin{enumerate}
+    \item \textbf{GAP-TV residual increases $\sim$10$\times$}: GAP-TV is an iterative optimisation algorithm that explicitly uses the mask in each iteration. When the mask is mismatched, the algorithm converges to a reconstruction inconsistent with the true measurement, causing a 10$\times$ increase in residual. This mirrors the severe degradation seen in simulation.
+    \item \textbf{EfficientSCI residual increases only $\sim$1.3$\times$}: EfficientSCI is an end-to-end learned method whose reconstruction is less directly coupled to the mask. The small residual increase is consistent with the observation from simulation that learned methods produce outputs with moderate data fidelity regardless of the mask.
+    \item \textbf{Absolute residual levels}: GAP-TV achieves orders-of-magnitude lower calibrated residuals ($\sim$10$^{-5}$) than EfficientSCI ($\sim$10$^{-2}$), because GAP-TV explicitly minimises data fidelity while EfficientSCI optimises a learned objective. This does not necessarily mean GAP-TV produces better visual quality---only that its reconstruction is more consistent with the assumed forward model.
+\end{enumerate}
+
+\subsection{Summary: Simulation vs.\ Real Data Comparison}
+
+\begin{table}[h]
+\centering
+\caption{Comparison of simulation and real hardware findings for CASSI and CACTI. Simulation has ground truth; real data uses proxy metrics.}
+\label{tab:sim_vs_real}
+\begin{tabular}{@{}lp{5cm}p{5cm}@{}}
+\toprule
+& \textbf{Simulation} & \textbf{Real Hardware} \\
+\midrule
+\textbf{CASSI} & & \\
+\quad Ground truth & True hyperspectral cube & None (use reference recon.) \\
+\quad Metric & PSNR against ground truth & PSNR against reference \\
+\quad Mismatch & 5 params (spatial + dispersion) & 2 params (spatial only) \\
+\quad Degradation & 3.38--13.98\,dB & $\leq$0.22\,dB \\
+\quad Key finding & Dispersion is dominant source & Spatial shift alone is negligible \\
+\midrule
+\textbf{CACTI} & & \\
+\quad Ground truth & True video frames & None \\
+\quad Metric & PSNR against ground truth & Measurement residual ratio \\
+\quad Mismatch & 8 params (spatial + temporal + radiometric) & 2 params (spatial only) \\
+\quad Degradation & 10.94--20.58\,dB & Residual increases 10$\times$ (GAP-TV) \\
+\quad Key finding & All methods collapse & Spatial shift alone causes large data infidelity \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The real hardware experiments confirm two simulation findings: (1)~mask-oblivious methods (HDNet) are completely insensitive to mask mismatch, and (2)~the severity of spatial mismatch varies by modality---negligible for CASSI (where dispersion dominates) but severe for CACTI (where the mask directly modulates each frame).
 
 % ============================================================================
 % A3. SCENARIO IV PER-SCENE RESULTS
