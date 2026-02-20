@@ -311,7 +311,7 @@ def compute_ct_number_water(
         radius_px = _mm_to_pixels(radius_mm, float(pixel_spacing[0]))
         roi_pixels = _extract_circular_roi(central_slice, center, radius_px)
         mean_hu = float(np.mean(roi_pixels))
-        std_hu = float(np.std(roi_pixels))
+        std_hu = float(np.std(roi_pixels, ddof=1)) if roi_pixels.size > 1 else float(np.std(roi_pixels))
 
         return MetricResult(
             name="CT Number - Water",
@@ -402,8 +402,8 @@ def compute_ct_number_insert(
 
         # Convert angle and offset to pixel coordinates
         angle_rad = np.deg2rad(angle_deg)
-        offset_px_y = _mm_to_pixels(offset_mm, float(pixel_spacing[0]))
-        offset_px_x = _mm_to_pixels(offset_mm, float(pixel_spacing[1]))
+        offset_px_y = offset_mm / float(pixel_spacing[0])
+        offset_px_x = offset_mm / float(pixel_spacing[1])
         radius_px = _mm_to_pixels(radius_mm, float(pixel_spacing[0]))
 
         # Insert position: angle is measured CW from 12-o'clock (negative Y)
@@ -615,7 +615,8 @@ def compute_slice_thickness(
         else:
             # Interpolate for sub-pixel accuracy on the first peak
             rise = int(rise_indices[0])
-            fall = int(fall_indices[-1]) if fall_indices[-1] > rise else int(fall_indices[0])
+            valid_falls = fall_indices[fall_indices > rise]
+            fall = int(valid_falls[0]) if valid_falls.size > 0 else int(fall_indices[-1])
             fwhm_px = float(fall - rise)
             if fwhm_px <= 0:
                 fwhm_px = float(np.sum(above_half))
@@ -902,14 +903,22 @@ def compute_low_contrast_detectability(
         bg_radius_px = _mm_to_pixels(20.0, float(pixel_spacing[0]))
         background_roi = _extract_circular_roi(central_slice, center, bg_radius_px)
 
-        for target_size_mm in sorted(target_sizes, reverse=True):
+        sorted_targets = sorted(target_sizes, reverse=True)
+        num_targets = len(sorted_targets)
+        for idx, target_size_mm in enumerate(sorted_targets):
             target_radius_mm = target_size_mm / 2.0
             target_radius_px = _mm_to_pixels(target_radius_mm, float(pixel_spacing[0]))
 
-            # Place target ROI at an offset from centre
-            # (simplified: use concentric ring at 40mm offset)
-            offset_px = _mm_to_pixels(40.0, float(pixel_spacing[0]))
-            target_center = (center[0] - offset_px, center[1])
+            # Place each target at a different angular position around the
+            # phantom centre (evenly spaced) to match ACR Module 3 layout.
+            offset_mm = 40.0
+            offset_px_y = offset_mm / float(pixel_spacing[0])
+            offset_px_x = offset_mm / float(pixel_spacing[1])
+            angle_rad = 2.0 * np.pi * idx / num_targets
+            target_center = (
+                int(round(center[0] - offset_px_y * np.cos(angle_rad))),
+                int(round(center[1] + offset_px_x * np.sin(angle_rad))),
+            )
 
             if (
                 target_center[0] - target_radius_px < 0
@@ -1270,7 +1279,14 @@ def compute_all_metrics(
     # Auto-detect phantom centre from central slice
     central_idx = volume.shape[0] // 2
     center = _find_phantom_center(volume[central_idx])
-    rotation_offset = _find_phantom_rotation(volume[central_idx])
+
+    # Only compute rotation when insert metrics are present in the metric set
+    needs_rotation = any(
+        mk.startswith("ct_number_") and mk != "ct_number_water"
+        and (insert_rois.get(mk.replace("ct_number_", ""), {}))
+        for mk in metric_set
+    )
+    rotation_offset = _find_phantom_rotation(volume[central_idx]) if needs_rotation else 0.0
 
     # ROI configuration defaults (from casepack or fallback)
     water_roi_cfg = roi_defs.get("water_roi", {})

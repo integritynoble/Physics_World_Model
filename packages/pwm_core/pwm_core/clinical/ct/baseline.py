@@ -28,6 +28,10 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import os
+import re
+import shutil
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
@@ -120,6 +124,31 @@ class BaselineComparison(BaseModel):
     delta: float
     delta_percent: float
     status: Literal["STABLE", "DRIFTED", "ALERT"]
+
+
+# ---------------------------------------------------------------------------
+# Input sanitisation helpers
+# ---------------------------------------------------------------------------
+
+_SAFE_SCANNER_ID_RE = re.compile(r"^[A-Za-z0-9_\-]+$")
+
+
+def _sanitize_scanner_id(scanner_id: str) -> str:
+    """Validate that *scanner_id* is safe for use in file paths.
+
+    Only alphanumeric characters, underscores, and hyphens are allowed.
+
+    Raises
+    ------
+    ValueError
+        If the scanner_id contains unsafe characters.
+    """
+    if not scanner_id or not _SAFE_SCANNER_ID_RE.match(scanner_id):
+        raise ValueError(
+            f"Invalid scanner_id '{scanner_id}': must be non-empty and "
+            "contain only alphanumeric characters, underscores, or hyphens."
+        )
+    return scanner_id
 
 
 # ---------------------------------------------------------------------------
@@ -286,8 +315,14 @@ class BaselineManager:
         CommissioningBundle | None
             The matching baseline, or ``None`` if not found.
         """
+        _sanitize_scanner_id(scanner_id)
         scanner_dir = self.storage_path / scanner_id
         path = scanner_dir / f"v{version}.json"
+        # Ensure resolved path stays within the expected directory
+        if not path.resolve().is_relative_to(self.storage_path.resolve()):
+            raise ValueError(
+                f"Resolved path '{path.resolve()}' escapes storage directory."
+            )
         if path.exists():
             return self._load(path)
         return None
@@ -305,6 +340,7 @@ class BaselineManager:
         list[CommissioningBundle]
             All baselines in version order (earliest first).
         """
+        _sanitize_scanner_id(scanner_id)
         scanner_dir = self.storage_path / scanner_id
         if not scanner_dir.exists():
             return []
@@ -413,19 +449,40 @@ class BaselineManager:
     def _save(self, bundle: CommissioningBundle) -> None:
         """Persist a commissioning bundle as a JSON file.
 
+        Uses atomic write (temp file + ``os.replace``) to prevent
+        data loss from concurrent writes or interrupted I/O.
+
         Parameters
         ----------
         bundle : CommissioningBundle
             The bundle to persist.
         """
+        _sanitize_scanner_id(bundle.scanner_id)
         scanner_dir = self.storage_path / bundle.scanner_id
         scanner_dir.mkdir(parents=True, exist_ok=True)
         path = scanner_dir / f"v{bundle.version}.json"
+        # Ensure resolved path stays within the expected directory
+        if not path.resolve().is_relative_to(self.storage_path.resolve()):
+            raise ValueError(
+                f"Resolved path '{path.resolve()}' escapes storage directory."
+            )
 
-        path.write_text(
-            json.dumps(bundle.model_dump(), indent=2, default=str),
-            encoding="utf-8",
+        content = json.dumps(bundle.model_dump(), indent=2, default=str)
+        # Atomic write: write to temp file, then replace target
+        fd, tmp_path = tempfile.mkstemp(
+            dir=str(scanner_dir), suffix=".tmp",
         )
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as tmp_f:
+                tmp_f.write(content)
+            os.replace(tmp_path, str(path))
+        except BaseException:
+            # Clean up temp file on failure
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
+            raise
         logger.debug("Saved baseline to '%s'.", path)
 
     @staticmethod
@@ -493,12 +550,15 @@ class BaselineManager:
 
         try:
             import subprocess
-            result = subprocess.run(
-                ["git", "rev-parse", "HEAD"],
-                capture_output=True, text=True, timeout=5,
-            )
-            if result.returncode == 0:
-                provenance["git_hash"] = result.stdout.strip()
+            if shutil.which("git") is not None:
+                result = subprocess.run(
+                    ["git", "rev-parse", "HEAD"],
+                    capture_output=True, text=True, timeout=5,
+                )
+                if result.returncode == 0:
+                    provenance["git_hash"] = result.stdout.strip()
+            else:
+                provenance["git_hash"] = "unavailable"
         except Exception:
             pass
 

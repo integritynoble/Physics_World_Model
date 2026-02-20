@@ -453,9 +453,12 @@ class DiagnosisEngine:
         second_score = hypotheses[1].score
 
         if second_score <= 0:
-            confidence: Literal["high", "moderate", "low"] = (
-                "high" if top_score > 0 else "low"
-            )
+            if top_score >= 1.0:
+                confidence: Literal["high", "moderate", "low"] = "high"
+            elif top_score > 0:
+                confidence = "moderate"
+            else:
+                confidence = "low"
         elif top_score > 2.0 * second_score:
             confidence = "high"
         elif top_score > 1.2 * second_score:

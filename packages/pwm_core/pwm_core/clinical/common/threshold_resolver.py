@@ -546,7 +546,12 @@ class ThresholdResolver:
         # Layer 2: scanner_model
         scanner_layer = metric_config.get("scanner_model", {})
         if scanner_model and isinstance(scanner_layer, dict):
-            model_data = scanner_layer.get(scanner_model)
+            # Normalize the scanner_model key: lowercase with underscores
+            # so that "SOMATOM Force" matches "somatom_force" in YAML.
+            normalized_model = scanner_model.lower().replace(" ", "_")
+            model_data = scanner_layer.get(scanner_model) or scanner_layer.get(
+                normalized_model
+            )
             if model_data and isinstance(model_data, dict):
                 resolved = _layer_to_resolved(
                     model_data, metric_name, "scanner_model", base=resolved

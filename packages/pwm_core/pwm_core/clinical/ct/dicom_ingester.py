@@ -742,6 +742,7 @@ class DICOMIngester:
 
         # Sort datasets
         datasets_with_loc: list[tuple[float, int, Any]] = []
+        all_have_location = True
         for idx, ds in enumerate(datasets):
             loc = getattr(ds, "SliceLocation", None)
             inst = getattr(ds, "InstanceNumber", idx)
@@ -753,21 +754,28 @@ class DICOMIngester:
                 inst_i = int(inst) if inst is not None else idx
             except (TypeError, ValueError):
                 inst_i = idx
+            if loc_f is None:
+                all_have_location = False
             datasets_with_loc.append((loc_f if loc_f is not None else 0.0, inst_i, ds))
 
-        # Prefer SliceLocation if values are diverse (i.e. not all the same)
+        # Prefer SliceLocation only if ALL datasets have valid values
+        # and the values are diverse (i.e. not all the same).
+        # If any dataset is missing SliceLocation, fall back entirely
+        # to InstanceNumber to avoid mixing valid and fallback values.
         locations = [t[0] for t in datasets_with_loc]
-        if len(set(locations)) > 1:
+        if all_have_location and len(set(locations)) > 1:
             datasets_with_loc.sort(key=lambda t: (t[0], t[1]))
         else:
             datasets_with_loc.sort(key=lambda t: (t[1], t[0]))
 
         sorted_datasets = [t[2] for t in datasets_with_loc]
-        slice_locations_out = [t[0] for t in datasets_with_loc]
+        sorted_locations = [t[0] for t in datasets_with_loc]
 
-        # Stack pixel arrays and apply rescale
+        # Stack pixel arrays and apply rescale.
+        # Build slice_locations_out in parallel so it stays aligned with slices.
         slices: list[Any] = []
-        for ds in sorted_datasets:
+        slice_locations_out: list[float] = []
+        for ds, loc in zip(sorted_datasets, sorted_locations):
             try:
                 pixel_array = ds.pixel_array.astype(np.float64)
             except Exception as exc:
@@ -780,6 +788,7 @@ class DICOMIngester:
             intercept = float(getattr(ds, "RescaleIntercept", 0.0))
             hu_slice = pixel_array * slope + intercept
             slices.append(hu_slice)
+            slice_locations_out.append(loc)
 
         if not slices:
             raise ValueError(

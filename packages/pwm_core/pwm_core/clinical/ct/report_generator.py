@@ -361,7 +361,7 @@ class ReportGenerator:
         # Compute SHA-256 over canonical serialization (excluding hash itself)
         payload = report.model_dump()
         payload["sha256"] = ""
-        canonical = json.dumps(payload, sort_keys=True, indent=2, default=str)
+        canonical = json.dumps(payload, sort_keys=True, indent=2, default=_portable_serializer)
         report.sha256 = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
         # Write using the same canonical serialization with the computed hash
@@ -993,6 +993,21 @@ class ReportGenerator:
 # ---------------------------------------------------------------------------
 # Module-level helpers
 # ---------------------------------------------------------------------------
+
+
+def _portable_serializer(obj: Any) -> str:
+    """JSON serializer that produces platform-independent strings.
+
+    Normalizes Path objects to forward-slash strings, datetime objects
+    to ISO-8601 format, and other types to their repr.  This ensures
+    that SHA-256 hashes computed from the JSON output are identical
+    across Windows, Linux, and macOS.
+    """
+    if isinstance(obj, Path):
+        return obj.as_posix()
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    return repr(obj)
 
 
 def _extract_metrics_dict(metrics_report: Any) -> dict:

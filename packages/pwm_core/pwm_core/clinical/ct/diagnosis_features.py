@@ -137,7 +137,6 @@ def compute_ring_index(
 
     # Compute azimuthal variance at each integer radius
     num_angular_bins = 360
-    theta = np.arctan2(yy - cy, xx - cx)  # range [-pi, pi]
 
     azimuthal_variances: list[float] = []
     for r in range(inner_radius_px, outer_radius_px):
