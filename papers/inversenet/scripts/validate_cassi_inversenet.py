@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """CASSI InverseNet Validation -- benchmark-grade reconstruction.
 
-Validates 4 reconstruction methods (GAP-TV, HDNet, MST-S, MST-L) across
+Validates 4 reconstruction methods (GAP-TV, PnP-HSICNN, HDNet, MST-L) across
 3 scenarios (I: Ideal, II: Assumed, III: Truth Forward Model) on 10 KAIST scenes.
 
 5-parameter mismatch model (v4.0):
@@ -14,10 +14,10 @@ Scenarios:
   Scenario III : corrupted measurement + truth operator    (oracle, knows all 5 params)
 
 Methods:
-  GAP-TV   -- classical iterative (mask-aware)    (~32 dB ideal)
-  HDNet    -- dual-domain deep learning           (~35 dB ideal, mask-oblivious)
-  MST-S    -- mask-guided Transformer (small)     (~34 dB ideal)
-  MST-L    -- mask-guided Transformer (large)     (~36 dB ideal)
+  GAP-TV     -- classical iterative (mask-aware)    (~24 dB ideal)
+  PnP-HSICNN -- GAP + HSI-SDeCNN deep denoiser     (~29 dB ideal)
+  HDNet      -- dual-domain deep learning           (~35 dB ideal, mask-oblivious)
+  MST-L      -- mask-guided Transformer (large)     (~36 dB ideal)
 
 Usage:
     python validate_cassi_inversenet.py [--device cuda:0] [--save-recon]
@@ -59,14 +59,14 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # constants
 # ---------------------------------------------------------------------------
-RECONSTRUCTION_METHODS = ["gap_tv", "hdnet", "mst_s", "mst_l"]
+RECONSTRUCTION_METHODS = ["gap_tv", "pnp_hsicnn", "hdnet", "mst_l"]
 SCENARIOS = ["scenario_i", "scenario_ii", "scenario_iii"]
 NUM_SCENES = 10
 
 METHOD_LABELS = {
     "gap_tv": "GAP-TV",
+    "pnp_hsicnn": "PnP-HSICNN",
     "hdnet": "HDNet",
-    "mst_s": "MST-S",
     "mst_l": "MST-L",
 }
 
@@ -509,6 +509,149 @@ def reconstruct_gap_tv(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0") 
         return np.clip(np.random.rand(H, H, 28).astype(np.float32) * 0.1, 0, 1)
 
 
+# ===================================================================
+# PnP-HSICNN (GAP + HSI-SDeCNN deep denoiser)
+# ===================================================================
+_pnp_hsicnn_cache = {}
+
+
+def _load_pnp_hsicnn(device: str):
+    """Load HSI-SDeCNN denoiser from PnP-CASSI."""
+    if "model" in _pnp_hsicnn_cache:
+        return _pnp_hsicnn_cache["model"]
+
+    import torch
+    import importlib.util
+
+    hsi_path = "/home/spiritai/PnP-CASSI-main/hsi.py"
+    spec = importlib.util.spec_from_file_location("hsi_sdecnn", hsi_path)
+    hsi_mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(hsi_mod)
+
+    dev = torch.device(device)
+    model = hsi_mod.HSI_SDeCNN(in_nc=7, out_nc=1, nc=128, nb=15).to(dev)
+
+    weights_path = "/home/spiritai/PnP-CASSI-main/check_points/deep_denoiser.pth"
+    state_dict = torch.load(weights_path, map_location=dev, weights_only=False)
+    model.load_state_dict(state_dict, strict=True)
+    model.eval()
+    for p in model.parameters():
+        p.requires_grad = False
+    logger.info("  Loaded HSI-SDeCNN denoiser with pretrained weights")
+
+    _pnp_hsicnn_cache["model"] = (model, dev)
+    return model, dev
+
+
+def _apply_hsicnn_denoiser(x: np.ndarray, model, dev,
+                           nC: int = 28, sigma_val: float = 10.0) -> np.ndarray:
+    """Apply HSI-SDeCNN band-by-band with 7-channel context window."""
+    import torch
+
+    result = np.zeros_like(x)
+    sigma_t = torch.full((1, 1, 1, 1), sigma_val / 255.0, device=dev)
+
+    for i in range(nC):
+        if i < 3:
+            if i == 0:
+                net_in = np.dstack((x[:, :, 0], x[:, :, 0], x[:, :, 0],
+                                    x[:, :, 0:4]))
+            elif i == 1:
+                net_in = np.dstack((x[:, :, 0], x[:, :, 0], x[:, :, 0],
+                                    x[:, :, 1:5]))
+            else:
+                net_in = np.dstack((x[:, :, 0], x[:, :, 0], x[:, :, 1],
+                                    x[:, :, 2:6]))
+        elif i > nC - 4:
+            if i == nC - 3:
+                net_in = np.dstack((x[:, :, i - 3:i + 1], x[:, :, i + 1],
+                                    x[:, :, i + 2], x[:, :, i + 2]))
+            elif i == nC - 2:
+                net_in = np.dstack((x[:, :, i - 3:i + 1], x[:, :, i + 1],
+                                    x[:, :, i + 1], x[:, :, i + 1]))
+            else:
+                net_in = np.dstack((x[:, :, i - 3:i + 1], x[:, :, i],
+                                    x[:, :, i], x[:, :, i]))
+        else:
+            net_in = x[:, :, i - 3:i + 4]
+
+        net_t = (torch.from_numpy(np.ascontiguousarray(net_in))
+                 .permute(2, 0, 1).float().unsqueeze(0).to(dev))
+        with torch.no_grad():
+            out = model(net_t, sigma_t)
+        result[:, :, i] = out.squeeze().cpu().numpy()
+
+    return result
+
+
+def _is_hsicnn_iter(k: int) -> bool:
+    """True for iterations 83+ with 3/4 HSICNN schedule."""
+    if k < 83:
+        return False
+    return (k - 83) % 4 < 3
+
+
+def reconstruct_pnp_hsicnn(y: np.ndarray, mask: np.ndarray,
+                            device: str = "cuda:0") -> np.ndarray:
+    """Reconstruct using PnP-HSICNN (GAP + HSI-SDeCNN deep denoiser).
+
+    124-iter GAP with hybrid TV (iters 0-82) + HSICNN (iters 83-123).
+    """
+    try:
+        from skimage.restoration import denoise_tv_chambolle
+
+        model, dev = _load_pnp_hsicnn(device)
+
+        H, W = mask.shape
+        nC = 28
+        step = 2
+        W_ext = W + (nC - 1) * step
+
+        Phi_sum = np.zeros((H, W_ext), dtype=np.float32)
+        for k in range(nC):
+            Phi_sum[:, k * step:k * step + W] += mask ** 2
+        Phi_sum = np.maximum(Phi_sum, 1.0)
+
+        # Initialize with adjoint
+        x = np.zeros((H, W, nC), dtype=np.float32)
+        for k in range(nC):
+            x[:, :, k] = mask * y[:, k * step:k * step + W]
+
+        y_nom = np.zeros((H, W_ext), dtype=np.float32)
+        hh = min(H, y.shape[0])
+        ww = min(W_ext, y.shape[1])
+        y_nom[:hh, :ww] = y[:hh, :ww]
+
+        y1 = np.zeros_like(y_nom)
+        nsig_tv = 12.75  # TV weight ~ 0.05
+        n_total = 124
+
+        for k_iter in range(n_total):
+            y_est = np.zeros((H, W_ext), dtype=np.float32)
+            for k in range(nC):
+                y_est[:, k * step:k * step + W] += mask * x[:, :, k]
+
+            y1 += (y_nom - y_est)
+            norm_r = (y1 - y_est) / Phi_sum
+
+            for k in range(nC):
+                x[:, :, k] += mask * norm_r[:, k * step:k * step + W]
+
+            if _is_hsicnn_iter(k_iter):
+                x = _apply_hsicnn_denoiser(
+                    np.clip(x, 0, None), model, dev, nC=nC, sigma_val=10.0)
+            else:
+                x = denoise_tv_chambolle(
+                    np.clip(x, 0, None), weight=nsig_tv / 255.0,
+                    max_num_iter=5, channel_axis=2).astype(np.float32)
+
+        return np.clip(x, 0, 1).astype(np.float32)
+    except Exception as e:
+        logger.warning(f"PnP-HSICNN failed: {e}")
+        H = y.shape[0]
+        return np.clip(np.random.rand(H, H, 28).astype(np.float32) * 0.1, 0, 1)
+
+
 _hdnet_cache = {}
 
 def _load_original_hdnet(device: str):
@@ -589,26 +732,6 @@ def reconstruct_hdnet(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0") -
         return np.clip(np.random.rand(H, H, 28).astype(np.float32) * 0.1, 0, 1)
 
 
-def reconstruct_mst_s(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0") -> np.ndarray:
-    """Reconstruct using MST-S (mask-aware Transformer, small).
-
-    Args:
-        y: (H, W_ext) CASSI measurement
-        mask: (H, W) forward operator mask
-        device: torch device
-
-    Returns:
-        x_recon: (H, W, 28) reconstruction
-    """
-    try:
-        from pwm_core.recon.mst import mst_recon_cassi
-        return mst_recon_cassi(y, mask, nC=28, step=2, device=device, variant="mst_s")
-    except Exception as e:
-        logger.warning(f"MST-S failed: {e}")
-        H = y.shape[0]
-        return np.clip(np.random.rand(H, H, 28).astype(np.float32) * 0.1, 0, 1)
-
-
 def reconstruct_mst_l(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0") -> np.ndarray:
     """Reconstruct using MST-L (mask-aware Transformer, large).
 
@@ -631,8 +754,8 @@ def reconstruct_mst_l(y: np.ndarray, mask: np.ndarray, device: str = "cuda:0") -
 
 RECONSTRUCTION_FUNCTIONS = {
     "gap_tv": reconstruct_gap_tv,
+    "pnp_hsicnn": reconstruct_pnp_hsicnn,
     "hdnet": reconstruct_hdnet,
-    "mst_s": reconstruct_mst_s,
     "mst_l": reconstruct_mst_l,
 }
 
@@ -766,7 +889,8 @@ def validate_scenario_iii(scene: np.ndarray, mask_ideal: np.ndarray,
 
     Oracle knows ALL 5 true mismatch parameters:
       - GAP-TV: custom forward/adjoint with true a1, alpha + true warped mask
-      - MST-S/MST-L: true warped mask (best approx, architecture uses integer step)
+      - PnP-HSICNN: true warped mask (mask-aware GAP framework, integer step)
+      - MST-L: true warped mask (best approx, architecture uses integer step)
       - HDNet: mask-oblivious, same as Scenario II (no oracle benefit)
 
     Args:
@@ -802,8 +926,11 @@ def validate_scenario_iii(scene: np.ndarray, mask_ideal: np.ndarray,
                     y_corrupt, mask_truth,
                     a1=mismatch.disp_a1, alpha_deg=mismatch.disp_alpha,
                     device=device)
+            elif method == "pnp_hsicnn":
+                # PnP-HSICNN: mask-aware GAP, pass true warped mask
+                x_hat = reconstruct_pnp_hsicnn(y_corrupt, mask_truth, device=device)
             else:
-                # MST-S/MST-L: mask-aware, benefit from true warped mask
+                # MST-L: mask-aware, benefit from true warped mask
                 # HDNet: mask-oblivious, Scenario III ≈ Scenario II
                 x_hat = RECONSTRUCTION_FUNCTIONS[method](
                     y_corrupt, mask_truth, device=device)

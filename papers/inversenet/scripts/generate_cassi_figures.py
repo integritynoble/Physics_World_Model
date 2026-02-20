@@ -46,15 +46,15 @@ rcParams["ytick.labelsize"] = 10
 
 METHOD_COLORS = {
     "gap_tv": "#1f77b4",
+    "pnp_hsicnn": "#2ca02c",
     "hdnet": "#ff7f0e",
-    "mst_s": "#2ca02c",
     "mst_l": "#d62728",
 }
 
 METHOD_LABELS = {
     "gap_tv": "GAP-TV",
+    "pnp_hsicnn": "PnP-HSICNN",
     "hdnet": "HDNet",
-    "mst_s": "MST-S",
     "mst_l": "MST-L",
 }
 
@@ -71,7 +71,7 @@ SCENARIO_SHORT = {
 }
 
 SCENARIOS = ["scenario_i", "scenario_ii", "scenario_iii"]
-METHODS = ["gap_tv", "hdnet", "mst_s", "mst_l"]
+METHODS = ["gap_tv", "pnp_hsicnn", "hdnet", "mst_l"]
 
 
 def load_results():

@@ -14,7 +14,7 @@
   },
   "methods": [
     "gap_tv",
-    "efficientsci"
+    "pnp_ffdnet"
   ],
   "per_scene": [
     {
@@ -24,9 +24,9 @@
           "residual": 8e-06,
           "tv": 10372.3
         },
-        "efficientsci": {
-          "residual": 0.021674,
-          "tv": 7942.5
+        "pnp_ffdnet": {
+          "residual": 0.001981,
+          "tv": 9683.4
         }
       },
       "mismatched": {
@@ -34,14 +34,14 @@
           "residual": 8.5e-05,
           "tv": 11616.9
         },
-        "efficientsci": {
-          "residual": 0.027724,
-          "tv": 8575.3
+        "pnp_ffdnet": {
+          "residual": 0.004027,
+          "tv": 10777.2
         }
       },
       "residual_ratio": {
         "gap_tv": 10.625,
-        "efficientsci": 1.279
+        "pnp_ffdnet": 2.033
       }
     },
     {
@@ -51,9 +51,9 @@
           "residual": 7e-06,
           "tv": 12550.8
         },
-        "efficientsci": {
-          "residual": 0.019861,
-          "tv": 13519.7
+        "pnp_ffdnet": {
+          "residual": 0.002493,
+          "tv": 7604.7
         }
       },
       "mismatched": {
@@ -61,14 +61,14 @@
           "residual": 7.7e-05,
           "tv": 23245.0
         },
-        "efficientsci": {
-          "residual": 0.028889,
-          "tv": 19685.7
+        "pnp_ffdnet": {
+          "residual": 0.007049,
+          "tv": 12232.8
         }
       },
       "residual_ratio": {
         "gap_tv": 11.0,
-        "efficientsci": 1.455
+        "pnp_ffdnet": 2.828
       }
     },
     {
@@ -78,9 +78,9 @@
           "residual": 3.7e-05,
           "tv": 9687.5
         },
-        "efficientsci": {
-          "residual": 0.033396,
-          "tv": 6033.3
+        "pnp_ffdnet": {
+          "residual": 0.009192,
+          "tv": 7770.4
         }
       },
       "mismatched": {
@@ -88,14 +88,14 @@
           "residual": 0.000346,
           "tv": 9484.7
         },
-        "efficientsci": {
-          "residual": 0.041501,
-          "tv": 6279.0
+        "pnp_ffdnet": {
+          "residual": 0.011502,
+          "tv": 8005.5
         }
       },
       "residual_ratio": {
         "gap_tv": 9.351,
-        "efficientsci": 1.243
+        "pnp_ffdnet": 1.251
       }
     },
     {
@@ -105,9 +105,9 @@
           "residual": 1.4e-05,
           "tv": 10017.2
         },
-        "efficientsci": {
-          "residual": 0.02036,
-          "tv": 6950.1
+        "pnp_ffdnet": {
+          "residual": 0.002637,
+          "tv": 8292.5
         }
       },
       "mismatched": {
@@ -115,16 +115,16 @@
           "residual": 0.000147,
           "tv": 11161.1
         },
-        "efficientsci": {
-          "residual": 0.026644,
-          "tv": 7695.6
+        "pnp_ffdnet": {
+          "residual": 0.004932,
+          "tv": 8792.1
         }
       },
       "residual_ratio": {
         "gap_tv": 10.5,
-        "efficientsci": 1.309
+        "pnp_ffdnet": 1.87
       }
     }
   ],
-  "execution_seconds": 175.3
+  "execution_seconds": 335.6
 }
