@@ -1,0 +1,130 @@
+{
+  "experiment": "cacti_real_data",
+  "compression_ratio": 10,
+  "num_scenes": 4,
+  "scenes": [
+    "duomino",
+    "hand",
+    "pendulumBall",
+    "waterBalloon"
+  ],
+  "mismatch": {
+    "dx": 0.5,
+    "dy": 0.3
+  },
+  "methods": [
+    "gap_tv",
+    "efficientsci"
+  ],
+  "per_scene": [
+    {
+      "scene": "duomino",
+      "calibrated": {
+        "gap_tv": {
+          "residual": 8e-06,
+          "tv": 10372.3
+        },
+        "efficientsci": {
+          "residual": 0.021674,
+          "tv": 7942.5
+        }
+      },
+      "mismatched": {
+        "gap_tv": {
+          "residual": 8.5e-05,
+          "tv": 11616.9
+        },
+        "efficientsci": {
+          "residual": 0.027724,
+          "tv": 8575.3
+        }
+      },
+      "residual_ratio": {
+        "gap_tv": 10.625,
+        "efficientsci": 1.279
+      }
+    },
+    {
+      "scene": "hand",
+      "calibrated": {
+        "gap_tv": {
+          "residual": 7e-06,
+          "tv": 12550.8
+        },
+        "efficientsci": {
+          "residual": 0.019861,
+          "tv": 13519.7
+        }
+      },
+      "mismatched": {
+        "gap_tv": {
+          "residual": 7.7e-05,
+          "tv": 23245.0
+        },
+        "efficientsci": {
+          "residual": 0.028889,
+          "tv": 19685.7
+        }
+      },
+      "residual_ratio": {
+        "gap_tv": 11.0,
+        "efficientsci": 1.455
+      }
+    },
+    {
+      "scene": "pendulumBall",
+      "calibrated": {
+        "gap_tv": {
+          "residual": 3.7e-05,
+          "tv": 9687.5
+        },
+        "efficientsci": {
+          "residual": 0.033396,
+          "tv": 6033.3
+        }
+      },
+      "mismatched": {
+        "gap_tv": {
+          "residual": 0.000346,
+          "tv": 9484.7
+        },
+        "efficientsci": {
+          "residual": 0.041501,
+          "tv": 6279.0
+        }
+      },
+      "residual_ratio": {
+        "gap_tv": 9.351,
+        "efficientsci": 1.243
+      }
+    },
+    {
+      "scene": "waterBalloon",
+      "calibrated": {
+        "gap_tv": {
+          "residual": 1.4e-05,
+          "tv": 10017.2
+        },
+        "efficientsci": {
+          "residual": 0.02036,
+          "tv": 6950.1
+        }
+      },
+      "mismatched": {
+        "gap_tv": {
+          "residual": 0.000147,
+          "tv": 11161.1
+        },
+        "efficientsci": {
+          "residual": 0.026644,
+          "tv": 7695.6
+        }
+      },
+      "residual_ratio": {
+        "gap_tv": 10.5,
+        "efficientsci": 1.309
+      }
+    }
+  ],
+  "execution_seconds": 175.3
+}

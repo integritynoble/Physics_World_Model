@@ -1,0 +1,50 @@
+{
+  "cassi": {
+    "modality": "cassi",
+    "method": "gap_tv",
+    "true_params": {
+      "dx": 0.5,
+      "dy": 0.3,
+      "theta": 0.1
+    },
+    "estimated_params": {
+      "dx": 0.4,
+      "dy": 0.2
+    },
+    "scenario_ii_psnr": 21.95,
+    "scenario_iv_psnr": 23.31,
+    "scenario_iii_psnr": 23.69,
+    "calibration_time_s": 1234.3,
+    "grid_size": 121
+  },
+  "cacti": {
+    "modality": "cacti",
+    "method": "gap_tv",
+    "true_params": {
+      "dx": 0.5,
+      "dy": 0.3
+    },
+    "estimated_params": {
+      "dx": 0.5,
+      "dy": 0.25
+    },
+    "scenario_ii_psnr": 17.6,
+    "scenario_iv_psnr": 26.99,
+    "scenario_iii_psnr": 26.99,
+    "calibration_time_s": 64.2
+  },
+  "spc": {
+    "modality": "spc",
+    "method": "fista_tv",
+    "true_params": {
+      "alpha": 0.0015
+    },
+    "estimated_params": {
+      "alpha": 0.0
+    },
+    "scenario_ii_psnr": 25.47,
+    "scenario_iv_psnr": 25.47,
+    "scenario_iii_psnr": 25.43,
+    "calibration_time_s": 217.5
+  }
+}
