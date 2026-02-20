@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """Scenario IV: Grid-Search Calibration Baseline for InverseNet ECCV 2026.
 
-For each modality, grid-searches over mismatch parameters using the
-measurement residual as the objective function.  This provides a practical
-calibration baseline between Scenario II (uncorrected) and Scenario III
-(oracle).
+For each modality, grid-searches over mismatch parameters using a
+self-supervised objective.  This provides a practical calibration baseline
+between Scenario II (uncorrected) and Scenario III (oracle).
 
-  CASSI : search dx, dy grid with GAP-TV inner loop
-  CACTI : search mask shift + timing with GAP-TV inner loop
-  SPC   : search gain_alpha with FISTA-TV inner loop
+  CASSI : search dx, dy grid with GAP-TV inner loop (measurement residual)
+  CACTI : search mask shift + timing with GAP-TV inner loop (measurement residual)
+  SPC   : search gain_alpha with FISTA-TV inner loop (reconstruction TV)
 
 Usage:
     python run_scenario_iv.py [--device cuda:0] [--modality all|cassi|cacti|spc]
@@ -348,44 +347,113 @@ def cacti_scenario_iv(device: str = "cuda:0") -> Dict:
 def spc_scenario_iv(device: str = "cuda:0") -> Dict:
     """Grid-search calibration for SPC using FISTA-TV.
 
-    Searches gain_alpha over a grid.
+    Searches gain_alpha over a grid using reconstruction-TV as objective.
+    Uses ISTA-Net's learned Phi matrix and real Set11 images with 33x33 blocks,
+    matching the simulation setup in validate_spc_inversenet.py.
     """
+    import glob
+
+    import cv2
+    import scipy.io as sio
     from skimage.restoration import denoise_tv_chambolle
 
     logger.info("\n" + "=" * 60)
-    logger.info("SPC Scenario IV: Grid-Search Calibration")
+    logger.info("SPC Scenario IV: Grid-Search Calibration (TV criterion)")
     logger.info("=" * 60)
 
-    n = 64
-    m = int(n * n * 0.25)
+    BLOCK_SIZE = 33
+    N_PIX = BLOCK_SIZE ** 2  # 1089
+    ISTA_ROOT = Path("/home/spiritai/ISTA-Net-PyTorch-master")
+    ISTA_PHI_PATH = ISTA_ROOT / "sampling_matrix" / "phi_0_25_1089.mat"
+    SET11_DIR = ISTA_ROOT / "data" / "Set11"
 
-    np.random.seed(42)
-    x_true = np.random.rand(n, n).astype(np.float32)
-    # Make a smoother test image
-    from scipy.ndimage import gaussian_filter
-    x_true = gaussian_filter(x_true, sigma=2.0)
-    x_true = (x_true - x_true.min()) / (x_true.max() - x_true.min())
-    x_flat = x_true.ravel()
+    # Load ISTA-Net's learned Phi matrix (272 x 1089)
+    Phi_data = sio.loadmat(str(ISTA_PHI_PATH))
+    A = Phi_data["phi"].astype(np.float32)
+    m, n_pix = A.shape
+    logger.info(f"Phi matrix: {m} x {n_pix} (cs_ratio={m/n_pix:.2f})")
 
-    A = np.random.randn(m, n * n).astype(np.float32) / np.sqrt(m)
+    # Load Set11 images: use cameraman and Monarch for calibration
+    target_names = ["cameraman", "Monarch"]
+    all_tifs = sorted(glob.glob(str(SET11_DIR / "*.tif")))
+    image_blocks_list = []  # list of (name, blocks array [n_blocks, 1089])
 
-    # True mismatch: gain drift
+    for tif_path in all_tifs:
+        fname = Path(tif_path).stem
+        if not any(t.lower() in fname.lower() for t in target_names):
+            continue
+        img_bgr = cv2.imread(tif_path, cv2.IMREAD_COLOR)
+        if img_bgr is None:
+            continue
+        img_ycrcb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2YCrCb)
+        Iorg = img_ycrcb[:, :, 0].astype(np.float64)
+        row, col = Iorg.shape
+        # Pad to multiple of BLOCK_SIZE
+        row_pad = (BLOCK_SIZE - row % BLOCK_SIZE) % BLOCK_SIZE
+        col_pad = (BLOCK_SIZE - col % BLOCK_SIZE) % BLOCK_SIZE
+        Ipad = np.pad(Iorg, ((0, row_pad), (0, col_pad)), mode="reflect")
+        # Extract 33x33 blocks
+        row_new, col_new = Ipad.shape
+        blocks = []
+        for i in range(0, row_new, BLOCK_SIZE):
+            for j in range(0, col_new, BLOCK_SIZE):
+                blocks.append(Ipad[i:i+BLOCK_SIZE, j:j+BLOCK_SIZE].ravel())
+        blocks = np.array(blocks, dtype=np.float32) / 255.0  # [n_blocks, 1089]
+        image_blocks_list.append((fname, blocks, Ipad.shape))
+        logger.info(f"  Loaded {fname}: {Iorg.shape} -> {Ipad.shape}, {blocks.shape[0]} blocks")
+
+    if not image_blocks_list:
+        logger.warning("No Set11 images found, falling back to synthetic")
+        # Fallback: create synthetic blocks
+        np.random.seed(42)
+        from scipy.ndimage import gaussian_filter
+        x_synth = np.random.rand(256, 256).astype(np.float32)
+        x_synth = gaussian_filter(x_synth, sigma=2.0)
+        x_synth = (x_synth - x_synth.min()) / (x_synth.max() - x_synth.min())
+        blocks = []
+        for i in range(0, 256 - BLOCK_SIZE + 1, BLOCK_SIZE):
+            for j in range(0, 256 - BLOCK_SIZE + 1, BLOCK_SIZE):
+                blocks.append(x_synth[i:i+BLOCK_SIZE, j:j+BLOCK_SIZE].ravel())
+        blocks = np.array(blocks, dtype=np.float32)
+        image_blocks_list.append(("synthetic", blocks, (256, 256)))
+
+    # True mismatch: exponential gain drift g_i = exp(-alpha * i)
     true_alpha = 0.0015
-    gain_true = 1.0 + true_alpha * np.exp(np.arange(m, dtype=np.float32) * true_alpha)
-    y_corrupt = gain_true * (A @ x_flat) + 0.03 * np.random.randn(m).astype(np.float32)
+    gain_true = np.exp(-true_alpha * np.arange(m, dtype=np.float32))
+    sigma_y = 0.03
 
-    def fista_tv(y, A, gain=1.0, iters=200, lam=0.005):
-        y_corr = y / np.maximum(gain, 0.01)
-        AtA = A.T @ A
+    # Generate corrupted measurements for all blocks
+    np.random.seed(42)
+    all_blocks = []
+    all_y_corrupt = []
+    for name, blocks, shape in image_blocks_list:
+        for bi in range(blocks.shape[0]):
+            x_b = blocks[bi]
+            y_clean = A @ x_b
+            y_c = gain_true * y_clean + sigma_y * np.random.randn(m).astype(np.float32)
+            all_blocks.append(x_b)
+            all_y_corrupt.append(y_c)
+
+    all_blocks = np.array(all_blocks)
+    all_y_corrupt = np.array(all_y_corrupt)
+    n_blocks_total = all_blocks.shape[0]
+    logger.info(f"Total blocks for calibration: {n_blocks_total}")
+
+    # Precompute AtA and its spectral norm (same for all blocks)
+    AtA = A.T @ A
+    L = float(np.linalg.norm(AtA, ord=2))
+
+    def fista_tv_block(y, gain, iters=200, lam=0.005):
+        """FISTA-TV for a single 33x33 block."""
+        y_corr = y / np.maximum(gain, 1e-6)
         Aty = A.T @ y_corr
-        x = np.zeros(n * n, dtype=np.float32)
-        L = np.linalg.norm(AtA, ord=2)
-        t = 1.0
+        x = np.zeros(N_PIX, dtype=np.float32)
         x_prev = x.copy()
+        t = 1.0
         for _ in range(iters):
             grad = AtA @ x - Aty
             x_new = x - grad / L
-            x_2d = np.clip(x_new.reshape(n, n), 0, 1)
+            x_2d = np.clip(x_new.reshape(BLOCK_SIZE, BLOCK_SIZE), 0, 1)
             x_2d = denoise_tv_chambolle(x_2d, weight=lam / L, max_num_iter=3)
             x_new = x_2d.ravel()
             t_new = (1 + np.sqrt(1 + 4 * t ** 2)) / 2
@@ -394,54 +462,100 @@ def spc_scenario_iv(device: str = "cuda:0") -> Dict:
             t = t_new
         return np.clip(x, 0, 1).astype(np.float32)
 
-    # Grid search over alpha
-    alpha_grid = np.linspace(0.0, 0.005, 21)
-    logger.info(f"Grid: {len(alpha_grid)} alpha values")
+    def compute_tv(x_2d):
+        """Total variation of a 2D image (sum of abs gradients)."""
+        dx = np.abs(x_2d[:, 1:] - x_2d[:, :-1])
+        dy = np.abs(x_2d[1:, :] - x_2d[:-1, :])
+        return float(np.sum(dx) + np.sum(dy))
+
+    # Grid search over alpha using TV criterion
+    # TV criterion: correct gain -> clean reconstruction -> low TV
+    #               wrong gain -> artifacts -> higher TV
+    alpha_grid = np.linspace(0.0, 0.005, 41)
+    logger.info(f"Grid: {len(alpha_grid)} alpha values (TV criterion)")
+
+    # Use a subset of blocks for speed during grid search
+    n_cal_blocks = min(n_blocks_total, 20)
+    cal_indices = np.linspace(0, n_blocks_total - 1, n_cal_blocks, dtype=int)
 
     best_alpha = 0.0
-    best_residual = float("inf")
+    best_tv = float("inf")
+    grid_tvs = []
 
     t0 = time.time()
-    for alpha_test in alpha_grid:
-        gain_test = 1.0 + alpha_test * np.exp(np.arange(m, dtype=np.float32) * alpha_test)
-        x_hat = fista_tv(y_corrupt, A, gain=gain_test, iters=100)
-        y_pred = gain_test * (A @ x_hat)
-        residual = np.sum((y_corrupt - y_pred) ** 2)
-        if residual < best_residual:
-            best_residual = residual
+    for ai, alpha_test in enumerate(alpha_grid):
+        gain_test = np.exp(-alpha_test * np.arange(m, dtype=np.float32))
+        total_tv = 0.0
+        for bi in cal_indices:
+            x_hat = fista_tv_block(all_y_corrupt[bi], gain_test, iters=100, lam=0.005)
+            total_tv += compute_tv(x_hat.reshape(BLOCK_SIZE, BLOCK_SIZE))
+
+        grid_tvs.append({"alpha": round(float(alpha_test), 5), "tv": round(total_tv, 2)})
+
+        if total_tv < best_tv:
+            best_tv = total_tv
             best_alpha = alpha_test
+
+        if (ai + 1) % 10 == 0:
+            logger.info(f"  Grid search: {ai+1}/{len(alpha_grid)} done")
 
     calibration_time = time.time() - t0
 
-    logger.info(f"Best alpha: {best_alpha:.4f} (true: {true_alpha:.4f})")
-    logger.info(f"Calibration time: {calibration_time:.1f}s")
+    logger.info(f"Best alpha: {best_alpha:.5f} (true: {true_alpha:.5f})")
+    logger.info(f"Grid search time: {calibration_time:.1f}s")
 
-    # Evaluate scenarios
-    # II: no correction
-    x_ii = fista_tv(y_corrupt, A, gain=1.0, iters=200)
-    psnr_ii = float(10 * np.log10(1.0 / max(np.mean((x_flat - x_ii)**2), 1e-10)))
+    # Evaluate Scenario II, IV, III on ALL blocks
+    logger.info("Evaluating Scenario II (no correction)...")
+    gain_none = np.ones(m, dtype=np.float32)
+    psnrs_ii = []
+    for bi in range(n_blocks_total):
+        x_hat = fista_tv_block(all_y_corrupt[bi], gain_none, iters=200, lam=0.005)
+        mse = float(np.mean((all_blocks[bi] - x_hat) ** 2))
+        psnrs_ii.append(10 * np.log10(1.0 / max(mse, 1e-10)))
 
-    # IV: calibrated
-    gain_cal = 1.0 + best_alpha * np.exp(np.arange(m, dtype=np.float32) * best_alpha)
-    x_iv = fista_tv(y_corrupt, A, gain=gain_cal, iters=200)
-    psnr_iv = float(10 * np.log10(1.0 / max(np.mean((x_flat - x_iv)**2), 1e-10)))
+    logger.info("Evaluating Scenario IV (TV-calibrated)...")
+    gain_cal = np.exp(-best_alpha * np.arange(m, dtype=np.float32))
+    psnrs_iv = []
+    for bi in range(n_blocks_total):
+        x_hat = fista_tv_block(all_y_corrupt[bi], gain_cal, iters=200, lam=0.005)
+        mse = float(np.mean((all_blocks[bi] - x_hat) ** 2))
+        psnrs_iv.append(10 * np.log10(1.0 / max(mse, 1e-10)))
 
-    # III: oracle
-    x_iii = fista_tv(y_corrupt, A, gain=gain_true, iters=200)
-    psnr_iii = float(10 * np.log10(1.0 / max(np.mean((x_flat - x_iii)**2), 1e-10)))
+    logger.info("Evaluating Scenario III (oracle)...")
+    psnrs_iii = []
+    for bi in range(n_blocks_total):
+        x_hat = fista_tv_block(all_y_corrupt[bi], gain_true, iters=200, lam=0.005)
+        mse = float(np.mean((all_blocks[bi] - x_hat) ** 2))
+        psnrs_iii.append(10 * np.log10(1.0 / max(mse, 1e-10)))
+
+    psnr_ii = float(np.mean(psnrs_ii))
+    psnr_iv = float(np.mean(psnrs_iv))
+    psnr_iii = float(np.mean(psnrs_iii))
+
+    # Recovery
+    gap = psnr_iii - psnr_ii
+    recovery_db = psnr_iv - psnr_ii
+    recovery_pct = (recovery_db / gap * 100) if abs(gap) > 0.01 else 0.0
 
     result = {
         "modality": "spc",
         "method": "fista_tv",
+        "criterion": "tv_minimisation",
         "true_params": {"alpha": true_alpha},
-        "estimated_params": {"alpha": round(best_alpha, 4)},
+        "estimated_params": {"alpha": round(best_alpha, 5)},
         "scenario_ii_psnr": round(psnr_ii, 2),
         "scenario_iv_psnr": round(psnr_iv, 2),
         "scenario_iii_psnr": round(psnr_iii, 2),
+        "recovery_pct": round(recovery_pct, 1),
         "calibration_time_s": round(calibration_time, 1),
+        "n_blocks": n_blocks_total,
+        "n_cal_blocks": n_cal_blocks,
+        "grid_size": len(alpha_grid),
+        "grid_tvs": grid_tvs,
     }
 
-    logger.info(f"\nSPC FISTA-TV:  II={psnr_ii:.2f}  IV={psnr_iv:.2f}  III={psnr_iii:.2f}")
+    logger.info(f"\nSPC FISTA-TV:  II={psnr_ii:.2f}  IV={psnr_iv:.2f}  "
+                f"III={psnr_iii:.2f}  Recovery={recovery_pct:.1f}%")
 
     return result
 
