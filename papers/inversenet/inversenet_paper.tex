@@ -546,8 +546,9 @@ The measurement residual provides a strong signal for geometric mismatch because
 
 \paragraph{SPC results.}
 \Cref{tab:spc_scenario_iv} shows the SPC calibration results using TV minimisation (\cref{eq:scenario_iv_tv}).
-Grid search over $\alpha \in [0, 0.005]$ with 41 points and FISTA-TV inner loop (100 iterations, $33 \times 33$ blocks, ISTA-Net's learned $\mathbf{\Phi}$) estimates $\hat{\alpha} = 0.00125$ vs.\ true $\alpha = 0.0015$, recovering 86\% of the oracle bound.
+Grid search over $\alpha \in [0, 0.005]$ with 41 points ($33 \times 33$ blocks, ISTA-Net's learned $\mathbf{\Phi}$) estimates $\hat{\alpha} = 0.00125$ vs.\ true $\alpha = 0.0015$ for both methods, recovering 86--92\% of the oracle bound.
 The TV surface exhibits a clear bowl-shaped minimum near the true $\alpha$, confirming that reconstruction sparsity is a viable calibration objective for radiometric mismatch.
+PnP-DRUNet achieves higher recovery (92\%) than FISTA-TV (86\%) because the learned denoiser prior produces sharper reconstructions whose TV is more sensitive to residual gain artifacts.
 This contrasts with the measurement residual, which is flat across all $\alpha$ values for SPC (the underdetermined system can always self-consistently fit any gain-corrected measurements).
 
 \begin{table}[t]
@@ -558,7 +559,8 @@ This contrasts with the measurement residual, which is flat across all $\alpha$ 
 \toprule
 \textbf{Method} & \textbf{II} & \textbf{IV} & \textbf{III} & \textbf{Recovery} \\
 \midrule
-FISTA-TV & 19.78 & 26.54 & 27.60 & 86\% \\
+FISTA-TV   & 19.78 & 26.54 & 27.60 & 86\% \\
+PnP-DRUNet & 17.54 & 23.96 & 24.51 & 92\% \\
 \bottomrule
 \end{tabular}
 \end{table}
