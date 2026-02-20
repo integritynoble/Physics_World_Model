@@ -976,6 +976,162 @@ accuracy is more important than spatial quality.
 
 
 %% ============================================================
+%% SUPPLEMENTARY TABLES S10--S11: GATE 1 & GATE 2 VALIDATION
+%% ============================================================
+\newpage
+\section{Supplementary Tables S10--S11: Gate~1 and Gate~2 Validation}
+\label{sec:gate12}
+
+The main text argues that Gate~3 (operator mismatch) is the dominant
+bottleneck under standard operating conditions. To demonstrate that
+Gate~1 (information deficiency) and Gate~2 (carrier budget) are real and
+measurable, we sweep the compression level and noise level across all
+seven validated modalities while keeping the forward model perfectly
+calibrated.  All experiments use classical solvers (no deep-learned
+components) to ensure the results reflect information-theoretic limits
+rather than solver-specific behaviour.
+
+\subsection{Gate~1: Information Deficiency (Extreme Compression)}
+
+Table~\ref{tab:gate1} reports reconstruction PSNR (dB) as the
+compression ratio / sampling rate / blur width is driven to extreme
+values.  The forward model is ideal in every case; any PSNR loss is
+attributable solely to information lost in the measurement process.
+
+\begin{table}[htbp]
+\centering
+\caption{Gate~1 validation: PSNR (dB) under extreme compression for 7
+modalities.  ``Best solver'' reports the better of the two classical
+methods tested.  Bold entries highlight the regime where PSNR falls
+below $15$\,dB (severe information loss).}
+\label{tab:gate1}
+\small
+\begin{tabular}{l l r r r r r}
+\toprule
+\textbf{Modality} & \textbf{Parameter} &
+  \multicolumn{5}{c}{\textbf{PSNR (dB) at sweep points}} \\
+\cmidrule(lr){3-7}
+ & & \textbf{Nominal} & \textbf{Moderate} & \textbf{Severe} & \textbf{Extreme} & \textbf{Critical} \\
+\midrule
+CACTI & CR
+  & 25.9 \scriptsize{(8)} & 24.1 \scriptsize{(16)} & 22.7 \scriptsize{(32)} & 20.6 \scriptsize{(64)} & --- \\
+CASSI & Transmittance
+  & 26.1 \scriptsize{(50\%)} & 27.7 \scriptsize{(25\%)} & 27.7 \scriptsize{(10\%)} & 27.6 \scriptsize{(5\%)} & 27.4 \scriptsize{(2\%)} \\
+SPC & CS ratio
+  & 28.3 \scriptsize{(25\%)} & 24.0 \scriptsize{(10\%)} & 21.2 \scriptsize{(5\%)} & 16.2 \scriptsize{(2\%)} & \textbf{14.4} \scriptsize{(1\%)} \\
+MRI & Sampling rate
+  & 28.8 \scriptsize{(25\%)} & 25.1 \scriptsize{(10\%)} & 24.3 \scriptsize{(5\%)} & 23.9 \scriptsize{(2\%)} & --- \\
+CT & Projection angles
+  & 22.1 \scriptsize{(180)} & 22.0 \scriptsize{(90)} & 21.2 \scriptsize{(30)} & 20.7 \scriptsize{(10)} & 17.8 \scriptsize{(5)} \\
+Lensless & Blur $\sigma$ (px)
+  & 36.6 \scriptsize{(1)} & 25.5 \scriptsize{(3)} & 23.1 \scriptsize{(5)} & 20.5 \scriptsize{(10)} & 17.9 \scriptsize{(20)} \\
+Ptychography & Scan positions
+  & 15.0 \scriptsize{(16)} & 12.4 \scriptsize{(9)} & 12.0 \scriptsize{(4)} & 9.9 \scriptsize{(1)} & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Key observations.}
+\begin{itemize}
+  \item \textbf{SPC} and \textbf{Lensless} show the most dramatic Gate~1 collapse.
+    SPC PSNR drops $13.9$\,dB from $25$\% to $1$\% CS ratio; lensless drops
+    $18.7$\,dB as the PSF blur widens from $\sigma{=}1$ to $\sigma{=}20$\,px.
+    In both cases the loss is irrecoverable: no solver can reconstruct
+    information that was never measured.
+  \item \textbf{CASSI} is a notable exception: reducing mask transmittance from
+    $50$\% to $2$\% produces no degradation (mean PSNR actually increases by
+    ${\sim}1.5$\,dB). This occurs because sparser coded apertures reduce
+    spectral mixing in the multiplexed measurement, making the
+    demixing problem easier for iterative solvers.  The CASSI null space
+    is effectively unchanged because each spectral band still contributes
+    signal through the remaining open mask pixels.
+  \item \textbf{CACTI} degrades monotonically with compression ratio
+    ($25.9 \to 20.6$\,dB over $8\times$ CR increase), consistent with the
+    growing null space when fewer temporal measurements are available.
+  \item \textbf{CT} shows SART outperforming FBP at sparse angles
+    ($21.2$\,dB vs.\ $15.8$\,dB at 10 angles), illustrating that iterative
+    solvers can partially compensate for angular undersampling via their
+    implicit prior, but ultimately both methods converge at $\leq 5$ angles.
+\end{itemize}
+
+
+\subsection{Gate~2: Carrier Budget (Noise Sweep)}
+
+Table~\ref{tab:gate2} reports reconstruction PSNR as the photon budget
+or noise level is swept to extreme values while the compression is held
+at a well-posed nominal value and the forward model is ideal.
+
+\begin{table}[htbp]
+\centering
+\caption{Gate~2 validation: PSNR (dB) under increasing noise for 7
+modalities.  ``Best solver'' reports the better of the two classical
+methods tested.  Noise parameter: photon count for Poisson-dominated
+modalities, Gaussian $\sigma$ (fraction of signal range) for
+MRI and SPC.  Bold entries indicate PSNR ${<}\,15$\,dB.}
+\label{tab:gate2}
+\small
+\begin{tabular}{l l r r r r r}
+\toprule
+\textbf{Modality} & \textbf{Noise param.} &
+  \multicolumn{5}{c}{\textbf{PSNR (dB) at sweep points}} \\
+\cmidrule(lr){3-7}
+ & & \textbf{Low noise} & & \textbf{Moderate} & & \textbf{Extreme} \\
+\midrule
+CACTI & Photon count
+  & 24.8 \scriptsize{(10k)} & 23.3 \scriptsize{(1k)} & 18.4 \scriptsize{(100)} & \textbf{10.5} \scriptsize{(10)} & --- \\
+CASSI & Photon count
+  & 24.6 \scriptsize{(10k)} & 22.3 \scriptsize{(1k)} & 20.2 \scriptsize{(100)} & 17.0 \scriptsize{(10)} & --- \\
+SPC & $\sigma$ (frac.)
+  & 27.9 \scriptsize{(0)} & 27.8 \scriptsize{(.01)} & 25.3 \scriptsize{(.05)} & 21.6 \scriptsize{(.1)} & \textbf{13.5} \scriptsize{(.3)} \\
+MRI & $\sigma$ (frac.)
+  & 28.8 \scriptsize{(0)} & 17.1 \scriptsize{(.01)} & \textbf{12.8} \scriptsize{(.05)} & \textbf{12.1} \scriptsize{(.1)} & \textbf{11.0} \scriptsize{(.3)} \\
+CT & Photon count
+  & 22.1 \scriptsize{(100k)} & 21.9 \scriptsize{(10k)} & 21.0 \scriptsize{(1k)} & 18.3 \scriptsize{(100)} & --- \\
+Lensless & Photon count
+  & 40.9 \scriptsize{(10k)} & 32.8 \scriptsize{(1k)} & 23.1 \scriptsize{(100)} & \textbf{13.6} \scriptsize{(10)} & --- \\
+Ptychography & Photon count
+  & 13.5 \scriptsize{(10k)} & \textbf{10.3} \scriptsize{(1k)} & \textbf{10.0} \scriptsize{(100)} & \textbf{9.7} \scriptsize{(10)} & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Key observations.}
+\begin{itemize}
+  \item Every modality exhibits monotonic PSNR degradation with
+    increasing noise, confirming that Gate~2 failures are universal.
+  \item \textbf{MRI} is the most noise-sensitive modality: adding just
+    $\sigma{=}0.01$ Gaussian noise to k-space drops CS-wavelet PSNR from
+    $28.8$\,dB to $17.1$\,dB, a $11.7$\,dB cliff. This is because MRI's
+    Fourier encoding concentrates signal energy in a few k-space samples,
+    so additive noise corrupts the information-dense center region
+    disproportionately.
+  \item \textbf{Lensless} imaging shows the widest Gate~2 dynamic range:
+    $40.9$\,dB at 10,000 photons to $13.6$\,dB at 10 photons, a $27.3$\,dB
+    span. This reflects the well-conditioned forward operator (diffuser PSF),
+    which faithfully propagates both signal and noise.
+  \item \textbf{CT} is the most noise-robust modality ($3.8$\,dB drop from
+    $10^5$ to $10^2$ photons), because the many-angle sinogram provides
+    substantial redundancy that averages out Poisson noise.
+  \item The cliff-edge nature of Gate~2 is most dramatic in CACTI
+    ($14.3$\,dB drop from $10{,}000$ to $10$ photons) and SPC
+    ($14.4$\,dB drop from $\sigma{=}0$ to $\sigma{=}0.3$), where the
+    compressed measurement offers no noise-averaging redundancy.
+\end{itemize}
+
+\noindent\textbf{Comparison with Gate~3.}
+Under standard operating conditions (adequate compression, adequate
+photon budget), the Gate~3 (mismatch) degradation reported in
+Supplementary Table~S1 is typically $3$--$20$\,dB---comparable in
+magnitude to Gate~1 and Gate~2 degradation, but \emph{correctable} by
+operator refinement.  This is the key distinction: Gate~1 and Gate~2
+losses are information-theoretic and irrecoverable, whereas Gate~3
+losses are recoverable via calibration.  The practical dominance of
+Gate~3 arises because modern instruments operate well above the Gate~1
+and Gate~2 thresholds, leaving operator mismatch as the binding
+constraint.
+
+
+%% ============================================================
 %% SUPPLEMENTARY NOTE 7: CLINICAL CT QC VALIDATION
 %% ============================================================
 \newpage

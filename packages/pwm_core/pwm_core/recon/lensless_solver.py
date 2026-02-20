@@ -128,7 +128,7 @@ def _tv_prox_2d(
 def tikhonov_lensless(
     measurement: np.ndarray,
     psf: np.ndarray,
-    reg: float = 1e-3,
+    reg: Optional[float] = None,
 ) -> np.ndarray:
     """Tikhonov (Wiener) deconvolution for lensless imaging.
 
@@ -138,7 +138,10 @@ def tikhonov_lensless(
     Args:
         measurement: Measurement image (H, W)
         psf: Point spread function (H, W)
-        reg: Tikhonov regularization parameter
+        reg: Tikhonov regularization parameter.  If *None* (default), an
+            adaptive value is computed as ``1e-2 * mean(|H|^2)`` so that the
+            regularization is scaled to the PSF power spectrum.  This avoids
+            over-regularization when the PSF has small Fourier magnitudes.
 
     Returns:
         Reconstructed image (H, W)
@@ -146,8 +149,12 @@ def tikhonov_lensless(
     Y = fft2(measurement)
     H = fft2(psf)
     H_conj = np.conj(H)
+    H_abs2 = np.abs(H) ** 2
 
-    X = H_conj * Y / (np.abs(H) ** 2 + reg)
+    if reg is None:
+        reg = 1e-2 * float(np.mean(H_abs2))
+
+    X = H_conj * Y / (H_abs2 + reg)
     x = np.real(ifft2(X))
     return x.astype(np.float32)
 
@@ -159,8 +166,8 @@ def tikhonov_lensless(
 def admm_tv_lensless(
     measurement: np.ndarray,
     psf: np.ndarray,
-    rho: float = 1.0,
-    lam_tv: float = 0.01,
+    rho: Optional[float] = None,
+    lam_tv: Optional[float] = None,
     iters: int = 100,
     tv_inner_iters: int = 20,
     non_negative: bool = True,
@@ -178,8 +185,12 @@ def admm_tv_lensless(
     Args:
         measurement: Lensless measurement (H, W)
         psf: Point spread function (H, W), same spatial size
-        rho: ADMM penalty parameter (augmented Lagrangian)
-        lam_tv: TV regularization weight
+        rho: ADMM penalty parameter (augmented Lagrangian).  If *None*
+            (default), automatically set to ``10 * mean(|H|^2)`` so that it
+            is scaled to the PSF power spectrum and balances the data-fidelity
+            and proximal terms in the x-update.
+        lam_tv: TV regularization weight.  If *None* (default), set to
+            ``0.01 * mean(|H|^2)`` for the same adaptive-scaling reason.
         iters: Number of ADMM outer iterations
         tv_inner_iters: Inner iterations for TV proximal operator
         non_negative: Enforce non-negativity constraint
@@ -197,11 +208,19 @@ def admm_tv_lensless(
     H_conj = np.conj(H)
     H_abs2 = np.abs(H) ** 2
 
+    # Adaptive defaults scaled to PSF power spectrum
+    mean_H2 = float(np.mean(H_abs2))
+    if rho is None:
+        rho = 10.0 * mean_H2
+    if lam_tv is None:
+        lam_tv = 0.01 * mean_H2
+
     # Denominator for x-update: |H|^2 + rho
     denom = H_abs2 + rho
 
-    # Initialize variables
-    x = np.real(ifft2(H_conj * Y / (H_abs2 + 1e-3))).astype(np.float64)  # Wiener init
+    # Initialize with Wiener filter (adaptive reg)
+    init_reg = 1e-2 * mean_H2
+    x = np.real(ifft2(H_conj * Y / (H_abs2 + init_reg))).astype(np.float64)
     z = x.copy()
     u = np.zeros_like(x)
 
@@ -256,22 +275,22 @@ def run_lensless(
                  or ``forward``/``adjoint`` methods)
         cfg: Configuration dict with:
             - solver: 'admm_tv' (default) or 'tikhonov'
-            - rho: ADMM penalty (default: 1.0)
-            - lam_tv: TV weight (default: 0.01)
+            - rho: ADMM penalty (default: None -> adaptive to PSF spectrum)
+            - lam_tv: TV weight (default: None -> adaptive to PSF spectrum)
             - iters: Outer ADMM iterations (default: 100)
             - tv_inner_iters: Inner TV iterations (default: 20)
-            - reg: Tikhonov regularization (default: 1e-3)
+            - reg: Tikhonov regularization (default: None -> adaptive)
             - non_negative: Enforce x >= 0 (default: True)
 
     Returns:
         Tuple of (reconstructed image, info_dict)
     """
     solver = cfg.get("solver", "admm_tv")
-    rho = cfg.get("rho", 1.0)
-    lam_tv = cfg.get("lam_tv", 0.01)
+    rho = cfg.get("rho", None)           # None -> adaptive default
+    lam_tv = cfg.get("lam_tv", None)     # None -> adaptive default
     iters = cfg.get("iters", 100)
     tv_inner_iters = cfg.get("tv_inner_iters", 20)
-    reg = cfg.get("reg", 1e-3)
+    reg = cfg.get("reg", None)           # None -> adaptive default
     non_negative = cfg.get("non_negative", True)
 
     info: Dict[str, Any] = {

@@ -157,9 +157,17 @@ class BaseOperator:
     def x_shape(self) -> Tuple[int, ...]:
         return self._x_shape
 
+    @x_shape.setter
+    def x_shape(self, value: Tuple[int, ...]) -> None:
+        self._x_shape = tuple(value)
+
     @property
     def y_shape(self) -> Tuple[int, ...]:
         return self._y_shape
+
+    @y_shape.setter
+    def y_shape(self, value: Tuple[int, ...]) -> None:
+        self._y_shape = tuple(value)
 
     @property
     def is_linear(self) -> bool:
