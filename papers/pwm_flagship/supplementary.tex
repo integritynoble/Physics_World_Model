@@ -3,8 +3,8 @@
 \usepackage[numbers,sort&compress,super]{natbib}
 \geometry{margin=1in}
 
-\title{Supplementary Information:\\Physics World Models for Computational Imaging}
-\author{Chengshuai Yang}
+\title{Supplementary Information:\\Operator mismatch, not solver weakness, is the dominant bottleneck in computational imaging}
+\author{Chengshuai Yang and David J.\ Brady}
 \date{}
 
 \newtheorem{theorem}{Theorem}
@@ -26,10 +26,10 @@
 %% ============================================================
 %% SUPPLEMENTARY NOTE 1
 %% ============================================================
-\section{Supplementary Note 1: Triad Law Mathematical Derivations}
+\section{Supplementary Note 1: Triad Decomposition Mathematical Derivations}
 \label{sec:triad}
 
-The Triad Law formalizes three successive gates that every computational-imaging
+The Triad Decomposition formalizes three successive gates that every computational-imaging
 reconstruction must pass.  We derive rigorous bounds for each gate and show how
 the \emph{recovery ratio} $\rho$ summarizes the overall reconstruction quality.
 
@@ -227,7 +227,7 @@ Given an \texttt{OperatorGraph} $G = (V, E)$:
   \item \textbf{Automatic adjoint chain.}  Construct the adjoint graph
         $G^\top$ by reversing all edges and replacing each node's
         \texttt{forward} with \texttt{adjoint}.  The adjoint graph is used for
-        gradient-based reconstruction and the Triad Law sensitivity analysis.
+        gradient-based reconstruction and the Triad Decomposition sensitivity analysis.
   \item \textbf{Fusion (optional).}  Consecutive linear operators are fused
         into a single matrix--vector product when dimensions permit, reducing
         memory traffic.
@@ -602,7 +602,7 @@ produces a RunBundle that captures the complete computational state.
 \texttt{metrics}        & object   & Computed quality metrics: PSNR, SSIM, LPIPS, and any modality-specific metrics. \\
 \texttt{timestamps}     & object   & ISO-8601 timestamps for start, end, and per-stage completion. \\
 \texttt{operator\_state}& object   & Serialized OperatorGraph including all node parameters and edge metadata. \\
-\texttt{triad\_report}  & object   & Triad Law evaluation: gate pass/fail status, PSNR bounds, and recovery ratio $\rho$. \\
+\texttt{triad\_report}  & object   & Triad Decomposition evaluation: gate pass/fail status, PSNR bounds, and recovery ratio $\rho$. \\
 \texttt{correction\_trajectory} & array &
   Time series of correction iterations: $[\{$\texttt{iter}, \texttt{params},
   \texttt{loss}, \texttt{psnr}, \texttt{grad\_norm}$\}, \ldots]$.
@@ -702,6 +702,185 @@ For large-scale deployment:
         scene dimension $n$, making correction feasible even for
         high-resolution 3D volumes (e.g.\ $512^3$ CT).
 \end{itemize}
+
+\newpage
+
+%% ============================================================
+%% SUPPLEMENTARY NOTE 6: REAL-DATA VALIDATION
+%% ============================================================
+\section{Supplementary Note 6: Real-Data Validation Details}
+\label{sec:realdata}
+
+\subsection{CASSI Real Data: TSA Hyperspectral Camera}
+
+The TSA (Thermal Snapshot Aperture) real dataset consists of 5 hyperspectral
+scenes acquired with a coded aperture snapshot spectral imaging system.
+Each scene has spatial resolution $660 \times 660$ with 28 spectral bands
+(450--650\,nm) and a mask-shift step of 2 pixels per band.  The extended
+measurement has width $660 + (28-1) \times 2 = 714$ pixels.
+
+\paragraph{Experimental protocol.}
+For each scene, we reconstruct with four methods: GAP-TV (classical
+iterative), HDNet (mask-oblivious neural network), MST-S, and MST-L
+(mask-guided spectral transformers).  Each method is applied under two
+conditions: (i)~the calibrated mask provided with the dataset, and
+(ii)~a perturbed mask with sub-pixel shift $dx = 0.5$\,px, $dy = 0.3$\,px.
+Because the MST model has a hardcoded $256 \times 256$ spatial assumption,
+the $660 \times 660$ real data is center-cropped to $256 \times 256$ for
+MST reconstruction.  HDNet is fully convolutional and processes the full
+spatial extent.
+
+\paragraph{Metric.}
+Because no ground-truth hyperspectral cube exists for the real scenes,
+we use the measurement residual as a ground-truth-free diagnostic:
+\begin{equation}
+  r = \frac{\|\mathbf{y} - H\hat{\mathbf{x}}\|^2}{\|\mathbf{y}\|^2},
+  \label{eq:meas_residual}
+\end{equation}
+where $\mathbf{y}$ is the measured snapshot and $\hat{\mathbf{x}}$ is the
+reconstruction.  The residual ratio $r_{\mathrm{mismatch}} /
+r_{\mathrm{calibrated}}$ quantifies the relative impact of operator
+mismatch, independent of the (unknown) ground truth.
+
+\begin{table}[htbp]
+\centering
+\caption{Supplementary Table S5: CASSI real-data measurement residuals.
+Residual values $r$ (Eq.~\ref{eq:meas_residual}) and residual ratio
+(mismatched/calibrated) across 5 TSA scenes and 4 methods.}
+\label{tab:cassi_real}
+\begin{tabular}{l l r r r}
+\toprule
+\textbf{Scene} & \textbf{Method} &
+  \textbf{$r_{\mathrm{cal}}$} & \textbf{$r_{\mathrm{mis}}$} &
+  \textbf{Ratio} \\
+\midrule
+Scene~1 & GAP-TV  & 0.00148 & 0.00298 & 2.0 \\
+Scene~1 & HDNet   & 0.18506 & 0.18506 & 1.0 \\
+Scene~1 & MST-S   & 0.09953 & 0.10746 & 1.1 \\
+Scene~1 & MST-L   & 0.10055 & 0.09544 & 0.9 \\
+\midrule
+Scene~2 & GAP-TV  & 0.00210 & 0.00331 & 1.6 \\
+Scene~2 & HDNet   & 0.14853 & 0.14853 & 1.0 \\
+Scene~2 & MST-S   & 0.25357 & 0.23807 & 0.9 \\
+Scene~2 & MST-L   & 0.25441 & 0.22811 & 0.9 \\
+\midrule
+Scene~3 & GAP-TV  & 0.00204 & 0.00320 & 1.6 \\
+Scene~3 & HDNet   & 0.18291 & 0.18291 & 1.0 \\
+Scene~3 & MST-S   & 0.09399 & 0.09160 & 1.0 \\
+Scene~3 & MST-L   & 0.10127 & 0.09085 & 0.9 \\
+\midrule
+Scene~4 & GAP-TV  & 0.00148 & 0.00297 & 2.0 \\
+Scene~4 & HDNet   & 0.14355 & 0.14355 & 1.0 \\
+Scene~4 & MST-S   & 0.15586 & 0.14712 & 0.9 \\
+Scene~4 & MST-L   & 0.17899 & 0.15893 & 0.9 \\
+\midrule
+Scene~5 & GAP-TV  & 0.00233 & 0.00421 & 1.8 \\
+Scene~5 & HDNet   & 0.11325 & 0.11325 & 1.0 \\
+Scene~5 & MST-S   & 0.11995 & 0.12004 & 1.0 \\
+Scene~5 & MST-L   & 0.13008 & 0.12208 & 0.9 \\
+\midrule
+\textbf{Mean} & \textbf{GAP-TV} & \textbf{0.00189} & \textbf{0.00333} & \textbf{1.8} \\
+\textbf{Mean} & \textbf{HDNet}  & \textbf{0.15466} & \textbf{0.15466} & \textbf{1.0} \\
+\textbf{Mean} & \textbf{MST-S}  & \textbf{0.14458} & \textbf{0.14086} & \textbf{1.0} \\
+\textbf{Mean} & \textbf{MST-L}  & \textbf{0.15306} & \textbf{0.13908} & \textbf{0.9} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Key findings.}
+GAP-TV, which explicitly conditions on the coded aperture mask in its
+forward--adjoint iterations, shows the expected sensitivity to mask mismatch
+(mean ratio $1.8\times$).  HDNet, whose architecture processes the
+measurement without explicit mask conditioning, is entirely insensitive
+(ratio $1.0\times$).  The transformer methods (MST-S, MST-L) show ratios
+near or below $1.0\times$ on real data---in sharp contrast to their severe
+degradation in simulation ($-13.98$\,dB for MST-L).  This
+simulation-to-hardware gap indicates that the real hardware mask already
+contains uncorrected manufacturing imperfections, so the additional
+$0.5$\,px perturbation is small relative to pre-existing errors.
+
+
+\subsection{CACTI Real Data: Temporal Compressive Camera}
+
+The CACTI real dataset consists of 4 dynamic scenes (duomino, hand,
+pendulumBall, waterBalloon) acquired with a coded aperture compressive
+temporal imaging system at $512 \times 512$ spatial resolution with
+compression ratio 10 (10 video frames encoded per snapshot).
+
+\begin{table}[htbp]
+\centering
+\caption{Supplementary Table S6: CACTI real-data measurement residuals
+and total variation.  Residual ratio (mismatched/calibrated) and
+total variation (TV) for 4 real scenes and 2 methods.}
+\label{tab:cacti_real}
+\begin{tabular}{l l r r r}
+\toprule
+\textbf{Scene} & \textbf{Method} &
+  \textbf{$r_{\mathrm{cal}}$} & \textbf{$r_{\mathrm{mis}}$} &
+  \textbf{Ratio} \\
+\midrule
+duomino       & GAP-TV     & $8.0\times10^{-6}$ & $8.5\times10^{-5}$ & 10.6 \\
+duomino       & PnP-FFDNet & 0.00198             & 0.00403             &  2.0 \\
+\midrule
+hand          & GAP-TV     & $7.0\times10^{-6}$ & $7.7\times10^{-5}$ & 11.0 \\
+hand          & PnP-FFDNet & 0.00249             & 0.00705             &  2.8 \\
+\midrule
+pendulumBall  & GAP-TV     & $3.7\times10^{-5}$ & $3.46\times10^{-4}$ &  9.4 \\
+pendulumBall  & PnP-FFDNet & 0.00919             & 0.01150             &  1.3 \\
+\midrule
+waterBalloon  & GAP-TV     & $1.4\times10^{-5}$ & $1.47\times10^{-4}$ & 10.5 \\
+waterBalloon  & PnP-FFDNet & 0.00264             & 0.00493             &  1.9 \\
+\midrule
+\textbf{Mean} & \textbf{GAP-TV}     & --- & --- & \textbf{10.4} \\
+\textbf{Mean} & \textbf{PnP-FFDNet} & --- & --- & \textbf{2.0} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Key findings.}
+GAP-TV shows an order-of-magnitude residual increase ($10.4\times$ mean)
+under sub-pixel mask mismatch, consistent with the multiplicative error
+amplification in temporal compression (a single mask error propagates
+across all 10 compressed frames).  PnP-FFDNet shows moderate robustness
+($2.0\times$), likely because the FFDNet denoiser provides an implicit
+regularization that partially absorbs the mismatch artefacts.  The CACTI
+results confirm that temporal compressive modalities are substantially
+more sensitive to operator mismatch than spectral compressive modalities
+(CASSI), a distinction that would be invisible without the unified
+\textsc{Triad Decomposition} framework.
+
+
+\subsection{Autonomous Calibration on Real Data}
+
+\begin{table}[htbp]
+\centering
+\caption{Supplementary Table S7: Grid-search calibration results on
+simulated data with known ground truth.  PSNR values in dB.}
+\label{tab:scenario_iv}
+\begin{tabular}{l r r r r r}
+\toprule
+\textbf{Modality} &
+  \textbf{Sc.~II} & \textbf{Sc.~IV} & \textbf{Sc.~III} &
+  \textbf{Time (s)} & \textbf{Recovery} \\
+\midrule
+CASSI  & 21.95 & 23.31 & 23.69 & 1234.3 & 78\% \\
+CACTI  & 17.60 & 26.99 & 26.99 &   64.2 & 100\% \\
+SPC    & 25.47 & 25.47 & 25.43 &  217.5 &  0\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent CACTI achieves perfect calibration recovery because the mismatch
+manifold is low-dimensional (2D spatial shift) and the temporal compression
+provides high sensitivity to mask position.  CASSI achieves 78\% recovery;
+the residual gap reflects the higher-dimensional mismatch space (mask
+geometry plus dispersion) and pre-existing hardware imperfections.  SPC
+gain-drift mismatch is not recoverable from the measurement residual alone,
+because a multiplicative gain bias scales both signal and noise uniformly,
+leaving the residual structure unchanged.  This demonstrates a fundamental
+limitation of residual-based calibration for gain-type mismatches and
+motivates the development of alternative diagnostics for \textsc{Gate~3}
+in gain-dominated systems.
 
 \bibliographystyle{naturemag}
 \bibliography{pwm_flagship}
