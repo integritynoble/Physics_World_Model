@@ -507,12 +507,14 @@ superimposing the drift ramps on the 4 degrading scanners.
   Deviation between Copilot-computed metrics and manufacturer
   console values for two scanner models, expressed as a percentage
   of the respective ACR tolerance for each metric.
-  All metrics fall within 15\% of their tolerances, confirming
-  agreement well within actionable limits.
+  All metrics are $\leq 15\%$ of their respective tolerances,
+  confirming agreement well within actionable limits.
   Tolerances: Water $\pm 5$~HU, Bone/Air $\pm 20$~HU,
   Acrylic/Poly $\pm 15$~HU, Geom $\pm 2$~mm,
   Slice $\pm 1.5$~mm, Unif $\pm 5$~HU,
-  Noise $\pm 1.0$~HU, SpatRes $\geq 5$~lp/cm.
+  Noise $\pm 1.0$~HU (baseline deviation),
+  SpatRes $\geq 5$~lp/cm.
+  Type~A measurement uncertainties are smaller than bar widths.
 }
 \label{fig:metric_accuracy}
 \end{figure}
@@ -706,8 +708,8 @@ Stable         & 26 & --- & 0 & --- & --- \\
 
 \Cref{fig:time_comparison} compares per-scanner QC time between
 the manual workflow and the Copilot.
-Manual QC required an estimated $67 \pm 12$~minutes per scanner
-per month, including DICOM handling (5~min), manual ROI placement
+Manual QC required an estimated $67 \pm 12$~minutes (mean $\pm$ SD
+from task-decomposition analysis) per scanner per month, including DICOM handling (5~min), manual ROI placement
 and metric computation (25~min), threshold checking (5~min),
 trend maintenance (10~min), report writing (15~min), and
 review/sign-off (7~min).
