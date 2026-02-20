@@ -1,0 +1,288 @@
+{
+  "experiment": "cassi_real_data",
+  "num_scenes": 5,
+  "mismatch": {
+    "dx": 0.5,
+    "dy": 0.3
+  },
+  "methods": [
+    "gap_tv",
+    "hdnet",
+    "mst_s",
+    "mst_l"
+  ],
+  "per_scene": [
+    {
+      "scene_idx": 1,
+      "calibrated": {
+        "gap_tv": {
+          "psnr": 23.83,
+          "ssim": 0.1445
+        },
+        "hdnet": {
+          "psnr": 28.48,
+          "ssim": 0.6729
+        },
+        "mst_s": {
+          "psnr": 19.39,
+          "ssim": 0.4373
+        },
+        "mst_l": {
+          "psnr": 18.74,
+          "ssim": 0.3657
+        }
+      },
+      "mismatched": {
+        "gap_tv": {
+          "psnr": 24.18,
+          "ssim": 0.1826
+        },
+        "hdnet": {
+          "psnr": 28.48,
+          "ssim": 0.6729
+        },
+        "mst_s": {
+          "psnr": 20.27,
+          "ssim": 0.5389
+        },
+        "mst_l": {
+          "psnr": 18.82,
+          "ssim": 0.3855
+        }
+      },
+      "degradation": {
+        "gap_tv": -0.35,
+        "hdnet": 0.0,
+        "mst_s": -0.88,
+        "mst_l": -0.08
+      }
+    },
+    {
+      "scene_idx": 2,
+      "calibrated": {
+        "gap_tv": {
+          "psnr": 21.4,
+          "ssim": 0.1421
+        },
+        "hdnet": {
+          "psnr": 26.43,
+          "ssim": 0.7409
+        },
+        "mst_s": {
+          "psnr": 20.85,
+          "ssim": 0.3036
+        },
+        "mst_l": {
+          "psnr": 20.4,
+          "ssim": 0.2245
+        }
+      },
+      "mismatched": {
+        "gap_tv": {
+          "psnr": 21.52,
+          "ssim": 0.1619
+        },
+        "hdnet": {
+          "psnr": 26.43,
+          "ssim": 0.7409
+        },
+        "mst_s": {
+          "psnr": 20.82,
+          "ssim": 0.3085
+        },
+        "mst_l": {
+          "psnr": 20.37,
+          "ssim": 0.2213
+        }
+      },
+      "degradation": {
+        "gap_tv": -0.12,
+        "hdnet": 0.0,
+        "mst_s": 0.03,
+        "mst_l": 0.03
+      }
+    },
+    {
+      "scene_idx": 3,
+      "calibrated": {
+        "gap_tv": {
+          "psnr": 20.48,
+          "ssim": 0.1167
+        },
+        "hdnet": {
+          "psnr": 25.81,
+          "ssim": 0.6737
+        },
+        "mst_s": {
+          "psnr": 18.23,
+          "ssim": 0.185
+        },
+        "mst_l": {
+          "psnr": 18.09,
+          "ssim": 0.1596
+        }
+      },
+      "mismatched": {
+        "gap_tv": {
+          "psnr": 20.61,
+          "ssim": 0.13
+        },
+        "hdnet": {
+          "psnr": 25.81,
+          "ssim": 0.6737
+        },
+        "mst_s": {
+          "psnr": 18.27,
+          "ssim": 0.2008
+        },
+        "mst_l": {
+          "psnr": 18.15,
+          "ssim": 0.1757
+        }
+      },
+      "degradation": {
+        "gap_tv": -0.13,
+        "hdnet": 0.0,
+        "mst_s": -0.04,
+        "mst_l": -0.06
+      }
+    },
+    {
+      "scene_idx": 4,
+      "calibrated": {
+        "gap_tv": {
+          "psnr": 21.11,
+          "ssim": 0.1185
+        },
+        "hdnet": {
+          "psnr": 25.48,
+          "ssim": 0.6147
+        },
+        "mst_s": {
+          "psnr": 16.05,
+          "ssim": 0.2513
+        },
+        "mst_l": {
+          "psnr": 15.76,
+          "ssim": 0.2204
+        }
+      },
+      "mismatched": {
+        "gap_tv": {
+          "psnr": 21.2,
+          "ssim": 0.13
+        },
+        "hdnet": {
+          "psnr": 25.48,
+          "ssim": 0.6147
+        },
+        "mst_s": {
+          "psnr": 16.13,
+          "ssim": 0.2843
+        },
+        "mst_l": {
+          "psnr": 15.7,
+          "ssim": 0.2146
+        }
+      },
+      "degradation": {
+        "gap_tv": -0.09,
+        "hdnet": 0.0,
+        "mst_s": -0.08,
+        "mst_l": 0.06
+      }
+    },
+    {
+      "scene_idx": 5,
+      "calibrated": {
+        "gap_tv": {
+          "psnr": 21.61,
+          "ssim": 0.0996
+        },
+        "hdnet": {
+          "psnr": 23.14,
+          "ssim": 0.4325
+        },
+        "mst_s": {
+          "psnr": 16.78,
+          "ssim": 0.5472
+        },
+        "mst_l": {
+          "psnr": 16.0,
+          "ssim": 0.4474
+        }
+      },
+      "mismatched": {
+        "gap_tv": {
+          "psnr": 21.71,
+          "ssim": 0.1258
+        },
+        "hdnet": {
+          "psnr": 23.14,
+          "ssim": 0.4325
+        },
+        "mst_s": {
+          "psnr": 16.93,
+          "ssim": 0.6033
+        },
+        "mst_l": {
+          "psnr": 15.97,
+          "ssim": 0.4474
+        }
+      },
+      "degradation": {
+        "gap_tv": -0.1,
+        "hdnet": 0.0,
+        "mst_s": -0.15,
+        "mst_l": 0.03
+      }
+    }
+  ],
+  "execution_seconds": 1753.7,
+  "mean": {
+    "calibrated": {
+      "gap_tv": {
+        "psnr_mean": 21.69,
+        "psnr_std": 1.14,
+        "ssim_mean": 0.1243
+      },
+      "hdnet": {
+        "psnr_mean": 25.87,
+        "psnr_std": 1.72,
+        "ssim_mean": 0.6269
+      },
+      "mst_s": {
+        "psnr_mean": 18.26,
+        "psnr_std": 1.74,
+        "ssim_mean": 0.3449
+      },
+      "mst_l": {
+        "psnr_mean": 17.8,
+        "psnr_std": 1.74,
+        "ssim_mean": 0.2835
+      }
+    },
+    "mismatched": {
+      "gap_tv": {
+        "psnr_mean": 21.84,
+        "psnr_std": 1.23,
+        "ssim_mean": 0.1461
+      },
+      "hdnet": {
+        "psnr_mean": 25.87,
+        "psnr_std": 1.72,
+        "ssim_mean": 0.6269
+      },
+      "mst_s": {
+        "psnr_mean": 18.48,
+        "psnr_std": 1.82,
+        "ssim_mean": 0.3872
+      },
+      "mst_l": {
+        "psnr_mean": 17.8,
+        "psnr_std": 1.76,
+        "ssim_mean": 0.2889
+      }
+    }
+  }
+}

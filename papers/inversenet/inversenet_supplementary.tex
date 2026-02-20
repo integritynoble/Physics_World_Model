@@ -24,9 +24,9 @@
 
 \title{InverseNet: Supplementary Material}
 \titlerunning{InverseNet Supplementary}
-\author{Chengshuai Yang\thanks{\href{mailto:integrityyang@gmail.com}{integrityyang@gmail.com}}}
-\authorrunning{C. Yang}
-\institute{NextGen PlatformAI C Corp}
+\author{Anonymous ECCV submission}
+\authorrunning{Anonymous}
+\institute{Anonymous}
 \maketitle
 
 % ============================================================================
@@ -125,6 +125,104 @@ peppers256  & 29.95 & 19.11 & 27.51 & 77.5\% & 33.33 & 19.49 & 28.01 & 61.6\% & 
 \end{tabular}%
 }
 \end{table}
+
+% ============================================================================
+% A2. REAL HARDWARE PER-SCENE RESULTS
+% ============================================================================
+\section{Real Hardware Per-Scene Results}
+\label{sec:real_perscene}
+
+\subsection{CASSI Real Data Per-Scene PSNR}
+
+\Cref{tab:cassi_real_perscene} reports per-scene PSNR for real CASSI data from the TSA real dataset (Meng et al., ECCV 2020).
+Reconstructions use the hardware-provided mask (calibrated) or a shifted mask ($dx{=}0.5$, $dy{=}0.3$\,px) to simulate operator mismatch.
+PSNR is computed against reference reconstructions distributed with the dataset.
+
+\begin{table}[h]
+\centering
+\caption{CASSI real data per-scene PSNR (dB). 5 real scenes ($660 \times 660 \times 28$). Calibrated uses the hardware mask; mismatched applies subpixel shift ($dx{=}0.5$, $dy{=}0.3$\,px).}
+\label{tab:cassi_real_perscene}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}l|cc|c|cc|c|cc|c@{}}
+\toprule
+& \multicolumn{3}{c|}{\textbf{GAP-TV}} & \multicolumn{3}{c|}{\textbf{MST-S}} & \multicolumn{3}{c}{\textbf{MST-L}} \\
+\textbf{Scene} & \textbf{Cal.} & \textbf{Mis.} & $\boldsymbol{\Delta}$ & \textbf{Cal.} & \textbf{Mis.} & $\boldsymbol{\Delta}$ & \textbf{Cal.} & \textbf{Mis.} & $\boldsymbol{\Delta}$ \\
+\midrule
+Scene 1 & 23.83 & 24.18 & $-$0.35 & 19.39 & 20.27 & $-$0.88 & 18.74 & 18.82 & $-$0.08 \\
+Scene 2 & 21.40 & 21.52 & $-$0.12 & 20.85 & 20.82 & 0.03 & 20.40 & 20.37 & 0.03 \\
+Scene 3 & 20.48 & 20.61 & $-$0.13 & 18.23 & 18.27 & $-$0.04 & 18.09 & 18.15 & $-$0.06 \\
+Scene 4 & 21.11 & 21.20 & $-$0.09 & 16.05 & 16.13 & $-$0.08 & 15.76 & 15.70 & 0.06 \\
+Scene 5 & 21.61 & 21.71 & $-$0.10 & 16.78 & 16.93 & $-$0.15 & 16.00 & 15.97 & 0.03 \\
+\midrule
+\textbf{Mean} & 21.69 & 21.84 & $-$0.16 & 18.26 & 18.48 & $-$0.22 & 17.80 & 17.80 & $-$0.00 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsection{CACTI Real Data Per-Scene Residuals}
+
+\Cref{tab:cacti_real_perscene} reports per-scene measurement residuals for real CACTI data from the EfficientSCI dataset (Wang et al., CVPR 2023) ($\text{cr}{=}10$).
+Since no ground truth exists, we report the relative measurement residual $\|y - \Phi\hat{x}\|^2 / \|y\|^2$ (lower is better) and the total variation of reconstructions.
+
+\begin{table}[h]
+\centering
+\caption{CACTI real data per-scene measurement residual (lower is better). 4 real scenes ($512 \times 512$, $\text{cr}{=}10$). Calibrated uses the hardware mask; mismatched shifts the mask by ($dx{=}0.5$, $dy{=}0.3$\,px).}
+\label{tab:cacti_real_perscene}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}l|cc|c|cc|c@{}}
+\toprule
+& \multicolumn{3}{c|}{\textbf{GAP-TV}} & \multicolumn{3}{c}{\textbf{EfficientSCI}} \\
+\textbf{Scene} & \textbf{Cal.} & \textbf{Mis.} & \textbf{Ratio} & \textbf{Cal.} & \textbf{Mis.} & \textbf{Ratio} \\
+\midrule
+Duomino       & 8e-6 & 8.5e-5 & 10.6$\times$ & 0.0217 & 0.0277 & 1.3$\times$ \\
+Hand          & 7e-6 & 7.7e-5 & 11.0$\times$ & 0.0199 & 0.0289 & 1.5$\times$ \\
+PendulumBall  & 3.7e-5 & 3.5e-4 & 9.4$\times$ & 0.0334 & 0.0415 & 1.2$\times$ \\
+WaterBalloon  & 1.4e-5 & 1.5e-4 & 10.5$\times$ & 0.0204 & 0.0266 & 1.3$\times$ \\
+\midrule
+\textbf{Mean} & 1.6e-5 & 1.6e-4 & 10.4$\times$ & 0.0238 & 0.0312 & 1.3$\times$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+% ============================================================================
+% A3. SCENARIO IV PER-SCENE RESULTS
+% ============================================================================
+\section{Scenario IV Per-Scene Results}
+\label{sec:scenario_iv_perscene}
+
+\Cref{tab:scenario_iv_perscene} reports per-scene/video Scenario~IV results for representative methods across all three modalities.
+Scenario~IV applies grid-search calibration over the mismatch parameter space using measurement residual as the objective function (no ground truth required).
+
+\begin{table}[h]
+\centering
+\caption{Scenario IV per-scene/video PSNR (dB). Representative methods: GAP-TV (CASSI, CACTI), FISTA-TV (SPC). Recovery percentage = (IV$-$II)/(III$-$II)$\times$100\%.}
+\label{tab:scenario_iv_perscene}
+\begin{tabular}{@{}llcccccc@{}}
+\toprule
+\textbf{Modality} & \textbf{Method} & \textbf{II} & \textbf{IV} & \textbf{III} & \textbf{IV$-$II} & \textbf{III$-$II} & \textbf{Recovery} \\
+\midrule
+CASSI & GAP-TV   & 21.95 & 23.31 & 23.69 & +1.36 & +1.74 & 78\% \\
+CACTI & GAP-TV   & 17.60 & 26.99 & 26.99 & +9.39 & +9.39 & 100\% \\
+SPC   & FISTA-TV & 25.47 & 25.47 & 25.43 & +0.00 & $-$0.04 & 0\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Calibration Convergence}
+
+The grid-search calibration in Scenario~IV explores mismatch parameters using measurement residual as a blind objective.
+For CASSI, we search over spatial shifts $dx, dy \in [-1.0, 1.0]$\,px on an $11 \times 11$ grid (121 evaluations).
+For CACTI, we search over $dx, dy \in [-1.0, 1.0]$\,px on a $9 \times 9$ grid (81 evaluations).
+For SPC, we search over gain drift $\alpha \in [0, 0.005]$ with 21 grid points.
+Each evaluation runs a fast inner-loop solver (GAP-TV with 30 iterations for CASSI/CACTI, FISTA-TV with 200 iterations for SPC) and computes the measurement residual.
+The parameter yielding the lowest residual is selected, and a final high-quality reconstruction is performed.
+
+The total calibration cost measured on a single CPU core: $\sim$20 minutes for CASSI (121 evaluations $\times$ 3 scenes), $\sim$1 minute for CACTI (81 evaluations $\times$ 2 groups), and $\sim$3.6 minutes for SPC (21 evaluations).
+The CASSI grid search recovered the true parameters with good accuracy (estimated $dx{=}0.40$, $dy{=}0.20$ vs.\ true $dx{=}0.50$, $dy{=}0.30$).
+CACTI achieved near-perfect recovery (estimated $dx{=}0.50$, $dy{=}0.25$ vs.\ true $dx{=}0.50$, $dy{=}0.30$).
+For SPC, the measurement residual did not provide a useful signal for gain drift calibration, estimating $\alpha{=}0$ regardless of the true value ($\alpha{=}0.0015$).
 
 % ============================================================================
 % B. RECOVERY RATIO HEATMAPS
@@ -239,7 +337,8 @@ No method was retrained or adapted for the mismatch scenarios; this ensures a fa
 
 \subsection{Code Availability}
 
-All figure generation scripts are included in the \texttt{papers/inversenet/scripts/} directory:
+Code and scripts will be made available upon acceptance.
+All figure generation and validation scripts are included in the supplementary code package:
 \begin{itemize}
     \item \texttt{generate\_visual\_comparison.py}: Qualitative reconstruction figure
     \item \texttt{generate\_scatter\_plot.py}: Recovery ratio vs.\ ideal PSNR scatter plot
@@ -248,6 +347,10 @@ All figure generation scripts are included in the \texttt{papers/inversenet/scri
     \item \texttt{generate\_cassi\_figures.py}: CASSI-specific analysis figures
     \item \texttt{generate\_cacti\_figures.py}: CACTI-specific analysis figures
     \item \texttt{generate\_spc\_figures.py}: SPC-specific analysis figures
+    \item \texttt{validate\_cassi\_real.py}: Real CASSI hardware validation
+    \item \texttt{validate\_cacti\_real.py}: Real CACTI hardware validation
+    \item \texttt{run\_scenario\_iv.py}: Scenario~IV grid-search calibration
+    \item \texttt{generate\_real\_data\_figures.py}: Real data comparison figures
 \end{itemize}
 
 \end{document}
