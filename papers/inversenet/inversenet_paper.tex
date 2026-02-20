@@ -442,42 +442,46 @@ Full methodological details---including dataset provenance, evaluation metric de
 
 \paragraph{CASSI real data.}
 We use the TSA real dataset~\cite{choi2017kaist}: 5 real scenes captured on a DD-CASSI prototype with a $660 \times 660$ coded aperture mask and 28 spectral bands (450--650\,nm).
-Measurements are $660 \times 714$ detector images; reference reconstructions from the dataset authors serve as pseudo-ground-truth.
+Measurements are $660 \times 714$ detector images.
+Since \textbf{no ground truth} exists for real CASSI captures (the true spectral cube cannot be independently measured), we use the same ground-truth-free metric as for CACTI: the normalised measurement residual $r = \|\mathbf{y} - \mathbf{\Phi}\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$.
 We evaluate two conditions: \emph{calibrated} (hardware mask as-is) and \emph{mismatched} (mask shifted by $dx{=}0.5$, $dy{=}0.3$\,pixels).
 \Cref{tab:cassi_real} shows the results.
 
 \begin{table}[t]
 \centering
-\caption{CASSI real data (5 scenes, $660 \times 660 \times 28$). PSNR~(dB) measured against published reference reconstructions from the TSA dataset (not ground truth). $\Delta$: calibrated $-$ mismatched (positive = degradation). $^\dagger$MST evaluated on center $256 \times 256$ crop due to architecture constraints.}
+\caption{CASSI real data (5 scenes, $660 \times 660 \times 28$). Normalised measurement residual $r = \|\mathbf{y} - \mathbf{\Phi}\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$ (lower is better; no ground truth required). Ratio: mismatched\,/\,calibrated. $^\dagger$MST evaluated on center $256 \times 256$ crop.}
 \label{tab:cassi_real}
 \begin{tabular}{@{}lccc@{}}
 \toprule
-\textbf{Method} & \textbf{Calibrated} & \textbf{Mismatched} & $\boldsymbol{\Delta}$ \\
+\textbf{Method} & \textbf{Calibrated} & \textbf{Mismatched} & \textbf{Ratio} \\
 \midrule
-GAP-TV   & 21.69 & 21.84 & $-$0.16 \\
-HDNet    & 25.87 & 25.87 & 0.00 \\
-MST-S$^\dagger$    & 18.26 & 18.48 & $-$0.22 \\
-MST-L$^\dagger$    & 17.80 & 17.80 & $-$0.00 \\
+GAP-TV            & 0.0019 & 0.0011 & 0.6$\times$ \\
+HDNet             & 0.155  & 0.157  & 1.0$\times$ \\
+MST-S$^\dagger$   & 0.145  & 0.136  & 1.0$\times$ \\
+MST-L$^\dagger$   & 0.153  & 0.134  & 0.9$\times$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Note that PSNR in \cref{tab:cassi_real} is measured against the published reference reconstructions from the TSA dataset---these are \emph{not} ground-truth spectral cubes but prior algorithmic reconstructions, hence the moderate absolute values.
-The key diagnostic is the \emph{difference} $\Delta$ between calibrated and mismatched conditions: spatial-only mask shift produces negligible degradation ($|\Delta| \leq 0.22$\,dB on real data).
-By contrast, our \emph{simulation} experiments (\cref{tab:cassi}), which include both mask shift \emph{and} dispersion perturbation and which have access to true ground-truth hyperspectral cubes, show 3--14\,dB degradation.
-The large gap between real-data $\Delta$ and simulation $\Delta$ is expected: (1)~real hardware masks already contain uncorrected registration errors, so our additional shift is a small perturbation atop existing mismatch; (2)~the real-data experiment applies spatial mask shift only, while the simulation mismatch also includes dispersion parameters ($a_1$, $\alpha$)---which \cref{tab:cassi} identifies as the dominant CASSI degradation source.
-HDNet shows $\Delta{=}0$\,dB, consistent with its mask-oblivious architecture.
-This validates that dispersion mismatch, not spatial shift alone, drives large CASSI gaps (\cref{fig:cassi_real}).
+Spatial mask shift produces residual ratios of $0.6$--$1.0\times$---the measurement residual does \emph{not} increase under mismatch.
+This contrasts sharply with CACTI (\cref{sec:cacti_real_data} below), where residuals increase $9.4$--$11.0\times$ under the same spatial shift.
+The difference arises because CASSI's dispersive forward model creates spectral overlap in each detector pixel: a small mask shift redistributes which spectral information is multiplexed, but does not break measurement consistency.
+GAP-TV, which explicitly minimises the residual during reconstruction, achieves very low absolute residuals ($\sim$0.002) and its residual actually \emph{decreases} under the shifted mask ($0.6\times$).
+HDNet shows ratio $1.0\times$, consistent with its mask-oblivious architecture.
+
+By contrast, our \emph{simulation} experiments (\cref{tab:cassi}) show 3--14\,dB PSNR degradation because they include dispersion perturbation ($a_1$, $\alpha$)---which the real-data experiment does not.
+This validates that \textbf{dispersion mismatch, not spatial shift alone, is the dominant CASSI degradation source} (\cref{fig:cassi_real}).
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/cassi_real_comparison.pdf}
-\caption{CASSI real data (Scene~1, band~14, central $256 \times 256$ patch): calibrated (top) vs.\ mismatched (bottom) reconstructions for four methods. The visual differences are subtle, consistent with the small $\Delta$ in \cref{tab:cassi_real}---spatial mask shift alone is not the dominant degradation source for CASSI.}
+\caption{CASSI real data (Scene~1, band~14, central $256 \times 256$ patch): calibrated (top) vs.\ mismatched (bottom) reconstructions for four methods. The visual differences are subtle, consistent with the near-unity residual ratios in \cref{tab:cassi_real}---spatial mask shift alone is not the dominant degradation source for CASSI.}
 \label{fig:cassi_real}
 \end{figure}
 
 \paragraph{CACTI real data.}
-We evaluate 4 real CACTI scenes from the EfficientSCI dataset (cr$=$10), using measurement residual $\|\mathbf{y} - \mathbf{\Phi}\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$ as proxy (no ground truth).
+\label{sec:cacti_real_data}
+We evaluate 4 real CACTI scenes from the EfficientSCI dataset (cr$=$10), using the same measurement residual metric (no ground truth).
 Under mask mismatch, GAP-TV residuals increase $9.4$--$11.0\times$, confirming mismatch severely degrades real data fidelity.
 EfficientSCI shows smaller increases ($1.2$--$1.5\times$), consistent with simulation.
 Mismatched reconstructions exhibit temporal ghosting (\cref{fig:cacti_real}).
