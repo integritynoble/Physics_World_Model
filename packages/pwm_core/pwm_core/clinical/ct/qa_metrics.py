@@ -1238,18 +1238,23 @@ def compute_all_metrics(
 
     t0 = time.monotonic()
 
-    # Parse casepack configuration
+    # Parse casepack configuration (supports both dict and CasePackConfig)
     if isinstance(casepack, dict):
         cp = casepack.get("casepack", casepack)
     else:
         cp = casepack
 
-    casepack_id: str = cp.get("id", "unknown") if isinstance(cp, dict) else "unknown"
-    metric_set: list[str] = (
-        cp.get("metric_set", []) if isinstance(cp, dict) else []
-    )
-    roi_defs: dict = cp.get("roi_definitions", {}) if isinstance(cp, dict) else {}
-    insert_rois: dict = roi_defs.get("insert_rois", {})
+    if isinstance(cp, dict):
+        casepack_id = cp.get("id", "unknown")
+        metric_set = cp.get("metric_set", [])
+        roi_defs = cp.get("roi_definitions", {})
+    else:
+        # CasePackConfig or other Pydantic model
+        casepack_id = getattr(cp, "id", "unknown")
+        metric_set = getattr(cp, "metric_set", [])
+        roi_defs = getattr(cp, "roi_definitions", {})
+
+    insert_rois: dict = roi_defs.get("insert_rois", {}) if isinstance(roi_defs, dict) else {}
 
     # Extract common parameters from scan_bundle
     volume = scan_bundle.slices
