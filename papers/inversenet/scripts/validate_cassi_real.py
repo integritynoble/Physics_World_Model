@@ -165,6 +165,49 @@ def compute_ssim(x_true: np.ndarray, x_recon: np.ndarray) -> float:
 
 
 # ---------------------------------------------------------------------------
+# CASSI forward model (for measurement residual computation)
+# ---------------------------------------------------------------------------
+def cassi_forward(x: np.ndarray, mask: np.ndarray,
+                  step: int = STEP, nC: int = N_BANDS) -> np.ndarray:
+    """CASSI forward model: y(i,j) = sum_lambda M(i, j-d(lambda)) * x(i,j,lambda).
+
+    Args:
+        x: reconstructed cube (H, W, nC)
+        mask: 2D binary mask (H, W)
+        step: dispersion step (pixels per band)
+        nC: number of spectral bands
+
+    Returns:
+        y: simulated measurement (H, W_ext) where W_ext = W + (nC-1)*step
+    """
+    H, W = mask.shape[:2]
+    W_ext = W + (nC - 1) * step
+    y = np.zeros((H, W_ext), dtype=np.float32)
+    for k in range(nC):
+        y[:, k * step:k * step + W] += mask * x[:, :, k]
+    return y
+
+
+def compute_measurement_residual(meas: np.ndarray, x_hat: np.ndarray,
+                                  mask: np.ndarray) -> float:
+    """Normalised measurement residual: ||y - Phi(x_hat)||^2 / ||y||^2.
+
+    This metric requires no ground truth — only the measurement and the
+    assumed forward operator. A small residual means the reconstruction
+    is consistent with the measurement under the assumed mask.
+    """
+    y_pred = cassi_forward(x_hat, mask)
+    # Match sizes (meas may be slightly different due to rounding)
+    hh = min(meas.shape[0], y_pred.shape[0])
+    ww = min(meas.shape[1], y_pred.shape[1])
+    residual = float(np.sum((meas[:hh, :ww] - y_pred[:hh, :ww]) ** 2))
+    norm_y = float(np.sum(meas[:hh, :ww] ** 2))
+    if norm_y < 1e-10:
+        return 0.0
+    return residual / norm_y
+
+
+# ---------------------------------------------------------------------------
 # reconstruction: GAP-TV for real CASSI data (660x714)
 # ---------------------------------------------------------------------------
 def gap_tv_real(meas: np.ndarray, mask: np.ndarray,
@@ -360,99 +403,91 @@ def reconstruct_dl_real(meas: np.ndarray, mask: np.ndarray,
 # main validation
 # ---------------------------------------------------------------------------
 def validate_scene(scene_idx: int, meas: np.ndarray,
-                   mask: np.ndarray, reference: np.ndarray,
+                   mask: np.ndarray, reference: Optional[np.ndarray],
                    methods: List[str], device: str,
                    dx_mismatch: float = 0.5,
                    dy_mismatch: float = 0.3) -> Dict:
-    """Validate one real scene with calibrated and mismatched masks."""
+    """Validate one real scene with calibrated and mismatched masks.
+
+    Computes measurement residual (ground-truth-free metric) for all methods.
+    Also computes PSNR against reference reconstruction if available (for
+    supplementary analysis only — not used as the primary metric).
+    """
     logger.info(f"\n{'='*60}")
     logger.info(f"Real Scene {scene_idx}")
     logger.info(f"{'='*60}")
 
-    # Normalise reference to [0, 1]
-    ref_max = reference.max()
-    if ref_max > 0:
-        reference_norm = reference / ref_max
-    else:
-        reference_norm = reference
+    # Normalise reference to [0, 1] if available (for supplementary PSNR only)
+    reference_norm = None
+    ref_crop = None
+    if reference is not None:
+        ref_max = reference.max()
+        reference_norm = reference / ref_max if ref_max > 0 else reference
+        H_full = reference_norm.shape[0]
+        crop_h = 256
+        r0 = (H_full - crop_h) // 2
+        ref_crop = reference_norm[r0:r0 + crop_h, r0:r0 + crop_h, :]
 
     result = {"scene_idx": scene_idx, "calibrated": {}, "mismatched": {}}
-
-    # Precompute center crop of reference for MST (256x256x28)
-    H_full = reference_norm.shape[0]
-    crop_h = 256
-    r0 = (H_full - crop_h) // 2
-    ref_crop = reference_norm[r0:r0 + crop_h, r0:r0 + crop_h, :]
-
-    # ---- Calibrated reconstruction (using hardware mask as-is) ----
-    logger.info("  Calibrated (hardware mask):")
-    for method in methods:
-        t0 = time.time()
-        try:
-            if method == "gap_tv":
-                x_hat = gap_tv_real(meas, mask)
-            else:
-                x_hat = reconstruct_dl_real(meas, mask, method, device)
-
-            # Match scale to reference
-            x_max = x_hat.max()
-            if x_max > 0:
-                x_hat_norm = x_hat / x_max
-            else:
-                x_hat_norm = x_hat
-
-            # For MST methods, reconstruction is 256x256 crop — compare with ref crop
-            is_mst = method in ("mst_s", "mst_l")
-            ref_for_psnr = ref_crop if is_mst else reference_norm
-            psnr = compute_psnr(ref_for_psnr, x_hat_norm)
-            ssim = compute_ssim(ref_for_psnr, x_hat_norm)
-            result["calibrated"][method] = {"psnr": round(psnr, 2), "ssim": round(ssim, 4)}
-
-            # Save reconstruction
-            np.save(str(RECON_DIR / f"scene{scene_idx}_calibrated_{method}.npy"), x_hat)
-        except Exception as e:
-            logger.error(f"    {method} failed: {e}")
-            result["calibrated"][method] = {"psnr": 0.0, "ssim": 0.0}
-        dt = time.time() - t0
-        logger.info(f"    {METHOD_LABELS[method]:8s}: PSNR={result['calibrated'][method]['psnr']:.2f} dB  ({dt:.1f}s)")
-
-    # ---- Mismatched reconstruction (shifted mask) ----
     mask_shifted = shift_mask_2d(mask, dx_mismatch, dy_mismatch)
-    logger.info(f"  Mismatched (dx={dx_mismatch}, dy={dy_mismatch}):")
+
+    for condition, mask_used in [("calibrated", mask), ("mismatched", mask_shifted)]:
+        logger.info(f"  {condition.capitalize()}:")
+        for method in methods:
+            t0 = time.time()
+            try:
+                if method == "gap_tv":
+                    x_hat = gap_tv_real(meas, mask_used)
+                else:
+                    x_hat = reconstruct_dl_real(meas, mask_used, method, device)
+
+                # --- Measurement residual (primary metric, no ground truth needed) ---
+                is_mst = method in ("mst_s", "mst_l")
+                if is_mst:
+                    # MST reconstructs a 256x256 crop; compute residual on that crop
+                    _, mask_crop, (r0c, c0c) = _crop_for_mst(meas, mask_used)
+                    meas_crop = meas[r0c:r0c + 256, c0c:c0c + 256 + (N_BANDS - 1) * STEP]
+                    residual = compute_measurement_residual(meas_crop, x_hat, mask_crop)
+                else:
+                    residual = compute_measurement_residual(meas, x_hat, mask_used)
+
+                # --- PSNR against reference (supplementary only) ---
+                psnr_ref = 0.0
+                ssim_ref = 0.0
+                if reference_norm is not None:
+                    x_max = x_hat.max()
+                    x_hat_norm = x_hat / x_max if x_max > 0 else x_hat
+                    ref_for_psnr = ref_crop if is_mst else reference_norm
+                    psnr_ref = compute_psnr(ref_for_psnr, x_hat_norm)
+                    ssim_ref = compute_ssim(ref_for_psnr, x_hat_norm)
+
+                result[condition][method] = {
+                    "residual": round(residual, 8),
+                    "psnr_vs_ref": round(psnr_ref, 2),
+                    "ssim_vs_ref": round(ssim_ref, 4),
+                }
+
+                np.save(str(RECON_DIR / f"scene{scene_idx}_{condition}_{method}.npy"), x_hat)
+            except Exception as e:
+                logger.error(f"    {method} failed: {e}")
+                result[condition][method] = {"residual": -1.0, "psnr_vs_ref": 0.0, "ssim_vs_ref": 0.0}
+
+            dt = time.time() - t0
+            r = result[condition][method]
+            logger.info(f"    {METHOD_LABELS[method]:8s}: residual={r['residual']:.6f}  "
+                        f"PSNR_ref={r['psnr_vs_ref']:.2f}  ({dt:.1f}s)")
+
+    # Compute residual ratio (mismatched / calibrated)
+    result["residual_ratio"] = {}
     for method in methods:
-        t0 = time.time()
-        try:
-            if method == "gap_tv":
-                x_hat = gap_tv_real(meas, mask_shifted)
-            else:
-                x_hat = reconstruct_dl_real(meas, mask_shifted, method, device)
-
-            x_max = x_hat.max()
-            if x_max > 0:
-                x_hat_norm = x_hat / x_max
-            else:
-                x_hat_norm = x_hat
-
-            is_mst = method in ("mst_s", "mst_l")
-            ref_for_psnr = ref_crop if is_mst else reference_norm
-            psnr = compute_psnr(ref_for_psnr, x_hat_norm)
-            ssim = compute_ssim(ref_for_psnr, x_hat_norm)
-            result["mismatched"][method] = {"psnr": round(psnr, 2), "ssim": round(ssim, 4)}
-
-            np.save(str(RECON_DIR / f"scene{scene_idx}_mismatched_{method}.npy"), x_hat)
-        except Exception as e:
-            logger.error(f"    {method} failed: {e}")
-            result["mismatched"][method] = {"psnr": 0.0, "ssim": 0.0}
-        dt = time.time() - t0
-        logger.info(f"    {METHOD_LABELS[method]:8s}: PSNR={result['mismatched'][method]['psnr']:.2f} dB  ({dt:.1f}s)")
-
-    # Compute degradation
-    result["degradation"] = {}
-    for method in methods:
-        p_cal = result["calibrated"][method]["psnr"]
-        p_mis = result["mismatched"][method]["psnr"]
-        result["degradation"][method] = round(p_cal - p_mis, 2)
-        logger.info(f"    {METHOD_LABELS[method]:8s}: Δ = {p_cal - p_mis:+.2f} dB")
+        r_cal = result["calibrated"][method]["residual"]
+        r_mis = result["mismatched"][method]["residual"]
+        if r_cal > 0 and r_mis > 0:
+            ratio = r_mis / r_cal
+        else:
+            ratio = 0.0
+        result["residual_ratio"][method] = round(ratio, 1)
+        logger.info(f"    {METHOD_LABELS[method]:8s}: residual ratio = {ratio:.1f}×")
 
     return result
 
@@ -500,18 +535,17 @@ def main():
         for condition in ["calibrated", "mismatched"]:
             logger.info(f"\n  {condition.capitalize()}:")
             for method in methods:
-                psnrs = [r[condition][method]["psnr"] for r in all_results
-                         if r[condition][method]["psnr"] > 0]
-                ssims = [r[condition][method]["ssim"] for r in all_results
-                         if r[condition][method]["ssim"] > 0]
-                if psnrs:
-                    logger.info(f"    {METHOD_LABELS[method]:8s}: PSNR={np.mean(psnrs):.2f}±{np.std(psnrs):.2f}  "
-                                f"SSIM={np.mean(ssims):.4f}")
+                residuals = [r[condition][method]["residual"] for r in all_results
+                             if r[condition][method]["residual"] >= 0]
+                if residuals:
+                    logger.info(f"    {METHOD_LABELS[method]:8s}: residual={np.mean(residuals):.6f}")
 
-        logger.info(f"\n  Degradation (calibrated - mismatched):")
+        logger.info(f"\n  Residual ratio (mismatched / calibrated):")
         for method in methods:
-            deltas = [r["degradation"][method] for r in all_results]
-            logger.info(f"    {METHOD_LABELS[method]:8s}: Δ = {np.mean(deltas):+.2f} dB")
+            ratios = [r["residual_ratio"][method] for r in all_results
+                      if r["residual_ratio"][method] > 0]
+            if ratios:
+                logger.info(f"    {METHOD_LABELS[method]:8s}: {np.mean(ratios):.1f}×")
 
     # Save results
     summary = {
@@ -528,15 +562,19 @@ def main():
     for condition in ["calibrated", "mismatched"]:
         summary["mean"][condition] = {}
         for method in methods:
-            psnrs = [r[condition][method]["psnr"] for r in all_results
-                     if r[condition][method]["psnr"] > 0]
-            ssims = [r[condition][method]["ssim"] for r in all_results
-                     if r[condition][method]["ssim"] > 0]
+            residuals = [r[condition][method]["residual"] for r in all_results
+                         if r[condition][method]["residual"] >= 0]
+            psnrs = [r[condition][method]["psnr_vs_ref"] for r in all_results
+                     if r[condition][method]["psnr_vs_ref"] > 0]
             summary["mean"][condition][method] = {
-                "psnr_mean": round(float(np.mean(psnrs)), 2) if psnrs else 0.0,
-                "psnr_std": round(float(np.std(psnrs)), 2) if psnrs else 0.0,
-                "ssim_mean": round(float(np.mean(ssims)), 4) if ssims else 0.0,
+                "residual_mean": round(float(np.mean(residuals)), 8) if residuals else 0.0,
+                "psnr_ref_mean": round(float(np.mean(psnrs)), 2) if psnrs else 0.0,
             }
+    summary["mean"]["residual_ratio"] = {}
+    for method in methods:
+        ratios = [r["residual_ratio"][method] for r in all_results
+                  if r["residual_ratio"][method] > 0]
+        summary["mean"]["residual_ratio"][method] = round(float(np.mean(ratios)), 1) if ratios else 0.0
 
     out_path = RESULTS_DIR / "cassi_real_results.json"
     with open(out_path, "w") as f:

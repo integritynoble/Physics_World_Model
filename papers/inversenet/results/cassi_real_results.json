@@ -16,273 +16,311 @@
       "scene_idx": 1,
       "calibrated": {
         "gap_tv": {
-          "psnr": 23.83,
-          "ssim": 0.1445
+          "residual": 0.00147859,
+          "psnr_vs_ref": 23.83,
+          "ssim_vs_ref": 0.1445
         },
         "hdnet": {
-          "psnr": 28.48,
-          "ssim": 0.6729
+          "residual": 0.18505901,
+          "psnr_vs_ref": 28.48,
+          "ssim_vs_ref": 0.6729
         },
         "mst_s": {
-          "psnr": 19.39,
-          "ssim": 0.4373
+          "residual": 0.09952649,
+          "psnr_vs_ref": 19.39,
+          "ssim_vs_ref": 0.4373
         },
         "mst_l": {
-          "psnr": 18.74,
-          "ssim": 0.3657
+          "residual": 0.10054514,
+          "psnr_vs_ref": 18.74,
+          "ssim_vs_ref": 0.3657
         }
       },
       "mismatched": {
         "gap_tv": {
-          "psnr": 24.18,
-          "ssim": 0.1826
+          "residual": 0.00094871,
+          "psnr_vs_ref": 24.18,
+          "ssim_vs_ref": 0.1826
         },
         "hdnet": {
-          "psnr": 28.48,
-          "ssim": 0.6729
+          "residual": 0.18672833,
+          "psnr_vs_ref": 28.48,
+          "ssim_vs_ref": 0.6729
         },
         "mst_s": {
-          "psnr": 20.27,
-          "ssim": 0.5389
+          "residual": 0.10902322,
+          "psnr_vs_ref": 20.27,
+          "ssim_vs_ref": 0.5389
         },
         "mst_l": {
-          "psnr": 18.82,
-          "ssim": 0.3855
+          "residual": 0.09711444,
+          "psnr_vs_ref": 18.82,
+          "ssim_vs_ref": 0.3855
         }
       },
-      "degradation": {
-        "gap_tv": -0.35,
-        "hdnet": 0.0,
-        "mst_s": -0.88,
-        "mst_l": -0.08
+      "residual_ratio": {
+        "gap_tv": 0.6,
+        "hdnet": 1.0,
+        "mst_s": 1.1,
+        "mst_l": 1.0
       }
     },
     {
       "scene_idx": 2,
       "calibrated": {
         "gap_tv": {
-          "psnr": 21.4,
-          "ssim": 0.1421
+          "residual": 0.00210396,
+          "psnr_vs_ref": 21.4,
+          "ssim_vs_ref": 0.1421
         },
         "hdnet": {
-          "psnr": 26.43,
-          "ssim": 0.7409
+          "residual": 0.14852907,
+          "psnr_vs_ref": 26.43,
+          "ssim_vs_ref": 0.7409
         },
         "mst_s": {
-          "psnr": 20.85,
-          "ssim": 0.3036
+          "residual": 0.2535716,
+          "psnr_vs_ref": 20.85,
+          "ssim_vs_ref": 0.3036
         },
         "mst_l": {
-          "psnr": 20.4,
-          "ssim": 0.2245
+          "residual": 0.25440537,
+          "psnr_vs_ref": 20.4,
+          "ssim_vs_ref": 0.2245
         }
       },
       "mismatched": {
         "gap_tv": {
-          "psnr": 21.52,
-          "ssim": 0.1619
+          "residual": 0.0012668,
+          "psnr_vs_ref": 21.52,
+          "ssim_vs_ref": 0.1619
         },
         "hdnet": {
-          "psnr": 26.43,
-          "ssim": 0.7409
+          "residual": 0.15032034,
+          "psnr_vs_ref": 26.43,
+          "ssim_vs_ref": 0.7409
         },
         "mst_s": {
-          "psnr": 20.82,
-          "ssim": 0.3085
+          "residual": 0.22540865,
+          "psnr_vs_ref": 20.82,
+          "ssim_vs_ref": 0.3085
         },
         "mst_l": {
-          "psnr": 20.37,
-          "ssim": 0.2213
+          "residual": 0.2136959,
+          "psnr_vs_ref": 20.37,
+          "ssim_vs_ref": 0.2213
         }
       },
-      "degradation": {
-        "gap_tv": -0.12,
-        "hdnet": 0.0,
-        "mst_s": 0.03,
-        "mst_l": 0.03
+      "residual_ratio": {
+        "gap_tv": 0.6,
+        "hdnet": 1.0,
+        "mst_s": 0.9,
+        "mst_l": 0.8
       }
     },
     {
       "scene_idx": 3,
       "calibrated": {
         "gap_tv": {
-          "psnr": 20.48,
-          "ssim": 0.1167
+          "residual": 0.00203925,
+          "psnr_vs_ref": 20.48,
+          "ssim_vs_ref": 0.1167
         },
         "hdnet": {
-          "psnr": 25.81,
-          "ssim": 0.6737
+          "residual": 0.1829148,
+          "psnr_vs_ref": 25.81,
+          "ssim_vs_ref": 0.6737
         },
         "mst_s": {
-          "psnr": 18.23,
-          "ssim": 0.185
+          "residual": 0.09399184,
+          "psnr_vs_ref": 18.23,
+          "ssim_vs_ref": 0.185
         },
         "mst_l": {
-          "psnr": 18.09,
-          "ssim": 0.1596
+          "residual": 0.10127248,
+          "psnr_vs_ref": 18.09,
+          "ssim_vs_ref": 0.1596
         }
       },
       "mismatched": {
         "gap_tv": {
-          "psnr": 20.61,
-          "ssim": 0.13
+          "residual": 0.00080145,
+          "psnr_vs_ref": 20.61,
+          "ssim_vs_ref": 0.13
         },
         "hdnet": {
-          "psnr": 25.81,
-          "ssim": 0.6737
+          "residual": 0.18505397,
+          "psnr_vs_ref": 25.81,
+          "ssim_vs_ref": 0.6737
         },
         "mst_s": {
-          "psnr": 18.27,
-          "ssim": 0.2008
+          "residual": 0.08204667,
+          "psnr_vs_ref": 18.27,
+          "ssim_vs_ref": 0.2008
         },
         "mst_l": {
-          "psnr": 18.15,
-          "ssim": 0.1757
+          "residual": 0.08203046,
+          "psnr_vs_ref": 18.15,
+          "ssim_vs_ref": 0.1757
         }
       },
-      "degradation": {
-        "gap_tv": -0.13,
-        "hdnet": 0.0,
-        "mst_s": -0.04,
-        "mst_l": -0.06
+      "residual_ratio": {
+        "gap_tv": 0.4,
+        "hdnet": 1.0,
+        "mst_s": 0.9,
+        "mst_l": 0.8
       }
     },
     {
       "scene_idx": 4,
       "calibrated": {
         "gap_tv": {
-          "psnr": 21.11,
-          "ssim": 0.1185
+          "residual": 0.00148275,
+          "psnr_vs_ref": 21.11,
+          "ssim_vs_ref": 0.1185
         },
         "hdnet": {
-          "psnr": 25.48,
-          "ssim": 0.6147
+          "residual": 0.14354521,
+          "psnr_vs_ref": 25.48,
+          "ssim_vs_ref": 0.6147
         },
         "mst_s": {
-          "psnr": 16.05,
-          "ssim": 0.2513
+          "residual": 0.155856,
+          "psnr_vs_ref": 16.05,
+          "ssim_vs_ref": 0.2513
         },
         "mst_l": {
-          "psnr": 15.76,
-          "ssim": 0.2204
+          "residual": 0.17898548,
+          "psnr_vs_ref": 15.76,
+          "ssim_vs_ref": 0.2204
         }
       },
       "mismatched": {
         "gap_tv": {
-          "psnr": 21.2,
-          "ssim": 0.13
+          "residual": 0.00086123,
+          "psnr_vs_ref": 21.2,
+          "ssim_vs_ref": 0.13
         },
         "hdnet": {
-          "psnr": 25.48,
-          "ssim": 0.6147
+          "residual": 0.14572976,
+          "psnr_vs_ref": 25.48,
+          "ssim_vs_ref": 0.6147
         },
         "mst_s": {
-          "psnr": 16.13,
-          "ssim": 0.2843
+          "residual": 0.14518163,
+          "psnr_vs_ref": 16.13,
+          "ssim_vs_ref": 0.2843
         },
         "mst_l": {
-          "psnr": 15.7,
-          "ssim": 0.2146
+          "residual": 0.15616238,
+          "psnr_vs_ref": 15.7,
+          "ssim_vs_ref": 0.2146
         }
       },
-      "degradation": {
-        "gap_tv": -0.09,
-        "hdnet": 0.0,
-        "mst_s": -0.08,
-        "mst_l": 0.06
+      "residual_ratio": {
+        "gap_tv": 0.6,
+        "hdnet": 1.0,
+        "mst_s": 0.9,
+        "mst_l": 0.9
       }
     },
     {
       "scene_idx": 5,
       "calibrated": {
         "gap_tv": {
-          "psnr": 21.61,
-          "ssim": 0.0996
+          "residual": 0.00233308,
+          "psnr_vs_ref": 21.61,
+          "ssim_vs_ref": 0.0996
         },
         "hdnet": {
-          "psnr": 23.14,
-          "ssim": 0.4325
+          "residual": 0.11324777,
+          "psnr_vs_ref": 23.14,
+          "ssim_vs_ref": 0.4325
         },
         "mst_s": {
-          "psnr": 16.78,
-          "ssim": 0.5472
+          "residual": 0.11994942,
+          "psnr_vs_ref": 16.78,
+          "ssim_vs_ref": 0.5472
         },
         "mst_l": {
-          "psnr": 16.0,
-          "ssim": 0.4474
+          "residual": 0.13008447,
+          "psnr_vs_ref": 16.0,
+          "ssim_vs_ref": 0.4474
         }
       },
       "mismatched": {
         "gap_tv": {
-          "psnr": 21.71,
-          "ssim": 0.1258
+          "residual": 0.00156655,
+          "psnr_vs_ref": 21.71,
+          "ssim_vs_ref": 0.1258
         },
         "hdnet": {
-          "psnr": 23.14,
-          "ssim": 0.4325
+          "residual": 0.11538204,
+          "psnr_vs_ref": 23.14,
+          "ssim_vs_ref": 0.4325
         },
         "mst_s": {
-          "psnr": 16.93,
-          "ssim": 0.6033
+          "residual": 0.1202139,
+          "psnr_vs_ref": 16.93,
+          "ssim_vs_ref": 0.6033
         },
         "mst_l": {
-          "psnr": 15.97,
-          "ssim": 0.4474
+          "residual": 0.12141793,
+          "psnr_vs_ref": 15.97,
+          "ssim_vs_ref": 0.4474
         }
       },
-      "degradation": {
-        "gap_tv": -0.1,
-        "hdnet": 0.0,
-        "mst_s": -0.15,
-        "mst_l": 0.03
+      "residual_ratio": {
+        "gap_tv": 0.7,
+        "hdnet": 1.0,
+        "mst_s": 1.0,
+        "mst_l": 0.9
       }
     }
   ],
-  "execution_seconds": 1753.7,
+  "execution_seconds": 1628.2,
   "mean": {
     "calibrated": {
       "gap_tv": {
-        "psnr_mean": 21.69,
-        "psnr_std": 1.14,
-        "ssim_mean": 0.1243
+        "residual_mean": 0.00188753,
+        "psnr_ref_mean": 21.69
       },
       "hdnet": {
-        "psnr_mean": 25.87,
-        "psnr_std": 1.72,
-        "ssim_mean": 0.6269
+        "residual_mean": 0.15465917,
+        "psnr_ref_mean": 25.87
       },
       "mst_s": {
-        "psnr_mean": 18.26,
-        "psnr_std": 1.74,
-        "ssim_mean": 0.3449
+        "residual_mean": 0.14457907,
+        "psnr_ref_mean": 18.26
       },
       "mst_l": {
-        "psnr_mean": 17.8,
-        "psnr_std": 1.74,
-        "ssim_mean": 0.2835
+        "residual_mean": 0.15305859,
+        "psnr_ref_mean": 17.8
       }
     },
     "mismatched": {
       "gap_tv": {
-        "psnr_mean": 21.84,
-        "psnr_std": 1.23,
-        "ssim_mean": 0.1461
+        "residual_mean": 0.00108895,
+        "psnr_ref_mean": 21.84
       },
       "hdnet": {
-        "psnr_mean": 25.87,
-        "psnr_std": 1.72,
-        "ssim_mean": 0.6269
+        "residual_mean": 0.15664289,
+        "psnr_ref_mean": 25.87
       },
       "mst_s": {
-        "psnr_mean": 18.48,
-        "psnr_std": 1.82,
-        "ssim_mean": 0.3872
+        "residual_mean": 0.13637481,
+        "psnr_ref_mean": 18.48
       },
       "mst_l": {
-        "psnr_mean": 17.8,
-        "psnr_std": 1.76,
-        "ssim_mean": 0.2889
+        "residual_mean": 0.13408422,
+        "psnr_ref_mean": 17.8
       }
+    },
+    "residual_ratio": {
+      "gap_tv": 0.6,
+      "hdnet": 1.0,
+      "mst_s": 1.0,
+      "mst_l": 0.9
     }
   }
 }
