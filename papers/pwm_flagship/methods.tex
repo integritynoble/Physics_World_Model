@@ -144,7 +144,7 @@ degree of physical realism in the simulated forward model:
 
 
 %% =========================================================================
-\subsection*{Triad Law Formalization}
+\subsection*{Triad Decomposition Formalization}
 \label{sec:methods:triad}
 
 The \triad{} asserts that the quality of any computational imaging
@@ -549,6 +549,28 @@ modeled as a center-of-rotation (CoR) offset, which produces
 characteristic arc artifacts in the reconstruction.  The default solver
 is filtered back-projection (FBP)~\cite{feldkamp1984practical} with a Ram-Lak filter, supplemented
 by iterative SART for comparison.
+
+\paragraph{CASSI real-data configuration.}
+The TSA real hyperspectral dataset~\cite{wagadarikar2008cassi} consists of
+5 scenes at $660 \times 660$ spatial resolution with 28 spectral bands
+and mask-shift step~2.  Four solvers are evaluated: GAP-TV (200 iterations),
+HDNet (pre-trained checkpoint, full spatial resolution), MST-S and MST-L
+(pre-trained checkpoints, centre-cropped to $256 \times 256$ due to
+hardcoded spatial assumptions in the model architecture).  The coded
+aperture mask is perturbed by $dx = 0.5$\,px, $dy = 0.3$\,px to simulate
+assembly-induced mismatch.  No ground truth is available; quality is
+assessed via the normalised measurement residual
+$r = \|\mathbf{y} - H\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$.
+
+\paragraph{CACTI real-data configuration.}
+The EfficientSCI real temporal dataset~\cite{wang2023efficientsci} consists
+of 4 dynamic scenes (duomino, hand, pendulumBall, waterBalloon) at
+$512 \times 512$ with compression ratio~10.  The real mask is stored
+separately from the measurement data.  Two solvers are evaluated:
+GAP-TV (50 iterations) and PnP-FFDNet (50 iterations with FFDNet denoiser).
+Mismatch is induced by shifting the mask by $dx = 0.5$\,px, $dy = 0.3$\,px.
+Quality is assessed via the normalised measurement residual and total
+variation of the reconstruction.
 
 
 %% =========================================================================
