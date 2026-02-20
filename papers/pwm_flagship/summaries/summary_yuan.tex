@@ -1,0 +1,130 @@
+\documentclass[11pt]{article}
+\usepackage{geometry,graphicx,booktabs,xcolor,hyperref,amsmath}
+\geometry{margin=1in}
+\definecolor{pwmblue}{HTML}{2E5FA1}
+\definecolor{pwmred}{HTML}{C93C3C}
+\definecolor{pwmgreen}{HTML}{3D9E3F}
+
+\title{\textbf{Paper Summary for Prof.\ Xin Yuan}\\[4pt]
+\large Physics World Models for Computational Imaging:\\
+CASSI, CACTI, and SPC Validation Results}
+\author{Chengshuai Yang \and Xin Yuan}
+\date{February 2026 --- Prepared for Nature submission}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\section*{Paper Overview}
+
+This paper introduces \textbf{Physics World Models (PWM)}, a universal diagnostic and correction framework built on the \textbf{Triad Decomposition}, which attributes imaging failures to three gates: recoverability (Gate~1), carrier budget (Gate~2), and operator mismatch (Gate~3).  The \textbf{OperatorGraph IR} encodes forward models across modalities into a common DAG formalism, enabling modality-agnostic diagnosis.
+
+\paragraph{Central finding.}  Gate~3 (operator mismatch) dominates in \emph{every} validated modality.  A sub-pixel mask perturbation erases \textbf{twice the reconstruction gains} of a decade of solver innovation.
+
+\section*{Sections Most Relevant to Your Expertise}
+
+\subsection*{1. CASSI Deep Dive: GAP-TV, MST-L, HDNet Under Mismatch}
+
+The paper uses the 5-parameter InverseNet mismatch ($dx{=}0.5$\,px, $dy{=}0.3$\,px, $\theta{=}0.1^\circ$, $a_1{=}2.02$, $\alpha{=}0.15^\circ$) across 10 KAIST scenes:
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Method} & \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~IV} & \textbf{$\rho$} \\
+\midrule
+GAP-TV  & $24.34$ & $20.96$ & $21.72$ & 0.22 \\
+MST-L   & $34.81$ & $20.83$ & $27.33$ & 0.46 \\
+HDNet   & $34.66$ & $21.88$ & $21.88$ & 0.00 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Key insight:} All solvers collapse to a narrow Scenario~II range ($20.83$--$21.88$\,dB), confirming the failure is operator-driven.  GAP-TV achieves $\rho = 0.22$ recovery; MST-L achieves $\rho = 0.46$ because it conditions on the mask.  HDNet's mask-oblivious architecture shows $\rho = 0$---it cannot exploit a corrected mask.
+
+\subsection*{2. CACTI Results: EfficientSCI and Temporal Compression}
+
+CACTI exhibits the most severe mismatch sensitivity among photon-domain modalities:
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Method} & \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III} & \textbf{$\rho$} \\
+\midrule
+GAP-TV        & $28.42$ & $17.60$ & --- & --- \\
+EfficientSCI  & $35.33$ & $14.48$ & $37.42$ & $>1.0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent EfficientSCI loses $20.85$\,dB under mismatch.  PWM correction recovers $+22.94$\,dB, reaching $37.42$\,dB---\emph{exceeding} the ideal baseline ($\rho > 1$ due to beneficial regularization from the corrected operator).  The temporal mask replication amplifies calibration errors multiplicatively across all compressed frames.
+
+\subsection*{3. SPC Gain Mismatch: A Qualitatively Different Failure Mode}
+
+SPC presents \textbf{gain bias} rather than geometric shift:
+
+\begin{itemize}
+  \item 5\% detector gain drift $\Rightarrow$ $-12.21$\,dB PSNR drop
+  \item PWM diagnoses Gate~3 localized to detector gain node
+  \item Correction recovers the full $12.21$\,dB ($\rho = 1.0$)
+  \item \textbf{But}: Gain-type mismatch is \emph{not} recoverable from measurement residual alone (Scenario~IV recovery = 0\% for SPC), because gain bias scales signal and noise uniformly
+\end{itemize}
+
+\subsection*{4. Real-Data Hardware Validation}
+
+\paragraph{CASSI real (TSA dataset, 5 scenes):}
+\begin{itemize}
+  \item GAP-TV residual ratio: $1.8\times$ (consistent across 5 scenes, range $1.6$--$2.0\times$)
+  \item HDNet: $1.0\times$ (mask-oblivious, insensitive)
+  \item MST-S/MST-L: ${\sim}1.0\times$ on real data (vs.\ $-13.98$\,dB in simulation!)
+  \item \textbf{Explanation}: Real hardware mask contains pre-existing manufacturing errors; additional $0.5$\,px perturbation is small relative to existing imperfections
+\end{itemize}
+
+\paragraph{CACTI real (4 scenes):}
+\begin{itemize}
+  \item GAP-TV residual ratio: $10.4\times$ (range $9.4$--$11.0\times$)
+  \item PnP-FFDNet: $2.0\times$ (deep prior provides partial robustness)
+  \item Temporal compression amplifies errors across all 10 frames
+\end{itemize}
+
+\paragraph{Autonomous calibration:}
+\begin{itemize}
+  \item CASSI: Grid search recovers 78\% of oracle correction (1,234\,s)
+  \item CACTI: Grid search recovers \textbf{100\%} of oracle correction (64\,s)
+  \item SPC: 0\% recovery (gain mismatch invisible to residual-based calibration)
+\end{itemize}
+
+\subsection*{5. SSIM and SAM Supplementary Results}
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{CASSI SAM} & \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III} \\
+\midrule
+GAP-TV  & $16.66^\circ$ & $24.27^\circ$ & $25.97^\circ$ \\
+MST-L   & $7.44^\circ$  & $23.92^\circ$ & $11.74^\circ$ \\
+HDNet   & $6.67^\circ$  & $17.03^\circ$ & $17.03^\circ$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent MST-L's SAM increases from $7.44^\circ$ to $23.92^\circ$ under mismatch---substantial spectral mixing.  Oracle correction partially recovers to $11.74^\circ$.
+
+\section*{Your Role and Contributions}
+
+As \textbf{co-author}, your contributions include:
+\begin{enumerate}
+  \item Domain expertise on CASSI and CACTI forward models and the mismatch parameter specifications used in all experiments
+  \item Validation of GAP-TV and EfficientSCI reconstruction algorithms
+  \item Expertise on SPC gain-mismatch failure mode (qualitatively different from geometric mismatch)
+  \item Manuscript editing and domain-specific review
+\end{enumerate}
+
+\section*{Paper Statistics}
+\begin{itemize}
+  \item Main paper: 34 pages, 7 figures; Supplementary: 22 pages, 12 tables
+  \item 10 KAIST scenes (CASSI), 6 benchmark videos (CACTI), 11 SPC images
+  \item 5 real CASSI scenes + 4 real CACTI scenes
+  \item Correction gains: CASSI $+0.76$--$6.50$\,dB, CACTI $+22.94$\,dB, SPC $+12.21$\,dB
+\end{itemize}
+
+\end{document}

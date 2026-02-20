@@ -1,0 +1,92 @@
+\documentclass[11pt]{article}
+\usepackage{geometry,graphicx,booktabs,xcolor,hyperref,amsmath}
+\geometry{margin=1in}
+\definecolor{pwmblue}{HTML}{2E5FA1}
+\definecolor{pwmred}{HTML}{C93C3C}
+\definecolor{pwmgreen}{HTML}{3D9E3F}
+
+\title{\textbf{Paper Summary for Prof.\ David Brady}\\[4pt]
+\large Physics World Models for Computational Imaging:\\
+Hardware Validation and the Simulation-to-Hardware Gap}
+\author{Chengshuai Yang \and Xin Yuan}
+\date{February 2026 --- Prepared for Nature submission}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\section*{Paper Overview}
+
+This paper introduces \textbf{Physics World Models (PWM)}, a universal diagnostic and correction framework for computational imaging.  The central contribution is the \textbf{Triad Decomposition}, which attributes every imaging failure to one of three root causes: information deficiency (Gate~1), insufficient signal-to-noise ratio (Gate~2), or \textbf{operator mismatch} (Gate~3).  A unified intermediate representation, the \textbf{OperatorGraph IR}, encodes forward models across imaging modalities into a common directed-acyclic-graph formalism.
+
+\paragraph{Key finding.}  Across \textbf{7 validated modalities} (CASSI, CACTI, SPC, lensless, ptychography, MRI, CT), Gate~3 (operator mismatch) is the dominant failure mode in \emph{every} case.  A sub-pixel mask perturbation in CASSI erases \textbf{twice the reconstruction gains} achieved by a decade of solver innovation ($-13.98$\,dB mismatch loss vs.\ ${\sim}7$\,dB from TwIST to MST-L).
+
+\section*{Sections Most Relevant to Your Expertise}
+
+\subsection*{1. Hardware Validation on Real CASSI and CACTI Instruments}
+
+The paper validates the Triad Decomposition on \textbf{real hardware data} from the two coded aperture modalities you pioneered:
+
+\begin{itemize}
+  \item \textbf{CASSI real data} (TSA dataset, 5 scenes, $660 \times 660$, 28 bands): Under a sub-pixel mask perturbation ($dx{=}0.5$\,px, $dy{=}0.3$\,px), GAP-TV shows a \textbf{$1.8\times$ measurement residual ratio}.  HDNet (mask-oblivious) shows $1.0\times$, confirming that the degradation is operator-driven.
+  \item \textbf{CACTI real data} (4 scenes, $512 \times 512$, CR=10): GAP-TV shows an \textbf{order-of-magnitude $10.4\times$ residual ratio}.  The multiplicative error amplification in temporal compression (single mask error $\times$ 10 frames) explains the severity.
+\end{itemize}
+
+\subsection*{2. The Simulation-to-Hardware Gap (Key Discovery)}
+
+The comparison between synthetic and real-data results reveals a \textbf{systematic simulation-to-hardware gap}:
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{CASSI} & \textbf{CACTI} \\
+\midrule
+Simulation PSNR drop & $3.38$\,dB & $10.94$\,dB \\
+Hardware residual ratio & $1.8\times$ & $10.4\times$ \\
+Gap interpretation & \textcolor{pwmgreen}{Modest} & \textcolor{pwmred}{Severe} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Why the asymmetry?}  CASSI's real hardware mask contains \emph{pre-existing manufacturing imperfections} (spatial nonuniformities, assembly tolerances) that absorb additional perturbations.  CACTI's simpler temporal mask has fewer pre-existing errors, so each perturbation propagates at full strength.
+
+\textbf{Implication:} Simulation-based mismatch studies (most prior literature) \emph{overestimate} the marginal impact of individual calibration errors while \emph{underestimating} the cumulative impact of as-built system errors.  The paper recommends reporting both simulation PSNR drops \emph{and} hardware residual ratios.
+
+\subsection*{3. Autonomous Calibration on Real Data}
+
+Grid-search calibration was applied to real measurements:
+
+\begin{itemize}
+  \item \textbf{CASSI}: Estimated $(\hat{dx}, \hat{dy}) = (0.4, 0.2)$\,px (true: $0.5, 0.3$\,px), achieving \textbf{78\%} of oracle correction in 1,234\,s.
+  \item \textbf{CACTI}: Estimated $(\hat{dx}, \hat{dy}) = (0.5, 0.25)$\,px, recovering \textbf{100\%} of oracle correction in 64\,s.
+\end{itemize}
+
+\subsection*{4. Controlled Hardware Experiment Protocol (Proposed)}
+
+The Methods section describes a full \textbf{hardware-in-the-loop validation protocol}:
+\begin{enumerate}
+  \item Acquire baseline data at factory-calibrated mask position.
+  \item Physically translate mask by known displacement ($\Delta x \in \{0.25, 0.5, 1.0\}$\,px, verified by micrometer stage).
+  \item Re-acquire under identical illumination and reconstruct both datasets.
+  \item Apply PWM autonomous calibration and measure recovery.
+  \item Multi-unit variation study: compare 2+ camera units to quantify inter-unit mismatch baseline.
+\end{enumerate}
+
+\section*{How Your Expertise Would Strengthen This Paper}
+
+\begin{enumerate}
+  \item \textbf{Real hardware validation with physical mask displacement}: Your lab can physically translate the coded aperture mask on real CASSI/CACTI systems and re-acquire data, converting the software-perturbation protocol into a true hardware-in-the-loop experiment.
+  \item \textbf{Multi-unit variation studies}: Access to multiple CASSI/CACTI camera units enables quantifying the inter-unit mismatch baseline---a measurement that has never been reported in the literature.
+  \item \textbf{Domain authority}: As the inventor of both CASSI and CACTI, your co-authorship provides the strongest possible validation that the mismatch analysis and correction framework is physically sound.
+\end{enumerate}
+
+\section*{Paper Statistics}
+\begin{itemize}
+  \item Main paper: 34 pages (Nature review format), 7 figures
+  \item Supplementary: 22 pages, 12 tables, 7 supplementary notes
+  \item Validated modalities: 7 (CASSI, CACTI, SPC, Lensless, Ptychography, MRI, CT)
+  \item Hardware validation: Real CASSI (5 scenes) + real CACTI (4 scenes)
+  \item Correction gains: $+0.76$ to $+48.25$\,dB across modalities
+\end{itemize}
+
+\end{document}
