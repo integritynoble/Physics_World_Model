@@ -50,13 +50,15 @@ CACTI exhibits the most severe mismatch sensitivity among photon-domain modaliti
 \toprule
 \textbf{Method} & \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III} & \textbf{$\rho$} \\
 \midrule
-GAP-TV        & $28.42$ & $17.60$ & --- & --- \\
-EfficientSCI  & $35.33$ & $14.48$ & $37.42$ & $>1.0$ \\
+GAP-TV        & $26.75$ & $15.81$ & $26.01$ & $0.93$ \\
+PnP-FFDNet    & $29.28$ & $11.43$ & $25.39$ & $0.78$ \\
+ELP-Unfolding & $34.09$ & $15.47$ & $29.40$ & $0.75$ \\
+EfficientSCI  & $35.39$ & $14.81$ & $27.38$ & $0.61$ \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\noindent EfficientSCI loses $20.85$\,dB under mismatch.  PWM correction recovers $+22.94$\,dB, reaching $37.42$\,dB---\emph{exceeding} the ideal baseline ($\rho > 1$ due to beneficial regularization from the corrected operator).  The temporal mask replication amplifies calibration errors multiplicatively across all compressed frames.
+\noindent\textbf{Key insights:} All four methods suffer catastrophic mismatch degradation ($-10.94$ to $-20.58$\,dB), confirming operator-driven failure.  GAP-TV achieves the highest recovery ratio ($\rho = 0.93$), recovering $+10.21$\,dB of the $10.94$\,dB degradation---nearly perfect calibration.  EfficientSCI has the lowest $\rho$ ($0.61$) despite the best Sc.~I performance, indicating that deep unrolling networks suffer more \emph{irreversible} damage from mismatch than iterative methods.  PnP-FFDNet and ELP-Unfolding fall in between ($\rho = 0.78$ and $0.75$).  The temporal mask replication amplifies calibration errors multiplicatively across all compressed frames.
 
 \subsection*{3. SPC Gain Mismatch: A Qualitatively Different Failure Mode}
 
