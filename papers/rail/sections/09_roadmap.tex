@@ -225,3 +225,57 @@ computational imaging will crystallize.  The infrastructure laid in
 Phase~1 determines whether those norms are principled, reproducible, and
 physics-aware---or whether the field continues to optimize solvers on
 idealized simulations while real systems fail silently.
+
+\subsection{Clinical Medical Physics Vertical}
+
+PWM's mismatch detection and four-scenario protocol map directly to
+clinical QA/QC workflows, making medical physics a natural vertical for
+the platform.  The Triad Law applies to clinical imaging with the same
+gate structure observed across 16~research modalities: Gate~1 (protocol
+design inadequacy), Gate~2 (dose/count budget), and Gate~3 (scanner
+calibration drift).  Gate~3 dominates in clinical practice---most QA
+failures trace to calibration drift, not protocol or dose
+issues---precisely mirroring the research finding that operator mismatch,
+rather than algorithmic weakness, is the primary source of
+reconstruction degradation.
+
+\medskip
+\noindent
+\textbf{Standards alignment.}
+The system computationally implements existing clinical standards rather
+than inventing new QA criteria: ACR CT
+accreditation~\cite{acr_ct_accreditation}, AAPM TG-233 for CT
+performance metrics~\cite{aapm_tg233}, AAPM TG-126 for PET/CT
+QA~\cite{aapm_tg126}, and AAPM TG-177 for
+SPECT/CT~\cite{aapm_tg177}.  Each phantom/test combination is encoded
+as a versioned \emph{CasePack}---the same abstraction that packages
+research modalities---ensuring reproducibility across sites.
+
+\medskip
+\noindent
+\textbf{The copilot model.}
+Following the SolveEverything.org framework, PWM serves as a clinical QC
+copilot rather than a replacement for the qualified medical physicist.
+PWM provides the targeting system (which scanner needs attention),
+outcome contracts (pass/fail against published thresholds with full
+evidence), and decision logs (immutable QC records).  The physicist
+provides clinical judgment, sign-off, and regulatory accountability.  In
+slogan form: ``Autopilot for QC, Digital Twin for troubleshooting.''
+
+\medskip
+\noindent
+\textbf{CasePack extensibility.}
+Each phantom/test combination is a versioned CasePack containing ROIs,
+metrics, thresholds, and a report template.  Adding PET/CT or SPECT
+requires a new CasePack, not new code---the same harness accommodates
+different modalities with no architectural changes.
+
+\medskip
+\noindent
+\textbf{Economic argument.}
+A single medical physicist may oversee 10--50~scanners.  The copilot
+reduces per-scanner QC time from hours to minutes while improving
+consistency, traceability, and accreditation readiness.  The abundance
+flywheel (\cref{sec:flywheel}) applies: each scanner model added lowers
+the marginal cost of the next, and the resulting cost surplus funds
+expansion to additional imaging modalities and clinical sites.
