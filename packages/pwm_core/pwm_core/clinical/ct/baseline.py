@@ -341,6 +341,17 @@ class BaselineManager:
         """
         comparisons: dict[str, BaselineComparison] = {}
 
+        # Unwrap MetricResult objects to floats if needed
+        unwrapped: dict[str, float] = {}
+        for k, v in current_metrics.items():
+            if isinstance(v, (int, float)):
+                unwrapped[k] = float(v)
+            elif hasattr(v, "value"):
+                unwrapped[k] = float(v.value)
+            else:
+                unwrapped[k] = float(v)
+        current_metrics = unwrapped
+
         for metric_name, current_value in current_metrics.items():
             if metric_name not in baseline.metrics:
                 logger.warning(

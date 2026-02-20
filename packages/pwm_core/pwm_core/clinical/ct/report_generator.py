@@ -598,9 +598,25 @@ class ReportGenerator:
             pdf.cell(0, 7, "Drift Alerts", new_x="LMARGIN", new_y="NEXT")
             pdf.set_font("Helvetica", "", 9)
             for alert in drift_alerts:
-                metric_name = alert.get("metric", alert.get("metric_key", "unknown"))
-                alert_type = alert.get("type", alert.get("alert_type", "drift"))
-                message = alert.get("message", alert.get("description", ""))
+                if isinstance(alert, dict):
+                    # Support both correct DriftAlert field names and legacy keys
+                    metric_name = alert.get(
+                        "metric_name",
+                        alert.get("metric", alert.get("metric_key", "unknown")),
+                    )
+                    alert_type = alert.get(
+                        "alert_level",
+                        alert.get("type", alert.get("alert_type", "drift")),
+                    )
+                    message = alert.get(
+                        "description",
+                        alert.get("message", ""),
+                    )
+                else:
+                    # Pydantic object (DriftAlert) -- use attribute access
+                    metric_name = getattr(alert, "metric_name", "unknown")
+                    alert_type = getattr(alert, "alert_level", "drift")
+                    message = getattr(alert, "description", "")
                 pdf.set_text_color(200, 100, 0)
                 pdf.cell(0, 5, f"  [{alert_type}] {metric_name}: {message}", new_x="LMARGIN", new_y="NEXT")
             pdf.set_text_color(0, 0, 0)
@@ -1082,12 +1098,30 @@ def _extract_trend_data(drift_report: Any) -> dict[str, list]:
     """Extract time-series data from a drift report for plotting.
 
     Returns a dict of metric_key -> list of (date, value) tuples.
+
+    Supports three input shapes:
+    - Plain dict with ``"trends"`` or ``"series"`` key.
+    - Object with a ``.trends`` attribute (legacy).
+    - DriftReport Pydantic model with ``.control_charts`` (dict of
+      metric_key -> ControlChart). Each ControlChart has ``metric_name``,
+      ``values``, and ``dates`` fields.
     """
     if isinstance(drift_report, dict):
         return drift_report.get("trends", drift_report.get("series", {}))
     elif hasattr(drift_report, "trends"):
         trends = drift_report.trends
         return trends if isinstance(trends, dict) else {}
+    elif hasattr(drift_report, "control_charts"):
+        charts = drift_report.control_charts
+        if not isinstance(charts, dict):
+            return {}
+        result: dict[str, list] = {}
+        for metric_key, chart in charts.items():
+            # ControlChart has .values (list[float]) and .dates (list[str])
+            values = getattr(chart, "values", [])
+            dates = getattr(chart, "dates", [])
+            result[metric_key] = list(zip(dates, values))
+        return result
     return {}
 
 
