@@ -1,19 +1,20 @@
 \input{preamble}
 
-\title{Operator mismatch, not solver weakness, is the dominant bottleneck\\
-in computational imaging}
+\title{Physics World Models for Computational Imaging:\\
+A Universal Physics-Information Law for Recoverability,\\
+Carrier Noise, and Operator Mismatch}
 
 \author{
 Chengshuai Yang$^{1,*}$
 \and
-David J.\ Brady$^{2}$
+Xin Yuan$^{2}$
 }
 
 \date{}
 
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 \footnotetext[1]{$^1$NextGen PlatformAI C Corp, USA.
-$^2$Wyant College of Optical Sciences, University of Arizona, Tucson, AZ, USA.
+$^2$School of Engineering, Westlake University, Hangzhou, China.
 $^*$Correspondence: \texttt{integrityyang@gmail.com}}
 \renewcommand{\thefootnote}{\arabic{footnote}}
 
@@ -207,13 +208,13 @@ Looking forward, we envision three extensions. First, systematic hardware-in-the
 %% ═══════════════════════════════════════════════════════════════════
 
 \paragraph{Acknowledgements.}
-We thank the open-source computational imaging community for making reconstruction code and benchmark datasets publicly available. The TSA real hyperspectral dataset and CACTI real video datasets were acquired using instruments developed at the Brady Camera Lab. This work was supported by NextGen PlatformAI C~Corp and in part by the J.W.\ and H.M.\ Goodman Foundation.
+We thank the open-source computational imaging community for making reconstruction code and benchmark datasets publicly available. This work was supported by NextGen PlatformAI C~Corp.
 
 \paragraph{Author Contributions.}
-C.Y.\ conceived the project, designed the \triad{} framework, developed the \opg{} IR, implemented the agent and correction systems, performed the simulation and real-data experiments, and wrote the manuscript. D.J.B.\ provided domain expertise on the CASSI and CACTI forward models, supervised the hardware validation experiments, contributed to the interpretation of the simulation-to-hardware gap, and edited the manuscript.
+C.Y.\ conceived the project, designed the \triad{} framework, developed the \opg{} IR, implemented the agent and correction systems, performed all simulation and real-data experiments, and wrote the manuscript. X.Y.\ contributed domain expertise on the CASSI and CACTI forward models and reconstruction algorithms (GAP-TV, EfficientSCI), validated the mismatch parameter specifications, and edited the manuscript.
 
 \paragraph{Competing Interests.}
-C.Y.\ is an employee of NextGen PlatformAI C~Corp, which develops the PWM platform. D.J.B.\ is co-founder of Aqueti Inc.\ and Applied Quantum Technologies. The authors declare no other competing interests.
+C.Y.\ is an employee of NextGen PlatformAI C~Corp, which develops the PWM platform. The authors declare no other competing interests.
 
 \paragraph{Data Availability.}
 All synthetic measurement data can be regenerated using the \opg{} templates and mismatch parameters in the Supplementary Information. The KAIST hyperspectral dataset~\cite{choi2017kaist} and TSA real-data scenes used for CASSI experiments are publicly available. CACTI real-data scenes are available from the EfficientSCI repository~\cite{wang2023efficientsci}.
