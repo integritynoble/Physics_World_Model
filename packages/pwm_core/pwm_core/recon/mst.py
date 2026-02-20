@@ -532,9 +532,12 @@ def _find_mst_weights(variant: str = "mst_l", weights_path: Optional[str] = None
         return weights_path
 
     pkg_root = Path(__file__).resolve().parent.parent
+    pkg_top = pkg_root.parent  # packages/pwm_core (above pwm_core/)
     search_paths = [
         pkg_root / f"weights/mst/{variant}.pth",
         pkg_root / "weights/mst/mst_l.pth",  # fallback to mst_l
+        pkg_top / f"weights/mst/{variant}.pth",
+        pkg_top / "weights/mst/mst_l.pth",
     ]
     for p in search_paths:
         if p.exists():

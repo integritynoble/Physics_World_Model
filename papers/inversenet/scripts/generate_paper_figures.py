@@ -63,11 +63,11 @@ def load_json(name: str):
 
 
 # ===== CASSI helpers =====
-CASSI_METHODS = ["gap_tv", "hdnet", "mst_s", "mst_l"]
-CASSI_LABELS = {"gap_tv": "GAP-TV", "hdnet": "HDNet",
-                "mst_s": "MST-S", "mst_l": "MST-L"}
-CASSI_COLORS = {"gap_tv": "#1f77b4", "hdnet": "#ff7f0e",
-                "mst_s": "#2ca02c", "mst_l": "#d62728"}
+CASSI_METHODS = ["gap_tv", "pnp_hsicnn", "hdnet", "mst_l"]
+CASSI_LABELS = {"gap_tv": "GAP-TV", "pnp_hsicnn": "PnP-HSICNN",
+                "hdnet": "HDNet", "mst_l": "MST-L"}
+CASSI_COLORS = {"gap_tv": "#1f77b4", "pnp_hsicnn": "#2ca02c",
+                "hdnet": "#ff7f0e", "mst_l": "#d62728"}
 
 # ===== CACTI helpers =====
 CACTI_METHODS = ["gap_tv", "pnp_ffdnet", "elp_unfolding", "efficientsci"]
@@ -77,11 +77,11 @@ CACTI_COLORS = {"gap_tv": "#1f77b4", "pnp_ffdnet": "#2ca02c",
                 "elp_unfolding": "#ff7f0e", "efficientsci": "#d62728"}
 
 # ===== SPC helpers =====
-SPC_METHODS = ["fista_tv", "ista_net", "hatnet"]
-SPC_LABELS = {"fista_tv": "FISTA-TV", "ista_net": "ISTA-Net",
-              "hatnet": "HATNet"}
-SPC_COLORS = {"fista_tv": "#1f77b4", "ista_net": "#2ca02c",
-              "hatnet": "#ff7f0e"}
+SPC_METHODS = ["fista_tv", "pnp_drunet", "ista_net", "hatnet"]
+SPC_LABELS = {"fista_tv": "FISTA-TV", "pnp_drunet": "PnP-DRUNet",
+              "ista_net": "ISTA-Net", "hatnet": "HATNet"}
+SPC_COLORS = {"fista_tv": "#1f77b4", "pnp_drunet": "#9467bd",
+              "ista_net": "#2ca02c", "hatnet": "#ff7f0e"}
 
 SCENARIOS = ["scenario_i", "scenario_ii", "scenario_iii"]
 SCENARIO_TICK = ["I (Ideal)", "II (Mismatch)", "III (Oracle)"]
@@ -343,8 +343,8 @@ def fig4_rho_scatter():
         piii = cassi["scenario_iii"][m]["psnr_mean"]
         deg = pi - pii
         rho = ((piii - pii) / deg * 100) if deg > 0.5 else None
-        mtype = {"gap_tv": "classical", "hdnet": "mask-oblivious",
-                 "mst_s": "mask-aware", "mst_l": "mask-aware"}[m]
+        mtype = {"gap_tv": "classical", "pnp_hsicnn": "classical",
+                 "hdnet": "mask-oblivious", "mst_l": "mask-aware"}[m]
         points.append(("CASSI", CASSI_LABELS[m], pi, rho, mtype))
 
     for m in CACTI_METHODS:
@@ -364,8 +364,8 @@ def fig4_rho_scatter():
         piii = spc["methods"][f"{m}_scenario_iii"]["psnr_mean"]
         deg = pi - pii
         rho = ((piii - pii) / deg * 100) if deg > 0.5 else None
-        mtype = {"fista_tv": "classical", "ista_net": "mask-aware",
-                 "hatnet": "mask-aware"}[m]
+        mtype = {"fista_tv": "classical", "pnp_drunet": "classical",
+                 "ista_net": "mask-aware", "hatnet": "mask-aware"}[m]
         points.append(("SPC", SPC_LABELS[m], pi, rho, mtype))
 
     type_markers = {"classical": "^", "mask-aware": "o", "mask-oblivious": "X"}

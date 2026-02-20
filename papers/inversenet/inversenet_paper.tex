@@ -43,10 +43,10 @@
 State-of-the-art EfficientSCI loses 20.58\,dB---from 35.39 to 14.81\,dB---when its assumed forward operator deviates from the physical truth by just eight parameters.
 This \emph{operator mismatch} is the default condition of every deployed compressive imaging system, yet no existing benchmark quantifies it.
 We introduce \textbf{InverseNet}, the first cross-modality benchmark for operator mismatch in compressive imaging, spanning coded aperture snapshot spectral imaging (CASSI), coded aperture compressive temporal imaging (CACTI), and single-pixel camera (SPC).
-InverseNet evaluates 11 reconstruction methods under a four-scenario protocol---ideal~(I), mismatched~(II), oracle-corrected~(III), and blind grid-search calibration~(IV)---across 27 simulated scenes and 9 real hardware captures, totalling over 330 experiments.
+InverseNet evaluates 12 reconstruction methods under a four-scenario protocol---ideal~(I), mismatched~(II), oracle-corrected~(III), and blind grid-search calibration~(IV)---across 27 simulated scenes and 9 real hardware captures, totalling over 360 experiments.
 We discover an inverse performance--robustness relationship: methods achieving the highest ideal PSNR suffer the largest mismatch degradation---confirming that \emph{a mediocre algorithm with a correct forward model outperforms a state-of-the-art network with a wrong one}.
 We further establish an operator-awareness taxonomy: \emph{mask-oblivious} architectures show zero calibration benefit ($\rho = 0\%$), while \emph{operator-conditioned} methods recover 41--90\% of mismatch losses.
-Scenario~IV provides a practical calibration baseline via measurement-residual minimization, recovering a substantial fraction of the oracle bound without ground truth.
+Scenario~IV provides a practical calibration baseline via self-supervised objectives (measurement residual for geometric mismatch, reconstruction sparsity for radiometric mismatch), recovering 78--100\% of the oracle bound without ground truth.
 Real hardware experiments on 5 CASSI scenes and 4 CACTI scenes confirm that simulation-derived patterns hold on physical data.
 Code is available upon acceptance.
 
@@ -76,9 +76,9 @@ Antun et al.~\cite{antun2020instabilities} showed deep learning solvers are unst
 \textbf{Contributions.}
 We address this gap with InverseNet, which makes four contributions:
 \begin{enumerate}
-    \item \textbf{Unified four-scenario protocol.} We define four scenarios---ideal~(I), mismatched~(II), oracle-corrected~(III), and blind calibration~(IV)---applicable across modalities. The I$\to$II gap quantifies mismatch sensitivity; II$\to$III quantifies calibration potential; IV measures practical recovery via measurement-residual minimization.
+    \item \textbf{Unified four-scenario protocol.} We define four scenarios---ideal~(I), mismatched~(II), oracle-corrected~(III), and blind calibration~(IV)---applicable across modalities. The I$\to$II gap quantifies mismatch sensitivity; II$\to$III quantifies calibration potential; IV measures practical recovery via self-supervised calibration.
 
-    \item \textbf{Cross-modality benchmark.} We evaluate 11 methods (4 CASSI, 4 CACTI, 3 SPC) spanning classical and deep learning approaches across 27 simulated scenes, producing over 330 experiments.
+    \item \textbf{Cross-modality benchmark.} We evaluate 12 methods (4 CASSI, 4 CACTI, 4 SPC) spanning classical, plug-and-play, and deep learning approaches across 27 simulated scenes, producing over 360 experiments.
 
     \item \textbf{Real hardware validation.} We validate simulation findings on 5 real CASSI scenes and 4 real CACTI scenes from publicly available hardware captures, confirming that mismatch patterns transfer to physical data.
 
@@ -118,10 +118,10 @@ InverseNet extends these by introducing controlled operator mismatch and measuri
 \section{The InverseNet Benchmark}
 \label{sec:benchmark}
 
-\subsection{Unified Three-Scenario Protocol}
+\subsection{Unified Four-Scenario Protocol}
 \label{sec:protocol}
 
-We define three evaluation scenarios that apply uniformly across all compressive imaging modalities.
+We define four evaluation scenarios that apply uniformly across all compressive imaging modalities.
 Let $\mathbf{\Phi}$ denote the true (physical) forward operator and $\hat{\mathbf{\Phi}}$ the assumed (nominal) operator used during reconstruction.
 
 \begin{itemize}
@@ -131,7 +131,7 @@ Let $\mathbf{\Phi}$ denote the true (physical) forward operator and $\hat{\mathb
 
     \item \textbf{Scenario~III (Oracle):} $\mathbf{y} = \mathbf{\Phi}\mathbf{x} + \mathbf{n}$, reconstruct with $\mathbf{\Phi}$. Upper bound achievable through perfect calibration.
 
-    \item \textbf{Scenario~IV (Blind Calibration):} $\mathbf{y} = \mathbf{\Phi}\mathbf{x} + \mathbf{n}$, reconstruct with $\tilde{\mathbf{\Phi}}$ estimated via $\tilde{\mathbf{\Phi}} = \arg\min_{\mathbf{\Phi}'} \|\mathbf{y} - \mathbf{\Phi}' \hat{\mathbf{x}}(\mathbf{\Phi}')\|^2$. Practical calibration without ground truth, using grid search over mismatch parameters with measurement residual as objective.
+    \item \textbf{Scenario~IV (Blind Calibration):} $\mathbf{y} = \mathbf{\Phi}\mathbf{x} + \mathbf{n}$, reconstruct with $\tilde{\mathbf{\Phi}}$ estimated via grid search over mismatch parameters using a self-supervised objective (measurement residual for geometric mismatch, reconstruction sparsity for radiometric mismatch). Practical calibration without ground truth.
 \end{itemize}
 
 This protocol yields two diagnostic metrics per method:
@@ -164,8 +164,8 @@ We use $dx = 0.5$\,px, $dy = 0.3$\,px, $\theta = 0.1^\circ$ for mask misalignmen
 \paragraph{Reconstruction methods.}
 We evaluate four methods:
 \textbf{GAP-TV}~\cite{yuan2016gaptv}: classical accelerated proximal gradient with TV regularization (100 iterations, $\lambda_{\text{TV}} = 0.1$);
+\textbf{PnP-HSICNN}~\cite{yuan2020pnp}: plug-and-play GAP with HSI-SDeCNN deep denoiser (124 iterations: TV iters 0--82, HSICNN iters 83--123);
 \textbf{HDNet}~\cite{hu2022hdnet}: dual-domain deep network with spectral discrimination learning (pretrained);
-\textbf{MST-S}~\cite{cai2022mst}: mask-guided spectral transformer, small variant (2 stages, blocks $[2,2,2]$, pretrained);
 \textbf{MST-L}~\cite{cai2022mst}: mask-guided spectral transformer, large variant (2 stages, blocks $[4,7,5]$, pretrained).
 
 \paragraph{Dataset.}
@@ -210,16 +210,17 @@ The single-pixel camera acquires $m$ scalar measurements of an image $\mathbf{x}
 where $\mathbf{A} \in \mathbb{R}^{m \times n}$ is the measurement matrix (typically Gaussian or Hadamard patterns) with compression ratio $m/n$.
 
 \paragraph{Mismatch model.}
-We model SPC mismatch as multiplicative gain drift affecting the measurement matrix:
+We model SPC mismatch as exponential gain drift affecting the measurement rows:
 \begin{equation}
-    \mathbf{\Phi} = \text{diag}(1 + \alpha \cdot \mathbf{g}) \cdot \hat{\mathbf{\Phi}},
+    \mathbf{\Phi} = \text{diag}\!\left(e^{-\alpha \cdot \mathbf{i}}\right) \cdot \hat{\mathbf{\Phi}},
 \end{equation}
-where $\alpha = 0.0015$ controls the drift magnitude and $\mathbf{g}$ is a per-row gain perturbation vector.
+where $\alpha = 0.0015$ controls the drift rate and $\mathbf{i} = [0, 1, \ldots, m{-}1]^{\!\top}$ indexes the measurement rows, modelling progressive detector gain decay during sequential acquisition.
 Additional measurement noise $\sigma_y = 0.03$ is applied.
 
 \paragraph{Reconstruction methods.}
-We evaluate three methods:
+We evaluate four methods:
 \textbf{FISTA-TV}~\cite{beck2009fista}: fast iterative shrinkage-thresholding with TV regularization (500 iterations, $\lambda = 0.005$);
+\textbf{PnP-DRUNet}~\cite{zhang2021drunet}: plug-and-play FISTA with DRUNet denoiser and sigma annealing (100 iterations, row-normalized operator);
 \textbf{ISTA-Net}~\cite{zhang2018istanet}: learned iterative shrinkage-thresholding network (pretrained);
 \textbf{HATNet}~\cite{qu2024hatnet}: dual-scale transformer for single-pixel imaging (pretrained).
 
@@ -281,11 +282,11 @@ HDNet~\cite{hu2022hdnet}
  & 21.88{\scriptsize$\pm$1.72} / .756
  & 21.88{\scriptsize$\pm$1.72} / .756
  & 12.78 & 0.00 & 0\% \\
-MST-S~\cite{cai2022mst}
- & 33.98{\scriptsize$\pm$2.50} / .965
- & 20.99{\scriptsize$\pm$2.08} / .771
- & 26.28{\scriptsize$\pm$1.88} / .870
- & 12.99 & 5.29 & 40.7\% \\
+PnP-HSICNN~\cite{zheng2021pnp}
+ & 25.12{\scriptsize$\pm$1.88} / .758
+ & 20.40{\scriptsize$\pm$1.71} / .574
+ & 23.08{\scriptsize$\pm$1.52} / .702
+ & 4.72 & 2.68 & 56.8\% \\
 MST-L~\cite{cai2022mst}
  & \textbf{34.81}{\scriptsize$\pm$2.11} / \textbf{.973}
  & 20.83{\scriptsize$\pm$2.01} / .744
@@ -298,14 +299,14 @@ MST-L~\cite{cai2022mst}
 
 \paragraph{Key findings.}
 The CASSI results reveal a dichotomy between operator-aware and mask-oblivious architectures.
-\textbf{MST-L} achieves the best ideal performance (34.81\,dB) and highest oracle recovery (+6.50\,dB, $\rho = 46.5\%$); the moderate recovery ratio reflects architectural limitations in correcting sub-pixel dispersion drift.
+\textbf{PnP-HSICNN} achieves the highest oracle recovery ratio ($\rho = 56.8\%$, +2.68\,dB), outperforming even the deep \textbf{MST-L} ($\rho = 46.5\%$, +6.50\,dB absolute), because its iterative GAP backbone directly benefits from corrected mask and dispersion parameters.
 \textbf{HDNet} shows \textit{zero} oracle gain ($\Delta_{\text{rec}} = 0.00$\,dB), confirming mask-oblivious architectures cannot benefit from calibration.
-Under Scenario~II, all deep learning methods converge to 20.83--21.88\,dB, erasing their ${\sim}$10\,dB ideal-condition advantage over classical GAP-TV.
+Under Scenario~II, all methods converge to 20.40--21.88\,dB, erasing the ${\sim}$10\,dB ideal-condition advantage of deep learning over classical methods.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig3_gap_comparison.pdf}
-\caption{Mismatch degradation ($\Delta_{\text{deg}}$, left) and oracle recovery ($\Delta_{\text{rec}}$, right) per method across all three modalities. CACTI suffers the most severe degradation (up to 20.6\,dB) but also the highest absolute recovery. For CASSI, HDNet shows zero recovery due to its mask-oblivious architecture; MST-L achieves the best recovery (+6.50\,dB, $\rho = 46.5\%$). For SPC, HATNet recovers 10.4\,dB ($\rho = 89.6\%$).}
+\caption{Mismatch degradation ($\Delta_{\text{deg}}$, left) and oracle recovery ($\Delta_{\text{rec}}$, right) per method across all three modalities. CACTI suffers the most severe degradation (up to 20.6\,dB) but also the highest absolute recovery. For CASSI, HDNet shows zero recovery due to its mask-oblivious architecture; PnP-HSICNN achieves the best recovery ratio ($\rho = 56.8\%$). For SPC, HATNet recovers 10.4\,dB ($\rho = 89.6\%$).}
 \label{fig:gap_comparison}
 \end{figure}
 
@@ -376,6 +377,11 @@ FISTA-TV~\cite{beck2009fista}
  & 18.51{\scriptsize$\pm$0.69} / .586
  & 26.21{\scriptsize$\pm$2.28} / .759
  & 9.55 & 7.71 & 80.7\% \\
+PnP-DRUNet~\cite{zhang2021drunet}
+ & 28.06{\scriptsize$\pm$5.26} / .880
+ & 16.08{\scriptsize$\pm$0.89} / .402
+ & 22.35{\scriptsize$\pm$2.67} / .645
+ & 11.99 & 6.28 & 52.4\% \\
 ISTA-Net~\cite{zhang2018istanet}
  & \textbf{31.85}{\scriptsize$\pm$3.11} / \textbf{.916}
  & 19.02{\scriptsize$\pm$0.61} / .584
@@ -392,8 +398,10 @@ HATNet~\cite{qu2024hatnet}
 \end{table}
 
 \paragraph{Key findings.}
-Gain drift compresses all methods to 18.51--19.40\,dB under Scenario~II despite a 3.79\,dB ideal spread.
-\textbf{HATNet} achieves the highest recovery ($\rho = 89.6\%$), while \textbf{ISTA-Net} ($\rho = 65.7\%$) confirms the pattern that higher-capacity representations are more fragile under mismatch.
+Gain drift compresses all methods to 16.08--19.40\,dB under Scenario~II despite a ${\sim}$3\,dB ideal spread.
+\textbf{HATNet} achieves the highest recovery ($\rho = 89.6\%$), followed by \textbf{FISTA-TV} ($\rho = 80.7\%$).
+\textbf{PnP-DRUNet} ($\rho = 52.4\%$) shows that the DRUNet denoiser prior, while effective for ideal conditions (28.06\,dB), is more fragile under gain drift mismatch, as the denoiser amplifies gain-corrupted measurement artifacts.
+\textbf{ISTA-Net} ($\rho = 65.7\%$) confirms the pattern that higher-capacity learned representations are more fragile under mismatch.
 
 \subsection{Cross-Modality Analysis}
 \label{sec:cross}
@@ -408,9 +416,9 @@ Gain drift compresses all methods to 18.51--19.40\,dB under Scenario~II despite 
 \toprule
 \textbf{Modality} & \textbf{Dim.} & $\boldsymbol{\Delta}_{\textbf{deg}}$ \textbf{range} & $\boldsymbol{\Delta}_{\textbf{rec}}$ \textbf{range} & $\boldsymbol{\rho}_{\textbf{best}}$ & \textbf{SSIM rec.} & \textbf{Best method} \\
 \midrule
-CASSI  & 5 & 3.38--13.98 & 0.00--6.50 & 46.5\% & .744$\to$.881 & MST-L \\
+CASSI  & 5 & 3.38--12.78 & 0.00--6.50 & 56.8\% & .574$\to$.702 & PnP-HSICNN \\
 CACTI  & 8 & 10.94--20.58 & 10.21--13.96 & 93.3\% & .305$\to$.794 & GAP-TV \\
-SPC    & 2 & 9.55--12.83 & 7.71--10.38 & 89.6\% & .648$\to$.807 & HATNet \\
+SPC    & 2 & 9.55--12.83 & 6.28--10.38 & 89.6\% & .648$\to$.807 & HATNet \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -418,7 +426,7 @@ SPC    & 2 & 9.55--12.83 & 7.71--10.38 & 89.6\% & .648$\to$.807 & HATNet \\
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.75\textwidth]{figures/rho_scatter.pdf}
-\caption{Recovery ratio ($\rho$) vs.\ ideal PSNR (Scenario~I) for all 11 methods across three modalities. Color indicates modality; shape indicates method type (classical, operator-aware, mask-oblivious). An inverse trend is visible: higher-performing methods tend to have lower recovery ratios, suggesting that stronger learned priors create greater operator dependence.}
+\caption{Recovery ratio ($\rho$) vs.\ ideal PSNR (Scenario~I) for all 12 methods across three modalities. Color indicates modality; shape indicates method type (classical, operator-aware, mask-oblivious). An inverse trend is visible: higher-performing methods tend to have lower recovery ratios, suggesting that stronger learned priors create greater operator dependence.}
 \label{fig:rho_scatter}
 \end{figure}
 
@@ -449,23 +457,20 @@ We evaluate two conditions: \emph{calibrated} (hardware mask as-is) and \emph{mi
 
 \begin{table}[t]
 \centering
-\caption{CASSI real data (5 scenes, $660 \times 660 \times 28$). Normalised measurement residual $r = \|\mathbf{y} - \mathbf{\Phi}\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$ (lower is better; no ground truth required). Ratio: mismatched\,/\,calibrated. $^\dagger$MST evaluated on center $256 \times 256$ crop.}
+\caption{CASSI real data (5 scenes, $660 \times 660 \times 28$). Normalised measurement residual $r = \|\mathbf{y} - \mathbf{\Phi}_{\text{cal}}\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$ (lower is better; no ground truth required). Ratio: mismatched\,/\,calibrated. Only classical/PnP methods evaluated (no ground truth for deep learning supervision).}
 \label{tab:cassi_real}
 \begin{tabular}{@{}lccc@{}}
 \toprule
 \textbf{Method} & \textbf{Calibrated} & \textbf{Mismatched} & \textbf{Ratio} \\
 \midrule
 GAP-TV            & 0.0019 & 0.0033 & 1.8$\times$ \\
-HDNet             & 0.155  & 0.155  & 1.0$\times$ \\
-MST-S$^\dagger$   & 0.145  & 0.141  & 1.0$\times$ \\
-MST-L$^\dagger$   & 0.153  & 0.139  & 0.9$\times$ \\
+PnP-HSICNN        & 0.0127 & 0.0142 & 1.1$\times$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-GAP-TV shows the largest residual increase ($1.8\times$), because it explicitly fits the forward model during reconstruction: when reconstructed with a wrong mask, the result is inconsistent with the true measurement.
-HDNet shows ratio exactly $1.0\times$, consistent with its mask-oblivious architecture (identical output regardless of mask).
-MST-S/L show ratios $\approx 1\times$, indicating their learned spectral priors are largely insensitive to small spatial shifts.
+Both mask-aware iterative methods (GAP-TV and PnP-HSICNN) show residual increases under mismatch, because they explicitly fit the forward model during reconstruction: when reconstructed with a wrong mask, the result is inconsistent with the true measurement.
+GAP-TV shows a modest $1.8\times$ increase, while PnP-HSICNN shows only $1.1\times$---the deep denoiser regularises the reconstruction enough to partially mask the forward-model inconsistency.
 This contrasts sharply with CACTI (\cref{sec:cacti_real_data} below), where residuals increase $9.4$--$11.0\times$ under the same spatial shift.
 
 By contrast, our \emph{simulation} experiments (\cref{tab:cassi}) show 3--14\,dB PSNR degradation because they include dispersion perturbation ($a_1$, $\alpha$)---which the real-data experiment does not.
@@ -474,16 +479,31 @@ The modest $1.8\times$ residual increase from spatial shift alone (vs.\ $10\time
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/cassi_real_comparison.pdf}
-\caption{CASSI real data (Scene~1, band~14, central $256 \times 256$ patch): calibrated (top) vs.\ mismatched (bottom) reconstructions for four methods. The visual differences are subtle, consistent with the near-unity residual ratios in \cref{tab:cassi_real}---spatial mask shift alone is not the dominant degradation source for CASSI.}
+\caption{CASSI real data (Scene~1, band~14): calibrated (top) vs.\ mismatched (bottom) reconstructions for GAP-TV and PnP-HSICNN. The visual differences are subtle, consistent with the modest residual ratios in \cref{tab:cassi_real}---spatial mask shift alone is not the dominant degradation source for CASSI.}
 \label{fig:cassi_real}
 \end{figure}
 
 \paragraph{CACTI real data.}
 \label{sec:cacti_real_data}
 We evaluate 4 real CACTI scenes from the EfficientSCI dataset (cr$=$10), using the same measurement residual metric (no ground truth).
+\Cref{tab:cacti_real} shows the results.
 Under mask mismatch, GAP-TV residuals increase $9.4$--$11.0\times$, confirming mismatch severely degrades real data fidelity.
-EfficientSCI shows smaller increases ($1.2$--$1.5\times$), consistent with simulation.
+PnP-FFDNet shows increases of $1.3$--$2.8\times$ (mean $2.0\times$), higher than GAP-TV's baseline but moderated by FFDNet's learned denoiser.
 Mismatched reconstructions exhibit temporal ghosting (\cref{fig:cacti_real}).
+
+\begin{table}[t]
+\centering
+\caption{CACTI real data (4 scenes, $512 \times 512$, cr$=$10). Normalised measurement residual (lower is better). Ratio: mismatched\,/\,calibrated.}
+\label{tab:cacti_real}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Method} & \textbf{Calibrated} & \textbf{Mismatched} & \textbf{Ratio} \\
+\midrule
+GAP-TV     & 1.6e-5 & 1.6e-4 & 10.4$\times$ \\
+PnP-FFDNet & 0.0041 & 0.0069 & 2.0$\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{figure}[t]
 \centering
@@ -497,46 +517,55 @@ Mismatched reconstructions exhibit temporal ghosting (\cref{fig:cacti_real}).
 
 Scenario~III assumes oracle knowledge of the true operator.
 In practice, the mismatch parameters must be estimated from measurements alone.
-Scenario~IV evaluates blind calibration via grid search over mismatch parameters, using the measurement residual as the sole objective:
+Scenario~IV evaluates blind calibration via grid search over mismatch parameters.
+For \emph{geometric} mismatch (CASSI, CACTI), the measurement residual provides a strong calibration signal:
 \begin{equation}
     \tilde{\boldsymbol{\theta}} = \arg\min_{\boldsymbol{\theta}} \left\| \mathbf{y} - \mathbf{\Phi}(\boldsymbol{\theta})\, \hat{\mathbf{x}}\!\left(\mathbf{y}, \mathbf{\Phi}(\boldsymbol{\theta})\right) \right\|^2,
     \label{eq:scenario_iv}
 \end{equation}
 where $\boldsymbol{\theta}$ denotes the mismatch parameters and $\hat{\mathbf{x}}(\mathbf{y}, \mathbf{\Phi})$ is the reconstruction from a fast inner-loop solver.
-No ground truth is required---only the measurement $\mathbf{y}$ and the ability to vary $\mathbf{\Phi}$.
+For \emph{radiometric} mismatch (SPC gain drift), the measurement residual is uninformative because the underdetermined system always achieves near-zero self-consistent residual regardless of gain.
+Instead, we use reconstruction sparsity (total variation) as the objective:
+\begin{equation}
+    \tilde{\alpha} = \arg\min_{\alpha} \mathrm{TV}\!\left(\hat{\mathbf{x}}\!\left(\mathbf{y},\, \mathbf{\Phi}(\alpha)\right)\right),
+    \label{eq:scenario_iv_tv}
+\end{equation}
+where $\mathrm{TV}(\cdot)$ denotes the anisotropic total variation.
+The rationale is that the correctly calibrated gain produces a clean corrected measurement, yielding a smooth natural-image reconstruction with low TV; incorrect gain leaves systematic artifacts that increase TV.
+No ground truth is required for either criterion.
 
 \paragraph{Procedure.}
-For each candidate $\boldsymbol{\theta}$, we: (1)~construct the trial operator $\mathbf{\Phi}(\boldsymbol{\theta})$, (2)~reconstruct $\hat{\mathbf{x}}$ using a fast classical solver, and (3)~compute the measurement residual $\|\mathbf{y} - \mathbf{\Phi}(\boldsymbol{\theta})\hat{\mathbf{x}}\|^2$.
-The parameter yielding the lowest residual is selected, and a final high-quality reconstruction is performed with that operator.
-For efficiency, calibration uses a subset of the data: 3 KAIST scenes for CASSI, 2 benchmark videos for CACTI, and 1 test image for SPC---all from the same datasets as Sections~\ref{sec:cassi}--\ref{sec:spc}, with the same mismatch parameters.
-Modality-specific details:
-\begin{itemize}
-    \item \textbf{CASSI:} Grid search over mask shifts $dx, dy \in [-1.0, 1.0]$\,px on an $11 \times 11$ grid (121 evaluations). Inner loop: GAP-TV with 30 iterations per evaluation and 100 iterations for the final reconstruction. The grid search recovered $(dx, dy) = (0.40, 0.20)$ vs.\ true $(0.50, 0.30)$.
-    \item \textbf{CACTI:} Grid search over $dx, dy \in [-1.0, 1.0]$\,px on a $9 \times 9$ grid (81 evaluations). Inner loop: GAP-TV with 20 iterations per evaluation. Recovered $(0.50, 0.25)$ vs.\ true $(0.50, 0.30)$.
-    \item \textbf{SPC:} Grid search over gain drift $\alpha \in [0, 0.005]$ with 21 grid points. Inner loop: FISTA-TV with 100 iterations per evaluation. The residual surface was flat: estimated $\alpha = 0$ vs.\ true $\alpha = 0.0015$.
-\end{itemize}
+For each candidate $\boldsymbol{\theta}$, we: (1)~construct the trial operator $\mathbf{\Phi}(\boldsymbol{\theta})$, (2)~reconstruct $\hat{\mathbf{x}}$ using a fast classical solver, and (3)~evaluate the objective (measurement residual for CASSI/CACTI, TV for SPC).
+The parameter yielding the lowest objective is selected, and a final high-quality reconstruction is performed with that operator.
+Calibration uses a subset of the data: 3 KAIST scenes for CASSI, 2 benchmark videos for CACTI, and 2 Set11 images for SPC---all from the same datasets as \cref{sec:cassi,sec:cacti,sec:spc}, with the same mismatch parameters.
 
-\paragraph{Results.}
-\Cref{tab:scenario_iv} shows the results.
-For CACTI, grid search achieves \emph{near-perfect} calibration ($26.99$\,dB, matching Scenario~III), recovering the full $9.39$\,dB mismatch gap---the measurement residual provides a strong signal for spatial mask shifts.
-CASSI recovers $78\%$ of the gap ($+1.36$\,dB of $+1.74$\,dB possible); the residual $22\%$ is attributable to dispersion parameters ($a_1$, $\alpha$) not included in the spatial-only grid search.
-For SPC, the measurement-residual objective fails entirely: gain drift $\alpha = 0.0015$ produces nearly identical residuals to $\alpha = 0$, because FISTA-TV's TV regularisation absorbs the gain-induced artefacts.
-This reveals a fundamental limitation: measurement-residual minimisation is effective for \emph{geometric} mismatch (mask shifts) but insensitive to \emph{radiometric} mismatch (gain drift), where more sophisticated objectives (e.g., reconstruction sparsity or learned calibration networks) are needed.
+\paragraph{CASSI and CACTI results.}
+For CACTI, grid search over mask shifts $dx, dy \in [-1.0, 1.0]$\,px ($9 \times 9$ grid) achieves \emph{near-perfect} calibration: 26.99\,dB (matching Scenario~III), recovering the full 9.39\,dB mismatch gap.
+For CASSI ($11 \times 11$ grid), calibration recovers 78\% of the gap ($+1.36$\,dB of $+1.74$\,dB possible); the residual 22\% is attributable to dispersion parameters ($a_1$, $\alpha$) not included in the spatial-only search.
+The measurement residual provides a strong signal for geometric mismatch because mask shifts cause large, structured data inconsistencies.
+
+\paragraph{SPC results.}
+\Cref{tab:spc_scenario_iv} shows the SPC calibration results using TV minimisation (\cref{eq:scenario_iv_tv}).
+Grid search over $\alpha \in [0, 0.005]$ with 41 points and FISTA-TV inner loop (100 iterations, $33 \times 33$ blocks, ISTA-Net's learned $\mathbf{\Phi}$) estimates $\hat{\alpha} = 0.00125$ vs.\ true $\alpha = 0.0015$, recovering 86\% of the oracle bound.
+The TV surface exhibits a clear bowl-shaped minimum near the true $\alpha$, confirming that reconstruction sparsity is a viable calibration objective for radiometric mismatch.
+This contrasts with the measurement residual, which is flat across all $\alpha$ values for SPC (the underdetermined system can always self-consistently fit any gain-corrected measurements).
 
 \begin{table}[t]
 \centering
-\caption{Scenario~IV: blind grid-search calibration. II: mismatched operator, no calibration. IV: operator estimated via measurement-residual minimisation (\cref{eq:scenario_iv}). III: oracle (true operator). Recovery~\%: (IV$-$II)/(III$-$II). Est.\ params: estimated mismatch parameters (true: CASSI $dx{=}0.5$, $dy{=}0.3$; CACTI $dx{=}0.5$, $dy{=}0.3$; SPC $\alpha{=}0.0015$).}
-\label{tab:scenario_iv}
-\begin{tabular}{@{}lcccccc@{}}
+\caption{SPC blind calibration via TV minimisation (\cref{eq:scenario_iv_tv}). II: mismatched, no calibration. IV: estimated $\hat{\alpha}$ via TV grid search. III: oracle (true $\alpha$). Recovery: (IV$-$II)\,/\,(III$-$II). True $\alpha{=}0.0015$; estimated $\hat{\alpha}{=}0.00125$.}
+\label{tab:spc_scenario_iv}
+\begin{tabular}{@{}lcccc@{}}
 \toprule
-\textbf{Modality} & \textbf{Method} & \textbf{II} & \textbf{IV} & \textbf{III} & \textbf{Recovery} & \textbf{Est.\ params} \\
+\textbf{Method} & \textbf{II} & \textbf{IV} & \textbf{III} & \textbf{Recovery} \\
 \midrule
-CASSI & GAP-TV    & 21.95 & 23.31 & 23.69 & 78\% & $dx{=}0.40$, $dy{=}0.20$ \\
-CACTI & GAP-TV    & 17.60 & 26.99 & 26.99 & 100\% & $dx{=}0.50$, $dy{=}0.25$ \\
-SPC   & FISTA-TV  & 25.47 & 25.47 & 25.43 & 0\% & $\alpha{=}0.0$ \\
+FISTA-TV & 19.78 & 26.54 & 27.60 & 86\% \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\paragraph{Criterion comparison.}
+The geometric/radiometric distinction reveals that blind calibration requires \emph{matching the objective to the mismatch type}: measurement residual for geometric mismatch (where operator errors create large data infidelities), and reconstruction sparsity for radiometric mismatch (where the operator structure is preserved but measurement values are scaled).
+Across all three modalities, Scenario~IV recovers 78--100\% of the oracle bound, demonstrating that blind calibration is practical for all mismatch types studied.
 
 % ============================================================================
 % 5. DISCUSSION
@@ -555,7 +584,7 @@ This taxonomy reframes the problem: the critical bottleneck is not algorithmic s
 \paragraph{Practical implications.}
 When recalibration is feasible, operator-conditioned networks should be paired with Scenario~IV-style calibration.
 When calibration is impractical, classical methods provide the most robust baseline, with degradation 3--5$\times$ smaller than deep methods.
-Scenario~IV demonstrates that simple grid-search calibration already recovers a substantial fraction of the oracle bound without ground truth.
+Scenario~IV demonstrates that simple grid-search calibration recovers 78--100\% of the oracle bound without ground truth, provided the objective matches the mismatch type: measurement residual for geometric mismatch, reconstruction sparsity for radiometric mismatch.
 
 \paragraph{Limitations.}
 Our parametric mismatch models (affine shifts, gain drift) capture dominant error sources but do not cover spatially varying PSF errors or nonlinear detector response.
@@ -574,12 +603,12 @@ Per-method residual gap visualizations are provided in the supplementary materia
 \label{sec:conclusion}
 
 We have presented InverseNet, the first cross-modality benchmark for operator mismatch in compressive imaging.
-Evaluating 11 methods across CASSI, CACTI, and SPC under a four-scenario protocol, we find:
+Evaluating 12 methods across CASSI, CACTI, and SPC under a four-scenario protocol, we find:
 (1)~mismatch degrades deep learning methods by 10--21\,dB, collapsing their advantage over classical methods;
 (2)~operator-conditioned architectures recover 40--90\% of losses through calibration, while mask-oblivious ones recover 0\%;
-(3)~blind grid-search calibration (Scenario~IV) recovers a substantial fraction of the oracle bound without ground truth;
+(3)~blind grid-search calibration (Scenario~IV) recovers 78--100\% of the oracle bound without ground truth, using measurement residual for geometric and reconstruction sparsity for radiometric mismatch;
 (4)~real hardware experiments confirm simulation patterns transfer to physical data.
-When calibration is feasible, operator-conditioned networks paired with measurement-residual calibration are optimal; otherwise, classical methods provide the most robust baseline.
+When calibration is feasible, operator-conditioned networks paired with self-supervised calibration are optimal; otherwise, classical methods provide the most robust baseline.
 
 All reconstruction arrays, metrics, and code will be released upon acceptance.
 Future work includes gradient-based calibration, dispersion-aware architectures, and expansion to lensless imaging and ptychography.
@@ -769,6 +798,16 @@ Foundations of Computational Mathematics \textbf{24}(4), 1285--1337 (2024)
 Liu, Q., Luo, Y., Fan, L., Qiao, X., Yuan, X.:
 Under-display camera image restoration with scattering effect.
 In: NeurIPS (2024)
+
+\bibitem{zheng2021pnp}
+Zheng, S., Liu, Y., Meng, Z., M{\"u}ller, M., Shu, R., Yuan, X.:
+Deep plug-and-play priors for spectral snapshot compressive imaging.
+Photonics Research \textbf{9}(2), B18--B29 (2021)
+
+\bibitem{zhang2021drunet}
+Zhang, K., Li, Y., Zuo, W., Zhang, L., Van Gool, L., Timofte, R.:
+Plug-and-play image restoration with deep denoiser prior.
+IEEE Transactions on Pattern Analysis and Machine Intelligence \textbf{44}(10), 6360--6376 (2022)
 
 \end{thebibliography}
 

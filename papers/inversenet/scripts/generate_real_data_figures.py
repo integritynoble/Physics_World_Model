@@ -49,8 +49,8 @@ def generate_cassi_real_figure():
 
     logger.info("Generating CASSI real data figure...")
 
-    methods = ["gap_tv", "hdnet", "mst_s", "mst_l"]
-    labels = {"gap_tv": "GAP-TV", "hdnet": "HDNet", "mst_s": "MST-S", "mst_l": "MST-L"}
+    methods = ["gap_tv", "pnp_hsicnn"]
+    labels = {"gap_tv": "GAP-TV", "pnp_hsicnn": "PnP-HSICNN"}
     conditions = ["calibrated", "mismatched"]
     cond_labels = {"calibrated": "Calibrated", "mismatched": "Mismatched"}
 
@@ -62,16 +62,11 @@ def generate_cassi_real_figure():
             if npy_path.exists():
                 recon = np.load(str(npy_path))
                 H, W = recon.shape[:2]
-                # For full-size recons (660x660x28), crop central 256x256
-                if H > 256:
-                    ch, cw = H // 2, W // 2
-                    ps = 128
-                    band = min(14, recon.shape[2] - 1)
-                    patch = recon[ch - ps:ch + ps, cw - ps:cw + ps, band]
-                else:
-                    # MST crops are already 256x256
-                    band = min(14, recon.shape[2] - 1)
-                    patch = recon[:, :, band]
+                # Crop central 256x256 for display
+                ch, cw = H // 2, min(W, H) // 2
+                ps = 128
+                band = min(14, recon.shape[2] - 1)
+                patch = recon[ch - ps:ch + ps, cw - ps:cw + ps, band]
                 patch = np.clip(patch / (patch.max() + 1e-6), 0, 1)
             else:
                 patch = np.random.rand(256, 256) * 0.3
@@ -98,7 +93,7 @@ def generate_cacti_real_figure():
     """Generate CACTI real data visual comparison figure.
 
     Layout: 2 rows (duomino, hand) x 4 columns (GAP-TV cal, GAP-TV mis,
-    EfficientSCI cal, EfficientSCI mis). Larger fonts for readability.
+    PnP-FFDNet cal, PnP-FFDNet mis). Larger fonts for readability.
     """
     if not HAS_MPL:
         return
@@ -107,8 +102,8 @@ def generate_cacti_real_figure():
 
     scenes = ["duomino", "hand"]
     scene_labels = {"duomino": "Duomino", "hand": "Hand"}
-    methods = ["gap_tv", "efficientsci"]
-    labels = {"gap_tv": "GAP-TV", "efficientsci": "EfficientSCI"}
+    methods = ["gap_tv", "pnp_ffdnet"]
+    labels = {"gap_tv": "GAP-TV", "pnp_ffdnet": "PnP-FFDNet"}
     conditions = ["calibrated", "mismatched"]
     cond_short = {"calibrated": "Cal.", "mismatched": "Mis."}
 
@@ -163,7 +158,7 @@ def generate_sim_vs_real_bar_chart():
     if cassi_sim_path.exists():
         with open(cassi_sim_path) as f:
             sim = json.load(f)
-        for method in ["gap_tv", "mst_s", "mst_l"]:
+        for method in ["gap_tv", "pnp_hsicnn"]:
             if "scenario_i" in sim and method in sim["scenario_i"]:
                 p_i = sim["scenario_i"][method]["psnr_mean"]
                 p_ii = sim["scenario_ii"][method]["psnr_mean"]
@@ -174,20 +169,20 @@ def generate_sim_vs_real_bar_chart():
         with open(cassi_real_path) as f:
             real = json.load(f)
         if "mean" in real:
-            for method in ["gap_tv", "mst_s", "mst_l"]:
+            for method in ["gap_tv", "pnp_hsicnn"]:
                 if method in real["mean"].get("calibrated", {}):
-                    p_cal = real["mean"]["calibrated"][method]["psnr_mean"]
-                    p_mis = real["mean"]["mismatched"][method]["psnr_mean"]
-                    real_data[method] = p_cal - p_mis
+                    p_cal = real["mean"]["calibrated"][method].get("residual_mean", real["mean"]["calibrated"][method].get("residual", 0))
+                    p_mis = real["mean"]["mismatched"][method].get("residual_mean", real["mean"]["mismatched"][method].get("residual", 0))
+                    real_data[method] = p_mis / p_cal if p_cal > 0 else 0
 
     methods = list(set(sim_data.keys()) | set(real_data.keys()))
     if not methods:
         # Use placeholder data
-        methods = ["gap_tv", "mst_s", "mst_l"]
-        sim_data = {"gap_tv": 3.38, "mst_s": 12.99, "mst_l": 13.98}
-        real_data = {"gap_tv": 1.5, "mst_s": 5.0, "mst_l": 6.0}
+        methods = ["gap_tv", "pnp_hsicnn"]
+        sim_data = {"gap_tv": 3.38, "pnp_hsicnn": 5.0}
+        real_data = {"gap_tv": 1.8, "pnp_hsicnn": 1.5}
 
-    labels = {"gap_tv": "GAP-TV", "mst_s": "MST-S", "mst_l": "MST-L"}
+    labels = {"gap_tv": "GAP-TV", "pnp_hsicnn": "PnP-HSICNN"}
 
     x = np.arange(len(methods))
     width = 0.35

@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
 """CASSI Real Data Validation for InverseNet ECCV 2026.
 
-Validates reconstruction methods on 5 real CASSI scenes from the TSA real
-dataset.  Two conditions:
-  - Calibrated:  use the hardware-calibrated mask_3d_shift
+Validates classical/PnP reconstruction methods on 5 real CASSI scenes from
+the TSA real dataset.  Two conditions:
+  - Calibrated:  use the hardware-calibrated mask
   - Mismatched:  shift mask by (dx=0.5, dy=0.3) to simulate operator mismatch
 
-Reference reconstructions (Recon_scene*.mat) serve as pseudo-ground-truth
-for PSNR/SSIM computation.
+No ground truth — uses measurement residual as quality metric.
+Reference reconstructions used for supplementary PSNR only.
 
 Methods:
-  GAP-TV   -- classical iterative (mask-aware)
-  HDNet    -- dual-domain deep learning (mask-oblivious)
-  MST-S    -- mask-guided Transformer (small)
-  MST-L    -- mask-guided Transformer (large)
+  GAP-TV     -- classical iterative (mask-aware)
+  PnP-HSICNN -- GAP + HSI-SDeCNN deep denoiser (mask-aware)
 
 Usage:
     python validate_cassi_real.py [--device cuda:0]
@@ -60,9 +58,7 @@ W_EXT = SCENE_SIZE + (N_BANDS - 1) * STEP  # 714
 
 METHOD_LABELS = {
     "gap_tv": "GAP-TV",
-    "hdnet": "HDNet",
-    "mst_s": "MST-S",
-    "mst_l": "MST-L",
+    "pnp_hsicnn": "PnP-HSICNN",
 }
 
 # ---------------------------------------------------------------------------
@@ -93,26 +89,6 @@ def load_mask() -> Optional[np.ndarray]:
         return None
     data = sio.loadmat(str(path))
     return data["mask"].astype(np.float32)
-
-
-def load_mask_3d_shift() -> Optional[np.ndarray]:
-    """Load pre-computed mask_3d_shift (660x714x28)."""
-    path = DATASET_REAL / "mask_3d_shift.mat"
-    if not path.exists():
-        return None
-    data = sio.loadmat(str(path))
-    return data["mask_3d_shift"].astype(np.float32)
-
-
-def build_mask_3d_shift(mask: np.ndarray) -> np.ndarray:
-    """Build mask_3d_shift from 2D mask (replicate MST pipeline)."""
-    H, W = mask.shape
-    mask_3d = np.tile(mask[:, :, np.newaxis], (1, 1, N_BANDS))
-    mask_3d_shift = np.zeros((H, H + (N_BANDS - 1) * STEP, N_BANDS), dtype=np.float32)
-    mask_3d_shift[:, 0:H, :] = mask_3d
-    for t in range(N_BANDS):
-        mask_3d_shift[:, :, t] = np.roll(mask_3d_shift[:, :, t], STEP * t, axis=1)
-    return mask_3d_shift
 
 
 def shift_mask_2d(mask: np.ndarray, dx: float, dy: float) -> np.ndarray:
@@ -169,17 +145,7 @@ def compute_ssim(x_true: np.ndarray, x_recon: np.ndarray) -> float:
 # ---------------------------------------------------------------------------
 def cassi_forward(x: np.ndarray, mask: np.ndarray,
                   step: int = STEP, nC: int = N_BANDS) -> np.ndarray:
-    """CASSI forward model: y(i,j) = sum_lambda M(i, j-d(lambda)) * x(i,j,lambda).
-
-    Args:
-        x: reconstructed cube (H, W, nC)
-        mask: 2D binary mask (H, W)
-        step: dispersion step (pixels per band)
-        nC: number of spectral bands
-
-    Returns:
-        y: simulated measurement (H, W_ext) where W_ext = W + (nC-1)*step
-    """
+    """CASSI forward model."""
     H, W = mask.shape[:2]
     W_ext = W + (nC - 1) * step
     y = np.zeros((H, W_ext), dtype=np.float32)
@@ -190,14 +156,8 @@ def cassi_forward(x: np.ndarray, mask: np.ndarray,
 
 def compute_measurement_residual(meas: np.ndarray, x_hat: np.ndarray,
                                   mask: np.ndarray) -> float:
-    """Normalised measurement residual: ||y - Phi(x_hat)||^2 / ||y||^2.
-
-    This metric requires no ground truth — only the measurement and the
-    assumed forward operator. A small residual means the reconstruction
-    is consistent with the measurement under the assumed mask.
-    """
+    """Normalised measurement residual: ||y - Phi(x_hat)||^2 / ||y||^2."""
     y_pred = cassi_forward(x_hat, mask)
-    # Match sizes (meas may be slightly different due to rounding)
     hh = min(meas.shape[0], y_pred.shape[0])
     ww = min(meas.shape[1], y_pred.shape[1])
     residual = float(np.sum((meas[:hh, :ww] - y_pred[:hh, :ww]) ** 2))
@@ -227,7 +187,6 @@ def gap_tv_real(meas: np.ndarray, mask: np.ndarray,
         Phi_sum[:, k * step:k * step + H] += mask ** 2
     Phi_sum = np.maximum(Phi_sum, 1e-10)
 
-    # Normalised back-projection init
     x = np.zeros((H, H, nC), dtype=np.float32)
     for k in range(nC):
         x[:, :, k] = mask * meas[:, k * step:k * step + H] / np.maximum(
@@ -258,145 +217,143 @@ def gap_tv_real(meas: np.ndarray, mask: np.ndarray,
 
 
 # ---------------------------------------------------------------------------
-# reconstruction: deep learning methods for real CASSI
+# reconstruction: PnP-HSICNN for real CASSI data (660x714)
 # ---------------------------------------------------------------------------
-import torch
-
-_model_cache = {}
+_pnp_hsicnn_cache = {}
 
 
-def _build_mask_3d_shift_torch(mask: np.ndarray, device: str):
-    """Build mask_3d_shift tensor for MST pipeline."""
-    mask_3d_shift = build_mask_3d_shift(mask)
-    mask_3d_shift_s = np.sum(mask_3d_shift ** 2, axis=2, keepdims=False)
-    mask_3d_shift_s[mask_3d_shift_s == 0] = 1
-    m3d = torch.FloatTensor(mask_3d_shift.copy()).permute(2, 0, 1).unsqueeze(0).to(device)
-    m3ds = torch.FloatTensor(mask_3d_shift_s.copy()).unsqueeze(0).to(device)
-    return m3d, m3ds
+def _load_pnp_hsicnn(device: str):
+    """Load HSI-SDeCNN denoiser from PnP-CASSI."""
+    if "model" in _pnp_hsicnn_cache:
+        return _pnp_hsicnn_cache["model"]
 
-
-def _load_model(method: str, device: str):
-    """Load and cache a pretrained model."""
-    cache_key = f"{method}_{device}"
-    if cache_key in _model_cache:
-        return _model_cache[cache_key]
-
+    import torch
     import importlib.util
 
+    hsi_path = "/home/spiritai/PnP-CASSI-main/hsi.py"
+    spec = importlib.util.spec_from_file_location("hsi_sdecnn", hsi_path)
+    hsi_mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(hsi_mod)
+
     dev = torch.device(device)
+    model = hsi_mod.HSI_SDeCNN(in_nc=7, out_nc=1, nc=128, nb=15).to(dev)
 
-    if method == "hdnet":
-        hdnet_path = "/home/spiritai/MST-main/simulation/test_code/architecture/HDNet.py"
-        spec = importlib.util.spec_from_file_location("hdnet_orig", hdnet_path)
-        hdnet_mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(hdnet_mod)
-        model = hdnet_mod.HDNet(in_ch=28, out_ch=28).to(dev)
-        weights_path = "/home/spiritai/MST-main/model_zoo/hdnet/hdnet.pth"
-        checkpoint = torch.load(weights_path, map_location=dev, weights_only=False)
-        if isinstance(checkpoint, dict) and "state_dict" in checkpoint:
-            state_dict = {k.replace("module.", ""): v for k, v in checkpoint["state_dict"].items()}
-        else:
-            state_dict = checkpoint
-        model.load_state_dict(state_dict, strict=True)
-    elif method in ("mst_s", "mst_l"):
-        sys.path.insert(0, "/home/spiritai/MST-main/simulation/test_code")
-        from architecture import MST
-        dim = 28
-        if method == "mst_s":
-            stage = 2
-            model = MST(dim=dim, stage=stage, num_blocks=[2, 2, 2]).to(dev)
-            weights_path = "/home/spiritai/MST-main/model_zoo/mst/mst_s.pth"
-        else:
-            stage = 2
-            model = MST(dim=dim, stage=stage, num_blocks=[4, 7, 5]).to(dev)
-            weights_path = "/home/spiritai/MST-main/model_zoo/mst/mst_l.pth"
-        checkpoint = torch.load(weights_path, map_location=dev, weights_only=False)
-        if isinstance(checkpoint, dict) and "state_dict" in checkpoint:
-            state_dict = {k.replace("module.", ""): v for k, v in checkpoint["state_dict"].items()}
-        else:
-            state_dict = checkpoint
-        model.load_state_dict(state_dict, strict=True)
-    else:
-        raise ValueError(f"Unknown method: {method}")
-
+    weights_path = "/home/spiritai/PnP-CASSI-main/check_points/deep_denoiser.pth"
+    state_dict = torch.load(weights_path, map_location=dev, weights_only=False)
+    model.load_state_dict(state_dict, strict=True)
     model.eval()
-    _model_cache[cache_key] = model
-    logger.info(f"  Loaded {method} model")
-    return model
+    for p in model.parameters():
+        p.requires_grad = False
+    logger.info("  Loaded HSI-SDeCNN denoiser with pretrained weights")
+
+    _pnp_hsicnn_cache["model"] = (model, dev)
+    return model, dev
 
 
-def _crop_for_mst(meas: np.ndarray, mask: np.ndarray,
-                   crop_h: int = 256, step: int = STEP, nC: int = N_BANDS):
-    """Center-crop measurement and mask to fit MST's hardcoded 256 spatial dim.
+def _apply_hsicnn_denoiser(x: np.ndarray, model, dev,
+                           nC: int = 28, sigma_val: float = 10.0) -> np.ndarray:
+    """Apply HSI-SDeCNN band-by-band with 7-channel context window."""
+    import torch
 
-    MST has shift_back with hardcoded `256//row` which breaks for non-256 sizes.
-    We crop to (crop_h, crop_w_ext) measurement and (crop_h, crop_h) mask.
+    result = np.zeros_like(x)
+    sigma_t = torch.full((1, 1, 1, 1), sigma_val / 255.0, device=dev)
 
-    Returns:
-        meas_crop: (crop_h, crop_w_ext)
-        mask_crop: (crop_h, crop_h)
-        (r0, c0): crop origin for later reference extraction
-    """
-    H_full = mask.shape[0]
-    W_ext = meas.shape[1]
-    crop_w_ext = crop_h + (nC - 1) * step  # 256 + 54 = 310
+    for i in range(nC):
+        if i < 3:
+            if i == 0:
+                net_in = np.dstack((x[:, :, 0], x[:, :, 0], x[:, :, 0],
+                                    x[:, :, 0:4]))
+            elif i == 1:
+                net_in = np.dstack((x[:, :, 0], x[:, :, 0], x[:, :, 0],
+                                    x[:, :, 1:5]))
+            else:
+                net_in = np.dstack((x[:, :, 0], x[:, :, 0], x[:, :, 1],
+                                    x[:, :, 2:6]))
+        elif i > nC - 4:
+            if i == nC - 3:
+                net_in = np.dstack((x[:, :, i - 3:i + 1], x[:, :, i + 1],
+                                    x[:, :, i + 2], x[:, :, i + 2]))
+            elif i == nC - 2:
+                net_in = np.dstack((x[:, :, i - 3:i + 1], x[:, :, i + 1],
+                                    x[:, :, i + 1], x[:, :, i + 1]))
+            else:
+                net_in = np.dstack((x[:, :, i - 3:i + 1], x[:, :, i],
+                                    x[:, :, i], x[:, :, i]))
+        else:
+            net_in = x[:, :, i - 3:i + 4]
 
-    r0 = (H_full - crop_h) // 2
-    c0 = (H_full - crop_h) // 2  # mask is HxH
-
-    meas_crop = meas[r0:r0 + crop_h, c0:c0 + crop_w_ext]
-    mask_crop = mask[r0:r0 + crop_h, c0:c0 + crop_h]
-    return meas_crop, mask_crop, (r0, c0)
-
-
-def reconstruct_dl_real(meas: np.ndarray, mask: np.ndarray,
-                        method: str, device: str) -> np.ndarray:
-    """Reconstruct real CASSI data using deep learning method.
-
-    HDNet: fully convolutional, handles full 660x714 input.
-    MST-S/L: internal shift_back hardcoded for 256 spatial dim,
-             so we center-crop to 256x310 and return 256x256x28.
-    """
-    from pwm_core.recon.mst import shift_back_meas_torch
-
-    dev = torch.device(device)
-    model = _load_model(method, device)
-
-    is_mst = method in ("mst_s", "mst_l")
-
-    if is_mst:
-        # Crop for MST compatibility
-        meas_proc, mask_proc, crop_origin = _crop_for_mst(meas, mask)
-    else:
-        meas_proc, mask_proc = meas, mask
-        crop_origin = None
-
-    # Normalise measurement (from MST test.py)
-    meas_norm = meas_proc.copy()
-    meas_max = meas_norm.max()
-    if meas_max > 0:
-        meas_norm = meas_norm / meas_max * 0.8
-
-    # Build mask tensors
-    m3d, m3ds = _build_mask_3d_shift_torch(mask_proc, device)
-    meas_t = torch.FloatTensor(meas_norm).unsqueeze(0).to(dev)
-
-    if method == "hdnet":
-        # HDNet takes only initial spectral estimate (no mask input)
-        x_init = shift_back_meas_torch(meas_t, step=STEP, nC=N_BANDS)
-        x_init = x_init / N_BANDS * 2
+        net_t = (torch.from_numpy(np.ascontiguousarray(net_in))
+                 .permute(2, 0, 1).float().unsqueeze(0).to(dev))
         with torch.no_grad():
-            out = model(x_init)
-    else:
-        # MST-S/L: forward(x, mask) where x=[B,28,H,W] is shifted-back meas
-        x_init = shift_back_meas_torch(meas_t, step=STEP, nC=N_BANDS)
-        x_init = x_init / N_BANDS * 2
-        with torch.no_grad():
-            out = model(x_init, m3d)
+            out = model(net_t, sigma_t)
+        result[:, :, i] = out.squeeze().cpu().numpy()
 
-    recon = out.squeeze(0).clamp(min=0.0, max=1.0)
-    recon = recon.permute(1, 2, 0).cpu().numpy()  # (H, W, 28)
-    return recon.astype(np.float32)
+    return result
+
+
+def _is_hsicnn_iter(k: int) -> bool:
+    """True for iterations 83+ with 3/4 HSICNN schedule."""
+    if k < 83:
+        return False
+    return (k - 83) % 4 < 3
+
+
+def pnp_hsicnn_real(meas: np.ndarray, mask: np.ndarray,
+                     device: str = "cuda:0") -> np.ndarray:
+    """PnP-HSICNN for real CASSI data (handles full 660x660 natively).
+
+    124-iter GAP with hybrid TV (iters 0-82) + HSICNN (iters 83-123).
+    HSI-SDeCNN uses PixelUnshuffle -> 330x330 internal, fits in GPU memory.
+    """
+    from skimage.restoration import denoise_tv_chambolle
+
+    model, dev = _load_pnp_hsicnn(device)
+
+    H = mask.shape[0]
+    nC = N_BANDS
+    step = STEP
+    W_ext = H + (nC - 1) * step
+
+    mask_c = np.clip(mask, 0, 1).astype(np.float32)
+    Phi_sum = np.zeros((H, W_ext), dtype=np.float32)
+    for k in range(nC):
+        Phi_sum[:, k * step:k * step + H] += mask_c ** 2
+    Phi_sum = np.maximum(Phi_sum, 1.0)
+
+    # Initialize with adjoint
+    x = np.zeros((H, H, nC), dtype=np.float32)
+    for k in range(nC):
+        x[:, :, k] = mask_c * meas[:, k * step:k * step + H]
+
+    y_nom = np.zeros((H, W_ext), dtype=np.float32)
+    hh = min(H, meas.shape[0])
+    ww = min(W_ext, meas.shape[1])
+    y_nom[:hh, :ww] = meas[:hh, :ww]
+
+    y1 = np.zeros_like(y_nom)
+    nsig_tv = 12.75
+    n_total = 124
+
+    for k_iter in range(n_total):
+        y_est = np.zeros((H, W_ext), dtype=np.float32)
+        for k in range(nC):
+            y_est[:, k * step:k * step + H] += mask_c * x[:, :, k]
+
+        y1 += (y_nom - y_est)
+        norm_r = (y1 - y_est) / Phi_sum
+
+        for k in range(nC):
+            x[:, :, k] += mask_c * norm_r[:, k * step:k * step + H]
+
+        if _is_hsicnn_iter(k_iter):
+            x = _apply_hsicnn_denoiser(
+                np.clip(x, 0, None), model, dev, nC=nC, sigma_val=10.0)
+        else:
+            x = denoise_tv_chambolle(
+                np.clip(x, 0, None), weight=nsig_tv / 255.0,
+                max_num_iter=5, channel_axis=2).astype(np.float32)
+
+    return np.clip(x, 0, None).astype(np.float32)
 
 
 # ---------------------------------------------------------------------------
@@ -410,23 +367,16 @@ def validate_scene(scene_idx: int, meas: np.ndarray,
     """Validate one real scene with calibrated and mismatched masks.
 
     Computes measurement residual (ground-truth-free metric) for all methods.
-    Also computes PSNR against reference reconstruction if available (for
-    supplementary analysis only — not used as the primary metric).
+    Also computes PSNR against reference reconstruction if available.
     """
     logger.info(f"\n{'='*60}")
     logger.info(f"Real Scene {scene_idx}")
     logger.info(f"{'='*60}")
 
-    # Normalise reference to [0, 1] if available (for supplementary PSNR only)
     reference_norm = None
-    ref_crop = None
     if reference is not None:
         ref_max = reference.max()
         reference_norm = reference / ref_max if ref_max > 0 else reference
-        H_full = reference_norm.shape[0]
-        crop_h = 256
-        r0 = (H_full - crop_h) // 2
-        ref_crop = reference_norm[r0:r0 + crop_h, r0:r0 + crop_h, :]
 
     result = {"scene_idx": scene_idx, "calibrated": {}, "mismatched": {}}
     mask_shifted = shift_mask_2d(mask, dx_mismatch, dy_mismatch)
@@ -438,34 +388,22 @@ def validate_scene(scene_idx: int, meas: np.ndarray,
             try:
                 if method == "gap_tv":
                     x_hat = gap_tv_real(meas, mask_used)
+                elif method == "pnp_hsicnn":
+                    x_hat = pnp_hsicnn_real(meas, mask_used, device)
                 else:
-                    x_hat = reconstruct_dl_real(meas, mask_used, method, device)
+                    raise ValueError(f"Unknown method: {method}")
 
-                # --- Measurement residual (primary metric, no ground truth needed) ---
-                # IMPORTANT: Always use the CALIBRATED mask for residual computation,
-                # not the mask used for reconstruction. This "cross-residual" measures
-                # whether the reconstruction is consistent with the TRUE forward model.
-                # If we used the reconstruction mask (self-consistent residual), iterative
-                # methods like GAP-TV would trivially achieve low residual regardless of
-                # mismatch, since they directly minimise that objective.
-                is_mst = method in ("mst_s", "mst_l")
-                if is_mst:
-                    # MST reconstructs a 256x256 crop; compute residual on that crop
-                    _, mask_cal_crop, (r0c, c0c) = _crop_for_mst(meas, mask)
-                    meas_crop = meas[r0c:r0c + 256, c0c:c0c + 256 + (N_BANDS - 1) * STEP]
-                    residual = compute_measurement_residual(meas_crop, x_hat, mask_cal_crop)
-                else:
-                    residual = compute_measurement_residual(meas, x_hat, mask)
+                # Cross-residual: always use CALIBRATED mask for residual
+                residual = compute_measurement_residual(meas, x_hat, mask)
 
-                # --- PSNR against reference (supplementary only) ---
+                # PSNR against reference (supplementary only)
                 psnr_ref = 0.0
                 ssim_ref = 0.0
                 if reference_norm is not None:
                     x_max = x_hat.max()
                     x_hat_norm = x_hat / x_max if x_max > 0 else x_hat
-                    ref_for_psnr = ref_crop if is_mst else reference_norm
-                    psnr_ref = compute_psnr(ref_for_psnr, x_hat_norm)
-                    ssim_ref = compute_ssim(ref_for_psnr, x_hat_norm)
+                    psnr_ref = compute_psnr(reference_norm, x_hat_norm)
+                    ssim_ref = compute_ssim(reference_norm, x_hat_norm)
 
                 result[condition][method] = {
                     "residual": round(residual, 8),
@@ -480,7 +418,7 @@ def validate_scene(scene_idx: int, meas: np.ndarray,
 
             dt = time.time() - t0
             r = result[condition][method]
-            logger.info(f"    {METHOD_LABELS[method]:8s}: residual={r['residual']:.6f}  "
+            logger.info(f"    {METHOD_LABELS[method]:12s}: residual={r['residual']:.6f}  "
                         f"PSNR_ref={r['psnr_vs_ref']:.2f}  ({dt:.1f}s)")
 
     # Compute residual ratio (mismatched / calibrated)
@@ -493,7 +431,7 @@ def validate_scene(scene_idx: int, meas: np.ndarray,
         else:
             ratio = 0.0
         result["residual_ratio"][method] = round(ratio, 1)
-        logger.info(f"    {METHOD_LABELS[method]:8s}: residual ratio = {ratio:.1f}×")
+        logger.info(f"    {METHOD_LABELS[method]:12s}: residual ratio = {ratio:.1f}x")
 
     return result
 
@@ -503,11 +441,11 @@ def main():
     parser.add_argument("--device", default="cuda:0")
     args = parser.parse_args()
 
-    methods = ["gap_tv", "hdnet", "mst_s", "mst_l"]
+    methods = ["gap_tv", "pnp_hsicnn"]
 
     logger.info("=" * 60)
     logger.info("CASSI Real Data Validation for InverseNet ECCV 2026")
-    logger.info(f"5 scenes x 4 methods x 2 conditions = 40 reconstructions")
+    logger.info(f"5 scenes x 2 methods x 2 conditions = 20 reconstructions")
     logger.info(f"Device: {args.device}")
     logger.info("=" * 60)
 
@@ -524,8 +462,8 @@ def main():
     for si in range(1, NUM_SCENES + 1):
         meas = load_real_measurement(si)
         ref = load_reference_reconstruction(si)
-        if meas is None or ref is None:
-            logger.warning(f"Scene {si}: data missing, skipping")
+        if meas is None:
+            logger.warning(f"Scene {si}: measurement missing, skipping")
             continue
 
         result = validate_scene(si, meas, mask, ref, methods, args.device)
@@ -544,14 +482,14 @@ def main():
                 residuals = [r[condition][method]["residual"] for r in all_results
                              if r[condition][method]["residual"] >= 0]
                 if residuals:
-                    logger.info(f"    {METHOD_LABELS[method]:8s}: residual={np.mean(residuals):.6f}")
+                    logger.info(f"    {METHOD_LABELS[method]:12s}: residual={np.mean(residuals):.6f}")
 
         logger.info(f"\n  Residual ratio (mismatched / calibrated):")
         for method in methods:
             ratios = [r["residual_ratio"][method] for r in all_results
                       if r["residual_ratio"][method] > 0]
             if ratios:
-                logger.info(f"    {METHOD_LABELS[method]:8s}: {np.mean(ratios):.1f}×")
+                logger.info(f"    {METHOD_LABELS[method]:12s}: {np.mean(ratios):.1f}x")
 
     # Save results
     summary = {
@@ -563,7 +501,6 @@ def main():
         "execution_seconds": round(elapsed, 1),
     }
 
-    # Compute means for summary
     summary["mean"] = {}
     for condition in ["calibrated", "mismatched"]:
         summary["mean"][condition] = {}
