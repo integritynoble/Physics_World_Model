@@ -38,8 +38,8 @@ def compute_rho(pi, pii, piii, min_deg=0.5):
 def generate_cassi_heatmap():
     """Generate CASSI per-scene recovery ratio heatmap."""
     data = load_json("cassi_validation_results.json")
-    methods = ["gap_tv", "hdnet", "mst_s", "mst_l"]
-    method_labels = ["GAP-TV", "HDNet", "MST-S", "MST-L"]
+    methods = ["gap_tv", "pnp_hsicnn", "hdnet", "mst_l"]
+    method_labels = ["GAP-TV", "PnP-HSICNN", "HDNet", "MST-L"]
     scene_labels = [f"Scene {i+1}" for i in range(10)]
 
     rho_matrix = np.full((len(methods), len(data)), np.nan)
@@ -84,13 +84,15 @@ def generate_cacti_heatmap():
 def generate_spc_heatmap():
     """Generate SPC per-image recovery ratio heatmap."""
     data = load_json("spc_validation_results.json")
-    methods = ["fista_tv", "ista_net", "hatnet"]
-    method_labels = ["FISTA-TV", "ISTA-Net", "HATNet"]
+    methods = ["fista_tv", "pnp_drunet", "ista_net", "hatnet"]
+    method_labels = ["FISTA-TV", "PnP-DRUNet", "ISTA-Net", "HATNet"]
     image_labels = [img["image_name"] for img in data]
 
     rho_matrix = np.full((len(methods), len(data)), np.nan)
     for j, img in enumerate(data):
         for i, m in enumerate(methods):
+            if m not in img:
+                continue
             pi = img[m]["scenario_i"]["psnr"]
             pii = img[m]["scenario_ii"]["psnr"]
             piii = img[m]["scenario_iii"]["psnr"]
@@ -185,8 +187,8 @@ def generate_residual_gap_figure():
     groups = []
 
     # CASSI
-    cassi_methods = ["gap_tv", "hdnet", "mst_s", "mst_l"]
-    cassi_labels = ["GAP-TV", "HDNet", "MST-S", "MST-L"]
+    cassi_methods = ["gap_tv", "pnp_hsicnn", "hdnet", "mst_l"]
+    cassi_labels = ["GAP-TV", "PnP-HSICNN", "HDNet", "MST-L"]
     cassi_res = []
     for m in cassi_methods:
         pi = cassi["scenario_i"][m]["psnr_mean"]
@@ -205,12 +207,17 @@ def generate_residual_gap_figure():
     groups.append(("CACTI", cacti_labels, cacti_res))
 
     # SPC
-    spc_methods = ["fista_tv", "ista_net", "hatnet"]
-    spc_labels = ["FISTA-TV", "ISTA-Net", "HATNet"]
+    spc_methods = ["fista_tv", "pnp_drunet", "ista_net", "hatnet"]
+    spc_labels = ["FISTA-TV", "PnP-DRUNet", "ISTA-Net", "HATNet"]
     spc_res = []
     for m in spc_methods:
-        pi = spc["methods"][f"{m}_scenario_i"]["psnr_mean"]
-        piii = spc["methods"][f"{m}_scenario_iii"]["psnr_mean"]
+        key_i = f"{m}_scenario_i"
+        key_iii = f"{m}_scenario_iii"
+        if key_i not in spc["methods"]:
+            spc_res.append(0)
+            continue
+        pi = spc["methods"][key_i]["psnr_mean"]
+        piii = spc["methods"][key_iii]["psnr_mean"]
         spc_res.append(pi - piii)
     groups.append(("SPC", spc_labels, spc_res))
 

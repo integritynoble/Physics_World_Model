@@ -34,17 +34,17 @@ def main():
     methods = []
 
     # CASSI methods
-    for m in ["gap_tv", "hdnet", "mst_s", "mst_l"]:
+    for m in ["gap_tv", "pnp_hsicnn", "hdnet", "mst_l"]:
         pi = cassi["scenario_i"][m]["psnr_mean"]
         pii = cassi["scenario_ii"][m]["psnr_mean"]
         piii = cassi["scenario_iii"][m]["psnr_mean"]
         deg = pi - pii
         rec = piii - pii
         rho = (rec / deg * 100) if deg > 0.5 else None  # skip near-zero deg
-        mtype = {"gap_tv": "classical", "hdnet": "mask-oblivious",
-                 "mst_s": "operator-aware", "mst_l": "operator-aware"}[m]
-        label = {"gap_tv": "GAP-TV", "hdnet": "HDNet",
-                 "mst_s": "MST-S", "mst_l": "MST-L"}[m]
+        mtype = {"gap_tv": "classical", "pnp_hsicnn": "classical",
+                 "hdnet": "mask-oblivious", "mst_l": "operator-aware"}[m]
+        label = {"gap_tv": "GAP-TV", "pnp_hsicnn": "PnP-HSICNN",
+                 "hdnet": "HDNet", "mst_l": "MST-L"}[m]
         methods.append(("CASSI", label, pi, rho, mtype))
 
     # CACTI methods
@@ -64,20 +64,22 @@ def main():
         methods.append(("CACTI", label, pi, rho, mtype))
 
     # SPC methods
-    for m in ["fista_tv", "ista_net", "hatnet"]:
+    for m in ["fista_tv", "pnp_drunet", "ista_net", "hatnet"]:
         key_i = f"{m}_scenario_i"
         key_ii = f"{m}_scenario_ii"
         key_iii = f"{m}_scenario_iii"
+        if key_i not in spc["methods"]:
+            continue  # skip if method not yet available
         pi = spc["methods"][key_i]["psnr_mean"]
         pii = spc["methods"][key_ii]["psnr_mean"]
         piii = spc["methods"][key_iii]["psnr_mean"]
         deg = pi - pii
         rec = piii - pii
         rho = (rec / deg * 100) if deg > 0.5 else None
-        mtype = {"fista_tv": "classical", "ista_net": "operator-aware",
-                 "hatnet": "operator-aware"}[m]
-        label = {"fista_tv": "FISTA-TV", "ista_net": "ISTA-Net",
-                 "hatnet": "HATNet"}[m]
+        mtype = {"fista_tv": "classical", "pnp_drunet": "classical",
+                 "ista_net": "operator-aware", "hatnet": "operator-aware"}[m]
+        label = {"fista_tv": "FISTA-TV", "pnp_drunet": "PnP-DRUNet",
+                 "ista_net": "ISTA-Net", "hatnet": "HATNet"}[m]
         methods.append(("SPC", label, pi, rho, mtype))
 
     # --- Plot ---
