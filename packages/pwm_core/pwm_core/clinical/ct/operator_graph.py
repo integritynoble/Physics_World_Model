@@ -248,6 +248,10 @@ class CTOperatorGraph:
         A large reprojection error indicates operator mismatch (wrong
         geometry, miscalibration, etc.).
 
+        Uses a noiseless forward projection (ignoring the configured
+        ``noise_std``) so the error is deterministic and reflects only
+        the geometric/calibration mismatch.
+
         Parameters
         ----------
         image : np.ndarray
@@ -265,7 +269,13 @@ class CTOperatorGraph:
         image = np.asarray(image, dtype=np.float64)
         measured_sinogram = np.asarray(measured_sinogram, dtype=np.float64)
 
-        predicted = self.forward(image)
+        # Use noiseless forward projection for deterministic error
+        saved_noise = self.params.noise_std
+        self.params = self.params.model_copy(update={"noise_std": 0.0})
+        try:
+            predicted = self.forward(image)
+        finally:
+            self.params = self.params.model_copy(update={"noise_std": saved_noise})
 
         # Handle shape mismatch gracefully
         if predicted.shape != measured_sinogram.shape:
