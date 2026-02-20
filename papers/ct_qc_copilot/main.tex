@@ -128,10 +128,10 @@ This manual process faces three scaling challenges.
 First, a single QMP may oversee 10--50 CT scanners, each requiring
 monthly QC with annual comprehensive
 evaluations~\cite{bushberg2012essential_physics}.
-At 30 scanners, manual analysis at 1--2 hours per scanner per month
-amounts to 360--720 physicist-hours per year devoted to routine
-computation---time diverted from clinical consultation, protocol
-optimization, and radiation safety.
+At 30 scanners, manual analysis at approximately 1~hour per scanner
+per month amounts to $\sim$360 physicist-hours per year devoted to
+routine computation---time diverted from clinical consultation,
+protocol optimization, and radiation safety.
 Second, trending-based QC requires maintaining time-series databases
 and computing control-chart statistics---tasks that are error-prone
 when performed in spreadsheets~\cite{pawlicki2005spc}.
@@ -414,11 +414,11 @@ within 20\% score separation.
 
 \subsection{Report Generation and Physicist Review (Steps 8--9)}
 
-Triple-output reporting produces: (i)~\texttt{physicist\_report.json}
-with SHA-256 integrity hash; (ii)~\texttt{physicist\_report.pdf} with
-color-coded summary, metrics table, drift alerts,
-diagnosis, and signature block; and
-(iii)~\texttt{evidence/} folder with ROI overlays, trend plots, and
+Triple-output reporting produces three artifacts:
+(i)~a JSON report with SHA-256 integrity hash;
+(ii)~a PDF report with color-coded summary, metrics table, drift
+alerts, diagnosis, and signature block; and
+(iii)~an evidence folder with ROI overlays, trend plots, and
 derivation logs.
 The physicist reviews the output, verifies the determination, and
 signs the PDF as the official QC record (Step~9).
@@ -463,14 +463,14 @@ superimposing the drift ramps on the 4 degrading scanners.
   height=5.5cm,
   bar width=6pt,
   xlabel={QA Metric},
-  ylabel={$|\Delta|$ (platform $-$ reference)},
+  ylabel={$|\Delta|$ (\% of ACR tolerance)},
   symbolic x coords={
     Water, Bone, Air, Acrylic, Poly,
     Geom, Slice, Unif, Noise
   },
   xtick=data,
   xticklabel style={font=\tiny, rotate=30, anchor=east},
-  ymin=0, ymax=2.5,
+  ymin=0, ymax=20,
   grid=major,
   grid style={gray!15},
   tick label style={font=\small},
@@ -479,33 +479,37 @@ superimposing the drift ramps on the 4 degrading scanners.
   legend style={font=\tiny, draw=none},
 ]
 
-% GE Revolution Apex
+% GE Revolution Apex (|Delta|/tolerance * 100)
+% Water: 0.1/5=2%, Bone: 1.2/20=6%, Air: 0.8/20=4%,
+% Acrylic: 0.5/12.5=4%, Poly: 0.4/12=3.3%,
+% Geom: 0.05/2=2.5%, Slice: 0.06/1.5=4%, Unif: 0.1/5=2%, Noise: 0.1/1.0=10%
 \addplot[fill=pwmBlue!70, draw=pwmBlue] coordinates {
-  (Water, 0.1)  (Bone, 1.2) (Air, 0.8) (Acrylic, 0.5) (Poly, 0.4)
-  (Geom, 0.05) (Slice, 0.06) (Unif, 0.1) (Noise, 0.1)
+  (Water, 2)  (Bone, 6) (Air, 4) (Acrylic, 4) (Poly, 3.3)
+  (Geom, 2.5) (Slice, 4) (Unif, 2) (Noise, 10)
 };
 \addlegendentry{GE Rev Apex}
 
 % Siemens Force
+% Water: 0.2/5=4%, Bone: 0.9/20=4.5%, Air: 1.1/20=5.5%,
+% Acrylic: 0.3/12.5=2.4%, Poly: 0.6/12=5%,
+% Geom: 0.10/2=5%, Slice: 0.08/1.5=5.3%, Unif: 0.2/5=4%, Noise: 0.15/1.0=15%
 \addplot[fill=pwmGreen!70, draw=pwmGreen] coordinates {
-  (Water, 0.2)  (Bone, 0.9) (Air, 1.1) (Acrylic, 0.3) (Poly, 0.6)
-  (Geom, 0.10) (Slice, 0.08) (Unif, 0.2) (Noise, 0.15)
+  (Water, 4)  (Bone, 4.5) (Air, 5.5) (Acrylic, 2.4) (Poly, 5)
+  (Geom, 5) (Slice, 5.3) (Unif, 4) (Noise, 15)
 };
 \addlegendentry{Siemens Force}
-
-% ACR tolerance
-\draw[pwmRed, dashed, line width=0.6pt]
-  (axis cs:Water,2.0) -- (axis cs:Noise,2.0);
-\node[font=\tiny\color{pwmRed}, anchor=west] at (axis cs:Noise,2.15) {ACR tol.};
 
 \end{axis}
 \end{tikzpicture}
 \caption{%
-  Absolute deviation between Copilot-computed metrics and
-  manufacturer console values for two scanner models.
-  All metrics fall well within ACR tolerance bands (dashed red line).
-  CT number metrics (Water--Poly) in HU; Geom in mm; Slice in mm;
-  Unif in HU; Noise in HU.
+  Deviation between Copilot-computed metrics and manufacturer
+  console values for two scanner models, expressed as a percentage
+  of the respective ACR tolerance for each metric.
+  All metrics fall within 15\% of their tolerances, confirming
+  agreement well within actionable limits.
+  ACR tolerances used: Water $\pm 5$~HU, Inserts $\pm 20$~HU,
+  Geom $\pm 2$~mm, Slice $\pm 1.5$~mm, Unif $\pm 5$~HU,
+  Noise $\pm 1.0$~HU baseline deviation.
 }
 \label{fig:metric_accuracy}
 \end{figure}
@@ -531,7 +535,7 @@ CT number metrics agreed within 1.2~HU, geometric accuracy within
   xlabel={Month},
   ylabel={Noise std (HU)},
   xmin=0.5, xmax=12.5,
-  ymin=3.5, ymax=8.0,
+  ymin=4.0, ymax=5.6,
   xtick={1,2,...,12},
   grid=major,
   grid style={gray!20},
@@ -542,57 +546,65 @@ CT number metrics agreed within 1.2~HU, geometric accuracy within
   label style={font=\small},
 ]
 
-% UCL
-\addplot[pwmRed, dashed, domain=0.5:12.5] {7.5};
-\addlegendentry{UCL ($3\sigma$)}
+% Commissioning: x-bar=4.60, s=0.18 from commissioning data
+% UCL = 4.60 + 3(0.18) = 5.14
+\addplot[pwmRed, dashed, domain=0.5:12.5] {5.14};
+\addlegendentry{UCL ($\bar{x}+3s$)}
 
-% Warning
-\addplot[pwmOrange, dotted, domain=0.5:12.5] {6.5};
-\addlegendentry{Warning ($2\sigma$)}
+% Warning = 4.60 + 2(0.18) = 4.96
+\addplot[pwmOrange, dotted, domain=0.5:12.5] {4.96};
+\addlegendentry{Warning ($\bar{x}+2s$)}
 
 % Baseline
-\addplot[pwmBlue, domain=0.5:12.5] {4.8};
-\addlegendentry{Baseline}
+\addplot[pwmBlue, domain=0.5:12.5] {4.60};
+\addlegendentry{Baseline $\bar{x}$}
+
+% LCL = 4.60 - 3(0.18) = 4.06
+\addplot[pwmRed, dashed, domain=0.5:12.5] {4.06};
+\addlegendentry{LCL ($\bar{x}-3s$)}
 
 % Scanner A -- stable
 \addplot[mark=o, mark size=1.5pt, pwmGreen!80!black]
   coordinates {
-    (1,4.7) (2,4.9) (3,4.6) (4,4.8) (5,4.5)
-    (6,4.9) (7,4.7) (8,4.6) (9,4.8) (10,4.7)
-    (11,4.9) (12,4.6)
+    (1,4.55) (2,4.72) (3,4.48) (4,4.65) (5,4.42)
+    (6,4.70) (7,4.58) (8,4.50) (9,4.63) (10,4.55)
+    (11,4.68) (12,4.47)
   };
 \addlegendentry{Scanner A (stable)}
 
-% Scanner B -- drifting
+% Scanner B -- drifting (onset month 3, gradual ramp)
 \addplot[mark=*, mark size=1.5pt, pwmRed!80!black]
   coordinates {
-    (1,4.8) (2,4.9) (3,4.7) (4,4.8) (5,5.0)
-    (6,5.1) (7,5.4) (8,5.6) (9,5.9) (10,6.2)
-    (11,6.5) (12,6.9)
+    (1,4.62) (2,4.58) (3,4.60) (4,4.65) (5,4.70)
+    (6,4.76) (7,4.82) (8,4.88) (9,4.95) (10,5.02)
+    (11,5.10) (12,5.18)
   };
 \addlegendentry{Scanner B (drifting)}
 
-% WE Rule 5 detection point
+% WE Rule 5 detection point at month 9 (7 increasing: months 3-9)
 \draw[-{Stealth[length=4pt]}, pwmPurple, line width=0.8pt]
-  (axis cs:9,7.2) -- (axis cs:9,6.1)
+  (axis cs:9,5.40) -- (axis cs:9,4.97)
   node[pos=0, above, font=\tiny\sffamily\color{pwmPurple}, text width=2cm, align=center]
-  {WE Rule 5\\detected here\\(Month 9)};
+  {WE Rule 5\\detected\\(Month 9)};
 
-% ACR fail would be at month 12+
+% Early warning brace
 \draw[decorate, decoration={brace, amplitude=3pt}, pwmOrange, line width=0.5pt]
-  (axis cs:9.2,7.6) -- (axis cs:12.3,7.6)
+  (axis cs:9.2,5.45) -- (axis cs:12.3,5.45)
   node[midway, above=3pt, font=\tiny\sffamily\color{pwmOrange}]
   {3 months early warning};
 
 \end{axis}
 \end{tikzpicture}
 \caption{%
-  Drift detection timeline for two scanners over 12~months.
+  Drift detection timeline for two scanners over 12~months
+  ($\bar{x}=4.60$~HU, $s=0.18$~HU from commissioning).
   Scanner~A (green) shows stable noise performance.
   Scanner~B (red) exhibits gradual noise drift; Western Electric
-  Rule~5 (7 monotonically increasing points) triggers at month~9,
-  3~months before the noise would cross the UCL at month~12.
-  This early warning enables proactive maintenance scheduling.
+  Rule~5 (7 monotonically increasing points, months 3--9)
+  triggers at month~9 while the value (4.95~HU) is still below
+  the UCL (5.14~HU), providing 3~months early warning before
+  projected threshold exceedance.
+  This enables proactive maintenance scheduling.
 }
 \label{fig:drift_timeline}
 \end{figure}
@@ -701,9 +713,9 @@ For the 30-scanner fleet, the annualized time savings are:
   \approx 377 \text{~physicist-hours/yr}
 \label{eq:time_savings}
 \end{equation}
-This represents approximately 0.18 FTE---time that can be redirected
-to clinical consultation, protocol optimization, and radiation
-safety.
+This represents approximately 0.18 FTE (assuming 2080 working hours
+per year)---time that can be redirected to clinical consultation,
+protocol optimization, and radiation safety.
 
 \subsection{Reproducibility}
 
@@ -757,13 +769,13 @@ submissions.
 \subsection{Integration with the Physics World Model}
 
 The CT QC Copilot is one application within the Physics World Model
-(\pwm{}) framework.
-\pwm{} models physical measurement as operator-graph transformations
-where each step can introduce mismatch.
-In the CT QC context, the Copilot's nine metrics probe scanner
-calibration drift (Gate~3 of the Triad Law), and the diagnosis
-engine identifies which calibration parameter has
-drifted~\cite{solveeverything}.
+(\pwm{}) framework~\cite{solveeverything}.
+\pwm{} provides a general architecture for reproducible physical
+measurement pipelines, from which the Copilot inherits its CasePack
+specification, version-controlled baselines, and triple-output
+reporting.
+Future extensions to PET/CT and SPECT/CT QA will share this
+infrastructure, reducing per-modality development cost.
 
 
 % ===========================================================================
@@ -794,9 +806,9 @@ via open-source CasePacks.
 \paragraph{Time savings in context.}
 The 94\% reduction in per-scanner QC time (67~min $\to$ 4.2~min)
 should be interpreted carefully.
-Manual time estimates are based on literature reports and physicist
-surveys~\cite{bushberg2012essential_physics}; actual times vary by
-site.
+Manual time estimates are based on task decomposition analysis
+of the step-by-step workflow (\cref{fig:time_comparison}); actual
+times vary by site, scanner model, and physicist experience.
 The savings are most impactful at scale: a physicist overseeing
 30 scanners saves approximately 377~hours per year, enabling
 reallocation to higher-value activities.
@@ -842,11 +854,9 @@ The system offers a practical path to implementing AAPM TG-233
 trending-based QC recommendations in clinical practice.
 
 \paragraph{Data and code availability.}
-All source code is available at
-\url{https://github.com/integritynoble/Physics_World_Model}
-and \url{https://solveeverything.org}.
-No non-public datasets were used.
-All analyses are phantom-based; no patient data were used.
+Source code: \url{https://github.com/integritynoble/Physics_World_Model}.
+Governance: \url{https://solveeverything.org}.
+No non-public datasets were used; all analyses are phantom-based.
 
 \paragraph{Author Contributions.}
 C.Y.\ conceived the project, designed the system, implemented all
