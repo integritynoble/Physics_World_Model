@@ -45,6 +45,7 @@ The threshold YAML file should follow this structure::
 from __future__ import annotations
 
 import logging
+import math
 from enum import Enum
 from pathlib import Path
 from typing import Any, Literal
@@ -253,6 +254,25 @@ def _layer_to_resolved(
             layer_data["tolerance_from_nominal"]
         )
 
+    # Handle non-standard threshold keys by converting to pass_range.
+    # min_visible_targets: N  ->  pass_range: [N, inf]  (more is better)
+    if "min_visible_targets" in layer_data:
+        n = float(layer_data["min_visible_targets"])
+        result_data["pass_range"] = (n, math.inf)
+        result_data["threshold_type"] = ThresholdType.ABSOLUTE_RANGE
+
+    # max_artifact_score: N  ->  pass_range: [-inf, N]  (less is better)
+    if "max_artifact_score" in layer_data:
+        n = float(layer_data["max_artifact_score"])
+        result_data["pass_range"] = (-math.inf, n)
+        result_data["threshold_type"] = ThresholdType.ABSOLUTE_RANGE
+
+    # min_resolvable_lp_per_cm: N  ->  pass_range: [N, inf]  (more is better)
+    if "min_resolvable_lp_per_cm" in layer_data:
+        n = float(layer_data["min_resolvable_lp_per_cm"])
+        result_data["pass_range"] = (n, math.inf)
+        result_data["threshold_type"] = ThresholdType.ABSOLUTE_RANGE
+
     if "unit" in layer_data:
         result_data["unit"] = str(layer_data["unit"])
 
@@ -304,7 +324,8 @@ class ThresholdResolver:
             If the YAML file does not exist.
         """
         self._yaml_path = Path(threshold_yaml_path)
-        self._data: dict[str, Any] = self._load_yaml()
+        raw_data = self._load_yaml()
+        self._data: dict[str, Any] = self._normalize_schema(raw_data)
 
     def _load_yaml(self) -> dict[str, Any]:
         """Load and parse the threshold YAML file.
@@ -336,6 +357,107 @@ class ThresholdResolver:
             )
 
         return data
+
+    @staticmethod
+    def _normalize_schema(data: dict[str, Any]) -> dict[str, Any]:
+        """Detect YAML schema format and normalise to metrics-first layout.
+
+        The resolver's internal logic expects the **metrics-first** schema::
+
+            metrics:
+              metric_name:
+                standard_default: { ... }
+                scanner_model:
+                  ScannerX: { ... }
+
+        The production YAML uses a **layer-first** schema::
+
+            standard_default:
+              metric_name: { ... }
+            scanner_model:
+              ScannerX:
+                metric_name: { ... }
+
+        If the data already contains a top-level ``metrics`` key it is
+        returned unchanged.  Otherwise the layer-first data is transposed
+        into the metrics-first format.
+
+        Parameters
+        ----------
+        data : dict[str, Any]
+            Raw parsed YAML data.
+
+        Returns
+        -------
+        dict[str, Any]
+            Data guaranteed to have a ``metrics`` top-level key.
+        """
+        if "metrics" in data:
+            return data
+
+        # Detect layer-first format by checking for known layer keys
+        layer_keys = set(_LAYER_ORDER)
+        if not layer_keys & set(data.keys()):
+            # Neither format detected; return as-is and let downstream
+            # validation report the problem.
+            return data
+
+        metrics: dict[str, dict[str, Any]] = {}
+
+        # Layer 1 — standard_default: {metric: config}
+        for metric_name, config in data.get("standard_default", {}).items():
+            if isinstance(config, dict):
+                metrics.setdefault(metric_name, {})["standard_default"] = config
+
+        # Layer 2 — scanner_model: {scanner: {metric: config}}
+        for scanner_name, scanner_metrics in data.get("scanner_model", {}).items():
+            if not isinstance(scanner_metrics, dict):
+                continue
+            for metric_name, config in scanner_metrics.items():
+                if isinstance(config, dict):
+                    metrics.setdefault(metric_name, {}).setdefault(
+                        "scanner_model", {}
+                    )[scanner_name] = config
+
+        # Layer 3 — protocol: {protocol: {metric: config}}
+        for protocol_name, protocol_metrics in data.get("protocol", {}).items():
+            if not isinstance(protocol_metrics, dict):
+                continue
+            for metric_name, config in protocol_metrics.items():
+                if isinstance(config, dict):
+                    metrics.setdefault(metric_name, {}).setdefault(
+                        "protocol", {}
+                    )[protocol_name] = config
+
+        # Layer 4 — site_override: {site_or_metric: config}
+        # In the layer-first format, site_override can be either
+        # {site_name: {metric: config}} or directly {metric: config}.
+        site_data = data.get("site_override", {})
+        if isinstance(site_data, dict):
+            for key, value in site_data.items():
+                if isinstance(value, dict):
+                    # Could be a metric config directly or a site grouping.
+                    # If the key is a known metric, treat as direct override.
+                    if key in metrics:
+                        metrics[key]["site_override"] = value
+                    else:
+                        # Assume it's a site-name grouping: {metric: config}
+                        for metric_name, config in value.items():
+                            if isinstance(config, dict):
+                                metrics.setdefault(metric_name, {})[
+                                    "site_override"
+                                ] = config
+
+        logger.debug(
+            "Transposed layer-first YAML to metrics-first format "
+            "(%d metrics detected).",
+            len(metrics),
+        )
+
+        # Preserve non-layer metadata (version, threshold_set_id, etc.)
+        result = {k: v for k, v in data.items() if k not in layer_keys}
+        result["metrics"] = metrics
+        return result
 
     def _get_metric_config(self, metric_name: str) -> dict[str, Any]:
         """Retrieve the raw configuration for a metric.
@@ -625,11 +747,26 @@ class ThresholdResolver:
             # Degenerate range: exact match required
             return "PASS" if value == low else "FAIL"
 
-        warning_margin = range_width * _WARNING_MARGIN_FRACTION
-
         # Check FAIL first
         if value < low or value > high:
             return "FAIL"
+
+        # For infinite or semi-infinite ranges, the WARNING margin
+        # only applies on finite boundaries.  Use 10% of the distance
+        # from the value to the finite boundary, measured relative to
+        # the boundary magnitude (with a floor of 10% of 1 unit).
+        if math.isinf(range_width):
+            if not math.isinf(low):
+                finite_margin = max(abs(low), 1.0) * _WARNING_MARGIN_FRACTION
+                if (value - low) < finite_margin:
+                    return "WARNING"
+            if not math.isinf(high):
+                finite_margin = max(abs(high), 1.0) * _WARNING_MARGIN_FRACTION
+                if (high - value) < finite_margin:
+                    return "WARNING"
+            return "PASS"
+
+        warning_margin = range_width * _WARNING_MARGIN_FRACTION
 
         # Check WARNING: within 10% of boundary
         if (value - low) < warning_margin or (high - value) < warning_margin:

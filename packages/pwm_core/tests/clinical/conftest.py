@@ -296,7 +296,7 @@ def sample_metrics() -> dict[str, float]:
         "ct_number_polyethylene": -96.2,
         "uniformity": 2.1,
         "noise_std": 7.8,
-        "geometric_accuracy": 200.3,
+        "geometric_accuracy": 0.3,
         "slice_thickness": 5.1,
         "low_contrast_detectability": 4,
         "artifact_evaluation": 0.0,
@@ -339,60 +339,25 @@ def sample_threshold_yaml(tmp_path: Path) -> Path:
     4. **site** -- Site-level overrides (tightest).
     """
     content = """\
-# 4-layer threshold configuration for ACR CT QC
-layers:
-  standard:
-    ct_number_water:
-      range: [-7.0, 7.0]
-      unit: HU
-    ct_number_bone:
-      range: [850, 970]
-      unit: HU
-    ct_number_air:
-      range: [-1005, -970]
-      unit: HU
-    ct_number_acrylic:
-      range: [110, 135]
-      unit: HU
-    ct_number_polyethylene:
-      range: [-107, -84]
-      unit: HU
-    uniformity:
-      range: [0, 5.0]
-      unit: HU
+# Threshold configuration for ACR CT QC (layer-first format)
+standard_default:
+  ct_number_water:
+    pass_range: [-5.0, 5.0]
+    unit: HU
+    source: "ACR"
+  noise_std:
+    tolerance_from_baseline_sigma: 2.0
+    unit: HU
+    source: "AAPM TG-233"
+  uniformity:
+    pass_range: [0.0, 5.0]
+    unit: HU
+    source: "ACR"
+scanner_model:
+  "Siemens SOMATOM Force":
     noise_std:
-      range: [0, 12.0]
-      unit: HU
-    geometric_accuracy:
-      range: [198.0, 202.0]
-      unit: mm
-    slice_thickness:
-      range: [4.5, 5.5]
-      unit: mm
-
-  scanner_model:
-    "Siemens SOMATOM Force":
-      noise_std:
-        range: [0, 9.0]
-        unit: HU
-      uniformity:
-        range: [0, 3.5]
-        unit: HU
-
-  protocol:
-    "ACR CT Adult Abdomen 120kVp":
-      ct_number_water:
-        expected_baseline: 0.5
-        tolerance_from_baseline_sigma: 2.0
-
-  site:
-    "Main Hospital CT-001":
-      noise_std:
-        range: [0, 8.0]
-        unit: HU
-      uniformity:
-        range: [0, 3.0]
-        unit: HU
+      tolerance_from_baseline_sigma: 1.5
+site_override: {}
 """
     yaml_path = tmp_path / "thresholds.yaml"
     yaml_path.write_text(content, encoding="utf-8")
@@ -409,62 +374,19 @@ def sample_mismatch_yaml(tmp_path: Path) -> Path:
     candidate root causes (hypotheses) with associated likelihoods.
     """
     content = """\
-# Mismatch library: feature-signature -> root-cause hypotheses
-mismatch_library:
-  ring_artifact:
-    features:
-      ring_index: "> 0.3"
-    hypotheses:
-      - name: detector_gain_drift
-        likelihood: 0.7
-        description: "One or more detector elements have drifted in gain."
-      - name: center_of_rotation
-        likelihood: 0.3
-        description: "Center-of-rotation offset produces ring-like artifacts."
-
-  cupping_artifact:
-    features:
-      cupping_index: "> 3.0"
-    hypotheses:
-      - name: scatter_fraction_drift
-        likelihood: 0.5
-        description: "Scatter correction is under-estimating scatter fraction."
-      - name: beam_hardening_residual
-        likelihood: 0.5
-        description: "Beam hardening correction is insufficient."
-
-  streak_artifact:
-    features:
-      streak_index: "> 0.3"
-    hypotheses:
-      - name: detector_dead_channel
-        likelihood: 0.8
-        description: "Dead or intermittent detector channel."
-      - name: helical_interpolation
-        likelihood: 0.2
-        description: "Helical interpolation artifact at high pitch."
-
-  hu_drift:
-    features:
-      hu_drift_index: "> 0.05"
-    hypotheses:
-      - name: hu_calibration_slope
-        likelihood: 0.6
-        description: "HU calibration slope has drifted since commissioning."
-      - name: tube_aging
-        likelihood: 0.4
-        description: "X-ray tube spectral shift due to target pitting."
-
-  noise_increase:
-    features:
-      noise_ratio: "> 1.5"
-    hypotheses:
-      - name: noise_floor_increase
-        likelihood: 0.7
-        description: "Detector electronics noise floor has increased."
-      - name: tube_output_drop
-        likelihood: 0.3
-        description: "Tube output has dropped, reducing signal-to-noise."
+# Mismatch library for DiagnosisEngine
+mismatch_types:
+  - id: "noise_floor_increase"
+    name: "Noise Floor Increase"
+    diagnostic_features:
+      noise_ratio:
+        expected_direction: "elevated"
+        weight: 0.8
+      ring_index:
+        expected_direction: "elevated"
+        weight: 0.2
+    diagnostic_test: "Tube output measurement"
+    affected_metrics: ["noise_std"]
 """
     yaml_path = tmp_path / "mismatch_library.yaml"
     yaml_path.write_text(content, encoding="utf-8")
