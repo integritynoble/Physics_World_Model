@@ -365,11 +365,10 @@ class BaselineManager:
 
             delta = current_value - baseline_value
 
-            if abs(baseline_value) > 1e-12:
-                delta_percent = abs(delta / baseline_value) * 100.0
-            else:
-                # Avoid division by zero; use absolute delta as proxy
-                delta_percent = abs(delta) * 100.0
+            # Use a minimum denominator to prevent inflated percentages
+            # for near-zero metrics (e.g., water CT number ~0 HU)
+            denom = max(abs(baseline_value), 10.0)
+            delta_percent = abs(delta / denom) * 100.0
 
             status: Literal["STABLE", "DRIFTED", "ALERT"]
             if delta_percent >= self._ALERT_THRESHOLD_PERCENT:
