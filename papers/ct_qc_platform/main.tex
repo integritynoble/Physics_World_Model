@@ -34,11 +34,6 @@
 \definecolor{pwmOrange}{HTML}{E8712B}
 \definecolor{pwmPurple}{HTML}{7B4EA3}
 \definecolor{pwmGray}{HTML}{6B6B6B}
-\definecolor{lightblue}{HTML}{E3EEF9}
-\definecolor{lightgreen}{HTML}{E3F5E3}
-\definecolor{lightred}{HTML}{FDE8E8}
-\definecolor{lightyellow}{HTML}{FFF8E1}
-\definecolor{lightpurple}{HTML}{F0E6F6}
 \usepackage[colorlinks=true, linkcolor=pwmBlue, citecolor=pwmBlue, urlcolor=pwmBlue]{hyperref}
 \usepackage[capitalise,noabbrev]{cleveref}
 
@@ -127,7 +122,7 @@ categories~\cite{acr_ct464}, and AAPM Task Group 233 recommends
 trending-based QC with statistical process control rather than
 simple pass/fail thresholds~\cite{aapm_tg233}.
 Despite decades of QC practice, the workflow at most sites remains
-manual, vendor-specific, and poorly reproducible~\cite{samei2019performance}.
+manual, vendor-specific, and poorly reproducible~\cite{mccollough2004ct_performance}.
 
 Several prior efforts have addressed parts of this problem.
 Pawlicki \etal~\cite{pawlicki2005spc} demonstrated statistical
@@ -150,7 +145,7 @@ threshold logic~\cite{verdun2015image_quality}.
 Second, \emph{traceability}: baselines are typically maintained in
 spreadsheets without integrity protection, making it difficult to
 verify that a baseline has not been accidentally
-modified~\cite{droege1982ct_qa}.
+modified~\cite{mccollough2004ct_performance}.
 Third, \emph{extensibility}: adding a new phantom type or modality
 typically requires rewriting the analysis pipeline from
 scratch~\cite{aapm_tg126,aapm_tg177}.
@@ -269,8 +264,7 @@ casepack:
   version: "2.1.0"
   metric_set:
     - ct_number_water
-    - ct_number_bone
-    - ct_number_air
+    - ct_number_inserts   # bone, air, acrylic, poly
     - geometric_accuracy
     - slice_thickness
     - uniformity
@@ -403,7 +397,7 @@ authoritative source.
 Scanner baselines are the reference point for all subsequent QC
 measurements.
 In conventional practice, baselines are maintained in spreadsheets
-that lack integrity protection~\cite{droege1982ct_qa}.
+that lack integrity protection~\cite{nowik2015ct_qa_automation}.
 
 The \pwm{} \texttt{CommissioningBundle} is a frozen Pydantic
 model~\cite{pydantic} (\texttt{frozen=True}) that captures:
@@ -597,17 +591,22 @@ protection.
 
 When metrics fail, the platform computes six artifact signatures
 (ring, cupping, streak, HU drift, noise ratio, geometric distortion)
-and scores mismatch hypotheses from a YAML library:
+and scores mismatch hypotheses from a YAML library.
+For hypothesis $h$, the score is:
 \begin{equation}
-  S(h) = \sum_{f \in \text{match}} |v_f| w_f
-  - \sum_{f \in \text{contradict}} |v_f| w_f
+  S(h) = \sum_{f \in \text{match}} |v_f|\, w_f
+  - \sum_{f \in \text{contradict}} |v_f|\, w_f
   + 0.5 \cdot |\mathcal{M}_h \cap \mathcal{M}_{\text{fail}}|
   \label{eq:score}
 \end{equation}
-Confidence: high (top $> 2\times$ second), moderate ($> 1.2\times$),
-low (otherwise).
-Disambiguation test recommended when the top two hypotheses are
-within 20\%.
+where $v_f$ is the measured value of artifact feature $f$, $w_f$ is
+its weight, $\mathcal{M}_h$ is the set of metrics associated with
+hypothesis $h$, and $\mathcal{M}_{\text{fail}}$ is the set of
+currently failing metrics.
+Confidence is assigned based on score separation:
+high ($S_1 > 2 S_2$), moderate ($S_1 > 1.2 S_2$), or low (otherwise),
+where $S_1$ and $S_2$ are the top two scores.
+A disambiguation test is recommended when $S_1$ and $S_2$ are within 20\%.
 
 
 % ===========================================================================
@@ -662,8 +661,8 @@ Planned extensions:
     image-guided radiation therapy~\cite{bissonnette2008cbct}.
 \end{itemize}
 
-This creates an \emph{abundance flywheel}: each scanner model added
-lowers the marginal cost of the next, because infrastructure is
+Each new CasePack lowers the marginal cost of supporting the next
+scanner type, because the analysis infrastructure is
 shared~\cite{solveeverything}.
 
 
@@ -687,16 +686,16 @@ reproducibility, SPC rule detection, and computational performance.
   ybar,
   width=\textwidth,
   height=5.5cm,
-  bar width=8pt,
+  bar width=6pt,
   xlabel={QA Metric},
-  ylabel={Deviation from reference},
+  ylabel={Deviation (\% of ACR tolerance)},
   symbolic x coords={
     Water, Bone, Air, Acrylic, Poly,
-    Geom, Slice, Unif, Noise
+    Geom, Slice, Unif, Noise, SpatRes
   },
   xtick=data,
   xticklabel style={font=\tiny, rotate=30, anchor=east},
-  ymin=-2.5, ymax=2.5,
+  ymin=-50, ymax=50,
   grid=major,
   grid style={gray!15},
   tick label style={font=\small},
@@ -706,34 +705,40 @@ reproducibility, SPC rule detection, and computational performance.
   every axis plot/.append style={line width=0pt},
 ]
 
-% Deviations (platform value - nominal, in respective units)
+% Deviations as percentage of ACR tolerance
+% Water: 0.3/5=6%, Bone: 1.2/~20=6%, Air: 0.8/~20=4%,
+% Acrylic: 0.5/~10=5%, Poly: 0.4/~10=4%,
+% Geom: 0.15/2=7.5%, Slice: 0.08/1.5=5.3%, Unif: 0.2/5=4%,
+% Noise: 0.1/baseline~10%, SpatRes: 0.2/5=4%
 \addplot[fill=pwmBlue!70, draw=pwmBlue] coordinates {
-  (Water, 0.3)
-  (Bone, -1.2)
-  (Air, 0.8)
-  (Acrylic, -0.5)
-  (Poly, 0.4)
-  (Geom, -0.15)
-  (Slice, 0.08)
-  (Unif, 0.2)
-  (Noise, 0.1)
+  (Water, 6)
+  (Bone, -6)
+  (Air, 4)
+  (Acrylic, -5)
+  (Poly, 4)
+  (Geom, -7.5)
+  (Slice, 5.3)
+  (Unif, 4)
+  (Noise, 2.2)
+  (SpatRes, -4)
 };
 \addlegendentry{\pwm{} platform}
 
-% ACR tolerance band
-\draw[pwmRed, dashed, line width=0.6pt] (axis cs:Water,2) -- (axis cs:Noise,2);
-\draw[pwmRed, dashed, line width=0.6pt] (axis cs:Water,-2) -- (axis cs:Noise,-2);
-\node[font=\tiny\color{pwmRed}, anchor=west] at (axis cs:Noise,2.2) {ACR tolerance};
+% ACR tolerance at 100%
+\draw[pwmRed, dashed, line width=0.6pt]
+  (axis cs:Water,100) -- (axis cs:SpatRes,100);
+\draw[pwmRed, dashed, line width=0.6pt]
+  (axis cs:Water,-100) -- (axis cs:SpatRes,-100);
 
 \end{axis}
 \end{tikzpicture}
 \caption{%
-  Metric deviations from nominal values on an ACR CT~464 phantom
-  scan (GE Revolution, 120~kVp, 5~mm axial).
-  All nine metrics fall within ACR tolerance bands (dashed red
-  lines at $\pm 2$ normalized units).
-  Water, Bone, Air, Acrylic, Poly: deviation in HU; Geom: mm;
-  Slice: mm; Unif: HU; Noise: HU.
+  Metric deviations from reference values on an ACR CT~464 phantom
+  scan (GE Revolution Apex, 120~kVp, 5~mm axial), expressed as
+  percentage of the respective ACR tolerance for each metric.
+  All continuous metrics fall within $\pm 8\%$ of their tolerances.
+  Low-contrast detectability (5/5 targets) and artifact evaluation
+  (score 0) are discrete metrics shown in \cref{tab:validation}.
 }
 \label{fig:validation}
 \end{figure}
@@ -850,7 +855,7 @@ The \pwm{} CT QC Platform addresses gaps in three areas.
 \paragraph{Reproducibility vs.\ existing tools.}
 Commercial QC packages (\eg, Sun Nuclear, Radcal) provide automated
 analysis but are closed-source, limiting independent validation and
-cross-platform comparison~\cite{samei2019performance}.
+cross-platform comparison~\cite{nowik2015ct_qa_automation}.
 Open tools like pydicom~\cite{pydicom} and
 scikit-image~\cite{scikit_image} provide components but not an
 integrated, validated pipeline.
@@ -874,7 +879,7 @@ from multi-site QC databases could improve diagnostic coverage.
 would require FDA 510(k) and IEC 62304 compliance~\cite{iec62304,samd_fda}.
 (4)~Low-contrast detectability uses a simplified CNR criterion;
 more sophisticated model-observer approaches could improve
-correlation with human observer performance~\cite{solomon2016lcd}.
+correlation with human observer performance~\cite{solomon2014lcd}.
 
 \paragraph{Future work.}
 Planned extensions include multi-vendor validation, PET/CT and
