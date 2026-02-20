@@ -29,9 +29,11 @@ from tests.clinical.conftest import (
     PIXEL_SPACING_MM,
 )
 
-# Pixel-domain radii for ring analysis
-_INNER_RADIUS_PX = int(0.1 * PHANTOM_RADIUS_PX)
-_OUTER_RADIUS_PX = int(0.95 * PHANTOM_RADIUS_PX)
+# Pixel-domain radii for ring analysis.
+# The ring artifact is injected in the band 30-50 px from centre.
+# Use an analysis annulus that covers this band.
+_INNER_RADIUS_PX = 25
+_OUTER_RADIUS_PX = 55
 _RADIUS_PX = int(PHANTOM_RADIUS_PX)
 
 
