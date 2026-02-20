@@ -248,11 +248,17 @@ def _layer_to_resolved(
         result_data["tolerance_sigma"] = float(
             layer_data["tolerance_from_baseline_sigma"]
         )
+        # Infer threshold_type if not explicitly set
+        if result_data["threshold_type"] == ThresholdType.ABSOLUTE_RANGE and result_data["pass_range"] is None:
+            result_data["threshold_type"] = ThresholdType.RELATIVE_TO_BASELINE_SIGMA
 
     if "tolerance_from_nominal" in layer_data:
         result_data["tolerance_from_nominal"] = float(
             layer_data["tolerance_from_nominal"]
         )
+        # Infer threshold_type if not explicitly set
+        if result_data["threshold_type"] == ThresholdType.ABSOLUTE_RANGE and result_data["pass_range"] is None:
+            result_data["threshold_type"] = ThresholdType.RELATIVE_TO_NOMINAL
 
     # Handle non-standard threshold keys by converting to pass_range.
     # min_visible_targets: N  ->  pass_range: [N, inf]  (more is better)
