@@ -39,36 +39,54 @@ CACTI_RECON_DIR = RESULTS_DIR / "cacti_real_reconstructions"
 
 
 def generate_cassi_real_figure():
-    """Generate CASSI real data visual comparison figure."""
+    """Generate CASSI real data visual comparison figure.
+
+    Layout: 2 rows (calibrated, mismatched) x 4 columns (GAP-TV, HDNet, MST-S, MST-L)
+    Shows Scene 1, band 14 (mid-spectrum), central 256x256 patch.
+    """
     if not HAS_MPL:
         return
 
     logger.info("Generating CASSI real data figure...")
 
-    methods = ["gap_tv", "mst_s", "mst_l"]
-    labels = {"gap_tv": "GAP-TV", "mst_s": "MST-S", "mst_l": "MST-L"}
+    methods = ["gap_tv", "hdnet", "mst_s", "mst_l"]
+    labels = {"gap_tv": "GAP-TV", "hdnet": "HDNet", "mst_s": "MST-S", "mst_l": "MST-L"}
+    conditions = ["calibrated", "mismatched"]
+    cond_labels = {"calibrated": "Calibrated", "mismatched": "Mismatched"}
 
-    fig, axes = plt.subplots(2, len(methods), figsize=(4 * len(methods), 8))
+    fig, axes = plt.subplots(2, len(methods), figsize=(3.5 * len(methods), 7))
 
-    for ci, condition in enumerate(["calibrated", "mismatched"]):
+    for ci, condition in enumerate(conditions):
         for mi, method in enumerate(methods):
             npy_path = CASSI_RECON_DIR / f"scene1_{condition}_{method}.npy"
             if npy_path.exists():
                 recon = np.load(str(npy_path))
-                # Show band 14 (mid-spectrum), crop central patch
                 H, W = recon.shape[:2]
-                ch, cw = H // 2, W // 2
-                ps = 128
-                patch = recon[ch - ps:ch + ps, cw - ps:cw + ps, 14]
+                # For full-size recons (660x660x28), crop central 256x256
+                if H > 256:
+                    ch, cw = H // 2, W // 2
+                    ps = 128
+                    band = min(14, recon.shape[2] - 1)
+                    patch = recon[ch - ps:ch + ps, cw - ps:cw + ps, band]
+                else:
+                    # MST crops are already 256x256
+                    band = min(14, recon.shape[2] - 1)
+                    patch = recon[:, :, band]
                 patch = np.clip(patch / (patch.max() + 1e-6), 0, 1)
             else:
                 patch = np.random.rand(256, 256) * 0.3
 
             axes[ci, mi].imshow(patch, cmap="viridis", vmin=0, vmax=1)
-            axes[ci, mi].set_title(f"{labels[method]}\n({condition})", fontsize=11)
+            if ci == 0:
+                axes[ci, mi].set_title(labels[method], fontsize=14, fontweight="bold")
             axes[ci, mi].axis("off")
 
-    fig.suptitle("CASSI Real Data: Scene 1, Band 14 (Central Patch)", fontsize=13, y=0.98)
+        # Row label
+        axes[ci, 0].set_ylabel(cond_labels[condition], fontsize=13,
+                                rotation=90, labelpad=10)
+
+    fig.suptitle("CASSI Real Data: Scene 1, Band 14 (Central 256×256 Patch)",
+                 fontsize=14, y=1.0)
     plt.tight_layout()
     out = FIGURES_DIR / "cassi_real_comparison.pdf"
     fig.savefig(out, dpi=200, bbox_inches="tight")
@@ -77,24 +95,32 @@ def generate_cassi_real_figure():
 
 
 def generate_cacti_real_figure():
-    """Generate CACTI real data visual comparison figure."""
+    """Generate CACTI real data visual comparison figure.
+
+    Layout: 2 rows (duomino, hand) x 4 columns (GAP-TV cal, GAP-TV mis,
+    EfficientSCI cal, EfficientSCI mis). Larger fonts for readability.
+    """
     if not HAS_MPL:
         return
 
     logger.info("Generating CACTI real data figure...")
 
     scenes = ["duomino", "hand"]
+    scene_labels = {"duomino": "Duomino", "hand": "Hand"}
     methods = ["gap_tv", "efficientsci"]
     labels = {"gap_tv": "GAP-TV", "efficientsci": "EfficientSCI"}
+    conditions = ["calibrated", "mismatched"]
+    cond_short = {"calibrated": "Cal.", "mismatched": "Mis."}
 
-    fig, axes = plt.subplots(len(scenes), 2 * len(methods), figsize=(4 * 2 * len(methods), 4 * len(scenes)))
+    fig, axes = plt.subplots(len(scenes), 2 * len(methods),
+                              figsize=(3.5 * 2 * len(methods), 3.5 * len(scenes)))
     if len(scenes) == 1:
         axes = axes[np.newaxis, :]
 
     for si, scene in enumerate(scenes):
         col = 0
         for mi, method in enumerate(methods):
-            for condition in ["calibrated", "mismatched"]:
+            for condition in conditions:
                 npy_path = CACTI_RECON_DIR / f"{scene}_{condition}_{method}.npy"
                 if npy_path.exists():
                     recon = np.load(str(npy_path))
@@ -104,13 +130,17 @@ def generate_cacti_real_figure():
                     frame = np.random.rand(256, 256) * 0.3
 
                 axes[si, col].imshow(frame, cmap="gray", vmin=0, vmax=1)
-                axes[si, col].set_title(f"{labels[method]}\n({condition})", fontsize=10)
+                if si == 0:
+                    axes[si, col].set_title(
+                        f"{labels[method]}\n({cond_short[condition]})",
+                        fontsize=13, fontweight="bold")
                 axes[si, col].axis("off")
                 if col == 0:
-                    axes[si, col].set_ylabel(scene, fontsize=12, rotation=90, labelpad=10)
+                    axes[si, col].set_ylabel(scene_labels[scene], fontsize=13,
+                                              rotation=90, labelpad=10)
                 col += 1
 
-    fig.suptitle("CACTI Real Data: Frame 1", fontsize=13, y=0.98)
+    fig.suptitle("CACTI Real Data: Frame 1 Reconstruction", fontsize=14, y=1.0)
     plt.tight_layout()
     out = FIGURES_DIR / "cacti_real_comparison.pdf"
     fig.savefig(out, dpi=200, bbox_inches="tight")
