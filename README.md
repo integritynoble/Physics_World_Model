@@ -42,6 +42,10 @@ PWM is designed to be:
 - [Modality Coverage](#modality-coverage) — 64-modality catalog
 - [Benchmark Results](#benchmark-results-26-modalities-with-psnr-table) — PSNR/SSIM tables
 
+**Clinical Medical Physics**
+- [CT QC Copilot](#ct-qc-copilot) — metric-first QA for diagnostic CT
+- [Clinical Architecture](#clinical-architecture) — CasePack-driven, threshold-resolved, audit-grade
+
 **Community**
 - [Community & Contributing](#community--contributing) — 4 contribution levels, weekly challenges, calibration sprints
 - [Documentation Index](#documentation-index)
@@ -298,8 +302,9 @@ python benchmarks/run_all.py --modality photoacoustic
 # Run operator correction tests (16 tests, ~63 min)
 python -m pytest benchmarks/test_operator_correction.py -v
 
-# Run unit tests (3743 tests)
-python -m pytest tests/ -v
+# Run unit tests (3953 tests)
+python -m pytest tests/ -v         # 3743 core tests
+python -m pytest tests/clinical/ -v  # 210 clinical tests
 ```
 
 ### E) Evaluate a method on the harness
@@ -823,7 +828,7 @@ python benchmarks/run_all.py --modality fpm
 ```bash
 cd packages/pwm_core
 
-# Unit tests (3743 tests)
+# Unit tests (3743 core + 210 clinical = 3953 tests)
 python -m pytest tests/ -v
 
 # Operator correction tests (16 tests, ~63 min)
@@ -846,6 +851,89 @@ Most benchmarks use **synthetic data by default** (no download required). For re
 ```
 
 For large datasets (LoDoPaB-CT, fastMRI, KAIST), see `docs/plan.md` for details.
+
+---
+
+## CT QC Copilot
+
+PWM extends from research computational imaging into **clinical diagnostic medical physics**. The CT QC Copilot is a metric-first quality assurance module for CT scanners, implementing ACR CT accreditation standards (ACR CT 464 phantom), AAPM TG-233 performance metrics, and Western Electric SPC rules for drift detection.
+
+**Design philosophy:** Autopilot for QC, Digital Twin for troubleshooting. PWM provides the targeting system (which scanner needs attention), outcome contracts (pass/fail against published thresholds with full evidence), and decision logs (immutable QC records). The qualified medical physicist provides clinical judgment, sign-off, and regulatory accountability.
+
+### 12 ACR CT Phantom Metrics
+
+| # | Metric | ACR Criterion | Method |
+|---|--------|---------------|--------|
+| 1 | CT Number (Water) | 0 +/- 5 HU | Central circular ROI mean |
+| 2 | CT Number (Bone) | 850--970 HU | Insert ROI with rotation correction |
+| 3 | CT Number (Polyethylene) | -107 to -84 HU | Insert ROI with rotation correction |
+| 4 | CT Number (Acrylic) | 110--135 HU | Insert ROI with rotation correction |
+| 5 | CT Number (Air) | -1005 to -970 HU | Insert ROI with rotation correction |
+| 6 | Geometric Accuracy | +/- 2 mm of 200 mm | Bounding box extent with fence-post correction |
+| 7 | Slice Thickness | +/- 1.5 mm of nominal | Wire-ramp FWHM with pixel spacing |
+| 8 | Uniformity | < 5 HU center-to-edge | 4 peripheral ROIs (12/3/6/9 o'clock) |
+| 9 | Noise (Std Dev) | Site-specific | Central water ROI sample std |
+| 10 | Low-Contrast Detectability | >= 4 targets visible | CNR-based detection at 5 target sizes |
+| 11 | Artifact Evaluation | Score 0--3 | Radial profile peak-to-valley analysis |
+| 12 | Spatial Resolution | Site-specific lp/cm | Bar pattern MTF analysis |
+
+### Clinical Architecture
+
+```
+DICOM Files -> DICOMIngester (PHI-safe) -> CTScanBundle
+    -> compute_all_metrics() -> QAMetricsReport
+    -> ThresholdResolver (4-layer) -> ThresholdResults
+    -> DiagnosisEngine (scored root-cause) -> DiagnosisReport
+    -> DriftDetector (SPC/Western Electric) -> DriftReport
+    -> BaselineManager (versioned, SHA-256 signed) -> BaselineComparison
+    -> ReportGenerator -> physicist_report.json + PDF + evidence/
+```
+
+**Key components:**
+
+| Component | Description |
+|-----------|-------------|
+| **DICOMIngester** | PHI-safe DICOM loading with phantom-only validation, CasePack-driven series selection, and canonical resampling |
+| **QA Metrics** | 12 ACR CT phantom metrics with automatic phantom center detection and rotation correction |
+| **ThresholdResolver** | 4-layer cascade: standard_default -> scanner_model -> protocol -> site_override |
+| **DiagnosisEngine** | Scored root-cause diagnosis using mismatch library YAML with 6 artifact features |
+| **DriftDetector** | 5 Western Electric SPC rules on Shewhart control charts with baseline-anchored limits |
+| **BaselineManager** | Immutable, SHA-256 signed, version-chained CommissioningBundles |
+| **CTOperatorGraph** | Tier 1/2 CT forward model for troubleshoot-mode Triad diagnosis |
+| **ReportGenerator** | Triple-output: JSON (tamper-evident SHA-256), PDF, and evidence directory |
+
+**CasePack extensibility:** Each phantom/test combination is a versioned CasePack YAML containing ROI definitions, metric sets, thresholds, and report templates. Adding PET/CT or SPECT requires a new CasePack, not new code. Scaffold directories for `pet_ct/` and `spect_ct/` are in place.
+
+### Clinical Quickstart
+
+```python
+from pwm_core.clinical.ct.dicom_ingester import DICOMIngester
+from pwm_core.clinical.ct.qa_metrics import compute_all_metrics
+from pwm_core.clinical.common.threshold_resolver import ThresholdResolver
+from pwm_core.clinical.ct.report_generator import ReportGenerator
+
+# 1. Ingest DICOM (PHI-safe, phantom-only)
+ingester = DICOMIngester(phi_strict=True)
+scan_bundle = ingester.ingest(Path("acr_phantom_scan/"), casepack=casepack)
+
+# 2. Compute all 12 metrics
+metrics_report = compute_all_metrics(scan_bundle, casepack)
+
+# 3. Resolve thresholds (4-layer cascade)
+resolver = ThresholdResolver(threshold_config)
+threshold_results = resolver.evaluate(metrics_report)
+
+# 4. Generate audit-grade report
+gen = ReportGenerator()
+gen.generate(config, metrics_report, threshold_results)
+# -> physicist_report.json + physicist_report.pdf + evidence/
+```
+
+```bash
+# Run clinical test suite (210 tests)
+cd packages/pwm_core
+python -m pytest tests/clinical/ -v
+```
 
 ---
 
@@ -881,6 +969,12 @@ pwm/
         analysis/          # Metrics, bottleneck, uncertainty
         core/              # Runner, RunBundle, simulator
         api/               # Pydantic types, endpoints
+        clinical/          # Clinical medical physics QA modules
+          ct/              # CT QC Copilot (12 metrics, diagnosis, drift, reports)
+          common/          # Shared: threshold resolver, PHI filter, scanner registry
+          casepacks/       # CasePack loader + YAML configs (acr_ct.yaml)
+          pet_ct/          # PET/CT QC (scaffold)
+          spect_ct/        # SPECT/CT QC (scaffold)
       contrib/
         modalities.yaml    # 64-modality source of truth
         mismatch_db.yaml   # Mismatch parameters per modality
@@ -891,7 +985,7 @@ pwm/
       benchmarks/
         run_all.py         # 64-modality benchmark suite
         test_operator_correction.py  # 16 calibration tests
-      tests/               # 3743 unit tests
+      tests/               # 3953 unit tests (incl. 210 clinical)
     pwm_AI_Scientist/      # AI_Scientist adapter (thin)
 ```
 
@@ -1104,6 +1198,10 @@ See also: [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full contribution guide.
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Contribution guide (modalities, solvers, datasets) |
 | [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) | Three-speed merge, steward board, dispute resolution |
 | [`community/CONTRIBUTING_CHALLENGE.md`](community/CONTRIBUTING_CHALLENGE.md) | Weekly challenge participation guide |
+| **Clinical Medical Physics** | |
+| [`packages/pwm_core/pwm_core/clinical/`](packages/pwm_core/pwm_core/clinical/) | CT QC Copilot source modules |
+| [`packages/pwm_core/tests/clinical/`](packages/pwm_core/tests/clinical/) | 210 clinical tests |
+| [`packages/pwm_core/pwm_core/clinical/casepacks/acr_ct.yaml`](packages/pwm_core/pwm_core/clinical/casepacks/acr_ct.yaml) | ACR CT phantom CasePack |
 
 ---
 
