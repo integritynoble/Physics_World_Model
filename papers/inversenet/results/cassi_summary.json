@@ -144,10 +144,10 @@
       "gap_ii_iii_std": 0.0
     },
     "mst_l": {
-      "gap_i_ii_mean": -0.34,
-      "gap_i_ii_std": 1.55,
-      "gap_ii_iii_mean": -0.14,
-      "gap_ii_iii_std": 1.13
+      "gap_i_ii_mean": 13.98,
+      "gap_i_ii_std": 2.54,
+      "gap_ii_iii_mean": 6.50,
+      "gap_ii_iii_std": 2.17
     }
   },
   "execution_seconds": 2139.7
