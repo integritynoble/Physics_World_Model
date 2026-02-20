@@ -461,8 +461,10 @@ MST-L$^\dagger$    & 17.80 & 17.80 & $-$0.00 \\
 \end{tabular}
 \end{table}
 
-The spatial-only mismatch produces negligible real-data degradation ($\leq$0.22\,dB), contrasting with 3--14\,dB in simulation.
-This is expected: (1)~hardware masks already contain uncorrected registration errors; (2)~simulation mismatch includes dispersion perturbation (the dominant CASSI degradation source), absent here.
+Note that PSNR in \cref{tab:cassi_real} is measured against the published reference reconstructions from the TSA dataset---these are \emph{not} ground-truth spectral cubes but prior algorithmic reconstructions, hence the moderate absolute values.
+The key diagnostic is the \emph{difference} $\Delta$ between calibrated and mismatched conditions: spatial-only mask shift produces negligible degradation ($|\Delta| \leq 0.22$\,dB on real data).
+By contrast, our \emph{simulation} experiments (\cref{tab:cassi}), which include both mask shift \emph{and} dispersion perturbation and which have access to true ground-truth hyperspectral cubes, show 3--14\,dB degradation.
+The large gap between real-data $\Delta$ and simulation $\Delta$ is expected: (1)~real hardware masks already contain uncorrected registration errors, so our additional shift is a small perturbation atop existing mismatch; (2)~the real-data experiment applies spatial mask shift only, while the simulation mismatch also includes dispersion parameters ($a_1$, $\alpha$)---which \cref{tab:cassi} identifies as the dominant CASSI degradation source.
 HDNet shows $\Delta{=}0$\,dB, consistent with its mask-oblivious architecture.
 This validates that dispersion mismatch, not spatial shift alone, drives large CASSI gaps (\cref{fig:cassi_real}).
 
