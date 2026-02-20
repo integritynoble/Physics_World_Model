@@ -489,23 +489,45 @@ Mismatched reconstructions exhibit temporal ghosting (\cref{fig:cacti_real}).
 \subsection{Scenario~IV: Blind Calibration Baseline}
 \label{sec:scenario_iv}
 
-Scenario~IV evaluates blind calibration via grid search over mismatch parameters using the measurement residual $\|\mathbf{y} - \mathbf{\Phi}'(\hat{\mathbf{x}})\|^2$ as objective, with a classical solver as inner loop.
+Scenario~III assumes oracle knowledge of the true operator.
+In practice, the mismatch parameters must be estimated from measurements alone.
+Scenario~IV evaluates blind calibration via grid search over mismatch parameters, using the measurement residual as the sole objective:
+\begin{equation}
+    \tilde{\boldsymbol{\theta}} = \arg\min_{\boldsymbol{\theta}} \left\| \mathbf{y} - \mathbf{\Phi}(\boldsymbol{\theta})\, \hat{\mathbf{x}}\!\left(\mathbf{y}, \mathbf{\Phi}(\boldsymbol{\theta})\right) \right\|^2,
+    \label{eq:scenario_iv}
+\end{equation}
+where $\boldsymbol{\theta}$ denotes the mismatch parameters and $\hat{\mathbf{x}}(\mathbf{y}, \mathbf{\Phi})$ is the reconstruction from a fast inner-loop solver.
+No ground truth is required---only the measurement $\mathbf{y}$ and the ability to vary $\mathbf{\Phi}$.
+
+\paragraph{Procedure.}
+For each candidate $\boldsymbol{\theta}$, we: (1)~construct the trial operator $\mathbf{\Phi}(\boldsymbol{\theta})$, (2)~reconstruct $\hat{\mathbf{x}}$ using a fast classical solver, and (3)~compute the measurement residual $\|\mathbf{y} - \mathbf{\Phi}(\boldsymbol{\theta})\hat{\mathbf{x}}\|^2$.
+The parameter yielding the lowest residual is selected, and a final high-quality reconstruction is performed with that operator.
+For efficiency, calibration uses a subset of the data: 3 KAIST scenes for CASSI, 2 benchmark videos for CACTI, and 1 test image for SPC---all from the same datasets as Sections~\ref{sec:cassi}--\ref{sec:spc}, with the same mismatch parameters.
+Modality-specific details:
+\begin{itemize}
+    \item \textbf{CASSI:} Grid search over mask shifts $dx, dy \in [-1.0, 1.0]$\,px on an $11 \times 11$ grid (121 evaluations). Inner loop: GAP-TV with 30 iterations per evaluation and 100 iterations for the final reconstruction. The grid search recovered $(dx, dy) = (0.40, 0.20)$ vs.\ true $(0.50, 0.30)$.
+    \item \textbf{CACTI:} Grid search over $dx, dy \in [-1.0, 1.0]$\,px on a $9 \times 9$ grid (81 evaluations). Inner loop: GAP-TV with 20 iterations per evaluation. Recovered $(0.50, 0.25)$ vs.\ true $(0.50, 0.30)$.
+    \item \textbf{SPC:} Grid search over gain drift $\alpha \in [0, 0.005]$ with 21 grid points. Inner loop: FISTA-TV with 100 iterations per evaluation. The residual surface was flat: estimated $\alpha = 0$ vs.\ true $\alpha = 0.0015$.
+\end{itemize}
+
+\paragraph{Results.}
 \Cref{tab:scenario_iv} shows the results.
-CACTI achieves near-perfect calibration ($26.99$\,dB, matching Scenario~III).
-CASSI recovers $78\%$ of the gap ($+1.36$\,dB of $+1.74$\,dB), with dispersion parameters not covered by the spatial-only search.
-For SPC, the measurement-residual objective cannot distinguish the true gain drift from $\alpha{=}0$, suggesting that more sophisticated objectives may be needed for radiometric mismatch.
+For CACTI, grid search achieves \emph{near-perfect} calibration ($26.99$\,dB, matching Scenario~III), recovering the full $9.39$\,dB mismatch gap---the measurement residual provides a strong signal for spatial mask shifts.
+CASSI recovers $78\%$ of the gap ($+1.36$\,dB of $+1.74$\,dB possible); the residual $22\%$ is attributable to dispersion parameters ($a_1$, $\alpha$) not included in the spatial-only grid search.
+For SPC, the measurement-residual objective fails entirely: gain drift $\alpha = 0.0015$ produces nearly identical residuals to $\alpha = 0$, because FISTA-TV's TV regularisation absorbs the gain-induced artefacts.
+This reveals a fundamental limitation: measurement-residual minimisation is effective for \emph{geometric} mismatch (mask shifts) but insensitive to \emph{radiometric} mismatch (gain drift), where more sophisticated objectives (e.g., reconstruction sparsity or learned calibration networks) are needed.
 
 \begin{table}[t]
 \centering
-\caption{Scenario~IV results: blind grid-search calibration vs.\ Scenarios~II and III. PSNR~(dB) for the classical solver on each modality.}
+\caption{Scenario~IV: blind grid-search calibration. II: mismatched operator, no calibration. IV: operator estimated via measurement-residual minimisation (\cref{eq:scenario_iv}). III: oracle (true operator). Recovery~\%: (IV$-$II)/(III$-$II). Est.\ params: estimated mismatch parameters (true: CASSI $dx{=}0.5$, $dy{=}0.3$; CACTI $dx{=}0.5$, $dy{=}0.3$; SPC $\alpha{=}0.0015$).}
 \label{tab:scenario_iv}
-\begin{tabular}{@{}lccccc@{}}
+\begin{tabular}{@{}lcccccc@{}}
 \toprule
-\textbf{Modality} & \textbf{Method} & \textbf{II} & \textbf{IV} & \textbf{III} & \textbf{IV/III (\%)} \\
+\textbf{Modality} & \textbf{Method} & \textbf{II} & \textbf{IV} & \textbf{III} & \textbf{Recovery} & \textbf{Est.\ params} \\
 \midrule
-CASSI & GAP-TV    & 21.95 & 23.31 & 23.69 & 78\% \\
-CACTI & GAP-TV    & 17.60 & 26.99 & 26.99 & 100\% \\
-SPC   & FISTA-TV  & 25.47 & 25.47 & 25.43 & 0\% \\
+CASSI & GAP-TV    & 21.95 & 23.31 & 23.69 & 78\% & $dx{=}0.40$, $dy{=}0.20$ \\
+CACTI & GAP-TV    & 17.60 & 26.99 & 26.99 & 100\% & $dx{=}0.50$, $dy{=}0.25$ \\
+SPC   & FISTA-TV  & 25.47 & 25.47 & 25.43 & 0\% & $\alpha{=}0.0$ \\
 \bottomrule
 \end{tabular}
 \end{table}
