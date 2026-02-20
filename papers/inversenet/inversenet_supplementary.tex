@@ -324,18 +324,22 @@ Both PnP methods (PnP-HSICNN for CASSI, PnP-FFDNet for CACTI) show intermediate 
 \subsection{Algorithm}
 
 Scenario~IV performs blind calibration without ground truth.
-The key idea is that the correct operator should produce a reconstruction whose re-measurement matches the observed data.
-We formalise this as:
+For \emph{geometric} mismatch (CASSI, CACTI), the measurement residual provides a strong signal:
 \begin{equation}
     \tilde{\boldsymbol{\theta}} = \arg\min_{\boldsymbol{\theta} \in \mathcal{G}} \sum_{s=1}^{S} \left\| \mathbf{y}_s - \mathbf{\Phi}(\boldsymbol{\theta})\, \hat{\mathbf{x}}_s\!\left(\mathbf{y}_s, \mathbf{\Phi}(\boldsymbol{\theta})\right) \right\|^2,
 \end{equation}
-where $\mathcal{G}$ is a discrete grid of candidate parameters, $S$ is the number of scenes used for calibration, and $\hat{\mathbf{x}}_s$ is the reconstruction obtained by a fast inner-loop solver.
+where $\mathcal{G}$ is a discrete grid of candidate parameters.
+For \emph{radiometric} mismatch (SPC gain drift), the measurement residual is uninformative (the underdetermined system always achieves near-zero self-consistent residual regardless of gain), so we instead minimise reconstruction total variation:
+\begin{equation}
+    \tilde{\alpha} = \arg\min_{\alpha \in \mathcal{G}} \sum_{s=1}^{S} \mathrm{TV}\!\left(\hat{\mathbf{x}}_s\!\left(\mathbf{y}_s,\, \mathbf{\Phi}(\alpha)\right)\right).
+\end{equation}
+The rationale is that correct gain correction yields clean measurements, producing smooth reconstructions with low TV, while incorrect gain leaves systematic artifacts that increase TV.
 The procedure is:
 
 \begin{enumerate}
     \item \textbf{Generate corrupted measurements}: apply the true mismatch ($\boldsymbol{\theta}_{\text{true}}$) to the ideal operator and measure scenes: $\mathbf{y}_s = \mathbf{\Phi}(\boldsymbol{\theta}_{\text{true}})\mathbf{x}_s + \mathbf{n}$.
-    \item \textbf{Grid search}: for each candidate $\boldsymbol{\theta} \in \mathcal{G}$, construct $\mathbf{\Phi}(\boldsymbol{\theta})$, run the inner-loop solver to get $\hat{\mathbf{x}}_s$, compute the measurement residual $\|\mathbf{y}_s - \mathbf{\Phi}(\boldsymbol{\theta})\hat{\mathbf{x}}_s\|^2$, and sum across scenes.
-    \item \textbf{Select best}: $\tilde{\boldsymbol{\theta}} = \arg\min_{\boldsymbol{\theta} \in \mathcal{G}} \sum_s \text{residual}_s(\boldsymbol{\theta})$.
+    \item \textbf{Grid search}: for each candidate $\boldsymbol{\theta} \in \mathcal{G}$, construct $\mathbf{\Phi}(\boldsymbol{\theta})$, run the inner-loop solver to get $\hat{\mathbf{x}}_s$, evaluate the objective (measurement residual for CASSI/CACTI, TV for SPC), and sum across scenes.
+    \item \textbf{Select best}: $\tilde{\boldsymbol{\theta}} = \arg\min_{\boldsymbol{\theta} \in \mathcal{G}} \sum_s \text{objective}_s(\boldsymbol{\theta})$.
     \item \textbf{Final reconstruction}: run the full solver (more iterations) with the calibrated operator $\mathbf{\Phi}(\tilde{\boldsymbol{\theta}})$ and compute PSNR against ground truth.
 \end{enumerate}
 
@@ -344,7 +348,7 @@ The procedure is:
 \begin{itemize}
     \item \textbf{CASSI}: 3 scenes from the KAIST simulated dataset (same as Section~3.2 of the main paper, $256 \times 256 \times 28$). True mismatch: $dx{=}0.5$\,px, $dy{=}0.3$\,px, $\theta{=}0.1^\circ$. Search space: $dx, dy \in [-1.0, 1.0]$\,px with step~$0.2$, giving an $11 \times 11$ grid (121 points). Inner loop: GAP-TV with 30 iterations per grid point, 100 iterations for final reconstruction.
     \item \textbf{CACTI}: 2 benchmark videos from the standard SCI dataset (same as Section~3.3, $256 \times 256 \times 8$). True mismatch: $dx{=}0.5$\,px, $dy{=}0.3$\,px. Search: $dx, dy \in [-1.0, 1.0]$\,px with step~$0.25$, giving a $9 \times 9$ grid (81 points). Inner loop: GAP-TV with 20 iterations per grid point, 50 for final.
-    \item \textbf{SPC}: 1 synthetic test image ($64 \times 64$, 25\% sampling, same measurement matrix as Section~3.4). True mismatch: $\alpha{=}0.0015$. Search: $\alpha \in [0, 0.005]$ with 21 grid points. Inner loop: FISTA-TV with 100 iterations per point, 200 for final.
+    \item \textbf{SPC}: 2 Set11 images (\textit{cameraman}, \textit{Monarch}) processed in $33 \times 33$ blocks using ISTA-Net's learned $\mathbf{\Phi}$ (25\% sampling, 272 measurements per block). True mismatch: $\alpha{=}0.0015$ (exponential gain drift $g_i = e^{-\alpha i}$). Search: $\alpha \in [0, 0.005]$ with 41 grid points. Objective: reconstruction TV. Inner loop: FISTA-TV with 100 iterations per point, 200 for final.
 \end{itemize}
 
 \subsection{Results}
@@ -353,7 +357,7 @@ The procedure is:
 
 \begin{table}[h]
 \centering
-\caption{Scenario IV results. II: mismatched (no calibration). IV: grid-search calibrated. III: oracle (true operator). Recovery = (IV$-$II)/(III$-$II)$\times$100\%.}
+\caption{Scenario IV results. II: mismatched (no calibration). IV: grid-search calibrated. III: oracle (true operator). Recovery = (IV$-$II)/(III$-$II)$\times$100\%. CASSI/CACTI use measurement-residual objective; SPC uses reconstruction-TV objective.}
 \label{tab:scenario_iv_perscene}
 \begin{tabular}{@{}llccccccc@{}}
 \toprule
@@ -361,7 +365,7 @@ The procedure is:
 \midrule
 CASSI & GAP-TV   & 21.95 & 23.31 & 23.69 & +1.36 & +1.74 & 78\% & 121 \\
 CACTI & GAP-TV   & 17.60 & 26.99 & 26.99 & +9.39 & +9.39 & 100\% & 81 \\
-SPC   & FISTA-TV & 25.47 & 25.47 & 25.43 & +0.00 & $-$0.04 & 0\% & 21 \\
+SPC   & FISTA-TV & 19.78 & 26.54 & 27.60 & +6.76 & +7.82 & 86\% & 41 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -384,7 +388,7 @@ SPC   & FISTA-TV & 25.47 & 25.47 & 25.43 & +0.00 & $-$0.04 & 0\% & 21 \\
 \multirow{2}{*}{CACTI} & $dx$ & 0.50\,px & 0.50\,px & 0.00\,px & \multirow{2}{*}{$\sim$1\,min} \\
  & $dy$ & 0.30\,px & 0.25\,px & 0.05\,px & \\
 \midrule
-SPC & $\alpha$ & 0.0015 & 0.0000 & 0.0015 & $\sim$3.6\,min \\
+SPC & $\alpha$ & 0.0015 & 0.00125 & 0.00025 & $\sim$1.7\,min \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -393,8 +397,9 @@ SPC & $\alpha$ & 0.0015 & 0.0000 & 0.0015 & $\sim$3.6\,min \\
 CACTI achieves the best calibration: the estimated shifts are within 0.05\,px of truth, recovering 100\% of the oracle PSNR.
 The measurement residual provides a strong signal because CACTI's simple sum-of-masked-frames forward model means any mask shift directly causes large data mismatch.
 CASSI calibration is good but imperfect: the 0.1\,px estimation error in both $dx$ and $dy$ leaves a residual gap, and the search only covers spatial parameters---the dispersion parameters ($a_1{=}2.02$, $\alpha{=}0.15^\circ$) are not searched, accounting for the remaining 22\% gap.
-SPC calibration fails because FISTA-TV's total variation regularisation absorbs the small gain-drift artefacts ($\alpha{=}0.0015$ produces gain factors in the range $[1.0, 1.0097]$---less than 1\% deviation), making the measurement residual nearly identical across all $\alpha$ values.
-This motivates alternative calibration objectives for radiometric mismatch, such as reconstruction sparsity or learned discriminators.
+SPC calibration uses reconstruction-TV minimisation instead of the measurement residual, because the underdetermined SPC system ($m{=}272$ measurements for $n{=}1089$ unknowns) always achieves near-zero self-consistent residual regardless of gain---making the measurement residual uninformative for radiometric mismatch.
+The TV criterion produces a clear bowl-shaped minimum near the true $\alpha$: the estimated $\hat{\alpha}{=}0.00125$ is within 17\% of the true $\alpha{=}0.0015$, recovering 86\% of the oracle bound.
+This demonstrates that blind calibration is practical for \emph{all} mismatch types studied, provided the objective matches the mismatch structure: measurement residual for geometric mismatch, reconstruction sparsity for radiometric mismatch.
 
 % ============================================================================
 % A4. RESIDUAL GAP ANALYSIS
