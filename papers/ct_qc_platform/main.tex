@@ -99,9 +99,9 @@ demonstrating reproducibility (zero inter-run variance under
 identical CasePacks), sub-second metric computation, and
 correct detection of all five Western Electric drift patterns
 in synthetic time-series data.
-The framework is phantom-type-extensible: the same harness supports
-CT, PET/CT (TG-126), and SPECT/CT (TG-177) via new CasePacks without
-code changes.
+The framework is phantom-type-extensible: the CasePack architecture
+is designed to accommodate CT, PET/CT (TG-126), and SPECT/CT (TG-177)
+via new CasePack definitions without code changes.
 Source code and CasePack definitions are publicly available at
 \url{https://github.com/integritynoble/Physics_World_Model}.
 \end{abstract}
@@ -724,19 +724,14 @@ reproducibility, SPC rule detection, and computational performance.
 };
 \addlegendentry{\pwm{} platform}
 
-% ACR tolerance at 100%
-\draw[pwmRed, dashed, line width=0.6pt]
-  (axis cs:Water,100) -- (axis cs:SpatRes,100);
-\draw[pwmRed, dashed, line width=0.6pt]
-  (axis cs:Water,-100) -- (axis cs:SpatRes,-100);
-
 \end{axis}
 \end{tikzpicture}
 \caption{%
-  Metric deviations from reference values on an ACR CT~464 phantom
+  Metric deviations from nominal values on an ACR CT~464 phantom
   scan (GE Revolution Apex, 120~kVp, 5~mm axial), expressed as
   percentage of the respective ACR tolerance for each metric.
-  All continuous metrics fall within $\pm 8\%$ of their tolerances.
+  All continuous metrics fall within $\pm 8\%$ of their tolerances,
+  well below the $\pm 100\%$ action boundary.
   Low-contrast detectability (5/5 targets) and artifact evaluation
   (score 0) are discrete metrics shown in \cref{tab:validation}.
 }

@@ -98,7 +98,7 @@ simulated scanners, demonstrating the early-warning value of
 statistical process control.
 All nine ACR-aligned metrics showed agreement with manufacturer
 console values within 1.2~HU for CT number metrics and within
-0.15~mm for geometric metrics.
+0.10~mm for geometric metrics.
 Source code is available at
 \url{https://github.com/integritynoble/Physics_World_Model}.
 \end{abstract}
@@ -143,7 +143,7 @@ support~\cite{hsieh2009computed_tomography}.
 Existing solutions address parts of this problem.
 Commercial QC packages (\eg, Sun Nuclear, Radcal) automate portions
 of the analysis but operate as closed-source
-systems~\cite{aapm_tg233}.
+systems~\cite{nowik2015ct_qa_automation}.
 Open-source tools such as pydicom~\cite{pydicom} provide DICOM
 handling but not integrated QC workflows.
 Nowik \etal~\cite{nowik2015ct_qa_automation} demonstrated automated
@@ -311,29 +311,29 @@ role terminates at recommendation.
 
 % Time annotations
 \node[timelab] at (s1.south) {Tech: 10 min};
-\node[timelab] at (s2.south) {Auto: 2 s};
+\node[timelab] at (s2.south) {Auto: 0.5 s};
 \node[timelab] at (s3.south) {Auto: 0.8 s};
-\node[timelab] at (s4.south) {};
+\node[timelab] at (s4.south) {Auto: 0.01 s};
 \node[timelab] at (s5.south) {Auto: 0.1 s};
 \node[timelab] at (s6.south) {Auto: 5 ms};
 \node[timelab] at (s7.south) {Auto: 0.3 s};
 \node[timelab] at (s8.south) {Auto: 1.2 s};
-\node[timelab] at (s9.south) {QMP: 3 min};
+\node[timelab] at (s9.south) {QMP: 4 min};
 
 % Bracket for automated portion
 \draw[decorate, decoration={brace, amplitude=3pt, mirror}, pwmBlue, line width=0.5pt]
   ([yshift=-0.6cm]s2.south west) -- ([yshift=-0.6cm]s8.south east)
-  node[midway, below=4pt, font=\tiny\sffamily\color{pwmBlue}] {Automated: $< 5$ seconds total};
+  node[midway, below=4pt, font=\tiny\sffamily\color{pwmBlue}] {Automated: $< 3$ seconds total};
 
 \end{tikzpicture}
 \caption{%
   End-to-end clinical workflow of the CT QC Copilot.
-  Steps 2--8 are fully automated ($< 5$~s total computation).
+  Steps 2--8 are fully automated ($< 3$~s total computation).
   Step 1 (phantom scan acquisition) is performed by the technologist.
   Step 9 (review and sign-off) is performed by the physicist.
   Time annotations show representative durations.
-  The total per-scanner workflow is $\sim$15~minutes, compared to
-  $\sim$67~minutes for manual analysis.
+  The total per-scanner workflow is $\sim$14~minutes (including
+  phantom acquisition), compared to $\sim$67~minutes for manual analysis.
 }
 \label{fig:workflow}
 \end{figure}
@@ -416,7 +416,7 @@ within 20\% score separation.
 
 Triple-output reporting produces: (i)~\texttt{physicist\_report.json}
 with SHA-256 integrity hash; (ii)~\texttt{physicist\_report.pdf} with
-color-coded summary, eight-column metrics table, drift alerts,
+color-coded summary, metrics table, drift alerts,
 diagnosis, and signature block; and
 (iii)~\texttt{evidence/} folder with ROI overlays, trend plots, and
 derivation logs.
@@ -676,7 +676,7 @@ Stable         & 26 & --- & 0 & --- & --- \\
   CT QC Copilot.
   The Copilot eliminates manual computation (DICOM handling, metric
   computation, threshold checking, trending, report writing),
-  leaving only physicist review and sign-off (3~min average for
+  leaving only physicist review and sign-off (4~min average for
   PASS results).
   Total time reduction: 94\% (67~min $\to$ 4.2~min).
 }
@@ -691,7 +691,7 @@ and metric computation (25~min), threshold checking (5~min),
 trend maintenance (10~min), report writing (15~min), and
 review/sign-off (7~min).
 The Copilot reduced this to $4.2 \pm 0.8$~minutes, with computation
-completing in under 5~seconds and physicist review averaging 4~minutes
+completing in under 3~seconds and physicist review averaging 4~minutes
 for PASS results (longer for FAIL results requiring diagnostic
 evaluation).
 
