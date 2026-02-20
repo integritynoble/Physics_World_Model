@@ -309,25 +309,27 @@ class DiagnosisEngine:
         Returns
         -------
         dict
-            The same entry, augmented with ``feature_weights``,
-            ``expected_direction``, and ``mismatch_id`` if they were
-            missing but could be derived from the nested format.
+            A new dict with ``feature_weights``, ``expected_direction``,
+            and ``mismatch_id`` added if they could be derived from the
+            nested format.  The original *entry* is not mutated.
         """
+        result = dict(entry)  # shallow copy to avoid mutating YAML data
+
         # Normalize nested diagnostic_features -> flat feature_weights / expected_direction
-        if "diagnostic_features" in entry and "feature_weights" not in entry:
-            features = entry["diagnostic_features"]
-            entry["feature_weights"] = {
+        if "diagnostic_features" in result and "feature_weights" not in result:
+            features = result["diagnostic_features"]
+            result["feature_weights"] = {
                 k: v["weight"] for k, v in features.items()
             }
-            entry["expected_direction"] = {
+            result["expected_direction"] = {
                 k: v["expected_direction"] for k, v in features.items()
             }
 
         # Normalize id -> mismatch_id
-        if "id" in entry and "mismatch_id" not in entry:
-            entry["mismatch_id"] = entry["id"]
+        if "id" in result and "mismatch_id" not in result:
+            result["mismatch_id"] = result["id"]
 
-        return entry
+        return result
 
     def _score_hypothesis(
         self,

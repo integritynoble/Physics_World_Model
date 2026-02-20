@@ -33,7 +33,8 @@ logger = logging.getLogger(__name__)
 _MODULE_DIR = Path(__file__).resolve().parent
 _DEFAULT_SEARCH_PATHS: list[Path] = [
     _MODULE_DIR,                          # casepacks/ directory itself
-    _MODULE_DIR.parent / "contrib",       # community contributed casepacks
+    _MODULE_DIR.parent / "contrib",       # clinical/contrib/
+    _MODULE_DIR.parents[2] / "contrib",   # packages/pwm_core/contrib/ (project-level)
 ]
 
 # Known metric names for validation
