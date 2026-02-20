@@ -44,6 +44,15 @@ _DEFAULT_TEMPLATE_DIR = (
 _VERSION = "1.0.0"
 
 
+def _to_dict(obj: Any) -> dict:
+    """Convert a Pydantic model (v1 or v2) to a dict."""
+    if hasattr(obj, "model_dump"):
+        return obj.model_dump()
+    if hasattr(obj, "dict"):
+        return obj.dict()
+    return dict(obj)
+
+
 # ---------------------------------------------------------------------------
 # Pydantic models
 # ---------------------------------------------------------------------------
@@ -314,7 +323,7 @@ class ReportGenerator:
                 drift_alerts = drift_report.get("alerts", [])
             elif hasattr(drift_report, "alerts"):
                 drift_alerts = [
-                    a if isinstance(a, dict) else a.model_dump()
+                    a if isinstance(a, dict) else _to_dict(a)
                     for a in getattr(drift_report, "alerts", [])
                 ]
 
@@ -405,6 +414,8 @@ class ReportGenerator:
                 diagnosis_dict = diagnosis_report
             elif hasattr(diagnosis_report, "model_dump"):
                 diagnosis_dict = diagnosis_report.model_dump()
+            elif hasattr(diagnosis_report, "dict"):
+                diagnosis_dict = diagnosis_report.dict()
 
         # Extract drift data
         drift_alerts: list[dict] = []
@@ -413,7 +424,7 @@ class ReportGenerator:
                 drift_alerts = drift_report.get("alerts", [])
             elif hasattr(drift_report, "alerts"):
                 drift_alerts = [
-                    a if isinstance(a, dict) else a.model_dump()
+                    a if isinstance(a, dict) else _to_dict(a)
                     for a in getattr(drift_report, "alerts", [])
                 ]
 
