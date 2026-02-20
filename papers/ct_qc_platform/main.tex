@@ -459,7 +459,7 @@ requiring no forward model or proprietary raw data access.
   Sample standard deviation of uniform water ROI \\
 7 & Low-Contrast Detect. & targets &
   $\geq 4$ &
-  Count with CNR~$\geq 1.0$ (Rose criterion) \\
+  Count with CNR~$\geq 1.0$ (detection threshold) \\
 8 & Artifact Evaluation & score &
   0--3 &
   Peak-to-valley of radial profile \\
@@ -621,8 +621,7 @@ studies)~\cite{pydicom};
 (2)~CasePack-driven series selection with full audit logging;
 (3)~HU rescaling ($\text{HU} = \text{pixel} \times \text{slope} +
 \text{intercept}$);
-(4)~canonical resampling via trilinear interpolation
-(\texttt{scipy.ndimage.zoom})~\cite{scipy};
+(4)~canonical resampling (\texttt{scipy.ndimage.zoom})~\cite{scipy};
 (5)~vendor private tag extraction.
 The output \texttt{CTScanBundle} is a typed Pydantic model holding
 the 3-D HU volume, spacing, protocol metadata, and selection log.
@@ -732,8 +731,10 @@ reproducibility, SPC rule detection, and computational performance.
   signed percentage of the ACR tolerance.
   Tolerances: Water $\pm 5$~HU, Bone/Air $\pm 20$~HU,
   Acrylic/Poly $\pm 15$~HU, Geom $\pm 2$~mm, Slice $\pm 1.5$~mm,
-  Unif $\pm 5$~HU, Noise $\pm 1.0$~HU.
-  All continuous metrics fall within $\pm 10\%$ of their tolerances.
+  Unif $\pm 5$~HU, Noise $\pm 1.0$~HU (baseline deviation),
+  SpatRes $\geq 5$~lp/cm.
+  All continuous metrics are $\leq 10\%$ of their tolerances;
+  Type~A measurement uncertainties are smaller than bar widths.
   Low-contrast detectability (5/5 targets) and artifact evaluation
   (score 0) are discrete metrics shown in \cref{tab:validation}.
 }
@@ -745,16 +746,19 @@ GE Revolution Apex scanner (120~kVp, 200~mAs, 5~mm axial, standard
 kernel).
 \Cref{fig:validation} shows the agreement between platform-computed
 and manufacturer console values for each metric.
-All nine metrics fell within ACR tolerance bands:
-CT number of water deviated by 0.3~HU ($\pm 5$~HU criterion),
-geometric accuracy by 0.15~mm ($\pm 2$~mm), slice thickness by
-0.08~mm ($\pm 1.5$~mm), and uniformity measured 1.2~HU ($\leq 5$~HU).
+All nine metrics fell within ACR tolerance bands
+(\cref{tab:validation}).
+Platform-to-console differences were $\leq 1.0$~HU for all CT
+number metrics, $0.05$~mm for geometric accuracy, $0.06$~mm
+for slice thickness, and $0.1$~HU for uniformity and noise.
+Low-contrast detectability (5/5 targets) and artifact evaluation
+(score~0) matched exactly.
 
 Type~A measurement uncertainty (standard error of the mean from
 ROI pixel statistics) was $< 0.07$~HU for CT number metrics
 (ROI sizes $> 5000$ pixels, noise $\sigma \approx 4.6$~HU)
 and $< 0.02$~mm for geometric accuracy, confirming that observed
-deviations reflect systematic measurement differences rather than
+deviations reflect systematic differences rather than
 statistical noise.
 
 \Cref{tab:validation} provides detailed results including the
