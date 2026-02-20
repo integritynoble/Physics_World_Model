@@ -2,12 +2,13 @@
 """
 SPC (Single-Pixel Camera) Validation for InverseNet ECCV Paper — v4.0
 
-Uses **actual pretrained models** (ISTA-Net, HATNet) instead of PnP proxies.
+Uses **actual pretrained models** (ISTA-Net, HATNet) and PnP methods.
 
 Methods:
-  - FISTA-TV: Classical solver on 33×33 blocks with ISTA-Net's learned Phi
-  - ISTA-Net: Pretrained CS_ISTA_Net (non-plus), 9 layers, CR=25%
-  - HATNet:   Pretrained HATNet with Kronecker measurement, CR=25%
+  - FISTA-TV:   Classical solver on 33×33 blocks with ISTA-Net's learned Phi
+  - PnP-DRUNet: PnP-FISTA with DRUNet denoiser on 33×33 blocks
+  - ISTA-Net:   Pretrained CS_ISTA_Net (non-plus), 9 layers, CR=25%
+  - HATNet:     Pretrained HATNet with Kronecker measurement, CR=25%
 
 Mismatch model: per-row exponential gain drift
   g_i = exp(-alpha * i) applied to measurement rows
@@ -340,6 +341,210 @@ class FISTATVSolver33:
 
 
 # ============================================================================
+# PnP-DRUNet Solver (33×33 blocks with ISTA-Net's Phi)
+# ============================================================================
+import inspect
+
+_drunet_cache = {}
+
+_HAS_DEEPINV = False
+_DEEPINV_ERR = ""
+try:
+    import deepinv as dinv
+    from deepinv.models import DRUNet
+    _HAS_DEEPINV = True
+except Exception as _e:
+    _DEEPINV_ERR = str(_e)
+
+
+def _load_drunet(dev: torch.device):
+    """Load DRUNet from deepinv with fallback chain."""
+    cache_key = str(dev)
+    if cache_key in _drunet_cache:
+        return _drunet_cache[cache_key]
+
+    if not _HAS_DEEPINV:
+        raise RuntimeError(f"deepinv not available: {_DEEPINV_ERR}")
+
+    tried = []
+    for kwargs in [
+        {"in_channels": 1, "out_channels": 1, "device": dev},
+        {"in_channels": 1, "out_channels": 1},
+        {"in_channels": 1},
+        {},
+    ]:
+        try:
+            m = DRUNet(**kwargs).to(dev).eval()
+            _drunet_cache[cache_key] = m
+            print(f"  DRUNet loaded ({sum(p.numel() for p in m.parameters())} params)")
+            return m
+        except Exception as e:
+            tried.append((kwargs, str(e)))
+
+    raise RuntimeError(f"Could not load DRUNet: {tried}")
+
+
+def _supports_kwarg(fn, kw: str) -> bool:
+    try:
+        sig = inspect.signature(fn)
+        return kw in sig.parameters
+    except Exception:
+        return False
+
+
+def _pad_to_multiple(x: torch.Tensor, mult: int):
+    """Pad BCHW tensor so H,W are multiples of mult."""
+    B, C, H, W = x.shape
+    if mult <= 1:
+        return x, (0, 0, 0, 0)
+    Hp = int(math.ceil(H / mult) * mult)
+    Wp = int(math.ceil(W / mult) * mult)
+    pad_h = Hp - H
+    pad_w = Wp - W
+    pad_left = pad_w // 2
+    pad_right = pad_w - pad_left
+    pad_top = pad_h // 2
+    pad_bottom = pad_h - pad_top
+    x_pad = F.pad(x, (pad_left, pad_right, pad_top, pad_bottom), mode="reflect")
+    return x_pad, (pad_left, pad_right, pad_top, pad_bottom)
+
+
+def _crop_from_pad(x_pad: torch.Tensor, pad, H: int, W: int) -> torch.Tensor:
+    pad_left, pad_right, pad_top, pad_bottom = pad
+    y = x_pad[:, :, pad_top:pad_top + H, pad_left:pad_left + W]
+    return y.contiguous()
+
+
+def _denoise_call(denoiser, x_img: torch.Tensor, sigma_val: float,
+                  pad_mult: int = 8) -> torch.Tensor:
+    """Robust denoiser call with pad/crop for DRUNet on 33×33 blocks."""
+    H, W = x_img.shape[-2], x_img.shape[-1]
+    x_pad, pad = _pad_to_multiple(x_img, mult=pad_mult)
+
+    fwd = denoiser.forward if hasattr(denoiser, "forward") else denoiser
+    if _supports_kwarg(fwd, "sigma"):
+        y_pad = denoiser(x_pad, sigma=float(sigma_val))
+    elif _supports_kwarg(fwd, "noise_level"):
+        y_pad = denoiser(x_pad, noise_level=float(sigma_val))
+    else:
+        y_pad = denoiser(x_pad)
+
+    return _crop_from_pad(y_pad, pad, H=H, W=W)
+
+
+@torch.no_grad()
+def _row_normalize_operator(Phi_mn: torch.Tensor, eps: float = 1e-8):
+    """Row-normalize the sensing matrix for PnP stability."""
+    row_norm = torch.linalg.norm(Phi_mn, dim=1).clamp_min(eps)
+    PhiN = Phi_mn / row_norm[:, None]
+    return PhiN, row_norm
+
+
+@torch.no_grad()
+def _estimate_L_power(Phi_mn: torch.Tensor, iters: int = 20) -> float:
+    """Estimate largest eigenvalue of Phi^T Phi via power iteration."""
+    n = Phi_mn.shape[1]
+    v = torch.randn(n, device=Phi_mn.device, dtype=Phi_mn.dtype)
+    v = v / (v.norm() + 1e-12)
+    for _ in range(iters):
+        w = Phi_mn.t() @ (Phi_mn @ v)
+        wn = w.norm() + 1e-12
+        v = w / wn
+    w = Phi_mn @ v
+    s = w.norm()
+    return max(float((s * s).item()), 1e-8)
+
+
+@torch.no_grad()
+def pnp_fista_drunet(y_Bm: torch.Tensor, Phi_mn: torch.Tensor,
+                     x0_Bn: torch.Tensor, denoiser,
+                     sigma_end: float = 0.01,
+                     sigma_anneal_mult: float = 5.0,
+                     stepsize: float = 0.5,
+                     max_iter: int = 100,
+                     pad_mult: int = 8) -> torch.Tensor:
+    """PnP-FISTA with DRUNet denoiser for 33×33 block CS."""
+    B = y_Bm.shape[0]
+    x = x0_Bn.clone()
+    z = x0_Bn.clone()
+    t = 1.0
+
+    sigma_start = sigma_anneal_mult * sigma_end
+
+    for k in range(max_iter):
+        a = k / max(max_iter - 1, 1)
+        sigma_k = (1 - a) * sigma_start + a * sigma_end
+
+        y_hat = x @ Phi_mn.t()
+        grad = (y_hat - y_Bm) @ Phi_mn
+        u = x - stepsize * grad
+        u_img = u.reshape(B, 1, BLOCK_SIZE, BLOCK_SIZE)
+
+        z_new_img = _denoise_call(denoiser, u_img, sigma_val=sigma_k, pad_mult=pad_mult)
+        z_new = z_new_img.reshape(B, -1).clamp(0.0, 1.0)
+
+        t_new = 0.5 * (1.0 + math.sqrt(1.0 + 4.0 * t * t))
+        x = z_new + ((t - 1.0) / t_new) * (z_new - z)
+        x = x.clamp(0.0, 1.0)
+
+        z = z_new
+        t = t_new
+
+    return z.clamp(0.0, 1.0)
+
+
+class PnPDRUNetSolver33:
+    """PnP-DRUNet solver wrapper for 33×33 block CS."""
+
+    def __init__(self, Phi_np: np.ndarray, dev: torch.device,
+                 sigma_end: float = 0.01, sigma_anneal_mult: float = 5.0,
+                 max_iter: int = 100):
+        self.dev = dev
+        self.sigma_end = sigma_end
+        self.sigma_anneal_mult = sigma_anneal_mult
+        self.max_iter = max_iter
+
+        # Load denoiser
+        self.denoiser = _load_drunet(dev)
+
+        # Prepare normalised sensing matrix
+        Phi_t = torch.from_numpy(Phi_np.astype(np.float32)).to(dev)
+        self.PhiN, self.row_norm = _row_normalize_operator(Phi_t)
+
+        # Auto stepsize
+        L = _estimate_L_power(self.PhiN)
+        self.stepsize = 0.9 / L
+        print(f"  PnP-DRUNet: L={L:.4f}, stepsize={self.stepsize:.6f}")
+
+    @torch.no_grad()
+    def solve_batch(self, y_Bm_np: np.ndarray) -> np.ndarray:
+        """Solve for a batch of blocks. y_Bm: [B, m]. Returns [B, n]."""
+        y_raw = torch.from_numpy(y_Bm_np.astype(np.float32)).to(self.dev)
+        # Row-normalize measurements
+        yN = y_raw / self.row_norm[None, :]
+
+        # Backprojection init
+        x0 = yN @ self.PhiN
+        x0 = x0.reshape(-1, 1, BLOCK_SIZE, BLOCK_SIZE)
+        # Normalize each block to [0,1]
+        B = x0.shape[0]
+        for b in range(B):
+            mn, mx = x0[b].min(), x0[b].max()
+            if mx - mn > 1e-8:
+                x0[b] = (x0[b] - mn) / (mx - mn)
+        x0 = x0.reshape(-1, N_PIX).clamp(0.0, 1.0)
+
+        result = pnp_fista_drunet(
+            yN, self.PhiN, x0, self.denoiser,
+            sigma_end=self.sigma_end,
+            sigma_anneal_mult=self.sigma_anneal_mult,
+            stepsize=self.stepsize,
+            max_iter=self.max_iter,
+        )
+        return result.cpu().numpy()
+
+
+# ============================================================================
 # ISTA-Net Reconstruction
 # ============================================================================
 @torch.no_grad()
@@ -461,21 +666,22 @@ def load_hatnet():
     return model, EucProj
 
 
-def process_image_ista_fista(
+def process_image_block_methods(
     img_path: str,
     ista_model: nn.Module,
     Phi_np: np.ndarray,
     Phi_t: torch.Tensor,
     Qinit_t: torch.Tensor,
     fista_solver: FISTATVSolver33,
+    drunet_solver: Optional[PnPDRUNetSolver33],
     gain_alpha: float,
     sigma_y: float,
     noise_seed: int,
     save_recon: bool = False,
 ) -> Dict[str, Any]:
-    """Process one image with ISTA-Net and FISTA-TV.
+    """Process one image with ISTA-Net, FISTA-TV, and PnP-DRUNet.
 
-    Returns per-scenario PSNR/SSIM for both methods.
+    Returns per-scenario PSNR/SSIM for all block-based methods.
     """
     # Load and preprocess
     Img = cv2.imread(img_path, 1)
@@ -507,6 +713,12 @@ def process_image_ista_fista(
         x_fista_i = fista_solver.solve_batch(y_ideal.cpu().numpy())
         rec_fista_i = col2im_CS_py(x_fista_i.transpose(), row, col, row_new, col_new)
 
+        # PnP-DRUNet Scenario I
+        rec_drunet_i = None
+        if drunet_solver is not None:
+            x_drunet_i = drunet_solver.solve_batch(y_ideal.cpu().numpy())
+            rec_drunet_i = col2im_CS_py(x_drunet_i.transpose(), row, col, row_new, col_new)
+
         # ---- Scenario II: Gain drift + noise, reconstruct with ideal Phi ----
         Phi_real_t = g_t.unsqueeze(1) * Phi_t  # [m, n] with gain
         y_clean = x_blocks @ Phi_real_t.t()  # [B, m]
@@ -524,6 +736,12 @@ def process_image_ista_fista(
         x_fista_ii = fista_solver.solve_batch(y_meas.cpu().numpy())
         rec_fista_ii = col2im_CS_py(x_fista_ii.transpose(), row, col, row_new, col_new)
 
+        # PnP-DRUNet Scenario II
+        rec_drunet_ii = None
+        if drunet_solver is not None:
+            x_drunet_ii = drunet_solver.solve_batch(y_meas.cpu().numpy())
+            rec_drunet_ii = col2im_CS_py(x_drunet_ii.transpose(), row, col, row_new, col_new)
+
         # ---- Scenario III: Corrected measurement (y / gain) ----
         y_corr = y_meas / g_t.unsqueeze(0)  # [B, m]
 
@@ -535,6 +753,12 @@ def process_image_ista_fista(
         # FISTA-TV Scenario III
         x_fista_iii = fista_solver.solve_batch(y_corr.cpu().numpy())
         rec_fista_iii = col2im_CS_py(x_fista_iii.transpose(), row, col, row_new, col_new)
+
+        # PnP-DRUNet Scenario III
+        rec_drunet_iii = None
+        if drunet_solver is not None:
+            x_drunet_iii = drunet_solver.solve_batch(y_corr.cpu().numpy())
+            rec_drunet_iii = col2im_CS_py(x_drunet_iii.transpose(), row, col, row_new, col_new)
 
     # Compute metrics (255 scale)
     gt = Iorg_y
@@ -554,6 +778,15 @@ def process_image_ista_fista(
         "scenario_iii": {"psnr": psnr_255(rec_fista_iii * 255, gt),
                           "ssim": ssim_255(rec_fista_iii * 255, gt)},
     }
+    if rec_drunet_i is not None:
+        results["pnp_drunet"] = {
+            "scenario_i": {"psnr": psnr_255(rec_drunet_i * 255, gt),
+                            "ssim": ssim_255(rec_drunet_i * 255, gt)},
+            "scenario_ii": {"psnr": psnr_255(rec_drunet_ii * 255, gt),
+                             "ssim": ssim_255(rec_drunet_ii * 255, gt)},
+            "scenario_iii": {"psnr": psnr_255(rec_drunet_iii * 255, gt),
+                              "ssim": ssim_255(rec_drunet_iii * 255, gt)},
+        }
 
     if save_recon:
         results["recon"] = {
@@ -565,6 +798,10 @@ def process_image_ista_fista(
             "scenario_iii_fista_tv": (rec_fista_iii * 255).astype(np.float32),
             "scenario_iii_ista_net": (rec_ista_iii * 255).astype(np.float32),
         }
+        if rec_drunet_i is not None:
+            results["recon"]["scenario_i_pnp_drunet"] = (rec_drunet_i * 255).astype(np.float32)
+            results["recon"]["scenario_ii_pnp_drunet"] = (rec_drunet_ii * 255).astype(np.float32)
+            results["recon"]["scenario_iii_pnp_drunet"] = (rec_drunet_iii * 255).astype(np.float32)
 
     return results
 
@@ -727,7 +964,7 @@ def process_image_hatnet(
 def run_validation(quick: bool = False, tune: bool = False, save_recon: bool = False):
     """Run full SPC validation."""
     print("=" * 70)
-    print("SPC Validation v4.0 — Pretrained ISTA-Net + HATNet")
+    print("SPC Validation v4.0 — FISTA-TV + PnP-DRUNet + ISTA-Net + HATNet")
     print("=" * 70)
 
     # ---- Parameters (tuned to match target baselines) ----
@@ -735,6 +972,11 @@ def run_validation(quick: bool = False, tune: bool = False, save_recon: bool = F
     sigma_y = 0.03             # Noise std for ISTA/FISTA
     fista_lam = 0.005          # FISTA-TV regularization
     fista_iters = 500          # FISTA-TV iterations
+
+    # PnP-DRUNet parameters
+    drunet_sigma_end = 0.01
+    drunet_sigma_anneal = 5.0
+    drunet_max_iter = 100
 
     gain_alpha_h = 1.5e-3      # HATNet 2D gain drift (rows)
     gain_alpha_w = 1.5e-3      # HATNet 2D gain drift (cols)
@@ -752,6 +994,20 @@ def run_validation(quick: bool = False, tune: bool = False, save_recon: bool = F
                                     max_iter=fista_iters)
     print(f"  L={fista_solver.L:.4f}, tau={fista_solver.tau:.6f}")
 
+    # ---- Create PnP-DRUNet solver ----
+    drunet_solver = None
+    try:
+        print(f"\n[PnP-DRUNet] Creating solver: sigma_end={drunet_sigma_end}, "
+              f"anneal={drunet_sigma_anneal}, iters={drunet_max_iter}")
+        drunet_solver = PnPDRUNetSolver33(
+            Phi_np, device,
+            sigma_end=drunet_sigma_end,
+            sigma_anneal_mult=drunet_sigma_anneal,
+            max_iter=drunet_max_iter)
+    except Exception as e:
+        print(f"  WARNING: PnP-DRUNet not available: {e}")
+        print(f"  Continuing without PnP-DRUNet...")
+
     # ---- Get test images ----
     filepaths = sorted(glob.glob(str(SET11_DIR / "*.tif")))
     if not filepaths:
@@ -768,6 +1024,8 @@ def run_validation(quick: bool = False, tune: bool = False, save_recon: bool = F
     print(f"\nParameters:")
     print(f"  ISTA/FISTA: gain_alpha={gain_alpha}, sigma_y={sigma_y}")
     print(f"  FISTA-TV:   lam={fista_lam}, iters={fista_iters}")
+    print(f"  PnP-DRUNet: sigma_end={drunet_sigma_end}, anneal={drunet_sigma_anneal}, "
+          f"iters={drunet_max_iter}")
     print(f"  HATNet:     gain_alpha_h={gain_alpha_h}, gain_alpha_w={gain_alpha_w}, "
           f"sigma_y_hat={sigma_y_hat}")
 
@@ -777,7 +1035,7 @@ def run_validation(quick: bool = False, tune: bool = False, save_recon: bool = F
 
     # ---- Process images ----
     all_results = []
-    methods = ["fista_tv", "ista_net", "hatnet"]
+    methods = ["fista_tv", "pnp_drunet", "ista_net", "hatnet"]
 
     for img_no, img_path in enumerate(filepaths):
         img_name = Path(img_path).stem
@@ -787,10 +1045,10 @@ def run_validation(quick: bool = False, tune: bool = False, save_recon: bool = F
         print(f"[{img_no+1:02d}/{len(filepaths):02d}] {img_name}")
         print(f"{'='*60}")
 
-        # ISTA-Net + FISTA-TV (33×33 blocks)
-        res_ista_fista = process_image_ista_fista(
+        # Block-based methods: ISTA-Net + FISTA-TV + PnP-DRUNet (33×33 blocks)
+        res_block = process_image_block_methods(
             img_path, ista_model, Phi_np, Phi_t, Qinit_t,
-            fista_solver, gain_alpha, sigma_y,
+            fista_solver, drunet_solver, gain_alpha, sigma_y,
             noise_seed=2026001 + img_no,
             save_recon=save_recon)
 
@@ -804,8 +1062,8 @@ def run_validation(quick: bool = False, tune: bool = False, save_recon: bool = F
         # Save per-image .npz
         if save_recon:
             npz_data = {}
-            if "recon" in res_ista_fista:
-                npz_data.update(res_ista_fista.pop("recon"))
+            if "recon" in res_block:
+                npz_data.update(res_block.pop("recon"))
             if "recon" in res_hatnet:
                 npz_data.update(res_hatnet.pop("recon"))
             npz_path = RECON_DIR / f"{img_name}.npz"
@@ -819,15 +1077,19 @@ def run_validation(quick: bool = False, tune: bool = False, save_recon: bool = F
         result = {
             "image_idx": img_no + 1,
             "image_name": img_name,
-            "fista_tv": res_ista_fista["fista_tv"],
-            "ista_net": res_ista_fista["ista_net"],
+            "fista_tv": res_block["fista_tv"],
+            "ista_net": res_block["ista_net"],
             "hatnet": res_hatnet["hatnet"],
             "elapsed": time.time() - t_img,
         }
+        if "pnp_drunet" in res_block:
+            result["pnp_drunet"] = res_block["pnp_drunet"]
         all_results.append(result)
 
         # Print summary
         for method in methods:
+            if method not in result:
+                continue
             r = result[method]
             pi = r["scenario_i"]["psnr"]
             pii = r["scenario_ii"]["psnr"]
@@ -849,6 +1111,9 @@ def run_validation(quick: bool = False, tune: bool = False, save_recon: bool = F
         "sigma_y": sigma_y,
         "fista_lam": fista_lam,
         "fista_iters": fista_iters,
+        "drunet_sigma_end": drunet_sigma_end,
+        "drunet_sigma_anneal": drunet_sigma_anneal,
+        "drunet_max_iter": drunet_max_iter,
         "gain_alpha_h": gain_alpha_h,
         "gain_alpha_w": gain_alpha_w,
         "sigma_y_hat": sigma_y_hat,
@@ -857,29 +1122,35 @@ def run_validation(quick: bool = False, tune: bool = False, save_recon: bool = F
 
     for method in methods:
         for scenario in ["scenario_i", "scenario_ii", "scenario_iii"]:
-            psnrs = [r[method][scenario]["psnr"] for r in all_results]
-            ssims = [r[method][scenario]["ssim"] for r in all_results]
+            psnrs = [r[method][scenario]["psnr"] for r in all_results
+                     if method in r]
+            ssims = [r[method][scenario]["ssim"] for r in all_results
+                     if method in r]
             key = f"{method}_{scenario}"
-            summary["methods"][key] = {
-                "psnr_mean": float(np.mean(psnrs)),
-                "psnr_std": float(np.std(psnrs)),
-                "ssim_mean": float(np.mean(ssims)),
-                "ssim_std": float(np.std(ssims)),
-            }
+            if psnrs:
+                summary["methods"][key] = {
+                    "psnr_mean": float(np.mean(psnrs)),
+                    "psnr_std": float(np.std(psnrs)),
+                    "ssim_mean": float(np.mean(ssims)),
+                    "ssim_std": float(np.std(ssims)),
+                }
 
     print(f"\n{'Method':12s} | {'Scenario I':>12s} | {'Scenario II':>12s} | "
-          f"{'Scenario III':>12s} | {'Gap I→II':>10s} | {'Gain II→III':>10s}")
-    print("-" * 80)
+          f"{'Scenario III':>12s} | {'Gap I->II':>10s} | {'Gain II->III':>10s}")
+    print("-" * 85)
 
     for method in methods:
+        key_i = f"{method}_scenario_i"
+        if key_i not in summary["methods"]:
+            continue
         si = summary["methods"][f"{method}_scenario_i"]["psnr_mean"]
         sii = summary["methods"][f"{method}_scenario_ii"]["psnr_mean"]
         siii = summary["methods"][f"{method}_scenario_iii"]["psnr_mean"]
         si_s = summary["methods"][f"{method}_scenario_i"]["psnr_std"]
         sii_s = summary["methods"][f"{method}_scenario_ii"]["psnr_std"]
         siii_s = summary["methods"][f"{method}_scenario_iii"]["psnr_std"]
-        print(f"{method:12s} | {si:5.2f}±{si_s:.2f} | {sii:5.2f}±{sii_s:.2f} | "
-              f"{siii:5.2f}±{siii_s:.2f} | {si-sii:8.2f}  | {siii-sii:8.2f}")
+        print(f"{method:12s} | {si:5.2f}+/-{si_s:.2f} | {sii:5.2f}+/-{sii_s:.2f} | "
+              f"{siii:5.2f}+/-{siii_s:.2f} | {si-sii:8.2f}  | {siii-sii:8.2f}")
 
     total_time = sum(r["elapsed"] for r in all_results)
     print(f"\nTotal time: {total_time/60:.1f} min "

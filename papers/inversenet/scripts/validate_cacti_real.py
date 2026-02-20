@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """CACTI Real Data Validation for InverseNet ECCV 2026.
 
-Validates GAP-TV and EfficientSCI on 4 real CACTI scenes from the EfficientSCI
+Validates GAP-TV and PnP-FFDNet on 4 real CACTI scenes from the EfficientSCI
 real_data dataset (cr=10).  Two conditions:
   - Calibrated:  use the real_mask as-is
   - Mismatched:  shift mask by (dx=0.5, dy=0.3) to simulate operator mismatch
@@ -55,7 +55,7 @@ SCENES = ["duomino", "hand", "pendulumBall", "waterBalloon"]
 
 METHOD_LABELS = {
     "gap_tv": "GAP-TV",
-    "efficientsci": "EfficientSCI",
+    "pnp_ffdnet": "PnP-FFDNet",
 }
 
 
@@ -165,72 +165,16 @@ def gap_tv_cacti_real(y: np.ndarray, mask: np.ndarray,
 
 
 # ---------------------------------------------------------------------------
-# reconstruction: EfficientSCI
+# reconstruction: PnP-FFDNet (from pwm_core)
 # ---------------------------------------------------------------------------
-_esci_cache = {}
+def pnp_ffdnet_cacti_real(y: np.ndarray, mask: np.ndarray,
+                           device: str = "cuda:0") -> np.ndarray:
+    """PnP-FFDNet reconstruction for real CACTI data.
 
-
-def _load_efficientsci(device: str):
-    """Load pretrained EfficientSCI model."""
-    if "model" in _esci_cache:
-        return _esci_cache["model"]
-
-    import torch
-
-    esci_repo = "/home/spiritai/EfficientSCI-main"
-    esci_ckpt = "/home/spiritai/EfficientSCI-main/checkpoints/efficientsci_base.pth"
-
-    if esci_repo not in sys.path:
-        sys.path.insert(0, esci_repo)
-
-    from cacti.models.efficientsci import EfficientSCI
-
-    dev = torch.device(device)
-    # For cr=10: units=10 (matching compression ratio)
-    model = EfficientSCI(in_ch=64, units=CR, group_num=4, color_ch=1).to(dev)
-
-    # Try loading with strict=False since units may differ from training
-    ckpt = torch.load(esci_ckpt, map_location=dev, weights_only=False)
-    if isinstance(ckpt, dict) and "model_state_dict" in ckpt:
-        state_dict = ckpt["model_state_dict"]
-    else:
-        state_dict = ckpt
-
-    try:
-        model.load_state_dict(state_dict, strict=True)
-    except RuntimeError:
-        logger.warning("Strict load failed, trying partial load")
-        model.load_state_dict(state_dict, strict=False)
-
-    model.eval()
-    _esci_cache["model"] = (model, dev)
-    logger.info("EfficientSCI loaded for cr=%d", CR)
-    return model, dev
-
-
-def efficientsci_cacti_real(y: np.ndarray, mask: np.ndarray,
-                            device: str = "cuda:0") -> np.ndarray:
-    """EfficientSCI reconstruction for real CACTI data."""
-    import torch
-
-    try:
-        model, dev = _load_efficientsci(device)
-    except Exception as e:
-        logger.warning(f"EfficientSCI not available: {e}, falling back to GAP-TV")
-        return gap_tv_cacti_real(y, mask, iterations=150, tv_weight=0.12)
-
-    H, W, nF = mask.shape
-
-    Phi = torch.from_numpy(mask.transpose(2, 0, 1).copy()).unsqueeze(0).float().to(dev)
-    Phi_s = Phi.sum(dim=1, keepdim=True)
-    Phi_s[Phi_s == 0] = 1
-    meas_t = torch.from_numpy(y.copy()).unsqueeze(0).unsqueeze(0).float().to(dev)
-
-    with torch.no_grad():
-        outputs = model(meas_t, Phi, Phi_s)
-
-    recon = outputs[-1].squeeze(0).clamp(0, 1).cpu().numpy()  # (nF, H, W)
-    return recon.transpose(1, 2, 0).astype(np.float32)  # (H, W, nF)
+    Uses the GAP + FFDNet deep denoiser from pwm_core.recon.cacti_solvers.
+    """
+    from pwm_core.recon.cacti_solvers import pnp_ffdnet_cacti
+    return pnp_ffdnet_cacti(y, mask, device=device)
 
 
 # ---------------------------------------------------------------------------
@@ -254,8 +198,10 @@ def validate_scene(scene_name: str, meas: np.ndarray, mask: np.ndarray,
         try:
             if method == "gap_tv":
                 x_hat = gap_tv_cacti_real(meas, mask)
+            elif method == "pnp_ffdnet":
+                x_hat = pnp_ffdnet_cacti_real(meas, mask, device)
             else:
-                x_hat = efficientsci_cacti_real(meas, mask, device)
+                raise ValueError(f"Unknown method: {method}")
 
             residual = compute_measurement_residual(meas, x_hat, mask)
             tv = compute_tv(x_hat)
@@ -281,8 +227,10 @@ def validate_scene(scene_name: str, meas: np.ndarray, mask: np.ndarray,
         try:
             if method == "gap_tv":
                 x_hat = gap_tv_cacti_real(meas, mask_shifted)
+            elif method == "pnp_ffdnet":
+                x_hat = pnp_ffdnet_cacti_real(meas, mask_shifted, device)
             else:
-                x_hat = efficientsci_cacti_real(meas, mask_shifted, device)
+                raise ValueError(f"Unknown method: {method}")
 
             residual = compute_measurement_residual(meas, x_hat, mask_shifted)
             tv = compute_tv(x_hat)
@@ -322,11 +270,11 @@ def main():
     parser.add_argument("--device", default="cuda:0")
     args = parser.parse_args()
 
-    methods = ["gap_tv", "efficientsci"]
+    methods = ["gap_tv", "pnp_ffdnet"]
 
     logger.info("=" * 60)
     logger.info("CACTI Real Data Validation for InverseNet ECCV 2026")
-    logger.info(f"4 scenes x 2 methods x 2 conditions")
+    logger.info(f"4 scenes x 2 methods x 2 conditions = 16 reconstructions")
     logger.info(f"Device: {args.device}")
     logger.info("=" * 60)
 

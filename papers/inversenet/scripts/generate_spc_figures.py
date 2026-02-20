@@ -43,19 +43,21 @@ rcParams['axes.titlesize'] = 13
 rcParams['legend.fontsize'] = 10
 
 # Methods and colors (v4.0: actual pretrained models)
-METHODS = ['fista_tv', 'ista_net', 'hatnet']
+METHODS = ['fista_tv', 'pnp_drunet', 'ista_net', 'hatnet']
 SCENARIOS = ['scenario_i', 'scenario_ii', 'scenario_iii']
 SCENARIO_LABELS = ['Scenario I\n(Ideal)', 'Scenario II\n(Baseline)', 'Scenario III\n(Corrected)']
 SCENARIO_SHORT = ['Ideal', 'Baseline', 'Corrected']
 
 METHOD_COLORS = {
     'fista_tv': '#1f77b4',     # blue
+    'pnp_drunet': '#9467bd',   # purple
     'ista_net': '#2ca02c',     # green
     'hatnet': '#ff7f0e',       # orange
 }
 
 METHOD_LABELS = {
     'fista_tv': 'FISTA-TV',
+    'pnp_drunet': 'PnP-DRUNet',
     'ista_net': 'ISTA-Net',
     'hatnet': 'HATNet',
 }

@@ -2,8 +2,8 @@
   "num_scenes": 10,
   "methods": [
     "gap_tv",
+    "pnp_hsicnn",
     "hdnet",
-    "mst_s",
     "mst_l"
   ],
   "scenarios": [
@@ -31,6 +31,14 @@
       "sam_mean": 16.66,
       "sam_std": 3.32
     },
+    "pnp_hsicnn": {
+      "psnr_mean": 25.12,
+      "psnr_std": 1.88,
+      "ssim_mean": 0.7582,
+      "ssim_std": 0.0819,
+      "sam_mean": 16.1,
+      "sam_std": 3.25
+    },
     "hdnet": {
       "psnr_mean": 34.66,
       "psnr_std": 2.62,
@@ -38,14 +46,6 @@
       "ssim_std": 0.009,
       "sam_mean": 6.67,
       "sam_std": 0.96
-    },
-    "mst_s": {
-      "psnr_mean": 33.98,
-      "psnr_std": 2.5,
-      "ssim_mean": 0.9646,
-      "ssim_std": 0.0114,
-      "sam_mean": 8.75,
-      "sam_std": 1.77
     },
     "mst_l": {
       "psnr_mean": 34.81,
@@ -65,6 +65,14 @@
       "sam_mean": 24.27,
       "sam_std": 2.92
     },
+    "pnp_hsicnn": {
+      "psnr_mean": 20.4,
+      "psnr_std": 1.71,
+      "ssim_mean": 0.5739,
+      "ssim_std": 0.0914,
+      "sam_mean": 23.73,
+      "sam_std": 2.81
+    },
     "hdnet": {
       "psnr_mean": 21.88,
       "psnr_std": 1.72,
@@ -72,14 +80,6 @@
       "ssim_std": 0.0739,
       "sam_mean": 17.03,
       "sam_std": 2.76
-    },
-    "mst_s": {
-      "psnr_mean": 20.99,
-      "psnr_std": 2.08,
-      "ssim_mean": 0.7714,
-      "ssim_std": 0.0578,
-      "sam_mean": 24.4,
-      "sam_std": 3.36
     },
     "mst_l": {
       "psnr_mean": 20.83,
@@ -99,6 +99,14 @@
       "sam_mean": 25.97,
       "sam_std": 2.54
     },
+    "pnp_hsicnn": {
+      "psnr_mean": 23.08,
+      "psnr_std": 1.52,
+      "ssim_mean": 0.7022,
+      "ssim_std": 0.0788,
+      "sam_mean": 18.66,
+      "sam_std": 2.75
+    },
     "hdnet": {
       "psnr_mean": 21.88,
       "psnr_std": 1.72,
@@ -106,14 +114,6 @@
       "ssim_std": 0.0739,
       "sam_mean": 17.03,
       "sam_std": 2.76
-    },
-    "mst_s": {
-      "psnr_mean": 26.28,
-      "psnr_std": 1.88,
-      "ssim_mean": 0.8703,
-      "ssim_std": 0.0317,
-      "sam_mean": 13.29,
-      "sam_std": 1.16
     },
     "mst_l": {
       "psnr_mean": 27.33,
@@ -131,24 +131,24 @@
       "gap_ii_iii_mean": 0.76,
       "gap_ii_iii_std": 0.37
     },
+    "pnp_hsicnn": {
+      "gap_i_ii_mean": 4.72,
+      "gap_i_ii_std": 1.82,
+      "gap_ii_iii_mean": 2.68,
+      "gap_ii_iii_std": 0.79
+    },
     "hdnet": {
       "gap_i_ii_mean": 12.77,
       "gap_i_ii_std": 2.46,
       "gap_ii_iii_mean": 0.0,
       "gap_ii_iii_std": 0.0
     },
-    "mst_s": {
-      "gap_i_ii_mean": 12.99,
-      "gap_i_ii_std": 2.85,
-      "gap_ii_iii_mean": 5.29,
-      "gap_ii_iii_std": 0.52
-    },
     "mst_l": {
-      "gap_i_ii_mean": 13.98,
-      "gap_i_ii_std": 2.68,
-      "gap_ii_iii_mean": 6.5,
-      "gap_ii_iii_std": 0.73
+      "gap_i_ii_mean": -0.34,
+      "gap_i_ii_std": 1.55,
+      "gap_ii_iii_mean": -0.14,
+      "gap_ii_iii_std": 1.13
     }
   },
-  "execution_seconds": 1061.4
+  "execution_seconds": 2139.7
 }
