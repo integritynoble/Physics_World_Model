@@ -1,0 +1,109 @@
+# =============================================================================
+# PWM Clinical PET/CT CasePack Stub — Phase 2
+# Defines the initial specification for PET/CT QA/QC using the NEMA NU-2
+# performance phantom.  This is a placeholder for Phase 2 development.
+#
+# References:
+#   - NEMA NU 2-2018: Performance Measurements of PET/CT Systems
+#   - AAPM TG-126: PET/CT Acceptance Testing and Quality Assurance
+#   - ACR PET Phantom Testing Program
+# =============================================================================
+
+status: "stub"
+phase: 2
+target_version: "0.5.0"
+
+casepack:
+  id: "pet_ct_nema_nu2_v0.1"
+  name: "PET/CT NEMA NU-2 QC"
+  version: "0.1.0"
+  min_pwm_version: "0.5.0"
+  author: "PWM Clinical Team"
+  phantom_type: "NEMA NU-2 Image Quality Phantom"
+
+  # The NEMA NU-2 phantom contains:
+  #   - 6 spheres (10, 13, 17, 22, 28, 37 mm diameter)
+  #   - 4 hot, 2 cold (or all hot depending on test)
+  #   - Lung insert (low-density cylinder)
+  #   - Uniform background activity
+
+  # ---------------------------------------------------------------------------
+  # Metric Stubs
+  # Each metric below will require a dedicated implementation in pet_ct/
+  # ---------------------------------------------------------------------------
+  metric_set:
+    - id: "sensitivity"
+      name: "System Sensitivity"
+      description: "Count rate per unit activity concentration (cps/kBq)"
+      unit: "cps/kBq"
+      reference: "NEMA NU-2 Section 4"
+      implementation_status: "planned"
+
+    - id: "scatter_fraction"
+      name: "Scatter Fraction"
+      description: "Fraction of detected events attributable to scatter"
+      unit: "fraction"
+      reference: "NEMA NU-2 Section 5"
+      implementation_status: "planned"
+
+    - id: "count_rate"
+      name: "Noise Equivalent Count Rate (NECR)"
+      description: "Peak NECR characterizing system count rate performance"
+      unit: "kcps"
+      reference: "NEMA NU-2 Section 5"
+      implementation_status: "planned"
+
+    - id: "uniformity"
+      name: "Image Uniformity"
+      description: "Coefficient of variation in uniform background region"
+      unit: "percent"
+      reference: "NEMA NU-2 Section 7; AAPM TG-126 Section 5.4"
+      implementation_status: "planned"
+
+    - id: "accuracy"
+      name: "SUV Accuracy"
+      description: >
+        Accuracy of standardized uptake value measurement in hot spheres
+        relative to known activity concentration.
+      unit: "percent_error"
+      reference: "AAPM TG-126 Section 5.6"
+      implementation_status: "planned"
+
+    - id: "resolution"
+      name: "Spatial Resolution"
+      description: "FWHM of point source response in transaxial and axial planes"
+      unit: "mm"
+      reference: "NEMA NU-2 Section 3"
+      implementation_status: "planned"
+
+  # ---------------------------------------------------------------------------
+  # Threshold Stubs (to be defined in Phase 2)
+  # ---------------------------------------------------------------------------
+  threshold_set: "pet_ct_thresholds"   # Will be created in clinical_pet_ct_thresholds.yaml
+
+  # ---------------------------------------------------------------------------
+  # Evidence Artifacts (planned)
+  # ---------------------------------------------------------------------------
+  evidence_artifacts:
+    - sphere_contrast_recovery_plot
+    - uniformity_map
+    - suv_accuracy_table
+    - necr_curve_plot
+
+  # ---------------------------------------------------------------------------
+  # CT Component
+  # PET/CT QA includes the CT subsystem; reference the existing CT CasePack.
+  # ---------------------------------------------------------------------------
+  ct_component:
+    reference_casepack: "acr_ct_v1.0"
+    note: >
+      CT component QA uses the standard ACR CT phantom CasePack.
+      PET/CT-specific CT tests (attenuation correction accuracy,
+      PET-CT registration) will be added in Phase 2.
+
+  references:
+    - name: "NEMA NU 2-2018"
+      url: "https://www.nema.org/standards/view/Performance-Measurements-of-Positron-Emission-Tomographs"
+    - name: "AAPM TG-126"
+      title: "PET/CT Acceptance Testing and Quality Assurance"
+      year: 2010

@@ -1,0 +1,138 @@
+# =============================================================================
+# ACR CT Phantom QC CasePack
+# Defines the complete workflow specification for ACR CT 464 phantom quality
+# control, including series selection, ROI placement, metric extraction, and
+# evidence artifact generation.
+#
+# References:
+#   - ACR CT Accreditation Program Testing Instructions (2024)
+#   - AAPM TG-233: Performance Evaluation of CT Systems
+# =============================================================================
+
+casepack:
+  id: "acr_ct_v1.0"
+  name: "ACR CT Phantom QC"
+  version: "1.0.0"
+  min_pwm_version: "0.4.0"
+  author: "PWM Clinical Team"
+  phantom_type: "ACR CT 464"
+
+  # ---------------------------------------------------------------------------
+  # Series Selection
+  # Identifies the correct DICOM series for each ACR phantom module.
+  # Each rule attempts tag-based matching first, then falls back to heuristic.
+  # ---------------------------------------------------------------------------
+  series_selection:
+    rules:
+      - name: "module_1_axial"
+        match:
+          series_description_contains: ["ACR", "Module 1", "QC"]
+          slice_thickness_range: [4.0, 6.0]
+          image_type_contains: "AXIAL"
+        fallback: "select thinnest axial series through phantom center"
+      - name: "module_2_axial"
+        match:
+          series_description_contains: ["ACR", "Module 2", "QC"]
+          slice_thickness_range: [4.0, 6.0]
+          image_type_contains: "AXIAL"
+        fallback: "select series adjacent to module 1"
+      - name: "module_3_axial"
+        match:
+          series_description_contains: ["ACR", "Module 3", "QC"]
+          slice_thickness_range: [4.0, 6.0]
+          image_type_contains: "AXIAL"
+        fallback: "select series at low-contrast region"
+      - name: "module_4_axial"
+        match:
+          series_description_contains: ["ACR", "Module 4", "QC"]
+          slice_thickness_range: [4.0, 6.0]
+          image_type_contains: "AXIAL"
+        fallback: "select series at resolution pattern region"
+    log_selection: true
+
+  # ---------------------------------------------------------------------------
+  # ROI Definitions
+  # Specifies all regions of interest used for metric extraction.
+  # Coordinates are relative to the phantom center, which is auto-detected.
+  # ---------------------------------------------------------------------------
+  roi_definitions:
+    # Phantom rotation is detected automatically from the air bubble or
+    # known insert geometry, then all ROI positions are rotated accordingly.
+    orientation_method: phantom_rotation_auto
+
+    water_roi:
+      shape: circle
+      center_method: phantom_center_auto
+      radius_mm: 20.0
+      slice_selection: central
+
+    peripheral_rois:
+      shape: circle
+      count: 4
+      radius_mm: 10.0
+      offset_from_center_mm: 60.0
+      positions: [12_oclock, 3_oclock, 6_oclock, 9_oclock]
+
+    insert_rois:
+      bone:
+        offset_angle_deg: 90
+        offset_radius_mm: 50
+        expected_hu: 955           # ACR nominal for bone-equivalent insert
+      air:
+        offset_angle_deg: 180
+        offset_radius_mm: 50
+        expected_hu: -1000         # ACR nominal for air
+      acrylic:
+        offset_angle_deg: 270
+        offset_radius_mm: 50
+        expected_hu: 120           # ACR nominal for acrylic
+      polyethylene:
+        offset_angle_deg: 0
+        offset_radius_mm: 50
+        expected_hu: -95           # ACR nominal for polyethylene (LDPE)
+
+    slice_thickness_ramp:
+      wire_pairs: 2               # Two crossed ramp pairs in Module 1
+      expected_fwhm_mm: 5.0       # Nominal 5 mm for standard ACR protocol
+
+    spatial_resolution_patterns:
+      groups: [4, 5, 6, 7, 8]    # Line-pair groups per cm in Module 4
+
+    low_contrast_targets:
+      target_sizes_mm: [2, 3, 4, 5, 6]
+      nominal_contrast_hu: 6      # 6 HU nominal contrast in Module 3
+
+  # ---------------------------------------------------------------------------
+  # Metric Set
+  # Complete list of metrics to extract from the phantom scan.
+  # Each metric key maps to a function in ct.qa_metrics.
+  # ---------------------------------------------------------------------------
+  metric_set:
+    - ct_number_water
+    - ct_number_bone
+    - ct_number_air
+    - ct_number_acrylic
+    - ct_number_polyethylene
+    - geometric_accuracy
+    - slice_thickness
+    - uniformity
+    - noise_std
+    - low_contrast_detectability
+    - artifact_evaluation
+    - spatial_resolution
+
+  # ---------------------------------------------------------------------------
+  # Threshold & Reporting Configuration
+  # ---------------------------------------------------------------------------
+  threshold_set: "acr_ct_thresholds"
+  report_template: "ct_qa_report"
+
+  # Evidence artifacts to generate alongside the pass/fail report.
+  # These are saved as PNG/PDF for human review and audit trail.
+  evidence_artifacts:
+    - roi_overlay_image
+    - uniformity_profile_plot
+    - hu_trend_plot
+    - noise_trend_plot
+    - slice_thickness_profile
+    - spatial_resolution_mtf
