@@ -326,7 +326,7 @@ class ReportGenerator:
             elif hasattr(diagnosis_report, "model_dump"):
                 diagnosis_dict = diagnosis_report.model_dump()
             elif hasattr(diagnosis_report, "dict"):
-                diagnosis_dict = diagnosis_report.model_dump()
+                diagnosis_dict = diagnosis_report.dict()
 
         # Build baseline reference string
         baseline_ref: str | None = None
@@ -423,7 +423,7 @@ class ReportGenerator:
             "table_rows": table_rows,
             "diagnosis": diagnosis_dict,
             "drift_alerts": drift_alerts,
-            "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         }
 
         output_path = Path(config.output_dir) / "physicist_report.pdf"
@@ -716,7 +716,7 @@ class ReportGenerator:
         for metric_key, metric_data in metrics_data.items():
             log_entry = {
                 "metric_key": metric_key,
-                "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
                 "scanner_id": config.scanner_id,
                 "casepack_id": config.casepack_id,
                 "measurement": metric_data if isinstance(metric_data, dict) else {"value": metric_data},
