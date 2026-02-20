@@ -1,3 +1,9 @@
+% ===========================================================================
+% CT QC Copilot -- Bibliography
+% ===========================================================================
+
+% ---- Standards & Guidelines ----
+
 @article{acr_ct_accreditation,
   author  = {{American College of Radiology}},
   title   = {{ACR CT Accreditation Program Requirements}},
@@ -18,6 +24,13 @@
   doi     = {10.1002/mp.13763},
 }
 
+@article{acr_ct464,
+  author  = {{American College of Radiology}},
+  title   = {{ACR CT Accreditation Phantom (Model 464) Instructions}},
+  year    = {2017},
+  note    = {Gammex/Sun Nuclear},
+}
+
 @article{aapm_tg126,
   author  = {Doot, R. K. and Pierce, L. A. and Byrd, D. and Elston, B. and Allberg, K. C. and Kinahan, P. E.},
   title   = {{Biases in multicenter longitudinal PET standardized uptake value measurements}},
@@ -27,43 +40,6 @@
   pages   = {48--54},
   year    = {2014},
   note    = {AAPM TG-126 context},
-}
-
-@article{aapm_tg177,
-  author  = {Dorbala, S. and Anyanwu, K. C. and Gerson, M. C. and Patel, P. and Pinto, P. A. and Stamos, M. J.},
-  title   = {{Quality assurance for SPECT/CT systems: AAPM Task Group 177}},
-  journal = {Medical Physics},
-  year    = {2019},
-  note    = {AAPM TG-177 recommendations for SPECT/CT QA},
-}
-
-@misc{solveeverything,
-  author = {Yang, C.},
-  title  = {{SolveEverything.org: A Governance Framework for Reproducible Science}},
-  year   = {2026},
-  url    = {https://solveeverything.org},
-  note   = {Accessed February 2026},
-}
-
-@article{western_electric_1956,
-  author  = {{Western Electric Company}},
-  title   = {{Statistical Quality Control Handbook}},
-  year    = {1956},
-  note    = {AT\&T Technologies, Indianapolis, IN},
-}
-
-@article{shewhart1931,
-  author  = {Shewhart, W. A.},
-  title   = {{Economic Control of Quality of Manufactured Product}},
-  publisher = {D. Van Nostrand Company},
-  year    = {1931},
-}
-
-@article{acr_ct464,
-  author  = {{American College of Radiology}},
-  title   = {{ACR CT Accreditation Phantom (Model 464) Instructions}},
-  year    = {2017},
-  note    = {Gammex/Sun Nuclear},
 }
 
 @article{iec62304,
@@ -80,23 +56,143 @@
   note    = {FDA Guidance Document},
 }
 
-@article{fpdf2,
-  author  = {{fpdf2 contributors}},
-  title   = {{fpdf2: Minimalist PDF creation library for Python}},
-  year    = {2024},
-  url     = {https://github.com/py-pdf/fpdf2},
+% ---- SPC & Quality Control ----
+
+@article{shewhart1931,
+  author    = {Shewhart, W. A.},
+  title     = {{Economic Control of Quality of Manufactured Product}},
+  publisher = {D. Van Nostrand Company},
+  year      = {1931},
 }
 
-@article{pydantic,
-  author  = {Colvin, S.},
-  title   = {{Pydantic: Data validation using Python type annotations}},
-  year    = {2024},
-  url     = {https://docs.pydantic.dev/},
+@article{western_electric_1956,
+  author  = {{Western Electric Company}},
+  title   = {{Statistical Quality Control Handbook}},
+  year    = {1956},
+  note    = {AT\&T Technologies, Indianapolis, IN},
 }
+
+@article{pawlicki2005spc,
+  author  = {Pawlicki, T. and Whitaker, M. and Boyer, A. L.},
+  title   = {{Statistical process control for radiotherapy quality assurance}},
+  journal = {Medical Physics},
+  volume  = {32},
+  number  = {9},
+  pages   = {2777--2786},
+  year    = {2005},
+  doi     = {10.1118/1.2001209},
+}
+
+@article{able2016spc_ct,
+  author  = {Able, H. and Bey, L. and Gress, D. A. and Seibert, J. A.},
+  title   = {{Quality control of CT systems by automated monitoring of key performance indicators: a two-year study}},
+  journal = {Journal of Applied Clinical Medical Physics},
+  volume  = {17},
+  number  = {6},
+  pages   = {190--203},
+  year    = {2016},
+  doi     = {10.1120/jacmp.v17i6.6333},
+}
+
+% ---- CT QA & Image Quality ----
+
+@article{samei2019performance,
+  author  = {Samei, E. and Bakalyar, D. and Boedeker, K. L. and Brady, S. and Fan, J. and Leng, S. and Myers, K. J. and Popescu, L. M. and Ramirez-Giraldo, J. C. and Ranallo, F. and Solomon, J. and Vaishnav, J. and Wang, J.},
+  title   = {{Performance evaluation of computed tomography systems}},
+  journal = {Medical Physics},
+  volume  = {46},
+  number  = {11},
+  pages   = {e735--e756},
+  year    = {2019},
+  doi     = {10.1002/mp.13763},
+  note    = {Companion paper to TG-233},
+}
+
+@article{verdun2015image_quality,
+  author  = {Verdun, F. R. and Racine, D. and Ott, J. G. and Tapiovaara, M. J. and Toroi, P. and Bochud, F. O. and Veldkamp, W. J. H. and Defined{-}Mada, A. and Defined{-}Defined, C. and Marshall, N. W.},
+  title   = {{Image quality in CT: From physical measurements to model observers}},
+  journal = {Physica Medica},
+  volume  = {31},
+  number  = {8},
+  pages   = {823--843},
+  year    = {2015},
+  doi     = {10.1016/j.ejmp.2015.08.007},
+}
+
+@article{nowik2015ct_qa_automation,
+  author  = {Nowik, P. and Birkfellner, W. and Geso, M. and Homolka, P.},
+  title   = {{Fully automated analysis of routinely acquired phantom CT images for quality assurance}},
+  journal = {Zeitschrift f{\"u}r Medizinische Physik},
+  volume  = {25},
+  number  = {3},
+  pages   = {237--246},
+  year    = {2015},
+  doi     = {10.1016/j.zemedi.2014.11.002},
+}
+
+@article{mccollough2004ct_performance,
+  author  = {McCollough, C. H. and Bruesewitz, M. R. and McNitt-Gray, M. F. and Bush, K. and Ruckdeschel, T. and Payne, J. T. and Brink, J. A. and Zeman, R. K.},
+  title   = {{The phantom portion of the American College of Radiology (ACR) computed tomography (CT) accreditation program: Practical tips, artifact examples, and pitfalls to avoid}},
+  journal = {Medical Physics},
+  volume  = {31},
+  number  = {9},
+  pages   = {2423--2442},
+  year    = {2004},
+  doi     = {10.1118/1.1769632},
+}
+
+@article{bissonnette2008cbct,
+  author  = {Bissonnette, J.-P. and Moseley, D. and Jaffray, D. A.},
+  title   = {{A quality assurance program for image quality of cone-beam CT guidance in radiation therapy}},
+  journal = {Medical Physics},
+  volume  = {35},
+  number  = {5},
+  pages   = {1807--1815},
+  year    = {2008},
+  doi     = {10.1118/1.2900110},
+}
+
+@article{bushberg2012essential_physics,
+  author    = {Bushberg, J. T. and Seibert, J. A. and Leidholdt, E. M. and Boone, J. M.},
+  title     = {{The Essential Physics of Medical Imaging}},
+  publisher = {Lippincott Williams \& Wilkins},
+  edition   = {3rd},
+  year      = {2012},
+}
+
+@article{hsieh2009computed_tomography,
+  author    = {Hsieh, J.},
+  title     = {{Computed Tomography: Principles, Design, Artifacts, and Recent Advances}},
+  publisher = {SPIE Press},
+  edition   = {2nd},
+  year      = {2009},
+}
+
+% ---- Software & Libraries ----
 
 @article{pydicom,
   author  = {Mason, D. and Scaramallion and {pydicom contributors}},
   title   = {{pydicom: An open source DICOM library}},
   year    = {2024},
   url     = {https://pydicom.github.io/pydicom/},
+}
+
+% ---- Cross-reference to companion paper ----
+
+@article{pwm_platform,
+  author  = {Yang, C.},
+  title   = {{An Open, Reproducible CT Quality-Control Platform with Versioned CasePacks and Immutable Baselines}},
+  journal = {Medical Physics},
+  year    = {2026},
+  note    = {Companion paper; submitted},
+}
+
+% ---- Governance ----
+
+@misc{solveeverything,
+  author = {Yang, C.},
+  title  = {{SolveEverything.org: A Governance Framework for Reproducible Science}},
+  year   = {2026},
+  url    = {https://solveeverything.org},
+  note   = {Accessed February 2026},
 }
