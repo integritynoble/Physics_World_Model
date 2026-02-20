@@ -137,6 +137,13 @@
   \textbf{\bibinfo{volume}{1}}, \bibinfo{pages}{612--619}
   (\bibinfo{year}{1984}).
 
+\bibitem{yang2026inversenet}
+\bibinfo{author}{Yang, C.}
+\newblock \bibinfo{title}{{InverseNet}: Benchmarking operator mismatch in
+  snapshot compressive imaging}.
+\newblock \bibinfo{type}{Technical Report}, \bibinfo{institution}{NextGen
+  PlatformAI C Corp} (\bibinfo{year}{2026}).
+
 \bibitem{yuan2016gaptv}
 \bibinfo{author}{Yuan, X.}
 \newblock \bibinfo{title}{Generalized alternating projection based total

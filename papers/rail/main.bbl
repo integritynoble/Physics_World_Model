@@ -1,9 +1,37 @@
-\begin{thebibliography}{26}
+\begin{thebibliography}{30}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[{AAPM Task Group 126}(2019)]{aapm_tg126}
+{AAPM Task Group 126}.
+\newblock Pet/ct acceptance testing and quality assurance.
+\newblock Technical report, American Association of Physicists in Medicine,
+  2019.
+\newblock AAPM Report No. 126.
+
+\bibitem[{AAPM Task Group 177}(2019)]{aapm_tg177}
+{AAPM Task Group 177}.
+\newblock Acceptance testing and quality control of spect/ct systems.
+\newblock Technical report, American Association of Physicists in Medicine,
+  2019.
+\newblock AAPM Report No. 177.
+
+\bibitem[{AAPM Task Group 233}(2019)]{aapm_tg233}
+{AAPM Task Group 233}.
+\newblock Performance evaluation of computed tomography systems.
+\newblock Technical report, American Association of Physicists in Medicine,
+  2019.
+\newblock AAPM Report No. 233.
+
+\bibitem[{American College of Radiology}(2017)]{acr_ct_accreditation}
+{American College of Radiology}.
+\newblock {ACR CT Accreditation Program: Testing Instructions}.
+\newblock
+  \url{https://www.acraccreditation.org/modalities/computed-tomography}, 2017.
+\newblock Accessed: 2026-02-19.
 
 \bibitem[Arad and Ben-Shahar(2016)]{arad2016icvl}
 Boaz Arad and Ohad Ben-Shahar.
