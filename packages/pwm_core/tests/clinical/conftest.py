@@ -467,4 +467,5 @@ mismatch_library:
         description: "Tube output has dropped, reducing signal-to-noise."
 """
     yaml_path = tmp_path / "mismatch_library.yaml"
-  
+    yaml_path.write_text(content, encoding="utf-8")
+    return yaml_path
