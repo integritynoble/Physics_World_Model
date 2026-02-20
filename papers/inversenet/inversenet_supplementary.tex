@@ -225,6 +225,22 @@ CACTI achieved near-perfect recovery (estimated $dx{=}0.50$, $dy{=}0.25$ vs.\ tr
 For SPC, the measurement residual did not provide a useful signal for gain drift calibration, estimating $\alpha{=}0$ regardless of the true value ($\alpha{=}0.0015$).
 
 % ============================================================================
+% A4. RESIDUAL GAP ANALYSIS
+% ============================================================================
+\section{Residual Gap Analysis}
+\label{sec:residual_gap}
+
+\Cref{fig:residual_gap} visualizes the residual gap $\Delta_{\text{res}} = \text{PSNR}_{\text{I}} - \text{PSNR}_{\text{III}}$ per method, representing unrecoverable losses even with oracle calibration.
+CASSI exhibits the largest residual gaps (MST-L: 7.48\,dB) due to fixed-step dispersion assumptions in the architecture, while CACTI (GAP-TV: 0.74\,dB) and SPC (HATNet: 1.20\,dB) confirm that spatial and gain-type mismatches are nearly fully recoverable.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/residual_gap.pdf}
+\caption{Residual gap ($\Delta_{\text{res}} = \text{PSNR}_{\text{I}} - \text{PSNR}_{\text{III}}$) per method, grouped by modality. CASSI exhibits the largest residual gaps due to dispersion mismatch that oracle mask correction alone cannot address. CACTI and SPC residual gaps are small, confirming high recoverability of spatial and gain-type mismatches.}
+\label{fig:residual_gap}
+\end{figure}
+
+% ============================================================================
 % B. RECOVERY RATIO HEATMAPS
 % ============================================================================
 \section{Per-Scene Recovery Ratio Heatmaps}
