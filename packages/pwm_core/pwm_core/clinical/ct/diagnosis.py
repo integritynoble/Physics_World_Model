@@ -278,15 +278,56 @@ class DiagnosisEngine:
         if raw is None:
             return []
 
-        mismatches = raw.get("mismatches", [])
+        # Support both production key ("mismatch_types") and legacy key ("mismatches").
+        mismatches = raw.get("mismatch_types", raw.get("mismatches", []))
         if not isinstance(mismatches, list):
             logger.warning(
-                "Expected 'mismatches' to be a list in '%s'; got %s.",
+                "Expected 'mismatch_types'/'mismatches' to be a list in '%s'; got %s.",
                 path, type(mismatches).__name__,
             )
             return []
 
-        return mismatches
+        return [self._normalize_mismatch(entry) for entry in mismatches]
+
+    @staticmethod
+    def _normalize_mismatch(entry: dict[str, Any]) -> dict[str, Any]:
+        """Convert production YAML format to internal format.
+
+        The production ``clinical_ct_mismatch.yaml`` uses a nested
+        ``diagnostic_features`` mapping where each feature has
+        ``expected_direction`` and ``weight`` sub-keys, plus ``id``
+        instead of ``mismatch_id``.  The engine expects flat
+        ``feature_weights`` and ``expected_direction`` dicts and a
+        ``mismatch_id`` key.  This method bridges both formats so the
+        engine works with legacy *and* production YAML files.
+
+        Parameters
+        ----------
+        entry : dict
+            A single mismatch entry from the YAML library.
+
+        Returns
+        -------
+        dict
+            The same entry, augmented with ``feature_weights``,
+            ``expected_direction``, and ``mismatch_id`` if they were
+            missing but could be derived from the nested format.
+        """
+        # Normalize nested diagnostic_features -> flat feature_weights / expected_direction
+        if "diagnostic_features" in entry and "feature_weights" not in entry:
+            features = entry["diagnostic_features"]
+            entry["feature_weights"] = {
+                k: v["weight"] for k, v in features.items()
+            }
+            entry["expected_direction"] = {
+                k: v["expected_direction"] for k, v in features.items()
+            }
+
+        # Normalize id -> mismatch_id
+        if "id" in entry and "mismatch_id" not in entry:
+            entry["mismatch_id"] = entry["id"]
+
+        return entry
 
     def _score_hypothesis(
         self,
@@ -448,13 +489,47 @@ class DiagnosisEngine:
             return "neutral"
 
     @staticmethod
-    def _directions_match(expected: str, observed: str) -> bool:
+    def _normalize_direction(direction: str) -> str:
+        """Map direction synonyms to canonical ``"high"``/``"low"`` values.
+
+        The production YAML uses vocabulary like ``"elevated"`` and
+        ``"decreased"`` while the engine's :meth:`_classify_direction`
+        returns ``"high"``, ``"low"``, or ``"neutral"``.  This helper
+        maps synonyms so that comparison works regardless of vocabulary.
+
+        Parameters
+        ----------
+        direction : str
+            Direction string from either the YAML or the classifier.
+
+        Returns
+        -------
+        str
+            Canonical direction (``"high"``, ``"low"``, or unchanged
+            if no synonym mapping exists).
+        """
+        synonyms = {
+            "elevated": "high",
+            "decreased": "low",
+            "increased": "high",
+            "reduced": "low",
+        }
+        return synonyms.get(direction, direction)
+
+    @classmethod
+    def _directions_match(cls, expected: str, observed: str) -> bool:
         """Check if observed direction matches the hypothesis expectation.
+
+        Both *expected* and *observed* are normalized through
+        :meth:`_normalize_direction` before comparison so that YAML
+        vocabulary (``"elevated"``/``"decreased"``) and classifier
+        vocabulary (``"high"``/``"low"``) are treated as equivalent.
 
         Parameters
         ----------
         expected : str
-            Expected direction (``"high"`` or ``"low"``).
+            Expected direction (``"high"``, ``"low"``, ``"elevated"``,
+            ``"decreased"``, etc.).
         observed : str
             Classified observed direction.
 
@@ -463,16 +538,20 @@ class DiagnosisEngine:
         bool
             ``True`` if the observed direction matches the expected.
         """
-        return expected == observed
+        return cls._normalize_direction(expected) == cls._normalize_direction(observed)
 
-    @staticmethod
-    def _directions_contradict(expected: str, observed: str) -> bool:
+    @classmethod
+    def _directions_contradict(cls, expected: str, observed: str) -> bool:
         """Check if observed direction contradicts the hypothesis expectation.
+
+        Both *expected* and *observed* are normalized through
+        :meth:`_normalize_direction` before comparison.
 
         Parameters
         ----------
         expected : str
-            Expected direction (``"high"`` or ``"low"``).
+            Expected direction (``"high"``, ``"low"``, ``"elevated"``,
+            ``"decreased"``, etc.).
         observed : str
             Classified observed direction.
 
@@ -481,9 +560,11 @@ class DiagnosisEngine:
         bool
             ``True`` if the directions are opposite.
         """
+        ne = cls._normalize_direction(expected)
+        no = cls._normalize_direction(observed)
         return (
-            (expected == "high" and observed == "low")
-            or (expected == "low" and observed == "high")
+            (ne == "high" and no == "low")
+            or (ne == "low" and no == "high")
         )
 
     def _find_mismatch_by_id(self, mismatch_id: str) -> dict[str, Any] | None:

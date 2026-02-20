@@ -54,6 +54,7 @@ _KNOWN_METRICS: set[str] = {
     "mtf_50",
     "mtf_10",
     "artifact_index",
+    "artifact_evaluation",
     "geometric_accuracy",
     "patient_positioning_accuracy",
     "dose_ctdi_vol",
@@ -289,7 +290,7 @@ class CasePackLoader:
                     )
                     continue
 
-                casepack_id = data.get("id")
+                casepack_id = data.get("id") or data.get("casepack", {}).get("id")
                 if casepack_id and isinstance(casepack_id, str):
                     if casepack_id in self._index:
                         logger.warning(
@@ -309,7 +310,7 @@ class CasePackLoader:
                         data = self._load_yaml(yaml_path)
                     except Exception:  # noqa: BLE001
                         continue
-                    casepack_id = data.get("id")
+                    casepack_id = data.get("id") or data.get("casepack", {}).get("id")
                     if casepack_id and isinstance(casepack_id, str):
                         if casepack_id not in self._index:
                             self._index[casepack_id] = yaml_path
@@ -347,6 +348,7 @@ class CasePackLoader:
 
         yaml_path = self._index[casepack_id]
         data = self._load_yaml(yaml_path)
+        data = data.get("casepack", data)
 
         try:
             config = CasePackConfig(**data)

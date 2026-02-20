@@ -28,7 +28,7 @@ import hashlib
 import json
 import logging
 import warnings
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
@@ -314,7 +314,7 @@ class ReportGenerator:
                 drift_alerts = drift_report.get("alerts", [])
             elif hasattr(drift_report, "alerts"):
                 drift_alerts = [
-                    a if isinstance(a, dict) else a.dict()
+                    a if isinstance(a, dict) else a.model_dump()
                     for a in getattr(drift_report, "alerts", [])
                 ]
 
@@ -326,7 +326,7 @@ class ReportGenerator:
             elif hasattr(diagnosis_report, "model_dump"):
                 diagnosis_dict = diagnosis_report.model_dump()
             elif hasattr(diagnosis_report, "dict"):
-                diagnosis_dict = diagnosis_report.dict()
+                diagnosis_dict = diagnosis_report.model_dump()
 
         # Build baseline reference string
         baseline_ref: str | None = None
@@ -413,7 +413,7 @@ class ReportGenerator:
                 drift_alerts = drift_report.get("alerts", [])
             elif hasattr(drift_report, "alerts"):
                 drift_alerts = [
-                    a if isinstance(a, dict) else a.dict()
+                    a if isinstance(a, dict) else a.model_dump()
                     for a in getattr(drift_report, "alerts", [])
                 ]
 
@@ -423,7 +423,7 @@ class ReportGenerator:
             "table_rows": table_rows,
             "diagnosis": diagnosis_dict,
             "drift_alerts": drift_alerts,
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
         }
 
         output_path = Path(config.output_dir) / "physicist_report.pdf"
@@ -716,7 +716,7 @@ class ReportGenerator:
         for metric_key, metric_data in metrics_data.items():
             log_entry = {
                 "metric_key": metric_key,
-                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
                 "scanner_id": config.scanner_id,
                 "casepack_id": config.casepack_id,
                 "measurement": metric_data if isinstance(metric_data, dict) else {"value": metric_data},

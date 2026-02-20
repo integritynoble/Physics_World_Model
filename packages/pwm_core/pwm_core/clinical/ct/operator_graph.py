@@ -27,7 +27,6 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-import numpy as np
 from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
@@ -160,6 +159,8 @@ class CTOperatorGraph:
     """
 
     def __init__(self, params: CTOperatorParams) -> None:
+        import numpy as np
+
         self.params = params
         self._angles = np.linspace(
             0, np.pi, params.geometry.num_angles, endpoint=False
@@ -185,6 +186,8 @@ class CTOperatorGraph:
         np.ndarray
             Sinogram of shape (num_angles, num_detectors).
         """
+        import numpy as np
+
         image = np.asarray(image, dtype=np.float64)
 
         if self.params.geometry.is_parallel_beam:
@@ -222,6 +225,8 @@ class CTOperatorGraph:
         np.ndarray
             Backprojected image (N x N).
         """
+        import numpy as np
+
         sinogram = np.asarray(sinogram, dtype=np.float64)
         return self._backproject(sinogram, self._angles)
 
@@ -252,6 +257,8 @@ class CTOperatorGraph:
         float
             Normalized squared error. 0.0 = perfect match.
         """
+        import numpy as np
+
         image = np.asarray(image, dtype=np.float64)
         measured_sinogram = np.asarray(measured_sinogram, dtype=np.float64)
 
@@ -302,6 +309,8 @@ class CTOperatorGraph:
         MismatchEstimate
             Estimated CoR offset in mm with confidence score.
         """
+        import numpy as np
+
         sinogram = np.asarray(sinogram, dtype=np.float64)
         num_angles, num_detectors = sinogram.shape
         half_angles = num_angles // 2
@@ -418,6 +427,8 @@ class CTOperatorGraph:
                 f"phantom_rois keys: {sorted(phantom_rois.keys())}, "
                 f"expected_hu keys: {sorted(expected_hu.keys())}"
             )
+
+        import numpy as np
 
         measured = np.array([phantom_rois[k] for k in common_keys], dtype=np.float64)
         expected = np.array([expected_hu[k] for k in common_keys], dtype=np.float64)
@@ -563,6 +574,8 @@ class CTOperatorGraph:
         np.ndarray
             Sinogram of shape (len(angles), num_detectors).
         """
+        import numpy as np
+
         angles_deg = np.degrees(angles)
         num_detectors = self.params.geometry.num_detectors
         cor_offset_px = (
@@ -628,6 +641,7 @@ class CTOperatorGraph:
         np.ndarray
             Sinogram of shape (len(angles), num_detectors).
         """
+        import numpy as np
         from scipy.ndimage import rotate as ndimage_rotate, shift as ndimage_shift
 
         n = image.shape[0]
@@ -681,6 +695,8 @@ class CTOperatorGraph:
         np.ndarray
             Sinogram of shape (num_angles, num_detectors).
         """
+        import numpy as np
+
         geom = self.params.geometry
         num_angles = geom.num_angles
         num_detectors = geom.num_detectors
@@ -750,6 +766,7 @@ class CTOperatorGraph:
         np.ndarray
             Reconstructed image (N x N) where N = num_detectors.
         """
+        import numpy as np
         from scipy.ndimage import rotate as ndimage_rotate
 
         num_angles, num_detectors = sinogram.shape
@@ -802,6 +819,8 @@ def _cross_correlation_shift(a: np.ndarray, b: np.ndarray) -> float:
     float
         Estimated shift in pixels (sub-pixel via parabolic interpolation).
     """
+    import numpy as np
+
     n = len(a)
     if n == 0:
         return 0.0
@@ -854,6 +873,8 @@ def _resample_1d(signal: np.ndarray, target_length: int) -> np.ndarray:
     np.ndarray
         Resampled signal of length ``target_length``.
     """
+    import numpy as np
+
     n = len(signal)
     if n == target_length:
         return signal.copy()
@@ -884,6 +905,8 @@ def _resample_detectors(
     np.ndarray
         Resampled sinogram (num_angles x target_detectors).
     """
+    import numpy as np
+
     num_angles, native_detectors = sinogram.shape
     result = np.zeros((num_angles, target_detectors), dtype=np.float64)
 
@@ -931,6 +954,8 @@ def _trace_ray(
     float
         Integrated attenuation along the ray.
     """
+    import numpy as np
+
     # Convert world coordinates to pixel coordinates
     # Image center is at (n/2, n/2) in pixel coords
     half_n = n / 2.0
@@ -996,6 +1021,8 @@ def _apply_ramp_filter(sinogram: np.ndarray) -> np.ndarray:
     np.ndarray
         Filtered sinogram.
     """
+    import numpy as np
+
     num_angles, num_detectors = sinogram.shape
 
     # Pad to next power of 2 for efficient FFT

@@ -32,8 +32,7 @@ _ACR_CT_YAML = _CASEPACKS_DIR / "acr_ct.yaml"
 try:
     from pwm_core.clinical.casepacks.casepack_loader import (
         CasePackConfig,
-        list_available,
-        load_casepack,
+        CasePackLoader,
     )
 
     _LOADER_AVAILABLE = True
@@ -131,8 +130,9 @@ class TestLoadACRCTCasePack:
     """Load acr_ct.yaml through the CasePack loader API."""
 
     def test_load_acr_ct_casepack(self) -> None:
-        """load_casepack('acr_ct') should return a valid CasePackConfig."""
-        config = load_casepack("acr_ct")
+        """CasePackLoader.load('acr_ct_v1.0') should return a valid CasePackConfig."""
+        loader = CasePackLoader()
+        config = loader.load("acr_ct_v1.0")
         assert isinstance(config, CasePackConfig)
         assert config.id == "acr_ct_v1.0"
 
@@ -145,12 +145,14 @@ class TestLoadACRCTCasePack:
 
     def test_casepack_metric_set(self) -> None:
         """Loaded metric_set should have 12 entries."""
-        config = load_casepack("acr_ct")
+        loader = CasePackLoader()
+        config = loader.load("acr_ct_v1.0")
         assert len(config.metric_set) == 12
 
     def test_casepack_roi_definitions(self) -> None:
         """ROI defs should include water_roi, peripheral_rois, insert_rois."""
-        config = load_casepack("acr_ct")
+        loader = CasePackLoader()
+        config = loader.load("acr_ct_v1.0")
         roi_keys = set(config.roi_definitions.keys())
         expected = {"water_roi", "peripheral_rois", "insert_rois"}
         assert expected.issubset(roi_keys), (
@@ -159,15 +161,17 @@ class TestLoadACRCTCasePack:
 
     def test_casepack_version_compat(self) -> None:
         """min_pwm_version should be a parseable version string."""
-        config = load_casepack("acr_ct")
+        loader = CasePackLoader()
+        config = loader.load("acr_ct_v1.0")
         parts = config.min_pwm_version.split(".")
         assert len(parts) >= 2, (
             f"min_pwm_version '{config.min_pwm_version}' not a valid semver"
         )
 
     def test_list_available(self) -> None:
-        """list_available() should find at least the acr_ct casepack."""
-        available = list_available()
-        assert "acr_ct" in available, (
-            f"acr_ct not in available casepacks: {available}"
+        """list_available() should find at least the acr_ct_v1.0 casepack."""
+        loader = CasePackLoader()
+        available = loader.list_available()
+        assert "acr_ct_v1.0" in available, (
+            f"acr_ct_v1.0 not in available casepacks: {available}"
         )

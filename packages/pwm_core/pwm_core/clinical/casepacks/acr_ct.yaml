@@ -77,18 +77,22 @@ casepack:
       bone:
         offset_angle_deg: 90
         offset_radius_mm: 50
+        roi_radius_mm: 5.0
         expected_hu: 955           # ACR nominal for bone-equivalent insert
       air:
         offset_angle_deg: 180
         offset_radius_mm: 50
+        roi_radius_mm: 5.0
         expected_hu: -1000         # ACR nominal for air
       acrylic:
         offset_angle_deg: 270
         offset_radius_mm: 50
+        roi_radius_mm: 5.0
         expected_hu: 120           # ACR nominal for acrylic
       polyethylene:
         offset_angle_deg: 0
         offset_radius_mm: 50
+        roi_radius_mm: 5.0
         expected_hu: -95           # ACR nominal for polyethylene (LDPE)
 
     slice_thickness_ramp:
