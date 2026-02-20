@@ -12,11 +12,9 @@
 
 % ---- Graphics & Tables ----
 \usepackage{graphicx}
-\usepackage{subcaption}
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{array}
-\usepackage{longtable}
 
 % ---- Colors (must precede tikz) ----
 \usepackage[dvipsnames]{xcolor}
@@ -540,8 +538,8 @@ lp/cm by multiplying by 10.
   coordinates {
     (1,4.50) (2,4.72) (3,4.41) (4,4.78) (5,4.35)
     (6,4.60) (7,4.85) (8,4.48) (9,4.68) (10,4.55)
-    (11,4.65) (12,4.70) (13,4.75) (14,4.80) (15,4.85)
-    (16,4.92) (17,4.98) (18,5.04) (19,5.10) (20,5.18)
+    (11,4.65) (12,4.70) (13,4.75) (14,4.72) (15,4.78)
+    (16,4.84) (17,4.90) (18,4.96) (19,5.04) (20,5.12)
   };
 \addlegendentry{Measurements}
 
@@ -698,7 +696,7 @@ reproducibility, SPC rule detection, and computational performance.
   },
   xtick=data,
   xticklabel style={font=\tiny, rotate=30, anchor=east},
-  ymin=-50, ymax=50,
+  ymin=-15, ymax=15,
   grid=major,
   grid style={gray!15},
   tick label style={font=\small},
@@ -708,33 +706,35 @@ reproducibility, SPC rule detection, and computational performance.
   every axis plot/.append style={line width=0pt},
 ]
 
-% Deviations as percentage of ACR tolerance
-% Water: 0.3/5=6%, Bone: 1.2/~20=6%, Air: 0.8/~20=4%,
-% Acrylic: 0.5/~10=5%, Poly: 0.4/~10=4%,
-% Geom: 0.15/2=7.5%, Slice: 0.08/1.5=5.3%, Unif: 0.2/5=4%,
-% Noise: 0.1/baseline~10%, SpatRes: 0.2/5=4%
+% Platform-vs-console |Delta| as % of ACR tolerance (from Table 2)
+% Water: 0.1/5=2%, Bone: 1.0/20=5%, Air: 1.0/20=5%,
+% Acrylic: 1.0/15=7%, Poly: 0.0/15=0%,
+% Geom: 0.05/2=2.5%, Slice: 0.06/1.5=4%, Unif: 0.1/5=2%,
+% Noise: 0.1/1.0=10%, SpatRes: 0.2/5=4%
 \addplot[fill=pwmBlue!70, draw=pwmBlue] coordinates {
-  (Water, 6)
-  (Bone, -6)
-  (Air, 4)
-  (Acrylic, -5)
-  (Poly, 4)
-  (Geom, -7.5)
-  (Slice, 5.3)
-  (Unif, 4)
-  (Noise, 2.2)
-  (SpatRes, -4)
+  (Water, 2)
+  (Bone, -5)
+  (Air, 5)
+  (Acrylic, -7)
+  (Poly, 0)
+  (Geom, 2.5)
+  (Slice, 4)
+  (Unif, 2)
+  (Noise, 10)
+  (SpatRes, 4)
 };
 \addlegendentry{\pwm{} platform}
 
 \end{axis}
 \end{tikzpicture}
 \caption{%
-  Metric deviations from nominal values on an ACR CT~464 phantom
+  Platform-versus-console agreement on an ACR CT~464 phantom
   scan (GE Revolution Apex, 120~kVp, 5~mm axial), expressed as
-  percentage of the respective ACR tolerance for each metric.
-  All continuous metrics fall within $\pm 8\%$ of their tolerances,
-  well below the $\pm 100\%$ action boundary.
+  signed percentage of the ACR tolerance.
+  Tolerances: Water $\pm 5$~HU, Bone/Air $\pm 20$~HU,
+  Acrylic/Poly $\pm 15$~HU, Geom $\pm 2$~mm, Slice $\pm 1.5$~mm,
+  Unif $\pm 5$~HU, Noise $\pm 1.0$~HU.
+  All continuous metrics fall within $\pm 10\%$ of their tolerances.
   Low-contrast detectability (5/5 targets) and artifact evaluation
   (score 0) are discrete metrics shown in \cref{tab:validation}.
 }
@@ -747,9 +747,9 @@ kernel).
 \Cref{fig:validation} shows the deviation of each metric from its
 nominal value.
 All nine metrics fell within ACR tolerance bands:
-CT number of water deviated by 0.3~HU ($< 5$~HU criterion),
-geometric accuracy by $-0.15$~mm ($< 2$~mm), slice thickness by
-0.08~mm ($< 1.5$~mm), and uniformity by 0.2~HU ($< 5$~HU).
+CT number of water deviated by 0.3~HU ($\pm 5$~HU criterion),
+geometric accuracy by 0.15~mm ($\pm 2$~mm), slice thickness by
+0.08~mm ($\pm 1.5$~mm), and uniformity measured 1.2~HU ($\leq 5$~HU).
 
 Type~A measurement uncertainty (standard error of the mean from
 ROI pixel statistics) was $< 0.07$~HU for CT number metrics
@@ -882,17 +882,23 @@ computing control-chart statistics manually.
 By automating SPC with zero database dependencies (JSON files only),
 the platform lowers this barrier for sites without IT infrastructure.
 
+\paragraph{Structured data for machine learning.}
+The platform's systematic data collection (versioned CasePacks,
+time-series metrics with labeled outcomes, root-cause annotations)
+provides curated training data for future machine-learning
+extensions such as predictive maintenance or anomaly detection,
+complementing rule-based SPC with data-driven approaches.
+
 \paragraph{Limitations.}
-(1)~Validation used a single scanner model; multi-vendor validation
-is planned.
-(2)~The mismatch library is expert-curated; data-driven enrichment
-from multi-site QC databases could improve diagnostic coverage.
-(3)~The platform is for research/internal QA use; deployment as
-a Software as a Medical Device would require FDA 510(k) and
-IEC~62304 compliance~\cite{iec62304,samd_fda}.
-(4)~Low-contrast detectability uses a simplified CNR criterion;
-model-observer approaches~\cite{solomon2014lcd} could improve
-correlation with human observer performance.
+(1)~Single-scanner validation; multi-vendor testing is planned.
+(2)~The mismatch library is expert-curated; data-driven
+enrichment from multi-site QC databases could improve coverage.
+(3)~The platform is for research and internal QA use;
+clinical deployment would require FDA~510(k) and
+IEC~62304 compliance \cite{iec62304,samd_fda}.
+(4)~Low-contrast detectability uses a simplified CNR
+criterion; model observers \cite{solomon2014lcd} could improve
+correlation with human performance.
 
 \paragraph{Future work.}
 Planned extensions include multi-vendor validation, PET/CT and

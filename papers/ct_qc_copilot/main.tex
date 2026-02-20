@@ -12,7 +12,6 @@
 
 % ---- Graphics & Tables ----
 \usepackage{graphicx}
-\usepackage{subcaption}
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{array}
@@ -481,20 +480,20 @@ superimposing the drift ramps on the 4 degrading scanners.
 
 % GE Revolution Apex (|Delta|/tolerance * 100)
 % Water: 0.1/5=2%, Bone: 1.2/20=6%, Air: 0.8/20=4%,
-% Acrylic: 0.5/12.5=4%, Poly: 0.4/12=3.3%,
+% Acrylic: 0.5/15=3.3%, Poly: 0.4/15=2.7%,
 % Geom: 0.05/2=2.5%, Slice: 0.06/1.5=4%, Unif: 0.1/5=2%, Noise: 0.1/1.0=10%
 \addplot[fill=pwmBlue!70, draw=pwmBlue] coordinates {
-  (Water, 2)  (Bone, 6) (Air, 4) (Acrylic, 4) (Poly, 3.3)
+  (Water, 2)  (Bone, 6) (Air, 4) (Acrylic, 3.3) (Poly, 2.7)
   (Geom, 2.5) (Slice, 4) (Unif, 2) (Noise, 10)
 };
 \addlegendentry{GE Rev Apex}
 
 % Siemens Force
 % Water: 0.2/5=4%, Bone: 0.9/20=4.5%, Air: 1.1/20=5.5%,
-% Acrylic: 0.3/12.5=2.4%, Poly: 0.6/12=5%,
+% Acrylic: 0.3/15=2%, Poly: 0.6/15=4%,
 % Geom: 0.10/2=5%, Slice: 0.08/1.5=5.3%, Unif: 0.2/5=4%, Noise: 0.15/1.0=15%
 \addplot[fill=pwmGreen!70, draw=pwmGreen] coordinates {
-  (Water, 4)  (Bone, 4.5) (Air, 5.5) (Acrylic, 2.4) (Poly, 5)
+  (Water, 4)  (Bone, 4.5) (Air, 5.5) (Acrylic, 2) (Poly, 4)
   (Geom, 5) (Slice, 5.3) (Unif, 4) (Noise, 15)
 };
 \addlegendentry{Siemens Force}
@@ -507,7 +506,8 @@ superimposing the drift ramps on the 4 degrading scanners.
   of the respective ACR tolerance for each metric.
   All metrics fall within 15\% of their tolerances, confirming
   agreement well within actionable limits.
-  ACR tolerances used: Water $\pm 5$~HU, Inserts $\pm 20$~HU,
+  Tolerances: Water $\pm 5$~HU, Bone/Air $\pm 20$~HU,
+  Acrylic/Poly $\pm 15$~HU,
   Geom $\pm 2$~mm, Slice $\pm 1.5$~mm, Unif $\pm 5$~HU,
   Noise $\pm 1.0$~HU baseline deviation.
 }
@@ -575,7 +575,7 @@ CT number metrics agreed within 1.2~HU, geometric accuracy within
 % Scanner B -- drifting (onset month 3, gradual ramp)
 \addplot[mark=*, mark size=1.5pt, pwmRed!80!black]
   coordinates {
-    (1,4.62) (2,4.58) (3,4.60) (4,4.65) (5,4.70)
+    (1,4.62) (2,4.58) (3,4.55) (4,4.65) (5,4.70)
     (6,4.76) (7,4.82) (8,4.88) (9,4.95) (10,5.02)
     (11,5.10) (12,5.18)
   };
@@ -616,6 +616,12 @@ parameter would have crossed the ACR action threshold, providing
 an early-warning window for preventive maintenance.
 There were zero false drift alerts on the 26 stable scanners
 over the 12-month evaluation period (\cref{tab:drift_results}).
+The observed sensitivity was 100\% (4/4; 95\% Clopper--Pearson
+exact CI: 39.8\%--100\%) and specificity was 100\% (0/26 false
+positives; 95\% CI: 86.8\%--100\%).
+The wide sensitivity confidence interval reflects the small sample
+of drifting scanners and motivates larger-scale prospective
+validation.
 
 \begin{table}[t]
 \centering
@@ -815,6 +821,14 @@ reallocation to higher-value activities.
 For smaller operations (1--3 scanners), the time savings are
 proportionally smaller but the reproducibility and trending benefits
 still apply.
+
+\paragraph{Foundation for data-driven QA.}
+While the current Copilot uses rule-based SPC and scored diagnosis,
+the structured data it produces---labeled QC outcomes, multi-metric
+time series, and root-cause annotations---provides training data
+for future machine-learning models such as predictive maintenance
+or multi-variate anomaly detection, bridging traditional QC
+methodology with emerging data-driven approaches.
 
 \paragraph{Limitations.}
 (1)~The evaluation used synthetic data for the 30-scanner fleet;
