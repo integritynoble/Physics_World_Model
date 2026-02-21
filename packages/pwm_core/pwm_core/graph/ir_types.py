@@ -92,6 +92,57 @@ class DiffMode(str, Enum):
 
 
 # ---------------------------------------------------------------------------
+# Canonical Primitive enums (Finite Primitive Basis Theorem)
+# ---------------------------------------------------------------------------
+
+
+class CanonicalPrimitive(str, Enum):
+    """The 10 canonical primitives from the Finite Primitive Basis Theorem.
+
+    Every Tier-2 imaging forward model can be decomposed into a DAG of
+    these 10 canonical operators (Theorem 1, FPB paper).
+    """
+
+    P = "propagate"       # Free-space wave propagation
+    M = "modulate"        # Element-wise multiplication (mask, coil, absorption)
+    Pi = "project"        # Radon line-integral projection
+    F = "encode"          # Fourier-domain encoding (k-space)
+    C = "convolve"        # Spatial convolution (PSF)
+    Sigma = "accumulate"  # Summation over spectral/temporal axis
+    D = "detect"          # Detector response (5 canonical families)
+    S = "sample"          # Sub-sampling on index set
+    W = "disperse"        # Wavelength-dependent spatial shift
+    R = "scatter"         # Direction change and/or energy shift
+
+
+class PhysicsStageFamily(str, Enum):
+    """The 4 physics-stage families from the FPB Theorem proof.
+
+    Each canonical primitive belongs to exactly one stage family,
+    reflecting its role in the physical imaging pipeline.
+    """
+
+    propagation = "propagation"                  # → {P, C}
+    interaction = "interaction"                   # → {M, R}
+    encoding_projection = "encoding_projection"   # → {Π, F}
+    detection_readout = "detection_readout"        # → {Σ, S, W, D}
+
+
+class DetectFamily(str, Enum):
+    """The 5 canonical Detect response families.
+
+    Each detector primitive implements one of these response functions,
+    determining the measurement nonlinearity.
+    """
+
+    linear_intensity = "linear_intensity"   # η(x) = g|x|²
+    logarithmic = "logarithmic"             # η(x) = g·log(1 + |x|²/x₀)
+    sigmoid = "sigmoid"                     # η(x) = g·σ(|x|² - x₀)
+    poisson_rate = "poisson_rate"           # η(x) = g|x|² (returns Poisson rate)
+    coherent_field = "coherent_field"       # η(x) = g·Re[x·e^(iφ)]
+
+
+# ---------------------------------------------------------------------------
 # StrictBaseModel (local copy for self-containment)
 # ---------------------------------------------------------------------------
 
@@ -147,6 +198,9 @@ class NodeTags(StrictBaseModel):
     supports_vjp: bool = False
     supports_jvp: bool = False
     physics_subrole: Optional[PhysicsSubrole] = None
+    canonical_id: Optional[CanonicalPrimitive] = None
+    physics_stage: Optional[PhysicsStageFamily] = None
+    detect_family: Optional[DetectFamily] = None
 
 
 # ---------------------------------------------------------------------------
