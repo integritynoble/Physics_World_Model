@@ -417,7 +417,7 @@ Not all five operations are present in every modality (e.g., CT omits dispersion
 \begin{proof}[Proof of Theorem~\ref{thm:fpb}]
 Let $H \in \ctier$ with factorization $H = H_K \circ \cdots \circ H_1$, $K \leq \Nmax$. We construct $G$ as follows.
 
-\textbf{Step 1: Classification.} Classify each factor $H_k$ into one of the four physics-stage families (propagation, interaction, encoding--projection, detection--readout). The physics-stage classification of each factor is determined by the physical description of the imaging system (the carrier type and the nature of the carrier--matter interaction at each stage). Supplementary~S7 provides a formal decision table (three questions $\to$ primitive assignment) and two worked examples (CASSI, MRI). For every modality in Table~\ref{tab:decomposition}, this classification is uniquely determined by the modality's physics specifications. The constructive algorithm is thus deterministic given the physics-level description; it does not require iterative search over possible classifications.
+\textbf{Step 1: Classification.} Classify each factor $H_k$ into one of the five physics-stage families (propagation, elastic interaction, inelastic interaction, encoding--projection, detection--readout). The physics-stage classification of each factor is determined by the physical description of the imaging system (the carrier type and the nature of the carrier--matter interaction at each stage). Supplementary~S7 provides a formal decision table (three questions $\to$ primitive assignment) and two worked examples (CASSI, MRI). For every modality in Table~\ref{tab:decomposition}, this classification is uniquely determined by the modality's physics specifications. The constructive algorithm is thus deterministic given the physics-level description; it does not require iterative search over possible classifications.
 
 \textbf{Step 2: Per-factor realization.} Apply the appropriate lemma to realize each $H_k$:
 \begin{itemize}
@@ -498,7 +498,7 @@ Proposition~\ref{prop:necessity} together with Theorem~\ref{thm:fpb} establishes
 
 \subsection{Decomposition Registry}
 
-Table~\ref{tab:decomposition} shows the primitive decomposition of all 31 modalities (26 previously registered in~\cite{yang2026pwm} plus 5 held-out for closure testing). Every modality achieves $\etier < 0.01$ with at most 5 operator nodes and depth 5. The $\etier$ values are computed via~\eqref{eq:supp_etier_mean} over 20 test objects per modality (see Supplementary~S1).
+Table~\ref{tab:decomposition} shows the primitive decomposition of all 31 modalities (26 previously registered in~\cite{yang2026pwm} plus 5 held-out for closure testing). Every modality achieves $\etier < 0.01$ with at most 5 operator nodes and depth 5. The $\etier$ values are computed via~\eqref{eq:supp_etier_mean} over 20 test objects per modality (see Supplementary~S1). Of the five Detect response families, three are exercised by the 31 validated modalities: family~1 (linear-field: MRI, ultrasound), family~4 (intensity-square-law: CASSI, CT, ptychography, and most photon-detecting modalities), and family~5 (coherent-field: THz-TDS, SAR, radar). Families~2 (logarithmic) and~3 (sigmoid) cover wide-dynamic-range and saturating detectors (e.g., HDR CMOS, bolometers) used in specialized applications not in the current validation set; should such modalities be added, the existing families accommodate them without a library extension.
 
 \begin{longtable}{l l l c c c}
 \caption{Primitive decomposition of 31 imaging modalities. $\etier$ is the mean relative fidelity error over 20 test objects. All values satisfy $\etier < 0.01$.} \label{tab:decomposition} \\
@@ -583,7 +583,7 @@ Seven of eight modalities decompose with the frozen library. The eighth (Compton
 
 \subsection{Basis-Growth Saturation}
 
-Figure~\ref{fig:growth} plots the number of distinct primitive types as modalities are added to the registry in chronological order. The curve saturates: 9 of 10 primitives are introduced by the first 8 modalities---Convolve ($C$) and Detect ($D$) from Lensless imaging, Project ($\Pi$) from CT, Modulate ($M$) and Accumulate ($\Sigma$) from SPC, Propagate ($P$) from Ptychography, Encode ($F$) and Sample ($S$) from MRI, and Disperse ($W$) from CASSI. Scatter ($R$) is introduced only when Compton/Raman-class modalities enter (modality 28). THz-TDS (modality 27) uses a new Detect \emph{family} (coherent-field, family 5) but does not require a new primitive type. The growth is sublinear and saturating: $K = 10$ at $N = 31$, with no new primitive type required for the most recent 19 template-validated modalities. This saturation is consistent with Theorem~\ref{thm:fpb}: once all four physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
+Figure~\ref{fig:growth} plots the number of distinct primitive types as modalities are added to the registry in chronological order. The curve saturates: 9 of 10 primitives are introduced by the first 8 modalities---Convolve ($C$) and Detect ($D$) from Lensless imaging, Project ($\Pi$) from CT, Modulate ($M$) and Accumulate ($\Sigma$) from SPC, Propagate ($P$) from Ptychography, Encode ($F$) and Sample ($S$) from MRI, and Disperse ($W$) from CASSI. Scatter ($R$) is introduced only when Compton/Raman-class modalities enter (modality 28). THz-TDS (modality 27) uses a new Detect \emph{family} (coherent-field, family 5) but does not require a new primitive type. The growth is sublinear and saturating: $K = 10$ at $N = 31$, with no new primitive type required for the most recent 19 template-validated modalities. This saturation is consistent with Theorem~\ref{thm:fpb}: once all five physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
 
 \begin{figure}[htbp]
 \centering
@@ -701,7 +701,7 @@ The closure test is re-run with $\Blib' = \Blib \cup \{R\}$: all previously deco
 
 \subsection{Basis-Growth Prediction}
 
-Theorem~\ref{thm:fpb}, together with the physics-stage analysis, implies that the number of canonical primitives will saturate once all four physics-stage families are covered. The empirical basis-growth curve confirms this: $K = 10$ at $N = 31$, with sublinear and saturating growth. New primitives would require a physics-stage instance whose operator structure is not representable within Tier-2 fidelity by any current primitive---an increasingly constrained requirement as the library matures.
+Theorem~\ref{thm:fpb}, together with the physics-stage analysis, implies that the number of canonical primitives will saturate once all five physics-stage families are covered. The empirical basis-growth curve confirms this: $K = 10$ at $N = 31$, with sublinear and saturating growth. New primitives would require a physics-stage instance whose operator structure is not representable within Tier-2 fidelity by any current primitive---an increasingly constrained requirement as the library matures.
 
 
 %% ═══════════════════════════════════════════════════════════════════
