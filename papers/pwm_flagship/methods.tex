@@ -218,8 +218,9 @@ operator), $\psnr_{\text{noisy}}$ under the corresponding noisy condition,
 and $\psnr_{\text{limit}}$ is the theoretical upper bound from the
 compression table.  The dominant gate is $\arg\max_g C_g$.
 
-\paragraph{TriadReport schema.}
-The analysis output is a Pydantic-validated \triadreport{} comprising:
+\paragraph{TriadReport.}
+For every diagnosis, \pwm{} produces a \triadreport{}: a Pydantic-validated
+structured artifact comprising
 \texttt{dominant\_gate} (enum: \texttt{recoverability},
 \texttt{carrier\_budget}, \texttt{operator\_mismatch}),
 \texttt{evidence\_scores} (three floats, one per gate),
@@ -228,6 +229,7 @@ The analysis output is a Pydantic-validated \triadreport{} comprising:
 or ``apply mismatch correction''), and
 \texttt{parameter\_sensitivities} (dictionary mapping each mismatch
 parameter name to its $\partial \psnr / \partial \theta_k$ value).
+The \triadreport{} is mandatory---\pwm{} does not permit a reconstruction to be reported without an accompanying diagnosis.
 
 \paragraph{Recovery ratio.}
 We define the \emph{recovery ratio}
