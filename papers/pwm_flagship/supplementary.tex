@@ -307,10 +307,10 @@ CT
   & center\_of\_rotation
   & 13.41 & 24.09 & +10.68
   & 0.0031 \\
-CACTI
-  & mask\_timing
-  & 14.48 & 37.42 & +22.94
-  & 0.0018 \\
+CACTI\footnote{CACTI uses GAP-TV as the reconstruction solver for Table~S1 consistency.  Oracle values from InverseNet validation under 8-parameter mismatch ($dx{=}0.5$\,px, $dy{=}0.3$\,px, $\theta{=}0.1^\circ$, $\Delta t{=}0.05$, $\eta{=}0.95$, $g{=}1.02$, $o{=}0.002$, $\sigma_n{=}1.0$).  State-of-the-art EfficientSCI achieves Sc.~II$\,=\,$14.81\,dB and Sc.~III$\,=\,$27.38\,dB ($\rho{=}61.1\%$); see main text.}
+  & 8-param mismatch
+  & 15.81 & 26.01 & +10.21
+  & --- \\
 Lensless
   & psf\_shift
   & 23.48 & 27.03 & +3.55
@@ -319,10 +319,10 @@ MRI
   & coil\_sensitivities
   & 6.94 & 55.19 & +48.25
   & 0.0003 \\
-SPC
-  & gain\_bias
-  & 11.14 & 23.35 & +12.21
-  & 0.0042 \\
+SPC\footnote{SPC uses FISTA-TV as the reconstruction solver for Table~S1 consistency.  Values from InverseNet validation under exponential gain drift ($\alpha{=}0.0015$).  HATNet achieves Sc.~II$\,=\,$19.40\,dB and Sc.~III$\,=\,$29.78\,dB ($\rho{=}89.6\%$); see main text.}
+  & gain\_drift
+  & 18.51 & 26.21 & +7.71
+  & --- \\
 CASSI (Alg~1)\footnote{Reported values are averaged over 10 test scenes using GAP-TV as the reconstruction solver. Sc.~II from InverseNet validation; Sc.~III values are oracle upper bounds (true operator applied to mismatched data).}
   & mask\_geo + dispersion
   & 20.96 & 21.50 & +0.54
@@ -377,96 +377,93 @@ Radar/SAR
 \section{Supplementary Table S2: CASSI Per-Scene Results}
 \label{sec:cassi_scenes}
 
-Table~\ref{tab:cassi_scenes} reports PSNR (dB) for 10 KAIST scenes across
-five representative methods under four scenarios.\footnote{This supplementary table reports five methods (GAP-TV, TwIST, DeSCI, MST, HDNet) to provide comprehensive coverage; the main text focuses on three methods (GAP-TV, MST-L, HDNet) for clarity. The supplementary table uses MST (base variant); the main text reports MST-L (large variant), which has higher Scenario~I performance but similar Scenario~II collapse.}
+Table~\ref{tab:cassi_scenes} reports PSNR (dB) and recovery ratio $\rho$ (\%) for 10 KAIST scenes across
+four methods under three scenarios, matching the InverseNet benchmark~\cite{yang2026inversenet}.
 
 \begin{footnotesize}
 \begin{longtable}{l l r r r r}
-\caption{CASSI per-scene PSNR (dB).  Sc.~I = ideal forward model;
-Sc.~II = mismatched (baseline); Sc.~III-A1 = correction Algorithm~1; Verify = pipeline sanity check (ideal-condition data with ideal operator, confirming pipeline integrity to $\pm 0.01$\,dB from Sc.~I).
-GAP-TV values for Sc.~I, Sc.~II, and Sc.~III-A1 are from InverseNet validation~\cite{yang2026inversenet} under the 5-parameter mismatch ($dx{=}0.5$\,px, $dy{=}0.3$\,px, $\theta{=}0.1^\circ$, $a_1{=}2.02$, $\alpha{=}0.15^\circ$). Sc.~III-A1 entries marked $^*$ use Oracle Mask values (true operator applied to mismatched data) as correction upper bounds. Algorithm~2 results are reported in Table~\ref{tab:correction_params}.}
+\caption{CASSI per-scene PSNR (dB) and recovery ratio $\rho$.  Sc.~I = ideal forward model;
+Sc.~II = mismatched (baseline); Sc.~III = oracle correction (true operator applied to mismatched data).
+All values from InverseNet validation under the 5-parameter mismatch ($dx{=}0.5$\,px, $dy{=}0.3$\,px, $\theta{=}0.1^\circ$, $a_1{=}2.02$, $\alpha{=}0.15^\circ$).
+HDNet shows $\rho{=}0\%$ across all scenes due to its mask-oblivious architecture.}
 \label{tab:cassi_scenes} \\
 \toprule
 \textbf{Scene} & \textbf{Method} &
-  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III-A1} & \textbf{Verify} \\
+  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III} & $\boldsymbol{\rho}$ \\
 \midrule
 \endfirsthead
 \toprule
 \textbf{Scene} & \textbf{Method} &
-  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III-A1} & \textbf{Verify} \\
+  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III} & $\boldsymbol{\rho}$ \\
 \midrule
 \endhead
 \bottomrule
 \endlastfoot
 %% Scene 1
-scene01 & GAP-TV        & 26.49 & 24.08 & 24.18$^*$ & 26.49 \\
-scene01 & TwIST         & 27.18 & 15.79 & 21.34 & 27.18 \\
-scene01 & DeSCI         & 28.01 & 14.92 & 20.15 & 28.01 \\
-scene01 & MST           & 33.47 & 16.84 & 22.61 & 33.47 \\
-scene01 & HDNet         & 34.12 & 17.02 & 23.10 & 34.12 \\
+scene01 & GAP-TV        & 26.49 & 24.08 & 24.18 & 4.1\% \\
+scene01 & PnP-HSICNN    & 27.43 & 23.47 & 25.78 & 58.3\% \\
+scene01 & HDNet         & 34.95 & 24.37 & 24.37 & 0.0\% \\
+scene01 & MST-L         & 35.29 & 23.96 & 29.98 & 53.2\% \\
 \midrule
 %% Scene 2
-scene02 & GAP-TV        & 24.60 & 21.89 & 22.82$^*$ & 24.60 \\
-scene02 & TwIST         & 25.73 & 15.21 & 20.48 & 25.73 \\
-scene02 & DeSCI         & 26.95 & 14.38 & 19.54 & 26.95 \\
-scene02 & MST           & 31.84 & 16.12 & 21.73 & 31.84 \\
-scene02 & HDNet         & 32.56 & 16.45 & 22.01 & 32.56 \\
+scene02 & GAP-TV        & 24.60 & 21.89 & 22.82 & 34.5\% \\
+scene02 & PnP-HSICNN    & 25.34 & 21.56 & 23.80 & 59.3\% \\
+scene02 & HDNet         & 35.65 & 23.26 & 23.26 & 0.0\% \\
+scene02 & MST-L         & 36.14 & 22.21 & 28.42 & 44.6\% \\
 \midrule
 %% Scene 3
-scene03 & GAP-TV        & 25.96 & 18.62 & 19.68$^*$ & 25.96 \\
-scene03 & TwIST         & 28.04 & 16.35 & 21.87 & 28.04 \\
-scene03 & DeSCI         & 29.22 & 15.64 & 20.93 & 29.22 \\
-scene03 & MST           & 34.67 & 17.48 & 23.25 & 34.67 \\
-scene03 & HDNet         & 35.31 & 17.71 & 23.68 & 35.31 \\
+scene03 & GAP-TV        & 25.96 & 18.62 & 19.68 & 14.4\% \\
+scene03 & PnP-HSICNN    & 26.71 & 17.59 & 21.83 & 46.5\% \\
+scene03 & HDNet         & 35.54 & 18.61 & 18.61 & 0.0\% \\
+scene03 & MST-L         & 35.66 & 16.09 & 23.57 & 38.2\% \\
 \midrule
 %% Scene 4
-scene04 & GAP-TV        & 28.36 & 23.37 & 24.41$^*$ & 28.36 \\
-scene04 & TwIST         & 31.09 & 18.02 & 23.75 & 31.09 \\
-scene04 & DeSCI         & 32.14 & 17.11 & 22.64 & 32.14 \\
-scene04 & MST           & 37.82 & 19.33 & 25.47 & 37.82 \\
-scene04 & HDNet         & 38.45 & 19.68 & 25.94 & 38.45 \\
+scene04 & GAP-TV        & 28.36 & 23.37 & 24.41 & 20.9\% \\
+scene04 & PnP-HSICNN    & 28.80 & 22.89 & 25.98 & 52.3\% \\
+scene04 & HDNet         & 41.63 & 23.98 & 23.98 & 0.0\% \\
+scene04 & MST-L         & 40.05 & 21.91 & 29.80 & 43.5\% \\
 \midrule
 %% Scene 5
-scene05 & GAP-TV        & 23.66 & 20.39 & 21.27$^*$ & 23.66 \\
-scene05 & TwIST         & 26.54 & 15.53 & 20.84 & 26.54 \\
-scene05 & DeSCI         & 27.68 & 14.72 & 19.87 & 27.68 \\
-scene05 & MST           & 32.91 & 16.67 & 22.14 & 32.91 \\
-scene05 & HDNet         & 33.58 & 16.94 & 22.53 & 33.58 \\
+scene05 & GAP-TV        & 23.66 & 20.39 & 21.27 & 26.9\% \\
+scene05 & PnP-HSICNN    & 24.65 & 19.36 & 22.75 & 64.3\% \\
+scene05 & HDNet         & 32.56 & 20.22 & 20.22 & 0.0\% \\
+scene05 & MST-L         & 32.84 & 20.28 & 26.75 & 51.5\% \\
 \midrule
 %% Scene 6
-scene06 & GAP-TV        & 22.34 & 20.39 & 21.00$^*$ & 22.34 \\
-scene06 & TwIST         & 29.18 & 16.74 & 22.31 & 29.18 \\
-scene06 & DeSCI         & 30.42 & 15.97 & 21.24 & 30.42 \\
-scene06 & MST           & 35.89 & 18.05 & 23.87 & 35.89 \\
-scene06 & HDNet         & 36.54 & 18.32 & 24.25 & 36.54 \\
+scene06 & GAP-TV        & 22.34 & 20.39 & 21.00 & 31.2\% \\
+scene06 & PnP-HSICNN    & 23.12 & 20.29 & 21.80 & 53.0\% \\
+scene06 & HDNet         & 34.33 & 22.63 & 22.63 & 0.0\% \\
+scene06 & MST-L         & 34.56 & 22.37 & 28.67 & 51.7\% \\
 \midrule
 %% Scene 7
-scene07 & GAP-TV        & 23.51 & 20.56 & 21.07$^*$ & 23.51 \\
-scene07 & TwIST         & 24.76 & 14.32 & 19.64 & 24.76 \\
-scene07 & DeSCI         & 25.84 & 13.55 & 18.73 & 25.84 \\
-scene07 & MST           & 30.72 & 15.48 & 21.02 & 30.72 \\
-scene07 & HDNet         & 31.35 & 15.73 & 21.38 & 31.35 \\
+scene07 & GAP-TV        & 23.51 & 20.56 & 21.07 & 17.4\% \\
+scene07 & PnP-HSICNN    & 24.94 & 19.86 & 22.77 & 57.4\% \\
+scene07 & HDNet         & 33.27 & 20.79 & 20.79 & 0.0\% \\
+scene07 & MST-L         & 33.80 & 19.76 & 26.12 & 45.3\% \\
 \midrule
 %% Scene 8
-scene08 & GAP-TV        & 22.16 & 20.57 & 21.10$^*$ & 22.16 \\
-scene08 & TwIST         & 28.53 & 16.52 & 22.04 & 28.53 \\
-scene08 & DeSCI         & 29.71 & 15.78 & 21.12 & 29.71 \\
-scene08 & MST           & 35.14 & 17.83 & 23.55 & 35.14 \\
-scene08 & HDNet         & 35.79 & 18.08 & 23.94 & 35.79 \\
+scene08 & GAP-TV        & 22.16 & 20.57 & 21.10 & 33.3\% \\
+scene08 & PnP-HSICNN    & 22.73 & 20.30 & 21.92 & 66.4\% \\
+scene08 & HDNet         & 32.26 & 22.73 & 22.73 & 0.0\% \\
+scene08 & MST-L         & 32.74 & 21.33 & 27.44 & 53.5\% \\
 \midrule
 %% Scene 9
-scene09 & GAP-TV        & 23.03 & 19.14 & 20.61$^*$ & 23.03 \\
-scene09 & TwIST         & 26.89 & 15.64 & 21.02 & 26.89 \\
-scene09 & DeSCI         & 28.04 & 14.91 & 20.08 & 28.04 \\
-scene09 & MST           & 33.28 & 16.87 & 22.35 & 33.28 \\
-scene09 & HDNet         & 33.94 & 17.12 & 22.71 & 33.94 \\
+scene09 & GAP-TV        & 23.03 & 19.14 & 20.61 & 37.8\% \\
+scene09 & PnP-HSICNN    & 24.03 & 18.79 & 21.82 & 57.8\% \\
+scene09 & HDNet         & 34.18 & 21.18 & 21.18 & 0.0\% \\
+scene09 & MST-L         & 34.37 & 19.75 & 26.71 & 47.6\% \\
 \midrule
 %% Scene 10
-scene10 & GAP-TV        & 23.27 & 20.58 & 21.04$^*$ & 23.27 \\
-scene10 & TwIST         & 30.34 & 17.54 & 23.21 & 30.34 \\
-scene10 & DeSCI         & 31.52 & 16.73 & 22.14 & 31.52 \\
-scene10 & MST           & 37.05 & 18.89 & 24.91 & 37.05 \\
-scene10 & HDNet         & 37.68 & 19.15 & 25.34 & 37.68 \\
+scene10 & GAP-TV        & 23.27 & 20.58 & 21.04 & 16.9\% \\
+scene10 & PnP-HSICNN    & 23.47 & 19.90 & 22.38 & 69.4\% \\
+scene10 & HDNet         & 32.22 & 21.06 & 21.06 & 0.0\% \\
+scene10 & MST-L         & 32.63 & 20.69 & 25.86 & 43.3\% \\
+\midrule
+%% Mean
+\textbf{Mean} & \textbf{GAP-TV}     & \textbf{24.34} & \textbf{20.96} & \textbf{21.72} & \textbf{22.5\%} \\
+\textbf{Mean} & \textbf{PnP-HSICNN} & \textbf{25.12} & \textbf{20.40} & \textbf{23.08} & \textbf{56.8\%} \\
+\textbf{Mean} & \textbf{HDNet}      & \textbf{34.66} & \textbf{21.88} & \textbf{21.88} & \textbf{0.0\%} \\
+\textbf{Mean} & \textbf{MST-L}      & \textbf{34.81} & \textbf{20.83} & \textbf{27.33} & \textbf{46.5\%} \\
 \end{longtable}
 \end{footnotesize}
 
@@ -502,9 +499,9 @@ where available.}
 \endlastfoot
 %% Group 1: Incoherent light
 1  & Matrix (toy)         & Incoherent     & 23.35 & ---   & Validated & ADMM-TV \\
-2  & SPC                  & Incoherent     & 23.35 & 24.1  & Validated & ADMM-TV \\
+2  & SPC                  & Incoherent     & 28.06 & 31.0  & Validated & FISTA-TV \\
 3  & CASSI                & Incoherent     & 24.34 & 34.2  & Validated & GAP-TV \\
-4  & CACTI                & Incoherent     & 35.33 & 33.4  & Validated & EfficientSCI \\
+4  & CACTI                & Incoherent     & 35.39 & 33.4  & Validated & EfficientSCI \\
 5  & Lensless             & Incoherent     & 27.03 & 28.5  & Validated & ADMM-TV \\
 6  & Fluorescence         & Incoherent     & ---   & 30.1  & Phase 4   & --- \\
 %% Group 2: Coherent light
@@ -852,32 +849,44 @@ more sensitive to operator mismatch than spectral compressive modalities
 \begin{table}[htbp]
 \centering
 \caption{Supplementary Table S7: Grid-search calibration results on
-simulated data with known ground truth.  PSNR values in dB.}
+simulated data with known ground truth.  PSNR values in dB.
+Sc.~II = mismatch (no calibration); Sc.~IV = grid-search calibrated;
+Sc.~III = oracle (true operator).
+Recovery = (Sc.~IV $-$ Sc.~II) / (Sc.~III $-$ Sc.~II).
+CASSI/CACTI use measurement-residual objective; SPC uses
+reconstruction-TV objective.}
 \label{tab:scenario_iv}
-\begin{tabular}{l r r r r r}
+\begin{tabular}{l l r r r r r}
 \toprule
-\textbf{Modality} &
+\textbf{Modality} & \textbf{Method} &
   \textbf{Sc.~II} & \textbf{Sc.~IV} & \textbf{Sc.~III} &
   \textbf{Time (s)} & \textbf{Recovery} \\
 \midrule
-CASSI  & 21.95 & 23.31 & 23.69 & 1234.3 & 78\% \\
-CACTI  & 17.60 & 26.99 & 26.99 &   64.2 & 100\% \\
-SPC    & 25.47 & 25.47 & 25.43 &  217.5 &  0\% \\
+CASSI  & GAP-TV     & 21.52 & 22.96 & 23.21 & 1140 & 85\% \\
+CACTI  & GAP-TV     & 17.60 & 26.99 & 26.99 &   60 & 100\% \\
+SPC    & FISTA-TV   & 19.78 & 26.54 & 27.60 &  166 &  86\% \\
+SPC    & PnP-DRUNet & 18.34 & 25.39 & 26.01 &  247 &  92\% \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \noindent CACTI achieves perfect calibration recovery because the mismatch
 manifold is low-dimensional (2D spatial shift) and the temporal compression
-provides high sensitivity to mask position.  CASSI achieves 78\% recovery;
+provides high sensitivity to mask position.  CASSI achieves 85\% recovery;
 the residual gap reflects the higher-dimensional mismatch space (mask
-geometry plus dispersion) and pre-existing hardware imperfections.  SPC
-gain-drift mismatch is not recoverable from the measurement residual alone,
-because a multiplicative gain bias scales both signal and noise uniformly,
-leaving the residual structure unchanged.  This demonstrates a fundamental
-limitation of residual-based calibration for gain-type mismatches and
-motivates the development of alternative diagnostics for \textsc{Gate~3}
-in gain-dominated systems.
+geometry plus dispersion) and the estimation error in both $dx$ and $dy$
+($0.10$\,px each).  For SPC, the measurement residual is uninformative
+for gain drift because the underdetermined system ($m{=}272$ measurements
+for $n{=}1089$ unknowns) always achieves near-zero self-consistent residual
+regardless of gain.  Instead, reconstruction total variation provides a
+viable objective: the correctly calibrated gain produces clean measurements
+yielding smooth reconstructions with low TV, while incorrect gain leaves
+systematic artifacts that increase TV.  The TV surface exhibits a clear
+bowl-shaped minimum near the true $\alpha$, recovering 86\% (FISTA-TV) to
+92\% (PnP-DRUNet) of the oracle bound.  This demonstrates that blind
+calibration generalises to radiometric mismatch provided the objective
+matches the mismatch type: measurement residual for geometric mismatch,
+reconstruction sparsity for radiometric mismatch.
 
 
 %% ============================================================
@@ -918,7 +927,7 @@ Values are mean $\pm$ s.d.\ across test scenes/images.}
 \multicolumn{5}{l}{\emph{SPC (11 standard images, 25\% compression)}} \\
 \midrule
 & FISTA-TV   & $0.852 \pm 0.046$ & $0.586 \pm 0.055$ & $0.759 \pm 0.036$ \\
-& PnP-DRUNet & $0.880 \pm 0.047$ & $0.402 \pm 0.062$ & $0.645 \pm 0.050$ \\
+& PnP-DRUNet & $0.899 \pm 0.026$ & $0.415 \pm 0.066$ & $0.666 \pm 0.055$ \\
 & ISTA-Net   & $0.916 \pm 0.028$ & $0.584 \pm 0.077$ & $0.760 \pm 0.056$ \\
 & HATNet     & $0.847 \pm 0.049$ & $0.648 \pm 0.091$ & $0.807 \pm 0.060$ \\
 \bottomrule
