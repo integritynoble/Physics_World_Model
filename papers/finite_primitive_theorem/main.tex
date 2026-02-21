@@ -444,10 +444,10 @@ provided $\max_k(\varepsilon_k) \leq \varepsilon \cdot \|H\| / (K \cdot B^{K-1})
 
 \textbf{Step 5: Complexity bound.} Let $c$ be the maximum number of primitive nodes per factor (bounded by the detection-readout chain length, at most 5). We establish two bounds:
 \begin{itemize}
-  \item \textbf{Node count:} $|V| \leq c \cdot K \leq \Nmax$. For all modalities in our validation set, each factor maps to at most $c = 2$ primitive nodes and $K \leq 4$ factors, giving $|V| \leq 8 \leq 20 = \Nmax$; the empirical maximum is $|V| = 5$ (Table~\ref{tab:decomposition}).
-  \item \textbf{Depth:} $\mathrm{depth}(G) \leq c \cdot K \leq \Dmax$. With $c = 2$ and $K \leq 4$, $\mathrm{depth}(G) \leq 8 \leq 10 = \Dmax$.
+  \item \textbf{Node count:} $|V| \leq c \cdot K \leq \Nmax$. For all modalities in our validation set, each factor maps to at most $c = 3$ primitive nodes (achieved by the detection-readout chain of CASSI: $W, \Sigma, D$; and the scattering chain of DOT: $R, P, R$) and $K \leq 3$ physics-stage factors, giving $|V| \leq 9 \leq 20 = \Nmax$; the empirical maximum is $|V| = 5$ (Table~\ref{tab:decomposition}).
+  \item \textbf{Depth:} $\mathrm{depth}(G) \leq c \cdot K \leq \Dmax$. With $c \leq 3$ and $K \leq 3$, $\mathrm{depth}(G) \leq 9 \leq 10 = \Dmax$.
 \end{itemize}
-Both bounds hold since $c \cdot K \leq 8 \leq \min(\Nmax, \Dmax) = 10$.
+Both bounds hold since $c \cdot K \leq 9 \leq \min(\Nmax, \Dmax) = 10$.
 \end{proof}
 
 \subsection{Necessity of Each Primitive}
@@ -523,7 +523,7 @@ MRI~\cite{pruessmann1999sense,lustig2007sparse}           & Spin        & $M \to
 CT~\cite{feldkamp1984practical}            & X-ray       & $\Pi \to D$                     & 2 & 2 & $< 10^{-5}$ \\
 \midrule
 \multicolumn{6}{l}{\textit{Held-out modalities (frozen library, no tuning permitted)}} \\
-OCT~\cite{huang1991oct}\textsuperscript{a}  & Photon      & $P{+}P \to \Sigma \to D$      & 4 & 3 & $3.8 \times 10^{-4}$ \\
+OCT~\cite{huang1991oct}\textsuperscript{a,b}  & Photon      & $P{+}P \to \Sigma \to D_{\mathrm{coh}}$      & 4 & 3 & $3.8 \times 10^{-4}$ \\
 Photoacoustic~\cite{wang2012photoacoustic}   & Acoustic    & $M \to P \to D$               & 3 & 3 & $7.1 \times 10^{-4}$ \\
 SIM~\cite{gustafsson2000sim}             & Photon      & $M \to C \to D$               & 3 & 3 & $2.5 \times 10^{-4}$ \\
 Phase-contrast~\cite{pfeiffer2008xray}  & X-ray       & $\Pi \to P \to M \to D$       & 4 & 4 & $1.2 \times 10^{-3}$ \\
@@ -667,7 +667,7 @@ Figure~\ref{fig:growth} plots the number of distinct primitive types as modaliti
 
 A new canonical primitive is warranted when a forward model $H \in \ctier$ cannot be $\varepsilon$-approximately represented by any DAG over the current library $\Blib$ within the complexity bounds:
 \begin{equation}
-  \min_{G:\, V \subseteq \Blib,\; |V| \leq \Nmax,\; \mathrm{depth}(G) \leq \Dmax} \etier(H, \Hdag) > \varepsilon.
+  \min_{\substack{G = (V,E,\tau) \text{ with node types} \\ \text{drawn from } \Blib,\; |V| \leq \Nmax,\; \mathrm{depth}(G) \leq \Dmax}} \etier(H, \Hdag) > \varepsilon.
   \label{eq:extension}
 \end{equation}
 
