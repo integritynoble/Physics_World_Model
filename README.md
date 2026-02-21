@@ -1,5 +1,10 @@
 # PWM — Physics World Model for Imaging System Autonomy
 
+[![Discussions](https://img.shields.io/github/discussions/integritynoble/Physics_World_Model?label=Discussions&logo=github)](https://github.com/integritynoble/Physics_World_Model/discussions)
+[![Good First Issues](https://img.shields.io/github/issues/integritynoble/Physics_World_Model/good%20first%20issue?label=Good%20First%20Issues&color=7057ff)](https://github.com/integritynoble/Physics_World_Model/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+[![Contributing](https://img.shields.io/badge/Contributing-Guide-blue)](CONTRIBUTING.md)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/integritynoble/Physics_World_Model/blob/master/examples/PWM_Quickstart.ipynb)
+
 PWM is the **evaluation harness + current best methods** for computational imaging -- an open, reproducible toolkit that aims to make any imaging system **self-specifying, self-diagnosing, and self-correcting**.
 
 It turns **either**:
@@ -1025,6 +1030,8 @@ Use `packages/pwm_AI_Scientist/` as the thin adapter layer.
 ---
 
 ## Community & Contributing
+
+**New here?** Start with the [Colab Quickstart](https://colab.research.google.com/github/integritynoble/Physics_World_Model/blob/master/examples/PWM_Quickstart.ipynb) (5-minute demo, no install). Then check out [Good First Issues](https://github.com/integritynoble/Physics_World_Model/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) for entry points, or ask questions in [GitHub Discussions](https://github.com/integritynoble/Physics_World_Model/discussions).
 
 PWM is intended to be extended by the community. All algorithms are open source under the [PWM Noncommercial Share-Alike License v1.0](LICENSE) (free for academic research, teaching, and personal projects; commercial use requires a separate license). No algorithm is paywalled. See [`community/OPEN_CORE_BOUNDARY.md`](community/OPEN_CORE_BOUNDARY.md) for the full open-core policy.
 
