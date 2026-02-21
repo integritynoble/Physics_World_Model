@@ -33,7 +33,7 @@ $^*$Correspondence: \texttt{integrityyang@gmail.com}}
 %%  ABSTRACT
 %% ═══════════════════════════════════════════════════════════════════
 \begin{abstract}
-Computational imaging systems routinely underperform because the assumed forward model diverges from the true physics. Here we prove two results. First, the \textbf{Finite Primitive Basis Theorem}: every linear, shift-variant imaging forward model admits an $\varepsilon$-approximate representation as a typed directed acyclic graph over exactly 10 canonical primitives. Second, the \textbf{Triad Decomposition}: every reconstruction failure decomposes into three root causes---information deficiency, carrier noise, and operator mismatch---with mismatch dominant across all validated modalities. Together these results yield a modality-agnostic diagnostic and correction framework. Across seven modalities and five physical carriers, autonomous correction recovers $+0.8$ to $+10.7$\,dB of mismatch-induced degradation without retraining the solver. Hardware validation on real instruments confirms mismatch dominance. A held-out closure test on 8 additional modalities confirms basis completeness with saturating growth.
+Computational imaging systems routinely underperform because the assumed forward model diverges from the true physics. Here we prove two results. First, the \textbf{Finite Primitive Basis Theorem}: every linear, shift-variant imaging forward model admits an $\varepsilon$-approximate representation as a typed directed acyclic graph over exactly 10 canonical primitives. Second, the \textbf{Triad Decomposition}: every reconstruction failure decomposes into three root causes---information deficiency, carrier noise, and operator mismatch---with mismatch dominant across all validated modalities. Together these results yield a modality-agnostic diagnostic and correction framework. Across seven modalities spanning three carrier families (optical photons, X-ray photons, and nuclear spins), autonomous correction recovers $+0.8$ to $+10.7$\,dB of mismatch-induced degradation without retraining the solver. Hardware validation on real instruments confirms mismatch dominance. A held-out closure test on 8 additional modalities confirms basis completeness with saturating growth.
 \end{abstract}
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -47,7 +47,7 @@ These failures persist because computational imaging lacks two theoretical found
 
 Here we establish both foundations within Physics World Models (\pwm{}). We prove the \textbf{Finite Primitive Basis Theorem} (Theorem~\ref{thm:fpb}): every imaging forward model in the operator class $\ctier$---encompassing all clinical, scientific, and industrial modalities at Tier-2 fidelity---admits an $\varepsilon$-approximate representation as a typed DAG over exactly 10 canonical primitives. We establish the \textbf{Triad Decomposition}: every reconstruction failure decomposes into three gates---information deficiency (\gateone{}), carrier noise (\gatetwo{}), and operator mismatch (\gatethree{})---with \gatethree{} dominant across all validated modalities. These two results are complementary: the Finite Primitive Basis provides a universal representation for forward models; the Triad Decomposition provides a universal diagnostic law over that representation. Together they yield a practical framework that diagnoses and corrects imaging failures across modalities without modality-specific tuning.
 
-We validate both contributions across seven modalities spanning five physical carriers (CASSI, CACTI, SPC, lensless, ptychography~\cite{rodenburg2004ptychography}, MRI~\cite{pruessmann1999sense}, CT~\cite{feldkamp1984practical}), with hardware validation on real DD-CASSI and CACTI instruments, confirming Triad predictions on physical measurements. A held-out closure test on 8 additional modalities---including quantum ghost imaging, THz time-domain spectroscopy, and Compton scatter imaging---confirms basis completeness. The proof of Theorem~\ref{thm:fpb} is in Supplementary Note~10; formal primitive semantics are developed in~\cite{yang2026fpt}.
+We validate both contributions across seven modalities spanning three carrier families---optical photons (CASSI, CACTI, SPC, lensless), coherent photons (ptychography~\cite{rodenburg2004ptychography}), X-ray photons (CT~\cite{feldkamp1984practical}), and nuclear spins (MRI~\cite{pruessmann1999sense})---with hardware validation on real DD-CASSI and CACTI instruments, confirming Triad predictions on physical measurements. The OperatorGraph library additionally registers templates for electron, acoustic, and particle modalities (Extended Data Table~2), pending future validation. A held-out closure test on 8 additional modalities---including quantum ghost imaging, THz time-domain spectroscopy, and Compton scatter imaging---confirms basis completeness. The proof of Theorem~\ref{thm:fpb} is in Supplementary Note~10; formal primitive semantics are developed in~\cite{yang2026fpt}.
 
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -83,16 +83,16 @@ The \opg{} IR defines a library of exactly 10 canonical primitives $\Blib = \{P,
 \end{tabular}
 \end{table}
 
-\noindent The Detect nonlinearity $\eta$ is restricted to five canonical families (linear-intensity, logarithmic, sigmoid, Poisson-rate, coherent-field), each with at most 2 scalar parameters, preventing Detect from becoming a universal approximator (see~\cite{yang2026fpt} for formal definitions and non-universality proof).
+\noindent The Detect nonlinearity $\eta$ is restricted to five canonical families (linear-field: $\eta(x) = gx$; logarithmic; sigmoid; intensity-square-law: $\eta(x) = g|x|^2$; coherent-field), each with at most 2 scalar parameters, preventing Detect from becoming a universal approximator (see~\cite{yang2026fpt} for formal definitions and non-universality proof).
 
 \paragraph{Physics-stage mapping.}
-Each factor of a forward model is classified into one of four physics-stage families---propagation, interaction, encoding--projection, detection--readout---and mapped to primitives from $\Blib$ (propagation $\to$ $\{P, C\}$; elastic interaction $\to$ $\{M\}$; scattering $\to$ $\{R\}$; encoding--projection $\to$ $\{\Pi, F\}$; detection--readout $\to$ $\{\Sigma, S, W, C, D\}$).
+Each factor of a forward model is classified into one of five physics-stage families and mapped to primitives from $\Blib$: propagation $\to$ $\{P, C\}$; elastic interaction $\to$ $\{M\}$; inelastic interaction (scattering) $\to$ $\{R\}$; encoding--projection $\to$ $\{\Pi, F\}$; detection--readout $\to$ $\{\Sigma, S, W, C, D\}$.
 
 \paragraph{Physics Fidelity Ladder.}
 The \opg{} IR defines a four-tier Physics Fidelity Ladder: Tier~1 (linear, shift-invariant), Tier~2 (linear, shift-variant), Tier~3 (nonlinear, ray/wave-based), and Tier~4 (full-wave/Monte Carlo). The Finite Primitive Basis applies to Tiers~1--2; Tiers~3--4 are handled by refinement sub-DAGs that expand individual primitive nodes into higher-fidelity sub-graphs while preserving the top-level DAG structure.
 
 \paragraph{Five physical carriers.}
-The library spans five carrier families---photons, electrons, spins, acoustic waves, and particles---with 26 validated modality templates (Extended Data Table~2; Supplementary Table~S3).
+The library spans five carrier families---photons, electrons, spins, acoustic waves, and particles---with 26 registered modality templates (7 with full end-to-end correction validation; Extended Data Table~2; Supplementary Table~S3).
 
 \paragraph{Theorem statement.}
 
@@ -103,7 +103,7 @@ $\ctier$ consists of all imaging forward models expressible as a finite sequenti
 
 \begin{definition}[$\varepsilon$-Approximate Representation]
 \label{def:eps}
-A typed DAG $G$ with nodes $V \subseteq \Blib$ is an $\varepsilon$-approximate representation of $H \in \ctier$ if $\sup_{\|\mathbf{x}\|\leq 1} \|H(\mathbf{x}) - \Hdag(\mathbf{x})\| / \|H(\mathbf{x})\| \leq \varepsilon$ and $|V| \leq \Nmax$, $\mathrm{depth}(G) \leq \Dmax$.
+A typed DAG $G$ with nodes $V \subseteq \Blib$ is an $\varepsilon$-approximate representation of $H \in \ctier$ if $\sup_{\|\mathbf{x}\|\leq 1} \|H(\mathbf{x}) - \Hdag(\mathbf{x})\| / (\|H(\mathbf{x})\| + \delta) \leq \varepsilon$, where $\delta > 0$ is a regularization constant, and $|V| \leq \Nmax$, $\mathrm{depth}(G) \leq \Dmax$.
 \end{definition}
 
 \begin{theorem}[Finite Primitive Basis]
@@ -111,7 +111,7 @@ A typed DAG $G$ with nodes $V \subseteq \Blib$ is an $\varepsilon$-approximate r
 For every $H \in \ctier$, there exists a typed DAG $G$ with $V \subseteq \Blib$ that is an $\varepsilon$-approximate representation of $H$.
 \end{theorem}
 
-\noindent\textit{Proof sketch.} By Definition~\ref{def:ctier}, $H = H_K \circ \cdots \circ H_1$ with $K \leq \Nmax$. Each factor is classified into one of four physics-stage families and realized by primitives: propagation factors $\to$ $P$ or $C$ (wave-equation solutions); elastic interaction $\to$ $M$ (exact); scattering $\to$ $R$; encoding--projection $\to$ $\Pi$ or $F$ (exact); detection--readout $\to$ finite composition from $\{\Sigma, S, W, C, D\}$. The per-factor approximation errors compose via sub-multiplicativity: $\|H - \Hdag\| \leq K \cdot \max_k(\varepsilon_k) \cdot B^{K-1} \leq \varepsilon$ for $\varepsilon_k$ bounded by the Tier-2 truncation. Full proof in Supplementary Note~10; formal primitive semantics and typed DAG denotation in~\cite{yang2026fpt}. \hfill$\square$
+\noindent\textit{Proof sketch.} By Definition~\ref{def:ctier}, $H = H_K \circ \cdots \circ H_1$ with $K \leq \Nmax$. Each factor is classified into one of five physics-stage families and realized by primitives: propagation $\to$ $P$ or $C$ (wave-equation solutions); elastic interaction $\to$ $M$ (exact); inelastic interaction $\to$ $R$; encoding--projection $\to$ $\Pi$ or $F$ (exact); detection--readout $\to$ finite composition from $\{\Sigma, S, W, C, D\}$. The per-factor approximation errors compose via sub-multiplicativity: $\|H - \Hdag\| \leq K \cdot \max_k(\varepsilon_k) \cdot B^{K-1} \leq \varepsilon$ for $\varepsilon_k$ bounded by the Tier-2 truncation. Full proof in Supplementary Note~10; formal primitive semantics and typed DAG denotation in~\cite{yang2026fpt}. \hfill$\square$
 
 \medskip
 
@@ -147,10 +147,10 @@ Compton scatter      & ${<}\,0.01^{*}$ & 4\,/\,3 & Y & Y ($R$) \\
 \noindent Seven of eight modalities decompose with the frozen library. Quantum ghost imaging is operator-equivalent to a single-pixel camera at the image-formation level---sharing the canonical DAG Source $\to M \to \Sigma \to D$ at Tier-2 abstraction despite fundamentally different source physics. THz-TDS requires only the coherent-field Detect family. Compton scatter imaging triggered the extension protocol (Section ``Extension protocol'' above): its representation gap ($\etier = 0.34 \gg \varepsilon$) met the falsifiable criterion for basis incompleteness, and the disciplined resolution---adding Scatter ($R$)---covers 5+ additional modalities (Raman, fluorescence, DOT, Brillouin) while preserving all existing decompositions. The basis grows from 9 to 10 (11\% increase) while modality coverage grows by 19\%+.
 
 \paragraph{Basis-growth saturation.}
-Plotting the number of distinct primitives $K$ against the number of registered modalities $N$ reveals clear saturation (\cref{fig:basis_growth}): 8 of 10 primitives are introduced by the first 10 modalities, Disperse ($W$) by CASSI-type spectral systems, and Scatter ($R$) only when Compton/Raman-class modalities enter. The growth is sublinear and saturating: $K = 10$ at $N = 31$, with no new primitive required for the most recent 19 modalities added. This saturation is consistent with Theorem~\ref{thm:fpb}: once all four physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
+Plotting the number of distinct primitives $K$ against the number of registered modalities $N$ reveals clear saturation (\cref{fig:basis_growth}): 8 of 10 primitives are introduced by the first 10 modalities, Disperse ($W$) by CASSI-type spectral systems, and Scatter ($R$) only when Compton/Raman-class modalities enter. The growth is sublinear and saturating: $K = 10$ at $N = 31$, with no new primitive required for the most recent 19 modalities added. This saturation is consistent with Theorem~\ref{thm:fpb}: once all five physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
 
 \paragraph{Theorem tightness.}
-The theoretical complexity bounds ($N_{\max} = 20$, $D_{\max} = 10$) are conservative: empirically, all 34 validated modalities require $\leq 6$ nodes and depth $\leq 5$ (held-out closure test table above), with the median modality using 4 nodes at depth 3. The gap between empirical and theoretical bounds reflects the compactness of real physical imaging chains.
+The theoretical complexity bounds ($N_{\max} = 20$, $D_{\max} = 10$) are conservative: empirically, all 26 registered and 8 held-out modalities (${\sim}31$ unique, accounting for overlaps) require $\leq 6$ nodes and depth $\leq 5$ (held-out closure test table above), with the median modality using 4 nodes at depth 3. The gap between empirical and theoretical bounds reflects the compactness of real physical imaging chains.
 
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -190,7 +190,7 @@ $\|\delta\boldsymbol{\theta}\|_{\mathbf{J}^\top\mathbf{J}} > (\sigma_n / \|\math
 \noindent\textit{Proof.} See Supplementary Note~1, Proposition~2. \hfill$\square$
 
 \paragraph{Key finding: Gate 3 dominates.}
-Across all 9 validated configurations (7 modalities), \gatethree{} is the dominant failure gate. In CASSI, a sub-pixel mask shift degrades MST-L by $13.98$\,dB; in MRI, a 5\% coil sensitivity mismatch produces $6.94$\,dB degradation. The imaging community has been optimizing the wrong variable.
+Across all 9 validated configurations (7 modalities), \gatethree{} is the dominant failure gate. In CASSI, a sub-pixel mask shift degrades MST-L by $13.98$\,dB; in MRI, a 5\% coil sensitivity mismatch collapses the single-coil reconstruction to $6.94$\,dB (a ${\sim}48$\,dB degradation; under clinically realistic multi-coil conditions the degradation is $11.2$\,dB, see Supplementary Note~S13). The imaging community has been optimizing the wrong variable.
 
 \paragraph{Relationship to the Finite Primitive Basis.}
 The two contributions are complementary: the Finite Primitive Basis provides a universal representation (every forward model is a DAG over 10 primitives), and the Triad provides a universal diagnostic law over that representation. The DAG structure makes Gate~3 diagnosis \emph{actionable}: the MismatchAgent localizes the offending primitive node and corrects its parameters.
@@ -223,10 +223,10 @@ We validate both theoretical contributions in two stages: controlled simulation 
 \subsection*{Simulation experiments}
 
 \paragraph{Correction results.}
-Extended Data Table~1 (Supplementary Table~S1) summarizes the correction performance across 9 configurations spanning 7 modalities and multiple carrier families. The correction gain $\Delta_{\mathrm{corr}} = \psnr_{\mathrm{III}} - \psnr_{\mathrm{II}}$ ranges from $+0.76$\,dB (CASSI) to $+10.68$\,dB (CT) across the six non-MRI modalities, with recovery ratios up to $\recoveryratio = 93.3\%$. The validated modalities span photon-domain (CASSI: $+0.76$/$+6.50$\,dB; CACTI: $+10.21$\,dB; SPC: $+10.38$\,dB; Lensless: $+3.55$\,dB), coherent-photon (Ptychography: $+7.09$\,dB), and X-ray (CT: $+10.68$\,dB). For MRI, the single-coil stress test yields $+48.25$\,dB, but this reflects a pathological scenario; under clinically realistic multi-coil conditions (8 coils, $4\times$ acceleration), the correction gain is $+1.75$ to $+7.14$\,dB at 3--5\% mismatch (Supplementary Note~S13)---clinically meaningful but commensurate with other modalities.
+Extended Data Table~1 (Supplementary Table~S1) summarizes the oracle correction ceiling across 9 configurations spanning 7 modalities. The oracle gain $\Delta_{\mathrm{oracle}} = \psnr_{\mathrm{IV}} - \psnr_{\mathrm{II}}$ (Scenario~IV: true operator applied to mismatched data) ranges from $+0.76$\,dB (CASSI) to $+10.68$\,dB (CT) across the six non-MRI modalities. Autonomous grid-search calibration achieves 85--100\% of the oracle ceiling (Supplementary Table~S7). The validated modalities span photon-domain (CASSI: $+0.76$/$+6.50$\,dB; CACTI: $+10.21$\,dB; SPC: $+10.38$\,dB; Lensless: $+3.55$\,dB), coherent-photon (Ptychography: $+7.09$\,dB), and X-ray (CT: $+10.68$\,dB). For MRI, the single-coil stress test yields $+48.25$\,dB, but this reflects a pathological scenario; under clinically realistic multi-coil conditions (8 coils, $4\times$ acceleration), the correction gain is $+1.75$ to $+7.14$\,dB at 3--5\% mismatch (Supplementary Note~S13)---clinically meaningful but commensurate with other modalities.
 
 \paragraph{Modality deep dives.}
-In CASSI, a 5-parameter mismatch~\cite{yang2026inversenet} collapses all solvers to ${\sim}21$\,dB regardless of ideal performance ($24$--$35$\,dB); oracle recovery varies by solver ($\recoveryratio = 0$--$0.46$), confirming that multi-parameter mismatches are harder to correct than isolated shifts. In CACTI, EfficientSCI~\cite{wang2023efficientsci} drops by $20.58$\,dB, yet GAP-TV recovers $\recoveryratio = 93.3\%$---the best ideal-condition solver suffers the largest degradation. SPC gain drift is corrected to $\recoveryratio = 89.6\%$. \gatethree{} is dominant in every case; Gates~1--2 impose irrecoverable information-theoretic limits only at extreme compression or photon starvation (Supplementary Tables~S10--S11).
+In CASSI, a 5-parameter mismatch~\cite{yang2026inversenet} collapses all solvers to ${\sim}21$\,dB regardless of ideal performance ($24$--$35$\,dB); oracle recovery varies by solver ($\recoveryratio_{\mathrm{IV}} = 0$--$0.46$; Supplementary Table~S2), confirming that multi-parameter mismatches are harder to correct than isolated shifts. In CACTI, EfficientSCI~\cite{wang2023efficientsci} drops by $20.58$\,dB, yet GAP-TV achieves $\recoveryratio_{\mathrm{IV}} = 93.3\%$ oracle recovery---the best ideal-condition solver suffers the largest degradation. SPC gain drift is corrected to $\recoveryratio = 89.6\%$ (Table~S7). \gatethree{} is dominant in every case; Gates~1--2 impose irrecoverable information-theoretic limits only at extreme compression or photon starvation (Supplementary Tables~S10--S11).
 
 \paragraph{Zero-shot generalization.}
 Hyperparameters tuned on photon-domain modalities (CASSI, CACTI, SPC) transfer without modification to coherent-photon, spin, and X-ray domains, with comparable correction gains (\cref{fig:correction_zeroshot}), confirming carrier-agnostic operation enabled by the OperatorGraph abstraction.
@@ -380,7 +380,7 @@ The Physics World Models pipeline. \textbf{a},~A computational imaging system is
 %%  EXTENDED DATA (Nature style)
 %% ═══════════════════════════════════════════════════════════════════
 \clearpage
-\noindent\textbf{Extended Data Table~1} $|$ Master correction results across 9 validated configurations (7 modalities). Full table with per-scene metrics in Supplementary Table~S1.
+\noindent\textbf{Extended Data Table~1} $|$ Oracle correction ceiling (Scenario~IV) across 9 validated configurations (7 modalities). Full table with per-scene metrics in Supplementary Table~S1; autonomous correction recovery (Scenario~III) in Supplementary Table~S7.
 
 \medskip
 \noindent\textbf{Extended Data Table~2} $|$ 26-modality template registry spanning five physical carrier families. Full table in Supplementary Table~S3.
