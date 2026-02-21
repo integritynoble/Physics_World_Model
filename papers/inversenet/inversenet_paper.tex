@@ -410,15 +410,15 @@ Gain drift compresses all methods to 16.29--19.40\,dB under Scenario~II despite 
 
 \begin{table}[t]
 \centering
-\caption{Cross-modality summary. Mismatch dim.\ is the number of mismatch parameters. SSIM rec.\ shows the best-method SSIM improvement from Scenario~II to III.}
+\caption{Cross-modality summary (SSIM-based). Dim.\ = mismatch parameters. $\Delta$ and $\rho$ are computed from SSIM. SSIM rec.\ = best-method absolute SSIM from Scenario~II to~III.}
 \label{tab:cross}
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
 \textbf{Modality} & \textbf{Dim.} & $\boldsymbol{\Delta}_{\textbf{deg}}$ \textbf{range} & $\boldsymbol{\Delta}_{\textbf{rec}}$ \textbf{range} & $\boldsymbol{\rho}_{\textbf{best}}$ & \textbf{SSIM rec.} & \textbf{Best method} \\
 \midrule
-CASSI  & 5 & 3.38--12.78 & 0.00--6.50 & 56.8\% & .574$\to$.702 & PnP-HSICNN \\
-CACTI  & 8 & 10.94--20.58 & 10.21--13.96 & 93.3\% & .305$\to$.794 & GAP-TV \\
-SPC    & 2 & 9.55--14.24 & 7.37--10.38 & 89.6\% & .648$\to$.807 & HATNet \\
+CASSI  & 5 & .11--.23 & .04--.21 & 69.6\% & .574$\to$.702 & PnP-HSICNN \\
+CACTI  & 8 & .54--.67 & .04--.07 & 94.2\% & .308$\to$.927 & ELP-Unf.\ \\
+SPC    & 2 & .20--.48 & .04--.23 & 80.1\% & .648$\to$.807 & HATNet \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -431,13 +431,13 @@ SPC    & 2 & 9.55--14.24 & 7.37--10.38 & 89.6\% & .648$\to$.807 & HATNet \\
 \end{figure}
 
 \paragraph{Mismatch severity ranking.}
-CACTI suffers the most severe degradation (10.94--20.58\,dB), driven by its 8-parameter mismatch space where spatial, temporal, and radiometric errors compound.
-CASSI's 5-parameter model produces up to 13.98\,dB degradation, with dispersion parameters ($a_1$, $\alpha$) creating cumulative sub-pixel shifts across spectral bands.
-SPC shows 9.55--14.24\,dB degradation from gain drift alone.
+CACTI suffers the most severe degradation (.54--.67 SSIM drop), driven by its 8-parameter mismatch space where spatial, temporal, and radiometric errors compound.
+CASSI's 5-parameter model produces up to .23 SSIM degradation, with dispersion parameters ($a_1$, $\alpha$) creating cumulative sub-pixel shifts across spectral bands.
+SPC shows .20--.48 SSIM degradation from gain drift alone.
 
 \paragraph{Recovery potential and architectural patterns.}
 \Cref{fig:rho_scatter} visualizes recovery ratio versus ideal performance.
-Best recovery varies by modality: GAP-TV achieves 93.3\% on CACTI, HATNet 89.6\% on SPC, MST-L 46.5\% on CASSI---the lower CASSI value reflects that current architectures cannot adapt to sub-pixel dispersion drift even with oracle mask knowledge.
+Best recovery varies by modality: ELP-Unfolding achieves 94.2\% on CACTI, HATNet 80.1\% on SPC, PnP-HSICNN 69.6\% on CASSI---the lower CASSI value reflects that current architectures cannot adapt to sub-pixel dispersion drift even with oracle mask knowledge.
 Across modalities, a consistent three-way pattern emerges: (i)~classical methods show moderate degradation with high recovery; (ii)~operator-conditioned deep methods show high degradation but substantial recovery; (iii)~mask-oblivious methods show zero recovery.
 This taxonomy guides method selection based on calibration availability.
 
