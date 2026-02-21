@@ -1,0 +1,76 @@
+% preamble.tex — Companion paper: Finite Primitive Basis Theorem
+% Journal-style formatting for the formal foundations paper
+
+\documentclass[11pt]{article}
+
+%% ——— Geometry ———
+\usepackage[
+  top=2.54cm,
+  bottom=2.54cm,
+  left=2.54cm,
+  right=2.54cm
+]{geometry}
+
+%% ——— Spacing ———
+\usepackage{setspace}
+\onehalfspacing
+
+%% ——— Mathematics ———
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+%% ——— Graphics and figures ———
+\usepackage{graphicx}
+
+%% ——— Tables ———
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{longtable}
+
+%% ——— Colors ———
+\usepackage[dvipsnames]{xcolor}
+
+\definecolor{pwmBlue}{HTML}{2E5FA1}
+\definecolor{pwmOrange}{HTML}{E8712B}
+\definecolor{pwmGreen}{HTML}{3D9E3F}
+\definecolor{pwmRed}{HTML}{C93C3C}
+
+%% ——— Hyperlinks and cross-references ———
+\usepackage[
+  colorlinks=true,
+  linkcolor=pwmBlue,
+  citecolor=pwmBlue,
+  urlcolor=pwmBlue
+]{hyperref}
+\usepackage[capitalise,noabbrev]{cleveref}
+
+%% ——— Bibliography ———
+\usepackage[numbers,sort&compress]{natbib}
+
+%% ——— Theorem environments ———
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+%% ——— Custom commands ———
+\newcommand{\pwm}{\textsc{pwm}}
+\newcommand{\opg}{\textsc{OperatorGraph}}
+\newcommand{\ctier}{\mathcal{C}_{\mathrm{Tier2}}}
+\newcommand{\Blib}{\mathcal{B}}
+\newcommand{\Hnom}{H_{\mathrm{nom}}}
+\newcommand{\Htrue}{H_{\mathrm{true}}}
+\newcommand{\Hdag}{H_{G}}
+\newcommand{\etier}{e_{\mathrm{Tier2}}}
+\newcommand{\Nmax}{N_{\max}}
+\newcommand{\Dmax}{D_{\max}}
+\newcommand{\compose}{\mathrm{compose}}
+\newcommand{\ie}{\textit{i.e.}}
+\newcommand{\eg}{\textit{e.g.}}

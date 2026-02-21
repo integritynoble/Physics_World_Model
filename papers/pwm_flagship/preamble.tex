@@ -63,7 +63,20 @@
 %% ——— Bibliography (Nature style) ———
 \usepackage[numbers,sort&compress,super]{natbib}
 
+%% ——— Theorem environments (for compact theorem in main text) ———
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}[theorem]{Definition}
+
 %% ——— Custom commands ———
+
+% Tier-2 operator class
+\newcommand{\ctier}{\mathcal{C}_{\mathrm{Tier2}}}
+\newcommand{\Blib}{\mathcal{B}}
+\newcommand{\etier}{e_{\mathrm{Tier2}}}
+\newcommand{\Nmax}{N_{\max}}
+\newcommand{\Dmax}{D_{\max}}
+\newcommand{\Hdag}{H_{G}}
 
 % Project abbreviations
 \newcommand{\pwm}{\textsc{pwm}}

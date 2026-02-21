@@ -9,6 +9,8 @@
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
 
 \begin{document}
 \maketitle
@@ -1527,6 +1529,73 @@ repositioning.}
 (clinically realistic range), the expected correction gain is $+3$ to $+8$\,dB,
 confirming clinical relevance at a realistic scale while being substantially
 more modest than the extreme $+48.25$\,dB single-coil result.
+
+
+%% ============================================================
+%% SUPPLEMENTARY NOTE 8: FINITE PRIMITIVE BASIS — EXPANDED PROOF
+%% ============================================================
+\section{Supplementary Note 8: Finite Primitive Basis --- Expanded Proof}
+\label{sec:fpb_proof}
+
+This note provides the expanded proof of Theorem~1 (Finite Primitive Basis) stated in the main text. Full formal definitions, primitive semantics, and typed DAG denotation are in the companion paper~\cite{yang2026fpt}.
+
+\subsection{Formal Definitions}
+
+\begin{definition}[Tier-2 Operator Class $\mathcal{C}_{\mathrm{Tier2}}$]
+\label{def:ctier_supp}
+The class $\mathcal{C}_{\mathrm{Tier2}}$ consists of all imaging forward models $H: \mathcal{X} \to \mathcal{Y}$ that admit a factorization $H = H_K \circ \cdots \circ H_1$ (or a DAG generalization) where: (i)~$K \leq N_{\max} = 20$; (ii)~each $H_k$ is a linear operator; (iii)~$\|H_k\| \leq B$ for a universal bound $B > 0$; (iv)~each $H_k$ is at most shift-variant (Tier-2 on the Physics Fidelity Ladder).
+\end{definition}
+
+\begin{definition}[$\varepsilon$-Approximate Representation]
+\label{def:eps_supp}
+Let $\mathcal{B} = \{P, M, \Pi, F, C, \Sigma, D, S, W, R\}$ be the canonical primitive library. A typed DAG $G = (V, E, \tau)$ with $V \subseteq \mathcal{B}$ is an $\varepsilon$-approximate representation of $H \in \mathcal{C}_{\mathrm{Tier2}}$ if:
+\begin{enumerate}
+  \item $\displaystyle \sup_{\|\mathbf{x}\| \leq 1} \frac{\|H(\mathbf{x}) - H_G(\mathbf{x})\|}{\|H(\mathbf{x})\| + \delta} \leq \varepsilon$, where $\delta > 0$ is a regularization constant;
+  \item $|V| \leq N_{\max} = 20$ and $\mathrm{depth}(G) \leq D_{\max} = 10$.
+\end{enumerate}
+\end{definition}
+
+\noindent\textbf{Empirical evaluation.} For each modality, $e_{\mathrm{Tier2}}$ is evaluated as the mean relative error over $\mathcal{X}_{\mathrm{test}}$ consisting of 10 standard benchmark scenes and 10 random Gaussian objects. The threshold $\varepsilon = 0.01$ is chosen so the Tier-2 approximation error is below the noise floor at standard operating SNR.
+
+\subsection{Proof of Theorem 1}
+
+\begin{theorem}[Finite Primitive Basis --- restated]
+For every $H \in \mathcal{C}_{\mathrm{Tier2}}$, there exists a typed DAG $G$ with $V \subseteq \mathcal{B}$ that is an $\varepsilon$-approximate representation of $H$.
+\end{theorem}
+
+\begin{proof}
+The proof proceeds in four phases, one per physics-stage family.
+
+\medskip
+\noindent\textbf{Phase 1: Propagation factors.}
+Any factor $H_k$ representing free-space carrier evolution satisfies a linear wave equation (Maxwell, Helmholtz, Schr\"{o}dinger, or acoustic). At Tier-2 fidelity, the solution is the angular spectrum propagator $P(d, \lambda)$ or, in the shift-invariant limit, $C(\mathbf{h})$. The truncation error (neglected evanescent waves, paraxial approximation residual) satisfies $\|H_k - P\|/\|H_k\| \leq \varepsilon_{\mathrm{prop}}$.
+
+\medskip
+\noindent\textbf{Phase 2: Interaction factors.}
+\emph{Elastic:} The carrier's amplitude/phase changes without direction or energy change $\to$ $M(\mathbf{m})$ (exact).
+\emph{Scattering:} Direction and/or energy change $\to$ $R(\sigma, \Delta\varepsilon)$ or finite composition of $R$, $M$, $P$ for multiple-scattering media within low-order Born approximation. Error bounded by Tier-2 truncation: $\varepsilon_{\mathrm{scat}}$.
+
+\medskip
+\noindent\textbf{Phase 3: Encoding--projection factors.}
+Line-integral projection $\to$ $\Pi(\theta)$ (exact Radon transform). Fourier encoding $\to$ $F(\mathbf{k})$ (exact). Both are linear; representation is exact.
+
+\medskip
+\noindent\textbf{Phase 4: Detection--readout factors.}
+The detector chain is realized by a finite composition of $\Sigma$ (integration), $S(\Omega)$ (sampling), $W(\alpha, a)$ (dispersion), $C(\mathbf{h}_{\mathrm{det}})$ (detector PSF), and $D(g, \eta)$ (quantum measurement from 5 canonical families). Per-operation errors sum to $\varepsilon_{\mathrm{det}}$.
+
+\medskip
+\noindent\textbf{Error bound.}
+Concatenating the per-factor DAGs and applying sub-multiplicativity:
+\begin{equation}
+  \|H - H_G\| \leq \sum_{k=1}^{K} \varepsilon_k \prod_{j \neq k} \|H_j\|
+  \leq K \cdot \max_k(\varepsilon_k) \cdot B^{K-1} \leq \varepsilon,
+\end{equation}
+for $\varepsilon_k \leq \varepsilon / (K \cdot B^{K-1})$, guaranteed by Tier-2 truncation for standard imaging geometries. Complexity: $|V| \leq 5K \leq 5 N_{\max}$; empirically $|V| \leq 6$ for all validated modalities.
+\end{proof}
+
+\subsection{Extension Protocol: Worked Example}
+
+\noindent\textbf{Compton scatter imaging.} The forward model involves direction change (angle $\theta$, Klein--Nishina cross section) and energy shift ($E_0 \to E_s$). Testing all 9-primitive DAGs: the best achieves $e_{\mathrm{Tier2}} = 0.34 \gg \varepsilon$. None of the original primitives can represent direction change with energy shift. Introducing Scatter $R(\sigma, \Delta\varepsilon)$: the DAG $M(n_e) \to R_{\mathrm{KN}} \to D(E)$ achieves $e_{\mathrm{Tier2}} < 0.01$. Scatter is needed by 5+ modalities (Compton, Raman, fluorescence, DOT, Brillouin), satisfying the multi-modality criterion. Re-running the closure test with $\mathcal{B}' = \mathcal{B} \cup \{R\}$: all previously decomposed modalities remain valid.
 
 
 \bibliographystyle{unsrtnat}
