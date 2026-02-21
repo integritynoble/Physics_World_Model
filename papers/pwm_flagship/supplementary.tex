@@ -545,7 +545,7 @@ where available.  Validation tiers: \emph{Validated} = full Scenarios~I--IV corr
 15 & CT (cone-beam)       & X-ray          & ---   & 39.5  & Phase 2   & --- \\
 16 & Electron Pty.        & Electron       & ---   & 25.9  & Phase 4   & --- \\
 %% Group 4: RF / acoustic
-17 & MRI (Cartesian)\footnote{Multi-coil Scenario~I PSNR (8 coils, $4\times$ acceleration); see Supplementary Note~S13 for full multi-coil analysis.}      & RF             & 52.11 & 42.3  & Validated & CG-SENSE \\
+17 & MRI (Cartesian)\footnote{Multi-coil Scenario~I PSNR (8 coils, $4\times$ acceleration); see Supplementary Note~11 for full multi-coil analysis.}      & RF             & 52.11 & 42.3  & Validated & CG-SENSE \\
 18 & MRI (radial)         & RF             & ---   & 38.7  & Phase 2   & --- \\
 19 & MRI (spiral)         & RF             & ---   & 37.2  & Phase 4   & --- \\
 20 & Ultrasound           & Acoustic       & ---   & 31.8  & Phase 4   & --- \\
@@ -1299,7 +1299,7 @@ phases:
 A single GE Revolution Apex scanner with an ACR CT accreditation phantom
 (Gammex 464) scanned monthly for 3 consecutive months.  Compare
 Copilot-computed metrics against manual physicist measurements for all
-9 ACR-aligned metrics.
+10 ACR-aligned metrics.
 
 \paragraph{Phase~2 (5-scanner mini-fleet, 6 months).}
 Expand to 5 scanners from $\geq 2$ manufacturers (GE + Siemens or Philips).
@@ -1437,16 +1437,16 @@ mismatch of comparable magnitude to the perturbation applied.
 
 
 %% ============================================================
-%% SUPPLEMENTARY NOTE S12: CALIBRATION METHOD COMPARISON
+%% SUPPLEMENTARY NOTE 10: CALIBRATION METHOD COMPARISON
 %% ============================================================
 \newpage
-\section{Supplementary Note S12: Calibration Method Comparison}
+\section{Supplementary Note 10: Calibration Method Comparison}
 \label{sec:calibration_comparison}
 
 Existing calibration methods are modality-specific: ESPIRiT~\cite{uecker2014espirit} auto-calibrates coil sensitivities for parallel MRI; entropy-based center-of-rotation autofocus corrects geometric errors in CT; blind position correction in ePIE~\cite{maiden2009ptychography} self-calibrates probe positions in ptychography. Each achieves high recovery within its target modality but requires domain-specific algorithm design and cannot transfer across modalities.
 
 \paragraph{Quantitative comparison: ESPIRiT vs.\ PWM on multi-coil MRI.}
-To ground this comparison empirically, we evaluate four conditions on a synthetic brain phantom (8~coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE with $\ell_1$-wavelet regularization $\lambda = 10^{-3}$ and 30 iterations, 5\% multiplicative coil sensitivity mismatch).  Note: this experiment uses a structurally complex brain phantom, yielding a lower Sc.~I baseline (34.98\,dB) than the Shepp-Logan phantom used in Note~S13 (52.11\,dB); the difference reflects phantom complexity, not solver disagreement.
+To ground this comparison empirically, we evaluate four conditions on a synthetic brain phantom (8~coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE with $\ell_1$-wavelet regularization $\lambda = 10^{-3}$ and 30 iterations, 5\% multiplicative coil sensitivity mismatch).  Note: this experiment uses a structurally complex brain phantom, yielding a lower Sc.~I baseline (34.98\,dB) than the Shepp-Logan phantom used in Note~11 (52.11\,dB); the difference reflects phantom complexity, not solver disagreement.
 
 \begin{table}[h]
 \centering\small
@@ -1471,12 +1471,12 @@ PWM (beam-search corrected) & 32.05 & 0.7264 \\
 PWM's modality-agnostic correction achieves comparable recovery on validated modalities (CASSI: 22--46\%, CACTI: 100\%, SPC: 86--92\%; Table~S9) without requiring domain-specific tuning. The advantage is most pronounced for CASSI, where no automated calibration standard exists, and for cross-modality deployment, where a single pipeline serves all modalities without per-modality engineering.
 
 %% ============================================================
-%% SUPPLEMENTARY NOTE S13: MRI UNDER CLINICALLY REALISTIC CONDITIONS
+%% SUPPLEMENTARY NOTE 11: MRI UNDER CLINICALLY REALISTIC CONDITIONS
 %% ============================================================
-\section{Supplementary Note S13: MRI Under Clinically Realistic Conditions}
+\section{Supplementary Note 11: MRI Under Clinically Realistic Conditions}
 \label{sec:mri_realistic}
 
-The $+48.25$\,dB correction gain reported for MRI in the main text reflects a single-coil scenario with 5\% multiplicative sensitivity error---a pathological case chosen to stress-test the framework. Under clinically realistic multi-coil conditions (8 coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE reconstruction) on a Shepp-Logan phantom with spatially smooth Biot-Savart sensitivity errors simulating patient repositioning, the correction gains are substantially more modest but clinically meaningful.  Note: the Sc.~I baseline here (52.11\,dB) is higher than in Note~S12 (34.98\,dB) because this experiment uses a smooth Shepp-Logan phantom; the structurally complex brain phantom in Note~S12 is harder to reconstruct, yielding lower absolute PSNR across all scenarios.
+The $+48.25$\,dB correction gain reported for MRI in the main text reflects a single-coil scenario with 5\% multiplicative sensitivity error---a pathological case chosen to stress-test the framework. Under clinically realistic multi-coil conditions (8 coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE reconstruction) on a Shepp-Logan phantom with spatially smooth Biot-Savart sensitivity errors simulating patient repositioning, the correction gains are substantially more modest but clinically meaningful.  Note: the Sc.~I baseline here (52.11\,dB) is higher than in Note~10 (34.98\,dB) because this experiment uses a smooth Shepp-Logan phantom; the structurally complex brain phantom in Note~10 is harder to reconstruct, yielding lower absolute PSNR across all scenarios.
 
 \begin{table}[h]
 \centering\small
@@ -1500,9 +1500,9 @@ Mismatch & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & Sc.~IV (dB) & Gain (dB) \\
 
 
 %% ============================================================
-%% SUPPLEMENTARY NOTE 10: FINITE PRIMITIVE BASIS — EXPANDED PROOF
+%% SUPPLEMENTARY NOTE 12: FINITE PRIMITIVE BASIS — EXPANDED PROOF
 %% ============================================================
-\section{Supplementary Note 10: Finite Primitive Basis --- Expanded Proof}
+\section{Supplementary Note 12: Finite Primitive Basis --- Expanded Proof}
 \label{sec:fpb_proof}
 
 This note provides the expanded proof of Theorem~1 (Finite Primitive Basis) stated in the main text. Full formal definitions, primitive semantics, and typed DAG denotation are in the companion paper~\cite{yang2026fpt}.
