@@ -143,13 +143,40 @@ PWM runs weekly reconstruction challenges. See
 - Follow existing patterns in the codebase.
 - Run `pytest` before submitting PRs.
 
+## Good First Issues
+
+New to PWM? Look for issues labeled
+[`good first issue`](https://github.com/integritynoble/Physics_World_Model/labels/good%20first%20issue)
+on GitHub. These are curated entry points:
+
+- **Add a solver wrapper** for an existing method (e.g., wrap a published
+  denoiser as a PnP solver). Level 1, ~1 day.
+- **Add unit tests** for an untested modality operator. Level 1, ~hours.
+- **Improve documentation** for a modality or CasePack. No code required.
+- **Fix a typo or broken link** in docs. Instant PR.
+
+If you're unsure where to start, open an issue and we'll help you find a task
+that matches your expertise.
+
 ## Reporting Issues
 
-- Use GitHub Issues with appropriate labels.
-- For bugs, include: steps to reproduce, expected behavior, actual behavior.
+- Use GitHub Issues with the appropriate template (bug report, feature request,
+  or calibration sprint).
+- For bugs, include: steps to reproduce, expected behavior, actual behavior,
+  and environment details.
 - For feature requests, describe the use case and proposed approach.
+- **Never include patient data or PHI in issue reports.**
+
+## Security
+
+If you discover a security vulnerability, **do not open a public issue**.
+Instead, follow the process in [SECURITY.md](SECURITY.md).
+
+## Code of Conduct
+
+All contributors must follow our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## License
 
 By contributing, you agree that your contributions will be licensed under the
-same license as the project.
+[PWM Noncommercial Share-Alike License v1.0](LICENSE).

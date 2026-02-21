@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://github.com/integritynoble/Physics_World_Model#documentation-index
+    about: Check the documentation before opening an issue
+  - name: Weekly Challenges
+    url: https://github.com/integritynoble/Physics_World_Model/tree/master/community/challenges
+    about: Browse and participate in weekly reconstruction challenges
+  - name: SolveEverything.org
+    url: https://solveeverything.org
+    about: PWM governance framework and reproducible science platform

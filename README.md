@@ -1026,7 +1026,7 @@ Use `packages/pwm_AI_Scientist/` as the thin adapter layer.
 
 ## Community & Contributing
 
-PWM is intended to be extended by the community. All algorithms are open source (MIT). No algorithm is paywalled. See [`community/OPEN_CORE_BOUNDARY.md`](community/OPEN_CORE_BOUNDARY.md) for the full open-core policy.
+PWM is intended to be extended by the community. All algorithms are open source under the [PWM Noncommercial Share-Alike License v1.0](LICENSE) (free for academic research, teaching, and personal projects; commercial use requires a separate license). No algorithm is paywalled. See [`community/OPEN_CORE_BOUNDARY.md`](community/OPEN_CORE_BOUNDARY.md) for the full open-core policy.
 
 ### 4 Levels of Contribution
 
