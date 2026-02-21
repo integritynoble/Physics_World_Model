@@ -2,19 +2,24 @@
 
 Entry point for `pwm` CLI.
 
-Commands (starter):
+Commands:
 - pwm run --prompt "..."
 - pwm run --spec spec.json
 - pwm fit-operator --y y.npy --operator cassi --out out_dir
 - pwm calib-recon --y y.npy --operator cassi --out out_dir
 - pwm view <runbundle_dir>
 - pwm demo <modality> [--preset NAME] [--run] [--open-viewer] [--export-sharepack]
+- pwm evaluate --modality cassi --solver traditional_cpu --track correct
+- pwm scaffold solver my_solver
+- pwm contrib check my_solver
+- pwm submit runbundle.zip
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import sys
 import uuid
 from pathlib import Path
 
@@ -34,6 +39,9 @@ from pwm_core.api.types import (
     MismatchSpec,
     MismatchFitOperator,
 )
+
+# Commands delegated to the targeting CLI
+_TARGETING_COMMANDS = {"evaluate", "scaffold", "contrib", "submit", "install", "uninstall", "plugins"}
 
 
 def _read_json(p: Path):
@@ -162,8 +170,8 @@ def cmd_view(args):
 
 
 def build_parser():
-    p = argparse.ArgumentParser(prog="pwm", description="Physics World Model CLI (starter).")
-    sub = p.add_subparsers(dest="cmd", required=True)
+    p = argparse.ArgumentParser(prog="pwm", description="Physics World Model CLI.")
+    sub = p.add_subparsers(dest="cmd")
 
     p_run = sub.add_parser("run", help="Run full pipeline from prompt or spec")
     p_run.add_argument("--prompt", type=str, default=None, help="Natural language prompt")
@@ -199,13 +207,29 @@ def build_parser():
     from pwm_core.cli.modality_gate import add_next_modality_subparser
     add_next_modality_subparser(sub)
 
+    # --- targeting system placeholders (for help text) ---
+    sub.add_parser("evaluate", help="Run the targeting harness (pwm evaluate --modality cassi)")
+    sub.add_parser("scaffold", help="Scaffold a new solver/calibrator/modality (pwm scaffold solver my_solver)")
+    sub.add_parser("contrib", help="Contribution tools (pwm contrib check my_solver)")
+    sub.add_parser("submit", help="Submit a RunBundle for leaderboard scoring")
+
     return p
 
 
 def main(argv=None):
+    # Check if the first argument is a targeting CLI command -- delegate directly
+    args_list = argv if argv is not None else sys.argv[1:]
+    if args_list and args_list[0] in _TARGETING_COMMANDS:
+        from pwm_core.targeting.cli import main as targeting_main
+        sys.exit(targeting_main(args_list))
+
     parser = build_parser()
     args = parser.parse_args(argv)
-    args.func(args)
+    if not args.cmd:
+        parser.print_help()
+        return
+    if hasattr(args, "func"):
+        args.func(args)
 
 
 if __name__ == "__main__":
