@@ -10,8 +10,8 @@ This document describes PWM’s **Operator Mode**: users provide **measured data
 - **export** a reproducible RunBundle (including operator-fit artifacts).
 
 Operator Mode is the foundation for workflows like:
-- CASSI / SCI-spectral “operator correction” (dispersion, mask shift, PSF mismatch)
-- SPC / SCI-video calibration from measurement residuals
+- CASSI spectral “operator correction” (dispersion, mask shift, PSF mismatch)
+- SPC / CACTI calibration from measurement residuals
 - Generic linear inverse problems with user-provided matrices
 
 ---
@@ -182,7 +182,7 @@ See `docs/runbundle_format.md`.
 
 ---
 
-## 9. CASSI-specific notes (SCI-spectral)
+## 9. CASSI-specific notes (spectral imaging)
 
 In CASSI, small mismatch often dominates:
 - mask shifts (dx, dy)

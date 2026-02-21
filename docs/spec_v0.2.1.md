@@ -188,7 +188,7 @@ Minimal:
 ```yaml
 states:
   physics:
-    modality: "cassi" | "sci_video" | "spc" | "widefield" | "confocal" | "sim" | "lightsheet" | "ct" | "mri" | "ptychography" | "holography" | "nerf"
+    modality: "cassi" | "cacti" | "spc" | "widefield" | "confocal" | "sim" | "lightsheet" | "ct" | "mri" | "ptychography" | "holography" | "nerf"
     dims:
       x: [H, W, C]            # latent dimensions (may be 2D/3D)
       y: [M]                  # measurement dims (optional if inferred)
@@ -229,7 +229,7 @@ states:
         enabled: false
     measurement_budget:
       sampling_rate: 0.1         # e.g., SPC/MRI
-      num_frames: 9              # e.g., SIM/SCI-video
+      num_frames: 9              # e.g., SIM/CACTI
       scan_speed: null
 ```
 

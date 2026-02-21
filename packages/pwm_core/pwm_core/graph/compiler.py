@@ -334,7 +334,7 @@ class GraphCompiler:
         This handles the common pattern where graph templates are stored
         in YAML as::
 
-            graph_id: cassi_sd_graph_v1
+            graph_id: cassi_graph_v1
             nodes:
               - node_id: modulate
                 primitive_id: coded_mask

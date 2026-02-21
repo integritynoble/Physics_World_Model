@@ -41,7 +41,12 @@ with open("packages/pwm_core/contrib/graph_templates.yaml") as f:
     templates = yaml.safe_load(f)["templates"]
 
 # Compile the CASSI operator graph
-spec = OperatorGraphSpec.model_validate(templates["cassi_sd_graph_v1"])
+# Inject graph_id and strip description (not part of Pydantic schema)
+key = "cassi_graph_v1"
+t = dict(templates[key])
+t["graph_id"] = key
+t.pop("description", None)
+spec = OperatorGraphSpec.model_validate(t)
 compiler = GraphCompiler()
 op = compiler.compile(spec)
 
@@ -55,7 +60,7 @@ print(f"Output shape: {y.shape}")
 
 ## 5. Explore further
 
-- **Gallery**: Browse all 26 modalities with `pwm demo <modality>`
+- **Gallery**: Browse all 64 modalities with `pwm demo <modality>`
 - **Challenges**: See `packages/pwm_core/contrib/challenges/` for community challenges
 - **Full docs**: See `docs/plan.md` for the complete architecture reference
 - **CasePacks**: Pre-configured experiments in `packages/pwm_core/contrib/casepacks/`
