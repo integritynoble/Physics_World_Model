@@ -20,17 +20,20 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 
+%% ——— Colors (must load before pgfplots/tikz to avoid option clash) ———
+\usepackage[dvipsnames]{xcolor}
+
 %% ——— Graphics and figures ———
 \usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 
 %% ——— Tables ———
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{longtable}
-
-%% ——— Colors ———
-\usepackage[dvipsnames]{xcolor}
 
 \definecolor{pwmBlue}{HTML}{2E5FA1}
 \definecolor{pwmOrange}{HTML}{E8712B}

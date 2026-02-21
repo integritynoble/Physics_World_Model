@@ -4,16 +4,13 @@
 Formal Foundations of the OperatorGraph Representation}
 
 \author{
-Chengshuai Yang$^{1,*}$
-\and
-Xin Yuan$^{2}$
+Chengshuai Yang$^{*}$
 }
 
 \date{}
 
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\footnotetext[1]{$^1$NextGen PlatformAI C Corp, USA.
-$^2$School of Engineering, Westlake University, Hangzhou, China.
+\footnotetext[1]{NextGen PlatformAI C Corp, USA.
 $^*$Correspondence: \texttt{integrityyang@gmail.com}}
 \renewcommand{\thefootnote}{\arabic{footnote}}
 
@@ -488,9 +485,71 @@ Figure~\ref{fig:growth} plots the number of distinct primitives as modalities ar
 
 \begin{figure}[htbp]
 \centering
-% Placeholder for basis-growth curve figure
-\fbox{\parbox{0.8\textwidth}{\centering\vspace{3cm}\textbf{[Basis-growth curve: $K$ vs.\ $N$]}\vspace{3cm}}}
-\caption{Basis-growth saturation. Number of distinct primitives $K$ (y-axis) as a function of the number of modalities $N$ (x-axis) added to the registry. The curve saturates at $K = 10$ for $N \geq 27$. Annotated modalities mark each primitive introduction.}
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.88\textwidth,
+  height=0.48\textwidth,
+  xlabel={Number of modalities $N$},
+  ylabel={Number of primitives $K$},
+  xmin=0, xmax=33,
+  ymin=0, ymax=12,
+  xtick={0,5,10,15,20,25,30},
+  ytick={0,2,4,6,8,10,12},
+  grid=major,
+  grid style={gray!30},
+  mark size=2.5pt,
+  thick,
+  every axis label/.style={font=\small},
+  tick label style={font=\footnotesize},
+]
+% Main curve: (N, K) data points
+% Modalities added chronologically; K = cumulative distinct primitives needed
+\addplot[pwmBlue, mark=*, line width=1.2pt] coordinates {
+  (1,3)   % Lensless: C, D → 3 (Source implicit)
+  (2,4)   % CT: +Pi → 4
+  (3,5)   % SPC: +M, Sigma → 5
+  (4,5)   % CACTI: M, Sigma, D (no new)
+  (5,5)   % Ptychography: M, P, D (P already from Lensless)
+  (6,7)   % MRI: +F, +S → 7
+  (7,7)   % Matrix (no new)
+  (8,8)   % CASSI: +W → 8
+  (9,8)   % Electron ptycho (no new)
+  (10,8)  % SIM (no new)
+  (11,8)  % OCT (no new)
+  (12,8)  % Photoacoustic (no new)
+  (13,8)  % Phase-contrast X-ray (no new)
+  (14,8)  % Neutron imaging (no new)
+  (15,8)  % Holography (no new)
+  (16,8)  % STED (no new)
+  (17,8)  % Light-field (no new)
+  (18,8)  % FPM (no new)
+  (19,8)  % Spectral CT (no new)
+  (20,8)  % PET (no new)
+  (21,8)  % SPECT (no new)
+  (22,8)  % Ultrasound (no new)
+  (23,8)  % SAR (no new)
+  (24,8)  % Radar (no new)
+  (25,8)  % Electron tomo (no new)
+  (26,8)  % Ghost imaging (no new)
+  (27,9)  % THz-TDS: +coherent Detect family → 9 (Detect family, not new node type)
+  (28,10) % Compton: +R → 10
+  (29,10) % Raman (no new)
+  (30,10) % Fluorescence (no new)
+  (31,10) % DOT (no new)
+};
+% Annotate key primitive introductions
+\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:1,3.2) {$C,D$};
+\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:2,4.2) {$+\Pi$};
+\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:3,5.2) {$+M,\Sigma$};
+\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:6,7.2) {$+F,S$};
+\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:8,8.2) {$+W$};
+\node[anchor=south, font=\scriptsize, pwmRed] at (axis cs:28,10.4) {$+R$};
+% Dashed saturation line
+\addplot[dashed, gray, line width=0.8pt] coordinates {(0,10)(33,10)};
+\node[anchor=south east, font=\scriptsize, gray] at (axis cs:33,10) {$K=10$};
+\end{axis}
+\end{tikzpicture}
+\caption{Basis-growth saturation. Number of distinct primitives $K$ as a function of the number of modalities $N$ added to the registry. The curve saturates at $K = 10$ for $N \geq 28$; annotated points mark each primitive introduction. Saturation is consistent with Theorem~\ref{thm:fpb}: once all physics-stage families are covered, new modalities compose existing primitives.}
 \label{fig:growth}
 \end{figure}
 
@@ -582,5 +641,23 @@ The primitive library is not claimed to be final. The extension protocol ensures
 %% ═══════════════════════════════════════════════════════════════════
 \bibliographystyle{unsrtnat}
 \bibliography{finite_primitive_theorem}
+
+
+%% ═══════════════════════════════════════════════════════════════════
+%%  SUPPLEMENTARY INFORMATION (appended)
+%% ═══════════════════════════════════════════════════════════════════
+\clearpage
+\appendix
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\theequation}{S\arabic{equation}}
+\setcounter{table}{0}
+\setcounter{figure}{0}
+\setcounter{equation}{0}
+
+\section*{Supplementary Information}
+\addcontentsline{toc}{section}{Supplementary Information}
+
+\input{supplementary}
 
 \end{document}

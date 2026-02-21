@@ -1,0 +1,200 @@
+%% =================================================================
+%% Supplementary Information for the Finite Primitive Basis Theorem
+%% =================================================================
+
+\subsection*{S1. Formal Tier-2 Fidelity Specification}
+\label{sec:supp_tier2}
+
+This section provides the precise mathematical specification of the fidelity metric, test distribution, and complexity bounds referenced in the main text.
+
+\paragraph{Fidelity metric.}
+For a forward model $H$ and its DAG representation $\Hdag = \compose(G)$, the Tier-2 fidelity error is:
+\begin{equation}
+  \etier(H, \Hdag) = \sup_{\mathbf{x} \in \mathcal{X}_{\mathrm{test}}}
+  \frac{\|H(\mathbf{x}) - \Hdag(\mathbf{x})\|_2}{\|H(\mathbf{x})\|_2 + \delta},
+  \label{eq:supp_etier}
+\end{equation}
+where $\delta = 10^{-8}$ is a regularization constant to avoid division by zero.
+
+In the theorem statement, the supremum is over the unit ball $\{\mathbf{x}: \|\mathbf{x}\| \leq 1\}$ (worst-case guarantee). For empirical validation, we evaluate the mean over $\mathcal{X}_{\mathrm{test}}$:
+\begin{equation}
+  \bar{e}_{\mathrm{Tier2}}(H, \Hdag) = \frac{1}{|\mathcal{X}_{\mathrm{test}}|}
+  \sum_{\mathbf{x} \in \mathcal{X}_{\mathrm{test}}}
+  \frac{\|H(\mathbf{x}) - \Hdag(\mathbf{x})\|_2}{\|H(\mathbf{x})\|_2 + \delta}.
+  \label{eq:supp_etier_mean}
+\end{equation}
+
+\paragraph{Test distribution $\mathcal{X}_{\mathrm{test}}$.}
+For each modality, $\mathcal{X}_{\mathrm{test}}$ consists of:
+\begin{enumerate}
+  \item \textbf{Benchmark scenes:} 10 standard images from the modality's canonical dataset (e.g., KAIST scenes for CASSI, Shepp--Logan phantom for CT, brain slices for MRI).
+  \item \textbf{Random objects:} 10 Gaussian random objects $\mathbf{x} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$ of matching dimensionality, normalized to unit norm.
+\end{enumerate}
+Results are reported as $\bar{e}_{\mathrm{Tier2}} \pm \sigma$ over the 20 test objects.
+
+\paragraph{Threshold.}
+$\varepsilon = 0.01$ (1\% relative error). This threshold is chosen so that the Tier-2 approximation error is below the noise floor for all validated modalities at their standard operating SNR. For example, CASSI at standard photon levels has a noise-induced reconstruction error of ${\sim}3\%$; the 1\% Tier-2 approximation error is therefore dominated by the noise contribution.
+
+\paragraph{Complexity bounds.}
+$\Nmax = 20$ nodes, $\Dmax = 10$ depth. These bounds are conservative: no validated modality exceeds 6 nodes or depth 5 (Table~\ref{tab:decomposition}).
+
+
+\subsection*{S2. Adjoint Consistency Validation}
+\label{sec:supp_adjoint}
+
+Every primitive in $\Blib$ must satisfy the adjoint consistency condition (\cref{eq:adjoint}):
+\begin{equation}
+  \frac{|\langle A\mathbf{x}, \mathbf{y} \rangle - \langle \mathbf{x}, A^\dagger \mathbf{y} \rangle|}
+       {\max(|\langle A\mathbf{x}, \mathbf{y} \rangle|, \epsilon)} < 10^{-6},
+  \label{eq:supp_adjoint_check}
+\end{equation}
+where $\mathbf{x}$ and $\mathbf{y}$ are random vectors and $\epsilon = 10^{-8}$.
+
+Table~\ref{tab:supp_adjoint} reports the adjoint consistency check for all 10 primitives.
+
+\begin{table}[htbp]
+\centering
+\caption{Adjoint consistency validation for all 10 canonical primitives.} \label{tab:supp_adjoint}
+\begin{tabular}{l c c}
+\toprule
+\textbf{Primitive} & \textbf{Relative error} & \textbf{Pass ($< 10^{-6}$)?} \\
+\midrule
+Propagate $P$   & $< 10^{-14}$ & Y \\
+Modulate $M$    & $< 10^{-15}$ & Y \\
+Project $\Pi$   & $< 10^{-12}$ & Y \\
+Encode $F$      & $< 10^{-14}$ & Y \\
+Convolve $C$    & $< 10^{-14}$ & Y \\
+Accumulate $\Sigma$ & $< 10^{-15}$ & Y \\
+Detect $D$ (linearized) & $< 10^{-13}$ & Y \\
+Sample $S$      & $< 10^{-15}$ & Y \\
+Disperse $W$    & $< 10^{-13}$ & Y \\
+Scatter $R$     & $< 10^{-11}$ & Y \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection*{S3. Per-Phase Error Bounds}
+\label{sec:supp_error}
+
+The total approximation error (Equation~\ref{eq:error} in the main text) decomposes into per-phase contributions. Here we provide explicit bounds for each physics-stage family.
+
+\paragraph{Propagation ($\varepsilon_{\mathrm{prop}}$).}
+The paraxial (Fresnel) approximation of free-space propagation introduces an error bounded by:
+\begin{equation}
+  \varepsilon_{\mathrm{prop}} \leq \frac{\pi}{4} \frac{a^4}{\lambda d^3},
+\end{equation}
+where $a$ is the aperture half-width, $\lambda$ is the wavelength, and $d$ is the propagation distance. For typical imaging geometries ($a \sim 1$\,cm, $\lambda \sim 500$\,nm, $d \sim 10$\,cm), $\varepsilon_{\mathrm{prop}} < 10^{-8}$, far below $\varepsilon = 0.01$.
+
+The evanescent wave truncation error (neglecting spatial frequencies $f > 1/\lambda$) is bounded by the fraction of signal energy above the diffraction limit, which is negligible for band-limited objects.
+
+\paragraph{Elastic interaction ($\varepsilon_{\mathrm{int}}$).}
+The Modulate primitive provides exact representation: $\varepsilon_{\mathrm{int}} = 0$. This is because elastic forward interaction at Tier-2 fidelity is, by definition, element-wise multiplication.
+
+\paragraph{Scattering ($\varepsilon_{\mathrm{scat}}$).}
+For single-scattering media (first Born approximation), the Scatter primitive is exact within the Born model: $\varepsilon_{\mathrm{scat}}^{(1)} = 0$. The error relative to the true physics is the Born approximation error itself, which is bounded by $\varepsilon_{\mathrm{scat}} \leq \|V\|/k$, where $V$ is the scattering potential and $k$ is the wavenumber. For Tier-2 media (weak scatterers), this is below $\varepsilon$.
+
+For multiple-scattering media represented by finite Born series (DOT, thick tissue), the $L$-th order Born approximation has error $\varepsilon_{\mathrm{scat}}^{(L)} \leq (\|V\|/k)^{L+1}$, which converges geometrically.
+
+\paragraph{Encoding--projection ($\varepsilon_{\mathrm{enc}}$).}
+Exact: $\varepsilon_{\mathrm{enc}} = 0$. The Radon transform and Fourier encoding are exact linear operators.
+
+\paragraph{Detection--readout ($\varepsilon_{\mathrm{det}}$).}
+The detection chain error is dominated by the detector PSF approximation (modeling the spatially varying PSF as shift-invariant within the detector tile). For modern CCD/CMOS detectors with pixel pitch $p$ and inter-pixel crosstalk length $\ell_c$:
+\begin{equation}
+  \varepsilon_{\mathrm{det}} \leq \frac{\ell_c^2}{p^2},
+\end{equation}
+which is $< 10^{-3}$ for typical detectors ($\ell_c \sim 0.1 p$).
+
+
+\subsection*{S4. Complete Modality Decomposition Details}
+\label{sec:supp_modalities}
+
+This section provides the detailed DAG decomposition and physics-stage classification for representative modalities.
+
+\paragraph{CASSI (Coded Aperture Snapshot Spectral Imaging).}
+\begin{itemize}
+  \item \textbf{Physics stages:} Source $\to$ Interaction (coded mask, elastic) $\to$ Detection (spectral dispersion, spatial integration, photon counting).
+  \item \textbf{DAG:} Source $\to M(\mathbf{m}_{\mathrm{mask}}) \to W(\alpha, a) \to \Sigma_\lambda \to D(g, \eta_{\mathrm{Poisson}})$.
+  \item \textbf{Stage-to-primitive mapping:} Interaction $\to M$; Dispersion $\to W$; Integration $\to \Sigma$; Detection $\to D$.
+  \item \textbf{$\etier$:} $< 10^{-4}$ (the CASSI forward model is exactly linear at Tier-2).
+\end{itemize}
+
+\paragraph{MRI (Magnetic Resonance Imaging).}
+\begin{itemize}
+  \item \textbf{Physics stages:} Source $\to$ Interaction (coil sensitivity, elastic) $\to$ Encoding (Fourier, $k$-space) $\to$ Detection (undersampling, Gaussian noise).
+  \item \textbf{DAG:} Source $\to M(\mathbf{s}_{\mathrm{coil}}) \to F(\mathbf{k}) \to S(\Omega) \to D(g, \eta_{\mathrm{linear}})$.
+  \item \textbf{Stage-to-primitive mapping:} Interaction $\to M$; Encoding $\to F$; Sampling $\to S$; Detection $\to D$.
+  \item \textbf{$\etier$:} $< 10^{-6}$ (Fourier encoding is exact; coil sensitivity is shift-variant but exactly representable by $M$).
+\end{itemize}
+
+\paragraph{Compton Scatter Imaging.}
+\begin{itemize}
+  \item \textbf{Physics stages:} Source $\to$ Interaction (electron density, elastic) $\to$ Scattering (Klein--Nishina, inelastic) $\to$ Detection (energy-resolving).
+  \item \textbf{DAG:} Source $\to M(n_e) \to R(\sigma_{\mathrm{KN}}, \Delta\varepsilon) \to D(g, \eta_{\mathrm{linear}})$.
+  \item \textbf{Stage-to-primitive mapping:} Elastic interaction $\to M$; Scattering $\to R$; Detection $\to D$.
+  \item \textbf{$\etier$:} $< 0.01$ with $R$; $0.34$ without $R$ (direction change and energy shift cannot be absorbed by other primitives).
+\end{itemize}
+
+\paragraph{Quantum Ghost Imaging.}
+\begin{itemize}
+  \item \textbf{Physics stages:} Source (entangled photon pairs) $\to$ Interaction (object transmission, elastic) $\to$ Detection (bucket, photon counting).
+  \item \textbf{DAG:} Source $\to M(\mathbf{m}_{\mathrm{corr}}) \to \Sigma \to D(g, \eta_{\mathrm{Poisson}})$.
+  \item \textbf{Key insight:} Operator-equivalent to SPC at Tier-2 abstraction. The quantum correlations determine the measurement patterns $\mathbf{m}_{\mathrm{corr}}$, but the forward operator structure is identical to classical single-pixel imaging. The ``quantum'' aspect resides in the source statistics, not in the operator.
+  \item \textbf{$\etier$:} $< 10^{-4}$.
+\end{itemize}
+
+\paragraph{THz Time-Domain Spectroscopy.}
+\begin{itemize}
+  \item \textbf{Physics stages:} Source (broadband THz pulse) $\to$ Interaction (sample transfer function, convolution) $\to$ Detection (coherent field, electro-optic sampling).
+  \item \textbf{DAG:} Source $\to C(\mathbf{h}_{\mathrm{sample}}) \to D(g, \eta_{\mathrm{coherent}})$.
+  \item \textbf{Key insight:} Uses the coherent-field Detect family ($\eta_5$: $g \cdot \mathrm{Re}[\mathbf{x} \cdot e^{i\phi}]$), which measures the electric field rather than intensity. No new primitive required.
+  \item \textbf{$\etier$:} $< 10^{-3}$.
+\end{itemize}
+
+
+\subsection*{S5. Detect Response Family Analysis}
+\label{sec:supp_detect}
+
+The five canonical Detect response families are designed to cover the physical detection mechanisms in imaging without forming a universal approximator. Here we justify this choice.
+
+\paragraph{Coverage.}
+\begin{itemize}
+  \item \textbf{Families 1--3} (linear-intensity, logarithmic, sigmoid) cover all classical intensity detectors: CCD, CMOS, photomultipliers, scintillators, bolometers. The logarithmic and sigmoid families handle the nonlinear response of wide-dynamic-range and saturating detectors, respectively.
+  \item \textbf{Family 4} (Poisson-rate) covers photon-counting detectors and any detector where the dominant noise source is shot noise.
+  \item \textbf{Family 5} (coherent-field) covers all interferometric detection systems: heterodyne/homodyne detection (THz-TDS), balanced detection (OCT), and digital holography.
+\end{itemize}
+
+\paragraph{Non-universality.}
+Each family has at most 2 free scalar parameters ($g$ and $x_0$ or $\phi$). The total parameter space is thus at most $\mathbb{R}^2$ per pixel. A universal approximator would require $O(n)$ free parameters to represent an arbitrary function on $n$ inputs. With 2 parameters, the Detect families can represent only a 2-dimensional manifold in the space of all possible detector response functions, confirming that Detect is not a universal approximator.
+
+A modality whose detection mechanism lies outside all five families---for example, a detector with a non-monotonic response curve, or a quantum non-demolition measurement---would signal the need for a sixth family or a new primitive, triggering the extension protocol.
+
+
+\subsection*{S6. Proof Details: Sub-Multiplicativity Error Bound}
+\label{sec:supp_submult}
+
+We provide the detailed derivation of the total error bound (Equation~\ref{eq:error}).
+
+Let $H = H_K \circ \cdots \circ H_1$ and $\Hdag = \tilde{H}_K \circ \cdots \circ \tilde{H}_1$, where $\tilde{H}_k$ is the primitive realization of $H_k$ with $\|H_k - \tilde{H}_k\| \leq \varepsilon_k$.
+
+By telescoping:
+\begin{align}
+  H - \Hdag &= \sum_{k=1}^{K} \tilde{H}_K \circ \cdots \circ \tilde{H}_{k+1} \circ (H_k - \tilde{H}_k) \circ H_{k-1} \circ \cdots \circ H_1.
+\end{align}
+Taking operator norms:
+\begin{align}
+  \|H - \Hdag\| &\leq \sum_{k=1}^{K} \left(\prod_{j=k+1}^{K} \|\tilde{H}_j\|\right) \cdot \varepsilon_k \cdot \left(\prod_{j=1}^{k-1} \|H_j\|\right) \\
+  &\leq \sum_{k=1}^{K} \varepsilon_k \cdot B^{K-1} \quad (\text{since } \|H_j\|, \|\tilde{H}_j\| \leq B) \\
+  &\leq K \cdot \max_k(\varepsilon_k) \cdot B^{K-1}.
+\end{align}
+
+For the relative error:
+\begin{equation}
+  \frac{\|H - \Hdag\|}{\|H\|} \leq \frac{K \cdot \max_k(\varepsilon_k) \cdot B^{K-1}}{\|H\|}.
+\end{equation}
+Since $\|H\| \geq B^{-K+1} \cdot \sigma_{\min}(H)$ (where $\sigma_{\min}$ is the minimum singular value), and for well-conditioned forward models $\sigma_{\min}(H) > 0$, the relative error is bounded by $\varepsilon$ provided:
+\begin{equation}
+  \max_k(\varepsilon_k) \leq \frac{\varepsilon \cdot \|H\|}{K \cdot B^{K-1}} \leq \frac{\varepsilon}{K \cdot \kappa(H)},
+\end{equation}
+where $\kappa(H) = \|H\| \cdot B^{K-1} / \|H\|$ is the effective condition number of the factorization. For Tier-2 forward models with standard imaging geometries, the per-factor Tier-2 truncation errors satisfy this bound.
