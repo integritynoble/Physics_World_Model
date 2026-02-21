@@ -20,13 +20,13 @@
 
 ### Solver PRs (Level 1)
 - [ ] Implements `run_<solver>(y, physics, cfg) -> (x_hat, info)`
-- [ ] Entry added to `contrib/solver_registry.yaml`
+- [ ] Entry added to `packages/pwm_core/contrib/solver_registry.yaml`
 - [ ] `pwm contrib check <solver>` passes
 - [ ] Benchmark PSNR documented
 
 ### Calibrator PRs (Level 2)
 - [ ] Implements `calibrate_<method>(y, H_nom, budget) -> (H_hat, info)`
-- [ ] Operator correction test added to `benchmarks/test_operator_correction.py`
+- [ ] Operator correction test added to `packages/pwm_core/benchmarks/test_operator_correction.py`
 - [ ] Improvement over uncalibrated baseline documented (dB gain)
 
 ### Modality PRs (Level 3)
@@ -35,7 +35,7 @@
 - [ ] CasePack JSON follows naming: `<modality>_<description>_v<N>.json`
 - [ ] Entries in all 6 YAML registries
 - [ ] ID format: `<domain>_<name>_v<N>` (lowercase, underscores)
-- [ ] Benchmark entry in `benchmarks/run_all.py`
+- [ ] Benchmark entry in `packages/pwm_core/benchmarks/run_all.py`
 
 ### Primitive PRs (Level 4)
 - [ ] RFC issue opened and linked: #___

@@ -6,7 +6,7 @@ widefield:
   traditional_cpu:
     name: Richardson-Lucy
     module: pwm_core.recon.richardson_lucy
-    function: richardson_lucy_2d
+    function: run_richardson_lucy
     params: 0
     gpu: false
   best_quality:
@@ -32,7 +32,7 @@ widefield_lowdose:
   traditional_cpu:
     name: BM3D + RL
     module: pwm_core.recon.richardson_lucy
-    function: richardson_lucy_2d
+    function: run_richardson_lucy
     params: 0
     gpu: false
   best_quality:
@@ -58,7 +58,7 @@ confocal_livecell:
   traditional_cpu:
     name: Richardson-Lucy
     module: pwm_core.recon.richardson_lucy
-    function: richardson_lucy_2d
+    function: run_richardson_lucy
     params: 0
     gpu: false
   best_quality:
@@ -83,7 +83,7 @@ confocal_3d:
   traditional_cpu:
     name: 3D Richardson-Lucy
     module: pwm_core.recon.richardson_lucy
-    function: richardson_lucy_3d
+    function: run_richardson_lucy
     params: 0
     gpu: false
   best_quality:
