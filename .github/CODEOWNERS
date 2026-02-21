@@ -1,0 +1,26 @@
+# PWM CODEOWNERS
+# Auto-assigns reviewers to PRs based on changed files.
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default: core maintainer reviews everything
+* @integritynoble
+
+# Core library
+packages/pwm_core/pwm_core/physics/       @integritynoble
+packages/pwm_core/pwm_core/graph/         @integritynoble
+packages/pwm_core/pwm_core/agents/        @integritynoble
+packages/pwm_core/pwm_core/clinical/      @integritynoble
+
+# Registries (review-lane: modality/solver additions)
+packages/pwm_core/contrib/                @integritynoble
+
+# Governance-lane (frozen specs, scoring, protocol)
+packages/pwm_core/pwm_core/targeting/     @integritynoble
+rails/                                    @integritynoble
+docs/GOVERNANCE.md                        @integritynoble
+
+# Community infrastructure
+community/                                @integritynoble
+
+# CI / GitHub config
+.github/                                  @integritynoble
