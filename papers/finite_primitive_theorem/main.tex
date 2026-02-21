@@ -317,7 +317,7 @@ Models with strong nonlinearity (e.g., nonlinear ultrasound, full-wave electroma
 
 \begin{definition}[$\varepsilon$-Approximate Representation]
 \label{def:eps}
-Let $\Blib = \{P, M, \Pi, F, C, \Sigma, D, S, W, R\}$ be the canonical primitive library. A well-formed typed DAG $G = (V, E, \tau)$ with $V \subseteq \Blib$ is an \emph{$\varepsilon$-approximate representation} of $H \in \ctier$ if:
+Let $\Blib = \{P, M, \Pi, F, C, \Sigma, D, S, W, R\}$ be the canonical primitive library. A well-formed typed DAG $G = (V, E, \tau)$ whose node types are drawn from $\Blib$ is an \emph{$\varepsilon$-approximate representation} of $H \in \ctier$ if:
 \begin{enumerate}
   \item \textbf{Fidelity:} $\displaystyle \frac{\|H - \Hdag\|}{\|H\|} \leq \varepsilon$,\quad where $\Hdag = \compose(G)$ and $\|\cdot\|$ denotes the operator norm.
   \item \textbf{Complexity:} $|V| \leq \Nmax$ and $\mathrm{depth}(G) \leq \Dmax$.
@@ -334,7 +334,7 @@ The operator-norm criterion in Definition~\ref{def:eps} is the formal guarantee 
 
 \begin{theorem}[Finite Primitive Basis]
 \label{thm:fpb}
-For every $H \in \ctier$, there exists a well-formed typed DAG $G = (V, E, \tau)$ with $V \subseteq \Blib$ that is an $\varepsilon$-approximate representation of $H$.
+For every $H \in \ctier$, there exists a well-formed typed DAG $G = (V, E, \tau)$ whose node types are drawn from $\Blib$ that is an $\varepsilon$-approximate representation of $H$.
 \end{theorem}
 
 The proof is constructive: given the factorization $H = H_K \circ \cdots \circ H_1$ guaranteed by Definition~\ref{def:ctier}, we show that each factor $H_k$ can be represented by one or a finite composition of primitives from $\Blib$ with bounded approximation error. The argument proceeds through five primitive realization lemmas, one per physics-stage family.
@@ -498,7 +498,7 @@ Proposition~\ref{prop:necessity} together with Theorem~\ref{thm:fpb} establishes
 
 \subsection{Decomposition Registry}
 
-Table~\ref{tab:decomposition} shows the primitive decomposition of all 31 modalities (26 previously registered in~\cite{yang2026pwm} plus 5 held-out for closure testing). Every modality achieves $\etier < 0.01$ with at most 5 operator nodes and depth 5. The $\etier$ values are computed via~\eqref{eq:supp_etier_mean} over 20 test objects per modality (see Supplementary~S1). Of the five Detect response families, three are exercised by the 31 validated modalities: family~1 (linear-field: MRI, ultrasound), family~4 (intensity-square-law: CASSI, CT, ptychography, and most photon-detecting modalities), and family~5 (coherent-field: THz-TDS, SAR, radar). Families~2 (logarithmic) and~3 (sigmoid) cover wide-dynamic-range and saturating detectors (e.g., HDR CMOS, bolometers) used in specialized applications not in the current validation set; should such modalities be added, the existing families accommodate them without a library extension.
+Table~\ref{tab:decomposition} shows the primitive decomposition of all 31 modalities (26 previously registered in~\cite{yang2026pwm} plus 5 held-out for closure testing). Every modality achieves $\etier < 0.01$ with at most 5 operator nodes and depth 5. The $\etier$ values are computed via~\eqref{eq:supp_etier_mean} over 20 test objects per modality (see Supplementary~S1). Of the five Detect response families, three are exercised by the 31 validated modalities: family~1 (linear-field: MRI, ultrasound, photoacoustic), family~4 (intensity-square-law: CASSI, CT, ptychography, and most photon-detecting modalities), and family~5 (coherent-field: OCT, THz-TDS, SAR, radar). Families~2 (logarithmic) and~3 (sigmoid) cover wide-dynamic-range and saturating detectors (e.g., HDR CMOS, bolometers) used in specialized applications not in the current validation set; should such modalities be added, the existing families accommodate them without a library extension.
 
 \begin{longtable}{l l l c c c}
 \caption{Primitive decomposition of 31 imaging modalities. $\etier$ is the mean relative fidelity error over 20 test objects. All values satisfy $\etier < 0.01$.} \label{tab:decomposition} \\
@@ -546,9 +546,9 @@ Brillouin~\cite{scarcelli2008brillouin}       & Photon      & $M \to R \to D$   
 
 \subsection{Held-Out Closure Test}
 
-To validate Theorem~\ref{thm:fpb} empirically, we conduct a closure test under a frozen protocol. Before evaluation, we freeze:
+To validate Theorem~\ref{thm:fpb} empirically, we conduct a closure test under a frozen protocol. Before evaluating any held-out modality, we freeze:
 \begin{enumerate}
-  \item The primitive library $\Blib$ (10 primitives, no additions permitted);
+  \item The primitive library $\Blib$ (initially 9 primitives; Scatter is added only after the protocol identifies it as necessary);
   \item The Detect response families (5 families, frozen);
   \item The fidelity threshold $\varepsilon = 0.01$;
   \item The complexity bounds $\Nmax = 20$, $\Dmax = 10$.
