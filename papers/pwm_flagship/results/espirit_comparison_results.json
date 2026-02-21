@@ -1,0 +1,228 @@
+{
+  "protocol": {
+    "n_coils": 8,
+    "image_size": [
+      256,
+      256
+    ],
+    "acceleration": 4,
+    "acs_lines": 24,
+    "mismatch_level": 0.05,
+    "noise_sigma": 0.005,
+    "cg_iters": 30,
+    "cg_reg": 0.001,
+    "seed": 42
+  },
+  "conditions": {
+    "scenario_i": {
+      "description": "Reconstruction with true sensitivity maps",
+      "psnr": 34.98,
+      "ssim": 0.833,
+      "time_s": 0.44
+    },
+    "scenario_ii": {
+      "description": "Reconstruction with mismatched sensitivity maps (5% error)",
+      "psnr": 31.3,
+      "ssim": 0.7388,
+      "time_s": 0.44,
+      "mismatch_nrmse": 0.091
+    },
+    "espirit": {
+      "description": "ESPIRiT auto-calibrated maps from ACS",
+      "psnr": 22.01,
+      "ssim": 0.5074,
+      "time_s": 0.51,
+      "calibration_time_s": 0.02,
+      "map_error_nrmse": 0.8164
+    },
+    "pwm": {
+      "description": "PWM beam-search corrected maps (grid search over sensitivity scaling)",
+      "psnr": 32.05,
+      "ssim": 0.7264,
+      "time_s": 19.73,
+      "best_alpha": 0.9,
+      "n_search_steps": 41,
+      "search_range": [
+        0.9,
+        1.1
+      ]
+    }
+  },
+  "deltas": {
+    "psnr_drop_mismatch_dB": 3.67,
+    "psnr_recovery_espirit_dB": -9.29,
+    "psnr_recovery_pwm_dB": 0.75,
+    "ssim_drop_mismatch": 0.0942,
+    "ssim_recovery_espirit": -0.2314,
+    "ssim_recovery_pwm": -0.0124,
+    "recovery_ratio_espirit": -2.5299,
+    "recovery_ratio_pwm": 0.2033
+  },
+  "timestamp": "2026-02-21T18:58:31.327455+00:00",
+  "search_log": [
+    {
+      "alpha": 0.9,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.905,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.91,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.915,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.92,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.925,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.93,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.935,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.9400000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.9450000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.9500000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.9550000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.9600000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.9650000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.9700000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.9750000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.9800000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.9850000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.9900000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 0.9950000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.0,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.0050000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.01,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.0150000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.02,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.0250000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.03,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.0350000000000001,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.04,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.0450000000000002,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.05,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.0550000000000002,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.06,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.0650000000000002,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.07,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.0750000000000002,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.08,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.0850000000000002,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.09,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.0950000000000002,
+      "psnr": 32.05049868710479
+    },
+    {
+      "alpha": 1.1,
+      "psnr": 32.05049868710479
+    }
+  ]
+}

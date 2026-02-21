@@ -50,8 +50,8 @@ SEED = 42                    # Reproducibility
 MISMATCH_LEVELS = [0.01, 0.02, 0.03, 0.05, 0.10, 0.15]
 
 # PWM grid search parameters for correction
-PWM_GRID_POINTS = 21         # Grid points per parameter in coarse search
-PWM_REFINE_ITERS = 15        # Refinement iterations after coarse grid
+PWM_GRID_POINTS = 5          # Grid points per parameter in coarse search
+PWM_REFINE_ITERS = 3         # Refinement iterations after coarse grid
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -346,7 +346,7 @@ def pwm_correct_maps(
         """Evaluate k-space residual for given sensitivity maps."""
         x_recon = sense_reconstruction(
             kspace, candidate_maps.astype(np.complex64),
-            mask, regularization=CG_REG, iterations=CG_ITERS,
+            mask, regularization=CG_REG, iterations=10,  # Fewer iters for fast ranking
         )
         residual = 0.0
         for c in range(n_coils):
