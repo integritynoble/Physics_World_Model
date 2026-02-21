@@ -31,6 +31,7 @@ PWM is designed to be:
 - [PWM = Harness + Best Methods](#pwm--harness--best-methods) — the rail vs the trains
 - [The Rails: SolveEverything Implementation](#the-rails-solveeverything-implementation) — 10-gear framework + LIP-Arena targeting system
 - [Physics Fidelity Ladder](#physics-fidelity-ladder) — 4-tier operator hierarchy
+- [Theoretical Foundations](#theoretical-foundations-flagship-paper) — FPB Theorem (10 canonical primitives), Triad Decomposition, Extension Protocol
 - [4-Scenario Evaluation Protocol](#4-scenario-evaluation-protocol) — how methods are scored
 
 **Getting Started**
@@ -69,7 +70,7 @@ One repo, one install -- you get both the evaluation infrastructure and the meth
 
 | Component | Role | Durability |
 |-----------|------|------------|
-| **Harness** (OperatorGraph IR, 4-scenario protocol, Triad scoring, LIP-Arena) | Defines *how* methods are tested | Durable -- the railroad |
+| **Harness** (OperatorGraph IR, 10 canonical primitives, Triad Decomposition, 4-scenario protocol, LIP-Arena) | Defines *how* methods are tested | Durable -- the railroad |
 | **Current best methods** (GAP-TV, MST-L, Alg 1/2, HDNet, EfficientSCI, ...) | The methods that currently score highest | Replaceable -- the trains |
 
 **Evaluate any method on the harness:**
@@ -91,7 +92,7 @@ pwm evaluate --method my_solver --modality cassi --scenarios I,II,III,IV
 
 ## The Rails: SolveEverything Implementation
 
-PWM is the first repository that implements all 10 gears of the [SolveEverything.org](https://solveeverything.org/) abundance engine as a concrete, runnable reference for **computational imaging**: 64 modalities, 89 graph templates, 43+ solvers, a built-in adversarial evaluation harness (LIP-Arena), and a complete audit trail (RunBundle + DR-IS). See [`rails/`](rails/) for the complete mapping:
+PWM is the first repository that implements all 10 gears of the [SolveEverything.org](https://solveeverything.org/) abundance engine as a concrete, runnable reference for **computational imaging**: 64 modalities, 99 implementation primitives mapped to 10 canonical types, 43+ solvers, a built-in adversarial evaluation harness (LIP-Arena), and a complete audit trail (RunBundle + DR-IS). See [`rails/`](rails/) for the complete mapping:
 
 | Gear | Status | PWM Implementation |
 |------|--------|--------------------|
@@ -162,6 +163,53 @@ See `pwm_core/graph/tier_policy.py` and `tests/test_tier_policy.py`.
 **Tie to execution modes:**
 - **Mode S** (simulate) and **Mode I** (infer) default to Tier 0/1 for fast turnaround.
 - **Mode C** (calibrate) starts at Tier 0/1, then validates the corrected operator at a higher tier when budget allows.
+
+---
+
+## Theoretical Foundations (Flagship Paper)
+
+PWM's theoretical core is established in the flagship paper: *"Ten Primitives and Three Gates: The Universal Structure of Computational Imaging"* (Yang & Yuan, 2026). Two main results underpin the entire framework.
+
+### Finite Primitive Basis Theorem
+
+**Theorem (FPB).** Every imaging forward model in the Tier-2 operator class admits an $\varepsilon$-approximate representation as a typed DAG over exactly **10 canonical primitives**:
+
+| # | Primitive | Notation | Physical action | Physics-stage family |
+|---|-----------|----------|-----------------|---------------------|
+| 1 | Propagate | $P(d,\lambda)$ | Free-space wave propagation | Propagation |
+| 2 | Modulate | $M(\mathbf{m})$ | Element-wise multiplication (mask, coil, absorption) | Interaction |
+| 3 | Project | $\Pi(\theta)$ | Radon line-integral projection | Encoding-Projection |
+| 4 | Encode | $F(\mathbf{k})$ | Fourier-domain encoding ($k$-space) | Encoding-Projection |
+| 5 | Convolve | $C(\mathbf{h})$ | Spatial convolution (PSF) | Propagation |
+| 6 | Accumulate | $\Sigma$ | Summation over spectral/temporal axis | Detection-Readout |
+| 7 | Detect | $D(g,\eta)$ | Detector response (5 canonical families) | Detection-Readout |
+| 8 | Sample | $S(\Omega)$ | Sub-sampling on index set $\Omega$ | Detection-Readout |
+| 9 | Disperse | $W(\alpha,a)$ | Wavelength-dependent spatial shift | Detection-Readout |
+| 10 | Scatter | $R(\sigma,\Delta\varepsilon)$ | Direction change and/or energy shift | Interaction |
+
+The 10 primitives are organized into **4 physics-stage families**: Propagation → {P, C}; Interaction → {M, R}; Encoding-Projection → {Π, F}; Detection-Readout → {Σ, S, W, D}. The Detect nonlinearity is restricted to **5 canonical families**: linear-intensity, logarithmic, sigmoid, Poisson-rate, and coherent-field.
+
+**Basis-growth saturation.** Plotting distinct primitives $K$ vs. registered modalities $N$ reveals clear saturation: $K = 10$ at $N = 31$, with no new primitive required for the most recent 19 modalities. New modalities compose existing primitives rather than requiring new ones.
+
+**Implementation.** The 10 canonical types are implemented as `CanonicalPrimitive` enums in `pwm_core/graph/ir_types.py`, with all 99 implementation primitives mapped to their canonical type via `CANONICAL_REGISTRY` in `pwm_core/graph/primitives.py`. The 31-modality canonical decomposition registry is in `pwm_core/graph/canonical_decompositions.py`.
+
+### Triad Decomposition
+
+Every reconstruction failure decomposes into three root causes (gates):
+
+| Gate | Name | Physical origin |
+|------|------|-----------------|
+| Gate 1 | Recoverability | Null-space loss — measurement encodes insufficient information |
+| Gate 2 | Carrier Budget | SNR floor — photon/electron/spin/acoustic noise dominates |
+| Gate 3 | Operator Mismatch | $H_{\text{nom}} \neq H_{\text{true}}$ — solver targets the wrong inverse problem |
+
+**Key finding: Gate 3 dominates** across all validated modalities. In CASSI, a sub-pixel mask shift degrades MST-L by 13.98 dB; in MRI, a 5% coil mismatch produces 6.94 dB degradation. Autonomous correction recovers +0.8 to +10.7 dB without retraining the solver.
+
+The two results are complementary: the FPB provides a universal representation (every forward model is a DAG over 10 primitives); the Triad provides a universal diagnostic law over that representation. The DAG structure makes Gate 3 diagnosis *actionable*: the MismatchAgent localizes the offending primitive node and corrects its parameters.
+
+### Extension Protocol
+
+A new primitive is warranted only when no DAG over the existing 10 achieves $\varepsilon_{\text{tier2}} \leq \varepsilon$. The formal 5-step process requires: (1) validated forward/adjoint, (2) demonstrated representation gap, (3) error reduction below $\varepsilon$, (4) need by ≥2 modalities, (5) backward-compatible closure re-test. See `pwm_core/graph/extension_protocol.py`.
 
 ---
 
@@ -307,8 +355,8 @@ python benchmarks/run_all.py --modality photoacoustic
 # Run operator correction tests (16 tests, ~63 min)
 python -m pytest benchmarks/test_operator_correction.py -v
 
-# Run unit tests (3953 tests)
-python -m pytest tests/ -v         # 3743 core tests
+# Run unit tests (3985 tests)
+python -m pytest tests/ -v         # 3743 core + 32 canonical tests
 python -m pytest tests/clinical/ -v  # 210 clinical tests
 ```
 
@@ -833,7 +881,7 @@ python benchmarks/run_all.py --modality fpm
 ```bash
 cd packages/pwm_core
 
-# Unit tests (3743 core + 210 clinical = 3953 tests)
+# Unit tests (3743 core + 32 canonical + 210 clinical = 3985 tests)
 python -m pytest tests/ -v
 
 # Operator correction tests (16 tests, ~63 min)
@@ -969,6 +1017,14 @@ pwm/
   packages/
     pwm_core/              # public core library (no AI_Scientist deps)
       pwm_core/
+        graph/             # OperatorGraph IR + canonical framework
+          ir_types.py      # CanonicalPrimitive, PhysicsStageFamily, DetectFamily enums
+          primitives.py    # 99 primitives + CANONICAL_REGISTRY (10 canonical types)
+          canonical_decompositions.py  # 31-modality canonical DAG registry
+          fidelity.py      # Operator-norm, pointwise, mean fidelity metrics
+          extension_protocol.py  # 5-step formal extension process
+          graph_operator.py  # to_canonical(), canonical_dag_string()
+          compiler.py      # Compiles specs to graphs with canonical tags
         agents/            # 17 agent modules + contracts + registry
         physics/           # 64 modality operators
         analysis/          # Metrics, bottleneck, uncertainty
@@ -990,7 +1046,7 @@ pwm/
       benchmarks/
         run_all.py         # 64-modality benchmark suite
         test_operator_correction.py  # 16 calibration tests
-      tests/               # 3953 unit tests (incl. 210 clinical)
+      tests/               # 3985 unit tests (incl. 32 canonical + 210 clinical)
     pwm_AI_Scientist/      # AI_Scientist adapter (thin)
 ```
 
@@ -1104,15 +1160,17 @@ Templates:
 
 **Paper**: "We formalize 4D-STEM as an OperatorGraph and benchmark 10 solvers"
 
-#### Level 4: New Primitive (Hardest -- RFC Process)
+#### Level 4: New Primitive (Hardest -- RFC + Extension Protocol)
 
-**Who**: Physics experts willing to implement a new atomic operator.
+**Who**: Physics experts willing to implement a new atomic operator. Must follow the formal [Extension Protocol](packages/pwm_core/pwm_core/graph/extension_protocol.py) from the FPB Theorem:
 
-1) Open RFC issue with physics justification + adjoint proof
-2) Implement `PrimitiveOp` (or use `contrib/templates/tier2_wrapper.py`)
-3) Pass adjoint correctness tests
-4) Community + steward review
-5) Merge into `PRIMITIVE_REGISTRY`
+1) Demonstrate representation gap: no DAG over existing 10 canonical primitives achieves $\varepsilon_{\text{tier2}} \leq \varepsilon$
+2) Open RFC issue with physics justification + validated forward/adjoint
+3) Show error reduction below $\varepsilon$ with the new primitive
+4) Demonstrate need by ≥2 modalities
+5) Pass backward-compatible closure re-test (all existing decompositions preserved)
+6) Community + steward review
+7) Merge into `CANONICAL_REGISTRY` and update `canonical_decompositions.py`
 
 **Paper**: "Our full-wave primitive improves fidelity by 3 dB across 5 modalities"
 
@@ -1193,6 +1251,10 @@ See also: [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full contribution guide.
 | [`rails/README.md`](rails/README.md) | SolveEverything 10-gear framework + status table |
 | [`docs/purpose.md`](docs/purpose.md) | Imaging System Autonomy (ISA) discipline |
 | [`docs/spec_v0.2.1.md`](docs/spec_v0.2.1.md) | ExperimentSpec data model (8 state groups) |
+| **Theoretical Foundations** | |
+| [`papers/pwm_flagship/main.tex`](papers/pwm_flagship/main.tex) | Flagship paper: FPB Theorem + Triad Decomposition |
+| [`pwm_core/graph/canonical_decompositions.py`](packages/pwm_core/pwm_core/graph/canonical_decompositions.py) | 31-modality canonical DAG registry |
+| [`pwm_core/graph/extension_protocol.py`](packages/pwm_core/pwm_core/graph/extension_protocol.py) | 5-step extension protocol for new primitives |
 | **Specifications** | |
 | [`docs/targeting_system.md`](docs/targeting_system.md) | LIP-Arena: 4-scenario protocol, scoring, tracks |
 | [`docs/operator_mode.md`](docs/operator_mode.md) | Operator correction pipeline + 16 calibration modalities |
@@ -1220,4 +1282,15 @@ See `LICENSE`.
 
 ## Citation
 
-If you use PWM in academic work, please cite the associated paper (to be added) and link to this repository.
+If you use PWM in academic work, please cite the flagship paper and link to this repository:
+
+```bibtex
+@article{yang2026pwm,
+  title   = {Ten Primitives and Three Gates: The Universal Structure
+             of Computational Imaging},
+  author  = {Yang, Chengshuai and Yuan, Xin},
+  journal = {Under review},
+  year    = {2026},
+  note    = {Flagship paper for the Physics World Model (PWM) framework}
+}
+```
