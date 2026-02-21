@@ -303,7 +303,7 @@ additions with partial or planned validation.
                   r r r r}
 \caption{Oracle correction ceiling summary.  $\Delta$PSNR is the
 improvement from Scenario~II (mismatch) to Scenario~IV (oracle: true operator applied to mismatched data).
-For modalities with low-dimensional mismatch (Matrix, CT, Lensless, MRI, Ptychography), autonomous correction achieves near-oracle performance (Sc.~III $\approx$ Sc.~IV); for CASSI and CACTI with multi-parameter mismatch, the gap between Sc.~III and Sc.~IV is reported in Table~S7. CASSI correction results use GAP-TV as the reconstruction solver.
+For modalities with low-dimensional mismatch (Matrix, CT, Lensless, MRI, Ptychography), autonomous correction achieves near-oracle performance (Sc.~III $\approx$ Sc.~IV); for CASSI and CACTI with multi-parameter mismatch, the gap between Sc.~III and Sc.~IV is reported in Table~S9. CASSI correction results use GAP-TV as the reconstruction solver.
 Scenario~I (ideal) PSNR values are available in the RunBundle manifests in the code repository.}
 \label{tab:correction_params} \\
 \toprule
@@ -350,7 +350,7 @@ SPC\footnote{SPC uses FISTA-TV as the reconstruction solver for Table~S1 consist
   & gain\_drift
   & 18.51 & 26.21 & +7.71
   & --- \\
-CASSI (Alg~1)\footnote{Reported values are averaged over 10 test scenes using GAP-TV as the reconstruction solver. Sc.~II from InverseNet validation; Sc.~IV values are oracle upper bounds (true operator applied to mismatched data). Autonomous correction achieves 85\% of oracle (Table~S7).}
+CASSI (Alg~1)\footnote{Reported values are averaged over 10 test scenes using GAP-TV as the reconstruction solver. Sc.~II from InverseNet validation; Sc.~IV values are oracle upper bounds (true operator applied to mismatched data). Autonomous correction achieves 85\% of oracle (Table~S9).}
   & mask\_geo + dispersion
   & 20.96 & 21.50 & +0.54
   & 0.0105 \\
@@ -766,7 +766,7 @@ mismatch, independent of the (unknown) ground truth.
 
 \begin{table}[htbp]
 \centering
-\caption{Supplementary Table S5: CASSI real-data measurement residuals.
+\caption{CASSI real-data measurement residuals.
 Residual values $r$ (Eq.~\ref{eq:meas_residual}) and residual ratio
 (mismatched/calibrated) across 5 TSA scenes and 4 methods.}
 \label{tab:cassi_real}
@@ -831,7 +831,7 @@ compression ratio 10 (10 video frames encoded per snapshot).
 
 \begin{table}[htbp]
 \centering
-\caption{Supplementary Table S6: CACTI real-data measurement residuals
+\caption{CACTI real-data measurement residuals
 and total variation.  Residual ratio (mismatched/calibrated) and
 total variation (TV) for 4 real scenes and 2 methods.}
 \label{tab:cacti_real}
@@ -876,7 +876,7 @@ more sensitive to operator mismatch than spectral compressive modalities
 
 \begin{table}[htbp]
 \centering
-\caption{Supplementary Table S7: Grid-search calibration results on
+\caption{Grid-search calibration results on
 simulated data with known ground truth.  PSNR values in dB.
 Sc.~II = mismatch (no calibration); Sc.~III = PWM grid-search corrected;
 Sc.~IV = oracle (true operator on mismatched data).
@@ -921,7 +921,7 @@ reconstruction sparsity for radiometric mismatch.
 %% SUPPLEMENTARY TABLE S8: SSIM COMPARISON
 %% ============================================================
 \newpage
-\section{Supplementary Table S8: SSIM Comparison Across Modalities}
+\section{Supplementary Table S10: SSIM Comparison Across Modalities}
 \label{sec:ssim}
 
 Table~\ref{tab:ssim} reports the structural similarity index (SSIM)
@@ -977,7 +977,7 @@ resemblance to the ground truth under mismatch conditions.
 %% ============================================================
 %% SUPPLEMENTARY TABLE S9: CASSI SAM COMPARISON
 %% ============================================================
-\section{Supplementary Table S9: CASSI Spectral Angle Mapper (SAM)}
+\section{Supplementary Table S11: CASSI Spectral Angle Mapper (SAM)}
 \label{sec:sam}
 
 Table~\ref{tab:sam} reports the spectral angle mapper (SAM, in degrees)
@@ -1018,7 +1018,7 @@ accuracy is more important than spatial quality.
 %% SUPPLEMENTARY TABLES S10--S11: GATE 1 & GATE 2 VALIDATION
 %% ============================================================
 \newpage
-\section{Supplementary Tables S10--S11: Gate~1 and Gate~2 Validation}
+\section{Supplementary Tables S12--S13: Gate~1 and Gate~2 Validation}
 \label{sec:gate12}
 
 The main text argues that Gate~3 (operator mismatch) is the dominant
@@ -1206,7 +1206,7 @@ Gate~3 & Operator mismatch            & Scanner calibration drift \\
 
 \subsection{ACR Metric Validation}
 
-Nine ACR-aligned QC metrics are computed automatically from CT phantom
+Ten ACR-aligned QC metrics are computed automatically from CT phantom
 (Gammex 464) scans.  Table~\ref{tab:acr_metrics} reports the measurement
 agreement between the CT QC Copilot and console-reported values on a GE
 Revolution Apex scanner (120~kVp, 200~mAs, 5~mm axial).
@@ -1240,7 +1240,7 @@ measurements to within acceptable precision.
 
 \subsection{Drift Detection Performance}
 
-Statistical process control (SPC) using five Western Electric rules was
+Statistical process control using five Western Electric rules was
 evaluated on a 30-scanner simulated fleet over 12 monthly measurement
 cycles.  Four scanners were programmed with known drift trajectories
 (noise drift: 2 scanners; uniformity drift: 1 scanner; CT number drift:
@@ -1468,7 +1468,7 @@ PWM (beam-search corrected) & 32.05 & 0.7264 \\
 
 \paragraph{Complementarity.} ESPIRiT and PWM address different aspects of the calibration problem. ESPIRiT exploits $k$-space structure to estimate sensitivity maps purely from data, performing well when sufficient calibration data is available (e.g., fully sampled ACS regions with $\geq$~32 lines). PWM corrects arbitrary forward-model parameters using the OperatorGraph structure, providing robust improvement even in data-limited regimes. The two approaches are complementary: ESPIRiT can be combined with PWM by using ESPIRiT-estimated maps as the initial $H_{\mathrm{nom}}$ for PWM correction.
 
-PWM's modality-agnostic correction achieves comparable recovery on validated modalities (CASSI: 22--46\%, CACTI: 100\%, SPC: 86--92\%; Table~S7) without requiring domain-specific tuning. The advantage is most pronounced for CASSI, where no automated calibration standard exists, and for cross-modality deployment, where a single pipeline serves all modalities without per-modality engineering.
+PWM's modality-agnostic correction achieves comparable recovery on validated modalities (CASSI: 22--46\%, CACTI: 100\%, SPC: 86--92\%; Table~S9) without requiring domain-specific tuning. The advantage is most pronounced for CASSI, where no automated calibration standard exists, and for cross-modality deployment, where a single pipeline serves all modalities without per-modality engineering.
 
 %% ============================================================
 %% SUPPLEMENTARY NOTE S13: MRI UNDER CLINICALLY REALISTIC CONDITIONS
