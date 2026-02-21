@@ -428,6 +428,15 @@ def generate_all_data():
     """Generate example data for all modalities."""
     data_dir = get_examples_dir() / "data"
 
+    # Create all subdirectories up front
+    for subdir in [
+        "widefield_basic", "widefield_lowdose", "confocal_livecell",
+        "confocal_3d", "sim", "cassi", "spc", "lensless", "lightsheet",
+        "ct", "mri", "ptychography", "holography", "nerf",
+        "gaussian_splatting", "matrix_generic",
+    ]:
+        (data_dir / subdir).mkdir(parents=True, exist_ok=True)
+
     print("Generating example data for all modalities...")
 
     # 1. Widefield Basic
