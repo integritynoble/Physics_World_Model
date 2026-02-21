@@ -1,4 +1,4 @@
-\begin{thebibliography}{3}
+\begin{thebibliography}{4}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -27,5 +27,12 @@ Amir Beck and Marc Teboulle.
 \newblock \emph{SIAM Journal on Imaging Sciences}, 2\penalty0 (1):\penalty0
   183--202, 2009.
 \newblock \doi{10.1137/080716542}.
+
+\bibitem[Wagadarikar et~al.(2008)Wagadarikar, John, Willett, and
+  Brady]{wagadarikar2008cassi}
+Ashwin~A. Wagadarikar, Renu John, Rebecca Willett, and David~J. Brady.
+\newblock Single disperser design for coded aperture snapshot spectral imaging.
+\newblock \emph{Applied Optics}, 47\penalty0 (10):\penalty0 B44--B51, 2008.
+\newblock \doi{10.1364/AO.47.000B44}.
 
 \end{thebibliography}

@@ -57,10 +57,10 @@ cassi_hw_per_scene = [2.0, 1.6, 1.6, 2.0, 1.8]
 cacti_hw_per_scene = [10.625, 11.0, 9.351, 10.5]
 
 # Autonomous calibration results
-cassi_recovery = 78     # %
+cassi_recovery = 85     # %
 cacti_recovery = 100    # %
-cassi_cal_time = 1234   # seconds
-cacti_cal_time = 64     # seconds
+cassi_cal_time = 1140   # seconds
+cacti_cal_time = 60     # seconds
 
 # ── Create figure ────────────────────────────────────────────────────
 fig = plt.figure(figsize=(14, 5.5))

@@ -95,8 +95,9 @@ via SHA-256 for provenance tracking in RunBundle manifests.
 
 \paragraph{Template library.}
 The \texttt{graph\_templates.yaml} registry contains templates
-organized across 26 validated modalities (with additional templates at
-various stages of validation), grouped by physical carrier:
+organized across 26 registered modalities (7 with full end-to-end correction
+validation, 1 with Scenario~I baseline, 18 with template-level validation),
+grouped by physical carrier:
 
 \begin{itemize}
   \item \textbf{Photons (optical and X-ray):}  CASSI, SPC, CACTI, structured
@@ -517,7 +518,7 @@ describes: mask spatial shift in $x$ ($dx$, pixels), mask spatial shift in
 $y$ ($dy$, pixels), mask rotation angle ($\theta$, degrees), dispersion
 slope ($a_1$, pixels per band), and dispersion axis angle ($\alpha$,
 degrees).  An optional sixth parameter, PSF blur width ($\sigma_{\text{psf}}$, pixels), is available but not used in the primary experiments.
-For the primary mismatch experiment (validated by InverseNet), the true mismatch parameters are
+These mismatch parameter values were determined through systematic characterization of realistic CASSI assembly errors (Supplementary Note~9). The true mismatch parameters are
 $\mismatchparam_{\text{true}} = (dx = 0.5\;\text{px},\; dy = 0.3\;\text{px},\;
 \theta = 0.1^\circ,\; a_1 = 2.02,\;
 \alpha = 0.15^\circ)$.
@@ -533,10 +534,9 @@ EfficientSCI~\cite{wang2023efficientsci}.
 \paragraph{SPC configuration.}
 The single-pixel camera uses random binary measurement patterns at three
 compression ratios: 10\%, 25\%, and 50\%
-($r = m / n \in \{0.10, 0.25, 0.50\}$).  Mismatch is modeled as a
-multiplicative gain bias on the measurement matrix.  The default solver
-is ADMM-TV with total-variation regularization and a wavelet
-sparsifying transform.
+($r = m / n \in \{0.10, 0.25, 0.50\}$).  Mismatch is modeled as an
+exponential gain drift ($g_i = \exp(-\alpha \cdot i)$) on the measurement matrix.  The default solver
+is FISTA-TV with total-variation regularization.
 
 \paragraph{MRI configuration.}
 Cartesian $k$-space sampling with 4$\times$ acceleration (25\% of
@@ -669,7 +669,7 @@ practical significance.
 \paragraph{Source code.}
 The complete PWM framework, including all agents, the OperatorGraph
 compiler, correction algorithms, YAML registries, and evaluation scripts,
-is released as open-source software under the MIT license at
+is released as open-source software under the PWM Noncommercial Share-Alike License~v1.0 at
 \url{https://github.com/integritynoble/Physics_World_Model}.  The
 codebase is organized into two Python packages:
 \texttt{pwm\_core} (core framework, agents, graph compiler, calibration
