@@ -440,7 +440,7 @@ where $B$ is the uniform operator norm bound from Definition~\ref{def:ctier}. Th
 \[
   \frac{\|H - \Hdag\|}{\|H\|} \leq \frac{K \cdot \max_k(\varepsilon_k) \cdot B^{K-1}}{\|H\|} \leq \varepsilon
 \]
-provided $\max_k(\varepsilon_k) \leq \varepsilon \cdot \|H\| / (K \cdot B^{K-1})$. The uniform worst-case bound with $K=4$ and $B=4$ requires $\max_k(\varepsilon_k) \leq 3.9 \times 10^{-5}$; however, the bound~\eqref{eq:error} is much tighter when evaluated per modality using the actual operator norms from Table~\ref{tab:supp_opnorm}. Two features dominate the tightening. First, most per-factor errors are exactly zero: Lemmas~\ref{lem:elastic} and~\ref{lem:encode} give exact representations ($\varepsilon_M = \varepsilon_F = \varepsilon_\Pi = 0$), so the sum $\sum_k \varepsilon_k \prod_{j \neq k}\|H_j\|$ reduces to one or two nonzero terms. Second, most primitives are norm-preserving ($\|H_k\| \leq 1$), so the product $\prod_{j \neq k}\|H_j\|$ is dominated by the single non-unit-norm primitive (typically $\|\Sigma\| \leq 3.9$ or $\|\Pi\| \leq 3.2$). For example, CASSI ($K=4$) has only $\varepsilon_D \leq 10^{-3}$ nonzero, with $\prod_{j \neq D}\|H_j\| = \|M\|\cdot\|W\|\cdot\|\Sigma\| \leq 1 \times 1 \times 3.9 = 3.9$, giving total relative error $\leq 3.9 \times 10^{-3}$. For CT ($K=2$, only $\varepsilon_D$ nonzero, $\|\Pi\| \leq 3.2$): relative error $\leq 3.2 \times 10^{-3}$. This per-modality computation confirms $\|H - \Hdag\|/\|H\| < \varepsilon = 0.01$ for all 31 validated modalities (see Supplementary~S3 for the full per-phase bounds).
+provided $\max_k(\varepsilon_k) \leq \varepsilon \cdot \|H\| / (K \cdot B^{K-1})$. The uniform worst-case bound with $K=4$ and $B=4$ requires $\max_k(\varepsilon_k) \leq 3.9 \times 10^{-5}$; however, the bound~\eqref{eq:error} is much tighter when evaluated per modality using the actual operator norms from Table~\ref{tab:supp_opnorm}. Two features dominate the tightening. First, most per-factor errors are exactly zero: Lemmas~\ref{lem:elastic} and~\ref{lem:encode} give exact representations ($\varepsilon_M = \varepsilon_F = \varepsilon_\Pi = 0$), so the sum $\sum_k \varepsilon_k \prod_{j \neq k}\|H_j\|$ reduces to one or two nonzero terms. Second, most primitives are norm-preserving ($\|H_k\| \leq 1$), so the product $\prod_{j \neq k}\|H_j\|$ is dominated by the single non-unit-norm primitive (typically $\|\Sigma\| \leq 3.9$ or $\|\Pi\| \leq 3.2$). For example, CASSI ($K=4$) has only $\varepsilon_D \leq 10^{-3}$ nonzero, with $\prod_{j \neq D}\|H_j\| = \|M\|\cdot\|W\|\cdot\|\Sigma\| \leq 1 \times 1 \times 3.9 = 3.9$, giving absolute error $\|H - \Hdag\| \leq 3.9 \times 10^{-3}$. For CT ($K=2$, only $\varepsilon_D$ nonzero, $\|\Pi\| \leq 3.2$): absolute error $\leq 3.2 \times 10^{-3}$. Since forward models in $\ctier$ have $\|H\| \geq 1$ under standard normalization (unit-norm object producing non-vanishing measurements), the relative errors are at most these values. This per-modality computation confirms $\|H - \Hdag\|/\|H\| < \varepsilon = 0.01$ for all 31 validated modalities (see Supplementary~S3 for the full per-phase bounds).
 
 \textbf{Step 5: Complexity bound.} Let $c$ be the maximum number of primitive nodes per factor (bounded by the detection-readout chain length, at most 5). We establish two bounds:
 \begin{itemize}
@@ -583,7 +583,7 @@ Seven of eight modalities decompose with the frozen library. The eighth (Compton
 
 \subsection{Basis-Growth Saturation}
 
-Figure~\ref{fig:growth} plots the number of distinct primitive types as modalities are added to the registry in chronological order. The curve saturates: 9 of 10 primitives are introduced by the first 8 modalities---Convolve ($C$) and Detect ($D$) from Lensless imaging, Project ($\Pi$) from CT, Modulate ($M$) and Accumulate ($\Sigma$) from SPC, Propagate ($P$) from Ptychography, Encode ($F$) and Sample ($S$) from MRI, and Disperse ($W$) from CASSI. Scatter ($R$) is introduced only when Compton/Raman-class modalities enter (modality 28). THz-TDS (modality 27) uses a new Detect \emph{family} (coherent-field, family 5) but does not require a new primitive type. The growth is sublinear and saturating: $K = 10$ at $N = 31$, with no new primitive type required for the most recent 19 template-validated modalities. This saturation is consistent with Theorem~\ref{thm:fpb}: once all five physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
+Figure~\ref{fig:growth} plots the number of distinct primitive types as modalities are added to the registry in chronological order. The curve saturates: 9 of 10 primitives are introduced by the first 7 modalities---Convolve ($C$) and Detect ($D$) from Lensless imaging, Project ($\Pi$) from CT, Modulate ($M$) and Accumulate ($\Sigma$) from SPC, Propagate ($P$) from Ptychography, Encode ($F$) and Sample ($S$) from MRI, and Disperse ($W$) from CASSI. Scatter ($R$) is introduced only when Compton/Raman-class modalities enter (modality 27). THz-TDS (modality 26) uses a new Detect \emph{family} (coherent-field, family 5) but does not require a new primitive type. The growth is sublinear and saturating: $K = 10$ at $N = 31$, with no new primitive type required for the most recent 19 template-validated modalities. This saturation is consistent with Theorem~\ref{thm:fpb}: once all five physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
 
 \begin{figure}[htbp]
 \centering
@@ -613,31 +613,31 @@ Figure~\ref{fig:growth} plots the number of distinct primitive types as modaliti
   (4,5)   % CACTI: M, Sigma, D (no new)
   (5,6)   % Ptychography: +P → K=6
   (6,8)   % MRI: +F, +S → K=8
-  (7,8)   % Matrix (no new)
-  (8,9)   % CASSI: +W → K=9
-  (9,9)   % Electron ptycho (no new)
-  (10,9)  % SIM (no new)
-  (11,9)  % OCT (no new)
-  (12,9)  % Photoacoustic (no new)
-  (13,9)  % Phase-contrast X-ray (no new)
-  (14,9)  % Neutron imaging (no new)
-  (15,9)  % Holography (no new)
-  (16,9)  % STED (no new)
-  (17,9)  % Light-field (no new)
-  (18,9)  % FPM (no new)
-  (19,9)  % Spectral CT (no new)
-  (20,9)  % PET (no new)
-  (21,9)  % SPECT (no new)
-  (22,9)  % Ultrasound (no new)
-  (23,9)  % SAR (no new)
-  (24,9)  % Radar (no new)
-  (25,9)  % Electron tomo (no new)
-  (26,9)  % Ghost imaging (no new)
-  (27,9)  % THz-TDS: uses D with coherent family, no new primitive type
-  (28,10) % Compton: +R → K=10
-  (29,10) % Raman (no new)
-  (30,10) % Fluorescence (no new)
-  (31,10) % DOT (no new)
+  (7,9)   % CASSI: +W → K=9
+  (8,9)   % Electron ptycho (no new)
+  (9,9)   % SIM (no new)
+  (10,9)  % OCT (no new)
+  (11,9)  % Photoacoustic (no new)
+  (12,9)  % Phase-contrast X-ray (no new)
+  (13,9)  % Neutron imaging (no new)
+  (14,9)  % Holography (no new)
+  (15,9)  % STED (no new)
+  (16,9)  % Light-field (no new)
+  (17,9)  % FPM (no new)
+  (18,9)  % Spectral CT (no new)
+  (19,9)  % PET (no new)
+  (20,9)  % SPECT (no new)
+  (21,9)  % Ultrasound (no new)
+  (22,9)  % SAR (no new)
+  (23,9)  % Radar (no new)
+  (24,9)  % Electron tomo (no new)
+  (25,9)  % Ghost imaging (no new)
+  (26,9)  % THz-TDS: uses D with coherent family, no new primitive type
+  (27,10) % Compton: +R → K=10
+  (28,10) % Raman (no new)
+  (29,10) % Fluorescence (no new)
+  (30,10) % DOT (no new)
+  (31,10) % Brillouin (no new, R already in library)
 };
 % Annotate key primitive introductions
 \node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:1,2.2) {$C,D$};
@@ -645,8 +645,8 @@ Figure~\ref{fig:growth} plots the number of distinct primitive types as modaliti
 \node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:3,5.2) {$+M,\Sigma$};
 \node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:5,6.2) {$+P$};
 \node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:6,8.2) {$+F,S$};
-\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:8,9.2) {$+W$};
-\node[anchor=south, font=\scriptsize, pwmRed] at (axis cs:28,10.4) {$+R$};
+\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:7,9.2) {$+W$};
+\node[anchor=south, font=\scriptsize, pwmRed] at (axis cs:27,10.4) {$+R$};
 % Dashed saturation line
 \addplot[dashed, gray, line width=0.8pt] coordinates {(0,10)(33,10)};
 \node[anchor=south east, font=\scriptsize, gray] at (axis cs:33,10) {$K=10$};
