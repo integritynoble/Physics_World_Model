@@ -20,11 +20,18 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from .cisp_scorer import (
-    TRACKS,
-    CISPSubmissionScore,
-    score_submission,
-)
+try:
+    from .cisp_scorer import (
+        TRACKS,
+        CISPSubmissionScore,
+        score_submission,
+    )
+except ImportError:
+    from cisp_scorer import (
+        TRACKS,
+        CISPSubmissionScore,
+        score_submission,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -221,6 +228,7 @@ def save_leaderboard(board: CISPLeaderboard, path: Path):
         data["track_boards"][track_name] = [
             {
                 "team_id": e.team_id,
+                "track": e.track,
                 "primary_score": e.primary_score,
                 "secondary_scores": e.secondary_scores,
                 "final_score": e.final_score,
