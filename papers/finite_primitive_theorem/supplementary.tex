@@ -333,11 +333,11 @@ The five canonical Detect response families are designed to cover the physical d
 \paragraph{Mathematical distinctness.}
 The five families are pairwise distinct as functions on $\mathbb{C}^n$:
 \begin{itemize}
-  \item Family~1 ($g\mathbf{x}$) is linear in $\mathbf{x}$ and real-valued for real inputs; it is the only family that is linear.
+  \item Family~1 ($g\mathbf{x}$) is $\mathbb{C}$-linear in $\mathbf{x}$ (i.e., $\eta(\alpha\mathbf{x}) = \alpha\,\eta(\mathbf{x})$ for $\alpha \in \mathbb{C}$) and real-valued for real inputs; it is the only family that is $\mathbb{C}$-linear.
   \item Family~2 ($g\log(1+|\mathbf{x}|^2/x_0)$) is concave, monotonically increasing, and unbounded.
   \item Family~3 ($g\sigma(|\mathbf{x}|^2 - x_0)$) is sigmoidal and bounded in $[0, g]$.
   \item Family~4 ($g|\mathbf{x}|^2$) is quadratic (homogeneous degree 2), unbounded.
-  \item Family~5 ($g\,\mathrm{Re}[\mathbf{x} \cdot e^{i\phi}]$) is linear in $\mathbf{x}$ but complex-valued and phase-sensitive; it differs from Family~1 by the complex inner product structure.
+  \item Family~5 ($g\,\mathrm{Re}[\mathbf{x} \cdot e^{i\phi}]$) is $\mathbb{R}$-linear but not $\mathbb{C}$-linear (taking $\mathrm{Re}[\cdot]$ breaks complex homogeneity); it differs from Family~1 by extracting only the real part of a phase-rotated inner product.
 \end{itemize}
 No two families agree on all inputs, confirming that the Detect definition introduces five genuinely distinct response types.
 
