@@ -89,11 +89,10 @@ def test_cpu_mode_false_does_not_force_device(monkeypatch):
 
     portfolio.run_portfolio(y, physics, {"candidates": ["gap_tv"]})
 
-    # Either run_gap_tv was not called (fallback path) OR device was not set to "cpu"
-    if "cfg" in captured:
-        assert captured["cfg"].get("device") != "cpu", (
-            "device should NOT be 'cpu' when cpu_mode is absent"
-        )
+    assert "cfg" in captured, "run_gap_tv was never called on gap_tv candidate path"
+    assert captured["cfg"].get("device") != "cpu", (
+        "device should NOT be 'cpu' when cpu_mode is absent"
+    )
 
 
 # ---------------------------------------------------------------------------
