@@ -45,7 +45,7 @@ All registries live in `packages/pwm_core/contrib/`:
 
 | File | Content |
 |------|---------|
-| `modalities.yaml` | 26 modality definitions |
+| `modalities.yaml` | 64 modality definitions |
 | `solver_registry.yaml` | 43+ solver definitions |
 | `compression_db.yaml` | Compression/recoverability tables |
 | `mismatch_db.yaml` | Mismatch family definitions |

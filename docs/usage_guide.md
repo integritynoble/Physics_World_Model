@@ -574,7 +574,7 @@ pwm calib-recon --y examples/data/lensless/measurements.npy --operator lensless 
 
 ---
 
-### 4.9 Light-Sheet Microscopy
+### 4.10 Light-Sheet Microscopy
 
 Light-sheet imaging with stripe artifacts.
 
@@ -620,7 +620,7 @@ pwm calib-recon --y examples/data/lightsheet/measurements.npy --operator lightsh
 
 ---
 
-### 4.10 Cone-Beam CT
+### 4.11 Cone-Beam CT
 
 Low-dose CT with scatter.
 
@@ -668,7 +668,7 @@ pwm calib-recon --y examples/data/ct/measurements.npy --operator ct --out-dir ru
 
 ---
 
-### 4.11 MRI (Accelerated)
+### 4.12 MRI (Accelerated)
 
 Accelerated MRI with k-space undersampling.
 
@@ -715,7 +715,7 @@ pwm calib-recon --y examples/data/mri/measurements.npy --operator mri --out-dir 
 
 ---
 
-### 4.12 Ptychography
+### 4.13 Ptychography
 
 Ptychographic phase retrieval.
 
@@ -759,7 +759,7 @@ pwm calib-recon --y examples/data/ptychography/measurements.npy --operator ptych
 
 ---
 
-### 4.13 Holography
+### 4.14 Holography
 
 Off-axis digital holography.
 
@@ -803,7 +803,7 @@ pwm calib-recon --y examples/data/holography/measurements.npy --operator hologra
 
 ---
 
-### 4.14 NeRF (Neural Radiance Fields)
+### 4.15 NeRF (Neural Radiance Fields)
 
 Neural radiance field from multi-view images.
 
@@ -845,7 +845,7 @@ pwm calib-recon --y examples/data/nerf/measurements.npy --operator nerf --out-di
 
 ---
 
-### 4.15 3D Gaussian Splatting
+### 4.16 3D Gaussian Splatting
 
 3D Gaussian splatting from multi-view images.
 
@@ -887,7 +887,7 @@ pwm calib-recon --y examples/data/gaussian_splatting/measurements.npy --operator
 
 ---
 
-### 4.16 Generic Matrix (y = Ax)
+### 4.17 Generic Matrix (y = Ax)
 
 Generic linear inverse problem with explicit matrix.
 
