@@ -277,19 +277,17 @@ class TestAlgorithm2MSTIntegration:
         if not HAS_TORCH:
             pytest.skip("PyTorch not available")
 
-        # Create synthetic data
-        H, W, L = 256, 256, 28
+        # Create synthetic data (small size to keep test fast)
+        H, W, L = 64, 64, 8
         x_true = np.random.rand(H, W, L).astype(np.float32) * 0.5
         mask_real = np.random.rand(H, W).astype(np.float32) * 0.8 + 0.1
 
-        # Create measurement
+        # Create measurement using corrupted mask (N=1, K=1 for speed)
         from pwm_core.calibration import SimulatedOperatorEnlargedGrid, MismatchParameters
-        op = SimulatedOperatorEnlargedGrid(L=L, step=2)
-
-        # Inject small mismatch
         from pwm_core.calibration import warp_affine_2d
         mask_corrupted = warp_affine_2d(mask_real, dx=0.2, dy=0.1, theta=0.05)
-        y_meas = op.forward(x_true, mask_corrupted)
+        op = SimulatedOperatorEnlargedGrid(mask_256=mask_corrupted, N=1, K=1)
+        y_meas = op.forward(x_true)
 
         # Coarse estimate (Algorithm 1)
         mismatch_coarse = MismatchParameters(
