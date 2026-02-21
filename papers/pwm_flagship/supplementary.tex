@@ -301,21 +301,21 @@ additions with partial or planned validation.
 
 \begin{longtable}{>{\raggedright}p{2.0cm} >{\raggedright}p{2.8cm}
                   r r r r}
-\caption{Complete correction parameter summary.  $\Delta$PSNR is the
-improvement from Scenario~II (mismatch) to Scenario~III (corrected).
-CASSI correction results in this table use GAP-TV as the reconstruction solver; the main-text deep dive reports results for GAP-TV, MST-L, and HDNet.
-Scenario~I (ideal) PSNR values and recovery ratios ($\rho$) for all configurations are available in the RunBundle manifests in the code repository.}
+\caption{Oracle correction ceiling summary.  $\Delta$PSNR is the
+improvement from Scenario~II (mismatch) to Scenario~IV (oracle: true operator applied to mismatched data).
+For modalities with low-dimensional mismatch (Matrix, CT, Lensless, MRI, Ptychography), autonomous correction achieves near-oracle performance (Sc.~III $\approx$ Sc.~IV); for CASSI and CACTI with multi-parameter mismatch, the gap between Sc.~III and Sc.~IV is reported in Table~S7. CASSI correction results use GAP-TV as the reconstruction solver.
+Scenario~I (ideal) PSNR values are available in the RunBundle manifests in the code repository.}
 \label{tab:correction_params} \\
 \toprule
 \textbf{Modality} & \textbf{Mismatch Parameter} &
-  \textbf{Sc.~II} & \textbf{Sc.~III} &
+  \textbf{Sc.~II} & \textbf{Sc.~IV} &
   \textbf{$\Delta$PSNR} & \textbf{RMSE} \\
   & & \textbf{(dB)} & \textbf{(dB)} & \textbf{(dB)} & \\
 \midrule
 \endfirsthead
 \toprule
 \textbf{Modality} & \textbf{Mismatch Parameter} &
-  \textbf{Sc.~II} & \textbf{Sc.~III} &
+  \textbf{Sc.~II} & \textbf{Sc.~IV} &
   \textbf{$\Delta$PSNR} & \textbf{RMSE} \\
   & & \textbf{(dB)} & \textbf{(dB)} & \textbf{(dB)} & \\
 \midrule
@@ -334,7 +334,7 @@ CT
   & center\_of\_rotation
   & 13.41 & 24.09 & +10.68
   & 0.0031 \\
-CACTI\footnote{CACTI uses GAP-TV as the reconstruction solver for Table~S1 consistency.  Oracle values from InverseNet validation under 8-parameter mismatch ($dx{=}0.5$\,px, $dy{=}0.3$\,px, $\theta{=}0.1^\circ$, $\Delta t{=}0.05$, $\eta{=}0.95$, $g{=}1.02$, $o{=}0.002$, $\sigma_n{=}1.0$).  State-of-the-art EfficientSCI achieves Sc.~II$\,=\,$14.81\,dB and Sc.~III$\,=\,$27.38\,dB ($\rho{=}61.1\%$); see main text.}
+CACTI\footnote{CACTI uses GAP-TV as the reconstruction solver for Table~S1 consistency.  Oracle values from InverseNet validation under 8-parameter mismatch ($dx{=}0.5$\,px, $dy{=}0.3$\,px, $\theta{=}0.1^\circ$, $\Delta t{=}0.05$, $\eta{=}0.95$, $g{=}1.02$, $o{=}0.002$, $\sigma_n{=}1.0$).  State-of-the-art EfficientSCI achieves Sc.~II$\,=\,$14.81\,dB and Sc.~IV$\,=\,$27.38\,dB; see main text.}
   & 8-param mismatch
   & 15.81 & 26.01 & +10.21
   & --- \\
@@ -346,15 +346,15 @@ MRI
   & coil\_sensitivities
   & 6.94 & 55.19 & +48.25
   & 0.0003 \\
-SPC\footnote{SPC uses FISTA-TV as the reconstruction solver for Table~S1 consistency.  Values from InverseNet validation under exponential gain drift ($\alpha{=}0.0015$).  HATNet achieves Sc.~II$\,=\,$19.40\,dB and Sc.~III$\,=\,$29.78\,dB ($\rho{=}89.6\%$); see main text.}
+SPC\footnote{SPC uses FISTA-TV as the reconstruction solver for Table~S1 consistency.  Values from InverseNet validation under exponential gain drift ($\alpha{=}0.0015$).  HATNet achieves Sc.~II$\,=\,$19.40\,dB and Sc.~IV$\,=\,$29.78\,dB; see main text.}
   & gain\_drift
   & 18.51 & 26.21 & +7.71
   & --- \\
-CASSI (Alg~1)\footnote{Reported values are averaged over 10 test scenes using GAP-TV as the reconstruction solver. Sc.~II from InverseNet validation; Sc.~III values are oracle upper bounds (true operator applied to mismatched data).}
+CASSI (Alg~1)\footnote{Reported values are averaged over 10 test scenes using GAP-TV as the reconstruction solver. Sc.~II from InverseNet validation; Sc.~IV values are oracle upper bounds (true operator applied to mismatched data). Autonomous correction achieves 85\% of oracle (Table~S7).}
   & mask\_geo + dispersion
   & 20.96 & 21.50 & +0.54
   & 0.0105 \\
-CASSI (Alg~2)\footnote{Note: the correction-table PSNR reflects GAP-TV reconstruction; state-of-the-art solvers (e.g., MST-L) achieve 27.33\,dB oracle PSNR under the corrected operator (see main text).}
+CASSI (Alg~2)\footnote{The correction-table PSNR reflects GAP-TV reconstruction; state-of-the-art solvers (e.g., MST-L) achieve 27.33\,dB under Sc.~IV (see main text and Table~S2).}
   & mask\_geo + dispersion
   & 20.96 & 21.72 & +0.76
   & 0.0098 \\
@@ -409,19 +409,20 @@ four methods under three scenarios, matching the InverseNet benchmark~\cite{yang
 
 \begin{footnotesize}
 \begin{longtable}{l l r r r r}
-\caption{CASSI per-scene PSNR (dB) and recovery ratio $\rho$.  Sc.~I = ideal forward model;
-Sc.~II = mismatched (baseline); Sc.~III = oracle correction (true operator applied to mismatched data).
+\caption{CASSI per-scene PSNR (dB) and oracle recovery ratio $\rho_{\mathrm{IV}}$.  Sc.~I = ideal forward model;
+Sc.~II = mismatched (baseline); Sc.~IV = oracle correction (true operator applied to mismatched data).
 All values from InverseNet validation under the 5-parameter mismatch ($dx{=}0.5$\,px, $dy{=}0.3$\,px, $\theta{=}0.1^\circ$, $a_1{=}2.02$, $\alpha{=}0.15^\circ$).
-HDNet shows $\rho{=}0\%$ across all scenes due to its mask-oblivious architecture.}
+$\rho_{\mathrm{IV}} = (\mathrm{Sc.~IV} - \mathrm{Sc.~II}) / (\mathrm{Sc.~I} - \mathrm{Sc.~II})$ is the oracle recovery ceiling.
+HDNet shows $\rho_{\mathrm{IV}}{=}0\%$ across all scenes due to its mask-oblivious architecture.}
 \label{tab:cassi_scenes} \\
 \toprule
 \textbf{Scene} & \textbf{Method} &
-  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III} & $\boldsymbol{\rho}$ \\
+  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~IV} & $\boldsymbol{\rho}_{\textbf{IV}}$ \\
 \midrule
 \endfirsthead
 \toprule
 \textbf{Scene} & \textbf{Method} &
-  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III} & $\boldsymbol{\rho}$ \\
+  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~IV} & $\boldsymbol{\rho}_{\textbf{IV}}$ \\
 \midrule
 \endhead
 \bottomrule
@@ -508,7 +509,7 @@ by physical carrier tier.
 \begin{longtable}{r l l r r l l}
 \caption{26-modality template registry.  PSNR values are representative
 (Scenario~I, default solver).  ``Ref.\ PSNR'' is the best published result
-where available.  Validation tiers: \emph{Validated} = full Scenarios~I--IV correction; \emph{Phase~2} = template validated, correction in progress; \emph{Phase~4} = template registered, validation planned.}
+where available.  Validation tiers: \emph{Validated} = full Scenarios~I--IV correction (7 modalities); \emph{Test} = pipeline consistency test (not an independent modality); \emph{Phase~2} = template validated, correction in progress; \emph{Phase~4} = template registered, validation planned.}
 \label{tab:26mod} \\
 \toprule
 \textbf{\#} & \textbf{Modality} & \textbf{Domain} &
@@ -525,7 +526,7 @@ where available.  Validation tiers: \emph{Validated} = full Scenarios~I--IV corr
 \bottomrule
 \endlastfoot
 %% Group 1: Incoherent light
-1  & Matrix (toy)         & Incoherent     & 23.35 & ---   & Validated & ADMM-TV \\
+1  & Matrix (toy)         & Incoherent     & 23.35 & ---   & Test      & ADMM-TV \\
 2  & SPC                  & Incoherent     & 28.06 & 31.0  & Validated & FISTA-TV \\
 3  & CASSI                & Incoherent     & 24.34 & 34.2  & Validated & GAP-TV \\
 4  & CACTI                & Incoherent     & 35.39 & 33.4  & Validated & EfficientSCI \\
@@ -544,7 +545,7 @@ where available.  Validation tiers: \emph{Validated} = full Scenarios~I--IV corr
 15 & CT (cone-beam)       & X-ray          & ---   & 39.5  & Phase 2   & --- \\
 16 & Electron Pty.        & Electron       & ---   & 25.9  & Phase 4   & --- \\
 %% Group 4: RF / acoustic
-17 & MRI (Cartesian)      & RF             & 55.19 & 42.3  & Validated & CG-SENSE \\
+17 & MRI (Cartesian)\footnote{Multi-coil Scenario~I PSNR (8 coils, $4\times$ acceleration); see Supplementary Note~S13 for full multi-coil analysis.}      & RF             & 52.11 & 42.3  & Validated & CG-SENSE \\
 18 & MRI (radial)         & RF             & ---   & 38.7  & Phase 2   & --- \\
 19 & MRI (spiral)         & RF             & ---   & 37.2  & Phase 4   & --- \\
 20 & Ultrasound           & Acoustic       & ---   & 31.8  & Phase 4   & --- \\
@@ -877,16 +878,16 @@ more sensitive to operator mismatch than spectral compressive modalities
 \centering
 \caption{Supplementary Table S7: Grid-search calibration results on
 simulated data with known ground truth.  PSNR values in dB.
-Sc.~II = mismatch (no calibration); Sc.~IV = grid-search calibrated;
-Sc.~III = oracle (true operator).
-Recovery = (Sc.~IV $-$ Sc.~II) / (Sc.~III $-$ Sc.~II).
+Sc.~II = mismatch (no calibration); Sc.~III = PWM grid-search corrected;
+Sc.~IV = oracle (true operator on mismatched data).
+Recovery = (Sc.~III $-$ Sc.~II) / (Sc.~IV $-$ Sc.~II).
 CASSI/CACTI use measurement-residual objective; SPC uses
 reconstruction-TV objective.}
 \label{tab:scenario_iv}
 \begin{tabular}{l l r r r r r}
 \toprule
 \textbf{Modality} & \textbf{Method} &
-  \textbf{Sc.~II} & \textbf{Sc.~IV} & \textbf{Sc.~III} &
+  \textbf{Sc.~II} & \textbf{Sc.~III} & \textbf{Sc.~IV} &
   \textbf{Time (s)} & \textbf{Recovery} \\
 \midrule
 CASSI  & GAP-TV     & 21.52 & 22.96 & 23.21 & 1140 & 85\% \\
@@ -931,12 +932,13 @@ quality, particularly structural distortions from operator mismatch.
 \begin{table}[htbp]
 \centering
 \caption{SSIM comparison across modalities and scenarios.
+Sc.~IV = oracle (true operator on mismatched data).
 Values are mean $\pm$ s.d.\ across test scenes/images.}
 \label{tab:ssim}
 \begin{tabular}{l l r r r}
 \toprule
 \textbf{Modality} & \textbf{Method} &
-  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III} \\
+  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~IV} \\
 \midrule
 \multicolumn{5}{l}{\emph{CASSI (10 KAIST scenes, 28 spectral bands)}} \\
 \midrule
@@ -985,12 +987,13 @@ Lower values indicate better spectral reconstruction.
 \begin{table}[htbp]
 \centering
 \caption{CASSI spectral angle mapper (SAM, degrees). Lower is better.
+Sc.~IV = oracle (true operator on mismatched data).
 Values are mean $\pm$ s.d.\ across 10 KAIST scenes.}
 \label{tab:sam}
 \begin{tabular}{l r r r}
 \toprule
 \textbf{Method} &
-  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III} \\
+  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~IV} \\
 \midrule
 GAP-TV      & $16.66 \pm 3.32$ & $24.27 \pm 2.92$ & $25.97 \pm 2.54$ \\
 PnP-HSI-CNN & $16.10 \pm 3.25$ & $23.73 \pm 2.81$ & $18.66 \pm 2.75$ \\
@@ -1003,8 +1006,8 @@ MST-L       & $7.44 \pm 1.24$  & $23.92 \pm 4.58$ & $11.74 \pm 1.32$ \\
 \noindent\textbf{Key observations.}
 Spectral fidelity degrades severely under mismatch: MST-L's SAM increases
 from $7.44^\circ$ (near-perfect spectral reconstruction) to $23.92^\circ$
-(substantial spectral mixing). Oracle correction partially recovers
-spectral quality ($11.74^\circ$), but the residual SAM error confirms
+(substantial spectral mixing). Under Scenario~IV (oracle), SAM partially recovers
+to $11.74^\circ$, but the residual SAM error confirms
 that multi-parameter mismatch produces irreversible spectral distortions
 not fully correctable by mask-only correction. The SAM metric is
 particularly valuable for remote sensing applications where spectral
@@ -1545,30 +1548,33 @@ Let $\mathcal{B} = \{P, M, \Pi, F, C, \Sigma, D, S, W, R\}$ be the canonical pri
 \subsection{Proof of Theorem 1}
 
 \paragraph{Proof strategy.}
-The proof is constructive: we show that every factor $H_k$ of a Tier-2 forward model can be realized by one or more primitives from $\mathcal{B}$, organized by the four physics-stage families. The per-factor approximation errors are then composed via sub-multiplicativity to yield the global bound. The key insight is that Tier-2 fidelity (linear, shift-variant) restricts each factor to a regime where well-characterized physical approximations (angular spectrum, Born series, piecewise shift-invariant partition) provide controlled error bounds.
+The proof is constructive: we show that every factor $H_k$ of a Tier-2 forward model can be realized by one or more primitives from $\mathcal{B}$, organized by the five physics-stage families. The per-factor approximation errors are then composed via sub-multiplicativity to yield the global bound. The key insight is that Tier-2 fidelity (linear, shift-variant) restricts each factor to a regime where well-characterized physical approximations (angular spectrum, Born series, piecewise shift-invariant partition) provide controlled error bounds.
 
 \begin{theorem}[Finite Primitive Basis --- restated]
 For every $H \in \mathcal{C}_{\mathrm{Tier2}}$, there exists a typed DAG $G$ with $V \subseteq \mathcal{B}$ that is an $\varepsilon$-approximate representation of $H$.
 \end{theorem}
 
 \begin{proof}
-The proof proceeds in four phases, one per physics-stage family.
+The proof proceeds in five phases, one per physics-stage family.
 
 \medskip
 \noindent\textbf{Phase 1: Propagation factors.}
 Any factor $H_k$ representing free-space carrier evolution satisfies a linear wave equation (Maxwell, Helmholtz, Schr\"{o}dinger, or acoustic). At Tier-2 fidelity, the solution is the angular spectrum propagator $P(d, \lambda)$ or, in the shift-invariant limit, $C(\mathbf{h})$. The truncation error (neglected evanescent waves, paraxial approximation residual) satisfies $\|H_k - P\|/\|H_k\| \leq \varepsilon_{\mathrm{prop}}$.
 
 \medskip
-\noindent\textbf{Phase 2: Interaction factors.}
-\emph{Elastic:} The carrier's amplitude/phase changes without direction or energy change $\to$ $M(\mathbf{m})$ (exact).
-\emph{Scattering:} Direction and/or energy change $\to$ $R(\sigma, \Delta\varepsilon)$ or finite composition of $R$, $M$, $P$ for multiple-scattering media within low-order Born approximation. Error bounded by Tier-2 truncation: $\varepsilon_{\mathrm{scat}}$.
+\noindent\textbf{Phase 2: Elastic interaction factors.}
+The carrier's amplitude/phase changes without direction or energy change $\to$ $M(\mathbf{m})$ (exact).
 
 \medskip
-\noindent\textbf{Phase 3: Encoding--projection factors.}
+\noindent\textbf{Phase 3: Inelastic interaction (scattering) factors.}
+Direction and/or energy change $\to$ $R(\sigma, \Delta\varepsilon)$ or finite composition of $R$, $M$, $P$ for multiple-scattering media within low-order Born approximation. Error bounded by Tier-2 truncation: $\varepsilon_{\mathrm{scat}}$.
+
+\medskip
+\noindent\textbf{Phase 4: Encoding--projection factors.}
 Line-integral projection $\to$ $\Pi(\theta)$ (exact Radon transform). Fourier encoding $\to$ $F(\mathbf{k})$ (exact). Both are linear; representation is exact.
 
 \medskip
-\noindent\textbf{Phase 4: Detection--readout factors.}
+\noindent\textbf{Phase 5: Detection--readout factors.}
 The detector chain is realized by a finite composition of $\Sigma$ (integration), $S(\Omega)$ (sampling), $W(\alpha, a)$ (dispersion), $C(\mathbf{h}_{\mathrm{det}})$ (detector PSF), and $D(g, \eta)$ (quantum measurement from 5 canonical families). Per-operation errors sum to $\varepsilon_{\mathrm{det}}$.
 
 \medskip
