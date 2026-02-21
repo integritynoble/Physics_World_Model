@@ -298,10 +298,10 @@ $\ctier$ encompasses Tier~1 and Tier~2 models. Tier~3 and Tier~4 models are excl
 \subsection{Membership Examples}
 
 \begin{itemize}
-  \item \textbf{CASSI}~\cite{wagadarikar2008cassi}: $H = \Sigma \circ W \circ M$. Each factor is linear and bounded. $H \in \ctier$.
-  \item \textbf{MRI}~\cite{pruessmann1999sense}: $H = S \circ F \circ M_{\mathrm{coil}}$. Fourier encoding is linear; coil sensitivity is shift-variant. $H \in \ctier$.
-  \item \textbf{CT}~\cite{feldkamp1984practical,natterer2001radon}: $H = \Pi$ (fan-beam Radon). Linear, bounded. $H \in \ctier$.
-  \item \textbf{Compton scatter}~\cite{hussain2022compton}: $H = R \circ M$. Scatter is linear at first-Born level. $H \in \ctier$.
+  \item \textbf{CASSI}~\cite{wagadarikar2008cassi}: $H = D \circ \Sigma \circ W \circ M$. Each pre-detection factor is linear and bounded; the terminal Detect applies a prescribed response. $H \in \ctier$.
+  \item \textbf{MRI}~\cite{pruessmann1999sense}: $H = D \circ S \circ F \circ M_{\mathrm{coil}}$. Fourier encoding is linear; coil sensitivity is shift-variant. $H \in \ctier$.
+  \item \textbf{CT}~\cite{feldkamp1984practical,natterer2001radon}: $H = D \circ \Pi$ (fan-beam Radon). Linear, bounded. $H \in \ctier$.
+  \item \textbf{Compton scatter}~\cite{hussain2022compton}: $H = D \circ R \circ M$. Scatter is linear at first-Born level. $H \in \ctier$.
 \end{itemize}
 
 Models with strong nonlinearity (e.g., nonlinear ultrasound, full-wave electromagnetic scattering beyond first Born) fall outside $\ctier$.
@@ -341,14 +341,15 @@ The proof is constructive: given the factorization $H = H_K \circ \cdots \circ H
 
 \subsection{Physics-Stage Families}
 
-Every imaging forward model in $\ctier$ passes through at most four types of physical stages:
+Every imaging forward model in $\ctier$ passes through at most five types of physical stages:
 \begin{enumerate}
   \item \textbf{Propagation:} The carrier evolves through space via a wave equation (Maxwell, Schr\"{o}dinger, acoustic, Bloch).
-  \item \textbf{Interaction:} The carrier exchanges energy, momentum, or phase with the object---either elastically (amplitude/phase change) or inelastically (scattering, fluorescence).
+  \item \textbf{Elastic interaction:} The carrier exchanges phase or amplitude with the object without changing direction or energy (transmission, absorption, refraction).
+  \item \textbf{Inelastic interaction (scattering):} The carrier changes direction and/or energy upon interaction with the object (Compton scattering, Raman, fluorescence, diffuse scattering).
   \item \textbf{Encoding--Projection:} Spatial information is mapped to a measurement-domain coordinate.
   \item \textbf{Detection--Readout:} The carrier field is converted to a discrete digital measurement.
 \end{enumerate}
-This categorization is motivated by the physics of carrier--matter interaction under non-relativistic conditions: the fundamental electromagnetic, strong, and weak interactions produce only elastic and inelastic carrier--matter coupling at the energies relevant to imaging.
+This categorization is motivated by the physics of carrier--matter interaction under non-relativistic conditions: the fundamental electromagnetic, strong, and weak interactions produce elastic coupling (phase/amplitude change) and inelastic coupling (direction and/or energy change) at the energies relevant to imaging.
 
 \subsection{Primitive Realization Lemmas}
 
@@ -382,7 +383,7 @@ Let $H_k$ be a factor of $H \in \ctier$ that represents inelastic or off-axis ca
 \begin{proof}
 Under the first Born approximation, the scattered field is a linear functional of the scattering potential $V(\mathbf{r})$, with kernel given by the differential cross section $\sigma(\theta, E)$ and energy shift $\Delta\varepsilon$. The Scatter primitive (Definition~\ref{def:scatter}) parameterizes this integral operator directly. For single-scattering media, one $R$ node provides an exact representation within the Born model ($\varepsilon_{\mathrm{scat}}^{(1)} = 0$ relative to the Born-approximated physics). The error relative to the true physics is bounded by $\varepsilon_{\mathrm{scat}} \leq \|V\|/k$ where $k$ is the wavenumber~\cite{born1999principles}; for weak scatterers satisfying the $\ctier$ membership criterion, this is below $\varepsilon$.
 
-For multiple-scattering media within the Tier-2 regime, the $L$-th order Born series $\sum_{l=0}^{L} G_0 V)^l$ is represented by a finite composition of $L$ Scatter nodes interleaved with Propagate and Modulate nodes: $(M \circ R \circ P)^L \circ R \circ M$. The truncation error decays geometrically as $(\|V\|/k)^{L+1}$, so a finite $L \leq 3$ suffices for $\varepsilon_{\mathrm{scat}} < \varepsilon$ in Tier-2 media (diffusion regime for DOT, low-order multiple scattering).
+For multiple-scattering media within the Tier-2 regime, the $L$-th order Born series $\sum_{l=0}^{L} (G_0 V)^l$ is represented by a finite composition of $L$ Scatter nodes interleaved with Propagate and Modulate nodes: $(M \circ R \circ P)^L \circ R \circ M$. The truncation error decays geometrically as $(\|V\|/k)^{L+1}$, so a finite $L \leq 3$ suffices for $\varepsilon_{\mathrm{scat}} < \varepsilon$ in Tier-2 media (diffusion regime for DOT, low-order multiple scattering).
 \end{proof}
 
 \begin{lemma}[Encoding--Projection Realization]
@@ -439,7 +440,7 @@ where $B$ is the uniform operator norm bound from Definition~\ref{def:ctier}. Th
 \[
   \frac{\|H - \Hdag\|}{\|H\|} \leq \frac{K \cdot \max_k(\varepsilon_k) \cdot B^{K-1}}{\|H\|} \leq \varepsilon
 \]
-provided $\max_k(\varepsilon_k) \leq \varepsilon \cdot \|H\| / (K \cdot B^{K-1})$. The per-phase error bounds in Supplementary~S3 verify this condition: for the modalities in Table~\ref{tab:decomposition}, $K \leq 4$, $B \leq 4$ (verified per-primitive in Supplementary~S3, Table~\ref{tab:supp_opnorm}; the largest single-primitive norm is $\|\Sigma\| = \sqrt{n_\lambda} \leq 3.9$ for spectral integration), and the largest per-factor error is $\varepsilon_{\mathrm{det}} \leq 10^{-3}$. For example, with $K = 4$, $B = 4$, $\max_k(\varepsilon_k) = 10^{-3}$, and $\|H\| \geq 1$, the relative error is at most $4 \times 10^{-3} \times 64 / 1 = 0.256$; in practice, because most primitives are norm-preserving ($\|H_k\| \leq 1$), the effective product $\prod_{j \neq k}\|H_j\|$ is much smaller, and the actual error is below $\varepsilon = 0.01$ for all 31 validated modalities.
+provided $\max_k(\varepsilon_k) \leq \varepsilon \cdot \|H\| / (K \cdot B^{K-1})$. The uniform worst-case bound with $K=4$ and $B=4$ requires $\max_k(\varepsilon_k) \leq 3.9 \times 10^{-5}$; however, the bound~\eqref{eq:error} is much tighter when evaluated per modality using the actual operator norms from Table~\ref{tab:supp_opnorm}. Two features dominate the tightening. First, most per-factor errors are exactly zero: Lemmas~\ref{lem:elastic} and~\ref{lem:encode} give exact representations ($\varepsilon_M = \varepsilon_F = \varepsilon_\Pi = 0$), so the sum $\sum_k \varepsilon_k \prod_{j \neq k}\|H_j\|$ reduces to one or two nonzero terms. Second, most primitives are norm-preserving ($\|H_k\| \leq 1$), so the product $\prod_{j \neq k}\|H_j\|$ is dominated by the single non-unit-norm primitive (typically $\|\Sigma\| \leq 3.9$ or $\|\Pi\| \leq 3.2$). For example, CASSI ($K=4$) has only $\varepsilon_D \leq 10^{-3}$ nonzero, with $\prod_{j \neq D}\|H_j\| = \|M\|\cdot\|W\|\cdot\|\Sigma\| \leq 1 \times 1 \times 3.9 = 3.9$, giving total relative error $\leq 3.9 \times 10^{-3}$. For CT ($K=2$, only $\varepsilon_D$ nonzero, $\|\Pi\| \leq 3.2$): relative error $\leq 3.2 \times 10^{-3}$. This per-modality computation confirms $\|H - \Hdag\|/\|H\| < \varepsilon = 0.01$ for all 31 validated modalities (see Supplementary~S3 for the full per-phase bounds).
 
 \textbf{Step 5: Complexity bound.} Let $c$ be the maximum number of primitive nodes per factor (bounded by the detection-readout chain length, at most 5). We establish two bounds:
 \begin{itemize}
@@ -757,7 +758,7 @@ All test scenes used for empirical validation are drawn from publicly available 
 %%  ACKNOWLEDGMENTS
 %% ═══════════════════════════════════════════════════════════════════
 \section*{Acknowledgments}
-[To be completed before submission.]
+The author thanks the open-source computational imaging community for making reference forward model implementations publicly available, which enabled the empirical validation in this work.
 
 \section*{Declaration of Interest}
 The author declares no competing interests.

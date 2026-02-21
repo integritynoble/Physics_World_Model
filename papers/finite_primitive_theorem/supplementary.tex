@@ -130,7 +130,7 @@ The uniform operator norm bound $B$ in Definition~\ref{def:ctier} must be verifi
 \midrule
 \multirow{2}{*}{CT}
   & $\Pi(\theta)$ & $\sqrt{n_{\mathrm{pix}}\, \Delta s} \leq 3.2$ (typical $256 \times 256$) & Y \\
-  & $D(g, \eta_1)$ & $g \leq 1$ & Y \\
+  & $D(g, \eta_4)$ & $g \leq 1$ & Y \\
 \midrule
 \multirow{3}{*}{Compton}
   & $M(n_e)$ & $\|n_e\|_\infty \leq 1$ (normalized) & Y \\
@@ -151,7 +151,7 @@ This section provides the detailed DAG decomposition and physics-stage classific
 \paragraph{CASSI (Coded Aperture Snapshot Spectral Imaging).}
 \begin{itemize}
   \item \textbf{Physics stages:} Source $\to$ Interaction (coded mask, elastic) $\to$ Detection (spectral dispersion, spatial integration, photon counting).
-  \item \textbf{DAG:} Source $\to M(\mathbf{m}_{\mathrm{mask}}) \to W(\alpha, a) \to \Sigma_\lambda \to D(g, \eta_{\mathrm{Poisson}})$.
+  \item \textbf{DAG:} Source $\to M(\mathbf{m}_{\mathrm{mask}}) \to W(\alpha, a) \to \Sigma_\lambda \to D(g, \eta_4)$.
   \item \textbf{Stage-to-primitive mapping:} Interaction $\to M$; Dispersion $\to W$; Integration $\to \Sigma$; Detection $\to D$.
   \item \textbf{$\etier$:} $< 10^{-4}$ (the CASSI forward model is exactly linear at Tier-2).
 \end{itemize}
@@ -159,7 +159,7 @@ This section provides the detailed DAG decomposition and physics-stage classific
 \paragraph{MRI (Magnetic Resonance Imaging).}
 \begin{itemize}
   \item \textbf{Physics stages:} Source $\to$ Interaction (coil sensitivity, elastic) $\to$ Encoding (Fourier, $k$-space) $\to$ Detection (undersampling, Gaussian noise).
-  \item \textbf{DAG:} Source $\to M(\mathbf{s}_{\mathrm{coil}}) \to F(\mathbf{k}) \to S(\Omega) \to D(g, \eta_{\mathrm{linear}})$.
+  \item \textbf{DAG:} Source $\to M(\mathbf{s}_{\mathrm{coil}}) \to F(\mathbf{k}) \to S(\Omega) \to D(g, \eta_1)$.
   \item \textbf{Stage-to-primitive mapping:} Interaction $\to M$; Encoding $\to F$; Sampling $\to S$; Detection $\to D$.
   \item \textbf{$\etier$:} $< 10^{-6}$ (Fourier encoding is exact; coil sensitivity is shift-variant but exactly representable by $M$).
 \end{itemize}
@@ -167,7 +167,7 @@ This section provides the detailed DAG decomposition and physics-stage classific
 \paragraph{Compton Scatter Imaging.}
 \begin{itemize}
   \item \textbf{Physics stages:} Source $\to$ Interaction (electron density, elastic) $\to$ Scattering (Klein--Nishina, inelastic) $\to$ Detection (energy-resolving).
-  \item \textbf{DAG:} Source $\to M(n_e) \to R(\sigma_{\mathrm{KN}}, \Delta\varepsilon) \to D(g, \eta_{\mathrm{linear}})$.
+  \item \textbf{DAG:} Source $\to M(n_e) \to R(\sigma_{\mathrm{KN}}, \Delta\varepsilon) \to D(g, \eta_4)$.
   \item \textbf{Stage-to-primitive mapping:} Elastic interaction $\to M$; Scattering $\to R$; Detection $\to D$.
   \item \textbf{$\etier$:} $< 0.01$ with $R$; $0.34$ without $R$ (direction change and energy shift cannot be absorbed by other primitives).
 \end{itemize}
@@ -175,7 +175,7 @@ This section provides the detailed DAG decomposition and physics-stage classific
 \paragraph{Quantum Ghost Imaging.}
 \begin{itemize}
   \item \textbf{Physics stages:} Source (entangled photon pairs) $\to$ Interaction (object transmission, elastic) $\to$ Detection (bucket, photon counting).
-  \item \textbf{DAG:} Source $\to M(\mathbf{m}_{\mathrm{corr}}) \to \Sigma \to D(g, \eta_{\mathrm{Poisson}})$.
+  \item \textbf{DAG:} Source $\to M(\mathbf{m}_{\mathrm{corr}}) \to \Sigma \to D(g, \eta_4)$.
   \item \textbf{Key insight:} Operator-equivalent to SPC at Tier-2 abstraction. The quantum correlations determine the measurement patterns $\mathbf{m}_{\mathrm{corr}}$, but the forward operator structure is identical to classical single-pixel imaging. The ``quantum'' aspect resides in the source statistics, not in the operator.
   \item \textbf{$\etier$:} $< 10^{-4}$.
 \end{itemize}
@@ -183,7 +183,7 @@ This section provides the detailed DAG decomposition and physics-stage classific
 \paragraph{THz Time-Domain Spectroscopy.}
 \begin{itemize}
   \item \textbf{Physics stages:} Source (broadband THz pulse) $\to$ Interaction (sample transfer function, convolution) $\to$ Detection (coherent field, electro-optic sampling).
-  \item \textbf{DAG:} Source $\to C(\mathbf{h}_{\mathrm{sample}}) \to D(g, \eta_{\mathrm{coherent}})$.
+  \item \textbf{DAG:} Source $\to C(\mathbf{h}_{\mathrm{sample}}) \to D(g, \eta_5)$.
   \item \textbf{Key insight:} Uses the coherent-field Detect family ($\eta_5$: $g \cdot \mathrm{Re}[\mathbf{x} \cdot e^{i\phi}]$), which measures the electric field rather than intensity. No new primitive required.
   \item \textbf{$\etier$:} $< 10^{-3}$.
 \end{itemize}
