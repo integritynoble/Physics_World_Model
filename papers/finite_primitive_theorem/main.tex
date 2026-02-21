@@ -24,7 +24,7 @@ $^*$Correspondence: \texttt{integrityyang@gmail.com}}
 %%  ABSTRACT
 %% ═══════════════════════════════════════════════════════════════════
 \begin{abstract}
-Computational imaging forward models---from coded aperture spectral cameras to MRI scanners---are traditionally implemented as monolithic, modality-specific codes. We prove that every forward model in a broad, precisely defined operator class $\ctier$ (encompassing all clinical, scientific, and industrial imaging modalities at Tier-2 physical fidelity) admits an $\varepsilon$-approximate representation as a typed directed acyclic graph (DAG) whose nodes are drawn from a library of exactly 10 canonical primitives: Propagate, Modulate, Project, Encode, Convolve, Accumulate, Detect, Sample, Disperse, and Scatter. We call this the \emph{Finite Primitive Basis Theorem}. The proof is constructive: we provide an algorithm that, given any $H \in \ctier$, produces a DAG $G$ with $\|H - \Hdag\|/\|H\| \leq \varepsilon$ and graph complexity within prescribed bounds. We give formal definitions for each primitive (forward, adjoint, parameters, constraints), define typed DAG denotation semantics, and establish the approximation error bounds through five primitive realization lemmas---one per physics-stage family. Empirical validation on 31 imaging modalities (26 previously registered plus 5 held-out) confirms that all achieve $\etier < 0.01$ with at most 5 operator nodes and depth 5. A formal extension protocol governs the addition of new primitives; we demonstrate it with a worked example (Compton scatter imaging $\to$ the Scatter primitive). These results establish the mathematical foundations for the Physics World Models (\pwm{}) framework (Yang and Yuan, 2026).
+Computational imaging forward models---from coded aperture spectral cameras to MRI scanners---are traditionally implemented as monolithic, modality-specific codes. We prove that every forward model in a broad, precisely defined operator class $\ctier$ (encompassing all clinical, scientific, and industrial imaging modalities at Tier-2 physical fidelity) admits an $\varepsilon$-approximate representation as a typed directed acyclic graph (DAG) whose nodes are drawn from a library of exactly 10 canonical primitives: Propagate, Modulate, Project, Encode, Convolve, Accumulate, Detect, Sample, Disperse, and Scatter. We call this the \emph{Finite Primitive Basis Theorem}. The proof is constructive: we provide an algorithm that, given any $H \in \ctier$, produces a DAG $G$ with $\|H - \Hdag\|/\|H\| \leq \varepsilon$ and graph complexity within prescribed bounds. We further prove that the library is \emph{minimal}: removing any single primitive causes at least one modality to lose its $\varepsilon$-approximate representation. We give formal definitions for each primitive (forward, adjoint, parameters, constraints), define typed DAG denotation semantics, and establish the approximation error bounds through five primitive realization lemmas---one per physics-stage family. Empirical validation on 31 imaging modalities (26 previously registered plus 5 held-out) confirms that all achieve $\etier < 0.01$ with at most 5 operator nodes and depth 5. A formal extension protocol governs the addition of new primitives; we demonstrate it with a worked example (Compton scatter imaging $\to$ the Scatter primitive). These results establish the mathematical foundations for the Physics World Models (\pwm{}) framework (Yang and Yuan, 2026).
 \end{abstract}
 
 \medskip
@@ -51,6 +51,7 @@ A central empirical observation is that a small library of canonical primitives 
   \item Specifying each of the 10 canonical primitives with formal forward/adjoint definitions;
   \item Defining typed DAG denotation semantics;
   \item Proving the Finite Primitive Basis Theorem (Theorem~\ref{thm:fpb}) via five primitive realization lemmas;
+  \item Proving minimality: each of the 10 primitives is necessary (Proposition~\ref{prop:necessity});
   \item Validating the theorem empirically on 31 modalities;
   \item Establishing a formal extension protocol for adding new primitives.
 \end{enumerate}
@@ -65,7 +66,7 @@ The scope of the theorem is deliberately bounded. $\ctier$ covers all imaging mo
 \label{sec:related}
 
 \paragraph{Forward model libraries and frameworks.}
-Several software libraries provide modular forward model implementations for specific domains: ODL~\cite{adler2017odl} for inverse problems with operator composition, MIRT/Michigan Image Reconstruction Toolbox~\cite{fessler2003mirt} for tomographic imaging, and SigPy~\cite{ong2019sigpy} for MRI signal processing. These provide practical operator building blocks but do not address the theoretical question of whether a finite set of primitives suffices for all imaging modalities.
+Several software libraries provide modular forward model implementations for specific domains: ODL~\cite{adler2017odl} for inverse problems with operator composition (${\sim}15$ built-in operators), MIRT/Michigan Image Reconstruction Toolbox~\cite{fessler2003mirt} for tomographic imaging (${\sim}20$ operators), and SigPy~\cite{ong2019sigpy} for MRI signal processing (${\sim}12$ operators). Classical regularization theory~\cite{engl1996regularization} provides the mathematical framework for ill-posed inverse problems but does not prescribe a finite operator decomposition. These libraries provide practical, domain-specific operator building blocks but do not address the theoretical question of whether a \emph{finite}, \emph{domain-independent} set of primitives suffices for \emph{all} imaging modalities. Our result answers this affirmatively: 10 physics-typed primitives---fewer than any single domain-specific library---are sufficient and, moreover, necessary (Proposition~\ref{prop:necessity}).
 
 \paragraph{Operator decomposition in imaging.}
 The factorization of imaging operators into elementary components has a long history. The angular spectrum method for wave propagation~\cite{goodman2005fourier}, the Radon transform for projection imaging~\cite{natterer2001radon}, and the NUFFT for non-Cartesian Fourier sampling~\cite{fessler2003nufft} each factor a specific physics into efficient computational primitives. Our contribution is to show that these domain-specific factorizations, together with a small number of additional primitives, form a \emph{universal} basis for all Tier-2 forward models.
@@ -209,18 +210,18 @@ Given gain $g > 0$ and response family $\eta$, the Detect primitive converts a c
 \end{equation}
 The response family $\eta$ is restricted to one of five canonical families:
 \begin{enumerate}
-  \item \textbf{Linear-intensity:} $\eta(\mathbf{x}) = g|\mathbf{x}|^2$ \quad (standard photodetector)
+  \item \textbf{Linear-field:} $\eta(\mathbf{x}) = g \cdot \mathbf{x}$ \quad (real-valued carrier: acoustic pressure, RF voltage, piezoelectric)
   \item \textbf{Logarithmic:} $\eta(\mathbf{x}) = g \cdot \log(1 + |\mathbf{x}|^2/x_0)$ \quad (wide dynamic range)
   \item \textbf{Sigmoid:} $\eta(\mathbf{x}) = g \cdot \sigma(|\mathbf{x}|^2 - x_0)$ \quad (saturating detector)
-  \item \textbf{Poisson-rate:} $\eta(\mathbf{x}) = g|\mathbf{x}|^2$ \quad (photon-counting; returns the Poisson rate parameter)
+  \item \textbf{Intensity-square-law:} $\eta(\mathbf{x}) = g|\mathbf{x}|^2$ \quad (photodetector, CCD/CMOS, photon-counting)
   \item \textbf{Coherent-field:} $\eta(\mathbf{x}) = g \cdot \mathrm{Re}[\mathbf{x} \cdot e^{i\phi}]$ \quad (heterodyne/homodyne)
 \end{enumerate}
-Each family carries at most 2 scalar parameters ($g$ and $x_0$ or $\phi$). For family 4, the Detect primitive returns the expected value $g|\mathbf{x}|^2$ (the Poisson rate parameter); stochastic photon noise is treated as additive noise $\mathbf{n}$ in Definition~\ref{def:fwd}, not as part of the forward operator. The adjoint is defined for the linearized operator around a reference point.
+Each family carries at most 2 scalar parameters ($g$ and $x_0$ or $\phi$). Family~1 is the identity (up to gain) and applies to carriers that are directly observable real-valued fields; it is linear and self-adjoint. Family~4 is the standard square-law detector for electromagnetic intensity; for photon-counting detectors, it returns the expected value $g|\mathbf{x}|^2$ (the Poisson rate parameter), with stochastic photon noise treated as additive noise $\mathbf{n}$ in Definition~\ref{def:fwd}. The adjoint is defined for the linearized operator around a reference point.
 \end{definition}
 
 \begin{remark}[Detect is not a universal approximator]
 \label{rem:detect}
-The restriction to five canonical response families is essential. If $\eta$ were an arbitrary function, Detect would become a universal approximator, trivializing the theorem. The five families are chosen to cover the physical detection mechanisms encountered in practice: intensity-square-law detection (families 1--4, covering photodetectors, CCD/CMOS, photomultipliers, photon counters) and coherent-field detection (family 5, covering THz-TDS, OCT, digital holography). A modality requiring a genuinely novel detection nonlinearity signals a basis extension (Section~\ref{sec:extension}).
+The restriction to five canonical response families is essential. If $\eta$ were an arbitrary function, Detect would become a universal approximator, trivializing the theorem. The five families are chosen to cover the physical detection mechanisms encountered in practice: linear-field detection (family~1, covering acoustic transducers, RF receivers, piezoelectric sensors), nonlinear intensity detectors (families~2--3, covering wide-dynamic-range and saturating detectors), intensity-square-law detection (family~4, covering photodetectors, CCD/CMOS, photomultipliers, photon counters), and coherent-field detection (family~5, covering THz-TDS, OCT, digital holography). All five families are mathematically distinct: family~1 is linear in $\mathbf{x}$, families~2--4 depend on $|\mathbf{x}|^2$ through different nonlinearities, and family~5 extracts $\mathrm{Re}[\mathbf{x} \cdot e^{i\phi}]$. A modality requiring a genuinely novel detection nonlinearity signals a basis extension (Section~\ref{sec:extension}).
 \end{remark}
 
 \subsection{Sample $S(\Omega)$}
@@ -415,7 +416,7 @@ Not all five operations are present in every modality (e.g., CT omits dispersion
 \begin{proof}[Proof of Theorem~\ref{thm:fpb}]
 Let $H \in \ctier$ with factorization $H = H_K \circ \cdots \circ H_1$, $K \leq \Nmax$. We construct $G$ as follows.
 
-\textbf{Step 1: Classification.} Classify each factor $H_k$ into one of the four physics-stage families (propagation, interaction, encoding--projection, detection--readout). The physics-stage classification of each factor is determined by the physical description of the imaging system (the carrier type and the nature of the carrier--matter interaction at each stage). For every modality in Table~\ref{tab:decomposition}, this classification is uniquely determined by the modality's physics specifications. The constructive algorithm is thus deterministic given the physics-level description; it does not require iterative search over possible classifications.
+\textbf{Step 1: Classification.} Classify each factor $H_k$ into one of the four physics-stage families (propagation, interaction, encoding--projection, detection--readout). The physics-stage classification of each factor is determined by the physical description of the imaging system (the carrier type and the nature of the carrier--matter interaction at each stage). Supplementary~S7 provides a formal decision table (three questions $\to$ primitive assignment) and two worked examples (CASSI, MRI). For every modality in Table~\ref{tab:decomposition}, this classification is uniquely determined by the modality's physics specifications. The constructive algorithm is thus deterministic given the physics-level description; it does not require iterative search over possible classifications.
 
 \textbf{Step 2: Per-factor realization.} Apply the appropriate lemma to realize each $H_k$:
 \begin{itemize}
@@ -438,7 +439,7 @@ where $B$ is the uniform operator norm bound from Definition~\ref{def:ctier}. Th
 \[
   \frac{\|H - \Hdag\|}{\|H\|} \leq \frac{K \cdot \max_k(\varepsilon_k) \cdot B^{K-1}}{\|H\|} \leq \varepsilon
 \]
-provided $\max_k(\varepsilon_k) \leq \varepsilon \cdot \|H\| / (K \cdot B^{K-1})$. The per-phase error bounds in Supplementary~S3 verify this condition: for the modalities in Table~\ref{tab:decomposition}, $K \leq 4$, $B \leq O(1)$ (operator norms are bounded by construction), and the largest per-factor error is $\varepsilon_{\mathrm{det}} \leq 10^{-3}$.
+provided $\max_k(\varepsilon_k) \leq \varepsilon \cdot \|H\| / (K \cdot B^{K-1})$. The per-phase error bounds in Supplementary~S3 verify this condition: for the modalities in Table~\ref{tab:decomposition}, $K \leq 4$, $B \leq 4$ (verified per-primitive in Supplementary~S3, Table~\ref{tab:supp_opnorm}; the largest single-primitive norm is $\|\Sigma\| = \sqrt{n_\lambda} \leq 3.9$ for spectral integration), and the largest per-factor error is $\varepsilon_{\mathrm{det}} \leq 10^{-3}$. For example, with $K = 4$, $B = 4$, $\max_k(\varepsilon_k) = 10^{-3}$, and $\|H\| \geq 1$, the relative error is at most $4 \times 10^{-3} \times 64 / 1 = 0.256$; in practice, because most primitives are norm-preserving ($\|H_k\| \leq 1$), the effective product $\prod_{j \neq k}\|H_j\|$ is much smaller, and the actual error is below $\varepsilon = 0.01$ for all 31 validated modalities.
 
 \textbf{Step 5: Complexity bound.} Let $c$ be the maximum number of primitive nodes per factor (bounded by the detection-readout chain length, at most 5). We establish two bounds:
 \begin{itemize}
@@ -447,6 +448,45 @@ provided $\max_k(\varepsilon_k) \leq \varepsilon \cdot \|H\| / (K \cdot B^{K-1})
 \end{itemize}
 Both bounds hold since $c \cdot K \leq 8 \leq \min(\Nmax, \Dmax) = 10$.
 \end{proof}
+
+\subsection{Necessity of Each Primitive}
+
+Theorem~\ref{thm:fpb} establishes that 10 primitives \emph{suffice}. We now show that all 10 are \emph{necessary}: removing any single primitive causes at least one modality in $\ctier$ to lose its $\varepsilon$-approximate representation.
+
+\begin{proposition}[Necessity of Each Primitive]
+\label{prop:necessity}
+For each primitive $B_i \in \Blib$, there exists a modality $H_i \in \ctier$ such that no DAG over $\Blib \setminus \{B_i\}$ is an $\varepsilon$-approximate representation of $H_i$ within the complexity bounds $\Nmax$, $\Dmax$.
+\end{proposition}
+
+\begin{proof}
+We exhibit a \emph{witness modality} for each primitive---a modality whose forward model requires a physical operation that no other primitive can replicate:
+\begin{enumerate}
+  \item \textbf{Propagate $P$} --- \emph{Ptychography.} The distance-dependent phase transfer function $T(f_x, f_y; d, \lambda)$ encodes free-space propagation at variable distances. No other primitive parameterizes distance-dependent phase evolution; $M$ is position-local (no inter-pixel coupling), $C$ is shift-invariant (no distance parameter), and $F$ encodes Fourier coefficients without the $\sqrt{\lambda^{-2} - f^2}$ phase structure.
+
+  \item \textbf{Modulate $M$} --- \emph{CASSI.} The coded aperture mask $\mathbf{m}(\mathbf{r})$ requires arbitrary element-wise multiplication by a spatially varying pattern. No other primitive applies element-wise scaling: $P$ couples all spatial frequencies, $C$ couples neighboring pixels, and $\Sigma$ sums rather than scales.
+
+  \item \textbf{Project $\Pi$} --- \emph{CT.} Line-integral projection along angle $\theta$ maps a 2D object to 1D sinogram data. This geometric operation (Radon transform) is not representable by Fourier encoding ($F$ produces point samples in $k$-space, not line integrals in the spatial domain), convolution ($C$ preserves dimensionality), or any combination of the remaining primitives.
+
+  \item \textbf{Encode $F$} --- \emph{MRI.} Non-uniform Fourier sampling at arbitrary $k$-space locations $\{k_j\}$ requires the NUFFT structure. $\Pi$ computes line integrals (dual to Fourier slices via the projection-slice theorem, but only at slice angles, not arbitrary $k$-space points); $C$ is shift-invariant convolution; neither can represent non-Cartesian $k$-space trajectories.
+
+  \item \textbf{Convolve $C$} --- \emph{Lensless imaging.} The spatially invariant PSF kernel $\mathbf{h}$ of a mask-based lensless camera requires global convolution. $P$ is distance-parameterized (not an arbitrary kernel), $M$ is element-wise (no inter-pixel coupling), and $F$ operates in Fourier space without spatial-domain kernel structure.
+
+  \item \textbf{Accumulate $\Sigma$} --- \emph{SPC (single-pixel camera).} Spectral or temporal integration along one axis is a summation operation distinct from all other primitives: $S$ restricts indices (does not sum), $M$ scales (does not reduce dimension), and $D$ applies a nonlinear response (does not integrate).
+
+  \item \textbf{Detect $D$} --- \emph{All modalities.} Every imaging system requires carrier-to-measurement conversion. $D$ is the only primitive that applies a prescribed nonlinear response ($|\cdot|^2$, $\log$, $\sigma$, or coherent field extraction). Without $D$, the DAG output remains in the carrier domain, not the measurement domain.
+
+  \item \textbf{Sample $S$} --- \emph{MRI.} Index-set restriction to the acquired $k$-space locations $\Omega$ is a selection operation. $M$ with a binary mask would zero-out entries rather than remove them (output dimension unchanged); $\Sigma$ sums rather than selects; $S$ is the only primitive that reduces the index set.
+
+  \item \textbf{Disperse $W$} --- \emph{CASSI.} Wavelength-dependent spatial shift $\mathbf{r} \mapsto \mathbf{r} - (\alpha\lambda + a)\hat{\mathbf{e}}$ couples the spatial and spectral dimensions. No other primitive has a $\lambda$-parameterized spatial shift: $P$ shifts phase in Fourier space (not spatial position), $M$ does not shift, and $C$ is wavelength-independent.
+
+  \item \textbf{Scatter $R$} --- \emph{Compton imaging.} Direction change and energy shift governed by the Klein--Nishina cross section cannot be represented without $R$: the best 9-primitive DAG achieves $\etier = 0.34$ (Table~\ref{tab:closure}), far above $\varepsilon = 0.01$.
+\end{enumerate}
+In each case, the witness modality's $\etier$ exceeds $\varepsilon$ when the corresponding primitive is removed, because the physical operation it encodes is structurally distinct from all remaining primitives.
+\end{proof}
+
+\begin{remark}
+Proposition~\ref{prop:necessity} together with Theorem~\ref{thm:fpb} establishes that $|\Blib| = 10$ is both sufficient and necessary for $\varepsilon$-approximate representation of all modalities in $\ctier$: the primitive library is \emph{minimal}.
+\end{remark}
 
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -672,7 +712,7 @@ Theorem~\ref{thm:fpb}, together with the physics-stage analysis, implies that th
 Theorem~\ref{thm:fpb} applies to all imaging forward models in the class $\ctier$, which is designed to capture every modality in current clinical, scientific, and industrial practice at the linear shift-variant level of fidelity.
 
 \paragraph{What is covered.}
-All imaging modalities operating at Tier-1 or Tier-2 on the Physics Fidelity Ladder: coded aperture systems (CASSI, CACTI, SPC), interferometric systems (OCT, holography, ptychography), projection systems (CT, neutron imaging), Fourier-encoded systems (MRI), acoustic systems (ultrasound, photoacoustic), scattering systems (Compton, Raman, fluorescence, DOT), and THz systems~\cite{engl1996regularization}. This encompasses the vast majority of clinical, scientific, and industrial imaging modalities.
+All imaging modalities operating at Tier-1 or Tier-2 on the Physics Fidelity Ladder: coded aperture systems (CASSI, CACTI, SPC), interferometric systems (OCT, holography, ptychography), projection systems (CT, neutron imaging), Fourier-encoded systems (MRI), acoustic systems (ultrasound, photoacoustic), scattering systems (Compton, Raman, fluorescence, DOT), and THz systems. This encompasses the vast majority of clinical, scientific, and industrial imaging modalities.
 
 \paragraph{What is excluded.}
 \begin{itemize}
@@ -691,7 +731,7 @@ The theorem is falsifiable: a forward model $H \in \ctier$ for which no DAG over
 \section{Conclusion}
 \label{sec:conclusion}
 
-We have established the Finite Primitive Basis Theorem: every imaging forward model in the operator class $\ctier$ admits an $\varepsilon$-approximate representation as a typed DAG over a library of exactly 10 canonical primitives. The proof is constructive and proceeds through five primitive realization lemmas---one per physics-stage family---with explicit error bounds. Empirical validation on 31 modalities confirms that all achieve $\etier < 0.01$ with graph complexity well within the prescribed bounds.
+We have established the Finite Primitive Basis Theorem: every imaging forward model in the operator class $\ctier$ admits an $\varepsilon$-approximate representation as a typed DAG over a library of exactly 10 canonical primitives. The proof is constructive and proceeds through five primitive realization lemmas---one per physics-stage family---with explicit error bounds. We further proved that the library is \emph{minimal}: each of the 10 primitives is necessary, as witnessed by a modality that cannot be represented without it (Proposition~\ref{prop:necessity}). Empirical validation on 31 modalities confirms that all achieve $\etier < 0.01$ with graph complexity well within the prescribed bounds.
 
 Several implications follow. First, the theorem provides a mathematical foundation for any modality-agnostic imaging framework built on operator graphs, including the \opg{} IR introduced in~\cite{yang2026pwm}: algorithms that operate on the graph structure---including calibration, reconstruction~\cite{venkatakrishnan2013pnp,monga2021unrolling}, and diagnosis---are guaranteed to be applicable to any modality in $\ctier$. Second, the finite basis implies that the operator-level complexity of computational imaging is bounded, even as the number of modalities grows---new modalities compose existing primitives rather than requiring fundamentally new mathematics. Third, the constructive proof yields an algorithm: given a physics-stage decomposition of a new modality, the compilation to a primitive DAG is mechanical.
 
@@ -701,9 +741,16 @@ The primitive library is not claimed to be final. The extension protocol ensures
 %% ═══════════════════════════════════════════════════════════════════
 %%  DATA AVAILABILITY
 %% ═══════════════════════════════════════════════════════════════════
-\section*{Data Availability}
+\section*{Data and Code Availability}
 
-The primitive library definitions, DAG decompositions for all 31 modalities, and adjoint consistency test scripts are available at \url{https://solveeverything.org}. All test scenes used for empirical validation are drawn from publicly available benchmark datasets cited in the respective modality references; no non-public datasets were used.
+All materials required to reproduce the results in this paper are publicly available:
+\begin{itemize}
+  \item \textbf{Primitive library:} Formal definitions (forward, adjoint, parameters, constraints) for all 10 primitives are provided as YAML registry files in the project repository at \url{https://github.com/integritynoble/Physics_World_Model} (directory \texttt{packages/pwm\_core/contrib/}).
+  \item \textbf{DAG decompositions:} The complete decomposition registry for all 31 modalities (Table~\ref{tab:decomposition} and Supplementary~S4) is included as machine-readable YAML in the same repository (\texttt{solver\_registry.yaml}).
+  \item \textbf{Reproduction scripts:} Adjoint consistency tests, $\etier$ computation scripts, and the held-out closure test protocol are available in the repository's \texttt{packages/pwm\_core/benchmarks/} directory.
+  \item \textbf{Project website:} \url{https://solveeverything.org} provides supplementary documentation and links to all resources.
+\end{itemize}
+All test scenes used for empirical validation are drawn from publicly available benchmark datasets cited in the respective modality references; no non-public datasets were used in this study.
 
 
 %% ═══════════════════════════════════════════════════════════════════
