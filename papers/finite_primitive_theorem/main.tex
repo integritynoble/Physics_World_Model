@@ -583,7 +583,7 @@ Seven of eight modalities decompose with the frozen library. The eighth (Compton
 
 \subsection{Basis-Growth Saturation}
 
-Figure~\ref{fig:growth} plots the number of distinct primitive types as modalities are added to the registry in chronological order. The curve saturates: 9 of 10 primitives are introduced by the first 7 modalities---Convolve ($C$) and Detect ($D$) from Lensless imaging, Project ($\Pi$) from CT, Modulate ($M$) and Accumulate ($\Sigma$) from SPC, Propagate ($P$) from Ptychography, Encode ($F$) and Sample ($S$) from MRI, and Disperse ($W$) from CASSI. Scatter ($R$) is introduced only when Compton/Raman-class modalities enter (modality 27). THz-TDS (modality 26) uses a new Detect \emph{family} (coherent-field, family 5) but does not require a new primitive type. The growth is sublinear and saturating: $K = 10$ at $N = 31$, with no new primitive type required for the most recent 19 template-validated modalities. This saturation is consistent with Theorem~\ref{thm:fpb}: once all five physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
+Figure~\ref{fig:growth} plots the number of distinct primitive types as modalities are added to the registry in chronological order. The curve saturates: 9 of 10 primitives are introduced by the first 7 modalities---Convolve ($C$) and Detect ($D$) from Lensless imaging, Project ($\Pi$) from CT, Modulate ($M$) and Accumulate ($\Sigma$) from SPC, Propagate ($P$) from Ptychography, Encode ($F$) and Sample ($S$) from MRI, and Disperse ($W$) from CASSI. Scatter ($R$) is introduced only when Compton/Raman-class modalities enter (modality 27). THz-TDS (modality 26) uses a new Detect \emph{family} (coherent-field, family 5) but does not require a new primitive type. The growth is sublinear and saturating: $K = 10$ at $N = 31$, with no new primitive type required for the 19 modalities between CASSI and Compton (positions 8--26). This saturation is consistent with Theorem~\ref{thm:fpb}: once all five physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
 
 \begin{figure}[htbp]
 \centering
@@ -652,7 +652,7 @@ Figure~\ref{fig:growth} plots the number of distinct primitive types as modaliti
 \node[anchor=south east, font=\scriptsize, gray] at (axis cs:33,10) {$K=10$};
 \end{axis}
 \end{tikzpicture}
-\caption{Basis-growth saturation. Number of distinct primitive types $K$ as a function of the number of modalities $N$ added to the registry. The curve saturates at $K = 10$ for $N \geq 28$; annotated points mark each primitive type introduction. Saturation is consistent with Theorem~\ref{thm:fpb}: once all physics-stage families are covered, new modalities compose existing primitives.}
+\caption{Basis-growth saturation. Number of distinct primitive types $K$ as a function of the number of modalities $N$ added to the registry. The curve saturates at $K = 10$ for $N \geq 27$; annotated points mark each primitive type introduction. Saturation is consistent with Theorem~\ref{thm:fpb}: once all physics-stage families are covered, new modalities compose existing primitives.}
 \label{fig:growth}
 \end{figure}
 
