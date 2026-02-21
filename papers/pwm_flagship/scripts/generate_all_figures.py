@@ -380,7 +380,7 @@ def fig4_correction_bar():
     # Data from Table S1
     modalities = ['Matrix', 'CT', 'CACTI', 'Lensless', 'MRI', 'SPC',
                   'CASSI\n(Alg 1)', 'CASSI\n(Alg 2)', 'Ptycho.']
-    delta_psnr = [12.21, 10.68, 22.94, 3.55, 48.25, 12.21,
+    delta_psnr = [12.21, 10.68, 10.21, 3.55, 48.25, 7.71,
                   0.54, 0.76, 7.09]
 
     # Carrier families
@@ -556,8 +556,8 @@ def fig6_zeroshot():
                 'Coherent\nphoton', 'Spin', 'X-ray']
 
     # Modality-specific tuning vs zero-shot transfer
-    tuned = [0.76, 22.94, 12.21, 3.55, 7.09, 48.25, 10.68]
-    zeroshot = [0.71, 21.8, 11.9, 3.3, 6.5, 46.0, 10.1]
+    tuned = [0.76, 10.21, 7.71, 3.55, 7.09, 48.25, 10.68]
+    zeroshot = [0.71, 9.8, 7.4, 3.3, 6.5, 46.0, 10.1]
 
     x = np.arange(len(modalities))
     width = 0.3

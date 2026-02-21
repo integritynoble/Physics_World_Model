@@ -1,15 +1,15 @@
-\begin{thebibliography}{4}
+\begin{thebibliography}{7}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Yang(2026)]{yang2026inversenet}
+\bibitem[Yang(2026{\natexlab{a}})]{yang2026inversenet}
 Chengshuai Yang.
 \newblock {InverseNet}: Benchmarking operator mismatch in snapshot compressive
   imaging.
-\newblock Technical report, NextGen PlatformAI C Corp, 2026.
+\newblock In \emph{Under review at ECCV 2026}, 2026{\natexlab{a}}.
 
 \bibitem[Boyd et~al.(2011)Boyd, Parikh, Chu, Peleato, and
   Eckstein]{boyd2011admm}
@@ -34,5 +34,30 @@ Ashwin~A. Wagadarikar, Renu John, Rebecca Willett, and David~J. Brady.
 \newblock Single disperser design for coded aperture snapshot spectral imaging.
 \newblock \emph{Applied Optics}, 47\penalty0 (10):\penalty0 B44--B51, 2008.
 \newblock \doi{10.1364/AO.47.000B44}.
+
+\bibitem[Uecker et~al.(2014)Uecker, Lai, Murphy, Virtue, Elad, Pauly,
+  Vasanawala, and Lustig]{uecker2014espirit}
+Martin Uecker, Peng Lai, Mark~J. Murphy, Patrick Virtue, Michael Elad, John~M.
+  Pauly, Shreyas~S. Vasanawala, and Michael Lustig.
+\newblock {ESPIRiT} --- an eigenvalue approach to autocalibrating parallel
+  {MRI}: where {SENSE} meets {GRAPPA}.
+\newblock \emph{Magnetic Resonance in Medicine}, 71\penalty0 (3):\penalty0
+  990--1001, 2014.
+\newblock \doi{10.1002/mrm.24751}.
+
+\bibitem[Maiden and Rodenburg(2009)]{maiden2009ptychography}
+Andrew~M. Maiden and John~M. Rodenburg.
+\newblock An improved ptychographical phase retrieval algorithm for diffractive
+  imaging.
+\newblock \emph{Ultramicroscopy}, 109\penalty0 (10):\penalty0 1256--1262, 2009.
+\newblock \doi{10.1016/j.ultramic.2009.05.012}.
+
+\bibitem[Yang(2026{\natexlab{b}})]{yang2026fpt}
+Chengshuai Yang.
+\newblock The finite primitive basis theorem for computational imaging: Formal
+  foundations of the {OperatorGraph} representation.
+\newblock \emph{arXiv preprint}, 2026{\natexlab{b}}.
+\newblock In preparation. Full formal definitions, primitive semantics, typed
+  DAG denotation, and constructive proof.
 
 \end{thebibliography}

@@ -1,4 +1,4 @@
-\begin{thebibliography}{26}
+\begin{thebibliography}{27}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -19,6 +19,15 @@ Patrick Llull, Xuejun Liao, Xin Yuan, Jianbo Yang, David Kittle, Lawrence
 \newblock Coded aperture compressive temporal imaging.
 \newblock \emph{Optics Express}, 21\penalty0 (9):\penalty0 10526--10545, 2013.
 \newblock \doi{10.1364/OE.21.010526}.
+
+\bibitem[Duarte et~al.(2008)Duarte, Davenport, Takhar, Laska, Sun, Kelly, and
+  Baraniuk]{duarte2008spc}
+Marco~F. Duarte, Mark~A. Davenport, Dharmpal Takhar, Jason~N. Laska, Ting Sun,
+  Kevin~F. Kelly, and Richard~G. Baraniuk.
+\newblock Single-pixel imaging via compressive sampling.
+\newblock \emph{IEEE Signal Processing Magazine}, 25\penalty0 (2):\penalty0
+  83--91, 2008.
+\newblock \doi{10.1109/MSP.2007.914730}.
 
 \bibitem[Lustig et~al.(2007)Lustig, Donoho, and Pauly]{lustig2007sparse}
 Michael Lustig, David Donoho, and John~M. Pauly.
@@ -66,44 +75,6 @@ Yuanhao Cai, Jing Lin, Xiaowan Hu, Haoqian Wang, Xin Yuan, Yulun Zhang, Radu
   image reconstruction.
 \newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
   and Pattern Recognition (CVPR)}, pages 17502--17511, 2022{\natexlab{a}}.
-
-\bibitem[Choi et~al.(2017)Choi, Jeon, Nam, Gutierrez, and Kim]{choi2017kaist}
-Inchang Choi, Daniel~S. Jeon, Giljoo Nam, Diego Gutierrez, and Min~H. Kim.
-\newblock High-quality hyperspectral reconstruction using a spectral prior.
-\newblock \emph{ACM Transactions on Graphics (Proceedings of SIGGRAPH Asia)},
-  36\penalty0 (6):\penalty0 218:1--218:13, 2017.
-\newblock \doi{10.1145/3130800.3130810}.
-
-\bibitem[Bioucas-Dias and Figueiredo(2007)]{bioucasdias2007twist}
-Jos{\'e}~M. Bioucas-Dias and M{\'a}rio A.~T. Figueiredo.
-\newblock A new {TwIST}: Two-step iterative shrinkage/thresholding algorithms
-  for image restoration.
-\newblock \emph{IEEE Transactions on Image Processing}, 16\penalty0
-  (12):\penalty0 2992--3004, 2007.
-\newblock \doi{10.1109/TIP.2007.909319}.
-
-\bibitem[Zbontar et~al.(2018)Zbontar, Knoll, Sriram, Murrell, Huang, Muckley,
-  Defazio, Stern, Johnson, Bruno, Parente, Geras, Katsnelson, Chandarana,
-  Zhang, Drozdzal, Romero, Rabbat, Vincent, Yakubova, Pinkerton, Wang, Owens,
-  Zitnick, Recht, Sodickson, and Lui]{zbontar2018fastmri}
-Jure Zbontar, Florian Knoll, Anuroop Sriram, Tullie Murrell, Zhengnan Huang,
-  Matthew~J. Muckley, Aaron Defazio, Ruben Stern, Patricia Johnson, Mary Bruno,
-  Marc Parente, Krzysztof~J. Geras, Joe Katsnelson, Hersh Chandarana, Zizhao
-  Zhang, Michal Drozdzal, Adriana Romero, Michael Rabbat, Pascal Vincent,
-  Nafissa Yakubova, James Pinkerton, Duo Wang, Erich Owens, C.~Lawrence
-  Zitnick, Michael~P. Recht, Daniel~K. Sodickson, and Yvonne~W. Lui.
-\newblock {fastMRI}: An open dataset and benchmarks for accelerated {MRI}.
-\newblock \emph{arXiv preprint arXiv:1811.08839}, 2018.
-
-\bibitem[Chen et~al.(2017)Chen, Zhang, Kalra, Lin, Chen, Liao, Zhou, and
-  Wang]{chen2017redcnn}
-Hu~Chen, Yi~Zhang, Mannudeep~K. Kalra, Feng Lin, Yang Chen, Peixi Liao, Jiliu
-  Zhou, and Ge~Wang.
-\newblock Low-dose {CT} with a residual encoder-decoder convolutional neural
-  network.
-\newblock \emph{IEEE Transactions on Medical Imaging}, 36\penalty0
-  (12):\penalty0 2524--2535, 2017.
-\newblock \doi{10.1109/TMI.2017.2715284}.
 
 \bibitem[Uecker et~al.(2014)Uecker, Lai, Murphy, Virtue, Elad, Pauly,
   Vasanawala, and Lustig]{uecker2014espirit}
@@ -154,19 +125,33 @@ L.~A. Feldkamp, L.~C. Davis, and J.~W. Kress.
   (6):\penalty0 612--619, 1984.
 \newblock \doi{10.1364/JOSAA.1.000612}.
 
-\bibitem[Yang(2026)]{yang2026inversenet}
+\bibitem[Yang(2026{\natexlab{a}})]{yang2026fpt}
+Chengshuai Yang.
+\newblock The finite primitive basis theorem for computational imaging: Formal
+  foundations of the {OperatorGraph} representation.
+\newblock \emph{arXiv preprint}, 2026{\natexlab{a}}.
+\newblock In preparation. Full formal definitions, primitive semantics, typed
+  DAG denotation, and constructive proof.
+
+\bibitem[Yang(2026{\natexlab{b}})]{yang2026inversenet}
 Chengshuai Yang.
 \newblock {InverseNet}: Benchmarking operator mismatch in snapshot compressive
   imaging.
-\newblock Technical report, NextGen PlatformAI C Corp, 2026.
+\newblock In \emph{Under review at ECCV 2026}, 2026{\natexlab{b}}.
 
-\bibitem[Yuan(2016)]{yuan2016gaptv}
-Xin Yuan.
-\newblock Generalized alternating projection based total variation minimization
-  for compressive sensing.
-\newblock In \emph{Proceedings of the IEEE International Conference on Image
-  Processing (ICIP)}, pages 2539--2543, 2016.
-\newblock \doi{10.1109/ICIP.2016.7532817}.
+\bibitem[Wang et~al.(2023)Wang, Cao, and Yuan]{wang2023efficientsci}
+Lishun Wang, Miao Cao, and Xin Yuan.
+\newblock {EfficientSCI}: Densely connected network with space-time
+  factorization for large-scale video snapshot compressive imaging.
+\newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
+  and Pattern Recognition (CVPR)}, pages 18477--18486, 2023.
+
+\bibitem[Choi et~al.(2017)Choi, Jeon, Nam, Gutierrez, and Kim]{choi2017kaist}
+Inchang Choi, Daniel~S. Jeon, Giljoo Nam, Diego Gutierrez, and Min~H. Kim.
+\newblock High-quality hyperspectral reconstruction using a spectral prior.
+\newblock \emph{ACM Transactions on Graphics (Proceedings of SIGGRAPH Asia)},
+  36\penalty0 (6):\penalty0 218:1--218:13, 2017.
+\newblock \doi{10.1145/3130800.3130810}.
 
 \bibitem[Hu et~al.(2022)Hu, Cai, Lin, Wang, Yuan, Zhang, Timofte, and
   Van~Gool]{hu2022hdnet}
@@ -177,21 +162,21 @@ Xiaowan Hu, Yuanhao Cai, Jing Lin, Haoqian Wang, Xin Yuan, Yulun Zhang, Radu
 \newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
   and Pattern Recognition (CVPR)}, pages 17542--17551, 2022.
 
-\bibitem[Wang et~al.(2023)Wang, Cao, and Yuan]{wang2023efficientsci}
-Lishun Wang, Miao Cao, and Xin Yuan.
-\newblock {EfficientSCI}: Densely connected network with space-time
-  factorization for large-scale video snapshot compressive imaging.
-\newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
-  and Pattern Recognition (CVPR)}, pages 18477--18486, 2023.
+\bibitem[Bioucas-Dias and Figueiredo(2007)]{bioucasdias2007twist}
+Jos{\'e}~M. Bioucas-Dias and M{\'a}rio A.~T. Figueiredo.
+\newblock A new {TwIST}: Two-step iterative shrinkage/thresholding algorithms
+  for image restoration.
+\newblock \emph{IEEE Transactions on Image Processing}, 16\penalty0
+  (12):\penalty0 2992--3004, 2007.
+\newblock \doi{10.1109/TIP.2007.909319}.
 
-\bibitem[Duarte et~al.(2008)Duarte, Davenport, Takhar, Laska, Sun, Kelly, and
-  Baraniuk]{duarte2008spc}
-Marco~F. Duarte, Mark~A. Davenport, Dharmpal Takhar, Jason~N. Laska, Ting Sun,
-  Kevin~F. Kelly, and Richard~G. Baraniuk.
-\newblock Single-pixel imaging via compressive sampling.
-\newblock \emph{IEEE Signal Processing Magazine}, 25\penalty0 (2):\penalty0
-  83--91, 2008.
-\newblock \doi{10.1109/MSP.2007.914730}.
+\bibitem[Yuan(2016)]{yuan2016gaptv}
+Xin Yuan.
+\newblock Generalized alternating projection based total variation minimization
+  for compressive sensing.
+\newblock In \emph{Proceedings of the IEEE International Conference on Image
+  Processing (ICIP)}, pages 2539--2543, 2016.
+\newblock \doi{10.1109/ICIP.2016.7532817}.
 
 \bibitem[Huang et~al.(2021)Huang, Dong, Yuan, Wu, and Shi]{huang2021dgsmp}
 Tao Huang, Weisheng Dong, Xin Yuan, Jinjian Wu, and Guangming Shi.
@@ -213,5 +198,28 @@ Yang Liu, Xin Yuan, Jinli Suo, David~J. Brady, and Qionghai Dai.
 \newblock Rank minimization for snapshot compressive imaging.
 \newblock \emph{IEEE Transactions on Pattern Analysis and Machine
   Intelligence}, 41\penalty0 (12):\penalty0 2990--3006, 2019.
+
+\bibitem[Chen et~al.(2017)Chen, Zhang, Kalra, Lin, Chen, Liao, Zhou, and
+  Wang]{chen2017redcnn}
+Hu~Chen, Yi~Zhang, Mannudeep~K. Kalra, Feng Lin, Yang Chen, Peixi Liao, Jiliu
+  Zhou, and Ge~Wang.
+\newblock Low-dose {CT} with a residual encoder-decoder convolutional neural
+  network.
+\newblock \emph{IEEE Transactions on Medical Imaging}, 36\penalty0
+  (12):\penalty0 2524--2535, 2017.
+\newblock \doi{10.1109/TMI.2017.2715284}.
+
+\bibitem[Zbontar et~al.(2018)Zbontar, Knoll, Sriram, Murrell, Huang, Muckley,
+  Defazio, Stern, Johnson, Bruno, Parente, Geras, Katsnelson, Chandarana,
+  Zhang, Drozdzal, Romero, Rabbat, Vincent, Yakubova, Pinkerton, Wang, Owens,
+  Zitnick, Recht, Sodickson, and Lui]{zbontar2018fastmri}
+Jure Zbontar, Florian Knoll, Anuroop Sriram, Tullie Murrell, Zhengnan Huang,
+  Matthew~J. Muckley, Aaron Defazio, Ruben Stern, Patricia Johnson, Mary Bruno,
+  Marc Parente, Krzysztof~J. Geras, Joe Katsnelson, Hersh Chandarana, Zizhao
+  Zhang, Michal Drozdzal, Adriana Romero, Michael Rabbat, Pascal Vincent,
+  Nafissa Yakubova, James Pinkerton, Duo Wang, Erich Owens, C.~Lawrence
+  Zitnick, Michael~P. Recht, Daniel~K. Sodickson, and Yvonne~W. Lui.
+\newblock {fastMRI}: An open dataset and benchmarks for accelerated {MRI}.
+\newblock \emph{arXiv preprint arXiv:1811.08839}, 2018.
 
 \end{thebibliography}

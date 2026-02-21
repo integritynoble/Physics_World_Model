@@ -1,0 +1,158 @@
+{
+  "modality": "CASSI",
+  "metric": "cross_residual",
+  "mismatch_levels": [
+    {
+      "mismatch_px": 0.25,
+      "per_scene": [
+        {
+          "scene": "scene1",
+          "cross_res_II_to_I": 0.002691691658861159,
+          "cross_res_I_to_II": 0.004193025405081665,
+          "bidirectional": 0.003359513582090605
+        },
+        {
+          "scene": "scene2",
+          "cross_res_II_to_I": 0.0025515941389792473,
+          "cross_res_I_to_II": 0.004222966431730936,
+          "bidirectional": 0.0032825746596704787
+        },
+        {
+          "scene": "scene3",
+          "cross_res_II_to_I": 0.002137863578881108,
+          "cross_res_I_to_II": 0.003748731028436965,
+          "bidirectional": 0.002830949581450879
+        },
+        {
+          "scene": "scene4",
+          "cross_res_II_to_I": 0.0023660340032544427,
+          "cross_res_I_to_II": 0.003828094228732397,
+          "bidirectional": 0.00300955164648207
+        },
+        {
+          "scene": "scene5",
+          "cross_res_II_to_I": 0.005655179824284135,
+          "cross_res_I_to_II": 0.005689140386165336,
+          "bidirectional": 0.005672134688929933
+        }
+      ],
+      "mean_cross_II_I": 0.003080472640852019,
+      "mean_cross_I_II": 0.00433639149602946,
+      "mean_bidirectional": 0.003630944831724793
+    },
+    {
+      "mismatch_px": 0.5,
+      "per_scene": [
+        {
+          "scene": "scene1",
+          "cross_res_II_to_I": 0.0030937882225208304,
+          "cross_res_I_to_II": 0.012990680307022915,
+          "bidirectional": 0.00633959097548105
+        },
+        {
+          "scene": "scene2",
+          "cross_res_II_to_I": 0.003277497044997987,
+          "cross_res_I_to_II": 0.013416988909595931,
+          "bidirectional": 0.006631300136773439
+        },
+        {
+          "scene": "scene3",
+          "cross_res_II_to_I": 0.0031469256440421357,
+          "cross_res_I_to_II": 0.01257392101878098,
+          "bidirectional": 0.00629040495518073
+        },
+        {
+          "scene": "scene4",
+          "cross_res_II_to_I": 0.003113885201713938,
+          "cross_res_I_to_II": 0.011857104352364726,
+          "bidirectional": 0.006076319756069989
+        },
+        {
+          "scene": "scene5",
+          "cross_res_II_to_I": 0.006364011488794339,
+          "cross_res_I_to_II": 0.014038604701062994,
+          "bidirectional": 0.009452081337155702
+        }
+      ],
+      "mean_cross_II_I": 0.003799221520413846,
+      "mean_cross_I_II": 0.01297545985776551,
+      "mean_bidirectional": 0.006957939432132182
+    },
+    {
+      "mismatch_px": 1.0,
+      "per_scene": [
+        {
+          "scene": "scene1",
+          "cross_res_II_to_I": 0.024265838216963428,
+          "cross_res_I_to_II": 0.04254524071489447,
+          "bidirectional": 0.03213091856902623
+        },
+        {
+          "scene": "scene2",
+          "cross_res_II_to_I": 0.02530461809597738,
+          "cross_res_I_to_II": 0.043204477411374675,
+          "bidirectional": 0.033064676029429314
+        },
+        {
+          "scene": "scene3",
+          "cross_res_II_to_I": 0.025321881859978523,
+          "cross_res_I_to_II": 0.04174609767478511,
+          "bidirectional": 0.03251291671683783
+        },
+        {
+          "scene": "scene4",
+          "cross_res_II_to_I": 0.02205330906606085,
+          "cross_res_I_to_II": 0.03824034025294276,
+          "bidirectional": 0.02904007648732135
+        },
+        {
+          "scene": "scene5",
+          "cross_res_II_to_I": 0.02893237646212254,
+          "cross_res_I_to_II": 0.04147496770838951,
+          "bidirectional": 0.03464057417961632
+        }
+      ],
+      "mean_cross_II_I": 0.02517560474022055,
+      "mean_cross_I_II": 0.0414422247524773,
+      "mean_bidirectional": 0.03227783239644621
+    },
+    {
+      "mismatch_px": 2.0,
+      "per_scene": [
+        {
+          "scene": "scene1",
+          "cross_res_II_to_I": 0.11429593094266853,
+          "cross_res_I_to_II": 0.13119839371469033,
+          "bidirectional": 0.12245588000501766
+        },
+        {
+          "scene": "scene2",
+          "cross_res_II_to_I": 0.1130912553954011,
+          "cross_res_I_to_II": 0.1296811064295079,
+          "bidirectional": 0.12110243237514955
+        },
+        {
+          "scene": "scene3",
+          "cross_res_II_to_I": 0.10994786415727385,
+          "cross_res_I_to_II": 0.12659607787652313,
+          "bidirectional": 0.11797867762104992
+        },
+        {
+          "scene": "scene4",
+          "cross_res_II_to_I": 0.09989625117155701,
+          "cross_res_I_to_II": 0.11582520467635934,
+          "bidirectional": 0.1075662760271387
+        },
+        {
+          "scene": "scene5",
+          "cross_res_II_to_I": 0.11928969549662854,
+          "cross_res_I_to_II": 0.12207141084872225,
+          "bidirectional": 0.12067253800673919
+        }
+      ],
+      "mean_cross_II_I": 0.1113041994327058,
+      "mean_cross_I_II": 0.1250744387091606,
+      "mean_bidirectional": 0.117955160807019
+    }
+  ]
+}

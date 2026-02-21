@@ -1,0 +1,35 @@
+{
+  "dataset": "HTC2022_ta",
+  "cor_offsets": [
+    {
+      "cor_offset_px": 1.0,
+      "psnr_mismatched": 26.726025988891724,
+      "psnr_calibrated": 100.0,
+      "best_cor": 0.0
+    },
+    {
+      "cor_offset_px": 2.0,
+      "psnr_mismatched": 25.85962160482321,
+      "psnr_calibrated": 100.0,
+      "best_cor": 0.0
+    },
+    {
+      "cor_offset_px": 3.0,
+      "psnr_mismatched": 24.19554718857092,
+      "psnr_calibrated": 100.0,
+      "best_cor": 0.0
+    },
+    {
+      "cor_offset_px": 5.0,
+      "psnr_mismatched": 21.309170247002157,
+      "psnr_calibrated": 100.0,
+      "best_cor": 0.0
+    },
+    {
+      "cor_offset_px": 8.0,
+      "psnr_mismatched": 18.730079659445718,
+      "psnr_calibrated": 100.0,
+      "best_cor": 0.0
+    }
+  ]
+}

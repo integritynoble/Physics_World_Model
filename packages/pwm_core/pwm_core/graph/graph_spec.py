@@ -186,3 +186,11 @@ class OperatorGraphSpec(StrictBaseModel):
                 raise ValueError(f"Duplicate node_id: '{node.node_id}'")
             seen.add(node.node_id)
         return self
+
+
+# ---------------------------------------------------------------------------
+# Rebuild models to resolve forward references from `from __future__ import
+# annotations`.  Without this, Pydantic v2 may reject GraphNode / GraphEdge
+# instances passed to OperatorGraphSpec (model_type validation error).
+# ---------------------------------------------------------------------------
+OperatorGraphSpec.model_rebuild()

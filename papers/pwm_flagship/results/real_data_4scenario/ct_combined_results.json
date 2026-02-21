@@ -1,0 +1,46 @@
+{
+  "walnut": {
+    "dataset": "FIPS_walnut",
+    "cor_offsets": [
+      {
+        "cor_offset_px": 1.0,
+        "psnr_I": 5.42515352368162,
+        "psnr_II": 5.425268212614491,
+        "psnr_III": 5.425294386084076,
+        "delta_psnr_II": -0.00011468893287158721,
+        "delta_psnr_III": -0.00014086240245614334,
+        "recovery_ratio": NaN,
+        "sino_res_I": 1.0224420741948184,
+        "sino_res_II": 0.8463785413579225,
+        "sino_cross_ratio": 0.8278009705581146,
+        "best_cor": -0.8571428571428572
+      },
+      {
+        "cor_offset_px": 3.0,
+        "psnr_I": 5.42515352368162,
+        "psnr_II": 5.425205572059567,
+        "psnr_III": 5.425294344270103,
+        "delta_psnr_II": -5.2048377947144786e-05,
+        "delta_psnr_III": -0.0001408205884834146,
+        "recovery_ratio": NaN,
+        "sino_res_I": 1.0224420741948184,
+        "sino_res_II": 0.9682485601278866,
+        "sino_cross_ratio": 0.9469960055100338,
+        "best_cor": -0.6428571428571423
+      },
+      {
+        "cor_offset_px": 5.0,
+        "psnr_I": 5.42515352368162,
+        "psnr_II": 5.425208605852553,
+        "psnr_III": 5.425240827102179,
+        "delta_psnr_II": -5.508217093286305e-05,
+        "delta_psnr_III": -8.730342055951468e-05,
+        "recovery_ratio": NaN,
+        "sino_res_I": 1.0224420741948184,
+        "sino_res_II": 0.9882987239872492,
+        "sino_cross_ratio": 0.9666060786529571,
+        "best_cor": -7.5
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "dataset": "FIPS_walnut_self_ref",
+  "cor_offsets": [
+    {
+      "cor_offset_px": 1.0,
+      "psnr_mismatched": 30.369622437740148,
+      "ssim_mismatched": 0.9519385129627858,
+      "psnr_calibrated": 100.0,
+      "best_cor": 0.0
+    },
+    {
+      "cor_offset_px": 2.0,
+      "psnr_mismatched": 24.367296522173874,
+      "ssim_mismatched": 0.9245135087730539,
+      "psnr_calibrated": 100.0,
+      "best_cor": 0.0
+    },
+    {
+      "cor_offset_px": 3.0,
+      "psnr_mismatched": 23.09536388127289,
+      "ssim_mismatched": 0.9119558418867003,
+      "psnr_calibrated": 100.0,
+      "best_cor": 0.0
+    },
+    {
+      "cor_offset_px": 5.0,
+      "psnr_mismatched": 21.81641902730008,
+      "ssim_mismatched": 0.894716252341293,
+      "psnr_calibrated": 100.0,
+      "best_cor": 0.0
+    },
+    {
+      "cor_offset_px": 8.0,
+      "psnr_mismatched": 20.945366272100774,
+      "ssim_mismatched": 0.8751226810961644,
+      "psnr_calibrated": 100.0,
+      "best_cor": 0.0
+    }
+  ]
+}

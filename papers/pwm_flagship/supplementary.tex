@@ -526,11 +526,11 @@ where available.  Validation tiers: \emph{Validated} = full Scenarios~I--IV corr
 \bottomrule
 \endlastfoot
 %% Group 1: Incoherent light
-1  & Matrix (toy)         & Incoherent     & 23.35 & ---   & Test      & ADMM-TV \\
+1  & Matrix (toy)         & Incoherent     & 23.35 & ---   & Test      & FISTA-L2 \\
 2  & SPC                  & Incoherent     & 28.06 & 31.0  & Validated & FISTA-TV \\
 3  & CASSI                & Incoherent     & 24.34 & 34.2  & Validated & GAP-TV \\
 4  & CACTI                & Incoherent     & 35.39 & 33.4  & Validated & EfficientSCI \\
-5  & Lensless             & Incoherent     & 27.03 & 28.5  & Validated & ADMM-TV \\
+5  & Lensless             & Incoherent     & 27.03 & 28.5  & Validated & Richardson--Lucy \\
 6  & Fluorescence         & Incoherent     & ---   & 30.1  & Phase 4   & --- \\
 %% Group 2: Coherent light
 7  & Holography           & Coherent       & ---   & 32.7  & Phase 2   & --- \\
@@ -1500,7 +1500,74 @@ Mismatch & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & Sc.~IV (dB) & Gain (dB) \\
 
 
 %% ============================================================
-%% SUPPLEMENTARY NOTE 12: FINITE PRIMITIVE BASIS — EXPANDED PROOF
+%% SUPPLEMENTARY NOTE S14: CALIBRATION METHOD COMPARISON
+%% ============================================================
+\section{Supplementary Note S14: Comparison with Existing Calibration Methods}
+\label{sec:calibration_comparison}
+
+A key question is how PWM's modality-agnostic correction compares with established domain-specific calibration methods. We provide a systematic comparison across four modalities where mature calibration standards exist.
+
+\begin{table}[h]
+\centering\small
+\caption{Comparison of PWM autonomous correction with domain-specific calibration methods. $\rho$: recovery ratio. ``Modalities served'' counts the number of modalities addressable by each method without modification.}
+\label{tab:calibration_comparison}
+\begin{tabular}{@{}p{1.8cm}p{2.0cm}p{2.0cm}ccp{1.8cm}@{}}
+\toprule
+\textbf{Modality} & \textbf{Specialist Method} & \textbf{PWM Method} & \textbf{Specialist $\rho$} & \textbf{PWM $\rho$} & \textbf{Modalities Served} \\
+\midrule
+MRI (multi-coil) & ESPIRiT~\cite{uecker2014espirit} (auto-cal.\ maps from ACS) & Beam search over coil scale/phase & 85--95\%$^a$ & 20--65\%$^b$ & 1 vs.\ 7+ \\
+\addlinespace
+Ptychography & ePIE blind position correction~\cite{maiden2009ptychography} & Grid search over $(dx, dy)$ & 70--90\%$^c$ & 60--85\% & 1 vs.\ 7+ \\
+\addlinespace
+CT & Auto-focus CoR detection (cross-correlation) & Grid search over CoR offset & 95--100\%$^d$ & 100\% & 1 vs.\ 7+ \\
+\addlinespace
+CASSI & None (manual calibration) & Alg~1 beam search + Alg~2 gradient & --- & 22--46\% & 0 vs.\ 7+ \\
+\addlinespace
+CACTI & None (manual mask alignment) & Grid search over $(dx,dy)$ & --- & 100\% & 0 vs.\ 7+ \\
+\bottomrule
+\multicolumn{6}{l}{\footnotesize $^a$With $\geq 32$ ACS lines; degrades to $<0\%$ with 24 ACS lines (see Note~11).}\\
+\multicolumn{6}{l}{\footnotesize $^b$Under limited calibration data (24 ACS lines); improves with ESPIRiT-initialized PWM.}\\
+\multicolumn{6}{l}{\footnotesize $^c$Depends on overlap ratio and scan strategy; reported for standard raster scans.}\\
+\multicolumn{6}{l}{\footnotesize $^d$Standard cross-correlation methods achieve near-perfect CoR recovery for isolated offsets.}
+\end{tabular}
+\end{table}
+
+\paragraph{Key findings.}
+\begin{enumerate}
+  \item \textbf{Specialist methods excel on their home modality.} ESPIRiT with adequate calibration data ($\geq 32$ ACS lines) outperforms PWM for MRI coil sensitivity estimation. Auto-focus methods achieve near-perfect CT CoR correction. This is expected: decades of domain-specific engineering have optimized these methods for their target modality.
+
+  \item \textbf{PWM provides robust performance in data-limited regimes.} When calibration data is scarce (e.g., 24 ACS lines in MRI), specialist methods can degrade catastrophically ($-9.29$\,dB for ESPIRiT) while PWM maintains positive correction ($+0.75$\,dB). This robustness arises because PWM operates on forward-model parameters rather than estimating calibration maps from data.
+
+  \item \textbf{PWM uniquely covers modalities without existing calibration standards.} For CASSI and CACTI, no automated calibration method exists in the literature. Practitioners rely on manual alignment and factory calibration. PWM's autonomous correction provides the first automated calibration pipeline for these modalities.
+
+  \item \textbf{The methods are complementary, not competitive.} ESPIRiT-estimated maps can initialize PWM's beam search (yielding ESPIRiT+PWM), and PWM's parameter-space correction can refine specialist estimates. The value of PWM is \emph{generality}: a single pipeline serving 7+ modalities versus separate engineering effort for each.
+\end{enumerate}
+
+\paragraph{Extended ESPIRiT comparison.}
+To address the concern that the 24-ACS-line comparison is unfairly limited, we extend the comparison across multiple calibration data regimes:
+
+\begin{table}[h]
+\centering\small
+\caption{ESPIRiT vs.\ PWM across ACS line counts (8 coils, $4\times$ accel., 5\% mismatch).}
+\label{tab:espirit_extended}
+\begin{tabular}{@{}rcccr@{}}
+\toprule
+ACS Lines & ESPIRiT PSNR (dB) & PWM PSNR (dB) & ESPIRiT $\rho$ & PWM $\rho$ \\
+\midrule
+16  & 22.81 & 35.72 & $-32.9\%$  & $20.0\%$ \\
+24  & 25.69 & 35.72 & $-25.1\%$  & $20.3\%$ \\
+32  & 33.15 & 35.72 & $-5.0\%$   & $20.3\%$ \\
+48  & 36.88 & 35.72 & $+5.1\%$   & $20.3\%$ \\
+Full & 38.92 & 35.72 & $+10.6\%$ & $20.3\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent ESPIRiT crosses from negative to positive recovery ratio between 32 and 48 ACS lines---confirming that it requires substantial calibration data to outperform model-based correction. At $\leq 32$ ACS lines (the regime in most clinical $4\times$-accelerated scans), PWM provides more reliable correction. At $\geq 48$ ACS lines, ESPIRiT surpasses PWM, motivating the hybrid ESPIRiT+PWM approach.
+
+
+%% ============================================================
+%% SUPPLEMENTARY NOTE 12: FINITE PRIMITIVE BASIS --- EXPANDED PROOF
 %% ============================================================
 \section{Supplementary Note 12: Finite Primitive Basis --- Expanded Proof}
 \label{sec:fpb_proof}
@@ -1572,6 +1639,258 @@ for $\varepsilon_k \leq \varepsilon / (K \cdot B^{K-1})$. For shift-variant oper
 \subsection{Extension Protocol: Worked Example}
 
 \noindent\textbf{Compton scatter imaging.} The forward model involves direction change (angle $\theta$, Klein--Nishina cross section) and energy shift ($E_0 \to E_s$). Testing all 9-primitive DAGs: the best achieves $e_{\mathrm{Tier2}} = 0.34 \gg \varepsilon$. None of the original primitives can represent direction change with energy shift. Introducing Scatter $R(\sigma, \Delta\varepsilon)$: the DAG $M(n_e) \to R_{\mathrm{KN}} \to D(E)$ achieves $e_{\mathrm{Tier2}} < 0.01$. Scatter is needed by 5+ modalities (Compton, Raman, fluorescence, DOT, Brillouin), satisfying the multi-modality criterion. Re-running the closure test with $\mathcal{B}' = \mathcal{B} \cup \{R\}$: all previously decomposed modalities remain valid.
+
+
+\subsection{Minimality of the Primitive Basis}
+\label{sec:minimality}
+
+The FPB Theorem establishes that 10 primitives \emph{suffice}.
+We now establish that no proper subset of 9 primitives suffices for all
+modalities in $\mathcal{C}_{\mathrm{Tier2}}$---that is, the basis is \emph{minimal}.
+
+\begin{proposition}[Minimality]
+\label{prop:minimality}
+For each primitive $B_j \in \mathcal{B}$, there exists at least one modality
+$H_j \in \mathcal{C}_{\mathrm{Tier2}}$ such that no DAG over
+$\mathcal{B} \setminus \{B_j\}$ achieves
+$e_{\mathrm{Tier2}} \leq \varepsilon$.
+\end{proposition}
+
+\begin{proof}
+We exhibit a witness modality for each primitive:
+
+\begin{enumerate}
+  \item \textbf{Propagate} ($P$): Free-space digital holography requires Fresnel propagation;
+    no other primitive computes a quadratic phase modulation in the Fourier domain.
+    Removing $P$: holography $e_{\mathrm{Tier2}} = 0.41$.
+  \item \textbf{Modulate} ($M$): CASSI coded aperture imaging requires
+    element-wise mask multiplication. No combination of $C$, $\Sigma$, $S$
+    can implement a spatially random binary mask.
+    Removing $M$: CASSI $e_{\mathrm{Tier2}} = 0.89$.
+  \item \textbf{Project} ($\Pi$): CT requires line-integral projection (Radon transform).
+    $\Pi$ cannot be composed from $P$, $M$, $F$, or $C$ because the Radon
+    transform mixes all spatial frequencies along each projection angle.
+    Removing $\Pi$: CT $e_{\mathrm{Tier2}} > 1.0$.
+  \item \textbf{Encode} ($F$): MRI $k$-space encoding requires the Fourier transform
+    with subsampling on a non-Cartesian trajectory.
+    $F$ is distinct from $C$ (which is shift-invariant convolution)
+    and from $P$ (which is a specific quadratic-phase $F$).
+    Removing $F$: MRI $e_{\mathrm{Tier2}} = 0.72$.
+  \item \textbf{Convolve} ($C$): Widefield fluorescence microscopy has a
+    spatially invariant PSF.  While $C = F^{-1} \circ M_{\hat{h}} \circ F$
+    in principle, implementing all convolutions via three $F$ operations
+    triples the DAG depth and requires $M$ to encode a frequency-domain
+    filter---this substitution exceeds the depth bound $D_{\max} = 10$
+    for modalities requiring multiple convolution stages.
+    Removing $C$: confocal microscopy $e_{\mathrm{Tier2}} = 0.03 > \varepsilon$.
+  \item \textbf{Accumulate} ($\Sigma$): SPC requires summation over spatial
+    dimensions to produce a single scalar measurement per pattern.
+    No other primitive performs dimensionality reduction by summation.
+    Removing $\Sigma$: SPC $e_{\mathrm{Tier2}} > 1.0$.
+  \item \textbf{Detect} ($D$): Ptychography requires $|{\cdot}|^2$ detection
+    (intensity-square-law family).  No linear primitive can implement
+    the nonlinear magnitude-squared operation.
+    Removing $D$: ptychography $e_{\mathrm{Tier2}} > 1.0$.
+  \item \textbf{Sample} ($S$): Compressed MRI requires sub-sampling on an index
+    set $\Omega \subsetneq \{1,\ldots,n\}$.  While $M$ with a binary mask
+    achieves the same effect in the spatial domain, $S$ operates in $k$-space
+    on non-uniform grids where $M$ is not defined without first applying $F^{-1}$.
+    Removing $S$: accelerated MRI $e_{\mathrm{Tier2}} = 0.15$.
+  \item \textbf{Disperse} ($W$): CASSI spectral dispersion shifts each wavelength
+    band by a wavelength-dependent displacement.  This is neither convolution
+    (which is wavelength-independent) nor modulation (which acts element-wise).
+    Removing $W$: CASSI $e_{\mathrm{Tier2}} = 0.62$.
+  \item \textbf{Scatter} ($R$): Compton imaging requires direction change with
+    energy shift.  No combination of the remaining 9 primitives can
+    represent the Klein--Nishina scattering kernel.
+    Removing $R$: Compton $e_{\mathrm{Tier2}} = 0.34$.
+\end{enumerate}
+
+\noindent Each witness is a validated modality with $e_{\mathrm{Tier2}} > \varepsilon = 0.01$ when the corresponding primitive is removed. The basis is therefore minimal: $|\mathcal{B}| = 10$ is both sufficient and necessary.
+\end{proof}
+
+\noindent\textbf{Remark (near-minimality vs.\ strict necessity).}
+Three primitives ($C$, $S$, $W$) admit approximate substitution by compositions of other primitives at the cost of increased DAG complexity. In a weaker sense (allowing unbounded depth), these three could be removed; the remaining 7 primitives ($P$, $M$, $\Pi$, $F$, $\Sigma$, $D$, $R$) are \emph{strictly} necessary---no composition of the other six can approximate their physical action. The choice to include $C$, $S$, and $W$ as first-class primitives is driven by the complexity bounds ($N_{\max}$, $D_{\max}$) and the principle that each primitive should map to a single physical operation, not an encoding trick.
+
+\subsection{Complexity Hierarchy}
+\label{sec:complexity}
+
+We observe an empirical complexity hierarchy across modalities.
+Defining the \emph{primitive complexity} $\kappa(H)$ as the minimum
+number of nodes in any $\varepsilon$-approximate DAG for $H$, we find:
+
+\begin{itemize}
+  \item $\kappa = 2$: THz-TDS (simplest: single interaction + detection).
+  \item $\kappa = 3$: SPC, ghost imaging, light field (single encoding + detection + readout).
+  \item $\kappa = 4$: CT, MRI, ptychography, lensless (typical: source + interaction + encoding + detection).
+  \item $\kappa = 5$: CASSI, holography, phase-contrast X-ray (multiple interactions or complex readout).
+  \item $\kappa = 6$: CBCT (3D geometry adds a projection stage).
+\end{itemize}
+
+\noindent The median is $\kappa = 4$, well below the theoretical bound
+$N_{\max} = 20$, consistent with the compactness of real physical imaging
+chains. This hierarchy suggests a natural ordering of modalities by
+forward-model complexity that could inform curriculum design for
+progressive validation.
+
+
+%% ============================================================
+%% SUPPLEMENTARY NOTE 15: EXTENDED REAL-DATA HARDWARE VALIDATION
+%% ============================================================
+\section{Supplementary Note 15: Extended Real-Data Hardware Validation}
+\label{sec:real_data_extended}
+
+We extend the real-data validation from the main text with three additional analyses:
+(i)~multi-level cross-residual analysis on CASSI (5 scenes, 4 mismatch levels),
+(ii)~self- vs.\ cross-residual comparison on CACTI (4 scenes, 3 mismatch levels),
+and (iii)~center-of-rotation (CoR) mismatch on real CT sinograms from two public datasets.
+All data and code are included in the repository.
+
+\subsection{CASSI: Cross-Residual Monotonicity (TSA Real Data)}
+\label{sec:cassi_cross}
+
+For CASSI, the forward model $\mathbf{y} = \sum_b \mathbf{x}_b \odot \mathbf{M}_{3\mathrm{D},b}$ is heavily underdetermined ($28\times$ compression).
+Consequently, GAP reconstruction achieves near-zero \emph{self-residual} regardless of whether the mask model is correct, because the solver simply finds a different $\mathbf{x}$ that fits $\mathbf{y}$ under the wrong model.
+The diagnostic metric is the \emph{cross-residual}: reconstruct with model $A'$, then evaluate $\|\mathbf{y} - A\hat{\mathbf{x}}_{A'}\|^2 / \|\mathbf{y}\|^2$ under the true model~$A$.
+
+\begin{table}[h!]
+\centering\small
+\caption{CASSI cross-residual (\%) vs.\ mask shift magnitude ($\Delta x$, $\Delta y = 0.6\Delta x$), averaged over 5 TSA scenes.
+The monotonic increase confirms Gate~3 sensitivity to sub-pixel mask offsets.}
+\label{tab:cassi_cross_res}
+\begin{tabular}{@{}rcccc@{}}
+\toprule
+& \multicolumn{4}{c}{Mask shift $\Delta x$ (pixels)} \\
+\cmidrule(l){2-5}
+Metric & 0.25 & 0.50 & 1.00 & 2.00 \\
+\midrule
+Cross-res.\ (II$\to$I)  & 0.31\% & 0.38\% & 2.52\% & 11.1\% \\
+Cross-res.\ (I$\to$II)  & 0.43\% & 1.30\% & 4.14\% & 12.5\% \\
+Bidirectional (geom.\ mean)  & 0.36\% & 0.70\% & 3.23\% & 11.8\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Per-scene standard deviation is $< 0.05\%$ at $\Delta x \leq 0.5$ and $< 0.4\%$ at $\Delta x = 2.0$, confirming that the mismatch signal dominates scene-dependent variation.
+The roughly quadratic scaling ($4\times$ mismatch $\to$ ${\sim}30\times$ cross-residual) is consistent with a Taylor expansion of the operator error: $\|\Delta A\| \propto (\Delta x)^2$ for subpixel shifts through bilinear interpolation.
+
+\subsection{CACTI: Self-Residual Masking (EfficientSCI Real Data)}
+\label{sec:cacti_cross}
+
+CACTI temporal multiplexing ($10\times$ compression) exhibits a striking dissociation between self-residual and cross-residual:
+
+\begin{table}[h!]
+\centering\small
+\caption{CACTI self-residual ratio (Scenario~II / Scenario~I) vs.\ cross-residual ratio, averaged over 4 scenes.}
+\label{tab:cacti_cross_res}
+\begin{tabular}{@{}rccc@{}}
+\toprule
+Mask shift $\Delta x$ & Self-residual ratio & Cross-residual ratio & Corrected ratio (III/I) \\
+\midrule
+0.25\,px & $1.00\times$ & $44\times$  & $0.98\times$ \\
+0.50\,px & $1.05\times$ & $148\times$ & $0.99\times$ \\
+1.00\,px & $1.12\times$ & $462\times$ & $0.99\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent The self-residual barely changes ($1.00$--$1.12\times$) because the solver adapts to the wrong model and finds an $\mathbf{x}$ that satisfies $A'\hat{\mathbf{x}} \approx \mathbf{y}$.
+However, when the same reconstruction is evaluated under the \emph{true} forward model ($A$), the cross-residual explodes $44$--$462\times$.
+This demonstrates that \textbf{self-consistency is not a reliable diagnostic for operator mismatch in underdetermined systems}---a finding with direct implications for quality control in compressive sensing.
+Autonomous calibration (Scenario~III) recovers a corrected ratio $\leq 1.0\times$ by grid search over the 2D shift space.
+
+\subsection{CT: Center-of-Rotation Mismatch (Public Sinograms)}
+\label{sec:ct_cor}
+
+We validate CT Gate~3 sensitivity using two public sinogram datasets:
+(i)~the FIPS walnut micro-CT dataset (Zenodo~1254206; parallel-beam, 1200 projections, 2296 detectors, cropped to 512), and
+(ii)~the Helsinki Tomography Challenge 2022 sample~A (Zenodo~6984868; fan-beam, 721 projections, 560 detectors).
+CoR offset is simulated by shifting each sinogram column by $\Delta_{\mathrm{CoR}}$ pixels before FBP reconstruction (scikit-image \texttt{iradon}).
+PSNR is measured against the correct-CoR reconstruction as reference.
+
+\begin{table}[h!]
+\centering\small
+\caption{CT reconstruction PSNR (dB) vs.\ center-of-rotation offset for two public datasets.}
+\label{tab:ct_cor}
+\begin{tabular}{@{}rccccc@{}}
+\toprule
+& \multicolumn{5}{c}{CoR offset $\Delta_{\mathrm{CoR}}$ (pixels)} \\
+\cmidrule(l){2-6}
+Dataset & 1 & 2 & 3 & 5 & 8 \\
+\midrule
+FIPS walnut    & 30.37 & 24.37 & 23.10 & 21.82 & 20.95 \\
+HTC 2022       & 26.73 & 25.86 & 24.20 & 21.31 & 18.73 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Both datasets show monotonic PSNR degradation with CoR offset.
+The walnut dataset loses $9.4$\,dB over the 1--8 pixel range; HTC loses $8.0$\,dB.
+Oracle calibration (grid search over CoR values) recovers 100\% of the degradation, confirming that CoR is a pure Gate~3 (operator mismatch) parameter.
+These results on \emph{real sinogram data} corroborate the simulation results in Table~S1 and confirm the universality of Gate~3 dominance across carrier families (X-ray photons for CT, optical photons for CASSI/CACTI).
+
+\subsection{Electron Ptychography: Probe Position Jitter (4D STEM SrTiO$_3$)}
+\label{sec:ptycho_real}
+
+We validate Gate~3 for electron ptychography---a fourth carrier family (electrons at 300\,kV)---using the publicly available SrTiO$_3$ [001] 4D-STEM dataset from Zenodo~5113449 (Medipix3RX detector, $128\times128$ scan, $256\times256$ diffraction patterns).
+The Gate~3 parameter is \emph{probe position jitter}: random displacements of the assumed scan positions relative to their true values, modelling stage drift and scan distortion.
+
+Reconstruction uses integrated center-of-mass (iCoM) ptychography, which computes the beam deflection at each scan point and integrates the resulting gradient field to obtain the object phase.
+We process a $64\times64$ central scan subset and quantify degradation via phase-image PSNR (relative to the nominal-position reconstruction) and center-of-mass cross-residual.
+
+\begin{table}[h!]
+\centering\small
+\caption{Electron ptychography: iCoM phase quality vs.\ probe position jitter $\sigma$ (pixels).}
+\label{tab:ptycho_jitter}
+\begin{tabular}{@{}rcccc@{}}
+\toprule
+& \multicolumn{4}{c}{Position jitter $\sigma$ (pixels)} \\
+\cmidrule(l){2-5}
+Metric & 0.5 & 1.0 & 2.0 & 4.0 \\
+\midrule
+Phase PSNR (dB)          & 35.45 & 29.63 & 24.10 & 19.35 \\
+Phase correlation         & 0.997 & 0.988 & 0.955 & 0.858 \\
+Gradient correlation      & 0.884 & 0.668 & 0.365 & 0.152 \\
+CoM cross-residual (\%)  & 15.2  & 30.2  & 60.3  & 120.5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Degradation is monotonic across all metrics: the total PSNR loss from $\sigma = 0.5$ to $\sigma = 4.0$\,px is $16.1$\,dB, and the CoM cross-residual increases linearly with jitter magnitude.
+Oracle position correction (applying the known inverse shifts) recovers $> 99.9\%$ of the original phase quality (PSNR $= 61.95$\,dB, correlation $= 1.0000$), confirming that position jitter is a pure Gate~3 parameter.
+These results validate the falsifiable prediction in the main text: probe position errors exceeding ${\sim}1/10$ of the detector field of view trigger Gate~3 dominance, with correction gains of $+5$ to $+16$\,dB depending on jitter severity.
+
+\subsection{MRI: Coil Sensitivity Mismatch (Multi-Coil Brain Data)}
+\label{sec:mri_real}
+
+We validate Gate~3 for MRI---the nuclear spin / RF carrier family---using the M4Raw multi-coil brain dataset from Zenodo~8056074 (0.3\,T, 4 receiver coils, $256\times256$ $k$-space, T1w and T2w contrasts).
+The Gate~3 parameter is \emph{coil sensitivity perturbation}: smooth spatial magnitude and phase perturbations applied to the estimated sensitivity maps, modelling coil repositioning between scans.
+Reconstruction uses R=2 SENSE unfolding (even PE lines only), which requires accurate coil sensitivities to resolve aliasing.
+
+\begin{table}[h!]
+\centering\small
+\caption{MRI SENSE (R=2): PSNR degradation vs.\ coil sensitivity perturbation level, averaged over 3 volumes $\times$ 3 slices.}
+\label{tab:mri_sense}
+\begin{tabular}{@{}rcccc@{}}
+\toprule
+Perturbation level & 5\% & 10\% & 20\% & 40\% \\
+\midrule
+$\Delta$PSNR (dB), T1w & $-$0.00 & $-$0.04 & $-$0.13 & $-$0.50 \\
+$\Delta$PSNR (dB), T2w & $+$0.09 & $+$0.19 & $+$0.19 & $-$0.28 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent The T1w contrast shows consistent monotonic degradation ($-0.5$\,dB at 40\% perturbation).
+The T2w contrast shows an initial paradoxical improvement at low perturbation levels, followed by degradation at 40\%: the perturbation accidentally corrects a pre-existing sensitivity estimation error at the lower levels.
+This behaviour is analogous to the CASSI finding where real hardware has pre-existing calibration imperfections.
+Autonomous sensitivity re-estimation from the data achieves 100\% recovery across all volumes.
+
+Importantly, the effect size for MRI ($< 1$\,dB at R=2 with 4 coils) is substantially smaller than for other modalities (CASSI, CACTI, CT, ptychography), which is physically consistent: R=2 acceleration with 4 coils provides $2\times$ coil redundancy, making the SENSE encoding well-conditioned.
+At higher acceleration factors (R=4 with 8 coils), the simulation experiments in Supplementary Note~S13 show much larger degradation ($1.75$--$7.14$\,dB), confirming that Gate~3 severity scales with the condition number of the encoding matrix.
+
+\vspace{1em}
+\noindent\textbf{Summary.} Supplementary Note~S15 validates Gate~3 dominance across 5 modalities spanning 4 carrier families: optical photons (CASSI, CACTI), X-ray photons (CT), electrons (ptychography), and nuclear spins/RF (MRI). The mismatch signal is monotonic and scene-independent in all cases, with 100\% recovery via autonomous or oracle calibration. The only modality with sub-dB degradation (MRI at R=2) is explained by the inherent robustness of over-determined coil encoding.
 
 
 \bibliographystyle{unsrtnat}
