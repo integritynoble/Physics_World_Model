@@ -1,0 +1,263 @@
+{
+  "modality": "CACTI",
+  "mismatch_levels": [
+    {
+      "mismatch_px": 0.25,
+      "per_scene": [
+        {
+          "scene": "duomino",
+          "mismatch_px": 0.25,
+          "res_I_calibrated": 4.597306971427037e-05,
+          "res_II_mismatched": 4.360455328718291e-05,
+          "res_II_cross": 0.0016213266259696105,
+          "res_III_corrected": 4.342780762869071e-05,
+          "ratio_II_I": 0.9484803507399409,
+          "cross_ratio": 35.26687767526516,
+          "ratio_III_I": 0.9446358030603818,
+          "recovery_ratio": -0.07462293968952918,
+          "calibrated_shift": {
+            "dx": 0.25,
+            "dy": 0.25
+          },
+          "time_I_s": 12.616721391677856,
+          "time_II_s": 11.14380407333374,
+          "time_III_s": 182.49448561668396
+        },
+        {
+          "scene": "hand",
+          "mismatch_px": 0.25,
+          "res_I_calibrated": 1.3366360849241128e-05,
+          "res_II_mismatched": 1.460809810138874e-05,
+          "res_II_cross": 0.0015480960344961784,
+          "res_III_corrected": 1.3366360849241128e-05,
+          "ratio_II_I": 1.0929001742623246,
+          "cross_ratio": 115.82030830658526,
+          "ratio_III_I": 1.0,
+          "recovery_ratio": 1.0,
+          "calibrated_shift": {
+            "dx": 0.0,
+            "dy": 0.0
+          },
+          "time_I_s": 6.499288558959961,
+          "time_II_s": 6.74762749671936,
+          "time_III_s": 157.12934017181396
+        },
+        {
+          "scene": "pendulumBall",
+          "mismatch_px": 0.25,
+          "res_I_calibrated": 0.00027335151589572584,
+          "res_II_mismatched": 0.0002677953012550129,
+          "res_II_cross": 0.0018314955801207095,
+          "res_III_corrected": 0.0002680128179935971,
+          "ratio_II_I": 0.9796737375956881,
+          "cross_ratio": 6.700147881452986,
+          "ratio_III_I": 0.9804694776078532,
+          "recovery_ratio": 0.039148368565600264,
+          "calibrated_shift": {
+            "dx": 0.25,
+            "dy": 0.25
+          },
+          "time_I_s": 6.197268962860107,
+          "time_II_s": 7.266547918319702,
+          "time_III_s": 153.52432537078857
+        },
+        {
+          "scene": "waterBalloon",
+          "mismatch_px": 0.25,
+          "res_I_calibrated": 8.869940052063171e-05,
+          "res_II_mismatched": 8.816627202174735e-05,
+          "res_II_cross": 0.0016207280096100045,
+          "res_III_corrected": 8.812968660422242e-05,
+          "ratio_II_I": 0.9939894915213057,
+          "cross_ratio": 18.272141639029666,
+          "ratio_III_I": 0.9935770263038387,
+          "recovery_ratio": -0.06862401391314249,
+          "calibrated_shift": {
+            "dx": 0.25,
+            "dy": 0.0
+          },
+          "time_I_s": 7.534398555755615,
+          "time_II_s": 6.801571846008301,
+          "time_III_s": 172.76693677902222
+        }
+      ],
+      "mean_ratio_II": 1.0037609385298147,
+      "std_ratio_II": 0.054031058565539414,
+      "mean_cross_ratio": 44.01486887558326,
+      "mean_ratio_III": 0.9796705767430184,
+      "mean_recovery": 0.22397535374073213
+    },
+    {
+      "mismatch_px": 0.5,
+      "per_scene": [
+        {
+          "scene": "duomino",
+          "mismatch_px": 0.5,
+          "res_I_calibrated": 4.597306971427037e-05,
+          "res_II_mismatched": 4.4100162571770236e-05,
+          "res_II_cross": 0.005354229008041728,
+          "res_III_corrected": 4.367848875985815e-05,
+          "ratio_II_I": 0.9592607769256972,
+          "cross_ratio": 116.4644658561866,
+          "ratio_III_I": 0.9500885851505373,
+          "recovery_ratio": -0.22514400332159226,
+          "calibrated_shift": {
+            "dx": 0.375,
+            "dy": 0.375
+          },
+          "time_I_s": 8.120547533035278,
+          "time_II_s": 7.073004722595215,
+          "time_III_s": 174.16406297683716
+        },
+        {
+          "scene": "hand",
+          "mismatch_px": 0.5,
+          "res_I_calibrated": 1.3366360849241128e-05,
+          "res_II_mismatched": 1.6268946255898765e-05,
+          "res_II_cross": 0.005264310697069721,
+          "res_III_corrected": 1.3366360849241128e-05,
+          "ratio_II_I": 1.2171559962652385,
+          "cross_ratio": 393.84771640132703,
+          "ratio_III_I": 1.0,
+          "recovery_ratio": 1.0,
+          "calibrated_shift": {
+            "dx": 0.0,
+            "dy": 0.0
+          },
+          "time_I_s": 7.190471172332764,
+          "time_II_s": 7.611361503601074,
+          "time_III_s": 165.62740659713745
+        },
+        {
+          "scene": "pendulumBall",
+          "mismatch_px": 0.5,
+          "res_I_calibrated": 0.00027335151589572584,
+          "res_II_mismatched": 0.0002730054975462948,
+          "res_II_cross": 0.005508621560326479,
+          "res_III_corrected": 0.0002710801461676646,
+          "ratio_II_I": 0.9987341634148352,
+          "cross_ratio": 20.15215296054121,
+          "ratio_III_I": 0.9916906635011028,
+          "recovery_ratio": -5.564304268244725,
+          "calibrated_shift": {
+            "dx": 0.375,
+            "dy": 0.0
+          },
+          "time_I_s": 5.103925704956055,
+          "time_II_s": 7.026310920715332,
+          "time_III_s": 163.5777451992035
+        },
+        {
+          "scene": "waterBalloon",
+          "mismatch_px": 0.5,
+          "res_I_calibrated": 8.869940052063171e-05,
+          "res_II_mismatched": 9.099573774821555e-05,
+          "res_II_cross": 0.005364882648320585,
+          "res_III_corrected": 8.869940052063171e-05,
+          "ratio_II_I": 1.0258889824971218,
+          "cross_ratio": 60.4838659205222,
+          "ratio_III_I": 1.0,
+          "recovery_ratio": 1.0,
+          "calibrated_shift": {
+            "dx": 0.0,
+            "dy": 0.0
+          },
+          "time_I_s": 6.0969367027282715,
+          "time_II_s": 6.728360652923584,
+          "time_III_s": 113.99103045463562
+        }
+      ],
+      "mean_ratio_II": 1.0502599797757233,
+      "std_ratio_II": 0.0992270004830065,
+      "mean_cross_ratio": 147.73705028464428,
+      "mean_ratio_III": 0.98544481216291,
+      "mean_recovery": -0.9473620678915793
+    },
+    {
+      "mismatch_px": 1.0,
+      "per_scene": [
+        {
+          "scene": "duomino",
+          "mismatch_px": 1.0,
+          "res_I_calibrated": 4.597306971427037e-05,
+          "res_II_mismatched": 4.783916549296671e-05,
+          "res_II_cross": 0.016781458695437942,
+          "res_III_corrected": 4.4954563116989586e-05,
+          "ratio_II_I": 1.0405910632092747,
+          "cross_ratio": 365.0280218340273,
+          "ratio_III_I": 0.9778455821286036,
+          "recovery_ratio": 1.5457954564327427,
+          "calibrated_shift": {
+            "dx": 1.5,
+            "dy": 1.5
+          },
+          "time_I_s": 4.740484237670898,
+          "time_II_s": 4.952569246292114,
+          "time_III_s": 110.36158633232117
+        },
+        {
+          "scene": "hand",
+          "mismatch_px": 1.0,
+          "res_I_calibrated": 1.3366360849241128e-05,
+          "res_II_mismatched": 1.7481036603780836e-05,
+          "res_II_cross": 0.016499847071564502,
+          "res_III_corrected": 1.3366360849241128e-05,
+          "ratio_II_I": 1.3078381468934617,
+          "cross_ratio": 1234.4307667334356,
+          "ratio_III_I": 1.0,
+          "recovery_ratio": 1.0,
+          "calibrated_shift": {
+            "dx": 0.0,
+            "dy": 0.0
+          },
+          "time_I_s": 4.819309711456299,
+          "time_II_s": 4.697044372558594,
+          "time_III_s": 104.05493307113647
+        },
+        {
+          "scene": "pendulumBall",
+          "mismatch_px": 1.0,
+          "res_I_calibrated": 0.00027335151589572584,
+          "res_II_mismatched": 0.000286139352803973,
+          "res_II_cross": 0.016233664113555063,
+          "res_III_corrected": 0.00027335151589572584,
+          "ratio_II_I": 1.0467816571872435,
+          "cross_ratio": 59.38750352402525,
+          "ratio_III_I": 1.0,
+          "recovery_ratio": 1.0,
+          "calibrated_shift": {
+            "dx": 0.0,
+            "dy": 0.0
+          },
+          "time_I_s": 4.753906965255737,
+          "time_II_s": 4.858116388320923,
+          "time_III_s": 107.08257794380188
+        },
+        {
+          "scene": "waterBalloon",
+          "mismatch_px": 1.0,
+          "res_I_calibrated": 8.869940052063171e-05,
+          "res_II_mismatched": 9.640367309664028e-05,
+          "res_II_cross": 0.016763739424970975,
+          "res_III_corrected": 8.869940052063171e-05,
+          "ratio_II_I": 1.0868582259946225,
+          "cross_ratio": 188.99495742444938,
+          "ratio_III_I": 1.0,
+          "recovery_ratio": 1.0,
+          "calibrated_shift": {
+            "dx": 0.0,
+            "dy": 0.0
+          },
+          "time_I_s": 4.719260215759277,
+          "time_II_s": 4.746929883956909,
+          "time_III_s": 104.74224090576172
+        }
+      ],
+      "mean_ratio_II": 1.1205172733211506,
+      "std_ratio_II": 0.10959833631529022,
+      "mean_cross_ratio": 461.9603123789844,
+      "mean_ratio_III": 0.9944613955321508,
+      "mean_recovery": 1.1364488641081856
+    }
+  ]
+}

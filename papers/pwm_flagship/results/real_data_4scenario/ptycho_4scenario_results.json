@@ -1,0 +1,73 @@
+{
+  "method": "iCoM",
+  "dataset": "SrTiO3_4DSTEM_Zenodo5113449",
+  "scan_subset": "64x64",
+  "scenarios": {
+    "I_nominal": {
+      "phase_range": [
+        -9.723239207453886,
+        11.63866022893836
+      ],
+      "phase_std": 4.481787350329895
+    },
+    "II_jitter_0.5px": {
+      "psnr_db": 35.4471272540569,
+      "phase_correlation": 0.9967540641163575,
+      "gradient_correlation": 0.8844213120933079,
+      "mse": 0.13018681646718033
+    },
+    "II_jitter_1.0px": {
+      "psnr_db": 29.633001231159177,
+      "phase_correlation": 0.9875618305670528,
+      "gradient_correlation": 0.667748678975985,
+      "mse": 0.49656900641229385
+    },
+    "II_jitter_2.0px": {
+      "psnr_db": 24.096930827365156,
+      "phase_correlation": 0.9547527356197345,
+      "gradient_correlation": 0.36476267029666376,
+      "mse": 1.7765876949064476
+    },
+    "II_jitter_4.0px": {
+      "psnr_db": 19.35213908441293,
+      "phase_correlation": 0.8580604259933821,
+      "gradient_correlation": 0.1515679262779727,
+      "mse": 5.2974372866278845
+    },
+    "III_corrected_2px": {
+      "psnr_db": 61.94564676955997,
+      "phase_correlation": 0.9999927425485151,
+      "gradient_correlation": 0.9997897015524373,
+      "mse": 0.0002915513482020683
+    },
+    "recovery_ratio": 0.9998396046350141
+  },
+  "measurement_residual": {
+    "mismatch_levels": {
+      "0.5px": {
+        "cross_residual": 0.7114147865953157,
+        "ref_magnitude": 4.694209204199712,
+        "residual_ratio": 0.15155157251169007,
+        "residual_percent": 15.155157251169008
+      },
+      "1.0px": {
+        "cross_residual": 1.4170940063577284,
+        "ref_magnitude": 4.694209204199712,
+        "residual_ratio": 0.3018813062464097,
+        "residual_percent": 30.18813062464097
+      },
+      "2.0px": {
+        "cross_residual": 2.8296828205504343,
+        "ref_magnitude": 4.694209204199712,
+        "residual_ratio": 0.6028028784952396,
+        "residual_percent": 60.28028784952396
+      },
+      "4.0px": {
+        "cross_residual": 5.65601058945487,
+        "ref_magnitude": 4.694209204199712,
+        "residual_ratio": 1.2048910356178149,
+        "residual_percent": 120.48910356178149
+      }
+    }
+  }
+}

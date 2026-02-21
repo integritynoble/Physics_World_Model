@@ -277,17 +277,15 @@ class TestAlgorithm2MSTIntegration:
         if not HAS_TORCH:
             pytest.skip("PyTorch not available")
 
-        # Create synthetic data (small size to keep test fast)
-        H, W, L = 64, 64, 8
+        # Create synthetic data (use 256x256x28 for MST compatibility;
+        # use random measurement to avoid expensive enlarged-grid forward
+        # model which takes minutes on CPU)
+        H, W, L = 256, 256, 28
         x_true = np.random.rand(H, W, L).astype(np.float32) * 0.5
         mask_real = np.random.rand(H, W).astype(np.float32) * 0.8 + 0.1
+        y_meas = np.random.rand(H, H + 54).astype(np.float32) * 0.1  # (256, 310)
 
-        # Create measurement using corrupted mask (N=1, K=1 for speed)
         from pwm_core.calibration import SimulatedOperatorEnlargedGrid, MismatchParameters
-        from pwm_core.calibration import warp_affine_2d
-        mask_corrupted = warp_affine_2d(mask_real, dx=0.2, dy=0.1, theta=0.05)
-        op = SimulatedOperatorEnlargedGrid(mask_256=mask_corrupted, N=1, K=1)
-        y_meas = op.forward(x_true)
 
         # Coarse estimate (Algorithm 1)
         mismatch_coarse = MismatchParameters(

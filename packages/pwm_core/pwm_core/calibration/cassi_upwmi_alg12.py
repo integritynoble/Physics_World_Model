@@ -116,13 +116,18 @@ def warp_affine_2d(image: np.ndarray, dx: float, dy: float, theta: float) -> np.
         [-sin_m, cos_m]
     ])
 
-    # Offset for rotation around center
-    offset = np.array([cy, cx])
+    # Offset for rotation around center + translation
+    # scipy maps output coords to input coords: input = matrix @ output + offset
+    # We want: rotate by theta around center, then translate by (dy, dx)
+    # Inverse: input = R^{-1} @ (output - center - [dy,dx]) + center
+    #        = matrix @ output + center - matrix @ (center + [dy,dx])
+    center = np.array([cy, cx])
+    offset = center - matrix @ (center + np.array([dy, dx]))
 
     # Apply warp with translation
     output = scipy_affine_transform(
         image, matrix,
-        offset=offset - np.array([dy, dx]),
+        offset=offset,
         order=1,  # linear interpolation
         mode='constant',
         cval=0.0
