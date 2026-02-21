@@ -154,6 +154,11 @@ class GraphCompiler:
                 except ValueError:
                     pass
 
+            # Canonical primitive attributes (FPB Theorem)
+            _canonical_id = getattr(prim, '_canonical_id', None)
+            _physics_stage = getattr(prim, '_physics_stage', None)
+            _detect_family = getattr(prim, '_detect_family', None)
+
             node_tags[node_id] = NodeTags(
                 is_linear=prim.is_linear,
                 is_stochastic=prim.is_stochastic,
@@ -161,6 +166,9 @@ class GraphCompiler:
                 is_stateful=prim.is_stateful,
                 physics_tier=_physics_tier,
                 physics_subrole=_physics_subrole,
+                canonical_id=_canonical_id,
+                physics_stage=_physics_stage,
+                detect_family=_detect_family,
             )
 
         # Collect edges

@@ -26,6 +26,7 @@ from typing import Any, Dict, List, Optional, Protocol, Tuple, runtime_checkable
 import numpy as np
 from scipy import ndimage
 
+from pwm_core.graph.ir_types import CanonicalPrimitive, DetectFamily, PhysicsStageFamily
 from pwm_core.mismatch.subpixel import subpixel_shift_2d
 
 
@@ -69,6 +70,9 @@ class BasePrimitive:
     _is_stateful: bool = False
     _n_inputs: int = 1
     _physics_subrole: Optional[str] = None
+    _canonical_id: Optional[CanonicalPrimitive] = None
+    _physics_stage: Optional[PhysicsStageFamily] = None
+    _detect_family: Optional[DetectFamily] = None
     _params: Dict[str, Any]
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
@@ -139,6 +143,8 @@ class FresnelProp(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "propagation"
+    _canonical_id = CanonicalPrimitive.P
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         wavelength = self._params.get("wavelength", 0.5e-6)
@@ -174,6 +180,8 @@ class AngularSpectrum(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "propagation"
+    _canonical_id = CanonicalPrimitive.P
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         wavelength = self._params.get("wavelength", 0.5e-6)
@@ -209,6 +217,8 @@ class RayTrace(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "propagation"
+    _canonical_id = CanonicalPrimitive.P
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         focal_length = self._params.get("focal_length", 50.0)
@@ -234,6 +244,8 @@ class Conv2d(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "propagation"
+    _canonical_id = CanonicalPrimitive.C
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sigma = self._params.get("sigma", 2.0)
@@ -257,6 +269,8 @@ class Conv3d(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "propagation"
+    _canonical_id = CanonicalPrimitive.C
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sigma = self._params.get("sigma", [2.0, 2.0, 2.0])
@@ -313,6 +327,8 @@ class CodedMask(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "modulation"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -352,6 +368,8 @@ class DMDPattern(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "modulation"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -379,6 +397,8 @@ class SIMPattern(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "modulation"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -426,6 +446,8 @@ class SpectralDispersion(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "encoding"
+    _canonical_id = CanonicalPrimitive.W
+    _physics_stage = PhysicsStageFamily.detection_readout
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         disp_step = self._params.get("disp_step", 1.0)
@@ -515,6 +537,8 @@ class ObjectiveLens(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "imaging"
+    _canonical_id = CanonicalPrimitive.C
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         throughput = self._params.get("throughput", 0.92)
@@ -555,6 +579,8 @@ class RelayLens(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "transport"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         throughput = self._params.get("throughput", 0.90)
@@ -580,6 +606,8 @@ class ImbalancedResponse(BasePrimitive):
     _is_linear = True  # approximately linear per-channel
     _physics_tier = "tier1_approx"
     _physics_subrole = "distortion"
+    _canonical_id = CanonicalPrimitive.W
+    _physics_stage = PhysicsStageFamily.detection_readout
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         if x.ndim < 3:
@@ -625,6 +653,8 @@ class ChromaticWarp(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "propagation"
+    _canonical_id = CanonicalPrimitive.W
+    _physics_stage = PhysicsStageFamily.detection_readout
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         warp_coeff = self._params.get("warp_coeff", 0.01)
@@ -667,6 +697,8 @@ class RandomMask(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "sampling"
+    _canonical_id = CanonicalPrimitive.S
+    _physics_stage = PhysicsStageFamily.detection_readout
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -703,6 +735,8 @@ class CTRadon(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "sampling"
+    _canonical_id = CanonicalPrimitive.Pi
+    _physics_stage = PhysicsStageFamily.encoding_projection
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -771,6 +805,8 @@ class MRIKspace(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "sampling"
+    _canonical_id = CanonicalPrimitive.F
+    _physics_stage = PhysicsStageFamily.encoding_projection
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -799,6 +835,8 @@ class TemporalMask(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "encoding"
+    _canonical_id = CanonicalPrimitive.S
+    _physics_stage = PhysicsStageFamily.detection_readout
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -841,6 +879,8 @@ class ShutterIntegration(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "integration"
+    _canonical_id = CanonicalPrimitive.Sigma
+    _physics_stage = PhysicsStageFamily.detection_readout
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         duty_cycle = self._params.get("duty_cycle", 1.0)
@@ -863,6 +903,9 @@ class MagnitudeSq(BasePrimitive):
     _is_linear = False
     _physics_tier = "tier1_approx"
     _physics_subrole = "transduction"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.linear_intensity
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         return np.abs(x.astype(np.complex128)) ** 2
@@ -875,6 +918,9 @@ class Saturation(BasePrimitive):
     _is_linear = False
     _physics_tier = "tier1_approx"
     _physics_subrole = "transduction"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.sigmoid
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         max_val = self._params.get("max_val", 1.0)
@@ -888,6 +934,9 @@ class LogCompress(BasePrimitive):
     _is_linear = False
     _physics_tier = "tier1_approx"
     _physics_subrole = "transduction"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.logarithmic
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         alpha = self._params.get("alpha", 1.0)
@@ -990,6 +1039,8 @@ class FrameIntegration(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "encoding"
+    _canonical_id = CanonicalPrimitive.Sigma
+    _physics_stage = PhysicsStageFamily.detection_readout
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         axis = self._params.get("axis", -1)
@@ -1007,6 +1058,8 @@ class MotionWarp(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "propagation"
+    _canonical_id = CanonicalPrimitive.P
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         dx = self._params.get("dx", 0.0)
@@ -1086,6 +1139,8 @@ class SumAxis(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier0_geometry"
     _physics_subrole = "encoding"
+    _canonical_id = CanonicalPrimitive.Sigma
+    _physics_stage = PhysicsStageFamily.detection_readout
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         axis = self._params.get("axis", -1)
@@ -1202,6 +1257,9 @@ class PhotonSensor(BasePrimitive):
     _is_linear = True
     _node_role = "sensor"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.linear_intensity
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         qe = self._params.get("quantum_efficiency", 0.9)
@@ -1247,6 +1305,9 @@ class CoilSensor(BasePrimitive):
     _is_linear = True
     _node_role = "sensor"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.coherent_field
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sensitivity = self._params.get("sensitivity", 1.0)
@@ -1295,6 +1356,9 @@ class TransducerSensor(BasePrimitive):
     _is_linear = True
     _node_role = "sensor"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.linear_intensity
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sensitivity = self._params.get("sensitivity", 1.0)
@@ -1315,6 +1379,9 @@ class GenericSensor(BasePrimitive):
     _is_linear = True
     _node_role = "sensor"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.linear_intensity
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         gain = self._params.get("gain", 1.0)
@@ -1436,6 +1503,8 @@ class Interference(BasePrimitive):
     _n_inputs = 2
     _physics_tier = "tier1_approx"
     _physics_subrole = "interaction"
+    _canonical_id = CanonicalPrimitive.P
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         # Single-input fallback: identity
@@ -1460,6 +1529,8 @@ class FourierRelay(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "relay"
+    _canonical_id = CanonicalPrimitive.P
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         transfer_function = self._params.get("transfer_function", "free_space")
@@ -1511,6 +1582,8 @@ class MaxwellInterface(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier2_full"
     _physics_subrole = "propagation"
+    _canonical_id = CanonicalPrimitive.P
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         backend = self._params.get("backend", "none")
@@ -1612,6 +1685,8 @@ class BeerLambert(BasePrimitive):
     _node_role = "transport"
     _physics_tier = "tier1_approx"
     _physics_subrole = "transduction"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x, **params):
         I_0 = self._params.get("I_0", 10000.0)
@@ -1639,6 +1714,8 @@ class OpticalAbsorption(BasePrimitive):
     _physics_tier = "tier1_approx"
     _physics_subrole = "interaction"
     _carrier_type = "acoustic"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x, **params):
         grueneisen = self._params.get("grueneisen", 0.8)
@@ -1664,6 +1741,8 @@ class AcousticPropagation(BasePrimitive):
     _physics_tier = "tier1_approx"
     _physics_subrole = "propagation"
     _carrier_type = "acoustic"
+    _canonical_id = CanonicalPrimitive.P
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x, **params):
         x = np.asarray(x, dtype=np.float64)
@@ -1862,6 +1941,9 @@ class ElectronDetectorSensor(BasePrimitive):
     _node_role = "sensor"
     _physics_tier = "tier0_geometry"
     _carrier_type = "electron"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.linear_intensity
 
     def forward(self, x, **params):
         ce = self._params.get("collection_efficiency", 0.5)
@@ -1881,6 +1963,9 @@ class SinglePixelSensor(BasePrimitive):
     _is_linear = True
     _node_role = "sensor"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.linear_intensity
 
     def forward(self, x, **params):
         n_patterns = self._params.get("n_patterns", 64)
@@ -1905,6 +1990,9 @@ class XRayDetectorSensor(BasePrimitive):
     _is_linear = True
     _node_role = "sensor"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.linear_intensity
 
     def forward(self, x, **params):
         eff = self._params.get("scintillator_efficiency", 0.8)
@@ -1924,6 +2012,9 @@ class AcousticReceiveSensor(BasePrimitive):
     _is_linear = True
     _node_role = "sensor"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.linear_intensity
 
     def forward(self, x, **params):
         sensitivity = self._params.get("sensitivity", 1.0)
@@ -1989,6 +2080,8 @@ class ThinObjectPhase(BasePrimitive):
     _carrier_type = "electron"
     _n_inputs = 2
     _physics_validity_regime = "thin_sample, weak_phase_approx"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x, **params):
         sigma = self._params.get("sigma", 0.01)
@@ -2014,6 +2107,8 @@ class CTFTransfer(BasePrimitive):
     _physics_tier = "tier1_approx"
     _carrier_type = "electron"
     _physics_validity_regime = "isoplanatic, no_spatial_incoherence"
+    _canonical_id = CanonicalPrimitive.C
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x, **params):
         defocus = self._params.get("defocus_nm", 100.0)
@@ -2045,6 +2140,8 @@ class YieldModel(BasePrimitive):
     _carrier_type = "electron"
     _n_inputs = 2
     _physics_validity_regime = "homogeneous_material, normal_incidence"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x, **params):
         yc = self._params.get("yield_coeff", 0.3)
@@ -2068,6 +2165,8 @@ class BeamformDelay(BasePrimitive):
     _node_role = "transport"
     _physics_subrole = "propagation"
     _physics_tier = "tier1_approx"
+    _canonical_id = CanonicalPrimitive.P
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x, **params):
         x = np.asarray(x, dtype=np.float64)
@@ -2088,6 +2187,8 @@ class EmissionProjection(BasePrimitive):
     _node_role = "transport"
     _physics_subrole = "sampling"
     _physics_tier = "tier1_approx"
+    _canonical_id = CanonicalPrimitive.Pi
+    _physics_stage = PhysicsStageFamily.encoding_projection
 
     def forward(self, x, **params):
         n_angles = self._params.get("n_angles", 32)
@@ -2122,6 +2223,8 @@ class ScatterModel(BasePrimitive):
     _node_role = "transport"
     _physics_subrole = "interaction"
     _physics_tier = "tier1_approx"
+    _canonical_id = CanonicalPrimitive.R
+    _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x, **params):
         fraction = self._params.get("scatter_fraction", 0.1)
@@ -2153,6 +2256,8 @@ class ScanTrajectory(BasePrimitive):
     _is_linear = True
     _node_role = "element"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.S
+    _physics_stage = PhysicsStageFamily.detection_readout
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         scan_type = self._params.get("scan_type", "raster")
@@ -2187,6 +2292,8 @@ class TimeOfFlightGate(BasePrimitive):
     _is_linear = True
     _node_role = "element"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.S
+    _physics_stage = PhysicsStageFamily.detection_readout
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_bins = self._params.get("n_bins", 64)
@@ -2225,6 +2332,8 @@ class CollimatorModel(BasePrimitive):
     _is_linear = True
     _node_role = "element"
     _physics_tier = "tier1_wave"
+    _canonical_id = CanonicalPrimitive.S
+    _physics_stage = PhysicsStageFamily.detection_readout
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         hole_diameter = self._params.get("hole_diameter", 1.5)
@@ -2255,6 +2364,8 @@ class FluoroTemporalIntegrator(BasePrimitive):
     _is_linear = True
     _node_role = "element"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.Sigma
+    _physics_stage = PhysicsStageFamily.detection_readout
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_frames = self._params.get("n_frames", 8)
@@ -2283,6 +2394,8 @@ class FluorescenceKinetics(BasePrimitive):
     _is_linear = False
     _node_role = "element"
     _physics_tier = "tier1_wave"
+    _canonical_id = CanonicalPrimitive.R
+    _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         lifetime_ns = self._params.get("lifetime_ns", 3.0)
@@ -2312,6 +2425,8 @@ class NonlinearExcitation(BasePrimitive):
     _is_linear = False
     _node_role = "element"
     _physics_tier = "tier1_wave"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_photons = self._params.get("n_photons", 2)
@@ -2329,6 +2444,8 @@ class SaturationDepletion(BasePrimitive):
     _is_linear = False
     _node_role = "element"
     _physics_tier = "tier1_wave"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         depletion_factor = self._params.get("depletion_factor", 0.5)
@@ -2380,6 +2497,8 @@ class EvanescentFieldDecay(BasePrimitive):
     _is_linear = True
     _node_role = "element"
     _physics_tier = "tier1_wave"
+    _canonical_id = CanonicalPrimitive.P
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         penetration_depth = self._params.get("penetration_depth", 100.0)
@@ -2411,6 +2530,9 @@ class DopplerEstimator(BasePrimitive):
     _is_linear = False
     _node_role = "element"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.coherent_field
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         prf = self._params.get("prf", 1000.0)
@@ -2433,6 +2555,8 @@ class ElasticWaveModel(BasePrimitive):
     _is_linear = True
     _node_role = "element"
     _physics_tier = "tier1_wave"
+    _canonical_id = CanonicalPrimitive.P
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         wave_speed = self._params.get("wave_speed", 1.5)
@@ -2456,6 +2580,8 @@ class DualEnergyBeerLambert(BasePrimitive):
     _is_linear = False
     _node_role = "element"
     _physics_tier = "tier1_wave"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         I_0_low = self._params.get("I_0_low", 1000.0)
@@ -2479,6 +2605,8 @@ class DepthOptics(BasePrimitive):
     _is_linear = False
     _node_role = "element"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.C
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         focal_length = self._params.get("focal_length", 50.0)
@@ -2498,6 +2626,8 @@ class DiffractionCamera(BasePrimitive):
     _is_linear = False
     _node_role = "element"
     _physics_tier = "tier1_wave"
+    _canonical_id = CanonicalPrimitive.C
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         detector_psf_sigma = self._params.get("detector_psf_sigma", 0.0)
@@ -2518,6 +2648,8 @@ class SARBackprojection(BasePrimitive):
     _is_linear = True
     _node_role = "element"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.Pi
+    _physics_stage = PhysicsStageFamily.encoding_projection
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_pulses = self._params.get("n_pulses", 64)
@@ -2557,6 +2689,8 @@ class ParticleAttenuation(BasePrimitive):
     _is_linear = False
     _node_role = "element"
     _physics_tier = "tier1_wave"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         I_0 = self._params.get("I_0", 1000.0)
@@ -2575,6 +2709,8 @@ class MultipleScatteringKernel(BasePrimitive):
     _is_linear = True
     _node_role = "element"
     _physics_tier = "tier1_wave"
+    _canonical_id = CanonicalPrimitive.R
+    _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sigma = self._params.get("sigma", 2.0)
@@ -2600,6 +2736,9 @@ class VesselFlowContrast(BasePrimitive):
     _is_linear = False
     _node_role = "element"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.linear_intensity
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_frames = self._params.get("n_frames", 4)
@@ -2620,6 +2759,8 @@ class SpecularReflectionModel(BasePrimitive):
     _is_linear = False
     _node_role = "element"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.R
+    _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         specular_strength = self._params.get("specular_strength", 0.1)
@@ -2639,6 +2780,8 @@ class StructuredLightProjector(BasePrimitive):
     _is_linear = True
     _node_role = "element"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_patterns = self._params.get("n_patterns", 4)
@@ -2672,6 +2815,8 @@ class SequenceBlock(BasePrimitive):
     _is_linear = True
     _node_role = "element"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sequence_type = self._params.get("sequence_type", "epi")
@@ -2731,6 +2876,8 @@ class ReciprocalSpaceGeometry(BasePrimitive):
     _is_linear = False
     _node_role = "element"
     _physics_tier = "tier1_wave"
+    _canonical_id = CanonicalPrimitive.F
+    _physics_stage = PhysicsStageFamily.encoding_projection
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sample_tilt_deg = self._params.get("sample_tilt_deg", 70.0)
@@ -2764,6 +2911,9 @@ class SPADToFSensor(BasePrimitive):
     _node_role = "sensor"
     _carrier_type = "photon"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.poisson_rate
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_bins = self._params.get("n_bins", 64)
@@ -2787,6 +2937,9 @@ class EnergyResolvingDetector(BasePrimitive):
     _node_role = "sensor"
     _carrier_type = "electron"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.linear_intensity
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_channels = self._params.get("n_channels", 256)
@@ -2811,6 +2964,9 @@ class FiberBundleSensor(BasePrimitive):
     _node_role = "sensor"
     _carrier_type = "photon"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.linear_intensity
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_cores = self._params.get("n_cores", 10000)
@@ -2839,6 +2995,9 @@ class TrackDetectorSensor(BasePrimitive):
     _node_role = "sensor"
     _carrier_type = "abstract"
     _physics_tier = "tier0_geometry"
+    _canonical_id = CanonicalPrimitive.D
+    _physics_stage = PhysicsStageFamily.detection_readout
+    _detect_family = DetectFamily.linear_intensity
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_layers = self._params.get("n_layers", 8)
@@ -2866,6 +3025,8 @@ class ProjectionOptics(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "transport"
+    _canonical_id = CanonicalPrimitive.C
+    _physics_stage = PhysicsStageFamily.propagation
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         throughput = self._params.get("throughput", 0.95)
@@ -2934,6 +3095,8 @@ class DMDPatternSequence(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "encoding"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
 
     def __init__(self, params: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(params)
@@ -3033,6 +3196,8 @@ class BucketIntegration(BasePrimitive):
     _is_linear = True
     _physics_tier = "tier1_approx"
     _physics_subrole = "integration"
+    _canonical_id = CanonicalPrimitive.Sigma
+    _physics_stage = PhysicsStageFamily.detection_readout
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         duty_cycle = self._params.get("duty_cycle", 1.0)
@@ -3185,6 +3350,13 @@ _ALL_PRIMITIVES: List[type] = [
     DMDPatternSequence,
     BucketIntegration,
 ]
+
+# Build canonical registry: maps each CanonicalPrimitive to its implementation primitive_ids
+CANONICAL_REGISTRY: Dict[CanonicalPrimitive, List[str]] = {}
+for _cls in _ALL_PRIMITIVES:
+    _cid = getattr(_cls, '_canonical_id', None)
+    if _cid is not None:
+        CANONICAL_REGISTRY.setdefault(_cid, []).append(_cls.primitive_id)
 
 PRIMITIVE_REGISTRY: Dict[str, type] = {
     cls.primitive_id: cls for cls in _ALL_PRIMITIVES

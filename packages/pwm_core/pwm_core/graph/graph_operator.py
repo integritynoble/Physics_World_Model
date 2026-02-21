@@ -18,7 +18,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
-from pwm_core.graph.ir_types import NodeTags
+from pwm_core.graph.ir_types import CanonicalPrimitive, NodeTags
 from pwm_core.graph.primitives import BasePrimitive
 
 logger = logging.getLogger(__name__)
@@ -256,6 +256,32 @@ class GraphOperator:
             )
 
         return report
+
+    # ---- Canonical form ----
+
+    def to_canonical(self) -> List[Optional[CanonicalPrimitive]]:
+        """Extract the canonical decomposition of this graph.
+
+        Returns a list of CanonicalPrimitive values (one per node in
+        topological order), with None for nodes that have no canonical
+        mapping (sources, noise, corrections, utilities).
+        """
+        result: List[Optional[CanonicalPrimitive]] = []
+        for node_id, prim in self.forward_plan:
+            cid = getattr(prim, '_canonical_id', None)
+            result.append(cid)
+        return result
+
+    def canonical_dag_string(self) -> str:
+        """Return a compact canonical DAG string, e.g. 'M -> W -> Sigma -> D'.
+
+        Non-canonical nodes (sources, noise, corrections) are omitted.
+        """
+        symbols = []
+        for cid in self.to_canonical():
+            if cid is not None:
+                symbols.append(cid.name)
+        return " -> ".join(symbols) if symbols else "(empty)"
 
     # ---- Explain ----
 

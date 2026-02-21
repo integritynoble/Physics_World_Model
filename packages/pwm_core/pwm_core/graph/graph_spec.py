@@ -20,7 +20,13 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from pwm_core.graph.ir_types import NodeRole, NodeTags, ParameterSpec, PhysicsSubrole
+from pwm_core.graph.ir_types import (
+    CanonicalPrimitive,
+    NodeRole,
+    NodeTags,
+    ParameterSpec,
+    PhysicsSubrole,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -96,6 +102,7 @@ class GraphNode(StrictBaseModel):
     role: Optional[NodeRole] = None
     physics_subrole: Optional[PhysicsSubrole] = None
     parameter_specs: List[ParameterSpec] = Field(default_factory=list)
+    canonical_id: Optional[CanonicalPrimitive] = None
 
 
 # ---------------------------------------------------------------------------
