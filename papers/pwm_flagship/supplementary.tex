@@ -882,7 +882,7 @@ Sc.~II = mismatch (no calibration); Sc.~III = PWM grid-search corrected;
 Sc.~IV = oracle (true operator on mismatched data).
 Recovery = (Sc.~III $-$ Sc.~II) / (Sc.~IV $-$ Sc.~II).
 CASSI/CACTI use measurement-residual objective; SPC uses
-reconstruction-TV objective.}
+reconstruction-TV objective.  Note: Sc.~II values here differ from Table~S1 because Table~S1 reports the full InverseNet multi-parameter mismatch, whereas this table uses simplified single-parameter mismatch for grid-search tractability.}
 \label{tab:scenario_iv}
 \begin{tabular}{l l r r r r r}
 \toprule
@@ -995,7 +995,7 @@ Values are mean $\pm$ s.d.\ across 10 KAIST scenes.}
 \textbf{Method} &
   \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~IV} \\
 \midrule
-GAP-TV      & $16.66 \pm 3.32$ & $24.27 \pm 2.92$ & $25.97 \pm 2.54$ \\
+GAP-TV\footnote{GAP-TV's SAM under Sc.~IV ($25.97^\circ$) exceeds Sc.~II ($24.27^\circ$) because PSNR-optimal oracle correction redistributes spectral energy in a way that improves intensity fidelity (PSNR) while slightly degrading angular fidelity (SAM).  This PSNR--SAM trade-off is specific to GAP-TV's TV regularization; learned methods (MST-L) improve on both metrics.}      & $16.66 \pm 3.32$ & $24.27 \pm 2.92$ & $25.97 \pm 2.54$ \\
 PnP-HSI-CNN & $16.10 \pm 3.25$ & $23.73 \pm 2.81$ & $18.66 \pm 2.75$ \\
 HDNet       & $6.67 \pm 0.96$  & $17.03 \pm 2.76$ & $17.03 \pm 2.76$ \\
 MST-L       & $7.44 \pm 1.24$  & $23.92 \pm 4.58$ & $11.74 \pm 1.32$ \\
@@ -1288,6 +1288,34 @@ $4.2 \pm 0.8$~minutes) translates to 377 physicist-hours annually for a
 inter-analyst variability, a known source of inconsistency in manual
 QA workflows.
 
+\subsection{Prospective Clinical Validation Protocol}
+\label{sec:ctqc_prospective}
+
+The CT QC Copilot results above use simulated scanner
+data.  Prospective validation on physical CT systems is planned in three
+phases:
+
+\paragraph{Phase~1 (single scanner, 3 months).}
+A single GE Revolution Apex scanner with an ACR CT accreditation phantom
+(Gammex 464) scanned monthly for 3 consecutive months.  Compare
+Copilot-computed metrics against manual physicist measurements for all
+9 ACR-aligned metrics.
+
+\paragraph{Phase~2 (5-scanner mini-fleet, 6 months).}
+Expand to 5 scanners from $\geq 2$ manufacturers (GE + Siemens or Philips).
+Apply Western Electric drift detection rules over 6 monthly measurement
+cycles.  Evaluate sensitivity and specificity for detecting known
+calibration drifts.
+
+\paragraph{Phase~3 (30-scanner fleet).}
+Full fleet deployment, if available, to validate the 377 physicist-hours
+annual savings projection from the simulation study.
+
+\noindent\textbf{Status.}  Prospective validation is planned in collaboration
+with clinical physics partners.  Even Phase~1 data (single scanner, 3 months)
+would transform the CT QC section from a simulation exercise to a clinical
+demonstration.
+
 %% ============================================================
 %% SUPPLEMENTARY NOTE 8: CONTROLLED HARDWARE VALIDATION
 %% ============================================================
@@ -1409,54 +1437,6 @@ mismatch of comparable magnitude to the perturbation applied.
 
 
 %% ============================================================
-%% SUPPLEMENTARY NOTE 7 ADDENDUM: PROSPECTIVE CLINICAL VALIDATION
-%% ============================================================
-\subsection{Prospective Clinical Validation Protocol}
-\label{sec:ctqc_prospective}
-
-The CT QC Copilot results in Supplementary Note~7 use simulated scanner
-data.  Prospective validation on physical CT systems is planned in three
-phases:
-
-\paragraph{Phase~1 (single scanner, 3 months).}
-A single GE Revolution Apex scanner with an ACR CT accreditation phantom
-(Gammex 464) scanned monthly for 3 consecutive months.  Compare
-Copilot-computed metrics against manual physicist measurements for all
-9 ACR-aligned metrics.
-
-\paragraph{Phase~2 (5-scanner mini-fleet, 6 months).}
-Expand to 5 scanners from $\geq 2$ manufacturers (GE + Siemens or Philips).
-Apply Western Electric drift detection rules over 6 monthly measurement
-cycles.  Evaluate sensitivity and specificity for detecting known
-calibration drifts.
-
-\paragraph{Phase~3 (30-scanner fleet).}
-Full fleet deployment, if available, to validate the 377 physicist-hours
-annual savings projection from the simulation study.
-
-\noindent\textbf{Status.}  Prospective validation is planned in collaboration
-with clinical physics partners.  Even Phase~1 data (single scanner, 3 months)
-would transform the CT QC section from a simulation exercise to a clinical
-demonstration.
-
-% Placeholder for Jiang Lab clinical results
-% \begin{table}[htbp]
-% \centering
-% \caption{Prospective CT QC validation: Copilot vs. manual physicist.}
-% \label{tab:ctqc_prospective}
-% \begin{tabular}{l r r r}
-% \toprule
-% \textbf{Metric} & \textbf{Copilot} & \textbf{Manual} & \textbf{Deviation} \\
-% \midrule
-% CT\# Water (HU) & --- & --- & --- \\
-% CT\# Bone (HU) & --- & --- & --- \\
-% ... & & & \\
-% \bottomrule
-% \end{tabular}
-% \end{table}
-
-
-%% ============================================================
 %% SUPPLEMENTARY NOTE S12: CALIBRATION METHOD COMPARISON
 %% ============================================================
 \newpage
@@ -1466,7 +1446,7 @@ demonstration.
 Existing calibration methods are modality-specific: ESPIRiT~\cite{uecker2014espirit} auto-calibrates coil sensitivities for parallel MRI; entropy-based center-of-rotation autofocus corrects geometric errors in CT; blind position correction in ePIE~\cite{maiden2009ptychography} self-calibrates probe positions in ptychography. Each achieves high recovery within its target modality but requires domain-specific algorithm design and cannot transfer across modalities.
 
 \paragraph{Quantitative comparison: ESPIRiT vs.\ PWM on multi-coil MRI.}
-To ground this comparison empirically, we evaluate four conditions on a synthetic brain phantom (8~coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE, 5\% multiplicative coil sensitivity mismatch):
+To ground this comparison empirically, we evaluate four conditions on a synthetic brain phantom (8~coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE with $\ell_1$-wavelet regularization $\lambda = 10^{-3}$ and 30 iterations, 5\% multiplicative coil sensitivity mismatch).  Note: this experiment uses a structurally complex brain phantom, yielding a lower Sc.~I baseline (34.98\,dB) than the Shepp-Logan phantom used in Note~S13 (52.11\,dB); the difference reflects phantom complexity, not solver disagreement.
 
 \begin{table}[h]
 \centering\small
@@ -1488,7 +1468,7 @@ PWM (beam-search corrected) & 32.05 & 0.7264 \\
 
 \paragraph{Complementarity.} ESPIRiT and PWM address different aspects of the calibration problem. ESPIRiT exploits $k$-space structure to estimate sensitivity maps purely from data, performing well when sufficient calibration data is available (e.g., fully sampled ACS regions with $\geq$~32 lines). PWM corrects arbitrary forward-model parameters using the OperatorGraph structure, providing robust improvement even in data-limited regimes. The two approaches are complementary: ESPIRiT can be combined with PWM by using ESPIRiT-estimated maps as the initial $H_{\mathrm{nom}}$ for PWM correction.
 
-PWM's modality-agnostic correction achieves comparable recovery on validated modalities (CASSI: 22--46\%, CACTI: 93\%, SPC: 86--92\%) without requiring domain-specific tuning. The advantage is most pronounced for CASSI, where no automated calibration standard exists, and for cross-modality deployment, where a single pipeline serves all modalities without per-modality engineering.
+PWM's modality-agnostic correction achieves comparable recovery on validated modalities (CASSI: 22--46\%, CACTI: 100\%, SPC: 86--92\%; Table~S7) without requiring domain-specific tuning. The advantage is most pronounced for CASSI, where no automated calibration standard exists, and for cross-modality deployment, where a single pipeline serves all modalities without per-modality engineering.
 
 %% ============================================================
 %% SUPPLEMENTARY NOTE S13: MRI UNDER CLINICALLY REALISTIC CONDITIONS
@@ -1496,7 +1476,7 @@ PWM's modality-agnostic correction achieves comparable recovery on validated mod
 \section{Supplementary Note S13: MRI Under Clinically Realistic Conditions}
 \label{sec:mri_realistic}
 
-The $+48.25$\,dB correction gain reported for MRI in the main text reflects a single-coil scenario with 5\% multiplicative sensitivity error---a pathological case chosen to stress-test the framework. Under clinically realistic multi-coil conditions (8 coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE reconstruction) with spatially smooth Biot-Savart sensitivity errors simulating patient repositioning, the correction gains are substantially more modest but clinically meaningful:
+The $+48.25$\,dB correction gain reported for MRI in the main text reflects a single-coil scenario with 5\% multiplicative sensitivity error---a pathological case chosen to stress-test the framework. Under clinically realistic multi-coil conditions (8 coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE reconstruction) on a Shepp-Logan phantom with spatially smooth Biot-Savart sensitivity errors simulating patient repositioning, the correction gains are substantially more modest but clinically meaningful.  Note: the Sc.~I baseline here (52.11\,dB) is higher than in Note~S12 (34.98\,dB) because this experiment uses a smooth Shepp-Logan phantom; the structurally complex brain phantom in Note~S12 is harder to reconstruct, yielding lower absolute PSNR across all scenarios.
 
 \begin{table}[h]
 \centering\small
