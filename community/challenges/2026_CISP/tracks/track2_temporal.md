@@ -1,4 +1,4 @@
-# Track 2: Temporal — Video SCI Under Motion Blur
+# Track 2: Temporal — Video Compressive Imaging Under Motion Blur
 
 ## Challenge
 

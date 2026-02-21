@@ -8,7 +8,7 @@ The following components are freely available under the MIT license:
 
 - **Core library** (`packages/pwm_core/`)
   - OperatorGraph IR and compiler
-  - 26 imaging modality templates
+  - 64 imaging modality templates
   - All reconstruction solvers
   - Calibration algorithms (Algorithm 1: beam search, Algorithm 2: GPU differentiable)
   - Agent framework (deterministic path)

@@ -26,7 +26,7 @@ can handle the gap between assumed and actual physics.
 | Track | Modality Focus | Key Challenge |
 |-------|---------------|--------------|
 | [Track 1: Correct](tracks/track1_correct.md) | CASSI (spectral) | Reconstruct under calibration mismatch |
-| [Track 2: Temporal](tracks/track2_temporal.md) | CACTI (video SCI) | Handle motion blur + temporal mismatch |
+| [Track 2: Temporal](tracks/track2_temporal.md) | CACTI (video) | Handle motion blur + temporal mismatch |
 | [Track 3: Medical](tracks/track3_medical.md) | MRI/CT | Acquisition artifacts + noise |
 | [Track 4: Cross-Modal](tracks/track4_cross.md) | Mixed | Transfer across modality families |
 
