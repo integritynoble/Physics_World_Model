@@ -25,7 +25,15 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class PhysicsTier(str, Enum):
-    """Level of physical fidelity for a primitive or graph node."""
+    """Level of physical fidelity for a primitive or graph node.
+
+    Paper-to-code mapping (paper uses 1-indexed tiers)::
+
+        Paper Tier 1 (linear, shift-invariant)   -> tier0_geometry
+        Paper Tier 2 (linear, shift-variant)     -> tier1_approx
+        Paper Tier 3 (nonlinear, ray/wave)       -> tier2_full
+        Paper Tier 4 (full-wave / Monte Carlo)   -> tier3_learned
+    """
 
     tier0_geometry = "tier0_geometry"
     tier1_approx = "tier1_approx"
@@ -135,11 +143,11 @@ class DetectFamily(str, Enum):
     determining the measurement nonlinearity.
     """
 
-    linear_intensity = "linear_intensity"   # η(x) = g|x|²
-    logarithmic = "logarithmic"             # η(x) = g·log(1 + |x|²/x₀)
-    sigmoid = "sigmoid"                     # η(x) = g·σ(|x|² - x₀)
-    poisson_rate = "poisson_rate"           # η(x) = g|x|² (returns Poisson rate)
-    coherent_field = "coherent_field"       # η(x) = g·Re[x·e^(iφ)]
+    intensity_square_law = "intensity_square_law"  # η(x) = g|x|² (intensity detector)
+    logarithmic = "logarithmic"                    # η(x) = g·log(1 + |x|²/x₀)
+    sigmoid = "sigmoid"                            # η(x) = g·σ(|x|² - x₀)
+    linear_field = "linear_field"                  # η(x) = gx (field-amplitude detector)
+    coherent_field = "coherent_field"              # η(x) = g·Re[x·e^(iφ)]
 
 
 # ---------------------------------------------------------------------------

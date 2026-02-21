@@ -905,7 +905,7 @@ class MagnitudeSq(BasePrimitive):
     _physics_subrole = "transduction"
     _canonical_id = CanonicalPrimitive.D
     _physics_stage = PhysicsStageFamily.detection_readout
-    _detect_family = DetectFamily.linear_intensity
+    _detect_family = DetectFamily.intensity_square_law
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         return np.abs(x.astype(np.complex128)) ** 2
@@ -1259,7 +1259,7 @@ class PhotonSensor(BasePrimitive):
     _physics_tier = "tier0_geometry"
     _canonical_id = CanonicalPrimitive.D
     _physics_stage = PhysicsStageFamily.detection_readout
-    _detect_family = DetectFamily.linear_intensity
+    _detect_family = DetectFamily.intensity_square_law
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         qe = self._params.get("quantum_efficiency", 0.9)
@@ -1358,7 +1358,7 @@ class TransducerSensor(BasePrimitive):
     _physics_tier = "tier0_geometry"
     _canonical_id = CanonicalPrimitive.D
     _physics_stage = PhysicsStageFamily.detection_readout
-    _detect_family = DetectFamily.linear_intensity
+    _detect_family = DetectFamily.intensity_square_law
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         sensitivity = self._params.get("sensitivity", 1.0)
@@ -1381,7 +1381,7 @@ class GenericSensor(BasePrimitive):
     _physics_tier = "tier0_geometry"
     _canonical_id = CanonicalPrimitive.D
     _physics_stage = PhysicsStageFamily.detection_readout
-    _detect_family = DetectFamily.linear_intensity
+    _detect_family = DetectFamily.intensity_square_law
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         gain = self._params.get("gain", 1.0)
@@ -1943,7 +1943,7 @@ class ElectronDetectorSensor(BasePrimitive):
     _carrier_type = "electron"
     _canonical_id = CanonicalPrimitive.D
     _physics_stage = PhysicsStageFamily.detection_readout
-    _detect_family = DetectFamily.linear_intensity
+    _detect_family = DetectFamily.intensity_square_law
 
     def forward(self, x, **params):
         ce = self._params.get("collection_efficiency", 0.5)
@@ -1965,7 +1965,7 @@ class SinglePixelSensor(BasePrimitive):
     _physics_tier = "tier0_geometry"
     _canonical_id = CanonicalPrimitive.D
     _physics_stage = PhysicsStageFamily.detection_readout
-    _detect_family = DetectFamily.linear_intensity
+    _detect_family = DetectFamily.intensity_square_law
 
     def forward(self, x, **params):
         n_patterns = self._params.get("n_patterns", 64)
@@ -1992,7 +1992,7 @@ class XRayDetectorSensor(BasePrimitive):
     _physics_tier = "tier0_geometry"
     _canonical_id = CanonicalPrimitive.D
     _physics_stage = PhysicsStageFamily.detection_readout
-    _detect_family = DetectFamily.linear_intensity
+    _detect_family = DetectFamily.intensity_square_law
 
     def forward(self, x, **params):
         eff = self._params.get("scintillator_efficiency", 0.8)
@@ -2014,7 +2014,7 @@ class AcousticReceiveSensor(BasePrimitive):
     _physics_tier = "tier0_geometry"
     _canonical_id = CanonicalPrimitive.D
     _physics_stage = PhysicsStageFamily.detection_readout
-    _detect_family = DetectFamily.linear_intensity
+    _detect_family = DetectFamily.intensity_square_law
 
     def forward(self, x, **params):
         sensitivity = self._params.get("sensitivity", 1.0)
@@ -2738,7 +2738,7 @@ class VesselFlowContrast(BasePrimitive):
     _physics_tier = "tier0_geometry"
     _canonical_id = CanonicalPrimitive.D
     _physics_stage = PhysicsStageFamily.detection_readout
-    _detect_family = DetectFamily.linear_intensity
+    _detect_family = DetectFamily.intensity_square_law
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_frames = self._params.get("n_frames", 4)
@@ -2913,7 +2913,7 @@ class SPADToFSensor(BasePrimitive):
     _physics_tier = "tier0_geometry"
     _canonical_id = CanonicalPrimitive.D
     _physics_stage = PhysicsStageFamily.detection_readout
-    _detect_family = DetectFamily.poisson_rate
+    _detect_family = DetectFamily.linear_field
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_bins = self._params.get("n_bins", 64)
@@ -2939,7 +2939,7 @@ class EnergyResolvingDetector(BasePrimitive):
     _physics_tier = "tier0_geometry"
     _canonical_id = CanonicalPrimitive.D
     _physics_stage = PhysicsStageFamily.detection_readout
-    _detect_family = DetectFamily.linear_intensity
+    _detect_family = DetectFamily.intensity_square_law
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_channels = self._params.get("n_channels", 256)
@@ -2966,7 +2966,7 @@ class FiberBundleSensor(BasePrimitive):
     _physics_tier = "tier0_geometry"
     _canonical_id = CanonicalPrimitive.D
     _physics_stage = PhysicsStageFamily.detection_readout
-    _detect_family = DetectFamily.linear_intensity
+    _detect_family = DetectFamily.intensity_square_law
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_cores = self._params.get("n_cores", 10000)
@@ -2997,7 +2997,7 @@ class TrackDetectorSensor(BasePrimitive):
     _physics_tier = "tier0_geometry"
     _canonical_id = CanonicalPrimitive.D
     _physics_stage = PhysicsStageFamily.detection_readout
-    _detect_family = DetectFamily.linear_intensity
+    _detect_family = DetectFamily.intensity_square_law
 
     def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
         n_layers = self._params.get("n_layers", 8)
