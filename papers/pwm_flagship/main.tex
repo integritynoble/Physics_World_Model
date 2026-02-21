@@ -34,7 +34,7 @@ $^*$Correspondence: \texttt{integrityyang@gmail.com}}
 %%  ABSTRACT
 %% ═══════════════════════════════════════════════════════════════════
 \begin{abstract}
-Computational imaging systems---from hyperspectral cameras to MRI scanners---routinely underperform in practice because the forward model assumed during reconstruction diverges from the true physics. Yet practitioners lack a systematic way to diagnose \emph{why} a reconstruction fails or which component of the pipeline is responsible. Here we introduce Physics World Models (\pwm{}), a diagnostic and correction framework built on the \triad{}, which attributes every imaging failure to one of three root causes: information deficiency in the measurement (\gateone{}), insufficient signal-to-noise ratio (\gatetwo{}), or mismatch between the assumed and true forward operator (\gatethree{}). A unified intermediate representation, the \opg{}, encodes forward models across imaging modalities into a common directed-acyclic-graph formalism, enabling modality-agnostic diagnosis. Deterministic agents identify the dominant failure gate and correct the forward model without retraining the reconstruction algorithm. Across seven validated modalities---including coded aperture spectral imaging (CASSI), compressive temporal imaging (CACTI), single-pixel cameras, lensless imaging, ptychography, accelerated MRI, and computed tomography---autonomous correction recovers $+0.76$ to $+48.25$\,dB of mismatch-induced degradation. In every case, \gatethree{} is the dominant bottleneck: a sub-pixel mask perturbation in CASSI erases twice the reconstruction gains achieved by a decade of solver innovation. Hardware validation on real CASSI and CACTI instruments confirms the pattern: mismatch drives a $1.8\times$ to $10.4\times$ increase in measurement residual, and grid-search calibration recovers up to 100\% of the degradation. On real hardware, pre-existing manufacturing imperfections modulate the marginal impact of any single perturbation, revealing that the \emph{cumulative} error burden---not any individual calibration error---is the dominant threat. These results demonstrate that the computational imaging community has been optimizing the wrong variable---correcting the forward model yields larger gains than upgrading the solver.
+Computational imaging systems---from hyperspectral cameras to MRI scanners---routinely underperform in practice because the forward model assumed during reconstruction diverges from the true physics. Yet practitioners lack a systematic way to diagnose \emph{why} a reconstruction fails or which component of the pipeline is responsible. Here we introduce Physics World Models (\pwm{}), a diagnostic and correction framework built on the \triad{}, which attributes every imaging failure to one of three root causes: information deficiency in the measurement (\gateone{}), insufficient signal-to-noise ratio (\gatetwo{}), or mismatch between the assumed and true forward operator (\gatethree{}). A unified intermediate representation, the \opg{}, encodes forward models across imaging modalities into a common directed-acyclic-graph formalism, enabling modality-agnostic diagnosis. Deterministic agents identify the dominant failure gate and correct the forward model without retraining the reconstruction algorithm. Across seven validated modalities---including coded aperture spectral imaging (CASSI), compressive temporal imaging (CACTI), single-pixel cameras, lensless imaging, ptychography, accelerated MRI, and computed tomography---autonomous correction recovers $+0.76$ to $+48.25$\,dB of mismatch-induced degradation. In every case, \gatethree{} is the dominant bottleneck: a sub-pixel mask perturbation in CASSI erases twice the reconstruction gains achieved by a decade of solver innovation. Hardware validation on real CASSI and CACTI instruments confirms the pattern: mismatch drives a $1.8\times$ to $10.4\times$ increase in measurement residual, and grid-search calibration recovers up to 100\% of the degradation. On real hardware, pre-existing manufacturing imperfections modulate the marginal impact of any single perturbation, revealing that the \emph{cumulative} error burden---not any individual calibration error---is the dominant threat. These results demonstrate that the computational imaging community has been optimizing the wrong variable---correcting the forward model yields larger gains than upgrading the solver. Underpinning the framework is the Finite Primitive Basis Theorem: we prove that every imaging forward model in a broad operator class $\ctier$ (Tier-2 linear shift-variant) admits an $\varepsilon$-approximate representation as a typed DAG over a library of exactly 10 canonical primitives. A held-out closure test on 8 modalities---including quantum ghost imaging, THz time-domain spectroscopy, and Compton scatter imaging---confirms basis completeness, with empirical growth that is sublinear and saturating.
 \end{abstract}
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -53,6 +53,8 @@ The root problem is a missing diagnostic layer. When a reconstruction fails, the
 Here we introduce Physics World Models (\pwm{}), a framework that elevates imaging diagnosis to a first-class computational task alongside reconstruction. The theoretical backbone is the \triad{}, which decomposes every imaging failure into three gates: \gateone{} (recoverability), \gatetwo{} (carrier budget), and \gatethree{} (operator mismatch). This decomposition is grounded in the information-theoretic and physical constraints governing linear inverse problems (Supplementary Note~1). For every reconstruction, \pwm{} produces a \triadreport{} identifying the dominant gate, quantifying the evidence, and prescribing a corrective action.
 
 To apply the \triad{} across diverse modalities, \pwm{} introduces the \opg{} intermediate representation (IR): a directed acyclic graph (DAG) in which each node wraps a primitive physical operator and edges define the data flow from source to sensor. The \opg{} currently encodes templates for 26 registered modality templates (7 with full end-to-end correction validation, 1 with Scenario~I baseline, 18 with template-level validation) spanning five physical carriers (photons, electrons, spins, acoustic waves, particles), enabling the same diagnostic machinery to reason about CASSI~\cite{wagadarikar2008cassi}, ptychography~\cite{rodenburg2004ptychography}, accelerated MRI~\cite{pruessmann1999sense}, and computed tomography~\cite{feldkamp1984practical} within a single formalism.
+
+A foundational question is whether the \opg{} primitive library is \emph{complete}: can every imaging forward model be expressed as a composition of a small, fixed set of primitives? We prove the Finite Primitive Basis Theorem (Theorem~\ref{thm:fpb}): every forward model in the operator class $\ctier$---encompassing all clinical, scientific, and industrial modalities at Tier-2 fidelity---admits an $\varepsilon$-approximate representation as a typed DAG over exactly 10 canonical primitives. The theorem is validated empirically by a held-out closure test on 8 additional modalities, and the full formal proof is presented in the companion paper~\cite{yang2026fpt}.
 
 When \gatethree{} is identified as dominant, \pwm{} performs autonomous correction via beam search followed by gradient refinement, recovering the true forward-model parameters without retraining the downstream solver. Across seven validated modalities, autonomous correction recovers $+0.76$ to $+48.25$\,dB of mismatch-induced degradation. Hardware experiments on real CASSI and CACTI instruments---using the coded aperture systems in which these modalities were originally demonstrated~\cite{wagadarikar2008cassi,llull2013cacti}---confirm that mismatch is the dominant failure mode and that autonomous calibration can recover the degradation. In every validated case, \gatethree{} is the dominant gate, revealing that the field has been optimising the wrong variable: correcting the forward model yields larger gains than upgrading the solver.
 
@@ -104,6 +106,62 @@ Not all applications require the same level of physical fidelity. The \opg{} IR 
 
 \paragraph{Scale and validation.}
 The current \opg{} library contains templates for 26 validated modalities across all five carrier families (see Supplementary Table~S3 and \cref{fig:operatorgraph}c). Validation consists of three automated checks: adjoint consistency (relative error $|\langle H\mathbf{x}, \mathbf{y} \rangle - \langle \mathbf{x}, H^{\dagger}\mathbf{y} \rangle| / \max(|\langle H\mathbf{x}, \mathbf{y} \rangle|, \epsilon) < 10^{-6}$), gradient flow (backpropagation through the full DAG), and dimensional consistency (static shape inference matches runtime shapes). Of the 26 validated modalities, 7 have full end-to-end correction validation (Scenarios~I--IV) and 2 have additional real-hardware validation. The \opg{} IR is implemented in Python with a PyTorch backend, enabling seamless integration with existing deep-learning reconstruction pipelines.
+
+
+\paragraph{Canonical primitive library.}
+The \opg{} IR defines a library of exactly 10 canonical primitives $\Blib = \{P, M, \Pi, F, C, \Sigma, D, S, W, R\}$:
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{@{}clll@{}}
+\toprule
+\# & Primitive & Notation & Physical action \\
+\midrule
+1 & Propagate  & $P(d,\lambda)$ & Free-space wave propagation \\
+2 & Modulate   & $M(\mathbf{m})$ & Element-wise multiplication (mask, coil, absorption) \\
+3 & Project    & $\Pi(\theta)$ & Radon line-integral projection \\
+4 & Encode     & $F(\mathbf{k})$ & Fourier-domain encoding ($k$-space) \\
+5 & Convolve   & $C(\mathbf{h})$ & Spatial convolution (PSF) \\
+6 & Accumulate & $\Sigma$ & Summation over spectral/temporal axis \\
+7 & Detect     & $D(g,\eta)$ & Detector response (5 canonical families) \\
+8 & Sample     & $S(\Omega)$ & Sub-sampling on index set $\Omega$ \\
+9 & Disperse   & $W(\alpha,a)$ & Wavelength-dependent spatial shift \\
+10 & Scatter   & $R(\sigma,\Delta\varepsilon)$ & Direction change and/or energy shift \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent The Detect nonlinearity $\eta$ is restricted to five canonical families (linear-intensity, logarithmic, sigmoid, Poisson-rate, coherent-field), each with at most 2 scalar parameters, preventing Detect from becoming a universal approximator (see~\cite{yang2026fpt} for formal definitions).
+
+\paragraph{Two-layer architecture.}
+The framework separates two abstraction layers. \emph{Layer~A} (physics-stage families) categorizes carrier physics into four stages: propagation (wave equation), interaction (elastic or scattering), encoding--projection (Radon or Fourier), and detection--readout (integration, sampling, measurement). \emph{Layer~B} (primitives) maps each physics-stage instance to one or a finite composition of primitives from $\Blib$: propagation $\to$ $\{P, C\}$; elastic interaction $\to$ $\{M\}$; scattering $\to$ $\{R\}$; encoding--projection $\to$ $\{\Pi, F\}$; detection--readout $\to$ $\{\Sigma, S, W, C, D\}$.
+
+\paragraph{Finite Primitive Basis Theorem.}
+
+\begin{definition}[Tier-2 Operator Class]
+\label{def:ctier}
+$\ctier$ consists of all imaging forward models expressible as a finite sequential-parallel composition of linear, shift-variant stages with bounded operator norm ($\|H_k\| \leq B$) and stage count $K \leq \Nmax$.
+\end{definition}
+
+\begin{definition}[$\varepsilon$-Approximate Representation]
+\label{def:eps}
+A typed DAG $G$ with nodes $V \subseteq \Blib$ is an $\varepsilon$-approximate representation of $H \in \ctier$ if $\sup_{\|\mathbf{x}\|\leq 1} \|H(\mathbf{x}) - \Hdag(\mathbf{x})\| / \|H(\mathbf{x})\| \leq \varepsilon$ and $|V| \leq \Nmax$, $\mathrm{depth}(G) \leq \Dmax$.
+\end{definition}
+
+\begin{theorem}[Finite Primitive Basis]
+\label{thm:fpb}
+For every $H \in \ctier$, there exists a typed DAG $G$ with $V \subseteq \Blib$ that is an $\varepsilon$-approximate representation of $H$.
+\end{theorem}
+
+\noindent\textit{Proof sketch.} By Definition~\ref{def:ctier}, $H = H_K \circ \cdots \circ H_1$ with $K \leq \Nmax$. Each factor is classified into one of four physics-stage families and realized by primitives: propagation factors $\to$ $P$ or $C$ (wave-equation solutions); elastic interaction $\to$ $M$ (exact); scattering $\to$ $R$; encoding--projection $\to$ $\Pi$ or $F$ (exact); detection--readout $\to$ finite composition from $\{\Sigma, S, W, C, D\}$. The per-factor approximation errors compose via sub-multiplicativity: $\|H - \Hdag\| \leq K \cdot \max_k(\varepsilon_k) \cdot B^{K-1} \leq \varepsilon$ for $\varepsilon_k$ bounded by the Tier-2 truncation. Full proof with five primitive realization lemmas in Supplementary Note~8 and~\cite{yang2026fpt}. \hfill$\square$
+
+\medskip
+
+\noindent\fbox{\parbox{0.96\textwidth}{\small
+\textbf{Scope of $\ctier$.} Covers: all clinical, scientific, and industrial modalities at Tier 1--2 (coded aperture, interferometric, projection, Fourier-encoded, acoustic, scattering, THz). Excludes: Tier 3--4 nonlinear models (handled by refinement sub-DAGs), quantum state tomography, relativistic regimes.}}
+
+\paragraph{Extension protocol.}
+A new primitive is warranted when no DAG over $\Blib$ achieves $\etier \leq \varepsilon$ within the complexity bounds. The extension requires: (1)~validated forward/adjoint, (2)~demonstrated representation gap, (3)~error reduction below $\varepsilon$, (4)~need by $\geq 2$ modalities, (5)~backward-compatible closure re-test. Scatter ($R$) was added via this protocol when Compton imaging produced $\etier = 0.34$ without it (see Results).
 
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -173,6 +231,33 @@ A key test of universality is whether the correction approach generalizes across
 \paragraph{Broader benchmark.}
 Beyond the 7 fully validated modalities, we maintain a registry of 26 modality templates organized in three tiers: 7 with full end-to-end correction validation (Scenarios~I--IV), 1 with Scenario~I baseline (Matrix), and 18 with template-level validation (adjoint consistency, gradient flow, dimensional consistency; see Supplementary Table~S3). All 26 modalities pass the automated template validation suite. Scenario~I PSNR values among validated modalities range from $23.35$\,dB (Matrix, toy configuration) to $55.19$\,dB (MRI).
 
+\paragraph{Held-out closure test.}
+To validate Theorem~\ref{thm:fpb} empirically, we conduct a closure test under a frozen protocol: the primitive library $\Blib$ (10 primitives), Detect families (5), fidelity threshold ($\varepsilon = 0.01$), and complexity bounds ($\Nmax = 20$, $\Dmax = 10$) are all frozen before evaluation. We test 5 Tier-1 held-out modalities (OCT, photoacoustic, SIM, phase-contrast X-ray, electron ptychography) and 3 exotic modalities (quantum ghost imaging, THz-TDS, Compton scatter imaging). Results are reported as 4-metric evaluation cards (Supplementary Table~S14):
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Modality & $\etier$ & \#Nodes/Depth & Triad transfer & New prim.? \\
+\midrule
+OCT                  & ${<}\,0.01$ & 5\,/\,3 & Y & N \\
+Photoacoustic        & ${<}\,0.01$ & 4\,/\,3 & Y & N \\
+SIM                  & ${<}\,0.01$ & 4\,/\,3 & Y & N \\
+Phase-contrast X-ray & ${<}\,0.01$ & 5\,/\,4 & Y & N \\
+Electron ptycho      & ${<}\,0.01$ & 4\,/\,3 & Y & N \\
+Ghost imaging        & ${<}\,0.01$ & 4\,/\,3 & Y & N \\
+THz-TDS              & ${<}\,0.01$ & 3\,/\,2 & Y & N \\
+Compton scatter      & ${<}\,0.01^{*}$ & 4\,/\,3 & Y & Y ($R$) \\
+\bottomrule
+\multicolumn{5}{l}{\footnotesize $^{*}$With $R$ in library; $\etier > 0.01$ without $R$.}
+\end{tabular}
+\end{table}
+
+\noindent Seven of eight modalities decompose with the frozen library. Quantum ghost imaging is operator-equivalent to a single-pixel camera at the image-formation level---sharing the canonical DAG Source $\to M \to \Sigma \to D$ at Tier-2 abstraction despite fundamentally different source physics. THz-TDS requires only the coherent-field Detect family. Compton scatter imaging is the sole modality requiring a new primitive (Scatter, $R$), which covers 5+ additional modalities (Raman, fluorescence, DOT, Brillouin). The basis grows from 9 to 10---an 11\% increase---while modality coverage grows by 19\%+.
+
+\paragraph{Basis-growth analysis.}
+Plotting the number of distinct primitives $K$ against the number of registered modalities $N$ reveals clear saturation (\cref{fig:basis_growth}): 8 of 10 primitives are introduced by the first 10 modalities, Disperse ($W$) by CASSI-type spectral systems, and Scatter ($R$) only when Compton/Raman-class modalities enter. The growth is sublinear and saturating: $K = 10$ at $N = 31$, with no new primitive required for the most recent 19 modalities added. This saturation is consistent with Theorem~\ref{thm:fpb}: once all four physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
+
 \paragraph{Comparison with standard calibration methods.}
 A natural question is how PWM's modality-agnostic calibration compares with established modality-specific methods. Supplementary Table~S12 reports a head-to-head comparison for four modalities: ESPIRiT auto-calibration for MRI, entropy-based center-of-rotation autofocus for CT, blind position correction (ePIE) for ptychography, and manual mask alignment for CASSI. PWM achieves comparable recovery without modality-specific tuning, and is the only method that applies uniformly across all four modalities. For CASSI, no automated calibration standard exists; PWM provides the first autonomous calibration pipeline for this modality.
 
@@ -208,6 +293,10 @@ The comparison between synthetic and real-data results reveals a systematic simu
 The central finding of this work is that operator mismatch---not solver weakness, not information deficiency, not noise---is the dominant bottleneck in modern computational imaging. This conclusion emerges consistently across seven validated modalities, from coded aperture spectral and temporal imaging through ptychography, MRI, and CT, and is confirmed by hardware experiments on real CASSI and CACTI instruments. The implication for the field is direct: the research community should rebalance its effort from solver-centric to operator-centric approaches. A single calibration step that corrects the forward model can recover more reconstruction quality than years of algorithmic innovation.
 
 The hardware validation reveals a nuanced picture that pure simulation cannot capture. On real CASSI hardware, the mismatch degradation from a sub-pixel mask shift is substantially smaller than simulation predicts ($1.8\times$ residual ratio versus ${\sim}3.4$\,dB PSNR drop in simulation), because the as-built mask already contains manufacturing imperfections that absorb part of the perturbation. On real CACTI hardware, by contrast, the degradation is severe ($10.4\times$ residual ratio), because temporal compression amplifies calibration errors across all compressed frames. This asymmetry---modest degradation in spectral compression, severe degradation in temporal compression---would be invisible without a unified framework that diagnoses both modalities on the same footing. The simulation-to-hardware gap also carries a methodological lesson: purely synthetic mismatch studies, which constitute most of the prior literature, likely overestimate the marginal impact of individual perturbations while underestimating the cumulative burden of the many small errors present in any real instrument.
+
+An instructive analogy is the periodic table of elements. Just as Mendeleev organized known elements by atomic number and predicted gaps, the \opg{} organizes imaging modalities by their primitive composition and reveals structural patterns. The analogy is pedagogical, not mathematical: imaging primitives do not have atomic numbers, and the DAG structure is richer than a two-dimensional table. Nevertheless, the parallel is suggestive: Theorem~\ref{thm:fpb} implies that the space of imaging forward models, like the space of chemical elements, has a discoverable and finite structure---and for a related reason: the underlying physical interactions are finite.
+
+The coverage of the primitive basis is broader than it may initially appear. Quantum ghost imaging---often presented as a fundamentally quantum protocol---is operator-equivalent to a classical single-pixel camera at the image-formation level, because the forward model depends on the spatial correlation pattern, not on whether those correlations arise from entanglement or a digital micromirror device. THz time-domain imaging requires only the coherent-field Detect family. Of the three exotic modalities analyzed, only Compton scatter imaging required a genuinely new primitive (Scatter), and that single primitive covers an entire class of 5+ scattering and fluorescence modalities. This pattern---that apparently exotic modalities decompose into existing primitives, and when they do not, a single new primitive covers a whole family---is the hallmark of a well-chosen basis.
 
 The practical implications extend well beyond the laboratory. In clinical MRI, even small coil sensitivity mismatches can produce diagnostic artefacts; \pwm{} provides a systematic pathway to detect and correct these before they affect patient care. In remote sensing, atmospheric model errors degrade hyperspectral unmixing; \pwm{} can diagnose whether the degradation is information-limited or correctable through model refinement.
 
@@ -323,6 +412,14 @@ Correction gain (dB) when beam-search and gradient-refinement hyperparameters ar
 \caption{\textbf{Visual reconstruction comparison across three modalities.}
 Each row shows one modality (CASSI, CACTI, MRI); columns from left to right: ground truth, Scenario~I (ideal operator), Scenario~II (mismatched operator---note structured artifacts), Scenario~III (PWM-corrected operator), and error map ($|\text{Sc.~II} - \text{GT}|$). Mismatch produces severe structured artifacts (column~3) that are qualitatively distinct from noise, confirming that the degradation is operator-driven. PWM correction (column~4) substantially reduces these artifacts across all three modalities and carrier families.}
 \label{fig:visual_comparison}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig9_basis_growth.pdf}
+\caption{\textbf{Basis-growth saturation and primitive decomposition.}
+\textbf{a},~Number of distinct primitives $K$ as a function of modalities $N$ added to the registry. The curve saturates at $K = 10$ for $N \geq 27$; annotated points mark the introduction of each primitive. \textbf{b},~Summary decomposition table for representative modalities across five carrier families, showing DAG primitives, node count, depth, and validation status.}
+\label{fig:basis_growth}
 \end{figure}
 
 

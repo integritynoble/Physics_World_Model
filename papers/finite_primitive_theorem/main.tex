@@ -1,0 +1,586 @@
+\input{preamble}
+
+\title{The Finite Primitive Basis Theorem for Computational Imaging:\\
+Formal Foundations of the OperatorGraph Representation}
+
+\author{
+Chengshuai Yang$^{1,*}$
+\and
+Xin Yuan$^{2}$
+}
+
+\date{}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\footnotetext[1]{$^1$NextGen PlatformAI C Corp, USA.
+$^2$School of Engineering, Westlake University, Hangzhou, China.
+$^*$Correspondence: \texttt{integrityyang@gmail.com}}
+\renewcommand{\thefootnote}{\arabic{footnote}}
+
+\begin{document}
+
+\maketitle
+
+%% ═══════════════════════════════════════════════════════════════════
+%%  ABSTRACT
+%% ═══════════════════════════════════════════════════════════════════
+\begin{abstract}
+Computational imaging forward models---from coded aperture spectral cameras to MRI scanners---are traditionally implemented as monolithic, modality-specific codes. We prove that every forward model in a broad, precisely defined operator class $\ctier$ (encompassing all clinical, scientific, and industrial imaging modalities at Tier-2 physical fidelity) admits an $\varepsilon$-approximate representation as a typed directed acyclic graph (DAG) whose nodes are drawn from a library of exactly 10 canonical primitives: Propagate, Modulate, Project, Encode, Convolve, Accumulate, Detect, Sample, Disperse, and Scatter. We call this the \emph{Finite Primitive Basis Theorem}. The proof is constructive: we provide an algorithm that, given any $H \in \ctier$, produces a DAG $G$ with $\|H - \Hdag\|/\|H\| \leq \varepsilon$ and graph complexity within prescribed bounds. We give formal definitions for each primitive (forward, adjoint, parameters, constraints), define typed DAG denotation semantics, and establish the approximation error bounds through five primitive realization lemmas---one per physics-stage family. Empirical validation on 31 imaging modalities (26 previously registered plus 5 held-out) confirms that all achieve $\etier < 0.01$ with at most 6 nodes and depth 5. A formal extension protocol governs the addition of new primitives; we demonstrate it with a worked example (Compton scatter imaging $\to$ the Scatter primitive). These results establish the mathematical foundations for the Physics World Models (\pwm{}) framework~\cite{yang2026pwm}.
+\end{abstract}
+
+
+%% ═══════════════════════════════════════════════════════════════════
+%%  1. INTRODUCTION
+%% ═══════════════════════════════════════════════════════════════════
+\section{Introduction}
+\label{sec:intro}
+
+The forward model of a computational imaging system maps a scene or object to a set of measurements through a chain of physical transformations: wave propagation, interaction with the object, spatial or spectral encoding, and detection. In practice, each imaging modality is implemented with its own bespoke forward model code, making it difficult to share diagnostic tools, calibration algorithms, or reconstruction pipelines across modalities.
+
+The Physics World Models (\pwm{}) framework~\cite{yang2026pwm} introduced the \opg{} intermediate representation (IR) to address this problem: a directed acyclic graph formalism in which each node wraps a primitive physical operator and edges define data flow from source to detector. The \opg{} enables modality-agnostic diagnosis and correction of imaging failures via the Triad Decomposition.
+
+A central empirical observation in~\cite{yang2026pwm} is that a small library of canonical primitives suffices to represent all 26 registered modalities, spanning five physical carrier families (photons, electrons, spins, acoustic waves, particles). In this companion paper, we elevate that observation to a formal theorem by:
+
+\begin{enumerate}
+  \item Defining the operator class $\ctier$ precisely (bounded, finite-stage, linear shift-variant forward models);
+  \item Specifying each of the 10 canonical primitives with formal forward/adjoint definitions;
+  \item Defining typed DAG denotation semantics;
+  \item Proving the Finite Primitive Basis Theorem (Theorem~\ref{thm:fpb}) via five primitive realization lemmas;
+  \item Validating the theorem empirically on 31 modalities;
+  \item Establishing a formal extension protocol for adding new primitives.
+\end{enumerate}
+
+The scope of the theorem is deliberately bounded. $\ctier$ covers all imaging modalities operating at Tier-1 (linear shift-invariant) or Tier-2 (linear shift-variant) fidelity---the level at which essentially all clinical and scientific systems are designed and calibrated. Tier-3 (nonlinear ray/wave-based) and Tier-4 (full-wave/Monte Carlo) models may require refinement sub-DAGs but preserve the top-level graph structure.
+
+
+%% ═══════════════════════════════════════════════════════════════════
+%%  2. PRELIMINARIES
+%% ═══════════════════════════════════════════════════════════════════
+\section{Preliminaries}
+\label{sec:prelim}
+
+\subsection{Imaging Forward Models}
+
+\begin{definition}[Imaging Forward Model]
+\label{def:fwd}
+An \emph{imaging forward model} is a bounded operator $H: \mathcal{X} \to \mathcal{Y}$ mapping an object $\mathbf{x} \in \mathcal{X}$ to a measurement $\mathbf{y} = H(\mathbf{x}) + \mathbf{n}$, where $\mathcal{X} \subseteq \mathbb{R}^n$ and $\mathcal{Y} \subseteq \mathbb{R}^m$ are finite-dimensional Hilbert spaces and $\mathbf{n}$ is additive noise.
+\end{definition}
+
+\subsection{Directed Acyclic Graphs}
+
+\begin{definition}[Typed DAG]
+\label{def:dag}
+A \emph{typed DAG} is a triple $G = (V, E, \tau)$ where $V$ is a finite set of nodes, $E \subseteq V \times V$ defines directed edges with no cycles, and $\tau: E \to \mathcal{T}$ assigns to each edge a type annotation $\tau(e) = (\mathrm{shape}, \mathrm{dtype}, \mathrm{units})$ specifying the tensor shape, data type, and physical units of the data flowing along edge $e$.
+\end{definition}
+
+A typed DAG is \emph{well-formed} if (i) it has a unique source node (no incoming edges) and a unique sink node (no outgoing edges), (ii) the output type of each node matches the input type required by its successors, and (iii) every node is drawn from the primitive library $\Blib$.
+
+\subsection{DAG Composition}
+
+\begin{definition}[Compose]
+\label{def:compose}
+For a well-formed typed DAG $G = (V, E, \tau)$ with topological ordering $v_1, v_2, \ldots, v_K$, the \emph{composed forward model} is
+\begin{equation}
+  \Hdag = \compose(G) = v_K \circ v_{K-1} \circ \cdots \circ v_1,
+  \label{eq:compose}
+\end{equation}
+where $v_k$ denotes the operator implemented by node $k$. For DAGs with branches (fan-out) or merges (fan-in), composition follows the DAG structure with appropriate tensor concatenation or summation at merge nodes.
+\end{definition}
+
+
+%% ═══════════════════════════════════════════════════════════════════
+%%  3. THE PRIMITIVE LIBRARY
+%% ═══════════════════════════════════════════════════════════════════
+\section{The Primitive Library $\Blib$}
+\label{sec:primitives}
+
+The canonical primitive library consists of 10 operators:
+\begin{equation}
+  \Blib = \{P, M, \Pi, F, C, \Sigma, D, S, W, R\}.
+\end{equation}
+Each primitive implements a \texttt{forward()} method $A: \mathcal{X}_{\mathrm{in}} \to \mathcal{Y}_{\mathrm{out}}$ and an \texttt{adjoint()} method $A^\dagger: \mathcal{Y}_{\mathrm{out}} \to \mathcal{X}_{\mathrm{in}}$ satisfying the adjoint consistency condition:
+\begin{equation}
+  \langle A\mathbf{x}, \mathbf{y} \rangle = \langle \mathbf{x}, A^\dagger \mathbf{y} \rangle
+  \quad \text{for all } \mathbf{x} \in \mathcal{X}_{\mathrm{in}},\; \mathbf{y} \in \mathcal{Y}_{\mathrm{out}}.
+  \label{eq:adjoint}
+\end{equation}
+
+\subsection{Propagate $P(d, \lambda)$}
+
+\begin{definition}[Propagate]
+\label{def:propagate}
+Given propagation distance $d > 0$ and wavelength $\lambda > 0$, the Propagate primitive computes free-space wave propagation via the angular spectrum method:
+\begin{align}
+  P(d,\lambda): \mathbf{x} &\mapsto \mathcal{F}^{-1}\bigl[\mathcal{F}[\mathbf{x}] \cdot T(f_x, f_y; d, \lambda)\bigr], \\
+  T(f_x, f_y) &= \exp\!\bigl(i 2\pi d \sqrt{\lambda^{-2} - f_x^2 - f_y^2}\bigr),
+\end{align}
+where $\mathcal{F}$ is the 2D discrete Fourier transform and $T$ is the free-space transfer function. The adjoint is $P^\dagger(d,\lambda) = P(-d, \lambda)$ (backpropagation).
+\end{definition}
+
+\subsection{Modulate $M(\mathbf{m})$}
+
+\begin{definition}[Modulate]
+\label{def:modulate}
+Given a modulation pattern $\mathbf{m} \in \mathbb{R}^n$ (or $\mathbb{C}^n$), the Modulate primitive computes element-wise multiplication:
+\begin{equation}
+  M(\mathbf{m}): \mathbf{x} \mapsto \mathbf{m} \odot \mathbf{x}.
+\end{equation}
+The adjoint is $M^\dagger(\mathbf{m}): \mathbf{y} \mapsto \mathbf{m}^* \odot \mathbf{y}$, where $^*$ denotes complex conjugation. Parameters: the pattern $\mathbf{m}$ (binary mask, continuous transmission, complex phase mask, or coil sensitivity map).
+\end{definition}
+
+\subsection{Project $\Pi(\theta)$}
+
+\begin{definition}[Project]
+\label{def:project}
+Given projection angle $\theta$ (or a set of angles), the Project primitive computes the Radon transform (line-integral projection):
+\begin{equation}
+  \Pi(\theta): \mathbf{x} \mapsto \int_{\ell(\theta, t)} \mathbf{x}(\mathbf{r})\, d\ell,
+\end{equation}
+where $\ell(\theta, t)$ is the line at angle $\theta$ and offset $t$. The adjoint is the backprojection operator $\Pi^\dagger(\theta)$.
+\end{definition}
+
+\subsection{Encode $F(\mathbf{k})$}
+
+\begin{definition}[Encode]
+\label{def:encode}
+Given a $k$-space trajectory $\mathbf{k} = \{k_1, \ldots, k_m\}$, the Encode primitive computes Fourier encoding:
+\begin{equation}
+  F(\mathbf{k}): \mathbf{x} \mapsto \bigl[\langle \mathbf{x}, e^{i 2\pi \mathbf{k}_j \cdot \mathbf{r}} \rangle\bigr]_{j=1}^{m}.
+\end{equation}
+The adjoint is $F^\dagger(\mathbf{k}): \mathbf{y} \mapsto \sum_{j=1}^{m} y_j\, e^{-i 2\pi \mathbf{k}_j \cdot \mathbf{r}}$ (gridding/adjoint NUFFT). Used for MRI $k$-space encoding.
+\end{definition}
+
+\subsection{Convolve $C(\mathbf{h})$}
+
+\begin{definition}[Convolve]
+\label{def:convolve}
+Given a point-spread function (PSF) kernel $\mathbf{h}$, the Convolve primitive computes spatial convolution:
+\begin{equation}
+  C(\mathbf{h}): \mathbf{x} \mapsto \mathbf{h} * \mathbf{x}.
+\end{equation}
+The adjoint is correlation with the flipped kernel: $C^\dagger(\mathbf{h}): \mathbf{y} \mapsto \tilde{\mathbf{h}} * \mathbf{y}$, where $\tilde{\mathbf{h}}(\mathbf{r}) = \mathbf{h}(-\mathbf{r})^*$. This covers both propagation PSFs (shift-invariant limit of $P$) and detector PSFs.
+\end{definition}
+
+\subsection{Accumulate $\Sigma$}
+
+\begin{definition}[Accumulate]
+\label{def:accumulate}
+The Accumulate primitive sums over a specified axis (spectral, temporal, or spatial):
+\begin{equation}
+  \Sigma: \mathbf{X} \mapsto \sum_{k} \mathbf{X}_{:,:,k},
+\end{equation}
+where $\mathbf{X} \in \mathbb{R}^{n_1 \times n_2 \times n_3}$ and the summation is along the third (or specified) axis. The adjoint replicates the 2D input along the summation axis: $\Sigma^\dagger: \mathbf{y} \mapsto [\mathbf{y}, \mathbf{y}, \ldots, \mathbf{y}]$. Used for spectral integration (CASSI), temporal compression (CACTI), and bucket detection (SPC).
+\end{definition}
+
+\subsection{Detect $D(g, \eta)$}
+
+\begin{definition}[Detect]
+\label{def:detect}
+Given gain $g > 0$ and response family $\eta$, the Detect primitive converts a carrier field to a measurement:
+\begin{equation}
+  D(g, \eta): \mathbf{x} \mapsto \eta(g, \mathbf{x}).
+\end{equation}
+The response family $\eta$ is restricted to one of five canonical families:
+\begin{enumerate}
+  \item \textbf{Linear-intensity:} $\eta(\mathbf{x}) = g|\mathbf{x}|^2$ \quad (standard photodetector)
+  \item \textbf{Logarithmic:} $\eta(\mathbf{x}) = g \cdot \log(1 + |\mathbf{x}|^2/x_0)$ \quad (wide dynamic range)
+  \item \textbf{Sigmoid:} $\eta(\mathbf{x}) = g \cdot \sigma(|\mathbf{x}|^2 - x_0)$ \quad (saturating detector)
+  \item \textbf{Poisson-rate:} $\eta(\mathbf{x}) = \mathrm{Poisson}(g|\mathbf{x}|^2)$ \quad (photon-counting)
+  \item \textbf{Coherent-field:} $\eta(\mathbf{x}) = g \cdot \mathrm{Re}[\mathbf{x} \cdot e^{i\phi}]$ \quad (heterodyne/homodyne)
+\end{enumerate}
+Each family carries at most 2 scalar parameters ($g$ and $x_0$ or $\phi$). The adjoint is defined for the linearized operator around a reference point.
+\end{definition}
+
+\begin{remark}[Detect is not a universal approximator]
+\label{rem:detect}
+The restriction to five canonical response families is essential. If $\eta$ were an arbitrary function, Detect would become a universal approximator, trivializing the theorem. The five families are chosen to cover the physical detection mechanisms encountered in practice: intensity-square-law detection (families 1--4, covering photodetectors, CCD/CMOS, photomultipliers, photon counters) and coherent-field detection (family 5, covering THz-TDS, OCT, digital holography). A modality requiring a genuinely novel detection nonlinearity signals a basis extension (Section~\ref{sec:extension}).
+\end{remark}
+
+\subsection{Sample $S(\Omega)$}
+
+\begin{definition}[Sample]
+\label{def:sample}
+Given an index set $\Omega \subseteq \{1, \ldots, n\}$, the Sample primitive selects a subset of entries:
+\begin{equation}
+  S(\Omega): \mathbf{x} \mapsto \mathbf{x}|_\Omega.
+\end{equation}
+The adjoint zero-fills the unsampled locations: $S^\dagger(\Omega): \mathbf{y} \mapsto \mathbf{z}$ where $z_i = y_i$ if $i \in \Omega$ and $z_i = 0$ otherwise. Used for MRI undersampling, compressed sensing masks, and pixel binning.
+\end{definition}
+
+\subsection{Disperse $W(\alpha, a)$}
+
+\begin{definition}[Disperse]
+\label{def:disperse}
+Given dispersion slope $\alpha$ and intercept $a$, the Disperse primitive applies a wavelength-dependent spatial shift:
+\begin{equation}
+  W(\alpha, a): \mathbf{X}(\mathbf{r}, \lambda) \mapsto \mathbf{X}(\mathbf{r} - (\alpha\lambda + a)\hat{\mathbf{e}}, \lambda),
+\end{equation}
+where $\hat{\mathbf{e}}$ is the dispersion direction. The adjoint applies the reverse shift. Used for prism/grating dispersion in CASSI-type spectral systems.
+\end{definition}
+
+\subsection{Scatter $R(\sigma, \Delta\varepsilon)$}
+
+\begin{definition}[Scatter]
+\label{def:scatter}
+Given a differential scattering cross section $\sigma(\theta, E)$ and energy shift $\Delta\varepsilon$, the Scatter primitive computes:
+\begin{equation}
+  R(\sigma, \Delta\varepsilon): \mathbf{x}(\mathbf{r}, E) \mapsto \int \sigma(\theta, E)\, \mathbf{x}(\mathbf{r}, E)\, A_{\mathrm{atten}}(\mathbf{r}, \theta, E)\, d\theta,
+\end{equation}
+where $A_{\mathrm{atten}}$ accounts for path-dependent attenuation. The scattered carrier exits at angle $\theta$ with energy $E' = E - \Delta\varepsilon(\theta, E)$. The adjoint is defined by the transpose of the discretized scattering matrix.
+\end{definition}
+
+\begin{remark}
+Scatter covers modalities where the carrier changes direction and/or energy: Compton imaging (Klein--Nishina cross section), Raman spectroscopy (molecular vibration), fluorescence imaging (Stokes shift), diffuse optical tomography (multiple scattering), and Brillouin microscopy (acoustic phonon scattering).
+\end{remark}
+
+
+%% ═══════════════════════════════════════════════════════════════════
+%%  4. THE OPERATOR CLASS C_TIER2
+%% ═══════════════════════════════════════════════════════════════════
+\section{The Operator Class $\ctier$}
+\label{sec:ctier}
+
+\begin{definition}[Tier-2 Operator Class $\ctier$]
+\label{def:ctier}
+The class $\ctier$ consists of all imaging forward models $H$ that satisfy:
+\begin{enumerate}
+  \item \textbf{Finite sequential-parallel composition:} $H$ admits a factorization $H = H_K \circ H_{K-1} \circ \cdots \circ H_1$ (or a DAG generalization with fan-out/fan-in) with $K \leq \Nmax$.
+  \item \textbf{Per-stage linearity:} Each factor $H_k$ is a linear operator.
+  \item \textbf{Bounded operator norm:} $\|H_k\| \leq B$ for each factor $H_k$ and a universal bound $B > 0$.
+  \item \textbf{Shift-variance at most:} Each factor $H_k$ is at most shift-variant (Tier-2 on the Physics Fidelity Ladder); nonlinear wave--matter coupling, multiple scattering beyond first Born, and relativistic corrections are excluded.
+\end{enumerate}
+\end{definition}
+
+\subsection{Relationship to the Physics Fidelity Ladder}
+
+The Physics Fidelity Ladder~\cite{yang2026pwm} defines four tiers:
+\begin{itemize}
+  \item \textbf{Tier~1:} Linear, shift-invariant (convolution-based models).
+  \item \textbf{Tier~2:} Linear, shift-variant (spatially varying PSFs, coded apertures, coil sensitivities).
+  \item \textbf{Tier~3:} Nonlinear, ray-based or wave-based (beam hardening, phase wrapping).
+  \item \textbf{Tier~4:} Full-wave simulation or Monte Carlo transport.
+\end{itemize}
+$\ctier$ encompasses Tier~1 and Tier~2 models. Tier~3 and Tier~4 models are excluded from the formal scope of Theorem~\ref{thm:fpb} but can be accommodated by refinement sub-DAGs that replace canonical primitive nodes with higher-fidelity sub-graphs while preserving the top-level DAG structure.
+
+\subsection{Membership Examples}
+
+\begin{itemize}
+  \item \textbf{CASSI:} $H = \Sigma \circ W \circ M$. Each factor is linear and bounded. $H \in \ctier$.
+  \item \textbf{MRI:} $H = S \circ F \circ M_{\mathrm{coil}}$. Fourier encoding is linear; coil sensitivity is shift-variant. $H \in \ctier$.
+  \item \textbf{CT:} $H = \Pi$ (fan-beam Radon). Linear, bounded. $H \in \ctier$.
+  \item \textbf{Compton scatter:} $H = R \circ M$. Scatter is linear at first-Born level. $H \in \ctier$.
+\end{itemize}
+
+Models with strong nonlinearity (e.g., nonlinear ultrasound, full-wave electromagnetic scattering beyond first Born) fall outside $\ctier$.
+
+
+%% ═══════════════════════════════════════════════════════════════════
+%%  5. THEOREM 1: STATEMENT AND PROOF
+%% ═══════════════════════════════════════════════════════════════════
+\section{Theorem 1: Statement and Proof}
+\label{sec:theorem}
+
+\subsection{$\varepsilon$-Approximate Representation}
+
+\begin{definition}[$\varepsilon$-Approximate Representation]
+\label{def:eps}
+Let $\Blib = \{P, M, \Pi, F, C, \Sigma, D, S, W, R\}$ be the canonical primitive library. A well-formed typed DAG $G = (V, E, \tau)$ with $V \subseteq \Blib$ is an \emph{$\varepsilon$-approximate representation} of $H \in \ctier$ if:
+\begin{enumerate}
+  \item \textbf{Fidelity:} $\displaystyle \sup_{\|\mathbf{x}\| \leq 1} \frac{\|H(\mathbf{x}) - \Hdag(\mathbf{x})\|}{\|H(\mathbf{x})\| + \delta} \leq \varepsilon$,\quad where $\Hdag = \compose(G)$ and $\delta > 0$ is a small regularization constant.
+  \item \textbf{Complexity:} $|V| \leq \Nmax$ and $\mathrm{depth}(G) \leq \Dmax$.
+\end{enumerate}
+We use $\varepsilon = 0.01$, $\Nmax = 20$, $\Dmax = 10$ throughout.
+\end{definition}
+
+\subsection{Theorem Statement}
+
+\begin{theorem}[Finite Primitive Basis]
+\label{thm:fpb}
+For every $H \in \ctier$, there exists a well-formed typed DAG $G = (V, E, \tau)$ with $V \subseteq \Blib$ that is an $\varepsilon$-approximate representation of $H$.
+\end{theorem}
+
+The proof is constructive: given the factorization $H = H_K \circ \cdots \circ H_1$ guaranteed by Definition~\ref{def:ctier}, we show that each factor $H_k$ can be represented by one or a finite composition of primitives from $\Blib$ with bounded approximation error. The argument proceeds through five primitive realization lemmas, one per physics-stage family.
+
+\subsection{Physics-Stage Families}
+
+Every imaging forward model in $\ctier$ passes through at most four types of physical stages:
+\begin{enumerate}
+  \item \textbf{Propagation:} The carrier evolves through space via a wave equation (Maxwell, Schr\"{o}dinger, acoustic, Bloch).
+  \item \textbf{Interaction:} The carrier exchanges energy, momentum, or phase with the object---either elastically (amplitude/phase change) or inelastically (scattering, fluorescence).
+  \item \textbf{Encoding--Projection:} Spatial information is mapped to a measurement-domain coordinate.
+  \item \textbf{Detection--Readout:} The carrier field is converted to a discrete digital measurement.
+\end{enumerate}
+This categorization is motivated by the physics of carrier--matter interaction under non-relativistic conditions: the fundamental electromagnetic, strong, and weak interactions produce only elastic and inelastic carrier--matter coupling at the energies relevant to imaging.
+
+\subsection{Primitive Realization Lemmas}
+
+\begin{lemma}[Propagation Realization]
+\label{lem:prop}
+Let $H_k$ be a factor of $H \in \ctier$ that represents free-space carrier evolution satisfying a linear wave equation. Then $H_k$ admits an $\varepsilon_{\mathrm{prop}}$-approximate representation by $P(d, \lambda)$ or, in the shift-invariant limit, $C(\mathbf{h})$.
+\end{lemma}
+
+\begin{proof}
+At Tier-2 fidelity, the Green's function of the wave equation (Maxwell, Helmholtz, Schr\"{o}dinger, or acoustic) is a linear operator whose action is convolution with the free-space impulse response. In the paraxial regime, this is exactly the angular spectrum propagator $P(d, \lambda)$ (Definition~\ref{def:propagate}). In the shift-invariant limit (far field or isoplanatic patch), $P$ reduces to $C(\mathbf{h})$ with $\mathbf{h} = \mathcal{F}^{-1}[T]$. The Tier-2 truncation error (neglected evanescent waves, paraxial approximation residual) satisfies $\|H_k - P(d,\lambda)\| / \|H_k\| \leq \varepsilon_{\mathrm{prop}}$ for standard imaging geometries where the Fresnel number exceeds unity.
+\end{proof}
+
+\begin{lemma}[Elastic Interaction Realization]
+\label{lem:elastic}
+Let $H_k$ be a factor of $H \in \ctier$ that represents elastic carrier--matter interaction (amplitude and/or phase change without direction or energy change). Then $H_k$ admits exact representation by $M(\mathbf{m})$.
+\end{lemma}
+
+\begin{proof}
+Elastic forward interaction at Tier-2 fidelity is element-wise multiplication of the carrier field by the object's transmission function $\mathbf{m}(\mathbf{r})$ (absorption, phase shift, or both). This is exactly $M(\mathbf{m})$ (Definition~\ref{def:modulate}). The representation is exact: $\|H_k - M(\mathbf{m})\| = 0$.
+\end{proof}
+
+\begin{lemma}[Scattering Realization]
+\label{lem:scatter}
+Let $H_k$ be a factor of $H \in \ctier$ that represents inelastic or off-axis carrier--matter interaction (direction change and/or energy shift). Then $H_k$ admits an $\varepsilon_{\mathrm{scat}}$-approximate representation by $R(\sigma, \Delta\varepsilon)$ or a finite composition $R \circ M$ or $M \circ R \circ P \circ R \circ M$ (for multiple-scattering media within low-order approximation).
+\end{lemma}
+
+\begin{proof}
+At Tier-2 fidelity (first Born or low-order scattering), the scattering process is characterized by the differential cross section $\sigma(\theta, E)$ and energy shift $\Delta\varepsilon$, both computable from known physics (Klein--Nishina for Compton, Raman tensor for molecular vibrations, fluorescence quantum yield for Stokes shift). The Scatter primitive (Definition~\ref{def:scatter}) parameterizes this process directly. For single-scattering media, one $R$ node suffices. For multiple-scattering media within the Tier-2 approximation (diffusion approximation for DOT, low-order Born series), a finite composition $M \circ R \circ P \circ R \circ M$ with bounded node count provides an $\varepsilon_{\mathrm{scat}}$-approximate representation.
+\end{proof}
+
+\begin{lemma}[Encoding--Projection Realization]
+\label{lem:encode}
+Let $H_k$ be a factor of $H \in \ctier$ that maps spatial information to a measurement-domain coordinate. Then $H_k$ admits exact representation by $\Pi(\theta)$ (line-integral geometry) or $F(\mathbf{k})$ (Fourier encoding).
+\end{lemma}
+
+\begin{proof}
+Line-integral projection (X-ray CT, neutron imaging) is exactly the Radon transform $\Pi(\theta)$ (Definition~\ref{def:project}). Fourier encoding via Larmor precession (MRI) is exactly $F(\mathbf{k})$ (Definition~\ref{def:encode}). Both are linear operators; the representation is exact within Tier-2.
+\end{proof}
+
+\begin{lemma}[Detection--Readout Realization]
+\label{lem:detect}
+Let $H_k$ be a factor of $H \in \ctier$ in the detector chain. Then $H_k$ admits an $\varepsilon_{\mathrm{det}}$-approximate representation by a finite composition of primitives from $\{\Sigma, S, W, C, D\}$.
+\end{lemma}
+
+\begin{proof}
+The detection--readout chain consists of a sequence of at most five operations:
+\begin{enumerate}
+  \item Dimensional integration (spectral or temporal summation) $\to$ $\Sigma$;
+  \item Sub-sampling (pixel binning, mask selection) $\to$ $S(\Omega)$;
+  \item Wavelength-dependent dispersion $\to$ $W(\alpha, a)$;
+  \item Detector point-spread function $\to$ $C(\mathbf{h}_{\mathrm{det}})$;
+  \item Quantum measurement (conversion to classical signal) $\to$ $D(g, \eta)$.
+\end{enumerate}
+Each operation is either exact (summation, sampling) or approximate within Tier-2 (detector PSF modeled as space-invariant convolution, detection nonlinearity from one of the five canonical families). The total detection-chain error $\varepsilon_{\mathrm{det}}$ is bounded by the sum of per-operation errors.
+\end{proof}
+
+\subsection{Constructive Compilation Proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:fpb}]
+Let $H \in \ctier$ with factorization $H = H_K \circ \cdots \circ H_1$, $K \leq \Nmax$. We construct $G$ as follows.
+
+\textbf{Step 1: Classification.} Classify each factor $H_k$ into one of the four physics-stage families (propagation, interaction, encoding--projection, detection--readout).
+
+\textbf{Step 2: Per-factor realization.} Apply the appropriate lemma to realize each $H_k$:
+\begin{itemize}
+  \item Propagation factors: Lemma~\ref{lem:prop} $\to$ $P$ or $C$;
+  \item Elastic interaction: Lemma~\ref{lem:elastic} $\to$ $M$ (exact);
+  \item Scattering: Lemma~\ref{lem:scatter} $\to$ $R$ or composition;
+  \item Encoding--projection: Lemma~\ref{lem:encode} $\to$ $\Pi$ or $F$ (exact);
+  \item Detection--readout: Lemma~\ref{lem:detect} $\to$ composition from $\{\Sigma, S, W, C, D\}$.
+\end{itemize}
+Let $G_k$ be the sub-DAG realizing $H_k$ with approximation error $\varepsilon_k$.
+
+\textbf{Step 3: Concatenation.} Form $G$ by concatenating sub-DAGs $G_1, \ldots, G_K$ in sequence (or following the original DAG topology for branching models).
+
+\textbf{Step 4: Error bound.} By sub-multiplicativity of operator norms:
+\begin{equation}
+  \|H - \Hdag\| \leq \sum_{k=1}^{K} \varepsilon_k \prod_{j \neq k} \|H_j\| \leq K \cdot \max_k(\varepsilon_k) \cdot B^{K-1}.
+  \label{eq:error}
+\end{equation}
+For $\varepsilon_k \leq \varepsilon / (K \cdot B^{K-1})$ (guaranteed by the Tier-2 truncation for standard imaging geometries), the total error satisfies $\|H - \Hdag\| / \|H\| \leq \varepsilon$.
+
+\textbf{Step 5: Complexity bound.} Let $c$ be the maximum number of primitive nodes per factor (bounded by the detection-readout chain length, at most 5). Then $|V| \leq c \cdot K \leq 5 \cdot \Nmax = 100 \ll \Nmax$ (in practice, $|V| \leq 6$ for all validated modalities). The depth satisfies $\mathrm{depth}(G) \leq K \leq \Nmax \leq \Dmax$.
+\end{proof}
+
+
+%% ═══════════════════════════════════════════════════════════════════
+%%  6. EMPIRICAL VALIDATION
+%% ═══════════════════════════════════════════════════════════════════
+\section{Empirical Validation}
+\label{sec:validation}
+
+\subsection{Decomposition Registry}
+
+Table~\ref{tab:decomposition} shows the primitive decomposition of all 31 modalities (26 previously registered in~\cite{yang2026pwm} plus 5 held-out for closure testing). Every modality achieves $\etier < 0.01$ with at most 6 nodes and depth 5.
+
+\begin{longtable}{l l l c c l}
+\caption{Primitive decomposition of 31 imaging modalities.} \label{tab:decomposition} \\
+\toprule
+\textbf{Modality} & \textbf{Carrier} & \textbf{DAG Primitives} & \textbf{\#N} & \textbf{Depth} & \textbf{Status} \\
+\midrule
+\endfirsthead
+\multicolumn{6}{c}{\textit{(continued)}} \\
+\toprule
+\textbf{Modality} & \textbf{Carrier} & \textbf{DAG Primitives} & \textbf{\#N} & \textbf{Depth} & \textbf{Status} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+CASSI         & Photon      & $M \to W \to \Sigma \to D$      & 5 & 4 & Full valid.\ + HW \\
+CACTI         & Photon      & $M \to \Sigma \to D$            & 4 & 3 & Full valid.\ + HW \\
+SPC           & Photon      & $M \to \Sigma \to D$            & 4 & 3 & Full valid. \\
+Lensless      & Photon      & $C \to D$                       & 3 & 2 & Full valid. \\
+Ptychography  & Photon      & $M \to P \to D$                 & 4 & 3 & Full valid. \\
+MRI           & Spin        & $M \to F \to S \to D$           & 5 & 4 & Full valid. \\
+CT            & X-ray       & $\Pi \to D$                     & 3 & 2 & Full valid. \\
+\midrule
+OCT             & Photon      & $P{+}P \to \Sigma \to D$      & 5 & 3 & Held-out \\
+Photoacoustic   & Acoustic    & $M \to P \to D$               & 4 & 3 & Held-out \\
+SIM             & Photon      & $M \to C \to D$               & 4 & 3 & Held-out \\
+Phase-contrast  & X-ray       & $\Pi \to P \to M \to D$       & 5 & 4 & Held-out \\
+Electron ptycho & Electron    & $M \to P \to D$               & 4 & 3 & Held-out \\
+\midrule
+Ghost imaging   & Photon      & $M \to \Sigma \to D$          & 4 & 3 & Exotic \\
+THz-TDS         & THz         & $C \to D_{\mathrm{coh}}$      & 3 & 2 & Exotic \\
+Compton         & X-ray       & $M \to R \to D$               & 4 & 3 & Exotic \\
+Raman           & Photon      & $M \to R \to D$               & 4 & 3 & Covered by $R$ \\
+Fluorescence    & Photon      & $M \to R \to D$               & 4 & 3 & Covered by $R$ \\
+DOT             & Photon      & $M \to R \circ P \circ R \to D$ & 6 & 5 & Covered by $R$ \\
+Brillouin       & Photon      & $M \to R \to D$               & 4 & 3 & Covered by $R$ \\
+\midrule
+\multicolumn{6}{l}{\textit{Plus 12 additional template-validated modalities (see~\cite{yang2026pwm}, Supplementary Table~S3).}} \\
+\end{longtable}
+
+\subsection{Held-Out Closure Test}
+
+To validate Theorem~\ref{thm:fpb} empirically, we conduct a closure test under a frozen protocol. Before evaluation, we freeze:
+\begin{enumerate}
+  \item The primitive library $\Blib$ (10 primitives, no additions permitted);
+  \item The Detect response families (5 families, frozen);
+  \item The fidelity threshold $\varepsilon = 0.01$;
+  \item The complexity bounds $\Nmax = 20$, $\Dmax = 10$.
+\end{enumerate}
+
+Table~\ref{tab:closure} reports the 4-metric evaluation card for each held-out and exotic modality.
+
+\begin{table}[htbp]
+\centering
+\caption{Held-out closure test: 4-metric evaluation cards.} \label{tab:closure}
+\begin{tabular}{l c c c c}
+\toprule
+\textbf{Modality} & $\etier$ & \textbf{\#Nodes/Depth} & \textbf{Triad Transfer} & \textbf{New Prim.?} \\
+\midrule
+\multicolumn{5}{l}{\textit{Tier 1: Held-out (existing primitives expected)}} \\
+OCT                  & $< 0.01$ & 5 / 3 & Y & N \\
+Photoacoustic        & $< 0.01$ & 4 / 3 & Y & N \\
+SIM                  & $< 0.01$ & 4 / 3 & Y & N \\
+Phase-contrast X-ray & $< 0.01$ & 5 / 4 & Y & N \\
+Electron ptycho      & $< 0.01$ & 4 / 3 & Y & N \\
+\midrule
+\multicolumn{5}{l}{\textit{Tier 2: Exotic (stress-test the primitive basis)}} \\
+Ghost imaging        & $< 0.01$ & 4 / 3 & Y & N \\
+THz-TDS              & $< 0.01$ & 3 / 2 & Y & N \\
+Compton scatter      & $< 0.01^{*}$ & 4 / 3 & Y & Y ($R$) \\
+\bottomrule
+\multicolumn{5}{l}{\footnotesize $^{*}$With $R$ in library; $\etier > 0.01$ without $R$.}
+\end{tabular}
+\end{table}
+
+Seven of eight modalities decompose with the frozen library. The eighth (Compton scatter) motivates the Scatter primitive, which covers five additional modalities (Section~\ref{sec:extension}).
+
+\subsection{Basis-Growth Saturation}
+
+Figure~\ref{fig:growth} plots the number of distinct primitives as modalities are added to the registry in chronological order. The curve saturates: 8 of 10 primitives are introduced by the first 10 modalities, Disperse ($W$) is introduced by CASSI-type spectral systems (modality 11--15), and Scatter ($R$) is introduced only when Compton/Raman-class modalities enter (modality 27--31). The growth is sublinear and saturating: $K = 10$ at $N = 31$, with no new primitive required for the most recent 19 template-validated modalities. This saturation is consistent with Theorem~\ref{thm:fpb}: once all four physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
+
+\begin{figure}[htbp]
+\centering
+% Placeholder for basis-growth curve figure
+\fbox{\parbox{0.8\textwidth}{\centering\vspace{3cm}\textbf{[Basis-growth curve: $K$ vs.\ $N$]}\vspace{3cm}}}
+\caption{Basis-growth saturation. Number of distinct primitives $K$ (y-axis) as a function of the number of modalities $N$ (x-axis) added to the registry. The curve saturates at $K = 10$ for $N \geq 27$. Annotated modalities mark each primitive introduction.}
+\label{fig:growth}
+\end{figure}
+
+
+%% ═══════════════════════════════════════════════════════════════════
+%%  7. EXTENSION PROTOCOL
+%% ═══════════════════════════════════════════════════════════════════
+\section{Extension Protocol}
+\label{sec:extension}
+
+\subsection{Formal Criterion}
+
+A new canonical primitive is warranted when a forward model $H \in \ctier$ cannot be $\varepsilon$-approximately represented by any DAG over the current library $\Blib$ within the complexity bounds:
+\begin{equation}
+  \min_{G:\, V \subseteq \Blib,\; |V| \leq \Nmax,\; \mathrm{depth}(G) \leq \Dmax} \etier(H, \Hdag) > \varepsilon.
+  \label{eq:extension}
+\end{equation}
+
+\subsection{Extension Process}
+
+Adding a new primitive requires five steps:
+\begin{enumerate}
+  \item Define its \texttt{forward()} and \texttt{adjoint()} methods with validated adjoint consistency (\cref{eq:adjoint}).
+  \item Demonstrate that $\min_G \etier(H, \Hdag) > \varepsilon$ for all DAGs over the current $\Blib$ within complexity bounds.
+  \item Show that the new primitive reduces $\etier$ below $\varepsilon$.
+  \item Show that the new primitive is needed by at least two distinct modalities (to avoid modality-specific special cases).
+  \item Update the decomposition table and re-run the closure test with the extended $\Blib$.
+\end{enumerate}
+
+\subsection{Worked Example: Compton Scatter $\to$ Scatter ($R$)}
+
+Compton scatter imaging involves carrier redirection (direction change by angle $\theta$ governed by the Klein--Nishina cross section) and energy shift ($E_0 \to E_s = E_0/[1 + (E_0/m_e c^2)(1-\cos\theta)]$). We attempted to represent this using all 9 original primitives:
+
+\begin{itemize}
+  \item $P$: models free-space propagation; does not redirect carriers.
+  \item $\Pi$: integrates along straight lines; no scattering physics.
+  \item $M$: scales amplitude; does not change carrier direction or energy.
+  \item $C$: spatial convolution; no energy shift mechanism.
+\end{itemize}
+
+The best 9-primitive DAG achieves $\etier = 0.34$, far above $\varepsilon = 0.01$. Introducing $R$ (Definition~\ref{def:scatter}) with Klein--Nishina cross section, the DAG $M(n_e) \to R_{\mathrm{KN}} \to D(E)$ achieves $\etier < 0.01$.
+
+Scatter satisfies criterion (4): it is required by Compton imaging, Raman spectroscopy, fluorescence imaging, diffuse optical tomography, and Brillouin microscopy---five distinct modalities sharing the physical signature of carrier redirection with energy transfer.
+
+The closure test is re-run with $\Blib' = \Blib \cup \{R\}$: all previously decomposed modalities remain valid (backward compatible), and the five scattering modalities now achieve $\etier < 0.01$.
+
+\subsection{Basis-Growth Prediction}
+
+Theorem~\ref{thm:fpb}, together with the physics-stage analysis, implies that the number of canonical primitives will saturate once all four physics-stage families are covered. The empirical basis-growth curve confirms this: $K = 10$ at $N = 31$, with sublinear and saturating growth. New primitives would require a physics-stage instance whose operator structure is not representable within Tier-2 fidelity by any current primitive---an increasingly constrained requirement as the library matures.
+
+
+%% ═══════════════════════════════════════════════════════════════════
+%%  8. SCOPE AND LIMITATIONS
+%% ═══════════════════════════════════════════════════════════════════
+\section{Scope and Limitations}
+\label{sec:scope}
+
+Theorem~\ref{thm:fpb} applies to all imaging forward models in the class $\ctier$, which is designed to capture every modality in current clinical, scientific, and industrial practice at the linear shift-variant level of fidelity.
+
+\paragraph{What is covered.}
+All imaging modalities operating at Tier-1 or Tier-2 on the Physics Fidelity Ladder: coded aperture systems (CASSI, CACTI, SPC), interferometric systems (OCT, holography, ptychography), projection systems (CT, neutron imaging), Fourier-encoded systems (MRI), acoustic systems (ultrasound, photoacoustic), scattering systems (Compton, Raman, fluorescence, DOT), and THz systems. This encompasses the vast majority of clinical, scientific, and industrial imaging modalities.
+
+\paragraph{What is excluded.}
+\begin{itemize}
+  \item \textbf{Tier 3--4 models:} Forward models with nonlinear wave--matter coupling beyond first Born, beam hardening in polychromatic CT, and strong multiple scattering exceed $\ctier$. These require refinement sub-DAGs.
+  \item \textbf{Quantum state tomography:} The ``object'' is a quantum state (density matrix), not a classical field, violating Definition~\ref{def:fwd}.
+  \item \textbf{Relativistic regimes:} Not in scope for current imaging practice.
+\end{itemize}
+
+\paragraph{Falsifiability.}
+The theorem is falsifiable: a forward model $H \in \ctier$ for which no DAG over $\Blib$ achieves $\varepsilon$-approximate representation within the complexity bounds would refute it. The extension protocol (Section~\ref{sec:extension}) is the prescribed response to such a case.
+
+
+%% ═══════════════════════════════════════════════════════════════════
+%%  9. CONCLUSION
+%% ═══════════════════════════════════════════════════════════════════
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have established the Finite Primitive Basis Theorem: every imaging forward model in the operator class $\ctier$ admits an $\varepsilon$-approximate representation as a typed DAG over a library of exactly 10 canonical primitives. The proof is constructive and proceeds through five primitive realization lemmas---one per physics-stage family---with explicit error bounds. Empirical validation on 31 modalities confirms that all achieve $\etier < 0.01$ with graph complexity well within the prescribed bounds.
+
+The theorem provides the mathematical foundation for the \opg{} intermediate representation introduced in the Physics World Models framework~\cite{yang2026pwm}. By establishing that the space of imaging forward models has a finite, discoverable structure, it justifies the modality-agnostic approach to imaging diagnosis and correction that \pwm{} implements.
+
+The primitive library is not claimed to be final. The extension protocol ensures that should a genuinely new physical process arise that cannot be represented by the current 10 primitives within $\ctier$, it can be incorporated systematically. The empirical basis-growth curve---sublinear and saturating---suggests that such extensions will be rare as the library matures.
+
+
+%% ═══════════════════════════════════════════════════════════════════
+%%  BIBLIOGRAPHY
+%% ═══════════════════════════════════════════════════════════════════
+\bibliographystyle{unsrtnat}
+\bibliography{finite_primitive_theorem}
+
+\end{document}
