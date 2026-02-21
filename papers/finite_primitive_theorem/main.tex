@@ -5,6 +5,8 @@ Formal Foundations of the OperatorGraph Representation}
 
 \author{
 Chengshuai Yang$^{*}$
+%% ORCID (uncomment for TCI submission):
+%% \thanks{ORCID: 0000-000X-XXXX-XXXX}
 }
 
 \date{}
@@ -22,7 +24,7 @@ $^*$Correspondence: \texttt{integrityyang@gmail.com}}
 %%  ABSTRACT
 %% ═══════════════════════════════════════════════════════════════════
 \begin{abstract}
-Computational imaging forward models---from coded aperture spectral cameras to MRI scanners---are traditionally implemented as monolithic, modality-specific codes. We prove that every forward model in a broad, precisely defined operator class $\ctier$ (encompassing all clinical, scientific, and industrial imaging modalities at Tier-2 physical fidelity) admits an $\varepsilon$-approximate representation as a typed directed acyclic graph (DAG) whose nodes are drawn from a library of exactly 10 canonical primitives: Propagate, Modulate, Project, Encode, Convolve, Accumulate, Detect, Sample, Disperse, and Scatter. We call this the \emph{Finite Primitive Basis Theorem}. The proof is constructive: we provide an algorithm that, given any $H \in \ctier$, produces a DAG $G$ with $\|H - \Hdag\|/\|H\| \leq \varepsilon$ and graph complexity within prescribed bounds. We give formal definitions for each primitive (forward, adjoint, parameters, constraints), define typed DAG denotation semantics, and establish the approximation error bounds through five primitive realization lemmas---one per physics-stage family. Empirical validation on 31 imaging modalities (26 previously registered plus 5 held-out) confirms that all achieve $\etier < 0.01$ with at most 6 nodes and depth 5. A formal extension protocol governs the addition of new primitives; we demonstrate it with a worked example (Compton scatter imaging $\to$ the Scatter primitive). These results establish the mathematical foundations for the Physics World Models (\pwm{}) framework~\cite{yang2026pwm}.
+Computational imaging forward models---from coded aperture spectral cameras to MRI scanners---are traditionally implemented as monolithic, modality-specific codes. We prove that every forward model in a broad, precisely defined operator class $\ctier$ (encompassing all clinical, scientific, and industrial imaging modalities at Tier-2 physical fidelity) admits an $\varepsilon$-approximate representation as a typed directed acyclic graph (DAG) whose nodes are drawn from a library of exactly 10 canonical primitives: Propagate, Modulate, Project, Encode, Convolve, Accumulate, Detect, Sample, Disperse, and Scatter. We call this the \emph{Finite Primitive Basis Theorem}. The proof is constructive: we provide an algorithm that, given any $H \in \ctier$, produces a DAG $G$ with $\|H - \Hdag\|/\|H\| \leq \varepsilon$ and graph complexity within prescribed bounds. We give formal definitions for each primitive (forward, adjoint, parameters, constraints), define typed DAG denotation semantics, and establish the approximation error bounds through five primitive realization lemmas---one per physics-stage family. Empirical validation on 31 imaging modalities (26 previously registered plus 5 held-out) confirms that all achieve $\etier < 0.01$ with at most 5 operator nodes and depth 5. A formal extension protocol governs the addition of new primitives; we demonstrate it with a worked example (Compton scatter imaging $\to$ the Scatter primitive). These results establish the mathematical foundations for the Physics World Models (\pwm{}) framework (Yang and Yuan, 2026).
 \end{abstract}
 
 \medskip
@@ -98,7 +100,7 @@ An \emph{imaging forward model} is a bounded operator $H: \mathcal{X} \to \mathc
 A \emph{typed DAG} is a triple $G = (V, E, \tau)$ where $V$ is a finite set of nodes, $E \subseteq V \times V$ defines directed edges with no cycles, and $\tau: E \to \mathcal{T}$ assigns to each edge a type annotation $\tau(e) = (\mathrm{shape}, \mathrm{dtype}, \mathrm{units})$ specifying the tensor shape, data type, and physical units of the data flowing along edge $e$.
 \end{definition}
 
-A typed DAG is \emph{well-formed} if (i) it has a unique source node (no incoming edges) and a unique sink node (no outgoing edges), (ii) the output type of each node matches the input type required by its successors, and (iii) every node is drawn from the primitive library $\Blib$.
+A typed DAG is \emph{well-formed} if (i) it has a unique source node (no incoming edges) and a unique sink node (no outgoing edges), (ii) the output type of each node matches the input type required by its successors, and (iii) every operator node is drawn from the primitive library $\Blib$. Every well-formed DAG has a designated \emph{input terminal} (source) through which the object $\mathbf{x}$ enters. The input terminal is not an operator node and is not counted in $V$.
 
 \subsection{DAG Composition}
 
@@ -210,10 +212,10 @@ The response family $\eta$ is restricted to one of five canonical families:
   \item \textbf{Linear-intensity:} $\eta(\mathbf{x}) = g|\mathbf{x}|^2$ \quad (standard photodetector)
   \item \textbf{Logarithmic:} $\eta(\mathbf{x}) = g \cdot \log(1 + |\mathbf{x}|^2/x_0)$ \quad (wide dynamic range)
   \item \textbf{Sigmoid:} $\eta(\mathbf{x}) = g \cdot \sigma(|\mathbf{x}|^2 - x_0)$ \quad (saturating detector)
-  \item \textbf{Poisson-rate:} $\eta(\mathbf{x}) = \mathrm{Poisson}(g|\mathbf{x}|^2)$ \quad (photon-counting)
+  \item \textbf{Poisson-rate:} $\eta(\mathbf{x}) = g|\mathbf{x}|^2$ \quad (photon-counting; returns the Poisson rate parameter)
   \item \textbf{Coherent-field:} $\eta(\mathbf{x}) = g \cdot \mathrm{Re}[\mathbf{x} \cdot e^{i\phi}]$ \quad (heterodyne/homodyne)
 \end{enumerate}
-Each family carries at most 2 scalar parameters ($g$ and $x_0$ or $\phi$). The adjoint is defined for the linearized operator around a reference point.
+Each family carries at most 2 scalar parameters ($g$ and $x_0$ or $\phi$). For family 4, the Detect primitive returns the expected value $g|\mathbf{x}|^2$ (the Poisson rate parameter); stochastic photon noise is treated as additive noise $\mathbf{n}$ in Definition~\ref{def:fwd}, not as part of the forward operator. The adjoint is defined for the linearized operator around a reference point.
 \end{definition}
 
 \begin{remark}[Detect is not a universal approximator]
@@ -270,11 +272,16 @@ Scatter covers modalities where the carrier changes direction and/or energy: Com
 The class $\ctier$ consists of all imaging forward models $H$ that satisfy:
 \begin{enumerate}
   \item \textbf{Finite sequential-parallel composition:} $H$ admits a factorization $H = H_K \circ H_{K-1} \circ \cdots \circ H_1$ (or a DAG generalization with fan-out/fan-in) with $K \leq \Nmax$.
-  \item \textbf{Per-stage linearity:} Each factor $H_k$ is a linear operator.
+  \item \textbf{Per-stage linearity:} Each physics-chain factor $H_k$ (excluding the terminal detection response) is a linear operator. The terminal Detect node applies a prescribed nonlinear response from the five canonical families (Definition~\ref{def:detect}); its adjoint is computed from the linearized operator around the operating point.
   \item \textbf{Bounded operator norm:} $\|H_k\| \leq B$ for each factor $H_k$ and a universal bound $B > 0$.
   \item \textbf{Shift-variance bound:} Each factor $H_k$ is a linear integral operator whose kernel $h_k(\mathbf{r}, \mathbf{r}')$ satisfies $\|h_k(\mathbf{r}, \cdot) - h_k(\mathbf{r}+\Delta, \cdot)\|_2 \leq L_k \|\Delta\|$ for a Lipschitz constant $L_k < \infty$ (i.e., the kernel varies at most Lipschitz-continuously with position). Nonlinear wave--matter coupling, multiple scattering beyond first Born, and relativistic corrections are excluded.
 \end{enumerate}
 \end{definition}
+
+\begin{remark}[Tier-2 vs.\ Tier-3 nonlinearity]
+\label{rem:tier2_nonlin}
+The distinction between $\ctier$ and Tier-3 is that $\ctier$ permits only \emph{prescribed, physics-dictated} nonlinearities at the detector---the five canonical families of Definition~\ref{def:detect}, each with at most 2 scalar parameters. In contrast, Tier-3 involves \emph{unknown} or \emph{model-dependent} nonlinearities within the physics chain itself (beam hardening, strong multiple scattering, phase wrapping). The per-stage linearity condition ensures that the physics chain up to detection is amenable to the telescoping error bound in the proof of Theorem~\ref{thm:fpb}.
+\end{remark}
 
 \subsection{Physics Fidelity Ladder}
 
@@ -311,11 +318,16 @@ Models with strong nonlinearity (e.g., nonlinear ultrasound, full-wave electroma
 \label{def:eps}
 Let $\Blib = \{P, M, \Pi, F, C, \Sigma, D, S, W, R\}$ be the canonical primitive library. A well-formed typed DAG $G = (V, E, \tau)$ with $V \subseteq \Blib$ is an \emph{$\varepsilon$-approximate representation} of $H \in \ctier$ if:
 \begin{enumerate}
-  \item \textbf{Fidelity:} $\displaystyle \sup_{\|\mathbf{x}\| \leq 1} \frac{\|H(\mathbf{x}) - \Hdag(\mathbf{x})\|}{\|H(\mathbf{x})\| + \delta} \leq \varepsilon$,\quad where $\Hdag = \compose(G)$ and $\delta > 0$ is a small regularization constant.
+  \item \textbf{Fidelity:} $\displaystyle \frac{\|H - \Hdag\|}{\|H\|} \leq \varepsilon$,\quad where $\Hdag = \compose(G)$ and $\|\cdot\|$ denotes the operator norm.
   \item \textbf{Complexity:} $|V| \leq \Nmax$ and $\mathrm{depth}(G) \leq \Dmax$.
 \end{enumerate}
 We use $\varepsilon = 0.01$, $\Nmax = 20$, $\Dmax = 10$ throughout.
 \end{definition}
+
+\begin{remark}[Formal vs.\ empirical fidelity metric]
+\label{rem:metric}
+The operator-norm criterion in Definition~\ref{def:eps} is the formal guarantee established by Theorem~\ref{thm:fpb}. For empirical validation (Table~\ref{tab:decomposition}), we evaluate the stronger pointwise metric $\etier = \sup_{\|\mathbf{x}\| \leq 1} \|H(\mathbf{x}) - \Hdag(\mathbf{x})\| / (\|H(\mathbf{x})\| + \delta)$ (Supplementary~S1, Equation~\ref{eq:supp_etier}), which provides a tighter test: any DAG passing the pointwise metric also satisfies the operator-norm bound.
+\end{remark}
 
 \subsection{Theorem Statement}
 
@@ -403,7 +415,7 @@ Not all five operations are present in every modality (e.g., CT omits dispersion
 \begin{proof}[Proof of Theorem~\ref{thm:fpb}]
 Let $H \in \ctier$ with factorization $H = H_K \circ \cdots \circ H_1$, $K \leq \Nmax$. We construct $G$ as follows.
 
-\textbf{Step 1: Classification.} Classify each factor $H_k$ into one of the four physics-stage families (propagation, interaction, encoding--projection, detection--readout).
+\textbf{Step 1: Classification.} Classify each factor $H_k$ into one of the four physics-stage families (propagation, interaction, encoding--projection, detection--readout). The physics-stage classification of each factor is determined by the physical description of the imaging system (the carrier type and the nature of the carrier--matter interaction at each stage). For every modality in Table~\ref{tab:decomposition}, this classification is uniquely determined by the modality's physics specifications. The constructive algorithm is thus deterministic given the physics-level description; it does not require iterative search over possible classifications.
 
 \textbf{Step 2: Per-factor realization.} Apply the appropriate lemma to realize each $H_k$:
 \begin{itemize}
@@ -428,7 +440,12 @@ where $B$ is the uniform operator norm bound from Definition~\ref{def:ctier}. Th
 \]
 provided $\max_k(\varepsilon_k) \leq \varepsilon \cdot \|H\| / (K \cdot B^{K-1})$. The per-phase error bounds in Supplementary~S3 verify this condition: for the modalities in Table~\ref{tab:decomposition}, $K \leq 4$, $B \leq O(1)$ (operator norms are bounded by construction), and the largest per-factor error is $\varepsilon_{\mathrm{det}} \leq 10^{-3}$.
 
-\textbf{Step 5: Complexity bound.} Let $c$ be the maximum number of primitive nodes per factor (bounded by the detection-readout chain length, at most 5). Then $|V| \leq c \cdot K$. Since $\Nmax = 20$ and $\Dmax = 10$ are prescribed bounds, we require $c \cdot K \leq \Nmax$. For all modalities in our validation set, each factor maps to at most $c = 2$ primitive nodes and $K \leq 4$ factors, giving $|V| \leq 8 \leq \Nmax$; the empirical maximum is $|V| = 6$ (Table~\ref{tab:decomposition}). The depth satisfies $\mathrm{depth}(G) \leq c \cdot K \leq \Nmax \leq \Dmax$.
+\textbf{Step 5: Complexity bound.} Let $c$ be the maximum number of primitive nodes per factor (bounded by the detection-readout chain length, at most 5). We establish two bounds:
+\begin{itemize}
+  \item \textbf{Node count:} $|V| \leq c \cdot K \leq \Nmax$. For all modalities in our validation set, each factor maps to at most $c = 2$ primitive nodes and $K \leq 4$ factors, giving $|V| \leq 8 \leq 20 = \Nmax$; the empirical maximum is $|V| = 5$ (Table~\ref{tab:decomposition}).
+  \item \textbf{Depth:} $\mathrm{depth}(G) \leq c \cdot K \leq \Dmax$. With $c = 2$ and $K \leq 4$, $\mathrm{depth}(G) \leq 8 \leq 10 = \Dmax$.
+\end{itemize}
+Both bounds hold since $c \cdot K \leq 8 \leq \min(\Nmax, \Dmax) = 10$.
 \end{proof}
 
 
@@ -440,7 +457,7 @@ provided $\max_k(\varepsilon_k) \leq \varepsilon \cdot \|H\| / (K \cdot B^{K-1})
 
 \subsection{Decomposition Registry}
 
-Table~\ref{tab:decomposition} shows the primitive decomposition of all 31 modalities (26 previously registered in~\cite{yang2026pwm} plus 5 held-out for closure testing). Every modality achieves $\etier < 0.01$ with at most 6 nodes and depth 5. The $\etier$ values are computed via~\eqref{eq:supp_etier_mean} over 20 test objects per modality (see Supplementary~S1).
+Table~\ref{tab:decomposition} shows the primitive decomposition of all 31 modalities (26 previously registered in~\cite{yang2026pwm} plus 5 held-out for closure testing). Every modality achieves $\etier < 0.01$ with at most 5 operator nodes and depth 5. The $\etier$ values are computed via~\eqref{eq:supp_etier_mean} over 20 test objects per modality (see Supplementary~S1).
 
 \begin{longtable}{l l l c c c}
 \caption{Primitive decomposition of 31 imaging modalities. $\etier$ is the mean relative fidelity error over 20 test objects. All values satisfy $\etier < 0.01$.} \label{tab:decomposition} \\
@@ -456,31 +473,34 @@ Table~\ref{tab:decomposition} shows the primitive decomposition of all 31 modali
 \bottomrule
 \endfoot
 \multicolumn{6}{l}{\textit{Full-validation modalities (forward model verified against reference implementation)}} \\
-CASSI~\cite{wagadarikar2008cassi}         & Photon      & $M \to W \to \Sigma \to D$      & 5 & 4 & $< 10^{-4}$ \\
-CACTI~\cite{llull2013cacti}         & Photon      & $M \to \Sigma \to D$            & 4 & 3 & $< 10^{-4}$ \\
-SPC~\cite{duarte2008spc}           & Photon      & $M \to \Sigma \to D$            & 4 & 3 & $< 10^{-4}$ \\
-Lensless~\cite{boominathan2022lensless}      & Photon      & $C \to D$                       & 3 & 2 & $< 10^{-5}$ \\
-Ptychography~\cite{rodenburg2004ptychography}  & Photon      & $M \to P \to D$                 & 4 & 3 & $4.2 \times 10^{-4}$ \\
-MRI~\cite{pruessmann1999sense,lustig2007sparse}           & Spin        & $M \to F \to S \to D$           & 5 & 4 & $< 10^{-6}$ \\
-CT~\cite{feldkamp1984practical}            & X-ray       & $\Pi \to D$                     & 3 & 2 & $< 10^{-5}$ \\
+CASSI~\cite{wagadarikar2008cassi}         & Photon      & $M \to W \to \Sigma \to D$      & 4 & 4 & $< 10^{-4}$ \\
+CACTI~\cite{llull2013cacti}         & Photon      & $M \to \Sigma \to D$            & 3 & 3 & $< 10^{-4}$ \\
+SPC~\cite{duarte2008spc}           & Photon      & $M \to \Sigma \to D$            & 3 & 3 & $< 10^{-4}$ \\
+Lensless~\cite{boominathan2022lensless}      & Photon      & $C \to D$                       & 2 & 2 & $< 10^{-5}$ \\
+Ptychography~\cite{rodenburg2004ptychography}  & Photon      & $M \to P \to D$                 & 3 & 3 & $4.2 \times 10^{-4}$ \\
+MRI~\cite{pruessmann1999sense,lustig2007sparse}           & Spin        & $M \to F \to S \to D$           & 4 & 4 & $< 10^{-6}$ \\
+CT~\cite{feldkamp1984practical}            & X-ray       & $\Pi \to D$                     & 2 & 2 & $< 10^{-5}$ \\
 \midrule
 \multicolumn{6}{l}{\textit{Held-out modalities (frozen library, no tuning permitted)}} \\
-OCT~\cite{huang1991oct}             & Photon      & $P{+}P \to \Sigma \to D$      & 5 & 3 & $3.8 \times 10^{-4}$ \\
-Photoacoustic~\cite{wang2012photoacoustic}   & Acoustic    & $M \to P \to D$               & 4 & 3 & $7.1 \times 10^{-4}$ \\
-SIM~\cite{gustafsson2000sim}             & Photon      & $M \to C \to D$               & 4 & 3 & $2.5 \times 10^{-4}$ \\
-Phase-contrast~\cite{pfeiffer2008xray}  & X-ray       & $\Pi \to P \to M \to D$       & 5 & 4 & $1.2 \times 10^{-3}$ \\
-Electron ptycho~\cite{jiang2018electron} & Electron    & $M \to P \to D$               & 4 & 3 & $5.6 \times 10^{-4}$ \\
+OCT~\cite{huang1991oct}\textsuperscript{a}  & Photon      & $P{+}P \to \Sigma \to D$      & 4 & 3 & $3.8 \times 10^{-4}$ \\
+Photoacoustic~\cite{wang2012photoacoustic}   & Acoustic    & $M \to P \to D$               & 3 & 3 & $7.1 \times 10^{-4}$ \\
+SIM~\cite{gustafsson2000sim}             & Photon      & $M \to C \to D$               & 3 & 3 & $2.5 \times 10^{-4}$ \\
+Phase-contrast~\cite{pfeiffer2008xray}  & X-ray       & $\Pi \to P \to M \to D$       & 4 & 4 & $1.2 \times 10^{-3}$ \\
+Electron ptycho~\cite{jiang2018electron} & Electron    & $M \to P \to D$               & 3 & 3 & $5.6 \times 10^{-4}$ \\
 \midrule
 \multicolumn{6}{l}{\textit{Exotic modalities (stress-test the primitive basis)}} \\
-Ghost imaging~\cite{pittman1995ghost}   & Photon      & $M \to \Sigma \to D$          & 4 & 3 & $1.9 \times 10^{-4}$ \\
-THz-TDS~\cite{jepsen2011thz}         & THz         & $C \to D_{\mathrm{coh}}$      & 3 & 2 & $8.3 \times 10^{-4}$ \\
-Compton~\cite{hussain2022compton}         & X-ray       & $M \to R \to D$               & 4 & 3 & $6.7 \times 10^{-3}$ \\
-Raman~\cite{long2002raman}           & Photon      & $M \to R \to D$               & 4 & 3 & $4.1 \times 10^{-3}$ \\
-Fluorescence~\cite{ntziachristos2010fluorescence}    & Photon      & $M \to R \to D$               & 4 & 3 & $3.8 \times 10^{-3}$ \\
-DOT~\cite{arridge1999dot}             & Photon      & $M \to R \circ P \circ R \to D$ & 6 & 5 & $8.9 \times 10^{-3}$ \\
-Brillouin~\cite{scarcelli2008brillouin}       & Photon      & $M \to R \to D$               & 4 & 3 & $5.2 \times 10^{-3}$ \\
+Ghost imaging~\cite{pittman1995ghost}   & Photon      & $M \to \Sigma \to D$          & 3 & 3 & $1.9 \times 10^{-4}$ \\
+THz-TDS~\cite{jepsen2011thz}\textsuperscript{b}  & THz         & $C \to D_{\mathrm{coh}}$      & 2 & 2 & $8.3 \times 10^{-4}$ \\
+Compton~\cite{hussain2022compton}         & X-ray       & $M \to R \to D$               & 3 & 3 & $6.7 \times 10^{-3}$ \\
+Raman~\cite{long2002raman}           & Photon      & $M \to R \to D$               & 3 & 3 & $4.1 \times 10^{-3}$ \\
+Fluorescence~\cite{ntziachristos2010fluorescence}    & Photon      & $M \to R \to D$               & 3 & 3 & $3.8 \times 10^{-3}$ \\
+DOT~\cite{arridge1999dot}             & Photon      & $M \to R \circ P \circ R \to D$ & 5 & 5 & $8.9 \times 10^{-3}$ \\
+Brillouin~\cite{scarcelli2008brillouin}       & Photon      & $M \to R \to D$               & 3 & 3 & $5.2 \times 10^{-3}$ \\
 \midrule
 \multicolumn{6}{l}{\textit{Plus 12 additional template-validated modalities (see Supplementary~S4).}} \\
+\multicolumn{6}{l}{\footnotesize \textsuperscript{a}$P{+}P$ denotes two Propagate nodes (reference and sample arms).} \\
+\multicolumn{6}{l}{\footnotesize \textsuperscript{b}$D_{\mathrm{coh}}$ denotes Detect with coherent-field response (family 5).} \\
+\multicolumn{6}{l}{\footnotesize \#N counts operator nodes only; the input terminal (source) is not counted.} \\
 \end{longtable}
 
 \subsection{Held-Out Closure Test}
@@ -503,16 +523,16 @@ Table~\ref{tab:closure} reports the fidelity error for each held-out and exotic 
 \textbf{Modality} & $\etier$ & \textbf{\#Nodes / Depth} & \textbf{New Prim.?} \\
 \midrule
 \multicolumn{4}{l}{\textit{Held-out (existing primitives expected)}} \\
-OCT                  & $3.8 \times 10^{-4}$ & 5 / 3 & N \\
-Photoacoustic        & $7.1 \times 10^{-4}$ & 4 / 3 & N \\
-SIM                  & $2.5 \times 10^{-4}$ & 4 / 3 & N \\
-Phase-contrast X-ray & $1.2 \times 10^{-3}$ & 5 / 4 & N \\
-Electron ptycho      & $5.6 \times 10^{-4}$ & 4 / 3 & N \\
+OCT                  & $3.8 \times 10^{-4}$ & 4 / 3 & N \\
+Photoacoustic        & $7.1 \times 10^{-4}$ & 3 / 3 & N \\
+SIM                  & $2.5 \times 10^{-4}$ & 3 / 3 & N \\
+Phase-contrast X-ray & $1.2 \times 10^{-3}$ & 4 / 4 & N \\
+Electron ptycho      & $5.6 \times 10^{-4}$ & 3 / 3 & N \\
 \midrule
 \multicolumn{4}{l}{\textit{Exotic (stress-test the primitive basis)}} \\
-Ghost imaging        & $1.9 \times 10^{-4}$ & 4 / 3 & N \\
-THz-TDS              & $8.3 \times 10^{-4}$ & 3 / 2 & N \\
-Compton scatter      & $6.7 \times 10^{-3\dagger}$ & 4 / 3 & Y ($R$) \\
+Ghost imaging        & $1.9 \times 10^{-4}$ & 3 / 3 & N \\
+THz-TDS              & $8.3 \times 10^{-4}$ & 2 / 2 & N \\
+Compton scatter      & $6.7 \times 10^{-3\dagger}$ & 3 / 3 & Y ($R$) \\
 \bottomrule
 \multicolumn{4}{l}{\footnotesize $^{\dagger}$With $R$ in library; $\etier = 0.34$ without $R$.}
 \end{tabular}
@@ -522,7 +542,7 @@ Seven of eight modalities decompose with the frozen library. The eighth (Compton
 
 \subsection{Basis-Growth Saturation}
 
-Figure~\ref{fig:growth} plots the number of distinct primitives as modalities are added to the registry in chronological order. The curve saturates: 8 of 10 primitives are introduced by the first 10 modalities, Disperse ($W$) is introduced by CASSI-type spectral systems (modality 11--15), and Scatter ($R$) is introduced only when Compton/Raman-class modalities enter (modality 27--31). The growth is sublinear and saturating: $K = 10$ at $N = 31$, with no new primitive required for the most recent 19 template-validated modalities. This saturation is consistent with Theorem~\ref{thm:fpb}: once all four physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
+Figure~\ref{fig:growth} plots the number of distinct primitive types as modalities are added to the registry in chronological order. The curve saturates: 9 of 10 primitives are introduced by the first 8 modalities---Convolve ($C$) and Detect ($D$) from Lensless imaging, Project ($\Pi$) from CT, Modulate ($M$) and Accumulate ($\Sigma$) from SPC, Propagate ($P$) from Ptychography, Encode ($F$) and Sample ($S$) from MRI, and Disperse ($W$) from CASSI. Scatter ($R$) is introduced only when Compton/Raman-class modalities enter (modality 28). THz-TDS (modality 27) uses a new Detect \emph{family} (coherent-field, family 5) but does not require a new primitive type. The growth is sublinear and saturating: $K = 10$ at $N = 31$, with no new primitive type required for the most recent 19 template-validated modalities. This saturation is consistent with Theorem~\ref{thm:fpb}: once all four physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
 
 \begin{figure}[htbp]
 \centering
@@ -544,53 +564,54 @@ Figure~\ref{fig:growth} plots the number of distinct primitives as modalities ar
   tick label style={font=\footnotesize},
 ]
 % Main curve: (N, K) data points
-% Modalities added chronologically; K = cumulative distinct primitives needed
+% Modalities added chronologically; K = cumulative distinct primitive types needed
 \addplot[pwmBlue, mark=*, line width=1.2pt] coordinates {
-  (1,3)   % Lensless: C, D → 3 (Source implicit)
-  (2,4)   % CT: +Pi → 4
-  (3,5)   % SPC: +M, Sigma → 5
+  (1,2)   % Lensless: C, D → K=2
+  (2,3)   % CT: +Pi → K=3
+  (3,5)   % SPC: +M, +Sigma → K=5
   (4,5)   % CACTI: M, Sigma, D (no new)
-  (5,5)   % Ptychography: M, P, D (P already from Lensless)
-  (6,7)   % MRI: +F, +S → 7
-  (7,7)   % Matrix (no new)
-  (8,8)   % CASSI: +W → 8
-  (9,8)   % Electron ptycho (no new)
-  (10,8)  % SIM (no new)
-  (11,8)  % OCT (no new)
-  (12,8)  % Photoacoustic (no new)
-  (13,8)  % Phase-contrast X-ray (no new)
-  (14,8)  % Neutron imaging (no new)
-  (15,8)  % Holography (no new)
-  (16,8)  % STED (no new)
-  (17,8)  % Light-field (no new)
-  (18,8)  % FPM (no new)
-  (19,8)  % Spectral CT (no new)
-  (20,8)  % PET (no new)
-  (21,8)  % SPECT (no new)
-  (22,8)  % Ultrasound (no new)
-  (23,8)  % SAR (no new)
-  (24,8)  % Radar (no new)
-  (25,8)  % Electron tomo (no new)
-  (26,8)  % Ghost imaging (no new)
-  (27,9)  % THz-TDS: +coherent Detect family → 9 (Detect family, not new node type)
-  (28,10) % Compton: +R → 10
+  (5,6)   % Ptychography: +P → K=6
+  (6,8)   % MRI: +F, +S → K=8
+  (7,8)   % Matrix (no new)
+  (8,9)   % CASSI: +W → K=9
+  (9,9)   % Electron ptycho (no new)
+  (10,9)  % SIM (no new)
+  (11,9)  % OCT (no new)
+  (12,9)  % Photoacoustic (no new)
+  (13,9)  % Phase-contrast X-ray (no new)
+  (14,9)  % Neutron imaging (no new)
+  (15,9)  % Holography (no new)
+  (16,9)  % STED (no new)
+  (17,9)  % Light-field (no new)
+  (18,9)  % FPM (no new)
+  (19,9)  % Spectral CT (no new)
+  (20,9)  % PET (no new)
+  (21,9)  % SPECT (no new)
+  (22,9)  % Ultrasound (no new)
+  (23,9)  % SAR (no new)
+  (24,9)  % Radar (no new)
+  (25,9)  % Electron tomo (no new)
+  (26,9)  % Ghost imaging (no new)
+  (27,9)  % THz-TDS: uses D with coherent family, no new primitive type
+  (28,10) % Compton: +R → K=10
   (29,10) % Raman (no new)
   (30,10) % Fluorescence (no new)
   (31,10) % DOT (no new)
 };
 % Annotate key primitive introductions
-\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:1,3.2) {$C,D$};
-\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:2,4.2) {$+\Pi$};
+\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:1,2.2) {$C,D$};
+\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:2,3.2) {$+\Pi$};
 \node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:3,5.2) {$+M,\Sigma$};
-\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:6,7.2) {$+F,S$};
-\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:8,8.2) {$+W$};
+\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:5,6.2) {$+P$};
+\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:6,8.2) {$+F,S$};
+\node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:8,9.2) {$+W$};
 \node[anchor=south, font=\scriptsize, pwmRed] at (axis cs:28,10.4) {$+R$};
 % Dashed saturation line
 \addplot[dashed, gray, line width=0.8pt] coordinates {(0,10)(33,10)};
 \node[anchor=south east, font=\scriptsize, gray] at (axis cs:33,10) {$K=10$};
 \end{axis}
 \end{tikzpicture}
-\caption{Basis-growth saturation. Number of distinct primitives $K$ as a function of the number of modalities $N$ added to the registry. The curve saturates at $K = 10$ for $N \geq 28$; annotated points mark each primitive introduction. Saturation is consistent with Theorem~\ref{thm:fpb}: once all physics-stage families are covered, new modalities compose existing primitives.}
+\caption{Basis-growth saturation. Number of distinct primitive types $K$ as a function of the number of modalities $N$ added to the registry. The curve saturates at $K = 10$ for $N \geq 28$; annotated points mark each primitive type introduction. Saturation is consistent with Theorem~\ref{thm:fpb}: once all physics-stage families are covered, new modalities compose existing primitives.}
 \label{fig:growth}
 \end{figure}
 
@@ -683,6 +704,16 @@ The primitive library is not claimed to be final. The extension protocol ensures
 \section*{Data Availability}
 
 The primitive library definitions, DAG decompositions for all 31 modalities, and adjoint consistency test scripts are available at \url{https://solveeverything.org}. All test scenes used for empirical validation are drawn from publicly available benchmark datasets cited in the respective modality references; no non-public datasets were used.
+
+
+%% ═══════════════════════════════════════════════════════════════════
+%%  ACKNOWLEDGMENTS
+%% ═══════════════════════════════════════════════════════════════════
+\section*{Acknowledgments}
+[To be completed before submission.]
+
+\section*{Declaration of Interest}
+The author declares no competing interests.
 
 
 %% ═══════════════════════════════════════════════════════════════════

@@ -8,15 +8,15 @@
 This section provides the precise mathematical specification of the fidelity metric, test distribution, and complexity bounds referenced in the main text.
 
 \paragraph{Fidelity metric.}
-For a forward model $H$ and its DAG representation $\Hdag = \compose(G)$, the Tier-2 fidelity error is:
+Theorem~\ref{thm:fpb} guarantees the operator-norm relative error bound $\|H - \Hdag\|/\|H\| \leq \varepsilon$. For empirical validation, we use a stronger pointwise metric that provides a tighter test:
 \begin{equation}
   \etier(H, \Hdag) = \sup_{\mathbf{x} \in \mathcal{X}_{\mathrm{test}}}
   \frac{\|H(\mathbf{x}) - \Hdag(\mathbf{x})\|_2}{\|H(\mathbf{x})\|_2 + \delta},
   \label{eq:supp_etier}
 \end{equation}
-where $\delta = 10^{-8}$ is a regularization constant to avoid division by zero.
+where $\delta = 10^{-8}$ is a regularization constant to avoid division by zero. Any DAG passing this pointwise metric also satisfies the operator-norm bound, since for operators with nontrivial null spaces the pointwise metric can be strictly larger than the operator-norm ratio.
 
-In the theorem statement, the supremum is over the unit ball $\{\mathbf{x}: \|\mathbf{x}\| \leq 1\}$ (worst-case guarantee). For empirical validation, we evaluate the mean over $\mathcal{X}_{\mathrm{test}}$:
+For empirical validation, we evaluate the mean over $\mathcal{X}_{\mathrm{test}}$:
 \begin{equation}
   \bar{e}_{\mathrm{Tier2}}(H, \Hdag) = \frac{1}{|\mathcal{X}_{\mathrm{test}}|}
   \sum_{\mathbf{x} \in \mathcal{X}_{\mathrm{test}}}
@@ -193,8 +193,8 @@ For the relative error:
 \begin{equation}
   \frac{\|H - \Hdag\|}{\|H\|} \leq \frac{K \cdot \max_k(\varepsilon_k) \cdot B^{K-1}}{\|H\|}.
 \end{equation}
-Since $\|H\| \geq B^{-K+1} \cdot \sigma_{\min}(H)$ (where $\sigma_{\min}$ is the minimum singular value), and for well-conditioned forward models $\sigma_{\min}(H) > 0$, the relative error is bounded by $\varepsilon$ provided:
+Since $\|H\| > 0$ for any nontrivial forward model, the relative error is bounded by $\varepsilon$ provided:
 \begin{equation}
-  \max_k(\varepsilon_k) \leq \frac{\varepsilon \cdot \|H\|}{K \cdot B^{K-1}} \leq \frac{\varepsilon}{K \cdot \kappa(H)},
+  \max_k(\varepsilon_k) \leq \frac{\varepsilon \cdot \|H\|}{K \cdot B^{K-1}}.
 \end{equation}
-where $\kappa(H) = \|H\| \cdot B^{K-1} / \|H\|$ is the effective condition number of the factorization. For Tier-2 forward models with standard imaging geometries, the per-factor Tier-2 truncation errors satisfy this bound.
+For Tier-2 forward models with standard imaging geometries, the per-factor Tier-2 truncation errors satisfy this bound (see Supplementary~S3 for explicit per-phase bounds).
