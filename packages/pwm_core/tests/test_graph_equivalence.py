@@ -177,18 +177,18 @@ class TestCASSIEquivalence:
         spec = OperatorGraphSpec(
             graph_id="cassi_partial",
             nodes=[
-                GraphNode(
-                    node_id="modulate",
-                    primitive_id="coded_mask",
-                    params={"seed": 42, "H": 64, "W": 64},
-                ),
-                GraphNode(
-                    node_id="disperse",
-                    primitive_id="spectral_dispersion",
-                    params={"disp_step": 1.0},
-                ),
+                {
+                    "node_id": "modulate",
+                    "primitive_id": "coded_mask",
+                    "params": {"seed": 42, "H": 64, "W": 64},
+                },
+                {
+                    "node_id": "disperse",
+                    "primitive_id": "spectral_dispersion",
+                    "params": {"disp_step": 1.0},
+                },
             ],
-            edges=[GraphEdge(source="modulate", target="disperse")],
+            edges=[{"source": "modulate", "target": "disperse"}],
         )
         graph_op = compiler.compile(spec, x_shape=(64, 64, 8))
 

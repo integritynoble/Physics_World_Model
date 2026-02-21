@@ -120,6 +120,9 @@ class TestMemoryBudget:
 
     def test_memory_budget(self) -> None:
         """Compile + forward should not consume excessive memory."""
+        import sys
+        if sys.platform == "win32":
+            pytest.skip("resource module not available on Windows")
         import resource
 
         # Get baseline memory

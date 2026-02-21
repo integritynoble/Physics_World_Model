@@ -152,11 +152,11 @@ class TestGraphAdjoint:
         spec = OperatorGraphSpec(
             graph_id="ct_small_linear",
             nodes=[
-                GraphNode(
-                    node_id="radon",
-                    primitive_id="ct_radon",
-                    params={"n_angles": 18, "H": 16, "W": 16},
-                ),
+                {
+                    "node_id": "radon",
+                    "primitive_id": "ct_radon",
+                    "params": {"n_angles": 18, "H": 16, "W": 16},
+                },
             ],
             edges=[],
             metadata={"x_shape": [16, 16], "y_shape": [18, 16]},
