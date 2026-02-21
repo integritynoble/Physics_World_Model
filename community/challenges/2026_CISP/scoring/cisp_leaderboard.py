@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -73,7 +73,7 @@ def create_leaderboard() -> CISPLeaderboard:
     board = CISPLeaderboard(
         track_boards={track: [] for track in TRACKS},
         composite_board=[],
-        last_updated=datetime.utcnow().isoformat(),
+        last_updated=datetime.now(timezone.utc).isoformat(),
     )
     return board
 
@@ -82,7 +82,7 @@ def add_submission(board: CISPLeaderboard,
                    submission: CISPSubmissionScore,
                    badge: str = "anonymous") -> CISPLeaderboard:
     """Add a scored submission to the leaderboard and re-rank."""
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(timezone.utc).isoformat()
 
     for track_name, ts in submission.track_scores.items():
         entry = LeaderboardEntry(
