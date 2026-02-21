@@ -1,5 +1,43 @@
 % preamble.tex — Companion paper: Finite Primitive Basis Theorem
 % Journal-style formatting for the formal foundations paper
+%
+% ====================================================================
+% JOURNAL ADAPTATION GUIDE
+% ====================================================================
+% This paper is prepared in a generic article format. To submit to a
+% specific venue, make the following changes:
+%
+% --- SIIMS (SIAM Journal on Imaging Sciences) ---
+%   1. Replace \documentclass[11pt]{article} with:
+%      \documentclass[review,onefignum,onetabnum]{siamart251216}
+%   2. Remove geometry, setspace packages (SIAM class handles these)
+%   3. Replace \bibliographystyle{unsrtnat} with \bibliographystyle{siamplain}
+%   4. Replace natbib package with SIAM's built-in citation support
+%   5. Add \headers{Finite Primitive Basis Theorem}{C.\ Yang}
+%   6. Add MSC codes: \begin{MSCcodes} 65F22, 94A08, 47A68 \end{MSCcodes}
+%   7. Abstract limit: 250 words, one paragraph, no numbered refs
+%   8. Supplementary: separate file via \Supplementary{...}
+%
+% --- Inverse Problems (IOP) ---
+%   1. Replace \documentclass[11pt]{article} with:
+%      \documentclass[12pt]{iopart}
+%   2. Remove geometry, setspace, natbib (iopart handles these)
+%   3. Replace \bibliographystyle{unsrtnat} with \bibliographystyle{iopart-num}
+%   4. Add \pacs{} and \submitto{Inverse Problems}
+%   5. Article titles REQUIRED in references (already included)
+%   6. Author can choose single or double anonymous review
+%
+% --- TCI (IEEE Transactions on Computational Imaging) ---
+%   1. Replace \documentclass[11pt]{article} with:
+%      \documentclass[10pt,journal]{IEEEtran}
+%   2. Remove geometry, setspace, natbib (IEEEtran handles these)
+%   3. Replace \bibliographystyle{unsrtnat} with \bibliographystyle{IEEEtran}
+%   4. Move supplementary proofs to separate supplementary PDF
+%   5. Hard limit: 13 double-column pages (initial), 16 (revised)
+%   6. ORCID required for all authors
+%   7. Abstract: 150-250 words
+%   8. Consider condensing proofs to fit page limit
+% ====================================================================
 
 \documentclass[11pt]{article}
 
