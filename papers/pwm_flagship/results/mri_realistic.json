@@ -1,0 +1,126 @@
+{
+  "protocol": {
+    "image_size": 256,
+    "n_coils": 8,
+    "acceleration": 4,
+    "acs_lines": 24,
+    "noise_sigma": 0.005,
+    "cg_iters": 40,
+    "cg_reg": 0.001,
+    "seed": 42,
+    "retained_kspace_pct": 32.0
+  },
+  "mismatch_sweep": [
+    {
+      "mismatch_pct": 1.0,
+      "scenario_i": {
+        "psnr": 52.11
+      },
+      "scenario_ii": {
+        "psnr": 50.91
+      },
+      "scenario_iii": {
+        "psnr": 51.48
+      },
+      "scenario_iv": {
+        "psnr": 52.11
+      },
+      "gain_iii_dB": 0.58,
+      "degradation_dB": 1.2
+    },
+    {
+      "mismatch_pct": 2.0,
+      "scenario_i": {
+        "psnr": 52.11
+      },
+      "scenario_ii": {
+        "psnr": 49.4
+      },
+      "scenario_iii": {
+        "psnr": 48.72
+      },
+      "scenario_iv": {
+        "psnr": 52.11
+      },
+      "gain_iii_dB": -0.68,
+      "degradation_dB": 2.71
+    },
+    {
+      "mismatch_pct": 3.0,
+      "scenario_i": {
+        "psnr": 52.11
+      },
+      "scenario_ii": {
+        "psnr": 47.96
+      },
+      "scenario_iii": {
+        "psnr": 49.72
+      },
+      "scenario_iv": {
+        "psnr": 52.11
+      },
+      "gain_iii_dB": 1.75,
+      "degradation_dB": 4.15
+    },
+    {
+      "mismatch_pct": 5.0,
+      "scenario_i": {
+        "psnr": 52.11
+      },
+      "scenario_ii": {
+        "psnr": 40.91
+      },
+      "scenario_iii": {
+        "psnr": 48.05
+      },
+      "scenario_iv": {
+        "psnr": 52.11
+      },
+      "gain_iii_dB": 7.14,
+      "degradation_dB": 11.2
+    },
+    {
+      "mismatch_pct": 10.0,
+      "scenario_i": {
+        "psnr": 52.11
+      },
+      "scenario_ii": {
+        "psnr": 38.21
+      },
+      "scenario_iii": {
+        "psnr": 41.74
+      },
+      "scenario_iv": {
+        "psnr": 52.11
+      },
+      "gain_iii_dB": 3.52,
+      "degradation_dB": 13.9
+    },
+    {
+      "mismatch_pct": 15.0,
+      "scenario_i": {
+        "psnr": 52.11
+      },
+      "scenario_ii": {
+        "psnr": 32.97
+      },
+      "scenario_iii": {
+        "psnr": 36.25
+      },
+      "scenario_iv": {
+        "psnr": 52.11
+      },
+      "gain_iii_dB": 3.28,
+      "degradation_dB": 19.14
+    }
+  ],
+  "clinical_summary": {
+    "mismatch_range_pct": "2-3",
+    "mean_gain_dB": 0.53,
+    "mean_recovery_pct": 8.6
+  },
+  "extreme_summary": {
+    "mismatch_range_pct": "10-15",
+    "mean_gain_dB": 3.4
+  }
+}

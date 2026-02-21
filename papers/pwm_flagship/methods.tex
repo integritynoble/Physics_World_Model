@@ -546,6 +546,16 @@ $k$-space lines acquired).  Mismatch is parameterized as a 5\% multiplicative
 error in the coil sensitivity maps used for parallel imaging reconstruction.
 The default solver is SENSE~\cite{pruessmann1999sense} with $\ell_1$-wavelet regularization.
 
+\paragraph{ESPIRiT comparison protocol.}
+To quantitatively compare PWM with ESPIRiT~\cite{uecker2014espirit}, we evaluate
+four conditions on the same multi-coil MRI configuration: (1)~Scenario~I (true maps),
+(2)~Scenario~II (5\% mismatched maps), (3)~ESPIRiT auto-calibrated maps estimated
+from the 24-line ACS region via eigenvalue decomposition of the calibration matrix,
+and (4)~PWM beam-search corrected maps (grid search over per-coil amplitude and phase
+scaling). All four conditions use the same CG-SENSE solver ($\ell = 10^{-3}$, 30~iterations).
+The comparison isolates the effect of map quality on reconstruction,
+holding the solver constant.
+
 \paragraph{CT configuration.}
 Fan-beam geometry with 180 projections over $180^\circ$.  Mismatch is
 modeled as a center-of-rotation (CoR) offset, which produces
