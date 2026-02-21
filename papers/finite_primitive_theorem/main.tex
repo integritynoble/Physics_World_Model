@@ -75,7 +75,7 @@ The factorization of imaging operators into elementary components has a long his
 The classical universal approximation theorem for neural networks~\cite{cybenko1989approximation,hornik1991approximation} establishes that a single hidden layer of sigmoidal units can approximate any continuous function. Our result is fundamentally different: we show that 10 \emph{physically typed} primitives---each corresponding to a distinct physical process---suffice to represent all imaging forward models, not via parameter tuning of a generic architecture, but via structured composition guided by the underlying physics. The typed DAG structure preserves physical interpretability that a universal approximator discards.
 
 \paragraph{Computational graphs and domain-specific languages.}
-Computational graph frameworks (TensorFlow~\cite{abadi2016tensorflow}, PyTorch~\cite{paszke2019pytorch}, JAX~\cite{bradbury2018jax}) represent computations as DAGs of differentiable operations. DeepInverse~\cite{tachella2023deepinverse} specializes this paradigm to inverse problems. Our work can be viewed as proving a \emph{completeness} result for a physics-specific computational graph: the 10-node primitive library is sufficient to express any Tier-2 imaging forward model, in contrast to general-purpose frameworks whose operation sets are chosen for computational convenience rather than physical completeness.
+Computational graph frameworks (TensorFlow~\cite{abadi2016tensorflow}, PyTorch~\cite{paszke2019pytorch}, JAX~\cite{bradbury2018jax}) represent computations as DAGs of differentiable operations. The DeepInverse library~\cite{tachella2025deepinverse} specializes this paradigm to imaging inverse problems. Our work can be viewed as proving a \emph{completeness} result for a physics-specific computational graph: the 10-node primitive library is sufficient to express any Tier-2 imaging forward model, in contrast to general-purpose frameworks whose operation sets are chosen for computational convenience rather than physical completeness.
 
 \paragraph{Compressive sensing and measurement design.}
 The theory of compressive sensing~\cite{candes2008compressed,donoho2006compressed} establishes conditions on measurement matrices (RIP, incoherence) for signal recovery. Our work is complementary: rather than analyzing properties of a given measurement matrix, we characterize the \emph{structural} decomposition of the forward operator that generates the measurements, showing that its physics-level building blocks form a finite alphabet.
@@ -310,7 +310,7 @@ Models with strong nonlinearity (e.g., nonlinear ultrasound, full-wave electroma
 %% ═══════════════════════════════════════════════════════════════════
 %%  5. THEOREM 1: STATEMENT AND PROOF
 %% ═══════════════════════════════════════════════════════════════════
-\section{Theorem 1: Statement and Proof}
+\section{The Finite Primitive Basis Theorem}
 \label{sec:theorem}
 
 \subsection{$\varepsilon$-Approximate Representation}
@@ -558,7 +558,7 @@ Table~\ref{tab:closure} reports the fidelity error for each held-out and exotic 
 
 \begin{table}[htbp]
 \centering
-\caption{Held-out closure test results. All modalities achieve $\etier < 0.01$ with the frozen primitive library (10 primitives), except Compton which motivated the addition of Scatter ($R$).} \label{tab:closure}
+\caption{Held-out closure test results. All modalities achieve $\etier < 0.01$ with the frozen 9-primitive library; Compton's failure ($\etier = 0.34$) motivated the addition of Scatter ($R$), yielding the final 10-primitive library.} \label{tab:closure}
 \begin{tabular}{l c c c}
 \toprule
 \textbf{Modality} & $\etier$ & \textbf{\#Nodes / Depth} & \textbf{New Prim.?} \\
