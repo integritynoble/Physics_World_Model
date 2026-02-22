@@ -1,4 +1,6 @@
-# LIP-Arena: PWM's Built-in Evaluation Harness
+# LIP Arena: PWM's Built-in Evaluation Harness
+
+**LIP = Living Imaging Physics**
 
 **The Targeting System for Imaging System Autonomy (ISA)**
 
@@ -6,21 +8,21 @@
 >
 > -- Design spine derived from the [SolveEverything](https://solveeverything.org/) blueprint (Wissner-Gross & Diamandis) and the Industrial Intelligence Stack
 
-**Design Provenance.** LIP-Arena operationalizes three core SolveEverything principles for the imaging domain:
+**Design Provenance.** LIP Arena operationalizes three core SolveEverything principles for the imaging domain:
 
-| SolveEverything Principle | LIP-Arena Implementation |
+| SolveEverything Principle | LIP Arena Implementation |
 |--------------------------|--------------------------|
 | **Targeting Authorities** -- publicly funded leaderboards that use "blinded clears" (unseen test questions) to rank systems | Commit-Measure-Score protocol: prospective measurements generated *after* submission deadline; leaderboard ranked by prospective-dominated score ($0.7 \times S_{\text{prospective}}$) |
-| **Decision Records for AI Systems (DR-AIS)** -- permanent, auditable logs of every AI decision | Decision Records for Imaging Systems (DR-IS): every calibration action logged with evidence, gate attribution, confidence, compute consumed, and SHA-256 hash (Section 6.3) |
-| **Outcome-Based Procurement** -- pay for verified results, not effort or promises | Anti-Goodhart scoring: gaming penalized, recovery ratio $\rho$ and RoIC (dB/GPU-hr) are the currency; submissions must be right *for the right reasons* (Section 5) |
+| **Decision Records for AI Systems (DR-AIS)** -- permanent, auditable logs of every AI decision | Decision Records for Imaging Systems (DR-IS): every calibration action logged with evidence, gate attribution, confidence, compute consumed, and SHA-256 hash (Section 7.3) |
+| **Outcome-Based Procurement** -- pay for verified results, not effort or promises | Anti-Goodhart scoring: gaming penalized, recovery ratio $\rho$ and RoIC (dB/GPU-hr) are the currency; submissions must be right *for the right reasons* (Section 6) |
 
-LIP-Arena is the first domain-specific instantiation of the SolveEverything targeting authority pattern.
+LIP Arena is the first domain-specific instantiation of the SolveEverything targeting authority pattern.
 
 ---
 
-## 1. What LIP-Arena Is
+## 1. What LIP Arena Is
 
-LIP-Arena is PWM's built-in evaluation harness (Layer 4 of the Industrial Intelligence Stack). It is **not** a separate system and **not** a static benchmark. It ships with PWM, runs locally via `pwm evaluate`, and continuously stress-tests every claim Imaging System Autonomy makes using a live, prospective, adversarial protocol.
+LIP (Living Imaging Physics) Arena is PWM's built-in evaluation harness (Layer 4 of the Industrial Intelligence Stack). It is **not** a separate system and **not** a static benchmark. It ships with PWM, runs locally via `pwm evaluate`, and continuously stress-tests every claim Imaging System Autonomy makes using a live, prospective, adversarial protocol.
 
 ```bash
 # Score any method against the built-in harness
@@ -28,9 +30,9 @@ pwm evaluate --method my_solver --modality cassi --track correct
 pwm evaluate --method gap_tv --modality spc --track no-gt
 ```
 
-**"Live"** encodes the core SolveEverything principle: measurements are created *after* the submission deadline. No memorization. No overfitting. No gaming.
+**"Living"** encodes the core SolveEverything principle: measurements are created *after* the submission deadline. The physics is alive -- drifting, shifting, surprising. No memorization. No overfitting. No gaming.
 
-LIP-Arena guarantees two properties:
+LIP Arena guarantees two properties:
 
 | Property | Mechanism |
 |----------|-----------|
@@ -41,92 +43,51 @@ Everything else -- tracks, scoring, governance -- exists to enforce these two pr
 
 ---
 
-## 2. The Commit-Measure-Score Protocol
+## 2. Two Parallel Evaluation Modes
 
-This is the core innovation. Instead of releasing static datasets, LIP-Arena runs **measurement drops** where the test data is generated *after* submissions are locked.
-
-```
-  ┌─────────────────────────────────────────────────────────────┐
-  │                  LIP-Arena Round (Quarterly)                │
-  ├─────────────┬──────────────────┬────────────┬───────────────┤
-  │  Phase 1    │  Phase 2         │  Phase 3   │  Phase 4      │
-  │  COMMIT     │  MEASURE         │  EXECUTE   │  SCORE        │
-  │  (2 weeks)  │  (2 weeks)       │  (1 week)  │  (1 week)     │
-  ├─────────────┼──────────────────┼────────────┼───────────────┤
-  │ Teams       │ Custodians       │ Sealed     │ Automated     │
-  │ submit      │ generate NEW     │ environment│ scoring +     │
-  │ containers  │ measurements     │ runs all   │ publication   │
-  │ + declared  │ from live labs   │ submissions│ of all        │
-  │ compute     │ and sealed       │ on new     │ RunBundles    │
-  │ budget      │ simulators       │ data       │ and scores    │
-  └─────────────┴──────────────────┴────────────┴───────────────┘
-       │                │                │              │
-       │  DEADLINE      │  DATA CREATED  │  NO HUMAN    │  ALL RESULTS
-       │  (frozen)      │  (post-commit) │  IN THE LOOP │  PUBLIC
-```
-
-### Phase 1: Commit
-
-Method submissions include:
-- **Container image** with the full pipeline (inference, calibration, reconstruction, diagnosis)
-- **Declared compute budget** (GPU-hours, peak memory, wall-clock limit per scenario)
-- **Operator family declarations** (which OperatorGraph families the method claims to handle)
-
-After the deadline, submissions are cryptographically sealed. No modifications permitted.
-
-### Phase 2: Measure
-
-The PWM harness generates new measurement sets from two sources:
-
-**(A) Live-Lab Prospective Sets**
-
-Partner labs capture new physical measurements after the commit deadline:
-- Bead scans, resolution targets, tissue phantoms, spectral calibration scenes
-- Measurement recipes and hardware IDs hidden until after scoring
-- Labs rotate each round to prevent lab-specific overfitting
-- Physical hardware drift is real (not simulated) -- the hardest test
-
-**(B) Sealed-Simulator Prospective Sets**
-
-The same public OperatorGraph families, but with new random seeds and parameter draws generated post-deadline:
-- Mismatch parameters drawn from declared tolerance envelopes (with adversarial tails -- see Red Team)
-- Scene content drawn from held-out image databases
-- Noise realizations freshly sampled
-- The sealed simulator ships with PWM but runs sandboxed; only the measurement outputs are used for scoring
-
-Both sources are used every round. A submission must perform well on both to rank.
-
-### 2.1 Instant Mode: Real-Time Submission and Evaluation
-
-LIP-Arena operates in two complementary modes. The quarterly Commit-Measure-Score protocol (above) is the **Full Round Mode** -- authoritative, includes live-lab data, and carries Red Team adversarial injection. **Instant Mode** is the always-available, real-time complement: sealed-simulator only, results on LIP within minutes.
+LIP Arena operates in two complementary modes. Both enforce the same core guarantee -- submissions are sealed before test data exists -- but they differ in scope, turnaround, and authority. A submission to either mode produces the same artifacts (RunBundle, TriadReport, operator estimate) and uses the same 4-Scenario Protocol.
 
 ```
-  ┌──────────────────────────────────────────────────────────────────┐
-  │                  Instant Mode (Available 24/7)                   │
-  ├───────────────┬─────────────────┬──────────────┬─────────────────┤
-  │  Step 1       │  Step 2         │  Step 3      │  Step 4         │
-  │  SUBMIT       │  GENERATE       │  EXECUTE     │  PUBLISH        │
-  │  (~seconds)   │  (~1 min)       │  (~5-30 min) │  (~seconds)     │
-  ├───────────────┼─────────────────┼──────────────┼─────────────────┤
-  │ Container     │ Sealed simulator│ Sandboxed    │ Scores +        │
-  │ uploaded +    │ draws fresh     │ environment  │ RunBundle        │
-  │ SHA-256       │ seeds, params,  │ runs 4-      │ published to    │
-  │ sealed        │ scenes, noise   │ Scenario     │ LIP leaderboard │
-  │ immediately   │ (post-seal)     │ Protocol     │ (locked result) │
-  └───────────────┴─────────────────┴──────────────┴─────────────────┘
-       │                │                │              │
-       │  LOCKED        │  FRESH DATA    │  NO HUMAN    │  RESULTS ON
-       │  (immutable)   │  (never seen)  │  IN THE LOOP │  LIP IN MINUTES
+  ┌───────────────────────────────────────────────────────────────────────────┐
+  │                         LIP Arena: Two Modes                             │
+  ├─────────────────────────────────┬─────────────────────────────────────────┤
+  │       INSTANT MODE              │         FULL ROUND MODE                 │
+  │       (Available 24/7)          │         (Quarterly)                     │
+  ├─────────────────────────────────┼─────────────────────────────────────────┤
+  │                                 │                                         │
+  │  SUBMIT ──► GENERATE ──► RUN   │  COMMIT ──► MEASURE ──► EXECUTE ──► SCORE│
+  │  (~sec)     (~1 min)   (~5-30m)│  (2 wk)    (2 wk)     (1 wk)    (1 wk) │
+  │                                 │                                         │
+  │  Sealed simulator only          │  Sealed simulator + live-lab data       │
+  │  Standard tolerance envelopes   │  Red Team adversarial injection         │
+  │  Results on LIP in minutes      │  Authoritative ranking                  │
+  │  Rolling, always-on             │  Quarterly schedule with audits         │
+  │                                 │                                         │
+  │  PWM re-evaluated on every      │  All RunBundles published               │
+  │  submission's test set          │  Failure taxonomy updated               │
+  │  (no stale baselines)           │  Retired scenarios become training data │
+  └─────────────────────────────────┴─────────────────────────────────────────┘
 ```
+
+| Property | Instant Mode | Full Round Mode |
+|----------|-------------|-----------------|
+| Availability | 24/7, on-demand | Quarterly schedule |
+| Data source | Sealed simulator only | Sealed simulator + live-lab |
+| Red Team injection | Standard tolerance envelopes | Adversarial escalation schedule |
+| Turnaround | Minutes to ~1 hour | 6 weeks (full protocol) |
+| Leaderboard weight | Separate instant leaderboard | Authoritative ranking ($0.3 S_{\text{retro}} + 0.7 S_{\text{prospective}}$) |
+| Use case | Development iteration, CI/CD, rolling baseline | Publication-grade evaluation, official ranking |
+
+### Instant Mode
+
+Instant Mode is the always-available, real-time evaluation path. After submission, the container is locked, fresh prospective data is generated, the 4-Scenario Protocol runs, and results appear on the LIP leaderboard -- all within minutes.
 
 **How it works:**
 
-1. **Submit.** Team uploads a container image to LIP-Arena. The container is SHA-256 sealed on receipt. No further modifications.
+1. **Submit.** Team uploads a container image. The container is SHA-256 sealed on receipt. No further modifications.
 2. **Generate.** The sealed simulator immediately draws fresh random seeds, mismatch parameters (from declared tolerance envelopes), scene content (from held-out databases), and noise realizations. All generated *after* the seal -- memorization is impossible.
 3. **Execute.** The container runs in a sandboxed environment with no network access. The full 4-Scenario Protocol executes across all declared modalities. Compute budget enforced.
 4. **Publish.** Scores, RunBundles, and TriadReports appear on the LIP leaderboard. The result is locked and timestamped. PWM's own rolling baseline is always present for comparison.
-
-**CLI interface:**
 
 ```bash
 # Submit to Instant Mode (single modality)
@@ -154,22 +115,44 @@ pwm leaderboard --mode full    --round 2026-Q3
 | Ptychography | I-IV, per scan | ~10 min | Phase retrieval iterations |
 | MRI | I-IV, per slice | ~4 min | Multi-coil SENSE + correction |
 | Lensless | I-IV, per scene | ~5 min | PSF deconvolution |
-| **All 7 modalities** | **Full suite** | **~45 min** | **Parallelizable across GPUs** |
+| **All 7 validated** | **Full suite** | **~45 min** | **Parallelizable across GPUs** |
 
-**Instant vs Full Round:**
+### Full Round Mode
 
-| Property | Instant Mode | Full Round Mode |
-|----------|-------------|-----------------|
-| Availability | 24/7, on-demand | Quarterly schedule |
-| Data source | Sealed simulator only | Sealed simulator + live-lab |
-| Red Team injection | Standard tolerance envelopes | Adversarial escalation schedule |
-| Turnaround | Minutes to ~1 hour | 6 weeks (full protocol) |
-| Leaderboard weight | Separate instant leaderboard | Authoritative ranking ($0.3 S_{\text{retro}} + 0.7 S_{\text{prospective}}$) |
-| Use case | Development iteration, CI/CD, rolling baseline | Publication-grade evaluation, official ranking |
+Full Round Mode is the quarterly, authoritative evaluation. It adds live-lab data from partner labs and Red Team adversarial injection on top of the sealed-simulator sets.
 
-**Rolling baseline guarantee:** PWM's own latest system is automatically re-evaluated on every Instant Mode submission's test set. This means the leaderboard always shows a head-to-head comparison against the current PWM default -- no stale baselines.
+**Phase 1: Commit (2 weeks)**
 
-### Phase 3: Execute
+Method submissions include:
+- **Container image** with the full pipeline (inference, calibration, reconstruction, diagnosis)
+- **Declared compute budget** (GPU-hours, peak memory, wall-clock limit per scenario)
+- **Operator family declarations** (which OperatorGraph families the method claims to handle)
+
+After the deadline, submissions are cryptographically sealed. No modifications permitted.
+
+**Phase 2: Measure (2 weeks)**
+
+The PWM harness generates new measurement sets from two sources:
+
+**(A) Live-Lab Prospective Sets**
+
+Partner labs capture new physical measurements after the commit deadline:
+- Bead scans, resolution targets, tissue phantoms, spectral calibration scenes
+- Measurement recipes and hardware IDs hidden until after scoring
+- Labs rotate each round to prevent lab-specific overfitting
+- Physical hardware drift is real (not simulated) -- the hardest test
+
+**(B) Sealed-Simulator Prospective Sets**
+
+The same public OperatorGraph families, but with new random seeds and parameter draws generated post-deadline:
+- Mismatch parameters drawn from declared tolerance envelopes (with adversarial tails -- see Red Team)
+- Scene content drawn from held-out image databases
+- Noise realizations freshly sampled
+- The sealed simulator ships with PWM but runs sandboxed; only the measurement outputs are used for scoring
+
+Both sources are used every round. A submission must perform well on both to rank.
+
+**Phase 3: Execute (1 week)**
 
 All submissions run in a sealed compute environment:
 - No network access
@@ -177,7 +160,7 @@ All submissions run in a sealed compute environment:
 - Compute budgets strictly enforced (exceeding 2x budget = disqualification for that scenario)
 - All outputs captured: reconstruction, operator estimate, TriadReport, RunBundle
 
-### Phase 4: Score
+**Phase 4: Score (1 week)**
 
 Fully automated -- no committee, no subjective review:
 - Scores computed against held-out ground truth (Track 1, 2) or consistency metrics (Track 3)
@@ -190,7 +173,7 @@ Fully automated -- no committee, no subjective review:
 
 ## 3. Evaluation Tracks
 
-Four tracks, each prospective and adversarial by default.
+Four tracks, each prospective and adversarial by default. Both Instant Mode and Full Round Mode support all four tracks.
 
 ### Track 1: Correct (Live Drift Correction)
 
@@ -302,111 +285,46 @@ Four tracks, each prospective and adversarial by default.
 
 ---
 
-## 3A. Per-Modality Dataset Registry
+## 4. Modality Coverage
 
-Every LIP-Arena evaluation -- Instant Mode or Full Round -- draws from a curated registry of benchmark and experimental datasets. Each modality has both a **simulation benchmark** (for sealed-simulator prospective sets) and **real/experimental data** (for live-lab prospective sets and hardware validation). These datasets are grounded in the PWM flagship paper's validated results.
+PWM registers **64 imaging modalities** across 13 categories. The complete registry with IDs, forward model types, default solvers, and validation status is maintained in a dedicated document:
 
-### Optical Photon Modalities
+> **[imaging_modalities.md](imaging_modalities.md)** -- Full 64-modality registry
 
-**CASSI (Coded Aperture Snapshot Spectral Imaging)**
+LIP Arena can evaluate any registered modality via `pwm evaluate --modality <id>`. The framework is universal: all 64 modalities share the same OperatorGraph IR, the same 11 physical primitives, the same Triad decomposition, and the same 4-Scenario Protocol.
 
-| Dataset | Type | Resolution | Details | Source |
-|---------|------|-----------|---------|--------|
-| KAIST TSA | Simulation benchmark | 256 x 256 x 28 | 10 hyperspectral scenes, 450-650 nm, 28 spectral bands | Public (TSA dataset) |
-| TSA Real Data | Experimental | 660 x 660 x 28 | 5 real scenes from DD-CASSI prototype, hardware-calibrated mask, step=2 | Public (TSA real) |
+### Currently Validated (7 modalities)
 
-Mismatch parameters (5-param family): mask translation $\Delta x$, $\Delta y$ (px); mask rotation $\theta$ (deg); dispersion slope $a_1$ (px/band); dispersion axis offset $\alpha$ (deg).
+These modalities have completed the full 4-Scenario Protocol with flagship paper results and form the LIP Arena rolling baseline:
 
-**CACTI (Coded Aperture Compressive Temporal Imaging)**
+| Modality | Category | Carrier | Example Mismatch Parameters |
+|----------|----------|---------|---------------------------|
+| **CASSI** | Compressive | Optical photon | Mask shift $\Delta x$, $\Delta y$; rotation $\theta$; dispersion slope $a_1$; axis offset $\alpha$ (5 params) |
+| **CACTI** | Compressive | Optical photon | Spatial shifts; rotation; temporal clock; duty cycle; gain; offset; noise (8 params) |
+| **SPC** | Compressive | Optical photon | Exponential gain drift $\alpha$; measurement noise $\sigma_y$ (2 params) |
+| **Lensless** | Comp. Photography | Optical photon | PSF shift; scale drift; defocus offset (3+ params) |
+| **CT** | Medical | X-ray photon | Center-of-rotation offset; angular offset; detector tilt; beam hardening (3+ params) |
+| **Ptychography** | Coherent | Electron | Probe position error; defocus; aberration coefficients (3+ params) |
+| **MRI** | Medical | Nuclear spin/RF | Coil sensitivity error; k-space trajectory; off-resonance phase (3+ params) |
 
-| Dataset | Type | Resolution | Details | Source |
-|---------|------|-----------|---------|--------|
-| Standard benchmark videos | Simulation benchmark | 256 x 256 x 8 | 6 videos: *kobe, traffic, runner, drop, crash, aerial*; 8 temporal frames | Public |
-| EfficientSCI Real Data | Experimental | 512 x 512, cr=10 | 4 scenes: *duomino, hand, pendulumBall, waterBalloon*; time-varying mask | Public (EfficientSCI) |
+### Expansion Roadmap
 
-Mismatch parameters (8-param family): spatial shifts $dx$, $dy$ (px); rotation $\theta$ (deg); temporal clock offset $\Delta t$; duty cycle $\eta$; detector gain $g$; detector offset $o$; noise $\sigma_n$.
+| Phase | Timeline | Target Modalities | Examples |
+|-------|----------|-------------------|---------|
+| A | 0-6 months | 7 validated | CASSI, CACTI, SPC, CT, Ptychography, MRI, Lensless |
+| B | 6-12 months | 10+ | Add OCT, Photoacoustic, SIM, Ultrasound |
+| C | 12-24 months | 20+ | Add PET, SPECT, Holography, NeRF, SEM, TEM, SAR |
+| D | 24+ months | 64 (all registered) | Full registry, all categories, hardware-in-the-loop |
 
-**SPC (Single-Pixel Camera)**
-
-| Dataset | Type | Resolution | Details | Source |
-|---------|------|-----------|---------|--------|
-| Set11 | Simulation benchmark | 256 x 256 | 11 images: *Monarch, Parrots, barbara, boats, cameraman, fingerprint, flinstones, foreman, house, lena256, peppers256*; 25% sampling ratio | Public |
-
-Mismatch parameters (2-param family): exponential gain drift $\alpha$ (decay rate); measurement noise $\sigma_y$.
-
-**Lensless Imaging**
-
-| Dataset | Type | Resolution | Details | Source |
-|---------|------|-----------|---------|--------|
-| DiffuserCam benchmark | Simulation benchmark | 256 x 256 | PSF-based forward model with calibrated diffuser pattern | Public |
-
-Mismatch parameters: PSF shift $\Delta x$, $\Delta y$ (px); PSF scale drift; defocus offset $\Delta z$.
-
-### X-Ray Photon Modalities
-
-**CT (Computed Tomography)**
-
-| Dataset | Type | Resolution | Details | Source |
-|---------|------|-----------|---------|--------|
-| FIPS Walnut Micro-CT | Experimental | 1200 proj x 2296 det | Walnut micro-CT sinograms, full-angle acquisition | Zenodo |
-| Helsinki Tomography Challenge 2022 | Experimental | 721 proj x 560 det | Limited-angle CT challenge data | Zenodo |
-
-Mismatch parameters: center-of-rotation offset $\Delta r$ (px); angular offset $\Delta \phi$ (deg); detector tilt; beam hardening coefficient.
-
-### Electron Modalities
-
-**Ptychography (Electron Phase Imaging)**
-
-| Dataset | Type | Resolution | Details | Source |
-|---------|------|-----------|---------|--------|
-| 4D-STEM SrTiO3 [001] | Experimental | 128 x 128 scan | 300 kV, atomic-resolution phase imaging | Zenodo 5113449 |
-
-Mismatch parameters: probe position error $\Delta x$, $\Delta y$ (pm); defocus offset $\Delta C_1$ (nm); aberration coefficients $C_s$.
-
-### Nuclear Spin Modalities
-
-**MRI (Magnetic Resonance Imaging)**
-
-| Dataset | Type | Resolution | Details | Source |
-|---------|------|-----------|---------|--------|
-| M4Raw Multi-Coil Brain | Experimental | 256 x 256, 4 coils | Brain k-space, tested at R=2 and R=4 acceleration | Zenodo 8056074 |
-
-Mismatch parameters: coil sensitivity map error; k-space trajectory deviation; off-resonance phase $\Delta B_0$; acceleration factor.
-
-### Dataset Registry Summary
-
-| Modality | Carrier | Sim Benchmark | Real/Exp Data | # Mismatch Params | Validated in Flagship |
-|----------|---------|---------------|---------------|-------------------|-----------------------|
-| CASSI | Optical photon | KAIST TSA (10 scenes) | TSA Real (5 scenes) | 5 | Yes (Table 1) |
-| CACTI | Optical photon | 6 standard videos | EfficientSCI (4 scenes) | 8 | Yes (Table 1) |
-| SPC | Optical photon | Set11 (11 images) | -- | 2 | Yes (Table 1) |
-| Lensless | Optical photon | DiffuserCam | -- | 3+ | Yes (Table 1) |
-| CT | X-ray photon | -- | FIPS + Helsinki | 3+ | Yes (Table 1) |
-| Ptychography | Electron | -- | 4D-STEM SrTiO3 | 3+ | Yes (Table 1) |
-| MRI | Nuclear spin/RF | Synthetic 8-coil | M4Raw (4 coils) | 3+ | Yes (Table 1) |
-
-**Phase 2 expansion targets** (registered in `modalities.yaml` but not yet validated with 4-Scenario Protocol):
-
-| Modality | Carrier | Target Dataset | Status |
-|----------|---------|---------------|--------|
-| OCT | Optical photon | Public retinal OCT | Planned |
-| Photoacoustic | Optical + acoustic | Synthetic phantoms | Planned |
-| SIM | Optical photon | BioSR benchmark | Planned |
-| Phase-contrast X-ray | X-ray photon | Synchrotron data | Planned |
-| Ghost imaging | Quantum photon | Synthetic | Planned |
-| THz-TDS | THz photon | Spectroscopy database | Planned |
-| Ultrasound | Acoustic | PICMUS benchmark | Planned |
-| SAR | RF | Public SAR datasets | Planned |
-
-The sealed simulator draws scenes from each modality's benchmark dataset with fresh random seeds and mismatch parameters drawn from the declared tolerance envelopes. For Instant Mode, only simulation benchmarks are used. For Full Round Mode, both simulation and experimental/live-lab datasets contribute.
+Any registered modality can be submitted to Instant Mode today via the sealed simulator -- validation status only affects whether flagship-paper baselines exist for comparison. A researcher working on SEM or Doppler Ultrasound can still submit, receive scores, and appear on the LIP leaderboard; the modality simply won't have an established rolling baseline until formal validation is complete.
 
 ---
 
-## 4. The Red Team Module
+## 5. The Red Team Module
 
 A dedicated, funded adversarial layer whose **only job** is to break submissions every round. This implements SolveEverything's principle: "hire experts / other AIs to try to trick or game the system."
 
-The Red Team operates independently from the evaluation track custodians. It has its own budget and mandate.
+The Red Team operates independently from the evaluation track custodians. It has its own budget and mandate. Red Team injection applies to Full Round Mode; Instant Mode uses standard tolerance envelopes.
 
 ### Red Team Injection Categories
 
@@ -445,11 +363,11 @@ This is how the benchmark evolves. The failure taxonomy is a public good.
 
 ---
 
-## 5. Anti-Goodhart Scoring
+## 6. Anti-Goodhart Scoring
 
-Standard benchmarks die from Goodhart's Law: "when a measure becomes a target, it ceases to be a good measure." LIP-Arena prevents this through two mechanisms.
+Standard benchmarks die from Goodhart's Law: "when a measure becomes a target, it ceases to be a good measure." LIP Arena prevents this through two mechanisms.
 
-### 5.1 Prospective Dominance
+### 6.1 Prospective Dominance
 
 Every submission receives two scores:
 
@@ -464,7 +382,7 @@ $$S_{\text{rank}} = 0.3 \times S_{\text{retro}} + 0.7 \times S_{\text{prospectiv
 
 A system that scores 95% retrospective but 60% prospective will rank below a system that scores 80% on both. This makes memorization and overfitting to public data a losing strategy.
 
-### 5.2 Gaming Penalty
+### 6.2 Gaming Penalty
 
 If a method improves reconstruction quality (PSNR) but fails integrity checks, it **loses ranking**. This prevents metric hacking.
 
@@ -480,7 +398,7 @@ A submission is penalized when any of the following checks fail:
 
 **Net effect**: You must be right **for the right reasons**. A high-PSNR reconstruction with wrong diagnosis, overconfident uncertainty, or missing artifacts scores worse than a moderate-PSNR reconstruction with correct, calibrated, complete outputs.
 
-### 5.3 Composite Track Scores
+### 6.3 Composite Track Scores
 
 After prospective dominance weighting and gaming penalties:
 
@@ -490,11 +408,11 @@ Track 1 (Correct) weighted highest: the core ISA capability. Track 3 (No-GT) wei
 
 ---
 
-## 6. Governance and Reproducibility
+## 7. Governance and Reproducibility
 
-LIP-Arena is infrastructure, not a one-off competition. It must operate as a utility.
+LIP Arena is infrastructure, not a one-off competition. It must operate as a utility.
 
-### 6.1 Submission Requirements
+### 7.1 Submission Requirements
 
 | Requirement | Specification |
 |-------------|--------------|
@@ -504,9 +422,9 @@ LIP-Arena is infrastructure, not a one-off competition. It must operate as a uti
 | **Immutable RunBundle** | SHA-256 hash of complete output bundle (inputs, state, trajectory, outputs) |
 | **Reproducibility guarantee** | Same container + same input must produce bit-identical output |
 
-### 6.2 Round Reports
+### 7.2 Round Reports
 
-After every round, LIP-Arena publishes:
+After every Full Round, LIP Arena publishes:
 
 | Report Component | Purpose |
 |-----------------|---------|
@@ -517,7 +435,9 @@ After every round, LIP-Arena publishes:
 | **Counterfactual pack update** | New adversarial scenarios added to public training pool |
 | **RoIC leaderboard** | dB per GPU-hour per modality -- efficiency tracking |
 
-### 6.3 Decision Records for Imaging Systems (DR-IS)
+Instant Mode publishes scores and RunBundles immediately upon completion. Cumulative Instant Mode statistics are included in quarterly round reports.
+
+### 7.3 Decision Records for Imaging Systems (DR-IS)
 
 Every calibration decision within a submission is logged:
 
@@ -537,7 +457,7 @@ Every calibration decision within a submission is logged:
 
 DR-IS records are part of the RunBundle. They enable post-hoc audit of *how* a system reached its answer, not just *what* it answered.
 
-### 6.4 Safety Brakes
+### 7.4 Safety Brakes
 
 Pre-committed thresholds that trigger automatic flags. These are mechanical, not discretionary:
 
@@ -551,14 +471,14 @@ Pre-committed thresholds that trigger automatic flags. These are mechanical, not
 
 ---
 
-## 7. How LIP-Arena Maps to the Industrial Intelligence Stack
+## 8. How LIP Arena Maps to the Industrial Intelligence Stack
 
-| Stack Layer | LIP-Arena Component |
+| Stack Layer | LIP Arena Component |
 |-------------|-------------------|
 | 1. Purpose & Payoff | Recovery ratio $\geq 0.80$, oracle gap $\leq 2$ dB, RoIC tracked |
 | 2. Task Taxonomy | 4 tracks (Correct, Diagnose, No-GT, Design), each with atomic actions |
 | 3. Observability | RunBundle, DR-IS, TriadReport, RoIC dashboards |
-| **4. Targeting System** | **LIP-Arena module within PWM: Commit-Measure-Score protocol + Red Team; runs via `pwm evaluate`** |
+| **4. Targeting System** | **LIP Arena module within PWM: dual-mode (Instant + Full Round) Commit-Measure-Score protocol + Red Team; runs via `pwm evaluate` and `pwm submit`** |
 | 5. Model Layer | PWM's shipped default methods (current best) + submitted methods; the harness outlasts any individual method |
 | 6. Actuation | Corrected operators fed to reconstruction; future: hardware-in-the-loop |
 | 7. Verification | Red Team, DR-IS audit trail, gaming penalties, safety brakes |
@@ -567,11 +487,11 @@ Pre-committed thresholds that trigger automatic flags. These are mechanical, not
 
 ---
 
-## 8. Validated Baselines from the PWM Flagship Paper
+## 9. Validated Baselines from the PWM Flagship Paper
 
-LIP-Arena is grounded in empirically validated results from the PWM flagship paper. These serve as the **rolling baseline** -- the scores that every new submission must beat. PWM's own system is always a submission; the numbers below are its current performance.
+LIP Arena is grounded in empirically validated results from the PWM flagship paper. These serve as the **rolling baseline** -- the scores that every new submission must beat. PWM's own system is always a submission; the numbers below are its current performance.
 
-### 8.1 Correction Gains (PWM Rolling Baseline, Autonomous Grid-Search)
+### 9.1 Correction Gains (PWM Rolling Baseline, Autonomous Grid-Search)
 
 | Modality | Solver | Gain (dB) | 95% CI | Recovery $\rho$ | Cohen's $d$ | RoIC (dB/GPU-hr) |
 |----------|--------|-----------|--------|-----------------|-------------|-------------------|
@@ -585,7 +505,7 @@ LIP-Arena is grounded in empirically validated results from the PWM flagship pap
 
 **Interpretation:** Gain = $\text{PSNR}_{III} - \text{PSNR}_{II}$ (corrected vs mismatched). Recovery ratio $\rho = (\text{PSNR}_{III} - \text{PSNR}_{II}) / (\text{PSNR}_{I} - \text{PSNR}_{II})$. All CIs are 95% bootstrap over $B = 1{,}000$ resamples.
 
-### 8.2 Central Result: Gate 3 Dominance
+### 9.2 Central Result: Gate 3 Dominance
 
 The flagship paper's central empirical claim -- validated across all 7 modalities -- is:
 
@@ -593,9 +513,9 @@ The flagship paper's central empirical claim -- validated across all 7 modalitie
 >
 > Single-parameter operator correction recovers **more reconstruction quality** than the gap between a classical solver and a state-of-the-art deep network operating on the same mismatched operator.
 
-This means the LIP-Arena leaderboard will primarily differentiate submissions by their ability to **diagnose and correct operator mismatch** (Gate 3), not by the reconstruction algorithm alone. A classical solver with correct calibration beats a deep network with wrong calibration.
+This means the LIP Arena leaderboard will primarily differentiate submissions by their ability to **diagnose and correct operator mismatch** (Gate 3), not by the reconstruction algorithm alone. A classical solver with correct calibration beats a deep network with wrong calibration.
 
-### 8.3 Hardware Validation Baselines
+### 9.3 Hardware Validation Baselines
 
 Real-data experiments from the flagship paper establish the simulation-to-hardware gap:
 
@@ -608,7 +528,7 @@ Real-data experiments from the flagship paper establish the simulation-to-hardwa
 
 These gaps inform the sealed simulator's parameter ranges and Red Team injection severity.
 
-### 8.4 Acceptance Thresholds for LIP Leaderboard
+### 9.4 Acceptance Thresholds for LIP Leaderboard
 
 Based on the flagship paper's validated baselines, a submission must meet these minimum thresholds to appear on the LIP leaderboard:
 
@@ -622,25 +542,25 @@ Based on the flagship paper's validated baselines, a submission must meet these 
 
 ---
 
-## 9. Maturation of the Harness Itself
+## 10. Maturation of the Harness Itself
 
-LIP-Arena does not launch fully formed. It matures alongside PWM:
+LIP Arena does not launch fully formed. It matures alongside PWM:
 
 ### Phase A: Internal Harness (0-6 months)
 
 - All evaluation runs locally via `pwm evaluate`
 - Sealed-simulator prospective sets only (no partner labs yet)
-- 7 validated modalities (CASSI, CACTI, SPC, CT, Ptychography, MRI, Lensless) with datasets from Dataset Registry (Section 3A)
+- 7 validated modalities (CASSI, CACTI, SPC, CT, Ptychography, MRI, Lensless) with datasets from [imaging_modalities.md](imaging_modalities.md)
 - **Instant Mode available from day 1** -- `pwm submit --mode instant` for sealed-simulator evaluation; results on LIP within minutes
-- Rolling baseline seeded with flagship paper validated numbers (Section 8.1)
+- Rolling baseline seeded with flagship paper validated numbers (Section 9.1)
 - Red Team = PWM development team (adversarial self-testing)
 - Publish first 7 counterfactual packs (one per validated modality)
 - Establish Commit-Measure-Score tooling and Instant Mode infrastructure
 
 ### Phase B: Pilot External Rounds (6-12 months)
 
-- First live-lab partner (1-2 labs); live-lab prospective sets begin
-- 10+ modalities in sealed simulator (add OCT, Photoacoustic, SIM from Phase 2 targets)
+- First live-lab partner (1-2 labs); live-lab prospective sets begin; Full Round Mode operational
+- 10+ modalities in sealed simulator (add OCT, Photoacoustic, SIM, Ultrasound from expansion roadmap)
 - Independent Red Team budget allocated
 - PWM harness opened to third-party method submissions
 - Round reports published publicly
@@ -659,16 +579,17 @@ LIP-Arena does not launch fully formed. It matures alongside PWM:
 ### Phase D: Utility (24+ months)
 
 - **Instant Mode is the primary interface** -- rolling submissions replace quarterly as the default; Full Rounds become quarterly audits with live-lab + Red Team escalation
+- All 64 registered modalities active in sealed simulator
 - Hardware-in-the-loop scenarios (live instruments feed directly to Instant Mode pipeline)
-- LIP-Arena protocol extractable as a standalone standard; anyone can run an instance
-- Imaging calibration becomes a commodity evaluated by LIP-Arena scores
+- LIP Arena protocol extractable as a standalone standard; anyone can run an instance
+- Imaging calibration becomes a commodity evaluated by LIP Arena scores
 - Instant Mode turnaround target: < 15 minutes for single-modality, < 1 hour for full suite
 
 ---
 
-## 10. Summary: What Makes LIP-Arena Different
+## 11. Summary: What Makes LIP Arena Different
 
-| Traditional Benchmark | LIP-Arena |
+| Traditional Benchmark | LIP (Living Imaging Physics) Arena |
 |----------------------|-----------|
 | Static dataset released once | Prospective measurements generated after submission deadline |
 | Memorization possible | Memorization mechanically impossible |
@@ -680,15 +601,15 @@ LIP-Arena does not launch fully formed. It matures alongside PWM:
 | Wait weeks for results | Instant Mode: submit container, get scores on LIP in minutes |
 | Closed evaluation | Open round reports, public RunBundles, published failure taxonomies |
 | Benchmark separate from methods | Ships with the methods it evaluates |
-| Abstract -- no concrete baselines | Grounded in flagship paper: 7 modalities, validated $\rho$, CIs, Cohen's $d$ |
-| No dataset registry | Per-modality dataset registry with simulation + experimental data |
+| Handful of modalities | 64 registered modalities across 13 categories ([full registry](imaging_modalities.md)) |
+| Abstract -- no concrete baselines | Grounded in flagship paper: 7 validated modalities with $\rho$, CIs, Cohen's $d$ |
 | No design provenance | Built on [SolveEverything](https://solveeverything.org/) targeting authority pattern |
 
 **The harness ships with the agent. The counterfactual pack is built first; the model comes second. Install one repo, get both. This is how you industrialize imaging.**
 
 ---
 
-## 11. Submitting a New Method
+## 12. Submitting a New Method
 
 PWM ships with the current best methods. To replace one:
 
@@ -724,6 +645,6 @@ PWM ships with the current best methods. To replace one:
    pwm leaderboard --mode instant --modality cassi
    ```
 
-5. **Beat the current default** -- if your method achieves a higher recovery ratio, lower oracle gap, or better RoIC than the shipped default (Section 8.1 baselines) on the harness, it is a candidate to become the new default.
+5. **Beat the current default** -- if your method achieves a higher recovery ratio, lower oracle gap, or better RoIC than the shipped default (Section 9.1 baselines) on the harness, it is a candidate to become the new default.
 
 6. **Open a PR** -- submit your method with RunBundle artifacts and Instant Mode LIP scores demonstrating the improvement. The PR review verifies that the harness results are reproducible.
