@@ -1,0 +1,23 @@
+{
+  "modality": "holography",
+  "template_id": "holography_graph_v1",
+  "x_shape": [
+    32,
+    32
+  ],
+  "y_shape": [
+    32,
+    32
+  ],
+  "seed": 42,
+  "x_dtype": "float32",
+  "y_dtype": "float32",
+  "x_range": [
+    0.0,
+    0.9999999999853528
+  ],
+  "y_range": [
+    0.059768299577470305,
+    0.6952225551038803
+  ]
+}

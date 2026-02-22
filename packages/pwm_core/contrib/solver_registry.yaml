@@ -108,7 +108,7 @@ sim:
   traditional_cpu:
     name: Wiener-SIM
     module: pwm_core.recon.sim_solver
-    function: wiener_sim_2d
+    function: run_sim_reconstruction
     params: 0
     gpu: false
   best_quality:
@@ -172,7 +172,7 @@ spc:
   traditional_cpu:
     name: TVAL3
     module: pwm_core.recon.cs_solvers
-    function: tval3
+    function: run_tval3
     params: 0
     gpu: false
   best_quality:
@@ -231,7 +231,7 @@ lensless:
   traditional_cpu:
     name: ADMM-TV
     module: pwm_core.recon.lensless_solver
-    function: admm_tv_lensless
+    function: run_lensless
     params: 0
     gpu: false
     reference: "Antipa et al. 2018"
@@ -257,7 +257,7 @@ lightsheet:
   traditional_cpu:
     name: Fourier Notch Filter
     module: pwm_core.recon.lightsheet_solver
-    function: fourier_notch_destripe
+    function: run_lightsheet
     params: 0
     gpu: false
   best_quality:
@@ -283,7 +283,7 @@ ct:
   traditional_cpu:
     name: FBP
     module: pwm_core.recon.ct_solvers
-    function: fbp_2d
+    function: run_fbp
     params: 0
     gpu: false
   best_quality:
@@ -309,7 +309,7 @@ mri:
   traditional_cpu:
     name: SENSE
     module: pwm_core.recon.mri_solvers
-    function: sense_reconstruction
+    function: run_sense
     params: 0
     gpu: false
   best_quality:
@@ -336,7 +336,7 @@ ptychography:
   traditional_cpu:
     name: ePIE
     module: pwm_core.recon.ptychography_solver
-    function: epie
+    function: run_epie
     params: 0
     gpu: false
   best_quality:
@@ -503,7 +503,7 @@ light_field:
   traditional_cpu:
     name: Shift-and-Sum
     module: pwm_core.recon.light_field_solver
-    function: shift_and_sum_recon
+    function: run_light_field
     params: 0
     gpu: false
   best_quality:
@@ -530,7 +530,7 @@ dot:
   traditional_cpu:
     name: Born Approximation
     module: pwm_core.recon.dot_solver
-    function: born_approx_recon
+    function: run_dot
     params: 0
     gpu: false
   best_quality:
@@ -552,7 +552,7 @@ photoacoustic:
   traditional_cpu:
     name: Back Projection
     module: pwm_core.recon.photoacoustic_solver
-    function: back_projection_recon
+    function: run_photoacoustic
     params: 0
     gpu: false
   best_quality:
@@ -579,7 +579,7 @@ oct:
   traditional_cpu:
     name: FFT Recon
     module: pwm_core.recon.oct_solver
-    function: fft_recon
+    function: run_oct
     params: 0
     gpu: false
   best_quality:
@@ -606,7 +606,7 @@ flim:
   traditional_cpu:
     name: Phasor Analysis
     module: pwm_core.recon.flim_solver
-    function: phasor_recon
+    function: run_flim
     params: 0
     gpu: false
   best_quality:
@@ -633,7 +633,7 @@ phase_retrieval:
   traditional_cpu:
     name: HIO
     module: pwm_core.recon.phase_retrieval_solver
-    function: hio_recon
+    function: run_phase_retrieval
     params: 0
     gpu: false
   best_quality:
@@ -660,7 +660,7 @@ integral:
   traditional_cpu:
     name: Depth Estimation
     module: pwm_core.recon.integral_solver
-    function: depth_estimation_recon
+    function: run_integral
     params: 0
     gpu: false
   best_quality:
@@ -687,7 +687,7 @@ fpm:
   traditional_cpu:
     name: Sequential Phase Retrieval
     module: pwm_core.recon.fpm_solver
-    function: sequential_phase_retrieval_recon
+    function: run_fpm
     params: 0
     gpu: false
   best_quality:
