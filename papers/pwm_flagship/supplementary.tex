@@ -1448,7 +1448,7 @@ Existing calibration methods are modality-specific: ESPIRiT~\cite{uecker2014espi
 \paragraph{Quantitative comparison: ESPIRiT vs.\ PWM on multi-coil MRI.}
 To ground this comparison empirically, we evaluate four conditions on a synthetic brain phantom (8~coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE with $\ell_1$-wavelet regularization $\lambda = 10^{-3}$ and 30 iterations, 5\% multiplicative coil sensitivity mismatch).  Note: this experiment uses a structurally complex brain phantom, yielding a lower Sc.~I baseline (34.98\,dB) than the Shepp-Logan phantom used in Note~10 (52.11\,dB); the difference reflects phantom complexity, not solver disagreement.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering\small
 \caption{ESPIRiT vs.\ PWM comparison on multi-coil MRI (8 coils, $4\times$ acceleration, 5\% mismatch).}
 \label{tab:espirit_comparison}
@@ -1478,7 +1478,7 @@ PWM's modality-agnostic correction achieves comparable recovery on validated mod
 
 The $+48.25$\,dB correction gain reported for MRI in the main text reflects a single-coil scenario with 5\% multiplicative sensitivity error---a pathological case chosen to stress-test the framework. Under clinically realistic multi-coil conditions (8 coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE reconstruction) on a Shepp-Logan phantom with spatially smooth Biot-Savart sensitivity errors simulating patient repositioning, the correction gains are substantially more modest but clinically meaningful.  Note: the Sc.~I baseline here (52.11\,dB) is higher than in Note~9 (34.98\,dB) because this experiment uses a smooth Shepp-Logan phantom; the structurally complex brain phantom in Note~9 is harder to reconstruct, yielding lower absolute PSNR across all scenarios.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering\small
 \caption{Multi-coil MRI correction across mismatch levels (8 coils, $4\times$ accel., CG-SENSE).}
 \label{tab:mri_realistic}
@@ -1503,11 +1503,11 @@ Mismatch & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & Sc.~IV (dB) & Gain (dB) \\
 %% SUPPLEMENTARY NOTE S14: CALIBRATION METHOD COMPARISON
 %% ============================================================
 \section{Supplementary Note S14: Comparison with Existing Calibration Methods}
-\label{sec:calibration_comparison}
+\label{sec:calibration_comparison_extended}
 
 A key question is how PWM's modality-agnostic correction compares with established domain-specific calibration methods. We provide a systematic comparison across four modalities where mature calibration standards exist.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering\small
 \caption{Comparison of PWM autonomous correction with domain-specific calibration methods. $\rho$: recovery ratio. ``Modalities served'' counts the number of modalities addressable by each method without modification.}
 \label{tab:calibration_comparison}
@@ -1546,7 +1546,7 @@ CACTI & None (manual mask alignment) & Grid search over $(dx,dy)$ & --- & 100\% 
 \paragraph{Extended ESPIRiT comparison.}
 To address the concern that the 24-ACS-line comparison is unfairly limited, we extend the comparison across multiple calibration data regimes:
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering\small
 \caption{ESPIRiT vs.\ PWM across ACS line counts (8 coils, $4\times$ accel., 5\% mismatch).}
 \label{tab:espirit_extended}
@@ -1762,7 +1762,7 @@ For CASSI, the forward model $\mathbf{y} = \sum_b \mathbf{x}_b \odot \mathbf{M}_
 Consequently, GAP reconstruction achieves near-zero \emph{self-residual} regardless of whether the mask model is correct, because the solver simply finds a different $\mathbf{x}$ that fits $\mathbf{y}$ under the wrong model.
 The diagnostic metric is the \emph{cross-residual}: reconstruct with model $A'$, then evaluate $\|\mathbf{y} - A\hat{\mathbf{x}}_{A'}\|^2 / \|\mathbf{y}\|^2$ under the true model~$A$.
 
-\begin{table}[h!]
+\begin{table}[!ht]
 \centering\small
 \caption{CASSI cross-residual (\%) vs.\ mask shift magnitude ($\Delta x$, $\Delta y = 0.6\Delta x$), averaged over 5 TSA scenes.
 The monotonic increase confirms Gate~3 sensitivity to sub-pixel mask offsets.}
@@ -1788,7 +1788,7 @@ The roughly quadratic scaling ($4\times$ mismatch $\to$ ${\sim}30\times$ cross-r
 
 CACTI temporal multiplexing ($10\times$ compression) exhibits a striking dissociation between self-residual and cross-residual:
 
-\begin{table}[h!]
+\begin{table}[!ht]
 \centering\small
 \caption{CACTI self-residual ratio (Scenario~II / Scenario~I) vs.\ cross-residual ratio, averaged over 4 scenes.}
 \label{tab:cacti_cross_res}
@@ -1817,7 +1817,7 @@ We validate CT Gate~3 sensitivity using two public sinogram datasets:
 CoR offset is simulated by shifting each sinogram column by $\Delta_{\mathrm{CoR}}$ pixels before FBP reconstruction (scikit-image \texttt{iradon}).
 PSNR is measured against the correct-CoR reconstruction as reference.
 
-\begin{table}[h!]
+\begin{table}[!ht]
 \centering\small
 \caption{CT reconstruction PSNR (dB) vs.\ center-of-rotation offset for two public datasets.}
 \label{tab:ct_cor}
@@ -1838,7 +1838,7 @@ The walnut dataset loses $9.4$\,dB over the 1--8 pixel range; HTC loses $8.0$\,d
 Oracle calibration (grid search over CoR values) recovers 100\% of the degradation, confirming that CoR is a pure Gate~3 (operator mismatch) parameter.
 These results on \emph{real sinogram data} corroborate the simulation results in Table~S1 and confirm the universality of Gate~3 dominance across carrier families (X-ray photons for CT, optical photons for CASSI/CACTI).
 
-\subsection{Electron Ptychography: Probe Position Jitter (4D STEM SrTiO$_3$)}
+\subsection{Electron Ptychography: Probe Position Jitter (4D STEM SrTiO\texorpdfstring{$_3$}{3})}
 \label{sec:ptycho_real}
 
 We validate Gate~3 for electron ptychography---a fourth carrier family (electrons at 300\,kV)---using the publicly available SrTiO$_3$ [001] 4D-STEM dataset from Zenodo~5113449 (Medipix3RX detector, $128\times128$ scan, $256\times256$ diffraction patterns).
@@ -1847,7 +1847,7 @@ The Gate~3 parameter is \emph{probe position jitter}: random displacements of th
 Reconstruction uses integrated center-of-mass (iCoM) ptychography, which computes the beam deflection at each scan point and integrates the resulting gradient field to obtain the object phase.
 We process a $64\times64$ central scan subset and quantify degradation via phase-image PSNR (relative to the nominal-position reconstruction) and center-of-mass cross-residual.
 
-\begin{table}[h!]
+\begin{table}[!ht]
 \centering\small
 \caption{Electron ptychography: iCoM phase quality vs.\ probe position jitter $\sigma$ (pixels).}
 \label{tab:ptycho_jitter}
@@ -1876,7 +1876,7 @@ We validate Gate~3 for MRI---the nuclear spin / RF carrier family---using the M4
 The Gate~3 parameter is \emph{coil sensitivity perturbation}: smooth spatial magnitude and phase perturbations applied to the estimated sensitivity maps, modelling coil repositioning between scans.
 Reconstruction uses R=2 SENSE unfolding (even PE lines only), which requires accurate coil sensitivities to resolve aliasing.
 
-\begin{table}[h!]
+\begin{table}[!ht]
 \centering\small
 \caption{MRI SENSE (R=2): PSNR degradation vs.\ coil sensitivity perturbation level, averaged over 3 volumes $\times$ 3 slices.}
 \label{tab:mri_sense}
@@ -1914,7 +1914,7 @@ All main-text PSNR values are reported as means over test scenes. This section p
 
 For each modality and scenario, we report individual per-scene PSNR values to demonstrate that the mismatch effect is consistent across scenes and not driven by outliers.
 
-\begin{table}[h!]
+\begin{table}[!ht]
 \centering\small
 \caption{Per-scene PSNR (dB) for CASSI under the 4-Scenario Protocol (GAP-TV solver, 10 scenes). Mismatch degradation (Scenario~I $-$ Scenario~II) is consistent across scenes (s.d.\ $= 0.12$\,dB).}
 \label{tab:perscene_cassi}
@@ -1942,7 +1942,7 @@ Mean $\pm$ s.d. & $24.34 \pm 1.39$ & $23.58 \pm 1.37$ & $24.17 \pm 1.38$ & $24.2
 
 The recovery ratio $\rho = (\mathrm{PSNR}_{\mathrm{III}} - \mathrm{PSNR}_{\mathrm{II}}) / (\mathrm{PSNR}_{\mathrm{I}} - \mathrm{PSNR}_{\mathrm{II}})$ is computed per modality. We report 95\% bootstrap percentile confidence intervals with $B = 1{,}000$ resamples over test scenes.
 
-\begin{table}[h!]
+\begin{table}[!ht]
 \centering\small
 \caption{Recovery ratio $\rho$ with 95\% bootstrap confidence intervals across validated modalities.}
 \label{tab:bootstrap_rho}
