@@ -80,7 +80,7 @@ ALL_MODALITIES = [
     "nerf",
     "gaussian_splatting",
     "matrix",
-    "panorama_multifocal",
+    "panorama",
     "light_field",
     "integral",
     "phase_retrieval",
@@ -3258,7 +3258,7 @@ class BenchmarkRunner:
     # ========================================================================
     # MODALITY 18: Panorama / Multi-View → Multifocal
     # ========================================================================
-    def run_panorama_multifocal_benchmark(self) -> Dict:
+    def run_panorama_benchmark(self) -> Dict:
         """Run panorama multi-view multifocal benchmark.
 
         Simulates capturing a wide scene from multiple overlapping viewpoints,
@@ -3277,7 +3277,7 @@ class BenchmarkRunner:
         import torch
         import torch.nn as nn
 
-        results = {"modality": "panorama_multifocal", "solver": "neural_fusion"}
+        results = {"modality": "panorama", "solver": "neural_fusion"}
 
         np.random.seed(55)
 
@@ -4382,7 +4382,7 @@ class BenchmarkRunner:
             "nerf": self.run_nerf_benchmark,
             "gaussian_splatting": self.run_gaussian_splatting_benchmark,
             "matrix": self.run_matrix_benchmark,
-            "panorama_multifocal": self.run_panorama_multifocal_benchmark,
+            "panorama": self.run_panorama_benchmark,
             "light_field": self.run_light_field_benchmark,
             "integral": self.run_integral_benchmark,
             "phase_retrieval": self.run_phase_retrieval_benchmark,

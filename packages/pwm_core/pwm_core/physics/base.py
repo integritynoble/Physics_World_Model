@@ -77,7 +77,7 @@ class OperatorMetadata:
 # ---------------------------------------------------------------------------
 
 class PhysicsOperator(Protocol):
-    """Unified operator interface for all 26 modalities.
+    """Unified operator interface for all 64 modalities.
 
     v3: Extended with shape properties, serialize/deserialize, check_adjoint,
     and metadata.

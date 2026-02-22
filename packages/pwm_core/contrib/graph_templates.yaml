@@ -1,6 +1,6 @@
 # =============================================================================
 # PWM Graph Templates Registry
-# Skeleton graphs for all 26 modalities.
+# Skeleton graphs for all 64 modalities.
 # Each template: graph_id, description, nodes, edges, learnable params.
 #
 # CT + Widefield templates are complete enough to compile and pass adjoint checks.
@@ -738,7 +738,7 @@ templates:
 
   # ===========================================================================
   # V2 TEMPLATES — Canonical Chain: Source → Element(s) → Sensor → Noise
-  # All 26 modalities with explicit source/sensor/noise nodes.
+  # All 64 modalities with explicit source/sensor/noise nodes.
   # ===========================================================================
 
   # ---------------------------------------------------------------------------
@@ -2300,6 +2300,43 @@ templates:
         primitive_id: gaussian_sensor_noise
         role: noise
         params: {sigma: 0.02}
+    edges:
+      - source: source
+        target: interaction
+      - source: interaction
+        target: sensor
+      - source: sensor
+        target: noise
+
+  stem_graph_v2:
+    description: "STEM: ElectronBeamSource→ProbeConvolution→AnnularDetector→PoissonNoise"
+    metadata:
+      modality: stem
+      canonical_chain: true
+      requires_x_interaction: true
+      physics_fidelity:
+        tier: tier1_approx
+        validity_regime: "thin_sample, incoherent_imaging, HAADF"
+        known_limitations: ["No dynamical scattering", "No probe aberrations beyond defocus"]
+        upgrade_path: "tier2_full: multislice + aberration-corrected probe"
+    nodes:
+      - node_id: source
+        primitive_id: electron_beam_source
+        role: source
+        params: {accelerating_voltage_kv: 200.0, beam_current_na: 0.05}
+      - node_id: interaction
+        primitive_id: conv2d
+        role: transport
+        physics_subrole: interaction
+        params: {sigma: 0.8}
+      - node_id: sensor
+        primitive_id: electron_detector_sensor
+        role: sensor
+        params: {detector_type: "HAADF", collection_efficiency: 0.6, gain: 1.0}
+      - node_id: noise
+        primitive_id: poisson_only_sensor
+        role: noise
+        params: {peak_photons: 1000.0}
     edges:
       - source: source
         target: interaction

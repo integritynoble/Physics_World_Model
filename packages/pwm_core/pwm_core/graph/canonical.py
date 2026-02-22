@@ -218,6 +218,13 @@ def _validate_x_wiring(
     # Check for interaction/transduction subrole nodes
     interaction_nodes = []
     for node in spec.nodes:
+        # Check explicit node-level physics_subrole first
+        if node.physics_subrole is not None:
+            sr = node.physics_subrole.value if hasattr(node.physics_subrole, 'value') else str(node.physics_subrole)
+            if sr in ("interaction", "transduction"):
+                interaction_nodes.append(node.node_id)
+                continue
+        # Fall back to primitive class attribute
         prim_cls = PRIMITIVE_REGISTRY.get(node.primitive_id)
         if prim_cls is not None:
             subrole = getattr(prim_cls, "_physics_subrole", None)

@@ -27,7 +27,7 @@ BENCHMARK_DATA = [
     {"num": 15, "modality": "NeRF", "key": "nerf", "psnr": 61.35, "ref": 32.0, "status": "PASS"},
     {"num": 16, "modality": "3D Gaussian Splatting", "key": "gaussian_splatting", "psnr": 30.89, "ref": 30.0, "status": "PASS"},
     {"num": 17, "modality": "Matrix (Generic)", "key": "matrix", "psnr": 33.86, "ref": 25.0, "status": "PASS"},
-    {"num": 18, "modality": "Panorama Multifocal", "key": "panorama_multifocal", "psnr": 27.9, "ref": 28.0, "status": "PASS"},
+    {"num": 18, "modality": "Panorama", "key": "panorama", "psnr": 27.9, "ref": 28.0, "status": "PASS"},
     {"num": 19, "modality": "Light Field", "key": "light_field", "psnr": 30.35, "ref": 28.0, "status": "PASS"},
     {"num": 20, "modality": "Integral Photography", "key": "integral", "psnr": 27.85, "ref": 27.0, "status": "PASS"},
     {"num": 21, "modality": "Phase Retrieval", "key": "phase_retrieval", "psnr": 100.0, "ref": 30.0, "status": "PASS"},
@@ -44,7 +44,7 @@ CATEGORIES = {
     "Medical Imaging": ["ct", "mri", "oct", "photoacoustic", "dot", "flim"],
     "Coherent Imaging": ["ptychography", "holography", "phase_retrieval", "fpm"],
     "Neural Rendering": ["nerf", "gaussian_splatting"],
-    "General": ["matrix", "panorama_multifocal", "light_field", "integral"],
+    "General": ["matrix", "panorama", "light_field", "integral"],
 }
 
 DESCRIPTIONS = {
@@ -65,7 +65,7 @@ DESCRIPTIONS = {
     "nerf": "Neural Radiance Fields for novel view synthesis",
     "gaussian_splatting": "Differentiable Gaussian splatting",
     "matrix": "Generic linear inverse problem (y = Ax)",
-    "panorama_multifocal": "Multi-view focus stacking",
+    "panorama": "Multi-view focus stacking",
     "light_field": "Plenoptic camera light field imaging",
     "integral": "Integral photography reconstruction",
     "phase_retrieval": "Phase retrieval from intensity measurements",

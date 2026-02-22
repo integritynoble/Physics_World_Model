@@ -146,7 +146,7 @@ MODALITY_PRESETS = {
     "nerf": ["from_poses_basic"],
     "gaussian_splatting": ["basic"],
     "matrix": ["generic_linear"],
-    "panorama_multifocal": ["fusion"],
+    "panorama": ["fusion"],
     "light_field": ["plenoptic_basic"],
     "oct": ["retinal_balanced"],
 }

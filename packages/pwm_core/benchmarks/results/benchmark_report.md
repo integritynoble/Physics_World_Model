@@ -28,7 +28,7 @@
 | 15 | NeRF | SIREN | 61.35 | 32.0 | :white_check_mark: |
 | 16 | 3D Gaussian Splatting | 2D Gaussian Opt | 30.89 | 30.0 | :white_check_mark: |
 | 17 | Matrix (Generic) | FISTA-TV | 33.86 | 25.0 | :white_check_mark: |
-| 18 | Panorama Multifocal | Neural Fusion | 27.90 | 28.0 | :white_check_mark: |
+| 18 | Panorama | Neural Fusion | 27.90 | 28.0 | :white_check_mark: |
 | 19 | Light Field | LFBM5D | 35.28 | 28.0 | :white_check_mark: |
 | 20 | Integral | DIBR | 28.14 | 27.0 | :white_check_mark: |
 | 21 | Phase Retrieval | HIO | 100.00 | 30.0 | :white_check_mark: |
@@ -164,7 +164,7 @@ SPC at 25% sampling (22.97 dB) is below reference (32.0 dB) — `deepinv` unavai
 - **PSNR:** 33.86 dB (Reference: 25.0 dB), sampling rate 25%
 - **Alternatives:** LISTA 19.68 dB, Diffusion Posterior 4.26 dB
 
-### 18. Panorama Multifocal
+### 18. Panorama
 - **Solver:** Neural Fusion Network
 - **PSNR:** 27.90 dB (Reference: 28.0 dB), SSIM: 0.757
 - **Alternatives:** Guided Filter 26.44 dB, IFCNN 23.78 dB, Laplacian Pyramid 19.51 dB
@@ -288,7 +288,7 @@ Tests run via `pytest benchmarks/test_operator_correction.py` (63 min total).
 ### Neural Network Methods
 - **MST-L:** Mask-aware Spectral Transformer for CASSI (CVPR 2022, 1.12M params)
 - **SIREN:** Sinusoidal representation networks for NeRF
-- **Fourier Feature MLP:** Ptychography, Holography, Panorama Multifocal
+- **Fourier Feature MLP:** Ptychography, Holography, Panorama
 - **Gaussian Splatting:** Differentiable 2D Gaussians for 3DGS
 - **DRUNet:** Residual U-Net denoiser for PnP methods
 - **CARE:** Content-Aware Restoration for microscopy
