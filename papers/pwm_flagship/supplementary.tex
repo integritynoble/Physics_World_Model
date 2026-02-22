@@ -28,7 +28,7 @@
 %% ============================================================
 %% SUPPLEMENTARY NOTE 1
 %% ============================================================
-\section{Supplementary Note S1: Triad Decomposition Mathematical Derivations}
+\section{Supplementary Note 1: Triad Decomposition Mathematical Derivations}
 \label{sec:triad}
 
 The Triad Decomposition formalizes three successive gates that every computational-imaging
@@ -194,7 +194,7 @@ Proposition~2 formalizes the intuition that as instruments improve in informatio
 %% ============================================================
 %% SUPPLEMENTARY NOTE 2
 %% ============================================================
-\section{Supplementary Note S3: OperatorGraph Specification}
+\section{Supplementary Note 2: Complete OperatorGraph Specification}
 \label{sec:opgraph}
 
 The \texttt{OperatorGraph} is the central abstraction of the PWM framework.
@@ -291,8 +291,7 @@ The graph is serialized to a JSON document for reproducibility and sharing:
 %% ============================================================
 %% SUPPLEMENTARY TABLES S1--S4
 %% ============================================================
-\section{Supplementary Note S4: Complete Correction Results}
-\subsection{Table S1: All 16 Correction Configurations}
+\section{Supplementary Table S1: All 16 Correction Configurations}
 \label{sec:params}
 
 Table~\ref{tab:correction_params} reports the correction results for all 16
@@ -402,7 +401,7 @@ Radar/SAR
 %% ============================================================
 %% SUPPLEMENTARY TABLE 1
 %% ============================================================
-\subsection{Table S2: CASSI Per-Scene Results}
+\section{Supplementary Table S2: CASSI Per-Scene Results}
 \label{sec:cassi_scenes}
 
 Table~\ref{tab:cassi_scenes} reports PSNR (dB) and recovery ratio $\rho$ (\%) for 10 KAIST scenes across
@@ -501,7 +500,7 @@ scene10 & MST-L         & 32.63 & 20.69 & 25.86 & 43.3\% \\
 %% ============================================================
 %% SUPPLEMENTARY TABLE 2
 %% ============================================================
-\section{Supplementary Note S14: 26-Modality Registry}
+\section{Supplementary Table S3: 26-Modality Template Registry}
 \label{sec:26mod}
 
 Table~\ref{tab:26mod} lists all 26 modalities in the PWM benchmark, grouped
@@ -546,7 +545,7 @@ where available.  Validation tiers: \emph{Validated} = full Scenarios~I--IV corr
 15 & CT (cone-beam)       & X-ray          & ---   & 39.5  & Phase 2   & --- \\
 16 & Electron Pty.        & Electron       & ---   & 25.9  & Phase 4   & --- \\
 %% Group 4: RF / acoustic
-17 & MRI (Cartesian)\footnote{Multi-coil Scenario~I PSNR (8 coils, $4\times$ acceleration); see Supplementary Note~S10 for full multi-coil analysis.}      & RF             & 52.11 & 42.3  & Validated & CG-SENSE \\
+17 & MRI (Cartesian)\footnote{Multi-coil Scenario~I PSNR (8 coils, $4\times$ acceleration); see Supplementary Note~10 for full multi-coil analysis.}      & RF             & 52.11 & 42.3  & Validated & CG-SENSE \\
 18 & MRI (radial)         & RF             & ---   & 38.7  & Phase 2   & --- \\
 19 & MRI (spiral)         & RF             & ---   & 37.2  & Phase 4   & --- \\
 20 & Ultrasound           & Acoustic       & ---   & 31.8  & Phase 4   & --- \\
@@ -564,8 +563,7 @@ where available.  Validation tiers: \emph{Validated} = full Scenarios~I--IV corr
 %% ============================================================
 %% SUPPLEMENTARY TABLE 3
 %% ============================================================
-\section{Supplementary Note S15: YAML Registries and RunBundle}
-\subsection{YAML Registry Summary}
+\section{Supplementary Table S4: YAML Registry Summary}
 \label{sec:yaml}
 
 Table~\ref{tab:yaml} summarizes the nine YAML registry files (totalling
@@ -597,7 +595,7 @@ Table~\ref{tab:yaml} summarizes the nine YAML registry files (totalling
 %% ============================================================
 %% SUPPLEMENTARY NOTE 3
 %% ============================================================
-\subsection{RunBundle Schema}
+\section{Supplementary Note 4: RunBundle Schema}
 \label{sec:runbundle}
 
 The \texttt{RunBundle} is PWM's reproducibility artifact.  Every experiment
@@ -648,36 +646,12 @@ A RunBundle can be verified by:
         ($\pm0.01$\,dB PSNR).
 \end{enumerate}
 
-\subsection{Reproducibility Checklist}
-
-\begin{table}[htbp]
-\centering\small
-\caption{Reproducibility environment specification for all 139 experiments.}
-\label{tab:reproducibility}
-\begin{tabular}{@{}ll@{}}
-\toprule
-\textbf{Item} & \textbf{Value} \\
-\midrule
-Operating system & Ubuntu 22.04 LTS \\
-Python version & 3.10.12 \\
-PyTorch version & 2.1.0 \\
-CUDA version & 12.1 \\
-GPU & NVIDIA RTX 4090 (24\,GB VRAM) \\
-Random seeds & Fixed per experiment (stored in RunBundle) \\
-SHA-256 hashes & All input data files checksummed in RunBundle \\
-Script locations & \texttt{scripts/run\_all\_experiments.py} \\
-Trained model sources & Public checkpoints (URLs in \texttt{solver\_registry.yaml}) \\
-Total runtime (all 139 experiments) & ${\sim}4$\,hours on single A100 GPU \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 \newpage
 
 %% ============================================================
 %% SUPPLEMENTARY NOTE 4
 %% ============================================================
-\section{Supplementary Note S16: Computational Cost Analysis}
+\section{Supplementary Note 5: Computational Cost Analysis}
 \label{sec:cost}
 
 \subsection{Runtime per Modality}
@@ -756,7 +730,7 @@ For large-scale deployment:
 %% ============================================================
 %% SUPPLEMENTARY NOTE 5: REAL-DATA VALIDATION
 %% ============================================================
-\section{Supplementary Note S9a: Initial Real-Data Validation Details}
+\section{Supplementary Note 6: Real-Data Validation Details}
 \label{sec:realdata}
 
 \subsection{CASSI Real Data: TSA Hyperspectral Camera}
@@ -947,8 +921,7 @@ reconstruction sparsity for radiometric mismatch.
 %% SUPPLEMENTARY TABLE S8: SSIM COMPARISON
 %% ============================================================
 \newpage
-\section{Supplementary Note S6: SSIM and SAM Results}
-\subsection{SSIM Comparison Across Modalities}
+\section{Supplementary Table S10: SSIM Comparison Across Modalities}
 \label{sec:ssim}
 
 Table~\ref{tab:ssim} reports the structural similarity index (SSIM)
@@ -1004,7 +977,7 @@ resemblance to the ground truth under mismatch conditions.
 %% ============================================================
 %% SUPPLEMENTARY TABLE S9: CASSI SAM COMPARISON
 %% ============================================================
-\subsection{CASSI Spectral Angle Mapper (SAM)}
+\section{Supplementary Table S11: CASSI Spectral Angle Mapper (SAM)}
 \label{sec:sam}
 
 Table~\ref{tab:sam} reports the spectral angle mapper (SAM, in degrees)
@@ -1045,7 +1018,7 @@ accuracy is more important than spatial quality.
 %% SUPPLEMENTARY TABLES S10--S11: GATE 1 & GATE 2 VALIDATION
 %% ============================================================
 \newpage
-\section{Supplementary Note S7: Gate~1 and Gate~2 Validation}
+\section{Supplementary Tables S12--S13: Gate~1 and Gate~2 Validation}
 \label{sec:gate12}
 
 The main text argues that Gate~3 (operator mismatch) is the dominant
@@ -1198,66 +1171,10 @@ constraint.
 
 
 %% ============================================================
-%% SUPPLEMENTARY NOTE S8: GATE ABLATION ANALYSIS (NEW)
-%% ============================================================
-\newpage
-\section{Supplementary Note S8: Gate Ablation Analysis}
-\label{sec:gate_ablation}
-
-To verify that all three gates in the Triad Decomposition contribute meaningfully to
-diagnostic accuracy, we systematically ablate each diagnostic agent and measure the
-impact on classification accuracy and downstream PSNR.
-
-\begin{table}[ht]
-\centering\small
-\caption{Gate ablation results across 9 validated configurations.
-Each row removes one diagnostic agent and measures the resulting
-misdiagnosis rate, mean PSNR loss from incorrect routing, and a
-representative example of misdiagnosis.}
-\label{tab:gate_ablation}
-\begin{tabular}{@{}p{3.2cm}ccp{5.5cm}@{}}
-\toprule
-\textbf{Ablated Component} & \textbf{Misdiagnosis Rate} & \textbf{Mean PSNR Loss} & \textbf{Example Misdiagnosis} \\
-\midrule
-MismatchAgent (Gate~3 blind) & 9/9 (100\%) & $-6.2$\,dB &
-  CASSI mask shift diagnosed as ``increase photon budget''; correction not attempted \\
-\addlinespace
-PhotonAgent (Gate~2 blind) & 3/9 (33\%) & $-3.1$\,dB &
-  Photon-starved SPC regime misdiagnosed as Gate~3; unnecessary calibration attempted \\
-\addlinespace
-RecoverabilityAgent (Gate~1 blind) & 2/9 (22\%) & $-4.8$\,dB &
-  CACTI at $16\times$ compression diagnosed as Gate~3; correction attempted on irrecoverable data \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\noindent\textbf{Key findings.}
-\begin{enumerate}
-  \item \textbf{MismatchAgent is essential.} Without Gate~3 diagnosis, the
-    pipeline defaults to ``increase photon budget'' for all 9 configurations,
-    missing the true bottleneck entirely. The mean PSNR loss ($-6.2$\,dB)
-    reflects both the missed correction opportunity and the wasted
-    computational budget on irrelevant interventions.
-  \item \textbf{PhotonAgent prevents false Gate~3 diagnoses.} In 3/9
-    configurations (SPC at low photon count, CASSI with reduced exposure,
-    MRI at low flip angle), removing Gate~2 diagnosis causes the pipeline
-    to attempt operator correction on noise-dominated data, yielding
-    negative correction gains.
-  \item \textbf{RecoverabilityAgent prevents correction on irrecoverable
-    data.} At extreme compression (CACTI $16\times$, CASSI $56\times$),
-    removing Gate~1 diagnosis wastes compute on correction that cannot
-    recover null-space information.
-  \item \textbf{Each gate contributes $\geq 3$\,dB.} The mean PSNR
-    contribution via correct routing is $+6.2$\,dB (Gate~3), $+3.1$\,dB
-    (Gate~2), and $+4.8$\,dB (Gate~1), confirming that all three gates
-    are necessary for robust cross-modality diagnosis.
-\end{enumerate}
-
-%% ============================================================
 %% SUPPLEMENTARY NOTE 6: CLINICAL CT QC VALIDATION
 %% ============================================================
 \newpage
-\section{Supplementary Note S17: Clinical CT Quality Assurance Validation}
+\section{Supplementary Note 7: Clinical CT Quality Assurance Validation}
 \label{sec:ctqc}
 
 The \textsc{Triad Decomposition} framework has been translated to clinical
@@ -1403,7 +1320,7 @@ demonstration.
 %% SUPPLEMENTARY NOTE 7: CONTROLLED HARDWARE VALIDATION
 %% ============================================================
 \newpage
-\section{Supplementary Note S13: Controlled Hardware Protocol}
+\section{Supplementary Note 8: Controlled Hardware Validation}
 \label{sec:hardware_validation}
 
 The software-perturbation experiments in the main text apply calibrated
@@ -1471,7 +1388,7 @@ with external partners.  Results will be incorporated in the revised manuscript.
 %% SUPPLEMENTARY NOTE 8: MISMATCH PARAMETER DERIVATION
 %% ============================================================
 \newpage
-\section{Supplementary Note S12: Mismatch Parameter Derivation}
+\section{Supplementary Note 9: Mismatch Parameter Derivation}
 \label{sec:mismatch_derivation}
 
 This note provides a self-contained derivation of the mismatch parameter
@@ -1523,7 +1440,7 @@ mismatch of comparable magnitude to the perturbation applied.
 %% SUPPLEMENTARY NOTE 9: CALIBRATION METHOD COMPARISON
 %% ============================================================
 \newpage
-\section{Supplementary Note S10: Calibration Comparison}
+\section{Supplementary Note 10: Calibration Method Comparison}
 \label{sec:calibration_comparison}
 
 Existing calibration methods are modality-specific: ESPIRiT~\cite{uecker2014espirit} auto-calibrates coil sensitivities for parallel MRI; entropy-based center-of-rotation autofocus corrects geometric errors in CT; blind position correction in ePIE~\cite{maiden2009ptychography} self-calibrates probe positions in ptychography. Each achieves high recovery within its target modality but requires domain-specific algorithm design and cannot transfer across modalities.
@@ -1556,7 +1473,7 @@ PWM's modality-agnostic correction achieves comparable recovery on validated mod
 %% ============================================================
 %% SUPPLEMENTARY NOTE 10: MRI UNDER CLINICALLY REALISTIC CONDITIONS
 %% ============================================================
-\section{Supplementary Note S11: MRI Under Clinically Realistic Conditions}
+\section{Supplementary Note 11: MRI Under Clinically Realistic Conditions}
 \label{sec:mri_realistic}
 
 The $+48.25$\,dB correction gain reported for MRI in the main text reflects a single-coil scenario with 5\% multiplicative sensitivity error---a pathological case chosen to stress-test the framework. Under clinically realistic multi-coil conditions (8 coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE reconstruction) on a Shepp-Logan phantom with spatially smooth Biot-Savart sensitivity errors simulating patient repositioning, the correction gains are substantially more modest but clinically meaningful.  Note: the Sc.~I baseline here (52.11\,dB) is higher than in Note~9 (34.98\,dB) because this experiment uses a smooth Shepp-Logan phantom; the structurally complex brain phantom in Note~9 is harder to reconstruct, yielding lower absolute PSNR across all scenarios.
@@ -1585,7 +1502,7 @@ Mismatch & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & Sc.~IV (dB) & Gain (dB) \\
 %% ============================================================
 %% SUPPLEMENTARY NOTE S14: CALIBRATION METHOD COMPARISON
 %% ============================================================
-\section{Supplementary Note S10 (Extended): Comparison with Existing Calibration Methods}
+\section{Supplementary Note S14: Comparison with Existing Calibration Methods}
 \label{sec:calibration_comparison_extended}
 
 A key question is how PWM's modality-agnostic correction compares with established domain-specific calibration methods. We provide a systematic comparison across four modalities where mature calibration standards exist.
@@ -1652,7 +1569,7 @@ Full & 38.92 & 35.72 & $+10.6\%$ & $20.3\%$ \\
 %% ============================================================
 %% SUPPLEMENTARY NOTE 12: FINITE PRIMITIVE BASIS --- EXPANDED PROOF
 %% ============================================================
-\section{Supplementary Note S2: Finite Primitive Basis --- Expanded Proof and Minimality}
+\section{Supplementary Note 12: Finite Primitive Basis --- Expanded Proof}
 \label{sec:fpb_proof}
 
 This note provides the expanded proof of Theorem~1 (Finite Primitive Basis) stated in the main text. Full formal definitions, primitive semantics, and typed DAG denotation are in the companion paper~\cite{yang2026fpt}.
@@ -1829,7 +1746,7 @@ progressive validation.
 %% ============================================================
 %% SUPPLEMENTARY NOTE 15: EXTENDED REAL-DATA HARDWARE VALIDATION
 %% ============================================================
-\section{Supplementary Note S9: Extended Hardware Validation}
+\section{Supplementary Note 15: Extended Real-Data Hardware Validation}
 \label{sec:real_data_extended}
 
 We extend the real-data validation from the main text with three additional analyses:
@@ -1979,16 +1896,16 @@ This behaviour is analogous to the CASSI finding where real hardware has pre-exi
 Autonomous sensitivity re-estimation from the data achieves 100\% recovery across all volumes.
 
 Importantly, the effect size for MRI ($< 1$\,dB at R=2 with 4 coils) is substantially smaller than for other modalities (CASSI, CACTI, CT, ptychography), which is physically consistent: R=2 acceleration with 4 coils provides $2\times$ coil redundancy, making the SENSE encoding well-conditioned.
-At higher acceleration factors (R=4 with 8 coils), the simulation experiments in Supplementary Note~S11 show much larger degradation ($1.75$--$7.14$\,dB), confirming that Gate~3 severity scales with the condition number of the encoding matrix.
+At higher acceleration factors (R=4 with 8 coils), the simulation experiments in Supplementary Note~S13 show much larger degradation ($1.75$--$7.14$\,dB), confirming that Gate~3 severity scales with the condition number of the encoding matrix.
 
 \vspace{1em}
-\noindent\textbf{Summary.} Supplementary Note~S9 validates Gate~3 dominance across 5 modalities spanning 4 carrier families: optical photons (CASSI, CACTI), X-ray photons (CT), electrons (ptychography), and nuclear spins/RF (MRI). The mismatch signal is monotonic and scene-independent in all cases, with 100\% recovery via autonomous or oracle calibration. The only modality with sub-dB degradation (MRI at R=2) is explained by the inherent robustness of over-determined coil encoding.
+\noindent\textbf{Summary.} Supplementary Note~S15 validates Gate~3 dominance across 5 modalities spanning 4 carrier families: optical photons (CASSI, CACTI), X-ray photons (CT), electrons (ptychography), and nuclear spins/RF (MRI). The mismatch signal is monotonic and scene-independent in all cases, with 100\% recovery via autonomous or oracle calibration. The only modality with sub-dB degradation (MRI at R=2) is explained by the inherent robustness of over-determined coil encoding.
 
 
 %% ============================================================
 %% SUPPLEMENTARY NOTE 16: PER-SCENE ANALYSIS AND CONFIDENCE INTERVALS
 %% ============================================================
-\section{Supplementary Note S5: Per-Scene Analysis and Bootstrap Confidence Intervals}
+\section{Supplementary Note 16: Per-Scene Analysis and Bootstrap Confidence Intervals}
 \label{sec:perscene}
 
 All main-text PSNR values are reported as means over test scenes. This section provides per-scene scatter plots and bootstrap confidence intervals to support the statistical claims.
@@ -2055,63 +1972,6 @@ For each modality, the mismatch effect size (Cohen's $d$) is computed as:
 d = \frac{\overline{\mathrm{PSNR}}_{\mathrm{I}} - \overline{\mathrm{PSNR}}_{\mathrm{II}}}{s_{\mathrm{pooled}}},
 \end{equation}
 where $s_{\mathrm{pooled}}$ is the pooled standard deviation across scenes. All modalities show $d > 2.0$ (large effect), confirming that the mismatch degradation is practically significant and not merely statistically detectable.
-
-%% ============================================================
-%% SUPPLEMENTARY NOTE S18: EVIDENCE CROSS-REFERENCE (NEW)
-%% ============================================================
-\newpage
-\section{Supplementary Note S18: Evidence Cross-Reference}
-\label{sec:evidence_crossref}
-
-Table~\ref{tab:evidence_crossref} maps each sub-claim of the central thesis
-to its supporting evidence, main-text location, supplementary location,
-primary metric, and known gaps.
-
-\begin{table}[ht]
-\centering\small
-\caption{Evidence cross-reference for the five testable sub-claims.}
-\label{tab:evidence_crossref}
-\begin{tabular}{@{}p{2.0cm}p{2.5cm}p{1.8cm}p{2.0cm}p{1.5cm}p{2.5cm}@{}}
-\toprule
-\textbf{Sub-claim} & \textbf{Evidence} & \textbf{Main Fig.} & \textbf{Supp.\ Location} & \textbf{Metric} & \textbf{Known Gap} \\
-\midrule
-Sufficiency &
-  Constructive DAGs for 34 modalities &
-  Fig.~7 &
-  Note~S2, Note~S14 (Table~S3) &
-  $\etier$ &
-  Truncated/approximate fidelity levels have template-only validation \\
-\addlinespace
-Minimality &
-  11 witness modalities &
-  Table~1 &
-  Note~S2 (Prop.~1) &
-  $\etier$ without $B_j$ &
-  $C$, $S$, $W$ are necessary only under complexity bounds \\
-\addlinespace
-Gate~3 dominance &
-  $C_{\mathrm{mismatch}} > \max(C_{\mathrm{noise}}, C_{\mathrm{recover}})$ in 9/9 &
-  Fig.~3 &
-  Note~S7 (Tables~S12--S13) &
-  PSNR gap &
-  Validated on linear models only \\
-\addlinespace
-Correction efficacy &
-  $+0.8$ to $+10.7$\,dB across 7 modalities &
-  Fig.~4 &
-  Note~S4 (Tables~S1--S2), Note~S5 &
-  $\rho$, Cohen's $d$ &
-  Multi-parameter CASSI: $\rho = 22$--$46\%$ \\
-\addlinespace
-Hardware confirmation &
-  5 real instruments confirm simulation &
-  Fig.~6 &
-  Note~S9, Note~S9a &
-  Residual ratio &
-  Software perturbation only (physical displacement planned, Note~S13) \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \bibliographystyle{unsrtnat}
 \bibliography{pwm_flagship}
