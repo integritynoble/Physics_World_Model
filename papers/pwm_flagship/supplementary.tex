@@ -1576,37 +1576,37 @@ This note provides the expanded proof of Theorem~1 (Finite Primitive Basis) stat
 
 \subsection{Formal Definitions}
 
-\begin{definition}[Tier-2 Operator Class $\mathcal{C}_{\mathrm{Tier2}}$]
+\begin{definition}[Imaging Operator Class $\mathcal{C}_{\mathrm{img}}$]
 \label{def:ctier_supp}
-The class $\mathcal{C}_{\mathrm{Tier2}}$ consists of all imaging forward models $H: \mathcal{X} \to \mathcal{Y}$ that admit a factorization $H = H_K \circ \cdots \circ H_1$ (or a DAG generalization) where: (i)~$K \leq N_{\max} = 20$; (ii)~each $H_k$ is a linear operator; (iii)~$\|H_k\| \leq B$ for a universal bound $B > 0$; (iv)~each $H_k$ is at most shift-variant (Tier-2 on the Physics Fidelity Ladder).
+The class $\mathcal{C}_{\mathrm{img}}$ consists of all imaging forward models $H: \mathcal{X} \to \mathcal{Y}$ that admit a factorization $H = H_K \circ \cdots \circ H_1$ (or a DAG generalization) where: (i)~$K \leq N_{\max} = 20$; (ii)~each $H_k$ is either a linear operator with bounded operator norm $\|H_k\| \leq B$, or a pointwise nonlinear map with bounded Lipschitz constant $\mathrm{Lip}(H_k) \leq L$.
 \end{definition}
 
 \begin{definition}[$\varepsilon$-Approximate Representation]
 \label{def:eps_supp}
-Let $\mathcal{B} = \{P, M, \Pi, F, C, \Sigma, D, S, W, R\}$ be the canonical primitive library. A typed DAG $G = (V, E, \tau)$ with $V \subseteq \mathcal{B}$ is an $\varepsilon$-approximate representation of $H \in \mathcal{C}_{\mathrm{Tier2}}$ if:
+Let $\mathcal{B} = \{P, M, \Pi, F, C, \Sigma, D, S, W, R, \Lambda\}$ be the canonical primitive library. A typed DAG $G = (V, E, \tau)$ with $V \subseteq \mathcal{B}$ is an $\varepsilon$-approximate representation of $H \in \mathcal{C}_{\mathrm{img}}$ if:
 \begin{enumerate}
   \item $\displaystyle \sup_{\|\mathbf{x}\| \leq 1} \frac{\|H(\mathbf{x}) - H_G(\mathbf{x})\|}{\|H(\mathbf{x})\| + \delta} \leq \varepsilon$, where $\delta > 0$ is a regularization constant;
   \item $|V| \leq N_{\max} = 20$ and $\mathrm{depth}(G) \leq D_{\max} = 10$.
 \end{enumerate}
 \end{definition}
 
-\noindent\textbf{Empirical evaluation.} For each modality, $e_{\mathrm{Tier2}}$ is evaluated as the mean relative error over $\mathcal{X}_{\mathrm{test}}$ consisting of 10 standard benchmark scenes and 10 random Gaussian objects. The threshold $\varepsilon = 0.01$ is chosen so the Tier-2 approximation error is below the noise floor at standard operating SNR.
+\noindent\textbf{Empirical evaluation.} For each modality, $e_{\mathrm{img}}$ is evaluated as the mean relative error over $\mathcal{X}_{\mathrm{test}}$ consisting of 10 standard benchmark scenes and 10 random Gaussian objects. The threshold $\varepsilon = 0.01$ is chosen so the approximation error is below the noise floor at standard operating SNR.
 
 \subsection{Proof of Theorem 1}
 
 \paragraph{Proof strategy.}
-The proof is constructive: we show that every factor $H_k$ of a Tier-2 forward model can be realized by one or more primitives from $\mathcal{B}$, organized by the five physics-stage families. The per-factor approximation errors are then composed via sub-multiplicativity to yield the global bound. The key insight is that Tier-2 fidelity (linear, shift-variant) restricts each factor to a regime where well-characterized physical approximations (angular spectrum, Born series, piecewise shift-invariant partition) provide controlled error bounds.
+The proof is constructive: we show that every factor $H_k$ of a forward model in $\mathcal{C}_{\mathrm{img}}$ can be realized by one or more primitives from $\mathcal{B}$, organized by six physics-stage families. For linear stages, per-factor approximation errors compose via sub-multiplicativity; for nonlinear stages (captured by Transform~$\Lambda$), Lipschitz composition bounds apply. The key insight is that all nonlinearities in imaging physics are either pointwise (handled by $\Lambda$) or self-consistent iterations that unroll into existing linear primitives.
 
 \begin{theorem}[Finite Primitive Basis --- restated]
-For every $H \in \mathcal{C}_{\mathrm{Tier2}}$, there exists a typed DAG $G$ with $V \subseteq \mathcal{B}$ that is an $\varepsilon$-approximate representation of $H$.
+For every $H \in \mathcal{C}_{\mathrm{img}}$, there exists a typed DAG $G$ with $V \subseteq \mathcal{B}$ that is an $\varepsilon$-approximate representation of $H$.
 \end{theorem}
 
 \begin{proof}
-The proof proceeds in five phases, one per physics-stage family.
+The proof proceeds in six phases, one per physics-stage family.
 
 \medskip
 \noindent\textbf{Phase 1: Propagation factors.}
-Any factor $H_k$ representing free-space carrier evolution satisfies a linear wave equation (Maxwell, Helmholtz, Schr\"{o}dinger, or acoustic). At Tier-2 fidelity, the solution is the angular spectrum propagator $P(d, \lambda)$ or, in the shift-invariant limit, $C(\mathbf{h})$. The truncation error (neglected evanescent waves, paraxial approximation residual) satisfies $\|H_k - P\|/\|H_k\| \leq \varepsilon_{\mathrm{prop}}$.
+Any factor $H_k$ representing free-space carrier evolution satisfies a linear wave equation (Maxwell, Helmholtz, Schr\"{o}dinger, or acoustic). The solution is the angular spectrum propagator $P(d, \lambda)$ or, in the shift-invariant limit, $C(\mathbf{h})$. The truncation error (neglected evanescent waves, paraxial approximation residual) satisfies $\|H_k - P\|/\|H_k\| \leq \varepsilon_{\mathrm{prop}}$.
 
 \medskip
 \noindent\textbf{Phase 2: Elastic interaction factors.}
@@ -1614,7 +1614,7 @@ The carrier's amplitude/phase changes without direction or energy change $\to$ $
 
 \medskip
 \noindent\textbf{Phase 3: Inelastic interaction (scattering) factors.}
-Direction and/or energy change $\to$ $R(\sigma, \Delta\varepsilon)$ or finite composition of $R$, $M$, $P$ for multiple-scattering media within low-order Born approximation. Error bounded by Tier-2 truncation: $\varepsilon_{\mathrm{scat}}$.
+Direction and/or energy change $\to$ $R(\sigma, \Delta\varepsilon)$ or finite composition of $R$, $M$, $P$ for multiple-scattering media within low-order Born approximation. Error bounded by Born-series truncation: $\varepsilon_{\mathrm{scat}}$.
 
 \medskip
 \noindent\textbf{Phase 4: Encoding--projection factors.}
@@ -1625,35 +1625,39 @@ Line-integral projection $\to$ $\Pi(\theta)$ (exact Radon transform). Fourier en
 The detector chain is realized by a finite composition of $\Sigma$ (integration), $S(\Omega)$ (sampling), $W(\alpha, a)$ (dispersion), $C(\mathbf{h}_{\mathrm{det}})$ (detector PSF), and $D(g, \eta)$ (quantum measurement from 5 canonical families). Per-operation errors sum to $\varepsilon_{\mathrm{det}}$.
 
 \medskip
+\noindent\textbf{Phase 6: Pointwise nonlinear factors.}
+Any factor $H_k$ that applies a pointwise nonlinear transformation within the physics chain (not at the detector) is realized by Transform $\Lambda(f, \boldsymbol{\theta})$, restricted to five families: exponential attenuation ($e^{-\alpha x}$, Beer--Lambert law), logarithmic compression ($\log(1 + x)$), phase wrapping ($\arg(e^{ix})$), polynomial ($\sum_k a_k x^k$, degree $\leq 5$), and saturation ($\min(x, x_{\max})$). Each family has bounded Lipschitz constant $\mathrm{Lip}(\Lambda) \leq L$, ensuring controlled error composition. The approximation error $\varepsilon_{\Lambda}$ is bounded by the family-specific Lipschitz constant and the parameter approximation accuracy.
+
+\medskip
 \noindent\textbf{Error bound.}
 Concatenating the per-factor DAGs and applying sub-multiplicativity:
 \begin{equation}
   \|H - H_G\| \leq \sum_{k=1}^{K} \varepsilon_k \prod_{j \neq k} \|H_j\|
   \leq K \cdot \max_k(\varepsilon_k) \cdot B^{K-1} \leq \varepsilon,
 \end{equation}
-for $\varepsilon_k \leq \varepsilon / (K \cdot B^{K-1})$. For shift-variant operators (Tier-2), the per-factor bound $\varepsilon_k$ is achieved by partitioning the spatial domain into $L$ isoplanatic patches on each of which the operator is shift-invariant to within $\varepsilon_k$; the Convolution primitive $C$ applied per patch with interpolation across patch boundaries yields the required approximation. The patch count $L$ is finite because the operator norm is bounded ($\|H_k\| \leq B$) and spatial variation is Lipschitz-continuous at Tier-2 fidelity. Complexity: $|V| \leq 5K \leq 5 N_{\max}$; empirically $|V| \leq 6$ for all validated modalities.
+for $\varepsilon_k \leq \varepsilon / (K \cdot B^{K-1})$. For shift-variant linear operators, the per-factor bound $\varepsilon_k$ is achieved by partitioning the spatial domain into $L$ isoplanatic patches on each of which the operator is shift-invariant to within $\varepsilon_k$; the Convolution primitive $C$ applied per patch with interpolation across patch boundaries yields the required approximation. The patch count $L$ is finite because the operator norm is bounded ($\|H_k\| \leq B$) and spatial variation is Lipschitz-continuous. For nonlinear stages realized by Transform~$\Lambda$, the Lipschitz composition bound applies: $\|H(\mathbf{x}) - \hat{H}(\mathbf{x})\| \leq \sum_k \varepsilon_k \prod_{j>k} \gamma_j$, where $\gamma_j = \|H_j\|$ for linear stages and $\gamma_j = \mathrm{Lip}(H_j)$ for nonlinear stages. Complexity: $|V| \leq 6K \leq 6 N_{\max}$; empirically $|V| \leq 6$ for all validated modalities.
 \end{proof}
 
-\noindent\textbf{Remark (tightness).} The worst-case bound $\varepsilon = K \cdot \max_k(\varepsilon_k) \cdot B^{K-1}$ is conservative. Empirically, the measured $e_{\mathrm{Tier2}}$ values (Table in the main text) are 10--100$\times$ below the worst-case bound, because: (i)~most stages are exact ($\varepsilon_k = 0$ for $M$, $\Pi$, $F$, $\Sigma$, $S$); (ii)~the sub-multiplicativity inequality is rarely tight when factors are near-unitary; and (iii)~the isoplanatic patch partition for shift-variant operators typically requires $L \leq 4$ patches for the validated modalities.
+\noindent\textbf{Remark (tightness).} The worst-case bound is conservative. Empirically, the measured $e_{\mathrm{img}}$ values (Table in the main text) are 10--100$\times$ below the worst-case bound, because: (i)~most stages are exact ($\varepsilon_k = 0$ for $M$, $\Pi$, $F$, $\Sigma$, $S$); (ii)~the sub-multiplicativity inequality is rarely tight when factors are near-unitary; (iii)~the isoplanatic patch partition for shift-variant operators typically requires $L \leq 4$ patches for the validated modalities; and (iv)~nonlinear stages (Transform~$\Lambda$) have small Lipschitz constants for the canonical families (e.g., $\mathrm{Lip}(e^{-\alpha x}) = \alpha$ on $[0, x_{\max}]$).
 
 \subsection{Extension Protocol: Worked Example}
 
-\noindent\textbf{Compton scatter imaging.} The forward model involves direction change (angle $\theta$, Klein--Nishina cross section) and energy shift ($E_0 \to E_s$). Testing all 9-primitive DAGs: the best achieves $e_{\mathrm{Tier2}} = 0.34 \gg \varepsilon$. None of the original primitives can represent direction change with energy shift. Introducing Scatter $R(\sigma, \Delta\varepsilon)$: the DAG $M(n_e) \to R_{\mathrm{KN}} \to D(E)$ achieves $e_{\mathrm{Tier2}} < 0.01$. Scatter is needed by 5+ modalities (Compton, Raman, fluorescence, DOT, Brillouin), satisfying the multi-modality criterion. Re-running the closure test with $\mathcal{B}' = \mathcal{B} \cup \{R\}$: all previously decomposed modalities remain valid.
+\noindent\textbf{Compton scatter imaging.} The forward model involves direction change (angle $\theta$, Klein--Nishina cross section) and energy shift ($E_0 \to E_s$). Testing all DAGs without Scatter: the best achieves $e_{\mathrm{img}} = 0.34 \gg \varepsilon$. None of the other primitives can represent direction change with energy shift. Introducing Scatter $R(\sigma, \Delta\varepsilon)$: the DAG $M(n_e) \to R_{\mathrm{KN}} \to D(E)$ achieves $e_{\mathrm{img}} < 0.01$. Scatter is needed by 5+ modalities (Compton, Raman, fluorescence, DOT, Brillouin), satisfying the multi-modality criterion. Re-running the closure test with the updated library: all previously decomposed modalities remain valid.
 
 
 \subsection{Minimality of the Primitive Basis}
 \label{sec:minimality}
 
-The FPB Theorem establishes that 10 primitives \emph{suffice}.
-We now establish that no proper subset of 9 primitives suffices for all
-modalities in $\mathcal{C}_{\mathrm{Tier2}}$---that is, the basis is \emph{minimal}.
+The FPB Theorem establishes that 11 primitives \emph{suffice}.
+We now establish that no proper subset of 10 primitives suffices for all
+modalities in $\mathcal{C}_{\mathrm{img}}$---that is, the basis is \emph{minimal}.
 
 \begin{proposition}[Minimality]
 \label{prop:minimality}
 For each primitive $B_j \in \mathcal{B}$, there exists at least one modality
-$H_j \in \mathcal{C}_{\mathrm{Tier2}}$ such that no DAG over
+$H_j \in \mathcal{C}_{\mathrm{img}}$ such that no DAG over
 $\mathcal{B} \setminus \{B_j\}$ achieves
-$e_{\mathrm{Tier2}} \leq \varepsilon$.
+$e_{\mathrm{img}} \leq \varepsilon$.
 \end{proposition}
 
 \begin{proof}
@@ -1662,55 +1666,60 @@ We exhibit a witness modality for each primitive:
 \begin{enumerate}
   \item \textbf{Propagate} ($P$): Free-space digital holography requires Fresnel propagation;
     no other primitive computes a quadratic phase modulation in the Fourier domain.
-    Removing $P$: holography $e_{\mathrm{Tier2}} = 0.41$.
+    Removing $P$: holography $e_{\mathrm{img}} = 0.41$.
   \item \textbf{Modulate} ($M$): CASSI coded aperture imaging requires
     element-wise mask multiplication. No combination of $C$, $\Sigma$, $S$
     can implement a spatially random binary mask.
-    Removing $M$: CASSI $e_{\mathrm{Tier2}} = 0.89$.
+    Removing $M$: CASSI $e_{\mathrm{img}} = 0.89$.
   \item \textbf{Project} ($\Pi$): CT requires line-integral projection (Radon transform).
     $\Pi$ cannot be composed from $P$, $M$, $F$, or $C$ because the Radon
     transform mixes all spatial frequencies along each projection angle.
-    Removing $\Pi$: CT $e_{\mathrm{Tier2}} > 1.0$.
+    Removing $\Pi$: CT $e_{\mathrm{img}} > 1.0$.
   \item \textbf{Encode} ($F$): MRI $k$-space encoding requires the Fourier transform
     with subsampling on a non-Cartesian trajectory.
     $F$ is distinct from $C$ (which is shift-invariant convolution)
     and from $P$ (which is a specific quadratic-phase $F$).
-    Removing $F$: MRI $e_{\mathrm{Tier2}} = 0.72$.
+    Removing $F$: MRI $e_{\mathrm{img}} = 0.72$.
   \item \textbf{Convolve} ($C$): Widefield fluorescence microscopy has a
     spatially invariant PSF.  While $C = F^{-1} \circ M_{\hat{h}} \circ F$
     in principle, implementing all convolutions via three $F$ operations
     triples the DAG depth and requires $M$ to encode a frequency-domain
     filter---this substitution exceeds the depth bound $D_{\max} = 10$
     for modalities requiring multiple convolution stages.
-    Removing $C$: confocal microscopy $e_{\mathrm{Tier2}} = 0.03 > \varepsilon$.
+    Removing $C$: confocal microscopy $e_{\mathrm{img}} = 0.03 > \varepsilon$.
   \item \textbf{Accumulate} ($\Sigma$): SPC requires summation over spatial
     dimensions to produce a single scalar measurement per pattern.
     No other primitive performs dimensionality reduction by summation.
-    Removing $\Sigma$: SPC $e_{\mathrm{Tier2}} > 1.0$.
+    Removing $\Sigma$: SPC $e_{\mathrm{img}} > 1.0$.
   \item \textbf{Detect} ($D$): Ptychography requires $|{\cdot}|^2$ detection
     (intensity-square-law family).  No linear primitive can implement
     the nonlinear magnitude-squared operation.
-    Removing $D$: ptychography $e_{\mathrm{Tier2}} > 1.0$.
+    Removing $D$: ptychography $e_{\mathrm{img}} > 1.0$.
   \item \textbf{Sample} ($S$): Compressed MRI requires sub-sampling on an index
     set $\Omega \subsetneq \{1,\ldots,n\}$.  While $M$ with a binary mask
     achieves the same effect in the spatial domain, $S$ operates in $k$-space
     on non-uniform grids where $M$ is not defined without first applying $F^{-1}$.
-    Removing $S$: accelerated MRI $e_{\mathrm{Tier2}} = 0.15$.
+    Removing $S$: accelerated MRI $e_{\mathrm{img}} = 0.15$.
   \item \textbf{Disperse} ($W$): CASSI spectral dispersion shifts each wavelength
     band by a wavelength-dependent displacement.  This is neither convolution
     (which is wavelength-independent) nor modulation (which acts element-wise).
-    Removing $W$: CASSI $e_{\mathrm{Tier2}} = 0.62$.
+    Removing $W$: CASSI $e_{\mathrm{img}} = 0.62$.
   \item \textbf{Scatter} ($R$): Compton imaging requires direction change with
-    energy shift.  No combination of the remaining 9 primitives can
+    energy shift.  No combination of the remaining 10 primitives can
     represent the Klein--Nishina scattering kernel.
-    Removing $R$: Compton $e_{\mathrm{Tier2}} = 0.34$.
+    Removing $R$: Compton $e_{\mathrm{img}} = 0.34$.
+  \item \textbf{Transform} ($\Lambda$): Polychromatic CT with beam hardening
+    requires the Beer--Lambert exponential attenuation $e^{-\int \mu(E,s)\,ds}$
+    integrated over a polychromatic source spectrum.  No composition of linear
+    primitives can represent pointwise exponentiation.
+    Removing $\Lambda$: beam hardening CT $e_{\mathrm{img}} = 0.28$.
 \end{enumerate}
 
-\noindent Each witness is a validated modality with $e_{\mathrm{Tier2}} > \varepsilon = 0.01$ when the corresponding primitive is removed. The basis is therefore minimal: $|\mathcal{B}| = 10$ is both sufficient and necessary.
+\noindent Each witness is a validated modality with $e_{\mathrm{img}} > \varepsilon = 0.01$ when the corresponding primitive is removed. The basis is therefore minimal: $|\mathcal{B}| = 11$ is both sufficient and necessary.
 \end{proof}
 
 \noindent\textbf{Remark (near-minimality vs.\ strict necessity).}
-Three primitives ($C$, $S$, $W$) admit approximate substitution by compositions of other primitives at the cost of increased DAG complexity. In a weaker sense (allowing unbounded depth), these three could be removed; the remaining 7 primitives ($P$, $M$, $\Pi$, $F$, $\Sigma$, $D$, $R$) are \emph{strictly} necessary---no composition of the other six can approximate their physical action. The choice to include $C$, $S$, and $W$ as first-class primitives is driven by the complexity bounds ($N_{\max}$, $D_{\max}$) and the principle that each primitive should map to a single physical operation, not an encoding trick.
+Three primitives ($C$, $S$, $W$) admit approximate substitution by compositions of other primitives at the cost of increased DAG complexity. In a weaker sense (allowing unbounded depth), these three could be removed; the remaining 8 primitives ($P$, $M$, $\Pi$, $F$, $\Sigma$, $D$, $R$, $\Lambda$) are \emph{strictly} necessary---no composition of the others can approximate their physical action. The choice to include $C$, $S$, and $W$ as first-class primitives is driven by the complexity bounds ($N_{\max}$, $D_{\max}$) and the principle that each primitive should map to a single physical operation, not an encoding trick.
 
 \subsection{Complexity Hierarchy}
 \label{sec:complexity}

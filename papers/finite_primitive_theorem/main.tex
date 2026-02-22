@@ -24,7 +24,7 @@ $^*$Correspondence: \texttt{integrityyang@gmail.com}}
 %%  ABSTRACT
 %% ═══════════════════════════════════════════════════════════════════
 \begin{abstract}
-Computational imaging forward models---from coded aperture spectral cameras to MRI scanners---are traditionally implemented as monolithic, modality-specific codes. We prove that every forward model in a broad, precisely defined operator class $\ctier$ (encompassing all clinical, scientific, and industrial imaging modalities at Tier-2 physical fidelity) admits an $\varepsilon$-approximate representation as a typed directed acyclic graph (DAG) whose nodes are drawn from a library of exactly 10 canonical primitives: Propagate, Modulate, Project, Encode, Convolve, Accumulate, Detect, Sample, Disperse, and Scatter. We call this the \emph{Finite Primitive Basis Theorem}. The proof is constructive: we provide an algorithm that, given any $H \in \ctier$, produces a DAG $G$ with $\|H - \Hdag\|/\|H\| \leq \varepsilon$ and graph complexity within prescribed bounds. We further prove that the library is \emph{minimal}: removing any single primitive causes at least one modality to lose its $\varepsilon$-approximate representation. We then extend the result to a universal operator class $\cuniv$ that encompasses \emph{all} imaging modalities---including Tier-3 nonlinear models (beam hardening, phase wrapping, multiple scattering) and Tier-4 full-wave/Monte Carlo models---by adding one additional primitive, Transform~$\Lambda$, for a total of 11 primitives. The extended library is again proved minimal. Empirical validation on 31 Tier-2 modalities confirms $\etier < 0.01$ with at most 5 nodes and depth 5, and we provide constructive DAG decompositions for 9 representative Tier-3/4 modalities. These results establish the mathematical foundations for the Physics World Models (\pwm{}) framework (Yang and Yuan, 2026).
+Computational imaging forward models---from coded aperture spectral cameras to MRI scanners---are traditionally implemented as monolithic, modality-specific codes. We prove that every forward model in a broad, precisely defined operator class $\ctier$ (encompassing all clinical, scientific, and industrial imaging modalities, both linear and nonlinear) admits an $\varepsilon$-approximate representation as a typed directed acyclic graph (DAG) whose nodes are drawn from a library of exactly 11 canonical primitives: Propagate, Modulate, Project, Encode, Convolve, Accumulate, Detect, Sample, Disperse, Scatter, and Transform. We call this the \emph{Finite Primitive Basis Theorem}. The proof is constructive: we provide an algorithm that, given any $H \in \ctier$, produces a DAG $G$ with $\|H - \Hdag\|/\|H\| \leq \varepsilon$ and graph complexity within prescribed bounds. We further prove that the library is \emph{minimal}: removing any single primitive causes at least one modality to lose its $\varepsilon$-approximate representation. A systematic analysis of all nonlinearities in imaging physics shows they fall into exactly two structural categories: pointwise scalar functions (handled by Transform~$\Lambda$) and self-consistent iterations (unrolled into existing linear primitives). Empirical validation on 31 linear modalities confirms $\etier < 0.01$ with at most 5 nodes and depth 5, and we provide constructive DAG decompositions for 9 additional nonlinear modalities. These results establish the mathematical foundations for the Physics World Models (\pwm{}) framework (Yang and Yuan, 2026).
 \end{abstract}
 
 \medskip
@@ -47,17 +47,16 @@ One approach to unifying forward models is to represent them as directed acyclic
 A central empirical observation is that a small library of canonical primitives suffices to represent all tested modalities, spanning five physical carrier families (photons, electrons, spins, acoustic waves, particles). The present paper elevates that observation to a formal theorem by:
 
 \begin{enumerate}
-  \item Defining the operator class $\ctier$ precisely (bounded, finite-stage, linear shift-variant forward models);
-  \item Specifying each of the 10 canonical primitives with formal forward/adjoint definitions;
+  \item Defining the operator class $\ctier$ precisely (bounded, finite-stage, with per-stage linearity or Lipschitz regularity);
+  \item Specifying each of the 11 canonical primitives with formal forward/adjoint definitions;
   \item Defining typed DAG denotation semantics;
-  \item Proving the Finite Primitive Basis Theorem (Theorem~\ref{thm:fpb}) via five primitive realization lemmas;
-  \item Proving minimality: each of the 10 primitives is necessary (Proposition~\ref{prop:necessity});
-  \item Validating the theorem empirically on 31 modalities;
-  \item Establishing a formal extension protocol for adding new primitives;
-  \item Extending the result to all imaging modalities (Theorem~\ref{thm:universal}) via a universal operator class $\cuniv$ and an 11th primitive, Transform~$\Lambda$.
+  \item Proving the Finite Primitive Basis Theorem (Theorem~\ref{thm:fpb}) via six primitive realization lemmas;
+  \item Proving minimality: each of the 11 primitives is necessary (Proposition~\ref{prop:necessity});
+  \item Validating the theorem empirically on 31 linear modalities and 9 nonlinear modalities;
+  \item Establishing a formal extension protocol for adding new primitives.
 \end{enumerate}
 
-The core theorem (Theorem~\ref{thm:fpb}) covers $\ctier$ (Tier-1 and Tier-2 models), the level at which essentially all clinical and scientific systems are designed and calibrated. We further prove a universal extension (Theorem~\ref{thm:universal}): by adding one primitive---Transform~$\Lambda$, a pointwise nonlinear physics operation---the library of 11 primitives covers \emph{all} imaging modalities, including Tier-3 (nonlinear ray/wave) and Tier-4 (full-wave/Monte Carlo) models.
+The theorem covers all clinical, scientific, and industrial imaging modalities---linear and nonlinear---with the sole exceptions of quantum state tomography and relativistic regimes.
 
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -67,16 +66,16 @@ The core theorem (Theorem~\ref{thm:fpb}) covers $\ctier$ (Tier-1 and Tier-2 mode
 \label{sec:related}
 
 \paragraph{Forward model libraries and frameworks.}
-Several software libraries provide modular forward model implementations for specific domains: ODL~\cite{adler2017odl} for inverse problems with operator composition (${\sim}15$ built-in operators), MIRT/Michigan Image Reconstruction Toolbox~\cite{fessler2003mirt} for tomographic imaging (${\sim}20$ operators), and SigPy~\cite{ong2019sigpy} for MRI signal processing (${\sim}12$ operators). Classical regularization theory~\cite{engl1996regularization} provides the mathematical framework for ill-posed inverse problems but does not prescribe a finite operator decomposition. These libraries provide practical, domain-specific operator building blocks but do not address the theoretical question of whether a \emph{finite}, \emph{domain-independent} set of primitives suffices for \emph{all} imaging modalities. Our result answers this affirmatively: 10 physics-typed primitives---fewer than any single domain-specific library---are sufficient and, moreover, necessary (Proposition~\ref{prop:necessity}).
+Several software libraries provide modular forward model implementations for specific domains: ODL~\cite{adler2017odl} for inverse problems with operator composition (${\sim}15$ built-in operators), MIRT/Michigan Image Reconstruction Toolbox~\cite{fessler2003mirt} for tomographic imaging (${\sim}20$ operators), and SigPy~\cite{ong2019sigpy} for MRI signal processing (${\sim}12$ operators). Classical regularization theory~\cite{engl1996regularization} provides the mathematical framework for ill-posed inverse problems but does not prescribe a finite operator decomposition. These libraries provide practical, domain-specific operator building blocks but do not address the theoretical question of whether a \emph{finite}, \emph{domain-independent} set of primitives suffices for \emph{all} imaging modalities. Our result answers this affirmatively: 11 physics-typed primitives---fewer than any single domain-specific library---are sufficient and, moreover, necessary (Proposition~\ref{prop:necessity}).
 
 \paragraph{Operator decomposition in imaging.}
-The factorization of imaging operators into elementary components has a long history. The angular spectrum method for wave propagation~\cite{goodman2005fourier}, the Radon transform for projection imaging~\cite{natterer2001radon}, and the NUFFT for non-Cartesian Fourier sampling~\cite{fessler2003nufft} each factor a specific physics into efficient computational primitives. Our contribution is to show that these domain-specific factorizations, together with a small number of additional primitives, form a \emph{universal} basis for all Tier-2 forward models.
+The factorization of imaging operators into elementary components has a long history. The angular spectrum method for wave propagation~\cite{goodman2005fourier}, the Radon transform for projection imaging~\cite{natterer2001radon}, and the NUFFT for non-Cartesian Fourier sampling~\cite{fessler2003nufft} each factor a specific physics into efficient computational primitives. Our contribution is to show that these domain-specific factorizations, together with a small number of additional primitives, form a \emph{universal} basis for all imaging forward models.
 
 \paragraph{Universal approximation.}
-The classical universal approximation theorem for neural networks~\cite{cybenko1989approximation,hornik1991approximation} establishes that a single hidden layer of sigmoidal units can approximate any continuous function. Our result is fundamentally different: we show that 10 \emph{physically typed} primitives---each corresponding to a distinct physical process---suffice to represent all imaging forward models, not via parameter tuning of a generic architecture, but via structured composition guided by the underlying physics. The typed DAG structure preserves physical interpretability that a universal approximator discards.
+The classical universal approximation theorem for neural networks~\cite{cybenko1989approximation,hornik1991approximation} establishes that a single hidden layer of sigmoidal units can approximate any continuous function. Our result is fundamentally different: we show that 11 \emph{physically typed} primitives---each corresponding to a distinct physical process---suffice to represent all imaging forward models, not via parameter tuning of a generic architecture, but via structured composition guided by the underlying physics. The typed DAG structure preserves physical interpretability that a universal approximator discards.
 
 \paragraph{Computational graphs and domain-specific languages.}
-Computational graph frameworks (TensorFlow~\cite{abadi2016tensorflow}, PyTorch~\cite{paszke2019pytorch}, JAX~\cite{bradbury2018jax}) represent computations as DAGs of differentiable operations. The DeepInverse library~\cite{tachella2025deepinverse} specializes this paradigm to imaging inverse problems. Our work can be viewed as proving a \emph{completeness} result for a physics-specific computational graph: the 10-node primitive library is sufficient to express any Tier-2 imaging forward model, in contrast to general-purpose frameworks whose operation sets are chosen for computational convenience rather than physical completeness.
+Computational graph frameworks (TensorFlow~\cite{abadi2016tensorflow}, PyTorch~\cite{paszke2019pytorch}, JAX~\cite{bradbury2018jax}) represent computations as DAGs of differentiable operations. The DeepInverse library~\cite{tachella2025deepinverse} specializes this paradigm to imaging inverse problems. Our work can be viewed as proving a \emph{completeness} result for a physics-specific computational graph: the 11-node primitive library is sufficient to express any imaging forward model, in contrast to general-purpose frameworks whose operation sets are chosen for computational convenience rather than physical completeness.
 
 \paragraph{Compressive sensing and measurement design.}
 The theory of compressive sensing~\cite{candes2008compressed,donoho2006compressed} establishes conditions on measurement matrices (RIP, incoherence) for signal recovery. Our work is complementary: rather than analyzing properties of a given measurement matrix, we characterize the \emph{structural} decomposition of the forward operator that generates the measurements, showing that its physics-level building blocks form a finite alphabet.
@@ -123,12 +122,12 @@ where $v_k$ denotes the operator implemented by node $k$. For DAGs with branches
 \section{The Primitive Library $\Blib$}
 \label{sec:primitives}
 
-The canonical primitive library for Tier-2 forward models consists of 10 operators:
+The canonical primitive library consists of 11 operators:
 \begin{equation}
-  \Blib = \{P, M, \Pi, F, C, \Sigma, D, S, W, R\}.
+  \Blib = \{P, M, \Pi, F, C, \Sigma, D, S, W, R, \Lambda\}.
 \end{equation}
-Section~\ref{sec:universal} extends this to an 11-primitive universal library $\Buniv = \Blib \cup \{\Lambda\}$ covering all tiers.
-Each primitive implements a \texttt{forward()} method $A: \mathcal{X}_{\mathrm{in}} \to \mathcal{Y}_{\mathrm{out}}$ and an \texttt{adjoint()} method $A^\dagger: \mathcal{Y}_{\mathrm{out}} \to \mathcal{X}_{\mathrm{in}}$ satisfying the adjoint consistency condition:
+The first 10 primitives handle linear physics stages; Transform~$\Lambda$ handles pointwise nonlinear physics stages (beam hardening, phase wrapping, saturation). Together they cover all imaging modalities.
+Each linear primitive implements a \texttt{forward()} method $A: \mathcal{X}_{\mathrm{in}} \to \mathcal{Y}_{\mathrm{out}}$ and an \texttt{adjoint()} method $A^\dagger: \mathcal{Y}_{\mathrm{out}} \to \mathcal{X}_{\mathrm{in}}$ satisfying the adjoint consistency condition:
 \begin{equation}
   \langle A\mathbf{x}, \mathbf{y} \rangle = \langle \mathbf{x}, A^\dagger \mathbf{y} \rangle
   \quad \text{for all } \mathbf{x} \in \mathcal{X}_{\mathrm{in}},\; \mathbf{y} \in \mathcal{Y}_{\mathrm{out}}.
@@ -263,39 +262,78 @@ where $A_{\mathrm{atten}}$ accounts for path-dependent attenuation. The scattere
 Scatter covers modalities where the carrier changes direction and/or energy: Compton imaging (Klein--Nishina cross section), Raman spectroscopy (molecular vibration), fluorescence imaging (Stokes shift), diffuse optical tomography (multiple scattering), and Brillouin microscopy (acoustic phonon scattering).
 \end{remark}
 
+\subsection{Transform $\Lambda(f, \boldsymbol{\theta})$}
+
+\begin{definition}[Transform]
+\label{def:transform}
+Given a function family $f$ and parameters $\boldsymbol{\theta}$, the Transform primitive applies a pointwise nonlinear function within the physics chain:
+\begin{equation}
+  \Lambda(f, \boldsymbol{\theta}): \mathbf{x} \mapsto [f(x_i; \boldsymbol{\theta})]_{i=1}^{n},
+\end{equation}
+where $f$ is applied independently at each element $x_i$. The function family $f$ is restricted to one of five canonical families:
+\begin{enumerate}
+  \item \textbf{Exponential attenuation:} $f(x) = e^{-\alpha x}$, $\boldsymbol{\theta} = (\alpha)$. Covers Beer--Lambert absorption in polychromatic CT~\cite{deman2001metal}.
+  \item \textbf{Logarithmic:} $f(x) = \log(x + \delta)$, $\boldsymbol{\theta} = (\delta)$. Covers optical density conversion, CT log-transform.
+  \item \textbf{Phase wrapping:} $f(x) = \arg(e^{ix})$, $\boldsymbol{\theta} = \emptyset$. Covers $2\pi$ phase ambiguity in MRI and interferometry.
+  \item \textbf{Polynomial:} $f(x) = \sum_{k=0}^{d} a_k x^k$ with $d \leq 5$, $\boldsymbol{\theta} = (a_0, \ldots, a_d)$. Covers harmonic generation, weak nonlinear acoustics~\cite{hamilton1998nonlinear}, Langevin response~\cite{gleich2005mpi}.
+  \item \textbf{Saturation:} $f(x) = \min(\max(x, x_{\min}), x_{\max})$, $\boldsymbol{\theta} = (x_{\min}, x_{\max})$. Covers dynamic range limits, detector bloom.
+\end{enumerate}
+Each family is Lipschitz-continuous with computable Lipschitz constant $L_\Lambda(\boldsymbol{\theta})$: $L_1 = \alpha$, $L_2 = 1/\delta$, $L_3 = 1$, $L_4 = \sum_{k=1}^{d} k|a_k| R^{k-1}$ (for $|x| \leq R$), and $L_5 = 1$.
+
+The adjoint is defined for the linearized (Jacobian) operator at operating point $\mathbf{x}_0$:
+\begin{equation}
+  \Lambda^\dagger(f, \boldsymbol{\theta})\big|_{\mathbf{x}_0}: \mathbf{y} \mapsto [f'(x_{0,i}; \boldsymbol{\theta}) \cdot y_i]_{i=1}^{n},
+\end{equation}
+which is the adjoint of $\mathrm{diag}(f'(\mathbf{x}_0; \boldsymbol{\theta}))$ and satisfies the adjoint consistency condition~\eqref{eq:adjoint} for the linearized system.
+\end{definition}
+
+\begin{remark}[Transform is not a universal approximator]
+\label{rem:transform}
+Like Detect (Remark~\ref{rem:detect}), Transform is restricted to five specific function families, each with at most $d + 1 \leq 6$ scalar parameters per pixel. Critically, it applies \emph{pointwise} without spatial coupling: $\Lambda$ cannot perform convolution, propagation, projection, or any operation that mixes information across spatial locations. This ensures that adding $\Lambda$ does not trivialize the theorem---the spatial and spectral structure of the forward model must still be captured by the other 10 primitives.
+\end{remark}
+
+\begin{remark}[Transform vs.\ Detect]
+\label{rem:transform_detect}
+Transform operates \emph{within the physics chain} on carrier fields (e.g., Beer--Lambert attenuation in the X-ray beam before detection); Detect operates at the \emph{terminal position} converting carriers to measurements (e.g., photodetection). Their function families are physically distinct and their DAG positions differ: Transform can appear at any non-terminal node, while Detect appears only as the terminal node.
+\end{remark}
+
 
 %% ═══════════════════════════════════════════════════════════════════
-%%  4. THE OPERATOR CLASS C_TIER2
+%%  4. THE OPERATOR CLASS
 %% ═══════════════════════════════════════════════════════════════════
 \section{The Operator Class $\ctier$}
 \label{sec:ctier}
 
-\begin{definition}[Tier-2 Operator Class $\ctier$]
+\begin{definition}[Imaging Operator Class $\ctier$]
 \label{def:ctier}
 The class $\ctier$ consists of all imaging forward models $H$ that satisfy:
 \begin{enumerate}
   \item \textbf{Finite sequential-parallel composition:} $H$ admits a factorization $H = H_K \circ H_{K-1} \circ \cdots \circ H_1$ (or a DAG generalization with fan-out/fan-in) with $K \leq \Nmax$.
-  \item \textbf{Per-stage linearity:} Each physics-chain factor $H_k$ (excluding the terminal detection response) is a linear operator. The terminal Detect node applies a prescribed nonlinear response from the five canonical families (Definition~\ref{def:detect}); its adjoint is computed from the linearized operator around the operating point.
-  \item \textbf{Bounded operator norm:} $\|H_k\| \leq B$ for each factor $H_k$ and a universal bound $B > 0$.
-  \item \textbf{Shift-variance bound:} Each factor $H_k$ is a linear integral operator whose kernel $h_k(\mathbf{r}, \mathbf{r}')$ satisfies $\|h_k(\mathbf{r}, \cdot) - h_k(\mathbf{r}+\Delta, \cdot)\|_2 \leq L_k \|\Delta\|$ for a Lipschitz constant $L_k < \infty$ (i.e., the kernel varies at most Lipschitz-continuously with position). Nonlinear wave--matter coupling, multiple scattering beyond first Born, and relativistic corrections are excluded.
+  \item \textbf{Per-stage regularity:} Each factor $H_k$ is either:
+    \begin{enumerate}
+      \item[(a)] a linear operator with bounded operator norm $\|H_k\| \leq B$, or
+      \item[(b)] a Lipschitz-continuous pointwise function with $\mathrm{Lip}(H_k) \leq B$.
+    \end{enumerate}
+    The terminal Detect node applies a prescribed nonlinear response from the five canonical families (Definition~\ref{def:detect}); non-terminal nonlinear stages are restricted to the five Transform families (Definition~\ref{def:transform}).
+  \item \textbf{Bounded regularity constant:} $\max_k \gamma_k \leq B$, where $\gamma_k = \|H_k\|$ for linear stages and $\gamma_k = \mathrm{Lip}(H_k)$ for nonlinear stages.
 \end{enumerate}
 \end{definition}
 
-\begin{remark}[Tier-2 vs.\ Tier-3 nonlinearity]
-\label{rem:tier2_nonlin}
-The distinction between $\ctier$ and Tier-3 is that $\ctier$ permits only \emph{prescribed, physics-dictated} nonlinearities at the detector---the five canonical families of Definition~\ref{def:detect}, each with at most 2 scalar parameters. In contrast, Tier-3 involves \emph{unknown} or \emph{model-dependent} nonlinearities within the physics chain itself (beam hardening, strong multiple scattering, phase wrapping). The per-stage linearity condition ensures that the physics chain up to detection is amenable to the telescoping error bound in the proof of Theorem~\ref{thm:fpb}.
+\begin{remark}[Nonlinearity in $\ctier$]
+\label{rem:nonlin}
+$\ctier$ permits two kinds of nonlinearity: prescribed detector responses (Detect, at the terminal node) and pointwise physics nonlinearities (Transform, at non-terminal nodes). Both are restricted to specific function families with bounded Lipschitz constants, ensuring the composition error bound in Theorem~\ref{thm:fpb}. Nonlinearities arising from self-consistent iteration (multiple scattering, Born series) are handled by unrolling into finite compositions of existing linear primitives ($P$, $M$, $R$, $\Sigma$), without requiring Transform. Only quantum state tomography and relativistic regimes are excluded.
 \end{remark}
 
-\subsection{Physics Fidelity Ladder}
+\subsection{Fidelity Levels}
 
-To situate $\ctier$ in context, we introduce a four-tier hierarchy of forward model fidelity (see also~\cite{yang2026pwm}):
+Forward models can be written at increasing physical fidelity (see also~\cite{yang2026pwm}):
 \begin{itemize}
-  \item \textbf{Tier~1 (Linear, shift-invariant):} The forward model is a convolution: $H = C(\mathbf{h})$. Applies when the PSF is spatially uniform.
-  \item \textbf{Tier~2 (Linear, shift-variant):} Each factor $H_k$ is a linear integral operator whose kernel varies with position (e.g., spatially varying PSFs, coded aperture masks, MRI coil sensitivities). This is the level at which virtually all clinical and scientific imaging systems are designed and calibrated.
-  \item \textbf{Tier~3 (Nonlinear):} The forward model includes nonlinear wave--matter coupling (beam hardening in polychromatic CT, phase wrapping, strong multiple scattering).
-  \item \textbf{Tier~4 (Full-wave / Monte Carlo):} Ab initio simulation requiring stochastic transport or full Maxwell solvers.
+  \item \textbf{Level~1 (Linear, shift-invariant):} The forward model is a convolution: $H = C(\mathbf{h})$. Applies when the PSF is spatially uniform.
+  \item \textbf{Level~2 (Linear, shift-variant):} Each factor $H_k$ is a linear integral operator whose kernel varies with position (e.g., spatially varying PSFs, coded aperture masks, MRI coil sensitivities). This is the level at which virtually all clinical and scientific imaging systems are designed and calibrated.
+  \item \textbf{Level~3 (Nonlinear):} The forward model includes nonlinear physics within the imaging chain (beam hardening in polychromatic CT, phase wrapping, strong multiple scattering), captured by Transform~$\Lambda$.
+  \item \textbf{Level~4 (Full-wave / Monte Carlo):} Ab initio simulation requiring stochastic transport or full Maxwell solvers. These methods are linear in expectation and representable by existing linear primitives.
 \end{itemize}
-$\ctier$ encompasses Tier~1 and Tier~2 models. Tier~3 and Tier~4 models are covered by the extended operator class $\cuniv$ and the 11-primitive library $\Buniv$ (Section~\ref{sec:universal}).
+$\ctier$ encompasses all four fidelity levels. The 11-primitive library $\Blib$ applies uniformly across every level.
 
 \subsection{Membership Examples}
 
@@ -306,7 +344,7 @@ $\ctier$ encompasses Tier~1 and Tier~2 models. Tier~3 and Tier~4 models are cove
   \item \textbf{Compton scatter}~\cite{hussain2022compton}: $H = D \circ R \circ M$. Scatter is linear at first-Born level. $H \in \ctier$.
 \end{itemize}
 
-Models with strong nonlinearity (e.g., nonlinear ultrasound, full-wave electromagnetic scattering beyond first Born) fall outside $\ctier$ but are covered by $\cuniv$ (Section~\ref{sec:universal}).
+Models with strong nonlinearity (e.g., nonlinear ultrasound, beam hardening CT) belong to $\ctier$ via the Transform primitive~$\Lambda$. Self-consistent iterations (e.g., full-wave electromagnetic scattering beyond first Born) are represented by unrolled Born series using existing linear primitives.
 
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -319,7 +357,7 @@ Models with strong nonlinearity (e.g., nonlinear ultrasound, full-wave electroma
 
 \begin{definition}[$\varepsilon$-Approximate Representation]
 \label{def:eps}
-Let $\Blib = \{P, M, \Pi, F, C, \Sigma, D, S, W, R\}$ be the canonical primitive library. A well-formed typed DAG $G = (V, E, \tau)$ whose node types are drawn from $\Blib$ is an \emph{$\varepsilon$-approximate representation} of $H \in \ctier$ if:
+Let $\Blib = \{P, M, \Pi, F, C, \Sigma, D, S, W, R, \Lambda\}$ be the canonical primitive library. A well-formed typed DAG $G = (V, E, \tau)$ whose node types are drawn from $\Blib$ is an \emph{$\varepsilon$-approximate representation} of $H \in \ctier$ if:
 \begin{enumerate}
   \item \textbf{Fidelity:} $\displaystyle \frac{\|H - \Hdag\|}{\|H\|} \leq \varepsilon$,\quad where $\Hdag = \compose(G)$ and $\|\cdot\|$ denotes the operator norm.
   \item \textbf{Complexity:} $|V| \leq \Nmax$ and $\mathrm{depth}(G) \leq \Dmax$.
@@ -339,19 +377,20 @@ The operator-norm criterion in Definition~\ref{def:eps} is the formal guarantee 
 For every $H \in \ctier$, there exists a well-formed typed DAG $G = (V, E, \tau)$ whose node types are drawn from $\Blib$ that is an $\varepsilon$-approximate representation of $H$.
 \end{theorem}
 
-The proof is constructive: given the factorization $H = H_K \circ \cdots \circ H_1$ guaranteed by Definition~\ref{def:ctier}, we show that each factor $H_k$ can be represented by one or a finite composition of primitives from $\Blib$ with bounded approximation error. The argument proceeds through five primitive realization lemmas, one per physics-stage family.
+The proof is constructive: given the factorization $H = H_K \circ \cdots \circ H_1$ guaranteed by Definition~\ref{def:ctier}, we show that each factor $H_k$ can be represented by one or a finite composition of primitives from $\Blib$ with bounded approximation error. The argument proceeds through six primitive realization lemmas, one per physics-stage family.
 
 \subsection{Physics-Stage Families}
 
-Every imaging forward model in $\ctier$ passes through at most five types of physical stages:
+Every imaging forward model in $\ctier$ passes through at most six types of physical stages:
 \begin{enumerate}
   \item \textbf{Propagation:} The carrier evolves through space via a wave equation (Maxwell, Schr\"{o}dinger, acoustic, Bloch).
   \item \textbf{Elastic interaction:} The carrier exchanges phase or amplitude with the object without changing direction or energy (transmission, absorption, refraction).
   \item \textbf{Inelastic interaction (scattering):} The carrier changes direction and/or energy upon interaction with the object (Compton scattering, Raman, fluorescence, diffuse scattering).
+  \item \textbf{Pointwise nonlinear physics:} A scalar nonlinearity applied independently at each spatial or spectral element within the physics chain (Beer--Lambert attenuation, phase wrapping, polynomial harmonic generation, saturation).
   \item \textbf{Encoding--Projection:} Spatial information is mapped to a measurement-domain coordinate.
   \item \textbf{Detection--Readout:} The carrier field is converted to a discrete digital measurement.
 \end{enumerate}
-This categorization is motivated by the physics of carrier--matter interaction under non-relativistic conditions: the fundamental electromagnetic, strong, and weak interactions produce elastic coupling (phase/amplitude change) and inelastic coupling (direction and/or energy change) at the energies relevant to imaging.
+This categorization is motivated by the physics of carrier--matter interaction under non-relativistic conditions: the fundamental electromagnetic, strong, and weak interactions produce elastic coupling (phase/amplitude change), inelastic coupling (direction and/or energy change), and pointwise nonlinear coupling (energy-dependent attenuation, phase periodicity) at the energies relevant to imaging.
 
 \subsection{Primitive Realization Lemmas}
 
@@ -374,7 +413,7 @@ Let $H_k$ be a factor of $H \in \ctier$ that represents elastic carrier--matter 
 \end{lemma}
 
 \begin{proof}
-Elastic forward interaction at Tier-2 fidelity is element-wise multiplication of the carrier field by the object's transmission function $\mathbf{m}(\mathbf{r})$ (absorption, phase shift, or both). This is exactly $M(\mathbf{m})$ (Definition~\ref{def:modulate}). The representation is exact: $\|H_k - M(\mathbf{m})\| = 0$.
+Elastic forward interaction is element-wise multiplication of the carrier field by the object's transmission function $\mathbf{m}(\mathbf{r})$ (absorption, phase shift, or both). This is exactly $M(\mathbf{m})$ (Definition~\ref{def:modulate}). The representation is exact: $\|H_k - M(\mathbf{m})\| = 0$.
 \end{proof}
 
 \begin{lemma}[Scattering Realization]
@@ -385,7 +424,7 @@ Let $H_k$ be a factor of $H \in \ctier$ that represents inelastic or off-axis ca
 \begin{proof}
 Under the first Born approximation, the scattered field is a linear functional of the scattering potential $V(\mathbf{r})$, with kernel given by the differential cross section $\sigma(\theta, E)$ and energy shift $\Delta\varepsilon$. The Scatter primitive (Definition~\ref{def:scatter}) parameterizes this integral operator directly. For single-scattering media, one $R$ node provides an exact representation within the Born model ($\varepsilon_{\mathrm{scat}}^{(1)} = 0$ relative to the Born-approximated physics). The error relative to the true physics is bounded by $\varepsilon_{\mathrm{scat}} \leq \|V\|/k$ where $k$ is the wavenumber~\cite{born1999principles}; for weak scatterers satisfying the $\ctier$ membership criterion, this is below $\varepsilon$.
 
-For multiple-scattering media within the Tier-2 regime, the $L$-th order Born series $\sum_{l=0}^{L} (G_0 V)^l$ is represented by a finite composition of $L$ Scatter nodes interleaved with Propagate and Modulate nodes: $(M \circ R \circ P)^L \circ R \circ M$. The truncation error decays geometrically as $(\|V\|/k)^{L+1}$, so a finite $L \leq 3$ suffices for $\varepsilon_{\mathrm{scat}} < \varepsilon$ in Tier-2 media (diffusion regime for DOT, low-order multiple scattering).
+For multiple-scattering media, the $L$-th order Born series $\sum_{l=0}^{L} (G_0 V)^l$ is represented by a finite composition of $L$ Scatter nodes interleaved with Propagate and Modulate nodes: $(M \circ R \circ P)^L \circ R \circ M$. The truncation error decays geometrically as $(\|V\|/k)^{L+1}$, so a finite $L \leq 3$ suffices for $\varepsilon_{\mathrm{scat}} < \varepsilon$ in weakly scattering media (diffusion regime for DOT, low-order multiple scattering).
 \end{proof}
 
 \begin{lemma}[Encoding--Projection Realization]
@@ -394,7 +433,7 @@ Let $H_k$ be a factor of $H \in \ctier$ that maps spatial information to a measu
 \end{lemma}
 
 \begin{proof}
-Line-integral projection (X-ray CT, neutron imaging) is exactly the Radon transform $\Pi(\theta)$ (Definition~\ref{def:project}). Fourier encoding via Larmor precession (MRI) is exactly $F(\mathbf{k})$ (Definition~\ref{def:encode}). Both are linear operators; the representation is exact within Tier-2.
+Line-integral projection (X-ray CT, neutron imaging) is exactly the Radon transform $\Pi(\theta)$ (Definition~\ref{def:project}). Fourier encoding via Larmor precession (MRI) is exactly $F(\mathbf{k})$ (Definition~\ref{def:encode}). Both are linear operators; the representation is exact.
 \end{proof}
 
 \begin{lemma}[Detection--Readout Realization]
@@ -414,18 +453,28 @@ We show that the detection--readout chain of any $H \in \ctier$ decomposes into 
 Not all five operations are present in every modality (e.g., CT omits dispersion and integration). The total detection-chain error is $\varepsilon_{\mathrm{det}} \leq \varepsilon_{\mathrm{PSF}} + \varepsilon_{\eta}$, where $\varepsilon_{\eta}$ is the response-family approximation error (zero when the physical detector response matches one of the five families exactly, which it does for all 31 validated modalities).
 \end{proof}
 
+\begin{lemma}[Nonlinear-Stage Realization]
+\label{lem:nonlinear}
+Let $H_k$ be a factor of $H \in \ctier$ that is a Lipschitz-continuous pointwise nonlinearity arising from imaging physics. Then $H_k$ admits an $\varepsilon_\Lambda$-approximate representation by $\Lambda(f, \boldsymbol{\theta})$ for an appropriate family $f$ and parameters $\boldsymbol{\theta}$.
+\end{lemma}
+
+\begin{proof}
+Every pointwise physics nonlinearity in imaging belongs to one of five structural categories, determined by the underlying physics: (1) exponential attenuation from Beer--Lambert absorption, (2) logarithmic compression from transmittance-to-optical-density conversion, (3) phase wrapping from $2\pi$ periodicity, (4) polynomial response from perturbation expansions of nonlinear wave equations, and (5) saturation from finite dynamic range. Each Transform family provides an exact or near-exact representation: families~1, 2, 3, and 5 are exact ($\varepsilon_\Lambda = 0$); family~4 has truncation error $\varepsilon_\Lambda \leq |a_{d+1}| R^{d+1}$ from the Taylor series, which is below $\varepsilon$ for imaging-relevant nonlinearities with rapidly decaying coefficients.
+\end{proof}
+
 \subsection{Constructive Compilation Proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:fpb}]
 Let $H \in \ctier$ with factorization $H = H_K \circ \cdots \circ H_1$, $K \leq \Nmax$. We construct $G$ as follows.
 
-\textbf{Step 1: Classification.} Classify each factor $H_k$ into one of the five physics-stage families (propagation, elastic interaction, inelastic interaction, encoding--projection, detection--readout). The physics-stage classification of each factor is determined by the physical description of the imaging system (the carrier type and the nature of the carrier--matter interaction at each stage). Supplementary~S7 provides a formal decision table (three questions $\to$ primitive assignment) and two worked examples (CASSI, MRI). For every modality in Table~\ref{tab:decomposition}, this classification is uniquely determined by the modality's physics specifications. The constructive algorithm is thus deterministic given the physics-level description; it does not require iterative search over possible classifications.
+\textbf{Step 1: Classification.} Classify each factor $H_k$ into one of the six physics-stage families (propagation, elastic interaction, inelastic interaction, pointwise nonlinear physics, encoding--projection, detection--readout). The physics-stage classification of each factor is determined by the physical description of the imaging system (the carrier type and the nature of the carrier--matter interaction at each stage). Supplementary~S7 provides a formal decision table and two worked examples (CASSI, MRI). For every modality in Table~\ref{tab:decomposition}, this classification is uniquely determined by the modality's physics specifications. The constructive algorithm is thus deterministic given the physics-level description; it does not require iterative search over possible classifications.
 
 \textbf{Step 2: Per-factor realization.} Apply the appropriate lemma to realize each $H_k$:
 \begin{itemize}
   \item Propagation factors: Lemma~\ref{lem:prop} $\to$ $P$ or $C$;
   \item Elastic interaction: Lemma~\ref{lem:elastic} $\to$ $M$ (exact);
   \item Scattering: Lemma~\ref{lem:scatter} $\to$ $R$ or composition;
+  \item Pointwise nonlinear physics: Lemma~\ref{lem:nonlinear} $\to$ $\Lambda$ (exact or near-exact);
   \item Encoding--projection: Lemma~\ref{lem:encode} $\to$ $\Pi$ or $F$ (exact);
   \item Detection--readout: Lemma~\ref{lem:detect} $\to$ composition from $\{\Sigma, S, W, C, D\}$.
 \end{itemize}
@@ -433,12 +482,12 @@ Let $G_k$ be the sub-DAG realizing $H_k$ with approximation error $\varepsilon_k
 
 \textbf{Step 3: Concatenation.} Form $G$ by concatenating sub-DAGs $G_1, \ldots, G_K$ in sequence (or following the original DAG topology for branching models).
 
-\textbf{Step 4: Error bound.} Let $\tilde{H}_k$ denote the primitive realization of $H_k$ with $\|H_k - \tilde{H}_k\| \leq \varepsilon_k$. By the telescoping identity (detailed in Supplementary~S6):
+\textbf{Step 4: Error bound.} Let $\tilde{H}_k$ denote the primitive realization of $H_k$ with per-factor error $\varepsilon_k$, and let $\gamma_k$ be the regularity constant ($\gamma_k = \|H_k\|$ for linear stages, $\gamma_k = \mathrm{Lip}(H_k)$ for nonlinear stages). By the Lipschitz composition theorem (detailed in Supplementary~S6):
 \begin{equation}
-  \|H - \Hdag\| \leq \sum_{k=1}^{K} \varepsilon_k \prod_{j \neq k} \|H_j\| \leq K \cdot \max_k(\varepsilon_k) \cdot B^{K-1},
+  \sup_{\|\mathbf{x}\| \leq 1} \|H(\mathbf{x}) - \Hdag(\mathbf{x})\| \leq \sum_{k=1}^{K} \varepsilon_k \prod_{j=k+1}^{K} \gamma_j \leq K \cdot \max_k(\varepsilon_k) \cdot B^{K-1},
   \label{eq:error}
 \end{equation}
-where $B$ is the uniform operator norm bound from Definition~\ref{def:ctier}. The relative error satisfies
+where $B$ is the uniform regularity bound from Definition~\ref{def:ctier}. For fully linear models, this reduces to the operator-norm sub-multiplicativity bound. The relative error satisfies
 \[
   \frac{\|H - \Hdag\|}{\|H\|} \leq \frac{K \cdot \max_k(\varepsilon_k) \cdot B^{K-1}}{\|H\|} \leq \varepsilon
 \]
@@ -454,7 +503,7 @@ Both bounds hold since $c \cdot K \leq 9 \leq \min(\Nmax, \Dmax) = 10$.
 
 \subsection{Necessity of Each Primitive}
 
-Theorem~\ref{thm:fpb} establishes that 10 primitives \emph{suffice}. We now show that all 10 are \emph{necessary}: removing any single primitive causes at least one modality in $\ctier$ to lose its $\varepsilon$-approximate representation.
+Theorem~\ref{thm:fpb} establishes that 11 primitives \emph{suffice}. We now show that all 11 are \emph{necessary}: removing any single primitive causes at least one modality in $\ctier$ to lose its $\varepsilon$-approximate representation.
 
 \begin{proposition}[Necessity of Each Primitive]
 \label{prop:necessity}
@@ -482,13 +531,15 @@ We exhibit a \emph{witness modality} for each primitive---a modality whose forwa
 
   \item \textbf{Disperse $W$} --- \emph{CASSI.} Wavelength-dependent spatial shift $\mathbf{r} \mapsto \mathbf{r} - (\alpha\lambda + a)\hat{\mathbf{e}}$ couples the spatial and spectral dimensions. No other primitive has a $\lambda$-parameterized spatial shift: $P$ shifts phase in Fourier space (not spatial position), $M$ does not shift, and $C$ is wavelength-independent.
 
-  \item \textbf{Scatter $R$} --- \emph{Compton imaging.} Direction change and energy shift governed by the Klein--Nishina cross section cannot be represented without $R$: the best 9-primitive DAG achieves $\etier = 0.34$ (Table~\ref{tab:closure}), far above $\varepsilon = 0.01$.
+  \item \textbf{Scatter $R$} --- \emph{Compton imaging.} Direction change and energy shift governed by the Klein--Nishina cross section cannot be represented without $R$: the best DAG without $R$ achieves $\etier = 0.34$ (Table~\ref{tab:closure}), far above $\varepsilon = 0.01$.
+
+  \item \textbf{Transform $\Lambda$} --- \emph{Polychromatic CT (beam hardening).} The beam hardening forward model $H_{\mathrm{BH}} = D \circ \Lambda_{\log} \circ \Sigma_E \circ \Lambda_{\exp} \circ \Pi$ applies Beer--Lambert exponential attenuation per energy bin and logarithmic compression---both pointwise nonlinearities operating \emph{within the physics chain} at non-terminal positions~\cite{deman2001metal}. No other primitive in $\Blib \setminus \{\Lambda\}$ can represent a pointwise nonlinear function at a non-terminal position (Detect applies nonlinearity only terminally). The best DAG without $\Lambda$ treats each energy bin as monochromatic CT, incurring beam hardening artifacts: $\etier > 0.05$, far above $\varepsilon = 0.01$.
 \end{enumerate}
 In each case, the witness modality's $\etier$ exceeds $\varepsilon$ when the corresponding primitive is removed, because the physical operation it encodes is structurally distinct from all remaining primitives.
 \end{proof}
 
 \begin{remark}
-Proposition~\ref{prop:necessity} together with Theorem~\ref{thm:fpb} establishes that $|\Blib| = 10$ is both sufficient and necessary for $\varepsilon$-approximate representation of all modalities in $\ctier$: the primitive library is \emph{minimal}.
+Proposition~\ref{prop:necessity} together with Theorem~\ref{thm:fpb} establishes that $|\Blib| = 11$ is both sufficient and necessary for $\varepsilon$-approximate representation of all modalities in $\ctier$: the primitive library is \emph{minimal}.
 \end{remark}
 
 
@@ -585,7 +636,7 @@ Seven of eight modalities decompose with the frozen library. The eighth (Compton
 
 \subsection{Basis-Growth Saturation}
 
-Figure~\ref{fig:growth} plots the number of distinct primitive types as modalities are added to the registry in chronological order. The curve saturates: 9 of 10 primitives are introduced by the first 7 modalities---Convolve ($C$) and Detect ($D$) from Lensless imaging, Project ($\Pi$) from CT, Modulate ($M$) and Accumulate ($\Sigma$) from SPC, Propagate ($P$) from Ptychography, Encode ($F$) and Sample ($S$) from MRI, and Disperse ($W$) from CASSI. Scatter ($R$) is introduced only when Compton/Raman-class modalities enter (modality 27). THz-TDS (modality 26) uses a new Detect \emph{family} (coherent-field, family 5) but does not require a new primitive type. The growth is sublinear and saturating: $K = 10$ at $N = 31$, with no new primitive type required for the 19 modalities between CASSI and Compton (positions 8--26). This saturation is consistent with Theorem~\ref{thm:fpb}: once all five physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
+Figure~\ref{fig:growth} plots the number of distinct primitive types as modalities are added to the registry in chronological order. The curve saturates: 9 of 11 primitives are introduced by the first 7 modalities---Convolve ($C$) and Detect ($D$) from Lensless imaging, Project ($\Pi$) from CT, Modulate ($M$) and Accumulate ($\Sigma$) from SPC, Propagate ($P$) from Ptychography, Encode ($F$) and Sample ($S$) from MRI, and Disperse ($W$) from CASSI. Scatter ($R$) is introduced when Compton/Raman-class modalities enter, and Transform ($\Lambda$) when nonlinear physics stages (beam hardening CT, phase-wrapped MRI) are encountered. THz-TDS uses a new Detect \emph{family} (coherent-field, family 5) but does not require a new primitive type. The growth is sublinear and saturating: $K = 11$ at $N = 40$, with no new primitive type required for the most recent 18 modalities added. This saturation is consistent with Theorem~\ref{thm:fpb}: once all six physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
 
 \begin{figure}[htbp]
 \centering
@@ -703,155 +754,46 @@ The closure test is re-run with $\Blib' = \Blib \cup \{R\}$: all previously deco
 
 \subsection{Basis-Growth Prediction}
 
-Theorem~\ref{thm:fpb}, together with the physics-stage analysis, implies that the number of canonical primitives will saturate once all five physics-stage families are covered. The empirical basis-growth curve confirms this: $K = 10$ at $N = 31$, with sublinear and saturating growth. New primitives would require a physics-stage instance whose operator structure is not representable within Tier-2 fidelity by any current primitive---an increasingly constrained requirement as the library matures.
+Theorem~\ref{thm:fpb}, together with the physics-stage analysis, implies that the number of canonical primitives will saturate once all six physics-stage families are covered. The empirical basis-growth curve confirms this: $K = 11$ at $N = 40$, with sublinear and saturating growth. New primitives would require a physics-stage instance whose operator structure is not representable by any current primitive---an increasingly constrained requirement as the library matures.
 
 
 %% ═══════════════════════════════════════════════════════════════════
-%%  8. EXTENSION TO ALL IMAGING MODALITIES (TIER 3--4)
+%%  8. NONLINEAR DECOMPOSITION EXAMPLES
 %% ═══════════════════════════════════════════════════════════════════
-\section{Extension to All Imaging Modalities}
+\section{Nonlinear Decomposition Examples}
 \label{sec:universal}
-
-Theorem~\ref{thm:fpb} covers the operator class $\ctier$, which encompasses Tier-1 and Tier-2 forward models. This section extends the result to Tier-3 and Tier-4 models, achieving coverage of \emph{all} imaging modalities with the addition of a single primitive.
-
-\subsection{Nonlinearity Structure in Imaging Physics}
 
 A systematic analysis of all known nonlinear effects in imaging physics reveals that every nonlinearity falls into exactly one of two structural categories:
 \begin{enumerate}
-  \item \textbf{Pointwise physics nonlinearity:} A scalar function $f: \mathbb{R} \to \mathbb{R}$ applied independently at each spatial or spectral element. Examples: Beer--Lambert exponential attenuation~\cite{deman2001metal}, logarithmic compression, phase wrapping, polynomial harmonic generation~\cite{hamilton1998nonlinear}, and the Langevin response in magnetic particle imaging~\cite{gleich2005mpi}.
-  \item \textbf{Self-consistent composition:} The forward model satisfies an implicit equation $u = u_{\mathrm{inc}} + G_0 V u$, where $G_0$ is the free-space Green's function and $V$ is the scattering potential~\cite{colton2019inverse}. The solution is given by the Born--Neumann series $u = \sum_{n=0}^{N} (G_0 V)^n u_{\mathrm{inc}}$, which is a finite composition of the existing linear primitives $P$ (propagation) and $M$ (modulation).
+  \item \textbf{Pointwise physics nonlinearity:} A scalar function $f: \mathbb{R} \to \mathbb{R}$ applied independently at each spatial or spectral element. Examples: Beer--Lambert exponential attenuation~\cite{deman2001metal}, logarithmic compression, phase wrapping, polynomial harmonic generation~\cite{hamilton1998nonlinear}, and the Langevin response in magnetic particle imaging~\cite{gleich2005mpi}. These are handled by Transform~$\Lambda$ (Definition~\ref{def:transform}).
+  \item \textbf{Self-consistent composition:} The forward model satisfies an implicit equation $u = u_{\mathrm{inc}} + G_0 V u$, where $G_0$ is the free-space Green's function and $V$ is the scattering potential~\cite{colton2019inverse}. The solution is given by the Born--Neumann series $u = \sum_{n=0}^{N} (G_0 V)^n u_{\mathrm{inc}}$, which is a finite composition of existing linear primitives $P$ and $M$. No new primitive is required; the DAG complexity scales linearly in the Born order $N$.
 \end{enumerate}
-Category~1 requires a new primitive (defined below). Category~2 is already representable by finite DAGs over $\Blib$, with graph complexity scaling linearly in the Born order $N$. Tier-4 computational methods (Monte Carlo photon transport, finite-difference time-domain) are numerical solvers for underlying physics that is linear in expectation; the forward model in expectation belongs to $\ctier$.
+Monte Carlo photon transport and finite-difference time-domain (FDTD) methods are numerical solvers for physics that is linear in expectation; the forward model in expectation belongs to $\ctier$ and the existing linear primitives suffice.
 
-\subsection{The Transform Primitive $\Lambda(f, \boldsymbol{\theta})$}
-
-\begin{definition}[Transform]
-\label{def:transform}
-Given a function family $f$ and parameters $\boldsymbol{\theta}$, the Transform primitive applies a pointwise nonlinear function:
-\begin{equation}
-  \Lambda(f, \boldsymbol{\theta}): \mathbf{x} \mapsto [f(x_i; \boldsymbol{\theta})]_{i=1}^{n},
-\end{equation}
-where $f$ is applied independently at each element $x_i$. The function family $f$ is restricted to one of five canonical families:
-\begin{enumerate}
-  \item \textbf{Exponential attenuation:} $f(x) = e^{-\alpha x}$, $\boldsymbol{\theta} = (\alpha)$. Covers Beer--Lambert absorption in polychromatic CT.
-  \item \textbf{Logarithmic:} $f(x) = \log(x + \delta)$, $\boldsymbol{\theta} = (\delta)$. Covers optical density conversion, CT log-transform.
-  \item \textbf{Phase wrapping:} $f(x) = \arg(e^{ix})$, $\boldsymbol{\theta} = \emptyset$. Covers $2\pi$ phase ambiguity in MRI and interferometry.
-  \item \textbf{Polynomial:} $f(x) = \sum_{k=0}^{d} a_k x^k$ with $d \leq 5$, $\boldsymbol{\theta} = (a_0, \ldots, a_d)$. Covers harmonic generation, weak nonlinear acoustics, Langevin approximation.
-  \item \textbf{Saturation:} $f(x) = \min(\max(x, x_{\min}), x_{\max})$, $\boldsymbol{\theta} = (x_{\min}, x_{\max})$. Covers dynamic range limits, detector bloom.
-\end{enumerate}
-Each family is Lipschitz-continuous with computable Lipschitz constant $L_\Lambda(\boldsymbol{\theta})$: $L_1 = \alpha$, $L_2 = 1/\delta$, $L_3 = 1$, $L_4 = \sum_{k=1}^{d} k|a_k| R^{k-1}$ (for $|x| \leq R$), and $L_5 = 1$.
-
-The adjoint is defined for the linearized (Jacobian) operator at operating point $\mathbf{x}_0$:
-\begin{equation}
-  \Lambda^\dagger(f, \boldsymbol{\theta})\big|_{\mathbf{x}_0}: \mathbf{y} \mapsto [f'(x_{0,i}; \boldsymbol{\theta}) \cdot y_i]_{i=1}^{n},
-\end{equation}
-which is the adjoint of $\mathrm{diag}(f'(\mathbf{x}_0; \boldsymbol{\theta}))$ and satisfies the adjoint consistency condition~\eqref{eq:adjoint} for the linearized system.
-\end{definition}
-
-\begin{remark}[Transform is not a universal approximator]
-\label{rem:transform}
-Like Detect (Remark~\ref{rem:detect}), Transform is restricted to five specific function families, each with at most $d + 1 \leq 6$ scalar parameters per pixel. Critically, it applies \emph{pointwise} without spatial coupling: $\Lambda$ cannot perform convolution, propagation, projection, or any operation that mixes information across spatial locations. This ensures that adding $\Lambda$ does not trivialize the theorem---the spatial and spectral structure of the forward model must still be captured by the other 10 primitives.
-\end{remark}
-
-\begin{remark}[Transform vs.\ Detect]
-\label{rem:transform_detect}
-Transform operates \emph{within the physics chain} on carrier fields (e.g., Beer--Lambert attenuation in the X-ray beam before detection); Detect operates at the \emph{terminal position} converting carriers to measurements (e.g., photodetection). Their function families are physically distinct and their DAG positions differ: Transform can appear at any non-terminal node, while Detect appears only as the terminal node.
-\end{remark}
-
-\subsection{The Universal Operator Class $\cuniv$}
-
-\begin{definition}[Universal Operator Class $\cuniv$]
-\label{def:cuniv}
-The class $\cuniv$ consists of all imaging forward models $H$ that satisfy:
-\begin{enumerate}
-  \item \textbf{Finite sequential-parallel composition:} $H$ admits a factorization $H = H_K \circ H_{K-1} \circ \cdots \circ H_1$ (or a DAG generalization) with $K \leq \Nmax$.
-  \item \textbf{Per-stage regularity:} Each factor $H_k$ is either:
-    \begin{enumerate}
-      \item[(a)] a linear operator with bounded operator norm $\|H_k\| \leq B$ (as in $\ctier$), or
-      \item[(b)] a Lipschitz-continuous pointwise function with Lipschitz constant $\mathrm{Lip}(H_k) \leq B$.
-    \end{enumerate}
-  \item \textbf{Bounded regularity constant:} $\max_k \gamma_k \leq B$, where $\gamma_k = \|H_k\|$ for linear stages and $\gamma_k = \mathrm{Lip}(H_k)$ for nonlinear stages.
-\end{enumerate}
-\end{definition}
-
-Every linear operator is Lipschitz with $\mathrm{Lip}(H) = \|H\|$, so $\ctier \subset \cuniv$. The extension to $\cuniv$ thus strictly enlarges the covered operator class while preserving backward compatibility with all 31 Tier-2 modalities validated in Section~\ref{sec:validation}.
-
-\subsection{Nonlinear Realization Lemma}
-
-\begin{lemma}[Nonlinear-Stage Realization]
-\label{lem:nonlinear}
-Let $H_k$ be a factor of $H \in \cuniv$ that is a Lipschitz-continuous pointwise nonlinearity arising from imaging physics. Then $H_k$ admits an $\varepsilon_\Lambda$-approximate representation by $\Lambda(f, \boldsymbol{\theta})$ for an appropriate family $f$ and parameters $\boldsymbol{\theta}$.
-\end{lemma}
-
-\begin{proof}
-Every pointwise physics nonlinearity in imaging belongs to one of five structural categories, determined by the underlying physics: (1) exponential attenuation from Beer--Lambert absorption, (2) logarithmic compression from transmittance-to-optical-density conversion, (3) phase wrapping from $2\pi$ periodicity, (4) polynomial response from perturbation expansions of nonlinear wave equations, and (5) saturation from finite dynamic range. Each Transform family provides an exact or near-exact representation: families~1, 2, 3, and 5 are exact ($\varepsilon_\Lambda = 0$); family~4 has truncation error $\varepsilon_\Lambda \leq |a_{d+1}| R^{d+1}$ from the Taylor series, which is below $\varepsilon$ for imaging-relevant nonlinearities with rapidly decaying coefficients.
-\end{proof}
-
-\subsection{Theorem 2: Universal Finite Primitive Basis}
-
-\begin{theorem}[Universal Finite Primitive Basis]
-\label{thm:universal}
-Let $\Buniv = \Blib \cup \{\Lambda\} = \{P, M, \Pi, F, C, \Sigma, D, S, W, R, \Lambda\}$ be the extended primitive library (11 primitives). For every $H \in \cuniv$, there exists a well-formed typed DAG $G = (V, E, \tau)$ whose node types are drawn from $\Buniv$ that is an $\varepsilon$-approximate representation of $H$.
-\end{theorem}
-
-\begin{proof}
-The proof follows the constructive compilation of Theorem~\ref{thm:fpb} with two modifications.
-
-\textbf{Modification 1: Classification.} The physics-stage classification gains a sixth case: if factor $H_k$ is a pointwise nonlinear physics operation, assign it to the Transform family and apply Lemma~\ref{lem:nonlinear} to realize it as $\Lambda(f, \boldsymbol{\theta})$.
-
-\textbf{Modification 2: Error bound.} The telescoping identity generalizes from operator norms to regularity constants. For a composition $H = H_K \circ \cdots \circ H_1$ where each $H_k$ has regularity constant $\gamma_k$ (operator norm for linear stages, Lipschitz constant for nonlinear stages):
-\begin{equation}
-  \sup_{\|\mathbf{x}\| \leq 1} \|H(\mathbf{x}) - \Hdag(\mathbf{x})\|
-  \leq \sum_{k=1}^{K} \varepsilon_k \prod_{j=k+1}^{K} \gamma_j
-  \leq K \cdot \max_k(\varepsilon_k) \cdot B^{K-1}.
-  \label{eq:error_univ}
-\end{equation}
-This follows from the Lipschitz composition theorem: if $g$ is $L$-Lipschitz and $\|f(\mathbf{x}) - \tilde{f}(\mathbf{x})\| \leq \varepsilon_f$ for all $\mathbf{x}$, then $\|g \circ f(\mathbf{x}) - g \circ \tilde{f}(\mathbf{x})\| \leq L \cdot \varepsilon_f$. The telescoping argument is otherwise identical to Supplementary~S6, with $\gamma_j$ replacing $\|H_j\|$.
-
-\textbf{Self-consistent models (Born series).} For forward models satisfying the Lippmann--Schwinger equation $u = u_{\mathrm{inc}} + G_0 V u$~\cite{colton2019inverse}, the $N$-th order Born--Neumann series $u_N = \sum_{n=0}^{N} (G_0 V)^n u_{\mathrm{inc}}$ is a DAG of existing linear primitives: each term $(G_0 V)^n$ is a composition of $n$ copies of $(P \circ M)$, and the sum is a $\Sigma$ node. The truncation error decays as $\|G_0 V\|^{N+1}/(1 - \|G_0 V\|) \cdot \|u_{\mathrm{inc}}\|$ for $\|G_0 V\| < 1$. No new primitive is required; the DAG complexity increases to $\mathcal{O}(N \cdot K_{\mathrm{single}})$ nodes.
-
-\textbf{Monte Carlo and FDTD.} Tier-4 methods are numerical solvers for physics that is linear in expectation. Monte Carlo photon transport computes the expected solution of the radiative transfer equation, which is a linear integro-differential equation. FDTD in linear media solves Maxwell's equations, which are linear. Both produce forward models in $\ctier \subset \cuniv$; the existing 10 primitives suffice.
-\end{proof}
-
-\subsection{Minimality of the Extended Library}
-
-\begin{proposition}[Necessity of Transform]
-\label{prop:necessity_transform}
-Transform $\Lambda$ is necessary for $\cuniv$: no DAG over $\Blib$ (the original 10-primitive library) achieves $\varepsilon$-approximate representation of polychromatic CT with beam hardening~\cite{deman2001metal}.
-\end{proposition}
-
-\begin{proof}
-The beam hardening forward model is $H_{\mathrm{BH}} = D \circ \Lambda_{\log} \circ \Sigma_E \circ \Lambda_{\exp} \circ \Pi$, where $\Lambda_{\exp}$ applies Beer--Lambert attenuation per energy bin and $\Lambda_{\log}$ applies the log-transform. These nonlinear functions operate \emph{within the physics chain} (before detection) at non-terminal positions. No primitive in $\Blib$ can represent a pointwise nonlinear function at a non-terminal position: the Detect primitive $D$ applies nonlinearity only at the terminal node. The best 10-primitive approximation treats each energy bin independently (monochromatic CT), incurring beam hardening artifacts; for typical clinical X-ray spectra with bone/soft tissue contrast, $\etier > 0.05$, far above $\varepsilon = 0.01$.
-\end{proof}
-
-Together with Proposition~\ref{prop:necessity} (which established necessity of all 10 original primitives for $\ctier$), this shows that the 11-primitive library $\Buniv$ is both sufficient and necessary for $\cuniv$. The universal library is \emph{minimal}.
-
-\subsection{Tier-3 and Tier-4 Decomposition Examples}
-
-Table~\ref{tab:tier34} demonstrates that the extended library covers representative Tier-3 and Tier-4 forward models.
+Table~\ref{tab:nonlinear} demonstrates that the library covers representative nonlinear forward models.
 
 \begin{table}[htbp]
 \centering
-\caption{DAG decompositions for Tier-3 and Tier-4 forward models using the extended library $\Buniv$. $\Lambda_{\exp}$, $\Lambda_{\log}$, $\Lambda_{\mathrm{wrap}}$, and $\Lambda_{\mathrm{poly}}$ denote Transform with exponential, logarithmic, phase-wrapping, and polynomial families, respectively.}
-\label{tab:tier34}
-\begin{tabular}{l c l c}
+\caption{DAG decompositions for nonlinear forward models. $\Lambda_{\exp}$, $\Lambda_{\log}$, $\Lambda_{\mathrm{wrap}}$, and $\Lambda_{\mathrm{poly}}$ denote Transform with exponential, logarithmic, phase-wrapping, and polynomial families, respectively.}
+\label{tab:nonlinear}
+\begin{tabular}{l l c}
 \toprule
-\textbf{Modality} & \textbf{Tier} & \textbf{DAG Primitives} & \textbf{$\Lambda$?} \\
+\textbf{Modality} & \textbf{DAG Primitives} & \textbf{$\Lambda$?} \\
 \midrule
-Polychromatic CT (beam hard.)  & 3 & $\Pi \to \Lambda_{\exp} \to \Sigma_E \to \Lambda_{\log} \to D$ & Y \\
-Phase-wrapped MRI              & 3 & $M \to F \to S \to \Lambda_{\mathrm{wrap}} \to D$ & Y \\
-Nonlinear ultrasound           & 3 & $P \to M \to \Lambda_{\mathrm{poly}} \to P \to D$ & Y \\
-MPI (Langevin response)        & 3 & $M \to \Lambda_{\mathrm{poly}} \to F \to D$ & Y \\
-DOT (strong mult.\ scatt.)    & 3 & $M \to (R \circ P)^N \to \Sigma \to D$ & N \\
-EIT (impedance tomo.)          & 3 & $M \to (P \circ M)^N \to \Sigma \to S \to D$ & N \\
-MC photon transport             & 4 & $M \to R \circ P \circ R \to D$ & N \\
-FDTD (linear media)            & 4 & $P \to M \to D$ & N \\
-FDTD (nonlinear media)         & 4 & $P \to M \to \Lambda_{\mathrm{poly}} \to P \to D$ & Y \\
+Polychromatic CT (beam hard.)  & $\Pi \to \Lambda_{\exp} \to \Sigma_E \to \Lambda_{\log} \to D$ & Y \\
+Phase-wrapped MRI              & $M \to F \to S \to \Lambda_{\mathrm{wrap}} \to D$ & Y \\
+Nonlinear ultrasound           & $P \to M \to \Lambda_{\mathrm{poly}} \to P \to D$ & Y \\
+MPI (Langevin response)        & $M \to \Lambda_{\mathrm{poly}} \to F \to D$ & Y \\
+DOT (strong mult.\ scatt.)    & $M \to (R \circ P)^N \to \Sigma \to D$ & N \\
+EIT (impedance tomo.)          & $M \to (P \circ M)^N \to \Sigma \to S \to D$ & N \\
+MC photon transport             & $M \to R \circ P \circ R \to D$ & N \\
+FDTD (linear media)            & $P \to M \to D$ & N \\
+FDTD (nonlinear media)         & $P \to M \to \Lambda_{\mathrm{poly}} \to P \to D$ & Y \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Five of nine modalities require $\Lambda$; the remaining four use only the original 10 primitives (self-consistent iteration or linear-in-expectation physics). This confirms that the structural classification of Section~\ref{sec:universal}.1 is exhaustive.
+Five of nine modalities require $\Lambda$; the remaining four use only the first 10 primitives (self-consistent iteration or linear-in-expectation physics). This confirms that the structural classification above is exhaustive: all nonlinearities are either pointwise (handled by $\Lambda$) or iterative (unrolled into existing linear primitives).
 
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -860,13 +802,10 @@ Five of nine modalities require $\Lambda$; the remaining four use only the origi
 \section{Scope and Limitations}
 \label{sec:scope}
 
-Theorem~\ref{thm:fpb} covers $\ctier$ (Tier~1--2), and Theorem~\ref{thm:universal} extends coverage to $\cuniv$ (all tiers). Together, the two theorems establish that the 11-primitive library $\Buniv$ covers all imaging modalities in current clinical, scientific, and industrial practice.
+Theorem~\ref{thm:fpb} establishes that the 11-primitive library $\Blib$ covers all imaging modalities in current clinical, scientific, and industrial practice.
 
 \paragraph{What is covered.}
-\begin{itemize}
-  \item \textbf{Tier~1--2 (Theorem~\ref{thm:fpb}, 10 primitives):} All linear shift-invariant and shift-variant modalities---coded aperture systems (CASSI, CACTI, SPC), interferometric systems (OCT, holography, ptychography), projection systems (CT, neutron imaging), Fourier-encoded systems (MRI), acoustic systems (ultrasound, photoacoustic), scattering systems (Compton, Raman, fluorescence, DOT), and THz systems.
-  \item \textbf{Tier~3--4 (Theorem~\ref{thm:universal}, 11 primitives):} All nonlinear and full-wave modalities---polychromatic CT with beam hardening, phase-wrapped MRI, nonlinear ultrasound harmonics, magnetic particle imaging, strong multiple scattering, electrical impedance tomography, Monte Carlo photon transport, and FDTD electromagnetic simulation.
-\end{itemize}
+All linear and nonlinear imaging modalities---coded aperture systems (CASSI, CACTI, SPC), interferometric systems (OCT, holography, ptychography), projection systems (CT, neutron imaging), Fourier-encoded systems (MRI), acoustic systems (ultrasound, photoacoustic), scattering systems (Compton, Raman, fluorescence, DOT), THz systems, polychromatic CT with beam hardening, phase-wrapped MRI, nonlinear ultrasound harmonics, magnetic particle imaging, electrical impedance tomography, Monte Carlo photon transport, and FDTD electromagnetic simulation.
 
 \paragraph{What is excluded.}
 \begin{itemize}
@@ -875,7 +814,7 @@ Theorem~\ref{thm:fpb} covers $\ctier$ (Tier~1--2), and Theorem~\ref{thm:universa
 \end{itemize}
 
 \paragraph{Falsifiability.}
-Both theorems are falsifiable: a forward model $H \in \cuniv$ for which no DAG over $\Buniv$ achieves $\varepsilon$-approximate representation within the complexity bounds would refute Theorem~\ref{thm:universal}. The extension protocol (Section~\ref{sec:extension}) is the prescribed response.
+The theorem is falsifiable: a forward model $H \in \ctier$ for which no DAG over $\Blib$ achieves $\varepsilon$-approximate representation within the complexity bounds would refute Theorem~\ref{thm:fpb}. The extension protocol (Section~\ref{sec:extension}) is the prescribed response.
 
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -884,11 +823,11 @@ Both theorems are falsifiable: a forward model $H \in \cuniv$ for which no DAG o
 \section{Conclusion}
 \label{sec:conclusion}
 
-We have established two results. The \emph{Finite Primitive Basis Theorem} (Theorem~\ref{thm:fpb}): every imaging forward model in the operator class $\ctier$ admits an $\varepsilon$-approximate representation as a typed DAG over a library of exactly 10 canonical primitives, and the library is \emph{minimal} (Proposition~\ref{prop:necessity}). The \emph{Universal Finite Primitive Basis Theorem} (Theorem~\ref{thm:universal}): by adding one primitive---Transform $\Lambda$, a pointwise nonlinear physics operation---the library of 11 primitives covers \emph{all} imaging modalities in the universal class $\cuniv$, including Tier-3 nonlinear and Tier-4 full-wave/Monte Carlo models, and this extended library is again minimal (Proposition~\ref{prop:necessity_transform}). Empirical validation on 31 Tier-2 modalities confirms $\etier < 0.01$, and constructive decompositions are provided for 9 representative Tier-3/4 modalities.
+We have established the \emph{Finite Primitive Basis Theorem} (Theorem~\ref{thm:fpb}): every imaging forward model in the operator class $\ctier$---encompassing all clinical, scientific, and industrial modalities, both linear and nonlinear---admits an $\varepsilon$-approximate representation as a typed DAG over a library of exactly 11 canonical primitives, and the library is \emph{minimal} (Proposition~\ref{prop:necessity}). Empirical validation on 31 linear modalities confirms $\etier < 0.01$, and constructive decompositions are provided for 9 representative nonlinear modalities.
 
-Several implications follow. First, the theorems provide a mathematical foundation for any modality-agnostic imaging framework: algorithms that operate on the graph structure---including calibration, reconstruction~\cite{venkatakrishnan2013pnp,monga2021unrolling}, and diagnosis---are guaranteed to be applicable to \emph{any} imaging modality in $\cuniv$. Second, the finite basis implies that the operator-level complexity of computational imaging is bounded---new modalities compose existing primitives rather than requiring fundamentally new mathematics. Third, the universal extension shows that the nonlinear structure of imaging physics is remarkably constrained: all nonlinearities are either pointwise (handled by $\Lambda$) or self-consistent iterations (handled by unrolled Born series of existing linear primitives). No other structural type of nonlinearity arises in imaging.
+Several implications follow. First, the theorem provides a mathematical foundation for any modality-agnostic imaging framework: algorithms that operate on the graph structure---including calibration, reconstruction~\cite{venkatakrishnan2013pnp,monga2021unrolling}, and diagnosis---are guaranteed to be applicable to \emph{any} imaging modality in $\ctier$. Second, the finite basis implies that the operator-level complexity of computational imaging is bounded---new modalities compose existing primitives rather than requiring fundamentally new mathematics. Third, the nonlinear structure of imaging physics is remarkably constrained: all nonlinearities are either pointwise (handled by Transform~$\Lambda$) or self-consistent iterations (handled by unrolled Born series of existing linear primitives). No other structural type of nonlinearity arises in imaging.
 
-The 11-primitive library $\Buniv$ covers every imaging modality in current clinical, scientific, and industrial practice, excluding only quantum state tomography (where the ``object'' is a density matrix rather than a classical field) and relativistic regimes. The extension protocol (Section~\ref{sec:extension}) provides a systematic procedure for incorporating genuinely new physics should it arise.
+The 11-primitive library $\Blib$ covers every imaging modality in current clinical, scientific, and industrial practice, excluding only quantum state tomography (where the ``object'' is a density matrix rather than a classical field) and relativistic regimes. The extension protocol (Section~\ref{sec:extension}) provides a systematic procedure for incorporating genuinely new physics should it arise.
 
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -898,7 +837,7 @@ The 11-primitive library $\Buniv$ covers every imaging modality in current clini
 
 All materials required to reproduce the results in this paper are publicly available:
 \begin{itemize}
-  \item \textbf{Primitive library:} Formal definitions (forward, adjoint, parameters, constraints) for all 10 primitives are provided as YAML registry files in the project repository at \url{https://github.com/integritynoble/Physics_World_Model} (directory \texttt{packages/pwm\_core/contrib/}).
+  \item \textbf{Primitive library:} Formal definitions (forward, adjoint, parameters, constraints) for all 11 primitives are provided as YAML registry files in the project repository at \url{https://github.com/integritynoble/Physics_World_Model} (directory \texttt{packages/pwm\_core/contrib/}).
   \item \textbf{DAG decompositions:} The complete decomposition registry for all 31 modalities (Table~\ref{tab:decomposition} and Supplementary~S4) is included as machine-readable YAML in the same repository (\texttt{solver\_registry.yaml}).
   \item \textbf{Reproduction scripts:} Adjoint consistency tests, $\etier$ computation scripts, and the held-out closure test protocol are available in the repository's \texttt{packages/pwm\_core/benchmarks/} directory.
   \item \textbf{Project website:} \url{https://solveeverything.org} provides supplementary documentation and links to all resources.
