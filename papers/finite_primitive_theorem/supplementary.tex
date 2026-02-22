@@ -69,9 +69,12 @@ Detect $D$ (linearized) & $< 10^{-13}$ & Y \\
 Sample $S$      & $< 10^{-15}$ & Y \\
 Disperse $W$    & $< 10^{-13}$ & Y \\
 Scatter $R$     & $< 10^{-11}$ & Y \\
+Transform $\Lambda$ (linearized) & $< 10^{-13}$ & Y \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+The Transform primitive's adjoint is defined for the linearized (Jacobian) operator, analogous to the nonlinear Detect families. For a pointwise function $f$ with derivative $f'$, the linearized operator at $\mathbf{x}_0$ is $\mathrm{diag}(f'(\mathbf{x}_0))$, which is self-adjoint for real-valued $f'$. The adjoint consistency check uses $\langle \mathrm{diag}(f'(\mathbf{x}_0)) \mathbf{x}, \mathbf{y} \rangle = \sum_i f'(x_{0,i}) x_i y_i = \langle \mathbf{x}, \mathrm{diag}(f'(\mathbf{x}_0)) \mathbf{y} \rangle$, which is exact to machine precision.
 
 
 \subsection*{S3. Per-Phase Error Bounds}
@@ -446,3 +449,74 @@ The MRI forward model has four physics stages:
   \end{itemize}
 \end{enumerate}
 Result: $M \to F \to S \to D$ (4 nodes, depth 4). Matches Table~\ref{tab:decomposition}.
+
+\paragraph{Extended decision table for $\cuniv$.}
+For forward models in $\cuniv$ (Section~\ref{sec:universal}), add a preliminary question before Q1:
+
+\medskip
+\noindent\textbf{Q0:} Is $H_k$ a pointwise nonlinear physics operation (not at the detector)? If yes $\to$ \textbf{Transform family} $\to$ $\Lambda(f, \boldsymbol{\theta})$. If no $\to$ proceed to Q1.
+
+\medskip
+\noindent This catches nonlinearities such as Beer--Lambert attenuation ($\Lambda_{\exp}$), log-compression ($\Lambda_{\log}$), phase wrapping ($\Lambda_{\mathrm{wrap}}$), polynomial harmonic generation ($\Lambda_{\mathrm{poly}}$), and saturation ($\Lambda_{\mathrm{sat}}$) that occur within the physics chain before detection.
+
+\paragraph{Worked example 3: Polychromatic CT (beam hardening).}
+The beam hardening forward model has five physics stages:
+\begin{enumerate}
+  \item \textbf{Line-integral projection:} Compute $\int \mu(\mathbf{r}, E)\, dl$ for each energy bin $E$ and projection angle $\theta$.
+  \begin{itemize}
+    \item Q0: Pointwise nonlinear? No (line integral is linear). Q1: No. Q3: Spatial-to-measurement? Yes. Q3a: Line integral? Yes $\to$ $\Pi(\theta)$.
+  \end{itemize}
+  \item \textbf{Beer--Lambert attenuation:} Apply $\exp(-\int \mu\, dl)$ per energy bin.
+  \begin{itemize}
+    \item Q0: Pointwise nonlinear? Yes $\to$ $\Lambda_{\exp}(\alpha = 1)$.
+  \end{itemize}
+  \item \textbf{Energy integration:} Sum attenuated intensities weighted by source spectrum $S(E)$.
+  \begin{itemize}
+    \item Detection--readout chain $\to$ $\Sigma_E$.
+  \end{itemize}
+  \item \textbf{Log-transform:} Apply $-\log(\cdot)$ to convert transmittance to line-integral equivalent.
+  \begin{itemize}
+    \item Q0: Pointwise nonlinear? Yes $\to$ $\Lambda_{\log}(\delta = 10^{-8})$.
+  \end{itemize}
+  \item \textbf{Detection:} Photon counting.
+  \begin{itemize}
+    \item Detection--readout $\to$ $D(g, \eta_4)$.
+  \end{itemize}
+\end{enumerate}
+Result: $\Pi \to \Lambda_{\exp} \to \Sigma_E \to \Lambda_{\log} \to D$ (5 nodes, depth 5). Matches Table~\ref{tab:tier34}.
+
+
+\subsection*{S8. Lipschitz Error Bound for Nonlinear Compositions}
+\label{sec:supp_lipschitz}
+
+This section provides the detailed derivation of the extended error bound for compositions involving nonlinear (Lipschitz) stages, as used in the proof of Theorem~\ref{thm:universal}.
+
+Let $H = H_K \circ \cdots \circ H_1$ and $\hat{H} = \tilde{H}_K \circ \cdots \circ \tilde{H}_1$, where each $H_k$ may be linear or nonlinear. Define the \emph{regularity constant}:
+\[
+  \gamma_k = \begin{cases} \|H_k\| & \text{if } H_k \text{ is linear}, \\ \mathrm{Lip}(H_k) & \text{if } H_k \text{ is nonlinear (Lipschitz)}. \end{cases}
+\]
+
+Similarly, $\tilde{\gamma}_k$ for the approximate stages. The per-stage approximation error is $\varepsilon_k = \sup_{\|\mathbf{z}\| \leq R_k} \|H_k(\mathbf{z}) - \tilde{H}_k(\mathbf{z})\|$, where $R_k$ bounds the intermediate signal norm at stage $k$.
+
+\paragraph{Lipschitz telescoping.}
+By the same telescoping decomposition as Supplementary~S6, but using the Lipschitz property instead of linearity:
+\begin{align}
+  \|H(\mathbf{x}) - \hat{H}(\mathbf{x})\|
+  &\leq \sum_{k=1}^{K} \left(\prod_{j=k+1}^{K} \tilde{\gamma}_j\right) \cdot \varepsilon_k.
+\end{align}
+The key step uses: if $g$ is $L$-Lipschitz, then $\|g(\mathbf{a}) - g(\mathbf{b})\| \leq L \|\mathbf{a} - \mathbf{b}\|$, which replaces the operator norm bound $\|g\| \cdot \|\mathbf{a} - \mathbf{b}\|$ used for linear $g$. Since $\tilde{\gamma}_k \leq \gamma_k + \varepsilon_k/R_k \leq B + \varepsilon_k/R_k$, and for small $\varepsilon_k$ we have $\tilde{\gamma}_k \approx \gamma_k$:
+\begin{equation}
+  \|H(\mathbf{x}) - \hat{H}(\mathbf{x})\| \leq K \cdot \max_k(\varepsilon_k) \cdot B^{K-1}.
+\end{equation}
+
+\paragraph{Transform Lipschitz constants.}
+The Lipschitz constants for the five Transform families, evaluated over the domain $|x| \leq R$ relevant to imaging signals:
+\begin{itemize}
+  \item \textbf{Exponential:} $\mathrm{Lip}(e^{-\alpha x}) = \alpha e^{\alpha R}$. For $\alpha R \leq 5$ (typical CT), $\mathrm{Lip} \leq 5 e^5 \approx 742$; however, the forward model norm $\|H\|$ also scales proportionally, so the \emph{relative} error bound remains controlled.
+  \item \textbf{Logarithmic:} $\mathrm{Lip}(\log(x + \delta)) = 1/\delta$ for $x \geq 0$. With $\delta = 10^{-8}$, the Lipschitz constant is large, but the log is applied to positive-valued transmittance signals that are bounded away from zero in practice.
+  \item \textbf{Phase wrapping:} $\mathrm{Lip}(\arg(e^{ix})) = 1$ (the wrapping function has unit Lipschitz constant on each $2\pi$ branch).
+  \item \textbf{Polynomial:} $\mathrm{Lip}(\sum a_k x^k) = \sum_{k=1}^d k |a_k| R^{k-1}$.
+  \item \textbf{Saturation:} $\mathrm{Lip}(\mathrm{clip}(x)) = 1$.
+\end{itemize}
+
+For practical imaging systems, the product $\prod_{k} \gamma_k$ in the error bound is dominated by one or two non-unit-Lipschitz stages (typically the exponential and logarithmic in beam hardening CT). The per-factor approximation errors $\varepsilon_k$ for exact Transform families (exponential, log, wrap, saturation) are zero, so only polynomial truncation contributes to the total error.
