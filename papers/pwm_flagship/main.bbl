@@ -1,41 +1,18 @@
-\begin{thebibliography}{27}
+\begin{thebibliography}{26}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Wagadarikar et~al.(2008)Wagadarikar, John, Willett, and
-  Brady]{wagadarikar2008cassi}
-Ashwin~A. Wagadarikar, Renu John, Rebecca Willett, and David~J. Brady.
-\newblock Single disperser design for coded aperture snapshot spectral imaging.
-\newblock \emph{Applied Optics}, 47\penalty0 (10):\penalty0 B44--B51, 2008.
-\newblock \doi{10.1364/AO.47.000B44}.
-
-\bibitem[Llull et~al.(2013)Llull, Liao, Yuan, Yang, Kittle, Carin, Sapiro, and
-  Brady]{llull2013cacti}
-Patrick Llull, Xuejun Liao, Xin Yuan, Jianbo Yang, David Kittle, Lawrence
-  Carin, Guillermo Sapiro, and David~J. Brady.
-\newblock Coded aperture compressive temporal imaging.
-\newblock \emph{Optics Express}, 21\penalty0 (9):\penalty0 10526--10545, 2013.
-\newblock \doi{10.1364/OE.21.010526}.
-
-\bibitem[Duarte et~al.(2008)Duarte, Davenport, Takhar, Laska, Sun, Kelly, and
-  Baraniuk]{duarte2008spc}
-Marco~F. Duarte, Mark~A. Davenport, Dharmpal Takhar, Jason~N. Laska, Ting Sun,
-  Kevin~F. Kelly, and Richard~G. Baraniuk.
-\newblock Single-pixel imaging via compressive sampling.
-\newblock \emph{IEEE Signal Processing Magazine}, 25\penalty0 (2):\penalty0
-  83--91, 2008.
-\newblock \doi{10.1109/MSP.2007.914730}.
-
-\bibitem[Lustig et~al.(2007)Lustig, Donoho, and Pauly]{lustig2007sparse}
-Michael Lustig, David Donoho, and John~M. Pauly.
-\newblock Sparse {MRI}: The application of compressed sensing for rapid {MR}
-  imaging.
-\newblock \emph{Magnetic Resonance in Medicine}, 58\penalty0 (6):\penalty0
-  1182--1195, 2007.
-\newblock \doi{10.1002/mrm.21391}.
+\bibitem[Yang(2026{\natexlab{a}})]{yang2026fpt}
+Chengshuai Yang.
+\newblock The finite primitive basis theorem for computational imaging: Formal
+  foundations of the {OperatorGraph} representation.
+\newblock \emph{Under review at SIAM Journal on Imaging Sciences},
+  2026{\natexlab{a}}.
+\newblock Manuscript available at
+  \url{https://github.com/integritynoble/Physics_World_Model}.
 
 \bibitem[Cand{\`e}s and Wakin(2008)]{candes2008compressed}
 Emmanuel~J. Cand{\`e}s and Michael~B. Wakin.
@@ -76,23 +53,6 @@ Yuanhao Cai, Jing Lin, Xiaowan Hu, Haoqian Wang, Xin Yuan, Yulun Zhang, Radu
 \newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
   and Pattern Recognition (CVPR)}, pages 17502--17511, 2022{\natexlab{a}}.
 
-\bibitem[Uecker et~al.(2014)Uecker, Lai, Murphy, Virtue, Elad, Pauly,
-  Vasanawala, and Lustig]{uecker2014espirit}
-Martin Uecker, Peng Lai, Mark~J. Murphy, Patrick Virtue, Michael Elad, John~M.
-  Pauly, Shreyas~S. Vasanawala, and Michael Lustig.
-\newblock {ESPIRiT} --- an eigenvalue approach to autocalibrating parallel
-  {MRI}: where {SENSE} meets {GRAPPA}.
-\newblock \emph{Magnetic Resonance in Medicine}, 71\penalty0 (3):\penalty0
-  990--1001, 2014.
-\newblock \doi{10.1002/mrm.24751}.
-
-\bibitem[Maiden and Rodenburg(2009)]{maiden2009ptychography}
-Andrew~M. Maiden and John~M. Rodenburg.
-\newblock An improved ptychographical phase retrieval algorithm for diffractive
-  imaging.
-\newblock \emph{Ultramicroscopy}, 109\penalty0 (10):\penalty0 1256--1262, 2009.
-\newblock \doi{10.1016/j.ultramic.2009.05.012}.
-
 \bibitem[Antun et~al.(2020)Antun, Renna, Poon, Adcock, and
   Hansen]{antun2020instabilities}
 Vegard Antun, Francesco Renna, Clarice Poon, Ben Adcock, and Anders~C. Hansen.
@@ -101,6 +61,38 @@ Vegard Antun, Francesco Renna, Clarice Poon, Ben Adcock, and Anders~C. Hansen.
 \newblock \emph{Proceedings of the National Academy of Sciences}, 117\penalty0
   (48):\penalty0 30088--30098, 2020.
 \newblock \doi{10.1073/pnas.1907377117}.
+
+\bibitem[Wagadarikar et~al.(2008)Wagadarikar, John, Willett, and
+  Brady]{wagadarikar2008cassi}
+Ashwin~A. Wagadarikar, Renu John, Rebecca Willett, and David~J. Brady.
+\newblock Single disperser design for coded aperture snapshot spectral imaging.
+\newblock \emph{Applied Optics}, 47\penalty0 (10):\penalty0 B44--B51, 2008.
+\newblock \doi{10.1364/AO.47.000B44}.
+
+\bibitem[Llull et~al.(2013)Llull, Liao, Yuan, Yang, Kittle, Carin, Sapiro, and
+  Brady]{llull2013cacti}
+Patrick Llull, Xuejun Liao, Xin Yuan, Jianbo Yang, David Kittle, Lawrence
+  Carin, Guillermo Sapiro, and David~J. Brady.
+\newblock Coded aperture compressive temporal imaging.
+\newblock \emph{Optics Express}, 21\penalty0 (9):\penalty0 10526--10545, 2013.
+\newblock \doi{10.1364/OE.21.010526}.
+
+\bibitem[Duarte et~al.(2008)Duarte, Davenport, Takhar, Laska, Sun, Kelly, and
+  Baraniuk]{duarte2008spc}
+Marco~F. Duarte, Mark~A. Davenport, Dharmpal Takhar, Jason~N. Laska, Ting Sun,
+  Kevin~F. Kelly, and Richard~G. Baraniuk.
+\newblock Single-pixel imaging via compressive sampling.
+\newblock \emph{IEEE Signal Processing Magazine}, 25\penalty0 (2):\penalty0
+  83--91, 2008.
+\newblock \doi{10.1109/MSP.2007.914730}.
+
+\bibitem[Feldkamp et~al.(1984)Feldkamp, Davis, and
+  Kress]{feldkamp1984practical}
+L.~A. Feldkamp, L.~C. Davis, and J.~W. Kress.
+\newblock Practical cone-beam algorithm.
+\newblock \emph{Journal of the Optical Society of America A}, 1\penalty0
+  (6):\penalty0 612--619, 1984.
+\newblock \doi{10.1364/JOSAA.1.000612}.
 
 \bibitem[Rodenburg and Faulkner(2004)]{rodenburg2004ptychography}
 J.~M. Rodenburg and H.~M.~L. Faulkner.
@@ -117,21 +109,13 @@ Klaas~P. Pruessmann, Markus Weiger, Markus~B. Scheidegger, and Peter Boesiger.
   952--962, 1999.
 \newblock \doi{10.1002/(SICI)1522-2594(199911)42:5<952::AID-MRM16>3.0.CO;2-S}.
 
-\bibitem[Feldkamp et~al.(1984)Feldkamp, Davis, and
-  Kress]{feldkamp1984practical}
-L.~A. Feldkamp, L.~C. Davis, and J.~W. Kress.
-\newblock Practical cone-beam algorithm.
-\newblock \emph{Journal of the Optical Society of America A}, 1\penalty0
-  (6):\penalty0 612--619, 1984.
-\newblock \doi{10.1364/JOSAA.1.000612}.
-
-\bibitem[Yang(2026{\natexlab{a}})]{yang2026fpt}
-Chengshuai Yang.
-\newblock The finite primitive basis theorem for computational imaging: Formal
-  foundations of the {OperatorGraph} representation.
-\newblock \emph{arXiv preprint}, 2026{\natexlab{a}}.
-\newblock In preparation. Full formal definitions, primitive semantics, typed
-  DAG denotation, and constructive proof.
+\bibitem[Lustig et~al.(2007)Lustig, Donoho, and Pauly]{lustig2007sparse}
+Michael Lustig, David Donoho, and John~M. Pauly.
+\newblock Sparse {MRI}: The application of compressed sensing for rapid {MR}
+  imaging.
+\newblock \emph{Magnetic Resonance in Medicine}, 58\penalty0 (6):\penalty0
+  1182--1195, 2007.
+\newblock \doi{10.1002/mrm.21391}.
 
 \bibitem[Yang(2026{\natexlab{b}})]{yang2026inversenet}
 Chengshuai Yang.
@@ -145,6 +129,23 @@ Lishun Wang, Miao Cao, and Xin Yuan.
   factorization for large-scale video snapshot compressive imaging.
 \newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
   and Pattern Recognition (CVPR)}, pages 18477--18486, 2023.
+
+\bibitem[Uecker et~al.(2014)Uecker, Lai, Murphy, Virtue, Elad, Pauly,
+  Vasanawala, and Lustig]{uecker2014espirit}
+Martin Uecker, Peng Lai, Mark~J. Murphy, Patrick Virtue, Michael Elad, John~M.
+  Pauly, Shreyas~S. Vasanawala, and Michael Lustig.
+\newblock {ESPIRiT} --- an eigenvalue approach to autocalibrating parallel
+  {MRI}: where {SENSE} meets {GRAPPA}.
+\newblock \emph{Magnetic Resonance in Medicine}, 71\penalty0 (3):\penalty0
+  990--1001, 2014.
+\newblock \doi{10.1002/mrm.24751}.
+
+\bibitem[Maiden and Rodenburg(2009)]{maiden2009ptychography}
+Andrew~M. Maiden and John~M. Rodenburg.
+\newblock An improved ptychographical phase retrieval algorithm for diffractive
+  imaging.
+\newblock \emph{Ultramicroscopy}, 109\penalty0 (10):\penalty0 1256--1262, 2009.
+\newblock \doi{10.1016/j.ultramic.2009.05.012}.
 
 \bibitem[Choi et~al.(2017)Choi, Jeon, Nam, Gutierrez, and Kim]{choi2017kaist}
 Inchang Choi, Daniel~S. Jeon, Giljoo Nam, Diego Gutierrez, and Min~H. Kim.
@@ -198,16 +199,6 @@ Yang Liu, Xin Yuan, Jinli Suo, David~J. Brady, and Qionghai Dai.
 \newblock Rank minimization for snapshot compressive imaging.
 \newblock \emph{IEEE Transactions on Pattern Analysis and Machine
   Intelligence}, 41\penalty0 (12):\penalty0 2990--3006, 2019.
-
-\bibitem[Chen et~al.(2017)Chen, Zhang, Kalra, Lin, Chen, Liao, Zhou, and
-  Wang]{chen2017redcnn}
-Hu~Chen, Yi~Zhang, Mannudeep~K. Kalra, Feng Lin, Yang Chen, Peixi Liao, Jiliu
-  Zhou, and Ge~Wang.
-\newblock Low-dose {CT} with a residual encoder-decoder convolutional neural
-  network.
-\newblock \emph{IEEE Transactions on Medical Imaging}, 36\penalty0
-  (12):\penalty0 2524--2535, 2017.
-\newblock \doi{10.1109/TMI.2017.2715284}.
 
 \bibitem[Zbontar et~al.(2018)Zbontar, Knoll, Sriram, Murrell, Huang, Muckley,
   Defazio, Stern, Johnson, Bruno, Parente, Geras, Katsnelson, Chandarana,
