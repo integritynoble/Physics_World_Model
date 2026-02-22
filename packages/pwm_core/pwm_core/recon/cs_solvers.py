@@ -18,8 +18,15 @@ from typing import Any, Callable, Dict, Optional, Tuple, Union
 import numpy as np
 
 
-def soft_threshold(x: np.ndarray, tau: float) -> np.ndarray:
+def soft_threshold(x: np.ndarray, tau: float, device=None) -> np.ndarray:
     """Soft thresholding (proximal operator for L1 norm)."""
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        from pwm_core.recon.gpu_utils import to_torch, to_numpy, soft_threshold_torch
+        return to_numpy(soft_threshold_torch(to_torch(x, dev), tau)).astype(np.float32)
+
     return np.sign(x) * np.maximum(np.abs(x) - tau, 0)
 
 
@@ -39,6 +46,7 @@ def tv_prox_2d(
     x: np.ndarray,
     lam: float,
     iterations: int = 20,
+    device=None,
 ) -> np.ndarray:
     """Proximal operator for isotropic TV (Chambolle's algorithm).
 
@@ -46,10 +54,20 @@ def tv_prox_2d(
         x: Input image
         lam: Regularization parameter
         iterations: Number of iterations
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
 
     Returns:
         TV-denoised image
     """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        from pwm_core.recon.gpu_utils import to_torch, to_numpy, tv_prox_2d_torch
+        x_t = to_torch(x, dev)
+        result = tv_prox_2d_torch(x_t, lam, iterations)
+        return to_numpy(result).astype(np.float32)
+
     # Chambolle's dual algorithm
     n, m = x.shape
     p = np.zeros((n, m, 2), dtype=np.float32)
@@ -98,6 +116,7 @@ def tval3(
     tol: float = 1e-4,
     max_iters: int = 200,
     inner_iters: int = 10,
+    device=None,
 ) -> np.ndarray:
     """TVAL3: TV minimization by Augmented Lagrangian.
 
@@ -113,10 +132,18 @@ def tval3(
         tol: Convergence tolerance
         max_iters: Maximum outer iterations
         inner_iters: Inner CG iterations
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
 
     Returns:
         Reconstructed image
     """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _tval3_torch(y, forward, adjoint, x_shape, mu, beta, tol,
+                            max_iters, inner_iters, dev)
+
     # Initialize
     x = adjoint(y).reshape(x_shape).astype(np.float32)
 
@@ -205,6 +232,83 @@ def tval3(
     return x.astype(np.float32)
 
 
+def _tval3_torch(y, forward, adjoint, x_shape, mu, beta, tol, max_iters,
+                 inner_iters, dev):
+    """GPU implementation of tval3."""
+    import torch
+    from pwm_core.recon.gpu_utils import to_torch, to_numpy, wrap_operator
+
+    fwd = wrap_operator(forward, dev)
+    adj = wrap_operator(adjoint, dev)
+    y_t = to_torch(y, dev)
+
+    x = adj(y_t).reshape(x_shape)
+
+    x_max = float(torch.abs(x).max())
+    if x_max > 1:
+        x = x / x_max
+        y_t = y_t / x_max
+
+    n, m = x_shape[:2] if len(x_shape) >= 2 else (int(np.sqrt(np.prod(x_shape))),) * 2
+
+    wx = torch.zeros(n, m - 1, device=dev, dtype=torch.float32)
+    wy = torch.zeros(n - 1, m, device=dev, dtype=torch.float32)
+    lam_x = torch.zeros_like(wx)
+    lam_y = torch.zeros_like(wy)
+
+    for outer in range(max_iters):
+        x_old = x.clone()
+
+        rhs = adj(y_t).reshape(x_shape)
+
+        dwx = torch.zeros_like(x)
+        dwy = torch.zeros_like(x)
+        dwx[:, :-1] += wx + lam_x / beta
+        dwx[:, 1:] -= wx + lam_x / beta
+        dwy[:-1, :] += wy + lam_y / beta
+        dwy[1:, :] -= wy + lam_y / beta
+        rhs = rhs + beta * (dwx + dwy)
+
+        for _ in range(inner_iters):
+            AtAx = adj(fwd(x)).reshape(x_shape)
+
+            DtDx = torch.zeros_like(x)
+            DtDx[:, :-1] += x[:, :-1] - x[:, 1:]
+            DtDx[:, 1:] += x[:, 1:] - x[:, :-1]
+            DtDx[:-1, :] += x[:-1, :] - x[1:, :]
+            DtDx[1:, :] += x[1:, :] - x[:-1, :]
+
+            grad = AtAx + beta * DtDx - rhs
+            x = x - 0.01 * grad
+
+        dx = x[:, 1:] - x[:, :-1]
+        dy = x[1:, :] - x[:-1, :]
+
+        vx = dx + lam_x / beta
+        vy = dy + lam_y / beta
+
+        vx_pad = torch.nn.functional.pad(vx, (0, 1), mode='constant', value=0)
+        vy_pad = torch.nn.functional.pad(vy, (0, 0, 0, 1), mode='constant', value=0)
+        norm_v = torch.sqrt(vx_pad ** 2 + vy_pad ** 2 + 1e-10)
+        shrink = torch.clamp(norm_v - mu / beta, min=0) / norm_v
+
+        wx = vx * shrink[:, :-1]
+        wy = vy * shrink[:-1, :]
+
+        lam_x = lam_x + beta * (dx - wx)
+        lam_y = lam_y + beta * (dy - wy)
+
+        rel_change = float(torch.linalg.norm(x - x_old)) / (
+            float(torch.linalg.norm(x_old)) + 1e-10)
+        if rel_change < tol:
+            break
+
+    if x_max > 1:
+        x = x * x_max
+
+    return to_numpy(x).astype(np.float32)
+
+
 def ista(
     y: np.ndarray,
     forward: Callable,
@@ -214,6 +318,7 @@ def ista(
     step: float = 0.01,
     max_iters: int = 100,
     use_tv: bool = True,
+    device=None,
 ) -> np.ndarray:
     """ISTA: Iterative Shrinkage-Thresholding Algorithm.
 
@@ -229,10 +334,18 @@ def ista(
         step: Step size (should be < 1/L where L is Lipschitz constant)
         max_iters: Maximum iterations
         use_tv: Use TV instead of L1
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
 
     Returns:
         Reconstructed image
     """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _ista_torch(y, forward, adjoint, x_shape, lam, step,
+                           max_iters, use_tv, dev)
+
     # Initialize with adjoint
     x = adjoint(y).reshape(x_shape).astype(np.float32)
 
@@ -251,6 +364,32 @@ def ista(
     return x.astype(np.float32)
 
 
+def _ista_torch(y, forward, adjoint, x_shape, lam, step, max_iters, use_tv,
+                dev):
+    """GPU implementation of ista."""
+    import torch
+    from pwm_core.recon.gpu_utils import (to_torch, to_numpy, wrap_operator,
+                                          soft_threshold_torch, tv_prox_2d_torch)
+
+    y_t = to_torch(y, dev)
+    fwd = wrap_operator(forward, dev)
+    adj = wrap_operator(adjoint, dev)
+
+    x = adj(y_t).reshape(x_shape)
+
+    for _ in range(max_iters):
+        residual = fwd(x) - y_t
+        grad = adj(residual).reshape(x_shape)
+        x = x - step * grad
+
+        if use_tv:
+            x = tv_prox_2d_torch(x, lam * step)
+        else:
+            x = soft_threshold_torch(x, lam * step)
+
+    return to_numpy(x).astype(np.float32)
+
+
 def fista(
     y: np.ndarray,
     forward: Callable,
@@ -260,6 +399,7 @@ def fista(
     step: float = 0.01,
     max_iters: int = 100,
     use_tv: bool = True,
+    device=None,
 ) -> np.ndarray:
     """FISTA: Fast ISTA with momentum.
 
@@ -274,10 +414,18 @@ def fista(
         step: Step size
         max_iters: Maximum iterations
         use_tv: Use TV instead of L1
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
 
     Returns:
         Reconstructed image
     """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _fista_torch(y, forward, adjoint, x_shape, lam, step,
+                            max_iters, use_tv, dev)
+
     # Initialize
     x = adjoint(y).reshape(x_shape).astype(np.float32)
     z = x.copy()
@@ -305,6 +453,39 @@ def fista(
     return x.astype(np.float32)
 
 
+def _fista_torch(y, forward, adjoint, x_shape, lam, step, max_iters, use_tv,
+                 dev):
+    """GPU implementation of fista."""
+    import torch
+    from pwm_core.recon.gpu_utils import (to_torch, to_numpy, wrap_operator,
+                                          soft_threshold_torch, tv_prox_2d_torch)
+
+    y_t = to_torch(y, dev)
+    fwd = wrap_operator(forward, dev)
+    adj = wrap_operator(adjoint, dev)
+
+    x = adj(y_t).reshape(x_shape)
+    z = x.clone()
+    t = 1.0
+
+    for _ in range(max_iters):
+        residual = fwd(z) - y_t
+        grad = adj(residual).reshape(x_shape)
+        v = z - step * grad
+
+        if use_tv:
+            x_new = tv_prox_2d_torch(v, lam * step)
+        else:
+            x_new = soft_threshold_torch(v, lam * step)
+
+        t_new = (1 + (1 + 4 * t * t) ** 0.5) / 2
+        z = x_new + ((t - 1) / t_new) * (x_new - x)
+        x = x_new
+        t = t_new
+
+    return to_numpy(x).astype(np.float32)
+
+
 def admm_tv(
     y: np.ndarray,
     Phi: np.ndarray,
@@ -315,6 +496,7 @@ def admm_tv(
     max_iters: int = 500,
     tv_inner_iters: int = 15,
     non_negative: bool = True,
+    device=None,
 ) -> np.ndarray:
     """ADMM solver with DCT-L1 + TV regularization for block-based CS.
 
@@ -341,10 +523,18 @@ def admm_tv(
         max_iters: Number of ADMM outer iterations
         tv_inner_iters: Inner iterations for TV denoiser
         non_negative: Enforce non-negativity
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
 
     Returns:
         Reconstructed image block (H*W,)
     """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _admm_tv_torch(y, Phi, x_shape, mu_tv, mu_dct, rho, max_iters,
+                              tv_inner_iters, non_negative, dev)
+
     try:
         from skimage.restoration import denoise_tv_chambolle
     except ImportError:
@@ -415,6 +605,80 @@ def admm_tv(
     return z
 
 
+def _admm_tv_torch(y, Phi, x_shape, mu_tv, mu_dct, rho, max_iters,
+                   tv_inner_iters, non_negative, dev):
+    """GPU implementation of admm_tv."""
+    import torch
+    from pwm_core.recon.gpu_utils import (to_torch, to_numpy,
+                                          soft_threshold_torch, tv_prox_2d_torch)
+
+    n = Phi.shape[1]
+    Phi_t = to_torch(Phi.astype(np.float64), dev, torch.float64)
+    y_t = to_torch(y.astype(np.float64), dev, torch.float64)
+
+    # Pre-compute Cholesky factorization
+    PhiTPhi = Phi_t.T @ Phi_t
+    A_mat = PhiTPhi + rho * torch.eye(n, device=dev, dtype=torch.float64)
+    L_chol = torch.linalg.cholesky(A_mat)
+
+    PhiTy = Phi_t.T @ y_t
+
+    # Initialize via regularized least-squares
+    x = torch.cholesky_solve(PhiTy.unsqueeze(1), L_chol).squeeze(1).float()
+    z = x.clone()
+    u = torch.zeros(n, device=dev, dtype=torch.float32)
+
+    for k in range(max_iters):
+        frac = min(1.0, 2.0 * k / max_iters)
+        scale = 0.1 + 0.9 * frac
+
+        rhs = PhiTy + rho * (z - u).double()
+        x = torch.cholesky_solve(rhs.unsqueeze(1), L_chol).squeeze(1).float()
+
+        v = (x + u).reshape(x_shape)
+        if non_negative:
+            v = torch.clamp(v, 0, 1)
+
+        # DCT soft-thresholding via symmetric extension + FFT
+        if mu_dct > 0:
+            v_d = v.double()
+            # Type-II DCT via symmetric extension
+            H, W = x_shape
+            # Horizontal symmetric extension
+            v_ext = torch.cat([v_d, v_d.flip(1)], dim=1)
+            # Vertical symmetric extension
+            v_ext = torch.cat([v_ext, v_ext.flip(0)], dim=0)
+            coeffs = torch.fft.fft2(v_ext).real[:H, :W] / (2.0 * H * W) ** 0.5
+
+            dc = coeffs[0, 0].clone()
+            thresh = scale * mu_dct / rho
+            coeffs = torch.sign(coeffs) * torch.clamp(torch.abs(coeffs) - thresh, min=0)
+            coeffs[0, 0] = dc
+
+            # Inverse DCT via symmetric extension + IFFT
+            inv_ext = torch.zeros(2 * H, 2 * W, device=dev, dtype=torch.float64)
+            inv_ext[:H, :W] = coeffs
+            inv_ext[:H, W:] = coeffs.flip(1)
+            inv_ext[H:, :W] = coeffs.flip(0)
+            inv_ext[H:, W:] = coeffs.flip(0).flip(1)
+            v = torch.fft.ifft2(inv_ext).real[:H, :W].float() * (2.0 * H * W) ** 0.5
+
+            if non_negative:
+                v = torch.clamp(v, 0, 1)
+
+        if mu_tv > 0:
+            tv_weight = scale * mu_tv / rho
+            v = tv_prox_2d_torch(v.float(), tv_weight, tv_inner_iters)
+
+        if non_negative:
+            v = torch.clamp(v, 0, 1)
+        z = v.flatten().float()
+
+        u = u + x - z
+
+    return to_numpy(z).astype(np.float32)
+
+
 def run_admm_tv(
     y: np.ndarray,
     Phi: np.ndarray,
@@ -440,6 +704,7 @@ def run_admm_tv(
     rho = cfg.get("rho", 1.0)
     max_iters = cfg.get("iters", 500)
     tv_inner_iters = cfg.get("tv_inner_iters", 15)
+    device = cfg.get("device", None)
 
     info = {
         "solver": "admm_dct_tv",
@@ -456,6 +721,7 @@ def run_admm_tv(
             mu_tv=mu_tv, mu_dct=mu_dct, rho=rho,
             max_iters=max_iters,
             tv_inner_iters=tv_inner_iters,
+            device=device,
         )
         return result, info
     except Exception as e:
@@ -484,6 +750,7 @@ def run_tval3(
     mu = cfg.get("mu", 256.0)
     beta = cfg.get("beta", 32.0)
     iters = cfg.get("iters", 200)
+    device = cfg.get("device", None)
 
     info = {
         "solver": "tval3",
@@ -507,7 +774,7 @@ def run_tval3(
 
         result = tval3(
             y, physics.forward, physics.adjoint,
-            x_shape, mu, beta, max_iters=iters
+            x_shape, mu, beta, max_iters=iters, device=device
         )
 
         return result, info
@@ -544,6 +811,7 @@ def run_ista(
     iters = cfg.get("iters", 100)
     use_fista = cfg.get("fista", True)
     use_tv = cfg.get("use_tv", True)
+    device = cfg.get("device", None)
 
     solver_name = "fista" if use_fista else "ista"
 
@@ -571,12 +839,12 @@ def run_ista(
         if use_fista:
             result = fista(
                 y, physics.forward, physics.adjoint,
-                x_shape, lam, step, iters, use_tv
+                x_shape, lam, step, iters, use_tv, device=device
             )
         else:
             result = ista(
                 y, physics.forward, physics.adjoint,
-                x_shape, lam, step, iters, use_tv
+                x_shape, lam, step, iters, use_tv, device=device
             )
 
         return result, info

@@ -75,6 +75,7 @@ def fbp_2d(
     angles: np.ndarray,
     filter_type: str = "ramlak",
     output_size: Optional[int] = None,
+    device=None,
 ) -> np.ndarray:
     """Filtered Back-Projection for parallel-beam CT.
 
@@ -83,10 +84,17 @@ def fbp_2d(
         angles: Projection angles in radians
         filter_type: 'ramlak', 'shepp_logan', 'cosine', or 'none'
         output_size: Size of output image (default: n_detectors)
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
 
     Returns:
         Reconstructed image (output_size, output_size)
     """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _fbp_2d_torch(sinogram, angles, filter_type, output_size, dev)
+
     from scipy.ndimage import map_coordinates
 
     n_angles, n_detectors = sinogram.shape
@@ -144,6 +152,75 @@ def fbp_2d(
     return reconstruction.astype(np.float32)
 
 
+def _fbp_2d_torch(sinogram, angles, filter_type, output_size, dev):
+    """GPU implementation of fbp_2d.
+
+    Batch FFT filtering + grid_sample-based back-projection.
+    """
+    import torch
+    import torch.nn.functional as F
+    from pwm_core.recon.gpu_utils import to_torch, to_numpy
+
+    sinogram_t = to_torch(sinogram, dev)
+    n_angles, n_detectors = sinogram_t.shape
+
+    if output_size is None:
+        output_size = n_detectors
+
+    # Create filter on device
+    freqs = torch.fft.fftfreq(n_detectors, device=dev)
+    if filter_type == "ramlak":
+        filt = torch.abs(freqs)
+    elif filter_type == "shepp_logan":
+        ramp = torch.abs(freqs)
+        sinc = torch.sinc(2 * freqs)
+        filt = ramp * torch.abs(sinc)
+    elif filter_type == "cosine":
+        ramp = torch.abs(freqs)
+        nyquist = 0.5
+        cosine = torch.cos(torch.pi * freqs / (2 * nyquist + 1e-10))
+        cosine = torch.clamp(cosine, 0, 1)
+        filt = ramp * cosine
+    else:
+        filt = torch.ones(n_detectors, device=dev)
+
+    # Batch filter all projections at once
+    sino_fft = torch.fft.fft(sinogram_t, dim=1)
+    filtered = torch.real(torch.fft.ifft(sino_fft * filt.unsqueeze(0), dim=1))
+
+    # Back-projection using grid_sample
+    reconstruction = torch.zeros(output_size, output_size, device=dev,
+                                 dtype=torch.float32)
+
+    center = output_size / 2.0
+    x = torch.arange(output_size, device=dev, dtype=torch.float32) - center
+    y = torch.arange(output_size, device=dev, dtype=torch.float32) - center
+    Y, X = torch.meshgrid(y, x, indexing='ij')
+
+    angles_t = to_torch(np.asarray(angles, dtype=np.float32), dev)
+
+    for i in range(n_angles):
+        angle = angles_t[i]
+        t = X * torch.cos(angle) + Y * torch.sin(angle)
+        detector_coords = t + n_detectors / 2.0
+
+        # Normalize to [-1, 1] for grid_sample
+        grid_x = (detector_coords / (n_detectors - 1)) * 2 - 1
+        grid_y = torch.zeros_like(grid_x)
+        grid = torch.stack([grid_x, grid_y], dim=-1).unsqueeze(0)
+
+        proj = filtered[i].unsqueeze(0).unsqueeze(0).unsqueeze(0)
+        # grid_sample expects (N,C,H_in,W_in), grid (N,H_out,W_out,2)
+        proj_2d = proj.expand(-1, -1, 1, -1)
+        interp = F.grid_sample(proj_2d, grid, mode='bilinear',
+                               padding_mode='zeros', align_corners=True)
+        reconstruction += interp.squeeze()
+
+    reconstruction *= np.pi / n_angles
+
+    return to_numpy(reconstruction).astype(np.float32)
+
+
 def sart_2d(
     sinogram: np.ndarray,
     angles: np.ndarray,
@@ -156,6 +233,9 @@ def sart_2d(
 
     SART iteratively updates the reconstruction by back-projecting
     the residual between measured and computed projections.
+
+    Note: This function uses explicit pixel loops and stays CPU-only.
+    Use sart_operator for GPU-accelerated operator-based SART.
 
     Args:
         sinogram: Sinogram data (n_angles, n_detectors)
@@ -232,6 +312,7 @@ def sart_operator(
     x_shape: Tuple[int, ...],
     iterations: int = 10,
     relaxation: float = 0.25,
+    device=None,
 ) -> np.ndarray:
     """SART using forward/adjoint operators.
 
@@ -244,10 +325,18 @@ def sart_operator(
         x_shape: Shape of reconstruction
         iterations: Number of iterations
         relaxation: Relaxation parameter
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
 
     Returns:
         Reconstructed image
     """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _sart_operator_torch(y, forward, adjoint, x_shape, iterations,
+                                    relaxation, dev)
+
     y = y.astype(np.float32)
 
     # Initialize with back-projection
@@ -277,6 +366,32 @@ def sart_operator(
     return x.astype(np.float32)
 
 
+def _sart_operator_torch(y, forward, adjoint, x_shape, iterations, relaxation,
+                         dev):
+    """GPU implementation of sart_operator."""
+    import torch
+    from pwm_core.recon.gpu_utils import to_torch, to_numpy, wrap_operator
+
+    y_t = to_torch(y, dev)
+    fwd = wrap_operator(forward, dev)
+    adj = wrap_operator(adjoint, dev)
+
+    x = adj(y_t).reshape(x_shape)
+
+    ones_y = torch.ones_like(y_t)
+    norm = adj(ones_y).reshape(x_shape)
+    norm = torch.clamp(norm, min=1e-10)
+
+    for i in range(iterations):
+        Ax = fwd(x)
+        residual = y_t - Ax
+        bp_residual = adj(residual).reshape(x_shape)
+        x = x + relaxation * bp_residual / norm
+        x = torch.clamp(x, min=0)
+
+    return to_numpy(x).astype(np.float32)
+
+
 def run_fbp(
     y: np.ndarray,
     physics: Any,
@@ -296,6 +411,7 @@ def run_fbp(
     """
     filter_type = cfg.get("filter", "ramlak")
     output_size = cfg.get("output_size", None)
+    device = cfg.get("device", None)
 
     info = {
         "solver": "fbp",
@@ -326,7 +442,7 @@ def run_fbp(
             n_detectors = int(np.sqrt(len(y) / n_angles))
             y = y.reshape(n_angles, n_detectors)
 
-        result = fbp_2d(y, angles, filter_type, output_size)
+        result = fbp_2d(y, angles, filter_type, output_size, device=device)
 
         info["n_angles"] = len(angles)
         info["output_size"] = result.shape[0]
@@ -363,6 +479,7 @@ def run_sart(
     """
     iters = cfg.get("iters", 10)
     relaxation = cfg.get("relaxation", 0.25)
+    device = cfg.get("device", None)
 
     info = {
         "solver": "sart",
@@ -382,11 +499,11 @@ def run_sart(
 
             result = sart_operator(
                 y, physics.forward, physics.adjoint,
-                x_shape, iters, relaxation
+                x_shape, iters, relaxation, device=device
             )
             return result, info
 
-        # Fall back to angle-based SART
+        # Fall back to angle-based SART (CPU-only)
         angles = None
         n_angles = y.shape[0] if y.ndim >= 2 else int(np.sqrt(len(y)))
 
