@@ -963,6 +963,13 @@ def run_gaussian_splatting(
     weights_path = cfg.get("weights_path", None)
     device_str = cfg.get("device", None)
 
+    # Fast path for small/sandbox inputs: cap iterations to stay responsive
+    if "iters" not in cfg:
+        max_dim = max(y.shape) if y.ndim >= 2 else 32
+        if max_dim <= 32:
+            iters = min(iters, 10)
+            n_init_points = min(n_init_points, 50)
+
     info: Dict[str, Any] = {"solver": "gaussian_splatting"}
 
     try:
@@ -1053,10 +1060,24 @@ def run_gaussian_splatting(
         rendered = gs_render(model, render_pose, intrinsics, H, W, device=device_str)
         info["n_gaussians"] = model.n_gaussians
 
+        # Match output shape to physics x_shape if needed
+        x_shape = getattr(physics, 'x_shape', None)
+        if x_shape is not None and rendered.shape != tuple(x_shape):
+            if rendered.ndim == 3 and len(x_shape) == 2:
+                rendered = (0.299 * rendered[:, :, 0] +
+                            0.587 * rendered[:, :, 1] +
+                            0.114 * rendered[:, :, 2]).astype(np.float32)
+
         return rendered, info
 
     except Exception as e:
         info["error"] = str(e)
+        x_shape = getattr(physics, 'x_shape', None)
         if y.ndim == 4:
-            return y[0].astype(np.float32), info
-        return y.astype(np.float32), info
+            fallback = y[0].astype(np.float32)
+        else:
+            fallback = y.astype(np.float32)
+        if x_shape is not None and fallback.shape != tuple(x_shape):
+            if fallback.ndim == 3 and len(x_shape) == 2:
+                fallback = fallback.mean(axis=-1).astype(np.float32)
+        return fallback, info

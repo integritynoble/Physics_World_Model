@@ -197,6 +197,14 @@ def run_oct(
             window = cfg.get("window", "hann")
             result = fft_recon(y, window=window)
 
+        # Ensure output matches expected x_shape (fft_recon halves the
+        # spectral axis, which may not match the graph template's x_shape).
+        x_shape = getattr(physics, 'x_shape', None)
+        if x_shape is not None and result.shape != tuple(x_shape):
+            from scipy.ndimage import zoom
+            zoom_factors = tuple(t / r for t, r in zip(x_shape, result.shape))
+            result = zoom(result, zoom_factors, order=1).astype(np.float32)
+
         info["output_shape"] = list(result.shape)
         return result, info
     except Exception as e:

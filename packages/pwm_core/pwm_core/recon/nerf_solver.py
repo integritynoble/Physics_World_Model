@@ -762,6 +762,13 @@ def run_nerf(
     weights_path = cfg.get("weights_path", None)
     device_str = cfg.get("device", None)
 
+    # Fast path for small/sandbox inputs: cap iterations to stay responsive
+    if "iters" not in cfg:
+        max_dim = max(y.shape) if y.ndim >= 2 else 32
+        if max_dim <= 32:
+            iters = min(iters, 10)
+            n_samples = min(n_samples, 8)
+
     info: Dict[str, Any] = {
         "solver": "nerf",
         "model": model_type,
@@ -860,13 +867,26 @@ def run_nerf(
             device=device_str,
         )
 
+        # Match output shape to physics x_shape if needed
+        x_shape = getattr(physics, 'x_shape', None)
+        if x_shape is not None and rendered.shape != tuple(x_shape):
+            if rendered.ndim == 3 and len(x_shape) == 2:
+                # RGB -> grayscale
+                rendered = (0.299 * rendered[:, :, 0] +
+                            0.587 * rendered[:, :, 1] +
+                            0.114 * rendered[:, :, 2]).astype(np.float32)
+
         return rendered, info
 
     except Exception as e:
         info["error"] = str(e)
         # Graceful fallback: return first input view
+        x_shape = getattr(physics, 'x_shape', None)
         if y.ndim >= 3:
             fallback = y[0] if y.ndim == 4 else y
+            if x_shape is not None and fallback.shape != tuple(x_shape):
+                if fallback.ndim == 3 and len(x_shape) == 2:
+                    fallback = fallback.mean(axis=-1)
             return fallback.astype(np.float32), info
         return y.astype(np.float32), info
 

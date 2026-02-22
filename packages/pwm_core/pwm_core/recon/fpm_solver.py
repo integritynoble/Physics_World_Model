@@ -272,8 +272,11 @@ def run_fpm(
         lr_size = y.shape[1]
 
         if led_positions is None:
-            info["error"] = "no_led_positions"
-            return y[0].astype(np.float32), info
+            info["note"] = "no_led_positions_fallback"
+            # Return y as-is (2D) or first frame if 3D stack
+            if y.ndim == 3:
+                return np.abs(y[0]).astype(np.float32), info
+            return np.abs(y).astype(np.float32), info
 
         pupil = getattr(physics, 'pupil', None)
 

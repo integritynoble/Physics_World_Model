@@ -178,11 +178,12 @@ def run_integral(
     info: Dict[str, Any] = {"solver": "integral", "method": method}
 
     try:
-        # Get depth weights from physics
+        # Get depth weights from physics; default to single plane so
+        # output shape matches x_shape when physics has no depth info.
         if hasattr(physics, 'depth_weights'):
             depth_weights = physics.depth_weights
         else:
-            depth_weights = np.ones(16) / 16.0
+            depth_weights = np.ones(1)
 
         # Get PSF sigmas from physics if available
         psf_sigmas = getattr(physics, 'psf_sigmas', None)
@@ -194,6 +195,10 @@ def run_integral(
         else:
             reg = cfg.get("regularization", 0.01)
             result = depth_estimation(y, depth_weights, psf_sigmas=psf_sigmas, regularization=reg)
+
+        # Squeeze single-depth dimension so output matches 2D x_shape
+        if result.ndim == 3 and result.shape[2] == 1:
+            result = result[:, :, 0]
 
         return result, info
     except Exception as e:

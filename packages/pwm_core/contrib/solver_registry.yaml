@@ -363,7 +363,7 @@ holography:
   traditional_cpu:
     name: Angular Spectrum
     module: pwm_core.recon.holography_solver
-    function: reconstruct_offaxis_hologram
+    function: run_holography_reconstruction
     params: 0
     gpu: false
   best_quality:
@@ -388,14 +388,14 @@ nerf:
   traditional_cpu:
     name: SfM + MVS
     module: pwm_core.recon.nerf_solver
-    function: nerf_reconstruct
+    function: run_nerf
     config: {mode: "voxel_grid"}
     params: 0
     gpu: false
   best_quality:
     name: Mip-NeRF 360
     module: pwm_core.recon.nerf_solver
-    function: nerf_reconstruct
+    function: run_nerf
     config: {mode: "mip_nerf_360"}
     params: 9M
     gpu: true
@@ -404,13 +404,13 @@ nerf:
   famous_dl:
     name: NeRF (original MLP)
     module: pwm_core.recon.nerf_solver
-    function: nerf_reconstruct
+    function: run_nerf
     params: 1.2M
     reference: "Mildenhall et al. 2020"
   small_gpu:
     name: Instant-NGP
     module: pwm_core.recon.nerf_solver
-    function: nerf_reconstruct
+    function: run_nerf
     config: {mode: "instant_ngp"}
     params: 5M
     vram_gb: 3.0
@@ -421,14 +421,14 @@ gaussian_splatting:
   traditional_cpu:
     name: EWA Splatting
     module: pwm_core.recon.gaussian_splatting_solver
-    function: gaussian_splatting_reconstruct
+    function: run_gaussian_splatting
     config: {mode: "ewa_baseline"}
     params: 0
     gpu: false
   best_quality:
     name: 3DGS (full)
     module: pwm_core.recon.gaussian_splatting_solver
-    function: gaussian_splatting_reconstruct
+    function: run_gaussian_splatting
     params: variable
     gpu: true
     vram_gb: 8
@@ -436,12 +436,12 @@ gaussian_splatting:
   famous_dl:
     name: NeRF (baseline comparison)
     module: pwm_core.recon.nerf_solver
-    function: nerf_reconstruct
+    function: run_nerf
     params: 1.2M
   small_gpu:
     name: 3DGS (compact)
     module: pwm_core.recon.gaussian_splatting_solver
-    function: gaussian_splatting_reconstruct
+    function: run_gaussian_splatting
     config: {max_gaussians: 500000}
     vram_gb: 4.0
     fits_1660ti: tight
@@ -450,7 +450,7 @@ matrix:
   traditional_cpu:
     name: Tikhonov / FISTA-L2
     module: pwm_core.recon.classical
-    function: fista_l2
+    function: run_fista_l2
     params: 0
     gpu: false
   best_quality:
@@ -477,7 +477,7 @@ panorama:
   traditional_cpu:
     name: Laplacian Pyramid Fusion
     module: pwm_core.recon.panorama_solver
-    function: multifocus_fusion_laplacian
+    function: run_panorama_fusion
     params: 0
     gpu: false
   best_quality:
