@@ -381,6 +381,12 @@ class Harness:
                         if e.get("source") not in noise_ids
                         and e.get("target") not in noise_ids
                     ]
+                # Canonical-chain validation requires a noise node, which we
+                # just stripped.  Disable the check so the compiler doesn't
+                # reject the now-linear graph.
+                if "metadata" in spec_data:
+                    spec_data["metadata"] = dict(spec_data["metadata"])
+                    spec_data["metadata"].pop("canonical_chain", None)
 
         spec = GraphCompiler.from_dict(spec_data)
 

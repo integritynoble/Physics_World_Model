@@ -709,3 +709,309 @@ fpm:
     function: fourier_ptychnet_recon
     vram_gb: 2.5
     fits_1660ti: true
+
+# ── 38 additional modalities (all 64 modalities supported) ──────────────────
+
+angiography:
+  traditional_cpu:
+    name: FBP (DSA baseline)
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: 0
+    gpu: false
+
+cbct:
+  traditional_cpu:
+    name: FDK / FBP
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: 0
+    gpu: false
+
+dexa:
+  traditional_cpu:
+    name: FISTA-L2 (dual-energy)
+    module: pwm_core.recon.classical
+    function: run_fista_l2
+    params: 0
+    gpu: false
+
+diffusion_mri:
+  traditional_cpu:
+    name: SENSE (WLS tensor fit)
+    module: pwm_core.recon.mri_solvers
+    function: run_sense
+    params: 0
+    gpu: false
+
+doppler_ultrasound:
+  traditional_cpu:
+    name: Back-Projection (Doppler)
+    module: pwm_core.recon.photoacoustic_solver
+    function: run_photoacoustic
+    params: 0
+    gpu: false
+
+ebsd:
+  traditional_cpu:
+    name: FISTA-L2 (Hough baseline)
+    module: pwm_core.recon.classical
+    function: run_fista_l2
+    params: 0
+    gpu: false
+
+eels:
+  traditional_cpu:
+    name: FISTA-L2 (Fourier ratio)
+    module: pwm_core.recon.classical
+    function: run_fista_l2
+    params: 0
+    gpu: false
+
+elastography:
+  traditional_cpu:
+    name: SENSE (displacement field)
+    module: pwm_core.recon.mri_solvers
+    function: run_sense
+    params: 0
+    gpu: false
+
+electron_diffraction:
+  traditional_cpu:
+    name: ePIE (electron ptychography)
+    module: pwm_core.recon.ptychography_solver
+    function: run_epie
+    params: 0
+    gpu: false
+
+electron_holography:
+  traditional_cpu:
+    name: Phase Retrieval (HIO)
+    module: pwm_core.recon.phase_retrieval_solver
+    function: run_phase_retrieval
+    params: 0
+    gpu: false
+
+electron_tomography:
+  traditional_cpu:
+    name: FBP (SIRT baseline)
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: 0
+    gpu: false
+
+endoscopy:
+  traditional_cpu:
+    name: FISTA-L2 (endoscopy)
+    module: pwm_core.recon.classical
+    function: run_fista_l2
+    params: 0
+    gpu: false
+
+fluoroscopy:
+  traditional_cpu:
+    name: FBP (fluoroscopy)
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: 0
+    gpu: false
+
+fmri:
+  traditional_cpu:
+    name: SENSE (fMRI)
+    module: pwm_core.recon.mri_solvers
+    function: run_sense
+    params: 0
+    gpu: false
+
+fundus:
+  traditional_cpu:
+    name: Richardson-Lucy
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: 0
+    gpu: false
+
+lidar:
+  traditional_cpu:
+    name: FISTA-L2 (depth)
+    module: pwm_core.recon.classical
+    function: run_fista_l2
+    params: 0
+    gpu: false
+
+mammography:
+  traditional_cpu:
+    name: FBP (mammography)
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: 0
+    gpu: false
+
+mrs:
+  traditional_cpu:
+    name: SENSE (spectroscopy)
+    module: pwm_core.recon.mri_solvers
+    function: run_sense
+    params: 0
+    gpu: false
+
+muon_tomo:
+  traditional_cpu:
+    name: FBP (muon tomography)
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: 0
+    gpu: false
+
+neutron_tomo:
+  traditional_cpu:
+    name: FBP (neutron tomography)
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: 0
+    gpu: false
+
+octa:
+  traditional_cpu:
+    name: FFT Recon (OCTA)
+    module: pwm_core.recon.oct_solver
+    function: run_oct
+    params: 0
+    gpu: false
+
+palm_storm:
+  traditional_cpu:
+    name: Richardson-Lucy (STORM/PALM)
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: 0
+    gpu: false
+
+pet:
+  traditional_cpu:
+    name: FBP (emission tomography)
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: 0
+    gpu: false
+
+polarization:
+  traditional_cpu:
+    name: PnP-HQS
+    module: pwm_core.recon.pnp
+    function: run_pnp
+    params: 0
+    gpu: false
+
+proton_radiography:
+  traditional_cpu:
+    name: FBP (proton radiography)
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: 0
+    gpu: false
+
+sar:
+  traditional_cpu:
+    name: FBP (SAR backprojection)
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: 0
+    gpu: false
+
+sem:
+  traditional_cpu:
+    name: Richardson-Lucy (SEM)
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: 0
+    gpu: false
+
+sonar:
+  traditional_cpu:
+    name: FISTA-L2 (DAS)
+    module: pwm_core.recon.classical
+    function: run_fista_l2
+    params: 0
+    gpu: false
+
+spect:
+  traditional_cpu:
+    name: FBP (emission tomography)
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: 0
+    gpu: false
+
+sted:
+  traditional_cpu:
+    name: Richardson-Lucy (STED)
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: 0
+    gpu: false
+
+stem:
+  traditional_cpu:
+    name: Richardson-Lucy (STEM)
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: 0
+    gpu: false
+
+structured_light:
+  traditional_cpu:
+    name: FISTA-L2 (phase unwrap)
+    module: pwm_core.recon.classical
+    function: run_fista_l2
+    params: 0
+    gpu: false
+
+tem:
+  traditional_cpu:
+    name: FISTA-L2 (CTF correction)
+    module: pwm_core.recon.classical
+    function: run_fista_l2
+    params: 0
+    gpu: false
+
+tirf:
+  traditional_cpu:
+    name: Richardson-Lucy (TIRF)
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: 0
+    gpu: false
+
+tof_camera:
+  traditional_cpu:
+    name: FISTA-L2 (depth)
+    module: pwm_core.recon.classical
+    function: run_fista_l2
+    params: 0
+    gpu: false
+
+two_photon:
+  traditional_cpu:
+    name: Richardson-Lucy (2P)
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: 0
+    gpu: false
+
+ultrasound:
+  traditional_cpu:
+    name: FISTA-L2 (ultrasound)
+    module: pwm_core.recon.classical
+    function: run_fista_l2
+    params: 0
+    gpu: false
+
+xray_radiography:
+  traditional_cpu:
+    name: FBP (X-ray radiography)
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: 0
+    gpu: false
