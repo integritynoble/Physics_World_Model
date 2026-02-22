@@ -121,29 +121,31 @@ Table~S3). Representative modalities by carrier family include:
     and muon tomography.
 \end{itemize}
 
-\paragraph{Physics Fidelity Ladder.}
-Each template is parameterized by a fidelity tier that controls the
+\paragraph{Fidelity levels.}
+Each template is parameterized by a fidelity level that controls the
 degree of physical realism in the simulated forward model:
 
 \begin{description}
-  \item[Tier~1 (Linear, shift-invariant):]  The forward model is a
+  \item[Level~1 (Linear, shift-invariant):]  The forward model is a
     linear, spatially uniform operator---the simplest approximation,
     suitable for initial diagnostics and rapid prototyping.
-  \item[Tier~2 (Linear, shift-variant):]  Spatially varying operator
+  \item[Level~2 (Linear, shift-variant):]  Spatially varying operator
     parameters (e.g.\ non-uniform illumination, position-dependent PSF,
     multi-coil sensitivity maps in MRI).  Adds a modality-appropriate
     noise model (Poisson shot noise plus Gaussian read noise for
     photon-counting modalities, Rician noise for MRI, Poisson for CT).
-  \item[Tier~3 (Nonlinear, ray/wave-based):]  Includes nonlinear
-    effects such as wavefront curvature, diffraction, and scattering.
+  \item[Level~3 (Nonlinear, ray/wave-based):]  Includes nonlinear
+    effects such as beam hardening, phase wrapping, and scattering,
+    captured by the Transform~$\Lambda$ primitive.
     Perturbation families and ranges are specified in
     \texttt{mismatch\_db.yaml}.
-  \item[Tier~4 (Full-wave / Monte Carlo):]  Complete physical
+  \item[Level~4 (Full-wave / Monte Carlo):]  Complete physical
     simulation including wave-optical propagation, spatially varying
     aberrations, detector nonlinearities, and environmental drift.
-    Currently implemented for holography and ptychography; other
-    modalities degrade gracefully to Tier~3.
+    Currently implemented for holography and ptychography.
 \end{description}
+
+\noindent All 11 primitives in the library $\Blib$ apply uniformly across every fidelity level; the levels organize simulation complexity, not theorem scope.
 
 
 %% =========================================================================
