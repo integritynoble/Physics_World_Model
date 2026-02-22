@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Modalities — PWM Platform{% endblock %}
+{% block content %}
+<h1>Supported Modalities</h1>
+<div hx-get="/api/v1/modalities-list-partial" hx-trigger="load" hx-swap="innerHTML">
+  Loading modalities...
+</div>
+{% endblock %}

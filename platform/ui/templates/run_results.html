@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Run {{ run.id }} — PWM Platform{% endblock %}
+{% block content %}
+<h1>Run: {{ run.id }}</h1>
+<p>Status: <strong>{{ run.status }}</strong> | Mode: {{ run.compute_mode }} | Modality: {{ run.modality or "N/A" }}</p>
+
+{% if run.diagnosis_verdict %}
+<section class="diagnosis">
+  <h2>Diagnosis</h2>
+  <p>Verdict: <strong>{{ run.diagnosis_verdict }}</strong>
+     (confidence: {{ "%.2f"|format(run.diagnosis_confidence or 0) }})</p>
+</section>
+{% endif %}
+
+{% if run.metrics %}
+<section class="metrics">
+  <h2>Reconstruction Metrics</h2>
+  <pre>{{ run.metrics | tojson(indent=2) }}</pre>
+</section>
+{% endif %}
+
+{% if run.local_path %}
+<section class="provenance">
+  <h2>Provenance</h2>
+  <p>RunBundle: <code>{{ run.local_path }}</code></p>
+</section>
+{% endif %}
+
+{% if run.error_message %}
+<section class="error">
+  <h2>Error</h2>
+  <pre>{{ run.error_message }}</pre>
+</section>
+{% endif %}
+
+<p><a href="/runs">&larr; Back to runs</a></p>
+{% endblock %}

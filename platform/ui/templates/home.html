@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}PWM Platform — New Run{% endblock %}
+{% block content %}
+<h1>Physics World Model</h1>
+<p>Submit a natural-language prompt or ExperimentSpec to simulate, reconstruct, and diagnose an imaging system.</p>
+
+<section class="run-form">
+  <form hx-post="/api/v1/runs-htmx" hx-target="#result" hx-swap="innerHTML" hx-indicator="#spinner">
+    <label>
+      Natural-language prompt:<br>
+      <textarea name="prompt" rows="4"
+        placeholder="Simulate CASSI with 8 coded aperture patterns, reconstruct with ADMM, and diagnose bottlenecks..."></textarea>
+    </label>
+    <br>
+    <label>
+      Compute mode:
+      <select name="compute_mode">
+        <option value="auto">Auto (recommended)</option>
+        <option value="cpu">CPU only — free, ~5-30s</option>
+        <option value="gpu">GPU (Modal T4) — ~$0.01-0.05, ~30-120s</option>
+      </select>
+    </label>
+    <br>
+    <button type="submit">&#9654; Run PWM</button>
+    <span id="spinner" class="htmx-indicator"> &#8987; Submitting...</span>
+  </form>
+  <div id="result"></div>
+</section>
+
+<section>
+  <h2>Recent Runs</h2>
+  <div hx-get="/api/v1/runs-list-partial" hx-trigger="load, every 10s" hx-swap="innerHTML">
+    Loading...
+  </div>
+</section>
+{% endblock %}
