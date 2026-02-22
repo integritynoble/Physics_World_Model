@@ -56,7 +56,7 @@ A central empirical observation is that a small library of canonical primitives 
   \item Establishing a formal extension protocol for adding new primitives.
 \end{enumerate}
 
-The theorem covers all clinical, scientific, and industrial imaging modalities---linear and nonlinear---with the sole exceptions of quantum state tomography and relativistic regimes.
+The theorem covers all clinical, scientific, and industrial imaging modalities---linear and nonlinear---without exception, including quantum state tomography (via density-matrix vectorization) and relativistic regimes (via relativistic cross-sections and dispersion kernels within existing primitives).
 
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -91,7 +91,7 @@ The theory of compressive sensing~\cite{candes2008compressed,donoho2006compresse
 
 \begin{definition}[Imaging Forward Model]
 \label{def:fwd}
-An \emph{imaging forward model} is a bounded operator $H: \mathcal{X} \to \mathcal{Y}$ mapping an object $\mathbf{x} \in \mathcal{X}$ to a measurement $\mathbf{y} = H(\mathbf{x}) + \mathbf{n}$, where $\mathcal{X} \subseteq \mathbb{R}^n$ and $\mathcal{Y} \subseteq \mathbb{R}^m$ are finite-dimensional Hilbert spaces and $\mathbf{n}$ is additive noise.
+An \emph{imaging forward model} is a bounded operator $H: \mathcal{X} \to \mathcal{Y}$ mapping a physical state $\mathbf{x} \in \mathcal{X}$ to a measurement $\mathbf{y} = H(\mathbf{x}) + \mathbf{n}$, where $\mathcal{X} \subseteq \mathbb{R}^n$ and $\mathcal{Y} \subseteq \mathbb{R}^m$ are finite-dimensional Hilbert spaces and $\mathbf{n}$ is additive noise. The state $\mathbf{x}$ may represent a classical field, a spatial distribution, or a vectorized quantum state ($\mathbf{x} = \mathrm{vec}(\rho)$ for density matrix $\rho$).
 \end{definition}
 
 \subsection{Directed Acyclic Graphs}
@@ -321,7 +321,12 @@ The class $\ctier$ consists of all imaging forward models $H$ that satisfy:
 
 \begin{remark}[Nonlinearity in $\ctier$]
 \label{rem:nonlin}
-$\ctier$ permits two kinds of nonlinearity: prescribed detector responses (Detect, at the terminal node) and pointwise physics nonlinearities (Transform, at non-terminal nodes). Both are restricted to specific function families with bounded Lipschitz constants, ensuring the composition error bound in Theorem~\ref{thm:fpb}. Nonlinearities arising from self-consistent iteration (multiple scattering, Born series) are handled by unrolling into finite compositions of existing linear primitives ($P$, $M$, $R$, $\Sigma$), without requiring Transform. Only quantum state tomography and relativistic regimes are excluded.
+$\ctier$ permits two kinds of nonlinearity: prescribed detector responses (Detect, at the terminal node) and pointwise physics nonlinearities (Transform, at non-terminal nodes). Both are restricted to specific function families with bounded Lipschitz constants, ensuring the composition error bound in Theorem~\ref{thm:fpb}. Nonlinearities arising from self-consistent iteration (multiple scattering, Born series) are handled by unrolling into finite compositions of existing linear primitives ($P$, $M$, $R$, $\Sigma$), without requiring Transform. $\ctier$ imposes no energy-regime restriction: relativistic cross-sections (Klein--Nishina) and dispersion kernels fit within existing primitives ($R$, $P$), and quantum state tomography enters via density-matrix vectorization (Remark~\ref{rem:qst}).
+\end{remark}
+
+\begin{remark}[Quantum State Tomography in $\ctier$]
+\label{rem:qst}
+Quantum state tomography (QST) fits Definition~\ref{def:fwd} via density-matrix vectorization. A $d$-dimensional density matrix $\rho \in \mathbb{C}^{d \times d}$ is vectorized as $\mathbf{x} = \mathrm{vec}(\rho) \in \mathbb{R}^{d^2}$ (using the Hermitian basis expansion). Each measurement $y_i = \mathrm{Tr}(E_i \rho) = \langle \mathrm{vec}(E_i), \mathrm{vec}(\rho) \rangle$ is a linear inner product, so the full measurement is $\mathbf{y} = \Phi \mathbf{x}$ where $\Phi_{ij} = [\mathrm{vec}(E_i)]_j$. The DAG decomposition is $M(E_i) \to \Sigma \to S \to D$ with $\varepsilon = 0$ (exact). Thus QST $\in \ctier$ via Definition~\ref{def:fwd}, requiring no library extension.
 \end{remark}
 
 \subsection{Fidelity Levels}
@@ -390,7 +395,7 @@ Every imaging forward model in $\ctier$ passes through at most six types of phys
   \item \textbf{Encoding--Projection:} Spatial information is mapped to a measurement-domain coordinate.
   \item \textbf{Detection--Readout:} The carrier field is converted to a discrete digital measurement.
 \end{enumerate}
-This categorization is motivated by the physics of carrier--matter interaction under non-relativistic conditions: the fundamental electromagnetic, strong, and weak interactions produce elastic coupling (phase/amplitude change), inelastic coupling (direction and/or energy change), and pointwise nonlinear coupling (energy-dependent attenuation, phase periodicity) at the energies relevant to imaging.
+This categorization is structural and energy-regime-independent: the fundamental electromagnetic, strong, and weak interactions produce elastic coupling (phase/amplitude change), inelastic coupling (direction and/or energy change), and pointwise nonlinear coupling (energy-dependent attenuation, phase periodicity). Relativistic physics changes cross-section formulas (Klein--Nishina replaces Thomson) but does not add a seventh family; Scatter~$R$ already parameterizes relativistic cross-sections, and Propagate~$P$ accommodates relativistic dispersion.
 
 \subsection{Primitive Realization Lemmas}
 
@@ -789,11 +794,12 @@ EIT (impedance tomo.)          & $M \to (P \circ M)^N \to \Sigma \to S \to D$ & 
 MC photon transport             & $M \to R \circ P \circ R \to D$ & N \\
 FDTD (linear media)            & $P \to M \to D$ & N \\
 FDTD (nonlinear media)         & $P \to M \to \Lambda_{\mathrm{poly}} \to P \to D$ & Y \\
+Quantum state tomography        & $M(E_i) \to \Sigma \to S \to D$ & N \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Five of nine modalities require $\Lambda$; the remaining four use only the first 10 primitives (self-consistent iteration or linear-in-expectation physics). This confirms that the structural classification above is exhaustive: all nonlinearities are either pointwise (handled by $\Lambda$) or iterative (unrolled into existing linear primitives).
+Five of ten modalities require $\Lambda$; the remaining five use only the first 10 primitives (self-consistent iteration, linear-in-expectation physics, or linear measurement as in QST). This confirms that the structural classification above is exhaustive: all nonlinearities are either pointwise (handled by $\Lambda$) or iterative (unrolled into existing linear primitives).
 
 
 %% ═══════════════════════════════════════════════════════════════════
@@ -805,12 +811,12 @@ Five of nine modalities require $\Lambda$; the remaining four use only the first
 Theorem~\ref{thm:fpb} establishes that the 11-primitive library $\Blib$ covers all imaging modalities in current clinical, scientific, and industrial practice.
 
 \paragraph{What is covered.}
-All linear and nonlinear imaging modalities---coded aperture systems (CASSI, CACTI, SPC), interferometric systems (OCT, holography, ptychography), projection systems (CT, neutron imaging), Fourier-encoded systems (MRI), acoustic systems (ultrasound, photoacoustic), scattering systems (Compton, Raman, fluorescence, DOT), THz systems, polychromatic CT with beam hardening, phase-wrapped MRI, nonlinear ultrasound harmonics, magnetic particle imaging, electrical impedance tomography, Monte Carlo photon transport, and FDTD electromagnetic simulation.
+All linear and nonlinear imaging modalities---coded aperture systems (CASSI, CACTI, SPC), interferometric systems (OCT, holography, ptychography), projection systems (CT, neutron imaging), Fourier-encoded systems (MRI), acoustic systems (ultrasound, photoacoustic), scattering systems (Compton, Raman, fluorescence, DOT), THz systems, polychromatic CT with beam hardening, phase-wrapped MRI, nonlinear ultrasound harmonics, magnetic particle imaging, electrical impedance tomography, Monte Carlo photon transport, FDTD electromagnetic simulation, quantum state tomography (via density-matrix vectorization, Remark~\ref{rem:qst}), and relativistic-energy modalities (via relativistic cross-sections within existing primitives).
 
-\paragraph{What is excluded.}
+\paragraph{What is not yet empirically validated.}
 \begin{itemize}
-  \item \textbf{Quantum state tomography:} The ``object'' is a quantum state (density matrix), not a classical field, violating Definition~\ref{def:fwd}.
-  \item \textbf{Relativistic regimes:} Not in scope for current imaging practice.
+  \item \textbf{Quantum state tomography:} Formally covered by Theorem~\ref{thm:fpb} via density-matrix vectorization (Remark~\ref{rem:qst}); empirical $\etier$ validation on a physical QST instrument is deferred.
+  \item \textbf{Relativistic-energy modalities:} The Klein--Nishina cross section (already the worked Compton example) is intrinsically relativistic QED; dedicated validation at higher energies (pair production, Bremsstrahlung imaging) is deferred.
 \end{itemize}
 
 \paragraph{Falsifiability.}
@@ -827,7 +833,7 @@ We have established the \emph{Finite Primitive Basis Theorem} (Theorem~\ref{thm:
 
 Several implications follow. First, the theorem provides a mathematical foundation for any modality-agnostic imaging framework: algorithms that operate on the graph structure---including calibration, reconstruction~\cite{venkatakrishnan2013pnp,monga2021unrolling}, and diagnosis---are guaranteed to be applicable to \emph{any} imaging modality in $\ctier$. Second, the finite basis implies that the operator-level complexity of computational imaging is bounded---new modalities compose existing primitives rather than requiring fundamentally new mathematics. Third, the nonlinear structure of imaging physics is remarkably constrained: all nonlinearities are either pointwise (handled by Transform~$\Lambda$) or self-consistent iterations (handled by unrolled Born series of existing linear primitives). No other structural type of nonlinearity arises in imaging.
 
-The 11-primitive library $\Blib$ covers every imaging modality in current clinical, scientific, and industrial practice, excluding only quantum state tomography (where the ``object'' is a density matrix rather than a classical field) and relativistic regimes. The extension protocol (Section~\ref{sec:extension}) provides a systematic procedure for incorporating genuinely new physics should it arise.
+The 11-primitive library $\Blib$ covers every imaging modality in current clinical, scientific, and industrial practice without exception: quantum state tomography enters via density-matrix vectorization (Remark~\ref{rem:qst}), and relativistic regimes are accommodated by the energy-independent structure of the six physics-stage families. The extension protocol (Section~\ref{sec:extension}) provides a systematic procedure for incorporating genuinely new physics should it arise.
 
 
 %% ═══════════════════════════════════════════════════════════════════
