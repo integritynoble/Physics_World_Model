@@ -70,7 +70,7 @@ These mismatches are ubiquitous yet systematically ignored in benchmarks.
 
 \textbf{The benchmark gap.}
 Just as CASP~\cite{moult2005casp} transformed protein folding by forcing blind prediction against nature, computational imaging needs benchmarks that evaluate against physical reality.
-Existing benchmarks---KAIST~\cite{choi2017kaist} for CASSI, the SCI benchmark~\cite{yuan2021snapshot} for CACTI---assume perfect operator knowledge, providing no information about mismatch robustness.
+Existing benchmarks---KAIST~\cite{choi2017kaist} for CASSI, the CACTI benchmark~\cite{yuan2021snapshot}---assume perfect operator knowledge, providing no information about mismatch robustness.
 Antun et al.~\cite{antun2020instabilities} showed deep learning solvers are unstable to adversarial perturbations; InverseNet operationalizes this for \emph{physically realistic} operator mismatch.
 
 \textbf{Contributions.}
@@ -108,7 +108,7 @@ Berk et al.~\cite{berk2024robust} provide theoretical error bounds under structu
 No prior work offers a unified cross-modality benchmark quantifying both mismatch degradation and calibration recovery.
 
 \paragraph{Reconstruction benchmarks.}
-The KAIST TSA dataset~\cite{choi2017kaist} (CASSI), the video SCI benchmark~\cite{yuan2021snapshot} (CACTI), and Set11~\cite{kulkarni2016reconnet} (SPC) are standard evaluation suites.
+The KAIST TSA dataset~\cite{choi2017kaist} (CASSI), the CACTI benchmark~\cite{yuan2021snapshot}, and Set11~\cite{kulkarni2016reconnet} (SPC) are standard evaluation suites.
 Large-scale benchmarks like NTIRE~\cite{timofte2017ntire} and SupER~\cite{kohler2020super} standardize restoration evaluation but do not enable controlled forward-model modification.
 InverseNet extends these by introducing controlled operator mismatch and measuring calibration recovery.
 
@@ -614,6 +614,9 @@ When calibration is feasible, operator-conditioned networks paired with self-sup
 
 All reconstruction arrays, metrics, and code will be released upon acceptance.
 Future work includes gradient-based calibration, dispersion-aware architectures, and expansion to lensless imaging and ptychography.
+
+\paragraph{Data availability.}
+All test data used in this work come from existing public datasets: KAIST~\cite{choi2017kaist} for CASSI, the CACTI benchmark~\cite{yuan2021snapshot}, and Set11~\cite{kulkarni2016reconnet} for SPC. Real CASSI scenes are from the TSA dataset~\cite{wagadarikar2008cassi}; real CACTI scenes are from the EfficientSCI repository~\cite{wang2023efficientsci}. No non-public datasets were used. Code and reconstruction arrays are available at \url{https://github.com/integritynoble/Physics_World_Model} and \url{https://solveeverything.org}.
 
 % ============================================================================
 % REFERENCES

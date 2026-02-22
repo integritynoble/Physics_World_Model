@@ -651,9 +651,9 @@ Figure~\ref{fig:growth} plots the number of distinct primitive types as modaliti
   height=0.48\textwidth,
   xlabel={Number of modalities $N$},
   ylabel={Number of primitives $K$},
-  xmin=0, xmax=33,
+  xmin=0, xmax=43,
   ymin=0, ymax=12,
-  xtick={0,5,10,15,20,25,30},
+  xtick={0,5,10,15,20,25,30,35,40},
   ytick={0,2,4,6,8,10,12},
   grid=major,
   grid style={gray!30},
@@ -696,6 +696,15 @@ Figure~\ref{fig:growth} plots the number of distinct primitive types as modaliti
   (29,10) % Fluorescence (no new)
   (30,10) % DOT (no new)
   (31,10) % Brillouin (no new, R already in library)
+  (32,10) % FLIM (no new)
+  (33,10) % Shear-wave elastography (no new)
+  (34,10) % Proton radiography (no new)
+  (35,11) % Beam hardening CT: +Lambda → K=11
+  (36,11) % Phase-wrapped MRI (no new, Lambda already in library)
+  (37,11) % Saturated detector (no new)
+  (38,11) % Nonlinear DOT (no new)
+  (39,11) % Muon tomography (no new)
+  (40,11) % Sonar (no new)
 };
 % Annotate key primitive introductions
 \node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:1,2.2) {$C,D$};
@@ -705,12 +714,13 @@ Figure~\ref{fig:growth} plots the number of distinct primitive types as modaliti
 \node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:6,8.2) {$+F,S$};
 \node[anchor=south west, font=\scriptsize, pwmBlue] at (axis cs:7,9.2) {$+W$};
 \node[anchor=south, font=\scriptsize, pwmRed] at (axis cs:27,10.4) {$+R$};
+\node[anchor=south, font=\scriptsize, pwmRed] at (axis cs:35,11.4) {$+\Lambda$};
 % Dashed saturation line
-\addplot[dashed, gray, line width=0.8pt] coordinates {(0,10)(33,10)};
-\node[anchor=south east, font=\scriptsize, gray] at (axis cs:33,10) {$K=10$};
+\addplot[dashed, gray, line width=0.8pt] coordinates {(0,11)(43,11)};
+\node[anchor=south east, font=\scriptsize, gray] at (axis cs:43,11) {$K=11$};
 \end{axis}
 \end{tikzpicture}
-\caption{Basis-growth saturation. Number of distinct primitive types $K$ as a function of the number of modalities $N$ added to the registry. The curve saturates at $K = 10$ for $N \geq 27$; annotated points mark each primitive type introduction. Saturation is consistent with Theorem~\ref{thm:fpb}: once all physics-stage families are covered, new modalities compose existing primitives.}
+\caption{Basis-growth saturation. Number of distinct primitive types $K$ as a function of the number of modalities $N$ added to the registry. The curve saturates at $K = 11$ for $N \geq 35$; annotated points mark each primitive type introduction. Scatter ($R$) enters at $N = 27$ (Compton imaging); Transform ($\Lambda$) enters at $N = 35$ (beam hardening CT). Saturation is consistent with Theorem~\ref{thm:fpb}: once all physics-stage families are covered, new modalities compose existing primitives.}
 \label{fig:growth}
 \end{figure}
 
