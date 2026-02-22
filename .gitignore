@@ -54,6 +54,9 @@ data/
 # Allow SPC sampling matrices
 !papers/inversenet/data/spc/sampling_matrix/*.mat
 
+# Worktrees
+.worktrees/
+
 # Temp files
 *.tmp
 *.temp
