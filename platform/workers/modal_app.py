@@ -8,14 +8,22 @@ The Celery worker on the CPU server decodes the artifacts and saves them to
 
 No cloud storage credentials needed -- results returned in-memory as dicts.
 """
+import pathlib
 import modal
-from modal import Image, gpu
+from modal import Image
+
+# Path to the locally-built pwm_core wheel (produced by `python -m build`)
+_PWM_WHEEL = pathlib.Path(__file__).parent.parent.parent / "packages" / "pwm_core" / "dist" / "pwm_core-0.2.1-py3-none-any.whl"
+# Fallback: pre-built wheel in /tmp (produced by CI or local build)
+if not _PWM_WHEEL.exists():
+    _PWM_WHEEL = pathlib.Path("/tmp/pwm_wheels/pwm_core-0.2.1-py3-none-any.whl")
 
 pwm_image = (
     Image.debian_slim(python_version="3.11")
     .pip_install("uv")
+    .add_local_file(str(_PWM_WHEEL), "/tmp/pwm_core-0.2.1-py3-none-any.whl", copy=True)
     .run_commands(
-        "uv pip install --system 'torch' 'pwm-core[deepinv]'"
+        "uv pip install --system 'torch' 'deepinv>=0.2.0' /tmp/pwm_core-0.2.1-py3-none-any.whl"
     )
 )
 
@@ -24,7 +32,7 @@ app = modal.App("pwm-platform")
 
 @app.function(
     image=pwm_image,
-    gpu=gpu.T4(),
+    gpu="T4",
     timeout=600,
     retries=modal.Retries(max_retries=2, backoff_coefficient=2.0),
 )
@@ -59,7 +67,7 @@ def simulate_gpu(spec_dict: dict) -> dict:
 
 @app.function(
     image=pwm_image,
-    gpu=gpu.T4(),
+    gpu="T4",
     timeout=600,
     retries=modal.Retries(max_retries=2, backoff_coefficient=2.0),
 )
