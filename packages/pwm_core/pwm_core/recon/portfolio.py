@@ -496,7 +496,8 @@ def _run_operator_solver(
             if mst_recon_cassi is not None:
                 mask = getattr(physics, "mask", None)
                 n_bands = getattr(physics, "n_bands", 28)
-                result = mst_recon_cassi(y, mask, n_bands)
+                device = cfg.get("device", None)
+                result = mst_recon_cassi(y, mask, n_bands, device=device)
                 return result, {"solver": "mst"}
             return None, {"error": "mst not available"}
 
