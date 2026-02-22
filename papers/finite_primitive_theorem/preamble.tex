@@ -85,6 +85,25 @@
   citecolor=pwmBlue,
   urlcolor=pwmBlue
 ]{hyperref}
+%% PDF bookmark–safe substitutions for math in section headings
+\pdfstringdefDisableCommands{%
+  \def\Blib{B}%
+  \def\ctier{C_img}%
+  \def\boldsymbol#1{#1}%
+  \def\mathbf#1{#1}%
+  \def\varepsilon{epsilon}%
+  \def\lambda{lambda}%
+  \def\Lambda{Lambda}%
+  \def\Pi{Pi}%
+  \def\Sigma{Sigma}%
+  \def\Omega{Omega}%
+  \def\Delta{Delta}%
+  \def\alpha{alpha}%
+  \def\eta{eta}%
+  \def\sigma{sigma}%
+  \def\theta{theta}%
+  \def\to{->}%
+}
 \usepackage[capitalise,noabbrev]{cleveref}
 
 %% ——— Bibliography ———
