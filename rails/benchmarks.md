@@ -152,7 +152,7 @@ Every PWM benchmark reports these three mechanically verifiable metrics.
 
 ## 5. CACTI Benchmark
 
-**Modality:** Coded Aperture Compressive Temporal Imaging (video SCI)
+**Modality:** Coded Aperture Compressive Temporal Imaging (CACTI)
 **Dataset:** 6 grayscale benchmark videos (Kobe, Traffic, Runner, Drop, Crash, Aerial; 256 x 256 x 8 frames)
 **Mismatch model:** 8 parameters (mask_dx, mask_dy, mask_theta, mask_blur_sigma, clock_offset, duty_cycle, gain, offset)
 **Noise model:** Poisson-Gaussian (alpha=10000, sigma=1.0)

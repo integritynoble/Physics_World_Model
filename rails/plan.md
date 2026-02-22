@@ -473,7 +473,7 @@ community/challenges/
   │   ├── README.md               # Rules, timeline, tracks, prizes
   │   ├── tracks/
   │   │   ├── track1_correct.md   # Spectral imaging (CASSI) under mismatch
-  │   │   ├── track2_temporal.md  # Video SCI (CACTI) under motion blur
+  │   │   ├── track2_temporal.md  # Video compressive imaging (CACTI) under motion blur
   │   │   ├── track3_medical.md   # MRI/CT under acquisition artifacts
   │   │   └── track4_cross.md    # Cross-modal transfer performance
   │   ├── datasets/
