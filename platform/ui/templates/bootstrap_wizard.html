@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Bootstrap New Modality — PWM Platform{% endblock %}
+{% block content %}
+<h1>Bootstrap New Imaging Modality</h1>
+<p>Describe your modality and PWM will suggest a starter configuration based on similar modalities.</p>
+
+<form hx-post="/api/v1/bootstrap-htmx" hx-target="#bootstrap-result" hx-swap="innerHTML">
+  <label>Modality name:<br>
+    <input type="text" name="name" required minlength="3" maxlength="128"
+      placeholder="Terahertz Time-Domain Spectroscopy">
+  </label>
+  <br>
+  <label>Description (physics, sensor, geometry):<br>
+    <textarea name="description" rows="6" required minlength="20"
+      placeholder="THz pulses are transmitted through a sample. Time-gated detector records the electric field as a function of time delay, enabling spectral imaging..."></textarea>
+  </label>
+  <br>
+  <label>Physics class:
+    <select name="physics_class">
+      <option value="">Unknown</option>
+      <option value="coherent">Coherent</option>
+      <option value="incoherent">Incoherent</option>
+      <option value="tomographic">Tomographic</option>
+      <option value="quantum">Quantum</option>
+      <option value="thermal">Thermal</option>
+    </select>
+  </label>
+  <br>
+  <label>Sensor type:
+    <input type="text" name="sensor_type" placeholder="time-domain detector">
+  </label>
+  <br>
+  <label>Geometry:
+    <input type="text" name="geometry" placeholder="transmission / reflection / scanning">
+  </label>
+  <br>
+  <button type="submit">Generate Bootstrap Proposal</button>
+</form>
+<div id="bootstrap-result"></div>
+{% endblock %}
