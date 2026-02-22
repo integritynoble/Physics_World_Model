@@ -86,7 +86,7 @@ def test_gallery_data_completeness():
         "widefield", "widefield_lowdose", "confocal_livecell", "confocal_3d",
         "sim", "cassi", "spc", "cacti", "lensless", "lightsheet", "ct", "mri",
         "ptychography", "holography", "nerf", "gaussian_splatting", "matrix",
-        "panorama_multifocal", "light_field", "integral", "phase_retrieval",
+        "panorama", "light_field", "integral", "phase_retrieval",
         "flim", "photoacoustic", "oct", "fpm", "dot",
     }
     assert keys == expected, "Missing modalities: {}".format(expected - keys)

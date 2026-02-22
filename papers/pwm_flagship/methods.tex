@@ -94,10 +94,11 @@ The compiled \texttt{GraphOperator} is serializable to JSON and hashable
 via SHA-256 for provenance tracking in RunBundle manifests.
 
 \paragraph{Template library.}
-The \texttt{graph\_templates.yaml} registry contains templates
-organized across 26 registered modalities (7 with full end-to-end correction
-validation, 1 with Scenario~I baseline, 18 with template-level validation),
-grouped by physical carrier:
+The 	exttt{graph_templates.yaml} registry contains 89 templates
+spanning all five carrier families. Of these, 26 modalities carry formal
+validation status (7~with full end-to-end correction validation, 1~with
+Scenario~I baseline, 18~with template-level validation; Supplementary
+Table~S3). Representative modalities by carrier family include:
 
 \begin{itemize}
   \item \textbf{Photons (optical and X-ray):}  CASSI, SPC, CACTI, structured
@@ -520,7 +521,7 @@ describes: mask spatial shift in $x$ ($dx$, pixels), mask spatial shift in
 $y$ ($dy$, pixels), mask rotation angle ($\theta$, degrees), dispersion
 slope ($a_1$, pixels per band), and dispersion axis angle ($\alpha$,
 degrees).  An optional sixth parameter, PSF blur width ($\sigma_{\text{psf}}$, pixels), is available but not used in the primary experiments.
-These mismatch parameter values were determined through systematic characterization of realistic CASSI assembly errors (Supplementary Note~9). The true mismatch parameters are
+These mismatch parameter values were determined through systematic characterization of realistic CASSI assembly errors (Supplementary Note~8). The true mismatch parameters are
 $\mismatchparam_{\text{true}} = (dx = 0.5\;\text{px},\; dy = 0.3\;\text{px},\;
 \theta = 0.1^\circ,\; a_1 = 2.02,\;
 \alpha = 0.15^\circ)$.

@@ -1,6 +1,6 @@
 # =============================================================================
 # PWM Master Modality Registry
-# All 26 imaging modalities with optical element chains, forward models,
+# All 64 imaging modalities with optical element chains, forward models,
 # default solvers, and upload templates for operator correction mode.
 # =============================================================================
 

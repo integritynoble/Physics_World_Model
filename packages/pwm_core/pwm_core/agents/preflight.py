@@ -181,7 +181,7 @@ _UPLOAD_TEMPLATES: Dict[str, List[str]] = {
         "images/  -- directory of overlapping images",
         "focaldepths.json  -- per-image focus distances (optional)",
     ],
-    "panorama_multifocal": [
+    "panorama_multifocal": [  # alias for panorama with multi-focus
         "images/  -- directory of multi-focus images",
         "focaldepths.json  -- per-image focus distances",
     ],

@@ -1,8 +1,8 @@
 {
   "casepack_version": "0.2.1",
-  "id": "panorama_multifocal_fusion_v1",
+  "id": "panorama_fusion_v1",
   "title": "Panorama Multifocal Fusion (Neural)",
-  "modality": "panorama_multifocal",
+  "modality": "panorama",
   "tags": [
     "panorama",
     "multifocal",
@@ -24,13 +24,13 @@
   "required_user_inputs": [],
   "base_spec": {
     "version": "0.2.1",
-    "id": "panorama_multifocal_fusion_v1_base",
+    "id": "panorama_fusion_v1_base",
     "input": {
       "mode": "simulate"
     },
     "states": {
       "physics": {
-        "modality": "panorama_multifocal"
+        "modality": "panorama"
       },
       "budget": {
         "photon_budget": {

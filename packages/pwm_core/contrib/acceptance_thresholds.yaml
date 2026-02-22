@@ -133,7 +133,7 @@ holography: {tier: C, primary_metric: psnr, quick_threshold: 18, calib_required:
 nerf: {tier: C, primary_metric: psnr, quick_threshold: 10, calib_required: false}
 gaussian_splatting: {tier: C, primary_metric: psnr, quick_threshold: 10, calib_required: false}
 matrix: {tier: C, primary_metric: psnr, quick_threshold: 20, calib_required: false}
-panorama_multifocal: {tier: C, primary_metric: psnr, quick_threshold: 15, calib_required: false}
+panorama: {tier: C, primary_metric: psnr, quick_threshold: 15, calib_required: false}
 light_field: {tier: C, primary_metric: psnr, quick_threshold: 15, calib_required: false}
 integral: {tier: C, primary_metric: psnr, quick_threshold: 15, calib_required: false}
 phase_retrieval: {tier: C, primary_metric: psnr, quick_threshold: 12, calib_required: false}

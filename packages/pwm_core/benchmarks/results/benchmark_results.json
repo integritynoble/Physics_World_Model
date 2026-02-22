@@ -521,8 +521,8 @@
     "reference_psnr": 25.0,
     "sampling_rate": 0.25
   },
-  "panorama_multifocal": {
-    "modality": "panorama_multifocal",
+  "panorama": {
+    "modality": "panorama",
     "solver": "neural_fusion",
     "per_algorithm": {
       "laplacian_pyramid": {

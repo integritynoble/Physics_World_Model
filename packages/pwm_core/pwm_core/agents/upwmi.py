@@ -3,7 +3,7 @@
 Unified UPWMI scoring, caching, budget guardrails, and active learning search.
 
 Generalises the CASSI-specific UPWMI benchmarks into modality-agnostic
-infrastructure for operator correction across all 26 modalities.
+infrastructure for operator correction across all 64 modalities.
 """
 
 from __future__ import annotations

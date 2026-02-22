@@ -289,7 +289,7 @@ The graph is serialized to a JSON document for reproducibility and sharing:
 \newpage
 
 %% ============================================================
-%% SUPPLEMENTARY NOTE 3
+%% SUPPLEMENTARY TABLES S1--S4
 %% ============================================================
 \section{Supplementary Table S1: All 16 Correction Configurations}
 \label{sec:params}
@@ -545,7 +545,7 @@ where available.  Validation tiers: \emph{Validated} = full Scenarios~I--IV corr
 15 & CT (cone-beam)       & X-ray          & ---   & 39.5  & Phase 2   & --- \\
 16 & Electron Pty.        & Electron       & ---   & 25.9  & Phase 4   & --- \\
 %% Group 4: RF / acoustic
-17 & MRI (Cartesian)\footnote{Multi-coil Scenario~I PSNR (8 coils, $4\times$ acceleration); see Supplementary Note~11 for full multi-coil analysis.}      & RF             & 52.11 & 42.3  & Validated & CG-SENSE \\
+17 & MRI (Cartesian)\footnote{Multi-coil Scenario~I PSNR (8 coils, $4\times$ acceleration); see Supplementary Note~10 for full multi-coil analysis.}      & RF             & 52.11 & 42.3  & Validated & CG-SENSE \\
 18 & MRI (radial)         & RF             & ---   & 38.7  & Phase 2   & --- \\
 19 & MRI (spiral)         & RF             & ---   & 37.2  & Phase 4   & --- \\
 20 & Ultrasound           & Acoustic       & ---   & 31.8  & Phase 4   & --- \\
@@ -593,7 +593,7 @@ Table~\ref{tab:yaml} summarizes the nine YAML registry files (totalling
 \newpage
 
 %% ============================================================
-%% SUPPLEMENTARY NOTE 4
+%% SUPPLEMENTARY NOTE 3
 %% ============================================================
 \section{Supplementary Note 4: RunBundle Schema}
 \label{sec:runbundle}
@@ -649,7 +649,7 @@ A RunBundle can be verified by:
 \newpage
 
 %% ============================================================
-%% SUPPLEMENTARY NOTE 5
+%% SUPPLEMENTARY NOTE 4
 %% ============================================================
 \section{Supplementary Note 5: Computational Cost Analysis}
 \label{sec:cost}
@@ -728,7 +728,7 @@ For large-scale deployment:
 \newpage
 
 %% ============================================================
-%% SUPPLEMENTARY NOTE 6: REAL-DATA VALIDATION
+%% SUPPLEMENTARY NOTE 5: REAL-DATA VALIDATION
 %% ============================================================
 \section{Supplementary Note 6: Real-Data Validation Details}
 \label{sec:realdata}
@@ -1171,7 +1171,7 @@ constraint.
 
 
 %% ============================================================
-%% SUPPLEMENTARY NOTE 7: CLINICAL CT QC VALIDATION
+%% SUPPLEMENTARY NOTE 6: CLINICAL CT QC VALIDATION
 %% ============================================================
 \newpage
 \section{Supplementary Note 7: Clinical CT Quality Assurance Validation}
@@ -1317,7 +1317,7 @@ would transform the CT QC section from a simulation exercise to a clinical
 demonstration.
 
 %% ============================================================
-%% SUPPLEMENTARY NOTE 8: CONTROLLED HARDWARE VALIDATION
+%% SUPPLEMENTARY NOTE 7: CONTROLLED HARDWARE VALIDATION
 %% ============================================================
 \newpage
 \section{Supplementary Note 8: Controlled Hardware Validation}
@@ -1385,7 +1385,7 @@ with external partners.  Results will be incorporated in the revised manuscript.
 
 
 %% ============================================================
-%% SUPPLEMENTARY NOTE 9: MISMATCH PARAMETER DERIVATION
+%% SUPPLEMENTARY NOTE 8: MISMATCH PARAMETER DERIVATION
 %% ============================================================
 \newpage
 \section{Supplementary Note 9: Mismatch Parameter Derivation}
@@ -1437,7 +1437,7 @@ mismatch of comparable magnitude to the perturbation applied.
 
 
 %% ============================================================
-%% SUPPLEMENTARY NOTE 10: CALIBRATION METHOD COMPARISON
+%% SUPPLEMENTARY NOTE 9: CALIBRATION METHOD COMPARISON
 %% ============================================================
 \newpage
 \section{Supplementary Note 10: Calibration Method Comparison}
@@ -1446,7 +1446,7 @@ mismatch of comparable magnitude to the perturbation applied.
 Existing calibration methods are modality-specific: ESPIRiT~\cite{uecker2014espirit} auto-calibrates coil sensitivities for parallel MRI; entropy-based center-of-rotation autofocus corrects geometric errors in CT; blind position correction in ePIE~\cite{maiden2009ptychography} self-calibrates probe positions in ptychography. Each achieves high recovery within its target modality but requires domain-specific algorithm design and cannot transfer across modalities.
 
 \paragraph{Quantitative comparison: ESPIRiT vs.\ PWM on multi-coil MRI.}
-To ground this comparison empirically, we evaluate four conditions on a synthetic brain phantom (8~coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE with $\ell_1$-wavelet regularization $\lambda = 10^{-3}$ and 30 iterations, 5\% multiplicative coil sensitivity mismatch).  Note: this experiment uses a structurally complex brain phantom, yielding a lower Sc.~I baseline (34.98\,dB) than the Shepp-Logan phantom used in Note~11 (52.11\,dB); the difference reflects phantom complexity, not solver disagreement.
+To ground this comparison empirically, we evaluate four conditions on a synthetic brain phantom (8~coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE with $\ell_1$-wavelet regularization $\lambda = 10^{-3}$ and 30 iterations, 5\% multiplicative coil sensitivity mismatch).  Note: this experiment uses a structurally complex brain phantom, yielding a lower Sc.~I baseline (34.98\,dB) than the Shepp-Logan phantom used in Note~10 (52.11\,dB); the difference reflects phantom complexity, not solver disagreement.
 
 \begin{table}[h]
 \centering\small
@@ -1471,12 +1471,12 @@ PWM (beam-search corrected) & 32.05 & 0.7264 \\
 PWM's modality-agnostic correction achieves comparable recovery on validated modalities (CASSI: 22--46\%, CACTI: 100\%, SPC: 86--92\%; Table~S9) without requiring domain-specific tuning. The advantage is most pronounced for CASSI, where no automated calibration standard exists, and for cross-modality deployment, where a single pipeline serves all modalities without per-modality engineering.
 
 %% ============================================================
-%% SUPPLEMENTARY NOTE 11: MRI UNDER CLINICALLY REALISTIC CONDITIONS
+%% SUPPLEMENTARY NOTE 10: MRI UNDER CLINICALLY REALISTIC CONDITIONS
 %% ============================================================
 \section{Supplementary Note 11: MRI Under Clinically Realistic Conditions}
 \label{sec:mri_realistic}
 
-The $+48.25$\,dB correction gain reported for MRI in the main text reflects a single-coil scenario with 5\% multiplicative sensitivity error---a pathological case chosen to stress-test the framework. Under clinically realistic multi-coil conditions (8 coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE reconstruction) on a Shepp-Logan phantom with spatially smooth Biot-Savart sensitivity errors simulating patient repositioning, the correction gains are substantially more modest but clinically meaningful.  Note: the Sc.~I baseline here (52.11\,dB) is higher than in Note~10 (34.98\,dB) because this experiment uses a smooth Shepp-Logan phantom; the structurally complex brain phantom in Note~10 is harder to reconstruct, yielding lower absolute PSNR across all scenarios.
+The $+48.25$\,dB correction gain reported for MRI in the main text reflects a single-coil scenario with 5\% multiplicative sensitivity error---a pathological case chosen to stress-test the framework. Under clinically realistic multi-coil conditions (8 coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE reconstruction) on a Shepp-Logan phantom with spatially smooth Biot-Savart sensitivity errors simulating patient repositioning, the correction gains are substantially more modest but clinically meaningful.  Note: the Sc.~I baseline here (52.11\,dB) is higher than in Note~9 (34.98\,dB) because this experiment uses a smooth Shepp-Logan phantom; the structurally complex brain phantom in Note~9 is harder to reconstruct, yielding lower absolute PSNR across all scenarios.
 
 \begin{table}[h]
 \centering\small

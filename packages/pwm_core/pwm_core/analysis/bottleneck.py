@@ -150,7 +150,7 @@ def rank_bottlenecks(
     }
 
     # Maximum achievable gains per factor (empirical ceiling in dB).
-    # These are domain-typical ceilings observed across the 26 modalities.
+    # These are domain-typical ceilings observed across the 64 modalities.
     max_gains: Dict[str, float] = {
         "photon": 6.0,
         "recoverability": 8.0,

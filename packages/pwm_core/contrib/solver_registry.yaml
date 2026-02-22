@@ -1,5 +1,5 @@
 # PWM Solver Registry
-# Maps each of 18 imaging modalities to 4 tiers of reconstruction algorithms.
+# Maps each of 26 imaging modalities to 4 tiers of reconstruction algorithms.
 # Tiers: traditional_cpu, best_quality, famous_dl, small_gpu (GTX 1660 Ti, 6GB)
 
 widefield:

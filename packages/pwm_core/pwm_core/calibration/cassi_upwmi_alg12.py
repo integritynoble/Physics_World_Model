@@ -380,10 +380,10 @@ class Algorithm1HierarchicalBeamSearch:
         Returns:
             List of (dx, dy, theta) tuples, sorted by reconstruction MSE
         """
-        # Search space around initial estimates
-        dx_range = np.linspace(dx_init - 0.5, dx_init + 0.5, 5)
-        dy_range = np.linspace(dy_init - 0.5, dy_init + 0.5, 5)
-        theta_range = np.linspace(theta_init - 0.1, theta_init + 0.1, 5)
+        # Search space around initial estimates (clipped to valid bounds)
+        dx_range = np.linspace(max(dx_init - 0.5, -3.0), min(dx_init + 0.5, 3.0), 5)
+        dy_range = np.linspace(max(dy_init - 0.5, -3.0), min(dy_init + 0.5, 3.0), 5)
+        theta_range = np.linspace(max(theta_init - 0.1, -1.0), min(theta_init + 0.1, 1.0), 5)
 
         candidates = []
 

@@ -23,7 +23,7 @@ CasePacks are validated templates that define modality-specific configurations f
 | 15 | NeRF | `nerf_from_poses_basic_v1.json` | Neural Implicit (SIREN) | 61.35 dB |
 | 16 | 3D Gaussian Splatting | `gaussian_splatting_basic_v1.json` | 2D Gaussian Opt | 30.47 dB |
 | 17 | Matrix (Generic) | `matrix_generic_linear_v1.json` | FISTA-TV | 25.79 dB |
-| 18 | Panorama Multifocal | `panorama_multifocal_fusion_v1.json` | Neural Fusion | 27.78 dB |
+| 18 | Panorama | `panorama_fusion_v1.json` | Neural Fusion | 27.78 dB |
 
 ## CasePack Categories
 
@@ -55,7 +55,7 @@ CasePacks are validated templates that define modality-specific configurations f
 
 ### General
 - **Matrix** - Generic linear inverse problem (y = Ax)
-- **Panorama Multifocal** - Multi-view focus stacking
+- **Panorama** - Multi-view focus stacking
 
 ## Usage
 
