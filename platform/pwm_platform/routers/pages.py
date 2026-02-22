@@ -276,19 +276,36 @@ async def datasets_page(
 @router.get("/modalities", response_class=HTMLResponse)
 async def modalities_page(
     request: Request,
+    category: str | None = None,
     user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Modality catalog — public."""
-    result = await db.execute(
-        select(ModalityBasics).order_by(ModalityBasics.display_name)
+    """Modality catalog — serves from Physics World Model knowledge base."""
+    from pwm_platform.services.modality_database import (
+        MODALITY_DATABASE,
+        list_all_categories,
+        list_all_modality_keys,
+        list_modalities_by_category,
     )
-    modalities = result.scalars().all()
+
+    if category:
+        keys = list_modalities_by_category(category)
+    else:
+        keys = list_all_modality_keys()
+
+    # Build template-friendly objects with modality_key included
+    modalities = []
+    for k in keys:
+        entry = dict(MODALITY_DATABASE[k])
+        entry["modality_key"] = k
+        modalities.append(entry)
 
     return templates.TemplateResponse("modalities.html", {
         "request": request,
         "user": user,
         "modalities": modalities,
+        "categories": list_all_categories(),
+        "selected_category": category,
     })
 
 

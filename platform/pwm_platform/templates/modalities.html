@@ -1,10 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Modalities — PWM Platform{% endblock %}
+{% block title %}Physics World Model — Modality Catalog{% endblock %}
 
 {% block content %}
 <div class="space-y-6">
     <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-gray-900">Modality Catalog</h1>
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Physics World Model — Modality Catalog</h1>
+            <p class="mt-1 text-sm text-gray-500">All 64 imaging modalities with descriptions, experimental setups, and reconstruction guidance.</p>
+        </div>
         {% if user %}
         <a href="/bootstrap/new"
            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
@@ -13,24 +16,143 @@
         {% endif %}
     </div>
 
+    <!-- Category filter -->
+    {% if categories %}
+    <div class="flex flex-wrap gap-2">
+        <a href="/modalities" class="text-xs px-3 py-1 rounded-full {% if not selected_category %}bg-indigo-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">All</a>
+        {% for cat in categories %}
+        <a href="/modalities?category={{ cat }}" class="text-xs px-3 py-1 rounded-full {% if selected_category == cat %}bg-indigo-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">{{ cat | replace('_', ' ') | title }}</a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     {% if modalities %}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {% for m in modalities %}
-        <div class="bg-white shadow rounded-lg p-5 hover:shadow-md transition-shadow">
+        <div class="bg-white shadow rounded-lg p-5 hover:shadow-md transition-shadow cursor-pointer"
+             onclick="document.getElementById('detail-{{ m.modality_key }}').classList.toggle('hidden')">
             <h3 class="text-sm font-semibold text-gray-900">{{ m.display_name }}</h3>
             <div class="mt-1 flex items-center space-x-2">
                 <span class="text-xs px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded font-mono">{{ m.modality_key }}</span>
-                <span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">{{ m.category }}</span>
+                <span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">{{ m.category | replace('_', ' ') | title }}</span>
             </div>
+
+            {% if m.description %}
+            <p class="mt-2 text-xs text-gray-600 line-clamp-3">{{ m.description }}</p>
+            {% endif %}
+
             <div class="mt-3 text-xs text-gray-500 space-y-1">
-                <div>Physics: {{ m.physics_class }}</div>
-                <div>Solver: {{ m.default_solver }}</div>
+                {% if m.physics_class %}<div><span class="font-medium">Physics:</span> {{ m.physics_class | replace('_', ' ') }}</div>{% endif %}
+                {% if m.default_solver %}<div><span class="font-medium">Solver:</span> {{ m.default_solver }}</div>{% endif %}
+                {% if m.noise_model %}<div><span class="font-medium">Noise:</span> {{ m.noise_model | replace('_', ' ') }}</div>{% endif %}
             </div>
+
             {% if m.tags %}
             <div class="mt-2 flex flex-wrap gap-1">
                 {% for tag in m.tags %}
-                <span class="text-xs text-gray-500">#{{ tag }}</span>
+                <span class="text-xs text-gray-400">#{{ tag }}</span>
                 {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="mt-2 text-xs text-indigo-500 font-medium">Click to expand details</div>
+        </div>
+
+        <!-- Expandable detail panel -->
+        <div id="detail-{{ m.modality_key }}" class="hidden col-span-full bg-white shadow-lg rounded-lg p-6 space-y-4 border-l-4 border-indigo-500">
+            <h2 class="text-lg font-bold text-gray-900">{{ m.display_name }}</h2>
+
+            {% if m.description %}
+            <div>
+                <h4 class="text-sm font-semibold text-gray-700">Description</h4>
+                <p class="mt-1 text-sm text-gray-600">{{ m.description }}</p>
+            </div>
+            {% endif %}
+
+            {% if m.introduction %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% if m.introduction.principle %}
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-700">Principle</h4>
+                    <p class="mt-1 text-sm text-gray-600">{{ m.introduction.principle }}</p>
+                </div>
+                {% endif %}
+
+                {% if m.introduction.setup_guide %}
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-700">How to Build the System</h4>
+                    <p class="mt-1 text-sm text-gray-600">{{ m.introduction.setup_guide }}</p>
+                </div>
+                {% endif %}
+
+                {% if m.introduction.common_algorithms %}
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-700">Common Reconstruction Algorithms</h4>
+                    <ul class="mt-1 text-sm text-gray-600 list-disc list-inside space-y-0.5">
+                        {% for alg in m.introduction.common_algorithms %}
+                        <li>{{ alg }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if m.introduction.common_mistakes %}
+                <div>
+                    <h4 class="text-sm font-semibold text-red-600">Common Mistakes</h4>
+                    <ul class="mt-1 text-sm text-gray-600 list-disc list-inside space-y-0.5">
+                        {% for mistake in m.introduction.common_mistakes %}
+                        <li>{{ mistake }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if m.introduction.how_to_avoid_mistakes %}
+                <div class="md:col-span-2">
+                    <h4 class="text-sm font-semibold text-green-600">How to Avoid Mistakes</h4>
+                    <ul class="mt-1 text-sm text-gray-600 list-disc list-inside space-y-0.5">
+                        {% for tip in m.introduction.how_to_avoid_mistakes %}
+                        <li>{{ tip }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if m.experimental_setup %}
+            <div>
+                <h4 class="text-sm font-semibold text-gray-700">Experimental Setup</h4>
+                <div class="mt-1 grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {% for key, value in m.experimental_setup.items() %}
+                    <div class="text-xs">
+                        <span class="font-medium text-gray-600">{{ key | replace('_', ' ') | title }}:</span>
+                        <span class="text-gray-500">{{ value }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if m.canonical_references %}
+            <div>
+                <h4 class="text-sm font-semibold text-gray-700">Key References</h4>
+                <ul class="mt-1 text-xs text-gray-500 list-disc list-inside space-y-0.5">
+                    {% for ref in m.canonical_references %}
+                    <li>{{ ref }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if m.canonical_datasets %}
+            <div>
+                <h4 class="text-sm font-semibold text-gray-700">Canonical Datasets</h4>
+                <ul class="mt-1 text-xs text-gray-500 list-disc list-inside space-y-0.5">
+                    {% for ds in m.canonical_datasets %}
+                    <li>{{ ds }}</li>
+                    {% endfor %}
+                </ul>
             </div>
             {% endif %}
         </div>

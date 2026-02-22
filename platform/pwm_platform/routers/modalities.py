@@ -1,18 +1,33 @@
 """
 Modalities Router — list and inspect supported imaging modalities.
+
+Provides both database-backed endpoints (from ModalityBasics table) and
+direct access to the comprehensive Physics World Model modality knowledge
+base (MODALITY_DATABASE) with full descriptions, experimental setups,
+introductions, and canonical references.
 """
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from pwm_platform.auth.dependencies import get_current_user
 from pwm_platform.db.database import get_db
 from pwm_platform.db.models import ModalityBasics, User
+from pwm_platform.services.modality_database import (
+    MODALITY_DATABASE,
+    get_modality_info,
+    list_all_categories,
+    list_all_modality_keys,
+    list_modalities_by_category,
+)
 
 router = APIRouter(prefix="/api/v1/modalities", tags=["Modalities"])
+
+
+# ── Database-backed endpoints ───────────────────────────────────────────────
 
 
 @router.get("")
@@ -82,3 +97,57 @@ async def get_modality(
         "canonical_references": m.canonical_references,
         "tags": m.tags or [],
     }
+
+
+# ── Physics World Model knowledge base endpoints ───────────────────────────
+
+
+@router.get("/catalog/all")
+async def catalog_all(
+    category: str | None = None,
+):
+    """List all 64 modalities from the Physics World Model knowledge base.
+
+    Does not require database — serves directly from MODALITY_DATABASE.
+    """
+    if category:
+        keys = list_modalities_by_category(category)
+    else:
+        keys = list_all_modality_keys()
+
+    return {
+        "modalities": [
+            {
+                "modality_key": k,
+                "display_name": MODALITY_DATABASE[k]["display_name"],
+                "category": MODALITY_DATABASE[k]["category"],
+                "description": MODALITY_DATABASE[k]["description"],
+                "physics_class": MODALITY_DATABASE[k]["physics_class"],
+                "default_solver": MODALITY_DATABASE[k]["default_solver"],
+                "tags": MODALITY_DATABASE[k].get("tags", []),
+            }
+            for k in keys
+        ],
+        "total": len(keys),
+        "categories": list_all_categories(),
+    }
+
+
+@router.get("/catalog/{modality_key}")
+async def catalog_detail(modality_key: str):
+    """Full Physics World Model detail for a single modality.
+
+    Returns description, experimental setup, introduction (principle,
+    common algorithms, common mistakes, how-to-avoid), canonical
+    references, and all metadata.
+    """
+    try:
+        info = get_modality_info(modality_key)
+    except KeyError:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Modality '{modality_key}' not found. "
+            f"Available: {list_all_modality_keys()}",
+        )
+    info["modality_key"] = modality_key
+    return info
