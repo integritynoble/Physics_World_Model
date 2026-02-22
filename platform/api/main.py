@@ -18,3 +18,6 @@ async def health():
 from api.routes import runs, ui
 app.include_router(runs.router, prefix="/api/v1")
 app.include_router(ui.router)
+
+from api.routes import bootstrap
+app.include_router(bootstrap.router, prefix="/api/v1")
