@@ -533,10 +533,15 @@ def run_portfolio(y: np.ndarray, physics: Any, cfg: Dict[str, Any]) -> Tuple[np.
         y: Measurements.
         physics: Physics operator (with forward/adjoint or A matrix).
         cfg: Configuration dict with 'candidates', 'max_candidates', etc.
+            Special keys:
+            - cpu_mode (bool): Force device='cpu' for all DL solvers.
 
     Returns:
         Tuple of (best_x, best_info).
     """
+    if cfg.get("cpu_mode", False):
+        cfg = {**cfg, "device": "cpu"}
+
     cand = cfg.get("candidates", ["cg", "adjoint"])
     best_x = None
     best_score = float("inf")
