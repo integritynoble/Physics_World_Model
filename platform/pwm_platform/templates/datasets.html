@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Datasets — PWM Platform{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <h1 class="text-2xl font-bold text-gray-900">Dataset Catalog</h1>
+
+    {% if datasets %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for ds in datasets %}
+        <div class="bg-white shadow rounded-lg p-5 hover:shadow-md transition-shadow">
+            <h3 class="text-sm font-semibold text-gray-900">{{ ds.dataset_id }}</h3>
+            <div class="mt-1 flex items-center space-x-2">
+                <span class="text-xs px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded">{{ ds.modality }}</span>
+                <span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">{{ ds.data_type }}</span>
+                {% if ds.is_public %}
+                <span class="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded">public</span>
+                {% endif %}
+            </div>
+            <p class="mt-2 text-sm text-gray-600 line-clamp-2">{{ ds.description or 'No description' }}</p>
+            <div class="mt-3 text-xs text-gray-500 space-y-1">
+                <div>Samples: {{ ds.num_samples }}</div>
+                {% if ds.x_shape %}<div>x: {{ ds.x_shape }}</div>{% endif %}
+                {% if ds.y_shape %}<div>y: {{ ds.y_shape }}</div>{% endif %}
+            </div>
+            {% if ds.tags %}
+            <div class="mt-2 flex flex-wrap gap-1">
+                {% for tag in ds.tags %}
+                <span class="text-xs text-gray-500">#{{ tag }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white shadow rounded-lg px-6 py-12 text-center">
+        <p class="text-gray-500">No datasets registered yet.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

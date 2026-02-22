@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+{% block title %}Run {{ run.run_id }} — PWM Platform{% endblock %}
+
+{% block content %}
+{# Define step order for progress tracking #}
+{% set steps = ['pending', 'initializing', 'simulating', 'reconstructing', 'analyzing', 'completed'] %}
+{% set step_labels = {
+    'pending': 'Queued',
+    'initializing': 'Initializing',
+    'simulating': 'Forward Simulation',
+    'reconstructing': 'Reconstruction',
+    'analyzing': 'Analysis & QC',
+    'completed': 'Complete'
+} %}
+{% set step_icons = {
+    'pending': 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
+    'initializing': 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z',
+    'simulating': 'M13 10V3L4 14h7v7l9-11h-7z',
+    'reconstructing': 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15',
+    'analyzing': 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
+    'completed': 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
+} %}
+{% set current_idx = steps.index(run.status) if run.status in steps else -1 %}
+{% set is_failed = run.status == 'failed' %}
+{% set is_running = run.status not in ['completed', 'failed'] %}
+
+<div class="max-w-4xl mx-auto space-y-6"
+     id="run-page"
+     {% if is_running %}
+     hx-get="/runs/{{ run.run_id }}"
+     hx-trigger="every 2s"
+     hx-select="#run-page"
+     hx-target="#run-page"
+     hx-swap="outerHTML"
+     {% endif %}>
+
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Run {{ run.run_id }}</h1>
+            <p class="text-sm text-gray-500">{{ run.modality | upper }} / {{ run.task_kind | replace('_', ' ') | title }}</p>
+        </div>
+        {% if run.status == 'completed' %}
+        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+        {% elif run.status == 'failed' %}
+        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">Failed</span>
+        {% else %}
+        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800 animate-pulse">
+            {{ step_labels.get(run.status, run.status) }}...
+        </span>
+        {% endif %}
+    </div>
+
+    <!-- Progress Timeline -->
+    <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-sm font-medium text-gray-700 mb-4">Pipeline Progress</h2>
+        <div class="relative">
+            {% for step in steps %}
+            {% set idx = loop.index0 %}
+            {% set is_done = idx < current_idx %}
+            {% set is_current = idx == current_idx and not is_failed %}
+            {% set is_future = idx > current_idx %}
+            <div class="flex items-start mb-{% if not loop.last %}6{% else %}0{% endif %}">
+                <!-- Connector line -->
+                {% if not loop.last %}
+                <div class="absolute ml-4 mt-8 w-0.5 h-6
+                    {% if is_done %}bg-indigo-500{% elif is_current and run.status == 'completed' %}bg-indigo-500{% else %}bg-gray-200{% endif %}">
+                </div>
+                {% endif %}
+                <!-- Step icon -->
+                <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center
+                    {% if is_done or (is_current and run.status == 'completed') %}
+                        bg-indigo-500 text-white
+                    {% elif is_current %}
+                        bg-indigo-100 text-indigo-600 ring-2 ring-indigo-500
+                    {% else %}
+                        bg-gray-100 text-gray-400
+                    {% endif %}">
+                    {% if is_done or (is_current and run.status == 'completed') %}
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    {% elif is_current %}
+                    <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                    </svg>
+                    {% else %}
+                    <span class="text-xs font-medium">{{ idx + 1 }}</span>
+                    {% endif %}
+                </div>
+                <!-- Step label -->
+                <div class="ml-3">
+                    <p class="text-sm font-medium
+                        {% if is_done or (is_current and run.status == 'completed') %}text-indigo-700
+                        {% elif is_current %}text-indigo-600 font-semibold
+                        {% else %}text-gray-400{% endif %}">
+                        {{ step_labels[step] }}
+                    </p>
+                    {% if is_current and run.status != 'completed' %}
+                    <p class="text-xs text-indigo-500 mt-0.5">In progress...</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Run Info -->
+    <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-sm font-medium text-gray-700 mb-3">Run Details</h2>
+        <dl class="grid grid-cols-2 gap-4 text-sm">
+            <div>
+                <dt class="font-medium text-gray-500">Compute Mode</dt>
+                <dd class="text-gray-900">{{ run.compute_mode | upper }}</dd>
+            </div>
+            <div>
+                <dt class="font-medium text-gray-500">Input Mode</dt>
+                <dd class="text-gray-900">{{ run.input_mode or '—' }}</dd>
+            </div>
+            <div>
+                <dt class="font-medium text-gray-500">Submitted</dt>
+                <dd class="text-gray-900">{{ run.submitted_at.strftime('%Y-%m-%d %H:%M:%S UTC') if run.submitted_at else '—' }}</dd>
+            </div>
+            <div>
+                <dt class="font-medium text-gray-500">Duration</dt>
+                <dd class="text-gray-900">{{ '%.1f s' % run.duration_seconds if run.duration_seconds else '—' }}</dd>
+            </div>
+            <div>
+                <dt class="font-medium text-gray-500">Worker</dt>
+                <dd class="text-gray-900">{{ run.worker_type or '—' }}</dd>
+            </div>
+            <div>
+                <dt class="font-medium text-gray-500">Dataset</dt>
+                <dd class="text-gray-900">{{ run.dataset_id or '—' }}</dd>
+            </div>
+        </dl>
+
+        {% if run.error_message %}
+        <div class="mt-4 bg-red-50 border border-red-200 rounded p-4">
+            <h3 class="text-sm font-medium text-red-800">Error</h3>
+            <p class="mt-1 text-sm text-red-700">{{ run.error_message }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Triad Report (if available) -->
+    {% if report %}
+    <div class="bg-white shadow rounded-lg p-6 space-y-5">
+        <h2 class="text-lg font-medium text-gray-900">Results — Triad Report</h2>
+
+        <!-- Benchmark label -->
+        {% set benchmark_name = report.custom_metrics.get('images', {}).get('benchmark', '') if report.custom_metrics else '' %}
+        {% if benchmark_name %}
+        <div class="flex items-center space-x-2">
+            <span class="text-xs font-medium text-gray-500">Benchmark:</span>
+            <span class="px-2 py-0.5 text-xs font-medium bg-indigo-100 text-indigo-700 rounded-full">{{ benchmark_name }}</span>
+        </div>
+        {% endif %}
+
+        <!-- Metrics Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {% if report.psnr is not none %}
+            <div class="bg-gradient-to-br from-indigo-50 to-white rounded-lg p-4 text-center border border-indigo-100">
+                <div class="text-2xl font-bold {% if report.psnr > 30 %}text-green-700{% else %}text-yellow-700{% endif %}">{{ '%.2f' % report.psnr }}</div>
+                <div class="text-xs text-gray-500 mt-1">PSNR (dB)</div>
+            </div>
+            {% endif %}
+            {% if report.ssim is not none %}
+            <div class="bg-gradient-to-br from-indigo-50 to-white rounded-lg p-4 text-center border border-indigo-100">
+                <div class="text-2xl font-bold {% if report.ssim > 0.9 %}text-green-700{% else %}text-yellow-700{% endif %}">{{ '%.4f' % report.ssim }}</div>
+                <div class="text-xs text-gray-500 mt-1">SSIM</div>
+            </div>
+            {% endif %}
+            {% if report.lpips is not none %}
+            <div class="bg-gradient-to-br from-indigo-50 to-white rounded-lg p-4 text-center border border-indigo-100">
+                <div class="text-2xl font-bold {% if report.lpips < 0.1 %}text-green-700{% else %}text-yellow-700{% endif %}">{{ '%.4f' % report.lpips }}</div>
+                <div class="text-xs text-gray-500 mt-1">LPIPS</div>
+            </div>
+            {% endif %}
+            {% if report.sam is not none %}
+            <div class="bg-gradient-to-br from-indigo-50 to-white rounded-lg p-4 text-center border border-indigo-100">
+                <div class="text-2xl font-bold text-gray-900">{{ '%.4f' % report.sam }}</div>
+                <div class="text-xs text-gray-500 mt-1">SAM</div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Result Images -->
+        {% set images = report.custom_metrics.get('images', {}) if report.custom_metrics else {} %}
+        {% if images %}
+        <div>
+            <h3 class="text-sm font-medium text-gray-700 mb-3">Visual Results</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {% if images.get('original') %}
+                <div class="text-center">
+                    <div class="bg-gray-900 rounded-lg overflow-hidden">
+                        <img src="{{ images.original }}" alt="Ground Truth"
+                             class="w-full h-auto" loading="lazy">
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2 font-medium">Ground Truth</p>
+                </div>
+                {% endif %}
+                {% if images.get('measurement') %}
+                <div class="text-center">
+                    <div class="bg-gray-900 rounded-lg overflow-hidden">
+                        <img src="{{ images.measurement }}" alt="Measurement"
+                             class="w-full h-auto" loading="lazy">
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2 font-medium">Measurement</p>
+                </div>
+                {% endif %}
+                {% if images.get('reconstructed') %}
+                <div class="text-center">
+                    <div class="bg-gray-900 rounded-lg overflow-hidden">
+                        <img src="{{ images.reconstructed }}" alt="Reconstructed"
+                             class="w-full h-auto" loading="lazy">
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2 font-medium">Reconstructed</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Solver Info -->
+        <div class="bg-gray-50 rounded-lg p-4">
+            <h3 class="text-sm font-medium text-gray-700 mb-2">Solver Details</h3>
+            <div class="grid grid-cols-3 gap-4 text-sm">
+                <div>
+                    <span class="text-gray-500">Method:</span>
+                    <span class="font-mono text-gray-900 ml-1">{{ report.reconstruction_method or '—' }}</span>
+                    {% if report.reconstruction_method and '_torch' in report.reconstruction_method %}
+                    <span class="ml-1 px-1.5 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded">GPU</span>
+                    {% endif %}
+                </div>
+                {% if report.solver_iterations %}
+                <div>
+                    <span class="text-gray-500">Iterations:</span>
+                    <span class="font-mono text-gray-900 ml-1">{{ report.solver_iterations }}</span>
+                </div>
+                {% endif %}
+                {% if report.convergence_residual %}
+                <div>
+                    <span class="text-gray-500">Residual:</span>
+                    <span class="font-mono text-gray-900 ml-1">{{ '%.2e' % report.convergence_residual }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Uncertainty -->
+        {% if report.uncertainty_mean is not none %}
+        <div class="bg-gray-50 rounded-lg p-4">
+            <h3 class="text-sm font-medium text-gray-700 mb-2">Uncertainty Quantification</h3>
+            <div class="grid grid-cols-3 gap-4 text-sm">
+                <div>
+                    <span class="text-gray-500">Mean:</span>
+                    <span class="font-mono text-gray-900 ml-1">{{ '%.4f' % report.uncertainty_mean }}</span>
+                </div>
+                {% if report.uncertainty_max is not none %}
+                <div>
+                    <span class="text-gray-500">Max:</span>
+                    <span class="font-mono text-gray-900 ml-1">{{ '%.4f' % report.uncertainty_max }}</span>
+                </div>
+                {% endif %}
+                {% if report.confidence_interval %}
+                <div>
+                    <span class="text-gray-500">95% CI:</span>
+                    <span class="font-mono text-gray-900 ml-1">[{{ report.confidence_interval.lower }}, {{ report.confidence_interval.upper }}]</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Diagnosis -->
+        {% if report.diagnosis_severity and report.diagnosis_severity != 'info' %}
+        <div class="border rounded-lg p-4 {% if report.diagnosis_severity == 'error' %}border-red-200 bg-red-50{% else %}border-yellow-200 bg-yellow-50{% endif %}">
+            <h3 class="text-sm font-medium {% if report.diagnosis_severity == 'error' %}text-red-800{% else %}text-yellow-800{% endif %}">
+                Diagnosis: {{ report.diagnosis_severity | title }}
+            </h3>
+            {% if report.diagnosis_codes %}
+            <ul class="mt-2 text-sm list-disc list-inside {% if report.diagnosis_severity == 'error' %}text-red-700{% else %}text-yellow-700{% endif %}">
+                {% for code in report.diagnosis_codes %}
+                <li>{{ code | replace('_', ' ') | title }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% if report.recommended_actions %}
+            <p class="mt-2 text-sm font-medium {% if report.diagnosis_severity == 'error' %}text-red-800{% else %}text-yellow-800{% endif %}">Recommended:</p>
+            <ul class="text-sm list-disc list-inside {% if report.diagnosis_severity == 'error' %}text-red-700{% else %}text-yellow-700{% endif %}">
+                {% for action in report.recommended_actions %}
+                <li>{{ action | replace('_', ' ') | title }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Operator Mismatch -->
+        {% if report.operator_mismatch_detected %}
+        <div class="border border-orange-200 bg-orange-50 rounded-lg p-4">
+            <h3 class="text-sm font-medium text-orange-800">Operator Mismatch Detected</h3>
+            <p class="text-sm text-orange-700 mt-1">Type: {{ report.mismatch_type | replace('_', ' ') | title if report.mismatch_type else 'Unknown' }}</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <a href="/" class="inline-block text-sm text-indigo-600 hover:text-indigo-500">Back to Dashboard</a>
+</div>
+{% endblock %}

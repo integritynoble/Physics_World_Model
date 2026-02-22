@@ -1,0 +1,116 @@
+"""
+PWM Platform — FastAPI application entry point.
+
+Serves:
+  - JSON API at /api/v1/...
+  - Server-rendered UI pages at / (Jinja2 + HTMX)
+  - OpenAPI docs at /docs
+"""
+
+from __future__ import annotations
+
+import logging
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, Request
+from fastapi.exceptions import HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
+
+from pwm_platform.config import settings
+from pwm_platform.db.database import init_db
+from pwm_platform.routers import (
+    auth_router,
+    bootstrap_router,
+    datasets_router,
+    modalities_router,
+    pages_router,
+    runs_router,
+)
+
+logging.basicConfig(
+    level=getattr(logging, settings.LOG_LEVEL, logging.INFO),
+    format="%(asctime)s %(levelname)-8s %(name)s  %(message)s",
+)
+logger = logging.getLogger(__name__)
+
+
+# ── Lifespan ─────────────────────────────────────────────────────────────
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Startup / shutdown lifecycle."""
+    logger.info("PWM Platform starting up (%s)", settings.APP_VERSION)
+    await init_db()
+    logger.info("Database tables ensured")
+    yield
+    logger.info("PWM Platform shutting down")
+
+
+# ── App ──────────────────────────────────────────────────────────────────
+
+
+app = FastAPI(
+    title=settings.APP_NAME,
+    version=settings.APP_VERSION,
+    lifespan=lifespan,
+)
+
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Static files (CSS, JS, images)
+app.mount("/static", StaticFiles(directory="pwm_platform/static"), name="static")
+
+# ── Register routers ────────────────────────────────────────────────────
+
+app.include_router(auth_router)
+app.include_router(runs_router)
+app.include_router(datasets_router)
+app.include_router(modalities_router)
+app.include_router(bootstrap_router)
+app.include_router(pages_router)
+
+
+# ── Global exception handlers ───────────────────────────────────────────
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    """Redirect unauthenticated UI requests to /login; pass through others."""
+    if exc.status_code == 401 and "text/html" in request.headers.get("accept", ""):
+        return RedirectResponse("/login")
+    return JSONResponse(status_code=exc.status_code, content={"detail": str(exc.detail)})
+
+
+# ── Health check ─────────────────────────────────────────────────────────
+
+
+@app.get("/api/v1/health")
+async def health():
+    return {
+        "status": "ok",
+        "version": settings.APP_VERSION,
+        "service": "PWM Platform",
+    }
+
+
+# ── Entry point ──────────────────────────────────────────────────────────
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(
+        "pwm_platform.main:app",
+        host="0.0.0.0",
+        port=settings.APP_PORT,
+        reload=settings.DEBUG,
+    )

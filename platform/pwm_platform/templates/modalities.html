@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Modalities — PWM Platform{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-gray-900">Modality Catalog</h1>
+        {% if user %}
+        <a href="/bootstrap/new"
+           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+            + Bootstrap New Modality
+        </a>
+        {% endif %}
+    </div>
+
+    {% if modalities %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for m in modalities %}
+        <div class="bg-white shadow rounded-lg p-5 hover:shadow-md transition-shadow">
+            <h3 class="text-sm font-semibold text-gray-900">{{ m.display_name }}</h3>
+            <div class="mt-1 flex items-center space-x-2">
+                <span class="text-xs px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded font-mono">{{ m.modality_key }}</span>
+                <span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">{{ m.category }}</span>
+            </div>
+            <div class="mt-3 text-xs text-gray-500 space-y-1">
+                <div>Physics: {{ m.physics_class }}</div>
+                <div>Solver: {{ m.default_solver }}</div>
+            </div>
+            {% if m.tags %}
+            <div class="mt-2 flex flex-wrap gap-1">
+                {% for tag in m.tags %}
+                <span class="text-xs text-gray-500">#{{ tag }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white shadow rounded-lg px-6 py-12 text-center">
+        <p class="text-gray-500">No modalities in the knowledge base yet.</p>
+        <a href="/bootstrap/new" class="mt-2 inline-block text-indigo-600 hover:text-indigo-500">Bootstrap the first modality</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

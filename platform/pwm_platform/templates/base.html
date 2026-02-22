@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gray-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PWM Platform{% endblock %}</title>
+    <!-- Tailwind CSS (CDN for MVP — replace with local build in production) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- HTMX for dynamic UI without full-page reloads -->
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    {% block head %}{% endblock %}
+</head>
+<body class="h-full" hx-boost="true">
+    {% block navbar %}
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-8">
+                    <a href="/" class="text-xl font-bold text-indigo-600">PWM</a>
+                    <a href="/" class="text-sm font-medium text-gray-700 hover:text-indigo-600">Dashboard</a>
+                    <a href="/datasets" class="text-sm font-medium text-gray-700 hover:text-indigo-600">Datasets</a>
+                    <a href="/modalities" class="text-sm font-medium text-gray-700 hover:text-indigo-600">Modalities</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    {% if user %}
+                        <span class="text-sm text-gray-600">{{ user.username }}</span>
+                        <span class="text-xs px-2 py-1 bg-gray-100 rounded">{{ user.role }}</span>
+                        {% if user.role in ['admin', 'reviewer'] %}
+                        <a href="/bootstrap/review" class="text-sm text-gray-700 hover:text-indigo-600">Review</a>
+                        {% endif %}
+                        <a href="/runs/new"
+                           class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                            + New Run
+                        </a>
+                        <form action="/api/v1/auth/logout" method="post" hx-boost="false" class="inline">
+                            <button type="submit" class="text-sm text-gray-500 hover:text-red-600">Logout</button>
+                        </form>
+                    {% else %}
+                        <a href="/login"
+                           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                            Sign in
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% endblock %}
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

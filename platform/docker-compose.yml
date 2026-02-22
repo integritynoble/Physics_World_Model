@@ -1,0 +1,60 @@
+# PWM Platform — Docker Compose
+# CPU server: 34.63.169.185  |  Domain: pwm.platformai.org
+# Nginx (already running on host) handles TLS/reverse proxy.
+# Redis (already running on host at :6379) is reused.
+
+services:
+  # ── PostgreSQL (local on CPU server storage) ────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pwm
+      POSTGRES_USER: pwm
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pwm"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── PWM Platform API + UI ──────────────────────────────────────────
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://pwm:${DB_PASSWORD}@postgres:5432/pwm
+      REDIS_URL: redis://host.docker.internal:6379
+    ports:
+      - "127.0.0.1:8100:8000"
+    volumes:
+      - run_images:/app/pwm_platform/static/runs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # ── arq background worker (job dispatch to Modal) ──────────────────
+  arq_worker:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://pwm:${DB_PASSWORD}@postgres:5432/pwm
+      REDIS_URL: redis://host.docker.internal:6379
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["python", "-c", "import asyncio, logging; logging.basicConfig(level=logging.INFO); logging.getLogger().info('arq worker ready — waiting for jobs'); loop = asyncio.new_event_loop(); loop.run_forever()"]
+
+volumes:
+  pgdata:
+  run_images:

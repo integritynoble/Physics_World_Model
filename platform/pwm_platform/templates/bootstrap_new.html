@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Bootstrap New Modality — PWM Platform{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+    <h1 class="text-2xl font-bold text-gray-900">Bootstrap New Modality</h1>
+    <p class="text-gray-600">Describe a new imaging modality and PWM will generate starter templates, simulation plans, and calibration checklists using similar existing modalities.</p>
+
+    <form hx-post="/api/v1/bootstrap"
+          hx-target="#submit-result"
+          hx-swap="innerHTML"
+          class="bg-white shadow rounded-lg p-6 space-y-6">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="modality_key" class="block text-sm font-medium text-gray-700">Modality Key</label>
+                <input type="text" name="modality_key" id="modality_key" required minlength="2"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                       placeholder="e.g. sted, spim, oct">
+            </div>
+            <div>
+                <label for="display_name" class="block text-sm font-medium text-gray-700">Display Name</label>
+                <input type="text" name="display_name" id="display_name"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                       placeholder="e.g. STED Microscopy">
+            </div>
+        </div>
+
+        <div>
+            <label for="physics_class" class="block text-sm font-medium text-gray-700">Physics Class</label>
+            <select name="physics_class" id="physics_class"
+                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                <option value="">Select...</option>
+                <option value="spectral_coding">Spectral Coding</option>
+                <option value="tomographic">Tomographic</option>
+                <option value="coherent">Coherent / Phase</option>
+                <option value="fluorescence">Fluorescence</option>
+                <option value="super_resolution">Super-Resolution</option>
+                <option value="computational">Computational Photography</option>
+                <option value="interferometric">Interferometric</option>
+                <option value="diffraction">Diffraction</option>
+                <option value="particle">Particle / Nuclear</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="forward_model_family" class="block text-sm font-medium text-gray-700">Forward Model Family</label>
+                <input type="text" name="forward_model_family" id="forward_model_family"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm"
+                       placeholder="e.g. psf_convolution, radon_transform">
+            </div>
+            <div>
+                <label for="sensor_type" class="block text-sm font-medium text-gray-700">Sensor Type</label>
+                <input type="text" name="sensor_type" id="sensor_type"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm"
+                       placeholder="e.g. cmos, photon_counter">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="source_type" class="block text-sm font-medium text-gray-700">Source Type</label>
+                <input type="text" name="source_type" id="source_type"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm"
+                       placeholder="e.g. laser, xray_tube, broadband">
+            </div>
+            <div>
+                <label for="geometry" class="block text-sm font-medium text-gray-700">Geometry</label>
+                <input type="text" name="geometry" id="geometry"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm"
+                       placeholder="e.g. planar, rotational, scanning">
+            </div>
+        </div>
+
+        <div>
+            <label for="noise_model" class="block text-sm font-medium text-gray-700">Noise Model</label>
+            <select name="noise_model" id="noise_model"
+                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                <option value="gaussian">Gaussian</option>
+                <option value="poisson">Poisson</option>
+                <option value="mixed">Mixed (Poisson + Gaussian)</option>
+                <option value="speckle">Speckle</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div id="submit-result"></div>
+
+        <button type="submit"
+                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+            Generate Bootstrap Proposal
+        </button>
+    </form>
+</div>
+{% endblock %}

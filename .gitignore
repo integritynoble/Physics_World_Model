@@ -48,6 +48,7 @@ packages/pwm_core/weights/
 data/
 !packages/pwm_core/pwm_core/data/
 !papers/inversenet/data/
+!platform/pwm_platform/data/
 *.mat
 *.h5
 *.hdf5

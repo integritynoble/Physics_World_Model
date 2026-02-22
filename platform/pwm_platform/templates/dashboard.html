@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — PWM Platform{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">PWM Platform</h1>
+            <p class="text-sm text-gray-500">Physics World Model for Imaging System Autonomy</p>
+        </div>
+        {% if user %}
+        <a href="/runs/new"
+           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+            + New Run
+        </a>
+        {% else %}
+        <a href="/login"
+           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+            Sign in to run experiments
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="text-sm font-medium text-gray-500">Total Runs</div>
+                <div class="mt-1 text-3xl font-semibold text-gray-900">{{ total_runs }}</div>
+            </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="text-sm font-medium text-gray-500">Completed</div>
+                <div class="mt-1 text-3xl font-semibold text-green-600">
+                    {{ runs | selectattr('status', 'eq', 'completed') | list | length }}
+                </div>
+            </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="text-sm font-medium text-gray-500">Modalities</div>
+                <div class="mt-1 text-3xl font-semibold text-indigo-600">{{ total_modalities }}</div>
+            </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="text-sm font-medium text-gray-500">Datasets</div>
+                <div class="mt-1 text-3xl font-semibold text-purple-600">{{ total_datasets }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Runs Table -->
+    <div class="bg-white shadow rounded-lg">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-medium text-gray-900">Recent Runs</h2>
+        </div>
+
+        {% if runs %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Run ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modality</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compute</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submitted</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for run in runs %}
+                    <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='/runs/{{ run.run_id }}'">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-indigo-600">{{ run.run_id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ run.modality }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ run.task_kind }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if run.status == 'completed' %}
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">completed</span>
+                            {% elif run.status == 'running' %}
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">running</span>
+                            {% elif run.status == 'failed' %}
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">failed</span>
+                            {% elif run.status == 'pending' %}
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">pending</span>
+                            {% else %}
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{{ run.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ run.compute_mode }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ run.submitted_at.strftime('%Y-%m-%d %H:%M') if run.submitted_at else '—' }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="px-6 py-12 text-center">
+            <p class="text-gray-500">No runs yet.</p>
+            {% if user %}
+            <a href="/runs/new" class="mt-2 inline-block text-indigo-600 hover:text-indigo-500">Submit your first run</a>
+            {% else %}
+            <a href="/login" class="mt-2 inline-block text-indigo-600 hover:text-indigo-500">Sign in to submit a run</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
