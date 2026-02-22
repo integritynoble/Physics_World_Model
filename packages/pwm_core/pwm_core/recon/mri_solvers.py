@@ -411,6 +411,64 @@ def _zero_filled_reconstruction_torch(kspace, dev):
         return to_numpy(result).astype(np.float32)
 
 
+def run_sense(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Harness-compatible wrapper for SENSE MRI reconstruction.
+
+    Extracts coil sensitivity maps and undersampling mask from the physics
+    operator, then calls sense_reconstruction.
+    """
+    iters = cfg.get("iters", 30)
+    regularization = cfg.get("regularization", 0.001)
+    device = cfg.get("device", None)
+    info: Dict[str, Any] = {"solver": "sense", "iters": iters}
+
+    try:
+        mask = None
+        sensitivity_maps = None
+
+        if hasattr(physics, 'mask'):
+            mask = physics.mask
+        if hasattr(physics, 'sensitivity_maps'):
+            sensitivity_maps = physics.sensitivity_maps
+
+        # Try physics.info() dict
+        if hasattr(physics, 'info'):
+            op_info = physics.info()
+            if 'mask' in op_info:
+                mask = op_info['mask']
+            if 'sensitivity_maps' in op_info:
+                sensitivity_maps = op_info['sensitivity_maps']
+
+        # Default mask
+        if mask is None:
+            if y.ndim == 3:
+                mask = np.ones(y.shape[1:], dtype=np.float32)
+            else:
+                mask = np.ones(y.shape, dtype=np.float32)
+
+        if y.ndim == 3:
+            # Multi-coil data
+            if sensitivity_maps is None:
+                sensitivity_maps = estimate_sensitivity_maps(y, device=device)
+            result = sense_reconstruction(
+                y, sensitivity_maps, mask, regularization, iters, device=device)
+            result = np.abs(result).astype(np.float32)
+        else:
+            # Single-coil fallback
+            result = cs_mri_wavelet(y, mask, 0.01, iters, device=device)
+            result = np.abs(result).astype(np.float32)
+
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)
+        result = zero_filled_reconstruction(y)
+        return result, info
+
+
 def run_espirit_recon(
     y: np.ndarray,
     physics: Any,

@@ -96,6 +96,47 @@ def _least_squares_torch(A, y, reg, dev):
     return to_numpy(x).astype(np.float32)
 
 
+def run_fista_l2(
+    y: np.ndarray,
+    physics: Any,
+    cfg: Dict[str, Any],
+) -> Tuple[np.ndarray, Dict[str, Any]]:
+    """Harness-compatible wrapper for FISTA / gradient descent reconstruction.
+
+    Works with both explicit matrix physics and forward/adjoint operator physics.
+    """
+    lam = cfg.get("lam", 1e-3)
+    iters = cfg.get("iters", 50)
+    reg = cfg.get("reg", 1e-4)
+    step = cfg.get("step", 0.01)
+    device = cfg.get("device", None)
+    info: Dict[str, Any] = {"solver": "fista_l2"}
+
+    try:
+        if hasattr(physics, 'shape'):
+            # Explicit matrix A
+            result = fista_l2(y, physics, lam=lam, iters=iters, device=device)
+            x_shape = (physics.shape[1],)
+        elif hasattr(physics, 'forward') and hasattr(physics, 'adjoint'):
+            # Operator-based physics (GraphOperator)
+            x_shape = getattr(physics, 'x_shape', y.shape)
+            result = gradient_descent_operator(
+                y, physics.forward, physics.adjoint, x_shape,
+                iters=iters, step=step, reg=reg, device=device,
+            )
+            info["method"] = "gradient_descent_operator"
+        else:
+            info["error"] = "unsupported_physics_type"
+            return y.astype(np.float32), info
+
+        result = result.reshape(x_shape).astype(np.float32)
+        return result, info
+    except Exception as e:
+        info["error"] = str(e)
+        x_shape = getattr(physics, 'x_shape', y.shape)
+        return np.zeros(x_shape, dtype=np.float32), info
+
+
 def gradient_descent_operator(
     y: np.ndarray,
     forward: Any,
