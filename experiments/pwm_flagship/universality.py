@@ -38,7 +38,7 @@ TEMPLATES_PATH = (
     / "packages" / "pwm_core" / "contrib" / "graph_templates.yaml"
 )
 
-# All 26 expected modalities
+# Original 26 modalities that must always have graph templates
 EXPECTED_MODALITIES = [
     "widefield", "widefield_lowdose", "confocal_livecell",
     "confocal_3d", "sim", "lightsheet", "cassi", "spc", "cacti",
@@ -123,7 +123,7 @@ def run_universality(
     out_dir: str,
     smoke: bool = False,
 ) -> List[Dict[str, Any]]:
-    """Compile all 26 templates and output pass/fail table."""
+    """Compile all graph templates and output pass/fail table."""
     os.makedirs(out_dir, exist_ok=True)
     compiler = GraphCompiler()
     templates = _load_templates()
@@ -197,7 +197,7 @@ def run_universality(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="PWM Flagship: Universality -- compile all 26 templates"
+        description="PWM Flagship: Universality -- compile all graph templates"
     )
     parser.add_argument("--out_dir", default="results/flagship_universality")
     parser.add_argument("--smoke", action="store_true",
