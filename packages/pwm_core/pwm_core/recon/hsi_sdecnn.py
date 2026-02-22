@@ -288,6 +288,7 @@ def run_hsi_sdecnn(
     iters = cfg.get("iters", 50)
     acc = cfg.get("acc", 1.0)
     weights_path = cfg.get("weights_path", None)
+    device = cfg.get("device", None)
 
     info: Dict[str, Any] = {
         "solver": "gap_hsi_sdecnn",
@@ -311,6 +312,7 @@ def run_hsi_sdecnn(
         result = gap_sdecnn_cassi(
             y, mask, n_bands=n_bands,
             weights_path=weights_path, iters=iters, acc=acc,
+            device=device,
         )
         return result, info
 
