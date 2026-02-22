@@ -262,6 +262,12 @@ modalities:
       dispersion_step: 0.20
       psf_sigma: 0.10
       gain: 0.10
+    # graph_param_map: maps conceptual mismatch param names to the actual
+    # GraphOperator node parameter names for direct injection.
+    # Only entries with a graph_param_map key are injected; others are noted
+    # for documentation purposes only.
+    graph_param_map:
+      dispersion_step: disp_step  # SpectralDispersion node
     correction_method: "UPWMI_beam_search"
 
   spc:
@@ -530,6 +536,8 @@ modalities:
       psf_shift_x: 0.30
       psf_shift_y: 0.30
       background: 0.15
+    graph_param_map:
+      psf_sigma: sigma  # conv2d node (psf_conv) uses 'sigma' for blur width
     correction_method: "grid_search"
 
   # ==========================================================================
@@ -612,10 +620,29 @@ modalities:
         unit: "um"
         param_type: "offset"
         description: "Probe defocus from incorrect sample-condenser distance"
+      wavelength_error:
+        range: [-0.05e-6, 0.05e-6]
+        typical_error: 0.01e-6
+        unit: "m"
+        param_type: "scale"
+        description: "Illumination wavelength uncertainty from source bandwidth"
+      pixel_size_error:
+        range: [-0.5e-6, 0.5e-6]
+        typical_error: 0.1e-6
+        unit: "m"
+        param_type: "scale"
+        description: "Detector pixel size calibration error"
     severity_weights:
-      probe_position_error_x: 0.35
-      probe_position_error_y: 0.35
-      probe_defocus: 0.30
+      probe_position_error_x: 0.30
+      probe_position_error_y: 0.30
+      probe_defocus: 0.20
+      wavelength_error: 0.10
+      pixel_size_error: 0.10
+    graph_param_map:
+      # fresnel_prop node parameters
+      probe_defocus: distance     # propagation distance → defocus
+      wavelength_error: wavelength  # wavelength perturbation
+      pixel_size_error: pixel_size  # pixel size calibration
     correction_method: "gradient_descent"
 
   holography:

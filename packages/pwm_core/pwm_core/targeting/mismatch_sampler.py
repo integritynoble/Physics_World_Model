@@ -100,6 +100,21 @@ def sample_mismatch(
 
         sampled[pname] = float(rng.uniform(scaled_low, scaled_high))
 
+    # Apply graph_param_map: translate conceptual param names to the actual
+    # GraphOperator node parameter names for direct injection.
+    # Only rename entries present in the map; keep others under original names
+    # (they are retained for mismatch_magnitude computation but won't be
+    # injected into the graph unless they happen to match a node param).
+    graph_param_map = mod_entry.get("graph_param_map", {})
+    if graph_param_map:
+        remapped: Dict[str, float] = {}
+        for pname, pval in sampled.items():
+            graph_name = graph_param_map.get(pname, pname)
+            # If multiple conceptual params map to the same graph param,
+            # use the last one (highest severity weight wins via iteration order).
+            remapped[graph_name] = pval
+        sampled = remapped
+
     return sampled
 
 
