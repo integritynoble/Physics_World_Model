@@ -119,7 +119,7 @@ where $v_k$ denotes the operator implemented by node $k$. For DAGs with branches
 %% ═══════════════════════════════════════════════════════════════════
 %%  3. THE PRIMITIVE LIBRARY
 %% ═══════════════════════════════════════════════════════════════════
-\section{The Primitive Library $\Blib$}
+\section{The Primitive Library \texorpdfstring{$\Blib$}{B}}
 \label{sec:primitives}
 
 The canonical primitive library consists of 11 operators:
@@ -134,7 +134,7 @@ Each linear primitive implements a \texttt{forward()} method $A: \mathcal{X}_{\m
   \label{eq:adjoint}
 \end{equation}
 
-\subsection{Propagate $P(d, \lambda)$}
+\subsection{Propagate \texorpdfstring{$P(d, \lambda)$}{P(d, lambda)}}
 
 \begin{definition}[Propagate]
 \label{def:propagate}
@@ -146,7 +146,7 @@ Given propagation distance $d > 0$ and wavelength $\lambda > 0$, the Propagate p
 where $\mathcal{F}$ is the 2D discrete Fourier transform and $T$ is the free-space transfer function. The adjoint is $P^\dagger(d,\lambda) = P(-d, \lambda)$ (backpropagation).
 \end{definition}
 
-\subsection{Modulate $M(\mathbf{m})$}
+\subsection{Modulate \texorpdfstring{$M(\mathbf{m})$}{M(m)}}
 
 \begin{definition}[Modulate]
 \label{def:modulate}
@@ -157,7 +157,7 @@ Given a modulation pattern $\mathbf{m} \in \mathbb{R}^n$ (or $\mathbb{C}^n$), th
 The adjoint is $M^\dagger(\mathbf{m}): \mathbf{y} \mapsto \mathbf{m}^* \odot \mathbf{y}$, where $^*$ denotes complex conjugation. Parameters: the pattern $\mathbf{m}$ (binary mask, continuous transmission, complex phase mask, or coil sensitivity map).
 \end{definition}
 
-\subsection{Project $\Pi(\theta)$}
+\subsection{Project \texorpdfstring{$\Pi(\theta)$}{Pi(theta)}}
 
 \begin{definition}[Project]
 \label{def:project}
@@ -168,7 +168,7 @@ Given projection angle $\theta$ (or a set of angles), the Project primitive comp
 where $\ell(\theta, t)$ is the line at angle $\theta$ and offset $t$. The adjoint is the backprojection operator $\Pi^\dagger(\theta)$.
 \end{definition}
 
-\subsection{Encode $F(\mathbf{k})$}
+\subsection{Encode \texorpdfstring{$F(\mathbf{k})$}{F(k)}}
 
 \begin{definition}[Encode]
 \label{def:encode}
@@ -179,7 +179,7 @@ Given a $k$-space trajectory $\mathbf{k} = \{k_1, \ldots, k_m\}$, the Encode pri
 The adjoint is $F^\dagger(\mathbf{k}): \mathbf{y} \mapsto \sum_{j=1}^{m} y_j\, e^{-i 2\pi \mathbf{k}_j \cdot \mathbf{r}}$ (gridding/adjoint NUFFT). Used for MRI $k$-space encoding.
 \end{definition}
 
-\subsection{Convolve $C(\mathbf{h})$}
+\subsection{Convolve \texorpdfstring{$C(\mathbf{h})$}{C(h)}}
 
 \begin{definition}[Convolve]
 \label{def:convolve}
@@ -190,7 +190,7 @@ Given a point-spread function (PSF) kernel $\mathbf{h}$, the Convolve primitive 
 The adjoint is correlation with the flipped kernel: $C^\dagger(\mathbf{h}): \mathbf{y} \mapsto \tilde{\mathbf{h}} * \mathbf{y}$, where $\tilde{\mathbf{h}}(\mathbf{r}) = \mathbf{h}(-\mathbf{r})^*$. This covers both propagation PSFs (shift-invariant limit of $P$) and detector PSFs.
 \end{definition}
 
-\subsection{Accumulate $\Sigma$}
+\subsection{Accumulate \texorpdfstring{$\Sigma$}{Sigma}}
 
 \begin{definition}[Accumulate]
 \label{def:accumulate}
@@ -201,7 +201,7 @@ The Accumulate primitive sums over a specified axis (spectral, temporal, or spat
 where $\mathbf{X} \in \mathbb{R}^{n_1 \times n_2 \times n_3}$ and the summation is along the third (or specified) axis. The adjoint replicates the 2D input along the summation axis: $\Sigma^\dagger: \mathbf{y} \mapsto [\mathbf{y}, \mathbf{y}, \ldots, \mathbf{y}]$. Used for spectral integration (CASSI), temporal compression (CACTI), and bucket detection (SPC).
 \end{definition}
 
-\subsection{Detect $D(g, \eta)$}
+\subsection{Detect \texorpdfstring{$D(g, \eta)$}{D(g, eta)}}
 
 \begin{definition}[Detect]
 \label{def:detect}
@@ -225,7 +225,7 @@ Each family carries at most 2 scalar parameters ($g$ and $x_0$ or $\phi$). Famil
 The restriction to five canonical response families is essential. If $\eta$ were an arbitrary function, Detect would become a universal approximator, trivializing the theorem. The five families are chosen to cover the physical detection mechanisms encountered in practice: linear-field detection (family~1, covering acoustic transducers, RF receivers, piezoelectric sensors), nonlinear intensity detectors (families~2--3, covering wide-dynamic-range and saturating detectors), intensity-square-law detection (family~4, covering photodetectors, CCD/CMOS, photomultipliers, photon counters), and coherent-field detection (family~5, covering THz-TDS, OCT, digital holography). All five families are mathematically distinct: family~1 is linear in $\mathbf{x}$, families~2--4 depend on $|\mathbf{x}|^2$ through different nonlinearities, and family~5 extracts $\mathrm{Re}[\mathbf{x} \cdot e^{i\phi}]$. A modality requiring a genuinely novel detection nonlinearity signals a basis extension (Section~\ref{sec:extension}).
 \end{remark}
 
-\subsection{Sample $S(\Omega)$}
+\subsection{Sample \texorpdfstring{$S(\Omega)$}{S(Omega)}}
 
 \begin{definition}[Sample]
 \label{def:sample}
@@ -236,7 +236,7 @@ Given an index set $\Omega \subseteq \{1, \ldots, n\}$, the Sample primitive sel
 The adjoint zero-fills the unsampled locations: $S^\dagger(\Omega): \mathbf{y} \mapsto \mathbf{z}$ where $z_i = y_i$ if $i \in \Omega$ and $z_i = 0$ otherwise. Used for MRI undersampling, compressed sensing masks, and pixel binning.
 \end{definition}
 
-\subsection{Disperse $W(\alpha, a)$}
+\subsection{Disperse \texorpdfstring{$W(\alpha, a)$}{W(alpha, a)}}
 
 \begin{definition}[Disperse]
 \label{def:disperse}
@@ -247,7 +247,7 @@ Given dispersion slope $\alpha$ and intercept $a$, the Disperse primitive applie
 where $\hat{\mathbf{e}}$ is the dispersion direction. The adjoint applies the reverse shift. Used for prism/grating dispersion in CASSI-type spectral systems.
 \end{definition}
 
-\subsection{Scatter $R(\sigma, \Delta\varepsilon)$}
+\subsection{Scatter \texorpdfstring{$R(\sigma, \Delta\varepsilon)$}{R(sigma, Delta epsilon)}}
 
 \begin{definition}[Scatter]
 \label{def:scatter}
@@ -262,7 +262,7 @@ where $A_{\mathrm{atten}}$ accounts for path-dependent attenuation. The scattere
 Scatter covers modalities where the carrier changes direction and/or energy: Compton imaging (Klein--Nishina cross section), Raman spectroscopy (molecular vibration), fluorescence imaging (Stokes shift), diffuse optical tomography (multiple scattering), and Brillouin microscopy (acoustic phonon scattering).
 \end{remark}
 
-\subsection{Transform $\Lambda(f, \boldsymbol{\theta})$}
+\subsection{Transform \texorpdfstring{$\Lambda(f, \boldsymbol{\theta})$}{Lambda(f, theta)}}
 
 \begin{definition}[Transform]
 \label{def:transform}
@@ -301,7 +301,7 @@ Transform operates \emph{within the physics chain} on carrier fields (e.g., Beer
 %% ═══════════════════════════════════════════════════════════════════
 %%  4. THE OPERATOR CLASS
 %% ═══════════════════════════════════════════════════════════════════
-\section{The Operator Class $\ctier$}
+\section{The Operator Class \texorpdfstring{$\ctier$}{C\_img}}
 \label{sec:ctier}
 
 \begin{definition}[Imaging Operator Class $\ctier$]
@@ -358,7 +358,7 @@ Models with strong nonlinearity (e.g., nonlinear ultrasound, beam hardening CT) 
 \section{The Finite Primitive Basis Theorem}
 \label{sec:theorem}
 
-\subsection{$\varepsilon$-Approximate Representation}
+\subsection{\texorpdfstring{$\varepsilon$}{epsilon}-Approximate Representation}
 
 \begin{definition}[$\varepsilon$-Approximate Representation]
 \label{def:eps}
@@ -750,7 +750,7 @@ Adding a new primitive requires five steps:
   \item Update the decomposition table and re-run the closure test with the extended $\Blib$.
 \end{enumerate}
 
-\subsection{Worked Example: Compton Scatter $\to$ Scatter ($R$)}
+\subsection{Worked Example: Compton Scatter \texorpdfstring{$\to$}{->} Scatter (\texorpdfstring{$R$}{R})}
 
 Compton scatter imaging involves carrier redirection (direction change by angle $\theta$ governed by the Klein--Nishina cross section~\cite{klein1929streuung}) and energy shift ($E_0 \to E_s = E_0/[1 + (E_0/m_e c^2)(1-\cos\theta)]$). We attempted to represent this using all 9 original primitives:
 
