@@ -15,8 +15,8 @@ We prove that every computational imaging forward model decomposes into exactly 
 
 ## What We Have (Ready Now)
 
-- **Complete theoretical framework**: Finite Primitive Basis Theorem (10 primitives, proven minimal) + Triad Decomposition (3 failure gates)
-- **Open-source codebase**: 200+ Python modules, 26 modality templates, 139 completed experiment bundles, full reproducibility infrastructure
+- **Complete theoretical framework**: Finite Primitive Basis Theorem (11 primitives, proven minimal) + Triad Decomposition (3 failure gates)
+- **Open-source codebase**: 200+ Python modules, 90 graph templates across 64 modalities, 139 completed experiment bundles, full reproducibility infrastructure
 - **Simulation validation**: 7 modalities (CASSI, CACTI, SPC, CT, MRI, ptychography, lensless) with 4-scenario evaluation protocol
 - **Real-data validation**: 5 modalities across 4 carrier families: CASSI (5 TSA scenes, cross-residual analysis), CACTI (4 EfficientSCI scenes, self- vs. cross-residual dissociation), CT (2 public sinogram datasets: FIPS walnut + HTC 2022, CoR mismatch), electron ptychography (4D-STEM SrTiO₃, 16.1 dB position-jitter degradation), MRI (M4Raw multi-coil brain, SENSE R=2 sensitivity mismatch)
 - **Falsifiable predictions**: 2 remaining predictions for SIM and OCT; electron ptychography prediction confirmed (+5 to +16 dB)
@@ -61,7 +61,7 @@ We prove that every computational imaging forward model decomposes into exactly 
 
 **What you do:** Help strengthen the Finite Primitive Basis Theorem:
 - Prove a tighter error bound (current bound is 10-100x conservative)
-- Establish algebraic closure properties of the 10 primitives under composition
+- Establish algebraic closure properties of the 11 primitives under composition
 - Connect the primitive basis to category-theoretic structure
 
 **What you get:**
@@ -81,9 +81,9 @@ We prove that every computational imaging forward model decomposes into exactly 
 
 ## Key Figures
 
-1. **Periodic Table of Imaging Primitives**: 10 primitives organized by physics-stage family, covering 26+ modalities across 5 carrier families
+1. **Periodic Table of Imaging Primitives**: 11 primitives organized by physics-stage family, covering 26+ modalities across 5 carrier families
 2. **4-Scenario Bar Chart**: +0.8 to +10.7 dB correction gains across 7 modalities, carrier-agnostic
-3. **Basis-Growth Saturation Curve**: K=10 primitives saturates at N=31 modalities --- no new primitive needed for the most recent 19 modalities
+3. **Basis-Growth Saturation Curve**: K=11 primitives saturates at N=35 modalities --- no new primitive needed for the most recent 5 modalities
 
 ---
 

@@ -16,7 +16,7 @@ Complete implementation of SPC and CACTI validation frameworks for the InverseNe
   
 - ✅ `cacti_plan_inversenet.md` (450+ lines)
   - 3-scenario validation framework
-  - SCI benchmark specification
+  - CACTI benchmark specification
   - Expected results and gap analysis
 
 ### 2. Reconstruction Solver Modules (COMPLETE)
@@ -68,7 +68,7 @@ Total Execution: 2.5 minutes (13.5s per image)
   - **Status:** ✅ Executed successfully
 
 - ✅ `papers/inversenet/scripts/validate_cacti_inversenet.py` (700+ lines)
-  - 3-scenario framework with SCI benchmark (6 scenes)
+  - 3-scenario framework with CACTI benchmark (6 scenes)
   - Per-scene PSNR/SSIM metrics
   - 4-method comparison (GAP-TV, PnP-FFDNet, ELP-Unfolding, EfficientSCI)
   - Graceful fallbacks and error handling
@@ -170,7 +170,7 @@ papers/inversenet/tables/
 
 ### CACTI Validation
 - **Status:** ⏳ In progress
-- **Dataset:** SCI benchmark (6 scenes)
+- **Dataset:** CACTI benchmark (6 scenes)
 - **Methods:** 4 (GAP-TV, PnP-FFDNet, ELP-Unfolding, EfficientSCI)
 - **Scenarios:** 3 (Ideal, Baseline, Oracle)
 - **Note:** ELP-Unfolding has dimension mismatch, other methods functional
