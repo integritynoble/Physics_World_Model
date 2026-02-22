@@ -535,7 +535,9 @@ def run_portfolio(y: np.ndarray, physics: Any, cfg: Dict[str, Any]) -> Tuple[np.
         physics: Physics operator (with forward/adjoint or A matrix).
         cfg: Configuration dict with 'candidates', 'max_candidates', etc.
             Special keys:
-            - cpu_mode (bool): Force device='cpu' for all DL solvers.
+            - cpu_mode (bool): Injects device='cpu' into cfg before
+              dispatching. DL solvers that read cfg['device'] will run on
+              CPU; classical/NumPy solvers are always CPU-only regardless.
 
     Returns:
         Tuple of (best_x, best_info).
