@@ -1,0 +1,18 @@
+:80 {
+    reverse_proxy api:8000 {
+        health_uri /health
+        health_interval 10s
+    }
+
+    log {
+        output stdout
+        format json
+    }
+
+    header {
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        -Server
+    }
+}
