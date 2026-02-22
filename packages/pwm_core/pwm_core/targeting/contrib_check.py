@@ -129,19 +129,38 @@ def _check_ground_truth_isolation(
 
 def _check_sandbox_eval(name: str) -> Dict[str, Any]:
     """Run a quick sandbox evaluation."""
-    try:
-        from pwm_core.targeting.harness import Harness
+    # Prefer cassi (guaranteed in solver_registry); fall back to first available.
+    _SANDBOX_MODALITY_PREFERENCE = ["cassi", "widefield", "ct", "mri"]
 
-        # Try on widefield (simplest modality)
+    try:
+        from pwm_core.targeting.harness import Harness, load_solver_registry
+
+        registry = load_solver_registry()
+        sandbox_modality = None
+        for candidate in _SANDBOX_MODALITY_PREFERENCE:
+            if candidate in registry and "traditional_cpu" in registry.get(candidate, {}):
+                sandbox_modality = candidate
+                break
+        if sandbox_modality is None:
+            for mod, tiers in registry.items():
+                if isinstance(tiers, dict) and "traditional_cpu" in tiers:
+                    sandbox_modality = mod
+                    break
+        if sandbox_modality is None:
+            return {"passed": False, "reason": "No traditional_cpu solver found in registry"}
+
         harness = Harness(
-            modality="widefield",
+            modality=sandbox_modality,
             solver="traditional_cpu",
             sandbox=True,
         )
         result = harness.run(n_scenes=1, seed=42, severity="mild")
         return {
             "passed": True,
-            "reason": f"Sandbox eval: rho={result.aggregate.rho:.4f}",
+            "reason": (
+                f"Sandbox eval ({sandbox_modality}): "
+                f"rho={result.aggregate.rho:.4f}"
+            ),
         }
     except Exception as e:
         return {"passed": False, "reason": f"Sandbox eval failed: {e}"}

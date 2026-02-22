@@ -15,13 +15,18 @@ Gaming penalties (S5):
 - Overconfident uncertainty: -10%
 - Identifiability inconsistency: -10%
 - Compute dishonesty:       DQ
+
+Triad gate attribution (S2):
+- Gate 1 (Sampling):  measurement map A is the bottleneck
+- Gate 2 (Noise):     noise model mismatch limits recovery
+- Gate 3 (Mismatch):  forward operator H is wrong
 """
 
 from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -125,6 +130,200 @@ def compute_msi(psnr_drop_db: float, mismatch_magnitude: float) -> float:
     if abs(mismatch_magnitude) < 1e-10:
         return 0.0
     return float(abs(psnr_drop_db) / abs(mismatch_magnitude))
+
+
+# ---------------------------------------------------------------------------
+# Triad gate attribution (S2 of targeting_system.md)
+# ---------------------------------------------------------------------------
+
+
+# Recommended actions per dominant gate
+_GATE_ACTIONS = {
+    "gate_1_sampling": (
+        "Increase measurement budget: more snapshots, projections, or coded "
+        "aperture patterns. Consider a higher-compression ratio solver or "
+        "non-uniform sampling strategy."
+    ),
+    "gate_2_noise": (
+        "Recalibrate the noise model: verify photon-count estimates, "
+        "read-noise levels, and dark current. Use matched-filter or "
+        "noise-aware solvers (e.g., MAP with correct Poisson/Gaussian prior)."
+    ),
+    "gate_3_mismatch": (
+        "Calibrate the forward operator: run blind-calibration or "
+        "physics-informed fitting to recover H_hat ≈ H_true. Check for "
+        "geometric distortions, PSF drift, or gain miscalibration."
+    ),
+}
+
+# PSNR level (dB) below which we consider SNR/sampling to be the primary limit.
+_LOW_PSNR_THRESHOLD = 20.0
+
+
+@dataclass
+class GateAttribution:
+    """Triad decomposition: fraction of total degradation from each gate.
+
+    Gates (from targeting_system.md S2):
+    - Gate 1 (Sampling):  measurement map A is the bottleneck
+    - Gate 2 (Noise):     noise model mismatch limits recovery
+    - Gate 3 (Mismatch):  forward operator H is wrong
+
+    Attributes
+    ----------
+    gate_1_sampling : float
+        Fraction of total gap attributable to sampling limitations [0, 1].
+    gate_2_noise : float
+        Fraction attributable to noise model mismatch [0, 1].
+    gate_3_mismatch : float
+        Fraction attributable to operator mismatch [0, 1].
+    dominant_gate : str
+        Name of the dominant gate ('gate_1_sampling', 'gate_2_noise',
+        'gate_3_mismatch').
+    confidence : float
+        Confidence in the dominant-gate assignment [0, 1].
+        Low when the total gap is small (near-ideal performance).
+    recommended_action : str
+        Human-readable recommendation for addressing the dominant gate.
+    evidence : dict
+        Raw PSNR gaps used in the attribution.
+    """
+
+    gate_1_sampling: float
+    gate_2_noise: float
+    gate_3_mismatch: float
+    dominant_gate: str
+    confidence: float
+    recommended_action: str
+    evidence: Dict[str, float] = field(default_factory=dict)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "gate_1_sampling": self.gate_1_sampling,
+            "gate_2_noise": self.gate_2_noise,
+            "gate_3_mismatch": self.gate_3_mismatch,
+            "dominant_gate": self.dominant_gate,
+            "confidence": self.confidence,
+            "recommended_action": self.recommended_action,
+            "evidence": self.evidence,
+        }
+
+
+def infer_gate_attribution(
+    psnr_i: float,
+    psnr_ii: float,
+    psnr_iii: float,
+    psnr_iv: float,
+    mismatch_magnitude: float = 0.0,
+) -> GateAttribution:
+    """Infer the dominant Triad gate from the 4-scenario PSNR values.
+
+    Uses the structure of the LIP-Arena 4-Scenario Protocol:
+    - I  (Ideal):     H_true  → H_true  (best possible)
+    - II (Assumed):   H_true  → H_nom   (mismatch degradation)
+    - III (Calibrated): calibrate H_nom, reconstruct
+    - IV (Oracle):    H_true  → H_true  (same as I in current impl)
+
+    Gate fractions sum to 1.0.  Attribution is a heuristic; exact
+    disentanglement of Gates 1 and 2 requires varying the noise budget,
+    which the 4-scenario protocol does not do directly.
+
+    Parameters
+    ----------
+    psnr_i, psnr_ii, psnr_iii, psnr_iv : float
+        Per-scenario PSNR values (dB).
+    mismatch_magnitude : float
+        L2 magnitude of the injected mismatch vector (context for confidence).
+
+    Returns
+    -------
+    GateAttribution
+    """
+    eps = 1e-6
+
+    # --- Core gaps ---
+    # Total degradation from ideal → mismatched operator
+    total_gap = max(psnr_i - psnr_ii, 0.0)
+
+    # Gate-3 evidence: what calibration recovered (III − II)
+    calibration_gain = max(psnr_iii - psnr_ii, 0.0)
+
+    # Residual (Gates 1+2): what even perfect calibration cannot fix (oracle gap)
+    oracle_gap = max(psnr_i - psnr_iii, 0.0)
+
+    # --- Gate-3 fraction ---
+    if total_gap > eps:
+        gate_3_fraction = float(min(calibration_gain / total_gap, 1.0))
+    elif mismatch_magnitude > eps:
+        # Mismatch was injected but produced no PSNR gap → system insensitive
+        gate_3_fraction = 0.1
+    else:
+        gate_3_fraction = 0.0
+
+    residual_fraction = max(1.0 - gate_3_fraction, 0.0)
+
+    # --- Split residual between Gate 1 (sampling) and Gate 2 (noise) ---
+    # Heuristic: low PSNR_I implies poor SNR → noise-dominated.
+    # High PSNR_I with large oracle gap implies sampling is the limit.
+    if oracle_gap < 1.0:
+        # Tiny residual; gates 1+2 are both negligible → split evenly
+        gate_1_fraction = residual_fraction * 0.5
+        gate_2_fraction = residual_fraction * 0.5
+    elif psnr_i < _LOW_PSNR_THRESHOLD:
+        # Low absolute PSNR → noise likely dominant
+        gate_1_fraction = residual_fraction * 0.25
+        gate_2_fraction = residual_fraction * 0.75
+    else:
+        # Good SNR but large oracle gap → sampling bottleneck more likely
+        gate_1_fraction = residual_fraction * 0.65
+        gate_2_fraction = residual_fraction * 0.35
+
+    # --- Normalise so fractions sum to 1.0 ---
+    total = gate_1_fraction + gate_2_fraction + gate_3_fraction
+    if total > eps:
+        gate_1_fraction /= total
+        gate_2_fraction /= total
+        gate_3_fraction /= total
+    else:
+        gate_1_fraction = gate_2_fraction = gate_3_fraction = 1.0 / 3.0
+
+    # --- Dominant gate ---
+    fracs: Dict[str, float] = {
+        "gate_1_sampling": gate_1_fraction,
+        "gate_2_noise": gate_2_fraction,
+        "gate_3_mismatch": gate_3_fraction,
+    }
+    dominant_gate = max(fracs, key=fracs.get)  # type: ignore[arg-type]
+    dominant_fraction = fracs[dominant_gate]
+
+    # --- Confidence: high when total gap is large and one gate clearly wins ---
+    if total_gap < 1.0:
+        # Near-ideal performance; attribution is unreliable
+        confidence = 0.2
+    else:
+        # Confidence scales with the margin over a uniform distribution
+        uniform = 1.0 / 3.0
+        margin = (dominant_fraction - uniform) / (1.0 - uniform + eps)
+        confidence = float(min(max(margin, 0.0), 1.0))
+
+    return GateAttribution(
+        gate_1_sampling=round(gate_1_fraction, 4),
+        gate_2_noise=round(gate_2_fraction, 4),
+        gate_3_mismatch=round(gate_3_fraction, 4),
+        dominant_gate=dominant_gate,
+        confidence=round(confidence, 4),
+        recommended_action=_GATE_ACTIONS[dominant_gate],
+        evidence={
+            "psnr_i": round(psnr_i, 3),
+            "psnr_ii": round(psnr_ii, 3),
+            "psnr_iii": round(psnr_iii, 3),
+            "psnr_iv": round(psnr_iv, 3),
+            "total_gap_db": round(total_gap, 3),
+            "calibration_gain_db": round(calibration_gain, 3),
+            "oracle_gap_db": round(oracle_gap, 3),
+            "mismatch_magnitude": round(mismatch_magnitude, 4),
+        },
+    )
 
 
 # ---------------------------------------------------------------------------

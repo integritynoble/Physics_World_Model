@@ -38,7 +38,12 @@ from pwm_core.targeting.scenarios import (
     run_scenario_III,
     run_scenario_IV,
 )
-from pwm_core.targeting.scoring import ScoredResult, score_run
+from pwm_core.targeting.scoring import (
+    GateAttribution,
+    ScoredResult,
+    infer_gate_attribution,
+    score_run,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -180,6 +185,7 @@ class SceneResult:
     scored: ScoredResult
     mismatch_params: Dict[str, float]
     mismatch_magnitude: float
+    gate_attribution: Optional[GateAttribution] = None
 
 
 @dataclass
@@ -197,6 +203,7 @@ class HarnessResult:
     aggregate: ScoredResult
     timing_s: float
     budget_report: Dict[str, Any]
+    gate_attribution: Optional[GateAttribution] = None
     runbundle_path: Optional[str] = None
 
     def summary_table(self) -> str:
@@ -219,6 +226,19 @@ class HarnessResult:
             f"  {'-'*35}",
             f"  {'Total time (s)':<25} {self.timing_s:>10.2f}",
         ]
+
+        if self.gate_attribution is not None:
+            ga = self.gate_attribution
+            lines += [
+                f"",
+                f"  Triad Gate Attribution",
+                f"  {'-'*35}",
+                f"  {'Gate 1 (Sampling)':<25} {ga.gate_1_sampling:>10.3f}",
+                f"  {'Gate 2 (Noise)':<25} {ga.gate_2_noise:>10.3f}",
+                f"  {'Gate 3 (Mismatch)':<25} {ga.gate_3_mismatch:>10.3f}",
+                f"  {'Dominant gate':<25} {ga.dominant_gate:>10}",
+                f"  {'Confidence':<25} {ga.confidence:>10.3f}",
+            ]
 
         if self.aggregate.disqualified:
             lines.append(f"  ** DISQUALIFIED: {self.aggregate.disqualification_reason}")
@@ -246,6 +266,10 @@ class HarnessResult:
             "severity": self.severity,
             "sandbox": self.sandbox,
             "aggregate": self.aggregate.to_dict(),
+            "gate_attribution": (
+                self.gate_attribution.to_dict()
+                if self.gate_attribution is not None else None
+            ),
             "timing_s": self.timing_s,
             "budget_report": self.budget_report,
             "per_scene": [
@@ -255,6 +279,10 @@ class HarnessResult:
                     "oracle_gap": s.scored.oracle_gap,
                     "roic": s.scored.roic,
                     "mismatch_magnitude": s.mismatch_magnitude,
+                    "gate_attribution": (
+                        s.gate_attribution.to_dict()
+                        if s.gate_attribution is not None else None
+                    ),
                     "scenarios": {
                         k: {"psnr": v.psnr, "ssim": v.ssim, "runtime_s": v.runtime_s}
                         for k, v in s.scenario_results.items()
@@ -499,17 +527,28 @@ class Harness:
                 mismatch_magnitude=mismatch_mag,
             )
 
+            # 6b. Gate attribution (Triad decomposition for Track 2)
+            gate_attr = infer_gate_attribution(
+                psnr_i=scenarios["I"].psnr,
+                psnr_ii=scenarios["II"].psnr,
+                psnr_iii=scenarios["III"].psnr,
+                psnr_iv=scenarios["IV"].psnr,
+                mismatch_magnitude=mismatch_mag,
+            )
+
             scene_results.append(SceneResult(
                 scene_idx=scene_idx,
                 scenario_results=scenarios,
                 scored=scored,
                 mismatch_params=theta_mismatch,
                 mismatch_magnitude=mismatch_mag,
+                gate_attribution=gate_attr,
             ))
 
             logger.info(
                 f"Scene {scene_idx}: rho={scored.rho:.4f}, "
                 f"oracle_gap={scored.oracle_gap:.2f} dB, "
+                f"dominant_gate={gate_attr.dominant_gate}, "
                 f"roic={scored.roic:.2f}"
             )
 
@@ -546,6 +585,33 @@ class Harness:
             disqualification_reason=dq_reason,
         )
 
+        # 7b. Aggregate gate attribution across scenes
+        scene_gas = [
+            s.gate_attribution for s in scene_results if s.gate_attribution is not None
+        ]
+        agg_gate_attr: Optional[GateAttribution] = None
+        if scene_gas:
+            avg_g1 = float(np.mean([g.gate_1_sampling for g in scene_gas]))
+            avg_g2 = float(np.mean([g.gate_2_noise for g in scene_gas]))
+            avg_g3 = float(np.mean([g.gate_3_mismatch for g in scene_gas]))
+            avg_conf = float(np.mean([g.confidence for g in scene_gas]))
+            avg_fracs = {
+                "gate_1_sampling": avg_g1,
+                "gate_2_noise": avg_g2,
+                "gate_3_mismatch": avg_g3,
+            }
+            agg_dominant = max(avg_fracs, key=avg_fracs.get)  # type: ignore[arg-type]
+            from pwm_core.targeting.scoring import _GATE_ACTIONS
+            agg_gate_attr = GateAttribution(
+                gate_1_sampling=round(avg_g1, 4),
+                gate_2_noise=round(avg_g2, 4),
+                gate_3_mismatch=round(avg_g3, 4),
+                dominant_gate=agg_dominant,
+                confidence=round(avg_conf, 4),
+                recommended_action=_GATE_ACTIONS[agg_dominant],
+                evidence={"n_scenes": len(scene_gas)},
+            )
+
         total_time = time.perf_counter() - t_start
         budget_report = budget_guard.report().to_dict()
 
@@ -559,6 +625,7 @@ class Harness:
             sandbox=self.sandbox,
             per_scene=scene_results,
             aggregate=aggregate,
+            gate_attribution=agg_gate_attr,
             timing_s=total_time,
             budget_report=budget_report,
         )

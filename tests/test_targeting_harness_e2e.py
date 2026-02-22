@@ -17,6 +17,7 @@ _repo = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_repo / "packages" / "pwm_core"))
 
 from pwm_core.targeting.harness import Harness, HarnessResult
+from pwm_core.targeting.scoring import GateAttribution, infer_gate_attribution
 
 VALIDATED_MODALITIES = [
     "cassi", "cacti", "spc", "ct", "mri", "ptychography", "lensless",
@@ -86,6 +87,43 @@ class TestHarnessE2E:
         assert "aggregate" in d
         assert "per_scene" in d
 
+    def test_harness_gate_attribution(self, modality):
+        """Gate attribution is computed and has valid structure."""
+        result = _run_sandbox(modality)
+
+        # Aggregate gate attribution must be present
+        assert result.gate_attribution is not None, "gate_attribution missing on HarnessResult"
+        ga = result.gate_attribution
+
+        # Fractions are non-negative
+        assert ga.gate_1_sampling >= 0.0
+        assert ga.gate_2_noise >= 0.0
+        assert ga.gate_3_mismatch >= 0.0
+
+        # Fractions sum to ~1.0
+        total = ga.gate_1_sampling + ga.gate_2_noise + ga.gate_3_mismatch
+        assert abs(total - 1.0) < 1e-3, f"Gate fractions sum to {total:.4f}, expected 1.0"
+
+        # Dominant gate is one of the three valid gates
+        assert ga.dominant_gate in (
+            "gate_1_sampling", "gate_2_noise", "gate_3_mismatch"
+        )
+
+        # Confidence is in [0, 1]
+        assert 0.0 <= ga.confidence <= 1.0
+
+        # Recommended action is a non-empty string
+        assert isinstance(ga.recommended_action, str) and len(ga.recommended_action) > 0
+
+        # Per-scene gate attribution is also present
+        assert result.per_scene[0].gate_attribution is not None
+
+        # to_dict() includes gate_attribution
+        d = result.to_dict()
+        assert "gate_attribution" in d
+        assert d["gate_attribution"] is not None
+        assert "dominant_gate" in d["gate_attribution"]
+
 
 class TestDatasets:
     """Verify that generated LIP-Arena datasets exist and are valid."""
@@ -117,3 +155,82 @@ class TestDatasets:
         assert list(y.shape) == meta["y_shape"]
         assert x_gt.size > 0
         assert y.size > 0
+
+
+class TestGateAttribution:
+    """Unit tests for Triad gate attribution logic (infer_gate_attribution)."""
+
+    def _check_valid(self, ga: GateAttribution) -> None:
+        """Shared validity checks for a GateAttribution."""
+        fracs = [ga.gate_1_sampling, ga.gate_2_noise, ga.gate_3_mismatch]
+        assert all(f >= 0.0 for f in fracs), f"Negative fraction: {fracs}"
+        total = sum(fracs)
+        assert abs(total - 1.0) < 1e-3, f"Fractions sum to {total:.4f}"
+        assert ga.dominant_gate in (
+            "gate_1_sampling", "gate_2_noise", "gate_3_mismatch"
+        )
+        assert 0.0 <= ga.confidence <= 1.0
+
+    def test_gate3_dominant_when_calibration_recovers(self):
+        """When calibration (III) recovers most of the II→I gap, Gate 3 is dominant."""
+        # PSNR_I=30, PSNR_II=15, PSNR_III=28 → Gate 3 recovers 13/15 = 87%
+        ga = infer_gate_attribution(30.0, 15.0, 28.0, 30.0, mismatch_magnitude=1.5)
+        self._check_valid(ga)
+        assert ga.dominant_gate == "gate_3_mismatch", (
+            f"Expected gate_3_mismatch, got {ga.dominant_gate} "
+            f"(g3={ga.gate_3_mismatch:.3f})"
+        )
+        assert ga.gate_3_mismatch > 0.6
+
+    def test_gate12_dominant_when_calibration_does_not_help(self):
+        """When calibration barely helps, Gates 1/2 dominate."""
+        # PSNR_I=30, PSNR_II=15, PSNR_III=16 → calibration gained only 1/15 = 7%
+        ga = infer_gate_attribution(30.0, 15.0, 16.0, 30.0, mismatch_magnitude=0.5)
+        self._check_valid(ga)
+        # Gate 3 should be small; Gates 1+2 dominant
+        assert ga.gate_3_mismatch < 0.2
+
+    def test_near_ideal_performance_low_confidence(self):
+        """When all PSNRs are equal (near-ideal), confidence should be low."""
+        ga = infer_gate_attribution(30.0, 30.0, 30.0, 30.0, mismatch_magnitude=0.0)
+        self._check_valid(ga)
+        assert ga.confidence < 0.5, (
+            f"Expected low confidence for trivial case, got {ga.confidence}"
+        )
+
+    def test_high_psnr_with_large_oracle_gap_prefers_gate1(self):
+        """High PSNR_I with large oracle gap suggests sampling bottleneck (Gate 1)."""
+        # PSNR_I=35 (good SNR), PSNR_III=28 (7 dB oracle gap), minimal Gate 3 gain
+        ga = infer_gate_attribution(35.0, 25.0, 26.0, 35.0, mismatch_magnitude=0.3)
+        self._check_valid(ga)
+        # Residual (oracle_gap=9 dB) should favor Gate 1 over Gate 2
+        assert ga.gate_1_sampling > ga.gate_2_noise
+
+    def test_low_psnr_prefers_gate2_noise(self):
+        """Low absolute PSNR_I suggests noise is the primary limit (Gate 2)."""
+        # PSNR_I=12 (poor SNR), calibration doesn't help much
+        ga = infer_gate_attribution(12.0, 5.0, 6.0, 12.0, mismatch_magnitude=0.3)
+        self._check_valid(ga)
+        # Residual should favor Gate 2 over Gate 1
+        assert ga.gate_2_noise > ga.gate_1_sampling
+
+    def test_recommended_action_matches_dominant_gate(self):
+        """Recommended action must correspond to the dominant gate."""
+        ga = infer_gate_attribution(30.0, 15.0, 28.0, 30.0, mismatch_magnitude=1.5)
+        self._check_valid(ga)
+        if ga.dominant_gate == "gate_3_mismatch":
+            assert "operator" in ga.recommended_action.lower() or "calibrat" in ga.recommended_action.lower()
+        elif ga.dominant_gate == "gate_1_sampling":
+            assert "sampl" in ga.recommended_action.lower() or "measurement" in ga.recommended_action.lower()
+        elif ga.dominant_gate == "gate_2_noise":
+            assert "noise" in ga.recommended_action.lower()
+
+    def test_to_dict_has_required_keys(self):
+        """to_dict() includes all expected fields."""
+        ga = infer_gate_attribution(30.0, 15.0, 28.0, 30.0, mismatch_magnitude=1.5)
+        d = ga.to_dict()
+        for key in (
+            "gate_1_sampling", "gate_2_noise", "gate_3_mismatch",
+            "dominant_gate", "confidence", "recommended_action", "evidence",
+        ):
+            assert key in d, f"Missing key '{key}' in to_dict()"
