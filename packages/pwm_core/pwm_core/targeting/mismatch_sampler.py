@@ -118,6 +118,33 @@ def sample_mismatch(
     return sampled
 
 
+def _try_rebuild_primitive(prim: Any, orig_output_size: Optional[int] = None) -> Any:
+    """Attempt to rebuild a primitive from its updated ``_params``.
+
+    Primitives that pre-compile internal matrices (e.g. RandomMask, kspace
+    SubsampledFourier) must be fully reconstructed when parameters change.
+    Returns the new primitive only if the output shape is unchanged; returns
+    the original otherwise (prevents y-shape mismatches in the harness).
+    """
+    try:
+        new_prim = type(prim)(dict(prim._params))
+        # Shape-safety check: refuse rebuild if output dimensions changed
+        if orig_output_size is not None:
+            # Test with a dummy input to verify output size stability
+            import numpy as _np
+            dummy_in_size = getattr(prim, '_H', 32) * getattr(prim, '_W', 32)
+            dummy = _np.zeros(dummy_in_size)
+            try:
+                new_out = new_prim.forward(dummy)
+                if new_out.size != orig_output_size:
+                    return prim  # Shape changed — don't rebuild
+            except Exception:
+                return prim
+        return new_prim
+    except Exception:
+        return prim
+
+
 def inject_mismatch(
     H_true: Any,
     theta_mismatch: Dict[str, float],
@@ -155,9 +182,38 @@ def inject_mismatch(
     elif hasattr(H_nom, "node_map"):
         # Direct GraphOperator: inject into node params
         for pname, pval in theta_mismatch.items():
-            for node_id, prim in H_nom.node_map.items():
+            for node_id, prim in list(H_nom.node_map.items()):
                 if pname in prim._params:
+                    # Measure current output size before changing params
+                    orig_out_size: Optional[int] = None
+                    try:
+                        import numpy as _np
+                        in_size = getattr(prim, '_H', 32) * getattr(prim, '_W', 32)
+                        dummy = _np.zeros(in_size)
+                        orig_out_size = prim.forward(dummy).size
+                    except Exception:
+                        pass
+
+                    # Coerce integer-typed params (e.g. seed, n_angles) so that
+                    # primitives using np.random.default_rng(seed) don't fail.
+                    orig_type = type(prim._params[pname])
+                    if orig_type is int or pname in ("seed", "n_angles", "T"):
+                        pval = int(round(float(pval)))
                     prim._params[pname] = pval
+
+                    # Some primitives (e.g. RandomMask, SubsampledFourier) pre-compile
+                    # their measurement matrices at __init__ and don't re-read _params
+                    # on forward().  Rebuild the primitive so the new param takes effect,
+                    # but only if the output shape is preserved (prevents y-shape breaks).
+                    new_prim = _try_rebuild_primitive(prim, orig_out_size)
+                    if new_prim is not prim:
+                        H_nom.node_map[node_id] = new_prim
+                        for i, (nid, p) in enumerate(H_nom.forward_plan):
+                            if nid == node_id:
+                                H_nom.forward_plan[i] = (nid, new_prim)
+                        for i, (nid, p) in enumerate(H_nom.adjoint_plan):
+                            if nid == node_id:
+                                H_nom.adjoint_plan[i] = (nid, new_prim)
     else:
         logger.warning(
             "Cannot inject mismatch: operator has no set_theta() or node_map"

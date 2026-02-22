@@ -379,24 +379,32 @@ modalities:
         unit: "cycles_per_sequence"
         param_type: "temporal_frequency"
         description: "Sinusoidal illumination fluctuation frequency"
+      # ── F) Pattern seed (injectable: maps to measure.seed → different random mask) ──
+      seed:
+        range: [100, 200]
+        typical_error: 20.0
+        unit: "integer"
+        param_type: "pattern"
+        description: "Measurement matrix seed offset — different seed gives different random DMD pattern set"
     severity_weights:
-      mask_dx: 0.12
-      mask_dy: 0.12
-      mask_theta: 0.08
+      mask_dx: 0.11
+      mask_dy: 0.11
+      mask_theta: 0.07
       mask_scale: 0.04
       mask_contrast: 0.05
-      mask_blur_sigma: 0.06
+      mask_blur_sigma: 0.05
       dead_mirror_rate: 0.02
-      clock_offset: 0.10
-      timing_jitter_std: 0.07
+      clock_offset: 0.09
+      timing_jitter_std: 0.06
       duty_cycle: 0.05
-      gain: 0.08
+      gain: 0.07
       dark_current: 0.04
       offset: 0.03
-      read_sigma: 0.04
-      illum_drift_linear: 0.06
-      illum_drift_sin_amp: 0.05
+      read_sigma: 0.03
+      illum_drift_linear: 0.05
+      illum_drift_sin_amp: 0.04
       illum_drift_sin_freq: 0.04
+      seed: 0.05
     correction_method: "UPWMI_multistage_search"
     correction_stages:
       - name: "coarse_spatial"
@@ -590,10 +598,18 @@ modalities:
         unit: "Hz"
         param_type: "offset"
         description: "Static field inhomogeneity causing geometric distortion"
+      # ── Injectable: maps to kspace.seed → different k-space trajectory ──
+      seed:
+        range: [100, 200]
+        typical_error: 20.0
+        unit: "integer"
+        param_type: "pattern"
+        description: "K-space sampling seed — different seed gives different trajectory (models trajectory errors)"
     severity_weights:
-      coil_sensitivity_error: 0.45
-      k_space_trajectory_error: 0.30
-      B0_inhomogeneity: 0.25
+      coil_sensitivity_error: 0.35
+      k_space_trajectory_error: 0.25
+      B0_inhomogeneity: 0.20
+      seed: 0.20
     correction_method: "gradient_descent"
 
   # ==========================================================================

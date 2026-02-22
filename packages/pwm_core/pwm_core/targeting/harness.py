@@ -166,8 +166,13 @@ def _add_noise(
         y_photons = rng.poisson(np.clip(y * scale, 0, None).astype(np.float64))
         y = y_photons.astype(np.float64) / scale
     if noise_model in ("poisson_gaussian", "gaussian"):
-        sigma = read_sigma * (y.max() - y.min() + 1e-10)
-        y = y + rng.normal(0, sigma, y.shape)
+        if np.iscomplexobj(y):
+            # Complex measurements (e.g. MRI k-space): add independent real + imag noise
+            sigma = read_sigma * (np.abs(y).max() - np.abs(y).min() + 1e-10)
+            y = y + rng.normal(0, sigma, y.shape) + 1j * rng.normal(0, sigma, y.shape)
+        else:
+            sigma = read_sigma * (y.max() - y.min() + 1e-10)
+            y = y + rng.normal(0, sigma, y.shape)
     return y
 
 
