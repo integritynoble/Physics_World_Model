@@ -16,8 +16,15 @@ def soft_thresh(x: np.ndarray, lam: float) -> np.ndarray:
     return np.sign(x) * np.maximum(np.abs(x) - lam, 0.0)
 
 
-def fista_l2(y: np.ndarray, A: np.ndarray, lam: float = 1e-3, iters: int = 50) -> np.ndarray:
+def fista_l2(y: np.ndarray, A: np.ndarray, lam: float = 1e-3, iters: int = 50,
+             device=None) -> np.ndarray:
     """Simple FISTA for min_x 0.5||Ax - y||^2 + lam||x||_1 (toy)."""
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _fista_l2_torch(y, A, lam, iters, dev)
+
     # NOTE: For real imaging, prefer TV prox and operator forms; this is a safe placeholder.
     m, n = A.shape
     x = np.zeros((n,), dtype=np.float32)
@@ -35,10 +42,58 @@ def fista_l2(y: np.ndarray, A: np.ndarray, lam: float = 1e-3, iters: int = 50) -
     return x
 
 
-def least_squares(A: np.ndarray, y: np.ndarray, reg: float = 1e-6) -> np.ndarray:
+def _fista_l2_torch(y, A, lam, iters, dev):
+    """GPU implementation of fista_l2."""
+    import torch
+    from pwm_core.recon.gpu_utils import to_torch, to_numpy, soft_threshold_torch
+
+    A_t = to_torch(A, dev)
+    y_t = to_torch(y, dev)
+    At_t = A_t.T
+    m, n = A_t.shape
+
+    x = torch.zeros(n, device=dev, dtype=torch.float32)
+    z = x.clone()
+    t = 1.0
+
+    L = float(torch.linalg.norm(A_t, 2) ** 2) + 1e-8
+    step = 1.0 / L
+
+    for _ in range(iters):
+        grad = At_t @ (A_t @ z - y_t)
+        x_new = soft_threshold_torch(z - step * grad, lam * step)
+        t_new = (1.0 + (1.0 + 4.0 * t * t) ** 0.5) / 2.0
+        z = x_new + ((t - 1.0) / t_new) * (x_new - x)
+        x, t = x_new, t_new
+
+    return to_numpy(x).astype(np.float32)
+
+
+def least_squares(A: np.ndarray, y: np.ndarray, reg: float = 1e-6,
+                  device=None) -> np.ndarray:
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _least_squares_torch(A, y, reg, dev)
+
     AtA = A.T @ A + reg * np.eye(A.shape[1], dtype=np.float32)
     Aty = A.T @ y
     return np.linalg.solve(AtA, Aty)
+
+
+def _least_squares_torch(A, y, reg, dev):
+    """GPU implementation of least_squares."""
+    import torch
+    from pwm_core.recon.gpu_utils import to_torch, to_numpy
+
+    A_t = to_torch(A, dev)
+    y_t = to_torch(y, dev)
+    n = A_t.shape[1]
+    AtA = A_t.T @ A_t + reg * torch.eye(n, device=dev, dtype=A_t.dtype)
+    Aty = A_t.T @ y_t
+    x = torch.linalg.solve(AtA, Aty)
+    return to_numpy(x).astype(np.float32)
 
 
 def gradient_descent_operator(
@@ -49,6 +104,7 @@ def gradient_descent_operator(
     iters: int = 100,
     step: float = 0.01,
     reg: float = 1e-4,
+    device=None,
 ) -> np.ndarray:
     """Gradient descent using forward/adjoint operators.
 
@@ -62,10 +118,18 @@ def gradient_descent_operator(
         iters: Number of iterations.
         step: Step size (learning rate).
         reg: Regularization parameter.
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
 
     Returns:
         Reconstructed signal x.
     """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _gradient_descent_operator_torch(
+            y, forward, adjoint, x_shape, iters, step, reg, dev)
+
     # Initialize with adjoint of y
     x = adjoint(y).reshape(x_shape).astype(np.float32)
 
@@ -78,6 +142,26 @@ def gradient_descent_operator(
     return x
 
 
+def _gradient_descent_operator_torch(y, forward, adjoint, x_shape, iters,
+                                     step, reg, dev):
+    """GPU implementation of gradient_descent_operator."""
+    import torch
+    from pwm_core.recon.gpu_utils import to_torch, to_numpy, wrap_operator
+
+    y_t = to_torch(y, dev)
+    fwd = wrap_operator(forward, dev)
+    adj = wrap_operator(adjoint, dev)
+
+    x = adj(y_t).reshape(x_shape)
+
+    for _ in range(iters):
+        residual = fwd(x) - y_t
+        grad = adj(residual).reshape(x_shape) + reg * x
+        x = x - step * grad
+
+    return to_numpy(x).astype(np.float32)
+
+
 def conjugate_gradient_operator(
     y: np.ndarray,
     forward: Any,
@@ -85,6 +169,7 @@ def conjugate_gradient_operator(
     x_shape: Tuple[int, ...],
     iters: int = 50,
     reg: float = 1e-4,
+    device=None,
 ) -> np.ndarray:
     """Conjugate gradient using forward/adjoint operators.
 
@@ -97,10 +182,18 @@ def conjugate_gradient_operator(
         x_shape: Shape of the signal to reconstruct.
         iters: Number of iterations.
         reg: Regularization parameter.
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
 
     Returns:
         Reconstructed signal x.
     """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _conjugate_gradient_operator_torch(
+            y, forward, adjoint, x_shape, iters, reg, dev)
+
     # Right-hand side: A^T y
     b = adjoint(y).reshape(x_shape).astype(np.float32)
 
@@ -128,3 +221,38 @@ def conjugate_gradient_operator(
         rsold = rsnew
 
     return x
+
+
+def _conjugate_gradient_operator_torch(y, forward, adjoint, x_shape, iters,
+                                       reg, dev):
+    """GPU implementation of conjugate_gradient_operator."""
+    import torch
+    from pwm_core.recon.gpu_utils import to_torch, to_numpy, wrap_operator
+
+    y_t = to_torch(y, dev)
+    fwd = wrap_operator(forward, dev)
+    adj = wrap_operator(adjoint, dev)
+
+    b = adj(y_t).reshape(x_shape)
+    x = torch.zeros(x_shape, device=dev, dtype=torch.float32)
+    r = b - (adj(fwd(x)).reshape(x_shape) + reg * x)
+    p = r.clone()
+    rsold = float(torch.sum(r * r))
+
+    for _ in range(iters):
+        if rsold < 1e-12:
+            break
+
+        Ap = adj(fwd(p)).reshape(x_shape) + reg * p
+        pAp = float(torch.sum(p * Ap))
+        if pAp < 1e-12:
+            break
+
+        alpha = rsold / pAp
+        x = x + alpha * p
+        r = r - alpha * Ap
+        rsnew = float(torch.sum(r * r))
+        p = r + (rsnew / rsold) * p
+        rsold = rsnew
+
+    return to_numpy(x).astype(np.float32)

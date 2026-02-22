@@ -36,8 +36,15 @@ def soft_threshold(x: np.ndarray, tau: float) -> np.ndarray:
     return np.sign(x) * np.maximum(np.abs(x) - tau, 0)
 
 
-def estimate_operator_norm(A: np.ndarray, iterations: int = 20) -> float:
+def estimate_operator_norm(A: np.ndarray, iterations: int = 20,
+                           device=None) -> float:
     """Estimate spectral norm ||A|| using power iteration."""
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu:
+        return _estimate_operator_norm_torch(A, iterations, dev)
+
     m, n = A.shape
     v = np.random.randn(n) / np.sqrt(n)
 
@@ -47,6 +54,23 @@ def estimate_operator_norm(A: np.ndarray, iterations: int = 20) -> float:
         v = v / (np.linalg.norm(v) + 1e-10)
 
     return float(np.linalg.norm(A @ v))
+
+
+def _estimate_operator_norm_torch(A, iterations, dev):
+    """GPU implementation of estimate_operator_norm."""
+    import torch
+    from pwm_core.recon.gpu_utils import to_torch
+
+    A_t = to_torch(A, dev)
+    m, n = A_t.shape
+    v = torch.randn(n, device=dev) / (n ** 0.5)
+
+    for _ in range(iterations):
+        u = A_t @ v
+        v = A_t.T @ u
+        v = v / (torch.linalg.norm(v) + 1e-10)
+
+    return float(torch.linalg.norm(A_t @ v))
 
 
 # ============================================================================
@@ -60,6 +84,7 @@ def admm_spc(
     iterations: int = 100,
     tol: float = 1e-4,
     verbose: bool = False,
+    device=None,
 ) -> np.ndarray:
     """ADMM solver for SPC basis pursuit denoising.
 
@@ -72,10 +97,17 @@ def admm_spc(
         iterations: Maximum ADMM iterations
         tol: Convergence tolerance (relative residual)
         verbose: Print iteration details
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
 
     Returns:
         x: Reconstructed signal (N,), clipped to [0, 1]
     """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu and isinstance(A, np.ndarray):
+        return _admm_spc_torch(y, A, rho, iterations, tol, verbose, dev)
+
     logger.debug(f"ADMM SPC: starting with rho={rho}, iterations={iterations}")
 
     # Determine dimensions
@@ -159,6 +191,58 @@ def admm_spc(
     return x
 
 
+def _admm_spc_torch(y, A, rho, iterations, tol, verbose, dev):
+    """GPU implementation of admm_spc (matrix-form A only)."""
+    import torch
+    from pwm_core.recon.gpu_utils import to_torch, to_numpy, soft_threshold_torch
+
+    A_t = to_torch(A, dev)
+    y_t = to_torch(y, dev)
+    M, N = A_t.shape
+
+    AtA = A_t.T @ A_t
+    Aty = A_t.T @ y_t
+
+    # Pre-compute factorization
+    lhs = AtA + rho * torch.eye(N, device=dev, dtype=A_t.dtype)
+    L_chol = torch.linalg.cholesky(lhs)
+
+    x = torch.cholesky_solve(Aty.unsqueeze(1), L_chol).squeeze(1)
+    z = x.clone()
+    u = torch.zeros(N, device=dev, dtype=torch.float32)
+
+    threshold_tau = 1.0 / rho
+
+    for k in range(iterations):
+        x_old = x.clone()
+
+        rhs = Aty + rho * (z - u)
+        x = torch.cholesky_solve(rhs.unsqueeze(1), L_chol).squeeze(1).float()
+        x = torch.clamp(x, min=0)
+
+        z = soft_threshold_torch(x + u, threshold_tau)
+        u = u + x - z
+
+        residual_val = float(torch.linalg.norm(x - x_old)) / (
+            float(torch.linalg.norm(x)) + 1e-10)
+
+        if verbose and k % 10 == 0:
+            logger.info(f"ADMM iter {k:3d}: residual={residual_val:.2e}")
+
+        if residual_val < tol:
+            logger.debug(f"ADMM converged at iteration {k}")
+            break
+
+    x = torch.clamp(x, 0, 1)
+    result = to_numpy(x).astype(np.float32)
+
+    if result.shape[0] in (4096, 16384, 65536):
+        size = int(np.sqrt(result.shape[0]))
+        result = result.reshape(size, size)
+
+    return result
+
+
 # ============================================================================
 # Classical Method 2: ISTA/FISTA
 # ============================================================================
@@ -170,6 +254,7 @@ def fista_l1(
     iterations: int = 100,
     accelerate: bool = True,
     verbose: bool = False,
+    device=None,
 ) -> np.ndarray:
     """FISTA with L1 regularization for SPC.
 
@@ -182,10 +267,18 @@ def fista_l1(
         iterations: Maximum iterations
         accelerate: Use acceleration (FISTA vs ISTA)
         verbose: Print progress
+        device: Compute device (None=auto, 'cpu', 'cuda', etc.).
 
     Returns:
         x: Reconstructed signal
     """
+    from pwm_core.recon.gpu_utils import resolve_device
+    dev, use_gpu = resolve_device(device)
+
+    if use_gpu and isinstance(A, np.ndarray):
+        return _fista_l1_torch(y, A, lambda_l1, iterations, accelerate,
+                               verbose, dev)
+
     # Setup
     if isinstance(A, np.ndarray):
         M, N = A.shape
@@ -228,6 +321,38 @@ def fista_l1(
             logger.info(f"FISTA iter {k}: residual={residual:.2e}")
 
     return np.clip(x, 0, 1).astype(np.float32).reshape(-1)
+
+
+def _fista_l1_torch(y, A, lambda_l1, iterations, accelerate, verbose, dev):
+    """GPU implementation of fista_l1 (matrix-form A only)."""
+    import torch
+    from pwm_core.recon.gpu_utils import to_torch, to_numpy, soft_threshold_torch
+
+    A_t = to_torch(A, dev)
+    y_t = to_torch(y, dev)
+
+    L = _estimate_operator_norm_torch(A, 20, dev)
+    step_size = 1.0 / L
+
+    x = (A_t.T @ y_t) * step_size
+    z = x.clone()
+    t = 1.0
+
+    for k in range(iterations):
+        grad = A_t.T @ (A_t @ z - y_t)
+        x_new = z - step_size * grad
+        x_new = soft_threshold_torch(x_new, lambda_l1 * step_size)
+
+        if accelerate:
+            t_new = (1 + (1 + 4 * t ** 2) ** 0.5) / 2
+            z = x_new + ((t - 1) / t_new) * (x_new - x)
+            t = t_new
+        else:
+            z = x_new
+
+        x = x_new
+
+    return to_numpy(torch.clamp(x, 0, 1)).astype(np.float32).reshape(-1)
 
 
 # ============================================================================
@@ -329,7 +454,7 @@ def solve_spc(
         y: Measurement vector
         A: Forward operator
         method: Solver name ('admm', 'fista', 'ista_net_plus', 'hatnet')
-        **kwargs: Method-specific parameters
+        **kwargs: Method-specific parameters (including device=None for GPU)
 
     Returns:
         x: Reconstructed image
