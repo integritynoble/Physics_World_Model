@@ -9,6 +9,7 @@ Login: CompareGPT SSO redirect flow.
 from __future__ import annotations
 
 import logging
+from types import SimpleNamespace
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Request, Response
@@ -29,6 +30,92 @@ from pwm_platform.db.models import (
     TriadReport,
     User,
 )
+
+
+# ── Fallback modality list (used when DB is empty / not yet seeded) ───────
+# Format: (modality_key, display_name, category)
+_FALLBACK_MODALITIES_RAW = [
+    # Compressive
+    ("cassi", "CASSI (Coded Aperture Snapshot Spectral Imaging)", "compressive"),
+    ("cacti", "CACTI (Coded Aperture Compressive Temporal Imaging)", "compressive"),
+    ("spc", "Single-Pixel Camera", "compressive"),
+    ("matrix", "Generic Matrix Sensing", "compressive"),
+    # Medical
+    ("ct", "CT (X-ray Computed Tomography)", "medical"),
+    ("cbct", "Cone-Beam CT (CBCT)", "medical"),
+    ("mri", "MRI (Magnetic Resonance Imaging)", "medical"),
+    ("fmri", "Functional MRI (BOLD)", "medical"),
+    ("diffusion_mri", "Diffusion MRI (DTI)", "medical"),
+    ("mrs", "MR Spectroscopy", "medical"),
+    ("pet", "Positron Emission Tomography (PET)", "medical"),
+    ("spect", "Single Photon Emission CT (SPECT)", "medical"),
+    ("ultrasound", "Ultrasound Imaging", "medical"),
+    ("doppler_ultrasound", "Doppler Ultrasound", "medical_ultrasound"),
+    ("elastography", "Shear-Wave Elastography", "medical_ultrasound"),
+    ("fluoroscopy", "Fluoroscopy", "medical"),
+    ("angiography", "X-ray Angiography", "medical"),
+    ("xray_radiography", "X-ray Radiography", "medical"),
+    ("mammography", "Mammography", "medical"),
+    ("dexa", "Dual-Energy X-ray Absorptiometry (DEXA)", "medical"),
+    ("dot", "Diffuse Optical Tomography", "medical"),
+    ("photoacoustic", "Photoacoustic Imaging", "medical"),
+    # Coherent
+    ("holography", "Digital Holographic Microscopy", "coherent"),
+    ("ptychography", "Ptychography", "coherent"),
+    ("phase_retrieval", "Coherent Diffractive Imaging (CDI)", "coherent"),
+    # Microscopy
+    ("widefield", "Widefield Fluorescence Microscopy", "microscopy"),
+    ("widefield_lowdose", "Low-Dose Widefield Microscopy", "microscopy"),
+    ("confocal_livecell", "Confocal Live-Cell Microscopy", "microscopy"),
+    ("confocal_3d", "Confocal 3D Z-Stack", "microscopy"),
+    ("sim", "Structured Illumination Microscopy (SIM)", "microscopy"),
+    ("lightsheet", "Light-Sheet Fluorescence Microscopy", "microscopy"),
+    ("two_photon", "Two-Photon / Multiphoton Microscopy", "microscopy"),
+    ("sted", "STED Microscopy", "microscopy"),
+    ("tirf", "TIRF Microscopy", "microscopy"),
+    ("flim", "Fluorescence Lifetime Imaging (FLIM)", "microscopy"),
+    ("fpm", "Fourier Ptychographic Microscopy", "microscopy"),
+    ("palm_storm", "PALM/STORM Single-Molecule Localization", "microscopy"),
+    ("polarization", "Polarization Microscopy", "microscopy"),
+    # Electron microscopy
+    ("sem", "Scanning Electron Microscopy (SEM)", "electron_microscopy"),
+    ("tem", "Transmission Electron Microscopy (TEM)", "electron_microscopy"),
+    ("stem", "Scanning TEM (STEM)", "electron_microscopy"),
+    ("electron_tomography", "Electron Tomography", "electron_microscopy"),
+    ("electron_diffraction", "4D-STEM Electron Diffraction", "electron_microscopy"),
+    ("electron_holography", "Electron Holography", "electron_microscopy"),
+    ("ebsd", "Electron Backscatter Diffraction (EBSD)", "electron_microscopy"),
+    ("eels", "Electron Energy Loss Spectroscopy (EELS)", "electron_microscopy"),
+    # Clinical optics
+    ("oct", "Optical Coherence Tomography (OCT)", "clinical_optics"),
+    ("octa", "OCT Angiography", "clinical_optics"),
+    ("fundus", "Fundus Camera", "clinical_optics"),
+    ("endoscopy", "Fiber Bundle Endoscopy", "clinical_optics"),
+    # Computational
+    ("light_field", "Light Field Imaging", "computational"),
+    ("integral", "Integral Photography", "computational"),
+    ("lensless", "Lensless (Diffuser Camera) Imaging", "computational_photography"),
+    ("panorama", "Panorama Multi-Focus Fusion", "computational_photography"),
+    # Neural rendering
+    ("nerf", "Neural Radiance Fields (NeRF)", "neural_rendering"),
+    ("gaussian_splatting", "3D Gaussian Splatting", "neural_rendering"),
+    # Depth imaging
+    ("tof_camera", "Time-of-Flight Depth Camera", "depth_imaging"),
+    ("structured_light", "Structured-Light Depth Camera", "depth_imaging"),
+    ("lidar", "LiDAR Scanner", "depth_imaging"),
+    # Remote sensing
+    ("sar", "Synthetic Aperture Radar (SAR)", "remote_sensing"),
+    ("sonar", "Sonar Imaging", "remote_sensing"),
+    # Particle imaging
+    ("neutron_tomo", "Neutron Radiography / Tomography", "particle_imaging"),
+    ("proton_radiography", "Proton Radiography", "particle_imaging"),
+    ("muon_tomo", "Muon Tomography", "particle_imaging"),
+]
+
+_FALLBACK_MODALITIES = [
+    SimpleNamespace(modality_key=k, display_name=d, category=c)
+    for k, d, c in _FALLBACK_MODALITIES_RAW
+]
 
 logger = logging.getLogger(__name__)
 
@@ -124,6 +211,10 @@ async def new_run_page(
         select(ModalityBasics).order_by(ModalityBasics.display_name)
     )
     modalities = modalities_result.scalars().all()
+
+    # Fallback: if DB has no modalities seeded yet, use hardcoded list
+    if not modalities:
+        modalities = _FALLBACK_MODALITIES
 
     return templates.TemplateResponse("run_new.html", {
         "request": request,

@@ -47,14 +47,84 @@ class RunListResponse(BaseModel):
 
 # ── Mock execution (demo) ───────────────────────────────────────────────
 
-# Realistic metrics per modality
+# Realistic metrics per modality — all 64 modalities
+# Keys: psnr (dB range), ssim range, sam (spectral angle, optional), solver, iters range
 _MODALITY_METRICS = {
-    "cassi": {"psnr": (28, 36), "ssim": (0.88, 0.96), "sam": (0.03, 0.08), "solver": "gap_tv", "iters": (80, 200)},
-    "ct": {"psnr": (32, 42), "ssim": (0.92, 0.99), "sam": None, "solver": "fbp", "iters": (1, 1)},
-    "mri": {"psnr": (30, 40), "ssim": (0.90, 0.97), "sam": None, "solver": "compressed_sensing", "iters": (50, 150)},
-    "ptychography": {"psnr": (25, 35), "ssim": (0.85, 0.95), "sam": None, "solver": "pie", "iters": (100, 300)},
-    "holography": {"psnr": (27, 37), "ssim": (0.87, 0.96), "sam": None, "solver": "angular_spectrum", "iters": (1, 1)},
-    "spc": {"psnr": (22, 32), "ssim": (0.80, 0.92), "sam": None, "solver": "tv_fista", "iters": (100, 250)},
+    # ── Compressive ───────────────────────────────────────────────────────
+    "cassi":             {"psnr": (28, 36), "ssim": (0.88, 0.96), "sam": (0.03, 0.08), "solver": "mst",             "iters": (80, 200)},
+    "cacti":             {"psnr": (26, 34), "ssim": (0.86, 0.94), "sam": None,          "solver": "gap_tv",          "iters": (80, 200)},
+    "spc":               {"psnr": (22, 32), "ssim": (0.80, 0.92), "sam": None,          "solver": "pnp_fista",       "iters": (100, 250)},
+    "matrix":            {"psnr": (24, 34), "ssim": (0.82, 0.93), "sam": None,          "solver": "fista_l2",        "iters": (80, 200)},
+    # ── Medical ───────────────────────────────────────────────────────────
+    "ct":                {"psnr": (32, 42), "ssim": (0.92, 0.99), "sam": None,          "solver": "fbp",             "iters": (1, 1)},
+    "cbct":              {"psnr": (30, 40), "ssim": (0.90, 0.97), "sam": None,          "solver": "fdk",             "iters": (1, 1)},
+    "mri":               {"psnr": (30, 40), "ssim": (0.90, 0.97), "sam": None,          "solver": "sense",           "iters": (50, 150)},
+    "fmri":              {"psnr": (28, 36), "ssim": (0.86, 0.94), "sam": None,          "solver": "sense",           "iters": (30, 100)},
+    "diffusion_mri":     {"psnr": (26, 35), "ssim": (0.84, 0.93), "sam": None,          "solver": "weighted_least_squares", "iters": (20, 60)},
+    "mrs":               {"psnr": (20, 30), "ssim": (0.75, 0.88), "sam": None,          "solver": "lcmodel",         "iters": (50, 150)},
+    "pet":               {"psnr": (24, 33), "ssim": (0.82, 0.92), "sam": None,          "solver": "mlem",            "iters": (30, 80)},
+    "spect":             {"psnr": (22, 31), "ssim": (0.78, 0.90), "sam": None,          "solver": "mlem",            "iters": (30, 80)},
+    "ultrasound":        {"psnr": (26, 35), "ssim": (0.84, 0.93), "sam": None,          "solver": "tv_fista",        "iters": (30, 100)},
+    "doppler_ultrasound":{"psnr": (24, 33), "ssim": (0.80, 0.91), "sam": None,          "solver": "autocorrelation_estimator", "iters": (1, 1)},
+    "elastography":      {"psnr": (22, 31), "ssim": (0.78, 0.89), "sam": None,          "solver": "time_of_flight_inversion", "iters": (20, 60)},
+    "fluoroscopy":       {"psnr": (28, 37), "ssim": (0.86, 0.95), "sam": None,          "solver": "tv_fista",        "iters": (20, 60)},
+    "angiography":       {"psnr": (30, 39), "ssim": (0.88, 0.96), "sam": None,          "solver": "dsa_subtraction", "iters": (1, 1)},
+    "xray_radiography":  {"psnr": (30, 40), "ssim": (0.90, 0.97), "sam": None,          "solver": "tv_fista",        "iters": (10, 40)},
+    "mammography":       {"psnr": (29, 38), "ssim": (0.88, 0.96), "sam": None,          "solver": "tv_fista",        "iters": (15, 50)},
+    "dexa":              {"psnr": (28, 37), "ssim": (0.86, 0.95), "sam": None,          "solver": "dual_energy_decomposition", "iters": (1, 1)},
+    "dot":               {"psnr": (18, 27), "ssim": (0.68, 0.82), "sam": None,          "solver": "born_approx",     "iters": (50, 150)},
+    "photoacoustic":     {"psnr": (24, 33), "ssim": (0.80, 0.91), "sam": None,          "solver": "back_projection", "iters": (1, 1)},
+    # ── Coherent ──────────────────────────────────────────────────────────
+    "ptychography":      {"psnr": (25, 35), "ssim": (0.85, 0.95), "sam": None,          "solver": "epie",            "iters": (100, 300)},
+    "holography":        {"psnr": (27, 37), "ssim": (0.87, 0.96), "sam": None,          "solver": "angular_spectrum", "iters": (1, 1)},
+    "phase_retrieval":   {"psnr": (23, 33), "ssim": (0.82, 0.93), "sam": None,          "solver": "hio",             "iters": (100, 300)},
+    # ── Microscopy ────────────────────────────────────────────────────────
+    "widefield":         {"psnr": (28, 37), "ssim": (0.86, 0.95), "sam": None,          "solver": "richardson_lucy",  "iters": (20, 60)},
+    "widefield_lowdose": {"psnr": (24, 33), "ssim": (0.80, 0.91), "sam": None,          "solver": "pnp_hqs",         "iters": (30, 80)},
+    "confocal_livecell": {"psnr": (29, 38), "ssim": (0.88, 0.96), "sam": None,          "solver": "richardson_lucy", "iters": (20, 50)},
+    "confocal_3d":       {"psnr": (28, 37), "ssim": (0.86, 0.95), "sam": None,          "solver": "richardson_lucy_3d", "iters": (20, 60)},
+    "sim":               {"psnr": (30, 39), "ssim": (0.90, 0.97), "sam": None,          "solver": "wiener_sim",      "iters": (1, 1)},
+    "lightsheet":        {"psnr": (29, 38), "ssim": (0.88, 0.96), "sam": None,          "solver": "fourier_notch_destripe", "iters": (1, 1)},
+    "two_photon":        {"psnr": (27, 36), "ssim": (0.85, 0.94), "sam": None,          "solver": "richardson_lucy", "iters": (20, 60)},
+    "sted":              {"psnr": (26, 35), "ssim": (0.84, 0.93), "sam": None,          "solver": "richardson_lucy", "iters": (20, 60)},
+    "tirf":              {"psnr": (28, 37), "ssim": (0.86, 0.95), "sam": None,          "solver": "richardson_lucy", "iters": (20, 50)},
+    "flim":              {"psnr": (22, 31), "ssim": (0.78, 0.89), "sam": None,          "solver": "phasor",          "iters": (1, 1)},
+    "fpm":               {"psnr": (26, 35), "ssim": (0.84, 0.93), "sam": None,          "solver": "sequential_phase_retrieval", "iters": (50, 150)},
+    "palm_storm":        {"psnr": (20, 30), "ssim": (0.75, 0.88), "sam": None,          "solver": "thunderstorm",    "iters": (1, 1)},
+    "polarization":      {"psnr": (27, 36), "ssim": (0.85, 0.94), "sam": None,          "solver": "pnp_hqs",         "iters": (30, 80)},
+    # ── Electron Microscopy ───────────────────────────────────────────────
+    "sem":               {"psnr": (30, 40), "ssim": (0.90, 0.97), "sam": None,          "solver": "direct_imaging",  "iters": (1, 1)},
+    "tem":               {"psnr": (28, 38), "ssim": (0.88, 0.96), "sam": None,          "solver": "ctf_correction",  "iters": (1, 1)},
+    "stem":              {"psnr": (29, 39), "ssim": (0.89, 0.97), "sam": None,          "solver": "direct_imaging",  "iters": (1, 1)},
+    "electron_tomography": {"psnr": (26, 35), "ssim": (0.84, 0.93), "sam": None,        "solver": "sirt",            "iters": (30, 80)},
+    "electron_diffraction": {"psnr": (24, 33), "ssim": (0.82, 0.92), "sam": None,       "solver": "ptychography_epie", "iters": (80, 200)},
+    "electron_holography": {"psnr": (26, 36), "ssim": (0.85, 0.94), "sam": None,        "solver": "fourier_sideband", "iters": (1, 1)},
+    "ebsd":              {"psnr": (28, 37), "ssim": (0.86, 0.95), "sam": None,          "solver": "hough_indexing",  "iters": (1, 1)},
+    "eels":              {"psnr": (22, 31), "ssim": (0.78, 0.89), "sam": None,          "solver": "fourier_ratio",   "iters": (1, 1)},
+    # ── Clinical Optics ───────────────────────────────────────────────────
+    "oct":               {"psnr": (28, 38), "ssim": (0.87, 0.96), "sam": None,          "solver": "fft_recon",       "iters": (1, 1)},
+    "octa":              {"psnr": (26, 35), "ssim": (0.84, 0.93), "sam": None,          "solver": "tv_fista",        "iters": (20, 60)},
+    "fundus":            {"psnr": (30, 39), "ssim": (0.90, 0.97), "sam": None,          "solver": "richardson_lucy", "iters": (10, 30)},
+    "endoscopy":         {"psnr": (26, 35), "ssim": (0.84, 0.93), "sam": None,          "solver": "tv_fista",        "iters": (20, 60)},
+    # ── Computational / Computational Photography ─────────────────────────
+    "light_field":       {"psnr": (28, 37), "ssim": (0.86, 0.95), "sam": None,          "solver": "shift_and_sum",   "iters": (1, 1)},
+    "integral":          {"psnr": (27, 36), "ssim": (0.85, 0.94), "sam": None,          "solver": "depth_estimation", "iters": (1, 1)},
+    "lensless":          {"psnr": (22, 31), "ssim": (0.78, 0.89), "sam": None,          "solver": "admm_tv",         "iters": (50, 150)},
+    "panorama":          {"psnr": (30, 39), "ssim": (0.90, 0.97), "sam": None,          "solver": "laplacian_pyramid_fusion", "iters": (1, 1)},
+    # ── Neural Rendering ──────────────────────────────────────────────────
+    "nerf":              {"psnr": (26, 34), "ssim": (0.84, 0.93), "sam": None,          "solver": "nerf_mlp",        "iters": (5000, 30000)},
+    "gaussian_splatting": {"psnr": (28, 36), "ssim": (0.88, 0.96), "sam": None,         "solver": "gaussian_splatting_3dgs", "iters": (3000, 15000)},
+    # ── Depth Imaging ─────────────────────────────────────────────────────
+    "tof_camera":        {"psnr": (28, 37), "ssim": (0.86, 0.95), "sam": None,          "solver": "tv_fista",        "iters": (10, 40)},
+    "structured_light":  {"psnr": (30, 39), "ssim": (0.90, 0.97), "sam": None,          "solver": "phase_unwrap",    "iters": (1, 1)},
+    "lidar":             {"psnr": (26, 35), "ssim": (0.84, 0.93), "sam": None,          "solver": "tv_fista",        "iters": (10, 40)},
+    # ── Remote Sensing ────────────────────────────────────────────────────
+    "sar":               {"psnr": (24, 33), "ssim": (0.80, 0.91), "sam": None,          "solver": "backprojection",  "iters": (1, 1)},
+    "sonar":             {"psnr": (22, 31), "ssim": (0.76, 0.88), "sam": None,          "solver": "beamform_das",    "iters": (1, 1)},
+    # ── Particle Imaging ──────────────────────────────────────────────────
+    "neutron_tomo":      {"psnr": (26, 35), "ssim": (0.84, 0.93), "sam": None,          "solver": "filtered_back_projection", "iters": (1, 1)},
+    "proton_radiography": {"psnr": (24, 33), "ssim": (0.80, 0.91), "sam": None,         "solver": "filtered_back_projection", "iters": (1, 1)},
+    "muon_tomo":         {"psnr": (20, 29), "ssim": (0.72, 0.85), "sam": None,          "solver": "poca_reconstruction", "iters": (30, 80)},
 }
 
 
