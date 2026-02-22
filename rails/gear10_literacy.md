@@ -26,7 +26,7 @@ Each validated modality has a dedicated working-process document explaining:
 - CLI and Python examples
 
 Available modalities with working-process docs:
-`widefield` | `widefield_lowdose` | `confocal_livecell` | `confocal_3d` | `sim` | `lightsheet` | `spc` | `cassi` | `cacti` | `lensless` | `ct` | `mri` | `ptychography` | `holography` | `phase_retrieval` | `fpm` | `oct` | `light_field` | `integral` | `flim` | `dot` | `photoacoustic` | `nerf` | `gaussian_splatting` | `matrix` | `panorama_multifocal`
+`widefield` | `widefield_lowdose` | `confocal_livecell` | `confocal_3d` | `sim` | `lightsheet` | `spc` | `cassi` | `cacti` | `lensless` | `ct` | `mri` | `ptychography` | `holography` | `phase_retrieval` | `fpm` | `oct` | `light_field` | `integral` | `flim` | `dot` | `photoacoustic` | `nerf` | `gaussian_splatting` | `matrix` | `panorama`
 
 ### Quickstart Guides
 
