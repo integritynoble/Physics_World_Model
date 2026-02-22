@@ -1,8 +1,10 @@
-"""Failing tests for cpu_mode portfolio flag and device propagation.
+"""Tests for cpu_mode portfolio flag and device propagation.
 
-These tests are written BEFORE the implementation exists (TDD).
-Tests 1, 3, and 4 are expected to FAIL until the feature is implemented.
-Test 2 may pass or fail depending on current behaviour.
+Verifies:
+1. run_portfolio injects device='cpu' into cfg when cpu_mode=True
+2. run_portfolio does NOT inject device='cpu' when cpu_mode is absent
+3. MST portfolio entry forwards device from cfg to mst_recon_cassi
+4. run_hsi_sdecnn forwards device from cfg to gap_sdecnn_cassi
 """
 
 from __future__ import annotations
