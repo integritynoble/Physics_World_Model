@@ -2441,7 +2441,7 @@ templates:
       modality: dexa
       canonical_chain: true
       x_shape: [64, 64]
-      y_shape: [64, 64]
+      y_shape: [2, 64, 64]
     nodes:
       - node_id: source
         primitive_id: xray_source
@@ -2580,7 +2580,7 @@ templates:
       modality: doppler_ultrasound
       canonical_chain: true
       x_shape: [64, 64]
-      y_shape: [64]
+      y_shape: [32, 64]
     nodes:
       - node_id: source
         primitive_id: acoustic_source
@@ -2627,7 +2627,7 @@ templates:
       modality: elastography
       canonical_chain: true
       x_shape: [64, 64]
-      y_shape: [64]
+      y_shape: [32, 64]
     nodes:
       - node_id: source
         primitive_id: acoustic_source
@@ -3054,7 +3054,7 @@ templates:
       modality: endoscopy
       canonical_chain: true
       x_shape: [64, 64]
-      y_shape: [64, 64]
+      y_shape: [4096]
     nodes:
       - node_id: source
         primitive_id: photon_source
@@ -3240,7 +3240,7 @@ templates:
       modality: lidar
       canonical_chain: true
       x_shape: [64, 64]
-      y_shape: [64, 64]
+      y_shape: [64]
     nodes:
       - node_id: source
         primitive_id: photon_source

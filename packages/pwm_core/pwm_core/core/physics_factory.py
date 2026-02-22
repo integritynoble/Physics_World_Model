@@ -19,9 +19,25 @@ Routes to appropriate operator based on modality:
 - gaussian_splatting: GaussianSplattingOperator (3D Gaussian splatting)
 - oct: OCTOperator (optical coherence tomography)
 - light_field: LightFieldOperator (microlens array light field)
+- photoacoustic: PAOperator (circular Radon transform)
+- fpm: FPMOperator (Fourier ptychographic microscopy)
+- flim: FLIMOperator (fluorescence lifetime imaging)
+- dot: DOTOperator (diffuse optical tomography)
+- integral: IntegralOperator (plenoptic / integral photography)
+- phase_retrieval / cdi: CDIOperator (coherent diffraction imaging)
+- ultrasound: UltrasoundOperator (pulse-echo RF model)
+- sem: SEMOperator (scanning electron microscopy)
+- tem: TEMOperator (transmission electron microscopy / CTF)
+- electron_tomography: ETOperator (tilt-series projection)
+- pet: PETOperator (positron emission tomography)
+- spect: SPECTOperator (single photon emission CT)
+- xray_radiography: XRayRadiographyOperator (Beer-Lambert)
 - matrix: MatrixOperator (explicit matrix A)
 - callable: CallableOperator (user-provided forward/adjoint)
 - identity: fallback for testing
+
+Unrecognized modalities fall through to graph-first path (YAML templates),
+then to widefield fallback.
 """
 
 from __future__ import annotations
@@ -341,7 +357,63 @@ def _build_operator_by_id(
     elif operator_id == "identity":
         return IdentityOperator(x_shape=dims)
 
-    # Default fallback: widefield
+    # Photoacoustic
+    elif operator_id == "photoacoustic":
+        return _build_photoacoustic_operator(dims, theta)
+
+    # FPM (Fourier Ptychographic Microscopy)
+    elif operator_id == "fpm":
+        return _build_fpm_operator(dims, theta)
+
+    # FLIM (Fluorescence Lifetime Imaging)
+    elif operator_id == "flim":
+        return _build_flim_operator(dims, theta)
+
+    # DOT (Diffuse Optical Tomography)
+    elif operator_id in ("dot", "diffuse_optical"):
+        return _build_dot_operator(dims, theta)
+
+    # Integral Photography (Plenoptic)
+    elif operator_id == "integral":
+        return _build_integral_operator(dims, theta)
+
+    # Phase Retrieval / CDI
+    elif operator_id in ("phase_retrieval", "cdi"):
+        return _build_cdi_operator(dims, theta)
+
+    # Ultrasound
+    elif operator_id == "ultrasound":
+        return _build_ultrasound_operator(dims, theta)
+
+    # SEM (Scanning Electron Microscopy)
+    elif operator_id == "sem":
+        return _build_sem_operator(dims, theta)
+
+    # TEM (Transmission Electron Microscopy)
+    elif operator_id == "tem":
+        return _build_tem_operator(dims, theta)
+
+    # Electron Tomography
+    elif operator_id == "electron_tomography":
+        return _build_et_operator(dims, theta)
+
+    # PET (Positron Emission Tomography)
+    elif operator_id == "pet":
+        return _build_pet_operator(dims, theta)
+
+    # SPECT (Single Photon Emission CT)
+    elif operator_id == "spect":
+        return _build_spect_operator(dims, theta)
+
+    # X-ray Radiography
+    elif operator_id == "xray_radiography":
+        return _build_xray_radiography_operator(dims, theta)
+
+    # Default fallback: try graph-first, then widefield
+    graph_op = _try_build_graph_operator(operator_id, dims)
+    if graph_op is not None:
+        return graph_op
+    logger.warning("No operator or graph template for '%s', using widefield fallback", operator_id)
     return _build_widefield_operator(dims, {})
 
 
@@ -607,4 +679,226 @@ def _build_light_field_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) ->
         nu=nu,
         nv=nv,
         disparity=disparity,
+    )
+
+
+def _build_photoacoustic_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build a Photoacoustic operator."""
+    from pwm_core.physics.photoacoustic.pa_operator import PAOperator
+
+    ny = dims[0] if len(dims) >= 1 else 64
+    nx = dims[1] if len(dims) >= 2 else 64
+
+    return PAOperator(
+        operator_id="photoacoustic",
+        theta=theta,
+        ny=ny,
+        nx=nx,
+        n_transducers=theta.get("n_transducers", 32),
+        speed_of_sound=theta.get("speed_of_sound", 1.0),
+    )
+
+
+def _build_fpm_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build an FPM (Fourier Ptychographic Microscopy) operator."""
+    from pwm_core.physics.fpm.fpm_operator import FPMOperator
+
+    hr_size = dims[0] if len(dims) >= 1 else 128
+
+    return FPMOperator(
+        operator_id="fpm",
+        theta=theta,
+        hr_size=hr_size,
+        lr_size=theta.get("lr_size", hr_size // 4),
+        na=theta.get("na", 0.1),
+    )
+
+
+def _build_flim_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build a FLIM (Fluorescence Lifetime Imaging) operator."""
+    from pwm_core.physics.flim.flim_operator import FLIMOperator
+
+    ny = dims[0] if len(dims) >= 1 else 32
+    nx = dims[1] if len(dims) >= 2 else 32
+
+    return FLIMOperator(
+        operator_id="flim",
+        theta=theta,
+        ny=ny,
+        nx=nx,
+        n_time_bins=theta.get("n_time_bins", 64),
+        time_range_ns=theta.get("time_range_ns", 12.5),
+        irf_sigma_ns=theta.get("irf_sigma_ns", 0.3),
+    )
+
+
+def _build_dot_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build a DOT (Diffuse Optical Tomography) operator."""
+    from pwm_core.physics.diffuse_optical.dot_operator import DOTOperator
+
+    grid_size = dims[0] if len(dims) >= 1 else 16
+
+    return DOTOperator(
+        operator_id="dot",
+        theta=theta,
+        n_sources=theta.get("n_sources", 8),
+        n_detectors=theta.get("n_detectors", 8),
+        grid_size=grid_size,
+        mu_a_bg=theta.get("mu_a_bg", 0.01),
+        mu_s_prime=theta.get("mu_s_prime", 1.0),
+    )
+
+
+def _build_integral_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build an Integral Photography (plenoptic) operator."""
+    from pwm_core.physics.integral.integral_operator import IntegralOperator
+
+    ny = dims[0] if len(dims) >= 1 else 64
+    nx = dims[1] if len(dims) >= 2 else 64
+
+    return IntegralOperator(
+        operator_id="integral",
+        theta=theta,
+        ny=ny,
+        nx=nx,
+        n_depths=theta.get("n_depths", 8),
+    )
+
+
+def _build_cdi_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build a CDI (phase retrieval) operator."""
+    from pwm_core.physics.phase_retrieval.cdi_operator import CDIOperator
+
+    ny = dims[0] if len(dims) >= 1 else 64
+    nx = dims[1] if len(dims) >= 2 else 64
+
+    return CDIOperator(
+        operator_id="phase_retrieval",
+        theta=theta,
+        ny=ny,
+        nx=nx,
+        oversampling=theta.get("oversampling", 2),
+    )
+
+
+def _build_ultrasound_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build an Ultrasound operator."""
+    from pwm_core.physics.ultrasound.ultrasound_operator import UltrasoundOperator
+
+    nz = dims[0] if len(dims) >= 1 else 64
+    nx = dims[1] if len(dims) >= 2 else 64
+
+    return UltrasoundOperator(
+        operator_id="ultrasound",
+        theta=theta,
+        nz=nz,
+        nx=nx,
+        n_elements=theta.get("n_elements", 32),
+        n_samples=theta.get("n_samples", 128),
+    )
+
+
+def _build_sem_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build a SEM (Scanning Electron Microscopy) operator."""
+    from pwm_core.physics.electron.sem_operator import SEMOperator
+
+    ny = dims[0] if len(dims) >= 1 else 64
+    nx = dims[1] if len(dims) >= 2 else 64
+
+    return SEMOperator(
+        operator_id="sem",
+        theta=theta,
+        ny=ny,
+        nx=nx,
+        voltage_kv=theta.get("voltage_kv", 15.0),
+        psf_sigma=theta.get("psf_sigma", 1.0),
+    )
+
+
+def _build_tem_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build a TEM (Transmission Electron Microscopy) operator."""
+    from pwm_core.physics.electron.tem_operator import TEMOperator
+
+    ny = dims[0] if len(dims) >= 1 else 64
+    nx = dims[1] if len(dims) >= 2 else 64
+
+    return TEMOperator(
+        operator_id="tem",
+        theta=theta,
+        ny=ny,
+        nx=nx,
+        defocus_nm=theta.get("defocus_nm", -50.0),
+        Cs_mm=theta.get("Cs_mm", 1.0),
+        wavelength_pm=theta.get("wavelength_pm", 2.51),
+    )
+
+
+def _build_et_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build an Electron Tomography operator."""
+    from pwm_core.physics.electron.et_operator import ETOperator
+
+    if len(dims) == 2:
+        D, H, W = 32, dims[0], dims[1]
+    elif len(dims) >= 3:
+        D, H, W = dims[0], dims[1], dims[2]
+    else:
+        D, H, W = 32, 64, 64
+
+    return ETOperator(
+        operator_id="electron_tomography",
+        theta=theta,
+        D=D,
+        H=H,
+        W=W,
+        n_tilts=theta.get("n_tilts", 16),
+    )
+
+
+def _build_pet_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build a PET (Positron Emission Tomography) operator."""
+    from pwm_core.physics.nuclear.pet_operator import PETOperator
+
+    ny = dims[0] if len(dims) >= 1 else 64
+    nx = dims[1] if len(dims) >= 2 else 64
+
+    return PETOperator(
+        operator_id="pet",
+        theta=theta,
+        ny=ny,
+        nx=nx,
+        n_angles=theta.get("n_angles", 32),
+    )
+
+
+def _build_spect_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build a SPECT operator."""
+    from pwm_core.physics.nuclear.spect_operator import SPECTOperator
+
+    ny = dims[0] if len(dims) >= 1 else 64
+    nx = dims[1] if len(dims) >= 2 else 64
+
+    return SPECTOperator(
+        operator_id="spect",
+        theta=theta,
+        ny=ny,
+        nx=nx,
+        n_angles=theta.get("n_angles", 32),
+        collimator_sigma=theta.get("collimator_sigma", 2.0),
+    )
+
+
+def _build_xray_radiography_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build an X-ray Radiography operator."""
+    from pwm_core.physics.radiography.xray_radiography_operator import XRayRadiographyOperator
+
+    ny = dims[0] if len(dims) >= 1 else 64
+    nx = dims[1] if len(dims) >= 2 else 64
+
+    return XRayRadiographyOperator(
+        operator_id="xray_radiography",
+        theta=theta,
+        ny=ny,
+        nx=nx,
+        mu=theta.get("mu", 1.0),
+        psf_sigma=theta.get("psf_sigma", 0.5),
     )
