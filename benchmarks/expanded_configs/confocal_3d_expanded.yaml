@@ -1,0 +1,107 @@
+modality_id: confocal_3d
+display_name: Confocal 3D Z-Stack
+category: Microscopy
+carrier: Photon
+maturity: M1
+variants:
+  standard:
+    id: standard
+    name: Confocal 3D Z-Stack
+    dag: C --> D
+    optical_elements: []
+    reference: ''
+image_sizes:
+  small:
+    x_shape:
+    - 128
+    - 128
+    label: Small
+  standard:
+    x_shape:
+    - 256
+    - 256
+    label: Standard
+  large:
+    x_shape:
+    - 512
+    - 512
+    label: Large
+  xlarge:
+    x_shape:
+    - 1024
+    - 1024
+    label: XLarge
+noise_levels:
+  clean:
+    label: Clean
+    snr_db: 60
+  low:
+    label: Low noise
+    snr_db: 40
+  medium:
+    label: Medium noise
+    snr_db: 30
+  high:
+    label: High noise
+    snr_db: 20
+mismatch_params:
+- name: Axial PSF sigma
+  nominal: 3.0
+  range:
+  - 1.5
+  - 6.0
+  unit: px
+- name: Refractive index
+  nominal: 1.515
+  range:
+  - 1.33
+  - 1.56
+  unit: '-'
+- name: Attenuation coeff
+  nominal: 0.03
+  range:
+  - 0.0
+  - 0.1
+  unit: per slice
+- name: Spherical aberration
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.5
+  unit: waves
+mismatch_levels:
+  M0_nominal:
+    description: No mismatch - perfect forward model
+    n_params_perturbed: 0
+  M1_single:
+    description: Single parameter perturbed
+    n_params_perturbed: 1
+  M2_compound:
+    description: 3+ parameters simultaneously perturbed
+    n_params_perturbed: 3
+  M3_real:
+    description: Real calibration/experimental errors
+    n_params_perturbed: all
+  M4_adversarial:
+    description: Worst-case mismatch optimized to max failure
+    n_params_perturbed: all
+data_sources:
+- id: care_tribolium
+  type: web
+  label: WEB
+  url: https://publications.mpi-cbg.de/publications-sites/7207/
+  citation: 'Weigert et al., Content-aware image restoration: pushing the limits of fluorescence microscopy, Nature Methods
+    2018'
+  license: CC-BY-4.0
+  applies_to: all_variants
+- id: confocal_3d_generated
+  type: generated
+  label: GEN
+  description: Synthetically generated confocal_3d data
+  applies_to: all_variants
+total_cases:
+  B1: 12
+  B2: 80
+  B3: 80
+  B4: 80
+  grand_total: 252

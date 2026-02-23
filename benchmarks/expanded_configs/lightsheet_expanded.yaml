@@ -1,0 +1,154 @@
+modality_id: lightsheet
+display_name: Light-Sheet Fluorescence Microscopy (LSFM)
+category: Microscopy
+carrier: Photon
+maturity: M1
+variants:
+  spim:
+    id: spim
+    name: SPIM (OpenSPIM)
+    dag: Src(laser_sheet) -> C(PSF_sheet_5um) -> D(sCMOS)
+    optical_elements:
+    - Cylindrical lens (sheet generation)
+    - Detection objective (perpendicular)
+    - sCMOS
+    reference: Single-plane illumination
+  dispim:
+    id: dispim
+    name: diSPIM
+    dag: '[Src1->C->D1; Src2->C->D2]'
+    optical_elements:
+    - Dual perpendicular light sheets
+    - Two objectives
+    - Two sCMOS cameras
+    reference: Isotropic resolution via joint deconvolution
+  llsm:
+    id: llsm
+    name: Lattice Light-Sheet (LLSM)
+    dag: Src(Bessel_lattice) -> C(PSF_Bessel) -> D(sCMOS)
+    optical_elements:
+    - Bessel beam lattice generator
+    - Excitation/detection objectives
+    - sCMOS
+    reference: Chen lab, Janelia; near-isotropic
+  opm:
+    id: opm
+    name: Oblique Plane Microscope (OPM)
+    dag: Src(oblique_sheet_45deg) -> C(PSF) -> D(sCMOS)
+    optical_elements:
+    - Single objective
+    - Tilted light sheet (35-45 deg)
+    - sCMOS
+    reference: Single-objective design
+  mesospim:
+    id: mesospim
+    name: mesoSPIM
+    dag: Src(laser_sheet_wide) -> C(PSF) -> D(sCMOS)
+    optical_elements:
+    - Wide laser sheet
+    - Low-magnification objective
+    - Large-FOV sCMOS
+    reference: Cleared-tissue, cm-scale FOV
+  exa_spim:
+    id: exa_spim
+    name: ExA-SPIM
+    dag: Src(laser_sheet) -> C(PSF) -> D(sCMOS)
+    optical_elements:
+    - Laser sheet
+    - Expansion microscopy sample
+    - High-res sCMOS
+    reference: Expansion + SPIM; whole mouse brain
+image_sizes:
+  small:
+    x_shape:
+    - 128
+    - 128
+    label: Small
+  standard:
+    x_shape:
+    - 256
+    - 256
+    label: Standard
+  large:
+    x_shape:
+    - 512
+    - 512
+    label: Large
+  xlarge:
+    x_shape:
+    - 1024
+    - 1024
+    label: XLarge
+noise_levels:
+  clean:
+    label: Clean
+    snr_db: 60
+  low:
+    label: Low noise
+    snr_db: 40
+  medium:
+    label: Medium noise
+    snr_db: 30
+  high:
+    label: High noise
+    snr_db: 20
+mismatch_params:
+- name: Sheet thickness
+  nominal: 5.0
+  range:
+  - 2.0
+  - 15.0
+  unit: um
+- name: Sheet tilt
+  nominal: 0.0
+  range:
+  - -3.0
+  - 3.0
+  unit: deg
+- name: Stripe strength
+  nominal: 0.2
+  range:
+  - 0.0
+  - 0.8
+  unit: relative
+- name: Attenuation coeff
+  nominal: 0.02
+  range:
+  - 0.005
+  - 0.08
+  unit: per slice
+mismatch_levels:
+  M0_nominal:
+    description: No mismatch - perfect forward model
+    n_params_perturbed: 0
+  M1_single:
+    description: Single parameter perturbed
+    n_params_perturbed: 1
+  M2_compound:
+    description: 3+ parameters simultaneously perturbed
+    n_params_perturbed: 3
+  M3_real:
+    description: Real calibration/experimental errors
+    n_params_perturbed: all
+  M4_adversarial:
+    description: Worst-case mismatch optimized to max failure
+    n_params_perturbed: all
+data_sources:
+- id: openspim_demo
+  type: web
+  label: WEB
+  url: https://openspim.org/downloads
+  citation: 'Pitrone et al., OpenSPIM: an open-access light-sheet microscopy platform, Nature Methods 2013'
+  license: CC-BY-SA-4.0
+  applies_to: all_variants
+- id: lightsheet_generated
+  type: generated
+  label: GEN
+  description: Synthetically generated lightsheet data
+  applies_to: all_variants
+total_cases:
+  B1: 72
+  B2: 480
+  B3: 480
+  B4: 480
+  grand_total: 1512

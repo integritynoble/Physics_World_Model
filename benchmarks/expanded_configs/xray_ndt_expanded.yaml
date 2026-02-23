@@ -1,0 +1,70 @@
+modality_id: xray_ndt
+display_name: X-ray NDT (Radiography)
+category: Industrial Inspection
+carrier: X-ray
+maturity: M0
+variants:
+  standard:
+    id: standard
+    name: X-ray NDT (Radiography)
+    dag: Pi --> D
+    optical_elements: []
+    reference: ''
+image_sizes:
+  small:
+    x_shape:
+    - 128
+    - 128
+    label: Small
+  standard:
+    x_shape:
+    - 256
+    - 256
+    label: Standard
+  large:
+    x_shape:
+    - 512
+    - 512
+    label: Large
+noise_levels:
+  clean:
+    label: Clean
+    snr_db: 60
+  low:
+    label: Low noise
+    snr_db: 40
+  medium:
+    label: Medium noise
+    snr_db: 30
+  high:
+    label: High noise
+    snr_db: 20
+mismatch_params: []
+mismatch_levels:
+  M0_nominal:
+    description: No mismatch - perfect forward model
+    n_params_perturbed: 0
+  M1_single:
+    description: Single parameter perturbed
+    n_params_perturbed: 1
+  M2_compound:
+    description: 3+ parameters simultaneously perturbed
+    n_params_perturbed: 3
+  M3_real:
+    description: Real calibration/experimental errors
+    n_params_perturbed: all
+  M4_adversarial:
+    description: Worst-case mismatch optimized to max failure
+    n_params_perturbed: all
+data_sources:
+- id: xray_ndt_generated
+  type: generated
+  label: GEN
+  description: Synthetically generated xray_ndt data
+  applies_to: all_variants
+total_cases:
+  B1: 12
+  B2: 60
+  B3: 60
+  B4: 60
+  grand_total: 192

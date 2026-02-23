@@ -1,0 +1,122 @@
+modality_id: nerf
+display_name: Neural Radiance Fields (NeRF)
+category: Neural Rendering
+carrier: Photon
+maturity: M0
+variants:
+  nerf_original:
+    id: nerf_original
+    name: NeRF (original MLP)
+    dag: Src(scene) -> M(volume_density) -> P(ray_marching) -> D(camera)
+    optical_elements:
+    - Scene
+    - MLP (1.2M params)
+    - Volume rendering + positional encoding
+    - Camera
+    reference: Mildenhall et al., ECCV 2020
+  mipnerf360:
+    id: mipnerf360
+    name: Mip-NeRF 360
+    dag: Src(scene) -> M(volume) -> P(cone_casting) -> D(camera)
+    optical_elements:
+    - Scene
+    - Anti-aliased MLP (9M params)
+    - Cone casting
+    - Camera
+    reference: Barron et al., CVPR 2022
+  instant_ngp:
+    id: instant_ngp
+    name: Instant-NGP
+    dag: Src(scene) -> M(hash_grid) -> P(ray_marching) -> D(camera)
+    optical_elements:
+    - Scene
+    - Hash encoding + small MLP (5M params)
+    - Volume rendering
+    - Camera
+    reference: Muller et al., SIGGRAPH 2022
+  nerf_minus:
+    id: nerf_minus
+    name: NeRF-- (no poses)
+    dag: Src(scene) -> M(volume) -> P(ray_marching) -> D(camera) + pose_solver
+    optical_elements:
+    - Scene
+    - MLP
+    - Volume rendering
+    - Camera
+    - Joint pose estimation
+    reference: No known camera poses
+  zip_nerf:
+    id: zip_nerf
+    name: Zip-NeRF
+    dag: Src(scene) -> M(hash_grid) -> P(cone_casting) -> D(camera)
+    optical_elements:
+    - Scene
+    - Mip-NeRF + hash grid encoding
+    - Cone casting
+    - Camera
+    reference: State of art quality
+image_sizes:
+  small:
+    x_shape:
+    - 128
+    - 128
+    label: Small
+  standard:
+    x_shape:
+    - 256
+    - 256
+    label: Standard
+  large:
+    x_shape:
+    - 512
+    - 512
+    label: Large
+noise_levels:
+  clean:
+    label: Clean
+    snr_db: 60
+  low:
+    label: Low noise
+    snr_db: 40
+  medium:
+    label: Medium noise
+    snr_db: 30
+  high:
+    label: High noise
+    snr_db: 20
+mismatch_params: []
+mismatch_levels:
+  M0_nominal:
+    description: No mismatch - perfect forward model
+    n_params_perturbed: 0
+  M1_single:
+    description: Single parameter perturbed
+    n_params_perturbed: 1
+  M2_compound:
+    description: 3+ parameters simultaneously perturbed
+    n_params_perturbed: 3
+  M3_real:
+    description: Real calibration/experimental errors
+    n_params_perturbed: all
+  M4_adversarial:
+    description: Worst-case mismatch optimized to max failure
+    n_params_perturbed: all
+data_sources:
+- id: nerf_blender_synth
+  type: web
+  label: WEB
+  url: https://drive.google.com/drive/folders/128yBriW1IG_3NJ5Rp7APSTZsJqdJdfc1
+  citation: 'Mildenhall et al., NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis, ECCV 2020'
+  license: MIT
+  applies_to: all_variants
+- id: nerf_generated
+  type: generated
+  label: GEN
+  description: Synthetically generated nerf data
+  applies_to: all_variants
+total_cases:
+  B1: 60
+  B2: 300
+  B3: 300
+  B4: 300
+  grand_total: 960

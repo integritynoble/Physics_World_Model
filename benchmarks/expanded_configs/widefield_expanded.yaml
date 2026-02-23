@@ -1,0 +1,136 @@
+modality_id: widefield
+display_name: Widefield Fluorescence Microscopy
+category: Microscopy
+carrier: Photon
+maturity: M3
+variants:
+  standard_wf:
+    id: standard_wf
+    name: Standard Widefield
+    dag: Src(LED_470nm) -> C(PSF_Airy_NA1.3) -> D(sCMOS_16bit)
+    optical_elements:
+    - LED (470 nm)
+    - Objective 40x/1.3 oil
+    - Tube lens
+    - sCMOS (6.5um, 16-bit)
+    reference: Standard widefield fluorescence
+  low_dose_wf:
+    id: low_dose_wf
+    name: Low-Dose Widefield
+    dag: Src(LED_low) -> C(PSF_Airy) -> D(sCMOS)
+    optical_elements:
+    - 'LED (reduced power: 10-500 photons/px)'
+    - Objective
+    - sCMOS
+    reference: Photon-starved regime
+  deconv_wf:
+    id: deconv_wf
+    name: Deconvolution Widefield
+    dag: Src(LED) -> C(PSF_measured) -> D(sCMOS) + RL_deconv
+    optical_elements:
+    - LED
+    - Objective
+    - sCMOS
+    - Richardson-Lucy or CARE post-processing
+    reference: Restores 3D optical sections
+image_sizes:
+  small:
+    x_shape:
+    - 128
+    - 128
+    label: Small
+  standard:
+    x_shape:
+    - 256
+    - 256
+    label: Standard
+  large:
+    x_shape:
+    - 512
+    - 512
+    label: Large
+  xlarge:
+    x_shape:
+    - 1024
+    - 1024
+    label: XLarge
+noise_levels:
+  clean:
+    label: Clean
+    snr_db: 60
+  low:
+    label: Low noise
+    snr_db: 40
+  medium:
+    label: Medium noise
+    snr_db: 30
+  high:
+    label: High noise
+    snr_db: 20
+mismatch_params:
+- name: PSF sigma
+  nominal: 2.0
+  range:
+  - 1.2
+  - 3.5
+  unit: px
+- name: Background level
+  nominal: 50.0
+  range:
+  - 0.0
+  - 200.0
+  unit: counts
+- name: Gain
+  nominal: 1.0
+  range:
+  - 0.85
+  - 1.15
+  unit: '-'
+- name: Flatfield non-uniformity
+  nominal: 0.0
+  range:
+  - 0.0
+  - 15.0
+  unit: peak-to-peak
+- name: Photobleaching rate
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.05
+  unit: per frame
+mismatch_levels:
+  M0_nominal:
+    description: No mismatch - perfect forward model
+    n_params_perturbed: 0
+  M1_single:
+    description: Single parameter perturbed
+    n_params_perturbed: 1
+  M2_compound:
+    description: 3+ parameters simultaneously perturbed
+    n_params_perturbed: 3
+  M3_real:
+    description: Real calibration/experimental errors
+    n_params_perturbed: all
+  M4_adversarial:
+    description: Worst-case mismatch optimized to max failure
+    n_params_perturbed: all
+data_sources:
+- id: biosr_factin
+  type: web
+  label: WEB
+  url: https://figshare.com/articles/dataset/BioSR/13744429
+  citation: Qiao et al., Evaluation and development of deep neural networks for image super-resolution in optical microscopy,
+    Nature Methods 2021
+  license: CC-BY-4.0
+  applies_to: all_variants
+- id: widefield_generated
+  type: generated
+  label: GEN
+  description: Synthetically generated widefield data
+  applies_to: all_variants
+total_cases:
+  B1: 36
+  B2: 240
+  B3: 240
+  B4: 240
+  grand_total: 756

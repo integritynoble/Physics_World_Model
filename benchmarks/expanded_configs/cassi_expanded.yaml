@@ -1,0 +1,448 @@
+# CASSI Expanded Benchmark Configuration
+# Covers ALL 9 system variants x 4 sizes x 4 compression ratios x 4 noise x 5 mismatch levels
+# Total: 8,748 test instances across B1-B4
+
+modality_id: cassi
+display_name: Coded Aperture Snapshot Spectral Imaging (CASSI)
+category: Compressive Imaging
+carrier: Photon
+maturity: M3
+
+# ============================================================
+# 11 TYPED PRIMITIVES (DAG description)
+# ============================================================
+# All CASSI variants share: Src -> [variant-specific chain] -> D
+# Primitives used: Src, M (Modulate), W (Disperse), Sigma (Accumulate), D (Detect)
+
+# ============================================================
+# SYSTEM VARIANTS (9)
+# ============================================================
+variants:
+  sd_cassi:
+    id: sd_cassi
+    name: "Single-Disperser CASSI (SD-CASSI)"
+    dag: "Src -> M -> W -> Sigma -> D"
+    primitives:
+      Src: {type: halogen, spectral_range_nm: [450, 650], power_W: 150}
+      M: {type: binary_random_mask, density: 0.5, feature_size_um: 50, substrate: glass, position: before_disperser}
+      W: {type: prism, material: SF11, dispersion_step_px: 2, direction_deg: 0.0}
+      Sigma: {type: spectral_integration, n_bands: 28}
+      D: {type: CCD, pixel_size_um: 12.0, read_noise_e: 5.0, QE: 0.75, full_well_e: 20000, bit_depth: 12}
+    optical_elements:
+      - "Objective lens (f=75mm, f/4)"
+      - "Binary coded aperture (random, 50% density, 50um features)"
+      - "SF11 glass prism (disperser)"
+      - "Relay lens (1:1 magnification)"
+      - "CCD sensor (12um pixels, 12-bit)"
+    reference: "Wagadarikar et al., Applied Optics 47(10):B44-B51, 2008"
+
+  dd_cassi:
+    id: dd_cassi
+    name: "Dual-Disperser CASSI (DD-CASSI)"
+    dag: "Src -> W1 -> M -> W2 -> D"
+    primitives:
+      Src: {type: halogen, spectral_range_nm: [450, 650]}
+      W1: {type: prism, material: SF11, role: pre_aperture_disperser}
+      M: {type: binary_random_mask, density: 0.5, feature_size_um: 50, position: between_dispersers}
+      W2: {type: prism, material: SF11, role: post_aperture_recombiner}
+      D: {type: CCD, pixel_size_um: 12.0, bit_depth: 12}
+    optical_elements:
+      - "Objective lens"
+      - "Prism 1 (SF11, pre-aperture disperser)"
+      - "Relay optics (between prism 1 and aperture)"
+      - "Binary coded aperture (in spectrally dispersed plane)"
+      - "Prism 2 (SF11, recombiner/un-shear)"
+      - "Relay optics (between aperture and prism 2)"
+      - "CCD sensor"
+    reference: "Gehm et al., Optics Express, 2007"
+
+  r_cassi:
+    id: r_cassi
+    name: "Reflective CASSI (R-CASSI)"
+    dag: "Src -> M_reflective -> W_folded -> D"
+    primitives:
+      Src: {type: halogen, spectral_range_nm: [450, 650]}
+      M: {type: reflective_coded_mask, density: 0.5}
+      W: {type: prism_folded_path, material: SF11, passes: 2}
+      D: {type: CCD, pixel_size_um: 12.0, bit_depth: 12}
+    optical_elements:
+      - "Beam splitter (route reflected light)"
+      - "Reflective coded aperture mask"
+      - "Single SF11 prism (used twice via folded path)"
+      - "CCD sensor"
+    reference: "Yu et al., Optics Express 30(26):46822, 2022"
+
+  sccsi:
+    id: sccsi
+    name: "Snapshot Colored Compressive Spectral Imager (SCCSI)"
+    dag: "Src -> W -> M_color -> Sigma -> D"
+    primitives:
+      Src: {type: halogen}
+      W: {type: prism, material: SF11, position: before_aperture}
+      M: {type: color_coded_aperture, filter_type: CFA}
+      Sigma: {type: spectral_integration}
+      D: {type: CCD, bit_depth: 12}
+    reference: "Correa et al., JOSA A 32(10):1754, 2015"
+
+  multiframe_cassi:
+    id: multiframe_cassi
+    name: "Multi-frame CASSI"
+    dag: "Src -> M_piezo -> W -> Sigma -> D (x N frames)"
+    primitives:
+      Src: {type: halogen}
+      M: {type: binary_mask_on_piezo, translation_stage: Newport, max_shift_px: 24, repeatability_px: 0.0068}
+      W: {type: prism, material: SF11}
+      Sigma: {type: spectral_integration}
+      D: {type: CCD, frame_rate_fps: 60}
+    frame_counts: [1, 10, 20, 24]
+    reference: "Duke DISP Lab, https://disp.duke.edu/research/multiframe-coded-aperture-spectral-imaging-cassi"
+
+  dcchi:
+    id: dcchi
+    name: "Dual-Camera Compressive Hyperspectral Imaging (DCCHI)"
+    dag: "Src -> BS -> [M->W->Sigma->D_cassi ; D_pan]"
+    primitives:
+      Src: {type: halogen}
+      BS: {type: beam_splitter, ratio: "50:50"}
+      M: {type: binary_mask}
+      W: {type: prism}
+      Sigma: {type: spectral_integration}
+      D_cassi: {type: CCD, role: coded_spectral}
+      D_pan: {type: CCD_or_RGB, role: panchromatic_side_info}
+    reference: "In2SET, arXiv 2312.13319, 2023"
+
+  d_cassi:
+    id: d_cassi
+    name: "Differential CASSI (D-CASSI)"
+    dag: "Src -> M_complementary_pair -> W -> Sigma -> D"
+    primitives:
+      Src: {type: halogen}
+      M: {type: complementary_mask_pair, values: [-1, +1]}
+      W: {type: prism}
+      Sigma: {type: spectral_integration}
+      D: {type: CCD}
+    reference: "Optics Letters 47(9):2342, 2022"
+
+  ss_cassi:
+    id: ss_cassi
+    name: "Spatial-Spectral CASSI (SS-CASSI)"
+    dag: "Src -> [W,M] flexible -> Sigma -> D"
+    primitives:
+      Src: {type: halogen}
+      M: {type: binary_mask, position: flexible}
+      W: {type: prism, position: flexible}
+      D: {type: CCD}
+    reference: "Lin et al., 2014"
+
+  zero_order_cassi:
+    id: zero_order_cassi
+    name: "Zero-Order Enhanced CASSI"
+    dag: "Src -> M -> W_grating -> D(0th,+1st,-1st)"
+    primitives:
+      Src: {type: halogen}
+      M: {type: binary_mask}
+      W: {type: diffraction_grating, orders: [0, +1, -1]}
+      D: {type: CCD, captures_all_orders: true}
+    reference: "Applied Optics, 2021"
+
+# ============================================================
+# IMAGE SIZES
+# ============================================================
+image_sizes:
+  small:
+    x_shape: [128, 128, 28]
+    y_shape: [128, 182]
+    label: "Small (128x128x28)"
+  standard:
+    x_shape: [256, 256, 28]
+    y_shape: [256, 310]
+    label: "Standard (256x256x28)"
+  large:
+    x_shape: [512, 512, 28]
+    y_shape: [512, 566]
+    label: "Large (512x512x28)"
+  real_hw:
+    x_shape: [660, 660, 28]
+    y_shape: [660, 714]
+    label: "Real Hardware (660x660x28)"
+
+# ============================================================
+# COMPRESSION RATIOS
+# ============================================================
+compression_ratios:
+  snapshot_1: {shots: 1, ratio: "1/28", effective: 22.7}
+  snapshot_2: {shots: 2, ratio: "2/28", effective: 11.35}
+  snapshot_4: {shots: 4, ratio: "4/28", effective: 5.68}
+  snapshot_8: {shots: 8, ratio: "8/28", effective: 2.84}
+
+# ============================================================
+# NOISE LEVELS
+# ============================================================
+noise_levels:
+  clean:
+    shot_noise_photons: .inf
+    read_noise_e: 0.0
+    snr_db: 60
+    label: "Clean"
+  low:
+    shot_noise_photons: 10000
+    read_noise_e: 2.0
+    snr_db: 40
+    label: "Low noise"
+  medium:
+    shot_noise_photons: 1000
+    read_noise_e: 5.0
+    snr_db: 30
+    label: "Medium noise"
+  high:
+    shot_noise_photons: 100
+    read_noise_e: 15.0
+    snr_db: 20
+    label: "High noise"
+
+# ============================================================
+# MISMATCH PARAMETERS
+# ============================================================
+mismatch_params:
+  - name: mask_shift_dx
+    nominal: 0.0
+    range: [-3.0, 3.0]
+    unit: px
+    primitive: M
+    description: "Coded aperture lateral shift in x"
+  - name: mask_shift_dy
+    nominal: 0.0
+    range: [-3.0, 3.0]
+    unit: px
+    primitive: M
+    description: "Coded aperture lateral shift in y"
+  - name: mask_rotation
+    nominal: 0.0
+    range: [-2.0, 2.0]
+    unit: deg
+    primitive: M
+    description: "Coded aperture rotation angle"
+  - name: dispersion_slope
+    nominal: 2.0
+    range: [1.5, 2.5]
+    unit: px/band
+    primitive: W
+    description: "Prism dispersion slope"
+  - name: dispersion_offset
+    nominal: 0.0
+    range: [-0.5, 0.5]
+    unit: px
+    primitive: W
+    description: "Dispersion axis offset"
+  - name: gain
+    nominal: 1.0
+    range: [0.9, 1.1]
+    unit: "-"
+    primitive: D
+    description: "Detector gain drift"
+  - name: read_noise
+    nominal: 5.0
+    range: [1.0, 15.0]
+    unit: e-
+    primitive: D
+    description: "Detector read noise"
+
+mismatch_levels:
+  M0_nominal:
+    description: "No mismatch — perfect forward model"
+    n_params_perturbed: 0
+  M1_single:
+    description: "Single parameter perturbed"
+    n_params_perturbed: 1
+    # 7 sub-cases (one per param)
+  M2_compound:
+    description: "3 parameters simultaneously perturbed"
+    n_params_perturbed: 3
+  M3_real:
+    description: "Real calibration error profile from TSA-Net hardware"
+    n_params_perturbed: all
+    source: "TSA-Net real data calibration"
+  M4_adversarial:
+    description: "Worst-case mismatch injection optimized to maximize reconstruction failure"
+    n_params_perturbed: all
+    method: "gradient-based adversarial perturbation"
+
+# ============================================================
+# BENCHMARK B1: Design (Prompt -> Spec)
+# ============================================================
+b1_design:
+  total_cases: 108
+  prompt_difficulties:
+    easy:
+      description: "Straightforward spec request with standard parameters"
+      examples:
+        - "Design a CASSI system for 28-band hyperspectral imaging at 256x256 spatial resolution"
+        - "Create a coded aperture spectral imager using a binary mask and SF11 prism"
+    medium:
+      description: "Requires choosing among variants based on constraints"
+      examples:
+        - "Design a snapshot spectral imager with <-20 dB inter-band crosstalk, 450-650nm range"
+        - "Build a dual-disperser system that maximizes spectral fidelity for remote sensing"
+    hard:
+      description: "Complex multi-constraint design with physical tradeoffs"
+      examples:
+        - "Design a CASSI with reflective optics fitting in 10cm optical path length"
+        - "Create a multi-frame system achieving 2/28 effective ratio at 60fps with piezo shifting"
+    adversarial:
+      description: "Contradictory or infeasible requirements testing failure detection"
+      examples:
+        - "Design a single-shot CASSI with 100 bands at 1024x1024 with SNR>40dB and <$1000 BOM"
+        - "Build a CASSI that simultaneously maximizes spatial resolution, spectral resolution, and temporal resolution"
+  multi_round: 3  # each prompt can go 3 rounds of refinement
+  scoring:
+    - spec_completeness  # all required fields present
+    - spec_correctness   # physics constraints satisfied
+    - spec_optimality    # how close to Pareto-optimal design
+    - primitive_usage    # correct 11-primitive DAG specification
+
+# ============================================================
+# BENCHMARK B2: Forward + Reconstruct (Spec -> Reconstruction)
+# ============================================================
+b2_forward_reconstruct:
+  total_cases: 2880
+  dimensions: "9 variants x 4 sizes x 4 ratios x 4 noise x 5 mismatch"
+  solvers:
+    traditional_cpu:
+      name: GAP-TV
+      reference: "Yuan, 2016"
+    best_quality:
+      name: HDNet
+      reference: "Hu et al., CVPR 2022"
+    famous_dl:
+      name: MST-L
+      reference: "Cai et al., CVPR 2022"
+    small_gpu:
+      name: MST++
+      reference: "Cai et al., 2022"
+    state_of_art:
+      name: DAUHST-9stg
+      reference: "Cai et al., NeurIPS 2022"
+  metrics: [psnr, ssim, sam]
+  primary_metric: psnr
+  scoring:
+    - reconstruction_quality  # PSNR/SSIM/SAM vs ground truth
+    - feedback_quality        # quality of improvement suggestions
+
+# ============================================================
+# BENCHMARK B3: System Identification (Dataset + Prompt -> Spec)
+# ============================================================
+b3_system_identification:
+  total_cases: 2880
+  true_spec:
+    description: "Contains ALL exact parameter values used to generate the dataset"
+    includes:
+      - mask_pattern_seed
+      - exact_mask_shift_dx_dy
+      - exact_mask_rotation
+      - exact_dispersion_slope
+      - exact_dispersion_offset
+      - exact_gain
+      - exact_noise_level
+      - source_spectral_distribution
+      - detector_response_curve
+  given_info:
+    description: "Contestant knows parameter RANGES but not exact values"
+    includes:
+      - modality_type: cassi
+      - variant: sd_cassi  # or whichever
+      - parameter_ranges: "see mismatch_params above"
+      - measurement_Y: "H x W_y matrix"
+      - sensing_matrix_A: "optional, may be corrupted"
+  scoring:
+    - parameter_estimation_error  # |estimated - true| per param
+    - spec_completeness
+    - dag_correctness
+
+# ============================================================
+# BENCHMARK B4: Correct + Diagnose (Dataset + Spec -> Correction)
+# ============================================================
+b4_correct_diagnose:
+  total_cases: 2880
+  true_spec:
+    description: "Ground truth for judging correction quality"
+    includes_additionally:
+      - improvement_suggestions: "How to improve the physical system"
+      - system_diagnosis: "Root cause of degradation"
+  scoring:
+    - rho: "Mismatch correction quality (target >= 0.85)"
+    - psnr_improvement: "dB gain from correction"
+    - feedback_quality: "Quality of diagnostic feedback and improvement suggestions"
+    - diagnosis_accuracy: "Correct identification of mismatch source"
+
+# ============================================================
+# DATA SOURCES
+# ============================================================
+data_sources:
+  - id: kaist_10scenes
+    type: web
+    label: WEB
+    url: "https://github.com/caiyuanhao1998/MST/tree/main/simulation/test_datasets"
+    description: "10 cropped 256x256x28 scenes from KAIST hyperspectral"
+    citation: "Cai et al., CVPR 2022"
+    license: MIT
+    size_mb: 50
+    applies_to: [sd_cassi, dd_cassi, sccsi, d_cassi, ss_cassi, zero_order_cassi]
+
+  - id: cave_32scenes
+    type: web
+    label: WEB
+    url: "https://cave.cs.columbia.edu/repository/Multispectral"
+    description: "32 scenes, 512x512x31 (cropped to 28 bands 450-650nm)"
+    citation: "Columbia Univ. Multispectral Image Database"
+    license: research
+    size_mb: 300
+    applies_to: all_variants
+
+  - id: tsa_real_5scenes
+    type: web
+    label: WEB
+    url: "https://github.com/mengziyi64/TSA-Net"
+    description: "5 real SD-CASSI scenes, 660x660x28"
+    citation: "Miao et al., ICCV 2019"
+    license: research
+    size_mb: 200
+    applies_to: [sd_cassi]
+
+  - id: r_cassi_real
+    type: web
+    label: WEB
+    url: "https://opg.optica.org/oe/fulltext.cfm?uri=oe-30-26-46822"
+    description: "R-CASSI real prototype data"
+    citation: "Yu et al., Optics Express 2022"
+    applies_to: [r_cassi]
+
+  - id: harvard_hyperspectral
+    type: web
+    label: WEB
+    url: "https://vision.seas.harvard.edu/hyperspec/download.html"
+    description: "~75 scenes, 1392x1040x31"
+    applies_to: all_variants
+
+  - id: icvl_hyperspectral
+    type: web
+    label: WEB
+    url: "https://icvl.cs.bgu.ac.il/pages/researches/hyperspectral-imaging.html"
+    description: "201 scenes, 31 bands, diverse outdoor/indoor"
+    applies_to: all_variants
+
+  - id: generated_variants
+    type: generated
+    label: GEN
+    description: "Forward model simulation from CAVE/KAIST ground truth"
+    applies_to: [multiframe_cassi, dcchi, d_cassi, ss_cassi, zero_order_cassi, sccsi]
+    generator: "benchmarks/generators/cassi_generator.py"
+
+# ============================================================
+# CASE ENUMERATION
+# ============================================================
+total_cases:
+  B1: 108   # 9 variants x 4 difficulties x 3 rounds
+  B2: 2880  # 9 x 4 x 4 x 4 x 5
+  B3: 2880
+  B4: 2880
+  grand_total: 8748

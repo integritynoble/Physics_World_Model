@@ -1,0 +1,144 @@
+modality_id: mri
+display_name: Magnetic Resonance Imaging (MRI)
+category: Medical Imaging
+carrier: Spin/RF
+maturity: M3
+variants:
+  cartesian_single:
+    id: cartesian_single
+    name: Cartesian Single-Coil MRI
+    dag: Src(RF) -> M(tissue) -> F(k-space_Cartesian) -> S(uniform) -> D(ADC)
+    optical_elements:
+    - RF excitation coil
+    - Single receive coil
+    - ADC
+    reference: Basic MRI
+  cartesian_sense:
+    id: cartesian_sense
+    name: Cartesian Multi-Coil SENSE
+    dag: Src(RF) -> M(coil_8ch) -> F(k-space) -> S(undersampled) -> D(ADC_8ch)
+    optical_elements:
+    - RF excitation coil
+    - 8-32 channel receive coil array
+    - SENSE reconstruction
+    reference: Pruessmann et al., MRM 1999
+  cartesian_grappa:
+    id: cartesian_grappa
+    name: Cartesian Multi-Coil GRAPPA
+    dag: Src(RF) -> M(coil_8ch) -> F(k-space) -> S(undersampled_ACS) -> D(ADC_8ch)
+    optical_elements:
+    - RF excitation coil
+    - Multi-channel coil array
+    - ACS calibration lines
+    reference: Griswold et al., MRM 2002
+  radial:
+    id: radial
+    name: Radial Trajectory MRI
+    dag: Src(RF) -> M(coil) -> F(k-space_radial) -> S(golden_angle) -> D(ADC)
+    optical_elements:
+    - RF excitation coil
+    - Receive coil
+    - Radial gradient waveforms
+    reference: Golden-angle radial
+  spiral:
+    id: spiral
+    name: Spiral Trajectory MRI
+    dag: Src(RF) -> M(coil) -> F(k-space_spiral) -> S(Archimedean) -> D(ADC)
+    optical_elements:
+    - RF excitation coil
+    - Receive coil
+    - Spiral gradient waveforms
+    reference: Archimedean spiral
+  volumetric_3d:
+    id: volumetric_3d
+    name: 3D Volumetric MRI
+    dag: Src(RF) -> M(coil_32ch) -> F(k-space_3D) -> S(undersampled_3D) -> D(ADC_32ch)
+    optical_elements:
+    - RF excitation coil
+    - 32-channel coil array
+    - 3D encoding gradients
+    reference: 3D acquisition
+image_sizes:
+  small:
+    x_shape:
+    - 256
+    - 256
+    label: Small
+  standard:
+    x_shape:
+    - 512
+    - 512
+    label: Standard
+noise_levels:
+  clean:
+    label: Clean
+    snr_db: 60
+  low:
+    label: Low noise
+    snr_db: 40
+  medium:
+    label: Medium noise
+    snr_db: 30
+  high:
+    label: High noise
+    snr_db: 20
+mismatch_params:
+- name: Coil sensitivity error
+  nominal: 0.0
+  range:
+  - 0.0
+  - 15.0
+  unit: relative
+- name: k-space trajectory deviation
+  nominal: 0.0
+  range:
+  - 0.0
+  - 2.0
+  unit: '-'
+- name: Off-resonance (B0)
+  nominal: 0.0
+  range:
+  - -100.0
+  - 100.0
+  unit: Hz
+- name: Acceleration factor
+  nominal: 0.0
+  range:
+  - 2.0
+  - 8.0
+  unit: '-'
+mismatch_levels:
+  M0_nominal:
+    description: No mismatch - perfect forward model
+    n_params_perturbed: 0
+  M1_single:
+    description: Single parameter perturbed
+    n_params_perturbed: 1
+  M2_compound:
+    description: 3+ parameters simultaneously perturbed
+    n_params_perturbed: 3
+  M3_real:
+    description: Real calibration/experimental errors
+    n_params_perturbed: all
+  M4_adversarial:
+    description: Worst-case mismatch optimized to max failure
+    n_params_perturbed: all
+data_sources:
+- id: fastmri_knee
+  type: web
+  label: WEB
+  url: https://fastmri.med.nyu.edu/
+  citation: 'Zbontar et al., fastMRI: An Open Dataset and Benchmarks for Accelerated MRI, arXiv 2018'
+  license: fastMRI Dataset License
+  applies_to: all_variants
+- id: mri_generated
+  type: generated
+  label: GEN
+  description: Synthetically generated mri data
+  applies_to: all_variants
+total_cases:
+  B1: 72
+  B2: 240
+  B3: 240
+  B4: 240
+  grand_total: 792

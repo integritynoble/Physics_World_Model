@@ -1,0 +1,72 @@
+modality_id: octa
+display_name: OCT Angiography (OCTA)
+category: Medical Imaging
+carrier: Photon
+maturity: M0
+variants:
+  standard:
+    id: standard
+    name: OCT Angiography (OCTA)
+    dag: P+P --> Sigma --> D
+    optical_elements: []
+    reference: ''
+image_sizes:
+  small:
+    x_shape:
+    - 256
+    - 256
+    label: Small
+  standard:
+    x_shape:
+    - 512
+    - 512
+    label: Standard
+noise_levels:
+  clean:
+    label: Clean
+    snr_db: 60
+  low:
+    label: Low noise
+    snr_db: 40
+  medium:
+    label: Medium noise
+    snr_db: 30
+  high:
+    label: High noise
+    snr_db: 20
+mismatch_params: []
+mismatch_levels:
+  M0_nominal:
+    description: No mismatch - perfect forward model
+    n_params_perturbed: 0
+  M1_single:
+    description: Single parameter perturbed
+    n_params_perturbed: 1
+  M2_compound:
+    description: 3+ parameters simultaneously perturbed
+    n_params_perturbed: 3
+  M3_real:
+    description: Real calibration/experimental errors
+    n_params_perturbed: all
+  M4_adversarial:
+    description: Worst-case mismatch optimized to max failure
+    n_params_perturbed: all
+data_sources:
+- id: rose1_octa
+  type: web
+  label: WEB
+  url: https://imed.nimte.ac.cn/dataofrose.html
+  citation: 'Ma et al., ROSE: A Retinal OCT-Angiography Vessel Segmentation Dataset, IEEE TMI 2021'
+  license: Research use
+  applies_to: all_variants
+- id: octa_generated
+  type: generated
+  label: GEN
+  description: Synthetically generated octa data
+  applies_to: all_variants
+total_cases:
+  B1: 12
+  B2: 40
+  B3: 40
+  B4: 40
+  grand_total: 132

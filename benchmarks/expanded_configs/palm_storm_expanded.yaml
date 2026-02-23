@@ -1,0 +1,139 @@
+modality_id: palm_storm
+display_name: PALM/STORM Single-Molecule Localization
+category: Microscopy
+carrier: Photon
+maturity: M0
+variants:
+  2d_palm:
+    id: 2d_palm
+    name: 2D-PALM
+    dag: Src(405nm_activation) -> M(photoactivatable_FP) -> D(EMCCD)
+    optical_elements:
+    - 405 nm activation laser
+    - Photoactivatable fluorescent protein
+    - EMCCD (16um pixel)
+    reference: Photoactivatable localization microscopy
+  2d_storm:
+    id: 2d_storm
+    name: 2D-STORM
+    dag: Src(647nm) -> M(photoswitchable_dye) -> D(EMCCD)
+    optical_elements:
+    - 647 nm excitation laser
+    - Cy5/Alexa647 photoswitchable dyes
+    - EMCCD + TIRF illumination
+    reference: Stochastic optical reconstruction microscopy
+  3d_storm_astigmatic:
+    id: 3d_storm_astigmatic
+    name: 3D-STORM (Astigmatic)
+    dag: Src(647nm) -> M(dye) -> C(cylindrical_lens) -> D(EMCCD)
+    optical_elements:
+    - 647 nm laser
+    - Photoswitchable dye
+    - Cylindrical lens for astigmatism
+    - EMCCD
+    reference: Astigmatic z-encoding; +/-600nm axial range
+  3d_storm_dh:
+    id: 3d_storm_dh
+    name: 3D-STORM (Double-Helix)
+    dag: Src(647nm) -> M(dye) -> C(DH_PSF_mask) -> D(EMCCD)
+    optical_elements:
+    - 647 nm laser
+    - Photoswitchable dye
+    - Double-helix PSF phase mask
+    - EMCCD
+    reference: Double-helix PSF for z-encoding
+image_sizes:
+  small:
+    x_shape:
+    - 128
+    - 128
+    label: Small
+  standard:
+    x_shape:
+    - 256
+    - 256
+    label: Standard
+  large:
+    x_shape:
+    - 512
+    - 512
+    label: Large
+  xlarge:
+    x_shape:
+    - 1024
+    - 1024
+    label: XLarge
+noise_levels:
+  clean:
+    label: Clean
+    snr_db: 60
+  low:
+    label: Low noise
+    snr_db: 40
+  medium:
+    label: Medium noise
+    snr_db: 30
+  high:
+    label: High noise
+    snr_db: 20
+mismatch_params:
+- name: Drift rate (x, y)
+  nominal: 0.0
+  range:
+  - 0.0
+  - 2.0
+  unit: nm/frame
+- name: Background photons
+  nominal: 20.0
+  range:
+  - 5.0
+  - 100.0
+  unit: per px
+- name: Photon count/event
+  nominal: 1000.0
+  range:
+  - 200.0
+  - 5000.0
+  unit: photons
+- name: Pixel size
+  nominal: 100.0
+  range:
+  - 90.0
+  - 110.0
+  unit: nm
+mismatch_levels:
+  M0_nominal:
+    description: No mismatch - perfect forward model
+    n_params_perturbed: 0
+  M1_single:
+    description: Single parameter perturbed
+    n_params_perturbed: 1
+  M2_compound:
+    description: 3+ parameters simultaneously perturbed
+    n_params_perturbed: 3
+  M3_real:
+    description: Real calibration/experimental errors
+    n_params_perturbed: all
+  M4_adversarial:
+    description: Worst-case mismatch optimized to max failure
+    n_params_perturbed: all
+data_sources:
+- id: smlm_challenge_2016
+  type: web
+  label: WEB
+  url: http://bigwww.epfl.ch/smlm/challenge2016/datasets/
+  citation: 'Sage et al., Super-resolution fight club: assessment of 2D and 3D single-molecule localization microscopy software,
+    Nature Methods 2019'
+  license: CC-BY-4.0
+  applies_to: all_variants
+- id: palm_storm_generated
+  type: generated
+  label: GEN
+  description: Synthetically generated palm_storm data
+  applies_to: all_variants
+total_cases:
+  B1: 48
+  B2: 320
+  B3: 320
+  B4: 320
+  grand_total: 1008

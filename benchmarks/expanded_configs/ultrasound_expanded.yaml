@@ -1,0 +1,135 @@
+modality_id: ultrasound
+display_name: Ultrasound B-mode Imaging
+category: Medical Imaging
+carrier: Acoustic
+maturity: M1
+variants:
+  focused_us:
+    id: focused_us
+    name: Focused Transmit B-mode
+    dag: Src(piezo_128ch) -> P(wave_focused) -> D(128ch_ADC)
+    optical_elements:
+    - 128-element linear array (5 MHz)
+    - Focused transmit beam
+    - 128-channel ADC
+    reference: Standard clinical US
+  planewave_us:
+    id: planewave_us
+    name: Plane-Wave Ultrasound
+    dag: Src(piezo_128ch) -> P(wave_planar) -> D(128ch_ADC)
+    optical_elements:
+    - 128-element linear array
+    - Unfocused plane wave
+    - Coherent compounding
+    reference: Ultrafast US
+  diverging_us:
+    id: diverging_us
+    name: Diverging Wave Ultrasound
+    dag: Src(phased_array) -> P(wave_diverging) -> D(64ch_ADC)
+    optical_elements:
+    - 64-element phased array
+    - Virtual apex diverging wave
+    - ADC
+    reference: Cardiac ultrafast
+  synthetic_aperture_us:
+    id: synthetic_aperture_us
+    name: Synthetic Aperture US
+    dag: Src(single_element) -> P(wave) -> D(128ch)
+    optical_elements:
+    - Single-element transmit
+    - Full synthetic aperture receive
+    - 128-channel ADC
+    reference: Maximum flexibility
+  3d_us:
+    id: 3d_us
+    name: 3D/4D Ultrasound
+    dag: Src(matrix_array) -> P(wave_3D) -> D(matrix_ADC)
+    optical_elements:
+    - 2D matrix array transducer
+    - 3D beam steering
+    - Volumetric ADC
+    reference: Volumetric imaging
+image_sizes:
+  small:
+    x_shape:
+    - 256
+    - 256
+    label: Small
+  standard:
+    x_shape:
+    - 512
+    - 512
+    label: Standard
+noise_levels:
+  clean:
+    label: Clean
+    snr_db: 60
+  low:
+    label: Low noise
+    snr_db: 40
+  medium:
+    label: Medium noise
+    snr_db: 30
+  high:
+    label: High noise
+    snr_db: 20
+mismatch_params:
+- name: Speed of sound
+  nominal: 1540.0
+  range:
+  - 1450.0
+  - 1600.0
+  unit: m/s
+- name: Phase aberration
+  nominal: 0.0
+  range:
+  - 0.0
+  - 50.0
+  unit: ns rms
+- name: Element sensitivity
+  nominal: 1.0
+  range:
+  - 0.7
+  - 1.3
+  unit: '-'
+- name: Attenuation
+  nominal: 0.5
+  range:
+  - 0.3
+  - 0.8
+  unit: dB/cm/MHz
+mismatch_levels:
+  M0_nominal:
+    description: No mismatch - perfect forward model
+    n_params_perturbed: 0
+  M1_single:
+    description: Single parameter perturbed
+    n_params_perturbed: 1
+  M2_compound:
+    description: 3+ parameters simultaneously perturbed
+    n_params_perturbed: 3
+  M3_real:
+    description: Real calibration/experimental errors
+    n_params_perturbed: all
+  M4_adversarial:
+    description: Worst-case mismatch optimized to max failure
+    n_params_perturbed: all
+data_sources:
+- id: picmus_challenge
+  type: web
+  label: WEB
+  url: https://www.creatis.insa-lyon.fr/Challenge/IEEE_IUS_2016/download.html
+  citation: Liebgott et al., Plane-Wave Imaging Challenge in Medical Ultrasound, IEEE IUS 2016
+  license: Research use
+  applies_to: all_variants
+- id: ultrasound_generated
+  type: generated
+  label: GEN
+  description: Synthetically generated ultrasound data
+  applies_to: all_variants
+total_cases:
+  B1: 60
+  B2: 200
+  B3: 200
+  B4: 200
+  grand_total: 660

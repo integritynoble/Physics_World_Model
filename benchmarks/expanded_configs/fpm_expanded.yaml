@@ -1,0 +1,140 @@
+modality_id: fpm
+display_name: Fourier Ptychographic Microscopy (FPM)
+category: Microscopy
+carrier: Photon
+maturity: M1
+variants:
+  led_array_fpm:
+    id: led_array_fpm
+    name: LED Array FPM
+    dag: Src(LED_15x15) -> M(thin_sample) -> P(objective_pupil_4x) -> D(sCMOS)
+    optical_elements:
+    - 15x15 LED array (4mm pitch, 80mm distance)
+    - Thin sample
+    - 4x/0.1NA objective
+    - sCMOS
+    reference: Zheng et al., Nature Photonics 2013
+  dome_fpm:
+    id: dome_fpm
+    name: Dome Illumination FPM
+    dag: Src(LED_dome) -> M(sample) -> P(pupil) -> D(sCMOS)
+    optical_elements:
+    - Hemispherical LED dome
+    - Sample
+    - Objective
+    - sCMOS
+    reference: Dark-field angles included
+  3d_fpm:
+    id: 3d_fpm
+    name: 3D FPM
+    dag: Src(LED_array) -> M(thick_sample_multislice) -> P(pupil) -> D(sCMOS)
+    optical_elements:
+    - LED array
+    - Thick sample (multi-slice model)
+    - Objective
+    - sCMOS
+    reference: Volumetric reconstruction
+  multispectral_fpm:
+    id: multispectral_fpm
+    name: Multispectral FPM
+    dag: Src(RGB_LED_array) -> M(sample) -> P(pupil) -> D(sCMOS)
+    optical_elements:
+    - RGB LED array
+    - Sample
+    - Objective
+    - sCMOS
+    reference: Spectral imaging via wavelength multiplexing
+image_sizes:
+  small:
+    x_shape:
+    - 128
+    - 128
+    label: Small
+  standard:
+    x_shape:
+    - 256
+    - 256
+    label: Standard
+  large:
+    x_shape:
+    - 512
+    - 512
+    label: Large
+  xlarge:
+    x_shape:
+    - 1024
+    - 1024
+    label: XLarge
+noise_levels:
+  clean:
+    label: Clean
+    snr_db: 60
+  low:
+    label: Low noise
+    snr_db: 40
+  medium:
+    label: Medium noise
+    snr_db: 30
+  high:
+    label: High noise
+    snr_db: 20
+mismatch_params:
+- name: LED position error
+  nominal: 0.0
+  range:
+  - 0
+  - 0
+  unit: mm
+- name: LED intensity variation
+  nominal: 1.0
+  range:
+  - 0.5
+  - 1.5
+  unit: relative
+- name: Pupil aberration (Zernike)
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.3
+  unit: waves
+- name: Defocus
+  nominal: 0.0
+  range:
+  - -5.0
+  - 5.0
+  unit: um
+mismatch_levels:
+  M0_nominal:
+    description: No mismatch - perfect forward model
+    n_params_perturbed: 0
+  M1_single:
+    description: Single parameter perturbed
+    n_params_perturbed: 1
+  M2_compound:
+    description: 3+ parameters simultaneously perturbed
+    n_params_perturbed: 3
+  M3_real:
+    description: Real calibration/experimental errors
+    n_params_perturbed: all
+  M4_adversarial:
+    description: Worst-case mismatch optimized to max failure
+    n_params_perturbed: all
+data_sources:
+- id: fpm_led_benchmark
+  type: web
+  label: WEB
+  url: https://github.com/zhenglab/FPM/tree/master/data
+  citation: Zheng et al., Wide-field, high-resolution Fourier ptychographic microscopy, Nature Photonics 2013
+  license: BSD-3-Clause
+  applies_to: all_variants
+- id: fpm_generated
+  type: generated
+  label: GEN
+  description: Synthetically generated fpm data
+  applies_to: all_variants
+total_cases:
+  B1: 48
+  B2: 320
+  B3: 320
+  B4: 320
+  grand_total: 1008

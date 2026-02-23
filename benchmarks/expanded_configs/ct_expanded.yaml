@@ -1,0 +1,172 @@
+# CT Expanded Benchmark Configuration
+# 6 system variants x 4 sizes x 4 dose levels x 5 mismatch levels
+# Total: 1,512 test instances across B1-B4
+
+modality_id: ct
+display_name: X-ray Computed Tomography (CT)
+category: Medical Imaging
+carrier: X-ray
+maturity: M3
+
+variants:
+  parallel_beam:
+    id: parallel_beam
+    name: "Parallel-Beam CT"
+    dag: "Src(synchrotron) -> Pi(Radon_parallel) -> D(flat_panel)"
+    primitives:
+      Src: {type: synchrotron, energy_keV: 20, monochromatic: true}
+      Pi: {type: Radon_projection, geometry: parallel, n_angles: 180, angular_range_deg: 180}
+      D: {type: flat_panel, n_detectors: 512, pixel_pitch_mm: 0.1, scintillator: GOS, bit_depth: 16}
+    optical_elements:
+      - "Synchrotron X-ray source (monochromatic 20 keV)"
+      - "Sample rotation stage"
+      - "Flat-panel GOS scintillator detector (512 pixels)"
+    reference: "Standard synchrotron micro-CT geometry"
+
+  fan_beam:
+    id: fan_beam
+    name: "Fan-Beam CT"
+    dag: "Src(Xray_tube_120kVp) -> Pi(Radon_fan) -> D(arc_detector)"
+    primitives:
+      Src: {type: X-ray_tube, voltage_kVp: 120, current_mA: 200, focal_spot_mm: 0.6, spectrum: polychromatic, bowtie_filter: standard}
+      Pi: {type: Radon_projection, geometry: fan_beam, fan_angle_deg: 50, n_angles: 1000, SDD_mm: 1085.6, SID_mm: 595}
+      D: {type: arc_detector, n_detectors: 736, pixel_pitch_mm: 1.0, scintillator: CsI, bit_depth: 20}
+    optical_elements:
+      - "Rotating X-ray tube (120 kVp, 200 mA, 0.6mm focal spot)"
+      - "Aluminum bowtie filter"
+      - "Anti-scatter grid (ratio 12:1)"
+      - "Arc detector array (736 CsI elements)"
+    reference: "Standard clinical CT (GE Discovery / Siemens SOMATOM)"
+
+  cone_beam:
+    id: cone_beam
+    name: "Cone-Beam CT (CBCT)"
+    dag: "Src(Xray_tube) -> Pi(Radon_cone) -> D(flat_panel_2D)"
+    primitives:
+      Src: {type: X-ray_tube, voltage_kVp: 100, current_mA: 10, focal_spot_mm: 0.5}
+      Pi: {type: Radon_projection, geometry: cone_beam, n_angles: 360, angular_range_deg: 360}
+      D: {type: flat_panel_2D, size: [1024, 768], pixel_pitch_mm: 0.4, scintillator: CsI}
+    optical_elements:
+      - "X-ray tube (kV source)"
+      - "Flat-panel 2D detector (1024x768)"
+    reference: "C-arm CBCT / dental CBCT geometry"
+
+  helical:
+    id: helical
+    name: "Helical/Spiral CT"
+    dag: "Src(Xray_tube) -> Pi(Radon_helical) -> D(multi_row_detector)"
+    primitives:
+      Src: {type: X-ray_tube, voltage_kVp: 120, current_mA: 300}
+      Pi: {type: Radon_projection, geometry: helical, pitch_factor: 1.0, n_detector_rows: 64}
+      D: {type: multi_row_detector, rows: 64, channels: 736, pixel_pitch_mm: 1.0}
+    reference: "64-row MDCT (Siemens Force, GE Revolution)"
+
+  dual_energy:
+    id: dual_energy
+    name: "Dual-Energy CT (DECT)"
+    dag: "Src(Xray_tube_80_140kVp) -> Pi(Radon_DE) -> D(detector)"
+    primitives:
+      Src: {type: X-ray_tube_dual, voltage_low_kVp: 80, voltage_high_kVp: 140, switching: rapid_kV}
+      Pi: {type: Radon_projection, geometry: fan_beam}
+      D: {type: arc_detector, n_detectors: 736}
+    reference: "Rapid kV-switching DECT"
+
+  photon_counting:
+    id: photon_counting
+    name: "Photon-Counting CT (PCCT)"
+    dag: "Src(Xray_tube) -> Pi(Radon) -> D(CdTe_energy_resolving)"
+    primitives:
+      Src: {type: X-ray_tube, voltage_kVp: 140}
+      Pi: {type: Radon_projection, geometry: fan_beam}
+      D: {type: photon_counting_detector, material: CdTe, energy_bins: 4, thresholds_keV: [25, 50, 75, 100]}
+    reference: "Siemens NAEOTOM Alpha"
+
+image_sizes:
+  small: {sinogram: [180, 256], recon: [256, 256]}
+  standard: {sinogram: [360, 512], recon: [512, 512]}
+  high_res: {sinogram: [720, 1024], recon: [512, 512]}
+  lodopab: {sinogram: [1000, 736], recon: [362, 362]}
+
+dose_levels:
+  full: {photon_count_factor: 1.0, label: "Full dose"}
+  quarter: {photon_count_factor: 0.25, label: "Quarter dose"}
+  tenth: {photon_count_factor: 0.1, label: "Low dose (1/10)"}
+  ultra_low: {photon_count_factor: 0.02, label: "Ultra-low dose (1/50)"}
+
+mismatch_params:
+  - {name: center_of_rotation_offset, nominal: 0, range: [-5, 5], unit: px, primitive: Pi}
+  - {name: angular_offset, nominal: 0, range: [-3, 3], unit: deg, primitive: Pi}
+  - {name: detector_tilt, nominal: 0, range: [-2, 2], unit: deg, primitive: D}
+  - {name: beam_hardening_coeff, nominal: 0, range: [0, 0.05], unit: "-", primitive: Src}
+  - {name: ring_artifact_amplitude, nominal: 0, range: [0, 50], unit: counts, primitive: D}
+
+mismatch_levels:
+  M0_nominal:
+    description: "No mismatch - perfect geometry and calibration"
+    n_params_perturbed: 0
+  M1_single:
+    description: "Single parameter perturbed (e.g., CoR offset only)"
+    n_params_perturbed: 1
+  M2_compound:
+    description: "3+ parameters simultaneously perturbed"
+    n_params_perturbed: 3
+  M3_real:
+    description: "Real calibration errors from 2DeteCT experimental data"
+    n_params_perturbed: all
+  M4_adversarial:
+    description: "Worst-case geometry errors optimized to max failure"
+    n_params_perturbed: all
+
+data_sources:
+  - id: lodopab_ct
+    type: web
+    label: WEB
+    url: "https://zenodo.org/record/3384092"
+    description: "40,000+ slices from LIDC/IDRI; low-dose sinograms + FBP"
+    citation: "Leuschner et al., Scientific Data 2021"
+    license: CC-BY-4.0
+    size_gb: 120
+
+  - id: aapm_mayo_ldct
+    type: web
+    label: WEB
+    url: "https://www.aapm.org/grandchallenge/lowdosect/"
+    description: "30 contrast-enhanced abdominal exams; quarter-dose sinograms"
+    license: research
+
+  - id: tcia_ldct_projection
+    type: web
+    label: WEB
+    url: "https://www.cancerimagingarchive.net/collection/ldct-and-projection-data/"
+    description: "299 clinical exams with DICOM-CT-PD projection data"
+    license: CC-BY-3.0
+
+  - id: 2detect
+    type: web
+    label: WEB
+    url: "https://www.nature.com/articles/s41597-023-02484-6"
+    description: "5000 slices; 3 beam modes; sparse/limited-angle tasks"
+    citation: "Hendriksen et al., Scientific Data 2023"
+
+  - id: pcct_walnut
+    type: web
+    label: WEB
+    url: "https://www.nature.com/articles/s41597-025-06246-4"
+    description: "15 walnut samples; cone-beam photon-counting CT"
+
+  - id: shepp_logan
+    type: generated
+    label: GEN
+    generator: "benchmarks/framework/synthetic_data.py::SheppLoganGenerator"
+
+  - id: forbild
+    type: generated
+    label: GEN
+    generator: "benchmarks/generators/forbild_phantom.py"
+
+total_cases:
+  B1: 72
+  B2: 480
+  B3: 480
+  B4: 480
+  grand_total: 1512

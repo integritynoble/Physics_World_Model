@@ -1,0 +1,171 @@
+modality_id: sim
+display_name: Structured Illumination Microscopy (SIM)
+category: Microscopy
+carrier: Photon
+maturity: M2
+variants:
+  2d_sim:
+    id: 2d_sim
+    name: 2D-SIM (linear)
+    dag: Src(laser) -> M(grating_3ang_3phase) -> C(PSF_NA1.49) -> D(sCMOS)
+    optical_elements:
+    - Laser (488/561 nm)
+    - SLM or grating (3 angles x 3 phases = 9 frames)
+    - Objective 100x/1.49 oil
+    - sCMOS (6.5um)
+    reference: Standard 2D-SIM
+  3d_sim:
+    id: 3d_sim
+    name: 3D-SIM
+    dag: Src(laser) -> M(3D_pattern_3ang_5phase) -> C(PSF_3D) -> D(sCMOS)
+    optical_elements:
+    - Laser
+    - SLM (3 angles x 5 phases = 15 frames, axial modulation)
+    - Objective 100x/1.49
+    - sCMOS
+    reference: 2x lateral + 3x axial resolution
+  nl_sim:
+    id: nl_sim
+    name: Nonlinear SIM (NL-SIM)
+    dag: Src(high_power_laser) -> M(saturated_pattern) -> C(PSF) -> D(sCMOS)
+    optical_elements:
+    - High-power laser
+    - Photoswitchable fluorophores
+    - SLM (>25 frames)
+    - sCMOS
+    reference: '>2x resolution, 5-7 harmonics'
+  lattice_sim:
+    id: lattice_sim
+    name: Lattice SIM
+    dag: Src(laser) -> M(lattice_spot_pattern) -> C(PSF) -> D(sCMOS)
+    optical_elements:
+    - Laser
+    - Lattice spot pattern (not grating)
+    - Objective
+    - sCMOS
+    reference: Zeiss Lattice SIM; faster, lower phototoxicity
+  lls_sim:
+    id: lls_sim
+    name: Lattice Light-Sheet SIM
+    dag: Src(Bessel_lattice) -> M(lattice_pattern) -> C(PSF_lightsheet) -> D(sCMOS)
+    optical_elements:
+    - Bessel beam lattice light-sheet
+    - SIM illumination pattern
+    - Orthogonal detection
+    - sCMOS
+    reference: ~120nm lat, ~160nm axial
+  isim:
+    id: isim
+    name: Instant SIM (iSIM)
+    dag: Src(laser) -> M(microlens_array) -> C(PSF_reassigned) -> D(sCMOS)
+    optical_elements:
+    - Laser
+    - Spinning disk with microlens array
+    - Pixel reassignment optics
+    - sCMOS
+    reference: Real-time; ~1.4x resolution gain
+  open_sim:
+    id: open_sim
+    name: openSIM
+    dag: Src(LED) -> M(DMD_pattern) -> C(PSF) -> D(sCMOS)
+    optical_elements:
+    - LED
+    - DMD pattern generator (UC2 compatible)
+    - Objective
+    - sCMOS
+    reference: Open-hardware add-on
+image_sizes:
+  small:
+    x_shape:
+    - 128
+    - 128
+    label: Small
+  standard:
+    x_shape:
+    - 256
+    - 256
+    label: Standard
+  large:
+    x_shape:
+    - 512
+    - 512
+    label: Large
+  xlarge:
+    x_shape:
+    - 1024
+    - 1024
+    label: XLarge
+noise_levels:
+  clean:
+    label: Clean
+    snr_db: 60
+  low:
+    label: Low noise
+    snr_db: 40
+  medium:
+    label: Medium noise
+    snr_db: 30
+  high:
+    label: High noise
+    snr_db: 20
+mismatch_params:
+- name: Pattern frequency
+  nominal: 0.1
+  range:
+  - 0.05
+  - 0.15
+  unit: cycles/px
+- name: Phase shifts
+  nominal: 0.0
+  range:
+  - 0
+  - 0
+  unit: rad
+- name: Modulation depth
+  nominal: 0.8
+  range:
+  - 0.3
+  - 1.0
+  unit: '-'
+- name: Pattern orientation
+  nominal: 0.0
+  range:
+  - 0
+  - 0
+  unit: deg
+mismatch_levels:
+  M0_nominal:
+    description: No mismatch - perfect forward model
+    n_params_perturbed: 0
+  M1_single:
+    description: Single parameter perturbed
+    n_params_perturbed: 1
+  M2_compound:
+    description: 3+ parameters simultaneously perturbed
+    n_params_perturbed: 3
+  M3_real:
+    description: Real calibration/experimental errors
+    n_params_perturbed: all
+  M4_adversarial:
+    description: Worst-case mismatch optimized to max failure
+    n_params_perturbed: all
+data_sources:
+- id: biosr_sim
+  type: web
+  label: WEB
+  url: https://figshare.com/articles/dataset/BioSR/13744429
+  citation: Qiao et al., Evaluation and development of deep neural networks for image super-resolution in optical microscopy,
+    Nature Methods 2021
+  license: CC-BY-4.0
+  applies_to: all_variants
+- id: sim_generated
+  type: generated
+  label: GEN
+  description: Synthetically generated sim data
+  applies_to: all_variants
+total_cases:
+  B1: 84
+  B2: 560
+  B3: 560
+  B4: 560
+  grand_total: 1764

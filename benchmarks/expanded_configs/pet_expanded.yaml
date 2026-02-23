@@ -1,0 +1,141 @@
+modality_id: pet
+display_name: Positron Emission Tomography (PET)
+category: Medical Imaging
+carrier: Gamma
+maturity: M1
+variants:
+  pet_2d:
+    id: pet_2d
+    name: 2D PET
+    dag: Src(annihilation) -> Pi(LOR_2D) -> D(BGO)
+    optical_elements:
+    - Annihilation source (511 keV)
+    - Septa (inter-ring)
+    - BGO scintillator ring
+    reference: 2D PET with septa
+  pet_3d:
+    id: pet_3d
+    name: 3D PET
+    dag: Src(annihilation) -> Pi(LOR_3D) -> D(LYSO)
+    optical_elements:
+    - Annihilation source
+    - No septa
+    - LYSO scintillator ring
+    reference: 3D PET, no septa
+  tof_pet:
+    id: tof_pet
+    name: Time-of-Flight PET
+    dag: Src(annihilation) -> Pi(LOR_TOF) -> D(LYSO_fast)
+    optical_elements:
+    - Annihilation source
+    - Fast LYSO scintillator (200-400 ps)
+    - TOF electronics
+    reference: TOF-PET
+  listmode_pet:
+    id: listmode_pet
+    name: List-mode PET
+    dag: Src(annihilation) -> Pi(LOR_listmode) -> D(LYSO)
+    optical_elements:
+    - Annihilation source
+    - List-mode acquisition electronics
+    - LYSO detector
+    reference: Event-by-event
+  total_body_pet:
+    id: total_body_pet
+    name: Total-Body PET
+    dag: Src(annihilation) -> Pi(LOR_extended) -> D(LYSO_2m)
+    optical_elements:
+    - Annihilation source
+    - '>1m axial FOV detector ring'
+    - LYSO scintillator
+    reference: uExplorer/Quadra
+image_sizes:
+  small:
+    x_shape:
+    - 256
+    - 256
+    label: Small
+  standard:
+    x_shape:
+    - 512
+    - 512
+    label: Standard
+noise_levels:
+  clean:
+    label: Clean
+    snr_db: 60
+  low:
+    label: Low noise
+    snr_db: 40
+  medium:
+    label: Medium noise
+    snr_db: 30
+  high:
+    label: High noise
+    snr_db: 20
+mismatch_params:
+- name: Attenuation map error
+  nominal: 0.0
+  range:
+  - 0.0
+  - 10.0
+  unit: HU-to-LAC
+- name: Scatter fraction
+  nominal: 0.35
+  range:
+  - 0.2
+  - 0.5
+  unit: '-'
+- name: Randoms fraction
+  nominal: 0.2
+  range:
+  - 0.1
+  - 0.4
+  unit: '-'
+- name: Normalization error
+  nominal: 0.0
+  range:
+  - 0.0
+  - 5.0
+  unit: '-'
+- name: TOF timing offset
+  nominal: 0.0
+  range:
+  - -200.0
+  - 200.0
+  unit: ps
+mismatch_levels:
+  M0_nominal:
+    description: No mismatch - perfect forward model
+    n_params_perturbed: 0
+  M1_single:
+    description: Single parameter perturbed
+    n_params_perturbed: 1
+  M2_compound:
+    description: 3+ parameters simultaneously perturbed
+    n_params_perturbed: 3
+  M3_real:
+    description: Real calibration/experimental errors
+    n_params_perturbed: all
+  M4_adversarial:
+    description: Worst-case mismatch optimized to max failure
+    n_params_perturbed: all
+data_sources:
+- id: brainweb_pet
+  type: web
+  label: WEB
+  url: https://brainweb.bic.mni.mcgill.ca/brainweb/
+  citation: 'Cocosco et al., BrainWeb: Online Interface to a 3D MRI Simulated Brain Database, NeuroImage 1997'
+  license: Research use
+  applies_to: all_variants
+- id: pet_generated
+  type: generated
+  label: GEN
+  description: Synthetically generated pet data
+  applies_to: all_variants
+total_cases:
+  B1: 60
+  B2: 200
+  B3: 200
+  B4: 200
+  grand_total: 660
