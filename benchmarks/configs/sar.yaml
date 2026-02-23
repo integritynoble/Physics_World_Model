@@ -1,0 +1,70 @@
+modality_id: sar
+display_name: Synthetic Aperture Radar (SAR)
+category: Remote Sensing
+canonical_dag: F --> D
+carrier: RF
+maturity: M0
+forward_model_type: linear_operator
+default_solver: backprojection
+tier: A
+x_shape:
+- 512
+- 512
+y_shape:
+- 512
+- 512
+operator_id: sar
+has_dedicated_operator: true
+graph_template_id: sar_graph_v2
+theta:
+  type: microwave
+  frequency_ghz: 9.6
+  bandwidth_mhz: 150
+  aperture_length_m: 10
+  platform_velocity_m_per_s: 200
+  noise_figure_db: 3.0
+  adc_bits: 14
+assets: {}
+category_module: medical_mri_kspace
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: mstar_sar
+  dataset_url: https://www.sdms.afrl.af.mil/index.php?collection=mstar
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: Ross et al., Standard SAR ATR Evaluation Experiments using the MSTAR Public Release Data Set, SPIE 1998
+  license: Public domain (US Government)
+mismatch_params: []
+solvers:
+  traditional_cpu:
+    name: FBP (SAR backprojection)
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Ross et al., Standard SAR ATR Evaluation Experiments using the MSTAR Public Release Data Set, SPIE 1998
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / sar_graph_v2
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

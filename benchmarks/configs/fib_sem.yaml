@@ -1,0 +1,96 @@
+modality_id: fib_sem
+display_name: Focused Ion Beam SEM (FIB-SEM)
+category: Electron Microscopy
+canonical_dag: S --> C --> D
+carrier: Electron
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: stack_alignment
+tier: A
+x_shape:
+- 64
+- 64
+y_shape:
+- 64
+- 64
+operator_id: fib_sem
+has_dedicated_operator: true
+graph_template_id: fib_sem_graph_v1
+theta:
+  sigma: 2.0
+  read_noise_e: 5.0
+  pixel_size_um: 6.5
+assets: {}
+category_module: electron_ctf
+data_source:
+  priority:
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: ''
+  dataset_url: ''
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: ''
+  license: ''
+mismatch_params:
+- name: Slice thickness variation
+  nominal: 0.0
+  range:
+  - 0.0
+  - 15.0
+  unit: '-'
+- name: Curtaining artifact
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.3
+  unit: relative
+- name: Charging
+  nominal: 0.0
+  range:
+  - 0.0
+  - 300.0
+  unit: V
+- name: Drift between slices
+  nominal: 0.0
+  range:
+  - 0.0
+  - 5.0
+  unit: nm
+solvers:
+  traditional_cpu:
+    name: Richardson-Lucy
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    params: 2M
+    gpu: true
+    reference: Weigert et al. 2018
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: generated
+    reference: Synthetic phantom
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / fib_sem_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

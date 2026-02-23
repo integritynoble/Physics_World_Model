@@ -1,0 +1,95 @@
+modality_id: eht_imaging
+display_name: Event Horizon Telescope (EHT) Imaging
+category: Astronomy & Space Imaging
+canonical_dag: F --> S --> D
+carrier: RF
+maturity: M0
+forward_model_type: linear_operator
+default_solver: rml_clean
+tier: A
+x_shape:
+- 64
+- 64
+y_shape:
+- 64
+- 64
+operator_id: eht_imaging
+has_dedicated_operator: true
+graph_template_id: eht_imaging_graph_v1
+theta:
+  acceleration: 4
+assets: {}
+category_module: medical_mri_kspace
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: radio_vlbi
+  dataset_url: https://eventhorizontelescope.org/
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: EHT Collaboration 2019
+  license: CC-BY-4.0
+mismatch_params:
+- name: Atmospheric opacity (tau)
+  nominal: 0.1
+  range:
+  - 0.05
+  - 0.5
+  unit: nepers
+- name: Station gain calibration
+  nominal: 0.0
+  range:
+  - 0.0
+  - 10.0
+  unit: '-'
+- name: uv-coverage sparsity
+  nominal: 0.0
+  range:
+  - 0
+  - 0
+  unit: '-'
+- name: Interstellar scattering
+  nominal: 0.0
+  range:
+  - 0.0
+  - 10.0
+  unit: uas broadening
+solvers:
+  traditional_cpu:
+    name: Adjoint
+    module: pwm_core.recon.adjoint
+    function: run_adjoint
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: PnP-ADMM
+    module: pwm_core.recon.pnp_admm
+    function: pnp_admm_recon
+    params: 2M
+    gpu: true
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: EHT Collaboration 2019
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / eht_imaging_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

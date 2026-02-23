@@ -1,0 +1,127 @@
+modality_id: confocal_livecell
+display_name: Confocal Live-Cell Microscopy
+category: Microscopy
+canonical_dag: C --> D
+carrier: Photon
+maturity: M1
+forward_model_type: linear_operator
+default_solver: richardson_lucy
+tier: A
+x_shape:
+- 512
+- 512
+y_shape:
+- 512
+- 512
+operator_id: confocal_livecell
+has_dedicated_operator: true
+graph_template_id: confocal_livecell_graph_v1
+theta:
+  type: PMT
+  wavelength_nm: 488
+  power_mw: 5
+  line_width_nm: 0.1
+  scan_rate_hz: 8000
+  pixels_per_line: 512
+  bidirectional: true
+  magnification: 60
+  numerical_aperture: 1.4
+  psf_sigma_lateral_px: 1.0
+  psf_sigma_axial_px: 3.5
+  immersion: oil
+  pinhole_au: 1.0
+  pinhole_diameter_um: 60
+  quantum_efficiency: 0.25
+  dark_current_cps: 50
+  bit_depth: 12
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: deepbacs_fluor
+  dataset_url: https://zenodo.org/record/5764540
+  fallback: generated
+  synthetic_generator: cell_phantom
+  citation: Spahn et al., DeepBacs for multi-task bacterial image analysis using open-source deep learning approaches, Communications
+    Biology 2022
+  license: CC-BY-4.0
+mismatch_params:
+- name: PSF sigma
+  nominal: 1.5
+  range:
+  - 0.8
+  - 3.0
+  unit: px
+- name: Drift rate
+  nominal: 0.1
+  range:
+  - 0.0
+  - 1.0
+  unit: px/frame
+- name: Bleaching rate
+  nominal: 0.01
+  range:
+  - 0.0
+  - 0.1
+  unit: per frame
+- name: Pinhole misalignment
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.5
+  unit: AU offset
+solvers:
+  traditional_cpu:
+    name: Richardson-Lucy
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    params: 2M
+    gpu: true
+    reference: ''
+  famous_dl:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    params: 2M
+    gpu: false
+    reference: ''
+  small_gpu:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Spahn et al., DeepBacs for multi-task bacterial image analysis using open-source deep learning approaches,
+      Communications Biology 2022
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / confocal_livecell_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

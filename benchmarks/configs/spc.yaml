@@ -1,0 +1,120 @@
+modality_id: spc
+display_name: Single-Pixel Camera (SPC)
+category: Compressive Imaging
+canonical_dag: M --> Sigma --> D
+carrier: Photon
+maturity: M3
+forward_model_type: explicit_matrix
+default_solver: pnp_fista
+tier: A
+x_shape:
+- 64
+- 64
+y_shape:
+- 614
+operator_id: spc
+has_dedicated_operator: true
+graph_template_id: spc_graph_v1
+theta:
+  type: InGaAs_photodiode
+  spectral_range_nm:
+  - 400
+  - 1000
+  focal_length_mm: 25
+  f_number: 2.8
+  resolution:
+  - 1024
+  - 768
+  mirror_pitch_um: 10.8
+  tilt_angle_deg: 12
+  pattern_type: hadamard
+  sampling_rate: 0.15
+  responsivity_a_per_w: 0.95
+  nep_pw_per_sqrt_hz: 3.0
+  bandwidth_khz: 100
+  bit_depth: 16
+assets: {}
+category_module: compressive_mask
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: set11
+  dataset_url: https://github.com/jianzhangcs/SCSNet/tree/master/data/Set11
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: 'Kulkarni et al., ReconNet: Non-Iterative Reconstruction of Images from Compressively Sensed Measurements, CVPR
+    2016'
+  license: Public domain
+mismatch_params:
+- name: Gain drift alpha
+  nominal: 1.0
+  range:
+  - 0.8
+  - 1.2
+  unit: '-'
+- name: Measurement noise sigma_y
+  nominal: 0.01
+  range:
+  - 0.0
+  - 0.1
+  unit: '-'
+- name: Pattern error (bit flips)
+  nominal: 0.0
+  range:
+  - 0.0
+  - 1.0
+  unit: '-'
+solvers:
+  traditional_cpu:
+    name: TVAL3
+    module: pwm_core.recon.cs_solvers
+    function: run_tval3
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: HATNet
+    module: pwm_core.recon.hatnet
+    function: hatnet_reconstruct
+    params: 8M
+    gpu: false
+    reference: Qu et al. CVPR 2024
+  famous_dl:
+    name: ISTA-Net+
+    module: pwm_core.recon.ista_net
+    function: ista_net_reconstruct
+    params: 3M
+    gpu: false
+    reference: Zhang & Ghanem, CVPR 2018
+  small_gpu:
+    name: ISTA-Net+
+    module: pwm_core.recon.ista_net
+    function: ista_net_reconstruct
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: 'Kulkarni et al., ReconNet: Non-Iterative Reconstruction of Images from Compressively Sensed Measurements,
+      CVPR 2016'
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / spc_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

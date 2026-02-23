@@ -1,0 +1,71 @@
+modality_id: radio_astronomy
+display_name: Radio Aperture Synthesis
+category: Broader Experimental Science
+canonical_dag: F --> S --> D
+carrier: RF
+maturity: M0
+forward_model_type: linear_operator
+default_solver: clean
+tier: A
+x_shape:
+- 64
+- 64
+y_shape:
+- 64
+- 64
+operator_id: radio_astronomy
+has_dedicated_operator: true
+graph_template_id: radio_astronomy_graph_v1
+theta:
+  acceleration: 4
+assets: {}
+category_module: medical_mri_kspace
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: radio_vlbi
+  dataset_url: https://eventhorizontelescope.org/
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: EHT Collaboration 2019
+  license: CC-BY-4.0
+mismatch_params: []
+solvers:
+  traditional_cpu:
+    name: Adjoint
+    module: pwm_core.recon.adjoint
+    function: run_adjoint
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: PnP-ADMM
+    module: pwm_core.recon.pnp_admm
+    function: pnp_admm_recon
+    params: 2M
+    gpu: true
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: EHT Collaboration 2019
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / radio_astronomy_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

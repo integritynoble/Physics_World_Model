@@ -1,0 +1,128 @@
+modality_id: widefield_lowdose
+display_name: Low-Dose Widefield Microscopy
+category: Microscopy
+canonical_dag: C --> D
+carrier: Photon
+maturity: M1
+forward_model_type: linear_operator
+default_solver: pnp_hqs
+tier: A
+x_shape:
+- 512
+- 512
+y_shape:
+- 512
+- 512
+operator_id: widefield_lowdose
+has_dedicated_operator: true
+graph_template_id: widefield_lowdose_graph_v1
+theta:
+  type: LED
+  power_mw: 2
+  spectral_width_nm: 30
+  attenuation_factor: 0.04
+  center_nm: 525
+  bandwidth_nm: 50
+  magnification: 40
+  numerical_aperture: 1.3
+  psf_sigma_px: 1.2
+  immersion: oil
+  pixel_size_um: 6.5
+  read_noise_e: 1.6
+  quantum_efficiency: 0.82
+  exposure_ms: 5
+  photon_count_mean: 20
+  bit_depth: 16
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: biosr_lowsnr
+  dataset_url: https://figshare.com/articles/dataset/BioSR/13744429
+  fallback: generated
+  synthetic_generator: cell_phantom
+  citation: Qiao et al., Evaluation and development of deep neural networks for image super-resolution in optical microscopy,
+    Nature Methods 2021
+  license: CC-BY-4.0
+mismatch_params:
+- name: Photon rate alpha
+  nominal: 100.0
+  range:
+  - 10.0
+  - 500.0
+  unit: photons/px
+- name: Read noise sigma
+  nominal: 5.0
+  range:
+  - 1.0
+  - 15.0
+  unit: e-
+- name: Background
+  nominal: 50.0
+  range:
+  - 10.0
+  - 200.0
+  unit: counts
+- name: Dark current
+  nominal: 0.1
+  range:
+  - 0.01
+  - 1.0
+  unit: e-/px/s
+solvers:
+  traditional_cpu:
+    name: BM3D + RL
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    params: 2M
+    gpu: true
+    reference: ''
+  famous_dl:
+    name: Noise2Void
+    module: pwm_core.recon.noise2void
+    function: noise2void_denoise
+    params: 1M
+    gpu: false
+    reference: Krull et al. CVPR 2019
+  small_gpu:
+    name: Noise2Void
+    module: pwm_core.recon.noise2void
+    function: noise2void_denoise
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range:
+- 18.0
+- 25.0
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Qiao et al., Evaluation and development of deep neural networks for image super-resolution in optical microscopy,
+      Nature Methods 2021
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / widefield_lowdose_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

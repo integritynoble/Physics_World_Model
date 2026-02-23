@@ -1,0 +1,69 @@
+modality_id: ultrasonic_phased_array
+display_name: Ultrasonic Phased Array (TFM/FMC)
+category: Industrial Inspection
+canonical_dag: P --> D
+carrier: Acoustic
+maturity: M0
+forward_model_type: linear_operator
+default_solver: total_focusing_method
+tier: A
+x_shape:
+- 64
+- 64
+y_shape:
+- 64
+- 64
+operator_id: ultrasonic_phased_array
+has_dedicated_operator: true
+graph_template_id: ultrasonic_phased_array_graph_v1
+theta: {}
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: ''
+  dataset_url: ''
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: ''
+  license: ''
+mismatch_params: []
+solvers:
+  traditional_cpu:
+    name: Adjoint
+    module: pwm_core.recon.adjoint
+    function: run_adjoint
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: PnP-ADMM
+    module: pwm_core.recon.pnp_admm
+    function: pnp_admm_recon
+    params: 2M
+    gpu: true
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: generated
+    reference: Synthetic phantom
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / ultrasonic_phased_array_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

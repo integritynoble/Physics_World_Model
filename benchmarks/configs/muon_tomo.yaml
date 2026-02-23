@@ -1,0 +1,68 @@
+modality_id: muon_tomo
+display_name: Muon Tomography
+category: Scientific Instrumentation
+canonical_dag: Pi --> D
+carrier: Muon
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: poca_reconstruction
+tier: A
+x_shape:
+- 64
+- 64
+- 64
+y_shape:
+- 1024
+operator_id: muon_tomo
+has_dedicated_operator: true
+graph_template_id: muon_tomo_graph_v2
+theta:
+  type: cosmic_ray
+  mean_energy_gev: 3.0
+  n_layers: 8
+  detection_efficiency: 0.95
+assets: {}
+category_module: medical_ct_radon
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: muontomo_synth
+  dataset_url: https://github.com/pwm-project/muontomo-synth
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: PWM Project, Synthetic muon scattering tomography benchmark, 2026
+  license: MIT
+mismatch_params: []
+solvers:
+  traditional_cpu:
+    name: FBP (muon tomography)
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  - sam
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: PWM Project, Synthetic muon scattering tomography benchmark, 2026
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / muon_tomo_graph_v2
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

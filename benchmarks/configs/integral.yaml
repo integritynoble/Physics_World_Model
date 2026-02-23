@@ -1,0 +1,105 @@
+modality_id: integral
+display_name: Integral Photography
+category: Computational Optics
+canonical_dag: C --> S --> D
+carrier: Photon
+maturity: M0
+forward_model_type: linear_operator
+default_solver: depth_estimation
+tier: A
+x_shape:
+- 512
+- 512
+- 64
+y_shape:
+- 512
+- 512
+operator_id: integral
+has_dedicated_operator: true
+graph_template_id: integral_graph_v1
+theta:
+  type: ambient
+  spectral_range_nm:
+  - 400
+  - 700
+  focal_length_mm: 50
+  f_number: 2.8
+  distortion_model: pinhole
+  microlens_pitch_um: 150
+  microlens_focal_length_mm: 0.7
+  n_depth_planes: 64
+  array_size:
+  - 512
+  - 512
+  fill_factor: 0.95
+  pixel_size_um: 1.4
+  read_noise_e: 2.0
+  quantum_efficiency: 0.8
+  full_well_e: 10000
+  bit_depth: 12
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: stanford_lytro
+  dataset_url: http://lightfields.stanford.edu/LF2016.html
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: Stanford Computer Graphics Lab, The (New) Stanford Light Field Archive, 2016
+  license: Research use
+mismatch_params: []
+solvers:
+  traditional_cpu:
+    name: Depth Estimation
+    module: pwm_core.recon.integral_solver
+    function: run_integral
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: DIBR
+    module: pwm_core.recon.integral_solver
+    function: dibr_recon
+    params: '0'
+    gpu: false
+    reference: Fehn 2004, Proc. SPIE
+  famous_dl:
+    name: EPINet
+    module: pwm_core.recon.integral_solver
+    function: epinet_recon
+    params: 5M
+    gpu: false
+    reference: Shin et al. CVPR 2018
+  small_gpu:
+    name: EPINet
+    module: pwm_core.recon.integral_solver
+    function: epinet_recon
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  - sam
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Stanford Computer Graphics Lab, The (New) Stanford Light Field Archive, 2016
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / integral_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

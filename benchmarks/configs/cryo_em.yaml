@@ -1,0 +1,73 @@
+modality_id: cryo_em
+display_name: Cryo-EM Single Particle Analysis
+category: Scientific Instrumentation
+canonical_dag: C --> D
+carrier: Electron
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: ctf_3d_refinement
+tier: A
+x_shape:
+- 64
+- 64
+y_shape:
+- 64
+- 64
+operator_id: cryo_em
+has_dedicated_operator: true
+graph_template_id: cryo_em_graph_v1
+theta:
+  sigma: 2.0
+  read_noise_e: 5.0
+  pixel_size_um: 6.5
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: cryo_em
+  dataset_url: https://www.ebi.ac.uk/empiar/EMPIAR-10028/
+  fallback: generated
+  synthetic_generator: cell_phantom
+  citation: Bartesaghi et al., Science 2015
+  license: CC-BY-4.0
+mismatch_params: []
+solvers:
+  traditional_cpu:
+    name: Adjoint
+    module: pwm_core.recon.adjoint
+    function: run_adjoint
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: PnP-ADMM
+    module: pwm_core.recon.pnp_admm
+    function: pnp_admm_recon
+    params: 2M
+    gpu: true
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Bartesaghi et al., Science 2015
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / cryo_em_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

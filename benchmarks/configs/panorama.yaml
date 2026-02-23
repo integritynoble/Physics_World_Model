@@ -1,0 +1,102 @@
+modality_id: panorama
+display_name: Panorama Multi-Focus Fusion
+category: Computational Photography
+canonical_dag: C --> D
+carrier: Photon
+maturity: M0
+forward_model_type: linear_operator
+default_solver: laplacian_pyramid_fusion
+tier: A
+x_shape:
+- 512
+- 512
+- 3
+y_shape:
+- 512
+- 512
+- 3
+operator_id: panorama
+has_dedicated_operator: true
+graph_template_id: panorama_graph_v1
+theta:
+  type: ambient
+  focal_length_mm: 50
+  aperture: f/2.8
+  n_focus_planes: 5
+  focus_range_m:
+  - 0.3
+  - 10.0
+  n_images: 5
+  focus_step_diopters: 0.5
+  alignment_method: feature_based
+  pixel_size_um: 4.0
+  read_noise_e: 3.0
+  quantum_efficiency: 0.82
+  bit_depth: 14
+  color_filter: Bayer_RGGB
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: div2k_multicrop
+  dataset_url: https://data.vision.ee.ethz.ch/cvl/DIV2K/
+  fallback: generated
+  synthetic_generator: cell_phantom
+  citation: 'Agustsson and Timofte, NTIRE 2017 Challenge on Single Image Super-Resolution: Dataset and Study, CVPRW 2017'
+  license: Research use
+mismatch_params: []
+solvers:
+  traditional_cpu:
+    name: Laplacian Pyramid Fusion
+    module: pwm_core.recon.panorama_solver
+    function: run_panorama_fusion
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: Guided Filter Fusion
+    module: pwm_core.recon.panorama_solver
+    function: multifocus_fusion_guided
+    params: '0'
+    gpu: false
+    reference: ''
+  famous_dl:
+    name: IFCNN
+    module: pwm_core.recon.ifcnn
+    function: ifcnn_fuse
+    params: 0.3M
+    gpu: false
+    reference: Zhang et al. 2020
+  small_gpu:
+    name: IFCNN
+    module: pwm_core.recon.ifcnn
+    function: ifcnn_fuse
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  - sam
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: 'Agustsson and Timofte, NTIRE 2017 Challenge on Single Image Super-Resolution: Dataset and Study, CVPRW 2017'
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / panorama_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

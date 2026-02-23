@@ -1,0 +1,72 @@
+modality_id: dexa
+display_name: Dual-Energy X-ray Absorptiometry (DEXA)
+category: Medical Imaging
+canonical_dag: Pi --> D
+carrier: X-ray
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: dual_energy_decomposition
+tier: A
+x_shape:
+- 512
+- 512
+y_shape:
+- 512
+- 512
+operator_id: dexa
+has_dedicated_operator: true
+graph_template_id: dexa_graph_v2
+theta:
+  low_energy_kvp: 40
+  high_energy_kvp: 70
+  tube_current_ma: 5
+  bone_attenuation_low: 0.8
+  bone_attenuation_high: 0.3
+  soft_tissue_attenuation: 0.2
+  pixel_size_um: 350
+  detector_type: CdZnTe
+  bit_depth: 14
+assets: {}
+category_module: medical_ct_radon
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: dexa_synth_phantom
+  dataset_url: https://github.com/pwm-project/dexa-synth
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: PWM Project, Synthetic DEXA phantom generator, 2026
+  license: MIT
+mismatch_params: []
+solvers:
+  traditional_cpu:
+    name: FISTA-L2 (dual-energy)
+    module: pwm_core.recon.classical
+    function: run_fista_l2
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: PWM Project, Synthetic DEXA phantom generator, 2026
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / dexa_graph_v2
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

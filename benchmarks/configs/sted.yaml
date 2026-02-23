@@ -1,0 +1,93 @@
+modality_id: sted
+display_name: STED Microscopy
+category: Microscopy
+canonical_dag: C --> D
+carrier: Photon
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: richardson_lucy
+tier: A
+x_shape:
+- 512
+- 512
+y_shape:
+- 512
+- 512
+operator_id: sted
+has_dedicated_operator: true
+graph_template_id: sted_graph_v2
+theta:
+  type: hybrid_detector
+  wavelength_nm: 775
+  pulse_width_ps: 100
+  power_mw: 200
+  beam_profile: donut
+  magnification: 100
+  numerical_aperture: 1.4
+  effective_psf_fwhm_nm: 50
+  immersion: oil
+  quantum_efficiency: 0.45
+  dark_current_cps: 50
+  bit_depth: 12
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: abberior_sted
+  dataset_url: https://abberior.com/sted-microscopy/
+  fallback: generated
+  synthetic_generator: cell_phantom
+  citation: Hell and Wichmann, Breaking the diffraction resolution limit by stimulated emission, Optics Letters 1994
+  license: Research use
+mismatch_params:
+- name: Depletion beam alignment
+  nominal: 0.0
+  range:
+  - 0.0
+  - 30.0
+  unit: nm offset
+- name: Saturation factor
+  nominal: 30.0
+  range:
+  - 10.0
+  - 50.0
+  unit: '-'
+- name: Effective PSF FWHM
+  nominal: 40.0
+  range:
+  - 30.0
+  - 120.0
+  unit: nm
+solvers:
+  traditional_cpu:
+    name: Richardson-Lucy (STED)
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Hell and Wichmann, Breaking the diffraction resolution limit by stimulated emission, Optics Letters 1994
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / sted_graph_v2
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

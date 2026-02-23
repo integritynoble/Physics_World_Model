@@ -1,0 +1,76 @@
+modality_id: structured_light
+display_name: Structured-Light Depth Camera
+category: Depth Imaging
+canonical_dag: M --> C --> D
+carrier: Photon
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: phase_unwrap
+tier: A
+x_shape:
+- 512
+- 512
+y_shape:
+- 512
+- 512
+operator_id: structured_light
+has_dedicated_operator: true
+graph_template_id: structured_light_graph_v2
+theta:
+  type: DLP_projector
+  n_patterns: 4
+  fringe_freq_cycles: 8
+  resolution:
+  - 1024
+  - 768
+  focal_length_mm: 50
+  aperture: 2.8
+  pixel_size_um: 5.0
+  read_noise_e: 2.0
+  quantum_efficiency: 0.8
+  bit_depth: 12
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: middlebury_sl
+  dataset_url: https://vision.middlebury.edu/stereo/data/
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: Scharstein and Szeliski, A Taxonomy and Evaluation of Dense Two-Frame Stereo Correspondence Algorithms, IJCV 2002
+  license: Research use
+mismatch_params: []
+solvers:
+  traditional_cpu:
+    name: FISTA-L2 (phase unwrap)
+    module: pwm_core.recon.classical
+    function: run_fista_l2
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Scharstein and Szeliski, A Taxonomy and Evaluation of Dense Two-Frame Stereo Correspondence Algorithms, IJCV
+      2002
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / structured_light_graph_v2
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

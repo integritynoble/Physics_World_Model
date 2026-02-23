@@ -1,0 +1,93 @@
+modality_id: sims
+display_name: Secondary Ion Mass Spectrometry (SIMS) Imaging
+category: Spectroscopy & Spectral Imaging
+canonical_dag: S --> D
+carrier: Ion
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: mass_image_recon
+tier: A
+x_shape:
+- 64
+- 64
+y_shape:
+- 64
+- 64
+operator_id: sims
+has_dedicated_operator: true
+graph_template_id: sims_graph_v1
+theta: {}
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: ''
+  dataset_url: ''
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: ''
+  license: ''
+mismatch_params:
+- name: Mass calibration drift
+  nominal: 0.0
+  range:
+  - -5.0
+  - 5.0
+  unit: ppm
+- name: Matrix effect (sputter yield)
+  nominal: 0.0
+  range:
+  - 0.0
+  - 50.0
+  unit: '-'
+- name: Crater edge effect
+  nominal: 0.0
+  range:
+  - 0.0
+  - 10.0
+  unit: '-'
+- name: Charging (insulating samples)
+  nominal: 0.0
+  range:
+  - 0.0
+  - 200.0
+  unit: V
+solvers:
+  traditional_cpu:
+    name: Adjoint
+    module: pwm_core.recon.adjoint
+    function: run_adjoint
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: PnP-ADMM
+    module: pwm_core.recon.pnp_admm
+    function: pnp_admm_recon
+    params: 2M
+    gpu: true
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: generated
+    reference: Synthetic phantom
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / sims_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

@@ -1,0 +1,96 @@
+modality_id: lucky_imaging
+display_name: Lucky Imaging
+category: Astronomy & Space Imaging
+canonical_dag: M --> C --> D
+carrier: Photon
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: shift_and_add
+tier: A
+x_shape:
+- 64
+- 64
+y_shape:
+- 64
+- 64
+operator_id: lucky_imaging
+has_dedicated_operator: true
+graph_template_id: lucky_imaging_graph_v1
+theta:
+  sigma: 2.0
+  read_noise_e: 5.0
+  pixel_size_um: 6.5
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: ''
+  dataset_url: ''
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: ''
+  license: ''
+mismatch_params:
+- name: Fried parameter (r0)
+  nominal: 15.0
+  range:
+  - 5.0
+  - 25.0
+  unit: cm
+- name: Frame selection threshold
+  nominal: 10.0
+  range:
+  - 1.0
+  - 50.0
+  unit: '-'
+- name: Isoplanatic angle
+  nominal: 5.0
+  range:
+  - 2.0
+  - 10.0
+  unit: arcsec
+- name: Registration error
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.5
+  unit: px
+solvers:
+  traditional_cpu:
+    name: Adjoint
+    module: pwm_core.recon.adjoint
+    function: run_adjoint
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: PnP-ADMM
+    module: pwm_core.recon.pnp_admm
+    function: pnp_admm_recon
+    params: 2M
+    gpu: true
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: generated
+    reference: Synthetic phantom
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / lucky_imaging_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

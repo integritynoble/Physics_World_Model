@@ -1,0 +1,96 @@
+modality_id: pet_mr
+display_name: PET/MR Fusion
+category: Multi-Modal Fusion
+canonical_dag: Pi --> D (PET) + M --> F --> S --> D (MR) --> Fusion
+carrier: Gamma
+maturity: M0
+forward_model_type: linear_operator
+default_solver: joint_recon_petmr
+tier: A
+x_shape:
+- 64
+- 64
+y_shape:
+- 64
+- 64
+operator_id: pet_mr
+has_dedicated_operator: true
+graph_template_id: pet_mr_graph_v1
+theta:
+  n_angles: 180
+  pixel_size_um: 50.0
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: pet_dataset
+  dataset_url: https://ultra-low-dose-pet.grand-challenge.org/
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: Ultra-low-dose PET Challenge 2022
+  license: Research use
+mismatch_params:
+- name: MR-based attenuation error
+  nominal: 0.0
+  range:
+  - 0.0
+  - 15.0
+  unit: '-'
+- name: Susceptibility artifact at air/tissue
+  nominal: 0.0
+  range:
+  - 0.0
+  - 5.0
+  unit: mm
+- name: Timing synchronization
+  nominal: 0.0
+  range:
+  - 0.0
+  - 100.0
+  unit: ms
+- name: Truncation (MR FOV < PET FOV)
+  nominal: 0.0
+  range:
+  - 0.0
+  - 20.0
+  unit: of body
+solvers:
+  traditional_cpu:
+    name: Adjoint
+    module: pwm_core.recon.adjoint
+    function: run_adjoint
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: PnP-ADMM
+    module: pwm_core.recon.pnp_admm
+    function: pnp_admm_recon
+    params: 2M
+    gpu: true
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Ultra-low-dose PET Challenge 2022
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / pet_mr_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

@@ -1,0 +1,126 @@
+modality_id: oct
+display_name: Optical Coherence Tomography (OCT)
+category: Medical Imaging
+canonical_dag: P+P --> Sigma --> D
+carrier: Photon
+maturity: M1
+forward_model_type: nonlinear_operator
+default_solver: fft_recon
+tier: A
+x_shape:
+- 512
+- 512
+- 512
+y_shape:
+- 512
+- 512
+- 1024
+operator_id: oct
+has_dedicated_operator: true
+graph_template_id: oct_graph_v1
+theta:
+  type: balanced_photodetector
+  center_wavelength_nm: 1060
+  bandwidth_nm: 100
+  sweep_rate_khz: 100
+  power_mw: 20
+  coherence_length_mm: 6
+  splitting_ratio: 0.5
+  scan_type: galvo_xy
+  numerical_aperture: 0.05
+  lateral_resolution_um: 15
+  scan_range_mm: 6
+  working_distance_mm: 25
+  reference_amplitude: 1.0
+  dispersion_compensation: true
+  path_length_matching_um: 0.1
+  n_spectral_samples: 1024
+  dynamic_range_db: 105
+  sensitivity_dbm: -95
+  bit_depth: 14
+assets: {}
+category_module: medical_ct_radon
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: retouch_oct
+  dataset_url: https://retouch.grand-challenge.org/
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: 'Bogunovic et al., RETOUCH: The Retinal OCT Fluid Detection and Segmentation Benchmark and Challenge, IEEE TMI
+    2019'
+  license: Research use only
+mismatch_params:
+- name: Dispersion GDD
+  nominal: 0.0
+  range:
+  - -100.0
+  - 100.0
+  unit: fs^2
+- name: Reference arm position
+  nominal: 0.0
+  range:
+  - 0
+  - 0
+  unit: um
+- name: K-linearization error
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.5
+  unit: relative
+solvers:
+  traditional_cpu:
+    name: FFT Recon
+    module: pwm_core.recon.oct_solver
+    function: run_oct
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: Spectral Estimation
+    module: pwm_core.recon.oct_solver
+    function: spectral_estimation_recon
+    params: '0'
+    gpu: false
+    reference: Leitgeb et al. 2003, Optics Express
+  famous_dl:
+    name: OCT Denoising Net
+    module: pwm_core.recon.oct_solver
+    function: oct_denoising_net_recon
+    params: 5M
+    gpu: false
+    reference: Devalla et al. 2019, Biomed. Optics Express
+  small_gpu:
+    name: OCT Denoising Net
+    module: pwm_core.recon.oct_solver
+    function: oct_denoising_net_recon
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  - sam
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: 'Bogunovic et al., RETOUCH: The Retinal OCT Fluid Detection and Segmentation Benchmark and Challenge, IEEE
+      TMI 2019'
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / oct_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

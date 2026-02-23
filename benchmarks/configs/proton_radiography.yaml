@@ -1,0 +1,67 @@
+modality_id: proton_radiography
+display_name: Proton Radiography
+category: Scientific Instrumentation
+canonical_dag: Pi --> D
+carrier: Proton
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: filtered_back_projection
+tier: A
+x_shape:
+- 256
+- 256
+y_shape:
+- 256
+- 256
+operator_id: proton_radiography
+has_dedicated_operator: true
+graph_template_id: proton_radiography_graph_v2
+theta:
+  type: cyclotron
+  energy_mev: 200
+  n_planes: 4
+  strip_pitch_um: 80
+assets: {}
+category_module: medical_ct_radon
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: pct_synth
+  dataset_url: https://github.com/pwm-project/pct-synth
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: PWM Project, Synthetic proton radiography benchmark, 2026
+  license: MIT
+mismatch_params: []
+solvers:
+  traditional_cpu:
+    name: FBP (proton radiography)
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: PWM Project, Synthetic proton radiography benchmark, 2026
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / proton_radiography_graph_v2
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

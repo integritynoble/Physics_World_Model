@@ -1,0 +1,102 @@
+modality_id: matrix
+display_name: Generic Matrix Sensing
+category: Compressive Imaging
+canonical_dag: M --> D
+carrier: Photon
+maturity: M1
+forward_model_type: explicit_matrix
+default_solver: fista_l2
+tier: A
+x_shape:
+- 64
+- 64
+y_shape:
+- 614
+operator_id: matrix
+has_dedicated_operator: true
+graph_template_id: matrix_graph_v1
+theta:
+  type: ideal_adc
+  matrix_type: gaussian_random
+  M: 614
+  N: 4096
+  sampling_rate: 0.15
+  noise_sigma: 0.01
+  bit_depth: 16
+assets: {}
+category_module: compressive_mask
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: shepp_logan_synth
+  dataset_url: https://github.com/pwm-project/shepp-logan-synth
+  fallback: generated
+  synthetic_generator: spectral_scene
+  citation: Shepp and Logan, The Fourier reconstruction of a head section, IEEE TNS 1974
+  license: Public domain
+mismatch_params:
+- name: Matrix perturbation
+  nominal: 0.0
+  range:
+  - 0.0
+  - 10.0
+  unit: A
+- name: Condition number change
+  nominal: 0.0
+  range:
+  - 0
+  - 0
+  unit: '-'
+solvers:
+  traditional_cpu:
+    name: Tikhonov / FISTA-L2
+    module: pwm_core.recon.classical
+    function: run_fista_l2
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: Diffusion Posterior Sampling
+    module: pwm_core.recon.diffusion_posterior
+    function: diffusion_posterior_sample
+    params: 60M
+    gpu: true
+    reference: Song et al. 2023
+  famous_dl:
+    name: LISTA
+    module: pwm_core.recon.lista
+    function: lista_reconstruct
+    params: 0.5M
+    gpu: false
+    reference: Gregor & LeCun, ICML 2010
+  small_gpu:
+    name: LISTA
+    module: pwm_core.recon.lista
+    function: lista_reconstruct
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Shepp and Logan, The Fourier reconstruction of a head section, IEEE TNS 1974
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / matrix_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

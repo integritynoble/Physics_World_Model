@@ -1,0 +1,138 @@
+modality_id: flim
+display_name: Fluorescence Lifetime Imaging (FLIM)
+category: Microscopy
+canonical_dag: M --> R --> D
+carrier: Photon
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: phasor
+tier: A
+x_shape:
+- 256
+- 256
+- 2
+y_shape:
+- 256
+- 256
+- 256
+operator_id: flim
+has_dedicated_operator: true
+graph_template_id: flim_graph_v1
+theta:
+  type: SPAD
+  wavelengths_nm:
+  - 405
+  - 488
+  pulse_width_ps: 70
+  repetition_rate_mhz: 80
+  average_power_mw: 1
+  edge_wavelength_nm: 500
+  reflection_band_nm:
+  - 400
+  - 490
+  transmission_band_nm:
+  - 510
+  - 700
+  magnification: 60
+  numerical_aperture: 1.4
+  immersion: oil
+  psf_sigma_px: 1.0
+  center_nm: 530
+  bandwidth_nm: 40
+  time_resolution_ps: 50
+  n_time_bins: 256
+  time_range_ns: 12.5
+  dark_count_rate_cps: 25
+  dead_time_ns: 50
+  quantum_efficiency: 0.2
+  bit_depth: 16
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: flim_fret_benchmark
+  dataset_url: https://zenodo.org/record/8139025
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: Bhatt et al., FLIM-FRET benchmark dataset for fluorescence lifetime imaging, Scientific Data 2023
+  license: CC-BY-4.0
+mismatch_params:
+- name: IRF width
+  nominal: 80.0
+  range:
+  - 40.0
+  - 200.0
+  unit: ps
+- name: IRF shift
+  nominal: 0.0
+  range:
+  - -50.0
+  - 50.0
+  unit: ps
+- name: Afterpulsing
+  nominal: 0.01
+  range:
+  - 0.0
+  - 0.1
+  unit: relative
+- name: Pile-up fraction
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.05
+  unit: '-'
+solvers:
+  traditional_cpu:
+    name: Phasor Analysis
+    module: pwm_core.recon.flim_solver
+    function: run_flim
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: MLE Fit
+    module: pwm_core.recon.flim_solver
+    function: mle_fit_recon
+    params: '0'
+    gpu: false
+    reference: Becker 2012, J. Microscopy
+  famous_dl:
+    name: FLIMNet
+    module: pwm_core.recon.flim_solver
+    function: flimnet_recon
+    params: 3M
+    gpu: false
+    reference: Smith et al. 2019, Biomed. Optics Express
+  small_gpu:
+    name: FLIMNet
+    module: pwm_core.recon.flim_solver
+    function: flimnet_recon
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  - sam
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Bhatt et al., FLIM-FRET benchmark dataset for fluorescence lifetime imaging, Scientific Data 2023
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / flim_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

@@ -1,0 +1,94 @@
+modality_id: nirs_brain
+display_name: Functional Near-Infrared Spectroscopy (fNIRS)
+category: Medical Imaging
+canonical_dag: M --> R,P --> D
+carrier: Photon
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: modified_beer_lambert
+tier: A
+x_shape:
+- 64
+- 64
+y_shape:
+- 64
+- 64
+operator_id: nirs_brain
+has_dedicated_operator: true
+graph_template_id: nirs_brain_graph_v1
+theta:
+  density: 0.5
+assets: {}
+category_module: medical_ct_radon
+data_source:
+  priority:
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: ''
+  dataset_url: ''
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: ''
+  license: ''
+mismatch_params:
+- name: Source-detector coupling
+  nominal: 1.0
+  range:
+  - 0.5
+  - 1.5
+  unit: '-'
+- name: Scalp-brain distance variation
+  nominal: 0.0
+  range:
+  - 0.0
+  - 5.0
+  unit: mm
+- name: Motion artifact (head)
+  nominal: 0.0
+  range:
+  - 0.0
+  - 10.0
+  unit: '-'
+- name: Systemic physiology contamination
+  nominal: 0.0
+  range:
+  - 0.0
+  - 30.0
+  unit: '-'
+solvers:
+  traditional_cpu:
+    name: FBP
+    module: pwm_core.recon.fbp
+    function: run_fbp
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: DL-Recon
+    module: pwm_core.recon.dl_recon
+    function: dl_reconstruct
+    params: 5M
+    gpu: true
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: generated
+    reference: Synthetic phantom
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / nirs_brain_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

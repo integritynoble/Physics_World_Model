@@ -1,0 +1,91 @@
+modality_id: dot
+display_name: Diffuse Optical Tomography (DOT)
+category: Medical Imaging
+canonical_dag: M --> R,P,R --> D
+carrier: Photon
+maturity: M0
+forward_model_type: linear_operator
+default_solver: born_approx
+tier: A
+x_shape:
+- 64
+- 64
+- 64
+y_shape:
+- 256
+operator_id: dot
+has_dedicated_operator: true
+graph_template_id: dot_graph_v1
+theta:
+  type: APD
+  wavelengths_nm:
+  - 750
+  - 800
+  - 850
+  power_mw: 20
+  n_sources: 16
+  modulation: continuous_wave
+  background_mu_a_per_mm: 0.01
+  background_mu_s_prime_per_mm: 1.0
+  refractive_index: 1.37
+  diffusion_model: frequency_domain
+  tissue_thickness_mm: 60
+  n_detectors: 16
+  responsivity_a_per_w: 0.5
+  nep_pw_per_sqrt_hz: 10.0
+  bandwidth_mhz: 200
+  bit_depth: 16
+assets: {}
+category_module: medical_ct_radon
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: toast_phantom
+  dataset_url: http://web4.cs.ucl.ac.uk/research/vis/toast/download.html
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: Schweiger and Arridge, The Toast++ software suite for forward and inverse modeling in optical tomography, J. Biomed.
+    Optics 2014
+  license: LGPL-2.1
+mismatch_params: []
+solvers:
+  traditional_cpu:
+    name: Born Approximation
+    module: pwm_core.recon.dot_solver
+    function: run_dot
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: L-BFGS-TV
+    module: pwm_core.recon.dot_solver
+    function: lbfgs_tv_recon
+    params: '0'
+    gpu: false
+    reference: Schweiger & Arridge 2005, PMB
+metrics:
+  names:
+  - psnr
+  - ssim
+  - sam
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Schweiger and Arridge, The Toast++ software suite for forward and inverse modeling in optical tomography, J.
+      Biomed. Optics 2014
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / dot_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

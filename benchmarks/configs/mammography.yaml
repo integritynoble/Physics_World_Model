@@ -1,0 +1,74 @@
+modality_id: mammography
+display_name: Mammography
+category: Medical Imaging
+canonical_dag: Pi --> D
+carrier: X-ray
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: tv_fista
+tier: A
+x_shape:
+- 512
+- 512
+y_shape:
+- 512
+- 512
+operator_id: mammography
+has_dedicated_operator: true
+graph_template_id: mammography_graph_v2
+theta:
+  tube_voltage_kvp: 28
+  tube_current_ma: 100
+  anode_material: Mo/Rh
+  focal_spot_mm: 0.3
+  compressed_thickness_mm: 50
+  mean_attenuation_coefficient: 0.6
+  pixel_size_um: 70
+  detector_type: amorphous_selenium
+  bit_depth: 14
+assets: {}
+category_module: medical_ct_radon
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: cbis_ddsm
+  dataset_url: https://wiki.cancerimagingarchive.net/display/Public/CBIS-DDSM
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: Lee et al., A curated mammography data set for use in computer-aided detection and diagnosis research, Scientific
+    Data 2017
+  license: CC-BY-3.0
+mismatch_params: []
+solvers:
+  traditional_cpu:
+    name: FBP (mammography)
+    module: pwm_core.recon.ct_solvers
+    function: run_fbp
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Lee et al., A curated mammography data set for use in computer-aided detection and diagnosis research, Scientific
+      Data 2017
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / mammography_graph_v2
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

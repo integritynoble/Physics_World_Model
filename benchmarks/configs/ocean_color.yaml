@@ -1,0 +1,89 @@
+modality_id: ocean_color
+display_name: Ocean Color Remote Sensing
+category: Remote Sensing
+canonical_dag: M --> Sigma --> D
+carrier: Photon
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: atmospheric_correction
+tier: A
+x_shape:
+- 64
+- 64
+y_shape:
+- 64
+- 64
+operator_id: ocean_color
+has_dedicated_operator: true
+graph_template_id: ocean_color_graph_v1
+theta:
+  density: 0.5
+assets: {}
+category_module: compressive_mask
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: sentinel
+  dataset_url: https://scihub.copernicus.eu/
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: Copernicus Sentinel-2
+  license: CC-BY-SA-3.0
+mismatch_params:
+- name: Atmospheric correction error
+  nominal: 0.0
+  range:
+  - 0.0
+  - 15.0
+  unit: '-'
+- name: Sun glint contamination
+  nominal: 0.0
+  range:
+  - 0.0
+  - 20.0
+  unit: '-'
+- name: Vicarious calibration offset
+  nominal: 0.0
+  range:
+  - -3.0
+  - 3.0
+  unit: '-'
+solvers:
+  traditional_cpu:
+    name: RDA
+    module: pwm_core.recon.sar_rda
+    function: range_doppler
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: SAR-DL
+    module: pwm_core.recon.sar_dl
+    function: sar_dl_recon
+    params: 5M
+    gpu: true
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Copernicus Sentinel-2
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / ocean_color_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

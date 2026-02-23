@@ -1,0 +1,79 @@
+modality_id: endoscopy
+display_name: Fiber Bundle Endoscopy
+category: Medical Imaging
+canonical_dag: M --> C --> D
+carrier: Photon
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: tv_fista
+tier: A
+x_shape:
+- 512
+- 512
+y_shape:
+- 512
+- 512
+operator_id: endoscopy
+has_dedicated_operator: true
+graph_template_id: endoscopy_graph_v2
+theta:
+  type: LED
+  power_mw: 200
+  spectral_range_nm:
+  - 400
+  - 700
+  n_cores: 30000
+  core_pitch_um: 10
+  core_diameter_um: 8
+  bundle_diameter_mm: 3
+  na: 0.3
+  pixel_size_um: 5.0
+  read_noise_e: 3.0
+  quantum_efficiency: 0.75
+  bit_depth: 12
+assets: {}
+category_module: medical_ct_radon
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: hyper_kvasir
+  dataset_url: https://datasets.simula.no/hyper-kvasir/
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: Borgli et al., HyperKvasir, a comprehensive multi-class image and video dataset for gastrointestinal endoscopy,
+    Scientific Data 2020
+  license: CC-BY-4.0
+mismatch_params: []
+solvers:
+  traditional_cpu:
+    name: FISTA-L2 (endoscopy)
+    module: pwm_core.recon.classical
+    function: run_fista_l2
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Borgli et al., HyperKvasir, a comprehensive multi-class image and video dataset for gastrointestinal endoscopy,
+      Scientific Data 2020
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / endoscopy_graph_v2
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

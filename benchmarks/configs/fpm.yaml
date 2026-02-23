@@ -1,0 +1,130 @@
+modality_id: fpm
+display_name: Fourier Ptychographic Microscopy (FPM)
+category: Microscopy
+canonical_dag: M --> P --> D
+carrier: Photon
+maturity: M1
+forward_model_type: nonlinear_operator
+default_solver: sequential_phase_retrieval
+tier: A
+x_shape:
+- 1024
+- 1024
+y_shape:
+- 256
+- 256
+- 225
+operator_id: fpm
+has_dedicated_operator: true
+graph_template_id: fpm_graph_v1
+theta:
+  type: thin_sample
+  array_size:
+  - 15
+  - 15
+  n_leds: 225
+  led_pitch_mm: 4.0
+  center_wavelength_nm: 530
+  spectral_width_nm: 20
+  array_to_sample_distance_mm: 80
+  max_phase_shift_rad: 2.0
+  max_absorption: 0.5
+  magnification: 4
+  numerical_aperture: 0.1
+  immersion: air
+  synthetic_na: 0.5
+  resolution_gain_factor: 5
+  pixel_size_um: 6.5
+  read_noise_e: 2.0
+  quantum_efficiency: 0.78
+  full_well_e: 30000
+  bit_depth: 12
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: fpm_led_benchmark
+  dataset_url: https://github.com/zhenglab/FPM/tree/master/data
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: Zheng et al., Wide-field, high-resolution Fourier ptychographic microscopy, Nature Photonics 2013
+  license: BSD-3-Clause
+mismatch_params:
+- name: LED position error
+  nominal: 0.0
+  range:
+  - 0
+  - 0
+  unit: mm
+- name: LED intensity variation
+  nominal: 1.0
+  range:
+  - 0.5
+  - 1.5
+  unit: relative
+- name: Pupil aberration (Zernike)
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.3
+  unit: waves
+- name: Defocus
+  nominal: 0.0
+  range:
+  - -5.0
+  - 5.0
+  unit: um
+solvers:
+  traditional_cpu:
+    name: Sequential Phase Retrieval
+    module: pwm_core.recon.fpm_solver
+    function: run_fpm
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: Gradient Descent FPM
+    module: pwm_core.recon.fpm_solver
+    function: gradient_descent_fpm_recon
+    params: '0'
+    gpu: false
+    reference: Tian et al. 2014, Biomed. Optics Express
+  famous_dl:
+    name: Fourier Ptychnet
+    module: pwm_core.recon.fpm_solver
+    function: fourier_ptychnet_recon
+    params: 7M
+    gpu: false
+    reference: Jiang et al. 2018, Biomed. Optics Express
+  small_gpu:
+    name: Fourier Ptychnet
+    module: pwm_core.recon.fpm_solver
+    function: fourier_ptychnet_recon
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Zheng et al., Wide-field, high-resolution Fourier ptychographic microscopy, Nature Photonics 2013
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / fpm_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

@@ -1,0 +1,101 @@
+modality_id: two_photon
+display_name: Two-Photon / Multiphoton Microscopy
+category: Microscopy
+canonical_dag: C --> D
+carrier: Photon
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: richardson_lucy
+tier: A
+x_shape:
+- 512
+- 512
+y_shape:
+- 512
+- 512
+operator_id: two_photon
+has_dedicated_operator: true
+graph_template_id: two_photon_graph_v2
+theta:
+  type: GaAsP_PMT
+  wavelength_nm: 920
+  pulse_width_fs: 100
+  rep_rate_mhz: 80
+  power_mw: 20
+  magnification: 25
+  numerical_aperture: 1.05
+  psf_sigma_px: 1.5
+  immersion: water
+  quantum_efficiency: 0.45
+  dark_current_cps: 100
+  bit_depth: 12
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: allen_twophoton
+  dataset_url: https://observatory.brain-map.org/visualcoding
+  fallback: generated
+  synthetic_generator: cell_phantom
+  citation: de Vries et al., A large-scale standardized physiological survey reveals functional organization of the mouse
+    visual cortex, Nature Neuroscience 2020
+  license: Allen Institute Terms of Use
+mismatch_params:
+- name: Scattering coeff
+  nominal: 10.0
+  range:
+  - 5.0
+  - 30.0
+  unit: mm^-1
+- name: PSF depth scaling
+  nominal: 1.0
+  range:
+  - 0.7
+  - 1.5
+  unit: '-'
+- name: Excitation attenuation
+  nominal: 0.01
+  range:
+  - 0.005
+  - 0.02
+  unit: per um
+- name: Motion artifact
+  nominal: 0.0
+  range:
+  - 0.0
+  - 5.0
+  unit: um
+solvers:
+  traditional_cpu:
+    name: Richardson-Lucy (2P)
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: de Vries et al., A large-scale standardized physiological survey reveals functional organization of the mouse
+      visual cortex, Nature Neuroscience 2020
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / two_photon_graph_v2
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

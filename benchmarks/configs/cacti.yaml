@@ -1,0 +1,130 @@
+modality_id: cacti
+display_name: Coded Aperture Compressive Temporal Imaging (CACTI)
+category: Compressive Imaging
+canonical_dag: M --> Sigma --> D
+carrier: Photon
+maturity: M3
+forward_model_type: linear_operator
+default_solver: gap_tv
+tier: A
+x_shape:
+- 256
+- 256
+- 8
+y_shape:
+- 256
+- 256
+operator_id: cacti
+has_dedicated_operator: true
+graph_template_id: cacti_graph_v1
+theta:
+  type: ambient
+  frame_rate_equiv_fps: 240
+  focal_length_mm: 75
+  f_number: 2.0
+  mask_type: binary_random
+  density: 0.5
+  n_frames: 8
+  shift_type: vertical
+  shift_step_px: 1
+  pixel_size_um: 5.5
+  read_noise_e: 3.0
+  quantum_efficiency: 0.78
+  exposure_ms: 33
+  bit_depth: 10
+assets: {}
+category_module: compressive_mask
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: sci_6gray
+  dataset_url: https://github.com/liuyang12/SCI/tree/master/data
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: Liu et al., Rank Minimization for Snapshot Compressive Imaging, IEEE TPAMI 2019
+  license: BSD-3-Clause
+mismatch_params:
+- name: Spatial shift x,y
+  nominal: 0.0
+  range:
+  - -3.0
+  - 3.0
+  unit: px
+- name: Rotation
+  nominal: 0.0
+  range:
+  - -2.0
+  - 2.0
+  unit: deg
+- name: Temporal clock error
+  nominal: 0.0
+  range:
+  - -0.5
+  - 0.5
+  unit: frame frac
+- name: Gain / offset
+  nominal: 0.0
+  range:
+  - 0.9
+  - 1.1
+  unit: '- / counts'
+- name: Frame-dependent gain
+  nominal: 1.0
+  range:
+  - 0.9
+  - 1.1
+  unit: '-'
+solvers:
+  traditional_cpu:
+    name: GAP-TV
+    module: pwm_core.recon.gap_tv
+    function: run_gap_tv
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: EfficientSCI
+    module: pwm_core.recon.efficientsci
+    function: efficientsci_recon
+    params: 12.05M
+    gpu: false
+    reference: Wang et al. CVPR 2023
+  famous_dl:
+    name: ELP-Unfolding
+    module: pwm_core.recon.elp_unfolding
+    function: elp_recon
+    params: 10M
+    gpu: false
+    reference: Yang et al. ECCV 2022
+  small_gpu:
+    name: EfficientSCI-T
+    module: pwm_core.recon.efficientsci
+    function: efficientsci_recon
+    params: 3.78M
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  - sam
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Liu et al., Rank Minimization for Snapshot Compressive Imaging, IEEE TPAMI 2019
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / cacti_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

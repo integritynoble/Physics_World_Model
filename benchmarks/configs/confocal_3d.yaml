@@ -1,0 +1,127 @@
+modality_id: confocal_3d
+display_name: Confocal 3D Z-Stack
+category: Microscopy
+canonical_dag: C --> D
+carrier: Photon
+maturity: M1
+forward_model_type: linear_operator
+default_solver: richardson_lucy_3d
+tier: A
+x_shape:
+- 256
+- 256
+- 64
+y_shape:
+- 256
+- 256
+- 64
+operator_id: confocal_3d
+has_dedicated_operator: true
+graph_template_id: confocal_3d_graph_v1
+theta:
+  type: PMT
+  wavelength_nm: 561
+  power_mw: 3
+  scan_rate_hz: 8000
+  z_step_um: 0.3
+  magnification: 63
+  numerical_aperture: 1.4
+  psf_sigma_lateral_px: 1.0
+  psf_sigma_axial_px: 3.5
+  immersion: oil
+  pinhole_au: 1.0
+  quantum_efficiency: 0.25
+  dark_current_cps: 50
+  bit_depth: 12
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: care_tribolium
+  dataset_url: https://publications.mpi-cbg.de/publications-sites/7207/
+  fallback: generated
+  synthetic_generator: cell_phantom
+  citation: 'Weigert et al., Content-aware image restoration: pushing the limits of fluorescence microscopy, Nature Methods
+    2018'
+  license: CC-BY-4.0
+mismatch_params:
+- name: Axial PSF sigma
+  nominal: 3.0
+  range:
+  - 1.5
+  - 6.0
+  unit: px
+- name: Refractive index
+  nominal: 1.515
+  range:
+  - 1.33
+  - 1.56
+  unit: '-'
+- name: Attenuation coeff
+  nominal: 0.03
+  range:
+  - 0.0
+  - 0.1
+  unit: per slice
+- name: Spherical aberration
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.5
+  unit: waves
+solvers:
+  traditional_cpu:
+    name: 3D Richardson-Lucy
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: 3D CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_3d
+    params: 2M
+    gpu: true
+    reference: ''
+  famous_dl:
+    name: CARE-3D
+    module: pwm_core.recon.care_unet
+    function: care_restore_3d
+    params: 2M
+    gpu: false
+    reference: ''
+  small_gpu:
+    name: CARE-3D (slice-wise)
+    module: pwm_core.recon.care_unet
+    function: care_restore_3d
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  - sam
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: 'Weigert et al., Content-aware image restoration: pushing the limits of fluorescence microscopy, Nature Methods
+      2018'
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / confocal_3d_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

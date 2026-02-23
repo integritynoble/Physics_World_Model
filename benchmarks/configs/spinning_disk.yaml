@@ -1,0 +1,90 @@
+modality_id: spinning_disk
+display_name: Spinning Disk Confocal Microscopy
+category: Microscopy
+canonical_dag: C --> D
+carrier: Photon
+maturity: M0
+forward_model_type: linear_operator
+default_solver: richardson_lucy
+tier: A
+x_shape:
+- 64
+- 64
+y_shape:
+- 64
+- 64
+operator_id: spinning_disk
+has_dedicated_operator: true
+graph_template_id: spinning_disk_graph_v1
+theta:
+  sigma: 2.0
+  read_noise_e: 5.0
+  pixel_size_um: 6.5
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: ''
+  dataset_url: ''
+  fallback: generated
+  synthetic_generator: cell_phantom
+  citation: ''
+  license: ''
+mismatch_params:
+- name: Pinhole crosstalk
+  nominal: 0.0
+  range:
+  - 0.0
+  - 15.0
+  unit: '-'
+- name: Disk rotation wobble
+  nominal: 0.0
+  range:
+  - 0.0
+  - 1.0
+  unit: px
+- name: Illumination non-uniformity
+  nominal: 0.0
+  range:
+  - 0.0
+  - 10.0
+  unit: '-'
+solvers:
+  traditional_cpu:
+    name: Richardson-Lucy
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    params: 2M
+    gpu: true
+    reference: Weigert et al. 2018
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: generated
+    reference: Synthetic phantom
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / spinning_disk_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

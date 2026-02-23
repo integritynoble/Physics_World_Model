@@ -1,0 +1,118 @@
+modality_id: holography
+display_name: Digital Holographic Microscopy
+category: Coherent Imaging
+canonical_dag: P --> D
+carrier: Photon
+maturity: M1
+forward_model_type: nonlinear_operator
+default_solver: angular_spectrum
+tier: A
+x_shape:
+- 512
+- 512
+y_shape:
+- 512
+- 512
+operator_id: holography
+has_dedicated_operator: true
+graph_template_id: holography_graph_v1
+theta:
+  type: cube
+  wavelength_nm: 633
+  power_mw: 5
+  coherence_length_m: 0.3
+  splitting_ratio: 0.5
+  magnification: 40
+  numerical_aperture: 0.65
+  immersion: air
+  carrier_frequency_cycles_per_px: 0.2
+  reference_amplitude: 1.0
+  tilt_angle_deg: 2.5
+  pixel_size_um: 4.65
+  read_noise_e: 8.0
+  quantum_efficiency: 0.7
+  full_well_e: 18000
+  bit_depth: 12
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: sipi_offaxis
+  dataset_url: https://sipi.usc.edu/database/
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: Weber, The USC-SIPI Image Database, 1997
+  license: Public domain
+mismatch_params:
+- name: Reference angle error
+  nominal: 0.0
+  range:
+  - -1.0
+  - 1.0
+  unit: deg
+- name: Carrier frequency error
+  nominal: 0.0
+  range:
+  - -5.0
+  - 5.0
+  unit: '-'
+- name: Vibration
+  nominal: 0.0
+  range:
+  - 0.0
+  - 10.0
+  unit: '-'
+solvers:
+  traditional_cpu:
+    name: Angular Spectrum
+    module: pwm_core.recon.holography_solver
+    function: run_holography_reconstruction
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: PhaseNet
+    module: pwm_core.recon.phasenet
+    function: phasenet_reconstruct
+    params: 2M
+    gpu: false
+    reference: 'Rivenson et al. 2018, Light: S&A'
+  famous_dl:
+    name: PhaseNet
+    module: pwm_core.recon.phasenet
+    function: phasenet_reconstruct
+    params: 2M
+    gpu: false
+    reference: ''
+  small_gpu:
+    name: PhaseNet
+    module: pwm_core.recon.phasenet
+    function: phasenet_reconstruct
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Weber, The USC-SIPI Image Database, 1997
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / holography_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

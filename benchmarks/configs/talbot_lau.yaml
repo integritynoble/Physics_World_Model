@@ -1,0 +1,94 @@
+modality_id: talbot_lau
+display_name: Talbot-Lau X-ray Grating Interferometry
+category: Coherent Imaging
+canonical_dag: M --> P --> D
+carrier: X-ray
+maturity: M0
+forward_model_type: nonlinear_operator
+default_solver: phase_stepping
+tier: A
+x_shape:
+- 64
+- 64
+y_shape:
+- 64
+- 64
+operator_id: talbot_lau
+has_dedicated_operator: true
+graph_template_id: talbot_lau_graph_v1
+theta:
+  density: 0.5
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: ''
+  dataset_url: ''
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: ''
+  license: ''
+mismatch_params:
+- name: Grating alignment (rotation)
+  nominal: 0.0
+  range:
+  - -0.5
+  - 0.5
+  unit: deg
+- name: Inter-grating distance error
+  nominal: 0.0
+  range:
+  - -1.0
+  - 1.0
+  unit: '-'
+- name: Phase stepping error
+  nominal: 0.0
+  range:
+  - -5.0
+  - 5.0
+  unit: per step
+- name: Grating defect fraction
+  nominal: 0.0
+  range:
+  - 0.0
+  - 3.0
+  unit: '-'
+solvers:
+  traditional_cpu:
+    name: Adjoint
+    module: pwm_core.recon.adjoint
+    function: run_adjoint
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: PnP-ADMM
+    module: pwm_core.recon.pnp_admm
+    function: pnp_admm_recon
+    params: 2M
+    gpu: true
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: generated
+    reference: Synthetic phantom
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / talbot_lau_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

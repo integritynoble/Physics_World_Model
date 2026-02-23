@@ -1,0 +1,132 @@
+modality_id: widefield
+display_name: Widefield Fluorescence Microscopy
+category: Microscopy
+canonical_dag: C --> D
+carrier: Photon
+maturity: M3
+forward_model_type: linear_operator
+default_solver: richardson_lucy
+tier: A
+x_shape:
+- 512
+- 512
+y_shape:
+- 512
+- 512
+operator_id: widefield
+has_dedicated_operator: true
+graph_template_id: widefield_graph_v1
+theta:
+  type: LED
+  power_mw: 50
+  spectral_width_nm: 30
+  center_nm: 525
+  bandwidth_nm: 50
+  magnification: 20
+  numerical_aperture: 0.75
+  psf_sigma_px: 2.0
+  immersion: air
+  pixel_size_um: 6.5
+  read_noise_e: 1.6
+  quantum_efficiency: 0.82
+  full_well_e: 30000
+  bit_depth: 16
+assets: {}
+category_module: microscopy_psf
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: biosr_factin
+  dataset_url: https://figshare.com/articles/dataset/BioSR/13744429
+  fallback: generated
+  synthetic_generator: cell_phantom
+  citation: Qiao et al., Evaluation and development of deep neural networks for image super-resolution in optical microscopy,
+    Nature Methods 2021
+  license: CC-BY-4.0
+mismatch_params:
+- name: PSF sigma
+  nominal: 2.0
+  range:
+  - 1.2
+  - 3.5
+  unit: px
+- name: Background level
+  nominal: 50.0
+  range:
+  - 0.0
+  - 200.0
+  unit: counts
+- name: Gain
+  nominal: 1.0
+  range:
+  - 0.85
+  - 1.15
+  unit: '-'
+- name: Flatfield non-uniformity
+  nominal: 0.0
+  range:
+  - 0.0
+  - 15.0
+  unit: peak-to-peak
+- name: Photobleaching rate
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.05
+  unit: per frame
+solvers:
+  traditional_cpu:
+    name: Richardson-Lucy
+    module: pwm_core.recon.richardson_lucy
+    function: run_richardson_lucy
+    params: '0'
+    gpu: false
+    reference: ''
+  best_quality:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    params: 2M
+    gpu: true
+    reference: Weigert et al. 2018, Nature Methods
+  famous_dl:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    params: 2M
+    gpu: false
+    reference: ''
+  small_gpu:
+    name: CARE
+    module: pwm_core.recon.care_unet
+    function: care_restore_2d
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range:
+- 30.0
+- 38.0
+source_attribution:
+  ground_truth:
+    type: web
+    reference: Qiao et al., Evaluation and development of deep neural networks for image super-resolution in optical microscopy,
+      Nature Methods 2021
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / widefield_graph_v1
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec

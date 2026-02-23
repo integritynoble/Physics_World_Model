@@ -1,0 +1,67 @@
+modality_id: sonar
+display_name: Sonar Imaging
+category: Remote Sensing
+canonical_dag: P --> D
+carrier: Acoustic
+maturity: M0
+forward_model_type: linear_operator
+default_solver: beamform_das
+tier: A
+x_shape:
+- 256
+- 256
+y_shape:
+- 128
+operator_id: sonar
+has_dedicated_operator: true
+graph_template_id: sonar_graph_v2
+theta:
+  type: piezoelectric
+  frequency_khz: 200
+  source_level_db: 220
+  n_elements: 64
+  element_spacing_mm: 7.5
+assets: {}
+category_module: remote_sensing_sar
+data_source:
+  priority:
+  - web
+  - experimental
+  - synthetic_web
+  - generated
+  dataset_id: sonar_synth
+  dataset_url: https://github.com/pwm-project/sonar-synth
+  fallback: generated
+  synthetic_generator: shepp_logan
+  citation: PWM Project, Synthetic side-scan sonar benchmark, 2026
+  license: MIT
+mismatch_params: []
+solvers:
+  traditional_cpu:
+    name: FISTA-L2 (DAS)
+    module: pwm_core.recon.classical
+    function: run_fista_l2
+    params: '0'
+    gpu: false
+    reference: ''
+metrics:
+  names:
+  - psnr
+  - ssim
+  primary: psnr
+  thresholds: {}
+reference_psnr: null
+expected_psnr_range: null
+source_attribution:
+  ground_truth:
+    type: web
+    reference: PWM Project, Synthetic side-scan sonar benchmark, 2026
+  forward_model:
+    type: registry
+    reference: pwm graph_templates.yaml / sonar_graph_v2
+  solver:
+    type: registry
+    reference: pwm solver_registry.yaml
+  mismatch_ranges:
+    type: registry
+    reference: pwm modality_benchmarks spec
