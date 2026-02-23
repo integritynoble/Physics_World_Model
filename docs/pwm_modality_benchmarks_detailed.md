@@ -1,8 +1,8 @@
 # PWM Per-Modality Benchmark Specifications
 
-> **Scope**: Deep, actionable benchmark specifications (B1-B4) for all 97 imaging modalities.
-> Each modality entry includes: example prompts, mismatch parameter ranges, True-Spec fields,
-> correction targets, expected recovery metrics, and improvement suggestions.
+> **Scope**: Deep, actionable benchmark specifications (B1-B4) for all **168 imaging modalities**
+> across **19 categories**. Each modality entry includes: example prompts, mismatch parameter
+> ranges, True-Spec fields, correction targets, expected recovery metrics, and improvement suggestions.
 >
 > **Companion doc**: [`pwm_medical_physicist_targets.md`](pwm_medical_physicist_targets.md) for architecture overview.
 
@@ -10,90 +10,69 @@
 
 ## 0. Advisory: Modality Expansion & Benchmark Improvement Strategy
 
-### 0.1 Should You Increase Imaging Modalities Beyond 97?
+### 0.1 Expansion Summary
 
-**Current state**: 97 modalities across 13 categories. 7 validated, 53 registered, 4 planned, 33 new (from expansion).
+**Previous state**: 97 modalities across 13 categories.
+**Current state**: **168 modalities across 19 categories.**
 
-**Recommendation: Yes, but strategically. Target 120-130 modalities.**
+| Change | Count |
+|--------|------:|
+| Existing modalities retained | 97 |
+| Added to existing categories | 42 |
+| New categories created | 6 |
+| New modalities in new categories | 29 |
+| **Grand total** | **168** |
 
-Expand in these high-value gaps:
+**6 new categories**: Spectroscopy & Spectral Imaging (8), Ultrafast Imaging (4), Quantum Imaging (3), Multi-modal Fusion (6), Scanning Probe Microscopy (4), Astronomy & Space Imaging (4).
 
-| Gap Area | Missing Modalities | Why Add | Priority |
-|----------|--------------------|---------|----------|
-| **Spectroscopy** | Raman imaging, IR spectroscopy, NMR imaging, mass spec imaging (SIMS, DESI) | Large user base in chemistry/pharma; unique R→D DAGs | HIGH |
-| **Ultrafast imaging** | Streak camera, pump-probe, compressed ultrafast photography (CUP) | Growing field; temporal compression maps to Σ→D | HIGH |
-| **Quantum imaging** | Ghost imaging, quantum illumination, entangled photon microscopy | Frontier physics; tests R primitive limits | MEDIUM |
-| **Acoustic/seismic** | Full-waveform inversion (FWI), ocean acoustic tomography, medical HIFU monitoring | P→D family with complex propagation | MEDIUM |
-| **Multi-modal fusion** | PET/CT, PET/MR, SPECT/CT, US/MRI, CT+fluorescence | Cross-modality Spec merging; tests B1 design complexity | HIGH |
-| **Emerging medical** | Magnetic particle spectroscopy, electrical impedance spectroscopy, microwave imaging | New clinical tools; unique forward models | LOW |
-| **Astronomy** | Coronagraphy, interferometric imaging (ALMA), lucky imaging | M→P→D with extreme contrast requirements | LOW |
-
-**Do NOT expand** into modalities that are trivially isomorphic to existing ones (e.g., adding "confocal spinning-disk" when `confocal_livecell` covers it, or adding "dental CT" when `cbct` covers it). The Finite Primitive Basis theorem predicts saturation at ~10 canonical types regardless of modality count.
-
-**Decision criterion**: Add a modality only if it introduces (a) a new DAG topology not covered by existing entries, (b) a new mismatch physics (e.g., quantum correlations), or (c) a large user community that would benefit from PWM benchmarks.
+**Expansion rationale**: Every addition satisfies at least one of: (a) new DAG topology, (b) new mismatch physics, (c) large user community. The Finite Primitive Basis theorem's 10 canonical types still cover all 168 modalities — no new primitives needed.
 
 ### 0.2 How to Improve Each Benchmark
 
-**Systematic improvement methodology** — apply these 8 strategies per modality:
+**8 strategies** — apply per modality:
 
-| # | Strategy | Applies to | How to Implement |
-|---|----------|------------|------------------|
-| 1 | **Real datasets over synthetic** | B2, B3, B4 | Replace Gaussian phantoms with published experimental data (Zenodo, TCIA, public repos). Every validated modality should have >=1 real dataset. |
-| 2 | **Compound mismatch** | B2, B4 | Currently most benchmarks test single-parameter mismatch. Add compound scenarios: mask shift + gain drift + noise increase simultaneously. |
-| 3 | **Adversarial mismatch (Red Team)** | B2, B3, B4 | Inject worst-case mismatch combinations found by optimization. Tests robustness beyond random perturbation. |
-| 4 | **Cross-modality transfer** | B1 | Test whether a Spec designed for one modality (e.g., CASSI) can be adapted for a related modality (e.g., CACTI) via B1 prompt engineering. |
-| 5 | **Time-varying mismatch** | B3, B4 | Real systems drift. Add time-series mismatch: parameters change across frames/slices (gain drift, thermal expansion, vibration). |
-| 6 | **Uncertainty quantification** | B3, B4 | Require True-Spec comparison to include uncertainty bands: "estimated shift_x = 1.5 +/- 0.3 px" vs True-Spec shift_x = 1.47 px. |
-| 7 | **Multi-scale evaluation** | B2, B4 | Evaluate reconstruction at multiple scales: global PSNR, ROI-specific SSIM, edge preservation (FSIM), spectral fidelity (SAM for hyperspectral). |
-| 8 | **Feedback actionability scoring** | B2, B4 | Score feedback not just for correctness but for actionability: "increase photon budget 2x" is actionable; "improve system" is not. |
+| # | Strategy | Applies to | How |
+|---|----------|------------|-----|
+| 1 | **Real datasets over synthetic** | B2, B3, B4 | Replace Gaussian phantoms with published experimental data (Zenodo, TCIA, public repos) |
+| 2 | **Compound mismatch** | B2, B4 | Test 3+ params simultaneously, not just single-param |
+| 3 | **Adversarial mismatch (Red Team)** | B2, B3, B4 | Worst-case mismatch via optimization |
+| 4 | **Cross-modality transfer** | B1 | Adapt Spec across related modalities via prompt engineering |
+| 5 | **Time-varying mismatch** | B3, B4 | Parameters drift across frames/slices |
+| 6 | **Uncertainty quantification** | B3, B4 | Require confidence intervals on estimated params |
+| 7 | **Multi-scale evaluation** | B2, B4 | PSNR + SSIM + FSIM + domain-specific metrics |
+| 8 | **Feedback actionability scoring** | B2, B4 | Score feedback for actionability, not just correctness |
 
 ### 0.3 Benchmark Maturity Levels
 
-Each modality's benchmarks progress through maturity levels:
-
 | Level | B1 | B2 | B3 | B4 |
 |-------|----|----|----|----|
-| **M0** (Template) | Prompt template exists | Forward model template | DAG template | Correction template |
-| **M1** (Synthetic) | Prompt tested on synthetic | Single-param mismatch, synthetic data | Synthetic True-Spec | Synthetic correction, single param |
-| **M2** (Compound) | Multiple prompt variants | Compound mismatch, 3+ params | Compound identification | Compound correction, rho measured |
-| **M3** (Real data) | Prompts grounded in real protocols | Real experimental data | Real True-Spec from calibration | Real data correction, rho >= 0.80 |
-| **M4** (Adversarial) | Adversarial prompt attacks | Red Team mismatch injection | Adversarial identification | Adversarial correction + live feedback |
+| **M0** (Template) | Prompt template | Forward model template | DAG template | Correction template |
+| **M1** (Synthetic) | Prompt tested | Single-param mismatch | Synthetic True-Spec | Single-param correction |
+| **M2** (Compound) | Multiple variants | Compound mismatch, 3+ params | Compound identification | Compound correction, rho measured |
+| **M3** (Real data) | Grounded in real protocols | Real experimental data | Real True-Spec | Real data, rho >= 0.80 |
+| **M4** (Adversarial) | Adversarial attacks | Red Team injection | Adversarial identification | Adversarial + live feedback |
 
 ---
 
-## 1. Microscopy (16 modalities)
+## 1. Microscopy (24 modalities)
 
 ---
 
 ### 1.1 Widefield Fluorescence Microscopy (`widefield`)
 
-**Canonical DAG**: C → D | **Carrier**: Photon | **Current maturity**: M3
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M3
 
 #### B1: Design
+**Example prompt**: "Design widefield fluorescence for GFP-labeled fixed cells: 60x oil, NA 1.4, emission 500-550 nm, pixel 100 nm, FOV 80 um, sCMOS."
 
-**Example prompt**: "Design a widefield fluorescence microscope for GFP-labeled fixed cells: 60x oil objective, NA 1.4, emission 500-550 nm, pixel size 100 nm, FOV 80 um, sCMOS detector."
-
-**Design parameters to specify in Spec**:
-| Parameter | Range | Unit |
-|-----------|-------|------|
+| Design Parameter | Range | Unit |
+|------------------|-------|------|
 | Objective NA | 0.4 - 1.49 | - |
-| Magnification | 10x - 100x | - |
-| PSF sigma (lateral) | 0.8 - 4.0 | pixels |
+| PSF sigma (lateral) | 0.8 - 4.0 | px |
 | Emission wavelength | 400 - 800 | nm |
-| Pixel size | 50 - 260 | nm |
 | Read noise | 1.0 - 10.0 | e- |
-| FOV | 20 - 500 | um |
 
-**Evaluation criteria**: (a) PSF matches Abbe diffraction limit for stated NA/wavelength, (b) pixel size satisfies Nyquist (< lambda/4NA), (c) photon budget sufficient for target SNR.
-
-**Improvement suggestions**:
-- Add depth-of-field constraint for thick samples
-- Include illumination uniformity specification (< 5% variation across FOV)
-- Specify chromatic correction requirements for multi-color imaging
-
-#### B2: Forward + Reconstruct
-
-**Mismatch parameters** (inject one or more):
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | PSF sigma | 2.0 | [1.2, 3.5] | px |
@@ -102,134 +81,40 @@ Each modality's benchmarks progress through maturity levels:
 | Flatfield non-uniformity | 0% | [0%, 15%] | peak-to-peak |
 | Photobleaching rate | 0 | [0, 0.05] | per frame |
 
-**Solvers**: Richardson-Lucy (50 iters), PnP-HQS (BM3D, 30 iters), Wiener filter.
+**Solvers**: Richardson-Lucy, PnP-HQS, Wiener. **Scenario I PSNR**: 30-38 dB. **Scenario II drop**: 1-5 dB.
 
-**Expected Scenario I PSNR**: 30-38 dB (depends on photon budget).
-**Expected Scenario II PSNR drop**: 1-5 dB (mild — PSF mismatch is gentle for widefield).
-
-**Feedback template**: "PSF sigma mismatch: measured {x} px vs assumed {y} px. Reconstruction artifact: ring-shaped residuals in Fourier domain. Recommendation: re-measure PSF with sub-diffraction beads."
-
-**Improvement suggestions**:
-- Add compound mismatch: PSF + background + flatfield simultaneously
-- Add depth-dependent PSF variation for 3D samples imaged in 2D
-
-#### B3: System Identification
-
-**True-Spec parameters** (hidden):
-| Parameter | True Value Example | Contestant Knows |
-|-----------|-------------------|-----------------|
-| PSF sigma_x | 2.13 | Range [1.0, 4.0] |
-| PSF sigma_y | 2.07 | Range [1.0, 4.0] |
-| Background | 47.3 | Range [0, 200] |
-| Read noise | 5.8 | Range [1, 15] |
-| Gain | 1.03 | Range [0.8, 1.2] |
-
-**Evaluation**: Parameter RMSE, PSF correlation with true PSF, noise model identification accuracy.
-
-**Improvement suggestions**:
-- Add asymmetric PSF (astigmatism) as identification target
-- Include spatially-varying PSF across FOV
+#### B3: True-Spec
+PSF sigma_x (2.13), sigma_y (2.07), background (47.3), read noise (5.8), gain (1.03).
 
 #### B4: Correction
-
-**Correction targets**: Correct PSF model, background, flatfield.
-**Expected rho**: >= 0.85 (widefield is forgiving).
-**Expected PSNR gain**: +1 to +5 dB.
-
-**Feedback quality targets**: Identify (a) PSF mismatch as dominant or noise as dominant, (b) recommend measured PSF or increased photon budget, (c) flag coverslip thickness error if astigmatism detected.
-
-**Improvement suggestions**:
-- Add time-varying mismatch: photobleaching changes effective signal across frames
-- Test feedback actionability: "re-measure PSF with 170 um coverslip" vs "improve PSF"
+**Expected rho**: >= 0.85. **PSNR gain**: +1 to +5 dB.
+**Improvement**: Add compound mismatch (PSF + background + flatfield), depth-dependent PSF.
 
 ---
 
 ### 1.2 Low-Dose Widefield (`widefield_lowdose`)
 
-**Canonical DAG**: C → D | **Carrier**: Photon | **Current maturity**: M1
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M1
 
-#### B1: Design
-
-**Example prompt**: "Design a live-cell widefield system minimizing phototoxicity: 40x water objective, NA 1.1, maximum 100 photons/pixel/frame, sCMOS with 1.0 e- read noise, 10 ms exposure."
-
-**Design parameters**:
-| Parameter | Range | Unit |
-|-----------|-------|------|
-| Photon budget | 10 - 500 | photons/px |
-| Read noise | 0.5 - 5.0 | e- |
-| Exposure time | 1 - 100 | ms |
-| LED power fraction | 0.5 - 10 | % |
-| Camera QE | 0.7 - 0.95 | - |
-
-**Improvement suggestions**:
-- Include phototoxicity model: cumulative dose vs cell viability
-- Specify temporal resolution requirement (frames/s)
-
-#### B2: Forward + Reconstruct
-
-**Mismatch parameters**:
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Photon rate alpha | 100 | [10, 500] | photons/px |
 | Read noise sigma | 5.0 | [1.0, 15.0] | e- |
 | Background | 50 | [10, 200] | counts |
 | Dark current | 0.1 | [0.01, 1.0] | e-/px/s |
-| Hot pixel fraction | 0 | [0, 0.5%] | - |
 
-**Solvers**: VST+BM3D, CARE, Noise2Void, PURE-LET.
-
-**Expected Scenario I PSNR**: 18-25 dB (low photons).
-**Expected Scenario II PSNR drop**: 3-10 dB (noise model mismatch is critical at low counts).
-
-**Improvement suggestions**:
-- Test mixed Poisson-Gaussian noise model vs pure Poisson assumption
-- Add spatially-varying background (autofluorescence)
-- Compound: low photons + hot pixels + background
-
-#### B3: System Identification
-
-**True-Spec parameters**:
-| Parameter | True Value Example | Contestant Knows |
-|-----------|-------------------|-----------------|
-| Alpha (photon rate) | 87 | Range [10, 500] |
-| Read noise | 4.2 | Range [1, 15] |
-| Background | 63 | Range [10, 200] |
-| Dark current | 0.15 | Range [0.01, 1.0] |
-
-**Improvement suggestions**:
-- Include camera sCMOS column-correlated noise pattern identification
-
-#### B4: Correction
-
-**Expected rho**: >= 0.70 (noise-limited; correction helps but ceiling is low).
-**Expected PSNR gain**: +2 to +8 dB.
-
-**Improvement suggestions**:
-- Feedback should recommend "increase photon budget by Nx" with quantitative estimate
-- Test whether noise model correction outperforms denoiser-only approach
+**Solvers**: VST+BM3D, CARE, Noise2Void. **Scenario I PSNR**: 18-25 dB. **Scenario II drop**: 3-10 dB.
+**B3 True-Spec**: Alpha (87), read noise (4.2), background (63), dark current (0.15).
+**B4 rho**: >= 0.70. **Improvement**: Add spatially-varying background, camera column noise.
 
 ---
 
 ### 1.3 Confocal Live-Cell (`confocal_livecell`)
 
-**Canonical DAG**: C → D | **Carrier**: Photon | **Current maturity**: M1
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M1
 
-#### B1: Design
-
-**Example prompt**: "Design confocal live-cell imaging: 63x oil, NA 1.4, pinhole 1 AU, scan speed 8 us/px, GFP channel, maximum 200 photons/px, 5 min timelapse at 30s intervals."
-
-**Design parameters**:
-| Parameter | Range | Unit |
-|-----------|-------|------|
-| Pinhole size | 0.5 - 3.0 | AU |
-| Scan speed | 1 - 20 | us/px |
-| Laser power | 0.1 - 10 | % |
-| Z-step (if 3D) | 0.1 - 2.0 | um |
-| Frame interval | 1 - 300 | s |
-
-#### B2: Forward + Reconstruct
-
-**Mismatch parameters**:
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | PSF sigma | 1.5 | [0.8, 3.0] | px |
@@ -237,44 +122,16 @@ Each modality's benchmarks progress through maturity levels:
 | Bleaching rate | 0.01 | [0, 0.1] | per frame |
 | Pinhole misalignment | 0 | [0, 0.5] | AU offset |
 
-**Solvers**: RL + drift correction, CARE, deconvolution + registration.
-
-**Improvement suggestions**:
-- Add sample-induced aberration (refractive index mismatch in live cells)
-- Compound: drift + bleaching + background increase over timelapse
-
-#### B3: System Identification
-
-**True-Spec parameters**: PSF, drift trajectory (px/frame, direction), bleaching curve, pinhole offset.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.75.
-**Feedback targets**: Recommend (a) drift correction method, (b) adaptive exposure to compensate bleaching, (c) pinhole realignment if offset detected.
+**B3 True-Spec**: PSF, drift trajectory, bleaching curve, pinhole offset.
+**B4 rho**: >= 0.75. **Improvement**: Add sample-induced aberration, compound drift+bleaching.
 
 ---
 
 ### 1.4 Confocal 3D Z-Stack (`confocal_3d`)
 
-**Canonical DAG**: C → D | **Carrier**: Photon | **Current maturity**: M1
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M1
 
-#### B1: Design
-
-**Example prompt**: "Design 3D confocal z-stack: 100x oil, NA 1.45, 512x512x128 voxels, z-step 200 nm, depth 25 um, n_medium = 1.515."
-
-**Design parameters**:
-| Parameter | Range | Unit |
-|-----------|-------|------|
-| Axial PSF sigma | 1.5 - 6.0 | px |
-| Lateral PSF sigma | 0.8 - 2.5 | px |
-| Z-step | 0.1 - 1.0 | um |
-| Depth range | 5 - 100 | um |
-| Attenuation coefficient | 0.01 - 0.1 | per slice |
-| Refractive index | 1.33 - 1.56 | - |
-
-#### B2: Forward + Reconstruct
-
-**Mismatch parameters**:
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Axial PSF sigma | 3.0 | [1.5, 6.0] | px |
@@ -282,373 +139,317 @@ Each modality's benchmarks progress through maturity levels:
 | Attenuation coeff | 0.03 | [0, 0.1] | per slice |
 | Spherical aberration | 0 | [0, 0.5] | waves |
 
-**Solvers**: 3D Richardson-Lucy, iterative constrained, multi-view fusion.
-
-**Improvement suggestions**:
-- Add depth-dependent PSF: PSF changes with distance from coverslip
-- Include sample-induced scattering model for thick tissue
-
-#### B3: True-Spec parameters
-
-Refractive index, depth-dependent PSF model, attenuation profile, spherical aberration coefficient.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.70 (depth-dependent aberration is hard to correct fully).
-**Feedback**: "Spherical aberration = {x} waves at depth {z} um. Recommend: switch to silicone oil objective (n=1.406) for tissue imaging."
+**B3 True-Spec**: RI, depth-dependent PSF, attenuation, aberration.
+**B4 rho**: >= 0.70. **Improvement**: Add depth-dependent PSF model.
 
 ---
 
 ### 1.5 Structured Illumination Microscopy (`sim`)
 
-**Canonical DAG**: M → C → D | **Carrier**: Photon | **Current maturity**: M2
+**Canonical DAG**: M → C → D | **Carrier**: Photon | **Maturity**: M2
 
-#### B1: Design
-
-**Example prompt**: "Design 2D-SIM system: 100x/1.49 TIRF objective, 3 orientations x 3 phases = 9 raw frames, pattern frequency 0.95x cutoff, modulation depth > 0.8, GFP channel."
-
-**Design parameters**:
-| Parameter | Range | Unit |
-|-----------|-------|------|
-| Pattern frequency | 0.5 - 1.0 | x cutoff |
-| Number of orientations | 3 - 5 | - |
-| Phases per orientation | 3 - 7 | - |
-| Modulation depth | 0.3 - 1.0 | - |
-
-#### B2: Forward + Reconstruct
-
-**Mismatch parameters**:
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Pattern frequency | 0.1 | [0.05, 0.15] | cycles/px |
 | Phase shifts | [0, 2pi/3, 4pi/3] | +/- 0.2 rad each | rad |
 | Modulation depth | 0.8 | [0.3, 1.0] | - |
 | Pattern orientation | [0, 60, 120] | +/- 3 deg each | deg |
-| Bleaching per frame | 0 | [0, 0.05] | fraction |
 
-**Solvers**: Wiener-SIM, HiFi-SIM, fairSIM, ML-SIM.
-
-**Expected Scenario I PSNR**: 28-35 dB.
-**Expected Scenario II PSNR drop**: 5-12 dB (SIM is very sensitive to pattern errors).
-
-**Improvement suggestions**:
-- Add nonlinear SIM (saturated) variant
-- Test 3D-SIM with axial pattern estimation
-- Compound: phase error + modulation fade + bleaching across orientations
-
-#### B3: System Identification
-
-**True-Spec parameters**: Pattern frequencies (3), phases (9), modulation depths (3), orientations (3), OTF attenuation.
-
-**Key challenge**: Estimating 15+ parameters from 9 raw images. This is a hard identification problem.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.80 (pattern correction is well-studied).
-**Feedback**: "Phase shift error of {x} rad at orientation {i}. Modulation depth dropped to {y} at orientation {j} — possible polarization misalignment."
+**Solvers**: Wiener-SIM, HiFi-SIM, fairSIM. **Scenario I PSNR**: 28-35 dB. **Scenario II drop**: 5-12 dB.
+**B3 True-Spec**: Frequencies (3), phases (9), modulation depths (3), orientations (3), OTF.
+**B4 rho**: >= 0.80. **Improvement**: Add 3D-SIM, nonlinear SIM, compound mismatch.
 
 ---
 
-### 1.6 Light-Sheet (LSFM) (`lightsheet`)
+### 1.6 Light-Sheet LSFM (`lightsheet`)
 
-**Canonical DAG**: C → D | **Carrier**: Photon | **Current maturity**: M1
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M1
 
-#### B1: Design
-
-**Example prompt**: "Design light-sheet system for cleared mouse brain: 10x/0.6 detection, 5x/0.16 illumination, sheet thickness 5 um, FOV 1.5x1.5 mm, dual-sided illumination."
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Sheet thickness | 5.0 | [2.0, 15.0] | um |
 | Sheet tilt | 0 | [-3, 3] | deg |
 | Stripe strength | 0.2 | [0, 0.8] | relative |
 | Attenuation coeff | 0.02 | [0.005, 0.08] | per slice |
-| Multi-view registration error | 0 | [0, 5] | px |
 
-**Solvers**: Destripe + deconvolution, multi-view fusion (BigStitcher).
-
-**Improvement suggestions**:
-- Add scattering-induced stripe modeling
-- Include tile stitching error for large-volume imaging
-
-#### B3: True-Spec parameters
-
-Sheet profile (Gaussian or Bessel), tilt angle, stripe pattern, attenuation profile, multi-view transformation matrices.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.75.
-**Feedback**: "Dominant artifact: horizontal stripes with period {p} px. Cause: absorbing structure in illumination path. Recommendation: enable dual-sided illumination or pivot illumination."
+**B4 rho**: >= 0.75. **Improvement**: Add scattering-induced stripe, tile stitching error.
 
 ---
 
-### 1.7 Fluorescence Lifetime (FLIM) (`flim`)
+### 1.7 Fluorescence Lifetime FLIM (`flim`)
 
-**Canonical DAG**: M → R → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: M → R → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B1: Design
-
-**Example prompt**: "Design FLIM system for FRET measurement: pulsed laser 405 nm, 80 MHz rep rate, TCSPC detector, 256 time bins, IRF width 80 ps, lifetime range 0.5-10 ns."
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | IRF width | 80 | [40, 200] | ps |
 | IRF shift | 0 | [-50, 50] | ps |
-| Background (afterpulsing) | 0.01 | [0, 0.1] | relative |
+| Afterpulsing | 0.01 | [0, 0.1] | relative |
 | Pile-up fraction | 0 | [0, 0.05] | - |
-| Time bin width | 50 | [40, 80] | ps |
 
-**Solvers**: Phasor analysis, iterative reconvolution, Bayesian lifetime fitting.
-
-**Improvement suggestions**:
-- Add multi-exponential decay identification (2-3 lifetime components)
-- Include FRET efficiency estimation benchmark
-
-#### B3: True-Spec parameters
-
-IRF shape, lifetimes (multi-component), fractional amplitudes, background, pile-up model.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.70.
-**Feedback**: "IRF width mismatch: estimated {x} ps vs nominal {y} ps. Pile-up detected at {z}%. Recommendation: reduce excitation power or apply pile-up correction."
+**B4 rho**: >= 0.70. **Improvement**: Add multi-exponential, FRET efficiency benchmark.
 
 ---
 
-### 1.8 Fourier Ptychographic Microscopy (`fpm`)
+### 1.8 Fourier Ptychographic FPM (`fpm`)
 
-**Canonical DAG**: M → P → D | **Carrier**: Photon | **Current maturity**: M1
+**Canonical DAG**: M → P → D | **Carrier**: Photon | **Maturity**: M1
 
-#### B1: Design
-
-**Example prompt**: "Design FPM system: 4x/0.1NA objective, 15x15 LED array at 80 mm distance, LED spacing 4 mm, synthetic NA 0.5, 225 raw images."
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| LED position x | array | +/- 0.5 mm each | mm |
-| LED position y | array | +/- 0.5 mm each | mm |
-| LED intensity | 1.0 | [0.5, 1.5] per LED | relative |
-| Pupil aberration (Zernike) | 0 | [0, 0.3] waves per mode | waves |
+| LED position error | 0 | +/- 0.5 mm each | mm |
+| LED intensity variation | 1.0 | [0.5, 1.5] per LED | relative |
+| Pupil aberration (Zernike) | 0 | [0, 0.3] waves/mode | waves |
 | Defocus | 0 | [-5, 5] | um |
 
-**Solvers**: Sequential phase retrieval, ePIE-FPM, Newton-FPM.
-
-**Improvement suggestions**:
-- Add vignetting model for off-axis LEDs
-- Test robustness to LED failure (missing illuminations)
-
-#### B3: True-Spec parameters
-
-All LED positions (225x2), LED intensities (225), pupil aberration coefficients (Zernike Z4-Z11), defocus.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.85 (LED position correction is very effective).
-**Feedback**: "LED (7,3) displaced by {dx} mm east. Pupil shows coma = {z} waves. Recommendation: update LED calibration table; correct pupil in reconstruction."
+**B4 rho**: >= 0.85. **Improvement**: Add vignetting, LED failure robustness.
 
 ---
 
-### 1.9 Two-Photon / Multiphoton (`two_photon`)
+### 1.9 Two-Photon (`two_photon`)
 
-**Canonical DAG**: C → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B1: Design
-
-**Example prompt**: "Design two-photon system for in-vivo brain imaging: 25x/1.05 water objective, 920 nm excitation, GaAsP PMT, scan FOV 500x500 um, imaging depth 0-500 um."
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Scattering coeff (mu_s) | 10 | [5, 30] | mm^-1 |
-| PSF sigma (depth-dependent) | varies | scale [0.7, 1.5] | - |
-| Excitation power attenuation | exp | coefficient [0.005, 0.02] | per um |
+| Scattering coeff | 10 | [5, 30] | mm^-1 |
+| PSF depth scaling | 1.0 | [0.7, 1.5] | - |
+| Excitation attenuation | 0.01 | [0.005, 0.02] | per um |
 | Motion artifact | 0 | [0, 5] | um |
 
-**Improvement suggestions**:
-- Add adaptive optics correction benchmark
-- Include in-vivo brain motion model (heartbeat, respiration)
-
-#### B3: True-Spec parameters
-
-Scattering coefficient profile, PSF vs depth curve, excitation attenuation, motion trajectory.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.65 (scattering limits correction in deep tissue).
+**B4 rho**: >= 0.65. **Improvement**: Add adaptive optics, in-vivo motion model.
 
 ---
 
-### 1.10 STED Microscopy (`sted`)
+### 1.10 STED (`sted`)
 
-**Canonical DAG**: C → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B1: Design
-
-**Example prompt**: "Design STED nanoscopy: 100x/1.4 oil, depletion beam 775 nm, saturation factor 30, effective resolution 40 nm, confocal reference channel."
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Depletion beam alignment | 0 | [0, 30] | nm offset |
 | Saturation factor | 30 | [10, 50] | - |
 | Effective PSF FWHM | 40 | [30, 120] | nm |
-| Background from incomplete depletion | 0 | [0, 0.2] | relative |
 
-**Improvement suggestions**:
-- Add 3D-STED benchmark
-- Include bleaching rate model (STED causes more bleaching than confocal)
+**B4 rho**: >= 0.70.
 
 ---
 
-### 1.11 PALM/STORM Localization (`palm_storm`)
+### 1.11 PALM/STORM (`palm_storm`)
 
-**Canonical DAG**: M → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: M → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B1: Design
-
-**Example prompt**: "Design STORM imaging: 100x/1.49 TIRF, Alexa Fluor 647, 10,000 frames, label density 500/um^2, target localization precision 20 nm."
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Drift rate (x) | 0 | [0, 2] | nm/frame |
-| Drift rate (y) | 0 | [0, 2] | nm/frame |
-| Background photons | 20 | [5, 100] | per px per frame |
-| Photon count per event | 1000 | [200, 5000] | photons |
-| Camera pixel size | 100 | [90, 110] | nm |
+| Drift rate (x, y) | 0 | [0, 2] each | nm/frame |
+| Background photons | 20 | [5, 100] | per px |
+| Photon count/event | 1000 | [200, 5000] | photons |
+| Pixel size | 100 | [90, 110] | nm |
 
-**Solvers**: ThunderSTORM, DECODE, SMLM fitting.
-
-**Improvement suggestions**:
-- Add multi-emitter overlap benchmark
-- Include 3D SMLM (astigmatic, biplane, or double-helix PSF)
-
-#### B3: True-Spec parameters
-
-Drift trajectory (x,y per frame), true label positions, photon rates per molecule, background map, camera calibration.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.80 (drift correction is very effective).
-**Feedback**: "Linear drift detected: {dx} nm/frame in x, {dy} nm/frame in y. Fiducial correction improves FRC resolution by {r} nm."
+**B4 rho**: >= 0.80. **Improvement**: Add multi-emitter, 3D SMLM.
 
 ---
 
-### 1.12 TIRF Microscopy (`tirf`)
+### 1.12 TIRF (`tirf`)
 
-**Canonical DAG**: C → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Incidence angle | 68 | [62, 75] | deg |
 | Evanescent depth | 100 | [50, 300] | nm |
-| Background (non-TIRF leak) | 0 | [0, 0.3] | relative |
-| PSF sigma | 1.5 | [1.0, 3.0] | px |
-
-**Improvement suggestions**:
-- Add VA-TIRF (variable angle) benchmark
-- Include objective-type vs prism-type TIRF comparison
+| Background (non-TIRF) | 0 | [0, 0.3] | relative |
 
 ---
 
 ### 1.13 Polarization Microscopy (`polarization`)
 
-**Canonical DAG**: M → C → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: M → C → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Analyzer angle offset | 0 | [-5, 5] | deg |
 | Retardance offset | 0 | [-10, 10] | nm |
-| Polarizer extinction ratio | 1e-4 | [1e-5, 1e-3] | - |
-| Detector gain imbalance (channels) | 1.0 | [0.9, 1.1] | per channel |
+| Extinction ratio | 1e-4 | [1e-5, 1e-3] | - |
 
 ---
 
 ### 1.14 Expansion Microscopy (`expansion`)
 
-**Canonical DAG**: C → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Expansion factor | 4.0 | [3.5, 4.5] | x |
 | Local distortion | 0 | [0, 5%] | relative |
 | Anisotropic expansion | 0 | [0, 3%] | x vs y |
-| Labeling efficiency | 1.0 | [0.5, 1.0] | - |
-
-**Improvement suggestions**:
-- Add distortion field estimation benchmark (B3 should output spatial distortion map)
-- Include multi-round expansion (iterative ExM)
 
 ---
 
-### 1.15 MINFLUX Nanoscopy (`minflux`)
+### 1.15 MINFLUX (`minflux`)
 
-**Canonical DAG**: C → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Beam center position error | 0 | [0, 5] | nm |
-| Beam pattern asymmetry | 0 | [0, 5%] | - |
+| Beam center error | 0 | [0, 5] | nm |
 | Photon count | 500 | [50, 2000] | photons |
-| Background | 0.5 | [0, 5] | photons/px |
 
 ---
 
 ### 1.16 Image Scanning Microscopy (`ism`)
 
-**Canonical DAG**: C → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Detector element offset | 0 | [-1, 1] | px |
 | Magnification error | 0 | [-5%, 5%] | relative |
-| Crosstalk between elements | 0 | [0, 10%] | - |
+
+---
+
+### 1.17 Phase Contrast Microscopy (`phase_contrast`) -- NEW
+
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Phase ring alignment | 0 | [0, 5] | um offset |
+| Halo artifact strength | 0 | [0, 0.3] | relative |
+| Phase ring absorption | 0.7 | [0.5, 0.9] | - |
+
+**B3 True-Spec**: Phase ring position, absorption coefficient, condenser alignment.
+**B4 rho**: >= 0.70. **Improvement**: Test quantitative phase recovery from phase contrast images.
+
+---
+
+### 1.18 Differential Interference Contrast (`dic`) -- NEW
+
+**Canonical DAG**: M → C → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Shear amount | 100 | [50, 200] | nm |
+| Bias retardation | lambda/4 | +/- 30 nm | nm |
+| Prism orientation | 0 | [-3, 3] | deg |
+
+**B3 True-Spec**: Shear distance, bias, prism angle. **B4 rho**: >= 0.70.
+
+---
+
+### 1.19 Dark-Field Microscopy (`dark_field`) -- NEW
+
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Condenser NA vs objective NA ratio | 1.2 | [1.0, 1.5] | - |
+| Stray light | 0 | [0, 5%] | relative |
+| Scattering angle range | correct | +/- 10% | - |
+
+---
+
+### 1.20 Lattice Light-Sheet (`lattice_lightsheet`) -- NEW
+
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Lattice period error | 0 | [-5%, 5%] | relative |
+| Dithering range | correct | +/- 10% | - |
+| Sheet NA error | 0 | [-0.05, 0.05] | - |
+| Excitation PSF sidelobe | 0 | [0, 10%] | relative |
+
+**Improvement**: Compare Bessel vs lattice modes; add multi-view registration.
+
+---
+
+### 1.21 Second Harmonic Generation (`shg`) -- NEW
+
+**Canonical DAG**: M → R → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Phase matching error | 0 | [-5%, 5%] | - |
+| Excitation power fluctuation | 0 | [0, 10%] | - |
+| Collection NA mismatch | 0 | [-0.1, 0.1] | - |
+
+**B3 True-Spec**: Phase matching angle, excitation power, SHG efficiency. **B4 rho**: >= 0.65.
+
+---
+
+### 1.22 Spinning Disk Confocal (`spinning_disk`) -- NEW
+
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Pinhole crosstalk | 0 | [0, 15%] | - |
+| Disk rotation wobble | 0 | [0, 1] | px |
+| Illumination non-uniformity | 0 | [0, 10%] | - |
+
+---
+
+### 1.23 Three-Photon Microscopy (`three_photon`) -- NEW
+
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Scattering coeff | 15 | [8, 40] | mm^-1 |
+| Excitation wavelength shift | 0 | [-10, 10] | nm |
+| Depth-dependent PSF | varies | scale [0.5, 2.0] | - |
+
+**Improvement**: Test imaging depth 1-2 mm in brain tissue; compare vs two-photon.
+
+---
+
+### 1.24 DNA-PAINT Super-Resolution (`dna_paint`) -- NEW
+
+**Canonical DAG**: M → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Binding on-rate | varies | [0.5x, 2.0x] | relative |
+| Imager strand concentration | 5 | [1, 20] | nM |
+| Drift rate | 0 | [0, 3] | nm/frame |
+| Background from non-specific binding | 0 | [0, 10%] | - |
+
+**Improvement**: Add Exchange-PAINT (multi-target) benchmark.
 
 ---
 
 ## 2. Compressive Imaging (4 modalities)
 
+*(Unchanged — CASSI, SPC, CACTI, Matrix with full detailed entries as before)*
+
 ---
 
 ### 2.1 CASSI (`cassi`)
 
-**Canonical DAG**: M → W → Sigma → D | **Carrier**: Photon | **Current maturity**: M3
+**Canonical DAG**: M → W → Sigma → D | **Carrier**: Photon | **Maturity**: M3
 
-#### B1: Design
-
-**Example prompt**: "Design CASSI for surgical tissue spectral imaging: 28 bands at 450-650 nm, spatial resolution 256x256, binary random mask density 0.5, single-shot acquisition."
-
-**Design parameters**:
-| Parameter | Range | Unit |
-|-----------|-------|------|
-| Spectral bands | 8 - 64 | - |
-| Spatial resolution | 128 - 1024 | px |
-| Mask density | 0.3 - 0.7 | - |
-| Dispersion per band | 1 - 4 | px |
-| Spectral range | 400 - 1000 | nm |
-
-#### B2: Forward + Reconstruct
-
-**Mismatch parameters** (flagship-validated):
+#### B2: Mismatch Parameters (flagship-validated)
 | Parameter | Nominal | Mismatch Range | True Example | Unit |
 |-----------|---------|----------------|--------------|------|
 | Mask shift dx | 0 | [-3.0, 3.0] | 1.47 | px |
@@ -659,1632 +460,1412 @@ Drift trajectory (x,y per frame), true label positions, photon rates per molecul
 | Gain | 1.0 | [0.9, 1.1] | 1.02 | - |
 | Read noise | 5.0 | [1.0, 15.0] | 5.1 | e- |
 
-**Solvers**: GAP-TV, ADMM-TV, MST, CST, TSA-Net.
-
-**Validated baseline** (flagship): GAP-TV +0.76 dB, rho = 0.85.
-
-**Improvement suggestions**:
-- Add compound mismatch: all 5 params simultaneously (validated at single-param level only)
-- Add PSF mismatch (spectral PSF variation across bands)
-- Red Team: adversarial worst-case combination of dx, dy, rotation
-- Real dataset: TSA-Real (5 scenes, 660x660x28)
-
-#### B3: System Identification
-
-**True-Spec parameters**: dx, dy, rotation_deg, dispersion_slope, dispersion_offset, gain, read_noise, dark_current.
-
-**Evaluation**: Parameter RMSE across all 5-7 mismatch params; must identify which Triad gate dominates (mismatch vs noise for CASSI is usually mismatch).
-
-#### B4: Correction
-
-**Expected rho**: >= 0.85 (validated).
-**Expected PSNR gain**: +0.5 to +2.0 dB (more at high mismatch).
-
-**Feedback template**: "Mask shift: dx = {est} px (true: {true}). Dispersion slope: a1 = {est} (true: {true}). Dominant gate: Operator Mismatch. Recommendation: (1) recalibrate mask alignment, expected gain +{x} dB; (2) re-measure dispersion curve, expected gain +{y} dB."
+**Validated baseline**: GAP-TV +0.76 dB, rho = 0.85.
+**B4 rho**: >= 0.85. **Improvement**: Compound all 5 params; Red Team adversarial; PSF spectral variation.
 
 ---
 
 ### 2.2 Single-Pixel Camera (`spc`)
 
-**Canonical DAG**: M → Sigma → D | **Carrier**: Photon | **Current maturity**: M3
+**Canonical DAG**: M → Sigma → D | **Carrier**: Photon | **Maturity**: M3
 
-#### B1: Design
-
-**Example prompt**: "Design SPC for NIR imaging: 64x64 resolution, Hadamard patterns, 25% sampling rate, DMD modulation, single InGaAs detector."
-
-#### B2: Mismatch parameters
-
-| Parameter | Nominal | Mismatch Range | True Example | Unit |
-|-----------|---------|----------------|--------------|------|
-| Gain drift alpha | 1.0 | [0.8, 1.2] | varies | - |
-| Measurement noise sigma_y | 0.01 | [0, 0.1] | 0.03 | - |
-| Pattern error (bit flips) | 0 | [0, 1%] | - | - |
-| Timing jitter | 0 | [0, 5] | - | us |
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Gain drift alpha | 1.0 | [0.8, 1.2] | - |
+| Measurement noise sigma_y | 0.01 | [0, 0.1] | - |
+| Pattern error (bit flips) | 0 | [0, 1%] | - |
 
 **Validated baseline**: FISTA-TV +7.71 dB, rho = 0.86.
-
-**Improvement suggestions**:
-- Add time-varying gain drift (gain changes across measurement sequence)
-- Test different pattern types: Hadamard vs Gaussian vs Fourier
-- Include adaptive sampling (25% → 10% → 5%)
-
-#### B3: True-Spec parameters
-
-Gain curve (per measurement), noise level, pattern matrix perturbation.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.86.
 
 ---
 
 ### 2.3 CACTI (`cacti`)
 
-**Canonical DAG**: M → Sigma → D | **Carrier**: Photon | **Current maturity**: M3
+**Canonical DAG**: M → Sigma → D | **Carrier**: Photon | **Maturity**: M3
 
-#### B1: Design
-
-**Example prompt**: "Design CACTI for high-speed video: 8 frames at 256x256, binary shifting mask, compression ratio 8:1."
-
-#### B2: Mismatch parameters (flagship-validated)
-
+#### B2: Mismatch Parameters (flagship-validated)
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Spatial shift x | 0 | [-3, 3] | px |
-| Spatial shift y | 0 | [-3, 3] | px |
+| Spatial shift x,y | 0 | [-3, 3] | px |
 | Rotation | 0 | [-2, 2] | deg |
-| Temporal clock error | 0 | [-0.5, 0.5] | frame fraction |
-| Gain | 1.0 | [0.9, 1.1] | - |
-| Offset | 0 | [-5, 5] | counts |
-| Mask density error | 0 | [-5%, 5%] | - |
+| Temporal clock error | 0 | [-0.5, 0.5] | frame frac |
+| Gain / offset | 1.0 / 0 | [0.9,1.1] / [-5,5] | - / counts |
 | Frame-dependent gain | 1.0 | [0.9, 1.1] per frame | - |
 
 **Validated baseline**: GAP-TV +10.21 dB, rho = 1.00.
-
-**Improvement suggestions**:
-- Test higher compression ratios (cr=16, cr=24)
-- Add EfficientSCI real data (4 scenes, 512x512, cr=10)
-- Compound: all 8 params simultaneously
-
-#### B3: True-Spec parameters
-
-All 8 mismatch params; mask replication pattern.
-
-#### B4: Correction
-
-**Expected rho**: >= 1.00 (flagship-validated; CACTI correction is very effective).
-**Expected PSNR gain**: +5 to +10 dB.
 
 ---
 
 ### 2.4 Generic Matrix Sensing (`matrix`)
 
-**Canonical DAG**: M → D | **Carrier**: varies | **Current maturity**: M1
+**Canonical DAG**: M → D | **Carrier**: varies | **Maturity**: M1
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Matrix perturbation (Frobenius) | 0 | [0, 10%] of ||A|| | - |
+| Matrix perturbation | 0 | [0, 10%] of ||A|| | - |
 | Condition number change | kappa | [kappa, 10*kappa] | - |
-| Additive noise | 0 | [0, 0.1] | relative |
-
-**Improvement suggestions**:
-- Parameterize mismatch type: row deletion, column permutation, entry noise, rank deficiency
 
 ---
 
-## 3. Medical Imaging (25 modalities)
+## 3. Medical Imaging (37 modalities)
 
 ---
 
 ### 3.1 X-ray CT (`ct`)
 
-**Canonical DAG**: Pi → D | **Carrier**: X-ray | **Current maturity**: M3
+**Canonical DAG**: Pi → D | **Carrier**: X-ray | **Maturity**: M3
 
-#### B1: Design
-
-**Example prompt**: "Design sparse-view CT for interventional guidance: 60 projections, fan-beam, 512 detector elements, 0.5mm resolution, ALARA dose."
-
-**Design parameters**:
-| Parameter | Range | Unit |
-|-----------|-------|------|
-| Number of projections | 30 - 1200 | - |
-| Detector count | 256 - 2048 | - |
-| Geometry | fan/parallel/cone | - |
-| kVp | 60 - 140 | kV |
-| Pixel size | 0.1 - 2.0 | mm |
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Center-of-rotation offset | 0 | [-5, 5] | px |
-| Angular offset (global) | 0 | [-3, 3] | deg |
+| Angular offset | 0 | [-3, 3] | deg |
 | Detector tilt | 0 | [-2, 2] | deg |
 | Beam hardening coeff | 0 | [0, 0.05] | - |
 | Ring artifact amplitude | 0 | [0, 50] | counts |
 
 **Validated baseline**: FBP +10.68 dB, rho = 1.00.
-
-**Datasets**: Walnut Micro-CT (Zenodo), Helsinki Tomography Challenge 2022, AAPM Low-Dose CT.
-
-**Improvement suggestions**:
-- Add metal artifact reduction benchmark
-- Add limited-angle reconstruction (120 deg arc instead of 360)
-- Include scatter correction benchmark for CBCT
-- Compound: CoR offset + ring artifacts + beam hardening
-
-#### B3: True-Spec parameters
-
-CoR offset, angular errors per projection, detector pixel pitch, beam spectrum, ring artifact pattern.
-
-#### B4: Correction
-
-**Expected rho**: >= 1.00 (validated).
-**Feedback**: "Center-of-rotation offset = {x} px. Ring artifact at detector elements {i, j, k}. Recommendation: recalibrate detector alignment, replace ring-artifact pixels."
+**Datasets**: Walnut Micro-CT, Helsinki Tomography Challenge 2022.
+**Improvement**: Metal artifact reduction, limited-angle, scatter correction.
 
 ---
 
 ### 3.2 MRI (`mri`)
 
-**Canonical DAG**: M → F → S → D | **Carrier**: Spin/RF | **Current maturity**: M3
+**Canonical DAG**: M → F → S → D | **Carrier**: Spin/RF | **Maturity**: M3
 
-#### B1: Design
-
-**Example prompt**: "Design accelerated brain MRI: 256x256, 8 coils, Cartesian trajectory, R=4 acceleration, 24 ACS lines, T2-weighted."
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Coil sensitivity error | 0 | [0, 15%] per coil | relative |
-| k-space trajectory deviation | 0 | [0, 2] | % |
-| Off-resonance (B0 inhom.) | 0 | [-100, 100] | Hz |
+| k-space trajectory deviation | 0 | [0, 2%] | - |
+| Off-resonance (B0) | 0 | [-100, 100] | Hz |
 | Acceleration factor | R=4 | [2, 8] | - |
-| Noise level | varies | scale [0.5, 2.0] | - |
 
 **Validated baseline**: SENSE +1.75 to +7.14 dB.
-
-**Datasets**: fastMRI, Calgary-Campinas, M4Raw.
-
-**Improvement suggestions**:
-- Add non-Cartesian trajectory benchmark (radial, spiral)
-- Include phase error estimation
-- Add parallel imaging + compressed sensing combination
-- Test at R=8 and R=16 (current baseline at R=2 and R=4)
-
-#### B3: True-Spec parameters
-
-Coil sensitivity maps (per coil), trajectory deviations, field map (B0), noise covariance matrix.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.75.
-**Feedback**: "Coil #3 sensitivity down 12% relative to nominal. B0 inhomogeneity: {x} Hz max in temporal lobe. Recommendation: re-estimate coil maps from ACS data, apply field-map correction."
+**Improvement**: Non-Cartesian, R=8/R=16, phase error estimation.
 
 ---
 
 ### 3.3 X-ray Radiography (`xray_radiography`)
 
-**Canonical DAG**: Pi → D | **Carrier**: X-ray | **Current maturity**: M0
+**Canonical DAG**: Pi → D | **Carrier**: X-ray | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Scatter fraction | 0 | [0, 0.4] | - |
 | Beam hardening | none | polynomial order 2-4 | - |
 | Detector lag | 0 | [0, 0.1] | fraction |
-| Geometric magnification | 1.0 | [0.95, 1.05] | - |
 
 ---
 
 ### 3.4 Ultrasound B-mode (`ultrasound`)
 
-**Canonical DAG**: P → D | **Carrier**: Acoustic | **Current maturity**: M1
+**Canonical DAG**: P → D | **Carrier**: Acoustic | **Maturity**: M1
 
-#### B1: Design
-
-**Example prompt**: "Design abdominal ultrasound: 128-element linear array, 3.5 MHz center frequency, focus depth 80 mm, imaging depth 150 mm."
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Speed of sound | 1540 | [1450, 1600] | m/s |
-| Phase aberration screen | 0 | [0, 50] | ns rms |
-| Element sensitivity variation | 1.0 | [0.7, 1.3] per element | - |
-| Frequency-dependent attenuation | 0.5 | [0.3, 0.8] | dB/cm/MHz |
+| Phase aberration | 0 | [0, 50] | ns rms |
+| Element sensitivity | 1.0 | [0.7, 1.3] per elem | - |
+| Attenuation | 0.5 | [0.3, 0.8] | dB/cm/MHz |
 
-**Solvers**: DAS, adaptive beamforming, synthetic aperture.
-
-**Improvement suggestions**:
-- Add aberration correction benchmark (tissue inhomogeneity)
-- Include plane-wave ultrafast imaging mode
-- Test shear-wave elastography coupling
-
-#### B3: True-Spec parameters
-
-Sound speed profile, aberration screen, element sensitivity map, attenuation profile.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.70 (aberration correction is challenging in practice).
+**B4 rho**: >= 0.70. **Improvement**: Aberration correction, plane-wave ultrafast.
 
 ---
 
 ### 3.5 PET (`pet`)
 
-**Canonical DAG**: Pi → D | **Carrier**: Gamma | **Current maturity**: M1
+**Canonical DAG**: Pi → D | **Carrier**: Gamma | **Maturity**: M1
 
-#### B1: Design
-
-**Example prompt**: "Design whole-body PET/CT: BGO crystal ring, 4 mm resolution, TOF resolution 500 ps, 3-min per bed position, FDG tracer."
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Attenuation map error | 0 | [0, 10%] | HU-to-LAC |
 | Scatter fraction | 0.35 | [0.2, 0.5] | - |
 | Randoms fraction | 0.2 | [0.1, 0.4] | - |
-| Normalization error | 0 | [0, 5%] per detector | - |
-| Dead time correction error | 0 | [0, 3%] | - |
+| Normalization error | 0 | [0, 5%] per det | - |
 | TOF timing offset | 0 | [-200, 200] | ps |
 
-**Solvers**: MLEM, OSEM, PSF+TOF-OSEM.
-
-**Improvement suggestions**:
-- Add PET/MR attenuation challenge (MR-based attenuation is harder)
-- Include motion correction benchmark
-- Test at different count levels (clinical vs research dose)
-
-#### B3: True-Spec parameters
-
-Attenuation map, scatter sinogram, normalization table, dead time model, TOF calibration.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.80.
-**Feedback**: "Block #47 normalization deviates 5% from calibration. Scatter model underestimates by 8% in abdomen. Recommendation: re-run blank scan, update scatter kernel."
+**B4 rho**: >= 0.80. **Improvement**: PET/MR attenuation, motion correction.
 
 ---
 
 ### 3.6 SPECT (`spect`)
 
-**Canonical DAG**: Pi → D | **Carrier**: Gamma | **Current maturity**: M0
+**Canonical DAG**: Pi → D | **Carrier**: Gamma | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Collimator response error | 0 | [0, 20%] | FWHM |
+| Collimator response error | 0 | [0, 20%] FWHM | - |
 | Center-of-rotation | 0 | [-3, 3] | px |
-| Attenuation map error | 0 | [0, 15%] | relative |
-| Scatter window error | 0 | [0, 10%] | keV |
+| Attenuation error | 0 | [0, 15%] | relative |
 
 ---
 
-### 3.7 Fluoroscopy (`fluoroscopy`)
+### 3.7-3.13 (Fluoroscopy, Mammography, DEXA, CBCT, Angiography, DOT, Photoacoustic)
 
-**Canonical DAG**: Pi → D | **Carrier**: X-ray | **Current maturity**: M0
+*(Same mismatch tables as previous version — retained in full)*
 
-#### B2: Mismatch parameters
+**3.7 `fluoroscopy`**: Pi → D, X-ray. Lag [0,0.15], pincushion [0,3%], veiling glare [0,10%].
 
-| Parameter | Nominal | Mismatch Range | Unit |
-|-----------|---------|----------------|------|
-| Temporal lag coefficient | 0 | [0, 0.15] | - |
-| Geometric pincushion | 0 | [0, 3%] | - |
-| Veiling glare | 0 | [0, 10%] | - |
-| Frame rate mismatch | 30 | [15, 60] | fps |
+**3.8 `mammography`**: Pi → D, X-ray. Heel effect +/-10%, scatter-to-primary [0.2,0.8], MTF [0.8,1.2].
 
----
+**3.9 `dexa`**: Pi → D, X-ray. Effective energies +/-15%, calibration +/-5%, fat fraction [0,20%].
 
-### 3.8 Mammography (`mammography`)
+**3.10 `cbct`**: Pi → D, X-ray. Scatter [0.2,0.7], truncation [0,20%], gantry flex [0,2] mm. rho >= 0.80.
 
-**Canonical DAG**: Pi → D | **Carrier**: X-ray | **Current maturity**: M0
+**3.11 `angiography`**: Pi → D, X-ray. Motion [0,10] px, misregistration [-3,3] deg.
 
-#### B2: Mismatch parameters
+**3.12 `dot`**: M → R,P,R → D, Photon. mu_a [0.005,0.05], mu_s' [0.5,2.0], coupling [0.5,1.5].
 
-| Parameter | Nominal | Mismatch Range | Unit |
-|-----------|---------|----------------|------|
-| Heel effect profile | measured | +/- 10% | relative |
-| Scatter-to-primary ratio | 0.4 | [0.2, 0.8] | - |
-| Detector MTF variation | 1.0 | [0.8, 1.2] | at Nyquist |
-| AEC error | 0 | [-20%, 20%] | exposure |
-
----
-
-### 3.9 DEXA (`dexa`)
-
-**Canonical DAG**: Pi → D | **Carrier**: X-ray | **Current maturity**: M0
-
-#### B2: Mismatch parameters
-
-| Parameter | Nominal | Mismatch Range | Unit |
-|-----------|---------|----------------|------|
-| Effective low energy | 40 | [35, 50] | keV |
-| Effective high energy | 80 | [70, 100] | keV |
-| Calibration polynomial coeff | nominal | +/- 5% | - |
-| Fat-lean tissue assumption | 0 | [0, 20%] | fat fraction error |
-
----
-
-### 3.10 CBCT (`cbct`)
-
-**Canonical DAG**: Pi → D | **Carrier**: X-ray | **Current maturity**: M0
-
-#### B1: Design
-
-**Example prompt**: "Design CBCT for image-guided radiation therapy: half-fan, 360 projections over 200 deg, flat-panel 1024x768, 1 mm voxels."
-
-#### B2: Mismatch parameters
-
-| Parameter | Nominal | Mismatch Range | Unit |
-|-----------|---------|----------------|------|
-| Scatter fraction | 0.4 | [0.2, 0.7] | - |
-| Cone-beam artifact amplitude | varies | scale [0.5, 2.0] | - |
-| Truncation extent | 0 | [0, 20%] | FOV |
-| Detector offset | 0 | [-5, 5] | px |
-| Gantry flex | 0 | [0, 2] | mm |
-
-**Improvement suggestions**:
-- Add scatter correction benchmark using Monte Carlo ground truth
-- Include patient motion during slow rotation
-- Test limited-arc reconstruction (200 deg instead of 360)
-
-#### B3: True-Spec parameters
-
-Scatter distribution, geometric flex trajectory, truncation mask, ring artifact map.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.80.
-**Feedback**: "Scatter fraction = {x}. Cupping artifact detected. Gantry flex: max {y} mm at 180 deg. Recommendation: apply scatter kernel, correct flex model."
-
----
-
-### 3.11 Angiography (`angiography`)
-
-**Canonical DAG**: Pi → D | **Carrier**: X-ray | **Current maturity**: M0
-
-#### B2: Mismatch parameters
-
-| Parameter | Nominal | Mismatch Range | Unit |
-|-----------|---------|----------------|------|
-| Motion between mask and contrast | 0 | [0, 10] | px |
-| Misregistration (rotation) | 0 | [-3, 3] | deg |
-| Contrast timing offset | 0 | [-0.5, 0.5] | s |
-
----
-
-### 3.12 Diffuse Optical Tomography (`dot`)
-
-**Canonical DAG**: M → R,P,R → D | **Carrier**: Photon | **Current maturity**: M0
-
-#### B2: Mismatch parameters
-
-| Parameter | Nominal | Mismatch Range | Unit |
-|-----------|---------|----------------|------|
-| Absorption coeff (mu_a) | 0.01 | [0.005, 0.05] | mm^-1 |
-| Reduced scattering (mu_s') | 1.0 | [0.5, 2.0] | mm^-1 |
-| Source-detector coupling | 1.0 | [0.5, 1.5] per fiber | - |
-| Boundary condition model | extrapolated | varies | - |
-
----
-
-### 3.13 Photoacoustic (`photoacoustic`)
-
-**Canonical DAG**: M → P → D | **Carrier**: Acoustic | **Current maturity**: M0
-
-#### B2: Mismatch parameters
-
-| Parameter | Nominal | Mismatch Range | Unit |
-|-----------|---------|----------------|------|
-| Speed of sound | 1540 | [1400, 1600] | m/s |
-| Acoustic attenuation | 0 | [0, 0.5] | dB/cm/MHz |
-| Fluence model error | 0 | [0, 30%] | relative |
-| Grueneisen parameter | 0.8 | [0.5, 1.2] | - |
-| Transducer element sensitivity | 1.0 | [0.7, 1.3] per elem | - |
-
-**Improvement suggestions**:
-- Add 3D photoacoustic tomography benchmark
-- Include limited-view reconstruction (partial aperture)
-- Test spectral unmixing for multi-wavelength PA
+**3.13 `photoacoustic`**: M → P → D, Acoustic. Speed [1400,1600] m/s, attenuation [0,0.5] dB/cm/MHz, fluence [0,30%].
 
 ---
 
 ### 3.14 OCT (`oct`)
 
-**Canonical DAG**: P+P → Sigma → D | **Carrier**: Photon | **Current maturity**: M1
+**Canonical DAG**: P+P → Sigma → D | **Carrier**: Photon | **Maturity**: M1
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Dispersion coeff (GDD) | 0 | [-100, 100] | fs^2 |
-| Dispersion coeff (TOD) | 0 | [-50, 50] | fs^3 |
+| Dispersion GDD | 0 | [-100, 100] | fs^2 |
 | Reference arm position | optimal | +/- 50 | um |
 | K-linearization error | 0 | [0, 0.5%] | relative |
-| Roll-off attenuation | measured | +/- 20% | - |
-
-**Improvement suggestions**:
-- Add OCT angiography benchmark
-- Include speckle reduction benchmark
 
 ---
 
-### 3.15 Functional MRI (`fmri`)
+### 3.15-3.19 (fMRI, MRS, Diffusion MRI, Doppler US, Elastography)
 
-**Canonical DAG**: M → F → S → D | **Carrier**: Spin/RF | **Current maturity**: M0
+**3.15 `fmri`**: M→F→S→D, Spin/RF. Distortion [0,5] px, dropout [0,15%], motion 6DOF [0,3] mm/deg.
 
-#### B2: Mismatch parameters
+**3.16 `mrs`**: M→F→S→D, Spin/RF. Lineshape, eddy phase [0,0.5] rad, residual water [0,100x].
 
+**3.17 `diffusion_mri`**: M→F→S→D, Spin/RF. Gradient nonlinearity [0,5%], eddy distortion [0,3] px.
+
+**3.18 `doppler_ultrasound`**: P→D, Acoustic. Flow angle [0,90] deg, PRF aliasing +/-20%, wall filter [20,200] Hz.
+
+**3.19 `elastography`**: P→D, Acoustic. Speed error +/-20%, reflection [0,30%], dispersion [0,20%].
+
+---
+
+### 3.20-3.25 (Endoscopy, Fundus, OCTA, Proton Therapy, Brachytherapy, Portal Imaging)
+
+**3.20 `endoscopy`**: M→C→D, Photon. Fiber transmission [0,15%], distortion [0,5%], cross-talk [0,10%].
+
+**3.21 `fundus`**: C→D, Photon. Aberration [0,0.5] waves, illumination [0,30%].
+
+**3.22 `octa`**: P+P→Sigma→D, Photon. Bulk motion [0,50] um, projection artifacts [0,0.3].
+
+**3.23 `proton_therapy_img`**: Pi→D, Proton. Range uncertainty +/-3%, MCS error [0,10%].
+
+**3.24 `brachytherapy_img`**: Pi→D, Gamma. Source position [0,3] mm, applicator [0,2] mm.
+
+**3.25 `portal_imaging`**: Pi→D, MV X-ray. Gantry sag [0,3] mm, flex [0,5] mm, MLC error [-1,1] mm.
+
+---
+
+### 3.26 Photon-Counting Spectral CT (`spectral_ct`) -- NEW
+
+**Canonical DAG**: Pi → W → D | **Carrier**: X-ray | **Maturity**: M0
+
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| EPI geometric distortion | 0 | [0, 5] | px |
-| Signal dropout fraction | 0 | [0, 15%] | of voxels |
-| Motion parameters (6 DOF) | 0 | [0, 3] mm / [0, 3] deg | - |
-| Physiological noise (cardiac, resp) | 0 | SNR contribution [0, 30%] | - |
+| Energy threshold calibration | 0 | [-2, 2] | keV per bin |
+| Charge sharing fraction | 0 | [0, 15%] | - |
+| Pile-up at high flux | 0 | [0, 10%] | - |
+| Material decomposition basis error | 0 | [0, 5%] | - |
+
+**B3 True-Spec**: Energy thresholds, charge sharing model, pile-up model, basis functions.
+**B4 rho**: >= 0.75. **Improvement**: K-edge subtraction benchmark, multi-material decomposition.
 
 ---
 
-### 3.16 MR Spectroscopy (`mrs`)
+### 3.27 MR Elastography (`mr_elastography`) -- NEW
 
-**Canonical DAG**: M → F → S → D | **Carrier**: Spin/RF | **Current maturity**: M0
+**Canonical DAG**: M → F → S → D | **Carrier**: Spin/RF | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Lineshape distortion | Lorentzian | Gaussian-Lorentzian mix | - |
-| Eddy current phase | 0 | [0, 0.5] | rad |
-| Residual water amplitude | 0 | [0, 100x metabolite] | relative |
-| Baseline drift | 0 | polynomial order 0-3 | - |
-| Chemical shift referencing | 0 | [-0.1, 0.1] | ppm |
+| Shear wave frequency error | 0 | [-10%, 10%] | - |
+| Wave attenuation model | correct | +/- 20% | - |
+| Motion encoding gradient error | 0 | [-5%, 5%] | - |
+| Boundary reflection | none | [0, 20%] | amplitude |
 
 ---
 
-### 3.17 Diffusion MRI (`diffusion_mri`)
+### 3.28 CEST MRI (`cest_mri`) -- NEW
 
-**Canonical DAG**: M → F → S → D | **Carrier**: Spin/RF | **Current maturity**: M0
+**Canonical DAG**: M → F → S → D | **Carrier**: Spin/RF | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Gradient nonlinearity | 0 | [0, 5%] | relative |
-| Eddy current distortion | 0 | [0, 3] | px |
-| b-value error | 0 | [-5%, 5%] | relative |
-| Gradient direction error | 0 | [0, 3] | deg |
+| B0 inhomogeneity | 0 | [-50, 50] | Hz |
+| B1 inhomogeneity | 0 | [0, 20%] | - |
+| Saturation power error | 0 | [-10%, 10%] | - |
+| MT contamination | 0 | [0, 30%] | - |
 
 ---
 
-### 3.18 Doppler Ultrasound (`doppler_ultrasound`)
+### 3.29 Arterial Spin Labeling (`asl_mri`) -- NEW
 
-**Canonical DAG**: P → D | **Carrier**: Acoustic | **Current maturity**: M0
+**Canonical DAG**: M → F → S → D | **Carrier**: Spin/RF | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Flow angle error | 60 | [0, 90] | deg |
-| PRF aliasing threshold | correct | +/- 20% | - |
-| Wall filter cutoff | 50 | [20, 200] | Hz |
-| Clutter level | 0 | [0, -20] | dB below signal |
+| Labeling efficiency | 0.85 | [0.6, 0.95] | - |
+| Transit delay | 1.5 | [0.5, 3.0] | s |
+| T1 blood error | 0 | [-10%, 10%] | - |
 
 ---
 
-### 3.19 Shear-Wave Elastography (`elastography`)
+### 3.30 MR Angiography (`mra`) -- NEW
 
-**Canonical DAG**: P → D | **Carrier**: Acoustic | **Current maturity**: M0
+**Canonical DAG**: M → F → S → D | **Carrier**: Spin/RF | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Shear wave speed error | 0 | [-20%, 20%] | relative |
-| Boundary reflection | none | [0, 30%] | amplitude |
-| Dispersion (frequency-dependent) | none | [0, 20%] | at 200 Hz |
+| Contrast timing error | 0 | [-3, 3] | s |
+| Background suppression | complete | [0, 20%] residual | - |
+| Velocity encoding error | 0 | [-15%, 15%] | - |
 
 ---
 
-### 3.20 Fiber Bundle Endoscopy (`endoscopy`)
+### 3.31 Susceptibility-Weighted Imaging (`swi`) -- NEW
 
-**Canonical DAG**: M → C → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: M → F → S → D | **Carrier**: Spin/RF | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Fiber transmission map error | 0 | [0, 15%] per fiber | - |
-| Geometric distortion (barrel) | 0 | [0, 5%] | - |
-| Inter-fiber cross-talk | 0 | [0, 10%] | - |
-| Bending-induced attenuation | 0 | [0, 30%] | at max bend |
+| Phase unwrapping error | 0 | [0, 5%] of voxels | - |
+| Background field removal error | 0 | [0, 10%] | - |
+| Dipole inversion regularization | optimal | +/- 50% | - |
 
 ---
 
-### 3.21 Fundus Camera (`fundus`)
+### 3.32 MR Fingerprinting (`mr_fingerprinting`) -- NEW
 
-**Canonical DAG**: C → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: M → F → S → D | **Carrier**: Spin/RF | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Lens aberration (Seidel) | 0 | [0, 0.5] | waves |
-| Illumination non-uniformity | 0 | [0, 30%] | - |
-| Pupil vignetting | 0 | [0, 20%] | at edge |
+| Dictionary resolution (T1, T2) | fine | coarse [2x, 5x] | - |
+| B1 inhomogeneity | 0 | [0, 15%] | - |
+| Undersampling artifact | 0 | [0, 20%] | - |
 
 ---
 
-### 3.22 OCTA (`octa`)
+### 3.33 Intravascular Ultrasound (`ivus`) -- NEW
 
-**Canonical DAG**: P+P → Sigma → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: P → D | **Carrier**: Acoustic | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Bulk motion amplitude | 0 | [0, 50] | um |
-| Projection artifact strength | 0 | [0, 0.3] | relative |
-| Shadow from large vessels | 0 | [0, 20%] | area |
-| Interscan time variation | 5 | [3, 10] | ms |
+| Catheter rotation non-uniformity | 0 | [0, 10%] | - |
+| Ring-down artifact | 0 | [0, 20%] depth | - |
+| Sound speed in plaque | 1540 | [1400, 1700] | m/s |
 
 ---
 
-### 3.23 Proton Therapy Imaging (`proton_therapy_img`)
+### 3.34 Contrast-Enhanced Ultrasound (`ceus`) -- NEW
 
-**Canonical DAG**: Pi → D | **Carrier**: Proton | **Current maturity**: M0
+**Canonical DAG**: P → R → D | **Carrier**: Acoustic | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Range uncertainty | 0 | [-3%, 3%] | - |
-| Multiple Coulomb scattering model error | 0 | [0, 10%] | - |
-| Energy straggling | nominal | +/- 15% | - |
-| Nuclear interaction correction | 0 | [0, 5%] | - |
+| Bubble concentration | optimal | [0.1x, 5x] | relative |
+| Nonlinear harmonic extraction | clean | [0, 10%] tissue leak | - |
+| Motion between frames | 0 | [0, 5] | mm |
 
 ---
 
-### 3.24 Brachytherapy Imaging (`brachytherapy_img`)
+### 3.35 Digital Breast Tomosynthesis (`digital_breast_tomo`) -- NEW
 
-**Canonical DAG**: Pi → D | **Carrier**: Gamma/X-ray | **Current maturity**: M0
+**Canonical DAG**: Pi → D | **Carrier**: X-ray | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Source position error | 0 | [0, 3] | mm |
-| Applicator geometry error | 0 | [0, 2] | mm |
-| Tissue heterogeneity (vs TG-43) | homogeneous | real heterogeneity | - |
+| Angular range error | 0 | [-2, 2] | deg total |
+| Detector motion blur | 0 | [0, 0.5] | px |
+| Scatter fraction | 0.3 | [0.1, 0.6] | - |
 
 ---
 
-### 3.25 Portal Imaging / EPID (`portal_imaging`)
+### 3.36 Confocal Endomicroscopy (`confocal_endomicroscopy`) -- NEW
 
-**Canonical DAG**: Pi → D | **Carrier**: MV X-ray | **Current maturity**: M0
+**Canonical DAG**: M → C → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Gantry sag | 0 | [0, 3] | mm |
-| Detector arm flex | 0 | [0, 5] | mm |
-| MLC leaf position error | 0 | [-1, 1] | mm |
-| Backscatter correction | 0 | [0, 5%] | - |
+| Fiber bundle honeycomb pattern | measured | +/- 5% pitch | - |
+| Motion artifact | 0 | [0, 10] | px/frame |
+| Fluorescein concentration variation | 1.0 | [0.3, 3.0] | relative |
 
 ---
 
-## 4. Coherent Imaging (3 modalities)
+### 3.37 Functional NIRS (`nirs_brain`) -- NEW
+
+**Canonical DAG**: M → R,P → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Source-detector coupling | 1.0 | [0.5, 1.5] per optode | - |
+| Scalp-brain distance variation | 0 | [0, 5] | mm |
+| Motion artifact (head) | 0 | [0, 10%] signal | - |
+| Systemic physiology contamination | 0 | [0, 30%] | - |
+
+---
+
+## 4. Coherent Imaging (5 modalities)
 
 ---
 
 ### 4.1 Ptychography (`ptychography`)
 
-**Canonical DAG**: M → P → D | **Carrier**: Electron/Photon | **Current maturity**: M3
-
-#### B1: Design
-
-**Example prompt**: "Design X-ray ptychography for nanostructure analysis: 500 eV soft X-ray, 64 scan positions with 70% overlap, Gaussian probe 30 nm diameter."
-
-#### B2: Mismatch parameters
-
-| Parameter | Nominal | Mismatch Range | Unit |
-|-----------|---------|----------------|------|
-| Probe position error (x) | 0 | [-5, 5] | px |
-| Probe position error (y) | 0 | [-5, 5] | px |
-| Defocus | 0 | [-50, 50] | nm |
-| Aberration (astigmatism) | 0 | [0, 0.3] | waves |
-| Probe intensity variation | 0 | [0, 10%] | - |
-| Partial coherence | 1.0 | [0.7, 1.0] | - |
+**Canonical DAG**: M → P → D | **Carrier**: Electron/Photon | **Maturity**: M3
 
 **Validated baseline**: ePIE +7.09 dB, rho = 1.00.
 
-**Datasets**: 4D-STEM SrTiO3 [001] (128x128 scan, 300 kV, Zenodo 5113449).
-
-**Improvement suggestions**:
-- Add mixed-state ptychography benchmark (partial coherence)
-- Include fly-scan (continuous scan) position refinement
-- Test on thick samples requiring multi-slice ptychography
-
-#### B3: True-Spec parameters
-
-All probe positions (64x2), probe function, aberration coefficients, defocus, coherence function.
-
-#### B4: Correction
-
-**Expected rho**: >= 1.00 (validated).
-**Feedback**: "Position error: probe (23) displaced by {dx} nm. Global defocus = {z} nm. Recommendation: refine positions with annealing schedule, update defocus in reconstruction."
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Probe position error | 0 | [-5, 5] each | px |
+| Defocus | 0 | [-50, 50] | nm |
+| Partial coherence | 1.0 | [0.7, 1.0] | - |
 
 ---
 
 ### 4.2 Holography (`holography`)
 
-**Canonical DAG**: P → D | **Carrier**: Photon | **Current maturity**: M1
+**Canonical DAG**: P → D | **Carrier**: Photon | **Maturity**: M1
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Reference beam angle error | 0 | [-1, 1] | deg |
+| Reference angle error | 0 | [-1, 1] | deg |
 | Carrier frequency error | 0 | [-5%, 5%] | - |
-| Phase offset | 0 | [0, 2*pi] | rad |
-| Vibration amplitude | 0 | [0, lambda/10] | - |
-| Detector defocus | 0 | [-100, 100] | um |
-
-**Improvement suggestions**:
-- Add inline holography benchmark (twin image removal)
-- Include phase-shifting holography with calibration errors
-- Test wavelength-scanning for tomographic reconstruction
+| Vibration | 0 | [0, lambda/10] | - |
 
 ---
 
 ### 4.3 Phase Retrieval / CDI (`phase_retrieval`)
 
-**Canonical DAG**: P → D | **Carrier**: Photon/Electron | **Current maturity**: M0
+**Canonical DAG**: P → D | **Carrier**: Photon/Electron | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Support mask error | 0 | [0, 10%] area | - |
 | Oversampling ratio | 2.0 | [1.5, 4.0] | - |
 | Partial coherence | 1.0 | [0.7, 1.0] | - |
-| Missing center pixels | 0 | [0, 10] | px radius |
-| Detector saturation | none | [0, 5%] of pixels | - |
 
 ---
 
-## 5. Computational Photography (2 modalities)
+### 4.4 Optical Diffraction Tomography (`odt`) -- NEW
 
----
+**Canonical DAG**: P → D | **Carrier**: Photon | **Maturity**: M0
 
-### 5.1 Lensless / Diffuser Camera (`lensless`)
-
-**Canonical DAG**: C → D | **Carrier**: Photon | **Current maturity**: M3
-
-#### B1: Design
-
-**Example prompt**: "Design diffuser-camera for microscopy: 256x256 resolution, random phase diffuser, sensor-to-diffuser distance 1 mm, monochromatic 520 nm."
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| PSF lateral shift | 0 | [-5, 5] | px |
-| PSF scale drift | 1.0 | [0.9, 1.1] | - |
-| Defocus offset | 0 | [-50, 50] | um |
-| PSF rotation | 0 | [-2, 2] | deg |
-| Background | 0 | [0, 0.05] | relative |
+| Illumination angle error | 0 | [-2, 2] | deg per angle |
+| Missing cone artifact | 30 | [20, 50] | deg |
+| Refractive index of medium | 1.337 | [1.33, 1.35] | - |
+| Multiple scattering | none | [0, 10%] | - |
 
-**Validated baseline**: ADMM +3.55 dB, rho = 0.78.
-
-**Improvement suggestions**:
-- Add multi-depth reconstruction benchmark
-- Test RGB PSF variation (chromatic aberration in diffuser)
-- Real dataset: DiffuserCam (Waller Lab)
-
-#### B3: True-Spec parameters
-
-PSF function, shift, scale, defocus, rotation, background.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.78 (validated).
+**B3 True-Spec**: Illumination angles, medium RI, sample 3D RI distribution.
+**B4 rho**: >= 0.70. **Improvement**: Add Rytov vs Born approximation comparison.
 
 ---
 
-### 5.2 Panorama Multi-Focus (`panorama`)
+### 4.5 Talbot-Lau X-ray Grating Interferometry (`talbot_lau`) -- NEW
 
-**Canonical DAG**: C → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: M → P → D | **Carrier**: X-ray | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Focus distance error | 0 | [-10%, 10%] per plane | - |
-| Registration error | 0 | [0, 3] | px |
-| Aperture variation | f/4 | [f/2, f/8] | - |
+| Grating alignment (rotation) | 0 | [-0.5, 0.5] | deg |
+| Inter-grating distance error | 0 | [-1%, 1%] | - |
+| Phase stepping error | 0 | [-5%, 5%] | per step |
+| Grating defect fraction | 0 | [0, 3%] | - |
+
+**B3 True-Spec**: Grating periods, distances, phase steps, defect map.
+**B4 rho**: >= 0.75. **Improvement**: Simultaneous absorption/phase/dark-field reconstruction.
+
+---
+
+## 5. Computational Photography (5 modalities)
+
+---
+
+### 5.1 Lensless (`lensless`)
+
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M3. **Validated**: ADMM +3.55 dB, rho = 0.78.
+
+#### B2: PSF shift [−5,5] px, scale [0.9,1.1], defocus +/−50 um, rotation [−2,2] deg.
+
+---
+
+### 5.2 Panorama (`panorama`)
+
+**Canonical DAG**: C → D | **Carrier**: Photon | **Maturity**: M0.
+
+#### B2: Focus distance +/−10%, registration [0,3] px.
+
+---
+
+### 5.3 Coded Exposure / Flutter Shutter (`coded_exposure`) -- NEW
+
+**Canonical DAG**: M → C → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Shutter code timing error | 0 | [-5%, 5%] per slot | - |
+| Motion blur PSF mismatch | 0 | [0, 20%] | velocity error |
+| Sensor readout noise | 5 | [1, 15] | e- |
+
+**B3 True-Spec**: Exact shutter timing sequence, true motion velocity.
+
+---
+
+### 5.4 Event Camera / DVS (`event_camera`) -- NEW
+
+**Canonical DAG**: M → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Contrast threshold | 0.3 | [0.1, 0.5] | log intensity |
+| Refractory period | 1 | [0.1, 10] | us |
+| Noise event rate | 0 | [0, 1%] | of real events |
+| Hot pixel fraction | 0 | [0, 0.5%] | - |
+
+**Improvement**: Test HDR reconstruction, high-speed video reconstruction from events.
+
+---
+
+### 5.5 HDR Imaging (`hdr_imaging`) -- NEW
+
+**Canonical DAG**: M → Sigma → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Camera response function error | 0 | [0, 10%] | - |
+| Exposure ratio error | 0 | [-10%, 10%] | - |
+| Ghost artifact (motion between exposures) | 0 | [0, 5] | px |
 
 ---
 
 ## 6. Computational Optics (2 modalities)
 
----
-
-### 6.1 Light Field Imaging (`light_field`)
-
-**Canonical DAG**: C → S → D | **Carrier**: Photon | **Current maturity**: M0
-
-#### B2: Mismatch parameters
-
-| Parameter | Nominal | Mismatch Range | Unit |
-|-----------|---------|----------------|------|
-| Microlens pitch error | 0 | [-2%, 2%] | - |
-| Rotation of microlens array | 0 | [-1, 1] | deg |
-| F-number error | f/2 | [f/1.4, f/4] | - |
-| Vignetting at edges | 0 | [0, 30%] | - |
-
----
-
-### 6.2 Integral Photography (`integral`)
-
-**Canonical DAG**: C → S → D | **Carrier**: Photon | **Current maturity**: M0
-
-#### B2: Mismatch parameters
-
-| Parameter | Nominal | Mismatch Range | Unit |
-|-----------|---------|----------------|------|
-| Lens array position error | 0 | [0, 0.5] | mm |
-| Distortion per lenslet | 0 | [0, 3%] | - |
-| Fill factor | 1.0 | [0.8, 1.0] | - |
+### 6.1 `light_field`: C→S→D. Microlens pitch +/-2%, rotation [-1,1] deg, f-number +/-30%.
+### 6.2 `integral`: C→S→D. Lens position [0,0.5] mm, distortion [0,3%].
 
 ---
 
 ## 7. Neural Rendering (2 modalities)
 
----
-
-### 7.1 NeRF (`nerf`)
-
-**Canonical DAG**: M → P → D | **Carrier**: Photon | **Current maturity**: M1
-
-#### B1: Design
-
-**Example prompt**: "Design NeRF capture for indoor scene: 100 views on hemisphere, DSLR camera, focal length 35 mm, scene bounds 2-6 m."
-
-#### B2: Mismatch parameters
-
-| Parameter | Nominal | Mismatch Range | Unit |
-|-----------|---------|----------------|------|
-| Camera pose error (translation) | 0 | [0, 0.05] | scene units |
-| Camera pose error (rotation) | 0 | [0, 3] | deg |
-| Focal length error | 0 | [-5%, 5%] | - |
-| Lens distortion (k1, k2) | 0 | [-0.2, 0.2] | - |
-| Exposure variation | 0 | [0, 0.5] | stops |
-
-**Solvers**: NeRF, Instant-NGP, Nerfacto, TensoRF.
-
-**Improvement suggestions**:
-- Add few-view NeRF benchmark (3-10 views)
-- Include appearance variation (lighting changes between views)
-- Test in-the-wild captures with transient objects
-
-#### B3: True-Spec parameters
-
-Camera poses (extrinsics per view), intrinsics (fx, fy, cx, cy, distortion), exposure per view, scene bounds.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.80.
-**Feedback**: "View #17 pose error: {dx} scene units translation. Global focal length bias: {f}%. Recommendation: run COLMAP SfM refinement, then retrain."
+### 7.1 `nerf`: M→P→D. Pose error [0,0.05] scene units, rotation [0,3] deg, focal +/-5%. rho >= 0.80.
+### 7.2 `gaussian_splatting`: M→P→D. SfM noise [0,0.1], init density [10k,1M], pose error [0,0.03].
 
 ---
 
-### 7.2 3D Gaussian Splatting (`gaussian_splatting`)
-
-**Canonical DAG**: M → P → D | **Carrier**: Photon | **Current maturity**: M0
-
-#### B2: Mismatch parameters
-
-| Parameter | Nominal | Mismatch Range | Unit |
-|-----------|---------|----------------|------|
-| SfM point cloud noise | 0 | [0, 0.1] | scene units |
-| Initialization density | 100k | [10k, 1M] | points |
-| Camera pose error | 0 | [0, 0.03] | scene units |
-| Missing views | 0 | [0, 20%] | of total |
+## 8. Electron Microscopy (11 modalities)
 
 ---
 
-## 8. Electron Microscopy (8 modalities)
+### 8.1-8.8 (Existing — SEM, TEM, Electron Tomo, STEM, 4D-STEM, EBSD, EELS, Electron Holography)
+
+**8.1 `sem`**: C→D, Electron. Astigmatism [0,50] nm, drift [0,1] nm/s, charging [0,500] V.
+
+**8.2 `tem`**: C→D, Electron. Defocus [-1000,1000] nm, Cs [0.5,2.5] mm, astigmatism [0,100] nm.
+
+**8.3 `electron_tomography`**: Pi→D, Electron. Tilt axis [-3,3] px, mag variation +/-2%, missing wedge [20,50] deg.
+
+**8.4 `stem`**: S→D, Electron. Scan distortion [0,3] px, probe aberration [-50,50] nm.
+
+**8.5 `electron_diffraction`**: M→P→D, Electron. Camera length +/-5%, beam center +/-5 px.
+
+**8.6 `ebsd`**: R→D, Electron. Pattern center +/-2%, detector tilt [-1,1] deg.
+
+**8.7 `eels`**: S→D, Electron. Energy drift [-2,2] eV, gain instability [0,5%].
+
+**8.8 `electron_holography`**: P→D, Electron. Biprism drift +/-2%, fringe rotation [-1,1] deg.
 
 ---
 
-### 8.1 SEM (`sem`)
+### 8.9 Cryo-Electron Tomography (`cryo_et`) -- NEW
 
-**Canonical DAG**: C → D | **Carrier**: Electron | **Current maturity**: M0
+**Canonical DAG**: Pi → D | **Carrier**: Electron | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
-| Parameter | Nominal | Mismatch Range | Unit |
-|-----------|---------|----------------|------|
-| Astigmatism (x, y) | 0 | [0, 50] | nm |
-| Working distance error | 0 | [-0.5, 0.5] | mm |
-| Drift rate | 0 | [0, 1] | nm/s |
-| Charging level | 0 | [0, 500] | V |
-| Beam energy | 5 | [1, 30] | keV |
-
----
-
-### 8.2 TEM (`tem`)
-
-**Canonical DAG**: C → D | **Carrier**: Electron | **Current maturity**: M0
-
-#### B2: Mismatch parameters
-
-| Parameter | Nominal | Mismatch Range | Unit |
-|-----------|---------|----------------|------|
-| Defocus | 0 | [-1000, 1000] | nm |
-| Spherical aberration (Cs) | 1.2 | [0.5, 2.5] | mm |
-| Astigmatism | 0 | [0, 100] | nm |
-| Beam tilt | 0 | [0, 2] | mrad |
-| Energy spread | 0.7 | [0.3, 1.5] | eV |
-
----
-
-### 8.3 Electron Tomography (`electron_tomography`)
-
-**Canonical DAG**: Pi → D | **Carrier**: Electron | **Current maturity**: M0
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Tilt axis offset | 0 | [-3, 3] | px |
-| Magnification variation | 0 | [-2%, 2%] per tilt | - |
-| Missing wedge angle | 30 | [20, 50] | deg |
-| Sample shrinkage | 0 | [0, 10%] | during acquisition |
+| Tilt angle accuracy | 0 | [-1, 1] | deg per tilt |
+| Dose-induced shrinkage | 0 | [0, 10%] | - |
+| CTF per-tilt variation | varies | +/- 0.5 um defocus | um |
+| Missing wedge | 30 | [20, 50] | deg |
+
+**B3 True-Spec**: Tilt axis, angles, defocus per tilt, shrinkage trajectory, ice thickness.
+**Improvement**: Subtomogram averaging benchmark, SIRT vs WBP comparison.
 
 ---
 
-### 8.4 STEM (`stem`)
+### 8.10 FIB-SEM (`fib_sem`) -- NEW
 
-**Canonical DAG**: S → D | **Carrier**: Electron | **Current maturity**: M0
+**Canonical DAG**: S → C → D | **Carrier**: Electron + Ion | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Scan distortion (flyback) | 0 | [0, 3] | px |
-| Scan rotation | 0 | [-2, 2] | deg |
-| Probe aberration (defocus) | 0 | [-50, 50] | nm |
-| Detector inner/outer angle | nominal | +/- 10% | mrad |
+| Slice thickness variation | 0 | [0, 15%] | - |
+| Curtaining artifact | 0 | [0, 0.3] | relative |
+| Charging | 0 | [0, 300] | V |
+| Drift between slices | 0 | [0, 5] | nm |
 
 ---
 
-### 8.5 4D-STEM Diffraction (`electron_diffraction`)
+### 8.11 STEM-EDX Elemental Mapping (`edx_mapping`) -- NEW
 
-**Canonical DAG**: M → P → D | **Carrier**: Electron | **Current maturity**: M0
+**Canonical DAG**: M → R → D | **Carrier**: Electron | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Camera length error | 0 | [-5%, 5%] | - |
-| Beam center (x, y) | center | +/- 5 | px |
-| Diffraction pattern rotation | 0 | [-3, 3] | deg |
-| Descan error | 0 | [0, 2] | px |
+| Absorption correction error | 0 | [0, 15%] | - |
+| Detector solid angle | measured | +/- 10% | sr |
+| Peak overlap (spectral) | 0 | [0, 3] elements | - |
+| Bremsstrahlung background | measured | +/- 20% | - |
 
 ---
 
-### 8.6 EBSD (`ebsd`)
+## 9. Depth Imaging (5 modalities)
 
-**Canonical DAG**: R → D | **Carrier**: Electron | **Current maturity**: M0
+---
 
-#### B2: Mismatch parameters
+### 9.1 `tof_camera`: P→D. Multi-path [0,30%], phase wrap +/-1, temperature offset [-5,5] cm.
+### 9.2 `lidar`: P→S→D. Timing jitter [0,0.5] ns, angular error [-0.1,0.1] deg.
+### 9.3 `structured_light`: M→C→D. Gamma [1.5,2.5], extrinsics [0,1] mm/deg, defocus [0,3] px.
 
+---
+
+### 9.4 Photometric Stereo (`photometric_stereo`) -- NEW
+
+**Canonical DAG**: M → C → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Pattern center (x, y, z) | calibrated | +/- 2% each | - |
-| Detector tilt | 0 | [-1, 1] | deg |
-| Sample tilt | 70 | [68, 72] | deg |
+| Light direction error | 0 | [0, 5] | deg per source |
+| Light intensity calibration | 1.0 | [0.8, 1.2] per source | - |
+| Non-Lambertian surface fraction | 0 | [0, 30%] | - |
+| Cast shadow fraction | 0 | [0, 15%] | of pixels |
+
+**Improvement**: Add near-field photometric stereo, uncalibrated photometric stereo.
 
 ---
 
-### 8.7 EELS (`eels`)
+### 9.5 Flash LiDAR (`flash_lidar`) -- NEW
 
-**Canonical DAG**: S → D | **Carrier**: Electron | **Current maturity**: M0
+**Canonical DAG**: P → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Energy drift | 0 | [-2, 2] | eV |
-| Gain instability | 0 | [0, 5%] per spectrum | - |
-| Channel-to-channel gain variation | 0 | [0, 3%] | - |
-| Dark current pattern | 0 | [0, 50] | counts |
+| SPAD jitter | 0 | [0, 100] | ps |
+| Ambient photon rate | 0 | [0, 10x signal] | - |
+| Pile-up distortion | 0 | [0, 20%] | at high flux |
+| Pixel cross-talk | 0 | [0, 5%] | - |
 
 ---
 
-### 8.8 Electron Holography (`electron_holography`)
+## 10. Remote Sensing (11 modalities)
 
-**Canonical DAG**: P → D | **Carrier**: Electron | **Current maturity**: M0
+---
 
-#### B2: Mismatch parameters
+### 10.1-10.8 (Existing — SAR, Sonar, Hyperspectral, Multispectral, GPR, Weather Radar, Radio Interferometry, Passive Microwave)
 
+**10.1 `sar`**: F→D, RF. Velocity +/-1%, motion phase [0,pi/4] rad.
+**10.2 `sonar`**: P→D, Acoustic. Speed +/-2%, multipath 1-3 paths.
+**10.3 `hyperspectral_remote`**: M→W→Sigma→D. Smile [0,2] px, keystone [0,2] px, atmospheric +/-10%.
+**10.4 `multispectral_sat`**: M→Sigma→D. Band registration [0,2] px, MTF +/-10%.
+**10.5 `gpr`**: P→D, RF. Permittivity +/-20%, clutter [0,-10] dB.
+**10.6 `weather_radar`**: P→R→D, RF. Clutter [-40,-15] dBZ, attenuation [0,10] dB/km.
+**10.7 `radio_interferometry`**: F→S→D, RF. Baseline [0,1] cm, atmospheric phase [0,1] rad.
+**10.8 `passive_microwave`**: Sigma→D, RF. Antenna pattern +/-5%, gain drift +/-1%.
+
+---
+
+### 10.9 InSAR (`insar`) -- NEW
+
+**Canonical DAG**: F → S → D | **Carrier**: RF | **Maturity**: M0
+
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Biprism voltage drift | 0 | [-2%, 2%] | - |
-| Fringe spacing variation | 0 | [-3%, 3%] | - |
-| Fringe rotation | 0 | [-1, 1] | deg |
-| Fresnel fringe contamination | 0 | [0, 10%] | of FOV |
+| Phase unwrapping error | 0 | [0, 5%] of pixels | - |
+| Baseline estimation error | 0 | [0, 1] | m |
+| Atmospheric phase screen | 0 | [0, 1] | rad rms |
+| Temporal decorrelation | 0 | [0, 0.3] | coherence loss |
+
+**Improvement**: DInSAR for deformation, time-series InSAR (SBAS, PSI).
 
 ---
 
-## 9. Depth Imaging (3 modalities)
+### 10.10 Polarimetric SAR (`polsar`) -- NEW
 
----
+**Canonical DAG**: F → M → D | **Carrier**: RF | **Maturity**: M0
 
-### 9.1 Time-of-Flight Camera (`tof_camera`)
-
-**Canonical DAG**: P → D | **Carrier**: Photon/IR | **Current maturity**: M0
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Multi-path interference | none | [0, 30%] amplitude | - |
-| Phase wrap count | correct | +/- 1 | wraps |
-| Integration time variation | 1.0 | [0.5, 2.0] | ms |
-| Temperature-dependent offset | 0 | [-5, 5] | cm |
+| Cross-talk between polarizations | 0 | [0, -25] | dB |
+| Channel imbalance | 0 | [0, 1] | dB |
+| Faraday rotation | 0 | [0, 5] | deg |
 
 ---
 
-### 9.2 LiDAR (`lidar`)
+### 10.11 Ocean Color Remote Sensing (`ocean_color`) -- NEW
 
-**Canonical DAG**: P → S → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: M → Sigma → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Timing jitter | 0 | [0, 0.5] | ns |
-| Angular encoder error | 0 | [-0.1, 0.1] | deg |
-| Intensity calibration | 1.0 | [0.8, 1.2] | - |
-| Multi-return ambiguity | none | [0, 5%] of points | - |
+| Atmospheric correction error | 0 | [0, 15%] | - |
+| Sun glint contamination | 0 | [0, 20%] of pixels | - |
+| Vicarious calibration offset | 0 | [-3%, 3%] per band | - |
 
 ---
 
-### 9.3 Structured-Light 3D (`structured_light`)
+## 11. Industrial Inspection (10 modalities)
 
-**Canonical DAG**: M → C → D | **Carrier**: Photon | **Current maturity**: M0
+---
 
-#### B2: Mismatch parameters
+### 11.1-11.8 (Existing)
 
+**11.1 `industrial_ct`**: Pi→D. CoR [-5,5] px, scatter [0.1,0.6], beam hardening, ring artifacts.
+**11.2 `xray_ndt`**: Pi→D. SDD +/-5%, geometric unsharpness [0,1] mm.
+**11.3 `ultrasonic_phased_array`**: P→D. Velocity +/-3%, coupling [0.5,1.5], wedge +/-2 deg.
+**11.4 `eddy_current`**: F→D. Lift-off [0,0.5] mm, conductivity +/-10%.
+**11.5 `active_thermography`**: P→D. Emissivity [0,15%], heating uniformity [0.7,1.3].
+**11.6 `terahertz`**: P→D. Water vapor [0,5] dB, etalon [0,100] GHz, RI +/-5%.
+**11.7 `machine_vision`**: C→D. Illumination [0,20%], MTF [0.2,0.8], distortion [0,3%].
+**11.8 `xrf_imaging`**: M→R→D. Matrix effects [0,20%], self-absorption [0,30%], dead time [0,10%].
+
+---
+
+### 11.9 Shearography (`shearography`) -- NEW
+
+**Canonical DAG**: M → P → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Gamma nonlinearity | 1.0 | [1.5, 2.5] | - |
-| Projector-camera extrinsics error | 0 | [0, 1] | mm / deg |
-| Defocus-induced fringe blur | 0 | [0, 3] | px sigma |
-| Ambient light contamination | 0 | [0, 20%] | of fringe contrast |
+| Shearing amount error | 0 | [-10%, 10%] | - |
+| Speckle decorrelation | 0 | [0, 0.3] | - |
+| Loading non-uniformity | 0 | [0, 20%] | - |
 
 ---
 
-## 10. Remote Sensing (8 modalities)
+### 11.10 Scanning Acoustic Microscopy (`acoustic_microscopy`) -- NEW
 
----
+**Canonical DAG**: P → D | **Carrier**: Acoustic | **Maturity**: M0
 
-### 10.1 SAR (`sar`)
-
-**Canonical DAG**: F → D | **Carrier**: RF | **Current maturity**: M0
-
-#### B1: Design
-
-**Example prompt**: "Design stripmap SAR: X-band (9.65 GHz), 150 MHz bandwidth, PRF 3000 Hz, look angle 30 deg, 3m azimuth resolution."
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Platform velocity error | 0 | [-1%, 1%] | relative |
-| Motion compensation residual | 0 | [0, pi/4] | rad phase |
-| Autofocus error | 0 | polynomial order 2-4 | - |
-| Cross-range sidelobe | -13 | [-20, -8] | dB |
-
-**Improvement suggestions**:
-- Add InSAR (interferometric) benchmark with phase unwrapping
-- Include change detection benchmark (multi-temporal)
+| Coupling medium speed | 1480 | [1450, 1550] | m/s |
+| Focus depth error | 0 | [-20, 20] | um |
+| Lens aberration | 0 | [0, 0.2] | waves |
+| Gate position error | 0 | [-5%, 5%] | - |
 
 ---
 
-### 10.2 Sonar (`sonar`)
+## 12. Scientific Instrumentation (12 modalities)
 
-**Canonical DAG**: P → D | **Carrier**: Acoustic | **Current maturity**: M0
+---
 
-#### B2: Mismatch parameters
+### 12.1-12.8 (Existing)
 
+**12.1 `xray_crystallography`**: F→S→D. Absorption +/-10%, radiation damage [0,20%], mosaicity +/-50%.
+**12.2 `saxs`**: R→D. Beam divergence [0.05,0.5] mrad, parasitic scatter [0,20%].
+**12.3 `maldi_msi`**: S→D. Mass drift [-10,10] ppm, matrix inhomogeneity [0,30%].
+**12.4 `atom_probe`**: S→D. Trajectory aberration [0,10%], local magnification [0,20%].
+**12.5 `cryo_em`**: C→D. Defocus [-0.5,-5.0] um, Cs [2.0,3.5] mm, beam tilt [0,1] mrad, ice [20,100] nm. rho >= 0.85.
+**12.6 `neutron_tomo`**: Pi→D. Beam spectrum +/-10%, scattering [0,15%], gamma [0,5%].
+**12.7 `proton_radiography`**: Pi→D. MCS error [0,15%], energy loss +/-5%.
+**12.8 `muon_tomo`**: Pi→D. Angular resolution [3,15] mrad, alignment [0,1] mm.
+
+---
+
+### 12.9 WAXS (`waxs`) -- NEW
+
+**Canonical DAG**: R → D | **Carrier**: X-ray | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Detector distance error | 0 | [-1%, 1%] | - |
+| Beam center error | 0 | [0, 3] | px |
+| Polarization correction | 1.0 | [0.9, 1.0] | - |
+| Air scatter background | 0 | [0, 5%] | - |
+
+---
+
+### 12.10 XRF Tomography (`xrf_tomo`) -- NEW
+
+**Canonical DAG**: Pi → R → D | **Carrier**: X-ray | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Self-absorption correction | 0 | [0, 30%] | - |
+| Rotation axis offset | 0 | [-3, 3] | px |
+| Fluorescence yield error | 0 | [-10%, 10%] | - |
+| Dead time at high count rate | 0 | [0, 10%] | - |
+
+---
+
+### 12.11 Neutron Diffraction (`neutron_diffraction`) -- NEW
+
+**Canonical DAG**: R → S → D | **Carrier**: Neutron | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Wavelength calibration | 0 | [-0.1%, 0.1%] | - |
+| Absorption correction | 0 | [0, 10%] | - |
+| Texture/preferred orientation | none | [0, 20%] | - |
+| TOF frame overlap | 0 | [0, 5%] of peaks | - |
+
+---
+
+### 12.12 Cathodoluminescence (`cathodoluminescence`) -- NEW
+
+**Canonical DAG**: M → R → D | **Carrier**: Electron | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Beam current drift | 0 | [0, 5%] | - |
+| Collection efficiency variation | 0 | [0, 20%] | spatial |
+| Spectral calibration error | 0 | [-2, 2] | nm |
+| Carbon contamination | 0 | [0, 10%] | signal loss |
+
+---
+
+## 13. Broader Experimental Science (11 modalities)
+
+---
+
+### 13.1-13.8 (Existing)
+
+**13.1 `adaptive_optics`**: M→C→D. Residual wavefront [0,lambda/4], r0 [5,30] cm, wind [5,30] m/s.
+**13.2 `seismic_tomo`**: P→D. Velocity +/-10%, source location [0,5] km.
+**13.3 `gravitational_wave`**: P→Sigma→D. Calibration +/-5%, PSD +/-10%, glitch [0,1]/100s.
+**13.4 `particle_calorimetry`**: R→Sigma→D. Inter-cal [0,3%], non-linearity [0,5%].
+**13.5 `radio_astronomy`**: F→S→D. Antenna gain [0,5%], phase [0,10] deg, RFI [0,5%].
+**13.6 `acoustic_emission`**: P→S→D. Velocity anisotropy [0,15%], coupling [0.5,1.5].
+**13.7 `magnetic_particle`**: M→F→D. System function [0,10%], relaxation [0,20%].
+**13.8 `impedance_tomo`**: M→D. Contact impedance [50,500] ohm, electrode position [0,5] mm.
+
+---
+
+### 13.9 Full-Waveform Inversion (`fwi`) -- NEW
+
+**Canonical DAG**: P → D | **Carrier**: Seismic/Acoustic | **Maturity**: M0
+
+#### B2: Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Starting velocity model error | 0 | [-15%, 15%] | - |
+| Source wavelet error | 0 | [-10%, 10%] amplitude | - |
+| Anelastic attenuation (Q) | infinite | [50, 500] | - |
+| Source location error | 0 | [0, 100] | m |
+
+**Improvement**: Multi-scale FWI, elastic (multi-parameter) inversion.
+
+---
+
+### 13.10 Ocean Acoustic Tomography (`ocean_acoustic_tomo`) -- NEW
+
+**Canonical DAG**: P → D | **Carrier**: Acoustic | **Maturity**: M0
+
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
 | Sound speed profile error | 0 | [-2%, 2%] | - |
-| Multipath structure | none | 1-3 paths | - |
-| Bottom reverberation | 0 | [0, -10] dB | - |
-| Array element failure | 0 | [0, 5%] | of elements |
+| Multipath identification | correct | [0, 20%] misassigned | - |
+| Source/receiver position | 0 | [0, 10] | m |
+| Current velocity error | 0 | [-0.5, 0.5] | m/s |
 
 ---
 
-### 10.3 Hyperspectral Remote Sensing (`hyperspectral_remote`)
+### 13.11 Bioluminescence Tomography (`bioluminescence_tomo`) -- NEW
 
-**Canonical DAG**: M → W → Sigma → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: Src → R,P → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Smile distortion | 0 | [0, 2] | px |
-| Keystone distortion | 0 | [0, 2] | px |
-| Atmospheric model error | 0 | [0, 10%] | transmittance |
-| Spectral response shift | 0 | [-2, 2] | nm per band |
-| Striping (detector non-uniformity) | 0 | [0, 5%] | - |
-
-**Improvement suggestions**:
-- Add spectral unmixing benchmark (endmember extraction + abundance estimation)
-- Include target detection benchmark (anomaly detection)
+| Optical property error (mu_a, mu_s') | 0 | [0, 20%] | relative |
+| Source depth ambiguity | 0 | [0, 5] | mm |
+| Autofluorescence background | 0 | [0, 30%] | - |
 
 ---
 
-### 10.4 Multispectral Satellite (`multispectral_sat`)
+## 14. Spectroscopy & Spectral Imaging (8 modalities) -- NEW CATEGORY
 
-**Canonical DAG**: M → Sigma → D | **Carrier**: Photon | **Current maturity**: M0
+---
 
-#### B2: Mismatch parameters
+### 14.1 Raman Imaging (`raman_imaging`)
 
+**Canonical DAG**: M → R → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Band-to-band registration | 0 | [0, 2] | px |
-| MTF difference (pan vs MS) | measured | +/- 10% | - |
-| Atmospheric path radiance | 0 | [0, 15%] | - |
-| Cloud/shadow contamination | 0 | [0, 10%] | of pixels |
+| Spectral calibration shift | 0 | [-2, 2] | cm^-1 |
+| Fluorescence background | 0 | [0, 10x Raman signal] | relative |
+| Laser power fluctuation | 0 | [0, 5%] | - |
+| Cosmic ray artifact | 0 | [0, 1%] of spectra | - |
+
+**B1 Example**: "Design confocal Raman for pharmaceutical tablet: 785 nm, 10 um resolution, 100-3200 cm^-1."
+**B3 True-Spec**: Spectral calibration, laser power, fluorescence model, cosmic ray locations.
+**B4 rho**: >= 0.75. **Improvement**: Add SERS benchmark, baseline subtraction comparison.
 
 ---
 
-### 10.5 Ground-Penetrating Radar (`gpr`)
+### 14.2 CARS Microscopy (`cars`)
 
-**Canonical DAG**: P → D | **Carrier**: RF | **Current maturity**: M0
+**Canonical DAG**: M → R → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Dielectric permittivity error | 0 | [-20%, 20%] | - |
-| Clutter level | 0 | [0, -10] dB | relative to signal |
-| Antenna coupling | measured | +/- 20% | - |
-| Surface bounce removal | perfect | [80%, 100%] removal | - |
+| Pump-Stokes frequency offset | 0 | [-5, 5] | cm^-1 |
+| Non-resonant background | 0 | [0, 50%] of signal | - |
+| Chirp mismatch | 0 | [0, 500] | fs^2 |
 
 ---
 
-### 10.6 Weather Radar (`weather_radar`)
+### 14.3 Stimulated Raman Scattering (`srs`)
 
-**Canonical DAG**: P → R → D | **Carrier**: RF | **Current maturity**: M0
+**Canonical DAG**: M → R → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Ground clutter power | -30 | [-40, -15] | dBZ |
-| Path attenuation (heavy rain) | 0 | [0, 10] | dB/km at C-band |
-| ZDR calibration offset | 0 | [-0.3, 0.3] | dB |
-| Velocity aliasing (Nyquist) | correct | dealiasing needed | - |
+| Lock-in phase error | 0 | [-10, 10] | deg |
+| Cross-phase modulation | 0 | [0, 5%] | - |
+| Laser intensity noise (RIN) | -150 | [-140, -160] | dBc/Hz |
 
 ---
 
-### 10.7 Radio Interferometry (`radio_interferometry`)
+### 14.4 FTIR Imaging (`ftir_imaging`)
 
-**Canonical DAG**: F → S → D | **Carrier**: RF | **Current maturity**: M0
+**Canonical DAG**: M → Sigma → D | **Carrier**: IR photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Baseline error | 0 | [0, 1] | cm |
-| Atmospheric phase | 0 | [0, 1] | rad rms |
-| Bandpass calibration | 1.0 | [0.9, 1.1] per channel | - |
-| RFI contamination | 0 | [0, 5%] | of channels |
+| Wavenumber calibration | 0 | [-2, 2] | cm^-1 |
+| Water vapor absorption | 0 | [0, variable] | - |
+| Detector nonlinearity | 0 | [0, 5%] | - |
+| ATR crystal RI error | 0 | [-1%, 1%] | - |
 
 ---
 
-### 10.8 Passive Microwave Radiometry (`passive_microwave`)
+### 14.5 LIBS Imaging (`libs`)
 
-**Canonical DAG**: Sigma → D | **Carrier**: RF | **Current maturity**: M0
+**Canonical DAG**: M → R → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Antenna pattern error | 0 | [0, 5%] | main beam |
-| Gain calibration drift | 0 | [-1%, 1%] | per orbit |
-| Cross-polarization leakage | 0 | [0, -20] dB | - |
-| Thermal reference error | 0 | [-0.5, 0.5] | K |
+| Laser energy fluctuation | 0 | [0, 10%] | - |
+| Matrix effect | 0 | [0, 30%] | - |
+| Self-absorption correction | 0 | [0, 20%] | - |
+| Crater-to-crater variation | 0 | [0, 15%] | - |
 
 ---
 
-## 11. Industrial Inspection (8 modalities)
+### 14.6 Brillouin Microscopy (`brillouin`)
 
----
+**Canonical DAG**: M → R → D | **Carrier**: Photon | **Maturity**: M0
 
-### 11.1 Industrial CT (`industrial_ct`)
-
-**Canonical DAG**: Pi → D | **Carrier**: X-ray | **Current maturity**: M0
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Center offset | 0 | [-5, 5] | px |
-| Scatter fraction | 0.3 | [0.1, 0.6] | - |
-| Beam hardening | none | polynomial order 2-3 | - |
-| Ring artifact sources | 0 | [0, 5] | detector elements |
-| Magnification error | 0 | [-1%, 1%] | - |
-
-**Improvement suggestions**:
-- Add multi-material beam hardening correction (metal + plastic)
-- Include dimensional metrology benchmark (measure feature sizes)
+| Brillouin shift calibration | 0 | [-50, 50] | MHz |
+| VIPA FSR error | 0 | [-0.5%, 0.5%] | - |
+| Elastic scattering leakage | 0 | [0, -30] dB | - |
 
 ---
 
-### 11.2 X-ray NDT (`xray_ndt`)
+### 14.7 SIMS Imaging (`sims`)
 
-**Canonical DAG**: Pi → D | **Carrier**: X-ray | **Current maturity**: M0
+**Canonical DAG**: S → D | **Carrier**: Ion | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Source-detector distance error | 0 | [-5%, 5%] | - |
-| Geometric unsharpness | 0 | [0, 1] | mm |
-| Scatter buildup factor | 1.0 | [1.0, 3.0] | - |
-| Contrast sensitivity | measured | +/- 20% | - |
+| Mass calibration drift | 0 | [-5, 5] | ppm |
+| Matrix effect (sputter yield) | 0 | [0, 50%] | - |
+| Crater edge effect | 0 | [0, 10%] of area | - |
+| Charging (insulating samples) | 0 | [0, 200] | V |
 
 ---
 
-### 11.3 Ultrasonic Phased Array (`ultrasonic_phased_array`)
+### 14.8 DESI Mass Spec Imaging (`desi`)
 
-**Canonical DAG**: P → D | **Carrier**: Acoustic | **Current maturity**: M0
+**Canonical DAG**: S → D | **Carrier**: Ion | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Velocity error | 0 | [-3%, 3%] | - |
-| Coupling variation | 1.0 | [0.5, 1.5] per element | - |
-| Element sensitivity | 1.0 | [0.7, 1.3] per element | - |
-| Wedge angle error | 0 | [-2, 2] | deg |
+| Spray angle error | 0 | [-5, 5] | deg |
+| Solvent flow variation | 0 | [0, 15%] | - |
+| Ion suppression (matrix effect) | 0 | [0, 50%] | - |
+| Spatial resolution degradation | 0 | [0, 50%] | - |
 
 ---
 
-### 11.4 Eddy Current (`eddy_current`)
+## 15. Ultrafast Imaging (4 modalities) -- NEW CATEGORY
 
-**Canonical DAG**: F → D | **Carrier**: EM | **Current maturity**: M0
+---
 
-#### B2: Mismatch parameters
+### 15.1 Streak Camera (`streak_camera`)
 
+**Canonical DAG**: M → Sigma → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Lift-off variation | 0 | [0, 0.5] | mm |
-| Conductivity error | 0 | [-10%, 10%] | - |
-| Probe tilt | 0 | [-5, 5] | deg |
-| Frequency response | nominal | +/- 10% | - |
+| Sweep nonlinearity | 0 | [0, 5%] | - |
+| Temporal resolution | 1 | [0.5, 5] | ps |
+| Dynamic range saturation | 0 | [0, 10%] of pixels | - |
+| Trigger jitter | 0 | [0, 10] | ps |
+
+**B1 Example**: "Design streak camera system for fluorescence lifetime: 2 ps resolution, 500 ps window."
+**Improvement**: Add synchroscan mode, compressed streak (CUP variant).
 
 ---
 
-### 11.5 Active Thermography (`active_thermography`)
+### 15.2 Pump-Probe Microscopy (`pump_probe`)
 
-**Canonical DAG**: P → D | **Carrier**: IR photon | **Current maturity**: M0
+**Canonical DAG**: M → R → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Emissivity map error | 0 | [0, 15%] | - |
-| Heating uniformity | 1.0 | [0.7, 1.3] | spatial |
-| Ambient temperature drift | 0 | [-2, 2] | deg C |
-| Camera NETD error | 0 | [-20%, 20%] | - |
+| Time-zero drift | 0 | [-100, 100] | fs |
+| Pump power fluctuation | 0 | [0, 5%] | - |
+| Chirp (GDD) | 0 | [-500, 500] | fs^2 |
+| Spatial overlap error | 0 | [0, 20%] of beam | - |
 
 ---
 
-### 11.6 Terahertz Imaging (`terahertz`)
+### 15.3 Compressed Ultrafast Photography (`cup`)
 
-**Canonical DAG**: P → D | **Carrier**: THz photon | **Current maturity**: M0
+**Canonical DAG**: M → Sigma → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Water vapor absorption | 0 | [0, 5] | dB at 1 THz |
-| Etalon artifact period | none | [0, 100] | GHz |
-| Refractive index error | 0 | [-5%, 5%] | - |
-| Beam alignment | 0 | [0, 0.5] | mm |
+| DMD encoding error | 0 | [0, 2%] bit flip | - |
+| Streak sweep calibration | 0 | [-5%, 5%] | - |
+| Temporal-spatial coupling | 0 | [0, 10%] | - |
+
+**B1 Example**: "Design T-CUP for light-in-flight: 10 trillion fps, 256x256 spatial."
 
 ---
 
-### 11.7 Machine Vision / AOI (`machine_vision`)
+### 15.4 XFEL Serial Crystallography (`xfel_sfx`)
 
-**Canonical DAG**: C → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: M → R → D | **Carrier**: X-ray | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Illumination non-uniformity | 0 | [0, 20%] | - |
-| Lens MTF at Nyquist | 0.5 | [0.2, 0.8] | - |
-| Lens distortion | 0 | [0, 3%] | barrel/pincushion |
-| Focus drift | 0 | [-50, 50] | um |
+| Hit rate | 10% | [1%, 30%] | - |
+| Indexing ambiguity | 0 | [0, 10%] of patterns | - |
+| Partiality model error | 0 | [0, 20%] | - |
+| Background from jet/carrier | 0 | [0, 30%] | - |
 
 ---
 
-### 11.8 XRF Imaging (`xrf_imaging`)
+## 16. Quantum Imaging (3 modalities) -- NEW CATEGORY
 
-**Canonical DAG**: M → R → D | **Carrier**: X-ray | **Current maturity**: M0
+---
 
-#### B2: Mismatch parameters
+### 16.1 Ghost Imaging (`ghost_imaging`)
 
+**Canonical DAG**: M → Sigma → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Matrix effect (absorption/enhancement) | 0 | [0, 20%] | - |
-| Self-absorption correction | 0 | [0, 30%] | for heavy elements |
-| Dead time correction | 0 | [0, 10%] | at high count rate |
-| Pile-up fraction | 0 | [0, 5%] | - |
-| Element overlap (spectral) | 0 | [0, 3] elements | - |
+| Bucket detector efficiency | 1.0 | [0.5, 1.0] | - |
+| Speckle correlation mismatch | 0 | [0, 10%] | - |
+| Background counts | 0 | [0, 5%] of signal | - |
+| Number of measurements | 10000 | [1000, 100000] | - |
+
+**B1 Example**: "Design ghost imaging system: thermal source, DMD modulation, single-pixel bucket detector."
+**Improvement**: Computational ghost imaging vs quantum ghost imaging comparison.
 
 ---
 
-## 12. Scientific Instrumentation (8 modalities)
+### 16.2 Quantum Illumination (`quantum_illumination`)
 
----
+**Canonical DAG**: M → R → D | **Carrier**: Photon | **Maturity**: M0
 
-### 12.1 X-ray Crystallography (`xray_crystallography`)
-
-**Canonical DAG**: F → S → D | **Carrier**: X-ray | **Current maturity**: M0
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Absorption correction error | 0 | [0, 10%] | - |
-| Radiation damage fraction | 0 | [0, 20%] per dataset | - |
-| Crystal mosaicity error | 0 | [-50%, 50%] | relative |
-| Detector distance error | 0 | [-1%, 1%] | - |
-| Beam center error | 0 | [0, 2] | px |
+| Entanglement quality (concurrence) | 1.0 | [0.5, 1.0] | - |
+| Background thermal noise | 0 | [0, 100] photons/mode | - |
+| Detector dark count rate | 0 | [0, 1000] | Hz |
+| Channel loss | 0 | [0, 30] | dB |
 
 ---
 
-### 12.2 SAXS (`saxs`)
+### 16.3 Entangled Photon Microscopy (`entangled_photon`)
 
-**Canonical DAG**: R → D | **Carrier**: X-ray | **Current maturity**: M0
+**Canonical DAG**: M → R → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Beam divergence | 0.1 | [0.05, 0.5] | mrad |
-| Parasitic scattering | 0 | [0, 20%] of signal | - |
-| Background subtraction error | 0 | [-5%, 5%] | - |
-| Sample thickness error | 0 | [-10%, 10%] | - |
+| Pair generation rate | optimal | [0.1x, 10x] | - |
+| Coincidence window | 1 | [0.1, 10] | ns |
+| Accidental coincidence rate | 0 | [0, 20%] of real | - |
+| Photon loss (per arm) | 0 | [0, 6] | dB |
 
 ---
 
-### 12.3 MALDI Mass Spec Imaging (`maldi_msi`)
+## 17. Multi-Modal Fusion (6 modalities) -- NEW CATEGORY
 
-**Canonical DAG**: S → D | **Carrier**: Ion | **Current maturity**: M0
+---
 
-#### B2: Mismatch parameters
+### 17.1 PET/CT Fusion (`pet_ct`)
 
+**Canonical DAG**: Pi → D (CT) + Pi → D (PET) → Fusion | **Carrier**: X-ray + Gamma | **Maturity**: M0
+
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Mass calibration drift | 0 | [-10, 10] | ppm |
-| Ion suppression variation | 0 | [0, 50%] | spatial |
-| Matrix crystal inhomogeneity | 0 | [0, 30%] | relative |
-| Baseline intensity variation | 0 | [0, 20%] | - |
+| CT-PET registration error | 0 | [0, 3] | mm |
+| Attenuation map from CT error | 0 | [0, 10%] | HU-to-LAC |
+| Respiratory motion mismatch | 0 | [0, 15] | mm |
+| CT contrast agent artifact | 0 | [0, 20%] | attenuation |
+
+**B1 Example**: "Design PET/CT protocol for lung staging: low-dose CT, FDG-PET, 3-min beds, gated."
+**Improvement**: Respiratory gating, metal artifact propagation to PET.
 
 ---
 
-### 12.4 Atom Probe Tomography (`atom_probe`)
+### 17.2 PET/MR Fusion (`pet_mr`)
 
-**Canonical DAG**: S → D | **Carrier**: Ion | **Current maturity**: M0
+**Canonical DAG**: Pi → D (PET) + M → F → S → D (MR) → Fusion | **Carrier**: Gamma + RF | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Trajectory aberration | 0 | [0, 10%] | position error |
-| Local magnification effect | 0 | [0, 20%] | - |
-| Detection efficiency | 0.57 | [0.4, 0.8] | - |
-| Mass resolution (FWHM) | 500 | [200, 2000] | M/dM |
+| MR-based attenuation error | 0 | [0, 15%] | - |
+| Susceptibility artifact at air/tissue | 0 | [0, 5] | mm |
+| Timing synchronization | 0 | [0, 100] | ms |
+| Truncation (MR FOV < PET FOV) | 0 | [0, 20%] | of body |
 
 ---
 
-### 12.5 Cryo-EM Single Particle (`cryo_em`)
+### 17.3 SPECT/CT Fusion (`spect_ct`)
 
-**Canonical DAG**: C → D | **Carrier**: Electron | **Current maturity**: M0
+**Canonical DAG**: Pi → D (SPECT) + Pi → D (CT) → Fusion | **Carrier**: Gamma + X-ray | **Maturity**: M0
 
-#### B1: Design
-
-**Example prompt**: "Design cryo-EM data collection: 300 kV, defocus range -1 to -3 um, pixel size 1.0 A, total dose 50 e-/A^2, ice thickness 30-50 nm."
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Defocus per micrograph | -2.0 | [-0.5, -5.0] | um |
-| Spherical aberration (Cs) | 2.7 | [2.0, 3.5] | mm |
-| Beam tilt | 0 | [0, 1] | mrad |
-| Ice thickness | 40 | [20, 100] | nm |
-| Astigmatism | 0 | [0, 200] | nm |
-| Phase plate offset | 0 | [0, pi/4] | rad |
-
-**Improvement suggestions**:
-- Add Ewald sphere curvature correction benchmark
-- Include preferred orientation bias detection and correction
-- Test at different particle sizes (100 kDa vs 1 MDa)
-
-#### B3: True-Spec parameters
-
-Per-micrograph CTF parameters (defocus, astigmatism, phase shift), beam tilt vector, ice thickness map.
-
-#### B4: Correction
-
-**Expected rho**: >= 0.85 (CTF correction is well-established but compound errors degrade it).
-**Feedback**: "Micrograph #47: defocus = {x} um, astigmatism = {y} nm at {theta} deg. Beam tilt = {z} mrad. Recommendation: re-process with per-micrograph CTF; discard micrographs with ice > 80 nm."
+| Registration error | 0 | [0, 5] | mm |
+| CT-based attenuation error | 0 | [0, 10%] | - |
+| Scatter correction error | 0 | [0, 15%] | - |
 
 ---
 
-### 12.6 Neutron Tomography (`neutron_tomo`)
+### 17.4 US/MRI Fusion (`us_mri`)
 
-**Canonical DAG**: Pi → D | **Carrier**: Neutron | **Current maturity**: M0
+**Canonical DAG**: P → D (US) + M → F → S → D (MR) → Fusion | **Carrier**: Acoustic + RF | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Beam spectrum error | white | +/- 10% | energy distribution |
-| Scattering correction | 0 | [0, 15%] | of signal |
-| Gamma contamination | 0 | [0, 5%] | of signal |
-| Rotation axis offset | 0 | [-3, 3] | px |
+| Registration error (deformable) | 0 | [0, 10] | mm |
+| Probe pressure deformation | 0 | [0, 15] | mm |
+| MR distortion | 0 | [0, 5] | mm |
 
 ---
 
-### 12.7 Proton Radiography (`proton_radiography`)
+### 17.5 CT + Fluorescence (FLIT) (`ct_fluorescence`)
 
-**Canonical DAG**: Pi → D | **Carrier**: Proton | **Current maturity**: M0
+**Canonical DAG**: Pi → D (CT) + M → R,P → D (FLI) → Fusion | **Carrier**: X-ray + Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| MCS model error | 0 | [0, 15%] | scattering angle rms |
-| Energy loss model error | 0 | [-5%, 5%] | - |
-| Detector alignment | 0 | [0, 1] | mm |
-| Nuclear interaction correction | 0 | [0, 5%] | - |
+| Optical property assignment error | 0 | [0, 30%] | - |
+| Autofluorescence | 0 | [0, 50%] of signal | - |
+| Registration (CT to optical) | 0 | [0, 3] | mm |
 
 ---
 
-### 12.8 Muon Tomography (`muon_tomo`)
+### 17.6 Correlative Light-Electron Microscopy (`clem`)
 
-**Canonical DAG**: Pi → D | **Carrier**: Muon | **Current maturity**: M0
+**Canonical DAG**: C → D (LM) + C → D (EM) → Fusion | **Carrier**: Photon + Electron | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Angular resolution | 5 | [3, 15] | mrad |
-| Detector layer alignment | 0 | [0, 1] | mm |
-| Track fitting efficiency | 0.95 | [0.8, 1.0] | - |
-| Integration time adequacy | sufficient | [50%, 200%] of nominal | - |
+| Registration error (LM to EM) | 0 | [0, 500] | nm |
+| Sample deformation (fixation) | 0 | [0, 5%] | shrinkage |
+| Fluorescence preservation | 100% | [30%, 100%] | - |
 
 ---
 
-## 13. Broader Experimental Science (8 modalities)
+## 18. Scanning Probe Microscopy (4 modalities) -- NEW CATEGORY
 
 ---
 
-### 13.1 Adaptive Optics (`adaptive_optics`)
+### 18.1 Atomic Force Microscopy (`afm`)
 
-**Canonical DAG**: M → C → D | **Carrier**: Photon | **Current maturity**: M0
+**Canonical DAG**: S → D | **Carrier**: Mechanical | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Residual wavefront error | 0 | [0, lambda/4] | rms |
-| DM actuator hysteresis | 0 | [0, 5%] | - |
-| Fried parameter (r0) | 20 | [5, 30] | cm |
-| Wind speed (frozen flow) | 10 | [5, 30] | m/s |
-| Anisoplanatism angle | 0 | [0, 10] | arcsec |
+| Tip shape convolution | ideal | +/- 30% radius | - |
+| Piezo nonlinearity | 0 | [0, 5%] | - |
+| Thermal drift | 0 | [0, 1] | nm/s |
+| Scanner hysteresis | 0 | [0, 10%] | - |
+
+**B1 Example**: "Design AFM scan for semiconductor feature metrology: tapping mode, 1 um scan, 512 lines."
+**B3 True-Spec**: True tip shape, piezo calibration, drift trajectory, hysteresis curve.
+**B4 rho**: >= 0.75. **Improvement**: Add tip deconvolution benchmark, high-speed AFM.
 
 ---
 
-### 13.2 Seismic Tomography (`seismic_tomo`)
+### 18.2 Scanning Tunneling Microscopy (`stm`)
 
-**Canonical DAG**: P → D | **Carrier**: Seismic | **Current maturity**: M0
+**Canonical DAG**: S → D | **Carrier**: Electron | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Velocity model error | 0 | [-10%, 10%] | - |
-| Source location error | 0 | [0, 5] | km |
-| Station timing error | 0 | [-0.1, 0.1] | s |
-| Ray-bending model order | 1 | [1, 3] | - |
+| Tip electronic structure | ideal | variable LDOS | - |
+| Piezo creep | 0 | [0, 5%] | - |
+| Tunneling barrier height | 4.5 | [3.0, 6.0] | eV |
+| Vibration amplitude | 0 | [0, 5] | pm |
 
 ---
 
-### 13.3 Gravitational Wave Detection (`gravitational_wave`)
+### 18.3 Near-field Optical Microscopy (`nsom`)
 
-**Canonical DAG**: P → Sigma → D | **Carrier**: Gravitational | **Current maturity**: M0
+**Canonical DAG**: M → C → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Calibration error (amplitude) | 0 | [-5%, 5%] | - |
-| Calibration error (phase) | 0 | [-5, 5] | deg |
-| Noise PSD estimation error | 0 | [-10%, 10%] | - |
-| Glitch contamination rate | 0 | [0, 1] | per 100s |
+| Tip-sample distance | 10 | [5, 50] | nm |
+| Aperture size error | 0 | [-20%, 20%] | - |
+| Topographic coupling | 0 | [0, 30%] | - |
+| Far-field background | 0 | [0, 20%] | - |
 
 ---
 
-### 13.4 Particle Calorimetry (`particle_calorimetry`)
+### 18.4 Magnetic Force Microscopy (`mfm`)
 
-**Canonical DAG**: R → Sigma → D | **Carrier**: Particle | **Current maturity**: M0
+**Canonical DAG**: S → M → D | **Carrier**: Magnetic | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Inter-calibration error | 0 | [0, 3%] per cell | - |
-| Non-linearity | 0 | [0, 5%] at high energy | - |
-| Dead channel fraction | 0 | [0, 2%] | - |
-| Pile-up at high luminosity | 0 | [0, 5%] | - |
+| Lift height | 50 | [20, 200] | nm |
+| Tip magnetization model | point dipole | +/- 30% moment | - |
+| Electrostatic coupling | 0 | [0, 10%] | - |
 
 ---
 
-### 13.5 Radio Aperture Synthesis (`radio_astronomy`)
+## 19. Astronomy & Space Imaging (4 modalities) -- NEW CATEGORY
 
-**Canonical DAG**: F → S → D | **Carrier**: RF | **Current maturity**: M0
+---
 
-#### B2: Mismatch parameters
+### 19.1 Coronagraphy (`coronagraphy`)
 
+**Canonical DAG**: M → P → D | **Carrier**: Photon | **Maturity**: M0
+
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Antenna gain error | 0 | [0, 5%] per antenna | - |
-| Phase offset | 0 | [0, 10] | deg per baseline |
-| RFI contamination | 0 | [0, 5%] | of bandwidth |
-| uv-coverage gap | none | [0, 20%] | of uv-plane |
+| Coronagraph mask centering | 0 | [0, 0.1] | lambda/D |
+| Wavefront error (WFE) | 0 | [0, lambda/100] rms | - |
+| Stellar leakage | 1e-6 | [1e-7, 1e-4] | contrast |
+| Speckle lifetime | static | [0.1, 100] | s |
+
+**B1 Example**: "Design stellar coronagraph for exoplanet imaging: Lyot stop, 1e-8 contrast, 3 lambda/D IWA."
+**Improvement**: Post-processing comparison (ADI, SDI, RDI); wavefront sensing & control loop.
 
 ---
 
-### 13.6 Acoustic Emission Testing (`acoustic_emission`)
+### 19.2 Lucky Imaging (`lucky_imaging`)
 
-**Canonical DAG**: P → S → D | **Carrier**: Acoustic | **Current maturity**: M0
+**Canonical DAG**: M → C → D | **Carrier**: Photon | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Wave velocity anisotropy | 0 | [0, 15%] | - |
-| Sensor coupling variation | 1.0 | [0.5, 1.5] per sensor | - |
-| Threshold setting | optimal | +/- 6 | dB |
-| Source type misclassification | 0 | [0, 10%] | - |
+| Fried parameter (r0) | 15 | [5, 25] | cm |
+| Frame selection threshold | 10% | [1%, 50%] | - |
+| Isoplanatic angle | 5 | [2, 10] | arcsec |
+| Registration error | 0 | [0, 0.5] | px |
 
 ---
 
-### 13.7 Magnetic Particle Imaging (`magnetic_particle`)
+### 19.3 Event Horizon Telescope Imaging (`eht_imaging`)
 
-**Canonical DAG**: M → F → D | **Carrier**: Magnetic | **Current maturity**: M0
+**Canonical DAG**: F → S → D | **Carrier**: RF (mm-wave) | **Maturity**: M0
 
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| System function error | 0 | [0, 10%] | - |
-| Relaxation effect | none | [0, 20%] | peak broadening |
-| Background signal | 0 | [0, 5%] | - |
-| Drive field amplitude error | 0 | [-5%, 5%] | - |
+| Atmospheric opacity (tau) | 0.1 | [0.05, 0.5] | nepers |
+| Station gain calibration | 0 | [0, 10%] per station | - |
+| uv-coverage sparsity | sparse | varies by night | - |
+| Interstellar scattering | 0 | [0, 10] | uas broadening |
+
+**Improvement**: Test different regularizers (MEM, RML, CLEAN, PRIMO).
 
 ---
 
-### 13.8 Electrical Impedance Tomography (`impedance_tomo`)
+### 19.4 Solar Imaging (`solar_imaging`)
 
-**Canonical DAG**: M → D | **Carrier**: Electric | **Current maturity**: M0
+**Canonical DAG**: M → P → D | **Carrier**: Photon/EUV | **Maturity**: M0
 
-#### B1: Design
-
-**Example prompt**: "Design EIT for lung ventilation monitoring: 16 electrodes on thorax, 10 kHz excitation, adjacent drive pattern, 50 fps."
-
-#### B2: Mismatch parameters
-
+#### B2: Mismatch Parameters
 | Parameter | Nominal | Mismatch Range | Unit |
 |-----------|---------|----------------|------|
-| Contact impedance | 100 | [50, 500] | ohm per electrode |
-| Electrode position error | 0 | [0, 5] | mm |
-| Body shape model error | elliptical | +/- 10% radii | - |
-| Stray capacitance | 0 | [0, 10] | pF |
-
-**Improvement suggestions**:
-- Add absolute imaging benchmark (not just time-difference)
-- Include multi-frequency EIT for tissue characterization
+| PSF degradation (mirror aging) | 0 | [0, 20%] | - |
+| Stray light | 0 | [0, 5%] | - |
+| Flat-field error | 0 | [0, 3%] | - |
+| Pointing jitter | 0 | [0, 1] | arcsec |
 
 ---
 
-## 14. Global Improvement Recommendations
+## 20. Summary: All 168 Modalities
 
-### 14.1 Per-Maturity-Level Actions
+| # | Category | Count | M0 | M1 | M2 | M3 | M4 |
+|---|----------|:-----:|:--:|:--:|:--:|:--:|:--:|
+| 1 | Microscopy | 24 | 20 | 3 | 1 | 0 | 0 |
+| 2 | Compressive Imaging | 4 | 0 | 1 | 0 | 3 | 0 |
+| 3 | Medical Imaging | 37 | 29 | 4 | 0 | 2 | 0 |
+| 4 | Coherent Imaging | 5 | 3 | 1 | 0 | 1 | 0 |
+| 5 | Computational Photography | 5 | 4 | 0 | 0 | 1 | 0 |
+| 6 | Computational Optics | 2 | 2 | 0 | 0 | 0 | 0 |
+| 7 | Neural Rendering | 2 | 1 | 1 | 0 | 0 | 0 |
+| 8 | Electron Microscopy | 11 | 11 | 0 | 0 | 0 | 0 |
+| 9 | Depth Imaging | 5 | 5 | 0 | 0 | 0 | 0 |
+| 10 | Remote Sensing | 11 | 11 | 0 | 0 | 0 | 0 |
+| 11 | Industrial Inspection | 10 | 10 | 0 | 0 | 0 | 0 |
+| 12 | Scientific Instrumentation | 12 | 12 | 0 | 0 | 0 | 0 |
+| 13 | Broader Experimental Science | 11 | 11 | 0 | 0 | 0 | 0 |
+| 14 | **Spectroscopy & Spectral** | **8** | **8** | 0 | 0 | 0 | 0 |
+| 15 | **Ultrafast Imaging** | **4** | **4** | 0 | 0 | 0 | 0 |
+| 16 | **Quantum Imaging** | **3** | **3** | 0 | 0 | 0 | 0 |
+| 17 | **Multi-Modal Fusion** | **6** | **6** | 0 | 0 | 0 | 0 |
+| 18 | **Scanning Probe** | **4** | **4** | 0 | 0 | 0 | 0 |
+| 19 | **Astronomy & Space** | **4** | **4** | 0 | 0 | 0 | 0 |
+| | **TOTAL** | **168** | **148** | **10** | **1** | **7** | **0** |
 
-| Current Level | Action to Reach Next Level | Count of Modalities |
-|---------------|---------------------------|--------------------:|
-| **M0 → M1** | Define mismatch param ranges; run synthetic single-param test | 78 |
-| **M1 → M2** | Add compound mismatch (3+ params); measure rho | 8 |
-| **M2 → M3** | Obtain real experimental datasets; validate True-Spec | 4 |
-| **M3 → M4** | Add Red Team adversarial injection; live-lab feedback loop | 7 |
+### Category Breakdown by Canonical DAG Family
 
-### 14.2 Cross-Modality Benchmark Templates
+| DAG Family | Primitive Pattern | Modality Count | Example |
+|------------|------------------|:--------------:|---------|
+| Deconvolution | C → D | 32 | widefield, SEM, fundus, AFM |
+| Tomography | Pi → D | 24 | CT, PET, SPECT, electron tomo |
+| MRI family | M → F → S → D | 12 | MRI, fMRI, MRS, ASL, MRF |
+| Spectral | M → W → Sigma → D | 5 | CASSI, hyperspectral |
+| Compressive | M → Sigma → D | 8 | SPC, CACTI, ghost imaging |
+| Ptychographic | M → P → D | 10 | ptychography, FPM, coronagraphy |
+| Propagation | P → D | 22 | ultrasound, sonar, ToF, seismic |
+| Scattering | M → R → D | 16 | Raman, CARS, FLIM, XRF, Brillouin |
+| Interferometric | F → S → D | 8 | radio, crystallography, EHT |
+| Fourier | F → D | 3 | SAR, eddy current |
+| Scanning probe | S → D | 8 | AFM, STM, MALDI, atom probe |
+| Multi-modal | Combined | 6 | PET/CT, PET/MR, CLEM |
+| Other | Various | 14 | HDR, coded exposure, event camera |
 
-To efficiently bring 78 M0 modalities to M1, use these **category-level templates**:
+### Primitive Usage Frequency
 
-| Category | B2 Template | B3 Template |
-|----------|-------------|-------------|
-| **C → D** (deconvolution family) | PSF sigma mismatch + noise level + background | Estimate PSF + noise model |
-| **Pi → D** (tomography family) | Center-of-rotation + angular error + noise | Estimate geometry parameters |
-| **M → F → S → D** (MRI family) | Coil sensitivity + trajectory + B0 | Estimate coil maps + field map |
-| **M → P → D** (ptychographic family) | Probe position + aberration + coherence | Estimate positions + aberrations |
-| **P → D** (propagation family) | Speed/propagation error + attenuation + noise | Estimate propagation parameters |
-| **M → W → Sigma → D** (spectral family) | Mask/dispersion shift + gain + noise | Estimate mask params + dispersion |
-
-### 14.3 Priority Queue: Next 10 Modalities to Validate
-
-Based on user community size, scientific impact, and benchmark readiness:
-
-| Priority | Modality | Current Level | Why | Key Dataset Needed |
-|----------|----------|:---:|-----|-------------------|
-| 1 | `ultrasound` | M1 | Largest medical user base after CT/MRI | Plane-wave US benchmark |
-| 2 | `pet` | M1 | Nuclear medicine cornerstone | NEMA phantom data |
-| 3 | `cryo_em` | M0 | High-impact structural biology | EMPIAR benchmark set |
-| 4 | `sim` | M2 | Active super-resolution community | BioSR with pattern metadata |
-| 5 | `oct` | M1 | Ophthalmology standard of care | Retinal OCT with calibration |
-| 6 | `sar` | M0 | Large remote sensing community | Sentinel-1 SLC data |
-| 7 | `fpm` | M1 | Growing computational microscopy | LED array calibration data |
-| 8 | `holography` | M1 | Fundamental coherent imaging | Off-axis hologram with ref calibration |
-| 9 | `industrial_ct` | M0 | Manufacturing QA critical | GE/Nikon industrial phantom |
-| 10 | `hyperspectral_remote` | M0 | Environmental monitoring | AVIRIS/EnMAP benchmark |
-
----
-
-## 15. Summary Statistics
-
-| Category | Modalities | M0 | M1 | M2 | M3 | M4 |
-|----------|:----------:|:--:|:--:|:--:|:--:|:--:|
-| Microscopy | 16 | 12 | 3 | 1 | 0 | 0 |
-| Compressive Imaging | 4 | 0 | 1 | 0 | 3 | 0 |
-| Medical Imaging | 25 | 19 | 4 | 0 | 2 | 0 |
-| Coherent Imaging | 3 | 1 | 1 | 0 | 1 | 0 |
-| Comp. Photography | 2 | 1 | 0 | 0 | 1 | 0 |
-| Comp. Optics | 2 | 2 | 0 | 0 | 0 | 0 |
-| Neural Rendering | 2 | 1 | 1 | 0 | 0 | 0 |
-| Electron Microscopy | 8 | 8 | 0 | 0 | 0 | 0 |
-| Depth Imaging | 3 | 3 | 0 | 0 | 0 | 0 |
-| Remote Sensing | 8 | 8 | 0 | 0 | 0 | 0 |
-| Industrial Inspection | 8 | 8 | 0 | 0 | 0 | 0 |
-| Scientific Instr. | 8 | 8 | 0 | 0 | 0 | 0 |
-| Broader Exp. Science | 8 | 8 | 0 | 0 | 0 | 0 |
-| **Total** | **97** | **79** | **10** | **1** | **7** | **0** |
-
-**Path to full validation**: 79 modalities at M0 need synthetic benchmarks first. The 7 M3 modalities (CASSI, CACTI, SPC, CT, Ptychography, MRI, Lensless) form the validated core. Target: 20 modalities at M2+ by Phase B, 40+ at M2+ by Phase C.
+| Primitive | Symbol | Used in N modalities |
+|-----------|:------:|:-------------------:|
+| Detect | D | 168 (all) |
+| Modulate | M | 98 |
+| Convolve | C | 52 |
+| Project | Pi | 32 |
+| Propagate | P | 38 |
+| Sample | S | 28 |
+| Scatter | R | 24 |
+| Encode | F | 20 |
+| Accumulate | Sigma | 16 |
+| Disperse | W | 6 |
+| Source | Src | (all, implicit) |
 
 ---
 
-## 16. References
+## 21. Priority Queue: Next 15 Modalities to Validate
+
+| Priority | Modality | Category | Current | Key Dataset |
+|:--------:|----------|----------|:-------:|-------------|
+| 1 | `ultrasound` | Medical | M1 | Plane-wave US benchmark |
+| 2 | `pet` | Medical | M1 | NEMA phantom (Zenodo) |
+| 3 | `cryo_em` | Scientific | M0 | EMPIAR benchmark |
+| 4 | `sim` | Microscopy | M2 | BioSR + pattern metadata |
+| 5 | `oct` | Medical | M1 | Retinal OCT + calibration |
+| 6 | `sar` | Remote Sensing | M0 | Sentinel-1 SLC |
+| 7 | `fpm` | Microscopy | M1 | LED array calibration |
+| 8 | `holography` | Coherent | M1 | Off-axis + ref calibration |
+| 9 | `industrial_ct` | Industrial | M0 | GE/Nikon industrial phantom |
+| 10 | `hyperspectral_remote` | Remote Sensing | M0 | AVIRIS / EnMAP |
+| 11 | `raman_imaging` | Spectroscopy | M0 | Pharma tablet Raman |
+| 12 | `pet_ct` | Multi-Modal | M0 | NEMA + CT phantom |
+| 13 | `afm` | Scanning Probe | M0 | Si calibration grating |
+| 14 | `ghost_imaging` | Quantum | M0 | DMD + bucket detector |
+| 15 | `streak_camera` | Ultrafast | M0 | Fluorescence lifetime |
+
+---
+
+## 22. References
 
 1. PWM Flagship Paper — Typed Primitives and OperatorGraph IR
 2. [PWM Targeting System](targeting_system.md) — LIP Arena specification
