@@ -175,6 +175,8 @@ async def dashboard(
     db: AsyncSession = Depends(get_db),
 ):
     """Dashboard — public overview of platform stats and recent runs."""
+    from pwm_platform.services.modality_database import MODALITY_DATABASE
+
     # Show all recent runs (public view)
     runs_result = await db.execute(
         select(Run).order_by(Run.submitted_at.desc()).limit(20)
@@ -184,11 +186,14 @@ async def dashboard(
     count_result = await db.execute(select(func.count()).select_from(Run))
     total_runs = count_result.scalar() or 0
 
-    modality_count = await db.execute(select(func.count()).select_from(ModalityBasics))
-    total_modalities = modality_count.scalar() or 0
+    total_modalities = len(MODALITY_DATABASE)
 
-    dataset_count = await db.execute(select(func.count()).select_from(Dataset))
-    total_datasets = dataset_count.scalar() or 0
+    # Count unique canonical datasets across all modalities
+    all_datasets = set()
+    for entry in MODALITY_DATABASE.values():
+        for ds in entry.get("canonical_datasets", []):
+            all_datasets.add(ds)
+    total_datasets = len(all_datasets)
 
     return templates.TemplateResponse("dashboard.html", {
         "request": request,
@@ -257,19 +262,52 @@ async def run_status_page(
 @router.get("/datasets", response_class=HTMLResponse)
 async def datasets_page(
     request: Request,
+    category: str | None = None,
     user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Dataset catalog — public."""
-    result = await db.execute(
-        select(Dataset).order_by(Dataset.created_at.desc()).limit(100)
+    """Dataset catalog — serves canonical datasets from the modality knowledge base."""
+    from pwm_platform.services.modality_database import (
+        MODALITY_DATABASE,
+        list_all_categories,
+        list_all_modality_keys,
+        list_modalities_by_category,
     )
-    datasets = result.scalars().all()
+
+    if category:
+        keys = list_modalities_by_category(category)
+    else:
+        keys = list_all_modality_keys()
+
+    # Build a flat list of datasets, one entry per canonical dataset string
+    datasets = []
+    seen_names = set()
+    for k in keys:
+        entry = MODALITY_DATABASE[k]
+        recon = entry.get("recon_results", {})
+        for ds_name in entry.get("canonical_datasets", []):
+            if ds_name in seen_names:
+                continue
+            seen_names.add(ds_name)
+            datasets.append({
+                "name": ds_name,
+                "modality_key": k,
+                "modality_display": entry.get("display_name", k),
+                "category": entry.get("category", ""),
+                "psnr": recon.get("psnr"),
+                "ssim": recon.get("ssim"),
+                "solver": recon.get("solver"),
+                "comparison_img": recon.get("images", {}).get("comparison"),
+            })
 
     return templates.TemplateResponse("datasets.html", {
         "request": request,
         "user": user,
         "datasets": datasets,
+        "categories": list_all_categories(),
+        "selected_category": category,
+        "total_datasets": len(datasets),
+        "total_modalities": len(keys),
     })
 
 
