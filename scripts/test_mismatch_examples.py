@@ -1933,6 +1933,22 @@ def generate_markdown(results: List[ModalityResult]) -> str:
                 lines.append(f"{j}. {tip}")
             lines.append("")
 
+        # Forward-Model Mismatch Cases (from platform database)
+        mismatch_cases = intro.get("mismatch_cases", [])
+        if mismatch_cases:
+            lines.append("### Forward-Model Mismatch Cases\n")
+            for j, case in enumerate(mismatch_cases, 1):
+                lines.append(f"{j}. {case}")
+            lines.append("")
+
+        # How to Correct the Mismatch (from platform database)
+        mismatch_corrections = intro.get("mismatch_corrections", [])
+        if mismatch_corrections:
+            lines.append("### How to Correct the Mismatch\n")
+            for j, fix in enumerate(mismatch_corrections, 1):
+                lines.append(f"{j}. {fix}")
+            lines.append("")
+
         lines.append("---\n")
 
     return "\n".join(lines)

@@ -149,6 +149,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Match immersion oil RI to the coverslip and mounting medium specifications
 5. Normalize intensity per frame or use photobleaching-corrected models
 
+### Forward-Model Mismatch Cases
+
+1. No forward-model mismatch: the widefield Gaussian blur IS the correct operator for this modality (sigma=2.0 PSF convolution)
+2. Minor mismatch may arise if the actual microscope PSF differs from the default Gaussian (e.g., measured PSF with aberrations)
+
+### How to Correct the Mismatch
+
+1. The default widefield operator is already correct; no correction needed
+2. For higher fidelity, replace the Gaussian PSF with a measured or Born & Wolf PSF model matching the actual objective NA and wavelength
+
 ---
 
 ## 2. Low-Dose Widefield Microscopy (`widefield_lowdose`)
@@ -214,6 +224,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Keep camera offset (dark current) calibration current and subtract properly
 4. Apply per-pixel gain and offset maps for sCMOS cameras
 5. Monitor cell health markers (morphology, division rate) to confirm non-toxic dose
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies the correct blur kernel but uses a Gaussian noise model, whereas low-dose imaging is dominated by Poisson shot noise with very few photons per pixel
+2. Denoising algorithms trained on Gaussian noise statistics will underperform on Poisson-dominated low-dose data, producing biased estimates and residual artifacts
+
+### How to Correct the Mismatch
+
+1. Use the low-dose widefield operator that applies a Poisson-Gaussian noise model: y = Poisson(alpha * PSF ** x) / alpha + N(0, sigma^2)
+2. Train or select denoising algorithms that explicitly model Poisson statistics (Anscombe transform + BM3D, or Poisson-aware deep networks like Noise2Void)
 
 ---
 
@@ -281,6 +301,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Calibrate chromatic offsets with multi-color beads and apply corrections
 5. Follow Nyquist sampling (pixel size ~ 0.4× resolution limit); avoid oversampling
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback uses sigma=2.0, but confocal PSF is sharper (sigma~1.2-1.5) due to the pinhole rejecting out-of-focus light — the fallback over-blurs by 30-60%, destroying resolvable features
+2. Confocal provides optical sectioning (only in-focus plane contributes signal), while widefield collects fluorescence from all planes — reconstructions using widefield PSF will have incorrect out-of-focus model
+
+### How to Correct the Mismatch
+
+1. Use the confocal operator with the correct PSF (product of excitation and detection PSFs, effective sigma~1.2-1.5) matching the pinhole size and objective NA
+2. Model the confocal sectioning effect explicitly; for live-cell work, use the confocal PSF that accounts for pinhole size (1 Airy unit) and emission wavelength
+
 ---
 
 ## 4. Confocal 3D Z-Stack (`confocal_3d`)
@@ -342,6 +372,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Apply intensity normalization per z-slice before deconvolution
 4. Always perform true 3-D deconvolution to preserve axial information
 5. Use measured 3-D PSF from sub-diffraction beads embedded at the correct depth
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback processes only 2D (64,64) images, but confocal 3D requires volumetric input (32,64,64) — the entire z-stack is discarded, losing all axial information
+2. Applying 2D deconvolution slice-by-slice instead of true 3D deconvolution produces incorrect axial resolution and misses inter-slice correlations from the 3D PSF
+
+### How to Correct the Mismatch
+
+1. Use the 3D confocal operator that processes full z-stack volumes with the anisotropic 3D PSF (worse axial than lateral resolution)
+2. Perform true 3D deconvolution using the measured or modeled 3D confocal PSF; never decompose a z-stack into independent 2D slices
 
 ---
 
@@ -405,6 +445,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use 1.49 NA objectives for maximum resolution; 1.40 NA limits SIM performance
 5. Minimize total acquisition time; use fast cameras and short exposures
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a single (64,64) blurred image, but SIM requires 9-15 raw frames (3 orientations x 3-5 phases) with structured illumination patterns — output shape (64,64,9) vs (64,64)
+2. Without the sinusoidal illumination pattern encoding, the high-frequency information that SIM moves into the passband via Moiré interference is completely absent — no super-resolution is possible
+
+### How to Correct the Mismatch
+
+1. Use the SIM operator that generates multiple pattern-modulated images: y_k = (1 + m*cos(k_i*r + phi_j)) * (PSF ** x) for each orientation i and phase j
+2. Reconstruct using Fourier-space order separation and recombination (Gustafsson method) or deep-learning SIM, which require the correct multi-frame structured illumination forward model
+
 ---
 
 ## 6. Light-Sheet Fluorescence Microscopy (`lightsheet`)
@@ -466,6 +516,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Carefully co-align illumination and detection planes using fluorescent beads
 4. Use stable, low-melting-point agarose embedding and vibration-isolated stages
 5. Clear or match refractive index of tissue where possible; use adaptive optics
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback processes only 2D (64,64) images, but light-sheet microscopy acquires 3D volumes (64,64,32) with intrinsic optical sectioning — the volumetric z-dimension is entirely lost
+2. Widefield illumination excites the entire sample volume causing out-of-focus blur, whereas the light sheet illuminates only the focal plane — the fallback forward model includes fluorescence contributions from planes that the real system never excites
+
+### How to Correct the Mismatch
+
+1. Use the lightsheet operator that processes 3D volumes with the sheet illumination profile: each z-slice is excited only by the thin (1-5 um) light sheet
+2. Model the sheet thickness and propagation (Gaussian or Bessel beam) explicitly; for multi-view systems, include the detection PSF from the orthogonal objective
 
 ---
 
@@ -532,6 +592,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Design the relay optics for uniform imaging quality across the spectral range
 5. Optimize or simulate the mask pattern for low coherence (good RIP) before fabrication
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a 2D (64,64) grayscale image, but CASSI compresses a 3D spectral datacube (64,64,L wavelengths) into a single 2D coded snapshot via a binary mask and dispersive prism — the spectral dimension is entirely absent
+2. Without the coded aperture mask and spectral dispersion, the measurement does not encode wavelength-dependent information — spectral unmixing or hyperspectral reconstruction from the fallback output is impossible
+
+### How to Correct the Mismatch
+
+1. Use the CASSI operator that applies the binary coded aperture mask followed by spectral dispersion (prism/grating shift), producing a 2D coded measurement that encodes the full 3D spectral datacube
+2. Reconstruct the (x,y,lambda) datacube using compressive sensing (TwIST, GAP-TV) or deep unfolding networks (TSA-Net, MST) that exploit the spatio-spectral structure encoded by the CASSI forward model
+
 ---
 
 ## 8. Single-Pixel Camera (`spc`)
@@ -593,6 +663,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Start with 25-50 % measurement ratio for natural scenes; reduce only if sparsity allows
 4. Use 16-bit or higher ADC; verify linearity with a calibrated light source
 5. Measure dark frames periodically and subtract; maintain stable detector temperature
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a 2D (64,64) image, but single-pixel camera acquires a 1D vector of M scalar measurements (M << N pixels) via structured illumination patterns and a single photodetector — output shape (M,) vs (64,64)
+2. Each SPC measurement is an inner product of the scene with a known pattern (y_i = <phi_i, x>), capturing compressed information — the widefield blur produces N^2 pixels with no compression, making compressive reconstruction algorithms incompatible
+
+### How to Correct the Mismatch
+
+1. Use the SPC operator that applies the sensing matrix Phi (Hadamard, random, or learned patterns): y = Phi * x, where y has far fewer entries than the image has pixels
+2. Reconstruct using compressive sensing algorithms (ISTA-Net, basis pursuit, total variation) that exploit sparsity to recover the N^2-pixel image from M << N^2 measurements
 
 ---
 
@@ -660,6 +740,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Flatfield-correct the mask modulation using a uniform target calibration
 5. Simulate reconstruction quality with candidate mask patterns before hardware fabrication
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback processes a single 2D (64,64) frame, but CACTI compresses B temporal frames into a single 2D coded snapshot using a shifting binary mask — the temporal dimension (64,64,B) is entirely lost
+2. Without the time-varying coded exposure pattern, individual video frames cannot be separated from the compressed measurement — temporal super-resolution from the fallback is impossible
+
+### How to Correct the Mismatch
+
+1. Use the CACTI operator that applies frame-wise binary masks and sums the coded frames: y = sum_b(M_b * x_b), compressing B frames into one measurement
+2. Reconstruct the video sequence using PnP-SCI (plug-and-play with FastDVDnet), ELP-Unfolding, or GAP-TV that model the temporal compression and recover B frames from the single snapshot
+
 ---
 
 ## 10. Generic Matrix Sensing (`matrix`)
@@ -726,6 +816,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Validate sparsity assumption on representative signals before deploying CS
 5. Include quantization noise in the forward model or use dithering techniques
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies a Gaussian blur (shape-preserving convolution), but the correct compressed sensing operator applies a random measurement matrix y = Phi*x that projects the image into a lower-dimensional space
+2. Gaussian blur preserves spatial locality and image structure, whereas the random measurement matrix scrambles all spatial information — the fallback measurements contain no compressed-sensing-compatible encoding
+
+### How to Correct the Mismatch
+
+1. Use the correct compressed sensing operator with the measurement matrix Phi (Gaussian random, partial Fourier, or structured random), producing y = Phi * vec(x)
+2. Reconstruct using L1/TV-regularized optimization (ISTA, ADMM) or learned proximal operators designed for the specific measurement matrix structure
+
 ---
 
 ## 11. X-ray Computed Tomography (`ct`)
@@ -787,6 +887,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Use gating (cardiac/respiratory) or fast rotation to reduce motion artifacts
 4. Ensure adequate number of projections (≥ π × detector columns for FBP)
 5. Use metal artifact reduction algorithms (MAR, iterative forward-projection inpainting)
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a blurred (64,64) image, but CT acquires a sinogram of shape (180,64) via the Radon transform (line integrals at multiple angles) — any reconstruction algorithm expecting sinogram input will crash
+2. The Gaussian blur preserves spatial structure, but the Radon transform converts spatial information into angular projections — the fallback output bears no physical relationship to X-ray transmission measurements
+
+### How to Correct the Mismatch
+
+1. Use the CT operator implementing the discrete Radon transform: y(theta,s) = integral of f(x,y) along line at angle theta and offset s, producing a (n_angles, n_detectors) sinogram
+2. Reconstruct using filtered back-projection (FBP) or iterative algorithms (SART, ADMM-TV) that require the correct Radon transform / back-projection pair
 
 ---
 
@@ -865,6 +975,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use fat suppression or water-fat separation (Dixon) sequences
 5. Acquire adequate auto-calibration data for parallel imaging; use robust coil maps
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces real-valued spatially blurred output, but MRI acquires complex-valued k-space data via the Fourier transform with undersampling mask — all phase information is lost with the fallback
+2. The fallback applies spatial-domain convolution, but MRI measurement occurs in Fourier domain (k-space): y = M * F * x — using the fallback means compressed-sensing MRI reconstruction (L1-wavelet, E2E-VarNet) cannot function
+
+### How to Correct the Mismatch
+
+1. Use the MRI operator that applies the 2D Fourier transform followed by an undersampling mask: y = M * FFT2(x), producing complex-valued k-space measurements
+2. Reconstruct using parallel imaging (GRAPPA, SENSE) or compressed sensing (L1-wavelet + TV regularization) that operate on the Fourier-domain measurements with known sampling pattern
+
 ---
 
 ## 13. Ptychographic Imaging (`ptychography`)
@@ -938,6 +1058,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use interferometric position feedback and short dwell times per point
 5. Use a semi-transparent beam stop or high-dynamic-range detector modes
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a single (64,64) image, but ptychography acquires diffraction patterns at multiple overlapping scan positions — output shape (n_positions, det_x, det_y) is a set of far-field intensity measurements
+2. Ptychography is fundamentally nonlinear (y_j = |F{P * O_j}|^2, intensity of Fourier transform of probe times object) — the widefield linear blur cannot model coherent wave propagation, diffraction, or phase retrieval
+
+### How to Correct the Mismatch
+
+1. Use the ptychography operator that generates one far-field diffraction pattern per probe position, with overlapping illumination enabling redundant phase information for robust reconstruction
+2. Reconstruct using PIE (Ptychographic Iterative Engine), ePIE, or gradient-descent methods that alternate between real-space (overlap constraint) and Fourier-space (modulus constraint) using the coherent forward model
+
 ---
 
 ## 14. Digital Holographic Microscopy (`holography`)
@@ -1003,6 +1133,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Apply robust phase unwrapping algorithms; use multi-wavelength for large OPD
 4. Use a low-coherence source (LED or SLD) for speckle reduction in off-axis DHM
 5. Implement numerical autofocusing or calibrate propagation distance precisely
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces real-valued output, but holography records complex-valued interference between object and reference waves — the phase information encoding 3D depth and optical path length is completely lost
+2. The interference fringe pattern (I = |E_ref + E_obj|^2) encodes both amplitude and phase of the object wave, enabling numerical refocusing — the Gaussian blur destroys the fringe structure and all quantitative phase information
+
+### How to Correct the Mismatch
+
+1. Use the holography operator that models the coherent interference between object wave (after propagation) and reference wave, producing complex-valued holographic data
+2. Reconstruct amplitude and phase by digital holographic processing: Fourier filtering to isolate the sideband, numerical back-propagation using the angular spectrum method or Fresnel transform
 
 ---
 
@@ -1081,6 +1221,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Run multiple random starts and use HIO-ER hybrid strategies to escape local minima
 5. Model partial coherence in the forward model or select sufficiently coherent beams
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback is a linear operator, but phase retrieval measures only the intensity of the Fourier transform: y = |F{x}|^2 — this is a fundamentally nonlinear (quadratic) measurement that makes reconstruction non-convex
+2. The fallback preserves the spatial structure of the input, but phase retrieval destroys the phase of the Fourier transform — recovering the original signal from magnitude-only Fourier measurements is a fundamentally different (and harder) inverse problem
+
+### How to Correct the Mismatch
+
+1. Use the phase retrieval operator implementing y = |FFT(x)|^2 (or |F{x * support}|^2 with known support constraint), producing real-valued intensity measurements of the Fourier magnitude
+2. Reconstruct using iterative phase retrieval algorithms (Gerchberg-Saxton, HIO, ER) or gradient descent on the non-convex loss, which require the correct quadratic forward model
+
 ---
 
 ## 16. Fourier Ptychographic Microscopy (`fpm`)
@@ -1154,6 +1304,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Normalize LED intensities with a blank-sample calibration acquisition
 5. Stabilize the setup mechanically; use fast cameras to minimize inter-frame drift
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a single (64,64) image, but FPM acquires 25+ images from different LED illumination angles — output shape (25,16,16) captures distinct spatial-frequency bands for each angle
+2. FPM is fundamentally nonlinear (intensity = |F^-1{P * F{O * exp(i*k_led*r)}}|^2) — the widefield linear blur cannot model the coherent pupil filtering and phase recovery that enables synthetic aperture
+
+### How to Correct the Mismatch
+
+1. Use the FPM operator that generates one low-resolution intensity image per LED angle, each capturing a different region of the sample's Fourier spectrum shifted by the illumination wavevector
+2. Reconstruct using alternating projection (Gerchberg-Saxton in Fourier space) or embedded pupil recovery, which require the correct coherent forward model with known LED positions
+
 ---
 
 ## 17. Neural Radiance Fields (NeRF) (`nerf`)
@@ -1216,6 +1376,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Add distortion loss or density regularization to eliminate floater artifacts
 5. Use Instant-NGP or 3D Gaussian Splatting for real-time rendering requirements
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback processes a single 2D (64,64) image, but NeRF renders multiple views of a 3D scene from a volumetric radiance field — output shape (n_views, H, W) represents images from different camera poses
+2. NeRF is fundamentally nonlinear (volume rendering integral: C(r) = integral of T(t)*sigma(t)*c(t) dt along each ray) — the widefield linear blur cannot model view-dependent appearance, occlusion, or 3D geometry
+
+### How to Correct the Mismatch
+
+1. Use the NeRF operator that performs differentiable volume rendering: for each pixel, cast a ray through the volumetric density/color field and integrate transmittance-weighted radiance
+2. Optimize the 3D radiance field (MLP or voxel grid) to minimize photometric loss across all training views using the correct volume rendering equation as the forward model
+
 ---
 
 ## 18. 3D Gaussian Splatting (`gaussian_splatting`)
@@ -1277,6 +1447,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Apply periodic pruning of low-opacity Gaussians to control memory
 4. Enable adaptive densification and set proper gradient thresholds for splitting
 5. Apply per-image exposure compensation or normalize images before training
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback processes a single 2D (64,64) image, but Gaussian splatting renders multi-view images from a set of 3D Gaussian primitives — output shape (n_views, H, W) encodes view-dependent appearance
+2. Gaussian splatting is a nonlinear rendering process (alpha-compositing of projected 3D Gaussians sorted by depth) — the widefield linear blur cannot model 3D-to-2D projection, depth ordering, or view-dependent effects
+
+### How to Correct the Mismatch
+
+1. Use the Gaussian splatting operator that projects 3D Gaussian primitives onto each camera plane via differentiable rasterization with alpha compositing
+2. Optimize Gaussian parameters (position, covariance, opacity, color SH coefficients) to minimize rendering loss across training views using the correct splatting forward model
 
 ---
 
@@ -1344,6 +1524,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Tune regularization weight (e.g., via L-curve or cross-validation)
 5. Calibrate PSF at multiple depths for 3-D scenes; use depth-varying reconstruction
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback uses a Gaussian PSF, but lensless cameras use a coded aperture (phase mask, diffuser, or amplitude mask) that creates a highly structured, non-Gaussian PSF — the caustic pattern is fundamentally different from a Gaussian
+2. The lensless PSF encodes the scene through a known, shift-variant pattern — the widefield shift-invariant Gaussian blur does not capture the scene-dependent structure of the lensless measurement and produces incorrect reconstruction input
+
+### How to Correct the Mismatch
+
+1. Use the lensless operator with the calibrated PSF of the specific coded aperture (measured from a point source or computed from the mask design): y = H * x, where H is the non-Gaussian, possibly shift-variant PSF
+2. Reconstruct using Wiener deconvolution, ADMM with TV prior, or learned methods (FlatNet, PhlatCam) that use the correct coded-aperture PSF for the specific mask in use
+
 ---
 
 ## 20. Panorama Multi-Focus Fusion (`panorama`)
@@ -1410,6 +1600,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Plan focus distances to cover the entire depth range of the scene
 5. Use multi-band blending and choose seam lines in textureless regions
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies Gaussian blur to a single image, but panoramic imaging involves geometric projection (cylindrical, spherical, or equirectangular) of the scene onto a wide field of view — the projection geometry is absent
+2. Panorama multi-focus fusion requires modeling focus variation across the wide FOV and stitching multiple exposures — the widefield single-frame model cannot capture the spatially varying focus or overlap regions
+
+### How to Correct the Mismatch
+
+1. Use the panorama operator that models the geometric projection (cylindrical or spherical warping) and focus-dependent blur across the wide field of view
+2. Reconstruct using image stitching with homography estimation, exposure fusion, and spatially varying deblurring that account for the correct projection geometry
+
 ---
 
 ## 21. Light Field Imaging (`light_field`)
@@ -1471,6 +1671,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Calibrate using a white image and point-source images for precise microlens grid mapping
 4. Design the system with the desired spatial-angular trade-off explicitly computed
 5. Use microlens diameters larger than the diffraction limit (> 10× wavelength)
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a single (64,64) image, but a light field camera captures both spatial and angular information via a microlens array — the output encodes multiple sub-aperture views for computational refocusing
+2. Without the angular dimension (directions of light rays), depth estimation from parallax and computational refocusing are impossible — the widefield model captures only a single perspective
+
+### How to Correct the Mismatch
+
+1. Use the light field operator that models the microlens array: each microlens captures light from different angular directions, producing an (x, y, u, v) 4D light field on the 2D sensor
+2. Reconstruct depth maps from sub-aperture disparity, perform computational refocusing via shift-and-sum, or apply light-field super-resolution to trade angular for spatial resolution
 
 ---
 
@@ -1534,6 +1744,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use higher-order transport models (radiative transfer) near sources if needed
 5. Initialize reconstruction with patient-specific anatomical prior (from MRI or CT)
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a 2D (64,64) image, but Diffuse Optical Tomography acquires boundary measurements (source-detector pairs) — output shape (64,) is a 1D vector of photon counts at detector positions
+2. DOT measurement physics involves diffuse light propagation through scattering tissue (modeled by the diffusion equation), which is fundamentally different from surface-level Gaussian blur — the fallback cannot model subsurface absorption and scattering
+
+### How to Correct the Mismatch
+
+1. Use the DOT operator that models photon transport via the diffusion equation: Jacobian maps from interior optical properties (absorption, scattering) to boundary measurements at each source-detector pair
+2. Reconstruct interior absorption/scattering maps using Tikhonov-regularized inversion or iterative methods (conjugate gradient) with the correct diffusion-equation-based forward model
+
 ---
 
 ## 23. Photoacoustic Imaging (`photoacoustic`)
@@ -1596,6 +1816,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use appropriate acoustic coupling gel or water bath between transducer and tissue
 5. Monitor laser fluence at the tissue surface; comply with ANSI Z136.1 MPE limits
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a blurred (64,64) image, but photoacoustic imaging acquires time-resolved pressure signals at transducer elements — output shape (n_time, n_detectors) represents acoustic wave arrivals, not an image
+2. Photoacoustic signal generation involves optical absorption → thermoelastic expansion → acoustic wave propagation — the widefield blur has no connection to the optical-acoustic conversion physics
+
+### How to Correct the Mismatch
+
+1. Use the photoacoustic operator that models the forward problem: laser absorption creates initial pressure p_0(r) = Gamma * mu_a * Phi(r), then acoustic waves propagate to transducer elements
+2. Reconstruct using time-reversal, back-projection, or model-based iterative methods that invert the acoustic wave equation from measured pressure time series to initial pressure distribution
+
 ---
 
 ## 24. Optical Coherence Tomography (`oct`)
@@ -1657,6 +1887,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Use swept-source OCT for reduced roll-off; optimize spectrometer for uniform sensitivity
 4. Apply eye-tracking or motion-correction algorithms; average repeated B-scans
 5. Calibrate depth scale with a known-thickness reference standard
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies spatial blur, but OCT acquires spectral interferograms that encode depth via low-coherence interferometry — the interference fringe pattern bears no resemblance to a blurred image
+2. OCT depth resolution comes from the broadband source coherence length (~5-10 um), not from spatial PSF — the widefield operator cannot model the axial sectioning, dispersion, or spectral-to-depth FFT relationship
+
+### How to Correct the Mismatch
+
+1. Use the OCT operator that models spectral-domain interferometry: y(k) = |E_ref + E_sample(k)|^2, where depth information is encoded in the spectral fringe frequency
+2. Reconstruct A-scans via FFT of the spectral interferogram after dispersion compensation and k-linearization; B-scans are formed by lateral scanning
 
 ---
 
@@ -1731,6 +1971,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Keep count rate below 1-5 % of the laser repetition rate to avoid pile-up
 5. Measure autofluorescence lifetime separately and include in the fit model
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a single 2D intensity image (64,64), but FLIM measures fluorescence lifetime decay at each pixel — output shape (64,64,64) includes the temporal decay dimension
+2. FLIM forward model is nonlinear (exponential decay convolved with IRF: y(t) = IRF * sum(a_i * exp(-t/tau_i))), while the widefield linear blur cannot represent lifetime information at all
+
+### How to Correct the Mismatch
+
+1. Use the FLIM operator that generates time-resolved fluorescence decay histograms at each pixel, including IRF convolution and multi-exponential decay components
+2. Reconstruct lifetimes using phasor analysis or exponential fitting on the temporal dimension; the correct forward model preserves the relationship between decay time and local chemical environment
+
 ---
 
 ## 26. Integral Photography (Plenoptic) (`integral`)
@@ -1796,6 +2046,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Use high-quality molded lenslets and baffles to minimize crosstalk
 4. Apply per-lenslet calibration including vignetting and distortion correction
 5. Use computational depth inversion to correct pseudoscopic effects
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a single-perspective blurred image, but integral imaging captures multiple sub-aperture views through a lenslet array — each elemental image sees the scene from a slightly different angle
+2. Without the lenslet-array angular encoding, depth information (parallax between views) is lost — computational refocusing and 3D reconstruction from the fallback output are impossible
+
+### How to Correct the Mismatch
+
+1. Use the integral imaging operator that models the lenslet array: each microlens captures a different angular perspective, encoding the 4D light field on the 2D sensor
+2. Reconstruct depth maps via disparity estimation between elemental images, and perform computational refocusing using pixel rearrangement and summation across sub-aperture views
 
 ---
 
@@ -1863,6 +2123,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Apply appropriate DICOM windowing presets for the anatomical region
 5. Use an appropriate anti-scatter grid ratio (8:1 to 12:1) for thick body parts
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies additive Gaussian blur, but X-ray radiography follows Beer-Lambert attenuation: I = I_0 * exp(-integral(mu(x,y,z) dz)) — the exponential transmission model is fundamentally different from linear convolution
+2. The Gaussian blur preserves mean intensity, but X-ray attenuation reduces intensity exponentially with material thickness and density — the fallback cannot model absorption contrast, bone/soft-tissue differentiation, or scatter
+
+### How to Correct the Mismatch
+
+1. Use the X-ray radiography operator implementing Beer-Lambert transmission: y = I_0 * exp(-A*x) + scatter + noise, where A is the projection matrix along the beam direction
+2. Include scatter rejection (anti-scatter grid model), detector response (DQE), and quantum noise (Poisson statistics) for physically accurate forward modeling
+
 ---
 
 ## 28. Ultrasound Imaging (`ultrasound`)
@@ -1924,6 +2194,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Adjust TGC (time-gain compensation) curve for uniform brightness with depth
 4. Recognize and account for acoustic artifacts (shadowing, enhancement, reverberation)
 5. Set the transmit focal zone at the depth of the target structure
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a 2D (64,64) image, but ultrasound acquires RF channel data of shape (n_depths, n_channels) from each transducer element — output shape (32,128) vs (64,64) makes beamforming algorithms incompatible
+2. Ultrasound imaging involves wave propagation, reflection at tissue interfaces, and time-of-flight encoding — the widefield Gaussian blur has no relationship to acoustic wave physics (speed of sound, impedance mismatch, attenuation)
+
+### How to Correct the Mismatch
+
+1. Use the ultrasound operator that models acoustic pulse transmission, tissue reflection, and per-element receive: each channel records the time-domain echo signal from scatterers at different depths
+2. Reconstruct B-mode images using delay-and-sum beamforming or adaptive beamforming (MVDR, coherence factor) that require the correct RF channel data format and speed-of-sound model
 
 ---
 
@@ -1987,6 +2267,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use Monte Carlo scatter correction models validated for the patient population
 5. Double-check injected dose, patient weight, injection time, and decay correction
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a blurred (64,64) image, but PET acquires sinogram data of shape (n_angles, n_radial) from coincidence detection of annihilation photon pairs — output shape (32,64) vs (64,64)
+2. PET measurement physics (positron emission → annihilation → 511 keV photon pair → coincidence detection) is fundamentally different from optical blur — the fallback cannot model attenuation correction, scatter, randoms, or detector normalization
+
+### How to Correct the Mismatch
+
+1. Use the PET operator that models the system matrix: y = A*x + scatter + randoms, where A encodes line-of-response geometry and attenuation
+2. Reconstruct using OSEM (Ordered Subsets Expectation Maximization) with the correct system matrix, attenuation map, and scatter/randoms estimates
+
 ---
 
 ## 30. Single Photon Emission CT (`spect`)
@@ -2048,6 +2338,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Apply CT-based attenuation correction; verify CT-SPECT registration
 4. Use motion detection and correction algorithms; shorter acquisitions with CZT cameras
 5. Verify energy window settings match the radionuclide photopeak and scatter windows
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a blurred (64,64) image, but SPECT acquires projections of shape (n_angles, n_detectors) using a rotating gamma camera with collimator — output shape (32,64) vs (64,64)
+2. SPECT measurement involves collimated gamma-ray detection with depth-dependent spatial resolution (the collimator PSF broadens with distance) — the widefield spatially-invariant Gaussian blur cannot model this depth-dependent response
+
+### How to Correct the Mismatch
+
+1. Use the SPECT operator that models collimated gamma-ray projection with distance-dependent resolution: y(theta,s) = integral of (h(d) * f) along projection rays for each angle
+2. Reconstruct using OSEM with depth-dependent collimator-detector response modeling and attenuation correction (Chang method or CT-based mu-map)
 
 ---
 
@@ -2115,6 +2415,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Plasma-clean the chamber and samples; use a cold trap to reduce contamination
 5. Optimize working distance for the specific detector and resolution requirement
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies optical Gaussian blur, but SEM image formation involves electron-sample interaction (secondary electron yield depends on surface topography and composition) — the contrast mechanism is fundamentally different from optical fluorescence
+2. SEM contrast (SE and BSE signals) depends on accelerating voltage, material Z-number, surface tilt, and detector geometry — the widefield PSF convolution model cannot capture these electron-matter interaction physics
+
+### How to Correct the Mismatch
+
+1. Use the SEM operator that models the electron probe profile (sub-nm spot) and secondary/backscattered electron yield as a function of local surface topography and composition
+2. Include the interaction volume (Monte Carlo electron trajectory simulation), detector angular acceptance, and signal mixing between SE (topography) and BSE (composition) channels
+
 ---
 
 ## 32. Transmission Electron Microscopy (`tem`)
@@ -2181,6 +2491,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Simulate TEM images with known structure and compare; always correct CTF in analysis
 5. Plasma-clean grids and specimens before loading; use a cryo-shield during imaging
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces real-valued output, but TEM forms images from coherent electron wave transmission — the complex-valued exit wave (amplitude and phase from elastic scattering) is lost, destroying quantitative phase-contrast information
+2. TEM image contrast arises from coherent interference of scattered electron waves modulated by the contrast transfer function (CTF) — the widefield intensity-based Gaussian blur cannot model the oscillating CTF that produces Thon rings
+
+### How to Correct the Mismatch
+
+1. Use the TEM operator that models coherent electron imaging: exit wave convolved with the CTF (including defocus, spherical aberration Cs, partial coherence) producing complex-valued image wave
+2. Reconstruct phase and amplitude using CTF correction (Wiener filtering in Fourier space), or through-focus series exit-wave reconstruction for aberration-corrected quantitative HRTEM
+
 ---
 
 ## 33. Electron Tomography (`electron_tomography`)
@@ -2242,6 +2562,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Apply autofocus and drift tracking at each tilt; use cryo-conditions for biology
 4. Distribute dose evenly; start at high tilts where damage impact is greatest
 5. Calibrate stage tilt angle accuracy; use Saxton scheme (non-linear tilt increments)
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback processes only 2D (64,64) images, but electron tomography acquires a tilt series — projections at multiple angles through the 3D specimen volume, with output shape (n_tilts, H, W)
+2. The missing wedge problem (limited tilt range, typically +/- 70 degrees) is specific to electron tomography and cannot be modeled by the widefield operator — reconstructions without accounting for missing data have severe elongation artifacts
+
+### How to Correct the Mismatch
+
+1. Use the electron tomography operator that generates projection images at each tilt angle via the Radon transform applied to the 3D specimen density, including the limited tilt range constraint
+2. Reconstruct using weighted back-projection (WBP), SIRT, or compressed-sensing methods that account for the missing wedge and alignment errors between tilt images
 
 ---
 
@@ -2308,6 +2638,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use low-kV FIB final polishing or Ar-ion milling to minimize surface damage
 5. Simulate HAADF images with the exact specimen thickness for quantitative analysis
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies a Gaussian PSF blur, but STEM forms images by rastering a focused electron probe (~0.1 nm) and collecting scattered electrons with annular detectors — the contrast depends on detector geometry (BF, ADF, HAADF) not optical PSF shape
+2. HAADF-STEM contrast is proportional to Z^~1.7 (atomic number contrast), enabling direct chemical imaging — the widefield PSF convolution produces optical-type blur with no Z-contrast information
+
+### How to Correct the Mismatch
+
+1. Use the STEM operator that models the electron probe profile (aberration-corrected sub-angstrom) and detector-dependent signal collection: ADF integrates scattered electrons over the annular detector range
+2. For quantitative STEM, include the probe-forming aberration function, thermal diffuse scattering, and detector inner/outer angle to correctly model Z-contrast and strain mapping
+
 ---
 
 ## 35. Fluoroscopy (`fluoroscopy`)
@@ -2372,6 +2712,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Perform regular geometric calibration with a phantom for accurate 3D reconstruction
 4. Collimate tightly and use appropriate anti-scatter grids
 5. Monitor cumulative dose (DAP) and skin dose during procedures; rotate beam angles
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies additive Gaussian blur, but fluoroscopy follows X-ray Beer-Lambert attenuation with real-time temporal dynamics — the exponential transmission model and dynamic contrast are absent
+2. Fluoroscopy operates at much lower dose rates than radiography, requiring modeling of quantum mottle (Poisson noise at very low photon counts) and image intensifier/flat-panel detector gain — the widefield noise model is wrong
+
+### How to Correct the Mismatch
+
+1. Use the fluoroscopy operator implementing real-time X-ray transmission: y = I_0 * exp(-A*x) with Poisson quantum noise, modeling the low-dose regime and detector response
+2. Apply temporal filtering (recursive averaging) or deep-learning denoising tuned for the correct Poisson noise level of fluoroscopic sequences
 
 ---
 
@@ -2438,6 +2788,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Position AEC sensor appropriately for breast density; adjust manually if needed
 5. Use shortest possible exposure with adequate mAs; consider large-angle tomosynthesis
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies Gaussian blur, but mammography uses low-energy X-ray transmission (25-35 kVp) with tissue-specific attenuation coefficients optimized for fat/glandular tissue contrast — the physics model is fundamentally different
+2. Mammographic image formation involves compression geometry, scatter grid rejection, anti-scatter grid, and detector-specific MTF — none of these are captured by a simple spatial Gaussian blur
+
+### How to Correct the Mismatch
+
+1. Use the mammography operator implementing Beer-Lambert transmission at mammographic energies with tissue-specific attenuation: y = I_0 * exp(-mu_tissue * t) for fat, glandular, and calcification components
+2. Include scatter rejection model, detector quantum efficiency (DQE), and geometric magnification for accurate forward modeling and quantitative breast density estimation
+
 ---
 
 ## 37. Dual-Energy X-ray Absorptiometry (DEXA) (`dexa`)
@@ -2498,6 +2858,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Use same scanner for serial monitoring; cross-calibrate if changing equipment
 4. Evaluate AP spine image for degenerative changes; consider lateral spine or femur
 5. Follow ISCD guidelines for vertebral inclusion/exclusion criteria in analysis
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a single 2D (64,64) image, but DEXA acquires dual-energy X-ray measurements — output shape (2,64,64) has two channels (high and low energy) for material decomposition
+2. DEXA uses the energy-dependent difference in attenuation between bone and soft tissue to measure bone mineral density — the single-energy widefield blur cannot distinguish materials and produces no BMD information
+
+### How to Correct the Mismatch
+
+1. Use the DEXA operator that models dual-energy Beer-Lambert transmission: y_E = I_0(E) * exp(-(mu_bone(E)*t_bone + mu_tissue(E)*t_tissue)) for E = low and high energy
+2. Decompose the dual-energy measurements into bone and soft tissue components using the known energy-dependent attenuation coefficients to compute areal bone mineral density (g/cm^2)
 
 ---
 
@@ -2561,6 +2931,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Use extended FOV techniques (shifted detector, multiple scans) for large anatomy
 4. Apply 4D-CBCT or gated acquisition for moving anatomy
 5. Acquire sufficient projections (≥600 for a full rotation) with uniform angular spacing
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a blurred (64,64) image, but cone-beam CT acquires a sinogram of shape (n_angles, n_detector_rows * n_detector_cols) from a 2D detector rotating around the patient — the data is a set of cone-beam projections, not a blurred image
+2. CBCT cone-beam geometry introduces axial cone-angle artifacts (Feldkamp approximation errors) that are absent from the widefield model — any reconstruction expecting cone-beam projection data will fail with the blurred image
+
+### How to Correct the Mismatch
+
+1. Use the CBCT operator implementing cone-beam projection (Radon transform in 3D divergent geometry) for each source-detector angle, producing the correct sinogram/projection data shape
+2. Reconstruct using FDK (Feldkamp-Davis-Kress) algorithm or iterative cone-beam methods (SART, ADMM) with the correct cone-beam system matrix
 
 ---
 
@@ -2627,6 +3007,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use cardiac gating for coronary or thoracic angiography
 5. Adjust injection rate and volume to vessel size and flow characteristics
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies Gaussian blur, but angiography uses X-ray transmission with iodine contrast agent — the exponential attenuation model with contrast-enhanced vessels is not a simple convolution
+2. Digital subtraction angiography (DSA) requires temporal subtraction between pre- and post-contrast images to isolate vessels — the widefield model has no temporal component and cannot model contrast dynamics
+
+### How to Correct the Mismatch
+
+1. Use the angiography operator implementing contrast-enhanced X-ray transmission: y = I_0 * exp(-(mu_tissue*t + mu_iodine*c(t))) where c(t) models contrast agent concentration dynamics
+2. Apply temporal subtraction (post-contrast minus pre-contrast) or parametric mapping of contrast kinetics using the correct time-resolved forward model
+
 ---
 
 ## 40. Doppler Ultrasound (`doppler_ultrasound`)
@@ -2688,6 +3078,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Reduce color Doppler gain until color just fills the vessel without overflow
 5. Always apply angle correction cursor parallel to the vessel wall for spectral Doppler
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a 2D (64,64) image, but Doppler ultrasound acquires velocity-encoded data — output includes blood flow velocity maps estimated from phase shifts between consecutive pulses
+2. Doppler measurement relies on the frequency shift of backscattered ultrasound from moving blood cells (f_d = 2*v*cos(theta)*f_0/c) — the widefield spatial blur has no velocity or frequency-shift information
+
+### How to Correct the Mismatch
+
+1. Use the Doppler ultrasound operator that models pulsed-wave Doppler: multiple pulses along each line, with phase differences between returns encoding blood flow velocity
+2. Estimate velocity using autocorrelation (Kasai estimator) or spectral Doppler analysis on the correctly modeled multi-pulse RF data, then map to color flow images
+
 ---
 
 ## 41. Shear-Wave Elastography (`elastography`)
@@ -2748,6 +3148,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Instruct patient to suspend breathing calmly during each SWE measurement
 4. Avoid ROI placement near vessels, liver edges, or ribs
 5. Acquire ≥10 valid measurements and check IQR/median <30 % per EFSUMB guidelines
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a 2D (64,64) image, but elastography measures tissue displacement/strain from mechanical wave propagation — output includes displacement maps at multiple time points
+2. Elastography estimates tissue stiffness (Young's modulus) from shear wave speed, which requires tracking mechanical wave propagation through tissue — the widefield Gaussian blur has no connection to mechanical wave physics
+
+### How to Correct the Mismatch
+
+1. Use the elastography operator that models mechanical excitation (acoustic radiation force or external vibration) and tracks the resulting tissue displacement using ultrasound or MRI phase encoding
+2. Estimate shear wave speed from displacement propagation, then compute tissue stiffness: E = 3*rho*c_s^2, using the correct wave propagation and displacement tracking forward model
 
 ---
 
@@ -2814,6 +3224,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use multiband EPI for sub-second TR to adequately sample the HRF
 5. Acquire field maps (B₀) and apply distortion correction (topup, fieldmap-based)
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies spatial Gaussian blur, but fMRI measures the BOLD (Blood Oxygen Level Dependent) signal via T2*-weighted MRI — the hemodynamic response function (HRF) convolution with neural activity is completely absent
+2. fMRI acquisition occurs in k-space (Fourier domain) with EPI readout, and the signal of interest is a tiny (~1-5%) temporal modulation — the widefield spatial blur cannot model the temporal hemodynamic dynamics or k-space encoding
+
+### How to Correct the Mismatch
+
+1. Use the fMRI operator that models BOLD signal generation: y(t) = FFT_acquisition(x_baseline * (1 + delta_BOLD(t))), where delta_BOLD = HRF * neural_activity encodes brain activation
+2. Analyze using GLM (general linear model) with the hemodynamic response function, or ICA/connectivity analysis, applied to correctly modeled time-series MRI data
+
 ---
 
 ## 43. MR Spectroscopy (`mrs`)
@@ -2878,6 +3298,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Optimize water suppression parameters; acquire separate water reference for quantification
 4. Acquire sufficient averages: 128-256 for metabolites at low concentration (e.g., GABA)
 5. Include macromolecular basis set or measured baseline in the fitting model
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a spatial image, but MR Spectroscopy acquires frequency-domain spectra encoding chemical composition — metabolite peaks (NAA, choline, creatine, lactate) at specific ppm values are entirely absent
+2. MRS data is a 1D free induction decay (FID) or spectrum per voxel, not a 2D spatial image — the widefield blur destroys the spectral dimension that encodes metabolite concentrations
+
+### How to Correct the Mismatch
+
+1. Use the MRS operator that models the free induction decay: y(t) = sum_k(a_k * exp(i*2pi*f_k*t) * exp(-t/T2_k)) for each metabolite k, then FFT to produce the frequency spectrum
+2. Quantify metabolite concentrations by fitting the spectrum (LCModel, TARQUIN) or using deep-learning spectral quantification with the correctly modeled spectral forward model
 
 ---
 
@@ -2944,6 +3374,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use reduced FOV or multi-shot EPI near susceptibility-prone regions
 5. Include interspersed b=0 volumes for robust motion and drift correction
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a blurred spatial image, but diffusion MRI applies magnetic field gradients to encode Brownian water motion — the Stejskal-Tanner signal attenuation S = S_0*exp(-b*D) is not modeled
+2. Diffusion MRI acquires multiple volumes at different b-values and gradient directions to measure the diffusion tensor at each voxel — the widefield single-image model cannot encode directional water diffusivity or fiber orientation
+
+### How to Correct the Mismatch
+
+1. Use the diffusion MRI operator that applies Stejskal-Tanner encoding: y_i = FFT(x * exp(-b_i * g_i^T * D * g_i)) for each gradient direction g_i and b-value b_i
+2. Reconstruct diffusion tensors (DTI) or fiber orientation distributions (CSD, NODDI) from the multi-direction, multi-b-value measurements using the correct diffusion-weighted forward model
+
 ---
 
 ## 45. Two-Photon Microscopy (`two_photon`)
@@ -3008,6 +3448,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Select well-separated emission spectra and use appropriate dichroics and filters
 4. Apply real-time or post-hoc motion correction algorithms (rigid or non-rigid)
 5. Use adaptive optics or longer-wavelength excitation (three-photon) for deep tissue
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback uses a linear Gaussian PSF, but two-photon excitation depends on intensity squared (I^2), producing a much tighter effective PSF — the fallback PSF is 40-60% wider than the true two-photon PSF
+2. The widefield model applies uniform illumination, but two-photon intrinsically provides optical sectioning (only the focal volume has sufficient intensity for I^2 absorption) — the out-of-focus background model is fundamentally wrong
+
+### How to Correct the Mismatch
+
+1. Use the two-photon operator with the squared PSF: effective_PSF = PSF_excitation^2, which is ~1.4x narrower than the single-photon PSF
+2. Model the nonlinear excitation correctly; for deep tissue, include scattering-induced PSF broadening and signal attenuation with depth
 
 ---
 
@@ -3074,6 +3524,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Apply 1-6 ns detection gate synchronized with the pulsed excitation
 5. Choose fluorophores specifically designed for STED with high photostability
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback uses a diffraction-limited PSF (sigma=2.0, ~250 nm resolution), but STED achieves 30-70 nm resolution by shrinking the effective PSF with the depletion donut — the fallback is 4-8x wider
+2. The STED effective PSF depends on depletion beam power (d_eff = d_confocal / sqrt(1 + I_STED/I_sat)), making it fundamentally different from any fixed Gaussian — the fallback cannot model power-dependent resolution
+
+### How to Correct the Mismatch
+
+1. Use the STED operator with the effective PSF that accounts for depletion beam intensity: PSF_eff has FWHM = lambda/(2*NA*sqrt(1 + I/I_sat)), typically 30-70 nm
+2. Include the donut-shaped depletion profile and saturation intensity in the forward model; deconvolution with the correct sub-diffraction STED PSF recovers true super-resolution information
+
 ---
 
 ## 47. PALM/STORM Single-Molecule Localization (`palm_storm`)
@@ -3138,6 +3598,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Include fiducial markers (gold beads or TetraSpeck) and apply drift correction
 4. Prepare fresh imaging buffer immediately before acquisition; degas thoroughly
 5. Apply quality filters (photon threshold, localization precision, PSF shape) in analysis
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a blurred intensity image, but PALM/STORM generates sparse single-molecule localizations — the correct forward model produces a list of (x,y,photons) events, not a convolved image
+2. Using a continuous PSF blur instead of the discrete point-emitter model (y = sum_i(n_i * PSF(r - r_i) + background)) means single-molecule fitting algorithms will receive incorrect input and localization precision estimates will be meaningless
+
+### How to Correct the Mismatch
+
+1. Use the PALM/STORM operator that simulates stochastic single-molecule activation: sparse emitters with Poisson photon counts, individually convolved with the PSF, on a per-frame basis
+2. Reconstruct using single-molecule localization (Gaussian fitting, MLE) on the correct sparse-emitter frames; the forward model must match the blinking kinetics and photon statistics of the fluorophore
 
 ---
 
@@ -3204,6 +3674,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use 1.49 NA objectives; 1.45 NA is the minimum for aqueous TIR
 5. Calibrate evanescent field depth using fluorescent beads at known axial positions
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback illuminates the entire sample depth, but TIRF uses an evanescent wave that penetrates only ~100-200 nm from the coverslip — the fallback includes fluorescence from hundreds of nanometers deeper, adding massive background
+2. The exponential axial intensity decay of the evanescent field (I(z) = I_0 * exp(-z/d), d~100 nm) is not modeled by the widefield fallback — quantitative axial information (membrane proximity) is lost
+
+### How to Correct the Mismatch
+
+1. Use the TIRF operator that models evanescent-wave excitation: only fluorophores within ~200 nm of the glass-sample interface contribute signal, with exponentially decaying excitation intensity
+2. Include the penetration depth d = lambda/(4*pi*sqrt(n1^2*sin^2(theta) - n2^2)) in the forward model; for multi-angle TIRF, model the depth-dependent excitation for each incidence angle
+
 ---
 
 ## 49. Polarization Microscopy (`polarization`)
@@ -3269,6 +3749,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use narrow-band illumination or measure dispersion for wavelength correction
 5. For thick samples, consider Mueller matrix imaging to capture depolarization
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback treats light as a scalar intensity, but polarization microscopy measures the full Mueller matrix or Stokes parameters — the vector nature of light (birefringence, dichroism, depolarization) is completely lost
+2. The fallback produces a single-channel image, but the correct operator generates 4+ channels (Stokes S0-S3 or multiple polarizer/analyzer orientations), each encoding different polarization properties of the sample
+
+### How to Correct the Mismatch
+
+1. Use the polarization operator that generates images at multiple polarizer/analyzer angles (0, 45, 90, 135 degrees), encoding the sample's Jones or Mueller matrix at each pixel
+2. Reconstruct birefringence retardance and orientation from the polarization-resolved measurements using Mueller calculus or Jones matrix decomposition
+
 ---
 
 ## 50. Fiber Bundle Endoscopy (`endoscopy`)
@@ -3329,6 +3819,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Use polarization filtering or computational specular removal algorithms
 4. Use bright LED sources and adjust exposure/gain for adequate signal
 5. Calibrate and correct for bending-dependent distortion using test patterns
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a (64,64) image, but fiber-bundle endoscopy transmits images through discrete fiber cores creating a hexagonal pixelation pattern — output shape (n_fibers,) is a 1D vector of per-core intensities
+2. The fiber bundle imposes a fixed sampling grid (honeycomb structure) with inter-core crosstalk and dead fibers — the widefield continuous Gaussian blur has no relationship to the discrete fiber sampling and transmission physics
+
+### How to Correct the Mismatch
+
+1. Use the endoscopy operator that models per-fiber-core sampling: each of the ~10,000-100,000 cores transmits a point sample from the distal end to the proximal camera, with known core positions and transmission coefficients
+2. Reconstruct using fiber-core interpolation, honeycomb artifact removal, or deep-learning super-resolution that account for the known fiber bundle geometry and per-core response
 
 ---
 
@@ -3395,6 +3895,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Ask patients to open eyes wide; use a fixation target for gaze direction
 5. Verify uniform illumination before capture; adjust camera alignment if uneven
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies a generic Gaussian PSF, but fundus imaging has a unique optical path through the eye's optics (cornea and lens) with specific aberrations and the pupil-splitting illumination/observation geometry
+2. The retinal image is formed after double-pass through the ocular media, with wavelength-dependent absorption (hemoglobin, melanin, macular pigment) — the widefield achromatic Gaussian blur cannot model spectral absorption or ocular aberrations
+
+### How to Correct the Mismatch
+
+1. Use the fundus operator that models the eye's optical path: illumination through one pupil zone, retinal reflection/fluorescence, and collection through a separate pupil zone, with ocular aberration and media absorption
+2. Include wavelength-dependent retinal reflectance for color fundus imaging, or fluorescein excitation/emission model for fluorescein angiography
+
 ---
 
 ## 52. OCT Angiography (`octa`)
@@ -3459,6 +3969,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Increase number of repeated B-scans to improve SNR and reduce shadow impact
 4. Optimize inter-scan time: shorter for fast flow, longer for slow capillary flow
 5. Use active eye tracking and discard frames with large motion; average multiple volumes
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies static spatial blur, but OCTA detects blood flow by comparing repeated OCT B-scans — the temporal decorrelation between scans caused by moving red blood cells is not modeled
+2. OCTA is fundamentally a motion-contrast technique (flow signal = decorrelation or variance between repeated measurements) — the widefield static model has no temporal dimension and cannot detect or distinguish flowing from static tissue
+
+### How to Correct the Mismatch
+
+1. Use the OCTA operator that models repeated OCT measurements at the same location: static tissue produces correlated signals while flowing blood produces decorrelated signals between repeated scans
+2. Extract flow maps using SSADA (split-spectrum amplitude decorrelation) or OMAG (optical microangiography) that require multiple temporally separated OCT measurements as input
 
 ---
 
@@ -3525,6 +4045,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use narrow-band optical filter and higher modulation power for outdoor use
 5. Perform per-pixel depth calibration with a known flat reference at multiple distances
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a 2D intensity image, but ToF cameras measure depth via phase shift of modulated near-infrared light — the distance information (d = c*dphi/(4*pi*f_mod)) is entirely absent from the blurred image
+2. ToF measurement involves demodulation of the reflected modulated signal at each pixel, producing amplitude, phase, and confidence maps — the widefield intensity-only blur cannot produce depth or distinguish multi-path interference
+
+### How to Correct the Mismatch
+
+1. Use the ToF camera operator that models modulated illumination and per-pixel demodulation: four-phase sampling extracts the phase shift proportional to target distance at each pixel
+2. Apply phase-to-depth conversion, multi-path correction, and flying-pixel filtering using the correct modulation frequency, amplitude, and phase measurement model
+
 ---
 
 ## 54. LiDAR Scanner (`lidar`)
@@ -3585,6 +4115,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Perform target-based or targetless calibration between LiDAR and other sensors
 4. Use 1550 nm wavelength (eye-safe and less affected by rain) for outdoor applications
 5. Account for minimum range specification; fuse with short-range sensors if needed
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a 2D (64,64) image, but LiDAR produces a 1D or 3D point cloud of range measurements (r_i = c*t_i/2) — the output is a set of (x,y,z) points, not a blurred image
+2. LiDAR measures distance by timing laser pulse round-trips, with angular scanning determining direction — the widefield spatial blur has no connection to time-of-flight distance measurement or angular scanning geometry
+
+### How to Correct the Mismatch
+
+1. Use the LiDAR operator that models pulsed laser emission, scene reflection (surface albedo and geometry), and time-of-flight detection: range = c*delta_t/2 for each beam direction
+2. Process the point cloud using registration (ICP), ground classification, or object detection algorithms that operate on the correct 3D range measurement format
 
 ---
 
@@ -3651,6 +4191,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use high-resolution projectors (1080p+) and fine patterns for sub-mm precision
 5. Use binary or phase-shifting patterns that are robust to reflectance variations
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies spatial blur, but structured-light depth sensing projects known patterns and measures their deformation via triangulation — the depth-encoding pattern correspondence between projector and camera is absent
+2. Structured light extracts depth from disparity between projected and observed pattern positions (d = f*B/disparity) — the widefield blur produces no disparity information and cannot encode surface depth
+
+### How to Correct the Mismatch
+
+1. Use the structured-light operator that models pattern projection (Gray code, sinusoidal fringe, or speckle) and camera observation from a different viewpoint: depth is encoded in pattern deformation due to surface geometry
+2. Extract depth maps using pattern decoding (Gray code → correspondence → triangulation) or phase unwrapping (sinusoidal fringe → depth) with calibrated projector-camera geometry
+
 ---
 
 ## 56. Synthetic Aperture Radar (`sar`)
@@ -3716,6 +4266,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Design PRF to avoid range and azimuth ambiguity constraints for the swath geometry
 5. Apply multi-look or speckle filtering (Lee, refined-Lee) before interpretation
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a real-valued blurred image, but SAR acquires complex-valued (I/Q) radar echoes that require coherent pulse compression in range and azimuth — the phase information essential for InSAR and coherent processing is lost
+2. SAR image formation requires matched filtering with the transmitted chirp waveform and Doppler history — the widefield spatial blur cannot model microwave scattering, range-Doppler processing, or speckle statistics
+
+### How to Correct the Mismatch
+
+1. Use the SAR operator that models coherent radar echo formation: each pixel's complex return includes amplitude (backscatter cross-section) and phase (range + Doppler history), requiring range and azimuth compression
+2. Process using range-Doppler, chirp scaling, or omega-K algorithms for image formation; preserve complex data for InSAR, PolSAR, and coherence-based applications
+
 ---
 
 ## 57. Sonar Imaging (`sonar`)
@@ -3776,6 +4336,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Overlap adjacent swaths to fill the nadir gap; use a vertical beam sounder
 4. Apply real-time MRU data for heave, pitch, and roll correction of depth measurements
 5. Use advanced beamforming (CAPON, MVDR) to suppress side-lobe responses
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a 2D (64,64) image, but sonar acquires 1D time-domain acoustic echo signals per beam — output shape reflects beamformed acoustic returns, not a spatial image
+2. Sonar measurement involves acoustic wave propagation in water (c~1500 m/s, varying with temperature/salinity/pressure) with range-dependent attenuation and multipath — the optical-domain widefield blur has no connection to underwater acoustics
+
+### How to Correct the Mismatch
+
+1. Use the sonar operator that models acoustic pulse transmission, seabed/target reflection, and receive beamforming: time-of-arrival encodes range, beam angle encodes bearing
+2. Form sonar images using beamforming (delay-and-sum), SAS (synthetic aperture sonar) processing, or bathymetric extraction algorithms that require correct acoustic echo data format
 
 ---
 
@@ -3842,6 +4412,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use low-dose 4D-STEM protocols with fast detectors to minimize beam damage
 5. Carefully index patterns considering multiple scattering; compare with simulations
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a real-space blurred image, but electron diffraction records the far-field diffraction pattern (reciprocal space) — Bragg spots encode crystal structure, lattice spacings, and symmetry, which bear no resemblance to a blurred image
+2. The diffraction pattern intensity I(k) = |F{V(r) * P(r)}|^2 encodes the Fourier transform of the projected crystal potential — the widefield real-space blur cannot access reciprocal-space crystallographic information
+
+### How to Correct the Mismatch
+
+1. Use the electron diffraction operator that models kinematic or dynamical scattering from the crystal lattice, producing far-field diffraction patterns with Bragg peaks at reciprocal lattice positions
+2. Index diffraction patterns to determine crystal structure and orientation; use dynamical simulation (Bloch wave or multislice) for accurate intensity matching and structure refinement
+
 ---
 
 ## 59. Electron Backscatter Diffraction (`ebsd`)
@@ -3906,6 +4486,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Set step size ≤ 1/10 of the smallest grain dimension of interest
 4. Verify crystal structure and lattice parameters in the phase file before indexing
 5. Use beam shift or stage drift correction for maps longer than ~30 minutes
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a blurred intensity image, but EBSD acquires Kikuchi diffraction patterns at each probe position — each pattern encodes the local crystal orientation (Euler angles) via characteristic Kikuchi bands
+2. EBSD is fundamentally a crystallographic technique where the measurement is a diffraction pattern, not a spatial image — the widefield blur cannot produce orientation maps, grain boundaries, or texture information
+
+### How to Correct the Mismatch
+
+1. Use the EBSD operator that models Kikuchi pattern generation from electron backscatter diffraction at each beam position, with pattern features determined by the local crystal orientation and structure
+2. Index Kikuchi patterns using Hough transform (band detection) or dictionary-based matching to determine the crystal orientation (Euler angles) at each probe position, then assemble orientation maps
 
 ---
 
@@ -3972,6 +4562,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Deconvolve plural scattering using Fourier-log method before quantification
 5. Use low-dose protocols and fast spectrum imaging to minimize beam damage
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces a 2D spatial image, but EELS acquires energy-loss spectra at each probe position — the spectral dimension encoding elemental composition (core-loss edges) and electronic structure (near-edge fine structure) is entirely absent
+2. Each EELS spectrum contains characteristic ionization edges (e.g., C-K at 284 eV, O-K at 532 eV) that identify elements with atomic spatial resolution — the widefield spatial blur cannot access spectroscopic chemical information
+
+### How to Correct the Mismatch
+
+1. Use the EELS operator that models energy-loss spectrum formation: each probe position produces a spectrum with background (power-law), core-loss edges (proportional to elemental concentration), and near-edge fine structure (bonding information)
+2. Quantify elemental maps using background subtraction and edge integration, or MLLS fitting for overlapping edges; apply PCA denoising to spectrum images before quantification
+
 ---
 
 ## 61. Electron Holography (`electron_holography`)
@@ -4036,6 +4636,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Always acquire reference holograms and compute the normalized phase
 4. Use thin specimens (< 50-80 nm) to maintain fringe contrast above 10%
 5. Enclose the TEM column in mu-metal shielding; degauss the objective lens for Lorentz mode
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback produces real-valued output, but electron holography records the interference between object and reference electron waves — the complex-valued hologram encodes electromagnetic potentials (electric and magnetic fields) inside the specimen via the Aharonov-Bohm phase shift
+2. The biprism interference fringes encode quantitative phase information (phase shift = C_E * integral(V(x,y,z)dz) for electrostatic, and -(e/hbar) * integral(A*dl) for magnetic) — the widefield blur destroys fringe contrast and all phase information
+
+### How to Correct the Mismatch
+
+1. Use the electron holography operator that models biprism-mediated interference between object wave (with Aharonov-Bohm phase shift) and vacuum reference wave, producing complex holographic fringes
+2. Reconstruct phase maps using Fourier sideband filtering and inverse FFT; for magnetic specimens, use Lorentz mode and separate electrostatic and magnetic phase contributions
 
 ---
 
@@ -4102,6 +4712,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Use gamma-blind detectors (⁶Li glass) or filters to reject gamma contamination
 5. Optimize exposure per projection for adequate SNR; total scan time often 2-8 hours
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies optical Gaussian blur, but neutron tomography measures neutron transmission (I = I_0 * exp(-sigma_t * n * t)) — neutrons interact with nuclei, not electron clouds, giving completely different contrast (hydrogen-rich materials are opaque to neutrons but transparent to X-rays)
+2. Neutron attenuation depends on nuclear cross-sections that vary dramatically between isotopes (H, Li, B are strong absorbers) — the widefield model has no nuclear physics and cannot distinguish materials by their neutron interaction properties
+
+### How to Correct the Mismatch
+
+1. Use the neutron tomography operator implementing Beer-Lambert neutron transmission: y(theta,s) = I_0 * exp(-integral(Sigma_t(x,y) dl)) where Sigma_t is the macroscopic total cross-section
+2. Reconstruct using FBP or iterative methods (same algorithms as X-ray CT) but with neutron-specific attenuation coefficients — neutron imaging reveals hydrogen/water content, lithium batteries, and metallurgical features invisible to X-rays
+
 ---
 
 ## 63. Proton Radiography (`proton_radiography`)
@@ -4167,6 +4787,16 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 4. Include energy straggling in the forward model or use higher energy protons to reduce it
 5. Carefully align tracking detectors with survey or use track-based alignment algorithms
 
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies Gaussian blur, but proton radiography measures energy loss and multiple Coulomb scattering (MCS) of high-energy protons traversing the object — the scattering angle distribution encodes areal density, not spatial blur
+2. Protons lose energy continuously (Bethe-Bloch formula: -dE/dx ~ Z/A * z^2/beta^2) and scatter via Coulomb interaction — the measurement combines transmission intensity, residual energy, and scattering angle, none of which are modeled by optical blur
+
+### How to Correct the Mismatch
+
+1. Use the proton radiography operator that models energy-dependent proton transport: energy loss via Bethe-Bloch stopping power and angular broadening via Highland MCS formula (theta_rms ~ 13.6 MeV/(p*v) * sqrt(t/X_0))
+2. Reconstruct water-equivalent path length (WEPL) maps from residual energy measurements, or use scattering radiography for material discrimination — essential for proton therapy treatment planning
+
 ---
 
 ## 64. Muon Tomography (`muon_tomo`)
@@ -4231,5 +4861,15 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 3. Use momentum measurement (from curvature in a magnetic field) or momentum-dependent MCS model
 4. Apply track quality cuts (chi-squared, minimum number of detector hits) to reject background
 5. Use iterative reconstruction (ML/EM) rather than POCA for quantitative density imaging
+
+### Forward-Model Mismatch Cases
+
+1. The widefield fallback applies Gaussian blur, but muon tomography measures the scattering angle of cosmic-ray muons passing through the object — the scattering angle (Highland formula) encodes radiation length and density, not image blur
+2. Muon tomography uses natural cosmic-ray flux (~10,000 muons/m^2/min) with tracking detectors above and below the object — the widefield optical model has no connection to high-energy particle tracking or multiple Coulomb scattering physics
+
+### How to Correct the Mismatch
+
+1. Use the muon tomography operator that models multiple Coulomb scattering: incoming and outgoing muon tracks are measured, and the scattering angle distribution at each voxel encodes the local radiation length (related to material Z and density)
+2. Reconstruct using POCA (Point of Closest Approach) for quick imaging, or ML/EM iterative methods for quantitative density/Z mapping, using the correct scattering probability forward model
 
 ---
