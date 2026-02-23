@@ -226,12 +226,99 @@ def mri_mask_calibrator(
 
 
 # ---------------------------------------------------------------------------
+# CASSI: dispersion-step calibrator (model residual minimisation)
+# ---------------------------------------------------------------------------
+
+
+def cassi_disp_step_calibrator(
+    y: np.ndarray,
+    H_nom: Any,
+    budget_s: float = 300.0,
+    n_coarse: int = 17,
+    n_fine: int = 9,
+    solver_iters: int = 20,
+) -> Tuple[Any, Dict[str, Any]]:
+    """CASSI dispersion-step calibrator using model residual minimisation.
+
+    Strategy (two-pass grid-search):
+    1. Coarse pass: ``n_coarse`` candidates over the full disp_step range
+       [0.8, 1.2] (from mismatch_db.yaml).
+    2. Fine pass: ``n_fine`` candidates ±2 grid-steps around the coarse winner.
+    3. For each candidate, run a fast GAP-TV solve (``solver_iters`` iterations)
+       and measure the data residual ||y - H_cand(x_hat_cand)||² / ||y||².
+    4. Single ``inject_mismatch`` rebuild for the winning disp_step.
+
+    When disp_step matches the true disperser value the solver can explain the
+    measurements with a lower residual than when the model is wrong.  This
+    provides a reliable self-calibration signal without reference images.
+    """
+    from pwm_core.recon.gap_tv import run_gap_tv
+    from pwm_core.targeting.mismatch_sampler import inject_mismatch
+
+    t0 = time.perf_counter()
+
+    y_arr = np.asarray(y, dtype=np.float64)
+    denom = max(float(np.sum(y_arr.ravel() ** 2)), 1e-30)
+
+    scores: list = []
+
+    def _eval(ds: float) -> float:
+        H_cand = inject_mismatch(H_nom, {"disp_step": float(ds)})
+        x_hat, _ = run_gap_tv(y_arr, H_cand, {"iters": solver_iters})
+        y_pred = H_cand.forward(x_hat)
+        return float(np.sum((y_arr.ravel() - y_pred.ravel()) ** 2)) / denom
+
+    # Coarse sweep over the full calibration range [0.8, 1.2]
+    coarse_vals = np.linspace(0.8, 1.2, n_coarse)
+    for ds in coarse_vals:
+        if time.perf_counter() - t0 > budget_s * 0.7:
+            break
+        sc = _eval(float(ds))
+        scores.append({"disp_step": float(ds), "residual": sc})
+
+    best_coarse = min(scores, key=lambda d: d["residual"])["disp_step"]
+    step = coarse_vals[1] - coarse_vals[0] if len(coarse_vals) > 1 else 0.025
+
+    # Fine sweep around the coarse winner
+    fine_vals = np.linspace(best_coarse - 2 * step, best_coarse + 2 * step, n_fine)
+    fine_vals = np.clip(fine_vals, 0.5, 2.0)  # physical bounds
+    for ds in fine_vals:
+        if time.perf_counter() - t0 > budget_s * 0.9:
+            break
+        sc = _eval(float(ds))
+        scores.append({"disp_step": float(ds), "residual": sc})
+
+    best_entry = min(scores, key=lambda d: d["residual"])
+    best_ds = best_entry["disp_step"]
+
+    # Single rebuild for the winning operator
+    best_H = inject_mismatch(H_nom, {"disp_step": best_ds})
+
+    elapsed = time.perf_counter() - t0
+    cal_info = {
+        "method": "cassi_disp_step_residual",
+        "best_disp_step": best_ds,
+        "best_residual": best_entry["residual"],
+        "n_evaluated": len(scores),
+        "elapsed_s": elapsed,
+        "scores": scores,
+    }
+    logger.debug(
+        f"cassi_disp_step_calibrator: best_ds={best_ds:.4f}, "
+        f"residual={best_entry['residual']:.6f}, n={len(scores)}, "
+        f"t={elapsed:.2f}s"
+    )
+    return best_H, cal_info
+
+
+# ---------------------------------------------------------------------------
 # Registry and auto-discovery
 # ---------------------------------------------------------------------------
 
 DEFAULT_CALIBRATORS: Dict[str, Callable] = {
     "ct": ct_anisotropy_calibrator,
     "mri": mri_mask_calibrator,
+    "cassi": cassi_disp_step_calibrator,
 }
 
 
