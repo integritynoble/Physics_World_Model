@@ -25,7 +25,7 @@ Every imaging modality is described as a **directed acyclic graph (DAG)** compos
 | **S** | Sample | Detection-Readout | Sub-sampling on index set (k-space undersampling, scan positions) |
 | **D** | Detect | Detection-Readout | Detector response (linear, logarithmic, Poisson-rate, coherent-field) |
 
-> The Finite Primitive Basis theorem's 10 canonical types cover all 168 modalities — no new primitives are needed.
+> The Finite Primitive Basis theorem's 11 canonical types cover all 168 modalities — no new primitives are needed.
 
 ---
 
