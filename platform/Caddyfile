@@ -1,0 +1,27 @@
+# PWM Platform — Caddy reverse proxy
+# Auto-TLS via Let's Encrypt for pwm.platformai.org
+# Server IP: 34.63.169.185
+
+pwm.platformai.org {
+    reverse_proxy app:8000
+
+    encode gzip
+
+    header {
+        # Security headers
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        # Remove server identification
+        -Server
+    }
+
+    log {
+        output file /data/logs/access.log {
+            roll_size 50mb
+            roll_keep 10
+        }
+        format json
+    }
+}

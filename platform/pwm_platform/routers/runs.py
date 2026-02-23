@@ -260,17 +260,55 @@ async def create_run(
             "prompt": spec_text if not spec_text.strip().startswith("{") else None,
         }
 
+    # ── Auto-detect modality from prompt when set to "auto" ─────────────
+    prompt_text = data.get("prompt") or ""
+    if not prompt_text:
+        # Also check spec_json (used by both form and JSON submissions)
+        spec_json_text = data.get("spec_json", "")
+        if isinstance(spec_json_text, str) and spec_json_text.strip() and not spec_json_text.strip().startswith("{"):
+            prompt_text = spec_json_text.strip()
+    if not prompt_text:
+        # Also check experiment_spec
+        spec = data.get("experiment_spec", {})
+        if isinstance(spec, dict):
+            prompt_text = spec.get("prompt", "")
+
+    modality = data.get("modality", "cassi")
+    if modality == "auto" and prompt_text:
+        from pwm_platform.services.modality_router import detect_modality
+        detected, confidence = detect_modality(prompt_text)
+        modality = detected
+        logger.info(
+            "Auto-detected modality: %s (confidence=%.2f) from prompt: %s",
+            detected, confidence, prompt_text[:100],
+        )
+    elif modality == "auto":
+        modality = "cassi"  # fallback when no prompt given
+
+    # Auto-populate default experimental setup for the detected modality
+    from pwm_platform.services.experiment_defaults import get_default_experiment_spec
+    default_spec = get_default_experiment_spec(modality)
+
+    # Merge: default spec is the base, user-provided spec overrides
+    experiment_spec = data.get("experiment_spec", {})
+    if not isinstance(experiment_spec, dict):
+        experiment_spec = {}
+    merged_spec = {**default_spec, **experiment_spec}
+    if prompt_text:
+        merged_spec["prompt"] = prompt_text
+    experiment_spec = merged_spec
+
     run_id = f"run-{uuid.uuid4().hex[:12]}"
 
     run = Run(
         run_id=run_id,
         user_id=user.id,
-        modality=data.get("modality", "cassi"),
+        modality=modality,
         task_kind=data.get("task_kind", "simulate_recon_analyze"),
         status="pending",
         compute_mode=data.get("compute_mode", "auto"),
-        input_mode=data.get("input_mode", "spec"),
-        experiment_spec=data.get("experiment_spec", {}),
+        input_mode=data.get("input_mode", "prompt"),
+        experiment_spec=experiment_spec,
         dataset_id=data.get("dataset_id"),
     )
     db.add(run)

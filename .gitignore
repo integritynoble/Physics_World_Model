@@ -55,6 +55,11 @@ data/
 # Allow SPC sampling matrices
 !papers/inversenet/data/spc/sampling_matrix/*.mat
 
+# Large binary data (model checkpoints, datasets, run artifacts)
+checkpoint/
+datasets/
+runs/
+
 # Worktrees
 .worktrees/
 

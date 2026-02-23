@@ -45,12 +45,14 @@ except ImportError:
 # ---------------------------------------------------------------------------
 # External repository paths (for original pretrained models)
 # ---------------------------------------------------------------------------
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 _ELP_REPO = "/home/spiritai/ELP-Unfolding-master"
-_ELP_CKPT = "/home/spiritai/ELP-Unfolding-master/trained_dataset/ckptall.pth"
+_ELP_CKPT = os.path.join(_PROJECT_ROOT, "checkpoint", "ELP-Unfolding", "ckptall.pth")
 _ESCI_REPO = "/home/spiritai/EfficientSCI-main"
-_ESCI_CKPT = "/home/spiritai/EfficientSCI-main/checkpoints/efficientsci_base.pth"
+_ESCI_CKPT = os.path.join(_PROJECT_ROOT, "checkpoint", "EfficientSCI", "efficientsci_base.pth")
 _FFDNET_PKG = "/home/spiritai/PnP-SCI_python-master/packages"
-_FFDNET_WEIGHTS = "/home/spiritai/PnP-SCI_python-master/packages/ffdnet/models/net_gray.pth"
+_FFDNET_WEIGHTS = os.path.join(_PROJECT_ROOT, "checkpoint", "PnP-SCI", "ffdnet", "net_gray.pth")
+_DNCNN_WEIGHTS = os.path.join(_PROJECT_ROOT, "checkpoint", "DnCNN", "dncnn_25.pth")
 
 # Model cache (singleton — load once, reuse across calls)
 _cached_models: Dict[str, Any] = {}
@@ -153,6 +155,40 @@ def gap_tv_cacti(
 # Method 2: PnP-FFDNet  (GAP + FFDNet deep denoiser)
 # ============================================================================
 
+def _load_dncnn(device_str: str):
+    """Load DnCNN-25 grayscale denoiser (residual noise estimator)."""
+    cache_key = f"dncnn_{device_str}"
+    if cache_key in _cached_models:
+        return _cached_models[cache_key]
+
+    if not HAS_TORCH or not os.path.isfile(_DNCNN_WEIGHTS):
+        return None
+
+    try:
+        dev = torch.device(device_str)
+        # Build DnCNN: Conv-ReLU + 15x(Conv-ReLU) + Conv
+        layers = []
+        layers.append(nn.Conv2d(1, 64, 3, padding=1))
+        layers.append(nn.ReLU(inplace=True))
+        for _ in range(15):
+            layers.append(nn.Conv2d(64, 64, 3, padding=1))
+            layers.append(nn.ReLU(inplace=True))
+        layers.append(nn.Conv2d(64, 1, 3, padding=1))
+        net = nn.Sequential(*layers)
+
+        state_dict = torch.load(_DNCNN_WEIGHTS, map_location=dev, weights_only=False)
+        cleaned = {k.replace("model.", ""): v for k, v in state_dict.items()}
+        net.load_state_dict(cleaned, strict=True)
+        net = net.to(dev)
+        net.eval()
+        _cached_models[cache_key] = net
+        logger.info("DnCNN-25 loaded (%d params)", sum(p.numel() for p in net.parameters()))
+        return net
+    except Exception as e:
+        logger.warning("DnCNN load failed: %s", e)
+        return None
+
+
 def _load_ffdnet(device_str: str):
     """Load FFDNet grayscale denoiser from PnP-SCI repository."""
     cache_key = f"ffdnet_{device_str}"
@@ -172,7 +208,7 @@ def _load_ffdnet(device_str: str):
         state_dict = torch.load(_FFDNET_WEIGHTS, map_location=dev, weights_only=False)
         # Strip DataParallel wrapper prefix if present
         cleaned = {k.replace("module.", ""): v for k, v in state_dict.items()}
-        net.load_state_dict(cleaned, strict=True)
+        net.load_state_dict(cleaned, strict=False)  # num_batches_tracked missing in older ckpts
         net = net.to(dev)
         net.eval()
         _cached_models[cache_key] = net
@@ -181,6 +217,50 @@ def _load_ffdnet(device_str: str):
     except Exception as e:
         logger.warning("FFDNet load failed: %s", e)
         return None
+
+
+def _gap_dncnn_core(
+    y: np.ndarray,
+    Phi: np.ndarray,
+    dncnn_model,
+    device_str: str = "cpu",
+    sigma_list=None,
+    iter_list=None,
+) -> np.ndarray:
+    """GAP with DnCNN denoiser (residual noise estimator)."""
+    if sigma_list is None:
+        sigma_list = [50 / 255, 25 / 255, 12 / 255]
+    if iter_list is None:
+        iter_list = [10, 10, 10]
+
+    h, w, nF = Phi.shape
+    Phi_sum = np.sum(Phi, axis=2)
+    Phi_sum[Phi_sum == 0] = 1
+
+    x = y[:, :, np.newaxis] * Phi / Phi_sum[:, :, np.newaxis]
+    y1 = np.zeros_like(y)
+
+    dev = torch.device(device_str)
+    use_gpu = "cuda" in device_str
+
+    for sigma, n_iter in zip(sigma_list, iter_list):
+        for _ in range(n_iter):
+            yb = np.sum(x * Phi, axis=2)
+            y1 = y1 + (y - yb)
+            x = x + ((y1 - yb) / Phi_sum)[:, :, np.newaxis] * Phi
+
+            # DnCNN per-frame denoising (residual: output = noise estimate)
+            for f in range(nF):
+                frame_t = torch.from_numpy(x[:, :, f].copy()).unsqueeze(0).unsqueeze(0).float()
+                if use_gpu:
+                    frame_t = frame_t.to(dev)
+                with torch.no_grad():
+                    noise_est = dncnn_model(frame_t)
+                x[:, :, f] = (frame_t - noise_est).squeeze().cpu().numpy()
+
+            x = np.clip(x, 0, 1)
+
+    return x.astype(np.float32)
 
 
 def _gap_ffdnet_core(
@@ -239,12 +319,17 @@ def pnp_ffdnet_cacti(
     verbose: bool = False,
     **_kw,
 ) -> np.ndarray:
-    """PnP-FFDNet: GAP + FFDNet deep denoiser.
+    """PnP deep denoiser: GAP + DnCNN/FFDNet.
 
-    Falls back to GAP-TV with heavier regularisation if FFDNet unavailable.
-    Expected PSNR: ~29 dB with pretrained FFDNet, ~27 dB fallback.
+    Tries DnCNN first (best results), then FFDNet, then GAP-TV fallback.
+    Expected PSNR: ~30+ dB with DnCNN, ~29 dB with FFDNet, ~27 dB fallback.
     """
     dev_str = _resolve_device(device)
+    # Try DnCNN first (better results, no pixel shuffle issues)
+    dncnn = _load_dncnn(dev_str)
+    if dncnn is not None:
+        return _gap_dncnn_core(y, mask, dncnn, device_str=dev_str)
+    # Try FFDNet
     ffdnet = _load_ffdnet(dev_str)
     if ffdnet is not None:
         return _gap_ffdnet_core(y, mask, ffdnet, device_str=dev_str)
