@@ -49,11 +49,15 @@ Primitive operators fall into two categories:
     magnitude-squared in Gerchberg--Saxton-type algorithms).
 \end{itemize}
 
-\paragraph{Adjoint validation.}
-Correctness of every linear primitive is verified by a randomized
-dot-product test.  For a primitive $A$ with forward map $A:\mathbb{R}^n
-\to \mathbb{R}^m$, we draw $x \sim \mathcal{N}(0,I_n)$ and $y \sim
-\mathcal{N}(0,I_m)$ and compute
+\paragraph{Adjoint consistency and Lipschitz bounds as mathematical safety rails.}
+Two structural constraints distinguish the \opg{} IR from standard deep-learning
+forward models and prevent either nonlinear primitive family from becoming a
+universal approximator.
+
+First, \emph{adjoint consistency}: correctness of every linear primitive
+is verified by a randomized dot-product test.  For a primitive $A$ with
+forward map $A:\mathbb{R}^n \to \mathbb{R}^m$, we draw $x \sim \mathcal{N}(0,I_n)$
+and $y \sim \mathcal{N}(0,I_m)$ and compute
 \begin{equation}
   \delta = \frac{|\langle A^* y,\, x \rangle - \langle y,\, Ax \rangle|}
                {\max(|\langle A^* y,\, x \rangle|,\; \epsilon)}
@@ -67,6 +71,33 @@ executes the same test over the composed forward--adjoint chain.  A
 \texttt{GraphAdjointCheckReport} records $n_{\text{trials}}$,
 $\delta_{\max}$, and $\bar\delta$ for audit.  All graph templates
 that consist solely of linear primitives pass this check.
+Adjoint consistency is not merely a numerical correctness guarantee: it
+is a \emph{physical faithfulness certificate}.  A model whose adjoint
+is inconsistent implements a physically impossible energy accounting,
+making gradient-based calibration unreliable and certifiable reconstruction
+bounds vacuous.  Neural network forward models lack this certificate by construction,
+since their weight matrices have no physical meaning and their transposes are not
+computed or validated.
+
+Second, \emph{Lipschitz bounds}: the two nonlinear primitive families,
+Detect~$D$ and Transform~$\Lambda$, are each restricted to five canonical
+function families with at most two scalar parameters.  This restriction
+enforces bounded Lipschitz constants ($\mathrm{Lip}(\Lambda_k) \leq L$ for
+the explicit $L$ derived in~\cite{yang2026fpt}) and prevents either primitive
+from becoming a universal approximator in the sense of Cybenko~\cite{cybenko1989approximation}.
+Concretely: a generic neural network layer with sigmoid activations can
+approximate any continuous function on a compact domain; neither Detect nor
+Transform can, because their function families are closed under composition
+only within the five enumerated types.  This non-universality is the key
+property that makes the 11-primitive library \emph{falsifiable}: if a
+modality's forward physics cannot be represented within the restricted
+families, the extension protocol (Main Text, ``Extension protocol'') fires
+and a new primitive must be justified physically.  The combination of
+adjoint consistency and bounded Lipschitz nonlinearity provides the
+mathematical safety rails that make \opg{}-based reconstruction both
+interpretable and certifiable---properties that standard physics-informed
+neural networks~\cite{raissi2019pinn} achieve only approximately and
+without modality-agnostic guarantees.
 
 \paragraph{Graph compilation.}
 The compiler executes a four-stage pipeline:
