@@ -3,16 +3,14 @@
 \title{The Finite Primitive Basis Theorem for Computational Imaging:\\
 Formal Foundations of the OperatorGraph Representation}
 
-\author{
-Chengshuai Yang$^{*}$\thanks{ORCID: \href{https://orcid.org/XXXX-XXXX-XXXX-XXXX}{XXXX-XXXX-XXXX-XXXX}}
+\author{%
+  Chengshuai Yang\\[0.4em]
+  \small NextGen PlatformAI C Corp, USA\\[0.15em]
+  \small \href{mailto:integrityyang@gmail.com}{\texttt{integrityyang@gmail.com}}%
+  \thanks{ORCID: \href{https://orcid.org/XXXX-XXXX-XXXX-XXXX}{\texttt{XXXX-XXXX-XXXX-XXXX}}}%
 }
 
 \date{}
-
-\renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\footnotetext[1]{NextGen PlatformAI C Corp, USA.
-$^*$Correspondence: \texttt{integrityyang@gmail.com}}
-\renewcommand{\thefootnote}{\arabic{footnote}}
 
 \begin{document}
 
@@ -21,15 +19,20 @@ $^*$Correspondence: \texttt{integrityyang@gmail.com}}
 %% ═══════════════════════════════════════════════════════════════════
 %%  ABSTRACT
 %% ═══════════════════════════════════════════════════════════════════
+\noindent\rule{\linewidth}{0.4pt}
 \begin{abstract}
 Computational imaging forward models---from coded aperture spectral cameras to MRI scanners---are traditionally implemented as monolithic, modality-specific codes. We prove that every forward model in a broad, precisely defined operator class $\ctier$ (encompassing all clinical, scientific, and industrial imaging modalities, both linear and nonlinear) admits an $\varepsilon$-approximate representation as a typed directed acyclic graph (DAG) whose nodes are drawn from a library of exactly 11 canonical primitives: Propagate, Modulate, Project, Encode, Convolve, Accumulate, Detect, Sample, Disperse, Scatter, and Transform. We call this the \emph{Finite Primitive Basis Theorem}. The proof is constructive: we provide an algorithm that, given any $H \in \ctier$, produces a DAG $G$ with $\|H - \Hdag\|/\|H\| \leq \varepsilon$ and graph complexity within prescribed bounds. We further prove that the library is \emph{minimal}: removing any single primitive causes at least one modality to lose its $\varepsilon$-approximate representation. A systematic analysis of all nonlinearities in imaging physics shows they fall into exactly two structural categories: pointwise scalar functions (handled by Transform~$\Lambda$) and self-consistent iterations (unrolled into existing linear primitives). Empirical validation on 31 linear modalities confirms $\etier < 0.01$ with at most 5 nodes and depth 5, and we provide constructive DAG decompositions for 9 additional nonlinear modalities. These results establish the mathematical foundations for the Physics World Models (\pwm{}) framework (Yang and Yuan, 2026).
 \end{abstract}
+\noindent\rule{\linewidth}{0.4pt}
 
-\medskip
-\noindent\textbf{Keywords:} computational imaging, forward model, operator decomposition, directed acyclic graph, primitive basis, compressive sensing, inverse problems
+\smallskip
+\noindent\textbf{Keywords:} computational imaging, forward model, operator decomposition,
+directed acyclic graph, primitive basis, compressive sensing, inverse problems
 
-\medskip
-\noindent\textbf{AMS subject classifications:} 65F22 (Ill-posedness and regularization), 94A08 (Image processing), 47A68 (Factorization theory), 68U10 (Computing methodologies for image processing)
+\smallskip
+\noindent\textbf{AMS subject classifications:} 65F22 (Ill-posedness and regularization),
+94A08 (Image processing), 47A68 (Factorization theory),
+68U10 (Computing methodologies for image processing)
 
 
 %% ═══════════════════════════════════════════════════════════════════

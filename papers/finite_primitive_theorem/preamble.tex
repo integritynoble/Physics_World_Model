@@ -41,6 +41,10 @@
 
 \documentclass[11pt]{article}
 
+%% ——— Font encoding (CRITICAL: fixes word-merging on PDF copy/paste) ———
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
 %% ——— Geometry ———
 \usepackage[
   top=2.54cm,
@@ -52,6 +56,9 @@
 %% ——— Spacing ———
 \usepackage{setspace}
 \singlespacing
+
+%% ——— Typography ———
+\usepackage{microtype}
 
 %% ——— Mathematics ———
 \usepackage{amsmath}
