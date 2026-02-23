@@ -97,9 +97,12 @@
                 {% endif %}
 
                 {% if m.introduction.common_mistakes %}
-                <div>
-                    <h4 class="text-sm font-semibold text-red-600">Common Mistakes</h4>
-                    <ul class="mt-1 text-sm text-gray-600 list-disc list-inside space-y-0.5">
+                <div class="md:col-span-2 rounded-lg border border-red-300 bg-red-50 p-4">
+                    <h4 class="text-base font-bold text-red-700 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Common Mistakes
+                    </h4>
+                    <ul class="mt-2 text-sm text-red-900 list-disc list-inside space-y-1">
                         {% for mistake in m.introduction.common_mistakes %}
                         <li>{{ mistake }}</li>
                         {% endfor %}
@@ -108,9 +111,12 @@
                 {% endif %}
 
                 {% if m.introduction.how_to_avoid_mistakes %}
-                <div class="md:col-span-2">
-                    <h4 class="text-sm font-semibold text-green-600">How to Avoid Mistakes</h4>
-                    <ul class="mt-1 text-sm text-gray-600 list-disc list-inside space-y-0.5">
+                <div class="md:col-span-2 rounded-lg border border-green-300 bg-green-50 p-4">
+                    <h4 class="text-base font-bold text-green-700 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        How to Avoid Mistakes
+                    </h4>
+                    <ul class="mt-2 text-sm text-green-900 list-disc list-inside space-y-1">
                         {% for tip in m.introduction.how_to_avoid_mistakes %}
                         <li>{{ tip }}</li>
                         {% endfor %}
@@ -119,9 +125,12 @@
                 {% endif %}
 
                 {% if m.introduction.mismatch_cases %}
-                <div>
-                    <h4 class="text-sm font-semibold text-amber-600">Forward-Model Mismatch Cases</h4>
-                    <ul class="mt-1 text-sm text-gray-600 list-disc list-inside space-y-0.5">
+                <div class="md:col-span-2 rounded-lg border border-amber-300 bg-amber-50 p-4">
+                    <h4 class="text-base font-bold text-amber-700 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                        Forward-Model Mismatch Cases
+                    </h4>
+                    <ul class="mt-2 text-sm text-amber-900 list-disc list-inside space-y-1">
                         {% for case in m.introduction.mismatch_cases %}
                         <li>{{ case }}</li>
                         {% endfor %}
@@ -130,9 +139,12 @@
                 {% endif %}
 
                 {% if m.introduction.mismatch_corrections %}
-                <div class="md:col-span-2">
-                    <h4 class="text-sm font-semibold text-blue-600">How to Correct the Mismatch</h4>
-                    <ul class="mt-1 text-sm text-gray-600 list-disc list-inside space-y-0.5">
+                <div class="md:col-span-2 rounded-lg border border-blue-300 bg-blue-50 p-4">
+                    <h4 class="text-base font-bold text-blue-700 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        How to Correct the Mismatch
+                    </h4>
+                    <ul class="mt-2 text-sm text-blue-900 list-disc list-inside space-y-1">
                         {% for fix in m.introduction.mismatch_corrections %}
                         <li>{{ fix }}</li>
                         {% endfor %}
