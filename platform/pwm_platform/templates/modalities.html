@@ -117,6 +117,40 @@
                     </ul>
                 </div>
                 {% endif %}
+
+                {# ── Experimental Setup Schematic Diagram ── #}
+                {% if m.setup_diagram_url %}
+                <div class="md:col-span-2">
+                    <h4 class="text-sm font-semibold text-gray-700">Experimental Setup — Signal Chain</h4>
+                    <img src="{{ m.setup_diagram_url }}" alt="Experimental setup diagram for {{ m.display_name }}"
+                         class="mt-2 w-full max-w-2xl rounded border border-gray-200"
+                         loading="lazy" />
+                </div>
+                {% endif %}
+
+                {# ── Experimental Setup Details ── #}
+                {% if m.experimental_setup %}
+                <div class="md:col-span-2">
+                    <h4 class="text-sm font-semibold text-gray-700">Experimental Setup — Details</h4>
+                    <div class="mt-1 grid grid-cols-2 md:grid-cols-3 gap-2">
+                        {% for key, value in m.experimental_setup.items() %}
+                        <div class="text-xs">
+                            <span class="font-medium text-gray-600">{{ key | replace('_', ' ') | title }}:</span>
+                            <span class="text-gray-500">{{ value }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% else %}
+            {# No introduction — still show diagram and setup standalone #}
+            {% if m.setup_diagram_url %}
+            <div>
+                <h4 class="text-sm font-semibold text-gray-700">Experimental Setup — Signal Chain</h4>
+                <img src="{{ m.setup_diagram_url }}" alt="Experimental setup diagram for {{ m.display_name }}"
+                     class="mt-2 w-full max-w-2xl rounded border border-gray-200"
+                     loading="lazy" />
             </div>
             {% endif %}
 
@@ -132,6 +166,7 @@
                     {% endfor %}
                 </div>
             </div>
+            {% endif %}
             {% endif %}
 
             {% if m.canonical_references %}

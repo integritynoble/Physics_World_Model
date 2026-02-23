@@ -6432,6 +6432,10 @@ for _key, _intro in _MODALITY_INTRODUCTIONS.items():
     if _key in MODALITY_DATABASE:
         MODALITY_DATABASE[_key]["introduction"] = _intro
 
+# Inject setup_diagram_url for each modality (served from /static)
+for _key in MODALITY_DATABASE:
+    MODALITY_DATABASE[_key]["setup_diagram_url"] = f"/static/img/setups/{_key}.png"
+
 
 # ── Public API ──────────────────────────────────────────────────────────────
 
