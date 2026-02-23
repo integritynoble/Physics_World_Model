@@ -175,6 +175,10 @@ spc:
     function: run_tval3
     params: 0
     gpu: false
+    cfg:
+      mu: 16.0
+      beta: 2.0
+      iters: 100
   best_quality:
     name: HATNet
     module: pwm_core.recon.hatnet

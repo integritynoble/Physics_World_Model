@@ -90,7 +90,7 @@ def _resolve_solver_fn(
     modality: str,
     solver_name: str,
     solver_registry: Dict[str, Any],
-) -> Callable:
+) -> Tuple[Callable, Dict[str, Any]]:
     """Resolve a solver name to a callable function.
 
     Looks up in solver_registry.yaml by modality + tier, or by direct
@@ -134,7 +134,12 @@ def _resolve_solver_fn(
             f"{module_path}.{func_name}: {e}"
         ) from e
 
-    return fn
+    # Extract optional solver cfg from registry entry
+    solver_cfg: Dict[str, Any] = {}
+    if isinstance(tier_entry, dict):
+        solver_cfg = {k: v for k, v in tier_entry.get("cfg", {}).items()}
+
+    return fn, solver_cfg
 
 
 def _generate_scene(
@@ -364,8 +369,9 @@ class Harness:
         # Resolve solver function
         if solver_fn is not None:
             self._solver_fn = solver_fn
+            self._solver_cfg: Dict[str, Any] = {}
         else:
-            self._solver_fn = _resolve_solver_fn(
+            self._solver_fn, self._solver_cfg = _resolve_solver_fn(
                 modality, solver, self.solver_registry
             )
 
@@ -503,7 +509,8 @@ class Harness:
             y = _add_noise(y_clean, photon_config, scene_rng)
 
             # 5. Run 4 scenarios
-            cfg: Dict[str, Any] = {}
+            # Use solver_cfg from registry as default; callers can override.
+            cfg: Dict[str, Any] = dict(self._solver_cfg)
             scenarios: Dict[str, ScenarioResult] = {}
 
             scenarios["I"] = run_scenario_I(
