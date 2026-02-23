@@ -188,7 +188,7 @@ A Spec also declares: noise model, mismatch parameter ranges, scene/sample descr
 | **Phase A** (Internal) | 0-6 months | B2, B4 on 7 validated modalities | Sealed-simulator B2+B4 for CASSI, CACTI, SPC, CT, Ptychography, MRI, Lensless |
 | **Phase B** (Pilot) | 6-12 months | B1-B4 on 10+ modalities | B1 and B3 added; first live-lab True-Specs; external submissions |
 | **Phase C** (Full) | 12-24 months | B1-B4 on 20+ modalities | All benchmarks operational with Red Team adversarial injection |
-| **Phase D** (Utility) | 24+ months | B1-B4 on 64+ modalities | Hardware-in-the-loop; B1 from natural language to validated pipeline in minutes |
+| **Phase D** (Utility) | 24+ months | B1-B4 on 168+ modalities | Hardware-in-the-loop; B1 from natural language to validated pipeline in minutes |
 
 ### 4.3 Mapping to Maturation Levels (L0-L5)
 
@@ -207,7 +207,7 @@ A Spec also declares: noise model, mismatch parameter ranges, scene/sample descr
 
 For every modality: **B1** = Design focus, **B2** = Forward/Recon focus, **B3** = Identification focus, **B4** = Correction focus.
 
-### 5.1 Microscopy (16 modalities)
+### 5.1 Microscopy (24 modalities)
 
 | # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
 |---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
@@ -227,6 +227,14 @@ For every modality: **B1** = Design focus, **B2** = Forward/Recon focus, **B3** 
 | 14 | `expansion` | Expansion Microscopy | C --> D | Photon | Expansion factor, gel uniformity, labeling | Deconvolution correcting non-uniform expansion | Estimate local expansion factor, distortion field | Correct expansion non-uniformity |
 | 15 | `minflux` | MINFLUX Nanoscopy | C --> D | Photon | Beam pattern, localization precision, photon budget | Localization under beam misalignment | Estimate beam center position, photon rate | Correct beam positioning errors |
 | 16 | `ism` | Image Scanning Microscopy | C --> D | Photon | Detector array geometry, reassignment strategy | Pixel reassignment under geometric distortion | Estimate detector offset, magnification error | Correct pixel reassignment parameters |
+| 17 | `phase_contrast` | Phase Contrast Microscopy | C --> D | Photon | Phase ring design, condenser annulus, NA match | Halo artifact correction under ring misalignment | Estimate phase ring position, absorption ratio | Correct phase ring alignment, halo suppression |
+| 18 | `dic` | Differential Interference Contrast | M --> C --> D | Photon | Prism shear, bias retardation, NA selection | DIC gradient reconstruction under bias error | Estimate shear distance, bias offset, extinction ratio | Correct bias retardation, prism alignment |
+| 19 | `dark_field` | Dark-Field Microscopy | C --> D | Photon | Stop size, illumination angle, NA partitioning | Dark-field recon under illumination non-uniformity | Estimate stop alignment, illumination asymmetry | Correct stop positioning, flat-field correction |
+| 20 | `lattice_lightsheet` | Lattice Light-Sheet | C --> D | Photon | Lattice pattern, dithering, z-step, tile overlap | Deconvolution + tile stitching under lattice error | Estimate lattice period, dither range, tile offset | Correct lattice parameters, stitch registration |
+| 21 | `shg` | Second Harmonic Generation (SHG) | M --> R --> D | Photon | Excitation wavelength, polarization, NA, detection filter | SHG reconstruction under phase-matching error | Estimate SHG efficiency, polarization orientation | Correct phase-matching, polarization calibration |
+| 22 | `spinning_disk` | Spinning Disk Confocal | C --> D | Photon | Pinhole spacing, rotation speed, camera sync | Deconvolution under pinhole crosstalk | Estimate pinhole spacing error, crosstalk, sync lag | Correct crosstalk, synchronization timing |
+| 23 | `three_photon` | Three-Photon Microscopy | C --> D | Photon | Excitation 1300/1700 nm, repetition rate, depth | Deconvolution under deep-tissue scattering | Estimate scattering length, pulse broadening | Correct depth-dependent attenuation and PSF |
+| 24 | `dna_paint` | DNA-PAINT Super-Resolution | M --> D | Photon | Imager strand concentration, binding kinetics | Localization under binding rate variation | Estimate on-rate, off-rate, background binding | Correct binding kinetics model, background |
 
 ---
 
@@ -234,63 +242,80 @@ For every modality: **B1** = Design focus, **B2** = Forward/Recon focus, **B3** 
 
 | # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
 |---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
-| 17 | `cassi` | CASSI (Spectral) | M --> W --> Sigma --> D | Photon | Mask pattern, dispersion element, spectral range, spatial resolution | GAP-TV / MST-L under mask shift (dx,dy), rotation (theta), dispersion slope (a1), axis offset (alpha) | Estimate 5 mismatch params from measurement residuals | Correct all 5 params; rho validated at 85% (flagship) |
-| 18 | `spc` | Single-Pixel Camera | M --> Sigma --> D | Photon | Pattern type (Hadamard/Gaussian), sampling rate, DMD resolution | FISTA-TV under gain drift (alpha) and measurement noise (sigma_y) | Estimate gain drift curve and noise level | Correct gain model; rho validated at 86% |
-| 19 | `cacti` | CACTI (Temporal) | M --> Sigma --> D | Photon | Mask shift type, compression ratio, temporal resolution | GAP-TV under spatial shift, rotation, temporal clock, gain, offset | Estimate 8 mismatch params from temporal correlations | Correct mask replication errors; rho validated at 100% |
-| 20 | `matrix` | Generic Matrix Sensing | M --> D | Photon | Measurement matrix design (RIP, coherence), conditioning | CG/ADMM under matrix perturbation | Estimate matrix condition number, perturbation magnitude | Correct matrix calibration errors |
+| 25 | `cassi` | CASSI (Spectral) | M --> W --> Sigma --> D | Photon | Mask pattern, dispersion element, spectral range, spatial resolution | GAP-TV / MST-L under mask shift (dx,dy), rotation (theta), dispersion slope (a1), axis offset (alpha) | Estimate 5 mismatch params from measurement residuals | Correct all 5 params; rho validated at 85% (flagship) |
+| 26 | `spc` | Single-Pixel Camera | M --> Sigma --> D | Photon | Pattern type (Hadamard/Gaussian), sampling rate, DMD resolution | FISTA-TV under gain drift (alpha) and measurement noise (sigma_y) | Estimate gain drift curve and noise level | Correct gain model; rho validated at 86% |
+| 27 | `cacti` | CACTI (Temporal) | M --> Sigma --> D | Photon | Mask shift type, compression ratio, temporal resolution | GAP-TV under spatial shift, rotation, temporal clock, gain, offset | Estimate 8 mismatch params from temporal correlations | Correct mask replication errors; rho validated at 100% |
+| 28 | `matrix` | Generic Matrix Sensing | M --> D | Photon | Measurement matrix design (RIP, coherence), conditioning | CG/ADMM under matrix perturbation | Estimate matrix condition number, perturbation magnitude | Correct matrix calibration errors |
 
 **Validated Baselines** (flagship paper): CASSI GAP-TV +0.76 dB rho=85%; CACTI GAP-TV +10.21 dB rho=100%; SPC FISTA-TV +7.71 dB rho=86%; CT FBP +10.68 dB rho=100%; Ptychography ePIE +7.09 dB rho=100%; MRI SENSE +1.75-7.14 dB; Lensless ADMM +3.55 dB rho=78%.
 
 ---
 
-### 5.3 Medical Imaging (25 modalities)
+### 5.3 Medical Imaging (37 modalities)
 
 | # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
 |---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
-| 21 | `ct` | X-ray CT | Pi --> D | X-ray | Geometry (fan/parallel/cone), angles, detector count, dose | FBP/SART under center-of-rotation offset, angular offset, detector tilt, beam hardening | Estimate CoR offset, angular errors, hardening coefficients | Correct geometry; rho=100%, +10.68 dB |
-| 22 | `mri` | MRI | M --> F --> S --> D | Spin/RF | Coil count, trajectory (Cartesian/radial/spiral), acceleration factor | SENSE/GRAPPA under coil sensitivity error, k-space trajectory deviation, off-resonance | Estimate coil maps, trajectory errors, field map | Correct coil + trajectory; +1.75-7.14 dB |
-| 23 | `xray_radiography` | X-ray Radiography | Pi --> D | X-ray | Source-detector distance, filtration, exposure parameters | TV-FISTA under scatter, beam hardening, detector lag | Estimate scatter fraction, hardening polynomial | Correct scatter, beam hardening correction |
-| 24 | `ultrasound` | Ultrasound B-mode | P --> D | Acoustic | Transducer array, frequency, focus depth, apodization | DAS beamforming under speed-of-sound error, phase aberration | Estimate sound speed profile, aberration screen | Correct aberration, adaptive beamforming |
-| 25 | `pet` | PET | Pi --> D | Gamma | Crystal ring geometry, TOF resolution, attenuation correction | MLEM/OSEM under attenuation map error, scatter, randoms, normalization | Estimate attenuation factors, scatter fraction, normalization table | Correct attenuation, scatter, normalization |
-| 26 | `spect` | SPECT | Pi --> D | Gamma | Collimator type, orbit, energy window, attenuation correction | MLEM with depth-dependent resolution under collimator response error | Estimate collimator params, attenuation map, center-of-rotation | Correct CoR, collimator model, attenuation |
-| 27 | `fluoroscopy` | Fluoroscopy | Pi --> D | X-ray | Frame rate, dose per frame, detector type | TV-FISTA under temporal lag, scatter, geometric distortion | Estimate lag coefficient, scatter model, pincushion distortion | Correct lag, flat-field, geometric distortion |
-| 28 | `mammography` | Mammography | Pi --> D | X-ray | Target/filter combination, compression, detector type | TV-FISTA under scatter, heel effect, detector MTF variation | Estimate scatter-to-primary ratio, heel effect profile | Correct scatter, MTF correction |
-| 29 | `dexa` | DEXA | Pi --> D | X-ray | Dual energy selection, scan mode, calibration phantom | Dual-energy decomposition under beam hardening, fat-lean mismatch | Estimate effective energies, calibration polynomial | Correct calibration, decomposition coefficients |
-| 30 | `cbct` | Cone-Beam CT (CBCT) | Pi --> D | X-ray | Cone angle, flat-panel geometry, rotation arc, dose | FDK under cone-beam artifacts, scatter, truncation | Estimate scatter fraction, truncation extent, detector offset | Correct scatter, extend FOV, ring artifacts |
-| 31 | `angiography` | X-ray Angiography | Pi --> D | X-ray | Contrast timing, frame rate, subtraction protocol | DSA subtraction under patient motion, misregistration | Estimate motion field between mask and contrast frames | Correct motion-compensated subtraction |
-| 32 | `dot` | Diffuse Optical Tomography | M --> R,P,R --> D | Photon | Source-detector layout, wavelength selection, time/frequency domain | Born approximation inversion under scattering coefficient error | Estimate absorption/scattering coefficients, boundary conditions | Correct optical properties, boundary model |
-| 33 | `photoacoustic` | Photoacoustic | M --> P --> D | Acoustic | Transducer array, laser wavelength, fluence model | Backprojection under speed-of-sound heterogeneity, acoustic attenuation | Estimate sound speed map, Grueneisen parameter, fluence | Correct sound speed model, fluence compensation |
-| 34 | `oct` | OCT | P+P --> Sigma --> D | Photon | Source bandwidth, reference arm, scan pattern, axial resolution | FFT recon under dispersion mismatch, reference arm drift | Estimate dispersion coefficients, reference arm position | Correct dispersion, reference drift |
-| 35 | `fmri` | Functional MRI (BOLD) | M --> F --> S --> D | Spin/RF | TR/TE, spatial resolution, temporal resolution, EPI trajectory | SENSE + GLM under geometric distortion, signal dropout | Estimate field map, distortion, motion parameters | Correct distortion, motion, physiological noise |
-| 36 | `mrs` | MR Spectroscopy | M --> F --> S --> D | Spin/RF | Voxel localization, spectral bandwidth, water suppression | LCModel fitting under lineshape distortion, baseline error | Estimate lineshape, eddy current phase, residual water | Correct lineshape, eddy current, baseline |
-| 37 | `diffusion_mri` | Diffusion MRI (DTI) | M --> F --> S --> D | Spin/RF | b-values, gradient directions, eddy currents | WLS tensor fitting under gradient nonlinearity, eddy current distortion | Estimate gradient tables, eddy current coefficients | Correct gradient nonlinearity, eddy currents |
-| 38 | `doppler_ultrasound` | Doppler Ultrasound | P --> D | Acoustic | PRF, wall filter, velocity range, angle of insonation | Autocorrelation estimator under aliasing, wall filter error | Estimate flow angle, PRF aliasing threshold, clutter | Correct angle, anti-aliasing, clutter filter |
-| 39 | `elastography` | Shear-Wave Elastography | P --> D | Acoustic | Push pulse, tracking method, shear wave frequency | TOF inversion under wave reflection, dispersion | Estimate shear wave speed, attenuation, boundary effects | Correct reflection, dispersion compensation |
-| 40 | `endoscopy` | Fiber Bundle Endoscopy | M --> C --> D | Photon | Fiber count, FOV, bending radius, illumination | TV-FISTA under fiber cross-talk, non-uniform transmission | Estimate fiber transmission map, geometric distortion | Correct fiber calibration, distortion |
-| 41 | `fundus` | Fundus Camera | C --> D | Photon | FOV, illumination wavelength, mydriasis | Richardson-Lucy under aberration, non-uniform illumination | Estimate aberration coefficients, illumination profile | Correct aberrations, flat-field |
-| 42 | `octa` | OCT Angiography | P+P --> Sigma --> D | Photon | Scan density, interscan time, decorrelation method | TV-FISTA under bulk motion, projection artifact | Estimate bulk motion, shadow artifacts | Correct bulk motion, projection artifacts |
-| 43 | `proton_therapy_img` | Proton Therapy Imaging | Pi --> D | Proton | Energy range, detector stack, range verification | Backprojection under range uncertainty, scattering | Estimate water-equivalent path length, scattering model | Correct range model, scattering compensation |
-| 44 | `brachytherapy_img` | Brachytherapy Imaging | Pi --> D | Gamma/X-ray | Source geometry, applicator model, imaging protocol | TG-43/TG-186 dose with imaging verification | Estimate source position, applicator geometry | Correct source localization, applicator model |
-| 45 | `portal_imaging` | Portal Imaging (EPID) | Pi --> D | MV X-ray | Detector geometry, gantry angle, field size | Backprojection under sag, flex, MLC position error | Estimate gantry sag, detector offset, MLC positions | Correct geometric calibration, MLC model |
+| 29 | `ct` | X-ray CT | Pi --> D | X-ray | Geometry (fan/parallel/cone), angles, detector count, dose | FBP/SART under center-of-rotation offset, angular offset, detector tilt, beam hardening | Estimate CoR offset, angular errors, hardening coefficients | Correct geometry; rho=100%, +10.68 dB |
+| 30 | `mri` | MRI | M --> F --> S --> D | Spin/RF | Coil count, trajectory (Cartesian/radial/spiral), acceleration factor | SENSE/GRAPPA under coil sensitivity error, k-space trajectory deviation, off-resonance | Estimate coil maps, trajectory errors, field map | Correct coil + trajectory; +1.75-7.14 dB |
+| 31 | `xray_radiography` | X-ray Radiography | Pi --> D | X-ray | Source-detector distance, filtration, exposure parameters | TV-FISTA under scatter, beam hardening, detector lag | Estimate scatter fraction, hardening polynomial | Correct scatter, beam hardening correction |
+| 32 | `ultrasound` | Ultrasound B-mode | P --> D | Acoustic | Transducer array, frequency, focus depth, apodization | DAS beamforming under speed-of-sound error, phase aberration | Estimate sound speed profile, aberration screen | Correct aberration, adaptive beamforming |
+| 33 | `pet` | PET | Pi --> D | Gamma | Crystal ring geometry, TOF resolution, attenuation correction | MLEM/OSEM under attenuation map error, scatter, randoms, normalization | Estimate attenuation factors, scatter fraction, normalization table | Correct attenuation, scatter, normalization |
+| 34 | `spect` | SPECT | Pi --> D | Gamma | Collimator type, orbit, energy window, attenuation correction | MLEM with depth-dependent resolution under collimator response error | Estimate collimator params, attenuation map, center-of-rotation | Correct CoR, collimator model, attenuation |
+| 35 | `fluoroscopy` | Fluoroscopy | Pi --> D | X-ray | Frame rate, dose per frame, detector type | TV-FISTA under temporal lag, scatter, geometric distortion | Estimate lag coefficient, scatter model, pincushion distortion | Correct lag, flat-field, geometric distortion |
+| 36 | `mammography` | Mammography | Pi --> D | X-ray | Target/filter combination, compression, detector type | TV-FISTA under scatter, heel effect, detector MTF variation | Estimate scatter-to-primary ratio, heel effect profile | Correct scatter, MTF correction |
+| 37 | `dexa` | DEXA | Pi --> D | X-ray | Dual energy selection, scan mode, calibration phantom | Dual-energy decomposition under beam hardening, fat-lean mismatch | Estimate effective energies, calibration polynomial | Correct calibration, decomposition coefficients |
+| 38 | `cbct` | Cone-Beam CT (CBCT) | Pi --> D | X-ray | Cone angle, flat-panel geometry, rotation arc, dose | FDK under cone-beam artifacts, scatter, truncation | Estimate scatter fraction, truncation extent, detector offset | Correct scatter, extend FOV, ring artifacts |
+| 39 | `angiography` | X-ray Angiography | Pi --> D | X-ray | Contrast timing, frame rate, subtraction protocol | DSA subtraction under patient motion, misregistration | Estimate motion field between mask and contrast frames | Correct motion-compensated subtraction |
+| 40 | `dot` | Diffuse Optical Tomography | M --> R,P,R --> D | Photon | Source-detector layout, wavelength selection, time/frequency domain | Born approximation inversion under scattering coefficient error | Estimate absorption/scattering coefficients, boundary conditions | Correct optical properties, boundary model |
+| 41 | `photoacoustic` | Photoacoustic | M --> P --> D | Acoustic | Transducer array, laser wavelength, fluence model | Backprojection under speed-of-sound heterogeneity, acoustic attenuation | Estimate sound speed map, Grueneisen parameter, fluence | Correct sound speed model, fluence compensation |
+| 42 | `oct` | OCT | P+P --> Sigma --> D | Photon | Source bandwidth, reference arm, scan pattern, axial resolution | FFT recon under dispersion mismatch, reference arm drift | Estimate dispersion coefficients, reference arm position | Correct dispersion, reference drift |
+| 43 | `fmri` | Functional MRI (BOLD) | M --> F --> S --> D | Spin/RF | TR/TE, spatial resolution, temporal resolution, EPI trajectory | SENSE + GLM under geometric distortion, signal dropout | Estimate field map, distortion, motion parameters | Correct distortion, motion, physiological noise |
+| 44 | `mrs` | MR Spectroscopy | M --> F --> S --> D | Spin/RF | Voxel localization, spectral bandwidth, water suppression | LCModel fitting under lineshape distortion, baseline error | Estimate lineshape, eddy current phase, residual water | Correct lineshape, eddy current, baseline |
+| 45 | `diffusion_mri` | Diffusion MRI (DTI) | M --> F --> S --> D | Spin/RF | b-values, gradient directions, eddy currents | WLS tensor fitting under gradient nonlinearity, eddy current distortion | Estimate gradient tables, eddy current coefficients | Correct gradient nonlinearity, eddy currents |
+| 46 | `doppler_ultrasound` | Doppler Ultrasound | P --> D | Acoustic | PRF, wall filter, velocity range, angle of insonation | Autocorrelation estimator under aliasing, wall filter error | Estimate flow angle, PRF aliasing threshold, clutter | Correct angle, anti-aliasing, clutter filter |
+| 47 | `elastography` | Shear-Wave Elastography | P --> D | Acoustic | Push pulse, tracking method, shear wave frequency | TOF inversion under wave reflection, dispersion | Estimate shear wave speed, attenuation, boundary effects | Correct reflection, dispersion compensation |
+| 48 | `endoscopy` | Fiber Bundle Endoscopy | M --> C --> D | Photon | Fiber count, FOV, bending radius, illumination | TV-FISTA under fiber cross-talk, non-uniform transmission | Estimate fiber transmission map, geometric distortion | Correct fiber calibration, distortion |
+| 49 | `fundus` | Fundus Camera | C --> D | Photon | FOV, illumination wavelength, mydriasis | Richardson-Lucy under aberration, non-uniform illumination | Estimate aberration coefficients, illumination profile | Correct aberrations, flat-field |
+| 50 | `octa` | OCT Angiography | P+P --> Sigma --> D | Photon | Scan density, interscan time, decorrelation method | TV-FISTA under bulk motion, projection artifact | Estimate bulk motion, shadow artifacts | Correct bulk motion, projection artifacts |
+| 51 | `proton_therapy_img` | Proton Therapy Imaging | Pi --> D | Proton | Energy range, detector stack, range verification | Backprojection under range uncertainty, scattering | Estimate water-equivalent path length, scattering model | Correct range model, scattering compensation |
+| 52 | `brachytherapy_img` | Brachytherapy Imaging | Pi --> D | Gamma/X-ray | Source geometry, applicator model, imaging protocol | TG-43/TG-186 dose with imaging verification | Estimate source position, applicator geometry | Correct source localization, applicator model |
+| 53 | `portal_imaging` | Portal Imaging (EPID) | Pi --> D | MV X-ray | Detector geometry, gantry angle, field size | Backprojection under sag, flex, MLC position error | Estimate gantry sag, detector offset, MLC positions | Correct geometric calibration, MLC model |
+| 54 | `spectral_ct` | Photon-Counting Spectral CT | Pi --> W --> D | X-ray | Energy bins, threshold settings, pile-up correction | Material decomposition under threshold drift, charge sharing | Estimate energy thresholds, charge sharing width | Correct threshold calibration, pile-up |
+| 55 | `mr_elastography` | MR Elastography | M --> F --> S --> D | Spin/RF | Driver frequency, MEG encoding, inversion algorithm | LFE/DI under wave attenuation, reflection, boundary | Estimate shear modulus, attenuation, wave speed | Correct wave model, boundary conditions |
+| 56 | `cest_mri` | CEST MRI | M --> F --> S --> D | Spin/RF | Saturation frequency, power, B0 mapping | Z-spectrum fitting under B0/B1 inhomogeneity | Estimate B0 map, B1 map, CEST asymmetry | Correct B0/B1 correction, water reference |
+| 57 | `asl_mri` | Arterial Spin Labeling | M --> F --> S --> D | Spin/RF | Labeling scheme, PLD, background suppression | Perfusion quantification under transit time error | Estimate bolus arrival time, labeling efficiency | Correct transit time, partial volume |
+| 58 | `mra` | MR Angiography | M --> F --> S --> D | Spin/RF | TOF vs CE vs PC, spatial resolution, coverage | MIP/SSD under flow artifact, vessel signal | Estimate flow velocity, vessel boundary | Correct flow artifacts, background suppression |
+| 59 | `swi` | Susceptibility-Weighted Imaging | M --> F --> S --> D | Spin/RF | TE, filter size, phase mask | SWI reconstruction under field inhomogeneity | Estimate susceptibility sources, field map | Correct background field, phase unwrapping |
+| 60 | `mr_fingerprinting` | MR Fingerprinting | M --> F --> S --> D | Spin/RF | Flip angle pattern, TR pattern, dictionary design | Dictionary matching under B0/B1 variation, aliasing | Estimate T1, T2, B0, B1 maps simultaneously | Correct B0/B1, refine dictionary matching |
+| 61 | `ivus` | Intravascular Ultrasound | P --> D | Acoustic | Transducer frequency (20-60 MHz), pullback speed | Polar reconstruction under NURD, catheter eccentricity | Estimate NURD profile, catheter position offset | Correct NURD, re-center catheter model |
+| 62 | `ceus` | Contrast-Enhanced Ultrasound | P --> R --> D | Acoustic | MI, pulse scheme, frame rate, contrast agent | Contrast-specific imaging under tissue clutter | Estimate tissue signal, bubble nonlinearity curve | Correct tissue subtraction, linearize contrast |
+| 63 | `digital_breast_tomo` | Digital Breast Tomosynthesis | Pi --> D | X-ray | Angular range, projection count, detector type | Backprojection under geometric calibration error | Estimate tube positions, detector flex, compression | Correct geometry, reduce out-of-plane artifacts |
+| 64 | `confocal_endomicroscopy` | Confocal Endomicroscopy | M --> C --> D | Photon | Fiber bundle, laser wavelength, frame rate | Deconvolution under fiber honeycomb pattern | Estimate fiber core positions, coupling efficiency | Correct fiber pattern, interpolation artifacts |
+| 65 | `nirs_brain` | Functional NIRS | M --> R,P --> D | Photon | Source-detector distance, wavelengths, sampling rate | Modified Beer-Lambert under scalp coupling variation | Estimate DPF, coupling coefficients, motion artifact | Correct motion, coupling, superficial signal |
 
 ---
 
-### 5.4 Coherent Imaging (3 modalities)
+### 5.4 Coherent Imaging (5 modalities)
 
 | # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
 |---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
-| 46 | `ptychography` | Ptychographic Imaging | M --> P --> D | Electron/Photon | Probe size, overlap ratio, scan pattern, coherence | ePIE under probe position error, defocus, aberration | Estimate probe positions, aberration coefficients | Correct positions; rho=100%, +7.09 dB |
-| 47 | `holography` | Digital Holographic Microscopy | P --> D | Photon | Reference beam angle, wavelength, off-axis vs inline | Angular spectrum under reference beam angle error, vibration | Estimate carrier frequency, reference angle, phase offset | Correct reference beam model, vibration |
-| 48 | `phase_retrieval` | Coherent Diffractive Imaging | P --> D | Photon/Electron | Support constraint, oversampling ratio, coherence | HIO/ER under support error, partial coherence | Estimate support boundary, coherence function | Correct support, coherence model |
+| 66 | `ptychography` | Ptychographic Imaging | M --> P --> D | Electron/Photon | Probe size, overlap ratio, scan pattern, coherence | ePIE under probe position error, defocus, aberration | Estimate probe positions, aberration coefficients | Correct positions; rho=100%, +7.09 dB |
+| 67 | `holography` | Digital Holographic Microscopy | P --> D | Photon | Reference beam angle, wavelength, off-axis vs inline | Angular spectrum under reference beam angle error, vibration | Estimate carrier frequency, reference angle, phase offset | Correct reference beam model, vibration |
+| 68 | `phase_retrieval` | Coherent Diffractive Imaging | P --> D | Photon/Electron | Support constraint, oversampling ratio, coherence | HIO/ER under support error, partial coherence | Estimate support boundary, coherence function | Correct support, coherence model |
+| 69 | `odt` | Optical Diffraction Tomography | P --> D | Photon | Illumination angles, refractive index range, NA | Rytov/Born inversion under missing cone, RI drift | Estimate RI map, illumination angle errors | Correct missing cone, RI calibration |
+| 70 | `talbot_lau` | Talbot-Lau X-ray Interferometry | M --> P --> D | X-ray | Grating periods, design energy, inter-grating distance | Phase stepping under grating misalignment, vibration | Estimate grating positions, period mismatch, visibility | Correct grating alignment, period matching |
 
 ---
 
-### 5.5 Computational Photography (2 modalities)
+### 5.5 Computational Photography (5 modalities)
 
 | # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
 |---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
-| 49 | `lensless` | Lensless / Diffuser Camera | C --> D | Photon | Diffuser/mask type, sensor distance, PSF calibration | ADMM under PSF shift, scale drift, defocus | Estimate PSF shift, scale, defocus offset | Correct PSF model; rho=78%, +3.55 dB |
-| 50 | `panorama` | Panorama Multi-Focus Fusion | C --> D | Photon | Focal sweep range, focal planes, depth of field | Laplacian pyramid under focus distance error | Estimate focal distances, aperture, depth map | Correct focal plane registration |
+| 71 | `lensless` | Lensless / Diffuser Camera | C --> D | Photon | Diffuser/mask type, sensor distance, PSF calibration | ADMM under PSF shift, scale drift, defocus | Estimate PSF shift, scale, defocus offset | Correct PSF model; rho=78%, +3.55 dB |
+| 72 | `panorama` | Panorama Multi-Focus Fusion | C --> D | Photon | Focal sweep range, focal planes, depth of field | Laplacian pyramid under focus distance error | Estimate focal distances, aperture, depth map | Correct focal plane registration |
+| 73 | `coded_exposure` | Coded Exposure / Flutter Shutter | M --> C --> D | Photon | Shutter code, exposure time, motion range | Deblurring under code timing error, unknown motion | Estimate shutter function, motion kernel | Correct shutter timing, motion model |
+| 74 | `event_camera` | Event Camera / DVS | M --> D | Photon | Contrast threshold, temporal resolution, bias settings | Event-to-frame under threshold mismatch, refractory period | Estimate threshold per pixel, refractory time | Correct threshold calibration, hot pixels |
+| 75 | `hdr_imaging` | HDR Imaging | M --> Sigma --> D | Photon | Exposure bracketing, tone mapping, dynamic range | HDR merge under exposure time error, ghosting | Estimate exposure ratios, CRF, motion between frames | Correct exposure calibration, deghosting |
 
 ---
 
@@ -298,8 +323,8 @@ For every modality: **B1** = Design focus, **B2** = Forward/Recon focus, **B3** 
 
 | # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
 |---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
-| 51 | `light_field` | Light Field Imaging | C --> S --> D | Photon | Microlens array, angular vs spatial resolution | Shift-and-sum under microlens alignment error | Estimate microlens pitch, rotation, f-number | Correct microlens calibration |
-| 52 | `integral` | Integral Photography | C --> S --> D | Photon | Lens array geometry, baseline, depth range | Depth estimation under lens distortion | Estimate lens positions, distortion coefficients | Correct geometric calibration |
+| 76 | `light_field` | Light Field Imaging | C --> S --> D | Photon | Microlens array, angular vs spatial resolution | Shift-and-sum under microlens alignment error | Estimate microlens pitch, rotation, f-number | Correct microlens calibration |
+| 77 | `integral` | Integral Photography | C --> S --> D | Photon | Lens array geometry, baseline, depth range | Depth estimation under lens distortion | Estimate lens positions, distortion coefficients | Correct geometric calibration |
 
 ---
 
@@ -307,93 +332,181 @@ For every modality: **B1** = Design focus, **B2** = Forward/Recon focus, **B3** 
 
 | # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
 |---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
-| 53 | `nerf` | Neural Radiance Fields | M --> P --> D | Photon | View count, camera placement, scene bounds | NeRF/Instant-NGP under camera pose error, intrinsic error | Estimate camera poses, focal length, distortion | Correct camera calibration, refine poses |
-| 54 | `gaussian_splatting` | 3D Gaussian Splatting | M --> P --> D | Photon | Initial point cloud, densification, view selection | 3DGS under SfM initialization error | Estimate point cloud quality, initialization bias | Correct initialization, re-densify |
+| 78 | `nerf` | Neural Radiance Fields | M --> P --> D | Photon | View count, camera placement, scene bounds | NeRF/Instant-NGP under camera pose error, intrinsic error | Estimate camera poses, focal length, distortion | Correct camera calibration, refine poses |
+| 79 | `gaussian_splatting` | 3D Gaussian Splatting | M --> P --> D | Photon | Initial point cloud, densification, view selection | 3DGS under SfM initialization error | Estimate point cloud quality, initialization bias | Correct initialization, re-densify |
 
 ---
 
-### 5.8 Electron Microscopy (8 modalities)
+### 5.8 Electron Microscopy (11 modalities)
 
 | # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
 |---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
-| 55 | `sem` | SEM | C --> D | Electron | Beam energy, working distance, detector type | Direct imaging under charging, drift, astigmatism | Estimate stigmation, working distance, drift rate | Correct astigmatism, drift compensation |
-| 56 | `tem` | TEM | C --> D | Electron | Acceleration voltage, aperture, defocus series | CTF correction under defocus, astigmatism, beam tilt | Estimate CTF params (defocus, Cs, astigmatism) | Correct CTF, aberration model |
-| 57 | `electron_tomography` | Electron Tomography | Pi --> D | Electron | Tilt range, tilt increment, missing wedge | SIRT/WBP under tilt axis misalignment, magnification change | Estimate tilt axis offset, magnification variation | Correct tilt axis, missing wedge |
-| 58 | `stem` | STEM | S --> D | Electron | Convergence angle, detector geometry, scan pattern | Direct imaging under scan distortion, probe aberration | Estimate scan distortion, probe parameters | Correct scan calibration |
-| 59 | `electron_diffraction` | 4D-STEM Diffraction | M --> P --> D | Electron | Probe size, scan step, camera length | Ptychographic recon under camera length error | Estimate camera length, beam center, rotation | Correct geometry calibration |
-| 60 | `ebsd` | EBSD | R --> D | Electron | Tilt angle, step size, detector geometry | Hough indexing under pattern center error | Estimate pattern center (PC), detector tilt | Correct PC calibration |
-| 61 | `eels` | EELS | S --> D | Electron | Energy range, dispersion, collection angle | Fourier ratio under energy drift, gain variation | Estimate energy drift, gain instability | Correct energy calibration, gain |
-| 62 | `electron_holography` | Electron Holography | P --> D | Electron | Biprism voltage, fringe spacing, FOV | Fourier sideband under biprism drift | Estimate biprism voltage drift, fringe rotation | Correct fringe analysis parameters |
+| 80 | `sem` | SEM | C --> D | Electron | Beam energy, working distance, detector type | Direct imaging under charging, drift, astigmatism | Estimate stigmation, working distance, drift rate | Correct astigmatism, drift compensation |
+| 81 | `tem` | TEM | C --> D | Electron | Acceleration voltage, aperture, defocus series | CTF correction under defocus, astigmatism, beam tilt | Estimate CTF params (defocus, Cs, astigmatism) | Correct CTF, aberration model |
+| 82 | `electron_tomography` | Electron Tomography | Pi --> D | Electron | Tilt range, tilt increment, missing wedge | SIRT/WBP under tilt axis misalignment, magnification change | Estimate tilt axis offset, magnification variation | Correct tilt axis, missing wedge |
+| 83 | `stem` | STEM | S --> D | Electron | Convergence angle, detector geometry, scan pattern | Direct imaging under scan distortion, probe aberration | Estimate scan distortion, probe parameters | Correct scan calibration |
+| 84 | `electron_diffraction` | 4D-STEM Diffraction | M --> P --> D | Electron | Probe size, scan step, camera length | Ptychographic recon under camera length error | Estimate camera length, beam center, rotation | Correct geometry calibration |
+| 85 | `ebsd` | EBSD | R --> D | Electron | Tilt angle, step size, detector geometry | Hough indexing under pattern center error | Estimate pattern center (PC), detector tilt | Correct PC calibration |
+| 86 | `eels` | EELS | S --> D | Electron | Energy range, dispersion, collection angle | Fourier ratio under energy drift, gain variation | Estimate energy drift, gain instability | Correct energy calibration, gain |
+| 87 | `electron_holography` | Electron Holography | P --> D | Electron | Biprism voltage, fringe spacing, FOV | Fourier sideband under biprism drift | Estimate biprism voltage drift, fringe rotation | Correct fringe analysis parameters |
+| 88 | `cryo_et` | Cryo-Electron Tomography | Pi --> D | Electron | Tilt scheme, dose fractionation, defocus | SIRT under beam-induced motion, dose damage | Estimate per-tilt motion, CTF, accumulated dose | Correct motion, CTF per tilt, dose weighting |
+| 89 | `fib_sem` | FIB-SEM | S --> C --> D | Electron + Ion | Milling current, slice thickness, imaging kV | 3D stack under curtaining, charging, slice thickness variation | Estimate slice thickness, curtain artifact, charging | Correct curtaining, align slices, normalize intensity |
+| 90 | `edx_mapping` | STEM-EDX Elemental Mapping | M --> R --> D | Electron | Beam current, dwell time, detector solid angle | Element quantification under absorption, fluorescence | Estimate absorption correction, fluorescence yield | Correct absorption, cliff-lorimer factors |
 
 ---
 
-### 5.9 Depth Imaging (3 modalities)
+### 5.9 Depth Imaging (5 modalities)
 
 | # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
 |---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
-| 63 | `tof_camera` | Time-of-Flight Camera | P --> D | Photon/IR | Modulation frequency, integration time, multi-path | TV-FISTA under multi-path interference, phase wrap | Estimate multi-path coefficients, wrap count | Correct multi-path, phase unwrapping |
-| 64 | `lidar` | LiDAR Scanner | P --> S --> D | Photon | Scan pattern, pulse rate, wavelength, range | Point cloud recon under timing jitter, angular error | Estimate timing calibration, angular encoder error | Correct timing, angular calibration |
-| 65 | `structured_light` | Structured-Light 3D | M --> C --> D | Photon | Pattern type, projector-camera geometry | Phase unwrapping under defocus, gamma nonlinearity | Estimate gamma curve, projector-camera extrinsics | Correct gamma, geometric calibration |
+| 91 | `tof_camera` | Time-of-Flight Camera | P --> D | Photon/IR | Modulation frequency, integration time, multi-path | TV-FISTA under multi-path interference, phase wrap | Estimate multi-path coefficients, wrap count | Correct multi-path, phase unwrapping |
+| 92 | `lidar` | LiDAR Scanner | P --> S --> D | Photon | Scan pattern, pulse rate, wavelength, range | Point cloud recon under timing jitter, angular error | Estimate timing calibration, angular encoder error | Correct timing, angular calibration |
+| 93 | `structured_light` | Structured-Light 3D | M --> C --> D | Photon | Pattern type, projector-camera geometry | Phase unwrapping under defocus, gamma nonlinearity | Estimate gamma curve, projector-camera extrinsics | Correct gamma, geometric calibration |
+| 94 | `photometric_stereo` | Photometric Stereo | M --> C --> D | Photon | Light source count, placement, surface BRDF | Normal estimation under light position error | Estimate light directions, surface albedo, BRDF | Correct light calibration, inter-reflection |
+| 95 | `flash_lidar` | Flash LiDAR | P --> D | Photon | Laser power, APD array, range gate | Depth map under background noise, multi-return | Estimate background rate, reflectivity, range bias | Correct range calibration, background subtraction |
 
 ---
 
-### 5.10 Remote Sensing (8 modalities)
+### 5.10 Remote Sensing (11 modalities)
 
 | # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
 |---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
-| 66 | `sar` | Synthetic Aperture Radar | F --> D | RF | Bandwidth, PRF, look angle, aperture length | Backprojection under motion error, autofocus | Estimate platform motion errors, phase history | Correct autofocus, motion compensation |
-| 67 | `sonar` | Sonar Imaging | P --> D | Acoustic | Transducer array, frequency, beamforming | DAS beamforming under sound speed error, multipath | Estimate sound speed, multipath structure | Correct sound speed, suppress multipath |
-| 68 | `hyperspectral_remote` | Hyperspectral Remote Sensing | M --> W --> Sigma --> D | Photon | Spectral range, spatial resolution, push-broom vs snapshot | Unmixing under atmospheric correction error, smile/keystone | Estimate smile/keystone, atmospheric parameters | Correct spectral distortion, atmosphere |
-| 69 | `multispectral_sat` | Multispectral Satellite | M --> Sigma --> D | Photon | Band selection, spatial resolution, orbit | Pan-sharpening under co-registration error, MTF difference | Estimate band-to-band registration, MTF per band | Correct registration, MTF matching |
-| 70 | `gpr` | Ground-Penetrating Radar | P --> D | RF | Antenna frequency, scan spacing, time window | Migration under velocity model error, clutter | Estimate permittivity profile, clutter model | Correct velocity model, clutter suppression |
-| 71 | `weather_radar` | Weather / Doppler Radar | P --> R --> D | RF | Wavelength, scan strategy, PRF, dual-pol | Reflectivity estimation under ground clutter, attenuation | Estimate clutter map, attenuation path | Correct clutter filter, attenuation |
-| 72 | `radio_interferometry` | Radio Interferometry (VLBI) | F --> S --> D | RF | Baseline configuration, bandwidth, integration time | CLEAN / MEM under baseline error, atmospheric phase | Estimate baseline errors, atmospheric phase | Correct baseline, atmospheric phase |
-| 73 | `passive_microwave` | Passive Microwave Radiometry | Sigma --> D | RF | Frequency, spatial resolution, integration time | Deconvolution under antenna pattern error | Estimate antenna pattern, gain calibration | Correct antenna pattern, radiometric cal |
+| 96 | `sar` | Synthetic Aperture Radar | F --> D | RF | Bandwidth, PRF, look angle, aperture length | Backprojection under motion error, autofocus | Estimate platform motion errors, phase history | Correct autofocus, motion compensation |
+| 97 | `sonar` | Sonar Imaging | P --> D | Acoustic | Transducer array, frequency, beamforming | DAS beamforming under sound speed error, multipath | Estimate sound speed, multipath structure | Correct sound speed, suppress multipath |
+| 98 | `hyperspectral_remote` | Hyperspectral Remote Sensing | M --> W --> Sigma --> D | Photon | Spectral range, spatial resolution, push-broom vs snapshot | Unmixing under atmospheric correction error, smile/keystone | Estimate smile/keystone, atmospheric parameters | Correct spectral distortion, atmosphere |
+| 99 | `multispectral_sat` | Multispectral Satellite | M --> Sigma --> D | Photon | Band selection, spatial resolution, orbit | Pan-sharpening under co-registration error, MTF difference | Estimate band-to-band registration, MTF per band | Correct registration, MTF matching |
+| 100 | `gpr` | Ground-Penetrating Radar | P --> D | RF | Antenna frequency, scan spacing, time window | Migration under velocity model error, clutter | Estimate permittivity profile, clutter model | Correct velocity model, clutter suppression |
+| 101 | `weather_radar` | Weather / Doppler Radar | P --> R --> D | RF | Wavelength, scan strategy, PRF, dual-pol | Reflectivity estimation under ground clutter, attenuation | Estimate clutter map, attenuation path | Correct clutter filter, attenuation |
+| 102 | `radio_interferometry` | Radio Interferometry (VLBI) | F --> S --> D | RF | Baseline configuration, bandwidth, integration time | CLEAN / MEM under baseline error, atmospheric phase | Estimate baseline errors, atmospheric phase | Correct baseline, atmospheric phase |
+| 103 | `passive_microwave` | Passive Microwave Radiometry | Sigma --> D | RF | Frequency, spatial resolution, integration time | Deconvolution under antenna pattern error | Estimate antenna pattern, gain calibration | Correct antenna pattern, radiometric cal |
+| 104 | `insar` | InSAR (Interferometric SAR) | F --> S --> D | RF | Baseline, temporal separation, coherence | Phase unwrapping under atmospheric delay, decorrelation | Estimate atmospheric phase screen, coherence map | Correct atmospheric delay, improve coherence |
+| 105 | `polsar` | Polarimetric SAR | F --> M --> D | RF | Polarization modes, calibration targets | Polarimetric decomposition under cross-pol leakage | Estimate cross-pol isolation, channel imbalance | Correct polarimetric calibration, leakage |
+| 106 | `ocean_color` | Ocean Color Remote Sensing | M --> Sigma --> D | Photon | Spectral bands, spatial resolution, sun glint avoidance | Atmospheric correction under aerosol model error | Estimate aerosol optical depth, water-leaving radiance | Correct atmospheric path, sun glint removal |
 
 ---
 
-### 5.11 Industrial Inspection (8 modalities)
+### 5.11 Industrial Inspection (10 modalities)
 
 | # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
 |---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
-| 74 | `industrial_ct` | Industrial X-ray CT | Pi --> D | X-ray | kV/mA, geometry, magnification, voxel size | FBP/iterative under scatter, beam hardening, ring artifacts | Estimate center offset, ring sources, scatter fraction | Correct geometry, scatter, beam hardening |
-| 75 | `xray_ndt` | X-ray NDT (Radiography) | Pi --> D | X-ray | Source type, film/DR detector, exposure chart | Enhancement under scatter, geometric unsharpness | Estimate SDD, source size, scatter buildup | Correct scatter, magnification, contrast |
-| 76 | `ultrasonic_phased_array` | Ultrasonic Phased Array | P --> D | Acoustic | Element count, frequency, focal law, wedge angle | TFM/FMC under velocity error, coupling variation | Estimate velocity, coupling, element sensitivity | Correct velocity, element calibration |
-| 77 | `eddy_current` | Eddy Current Imaging | F --> D | EM | Frequency, probe geometry, lift-off compensation | Impedance map under lift-off variation | Estimate lift-off, conductivity, probe alignment | Correct lift-off, conductivity scale |
-| 78 | `active_thermography` | Active Thermography (IR) | P --> D | IR photon | Excitation type, camera NETD, frame rate | Thermal diffusivity inversion under non-uniform heating | Estimate emissivity map, heating uniformity | Correct emissivity, excitation model |
-| 79 | `terahertz` | Terahertz Imaging | P --> D | THz photon | Frequency range, imaging mode, spatial resolution | Deconvolution under water vapor absorption, etalon | Estimate thickness, refractive index, absorption | Correct etalon artifacts, vapor lines |
-| 80 | `machine_vision` | Machine Vision / AOI | C --> D | Photon | Lens, illumination, resolution, FOV | Defect detection under illumination non-uniformity | Estimate illumination profile, MTF, distortion | Correct flat-field, lens distortion, focus |
-| 81 | `xrf_imaging` | X-ray Fluorescence Imaging | M --> R --> D | X-ray | Excitation energy, detector geometry, resolution | Element mapping under matrix effect, self-absorption | Estimate matrix composition, self-absorption | Correct matrix effects, dead time, pile-up |
+| 107 | `industrial_ct` | Industrial X-ray CT | Pi --> D | X-ray | kV/mA, geometry, magnification, voxel size | FBP/iterative under scatter, beam hardening, ring artifacts | Estimate center offset, ring sources, scatter fraction | Correct geometry, scatter, beam hardening |
+| 108 | `xray_ndt` | X-ray NDT (Radiography) | Pi --> D | X-ray | Source type, film/DR detector, exposure chart | Enhancement under scatter, geometric unsharpness | Estimate SDD, source size, scatter buildup | Correct scatter, magnification, contrast |
+| 109 | `ultrasonic_phased_array` | Ultrasonic Phased Array | P --> D | Acoustic | Element count, frequency, focal law, wedge angle | TFM/FMC under velocity error, coupling variation | Estimate velocity, coupling, element sensitivity | Correct velocity, element calibration |
+| 110 | `eddy_current` | Eddy Current Imaging | F --> D | EM | Frequency, probe geometry, lift-off compensation | Impedance map under lift-off variation | Estimate lift-off, conductivity, probe alignment | Correct lift-off, conductivity scale |
+| 111 | `active_thermography` | Active Thermography (IR) | P --> D | IR photon | Excitation type, camera NETD, frame rate | Thermal diffusivity inversion under non-uniform heating | Estimate emissivity map, heating uniformity | Correct emissivity, excitation model |
+| 112 | `terahertz` | Terahertz Imaging | P --> D | THz photon | Frequency range, imaging mode, spatial resolution | Deconvolution under water vapor absorption, etalon | Estimate thickness, refractive index, absorption | Correct etalon artifacts, vapor lines |
+| 113 | `machine_vision` | Machine Vision / AOI | C --> D | Photon | Lens, illumination, resolution, FOV | Defect detection under illumination non-uniformity | Estimate illumination profile, MTF, distortion | Correct flat-field, lens distortion, focus |
+| 114 | `xrf_imaging` | X-ray Fluorescence Imaging | M --> R --> D | X-ray | Excitation energy, detector geometry, resolution | Element mapping under matrix effect, self-absorption | Estimate matrix composition, self-absorption | Correct matrix effects, dead time, pile-up |
+| 115 | `shearography` | Shearography | M --> P --> D | Photon | Shearing amount, illumination, loading method | Phase map under decorrelation, rigid body motion | Estimate shear distance, decorrelation rate | Correct rigid body motion, phase unwrapping |
+| 116 | `acoustic_microscopy` | Scanning Acoustic Microscopy | P --> D | Acoustic | Frequency (50-2000 MHz), lens geometry, coupling | C-scan under defocus, coupling variation | Estimate focal position, coupling impedance, velocity | Correct defocus, coupling normalization |
 
 ---
 
-### 5.12 Scientific Instrumentation (8 modalities)
+### 5.12 Scientific Instrumentation (12 modalities)
 
 | # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
 |---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
-| 82 | `xray_crystallography` | X-ray Crystallography | F --> S --> D | X-ray | Wavelength, rotation range, detector distance | Structure factor extraction under absorption, radiation damage | Estimate unit cell, space group, absorption | Correct absorption, scaling, damage |
-| 83 | `saxs` | Small-Angle X-ray Scattering | R --> D | X-ray | Beam size, q-range, sample-detector distance | Desmearing under beam divergence, parasitic scatter | Estimate beam profile, background scatter | Correct beam smearing, background |
-| 84 | `maldi_msi` | MALDI Mass Spec Imaging | S --> D | Ion | Laser spot size, step size, matrix application | Ion image under matrix inhomogeneity, mass drift | Estimate mass calibration drift, ion suppression | Correct mass calibration, normalize |
-| 85 | `atom_probe` | Atom Probe Tomography | S --> D | Ion | Voltage/laser pulse, detection efficiency, FOV | 3D recon under trajectory aberration, local magnification | Estimate tip shape, local magnification | Correct geometry, compositional bias |
-| 86 | `cryo_em` | Cryo-EM Single Particle | C --> D | Electron | Voltage, defocus range, dose, ice thickness | CTF correction + 3D refinement under beam tilt | Estimate CTF per micrograph, beam tilt, ice | Correct CTF, beam tilt, Ewald sphere |
-| 87 | `neutron_tomo` | Neutron Tomography | Pi --> D | Neutron | Beam flux, collimation ratio, rotation steps | FBP under beam hardening, scattering, gamma | Estimate beam spectrum, scattering factor | Correct beam hardening, scatter, gamma |
-| 88 | `proton_radiography` | Proton Radiography | Pi --> D | Proton | Beam energy, detector stack, angular acceptance | MLP recon under MCS model error | Estimate scattering model parameters, energy loss | Correct MCS model, energy calibration |
-| 89 | `muon_tomo` | Muon Tomography | Pi --> D | Muon | Detector layers, angular resolution, integration time | POCA / MLP under angular resolution limit | Estimate detector alignment, angular uncertainty | Correct alignment, track fitting |
+| 117 | `xray_crystallography` | X-ray Crystallography | F --> S --> D | X-ray | Wavelength, rotation range, detector distance | Structure factor extraction under absorption, radiation damage | Estimate unit cell, space group, absorption | Correct absorption, scaling, damage |
+| 118 | `saxs` | Small-Angle X-ray Scattering | R --> D | X-ray | Beam size, q-range, sample-detector distance | Desmearing under beam divergence, parasitic scatter | Estimate beam profile, background scatter | Correct beam smearing, background |
+| 119 | `maldi_msi` | MALDI Mass Spec Imaging | S --> D | Ion | Laser spot size, step size, matrix application | Ion image under matrix inhomogeneity, mass drift | Estimate mass calibration drift, ion suppression | Correct mass calibration, normalize |
+| 120 | `atom_probe` | Atom Probe Tomography | S --> D | Ion | Voltage/laser pulse, detection efficiency, FOV | 3D recon under trajectory aberration, local magnification | Estimate tip shape, local magnification | Correct geometry, compositional bias |
+| 121 | `cryo_em` | Cryo-EM Single Particle | C --> D | Electron | Voltage, defocus range, dose, ice thickness | CTF correction + 3D refinement under beam tilt | Estimate CTF per micrograph, beam tilt, ice | Correct CTF, beam tilt, Ewald sphere |
+| 122 | `neutron_tomo` | Neutron Tomography | Pi --> D | Neutron | Beam flux, collimation ratio, rotation steps | FBP under beam hardening, scattering, gamma | Estimate beam spectrum, scattering factor | Correct beam hardening, scatter, gamma |
+| 123 | `proton_radiography` | Proton Radiography | Pi --> D | Proton | Beam energy, detector stack, angular acceptance | MLP recon under MCS model error | Estimate scattering model parameters, energy loss | Correct MCS model, energy calibration |
+| 124 | `muon_tomo` | Muon Tomography | Pi --> D | Muon | Detector layers, angular resolution, integration time | POCA / MLP under angular resolution limit | Estimate detector alignment, angular uncertainty | Correct alignment, track fitting |
+| 125 | `waxs` | Wide-Angle X-ray Scattering | R --> D | X-ray | Detector geometry, q-range, polarization correction | Azimuthal integration under detector tilt, beam center | Estimate beam center, tilt angles, flat-field | Correct detector geometry, polarization |
+| 126 | `xrf_tomo` | XRF Tomography | Pi --> R --> D | X-ray | Excitation energy, rotation steps, self-absorption | Filtered backprojection under self-absorption error | Estimate attenuation map, fluorescence yield | Correct self-absorption, attenuation compensation |
+| 127 | `neutron_diffraction` | Neutron Diffraction | R --> S --> D | Neutron | Wavelength, detector coverage, sample environment | Rietveld/Pawley under background, absorption, extinction | Estimate structure parameters, absorption correction | Correct extinction, absorption, background |
+| 128 | `cathodoluminescence` | Cathodoluminescence | M --> R --> D | Electron | Beam energy, spectral range, collection optics | Hyperspectral mapping under drift, beam damage | Estimate spectral response, damage rate, drift | Correct drift, damage model, spectral calibration |
 
 ---
 
-### 5.13 Broader Experimental Science (8 modalities)
+### 5.13 Broader Experimental Science (11 modalities)
 
 | # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
 |---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
-| 90 | `adaptive_optics` | Adaptive Optics (Astronomy) | M --> C --> D | Photon | Wavefront sensor, DM actuators, guide star | PSF recon under residual wavefront error | Estimate residual wavefront, Cn2 profile | Correct AO loop, turbulence model |
-| 91 | `seismic_tomo` | Seismic Tomography | P --> D | Seismic | Station array, frequency band, ray geometry | Travel-time / FWI under velocity model error | Estimate velocity structure, source locations | Correct velocity model, relocate sources |
-| 92 | `gravitational_wave` | Gravitational Wave Detection | P --> Sigma --> D | Gravitational | Arm length, laser power, mirror quality | Matched filter under noise non-stationarity, glitches | Estimate noise PSD, glitch morphology | Correct calibration, glitch subtraction |
-| 93 | `particle_calorimetry` | Particle Calorimetry | R --> Sigma --> D | Particle | Absorber/scintillator layers, granularity | Energy/position recon under inter-calibration error | Estimate cell calibration, non-linearity curve | Correct inter-calibration, non-linearity |
-| 94 | `radio_astronomy` | Radio Aperture Synthesis | F --> S --> D | RF | Antenna configuration, bandwidth, uv-coverage | CLEAN / MEM under baseline phase error, RFI | Estimate antenna gains, phase offsets, RFI | Correct antenna calibration, RFI excision |
-| 95 | `acoustic_emission` | Acoustic Emission Testing | P --> S --> D | Acoustic | Sensor placement, frequency range, threshold | Source localization under velocity anisotropy | Estimate wave velocity, coupling, source type | Correct velocity model, localization |
-| 96 | `magnetic_particle` | Magnetic Particle Imaging | M --> F --> D | Magnetic | FFP trajectory, drive field, selection field | System function inversion under relaxation effects | Estimate system function, relaxation params | Correct system function, resolution |
-| 97 | `impedance_tomo` | Electrical Impedance Tomography | M --> D | Electric | Electrode count, current pattern, protocol | Gauss-Newton under contact impedance error | Estimate contact impedance, electrode positions | Correct contact impedance, electrode model |
+| 129 | `adaptive_optics` | Adaptive Optics (Astronomy) | M --> C --> D | Photon | Wavefront sensor, DM actuators, guide star | PSF recon under residual wavefront error | Estimate residual wavefront, Cn2 profile | Correct AO loop, turbulence model |
+| 130 | `seismic_tomo` | Seismic Tomography | P --> D | Seismic | Station array, frequency band, ray geometry | Travel-time / FWI under velocity model error | Estimate velocity structure, source locations | Correct velocity model, relocate sources |
+| 131 | `gravitational_wave` | Gravitational Wave Detection | P --> Sigma --> D | Gravitational | Arm length, laser power, mirror quality | Matched filter under noise non-stationarity, glitches | Estimate noise PSD, glitch morphology | Correct calibration, glitch subtraction |
+| 132 | `particle_calorimetry` | Particle Calorimetry | R --> Sigma --> D | Particle | Absorber/scintillator layers, granularity | Energy/position recon under inter-calibration error | Estimate cell calibration, non-linearity curve | Correct inter-calibration, non-linearity |
+| 133 | `radio_astronomy` | Radio Aperture Synthesis | F --> S --> D | RF | Antenna configuration, bandwidth, uv-coverage | CLEAN / MEM under baseline phase error, RFI | Estimate antenna gains, phase offsets, RFI | Correct antenna calibration, RFI excision |
+| 134 | `acoustic_emission` | Acoustic Emission Testing | P --> S --> D | Acoustic | Sensor placement, frequency range, threshold | Source localization under velocity anisotropy | Estimate wave velocity, coupling, source type | Correct velocity model, localization |
+| 135 | `magnetic_particle` | Magnetic Particle Imaging | M --> F --> D | Magnetic | FFP trajectory, drive field, selection field | System function inversion under relaxation effects | Estimate system function, relaxation params | Correct system function, resolution |
+| 136 | `impedance_tomo` | Electrical Impedance Tomography | M --> D | Electric | Electrode count, current pattern, protocol | Gauss-Newton under contact impedance error | Estimate contact impedance, electrode positions | Correct contact impedance, electrode model |
+| 137 | `fwi` | Full-Waveform Inversion | P --> D | Seismic/Acoustic | Source array, receiver array, frequency band | Adjoint-state inversion under starting model error | Estimate velocity model, attenuation, anisotropy | Correct starting model, cycle-skip mitigation |
+| 138 | `ocean_acoustic_tomo` | Ocean Acoustic Tomography | P --> D | Acoustic | Source-receiver transects, frequency, ray paths | Travel-time inversion under sound speed profile error | Estimate sound speed profile, current velocity | Correct sound speed, ray bending model |
+| 139 | `bioluminescence_tomo` | Bioluminescence Tomography | Src --> R,P --> D | Photon | Source depth, wavelength, tissue optics | Diffusion model inversion under optical property error | Estimate source location, tissue absorption/scatter | Correct optical model, source localization |
+
+---
+
+### 5.14 Spectroscopy & Spectral Imaging (8 modalities)
+
+| # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
+|---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
+| 140 | `raman_imaging` | Raman Imaging | M --> R --> D | Photon | Excitation wavelength, grating, integration time | Spectral unmixing under fluorescence background, cosmic rays | Estimate background, peak positions, linewidths | Correct fluorescence baseline, cosmic ray removal |
+| 141 | `cars` | CARS Microscopy | M --> R --> D | Photon | Pump/Stokes wavelengths, bandwidth, delay | CARS recon under non-resonant background | Estimate non-resonant background, spectral phase | Correct non-resonant background, phase retrieval |
+| 142 | `srs` | Stimulated Raman Scattering | M --> R --> D | Photon | Modulation frequency, pump/Stokes power, lock-in | SRS imaging under photothermal artifact, cross-phase mod | Estimate photothermal contribution, XPM artifacts | Correct photothermal, XPM background |
+| 143 | `ftir_imaging` | FTIR Imaging | M --> Sigma --> D | IR photon | Spectral range, resolution, interferometer type | Interferogram processing under apodization, phase error | Estimate phase error, wavenumber calibration | Correct phase, apodization, atmospheric absorption |
+| 144 | `libs` | LIBS Imaging | M --> R --> D | Photon | Laser energy, gate delay, spot size, spectrometer | Element quantification under matrix effect, self-absorption | Estimate plasma temperature, electron density | Correct matrix effects, self-absorption |
+| 145 | `brillouin` | Brillouin Microscopy | M --> R --> D | Photon | VIPA etalon, extinction, NA, integration time | Brillouin shift extraction under elastic background | Estimate elastic leakage, free spectral range | Correct elastic contamination, FSR calibration |
+| 146 | `sims` | SIMS Imaging | S --> D | Ion | Primary ion species, energy, mass analyzer | Mass image under dead time, mass interference | Estimate dead time, isotope ratios, matrix effect | Correct dead time, mass calibration, matrix |
+| 147 | `desi` | DESI Mass Spec Imaging | S --> D | Ion | Spray solvent, voltage, spatial resolution | Mass image under signal variation, matrix effects | Estimate ion suppression, spatial offset | Correct spray normalization, co-registration |
+
+---
+
+### 5.15 Ultrafast Imaging (4 modalities)
+
+| # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
+|---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
+| 148 | `streak_camera` | Streak Camera | M --> Sigma --> D | Photon | Sweep speed, slit width, trigger jitter | Spatiotemporal recon under sweep nonlinearity, jitter | Estimate sweep function, trigger jitter, flatfield | Correct sweep nonlinearity, jitter compensation |
+| 149 | `pump_probe` | Pump-Probe Microscopy | M --> R --> D | Photon | Pump/probe wavelengths, delay range, repetition rate | Transient absorption recon under chirp, scatter | Estimate chirp function, coherent artifact, scatter | Correct chirp, coherent artifact subtraction |
+| 150 | `cup` | Compressed Ultrafast Photography | M --> Sigma --> D | Photon | Streak speed, DMD pattern, spatial encoding | CUP reconstruction under streak nonlinearity, DMD error | Estimate streak function, DMD misalignment | Correct streak, DMD calibration |
+| 151 | `xfel_sfx` | XFEL Serial Crystallography | M --> R --> D | X-ray | Pulse energy, jet speed, hit rate, detector geometry | Indexing + merging under geometry error, partiality | Estimate detector geometry, beam center, partiality | Correct geometry, partiality model, scaling |
+
+---
+
+### 5.16 Quantum Imaging (3 modalities)
+
+| # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
+|---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
+| 152 | `ghost_imaging` | Ghost Imaging | M --> Sigma --> D | Photon | Bucket detector, spatial patterns, photon rate | Correlation reconstruction under accidental coincidences | Estimate accidental rate, visibility, detection efficiency | Correct accidentals, improve SNR via optimal patterns |
+| 153 | `quantum_illumination` | Quantum Illumination | M --> R --> D | Photon | Signal-idler source, entanglement quality, detector | Target detection under background thermal noise | Estimate entanglement quality, background level | Correct noise model, optimize detection threshold |
+| 154 | `entangled_photon` | Entangled Photon Microscopy | M --> R --> D | Photon | Photon pair source, coincidence window, NA | Coincidence image under accidentals, dark counts | Estimate pair rate, accidental fraction, timing jitter | Correct accidentals, timing calibration |
+
+---
+
+### 5.17 Multi-Modal Fusion (6 modalities)
+
+| # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
+|---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
+| 155 | `pet_ct` | PET/CT Fusion | Pi --> D (CT) + Pi --> D (PET) --> Fusion | X-ray + Gamma | PET/CT geometry, gantry offset, attenuation protocol | Joint recon under PET-CT misregistration, attenuation error | Estimate spatial misregistration, attenuation map error | Correct co-registration, attenuation map |
+| 156 | `pet_mr` | PET/MR Fusion | Pi --> D (PET) + M --> F --> S --> D (MR) --> Fusion | Gamma + RF | Simultaneous vs sequential, attenuation from MR | Joint recon under MR-based attenuation error, susceptibility | Estimate attenuation map, geometric distortion | Correct MR-AC, reduce susceptibility artifacts |
+| 157 | `spect_ct` | SPECT/CT Fusion | Pi --> D (SPECT) + Pi --> D (CT) --> Fusion | Gamma + X-ray | Collimator-CT geometry, energy windows, attenuation | Joint recon under SPECT-CT misregistration | Estimate registration offset, CT HU to mu conversion | Correct co-registration, attenuation |
+| 158 | `us_mri` | US/MRI Fusion | P --> D (US) + M --> F --> S --> D (MR) --> Fusion | Acoustic + RF | Registration method, US probe tracking, MR sequence | Fused guidance under probe drift, tissue deformation | Estimate probe position drift, tissue deformation field | Correct registration, deformation compensation |
+| 159 | `ct_fluorescence` | CT + Fluorescence (FLIT) | Pi --> D (CT) + M --> R,P --> D (FLI) --> Fusion | X-ray + Photon | CT structural prior, fluorophore, optical model | Joint recon under fluence error, tissue heterogeneity | Estimate fluorophore distribution, optical properties | Correct fluence, structural prior alignment |
+| 160 | `clem` | Correlative Light-Electron Microscopy | C --> D (LM) + C --> D (EM) --> Fusion | Photon + Electron | Sample prep, fiducials, overlay registration | Overlay under shrinkage, distortion, scale difference | Estimate scale factor, rotation, nonlinear distortion | Correct registration, compensate shrinkage |
+
+---
+
+### 5.18 Scanning Probe Microscopy (4 modalities)
+
+| # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
+|---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
+| 161 | `afm` | Atomic Force Microscopy | S --> D | Mechanical | Cantilever spring constant, scan rate, setpoint | Topography under piezo creep, thermal drift, tip convolution | Estimate piezo coefficients, drift rate, tip shape | Correct piezo nonlinearity, drift, deconvolve tip |
+| 162 | `stm` | Scanning Tunneling Microscopy | S --> D | Electron | Bias voltage, tunneling current setpoint, scan speed | Topography/LDOS under piezo hysteresis, thermal drift | Estimate piezo coefficients, tip electronic state | Correct piezo, flatten background, normalize LDOS |
+| 163 | `nsom` | Near-field Scanning Optical Microscopy | M --> C --> D | Photon | Aperture size, feedback, wavelength, illumination mode | Near-field recon under topographic artifact, coupling | Estimate topographic crosstalk, far-field background | Correct topographic artifact, background subtraction |
+| 164 | `mfm` | Magnetic Force Microscopy | S --> M --> D | Magnetic | Lift height, tip magnetization, scan rate | Magnetic recon under topographic crosstalk, tip degradation | Estimate lift height variation, tip moment, crosstalk | Correct lift height, topographic subtraction |
+
+---
+
+### 5.19 Astronomy & Space Imaging (4 modalities)
+
+| # | Modality ID | Full Name | Canonical DAG | Carrier | B1 Design | B2 Forward/Recon | B3 Identification | B4 Correction |
+|---|-------------|-----------|---------------|---------|-----------|-----------------|-------------------|---------------|
+| 165 | `coronagraphy` | Coronagraphy | M --> P --> D | Photon | Coronagraph type (Lyot/vortex), IWA, contrast ratio | Post-processing under speckle residuals, wind-driven halo | Estimate speckle field, quasi-static aberration | Correct speckle subtraction (ADI/SDI), wavefront |
+| 166 | `lucky_imaging` | Lucky Imaging | M --> C --> D | Photon | Frame rate, selection percentage, registration method | Shift-and-add under anisoplanatism, variable seeing | Estimate Fried parameter, isoplanatic angle, tip-tilt | Correct tip-tilt, deconvolve residual PSF |
+| 167 | `eht_imaging` | Event Horizon Telescope Imaging | F --> S --> D | RF (mm-wave) | Baseline coverage, bandwidth, atmospheric opacity | CLEAN/RML under atmospheric phase, sparse uv-coverage | Estimate station gains, atmospheric phase, bandpass | Correct atmospheric phase, amplitude calibration |
+| 168 | `solar_imaging` | Solar Imaging (EUV/X-ray) | M --> P --> D | Photon/EUV | Wavelength channels, cadence, pointing stability | DEM reconstruction under PSF degradation, stray light | Estimate PSF degradation curve, stray light model | Correct PSF evolution, stray light subtraction |
 
 ---
 
@@ -401,20 +514,26 @@ For every modality: **B1** = Design focus, **B2** = Forward/Recon focus, **B3** 
 
 | Category | Count | Medical Physicist Relevance |
 |----------|:-----:|---|
-| Microscopy | 16 | Diagnostic imaging (pathology), nuclear medicine (autoradiography) |
+| Microscopy | 24 | Diagnostic imaging (pathology), nuclear medicine (autoradiography) |
 | Compressive Imaging | 4 | Spectral tissue imaging, dose-efficient acquisition |
-| Medical Imaging | 25 | **All 4 roles directly** |
-| Coherent Imaging | 3 | Phase-contrast imaging, crystallography |
-| Computational Photography | 2 | Endoscopic imaging, fundoscopy |
+| Medical Imaging | 37 | **All 4 roles directly** |
+| Coherent Imaging | 5 | Phase-contrast imaging, crystallography |
+| Computational Photography | 5 | Endoscopic imaging, event-driven acquisition |
 | Computational Optics | 2 | Light-field microscopy for pathology |
 | Neural Rendering | 2 | Surgical planning, 3D anatomy |
-| Electron Microscopy | 8 | Materials for devices, radiobiology |
-| Depth Imaging | 3 | Surface-guided radiation therapy |
-| Remote Sensing | 8 | Environmental monitoring, dose mapping |
-| Industrial Inspection | 8 | QA of medical devices, accelerator components |
-| Scientific Instrumentation | 8 | Proton/neutron therapy verification |
-| Broader Experimental Science | 8 | MPI (tracers), EIT (lung monitoring) |
-| **Total** | **97** | |
+| Electron Microscopy | 11 | Materials for devices, radiobiology, cryo-EM |
+| Depth Imaging | 5 | Surface-guided radiation therapy |
+| Remote Sensing | 11 | Environmental monitoring, dose mapping |
+| Industrial Inspection | 10 | QA of medical devices, accelerator components |
+| Scientific Instrumentation | 12 | Proton/neutron therapy verification, synchrotron |
+| Broader Experimental Science | 11 | MPI (tracers), EIT (lung monitoring), seismic |
+| Spectroscopy & Spectral Imaging | 8 | Tissue characterization, molecular imaging |
+| Ultrafast Imaging | 4 | Radiation dynamics, XFEL crystallography |
+| Quantum Imaging | 3 | Low-dose quantum-enhanced diagnostics |
+| Multi-Modal Fusion | 6 | **PET/CT, PET/MR, SPECT/CT -- all 4 roles** |
+| Scanning Probe Microscopy | 4 | Dosimeter characterization, materials QA |
+| Astronomy & Space Imaging | 4 | AO technology transfer, EUV/X-ray detection |
+| **Total** | **168** | |
 
 ---
 
@@ -422,7 +541,7 @@ For every modality: **B1** = Design focus, **B2** = Forward/Recon focus, **B3** 
 
 ### 7.1 Therapeutic Medical Physicist (Radiation Therapy)
 
-**Primary modalities**: CT, CBCT, MRI, PET, portal imaging (EPID), proton therapy imaging, brachytherapy imaging.
+**Primary modalities**: CT, CBCT, MRI, PET, portal imaging (EPID), proton therapy imaging, brachytherapy imaging, PET/CT, PET/MR, MR elastography.
 
 | Benchmark | Application |
 |-----------|------------|
@@ -433,7 +552,7 @@ For every modality: **B1** = Design focus, **B2** = Forward/Recon focus, **B3** 
 
 ### 7.2 Diagnostic Imaging Medical Physicist
 
-**Primary modalities**: CT, MRI, X-ray, fluoroscopy, mammography, ultrasound, DEXA, angiography, OCT, fundus, endoscopy.
+**Primary modalities**: CT, spectral CT, MRI, MR fingerprinting, X-ray, fluoroscopy, mammography, digital breast tomosynthesis, ultrasound, IVUS, DEXA, angiography, OCT, fundus, endoscopy, confocal endomicroscopy.
 
 | Benchmark | Application |
 |-----------|------------|
@@ -444,7 +563,7 @@ For every modality: **B1** = Design focus, **B2** = Forward/Recon focus, **B3** 
 
 ### 7.3 Nuclear Medicine Medical Physicist
 
-**Primary modalities**: PET, SPECT, gamma camera, PET/CT, PET/MR, SPECT/CT, radionuclide therapy dosimetry.
+**Primary modalities**: PET, SPECT, gamma camera, PET/CT, PET/MR, SPECT/CT, radionuclide therapy dosimetry, MPI.
 
 | Benchmark | Application |
 |-----------|------------|
@@ -601,17 +720,27 @@ benchmark_pack/
 |----------|:-:|:-:|:-:|:-:|
 | Microscopy | Radiobiology | Pathology QA | Autoradiography | Bioassay |
 | Compressive | Dose-efficient imaging | Spectral tissue | Compressed PET/SPECT | |
-| Medical (X-ray) | **CBCT, portal** | **CT, mammo, fluoro** | PET/CT atten. | **Shielding** |
-| Medical (MRI) | **MR-guided RT** | **Clinical MRI QA** | PET/MR | RF safety |
+| Medical (X-ray) | **CBCT, portal, tomo** | **CT, spectral CT, mammo, fluoro, DBT** | PET/CT atten. | **Shielding** |
+| Medical (MRI) | **MR-guided RT, MRE** | **Clinical MRI QA, MRF** | PET/MR | RF safety |
 | Medical (Nuclear) | **PET targeting** | | **PET, SPECT, dosimetry** | Contamination |
-| Medical (Ultrasound) | **US-guided brachy** | **Clinical US QA** | | |
-| Clinical Optics | | **Fundus, OCT** | | |
+| Medical (Ultrasound) | **US-guided brachy** | **Clinical US QA, IVUS, CEUS** | | |
+| Clinical Optics | | **Fundus, OCT, confocal endo** | | |
+| Coherent Imaging | Talbot-Lau phase contrast | Phase imaging | | |
+| Computational Photography | | Coded exposure, event camera | | |
+| Computational Optics | | Light-field pathology | | |
+| Neural Rendering | Surgical planning | 3D anatomy | | |
 | Electron Microscopy | | | | Dosimeter char. |
 | Depth Imaging | **Surface-guided RT** | | | |
 | Remote Sensing | | | Environmental | **Area monitoring** |
 | Industrial Inspection | Accelerator QA | Device QA | Source QC | **Shielding survey** |
-| Scientific Instr. | Proton/neutron verify | | | |
+| Scientific Instr. | Proton/neutron verify | Synchrotron imaging | | |
 | Broader Exp. Science | MPI therapy | EIT ventilation | | |
+| Spectroscopy & Spectral | Tissue characterization | Raman pathology | Radiolabel analysis | |
+| Ultrafast Imaging | Radiation dynamics | | | |
+| Quantum Imaging | Low-dose quantum | | | |
+| Multi-Modal Fusion | **PET/CT, PET/MR** | **US/MRI, FLIT** | **PET/CT, SPECT/CT** | |
+| Scanning Probe | | | | Dosimeter materials |
+| Astronomy & Space | | | | AO/EUV transfer |
 
 ---
 
@@ -623,6 +752,7 @@ benchmark_pack/
 4. PWM Operator Mode -- [`docs/operator_mode.md`](operator_mode.md)
 5. PWM Canonical Primitives -- [`docs/plan_canonical_primitives.md`](plan_canonical_primitives.md)
 6. PWM Purpose (ISA) -- [`docs/purpose.md`](purpose.md)
-7. SolveEverything Framework -- [https://solveeverything.org/](https://solveeverything.org/)
-8. AAPM Task Groups -- TG-142, TG-66, TG-174
-9. CAMPEP Standards -- Medical physicist subspecialty definitions
+7. PWM Per-Modality Benchmarks -- [`docs/pwm_modality_benchmarks_detailed.md`](pwm_modality_benchmarks_detailed.md)
+8. SolveEverything Framework -- [https://solveeverything.org/](https://solveeverything.org/)
+9. AAPM Task Groups -- TG-142, TG-66, TG-174
+10. CAMPEP Standards -- Medical physicist subspecialty definitions
