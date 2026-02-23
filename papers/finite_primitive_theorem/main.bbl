@@ -1,0 +1,302 @@
+\begin{thebibliography}{45}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Ongie et~al.(2020)Ongie, Jalal, Metzler, Baraniuk, Dimakis, and
+  Willett]{ongie2020deep}
+Gregory Ongie, Ajil Jalal, Christopher~A. Metzler, Richard~G. Baraniuk,
+  Alexandros~G. Dimakis, and Rebecca Willett.
+\newblock Deep learning techniques for inverse problems in imaging.
+\newblock \emph{IEEE Journal on Selected Areas in Information Theory},
+  1\penalty0 (1):\penalty0 39--56, 2020.
+
+\bibitem[Monga et~al.(2021)Monga, Li, and Eldar]{monga2021unrolling}
+Vishal Monga, Yuelong Li, and Yonina~C. Eldar.
+\newblock Algorithm unrolling: Interpretable, efficient deep learning for
+  signal and image processing.
+\newblock \emph{IEEE Signal Processing Magazine}, 38\penalty0 (2):\penalty0
+  18--44, 2021.
+
+\bibitem[Yang and Yuan(2026)]{yang2026pwm}
+Chengshuai Yang and Xin Yuan.
+\newblock Eleven primitives and three gates: The universal structure of
+  computational imaging.
+\newblock \emph{arXiv preprint}, 2026.
+\newblock arXiv:2026.XXXXX [eess.IV]. Code:
+  \url{https://github.com/integritynoble/Physics_World_Model}.
+
+\bibitem[Adler et~al.(2017)Adler, Kohr, and {\"O}ktem]{adler2017odl}
+Jonas Adler, Holger Kohr, and Ozan {\"O}ktem.
+\newblock {ODL} -- a {P}ython framework for rapid prototyping in inverse
+  problems.
+\newblock \emph{Royal Institute of Technology, Stockholm, Sweden, Technical
+  Report}, 2017.
+
+\bibitem[Fessler(2003)]{fessler2003mirt}
+Jeffrey~A. Fessler.
+\newblock Michigan image reconstruction toolbox.
+\newblock \emph{University of Michigan, Technical Report}, 2003.
+\newblock \url{https://web.eecs.umich.edu/~fessler/code/}.
+
+\bibitem[Ong and Lustig(2019)]{ong2019sigpy}
+Frank Ong and Michael Lustig.
+\newblock {SigPy}: A {P}ython package for high performance iterative
+  reconstruction.
+\newblock \emph{Proceedings of the ISMRM}, page 4819, 2019.
+
+\bibitem[Engl et~al.(1996)Engl, Hanke, and Neubauer]{engl1996regularization}
+Heinz~W. Engl, Martin Hanke, and Andreas Neubauer.
+\newblock \emph{Regularization of Inverse Problems}.
+\newblock Mathematics and Its Applications. Springer, 1996.
+
+\bibitem[Goodman(2005)]{goodman2005fourier}
+Joseph~W. Goodman.
+\newblock \emph{Introduction to {F}ourier Optics}.
+\newblock Roberts and Company, 3rd edition, 2005.
+
+\bibitem[Natterer(2001)]{natterer2001radon}
+Frank Natterer.
+\newblock \emph{The Mathematics of Computerized Tomography}.
+\newblock Classics in Applied Mathematics. SIAM, 2001.
+
+\bibitem[Fessler and Sutton(2003)]{fessler2003nufft}
+Jeffrey~A. Fessler and Bradley~P. Sutton.
+\newblock Nonuniform fast {F}ourier transforms using min-max interpolation.
+\newblock \emph{IEEE Transactions on Signal Processing}, 51\penalty0
+  (2):\penalty0 560--574, 2003.
+
+\bibitem[Cybenko(1989)]{cybenko1989approximation}
+George Cybenko.
+\newblock Approximation by superpositions of a sigmoidal function.
+\newblock \emph{Mathematics of Control, Signals and Systems}, 2\penalty0
+  (4):\penalty0 303--314, 1989.
+
+\bibitem[Hornik(1991)]{hornik1991approximation}
+Kurt Hornik.
+\newblock Approximation capabilities of multilayer feedforward networks.
+\newblock \emph{Neural Networks}, 4\penalty0 (2):\penalty0 251--257, 1991.
+
+\bibitem[Abadi et~al.(2016)Abadi, Barham, Chen, Chen, Davis, Dean, Devin,
+  Ghemawat, Irving, Isard, et~al.]{abadi2016tensorflow}
+Mart\'{\i}n Abadi, Paul Barham, Jianmin Chen, Zhifeng Chen, Andy Davis, Jeffrey
+  Dean, Matthieu Devin, Sanjay Ghemawat, Geoffrey Irving, Michael Isard, et~al.
+\newblock {TensorFlow}: A system for large-scale machine learning.
+\newblock In \emph{OSDI}, pages 265--283, 2016.
+
+\bibitem[Paszke et~al.(2019)Paszke, Gross, Massa, Lerer, Bradbury, Chanan,
+  Killeen, Lin, Gimelshein, Antiga, et~al.]{paszke2019pytorch}
+Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory
+  Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, et~al.
+\newblock {PyTorch}: An imperative style, high-performance deep learning
+  library.
+\newblock In \emph{NeurIPS}, pages 8024--8035, 2019.
+
+\bibitem[Bradbury et~al.(2018)Bradbury, Frostig, Hawkins, Johnson, Leary,
+  Maclaurin, Necula, Paszke, Vander{P}las, Wanderman-{M}ilne, and
+  Zhang]{bradbury2018jax}
+James Bradbury, Roy Frostig, Peter Hawkins, Matthew~James Johnson, Chris Leary,
+  Dougal Maclaurin, George Necula, Adam Paszke, Jake Vander{P}las, Skye
+  Wanderman-{M}ilne, and Qiao Zhang.
+\newblock {JAX}: composable transformations of {P}ython+{N}um{P}y programs.
+\newblock \url{http://github.com/google/jax}, 2018.
+
+\bibitem[Tachella et~al.(2025)Tachella, Terris, Hurault, Wang, Chen, Nguyen,
+  et~al.]{tachella2025deepinverse}
+Juli{\'a}n Tachella, Matthieu Terris, Samuel Hurault, Andrew Wang, Dongdong
+  Chen, Minh-Hai Nguyen, et~al.
+\newblock {DeepInverse}: A {P}ython package for solving imaging inverse
+  problems with deep learning.
+\newblock \emph{Journal of Open Source Software}, 10\penalty0 (115):\penalty0
+  8923, 2025.
+\newblock \doi{10.21105/joss.08923}.
+
+\bibitem[Cand{\`e}s and Wakin(2008)]{candes2008compressed}
+Emmanuel~J. Cand{\`e}s and Michael~B. Wakin.
+\newblock An introduction to compressive sampling.
+\newblock \emph{IEEE Signal Processing Magazine}, 25\penalty0 (2):\penalty0
+  21--30, 2008.
+
+\bibitem[Donoho(2006)]{donoho2006compressed}
+David~L. Donoho.
+\newblock Compressed sensing.
+\newblock \emph{IEEE Transactions on Information Theory}, 52\penalty0
+  (4):\penalty0 1289--1306, 2006.
+
+\bibitem[De~Man et~al.(2001)De~Man, Nuyts, Dupont, Marchal, and
+  Suetens]{deman2001metal}
+Bruno De~Man, Johan Nuyts, Patrick Dupont, Guy Marchal, and Paul Suetens.
+\newblock An iterative maximum-likelihood polychromatic algorithm for {CT}.
+\newblock \emph{IEEE Transactions on Medical Imaging}, 20\penalty0
+  (10):\penalty0 999--1008, 2001.
+
+\bibitem[Hamilton and Blackstock(1998)]{hamilton1998nonlinear}
+Mark~F. Hamilton and David~T. Blackstock.
+\newblock \emph{Nonlinear Acoustics}.
+\newblock Academic Press, 1998.
+
+\bibitem[Gleich and Weizenecker(2005)]{gleich2005mpi}
+Bernhard Gleich and J{\"u}rgen Weizenecker.
+\newblock Tomographic imaging using the nonlinear response of magnetic
+  nanoparticles.
+\newblock \emph{Nature}, 435\penalty0 (7046):\penalty0 1214--1217, 2005.
+
+\bibitem[Wagadarikar et~al.(2008)Wagadarikar, John, Willett, and
+  Brady]{wagadarikar2008cassi}
+Ashwin~A. Wagadarikar, Renu John, Rebecca Willett, and David~J. Brady.
+\newblock Single disperser design for coded aperture snapshot spectral imaging.
+\newblock \emph{Applied Optics}, 47\penalty0 (10):\penalty0 B44--B51, 2008.
+
+\bibitem[Pruessmann et~al.(1999)Pruessmann, Weiger, Scheidegger, and
+  Boesiger]{pruessmann1999sense}
+Klaas~P. Pruessmann, Markus Weiger, Markus~B. Scheidegger, and Peter Boesiger.
+\newblock {SENSE}: Sensitivity encoding for fast {MRI}.
+\newblock \emph{Magnetic Resonance in Medicine}, 42\penalty0 (5):\penalty0
+  952--962, 1999.
+
+\bibitem[Feldkamp et~al.(1984)Feldkamp, Davis, and
+  Kress]{feldkamp1984practical}
+L.~A. Feldkamp, L.~C. Davis, and J.~W. Kress.
+\newblock Practical cone-beam algorithm.
+\newblock \emph{Journal of the Optical Society of America A}, 1\penalty0
+  (6):\penalty0 612--619, 1984.
+
+\bibitem[Hussain(2022)]{hussain2022compton}
+Sadiq Hussain.
+\newblock Compton scatter imaging: a review.
+\newblock \emph{Nuclear Instruments and Methods in Physics Research Section A},
+  1039:\penalty0 167069, 2022.
+
+\bibitem[Born and Wolf(1999)]{born1999principles}
+Max Born and Emil Wolf.
+\newblock \emph{Principles of Optics}.
+\newblock Cambridge University Press, 7th edition, 1999.
+
+\bibitem[Llull et~al.(2013)Llull, Liao, Yuan, Yang, Kittle, Carin, Sapiro, and
+  Brady]{llull2013cacti}
+Patrick Llull, Xuejun Liao, Xin Yuan, Jianbo Yang, David Kittle, Lawrence
+  Carin, Guillermo Sapiro, and David~J. Brady.
+\newblock Coded aperture compressive temporal imaging.
+\newblock \emph{Optics Express}, 21\penalty0 (9):\penalty0 10526--10545, 2013.
+
+\bibitem[Duarte et~al.(2008)Duarte, Davenport, Takhar, Laska, Sun, Kelly, and
+  Baraniuk]{duarte2008spc}
+Marco~F. Duarte, Mark~A. Davenport, Dharmpal Takhar, Jason~N. Laska, Ting Sun,
+  Kevin~F. Kelly, and Richard~G. Baraniuk.
+\newblock Single-pixel imaging via compressive sampling.
+\newblock \emph{IEEE Signal Processing Magazine}, 25\penalty0 (2):\penalty0
+  83--91, 2008.
+
+\bibitem[Boominathan et~al.(2022)Boominathan, Robinson, Waller, and
+  Veeraraghavan]{boominathan2022lensless}
+Vivek Boominathan, Jacob~T. Robinson, Laura Waller, and Ashok Veeraraghavan.
+\newblock Recent advances in lensless imaging.
+\newblock \emph{Optica}, 9\penalty0 (1):\penalty0 1--16, 2022.
+
+\bibitem[Rodenburg and Faulkner(2004)]{rodenburg2004ptychography}
+J.~M. Rodenburg and H.~M.~L. Faulkner.
+\newblock A phase retrieval algorithm for shifting illumination.
+\newblock \emph{Applied Physics Letters}, 85\penalty0 (20):\penalty0
+  4795--4797, 2004.
+
+\bibitem[Lustig et~al.(2007)Lustig, Donoho, and Pauly]{lustig2007sparse}
+Michael Lustig, David Donoho, and John~M. Pauly.
+\newblock Sparse {MRI}: The application of compressed sensing for rapid {MR}
+  imaging.
+\newblock \emph{Magnetic Resonance in Medicine}, 58\penalty0 (6):\penalty0
+  1182--1195, 2007.
+
+\bibitem[Huang et~al.(1991)Huang, Swanson, Lin, Schuman, Stinson, Chang, Hee,
+  Flotte, Gregory, Puliafito, and Fujimoto]{huang1991oct}
+David Huang, Eric~A. Swanson, Charles~P. Lin, Joel~S. Schuman, William~G.
+  Stinson, Warren Chang, Michael~R. Hee, Thomas Flotte, Kenton Gregory,
+  Carmen~A. Puliafito, and James~G. Fujimoto.
+\newblock Optical coherence tomography.
+\newblock \emph{Science}, 254\penalty0 (5035):\penalty0 1178--1181, 1991.
+
+\bibitem[Wang and Hu(2012)]{wang2012photoacoustic}
+Lihong~V. Wang and Song Hu.
+\newblock Photoacoustic tomography: In vivo imaging from organelles to organs.
+\newblock \emph{Science}, 335\penalty0 (6075):\penalty0 1458--1462, 2012.
+
+\bibitem[Gustafsson(2000)]{gustafsson2000sim}
+Mats G.~L. Gustafsson.
+\newblock Surpassing the lateral resolution limit by a factor of two using
+  structured illumination microscopy.
+\newblock \emph{Journal of Microscopy}, 198\penalty0 (2):\penalty0 82--87,
+  2000.
+
+\bibitem[Pfeiffer et~al.(2008)Pfeiffer, Bech, Bunk, Kraft, Eikenberry,
+  Br\"{o}nnimann, Gr\"{u}nzweig, and David]{pfeiffer2008xray}
+Franz Pfeiffer, Martin Bech, Oliver Bunk, Philipp Kraft, Eric~F. Eikenberry,
+  Christian Br\"{o}nnimann, Christian Gr\"{u}nzweig, and Christian David.
+\newblock Hard-{X}-ray dark-field imaging using a grating interferometer.
+\newblock \emph{Nature Materials}, 7\penalty0 (2):\penalty0 134--137, 2008.
+
+\bibitem[Jiang et~al.(2018)Jiang, Chen, Han, Deb, Gao, Xie, Purohit, Tate,
+  Park, Gruner, Elser, and Muller]{jiang2018electron}
+Yi~Jiang, Zhen Chen, Yimo Han, Pratiti Deb, Hui Gao, Saien Xie, Prafull
+  Purohit, Mark~W. Tate, Jiwoong Park, Sol~M. Gruner, Veit Elser, and David~A.
+  Muller.
+\newblock Electron ptychography of {2D} materials to deep sub-\r{A}ngstr\"{o}m
+  resolution.
+\newblock \emph{Nature}, 559:\penalty0 343--349, 2018.
+
+\bibitem[Pittman et~al.(1995)Pittman, Shih, Strekalov, and
+  Sergienko]{pittman1995ghost}
+T.~B. Pittman, Y.~H. Shih, D.~V. Strekalov, and A.~V. Sergienko.
+\newblock Optical imaging by means of two-photon quantum entanglement.
+\newblock \emph{Physical Review A}, 52\penalty0 (5):\penalty0 R3429--R3432,
+  1995.
+
+\bibitem[Jepsen et~al.(2011)Jepsen, Cooke, and Koch]{jepsen2011thz}
+P.~U. Jepsen, D.~G. Cooke, and M.~Koch.
+\newblock Terahertz spectroscopy and imaging -- modern techniques and
+  applications.
+\newblock \emph{Laser \& Photonics Reviews}, 5\penalty0 (1):\penalty0 124--166,
+  2011.
+
+\bibitem[Long(2002)]{long2002raman}
+Derek~Albert Long.
+\newblock \emph{The {R}aman Effect: A Unified Treatment of the Theory of
+  {R}aman Scattering by Molecules}.
+\newblock John Wiley \& Sons, 2002.
+
+\bibitem[Ntziachristos(2010)]{ntziachristos2010fluorescence}
+Vasilis Ntziachristos.
+\newblock Going deeper than microscopy: the optical imaging frontier in
+  biology.
+\newblock \emph{Nature Methods}, 7\penalty0 (8):\penalty0 603--614, 2010.
+
+\bibitem[Arridge(1999)]{arridge1999dot}
+Simon~R. Arridge.
+\newblock Optical tomography in medical imaging.
+\newblock \emph{Inverse Problems}, 15\penalty0 (2):\penalty0 R41--R93, 1999.
+
+\bibitem[Scarcelli and Yun(2008)]{scarcelli2008brillouin}
+Giuliano Scarcelli and Seok~Hyun Yun.
+\newblock Confocal {B}rillouin microscopy for three-dimensional mechanical
+  imaging.
+\newblock \emph{Nature Photonics}, 2\penalty0 (1):\penalty0 39--43, 2008.
+
+\bibitem[Klein and Nishina(1929)]{klein1929streuung}
+Oskar Klein and Yoshio Nishina.
+\newblock \"{U}ber die {S}treuung von {S}trahlung durch freie {E}lektronen nach
+  der neuen relativistischen {Q}uantendynamik von {D}irac.
+\newblock \emph{Zeitschrift f\"{u}r Physik}, 52\penalty0 (11--12):\penalty0
+  853--868, 1929.
+
+\bibitem[Colton and Kress(2019)]{colton2019inverse}
+David Colton and Rainer Kress.
+\newblock \emph{Inverse Acoustic and Electromagnetic Scattering Theory}.
+\newblock Applied Mathematical Sciences. Springer, 4th edition, 2019.
+
+\bibitem[Venkatakrishnan et~al.(2013)Venkatakrishnan, Bouman, and
+  Wohlberg]{venkatakrishnan2013pnp}
+Singanallur~V. Venkatakrishnan, Charles~A. Bouman, and Brendt Wohlberg.
+\newblock Plug-and-play priors for model based reconstruction.
+\newblock In \emph{GlobalSIP}, pages 945--948, 2013.
+
+\end{thebibliography}
