@@ -1,0 +1,77 @@
+# Positron Emission Tomography (PET) (`pet`)
+
+**Category**: Medical Imaging | **Canonical DAG**: Pi --> D | **Carrier**: Gamma
+**Current Maturity**: M1 | **Forward Model**: linear_operator | **Default Solver**: mlem
+
+---
+
+## B1: Design (Prompt + Original-Spec --> Spec)
+
+| Level | Specification |
+|-------|--------------|
+| **M0** Template | Design template: Crystal ring geometry, TOF resolution, attenuation correction |
+| **M1** Synthetic | Prompt tested with synthetic data validation: Crystal ring geometry, TOF resolution, attenuation correction |
+| **M2** Compound | Multiple design variants; multi-constraint Pareto optimization for Crystal ring geometry, TOF resolution, attenuation correction |
+| **M3** Real Data | Grounded in real experimental/clinical protocols: Crystal ring geometry, TOF resolution, attenuation correction |
+| **M4** Adversarial | Adversarial/edge-case prompts with contradictory requirements for Positron Emission Tomography (PET) |
+
+---
+
+## B2: Forward + Reconstruct (Spec --> Reconstruction + Feedback)
+
+| Level | Specification |
+|-------|--------------|
+| **M0** Template | Forward model template with nominal parameters: MLEM/OSEM under attenuation map error, scatter, randoms, normalization |
+| **M1** Synthetic | Single-parameter mismatch on synthetic data: MLEM/OSEM under attenuation map error, scatter, randoms, normalization |
+| **M2** Compound | Compound mismatch (3+ params simultaneously): MLEM/OSEM under attenuation map error, scatter, randoms, normalization |
+| **M3** Real Data | Real experimental data with measured mismatch: MLEM/OSEM under attenuation map error, scatter, randoms, normalization |
+| **M4** Adversarial | Red Team worst-case mismatch injection optimized to maximize failure: MLEM/OSEM under attenuation map error, scatter, randoms, normalization |
+
+### Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Attenuation map error | 0 | [0, 10%] | HU-to-LAC |
+| Scatter fraction | 0.35 | [0.2, 0.5] | - |
+| Randoms fraction | 0.2 | [0.1, 0.4] | - |
+| Normalization error | 0 | [0, 5%] per det | - |
+| TOF timing offset | 0 | [-200, 200] | ps |
+
+### Solvers & Expected Performance
+- **Solver**: mlem
+
+---
+
+## B3: System Identification (Dataset + Prompt --> Spec)
+
+| Level | Specification |
+|-------|--------------|
+| **M0** Template | DAG template identification for Pi --> D: Estimate attenuation factors, scatter fraction, normalization table |
+| **M1** Synthetic | Synthetic True-Spec with single-parameter identification: Estimate attenuation factors, scatter fraction, normalization table |
+| **M2** Compound | Compound parameter identification (3+ params): Estimate attenuation factors, scatter fraction, normalization table |
+| **M3** Real Data | Real True-Spec from calibration experiments: Estimate attenuation factors, scatter fraction, normalization table |
+| **M4** Adversarial | Adversarial identification under unknown configuration: Estimate attenuation factors, scatter fraction, normalization table |
+
+---
+
+## B4: Correct + Diagnose (Dataset + Spec --> Correction + Feedback)
+
+| Level | Specification |
+|-------|--------------|
+| **M0** Template | Correction template: Correct attenuation, scatter, normalization |
+| **M1** Synthetic | Single-parameter correction on synthetic data: Correct attenuation, scatter, normalization |
+| **M2** Compound | Compound correction with rho measurement: Correct attenuation, scatter, normalization |
+| **M3** Real Data | Real data correction (target rho >= 0.80): Correct attenuation, scatter, normalization |
+| **M4** Adversarial | Adversarial correction with live feedback loop under compound failures: Correct attenuation, scatter, normalization |
+
+### Correction Targets
+- **Expected rho**: >= 0.80
+
+### Improvement Roadmap
+PET/MR attenuation, motion correction.
+
+---
+
+## References
+- [Detailed Benchmarks](../pwm_modality_benchmarks_detailed.md)
+- [Medical Physicist Targets](../pwm_medical_physicist_targets.md)
+- [Modality Registry](../imaging_modalities.md)

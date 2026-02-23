@@ -1,0 +1,72 @@
+# Expansion Microscopy (ExM) (`expansion`)
+
+**Category**: Microscopy | **Canonical DAG**: C --> D | **Carrier**: Photon
+**Current Maturity**: M0 | **Forward Model**: linear_operator | **Default Solver**: richardson_lucy
+
+---
+
+## B1: Design (Prompt + Original-Spec --> Spec)
+
+| Level | Specification |
+|-------|--------------|
+| **M0** Template | Design template: Expansion factor, gel uniformity, labeling |
+| **M1** Synthetic | Prompt tested with synthetic data validation: Expansion factor, gel uniformity, labeling |
+| **M2** Compound | Multiple design variants; multi-constraint Pareto optimization for Expansion factor, gel uniformity, labeling |
+| **M3** Real Data | Grounded in real experimental/clinical protocols: Expansion factor, gel uniformity, labeling |
+| **M4** Adversarial | Adversarial/edge-case prompts with contradictory requirements for Expansion Microscopy (ExM) |
+
+---
+
+## B2: Forward + Reconstruct (Spec --> Reconstruction + Feedback)
+
+| Level | Specification |
+|-------|--------------|
+| **M0** Template | Forward model template with nominal parameters: Deconvolution correcting non-uniform expansion |
+| **M1** Synthetic | Single-parameter mismatch on synthetic data: Deconvolution correcting non-uniform expansion |
+| **M2** Compound | Compound mismatch (3+ params simultaneously): Deconvolution correcting non-uniform expansion |
+| **M3** Real Data | Real experimental data with measured mismatch: Deconvolution correcting non-uniform expansion |
+| **M4** Adversarial | Red Team worst-case mismatch injection optimized to maximize failure: Deconvolution correcting non-uniform expansion |
+
+### Mismatch Parameters
+| Parameter | Nominal | Mismatch Range | Unit |
+|-----------|---------|----------------|------|
+| Expansion factor | 4.0 | [3.5, 4.5] | x |
+| Local distortion | 0 | [0, 5%] | relative |
+| Anisotropic expansion | 0 | [0, 3%] | x vs y |
+
+### Solvers & Expected Performance
+- **Solver**: richardson_lucy
+
+---
+
+## B3: System Identification (Dataset + Prompt --> Spec)
+
+| Level | Specification |
+|-------|--------------|
+| **M0** Template | DAG template identification for C --> D: Estimate local expansion factor, distortion field |
+| **M1** Synthetic | Synthetic True-Spec with single-parameter identification: Estimate local expansion factor, distortion field |
+| **M2** Compound | Compound parameter identification (3+ params): Estimate local expansion factor, distortion field |
+| **M3** Real Data | Real True-Spec from calibration experiments: Estimate local expansion factor, distortion field |
+| **M4** Adversarial | Adversarial identification under unknown configuration: Estimate local expansion factor, distortion field |
+
+---
+
+## B4: Correct + Diagnose (Dataset + Spec --> Correction + Feedback)
+
+| Level | Specification |
+|-------|--------------|
+| **M0** Template | Correction template: Correct expansion non-uniformity |
+| **M1** Synthetic | Single-parameter correction on synthetic data: Correct expansion non-uniformity |
+| **M2** Compound | Compound correction with rho measurement: Correct expansion non-uniformity |
+| **M3** Real Data | Real data correction (target rho >= 0.80): Correct expansion non-uniformity |
+| **M4** Adversarial | Adversarial correction with live feedback loop under compound failures: Correct expansion non-uniformity |
+
+### Correction Targets
+- **Expected rho**: TBD
+
+---
+
+## References
+- [Detailed Benchmarks](../pwm_modality_benchmarks_detailed.md)
+- [Medical Physicist Targets](../pwm_medical_physicist_targets.md)
+- [Modality Registry](../imaging_modalities.md)
