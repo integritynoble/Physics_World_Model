@@ -1,46 +1,122 @@
 {% extends "base.html" %}
-{% block title %}New Run — PWM Platform{% endblock %}
+{% block title %}New Run — Physics World Model{% endblock %}
 
 {% block content %}
 <div class="max-w-2xl mx-auto space-y-6">
     <h1 class="text-2xl font-bold text-gray-900">New Run</h1>
+    <p class="text-sm text-gray-500">Describe your imaging experiment and Physics World Model will automatically detect the modality and run the pipeline.</p>
 
     <form action="/api/v1/runs" method="post" hx-boost="false"
           class="bg-white shadow rounded-lg p-6 space-y-6">
 
-        <!-- Input Mode -->
-        <fieldset>
-            <legend class="text-sm font-medium text-gray-700 mb-2">Input Mode</legend>
-            <div class="space-y-2">
-                <label class="flex items-center space-x-2">
-                    <input type="radio" name="input_mode" value="spec" checked class="text-indigo-600">
-                    <span class="text-sm text-gray-700">Experiment Spec (JSON/YAML)</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input type="radio" name="input_mode" value="prompt" class="text-indigo-600">
-                    <span class="text-sm text-gray-700">Natural Language Prompt</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input type="radio" name="input_mode" value="measured" class="text-indigo-600">
-                    <span class="text-sm text-gray-700">Measured Data</span>
-                </label>
-            </div>
-        </fieldset>
+        <input type="hidden" name="input_mode" value="prompt">
 
-        <!-- Modality -->
+        <!-- Prompt (primary input) -->
         <div>
-            <label for="modality" class="block text-sm font-medium text-gray-700">Modality</label>
+            <label for="spec_json" class="block text-sm font-medium text-gray-700">
+                Describe your experiment
+            </label>
+            <textarea name="spec_json" id="spec_json" rows="5"
+                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      placeholder="e.g. Reconstruct a brain MRI scan with 4x acceleration&#10;e.g. Denoise a low-dose widefield fluorescence microscopy image&#10;e.g. Process SAR terrain data with speckle reduction&#10;e.g. Reconstruct a CT scan from sparse-view sinogram"></textarea>
+            <p class="mt-1 text-xs text-gray-500">
+                Physics World Model auto-detects the imaging modality from your description. You can also paste a JSON experiment spec.
+            </p>
+        </div>
+
+        <!-- Modality (optional override) -->
+        <div>
+            <label for="modality" class="block text-sm font-medium text-gray-700">
+                Modality
+                <span class="font-normal text-gray-400">(auto-detected from prompt, or select manually)</span>
+            </label>
             <select name="modality" id="modality"
                     class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                <option value="auto" selected>Auto-detect from prompt</option>
+                <optgroup label="Compressive">
                 {% for m in modalities %}
-                <option value="{{ m.modality_key }}">{{ m.display_name }} ({{ m.category }})</option>
+                    {% if m.category == 'compressive' %}
+                    <option value="{{ m.modality_key }}">{{ m.display_name }}</option>
+                    {% endif %}
                 {% endfor %}
-                {% if not modalities %}
-                <option value="cassi">CASSI (spectral)</option>
-                <option value="ct">CT (medical)</option>
-                <option value="mri">MRI (medical)</option>
-                <option value="ptychography">Ptychography (coherent)</option>
-                {% endif %}
+                </optgroup>
+                <optgroup label="Medical">
+                {% for m in modalities %}
+                    {% if m.category == 'medical' %}
+                    <option value="{{ m.modality_key }}">{{ m.display_name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </optgroup>
+                <optgroup label="Medical Ultrasound">
+                {% for m in modalities %}
+                    {% if m.category == 'medical_ultrasound' %}
+                    <option value="{{ m.modality_key }}">{{ m.display_name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </optgroup>
+                <optgroup label="Coherent">
+                {% for m in modalities %}
+                    {% if m.category == 'coherent' %}
+                    <option value="{{ m.modality_key }}">{{ m.display_name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </optgroup>
+                <optgroup label="Microscopy">
+                {% for m in modalities %}
+                    {% if m.category == 'microscopy' %}
+                    <option value="{{ m.modality_key }}">{{ m.display_name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </optgroup>
+                <optgroup label="Electron Microscopy">
+                {% for m in modalities %}
+                    {% if m.category == 'electron_microscopy' %}
+                    <option value="{{ m.modality_key }}">{{ m.display_name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </optgroup>
+                <optgroup label="Clinical Optics">
+                {% for m in modalities %}
+                    {% if m.category == 'clinical_optics' %}
+                    <option value="{{ m.modality_key }}">{{ m.display_name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </optgroup>
+                <optgroup label="Computational">
+                {% for m in modalities %}
+                    {% if m.category in ('computational', 'computational_photography') %}
+                    <option value="{{ m.modality_key }}">{{ m.display_name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </optgroup>
+                <optgroup label="Neural Rendering">
+                {% for m in modalities %}
+                    {% if m.category == 'neural_rendering' %}
+                    <option value="{{ m.modality_key }}">{{ m.display_name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </optgroup>
+                <optgroup label="Depth Imaging">
+                {% for m in modalities %}
+                    {% if m.category == 'depth_imaging' %}
+                    <option value="{{ m.modality_key }}">{{ m.display_name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </optgroup>
+                <optgroup label="Remote Sensing">
+                {% for m in modalities %}
+                    {% if m.category == 'remote_sensing' %}
+                    <option value="{{ m.modality_key }}">{{ m.display_name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </optgroup>
+                <optgroup label="Particle Imaging">
+                {% for m in modalities %}
+                    {% if m.category == 'particle_imaging' %}
+                    <option value="{{ m.modality_key }}">{{ m.display_name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </optgroup>
             </select>
         </div>
 
@@ -55,16 +131,6 @@
                 <option value="fit_operator_only">Fit Operator Only</option>
                 <option value="qc_report">QC Report</option>
             </select>
-        </div>
-
-        <!-- Experiment Spec -->
-        <div>
-            <label for="spec_json" class="block text-sm font-medium text-gray-700">
-                Experiment Spec / Prompt
-            </label>
-            <textarea name="spec_json" id="spec_json" rows="8"
-                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm font-mono"
-                      placeholder='{"modality": "cassi", "sim": {"x_shape": [256, 256, 28]}} or a natural language prompt'></textarea>
         </div>
 
         <!-- Compute Mode -->

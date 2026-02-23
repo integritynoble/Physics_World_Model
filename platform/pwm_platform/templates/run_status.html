@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Run {{ run.run_id }} — PWM Platform{% endblock %}
+{% block title %}Run {{ run.run_id }} — Physics World Model{% endblock %}
 
 {% block content %}
 {# Define step order for progress tracking #}
@@ -143,6 +143,52 @@
         </div>
         {% endif %}
     </div>
+
+    <!-- Experimental Setup -->
+    {% set spec = run.experiment_spec or {} %}
+    {% set setup_params = {} %}
+    {% for k, v in spec.items() %}
+        {% if k not in ('prompt',) %}
+            {% if setup_params.update({k: v}) %}{% endif %}
+        {% endif %}
+    {% endfor %}
+    {% if setup_params %}
+    <div class="bg-white shadow rounded-lg p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-medium text-gray-700">Experimental Setup</h2>
+            {% if spec.get('setup_name') %}
+            <span class="px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 rounded-full">{{ spec.setup_name }}</span>
+            {% endif %}
+        </div>
+        {% if spec.get('prompt') %}
+        <div class="mb-4 bg-indigo-50 border border-indigo-100 rounded-lg px-4 py-3">
+            <span class="text-xs font-medium text-indigo-600 block mb-1">Prompt</span>
+            <p class="text-sm text-indigo-900">{{ spec.prompt }}</p>
+        </div>
+        {% endif %}
+        {% if spec.get('reference') %}
+        <div class="mb-3 text-xs text-gray-500">
+            <span class="font-medium">Reference:</span> {{ spec.reference }}
+        </div>
+        {% endif %}
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 text-sm">
+            {% for key, val in setup_params.items() %}
+                {% if key not in ('setup_name', 'reference') %}
+                <div class="flex justify-between py-1 border-b border-gray-50">
+                    <dt class="text-gray-500 font-medium truncate mr-2">{{ key | replace('_', ' ') | title }}</dt>
+                    <dd class="text-gray-900 font-mono text-right">
+                        {% if val is iterable and val is not string and val is not mapping %}
+                            {{ val | join(', ') }}
+                        {% else %}
+                            {{ val }}
+                        {% endif %}
+                    </dd>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Triad Report (if available) -->
     {% if report %}
