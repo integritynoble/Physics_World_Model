@@ -315,9 +315,9 @@ async def modalities_page(
 @router.get("/bootstrap/new", response_class=HTMLResponse)
 async def bootstrap_new_page(
     request: Request,
-    user: User = Depends(get_current_user),
+    user: Optional[User] = Depends(get_optional_user),
 ):
-    """New modality bootstrap wizard — requires login."""
+    """New modality bootstrap wizard — public page."""
     return templates.TemplateResponse("bootstrap_new.html", {
         "request": request,
         "user": user,

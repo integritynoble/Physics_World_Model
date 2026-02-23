@@ -1,0 +1,212 @@
+{
+  "cacti": {
+    "citation": "Llull et al., 'Coded Aperture Compressive Temporal Imaging', Optics Express 2013",
+    "image": "/static/img/paper_setups/cacti.png",
+    "link": "https://arxiv.org/abs/1302.2575"
+  },
+  "cassi": {
+    "citation": "Cai et al., 'MST++: Multi-Stage Spectral-Wise Transformer', CVPRW 2022",
+    "image": "/static/img/paper_setups/cassi.png",
+    "link": "https://arxiv.org/abs/2204.07908"
+  },
+  "cbct": {
+    "citation": "Zha et al., 'NAF: Neural Attenuation Fields for Sparse-View CBCT', arXiv 2021",
+    "image": "/static/img/paper_setups/cbct.png",
+    "link": "https://arxiv.org/abs/2112.11863"
+  },
+  "confocal_3d": {
+    "citation": "Weigert et al., 'CARE: Content-Aware Image Restoration', Nature Methods 2018",
+    "image": "/static/img/paper_setups/confocal_3d.png",
+    "link": "https://arxiv.org/abs/1707.02264"
+  },
+  "ct": {
+    "citation": "Leuschner et al., 'LoDoPaB-CT: A Benchmark Dataset for Low-Dose CT', arXiv 2019",
+    "image": "/static/img/paper_setups/ct.png",
+    "link": "https://arxiv.org/abs/1910.01113"
+  },
+  "diffusion_mri": {
+    "citation": "Tian et al., 'DeepDTI: High-fidelity Six-direction Diffusion Tensor Imaging', NeuroImage 2020",
+    "image": "/static/img/paper_setups/diffusion_mri.png",
+    "link": "https://arxiv.org/abs/2004.07340"
+  },
+  "doppler_ultrasound": {
+    "citation": "Shen et al., 'Deep Doppler Ultrasound', arXiv 2021",
+    "image": "/static/img/paper_setups/doppler_ultrasound.png",
+    "link": "https://arxiv.org/abs/2106.11643"
+  },
+  "elastography": {
+    "citation": "Wu et al., 'Ultrasound Elastography Review', arXiv 2020",
+    "image": "/static/img/paper_setups/elastography.png",
+    "link": "https://arxiv.org/abs/2009.14104"
+  },
+  "electron_tomography": {
+    "citation": "Yang et al., 'Deep Learning Electron Tomography', Nature 2021",
+    "image": "/static/img/paper_setups/electron_tomography.png",
+    "link": "https://arxiv.org/abs/2112.00370"
+  },
+  "flim": {
+    "citation": "Smith et al., 'FLIM-Net: Fluorescence Lifetime Imaging with Deep Learning', Biomed. Opt. Express 2020",
+    "image": "/static/img/paper_setups/flim.png",
+    "link": "https://arxiv.org/abs/2003.06505"
+  },
+  "fmri": {
+    "citation": "Elbau et al., 'fMRI Reconstruction Overview', arXiv 2020",
+    "image": "/static/img/paper_setups/fmri.png",
+    "link": "https://arxiv.org/abs/2001.10013"
+  },
+  "fpm": {
+    "citation": "Zheng et al., 'Concept, implementations and applications of Fourier ptychography', Nature Reviews Physics 2021",
+    "image": "/static/img/paper_setups/fpm.png",
+    "link": "https://arxiv.org/abs/2012.14738"
+  },
+  "fundus": {
+    "citation": "Li et al., 'Fundus Image Analysis with Deep Learning', arXiv 2018",
+    "image": "/static/img/paper_setups/fundus.png",
+    "link": "https://arxiv.org/abs/1803.04337"
+  },
+  "gaussian_splatting": {
+    "citation": "Kerbl et al., '3D Gaussian Splatting for Real-Time Radiance Field Rendering', SIGGRAPH 2023",
+    "image": "/static/img/paper_setups/gaussian_splatting.png",
+    "link": "https://arxiv.org/abs/2308.04079"
+  },
+  "holography": {
+    "citation": "Rivenson et al., 'Deep Learning for Holographic Reconstruction', Light: Science & Applications 2019",
+    "image": "/static/img/paper_setups/holography.png",
+    "link": "https://arxiv.org/abs/1903.02278"
+  },
+  "lensless": {
+    "citation": "Monakhova et al., 'Lensless Imaging with Deep Learning', Optica 2022",
+    "image": "/static/img/paper_setups/lensless.png",
+    "link": "https://arxiv.org/abs/2205.00088"
+  },
+  "lidar": {
+    "citation": "Guo et al., 'Deep Learning for 3D Point Clouds (LiDAR)', IEEE TPAMI 2021",
+    "image": "/static/img/paper_setups/lidar.png",
+    "link": "https://arxiv.org/abs/2005.09830"
+  },
+  "light_field": {
+    "citation": "Kalantari et al., 'Learning-Based View Synthesis for Light Field Cameras', SIGGRAPH 2016",
+    "image": "/static/img/paper_setups/light_field.png",
+    "link": "https://arxiv.org/abs/1708.03292"
+  },
+  "lightsheet": {
+    "citation": "Weigert et al., 'Isotropic Reconstruction of Light-Sheet Microscopy', Nature Methods 2018",
+    "image": "/static/img/paper_setups/lightsheet.png",
+    "link": "https://arxiv.org/abs/1706.08726"
+  },
+  "mammography": {
+    "citation": "Wu et al., 'Breast Density Classification with Deep CNNs', MICCAI 2017",
+    "image": "/static/img/paper_setups/mammography.png",
+    "link": "https://arxiv.org/abs/1708.09427"
+  },
+  "mri": {
+    "citation": "Zbontar et al., 'fastMRI: An Open Dataset and Benchmarks', arXiv 2018",
+    "image": "/static/img/paper_setups/mri.png",
+    "link": "https://arxiv.org/abs/1811.08839"
+  },
+  "nerf": {
+    "citation": "Mildenhall et al., 'NeRF: Representing Scenes as Neural Radiance Fields', ECCV 2020",
+    "image": "/static/img/paper_setups/nerf.png",
+    "link": "https://arxiv.org/abs/2003.08934"
+  },
+  "oct": {
+    "citation": "Devalla et al., 'OCT Layer Segmentation with Deep Learning', BOE 2019",
+    "image": "/static/img/paper_setups/oct.png",
+    "link": "https://arxiv.org/abs/1902.07308"
+  },
+  "panorama": {
+    "citation": "Zhu et al., 'Unpaired Image-to-Image Translation using CycleGAN', ICCV 2017",
+    "image": "/static/img/paper_setups/panorama.png",
+    "link": "https://arxiv.org/abs/1703.10593"
+  },
+  "pet": {
+    "citation": "Reader et al., 'Deep Learning for PET Image Reconstruction', IEEE TMI 2021",
+    "image": "/static/img/paper_setups/pet.png",
+    "link": "https://arxiv.org/abs/2108.06950"
+  },
+  "phase_retrieval": {
+    "citation": "Metzler et al., 'prDeep: Phase Retrieval with Deep Priors', NeurIPS 2018",
+    "image": "/static/img/paper_setups/phase_retrieval.png",
+    "link": "https://arxiv.org/abs/1711.08757"
+  },
+  "photoacoustic": {
+    "citation": "Hauptmann et al., 'Model-Based Photoacoustic Reconstruction', IEEE TMI 2018",
+    "image": "/static/img/paper_setups/photoacoustic.png",
+    "link": "https://arxiv.org/abs/1801.07461"
+  },
+  "ptychography": {
+    "citation": "Cherukara et al., 'AI-enabled High-Resolution Ptychographic Imaging', APL 2020",
+    "image": "/static/img/paper_setups/ptychography.png",
+    "link": "https://arxiv.org/abs/1811.07945"
+  },
+  "sar": {
+    "citation": "Zhu et al., 'Deep Learning in SAR Remote Sensing', IEEE GRSM 2021",
+    "image": "/static/img/paper_setups/sar.png",
+    "link": "https://arxiv.org/abs/2104.01007"
+  },
+  "sim": {
+    "citation": "M\u00fcller et al., 'Open-source fairSIM for structured illumination microscopy', Nature Comms 2016",
+    "image": "/static/img/paper_setups/sim.png",
+    "link": "https://arxiv.org/abs/1609.08958"
+  },
+  "sonar": {
+    "citation": "Steiniger et al., 'Sonar Image Classification with Deep Learning', arXiv 2021",
+    "image": "/static/img/paper_setups/sonar.png",
+    "link": "https://arxiv.org/abs/2108.01111"
+  },
+  "spc": {
+    "citation": "Higham et al., 'Deep Learning for Single-Pixel Imaging', Scientific Reports 2018",
+    "image": "/static/img/paper_setups/spc.png",
+    "link": "https://arxiv.org/abs/1909.05986"
+  },
+  "spect": {
+    "citation": "Xie et al., 'Deep Learning for SPECT Reconstruction', IEEE TMI 2022",
+    "image": "/static/img/paper_setups/spect.png",
+    "link": "https://arxiv.org/abs/2208.11706"
+  },
+  "sted": {
+    "citation": "Heine et al., 'Adaptive STED Nanoscopy', PNAS 2017",
+    "image": "/static/img/paper_setups/sted.png",
+    "link": "https://arxiv.org/abs/1905.04949"
+  },
+  "stem": {
+    "citation": "Spurgeon et al., 'STEM Image Analysis with Machine Learning', npj Comp. Materials 2021",
+    "image": "/static/img/paper_setups/stem.png",
+    "link": "https://arxiv.org/abs/1906.09498"
+  },
+  "structured_light": {
+    "citation": "Riegler et al., 'Deep Structured Light', IEEE TPAMI 2021",
+    "image": "/static/img/paper_setups/structured_light.png",
+    "link": "https://arxiv.org/abs/1908.08552"
+  },
+  "tem": {
+    "citation": "de Haan et al., 'Deep Learning for TEM Restoration', arXiv 2020",
+    "image": "/static/img/paper_setups/tem.png",
+    "link": "https://arxiv.org/abs/2010.03828"
+  },
+  "tof_camera": {
+    "citation": "Su et al., 'Deep End-to-End Time-of-Flight Imaging', CVPR 2018",
+    "image": "/static/img/paper_setups/tof_camera.png",
+    "link": "https://arxiv.org/abs/1903.11854"
+  },
+  "two_photon": {
+    "citation": "Weigert et al., 'CARE: Content-Aware Image Restoration', Nature Methods 2018",
+    "image": "/static/img/paper_setups/two_photon.png",
+    "link": "https://arxiv.org/abs/1707.02264"
+  },
+  "ultrasound": {
+    "citation": "van Sloun et al., 'Deep Learning in Ultrasound Imaging', IEEE 2020",
+    "image": "/static/img/paper_setups/ultrasound.png",
+    "link": "https://arxiv.org/abs/1908.05782"
+  },
+  "widefield": {
+    "citation": "Weigert et al., 'CARE: Content-Aware Image Restoration', Nature Methods 2018",
+    "image": "/static/img/paper_setups/widefield.png",
+    "link": "https://arxiv.org/abs/1707.02264"
+  },
+  "widefield_lowdose": {
+    "citation": "Weigert et al., 'CARE: Content-Aware Image Restoration', Nature Methods 2018",
+    "image": "/static/img/paper_setups/widefield_lowdose.png",
+    "link": "https://arxiv.org/abs/1707.02264"
+  }
+}

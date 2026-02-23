@@ -2,96 +2,176 @@
 {% block title %}Bootstrap New Modality — PWM Platform{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto space-y-6">
-    <h1 class="text-2xl font-bold text-gray-900">Bootstrap New Modality</h1>
-    <p class="text-gray-600">Describe a new imaging modality and PWM will generate starter templates, simulation plans, and calibration checklists using similar existing modalities.</p>
+<div class="max-w-3xl mx-auto space-y-6">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Bootstrap New Modality</h1>
+        <p class="mt-1 text-sm text-gray-600">
+            Describe a new imaging modality and PWM will find the most similar existing modalities,
+            generate starter templates, calibration checklists, and simulation plans.
+        </p>
+    </div>
 
     <form hx-post="/api/v1/bootstrap"
           hx-target="#submit-result"
           hx-swap="innerHTML"
+          hx-indicator="#spinner"
           class="bg-white shadow rounded-lg p-6 space-y-6">
 
+        {# ── Row 1: Key + Name ── #}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <label for="modality_key" class="block text-sm font-medium text-gray-700">Modality Key</label>
+                <label for="modality_key" class="block text-sm font-medium text-gray-700">Modality Key <span class="text-red-500">*</span></label>
                 <input type="text" name="modality_key" id="modality_key" required minlength="2"
                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                       placeholder="e.g. sted, spim, oct">
+                       placeholder="e.g. spim, minflux, ism">
+                <p class="mt-1 text-xs text-gray-400">Lowercase snake_case identifier</p>
             </div>
             <div>
                 <label for="display_name" class="block text-sm font-medium text-gray-700">Display Name</label>
                 <input type="text" name="display_name" id="display_name"
                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                       placeholder="e.g. STED Microscopy">
+                       placeholder="e.g. Selective Plane Illumination Microscopy">
             </div>
         </div>
 
+        {# ── Row 2: Physics class ── #}
         <div>
             <label for="physics_class" class="block text-sm font-medium text-gray-700">Physics Class</label>
             <select name="physics_class" id="physics_class"
                     class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                 <option value="">Select...</option>
-                <option value="spectral_coding">Spectral Coding</option>
-                <option value="tomographic">Tomographic</option>
-                <option value="coherent">Coherent / Phase</option>
                 <option value="fluorescence">Fluorescence</option>
+                <option value="spectral_coding">Spectral Coding</option>
+                <option value="tomographic">Tomographic (X-ray / CT)</option>
+                <option value="magnetic_resonance">Magnetic Resonance</option>
+                <option value="ultrasound">Ultrasound / Acoustic</option>
+                <option value="coherent">Coherent / Phase</option>
                 <option value="super_resolution">Super-Resolution</option>
+                <option value="electron_imaging">Electron Imaging</option>
                 <option value="computational">Computational Photography</option>
+                <option value="neural_rendering">Neural Rendering</option>
                 <option value="interferometric">Interferometric</option>
                 <option value="diffraction">Diffraction</option>
-                <option value="particle">Particle / Nuclear</option>
+                <option value="nuclear_particle">Nuclear / Particle</option>
+                <option value="radar_sonar">Radar / Sonar</option>
+                <option value="depth_sensing">Depth Sensing</option>
                 <option value="other">Other</option>
             </select>
         </div>
 
+        {# ── Row 3: Forward model + Sensor ── #}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label for="forward_model_family" class="block text-sm font-medium text-gray-700">Forward Model Family</label>
-                <input type="text" name="forward_model_family" id="forward_model_family"
-                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm"
-                       placeholder="e.g. psf_convolution, radon_transform">
+                <select name="forward_model_family" id="forward_model_family"
+                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <option value="">Select...</option>
+                    <option value="psf_convolution">PSF Convolution</option>
+                    <option value="radon_transform">Radon Transform</option>
+                    <option value="fourier_sampling">Fourier Sampling</option>
+                    <option value="coded_aperture">Coded Aperture</option>
+                    <option value="wave_propagation">Wave Propagation</option>
+                    <option value="scattering">Scattering</option>
+                    <option value="ray_tracing">Ray Tracing</option>
+                    <option value="volumetric_rendering">Volumetric Rendering</option>
+                    <option value="random_projection">Random Projection</option>
+                    <option value="other">Other</option>
+                </select>
             </div>
             <div>
                 <label for="sensor_type" class="block text-sm font-medium text-gray-700">Sensor Type</label>
-                <input type="text" name="sensor_type" id="sensor_type"
-                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm"
-                       placeholder="e.g. cmos, photon_counter">
+                <select name="sensor_type" id="sensor_type"
+                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <option value="">Select...</option>
+                    <option value="scmos">sCMOS Camera</option>
+                    <option value="cmos">CMOS Camera</option>
+                    <option value="ccd">CCD Camera</option>
+                    <option value="emccd">EMCCD</option>
+                    <option value="pmt">PMT (Photomultiplier Tube)</option>
+                    <option value="spad">SPAD Array</option>
+                    <option value="photon_counter">Photon Counter</option>
+                    <option value="piezoelectric">Piezoelectric (Ultrasound)</option>
+                    <option value="scintillator">Scintillator</option>
+                    <option value="antenna">Antenna Array</option>
+                    <option value="other">Other</option>
+                </select>
             </div>
         </div>
 
+        {# ── Row 4: Source + Geometry ── #}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label for="source_type" class="block text-sm font-medium text-gray-700">Source Type</label>
-                <input type="text" name="source_type" id="source_type"
-                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm"
-                       placeholder="e.g. laser, xray_tube, broadband">
+                <select name="source_type" id="source_type"
+                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <option value="">Select...</option>
+                    <option value="laser">Laser</option>
+                    <option value="led">LED</option>
+                    <option value="broadband">Broadband / White Light</option>
+                    <option value="xray_tube">X-ray Tube</option>
+                    <option value="synchrotron">Synchrotron</option>
+                    <option value="electron_gun">Electron Gun</option>
+                    <option value="ultrasound_transducer">Ultrasound Transducer</option>
+                    <option value="radiofrequency">Radiofrequency (RF)</option>
+                    <option value="radar">Radar Transmitter</option>
+                    <option value="radioactive">Radioactive Tracer</option>
+                    <option value="other">Other</option>
+                </select>
             </div>
             <div>
                 <label for="geometry" class="block text-sm font-medium text-gray-700">Geometry</label>
-                <input type="text" name="geometry" id="geometry"
-                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm"
-                       placeholder="e.g. planar, rotational, scanning">
+                <select name="geometry" id="geometry"
+                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <option value="">Select...</option>
+                    <option value="planar">Planar (2D)</option>
+                    <option value="volumetric">Volumetric (3D)</option>
+                    <option value="rotational">Rotational (Tomographic)</option>
+                    <option value="raster_scan">Raster Scan</option>
+                    <option value="point_scan">Point Scan</option>
+                    <option value="multi_view">Multi-View</option>
+                    <option value="angular_scanning">Angular Scanning</option>
+                    <option value="spectral">Spectral</option>
+                    <option value="other">Other</option>
+                </select>
             </div>
         </div>
 
+        {# ── Row 5: Noise model ── #}
         <div>
             <label for="noise_model" class="block text-sm font-medium text-gray-700">Noise Model</label>
             <select name="noise_model" id="noise_model"
                     class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                <option value="poisson_gaussian">Poisson + Gaussian (Mixed)</option>
                 <option value="gaussian">Gaussian</option>
                 <option value="poisson">Poisson</option>
-                <option value="mixed">Mixed (Poisson + Gaussian)</option>
                 <option value="speckle">Speckle</option>
+                <option value="rician">Rician (MRI)</option>
                 <option value="other">Other</option>
             </select>
         </div>
 
+        {# ── Loading spinner ── #}
+        <div id="spinner" class="htmx-indicator flex items-center justify-center py-4">
+            <svg class="animate-spin h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="ml-2 text-sm text-gray-600">Analyzing modality and finding matches...</span>
+        </div>
+
+        {# ── Result target ── #}
         <div id="submit-result"></div>
 
+        {# ── Submit button ── #}
         <button type="submit"
-                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+                class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
             Generate Bootstrap Proposal
         </button>
     </form>
+
+    <p class="text-center text-xs text-gray-400">
+        The bootstrap engine compares your modality description against all 64 existing modalities
+        in the Physics World Model knowledge base.
+    </p>
 </div>
 {% endblock %}

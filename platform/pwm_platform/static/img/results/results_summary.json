@@ -1,0 +1,770 @@
+{
+  "angiography": {
+    "images": {
+      "comparison": "/static/img/results/angiography/comparison.png",
+      "x_hat": "/static/img/results/angiography/x_hat.png",
+      "x_true": "/static/img/results/angiography/x_true.png",
+      "y": "/static/img/results/angiography/y.png"
+    },
+    "nrmse": 0.0002,
+    "psnr": 75.13,
+    "solver": "dsa_subtraction",
+    "ssim": 1.0
+  },
+  "cacti": {
+    "images": {
+      "comparison": "/static/img/results/cacti/comparison.png",
+      "x_hat": "/static/img/results/cacti/x_hat.png",
+      "x_true": "/static/img/results/cacti/x_true.png",
+      "y": "/static/img/results/cacti/y.png"
+    },
+    "nrmse": 0.1493,
+    "psnr": 17.43,
+    "solver": "gap_tv",
+    "ssim": 0.3999
+  },
+  "cassi": {
+    "images": {
+      "comparison": "/static/img/results/cassi/comparison.png",
+      "x_hat": "/static/img/results/cassi/x_hat.png",
+      "x_true": "/static/img/results/cassi/x_true.png",
+      "y": "/static/img/results/cassi/y.png"
+    },
+    "nrmse": 0.3606,
+    "psnr": 9.78,
+    "solver": "mst",
+    "ssim": 0.1118
+  },
+  "cbct": {
+    "images": {
+      "comparison": "/static/img/results/cbct/comparison.png",
+      "x_hat": "/static/img/results/cbct/x_hat.png",
+      "x_true": "/static/img/results/cbct/x_true.png",
+      "y": "/static/img/results/cbct/y.png"
+    },
+    "nrmse": 0.463,
+    "psnr": 7.38,
+    "solver": "fdk",
+    "ssim": -0.5592
+  },
+  "confocal_3d": {
+    "images": {
+      "comparison": "/static/img/results/confocal_3d/comparison.png",
+      "x_hat": "/static/img/results/confocal_3d/x_hat.png",
+      "x_true": "/static/img/results/confocal_3d/x_true.png",
+      "y": "/static/img/results/confocal_3d/y.png"
+    },
+    "nrmse": 0.0602,
+    "psnr": 24.99,
+    "solver": "richardson_lucy_3d",
+    "ssim": 0.8414
+  },
+  "confocal_livecell": {
+    "images": {
+      "comparison": "/static/img/results/confocal_livecell/comparison.png",
+      "x_hat": "/static/img/results/confocal_livecell/x_hat.png",
+      "x_true": "/static/img/results/confocal_livecell/x_true.png",
+      "y": "/static/img/results/confocal_livecell/y.png"
+    },
+    "nrmse": 0.0591,
+    "psnr": 25.09,
+    "solver": "richardson_lucy",
+    "ssim": 0.9378
+  },
+  "ct": {
+    "images": {
+      "comparison": "/static/img/results/ct/comparison.png",
+      "x_hat": "/static/img/results/ct/x_hat.png",
+      "x_true": "/static/img/results/ct/x_true.png",
+      "y": "/static/img/results/ct/y.png"
+    },
+    "nrmse": 0.3368,
+    "psnr": 9.45,
+    "solver": "fbp",
+    "ssim": 0.2929
+  },
+  "dexa": {
+    "images": {
+      "comparison": "/static/img/results/dexa/comparison.png",
+      "x_hat": "/static/img/results/dexa/x_hat.png",
+      "x_true": "/static/img/results/dexa/x_true.png",
+      "y": "/static/img/results/dexa/y.png"
+    },
+    "nrmse": 0.0011,
+    "psnr": 59.65,
+    "solver": "dual_energy_decomposition",
+    "ssim": 1.0
+  },
+  "diffusion_mri": {
+    "images": {
+      "comparison": "/static/img/results/diffusion_mri/comparison.png",
+      "x_hat": "/static/img/results/diffusion_mri/x_hat.png",
+      "x_true": "/static/img/results/diffusion_mri/x_true.png",
+      "y": "/static/img/results/diffusion_mri/y.png"
+    },
+    "nrmse": 0.0055,
+    "psnr": 45.95,
+    "solver": "weighted_least_squares",
+    "ssim": 0.9997
+  },
+  "doppler_ultrasound": {
+    "images": {
+      "comparison": "/static/img/results/doppler_ultrasound/comparison.png",
+      "x_hat": "/static/img/results/doppler_ultrasound/x_hat.png",
+      "x_true": "/static/img/results/doppler_ultrasound/x_true.png",
+      "y": "/static/img/results/doppler_ultrasound/y.png"
+    },
+    "nrmse": 0.3219,
+    "psnr": 10.53,
+    "solver": "autocorrelation_estimator",
+    "ssim": -0.0083
+  },
+  "dot": {
+    "images": {
+      "comparison": "/static/img/results/dot/comparison.png",
+      "x_hat": "/static/img/results/dot/x_hat.png",
+      "x_true": "/static/img/results/dot/x_true.png",
+      "y": "/static/img/results/dot/y.png"
+    },
+    "nrmse": 0.1507,
+    "psnr": 17.13,
+    "solver": "born_approx",
+    "ssim": 0.8211
+  },
+  "ebsd": {
+    "images": {
+      "comparison": "/static/img/results/ebsd/comparison.png",
+      "x_hat": "/static/img/results/ebsd/x_hat.png",
+      "x_true": "/static/img/results/ebsd/x_true.png",
+      "y": "/static/img/results/ebsd/y.png"
+    },
+    "nrmse": 0.2417,
+    "psnr": 13.02,
+    "solver": "hough_indexing",
+    "ssim": 0.3874
+  },
+  "eels": {
+    "images": {
+      "comparison": "/static/img/results/eels/comparison.png",
+      "x_hat": "/static/img/results/eels/x_hat.png",
+      "x_true": "/static/img/results/eels/x_true.png",
+      "y": "/static/img/results/eels/y.png"
+    },
+    "nrmse": 0.0501,
+    "psnr": 26.69,
+    "solver": "fourier_ratio",
+    "ssim": 0.9772
+  },
+  "elastography": {
+    "images": {
+      "comparison": "/static/img/results/elastography/comparison.png",
+      "x_hat": "/static/img/results/elastography/x_hat.png",
+      "x_true": "/static/img/results/elastography/x_true.png",
+      "y": "/static/img/results/elastography/y.png"
+    },
+    "nrmse": 0.3179,
+    "psnr": 10.64,
+    "solver": "time_of_flight_inversion",
+    "ssim": 0.6226
+  },
+  "electron_diffraction": {
+    "images": {
+      "comparison": "/static/img/results/electron_diffraction/comparison.png",
+      "x_hat": "/static/img/results/electron_diffraction/x_hat.png",
+      "x_true": "/static/img/results/electron_diffraction/x_true.png",
+      "y": "/static/img/results/electron_diffraction/y.png"
+    },
+    "nrmse": 0.3383,
+    "psnr": 10.1,
+    "solver": "ptychography_epie",
+    "ssim": 0.0003
+  },
+  "electron_holography": {
+    "images": {
+      "comparison": "/static/img/results/electron_holography/comparison.png",
+      "x_hat": "/static/img/results/electron_holography/x_hat.png",
+      "x_true": "/static/img/results/electron_holography/x_true.png",
+      "y": "/static/img/results/electron_holography/y.png"
+    },
+    "nrmse": 0.0648,
+    "psnr": 24.46,
+    "solver": "fourier_sideband",
+    "ssim": 0.9676
+  },
+  "electron_tomography": {
+    "images": {
+      "comparison": "/static/img/results/electron_tomography/comparison.png",
+      "x_hat": "/static/img/results/electron_tomography/x_hat.png",
+      "x_true": "/static/img/results/electron_tomography/x_true.png",
+      "y": "/static/img/results/electron_tomography/y.png"
+    },
+    "nrmse": 0.3917,
+    "psnr": 8.83,
+    "solver": "sirt",
+    "ssim": 0.0039
+  },
+  "endoscopy": {
+    "images": {
+      "comparison": "/static/img/results/endoscopy/comparison.png",
+      "x_hat": "/static/img/results/endoscopy/x_hat.png",
+      "x_true": "/static/img/results/endoscopy/x_true.png",
+      "y": "/static/img/results/endoscopy/y.png"
+    },
+    "nrmse": 0.3217,
+    "psnr": 10.54,
+    "solver": "tv_fista",
+    "ssim": -0.0157
+  },
+  "flim": {
+    "images": {
+      "comparison": "/static/img/results/flim/comparison.png",
+      "x_hat": "/static/img/results/flim/x_hat.png",
+      "x_true": "/static/img/results/flim/x_true.png",
+      "y": "/static/img/results/flim/y.png"
+    },
+    "nrmse": 0.2266,
+    "psnr": 13.54,
+    "solver": "phasor",
+    "ssim": 0.46
+  },
+  "fluoroscopy": {
+    "images": {
+      "comparison": "/static/img/results/fluoroscopy/comparison.png",
+      "x_hat": "/static/img/results/fluoroscopy/x_hat.png",
+      "x_true": "/static/img/results/fluoroscopy/x_true.png",
+      "y": "/static/img/results/fluoroscopy/y.png"
+    },
+    "nrmse": 0.0003,
+    "psnr": 72.28,
+    "solver": "tv_fista",
+    "ssim": 1.0
+  },
+  "fmri": {
+    "images": {
+      "comparison": "/static/img/results/fmri/comparison.png",
+      "x_hat": "/static/img/results/fmri/x_hat.png",
+      "x_true": "/static/img/results/fmri/x_true.png",
+      "y": "/static/img/results/fmri/y.png"
+    },
+    "nrmse": 0.079,
+    "psnr": 22.73,
+    "solver": "sense",
+    "ssim": 0.9548
+  },
+  "fpm": {
+    "images": {
+      "comparison": "/static/img/results/fpm/comparison.png",
+      "x_hat": "/static/img/results/fpm/x_hat.png",
+      "x_true": "/static/img/results/fpm/x_true.png",
+      "y": "/static/img/results/fpm/y.png"
+    },
+    "nrmse": 0.1681,
+    "psnr": 16.17,
+    "solver": "sequential_phase_retrieval",
+    "ssim": 0.8248
+  },
+  "fundus": {
+    "images": {
+      "comparison": "/static/img/results/fundus/comparison.png",
+      "x_hat": "/static/img/results/fundus/x_hat.png",
+      "x_true": "/static/img/results/fundus/x_true.png",
+      "y": "/static/img/results/fundus/y.png"
+    },
+    "nrmse": 0.0711,
+    "psnr": 23.66,
+    "solver": "richardson_lucy",
+    "ssim": 0.957
+  },
+  "gaussian_splatting": {
+    "images": {
+      "comparison": "/static/img/results/gaussian_splatting/comparison.png",
+      "x_hat": "/static/img/results/gaussian_splatting/x_hat.png",
+      "x_true": "/static/img/results/gaussian_splatting/x_true.png",
+      "y": "/static/img/results/gaussian_splatting/y.png"
+    },
+    "nrmse": 0.0021,
+    "psnr": 54.09,
+    "solver": "gaussian_splatting_3dgs",
+    "ssim": 1.0
+  },
+  "holography": {
+    "images": {
+      "comparison": "/static/img/results/holography/comparison.png",
+      "x_hat": "/static/img/results/holography/x_hat.png",
+      "x_true": "/static/img/results/holography/x_true.png",
+      "y": "/static/img/results/holography/y.png"
+    },
+    "nrmse": 0.0966,
+    "psnr": 20.99,
+    "solver": "angular_spectrum",
+    "ssim": 0.9343
+  },
+  "integral": {
+    "images": {
+      "comparison": "/static/img/results/integral/comparison.png",
+      "x_hat": "/static/img/results/integral/x_hat.png",
+      "x_true": "/static/img/results/integral/x_true.png",
+      "y": "/static/img/results/integral/y.png"
+    },
+    "nrmse": 0.0762,
+    "psnr": 23.05,
+    "solver": "depth_estimation",
+    "ssim": 0.9472
+  },
+  "lensless": {
+    "images": {
+      "comparison": "/static/img/results/lensless/comparison.png",
+      "x_hat": "/static/img/results/lensless/x_hat.png",
+      "x_true": "/static/img/results/lensless/x_true.png",
+      "y": "/static/img/results/lensless/y.png"
+    },
+    "nrmse": 0.0719,
+    "psnr": 23.34,
+    "solver": "admm_tv",
+    "ssim": 0.9335
+  },
+  "lidar": {
+    "images": {
+      "comparison": "/static/img/results/lidar/comparison.png",
+      "x_hat": "/static/img/results/lidar/x_hat.png",
+      "x_true": "/static/img/results/lidar/x_true.png",
+      "y": "/static/img/results/lidar/y.png"
+    },
+    "nrmse": 0.3482,
+    "psnr": 9.85,
+    "solver": "tv_fista",
+    "ssim": -0.0032
+  },
+  "light_field": {
+    "images": {
+      "comparison": "/static/img/results/light_field/comparison.png",
+      "x_hat": "/static/img/results/light_field/x_hat.png",
+      "x_true": "/static/img/results/light_field/x_true.png",
+      "y": "/static/img/results/light_field/y.png"
+    },
+    "nrmse": 0.0702,
+    "psnr": 23.76,
+    "solver": "shift_and_sum",
+    "ssim": 0.9548
+  },
+  "lightsheet": {
+    "images": {
+      "comparison": "/static/img/results/lightsheet/comparison.png",
+      "x_hat": "/static/img/results/lightsheet/x_hat.png",
+      "x_true": "/static/img/results/lightsheet/x_true.png",
+      "y": "/static/img/results/lightsheet/y.png"
+    },
+    "nrmse": 0.0621,
+    "psnr": 24.78,
+    "solver": "fourier_notch_destripe",
+    "ssim": 0.9634
+  },
+  "mammography": {
+    "images": {
+      "comparison": "/static/img/results/mammography/comparison.png",
+      "x_hat": "/static/img/results/mammography/x_hat.png",
+      "x_true": "/static/img/results/mammography/x_true.png",
+      "y": "/static/img/results/mammography/y.png"
+    },
+    "nrmse": 0.0002,
+    "psnr": 76.92,
+    "solver": "tv_fista",
+    "ssim": 1.0
+  },
+  "matrix": {
+    "images": {
+      "comparison": "/static/img/results/matrix/comparison.png",
+      "x_hat": "/static/img/results/matrix/x_hat.png",
+      "x_true": "/static/img/results/matrix/x_true.png",
+      "y": "/static/img/results/matrix/y.png"
+    },
+    "nrmse": 0.3266,
+    "psnr": 10.41,
+    "solver": "fista_l2",
+    "ssim": -0.0059
+  },
+  "mri": {
+    "images": {
+      "comparison": "/static/img/results/mri/comparison.png",
+      "x_hat": "/static/img/results/mri/x_hat.png",
+      "x_true": "/static/img/results/mri/x_true.png",
+      "y": "/static/img/results/mri/y.png"
+    },
+    "nrmse": 0.034,
+    "psnr": 29.37,
+    "solver": "sense",
+    "ssim": 0.9944
+  },
+  "mrs": {
+    "images": {
+      "comparison": "/static/img/results/mrs/comparison.png",
+      "x_hat": "/static/img/results/mrs/x_hat.png",
+      "x_true": "/static/img/results/mrs/x_true.png",
+      "y": "/static/img/results/mrs/y.png"
+    },
+    "nrmse": 0.0776,
+    "psnr": 22.89,
+    "solver": "lcmodel",
+    "ssim": 0.9562
+  },
+  "muon_tomo": {
+    "images": {
+      "comparison": "/static/img/results/muon_tomo/comparison.png",
+      "x_hat": "/static/img/results/muon_tomo/x_hat.png",
+      "x_true": "/static/img/results/muon_tomo/x_true.png",
+      "y": "/static/img/results/muon_tomo/y.png"
+    },
+    "nrmse": 0.0508,
+    "psnr": 26.57,
+    "solver": "poca_reconstruction",
+    "ssim": 0.98
+  },
+  "nerf": {
+    "images": {
+      "comparison": "/static/img/results/nerf/comparison.png",
+      "x_hat": "/static/img/results/nerf/x_hat.png",
+      "x_true": "/static/img/results/nerf/x_true.png",
+      "y": "/static/img/results/nerf/y.png"
+    },
+    "nrmse": 0.0166,
+    "psnr": 36.28,
+    "solver": "nerf_mlp",
+    "ssim": 0.9976
+  },
+  "neutron_tomo": {
+    "images": {
+      "comparison": "/static/img/results/neutron_tomo/comparison.png",
+      "x_hat": "/static/img/results/neutron_tomo/x_hat.png",
+      "x_true": "/static/img/results/neutron_tomo/x_true.png",
+      "y": "/static/img/results/neutron_tomo/y.png"
+    },
+    "nrmse": 0.0038,
+    "psnr": 49.11,
+    "solver": "filtered_back_projection",
+    "ssim": 0.9999
+  },
+  "oct": {
+    "images": {
+      "comparison": "/static/img/results/oct/comparison.png",
+      "x_hat": "/static/img/results/oct/x_hat.png",
+      "x_true": "/static/img/results/oct/x_true.png",
+      "y": "/static/img/results/oct/y.png"
+    },
+    "nrmse": 0.2778,
+    "psnr": 11.81,
+    "solver": "fft_recon",
+    "ssim": 0.1807
+  },
+  "octa": {
+    "images": {
+      "comparison": "/static/img/results/octa/comparison.png",
+      "x_hat": "/static/img/results/octa/x_hat.png",
+      "x_true": "/static/img/results/octa/x_true.png",
+      "y": "/static/img/results/octa/y.png"
+    },
+    "nrmse": 0.0337,
+    "psnr": 30.14,
+    "solver": "ssada",
+    "ssim": 0.9906
+  },
+  "palm_storm": {
+    "images": {
+      "comparison": "/static/img/results/palm_storm/comparison.png",
+      "x_hat": "/static/img/results/palm_storm/x_hat.png",
+      "x_true": "/static/img/results/palm_storm/x_true.png",
+      "y": "/static/img/results/palm_storm/y.png"
+    },
+    "nrmse": 0.3791,
+    "psnr": 9.11,
+    "solver": "thunderstorm",
+    "ssim": 0.096
+  },
+  "panorama": {
+    "images": {
+      "comparison": "/static/img/results/panorama/comparison.png",
+      "x_hat": "/static/img/results/panorama/x_hat.png",
+      "x_true": "/static/img/results/panorama/x_true.png",
+      "y": "/static/img/results/panorama/y.png"
+    },
+    "nrmse": 0.4184,
+    "psnr": 8.26,
+    "solver": "laplacian_pyramid_fusion",
+    "ssim": 0.4152
+  },
+  "pet": {
+    "images": {
+      "comparison": "/static/img/results/pet/comparison.png",
+      "x_hat": "/static/img/results/pet/x_hat.png",
+      "x_true": "/static/img/results/pet/x_true.png",
+      "y": "/static/img/results/pet/y.png"
+    },
+    "nrmse": 0.3219,
+    "psnr": 10.53,
+    "solver": "mlem",
+    "ssim": 0.616
+  },
+  "phase_retrieval": {
+    "images": {
+      "comparison": "/static/img/results/phase_retrieval/comparison.png",
+      "x_hat": "/static/img/results/phase_retrieval/x_hat.png",
+      "x_true": "/static/img/results/phase_retrieval/x_true.png",
+      "y": "/static/img/results/phase_retrieval/y.png"
+    },
+    "nrmse": 0.1681,
+    "psnr": 16.17,
+    "solver": "hio",
+    "ssim": 0.8248
+  },
+  "photoacoustic": {
+    "images": {
+      "comparison": "/static/img/results/photoacoustic/comparison.png",
+      "x_hat": "/static/img/results/photoacoustic/x_hat.png",
+      "x_true": "/static/img/results/photoacoustic/x_true.png",
+      "y": "/static/img/results/photoacoustic/y.png"
+    },
+    "nrmse": 0.3176,
+    "psnr": 10.65,
+    "solver": "back_projection",
+    "ssim": 0.6226
+  },
+  "polarization": {
+    "images": {
+      "comparison": "/static/img/results/polarization/comparison.png",
+      "x_hat": "/static/img/results/polarization/x_hat.png",
+      "x_true": "/static/img/results/polarization/x_true.png",
+      "y": "/static/img/results/polarization/y.png"
+    },
+    "nrmse": 0.0876,
+    "psnr": 21.83,
+    "solver": "pnp_hqs",
+    "ssim": 0.9272
+  },
+  "proton_radiography": {
+    "images": {
+      "comparison": "/static/img/results/proton_radiography/comparison.png",
+      "x_hat": "/static/img/results/proton_radiography/x_hat.png",
+      "x_true": "/static/img/results/proton_radiography/x_true.png",
+      "y": "/static/img/results/proton_radiography/y.png"
+    },
+    "nrmse": 0.8739,
+    "psnr": 1.86,
+    "solver": "filtered_back_projection",
+    "ssim": -0.0094
+  },
+  "ptychography": {
+    "images": {
+      "comparison": "/static/img/results/ptychography/comparison.png",
+      "x_hat": "/static/img/results/ptychography/x_hat.png",
+      "x_true": "/static/img/results/ptychography/x_true.png",
+      "y": "/static/img/results/ptychography/y.png"
+    },
+    "nrmse": 0.2161,
+    "psnr": 14.0,
+    "solver": "epie",
+    "ssim": 0.4759
+  },
+  "sar": {
+    "images": {
+      "comparison": "/static/img/results/sar/comparison.png",
+      "x_hat": "/static/img/results/sar/x_hat.png",
+      "x_true": "/static/img/results/sar/x_true.png",
+      "y": "/static/img/results/sar/y.png"
+    },
+    "nrmse": 0.3175,
+    "psnr": 10.65,
+    "solver": "backprojection",
+    "ssim": 0.6227
+  },
+  "sem": {
+    "images": {
+      "comparison": "/static/img/results/sem/comparison.png",
+      "x_hat": "/static/img/results/sem/x_hat.png",
+      "x_true": "/static/img/results/sem/x_true.png",
+      "y": "/static/img/results/sem/y.png"
+    },
+    "nrmse": 0.8677,
+    "psnr": 1.92,
+    "solver": "direct_imaging",
+    "ssim": 0.0065
+  },
+  "sim": {
+    "images": {
+      "comparison": "/static/img/results/sim/comparison.png",
+      "x_hat": "/static/img/results/sim/x_hat.png",
+      "x_true": "/static/img/results/sim/x_true.png",
+      "y": "/static/img/results/sim/y.png"
+    },
+    "nrmse": 0.1711,
+    "psnr": 15.88,
+    "solver": "wiener_sim",
+    "ssim": 0.4612
+  },
+  "sonar": {
+    "images": {
+      "comparison": "/static/img/results/sonar/comparison.png",
+      "x_hat": "/static/img/results/sonar/x_hat.png",
+      "x_true": "/static/img/results/sonar/x_true.png",
+      "y": "/static/img/results/sonar/y.png"
+    },
+    "nrmse": 0.3927,
+    "psnr": 8.81,
+    "solver": "beamform_das",
+    "ssim": 0.4249
+  },
+  "spc": {
+    "images": {
+      "comparison": "/static/img/results/spc/comparison.png",
+      "x_hat": "/static/img/results/spc/x_hat.png",
+      "x_true": "/static/img/results/spc/x_true.png",
+      "y": "/static/img/results/spc/y.png"
+    },
+    "nrmse": 0.0311,
+    "psnr": 30.2,
+    "solver": "pnp_fista",
+    "ssim": 0.907
+  },
+  "spect": {
+    "images": {
+      "comparison": "/static/img/results/spect/comparison.png",
+      "x_hat": "/static/img/results/spect/x_hat.png",
+      "x_true": "/static/img/results/spect/x_true.png",
+      "y": "/static/img/results/spect/y.png"
+    },
+    "nrmse": 0.3178,
+    "psnr": 10.64,
+    "solver": "mlem",
+    "ssim": 0.6227
+  },
+  "sted": {
+    "images": {
+      "comparison": "/static/img/results/sted/comparison.png",
+      "x_hat": "/static/img/results/sted/x_hat.png",
+      "x_true": "/static/img/results/sted/x_true.png",
+      "y": "/static/img/results/sted/y.png"
+    },
+    "nrmse": 0.2773,
+    "psnr": 11.83,
+    "solver": "richardson_lucy",
+    "ssim": 0.1727
+  },
+  "stem": {
+    "images": {
+      "comparison": "/static/img/results/stem/comparison.png",
+      "x_hat": "/static/img/results/stem/x_hat.png",
+      "x_true": "/static/img/results/stem/x_true.png",
+      "y": "/static/img/results/stem/y.png"
+    },
+    "nrmse": 0.3194,
+    "psnr": 10.6,
+    "solver": "direct_imaging",
+    "ssim": -0.0039
+  },
+  "structured_light": {
+    "images": {
+      "comparison": "/static/img/results/structured_light/comparison.png",
+      "x_hat": "/static/img/results/structured_light/x_hat.png",
+      "x_true": "/static/img/results/structured_light/x_true.png",
+      "y": "/static/img/results/structured_light/y.png"
+    },
+    "nrmse": 0.2425,
+    "psnr": 12.99,
+    "solver": "phase_unwrap",
+    "ssim": 0.3859
+  },
+  "tem": {
+    "images": {
+      "comparison": "/static/img/results/tem/comparison.png",
+      "x_hat": "/static/img/results/tem/x_hat.png",
+      "x_true": "/static/img/results/tem/x_true.png",
+      "y": "/static/img/results/tem/y.png"
+    },
+    "nrmse": 0.3224,
+    "psnr": 10.52,
+    "solver": "ctf_correction",
+    "ssim": 0.003
+  },
+  "tirf": {
+    "images": {
+      "comparison": "/static/img/results/tirf/comparison.png",
+      "x_hat": "/static/img/results/tirf/x_hat.png",
+      "x_true": "/static/img/results/tirf/x_true.png",
+      "y": "/static/img/results/tirf/y.png"
+    },
+    "nrmse": 0.0843,
+    "psnr": 22.17,
+    "solver": "richardson_lucy",
+    "ssim": 0.9362
+  },
+  "tof_camera": {
+    "images": {
+      "comparison": "/static/img/results/tof_camera/comparison.png",
+      "x_hat": "/static/img/results/tof_camera/x_hat.png",
+      "x_true": "/static/img/results/tof_camera/x_true.png",
+      "y": "/static/img/results/tof_camera/y.png"
+    },
+    "nrmse": 0.0173,
+    "psnr": 35.92,
+    "solver": "tv_fista",
+    "ssim": 0.9974
+  },
+  "two_photon": {
+    "images": {
+      "comparison": "/static/img/results/two_photon/comparison.png",
+      "x_hat": "/static/img/results/two_photon/x_hat.png",
+      "x_true": "/static/img/results/two_photon/x_true.png",
+      "y": "/static/img/results/two_photon/y.png"
+    },
+    "nrmse": 0.2793,
+    "psnr": 11.77,
+    "solver": "richardson_lucy",
+    "ssim": 0.1336
+  },
+  "ultrasound": {
+    "images": {
+      "comparison": "/static/img/results/ultrasound/comparison.png",
+      "x_hat": "/static/img/results/ultrasound/x_hat.png",
+      "x_true": "/static/img/results/ultrasound/x_true.png",
+      "y": "/static/img/results/ultrasound/y.png"
+    },
+    "nrmse": 0.3304,
+    "psnr": 10.31,
+    "solver": "tv_fista",
+    "ssim": 0.5827
+  },
+  "widefield": {
+    "images": {
+      "comparison": "/static/img/results/widefield/comparison.png",
+      "x_hat": "/static/img/results/widefield/x_hat.png",
+      "x_true": "/static/img/results/widefield/x_true.png",
+      "y": "/static/img/results/widefield/y.png"
+    },
+    "nrmse": 0.0509,
+    "psnr": 26.33,
+    "solver": "richardson_lucy",
+    "ssim": 0.9527
+  },
+  "widefield_lowdose": {
+    "images": {
+      "comparison": "/static/img/results/widefield_lowdose/comparison.png",
+      "x_hat": "/static/img/results/widefield_lowdose/x_hat.png",
+      "x_true": "/static/img/results/widefield_lowdose/x_true.png",
+      "y": "/static/img/results/widefield_lowdose/y.png"
+    },
+    "nrmse": 0.0675,
+    "psnr": 23.89,
+    "solver": "pnp_hqs",
+    "ssim": 0.9161
+  },
+  "xray_radiography": {
+    "images": {
+      "comparison": "/static/img/results/xray_radiography/comparison.png",
+      "x_hat": "/static/img/results/xray_radiography/x_hat.png",
+      "x_true": "/static/img/results/xray_radiography/x_true.png",
+      "y": "/static/img/results/xray_radiography/y.png"
+    },
+    "nrmse": 0.1001,
+    "psnr": 20.67,
+    "solver": "tv_fista",
+    "ssim": 0.8779
+  }
+}
