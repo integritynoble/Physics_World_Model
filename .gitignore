@@ -78,3 +78,15 @@ _ul
 # OS files
 .DS_Store
 Thumbs.db
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.blg
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
