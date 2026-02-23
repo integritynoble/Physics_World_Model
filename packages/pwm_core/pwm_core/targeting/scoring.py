@@ -3,10 +3,16 @@
 
 Metrics + Anti-Goodhart scoring from ``docs/targeting_system.md`` S3, S5.
 
+This module implements Layer 4 (Targeting System / Harness) of the Industrial
+Intelligence Stack, as described in SolveEverything (solveeverything.org).
+The harness is a collection of difficult tests that a physics-AI system must
+pass, using blinded mismatch injection to prevent self-grading bias.
+
 Frozen formulas (per Rail Constitution Article 1.3, 1.4):
 - Recovery ratio:  rho = (PSNR_III - PSNR_II) / (PSNR_I - PSNR_II)
 - Oracle gap:      PSNR_I - PSNR_III
 - RoIC:            dB recovered per GPU-hour
+- RoCS:            dB recovered per compute-budget-fraction (Return on Cognitive Spend)
 - Anti-Goodhart:   S_rank = 0.3 * S_retro + 0.7 * S_prospective
 - Track weights:   0.35 / 0.20 / 0.25 / 0.20
 
@@ -20,6 +26,14 @@ Triad gate attribution (S2):
 - Gate 1 (Sampling):  measurement map A is the bottleneck
 - Gate 2 (Noise):     noise model mismatch limits recovery
 - Gate 3 (Mismatch):  forward operator H is wrong
+
+L0-L5 Maturation Curve (SolveEverything Industrial Intelligence Stack):
+- L0: Ill-Posed    — rho < 0.10 (no robustness)
+- L1: Measurable   — 0.10 ≤ rho < 0.30 (basic recovery measured)
+- L2: Repeatable   — 0.30 ≤ rho < 0.50 (consistent, documented)
+- L3: Automated    — 0.50 ≤ rho < 0.70 (~80% routine mismatch handled)
+- L4: Industrialized — 0.70 ≤ rho < 0.90 (outcome-based delivery possible)
+- L5: Commoditized — rho ≥ 0.90 (compute-bound, effectively solved)
 """
 
 from __future__ import annotations
@@ -53,6 +67,114 @@ TRACK1_SUBWEIGHTS = {
     "cross_modality": 0.10,
     "roic": 0.10,
 }
+
+
+# ---------------------------------------------------------------------------
+# L0-L5 Maturation Curve (SolveEverything Industrial Intelligence Stack)
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class MaturityLevel:
+    """Maturity classification of a physics-AI system on the L0-L5 scale.
+
+    Maps recovery ratio ρ to a domain maturity level from the SolveEverything
+    Industrial Intelligence Stack.  The Targeting System (Layer 4) uses this
+    to grade whether a modality is ready for automated, industrial, or
+    commoditised deployment.
+
+    Attributes
+    ----------
+    level : int
+        Numeric level 0-5.
+    label : str
+        Short label e.g. "L3".
+    name : str
+        Human-readable name e.g. "Automated".
+    description : str
+        One-sentence description of what this level means.
+    rho_min : float
+        Minimum ρ threshold to reach this level.
+    """
+
+    level: int
+    label: str
+    name: str
+    description: str
+    rho_min: float
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "level": self.level,
+            "label": self.label,
+            "name": self.name,
+            "description": self.description,
+            "rho_min": self.rho_min,
+        }
+
+
+# Ordered L0→L5; each entry gives the *minimum* ρ required to reach that level.
+_MATURITY_TABLE: List[Tuple[float, int, str, str, str]] = [
+    # (rho_min, level, label, name, description)
+    (0.90, 5, "L5", "Commoditized",
+     "Compute-bound; recovery scales purely with additional processing power."),
+    (0.70, 4, "L4", "Industrialized",
+     "Outcome-based delivery possible; buyers purchase verified reconstruction results."),
+    (0.50, 3, "L3", "Automated",
+     "~80% of routine mismatch handled autonomously; humans manage exceptions only."),
+    (0.30, 2, "L2", "Repeatable",
+     "Recovery is consistent and documented via standard calibration procedures."),
+    (0.10, 1, "L1", "Measurable",
+     "Success metrics are agreed upon and basic leaderboard grading is operational."),
+    (0.00, 0, "L0", "Ill-Posed",
+     "Objectives contested; recovery unreliable; no robustness to operator mismatch."),
+]
+
+
+def compute_maturity_level(rho: float) -> MaturityLevel:
+    """Map recovery ratio ρ ∈ [0, 1] to an L0-L5 MaturityLevel.
+
+    Parameters
+    ----------
+    rho : float
+        Recovery ratio from :func:`compute_recovery_ratio`.
+
+    Returns
+    -------
+    MaturityLevel
+    """
+    for rho_min, level, label, name, description in _MATURITY_TABLE:
+        if rho >= rho_min:
+            return MaturityLevel(
+                level=level,
+                label=label,
+                name=name,
+                description=description,
+                rho_min=rho_min,
+            )
+    # Fallback: L0
+    return MaturityLevel(
+        level=0, label="L0", name="Ill-Posed",
+        description=_MATURITY_TABLE[-1][4], rho_min=0.0
+    )
+
+
+def compute_rocs(psnr_gain_db: float, budget_fraction: float) -> float:
+    """Return on Cognitive Spend: dB recovered per unit compute budget consumed.
+
+    Analogous to RoIC but normalised by budget fraction rather than absolute
+    GPU-hours, making it comparable across modalities with different runtimes.
+
+    Parameters
+    ----------
+    psnr_gain_db : float
+        PSNR_III - PSNR_II (dB recovered by calibration).
+    budget_fraction : float
+        Fraction of the allocated budget consumed (actual_s / budget_s).
+        Clamped to [1e-6, 10.0] to avoid division by zero.
+    """
+    budget_fraction = max(float(budget_fraction), 1e-6)
+    return float(psnr_gain_db / budget_fraction)
 
 
 # ---------------------------------------------------------------------------
@@ -456,7 +578,12 @@ def check_safety_brakes(
 
 @dataclass
 class ScoredResult:
-    """Aggregate scores for a harness run."""
+    """Aggregate scores for a harness run.
+
+    Includes both the core LIP-Arena metrics (rho, oracle_gap, roic, ofs) and
+    the SolveEverything Industrial Intelligence Stack indicators (maturity_level,
+    rocs) that position the modality on the L0-L5 curve.
+    """
 
     rho: float
     oracle_gap: float
@@ -470,13 +597,17 @@ class ScoredResult:
     disqualified: bool = False
     disqualification_reason: str = ""
     per_scene: List[Dict[str, Any]] = field(default_factory=list)
+    # SolveEverything Industrial Intelligence Stack additions
+    maturity_level: Optional[MaturityLevel] = None
+    rocs: float = 0.0  # Return on Cognitive Spend (dB / budget-fraction)
 
     def to_dict(self) -> Dict[str, Any]:
-        return {
+        d: Dict[str, Any] = {
             "rho": self.rho,
             "oracle_gap": self.oracle_gap,
             "roic": self.roic,
             "ofs": self.ofs,
+            "rocs": self.rocs,
             "track": self.track,
             "track_score": self.track_score,
             "final_score": self.final_score,
@@ -492,6 +623,9 @@ class ScoredResult:
                 for v in self.safety_violations
             ],
         }
+        if self.maturity_level is not None:
+            d["maturity_level"] = self.maturity_level.to_dict()
+        return d
 
 
 def score_run(
@@ -503,8 +637,12 @@ def score_run(
     track: str = "correct",
     diagnostics: Optional[Dict[str, Any]] = None,
     mismatch_magnitude: float = 1.0,
+    budget_s: float = 0.0,
 ) -> ScoredResult:
     """Compute all metrics and apply anti-Goodhart scoring.
+
+    Implements the full LIP-Arena scoring pipeline plus the SolveEverything
+    Industrial Intelligence Stack indicators (maturity_level, rocs).
 
     Parameters
     ----------
@@ -518,12 +656,19 @@ def score_run(
         Diagnostic data for gaming penalty checks.
     mismatch_magnitude : float
         Magnitude of injected mismatch (for MSI calculation).
+    budget_s : float
+        Allocated compute budget in seconds (used for RoCS; 0 = unknown).
     """
     rho = compute_recovery_ratio(psnr_i, psnr_ii, psnr_iii)
     oracle_gap = compute_oracle_gap(psnr_i, psnr_iii)
     psnr_gain = psnr_iii - psnr_ii
     roic = compute_roic(psnr_gain, total_gpu_seconds)
     ofs = compute_ofs(psnr_iii, psnr_i)
+
+    # SolveEverything: L0-L5 maturity classification and RoCS
+    maturity = compute_maturity_level(rho)
+    budget_fraction = (total_gpu_seconds / budget_s) if budget_s > 0 else 1.0
+    rocs = compute_rocs(psnr_gain, budget_fraction)
 
     # Track 1 score (simplified: rho-dominated)
     track_score = float(min(rho, 1.0))
@@ -576,4 +721,6 @@ def score_run(
         final_score=final_score,
         disqualified=disqualified,
         disqualification_reason=dq_reason,
+        maturity_level=maturity,
+        rocs=rocs,
     )

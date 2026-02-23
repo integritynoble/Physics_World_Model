@@ -15,6 +15,7 @@ from __future__ import annotations
 import importlib
 import logging
 import time
+import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
@@ -40,7 +41,9 @@ from pwm_core.targeting.scenarios import (
 )
 from pwm_core.targeting.scoring import (
     GateAttribution,
+    MaturityLevel,
     ScoredResult,
+    compute_maturity_level,
     infer_gate_attribution,
     score_run,
 )
@@ -182,6 +185,86 @@ def _add_noise(
 
 
 # ---------------------------------------------------------------------------
+# DecisionRecord — DR-AIS (Decision Records for AI Systems)
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class DecisionRecord:
+    """Immutable audit log for a harness run (DR-AIS standard).
+
+    Implements the Decision Records for AI Systems concept from the
+    SolveEverything Industrial Intelligence Stack.  Records exactly what
+    was measured, which physics model was used, and why the dominant gate
+    was attributed — functioning as a flight recorder for the Targeting System.
+
+    Attributes
+    ----------
+    run_id : str
+        Unique identifier for this evaluation run.
+    modality : str
+        Imaging modality evaluated.
+    solver : str
+        Solver tier used.
+    maturity_label : str
+        L0-L5 label for the aggregate run (e.g. "L3").
+    maturity_name : str
+        Human-readable maturity name (e.g. "Automated").
+    rho : float
+        Aggregate recovery ratio.
+    dominant_gate : str
+        Dominant Triad gate identified.
+    recommended_action : str
+        Actionable recommendation from the dominant gate.
+    blinded_clear : bool
+        True when mismatch was injected blind (as per CASP protocol).
+    template_id : str
+        Graph template used for the physics operator.
+    severity : str
+        Mismatch severity level used ('mild', 'moderate', 'severe', 'catastrophic').
+    n_scenes : int
+        Number of scenes evaluated.
+    """
+
+    run_id: str
+    modality: str
+    solver: str
+    maturity_label: str
+    maturity_name: str
+    rho: float
+    dominant_gate: str
+    recommended_action: str
+    blinded_clear: bool
+    template_id: str
+    severity: str
+    n_scenes: int
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "run_id": self.run_id,
+            "modality": self.modality,
+            "solver": self.solver,
+            "maturity_label": self.maturity_label,
+            "maturity_name": self.maturity_name,
+            "rho": self.rho,
+            "dominant_gate": self.dominant_gate,
+            "recommended_action": self.recommended_action,
+            "blinded_clear": self.blinded_clear,
+            "template_id": self.template_id,
+            "severity": self.severity,
+            "n_scenes": self.n_scenes,
+        }
+
+    def __str__(self) -> str:
+        return (
+            f"DR-AIS | {self.modality}/{self.solver} | "
+            f"{self.maturity_label} ({self.maturity_name}) | "
+            f"ρ={self.rho:.4f} | gate={self.dominant_gate} | "
+            f"blinded={self.blinded_clear}"
+        )
+
+
+# ---------------------------------------------------------------------------
 # HarnessResult
 # ---------------------------------------------------------------------------
 
@@ -200,7 +283,11 @@ class SceneResult:
 
 @dataclass
 class HarnessResult:
-    """Complete results for a harness run."""
+    """Complete results for a harness run.
+
+    Includes LIP-Arena metrics plus SolveEverything Industrial Intelligence
+    Stack indicators: L0-L5 maturity classification and DR-AIS decision record.
+    """
 
     modality: str
     solver: str
@@ -215,15 +302,27 @@ class HarnessResult:
     budget_report: Dict[str, Any]
     gate_attribution: Optional[GateAttribution] = None
     runbundle_path: Optional[str] = None
+    # SolveEverything Industrial Intelligence Stack additions
+    maturity_level: Optional[MaturityLevel] = None
+    decision_record: Optional[DecisionRecord] = None
 
     def summary_table(self) -> str:
         """Return a formatted summary table."""
+        # Build maturity label for header
+        ml = self.maturity_level or (
+            self.aggregate.maturity_level
+            if self.aggregate.maturity_level is not None
+            else None
+        )
+        ml_str = f"{ml.label} ({ml.name})" if ml is not None else "—"
+
         lines = [
             f"{'='*60}",
-            f"  LIP-Arena Harness Result",
+            f"  LIP-Arena Targeting System  [Industrial Intelligence Stack L4]",
             f"  Modality: {self.modality}  |  Solver: {self.solver}",
             f"  Track: {self.track}  |  Scenes: {self.n_scenes}",
             f"  Severity: {self.severity}  |  Sandbox: {self.sandbox}",
+            f"  Maturity: {ml_str}",
             f"{'='*60}",
             f"",
             f"  {'Metric':<25} {'Value':>10}",
@@ -231,6 +330,7 @@ class HarnessResult:
             f"  {'Recovery ratio (rho)':<25} {self.aggregate.rho:>10.4f}",
             f"  {'Oracle gap (dB)':<25} {self.aggregate.oracle_gap:>10.2f}",
             f"  {'RoIC (dB/GPU-hr)':<25} {self.aggregate.roic:>10.2f}",
+            f"  {'RoCS (dB/budget-frac)':<25} {self.aggregate.rocs:>10.2f}",
             f"  {'OFS':<25} {self.aggregate.ofs:>10.4f}",
             f"  {'Final score':<25} {self.aggregate.final_score:>10.4f}",
             f"  {'-'*35}",
@@ -250,6 +350,17 @@ class HarnessResult:
                 f"  {'Confidence':<25} {ga.confidence:>10.3f}",
             ]
 
+        if self.decision_record is not None:
+            dr = self.decision_record
+            lines += [
+                f"",
+                f"  DR-AIS Decision Record",
+                f"  {'-'*35}",
+                f"  {'Run ID':<25} {dr.run_id:>10}",
+                f"  {'Blinded clear':<25} {'yes' if dr.blinded_clear else 'no':>10}",
+                f"  {'Template':<25} {dr.template_id:>10}",
+            ]
+
         if self.aggregate.disqualified:
             lines.append(f"  ** DISQUALIFIED: {self.aggregate.disqualification_reason}")
 
@@ -267,6 +378,11 @@ class HarnessResult:
         return "\n".join(lines)
 
     def to_dict(self) -> Dict[str, Any]:
+        ml = self.maturity_level or (
+            self.aggregate.maturity_level
+            if self.aggregate.maturity_level is not None
+            else None
+        )
         return {
             "modality": self.modality,
             "solver": self.solver,
@@ -276,6 +392,11 @@ class HarnessResult:
             "severity": self.severity,
             "sandbox": self.sandbox,
             "aggregate": self.aggregate.to_dict(),
+            "maturity_level": ml.to_dict() if ml is not None else None,
+            "decision_record": (
+                self.decision_record.to_dict()
+                if self.decision_record is not None else None
+            ),
             "gate_attribution": (
                 self.gate_attribution.to_dict()
                 if self.gate_attribution is not None else None
@@ -537,6 +658,7 @@ class Harness:
                 total_gpu_seconds=total_time,
                 track=self.track,
                 mismatch_magnitude=mismatch_mag,
+                budget_s=float(self.budget_s),
             )
 
             # 6b. Gate attribution (Triad decomposition for Track 2)
@@ -627,6 +749,27 @@ class Harness:
         total_time = time.perf_counter() - t_start
         budget_report = budget_guard.report().to_dict()
 
+        # SolveEverything: L0-L5 maturity level for the aggregate run
+        agg_maturity = compute_maturity_level(avg_rho)
+
+        # DR-AIS: immutable decision record for this run
+        agg_dom_gate = agg_gate_attr.dominant_gate if agg_gate_attr else "unknown"
+        agg_rec_action = agg_gate_attr.recommended_action if agg_gate_attr else ""
+        decision_record = DecisionRecord(
+            run_id=str(uuid.uuid4())[:8],
+            modality=self.modality,
+            solver=self.solver_name,
+            maturity_label=agg_maturity.label,
+            maturity_name=agg_maturity.name,
+            rho=round(avg_rho, 4),
+            dominant_gate=agg_dom_gate,
+            recommended_action=agg_rec_action,
+            blinded_clear=True,  # mismatch always injected blind
+            template_id=self.template_id,
+            severity=severity,
+            n_scenes=n_scenes,
+        )
+
         result = HarnessResult(
             modality=self.modality,
             solver=self.solver_name,
@@ -640,6 +783,8 @@ class Harness:
             gate_attribution=agg_gate_attr,
             timing_s=total_time,
             budget_report=budget_report,
+            maturity_level=agg_maturity,
+            decision_record=decision_record,
         )
 
         logger.info(

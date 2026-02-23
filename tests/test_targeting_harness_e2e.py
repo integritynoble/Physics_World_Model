@@ -16,8 +16,13 @@ import pytest
 _repo = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_repo / "packages" / "pwm_core"))
 
-from pwm_core.targeting.harness import Harness, HarnessResult
-from pwm_core.targeting.scoring import GateAttribution, infer_gate_attribution
+from pwm_core.targeting.harness import DecisionRecord, Harness, HarnessResult
+from pwm_core.targeting.scoring import (
+    GateAttribution,
+    MaturityLevel,
+    compute_maturity_level,
+    infer_gate_attribution,
+)
 
 VALIDATED_MODALITIES = [
     "cassi", "cacti", "spc", "ct", "mri", "ptychography", "lensless",
@@ -234,3 +239,144 @@ class TestGateAttribution:
             "dominant_gate", "confidence", "recommended_action", "evidence",
         ):
             assert key in d, f"Missing key '{key}' in to_dict()"
+
+
+class TestMaturityLevel:
+    """Unit tests for the SolveEverything L0-L5 maturation curve."""
+
+    def test_l0_for_zero_rho(self):
+        """rho=0.0 → L0 (Ill-Posed)."""
+        ml = compute_maturity_level(0.0)
+        assert ml.level == 0
+        assert ml.label == "L0"
+        assert ml.name == "Ill-Posed"
+
+    def test_l1_boundary(self):
+        """rho=0.10 exactly → L1 (Measurable)."""
+        ml = compute_maturity_level(0.10)
+        assert ml.level == 1
+        assert ml.label == "L1"
+
+    def test_l2_mid(self):
+        """rho=0.40 → L2 (Repeatable)."""
+        ml = compute_maturity_level(0.40)
+        assert ml.level == 2
+        assert ml.label == "L2"
+        assert ml.name == "Repeatable"
+
+    def test_l3_boundary(self):
+        """rho=0.50 exactly → L3 (Automated)."""
+        ml = compute_maturity_level(0.50)
+        assert ml.level == 3
+        assert ml.label == "L3"
+        assert ml.name == "Automated"
+
+    def test_l4_mid(self):
+        """rho=0.80 → L4 (Industrialized)."""
+        ml = compute_maturity_level(0.80)
+        assert ml.level == 4
+        assert ml.label == "L4"
+        assert ml.name == "Industrialized"
+
+    def test_l5_boundary(self):
+        """rho=0.90 exactly → L5 (Commoditized)."""
+        ml = compute_maturity_level(0.90)
+        assert ml.level == 5
+        assert ml.label == "L5"
+        assert ml.name == "Commoditized"
+
+    def test_l5_above_threshold(self):
+        """rho=1.0 → L5 (Commoditized)."""
+        ml = compute_maturity_level(1.0)
+        assert ml.level == 5
+
+    def test_monotone_ordering(self):
+        """Higher rho must give equal or higher maturity level."""
+        rhos = [0.0, 0.05, 0.15, 0.35, 0.55, 0.75, 0.92, 1.0]
+        levels = [compute_maturity_level(r).level for r in rhos]
+        assert levels == sorted(levels), f"Non-monotone: {list(zip(rhos, levels))}"
+
+    def test_to_dict_keys(self):
+        """MaturityLevel.to_dict() has all required keys."""
+        ml = compute_maturity_level(0.6)
+        d = ml.to_dict()
+        for key in ("level", "label", "name", "description", "rho_min"):
+            assert key in d, f"Missing key '{key}'"
+
+    def test_harness_result_has_maturity_level(self):
+        """HarnessResult includes a valid maturity_level after run()."""
+        result = _run_sandbox("cassi")
+        assert result.maturity_level is not None
+        assert isinstance(result.maturity_level, MaturityLevel)
+        assert result.maturity_level.level in range(6)
+        assert result.maturity_level.label.startswith("L")
+
+    def test_harness_to_dict_includes_maturity(self):
+        """to_dict() includes maturity_level block."""
+        result = _run_sandbox("cassi")
+        d = result.to_dict()
+        assert "maturity_level" in d
+        assert d["maturity_level"] is not None
+        assert d["maturity_level"]["label"].startswith("L")
+
+    def test_summary_table_shows_maturity(self):
+        """summary_table() output includes the maturity label."""
+        result = _run_sandbox("cassi")
+        table = result.summary_table()
+        assert "Maturity:" in table
+        assert "L" in table  # at minimum L0-L5 label appears
+
+
+class TestDecisionRecord:
+    """Unit tests for DR-AIS DecisionRecord generation."""
+
+    def test_harness_produces_decision_record(self):
+        """HarnessResult includes a DecisionRecord after run()."""
+        result = _run_sandbox("cassi")
+        assert result.decision_record is not None
+        assert isinstance(result.decision_record, DecisionRecord)
+
+    def test_decision_record_fields(self):
+        """DecisionRecord has correct modality, solver, and blinded_clear."""
+        result = _run_sandbox("lensless")
+        dr = result.decision_record
+        assert dr.modality == "lensless"
+        assert dr.solver == "traditional_cpu"
+        assert dr.blinded_clear is True
+
+    def test_decision_record_maturity_consistent(self):
+        """DecisionRecord maturity_label must match HarnessResult.maturity_level."""
+        result = _run_sandbox("spc")
+        dr = result.decision_record
+        ml = result.maturity_level
+        assert ml is not None
+        assert dr.maturity_label == ml.label
+        assert dr.maturity_name == ml.name
+
+    def test_decision_record_run_id_unique(self):
+        """Each run produces a unique run_id."""
+        r1 = _run_sandbox("cassi")
+        r2 = _run_sandbox("cassi")
+        assert r1.decision_record.run_id != r2.decision_record.run_id
+
+    def test_decision_record_to_dict(self):
+        """to_dict() includes decision_record with required keys."""
+        result = _run_sandbox("cacti")
+        d = result.to_dict()
+        assert "decision_record" in d
+        dr_dict = d["decision_record"]
+        assert dr_dict is not None
+        for key in (
+            "run_id", "modality", "solver", "maturity_label", "maturity_name",
+            "rho", "dominant_gate", "blinded_clear", "template_id", "severity",
+            "n_scenes",
+        ):
+            assert key in dr_dict, f"Missing key '{key}' in decision_record dict"
+
+    def test_decision_record_str(self):
+        """__str__ produces a non-empty DR-AIS summary line."""
+        result = _run_sandbox("ct")
+        s = str(result.decision_record)
+        assert "DR-AIS" in s
+        assert result.decision_record.modality in s
+        assert result.decision_record.maturity_label in s
