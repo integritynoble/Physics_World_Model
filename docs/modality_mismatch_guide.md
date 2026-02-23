@@ -4,74 +4,81 @@
 
 This document shows, for each of the 64 PWM imaging modalities, what goes wrong when the **widefield Gaussian blur fallback** (sigma=2.0, shape-preserving, real-valued, self-adjoint) is used instead of the correct physics operator. Each modality includes quantitative mismatch evidence, **Common Mistakes** practitioners encounter, and **How to Avoid** them.
 
+## Data Source Breakdown
+
+| Data Source | Description | Count | Modalities |
+|-------------|-------------|-------|------------|
+| **lip_arena** | LIP Arena operator-generated ground truth | 14 | `widefield`, `sim`, `cassi`, `spc`, `cacti`, `ct`, `mri`, `ptychography`, `holography`, `nerf`, ... (+4 more) |
+| **synthetic_phantom** | Synthetic Gaussian phantom | 50 | `widefield_lowdose`, `confocal_livecell`, `confocal_3d`, `lightsheet`, `matrix`, `phase_retrieval`, `fpm`, `gaussian_splatting`, `panorama`, `light_field`, ... (+40 more) |
+
 ## Overview
 
-| # | Modality | Category | Build | Mismatch Types | Ex1 Shape Match | Ex1 RMSE | Ex2 RMSE |
-|---|----------|----------|-------|----------------|-----------------|----------|----------|
-| 1 | `widefield` | microscopy | OK | none | Yes | 0.0000 | 0.9800 |
-| 2 | `widefield_lowdose` | microscopy | OK | content | Yes | 0.0000 | 0.9800 |
-| 3 | `confocal_livecell` | microscopy | OK | content | Yes | 0.1346 | 0.9496 |
-| 4 | `confocal_3d` | microscopy | OK | dimensional, content | **No** (32, 64, 64) vs (64, 64) | N/A | 0.9998 |
-| 5 | `sim` | microscopy | OK | shape, content | **No** (64, 64, 9) vs (64, 64) | N/A | 0.9833 |
-| 6 | `lightsheet` | microscopy | OK | dimensional, content | **No** (64, 64, 32) vs (64, 64) | N/A | 0.9984 |
-| 7 | `cassi` | compressive | OK | shape, dimensional, content | Yes | 1.7780 | N/A |
-| 8 | `spc` | compressive | OK | shape, content | **No** (614) vs (64, 64) | N/A | 0.9273 |
-| 9 | `cacti` | compressive | OK | dimensional, content | Yes | 2.0146 | 1.5020 |
-| 10 | `matrix` | compressive | OK | shape, content | Yes | 0.0000 | 0.9800 |
-| 11 | `ct` | medical | OK | shape, content | **No** (180, 64) vs (64, 64) | N/A | 1.6748 |
-| 12 | `mri` | medical | OK | domain, content | Yes | 35.7292 | 1.1605 |
-| 13 | `ptychography` | coherent | OK | shape, nonlinear, content | **No** (16, 32, 32) vs (64, 64) | N/A | 1.0242 |
-| 14 | `holography` | coherent | OK | domain, content | Yes | 2.8429 | 1.1029 |
-| 15 | `phase_retrieval` | coherent | OK | shape, nonlinear, content | Yes | 5759.2899 | 1.4056 |
-| 16 | `fpm` | coherent | OK | shape, nonlinear, content | **No** (25, 16, 16) vs (64, 64) | N/A | 1.0002 |
-| 17 | `nerf` | neural_rendering | OK | dimensional, nonlinear, shape, content | **No** (10, 64, 64) vs (64, 64) | N/A | 0.9922 |
-| 18 | `gaussian_splatting` | neural_rendering | OK | dimensional, nonlinear, shape, content | **No** (10, 64, 64) vs (64, 64) | N/A | 1.0032 |
-| 19 | `lensless` | computational | OK | content | Yes | 0.9600 | 0.0057 |
-| 20 | `panorama` | computational | OK | content | Yes | 0.2596 | 0.9324 |
-| 21 | `light_field` | computational | OK | shape, content | **No** (64, 64) vs (64, 5) | N/A | 1.0022 |
-| 22 | `dot` | medical | OK | shape, content | **No** (64) vs (64, 64) | N/A | 1.0013 |
-| 23 | `photoacoustic` | medical | OK | shape, content | **No** (32, 91) vs (64, 64) | N/A | 75.5043 |
-| 24 | `oct` | medical | OK | content | **No** (64, 128) vs (64, 64) | N/A | 259.7463 |
-| 25 | `flim` | microscopy | OK | shape, nonlinear, content | **No** (64, 64, 64) vs (64, 64) | N/A | 1.4784 |
-| 26 | `integral` | computational | OK | shape, content | Yes | 0.1420 | 1.0038 |
-| 27 | `xray_radiography` | medical | OK | content | Yes | 0.5981 | 0.6191 |
-| 28 | `ultrasound` | medical | OK | shape, content | **No** (32, 128) vs (64, 64) | N/A | 976.2694 |
-| 29 | `pet` | medical | OK | shape, content | **No** (32, 64) vs (64, 64) | N/A | 57.0719 |
-| 30 | `spect` | medical | OK | shape, content | **No** (32, 64) vs (64, 64) | N/A | 45.9173 |
-| 31 | `sem` | electron_microscopy | OK | content | Yes | 0.1009 | 0.9918 |
-| 32 | `tem` | electron_microscopy | OK | domain, content | Yes | 0.1735 | 0.9914 |
-| 33 | `electron_tomography` | electron_microscopy | OK | dimensional, shape, content | **No** (16, 64, 64) vs (64, 64) | N/A | 22.4370 |
-| 34 | `stem` | electron_microscopy | OK | content | Yes | 0.1595 | N/A |
-| 35 | `fluoroscopy` | medical | OK | content | Yes | 9388.9027 | N/A |
-| 36 | `mammography` | medical | OK | content | Yes | 18241.2618 | N/A |
-| 37 | `dexa` | medical | OK | shape, content | **No** (2, 64, 64) vs (64, 64) | N/A | N/A |
-| 38 | `cbct` | medical | OK | shape, content | **No** (180, 64) vs (64, 64) | N/A | N/A |
-| 39 | `angiography` | medical | OK | content | Yes | 12071.4407 | N/A |
-| 40 | `doppler_ultrasound` | medical | OK | shape, content | **No** (32, 64) vs (64, 64) | N/A | N/A |
-| 41 | `elastography` | medical | OK | shape, content | **No** (32, 64) vs (64, 64) | N/A | N/A |
-| 42 | `fmri` | medical | OK | content | Yes | 15.6714 | N/A |
-| 43 | `mrs` | medical | OK | content | Yes | 4.7578 | N/A |
-| 44 | `diffusion_mri` | medical | OK | content | Yes | 38.2974 | N/A |
-| 45 | `two_photon` | microscopy | OK | content | Yes | 0.5101 | N/A |
-| 46 | `sted` | microscopy | OK | content | Yes | 0.1413 | N/A |
-| 47 | `palm_storm` | microscopy | OK | content | Yes | 210.4934 | N/A |
-| 48 | `tirf` | microscopy | OK | content | Yes | 0.1441 | N/A |
-| 49 | `polarization` | microscopy | OK | content | Yes | 0.1199 | N/A |
-| 50 | `endoscopy` | clinical_optics | OK | shape, content | **No** (4096) vs (64, 64) | N/A | N/A |
-| 51 | `fundus` | clinical_optics | OK | content | Yes | 0.1232 | N/A |
-| 52 | `octa` | clinical_optics | OK | content | Yes | 0.4745 | N/A |
-| 53 | `tof_camera` | depth_imaging | OK | content | Yes | 0.2418 | N/A |
-| 54 | `lidar` | depth_imaging | OK | shape, content | **No** (64) vs (64, 64) | N/A | N/A |
-| 55 | `structured_light` | depth_imaging | OK | content | Yes | 0.3545 | N/A |
-| 56 | `sar` | remote_sensing | OK | content | Yes | 6.2954 | N/A |
-| 57 | `sonar` | remote_sensing | OK | shape, content | **No** (64) vs (64, 64) | N/A | N/A |
-| 58 | `electron_diffraction` | electron_microscopy | OK | content | Yes | 3868.4630 | N/A |
-| 59 | `ebsd` | electron_microscopy | OK | content | Yes | 0.2938 | N/A |
-| 60 | `eels` | electron_microscopy | OK | content | Yes | 0.4893 | N/A |
-| 61 | `electron_holography` | electron_microscopy | OK | domain, content | Yes | 0.4275 | N/A |
-| 62 | `neutron_tomo` | particle_imaging | OK | content | Yes | 5017.3274 | N/A |
-| 63 | `proton_radiography` | particle_imaging | OK | content | Yes | 10010.4943 | N/A |
-| 64 | `muon_tomo` | particle_imaging | OK | content | Yes | 0.1193 | N/A |
+| # | Modality | Category | Source | Build | Mismatch Types | Ex1 Shape Match | Ex1 RMSE | Ex2 RMSE |
+|---|----------|----------|--------|-------|----------------|-----------------|----------|----------|
+| 1 | `widefield` | microscopy | lip_arena | OK | none | Yes | 0.0000 | 0.1409 |
+| 2 | `widefield_lowdose` | microscopy | synthetic_phantom | OK | content | Yes | 0.0000 | 0.9800 |
+| 3 | `confocal_livecell` | microscopy | synthetic_phantom | OK | content | Yes | 0.1346 | 0.9496 |
+| 4 | `confocal_3d` | microscopy | synthetic_phantom | OK | dimensional, content | **No** (32, 64, 64) vs (64, 64) | N/A | 0.9998 |
+| 5 | `sim` | microscopy | lip_arena | OK | shape, content | **No** (64, 64, 9) vs (64, 64) | N/A | 0.3954 |
+| 6 | `lightsheet` | microscopy | synthetic_phantom | OK | dimensional, content | **No** (64, 64, 32) vs (64, 64) | N/A | 0.9984 |
+| 7 | `cassi` | compressive | lip_arena | OK | shape, dimensional, content | Yes | 2.2182 | N/A |
+| 8 | `spc` | compressive | lip_arena | OK | shape, content | **No** (614) vs (64, 64) | N/A | 0.5113 |
+| 9 | `cacti` | compressive | lip_arena | OK | dimensional, content | Yes | 1.7161 | 1.4080 |
+| 10 | `matrix` | compressive | synthetic_phantom | OK | shape, content | Yes | 0.0000 | 0.9800 |
+| 11 | `ct` | medical | lip_arena | OK | shape, content | **No** (180, 64) vs (64, 64) | N/A | 27.3815 |
+| 12 | `mri` | medical | lip_arena | OK | domain, content | Yes | 34.2532 | 0.1117 |
+| 13 | `ptychography` | coherent | lip_arena | OK | shape, nonlinear, content | **No** (16, 32, 32) vs (64, 64) | N/A | 0.4210 |
+| 14 | `holography` | coherent | lip_arena | OK | domain, content | Yes | 1.1082 | 0.4813 |
+| 15 | `phase_retrieval` | coherent | synthetic_phantom | OK | shape, nonlinear, content | Yes | 5759.2899 | 1.4056 |
+| 16 | `fpm` | coherent | synthetic_phantom | OK | shape, nonlinear, content | **No** (25, 16, 16) vs (64, 64) | N/A | 1.0002 |
+| 17 | `nerf` | neural_rendering | lip_arena | OK | dimensional, nonlinear, shape, content | **No** (10, 64, 64) vs (64, 64) | N/A | 0.1725 |
+| 18 | `gaussian_splatting` | neural_rendering | synthetic_phantom | OK | dimensional, nonlinear, shape, content | **No** (10, 64, 64) vs (64, 64) | N/A | 1.0032 |
+| 19 | `lensless` | computational | lip_arena | OK | content | Yes | 0.1382 | 0.0008 |
+| 20 | `panorama` | computational | synthetic_phantom | OK | content | Yes | 0.2596 | 0.9324 |
+| 21 | `light_field` | computational | synthetic_phantom | OK | shape, content | **No** (64, 64) vs (64, 5) | N/A | 1.0022 |
+| 22 | `dot` | medical | synthetic_phantom | OK | shape, content | **No** (64) vs (64, 64) | N/A | 1.0013 |
+| 23 | `photoacoustic` | medical | synthetic_phantom | OK | shape, content | **No** (32, 91) vs (64, 64) | N/A | 75.5043 |
+| 24 | `oct` | medical | lip_arena | OK | content | **No** (64, 128) vs (64, 64) | N/A | 143.0442 |
+| 25 | `flim` | microscopy | synthetic_phantom | OK | shape, nonlinear, content | **No** (64, 64, 64) vs (64, 64) | N/A | 1.4784 |
+| 26 | `integral` | computational | synthetic_phantom | OK | shape, content | Yes | 0.1420 | 1.0038 |
+| 27 | `xray_radiography` | medical | synthetic_phantom | OK | content | Yes | 0.5981 | 0.6191 |
+| 28 | `ultrasound` | medical | lip_arena | OK | shape, content | **No** (32, 128) vs (64, 64) | N/A | 29768.8839 |
+| 29 | `pet` | medical | lip_arena | OK | shape, content | **No** (32, 64) vs (64, 64) | N/A | 894.4850 |
+| 30 | `spect` | medical | synthetic_phantom | OK | shape, content | **No** (32, 64) vs (64, 64) | N/A | 45.9173 |
+| 31 | `sem` | electron_microscopy | synthetic_phantom | OK | content | Yes | 0.1009 | 0.9918 |
+| 32 | `tem` | electron_microscopy | synthetic_phantom | OK | domain, content | Yes | 0.1735 | 0.9914 |
+| 33 | `electron_tomography` | electron_microscopy | synthetic_phantom | OK | dimensional, shape, content | **No** (16, 64, 64) vs (64, 64) | N/A | 22.4370 |
+| 34 | `stem` | electron_microscopy | synthetic_phantom | OK | content | Yes | 0.1595 | N/A |
+| 35 | `fluoroscopy` | medical | synthetic_phantom | OK | content | Yes | 9388.9027 | N/A |
+| 36 | `mammography` | medical | synthetic_phantom | OK | content | Yes | 18241.2618 | N/A |
+| 37 | `dexa` | medical | synthetic_phantom | OK | shape, content | **No** (2, 64, 64) vs (64, 64) | N/A | N/A |
+| 38 | `cbct` | medical | synthetic_phantom | OK | shape, content | **No** (180, 64) vs (64, 64) | N/A | N/A |
+| 39 | `angiography` | medical | synthetic_phantom | OK | content | Yes | 12071.4407 | N/A |
+| 40 | `doppler_ultrasound` | medical | synthetic_phantom | OK | shape, content | **No** (32, 64) vs (64, 64) | N/A | N/A |
+| 41 | `elastography` | medical | synthetic_phantom | OK | shape, content | **No** (32, 64) vs (64, 64) | N/A | N/A |
+| 42 | `fmri` | medical | synthetic_phantom | OK | content | Yes | 15.6714 | N/A |
+| 43 | `mrs` | medical | synthetic_phantom | OK | content | Yes | 4.7578 | N/A |
+| 44 | `diffusion_mri` | medical | synthetic_phantom | OK | content | Yes | 38.2974 | N/A |
+| 45 | `two_photon` | microscopy | synthetic_phantom | OK | content | Yes | 0.5101 | N/A |
+| 46 | `sted` | microscopy | synthetic_phantom | OK | content | Yes | 0.1413 | N/A |
+| 47 | `palm_storm` | microscopy | synthetic_phantom | OK | content | Yes | 210.4934 | N/A |
+| 48 | `tirf` | microscopy | synthetic_phantom | OK | content | Yes | 0.1441 | N/A |
+| 49 | `polarization` | microscopy | synthetic_phantom | OK | content | Yes | 0.1199 | N/A |
+| 50 | `endoscopy` | clinical_optics | synthetic_phantom | OK | shape, content | **No** (4096) vs (64, 64) | N/A | N/A |
+| 51 | `fundus` | clinical_optics | synthetic_phantom | OK | content | Yes | 0.1232 | N/A |
+| 52 | `octa` | clinical_optics | synthetic_phantom | OK | content | Yes | 0.4745 | N/A |
+| 53 | `tof_camera` | depth_imaging | synthetic_phantom | OK | content | Yes | 0.2418 | N/A |
+| 54 | `lidar` | depth_imaging | synthetic_phantom | OK | shape, content | **No** (64) vs (64, 64) | N/A | N/A |
+| 55 | `structured_light` | depth_imaging | synthetic_phantom | OK | content | Yes | 0.3545 | N/A |
+| 56 | `sar` | remote_sensing | synthetic_phantom | OK | content | Yes | 6.2954 | N/A |
+| 57 | `sonar` | remote_sensing | synthetic_phantom | OK | shape, content | **No** (64) vs (64, 64) | N/A | N/A |
+| 58 | `electron_diffraction` | electron_microscopy | synthetic_phantom | OK | content | Yes | 3868.4630 | N/A |
+| 59 | `ebsd` | electron_microscopy | synthetic_phantom | OK | content | Yes | 0.2938 | N/A |
+| 60 | `eels` | electron_microscopy | synthetic_phantom | OK | content | Yes | 0.4893 | N/A |
+| 61 | `electron_holography` | electron_microscopy | synthetic_phantom | OK | domain, content | Yes | 0.4275 | N/A |
+| 62 | `neutron_tomo` | particle_imaging | synthetic_phantom | OK | content | Yes | 5017.3274 | N/A |
+| 63 | `proton_radiography` | particle_imaging | synthetic_phantom | OK | content | Yes | 10010.4943 | N/A |
+| 64 | `muon_tomo` | particle_imaging | synthetic_phantom | OK | content | Yes | 0.1193 | N/A |
 
 ## Mismatch Categories
 
@@ -86,6 +93,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 1. Widefield Fluorescence Microscopy (`widefield`)
+
+**Data Source**: `lip_arena`
 
 **Principle**: The entire specimen is illuminated uniformly and fluorescence from all planes is collected simultaneously. The image is the convolution of the 3-D fluorescence distribution with the microscope point-spread function (PSF), dominated by out-of-focus blur from planes above and below the focal plane.
 
@@ -127,7 +136,7 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 |--------|---------|-------------------|
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
-| Round-trip RMSE | 0.979956 | — |
+| Round-trip RMSE | 0.140935 | — |
 
 **Failure**: Round-trip fidelity is similar — minimal mismatch.
 
@@ -162,6 +171,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 2. Low-Dose Widefield Microscopy (`widefield_lowdose`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Identical optical path to standard widefield but operated at very low photon budgets (short exposure or attenuated excitation) to minimize phototoxicity in live cells. The acquired images are severely photon-starved, making Poisson noise the dominant degradation rather than out-of-focus blur.
 
@@ -239,6 +250,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 3. Confocal Live-Cell Microscopy (`confocal_livecell`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: A focused laser spot is scanned across the specimen and a pinhole in front of the detector rejects out-of-focus fluorescence, providing optical sectioning. The image formation is modeled as a point-by-point convolution with the confocal PSF (product of excitation and detection PSFs). For live-cell work, speed and gentleness are prioritized.
 
 **Physics**: Laser scanning confocal microscopy for live-cell imaging. A focused laser scans the specimen point by point, and a pinhole rejects out-of-focus light. The confocal PSF is sharper (sigma~1.2-1.5) than widefield (sigma=2.0), producing fundamentally different blur characteristics.
@@ -315,6 +328,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 4. Confocal 3D Z-Stack (`confocal_3d`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Same confocal principle as live-cell mode but acquiring a full z-stack by stepping the objective or sample through the focal plane. Each optical section is convolved with the 3-D confocal PSF, and the full volume is reconstructed by 3-D deconvolution to recover isotropic resolution.
 
 **Physics**: Three-dimensional confocal imaging by acquiring a z-stack of optical sections. Each slice is convolved with the 3D confocal PSF. The anisotropic PSF (worse axial resolution) and volumetric data are key differences from 2D widefield. The correct operator works on 3D volumes, not 2D images.
@@ -387,6 +402,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 5. Structured Illumination Microscopy (`sim`)
 
+**Data Source**: `lip_arena`
+
 **Principle**: Structured Illumination Microscopy projects a known sinusoidal pattern onto the specimen, shifting high-frequency spatial information into the observable passband via Moiré interference. Multiple images (typically 9-15) are acquired at different pattern orientations and phases, then computationally recombined in Fourier space to achieve ~2× lateral resolution improvement beyond the diffraction limit.
 
 **Physics**: Structured Illumination Microscopy achieves ~2x lateral resolution improvement by illuminating with sinusoidal patterns at multiple orientations and phases. The forward model produces multiple patterned images (n_angles * n_phases = 9), fundamentally different from a single blurred output.
@@ -423,9 +440,9 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 |--------|---------|-------------------|
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
-| Round-trip RMSE | 0.983313 | — |
+| Round-trip RMSE | 0.395354 | — |
 
-**Failure**: Correct round-trip RMSE = 0.983313, fallback round-trip RMSE = 0.979956. The widefield round-trip loses structure-specific information that the correct operator preserves.
+**Failure**: Correct round-trip RMSE = 0.395354, fallback round-trip RMSE = 0.140935. The widefield round-trip loses structure-specific information that the correct operator preserves.
 
 **Correction**: Use the paired `sim` forward/adjoint for proper forward modeling and reconstruction.
 
@@ -458,6 +475,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 6. Light-Sheet Fluorescence Microscopy (`lightsheet`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: A thin sheet of laser light illuminates only the focal plane of the detection objective, providing intrinsic optical sectioning with minimal out-of-plane photobleaching. The orthogonal geometry between illumination and detection decouples sectioning from resolution. Detection is widefield, enabling fast volumetric imaging of large specimens.
 
@@ -531,6 +550,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 7. Coded Aperture Snapshot Spectral Imaging (CASSI) (`cassi`)
 
+**Data Source**: `lip_arena`
+
 **Principle**: Coded Aperture Snapshot Spectral Imaging (CASSI) captures a full 3-D spectral datacube (x, y, λ) in a single 2-D snapshot by encoding the scene with a binary coded aperture and spectrally dispersing it with a prism onto the detector. Different spectral channels are shifted and superimposed on the sensor, creating a compressed measurement. Computational algorithms recover the full datacube from this single measurement using sparsity priors.
 
 **Physics**: CASSI compresses a 3D spectral data cube (H x W x L) into a 2D coded measurement via a binary coded aperture mask and spectral dispersion. The output shape differs from the input due to dispersive shift. The widefield fallback ignores spectral encoding entirely.
@@ -556,12 +577,12 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
 | Complex output | No | No |
-| RMSE | 1.778001 | — |
-| Correlation | 0.1974 | — |
-| Max abs diff | 8.336653 | — |
-| Relative RMSE | 0.9864 | — |
+| RMSE | 2.218160 | — |
+| Correlation | 0.0442 | — |
+| Max abs diff | 4.167353 | — |
+| Relative RMSE | 0.8718 | — |
 
-**Failure**: While output shapes match, the pixel values are fundamentally different. RMSE = 1.778001, correlation = 0.1974. The widefield blur applies a generic Gaussian PSF that does not capture the physics of Coded Aperture Snapshot Spectral Imaging (CASSI).
+**Failure**: While output shapes match, the pixel values are fundamentally different. RMSE = 2.218160, correlation = 0.0442. The widefield blur applies a generic Gaussian PSF that does not capture the physics of Coded Aperture Snapshot Spectral Imaging (CASSI).
 
 **Correction**: Use the correct `cassi` operator which implements the physical forward model: y(x,y) = sum_l M(x,y) * X(x, y-s(l), l).
 
@@ -575,6 +596,26 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 **Failure**: The correct operator's adjoint is not available (non-linear model). The widefield round-trip (blur->blur) simply double-blurs the image, which does not represent the non-linear inverse problem.
 
 **Correction**: For non-linear modalities like Coded Aperture Snapshot Spectral Imaging (CASSI), iterative algorithms (gradient descent, ADMM) must use the correct forward model.
+
+### Mismatch Example 4: InverseNet 3-Scenario Comparison
+
+**Method**: `mst_l` | **Samples**: 10
+
+| Scenario | Description | PSNR (dB) | SSIM |
+|----------|-------------|-----------|------|
+| I (ideal) | Matched operator | 34.81 | 0.9730 |
+| II (mismatch) | Wrong/misaligned operator | 20.83 | 0.7440 |
+| III (oracle) | InverseNet self-supervised | 27.33 | 0.8813 |
+
+| Metric | Value |
+|--------|-------|
+| PSNR drop (I → II) | **14.0 dB** |
+| PSNR recovery (II → III) | **6.5 dB** |
+| Mismatch parameters | mask_dx=0.5, mask_dy=0.3, mask_theta=0.1, disp_a1=2.02, disp_alpha=0.15 |
+
+**Failure**: InverseNet 3-scenario comparison (mst_l, 10 samples): Scenario I (ideal) = 34.81 dB, Scenario II (mismatch) = 20.83 dB, Scenario III (oracle) = 27.33 dB. Mismatch causes a 14.0 dB PSNR drop; InverseNet recovers 6.5 dB.
+
+**Correction**: Use InverseNet self-supervised calibration to recover from forward-model mismatch. For Coded Aperture Snapshot Spectral Imaging (CASSI), this recovers 6.5 dB of the 14.0 dB mismatch degradation without ground-truth supervision.
 
 ### Common Mistakes
 
@@ -605,6 +646,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 8. Single-Pixel Camera (`spc`)
+
+**Data Source**: `lip_arena`
 
 **Principle**: A single-pixel camera uses a spatial light modulator (DMD) to project a sequence of binary or grayscale patterns onto the scene. Each pattern multiplies the scene, and a single bucket detector (photodiode or PMT) measures the total light for each pattern, producing one scalar measurement per pattern. Compressive sensing recovers the image from far fewer measurements than Nyquist by exploiting sparsity in a transform domain.
 
@@ -642,11 +685,31 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 |--------|---------|-------------------|
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
-| Round-trip RMSE | 0.927341 | — |
+| Round-trip RMSE | 0.511322 | — |
 
-**Failure**: Correct round-trip RMSE = 0.927341, fallback round-trip RMSE = 0.979956. The widefield round-trip loses structure-specific information that the correct operator preserves.
+**Failure**: Correct round-trip RMSE = 0.511322, fallback round-trip RMSE = 0.140935. The widefield round-trip loses structure-specific information that the correct operator preserves.
 
 **Correction**: Use the paired `spc` forward/adjoint for proper forward modeling and reconstruction.
+
+### Mismatch Example 4: InverseNet 3-Scenario Comparison
+
+**Method**: `ista_net` | **Samples**: 11
+
+| Scenario | Description | PSNR (dB) | SSIM |
+|----------|-------------|-----------|------|
+| I (ideal) | Matched operator | 31.85 | 0.9161 |
+| II (mismatch) | Wrong/misaligned operator | 19.02 | 0.5837 |
+| III (oracle) | InverseNet self-supervised | 27.45 | 0.7599 |
+
+| Metric | Value |
+|--------|-------|
+| PSNR drop (I → II) | **12.8 dB** |
+| PSNR recovery (II → III) | **8.4 dB** |
+| Mismatch parameters | gain_alpha=0.0015, sigma_y=0.03, fista_lam=0.005, fista_iters=500, drunet_sigma_end=0.01, drunet_sigma_anneal=10.0, drunet_max_iter=200, gain_alpha_h=0.0015, gain_alpha_w=0.0015, sigma_y_hat=0.04, num_images=11 |
+
+**Failure**: InverseNet 3-scenario comparison (ista_net, 11 samples): Scenario I (ideal) = 31.85 dB, Scenario II (mismatch) = 19.02 dB, Scenario III (oracle) = 27.45 dB. Mismatch causes a 12.8 dB PSNR drop; InverseNet recovers 8.4 dB.
+
+**Correction**: Use InverseNet self-supervised calibration to recover from forward-model mismatch. For Single-Pixel Camera, this recovers 8.4 dB of the 12.8 dB mismatch degradation without ground-truth supervision.
 
 ### Common Mistakes
 
@@ -678,6 +741,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 9. CACTI (Video Snapshot Compressive Imaging) (`cacti`)
 
+**Data Source**: `lip_arena`
+
 **Principle**: Coded Aperture Compressive Temporal Imaging (CACTI) compresses multiple high-speed video frames into a single sensor exposure by modulating the scene with a dynamic coded aperture (shifting mask) during the integration time. The sensor accumulates a coded sum of B consecutive frames, and computational algorithms recover all B frames from the single compressed measurement using video sparsity priors.
 
 **Physics**: CACTI compresses a video sequence (H x W x T frames) into a single 2D snapshot via time-varying coded apertures. Each temporal frame is modulated by a different mask pattern and all frames are summed on the detector. The widefield fallback has no temporal coding structure.
@@ -703,12 +768,12 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
 | Complex output | No | No |
-| RMSE | 2.014648 | — |
-| Correlation | 0.0793 | — |
-| Max abs diff | 8.437287 | — |
-| Relative RMSE | 0.9969 | — |
+| RMSE | 1.716063 | — |
+| Correlation | 0.0033 | — |
+| Max abs diff | 4.566164 | — |
+| Relative RMSE | 0.7815 | — |
 
-**Failure**: While output shapes match, the pixel values are fundamentally different. RMSE = 2.014648, correlation = 0.0793. The widefield blur applies a generic Gaussian PSF that does not capture the physics of CACTI (Video Snapshot Compressive Imaging).
+**Failure**: While output shapes match, the pixel values are fundamentally different. RMSE = 1.716063, correlation = 0.0033. The widefield blur applies a generic Gaussian PSF that does not capture the physics of CACTI (Video Snapshot Compressive Imaging).
 
 **Correction**: Use the correct `cacti` operator which implements the physical forward model: y(x,y) = sum_t M_t(x,y) * X(x,y,t).
 
@@ -718,11 +783,31 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 |--------|---------|-------------------|
 | Output shape | (64, 64, 8) | (64, 64) |
 | Shapes match | **No** | — |
-| Round-trip RMSE | 1.502037 | — |
+| Round-trip RMSE | 1.408046 | — |
 
-**Failure**: Correct round-trip RMSE = 1.502037, fallback round-trip RMSE = 0.970420. The widefield round-trip loses structure-specific information that the correct operator preserves.
+**Failure**: Correct round-trip RMSE = 1.408046, fallback round-trip RMSE = 0.114212. The widefield round-trip loses structure-specific information that the correct operator preserves.
 
 **Correction**: Use the paired `cacti` forward/adjoint for proper forward modeling and reconstruction.
+
+### Mismatch Example 4: InverseNet 3-Scenario Comparison
+
+**Method**: `efficientsci` | **Samples**: 6
+
+| Scenario | Description | PSNR (dB) | SSIM |
+|----------|-------------|-----------|------|
+| I (ideal) | Matched operator | 35.39 | 0.9729 |
+| II (mismatch) | Wrong/misaligned operator | 14.81 | 0.3031 |
+| III (oracle) | InverseNet self-supervised | 27.38 | 0.9268 |
+
+| Metric | Value |
+|--------|-------|
+| PSNR drop (I → II) | **20.6 dB** |
+| PSNR recovery (II → III) | **12.6 dB** |
+| Mismatch parameters | mask_dx=0.5, mask_dy=0.3, mask_theta=0.1, mask_blur_sigma=0.0, clock_offset=0.05, duty_cycle=0.95, gain=1.02, offset=0.002, noise_sigma=1.0 |
+
+**Failure**: InverseNet 3-scenario comparison (efficientsci, 6 samples): Scenario I (ideal) = 35.39 dB, Scenario II (mismatch) = 14.81 dB, Scenario III (oracle) = 27.38 dB. Mismatch causes a 20.6 dB PSNR drop; InverseNet recovers 12.6 dB.
+
+**Correction**: Use InverseNet self-supervised calibration to recover from forward-model mismatch. For CACTI (Video Snapshot Compressive Imaging), this recovers 12.6 dB of the 20.6 dB mismatch degradation without ground-truth supervision.
 
 ### Common Mistakes
 
@@ -753,6 +838,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 10. Generic Matrix Sensing (`matrix`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Generic matrix sensing models the forward process as y = Ax + n, where A is an arbitrary measurement matrix (not necessarily structured like a convolution or Radon transform). This is the most general compressive sensing framework, applicable to random projections, coded apertures, and any linear dimensionality reduction scheme. The key requirement is that A satisfies the Restricted Isometry Property (RIP) for successful sparse recovery.
 
@@ -830,6 +917,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 11. X-ray Computed Tomography (`ct`)
 
+**Data Source**: `lip_arena`
+
 **Principle**: X-ray Computed Tomography reconstructs cross-sectional images from multiple X-ray projection measurements acquired at different angles around the patient. The Beer-Lambert law governs X-ray attenuation: I = I₀ exp(-∫μ(x,y) dl), and the Radon transform relates projections to the attenuation map. Filtered back-projection or iterative algorithms invert the Radon transform to produce volumetric images.
 
 **Physics**: X-ray CT acquires line integrals of the attenuation coefficient at multiple angles via the Radon transform. The output is a sinogram of shape (n_angles, n_detectors), fundamentally different from the 2D input. The widefield blur cannot represent angular projections.
@@ -866,9 +955,9 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 |--------|---------|-------------------|
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
-| Round-trip RMSE | 1.674789 | — |
+| Round-trip RMSE | 27.381501 | — |
 
-**Failure**: Correct round-trip RMSE = 1.674789, fallback round-trip RMSE = 0.979956. The widefield round-trip loses structure-specific information that the correct operator preserves.
+**Failure**: Correct round-trip RMSE = 27.381501, fallback round-trip RMSE = 0.140935. The widefield round-trip loses structure-specific information that the correct operator preserves.
 
 **Correction**: Use the paired `ct` forward/adjoint for proper forward modeling and reconstruction.
 
@@ -902,6 +991,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 12. Magnetic Resonance Imaging (`mri`)
 
+**Data Source**: `lip_arena`
+
 **Principle**: Magnetic Resonance Imaging measures the precession of hydrogen nuclear spins in a strong magnetic field (1.5-7 T). Radiofrequency pulses tip spins away from equilibrium, and gradient fields spatially encode the MR signal into k-space (spatial frequency domain). The image is obtained by inverse Fourier transform of k-space data. Contrast depends on tissue T1, T2, and proton density via the pulse sequence timing parameters.
 
 **Physics**: MRI acquires data in the spatial frequency domain (k-space) via the Fourier transform, with undersampling via a binary mask. The output is complex-valued undersampled k-space data — the widefield fallback produces only real-valued spatially blurred output, losing phase information entirely.
@@ -927,10 +1018,10 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
 | Complex output | Yes | No |
-| RMSE | 35.729225 | — |
-| Correlation | -0.0510 | — |
-| Max abs diff | 172.373960 | — |
-| Relative RMSE | 1.0005 | — |
+| RMSE | 34.253249 | — |
+| Correlation | 0.0394 | — |
+| Max abs diff | 2169.791802 | — |
+| Relative RMSE | 0.9988 | — |
 
 **Failure**: The correct forward model produces complex-valued output (contains phase information), but the widefield fallback produces only real-valued output. Phase information is critical for this modality.
 
@@ -942,9 +1033,9 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 |--------|---------|-------------------|
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
-| Round-trip RMSE | 1.160470 | — |
+| Round-trip RMSE | 0.111717 | — |
 
-**Failure**: Correct round-trip RMSE = 1.160470, fallback round-trip RMSE = 0.979956. The widefield round-trip loses structure-specific information that the correct operator preserves.
+**Failure**: Correct round-trip RMSE = 0.111717, fallback round-trip RMSE = 0.140935. The widefield round-trip loses structure-specific information that the correct operator preserves.
 
 **Correction**: Use the paired `mri` forward/adjoint for proper forward modeling and reconstruction.
 
@@ -955,7 +1046,7 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
 
-**Failure**: The correct operator output has significant imaginary component (|imag| RMS = 24.788895, |real| RMS = 24.957148). The widefield fallback produces only real-valued output, discarding all phase information.
+**Failure**: The correct operator output has significant imaginary component (|imag| RMS = 3.513744, |real| RMS = 34.112545). The widefield fallback produces only real-valued output, discarding all phase information.
 
 **Correction**: Use `mri` which correctly handles complex-valued wave propagation and phase contrast.
 
@@ -988,6 +1079,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 13. Ptychographic Imaging (`ptychography`)
+
+**Data Source**: `lip_arena`
 
 **Principle**: Ptychography is a scanning coherent diffractive imaging technique where a coherent beam (visible, X-ray, or electron) illuminates overlapping regions of the sample. At each scan position, a far-field diffraction pattern is recorded. The redundancy from overlapping illumination positions constrains the phase-retrieval problem, enabling simultaneous recovery of both the complex sample transmittance and the illumination probe function.
 
@@ -1025,9 +1118,9 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 |--------|---------|-------------------|
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
-| Round-trip RMSE | 1.024245 | — |
+| Round-trip RMSE | 0.421014 | — |
 
-**Failure**: Correct round-trip RMSE = 1.024245, fallback round-trip RMSE = 0.979956. The widefield round-trip loses structure-specific information that the correct operator preserves.
+**Failure**: Correct round-trip RMSE = 0.421014, fallback round-trip RMSE = 0.140935. The widefield round-trip loses structure-specific information that the correct operator preserves.
 
 **Correction**: Use the paired `ptychography` forward/adjoint for proper forward modeling and reconstruction.
 
@@ -1038,7 +1131,7 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 | Output shape | (16, 32, 32) | (64, 64) |
 | Shapes match | **No** | — |
 
-**Failure**: The correct operator is non-linear: A(a*x1 + b*x2) != a*A(x1) + b*A(x2). Linearity error = 33.766057. The widefield fallback is always linear (Gaussian blur), missing the non-linear physics entirely.
+**Failure**: The correct operator is non-linear: A(a*x1 + b*x2) != a*A(x1) + b*A(x2). Linearity error = 73.356450. The widefield fallback is always linear (Gaussian blur), missing the non-linear physics entirely.
 
 **Correction**: Use `ptychography` which correctly models the non-linear forward process: I_j = |FFT(P(r) * O(r - r_j))|^2.
 
@@ -1072,6 +1165,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 14. Digital Holographic Microscopy (`holography`)
 
+**Data Source**: `lip_arena`
+
 **Principle**: Digital holographic microscopy records the interference pattern (hologram) between a reference wave and the wave scattered by the sample. The complex field (amplitude and phase) is recovered by numerical propagation of the recorded hologram to the object plane. Phase imaging reveals optical path length changes caused by refractive index or thickness variations, providing quantitative phase contrast without staining.
 
 **Physics**: Digital holographic microscopy records the interference pattern between the object wave and a reference wave. The complex-valued wave propagation (Fresnel/angular spectrum) produces an interference hologram. The widefield fallback loses all phase information by producing only real-valued output.
@@ -1097,12 +1192,12 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
 | Complex output | No | No |
-| RMSE | 2.842948 | — |
-| Correlation | -0.0091 | — |
-| Max abs diff | 20.621442 | — |
-| Relative RMSE | 1.0066 | — |
+| RMSE | 1.108221 | — |
+| Correlation | 0.0550 | — |
+| Max abs diff | 3.444886 | — |
+| Relative RMSE | 0.7259 | — |
 
-**Failure**: While output shapes match, the pixel values are fundamentally different. RMSE = 2.842948, correlation = -0.0091. The widefield blur applies a generic Gaussian PSF that does not capture the physics of Digital Holographic Microscopy.
+**Failure**: While output shapes match, the pixel values are fundamentally different. RMSE = 1.108221, correlation = 0.0550. The widefield blur applies a generic Gaussian PSF that does not capture the physics of Digital Holographic Microscopy.
 
 **Correction**: Use the correct `holography` operator which implements the physical forward model: I = |U_obj * exp(i*phi) + U_ref|^2.
 
@@ -1112,9 +1207,9 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 |--------|---------|-------------------|
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
-| Round-trip RMSE | 1.102913 | — |
+| Round-trip RMSE | 0.481258 | — |
 
-**Failure**: Correct round-trip RMSE = 1.102913, fallback round-trip RMSE = 0.979956. The widefield round-trip loses structure-specific information that the correct operator preserves.
+**Failure**: Correct round-trip RMSE = 0.481258, fallback round-trip RMSE = 0.140935. The widefield round-trip loses structure-specific information that the correct operator preserves.
 
 **Correction**: Use the paired `holography` forward/adjoint for proper forward modeling and reconstruction.
 
@@ -1147,6 +1242,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 15. Coherent Diffractive Imaging (CDI) (`phase_retrieval`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Coherent Diffractive Imaging (CDI) records the far-field diffraction pattern of an isolated object illuminated by a coherent beam. Only intensity (not phase) is measured on the detector. Phase retrieval algorithms iteratively recover the lost phase by enforcing known constraints: the measured Fourier modulus and the finite support of the object in real space. CDI achieves diffraction-limited resolution without any imaging lens.
 
@@ -1201,7 +1298,7 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
 
-**Failure**: The correct operator is non-linear: A(a*x1 + b*x2) != a*A(x1) + b*A(x2). Linearity error = 688.083417. The widefield fallback is always linear (Gaussian blur), missing the non-linear physics entirely.
+**Failure**: The correct operator is non-linear: A(a*x1 + b*x2) != a*A(x1) + b*A(x2). Linearity error = 699.828109. The widefield fallback is always linear (Gaussian blur), missing the non-linear physics entirely.
 
 **Correction**: Use `phase_retrieval` which correctly models the non-linear forward process: y = |F{x}|^2.
 
@@ -1234,6 +1331,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 16. Fourier Ptychographic Microscopy (`fpm`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Fourier Ptychographic Microscopy synthetically increases the NA of a low-magnification objective by illuminating the sample from multiple angles (LED array) and computationally stitching together the resulting images in Fourier space. Each LED angle shifts the sample spectrum so different spatial-frequency bands enter the objective pupil, allowing recovery of both amplitude and phase at high resolution over a large field of view.
 
@@ -1284,7 +1383,7 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 | Output shape | (25, 16, 16) | (64, 64) |
 | Shapes match | **No** | — |
 
-**Failure**: The correct operator is non-linear: A(a*x1 + b*x2) != a*A(x1) + b*A(x2). Linearity error = 2.244174. The widefield fallback is always linear (Gaussian blur), missing the non-linear physics entirely.
+**Failure**: The correct operator is non-linear: A(a*x1 + b*x2) != a*A(x1) + b*A(x2). Linearity error = 2.420848. The widefield fallback is always linear (Gaussian blur), missing the non-linear physics entirely.
 
 **Correction**: Use `fpm` which correctly models the non-linear forward process: y_j = |F^{-1}{P(k - k_j) * O(k)}|^2.
 
@@ -1317,6 +1416,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 17. Neural Radiance Fields (NeRF) (`nerf`)
+
+**Data Source**: `lip_arena`
 
 **Principle**: Neural Radiance Fields (NeRF) represent a 3-D scene as a continuous volumetric function F(x,y,z,θ,φ) → (RGB, σ) parameterized by a multi-layer perceptron (MLP). The network maps 3-D position and viewing direction to color and volume density. Novel views are synthesized by differentiable volume rendering along camera rays, and the network is trained by minimizing photometric loss against a set of posed 2-D images.
 
@@ -1354,9 +1455,9 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 |--------|---------|-------------------|
 | Output shape | (64, 64, 32) | (64, 64) |
 | Shapes match | **No** | — |
-| Round-trip RMSE | 0.992179 | — |
+| Round-trip RMSE | 0.172517 | — |
 
-**Failure**: Correct round-trip RMSE = 0.992179, fallback round-trip RMSE = 0.976433. The widefield round-trip loses structure-specific information that the correct operator preserves.
+**Failure**: Correct round-trip RMSE = 0.172517, fallback round-trip RMSE = 0.140935. The widefield round-trip loses structure-specific information that the correct operator preserves.
 
 **Correction**: Use the paired `nerf` forward/adjoint for proper forward modeling and reconstruction.
 
@@ -1389,6 +1490,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 18. 3D Gaussian Splatting (`gaussian_splatting`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: 3-D Gaussian Splatting represents a scene as a set of anisotropic 3-D Gaussians, each with position, covariance, opacity, and spherical harmonics color coefficients. Novel views are rendered by projecting (splatting) these Gaussians onto the image plane and alpha-compositing them in depth order. Unlike NeRF, rendering is rasterization-based and achieves real-time frame rates (≥100 fps) with high visual quality.
 
@@ -1462,6 +1565,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 19. Lensless (Diffuser Camera) Imaging (`lensless`)
 
+**Data Source**: `lip_arena`
+
 **Principle**: Lensless (diffuser-cam) imaging replaces the imaging lens with a thin diffuser or coded mask placed directly before the sensor. The sensor records a multiplexed pattern (caustic or speckle) that encodes the 3-D scene. Computational reconstruction inverts the known point-spread function of the diffuser to recover the image, enabling an extremely compact, lightweight camera suitable for miniaturized or in-vivo applications.
 
 **Physics**: Lensless imaging replaces the lens with a coded optical element (diffuser or mask), producing a heavily convolved measurement. The PSF is typically much larger (sigma~10) and spatially varying compared to widefield (sigma=2.0), resulting in fundamentally different blur characteristics.
@@ -1487,12 +1592,12 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
 | Complex output | No | No |
-| RMSE | 0.959978 | — |
-| Correlation | 0.3015 | — |
-| Max abs diff | 3.232664 | — |
-| Relative RMSE | 0.9649 | — |
+| RMSE | 0.138219 | — |
+| Correlation | 0.2972 | — |
+| Max abs diff | 0.483198 | — |
+| Relative RMSE | 0.2518 | — |
 
-**Failure**: While output shapes match, the pixel values are fundamentally different. RMSE = 0.959978, correlation = 0.3015. The widefield blur applies a generic Gaussian PSF that does not capture the physics of Lensless (Diffuser Camera) Imaging.
+**Failure**: While output shapes match, the pixel values are fundamentally different. RMSE = 0.138219, correlation = 0.2972. The widefield blur applies a generic Gaussian PSF that does not capture the physics of Lensless (Diffuser Camera) Imaging.
 
 **Correction**: Use the correct `lensless` operator which implements the physical forward model: y = PSF_diffuser ** x + n.
 
@@ -1502,9 +1607,9 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 |--------|---------|-------------------|
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
-| Round-trip RMSE | 0.005742 | — |
+| Round-trip RMSE | 0.000846 | — |
 
-**Failure**: Correct round-trip RMSE = 0.005742, fallback round-trip RMSE = 0.979956. The widefield round-trip loses structure-specific information that the correct operator preserves.
+**Failure**: Correct round-trip RMSE = 0.000846, fallback round-trip RMSE = 0.140935. The widefield round-trip loses structure-specific information that the correct operator preserves.
 
 **Correction**: Use the paired `lensless` forward/adjoint for proper forward modeling and reconstruction.
 
@@ -1537,6 +1642,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 20. Panorama Multi-Focus Fusion (`panorama`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Panoramic multi-focus fusion captures multiple images of the same wide scene at different focal distances and combines them to produce a single all-in-focus panorama with extended depth of field. Image stitching aligns overlapping frames using feature matching and homography estimation, while focus fusion selects the sharpest pixels from each focal plane.
 
@@ -1614,6 +1721,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 21. Light Field Imaging (`light_field`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Light-field imaging captures both the spatial position and direction of light rays in a scene, recording a 4-D light field L(u,v,s,t) where (u,v) parameterize the aperture and (s,t) parameterize the spatial position. This enables computational refocusing, depth estimation, and novel viewpoint synthesis from a single capture. A microlens array placed before the sensor trades spatial resolution for angular resolution.
 
 **Physics**: Light field cameras use a microlens array to capture both spatial and angular information of the light field. The forward model involves disparity-dependent shifts and microlens integration that produce fundamentally different measurements from simple blur.
@@ -1685,6 +1794,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 22. Diffuse Optical Tomography (`dot`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Diffuse Optical Tomography reconstructs 3-D maps of tissue optical properties (absorption μₐ and reduced scattering μ'ₛ) from measurements of multiply scattered near-infrared light transmitted through tissue. Multiple source-detector pairs on the tissue surface provide overlapping sensitivity profiles. The diffusion equation models light propagation in the multiple-scattering regime.
 
@@ -1758,6 +1869,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 23. Photoacoustic Imaging (`photoacoustic`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Photoacoustic imaging converts absorbed pulsed laser light into ultrasound via thermoelastic expansion. Short laser pulses (<10 ns) are absorbed by tissue chromophores (hemoglobin, melanin), causing rapid thermal expansion that generates broadband acoustic waves. These waves are detected by ultrasound transducers and reconstructed to form images reflecting optical absorption contrast at ultrasonic spatial resolution.
 
 **Physics**: Photoacoustic imaging converts pulsed laser illumination into acoustic waves via thermoelastic expansion. Ultrasonic transducers detect the acoustic signals. The forward model involves a circular Radon transform producing time-series data for each transducer, not a spatially blurred 2D image.
@@ -1830,6 +1943,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 24. Optical Coherence Tomography (`oct`)
 
+**Data Source**: `lip_arena`
+
 **Principle**: Optical Coherence Tomography uses low-coherence interferometry to produce cross-sectional images of tissue microstructure. A broadband light source (superluminescent diode, ~840 nm or ~1310 nm) is split between sample and reference arms. Interference occurs only when the path lengths match within the coherence length (~5-10 μm), providing axial resolution. Spectral-domain OCT records the spectral interferogram and uses FFT for fast depth-resolved imaging.
 
 **Physics**: OCT uses low-coherence interferometry to obtain depth-resolved images. The forward model involves spectral modulation and Fourier transform relations between sample reflectivity and detected spectral interferogram. The widefield blur cannot represent the spectral encoding.
@@ -1866,9 +1981,9 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 |--------|---------|-------------------|
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
-| Round-trip RMSE | 259.746293 | — |
+| Round-trip RMSE | 143.044188 | — |
 
-**Failure**: Correct round-trip RMSE = 259.746293, fallback round-trip RMSE = 0.979956. The widefield round-trip loses structure-specific information that the correct operator preserves.
+**Failure**: Correct round-trip RMSE = 143.044188, fallback round-trip RMSE = 0.140935. The widefield round-trip loses structure-specific information that the correct operator preserves.
 
 **Correction**: Use the paired `oct` forward/adjoint for proper forward modeling and reconstruction.
 
@@ -1901,6 +2016,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 25. Fluorescence Lifetime Imaging (`flim`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Fluorescence Lifetime Imaging measures the exponential decay time of fluorophore emission (typically 1-10 ns) rather than intensity. Lifetime is sensitive to the fluorophore's local chemical environment (pH, ion concentration, FRET) but independent of concentration and photobleaching. Detection uses either time-correlated single-photon counting (TCSPC) or frequency-domain phase/modulation methods.
 
@@ -1951,7 +2068,7 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 | Output shape | (64, 64, 64) | (64, 64) |
 | Shapes match | **No** | — |
 
-**Failure**: The correct operator is non-linear: A(a*x1 + b*x2) != a*A(x1) + b*A(x2). Linearity error = 0.014557. The widefield fallback is always linear (Gaussian blur), missing the non-linear physics entirely.
+**Failure**: The correct operator is non-linear: A(a*x1 + b*x2) != a*A(x1) + b*A(x2). Linearity error = 0.014461. The widefield fallback is always linear (Gaussian blur), missing the non-linear physics entirely.
 
 **Correction**: Use `flim` which correctly models the non-linear forward process: y(t) = IRF(t) * [sum_i a_i * exp(-t/tau_i)].
 
@@ -1984,6 +2101,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 26. Integral Photography (Plenoptic) (`integral`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Integral photography (also known as integral imaging) uses a 2-D array of elemental lenses to capture multi-perspective views of a 3-D scene simultaneously. Each elemental lens records a small perspective image, and the full set encodes the 4-D light field. Computational reconstruction produces 3-D images that can be viewed from different angles or refocused without glasses.
 
@@ -2061,6 +2180,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 27. X-ray Radiography (`xray_radiography`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: X-ray radiography produces a 2-D projection image of the patient's internal structures by measuring the transmitted X-ray intensity after passing through the body. Dense structures (bone, metal) attenuate more X-rays and appear bright on the detector. The image represents the line-integral of the attenuation coefficient along each ray path.
 
 **Physics**: X-ray radiography measures the transmission of X-rays through tissue following Beer-Lambert exponential attenuation. The non-linear exponential model (I = I_0 * exp(-mu*x)) produces contrast fundamentally different from linear Gaussian convolution.
@@ -2137,6 +2258,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 28. Ultrasound Imaging (`ultrasound`)
 
+**Data Source**: `lip_arena`
+
 **Principle**: Medical ultrasound imaging transmits short pulses of high-frequency sound waves (1-20 MHz) into tissue and detects the echoes reflected from acoustic impedance boundaries. The time delay of each echo determines the reflector depth, and beamforming focuses the transmitted and received beams to form a 2-D cross-sectional image. Spatial resolution improves with frequency but penetration depth decreases.
 
 **Physics**: Ultrasound imaging sends acoustic pulses into tissue and records echo signals at an array of transducer elements. The output is RF channel data of shape (n_elements, n_samples) — a fundamentally different domain from a spatially blurred 2D image.
@@ -2173,9 +2296,9 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 |--------|---------|-------------------|
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
-| Round-trip RMSE | 976.269374 | — |
+| Round-trip RMSE | 29768.883915 | — |
 
-**Failure**: Correct round-trip RMSE = 976.269374, fallback round-trip RMSE = 0.979956. The widefield round-trip loses structure-specific information that the correct operator preserves.
+**Failure**: Correct round-trip RMSE = 29768.883915, fallback round-trip RMSE = 0.140935. The widefield round-trip loses structure-specific information that the correct operator preserves.
 
 **Correction**: Use the paired `ultrasound` forward/adjoint for proper forward modeling and reconstruction.
 
@@ -2208,6 +2331,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 29. Positron Emission Tomography (`pet`)
+
+**Data Source**: `lip_arena`
 
 **Principle**: Positron Emission Tomography detects pairs of 511 keV gamma rays emitted in opposite directions when a positron from a radiotracer annihilates with an electron. Coincidence detection of the two photons defines a line of response (LOR). Many LORs from different angles are reconstructed into a 3-D activity distribution map, providing functional and metabolic information.
 
@@ -2245,9 +2370,9 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 |--------|---------|-------------------|
 | Output shape | (64, 64) | (64, 64) |
 | Shapes match | Yes | — |
-| Round-trip RMSE | 57.071892 | — |
+| Round-trip RMSE | 894.485015 | — |
 
-**Failure**: Correct round-trip RMSE = 57.071892, fallback round-trip RMSE = 0.979956. The widefield round-trip loses structure-specific information that the correct operator preserves.
+**Failure**: Correct round-trip RMSE = 894.485015, fallback round-trip RMSE = 0.140935. The widefield round-trip loses structure-specific information that the correct operator preserves.
 
 **Correction**: Use the paired `pet` forward/adjoint for proper forward modeling and reconstruction.
 
@@ -2280,6 +2405,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 30. Single Photon Emission CT (`spect`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Single Photon Emission Computed Tomography detects single gamma-ray photons emitted by a radiotracer (⁹⁹ᵐTc, ¹²³I, ²⁰¹Tl) using a rotating gamma camera with a parallel-hole or pinhole collimator. The collimator provides directional sensitivity at the cost of low geometric efficiency (~0.01 %). Projections from multiple angles are reconstructed into 3-D activity maps.
 
@@ -2352,6 +2479,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 31. Scanning Electron Microscopy (`sem`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Scanning Electron Microscopy rasters a focused electron beam (0.1-30 keV) across the sample surface. Secondary electrons (SE) emitted from the top few nanometers provide topographic contrast, while backscattered electrons (BSE) from deeper interactions reveal compositional contrast (higher Z → more BSE). The image is formed point-by-point, with resolution down to 1-5 nm determined by the probe size.
 
@@ -2429,6 +2558,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 32. Transmission Electron Microscopy (`tem`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Transmission Electron Microscopy transmits a high-energy electron beam (80-300 keV) through an ultra-thin specimen (<100 nm). Electrons interact with the sample via elastic scattering (diffraction contrast, phase contrast) and inelastic scattering (energy loss). The transmitted beam is magnified by electromagnetic lenses to form an image with atomic-level resolution (0.05-0.2 nm in aberration-corrected TEMs).
 
 **Physics**: TEM transmits an electron beam through a thin specimen. Image contrast arises from the contrast transfer function (CTF) applied in Fourier space, which produces complex-valued output with oscillating phase contrast. The widefield real-valued blur cannot represent CTF oscillations.
@@ -2505,6 +2636,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 33. Electron Tomography (`electron_tomography`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Electron tomography reconstructs a 3-D volume from a tilt series of 2-D TEM or STEM projections acquired at different specimen tilts (typically ±60-70°). The Radon transform (or its generalization) relates the projections to the 3-D structure. The limited tilt range causes a 'missing wedge' artifact — elongation in the beam direction — which must be addressed by regularization or dual-axis acquisition.
 
 **Physics**: Electron tomography acquires a tilt series of TEM projections at multiple angles through a 3D specimen volume. The forward model is a 3D-to-2D projection operator — the widefield 2D blur has no concept of tilt-angle projections through a volume.
@@ -2576,6 +2709,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 34. Scanning TEM (STEM) (`stem`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Scanning TEM focuses the electron beam to a fine probe (0.05-1 nm) and scans it across the specimen. Multiple detectors collect signals simultaneously: bright-field (BF), annular dark-field (ADF), and high-angle annular dark-field (HAADF). HAADF-STEM provides Z-contrast imaging where intensity scales approximately as Z^1.7, enabling direct interpretation of atomic columns by atomic number.
 
@@ -2652,6 +2787,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 35. Fluoroscopy (`fluoroscopy`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Fluoroscopy provides real-time continuous X-ray imaging for guiding interventional procedures. A pulsed or continuous X-ray beam produces live projection images at 7.5-30 fps on a flat-panel detector. The trade-off is between frame rate, radiation dose, and image quality. Temporal filtering and dose-saving modes reduce patient exposure while maintaining diagnostic quality.
 
 **Physics**: Fluoroscopy provides real-time X-ray imaging via Beer-Lambert attenuation with temporal integration of multiple low-dose frames. The exponential attenuation and temporal averaging produce contrast unlike simple Gaussian convolution.
@@ -2726,6 +2863,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 36. Mammography (`mammography`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Mammography uses low-energy X-rays (25-35 kVp) with specialized anode/filter combinations (Mo/Mo, Mo/Rh, W/Rh) to optimize contrast between breast tissue types (adipose, glandular, calcifications). Breast compression reduces thickness and scatter, improving contrast and reducing dose. Digital mammography uses flat-panel detectors for direct or indirect X-ray detection.
 
@@ -2802,6 +2941,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 37. Dual-Energy X-ray Absorptiometry (DEXA) (`dexa`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Dual-Energy X-ray Absorptiometry uses two X-ray beam energies to decompose the body into bone mineral and soft tissue compartments. The differential attenuation of the two energies allows separation of bone from soft tissue. Bone mineral density (BMD, g/cm²) is computed by comparing attenuation to calibration phantoms.
 
 **Physics**: DEXA acquires X-ray images at two energies to separate bone and soft tissue contributions. The output is a dual-channel image (2, H, W), fundamentally different from a single-channel blurred image.
@@ -2872,6 +3013,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 38. Cone-Beam CT (`cbct`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Cone-Beam CT uses a divergent cone-shaped X-ray beam and a 2-D flat-panel detector to acquire a volumetric CT dataset in a single rotation. Unlike multi-slice CT with a narrow fan beam, CBCT covers the full volume simultaneously, enabling faster acquisition but with increased scatter and cone-beam artifacts compared to conventional CT.
 
@@ -2945,6 +3088,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 39. X-ray Angiography (`angiography`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: X-ray angiography visualizes blood vessels by injecting iodinated contrast agent and acquiring rapid-sequence fluoroscopic images. Digital Subtraction Angiography (DSA) subtracts a pre-contrast mask image from post-contrast frames, removing bone and soft tissue to show only the contrast-filled vasculature with high contrast and spatial resolution.
 
@@ -3021,6 +3166,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 40. Doppler Ultrasound (`doppler_ultrasound`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Doppler ultrasound measures blood flow velocity by detecting the frequency shift of echoes reflected from moving red blood cells. The Doppler equation relates the frequency shift to velocity: Δf = 2f₀·v·cos(θ)/c, where θ is the beam-flow angle. Color Doppler maps velocity spatially, spectral Doppler provides velocity-time waveforms at a sample volume, and power Doppler shows flow amplitude regardless of direction.
 
 **Physics**: Doppler ultrasound measures blood flow velocity from the frequency shift of reflected ultrasound pulses. The output shape (n_sensors, n_samples) is a 2D matrix of acoustic data, not a spatially blurred image.
@@ -3092,6 +3239,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 41. Shear-Wave Elastography (`elastography`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Shear-wave elastography measures tissue stiffness by tracking the propagation speed of shear waves generated by an acoustic radiation force impulse (ARFI) or external vibration. Shear-wave speed is proportional to the square root of the shear modulus: cₛ = √(μ/ρ). Stiffer tissues (fibrosis, tumors) have faster shear-wave propagation. Results are displayed as quantitative elasticity maps (in kPa or m/s).
 
 **Physics**: Elastography maps tissue stiffness by tracking shear wave propagation via ultrasonic imaging. The output is acoustic wave data at sensor positions (n_sensors, n_samples), incompatible with 2D blur output.
@@ -3162,6 +3311,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 42. Functional MRI (BOLD) (`fmri`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Functional MRI detects brain activity indirectly through the Blood Oxygen Level Dependent (BOLD) contrast mechanism. Neural activity increases local blood flow and oxygenation, changing the ratio of diamagnetic oxyhemoglobin to paramagnetic deoxyhemoglobin. This alters the local T2* relaxation time, producing a small (~1-5 %) signal change detectable by gradient-echo EPI sequences acquired rapidly at whole-brain coverage.
 
@@ -3238,6 +3389,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 43. MR Spectroscopy (`mrs`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: MR Spectroscopy measures the chemical shift spectrum of nuclear spins (usually ¹H) from a localized volume in the body, providing concentrations of metabolites such as NAA, creatine, choline, lactate, myo-inositol, and glutamate/glutamine. Chemical shift differences (in ppm) arise from the varying electronic shielding of nuclei in different molecular environments.
 
 **Physics**: MRS measures the frequency spectrum of metabolites in a localized region. Like MRI, data is acquired in k-space via Fourier encoding. The widefield spatial blur has no concept of spectral information.
@@ -3312,6 +3465,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 44. Diffusion MRI (DTI) (`diffusion_mri`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Diffusion MRI sensitizes the MR signal to the Brownian motion of water molecules by applying strong magnetic field gradient pulses (Stejskal-Tanner scheme). In fibrous tissue (e.g., white matter), water diffuses preferentially along fibers, creating directional diffusion anisotropy. Diffusion Tensor Imaging (DTI) models this as a 3×3 tensor; higher-order models (HARDI, CSD) resolve crossing fibers.
 
@@ -3388,6 +3543,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 45. Two-Photon Microscopy (`two_photon`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Two-photon excitation uses a pulsed near-infrared laser so that two photons are absorbed simultaneously by a fluorophore, producing fluorescence equivalent to a single photon of half the wavelength. Because absorption depends on the square of intensity, fluorescence is generated only at the tight focus, providing intrinsic optical sectioning without a pinhole. Deep tissue penetration (up to ~1 mm) is achieved due to reduced scattering at NIR wavelengths.
 
 **Physics**: Two-photon microscopy achieves optical sectioning through non-linear two-photon absorption (signal proportional to I^2). The quadratic dependence on excitation intensity makes the forward model inherently non-linear — unlike the linear Gaussian convolution fallback.
@@ -3462,6 +3619,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 46. STED Microscopy (`sted`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Stimulated Emission Depletion microscopy breaks the diffraction limit by using a donut-shaped depletion beam to force fluorophores at the periphery of the excitation spot back to the ground state via stimulated emission. Only fluorophores at the very center of the donut emit spontaneously, shrinking the effective PSF to 30-70 nm lateral resolution depending on depletion power.
 
@@ -3538,6 +3697,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 47. PALM/STORM Single-Molecule Localization (`palm_storm`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Single-Molecule Localization Microscopy (PALM/STORM) achieves ~20 nm resolution by stochastically switching individual fluorophores between bright and dark states. In each frame, only a sparse subset of molecules emit, allowing their positions to be localized with sub-pixel precision by fitting 2-D Gaussians. Thousands of frames are accumulated and all localizations are plotted to form a super-resolution image.
 
 **Physics**: PALM/STORM achieves nanoscale resolution by stochastically activating sparse subsets of fluorophores and localizing their positions. The forward model involves sparse emitter blinking statistics — fundamentally different from continuous Gaussian convolution.
@@ -3612,6 +3773,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 48. TIRF Microscopy (`tirf`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Total Internal Reflection Fluorescence microscopy creates an evanescent wave that penetrates only ~100-200 nm into the sample when the excitation beam is totally internally reflected at the glass-sample interface. This provides excellent optical sectioning of membrane-proximal events (vesicle fusion, protein dynamics at the plasma membrane) with very low background.
 
@@ -3688,6 +3851,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 49. Polarization Microscopy (`polarization`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Polarization microscopy exploits the birefringence (orientation-dependent refractive index) of ordered biological structures such as collagen fibers, spindle microtubules, and crystalline inclusions. By analyzing the polarization state of transmitted or reflected light, structural anisotropy can be measured without fluorescent labeling. Quantitative techniques (LC-PolScope) measure both retardance magnitude and slow-axis orientation.
 
 **Physics**: Polarization microscopy measures birefringence and dichroism via Mueller/Jones matrix formalism. The polarization state transformation is fundamentally different from scalar Gaussian blur — it encodes material anisotropy that the scalar fallback cannot represent.
@@ -3763,6 +3928,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 50. Fiber Bundle Endoscopy (`endoscopy`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Fiber-bundle endoscopy transmits an image through a flexible coherent fiber bundle (10,000-100,000 individual fiber cores) to visualize internal body cavities. Each fiber core acts as a single pixel, transmitting light from the distal end to the proximal end where a camera captures the image. The hexagonal fiber packing imposes a fixed pixelation pattern (comb/honeycomb structure) on the image.
 
 **Physics**: Endoscopic imaging transmits images through a fiber bundle with honeycomb sampling and inter-core crosstalk. The output is a 1D vector of core intensities (n_cores), not a 2D spatially blurred image.
@@ -3833,6 +4000,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 51. Fundus Camera (`fundus`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: A fundus camera images the posterior segment of the eye (retina, optic disc, macula, vasculature) by illuminating the retina through the pupil and capturing the reflected/backscattered light. The optical path is designed to separate illumination and observation through different portions of the pupil to avoid corneal reflections. Standard fundus imaging provides 30-50° field-of-view color photographs of the retina.
 
@@ -3909,6 +4078,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 52. OCT Angiography (`octa`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: OCT Angiography detects blood flow non-invasively by comparing repeated OCT B-scans at the same location. Moving red blood cells cause temporal fluctuations in the OCT signal (amplitude and/or phase), while static tissue remains constant. Decorrelation, variance, or differential analysis between repeated scans produces a motion-contrast image revealing the vasculature without the need for injectable contrast agents.
 
 **Physics**: OCTA uses repeated OCT scans to detect motion contrast from blood flow. The forward model involves angular spectrum propagation and temporal variance estimation — fundamentally different from single-frame Gaussian blur.
@@ -3983,6 +4154,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 53. Time-of-Flight Depth Camera (`tof_camera`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: A Time-of-Flight depth camera measures the round-trip time of modulated light (typically near-infrared LEDs at 850 nm) reflected from the scene. The sensor measures the phase shift between emitted and received modulated signals at each pixel, which is proportional to the target distance: d = c·Δφ/(4π·f_mod). Typical modulation frequencies are 20-100 MHz, providing depth ranges of 0.5-10 meters with mm-cm precision.
 
@@ -4059,6 +4232,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 54. LiDAR Scanner (`lidar`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Light Detection and Ranging (LiDAR) measures distances by emitting laser pulses (905 nm or 1550 nm) and timing their return after reflection from the scene (time-of-flight: d = c·t/2). A scanning mechanism (rotating mirror, MEMS, or optical phased array) sweeps the beam to build a 3-D point cloud of the environment. Resolution depends on the beam divergence, scanning density, and pulse timing precision.
 
 **Physics**: LiDAR acquires 3D point clouds by scanning a laser beam and timing return pulses. The output is a 1D range profile per scan line — not a 2D spatially blurred image.
@@ -4129,6 +4304,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 55. Structured-Light Depth Camera (`structured_light`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Structured-light depth sensing projects a known pattern (stripes, dots, coded binary patterns) onto the scene and observes the pattern deformation with a camera from a different viewpoint. The displacement (disparity) of each pattern element between projected and observed positions encodes the surface depth via triangulation. Dense depth maps are obtained by identifying pattern correspondences across the scene.
 
@@ -4205,6 +4382,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 56. Synthetic Aperture Radar (`sar`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Synthetic Aperture Radar achieves fine azimuth resolution by coherently processing radar echoes collected as the antenna moves along its flight path, synthesizing an aperture much larger than the physical antenna. The SAR signal processor applies matched filtering (pulse compression) in both range and azimuth to form a high-resolution complex image. SAR operates through clouds, at night, and in all weather conditions.
 
 **Physics**: SAR synthesizes a large aperture by coherently combining radar echoes along the flight path. The complex-valued range-azimuth focusing is fundamentally different from real-valued Gaussian blur. SAR images contain speckle and phase information absent in optical images.
@@ -4280,6 +4459,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 57. Sonar Imaging (`sonar`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Sonar imaging uses acoustic waves (typically 50 kHz to 1 MHz) to image underwater scenes. Active sonar transmits a sound pulse and records the echoes from the seabed, objects, or water column. The propagation speed in water (~1500 m/s, varying with temperature, salinity, and pressure) determines the time-to-distance relationship. Side-scan sonar and multibeam bathymetry produce 2-D and 3-D maps of the underwater environment.
 
 **Physics**: Sonar forms images by beamforming acoustic echoes from an array of transducer elements. The output is a 1D range profile per beam — not a 2D spatially blurred image.
@@ -4350,6 +4531,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 58. 4D-STEM Electron Diffraction (`electron_diffraction`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: 4D-STEM electron diffraction scans a convergent electron beam across the specimen and records a full 2-D diffraction pattern (convergent beam electron diffraction, CBED) at each scan position. The resulting 4-D dataset (2-D scan × 2-D diffraction) enables mapping of crystal structure, orientation, strain, electric fields, and charge density with nanometer spatial resolution.
 
@@ -4426,6 +4609,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 59. Electron Backscatter Diffraction (`ebsd`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Electron Backscatter Diffraction (EBSD) maps the crystallographic orientation of polycrystalline materials at each surface point. A focused electron beam (15-30 keV) strikes a tilted (70°) polished specimen, generating backscattered electrons that form Kikuchi diffraction patterns on a phosphor screen/CMOS camera. Automated pattern indexing determines the crystal orientation at each point with ~0.5° angular resolution.
 
 **Physics**: EBSD measures crystallographic orientation by analyzing Kikuchi diffraction patterns from backscattered electrons. The reciprocal-space geometry of the diffraction patterns is unrelated to simple spatial Gaussian blur.
@@ -4500,6 +4685,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 60. Electron Energy Loss Spectroscopy (`eels`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Electron Energy Loss Spectroscopy measures the energy lost by transmitted electrons due to inelastic interactions with the specimen. The energy-loss spectrum contains characteristic edges corresponding to inner-shell ionization of specific elements, enabling elemental mapping with atomic spatial resolution. Near-edge fine structure (ELNES) reveals chemical bonding, and low-loss features probe band structure and optical properties.
 
@@ -4576,6 +4763,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 61. Electron Holography (`electron_holography`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Electron holography uses the interference between an object wave (transmitted through the specimen) and a reference wave (passing through vacuum) to record both amplitude and phase of the electron wave. An electrostatic biprism (charged wire) deflects the two waves to overlap and form interference fringes. Numerical reconstruction recovers the phase shift, which is sensitive to electrostatic potentials and magnetic fields in the specimen.
 
 **Physics**: Electron holography records the interference between the transmitted electron wave and a reference wave, encoding phase information. The complex-valued interference pattern contains electromagnetic potential information absent in real-valued Gaussian blur.
@@ -4650,6 +4839,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 62. Neutron Radiography/Tomography (`neutron_tomo`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Neutron radiography and tomography image the transmission of a thermal or cold neutron beam through a sample. Neutrons interact with nuclei (not electrons), providing complementary contrast to X-rays: hydrogen-rich materials (water, polymers, organics) attenuate neutrons strongly, while metals like aluminum and lead are relatively transparent. Tomographic reconstruction from multiple projection angles yields 3-D maps of neutron attenuation.
 
@@ -4726,6 +4917,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 
 ## 63. Proton Radiography (`proton_radiography`)
 
+**Data Source**: `synthetic_phantom`
+
 **Principle**: Proton radiography images the transmission and scattering of high-energy protons (50-800 MeV) through dense objects. Unlike X-rays, protons undergo significant multiple Coulomb scattering (MCS) in matter, which provides density and compositional contrast. Both transmission (energy loss) and scattering angle measurements contribute to image formation. Proton radiography can penetrate very dense materials (steel, depleted uranium) that are opaque to X-rays.
 
 **Physics**: Proton radiography measures the attenuation and multiple Coulomb scattering of proton beams through matter. The scattering kernel (MCS blur) and exponential attenuation are fundamentally different from a simple Gaussian PSF.
@@ -4800,6 +4993,8 @@ This document shows, for each of the 64 PWM imaging modalities, what goes wrong 
 ---
 
 ## 64. Muon Tomography (`muon_tomo`)
+
+**Data Source**: `synthetic_phantom`
 
 **Principle**: Muon tomography uses naturally occurring cosmic-ray muons to image the internal density structure of large objects (buildings, volcanoes, cargo containers). Muons undergo multiple Coulomb scattering, with the scattering angle proportional to the areal density and atomic number of the traversed material. By measuring the incoming and outgoing muon trajectories, the density distribution inside the object can be tomographically reconstructed.
 

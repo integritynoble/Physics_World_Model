@@ -19,6 +19,8 @@ Usage:
 
 from __future__ import annotations
 
+import enum
+import json
 import os
 import sys
 import time
@@ -27,6 +29,179 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
+
+
+# ---------------------------------------------------------------------------
+# Data source tiers for real experimental datasets
+# ---------------------------------------------------------------------------
+
+class DataSource(enum.Enum):
+    INVERSENET = "inversenet"
+    LIP_ARENA = "lip_arena"
+    BENCHMARK_SIM = "benchmark_sim"
+    SYNTHETIC = "synthetic_phantom"
+
+
+# Path constants (relative to project root)
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_INVERSENET_RESULTS_DIR = os.path.join(_PROJECT_ROOT, "papers", "inversenet", "results")
+_LIP_ARENA_DIR = os.path.join(_PROJECT_ROOT, "datasets", "lip_arena")
+_BENCHMARK_DATA_DIR = os.path.join(_PROJECT_ROOT, "papers", "inversenet", "data")
+
+# Modalities with InverseNet results
+_INVERSENET_MODALITIES = {"cacti", "cassi", "spc"}
+
+# Cache for loaded data
+_inversenet_summary_cache: Dict[str, dict] = {}
+_lip_arena_cache: Dict[str, np.ndarray] = {}
+
+
+def _load_inversenet_summary(modality: str) -> Optional[dict]:
+    """Load JSON summary metrics for a modality from InverseNet results."""
+    if modality in _inversenet_summary_cache:
+        return _inversenet_summary_cache[modality]
+    path = os.path.join(_INVERSENET_RESULTS_DIR, f"{modality}_summary.json")
+    if not os.path.isfile(path):
+        return None
+    try:
+        with open(path, "r") as f:
+            data = json.load(f)
+        _inversenet_summary_cache[modality] = data
+        return data
+    except Exception:
+        return None
+
+
+def _load_inversenet_sample(modality: str) -> Optional[np.ndarray]:
+    """Load a single ground truth array from the first NPZ file."""
+    recon_dir = os.path.join(_INVERSENET_RESULTS_DIR, f"{modality}_reconstructions")
+    if not os.path.isdir(recon_dir):
+        return None
+    npz_files = sorted(f for f in os.listdir(recon_dir) if f.endswith(".npz"))
+    if not npz_files:
+        return None
+    try:
+        data = np.load(
+            os.path.join(recon_dir, npz_files[0]), allow_pickle=True
+        )
+        # Try common ground truth keys
+        for key in ("g0_gt", "x_gt", "gt", "ground_truth"):
+            if key in data:
+                arr = data[key]
+                if hasattr(arr, "shape"):
+                    return np.asarray(arr, dtype=np.float32)
+        # Fallback: use first array that has a shape
+        for key in data.keys():
+            arr = data[key]
+            if hasattr(arr, "shape") and arr.ndim >= 2:
+                return np.asarray(arr, dtype=np.float32)
+        return None
+    except Exception:
+        return None
+
+
+def _load_lip_arena_sample(modality: str) -> Optional[np.ndarray]:
+    """Load x_gt.npy from datasets/lip_arena/{modality}/."""
+    if modality in _lip_arena_cache:
+        return _lip_arena_cache[modality]
+    path = os.path.join(_LIP_ARENA_DIR, modality, "x_gt.npy")
+    if not os.path.isfile(path):
+        return None
+    try:
+        arr = np.load(path).astype(np.float32)
+        _lip_arena_cache[modality] = arr
+        return arr
+    except Exception:
+        return None
+
+
+def _adapt_shape(x: np.ndarray, target_shape: Tuple[int, ...]) -> np.ndarray:
+    """Crop, pad, or resize x to match target_shape."""
+    if x.shape == target_shape:
+        return x
+
+    # Handle dimensionality difference
+    if len(x.shape) != len(target_shape):
+        # Try squeezing extra dims of size 1
+        squeezed = np.squeeze(x)
+        if squeezed.shape == target_shape:
+            return squeezed
+
+        # If target has more dims, expand by tiling trailing dims
+        if len(target_shape) > len(x.shape):
+            extra_dims = len(target_shape) - len(x.shape)
+            tmp = x
+            for _ in range(extra_dims):
+                tmp = np.expand_dims(tmp, axis=-1)
+            reps = [1] * len(tmp.shape)
+            for i in range(len(tmp.shape) - extra_dims, len(tmp.shape)):
+                reps[i] = target_shape[i]
+            x = np.tile(tmp, reps).astype(np.float32)
+            # Now x has the right ndim, fall through to per-axis crop/pad
+
+        # If target has fewer dims, take first slice of trailing dims
+        elif len(target_shape) < len(x.shape):
+            tmp = x
+            while len(tmp.shape) > len(target_shape):
+                tmp = tmp[..., 0]
+            x = tmp
+            # Now x has the right ndim, fall through to per-axis crop/pad
+
+    # Same number of dims: crop or pad each axis
+    result = x
+    for axis in range(len(target_shape)):
+        current = result.shape[axis]
+        target = target_shape[axis]
+        if current > target:
+            slices = [slice(None)] * len(result.shape)
+            slices[axis] = slice(0, target)
+            result = result[tuple(slices)]
+        elif current < target:
+            pad_width = [(0, 0)] * len(result.shape)
+            pad_width[axis] = (0, target - current)
+            result = np.pad(result, pad_width, mode="reflect")
+    return result.astype(np.float32)
+
+
+def resolve_data_source(
+    modality: str, required_shape: Tuple[int, ...]
+) -> Tuple[np.ndarray, DataSource, str]:
+    """Cascade through data tiers to find the best available data.
+
+    Returns (x_data, DataSource, description).
+    """
+    # Tier 1: InverseNet ground truth (CACTI, CASSI, SPC)
+    if modality in _INVERSENET_MODALITIES:
+        sample = _load_inversenet_sample(modality)
+        if sample is not None:
+            adapted = _adapt_shape(sample, required_shape)
+            src_dir = f"{modality}_reconstructions"
+            return adapted, DataSource.INVERSENET, f"InverseNet {src_dir} ground truth"
+
+    # Tier 2: LIP Arena x_gt.npy
+    lip_sample = _load_lip_arena_sample(modality)
+    if lip_sample is not None:
+        adapted = _adapt_shape(lip_sample, required_shape)
+        return adapted, DataSource.LIP_ARENA, f"LIP Arena {modality}/x_gt.npy"
+
+    # Tier 3: Benchmark simulation data (.mat/.tif)
+    if modality in _INVERSENET_MODALITIES:
+        bench_dir = os.path.join(_BENCHMARK_DATA_DIR, modality)
+        if os.path.isdir(bench_dir):
+            for fname in sorted(os.listdir(bench_dir)):
+                fpath = os.path.join(bench_dir, fname)
+                if fname.endswith(".npy"):
+                    try:
+                        arr = np.load(fpath).astype(np.float32)
+                        adapted = _adapt_shape(arr, required_shape)
+                        return adapted, DataSource.BENCHMARK_SIM, f"Benchmark {modality}/{fname}"
+                    except Exception:
+                        continue
+
+    # Tier 4: Synthetic phantom (labeled)
+    rng = np.random.default_rng(42)
+    x = rng.standard_normal(required_shape).astype(np.float32)
+    return x, DataSource.SYNTHETIC, "Synthetic Gaussian phantom (seed=42)"
 
 # ---------------------------------------------------------------------------
 # Load modality introductions from the platform database
@@ -1314,6 +1489,29 @@ class MismatchExample:
     relative_rmse: Optional[float] = None
     failure_description: str = ""
     correction_text: str = ""
+    data_source: str = ""           # e.g. "inversenet", "lip_arena", "synthetic_phantom"
+    data_source_detail: str = ""    # e.g. "InverseNet cacti_reconstructions ground truth"
+
+
+@dataclass
+class InverseNetScenarioResult:
+    """Pre-computed InverseNet 3-scenario PSNR/SSIM comparison."""
+    modality: str
+    best_method: str
+    num_samples: int
+    # Scenario I: ideal (matched operator)
+    scenario_i_psnr: float
+    scenario_i_ssim: float
+    # Scenario II: mismatch (wrong operator)
+    scenario_ii_psnr: float
+    scenario_ii_ssim: float
+    # Scenario III: oracle InverseNet correction
+    scenario_iii_psnr: float
+    scenario_iii_ssim: float
+    # Derived
+    psnr_drop: float = 0.0       # I → II
+    psnr_recovery: float = 0.0   # II → III
+    mismatch_params: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -1328,6 +1526,8 @@ class ModalityResult:
     actual_y_shape: Tuple[int, ...] = ()
     examples: List[MismatchExample] = field(default_factory=list)
     duration_ms: float = 0.0
+    data_source: str = ""                                      # tier label
+    inversenet_result: Optional[InverseNetScenarioResult] = None
 
 
 # ---------------------------------------------------------------------------
@@ -1365,9 +1565,8 @@ def run_example_1_forward_comparison(
     correct_op, fallback_op, spec: ModalitySpec
 ) -> MismatchExample:
     """Example 1: Forward pass comparison between correct and fallback operator."""
-    rng = np.random.default_rng(42)
     x_shape = _get_x_shape(correct_op)
-    x = rng.standard_normal(x_shape).astype(np.float32)
+    x, data_source, data_desc = resolve_data_source(spec.modality, x_shape)
 
     # Correct operator forward
     y_correct = correct_op.forward(x)
@@ -1451,6 +1650,8 @@ def run_example_1_forward_comparison(
         relative_rmse=metrics.get("relative_rmse"),
         failure_description=failure,
         correction_text=correction,
+        data_source=data_source.value,
+        data_source_detail=data_desc,
     )
 
 
@@ -1458,9 +1659,8 @@ def run_example_2_roundtrip(
     correct_op, fallback_op, spec: ModalitySpec
 ) -> MismatchExample:
     """Example 2: Round-trip fidelity (forward -> adjoint) comparison."""
-    rng = np.random.default_rng(42)
     x_shape = _get_x_shape(correct_op)
-    x = rng.standard_normal(x_shape).astype(np.float32)
+    x, data_source, data_desc = resolve_data_source(spec.modality, x_shape)
 
     # Correct operator round-trip
     correct_roundtrip_rmse = None
@@ -1549,6 +1749,8 @@ def run_example_2_roundtrip(
         relative_rmse=None,
         failure_description=failure,
         correction_text=correction,
+        data_source=data_source.value,
+        data_source_detail=data_desc,
     )
 
 
@@ -1556,13 +1758,13 @@ def run_example_3_bonus(
     correct_op, fallback_op, spec: ModalitySpec
 ) -> Optional[MismatchExample]:
     """Example 3: Bonus example for special mismatch types (domain/linearity)."""
-    rng = np.random.default_rng(123)
     x_shape = _get_x_shape(correct_op)
+    x_base, data_source, data_desc = resolve_data_source(spec.modality, x_shape)
     op_id = getattr(correct_op, "operator_id", spec.modality)
 
     # Domain check: complex vs real
     if "domain" in spec.mismatch_types:
-        x = rng.standard_normal(x_shape).astype(np.float32)
+        x = x_base
         y = correct_op.forward(x)
         if np.iscomplexobj(y):
             imag_energy = float(np.sqrt(np.mean(np.imag(y)**2)))
@@ -1590,11 +1792,14 @@ def run_example_3_bonus(
                         f"Use `{op_id}` which correctly handles complex-valued "
                         f"wave propagation and phase contrast."
                     ),
+                    data_source=data_source.value,
+                    data_source_detail=data_desc,
                 )
 
     # Linearity check: non-linear modalities
     if "nonlinear" in spec.mismatch_types:
-        x1 = rng.standard_normal(x_shape).astype(np.float32) * 0.5
+        rng = np.random.default_rng(123)
+        x1 = (x_base * 0.5 + rng.standard_normal(x_shape).astype(np.float32) * 0.1)
         x2 = rng.standard_normal(x_shape).astype(np.float32) * 0.5
         alpha, beta = 0.6, 0.4
         try:
@@ -1628,11 +1833,164 @@ def run_example_3_bonus(
                             f"Use `{op_id}` which correctly models the non-linear "
                             f"forward process: {spec.forward_equation}."
                         ),
+                        data_source=data_source.value,
+                        data_source_detail=data_desc,
                     )
         except Exception:
             pass  # Skip if operator can't handle this test
 
     return None
+
+
+# ---------------------------------------------------------------------------
+# Example 4: InverseNet 3-Scenario Comparison (CACTI, CASSI, SPC only)
+# ---------------------------------------------------------------------------
+
+def _extract_best_method_metrics(summary: dict, modality: str) -> Optional[InverseNetScenarioResult]:
+    """Extract best-method PSNR/SSIM across 3 scenarios from an InverseNet summary JSON."""
+    if modality == "cacti":
+        overall = summary.get("overall", {})
+        if not overall:
+            return None
+        # Find best method in scenario I by PSNR
+        sc_i = overall.get("scenario_i", {})
+        sc_ii = overall.get("scenario_ii", {})
+        sc_iii = overall.get("scenario_iii", {})
+        if not (sc_i and sc_ii and sc_iii):
+            return None
+        best_method = max(sc_i.keys(), key=lambda m: sc_i[m].get("psnr_mean", 0))
+        num_videos = len(summary.get("per_video", []))
+        n_groups = sum(v.get("n_groups", 0) for v in summary.get("per_video", []))
+        result = InverseNetScenarioResult(
+            modality=modality,
+            best_method=best_method,
+            num_samples=num_videos,
+            scenario_i_psnr=sc_i[best_method]["psnr_mean"],
+            scenario_i_ssim=sc_i[best_method]["ssim_mean"],
+            scenario_ii_psnr=sc_ii[best_method]["psnr_mean"],
+            scenario_ii_ssim=sc_ii[best_method]["ssim_mean"],
+            scenario_iii_psnr=sc_iii[best_method]["psnr_mean"],
+            scenario_iii_ssim=sc_iii[best_method]["ssim_mean"],
+            mismatch_params=summary.get("mismatch", {}),
+        )
+        result.psnr_drop = result.scenario_i_psnr - result.scenario_ii_psnr
+        result.psnr_recovery = result.scenario_iii_psnr - result.scenario_ii_psnr
+        return result
+
+    elif modality == "cassi":
+        sc_i = summary.get("scenario_i", {})
+        sc_ii = summary.get("scenario_ii", {})
+        sc_iii = summary.get("scenario_iii", {})
+        if not (sc_i and sc_ii and sc_iii):
+            return None
+        best_method = max(sc_i.keys(), key=lambda m: sc_i[m].get("psnr_mean", 0))
+        result = InverseNetScenarioResult(
+            modality=modality,
+            best_method=best_method,
+            num_samples=summary.get("num_scenes", 10),
+            scenario_i_psnr=sc_i[best_method]["psnr_mean"],
+            scenario_i_ssim=sc_i[best_method]["ssim_mean"],
+            scenario_ii_psnr=sc_ii[best_method]["psnr_mean"],
+            scenario_ii_ssim=sc_ii[best_method]["ssim_mean"],
+            scenario_iii_psnr=sc_iii[best_method]["psnr_mean"],
+            scenario_iii_ssim=sc_iii[best_method]["ssim_mean"],
+            mismatch_params=summary.get("mismatch", {}),
+        )
+        result.psnr_drop = result.scenario_i_psnr - result.scenario_ii_psnr
+        result.psnr_recovery = result.scenario_iii_psnr - result.scenario_ii_psnr
+        return result
+
+    elif modality == "spc":
+        methods = summary.get("methods", {})
+        if not methods:
+            return None
+        # Group by base method name, find best in scenario I
+        method_bases = set()
+        for key in methods:
+            for suffix in ("_scenario_i", "_scenario_ii", "_scenario_iii"):
+                if key.endswith(suffix):
+                    method_bases.add(key[: -len(suffix)])
+                    break
+        if not method_bases:
+            return None
+        best_base = max(
+            method_bases,
+            key=lambda m: methods.get(f"{m}_scenario_i", {}).get("psnr_mean", 0),
+        )
+        sc_i = methods.get(f"{best_base}_scenario_i", {})
+        sc_ii = methods.get(f"{best_base}_scenario_ii", {})
+        sc_iii = methods.get(f"{best_base}_scenario_iii", {})
+        if not (sc_i and sc_ii and sc_iii):
+            return None
+        result = InverseNetScenarioResult(
+            modality=modality,
+            best_method=best_base,
+            num_samples=summary.get("parameters", {}).get("num_images", 11),
+            scenario_i_psnr=sc_i["psnr_mean"],
+            scenario_i_ssim=sc_i["ssim_mean"],
+            scenario_ii_psnr=sc_ii["psnr_mean"],
+            scenario_ii_ssim=sc_ii["ssim_mean"],
+            scenario_iii_psnr=sc_iii["psnr_mean"],
+            scenario_iii_ssim=sc_iii["ssim_mean"],
+            mismatch_params=summary.get("parameters", {}),
+        )
+        result.psnr_drop = result.scenario_i_psnr - result.scenario_ii_psnr
+        result.psnr_recovery = result.scenario_iii_psnr - result.scenario_ii_psnr
+        return result
+
+    return None
+
+
+def run_example_4_inversenet_scenarios(
+    spec: ModalitySpec,
+) -> Optional[Tuple[MismatchExample, InverseNetScenarioResult]]:
+    """Example 4: InverseNet 3-scenario comparison (CACTI, CASSI, SPC only).
+
+    Uses pre-computed summary JSON — no operator execution needed.
+    """
+    if spec.modality not in _INVERSENET_MODALITIES:
+        return None
+    summary = _load_inversenet_summary(spec.modality)
+    if summary is None:
+        return None
+    inet_result = _extract_best_method_metrics(summary, spec.modality)
+    if inet_result is None:
+        return None
+
+    failure = (
+        f"InverseNet 3-scenario comparison ({inet_result.best_method}, "
+        f"{inet_result.num_samples} samples): "
+        f"Scenario I (ideal) = {inet_result.scenario_i_psnr:.2f} dB, "
+        f"Scenario II (mismatch) = {inet_result.scenario_ii_psnr:.2f} dB, "
+        f"Scenario III (oracle) = {inet_result.scenario_iii_psnr:.2f} dB. "
+        f"Mismatch causes a {inet_result.psnr_drop:.1f} dB PSNR drop; "
+        f"InverseNet recovers {inet_result.psnr_recovery:.1f} dB."
+    )
+    correction = (
+        f"Use InverseNet self-supervised calibration to recover from forward-model "
+        f"mismatch. For {spec.display_name}, this recovers "
+        f"{inet_result.psnr_recovery:.1f} dB of the {inet_result.psnr_drop:.1f} dB "
+        f"mismatch degradation without ground-truth supervision."
+    )
+
+    example = MismatchExample(
+        example_id=4,
+        title="InverseNet 3-Scenario Comparison",
+        correct_shape=spec.correct_y_shape,
+        fallback_shape=spec.correct_y_shape,
+        shapes_match=True,
+        correct_is_complex=False,
+        fallback_is_complex=False,
+        rmse=None,
+        correlation=None,
+        max_abs_diff=None,
+        relative_rmse=None,
+        failure_description=failure,
+        correction_text=correction,
+        data_source=DataSource.INVERSENET.value,
+        data_source_detail=f"InverseNet {spec.modality}_summary.json",
+    )
+    return example, inet_result
 
 
 # ---------------------------------------------------------------------------
@@ -1680,6 +2038,20 @@ def test_modality(modality: str) -> ModalityResult:
         except Exception:
             pass  # Bonus example is optional
 
+        # Example 4: InverseNet 3-Scenario Comparison (CACTI, CASSI, SPC)
+        try:
+            ex4_result = run_example_4_inversenet_scenarios(spec)
+            if ex4_result is not None:
+                ex4, inet_result = ex4_result
+                result.examples.append(ex4)
+                result.inversenet_result = inet_result
+        except Exception:
+            pass  # InverseNet example is optional
+
+        # Determine data source from first example
+        if result.examples:
+            result.data_source = result.examples[0].data_source
+
     except Exception as e:
         result.build_error = traceback.format_exc()
         # Still generate metadata-based examples
@@ -1718,7 +2090,7 @@ def test_modality(modality: str) -> ModalityResult:
 
 def print_console_report(results: List[ModalityResult]) -> int:
     """Print summary table to console. Returns count of mismatch modalities."""
-    header = f"{'#':<4} {'Modality':<28} {'Build':<8} {'Path':<10} {'Ex1':<12} {'Ex2':<12} {'Ex3':<12} {'Mismatch Types':<30} {'ms':<8}"
+    header = f"{'#':<4} {'Modality':<24} {'Source':<18} {'Build':<6} {'Path':<10} {'Ex1':<12} {'Ex2':<12} {'Ex3':<10} {'Ex4':<10} {'Mismatch Types':<24} {'ms':<6}"
     sep = "-" * len(header)
 
     print("\n" + "=" * len(header))
@@ -1730,11 +2102,18 @@ def print_console_report(results: List[ModalityResult]) -> int:
     n_mismatch = 0
     n_examples_total = 0
 
+    # Data source counts
+    source_counts: Dict[str, int] = {}
+
     for i, r in enumerate(results):
         build_status = "OK" if r.operator_built else "FAIL"
         ex1_status = "---"
         ex2_status = "---"
         ex3_status = "---"
+        ex4_status = "---"
+        source_label = r.data_source or "synthetic_phantom"
+
+        source_counts[source_label] = source_counts.get(source_label, 0) + 1
 
         for ex in r.examples:
             n_examples_total += 1
@@ -1755,16 +2134,21 @@ def print_console_report(results: List[ModalityResult]) -> int:
                 else:
                     ex2_status = "N/A"
             elif ex.example_id == 3:
-                ex3_status = ex.title[:11]
+                ex3_status = ex.title[:9]
+            elif ex.example_id == 4:
+                if r.inversenet_result:
+                    ex4_status = f"-{r.inversenet_result.psnr_drop:.0f}dB"
+                else:
+                    ex4_status = "YES"
 
         mismatch_str = ", ".join(r.spec.mismatch_types) if r.spec.mismatch_types else "none"
         if r.spec.mismatch_types:
             n_mismatch += 1
 
         print(
-            f"{i+1:<4} {r.modality:<28} {build_status:<8} {r.build_path:<10} "
-            f"{ex1_status:<12} {ex2_status:<12} {ex3_status:<12} "
-            f"{mismatch_str:<30} {r.duration_ms:<8.0f}"
+            f"{i+1:<4} {r.modality:<24} {source_label:<18} {build_status:<6} {r.build_path:<10} "
+            f"{ex1_status:<12} {ex2_status:<12} {ex3_status:<10} {ex4_status:<10} "
+            f"{mismatch_str:<24} {r.duration_ms:<6.0f}"
         )
 
     print(sep)
@@ -1772,6 +2156,11 @@ def print_console_report(results: List[ModalityResult]) -> int:
           f"{n_mismatch} with known mismatches")
     print(f"Builds: {sum(1 for r in results if r.operator_built)} OK, "
           f"{sum(1 for r in results if not r.operator_built)} FAIL")
+
+    # Data source breakdown
+    print(f"\nDATA SOURCES:")
+    for src, cnt in sorted(source_counts.items()):
+        print(f"  {src}: {cnt} modalities")
 
     # Print build failures
     failures = [r for r in results if not r.operator_built]
@@ -1814,14 +2203,41 @@ def generate_markdown(results: List[ModalityResult]) -> str:
         "practitioners encounter, and **How to Avoid** them.\n"
     )
 
+    # -- Data Source Breakdown --
+    lines.append("## Data Source Breakdown\n")
+    source_counts: Dict[str, List[str]] = {}
+    for r in results:
+        src = r.data_source or DataSource.SYNTHETIC.value
+        source_counts.setdefault(src, []).append(r.modality)
+
+    _source_labels = {
+        DataSource.INVERSENET.value: "InverseNet real experimental results",
+        DataSource.LIP_ARENA.value: "LIP Arena operator-generated ground truth",
+        DataSource.BENCHMARK_SIM.value: "Benchmark simulation data",
+        DataSource.SYNTHETIC.value: "Synthetic Gaussian phantom",
+    }
+    lines.append("| Data Source | Description | Count | Modalities |")
+    lines.append("|-------------|-------------|-------|------------|")
+    for src_val in [DataSource.INVERSENET.value, DataSource.LIP_ARENA.value,
+                    DataSource.BENCHMARK_SIM.value, DataSource.SYNTHETIC.value]:
+        mods = source_counts.get(src_val, [])
+        if mods:
+            desc = _source_labels.get(src_val, src_val)
+            mod_list = ", ".join(f"`{m}`" for m in mods[:10])
+            if len(mods) > 10:
+                mod_list += f", ... (+{len(mods) - 10} more)"
+            lines.append(f"| **{src_val}** | {desc} | {len(mods)} | {mod_list} |")
+    lines.append("")
+
     # -- Overview table --
     lines.append("## Overview\n")
-    lines.append("| # | Modality | Category | Build | Mismatch Types | Ex1 Shape Match | Ex1 RMSE | Ex2 RMSE |")
-    lines.append("|---|----------|----------|-------|----------------|-----------------|----------|----------|")
+    lines.append("| # | Modality | Category | Source | Build | Mismatch Types | Ex1 Shape Match | Ex1 RMSE | Ex2 RMSE |")
+    lines.append("|---|----------|----------|--------|-------|----------------|-----------------|----------|----------|")
 
     for i, r in enumerate(results):
         build = "OK" if r.operator_built else "FAIL"
         mt = ", ".join(r.spec.mismatch_types) if r.spec.mismatch_types else "none"
+        src = r.data_source or "synthetic_phantom"
         ex1_shape = "---"
         ex1_rmse = "---"
         ex2_rmse = "---"
@@ -1831,7 +2247,7 @@ def generate_markdown(results: List[ModalityResult]) -> str:
                 ex1_rmse = _fmt_float(ex.rmse, ".4f")
             elif ex.example_id == 2:
                 ex2_rmse = _fmt_float(ex.rmse, ".4f")
-        lines.append(f"| {i+1} | `{r.modality}` | {r.spec.category} | {build} | {mt} | {ex1_shape} | {ex1_rmse} | {ex2_rmse} |")
+        lines.append(f"| {i+1} | `{r.modality}` | {r.spec.category} | {src} | {build} | {mt} | {ex1_shape} | {ex1_rmse} | {ex2_rmse} |")
 
     lines.append("")
 
@@ -1858,7 +2274,11 @@ def generate_markdown(results: List[ModalityResult]) -> str:
     for i, r in enumerate(results):
         spec = r.spec
         intro = MODALITY_INTRODUCTIONS.get(r.modality, {})
+        src_label = r.data_source or DataSource.SYNTHETIC.value
         lines.append(f"## {i+1}. {spec.display_name} (`{r.modality}`)\n")
+
+        # Data source badge
+        lines.append(f"**Data Source**: `{src_label}`\n")
 
         # Physical principle (from platform database if available)
         principle = intro.get("principle", "")
@@ -1897,23 +2317,42 @@ def generate_markdown(results: List[ModalityResult]) -> str:
         for ex in r.examples:
             lines.append(f"### Mismatch Example {ex.example_id}: {ex.title}\n")
 
-            lines.append("| Metric | Correct | Widefield Fallback |")
-            lines.append("|--------|---------|-------------------|")
-            lines.append(f"| Output shape | {_fmt_shape(ex.correct_shape)} | {_fmt_shape(ex.fallback_shape)} |")
-            lines.append(f"| Shapes match | {'Yes' if ex.shapes_match else '**No**'} | — |")
+            if ex.example_id == 4 and r.inversenet_result:
+                # Special InverseNet 3-scenario table
+                inet = r.inversenet_result
+                lines.append(f"**Method**: `{inet.best_method}` | **Samples**: {inet.num_samples}\n")
+                lines.append("| Scenario | Description | PSNR (dB) | SSIM |")
+                lines.append("|----------|-------------|-----------|------|")
+                lines.append(f"| I (ideal) | Matched operator | {inet.scenario_i_psnr:.2f} | {inet.scenario_i_ssim:.4f} |")
+                lines.append(f"| II (mismatch) | Wrong/misaligned operator | {inet.scenario_ii_psnr:.2f} | {inet.scenario_ii_ssim:.4f} |")
+                lines.append(f"| III (oracle) | InverseNet self-supervised | {inet.scenario_iii_psnr:.2f} | {inet.scenario_iii_ssim:.4f} |")
+                lines.append("")
+                lines.append(f"| Metric | Value |")
+                lines.append(f"|--------|-------|")
+                lines.append(f"| PSNR drop (I → II) | **{inet.psnr_drop:.1f} dB** |")
+                lines.append(f"| PSNR recovery (II → III) | **{inet.psnr_recovery:.1f} dB** |")
+                if inet.mismatch_params:
+                    params_str = ", ".join(f"{k}={v}" for k, v in inet.mismatch_params.items())
+                    lines.append(f"| Mismatch parameters | {params_str} |")
+                lines.append("")
+            else:
+                lines.append("| Metric | Correct | Widefield Fallback |")
+                lines.append("|--------|---------|-------------------|")
+                lines.append(f"| Output shape | {_fmt_shape(ex.correct_shape)} | {_fmt_shape(ex.fallback_shape)} |")
+                lines.append(f"| Shapes match | {'Yes' if ex.shapes_match else '**No**'} | — |")
 
-            if ex.example_id == 1:
-                lines.append(f"| Complex output | {'Yes' if ex.correct_is_complex else 'No'} | {'Yes' if ex.fallback_is_complex else 'No'} |")
-                if ex.rmse is not None:
-                    lines.append(f"| RMSE | {_fmt_float(ex.rmse)} | — |")
-                    lines.append(f"| Correlation | {_fmt_float(ex.correlation, '.4f')} | — |")
-                    lines.append(f"| Max abs diff | {_fmt_float(ex.max_abs_diff)} | — |")
-                    lines.append(f"| Relative RMSE | {_fmt_float(ex.relative_rmse, '.4f')} | — |")
-            elif ex.example_id == 2:
-                if ex.rmse is not None:
-                    lines.append(f"| Round-trip RMSE | {_fmt_float(ex.rmse)} | — |")
+                if ex.example_id == 1:
+                    lines.append(f"| Complex output | {'Yes' if ex.correct_is_complex else 'No'} | {'Yes' if ex.fallback_is_complex else 'No'} |")
+                    if ex.rmse is not None:
+                        lines.append(f"| RMSE | {_fmt_float(ex.rmse)} | — |")
+                        lines.append(f"| Correlation | {_fmt_float(ex.correlation, '.4f')} | — |")
+                        lines.append(f"| Max abs diff | {_fmt_float(ex.max_abs_diff)} | — |")
+                        lines.append(f"| Relative RMSE | {_fmt_float(ex.relative_rmse, '.4f')} | — |")
+                elif ex.example_id == 2:
+                    if ex.rmse is not None:
+                        lines.append(f"| Round-trip RMSE | {_fmt_float(ex.rmse)} | — |")
+                lines.append("")
 
-            lines.append("")
             lines.append(f"**Failure**: {ex.failure_description}\n")
             lines.append(f"**Correction**: {ex.correction_text}\n")
 

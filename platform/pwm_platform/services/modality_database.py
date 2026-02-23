@@ -6477,6 +6477,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "The default widefield operator is already correct; no correction needed",
             "For higher fidelity, replace the Gaussian PSF with a measured or Born & Wolf PSF model matching the actual objective NA and wavelength",
         ],
+        "data_source": "lip_arena",
     },
 
     "widefield_lowdose": {
@@ -6488,6 +6489,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the low-dose widefield operator that applies a Poisson-Gaussian noise model: y = Poisson(alpha * PSF ** x) / alpha + N(0, sigma^2)",
             "Train or select denoising algorithms that explicitly model Poisson statistics (Anscombe transform + BM3D, or Poisson-aware deep networks like Noise2Void)",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "confocal_livecell": {
@@ -6499,6 +6501,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the confocal operator with the correct PSF (product of excitation and detection PSFs, effective sigma~1.2-1.5) matching the pinhole size and objective NA",
             "Model the confocal sectioning effect explicitly; for live-cell work, use the confocal PSF that accounts for pinhole size (1 Airy unit) and emission wavelength",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "confocal_3d": {
@@ -6510,6 +6513,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the 3D confocal operator that processes full z-stack volumes with the anisotropic 3D PSF (worse axial than lateral resolution)",
             "Perform true 3D deconvolution using the measured or modeled 3D confocal PSF; never decompose a z-stack into independent 2D slices",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "sim": {
@@ -6521,6 +6525,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the SIM operator that generates multiple pattern-modulated images: y_k = (1 + m*cos(k_i*r + phi_j)) * (PSF ** x) for each orientation i and phase j",
             "Reconstruct using Fourier-space order separation and recombination (Gustafsson method) or deep-learning SIM, which require the correct multi-frame structured illumination forward model",
         ],
+        "data_source": "lip_arena",
     },
 
     "lightsheet": {
@@ -6532,6 +6537,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the lightsheet operator that processes 3D volumes with the sheet illumination profile: each z-slice is excited only by the thin (1-5 um) light sheet",
             "Model the sheet thickness and propagation (Gaussian or Bessel beam) explicitly; for multi-view systems, include the detection PSF from the orthogonal objective",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "flim": {
@@ -6543,6 +6549,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the FLIM operator that generates time-resolved fluorescence decay histograms at each pixel, including IRF convolution and multi-exponential decay components",
             "Reconstruct lifetimes using phasor analysis or exponential fitting on the temporal dimension; the correct forward model preserves the relationship between decay time and local chemical environment",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "fpm": {
@@ -6554,6 +6561,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the FPM operator that generates one low-resolution intensity image per LED angle, each capturing a different region of the sample's Fourier spectrum shifted by the illumination wavevector",
             "Reconstruct using alternating projection (Gerchberg-Saxton in Fourier space) or embedded pupil recovery, which require the correct coherent forward model with known LED positions",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "two_photon": {
@@ -6565,6 +6573,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the two-photon operator with the squared PSF: effective_PSF = PSF_excitation^2, which is ~1.4x narrower than the single-photon PSF",
             "Model the nonlinear excitation correctly; for deep tissue, include scattering-induced PSF broadening and signal attenuation with depth",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "sted": {
@@ -6576,6 +6585,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the STED operator with the effective PSF that accounts for depletion beam intensity: PSF_eff has FWHM = lambda/(2*NA*sqrt(1 + I/I_sat)), typically 30-70 nm",
             "Include the donut-shaped depletion profile and saturation intensity in the forward model; deconvolution with the correct sub-diffraction STED PSF recovers true super-resolution information",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "palm_storm": {
@@ -6587,6 +6597,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the PALM/STORM operator that simulates stochastic single-molecule activation: sparse emitters with Poisson photon counts, individually convolved with the PSF, on a per-frame basis",
             "Reconstruct using single-molecule localization (Gaussian fitting, MLE) on the correct sparse-emitter frames; the forward model must match the blinking kinetics and photon statistics of the fluorophore",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "tirf": {
@@ -6598,6 +6609,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the TIRF operator that models evanescent-wave excitation: only fluorophores within ~200 nm of the glass-sample interface contribute signal, with exponentially decaying excitation intensity",
             "Include the penetration depth d = lambda/(4*pi*sqrt(n1^2*sin^2(theta) - n2^2)) in the forward model; for multi-angle TIRF, model the depth-dependent excitation for each incidence angle",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "polarization": {
@@ -6609,6 +6621,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the polarization operator that generates images at multiple polarizer/analyzer angles (0, 45, 90, 135 degrees), encoding the sample's Jones or Mueller matrix at each pixel",
             "Reconstruct birefringence retardance and orientation from the polarization-resolved measurements using Mueller calculus or Jones matrix decomposition",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     # ── COMPRESSIVE / SPECTRAL ─────────────────────────────────────────────
@@ -6622,6 +6635,17 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the CASSI operator that applies the binary coded aperture mask followed by spectral dispersion (prism/grating shift), producing a 2D coded measurement that encodes the full 3D spectral datacube",
             "Reconstruct the (x,y,lambda) datacube using compressive sensing (TwIST, GAP-TV) or deep unfolding networks (TSA-Net, MST) that exploit the spatio-spectral structure encoded by the CASSI forward model",
         ],
+        "data_source": "inversenet",
+        "inversenet_metrics": {
+            "best_method": "mst_l",
+            "num_scenes": 10,
+            "scenario_i": {"psnr_mean": 34.81, "ssim_mean": 0.973},
+            "scenario_ii": {"psnr_mean": 20.83, "ssim_mean": 0.744},
+            "scenario_iii": {"psnr_mean": 27.33, "ssim_mean": 0.8813},
+            "psnr_drop": 13.98,
+            "psnr_recovery": 6.50,
+            "mismatch_params": {"mask_dx": 0.5, "mask_dy": 0.3, "mask_theta": 0.1, "disp_a1": 2.02, "disp_alpha": 0.15},
+        },
     },
 
     "spc": {
@@ -6633,6 +6657,17 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the SPC operator that applies the sensing matrix Phi (Hadamard, random, or learned patterns): y = Phi * x, where y has far fewer entries than the image has pixels",
             "Reconstruct using compressive sensing algorithms (ISTA-Net, basis pursuit, total variation) that exploit sparsity to recover the N^2-pixel image from M << N^2 measurements",
         ],
+        "data_source": "inversenet",
+        "inversenet_metrics": {
+            "best_method": "ista_net",
+            "num_images": 11,
+            "scenario_i": {"psnr_mean": 31.85, "ssim_mean": 0.916},
+            "scenario_ii": {"psnr_mean": 19.02, "ssim_mean": 0.584},
+            "scenario_iii": {"psnr_mean": 27.45, "ssim_mean": 0.760},
+            "psnr_drop": 12.83,
+            "psnr_recovery": 8.43,
+            "mismatch_params": {"gain_alpha": 0.0015, "sigma_y": 0.03},
+        },
     },
 
     "cacti": {
@@ -6644,6 +6679,17 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the CACTI operator that applies frame-wise binary masks and sums the coded frames: y = sum_b(M_b * x_b), compressing B frames into one measurement",
             "Reconstruct the video sequence using PnP-SCI (plug-and-play with FastDVDnet), ELP-Unfolding, or GAP-TV that model the temporal compression and recover B frames from the single snapshot",
         ],
+        "data_source": "inversenet",
+        "inversenet_metrics": {
+            "best_method": "efficientsci",
+            "num_videos": 6,
+            "scenario_i": {"psnr_mean": 35.39, "ssim_mean": 0.9729},
+            "scenario_ii": {"psnr_mean": 14.81, "ssim_mean": 0.3031},
+            "scenario_iii": {"psnr_mean": 27.38, "ssim_mean": 0.9268},
+            "psnr_drop": 20.58,
+            "psnr_recovery": 12.57,
+            "mismatch_params": {"mask_dx": 0.5, "mask_dy": 0.3, "mask_theta": 0.1, "clock_offset": 0.05, "duty_cycle": 0.95, "gain": 1.02},
+        },
     },
 
     "matrix": {
@@ -6655,6 +6701,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the correct compressed sensing operator with the measurement matrix Phi (Gaussian random, partial Fourier, or structured random), producing y = Phi * vec(x)",
             "Reconstruct using L1/TV-regularized optimization (ISTA, ADMM) or learned proximal operators designed for the specific measurement matrix structure",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     # ── MEDICAL ────────────────────────────────────────────────────────────
@@ -6668,6 +6715,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the CT operator implementing the discrete Radon transform: y(theta,s) = integral of f(x,y) along line at angle theta and offset s, producing a (n_angles, n_detectors) sinogram",
             "Reconstruct using filtered back-projection (FBP) or iterative algorithms (SART, ADMM-TV) that require the correct Radon transform / back-projection pair",
         ],
+        "data_source": "lip_arena",
     },
 
     "mri": {
@@ -6679,6 +6727,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the MRI operator that applies the 2D Fourier transform followed by an undersampling mask: y = M * FFT2(x), producing complex-valued k-space measurements",
             "Reconstruct using parallel imaging (GRAPPA, SENSE) or compressed sensing (L1-wavelet + TV regularization) that operate on the Fourier-domain measurements with known sampling pattern",
         ],
+        "data_source": "lip_arena",
     },
 
     "xray_radiography": {
@@ -6690,6 +6739,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the X-ray radiography operator implementing Beer-Lambert transmission: y = I_0 * exp(-A*x) + scatter + noise, where A is the projection matrix along the beam direction",
             "Include scatter rejection (anti-scatter grid model), detector response (DQE), and quantum noise (Poisson statistics) for physically accurate forward modeling",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "ultrasound": {
@@ -6701,6 +6751,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the ultrasound operator that models acoustic pulse transmission, tissue reflection, and per-element receive: each channel records the time-domain echo signal from scatterers at different depths",
             "Reconstruct B-mode images using delay-and-sum beamforming or adaptive beamforming (MVDR, coherence factor) that require the correct RF channel data format and speed-of-sound model",
         ],
+        "data_source": "lip_arena",
     },
 
     "pet": {
@@ -6712,6 +6763,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the PET operator that models the system matrix: y = A*x + scatter + randoms, where A encodes line-of-response geometry and attenuation",
             "Reconstruct using OSEM (Ordered Subsets Expectation Maximization) with the correct system matrix, attenuation map, and scatter/randoms estimates",
         ],
+        "data_source": "lip_arena",
     },
 
     "spect": {
@@ -6723,6 +6775,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the SPECT operator that models collimated gamma-ray projection with distance-dependent resolution: y(theta,s) = integral of (h(d) * f) along projection rays for each angle",
             "Reconstruct using OSEM with depth-dependent collimator-detector response modeling and attenuation correction (Chang method or CT-based mu-map)",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "dot": {
@@ -6734,6 +6787,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the DOT operator that models photon transport via the diffusion equation: Jacobian maps from interior optical properties (absorption, scattering) to boundary measurements at each source-detector pair",
             "Reconstruct interior absorption/scattering maps using Tikhonov-regularized inversion or iterative methods (conjugate gradient) with the correct diffusion-equation-based forward model",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "photoacoustic": {
@@ -6745,6 +6799,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the photoacoustic operator that models the forward problem: laser absorption creates initial pressure p_0(r) = Gamma * mu_a * Phi(r), then acoustic waves propagate to transducer elements",
             "Reconstruct using time-reversal, back-projection, or model-based iterative methods that invert the acoustic wave equation from measured pressure time series to initial pressure distribution",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "oct": {
@@ -6756,6 +6811,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the OCT operator that models spectral-domain interferometry: y(k) = |E_ref + E_sample(k)|^2, where depth information is encoded in the spectral fringe frequency",
             "Reconstruct A-scans via FFT of the spectral interferogram after dispersion compensation and k-linearization; B-scans are formed by lateral scanning",
         ],
+        "data_source": "lip_arena",
     },
 
     "integral": {
@@ -6767,6 +6823,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the integral imaging operator that models the lenslet array: each microlens captures a different angular perspective, encoding the 4D light field on the 2D sensor",
             "Reconstruct depth maps via disparity estimation between elemental images, and perform computational refocusing using pixel rearrangement and summation across sub-aperture views",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "fluoroscopy": {
@@ -6778,6 +6835,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the fluoroscopy operator implementing real-time X-ray transmission: y = I_0 * exp(-A*x) with Poisson quantum noise, modeling the low-dose regime and detector response",
             "Apply temporal filtering (recursive averaging) or deep-learning denoising tuned for the correct Poisson noise level of fluoroscopic sequences",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "mammography": {
@@ -6789,6 +6847,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the mammography operator implementing Beer-Lambert transmission at mammographic energies with tissue-specific attenuation: y = I_0 * exp(-mu_tissue * t) for fat, glandular, and calcification components",
             "Include scatter rejection model, detector quantum efficiency (DQE), and geometric magnification for accurate forward modeling and quantitative breast density estimation",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "dexa": {
@@ -6800,6 +6859,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the DEXA operator that models dual-energy Beer-Lambert transmission: y_E = I_0(E) * exp(-(mu_bone(E)*t_bone + mu_tissue(E)*t_tissue)) for E = low and high energy",
             "Decompose the dual-energy measurements into bone and soft tissue components using the known energy-dependent attenuation coefficients to compute areal bone mineral density (g/cm^2)",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "cbct": {
@@ -6811,6 +6871,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the CBCT operator implementing cone-beam projection (Radon transform in 3D divergent geometry) for each source-detector angle, producing the correct sinogram/projection data shape",
             "Reconstruct using FDK (Feldkamp-Davis-Kress) algorithm or iterative cone-beam methods (SART, ADMM) with the correct cone-beam system matrix",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "angiography": {
@@ -6822,6 +6883,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the angiography operator implementing contrast-enhanced X-ray transmission: y = I_0 * exp(-(mu_tissue*t + mu_iodine*c(t))) where c(t) models contrast agent concentration dynamics",
             "Apply temporal subtraction (post-contrast minus pre-contrast) or parametric mapping of contrast kinetics using the correct time-resolved forward model",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "doppler_ultrasound": {
@@ -6833,6 +6895,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the Doppler ultrasound operator that models pulsed-wave Doppler: multiple pulses along each line, with phase differences between returns encoding blood flow velocity",
             "Estimate velocity using autocorrelation (Kasai estimator) or spectral Doppler analysis on the correctly modeled multi-pulse RF data, then map to color flow images",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "elastography": {
@@ -6844,6 +6907,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the elastography operator that models mechanical excitation (acoustic radiation force or external vibration) and tracks the resulting tissue displacement using ultrasound or MRI phase encoding",
             "Estimate shear wave speed from displacement propagation, then compute tissue stiffness: E = 3*rho*c_s^2, using the correct wave propagation and displacement tracking forward model",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "fmri": {
@@ -6855,6 +6919,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the fMRI operator that models BOLD signal generation: y(t) = FFT_acquisition(x_baseline * (1 + delta_BOLD(t))), where delta_BOLD = HRF * neural_activity encodes brain activation",
             "Analyze using GLM (general linear model) with the hemodynamic response function, or ICA/connectivity analysis, applied to correctly modeled time-series MRI data",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "mrs": {
@@ -6866,6 +6931,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the MRS operator that models the free induction decay: y(t) = sum_k(a_k * exp(i*2pi*f_k*t) * exp(-t/T2_k)) for each metabolite k, then FFT to produce the frequency spectrum",
             "Quantify metabolite concentrations by fitting the spectrum (LCModel, TARQUIN) or using deep-learning spectral quantification with the correctly modeled spectral forward model",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "diffusion_mri": {
@@ -6877,6 +6943,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the diffusion MRI operator that applies Stejskal-Tanner encoding: y_i = FFT(x * exp(-b_i * g_i^T * D * g_i)) for each gradient direction g_i and b-value b_i",
             "Reconstruct diffusion tensors (DTI) or fiber orientation distributions (CSD, NODDI) from the multi-direction, multi-b-value measurements using the correct diffusion-weighted forward model",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     # ── COHERENT / PHASE ───────────────────────────────────────────────────
@@ -6890,6 +6957,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the ptychography operator that generates one far-field diffraction pattern per probe position, with overlapping illumination enabling redundant phase information for robust reconstruction",
             "Reconstruct using PIE (Ptychographic Iterative Engine), ePIE, or gradient-descent methods that alternate between real-space (overlap constraint) and Fourier-space (modulus constraint) using the coherent forward model",
         ],
+        "data_source": "lip_arena",
     },
 
     "holography": {
@@ -6901,6 +6969,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the holography operator that models the coherent interference between object wave (after propagation) and reference wave, producing complex-valued holographic data",
             "Reconstruct amplitude and phase by digital holographic processing: Fourier filtering to isolate the sideband, numerical back-propagation using the angular spectrum method or Fresnel transform",
         ],
+        "data_source": "lip_arena",
     },
 
     "phase_retrieval": {
@@ -6912,6 +6981,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the phase retrieval operator implementing y = |FFT(x)|^2 (or |F{x * support}|^2 with known support constraint), producing real-valued intensity measurements of the Fourier magnitude",
             "Reconstruct using iterative phase retrieval algorithms (Gerchberg-Saxton, HIO, ER) or gradient descent on the non-convex loss, which require the correct quadratic forward model",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     # ── NEURAL RENDERING ───────────────────────────────────────────────────
@@ -6925,6 +6995,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the NeRF operator that performs differentiable volume rendering: for each pixel, cast a ray through the volumetric density/color field and integrate transmittance-weighted radiance",
             "Optimize the 3D radiance field (MLP or voxel grid) to minimize photometric loss across all training views using the correct volume rendering equation as the forward model",
         ],
+        "data_source": "lip_arena",
     },
 
     "gaussian_splatting": {
@@ -6936,6 +7007,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the Gaussian splatting operator that projects 3D Gaussian primitives onto each camera plane via differentiable rasterization with alpha compositing",
             "Optimize Gaussian parameters (position, covariance, opacity, color SH coefficients) to minimize rendering loss across training views using the correct splatting forward model",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     # ── COMPUTATIONAL ──────────────────────────────────────────────────────
@@ -6949,6 +7021,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the lensless operator with the calibrated PSF of the specific coded aperture (measured from a point source or computed from the mask design): y = H * x, where H is the non-Gaussian, possibly shift-variant PSF",
             "Reconstruct using Wiener deconvolution, ADMM with TV prior, or learned methods (FlatNet, PhlatCam) that use the correct coded-aperture PSF for the specific mask in use",
         ],
+        "data_source": "lip_arena",
     },
 
     "panorama": {
@@ -6960,6 +7033,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the panorama operator that models the geometric projection (cylindrical or spherical warping) and focus-dependent blur across the wide field of view",
             "Reconstruct using image stitching with homography estimation, exposure fusion, and spatially varying deblurring that account for the correct projection geometry",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "light_field": {
@@ -6971,6 +7045,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the light field operator that models the microlens array: each microlens captures light from different angular directions, producing an (x, y, u, v) 4D light field on the 2D sensor",
             "Reconstruct depth maps from sub-aperture disparity, perform computational refocusing via shift-and-sum, or apply light-field super-resolution to trade angular for spatial resolution",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     # ── CLINICAL OPTICS ────────────────────────────────────────────────────
@@ -6984,6 +7059,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the endoscopy operator that models per-fiber-core sampling: each of the ~10,000-100,000 cores transmits a point sample from the distal end to the proximal camera, with known core positions and transmission coefficients",
             "Reconstruct using fiber-core interpolation, honeycomb artifact removal, or deep-learning super-resolution that account for the known fiber bundle geometry and per-core response",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "fundus": {
@@ -6995,6 +7071,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the fundus operator that models the eye's optical path: illumination through one pupil zone, retinal reflection/fluorescence, and collection through a separate pupil zone, with ocular aberration and media absorption",
             "Include wavelength-dependent retinal reflectance for color fundus imaging, or fluorescein excitation/emission model for fluorescein angiography",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "octa": {
@@ -7006,6 +7083,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the OCTA operator that models repeated OCT measurements at the same location: static tissue produces correlated signals while flowing blood produces decorrelated signals between repeated scans",
             "Extract flow maps using SSADA (split-spectrum amplitude decorrelation) or OMAG (optical microangiography) that require multiple temporally separated OCT measurements as input",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     # ── DEPTH IMAGING ──────────────────────────────────────────────────────
@@ -7019,6 +7097,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the ToF camera operator that models modulated illumination and per-pixel demodulation: four-phase sampling extracts the phase shift proportional to target distance at each pixel",
             "Apply phase-to-depth conversion, multi-path correction, and flying-pixel filtering using the correct modulation frequency, amplitude, and phase measurement model",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "lidar": {
@@ -7030,6 +7109,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the LiDAR operator that models pulsed laser emission, scene reflection (surface albedo and geometry), and time-of-flight detection: range = c*delta_t/2 for each beam direction",
             "Process the point cloud using registration (ICP), ground classification, or object detection algorithms that operate on the correct 3D range measurement format",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "structured_light": {
@@ -7041,6 +7121,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the structured-light operator that models pattern projection (Gray code, sinusoidal fringe, or speckle) and camera observation from a different viewpoint: depth is encoded in pattern deformation due to surface geometry",
             "Extract depth maps using pattern decoding (Gray code → correspondence → triangulation) or phase unwrapping (sinusoidal fringe → depth) with calibrated projector-camera geometry",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     # ── REMOTE SENSING ─────────────────────────────────────────────────────
@@ -7054,6 +7135,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the SAR operator that models coherent radar echo formation: each pixel's complex return includes amplitude (backscatter cross-section) and phase (range + Doppler history), requiring range and azimuth compression",
             "Process using range-Doppler, chirp scaling, or omega-K algorithms for image formation; preserve complex data for InSAR, PolSAR, and coherence-based applications",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "sonar": {
@@ -7065,6 +7147,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the sonar operator that models acoustic pulse transmission, seabed/target reflection, and receive beamforming: time-of-arrival encodes range, beam angle encodes bearing",
             "Form sonar images using beamforming (delay-and-sum), SAS (synthetic aperture sonar) processing, or bathymetric extraction algorithms that require correct acoustic echo data format",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     # ── ELECTRON MICROSCOPY ────────────────────────────────────────────────
@@ -7078,6 +7161,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the SEM operator that models the electron probe profile (sub-nm spot) and secondary/backscattered electron yield as a function of local surface topography and composition",
             "Include the interaction volume (Monte Carlo electron trajectory simulation), detector angular acceptance, and signal mixing between SE (topography) and BSE (composition) channels",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "tem": {
@@ -7089,6 +7173,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the TEM operator that models coherent electron imaging: exit wave convolved with the CTF (including defocus, spherical aberration Cs, partial coherence) producing complex-valued image wave",
             "Reconstruct phase and amplitude using CTF correction (Wiener filtering in Fourier space), or through-focus series exit-wave reconstruction for aberration-corrected quantitative HRTEM",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "electron_tomography": {
@@ -7100,6 +7185,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the electron tomography operator that generates projection images at each tilt angle via the Radon transform applied to the 3D specimen density, including the limited tilt range constraint",
             "Reconstruct using weighted back-projection (WBP), SIRT, or compressed-sensing methods that account for the missing wedge and alignment errors between tilt images",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "stem": {
@@ -7111,6 +7197,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the STEM operator that models the electron probe profile (aberration-corrected sub-angstrom) and detector-dependent signal collection: ADF integrates scattered electrons over the annular detector range",
             "For quantitative STEM, include the probe-forming aberration function, thermal diffuse scattering, and detector inner/outer angle to correctly model Z-contrast and strain mapping",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "electron_diffraction": {
@@ -7122,6 +7209,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the electron diffraction operator that models kinematic or dynamical scattering from the crystal lattice, producing far-field diffraction patterns with Bragg peaks at reciprocal lattice positions",
             "Index diffraction patterns to determine crystal structure and orientation; use dynamical simulation (Bloch wave or multislice) for accurate intensity matching and structure refinement",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "ebsd": {
@@ -7133,6 +7221,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the EBSD operator that models Kikuchi pattern generation from electron backscatter diffraction at each beam position, with pattern features determined by the local crystal orientation and structure",
             "Index Kikuchi patterns using Hough transform (band detection) or dictionary-based matching to determine the crystal orientation (Euler angles) at each probe position, then assemble orientation maps",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "eels": {
@@ -7144,6 +7233,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the EELS operator that models energy-loss spectrum formation: each probe position produces a spectrum with background (power-law), core-loss edges (proportional to elemental concentration), and near-edge fine structure (bonding information)",
             "Quantify elemental maps using background subtraction and edge integration, or MLLS fitting for overlapping edges; apply PCA denoising to spectrum images before quantification",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "electron_holography": {
@@ -7155,6 +7245,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the electron holography operator that models biprism-mediated interference between object wave (with Aharonov-Bohm phase shift) and vacuum reference wave, producing complex holographic fringes",
             "Reconstruct phase maps using Fourier sideband filtering and inverse FFT; for magnetic specimens, use Lorentz mode and separate electrostatic and magnetic phase contributions",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     # ── PARTICLE IMAGING ───────────────────────────────────────────────────
@@ -7168,6 +7259,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the neutron tomography operator implementing Beer-Lambert neutron transmission: y(theta,s) = I_0 * exp(-integral(Sigma_t(x,y) dl)) where Sigma_t is the macroscopic total cross-section",
             "Reconstruct using FBP or iterative methods (same algorithms as X-ray CT) but with neutron-specific attenuation coefficients — neutron imaging reveals hydrogen/water content, lithium batteries, and metallurgical features invisible to X-rays",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "proton_radiography": {
@@ -7179,6 +7271,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the proton radiography operator that models energy-dependent proton transport: energy loss via Bethe-Bloch stopping power and angular broadening via Highland MCS formula (theta_rms ~ 13.6 MeV/(p*v) * sqrt(t/X_0))",
             "Reconstruct water-equivalent path length (WEPL) maps from residual energy measurements, or use scattering radiography for material discrimination — essential for proton therapy treatment planning",
         ],
+        "data_source": "synthetic_phantom",
     },
 
     "muon_tomo": {
@@ -7190,6 +7283,7 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
             "Use the muon tomography operator that models multiple Coulomb scattering: incoming and outgoing muon tracks are measured, and the scattering angle distribution at each voxel encodes the local radiation length (related to material Z and density)",
             "Reconstruct using POCA (Point of Closest Approach) for quick imaging, or ML/EM iterative methods for quantitative density/Z mapping, using the correct scattering probability forward model",
         ],
+        "data_source": "synthetic_phantom",
     },
 }
 
