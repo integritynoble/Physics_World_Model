@@ -211,7 +211,11 @@ def tval3(
             np.pad(vy, ((0, 1), (0, 0)), mode='constant')**2 +
             1e-10
         )
-        shrink = np.maximum(norm_v - mu / beta, 0) / norm_v
+        # When norm_v overflows to inf (large gradients), inf/inf = NaN.
+        # The mathematical limit is shrink → 1.0 as norm_v → ∞.
+        with np.errstate(invalid='ignore'):
+            shrink = np.maximum(norm_v - mu / beta, 0) / norm_v
+        shrink = np.nan_to_num(shrink, nan=1.0, posinf=1.0)
 
         wx = vx * shrink[:, :-1]
         wy = vy * shrink[:-1, :]
