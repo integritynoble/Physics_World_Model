@@ -7,6 +7,54 @@
 
 ---
 
+## Canonical DAG Primitives
+
+Every imaging modality is described as a **directed acyclic graph (DAG)** composed from 11 typed primitives. The DAG column in the tables below shows the signal path from scene to measurement — for example, `M --> W --> Sigma --> D` means the scene is **Modulated** by a coded mask, **Dispersed** by a prism, **Accumulated** across the spectral axis, and **Detected**.
+
+| Symbol | Primitive | Physics Stage | Description |
+|:------:|-----------|---------------|-------------|
+| **Src** | Source | Generation | Carrier generation (photon source, X-ray tube, RF excitation, electron gun) |
+| **P** | Propagate | Propagation | Free-space wave propagation (Fresnel, angular spectrum, acoustic) |
+| **M** | Modulate | Interaction | Element-wise multiplication (mask, coil sensitivity, absorption) |
+| **R** | Scatter | Interaction | Direction change and/or energy shift (Compton, Raman, fluorescence) |
+| **Pi** | Project | Encoding | Radon line-integral projection (CT, emission tomography) |
+| **F** | Encode | Encoding | Fourier-domain encoding (MRI k-space, reciprocal space) |
+| **C** | Convolve | Propagation / Detection | Spatial convolution (PSF, blur kernel, diffraction) |
+| **W** | Disperse | Detection-Readout | Wavelength-dependent spatial shift (prism, grating) |
+| **Sigma** | Accumulate | Detection-Readout | Summation over spectral/temporal axis |
+| **S** | Sample | Detection-Readout | Sub-sampling on index set (k-space undersampling, scan positions) |
+| **D** | Detect | Detection-Readout | Detector response (linear, logarithmic, Poisson-rate, coherent-field) |
+
+> The Finite Primitive Basis theorem's 10 canonical types cover all 168 modalities — no new primitives are needed.
+
+---
+
+## Benchmark Maturity Levels (M0-M4)
+
+Each modality progresses through five maturity levels per benchmark. The table below defines what each level means for each of the four benchmarks.
+
+| Level | Name | B1: Design | B2: Forward + Reconstruct | B3: System Identification | B4: Correct + Diagnose |
+|:-----:|------|------------|--------------------------|--------------------------|----------------------|
+| **M0** | Template | Single prompt template | Forward model with nominal params only | DAG template identification | Correction template |
+| **M1** | Synthetic | Prompt tested on synthetic data | Single-parameter mismatch tested | Synthetic True-Spec, single-param ID | Single-parameter correction validated |
+| **M2** | Compound | Multiple prompt variants, multi-constraint | 3+ params compound mismatch | Compound parameter identification | Compound correction, rho measured |
+| **M3** | Real Data | Grounded in real clinical/experimental protocols | Real experimental data, validated rho | Real True-Spec from calibration | Real data correction, rho >= 0.80 |
+| **M4** | Adversarial | Adversarial/contradictory prompt attacks | Red Team worst-case mismatch injection | Adversarial identification (unknown config) | Adversarial + live feedback loop |
+
+### Current Maturity Distribution
+
+| Maturity | Count | Modalities |
+|:--------:|------:|------------|
+| **M0** | 149 | Template only — basic forward model and parameter list defined |
+| **M1** | 10 | Confocal Live-Cell, Confocal 3D, FPM, Light-Sheet, Low-Dose Widefield, Holography, Matrix, OCT, PET, Ultrasound |
+| **M2** | 1 | SIM (compound mismatch tested) |
+| **M3** | 8 | CASSI, CACTI, SPC, CT, MRI, Ptychography, Lensless, Widefield (real data validated) |
+| **M4** | 0 | No modality yet at adversarial level |
+
+> **19 modalities** (11%) have been tested beyond template level. The remaining 149 (89%) are at M0, awaiting synthetic or real-data validation.
+
+---
+
 ## Summary
 
 | # | Category | Count | Validated | Registered | Planned |
