@@ -148,8 +148,28 @@ def _resolve_solver_fn(
 def _generate_scene(
     x_shape: Tuple[int, ...],
     rng: np.random.Generator,
+    modality: str = "",
 ) -> np.ndarray:
-    """Generate a synthetic scene for evaluation."""
+    """Generate a synthetic scene for evaluation.
+
+    For CT, returns a Gaussian-smoothed phantom with sharp object boundaries
+    so that TV-based calibration metrics are meaningful.  Other modalities use
+    normalised Gaussian noise (their calibration metrics are noise-agnostic).
+    """
+    if modality == "ct":
+        from scipy.ndimage import gaussian_filter
+        H = x_shape[0] if len(x_shape) >= 1 else 32
+        W = x_shape[1] if len(x_shape) >= 2 else H
+        # Smooth blobs: Gaussian-blur random noise → piecewise-smooth phantom
+        raw = rng.standard_normal((H, W)).astype(np.float64)
+        blurred = gaussian_filter(raw, sigma=max(H // 8, 2))
+        # Threshold to create disc-like high-contrast regions
+        x = (blurred > 0.0).astype(np.float64)
+        # Add a smoothly-graded interior
+        x = x + 0.3 * gaussian_filter(raw, sigma=max(H // 4, 3))
+        x = np.clip(x, 0.0, None)
+        x = (x - x.min()) / (x.max() - x.min() + 1e-10)
+        return x
     x = rng.standard_normal(x_shape).astype(np.float64)
     x = (x - x.min()) / (x.max() - x.min() + 1e-10)
     return x
@@ -465,6 +485,11 @@ class Harness:
         self.track = track
         self.budget_s = budget_s
         self.sandbox = sandbox
+
+        # Auto-load default calibrator when none supplied
+        if calibrator_fn is None:
+            from pwm_core.targeting.calibrators import get_default_calibrator
+            calibrator_fn = get_default_calibrator(modality)
         self.calibrator_fn = calibrator_fn
 
         # Load registries
@@ -615,7 +640,7 @@ class Harness:
             H_true = self._compile_operator()
 
             # 2. Generate synthetic scene
-            x_true = _generate_scene(H_true.x_shape, scene_rng)
+            x_true = _generate_scene(H_true.x_shape, scene_rng, modality=self.modality)
 
             # 3. Sample mismatch -> create H_nom
             theta_mismatch = sample_mismatch(
