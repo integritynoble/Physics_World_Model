@@ -53,6 +53,8 @@ modalities:
       defocus: 0.30
       background: 0.15
       gain: 0.15
+    graph_param_map:
+      psf_sigma: blur.sigma  # Conv2d node
     correction_method: "grid_search"
 
   widefield_lowdose:
@@ -86,6 +88,8 @@ modalities:
       defocus: 0.25
       background: 0.25
       gain: 0.20
+    graph_param_map:
+      psf_sigma: blur.sigma  # Conv2d node
     correction_method: "grid_search"
 
   confocal_livecell:
@@ -119,6 +123,8 @@ modalities:
       defocus: 0.35
       background: 0.15
       gain: 0.15
+    graph_param_map:
+      psf_sigma: blur.sigma  # Conv2d node
     correction_method: "grid_search"
 
   confocal_3d:
@@ -152,6 +158,8 @@ modalities:
       defocus: 0.35
       background: 0.20
       gain: 0.15
+    graph_param_map:
+      psf_sigma: blur_3d.sigma  # Conv3d node (sigma is a list [z, y, x])
     correction_method: "grid_search"
 
   sim:
@@ -185,6 +193,8 @@ modalities:
       defocus: 0.35
       background: 0.15
       gain: 0.15
+    graph_param_map:
+      psf_sigma: blur.sigma  # Conv2d node
     correction_method: "grid_search"
 
   lightsheet:
@@ -218,6 +228,8 @@ modalities:
       defocus: 0.30
       background: 0.25
       gain: 0.15
+    graph_param_map:
+      psf_sigma: blur.sigma  # Conv2d node
     correction_method: "grid_search"
 
   # ==========================================================================
@@ -553,7 +565,7 @@ modalities:
       psf_shift_y: 0.30
       background: 0.15
     graph_param_map:
-      psf_sigma: sigma  # conv2d node (psf_conv) uses 'sigma' for blur width
+      psf_sigma: psf_conv.sigma  # Conv2d node named 'psf_conv'
     correction_method: "grid_search"
 
   # ==========================================================================
@@ -1387,6 +1399,8 @@ modalities:
       projection_angle_offset: 0.30
       detector_offset: 0.40
       scatter_fraction: 0.30
+    graph_param_map:
+      projection_angle_offset: radon.angle_offset  # CTRadon node (same as ct)
     correction_method: "grid_search"
 
   angiography:
@@ -1581,6 +1595,8 @@ modalities:
       psf_sigma: 0.35
       defocus: 0.35
       power_fluctuation: 0.30
+    graph_param_map:
+      psf_sigma: blur.sigma  # Conv2d node
     correction_method: "grid_search"
 
   sted:
