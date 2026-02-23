@@ -29,6 +29,29 @@ from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 
 # ---------------------------------------------------------------------------
+# Load modality introductions from the platform database
+# ---------------------------------------------------------------------------
+
+
+def _load_modality_introductions() -> Dict[str, dict]:
+    """Load modality introductions (common_mistakes, how_to_avoid, etc.)."""
+    try:
+        platform_dir = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "platform"
+        )
+        if platform_dir not in sys.path:
+            sys.path.insert(0, platform_dir)
+        from pwm_platform.services.modality_database import _MODALITY_INTRODUCTIONS
+        return dict(_MODALITY_INTRODUCTIONS)
+    except Exception as e:
+        print(f"  [WARN] Could not load modality introductions: {e}")
+        return {}
+
+
+MODALITY_INTRODUCTIONS: Dict[str, dict] = _load_modality_introductions()
+
+
+# ---------------------------------------------------------------------------
 # All 64 modalities (same canonical list as test_all_forward_models.py)
 # ---------------------------------------------------------------------------
 ALL_MODALITIES = [
@@ -1786,7 +1809,9 @@ def generate_markdown(results: List[ModalityResult]) -> str:
     lines.append(
         "This document shows, for each of the 64 PWM imaging modalities, what goes "
         "wrong when the **widefield Gaussian blur fallback** (sigma=2.0, shape-preserving, "
-        "real-valued, self-adjoint) is used instead of the correct physics operator.\n"
+        "real-valued, self-adjoint) is used instead of the correct physics operator. "
+        "Each modality includes quantitative mismatch evidence, **Common Mistakes** "
+        "practitioners encounter, and **How to Avoid** them.\n"
     )
 
     # -- Overview table --
@@ -1832,9 +1857,15 @@ def generate_markdown(results: List[ModalityResult]) -> str:
 
     for i, r in enumerate(results):
         spec = r.spec
+        intro = MODALITY_INTRODUCTIONS.get(r.modality, {})
         lines.append(f"## {i+1}. {spec.display_name} (`{r.modality}`)\n")
 
-        # Physics introduction
+        # Physical principle (from platform database if available)
+        principle = intro.get("principle", "")
+        if principle:
+            lines.append(f"**Principle**: {principle}\n")
+
+        # Physics introduction (from ModalitySpec)
         lines.append(f"**Physics**: {spec.physics_intro}\n")
         lines.append(f"**Forward equation**: `{spec.forward_equation}`\n")
 
@@ -1846,10 +1877,23 @@ def generate_markdown(results: List[ModalityResult]) -> str:
             f"**Linear**: {'Yes' if spec.is_linear else 'No'}\n"
         )
 
+        # Setup guide (from platform database)
+        setup = intro.get("setup_guide", "")
+        if setup:
+            lines.append(f"**Setup guide**: {setup}\n")
+
         if r.build_error:
             lines.append(f"> **Build Error**: `{r.build_error.strip().split(chr(10))[-1]}`\n")
 
-        # Each mismatch example
+        # Common algorithms (from platform database)
+        algorithms = intro.get("common_algorithms", [])
+        if algorithms:
+            lines.append("### Common Reconstruction Algorithms\n")
+            for alg in algorithms:
+                lines.append(f"- {alg}")
+            lines.append("")
+
+        # Each mismatch example (quantitative evidence)
         for ex in r.examples:
             lines.append(f"### Mismatch Example {ex.example_id}: {ex.title}\n")
 
@@ -1872,6 +1916,22 @@ def generate_markdown(results: List[ModalityResult]) -> str:
             lines.append("")
             lines.append(f"**Failure**: {ex.failure_description}\n")
             lines.append(f"**Correction**: {ex.correction_text}\n")
+
+        # Common Mistakes (from platform database)
+        mistakes = intro.get("common_mistakes", [])
+        if mistakes:
+            lines.append("### Common Mistakes\n")
+            for j, mistake in enumerate(mistakes, 1):
+                lines.append(f"{j}. {mistake}")
+            lines.append("")
+
+        # How to Avoid Mistakes (from platform database)
+        avoidance = intro.get("how_to_avoid_mistakes", [])
+        if avoidance:
+            lines.append("### How to Avoid Mistakes\n")
+            for j, tip in enumerate(avoidance, 1):
+                lines.append(f"{j}. {tip}")
+            lines.append("")
 
         lines.append("---\n")
 
