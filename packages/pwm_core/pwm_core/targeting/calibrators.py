@@ -317,6 +317,7 @@ def cassi_disp_step_calibrator(
 
 DEFAULT_CALIBRATORS: Dict[str, Callable] = {
     "ct": ct_anisotropy_calibrator,
+    "cbct": ct_anisotropy_calibrator,  # same CTRadon physics as ct
     "mri": mri_mask_calibrator,
     "cassi": cassi_disp_step_calibrator,
 }

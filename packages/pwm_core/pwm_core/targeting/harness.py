@@ -156,7 +156,7 @@ def _generate_scene(
     so that TV-based calibration metrics are meaningful.  Other modalities use
     normalised Gaussian noise (their calibration metrics are noise-agnostic).
     """
-    if modality == "ct":
+    if modality in ("ct", "cbct"):
         from scipy.ndimage import gaussian_filter
         H = x_shape[0] if len(x_shape) >= 1 else 32
         W = x_shape[1] if len(x_shape) >= 2 else H

@@ -442,7 +442,20 @@ def run_fbp(
             n_detectors = int(np.sqrt(len(y) / n_angles))
             y = y.reshape(n_angles, n_detectors)
 
-        result = fbp_2d(y, angles, filter_type, output_size, device=device)
+        # Beer-Lambert log correction for CBCT: y = I_0 * exp(-sinogram)
+        # Detect Beer-Lambert node and apply log-linearisation before FBP
+        y_fbp = y
+        if hasattr(physics, "node_map"):
+            for node_id, prim in physics.node_map.items():
+                if getattr(prim, "primitive_id", "") == "beer_lambert":
+                    I_0 = float(prim._params.get("I_0", 8000.0) if hasattr(prim, "_params") else 8000.0)
+                    safe_y = np.clip(y.astype(np.float64), 1.0, None)
+                    y_fbp = -np.log(safe_y / I_0)
+                    info["beer_lambert_correction"] = True
+                    info["I_0"] = I_0
+                    break
+
+        result = fbp_2d(y_fbp, angles, filter_type, output_size, device=device)
 
         info["n_angles"] = len(angles)
         info["output_size"] = result.shape[0]

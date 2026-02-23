@@ -1378,11 +1378,11 @@ modalities:
   cbct:
     parameters:
       projection_angle_offset:
-        range: [-2.0, 2.0]
-        typical_error: 0.5
+        range: [-15.0, 15.0]
+        typical_error: 5.0
         unit: "degrees"
         param_type: "rotation"
-        description: "Gantry angular encoder offset from mechanical flex"
+        description: "C-arm angular encoder offset — larger than clinical CT due to less rigid gantry mechanics"
       detector_offset:
         range: [-5.0, 5.0]
         typical_error: 2.0
