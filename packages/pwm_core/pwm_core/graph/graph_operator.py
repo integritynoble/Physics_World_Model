@@ -96,6 +96,41 @@ class GraphOperator:
     edge_map: Dict[str, List[str]] = field(default_factory=dict)  # node_id -> list of predecessor node_ids
     spec: Optional[Any] = None  # Original OperatorGraphSpec (set by compiler)
 
+    # ---- Physics info (used by solver wrappers) ----
+
+    def info(self) -> Dict[str, Any]:
+        """Return physics-level attributes for solver wrappers.
+
+        Solvers (run_fbp, run_sense, run_epie) call ``physics.info()`` to read
+        modality-specific parameters (projection angles, k-space mask, probe)
+        so they can faithfully model H_nom during reconstruction.  Returning
+        H_nom's parameters (rather than defaults) makes mismatch visible in
+        PSNR.
+
+        Returns
+        -------
+        dict with keys:
+            x_shape, y_shape (always present)
+            angles     — ndarray of projection angles in radians (CT)
+            mask       — (H, W) float64 k-space sampling mask (MRI)
+            probe      — (H, W) complex64 illumination probe (ptychography)
+        """
+        d: Dict[str, Any] = {
+            "x_shape": list(self.x_shape),
+            "y_shape": list(self.y_shape),
+        }
+        for node_id, prim in self.node_map.items():
+            pid = prim.primitive_id
+            if pid == "ct_radon" and hasattr(prim, "_angles"):
+                # Convert from degrees (internal) to radians (FBP convention)
+                d["angles"] = np.deg2rad(prim._angles)
+            elif pid == "mri_kspace" and hasattr(prim, "_mask"):
+                d["mask"] = prim._mask
+            elif pid == "coded_mask" and hasattr(prim, "_mask"):
+                # Expose binary aperture as a complex probe for ePIE
+                d["probe"] = prim._mask.astype(np.complex64)
+        return d
+
     # ---- Forward ----
 
     def forward(self, x: np.ndarray) -> np.ndarray:

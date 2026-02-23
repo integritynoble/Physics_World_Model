@@ -561,13 +561,17 @@ modalities:
   # ==========================================================================
 
   ct:
+    # graph_param_map: injectable params → primitive node param names
+    # projection_angle_offset → radon.angle_offset (shifts all projection angles)
+    graph_param_map:
+      projection_angle_offset: radon.angle_offset
     parameters:
       projection_angle_offset:
-        range: [-2.0, 2.0]
-        typical_error: 0.5
+        range: [-15.0, 15.0]
+        typical_error: 5.0
         unit: "degrees"
         param_type: "rotation"
-        description: "Gantry angular encoder offset causing view angle errors"
+        description: "Gantry angular encoder offset causing view angle errors — shifts all projection angles by this amount"
       detector_offset:
         range: [-5.0, 5.0]
         typical_error: 1.5
@@ -581,12 +585,16 @@ modalities:
         param_type: "scale"
         description: "Polychromatic beam hardening correction coefficient error"
     severity_weights:
-      projection_angle_offset: 0.30
-      detector_offset: 0.45
-      beam_hardening_coeff: 0.25
+      projection_angle_offset: 0.55
+      detector_offset: 0.30
+      beam_hardening_coeff: 0.15
     correction_method: "grid_search"
 
   mri:
+    # graph_param_map: injectable params → primitive node param names
+    # seed → kspace.seed (different seed = different random undersampling mask)
+    graph_param_map:
+      seed: kspace.seed
     parameters:
       coil_sensitivity_error:
         range: [0.0, 0.5]
@@ -656,17 +664,27 @@ modalities:
         unit: "m"
         param_type: "scale"
         description: "Detector pixel size calibration error"
+      # ── Injectable: maps to probe.seed → different coded aperture / probe pattern ──
+      seed:
+        range: [100, 200]
+        typical_error: 20.0
+        unit: "integer"
+        param_type: "pattern"
+        description: "Probe illumination seed — different seed gives different coded aperture (models probe characterisation error)"
     severity_weights:
-      probe_position_error_x: 0.30
-      probe_position_error_y: 0.30
-      probe_defocus: 0.20
+      probe_position_error_x: 0.20
+      probe_position_error_y: 0.20
+      probe_defocus: 0.15
       wavelength_error: 0.10
       pixel_size_error: 0.10
+      seed: 0.25
     graph_param_map:
-      # fresnel_prop node parameters
-      probe_defocus: distance     # propagation distance → defocus
-      wavelength_error: wavelength  # wavelength perturbation
-      pixel_size_error: pixel_size  # pixel size calibration
+      # probe node (coded_mask): injectable seed for different probe pattern
+      seed: probe.seed
+      # fresnel_prop node parameters (visible only if solver uses physics.forward)
+      probe_defocus: propagate.distance
+      wavelength_error: propagate.wavelength
+      pixel_size_error: propagate.pixel_size
     correction_method: "gradient_descent"
 
   holography:

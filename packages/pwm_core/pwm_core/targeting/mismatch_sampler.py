@@ -180,40 +180,59 @@ def inject_mismatch(
                         break
         H_nom.set_theta(theta)
     elif hasattr(H_nom, "node_map"):
-        # Direct GraphOperator: inject into node params
+        # Direct GraphOperator: inject into node params.
+        # Supports two key formats produced by graph_param_map remapping:
+        #   "node_id.param_name"  → route directly to the named node
+        #   "param_name"          → scan all nodes for a matching param key
         for pname, pval in theta_mismatch.items():
-            for node_id, prim in list(H_nom.node_map.items()):
-                if pname in prim._params:
-                    # Measure current output size before changing params
-                    orig_out_size: Optional[int] = None
-                    try:
-                        import numpy as _np
-                        in_size = getattr(prim, '_H', 32) * getattr(prim, '_W', 32)
-                        dummy = _np.zeros(in_size)
-                        orig_out_size = prim.forward(dummy).size
-                    except Exception:
-                        pass
+            if "." in pname:
+                # node_id.param_name format: target a specific node
+                target_nid, param_name = pname.split(".", 1)
+                if target_nid in H_nom.node_map:
+                    nodes_to_update = [(target_nid, H_nom.node_map[target_nid])]
+                else:
+                    nodes_to_update = []
+            else:
+                # Legacy flat format: scan all nodes for a matching param key
+                param_name = pname
+                nodes_to_update = [
+                    (nid, prim)
+                    for nid, prim in H_nom.node_map.items()
+                    if pname in prim._params
+                ]
 
-                    # Coerce integer-typed params (e.g. seed, n_angles) so that
-                    # primitives using np.random.default_rng(seed) don't fail.
-                    orig_type = type(prim._params[pname])
-                    if orig_type is int or pname in ("seed", "n_angles", "T"):
-                        pval = int(round(float(pval)))
-                    prim._params[pname] = pval
+            for node_id, prim in nodes_to_update:
+                # Measure current output size before changing params
+                orig_out_size: Optional[int] = None
+                try:
+                    import numpy as _np
+                    in_size = getattr(prim, '_H', 32) * getattr(prim, '_W', 32)
+                    dummy = _np.zeros(in_size)
+                    orig_out_size = prim.forward(dummy).size
+                except Exception:
+                    pass
 
-                    # Some primitives (e.g. RandomMask, SubsampledFourier) pre-compile
-                    # their measurement matrices at __init__ and don't re-read _params
-                    # on forward().  Rebuild the primitive so the new param takes effect,
-                    # but only if the output shape is preserved (prevents y-shape breaks).
-                    new_prim = _try_rebuild_primitive(prim, orig_out_size)
-                    if new_prim is not prim:
-                        H_nom.node_map[node_id] = new_prim
-                        for i, (nid, p) in enumerate(H_nom.forward_plan):
-                            if nid == node_id:
-                                H_nom.forward_plan[i] = (nid, new_prim)
-                        for i, (nid, p) in enumerate(H_nom.adjoint_plan):
-                            if nid == node_id:
-                                H_nom.adjoint_plan[i] = (nid, new_prim)
+                # Coerce integer-typed params (e.g. seed, n_angles) so that
+                # primitives using np.random.default_rng(seed) don't fail.
+                existing_type = type(prim._params.get(param_name, pval))
+                if existing_type is int or param_name in ("seed", "n_angles", "T"):
+                    pval = int(round(float(pval)))
+                prim._params[param_name] = pval
+
+                # Some primitives (e.g. RandomMask, SubsampledFourier, CTRadon)
+                # pre-compile their measurement matrices at __init__ and don't
+                # re-read _params on forward().  Rebuild the primitive so the
+                # new param takes effect, but only if the output shape is
+                # preserved (prevents y-shape breaks in the harness).
+                new_prim = _try_rebuild_primitive(prim, orig_out_size)
+                if new_prim is not prim:
+                    H_nom.node_map[node_id] = new_prim
+                    for i, (nid, p) in enumerate(H_nom.forward_plan):
+                        if nid == node_id:
+                            H_nom.forward_plan[i] = (nid, new_prim)
+                    for i, (nid, p) in enumerate(H_nom.adjoint_plan):
+                        if nid == node_id:
+                            H_nom.adjoint_plan[i] = (nid, new_prim)
     else:
         logger.warning(
             "Cannot inject mismatch: operator has no set_theta() or node_map"

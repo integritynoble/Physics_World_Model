@@ -743,7 +743,15 @@ class CTRadon(BasePrimitive):
         self._n_angles = self._params.get("n_angles", 180)
         self._H = self._params.get("H", 64)
         self._W = self._params.get("W", 64)
-        self._angles = np.linspace(0, 180, self._n_angles, endpoint=False)
+        # angle_offset (degrees) shifts the projection angles — used by the
+        # mismatch harness to simulate gantry encoder offset (H_nom ≠ H_true).
+        self._angle_offset = float(self._params.get("angle_offset", 0.0))
+        self._angles = np.linspace(
+            self._angle_offset,
+            180.0 + self._angle_offset,
+            self._n_angles,
+            endpoint=False,
+        )
         self._build_matrix()
 
     def _build_matrix(self) -> None:
