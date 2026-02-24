@@ -279,52 +279,30 @@ async def run_status_page(
 @router.get("/datasets", response_class=HTMLResponse)
 async def datasets_page(
     request: Request,
-    category: str | None = None,
     user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Dataset catalog — serves canonical datasets from the modality knowledge base."""
-    from pwm_platform.services.modality_database import (
-        MODALITY_DATABASE,
-        list_all_categories,
-        list_all_modality_keys,
-        list_modalities_by_category,
+    """Benchmark datasets — lists all variant benchmarks with their datasets."""
+    from pwm_platform.services.benchmark_database import (
+        VARIANT_DATABASE,
+        list_all_variant_keys,
     )
 
-    if category:
-        keys = list_modalities_by_category(category)
-    else:
-        keys = list_all_modality_keys()
-
-    # Build a flat list of datasets, one entry per canonical dataset string
-    datasets = []
-    seen_names = set()
-    for k in keys:
-        entry = MODALITY_DATABASE[k]
-        recon = entry.get("recon_results", {})
-        for ds_name in entry.get("canonical_datasets", []):
-            if ds_name in seen_names:
-                continue
-            seen_names.add(ds_name)
-            datasets.append({
-                "name": ds_name,
-                "modality_key": k,
-                "modality_display": entry.get("display_name", k),
-                "category": entry.get("category", ""),
-                "psnr": recon.get("psnr"),
-                "ssim": recon.get("ssim"),
-                "solver": recon.get("solver"),
-                "comparison_img": recon.get("images", {}).get("comparison"),
-            })
+    variants = []
+    for key in list_all_variant_keys():
+        entry = dict(VARIANT_DATABASE[key])
+        entry["variant_key"] = key
+        # Count total benchmarks and datasets
+        benchmarks = entry.get("benchmarks", [])
+        entry["num_benchmarks"] = len(benchmarks)
+        entry["num_public"] = sum(1 for b in benchmarks if b.get("has_public_dataset"))
+        entry["num_hidden"] = sum(1 for b in benchmarks if b.get("has_hidden_dataset"))
+        variants.append(entry)
 
     return templates.TemplateResponse("datasets.html", {
         "request": request,
         "user": user,
-        "datasets": datasets,
-        "categories": list_all_categories(),
-        "selected_category": category,
-        "total_datasets": len(datasets),
-        "total_modalities": len(keys),
+        "variants": variants,
     })
 
 
@@ -364,13 +342,13 @@ async def modalities_page(
     })
 
 
-@router.get("/modalities/{variant_key}", response_class=HTMLResponse)
+@router.get("/datasets/{variant_key}", response_class=HTMLResponse)
 async def variant_benchmarks_page(
     request: Request,
     variant_key: str,
     user: Optional[User] = Depends(get_optional_user),
 ):
-    """Variant benchmark page — modality intro, B1-B4 benchmarks, spec DAG, leaderboards, credits."""
+    """Variant benchmark page — benchmarks, modality intro, spec DAG, leaderboards, credits."""
     from pwm_platform.services.benchmark_database import (
         get_spec_primitives,
         get_variant,
