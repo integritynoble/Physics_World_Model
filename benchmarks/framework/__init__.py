@@ -14,6 +14,12 @@ from benchmarks.framework.expanded_config import (
     load_expanded_config,
     load_all_expanded_configs,
 )
+from benchmarks.framework.expanded_result import (
+    CaseResult,
+    ExpandedRunSummary,
+    aggregate_results,
+)
+from benchmarks.framework.expanded_runner import ExpandedBenchmarkRunner
 
 __all__ = [
     "BenchmarkConfig",
@@ -34,4 +40,9 @@ __all__ = [
     "SystemVariant",
     "load_expanded_config",
     "load_all_expanded_configs",
+    # Expanded runner
+    "ExpandedBenchmarkRunner",
+    "CaseResult",
+    "ExpandedRunSummary",
+    "aggregate_results",
 ]
