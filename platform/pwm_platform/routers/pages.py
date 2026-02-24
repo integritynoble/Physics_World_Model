@@ -372,7 +372,6 @@ async def variant_benchmarks_page(
 ):
     """Variant benchmark page — spec DAG, B1-B4 benchmarks, leaderboards, credits."""
     from pwm_platform.services.benchmark_database import (
-        get_flowcharts,
         get_spec_primitives,
         get_variant,
     )
@@ -387,7 +386,6 @@ async def variant_benchmarks_page(
         "request": request,
         "user": user,
         "variant": variant,
-        "flowcharts": get_flowcharts(),
         "primitives": get_spec_primitives(),
     })
 
