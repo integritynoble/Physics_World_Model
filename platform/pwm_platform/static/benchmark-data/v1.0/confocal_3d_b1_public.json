@@ -1,0 +1,1109 @@
+{
+  "benchmark": "Benchmark 1",
+  "variant": "confocal_3d",
+  "task": "spec_selection",
+  "metric": "spec_match_accuracy",
+  "num_samples": 50,
+  "samples": [
+    {
+      "id": 1,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (3D Confocal PSF).",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Consider a confocal 3d z-stack system: This 3D Confocal PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "An optical system that blurs the specimen through convolution with a 3D Confocal PSF PSF before detection. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "C(PSF) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "A researcher sets up confocal 3d z-stack. A microscopy system where the image is formed by convolving the specimen with a point-spread function (3D Confocal PSF).",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "In a typical microscopy lab, this 3d confocal psf microscope images samples through psf convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "An optical system that blurs the specimen through convolution with a 3D Confocal PSF PSF before detection.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 7,
+      "description": "Consider a confocal 3d z-stack system: A microscopy system where the image is formed by convolving the specimen with a point-spread function (3D Confocal PSF).",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 8,
+      "description": "This 3D Confocal PSF microscope images samples through PSF convolution, with diffraction-limited resolution. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 9,
+      "description": "A researcher sets up confocal 3d z-stack. An optical system that blurs the specimen through convolution with a 3D Confocal PSF PSF before detection.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 10,
+      "description": "In a typical microscopy lab, a microscopy system where the image is formed by convolving the specimen with a point-spread function (3d confocal psf).",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 11,
+      "description": "This 3D Confocal PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 12,
+      "description": "Consider a confocal 3d z-stack system: An optical system that blurs the specimen through convolution with a 3D Confocal PSF PSF before detection.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "Π(fan) → D(g, η₂)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 13,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (3D Confocal PSF). The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 14,
+      "description": "A researcher sets up confocal 3d z-stack. This 3D Confocal PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 15,
+      "description": "In a typical microscopy lab, an optical system that blurs the specimen through convolution with a 3d confocal psf psf before detection.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 16,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (3D Confocal PSF).",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 17,
+      "description": "Consider a confocal 3d z-stack system: This 3D Confocal PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 18,
+      "description": "An optical system that blurs the specimen through convolution with a 3D Confocal PSF PSF before detection. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 19,
+      "description": "A researcher sets up confocal 3d z-stack. A microscopy system where the image is formed by convolving the specimen with a point-spread function (3D Confocal PSF).",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 20,
+      "description": "In a typical microscopy lab, this 3d confocal psf microscope images samples through psf convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 21,
+      "description": "An optical system that blurs the specimen through convolution with a 3D Confocal PSF PSF before detection.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 22,
+      "description": "Consider a confocal 3d z-stack system: A microscopy system where the image is formed by convolving the specimen with a point-spread function (3D Confocal PSF).",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 23,
+      "description": "This 3D Confocal PSF microscope images samples through PSF convolution, with diffraction-limited resolution. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 24,
+      "description": "A researcher sets up confocal 3d z-stack. An optical system that blurs the specimen through convolution with a 3D Confocal PSF PSF before detection.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 25,
+      "description": "In a typical microscopy lab, a microscopy system where the image is formed by convolving the specimen with a point-spread function (3d confocal psf).",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 26,
+      "description": "This 3D Confocal PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 27,
+      "description": "Consider a confocal 3d z-stack system: An optical system that blurs the specimen through convolution with a 3D Confocal PSF PSF before detection.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 28,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (3D Confocal PSF). The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 29,
+      "description": "A researcher sets up confocal 3d z-stack. This 3D Confocal PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 30,
+      "description": "In a typical microscopy lab, an optical system that blurs the specimen through convolution with a 3d confocal psf psf before detection.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 31,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (3D Confocal PSF).",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 32,
+      "description": "Consider a confocal 3d z-stack system: This 3D Confocal PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 33,
+      "description": "An optical system that blurs the specimen through convolution with a 3D Confocal PSF PSF before detection. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 34,
+      "description": "A researcher sets up confocal 3d z-stack. A microscopy system where the image is formed by convolving the specimen with a point-spread function (3D Confocal PSF).",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 35,
+      "description": "In a typical microscopy lab, this 3d confocal psf microscope images samples through psf convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 36,
+      "description": "An optical system that blurs the specimen through convolution with a 3D Confocal PSF PSF before detection.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 37,
+      "description": "Consider a confocal 3d z-stack system: A microscopy system where the image is formed by convolving the specimen with a point-spread function (3D Confocal PSF).",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 38,
+      "description": "This 3D Confocal PSF microscope images samples through PSF convolution, with diffraction-limited resolution. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 39,
+      "description": "A researcher sets up confocal 3d z-stack. An optical system that blurs the specimen through convolution with a 3D Confocal PSF PSF before detection.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 40,
+      "description": "In a typical microscopy lab, a microscopy system where the image is formed by convolving the specimen with a point-spread function (3d confocal psf).",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 41,
+      "description": "This 3D Confocal PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 42,
+      "description": "Consider a confocal 3d z-stack system: An optical system that blurs the specimen through convolution with a 3D Confocal PSF PSF before detection.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 43,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (3D Confocal PSF). The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 44,
+      "description": "A researcher sets up confocal 3d z-stack. This 3D Confocal PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 45,
+      "description": "In a typical microscopy lab, an optical system that blurs the specimen through convolution with a 3d confocal psf psf before detection.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 46,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (3D Confocal PSF).",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 47,
+      "description": "Consider a confocal 3d z-stack system: This 3D Confocal PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 48,
+      "description": "An optical system that blurs the specimen through convolution with a 3D Confocal PSF PSF before detection. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 49,
+      "description": "A researcher sets up confocal 3d z-stack. A microscopy system where the image is formed by convolving the specimen with a point-spread function (3D Confocal PSF).",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 50,
+      "description": "In a typical microscopy lab, this 3d confocal psf microscope images samples through psf convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_3D) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_3D",
+          "label": "3D Confocal PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "PMT / HyD"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    }
+  ]
+}

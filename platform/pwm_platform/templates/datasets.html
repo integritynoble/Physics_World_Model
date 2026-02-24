@@ -6,54 +6,66 @@
     <div>
         <h1 class="text-2xl font-bold text-gray-900">Benchmarks</h1>
         <p class="mt-1 text-sm text-gray-600">
-            Public and hidden datasets for {{ variants | length }} imaging system variants — B1 through B4 benchmarks with leaderboards, downloads, and evaluation.
+            Public and hidden datasets for {{ total_variants }} imaging system variants — B1 through B4 benchmarks with leaderboards, downloads, and evaluation.
         </p>
     </div>
 
-    {% if variants %}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {% for v in variants %}
-        <a href="/datasets/{{ v.variant_key }}" class="block bg-white shadow rounded-lg p-6 hover:shadow-md transition-shadow border-l-4 border-indigo-500">
-            <div class="flex items-center justify-between">
-                <h2 class="text-lg font-bold text-gray-900">{{ v.display_name }}</h2>
-                <span class="text-xs px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded">{{ v.category | replace('_', ' ') | title }}</span>
-            </div>
-            <p class="mt-1 text-sm text-gray-500">{{ v.full_name }}</p>
-
-            <!-- Spec notation -->
-            <p class="mt-3 text-xs font-mono text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded">{{ v.spec_notation }}</p>
-
-            <!-- Stats -->
-            <div class="mt-4 flex flex-wrap gap-3">
-                <div class="text-center px-3 py-2 bg-gray-50 rounded-lg">
-                    <div class="text-xl font-bold text-gray-900">{{ v.num_benchmarks }}</div>
-                    <div class="text-xs text-gray-500">Benchmarks</div>
-                </div>
-                <div class="text-center px-3 py-2 bg-green-50 rounded-lg">
-                    <div class="text-xl font-bold text-green-700">{{ v.num_public }}</div>
-                    <div class="text-xs text-gray-500">Public Datasets</div>
-                </div>
-                <div class="text-center px-3 py-2 bg-amber-50 rounded-lg">
-                    <div class="text-xl font-bold text-amber-700">{{ v.num_hidden }}</div>
-                    <div class="text-xs text-gray-500">Hidden Test Sets</div>
-                </div>
-            </div>
-
-            <!-- Benchmark IDs -->
-            <div class="mt-3 flex flex-wrap gap-1.5">
-                {% for bm in v.benchmarks %}
-                <span class="text-xs px-2 py-0.5 rounded font-medium
-                    {% if bm.id in ['Benchmark 1', 'Benchmark 3'] %}bg-blue-100 text-blue-700
-                    {% else %}bg-indigo-100 text-indigo-700{% endif %}
-                ">{{ bm.id }}: {{ bm.title | replace(bm.id ~ ' — ', '') }}</span>
-                {% endfor %}
-            </div>
-
-            <div class="mt-3 text-xs text-indigo-600 font-medium">View benchmarks & download datasets &rarr;</div>
+    <!-- Jump Nav -->
+    {% if grouped %}
+    <div class="flex flex-wrap gap-2">
+        {% for cat_key, variants in grouped.items() %}
+        <a href="#cat-{{ cat_key }}"
+           class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-colors">
+            {{ category_labels.get(cat_key, cat_key | replace('_', ' ') | title) }}
+            <span class="ml-1.5 px-1.5 py-0.5 text-xs bg-indigo-200 text-indigo-800 rounded-full">{{ variants | length }}</span>
         </a>
         {% endfor %}
     </div>
-    {% else %}
+    {% endif %}
+
+    <!-- Category Sections -->
+    {% for cat_key, variants in grouped.items() %}
+    <div id="cat-{{ cat_key }}" class="scroll-mt-4">
+        <div class="flex items-center gap-3 border-b border-gray-200 pb-2 mb-4">
+            <h2 class="text-lg font-bold text-gray-900">{{ category_labels.get(cat_key, cat_key | replace('_', ' ') | title) }}</h2>
+            <span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">{{ variants | length }} variant{{ 's' if variants | length != 1 else '' }}</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for v in variants %}
+            <a href="/datasets/{{ v.variant_key }}" class="block bg-white shadow rounded-lg p-5 hover:shadow-md transition-shadow border-l-4 border-indigo-500">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-base font-bold text-gray-900">{{ v.display_name }}</h3>
+                </div>
+                <p class="mt-0.5 text-xs text-gray-500 line-clamp-1">{{ v.full_name }}</p>
+
+                <!-- Spec notation -->
+                <p class="mt-2 text-xs font-mono text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded truncate">{{ v.spec_notation }}</p>
+
+                <!-- Stats -->
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <div class="text-center px-2 py-1.5 bg-gray-50 rounded">
+                        <div class="text-base font-bold text-gray-900">{{ v.num_benchmarks }}</div>
+                        <div class="text-xs text-gray-500">Benchmarks</div>
+                    </div>
+                    <div class="text-center px-2 py-1.5 bg-green-50 rounded">
+                        <div class="text-base font-bold text-green-700">{{ v.num_public }}</div>
+                        <div class="text-xs text-gray-500">Public</div>
+                    </div>
+                    <div class="text-center px-2 py-1.5 bg-amber-50 rounded">
+                        <div class="text-base font-bold text-amber-700">{{ v.num_hidden }}</div>
+                        <div class="text-xs text-gray-500">Hidden</div>
+                    </div>
+                </div>
+
+                <div class="mt-2 text-xs text-indigo-600 font-medium">View benchmarks &rarr;</div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if not grouped %}
     <div class="bg-white shadow rounded-lg px-6 py-12 text-center">
         <p class="text-gray-500">No benchmark datasets available yet.</p>
     </div>

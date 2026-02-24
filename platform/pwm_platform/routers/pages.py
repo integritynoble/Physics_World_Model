@@ -282,27 +282,60 @@ async def datasets_page(
     user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Benchmark datasets — lists all variant benchmarks with their datasets."""
+    """Benchmark datasets — lists all variant benchmarks grouped by category."""
+    from collections import OrderedDict
+
     from pwm_platform.services.benchmark_database import (
         VARIANT_DATABASE,
         list_all_variant_keys,
     )
 
-    variants = []
+    # Category display order and labels
+    CATEGORY_ORDER = [
+        ("compressive", "Compressive"),
+        ("medical", "Medical"),
+        ("medical_ultrasound", "Medical Ultrasound"),
+        ("coherent", "Coherent"),
+        ("microscopy", "Microscopy"),
+        ("electron_microscopy", "Electron Microscopy"),
+        ("clinical_optics", "Clinical Optics"),
+        ("computational", "Computational"),
+        ("computational_photography", "Computational Photography"),
+        ("neural_rendering", "Neural Rendering"),
+        ("depth_imaging", "Depth Imaging"),
+        ("remote_sensing", "Remote Sensing"),
+        ("particle_imaging", "Particle Imaging"),
+    ]
+    category_labels = dict(CATEGORY_ORDER)
+
+    # Group variants by category
+    grouped: dict[str, list[dict]] = OrderedDict()
+    for cat_key, _label in CATEGORY_ORDER:
+        grouped[cat_key] = []
+
     for key in list_all_variant_keys():
         entry = dict(VARIANT_DATABASE[key])
         entry["variant_key"] = key
-        # Count total benchmarks and datasets
         benchmarks = entry.get("benchmarks", [])
         entry["num_benchmarks"] = len(benchmarks)
         entry["num_public"] = sum(1 for b in benchmarks if b.get("has_public_dataset"))
         entry["num_hidden"] = sum(1 for b in benchmarks if b.get("has_hidden_dataset"))
-        variants.append(entry)
+        cat = entry.get("category", "other")
+        if cat not in grouped:
+            grouped[cat] = []
+        grouped[cat].append(entry)
+
+    # Remove empty categories
+    grouped = OrderedDict((k, v) for k, v in grouped.items() if v)
+
+    total_variants = sum(len(v) for v in grouped.values())
 
     return templates.TemplateResponse("datasets.html", {
         "request": request,
         "user": user,
-        "variants": variants,
+        "grouped": grouped,
+        "category_labels": category_labels,
+        "total_variants": total_variants,
     })
 
 

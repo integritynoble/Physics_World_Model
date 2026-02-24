@@ -1,0 +1,1609 @@
+{
+  "benchmark": "Benchmark 1",
+  "variant": "electron_tomography",
+  "task": "spec_selection",
+  "metric": "spec_match_accuracy",
+  "num_samples": 50,
+  "samples": [
+    {
+      "id": 1,
+      "description": "A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Consider a electron tomography system: This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles. The system operates in a electron microscopy context.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "C(PSF) → D(g, η₃)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "A researcher sets up electron tomography. This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "In a typical electron microscopy lab, a tomographic imaging system that rotates the sample tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 7,
+      "description": "Consider a electron tomography system: A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 8,
+      "description": "This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction. The system operates in a electron microscopy context.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 9,
+      "description": "A researcher sets up electron tomography. A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 10,
+      "description": "In a typical electron microscopy lab, this modality acquires data by rotating sample tilt and capturing projections at each angle for 3d reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 11,
+      "description": "A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 12,
+      "description": "Consider a electron tomography system: This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 13,
+      "description": "A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles. The system operates in a electron microscopy context.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 14,
+      "description": "A researcher sets up electron tomography. This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 15,
+      "description": "In a typical electron microscopy lab, a tomographic imaging system that rotates the sample tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(diffuser) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 16,
+      "description": "This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 17,
+      "description": "Consider a electron tomography system: A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 18,
+      "description": "This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction. The system operates in a electron microscopy context.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 19,
+      "description": "A researcher sets up electron tomography. A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 20,
+      "description": "In a typical electron microscopy lab, this modality acquires data by rotating sample tilt and capturing projections at each angle for 3d reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 21,
+      "description": "A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 22,
+      "description": "Consider a electron tomography system: This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 23,
+      "description": "A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles. The system operates in a electron microscopy context.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "Π(fan) → D(g, η₂)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 24,
+      "description": "A researcher sets up electron tomography. This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 25,
+      "description": "In a typical electron microscopy lab, a tomographic imaging system that rotates the sample tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 26,
+      "description": "This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 27,
+      "description": "Consider a electron tomography system: A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 28,
+      "description": "This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction. The system operates in a electron microscopy context.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 29,
+      "description": "A researcher sets up electron tomography. A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 30,
+      "description": "In a typical electron microscopy lab, this modality acquires data by rotating sample tilt and capturing projections at each angle for 3d reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 31,
+      "description": "A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "C(PSF) → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 32,
+      "description": "Consider a electron tomography system: This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 33,
+      "description": "A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles. The system operates in a electron microscopy context.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 34,
+      "description": "A researcher sets up electron tomography. This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 35,
+      "description": "In a typical electron microscopy lab, a tomographic imaging system that rotates the sample tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 36,
+      "description": "This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 37,
+      "description": "Consider a electron tomography system: A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 38,
+      "description": "This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction. The system operates in a electron microscopy context.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 39,
+      "description": "A researcher sets up electron tomography. A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 40,
+      "description": "In a typical electron microscopy lab, this modality acquires data by rotating sample tilt and capturing projections at each angle for 3d reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 41,
+      "description": "A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 42,
+      "description": "Consider a electron tomography system: This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 43,
+      "description": "A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles. The system operates in a electron microscopy context.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 44,
+      "description": "A researcher sets up electron tomography. This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 45,
+      "description": "In a typical electron microscopy lab, a tomographic imaging system that rotates the sample tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 46,
+      "description": "This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 47,
+      "description": "Consider a electron tomography system: A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 48,
+      "description": "This modality acquires data by rotating Sample Tilt and capturing projections at each angle for 3D reconstruction. The system operates in a electron microscopy context.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 49,
+      "description": "A researcher sets up electron tomography. A tomographic imaging system that rotates the Sample Tilt to acquire projections from multiple angles.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 50,
+      "description": "In a typical electron microscopy lab, this modality acquires data by rotating sample tilt and capturing projections at each angle for 3d reconstruction.",
+      "correct_spec": "R(θ) → P(e⁻) → Π(proj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "R",
+          "params": "θ",
+          "label": "Sample Tilt"
+        },
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Wave"
+        },
+        {
+          "primitive": "Pi",
+          "params": "proj",
+          "label": "Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    }
+  ]
+}

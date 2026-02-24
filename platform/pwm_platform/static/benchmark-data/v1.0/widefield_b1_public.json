@@ -1,0 +1,1109 @@
+{
+  "benchmark": "Benchmark 1",
+  "variant": "widefield",
+  "task": "spec_selection",
+  "metric": "spec_match_accuracy",
+  "num_samples": 50,
+  "samples": [
+    {
+      "id": 1,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (PSF Convolution).",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Consider a widefield fluorescence microscopy system: This PSF Convolution microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "An optical system that blurs the specimen through convolution with a PSF Convolution PSF before detection. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "A researcher sets up widefield fluorescence microscopy. A microscopy system where the image is formed by convolving the specimen with a point-spread function (PSF Convolution).",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "In a typical microscopy lab, this psf convolution microscope images samples through psf convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "An optical system that blurs the specimen through convolution with a PSF Convolution PSF before detection.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 7,
+      "description": "Consider a widefield fluorescence microscopy system: A microscopy system where the image is formed by convolving the specimen with a point-spread function (PSF Convolution).",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 8,
+      "description": "This PSF Convolution microscope images samples through PSF convolution, with diffraction-limited resolution. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 9,
+      "description": "A researcher sets up widefield fluorescence microscopy. An optical system that blurs the specimen through convolution with a PSF Convolution PSF before detection.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 10,
+      "description": "In a typical microscopy lab, a microscopy system where the image is formed by convolving the specimen with a point-spread function (psf convolution).",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 11,
+      "description": "This PSF Convolution microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 12,
+      "description": "Consider a widefield fluorescence microscopy system: An optical system that blurs the specimen through convolution with a PSF Convolution PSF before detection.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 13,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (PSF Convolution). The system operates in a microscopy context.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 14,
+      "description": "A researcher sets up widefield fluorescence microscopy. This PSF Convolution microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 15,
+      "description": "In a typical microscopy lab, an optical system that blurs the specimen through convolution with a psf convolution psf before detection.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 16,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (PSF Convolution).",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 17,
+      "description": "Consider a widefield fluorescence microscopy system: This PSF Convolution microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 18,
+      "description": "An optical system that blurs the specimen through convolution with a PSF Convolution PSF before detection. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 19,
+      "description": "A researcher sets up widefield fluorescence microscopy. A microscopy system where the image is formed by convolving the specimen with a point-spread function (PSF Convolution).",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 20,
+      "description": "In a typical microscopy lab, this psf convolution microscope images samples through psf convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 21,
+      "description": "An optical system that blurs the specimen through convolution with a PSF Convolution PSF before detection.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 22,
+      "description": "Consider a widefield fluorescence microscopy system: A microscopy system where the image is formed by convolving the specimen with a point-spread function (PSF Convolution).",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 23,
+      "description": "This PSF Convolution microscope images samples through PSF convolution, with diffraction-limited resolution. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 24,
+      "description": "A researcher sets up widefield fluorescence microscopy. An optical system that blurs the specimen through convolution with a PSF Convolution PSF before detection.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 25,
+      "description": "In a typical microscopy lab, a microscopy system where the image is formed by convolving the specimen with a point-spread function (psf convolution).",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 26,
+      "description": "This PSF Convolution microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 27,
+      "description": "Consider a widefield fluorescence microscopy system: An optical system that blurs the specimen through convolution with a PSF Convolution PSF before detection.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 28,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (PSF Convolution). The system operates in a microscopy context.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 29,
+      "description": "A researcher sets up widefield fluorescence microscopy. This PSF Convolution microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 30,
+      "description": "In a typical microscopy lab, an optical system that blurs the specimen through convolution with a psf convolution psf before detection.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 31,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (PSF Convolution).",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 32,
+      "description": "Consider a widefield fluorescence microscopy system: This PSF Convolution microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 33,
+      "description": "An optical system that blurs the specimen through convolution with a PSF Convolution PSF before detection. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 34,
+      "description": "A researcher sets up widefield fluorescence microscopy. A microscopy system where the image is formed by convolving the specimen with a point-spread function (PSF Convolution).",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 35,
+      "description": "In a typical microscopy lab, this psf convolution microscope images samples through psf convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 36,
+      "description": "An optical system that blurs the specimen through convolution with a PSF Convolution PSF before detection.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 37,
+      "description": "Consider a widefield fluorescence microscopy system: A microscopy system where the image is formed by convolving the specimen with a point-spread function (PSF Convolution).",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 38,
+      "description": "This PSF Convolution microscope images samples through PSF convolution, with diffraction-limited resolution. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 39,
+      "description": "A researcher sets up widefield fluorescence microscopy. An optical system that blurs the specimen through convolution with a PSF Convolution PSF before detection.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 40,
+      "description": "In a typical microscopy lab, a microscopy system where the image is formed by convolving the specimen with a point-spread function (psf convolution).",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 41,
+      "description": "This PSF Convolution microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 42,
+      "description": "Consider a widefield fluorescence microscopy system: An optical system that blurs the specimen through convolution with a PSF Convolution PSF before detection.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 43,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (PSF Convolution). The system operates in a microscopy context.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 44,
+      "description": "A researcher sets up widefield fluorescence microscopy. This PSF Convolution microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 45,
+      "description": "In a typical microscopy lab, an optical system that blurs the specimen through convolution with a psf convolution psf before detection.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 46,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (PSF Convolution).",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 47,
+      "description": "Consider a widefield fluorescence microscopy system: This PSF Convolution microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 48,
+      "description": "An optical system that blurs the specimen through convolution with a PSF Convolution PSF before detection. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 49,
+      "description": "A researcher sets up widefield fluorescence microscopy. A microscopy system where the image is formed by convolving the specimen with a point-spread function (PSF Convolution).",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 50,
+      "description": "In a typical microscopy lab, this psf convolution microscope images samples through psf convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    }
+  ]
+}

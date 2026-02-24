@@ -1,0 +1,1109 @@
+{
+  "benchmark": "Benchmark 1",
+  "variant": "holography",
+  "task": "spec_selection",
+  "metric": "spec_match_accuracy",
+  "num_samples": 50,
+  "samples": [
+    {
+      "id": 1,
+      "description": "An imaging system based on wave propagation (Fresnel Propagation), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Consider a digital holographic microscopy system: This modality captures data by propagating a Fresnel Propagation wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "Measurements are formed by Fresnel Propagation wave propagation and detection of the resulting intensity or phase. The system operates in a coherent context.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "A researcher sets up digital holographic microscopy. An imaging system based on wave propagation (Fresnel Propagation), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "In a typical coherent lab, this modality captures data by propagating a fresnel propagation wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "Measurements are formed by Fresnel Propagation wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "C(PSF) → D(g, η₃)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 7,
+      "description": "Consider a digital holographic microscopy system: An imaging system based on wave propagation (Fresnel Propagation), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 8,
+      "description": "This modality captures data by propagating a Fresnel Propagation wave through/around the specimen and recording the resulting field. The system operates in a coherent context.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 9,
+      "description": "A researcher sets up digital holographic microscopy. Measurements are formed by Fresnel Propagation wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 10,
+      "description": "In a typical coherent lab, an imaging system based on wave propagation (fresnel propagation), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 11,
+      "description": "This modality captures data by propagating a Fresnel Propagation wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 12,
+      "description": "Consider a digital holographic microscopy system: Measurements are formed by Fresnel Propagation wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 13,
+      "description": "An imaging system based on wave propagation (Fresnel Propagation), where measurements encode the object's interaction with the propagating field. The system operates in a coherent context.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 14,
+      "description": "A researcher sets up digital holographic microscopy. This modality captures data by propagating a Fresnel Propagation wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "P(diffuser) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 15,
+      "description": "In a typical coherent lab, measurements are formed by fresnel propagation wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 16,
+      "description": "An imaging system based on wave propagation (Fresnel Propagation), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 17,
+      "description": "Consider a digital holographic microscopy system: This modality captures data by propagating a Fresnel Propagation wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 18,
+      "description": "Measurements are formed by Fresnel Propagation wave propagation and detection of the resulting intensity or phase. The system operates in a coherent context.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 19,
+      "description": "A researcher sets up digital holographic microscopy. An imaging system based on wave propagation (Fresnel Propagation), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 20,
+      "description": "In a typical coherent lab, this modality captures data by propagating a fresnel propagation wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 21,
+      "description": "Measurements are formed by Fresnel Propagation wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 22,
+      "description": "Consider a digital holographic microscopy system: An imaging system based on wave propagation (Fresnel Propagation), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 23,
+      "description": "This modality captures data by propagating a Fresnel Propagation wave through/around the specimen and recording the resulting field. The system operates in a coherent context.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 24,
+      "description": "A researcher sets up digital holographic microscopy. Measurements are formed by Fresnel Propagation wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 25,
+      "description": "In a typical coherent lab, an imaging system based on wave propagation (fresnel propagation), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 26,
+      "description": "This modality captures data by propagating a Fresnel Propagation wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 27,
+      "description": "Consider a digital holographic microscopy system: Measurements are formed by Fresnel Propagation wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 28,
+      "description": "An imaging system based on wave propagation (Fresnel Propagation), where measurements encode the object's interaction with the propagating field. The system operates in a coherent context.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 29,
+      "description": "A researcher sets up digital holographic microscopy. This modality captures data by propagating a Fresnel Propagation wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 30,
+      "description": "In a typical coherent lab, measurements are formed by fresnel propagation wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 31,
+      "description": "An imaging system based on wave propagation (Fresnel Propagation), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 32,
+      "description": "Consider a digital holographic microscopy system: This modality captures data by propagating a Fresnel Propagation wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 33,
+      "description": "Measurements are formed by Fresnel Propagation wave propagation and detection of the resulting intensity or phase. The system operates in a coherent context.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 34,
+      "description": "A researcher sets up digital holographic microscopy. An imaging system based on wave propagation (Fresnel Propagation), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 35,
+      "description": "In a typical coherent lab, this modality captures data by propagating a fresnel propagation wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 36,
+      "description": "Measurements are formed by Fresnel Propagation wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 37,
+      "description": "Consider a digital holographic microscopy system: An imaging system based on wave propagation (Fresnel Propagation), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 38,
+      "description": "This modality captures data by propagating a Fresnel Propagation wave through/around the specimen and recording the resulting field. The system operates in a coherent context.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 39,
+      "description": "A researcher sets up digital holographic microscopy. Measurements are formed by Fresnel Propagation wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 40,
+      "description": "In a typical coherent lab, an imaging system based on wave propagation (fresnel propagation), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 41,
+      "description": "This modality captures data by propagating a Fresnel Propagation wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 42,
+      "description": "Consider a digital holographic microscopy system: Measurements are formed by Fresnel Propagation wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 43,
+      "description": "An imaging system based on wave propagation (Fresnel Propagation), where measurements encode the object's interaction with the propagating field. The system operates in a coherent context.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 44,
+      "description": "A researcher sets up digital holographic microscopy. This modality captures data by propagating a Fresnel Propagation wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 45,
+      "description": "In a typical coherent lab, measurements are formed by fresnel propagation wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 46,
+      "description": "An imaging system based on wave propagation (Fresnel Propagation), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 47,
+      "description": "Consider a digital holographic microscopy system: This modality captures data by propagating a Fresnel Propagation wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 48,
+      "description": "Measurements are formed by Fresnel Propagation wave propagation and detection of the resulting intensity or phase. The system operates in a coherent context.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 49,
+      "description": "A researcher sets up digital holographic microscopy. An imaging system based on wave propagation (Fresnel Propagation), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 50,
+      "description": "In a typical coherent lab, this modality captures data by propagating a fresnel propagation wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(Fresnel) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "Fresnel",
+          "label": "Fresnel Propagation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    }
+  ]
+}

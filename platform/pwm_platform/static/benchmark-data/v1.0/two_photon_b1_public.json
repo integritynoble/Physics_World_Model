@@ -1,0 +1,1109 @@
+{
+  "benchmark": "Benchmark 1",
+  "variant": "two_photon",
+  "task": "spec_selection",
+  "metric": "spec_match_accuracy",
+  "num_samples": 50,
+  "samples": [
+    {
+      "id": 1,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (Two-Photon PSF).",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Consider a two-photon / multiphoton microscopy system: This Two-Photon PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "C(PSF) → D(g, η₃)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "An optical system that blurs the specimen through convolution with a Two-Photon PSF PSF before detection. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "A researcher sets up two-photon / multiphoton microscopy. A microscopy system where the image is formed by convolving the specimen with a point-spread function (Two-Photon PSF).",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "In a typical microscopy lab, this two-photon psf microscope images samples through psf convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "An optical system that blurs the specimen through convolution with a Two-Photon PSF PSF before detection.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 7,
+      "description": "Consider a two-photon / multiphoton microscopy system: A microscopy system where the image is formed by convolving the specimen with a point-spread function (Two-Photon PSF).",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 8,
+      "description": "This Two-Photon PSF microscope images samples through PSF convolution, with diffraction-limited resolution. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 9,
+      "description": "A researcher sets up two-photon / multiphoton microscopy. An optical system that blurs the specimen through convolution with a Two-Photon PSF PSF before detection.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 10,
+      "description": "In a typical microscopy lab, a microscopy system where the image is formed by convolving the specimen with a point-spread function (two-photon psf).",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 11,
+      "description": "This Two-Photon PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 12,
+      "description": "Consider a two-photon / multiphoton microscopy system: An optical system that blurs the specimen through convolution with a Two-Photon PSF PSF before detection.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 13,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (Two-Photon PSF). The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 14,
+      "description": "A researcher sets up two-photon / multiphoton microscopy. This Two-Photon PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 15,
+      "description": "In a typical microscopy lab, an optical system that blurs the specimen through convolution with a two-photon psf psf before detection.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 16,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (Two-Photon PSF).",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 17,
+      "description": "Consider a two-photon / multiphoton microscopy system: This Two-Photon PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 18,
+      "description": "An optical system that blurs the specimen through convolution with a Two-Photon PSF PSF before detection. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 19,
+      "description": "A researcher sets up two-photon / multiphoton microscopy. A microscopy system where the image is formed by convolving the specimen with a point-spread function (Two-Photon PSF).",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 20,
+      "description": "In a typical microscopy lab, this two-photon psf microscope images samples through psf convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 21,
+      "description": "An optical system that blurs the specimen through convolution with a Two-Photon PSF PSF before detection.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 22,
+      "description": "Consider a two-photon / multiphoton microscopy system: A microscopy system where the image is formed by convolving the specimen with a point-spread function (Two-Photon PSF).",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 23,
+      "description": "This Two-Photon PSF microscope images samples through PSF convolution, with diffraction-limited resolution. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 24,
+      "description": "A researcher sets up two-photon / multiphoton microscopy. An optical system that blurs the specimen through convolution with a Two-Photon PSF PSF before detection.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 25,
+      "description": "In a typical microscopy lab, a microscopy system where the image is formed by convolving the specimen with a point-spread function (two-photon psf).",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 26,
+      "description": "This Two-Photon PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 27,
+      "description": "Consider a two-photon / multiphoton microscopy system: An optical system that blurs the specimen through convolution with a Two-Photon PSF PSF before detection.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 28,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (Two-Photon PSF). The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 29,
+      "description": "A researcher sets up two-photon / multiphoton microscopy. This Two-Photon PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 30,
+      "description": "In a typical microscopy lab, an optical system that blurs the specimen through convolution with a two-photon psf psf before detection.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 31,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (Two-Photon PSF).",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 32,
+      "description": "Consider a two-photon / multiphoton microscopy system: This Two-Photon PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 33,
+      "description": "An optical system that blurs the specimen through convolution with a Two-Photon PSF PSF before detection. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 34,
+      "description": "A researcher sets up two-photon / multiphoton microscopy. A microscopy system where the image is formed by convolving the specimen with a point-spread function (Two-Photon PSF).",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 35,
+      "description": "In a typical microscopy lab, this two-photon psf microscope images samples through psf convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 36,
+      "description": "An optical system that blurs the specimen through convolution with a Two-Photon PSF PSF before detection.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 37,
+      "description": "Consider a two-photon / multiphoton microscopy system: A microscopy system where the image is formed by convolving the specimen with a point-spread function (Two-Photon PSF).",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 38,
+      "description": "This Two-Photon PSF microscope images samples through PSF convolution, with diffraction-limited resolution. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 39,
+      "description": "A researcher sets up two-photon / multiphoton microscopy. An optical system that blurs the specimen through convolution with a Two-Photon PSF PSF before detection.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 40,
+      "description": "In a typical microscopy lab, a microscopy system where the image is formed by convolving the specimen with a point-spread function (two-photon psf).",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 41,
+      "description": "This Two-Photon PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 42,
+      "description": "Consider a two-photon / multiphoton microscopy system: An optical system that blurs the specimen through convolution with a Two-Photon PSF PSF before detection.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 43,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (Two-Photon PSF). The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 44,
+      "description": "A researcher sets up two-photon / multiphoton microscopy. This Two-Photon PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 45,
+      "description": "In a typical microscopy lab, an optical system that blurs the specimen through convolution with a two-photon psf psf before detection.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 46,
+      "description": "A microscopy system where the image is formed by convolving the specimen with a point-spread function (Two-Photon PSF).",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 47,
+      "description": "Consider a two-photon / multiphoton microscopy system: This Two-Photon PSF microscope images samples through PSF convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 48,
+      "description": "An optical system that blurs the specimen through convolution with a Two-Photon PSF PSF before detection. The system operates in a microscopy context.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 49,
+      "description": "A researcher sets up two-photon / multiphoton microscopy. A microscopy system where the image is formed by convolving the specimen with a point-spread function (Two-Photon PSF).",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 50,
+      "description": "In a typical microscopy lab, this two-photon psf microscope images samples through psf convolution, with diffraction-limited resolution.",
+      "correct_spec": "C(PSF_2P) → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "C",
+          "params": "PSF_2P",
+          "label": "Two-Photon PSF"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "Non-Descanned PMT"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    }
+  ]
+}

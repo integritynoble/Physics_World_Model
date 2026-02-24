@@ -1,0 +1,1359 @@
+{
+  "benchmark": "Benchmark 1",
+  "variant": "structured_light",
+  "task": "spec_selection",
+  "metric": "spec_match_accuracy",
+  "num_samples": 50,
+  "samples": [
+    {
+      "id": 1,
+      "description": "This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Consider a structured-light depth camera system: A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection. The system operates in a depth imaging context.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "A researcher sets up structured-light depth camera. A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "In a typical depth imaging lab, this system uses structured illumination patterns (projected pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 7,
+      "description": "Consider a structured-light depth camera system: This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 8,
+      "description": "A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct. The system operates in a depth imaging context.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 9,
+      "description": "A researcher sets up structured-light depth camera. This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 10,
+      "description": "In a typical depth imaging lab, a patterned illumination (projected pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 11,
+      "description": "This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 12,
+      "description": "Consider a structured-light depth camera system: A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 13,
+      "description": "This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection. The system operates in a depth imaging context.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 14,
+      "description": "A researcher sets up structured-light depth camera. A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 15,
+      "description": "In a typical depth imaging lab, this system uses structured illumination patterns (projected pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 16,
+      "description": "A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 17,
+      "description": "Consider a structured-light depth camera system: This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 18,
+      "description": "A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct. The system operates in a depth imaging context.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 19,
+      "description": "A researcher sets up structured-light depth camera. This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 20,
+      "description": "In a typical depth imaging lab, a patterned illumination (projected pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 21,
+      "description": "This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 22,
+      "description": "Consider a structured-light depth camera system: A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 23,
+      "description": "This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection. The system operates in a depth imaging context.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 24,
+      "description": "A researcher sets up structured-light depth camera. A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 25,
+      "description": "In a typical depth imaging lab, this system uses structured illumination patterns (projected pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 26,
+      "description": "A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 27,
+      "description": "Consider a structured-light depth camera system: This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 28,
+      "description": "A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct. The system operates in a depth imaging context.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 29,
+      "description": "A researcher sets up structured-light depth camera. This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 30,
+      "description": "In a typical depth imaging lab, a patterned illumination (projected pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 31,
+      "description": "This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 32,
+      "description": "Consider a structured-light depth camera system: A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 33,
+      "description": "This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection. The system operates in a depth imaging context.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 34,
+      "description": "A researcher sets up structured-light depth camera. A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 35,
+      "description": "In a typical depth imaging lab, this system uses structured illumination patterns (projected pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 36,
+      "description": "A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 37,
+      "description": "Consider a structured-light depth camera system: This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 38,
+      "description": "A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct. The system operates in a depth imaging context.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 39,
+      "description": "A researcher sets up structured-light depth camera. This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 40,
+      "description": "In a typical depth imaging lab, a patterned illumination (projected pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 41,
+      "description": "This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 42,
+      "description": "Consider a structured-light depth camera system: A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 43,
+      "description": "This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection. The system operates in a depth imaging context.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 44,
+      "description": "A researcher sets up structured-light depth camera. A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 45,
+      "description": "In a typical depth imaging lab, this system uses structured illumination patterns (projected pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "Π(fan) → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 46,
+      "description": "A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 47,
+      "description": "Consider a structured-light depth camera system: This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 48,
+      "description": "A patterned illumination (Projected Pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct. The system operates in a depth imaging context.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 49,
+      "description": "A researcher sets up structured-light depth camera. This system uses structured illumination patterns (Projected Pattern) to modulate the specimen before detection.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 50,
+      "description": "In a typical depth imaging lab, a patterned illumination (projected pattern) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(pattern) → Π(triangulation) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "pattern",
+          "label": "Projected Pattern"
+        },
+        {
+          "primitive": "Pi",
+          "params": "triangulation",
+          "label": "Triangulation"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "IR Camera"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    }
+  ]
+}

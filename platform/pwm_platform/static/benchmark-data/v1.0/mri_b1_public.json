@@ -1,0 +1,1109 @@
+{
+  "benchmark": "Benchmark 1",
+  "variant": "mri",
+  "task": "spec_selection",
+  "metric": "spec_match_accuracy",
+  "num_samples": 50,
+  "samples": [
+    {
+      "id": 1,
+      "description": "An imaging system that acquires data by sampling in the Fourier domain (k-Space Sampling), then reconstructing via inverse transform.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Consider a magnetic resonance imaging system: This modality samples k-Space Sampling in the frequency domain, encoding spatial information into k-space measurements.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "Data is collected by traversing k-space trajectories (k-Space Sampling), requiring Fourier inversion for image reconstruction. The system operates in a medical context.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "A researcher sets up magnetic resonance imaging. An imaging system that acquires data by sampling in the Fourier domain (k-Space Sampling), then reconstructing via inverse transform.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "In a typical medical lab, this modality samples k-space sampling in the frequency domain, encoding spatial information into k-space measurements.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "Data is collected by traversing k-space trajectories (k-Space Sampling), requiring Fourier inversion for image reconstruction.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 7,
+      "description": "Consider a magnetic resonance imaging system: An imaging system that acquires data by sampling in the Fourier domain (k-Space Sampling), then reconstructing via inverse transform.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "Π(fan) → D(g, η₂)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 8,
+      "description": "This modality samples k-Space Sampling in the frequency domain, encoding spatial information into k-space measurements. The system operates in a medical context.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 9,
+      "description": "A researcher sets up magnetic resonance imaging. Data is collected by traversing k-space trajectories (k-Space Sampling), requiring Fourier inversion for image reconstruction.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 10,
+      "description": "In a typical medical lab, an imaging system that acquires data by sampling in the fourier domain (k-space sampling), then reconstructing via inverse transform.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 11,
+      "description": "This modality samples k-Space Sampling in the frequency domain, encoding spatial information into k-space measurements.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 12,
+      "description": "Consider a magnetic resonance imaging system: Data is collected by traversing k-space trajectories (k-Space Sampling), requiring Fourier inversion for image reconstruction.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 13,
+      "description": "An imaging system that acquires data by sampling in the Fourier domain (k-Space Sampling), then reconstructing via inverse transform. The system operates in a medical context.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 14,
+      "description": "A researcher sets up magnetic resonance imaging. This modality samples k-Space Sampling in the frequency domain, encoding spatial information into k-space measurements.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 15,
+      "description": "In a typical medical lab, data is collected by traversing k-space trajectories (k-space sampling), requiring fourier inversion for image reconstruction.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 16,
+      "description": "An imaging system that acquires data by sampling in the Fourier domain (k-Space Sampling), then reconstructing via inverse transform.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 17,
+      "description": "Consider a magnetic resonance imaging system: This modality samples k-Space Sampling in the frequency domain, encoding spatial information into k-space measurements.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "C(PSF) → D(g, η₃)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 18,
+      "description": "Data is collected by traversing k-space trajectories (k-Space Sampling), requiring Fourier inversion for image reconstruction. The system operates in a medical context.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 19,
+      "description": "A researcher sets up magnetic resonance imaging. An imaging system that acquires data by sampling in the Fourier domain (k-Space Sampling), then reconstructing via inverse transform.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 20,
+      "description": "In a typical medical lab, this modality samples k-space sampling in the frequency domain, encoding spatial information into k-space measurements.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 21,
+      "description": "Data is collected by traversing k-space trajectories (k-Space Sampling), requiring Fourier inversion for image reconstruction.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 22,
+      "description": "Consider a magnetic resonance imaging system: An imaging system that acquires data by sampling in the Fourier domain (k-Space Sampling), then reconstructing via inverse transform.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 23,
+      "description": "This modality samples k-Space Sampling in the frequency domain, encoding spatial information into k-space measurements. The system operates in a medical context.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 24,
+      "description": "A researcher sets up magnetic resonance imaging. Data is collected by traversing k-space trajectories (k-Space Sampling), requiring Fourier inversion for image reconstruction.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 25,
+      "description": "In a typical medical lab, an imaging system that acquires data by sampling in the fourier domain (k-space sampling), then reconstructing via inverse transform.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 26,
+      "description": "This modality samples k-Space Sampling in the frequency domain, encoding spatial information into k-space measurements.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 27,
+      "description": "Consider a magnetic resonance imaging system: Data is collected by traversing k-space trajectories (k-Space Sampling), requiring Fourier inversion for image reconstruction.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 28,
+      "description": "An imaging system that acquires data by sampling in the Fourier domain (k-Space Sampling), then reconstructing via inverse transform. The system operates in a medical context.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 29,
+      "description": "A researcher sets up magnetic resonance imaging. This modality samples k-Space Sampling in the frequency domain, encoding spatial information into k-space measurements.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 30,
+      "description": "In a typical medical lab, data is collected by traversing k-space trajectories (k-space sampling), requiring fourier inversion for image reconstruction.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 31,
+      "description": "An imaging system that acquires data by sampling in the Fourier domain (k-Space Sampling), then reconstructing via inverse transform.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 32,
+      "description": "Consider a magnetic resonance imaging system: This modality samples k-Space Sampling in the frequency domain, encoding spatial information into k-space measurements.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 33,
+      "description": "Data is collected by traversing k-space trajectories (k-Space Sampling), requiring Fourier inversion for image reconstruction. The system operates in a medical context.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 34,
+      "description": "A researcher sets up magnetic resonance imaging. An imaging system that acquires data by sampling in the Fourier domain (k-Space Sampling), then reconstructing via inverse transform.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 35,
+      "description": "In a typical medical lab, this modality samples k-space sampling in the frequency domain, encoding spatial information into k-space measurements.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 36,
+      "description": "Data is collected by traversing k-space trajectories (k-Space Sampling), requiring Fourier inversion for image reconstruction.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 37,
+      "description": "Consider a magnetic resonance imaging system: An imaging system that acquires data by sampling in the Fourier domain (k-Space Sampling), then reconstructing via inverse transform.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 38,
+      "description": "This modality samples k-Space Sampling in the frequency domain, encoding spatial information into k-space measurements. The system operates in a medical context.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 39,
+      "description": "A researcher sets up magnetic resonance imaging. Data is collected by traversing k-space trajectories (k-Space Sampling), requiring Fourier inversion for image reconstruction.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 40,
+      "description": "In a typical medical lab, an imaging system that acquires data by sampling in the fourier domain (k-space sampling), then reconstructing via inverse transform.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 41,
+      "description": "This modality samples k-Space Sampling in the frequency domain, encoding spatial information into k-space measurements.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 42,
+      "description": "Consider a magnetic resonance imaging system: Data is collected by traversing k-space trajectories (k-Space Sampling), requiring Fourier inversion for image reconstruction.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 43,
+      "description": "An imaging system that acquires data by sampling in the Fourier domain (k-Space Sampling), then reconstructing via inverse transform. The system operates in a medical context.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 44,
+      "description": "A researcher sets up magnetic resonance imaging. This modality samples k-Space Sampling in the frequency domain, encoding spatial information into k-space measurements.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "C(PSF) → D(g, η₃)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 45,
+      "description": "In a typical medical lab, data is collected by traversing k-space trajectories (k-space sampling), requiring fourier inversion for image reconstruction.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 46,
+      "description": "An imaging system that acquires data by sampling in the Fourier domain (k-Space Sampling), then reconstructing via inverse transform.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 47,
+      "description": "Consider a magnetic resonance imaging system: This modality samples k-Space Sampling in the frequency domain, encoding spatial information into k-space measurements.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(diffuser) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 48,
+      "description": "Data is collected by traversing k-space trajectories (k-Space Sampling), requiring Fourier inversion for image reconstruction. The system operates in a medical context.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 49,
+      "description": "A researcher sets up magnetic resonance imaging. An imaging system that acquires data by sampling in the Fourier domain (k-Space Sampling), then reconstructing via inverse transform.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 50,
+      "description": "In a typical medical lab, this modality samples k-space sampling in the frequency domain, encoding spatial information into k-space measurements.",
+      "correct_spec": "F(k-traj) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "F",
+          "params": "k-traj",
+          "label": "k-Space Sampling"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "RF Coil Receiver"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    }
+  ]
+}

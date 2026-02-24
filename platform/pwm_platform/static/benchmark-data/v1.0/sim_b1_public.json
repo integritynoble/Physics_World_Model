@@ -1,0 +1,1609 @@
+{
+  "benchmark": "Benchmark 1",
+  "variant": "sim",
+  "task": "spec_selection",
+  "metric": "spec_match_accuracy",
+  "num_samples": 50,
+  "samples": [
+    {
+      "id": 1,
+      "description": "This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Consider a structured illumination microscopy system: A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection. The system operates in a microscopy context.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "Π(fan) → D(g, η₂)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "A researcher sets up structured illumination microscopy. A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "In a typical microscopy lab, this system uses structured illumination patterns (sinusoidal illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 7,
+      "description": "Consider a structured illumination microscopy system: This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 8,
+      "description": "A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct. The system operates in a microscopy context.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 9,
+      "description": "A researcher sets up structured illumination microscopy. This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 10,
+      "description": "In a typical microscopy lab, a patterned illumination (sinusoidal illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 11,
+      "description": "This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 12,
+      "description": "Consider a structured illumination microscopy system: A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 13,
+      "description": "This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection. The system operates in a microscopy context.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 14,
+      "description": "A researcher sets up structured illumination microscopy. A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 15,
+      "description": "In a typical microscopy lab, this system uses structured illumination patterns (sinusoidal illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 16,
+      "description": "A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 17,
+      "description": "Consider a structured illumination microscopy system: This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 18,
+      "description": "A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct. The system operates in a microscopy context.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 19,
+      "description": "A researcher sets up structured illumination microscopy. This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 20,
+      "description": "In a typical microscopy lab, a patterned illumination (sinusoidal illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 21,
+      "description": "This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 22,
+      "description": "Consider a structured illumination microscopy system: A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "C(PSF) → D(g, η₃)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 23,
+      "description": "This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection. The system operates in a microscopy context.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 24,
+      "description": "A researcher sets up structured illumination microscopy. A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "Π(fan) → D(g, η₂)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 25,
+      "description": "In a typical microscopy lab, this system uses structured illumination patterns (sinusoidal illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 26,
+      "description": "A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 27,
+      "description": "Consider a structured illumination microscopy system: This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 28,
+      "description": "A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct. The system operates in a microscopy context.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 29,
+      "description": "A researcher sets up structured illumination microscopy. This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 30,
+      "description": "In a typical microscopy lab, a patterned illumination (sinusoidal illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 31,
+      "description": "This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 32,
+      "description": "Consider a structured illumination microscopy system: A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 33,
+      "description": "This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection. The system operates in a microscopy context.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 34,
+      "description": "A researcher sets up structured illumination microscopy. A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 35,
+      "description": "In a typical microscopy lab, this system uses structured illumination patterns (sinusoidal illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 36,
+      "description": "A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 37,
+      "description": "Consider a structured illumination microscopy system: This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 38,
+      "description": "A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct. The system operates in a microscopy context.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "Π(fan) → D(g, η₂)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 39,
+      "description": "A researcher sets up structured illumination microscopy. This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 40,
+      "description": "In a typical microscopy lab, a patterned illumination (sinusoidal illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 41,
+      "description": "This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 42,
+      "description": "Consider a structured illumination microscopy system: A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 43,
+      "description": "This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection. The system operates in a microscopy context.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 44,
+      "description": "A researcher sets up structured illumination microscopy. A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 45,
+      "description": "In a typical microscopy lab, this system uses structured illumination patterns (sinusoidal illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 46,
+      "description": "A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 47,
+      "description": "Consider a structured illumination microscopy system: This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 48,
+      "description": "A patterned illumination (Sinusoidal Illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct. The system operates in a microscopy context.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 49,
+      "description": "A researcher sets up structured illumination microscopy. This system uses structured illumination patterns (Sinusoidal Illumination) to modulate the specimen before detection.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 50,
+      "description": "In a typical microscopy lab, a patterned illumination (sinusoidal illumination) is projected onto the sample, and multiple acquisitions are combined to reconstruct.",
+      "correct_spec": "S(grating) → C(PSF) → Σ_φ → D(g, η₃)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "grating",
+          "label": "Sinusoidal Illumination"
+        },
+        {
+          "primitive": "C",
+          "params": "PSF",
+          "label": "PSF Convolution"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "φ",
+          "label": "Phase-Shift Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₃",
+          "label": "sCMOS Camera"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    }
+  ]
+}

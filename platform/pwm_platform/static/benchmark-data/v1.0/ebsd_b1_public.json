@@ -1,0 +1,1359 @@
+{
+  "benchmark": "Benchmark 1",
+  "variant": "ebsd",
+  "task": "spec_selection",
+  "metric": "spec_match_accuracy",
+  "num_samples": 50,
+  "samples": [
+    {
+      "id": 1,
+      "description": "An imaging system based on wave propagation (Electron Beam), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Consider a electron backscatter diffraction system: This modality captures data by propagating a Electron Beam wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "Measurements are formed by Electron Beam wave propagation and detection of the resulting intensity or phase. The system operates in a electron microscopy context.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "A researcher sets up electron backscatter diffraction. An imaging system based on wave propagation (Electron Beam), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "In a typical electron microscopy lab, this modality captures data by propagating a electron beam wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "Measurements are formed by Electron Beam wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 7,
+      "description": "Consider a electron backscatter diffraction system: An imaging system based on wave propagation (Electron Beam), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 8,
+      "description": "This modality captures data by propagating a Electron Beam wave through/around the specimen and recording the resulting field. The system operates in a electron microscopy context.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 9,
+      "description": "A researcher sets up electron backscatter diffraction. Measurements are formed by Electron Beam wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 10,
+      "description": "In a typical electron microscopy lab, an imaging system based on wave propagation (electron beam), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 11,
+      "description": "This modality captures data by propagating a Electron Beam wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 12,
+      "description": "Consider a electron backscatter diffraction system: Measurements are formed by Electron Beam wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 13,
+      "description": "An imaging system based on wave propagation (Electron Beam), where measurements encode the object's interaction with the propagating field. The system operates in a electron microscopy context.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 14,
+      "description": "A researcher sets up electron backscatter diffraction. This modality captures data by propagating a Electron Beam wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 15,
+      "description": "In a typical electron microscopy lab, measurements are formed by electron beam wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 16,
+      "description": "An imaging system based on wave propagation (Electron Beam), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 17,
+      "description": "Consider a electron backscatter diffraction system: This modality captures data by propagating a Electron Beam wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 18,
+      "description": "Measurements are formed by Electron Beam wave propagation and detection of the resulting intensity or phase. The system operates in a electron microscopy context.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "C(PSF) → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 19,
+      "description": "A researcher sets up electron backscatter diffraction. An imaging system based on wave propagation (Electron Beam), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 20,
+      "description": "In a typical electron microscopy lab, this modality captures data by propagating a electron beam wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 21,
+      "description": "Measurements are formed by Electron Beam wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 22,
+      "description": "Consider a electron backscatter diffraction system: An imaging system based on wave propagation (Electron Beam), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 23,
+      "description": "This modality captures data by propagating a Electron Beam wave through/around the specimen and recording the resulting field. The system operates in a electron microscopy context.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(diffuser) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 24,
+      "description": "A researcher sets up electron backscatter diffraction. Measurements are formed by Electron Beam wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 25,
+      "description": "In a typical electron microscopy lab, an imaging system based on wave propagation (electron beam), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 26,
+      "description": "This modality captures data by propagating a Electron Beam wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "M(polarizer) → C(PSF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 27,
+      "description": "Consider a electron backscatter diffraction system: Measurements are formed by Electron Beam wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 28,
+      "description": "An imaging system based on wave propagation (Electron Beam), where measurements encode the object's interaction with the propagating field. The system operates in a electron microscopy context.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "Π(fan) → D(g, η₂)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 29,
+      "description": "A researcher sets up electron backscatter diffraction. This modality captures data by propagating a Electron Beam wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 30,
+      "description": "In a typical electron microscopy lab, measurements are formed by electron beam wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 31,
+      "description": "An imaging system based on wave propagation (Electron Beam), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 32,
+      "description": "Consider a electron backscatter diffraction system: This modality captures data by propagating a Electron Beam wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 33,
+      "description": "Measurements are formed by Electron Beam wave propagation and detection of the resulting intensity or phase. The system operates in a electron microscopy context.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 34,
+      "description": "A researcher sets up electron backscatter diffraction. An imaging system based on wave propagation (Electron Beam), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 35,
+      "description": "In a typical electron microscopy lab, this modality captures data by propagating a electron beam wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "C(PSF) → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 36,
+      "description": "Measurements are formed by Electron Beam wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(modulated) → Σ(corr) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 37,
+      "description": "Consider a electron backscatter diffraction system: An imaging system based on wave propagation (Electron Beam), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)",
+        "Π(ray) → Σ(volume) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 38,
+      "description": "This modality captures data by propagating a Electron Beam wave through/around the specimen and recording the resulting field. The system operates in a electron microscopy context.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 39,
+      "description": "A researcher sets up electron backscatter diffraction. Measurements are formed by Electron Beam wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "M(Φ) → Σ → D(g, η₁)",
+        "R(θ) → Π(cone) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 40,
+      "description": "In a typical electron microscopy lab, an imaging system based on wave propagation (electron beam), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "S(grating) → C(PSF) → Σ → D(g, η₃)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 41,
+      "description": "This modality captures data by propagating a Electron Beam wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(diffuser) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 42,
+      "description": "Consider a electron backscatter diffraction system: Measurements are formed by Electron Beam wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)",
+        "M(Φ) → Σ → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 43,
+      "description": "An imaging system based on wave propagation (Electron Beam), where measurements encode the object's interaction with the propagating field. The system operates in a electron microscopy context.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(diffuser) → D(g, η₁)",
+        "Λ(E₁,E₂) → Π(proj) → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 44,
+      "description": "A researcher sets up electron backscatter diffraction. This modality captures data by propagating a Electron Beam wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)",
+        "C(PSF) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 45,
+      "description": "In a typical electron microscopy lab, measurements are formed by electron beam wave propagation and detection of the resulting intensity or phase.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 46,
+      "description": "An imaging system based on wave propagation (Electron Beam), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "M(polarizer) → C(PSF) → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 47,
+      "description": "Consider a electron backscatter diffraction system: This modality captures data by propagating a Electron Beam wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "P(diffuser) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(acoustic) → Σ_t → D(g, η₂)"
+      ]
+    },
+    {
+      "id": 48,
+      "description": "Measurements are formed by Electron Beam wave propagation and detection of the resulting intensity or phase. The system operates in a electron microscopy context.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "M(Φ) → Σ → D(g, η₁)",
+        "P(fresnel) → |·|² → D(g, η₁)",
+        "F(EPI) → Σ_t → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 49,
+      "description": "A researcher sets up electron backscatter diffraction. An imaging system based on wave propagation (Electron Beam), where measurements encode the object's interaction with the propagating field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "Π(ray) → Σ(volume) → D(g, η₁)",
+        "F(spiral) → C(psf) → D(g, η₃)"
+      ]
+    },
+    {
+      "id": 50,
+      "description": "In a typical electron microscopy lab, this modality captures data by propagating a electron beam wave through/around the specimen and recording the resulting field.",
+      "correct_spec": "P(e⁻) → Π(backscatter) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "P",
+          "params": "e⁻",
+          "label": "Electron Beam"
+        },
+        {
+          "primitive": "Pi",
+          "params": "backscatter",
+          "label": "Kikuchi Pattern Projection"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Phosphor Screen + Camera"
+        }
+      ],
+      "distractors": [
+        "R(θ) → Π(cone) → D(g, η₁)",
+        "P(modulated) → Σ(corr) → D(g, η₁)",
+        "P(e⁻) → C(CTF) → D(g, η₁)"
+      ]
+    }
+  ]
+}
