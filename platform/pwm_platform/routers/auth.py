@@ -15,6 +15,7 @@ import logging
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -117,16 +118,26 @@ async def login(
     return result
 
 
-@router.post("/logout", response_model=LogoutResponse)
+@router.post("/logout")
 async def logout(
+    request: Request,
     response: Response,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     """Log out the current user."""
-    result = await auth_service.logout_user(user.id, db)
+    await auth_service.logout_user(user.id, db)
+
+    # Browser form submission → redirect to homepage
+    content_type = request.headers.get("content-type", "")
+    accept = request.headers.get("accept", "")
+    if "text/html" in accept or "application/x-www-form-urlencoded" in content_type:
+        redirect = RedirectResponse("/", status_code=303)
+        redirect.delete_cookie("access_token", path="/")
+        return redirect
+
     response.delete_cookie("access_token", path="/")
-    return result
+    return {"success": True, "message": "Logged out successfully"}
 
 
 @router.get("/me", response_model=AuthResponse)
