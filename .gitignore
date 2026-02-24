@@ -54,6 +54,8 @@ data/
 *.hdf5
 # Allow SPC sampling matrices
 !papers/inversenet/data/spc/sampling_matrix/*.mat
+# Allow benchmark dataset files
+!platform/pwm_platform/static/benchmark-data/**/*.h5
 
 # Large binary data (model checkpoints, datasets, run artifacts)
 checkpoint/
