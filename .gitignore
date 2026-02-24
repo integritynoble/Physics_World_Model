@@ -58,6 +58,8 @@ data/
 # Large binary data (model checkpoints, datasets, run artifacts)
 checkpoint/
 datasets/
+!benchmarks/datasets/
+benchmarks/datasets/__pycache__/
 runs/
 
 # Worktrees

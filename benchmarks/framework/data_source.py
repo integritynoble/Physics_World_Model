@@ -1,6 +1,7 @@
 """DataSource – multi-strategy data acquisition for benchmarks.
 
 Follows the sourcing priority:
+  0. registry   – check manifest.yaml for pre-acquired datasets
   1. web        – download from known dataset URLs
   2. experimental – load from local datasets/ directory
   3. synthetic_web – download synthetic from repositories
@@ -10,6 +11,7 @@ Follows the sourcing priority:
 from __future__ import annotations
 
 import hashlib
+import logging
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
@@ -18,6 +20,8 @@ from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 
 from benchmarks.framework.source_attribution import SourceAttribution, SourceRef, SourceType
+
+logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
@@ -58,6 +62,7 @@ class DataSource:
         synthetic_generator: str = "",
         category_module: str = "",
         dims: Tuple[int, ...] = (64, 64),
+        modality_id: str = "",
     ):
         self.priority = priority
         self.dataset_id = dataset_id
@@ -68,6 +73,7 @@ class DataSource:
         self.synthetic_generator = synthetic_generator
         self.category_module = category_module
         self.dims = dims
+        self.modality_id = modality_id
 
     def acquire(self) -> DataResult:
         """Try each source strategy in priority order.
@@ -75,6 +81,11 @@ class DataSource:
         Returns:
             DataResult with ground truth array and provenance.
         """
+        # Check the dataset manifest/registry first (pre-acquired data)
+        result = self._try_registry()
+        if result is not None:
+            return result
+
         strategies = {
             "web": self._try_web,
             "experimental": self._try_experimental,
@@ -91,6 +102,90 @@ class DataSource:
 
         # Ultimate fallback: generate a simple test pattern
         return self._generate_fallback()
+
+    # ------------------------------------------------------------------
+    # Registry lookup (pre-acquired datasets)
+    # ------------------------------------------------------------------
+
+    def _try_registry(self) -> Optional[DataResult]:
+        """Check manifest.yaml for a pre-acquired dataset matching this request.
+
+        Looks up by ``dataset_id`` first, then by ``modality_id``.
+        """
+        manifest = _load_manifest()
+        if not manifest:
+            return None
+
+        # Direct match by dataset_id
+        if self.dataset_id and self.dataset_id in manifest:
+            return self._load_manifest_entry(manifest[self.dataset_id])
+
+        # Match by modality_id (scan all entries' applies_to lists)
+        if self.modality_id:
+            for entry_id, entry_data in manifest.items():
+                applies = entry_data.get("applies_to", [])
+                if self.modality_id in applies:
+                    result = self._load_manifest_entry(entry_data)
+                    if result is not None:
+                        return result
+
+        return None
+
+    def _load_manifest_entry(self, entry_data: Dict) -> Optional[DataResult]:
+        """Try to load data from a manifest entry."""
+        status = entry_data.get("status", "")
+        if status not in ("acquired", "cached"):
+            return None
+
+        local_path_str = entry_data.get("local_path")
+        if local_path_str:
+            local_path = Path(local_path_str)
+            if local_path.exists():
+                try:
+                    arr = np.load(local_path)
+                    source_type = _parse_source_type(entry_data.get("source_type", "web"))
+                    return DataResult(
+                        x_true=arr,
+                        source_type=source_type,
+                        reference=entry_data.get("citation", entry_data.get("source_url", "")),
+                        metadata={
+                            "manifest_entry": True,
+                            "local_path": str(local_path),
+                            "license": entry_data.get("license", ""),
+                        },
+                    )
+                except Exception as e:
+                    logger.debug("Failed to load manifest entry: %s", e)
+
+        # Try GCS path
+        gcs_path = entry_data.get("gcs_path")
+        if gcs_path:
+            return self._try_gcs_download(gcs_path, entry_data)
+
+        return None
+
+    def _try_gcs_download(self, gcs_path: str, entry_data: Dict) -> Optional[DataResult]:
+        """Download from GCS if available."""
+        try:
+            from benchmarks.datasets.gcs_store import GCSDatasetStore
+            store = GCSDatasetStore()
+            # Strip gs://bucket/ prefix to get key
+            key = gcs_path
+            if key.startswith("gs://"):
+                key = "/".join(key.split("/")[3:])
+            local = store.download(key)
+            if local and local.exists():
+                arr = np.load(local)
+                source_type = _parse_source_type(entry_data.get("source_type", "web"))
+                return DataResult(
+                    x_true=arr,
+                    source_type=source_type,
+                    reference=entry_data.get("citation", gcs_path),
+                    metadata={"gcs_path": gcs_path},
+                )
+        except Exception as e:
+            logger.debug("GCS download failed: %s", e)
+        return None
 
     # ------------------------------------------------------------------
     # Strategy implementations
@@ -268,3 +363,45 @@ def _load_category_generator(module_name: str):
         return getattr(mod, "generate_phantom", None)
     except (ImportError, AttributeError):
         return None
+
+
+# ---------------------------------------------------------------------------
+# Manifest helpers
+# ---------------------------------------------------------------------------
+
+_manifest_cache: Optional[Dict] = None
+
+
+def _load_manifest() -> Dict:
+    """Load the dataset manifest, caching across calls within a session."""
+    global _manifest_cache
+    if _manifest_cache is not None:
+        return _manifest_cache
+
+    manifest_path = Path(__file__).parent.parent / "datasets" / "manifest.yaml"
+    if not manifest_path.exists():
+        _manifest_cache = {}
+        return _manifest_cache
+
+    try:
+        import yaml
+        with open(manifest_path) as f:
+            data = yaml.safe_load(f) or {}
+        _manifest_cache = data.get("datasets", {}) or {}
+    except Exception:
+        _manifest_cache = {}
+    return _manifest_cache
+
+
+def _parse_source_type(s: str) -> SourceType:
+    """Parse a source_type string to the SourceType enum."""
+    try:
+        return SourceType(s)
+    except ValueError:
+        return SourceType.web
+
+
+def invalidate_manifest_cache() -> None:
+    """Clear the manifest cache (e.g. after running prepare.py)."""
+    global _manifest_cache
+    _manifest_cache = None

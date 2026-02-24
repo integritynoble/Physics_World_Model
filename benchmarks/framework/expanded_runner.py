@@ -399,7 +399,11 @@ class ExpandedBenchmarkRunner:
     # ------------------------------------------------------------------
 
     def _acquire_data(self, case: CaseInstance) -> DataResult:
-        """Acquire ground-truth data, using cache when possible."""
+        """Acquire ground-truth data, using cache when possible.
+
+        The modality_id is passed to DataSource so the manifest registry
+        can match datasets by modality even if no dataset_id is provided.
+        """
         cache_key = f"{case.modality_id}_{case.variant.id}"
         if cache_key in self._data_cache:
             return self._data_cache[cache_key]
@@ -444,6 +448,7 @@ class ExpandedBenchmarkRunner:
             license_=license_,
             category_module=category_module,
             dims=dims,
+            modality_id=case.modality_id,
         )
         result = source.acquire()
         self._data_cache[cache_key] = result

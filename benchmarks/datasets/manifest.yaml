@@ -1,0 +1,687 @@
+datasets:
+  indian_pines_hs:
+    source_type: web
+    source_url: https://www.ehu.eus/ccwintco/uploads/6/67/Indian_pines_corrected.mat
+    citation: Purdue University, Indian Pines, 1992
+    license: Public domain
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/indian_pines_hs.npy
+    gcs_path: null
+    x_shape:
+    - 145
+    - 145
+    - 200
+    acquired_date: '2026-02-24'
+    applies_to:
+    - cassi
+    - cacti
+    - spc
+    - coded_exposure
+    - cup
+    - dcchi
+    - ghost_imaging
+    - matrix_completion
+    - one_pixel
+    - matrix
+    status: acquired
+  pavia_university_hs:
+    source_type: web
+    source_url: https://www.ehu.eus/ccwintco/uploads/e/ee/PaviaU.mat
+    citation: Pavia University, ROSIS sensor, 2003
+    license: Public domain
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/pavia_university_hs.npy
+    gcs_path: null
+    x_shape:
+    - 610
+    - 340
+    - 103
+    acquired_date: '2026-02-24'
+    applies_to:
+    - cassi
+    - cacti
+    - spc
+    - coded_exposure
+    - cup
+    - dcchi
+    - ghost_imaging
+    - hyperspectral_rs
+    - sar
+    - insar
+    - polsar
+    - ftir_imaging
+    - raman_imaging
+    - cars
+    - srs
+    - brillouin
+    - libs
+    - sims
+    - desi
+    status: acquired
+  salinas_hs:
+    source_type: web
+    source_url: https://www.ehu.eus/ccwintco/uploads/a/a3/Salinas_corrected.mat
+    citation: Salinas Valley, AVIRIS sensor, 1998
+    license: Public domain
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/salinas_hs.npy
+    gcs_path: null
+    x_shape:
+    - 512
+    - 217
+    - 204
+    acquired_date: '2026-02-24'
+    applies_to:
+    - cassi
+    - cacti
+    - spc
+    - coded_exposure
+    - hyperspectral_rs
+    - hyperspectral_remote
+    - multispectral_sat
+    - ocean_color
+    status: acquired
+  biosr_sim:
+    source_type: web
+    source_url: https://figshare.com/ndownloader/articles/13264793/versions/13
+    citation: Qiao et al., BioSR, Nature Methods 2021
+    license: CC BY 4.0
+    local_path: null
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - sim
+    - widefield
+    status: failed
+  smlm_challenge_2016:
+    source_type: web
+    source_url: https://srm.epfl.ch/DataRequest
+    citation: Sage et al., SMLM 2016 Challenge, Nature Methods 2019
+    license: Research use
+    local_path: null
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - palm
+    - storm
+    status: failed
+  bsd68_microscopy:
+    source_type: web
+    source_url: https://github.com/clausmichele/CBSD68-dataset/archive/refs/heads/master.zip
+    citation: Martin et al., Berkeley Segmentation Dataset, ICCV 2001
+    license: Research use
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/bsd68_microscopy.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - widefield
+    - confocal_3d
+    - confocal_livecell
+    - two_photon
+    - lightsheet
+    - sted
+    - sim
+    - dark_field
+    - dic
+    - phase_contrast
+    - polarization
+    - spinning_disk
+    - lattice_lightsheet
+    - widefield_lowdose
+    - flim
+    - shg
+    - three_photon
+    - tirf
+    - fpm
+    - ism
+    - expansion
+    - lensless
+    - confocal_endomicroscopy
+    - clem
+    status: acquired
+  lodopab_ct_sample:
+    source_type: web
+    source_url: https://zenodo.org/records/3384092/files/ground_truth_train_000.hdf5
+    citation: Leuschner et al., LoDoPaB-CT, Scientific Data 2021
+    license: CC BY 4.0
+    local_path: null
+    gcs_path: null
+    x_shape:
+    - 362
+    - 362
+    acquired_date: '2026-02-24'
+    applies_to:
+    - ct
+    - cbct
+    - helical_ct
+    - dual_energy_ct
+    - photon_counting_ct
+    - spectral_ct
+    status: pending
+  covid_ct_sample:
+    source_type: web
+    source_url: https://github.com/UCSD-AI4H/COVID-CT/archive/refs/heads/master.zip
+    citation: Zhao et al., COVID-CT Dataset, arXiv 2020
+    license: Research use
+    local_path: null
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - ct
+    - cbct
+    - helical_ct
+    status: failed
+  ixi_t1_sample:
+    source_type: web
+    source_url: https://brain-development.org/ixi-dataset/IXI-T1.tar
+    citation: IXI Dataset, Imperial College London
+    license: CC BY-SA 3.0
+    local_path: null
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - mri
+    - asl_mri
+    - cest_mri
+    - dti
+    - fmri
+    - mrsi
+    - mrf
+    - mre
+    status: pending
+  fastmri_knee_sample:
+    source_type: web
+    source_url: https://fastmri-dataset.s3.amazonaws.com/v2.0/knee_singlecoil_val.tar.xz
+    citation: Zbontar et al., fastMRI, arXiv 2018
+    license: fastMRI License (research only)
+    local_path: null
+    gcs_path: null
+    x_shape:
+    - 320
+    - 320
+    acquired_date: '2026-02-24'
+    applies_to:
+    - mri
+    status: pending
+  empiar_10146_apoferritin:
+    source_type: web
+    source_url: https://ftp.ebi.ac.uk/empiar/world_availability/10146/
+    citation: EMPIAR-10146, Apoferritin tutorial dataset
+    license: CC0
+    local_path: null
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - cryo_em
+    - cryo_et
+    - tem
+    status: pending
+  brainweb_pet:
+    source_type: synthetic_web
+    source_url: https://brainweb.bic.mni.mcgill.ca/brainweb/
+    citation: Collins et al., BrainWeb, IEEE TMI 1998
+    license: Non-commercial research
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/brainweb_pet.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - pet
+    - spect
+    - pet_ct
+    - pet_mr
+    - spect_ct
+    - magnetic_particle
+    status: acquired
+  kennedy_space_center_hs:
+    source_type: web
+    source_url: https://www.ehu.eus/ccwintco/uploads/2/26/KSC.mat
+    citation: Kennedy Space Center, AVIRIS sensor
+    license: Public domain
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/kennedy_space_center_hs.npy
+    gcs_path: null
+    x_shape:
+    - 512
+    - 614
+    - 176
+    acquired_date: '2026-02-24'
+    applies_to:
+    - hyperspectral_rs
+    - sar
+    - insar
+    - polsar
+    - multispectral_rs
+    - hyperspectral_remote
+    - multispectral_sat
+    - ocean_color
+    - passive_microwave
+    - weather_radar
+    - gpr
+    status: acquired
+  afm_synthetic_surface:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated surface topography
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/afm_synthetic_surface.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - afm
+    - stm
+    - nsom
+    - mfm
+    - skpm
+    - sicm
+    - shpm
+    status: acquired
+  retinal_oct_sample:
+    source_type: web
+    source_url: https://data.mendeley.com/public-files/datasets/rscbjbr9sj/files/14f54584-ff8d-4740-a138-2a88bae8e4f3/file_downloaded
+    citation: Kermany et al., Cell 2018
+    license: CC BY 4.0
+    local_path: null
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - oct
+    status: failed
+  hologram_usaf:
+    source_type: web
+    source_url: https://osf.io/download/b7qp3/
+    citation: Brito et al., HQ-DLHM-OD dataset, OSF 2022
+    license: CC BY 4.0
+    local_path: null
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - holography
+    - digital_holography
+    - doi
+    status: failed
+  lidar_kitti_sample:
+    source_type: web
+    source_url: https://s3.eu-central-1.amazonaws.com/avg-kitti/data_object_velodyne.zip
+    citation: Geiger et al., KITTI, CVPR 2012
+    license: CC BY-NC-SA 3.0
+    local_path: null
+    gcs_path: null
+    x_shape:
+    - 64
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - lidar
+    status: pending
+  deepstorm_smlm:
+    source_type: web
+    source_url: https://zenodo.org/records/3959089/files/TrainingData.zip
+    citation: Nehme et al., DeepSTORM, Optica 2018; Zenodo 3959089
+    license: CC BY 4.0
+    local_path: null
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - palm
+    - storm
+    status: failed
+  covid_ct_lung_seg:
+    source_type: web
+    source_url: https://zenodo.org/records/3757476/files/COVID-19-CT-Seg_20cases.zip
+    citation: COVID-19 CT Lung and Infection Segmentation, Zenodo 3757476
+    license: CC BY 4.0
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/covid_ct_lung_seg.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - ct
+    - cbct
+    - helical_ct
+    - industrial_ct
+    - digital_breast_tomo
+    - mammography
+    - fluoroscopy
+    - xray_radiography
+    - xray_ndt
+    - dexa
+    - angiography
+    - ct_fluorescence
+    - talbot_lau
+    - portal_imaging
+    - spectral_ct
+    - neutron_tomo
+    - muon_tomo
+    status: acquired
+  oct_generated:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated OCT-like layered retinal structure
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/oct_generated.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - oct
+    - octa
+    status: acquired
+  smlm_generated:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated SMLM emitter field
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/smlm_generated.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - palm
+    - storm
+    - palm_storm
+    - dna_paint
+    - minflux
+    status: acquired
+  medical_phantom_generated:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated medical phantom (Shepp-Logan derived)
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/medical_phantom_generated.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - ultrasound
+    - doppler_ultrasound
+    - ceus
+    - elastography
+    - ivus
+    - us_mri
+    - endoscopy
+    - fundus
+    - octa
+    - bioluminescence_tomo
+    - dot
+    - nirs_brain
+    - photoacoustic
+    - brachytherapy_img
+    - proton_therapy_img
+    - proton_radiography
+    - mri
+    - asl_mri
+    - cest_mri
+    - dti
+    - fmri
+    - diffusion_mri
+    - mr_elastography
+    - mr_fingerprinting
+    - mra
+    - mrs
+    - swi
+    - mrsi
+    - mrf
+    - mre
+    status: acquired
+  electron_microscopy_generated:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated EM phantom (nanoparticle field)
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/electron_microscopy_generated.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - cryo_em
+    - cryo_et
+    - tem
+    - sem
+    - eels
+    - stem
+    - fib_sem
+    - ebsd
+    - edx_mapping
+    - electron_diffraction
+    - electron_holography
+    - electron_tomography
+    - cathodoluminescence
+    status: acquired
+  coherent_imaging_generated:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated resolution target with phase
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/coherent_imaging_generated.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - holography
+    - ptychography
+    - phase_retrieval
+    - odt
+    - phase_contrast
+    - electron_holography
+    status: acquired
+  depth_imaging_generated:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated depth scene
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/depth_imaging_generated.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - lidar
+    - flash_lidar
+    - tof_camera
+    - structured_light
+    - photometric_stereo
+    - sonar
+    status: acquired
+  computational_photo_generated:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated test scene
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/computational_photo_generated.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - event_camera
+    - hdr_imaging
+    - lensless
+    - panorama
+    - light_field
+    - integral
+    - machine_vision
+    status: acquired
+  astronomy_generated:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated star field with extended source
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/astronomy_generated.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - coronagraphy
+    - eht_imaging
+    - lucky_imaging
+    - solar_imaging
+    - adaptive_optics
+    - radio_astronomy
+    - radio_interferometry
+    - gravitational_wave
+    status: acquired
+  ultrafast_generated:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated ultrafast dynamics phantom
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/ultrafast_generated.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - pump_probe
+    - streak_camera
+    - xfel_sfx
+    - entangled_photon
+    - quantum_illumination
+    status: acquired
+  xray_diffraction_generated:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated crystallographic diffraction pattern
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/xray_diffraction_generated.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - xray_crystallography
+    - saxs
+    - waxs
+    - neutron_diffraction
+    - electron_diffraction
+    - xfel_sfx
+    status: acquired
+  xrf_generated:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated elemental distribution map
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/xrf_generated.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - xrf_imaging
+    - xrf_tomo
+    - maldi_msi
+    - atom_probe
+    status: acquired
+  industrial_ndt_generated:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated NDT inspection phantom
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/industrial_ndt_generated.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - eddy_current
+    - acoustic_emission
+    - shearography
+    - active_thermography
+    - terahertz
+    - ultrasonic_phased_array
+    - acoustic_microscopy
+    status: acquired
+  seismic_generated:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated layered velocity model
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/seismic_generated.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - seismic_tomo
+    - fwi
+    - ocean_acoustic_tomo
+    - impedance_tomo
+    status: acquired
+  nerf_generated:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated multi-view test scene
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/nerf_generated.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - nerf
+    - gaussian_splatting
+    status: acquired
+  calorimeter_generated:
+    source_type: generated
+    source_url: ''
+    citation: PWM generated particle shower pattern
+    license: N/A
+    local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/calorimeter_generated.npy
+    gcs_path: null
+    x_shape:
+    - 256
+    - 256
+    acquired_date: '2026-02-24'
+    applies_to:
+    - particle_calorimetry
+    status: acquired
