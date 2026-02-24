@@ -1,63 +1,40 @@
 {% extends "base.html" %}
-{% block title %}Dashboard — Physics World Model{% endblock %}
+{% block title %}My Runs — Physics World Model{% endblock %}
 
 {% block content %}
 <div class="space-y-6">
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Physics World Model</h1>
-            <p class="text-sm text-gray-500">Physics World Model for Imaging System Autonomy</p>
+            <h1 class="text-2xl font-bold text-gray-900">My Runs</h1>
+            <p class="text-sm text-gray-500">All runs submitted by you</p>
         </div>
-        {% if user %}
         <a href="/runs/new"
            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
             + New Run
         </a>
-        {% else %}
-        <a href="/login"
-           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
-            Sign in to run experiments
-        </a>
-        {% endif %}
     </div>
 
-    <!-- Quick Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="text-sm font-medium text-gray-500">Total Runs</div>
-                <div class="mt-1 text-3xl font-semibold text-gray-900">{{ total_runs }}</div>
-            </div>
-        </div>
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="text-sm font-medium text-gray-500">Completed</div>
-                <div class="mt-1 text-3xl font-semibold text-green-600">
-                    {{ runs | selectattr('status', 'eq', 'completed') | list | length }}
-                </div>
-            </div>
-        </div>
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="text-sm font-medium text-gray-500">Modalities</div>
-                <div class="mt-1 text-3xl font-semibold text-indigo-600">{{ total_modalities }}</div>
-            </div>
-        </div>
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="text-sm font-medium text-gray-500">Datasets</div>
-                <div class="mt-1 text-3xl font-semibold text-purple-600">{{ total_datasets }}</div>
-            </div>
-        </div>
+    <!-- Visibility Filter Tabs -->
+    <div class="border-b border-gray-200">
+        <nav class="-mb-px flex space-x-8">
+            <a href="/my-runs"
+               class="{% if not selected_visibility %}border-indigo-500 text-indigo-600{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                All
+            </a>
+            <a href="/my-runs?visibility=public"
+               class="{% if selected_visibility == 'public' %}border-indigo-500 text-indigo-600{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                Public
+            </a>
+            <a href="/my-runs?visibility=private"
+               class="{% if selected_visibility == 'private' %}border-indigo-500 text-indigo-600{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                Private
+            </a>
+        </nav>
     </div>
 
-    <!-- Recent Runs Table -->
+    <!-- Runs Table -->
     <div class="bg-white shadow rounded-lg">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h2 class="text-lg font-medium text-gray-900">Recent Runs</h2>
-        </div>
-
         {% if runs %}
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
@@ -109,12 +86,16 @@
         </div>
         {% else %}
         <div class="px-6 py-12 text-center">
-            <p class="text-gray-500">No runs yet.</p>
-            {% if user %}
+            <p class="text-gray-500">
+                {% if selected_visibility == 'public' %}
+                No public runs yet.
+                {% elif selected_visibility == 'private' %}
+                No private runs yet.
+                {% else %}
+                No runs yet.
+                {% endif %}
+            </p>
             <a href="/runs/new" class="mt-2 inline-block text-indigo-600 hover:text-indigo-500">Submit your first run</a>
-            {% else %}
-            <a href="/login" class="mt-2 inline-block text-indigo-600 hover:text-indigo-500">Sign in to submit a run</a>
-            {% endif %}
         </div>
         {% endif %}
     </div>

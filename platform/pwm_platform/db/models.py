@@ -81,6 +81,7 @@ class Run(Base):
     task_kind = Column(String(50), nullable=False)
     status = Column(String(20), default="pending", index=True)
     compute_mode = Column(String(10), default="auto")
+    is_public = Column(Boolean, default=True, server_default="true", index=True)
 
     # Input
     input_mode = Column(String(20))                          # prompt / spec / measured

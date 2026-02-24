@@ -15,7 +15,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from pwm_platform.auth.dependencies import get_current_user
@@ -258,6 +258,7 @@ async def create_run(
             "input_mode": form.get("input_mode", "spec"),
             "experiment_spec": experiment_spec,
             "prompt": spec_text if not spec_text.strip().startswith("{") else None,
+            "is_public": form.get("is_public", "true"),
         }
 
     # ── Auto-detect modality from prompt when set to "auto" ─────────────
@@ -300,6 +301,9 @@ async def create_run(
 
     run_id = f"run-{uuid.uuid4().hex[:12]}"
 
+    is_public_raw = data.get("is_public", "true")
+    is_public = str(is_public_raw).lower() not in ("false", "0", "no", "private")
+
     run = Run(
         run_id=run_id,
         user_id=user.id,
@@ -310,6 +314,7 @@ async def create_run(
         input_mode=data.get("input_mode", "prompt"),
         experiment_spec=experiment_spec,
         dataset_id=data.get("dataset_id"),
+        is_public=is_public,
     )
     db.add(run)
     await db.commit()
@@ -339,8 +344,9 @@ async def list_runs(
     db: AsyncSession = Depends(get_db),
     limit: int = 50,
     offset: int = 0,
+    visibility: Optional[str] = None,
 ):
-    """List runs for the current user."""
+    """List runs for the current user. Optional visibility filter: public/private."""
     stmt = (
         select(Run)
         .where(Run.user_id == user.id)
@@ -348,6 +354,11 @@ async def list_runs(
         .limit(limit)
         .offset(offset)
     )
+    if visibility == "public":
+        stmt = stmt.where(Run.is_public == True)  # noqa: E712
+    elif visibility == "private":
+        stmt = stmt.where(Run.is_public == False)  # noqa: E712
+
     result = await db.execute(stmt)
     runs = result.scalars().all()
 
@@ -359,6 +370,7 @@ async def list_runs(
                 "task_kind": r.task_kind,
                 "status": r.status,
                 "compute_mode": r.compute_mode,
+                "is_public": r.is_public,
                 "submitted_at": r.submitted_at.isoformat() if r.submitted_at else None,
                 "completed_at": r.completed_at.isoformat() if r.completed_at else None,
                 "duration_seconds": r.duration_seconds,
@@ -375,12 +387,14 @@ async def get_run(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Get run details."""
-    result = await db.execute(
-        select(Run).where(Run.run_id == run_id, Run.user_id == user.id)
-    )
+    """Get run details. Public runs visible to all; private runs only to owner/admin."""
+    result = await db.execute(select(Run).where(Run.run_id == run_id))
     run = result.scalar_one_or_none()
     if run is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+
+    # Private runs: only owner or admin
+    if not run.is_public and run.user_id != user.id and user.role != "admin":
         raise HTTPException(status_code=404, detail="Run not found")
 
     return {
@@ -389,6 +403,7 @@ async def get_run(
         "task_kind": run.task_kind,
         "status": run.status,
         "compute_mode": run.compute_mode,
+        "is_public": run.is_public,
         "input_mode": run.input_mode,
         "experiment_spec": run.experiment_spec,
         "submitted_at": run.submitted_at.isoformat() if run.submitted_at else None,
@@ -407,12 +422,14 @@ async def get_run_results(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Get TriadReport results for a run."""
-    run_result = await db.execute(
-        select(Run).where(Run.run_id == run_id, Run.user_id == user.id)
-    )
+    """Get TriadReport results for a run. Public runs visible to all; private runs only to owner/admin."""
+    run_result = await db.execute(select(Run).where(Run.run_id == run_id))
     run = run_result.scalar_one_or_none()
     if run is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+
+    # Private runs: only owner or admin
+    if not run.is_public and run.user_id != user.id and user.role != "admin":
         raise HTTPException(status_code=404, detail="Run not found")
 
     report_result = await db.execute(
@@ -441,3 +458,53 @@ async def get_run_results(
         "reconstruction_method": report.reconstruction_method,
         "solver_iterations": report.solver_iterations,
     }
+
+
+@router.patch("/{run_id}/visibility")
+async def update_run_visibility(
+    run_id: str,
+    request: Request,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Toggle run visibility (public/private). Owner only."""
+    result = await db.execute(select(Run).where(Run.run_id == run_id))
+    run = result.scalar_one_or_none()
+    if run is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+
+    if run.user_id != user.id and user.role != "admin":
+        raise HTTPException(status_code=403, detail="Only the owner can change visibility")
+
+    content_type = request.headers.get("content-type", "")
+    if "application/json" in content_type:
+        data = await request.json()
+        is_public_raw = data.get("is_public", not run.is_public)
+    else:
+        form = await request.form()
+        is_public_raw = form.get("is_public", str(not run.is_public))
+
+    run.is_public = str(is_public_raw).lower() not in ("false", "0", "no", "private")
+    await db.commit()
+
+    # For HTMX requests, return an HTML snippet with the updated badge + toggle
+    accept = request.headers.get("accept", "")
+    if "text/html" in accept:
+        badge_color = "green" if run.is_public else "gray"
+        badge_text = "Public" if run.is_public else "Private"
+        next_action = "false" if run.is_public else "true"
+        next_label = "Make Private" if run.is_public else "Make Public"
+        html = (
+            f'<span id="visibility-controls" class="flex items-center space-x-2">'
+            f'<span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-{badge_color}-100 text-{badge_color}-800">{badge_text}</span>'
+            f'<button hx-patch="/api/v1/runs/{run.run_id}/visibility" '
+            f'hx-vals=\'{{"is_public": "{next_action}"}}\' '
+            f'hx-headers=\'{{"Content-Type": "application/json"}}\' '
+            f'hx-target="#visibility-controls" hx-swap="outerHTML" '
+            f'class="text-xs text-indigo-600 hover:text-indigo-800 underline">{next_label}</button>'
+            f'</span>'
+        )
+        from fastapi.responses import HTMLResponse
+        return HTMLResponse(html)
+
+    return {"run_id": run.run_id, "is_public": run.is_public}

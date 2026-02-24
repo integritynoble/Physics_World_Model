@@ -47,3 +47,8 @@ async def init_db() -> None:
         except Exception:
             # Tables likely created by another worker — verify connectivity
             await conn.execute(text("SELECT 1"))
+
+        # Idempotent migration: add is_public column to runs table
+        await conn.execute(text(
+            "ALTER TABLE runs ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT TRUE"
+        ))

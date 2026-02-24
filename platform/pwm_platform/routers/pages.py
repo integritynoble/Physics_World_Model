@@ -15,7 +15,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from pwm_platform.auth.dependencies import get_current_user, get_optional_user
@@ -174,16 +174,23 @@ async def dashboard(
     user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Dashboard — public overview of platform stats and recent runs."""
+    """Dashboard — shows public runs + own runs for logged-in users."""
     from pwm_platform.services.modality_database import MODALITY_DATABASE
 
-    # Show all recent runs (public view)
+    # Visibility filter: logged-in users see public + own runs; anonymous see public only
+    if user:
+        visibility_filter = or_(Run.is_public == True, Run.user_id == user.id)  # noqa: E712
+    else:
+        visibility_filter = Run.is_public == True  # noqa: E712
+
     runs_result = await db.execute(
-        select(Run).order_by(Run.submitted_at.desc()).limit(20)
+        select(Run).where(visibility_filter).order_by(Run.submitted_at.desc()).limit(20)
     )
     runs = runs_result.scalars().all()
 
-    count_result = await db.execute(select(func.count()).select_from(Run))
+    count_result = await db.execute(
+        select(func.count()).select_from(Run).where(visibility_filter)
+    )
     total_runs = count_result.scalar() or 0
 
     total_modalities = len(MODALITY_DATABASE)
@@ -235,13 +242,22 @@ async def run_status_page(
     user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Run status page — public view with live polling via HTMX."""
+    """Run status page — public runs visible to all, private runs only to owner/admin."""
     result = await db.execute(select(Run).where(Run.run_id == run_id))
     run = result.scalar_one_or_none()
     if run is None:
         return templates.TemplateResponse("404.html", {
             "request": request, "user": user, "message": "Run not found"
         }, status_code=404)
+
+    # Access control: private runs only visible to owner or admin
+    if not run.is_public:
+        if user is None or (run.user_id != user.id and user.role != "admin"):
+            return templates.TemplateResponse("404.html", {
+                "request": request, "user": user, "message": "Run not found"
+            }, status_code=404)
+
+    is_owner = user is not None and run.user_id == user.id
 
     # Get triad report if available
     report = None
@@ -256,6 +272,7 @@ async def run_status_page(
         "user": user,
         "run": run,
         "report": report,
+        "is_owner": is_owner,
     })
 
 
@@ -344,6 +361,31 @@ async def modalities_page(
         "modalities": modalities,
         "categories": list_all_categories(),
         "selected_category": category,
+    })
+
+
+@router.get("/my-runs", response_class=HTMLResponse)
+async def my_runs_page(
+    request: Request,
+    visibility: str | None = None,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Personal runs page — shows all runs owned by the current user."""
+    stmt = select(Run).where(Run.user_id == user.id).order_by(Run.submitted_at.desc())
+    if visibility == "public":
+        stmt = stmt.where(Run.is_public == True)  # noqa: E712
+    elif visibility == "private":
+        stmt = stmt.where(Run.is_public == False)  # noqa: E712
+
+    runs_result = await db.execute(stmt)
+    runs = runs_result.scalars().all()
+
+    return templates.TemplateResponse("my_runs.html", {
+        "request": request,
+        "user": user,
+        "runs": runs,
+        "selected_visibility": visibility,
     })
 
 

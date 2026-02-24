@@ -133,6 +133,22 @@
             </select>
         </div>
 
+        <!-- Visibility -->
+        <fieldset>
+            <legend class="text-sm font-medium text-gray-700 mb-2">Visibility</legend>
+            <div class="flex space-x-4">
+                <label class="flex items-center space-x-2">
+                    <input type="radio" name="is_public" value="true" checked class="text-indigo-600">
+                    <span class="text-sm text-gray-700">Public</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="radio" name="is_public" value="false" class="text-indigo-600">
+                    <span class="text-sm text-gray-700">Private</span>
+                </label>
+            </div>
+            <p class="mt-1 text-xs text-gray-500">Public runs appear on the dashboard for everyone. Private runs are only visible to you.</p>
+        </fieldset>
+
         <!-- Compute Mode -->
         <fieldset>
             <legend class="text-sm font-medium text-gray-700 mb-2">Compute</legend>

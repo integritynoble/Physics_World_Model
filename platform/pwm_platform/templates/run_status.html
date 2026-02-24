@@ -40,15 +40,45 @@
             <h1 class="text-2xl font-bold text-gray-900">Run {{ run.run_id }}</h1>
             <p class="text-sm text-gray-500">{{ run.modality | upper }} / {{ run.task_kind | replace('_', ' ') | title }}</p>
         </div>
-        {% if run.status == 'completed' %}
-        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
-        {% elif run.status == 'failed' %}
-        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">Failed</span>
-        {% else %}
-        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800 animate-pulse">
-            {{ step_labels.get(run.status, run.status) }}...
-        </span>
-        {% endif %}
+        <div class="flex items-center space-x-3">
+            <!-- Visibility badge + toggle -->
+            {% if is_owner %}
+            <span id="visibility-controls" class="flex items-center space-x-2">
+                {% if run.is_public %}
+                <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800">Public</span>
+                <button hx-patch="/api/v1/runs/{{ run.run_id }}/visibility"
+                        hx-vals='{"is_public": "false"}'
+                        hx-headers='{"Content-Type": "application/json"}'
+                        hx-target="#visibility-controls" hx-swap="outerHTML"
+                        class="text-xs text-indigo-600 hover:text-indigo-800 underline">Make Private</button>
+                {% else %}
+                <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">Private</span>
+                <button hx-patch="/api/v1/runs/{{ run.run_id }}/visibility"
+                        hx-vals='{"is_public": "true"}'
+                        hx-headers='{"Content-Type": "application/json"}'
+                        hx-target="#visibility-controls" hx-swap="outerHTML"
+                        class="text-xs text-indigo-600 hover:text-indigo-800 underline">Make Public</button>
+                {% endif %}
+            </span>
+            {% else %}
+                {% if run.is_public %}
+                <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800">Public</span>
+                {% else %}
+                <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">Private</span>
+                {% endif %}
+            {% endif %}
+
+            <!-- Status badge -->
+            {% if run.status == 'completed' %}
+            <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+            {% elif run.status == 'failed' %}
+            <span class="px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">Failed</span>
+            {% else %}
+            <span class="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800 animate-pulse">
+                {{ step_labels.get(run.status, run.status) }}...
+            </span>
+            {% endif %}
+        </div>
     </div>
 
     <!-- Progress Timeline -->
