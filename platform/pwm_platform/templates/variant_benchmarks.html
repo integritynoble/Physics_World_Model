@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ variant.display_name }} Benchmarks — Physics World Model{% endblock %}
+{% block title %}{{ variant.display_name }} — Physics World Model{% endblock %}
 
 {% block content %}
 <div class="space-y-8">
@@ -8,69 +8,229 @@
     <nav class="flex items-center space-x-2 text-sm text-gray-500">
         <a href="/modalities" class="hover:text-indigo-600">Modalities</a>
         <span>/</span>
-        <span>{{ variant.category | replace('_', ' ') | title }}</span>
+        <a href="/modalities?category={{ variant.category }}" class="hover:text-indigo-600">{{ variant.category | replace('_', ' ') | title }}</a>
         <span>/</span>
         <span class="font-medium text-gray-900">{{ variant.display_name }}</span>
     </nav>
 
     <!-- Header -->
     <div>
-        <h1 class="text-2xl font-bold text-gray-900">{{ variant.display_name }} — Benchmarks</h1>
+        <h1 class="text-2xl font-bold text-gray-900">{{ variant.display_name }}</h1>
         <p class="mt-1 text-sm text-gray-500">{{ variant.full_name }}</p>
     </div>
 
-    <!-- ═══ Spec DAG Card ═══ -->
+    <!-- ═══ Modality Introduction ═══ -->
+    {% if modality %}
     <div class="bg-white shadow rounded-lg p-6 space-y-4">
-        <h2 class="text-lg font-bold text-gray-900">Spec DAG — Forward Model Pipeline</h2>
-        <p class="text-sm font-mono text-indigo-700 bg-indigo-50 px-3 py-2 rounded">{{ variant.spec_notation }}</p>
+        <h2 class="text-lg font-bold text-gray-900">About the Imaging Modality</h2>
 
-        <!-- Visual pipeline -->
-        <div class="flex flex-wrap items-center gap-2">
-            {% for node in variant.spec_dag %}
-            {% if not loop.first %}
-            <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        {% if modality.description %}
+        <p class="text-sm text-gray-600">{{ modality.description }}</p>
+        {% endif %}
+
+        {% if modality.introduction %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% if modality.introduction.principle %}
+            <div>
+                <h4 class="text-sm font-semibold text-gray-700">Principle</h4>
+                <p class="mt-1 text-sm text-gray-600">{{ modality.introduction.principle }}</p>
+            </div>
             {% endif %}
-            <div class="inline-flex flex-col items-center px-3 py-2 border-2 border-indigo-300 bg-indigo-50 rounded-lg min-w-[80px]">
-                <span class="text-lg font-bold text-indigo-700">{{ primitives[node.primitive].symbol }}</span>
-                <span class="text-xs text-gray-600">{{ node.label }}</span>
-                {% if node.params %}
-                <span class="text-xs font-mono text-gray-400">({{ node.params }})</span>
+
+            {% if modality.introduction.setup_guide %}
+            <div>
+                <h4 class="text-sm font-semibold text-gray-700">How to Build the System</h4>
+                <p class="mt-1 text-sm text-gray-600">{{ modality.introduction.setup_guide }}</p>
+            </div>
+            {% endif %}
+
+            {% if modality.introduction.common_algorithms %}
+            <div>
+                <h4 class="text-sm font-semibold text-gray-700">Common Reconstruction Algorithms</h4>
+                <ul class="mt-1 text-sm text-gray-600 list-disc list-inside space-y-0.5">
+                    {% for alg in modality.introduction.common_algorithms %}
+                    <li>{{ alg }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if modality.introduction.common_mistakes %}
+            <div class="md:col-span-2 rounded-lg border border-red-300 bg-red-50 p-4">
+                <h4 class="text-base font-bold text-red-700 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Common Mistakes
+                </h4>
+                <ul class="mt-2 text-sm text-red-900 list-disc list-inside space-y-1">
+                    {% for mistake in modality.introduction.common_mistakes %}
+                    <li>{{ mistake }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if modality.introduction.how_to_avoid_mistakes %}
+            <div class="md:col-span-2 rounded-lg border border-green-300 bg-green-50 p-4">
+                <h4 class="text-base font-bold text-green-700 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    How to Avoid Mistakes
+                </h4>
+                <ul class="mt-2 text-sm text-green-900 list-disc list-inside space-y-1">
+                    {% for tip in modality.introduction.how_to_avoid_mistakes %}
+                    <li>{{ tip }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if modality.introduction.mismatch_cases %}
+            <div class="md:col-span-2 rounded-lg border border-amber-300 bg-amber-50 p-4">
+                <h4 class="text-base font-bold text-amber-700 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                    Forward-Model Mismatch Cases
+                </h4>
+                <ul class="mt-2 text-sm text-amber-900 list-disc list-inside space-y-1">
+                    {% for case in modality.introduction.mismatch_cases %}
+                    <li>{{ case }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if modality.introduction.mismatch_corrections %}
+            <div class="md:col-span-2 rounded-lg border border-blue-300 bg-blue-50 p-4">
+                <h4 class="text-base font-bold text-blue-700 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    How to Correct the Mismatch
+                </h4>
+                <ul class="mt-2 text-sm text-blue-900 list-disc list-inside space-y-1">
+                    {% for fix in modality.introduction.mismatch_corrections %}
+                    <li>{{ fix }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {# ── Experimental Setup Schematic Diagram ── #}
+            {% if modality.setup_diagram_url %}
+            <div class="md:col-span-2">
+                <h4 class="text-sm font-semibold text-gray-700">Experimental Setup — Signal Chain</h4>
+                <img src="{{ modality.setup_diagram_url }}" alt="Experimental setup diagram for {{ modality.display_name }}"
+                     class="mt-2 w-full max-w-2xl rounded border border-gray-200"
+                     loading="lazy" />
+            </div>
+            {% endif %}
+
+            {# ── Paper Setup Figure ── #}
+            {% if modality.paper_setup_url %}
+            <div class="md:col-span-2">
+                <h4 class="text-sm font-semibold text-gray-700">
+                    Paper Setup Figure
+                    {% if modality.paper_setup_citation %}
+                    <span class="font-normal text-gray-500">— from {{ modality.paper_setup_citation }}</span>
+                    {% endif %}
+                </h4>
+                <div class="mt-2">
+                    <img src="{{ modality.paper_setup_url }}" alt="Paper setup figure for {{ modality.display_name }}"
+                         class="w-full max-w-3xl rounded border border-gray-200 shadow-sm"
+                         loading="lazy" />
+                </div>
+                {% if modality.paper_setup_link %}
+                <a href="{{ modality.paper_setup_link }}" target="_blank" rel="noopener noreferrer"
+                   class="mt-2 inline-flex items-center text-xs text-indigo-600 hover:text-indigo-500">
+                    View Paper &rarr;
+                </a>
                 {% endif %}
             </div>
-            {% endfor %}
-        </div>
+            {% endif %}
 
-        <!-- Mismatch parameters table -->
-        {% if variant.mismatch_params %}
+            {# ── Reconstruction Results ── #}
+            {% if modality.recon_results %}
+            <div class="md:col-span-2">
+                <h4 class="text-sm font-semibold text-gray-700">Reconstruction Results</h4>
+                <div class="mt-2 grid grid-cols-3 gap-3 max-w-3xl">
+                    <div class="text-center">
+                        <img src="{{ modality.recon_results.images.x_true }}" alt="Ground truth"
+                             class="w-full rounded border border-gray-200" loading="lazy" />
+                        <p class="mt-1 text-xs font-medium text-gray-600">Ground Truth</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="{{ modality.recon_results.images.y }}" alt="Measurement"
+                             class="w-full rounded border border-gray-200" loading="lazy" />
+                        <p class="mt-1 text-xs font-medium text-gray-600">Measurement</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="{{ modality.recon_results.images.x_hat }}" alt="Reconstruction"
+                             class="w-full rounded border border-gray-200" loading="lazy" />
+                        <p class="mt-1 text-xs font-medium text-gray-600">Reconstruction</p>
+                    </div>
+                </div>
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        PSNR: {{ modality.recon_results.psnr }} dB
+                    </span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        SSIM: {{ modality.recon_results.ssim }}
+                    </span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                        NRMSE: {{ modality.recon_results.nrmse }}
+                    </span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                        Solver: {{ modality.recon_results.solver }}
+                    </span>
+                </div>
+                {% if modality.recon_results.images.comparison %}
+                <div class="mt-2">
+                    <img src="{{ modality.recon_results.images.comparison }}" alt="Side-by-side comparison"
+                         class="w-full max-w-3xl rounded border border-gray-200" loading="lazy" />
+                    <p class="mt-1 text-xs text-gray-500">Side-by-side comparison</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {# ── Experimental Setup Details ── #}
+        {% if modality.experimental_setup %}
         <div>
-            <h3 class="text-sm font-semibold text-gray-700 mb-2">Mismatch Parameters</h3>
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-sm">
-                    <thead>
-                        <tr class="bg-gray-50">
-                            <th class="px-3 py-2 text-left font-medium text-gray-600">Symbol</th>
-                            <th class="px-3 py-2 text-left font-medium text-gray-600">Parameter</th>
-                            <th class="px-3 py-2 text-left font-medium text-gray-600">Description</th>
-                            <th class="px-3 py-2 text-right font-medium text-gray-600">Nominal</th>
-                            <th class="px-3 py-2 text-right font-medium text-gray-600">Perturbed</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        {% for p in variant.mismatch_params %}
-                        <tr>
-                            <td class="px-3 py-2 font-mono text-indigo-600">{{ p.symbol }}</td>
-                            <td class="px-3 py-2 font-mono text-gray-700">{{ p.name }}</td>
-                            <td class="px-3 py-2 text-gray-500">{{ p.description }}</td>
-                            <td class="px-3 py-2 text-right font-mono">{{ p.nominal }}</td>
-                            <td class="px-3 py-2 text-right font-mono text-amber-600">{{ p.perturbed }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <h4 class="text-sm font-semibold text-gray-700">Experimental Setup</h4>
+            <div class="mt-1 grid grid-cols-2 md:grid-cols-3 gap-2">
+                {% for key, value in modality.experimental_setup.items() %}
+                <div class="text-xs">
+                    <span class="font-medium text-gray-600">{{ key | replace('_', ' ') | title }}:</span>
+                    <span class="text-gray-500">{{ value }}</span>
+                </div>
+                {% endfor %}
             </div>
         </div>
         {% endif %}
+
+        {# ── Key References ── #}
+        {% if modality.canonical_references %}
+        <div>
+            <h4 class="text-sm font-semibold text-gray-700">Key References</h4>
+            <ul class="mt-1 text-xs text-gray-500 list-disc list-inside space-y-0.5">
+                {% for ref in modality.canonical_references %}
+                <li>{{ ref }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {# ── Canonical Datasets ── #}
+        {% if modality.canonical_datasets %}
+        <div>
+            <h4 class="text-sm font-semibold text-gray-700">Canonical Datasets</h4>
+            <ul class="mt-1 text-xs text-gray-500 list-disc list-inside space-y-0.5">
+                {% for ds in modality.canonical_datasets %}
+                <li>{{ ds }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
     </div>
+    {% endif %}
 
     <!-- ═══ Benchmark Cards (B1–B4) ═══ -->
     <div class="space-y-6">
@@ -105,16 +265,58 @@
                 </div>
             </div>
 
-            <!-- Dataset badges -->
-            <div class="flex flex-wrap gap-2">
-                {% if bm.has_public_dataset %}
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Public Dataset</span>
+            <!-- Dataset badges (clickable) -->
+            <div class="space-y-2">
+                <div class="flex flex-wrap gap-2">
+                    {% if bm.has_public_dataset %}
+                    <button onclick="document.getElementById('ds-public-{{ bm.id }}-{{ loop.index }}').classList.toggle('hidden')"
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 hover:bg-green-200 cursor-pointer transition-colors">
+                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                        Public Dataset
+                    </button>
+                    {% endif %}
+                    {% if bm.has_hidden_dataset %}
+                    <button onclick="document.getElementById('ds-hidden-{{ bm.id }}-{{ loop.index }}').classList.toggle('hidden')"
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 hover:bg-amber-200 cursor-pointer transition-colors">
+                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                        Hidden Test Set
+                    </button>
+                    {% endif %}
+                </div>
+
+                <!-- Public dataset panel -->
+                {% if bm.has_public_dataset and bm.public_dataset %}
+                <div id="ds-public-{{ bm.id }}-{{ loop.index }}" class="hidden border border-green-200 bg-green-50 rounded-lg p-4 space-y-2">
+                    <h5 class="text-sm font-semibold text-green-900">{{ bm.public_dataset.name }}</h5>
+                    <p class="text-xs text-green-800">{{ bm.public_dataset.description }}</p>
+                    <div class="flex flex-wrap gap-4 text-xs text-green-700">
+                        <span><span class="font-medium">Format:</span> {{ bm.public_dataset.format }}</span>
+                        <span><span class="font-medium">Samples:</span> {{ bm.public_dataset.num_samples }}</span>
+                        <span><span class="font-medium">Size:</span> {% if bm.public_dataset.size_mb < 1 %}{{ (bm.public_dataset.size_mb * 1024)|int }} KB{% else %}{{ bm.public_dataset.size_mb }} MB{% endif %}</span>
+                    </div>
+                    {% if bm.public_dataset.download_url %}
+                    <a href="{{ bm.public_dataset.download_url }}" target="_blank" rel="noopener noreferrer"
+                       class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 mt-1">
+                        <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+                        Download from GitHub Releases
+                    </a>
+                    {% endif %}
+                </div>
                 {% endif %}
-                {% if bm.has_hidden_dataset %}
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">Hidden Test Set</span>
-                {% endif %}
-                {% if not bm.has_public_dataset and not bm.has_hidden_dataset %}
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">No dataset yet — contribute below</span>
+
+                <!-- Hidden dataset panel -->
+                {% if bm.has_hidden_dataset and bm.hidden_dataset %}
+                <div id="ds-hidden-{{ bm.id }}-{{ loop.index }}" class="hidden border border-amber-200 bg-amber-50 rounded-lg p-4 space-y-2">
+                    <h5 class="text-sm font-semibold text-amber-900">{{ bm.hidden_dataset.name }}</h5>
+                    <p class="text-xs text-amber-800">{{ bm.hidden_dataset.description }}</p>
+                    <div class="flex flex-wrap gap-4 text-xs text-amber-700">
+                        <span><span class="font-medium">Format:</span> {{ bm.hidden_dataset.format }}</span>
+                        <span><span class="font-medium">Samples:</span> {{ bm.hidden_dataset.num_samples }}</span>
+                    </div>
+                    {% if bm.hidden_dataset.note %}
+                    <p class="text-xs text-amber-600 italic">{{ bm.hidden_dataset.note }}</p>
+                    {% endif %}
+                </div>
                 {% endif %}
             </div>
 
@@ -181,6 +383,59 @@
             {% endif %}
         </div>
         {% endfor %}
+    </div>
+
+    <!-- ═══ Spec DAG Card ═══ -->
+    <div class="bg-white shadow rounded-lg p-6 space-y-4">
+        <h2 class="text-lg font-bold text-gray-900">Spec DAG — Forward Model Pipeline</h2>
+        <p class="text-sm font-mono text-indigo-700 bg-indigo-50 px-3 py-2 rounded">{{ variant.spec_notation }}</p>
+
+        <!-- Visual pipeline -->
+        <div class="flex flex-wrap items-center gap-2">
+            {% for node in variant.spec_dag %}
+            {% if not loop.first %}
+            <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            {% endif %}
+            <div class="inline-flex flex-col items-center px-3 py-2 border-2 border-indigo-300 bg-indigo-50 rounded-lg min-w-[80px]">
+                <span class="text-lg font-bold text-indigo-700">{{ primitives[node.primitive].symbol }}</span>
+                <span class="text-xs text-gray-600">{{ node.label }}</span>
+                {% if node.params %}
+                <span class="text-xs font-mono text-gray-400">({{ node.params }})</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Mismatch parameters table -->
+        {% if variant.mismatch_params %}
+        <div>
+            <h3 class="text-sm font-semibold text-gray-700 mb-2">Mismatch Parameters</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-3 py-2 text-left font-medium text-gray-600">Symbol</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-600">Parameter</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-600">Description</th>
+                            <th class="px-3 py-2 text-right font-medium text-gray-600">Nominal</th>
+                            <th class="px-3 py-2 text-right font-medium text-gray-600">Perturbed</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for p in variant.mismatch_params %}
+                        <tr>
+                            <td class="px-3 py-2 font-mono text-indigo-600">{{ p.symbol }}</td>
+                            <td class="px-3 py-2 font-mono text-gray-700">{{ p.name }}</td>
+                            <td class="px-3 py-2 text-gray-500">{{ p.description }}</td>
+                            <td class="px-3 py-2 text-right font-mono">{{ p.nominal }}</td>
+                            <td class="px-3 py-2 text-right font-mono text-amber-600">{{ p.perturbed }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
     </div>
 
     <!-- ═══ Credits Summary ═══ -->

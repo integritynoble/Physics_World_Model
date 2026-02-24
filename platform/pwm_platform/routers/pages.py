@@ -370,11 +370,12 @@ async def variant_benchmarks_page(
     variant_key: str,
     user: Optional[User] = Depends(get_optional_user),
 ):
-    """Variant benchmark page — spec DAG, B1-B4 benchmarks, leaderboards, credits."""
+    """Variant benchmark page — modality intro, B1-B4 benchmarks, spec DAG, leaderboards, credits."""
     from pwm_platform.services.benchmark_database import (
         get_spec_primitives,
         get_variant,
     )
+    from pwm_platform.services.modality_database import MODALITY_DATABASE
 
     variant = get_variant(variant_key)
     if variant is None:
@@ -382,10 +383,17 @@ async def variant_benchmarks_page(
             "request": request, "user": user, "message": "Variant not found"
         }, status_code=404)
 
+    # Fetch parent modality data for the introduction section
+    parent_key = variant.get("parent_modality")
+    modality = None
+    if parent_key and parent_key in MODALITY_DATABASE:
+        modality = dict(MODALITY_DATABASE[parent_key])
+
     return templates.TemplateResponse("variant_benchmarks.html", {
         "request": request,
         "user": user,
         "variant": variant,
+        "modality": modality,
         "primitives": get_spec_primitives(),
     })
 
