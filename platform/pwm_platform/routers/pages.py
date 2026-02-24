@@ -364,6 +364,34 @@ async def modalities_page(
     })
 
 
+@router.get("/modalities/{variant_key}", response_class=HTMLResponse)
+async def variant_benchmarks_page(
+    request: Request,
+    variant_key: str,
+    user: Optional[User] = Depends(get_optional_user),
+):
+    """Variant benchmark page — spec DAG, B1-B4 benchmarks, leaderboards, credits."""
+    from pwm_platform.services.benchmark_database import (
+        get_flowcharts,
+        get_spec_primitives,
+        get_variant,
+    )
+
+    variant = get_variant(variant_key)
+    if variant is None:
+        return templates.TemplateResponse("404.html", {
+            "request": request, "user": user, "message": "Variant not found"
+        }, status_code=404)
+
+    return templates.TemplateResponse("variant_benchmarks.html", {
+        "request": request,
+        "user": user,
+        "variant": variant,
+        "flowcharts": get_flowcharts(),
+        "primitives": get_spec_primitives(),
+    })
+
+
 @router.get("/my-runs", response_class=HTMLResponse)
 async def my_runs_page(
     request: Request,
