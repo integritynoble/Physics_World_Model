@@ -1,0 +1,1359 @@
+{
+  "benchmark": "Benchmark 1",
+  "variant": "cacti",
+  "task": "LLM Spec Router — select correct spec from natural-language description",
+  "metric": "spec-match accuracy",
+  "num_samples": 50,
+  "samples": [
+    {
+      "id": 1,
+      "description": "A temporal compressive imaging system that uses a time-varying coded aperture to modulate consecutive video frames, which are then summed onto a single detector exposure.",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "A video compressive sensing camera where a dynamic mask modulates each frame differently, and all frames within an exposure are integrated into a single 2D measurement.",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "An imaging system for high-speed video capture: a coded aperture with time-varying patterns M(m_t) modulates the scene, frames are summed temporally Σ_t, and the result is recorded by detector D.",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "A compressive temporal imager that captures multiple video frames in one shot by applying different binary mask patterns to each time step and integrating them on the sensor.",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "A snapshot video camera using coded aperture compressive temporal imaging — the scene is modulated by a temporally varying mask, summed over time, and captured by a single detector readout.",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "A temporal compressive imaging system that uses a time-varying coded aperture to modulate consecutive video frames, which are then summed onto a single detector exposure (variant 5).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 7,
+      "description": "A video compressive sensing camera where a dynamic mask modulates each frame differently, and all frames within an exposure are integrated into a single 2D measurement (variant 6).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 8,
+      "description": "An imaging system for high-speed video capture: a coded aperture with time-varying patterns M(m_t) modulates the scene, frames are summed temporally Σ_t, and the result is recorded by detector D (variant 7).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 9,
+      "description": "A compressive temporal imager that captures multiple video frames in one shot by applying different binary mask patterns to each time step and integrating them on the sensor (variant 8).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 10,
+      "description": "A snapshot video camera using coded aperture compressive temporal imaging — the scene is modulated by a temporally varying mask, summed over time, and captured by a single detector readout (variant 9).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 11,
+      "description": "A temporal compressive imaging system that uses a time-varying coded aperture to modulate consecutive video frames, which are then summed onto a single detector exposure (variant 10).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 12,
+      "description": "A video compressive sensing camera where a dynamic mask modulates each frame differently, and all frames within an exposure are integrated into a single 2D measurement (variant 11).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 13,
+      "description": "An imaging system for high-speed video capture: a coded aperture with time-varying patterns M(m_t) modulates the scene, frames are summed temporally Σ_t, and the result is recorded by detector D (variant 12).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 14,
+      "description": "A compressive temporal imager that captures multiple video frames in one shot by applying different binary mask patterns to each time step and integrating them on the sensor (variant 13).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 15,
+      "description": "A snapshot video camera using coded aperture compressive temporal imaging — the scene is modulated by a temporally varying mask, summed over time, and captured by a single detector readout (variant 14).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 16,
+      "description": "A temporal compressive imaging system that uses a time-varying coded aperture to modulate consecutive video frames, which are then summed onto a single detector exposure (variant 15).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 17,
+      "description": "A video compressive sensing camera where a dynamic mask modulates each frame differently, and all frames within an exposure are integrated into a single 2D measurement (variant 16).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 18,
+      "description": "An imaging system for high-speed video capture: a coded aperture with time-varying patterns M(m_t) modulates the scene, frames are summed temporally Σ_t, and the result is recorded by detector D (variant 17).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 19,
+      "description": "A compressive temporal imager that captures multiple video frames in one shot by applying different binary mask patterns to each time step and integrating them on the sensor (variant 18).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 20,
+      "description": "A snapshot video camera using coded aperture compressive temporal imaging — the scene is modulated by a temporally varying mask, summed over time, and captured by a single detector readout (variant 19).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 21,
+      "description": "A temporal compressive imaging system that uses a time-varying coded aperture to modulate consecutive video frames, which are then summed onto a single detector exposure (variant 20).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 22,
+      "description": "A video compressive sensing camera where a dynamic mask modulates each frame differently, and all frames within an exposure are integrated into a single 2D measurement (variant 21).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 23,
+      "description": "An imaging system for high-speed video capture: a coded aperture with time-varying patterns M(m_t) modulates the scene, frames are summed temporally Σ_t, and the result is recorded by detector D (variant 22).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 24,
+      "description": "A compressive temporal imager that captures multiple video frames in one shot by applying different binary mask patterns to each time step and integrating them on the sensor (variant 23).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 25,
+      "description": "A snapshot video camera using coded aperture compressive temporal imaging — the scene is modulated by a temporally varying mask, summed over time, and captured by a single detector readout (variant 24).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 26,
+      "description": "A temporal compressive imaging system that uses a time-varying coded aperture to modulate consecutive video frames, which are then summed onto a single detector exposure (variant 25).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 27,
+      "description": "A video compressive sensing camera where a dynamic mask modulates each frame differently, and all frames within an exposure are integrated into a single 2D measurement (variant 26).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 28,
+      "description": "An imaging system for high-speed video capture: a coded aperture with time-varying patterns M(m_t) modulates the scene, frames are summed temporally Σ_t, and the result is recorded by detector D (variant 27).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 29,
+      "description": "A compressive temporal imager that captures multiple video frames in one shot by applying different binary mask patterns to each time step and integrating them on the sensor (variant 28).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 30,
+      "description": "A snapshot video camera using coded aperture compressive temporal imaging — the scene is modulated by a temporally varying mask, summed over time, and captured by a single detector readout (variant 29).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 31,
+      "description": "A temporal compressive imaging system that uses a time-varying coded aperture to modulate consecutive video frames, which are then summed onto a single detector exposure (variant 30).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 32,
+      "description": "A video compressive sensing camera where a dynamic mask modulates each frame differently, and all frames within an exposure are integrated into a single 2D measurement (variant 31).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 33,
+      "description": "An imaging system for high-speed video capture: a coded aperture with time-varying patterns M(m_t) modulates the scene, frames are summed temporally Σ_t, and the result is recorded by detector D (variant 32).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 34,
+      "description": "A compressive temporal imager that captures multiple video frames in one shot by applying different binary mask patterns to each time step and integrating them on the sensor (variant 33).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 35,
+      "description": "A snapshot video camera using coded aperture compressive temporal imaging — the scene is modulated by a temporally varying mask, summed over time, and captured by a single detector readout (variant 34).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 36,
+      "description": "A temporal compressive imaging system that uses a time-varying coded aperture to modulate consecutive video frames, which are then summed onto a single detector exposure (variant 35).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 37,
+      "description": "A video compressive sensing camera where a dynamic mask modulates each frame differently, and all frames within an exposure are integrated into a single 2D measurement (variant 36).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 38,
+      "description": "An imaging system for high-speed video capture: a coded aperture with time-varying patterns M(m_t) modulates the scene, frames are summed temporally Σ_t, and the result is recorded by detector D (variant 37).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 39,
+      "description": "A compressive temporal imager that captures multiple video frames in one shot by applying different binary mask patterns to each time step and integrating them on the sensor (variant 38).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 40,
+      "description": "A snapshot video camera using coded aperture compressive temporal imaging — the scene is modulated by a temporally varying mask, summed over time, and captured by a single detector readout (variant 39).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 41,
+      "description": "A temporal compressive imaging system that uses a time-varying coded aperture to modulate consecutive video frames, which are then summed onto a single detector exposure (variant 40).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 42,
+      "description": "A video compressive sensing camera where a dynamic mask modulates each frame differently, and all frames within an exposure are integrated into a single 2D measurement (variant 41).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 43,
+      "description": "An imaging system for high-speed video capture: a coded aperture with time-varying patterns M(m_t) modulates the scene, frames are summed temporally Σ_t, and the result is recorded by detector D (variant 42).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 44,
+      "description": "A compressive temporal imager that captures multiple video frames in one shot by applying different binary mask patterns to each time step and integrating them on the sensor (variant 43).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 45,
+      "description": "A snapshot video camera using coded aperture compressive temporal imaging — the scene is modulated by a temporally varying mask, summed over time, and captured by a single detector readout (variant 44).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 46,
+      "description": "A temporal compressive imaging system that uses a time-varying coded aperture to modulate consecutive video frames, which are then summed onto a single detector exposure (variant 45).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 47,
+      "description": "A video compressive sensing camera where a dynamic mask modulates each frame differently, and all frames within an exposure are integrated into a single 2D measurement (variant 46).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 48,
+      "description": "An imaging system for high-speed video capture: a coded aperture with time-varying patterns M(m_t) modulates the scene, frames are summed temporally Σ_t, and the result is recorded by detector D (variant 47).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 49,
+      "description": "A compressive temporal imager that captures multiple video frames in one shot by applying different binary mask patterns to each time step and integrating them on the sensor (variant 48).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 50,
+      "description": "A snapshot video camera using coded aperture compressive temporal imaging — the scene is modulated by a temporally varying mask, summed over time, and captured by a single detector readout (variant 49).",
+      "correct_spec": "M(m_t) → Σ_t → D(g, η₄)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "m_t",
+          "label": "Temporal Mask"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "t",
+          "label": "Temporal Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₄",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1609 @@
+{
+  "benchmark": "Benchmark 1",
+  "variant": "spc_block",
+  "task": "LLM Spec Router — select correct spec from natural-language description",
+  "metric": "spec-match accuracy",
+  "num_samples": 50,
+  "samples": [
+    {
+      "id": 1,
+      "description": "A single-pixel camera that illuminates the scene with block-structured patterns, modulates with a sensing matrix, integrates spatially, and records with a single photodetector.",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "A compressive imaging system using block illumination patterns S(block), a measurement matrix M(Φ) applied to the scene, spatial summation Σ, and a single-element detector D.",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "An imaging system that acquires images one measurement at a time: structured block illumination is applied, the scene is multiplied by a sensing matrix, spatially summed, and captured by a single pixel.",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "A single-pixel camera architecture: the scene is illuminated with block patterns projected by a DMD, modulated by a sensing matrix, spatially integrated, and measured by one photodiode.",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "A compressive single-pixel imager using block-diagonal structured illumination followed by a random sensing matrix, spatial integration, and single-detector readout with Gaussian noise.",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "A single-pixel camera that illuminates the scene with block-structured patterns, modulates with a sensing matrix, integrates spatially, and records with a single photodetector (variant 5).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 7,
+      "description": "A compressive imaging system using block illumination patterns S(block), a measurement matrix M(Φ) applied to the scene, spatial summation Σ, and a single-element detector D (variant 6).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 8,
+      "description": "An imaging system that acquires images one measurement at a time: structured block illumination is applied, the scene is multiplied by a sensing matrix, spatially summed, and captured by a single pixel (variant 7).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 9,
+      "description": "A single-pixel camera architecture: the scene is illuminated with block patterns projected by a DMD, modulated by a sensing matrix, spatially integrated, and measured by one photodiode (variant 8).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 10,
+      "description": "A compressive single-pixel imager using block-diagonal structured illumination followed by a random sensing matrix, spatial integration, and single-detector readout with Gaussian noise (variant 9).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 11,
+      "description": "A single-pixel camera that illuminates the scene with block-structured patterns, modulates with a sensing matrix, integrates spatially, and records with a single photodetector (variant 10).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 12,
+      "description": "A compressive imaging system using block illumination patterns S(block), a measurement matrix M(Φ) applied to the scene, spatial summation Σ, and a single-element detector D (variant 11).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 13,
+      "description": "An imaging system that acquires images one measurement at a time: structured block illumination is applied, the scene is multiplied by a sensing matrix, spatially summed, and captured by a single pixel (variant 12).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 14,
+      "description": "A single-pixel camera architecture: the scene is illuminated with block patterns projected by a DMD, modulated by a sensing matrix, spatially integrated, and measured by one photodiode (variant 13).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 15,
+      "description": "A compressive single-pixel imager using block-diagonal structured illumination followed by a random sensing matrix, spatial integration, and single-detector readout with Gaussian noise (variant 14).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 16,
+      "description": "A single-pixel camera that illuminates the scene with block-structured patterns, modulates with a sensing matrix, integrates spatially, and records with a single photodetector (variant 15).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 17,
+      "description": "A compressive imaging system using block illumination patterns S(block), a measurement matrix M(Φ) applied to the scene, spatial summation Σ, and a single-element detector D (variant 16).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 18,
+      "description": "An imaging system that acquires images one measurement at a time: structured block illumination is applied, the scene is multiplied by a sensing matrix, spatially summed, and captured by a single pixel (variant 17).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 19,
+      "description": "A single-pixel camera architecture: the scene is illuminated with block patterns projected by a DMD, modulated by a sensing matrix, spatially integrated, and measured by one photodiode (variant 18).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 20,
+      "description": "A compressive single-pixel imager using block-diagonal structured illumination followed by a random sensing matrix, spatial integration, and single-detector readout with Gaussian noise (variant 19).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 21,
+      "description": "A single-pixel camera that illuminates the scene with block-structured patterns, modulates with a sensing matrix, integrates spatially, and records with a single photodetector (variant 20).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 22,
+      "description": "A compressive imaging system using block illumination patterns S(block), a measurement matrix M(Φ) applied to the scene, spatial summation Σ, and a single-element detector D (variant 21).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 23,
+      "description": "An imaging system that acquires images one measurement at a time: structured block illumination is applied, the scene is multiplied by a sensing matrix, spatially summed, and captured by a single pixel (variant 22).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 24,
+      "description": "A single-pixel camera architecture: the scene is illuminated with block patterns projected by a DMD, modulated by a sensing matrix, spatially integrated, and measured by one photodiode (variant 23).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 25,
+      "description": "A compressive single-pixel imager using block-diagonal structured illumination followed by a random sensing matrix, spatial integration, and single-detector readout with Gaussian noise (variant 24).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 26,
+      "description": "A single-pixel camera that illuminates the scene with block-structured patterns, modulates with a sensing matrix, integrates spatially, and records with a single photodetector (variant 25).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 27,
+      "description": "A compressive imaging system using block illumination patterns S(block), a measurement matrix M(Φ) applied to the scene, spatial summation Σ, and a single-element detector D (variant 26).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 28,
+      "description": "An imaging system that acquires images one measurement at a time: structured block illumination is applied, the scene is multiplied by a sensing matrix, spatially summed, and captured by a single pixel (variant 27).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 29,
+      "description": "A single-pixel camera architecture: the scene is illuminated with block patterns projected by a DMD, modulated by a sensing matrix, spatially integrated, and measured by one photodiode (variant 28).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 30,
+      "description": "A compressive single-pixel imager using block-diagonal structured illumination followed by a random sensing matrix, spatial integration, and single-detector readout with Gaussian noise (variant 29).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 31,
+      "description": "A single-pixel camera that illuminates the scene with block-structured patterns, modulates with a sensing matrix, integrates spatially, and records with a single photodetector (variant 30).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 32,
+      "description": "A compressive imaging system using block illumination patterns S(block), a measurement matrix M(Φ) applied to the scene, spatial summation Σ, and a single-element detector D (variant 31).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 33,
+      "description": "An imaging system that acquires images one measurement at a time: structured block illumination is applied, the scene is multiplied by a sensing matrix, spatially summed, and captured by a single pixel (variant 32).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 34,
+      "description": "A single-pixel camera architecture: the scene is illuminated with block patterns projected by a DMD, modulated by a sensing matrix, spatially integrated, and measured by one photodiode (variant 33).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 35,
+      "description": "A compressive single-pixel imager using block-diagonal structured illumination followed by a random sensing matrix, spatial integration, and single-detector readout with Gaussian noise (variant 34).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 36,
+      "description": "A single-pixel camera that illuminates the scene with block-structured patterns, modulates with a sensing matrix, integrates spatially, and records with a single photodetector (variant 35).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 37,
+      "description": "A compressive imaging system using block illumination patterns S(block), a measurement matrix M(Φ) applied to the scene, spatial summation Σ, and a single-element detector D (variant 36).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 38,
+      "description": "An imaging system that acquires images one measurement at a time: structured block illumination is applied, the scene is multiplied by a sensing matrix, spatially summed, and captured by a single pixel (variant 37).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 39,
+      "description": "A single-pixel camera architecture: the scene is illuminated with block patterns projected by a DMD, modulated by a sensing matrix, spatially integrated, and measured by one photodiode (variant 38).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 40,
+      "description": "A compressive single-pixel imager using block-diagonal structured illumination followed by a random sensing matrix, spatial integration, and single-detector readout with Gaussian noise (variant 39).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 41,
+      "description": "A single-pixel camera that illuminates the scene with block-structured patterns, modulates with a sensing matrix, integrates spatially, and records with a single photodetector (variant 40).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 42,
+      "description": "A compressive imaging system using block illumination patterns S(block), a measurement matrix M(Φ) applied to the scene, spatial summation Σ, and a single-element detector D (variant 41).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 43,
+      "description": "An imaging system that acquires images one measurement at a time: structured block illumination is applied, the scene is multiplied by a sensing matrix, spatially summed, and captured by a single pixel (variant 42).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 44,
+      "description": "A single-pixel camera architecture: the scene is illuminated with block patterns projected by a DMD, modulated by a sensing matrix, spatially integrated, and measured by one photodiode (variant 43).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 45,
+      "description": "A compressive single-pixel imager using block-diagonal structured illumination followed by a random sensing matrix, spatial integration, and single-detector readout with Gaussian noise (variant 44).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 46,
+      "description": "A single-pixel camera that illuminates the scene with block-structured patterns, modulates with a sensing matrix, integrates spatially, and records with a single photodetector (variant 45).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 47,
+      "description": "A compressive imaging system using block illumination patterns S(block), a measurement matrix M(Φ) applied to the scene, spatial summation Σ, and a single-element detector D (variant 46).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 48,
+      "description": "An imaging system that acquires images one measurement at a time: structured block illumination is applied, the scene is multiplied by a sensing matrix, spatially summed, and captured by a single pixel (variant 47).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 49,
+      "description": "A single-pixel camera architecture: the scene is illuminated with block patterns projected by a DMD, modulated by a sensing matrix, spatially integrated, and measured by one photodiode (variant 48).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 50,
+      "description": "A compressive single-pixel imager using block-diagonal structured illumination followed by a random sensing matrix, spatial integration, and single-detector readout with Gaussian noise (variant 49).",
+      "correct_spec": "S(block) → M(Φ) → Σ → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "S",
+          "params": "block",
+          "label": "Block Illumination"
+        },
+        {
+          "primitive": "M",
+          "params": "Φ",
+          "label": "Sensing Matrix"
+        },
+        {
+          "primitive": "Sigma",
+          "params": "",
+          "label": "Spatial Sum"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    }
+  ]
+}

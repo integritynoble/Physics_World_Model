@@ -106,7 +106,7 @@ VARIANT_DATABASE = {
                     "format": "JSON",
                     "num_samples": 50,
                     "size_mb": 0.1,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/sd_cassi_b1_public.json",
+                    "download_url": "/static/benchmark-data/v1.0/sd_cassi_b1_public.json",
                 },
                 "hidden_dataset": {
                     "name": "SD-CASSI Benchmark 1 Spec Prompts (Hidden)",
@@ -133,7 +133,7 @@ VARIANT_DATABASE = {
                     "format": "HDF5",
                     "num_samples": 5,
                     "size_mb": 45,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/sd_cassi_b2_public.h5",
+                    "download_url": "/static/benchmark-data/v1.0/sd_cassi_b2_public.h5",
                 },
                 "hidden_dataset": {
                     "name": "SD-CASSI Benchmark 2 Recon Data (Hidden)",
@@ -168,7 +168,7 @@ VARIANT_DATABASE = {
                     "format": "JSON + HDF5",
                     "num_samples": 50,
                     "size_mb": 12,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/sd_cassi_b3_public.tar.gz",
+                    "download_url": "/static/benchmark-data/v1.0/sd_cassi_b3_public.tar.gz",
                 },
                 "hidden_dataset": {
                     "name": "SD-CASSI Benchmark 3 Spec Validation (Hidden)",
@@ -195,7 +195,7 @@ VARIANT_DATABASE = {
                     "format": "HDF5",
                     "num_samples": 5,
                     "size_mb": 45,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/sd_cassi_b4_public.h5",
+                    "download_url": "/static/benchmark-data/v1.0/sd_cassi_b4_public.h5",
                 },
                 "hidden_dataset": {
                     "name": "SD-CASSI Benchmark 4 Drift Recon Data (Hidden)",
@@ -259,7 +259,7 @@ VARIANT_DATABASE = {
                     "format": "JSON",
                     "num_samples": 50,
                     "size_mb": 0.1,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/cacti_b1_public.json",
+                    "download_url": "/static/benchmark-data/v1.0/cacti_b1_public.json",
                 },
                 "hidden_dataset": {
                     "name": "CACTI Benchmark 1 Spec Prompts (Hidden)",
@@ -286,7 +286,7 @@ VARIANT_DATABASE = {
                     "format": "HDF5",
                     "num_samples": 3,
                     "size_mb": 30,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/cacti_b2_public.h5",
+                    "download_url": "/static/benchmark-data/v1.0/cacti_b2_public.h5",
                 },
                 "hidden_dataset": {
                     "name": "CACTI Benchmark 2 Recon Data (Hidden)",
@@ -321,7 +321,7 @@ VARIANT_DATABASE = {
                     "format": "JSON + HDF5",
                     "num_samples": 50,
                     "size_mb": 8,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/cacti_b3_public.tar.gz",
+                    "download_url": "/static/benchmark-data/v1.0/cacti_b3_public.tar.gz",
                 },
                 "hidden_dataset": {
                     "name": "CACTI Benchmark 3 Spec Validation (Hidden)",
@@ -348,7 +348,7 @@ VARIANT_DATABASE = {
                     "format": "HDF5",
                     "num_samples": 3,
                     "size_mb": 30,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/cacti_b4_public.h5",
+                    "download_url": "/static/benchmark-data/v1.0/cacti_b4_public.h5",
                 },
                 "hidden_dataset": {
                     "name": "CACTI Benchmark 4 Drift Recon Data (Hidden)",
@@ -409,7 +409,7 @@ VARIANT_DATABASE = {
                     "format": "JSON",
                     "num_samples": 50,
                     "size_mb": 0.1,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/spc_block_b1_public.json",
+                    "download_url": "/static/benchmark-data/v1.0/spc_block_b1_public.json",
                 },
                 "hidden_dataset": {
                     "name": "SPC-Block Benchmark 1 Spec Prompts (Hidden)",
@@ -436,7 +436,7 @@ VARIANT_DATABASE = {
                     "format": "HDF5",
                     "num_samples": 6,
                     "size_mb": 5,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/spc_block_b2_public.h5",
+                    "download_url": "/static/benchmark-data/v1.0/spc_block_b2_public.h5",
                 },
                 "hidden_dataset": {
                     "name": "SPC-Block Benchmark 2 Recon Data (Hidden)",
@@ -471,7 +471,7 @@ VARIANT_DATABASE = {
                     "format": "JSON + HDF5",
                     "num_samples": 50,
                     "size_mb": 3,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/spc_block_b3_public.tar.gz",
+                    "download_url": "/static/benchmark-data/v1.0/spc_block_b3_public.tar.gz",
                 },
                 "hidden_dataset": {
                     "name": "SPC-Block Benchmark 3 Spec Validation (Hidden)",
@@ -498,7 +498,7 @@ VARIANT_DATABASE = {
                     "format": "HDF5",
                     "num_samples": 6,
                     "size_mb": 5,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/spc_block_b4_public.h5",
+                    "download_url": "/static/benchmark-data/v1.0/spc_block_b4_public.h5",
                 },
                 "hidden_dataset": {
                     "name": "SPC-Block Benchmark 4 Drift Recon Data (Hidden)",
@@ -557,7 +557,7 @@ VARIANT_DATABASE = {
                     "format": "JSON",
                     "num_samples": 50,
                     "size_mb": 0.1,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/spc_kronecker_b1_public.json",
+                    "download_url": "/static/benchmark-data/v1.0/spc_kronecker_b1_public.json",
                 },
                 "hidden_dataset": {
                     "name": "SPC-Kronecker Benchmark 1 Spec Prompts (Hidden)",
@@ -584,7 +584,7 @@ VARIANT_DATABASE = {
                     "format": "HDF5",
                     "num_samples": 6,
                     "size_mb": 5,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/spc_kronecker_b2_public.h5",
+                    "download_url": "/static/benchmark-data/v1.0/spc_kronecker_b2_public.h5",
                 },
                 "hidden_dataset": {
                     "name": "SPC-Kronecker Benchmark 2 Recon Data (Hidden)",
@@ -619,7 +619,7 @@ VARIANT_DATABASE = {
                     "format": "JSON + HDF5",
                     "num_samples": 50,
                     "size_mb": 3,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/spc_kronecker_b3_public.tar.gz",
+                    "download_url": "/static/benchmark-data/v1.0/spc_kronecker_b3_public.tar.gz",
                 },
                 "hidden_dataset": {
                     "name": "SPC-Kronecker Benchmark 3 Spec Validation (Hidden)",
@@ -646,7 +646,7 @@ VARIANT_DATABASE = {
                     "format": "HDF5",
                     "num_samples": 6,
                     "size_mb": 5,
-                    "download_url": "https://github.com/InverseNet/benchmark-data/releases/download/v1.0/spc_kronecker_b4_public.h5",
+                    "download_url": "/static/benchmark-data/v1.0/spc_kronecker_b4_public.h5",
                 },
                 "hidden_dataset": {
                     "name": "SPC-Kronecker Benchmark 4 Drift Recon Data (Hidden)",

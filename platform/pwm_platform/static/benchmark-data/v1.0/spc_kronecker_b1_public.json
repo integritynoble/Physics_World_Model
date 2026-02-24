@@ -1,0 +1,1109 @@
+{
+  "benchmark": "Benchmark 1",
+  "variant": "spc_kronecker",
+  "task": "LLM Spec Router — select correct spec from natural-language description",
+  "metric": "spec-match accuracy",
+  "num_samples": 50,
+  "samples": [
+    {
+      "id": 1,
+      "description": "A single-pixel camera that uses Kronecker-structured sensing matrices (row ⊗ column) to efficiently compress the scene, directly measured by a single-element detector.",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "A compressive imaging system where the sensing matrix has Kronecker product structure M(H⊗W), enabling separable row and column measurements read by a single detector D.",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "An imaging system using Kronecker-product measurement matrices for single-pixel acquisition — the scene is modulated by a separable H⊗W pattern and measured by a single photodetector.",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "A single-pixel camera with Kronecker-structured measurements: the scene is multiplied by M(H⊗W) where H and W are row and column bases, then read by detector D(g, η₁).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "A compressive single-pixel imager using separable Kronecker sensing — each measurement applies a rank-1 outer product pattern to the scene and records the total intensity.",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "A single-pixel camera that uses Kronecker-structured sensing matrices (row ⊗ column) to efficiently compress the scene, directly measured by a single-element detector (variant 5).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 7,
+      "description": "A compressive imaging system where the sensing matrix has Kronecker product structure M(H⊗W), enabling separable row and column measurements read by a single detector D (variant 6).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 8,
+      "description": "An imaging system using Kronecker-product measurement matrices for single-pixel acquisition — the scene is modulated by a separable H⊗W pattern and measured by a single photodetector (variant 7).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 9,
+      "description": "A single-pixel camera with Kronecker-structured measurements: the scene is multiplied by M(H⊗W) where H and W are row and column bases, then read by detector D(g, η₁) (variant 8).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 10,
+      "description": "A compressive single-pixel imager using separable Kronecker sensing — each measurement applies a rank-1 outer product pattern to the scene and records the total intensity (variant 9).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 11,
+      "description": "A single-pixel camera that uses Kronecker-structured sensing matrices (row ⊗ column) to efficiently compress the scene, directly measured by a single-element detector (variant 10).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 12,
+      "description": "A compressive imaging system where the sensing matrix has Kronecker product structure M(H⊗W), enabling separable row and column measurements read by a single detector D (variant 11).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 13,
+      "description": "An imaging system using Kronecker-product measurement matrices for single-pixel acquisition — the scene is modulated by a separable H⊗W pattern and measured by a single photodetector (variant 12).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 14,
+      "description": "A single-pixel camera with Kronecker-structured measurements: the scene is multiplied by M(H⊗W) where H and W are row and column bases, then read by detector D(g, η₁) (variant 13).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 15,
+      "description": "A compressive single-pixel imager using separable Kronecker sensing — each measurement applies a rank-1 outer product pattern to the scene and records the total intensity (variant 14).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 16,
+      "description": "A single-pixel camera that uses Kronecker-structured sensing matrices (row ⊗ column) to efficiently compress the scene, directly measured by a single-element detector (variant 15).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 17,
+      "description": "A compressive imaging system where the sensing matrix has Kronecker product structure M(H⊗W), enabling separable row and column measurements read by a single detector D (variant 16).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 18,
+      "description": "An imaging system using Kronecker-product measurement matrices for single-pixel acquisition — the scene is modulated by a separable H⊗W pattern and measured by a single photodetector (variant 17).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 19,
+      "description": "A single-pixel camera with Kronecker-structured measurements: the scene is multiplied by M(H⊗W) where H and W are row and column bases, then read by detector D(g, η₁) (variant 18).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 20,
+      "description": "A compressive single-pixel imager using separable Kronecker sensing — each measurement applies a rank-1 outer product pattern to the scene and records the total intensity (variant 19).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 21,
+      "description": "A single-pixel camera that uses Kronecker-structured sensing matrices (row ⊗ column) to efficiently compress the scene, directly measured by a single-element detector (variant 20).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 22,
+      "description": "A compressive imaging system where the sensing matrix has Kronecker product structure M(H⊗W), enabling separable row and column measurements read by a single detector D (variant 21).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 23,
+      "description": "An imaging system using Kronecker-product measurement matrices for single-pixel acquisition — the scene is modulated by a separable H⊗W pattern and measured by a single photodetector (variant 22).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 24,
+      "description": "A single-pixel camera with Kronecker-structured measurements: the scene is multiplied by M(H⊗W) where H and W are row and column bases, then read by detector D(g, η₁) (variant 23).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 25,
+      "description": "A compressive single-pixel imager using separable Kronecker sensing — each measurement applies a rank-1 outer product pattern to the scene and records the total intensity (variant 24).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 26,
+      "description": "A single-pixel camera that uses Kronecker-structured sensing matrices (row ⊗ column) to efficiently compress the scene, directly measured by a single-element detector (variant 25).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 27,
+      "description": "A compressive imaging system where the sensing matrix has Kronecker product structure M(H⊗W), enabling separable row and column measurements read by a single detector D (variant 26).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 28,
+      "description": "An imaging system using Kronecker-product measurement matrices for single-pixel acquisition — the scene is modulated by a separable H⊗W pattern and measured by a single photodetector (variant 27).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 29,
+      "description": "A single-pixel camera with Kronecker-structured measurements: the scene is multiplied by M(H⊗W) where H and W are row and column bases, then read by detector D(g, η₁) (variant 28).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 30,
+      "description": "A compressive single-pixel imager using separable Kronecker sensing — each measurement applies a rank-1 outer product pattern to the scene and records the total intensity (variant 29).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 31,
+      "description": "A single-pixel camera that uses Kronecker-structured sensing matrices (row ⊗ column) to efficiently compress the scene, directly measured by a single-element detector (variant 30).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 32,
+      "description": "A compressive imaging system where the sensing matrix has Kronecker product structure M(H⊗W), enabling separable row and column measurements read by a single detector D (variant 31).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 33,
+      "description": "An imaging system using Kronecker-product measurement matrices for single-pixel acquisition — the scene is modulated by a separable H⊗W pattern and measured by a single photodetector (variant 32).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 34,
+      "description": "A single-pixel camera with Kronecker-structured measurements: the scene is multiplied by M(H⊗W) where H and W are row and column bases, then read by detector D(g, η₁) (variant 33).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 35,
+      "description": "A compressive single-pixel imager using separable Kronecker sensing — each measurement applies a rank-1 outer product pattern to the scene and records the total intensity (variant 34).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 36,
+      "description": "A single-pixel camera that uses Kronecker-structured sensing matrices (row ⊗ column) to efficiently compress the scene, directly measured by a single-element detector (variant 35).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 37,
+      "description": "A compressive imaging system where the sensing matrix has Kronecker product structure M(H⊗W), enabling separable row and column measurements read by a single detector D (variant 36).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 38,
+      "description": "An imaging system using Kronecker-product measurement matrices for single-pixel acquisition — the scene is modulated by a separable H⊗W pattern and measured by a single photodetector (variant 37).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 39,
+      "description": "A single-pixel camera with Kronecker-structured measurements: the scene is multiplied by M(H⊗W) where H and W are row and column bases, then read by detector D(g, η₁) (variant 38).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 40,
+      "description": "A compressive single-pixel imager using separable Kronecker sensing — each measurement applies a rank-1 outer product pattern to the scene and records the total intensity (variant 39).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 41,
+      "description": "A single-pixel camera that uses Kronecker-structured sensing matrices (row ⊗ column) to efficiently compress the scene, directly measured by a single-element detector (variant 40).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 42,
+      "description": "A compressive imaging system where the sensing matrix has Kronecker product structure M(H⊗W), enabling separable row and column measurements read by a single detector D (variant 41).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 43,
+      "description": "An imaging system using Kronecker-product measurement matrices for single-pixel acquisition — the scene is modulated by a separable H⊗W pattern and measured by a single photodetector (variant 42).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 44,
+      "description": "A single-pixel camera with Kronecker-structured measurements: the scene is multiplied by M(H⊗W) where H and W are row and column bases, then read by detector D(g, η₁) (variant 43).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 45,
+      "description": "A compressive single-pixel imager using separable Kronecker sensing — each measurement applies a rank-1 outer product pattern to the scene and records the total intensity (variant 44).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 46,
+      "description": "A single-pixel camera that uses Kronecker-structured sensing matrices (row ⊗ column) to efficiently compress the scene, directly measured by a single-element detector (variant 45).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 47,
+      "description": "A compressive imaging system where the sensing matrix has Kronecker product structure M(H⊗W), enabling separable row and column measurements read by a single detector D (variant 46).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 48,
+      "description": "An imaging system using Kronecker-product measurement matrices for single-pixel acquisition — the scene is modulated by a separable H⊗W pattern and measured by a single photodetector (variant 47).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 49,
+      "description": "A single-pixel camera with Kronecker-structured measurements: the scene is multiplied by M(H⊗W) where H and W are row and column bases, then read by detector D(g, η₁) (variant 48).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    },
+    {
+      "id": 50,
+      "description": "A compressive single-pixel imager using separable Kronecker sensing — each measurement applies a rank-1 outer product pattern to the scene and records the total intensity (variant 49).",
+      "correct_spec": "M(H⊗W) → D(g, η₁)",
+      "correct_dag": [
+        {
+          "primitive": "M",
+          "params": "H⊗W",
+          "label": "Kronecker Sensing"
+        },
+        {
+          "primitive": "D",
+          "params": "g, η₁",
+          "label": "Detector"
+        }
+      ],
+      "distractors": [
+        "Π(fan) → D(g, η₂)",
+        "F(spiral) → C(psf) → D(g, η₃)",
+        "P(fresnel) → |·|² → D(g, η₁)"
+      ]
+    }
+  ]
+}
