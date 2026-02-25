@@ -1,8 +1,8 @@
 """Async multi-turn Gemini client for the spec chat feature.
 
-Uses httpx (already a platform dependency) to call the Gemini 2.5 Flash REST
-API with multi-turn conversation history.  Conversations are stored in-memory
-with a 1-hour TTL and lazy cleanup.
+Uses the CompareGPT OpenAI-compatible API (https://comparegpt.io/api) to call
+Gemini 2.5 Flash with multi-turn conversation history.  Conversations are
+stored in-memory with a 1-hour TTL and lazy cleanup.
 """
 
 from __future__ import annotations
@@ -19,10 +19,9 @@ logger = logging.getLogger(__name__)
 
 # ── Constants ────────────────────────────────────────────────────────────────
 
-_GEMINI_MODEL = "gemini-2.5-flash"
-_GEMINI_URL = (
-    "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-)
+_MODEL = "gemini-2.5-flash"
+_COMPAREGPT_BASE_URL = "https://comparegpt.io/api"
+_COMPAREGPT_API_KEY_ENV = "COMPAREGPT_API_KEY"
 _MAX_OUTPUT_TOKENS = 4096
 _TEMPERATURE = 0.3
 _REQUEST_TIMEOUT_S = 120
@@ -31,7 +30,7 @@ _SESSION_TTL_S = 3600  # 1 hour
 
 # ── In-memory conversation store ─────────────────────────────────────────────
 
-# {session_id: {"history": [{"role": ..., "parts": [...]}], "created_at": float}}
+# {session_id: {"history": [{"role": ..., "content": ...}], "created_at": float}}
 _conversations: dict[str, dict[str, Any]] = {}
 
 
@@ -61,25 +60,34 @@ def get_conversation(session_id: str) -> dict[str, Any] | None:
 
 
 def append_to_conversation(session_id: str, role: str, text: str) -> None:
-    """Append a turn to the conversation history."""
+    """Append a turn to the conversation history.
+
+    Parameters
+    ----------
+    role : str
+        ``"user"`` or ``"model"`` (will be mapped to ``"assistant"`` for the
+        OpenAI-compatible API).
+    """
     conv = _conversations.get(session_id)
     if conv is None:
         return
-    conv["history"].append({"role": role, "parts": [{"text": text}]})
+    api_role = "assistant" if role == "model" else role
+    conv["history"].append({"role": api_role, "content": text})
 
 
-# ── Gemini API call ──────────────────────────────────────────────────────────
+# ── LLM API call (via CompareGPT) ───────────────────────────────────────────
 
 
 async def call_gemini(system_prompt: str, history: list[dict]) -> str:
-    """Call Gemini 2.5 Flash with a system prompt and multi-turn history.
+    """Call Gemini 2.5 Flash via the CompareGPT OpenAI-compatible API.
 
     Parameters
     ----------
     system_prompt : str
         System instruction for the model.
     history : list[dict]
-        Conversation turns, each ``{"role": "user"|"model", "parts": [{"text": ...}]}``.
+        Conversation turns in OpenAI format:
+        ``[{"role": "user"|"assistant", "content": "..."}]``.
 
     Returns
     -------
@@ -93,34 +101,38 @@ async def call_gemini(system_prompt: str, history: list[dict]) -> str:
     httpx.HTTPStatusError
         If the API returns a non-2xx status.
     """
-    api_key = os.environ.get("PWM_GEMINI_API_KEY", "")
+    api_key = os.environ.get(_COMPAREGPT_API_KEY_ENV, "")
     if not api_key:
         raise RuntimeError(
-            "PWM_GEMINI_API_KEY not set. Cannot call Gemini API."
+            f"{_COMPAREGPT_API_KEY_ENV} not set. Cannot call CompareGPT API."
         )
 
-    url = _GEMINI_URL.format(model=_GEMINI_MODEL)
+    url = f"{_COMPAREGPT_BASE_URL}/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    messages = [{"role": "system", "content": system_prompt}] + list(history)
     payload: dict[str, Any] = {
-        "systemInstruction": {
-            "parts": [{"text": system_prompt}],
-        },
-        "contents": history,
-        "generationConfig": {
-            "maxOutputTokens": _MAX_OUTPUT_TOKENS,
-            "temperature": _TEMPERATURE,
-        },
+        "model": _MODEL,
+        "messages": messages,
+        "max_tokens": _MAX_OUTPUT_TOKENS,
+        "temperature": _TEMPERATURE,
     }
 
-    logger.debug("Gemini request: model=%s, turns=%d", _GEMINI_MODEL, len(history))
+    logger.debug(
+        "CompareGPT request: model=%s, turns=%d, url=%s",
+        _MODEL, len(history), url,
+    )
 
     async with httpx.AsyncClient(timeout=_REQUEST_TIMEOUT_S) as client:
-        resp = await client.post(url, params={"key": api_key}, json=payload)
+        resp = await client.post(url, headers=headers, json=payload)
         resp.raise_for_status()
         body = resp.json()
 
     try:
-        return body["candidates"][0]["content"]["parts"][0]["text"]
+        return body["choices"][0]["message"]["content"]
     except (KeyError, IndexError) as exc:
         raise RuntimeError(
-            f"Unexpected Gemini response structure: {body}"
+            f"Unexpected CompareGPT response structure: {body}"
         ) from exc
