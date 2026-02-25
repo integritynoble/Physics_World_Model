@@ -175,9 +175,8 @@
                 <h3 class="text-base font-semibold text-blue-800">Simulation</h3>
                 <span class="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded">Benchmark 1 &amp; 2</span>
             </div>
-            {% for bm in variant.benchmarks[:2] %}
-            {{ benchmark_card(bm) }}
-            {% endfor %}
+            {% include "_spec_chat_box.html" %}
+            {{ benchmark_card(variant.benchmarks[1]) }}
         </div>
 
         <!-- Data2recon (Benchmark 3 & Benchmark 4) -->

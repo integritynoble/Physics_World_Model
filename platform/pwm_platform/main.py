@@ -27,6 +27,7 @@ from pwm_platform.routers import (
     modalities_router,
     pages_router,
     runs_router,
+    spec_chat_router,
 )
 
 logging.basicConfig(
@@ -77,6 +78,7 @@ app.include_router(runs_router)
 app.include_router(datasets_router)
 app.include_router(modalities_router)
 app.include_router(bootstrap_router)
+app.include_router(spec_chat_router)
 app.include_router(pages_router)
 
 

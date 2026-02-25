@@ -404,6 +404,7 @@ async def variant_benchmarks_page(
         "request": request,
         "user": user,
         "variant": variant,
+        "variant_key": variant_key,
         "modality": modality,
         "primitives": get_spec_primitives(),
     })

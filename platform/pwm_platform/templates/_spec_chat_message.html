@@ -1,0 +1,109 @@
+{# ── Single chat round: user message + assistant response ── #}
+
+{# ── User bubble (right-aligned) ── #}
+<div class="flex justify-end">
+    <div class="max-w-[80%] px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm">
+        {{ user_message }}
+    </div>
+</div>
+
+{# ── Assistant bubble (left-aligned) ── #}
+<div class="flex justify-start">
+    <div class="max-w-[90%] px-4 py-3 rounded-lg bg-white border border-gray-200 shadow-sm space-y-3">
+        {# Prose explanation #}
+        {% if assistant_text %}
+        <div class="text-sm text-gray-700 prose prose-sm max-w-none whitespace-pre-line">{{ assistant_text }}</div>
+        {% endif %}
+
+        {% if spec %}
+        {# ── Spec notation highlight ── #}
+        {% if spec.spec_notation %}
+        <div class="text-sm font-mono text-indigo-700 bg-indigo-50 px-3 py-2 rounded">
+            {{ spec.spec_notation }}
+        </div>
+        {% endif %}
+
+        {# ── Visual DAG pipeline (reuses pill+arrow layout from variant_benchmarks.html) ── #}
+        {% if spec.forward_model %}
+        <div class="flex flex-wrap items-center gap-2">
+            {% for node in spec.forward_model %}
+            {% if not loop.first %}
+            <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            {% endif %}
+            <div class="inline-flex flex-col items-center px-3 py-2 border-2 border-indigo-300 bg-indigo-50 rounded-lg min-w-[80px]">
+                {% if primitives and node.primitive in primitives %}
+                <span class="text-lg font-bold text-indigo-700">{{ primitives[node.primitive].symbol }}</span>
+                {% else %}
+                <span class="text-lg font-bold text-indigo-700">{{ node.primitive }}</span>
+                {% endif %}
+                <span class="text-xs text-gray-600">{{ node.label }}</span>
+                {% if node.params %}
+                <span class="text-xs font-mono text-gray-400">({{ node.params }})</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {# ── Noise model & measurement matrix ── #}
+        {% if spec.noise_model or spec.measurement_matrix %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            {% if spec.noise_model %}
+            <div class="px-3 py-2 bg-gray-50 rounded border border-gray-200">
+                <span class="font-semibold text-gray-500 uppercase">Noise Model</span>
+                <p class="text-gray-700 mt-0.5">{{ spec.noise_model }}</p>
+            </div>
+            {% endif %}
+            {% if spec.measurement_matrix %}
+            <div class="px-3 py-2 bg-gray-50 rounded border border-gray-200">
+                <span class="font-semibold text-gray-500 uppercase">Measurement Matrix</span>
+                <p class="text-gray-700 mt-0.5">{{ spec.measurement_matrix }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {# ── Mismatch parameters table ── #}
+        {% if spec.mismatch_params %}
+        <div>
+            <h4 class="text-xs font-semibold text-gray-700 mb-1">Mismatch Parameters</h4>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-xs">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-2 py-1.5 text-left font-medium text-gray-600">Symbol</th>
+                            <th class="px-2 py-1.5 text-left font-medium text-gray-600">Parameter</th>
+                            <th class="px-2 py-1.5 text-left font-medium text-gray-600">Description</th>
+                            <th class="px-2 py-1.5 text-right font-medium text-gray-600">Nominal</th>
+                            <th class="px-2 py-1.5 text-right font-medium text-gray-600">Perturbed</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for p in spec.mismatch_params %}
+                        <tr>
+                            <td class="px-2 py-1.5 font-mono text-indigo-600">{{ p.symbol }}</td>
+                            <td class="px-2 py-1.5 font-mono text-gray-700">{{ p.name }}</td>
+                            <td class="px-2 py-1.5 text-gray-500">{{ p.description }}</td>
+                            <td class="px-2 py-1.5 text-right font-mono">{{ p.nominal }}</td>
+                            <td class="px-2 py-1.5 text-right font-mono text-amber-600">{{ p.perturbed }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+{# ── Update session ID via inline script ── #}
+<script>
+    (function() {
+        var el = document.getElementById('chat-session-id');
+        if (el) el.value = '{{ session_id }}';
+        // Auto-scroll chat log
+        var log = document.getElementById('chat-log');
+        if (log) log.scrollTop = log.scrollHeight;
+    })();
+</script>
