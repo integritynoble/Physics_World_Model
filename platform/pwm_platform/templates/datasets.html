@@ -33,7 +33,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {% for v in variants %}
-            <a href="/datasets/{{ v.variant_key }}" class="block bg-white shadow rounded-lg p-5 hover:shadow-md transition-shadow border-l-4 border-indigo-500">
+            <a href="/benchmark/{{ v.variant_key }}" class="block bg-white shadow rounded-lg p-5 hover:shadow-md transition-shadow border-l-4 border-indigo-500">
                 <div class="flex items-center justify-between">
                     <h3 class="text-base font-bold text-gray-900">{{ v.display_name }}</h3>
                 </div>

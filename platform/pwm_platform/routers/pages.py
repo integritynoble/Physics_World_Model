@@ -277,7 +277,7 @@ async def run_status_page(
     })
 
 
-@router.get("/datasets", response_class=HTMLResponse)
+@router.get("/benchmark", response_class=HTMLResponse)
 async def datasets_page(
     request: Request,
     user: Optional[User] = Depends(get_optional_user),
@@ -376,7 +376,7 @@ async def modalities_page(
     })
 
 
-@router.get("/datasets/{variant_key}", response_class=HTMLResponse)
+@router.get("/benchmark/{variant_key}", response_class=HTMLResponse)
 async def variant_benchmarks_page(
     request: Request,
     variant_key: str,
