@@ -25,9 +25,10 @@ COMPAREGPT_BASE_URL = "https://comparegpt.io/api"
 COMPAREGPT_API_KEY_ENV = "COMPAREGPT_API_KEY"
 
 MAX_CONCURRENCY = 10          # asyncio.Semaphore limit
-REQUEST_TIMEOUT = 120         # seconds per request
-MAX_RETRIES = 5               # retry count on 429 / 5xx
+REQUEST_TIMEOUT = 60          # seconds per request
+MAX_RETRIES = 3               # retry count on 429 / 5xx
 RETRY_BASE_DELAY = 2.0        # exponential backoff base (seconds)
+RETRY_MAX_DELAY = 16.0        # cap on backoff delay
 
 
 def get_api_key() -> str:
@@ -55,13 +56,11 @@ class ModelEntry:
 MODEL_REGISTRY: dict[str, ModelEntry] = {
     e.short_key: e
     for e in [
-        ModelEntry("gemini-3-pro-preview",         "gemini_3_pro"),
         ModelEntry("gemini-2.5-pro",               "gemini_2_5_pro"),
         ModelEntry("gemini-2.5-flash",             "gemini_2_5_flash"),
         ModelEntry("gemini-2.5-flash-lite",        "gemini_2_5_flash_lite"),
         ModelEntry("gemini-2.5-flash-image-preview", "gemini_2_5_flash_image"),
         ModelEntry("claude-haiku-4-5",             "claude_haiku_4_5"),
-        ModelEntry("claude-sonnet-4-5",            "claude_sonnet_4_5"),
         ModelEntry("deepseek-v3.2",                "deepseek_v3_2"),
         ModelEntry("deepseek-v3.1",                "deepseek_v3_1"),
         ModelEntry("deepseek-r1",                  "deepseek_r1"),

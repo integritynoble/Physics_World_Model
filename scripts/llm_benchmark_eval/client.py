@@ -16,6 +16,7 @@ from .config import (
     MAX_RETRIES,
     REQUEST_TIMEOUT,
     RETRY_BASE_DELAY,
+    RETRY_MAX_DELAY,
     get_api_key,
 )
 
@@ -72,6 +73,7 @@ class CompareGPTClient:
             base_url=COMPAREGPT_BASE_URL,
             api_key=get_api_key(),
             timeout=REQUEST_TIMEOUT,
+            max_retries=0,  # we handle retries ourselves
         )
         self._semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
 
@@ -128,7 +130,7 @@ class CompareGPTClient:
                 }
             except RateLimitError as exc:
                 last_error = f"RateLimitError: {exc}"
-                delay = RETRY_BASE_DELAY * (2 ** (attempt - 1))
+                delay = min(RETRY_BASE_DELAY * (2 ** (attempt - 1)), RETRY_MAX_DELAY)
                 logger.warning(
                     "Rate limited (attempt %d/%d), retrying in %.1fs: %s",
                     attempt, MAX_RETRIES, delay, exc,
@@ -145,7 +147,7 @@ class CompareGPTClient:
                         "error": f"AuthError ({exc.status_code}): {exc}",
                     }
                 last_error = f"{type(exc).__name__}: {exc}"
-                delay = RETRY_BASE_DELAY * (2 ** (attempt - 1))
+                delay = min(RETRY_BASE_DELAY * (2 ** (attempt - 1)), RETRY_MAX_DELAY)
                 logger.warning(
                     "API error (attempt %d/%d), retrying in %.1fs: %s",
                     attempt, MAX_RETRIES, delay, exc,
@@ -153,7 +155,7 @@ class CompareGPTClient:
                 await asyncio.sleep(delay)
             except (APIError, APITimeoutError) as exc:
                 last_error = f"{type(exc).__name__}: {exc}"
-                delay = RETRY_BASE_DELAY * (2 ** (attempt - 1))
+                delay = min(RETRY_BASE_DELAY * (2 ** (attempt - 1)), RETRY_MAX_DELAY)
                 logger.warning(
                     "API error (attempt %d/%d), retrying in %.1fs: %s",
                     attempt, MAX_RETRIES, delay, exc,
