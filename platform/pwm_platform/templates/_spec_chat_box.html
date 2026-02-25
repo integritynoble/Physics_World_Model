@@ -1,8 +1,10 @@
-{# ── Benchmark 1 — Interactive Spec Builder Chat ── #}
+{# ── Interactive Spec Builder Chat ── #}
+{# Expects `chat_variant_key` in template context (e.g. "sd_cassi") #}
+{% set _vk = chat_variant_key | default("sd_cassi") %}
 <div class="bg-white shadow rounded-lg p-6 space-y-4 border-l-4 border-blue-400">
     <div class="flex items-center justify-between">
-        <h3 class="text-base font-bold text-gray-900">Benchmark 1 — LLM Spec Builder</h3>
-        <span class="text-xs px-2 py-1 rounded font-medium bg-blue-100 text-blue-700">Benchmark 1</span>
+        <h3 class="text-base font-bold text-gray-900">LLM Spec Builder</h3>
+        <span class="text-xs px-2 py-1 rounded font-medium bg-blue-100 text-blue-700">AI Chat</span>
     </div>
     <p class="text-sm text-gray-600">
         Build or refine an imaging modality spec through conversation.
@@ -13,7 +15,7 @@
     <!-- Example buttons -->
     <div class="flex flex-wrap gap-2">
         <span class="text-xs text-gray-500 self-center mr-1">Start from example:</span>
-        <button hx-post="/api/v1/spec-chat/{{ variant_key }}/example"
+        <button hx-post="/api/v1/spec-chat/{{ _vk }}/example"
                 hx-vals='{"example": "cassi"}'
                 hx-target="#chat-log"
                 hx-swap="innerHTML"
@@ -21,7 +23,7 @@
                 class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 cursor-pointer transition-colors">
             SD-CASSI
         </button>
-        <button hx-post="/api/v1/spec-chat/{{ variant_key }}/example"
+        <button hx-post="/api/v1/spec-chat/{{ _vk }}/example"
                 hx-vals='{"example": "spc"}'
                 hx-target="#chat-log"
                 hx-swap="innerHTML"
@@ -29,7 +31,7 @@
                 class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 cursor-pointer transition-colors">
             SPC-Block
         </button>
-        <button hx-post="/api/v1/spec-chat/{{ variant_key }}/example"
+        <button hx-post="/api/v1/spec-chat/{{ _vk }}/example"
                 hx-vals='{"example": "cacti"}'
                 hx-target="#chat-log"
                 hx-swap="innerHTML"
@@ -56,7 +58,7 @@
     </div>
 
     <!-- Input area -->
-    <form hx-post="/api/v1/spec-chat/{{ variant_key }}"
+    <form hx-post="/api/v1/spec-chat/{{ _vk }}"
           hx-target="#chat-log"
           hx-swap="beforeend"
           hx-indicator="#chat-spinner"

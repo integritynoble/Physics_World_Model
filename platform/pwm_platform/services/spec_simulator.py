@@ -151,16 +151,39 @@ def _parse_sigma(desc: str, default: float = 0.02) -> float:
 # ── Modality classification ───────────────────────────────────────────────
 
 
-def _classify_modality(variant_key: str) -> str:
-    """Map variant_key to one of: cassi, spc, cacti."""
+def _classify_modality(variant_key: str, spec: Optional[dict] = None) -> str:
+    """Map variant_key + spec content to one of: cassi, spc, cacti.
+
+    The variant_key alone may not distinguish modalities (e.g. all examples
+    may share the same variant_key). We also inspect the spec's notation,
+    measurement_matrix, and forward_model primitives.
+    """
     vk = variant_key.lower()
-    if "cassi" in vk or "sd_cassi" in vk:
-        return "cassi"
-    elif "spc" in vk or "single_pixel" in vk:
+
+    # First, try to detect from spec content (most reliable for examples)
+    if spec:
+        notation = (spec.get("spec_notation") or "").lower()
+        meas_matrix = (spec.get("measurement_matrix") or "").lower()
+        labels = " ".join(
+            (n.get("label") or "").lower() for n in (spec.get("forward_model") or [])
+        )
+        all_text = f"{notation} {meas_matrix} {labels}"
+
+        if "spc" in all_text or "single-pixel" in all_text or "block" in all_text or "sensing matrix" in meas_matrix:
+            return "spc"
+        if "cacti" in all_text or "temporal" in all_text or "video" in all_text or "time-varying" in meas_matrix:
+            return "cacti"
+        if "cassi" in all_text or "dispersion" in all_text or "spectral" in all_text:
+            return "cassi"
+
+    # Fall back to variant_key
+    if "spc" in vk or "single_pixel" in vk:
         return "spc"
-    elif "cacti" in vk:
+    if "cacti" in vk:
         return "cacti"
-    # Fallback: check spec forward model primitives
+    if "cassi" in vk:
+        return "cassi"
+
     return "cassi"
 
 
@@ -438,7 +461,7 @@ def _run_simulation_sync(spec: dict, variant_key: str) -> SimulationResult:
     sim_id = uuid.uuid4().hex[:12]
     rng = np.random.default_rng(42)
 
-    modality = _classify_modality(variant_key)
+    modality = _classify_modality(variant_key, spec)
     logger.info("Running %s simulation (sim_id=%s)", modality, sim_id)
 
     # Run modality-specific pipeline

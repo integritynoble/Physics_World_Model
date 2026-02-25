@@ -209,6 +209,7 @@ async def dashboard(
         "total_runs": total_runs,
         "total_modalities": total_modalities,
         "total_datasets": total_datasets,
+        "chat_variant_key": "sd_cassi",
     })
 
 

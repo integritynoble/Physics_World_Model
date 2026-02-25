@@ -24,7 +24,9 @@ services:
 
   # ── PWM Platform API + UI ──────────────────────────────────────────
   app:
-    build: .
+    build:
+      context: ..
+      dockerfile: platform/Dockerfile
     restart: unless-stopped
     depends_on:
       postgres:
@@ -37,12 +39,15 @@ services:
       - "127.0.0.1:8100:8000"
     volumes:
       - run_images:/app/pwm_platform/static/runs
+      - sim_images:/app/pwm_platform/static/simulations
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
   # ── arq background worker (job dispatch to Modal) ──────────────────
   arq_worker:
-    build: .
+    build:
+      context: ..
+      dockerfile: platform/Dockerfile
     restart: unless-stopped
     depends_on:
       postgres:
@@ -58,3 +63,4 @@ services:
 volumes:
   pgdata:
   run_images:
+  sim_images:

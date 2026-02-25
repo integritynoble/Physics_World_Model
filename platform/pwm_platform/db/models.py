@@ -241,6 +241,23 @@ class BootstrapProposal(Base):
 # ═══════════════════════════════════════════════════════════════════════════
 
 
+class SpecChatSession(Base):
+    """Persistent multi-turn spec builder chat session."""
+
+    __tablename__ = "spec_chat_sessions"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    session_id = Column(String(64), unique=True, nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    variant_key = Column(String(100), default="sd_cassi")
+    history = Column(JSONB, default=list)     # [{role, content}, ...]
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+    updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
+
+    # Relationships
+    user = relationship("User")
+
+
 class ModalityBasics(Base):
     """Structured knowledge about an imaging modality (for bootstrap engine)."""
 

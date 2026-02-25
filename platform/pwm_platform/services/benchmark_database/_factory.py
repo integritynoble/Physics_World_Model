@@ -105,8 +105,8 @@ def _make_b1(key: str, display: str, leaderboard: list) -> dict:
     }
 
 
-def _make_b2(key: str, display: str, ds: dict, leaderboard: list) -> dict:
-    return {
+def _make_b2(key: str, display: str, ds: dict, leaderboard: list, scenario_table: dict | None = None) -> dict:
+    result = {
         "id": "Benchmark 2",
         "title": "Benchmark 2 \u2014 Algorithm Correction + Reconstruction",
         "description": "Given a mismatched forward model and measurements, the algorithm corrects the spec and reconstructs the signal. Scored on PSNR / SSIM.",
@@ -136,6 +136,9 @@ def _make_b2(key: str, display: str, ds: dict, leaderboard: list) -> dict:
         },
         "credits": {"winner_share_pct": 30, "pool_source": "platform_profit"},
     }
+    if scenario_table:
+        result["scenario_table"] = scenario_table
+    return result
 
 
 def _make_b3(key: str, display: str, ds: dict, leaderboard: list) -> dict:
@@ -168,8 +171,8 @@ def _make_b3(key: str, display: str, ds: dict, leaderboard: list) -> dict:
     }
 
 
-def _make_b4(key: str, display: str, ds: dict, leaderboard: list) -> dict:
-    return {
+def _make_b4(key: str, display: str, ds: dict, leaderboard: list, scenario_table: dict | None = None) -> dict:
+    result = {
         "id": "Benchmark 4",
         "title": "Benchmark 4 \u2014 Algorithm Reconstruction (with drift)",
         "description": "Given measurements from a drifted system (low-scoring B3 specs), the algorithm reconstructs the signal. Tests robustness to forward-model drift.",
@@ -199,6 +202,9 @@ def _make_b4(key: str, display: str, ds: dict, leaderboard: list) -> dict:
         },
         "credits": {"winner_share_pct": 30, "pool_source": "platform_profit"},
     }
+    if scenario_table:
+        result["scenario_table"] = scenario_table
+    return result
 
 
 # ── Public factory ────────────────────────────────────────────────────────────
@@ -220,9 +226,9 @@ def build_variant(key: str, registry_entry: dict, leaderboard: dict | None = Non
         "mismatch_params": registry_entry["mismatch_params"],
         "benchmarks": [
             _make_b1(key, display, lb.get("b1", [])),
-            _make_b2(key, display, ds, lb.get("b2", [])),
+            _make_b2(key, display, ds, lb.get("b2", []), scenario_table=lb.get("b2_scenario_table")),
             _make_b3(key, display, ds, lb.get("b3", [])),
-            _make_b4(key, display, ds, lb.get("b4", [])),
+            _make_b4(key, display, ds, lb.get("b4", []), scenario_table=lb.get("b4_scenario_table")),
         ],
         "credits_config": {
             "profit_pool_pct": 40,

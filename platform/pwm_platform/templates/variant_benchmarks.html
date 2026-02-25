@@ -86,8 +86,148 @@
         {% endif %}
     </div>
 
-    <!-- Leaderboard -->
-    {% if bm.leaderboard %}
+    <!-- Scenario Comparison Table (rich view for variants with multi-scenario data) -->
+    {% if bm.scenario_table %}
+    <div class="space-y-3">
+        <h4 class="text-sm font-semibold text-gray-700">Scenario Comparison</h4>
+        <p class="text-xs text-gray-500">{{ bm.scenario_table.description }}</p>
+
+        <!-- Scenario legend -->
+        <div class="flex flex-wrap gap-2">
+            {% for sc in bm.scenario_table.scenarios %}
+            <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs
+                {% if sc.color == 'green' %}bg-green-50 text-green-700 border border-green-200
+                {% elif sc.color == 'red' %}bg-red-50 text-red-700 border border-red-200
+                {% elif sc.color == 'blue' %}bg-blue-50 text-blue-700 border border-blue-200
+                {% endif %}">
+                <span class="font-bold">{{ sc.id }}</span>
+                <span>{{ sc.name }}</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Main comparison table -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+                <thead>
+                    <tr class="bg-gray-50">
+                        <th class="px-3 py-2 text-left font-medium text-gray-600" rowspan="2">Method</th>
+                        <th class="px-3 py-2 text-center font-medium text-gray-500 text-xs" rowspan="2">Type</th>
+                        {% for sc in bm.scenario_table.scenarios %}
+                        <th class="px-2 py-2 text-center font-medium text-xs
+                            {% if sc.color == 'green' %}text-green-700 bg-green-50
+                            {% elif sc.color == 'red' %}text-red-700 bg-red-50
+                            {% elif sc.color == 'blue' %}text-blue-700 bg-blue-50
+                            {% endif %}" colspan="2">{{ sc.id }} &mdash; {{ sc.name }}</th>
+                        {% endfor %}
+                        <th class="px-2 py-2 text-center font-medium text-gray-500 text-xs" colspan="2">Gap Analysis</th>
+                    </tr>
+                    <tr class="bg-gray-50 border-t border-gray-100">
+                        {% for sc in bm.scenario_table.scenarios %}
+                        <th class="px-2 py-1 text-right text-xs text-gray-400">PSNR</th>
+                        <th class="px-2 py-1 text-right text-xs text-gray-400">SSIM</th>
+                        {% endfor %}
+                        <th class="px-2 py-1 text-right text-xs text-gray-400">Degrad.</th>
+                        <th class="px-2 py-1 text-right text-xs text-gray-400">Recov.</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for row in bm.scenario_table.methods %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-3 py-2 font-medium text-gray-900 whitespace-nowrap">
+                            {{ row.method }}
+                            {% if not row.mask_aware %}
+                            <span class="ml-1 text-xs px-1 py-0.5 rounded bg-gray-100 text-gray-500">mask-oblivious</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-3 py-2 text-xs text-gray-500">{{ row.type }}{% if row.params %} <span class="text-gray-400">({{ row.params }})</span>{% endif %}</td>
+
+                        {# Scenario I (green) #}
+                        {% if row.s1_psnr is defined %}
+                        <td class="px-2 py-2 text-right font-mono text-green-700 font-medium">{{ "%.2f"|format(row.s1_psnr) }}</td>
+                        <td class="px-2 py-2 text-right font-mono text-green-600 text-xs">{{ "%.3f"|format(row.s1_ssim) }}</td>
+                        {% endif %}
+
+                        {# Scenario II (red) #}
+                        <td class="px-2 py-2 text-right font-mono text-red-600">{{ "%.2f"|format(row.s2_psnr) }}</td>
+                        <td class="px-2 py-2 text-right font-mono text-red-500 text-xs">{{ "%.3f"|format(row.s2_ssim) }}</td>
+
+                        {# Scenario III (blue) #}
+                        <td class="px-2 py-2 text-right font-mono text-blue-700 font-medium">{{ "%.2f"|format(row.s3_psnr) }}</td>
+                        <td class="px-2 py-2 text-right font-mono text-blue-600 text-xs">{{ "%.3f"|format(row.s3_ssim) }}</td>
+
+                        {# Gap analysis #}
+                        <td class="px-2 py-2 text-right font-mono text-red-500 text-xs">
+                            {% if row.s1_psnr is defined %}{{ "%.1f"|format(row.s2_psnr - row.s1_psnr) }}{% elif row.gap_degradation is defined %}{{ "%.1f"|format(row.gap_degradation) }}{% endif %} dB
+                        </td>
+                        <td class="px-2 py-2 text-right font-mono text-blue-500 text-xs">
+                            +{{ "%.1f"|format(row.s3_psnr - row.s2_psnr) }} dB
+                            {% if row.recovery_pct is defined %}
+                            <span class="text-gray-400">({{ row.recovery_pct }}%)</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Per-scene PSNR breakdown (collapsible) -->
+        {% if bm.scenario_table.per_scene %}
+        <details class="border border-gray-200 rounded-lg">
+            <summary class="px-4 py-2 text-xs font-medium text-gray-600 cursor-pointer hover:text-indigo-600 hover:bg-gray-50">
+                Per-scene PSNR breakdown ({{ bm.scenario_table.per_scene | length }} scenes)
+            </summary>
+            <div class="px-4 pb-4 pt-2 overflow-x-auto">
+                <table class="min-w-full text-xs">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-2 py-1.5 text-left font-medium text-gray-600" rowspan="2">Scene</th>
+                            {% for mname in bm.scenario_table.method_names %}
+                            <th class="px-1 py-1.5 text-center font-medium text-gray-700 border-l border-gray-200" colspan="3">{{ mname }}</th>
+                            {% endfor %}
+                        </tr>
+                        <tr class="bg-gray-50 border-t border-gray-100">
+                            {% for mname in bm.scenario_table.method_names %}
+                            <th class="px-1 py-1 text-right text-green-600 border-l border-gray-200">I</th>
+                            <th class="px-1 py-1 text-right text-red-500">II</th>
+                            <th class="px-1 py-1 text-right text-blue-600">III</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for scene in bm.scenario_table.per_scene %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-2 py-1.5 font-medium text-gray-700 whitespace-nowrap">{{ scene.scene }}</td>
+                            {% for psnr in scene.psnr_values %}
+                            <td class="px-1 py-1.5 text-right font-mono
+                                {% if loop.index0 % 3 == 0 %}text-green-700 border-l border-gray-200
+                                {% elif loop.index0 % 3 == 1 %}text-red-500
+                                {% else %}text-blue-700{% endif %}
+                            ">{{ "%.2f"|format(psnr) }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                        <!-- Mean row -->
+                        <tr class="bg-gray-100 font-semibold">
+                            <td class="px-2 py-1.5 text-gray-700">Mean</td>
+                            {% for row in bm.scenario_table.methods %}
+                            <td class="px-1 py-1.5 text-right font-mono text-green-700 border-l border-gray-200">
+                                {% if row.s1_psnr is defined %}{{ "%.2f"|format(row.s1_psnr) }}{% endif %}
+                            </td>
+                            <td class="px-1 py-1.5 text-right font-mono text-red-500">{{ "%.2f"|format(row.s2_psnr) }}</td>
+                            <td class="px-1 py-1.5 text-right font-mono text-blue-700">{{ "%.2f"|format(row.s3_psnr) }}</td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </details>
+        {% endif %}
+    </div>
+
+    {% elif bm.leaderboard %}
+    <!-- Simple Leaderboard (fallback for variants without scenario data) -->
     <div>
         <h4 class="text-sm font-semibold text-gray-700 mb-2">Leaderboard</h4>
         <div class="overflow-x-auto">
@@ -98,6 +238,7 @@
                         <th class="px-3 py-2 text-left font-medium text-gray-600">Method</th>
                         <th class="px-3 py-2 text-right font-medium text-gray-600">PSNR (dB)</th>
                         <th class="px-3 py-2 text-right font-medium text-gray-600">SSIM</th>
+                        {% if bm.leaderboard[0].sam is defined %}<th class="px-3 py-2 text-right font-medium text-gray-600">SAM (&deg;)</th>{% endif %}
                         <th class="px-3 py-2 text-left font-medium text-gray-600">Source</th>
                         <th class="px-3 py-2 text-center font-medium text-gray-600">Adopted</th>
                     </tr>
@@ -109,6 +250,7 @@
                         <td class="px-3 py-2 font-medium text-gray-900">{{ row.method }}</td>
                         <td class="px-3 py-2 text-right font-mono {% if row.rank == 1 %}text-green-700 font-bold{% else %}text-gray-700{% endif %}">{{ row.psnr }}</td>
                         <td class="px-3 py-2 text-right font-mono text-gray-700">{{ row.ssim }}</td>
+                        {% if row.sam is defined %}<td class="px-3 py-2 text-right font-mono text-gray-700">{{ row.sam }}</td>{% endif %}
                         <td class="px-3 py-2 text-gray-500">{{ row.source }}</td>
                         <td class="px-3 py-2 text-center">
                             {% if row.adopted %}
@@ -175,8 +317,9 @@
                 <h3 class="text-base font-semibold text-blue-800">Simulation</h3>
                 <span class="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded">Benchmark 1 &amp; 2</span>
             </div>
-            {% include "_spec_chat_box.html" %}
-            {{ benchmark_card(variant.benchmarks[1]) }}
+            {% for bm in variant.benchmarks[:2] %}
+            {{ benchmark_card(bm) }}
+            {% endfor %}
         </div>
 
         <!-- Data2recon (Benchmark 3 & Benchmark 4) -->

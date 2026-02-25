@@ -33,9 +33,12 @@ VARIANT_REGISTRY: dict[str, dict] = {
             {"name": "mask_theta", "symbol": "\u03b8", "description": "Mask rotation (rad)", "nominal": 0, "perturbed": 0.1},
             {"name": "disp_a1", "symbol": "a\u2081", "description": "Dispersion coefficient", "nominal": 2.0, "perturbed": 2.02},
             {"name": "disp_alpha", "symbol": "\u03b1", "description": "Dispersion angle (rad)", "nominal": 0, "perturbed": 0.15},
+            {"name": "sigma_read", "symbol": "\u03c3_r", "description": "Detector read noise std (electrons)", "nominal": 5.0, "perturbed": 8.0},
+            {"name": "dark_current", "symbol": "I_d", "description": "Dark current (electrons/pixel/s)", "nominal": 0.1, "perturbed": 0.5},
+            {"name": "gain", "symbol": "g", "description": "Detector gain multiplier", "nominal": 1.0, "perturbed": 1.03},
         ],
         "dataset_config": {
-            "b2_samples": 5, "b2_size": 45, "b4_samples": 5, "b4_size": 45, "b3_size": 12,
+            "b2_samples": 10, "b2_size": 120, "b4_samples": 10, "b4_size": 120, "b3_size": 12,
             "data_type": "KAIST spectral scenes (256\u00d7256\u00d728 bands)",
         },
     },
