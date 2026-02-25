@@ -100,3 +100,111 @@ class CACTIBenchmark:
     def get_reference_psnr(self, name: str) -> float:
         """Return published GAP-TV reference PSNR for a given video name."""
         return _REF_PSNR.get(name, 25.0)
+
+
+class SyntheticCACTIDataset:
+    """Generates 6 synthetic 256x256x8 grayscale video sequences for CACTI benchmarks.
+
+    Used as a fallback when real .mat benchmark files are unavailable.
+    Each video simulates a distinct motion pattern with smooth temporal
+    transitions so GAP-TV solvers have meaningful structure to reconstruct.
+
+    Iterator yields (name, video, mask) where:
+      - video: (H, W, 8) float32 in [0, 1]
+      - mask:  (H, W, 8) float32 binary coded aperture
+    """
+
+    def __init__(self, resolution: int = 256, num_frames: int = 8):
+        self.resolution = resolution
+        self.num_frames = num_frames
+        self._items = self._generate()
+
+    def _generate(self):
+        n = self.resolution
+        nF = self.num_frames
+        rng = np.random.RandomState(2025)
+        y_coord, x_coord = np.mgrid[0:n, 0:n].astype(np.float32) / max(n - 1, 1)
+        items = []
+
+        # Generate a shared random binary mask (H, W, nF)
+        mask = (rng.rand(n, n, nF) > 0.5).astype(np.float32)
+
+        # 1. Sliding blocks — rectangles translating horizontally
+        video = np.zeros((n, n, nF), dtype=np.float32)
+        for f in range(nF):
+            shift = f / nF * 0.4
+            for bx, by, bw, bh, val in [(0.1, 0.2, 0.2, 0.15, 0.8),
+                                          (0.3, 0.5, 0.15, 0.2, 0.6),
+                                          (0.05, 0.7, 0.25, 0.1, 0.9)]:
+                cx = (bx + shift) % 1.0
+                in_box = (x_coord >= cx) & (x_coord < cx + bw) & (y_coord >= by) & (y_coord < by + bh)
+                video[:, :, f][in_box] = val
+            video[:, :, f] += 0.1  # background
+        video = np.clip(video, 0, 1)
+        items.append(("sliding_blocks", video, mask.copy()))
+
+        # 2. Diagonal flow — texture moving diagonally
+        video = np.zeros((n, n, nF), dtype=np.float32)
+        for f in range(nF):
+            shift = f / nF * 0.3
+            phase = x_coord + y_coord + shift
+            video[:, :, f] = 0.5 + 0.4 * np.sin(2 * np.pi * 4 * phase)
+        video = np.clip(video, 0, 1)
+        items.append(("diagonal_flow", video, mask.copy()))
+
+        # 3. Running silhouette — ellipse moving across frame
+        video = np.zeros((n, n, nF), dtype=np.float32)
+        video += 0.1  # background
+        for f in range(nF):
+            cx_f = 0.15 + 0.7 * f / (nF - 1)
+            cy_f = 0.5 + 0.05 * np.sin(2 * np.pi * f / nF)
+            r = ((x_coord - cx_f) / 0.06) ** 2 + ((y_coord - cy_f) / 0.15) ** 2
+            silhouette = np.clip(1.0 - r, 0, 1)
+            video[:, :, f] += 0.8 * silhouette
+        video = np.clip(video, 0, 1)
+        items.append(("running_silhouette", video, mask.copy()))
+
+        # 4. Falling drops — circular blobs falling downward
+        video = np.zeros((n, n, nF), dtype=np.float32)
+        video += 0.05
+        drop_centers = [(0.3, 0.1), (0.6, 0.2), (0.45, 0.05), (0.8, 0.15)]
+        for f in range(nF):
+            for dx, dy0 in drop_centers:
+                dy = dy0 + 0.1 * f
+                if dy < 1.0:
+                    r2 = (x_coord - dx) ** 2 + (y_coord - dy) ** 2
+                    drop = np.exp(-r2 / (2 * 0.03 ** 2))
+                    video[:, :, f] += 0.7 * drop
+        video = np.clip(video, 0, 1)
+        items.append(("falling_drops", video, mask.copy()))
+
+        # 5. Expanding wave — circular wave expanding from center
+        video = np.zeros((n, n, nF), dtype=np.float32)
+        r_dist = np.sqrt((x_coord - 0.5) ** 2 + (y_coord - 0.5) ** 2)
+        for f in range(nF):
+            radius = 0.05 + 0.4 * f / (nF - 1)
+            wave = np.exp(-((r_dist - radius) ** 2) / (2 * 0.03 ** 2))
+            video[:, :, f] = 0.1 + 0.8 * wave
+        video = np.clip(video, 0, 1)
+        items.append(("expanding_wave", video, mask.copy()))
+
+        # 6. Smooth pan — textured image with horizontal camera pan
+        from scipy.ndimage import gaussian_filter
+        texture = rng.rand(n, n * 2).astype(np.float32)
+        texture = gaussian_filter(texture, sigma=n / 16)
+        texture = (texture - texture.min()) / (texture.max() - texture.min() + 1e-8)
+        video = np.zeros((n, n, nF), dtype=np.float32)
+        for f in range(nF):
+            offset = int(n * f / nF * 0.5)
+            video[:, :, f] = texture[:, offset:offset + n]
+        video = np.clip(video, 0, 1)
+        items.append(("smooth_pan", video, mask.copy()))
+
+        return items
+
+    def __iter__(self):
+        for name, video, m in self._items:
+            yield name, video, m
+
+    def __len__(self):
+        return len(self._items)

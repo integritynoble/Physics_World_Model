@@ -1,0 +1,326 @@
+{
+  "sd_cassi": {
+    "variant": "sd_cassi",
+    "method": "GAP-Denoise",
+    "mismatch_param": "dispersion_step",
+    "nominal": 2,
+    "perturbed": 3,
+    "num_scenes": 10,
+    "scenes": [
+      {
+        "scene_idx": 0,
+        "scene_name": "blobs_spectral",
+        "psnr_I": 35.86,
+        "ssim_I": 0.9156,
+        "psnr_II": 16.02,
+        "ssim_II": 0.3462,
+        "psnr_III": 37.23,
+        "ssim_III": 0.9271
+      },
+      {
+        "scene_idx": 1,
+        "scene_name": "stripes_spectral",
+        "psnr_I": 27.7,
+        "ssim_I": 0.8864,
+        "psnr_II": 8.64,
+        "ssim_II": 0.0482,
+        "psnr_III": 28.91,
+        "ssim_III": 0.8914
+      },
+      {
+        "scene_idx": 2,
+        "scene_name": "checker_spectral",
+        "psnr_I": 24.03,
+        "ssim_I": 0.6586,
+        "psnr_II": 11.73,
+        "ssim_II": 0.0944,
+        "psnr_III": 24.49,
+        "ssim_III": 0.6611
+      },
+      {
+        "scene_idx": 3,
+        "scene_name": "radial_star",
+        "psnr_I": 25.41,
+        "ssim_I": 0.8874,
+        "psnr_II": 14.94,
+        "ssim_II": 0.3104,
+        "psnr_III": 25.92,
+        "ssim_III": 0.8909
+      },
+      {
+        "scene_idx": 4,
+        "scene_name": "phantom",
+        "psnr_I": 26.5,
+        "ssim_I": 0.7492,
+        "psnr_II": 12.29,
+        "ssim_II": 0.5057,
+        "psnr_III": 27.44,
+        "ssim_III": 0.7655
+      },
+      {
+        "scene_idx": 5,
+        "scene_name": "voronoi_mosaic",
+        "psnr_I": 22.58,
+        "ssim_I": 0.5638,
+        "psnr_II": 9.25,
+        "ssim_II": 0.0843,
+        "psnr_III": 23.3,
+        "ssim_III": 0.5995
+      },
+      {
+        "scene_idx": 6,
+        "scene_name": "gabor_field",
+        "psnr_I": 31.92,
+        "ssim_I": 0.9311,
+        "psnr_II": 19.41,
+        "ssim_II": 0.5991,
+        "psnr_III": 32.95,
+        "ssim_III": 0.9339
+      },
+      {
+        "scene_idx": 7,
+        "scene_name": "concentric_rings",
+        "psnr_I": 23.79,
+        "ssim_I": 0.7901,
+        "psnr_II": 6.54,
+        "ssim_II": 0.0335,
+        "psnr_III": 25.8,
+        "ssim_III": 0.84
+      },
+      {
+        "scene_idx": 8,
+        "scene_name": "lowfreq_random",
+        "psnr_I": 33.01,
+        "ssim_I": 0.8884,
+        "psnr_II": 9.61,
+        "ssim_II": 0.0548,
+        "psnr_III": 33.41,
+        "ssim_III": 0.8854
+      },
+      {
+        "scene_idx": 9,
+        "scene_name": "letter_blocks",
+        "psnr_I": 26.04,
+        "ssim_I": 0.7416,
+        "psnr_II": 14.15,
+        "ssim_II": 0.2747,
+        "psnr_III": 26.74,
+        "ssim_III": 0.7558
+      }
+    ],
+    "mean_psnr_I": 27.68,
+    "mean_psnr_II": 12.26,
+    "mean_psnr_III": 28.62,
+    "mean_ssim_I": 0.8012,
+    "mean_ssim_II": 0.2351,
+    "mean_ssim_III": 0.8151
+  },
+  "cacti": {
+    "variant": "cacti",
+    "method": "GAP-TV",
+    "mismatch_param": "timing_offset",
+    "nominal": 0,
+    "perturbed": 2,
+    "num_scenes": 6,
+    "scenes": [
+      {
+        "scene_idx": 0,
+        "scene_name": "sliding_blocks",
+        "psnr_I": 29.22,
+        "ssim_I": 0.9062,
+        "psnr_II": 12.3,
+        "ssim_II": 0.8276,
+        "psnr_III": 29.23,
+        "ssim_III": 0.9092
+      },
+      {
+        "scene_idx": 1,
+        "scene_name": "diagonal_flow",
+        "psnr_I": 35.89,
+        "ssim_I": 0.9885,
+        "psnr_II": 8.03,
+        "ssim_II": -0.1739,
+        "psnr_III": 35.96,
+        "ssim_III": 0.9889
+      },
+      {
+        "scene_idx": 2,
+        "scene_name": "running_silhouette",
+        "psnr_I": 46.86,
+        "ssim_I": 0.9936,
+        "psnr_II": 19.34,
+        "ssim_II": 0.9298,
+        "psnr_III": 46.8,
+        "ssim_III": 0.9944
+      },
+      {
+        "scene_idx": 3,
+        "scene_name": "falling_drops",
+        "psnr_I": 47.36,
+        "ssim_I": 0.9952,
+        "psnr_II": 19.75,
+        "ssim_II": 0.8545,
+        "psnr_III": 47.34,
+        "ssim_III": 0.9952
+      },
+      {
+        "scene_idx": 4,
+        "scene_name": "expanding_wave",
+        "psnr_I": 41.19,
+        "ssim_I": 0.9877,
+        "psnr_II": 9.93,
+        "ssim_II": 0.5919,
+        "psnr_III": 41.13,
+        "ssim_III": 0.9876
+      },
+      {
+        "scene_idx": 5,
+        "scene_name": "smooth_pan",
+        "psnr_I": 54.31,
+        "ssim_I": 0.9993,
+        "psnr_II": 16.77,
+        "ssim_II": 0.7511,
+        "psnr_III": 53.99,
+        "ssim_III": 0.9993
+      }
+    ],
+    "mean_psnr_I": 42.47,
+    "mean_psnr_II": 14.35,
+    "mean_psnr_III": 42.41,
+    "mean_ssim_I": 0.9784,
+    "mean_ssim_II": 0.6302,
+    "mean_ssim_III": 0.9791
+  },
+  "spc_block": {
+    "variant": "spc_block",
+    "method": "Reg. Least-Squares",
+    "mismatch_param": "gain+bias",
+    "nominal": {
+      "gain": 1.0,
+      "bias": 0.0
+    },
+    "perturbed": {
+      "gain": 0.8,
+      "bias": 0.05
+    },
+    "num_scenes": 11,
+    "scenes": [
+      {
+        "scene_idx": 0,
+        "scene_name": "gaussian_blob",
+        "psnr_I": 14.29,
+        "ssim_I": 0.1768,
+        "psnr_II": 13.99,
+        "ssim_II": 0.1775,
+        "psnr_III": 14.29,
+        "ssim_III": 0.1768
+      },
+      {
+        "scene_idx": 1,
+        "scene_name": "circles",
+        "psnr_I": 6.18,
+        "ssim_I": 0.1354,
+        "psnr_II": 5.86,
+        "ssim_II": 0.1001,
+        "psnr_III": 6.18,
+        "ssim_III": 0.1354
+      },
+      {
+        "scene_idx": 2,
+        "scene_name": "stripes_h",
+        "psnr_I": 6.36,
+        "ssim_I": 0.1428,
+        "psnr_II": 6.05,
+        "ssim_II": 0.1033,
+        "psnr_III": 6.36,
+        "ssim_III": 0.1428
+      },
+      {
+        "scene_idx": 3,
+        "scene_name": "checkerboard",
+        "psnr_I": 5.06,
+        "ssim_I": 0.1962,
+        "psnr_II": 4.76,
+        "ssim_II": 0.1427,
+        "psnr_III": 5.06,
+        "ssim_III": 0.1962
+      },
+      {
+        "scene_idx": 4,
+        "scene_name": "phantom",
+        "psnr_I": 9.73,
+        "ssim_I": 0.1475,
+        "psnr_II": 9.41,
+        "ssim_II": 0.1177,
+        "psnr_III": 9.73,
+        "ssim_III": 0.1475
+      },
+      {
+        "scene_idx": 5,
+        "scene_name": "gradient",
+        "psnr_I": 7.58,
+        "ssim_I": 0.0322,
+        "psnr_II": 7.22,
+        "ssim_II": 0.0364,
+        "psnr_III": 7.58,
+        "ssim_III": 0.0322
+      },
+      {
+        "scene_idx": 6,
+        "scene_name": "sinusoidal",
+        "psnr_I": 7.41,
+        "ssim_I": 0.137,
+        "psnr_II": 7.05,
+        "ssim_II": 0.1092,
+        "psnr_III": 7.41,
+        "ssim_III": 0.137
+      },
+      {
+        "scene_idx": 7,
+        "scene_name": "block_letter",
+        "psnr_I": 9.5,
+        "ssim_I": 0.1195,
+        "psnr_II": 9.26,
+        "ssim_II": 0.0902,
+        "psnr_III": 9.5,
+        "ssim_III": 0.1195
+      },
+      {
+        "scene_idx": 8,
+        "scene_name": "crosshatch",
+        "psnr_I": 4.77,
+        "ssim_I": 0.094,
+        "psnr_II": 4.41,
+        "ssim_II": 0.0731,
+        "psnr_III": 4.77,
+        "ssim_III": 0.094
+      },
+      {
+        "scene_idx": 9,
+        "scene_name": "gabor",
+        "psnr_I": 17.81,
+        "ssim_I": 0.2338,
+        "psnr_II": 17.49,
+        "ssim_II": 0.2313,
+        "psnr_III": 17.81,
+        "ssim_III": 0.2338
+      },
+      {
+        "scene_idx": 10,
+        "scene_name": "speckle",
+        "psnr_I": 6.82,
+        "ssim_I": 0.0791,
+        "psnr_II": 6.42,
+        "ssim_II": 0.0728,
+        "psnr_III": 6.82,
+        "ssim_III": 0.0791
+      }
+    ],
+    "mean_psnr_I": 8.68,
+    "mean_psnr_II": 8.36,
+    "mean_psnr_III": 8.68,
+    "mean_ssim_I": 0.1358,
+    "mean_ssim_II": 0.114,
+    "mean_ssim_III": 0.1358
+  }
+}

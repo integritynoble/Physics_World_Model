@@ -65,3 +65,26 @@ def get_flowcharts() -> dict:
 def get_spec_primitives() -> dict:
     """Return the 11 spec primitives."""
     return dict(SPEC_PRIMITIVES)
+
+
+def get_benchmark_gallery(variant_key: str) -> dict | None:
+    """Load pre-computed benchmark gallery data for a variant.
+
+    Returns the gallery dict for the variant from benchmark_gallery.json,
+    or None if the file doesn't exist or the variant has no gallery data.
+    """
+    import json
+    from pathlib import Path
+
+    json_path = (
+        Path(__file__).resolve().parent.parent.parent
+        / "static" / "benchmark-data" / "benchmark_gallery.json"
+    )
+    if not json_path.exists():
+        return None
+    try:
+        with open(json_path) as f:
+            gallery = json.load(f)
+        return gallery.get(variant_key)
+    except (json.JSONDecodeError, OSError):
+        return None

@@ -384,6 +384,7 @@ async def variant_benchmarks_page(
 ):
     """Variant benchmark page — benchmarks, modality intro, spec DAG, leaderboards, credits."""
     from pwm_platform.services.benchmark_database import (
+        get_benchmark_gallery,
         get_spec_primitives,
         get_variant,
     )
@@ -401,6 +402,9 @@ async def variant_benchmarks_page(
     if parent_key and parent_key in MODALITY_DATABASE:
         modality = dict(MODALITY_DATABASE[parent_key])
 
+    # Load pre-computed benchmark gallery (multi-scene scenario comparison)
+    benchmark_gallery = get_benchmark_gallery(variant_key)
+
     return templates.TemplateResponse("variant_benchmarks.html", {
         "request": request,
         "user": user,
@@ -408,6 +412,7 @@ async def variant_benchmarks_page(
         "variant_key": variant_key,
         "modality": modality,
         "primitives": get_spec_primitives(),
+        "benchmark_gallery": benchmark_gallery,
     })
 
 
