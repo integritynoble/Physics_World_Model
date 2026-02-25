@@ -1,0 +1,114 @@
+{# ── Simulation Result — appended to #chat-log after simulation completes ── #}
+
+<div class="flex justify-start">
+    <div class="max-w-[95%] w-full px-4 py-4 rounded-lg bg-white border border-green-200 shadow-sm space-y-4">
+        {# ── Header ── #}
+        <div class="flex items-center gap-2">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-green-100 text-green-800">
+                <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Simulation Complete
+            </span>
+            <h4 class="text-sm font-bold text-gray-900">{{ result.dataset_name | replace("_", " ") | title }}</h4>
+            <span class="text-xs text-gray-400 ml-auto font-mono">{{ result.sim_id }}</span>
+        </div>
+
+        {# ── 3-panel image grid ── #}
+        <div class="grid grid-cols-3 gap-2">
+            <div class="text-center">
+                <img src="{{ result.ground_truth_path }}" alt="Ground Truth"
+                     class="w-full rounded border border-gray-200" loading="lazy">
+                <span class="text-xs text-gray-500 mt-1 block">Ground Truth</span>
+            </div>
+            <div class="text-center">
+                <img src="{{ result.measurement_path }}" alt="Measurement"
+                     class="w-full rounded border border-gray-200" loading="lazy">
+                <span class="text-xs text-gray-500 mt-1 block">Measurement</span>
+            </div>
+            <div class="text-center">
+                <img src="{{ result.reconstructed_path }}" alt="Reconstructed"
+                     class="w-full rounded border border-gray-200" loading="lazy">
+                <span class="text-xs text-gray-500 mt-1 block">Reconstructed</span>
+            </div>
+        </div>
+
+        {# ── Metrics card ── #}
+        <div class="grid grid-cols-2 gap-2">
+            <div class="px-3 py-2 bg-blue-50 rounded border border-blue-100 text-center">
+                <span class="block text-xs font-semibold text-blue-600 uppercase">PSNR</span>
+                <span class="block text-lg font-bold text-blue-800">{{ "%.2f"|format(result.psnr) }} <span class="text-xs font-normal">dB</span></span>
+            </div>
+            <div class="px-3 py-2 bg-blue-50 rounded border border-blue-100 text-center">
+                <span class="block text-xs font-semibold text-blue-600 uppercase">SSIM</span>
+                <span class="block text-lg font-bold text-blue-800">{{ "%.4f"|format(result.ssim) }}</span>
+            </div>
+        </div>
+
+        {# ── Solver info ── #}
+        <div class="text-xs text-gray-500">
+            Solver: <span class="font-mono font-medium text-gray-700">{{ result.solver_name }}</span>
+            &middot; {{ result.solver_iters }} iterations
+        </div>
+
+        {# ── Bottleneck analysis card ── #}
+        {% if result.bottleneck and result.bottleneck.ranked %}
+        <div class="space-y-2">
+            <h5 class="text-xs font-semibold text-gray-700 uppercase">Bottleneck Analysis</h5>
+            <div class="space-y-1.5">
+                {% for item in result.bottleneck.ranked %}
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-medium text-gray-600 w-24 flex-shrink-0 capitalize">{{ item.factor | replace("_", " ") }}</span>
+                    <div class="flex-1 bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                        {% set pct = (item.severity * 100) | int %}
+                        {% if item.severity >= 0.6 %}
+                        <div class="h-full rounded-full bg-red-400" style="width: {{ pct }}%"></div>
+                        {% elif item.severity >= 0.3 %}
+                        <div class="h-full rounded-full bg-amber-400" style="width: {{ pct }}%"></div>
+                        {% else %}
+                        <div class="h-full rounded-full bg-green-400" style="width: {{ pct }}%"></div>
+                        {% endif %}
+                    </div>
+                    <span class="text-xs font-mono text-gray-500 w-16 text-right flex-shrink-0">+{{ "%.1f"|format(item.expected_gain_db) }} dB</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {# ── Recommendations ── #}
+        {% if result.recommendations %}
+        <div class="space-y-2">
+            <h5 class="text-xs font-semibold text-gray-700 uppercase">Recommendations</h5>
+            <ul class="space-y-1.5">
+                {% for rec in result.recommendations %}
+                {% if rec.severity >= 0.1 %}
+                <li class="flex items-start gap-2 text-xs">
+                    {% if loop.first %}
+                    <span class="flex-shrink-0 mt-0.5 w-4 h-4 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-xs">!</span>
+                    {% else %}
+                    <span class="flex-shrink-0 mt-0.5 w-4 h-4 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center text-xs">{{ loop.index }}</span>
+                    {% endif %}
+                    <span class="text-gray-600">{{ rec.recommendation }}</span>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {# ── What to change first ── #}
+        {% if result.bottleneck and result.bottleneck.what_to_change_first %}
+        <div class="px-3 py-2 bg-amber-50 rounded border border-amber-200">
+            <span class="block text-xs font-semibold text-amber-700 uppercase mb-0.5">What to change first</span>
+            <p class="text-xs text-amber-900">{{ result.bottleneck.what_to_change_first }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{# Auto-scroll chat log #}
+<script>
+    (function() {
+        var log = document.getElementById('chat-log');
+        if (log) log.scrollTop = log.scrollHeight;
+    })();
+</script>
