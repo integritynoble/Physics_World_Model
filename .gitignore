@@ -39,6 +39,7 @@ test_pnp_all/
 
 # Benchmark results (regenerated)
 packages/pwm_core/benchmarks/results/
+scripts/llm_benchmark_eval/results/
 
 # Model weights (local symlinks)
 packages/pwm_core/pwm_core/weights/
