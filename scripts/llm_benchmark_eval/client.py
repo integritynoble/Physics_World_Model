@@ -8,7 +8,7 @@ import logging
 import time
 from typing import Any
 
-from openai import AsyncOpenAI, APIError, APITimeoutError, RateLimitError
+from openai import AsyncOpenAI, APIError, APIStatusError, APITimeoutError, RateLimitError
 
 from .config import (
     COMPAREGPT_BASE_URL,
@@ -131,6 +131,23 @@ class CompareGPTClient:
                 delay = RETRY_BASE_DELAY * (2 ** (attempt - 1))
                 logger.warning(
                     "Rate limited (attempt %d/%d), retrying in %.1fs: %s",
+                    attempt, MAX_RETRIES, delay, exc,
+                )
+                await asyncio.sleep(delay)
+            except APIStatusError as exc:
+                # Don't retry auth errors (401/403)
+                if exc.status_code in (401, 403):
+                    latency = time.monotonic() - t0
+                    return {
+                        "raw_text": "",
+                        "parsed": None,
+                        "latency_s": round(latency, 3),
+                        "error": f"AuthError ({exc.status_code}): {exc}",
+                    }
+                last_error = f"{type(exc).__name__}: {exc}"
+                delay = RETRY_BASE_DELAY * (2 ** (attempt - 1))
+                logger.warning(
+                    "API error (attempt %d/%d), retrying in %.1fs: %s",
                     attempt, MAX_RETRIES, delay, exc,
                 )
                 await asyncio.sleep(delay)

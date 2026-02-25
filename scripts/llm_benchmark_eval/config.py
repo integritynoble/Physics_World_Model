@@ -21,7 +21,7 @@ SUMMARY_FILE = RESULTS_DIR / "summary.json"
 # ---------------------------------------------------------------------------
 # API configuration
 # ---------------------------------------------------------------------------
-COMPAREGPT_BASE_URL = "https://api.comparegpt.io/v1"
+COMPAREGPT_BASE_URL = "https://comparegpt.io/api"
 COMPAREGPT_API_KEY_ENV = "COMPAREGPT_API_KEY"
 
 MAX_CONCURRENCY = 10          # asyncio.Semaphore limit
@@ -55,21 +55,19 @@ class ModelEntry:
 MODEL_REGISTRY: dict[str, ModelEntry] = {
     e.short_key: e
     for e in [
-        ModelEntry("Gemini 3 Pro Preview",           "gemini_3_pro"),
-        ModelEntry("Gemini 2.5 Pro",                 "gemini_2_5_pro"),
-        ModelEntry("Gemini 2.5 Flash",               "gemini_2_5_flash"),
-        ModelEntry("Gemini 2.5 Flash Lite",          "gemini_2_5_flash_lite"),
-        ModelEntry("Gemini 2.5 Flash Image Preview", "gemini_2_5_flash_image"),
-        ModelEntry("Claude Opus 4.6",                "claude_opus_4_6"),
-        ModelEntry("Claude Opus 4.5",                "claude_opus_4_5"),
-        ModelEntry("Claude Haiku 4.5",               "claude_haiku_4_5"),
-        ModelEntry("Claude Sonnet 4.5",              "claude_sonnet_4_5"),
-        ModelEntry("DeepSeek V3.2",                  "deepseek_v3_2"),
-        ModelEntry("DeepSeek V3.1",                  "deepseek_v3_1"),
-        ModelEntry("DeepSeek R1",                    "deepseek_r1"),
-        ModelEntry("Qwen 3",                         "qwen_3"),
-        ModelEntry("Qwen 3 Next",                    "qwen_3_next"),
-        ModelEntry("Qwen 3 Next Thinking",           "qwen_3_next_thinking"),
+        ModelEntry("gemini-3-pro-preview",         "gemini_3_pro"),
+        ModelEntry("gemini-2.5-pro",               "gemini_2_5_pro"),
+        ModelEntry("gemini-2.5-flash",             "gemini_2_5_flash"),
+        ModelEntry("gemini-2.5-flash-lite",        "gemini_2_5_flash_lite"),
+        ModelEntry("gemini-2.5-flash-image-preview", "gemini_2_5_flash_image"),
+        ModelEntry("claude-haiku-4-5",             "claude_haiku_4_5"),
+        ModelEntry("claude-sonnet-4-5",            "claude_sonnet_4_5"),
+        ModelEntry("deepseek-v3.2",                "deepseek_v3_2"),
+        ModelEntry("deepseek-v3.1",                "deepseek_v3_1"),
+        ModelEntry("deepseek-r1",                  "deepseek_r1"),
+        ModelEntry("qwen-3",                       "qwen_3"),
+        ModelEntry("qwen-3-next",                  "qwen_3_next"),
+        ModelEntry("qwen-3-next-thinking",         "qwen_3_next_thinking"),
     ]
 }
 
