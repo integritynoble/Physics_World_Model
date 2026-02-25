@@ -353,6 +353,8 @@ def main():
     parser.add_argument("--all", action="store_true", help="Run all variants")
     parser.add_argument("--variant", type=str, help="Run a specific variant (sd_cassi, cacti, spc_block)")
     parser.add_argument("--iters", type=int, default=60, help="Reconstruction iterations")
+    parser.add_argument("--upload-gcs", action="store_true", help="Upload results to GCS after computation")
+    parser.add_argument("--gcs-bucket", type=str, default="pwm-benchmark-datasets", help="GCS bucket name")
     args = parser.parse_args()
 
     if not args.all and not args.variant:
@@ -397,7 +399,55 @@ def main():
     with open(json_path, "w") as f:
         json.dump(gallery, f, indent=2)
     print(f"\nSaved gallery JSON to {json_path}")
+
+    # Upload to GCS if requested
+    if args.upload_gcs:
+        _upload_to_gcs(platform_root, args.gcs_bucket)
+
     print("Done.")
+
+
+def _upload_to_gcs(platform_root: Path, bucket_name: str):
+    """Upload all gallery files to Google Cloud Storage."""
+    try:
+        from google.cloud import storage as gcs_storage
+    except ImportError:
+        print("\n[GCS] google-cloud-storage not installed, skipping upload.")
+        return
+
+    static_root = platform_root / "pwm_platform" / "static"
+    img_root = static_root / "img" / "benchmark_gallery"
+    json_path = static_root / "benchmark-data" / "benchmark_gallery.json"
+
+    files = []
+    if img_root.exists():
+        for f in sorted(img_root.rglob("*")):
+            if f.is_file():
+                rel = f.relative_to(static_root)
+                files.append((f, f"benchmark_gallery/{rel}"))
+    if json_path.exists():
+        files.append((json_path, "benchmark_gallery/benchmark_gallery.json"))
+
+    if not files:
+        print("\n[GCS] No files to upload.")
+        return
+
+    print(f"\n[GCS] Uploading {len(files)} files to gs://{bucket_name}/benchmark_gallery/ ...")
+    try:
+        client = gcs_storage.Client()
+        bucket = client.bucket(bucket_name)
+        if not bucket.exists():
+            bucket = client.create_bucket(bucket_name, location="us-central1")
+
+        uploaded = 0
+        for local_path, gcs_key in files:
+            blob = bucket.blob(gcs_key)
+            blob.upload_from_filename(str(local_path))
+            uploaded += 1
+        print(f"[GCS] Uploaded {uploaded}/{len(files)} files.")
+    except Exception as e:
+        print(f"[GCS] Upload failed: {e}")
+        print("[GCS] You can retry later with: python3 scripts/upload_gallery_to_gcs.py")
 
 
 if __name__ == "__main__":

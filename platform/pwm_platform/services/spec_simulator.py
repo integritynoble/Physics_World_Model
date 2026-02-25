@@ -196,9 +196,11 @@ def _run_cassi(spec: dict, rng: np.random.Generator) -> Tuple[np.ndarray, np.nda
     from pwm_core.physics.spectral.cassi_operator import SDCASSIOperator
     from pwm_core.recon.cs_solvers import run_tval3
 
-    # Load first synthetic hyperspectral cube
+    # Load a random scene from the 10-scene KAIST benchmark dataset
     dataset = KAISTDataset(resolution=256, num_bands=28)
-    name, cube = next(iter(dataset))
+    scenes = list(dataset)
+    idx = int(rng.integers(0, len(scenes)))
+    name, cube = scenes[idx]
 
     # Build operator
     H, W, L = cube.shape
@@ -241,9 +243,11 @@ def _run_spc(spec: dict, rng: np.random.Generator) -> Tuple[np.ndarray, np.ndarr
     from pwm_core.physics.compressive.spc_operator import SPCOperator
     from pwm_core.recon.cs_solvers import run_admm_tv
 
-    # Load first synthetic image
+    # Load a random image from the 11-image Set11 benchmark dataset
     dataset = Set11Dataset(resolution=64)
-    name, img = next(iter(dataset))
+    images = list(dataset)
+    idx = int(rng.integers(0, len(images)))
+    name, img = images[idx]
 
     # Build operator
     operator = SPCOperator(x_shape=(64, 64), sampling_rate=0.15)
@@ -270,8 +274,8 @@ def _run_cacti(spec: dict, rng: np.random.Generator) -> Tuple[np.ndarray, np.nda
     from pwm_core.physics.compressive.cacti_operator import CACTIOperator
     from pwm_core.recon.cacti_solvers import gap_tv_cacti
 
-    # Try real benchmark data first, fall back to synthetic
-    x_true, mask_3d, dataset_name = _load_cacti_data()
+    # Try real benchmark data first, fall back to 6-video synthetic dataset
+    x_true, mask_3d, dataset_name = _load_cacti_data(rng)
 
     H, W, T = x_true.shape
 
@@ -297,40 +301,35 @@ def _run_cacti(spec: dict, rng: np.random.Generator) -> Tuple[np.ndarray, np.nda
     return x_true, y_noisy, x_hat, dataset_name, "gap_tv", iters
 
 
-def _load_cacti_data() -> Tuple[np.ndarray, np.ndarray, str]:
-    """Load CACTI benchmark data, falling back to synthetic if .mat files unavailable."""
+def _load_cacti_data(rng: np.random.Generator = None) -> Tuple[np.ndarray, np.ndarray, str]:
+    """Load CACTI benchmark data, falling back to synthetic dataset if .mat files unavailable."""
     try:
         from pwm_core.data.loaders.cacti_bench import CACTIBenchmark
         bench = CACTIBenchmark()
-        name, group_gt, mask, meas = next(iter(bench))
+        groups = list(bench)
+        if rng is not None:
+            idx = int(rng.integers(0, len(groups)))
+        else:
+            idx = 0
+        name, group_gt, mask, meas = groups[idx]
         return group_gt, mask, name
     except (FileNotFoundError, Exception) as exc:
-        logger.info("CACTI benchmark data unavailable (%s), using synthetic fallback", exc)
-        return _synthetic_cacti()
+        logger.info("CACTI benchmark data unavailable (%s), using SyntheticCACTIDataset", exc)
+        return _synthetic_cacti(rng)
 
 
-def _synthetic_cacti() -> Tuple[np.ndarray, np.ndarray, str]:
-    """Generate synthetic CACTI video cube for fallback."""
-    H, W, T = 256, 256, 8
-    rng = np.random.RandomState(2024)
-    y, x = np.mgrid[0:H, 0:W].astype(np.float32) / max(H - 1, 1)
+def _synthetic_cacti(rng: np.random.Generator = None) -> Tuple[np.ndarray, np.ndarray, str]:
+    """Load from the 6-video SyntheticCACTIDataset benchmark."""
+    from pwm_core.data.loaders.cacti_bench import SyntheticCACTIDataset
 
-    # Video: moving blobs
-    cube = np.zeros((H, W, T), dtype=np.float32)
-    for t in range(T):
-        cx = 0.3 + 0.4 * t / T
-        cy = 0.5
-        cube[:, :, t] = np.exp(-((x - cx)**2 + (y - cy)**2) / 0.02)
-        cube[:, :, t] += 0.3 * np.exp(-((x - 0.7)**2 + (y - 0.3 + 0.05 * t)**2) / 0.015)
-    cube = np.clip(cube, 0, 1)
-
-    # Random binary mask
-    mask = np.zeros((H, W, T), dtype=np.float32)
-    base = (rng.random((H, W)) > 0.5).astype(np.float32)
-    for t in range(T):
-        mask[:, :, t] = np.roll(base, t, axis=0)
-
-    return cube, mask, "synthetic_video"
+    dataset = SyntheticCACTIDataset(resolution=256, num_frames=8)
+    videos = list(dataset)
+    if rng is not None:
+        idx = int(rng.integers(0, len(videos)))
+    else:
+        idx = 0
+    name, video, mask = videos[idx]
+    return video, mask, name
 
 
 # ── Bottleneck estimation from spec + metrics ─────────────────────────────
