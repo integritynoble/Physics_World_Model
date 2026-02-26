@@ -1,4 +1,4 @@
-{# ── Simulation Result — InverseNet baseline comparison ── #}
+{# ── Simulation Result — modality-specific physics simulation ── #}
 
 <div class="flex justify-start">
     <div class="max-w-[95%] w-full px-4 py-4 rounded-lg bg-white border border-green-200 shadow-sm space-y-4">
@@ -9,12 +9,19 @@
                 Simulation Complete
             </span>
             <h4 class="text-sm font-bold text-gray-900">{{ result.dataset_name | replace("_", " ") | title }}</h4>
-            {% if result.modality %}
+            {% if result.category_module or result.modality %}
             <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase
-                {% if result.modality == 'cassi' %}bg-violet-100 text-violet-700
+                {% if result.category_module == 'medical_ct_radon' %}bg-blue-100 text-blue-700
+                {% elif result.category_module == 'medical_mri_kspace' %}bg-purple-100 text-purple-700
+                {% elif result.category_module == 'microscopy_psf' %}bg-green-100 text-green-700
+                {% elif result.category_module == 'electron_ctf' %}bg-yellow-100 text-yellow-700
+                {% elif result.category_module == 'compressive_mask' %}bg-violet-100 text-violet-700
+                {% elif result.category_module == 'remote_sensing_sar' %}bg-teal-100 text-teal-700
+                {% elif result.category_module == 'scanning_probe' %}bg-orange-100 text-orange-700
+                {% elif result.modality == 'cassi' %}bg-violet-100 text-violet-700
                 {% elif result.modality == 'cacti' %}bg-teal-100 text-teal-700
-                {% else %}bg-orange-100 text-orange-700{% endif %}">
-                {{ result.modality }}
+                {% else %}bg-gray-100 text-gray-700{% endif %}">
+                {{ result.display_name or result.modality }}
             </span>
             {% endif %}
             <span class="text-xs text-gray-400 ml-auto font-mono">{{ result.sim_id }}</span>
@@ -51,12 +58,16 @@
             </div>
         </div>
 
-        {# ── InverseNet method comparison table ── #}
+        {# ── Method comparison table ── #}
         {% if result.methods %}
         <div class="space-y-2">
             <h5 class="text-xs font-semibold text-gray-700 uppercase flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7"/></svg>
+                {% if result.attribution and 'InverseNet' in result.attribution %}
                 InverseNet Baseline Comparison
+                {% else %}
+                Baseline Comparison
+                {% endif %}
             </h5>
             <div class="overflow-x-auto">
                 <table class="w-full text-xs border-collapse">
@@ -78,7 +89,7 @@
                             </th>
                             <th class="text-center py-1.5 px-2 font-semibold text-amber-700">
                                 <span class="block text-[10px]">Gap</span>
-                                <span class="block text-[9px] font-normal text-gray-400">I→II</span>
+                                <span class="block text-[9px] font-normal text-gray-400">I&rarr;II</span>
                             </th>
                         </tr>
                         <tr class="border-b border-gray-100 text-gray-400">
@@ -208,10 +219,15 @@
 
         {# ── Source attribution ── #}
         <div class="text-[10px] text-gray-400 border-t border-gray-100 pt-2">
+            {% if result.attribution %}
+            {{ result.attribution | safe }}
+            {% else %}
             Results from <span class="font-medium">InverseNet</span> benchmark &mdash;
             {% if result.modality == 'cassi' %}KAIST hyperspectral dataset (256&times;256&times;28)
             {% elif result.modality == 'cacti' %}Synthetic video dataset (256&times;256&times;8)
             {% elif result.modality == 'spc' %}Set11 grayscale dataset (CR=25%)
+            {% else %}Synthetic benchmark data
+            {% endif %}
             {% endif %}
         </div>
     </div>
