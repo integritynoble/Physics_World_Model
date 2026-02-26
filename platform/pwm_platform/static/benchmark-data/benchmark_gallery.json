@@ -188,7 +188,7 @@
     "mean_psnr_II": 14.35,
     "mean_psnr_III": 42.41,
     "mean_ssim_I": 0.9784,
-    "mean_ssim_II": 0.6302,
+    "mean_ssim_II": 0.6592,
     "mean_ssim_III": 0.9791
   },
   "spc_block": {

@@ -64,6 +64,96 @@
     <p class="text-sm text-gray-600">{{ tier.description }}</p>
     {% endif %}
 
+    <!-- ═══ Data Preview ═══ -->
+    {% if data_preview %}
+    <div class="bg-white shadow rounded-lg p-6 space-y-4">
+        <h2 class="text-base font-semibold text-gray-800">Data Preview
+            <span class="text-xs font-normal text-gray-500 ml-2">Scene {{ "%02d" | format(data_preview.scene_idx) }}</span>
+        </h2>
+
+        {% if data_preview.is_multi %}
+        {# Multi-dimensional: CASSI (spectral) / CACTI (temporal) — 2 GT views, 1 measurement, 2 recon views #}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Ground Truth column -->
+            <div class="space-y-3">
+                <h3 class="text-sm font-semibold text-gray-700 text-center">Ground Truth</h3>
+                <div class="space-y-2">
+                    <div>
+                        <img src="{{ data_preview.base_url }}/gt_view1.png" alt="GT {{ data_preview.view1_label }}"
+                             loading="lazy"
+                             class="w-full rounded-lg border-2
+                                 {% if tier_name == 'public' %}border-green-200{% elif tier_name == 'dev' %}border-amber-200{% else %}border-purple-200{% endif %}">
+                        <p class="text-xs text-gray-500 text-center mt-1">{{ data_preview.view1_label }}</p>
+                    </div>
+                    <div>
+                        <img src="{{ data_preview.base_url }}/gt_view2.png" alt="GT {{ data_preview.view2_label }}"
+                             loading="lazy"
+                             class="w-full rounded-lg border-2
+                                 {% if tier_name == 'public' %}border-green-200{% elif tier_name == 'dev' %}border-amber-200{% else %}border-purple-200{% endif %}">
+                        <p class="text-xs text-gray-500 text-center mt-1">{{ data_preview.view2_label }}</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Measurement column -->
+            <div class="space-y-3">
+                <h3 class="text-sm font-semibold text-gray-700 text-center">Measurement</h3>
+                <div>
+                    <img src="{{ data_preview.base_url }}/measurement_I.png" alt="Compressed measurement"
+                         loading="lazy"
+                         class="w-full rounded-lg border-2 border-gray-200">
+                    <p class="text-xs text-gray-500 text-center mt-1">2D compressed</p>
+                </div>
+            </div>
+            <!-- Reconstruction column -->
+            <div class="space-y-3">
+                <h3 class="text-sm font-semibold text-gray-700 text-center">Reconstruction</h3>
+                <div class="space-y-2">
+                    <div>
+                        <img src="{{ data_preview.base_url }}/recon_I_view1.png" alt="Recon {{ data_preview.view1_label }}"
+                             loading="lazy"
+                             class="w-full rounded-lg border-2
+                                 {% if tier_name == 'public' %}border-green-200{% elif tier_name == 'dev' %}border-amber-200{% else %}border-purple-200{% endif %}">
+                        <p class="text-xs text-gray-500 text-center mt-1">{{ data_preview.view1_label }}</p>
+                    </div>
+                    <div>
+                        <img src="{{ data_preview.base_url }}/recon_I_view2.png" alt="Recon {{ data_preview.view2_label }}"
+                             loading="lazy"
+                             class="w-full rounded-lg border-2
+                                 {% if tier_name == 'public' %}border-green-200{% elif tier_name == 'dev' %}border-amber-200{% else %}border-purple-200{% endif %}">
+                        <p class="text-xs text-gray-500 text-center mt-1">{{ data_preview.view2_label }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% else %}
+        {# Single-image: SPC — 1 GT, 1 measurement, 1 reconstruction #}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="space-y-2">
+                <h3 class="text-sm font-semibold text-gray-700 text-center">Ground Truth</h3>
+                <img src="{{ data_preview.base_url }}/gt.png" alt="Ground truth"
+                     loading="lazy"
+                     class="w-full rounded-lg border-2
+                         {% if tier_name == 'public' %}border-green-200{% elif tier_name == 'dev' %}border-amber-200{% else %}border-purple-200{% endif %}">
+            </div>
+            <div class="space-y-2">
+                <h3 class="text-sm font-semibold text-gray-700 text-center">Measurement</h3>
+                <img src="{{ data_preview.base_url }}/measurement_I.png" alt="Compressed measurement"
+                     loading="lazy"
+                     class="w-full rounded-lg border-2 border-gray-200">
+            </div>
+            <div class="space-y-2">
+                <h3 class="text-sm font-semibold text-gray-700 text-center">Reconstruction</h3>
+                <img src="{{ data_preview.base_url }}/recon_I.png" alt="Reconstruction"
+                     loading="lazy"
+                     class="w-full rounded-lg border-2
+                         {% if tier_name == 'public' %}border-green-200{% elif tier_name == 'dev' %}border-amber-200{% else %}border-purple-200{% endif %}">
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
     <!-- ═══ Scores Section ═══ -->
     {% if tier_name in ('public', 'dev') and benchmark_gallery %}
     <div class="bg-white shadow rounded-lg p-6 space-y-4">

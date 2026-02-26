@@ -508,6 +508,29 @@ async def challenge_tier_page(
             tier_leaderboard.append(entry)
     tier_leaderboard.sort(key=lambda e: e.get(tier_score_key, 0), reverse=True)
 
+    # Data preview images for challenge tier pages
+    _DATA_PREVIEW = {
+        "sd_cassi": {
+            "is_multi": True,
+            "view1_label": "Band 7 (~450 nm)",
+            "view2_label": "Band 21 (~650 nm)",
+        },
+        "cacti": {
+            "is_multi": True,
+            "view1_label": "Frame 0 (t=0)",
+            "view2_label": "Frame 7 (t=7)",
+        },
+        "spc_block": {"is_multi": False},
+    }
+    _TIER_SCENE = {"public": 0, "dev": 1, "hidden": 2}
+
+    preview_cfg = _DATA_PREVIEW.get(variant_key)
+    data_preview = None
+    if preview_cfg is not None:
+        scene_idx = _TIER_SCENE.get(tier_name, 0)
+        base = f"/static/img/benchmark_gallery/{variant_key}/scene_{scene_idx:02d}"
+        data_preview = {**preview_cfg, "scene_idx": scene_idx, "base_url": base}
+
     return templates.TemplateResponse("challenge_tier.html", {
         "request": request,
         "user": user,
@@ -520,6 +543,7 @@ async def challenge_tier_page(
         "tier_leaderboard": tier_leaderboard,
         "paper_fig_dir": paper_fig_dir,
         "paper_extra_chart": paper_extra_chart,
+        "data_preview": data_preview,
     })
 
 

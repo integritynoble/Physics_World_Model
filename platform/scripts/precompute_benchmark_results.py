@@ -122,6 +122,12 @@ def run_cassi_benchmark(out_root: Path, recon_iters: int = 60):
         gt_rgb = _hsi_to_rgb(cube)
         _save_rgb_png(gt_rgb, str(scene_dir / "gt.png"))
 
+        # Individual spectral band views for data preview
+        _save_grayscale_png(cube[:, :, 7] / (cube[:, :, 7].max() + 1e-8),
+                            str(scene_dir / "gt_view1.png"))    # band 7 (~450nm)
+        _save_grayscale_png(cube[:, :, 21] / (cube[:, :, 21].max() + 1e-8),
+                            str(scene_dir / "gt_view2.png"))   # band 21 (~650nm)
+
         # --- Scenario I: Ideal (step=2, reconstruct with step=2) ---
         nominal_step = 2
         y_ideal = cassi_forward(cube, mask, step=nominal_step)
@@ -129,6 +135,10 @@ def run_cassi_benchmark(out_root: Path, recon_iters: int = 60):
         _save_grayscale_png(y_norm, str(scene_dir / "measurement_I.png"))
         x_hat_I = cassi_gap_denoise(y_ideal, mask, step=nominal_step, max_iter=recon_iters)
         _save_rgb_png(_hsi_to_rgb(x_hat_I), str(scene_dir / "recon_I.png"))
+        _save_grayscale_png(x_hat_I[:, :, 7] / (x_hat_I[:, :, 7].max() + 1e-8),
+                            str(scene_dir / "recon_I_view1.png"))
+        _save_grayscale_png(x_hat_I[:, :, 21] / (x_hat_I[:, :, 21].max() + 1e-8),
+                            str(scene_dir / "recon_I_view2.png"))
         psnr_I = compute_psnr(cube, x_hat_I)
         ssim_I = _compute_ssim(cube, x_hat_I)
 
@@ -200,12 +210,18 @@ def run_cacti_benchmark(out_root: Path, recon_iters: int = 60):
         mid = video.shape[2] // 2
         _save_grayscale_png(video[:, :, mid], str(scene_dir / "gt.png"))
 
+        # Individual frame views for data preview
+        _save_grayscale_png(video[:, :, 0], str(scene_dir / "gt_view1.png"))  # frame 0
+        _save_grayscale_png(video[:, :, 7], str(scene_dir / "gt_view2.png"))  # frame 7
+
         # --- Scenario I: Ideal (timing_offset=0) ---
         y_ideal = cacti_forward(video, masks, timing_offset=0)
         y_norm = y_ideal / (y_ideal.max() + 1e-8)
         _save_grayscale_png(y_norm, str(scene_dir / "measurement_I.png"))
         x_hat_I = cacti_gap_tv(y_ideal, masks, timing_offset=0, iters=recon_iters)
         _save_grayscale_png(x_hat_I[:, :, mid], str(scene_dir / "recon_I.png"))
+        _save_grayscale_png(x_hat_I[:, :, 0], str(scene_dir / "recon_I_view1.png"))
+        _save_grayscale_png(x_hat_I[:, :, 7], str(scene_dir / "recon_I_view2.png"))
         psnr_I = compute_psnr(video, x_hat_I)
         ssim_I = _compute_ssim(video[:, :, mid], x_hat_I[:, :, mid])
 
