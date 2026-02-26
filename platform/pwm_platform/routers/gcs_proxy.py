@@ -22,6 +22,7 @@ router = APIRouter(tags=["GCS"])
 _ALLOWED_PREFIXES = (
     "benchmark_gallery/",
     "benchmark-data/",
+    "challenge-data/",
 )
 
 

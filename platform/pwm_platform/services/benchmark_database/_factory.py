@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from ._challenge_data import CHALLENGE_CONFIG
+
 # ── Category-specific dataset defaults ────────────────────────────────────────
 
 _CATEGORY_DEFAULTS: dict[str, dict] = {
@@ -211,6 +213,81 @@ def _make_b4(key: str, display: str, ds: dict, leaderboard: list, scenario_table
     return result
 
 
+# ── Challenge benchmark builder ───────────────────────────────────────────────
+
+def _make_b_challenge(key: str, display: str) -> dict | None:
+    """Build a Blind Reconstruction Challenge benchmark if the variant is configured."""
+    cfg = CHALLENGE_CONFIG.get(key)
+    if cfg is None:
+        return None
+
+    pro_split = cfg["splits"]["pro"]
+    hidden_split = cfg["splits"]["hidden"]
+
+    return {
+        "id": "Challenge",
+        "title": "Blind Reconstruction Challenge",
+        "description": (
+            "Given measurements with unknown mismatch and spec ranges (not exact params), "
+            "reconstruct the original signal. Scored on a composite metric: "
+            f"{cfg['scoring']['formula_display']}."
+        ),
+        "input": "Measurements y, ideal forward model H, spec ranges",
+        "output": "Reconstructed signal x\u0302",
+        "is_challenge": True,
+        "scoring": cfg["scoring"],
+        "spec_ranges": cfg["spec_ranges"],
+        "tiers": {
+            "pro": {
+                "name": "Pro",
+                "description": f"Download {pro_split['count']} scenes with measurements + ideal operator + spec ranges. Submit your reconstruction.",
+                "count": pro_split["count"],
+                "dataset": {
+                    "name": f"{display} Challenge Pro Dataset",
+                    "format": "HDF5",
+                    "num_samples": pro_split["count"],
+                    "gcs_object_path": f"challenge-data/v1.0/{key}_challenge_pro.h5",
+                    "download_url": None,
+                },
+            },
+            "hidden": {
+                "name": "Hidden",
+                "description": f"{hidden_split['count']} scenes held server-side. Submit your algorithm; we run it on hidden data.",
+                "count": hidden_split["count"],
+            },
+        },
+        "baselines": cfg["baselines"],
+        "links": {
+            "submit_reconstruction": "https://github.com/InverseNet/benchmark-data/issues/new?template=submit-reconstruction.md",
+            "submit_algorithm": "https://github.com/InverseNet/benchmark-data/issues/new?template=submit-algorithm.md",
+        },
+        "credits": {"winner_share_pct": 30, "pool_source": "platform_profit"},
+    }
+
+
+# ── Benchmark list builder ────────────────────────────────────────────────────
+
+def _build_benchmarks(key: str, display: str, ds: dict, lb: dict) -> list[dict]:
+    """Build benchmark list.  Skip B4 when B2 already covers all scenarios."""
+    benchmarks = [
+        _make_b1(key, display, lb.get("b1", [])),
+        _make_b2(key, display, ds, lb.get("b2", []), scenario_table=lb.get("b2_scenario_table")),
+        _make_b3(key, display, ds, lb.get("b3", [])),
+    ]
+    # Only add B4 if B2 doesn't already include a full scenario comparison
+    if not lb.get("b2_scenario_table"):
+        benchmarks.append(
+            _make_b4(key, display, ds, lb.get("b4", []), scenario_table=lb.get("b4_scenario_table"))
+        )
+
+    # Append Blind Reconstruction Challenge if variant is configured
+    challenge = _make_b_challenge(key, display)
+    if challenge is not None:
+        benchmarks.append(challenge)
+
+    return benchmarks
+
+
 # ── Public factory ────────────────────────────────────────────────────────────
 
 def build_variant(key: str, registry_entry: dict, leaderboard: dict | None = None) -> dict:
@@ -228,12 +305,7 @@ def build_variant(key: str, registry_entry: dict, leaderboard: dict | None = Non
         "spec_notation": registry_entry["spec_notation"],
         "spec_dag": registry_entry["spec_dag"],
         "mismatch_params": registry_entry["mismatch_params"],
-        "benchmarks": [
-            _make_b1(key, display, lb.get("b1", [])),
-            _make_b2(key, display, ds, lb.get("b2", []), scenario_table=lb.get("b2_scenario_table")),
-            _make_b3(key, display, ds, lb.get("b3", [])),
-            _make_b4(key, display, ds, lb.get("b4", []), scenario_table=lb.get("b4_scenario_table")),
-        ],
+        "benchmarks": _build_benchmarks(key, display, ds, lb),
         "credits_config": {
             "profit_pool_pct": 40,
             "winner_share_pct": 30,

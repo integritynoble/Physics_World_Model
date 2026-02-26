@@ -411,6 +411,12 @@ async def variant_benchmarks_page(
         if pd and pd.get("gcs_object_path"):
             pd["download_url"] = f"/gcs/{pd['gcs_object_path']}"
 
+        # Wire challenge tier download URLs
+        if bm.get("is_challenge"):
+            pro_ds = bm.get("tiers", {}).get("pro", {}).get("dataset")
+            if pro_ds and pro_ds.get("gcs_object_path"):
+                pro_ds["download_url"] = f"/gcs/{pro_ds['gcs_object_path']}"
+
     return templates.TemplateResponse("variant_benchmarks.html", {
         "request": request,
         "user": user,

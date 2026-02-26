@@ -16,6 +16,7 @@ Public API (unchanged from the original monolithic module):
 
 from __future__ import annotations
 
+from ._challenge_data import CHALLENGE_CONFIG
 from ._factory import build_variant
 from ._flowcharts import FLOWCHARTS
 from ._leaderboard_data import LEADERBOARD_DATA
@@ -65,6 +66,11 @@ def get_flowcharts() -> dict:
 def get_spec_primitives() -> dict:
     """Return the 11 spec primitives."""
     return dict(SPEC_PRIMITIVES)
+
+
+def get_challenge_config(variant_key: str) -> dict | None:
+    """Return challenge configuration for a variant, or None if not configured."""
+    return CHALLENGE_CONFIG.get(variant_key)
 
 
 _gallery_cache: dict | None = None

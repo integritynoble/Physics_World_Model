@@ -68,44 +68,7 @@ LEADERBOARD_DATA: dict[str, dict[str, list[dict]]] = {
             ],
         },
 
-        # B4 leaderboard — Scenario III (Oracle correction: true parameters known)
-        "b4": [
-            {"rank": 1, "method": "MST-L",      "psnr": 27.33, "ssim": 0.881, "sam": 11.74, "source": "InverseNet", "adopted": True},
-            {"rank": 2, "method": "PnP-HSICNN",  "psnr": 23.08, "ssim": 0.702, "sam": 18.66, "source": "InverseNet", "adopted": False},
-            {"rank": 3, "method": "HDNet",       "psnr": 21.88, "ssim": 0.756, "sam": 17.03, "source": "InverseNet", "adopted": False},
-            {"rank": 4, "method": "GAP-TV",      "psnr": 21.72, "ssim": 0.688, "sam": 25.97, "source": "InverseNet", "adopted": False},
-        ],
-
-        # B4 scenario table — mismatch degradation and recovery analysis
-        "b4_scenario_table": {
-            "description": "Recovery analysis: how much PSNR is lost from mismatch (I\u2192II) and how much is recovered with oracle calibration (II\u2192III).",
-            "scenarios": [
-                {"id": "II",  "name": "Mismatch (uncorrected)","color": "red",   "description": "5-parameter mismatch + noise, no correction"},
-                {"id": "III", "name": "Oracle correction",     "color": "blue",  "description": "True mismatch parameters known"},
-            ],
-            "methods": [
-                {
-                    "method": "GAP-TV", "type": "Classical", "mask_aware": True,
-                    "s2_psnr": 20.96, "s2_ssim": 0.612, "s3_psnr": 21.72, "s3_ssim": 0.688,
-                    "gap_degradation": -3.38, "gap_recovery": 0.76, "recovery_pct": 22,
-                },
-                {
-                    "method": "PnP-HSICNN", "type": "PnP", "mask_aware": True,
-                    "s2_psnr": 20.40, "s2_ssim": 0.574, "s3_psnr": 23.08, "s3_ssim": 0.702,
-                    "gap_degradation": -4.72, "gap_recovery": 2.68, "recovery_pct": 57,
-                },
-                {
-                    "method": "HDNet", "type": "Deep Learning", "mask_aware": False,
-                    "s2_psnr": 21.88, "s2_ssim": 0.756, "s3_psnr": 21.88, "s3_ssim": 0.756,
-                    "gap_degradation": -12.77, "gap_recovery": 0.00, "recovery_pct": 0,
-                },
-                {
-                    "method": "MST-L", "type": "Transformer", "mask_aware": True,
-                    "s2_psnr": 20.83, "s2_ssim": 0.744, "s3_psnr": 27.33, "s3_ssim": 0.881,
-                    "gap_degradation": -13.98, "gap_recovery": 6.50, "recovery_pct": 46,
-                },
-            ],
-        },
+        # B4 omitted — B2 scenario table already covers all 3 scenarios (Ideal + Mismatch + Oracle)
     },
 
     # ══════════════════════════════════════════════════════════════════════════
