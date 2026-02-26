@@ -76,8 +76,10 @@ def _compute_ssim(x: np.ndarray, y: np.ndarray) -> float:
         from skimage.metrics import structural_similarity
         data_range = max(x.max(), y.max(), 1.0) - min(x.min(), y.min(), 0.0)
         if x.ndim == 3:
-            return float(structural_similarity(x, y, data_range=data_range, channel_axis=2))
-        return float(structural_similarity(x, y, data_range=data_range))
+            val = float(structural_similarity(x, y, data_range=data_range, channel_axis=2))
+        else:
+            val = float(structural_similarity(x, y, data_range=data_range))
+        return max(val, 0.0)
     except ImportError:
         # Fallback: simple correlation-based approximation
         x_f = x.flatten().astype(np.float64)

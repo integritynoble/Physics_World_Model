@@ -139,7 +139,7 @@
         "psnr_I": 35.89,
         "ssim_I": 0.9885,
         "psnr_II": 8.03,
-        "ssim_II": -0.1739,
+        "ssim_II": 0.0,
         "psnr_III": 35.96,
         "ssim_III": 0.9889
       },
