@@ -429,6 +429,7 @@ async def challenge_tier_page(
     """Challenge tier detail page — expanded view of a single tier."""
     from pwm_platform.services.benchmark_database import (
         get_benchmark_gallery,
+        get_challenge_config,
         get_variant,
     )
 
@@ -468,9 +469,20 @@ async def challenge_tier_page(
         if tier_ds and tier_ds.get("gcs_object_path"):
             tier_ds["download_url"] = f"/gcs/{tier_ds['gcs_object_path']}"
 
-    # Load benchmark gallery for preview images
+    # Load benchmark gallery for preview images and scores
     benchmark_gallery = get_benchmark_gallery(variant_key)
     gallery_variant = challenge.get("gallery_variant") or variant_key
+
+    # Determine how many example scenes to show:
+    # Multi-frame (3D signal_shape like [256,256,28]) → 2 scenes; single-frame → 1
+    challenge_cfg = get_challenge_config(variant_key) or {}
+    signal_shape = challenge_cfg.get("signal_shape", [])
+    num_example_scenes = 2 if len(signal_shape) >= 3 else 1
+
+    # Slice example scenes from gallery data
+    example_scenes = []
+    if benchmark_gallery and "scenes" in benchmark_gallery:
+        example_scenes = benchmark_gallery["scenes"][:num_example_scenes]
 
     return templates.TemplateResponse("challenge_tier.html", {
         "request": request,
@@ -482,6 +494,7 @@ async def challenge_tier_page(
         "tier": tier,
         "benchmark_gallery": benchmark_gallery,
         "gallery_variant": gallery_variant,
+        "example_scenes": example_scenes,
     })
 
 

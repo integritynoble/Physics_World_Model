@@ -435,14 +435,6 @@
             <p class="text-xs text-gray-600 mb-2">{{ bm.tiers.public.description }}</p>
             {% endif %}
             <p class="text-xs text-green-700 font-medium mb-2">Includes ground truth</p>
-            {% if bm.tiers.public.preview_image %}
-            <div class="mb-3">
-                <img src="/gcs/benchmark_gallery/img/benchmark_gallery/{{ bm.gallery_variant or variant_key }}/scene_{{ '%02d' | format(bm.tiers.public.preview_image.scene_idx) }}/{{ bm.tiers.public.preview_image.image_key }}.png"
-                     alt="{{ bm.tiers.public.preview_image.alt }}"
-                     class="w-full rounded border border-green-200" loading="lazy" />
-                <p class="mt-0.5 text-xs text-gray-500">{{ bm.tiers.public.preview_image.caption }}</p>
-            </div>
-            {% endif %}
             <div class="text-xs text-gray-500 mb-3">
                 Format: <span class="font-mono font-medium">{{ bm.tiers.public.dataset.format }}</span>
             </div>
@@ -481,14 +473,6 @@
             <p class="text-xs text-gray-600 mb-2">{{ bm.tiers.dev.description }}</p>
             {% endif %}
             <p class="text-xs text-amber-700 font-medium mb-2">Measurements + operator (no ground truth)</p>
-            {% if bm.tiers.dev.preview_image %}
-            <div class="mb-3">
-                <img src="/gcs/benchmark_gallery/img/benchmark_gallery/{{ bm.gallery_variant or variant_key }}/scene_{{ '%02d' | format(bm.tiers.dev.preview_image.scene_idx) }}/{{ bm.tiers.dev.preview_image.image_key }}.png"
-                     alt="{{ bm.tiers.dev.preview_image.alt }}"
-                     class="w-full rounded border border-amber-200" loading="lazy" />
-                <p class="mt-0.5 text-xs text-gray-500">{{ bm.tiers.dev.preview_image.caption }}</p>
-            </div>
-            {% endif %}
             <div class="text-xs text-gray-500 mb-3">
                 Format: <span class="font-mono font-medium">{{ bm.tiers.dev.dataset.format }}</span>
             </div>
@@ -532,20 +516,6 @@
             </details>
             {% else %}
             <p class="text-xs text-gray-600 mb-3">{{ bm.tiers.hidden.description }}</p>
-            {% endif %}
-            {% if bm.tiers.hidden.preview_image %}
-            <div class="mb-3">
-                <img src="/gcs/benchmark_gallery/img/benchmark_gallery/{{ bm.gallery_variant or variant_key }}/scene_{{ '%02d' | format(bm.tiers.hidden.preview_image.scene_idx) }}/{{ bm.tiers.hidden.preview_image.image_key }}.png"
-                     alt="{{ bm.tiers.hidden.preview_image.alt }}"
-                     class="w-full rounded border border-purple-200" loading="lazy" />
-                <p class="mt-0.5 text-xs text-gray-500">{{ bm.tiers.hidden.preview_image.caption }}</p>
-            </div>
-            {% else %}
-            <!-- Lock placeholder for hidden tier -->
-            <div class="mb-3 flex flex-col items-center justify-center py-6 bg-purple-100/50 rounded border border-dashed border-purple-300">
-                <svg class="w-10 h-10 text-purple-300 mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                <p class="text-xs text-purple-400">Data held server-side</p>
-            </div>
             {% endif %}
             <div class="flex flex-wrap gap-2">
                 {% if bm.links.get('submit_algorithm') %}
