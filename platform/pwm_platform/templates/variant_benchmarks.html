@@ -613,31 +613,7 @@
     <div class="space-y-8">
         <h2 class="text-lg font-bold text-gray-900">Benchmarks</h2>
 
-        <!-- Simulation (Benchmark 1 & Benchmark 2) -->
-        <div class="space-y-4">
-            <div class="flex items-center gap-3 border-b border-blue-200 pb-2">
-                <h3 class="text-base font-semibold text-blue-800">Simulation</h3>
-                <span class="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded">Benchmark 1 &amp; 2</span>
-            </div>
-            {% for bm in variant.benchmarks[:2] %}
-            {{ benchmark_card(bm) }}
-            {% endfor %}
-        </div>
-
-        <!-- Data2recon (Benchmark 3, optionally Benchmark 4) -->
-        {% if variant.benchmarks | length > 2 %}
-        <div class="space-y-4">
-            <div class="flex items-center gap-3 border-b border-indigo-200 pb-2">
-                <h3 class="text-base font-semibold text-indigo-800">Data2recon</h3>
-                <span class="text-xs px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded">Benchmark 3{% if variant.benchmarks | length > 3 %} &amp; 4{% endif %}</span>
-            </div>
-            {% for bm in variant.benchmarks[2:] if not bm.get("is_challenge") %}
-            {{ benchmark_card(bm) }}
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        <!-- Challenge (Blind Reconstruction) -->
+        <!-- Challenge (Blind Reconstruction) — shown first -->
         {% set challenge_bms = variant.benchmarks | selectattr("is_challenge") | list %}
         {% if challenge_bms %}
         <div class="space-y-4">
@@ -647,6 +623,31 @@
             </div>
             {% for bm in challenge_bms %}
             {{ challenge_card(bm) }}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Simulation (Benchmark 1 & Benchmark 2) -->
+        {% set sim_bms = variant.benchmarks | rejectattr("is_challenge") | list %}
+        <div class="space-y-4">
+            <div class="flex items-center gap-3 border-b border-blue-200 pb-2">
+                <h3 class="text-base font-semibold text-blue-800">Simulation</h3>
+                <span class="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded">Benchmark 1 &amp; 2</span>
+            </div>
+            {% for bm in sim_bms[:2] %}
+            {{ benchmark_card(bm) }}
+            {% endfor %}
+        </div>
+
+        <!-- Data2recon (Benchmark 3, optionally Benchmark 4) -->
+        {% if sim_bms | length > 2 %}
+        <div class="space-y-4">
+            <div class="flex items-center gap-3 border-b border-indigo-200 pb-2">
+                <h3 class="text-base font-semibold text-indigo-800">Data2recon</h3>
+                <span class="text-xs px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded">Benchmark 3{% if sim_bms | length > 3 %} &amp; 4{% endif %}</span>
+            </div>
+            {% for bm in sim_bms[2:] %}
+            {{ benchmark_card(bm) }}
             {% endfor %}
         </div>
         {% endif %}
