@@ -22,6 +22,43 @@
         {% endif %}
     </div>
 
+    <!-- Introduction -->
+    <div class="bg-white shadow rounded-lg px-6 py-5 space-y-3">
+        <h2 class="text-lg font-semibold text-gray-900">Spec Builder</h2>
+        <p class="text-sm text-gray-600 leading-relaxed">
+            Design any imaging system using natural language. Describe a modality &mdash; from
+            <strong>CASSI</strong> and <strong>MRI</strong> to <strong>NeRF</strong> and
+            <strong>electron microscopy</strong> &mdash; and the AI will generate a complete physics
+            specification: forward-model DAG, noise model, mismatch parameters, and measurement matrix.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="flex items-start gap-2 px-3 py-2 bg-indigo-50 rounded border border-indigo-100">
+                <span class="text-indigo-600 font-bold text-base leading-none mt-0.5">1</span>
+                <div>
+                    <span class="font-semibold text-indigo-800">Describe</span>
+                    <p class="text-indigo-600 mt-0.5">Type a system description, e.g. &ldquo;Design a CT scanner&rdquo; or &ldquo;Design a CASSI system for hyperspectral imaging&rdquo;</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-2 px-3 py-2 bg-indigo-50 rounded border border-indigo-100">
+                <span class="text-indigo-600 font-bold text-base leading-none mt-0.5">2</span>
+                <div>
+                    <span class="font-semibold text-indigo-800">Refine</span>
+                    <p class="text-indigo-600 mt-0.5">Review the generated spec and ask follow-ups to adjust noise, mismatch, or forward-model primitives</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-2 px-3 py-2 bg-green-50 rounded border border-green-100">
+                <span class="text-green-600 font-bold text-base leading-none mt-0.5">3</span>
+                <div>
+                    <span class="font-semibold text-green-800">Simulate</span>
+                    <p class="text-green-600 mt-0.5">Click <strong>Run Simulation</strong> to see InverseNet baseline results across multiple methods and mismatch scenarios</p>
+                </div>
+            </div>
+        </div>
+        <p class="text-xs text-gray-400">
+            All 168 imaging modalities supported &mdash; each maps to the closest InverseNet benchmark (CASSI / CACTI / SPC) for realistic multi-method, multi-scenario comparison.
+        </p>
+    </div>
+
     <!-- Spec Builder Chat -->
     {% include "_spec_chat_box.html" %}
 
