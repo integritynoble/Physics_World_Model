@@ -48,6 +48,13 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 },
                 "seed": 1001,
                 "visible_data": ["y", "H_ideal", "spec_ranges", "x_true", "true_spec"],
+                "introduction": {
+                    "summary": "Full-access development tier with all data visible.",
+                    "what_you_get": "Measurements (y), ideal forward operator (H), spec ranges, ground truth (x_true), and true mismatch spec.",
+                    "how_to_use": "Load HDF5 → compare reconstruction vs x_true → check consistency → iterate.",
+                    "what_to_submit": "Reconstructed signals (x_hat) and corrected spec as HDF5.",
+                },
+                "preview_image": {"scene_idx": 1, "image_key": "gt", "alt": "Ground truth — Scene 01", "caption": "Ground truth (fully visible in Public tier)"},
             },
             "dev": {
                 "true_spec": {
@@ -59,6 +66,13 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 },
                 "seed": 2001,
                 "visible_data": ["y", "H_ideal", "spec_ranges"],
+                "introduction": {
+                    "summary": "Blind evaluation tier — no ground truth available.",
+                    "what_you_get": "Measurements (y), ideal forward operator (H), and spec ranges only.",
+                    "how_to_use": "Apply your pipeline from the Public tier. Use consistency as self-check.",
+                    "what_to_submit": "Reconstructed signals and corrected spec. Scored server-side.",
+                },
+                "preview_image": {"scene_idx": 1, "image_key": "measurement_II", "alt": "Measurement with mismatch", "caption": "Measurement only (no ground truth in Dev tier)"},
             },
             "hidden": {
                 "true_spec": {
@@ -70,6 +84,13 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 },
                 "seed": 3001,
                 "visible_data": [],
+                "introduction": {
+                    "summary": "Fully blind server-side evaluation — no data download.",
+                    "what_you_get": "No data downloadable. Algorithm runs server-side on hidden measurements.",
+                    "how_to_use": "Package algorithm as Docker container / Python script. Submit via link.",
+                    "what_to_submit": "Containerized algorithm accepting y + H, outputting x_hat + corrected spec.",
+                },
+                "preview_image": None,
             },
         },
         "data_source": "datasets/TSA_simu_data/Truth/",
@@ -128,6 +149,13 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 },
                 "seed": 1001,
                 "visible_data": ["y", "H_ideal", "spec_ranges", "x_true", "true_spec"],
+                "introduction": {
+                    "summary": "Full-access development tier with all data visible.",
+                    "what_you_get": "Measurements (y), ideal forward operator (H), spec ranges, ground truth (x_true), and true mismatch spec.",
+                    "how_to_use": "Load HDF5 → compare reconstruction vs x_true → check consistency → iterate.",
+                    "what_to_submit": "Reconstructed signals (x_hat) and corrected spec as HDF5.",
+                },
+                "preview_image": {"scene_idx": 1, "image_key": "gt", "alt": "Ground truth — Scene 01", "caption": "Ground truth (fully visible in Public tier)"},
             },
             "dev": {
                 "true_spec": {
@@ -141,6 +169,13 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 },
                 "seed": 2001,
                 "visible_data": ["y", "H_ideal", "spec_ranges"],
+                "introduction": {
+                    "summary": "Blind evaluation tier — no ground truth available.",
+                    "what_you_get": "Measurements (y), ideal forward operator (H), and spec ranges only.",
+                    "how_to_use": "Apply your pipeline from the Public tier. Use consistency as self-check.",
+                    "what_to_submit": "Reconstructed signals and corrected spec. Scored server-side.",
+                },
+                "preview_image": {"scene_idx": 1, "image_key": "measurement_II", "alt": "Measurement with mismatch", "caption": "Measurement only (no ground truth in Dev tier)"},
             },
             "hidden": {
                 "true_spec": {
@@ -154,6 +189,13 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 },
                 "seed": 3001,
                 "visible_data": [],
+                "introduction": {
+                    "summary": "Fully blind server-side evaluation — no data download.",
+                    "what_you_get": "No data downloadable. Algorithm runs server-side on hidden measurements.",
+                    "how_to_use": "Package algorithm as Docker container / Python script. Submit via link.",
+                    "what_to_submit": "Containerized algorithm accepting y + H, outputting x_hat + corrected spec.",
+                },
+                "preview_image": None,
             },
         },
         "data_source": "datasets/CACTI/simulation/",
@@ -202,6 +244,13 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 },
                 "seed": 1001,
                 "visible_data": ["y", "H_ideal", "spec_ranges", "x_true", "true_spec"],
+                "introduction": {
+                    "summary": "Full-access development tier with all data visible.",
+                    "what_you_get": "Measurements (y), ideal forward operator (H), spec ranges, ground truth (x_true), and true mismatch spec.",
+                    "how_to_use": "Load HDF5 → compare reconstruction vs x_true → check consistency → iterate.",
+                    "what_to_submit": "Reconstructed signals (x_hat) and corrected spec as HDF5.",
+                },
+                "preview_image": {"scene_idx": 1, "image_key": "gt", "alt": "Ground truth — Scene 01", "caption": "Ground truth (fully visible in Public tier)"},
             },
             "dev": {
                 "true_spec": {
@@ -210,6 +259,13 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 },
                 "seed": 2001,
                 "visible_data": ["y", "H_ideal", "spec_ranges"],
+                "introduction": {
+                    "summary": "Blind evaluation tier — no ground truth available.",
+                    "what_you_get": "Measurements (y), ideal forward operator (H), and spec ranges only.",
+                    "how_to_use": "Apply your pipeline from the Public tier. Use consistency as self-check.",
+                    "what_to_submit": "Reconstructed signals and corrected spec. Scored server-side.",
+                },
+                "preview_image": {"scene_idx": 1, "image_key": "measurement_II", "alt": "Measurement with mismatch", "caption": "Measurement only (no ground truth in Dev tier)"},
             },
             "hidden": {
                 "true_spec": {
@@ -218,6 +274,13 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 },
                 "seed": 3001,
                 "visible_data": [],
+                "introduction": {
+                    "summary": "Fully blind server-side evaluation — no data download.",
+                    "what_you_get": "No data downloadable. Algorithm runs server-side on hidden measurements.",
+                    "how_to_use": "Package algorithm as Docker container / Python script. Submit via link.",
+                    "what_to_submit": "Containerized algorithm accepting y + H, outputting x_hat + corrected spec.",
+                },
+                "preview_image": None,
             },
         },
         "data_source": "datasets/SPC/Set11/",
@@ -244,6 +307,7 @@ CHALLENGE_CONFIG: dict[str, dict] = {
     # ══════════════════════════════════════════════════════════════════════════
 
     "spc_kronecker": {
+        "gallery_variant": "spc_block",
         "scoring": {
             "psnr_weight": 0.40,
             "ssim_weight": 0.40,
@@ -266,6 +330,13 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 },
                 "seed": 1001,
                 "visible_data": ["y", "H_ideal", "spec_ranges", "x_true", "true_spec"],
+                "introduction": {
+                    "summary": "Full-access development tier with all data visible.",
+                    "what_you_get": "Measurements (y), ideal forward operator (H), spec ranges, ground truth (x_true), and true mismatch spec.",
+                    "how_to_use": "Load HDF5 → compare reconstruction vs x_true → check consistency → iterate.",
+                    "what_to_submit": "Reconstructed signals (x_hat) and corrected spec as HDF5.",
+                },
+                "preview_image": {"scene_idx": 1, "image_key": "gt", "alt": "Ground truth — Scene 01", "caption": "Ground truth (fully visible in Public tier)"},
             },
             "dev": {
                 "true_spec": {
@@ -274,6 +345,13 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 },
                 "seed": 2001,
                 "visible_data": ["y", "H_ideal", "spec_ranges"],
+                "introduction": {
+                    "summary": "Blind evaluation tier — no ground truth available.",
+                    "what_you_get": "Measurements (y), ideal forward operator (H), and spec ranges only.",
+                    "how_to_use": "Apply your pipeline from the Public tier. Use consistency as self-check.",
+                    "what_to_submit": "Reconstructed signals and corrected spec. Scored server-side.",
+                },
+                "preview_image": {"scene_idx": 1, "image_key": "measurement_II", "alt": "Measurement with mismatch", "caption": "Measurement only (no ground truth in Dev tier)"},
             },
             "hidden": {
                 "true_spec": {
@@ -282,6 +360,13 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 },
                 "seed": 3001,
                 "visible_data": [],
+                "introduction": {
+                    "summary": "Fully blind server-side evaluation — no data download.",
+                    "what_you_get": "No data downloadable. Algorithm runs server-side on hidden measurements.",
+                    "how_to_use": "Package algorithm as Docker container / Python script. Submit via link.",
+                    "what_to_submit": "Containerized algorithm accepting y + H, outputting x_hat + corrected spec.",
+                },
+                "preview_image": None,
             },
         },
         "data_source": "datasets/SPC/Set11/",

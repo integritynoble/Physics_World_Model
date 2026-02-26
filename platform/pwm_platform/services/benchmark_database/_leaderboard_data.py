@@ -11,6 +11,9 @@ LEADERBOARD_DATA: dict[str, dict[str, list[dict]]] = {
     # ══════════════════════════════════════════════════════════════════════════
 
     "sd_cassi": {
+        # Challenge leaderboard — Blind Reconstruction Challenge (3-tier)
+        "challenge": [],
+
         # B2 leaderboard — Scenario I (Ideal: no mismatch, no noise)
         "b2": [
             {"rank": 1, "method": "MST-L",      "psnr": 34.81, "ssim": 0.973, "sam": 7.44,  "source": "InverseNet", "adopted": True},
@@ -76,6 +79,7 @@ LEADERBOARD_DATA: dict[str, dict[str, list[dict]]] = {
     # ══════════════════════════════════════════════════════════════════════════
 
     "cacti": {
+        "challenge": [],
         "b2": [
             {"rank": 1, "method": "EfficientSCI",  "psnr": 35.39, "ssim": 0.973, "source": "InverseNet", "adopted": True},
             {"rank": 2, "method": "ELP-Unfolding", "psnr": 34.09, "ssim": 0.965, "source": "InverseNet", "adopted": False},
@@ -95,6 +99,7 @@ LEADERBOARD_DATA: dict[str, dict[str, list[dict]]] = {
     # ══════════════════════════════════════════════════════════════════════════
 
     "spc_block": {
+        "challenge": [],
         "b2": [
             {"rank": 1, "method": "ISTA-Net",   "psnr": 31.85, "ssim": 0.916, "source": "InverseNet", "adopted": True},
             {"rank": 2, "method": "HATNet",     "psnr": 30.98, "ssim": 0.905, "source": "InverseNet", "adopted": False},
@@ -114,6 +119,7 @@ LEADERBOARD_DATA: dict[str, dict[str, list[dict]]] = {
     # ══════════════════════════════════════════════════════════════════════════
 
     "spc_kronecker": {
+        "challenge": [],
         "b2": [
             {"rank": 1, "method": "ISTA-Net",   "psnr": 31.85, "ssim": 0.916, "source": "InverseNet", "adopted": True},
             {"rank": 2, "method": "HATNet",     "psnr": 30.98, "ssim": 0.905, "source": "InverseNet", "adopted": False},

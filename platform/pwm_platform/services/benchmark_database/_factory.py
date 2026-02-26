@@ -251,13 +251,14 @@ def _make_b4(key: str, display: str, ds: dict, leaderboard: list, scenario_table
 
 # ── Challenge benchmark builder ───────────────────────────────────────────────
 
-def _make_b_challenge(key: str, display: str) -> dict | None:
+def _make_b_challenge(key: str, display: str, leaderboard: list | None = None) -> dict | None:
     """Build a Blind Reconstruction Challenge benchmark if the variant is configured."""
     cfg = CHALLENGE_CONFIG.get(key)
     if cfg is None:
         return None
 
     scene_count = cfg["scene_count"]
+    tiers_cfg = cfg["tiers"]
 
     return {
         "id": "Challenge",
@@ -273,6 +274,8 @@ def _make_b_challenge(key: str, display: str) -> dict | None:
         "is_challenge": True,
         "scoring": cfg["scoring"],
         "spec_ranges": cfg["spec_ranges"],
+        "gallery_variant": cfg.get("gallery_variant", key),
+        "leaderboard": leaderboard or [],
         "tiers": {
             "public": {
                 "name": "Public",
@@ -282,6 +285,8 @@ def _make_b_challenge(key: str, display: str) -> dict | None:
                 ),
                 "count": scene_count,
                 "includes_ground_truth": True,
+                "introduction": tiers_cfg["public"].get("introduction"),
+                "preview_image": tiers_cfg["public"].get("preview_image"),
                 "dataset": {
                     "name": f"{display} Challenge Public Dataset",
                     "format": "HDF5",
@@ -297,6 +302,8 @@ def _make_b_challenge(key: str, display: str) -> dict | None:
                     "spec ranges (no ground truth). Submit your reconstruction."
                 ),
                 "count": scene_count,
+                "introduction": tiers_cfg["dev"].get("introduction"),
+                "preview_image": tiers_cfg["dev"].get("preview_image"),
                 "dataset": {
                     "name": f"{display} Challenge Dev Dataset",
                     "format": "HDF5",
@@ -312,6 +319,8 @@ def _make_b_challenge(key: str, display: str) -> dict | None:
                     "Submit your algorithm; we run it on hidden data."
                 ),
                 "count": scene_count,
+                "introduction": tiers_cfg["hidden"].get("introduction"),
+                "preview_image": tiers_cfg["hidden"].get("preview_image"),
             },
         },
         "baselines": cfg["baselines"],
@@ -339,7 +348,7 @@ def _build_benchmarks(key: str, display: str, ds: dict, lb: dict) -> list[dict]:
         )
 
     # Append Blind Reconstruction Challenge if variant is configured
-    challenge = _make_b_challenge(key, display)
+    challenge = _make_b_challenge(key, display, leaderboard=lb.get("challenge"))
     if challenge is not None:
         benchmarks.append(challenge)
 
