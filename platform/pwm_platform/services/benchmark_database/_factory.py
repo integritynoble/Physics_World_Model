@@ -347,10 +347,10 @@ def _build_benchmarks(key: str, display: str, ds: dict, lb: dict) -> list[dict]:
             _make_b4(key, display, ds, lb.get("b4", []), scenario_table=lb.get("b4_scenario_table"))
         )
 
-    # Append Blind Reconstruction Challenge if variant is configured
+    # Insert Blind Reconstruction Challenge at the top if variant is configured
     challenge = _make_b_challenge(key, display, leaderboard=lb.get("challenge"))
     if challenge is not None:
-        benchmarks.append(challenge)
+        benchmarks.insert(0, challenge)
 
     return benchmarks
 
