@@ -67,12 +67,30 @@ def get_spec_primitives() -> dict:
     return dict(SPEC_PRIMITIVES)
 
 
-def get_benchmark_gallery(variant_key: str) -> dict | None:
-    """Load pre-computed benchmark gallery data for a variant.
+_gallery_cache: dict | None = None
+_gallery_cache_ts: float = 0.0
+_GALLERY_TTL: float = 3600.0  # 1 hour
 
-    Returns the gallery dict for the variant from benchmark_gallery.json,
-    or None if the file doesn't exist or the variant has no gallery data.
-    """
+
+def _fetch_gallery_from_gcs() -> dict | None:
+    """Fetch benchmark_gallery.json from GCS. Returns parsed dict or None."""
+    import json
+    import urllib.request
+
+    from pwm_platform.config import settings
+
+    if not settings.GCS_BUCKET:
+        return None
+    url = f"https://storage.googleapis.com/{settings.GCS_BUCKET}/benchmark_gallery/benchmark_gallery.json"
+    try:
+        with urllib.request.urlopen(url, timeout=10) as resp:
+            return json.loads(resp.read())
+    except Exception:
+        return None
+
+
+def _load_gallery_local() -> dict | None:
+    """Fallback: load gallery JSON from local static file."""
     import json
     from pathlib import Path
 
@@ -84,7 +102,30 @@ def get_benchmark_gallery(variant_key: str) -> dict | None:
         return None
     try:
         with open(json_path) as f:
-            gallery = json.load(f)
-        return gallery.get(variant_key)
+            return json.load(f)
     except (json.JSONDecodeError, OSError):
         return None
+
+
+def get_benchmark_gallery(variant_key: str) -> dict | None:
+    """Load pre-computed benchmark gallery data for a variant.
+
+    Fetches from GCS with in-memory caching (1-hour TTL).
+    Falls back to local static file if GCS is unreachable.
+    """
+    import time
+
+    global _gallery_cache, _gallery_cache_ts
+
+    now = time.monotonic()
+    if _gallery_cache is None or (now - _gallery_cache_ts) > _GALLERY_TTL:
+        data = _fetch_gallery_from_gcs()
+        if data is None:
+            data = _load_gallery_local()
+        if data is not None:
+            _gallery_cache = data
+            _gallery_cache_ts = now
+
+    if _gallery_cache is None:
+        return None
+    return _gallery_cache.get(variant_key)

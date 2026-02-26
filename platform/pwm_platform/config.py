@@ -56,7 +56,7 @@ class Settings(BaseSettings):
     MODAL_TOKEN_SECRET: str = ""
 
     # ── GCP ──────────────────────────────────────────────────────────────
-    GCS_BUCKET: str = ""
+    GCS_BUCKET: str = "pwm-benchmark-datasets"
     GOOGLE_APPLICATION_CREDENTIALS: str = ""
     BIGQUERY_PROJECT: str = ""
     BIGQUERY_DATASET: str = "pwm_analytics"

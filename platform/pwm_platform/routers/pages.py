@@ -405,6 +405,8 @@ async def variant_benchmarks_page(
     # Load pre-computed benchmark gallery (multi-scene scenario comparison)
     benchmark_gallery = get_benchmark_gallery(variant_key)
 
+    gcs_base_url = f"https://storage.googleapis.com/{settings.GCS_BUCKET}"
+
     return templates.TemplateResponse("variant_benchmarks.html", {
         "request": request,
         "user": user,
@@ -413,6 +415,7 @@ async def variant_benchmarks_page(
         "modality": modality,
         "primitives": get_spec_primitives(),
         "benchmark_gallery": benchmark_gallery,
+        "gcs_base_url": gcs_base_url,
     })
 
 
