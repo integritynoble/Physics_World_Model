@@ -408,6 +408,15 @@ async def variant_benchmarks_page(
                 if tier_ds and tier_ds.get("gcs_object_path"):
                     tier_ds["download_url"] = f"/gcs/{tier_ds['gcs_object_path']}"
 
+    # Map variant_key to InverseNet paper figure subdirectory
+    _PAPER_FIG_MAP = {
+        "sd_cassi": "cassi",
+        "cacti": "cacti",
+        "spc_block": "spc",
+        "spc_kronecker": "spc",
+    }
+    paper_fig_dir = _PAPER_FIG_MAP.get(variant_key, variant_key)
+
     return templates.TemplateResponse("variant_benchmarks.html", {
         "request": request,
         "user": user,
@@ -416,6 +425,7 @@ async def variant_benchmarks_page(
         "modality": modality,
         "primitives": get_spec_primitives(),
         "benchmark_gallery": benchmark_gallery,
+        "paper_fig_dir": paper_fig_dir,
     })
 
 

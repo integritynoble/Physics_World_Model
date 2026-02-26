@@ -412,124 +412,132 @@
     </div>
     {% endif %}
 
-    <!-- Three-tier cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <!-- Public tier (green) -->
-        <div class="border-2 border-green-300 rounded-lg p-4 bg-green-50/50">
-            <div class="flex items-center gap-2 mb-2">
-                <span class="text-xs px-2 py-0.5 rounded font-bold bg-green-100 text-green-800">Public</span>
-                <span class="text-xs text-green-700">{{ bm.tiers.public.count }} scenes</span>
-                <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-            </div>
-            {% if bm.tiers.public.introduction %}
-            <p class="text-xs font-semibold text-green-800 mb-1">{{ bm.tiers.public.introduction.summary }}</p>
-            <details class="mb-2">
-                <summary class="text-xs text-green-600 cursor-pointer hover:text-green-800">What you get &amp; how to use</summary>
-                <div class="mt-1 space-y-1 text-xs text-gray-600">
-                    <p><strong class="text-green-700">What you get:</strong> {{ bm.tiers.public.introduction.what_you_get }}</p>
-                    <p><strong class="text-green-700">How to use:</strong> {{ bm.tiers.public.introduction.how_to_use }}</p>
-                    <p><strong class="text-green-700">What to submit:</strong> {{ bm.tiers.public.introduction.what_to_submit }}</p>
-                </div>
-            </details>
-            {% else %}
-            <p class="text-xs text-gray-600 mb-2">{{ bm.tiers.public.description }}</p>
-            {% endif %}
-            <p class="text-xs text-green-700 font-medium mb-2">Includes ground truth</p>
-            <div class="text-xs text-gray-500 mb-3">
-                Format: <span class="font-mono font-medium">{{ bm.tiers.public.dataset.format }}</span>
-            </div>
-            <div class="flex flex-wrap gap-2">
-                {% if bm.tiers.public.dataset.download_url %}
-                <a href="{{ bm.tiers.public.dataset.download_url }}"
-                   class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
-                    <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                    Download Dataset
-                </a>
-                {% endif %}
-            </div>
-            <a href="/benchmark/{{ variant_key }}/challenge/public"
-               class="block mt-3 text-xs text-green-600 hover:text-green-800 font-medium">
-                View Details &rarr;
-            </a>
+    <!-- InverseNet Visual Results -->
+    <div>
+        <h4 class="text-sm font-semibold text-gray-700 mb-2">InverseNet Visual Results</h4>
+        <p class="text-xs text-gray-500 mb-3">Full-area reconstruction examples from the InverseNet paper dataset</p>
+        <img src="/static/img/inversenet/visual_comparison.png"
+             alt="InverseNet visual comparison — Ground Truth, Scenario I, II, III, and error maps"
+             class="w-full rounded border border-gray-200" loading="lazy" />
+        <p class="mt-1 text-xs text-gray-500">Columns: Ground Truth, Scenario I (ideal), Scenario II (mismatch), Scenario III (oracle), Error Maps II &amp; III.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+            <img src="/static/img/inversenet/{{ paper_fig_dir }}/scenario_comparison.png"
+                 alt="Scenario Comparison" class="w-full rounded border border-gray-200" loading="lazy" />
+            <img src="/static/img/inversenet/{{ paper_fig_dir }}/gap_comparison.png"
+                 alt="Degradation and Recovery Gap" class="w-full rounded border border-gray-200" loading="lazy" />
         </div>
+    </div>
 
-        <!-- Dev tier (amber) -->
-        <div class="border-2 border-amber-300 rounded-lg p-4 bg-amber-50/50">
-            <div class="flex items-center gap-2 mb-2">
-                <span class="text-xs px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-800">Dev</span>
-                <span class="text-xs text-amber-700">{{ bm.tiers.dev.count }} scenes</span>
+    <!-- Three-tier cards -->
+    <div class="space-y-4">
+
+        {# ── Tier card macro ── #}
+        {% macro tier_card(tier_key, tier_data, color, score_key) %}
+        {% set border_c = "border-" ~ color ~ "-300" %}
+        {% set bg_c = "bg-" ~ color ~ "-50/50" %}
+        {% set text_c = "text-" ~ color ~ "-800" %}
+        {% set text_light = "text-" ~ color ~ "-700" %}
+        {% set badge_bg = "bg-" ~ color ~ "-100" %}
+        <div class="border-2 {{ border_c }} rounded-lg p-5 {{ bg_c }}">
+            <div class="flex items-center gap-2 mb-3">
+                <span class="text-xs px-2 py-0.5 rounded font-bold {{ badge_bg }} {{ text_c }}">{{ tier_key | capitalize }}</span>
+                <span class="text-xs {{ text_light }}">{{ tier_data.count }} scenes</span>
+                {% if tier_key == 'public' %}
+                <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                {% elif tier_key == 'hidden' %}
+                <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                {% endif %}
             </div>
-            {% if bm.tiers.dev.introduction %}
-            <p class="text-xs font-semibold text-amber-800 mb-1">{{ bm.tiers.dev.introduction.summary }}</p>
+
+            {% if tier_data.introduction %}
+            <p class="text-xs font-semibold {{ text_c }} mb-1">{{ tier_data.introduction.summary }}</p>
             <details class="mb-2">
-                <summary class="text-xs text-amber-600 cursor-pointer hover:text-amber-800">What you get &amp; how to use</summary>
+                <summary class="text-xs {{ text_light }} cursor-pointer hover:{{ text_c }}">What you get &amp; how to use</summary>
                 <div class="mt-1 space-y-1 text-xs text-gray-600">
-                    <p><strong class="text-amber-700">What you get:</strong> {{ bm.tiers.dev.introduction.what_you_get }}</p>
-                    <p><strong class="text-amber-700">How to use:</strong> {{ bm.tiers.dev.introduction.how_to_use }}</p>
-                    <p><strong class="text-amber-700">What to submit:</strong> {{ bm.tiers.dev.introduction.what_to_submit }}</p>
+                    <p><strong class="{{ text_light }}">What you get:</strong> {{ tier_data.introduction.what_you_get }}</p>
+                    <p><strong class="{{ text_light }}">How to use:</strong> {{ tier_data.introduction.how_to_use }}</p>
+                    <p><strong class="{{ text_light }}">What to submit:</strong> {{ tier_data.introduction.what_to_submit }}</p>
                 </div>
             </details>
             {% else %}
-            <p class="text-xs text-gray-600 mb-2">{{ bm.tiers.dev.description }}</p>
+            <p class="text-xs text-gray-600 mb-2">{{ tier_data.description }}</p>
             {% endif %}
-            <p class="text-xs text-amber-700 font-medium mb-2">Measurements + operator (no ground truth)</p>
-            <div class="text-xs text-gray-500 mb-3">
-                Format: <span class="font-mono font-medium">{{ bm.tiers.dev.dataset.format }}</span>
+
+            <!-- Per-tier leaderboard -->
+            {% set tier_entries = [] %}
+            {% for entry in bm.leaderboard %}
+                {% if entry.get(score_key) is not none %}
+                    {% if tier_entries.append(entry) %}{% endif %}
+                {% endif %}
+            {% endfor %}
+            {% if tier_entries %}
+            <div class="mb-3">
+                <h5 class="text-xs font-semibold {{ text_c }} mb-1">{{ tier_key | capitalize }} Leaderboard</h5>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-xs">
+                        <thead>
+                            <tr class="bg-white/60">
+                                <th class="px-2 py-1 text-center font-medium {{ text_light }}">#</th>
+                                <th class="px-2 py-1 text-left font-medium {{ text_light }}">Method</th>
+                                <th class="px-2 py-1 text-right font-medium {{ text_light }}">Score</th>
+                                <th class="px-2 py-1 text-right font-medium text-gray-500">PSNR</th>
+                                <th class="px-2 py-1 text-right font-medium text-gray-500">SSIM</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            {% for entry in tier_entries | sort(attribute=score_key, reverse=true) %}
+                            {% set td = entry.get('details', {}).get(tier_key, {}) %}
+                            <tr class="{% if loop.index == 1 %}bg-white/80{% else %}hover:bg-white/50{% endif %}">
+                                <td class="px-2 py-1 text-center font-bold {{ text_c }}">{{ loop.index }}</td>
+                                <td class="px-2 py-1 font-medium text-gray-700">{{ entry.method }}</td>
+                                <td class="px-2 py-1 text-right font-mono font-bold {{ text_light }}">{{ "%.3f" | format(entry.get(score_key)) }}</td>
+                                <td class="px-2 py-1 text-right font-mono text-gray-600">{% if td.psnr is defined %}{{ td.psnr }}{% else %}&mdash;{% endif %}</td>
+                                <td class="px-2 py-1 text-right font-mono text-gray-600">{% if td.ssim is defined %}{{ td.ssim }}{% else %}&mdash;{% endif %}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="flex flex-wrap gap-2">
-                {% if bm.tiers.dev.dataset.download_url %}
-                <a href="{{ bm.tiers.dev.dataset.download_url }}"
-                   class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700">
+            {% else %}
+            <div class="mb-3 px-3 py-2 text-center border border-dashed {{ border_c }} rounded bg-white/30">
+                <p class="text-xs {{ text_light }}">No submissions yet. Be the first!</p>
+            </div>
+            {% endif %}
+
+            <!-- Actions -->
+            <div class="flex flex-wrap items-center gap-2">
+                {% if tier_key in ('public', 'dev') and tier_data.dataset and tier_data.dataset.download_url %}
+                <a href="{{ tier_data.dataset.download_url }}"
+                   class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white
+                       {% if tier_key == 'public' %}bg-green-600 hover:bg-green-700{% else %}bg-amber-600 hover:bg-amber-700{% endif %}">
                     <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                    Download Dataset
+                    Download
                 </a>
                 {% endif %}
-                {% if bm.links.get('submit_reconstruction') %}
+                {% if tier_key == 'dev' and bm.links.get('submit_reconstruction') %}
                 <a href="{{ bm.links.submit_reconstruction }}" target="_blank" rel="noopener noreferrer"
                    class="inline-flex items-center px-3 py-1.5 border border-amber-300 text-xs font-medium rounded-md text-amber-700 bg-white hover:bg-amber-50">
                     Submit Reconstruction
                 </a>
                 {% endif %}
-            </div>
-            <a href="/benchmark/{{ variant_key }}/challenge/dev"
-               class="block mt-3 text-xs text-amber-600 hover:text-amber-800 font-medium">
-                View Details &rarr;
-            </a>
-        </div>
-
-        <!-- Hidden tier (purple) -->
-        <div class="border-2 border-purple-300 rounded-lg p-4 bg-purple-50/50">
-            <div class="flex items-center gap-2 mb-2">
-                <span class="text-xs px-2 py-0.5 rounded font-bold bg-purple-100 text-purple-800">Hidden</span>
-                <span class="text-xs text-purple-700">{{ bm.tiers.hidden.count }} scenes</span>
-                <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-            </div>
-            {% if bm.tiers.hidden.introduction %}
-            <p class="text-xs font-semibold text-purple-800 mb-1">{{ bm.tiers.hidden.introduction.summary }}</p>
-            <details class="mb-2">
-                <summary class="text-xs text-purple-600 cursor-pointer hover:text-purple-800">What you get &amp; how to use</summary>
-                <div class="mt-1 space-y-1 text-xs text-gray-600">
-                    <p><strong class="text-purple-700">What you get:</strong> {{ bm.tiers.hidden.introduction.what_you_get }}</p>
-                    <p><strong class="text-purple-700">How to use:</strong> {{ bm.tiers.hidden.introduction.how_to_use }}</p>
-                    <p><strong class="text-purple-700">What to submit:</strong> {{ bm.tiers.hidden.introduction.what_to_submit }}</p>
-                </div>
-            </details>
-            {% else %}
-            <p class="text-xs text-gray-600 mb-3">{{ bm.tiers.hidden.description }}</p>
-            {% endif %}
-            <div class="flex flex-wrap gap-2">
-                {% if bm.links.get('submit_algorithm') %}
+                {% if tier_key == 'hidden' and bm.links.get('submit_algorithm') %}
                 <a href="{{ bm.links.submit_algorithm }}" target="_blank" rel="noopener noreferrer"
                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700">
                     Submit Algorithm
                 </a>
                 {% endif %}
+                <a href="/benchmark/{{ variant_key }}/challenge/{{ tier_key }}"
+                   class="text-xs {{ text_light }} hover:{{ text_c }} font-medium ml-auto">
+                    View Details &rarr;
+                </a>
             </div>
-            <a href="/benchmark/{{ variant_key }}/challenge/hidden"
-               class="block mt-3 text-xs text-purple-600 hover:text-purple-800 font-medium">
-                View Details &rarr;
-            </a>
         </div>
+        {% endmacro %}
+
+        {{ tier_card('public', bm.tiers.public, 'green', 'public_score') }}
+        {{ tier_card('dev', bm.tiers.dev, 'amber', 'dev_score') }}
+        {{ tier_card('hidden', bm.tiers.hidden, 'purple', 'hidden_score') }}
     </div>
 
     <!-- Scoring note -->
