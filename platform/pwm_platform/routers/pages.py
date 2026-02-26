@@ -405,7 +405,11 @@ async def variant_benchmarks_page(
     # Load pre-computed benchmark gallery (multi-scene scenario comparison)
     benchmark_gallery = get_benchmark_gallery(variant_key)
 
-    gcs_base_url = f"https://storage.googleapis.com/{settings.GCS_BUCKET}"
+    # Set B1-B4 download URLs to the authenticated GCS proxy endpoint
+    for bm in variant.get("benchmarks", []):
+        pd = bm.get("public_dataset")
+        if pd and pd.get("gcs_object_path"):
+            pd["download_url"] = f"/gcs/{pd['gcs_object_path']}"
 
     return templates.TemplateResponse("variant_benchmarks.html", {
         "request": request,
@@ -415,7 +419,6 @@ async def variant_benchmarks_page(
         "modality": modality,
         "primitives": get_spec_primitives(),
         "benchmark_gallery": benchmark_gallery,
-        "gcs_base_url": gcs_base_url,
     })
 
 

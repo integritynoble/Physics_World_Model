@@ -24,6 +24,7 @@ from pwm_platform.routers import (
     auth_router,
     bootstrap_router,
     datasets_router,
+    gcs_proxy_router,
     modalities_router,
     pages_router,
     runs_router,
@@ -79,6 +80,7 @@ app.include_router(datasets_router)
 app.include_router(modalities_router)
 app.include_router(bootstrap_router)
 app.include_router(spec_chat_router)
+app.include_router(gcs_proxy_router)
 app.include_router(pages_router)
 
 

@@ -2,10 +2,6 @@
 
 from __future__ import annotations
 
-from pwm_platform.config import settings
-
-_GCS_BASE = f"https://storage.googleapis.com/{settings.GCS_BUCKET}"
-
 # ── Category-specific dataset defaults ────────────────────────────────────────
 
 _CATEGORY_DEFAULTS: dict[str, dict] = {
@@ -94,7 +90,8 @@ def _make_b1(key: str, display: str, leaderboard: list) -> dict:
             "format": "JSON",
             "num_samples": 50,
             "size_mb": 0.1,
-            "download_url": f"{_GCS_BASE}/benchmark-data/v1.0/{key}_b1_public.json",
+            "gcs_object_path": f"benchmark-data/v1.0/{key}_b1_public.json",
+            "download_url": None,
         },
         "hidden_dataset": {
             "name": f"{display} Benchmark 1 Spec Prompts (Hidden)",
@@ -124,7 +121,8 @@ def _make_b2(key: str, display: str, ds: dict, leaderboard: list, scenario_table
             "format": "HDF5",
             "num_samples": ds["b2_samples"],
             "size_mb": ds["b2_size"],
-            "download_url": f"{_GCS_BASE}/benchmark-data/v1.0/{key}_b2_public.h5",
+            "gcs_object_path": f"benchmark-data/v1.0/{key}_b2_public.h5",
+            "download_url": None,
         },
         "hidden_dataset": {
             "name": f"{display} Benchmark 2 Recon Data (Hidden)",
@@ -160,7 +158,8 @@ def _make_b3(key: str, display: str, ds: dict, leaderboard: list) -> dict:
             "format": "JSON + HDF5",
             "num_samples": 50,
             "size_mb": ds["b3_size"],
-            "download_url": f"{_GCS_BASE}/benchmark-data/v1.0/{key}_b3_public.tar.gz",
+            "gcs_object_path": f"benchmark-data/v1.0/{key}_b3_public.tar.gz",
+            "download_url": None,
         },
         "hidden_dataset": {
             "name": f"{display} Benchmark 3 Spec Validation (Hidden)",
@@ -190,7 +189,8 @@ def _make_b4(key: str, display: str, ds: dict, leaderboard: list, scenario_table
             "format": "HDF5",
             "num_samples": ds["b4_samples"],
             "size_mb": ds["b4_size"],
-            "download_url": f"{_GCS_BASE}/benchmark-data/v1.0/{key}_b4_public.h5",
+            "gcs_object_path": f"benchmark-data/v1.0/{key}_b4_public.h5",
+            "download_url": None,
         },
         "hidden_dataset": {
             "name": f"{display} Benchmark 4 Drift Recon Data (Hidden)",

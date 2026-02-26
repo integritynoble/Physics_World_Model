@@ -73,20 +73,10 @@ _GALLERY_TTL: float = 3600.0  # 1 hour
 
 
 def _fetch_gallery_from_gcs() -> dict | None:
-    """Fetch benchmark_gallery.json from GCS. Returns parsed dict or None."""
-    import json
-    import urllib.request
+    """Fetch benchmark_gallery.json from GCS using authenticated access."""
+    from pwm_platform.services.gcs_signer import fetch_gcs_json
 
-    from pwm_platform.config import settings
-
-    if not settings.GCS_BUCKET:
-        return None
-    url = f"https://storage.googleapis.com/{settings.GCS_BUCKET}/benchmark_gallery/benchmark_gallery.json"
-    try:
-        with urllib.request.urlopen(url, timeout=10) as resp:
-            return json.loads(resp.read())
-    except Exception:
-        return None
+    return fetch_gcs_json("benchmark_gallery/benchmark_gallery.json")
 
 
 def _load_gallery_local() -> dict | None:
