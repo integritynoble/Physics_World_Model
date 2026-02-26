@@ -22,36 +22,6 @@
         {% endif %}
     </div>
 
-    <!-- Quick Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="text-sm font-medium text-gray-500">Total Runs</div>
-                <div class="mt-1 text-3xl font-semibold text-gray-900">{{ total_runs }}</div>
-            </div>
-        </div>
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="text-sm font-medium text-gray-500">Completed</div>
-                <div class="mt-1 text-3xl font-semibold text-green-600">
-                    {{ runs | selectattr('status', 'eq', 'completed') | list | length }}
-                </div>
-            </div>
-        </div>
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="text-sm font-medium text-gray-500">Modalities</div>
-                <div class="mt-1 text-3xl font-semibold text-indigo-600">{{ total_modalities }}</div>
-            </div>
-        </div>
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="text-sm font-medium text-gray-500">Datasets</div>
-                <div class="mt-1 text-3xl font-semibold text-purple-600">{{ total_datasets }}</div>
-            </div>
-        </div>
-    </div>
-
     <!-- Spec Builder Chat -->
     {% include "_spec_chat_box.html" %}
 

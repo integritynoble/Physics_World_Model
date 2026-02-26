@@ -15,7 +15,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from sqlalchemy import func, or_, select
+from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from pwm_platform.auth.dependencies import get_current_user, get_optional_user
@@ -175,8 +175,6 @@ async def dashboard(
     db: AsyncSession = Depends(get_db),
 ):
     """Dashboard — shows public runs + own runs for logged-in users."""
-    from pwm_platform.services.modality_database import MODALITY_DATABASE
-
     # Visibility filter: logged-in users see public + own runs; anonymous see public only
     if user:
         visibility_filter = or_(Run.is_public == True, Run.user_id == user.id)  # noqa: E712
@@ -188,81 +186,11 @@ async def dashboard(
     )
     runs = runs_result.scalars().all()
 
-    count_result = await db.execute(
-        select(func.count()).select_from(Run).where(visibility_filter)
-    )
-    total_runs = count_result.scalar() or 0
-
-    total_modalities = len(MODALITY_DATABASE)
-
-    # Count unique canonical datasets across all modalities
-    all_datasets = set()
-    for entry in MODALITY_DATABASE.values():
-        for ds in entry.get("canonical_datasets", []):
-            all_datasets.add(ds)
-    total_datasets = len(all_datasets)
-
-    # Build modality groups for the chatbox selector (category → items)
-    from collections import OrderedDict
-
-    from pwm_platform.services.benchmark_database import VARIANT_DATABASE
-
-    _CHAT_CATEGORY_ORDER = [
-        ("compressive", "Compressive"),
-        ("medical", "Medical"),
-        ("medical_ultrasound", "Medical Ultrasound"),
-        ("coherent", "Coherent"),
-        ("microscopy", "Microscopy"),
-        ("electron_microscopy", "Electron Microscopy"),
-        ("clinical_optics", "Clinical Optics"),
-        ("computational", "Computational"),
-        ("computational_photography", "Computational Photography"),
-        ("neural_rendering", "Neural Rendering"),
-        ("depth_imaging", "Depth Imaging"),
-        ("remote_sensing", "Remote Sensing"),
-        ("particle_imaging", "Particle Imaging"),
-        ("scanning_probe", "Scanning Probe"),
-        ("industrial_inspection", "Industrial Inspection"),
-        ("spectroscopy", "Spectroscopy"),
-        ("astronomy", "Astronomy"),
-        ("ultrafast", "Ultrafast"),
-        ("quantum", "Quantum"),
-        ("experimental_science", "Experimental Science"),
-        ("scientific_instrumentation", "Scientific Instrumentation"),
-        ("multi_modal_fusion", "Multi-Modal Fusion"),
-    ]
-    cat_labels = dict(_CHAT_CATEGORY_ORDER)
-
-    _cat_items: dict[str, list[dict]] = OrderedDict()
-    for cat_key, _ in _CHAT_CATEGORY_ORDER:
-        _cat_items[cat_key] = []
-
-    for vk, vdata in VARIANT_DATABASE.items():
-        cat = vdata.get("category", "other")
-        if cat not in _cat_items:
-            _cat_items[cat] = []
-        _cat_items[cat].append({"key": vk, "display_name": vdata["display_name"]})
-
-    # Sort items within each category alphabetically
-    for items in _cat_items.values():
-        items.sort(key=lambda x: x["display_name"])
-
-    # Build template-friendly list: [(slug, label, items), ...]
-    modality_groups = [
-        (slug, cat_labels.get(slug, slug.replace("_", " ").title()), items)
-        for slug, items in _cat_items.items()
-        if items
-    ]
-
     return templates.TemplateResponse("dashboard.html", {
         "request": request,
         "user": user,
         "runs": runs,
-        "total_runs": total_runs,
-        "total_modalities": total_modalities,
-        "total_datasets": total_datasets,
         "chat_variant_key": "sd_cassi",
-        "modality_groups": modality_groups,
     })
 
 
