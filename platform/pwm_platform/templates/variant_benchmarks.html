@@ -412,22 +412,6 @@
     </div>
     {% endif %}
 
-    <!-- InverseNet Visual Results -->
-    <div>
-        <h4 class="text-sm font-semibold text-gray-700 mb-2">InverseNet Visual Results</h4>
-        <p class="text-xs text-gray-500 mb-3">Full-area reconstruction examples from the InverseNet paper dataset</p>
-        <img src="/static/img/inversenet/visual_comparison.png"
-             alt="InverseNet visual comparison — Ground Truth, Scenario I, II, III, and error maps"
-             class="w-full rounded border border-gray-200" loading="lazy" />
-        <p class="mt-1 text-xs text-gray-500">Columns: Ground Truth, Scenario I (ideal), Scenario II (mismatch), Scenario III (oracle), Error Maps II &amp; III.</p>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
-            <img src="/static/img/inversenet/{{ paper_fig_dir }}/scenario_comparison.png"
-                 alt="Scenario Comparison" class="w-full rounded border border-gray-200" loading="lazy" />
-            <img src="/static/img/inversenet/{{ paper_fig_dir }}/gap_comparison.png"
-                 alt="Degradation and Recovery Gap" class="w-full rounded border border-gray-200" loading="lazy" />
-        </div>
-    </div>
-
     <!-- Three-tier cards -->
     <div class="space-y-4">
 

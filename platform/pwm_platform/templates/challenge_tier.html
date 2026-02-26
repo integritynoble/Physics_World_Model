@@ -180,55 +180,6 @@
     </div>
     {% endif %}
 
-    <!-- ═══ InverseNet Visual Results ═══ -->
-    {% if tier_name in ('public', 'dev') %}
-    <div class="bg-white shadow rounded-lg p-6 space-y-6">
-        <div>
-            <h2 class="text-base font-semibold text-gray-800">InverseNet Visual Results</h2>
-            <p class="text-xs text-gray-500 mt-1">Full-area reconstruction examples from the InverseNet paper dataset &mdash; Ground Truth vs. Scenario I (Ideal) vs. Scenario II (Mismatch) vs. Scenario III (Oracle)</p>
-        </div>
-
-        <!-- Main visual comparison (all modalities) -->
-        <div>
-            <img src="/static/img/inversenet/visual_comparison.png"
-                 alt="InverseNet visual comparison — Ground Truth, Scenario I, II, III, and error maps"
-                 class="w-full rounded border border-gray-200" loading="lazy" />
-            <p class="mt-2 text-xs text-gray-500">Visual comparison across CASSI, CACTI, and SPC modalities. Columns: Ground Truth, Scenario I (ideal reconstruction), Scenario II (mismatch &mdash; severe degradation), Scenario III (oracle correction), Error Maps II &amp; III.</p>
-        </div>
-
-        <!-- Per-modality charts -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <img src="/static/img/inversenet/{{ paper_fig_dir }}/scenario_comparison.png"
-                     alt="{{ variant.display_name }} — PSNR Scenario Comparison"
-                     class="w-full rounded border border-gray-200" loading="lazy" />
-                <p class="mt-1 text-xs text-gray-500">PSNR across scenarios for multiple reconstruction methods.</p>
-            </div>
-            <div>
-                <img src="/static/img/inversenet/{{ paper_fig_dir }}/gap_comparison.png"
-                     alt="{{ variant.display_name }} — Degradation and Recovery Gap"
-                     class="w-full rounded border border-gray-200" loading="lazy" />
-                <p class="mt-1 text-xs text-gray-500">PSNR degradation (I&rarr;II) and recovery gap (II&rarr;III) per method.</p>
-            </div>
-        </div>
-        {% if paper_extra_chart %}
-        <div>
-            <img src="/static/img/inversenet/{{ paper_fig_dir }}/{{ paper_extra_chart }}"
-                 alt="{{ variant.display_name }} — Per-Scene PSNR"
-                 class="w-full rounded border border-gray-200" loading="lazy" />
-            <p class="mt-1 text-xs text-gray-500">Per-scene PSNR breakdown across scenarios and methods.</p>
-        </div>
-        {% endif %}
-    </div>
-    {% elif tier_name == 'hidden' %}
-    <div class="bg-white shadow rounded-lg p-6">
-        <h2 class="text-base font-semibold text-gray-800 mb-3">Visual Results</h2>
-        <div class="flex flex-col items-center justify-center py-12 bg-purple-100/50 rounded border border-dashed border-purple-300">
-            <svg class="w-16 h-16 text-purple-300 mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-            <p class="text-sm text-purple-400">Data held server-side &mdash; submit your algorithm for evaluation</p>
-        </div>
-    </div>
-    {% endif %}
 
     <!-- Visible data fields -->
     {% if tier.visible_data %}
