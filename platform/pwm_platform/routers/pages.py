@@ -419,6 +419,72 @@ async def variant_benchmarks_page(
     })
 
 
+@router.get("/benchmark/{variant_key}/challenge/{tier_name}", response_class=HTMLResponse)
+async def challenge_tier_page(
+    request: Request,
+    variant_key: str,
+    tier_name: str,
+    user: Optional[User] = Depends(get_optional_user),
+):
+    """Challenge tier detail page — expanded view of a single tier."""
+    from pwm_platform.services.benchmark_database import (
+        get_benchmark_gallery,
+        get_variant,
+    )
+
+    variant = get_variant(variant_key)
+    if variant is None:
+        return templates.TemplateResponse("404.html", {
+            "request": request, "user": user, "message": "Variant not found"
+        }, status_code=404)
+
+    # Find the challenge benchmark
+    challenge = None
+    for bm in variant.get("benchmarks", []):
+        if bm.get("is_challenge"):
+            challenge = bm
+            break
+
+    if challenge is None:
+        return templates.TemplateResponse("404.html", {
+            "request": request, "user": user, "message": "No challenge benchmark for this variant"
+        }, status_code=404)
+
+    # Validate tier name
+    if tier_name not in ("public", "dev", "hidden"):
+        return templates.TemplateResponse("404.html", {
+            "request": request, "user": user, "message": "Invalid tier name"
+        }, status_code=404)
+
+    tier = challenge.get("tiers", {}).get(tier_name)
+    if tier is None:
+        return templates.TemplateResponse("404.html", {
+            "request": request, "user": user, "message": "Tier not found"
+        }, status_code=404)
+
+    # Wire download URLs for challenge tiers
+    for tk in ("public", "dev"):
+        tier_ds = challenge.get("tiers", {}).get(tk, {}).get("dataset")
+        if tier_ds and tier_ds.get("gcs_object_path"):
+            tier_ds["download_url"] = f"/gcs/{tier_ds['gcs_object_path']}"
+
+    # Load benchmark gallery for preview images
+    benchmark_gallery = get_benchmark_gallery(variant_key)
+    gallery_variant = challenge.get("gallery_variant") or variant_key
+
+    return templates.TemplateResponse("challenge_tier.html", {
+        "request": request,
+        "user": user,
+        "variant": variant,
+        "variant_key": variant_key,
+        "challenge": challenge,
+        "tier_name": tier_name,
+        "tier": tier,
+        "benchmark_gallery": benchmark_gallery,
+        "gallery_variant": gallery_variant,
+    })
+
+
 @router.get("/my-runs", response_class=HTMLResponse)
 async def my_runs_page(
     request: Request,
