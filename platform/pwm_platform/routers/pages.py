@@ -469,20 +469,34 @@ async def challenge_tier_page(
         if tier_ds and tier_ds.get("gcs_object_path"):
             tier_ds["download_url"] = f"/gcs/{tier_ds['gcs_object_path']}"
 
-    # Load benchmark gallery for preview images and scores
+    # Load benchmark gallery for scores
     benchmark_gallery = get_benchmark_gallery(variant_key)
-    gallery_variant = challenge.get("gallery_variant") or variant_key
 
-    # Determine how many example scenes to show:
-    # Multi-frame (3D signal_shape like [256,256,28]) → 2 scenes; single-frame → 1
-    challenge_cfg = get_challenge_config(variant_key) or {}
-    signal_shape = challenge_cfg.get("signal_shape", [])
-    num_example_scenes = 2 if len(signal_shape) >= 3 else 1
+    # Map variant_key to InverseNet paper figure subdirectory
+    _PAPER_FIG_MAP = {
+        "sd_cassi": "cassi",
+        "cacti": "cacti",
+        "spc_block": "spc",
+        "spc_kronecker": "spc",
+    }
+    paper_fig_dir = _PAPER_FIG_MAP.get(variant_key, variant_key)
 
-    # Slice example scenes from gallery data
-    example_scenes = []
-    if benchmark_gallery and "scenes" in benchmark_gallery:
-        example_scenes = benchmark_gallery["scenes"][:num_example_scenes]
+    # Per-modality extra chart filename (3rd figure below scenario_comparison)
+    _EXTRA_CHART_MAP = {
+        "cassi": "per_scene_psnr.png",
+        "cacti": "per_video_psnr.png",
+        "spc": "psnr_distribution.png",
+    }
+    paper_extra_chart = _EXTRA_CHART_MAP.get(paper_fig_dir)
+
+    # Build per-tier leaderboard: filter + re-rank by this tier's score
+    tier_leaderboard = []
+    tier_score_key = f"{tier_name}_score"
+    for entry in challenge.get("leaderboard", []):
+        score = entry.get(tier_score_key)
+        if score is not None:
+            tier_leaderboard.append(entry)
+    tier_leaderboard.sort(key=lambda e: e.get(tier_score_key, 0), reverse=True)
 
     return templates.TemplateResponse("challenge_tier.html", {
         "request": request,
@@ -493,8 +507,9 @@ async def challenge_tier_page(
         "tier_name": tier_name,
         "tier": tier,
         "benchmark_gallery": benchmark_gallery,
-        "gallery_variant": gallery_variant,
-        "example_scenes": example_scenes,
+        "tier_leaderboard": tier_leaderboard,
+        "paper_fig_dir": paper_fig_dir,
+        "paper_extra_chart": paper_extra_chart,
     })
 
 
