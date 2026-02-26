@@ -59,6 +59,42 @@ _CATEGORY_DEFAULTS: dict[str, dict] = {
         "b2_samples": 3, "b2_size": 30, "b4_samples": 3, "b4_size": 30, "b3_size": 10,
         "data_type": "tomographic slices (128\u00d7128\u00d764)",
     },
+    "scanning_probe": {
+        "b2_samples": 3, "b2_size": 10, "b4_samples": 3, "b4_size": 10, "b3_size": 4,
+        "data_type": "surface scans (256\u00d7256)",
+    },
+    "industrial_inspection": {
+        "b2_samples": 3, "b2_size": 20, "b4_samples": 3, "b4_size": 20, "b3_size": 8,
+        "data_type": "inspection images (256\u00d7256)",
+    },
+    "spectroscopy": {
+        "b2_samples": 5, "b2_size": 15, "b4_samples": 5, "b4_size": 15, "b3_size": 6,
+        "data_type": "spectral data (256\u00d7256\u00d7N)",
+    },
+    "astronomy": {
+        "b2_samples": 3, "b2_size": 50, "b4_samples": 3, "b4_size": 50, "b3_size": 15,
+        "data_type": "astronomical images (512\u00d7512)",
+    },
+    "ultrafast": {
+        "b2_samples": 3, "b2_size": 20, "b4_samples": 3, "b4_size": 20, "b3_size": 8,
+        "data_type": "temporal frames (256\u00d7256\u00d7T)",
+    },
+    "quantum": {
+        "b2_samples": 3, "b2_size": 10, "b4_samples": 3, "b4_size": 10, "b3_size": 4,
+        "data_type": "photon-counting images (64\u00d764)",
+    },
+    "experimental_science": {
+        "b2_samples": 3, "b2_size": 20, "b4_samples": 3, "b4_size": 20, "b3_size": 8,
+        "data_type": "experimental measurements (256\u00d7256)",
+    },
+    "scientific_instrumentation": {
+        "b2_samples": 3, "b2_size": 15, "b4_samples": 3, "b4_size": 15, "b3_size": 6,
+        "data_type": "instrument readouts (256\u00d7256)",
+    },
+    "multi_modal_fusion": {
+        "b2_samples": 3, "b2_size": 30, "b4_samples": 3, "b4_size": 30, "b3_size": 10,
+        "data_type": "multi-modal image pairs (256\u00d7256)",
+    },
 }
 
 _DEFAULT_FALLBACK = {
@@ -221,15 +257,15 @@ def _make_b_challenge(key: str, display: str) -> dict | None:
     if cfg is None:
         return None
 
-    pro_split = cfg["splits"]["pro"]
-    hidden_split = cfg["splits"]["hidden"]
+    scene_count = cfg["scene_count"]
 
     return {
         "id": "Challenge",
         "title": "Blind Reconstruction Challenge",
         "description": (
             "Given measurements with unknown mismatch and spec ranges (not exact params), "
-            "reconstruct the original signal. Scored on a composite metric: "
+            "reconstruct the original signal. A method must be evaluated on all three tiers "
+            "for a complete score. Scored on a composite metric: "
             f"{cfg['scoring']['formula_display']}."
         ),
         "input": "Measurements y, ideal forward model H, spec ranges",
@@ -238,22 +274,44 @@ def _make_b_challenge(key: str, display: str) -> dict | None:
         "scoring": cfg["scoring"],
         "spec_ranges": cfg["spec_ranges"],
         "tiers": {
-            "pro": {
-                "name": "Pro",
-                "description": f"Download {pro_split['count']} scenes with measurements + ideal operator + spec ranges. Submit your reconstruction.",
-                "count": pro_split["count"],
+            "public": {
+                "name": "Public",
+                "description": (
+                    f"All {scene_count} scenes with measurements, ideal operator, "
+                    "spec ranges, ground truth, and true spec. Includes all InverseNet datasets."
+                ),
+                "count": scene_count,
+                "includes_ground_truth": True,
                 "dataset": {
-                    "name": f"{display} Challenge Pro Dataset",
+                    "name": f"{display} Challenge Public Dataset",
                     "format": "HDF5",
-                    "num_samples": pro_split["count"],
-                    "gcs_object_path": f"challenge-data/v1.0/{key}_challenge_pro.h5",
+                    "num_samples": scene_count,
+                    "gcs_object_path": f"challenge-data/v1.0/{key}_challenge_public.h5",
+                    "download_url": None,
+                },
+            },
+            "dev": {
+                "name": "Dev",
+                "description": (
+                    f"All {scene_count} scenes with measurements + ideal operator + "
+                    "spec ranges (no ground truth). Submit your reconstruction."
+                ),
+                "count": scene_count,
+                "dataset": {
+                    "name": f"{display} Challenge Dev Dataset",
+                    "format": "HDF5",
+                    "num_samples": scene_count,
+                    "gcs_object_path": f"challenge-data/v1.0/{key}_challenge_dev.h5",
                     "download_url": None,
                 },
             },
             "hidden": {
                 "name": "Hidden",
-                "description": f"{hidden_split['count']} scenes held server-side. Submit your algorithm; we run it on hidden data.",
-                "count": hidden_split["count"],
+                "description": (
+                    f"All {scene_count} scenes held server-side. "
+                    "Submit your algorithm; we run it on hidden data."
+                ),
+                "count": scene_count,
             },
         },
         "baselines": cfg["baselines"],

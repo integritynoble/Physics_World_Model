@@ -1,5 +1,5 @@
 {# ── Interactive Spec Builder Chat ── #}
-{# Expects `chat_variant_key` in template context (e.g. "sd_cassi") #}
+{# Expects `chat_variant_key` and optional `modality_groups` in template context #}
 {% set _vk = chat_variant_key | default("sd_cassi") %}
 <div class="bg-white shadow rounded-lg p-6 space-y-4 border-l-4 border-blue-400">
     <div class="flex items-center justify-between">
@@ -12,15 +12,34 @@
         noise model, measurement matrix, and mismatch parameters.
     </p>
 
-    <!-- Example buttons -->
-    <div class="flex flex-wrap gap-2">
+    <!-- Modality selector (dropdown grouped by category) -->
+    {% if modality_groups %}
+    <div class="flex items-center gap-2">
+        <label for="modality-select" class="text-xs text-gray-500 font-medium whitespace-nowrap">Modality:</label>
+        <select id="modality-select"
+                class="flex-1 text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+            {% for cat_slug, cat_label, items in modality_groups %}
+            <optgroup label="{{ cat_label }}">
+                {% for item in items %}
+                <option value="{{ item.key }}" {% if item.key == _vk %}selected{% endif %}>
+                    {{ item.display_name }}
+                </option>
+                {% endfor %}
+            </optgroup>
+            {% endfor %}
+        </select>
+    </div>
+    {% endif %}
+
+    <!-- Dynamic quick-start example buttons -->
+    <div id="quick-start-buttons" class="flex flex-wrap gap-2">
         <span class="text-xs text-gray-500 self-center mr-1">Start from example:</span>
         <button hx-post="/api/v1/spec-chat/{{ _vk }}/example"
                 hx-vals='{"example": "cassi"}'
                 hx-target="#chat-log"
                 hx-swap="innerHTML"
                 hx-indicator="#chat-spinner"
-                class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 cursor-pointer transition-colors">
+                class="quick-start-btn inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 cursor-pointer transition-colors">
             SD-CASSI
         </button>
         <button hx-post="/api/v1/spec-chat/{{ _vk }}/example"
@@ -28,7 +47,7 @@
                 hx-target="#chat-log"
                 hx-swap="innerHTML"
                 hx-indicator="#chat-spinner"
-                class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 cursor-pointer transition-colors">
+                class="quick-start-btn inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 cursor-pointer transition-colors">
             SPC-Block
         </button>
         <button hx-post="/api/v1/spec-chat/{{ _vk }}/example"
@@ -36,7 +55,7 @@
                 hx-target="#chat-log"
                 hx-swap="innerHTML"
                 hx-indicator="#chat-spinner"
-                class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 cursor-pointer transition-colors">
+                class="quick-start-btn inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 cursor-pointer transition-colors">
             CACTI
         </button>
     </div>
@@ -58,7 +77,8 @@
     </div>
 
     <!-- Input area -->
-    <form hx-post="/api/v1/spec-chat/{{ _vk }}"
+    <form id="chat-form"
+          hx-post="/api/v1/spec-chat/{{ _vk }}"
           hx-target="#chat-log"
           hx-swap="beforeend"
           hx-indicator="#chat-spinner"
@@ -95,3 +115,39 @@
         </div>
     </form>
 </div>
+
+<!-- Modality switcher JS -->
+<script>
+(function() {
+    var select = document.getElementById('modality-select');
+    if (!select) return;
+
+    select.addEventListener('change', function() {
+        var newKey = this.value;
+
+        // Update form hx-post URL
+        var form = document.getElementById('chat-form');
+        if (form) {
+            form.setAttribute('hx-post', '/api/v1/spec-chat/' + newKey);
+            htmx.process(form);
+        }
+
+        // Update example buttons
+        var buttons = document.querySelectorAll('.quick-start-btn');
+        buttons.forEach(function(btn) {
+            var origUrl = btn.getAttribute('hx-post') || '';
+            var newUrl = origUrl.replace(/\/api\/v1\/spec-chat\/[^/]+\/example/, '/api/v1/spec-chat/' + newKey + '/example');
+            btn.setAttribute('hx-post', newUrl);
+            htmx.process(btn);
+        });
+
+        // Clear chat log and reset session
+        var chatLog = document.getElementById('chat-log');
+        if (chatLog) {
+            chatLog.innerHTML = '<p class="text-sm text-gray-400 italic text-center py-8 chat-placeholder">Describe an imaging system, paste a spec JSON, or click an example above to get started.</p>';
+        }
+        var sessionId = document.getElementById('chat-session-id');
+        if (sessionId) sessionId.value = '';
+    });
+})();
+</script>

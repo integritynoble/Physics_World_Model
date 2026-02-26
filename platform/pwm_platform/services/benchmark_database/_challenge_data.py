@@ -1,8 +1,12 @@
 """Challenge configuration — Blind Reconstruction Challenge (Benchmark New).
 
 Each variant entry defines scoring weights, spec ranges (what contestants see),
-true spec (server-side only), dataset splits (Pro / Hidden), and baseline
-performance from InverseNet Scenarios II and III.
+per-tier mismatch configs (Public / Dev / Hidden), and baseline performance
+from InverseNet Scenarios II and III.
+
+All three tiers use ALL scenes but with different mismatch realizations
+(different true_spec values + different noise seeds), preventing cheating
+across tiers.
 """
 
 from __future__ import annotations
@@ -20,7 +24,7 @@ CHALLENGE_CONFIG: dict[str, dict] = {
             "psnr_weight": 0.40,
             "ssim_weight": 0.40,
             "consistency_weight": 0.20,
-            "formula_display": "0.4 \u00d7 PSNR_norm + 0.4 \u00d7 SSIM + 0.2 \u00d7 (1 \u2212 \u2016y \u2212 H\u0302x\u0302\u2016/\u2016y\u2016)",
+            "formula_display": "0.4 × PSNR_norm + 0.4 × SSIM + 0.2 × (1 − ‖y − Ĥx̂‖/‖y‖)",
         },
         "spec_ranges": [
             {"name": "mask_dx",          "min": 0.3,  "max": 0.7,  "unit": "px"},
@@ -29,18 +33,44 @@ CHALLENGE_CONFIG: dict[str, dict] = {
             {"name": "dispersion_slope", "min": 1.90, "max": 2.15, "unit": "px/band"},
             {"name": "dispersion_axis",  "min": 0.0,  "max": 0.3,  "unit": "deg"},
         ],
-        "true_spec": {
-            "mask_dx": 0.5,
-            "mask_dy": 0.3,
-            "mask_rotation": 0.1,
-            "dispersion_slope": 2.02,
-            "dispersion_axis": 0.15,
-        },
         "noise_model": "poisson_gaussian",
         "noise_params": {"poisson_alpha": 1.0, "gaussian_sigma": 0.01},
-        "splits": {
-            "pro":    {"scenes": [1, 2, 3, 4, 5, 6], "count": 6},
-            "hidden": {"scenes": [7, 8, 9, 10],      "count": 4},
+        "scenes": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        "scene_count": 10,
+        "tiers": {
+            "public": {
+                "true_spec": {
+                    "mask_dx": 0.50,
+                    "mask_dy": 0.30,
+                    "mask_rotation": 0.10,
+                    "dispersion_slope": 2.02,
+                    "dispersion_axis": 0.15,
+                },
+                "seed": 1001,
+                "visible_data": ["y", "H_ideal", "spec_ranges", "x_true", "true_spec"],
+            },
+            "dev": {
+                "true_spec": {
+                    "mask_dx": 0.40,
+                    "mask_dy": 0.20,
+                    "mask_rotation": 0.05,
+                    "dispersion_slope": 2.08,
+                    "dispersion_axis": 0.10,
+                },
+                "seed": 2001,
+                "visible_data": ["y", "H_ideal", "spec_ranges"],
+            },
+            "hidden": {
+                "true_spec": {
+                    "mask_dx": 0.60,
+                    "mask_dy": 0.40,
+                    "mask_rotation": 0.15,
+                    "dispersion_slope": 1.95,
+                    "dispersion_axis": 0.22,
+                },
+                "seed": 3001,
+                "visible_data": [],
+            },
         },
         "data_source": "datasets/TSA_simu_data/Truth/",
         "data_format": "mat",
@@ -70,7 +100,7 @@ CHALLENGE_CONFIG: dict[str, dict] = {
             "psnr_weight": 0.40,
             "ssim_weight": 0.40,
             "consistency_weight": 0.20,
-            "formula_display": "0.4 \u00d7 PSNR_norm + 0.4 \u00d7 SSIM + 0.2 \u00d7 (1 \u2212 \u2016y \u2212 H\u0302x\u0302\u2016/\u2016y\u2016)",
+            "formula_display": "0.4 × PSNR_norm + 0.4 × SSIM + 0.2 × (1 − ‖y − Ĥx̂‖/‖y‖)",
         },
         "spec_ranges": [
             {"name": "mask_dx",       "min": 0.2,  "max": 0.8,  "unit": "px"},
@@ -81,20 +111,50 @@ CHALLENGE_CONFIG: dict[str, dict] = {
             {"name": "gain_drift",    "min": 0.95, "max": 1.05, "unit": ""},
             {"name": "offset_drift",  "min": -0.02, "max": 0.02, "unit": ""},
         ],
-        "true_spec": {
-            "mask_dx": 0.5,
-            "mask_dy": 0.3,
-            "mask_rotation": 0.15,
-            "mask_blur": 0.2,
-            "clock_offset": 0.05,
-            "gain_drift": 1.02,
-            "offset_drift": 0.01,
-        },
         "noise_model": "poisson_gaussian",
         "noise_params": {"poisson_alpha": 1.0, "gaussian_sigma": 0.01},
-        "splits": {
-            "pro":    {"scenes": ["kobe", "traffic", "crash", "aerial"], "count": 4},
-            "hidden": {"scenes": ["runner", "drop"],                     "count": 2},
+        "scenes": ["kobe", "traffic", "runner", "drop", "crash", "aerial"],
+        "scene_count": 6,
+        "tiers": {
+            "public": {
+                "true_spec": {
+                    "mask_dx": 0.50,
+                    "mask_dy": 0.30,
+                    "mask_rotation": 0.15,
+                    "mask_blur": 0.20,
+                    "clock_offset": 0.05,
+                    "gain_drift": 1.02,
+                    "offset_drift": 0.01,
+                },
+                "seed": 1001,
+                "visible_data": ["y", "H_ideal", "spec_ranges", "x_true", "true_spec"],
+            },
+            "dev": {
+                "true_spec": {
+                    "mask_dx": 0.35,
+                    "mask_dy": 0.20,
+                    "mask_rotation": 0.08,
+                    "mask_blur": 0.10,
+                    "clock_offset": -0.03,
+                    "gain_drift": 0.98,
+                    "offset_drift": -0.01,
+                },
+                "seed": 2001,
+                "visible_data": ["y", "H_ideal", "spec_ranges"],
+            },
+            "hidden": {
+                "true_spec": {
+                    "mask_dx": 0.65,
+                    "mask_dy": 0.40,
+                    "mask_rotation": 0.22,
+                    "mask_blur": 0.35,
+                    "clock_offset": 0.08,
+                    "gain_drift": 1.04,
+                    "offset_drift": 0.015,
+                },
+                "seed": 3001,
+                "visible_data": [],
+            },
         },
         "data_source": "datasets/CACTI/simulation/",
         "data_format": "mat",
@@ -124,21 +184,41 @@ CHALLENGE_CONFIG: dict[str, dict] = {
             "psnr_weight": 0.40,
             "ssim_weight": 0.40,
             "consistency_weight": 0.20,
-            "formula_display": "0.4 \u00d7 PSNR_norm + 0.4 \u00d7 SSIM + 0.2 \u00d7 (1 \u2212 \u2016y \u2212 H\u0302x\u0302\u2016/\u2016y\u2016)",
+            "formula_display": "0.4 × PSNR_norm + 0.4 × SSIM + 0.2 × (1 − ‖y − Ĥx̂‖/‖y‖)",
         },
         "spec_ranges": [
             {"name": "gain_decay_alpha", "min": 0.001, "max": 0.01, "unit": "1/measurement"},
             {"name": "noise_sigma",      "min": 0.01,  "max": 0.05, "unit": ""},
         ],
-        "true_spec": {
-            "gain_decay_alpha": 0.005,
-            "noise_sigma": 0.03,
-        },
         "noise_model": "gaussian",
         "noise_params": {"sigma": 0.03},
-        "splits": {
-            "pro":    {"scenes": [1, 2, 3, 4, 5, 6, 7], "count": 7},
-            "hidden": {"scenes": [8, 9, 10, 11],         "count": 4},
+        "scenes": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+        "scene_count": 11,
+        "tiers": {
+            "public": {
+                "true_spec": {
+                    "gain_decay_alpha": 0.005,
+                    "noise_sigma": 0.03,
+                },
+                "seed": 1001,
+                "visible_data": ["y", "H_ideal", "spec_ranges", "x_true", "true_spec"],
+            },
+            "dev": {
+                "true_spec": {
+                    "gain_decay_alpha": 0.003,
+                    "noise_sigma": 0.02,
+                },
+                "seed": 2001,
+                "visible_data": ["y", "H_ideal", "spec_ranges"],
+            },
+            "hidden": {
+                "true_spec": {
+                    "gain_decay_alpha": 0.008,
+                    "noise_sigma": 0.04,
+                },
+                "seed": 3001,
+                "visible_data": [],
+            },
         },
         "data_source": "datasets/SPC/Set11/",
         "data_format": "tif",
@@ -168,21 +248,41 @@ CHALLENGE_CONFIG: dict[str, dict] = {
             "psnr_weight": 0.40,
             "ssim_weight": 0.40,
             "consistency_weight": 0.20,
-            "formula_display": "0.4 \u00d7 PSNR_norm + 0.4 \u00d7 SSIM + 0.2 \u00d7 (1 \u2212 \u2016y \u2212 H\u0302x\u0302\u2016/\u2016y\u2016)",
+            "formula_display": "0.4 × PSNR_norm + 0.4 × SSIM + 0.2 × (1 − ‖y − Ĥx̂‖/‖y‖)",
         },
         "spec_ranges": [
             {"name": "gain_decay_alpha", "min": 0.001, "max": 0.01, "unit": "1/measurement"},
             {"name": "noise_sigma",      "min": 0.01,  "max": 0.05, "unit": ""},
         ],
-        "true_spec": {
-            "gain_decay_alpha": 0.005,
-            "noise_sigma": 0.03,
-        },
         "noise_model": "gaussian",
         "noise_params": {"sigma": 0.03},
-        "splits": {
-            "pro":    {"scenes": [1, 2, 3, 4, 5, 6, 7], "count": 7},
-            "hidden": {"scenes": [8, 9, 10, 11],         "count": 4},
+        "scenes": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+        "scene_count": 11,
+        "tiers": {
+            "public": {
+                "true_spec": {
+                    "gain_decay_alpha": 0.005,
+                    "noise_sigma": 0.03,
+                },
+                "seed": 1001,
+                "visible_data": ["y", "H_ideal", "spec_ranges", "x_true", "true_spec"],
+            },
+            "dev": {
+                "true_spec": {
+                    "gain_decay_alpha": 0.003,
+                    "noise_sigma": 0.02,
+                },
+                "seed": 2001,
+                "visible_data": ["y", "H_ideal", "spec_ranges"],
+            },
+            "hidden": {
+                "true_spec": {
+                    "gain_decay_alpha": 0.008,
+                    "noise_sigma": 0.04,
+                },
+                "seed": 3001,
+                "visible_data": [],
+            },
         },
         "data_source": "datasets/SPC/Set11/",
         "data_format": "tif",

@@ -20,6 +20,7 @@ from ._challenge_data import CHALLENGE_CONFIG
 from ._factory import build_variant
 from ._flowcharts import FLOWCHARTS
 from ._leaderboard_data import LEADERBOARD_DATA
+from ._modality_catalog import MODALITY_CATALOG
 from ._primitives import SPEC_PRIMITIVES
 from ._variant_registry import VARIANT_REGISTRY
 
@@ -28,6 +29,22 @@ from ._variant_registry import VARIANT_REGISTRY
 VARIANT_DATABASE: dict[str, dict] = {}
 for _key, _entry in VARIANT_REGISTRY.items():
     VARIANT_DATABASE[_key] = build_variant(_key, _entry, LEADERBOARD_DATA.get(_key))
+
+# ── Auto-expand with catalog entries for modalities not yet covered ───────────
+
+_covered_parents = {v["parent_modality"] for v in VARIANT_DATABASE.values()}
+for _mod_id, _mod_entry in MODALITY_CATALOG.items():
+    if _mod_id not in _covered_parents and _mod_id not in VARIANT_DATABASE:
+        _auto_entry = {
+            "display_name": _mod_entry["display_name"],
+            "full_name": _mod_entry["display_name"],
+            "parent_modality": _mod_id,
+            "category": _mod_entry["category"],
+            "spec_notation": _mod_entry["spec_notation"],
+            "spec_dag": _mod_entry["spec_dag"],
+            "mismatch_params": _mod_entry["mismatch_params"],
+        }
+        VARIANT_DATABASE[_mod_id] = build_variant(_mod_id, _auto_entry, None)
 
 # ── Auto-derive modality → variants mapping ──────────────────────────────────
 

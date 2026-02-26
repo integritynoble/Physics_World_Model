@@ -353,40 +353,64 @@
     </div>
     {% endif %}
 
-    <!-- Two-tier cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <!-- Pro tier -->
+    <!-- Three-tier cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- Public tier (green) -->
         <div class="border-2 border-green-300 rounded-lg p-4 bg-green-50/50">
             <div class="flex items-center gap-2 mb-2">
-                <span class="text-xs px-2 py-0.5 rounded font-bold bg-green-100 text-green-800">Pro</span>
-                <span class="text-xs text-green-700">{{ bm.tiers.pro.count }} samples</span>
+                <span class="text-xs px-2 py-0.5 rounded font-bold bg-green-100 text-green-800">Public</span>
+                <span class="text-xs text-green-700">{{ bm.tiers.public.count }} scenes</span>
+                <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
             </div>
-            <p class="text-xs text-gray-600 mb-3">{{ bm.tiers.pro.description }}</p>
+            <p class="text-xs text-gray-600 mb-2">{{ bm.tiers.public.description }}</p>
+            <p class="text-xs text-green-700 font-medium mb-3">Includes ground truth</p>
             <div class="text-xs text-gray-500 mb-3">
-                Format: <span class="font-mono font-medium">{{ bm.tiers.pro.dataset.format }}</span>
+                Format: <span class="font-mono font-medium">{{ bm.tiers.public.dataset.format }}</span>
             </div>
             <div class="flex flex-wrap gap-2">
-                {% if bm.tiers.pro.dataset.download_url %}
-                <a href="{{ bm.tiers.pro.dataset.download_url }}"
+                {% if bm.tiers.public.dataset.download_url %}
+                <a href="{{ bm.tiers.public.dataset.download_url }}"
                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+                    <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    Download Dataset
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Dev tier (amber) -->
+        <div class="border-2 border-amber-300 rounded-lg p-4 bg-amber-50/50">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="text-xs px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-800">Dev</span>
+                <span class="text-xs text-amber-700">{{ bm.tiers.dev.count }} scenes</span>
+            </div>
+            <p class="text-xs text-gray-600 mb-2">{{ bm.tiers.dev.description }}</p>
+            <p class="text-xs text-amber-700 font-medium mb-3">Measurements + operator (no ground truth)</p>
+            <div class="text-xs text-gray-500 mb-3">
+                Format: <span class="font-mono font-medium">{{ bm.tiers.dev.dataset.format }}</span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                {% if bm.tiers.dev.dataset.download_url %}
+                <a href="{{ bm.tiers.dev.dataset.download_url }}"
+                   class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700">
                     <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                     Download Dataset
                 </a>
                 {% endif %}
                 {% if bm.links.get('submit_reconstruction') %}
                 <a href="{{ bm.links.submit_reconstruction }}" target="_blank" rel="noopener noreferrer"
-                   class="inline-flex items-center px-3 py-1.5 border border-green-300 text-xs font-medium rounded-md text-green-700 bg-white hover:bg-green-50">
+                   class="inline-flex items-center px-3 py-1.5 border border-amber-300 text-xs font-medium rounded-md text-amber-700 bg-white hover:bg-amber-50">
                     Submit Reconstruction
                 </a>
                 {% endif %}
             </div>
         </div>
 
-        <!-- Hidden tier -->
+        <!-- Hidden tier (purple) -->
         <div class="border-2 border-purple-300 rounded-lg p-4 bg-purple-50/50">
             <div class="flex items-center gap-2 mb-2">
                 <span class="text-xs px-2 py-0.5 rounded font-bold bg-purple-100 text-purple-800">Hidden</span>
-                <span class="text-xs text-purple-700">{{ bm.tiers.hidden.count }} samples</span>
+                <span class="text-xs text-purple-700">{{ bm.tiers.hidden.count }} scenes</span>
                 <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
             </div>
             <p class="text-xs text-gray-600 mb-3">{{ bm.tiers.hidden.description }}</p>
@@ -400,6 +424,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Scoring note -->
+    <p class="text-xs text-gray-500 mt-2 italic">Complete score requires all 3 tiers.</p>
 
     <!-- Baseline tables -->
     {% if bm.baselines %}

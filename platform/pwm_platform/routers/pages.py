@@ -202,6 +202,58 @@ async def dashboard(
             all_datasets.add(ds)
     total_datasets = len(all_datasets)
 
+    # Build modality groups for the chatbox selector (category → items)
+    from collections import OrderedDict
+
+    from pwm_platform.services.benchmark_database import VARIANT_DATABASE
+
+    _CHAT_CATEGORY_ORDER = [
+        ("compressive", "Compressive"),
+        ("medical", "Medical"),
+        ("medical_ultrasound", "Medical Ultrasound"),
+        ("coherent", "Coherent"),
+        ("microscopy", "Microscopy"),
+        ("electron_microscopy", "Electron Microscopy"),
+        ("clinical_optics", "Clinical Optics"),
+        ("computational", "Computational"),
+        ("computational_photography", "Computational Photography"),
+        ("neural_rendering", "Neural Rendering"),
+        ("depth_imaging", "Depth Imaging"),
+        ("remote_sensing", "Remote Sensing"),
+        ("particle_imaging", "Particle Imaging"),
+        ("scanning_probe", "Scanning Probe"),
+        ("industrial_inspection", "Industrial Inspection"),
+        ("spectroscopy", "Spectroscopy"),
+        ("astronomy", "Astronomy"),
+        ("ultrafast", "Ultrafast"),
+        ("quantum", "Quantum"),
+        ("experimental_science", "Experimental Science"),
+        ("scientific_instrumentation", "Scientific Instrumentation"),
+        ("multi_modal_fusion", "Multi-Modal Fusion"),
+    ]
+    cat_labels = dict(_CHAT_CATEGORY_ORDER)
+
+    _cat_items: dict[str, list[dict]] = OrderedDict()
+    for cat_key, _ in _CHAT_CATEGORY_ORDER:
+        _cat_items[cat_key] = []
+
+    for vk, vdata in VARIANT_DATABASE.items():
+        cat = vdata.get("category", "other")
+        if cat not in _cat_items:
+            _cat_items[cat] = []
+        _cat_items[cat].append({"key": vk, "display_name": vdata["display_name"]})
+
+    # Sort items within each category alphabetically
+    for items in _cat_items.values():
+        items.sort(key=lambda x: x["display_name"])
+
+    # Build template-friendly list: [(slug, label, items), ...]
+    modality_groups = [
+        (slug, cat_labels.get(slug, slug.replace("_", " ").title()), items)
+        for slug, items in _cat_items.items()
+        if items
+    ]
+
     return templates.TemplateResponse("dashboard.html", {
         "request": request,
         "user": user,
@@ -210,6 +262,7 @@ async def dashboard(
         "total_modalities": total_modalities,
         "total_datasets": total_datasets,
         "chat_variant_key": "sd_cassi",
+        "modality_groups": modality_groups,
     })
 
 
@@ -306,6 +359,15 @@ async def datasets_page(
         ("depth_imaging", "Depth Imaging"),
         ("remote_sensing", "Remote Sensing"),
         ("particle_imaging", "Particle Imaging"),
+        ("scanning_probe", "Scanning Probe"),
+        ("industrial_inspection", "Industrial Inspection"),
+        ("spectroscopy", "Spectroscopy"),
+        ("astronomy", "Astronomy"),
+        ("ultrafast", "Ultrafast"),
+        ("quantum", "Quantum"),
+        ("experimental_science", "Experimental Science"),
+        ("scientific_instrumentation", "Scientific Instrumentation"),
+        ("multi_modal_fusion", "Multi-Modal Fusion"),
     ]
     category_labels = dict(CATEGORY_ORDER)
 
@@ -411,11 +473,12 @@ async def variant_benchmarks_page(
         if pd and pd.get("gcs_object_path"):
             pd["download_url"] = f"/gcs/{pd['gcs_object_path']}"
 
-        # Wire challenge tier download URLs
+        # Wire challenge tier download URLs (Public + Dev)
         if bm.get("is_challenge"):
-            pro_ds = bm.get("tiers", {}).get("pro", {}).get("dataset")
-            if pro_ds and pro_ds.get("gcs_object_path"):
-                pro_ds["download_url"] = f"/gcs/{pro_ds['gcs_object_path']}"
+            for tier_key in ("public", "dev"):
+                tier_ds = bm.get("tiers", {}).get(tier_key, {}).get("dataset")
+                if tier_ds and tier_ds.get("gcs_object_path"):
+                    tier_ds["download_url"] = f"/gcs/{tier_ds['gcs_object_path']}"
 
     return templates.TemplateResponse("variant_benchmarks.html", {
         "request": request,
