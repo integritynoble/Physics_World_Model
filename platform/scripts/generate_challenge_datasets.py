@@ -1,18 +1,26 @@
 #!/usr/bin/env python3
 """Generate HDF5 challenge datasets for the Blind Reconstruction Challenge.
 
-Creates Pro (public) and Hidden (server-side) HDF5 files for each variant.
+Creates Public, Dev, and Hidden HDF5 files for each variant.
+All three tiers use ALL scenes but with different mismatch realizations
+(different true_spec values + different noise seeds).
 
-Pro HDF5 schema (what contestants download):
+Public HDF5 schema (what contestants download — includes ground truth):
+    /sample_{nn}/y           — measurements (corrupted by mismatch + noise)
+    /sample_{nn}/H_ideal     — ideal operator components
+    /sample_{nn}/spec_ranges — JSON string with mismatch ranges
+    /sample_{nn}/metadata    — JSON string (scene name, dimensions, noise model)
+    /sample_{nn}/x_true      — ground truth signal
+    /sample_{nn}/true_spec   — JSON string with exact mismatch params
+
+Dev HDF5 schema (contestants download — no ground truth):
     /sample_{nn}/y           — measurements (corrupted by mismatch + noise)
     /sample_{nn}/H_ideal     — ideal operator components
     /sample_{nn}/spec_ranges — JSON string with mismatch ranges
     /sample_{nn}/metadata    — JSON string (scene name, dimensions, noise model)
 
-Hidden HDF5 schema (server-side only, adds ground truth):
-    /sample_{nn}/...         — same as Pro
-    /sample_{nn}/x_true      — ground truth signal
-    /sample_{nn}/true_spec   — JSON string with exact mismatch params
+Hidden HDF5 schema (server-side only — includes ground truth for eval):
+    /sample_{nn}/...         — same as Public (full data for server-side evaluation)
 
 Usage:
     python scripts/generate_challenge_datasets.py --variant sd_cassi
@@ -231,7 +239,7 @@ def _write_sample(
     grp.attrs["spec_ranges"] = json.dumps(spec_ranges)
     grp.attrs["metadata"] = json.dumps(metadata)
 
-    # Hidden-only fields
+    # Ground-truth fields (included in Public + Hidden tiers)
     if x_true is not None:
         grp.create_dataset("x_true", data=x_true, compression="gzip", compression_opts=4)
     if true_spec is not None:
@@ -258,16 +266,34 @@ def _find_data_root() -> Path:
     )
 
 
+def _include_ground_truth(tier_name: str, visible_data: list[str]) -> bool:
+    """Determine whether to include ground truth in the HDF5 file.
+
+    Public tier: always includes x_true + true_spec (visible to contestants).
+    Hidden tier: always includes x_true + true_spec (for server-side eval).
+    Dev tier: never includes ground truth.
+    """
+    if tier_name == "dev":
+        return False
+    return True
+
+
 def _generate_cassi(cfg: dict, output_dir: Path, data_root: Path | None = None):
-    """Generate SD-CASSI challenge datasets."""
+    """Generate SD-CASSI challenge datasets (3 tiers)."""
     if data_root is None:
         data_root = _find_data_root()
     truth_dir = data_root / "TSA_simu_data" / "Truth"
 
-    rng = np.random.default_rng(2024)
-    mask = None  # Will be generated on first use
+    scenes = cfg["scenes"]
 
-    for tier_name, tier_cfg in cfg["splits"].items():
+    for tier_name, tier_cfg in cfg["tiers"].items():
+        tier_true_spec = tier_cfg["true_spec"]
+        tier_seed = tier_cfg["seed"]
+        visible_data = tier_cfg["visible_data"]
+
+        rng = np.random.default_rng(tier_seed)
+        mask = None  # Will be generated on first use
+
         out_path = output_dir / f"sd_cassi_challenge_{tier_name}.h5"
         logger.info("Generating %s -> %s", tier_name, out_path)
 
@@ -276,7 +302,7 @@ def _generate_cassi(cfg: dict, output_dir: Path, data_root: Path | None = None):
             f.attrs["tier"] = tier_name
             f.attrs["version"] = "1.0"
 
-            for i, scene_id in enumerate(tier_cfg["scenes"]):
+            for i, scene_id in enumerate(scenes):
                 scene_path = truth_dir / f"scene{scene_id:02d}.mat"
                 if not scene_path.exists():
                     logger.warning("Scene file not found: %s, skipping", scene_path)
@@ -287,13 +313,15 @@ def _generate_cassi(cfg: dict, output_dir: Path, data_root: Path | None = None):
                 if x.max() > 0:
                     x = x / x.max()
 
-                # Generate mask once
+                # Generate mask once per tier
                 if mask is None:
                     H, W = x.shape[:2]
                     mask = (rng.random((H, W)) > 0.5).astype(np.float64)
 
-                y, H_ideal = _apply_cassi_mismatch(x, mask, cfg["true_spec"])
+                y, H_ideal = _apply_cassi_mismatch(x, mask, tier_true_spec)
                 y = _add_noise(y, cfg["noise_model"], cfg["noise_params"], rng)
+
+                include_gt = _include_ground_truth(tier_name, visible_data)
 
                 grp = f.create_group(f"sample_{i:02d}")
                 _write_sample(
@@ -303,23 +331,29 @@ def _generate_cassi(cfg: dict, output_dir: Path, data_root: Path | None = None):
                         "shape": list(x.shape),
                         "noise_model": cfg["noise_model"],
                     },
-                    x_true=x if tier_name == "hidden" else None,
-                    true_spec=cfg["true_spec"] if tier_name == "hidden" else None,
+                    x_true=x if include_gt else None,
+                    true_spec=tier_true_spec if include_gt else None,
                 )
 
-        logger.info("Written %d samples to %s", len(tier_cfg["scenes"]), out_path)
+        logger.info("Written %d samples to %s", len(scenes), out_path)
 
 
 def _generate_cacti(cfg: dict, output_dir: Path, data_root: Path | None = None):
-    """Generate CACTI challenge datasets."""
+    """Generate CACTI challenge datasets (3 tiers)."""
     if data_root is None:
         data_root = _find_data_root()
     sim_dir = data_root / "CACTI" / "simulation"
 
-    rng = np.random.default_rng(2024)
-    mask = None
+    scenes = cfg["scenes"]
 
-    for tier_name, tier_cfg in cfg["splits"].items():
+    for tier_name, tier_cfg in cfg["tiers"].items():
+        tier_true_spec = tier_cfg["true_spec"]
+        tier_seed = tier_cfg["seed"]
+        visible_data = tier_cfg["visible_data"]
+
+        rng = np.random.default_rng(tier_seed)
+        mask = None
+
         out_path = output_dir / f"cacti_challenge_{tier_name}.h5"
         logger.info("Generating %s -> %s", tier_name, out_path)
 
@@ -328,7 +362,7 @@ def _generate_cacti(cfg: dict, output_dir: Path, data_root: Path | None = None):
             f.attrs["tier"] = tier_name
             f.attrs["version"] = "1.0"
 
-            for i, scene_name in enumerate(tier_cfg["scenes"]):
+            for i, scene_name in enumerate(scenes):
                 scene_path = sim_dir / f"{scene_name}.mat"
                 if not scene_path.exists():
                     logger.warning("Scene file not found: %s, skipping", scene_path)
@@ -342,8 +376,10 @@ def _generate_cacti(cfg: dict, output_dir: Path, data_root: Path | None = None):
                     H, W, T = x.shape
                     mask = (rng.random((H, W, T)) > 0.5).astype(np.float64)
 
-                y, H_ideal = _apply_cacti_mismatch(x, mask, cfg["true_spec"])
+                y, H_ideal = _apply_cacti_mismatch(x, mask, tier_true_spec)
                 y = _add_noise(y, cfg["noise_model"], cfg["noise_params"], rng)
+
+                include_gt = _include_ground_truth(tier_name, visible_data)
 
                 grp = f.create_group(f"sample_{i:02d}")
                 _write_sample(
@@ -353,21 +389,20 @@ def _generate_cacti(cfg: dict, output_dir: Path, data_root: Path | None = None):
                         "shape": list(x.shape),
                         "noise_model": cfg["noise_model"],
                     },
-                    x_true=x if tier_name == "hidden" else None,
-                    true_spec=cfg["true_spec"] if tier_name == "hidden" else None,
+                    x_true=x if include_gt else None,
+                    true_spec=tier_true_spec if include_gt else None,
                 )
 
-        logger.info("Written %d samples to %s", len(tier_cfg["scenes"]), out_path)
+        logger.info("Written %d samples to %s", len(scenes), out_path)
 
 
 def _generate_spc(variant_key: str, cfg: dict, output_dir: Path, data_root: Path | None = None):
-    """Generate SPC challenge datasets (block or kronecker)."""
+    """Generate SPC challenge datasets (block or kronecker, 3 tiers)."""
     if data_root is None:
         data_root = _find_data_root()
     set11_dir = data_root / "SPC" / "Set11"
 
-    rng = np.random.default_rng(2024)
-    phi = None
+    scenes = cfg["scenes"]
 
     # List .tif files sorted
     tif_files = sorted(set11_dir.glob("*.tif"))
@@ -377,7 +412,14 @@ def _generate_spc(variant_key: str, cfg: dict, output_dir: Path, data_root: Path
         logger.warning("No image files found in %s", set11_dir)
         return
 
-    for tier_name, tier_cfg in cfg["splits"].items():
+    for tier_name, tier_cfg in cfg["tiers"].items():
+        tier_true_spec = tier_cfg["true_spec"]
+        tier_seed = tier_cfg["seed"]
+        visible_data = tier_cfg["visible_data"]
+
+        rng = np.random.default_rng(tier_seed)
+        phi = None
+
         out_path = output_dir / f"{variant_key}_challenge_{tier_name}.h5"
         logger.info("Generating %s -> %s", tier_name, out_path)
 
@@ -386,7 +428,7 @@ def _generate_spc(variant_key: str, cfg: dict, output_dir: Path, data_root: Path
             f.attrs["tier"] = tier_name
             f.attrs["version"] = "1.0"
 
-            for i, scene_id in enumerate(tier_cfg["scenes"]):
+            for i, scene_id in enumerate(scenes):
                 idx = scene_id - 1  # 1-indexed to 0-indexed
                 if idx >= len(tif_files):
                     logger.warning("Image index %d out of range, skipping", scene_id)
@@ -394,12 +436,14 @@ def _generate_spc(variant_key: str, cfg: dict, output_dir: Path, data_root: Path
 
                 x = _load_tif_image(tif_files[idx])
 
-                y, H_ideal = _apply_spc_mismatch(x, phi, cfg["true_spec"])
+                y, H_ideal = _apply_spc_mismatch(x, phi, tier_true_spec)
                 y = _add_noise(y, cfg["noise_model"], cfg["noise_params"], rng)
 
                 # Cache phi for reuse
                 if phi is None:
                     phi = H_ideal
+
+                include_gt = _include_ground_truth(tier_name, visible_data)
 
                 grp = f.create_group(f"sample_{i:02d}")
                 _write_sample(
@@ -409,15 +453,14 @@ def _generate_spc(variant_key: str, cfg: dict, output_dir: Path, data_root: Path
                         "shape": list(x.shape),
                         "noise_model": cfg["noise_model"],
                     },
-                    x_true=x if tier_name == "hidden" else None,
-                    true_spec=cfg["true_spec"] if tier_name == "hidden" else None,
+                    x_true=x if include_gt else None,
+                    true_spec=tier_true_spec if include_gt else None,
                 )
 
-        logger.info("Written %d samples to %s", len(tier_cfg["scenes"]), out_path)
+        logger.info("Written %d samples to %s", len(scenes), out_path)
 
 
 # ── Variant dispatch ──────────────────────────────────────────────────────────
-
 _GENERATORS = {
     "sd_cassi": lambda cfg, out, dr: _generate_cassi(cfg, out, dr),
     "cacti": lambda cfg, out, dr: _generate_cacti(cfg, out, dr),
