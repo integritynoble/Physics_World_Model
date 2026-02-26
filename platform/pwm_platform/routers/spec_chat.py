@@ -190,10 +190,13 @@ async def simulate_spec(
     user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Run simulation on a spec JSON and return results as an HTMX partial."""
-    variant = get_variant(variant_key)
-    if variant is None:
-        raise HTTPException(status_code=404, detail="Variant not found")
+    """Run simulation on a spec JSON and return results as an HTMX partial.
+
+    Simulation works for ALL modalities — the variant_key is used for
+    classification but does not need to be in the platform registry.
+    """
+    # Variant lookup is optional for simulation (all 168 modalities supported)
+    variant = get_variant(variant_key)  # may be None for non-registry modalities
 
     # Parse the spec JSON
     try:

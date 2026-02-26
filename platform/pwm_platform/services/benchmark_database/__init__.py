@@ -16,13 +16,36 @@ Public API (unchanged from the original monolithic module):
 
 from __future__ import annotations
 
-from ._challenge_data import CHALLENGE_CONFIG
+from ._challenge_data import CHALLENGE_CONFIG, generate_challenge_config
 from ._factory import build_variant
 from ._flowcharts import FLOWCHARTS
 from ._leaderboard_data import LEADERBOARD_DATA
 from ._modality_catalog import MODALITY_CATALOG
 from ._primitives import SPEC_PRIMITIVES
 from ._variant_registry import VARIANT_REGISTRY
+
+# ── Pre-populate CHALLENGE_CONFIG for variants without hand-crafted configs ───
+
+for _key, _entry in VARIANT_REGISTRY.items():
+    if _key not in CHALLENGE_CONFIG:
+        _auto_cfg = generate_challenge_config(
+            _key, _entry["mismatch_params"], _entry["category"],
+            _entry.get("dataset_config"),
+        )
+        if _auto_cfg is not None:
+            CHALLENGE_CONFIG[_key] = _auto_cfg
+
+# Pre-populate for catalog entries that will be auto-expanded below
+_covered_parents_pre = {v.get("parent_modality") for v in VARIANT_REGISTRY.values()}
+for _mod_id, _mod_entry in MODALITY_CATALOG.items():
+    if (_mod_id not in _covered_parents_pre
+            and _mod_id not in VARIANT_REGISTRY
+            and _mod_id not in CHALLENGE_CONFIG):
+        _auto_cfg = generate_challenge_config(
+            _mod_id, _mod_entry["mismatch_params"], _mod_entry["category"],
+        )
+        if _auto_cfg is not None:
+            CHALLENGE_CONFIG[_mod_id] = _auto_cfg
 
 # ── Build the full database at import time ────────────────────────────────────
 

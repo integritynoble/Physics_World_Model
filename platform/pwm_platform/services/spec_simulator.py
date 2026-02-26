@@ -330,11 +330,198 @@ def _synthesise_reconstruction(
 
 # ── Modality classification ──────────────────────────────────────────────
 
+# Comprehensive mapping of all 168 benchmark modalities → InverseNet pipeline.
+#   cassi  — spectral / multi-band / wavelength-dispersive systems
+#   cacti  — temporal / video / multi-frame / multi-view systems
+#   spc    — generic projection / Fourier / convolution / scanning systems
+_MODALITY_MAP: Dict[str, str] = {
+    # ── Compressive imaging (native InverseNet modalities) ──
+    "sd_cassi": "cassi", "dd_cassi": "cassi", "cassi": "cassi",
+    "cacti": "cacti",
+    "spc_block": "spc", "spc_kronecker": "spc", "spc": "spc", "matrix": "spc",
+
+    # ── Medical — projection-based ──
+    "ct": "spc", "cbct": "spc", "industrial_ct": "spc",
+    "digital_breast_tomo": "spc", "portal_imaging": "spc",
+    "xray_radiography": "spc", "mammography": "spc", "angiography": "spc",
+    "fluoroscopy": "cacti",           # temporal X-ray → video-like
+    "dexa": "cassi",                  # dual-energy → spectral
+    "spectral_ct": "cassi",           # energy-resolved CT → spectral
+    "brachytherapy_img": "spc",
+
+    # ── Medical — emission tomography ──
+    "pet": "spc", "spect": "spc",
+    "pet_ct": "spc", "pet_mr": "spc", "spect_ct": "spc",
+
+    # ── Medical — MRI / NMR ──
+    "mri": "spc", "diffusion_mri": "spc", "mra": "spc",
+    "mr_elastography": "spc", "mr_fingerprinting": "spc", "swi": "spc",
+    "fmri": "cacti",                  # temporal BOLD → video-like
+    "asl_mri": "cacti",              # perfusion time-series
+    "cest_mri": "cassi",             # chemical-exchange saturation → spectral
+    "mrs": "cassi",                   # MR spectroscopy → spectral
+
+    # ── Medical — ultrasound / acoustic ──
+    "ultrasound": "spc", "elastography": "spc",
+    "ivus": "spc", "ceus": "spc",
+    "ultrasonic_phased_array": "spc",
+    "doppler_ultrasound": "cacti",    # temporal Doppler
+    "photoacoustic": "spc",
+
+    # ── Medical — optical ──
+    "dot": "spc", "nirs_brain": "spc",
+    "impedance_tomo": "spc",
+    "bioluminescence_tomo": "spc",
+    "ct_fluorescence": "cassi",       # CT + fluorescence → multi-modal spectral
+    "magnetic_particle": "spc",
+
+    # ── Clinical optics ──
+    "fundus": "spc",
+    "oct": "cassi",                   # spectral-domain OCT → spectral
+    "octa": "cacti",                  # OCT angiography → temporal
+    "endoscopy": "spc",
+    "confocal_endomicroscopy": "spc",
+
+    # ── Microscopy — PSF / convolution ──
+    "widefield": "spc", "widefield_lowdose": "spc",
+    "confocal_3d": "cassi",           # z-stack → 3D spectral-like
+    "confocal_livecell": "cacti",     # live-cell → temporal
+    "lightsheet": "cassi",            # 3D volume → spectral-like
+    "lattice_lightsheet": "cassi",
+    "two_photon": "spc", "three_photon": "spc",
+    "sted": "spc", "tirf": "spc", "ism": "spc",
+    "spinning_disk": "cacti",         # fast multi-frame
+    "dark_field": "spc", "phase_contrast": "spc",
+    "dic": "spc", "expansion": "spc", "minflux": "spc",
+    "machine_vision": "spc", "lensless": "spc",
+
+    # ── Microscopy — structured illumination / ptychographic ──
+    "sim": "spc", "fpm": "spc",
+
+    # ── Microscopy — spectral / lifetime ──
+    "flim": "cassi",                  # fluorescence lifetime → spectral
+    "palm_storm": "spc",
+    "dna_paint": "spc",
+    "polarization": "cassi",          # polarization channels → spectral-like
+    "shg": "cassi",                   # second-harmonic → spectral
+
+    # ── Coherent imaging ──
+    "holography": "spc", "ptychography": "spc",
+    "phase_retrieval": "spc", "odt": "spc",
+    "talbot_lau": "spc",
+
+    # ── Electron microscopy ──
+    "sem": "spc", "tem": "spc", "stem": "spc",
+    "electron_tomography": "spc", "electron_diffraction": "spc",
+    "electron_holography": "spc",
+    "cryo_em": "spc", "cryo_et": "spc", "fib_sem": "spc",
+    "ebsd": "spc",
+    "eels": "cassi",                  # energy-loss spectrum → spectral
+    "edx_mapping": "cassi",           # energy-dispersive X-ray → spectral
+    "cathodoluminescence": "cassi",   # emission spectrum → spectral
+
+    # ── Scanning probe ──
+    "afm": "spc", "mfm": "spc", "stm": "spc", "nsom": "spc",
+
+    # ── Remote sensing ──
+    "sar": "spc", "sonar": "spc",
+    "polsar": "spc", "insar": "spc",
+    "hyperspectral_remote": "cassi",  # hyperspectral → spectral
+    "multispectral_sat": "cassi",     # multispectral → spectral
+    "ocean_color": "cassi",           # spectral ocean → spectral
+    "weather_radar": "spc",
+    "gpr": "spc", "passive_microwave": "spc",
+
+    # ── Depth imaging ──
+    "lidar": "spc", "flash_lidar": "spc",
+    "structured_light": "spc",
+    "tof_camera": "cacti",            # time-of-flight → temporal
+    "photometric_stereo": "cacti",    # multi-illumination → multi-frame
+
+    # ── Computational photography ──
+    "coded_exposure": "cacti",        # temporal coding → video-like
+    "event_camera": "cacti",          # temporal events → video-like
+    "hdr_imaging": "cacti",           # multi-exposure → multi-frame
+    "panorama": "cacti",              # multi-frame stitching
+    "light_field": "cacti",           # multi-view → video-like
+    "integral": "cacti",              # multi-view
+    "adaptive_optics": "spc",
+
+    # ── Neural rendering ──
+    "nerf": "cacti",                  # multi-view → video-like
+    "gaussian_splatting": "cacti",    # multi-view
+
+    # ── Spectroscopy & spectral ──
+    "brillouin": "cassi", "cars": "cassi", "raman_imaging": "cassi",
+    "srs": "cassi", "libs": "cassi",
+    "ftir_imaging": "cassi",          # Fourier-transform IR → spectral
+    "desi": "cassi", "sims": "cassi",
+    "maldi_msi": "cassi",            # mass-spec imaging → spectral
+
+    # ── Ultrafast imaging ──
+    "streak_camera": "cacti",         # temporal streak
+    "pump_probe": "cacti",            # temporal pump-probe
+    "cup": "cacti",                   # compressed ultrafast photography → temporal
+    "xfel_sfx": "spc",
+
+    # ── Astronomy & space ──
+    "coronagraphy": "spc",
+    "eht_imaging": "spc",            # radio interferometry
+    "lucky_imaging": "cacti",         # multi-frame selection
+    "solar_imaging": "cacti",         # temporal solar
+    "radio_astronomy": "spc",
+    "radio_interferometry": "spc",
+
+    # ── Quantum imaging ──
+    "ghost_imaging": "spc",
+    "entangled_photon": "spc",
+    "quantum_illumination": "spc",
+
+    # ── Scientific / particle ──
+    "neutron_tomo": "spc", "neutron_diffraction": "spc",
+    "proton_radiography": "spc", "proton_therapy_img": "spc",
+    "muon_tomo": "spc",
+    "atom_probe": "spc",
+    "particle_calorimetry": "spc",
+    "saxs": "spc", "waxs": "spc",
+    "xray_crystallography": "spc",
+    "xrf_imaging": "cassi",          # X-ray fluorescence → spectral
+    "xrf_tomo": "cassi",
+
+    # ── Industrial inspection ──
+    "acoustic_microscopy": "spc",
+    "active_thermography": "spc",
+    "terahertz": "spc",
+    "eddy_current": "spc",
+    "shearography": "spc",
+    "xray_ndt": "spc",
+
+    # ── Multi-modal fusion ──
+    "clem": "spc",
+    "us_mri": "spc",
+
+    # ── Broader experimental ──
+    "acoustic_emission": "spc",
+    "gravitational_wave": "spc",
+    "seismic_tomo": "spc",
+    "fwi": "spc",
+    "ocean_acoustic_tomo": "spc",
+}
+
 
 def _classify_modality(variant_key: str, spec: Optional[dict] = None) -> str:
-    """Map variant_key + spec content to one of: cassi, spc, cacti."""
+    """Map variant_key + spec content to one of: cassi, spc, cacti.
+
+    Uses a comprehensive lookup of all 168 benchmark modalities,
+    then falls back to spec content analysis.
+    """
     vk = variant_key.lower()
 
+    # 1. Explicit lookup (covers all 168 benchmark modalities)
+    if vk in _MODALITY_MAP:
+        return _MODALITY_MAP[vk]
+
+    # 2. Inspect spec content for keyword-based classification
     if spec:
         notation = (spec.get("spec_notation") or "").lower()
         meas_matrix = (spec.get("measurement_matrix") or "").lower()
@@ -343,21 +530,34 @@ def _classify_modality(variant_key: str, spec: Optional[dict] = None) -> str:
         )
         all_text = f"{notation} {meas_matrix} {labels}"
 
-        if "spc" in all_text or "single-pixel" in all_text or "block" in all_text or "sensing matrix" in meas_matrix:
-            return "spc"
-        if "cacti" in all_text or "temporal" in all_text or "video" in all_text or "time-varying" in meas_matrix:
-            return "cacti"
-        if "cassi" in all_text or "dispersion" in all_text or "spectral" in all_text:
+        # Spectral / wavelength → CASSI
+        if any(kw in all_text for kw in (
+            "spectral", "wavelength", "dispersion", "hyperspectral",
+            "energy-loss", "fluorescence lifetime", "raman", "ftir",
+        )):
             return "cassi"
+        # Temporal / video / multi-frame → CACTI
+        if any(kw in all_text for kw in (
+            "temporal", "video", "time-varying", "multi-frame",
+            "multi-view", "time-of-flight", "ultrafast", "streak",
+        )):
+            return "cacti"
+        # SPC keywords
+        if any(kw in all_text for kw in (
+            "spc", "single-pixel", "sensing matrix", "block",
+        )):
+            return "spc"
 
-    if "spc" in vk or "single_pixel" in vk:
-        return "spc"
-    if "cacti" in vk:
-        return "cacti"
-    if "cassi" in vk:
+    # 3. Variant key substring matching
+    if any(kw in vk for kw in ("cassi", "spectral", "hyperspectral")):
         return "cassi"
+    if any(kw in vk for kw in ("cacti", "video", "temporal")):
+        return "cacti"
+    if any(kw in vk for kw in ("spc", "single_pixel", "matrix")):
+        return "spc"
 
-    return "cassi"
+    # 4. Default to SPC (most generic compressed sensing pipeline)
+    return "spc"
 
 
 # ── Per-modality data + InverseNet result pipelines ──────────────────────

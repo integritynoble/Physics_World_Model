@@ -94,10 +94,8 @@
         </div>
         {% endif %}
 
-        {# ── Run Simulation button (only for modalities with working pipelines) ── #}
-        {% set _sim_variants = ["sd_cassi", "dd_cassi", "cacti", "spc_block", "spc_kronecker", "matrix"] %}
+        {# ── Run Simulation button (enabled for all modalities) ── #}
         {% set _vk = variant_key | default('sd_cassi') %}
-        {% if _vk in _sim_variants %}
         <button hx-post="/api/v1/spec-chat/{{ _vk }}/simulate"
                 hx-vals='js:{
                     "spec_json": JSON.stringify({{ spec | tojson }}),
@@ -110,9 +108,6 @@
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             Run Simulation
         </button>
-        {% else %}
-        <p class="text-xs text-gray-400 italic">Simulation not yet available for this modality.</p>
-        {% endif %}
         {% endif %}
     </div>
 </div>
