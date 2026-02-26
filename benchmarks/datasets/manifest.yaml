@@ -5,7 +5,7 @@ datasets:
     citation: Purdue University, Indian Pines, 1992
     license: Public domain
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/indian_pines_hs.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/indian_pines_hs.npy
     x_shape:
     - 145
     - 145
@@ -29,7 +29,7 @@ datasets:
     citation: Pavia University, ROSIS sensor, 2003
     license: Public domain
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/pavia_university_hs.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/pavia_university_hs.npy
     x_shape:
     - 610
     - 340
@@ -62,7 +62,7 @@ datasets:
     citation: Salinas Valley, AVIRIS sensor, 1998
     license: Public domain
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/salinas_hs.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/salinas_hs.npy
     x_shape:
     - 512
     - 217
@@ -114,7 +114,7 @@ datasets:
     citation: Martin et al., Berkeley Segmentation Dataset, ICCV 2001
     license: Research use
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/bsd68_microscopy.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/bsd68_microscopy.npy
     x_shape:
     - 256
     - 256
@@ -237,7 +237,7 @@ datasets:
     citation: Collins et al., BrainWeb, IEEE TMI 1998
     license: Non-commercial research
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/brainweb_pet.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/brainweb_pet.npy
     x_shape:
     - 256
     - 256
@@ -256,7 +256,7 @@ datasets:
     citation: Kennedy Space Center, AVIRIS sensor
     license: Public domain
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/kennedy_space_center_hs.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/kennedy_space_center_hs.npy
     x_shape:
     - 512
     - 614
@@ -281,7 +281,7 @@ datasets:
     citation: PWM generated surface topography
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/afm_synthetic_surface.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/afm_synthetic_surface.npy
     x_shape:
     - 256
     - 256
@@ -360,7 +360,7 @@ datasets:
     citation: COVID-19 CT Lung and Infection Segmentation, Zenodo 3757476
     license: CC BY 4.0
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/covid_ct_lung_seg.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/covid_ct_lung_seg.npy
     x_shape:
     - 256
     - 256
@@ -390,7 +390,7 @@ datasets:
     citation: PWM generated OCT-like layered retinal structure
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/oct_generated.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/oct_generated.npy
     x_shape:
     - 256
     - 256
@@ -405,7 +405,7 @@ datasets:
     citation: PWM generated SMLM emitter field
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/smlm_generated.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/smlm_generated.npy
     x_shape:
     - 256
     - 256
@@ -423,7 +423,7 @@ datasets:
     citation: PWM generated medical phantom (Shepp-Logan derived)
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/medical_phantom_generated.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/medical_phantom_generated.npy
     x_shape:
     - 256
     - 256
@@ -466,7 +466,7 @@ datasets:
     citation: PWM generated EM phantom (nanoparticle field)
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/electron_microscopy_generated.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/electron_microscopy_generated.npy
     x_shape:
     - 256
     - 256
@@ -492,7 +492,7 @@ datasets:
     citation: PWM generated resolution target with phase
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/coherent_imaging_generated.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/coherent_imaging_generated.npy
     x_shape:
     - 256
     - 256
@@ -511,7 +511,7 @@ datasets:
     citation: PWM generated depth scene
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/depth_imaging_generated.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/depth_imaging_generated.npy
     x_shape:
     - 256
     - 256
@@ -530,7 +530,7 @@ datasets:
     citation: PWM generated test scene
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/computational_photo_generated.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/computational_photo_generated.npy
     x_shape:
     - 256
     - 256
@@ -550,7 +550,7 @@ datasets:
     citation: PWM generated star field with extended source
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/astronomy_generated.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/astronomy_generated.npy
     x_shape:
     - 256
     - 256
@@ -571,7 +571,7 @@ datasets:
     citation: PWM generated ultrafast dynamics phantom
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/ultrafast_generated.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/ultrafast_generated.npy
     x_shape:
     - 256
     - 256
@@ -589,7 +589,7 @@ datasets:
     citation: PWM generated crystallographic diffraction pattern
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/xray_diffraction_generated.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/xray_diffraction_generated.npy
     x_shape:
     - 256
     - 256
@@ -608,7 +608,7 @@ datasets:
     citation: PWM generated elemental distribution map
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/xrf_generated.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/xrf_generated.npy
     x_shape:
     - 256
     - 256
@@ -625,7 +625,7 @@ datasets:
     citation: PWM generated NDT inspection phantom
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/industrial_ndt_generated.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/industrial_ndt_generated.npy
     x_shape:
     - 256
     - 256
@@ -645,7 +645,7 @@ datasets:
     citation: PWM generated layered velocity model
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/seismic_generated.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/seismic_generated.npy
     x_shape:
     - 256
     - 256
@@ -662,7 +662,7 @@ datasets:
     citation: PWM generated multi-view test scene
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/nerf_generated.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/nerf_generated.npy
     x_shape:
     - 256
     - 256
@@ -677,7 +677,7 @@ datasets:
     citation: PWM generated particle shower pattern
     license: N/A
     local_path: /home/spiritai/pwm/Physics_World_Model/benchmarks/results/.data_cache/calorimeter_generated.npy
-    gcs_path: null
+    gcs_path: gs://pwm-benchmark-datasets/datasets/source_cache/calorimeter_generated.npy
     x_shape:
     - 256
     - 256
