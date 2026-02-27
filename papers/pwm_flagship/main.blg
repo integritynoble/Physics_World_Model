@@ -1,48 +1,46 @@
-This is BibTeX, Version 0.99e
+This is BibTeX, Version 0.99d (TeX Live 2023/Debian)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
-Reallocating 'name_of_file' (item size: 1) to 10 items.
-The style file: naturemag.bst
-Reallocating 'name_of_file' (item size: 1) to 13 items.
+The style file: unsrtnat.bst
 Database file #1: pwm_flagship.bib
-You've used 25 entries,
-            2348 wiz_defined-function locations,
-            1128 strings with 14272 characters,
-and the built_in function-call counts, 11694 in all, are:
-= -- 903
-> -- 276
-< -- 0
-+ -- 138
-- -- 69
-* -- 1341
-:= -- 1248
-add.period$ -- 75
-call.type$ -- 25
-change.case$ -- 39
-chr.to.int$ -- 0
-cite$ -- 25
-duplicate$ -- 977
-empty$ -- 1082
-format.name$ -- 92
-if$ -- 2428
-int.to.chr$ -- 0
-int.to.str$ -- 25
-missing$ -- 223
-newline$ -- 133
-num.names$ -- 25
-pop$ -- 202
+You've used 29 entries,
+            2481 wiz_defined-function locations,
+            742 strings with 11226 characters,
+and the built_in function-call counts, 14578 in all, are:
+= -- 1178
+> -- 941
+< -- 15
++ -- 349
+- -- 288
+* -- 1283
+:= -- 2332
+add.period$ -- 105
+call.type$ -- 29
+change.case$ -- 58
+chr.to.int$ -- 26
+cite$ -- 29
+duplicate$ -- 645
+empty$ -- 1204
+format.name$ -- 325
+if$ -- 3055
+int.to.chr$ -- 4
+int.to.str$ -- 30
+missing$ -- 29
+newline$ -- 171
+num.names$ -- 87
+pop$ -- 231
 preamble$ -- 1
-purify$ -- 0
+purify$ -- 29
 quote$ -- 0
-skip$ -- 270
+skip$ -- 400
 stack$ -- 0
-substring$ -- 755
-swap$ -- 958
-text.length$ -- 0
+substring$ -- 851
+swap$ -- 144
+text.length$ -- 6
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 0
+type$ -- 203
 warning$ -- 0
-while$ -- 77
-width$ -- 27
-write$ -- 280
+while$ -- 114
+width$ -- 0
+write$ -- 416

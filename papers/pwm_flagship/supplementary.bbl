@@ -56,8 +56,9 @@ Andrew~M. Maiden and John~M. Rodenburg.
 Chengshuai Yang.
 \newblock The finite primitive basis theorem for computational imaging: Formal
   foundations of the {OperatorGraph} representation.
-\newblock \emph{arXiv preprint}, 2026{\natexlab{b}}.
-\newblock In preparation. Full formal definitions, primitive semantics, typed
-  DAG denotation, and constructive proof.
+\newblock \emph{Under review at SIAM Journal on Imaging Sciences},
+  2026{\natexlab{b}}.
+\newblock Manuscript available at
+  \url{https://github.com/integritynoble/Physics_World_Model}.
 
 \end{thebibliography}
