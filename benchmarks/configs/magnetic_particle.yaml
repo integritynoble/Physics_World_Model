@@ -31,7 +31,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Drive field amplitude
+  nominal: 25.0
+  range:
+  - 22.0
+  - 28.0
+  unit: mT
+- name: Selection field gradient
+  nominal: 2.5
+  range:
+  - 2.0
+  - 3.0
+  unit: T/m
+- name: Particle relaxation time
+  nominal: 2.0
+  range:
+  - 1.0
+  - 3.0
+  unit: us
+- name: Receive coil sensitivity
+  nominal: 1.0
+  range:
+  - 0.85
+  - 1.15
+  unit: '-'
 solvers:
   traditional_cpu:
     name: Adjoint

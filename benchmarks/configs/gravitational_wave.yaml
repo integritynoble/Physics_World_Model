@@ -30,7 +30,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Calibration amplitude
+  nominal: 1.0
+  range:
+  - 0.95
+  - 1.05
+  unit: '-'
+- name: Phase calibration
+  nominal: 0.0
+  range:
+  - -0.05
+  - 0.05
+  unit: rad
+- name: Power spectral density
+  nominal: 1.0e-23
+  range:
+  - 5.0e-24
+  - 2.0e-23
+  unit: 1/Hz
+- name: Timing offset
+  nominal: 0.0
+  range:
+  - -0.0001
+  - 0.0001
+  unit: s
 solvers:
   traditional_cpu:
     name: Adjoint

@@ -30,7 +30,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Pulse chirp
+  nominal: 0.0
+  range:
+  - -0.1
+  - 0.1
+  unit: ps^2
+- name: Water vapor absorption
+  nominal: 0.1
+  range:
+  - 0.0
+  - 0.3
+  unit: 1/cm
+- name: Beam alignment error
+  nominal: 0.0
+  range:
+  - -1.0
+  - 1.0
+  unit: mm
+- name: Dynamic range drift
+  nominal: 1.0
+  range:
+  - 0.9
+  - 1.1
+  unit: '-'
 solvers:
   traditional_cpu:
     name: Adjoint

@@ -16,7 +16,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['P', 'S', 'D'],
         'spec_dag': [{'primitive': 'P', 'params': '', 'label': 'Propagation'}, {'primitive': 'S', 'params': '', 'label': 'Sampling'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'P → S → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'source_location_error', 'symbol': 's_l', 'description': 'Source location error (mm)', 'nominal': 0.0, 'perturbed': 1.0}, {'name': 'wave_speed_error', 'symbol': 'w_s', 'description': 'Wave speed error (m/s)', 'nominal': 5900.0, 'perturbed': 5940.0}, {'name': 'sensor_coupling_gain', 'symbol': 's_c', 'description': 'Sensor coupling gain (-)', 'nominal': 1.0, 'perturbed': 1.04}, {'name': 'arrival_time_bias', 'symbol': 'a_t', 'description': 'Arrival time bias (us)', 'nominal': 0.0, 'perturbed': 0.1}],
         'has_dedicated_operator': True,
     },
     'acoustic_microscopy': {
@@ -40,7 +40,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['P', 'D'],
         'spec_dag': [{'primitive': 'P', 'params': '', 'label': 'Propagation'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'P → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'emissivity_error', 'symbol': 'e_e', 'description': 'Emissivity error (-)', 'nominal': 0.95, 'perturbed': 0.96}, {'name': 'heat_source_power_drift', 'symbol': 'h_s', 'description': 'Heat source power drift (-)', 'nominal': 1.0, 'perturbed': 1.02}, {'name': 'background_temperature', 'symbol': 'b_t', 'description': 'Background temperature (C)', 'nominal': 25.0, 'perturbed': 26.0}, {'name': 'integration_time_offset', 'symbol': 'i_t', 'description': 'Integration time offset (s)', 'nominal': 0.0, 'perturbed': 0.02}],
         'has_dedicated_operator': True,
     },
     'adaptive_optics': {
@@ -52,7 +52,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['M', 'C', 'D'],
         'spec_dag': [{'primitive': 'M', 'params': '', 'label': 'Modulation'}, {'primitive': 'C', 'params': '', 'label': 'Convolution'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'M → C → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'dm_actuator_gain', 'symbol': 'd_a', 'description': 'DM actuator gain (-)', 'nominal': 1.0, 'perturbed': 1.02}, {'name': 'wfs_centroid_bias', 'symbol': 'w_c', 'description': 'WFS centroid bias (px)', 'nominal': 0.0, 'perturbed': 0.04}, {'name': 'fried_parameter_r0', 'symbol': 'f_p', 'description': 'Fried parameter r0 (m)', 'nominal': 0.15, 'perturbed': 0.17}, {'name': 'servo_lag', 'symbol': 's_l', 'description': 'Servo lag (ms)', 'nominal': 0.0, 'perturbed': 0.4}],
         'has_dedicated_operator': True,
     },
     'afm': {
@@ -100,7 +100,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['S', 'D'],
         'spec_dag': [{'primitive': 'S', 'params': '', 'label': 'Sampling'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'S → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'flight_path_error', 'symbol': 'f_p', 'description': 'Flight path error (mm)', 'nominal': 0.0, 'perturbed': 0.1}, {'name': 'voltage_calibration', 'symbol': 'v_c', 'description': 'Voltage calibration (-)', 'nominal': 1.0, 'perturbed': 1.004}, {'name': 'detection_efficiency', 'symbol': 'd_e', 'description': 'Detection efficiency (-)', 'nominal': 0.6, 'perturbed': 0.62}, {'name': 'tip_radius_error', 'symbol': 't_r', 'description': 'Tip radius error (nm)', 'nominal': 0.0, 'perturbed': 1.0}],
         'has_dedicated_operator': True,
     },
     'bioluminescence_tomo': {
@@ -124,7 +124,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['Pi', 'D'],
         'spec_dag': [{'primitive': 'Pi', 'params': '', 'label': 'Projection'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'Π → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'source_position_error', 'symbol': 's_p', 'description': 'Source position error (mm)', 'nominal': 0.0, 'perturbed': 0.4}, {'name': 'attenuation_coefficient', 'symbol': 'a_c', 'description': 'Attenuation coefficient (1/cm)', 'nominal': 0.2, 'perturbed': 0.21}, {'name': 'detector_gain_drift', 'symbol': 'd_g', 'description': 'Detector gain drift (-)', 'nominal': 1.0, 'perturbed': 1.01}, {'name': 'scatter_fraction', 'symbol': 's_f', 'description': 'Scatter fraction (-)', 'nominal': 0.15, 'perturbed': 0.17}],
         'has_dedicated_operator': True,
     },
     'brillouin': {
@@ -304,7 +304,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['C', 'D'],
         'spec_dag': [{'primitive': 'C', 'params': '', 'label': 'Convolution'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'C → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'defocus_error', 'symbol': 'd_e', 'description': 'Defocus error (nm)', 'nominal': 0.0, 'perturbed': 100.0}, {'name': 'astigmatism', 'symbol': 'a', 'description': 'Astigmatism (nm)', 'nominal': 0.0, 'perturbed': 20.0}, {'name': 'beam_tilt', 'symbol': 'b_t', 'description': 'Beam tilt (mrad)', 'nominal': 0.0, 'perturbed': 0.2}, {'name': 'ice_thickness_variation', 'symbol': 'i_t', 'description': 'Ice thickness variation (nm)', 'nominal': 50.0, 'perturbed': 56.0}],
         'has_dedicated_operator': True,
     },
     'cryo_et': {
@@ -484,7 +484,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['F', 'D'],
         'spec_dag': [{'primitive': 'F', 'params': '', 'label': 'Fourier'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'F → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'liftoff_distance', 'symbol': 'l_d', 'description': 'Liftoff distance (mm)', 'nominal': 0.0, 'perturbed': 0.2}, {'name': 'conductivity_error', 'symbol': 'c_e', 'description': 'Conductivity error (MS/m)', 'nominal': 58.0, 'perturbed': 58.6}, {'name': 'excitation_frequency_drift', 'symbol': 'e_f', 'description': 'Excitation frequency drift (kHz)', 'nominal': 100.0, 'perturbed': 101.0}, {'name': 'probe_tilt', 'symbol': 'p_t', 'description': 'Probe tilt (deg)', 'nominal': 0.0, 'perturbed': 0.4}],
         'has_dedicated_operator': True,
     },
     'edx_mapping': {
@@ -760,7 +760,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['P', 'D'],
         'spec_dag': [{'primitive': 'P', 'params': '', 'label': 'Propagation'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'P → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'soil_permittivity_error', 'symbol': 's_p', 'description': 'Soil permittivity error (-)', 'nominal': 9.0, 'perturbed': 10.2}, {'name': 'antenna_height', 'symbol': 'a_h', 'description': 'Antenna height (m)', 'nominal': 0.0, 'perturbed': 0.01}, {'name': 'time_zero_offset', 'symbol': 't_z', 'description': 'Time zero offset (ns)', 'nominal': 0.0, 'perturbed': 0.1}, {'name': 'velocity_model_error', 'symbol': 'v_m', 'description': 'Velocity model error (m/ns)', 'nominal': 0.1, 'perturbed': 0.106}],
         'has_dedicated_operator': True,
     },
     'gravitational_wave': {
@@ -772,7 +772,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['P', 'Sigma', 'D'],
         'spec_dag': [{'primitive': 'P', 'params': '', 'label': 'Propagation'}, {'primitive': 'Sigma', 'params': '', 'label': 'Summation'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'P → Σ → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'calibration_amplitude', 'symbol': 'c_a', 'description': 'Calibration amplitude (-)', 'nominal': 1.0, 'perturbed': 1.01}, {'name': 'phase_calibration', 'symbol': 'p_c', 'description': 'Phase calibration (rad)', 'nominal': 0.0, 'perturbed': 0.01}, {'name': 'power_spectral_density', 'symbol': 'p_s', 'description': 'Power spectral density (1/Hz)', 'nominal': 1e-23, 'perturbed': 0.0}, {'name': 'timing_offset', 'symbol': 't_o', 'description': 'Timing offset (s)', 'nominal': 0.0, 'perturbed': 0.0}],
         'has_dedicated_operator': True,
     },
     'hdr_imaging': {
@@ -808,7 +808,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['M', 'W', 'Sigma', 'D'],
         'spec_dag': [{'primitive': 'M', 'params': '', 'label': 'Modulation'}, {'primitive': 'W', 'params': '', 'label': 'Warp'}, {'primitive': 'Sigma', 'params': '', 'label': 'Summation'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'M → W → Σ → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'spectral_shift', 'symbol': 's_s', 'description': 'Spectral shift (nm)', 'nominal': 0.0, 'perturbed': 0.4}, {'name': 'smile_distortion', 'symbol': 's_d', 'description': 'Smile distortion (px)', 'nominal': 0.0, 'perturbed': 0.2}, {'name': 'keystone_distortion', 'symbol': 'k_d', 'description': 'Keystone distortion (px)', 'nominal': 0.0, 'perturbed': 0.1}, {'name': 'radiometric_gain', 'symbol': 'r_g', 'description': 'Radiometric gain (-)', 'nominal': 1.0, 'perturbed': 1.02}],
         'has_dedicated_operator': True,
     },
     'impedance_tomo': {
@@ -820,7 +820,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['M', 'D'],
         'spec_dag': [{'primitive': 'M', 'params': '', 'label': 'Modulation'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'M → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'contact_impedance', 'symbol': 'c_i', 'description': 'Contact impedance (ohm)', 'nominal': 100.0, 'perturbed': 120.0}, {'name': 'electrode_position_error', 'symbol': 'e_p', 'description': 'Electrode position error (mm)', 'nominal': 0.0, 'perturbed': 0.4}, {'name': 'background_conductivity', 'symbol': 'b_c', 'description': 'Background conductivity (S/m)', 'nominal': 0.2, 'perturbed': 0.24}, {'name': 'current_amplitude_drift', 'symbol': 'c_a', 'description': 'Current amplitude drift (-)', 'nominal': 1.0, 'perturbed': 1.01}],
         'has_dedicated_operator': True,
     },
     'industrial_ct': {
@@ -832,7 +832,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['Pi', 'D'],
         'spec_dag': [{'primitive': 'Pi', 'params': '', 'label': 'Projection'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'Π → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'center_of_rotation_offset', 'symbol': 'c_o', 'description': 'Center of rotation offset (px)', 'nominal': 0.0, 'perturbed': 0.4}, {'name': 'source_voltage_drift', 'symbol': 's_v', 'description': 'Source voltage drift (kV)', 'nominal': 150.0, 'perturbed': 151.0}, {'name': 'detector_tilt', 'symbol': 'd_t', 'description': 'Detector tilt (deg)', 'nominal': 0.0, 'perturbed': 0.1}, {'name': 'beam_hardening_coefficient', 'symbol': 'b_h', 'description': 'Beam hardening coefficient (-)', 'nominal': 0.0, 'perturbed': 0.01}],
         'has_dedicated_operator': True,
     },
     'insar': {
@@ -976,7 +976,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['C', 'D'],
         'spec_dag': [{'primitive': 'C', 'params': '', 'label': 'Convolution'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'C → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'focus_distance_error', 'symbol': 'f_d', 'description': 'Focus distance error (mm)', 'nominal': 0.0, 'perturbed': 1.0}, {'name': 'lens_distortion_k1', 'symbol': 'l_d', 'description': 'Lens distortion k1 (-)', 'nominal': 0.0, 'perturbed': 0.02}, {'name': 'exposure_time_drift', 'symbol': 'e_t', 'description': 'Exposure time drift (ms)', 'nominal': 10.0, 'perturbed': 10.4}, {'name': 'white_balance_gain', 'symbol': 'w_b', 'description': 'White balance gain (-)', 'nominal': 1.0, 'perturbed': 1.02}],
         'has_dedicated_operator': True,
     },
     'magnetic_particle': {
@@ -988,7 +988,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['M', 'F', 'D'],
         'spec_dag': [{'primitive': 'M', 'params': '', 'label': 'Modulation'}, {'primitive': 'F', 'params': '', 'label': 'Fourier'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'M → F → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'drive_field_amplitude', 'symbol': 'd_f', 'description': 'Drive field amplitude (mT)', 'nominal': 25.0, 'perturbed': 25.6}, {'name': 'selection_field_gradient', 'symbol': 's_f', 'description': 'Selection field gradient (T/m)', 'nominal': 2.5, 'perturbed': 2.6}, {'name': 'particle_relaxation_time', 'symbol': 'p_r', 'description': 'Particle relaxation time (us)', 'nominal': 2.0, 'perturbed': 2.2}, {'name': 'receive_coil_sensitivity', 'symbol': 'r_c', 'description': 'Receive coil sensitivity (-)', 'nominal': 1.0, 'perturbed': 1.03}],
         'has_dedicated_operator': True,
     },
     'maldi_msi': {
@@ -1000,7 +1000,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['S', 'D'],
         'spec_dag': [{'primitive': 'S', 'params': '', 'label': 'Sampling'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'S → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'laser_fluence_drift', 'symbol': 'l_f', 'description': 'Laser fluence drift (-)', 'nominal': 1.0, 'perturbed': 1.04}, {'name': 'mass_accuracy', 'symbol': 'm_a', 'description': 'Mass accuracy (ppm)', 'nominal': 0.0, 'perturbed': 1.0}, {'name': 'extraction_delay', 'symbol': 'e_d', 'description': 'Extraction delay (ns)', 'nominal': 100.0, 'perturbed': 104.0}, {'name': 'matrix_crystallization', 'symbol': 'm_c', 'description': 'Matrix crystallization (-)', 'nominal': 1.0, 'perturbed': 1.06}],
         'has_dedicated_operator': True,
     },
     'mammography': {
@@ -1120,7 +1120,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['M', 'Sigma', 'D'],
         'spec_dag': [{'primitive': 'M', 'params': '', 'label': 'Modulation'}, {'primitive': 'Sigma', 'params': '', 'label': 'Summation'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'M → Σ → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'band_registration_error', 'symbol': 'b_r', 'description': 'Band registration error (px)', 'nominal': 0.0, 'perturbed': 0.2}, {'name': 'atmospheric_transmittance', 'symbol': 'a_t', 'description': 'Atmospheric transmittance (-)', 'nominal': 0.85, 'perturbed': 0.87}, {'name': 'radiometric_calibration', 'symbol': 'r_c', 'description': 'Radiometric calibration (-)', 'nominal': 1.0, 'perturbed': 1.01}, {'name': 'pointing_jitter', 'symbol': 'p_j', 'description': 'Pointing jitter (px)', 'nominal': 0.0, 'perturbed': 0.1}],
         'has_dedicated_operator': True,
     },
     'muon_tomo': {
@@ -1288,7 +1288,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['R', 'Sigma', 'D'],
         'spec_dag': [{'primitive': 'R', 'params': '', 'label': 'Rotation'}, {'primitive': 'Sigma', 'params': '', 'label': 'Summation'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'R → Σ → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'energy_scale_factor', 'symbol': 'e_s', 'description': 'Energy scale factor (-)', 'nominal': 1.0, 'perturbed': 1.006}, {'name': 'position_resolution', 'symbol': 'p_r', 'description': 'Position resolution (mm)', 'nominal': 0.0, 'perturbed': 1.0}, {'name': 'sampling_fraction', 'symbol': 's_f', 'description': 'Sampling fraction (-)', 'nominal': 0.1, 'perturbed': 0.104}, {'name': 'pile_up_fraction', 'symbol': 'p_f', 'description': 'Pile-up fraction (-)', 'nominal': 0.0, 'perturbed': 0.01}],
         'has_dedicated_operator': True,
     },
     'passive_microwave': {
@@ -1300,7 +1300,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['Sigma', 'D'],
         'spec_dag': [{'primitive': 'Sigma', 'params': '', 'label': 'Summation'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'Σ → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'antenna_beam_width_error', 'symbol': 'a_b', 'description': 'Antenna beam width error (deg)', 'nominal': 0.0, 'perturbed': 0.1}, {'name': 'receiver_gain_drift', 'symbol': 'r_g', 'description': 'Receiver gain drift (-)', 'nominal': 1.0, 'perturbed': 1.01}, {'name': 'brightness_temperature_offset', 'symbol': 'b_t', 'description': 'Brightness temperature offset (K)', 'nominal': 0.0, 'perturbed': 0.4}, {'name': 'cross_polarization_leakage', 'symbol': 'c_l', 'description': 'Cross-polarization leakage (-)', 'nominal': 0.0, 'perturbed': 0.004}],
         'has_dedicated_operator': True,
     },
     'pet': {
@@ -1420,7 +1420,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['Pi', 'D'],
         'spec_dag': [{'primitive': 'Pi', 'params': '', 'label': 'Projection'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'Π → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'isocenter_shift', 'symbol': 'i_s', 'description': 'Isocenter shift (mm)', 'nominal': 0.0, 'perturbed': 0.4}, {'name': 'beam_energy_variation', 'symbol': 'b_e', 'description': 'Beam energy variation (MV)', 'nominal': 6.0, 'perturbed': 6.04}, {'name': 'detector_sag', 'symbol': 'd_s', 'description': 'Detector sag (mm)', 'nominal': 0.0, 'perturbed': 0.2}, {'name': 'scatter_kernel_width', 'symbol': 's_k', 'description': 'Scatter kernel width (mm)', 'nominal': 5.0, 'perturbed': 5.4}],
         'has_dedicated_operator': True,
     },
     'proton_radiography': {
@@ -1444,7 +1444,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['Pi', 'D'],
         'spec_dag': [{'primitive': 'Pi', 'params': '', 'label': 'Projection'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'Π → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'range_uncertainty', 'symbol': 'r_u', 'description': 'Range uncertainty (mm)', 'nominal': 0.0, 'perturbed': 0.6}, {'name': 'scattering_power_error', 'symbol': 's_p', 'description': 'Scattering power error (-)', 'nominal': 1.0, 'perturbed': 1.01}, {'name': 'detector_efficiency_drift', 'symbol': 'd_e', 'description': 'Detector efficiency drift (-)', 'nominal': 0.85, 'perturbed': 0.86}, {'name': 'setup_error', 'symbol': 's_e', 'description': 'Setup error (mm)', 'nominal': 0.0, 'perturbed': 0.4}],
         'has_dedicated_operator': True,
     },
     'ptychography': {
@@ -1492,7 +1492,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['F', 'S', 'D'],
         'spec_dag': [{'primitive': 'F', 'params': '', 'label': 'Fourier'}, {'primitive': 'S', 'params': '', 'label': 'Sampling'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'F → S → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'antenna_gain_error', 'symbol': 'a_g', 'description': 'Antenna gain error (-)', 'nominal': 1.0, 'perturbed': 1.01}, {'name': 'phase_calibration_error', 'symbol': 'p_c', 'description': 'Phase calibration error (deg)', 'nominal': 0.0, 'perturbed': 1.0}, {'name': 'bandpass_slope', 'symbol': 'b_s', 'description': 'Bandpass slope (1/MHz)', 'nominal': 0.0, 'perturbed': 0.002}, {'name': 'pointing_offset', 'symbol': 'p_o', 'description': 'Pointing offset (arcsec)', 'nominal': 0.0, 'perturbed': 1.0}],
         'has_dedicated_operator': True,
     },
     'radio_interferometry': {
@@ -1504,7 +1504,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['F', 'S', 'D'],
         'spec_dag': [{'primitive': 'F', 'params': '', 'label': 'Fourier'}, {'primitive': 'S', 'params': '', 'label': 'Sampling'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'F → S → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'baseline_error', 'symbol': 'b_e', 'description': 'Baseline error (m)', 'nominal': 0.0, 'perturbed': 0.002}, {'name': 'phase_calibration', 'symbol': 'p_c', 'description': 'Phase calibration (deg)', 'nominal': 0.0, 'perturbed': 2.0}, {'name': 'amplitude_calibration', 'symbol': 'a_c', 'description': 'Amplitude calibration (-)', 'nominal': 1.0, 'perturbed': 1.02}, {'name': 'clock_offset', 'symbol': 'c_o', 'description': 'Clock offset (ns)', 'nominal': 0.0, 'perturbed': 0.2}],
         'has_dedicated_operator': True,
     },
     'raman_imaging': {
@@ -1540,7 +1540,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['R', 'D'],
         'spec_dag': [{'primitive': 'R', 'params': '', 'label': 'Rotation'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'R → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'sample_detector_distance', 'symbol': 's_d', 'description': 'Sample-detector distance (mm)', 'nominal': 1000.0, 'perturbed': 1002.0}, {'name': 'beam_center_x', 'symbol': 'b_c', 'description': 'Beam center x (px)', 'nominal': 0.0, 'perturbed': 0.4}, {'name': 'beam_center_y', 'symbol': 'b_c', 'description': 'Beam center y (px)', 'nominal': 0.0, 'perturbed': 0.4}, {'name': 'wavelength_error', 'symbol': 'w_e', 'description': 'Wavelength error (nm)', 'nominal': 0.0, 'perturbed': 0.0002}],
         'has_dedicated_operator': True,
     },
     'seismic_tomo': {
@@ -1552,7 +1552,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['P', 'D'],
         'spec_dag': [{'primitive': 'P', 'params': '', 'label': 'Propagation'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'P → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'velocity_model_error', 'symbol': 'v_m', 'description': 'Velocity model error (m/s)', 'nominal': 5000.0, 'perturbed': 5100.0}, {'name': 'source_location_error', 'symbol': 's_l', 'description': 'Source location error (m)', 'nominal': 0.0, 'perturbed': 10.0}, {'name': 'receiver_coupling', 'symbol': 'r_c', 'description': 'Receiver coupling (-)', 'nominal': 1.0, 'perturbed': 1.03}, {'name': 'timing_error', 'symbol': 't_e', 'description': 'Timing error (s)', 'nominal': 0.0, 'perturbed': 0.0004}],
         'has_dedicated_operator': True,
     },
     'sem': {
@@ -1816,7 +1816,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['P', 'D'],
         'spec_dag': [{'primitive': 'P', 'params': '', 'label': 'Propagation'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'P → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'pulse_chirp', 'symbol': 'p_c', 'description': 'Pulse chirp (ps^2)', 'nominal': 0.0, 'perturbed': 0.02}, {'name': 'water_vapor_absorption', 'symbol': 'w_v', 'description': 'Water vapor absorption (1/cm)', 'nominal': 0.1, 'perturbed': 0.14}, {'name': 'beam_alignment_error', 'symbol': 'b_a', 'description': 'Beam alignment error (mm)', 'nominal': 0.0, 'perturbed': 0.2}, {'name': 'dynamic_range_drift', 'symbol': 'd_r', 'description': 'Dynamic range drift (-)', 'nominal': 1.0, 'perturbed': 1.02}],
         'has_dedicated_operator': True,
     },
     'three_photon': {
@@ -1876,7 +1876,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['P', 'D'],
         'spec_dag': [{'primitive': 'P', 'params': '', 'label': 'Propagation'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'P → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'element_pitch_error', 'symbol': 'e_p', 'description': 'Element pitch error (mm)', 'nominal': 0.0, 'perturbed': 0.002}, {'name': 'sound_velocity', 'symbol': 's_v', 'description': 'Sound velocity (m/s)', 'nominal': 5900.0, 'perturbed': 5940.0}, {'name': 'wedge_angle_error', 'symbol': 'w_a', 'description': 'Wedge angle error (deg)', 'nominal': 0.0, 'perturbed': 0.2}, {'name': 'dead_element_fraction', 'symbol': 'd_e', 'description': 'Dead element fraction (-)', 'nominal': 0.0, 'perturbed': 0.01}],
         'has_dedicated_operator': True,
     },
     'ultrasound': {
@@ -1924,7 +1924,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['P', 'R', 'D'],
         'spec_dag': [{'primitive': 'P', 'params': '', 'label': 'Propagation'}, {'primitive': 'R', 'params': '', 'label': 'Rotation'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'P → R → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'calibration_bias', 'symbol': 'c_b', 'description': 'Calibration bias (dBZ)', 'nominal': 0.0, 'perturbed': 0.2}, {'name': 'beam_elevation_error', 'symbol': 'b_e', 'description': 'Beam elevation error (deg)', 'nominal': 0.0, 'perturbed': 0.04}, {'name': 'attenuation_correction', 'symbol': 'a_c', 'description': 'Attenuation correction (-)', 'nominal': 1.0, 'perturbed': 1.02}, {'name': 'ground_clutter_leakage', 'symbol': 'g_c', 'description': 'Ground clutter leakage (-)', 'nominal': 0.0, 'perturbed': 0.01}],
         'has_dedicated_operator': True,
     },
     'widefield': {
@@ -1972,7 +1972,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['F', 'S', 'D'],
         'spec_dag': [{'primitive': 'F', 'params': '', 'label': 'Fourier'}, {'primitive': 'S', 'params': '', 'label': 'Sampling'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'F → S → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'crystal_orientation_error', 'symbol': 'c_o', 'description': 'Crystal orientation error (deg)', 'nominal': 0.0, 'perturbed': 0.1}, {'name': 'beam_divergence', 'symbol': 'b_d', 'description': 'Beam divergence (mrad)', 'nominal': 0.1, 'perturbed': 0.12}, {'name': 'absorption_correction', 'symbol': 'a_c', 'description': 'Absorption correction (-)', 'nominal': 1.0, 'perturbed': 1.02}, {'name': 'scale_factor', 'symbol': 's_f', 'description': 'Scale factor (-)', 'nominal': 1.0, 'perturbed': 1.01}],
         'has_dedicated_operator': True,
     },
     'xray_ndt': {
@@ -1984,7 +1984,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['Pi', 'D'],
         'spec_dag': [{'primitive': 'Pi', 'params': '', 'label': 'Projection'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'Π → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'source_position_error', 'symbol': 's_p', 'description': 'Source position error (mm)', 'nominal': 0.0, 'perturbed': 0.2}, {'name': 'beam_hardening', 'symbol': 'b_h', 'description': 'Beam hardening (-)', 'nominal': 0.0, 'perturbed': 0.02}, {'name': 'detector_gain_drift', 'symbol': 'd_g', 'description': 'Detector gain drift (-)', 'nominal': 1.0, 'perturbed': 1.01}, {'name': 'geometric_magnification', 'symbol': 'g_m', 'description': 'Geometric magnification (-)', 'nominal': 2.0, 'perturbed': 2.04}],
         'has_dedicated_operator': True,
     },
     'xray_radiography': {
@@ -2008,7 +2008,7 @@ MODALITY_CATALOG: dict[str, dict] = {
         'primitives': ['M', 'R', 'D'],
         'spec_dag': [{'primitive': 'M', 'params': '', 'label': 'Modulation'}, {'primitive': 'R', 'params': '', 'label': 'Rotation'}, {'primitive': 'D', 'params': '', 'label': 'Detector'}],
         'spec_notation': 'M → R → D',
-        'mismatch_params': [],
+        'mismatch_params': [{'name': 'excitation_energy_drift', 'symbol': 'e_e', 'description': 'Excitation energy drift (keV)', 'nominal': 0.0, 'perturbed': 0.01}, {'name': 'detector_resolution', 'symbol': 'd_r', 'description': 'Detector resolution (eV)', 'nominal': 130.0, 'perturbed': 134.0}, {'name': 'matrix_absorption', 'symbol': 'm_a', 'description': 'Matrix absorption (-)', 'nominal': 1.0, 'perturbed': 1.03}, {'name': 'beam_spot_size', 'symbol': 'b_s', 'description': 'Beam spot size (um)', 'nominal': 1.0, 'perturbed': 1.2}],
         'has_dedicated_operator': True,
     },
     'xrf_tomo': {

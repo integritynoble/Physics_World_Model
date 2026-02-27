@@ -30,7 +30,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Emissivity error
+  nominal: 0.95
+  range:
+  - 0.85
+  - 1.0
+  unit: '-'
+- name: Heat source power drift
+  nominal: 1.0
+  range:
+  - 0.9
+  - 1.1
+  unit: '-'
+- name: Background temperature
+  nominal: 25.0
+  range:
+  - 20.0
+  - 30.0
+  unit: C
+- name: Integration time offset
+  nominal: 0.0
+  range:
+  - -0.1
+  - 0.1
+  unit: s
 solvers:
   traditional_cpu:
     name: Adjoint

@@ -32,7 +32,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: Copernicus Sentinel-2
   license: CC-BY-SA-3.0
-mismatch_params: []
+mismatch_params:
+- name: Band registration error
+  nominal: 0.0
+  range:
+  - -1.0
+  - 1.0
+  unit: px
+- name: Atmospheric transmittance
+  nominal: 0.85
+  range:
+  - 0.7
+  - 0.95
+  unit: '-'
+- name: Radiometric calibration
+  nominal: 1.0
+  range:
+  - 0.95
+  - 1.05
+  unit: '-'
+- name: Pointing jitter
+  nominal: 0.0
+  range:
+  - -0.5
+  - 0.5
+  unit: px
 solvers:
   traditional_cpu:
     name: RDA

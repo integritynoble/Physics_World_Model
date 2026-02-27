@@ -30,7 +30,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Soil permittivity error
+  nominal: 9.0
+  range:
+  - 6.0
+  - 15.0
+  unit: '-'
+- name: Antenna height
+  nominal: 0.0
+  range:
+  - -0.05
+  - 0.05
+  unit: m
+- name: Time zero offset
+  nominal: 0.0
+  range:
+  - -0.5
+  - 0.5
+  unit: ns
+- name: Velocity model error
+  nominal: 0.1
+  range:
+  - 0.08
+  - 0.13
+  unit: m/ns
 solvers:
   traditional_cpu:
     name: RDA

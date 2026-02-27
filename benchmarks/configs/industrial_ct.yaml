@@ -32,7 +32,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Center of rotation offset
+  nominal: 0.0
+  range:
+  - -2.0
+  - 2.0
+  unit: px
+- name: Source voltage drift
+  nominal: 150.0
+  range:
+  - 145.0
+  - 155.0
+  unit: kV
+- name: Detector tilt
+  nominal: 0.0
+  range:
+  - -0.5
+  - 0.5
+  unit: deg
+- name: Beam hardening coefficient
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.05
+  unit: '-'
 solvers:
   traditional_cpu:
     name: Adjoint

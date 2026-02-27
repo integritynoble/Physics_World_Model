@@ -31,13 +31,6 @@ def inspect_variant(key: str, verbose: bool = True) -> dict:
     benchmarks = v.get("benchmarks", [])
     benchmark_ids = [b["id"] for b in benchmarks]
 
-    # Check B2
-    b2 = next((b for b in benchmarks if b["id"] == "Benchmark 2"), None)
-    b2_leaderboard_count = len(b2["leaderboard"]) if b2 else 0
-    b2_has_table = b2 is not None and "scenario_table" in b2
-    b2_method_count = len(b2["scenario_table"]["methods"]) if b2_has_table else 0
-    b2_scene_count = len(b2["scenario_table"]["per_scene"]) if b2_has_table else 0
-
     # Check Challenge
     challenge = next((b for b in benchmarks if b["id"] == "Challenge"), None)
     ch_leaderboard_count = len(challenge["leaderboard"]) if challenge else 0
@@ -49,6 +42,11 @@ def inspect_variant(key: str, verbose: bool = True) -> dict:
     ch_baseline_count = (
         len(challenge["baselines"]["scenario_ii"]) if ch_has_baselines else 0
     )
+    ch_has_tiers = (
+        challenge is not None
+        and "tiers" in challenge
+        and all(t in challenge["tiers"] for t in ("public", "dev", "hidden"))
+    )
 
     is_handcrafted = key in LEADERBOARD_DATA
     has_challenge_config = key in CHALLENGE_CONFIG
@@ -59,37 +57,29 @@ def inspect_variant(key: str, verbose: bool = True) -> dict:
         "category": v["category"],
         "is_handcrafted": is_handcrafted,
         "benchmark_ids": benchmark_ids,
-        "b2_leaderboard": b2_leaderboard_count,
-        "b2_scenario_table": b2_has_table,
-        "b2_methods": b2_method_count,
-        "b2_scenes": b2_scene_count,
         "challenge_present": challenge is not None,
         "challenge_leaderboard": ch_leaderboard_count,
         "challenge_baselines": ch_baseline_count,
+        "challenge_tiers": ch_has_tiers,
         "has_challenge_config": has_challenge_config,
     }
 
-    # Determine completeness
+    # Determine completeness — challenge with leaderboard and baselines
     complete = (
-        b2_leaderboard_count >= 4
-        and b2_has_table
-        and b2_method_count >= 4
+        challenge is not None
         and ch_leaderboard_count >= 4
         and ch_baseline_count >= 4
+        and ch_has_tiers
     )
-    # For variants without mismatch_params, challenge may be absent — that's OK
-    if not v.get("mismatch_params"):
-        complete = b2_leaderboard_count >= 4 and b2_has_table and b2_method_count >= 4
-
     status["complete"] = complete
 
     if verbose:
         flag = "HC" if is_handcrafted else "AG"
         ok = "\u2713" if complete else "\u2717"
+        tiers = "3T" if ch_has_tiers else "0T"
         print(
             f"  [{flag}] {ok} {key:40s}  "
-            f"B2={b2_leaderboard_count}m/{b2_scene_count}s  "
-            f"Ch={ch_leaderboard_count}m/{ch_baseline_count}b  "
+            f"Ch={ch_leaderboard_count}m/{ch_baseline_count}b/{tiers}  "
             f"({v['category']})"
         )
 
@@ -128,24 +118,6 @@ def main():
         v = VARIANT_DATABASE[key]
         benchmarks = v.get("benchmarks", [])
 
-        # Show B2 leaderboard
-        b2 = next((b for b in benchmarks if b["id"] == "Benchmark 2"), None)
-        if b2 and b2["leaderboard"]:
-            print(f"\n  B2 Leaderboard (Scenario I — Ideal):")
-            for e in b2["leaderboard"]:
-                print(f"    #{e['rank']}  {e['method']:20s}  PSNR={e['psnr']:.2f}  SSIM={e['ssim']:.3f}")
-
-        if b2 and "scenario_table" in b2:
-            table = b2["scenario_table"]
-            print(f"\n  B2 Scenario Table:")
-            for m in table["methods"]:
-                print(
-                    f"    {m['method']:20s}  "
-                    f"S1={m['s1_psnr']:.2f}/{m['s1_ssim']:.3f}  "
-                    f"S2={m['s2_psnr']:.2f}/{m['s2_ssim']:.3f}  "
-                    f"S3={m['s3_psnr']:.2f}/{m['s3_ssim']:.3f}"
-                )
-
         # Show Challenge leaderboard
         ch = next((b for b in benchmarks if b["id"] == "Challenge"), None)
         if ch and ch["leaderboard"]:
@@ -163,6 +135,13 @@ def main():
                 print(f"\n  Challenge Baselines (Scenario II):")
                 for b in bl["scenario_ii"]:
                     print(f"    {b['method']:20s}  PSNR={b['psnr']:.2f}  SSIM={b['ssim']:.3f}")
+
+        if ch and ch.get("tiers"):
+            print(f"\n  Challenge Tiers:")
+            for tier_key, tier_data in ch["tiers"].items():
+                ds = tier_data.get("dataset", {})
+                gcs = ds.get("gcs_object_path", "N/A") if ds else "N/A"
+                print(f"    {tier_key:8s}  {tier_data['count']} scenes  GCS: {gcs}")
 
         return 0
 
@@ -198,6 +177,7 @@ def main():
 
         with_challenge = sum(1 for r in results if r.get("challenge_present"))
         with_baselines = sum(1 for r in results if r.get("challenge_baselines", 0) >= 4)
+        with_tiers = sum(1 for r in results if r.get("challenge_tiers"))
 
         # Category breakdown
         categories = {}
@@ -214,6 +194,7 @@ def main():
         print(f"  Incomplete:            {incomplete}")
         print(f"  With Challenge:        {with_challenge}")
         print(f"  With baselines (4+):   {with_baselines}")
+        print(f"  With 3 tiers:          {with_tiers}")
         print()
         print(f"  By category:")
         for cat in sorted(categories):

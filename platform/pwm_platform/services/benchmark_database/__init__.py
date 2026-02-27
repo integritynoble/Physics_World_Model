@@ -1,9 +1,9 @@
 """
 Benchmark Database — static data for modality variant benchmark pages.
 
-Contains spec primitives, variant-specific benchmark configurations (Benchmark 1-4),
-leaderboard data sourced from the InverseNet paper, flowcharts, and credits
-configuration. Pattern follows modality_database.py (pure data, no DB models).
+Contains spec primitives, variant-specific Blind Reconstruction Challenge
+configurations, leaderboard data sourced from the InverseNet paper, flowcharts,
+and credits configuration. Pattern follows modality_database.py (pure data, no DB models).
 
 Public API (unchanged from the original monolithic module):
     get_variant(variant_key)        -> dict | None

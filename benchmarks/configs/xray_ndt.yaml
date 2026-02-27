@@ -32,7 +32,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Source position error
+  nominal: 0.0
+  range:
+  - -1.0
+  - 1.0
+  unit: mm
+- name: Beam hardening
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.1
+  unit: '-'
+- name: Detector gain drift
+  nominal: 1.0
+  range:
+  - 0.95
+  - 1.05
+  unit: '-'
+- name: Geometric magnification
+  nominal: 2.0
+  range:
+  - 1.8
+  - 2.2
+  unit: '-'
 solvers:
   traditional_cpu:
     name: Adjoint

@@ -31,7 +31,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: NOAA NEXRAD
   license: Public domain
-mismatch_params: []
+mismatch_params:
+- name: Calibration bias
+  nominal: 0.0
+  range:
+  - -1.0
+  - 1.0
+  unit: dBZ
+- name: Beam elevation error
+  nominal: 0.0
+  range:
+  - -0.2
+  - 0.2
+  unit: deg
+- name: Attenuation correction
+  nominal: 1.0
+  range:
+  - 0.9
+  - 1.1
+  unit: '-'
+- name: Ground clutter leakage
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.05
+  unit: '-'
 solvers:
   traditional_cpu:
     name: RDA

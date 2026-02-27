@@ -30,7 +30,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Energy scale factor
+  nominal: 1.0
+  range:
+  - 0.97
+  - 1.03
+  unit: '-'
+- name: Position resolution
+  nominal: 0.0
+  range:
+  - 0.0
+  - 5.0
+  unit: mm
+- name: Sampling fraction
+  nominal: 0.1
+  range:
+  - 0.08
+  - 0.12
+  unit: '-'
+- name: Pile-up fraction
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.05
+  unit: '-'
 solvers:
   traditional_cpu:
     name: Adjoint

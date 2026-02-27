@@ -30,7 +30,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Laser fluence drift
+  nominal: 1.0
+  range:
+  - 0.8
+  - 1.2
+  unit: '-'
+- name: Mass accuracy
+  nominal: 0.0
+  range:
+  - -5.0
+  - 5.0
+  unit: ppm
+- name: Extraction delay
+  nominal: 100.0
+  range:
+  - 80.0
+  - 120.0
+  unit: ns
+- name: Matrix crystallization
+  nominal: 1.0
+  range:
+  - 0.7
+  - 1.3
+  unit: '-'
 solvers:
   traditional_cpu:
     name: Adjoint

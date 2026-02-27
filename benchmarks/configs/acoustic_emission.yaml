@@ -30,7 +30,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Source location error
+  nominal: 0.0
+  range:
+  - -5.0
+  - 5.0
+  unit: mm
+- name: Wave speed error
+  nominal: 5900.0
+  range:
+  - 5700.0
+  - 6100.0
+  unit: m/s
+- name: Sensor coupling gain
+  nominal: 1.0
+  range:
+  - 0.8
+  - 1.2
+  unit: '-'
+- name: Arrival time bias
+  nominal: 0.0
+  range:
+  - -0.5
+  - 0.5
+  unit: us
 solvers:
   traditional_cpu:
     name: Adjoint

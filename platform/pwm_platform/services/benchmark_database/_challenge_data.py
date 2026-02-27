@@ -1,4 +1,4 @@
-"""Challenge configuration — Blind Reconstruction Challenge (Benchmark New).
+"""Challenge configuration — Blind Reconstruction Challenge.
 
 Each variant entry defines scoring weights, spec ranges (what contestants see),
 per-tier mismatch configs (Public / Dev / Hidden), and baseline performance

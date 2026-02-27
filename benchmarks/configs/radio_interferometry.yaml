@@ -32,7 +32,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: EHT Collaboration 2019
   license: CC-BY-4.0
-mismatch_params: []
+mismatch_params:
+- name: Baseline error
+  nominal: 0.0
+  range:
+  - -0.01
+  - 0.01
+  unit: m
+- name: Phase calibration
+  nominal: 0.0
+  range:
+  - -10.0
+  - 10.0
+  unit: deg
+- name: Amplitude calibration
+  nominal: 1.0
+  range:
+  - 0.9
+  - 1.1
+  unit: '-'
+- name: Clock offset
+  nominal: 0.0
+  range:
+  - -1.0
+  - 1.0
+  unit: ns
 solvers:
   traditional_cpu:
     name: RDA

@@ -33,7 +33,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Sample-detector distance
+  nominal: 1000.0
+  range:
+  - 990.0
+  - 1010.0
+  unit: mm
+- name: Beam center x
+  nominal: 0.0
+  range:
+  - -2.0
+  - 2.0
+  unit: px
+- name: Beam center y
+  nominal: 0.0
+  range:
+  - -2.0
+  - 2.0
+  unit: px
+- name: Wavelength error
+  nominal: 0.0
+  range:
+  - -0.001
+  - 0.001
+  unit: nm
 solvers:
   traditional_cpu:
     name: Adjoint

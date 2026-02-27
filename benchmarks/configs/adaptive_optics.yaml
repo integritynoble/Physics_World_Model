@@ -33,7 +33,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: DM actuator gain
+  nominal: 1.0
+  range:
+  - 0.9
+  - 1.1
+  unit: '-'
+- name: WFS centroid bias
+  nominal: 0.0
+  range:
+  - -0.2
+  - 0.2
+  unit: px
+- name: Fried parameter r0
+  nominal: 0.15
+  range:
+  - 0.1
+  - 0.25
+  unit: m
+- name: Servo lag
+  nominal: 0.0
+  range:
+  - 0.0
+  - 2.0
+  unit: ms
 solvers:
   traditional_cpu:
     name: Adjoint

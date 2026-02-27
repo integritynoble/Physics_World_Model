@@ -18,6 +18,9 @@ logger = logging.getLogger(__name__)
 # Cache generated examples in memory (they're small ~few KB each)
 _cache: dict[str, dict] = {}
 
+# Pre-serialized .npy bytes cache — filled at module load to avoid blocking the event loop
+_npy_cache: dict[str, bytes] = {}
+
 
 # ── Per-category example generators ──────────────────────────────────────
 
@@ -371,3 +374,40 @@ def _rotate_image(img: np.ndarray, angle_deg: float) -> np.ndarray:
     result = np.zeros_like(img)
     result[valid] = img[y_src[valid], x_src[valid]]
     return result
+
+
+# ── Pre-cached .npy bytes for instant downloads ─────────────────────────
+
+
+def get_npy_bytes(key: str, role: str) -> bytes:
+    """Return pre-serialized .npy bytes for a given example + role.
+
+    This is instant (no CPU work) because all data is pre-generated at startup.
+    """
+    cache_key = f"{key}:{role}"
+    if cache_key in _npy_cache:
+        return _npy_cache[cache_key]
+    # Fallback: generate on demand (shouldn't happen after warmup)
+    example = generate_example(key)
+    arr = example.get(role)
+    if arr is None:
+        raise ValueError(f"No {role} for {key}")
+    data = array_to_npy_bytes(arr)
+    _npy_cache[cache_key] = data
+    return data
+
+
+def warmup_all():
+    """Pre-generate all example datasets and serialize to .npy bytes.
+
+    Call once at app startup (in a background thread) so that
+    download_example_dataset() never blocks the async event loop.
+    """
+    logger.info("Pre-generating %d example datasets...", len(EXAMPLE_DATASETS))
+    for key, info in EXAMPLE_DATASETS.items():
+        example = generate_example(key)
+        for role in ("measurement", "matrix", "ground_truth"):
+            arr = example.get(role)
+            if arr is not None:
+                _npy_cache[f"{key}:{role}"] = array_to_npy_bytes(arr)
+    logger.info("Example datasets ready (%d .npy files cached)", len(_npy_cache))

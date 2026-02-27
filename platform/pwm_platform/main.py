@@ -44,9 +44,20 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup / shutdown lifecycle."""
+    import threading
+
     logger.info("PWM Platform starting up (%s)", settings.APP_VERSION)
     await init_db()
     logger.info("Database tables ensured")
+
+    # Pre-generate example .npy datasets in a background thread so the
+    # event loop stays responsive while CPU-heavy NumPy work runs.
+    def _warmup():
+        from pwm_platform.services.example_datasets import warmup_all
+        warmup_all()
+
+    threading.Thread(target=_warmup, daemon=True).start()
+
     yield
     logger.info("PWM Platform shutting down")
 

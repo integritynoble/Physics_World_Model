@@ -32,7 +32,31 @@ data_source:
   synthetic_generator: spectral_scene
   citation: Copernicus Sentinel-2
   license: CC-BY-SA-3.0
-mismatch_params: []
+mismatch_params:
+- name: Spectral shift
+  nominal: 0.0
+  range:
+  - -2.0
+  - 2.0
+  unit: nm
+- name: Smile distortion
+  nominal: 0.0
+  range:
+  - -1.0
+  - 1.0
+  unit: px
+- name: Keystone distortion
+  nominal: 0.0
+  range:
+  - -0.5
+  - 0.5
+  unit: px
+- name: Radiometric gain
+  nominal: 1.0
+  range:
+  - 0.9
+  - 1.1
+  unit: '-'
 solvers:
   traditional_cpu:
     name: RDA

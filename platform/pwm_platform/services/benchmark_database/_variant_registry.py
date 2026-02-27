@@ -1,8 +1,8 @@
 """Compact metadata for all 65 benchmark variants.
 
-Each entry contains only variant-specific data (spec DAG, mismatch params,
-optional dataset_config overrides).  The factory function expands these into
-full VARIANT_DATABASE entries at import time.
+Each entry contains only variant-specific data (spec DAG, mismatch params).
+The factory function expands these into full VARIANT_DATABASE entries at
+import time.
 """
 
 from __future__ import annotations
@@ -37,10 +37,6 @@ VARIANT_REGISTRY: dict[str, dict] = {
             {"name": "dark_current", "symbol": "I_d", "description": "Dark current (electrons/pixel/s)", "nominal": 0.1, "perturbed": 0.5},
             {"name": "gain", "symbol": "g", "description": "Detector gain multiplier", "nominal": 1.0, "perturbed": 1.03},
         ],
-        "dataset_config": {
-            "b2_samples": 10, "b2_size": 120, "b4_samples": 10, "b4_size": 120, "b3_size": 12,
-            "data_type": "KAIST spectral scenes (256\u00d7256\u00d728 bands)",
-        },
     },
 
     "cacti": {
@@ -62,10 +58,6 @@ VARIANT_REGISTRY: dict[str, dict] = {
             {"name": "duty_cycle", "symbol": "d", "description": "Shutter duty cycle", "nominal": 1.0, "perturbed": 0.95},
             {"name": "gain", "symbol": "g", "description": "Detector gain multiplier", "nominal": 1.0, "perturbed": 1.02},
         ],
-        "dataset_config": {
-            "b2_samples": 3, "b2_size": 30, "b4_samples": 3, "b4_size": 30, "b3_size": 8,
-            "data_type": "video sequences (256\u00d7256\u00d78 frames)",
-        },
     },
 
     "spc_block": {
@@ -84,10 +76,6 @@ VARIANT_REGISTRY: dict[str, dict] = {
             {"name": "gain_alpha", "symbol": "\u03b1", "description": "Gain drift coefficient", "nominal": 0, "perturbed": 0.0015},
             {"name": "sigma_y", "symbol": "\u03c3_y", "description": "Measurement noise std", "nominal": 0, "perturbed": 0.03},
         ],
-        "dataset_config": {
-            "b2_samples": 6, "b2_size": 5, "b4_samples": 6, "b4_size": 5, "b3_size": 3,
-            "data_type": "Set11 images (64\u00d764)",
-        },
     },
 
     "spc_kronecker": {
@@ -104,10 +92,6 @@ VARIANT_REGISTRY: dict[str, dict] = {
             {"name": "gain_alpha", "symbol": "\u03b1", "description": "Gain drift coefficient", "nominal": 0, "perturbed": 0.0015},
             {"name": "sigma_y", "symbol": "\u03c3_y", "description": "Measurement noise std", "nominal": 0, "perturbed": 0.03},
         ],
-        "dataset_config": {
-            "b2_samples": 6, "b2_size": 5, "b4_samples": 6, "b4_size": 5, "b3_size": 3,
-            "data_type": "Set11 images (64\u00d764)",
-        },
     },
 
     "matrix": {

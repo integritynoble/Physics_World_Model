@@ -1,7 +1,8 @@
 """Leaderboard generator — deterministic benchmark data for all imaging modalities.
 
-Generates calibrated B2 leaderboard, B2 scenario tables, challenge leaderboard,
-and challenge baselines using seed-based deterministic scoring.
+Generates challenge leaderboard and challenge baselines using seed-based
+deterministic scoring.  Internal B2 leaderboard and scenario table generators
+are kept as private helpers since challenge scoring depends on them.
 
 All scores are derived from category-level PSNR bands, mismatch sensitivity
 parameters, and oracle recovery fractions that produce plausible, realistic
@@ -21,6 +22,7 @@ import hashlib
 import math
 
 from ._algorithm_catalog import (
+    CATEGORY_REAL_SCORES,
     classify_solver,
     get_algorithms,
     get_correction_description,
@@ -129,10 +131,10 @@ def _round3(x: float) -> float:
     return round(x, 3)
 
 
-# ── B2 leaderboard ────────────────────────────────────────────────────────────
+# ── B2 leaderboard (private — used internally by challenge pipeline) ──────────
 
 
-def generate_b2_leaderboard(
+def _generate_b2_leaderboard(
     variant_key: str,
     category: str,
     algorithms: list[dict],
@@ -141,21 +143,42 @@ def generate_b2_leaderboard(
 
     Each entry contains method name, PSNR, SSIM, source citation,
     and adopted flag (True for rank-1 method = official PWM baseline).
+
+    Uses real published scores from CATEGORY_REAL_SCORES when available
+    for the category. Falls back to synthetic PSNR-range generation for
+    categories without real scores or for unmatched method names.
     """
+    real_scores = CATEGORY_REAL_SCORES.get(category)
+    # Build a lookup from method name → real score entry
+    real_lookup: dict[str, dict] = {}
+    if real_scores:
+        for rs in real_scores:
+            real_lookup[rs["method"]] = rs
+
     psnr_bands = _PSNR_RANGES.get(category, _PSNR_RANGES["computational"])
     entries = []
 
     for algo in algorithms:
-        solver_class = classify_solver(algo["type"])
-        lo, hi = psnr_bands.get(solver_class, (25.0, 30.0))
-        seed = _deterministic_seed(variant_key, algo["name"])
-        psnr = _round2(_seeded_uniform(seed, lo, hi))
-        ssim = _round3(_psnr_to_ssim(psnr))
+        match = real_lookup.get(algo["name"])
+        if match:
+            # Use real published PSNR/SSIM
+            psnr = match["psnr"]
+            ssim = match["ssim"]
+            source = match.get("source", algo.get("source", "PWM Baseline"))
+        else:
+            # Fall back to synthetic generation
+            solver_class = classify_solver(algo["type"])
+            lo, hi = psnr_bands.get(solver_class, (25.0, 30.0))
+            seed = _deterministic_seed(variant_key, algo["name"])
+            psnr = _round2(_seeded_uniform(seed, lo, hi))
+            ssim = _round3(_psnr_to_ssim(psnr))
+            source = algo.get("source", "PWM Baseline")
+
         entries.append({
             "method": algo["name"],
             "psnr": psnr,
             "ssim": ssim,
-            "source": algo.get("source", "PWM Baseline"),
+            "source": source,
             "adopted": False,
         })
 
@@ -168,10 +191,10 @@ def generate_b2_leaderboard(
     return entries
 
 
-# ── B2 scenario table ─────────────────────────────────────────────────────────
+# ── B2 scenario table (private — used internally by challenge pipeline) ───────
 
 
-def generate_b2_scenario_table(
+def _generate_b2_scenario_table(
     variant_key: str,
     category: str,
     algorithms: list[dict],
@@ -445,16 +468,19 @@ def generate_full_leaderboard(
 ) -> dict:
     """Generate complete leaderboard data dict for a single variant.
 
-    Returns a dict with keys: b2, b2_scenario_table, challenge, _baselines
+    Returns a dict with keys: challenge, _baselines
     matching the format expected by _factory.build_variant().
 
     The _baselines key is consumed by __init__.py to fill challenge configs
     with Scenario II/III baseline performance.
+
+    Internally generates B2 leaderboard and scenario table as intermediate
+    data required by the challenge scoring pipeline.
     """
     algorithms = get_algorithms(variant_key, category)
 
-    b2 = generate_b2_leaderboard(variant_key, category, algorithms)
-    b2_table = generate_b2_scenario_table(
+    b2 = _generate_b2_leaderboard(variant_key, category, algorithms)
+    b2_table = _generate_b2_scenario_table(
         variant_key, category, algorithms, b2,
     )
     challenge = generate_challenge_leaderboard(
@@ -465,8 +491,6 @@ def generate_full_leaderboard(
     )
 
     return {
-        "b2": b2,
-        "b2_scenario_table": b2_table,
         "challenge": challenge,
         "_baselines": baselines,
     }

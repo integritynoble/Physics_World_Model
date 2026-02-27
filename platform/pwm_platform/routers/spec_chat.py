@@ -489,44 +489,30 @@ async def reconstruct_dataset(
 async def download_example_dataset(key: str, role: str):
     """Download an example .npy dataset for trying Dataset Mode.
 
-    Parameters
-    ----------
-    key : str
-        Example key (e.g. "ct", "mri", "spc", "cassi")
-    role : str
-        "measurement", "matrix", or "ground_truth"
+    Uses pre-cached .npy bytes so the response is instant (no CPU work
+    at request time).  The cache is warmed at app startup via warmup_all().
     """
     from fastapi.responses import Response
 
     from pwm_platform.services.example_datasets import (
         EXAMPLE_DATASETS,
-        array_to_npy_bytes,
-        generate_example,
+        get_npy_bytes,
     )
 
     if key not in EXAMPLE_DATASETS:
         raise HTTPException(status_code=404, detail=f"Unknown example: {key}")
+    if role not in ("measurement", "matrix", "ground_truth"):
+        raise HTTPException(status_code=400, detail="role must be measurement, matrix, or ground_truth")
 
     info = EXAMPLE_DATASETS[key]
     if role == "matrix" and not info.get("has_matrix"):
         raise HTTPException(status_code=404, detail=f"No matrix for {key}")
 
-    example = generate_example(key)
+    try:
+        npy_bytes = get_npy_bytes(key, role)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
 
-    if role == "measurement":
-        arr = example["measurement"]
-    elif role == "matrix":
-        arr = example.get("matrix")
-        if arr is None:
-            raise HTTPException(status_code=404, detail="No matrix available")
-    elif role == "ground_truth":
-        arr = example.get("ground_truth")
-        if arr is None:
-            raise HTTPException(status_code=404, detail="No ground truth available")
-    else:
-        raise HTTPException(status_code=400, detail="role must be measurement, matrix, or ground_truth")
-
-    npy_bytes = array_to_npy_bytes(arr)
     filename = f"{key}_{role}.npy"
 
     return Response(

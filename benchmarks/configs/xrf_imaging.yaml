@@ -32,7 +32,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: Vogt et al., APS XRF Maps
   license: Public domain
-mismatch_params: []
+mismatch_params:
+- name: Excitation energy drift
+  nominal: 0.0
+  range:
+  - -0.05
+  - 0.05
+  unit: keV
+- name: Detector resolution
+  nominal: 130.0
+  range:
+  - 120.0
+  - 150.0
+  unit: eV
+- name: Matrix absorption
+  nominal: 1.0
+  range:
+  - 0.85
+  - 1.15
+  unit: '-'
+- name: Beam spot size
+  nominal: 1.0
+  range:
+  - 0.5
+  - 2.0
+  unit: um
 solvers:
   traditional_cpu:
     name: Adjoint

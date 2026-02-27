@@ -30,7 +30,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Velocity model error
+  nominal: 5000.0
+  range:
+  - 4500.0
+  - 5500.0
+  unit: m/s
+- name: Source location error
+  nominal: 0.0
+  range:
+  - -50.0
+  - 50.0
+  unit: m
+- name: Receiver coupling
+  nominal: 1.0
+  range:
+  - 0.85
+  - 1.15
+  unit: '-'
+- name: Timing error
+  nominal: 0.0
+  range:
+  - -0.002
+  - 0.002
+  unit: s
 solvers:
   traditional_cpu:
     name: Adjoint

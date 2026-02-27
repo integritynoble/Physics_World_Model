@@ -32,7 +32,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Isocenter shift
+  nominal: 0.0
+  range:
+  - -2.0
+  - 2.0
+  unit: mm
+- name: Beam energy variation
+  nominal: 6.0
+  range:
+  - 5.8
+  - 6.2
+  unit: MV
+- name: Detector sag
+  nominal: 0.0
+  range:
+  - -1.0
+  - 1.0
+  unit: mm
+- name: Scatter kernel width
+  nominal: 5.0
+  range:
+  - 3.0
+  - 7.0
+  unit: mm
 solvers:
   traditional_cpu:
     name: FBP

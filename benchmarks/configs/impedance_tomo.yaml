@@ -31,7 +31,31 @@ data_source:
   synthetic_generator: spectral_scene
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Contact impedance
+  nominal: 100.0
+  range:
+  - 50.0
+  - 200.0
+  unit: ohm
+- name: Electrode position error
+  nominal: 0.0
+  range:
+  - -2.0
+  - 2.0
+  unit: mm
+- name: Background conductivity
+  nominal: 0.2
+  range:
+  - 0.1
+  - 0.4
+  unit: S/m
+- name: Current amplitude drift
+  nominal: 1.0
+  range:
+  - 0.95
+  - 1.05
+  unit: '-'
 solvers:
   traditional_cpu:
     name: Adjoint

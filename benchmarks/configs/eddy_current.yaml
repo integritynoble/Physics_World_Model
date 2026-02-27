@@ -31,7 +31,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Liftoff distance
+  nominal: 0.0
+  range:
+  - 0.0
+  - 1.0
+  unit: mm
+- name: Conductivity error
+  nominal: 58.0
+  range:
+  - 55.0
+  - 61.0
+  unit: MS/m
+- name: Excitation frequency drift
+  nominal: 100.0
+  range:
+  - 95.0
+  - 105.0
+  unit: kHz
+- name: Probe tilt
+  nominal: 0.0
+  range:
+  - -2.0
+  - 2.0
+  unit: deg
 solvers:
   traditional_cpu:
     name: Adjoint

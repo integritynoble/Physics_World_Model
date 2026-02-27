@@ -32,7 +32,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Source position error
+  nominal: 0.0
+  range:
+  - -2.0
+  - 2.0
+  unit: mm
+- name: Attenuation coefficient
+  nominal: 0.2
+  range:
+  - 0.15
+  - 0.25
+  unit: 1/cm
+- name: Detector gain drift
+  nominal: 1.0
+  range:
+  - 0.95
+  - 1.05
+  unit: '-'
+- name: Scatter fraction
+  nominal: 0.15
+  range:
+  - 0.1
+  - 0.25
+  unit: '-'
 solvers:
   traditional_cpu:
     name: FBP

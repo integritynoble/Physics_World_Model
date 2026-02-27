@@ -30,7 +30,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Flight path error
+  nominal: 0.0
+  range:
+  - -0.5
+  - 0.5
+  unit: mm
+- name: Voltage calibration
+  nominal: 1.0
+  range:
+  - 0.98
+  - 1.02
+  unit: '-'
+- name: Detection efficiency
+  nominal: 0.6
+  range:
+  - 0.5
+  - 0.7
+  unit: '-'
+- name: Tip radius error
+  nominal: 0.0
+  range:
+  - -5.0
+  - 5.0
+  unit: nm
 solvers:
   traditional_cpu:
     name: Adjoint

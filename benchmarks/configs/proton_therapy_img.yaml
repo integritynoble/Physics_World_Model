@@ -32,7 +32,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Range uncertainty
+  nominal: 0.0
+  range:
+  - -3.0
+  - 3.0
+  unit: mm
+- name: Scattering power error
+  nominal: 1.0
+  range:
+  - 0.95
+  - 1.05
+  unit: '-'
+- name: Detector efficiency drift
+  nominal: 0.85
+  range:
+  - 0.8
+  - 0.9
+  unit: '-'
+- name: Setup error
+  nominal: 0.0
+  range:
+  - -2.0
+  - 2.0
+  unit: mm
 solvers:
   traditional_cpu:
     name: FBP

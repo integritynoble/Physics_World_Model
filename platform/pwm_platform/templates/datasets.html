@@ -2,13 +2,51 @@
 {% block title %}Benchmarks — Physics World Model{% endblock %}
 
 {% block content %}
-<div class="space-y-6">
+<div class="space-y-8">
     <div>
         <h1 class="text-2xl font-bold text-gray-900">Benchmarks</h1>
         <p class="mt-1 text-sm text-gray-600">
-            Public and hidden datasets for {{ total_variants }} imaging system variants — B1 through B4 benchmarks with leaderboards, downloads, and evaluation.
+            Blind reconstruction challenges across {{ total_variants }} imaging system variants — public and hidden test sets, leaderboards, and dataset downloads.
         </p>
     </div>
+
+    <!-- Flagship Leaderboards -->
+    {% if featured %}
+    <div>
+        <h2 class="text-lg font-bold text-gray-900">Flagship Leaderboards</h2>
+        <p class="mt-0.5 text-xs text-gray-500">Top-performing methods on 10 flagship imaging challenges — from medical to quantum.</p>
+
+        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {% for f in featured %}
+            <a href="/benchmark/{{ f.variant_key }}" class="block bg-white shadow rounded-lg p-5 hover:shadow-lg transition-shadow border-l-4 border-amber-500 group">
+                <div class="flex items-start justify-between gap-2">
+                    <h3 class="text-base font-bold text-gray-900 leading-snug">{{ f.display_name }}</h3>
+                    <span class="shrink-0 text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 font-medium whitespace-nowrap">{{ f.category }}</span>
+                </div>
+
+                {% if f.benchmark_dataset %}
+                <p class="mt-2 text-xs text-gray-400 leading-tight truncate" title="{{ f.benchmark_dataset.name }} — {{ f.benchmark_dataset.citation }}">{{ f.benchmark_dataset.name }}</p>
+                {% endif %}
+
+                {% if f.leaderboard %}
+                <div class="mt-3 bg-gray-50 rounded-lg p-3 space-y-1.5">
+                    <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Leaderboard</p>
+                    {% for row in f.leaderboard %}
+                    <div class="flex items-center gap-2 text-xs leading-snug">
+                        <span class="shrink-0 w-5 text-center text-sm">{% if row.rank == 1 %}🥇{% elif row.rank == 2 %}🥈{% elif row.rank == 3 %}🥉{% else %}{{ row.rank }}{% endif %}</span>
+                        <span class="text-gray-700 truncate flex-1" title="{{ row.method }}">{{ row.method }}</span>
+                        <span class="shrink-0 font-mono font-bold text-gray-900">{{ "%.3f" | format(row.overall_score) }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="mt-3 text-xs text-amber-600 font-semibold group-hover:text-amber-700">View benchmark &rarr;</div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Jump Nav -->
     {% if grouped %}
@@ -31,9 +69,9 @@
             <span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">{{ variants | length }} variant{{ 's' if variants | length != 1 else '' }}</span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {% for v in variants %}
-            <a href="/benchmark/{{ v.variant_key }}" class="block bg-white shadow rounded-lg p-5 hover:shadow-md transition-shadow border-l-4 border-indigo-500">
+            <a href="/benchmark/{{ v.variant_key }}" class="block bg-white shadow rounded-lg p-5 hover:shadow-lg transition-shadow border-l-4 border-indigo-500 group">
                 <div class="flex items-center justify-between">
                     <h3 class="text-base font-bold text-gray-900">{{ v.display_name }}</h3>
                 </div>
@@ -41,6 +79,20 @@
 
                 <!-- Spec notation -->
                 <p class="mt-2 text-xs font-mono text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded truncate">{{ v.spec_notation }}</p>
+
+                <!-- Leaderboard -->
+                {% if v.leaderboard %}
+                <div class="mt-3 bg-gray-50 rounded-lg p-3 space-y-1.5">
+                    <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Leaderboard</p>
+                    {% for row in v.leaderboard %}
+                    <div class="flex items-center gap-2 text-xs leading-snug">
+                        <span class="shrink-0 w-5 text-center text-sm">{% if row.rank == 1 %}🥇{% elif row.rank == 2 %}🥈{% elif row.rank == 3 %}🥉{% else %}{{ row.rank }}{% endif %}</span>
+                        <span class="text-gray-700 truncate flex-1" title="{{ row.method }}">{{ row.method }}</span>
+                        <span class="shrink-0 font-mono font-bold text-gray-900">{{ "%.3f" | format(row.overall_score) }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
 
                 <!-- Stats -->
                 <div class="mt-3 flex flex-wrap gap-2">
@@ -58,7 +110,7 @@
                     </div>
                 </div>
 
-                <div class="mt-2 text-xs text-indigo-600 font-medium">View benchmarks &rarr;</div>
+                <div class="mt-3 text-xs text-indigo-600 font-semibold group-hover:text-indigo-700">View benchmark &rarr;</div>
             </a>
             {% endfor %}
         </div>

@@ -1,15 +1,11 @@
 {# ── Spec Chat Sidebar: Prompt Guide & Modality Explorer ── #}
-<div id="chat-sidebar" class="bg-white shadow rounded-lg border-l-4 border-purple-400 overflow-hidden flex flex-col max-h-[780px]">
+<div id="chat-sidebar" hx-boost="false" class="bg-white shadow rounded-lg border-l-4 border-purple-400 overflow-hidden flex flex-col max-h-[780px]">
 
-    {# ── Tab header ── #}
+    {# ── Tab header (3 tabs: Guide, Modalities, Examples) ── #}
     <div class="flex border-b border-gray-200 bg-gray-50 flex-shrink-0">
         <button onclick="switchSidebarTab('guide')" id="tab-guide"
                 class="flex-1 px-2 py-2.5 text-xs font-semibold text-purple-700 border-b-2 border-purple-500 bg-white transition-colors">
             Guide
-        </button>
-        <button onclick="switchSidebarTab('datasets')" id="tab-datasets"
-                class="flex-1 px-2 py-2.5 text-xs font-semibold text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition-colors">
-            Datasets
         </button>
         <button onclick="switchSidebarTab('modalities')" id="tab-modalities"
                 class="flex-1 px-2 py-2.5 text-xs font-semibold text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition-colors">
@@ -25,6 +21,23 @@
     {# TAB 1 — Prompt Guide                                       #}
     {# ═══════════════════════════════════════════════════════════ #}
     <div id="panel-guide" class="overflow-y-auto flex-1 p-4 space-y-4">
+
+        {# ── Two Modes overview ── #}
+        <div class="bg-gradient-to-r from-indigo-50 to-amber-50 border border-gray-200 rounded-lg p-3 space-y-2">
+            <h3 class="text-sm font-bold text-gray-800">Two ways to use Spec Builder</h3>
+            <div class="grid grid-cols-2 gap-2">
+                <div class="bg-white/70 rounded px-2 py-1.5 border border-indigo-200">
+                    <p class="text-[10px] font-bold text-indigo-700 mb-0.5">Mode 1: Prompt &rarr; Simulate</p>
+                    <p class="text-[10px] text-gray-500 leading-snug">Describe a system &rarr; AI generates spec &rarr; Run Simulation</p>
+                </div>
+                <div class="bg-white/70 rounded px-2 py-1.5 border border-amber-200">
+                    <p class="text-[10px] font-bold text-amber-700 mb-0.5">Mode 2: Dataset+Prompt &rarr; Reconstruct</p>
+                    <p class="text-[10px] text-gray-500 leading-snug">Upload data + prompt &rarr; spec &rarr; Reconstruct</p>
+                </div>
+            </div>
+        </div>
+
+        <hr class="border-gray-200">
 
         <div>
             <h3 class="text-sm font-bold text-gray-800 mb-2">How to describe a modality</h3>
@@ -82,9 +95,9 @@
         <hr class="border-gray-200">
 
         <div>
-            <h3 class="text-sm font-bold text-gray-800 mb-2">Dataset Mode</h3>
+            <h3 class="text-sm font-bold text-gray-800 mb-2">Dataset Mode (Dataset+Prompt &rarr; Reconstruct)</h3>
             <p class="text-xs text-gray-600 leading-relaxed mb-2">
-                Upload your own measurement data and reconstruct using PWM's best methods:
+                Upload your own measurement data, describe it in natural language, then reconstruct:
             </p>
             <div class="space-y-1.5">
                 <div class="flex items-start gap-2 text-xs">
@@ -93,7 +106,7 @@
                 </div>
                 <div class="flex items-start gap-2 text-xs">
                     <span class="text-amber-600 font-bold mt-0.5">2</span>
-                    <div><strong class="text-gray-700">Describe:</strong> <span class="text-gray-500">&ldquo;This is CT sinogram data from a fan-beam scanner&rdquo;</span></div>
+                    <div><strong class="text-gray-700">Prompt:</strong> <span class="text-gray-500">&ldquo;This is CT sinogram data from a fan-beam scanner&rdquo;</span></div>
                 </div>
                 <div class="flex items-start gap-2 text-xs">
                     <span class="text-amber-600 font-bold mt-0.5">3</span>
@@ -104,19 +117,82 @@
                     <div><strong class="text-gray-700">Reconstruct:</strong> <span class="text-gray-500">Click "Reconstruct from Dataset" to apply the best method</span></div>
                 </div>
             </div>
-            <div class="mt-2 space-y-1">
-                <button onclick="insertPrompt('This is hyperspectral CASSI data with 28 spectral bands')"
-                        class="w-full text-left px-2.5 py-1.5 bg-amber-50 border border-amber-100 rounded text-[11px] text-amber-700 hover:bg-amber-100 transition-colors truncate">
-                    &ldquo;This is hyperspectral CASSI data with 28 spectral bands&rdquo;
-                </button>
-                <button onclick="insertPrompt('This is k-space MRI data with 4x undersampling')"
-                        class="w-full text-left px-2.5 py-1.5 bg-amber-50 border border-amber-100 rounded text-[11px] text-amber-700 hover:bg-amber-100 transition-colors truncate">
-                    &ldquo;This is k-space MRI data with 4x undersampling&rdquo;
-                </button>
-                <button onclick="insertPrompt('This is a CT sinogram from a fan-beam scanner with 360 projections')"
-                        class="w-full text-left px-2.5 py-1.5 bg-amber-50 border border-amber-100 rounded text-[11px] text-amber-700 hover:bg-amber-100 transition-colors truncate">
-                    &ldquo;CT sinogram from a fan-beam scanner with 360 projections&rdquo;
-                </button>
+
+            {# ── Quick-start example datasets ── #}
+            <div class="mt-3 space-y-2">
+                <p class="text-[10px] font-bold text-amber-700 uppercase tracking-wider">Try it now &mdash; download &amp; upload</p>
+
+                {# CT #}
+                <div class="bg-amber-50/50 border border-amber-100 rounded px-2.5 py-2 space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-semibold text-gray-700">CT Sinogram</span>
+                        <span class="text-[9px] px-1 py-0.5 bg-blue-100 text-blue-600 rounded font-mono">ct</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                        <a href="/api/v1/spec-chat/example-data/ct/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-100 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-200">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            measurement.npy
+                        </a>
+                        <a href="/api/v1/spec-chat/example-data/ct/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            ground_truth.npy
+                        </a>
+                    </div>
+                    <button onclick="insertPrompt('This is a CT sinogram from a fan-beam scanner with 180 projections and 128 detector pixels')"
+                            class="w-full text-left px-2 py-1 bg-white border border-amber-100 rounded text-[10px] text-amber-700 hover:bg-amber-50 transition-colors truncate">
+                        <span class="font-semibold">Prompt:</span> &ldquo;CT sinogram with 180 projections and 128 detector pixels&rdquo;
+                    </button>
+                </div>
+
+                {# SPC #}
+                <div class="bg-amber-50/50 border border-amber-100 rounded px-2.5 py-2 space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-semibold text-gray-700">Single-Pixel Camera</span>
+                        <span class="text-[9px] px-1 py-0.5 bg-violet-100 text-violet-600 rounded font-mono">spc</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                        <a href="/api/v1/spec-chat/example-data/spc/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-100 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-200">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            measurement.npy
+                        </a>
+                        <a href="/api/v1/spec-chat/example-data/spc/matrix" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gray-50 border border-gray-200 rounded text-[9px] font-medium text-gray-600 hover:bg-gray-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            matrix.npy
+                        </a>
+                        <a href="/api/v1/spec-chat/example-data/spc/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            ground_truth.npy
+                        </a>
+                    </div>
+                    <button onclick="insertPrompt('This is single-pixel camera data with a 256x1024 Gaussian sensing matrix and 25% compression ratio')"
+                            class="w-full text-left px-2 py-1 bg-white border border-amber-100 rounded text-[10px] text-amber-700 hover:bg-amber-50 transition-colors truncate">
+                        <span class="font-semibold">Prompt:</span> &ldquo;SPC data with 256&times;1024 Gaussian sensing matrix&rdquo;
+                    </button>
+                </div>
+
+                {# MRI #}
+                <div class="bg-amber-50/50 border border-amber-100 rounded px-2.5 py-2 space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-semibold text-gray-700">MRI k-Space</span>
+                        <span class="text-[9px] px-1 py-0.5 bg-blue-100 text-blue-600 rounded font-mono">mri</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                        <a href="/api/v1/spec-chat/example-data/mri/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-100 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-200">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            kspace.npy
+                        </a>
+                        <a href="/api/v1/spec-chat/example-data/mri/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            ground_truth.npy
+                        </a>
+                    </div>
+                    <button onclick="insertPrompt('This is 2D MRI k-space data with 4x Cartesian undersampling and Gaussian noise')"
+                            class="w-full text-left px-2 py-1 bg-white border border-amber-100 rounded text-[10px] text-amber-700 hover:bg-amber-50 transition-colors truncate">
+                        <span class="font-semibold">Prompt:</span> &ldquo;MRI k-space data with 4x undersampling&rdquo;
+                    </button>
+                </div>
+
+                <p class="text-[10px] text-gray-400 italic">More datasets available in <a href="javascript:switchSidebarTab('modalities')" class="text-purple-500 underline">Modalities</a> tab (look for the <span class="text-[9px] px-1 py-0.5 bg-amber-100 text-amber-600 rounded">DATA</span> badge).</p>
             </div>
         </div>
 
@@ -137,274 +213,7 @@
     </div>
 
     {# ═══════════════════════════════════════════════════════════ #}
-    {# TAB 2 — Dataset Examples for Mode 2                        #}
-    {# ═══════════════════════════════════════════════════════════ #}
-    <div id="panel-datasets" class="overflow-y-auto flex-1 p-4 space-y-3 hidden">
-
-        <div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-            <p class="text-xs text-amber-800 leading-relaxed">
-                <strong>Mode 2: Dataset &rarr; Reconstruct.</strong>
-                Download example .npy files below, then upload them using the
-                <strong>Upload Dataset</strong> button. Follow the prompt example to build a spec matched to the data.
-            </p>
-        </div>
-
-        {# ── Compressive Imaging ── #}
-        <div>
-            <h3 class="text-xs font-bold text-gray-800 mb-1.5 uppercase tracking-wide flex items-center gap-1.5">
-                <span class="w-2 h-2 bg-violet-500 rounded-full"></span>
-                Compressive Imaging
-            </h3>
-            <div class="space-y-2">
-                {# SPC #}
-                <div class="bg-white border border-gray-200 rounded-lg px-3 py-2 space-y-1.5">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-gray-800">Single-Pixel Camera (SPC)</span>
-                        <span class="text-[10px] px-1.5 py-0.5 bg-violet-100 text-violet-700 rounded font-mono">spc_block</span>
-                    </div>
-                    <p class="text-[11px] text-gray-500">Measurement (256,) + Sensing matrix (256&times;1024) + Ground truth (32&times;32)</p>
-                    <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/spc/measurement" class="inline-flex items-center gap-1 px-2 py-1 bg-amber-50 border border-amber-200 rounded text-[10px] font-medium text-amber-700 hover:bg-amber-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            measurement.npy
-                        </a>
-                        <a href="/api/v1/spec-chat/example-data/spc/matrix" class="inline-flex items-center gap-1 px-2 py-1 bg-gray-50 border border-gray-200 rounded text-[10px] font-medium text-gray-600 hover:bg-gray-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            matrix.npy
-                        </a>
-                        <a href="/api/v1/spec-chat/example-data/spc/ground_truth" class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded text-[10px] font-medium text-green-600 hover:bg-green-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            ground_truth.npy
-                        </a>
-                    </div>
-                    <button onclick="insertPrompt('This is single-pixel camera data with a 256x1024 Gaussian sensing matrix and 25% compression ratio')"
-                            class="w-full text-left px-2 py-1 bg-purple-50 border border-purple-100 rounded text-[11px] text-purple-700 hover:bg-purple-100 transition-colors">
-                        <span class="font-semibold">Prompt:</span> &ldquo;This is single-pixel camera data with a 256&times;1024 Gaussian sensing matrix...&rdquo;
-                    </button>
-                </div>
-
-                {# CASSI #}
-                <div class="bg-white border border-gray-200 rounded-lg px-3 py-2 space-y-1.5">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-gray-800">CASSI Hyperspectral</span>
-                        <span class="text-[10px] px-1.5 py-0.5 bg-violet-100 text-violet-700 rounded font-mono">sd_cassi</span>
-                    </div>
-                    <p class="text-[11px] text-gray-500">Measurement (64&times;91) + Ground truth (64&times;64)</p>
-                    <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/cassi/measurement" class="inline-flex items-center gap-1 px-2 py-1 bg-amber-50 border border-amber-200 rounded text-[10px] font-medium text-amber-700 hover:bg-amber-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            measurement.npy
-                        </a>
-                        <a href="/api/v1/spec-chat/example-data/cassi/ground_truth" class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded text-[10px] font-medium text-green-600 hover:bg-green-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            ground_truth.npy
-                        </a>
-                    </div>
-                    <button onclick="insertPrompt('This is SD-CASSI hyperspectral data with 28 spectral bands and binary coded aperture')"
-                            class="w-full text-left px-2 py-1 bg-purple-50 border border-purple-100 rounded text-[11px] text-purple-700 hover:bg-purple-100 transition-colors">
-                        <span class="font-semibold">Prompt:</span> &ldquo;This is SD-CASSI hyperspectral data with 28 spectral bands...&rdquo;
-                    </button>
-                </div>
-
-                {# CACTI #}
-                <div class="bg-white border border-gray-200 rounded-lg px-3 py-2 space-y-1.5">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-gray-800">CACTI Video</span>
-                        <span class="text-[10px] px-1.5 py-0.5 bg-violet-100 text-violet-700 rounded font-mono">cacti</span>
-                    </div>
-                    <p class="text-[11px] text-gray-500">Measurement (64&times;64) + Ground truth (64&times;64)</p>
-                    <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/cacti/measurement" class="inline-flex items-center gap-1 px-2 py-1 bg-amber-50 border border-amber-200 rounded text-[10px] font-medium text-amber-700 hover:bg-amber-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            measurement.npy
-                        </a>
-                        <a href="/api/v1/spec-chat/example-data/cacti/ground_truth" class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded text-[10px] font-medium text-green-600 hover:bg-green-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            ground_truth.npy
-                        </a>
-                    </div>
-                    <button onclick="insertPrompt('This is CACTI video compressive sensing data with 8 temporal frames')"
-                            class="w-full text-left px-2 py-1 bg-purple-50 border border-purple-100 rounded text-[11px] text-purple-700 hover:bg-purple-100 transition-colors">
-                        <span class="font-semibold">Prompt:</span> &ldquo;This is CACTI video compressive sensing data with 8 temporal frames&rdquo;
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        {# ── Medical Imaging ── #}
-        <div>
-            <h3 class="text-xs font-bold text-gray-800 mb-1.5 uppercase tracking-wide flex items-center gap-1.5">
-                <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
-                Medical Imaging
-            </h3>
-            <div class="space-y-2">
-                {# CT #}
-                <div class="bg-white border border-gray-200 rounded-lg px-3 py-2 space-y-1.5">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-gray-800">CT Sinogram</span>
-                        <span class="text-[10px] px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded font-mono">ct</span>
-                    </div>
-                    <p class="text-[11px] text-gray-500">Sinogram (128&times;180) + Ground truth (128&times;128)</p>
-                    <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/ct/measurement" class="inline-flex items-center gap-1 px-2 py-1 bg-amber-50 border border-amber-200 rounded text-[10px] font-medium text-amber-700 hover:bg-amber-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            sinogram.npy
-                        </a>
-                        <a href="/api/v1/spec-chat/example-data/ct/ground_truth" class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded text-[10px] font-medium text-green-600 hover:bg-green-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            ground_truth.npy
-                        </a>
-                    </div>
-                    <button onclick="insertPrompt('This is a CT sinogram from a fan-beam scanner with 180 projections and 128 detector pixels')"
-                            class="w-full text-left px-2 py-1 bg-purple-50 border border-purple-100 rounded text-[11px] text-purple-700 hover:bg-purple-100 transition-colors">
-                        <span class="font-semibold">Prompt:</span> &ldquo;This is a CT sinogram from a fan-beam scanner with 180 projections...&rdquo;
-                    </button>
-                </div>
-
-                {# MRI #}
-                <div class="bg-white border border-gray-200 rounded-lg px-3 py-2 space-y-1.5">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-gray-800">MRI k-Space</span>
-                        <span class="text-[10px] px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded font-mono">mri</span>
-                    </div>
-                    <p class="text-[11px] text-gray-500">k-space (128&times;128&times;2 real/imag) + Ground truth (128&times;128)</p>
-                    <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/mri/measurement" class="inline-flex items-center gap-1 px-2 py-1 bg-amber-50 border border-amber-200 rounded text-[10px] font-medium text-amber-700 hover:bg-amber-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            kspace.npy
-                        </a>
-                        <a href="/api/v1/spec-chat/example-data/mri/ground_truth" class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded text-[10px] font-medium text-green-600 hover:bg-green-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            ground_truth.npy
-                        </a>
-                    </div>
-                    <button onclick="insertPrompt('This is 2D MRI k-space data with 4x Cartesian undersampling and Gaussian noise')"
-                            class="w-full text-left px-2 py-1 bg-purple-50 border border-purple-100 rounded text-[11px] text-purple-700 hover:bg-purple-100 transition-colors">
-                        <span class="font-semibold">Prompt:</span> &ldquo;This is 2D MRI k-space data with 4x Cartesian undersampling...&rdquo;
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        {# ── Microscopy ── #}
-        <div>
-            <h3 class="text-xs font-bold text-gray-800 mb-1.5 uppercase tracking-wide flex items-center gap-1.5">
-                <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                Microscopy
-            </h3>
-            <div class="space-y-2">
-                <div class="bg-white border border-gray-200 rounded-lg px-3 py-2 space-y-1.5">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-gray-800">Confocal Fluorescence</span>
-                        <span class="text-[10px] px-1.5 py-0.5 bg-green-100 text-green-700 rounded font-mono">confocal_3d</span>
-                    </div>
-                    <p class="text-[11px] text-gray-500">PSF-blurred image (128&times;128) + Ground truth (128&times;128)</p>
-                    <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/confocal/measurement" class="inline-flex items-center gap-1 px-2 py-1 bg-amber-50 border border-amber-200 rounded text-[10px] font-medium text-amber-700 hover:bg-amber-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            measurement.npy
-                        </a>
-                        <a href="/api/v1/spec-chat/example-data/confocal/ground_truth" class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded text-[10px] font-medium text-green-600 hover:bg-green-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            ground_truth.npy
-                        </a>
-                    </div>
-                    <button onclick="insertPrompt('This is confocal fluorescence microscopy data with Gaussian PSF blur and Poisson noise')"
-                            class="w-full text-left px-2 py-1 bg-purple-50 border border-purple-100 rounded text-[11px] text-purple-700 hover:bg-purple-100 transition-colors">
-                        <span class="font-semibold">Prompt:</span> &ldquo;This is confocal microscopy data with Gaussian PSF blur...&rdquo;
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        {# ── More categories ── #}
-        <div>
-            <h3 class="text-xs font-bold text-gray-800 mb-1.5 uppercase tracking-wide flex items-center gap-1.5">
-                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
-                More Modalities
-            </h3>
-            <div class="space-y-2">
-                {# SEM #}
-                <div class="bg-white border border-gray-200 rounded-lg px-3 py-2 space-y-1.5">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-gray-800">SEM (Electron)</span>
-                        <span class="text-[10px] px-1.5 py-0.5 bg-yellow-100 text-yellow-700 rounded font-mono">sem</span>
-                    </div>
-                    <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/sem/measurement" class="inline-flex items-center gap-1 px-2 py-1 bg-amber-50 border border-amber-200 rounded text-[10px] font-medium text-amber-700 hover:bg-amber-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            measurement.npy
-                        </a>
-                        <a href="/api/v1/spec-chat/example-data/sem/ground_truth" class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded text-[10px] font-medium text-green-600 hover:bg-green-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            ground_truth.npy
-                        </a>
-                    </div>
-                    <button onclick="insertPrompt('This is SEM image data with beam aberration and Poisson shot noise')"
-                            class="w-full text-left px-2 py-1 bg-purple-50 border border-purple-100 rounded text-[11px] text-purple-700 hover:bg-purple-100 transition-colors">
-                        <span class="font-semibold">Prompt:</span> &ldquo;SEM image data with beam aberration and Poisson shot noise&rdquo;
-                    </button>
-                </div>
-
-                {# SAR #}
-                <div class="bg-white border border-gray-200 rounded-lg px-3 py-2 space-y-1.5">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-gray-800">SAR (Radar)</span>
-                        <span class="text-[10px] px-1.5 py-0.5 bg-teal-100 text-teal-700 rounded font-mono">sar</span>
-                    </div>
-                    <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/sar/measurement" class="inline-flex items-center gap-1 px-2 py-1 bg-amber-50 border border-amber-200 rounded text-[10px] font-medium text-amber-700 hover:bg-amber-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            measurement.npy
-                        </a>
-                        <a href="/api/v1/spec-chat/example-data/sar/ground_truth" class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded text-[10px] font-medium text-green-600 hover:bg-green-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            ground_truth.npy
-                        </a>
-                    </div>
-                    <button onclick="insertPrompt('This is SAR phase history data from a stripmap-mode synthetic aperture radar')"
-                            class="w-full text-left px-2 py-1 bg-purple-50 border border-purple-100 rounded text-[11px] text-purple-700 hover:bg-purple-100 transition-colors">
-                        <span class="font-semibold">Prompt:</span> &ldquo;SAR phase history data from a stripmap-mode radar&rdquo;
-                    </button>
-                </div>
-
-                {# AFM #}
-                <div class="bg-white border border-gray-200 rounded-lg px-3 py-2 space-y-1.5">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-gray-800">AFM (Scanning Probe)</span>
-                        <span class="text-[10px] px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded font-mono">afm</span>
-                    </div>
-                    <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/afm/measurement" class="inline-flex items-center gap-1 px-2 py-1 bg-amber-50 border border-amber-200 rounded text-[10px] font-medium text-amber-700 hover:bg-amber-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            measurement.npy
-                        </a>
-                        <a href="/api/v1/spec-chat/example-data/afm/ground_truth" class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded text-[10px] font-medium text-green-600 hover:bg-green-100">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            ground_truth.npy
-                        </a>
-                    </div>
-                    <button onclick="insertPrompt('This is AFM topography data with tip dilation artifacts and thermal noise')"
-                            class="w-full text-left px-2 py-1 bg-purple-50 border border-purple-100 rounded text-[11px] text-purple-700 hover:bg-purple-100 transition-colors">
-                        <span class="font-semibold">Prompt:</span> &ldquo;AFM topography data with tip dilation artifacts...&rdquo;
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        {# ── Workflow example ── #}
-        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 text-xs text-gray-600 space-y-1.5">
-            <h4 class="font-bold text-gray-800">Example Workflow (CT)</h4>
-            <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">1.</span><span>Download <strong>sinogram.npy</strong> + <strong>ground_truth.npy</strong> from CT above</span></div>
-            <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">2.</span><span>Click <strong>Upload Dataset</strong> &rarr; select sinogram.npy as measurement, ground_truth.npy as ground truth</span></div>
-            <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">3.</span><span>Type: &ldquo;This is a CT sinogram with 180 projections&rdquo;</span></div>
-            <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">4.</span><span>Refine: &ldquo;Add center-of-rotation mismatch of 2 pixels&rdquo;</span></div>
-            <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">5.</span><span>Click <strong>Reconstruct from Dataset</strong> to see FBP result with PSNR/SSIM</span></div>
-        </div>
-    </div>
-
-    {# ═══════════════════════════════════════════════════════════ #}
-    {# TAB 3 — Modality Explorer with per-modality fine-tuning    #}
+    {# TAB 2 — Modality Explorer with two modes per modality       #}
     {# ═══════════════════════════════════════════════════════════ #}
     <div id="panel-modalities" class="overflow-y-auto flex-1 p-4 space-y-2 hidden">
 
@@ -416,7 +225,7 @@
             <svg class="absolute left-2.5 top-2.5 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </div>
 
-        <p class="text-[10px] text-gray-400 leading-snug">Click a modality to see fine-tuning prompt examples. Click an example to insert it into the chat.</p>
+        <p class="text-[10px] text-gray-400 leading-snug">Click a modality to see <strong>Mode 1</strong> (prompt &rarr; simulate) and <strong>Mode 2</strong> (dataset+prompt &rarr; reconstruct) examples.</p>
 
         {# Categories #}
         {% for cat_name, cat_modalities in sidebar_categories.items() %}
@@ -432,7 +241,7 @@
             <div id="cat-list-{{ cat_name }}" class="hidden mt-1 space-y-0.5 pl-1">
                 {% for mod in cat_modalities %}
                 <div class="modality-item" data-modality="{{ mod.id }}" data-name="{{ mod.display_name | lower }}">
-                    {# Modality header row — click to expand fine-tuning examples #}
+                    {# Modality header row — click to expand #}
                     <div class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-purple-50 cursor-pointer group transition-colors"
                          onclick="toggleModality('{{ mod.id }}')">
                         <svg id="mod-chevron-{{ mod.id }}" class="w-3 h-3 text-gray-300 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
@@ -440,24 +249,96 @@
                             <p class="text-xs font-medium text-gray-700 truncate group-hover:text-purple-700">{{ mod.display_name }}</p>
                             <p class="text-[10px] font-mono text-gray-400 truncate">{{ mod.spec_notation }}</p>
                         </div>
-                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-500 flex-shrink-0 group-hover:bg-purple-100 group-hover:text-purple-600">{{ mod.carrier }}</span>
+                        <div class="flex items-center gap-1 flex-shrink-0">
+                            {% if mod.example_dataset %}
+                            <span class="text-[9px] px-1 py-0.5 rounded bg-amber-100 text-amber-600 font-medium">DATA</span>
+                            {% endif %}
+                            <span class="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-500 group-hover:bg-purple-100 group-hover:text-purple-600">{{ mod.carrier }}</span>
+                        </div>
                     </div>
 
-                    {# Expandable fine-tuning examples panel #}
-                    <div id="mod-examples-{{ mod.id }}" class="hidden pl-5 pr-1 pb-2 space-y-1">
-                        {# "Design this system" base prompt #}
-                        <button onclick="event.stopPropagation(); insertPrompt('Design a {{ mod.display_name }} system')"
-                                class="w-full text-left px-2.5 py-1.5 bg-blue-50 border border-blue-100 rounded text-[11px] text-blue-700 hover:bg-blue-100 transition-colors truncate">
-                            <span class="font-semibold">Start:</span> &ldquo;Design a {{ mod.display_name }} system&rdquo;
-                        </button>
+                    {# Expandable panel with Mode 1 and Mode 2 #}
+                    <div id="mod-examples-{{ mod.id }}" class="hidden pl-5 pr-1 pb-2 space-y-2">
 
-                        {# Per-modality fine-tuning examples generated from mismatch params, carrier, category #}
-                        {% for ex in mod.finetune_examples %}
-                        <button onclick="event.stopPropagation(); insertPrompt('{{ ex.prompt | e }}')"
-                                class="w-full text-left px-2.5 py-1.5 bg-amber-50 border border-amber-100 rounded text-[11px] text-amber-700 hover:bg-amber-100 transition-colors">
-                            <span class="font-semibold">{{ ex.label }}:</span> &ldquo;{{ ex.prompt }}&rdquo;
-                        </button>
-                        {% endfor %}
+                        {# ── Mode 1: Prompt → Simulate ── #}
+                        <div class="border-l-2 border-indigo-300 pl-2 space-y-1">
+                            <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">Mode 1: Prompt &rarr; Simulate</p>
+                            <button onclick="event.stopPropagation(); insertPrompt('Design a {{ mod.display_name }} system')"
+                                    class="w-full text-left px-2.5 py-1.5 bg-indigo-50 border border-indigo-100 rounded text-[11px] text-indigo-700 hover:bg-indigo-100 transition-colors truncate">
+                                <span class="font-semibold">Start:</span> &ldquo;Design a {{ mod.display_name }} system&rdquo;
+                            </button>
+                            {% for ex in mod.finetune_examples %}
+                            <button onclick="event.stopPropagation(); insertPrompt('{{ ex.prompt | e }}')"
+                                    class="w-full text-left px-2.5 py-1.5 bg-purple-50 border border-purple-100 rounded text-[11px] text-purple-700 hover:bg-purple-100 transition-colors">
+                                <span class="font-semibold">{{ ex.label }}:</span> &ldquo;{{ ex.prompt }}&rdquo;
+                            </button>
+                            {% endfor %}
+                        </div>
+
+                        {# ── Mode 2: Dataset+Prompt → Reconstruct ── #}
+                        <div class="border-l-2 border-amber-300 pl-2 space-y-1.5">
+                            <p class="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Mode 2: Dataset+Prompt &rarr; Reconstruct</p>
+
+                            {# Prompt — always shown for every modality #}
+                            {% if mod.example_dataset %}
+                            <button onclick="event.stopPropagation(); insertPrompt('{{ mod.example_dataset.prompt_example | e }}')"
+                                    class="w-full text-left px-2.5 py-1.5 bg-amber-50 border border-amber-200 rounded text-[11px] text-amber-700 hover:bg-amber-100 transition-colors">
+                                <span class="font-semibold">Prompt:</span> &ldquo;{{ mod.example_dataset.prompt_example }}&rdquo;
+                            </button>
+                            {% else %}
+                            <button onclick="event.stopPropagation(); insertPrompt('I uploaded {{ mod.display_name }} measurement data. Please build a spec that matches my data and reconstruct.')"
+                                    class="w-full text-left px-2.5 py-1.5 bg-amber-50 border border-amber-200 rounded text-[11px] text-amber-700 hover:bg-amber-100 transition-colors">
+                                <span class="font-semibold">Prompt:</span> &ldquo;I uploaded {{ mod.display_name }} measurement data. Please build a spec that matches my data and reconstruct.&rdquo;
+                            </button>
+                            {% endif %}
+
+                            {# Quick-start example .npy downloads (for modalities with synthetic examples) #}
+                            {% if mod.example_dataset %}
+                            <p class="text-[10px] text-gray-500">Quick-start example data:</p>
+                            <div class="flex flex-wrap gap-1">
+                                <a href="/api/v1/spec-chat/example-data/{{ mod.example_dataset.key }}/measurement"
+                                   class="inline-flex items-center gap-1 px-2 py-1 bg-amber-50 border border-amber-200 rounded text-[10px] font-medium text-amber-700 hover:bg-amber-100">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    measurement.npy <span class="text-gray-400">{{ mod.example_dataset.measurement_shape }}</span>
+                                </a>
+                                {% if mod.example_dataset.has_matrix %}
+                                <a href="/api/v1/spec-chat/example-data/{{ mod.example_dataset.key }}/matrix"
+                                   class="inline-flex items-center gap-1 px-2 py-1 bg-gray-50 border border-gray-200 rounded text-[10px] font-medium text-gray-600 hover:bg-gray-100">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    matrix.npy <span class="text-gray-400">{{ mod.example_dataset.matrix_shape }}</span>
+                                </a>
+                                {% endif %}
+                                {% if mod.example_dataset.has_gt %}
+                                <a href="/api/v1/spec-chat/example-data/{{ mod.example_dataset.key }}/ground_truth"
+                                   class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded text-[10px] font-medium text-green-600 hover:bg-green-100">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    ground_truth.npy
+                                </a>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            {# Benchmark datasets — direct HDF5 downloads (no page navigation) #}
+                            {% if mod.benchmark_variants %}
+                            <p class="text-[10px] text-gray-500 mt-1">Benchmark data:</p>
+                            {% for bv in mod.benchmark_variants %}
+                            {% if bv.tier_downloads %}
+                            <div class="space-y-1">
+                                <span class="text-[10px] font-medium text-gray-600">{{ bv.display_name }}</span>
+                                <div class="flex flex-wrap gap-1">
+                                    {% for td in bv.tier_downloads %}
+                                    <a href="{{ td.url }}" download
+                                       class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 border border-blue-200 rounded text-[10px] font-medium text-blue-700 hover:bg-blue-100">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                        {{ td.filename }} <span class="text-blue-400">({{ td.tier }})</span>
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
@@ -467,40 +348,46 @@
     </div>
 
     {# ═══════════════════════════════════════════════════════════ #}
-    {# TAB 3 — Example Prompts                                    #}
+    {# TAB 3 — Example Prompts (with Mode 1 / Mode 2 sections)    #}
     {# ═══════════════════════════════════════════════════════════ #}
     <div id="panel-examples" class="overflow-y-auto flex-1 p-4 space-y-4 hidden">
 
         <p class="text-xs text-gray-500 leading-relaxed">
-            Click any example to insert it into the chat. Start with a basic prompt and refine from there.
+            Click any example to insert it into the chat.
         </p>
 
-        {# ── Basic prompts ── #}
+        {# ═══ MODE 1 ═══ #}
+        <div class="bg-indigo-50 border border-indigo-200 rounded-lg px-3 py-2">
+            <h3 class="text-xs font-bold text-indigo-800 mb-0.5">Mode 1: Prompt &rarr; Spec &rarr; Simulate</h3>
+            <p class="text-[10px] text-indigo-600">Describe a system, build a spec, then click Run Simulation</p>
+        </div>
+
+        {# ── Basic prompts (Mode 1) ── #}
         <div>
-            <h3 class="text-xs font-bold text-gray-800 mb-2 uppercase tracking-wide">Basic &mdash; Name a modality</h3>
+            <h3 class="text-xs font-bold text-gray-800 mb-2 uppercase tracking-wide">Step 1 &mdash; Describe your system</h3>
             <div class="space-y-1.5">
                 <button onclick="insertPrompt('Design a CT scanner for medical imaging')"
-                        class="w-full text-left px-3 py-2 bg-blue-50 border border-blue-100 rounded text-xs text-blue-700 hover:bg-blue-100 transition-colors">
+                        class="w-full text-left px-3 py-2 bg-indigo-50 border border-indigo-100 rounded text-xs text-indigo-700 hover:bg-indigo-100 transition-colors">
                     &ldquo;Design a CT scanner for medical imaging&rdquo;
                 </button>
                 <button onclick="insertPrompt('Design a confocal fluorescence microscope')"
-                        class="w-full text-left px-3 py-2 bg-blue-50 border border-blue-100 rounded text-xs text-blue-700 hover:bg-blue-100 transition-colors">
+                        class="w-full text-left px-3 py-2 bg-indigo-50 border border-indigo-100 rounded text-xs text-indigo-700 hover:bg-indigo-100 transition-colors">
                     &ldquo;Design a confocal fluorescence microscope&rdquo;
                 </button>
                 <button onclick="insertPrompt('Design a single-pixel camera')"
-                        class="w-full text-left px-3 py-2 bg-blue-50 border border-blue-100 rounded text-xs text-blue-700 hover:bg-blue-100 transition-colors">
+                        class="w-full text-left px-3 py-2 bg-indigo-50 border border-indigo-100 rounded text-xs text-indigo-700 hover:bg-indigo-100 transition-colors">
                     &ldquo;Design a single-pixel camera&rdquo;
                 </button>
                 <button onclick="insertPrompt('Design a synthetic aperture radar system')"
-                        class="w-full text-left px-3 py-2 bg-blue-50 border border-blue-100 rounded text-xs text-blue-700 hover:bg-blue-100 transition-colors">
+                        class="w-full text-left px-3 py-2 bg-indigo-50 border border-indigo-100 rounded text-xs text-indigo-700 hover:bg-indigo-100 transition-colors">
                     &ldquo;Design a synthetic aperture radar system&rdquo;
                 </button>
             </div>
         </div>
 
-        {# ── Detailed prompts ── #}
+        {# ── Detailed prompts (Mode 1) ── #}
         <div>
-            <h3 class="text-xs font-bold text-gray-800 mb-2 uppercase tracking-wide">Detailed &mdash; Add parameters</h3>
+            <h3 class="text-xs font-bold text-gray-800 mb-2 uppercase tracking-wide">Step 2 &mdash; Add parameters</h3>
             <div class="space-y-1.5">
                 <button onclick="insertPrompt('Design a CASSI system for hyperspectral imaging with 28 spectral bands, binary coded aperture mask, and mixed Poisson-Gaussian noise')"
                         class="w-full text-left px-3 py-2 bg-green-50 border border-green-100 rounded text-xs text-green-700 hover:bg-green-100 transition-colors">
@@ -517,63 +404,227 @@
             </div>
         </div>
 
-        {# ── Refinement prompts ── #}
+        {# ── Refinement prompts (Mode 1) ── #}
         <div>
-            <h3 class="text-xs font-bold text-gray-800 mb-2 uppercase tracking-wide">Refinement &mdash; Fine-tune the spec</h3>
-            <p class="text-xs text-gray-500 mb-1.5">Use these as follow-ups after generating an initial spec:</p>
+            <h3 class="text-xs font-bold text-gray-800 mb-2 uppercase tracking-wide">Step 3 &mdash; Refine &amp; simulate</h3>
             <div class="space-y-1.5">
                 <button onclick="insertPrompt('Change the noise model to Poisson shot noise')"
-                        class="w-full text-left px-3 py-2 bg-amber-50 border border-amber-100 rounded text-xs text-amber-700 hover:bg-amber-100 transition-colors">
+                        class="w-full text-left px-3 py-2 bg-purple-50 border border-purple-100 rounded text-xs text-purple-700 hover:bg-purple-100 transition-colors">
                     &ldquo;Change the noise model to Poisson shot noise&rdquo;
                 </button>
                 <button onclick="insertPrompt('Add a mismatch parameter for focal length with nominal 10mm and perturbed 10.5mm')"
-                        class="w-full text-left px-3 py-2 bg-amber-50 border border-amber-100 rounded text-xs text-amber-700 hover:bg-amber-100 transition-colors">
+                        class="w-full text-left px-3 py-2 bg-purple-50 border border-purple-100 rounded text-xs text-purple-700 hover:bg-purple-100 transition-colors">
                     &ldquo;Add a mismatch parameter for focal length (10mm nominal, 10.5mm perturbed)&rdquo;
                 </button>
-                <button onclick="insertPrompt('Remove the wavelength dispersion primitive and simplify to a 2D forward model')"
-                        class="w-full text-left px-3 py-2 bg-amber-50 border border-amber-100 rounded text-xs text-amber-700 hover:bg-amber-100 transition-colors">
-                    &ldquo;Remove the wavelength dispersion primitive and simplify to 2D&rdquo;
-                </button>
-                <button onclick="insertPrompt('Increase the perturbation strength for all mismatch parameters by 50%')"
-                        class="w-full text-left px-3 py-2 bg-amber-50 border border-amber-100 rounded text-xs text-amber-700 hover:bg-amber-100 transition-colors">
-                    &ldquo;Increase perturbation strength for all mismatch params by 50%&rdquo;
-                </button>
                 <button onclick="insertPrompt('Use a Hadamard sensing matrix instead of Gaussian random')"
-                        class="w-full text-left px-3 py-2 bg-amber-50 border border-amber-100 rounded text-xs text-amber-700 hover:bg-amber-100 transition-colors">
+                        class="w-full text-left px-3 py-2 bg-purple-50 border border-purple-100 rounded text-xs text-purple-700 hover:bg-purple-100 transition-colors">
                     &ldquo;Use a Hadamard sensing matrix instead of Gaussian random&rdquo;
                 </button>
-                <button onclick="insertPrompt('Add structured illumination before the mask and explain how it changes the spec')"
+            </div>
+            <p class="text-[10px] text-gray-400 mt-1 italic">Then click <strong>Run Simulation</strong> to see benchmark results.</p>
+        </div>
+
+        {# ── Mode 1 multi-step workflow ── #}
+        <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3 text-xs text-gray-600 space-y-1.5">
+            <h4 class="font-bold text-indigo-800">Mode 1 Workflow Example (CACTI)</h4>
+            <div class="flex items-start gap-2"><span class="text-indigo-600 font-bold">1.</span><span>&ldquo;Design a CACTI video compressive sensing system&rdquo;</span></div>
+            <div class="flex items-start gap-2"><span class="text-indigo-600 font-bold">2.</span><span>&ldquo;Add 8 temporal frames with binary time-varying masks&rdquo;</span></div>
+            <div class="flex items-start gap-2"><span class="text-indigo-600 font-bold">3.</span><span>&ldquo;Set timing offset mismatch from 0 to 0.5 pixels&rdquo;</span></div>
+            <div class="flex items-start gap-2"><span class="text-indigo-600 font-bold">4.</span><span>Click <strong>Run Simulation</strong> to see benchmark results</span></div>
+        </div>
+
+        <hr class="border-gray-300 my-3">
+
+        {# ═══ MODE 2 ═══ #}
+        <div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+            <h3 class="text-xs font-bold text-amber-800 mb-0.5">Mode 2: Dataset+Prompt &rarr; Spec &rarr; Reconstruct</h3>
+            <p class="text-[10px] text-amber-600">Upload measurement data, prompt to describe your system, then click Reconstruct from Dataset</p>
+        </div>
+
+        {# ── Step 1: Download example datasets (Mode 2) ── #}
+        <div>
+            <h3 class="text-xs font-bold text-gray-800 mb-2 uppercase tracking-wide">Step 1 &mdash; Download example data</h3>
+            <p class="text-xs text-gray-500 mb-2">
+                Download a dataset below, then click <strong>Upload Dataset</strong> above the chat to upload it.
+            </p>
+            <div class="space-y-2">
+
+                {# SPC #}
+                <div class="bg-white border border-amber-200 rounded-lg px-3 py-2 space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-semibold text-gray-700">Single-Pixel Camera</span>
+                        <span class="text-[9px] px-1 py-0.5 bg-violet-100 text-violet-600 rounded font-mono">spc</span>
+                    </div>
+                    <p class="text-[10px] text-gray-400">Measurement (256,) + Matrix (256&times;1024) + GT (32&times;32)</p>
+                    <div class="flex flex-wrap gap-1">
+                        <a href="/api/v1/spec-chat/example-data/spc/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            measurement.npy
+                        </a>
+                        <a href="/api/v1/spec-chat/example-data/spc/matrix" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gray-50 border border-gray-200 rounded text-[9px] font-medium text-gray-600 hover:bg-gray-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            matrix.npy
+                        </a>
+                        <a href="/api/v1/spec-chat/example-data/spc/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            ground_truth.npy
+                        </a>
+                    </div>
+                </div>
+
+                {# CASSI #}
+                <div class="bg-white border border-amber-200 rounded-lg px-3 py-2 space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-semibold text-gray-700">CASSI Hyperspectral</span>
+                        <span class="text-[9px] px-1 py-0.5 bg-violet-100 text-violet-600 rounded font-mono">cassi</span>
+                    </div>
+                    <p class="text-[10px] text-gray-400">Measurement (64&times;91) + GT (64&times;64)</p>
+                    <div class="flex flex-wrap gap-1">
+                        <a href="/api/v1/spec-chat/example-data/cassi/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            measurement.npy
+                        </a>
+                        <a href="/api/v1/spec-chat/example-data/cassi/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            ground_truth.npy
+                        </a>
+                    </div>
+                </div>
+
+                {# CT #}
+                <div class="bg-white border border-amber-200 rounded-lg px-3 py-2 space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-semibold text-gray-700">CT Sinogram</span>
+                        <span class="text-[9px] px-1 py-0.5 bg-blue-100 text-blue-600 rounded font-mono">ct</span>
+                    </div>
+                    <p class="text-[10px] text-gray-400">Sinogram (128&times;180) + GT (128&times;128)</p>
+                    <div class="flex flex-wrap gap-1">
+                        <a href="/api/v1/spec-chat/example-data/ct/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            sinogram.npy
+                        </a>
+                        <a href="/api/v1/spec-chat/example-data/ct/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            ground_truth.npy
+                        </a>
+                    </div>
+                </div>
+
+                {# MRI #}
+                <div class="bg-white border border-amber-200 rounded-lg px-3 py-2 space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-semibold text-gray-700">MRI k-Space</span>
+                        <span class="text-[9px] px-1 py-0.5 bg-blue-100 text-blue-600 rounded font-mono">mri</span>
+                    </div>
+                    <p class="text-[10px] text-gray-400">k-space (128&times;128&times;2) + GT (128&times;128)</p>
+                    <div class="flex flex-wrap gap-1">
+                        <a href="/api/v1/spec-chat/example-data/mri/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            kspace.npy
+                        </a>
+                        <a href="/api/v1/spec-chat/example-data/mri/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            ground_truth.npy
+                        </a>
+                    </div>
+                </div>
+
+                {# Confocal #}
+                <div class="bg-white border border-amber-200 rounded-lg px-3 py-2 space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-semibold text-gray-700">Confocal Microscopy</span>
+                        <span class="text-[9px] px-1 py-0.5 bg-green-100 text-green-600 rounded font-mono">confocal</span>
+                    </div>
+                    <p class="text-[10px] text-gray-400">PSF-blurred (128&times;128) + GT (128&times;128)</p>
+                    <div class="flex flex-wrap gap-1">
+                        <a href="/api/v1/spec-chat/example-data/confocal/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            measurement.npy
+                        </a>
+                        <a href="/api/v1/spec-chat/example-data/confocal/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            ground_truth.npy
+                        </a>
+                    </div>
+                </div>
+
+                {# SEM #}
+                <div class="bg-white border border-amber-200 rounded-lg px-3 py-2 space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-semibold text-gray-700">SEM (Electron)</span>
+                        <span class="text-[9px] px-1 py-0.5 bg-yellow-100 text-yellow-600 rounded font-mono">sem</span>
+                    </div>
+                    <p class="text-[10px] text-gray-400">CTF-modulated (128&times;128) + GT (128&times;128)</p>
+                    <div class="flex flex-wrap gap-1">
+                        <a href="/api/v1/spec-chat/example-data/sem/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            measurement.npy
+                        </a>
+                        <a href="/api/v1/spec-chat/example-data/sem/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            ground_truth.npy
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ── Step 2: Describe data + prompt (Mode 2) ── #}
+        <div>
+            <h3 class="text-xs font-bold text-gray-800 mb-2 uppercase tracking-wide">Step 2 &mdash; Prompt (describe your data)</h3>
+            <p class="text-xs text-gray-500 mb-1.5">After uploading, prompt the AI with what your data is:</p>
+            <div class="space-y-1.5">
+                <button onclick="insertPrompt('This is single-pixel camera data with a 256x1024 Gaussian sensing matrix and 25% compression ratio')"
                         class="w-full text-left px-3 py-2 bg-amber-50 border border-amber-100 rounded text-xs text-amber-700 hover:bg-amber-100 transition-colors">
-                    &ldquo;Add structured illumination before the mask and explain the change&rdquo;
+                    &ldquo;This is single-pixel camera data with a 256&times;1024 Gaussian sensing matrix...&rdquo;
+                </button>
+                <button onclick="insertPrompt('This is SD-CASSI hyperspectral data with 28 spectral bands and binary coded aperture')"
+                        class="w-full text-left px-3 py-2 bg-amber-50 border border-amber-100 rounded text-xs text-amber-700 hover:bg-amber-100 transition-colors">
+                    &ldquo;This is SD-CASSI hyperspectral data with 28 spectral bands...&rdquo;
+                </button>
+                <button onclick="insertPrompt('This is a CT sinogram from a fan-beam scanner with 180 projections and 128 detector pixels')"
+                        class="w-full text-left px-3 py-2 bg-amber-50 border border-amber-100 rounded text-xs text-amber-700 hover:bg-amber-100 transition-colors">
+                    &ldquo;This is a CT sinogram from a fan-beam scanner with 180 projections...&rdquo;
+                </button>
+                <button onclick="insertPrompt('This is 2D MRI k-space data with 4x Cartesian undersampling and Gaussian noise')"
+                        class="w-full text-left px-3 py-2 bg-amber-50 border border-amber-100 rounded text-xs text-amber-700 hover:bg-amber-100 transition-colors">
+                    &ldquo;This is 2D MRI k-space data with 4x Cartesian undersampling...&rdquo;
+                </button>
+                <button onclick="insertPrompt('This is confocal fluorescence microscopy data with Gaussian PSF blur and Poisson noise')"
+                        class="w-full text-left px-3 py-2 bg-amber-50 border border-amber-100 rounded text-xs text-amber-700 hover:bg-amber-100 transition-colors">
+                    &ldquo;This is confocal microscopy data with Gaussian PSF blur...&rdquo;
+                </button>
+                <button onclick="insertPrompt('This is SEM image data with beam aberration and Poisson shot noise')"
+                        class="w-full text-left px-3 py-2 bg-amber-50 border border-amber-100 rounded text-xs text-amber-700 hover:bg-amber-100 transition-colors">
+                    &ldquo;This is SEM image data with beam aberration and Poisson shot noise&rdquo;
                 </button>
             </div>
         </div>
 
-        {# ── Advanced workflow ── #}
+        {# ── Step 3: Refine & Reconstruct (Mode 2) ── #}
         <div>
-            <h3 class="text-xs font-bold text-gray-800 mb-2 uppercase tracking-wide">Advanced &mdash; Multi-step workflow</h3>
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 text-xs text-gray-600 space-y-2">
-                <div class="flex items-start gap-2">
-                    <span class="text-purple-600 font-bold">1.</span>
-                    <span>&ldquo;Design a CACTI video compressive sensing system&rdquo;</span>
-                </div>
-                <div class="flex items-start gap-2">
-                    <span class="text-purple-600 font-bold">2.</span>
-                    <span>&ldquo;Add 8 temporal frames with binary time-varying masks&rdquo;</span>
-                </div>
-                <div class="flex items-start gap-2">
-                    <span class="text-purple-600 font-bold">3.</span>
-                    <span>&ldquo;Set timing offset mismatch from 0 to 0.5 pixels&rdquo;</span>
-                </div>
-                <div class="flex items-start gap-2">
-                    <span class="text-purple-600 font-bold">4.</span>
-                    <span>Click <strong>Run Simulation</strong> to see benchmark results</span>
-                </div>
-                <div class="flex items-start gap-2">
-                    <span class="text-purple-600 font-bold">5.</span>
-                    <span>&ldquo;The reconstruction looks blurry. Reduce the compression ratio.&rdquo;</span>
-                </div>
+            <h3 class="text-xs font-bold text-gray-800 mb-2 uppercase tracking-wide">Step 3 &mdash; Refine &amp; reconstruct</h3>
+            <div class="space-y-1.5">
+                <button onclick="insertPrompt('Add center-of-rotation mismatch of 2 pixels')"
+                        class="w-full text-left px-3 py-2 bg-amber-50 border border-amber-100 rounded text-xs text-amber-700 hover:bg-amber-100 transition-colors">
+                    &ldquo;Add center-of-rotation mismatch of 2 pixels&rdquo;
+                </button>
+                <button onclick="insertPrompt('The data shape doesn\\'t match — my measurement is 512x360, not 128x180')"
+                        class="w-full text-left px-3 py-2 bg-amber-50 border border-amber-100 rounded text-xs text-amber-700 hover:bg-amber-100 transition-colors">
+                    &ldquo;The data shape doesn't match &mdash; my measurement is 512&times;360&rdquo;
+                </button>
             </div>
+            <p class="text-[10px] text-gray-400 mt-1 italic">Then click <strong>Reconstruct from Dataset</strong> to apply the best method with PSNR/SSIM.</p>
+        </div>
+
+        {# ── Mode 2 multi-step workflow ── #}
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-gray-600 space-y-1.5">
+            <h4 class="font-bold text-amber-800">Mode 2 Full Example (CT)</h4>
+            <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">1.</span><span>Download <a href="/api/v1/spec-chat/example-data/ct/measurement" class="text-amber-700 underline font-medium">sinogram.npy</a> + <a href="/api/v1/spec-chat/example-data/ct/ground_truth" class="text-green-600 underline font-medium">ground_truth.npy</a></span></div>
+            <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">2.</span><span>Click <strong>Upload Dataset</strong> &rarr; select sinogram.npy as measurement, ground_truth.npy as GT</span></div>
+            <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">3.</span><span>Prompt: &ldquo;This is a CT sinogram with 180 projections&rdquo;</span></div>
+            <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">4.</span><span>Refine: &ldquo;Add center-of-rotation mismatch of 2 pixels&rdquo;</span></div>
+            <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">5.</span><span>Click <strong>Reconstruct from Dataset</strong> to see FBP result with PSNR/SSIM</span></div>
         </div>
     </div>
 </div>
@@ -581,7 +632,7 @@
 {# ── Sidebar JavaScript ── #}
 <script>
 function switchSidebarTab(tab) {
-    ['guide', 'datasets', 'modalities', 'examples'].forEach(function(t) {
+    ['guide', 'modalities', 'examples'].forEach(function(t) {
         var panel = document.getElementById('panel-' + t);
         var btn = document.getElementById('tab-' + t);
         if (t === tab) {

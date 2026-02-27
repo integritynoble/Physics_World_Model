@@ -30,7 +30,31 @@ data_source:
   synthetic_generator: shepp_logan
   citation: ''
   license: ''
-mismatch_params: []
+mismatch_params:
+- name: Antenna beam width error
+  nominal: 0.0
+  range:
+  - -0.5
+  - 0.5
+  unit: deg
+- name: Receiver gain drift
+  nominal: 1.0
+  range:
+  - 0.95
+  - 1.05
+  unit: '-'
+- name: Brightness temperature offset
+  nominal: 0.0
+  range:
+  - -2.0
+  - 2.0
+  unit: K
+- name: Cross-polarization leakage
+  nominal: 0.0
+  range:
+  - 0.0
+  - 0.02
+  unit: '-'
 solvers:
   traditional_cpu:
     name: RDA

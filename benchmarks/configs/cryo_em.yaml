@@ -34,7 +34,31 @@ data_source:
   synthetic_generator: cell_phantom
   citation: Bartesaghi et al., Science 2015
   license: CC-BY-4.0
-mismatch_params: []
+mismatch_params:
+- name: Defocus error
+  nominal: 0.0
+  range:
+  - -500.0
+  - 500.0
+  unit: nm
+- name: Astigmatism
+  nominal: 0.0
+  range:
+  - 0.0
+  - 100.0
+  unit: nm
+- name: Beam tilt
+  nominal: 0.0
+  range:
+  - -1.0
+  - 1.0
+  unit: mrad
+- name: Ice thickness variation
+  nominal: 50.0
+  range:
+  - 30.0
+  - 80.0
+  unit: nm
 solvers:
   traditional_cpu:
     name: Adjoint

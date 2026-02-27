@@ -374,8 +374,44 @@ def _build_sidebar_data() -> dict:
         get_categories,
     )
     from pwm_platform.services.benchmark_database._primitives import SPEC_PRIMITIVES
+    from pwm_platform.services.benchmark_database import VARIANT_DATABASE, list_all_variant_keys
+    from pwm_platform.services.example_datasets import EXAMPLE_DATASETS
 
     raw_cats = get_categories()
+
+    # Reverse mapping: variant_key → example dataset key, AND example_key → example_key
+    # (modality catalog IDs may differ from variant_keys, e.g. "cassi" vs "sd_cassi")
+    _variant_to_example = {v["variant_key"]: k for k, v in EXAMPLE_DATASETS.items()}
+    # Also map by the example key itself (e.g. "spc" → "spc", "cassi" → "cassi")
+    for k in EXAMPLE_DATASETS:
+        _variant_to_example.setdefault(k, k)
+
+    # Build parent_modality → list of variant_keys for benchmark links
+    _parent_to_variants: dict[str, list[dict]] = {}
+    for vk in list_all_variant_keys():
+        v = VARIANT_DATABASE[vk]
+        pm = v.get("parent_modality", "")
+        if pm:
+            bms = v.get("benchmarks", [])
+            challenge = next((b for b in bms if b.get("is_challenge")), None)
+            # Get public + dev tier download paths
+            tier_downloads = []
+            if challenge:
+                for tier_key, tier_label in [("public", "Public"), ("dev", "Dev")]:
+                    tier_ds = challenge.get("tiers", {}).get(tier_key, {}).get("dataset", {})
+                    gcs_path = tier_ds.get("gcs_object_path", "")
+                    if gcs_path:
+                        tier_downloads.append({
+                            "tier": tier_label,
+                            "url": f"/gcs/{gcs_path}",
+                            "filename": gcs_path.rsplit("/", 1)[-1],
+                        })
+            _parent_to_variants.setdefault(pm, []).append({
+                "variant_key": vk,
+                "display_name": v.get("display_name", vk),
+                "has_challenge": challenge is not None,
+                "tier_downloads": tier_downloads,
+            })
 
     # Build ordered dict with per-modality fine-tuning examples
     ordered_categories: dict[str, list[dict]] = {}
@@ -384,6 +420,22 @@ def _build_sidebar_data() -> dict:
         mods = []
         for mod_id in mod_ids:
             entry = MODALITY_CATALOG.get(mod_id, {})
+            # Check if this modality has an example dataset
+            example_key = _variant_to_example.get(mod_id)
+            example_info = None
+            if example_key:
+                ex = EXAMPLE_DATASETS[example_key]
+                example_info = {
+                    "key": example_key,
+                    "display_name": ex["display_name"],
+                    "measurement_shape": ex["measurement_shape"],
+                    "has_matrix": ex.get("has_matrix", False),
+                    "matrix_shape": ex.get("matrix_shape", ""),
+                    "has_gt": ex.get("has_gt", False),
+                    "prompt_example": ex["prompt_example"],
+                }
+            # Benchmark variants for this modality
+            benchmark_variants = _parent_to_variants.get(mod_id, [])
             mods.append({
                 "id": mod_id,
                 "display_name": entry.get("display_name", mod_id),
@@ -391,6 +443,8 @@ def _build_sidebar_data() -> dict:
                 "carrier": entry.get("carrier", ""),
                 "canonical_dag": entry.get("canonical_dag", ""),
                 "finetune_examples": _generate_finetune_examples(entry),
+                "example_dataset": example_info,
+                "benchmark_variants": benchmark_variants,
             })
         ordered_categories[cat_slug] = mods
 
@@ -551,6 +605,8 @@ async def datasets_page(
         entry["num_benchmarks"] = len(benchmarks)
         entry["num_public"] = sum(1 for b in benchmarks if b.get("has_public_dataset"))
         entry["num_hidden"] = sum(1 for b in benchmarks if b.get("has_hidden_dataset"))
+        challenge = next((b for b in benchmarks if b.get("is_challenge")), None)
+        entry["leaderboard"] = challenge.get("leaderboard", [])[:3] if challenge else []
         cat = entry.get("category", "other")
         if cat not in grouped:
             grouped[cat] = []
@@ -561,12 +617,35 @@ async def datasets_page(
 
     total_variants = sum(len(v) for v in grouped.values())
 
+    # ── Featured Modalities — 10 attention-grabbing picks with mini leaderboards
+    FEATURED_KEYS = [
+        "ct", "mri", "cryo_em", "ultrasound", "sd_cassi",
+        "nerf", "oct", "pet", "sar", "ghost_imaging",
+    ]
+    featured = []
+    for fk in FEATURED_KEYS:
+        entry = VARIANT_DATABASE.get(fk)
+        if entry is None:
+            continue
+        benchmarks = entry.get("benchmarks", [])
+        challenge = next((b for b in benchmarks if b.get("is_challenge")), None)
+        ds = challenge.get("benchmark_dataset") if challenge else None
+        lb = challenge.get("leaderboard", [])[:3] if challenge else []
+        featured.append({
+            "variant_key": fk,
+            "display_name": entry["display_name"],
+            "category": category_labels.get(entry.get("category", ""), entry.get("category", "")),
+            "benchmark_dataset": ds,
+            "leaderboard": lb,
+        })
+
     return templates.TemplateResponse("datasets.html", {
         "request": request,
         "user": user,
         "grouped": grouped,
         "category_labels": category_labels,
         "total_variants": total_variants,
+        "featured": featured,
     })
 
 
@@ -635,7 +714,7 @@ async def variant_benchmarks_page(
     # Load pre-computed benchmark gallery (multi-scene scenario comparison)
     benchmark_gallery = get_benchmark_gallery(variant_key)
 
-    # Set B1-B4 download URLs to the authenticated GCS proxy endpoint
+    # Set download URLs to the authenticated GCS proxy endpoint
     for bm in variant.get("benchmarks", []):
         pd = bm.get("public_dataset")
         if pd and pd.get("gcs_object_path"):
