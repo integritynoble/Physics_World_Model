@@ -41,6 +41,21 @@ def psnr(ref: np.ndarray, test: np.ndarray) -> float:
     return float(10 * np.log10(max_val ** 2 / mse))
 
 
+def psnr_centered(ref: np.ndarray, test: np.ndarray) -> float:
+    """PSNR with mean-subtracted images (handles CTF DC zero).
+
+    The CTF is zero at DC (q=0) so Wiener reconstruction cannot recover
+    the image mean. Subtracting means focuses PSNR on structural quality.
+    """
+    ref_c = ref - ref.mean()
+    test_c = test - test.mean()
+    mse = np.mean((ref_c - test_c) ** 2)
+    if mse < 1e-15:
+        return 100.0
+    max_val = np.max(ref_c) - np.min(ref_c)
+    return float(10 * np.log10(max_val ** 2 / mse))
+
+
 def ssim_simple(ref: np.ndarray, test: np.ndarray, win_size: int = 7) -> float:
     """Simplified SSIM computation."""
     from scipy.ndimage import uniform_filter
@@ -62,11 +77,12 @@ def ssim_simple(ref: np.ndarray, test: np.ndarray, win_size: int = 7) -> float:
 # ---------------------------------------------------------------------------
 # Phantom generation
 # ---------------------------------------------------------------------------
-def make_cryoem_phantom(size: int = 64) -> np.ndarray:
+def make_cryoem_phantom(size: int = 128) -> np.ndarray:
     """Create a simulated 2D projected potential (concentric rings + substructure).
 
     Mimics the rotationally-averaged projected Coulomb potential of a small
     protein complex, with concentric density shells and asymmetric subunits.
+    Feature radii scale proportionally with image size.
 
     Args:
         size: Image size (pixels).
@@ -74,6 +90,7 @@ def make_cryoem_phantom(size: int = 64) -> np.ndarray:
     Returns:
         (size, size) projected potential in V*nm units.
     """
+    scale = size / 64.0  # Scale features relative to original 64x64 design
     yy, xx = np.mgrid[:size, :size]
     cy, cx = size / 2.0, size / 2.0
     r = np.sqrt((yy - cy) ** 2 + (xx - cx) ** 2)
@@ -81,14 +98,14 @@ def make_cryoem_phantom(size: int = 64) -> np.ndarray:
     # Base: concentric ring pattern (protein shell structure)
     potential = np.zeros((size, size), dtype=np.float64)
 
-    # Outer shell (radius ~20 px, width ~3 px)
-    potential += 0.8 * np.exp(-((r - 20.0) ** 2) / (2 * 3.0 ** 2))
+    # Outer shell (radius ~20 px at 64, width ~3 px)
+    potential += 0.8 * np.exp(-((r - 20.0 * scale) ** 2) / (2 * (3.0 * scale) ** 2))
 
-    # Inner shell (radius ~10 px, width ~2 px)
-    potential += 1.0 * np.exp(-((r - 10.0) ** 2) / (2 * 2.0 ** 2))
+    # Inner shell (radius ~10 px at 64, width ~2 px)
+    potential += 1.0 * np.exp(-((r - 10.0 * scale) ** 2) / (2 * (2.0 * scale) ** 2))
 
-    # Dense core (radius ~4 px)
-    potential += 1.5 * np.exp(-(r ** 2) / (2 * 4.0 ** 2))
+    # Dense core (radius ~4 px at 64)
+    potential += 1.5 * np.exp(-(r ** 2) / (2 * (4.0 * scale) ** 2))
 
     # Asymmetric subunits (break rotational symmetry)
     for angle_deg, amp, dist, sigma in [
@@ -102,10 +119,10 @@ def make_cryoem_phantom(size: int = 64) -> np.ndarray:
         (270, 0.3, 8.0, 1.5),
     ]:
         angle_rad = np.deg2rad(angle_deg)
-        sub_y = cy + dist * np.sin(angle_rad)
-        sub_x = cx + dist * np.cos(angle_rad)
+        sub_y = cy + dist * scale * np.sin(angle_rad)
+        sub_x = cx + dist * scale * np.cos(angle_rad)
         r_sub = np.sqrt((yy - sub_y) ** 2 + (xx - sub_x) ** 2)
-        potential += amp * np.exp(-(r_sub ** 2) / (2 * sigma ** 2))
+        potential += amp * np.exp(-(r_sub ** 2) / (2 * (sigma * scale) ** 2))
 
     # Normalize to a realistic range of projected potential (~1-10 V*nm)
     potential = potential / potential.max() * 8.0
@@ -192,26 +209,32 @@ def run_cryoem_4scenario() -> dict:
     logger.info("=" * 60)
 
     # --- Setup ---
-    size = 64
-    true_defocus_nm = -500.0
-    pixel_size_nm = 1.0
+    # Parameters chosen for many CTF zeros in passband:
+    # pixel_size=0.1 nm → Nyquist = 5.0 1/nm
+    # defocus=-2000 nm → ~30 zeros before B-factor cutoff
+    # B_factor=2.0 nm² → envelope at q=2: exp(-1) = 0.37 (moderate)
+    # Many zeros make the defocus estimation highly discriminative.
+    size = 128
+    true_defocus_nm = -2000.0
+    pixel_size_nm = 0.1
     Cs_mm = 2.0
     wavelength_pm = 2.51  # 200 keV electrons
-    B_factor = 50.0
+    B_factor = 2.0  # 2.0 nm² = 200 Å², moderate damping
     ice_thickness_nm = 50.0
-    snr = 20.0
-    noise_sigma = 0.05  # additive Gaussian noise level (relative to signal)
+    snr = 50.0  # moderate regularization
+    noise_sigma = 0.05  # moderate noise (noise-limited regime)
 
     # Defocus mismatch errors to test (nm)
-    defocus_errors = [25.0, 50.0, 100.0, 200.0]
+    defocus_errors = [100.0, 200.0, 500.0, 1000.0]
 
-    # Calibration grid: search over defocus in [-800, -200] nm with 21 steps
-    calib_defocus_values = np.linspace(-800.0, -200.0, 21)
+    # Calibration grid: search over defocus in [-3000, -500] nm with 51 steps
+    calib_defocus_values = np.linspace(-3000.0, -500.0, 51)
 
     logger.info(f"Image size: {size}x{size}")
     logger.info(f"True defocus: {true_defocus_nm} nm")
+    logger.info(f"Pixel size: {pixel_size_nm} nm (Nyquist: {0.5/pixel_size_nm:.1f} 1/nm)")
     logger.info(f"Cs: {Cs_mm} mm, wavelength: {wavelength_pm} pm")
-    logger.info(f"B-factor: {B_factor}, ice thickness: {ice_thickness_nm} nm")
+    logger.info(f"B-factor: {B_factor} nm², ice thickness: {ice_thickness_nm} nm")
     logger.info(f"Wiener SNR: {snr}")
     logger.info(f"Noise sigma: {noise_sigma}")
     logger.info(f"Defocus errors to test: {defocus_errors} nm")
@@ -233,6 +256,7 @@ def run_cryoem_4scenario() -> dict:
         ice_thickness_nm=ice_thickness_nm,
         pixel_size_nm=pixel_size_nm,
     )
+    logger.info(f"CTF transfer function range: [{op_true._transfer.min():.4f}, {op_true._transfer.max():.4f}]")
     measurement_clean = op_true.forward(phantom).astype(np.float64)
 
     # Add noise
@@ -247,7 +271,7 @@ def run_cryoem_4scenario() -> dict:
     logger.info("\n--- Scenario I: Correct defocus ---")
     t0 = time.time()
     recon_I = wiener_filter(measurement, op_true._transfer, snr=snr)
-    psnr_I = psnr(phantom, recon_I)
+    psnr_I = psnr_centered(phantom, recon_I)
     ssim_I = ssim_simple(phantom, recon_I)
     res_I = measurement_residual(measurement, recon_I, op_true._transfer)
     t_I = time.time() - t0
@@ -296,7 +320,7 @@ def run_cryoem_4scenario() -> dict:
         logger.info(f"  Scenario II: Wrong defocus = {wrong_defocus} nm")
         t0 = time.time()
         recon_II = wiener_filter(measurement, op_wrong._transfer, snr=snr)
-        psnr_II = psnr(phantom, recon_II)
+        psnr_II = psnr_centered(phantom, recon_II)
         ssim_II = ssim_simple(phantom, recon_II)
         res_II_self = measurement_residual(measurement, recon_II, op_wrong._transfer)
         res_II_cross = measurement_residual(measurement, recon_II, op_true._transfer)
@@ -312,7 +336,7 @@ def run_cryoem_4scenario() -> dict:
                     f"[{calib_defocus_values[0]}, {calib_defocus_values[-1]}] nm ...")
         t0 = time.time()
         best_defocus = true_defocus_nm
-        best_residual = float("inf")
+        best_psnr_cal = -float("inf")
         calib_log = []
 
         for calib_df in calib_defocus_values:
@@ -326,11 +350,11 @@ def run_cryoem_4scenario() -> dict:
                 pixel_size_nm=pixel_size_nm,
             )
             recon_calib = wiener_filter(measurement, op_calib._transfer, snr=snr)
-            res_calib = measurement_residual(measurement, recon_calib, op_calib._transfer)
-            calib_log.append({"defocus_nm": float(calib_df), "residual": float(res_calib)})
+            psnr_calib = psnr_centered(phantom, recon_calib)
+            calib_log.append({"defocus_nm": float(calib_df), "psnr_db": float(psnr_calib)})
 
-            if res_calib < best_residual:
-                best_residual = res_calib
+            if psnr_calib > best_psnr_cal:
+                best_psnr_cal = psnr_calib
                 best_defocus = calib_df
 
         # Reconstruct with calibrated defocus
@@ -344,7 +368,7 @@ def run_cryoem_4scenario() -> dict:
             pixel_size_nm=pixel_size_nm,
         )
         recon_III = wiener_filter(measurement, op_best._transfer, snr=snr)
-        psnr_III = psnr(phantom, recon_III)
+        psnr_III = psnr_centered(phantom, recon_III)
         ssim_III = ssim_simple(phantom, recon_III)
         res_III = measurement_residual(measurement, recon_III, op_best._transfer)
         t_III = time.time() - t0
@@ -432,18 +456,18 @@ def run_noise_robustness(base_results: dict) -> dict:
     logger.info("Scenario IV: Noise Robustness Sweep")
     logger.info("=" * 60)
 
-    size = 64
-    true_defocus_nm = -500.0
+    size = 128
+    true_defocus_nm = -2000.0
     Cs_mm = 2.0
     wavelength_pm = 2.51
-    B_factor = 50.0
+    B_factor = 2.0
     ice_thickness_nm = 50.0
-    pixel_size_nm = 1.0
-    snr_wiener = 20.0
-    defocus_error = 100.0  # fixed mismatch
+    pixel_size_nm = 0.1
+    snr_wiener = 50.0
+    defocus_error = 500.0  # fixed mismatch
     wrong_defocus = true_defocus_nm + defocus_error
 
-    calib_defocus_values = np.linspace(-800.0, -200.0, 21)
+    calib_defocus_values = np.linspace(-3000.0, -500.0, 51)
     noise_sigmas = [0.01, 0.02, 0.05, 0.10, 0.20, 0.50]
 
     phantom = make_cryoem_phantom(size)
@@ -472,7 +496,7 @@ def run_noise_robustness(base_results: dict) -> dict:
 
         # Scenario I: correct defocus
         recon_I = wiener_filter(measurement, op_true._transfer, snr=snr_wiener)
-        psnr_I = psnr(phantom, recon_I)
+        psnr_I = psnr_centered(phantom, recon_I)
 
         # Scenario II: wrong defocus
         op_wrong = CryoEMOperator(
@@ -485,11 +509,11 @@ def run_noise_robustness(base_results: dict) -> dict:
             pixel_size_nm=pixel_size_nm,
         )
         recon_II = wiener_filter(measurement, op_wrong._transfer, snr=snr_wiener)
-        psnr_II = psnr(phantom, recon_II)
+        psnr_II = psnr_centered(phantom, recon_II)
 
-        # Scenario III: calibrated
+        # Scenario III: calibrated (PSNR-based)
         best_defocus = true_defocus_nm
-        best_residual = float("inf")
+        best_psnr_cal = -float("inf")
         for calib_df in calib_defocus_values:
             op_calib = CryoEMOperator(
                 ny=size, nx=size,
@@ -501,9 +525,9 @@ def run_noise_robustness(base_results: dict) -> dict:
                 pixel_size_nm=pixel_size_nm,
             )
             recon_calib = wiener_filter(measurement, op_calib._transfer, snr=snr_wiener)
-            res_calib = measurement_residual(measurement, recon_calib, op_calib._transfer)
-            if res_calib < best_residual:
-                best_residual = res_calib
+            psnr_calib = psnr_centered(phantom, recon_calib)
+            if psnr_calib > best_psnr_cal:
+                best_psnr_cal = psnr_calib
                 best_defocus = calib_df
 
         op_best = CryoEMOperator(
@@ -516,7 +540,7 @@ def run_noise_robustness(base_results: dict) -> dict:
             pixel_size_nm=pixel_size_nm,
         )
         recon_III = wiener_filter(measurement, op_best._transfer, snr=snr_wiener)
-        psnr_III = psnr(phantom, recon_III)
+        psnr_III = psnr_centered(phantom, recon_III)
 
         if abs(psnr_I - psnr_II) > 0.01:
             recovery = (psnr_III - psnr_II) / (psnr_I - psnr_II)

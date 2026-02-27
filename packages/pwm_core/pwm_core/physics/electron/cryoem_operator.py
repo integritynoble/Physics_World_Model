@@ -51,9 +51,9 @@ class CryoEMOperator(BaseOperator):
         defocus_nm: float = -500.0,
         Cs_mm: float = 2.0,
         wavelength_pm: float = 2.51,
-        B_factor: float = 50.0,
+        B_factor: float = 1.0,
         ice_thickness_nm: float = 50.0,
-        pixel_size_nm: float = 1.0,
+        pixel_size_nm: float = 0.5,
     ):
         self.operator_id = operator_id
         self.theta = theta or {}

@@ -135,24 +135,43 @@ class CBCTOperator(BaseOperator):
                 ray_y /= ray_len
                 ray_x /= ray_len
 
-                # Sample along ray through the object
-                n_steps = int(np.sqrt(ny ** 2 + nx ** 2) * 1.5)
-                t_vals = np.linspace(0, ray_len, n_steps)
+                # ---- Ray-box intersection: only sample within the object ----
+                # Object bounding box in world coords: y in [-center_y, ny-1-center_y],
+                # x in [-center_x, nx-1-center_x].  Compute t_entry, t_exit.
+                t_min, t_max = 0.0, ray_len
+                for dim_src, dim_ray, dim_lo, dim_hi in [
+                    (src_y, ray_y, -center_y, ny - 1 - center_y),
+                    (src_x, ray_x, -center_x, nx - 1 - center_x),
+                ]:
+                    if abs(dim_ray) > 1e-12:
+                        t1 = (dim_lo - dim_src) / dim_ray
+                        t2 = (dim_hi - dim_src) / dim_ray
+                        if t1 > t2:
+                            t1, t2 = t2, t1
+                        t_min = max(t_min, t1)
+                        t_max = min(t_max, t2)
+                    else:
+                        # Ray parallel to slab — check if inside
+                        if dim_src < dim_lo or dim_src > dim_hi:
+                            t_min = t_max + 1  # no intersection
+                if t_min >= t_max:
+                    continue
+
+                # Dense sampling within the object region (~2 samples per pixel)
+                diag = np.sqrt(ny ** 2 + nx ** 2)
+                n_steps = max(int(diag * 2), 4)
+                step_size = (t_max - t_min) / n_steps
+                t_vals = np.linspace(t_min, t_max, n_steps + 1)
                 sample_y = src_y + ray_y * t_vals + center_y
                 sample_x = src_x + ray_x * t_vals + center_x
 
-                # Bilinear interpolation
-                valid = (
-                    (sample_y >= 0) & (sample_y < ny - 1)
-                    & (sample_x >= 0) & (sample_x < nx - 1)
-                )
-                if not np.any(valid):
-                    continue
-
-                sy = sample_y[valid]
-                sx = sample_x[valid]
+                # Bilinear interpolation (clamp to valid range)
+                sy = np.clip(sample_y, 0, ny - 1 - 1e-6)
+                sx = np.clip(sample_x, 0, nx - 1 - 1e-6)
                 iy = np.floor(sy).astype(int)
                 ix = np.floor(sx).astype(int)
+                iy = np.clip(iy, 0, ny - 2)
+                ix = np.clip(ix, 0, nx - 2)
                 fy = sy - iy
                 fx = sx - ix
 
@@ -163,14 +182,8 @@ class CBCTOperator(BaseOperator):
                     + x64[iy + 1, ix + 1] * fy * fx
                 )
 
-                # Distance weighting: (D_so / distance_from_source)^2
-                dists = t_vals[valid]
-                dist_from_src = np.maximum(dists, 1e-6)
-                weights = (self.D_so / dist_from_src) ** 2
-                weights = np.clip(weights, 0, 10.0)  # prevent extreme weights
-
-                step_size = ray_len / n_steps
-                sinogram[i, d_idx] = np.sum(vals * weights) * step_size
+                # 2D fan-beam: simple line integral (no distance weighting).
+                sinogram[i, d_idx] = np.sum(vals) * step_size
 
         # Add scatter if specified
         if self.scatter_fraction > 0:
@@ -202,12 +215,17 @@ class CBCTOperator(BaseOperator):
         for i, angle in enumerate(self._angles_rad):
             cos_a, sin_a = np.cos(angle), np.sin(angle)
 
-            # Project each pixel onto the detector
-            # Fan-beam: detector coordinate for each pixel
-            t = PX * cos_a + PY * sin_a  # parallel-beam equivalent
-            # Fan-beam correction: magnify based on distance from source
-            U = self.D_so + PX * sin_a - PY * cos_a
-            fan_t = self.D_sd * t / np.maximum(U, 1e-6)
+            # Project each pixel onto the detector.
+            # Source at (-D_so sinθ, D_so cosθ); rays travel to -x side.
+            # t = pixel's perpendicular coordinate (detector direction)
+            #   = PY cosθ + PX sinθ
+            # U = distance from source along projection direction to pixel
+            #   = D_so - PX cosθ + PY sinθ  (source is at +cosθ in x)
+            # SID = D_so + D_sd = total source-to-detector distance
+            t = PY * cos_a + PX * sin_a
+            U = self.D_so - PX * cos_a + PY * sin_a
+            SID = self.D_so + self.D_sd
+            fan_t = SID * t / np.maximum(U, 1e-6)
 
             # Convert to detector index
             det_idx = fan_t + det_half - self.detector_offset

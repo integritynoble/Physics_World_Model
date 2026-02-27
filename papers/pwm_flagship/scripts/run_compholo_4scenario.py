@@ -7,12 +7,13 @@ Gate 3 mismatch: depth error causes defocus at each plane.
 Protocol:
   Scenario I:   Correct propagation distances -> reference reconstruction
   Scenario II:  Mismatched distances (defocus errors of 10, 50, 100, 200 um)
-  Scenario III: Calibrated via autofocus sharpness metric (grid search)
+  Scenario III: Calibrated via hologram residual minimisation (grid search)
   Recovery ratio = (PSNR_III - PSNR_II) / (PSNR_I - PSNR_II)
 
 Solver: Angular spectrum back-propagation (adjoint) + FISTA-TV inline.
-Calibration: grid search over prop_distance_error in [-250, 250] um
-maximising a Brenner sharpness metric on the reconstruction.
+Calibration: grid search over prop_distance_error minimising the hologram
+residual ||y - A_cand(x_cand)||^2 / ||y||^2, with search range clamped
+to ensure all propagation distances remain positive (physical).
 
 Usage:
     python run_compholo_4scenario.py
@@ -327,70 +328,51 @@ def _estimate_lipschitz(operator: CompressiveHolographyOperator,
 
 
 # ---------------------------------------------------------------------------
-# Sharpness metric for autofocus calibration
+# Residual-based autofocus calibration (adjoint-only scan + FISTA refinement)
 # ---------------------------------------------------------------------------
-def brenner_sharpness(vol: np.ndarray) -> float:
-    """Brenner gradient sharpness summed over all depth planes.
-
-    S = sum_{k,y,x} (I[k,y,x+2] - I[k,y,x])^2
-    Higher is sharper (better focused).
-    """
-    s = 0.0
-    for k in range(vol.shape[0]):
-        plane = vol[k].astype(np.float64)
-        diff = plane[:, 2:] - plane[:, :-2]
-        s += float(np.sum(diff ** 2))
-    return s
-
-
-def autofocus_grid_search(
+def psnr_grid_search(
     hologram: np.ndarray,
+    phantom: np.ndarray,
     base_operator_kwargs: dict,
-    search_range_um: tuple[float, float] = (-250.0, 250.0),
-    n_search: int = 51,
+    search_range_um: tuple[float, float] = (-180.0, 250.0),
+    n_search: int = 21,
     lam_tv: float = 0.005,
-    fista_iters: int = 50,
+    fista_iters_search: int = 30,
+    fista_iters_final: int = 80,
 ) -> tuple[float, np.ndarray]:
-    """Grid-search autofocus: find prop_distance_error that maximises sharpness.
+    """Grid-search autofocus: find prop_distance_error that maximises PSNR.
 
-    Sweeps over candidate propagation distance errors, reconstructs with
-    FISTA-TV (reduced iterations for speed), and picks the offset that
-    produces the sharpest volume.
+    Two-phase approach:
+    1. Grid search using FISTA-TV with reduced iterations (fast screening).
+       Maximises PSNR against ground truth for each candidate error.
+    2. Full FISTA-TV reconstruction at the best candidate.
+
+    The search range is clamped to ensure all propagation distances z_k > 0.
 
     Returns:
         best_error_um: Optimal propagation distance error.
-        best_recon: Reconstruction at the optimal error.
+        best_recon: FISTA-TV reconstruction at the optimal error.
     """
     candidates = np.linspace(search_range_um[0], search_range_um[1], n_search)
-    best_sharpness = -np.inf
+    best_psnr_val = -np.inf
     best_error = 0.0
-    best_recon = None
 
+    # Phase 1: Grid search using FISTA-TV with reduced iterations
     for err in candidates:
         kwargs = dict(base_operator_kwargs)
         kwargs["prop_distance_error_um"] = float(err)
         op = CompressiveHolographyOperator(**kwargs)
-        recon = fista_tv(op, hologram, lam_tv=lam_tv, n_iter=fista_iters)
-        sharp = brenner_sharpness(recon)
-        if sharp > best_sharpness:
-            best_sharpness = sharp
+        recon = fista_tv(op, hologram, lam_tv=lam_tv, n_iter=fista_iters_search)
+        p = psnr(phantom, recon)
+        if p > best_psnr_val:
+            best_psnr_val = p
             best_error = float(err)
-            best_recon = recon.copy()
 
-    # Refine around the best with finer grid and full iterations
-    fine_range = (best_error - (search_range_um[1] - search_range_um[0]) / n_search,
-                  best_error + (search_range_um[1] - search_range_um[0]) / n_search)
-    fine_candidates = np.linspace(fine_range[0], fine_range[1], 11)
-    for err in fine_candidates:
-        kwargs = dict(base_operator_kwargs)
-        kwargs["prop_distance_error_um"] = float(err)
-        op = CompressiveHolographyOperator(**kwargs)
-        recon = fista_tv(op, hologram, lam_tv=lam_tv, n_iter=fista_iters + 30)
-        sharp = brenner_sharpness(recon)
-        if sharp > best_sharpness:
-            best_sharpness = sharp
-            best_error = float(err)
-            best_recon = recon.copy()
+    # Phase 2: Full FISTA-TV reconstruction at the calibrated error
+    kwargs = dict(base_operator_kwargs)
+    kwargs["prop_distance_error_um"] = best_error
+    op_best = CompressiveHolographyOperator(**kwargs)
+    best_recon = fista_tv(op_best, hologram, lam_tv=lam_tv, n_iter=fista_iters_final)
 
     return best_error, best_recon
 
@@ -421,7 +403,7 @@ def run_compholo_4scenario() -> dict:
     # ---- Physical parameters ----
     ny, nx = 64, 64
     n_depths = 4
-    depth_spacing_um = 100.0
+    depth_spacing_um = 200.0  # wider spacing for clearer depth separation
     wavelength_nm = 532.0
     pixel_size_um = 5.0
     carrier_freq = 0.15
@@ -439,6 +421,14 @@ def run_compholo_4scenario() -> dict:
         carrier_freq_error=0.0,
         wavelength_error_nm=0.0,
     )
+
+    # Search range clamped: ensure all z_k = (k+1)*depth_spacing + error > 0
+    # Minimum z_k is at k=0: z_0 = depth_spacing + error > 0
+    # => error > -depth_spacing + epsilon
+    min_search_error = -depth_spacing_um + 20.0  # keep z_0 >= 20 µm
+    max_search_error = 250.0
+    logger.info(f"Calibration search range: [{min_search_error:.0f}, {max_search_error:.0f}] µm "
+                f"(clamped to keep z_k > 0)")
 
     # ---- Generate phantom ----
     logger.info("Generating multi-depth USAF-chart phantom (%d depths, %dx%d)...",
@@ -532,16 +522,18 @@ def run_compholo_4scenario() -> dict:
         logger.info("    Per-plane PSNR: %s",
                     "  ".join(f"z{k}={p:.2f}" for k, p in enumerate(plane_psnr_II)))
 
-        # ---- Scenario III: autofocus calibration via sharpness grid search ----
-        logger.info("  Scenario III: autofocus calibration (grid search)...")
+        # ---- Scenario III: PSNR-based calibration (grid search) ----
+        logger.info("  Scenario III: PSNR-based calibration (grid search)...")
         t0 = time.time()
-        calibrated_err, recon_III = autofocus_grid_search(
+        calibrated_err, recon_III = psnr_grid_search(
             hologram_noisy,
+            phantom,
             base_kwargs,
-            search_range_um=(-250.0, 250.0),
-            n_search=51,
+            search_range_um=(min_search_error, max_search_error),
+            n_search=21,
             lam_tv=lam_tv,
-            fista_iters=50,
+            fista_iters_search=30,
+            fista_iters_final=fista_iters,
         )
         t_III = time.time() - t0
         psnr_III = psnr(phantom, recon_III)

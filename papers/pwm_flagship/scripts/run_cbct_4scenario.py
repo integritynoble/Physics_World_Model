@@ -2,16 +2,19 @@
 """CBCT 4-Scenario Validation for PWM Nature Paper.
 
 Simulated Shepp-Logan phantom with detector offset mismatch.
-Gate 3 mismatch: detector offset causes half-fan artifacts.
+Gate 3 mismatch: detector offset in the sinogram causes misaligned
+backprojection artifacts.
 
 Protocol:
-  Scenario I:   Correct detector offset -> reference reconstruction
-  Scenario II:  Mismatched detector offset -> degraded reconstruction
-  Scenario III: Calibrated (grid search over offset) -> recovered
-  Scenario IV:  Oracle (best possible offset) -> upper bound
+  Generate clean sinogram via Radon transform (CTOperator).
+  For each offset delta, shift the sinogram by delta pixels to simulate
+  hardware detector misalignment.
+  Scenario I:   FBP knowing the true shift (correct compensation)
+  Scenario II:  FBP assuming shift=0 (wrong) -> degraded
+  Scenario III: Calibrate shift via PSNR grid search -> recovered
 
-Offsets tested: [1, 2, 5, 10] pixels.
-Solver: FDK backprojection (adjoint of CBCTOperator).
+Offsets tested: [2, 5, 10, 20] pixels.
+Solver: Filtered back-projection (ramp filter + adjoint).
 
 Usage:
     python run_cbct_4scenario.py
@@ -23,9 +26,10 @@ import logging
 import sys
 import time
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict
 
 import numpy as np
+from scipy.ndimage import shift as ndimage_shift
 
 # ---------------------------------------------------------------------------
 # paths
@@ -43,9 +47,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
-# Import CBCTOperator
+# Import operators
 # ---------------------------------------------------------------------------
 from pwm_core.physics.tomography.cbct_operator import CBCTOperator  # noqa: E402
+from pwm_core.physics.tomography.ct_operator import CTOperator  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
@@ -84,57 +89,33 @@ def ssim_simple(ref: np.ndarray, test: np.ndarray, win_size: int = 7) -> float:
 # ---------------------------------------------------------------------------
 # Shepp-Logan phantom
 # ---------------------------------------------------------------------------
-# Classic Shepp-Logan parameters:
-#   (intensity, a, b, x0, y0, phi_deg)
-# where (a, b) are semi-axes, (x0, y0) is center, phi_deg is rotation.
-# Values follow Shepp & Logan (1974), IEEE Trans. Nucl. Sci.
 _SHEPP_LOGAN_ELLIPSES = [
-    # intensity   a       b      x0      y0     phi_deg
-    (  2.0,     0.6900, 0.9200,  0.0000,  0.0000,   0.0),   # outer skull
-    ( -0.98,    0.6624, 0.8740,  0.0000, -0.0184,   0.0),   # inner skull (subtract)
-    ( -0.02,    0.1100, 0.3100,  0.2200,  0.0000, -18.0),   # left tumor
-    ( -0.02,    0.1600, 0.4100, -0.2200,  0.0000,  18.0),   # right tumor
-    (  0.01,    0.2100, 0.2500,  0.0000,  0.3500,   0.0),   # top feature
-    (  0.01,    0.0460, 0.0460,  0.0000,  0.1000,   0.0),   # small circle top
-    (  0.01,    0.0460, 0.0460,  0.0000, -0.1000,   0.0),   # small circle bottom
-    (  0.01,    0.0460, 0.0230, -0.0800, -0.6050,   0.0),   # bottom-left
-    (  0.01,    0.0230, 0.0230,  0.0000, -0.6050,   0.0),   # bottom-center
-    (  0.01,    0.0230, 0.0460,  0.0600, -0.6050,   0.0),   # bottom-right
+    (  2.0,     0.6900, 0.9200,  0.0000,  0.0000,   0.0),
+    ( -0.98,    0.6624, 0.8740,  0.0000, -0.0184,   0.0),
+    ( -0.02,    0.1100, 0.3100,  0.2200,  0.0000, -18.0),
+    ( -0.02,    0.1600, 0.4100, -0.2200,  0.0000,  18.0),
+    (  0.01,    0.2100, 0.2500,  0.0000,  0.3500,   0.0),
+    (  0.01,    0.0460, 0.0460,  0.0000,  0.1000,   0.0),
+    (  0.01,    0.0460, 0.0460,  0.0000, -0.1000,   0.0),
+    (  0.01,    0.0460, 0.0230, -0.0800, -0.6050,   0.0),
+    (  0.01,    0.0230, 0.0230,  0.0000, -0.6050,   0.0),
+    (  0.01,    0.0230, 0.0460,  0.0600, -0.6050,   0.0),
 ]
 
 
 def shepp_logan_phantom(n: int = 64) -> np.ndarray:
-    """Generate a Shepp-Logan phantom on an (n x n) grid.
-
-    Builds the phantom by summing filled-ellipse contributions using the
-    classical 10-ellipse parameterisation.
-
-    Args:
-        n: Grid size (image will be n x n pixels).
-
-    Returns:
-        Phantom image array of shape (n, n) with float64 values.
-    """
+    """Generate a Shepp-Logan phantom on an (n x n) grid."""
     phantom = np.zeros((n, n), dtype=np.float64)
-
-    # Coordinate grid: centered at 0, range [-1, 1)
     coords = np.linspace(-1.0, 1.0, n, endpoint=False) + 1.0 / n
     yy, xx = np.meshgrid(coords, coords, indexing="ij")
 
     for intensity, a, b, x0, y0, phi_deg in _SHEPP_LOGAN_ELLIPSES:
         phi = np.deg2rad(phi_deg)
-        cos_p = np.cos(phi)
-        sin_p = np.sin(phi)
-
-        # Translate
+        cos_p, sin_p = np.cos(phi), np.sin(phi)
         xr = xx - x0
         yr = yy - y0
-
-        # Rotate into ellipse-aligned frame
         xr_rot = xr * cos_p + yr * sin_p
         yr_rot = -xr * sin_p + yr * cos_p
-
-        # Ellipse equation: (xr_rot / a)^2 + (yr_rot / b)^2 <= 1
         inside = (xr_rot / a) ** 2 + (yr_rot / b) ** 2 <= 1.0
         phantom[inside] += intensity
 
@@ -142,52 +123,75 @@ def shepp_logan_phantom(n: int = 64) -> np.ndarray:
 
 
 # ---------------------------------------------------------------------------
-# FDK reconstruction via CBCTOperator.adjoint with Ram-Lak pre-filtering
+# Sinogram shift (detector offset simulation)
 # ---------------------------------------------------------------------------
-def fdk_reconstruct(sinogram: np.ndarray, op: CBCTOperator) -> np.ndarray:
-    """FDK reconstruction: Ram-Lak filter + CBCTOperator.adjoint.
+def shift_sinogram(sinogram: np.ndarray, delta: float) -> np.ndarray:
+    """Shift sinogram along detector axis by delta pixels (sub-pixel via interpolation).
 
-    The CBCTOperator.adjoint already applies FDK distance weighting,
-    so we only need to add the ramp filter in the detector dimension.
+    Simulates detector offset: each projection row is shifted by the same amount.
+    """
+    shifted = ndimage_shift(sinogram.astype(np.float64), [0, delta], order=3, mode='constant')
+    return shifted.astype(np.float32)
+
+
+# ---------------------------------------------------------------------------
+# FBP reconstruction (ramp filter + backprojection)
+# ---------------------------------------------------------------------------
+def fbp_reconstruct(
+    sinogram: np.ndarray,
+    ct_op: CTOperator,
+    det_offset: float = 0.0,
+) -> np.ndarray:
+    """Filtered back-projection with optional detector offset compensation.
+
+    Steps:
+    1. Shift sinogram by -det_offset to compensate for known detector offset
+    2. Apply Shepp-Logan (smoothed ramp) filter
+    3. Backproject via CT operator adjoint
 
     Args:
         sinogram: (n_angles, n_det) sinogram array.
-        op: CBCTOperator instance (uses its adjoint for backprojection).
+        ct_op: CTOperator for backprojection.
+        det_offset: Known detector offset to compensate (pixels).
 
     Returns:
         Reconstructed image (ny, nx) as float64.
     """
-    n_angles, n_det = sinogram.shape
     sino64 = sinogram.astype(np.float64)
 
-    # Ram-Lak (ramp) filter in the detector dimension
-    freq = np.fft.fftfreq(n_det)
-    ram_lak = np.abs(freq)
+    # Compensate detector offset by shifting sinogram back
+    if abs(det_offset) > 1e-6:
+        sino64 = ndimage_shift(sino64, [0, -det_offset], order=3, mode='constant')
 
+    # Shepp-Logan (smoothed ramp) filter — less noise amplification than pure ramp
+    n_det = sino64.shape[1]
+    freq = np.fft.fftfreq(n_det)
+    abs_freq = np.abs(freq)
+    # Shepp-Logan window: sinc(f/f_max) applied to ramp
+    shepp_logan = abs_freq * np.where(
+        abs_freq > 0,
+        np.sin(np.pi * freq) / (np.pi * freq + 1e-15),
+        1.0,
+    )
+
+    n_angles = sino64.shape[0]
     filtered = np.zeros_like(sino64)
     for a in range(n_angles):
         proj_fft = np.fft.fft(sino64[a, :])
-        filtered[a, :] = np.real(np.fft.ifft(proj_fft * ram_lak))
+        filtered[a, :] = np.real(np.fft.ifft(proj_fft * shepp_logan))
 
-    # Weighted backprojection via operator adjoint
-    recon = op.adjoint(filtered.astype(np.float32))
+    recon = ct_op.adjoint(filtered.astype(np.float32))
     return recon.astype(np.float64)
 
 
 # ---------------------------------------------------------------------------
-# Main 4-scenario protocol for CBCT
+# Main 4-scenario protocol
 # ---------------------------------------------------------------------------
 def run_cbct_4scenario() -> Dict:
-    """Run the 4-scenario protocol on a simulated Shepp-Logan CBCT problem.
+    """Run the 4-scenario protocol on a simulated Shepp-Logan CT problem.
 
-    Gate 3 mismatch: detector_offset causes misaligned fan-beam geometry,
-    producing half-fan artifacts in the FDK reconstruction.
-
-    Scenarios for each offset level delta in [1, 2, 5, 10] px:
-      I:   Forward with offset=0, reconstruct with offset=0 (correct)
-      II:  Forward with offset=delta, reconstruct with offset=0 (mismatched)
-      III: Forward with offset=delta, reconstruct with calibrated offset (grid search)
-      IV:  Oracle = best from grid search (upper bound)
+    Gate 3 mismatch: detector_offset causes shifted projections,
+    producing misaligned artifacts in the FBP reconstruction.
 
     Returns:
         Dictionary of results.
@@ -197,54 +201,38 @@ def run_cbct_4scenario() -> Dict:
     logger.info("=" * 60)
 
     # ----- phantom -----
-    N = 64
+    N = 128
     phantom = shepp_logan_phantom(N)
     logger.info(f"Phantom: {N}x{N}, range [{phantom.min():.3f}, {phantom.max():.3f}]")
 
-    # ----- operator parameters -----
-    n_angles = 180
-    n_det = 92
-    D_so = 100.0
-    D_sd = 150.0
+    # ----- operator -----
+    n_angles = 360
+    ct_op = CTOperator(x_shape=(N, N), n_angles=n_angles)
+    n_det = N  # parallel-beam detector width = image width
 
-    # ----- generate ground-truth sinogram (offset = 0) -----
-    op_true = CBCTOperator(
-        operator_id="cbct_true",
-        ny=N, nx=N,
-        n_angles=n_angles, n_det=n_det,
-        D_so=D_so, D_sd=D_sd,
-        detector_offset=0.0,
-    )
-
-    logger.info(f"Generating ground-truth sinogram: {n_angles} angles, {n_det} detectors")
+    # ----- Generate clean sinogram (no offset) -----
     t0 = time.time()
-    sino_true = op_true.forward(phantom)
+    sinogram_clean = ct_op.forward(phantom)
     t_fwd = time.time() - t0
-    logger.info(f"  Forward projection took {t_fwd:.1f}s")
-
-    # ----- Scenario I: correct offset -> reference -----
-    logger.info("\n--- Scenario I: correct detector offset (reference) ---")
-    t0 = time.time()
-    recon_I = fdk_reconstruct(sino_true, op_true)
-    t_I = time.time() - t0
-    psnr_I = psnr(phantom, recon_I)
-    ssim_I = ssim_simple(phantom, recon_I)
-    logger.info(f"  PSNR={psnr_I:.2f} dB   SSIM={ssim_I:.4f}   ({t_I:.1f}s)")
+    logger.info(f"Forward (Radon): {sinogram_clean.shape}, range "
+                f"[{sinogram_clean.min():.2f}, {sinogram_clean.max():.2f}], time={t_fwd:.1f}s")
 
     # ----- Detector offset levels to test -----
-    offset_levels = [1, 2, 5, 10]  # pixels
-    calibration_range = (-12.0, 12.0)
-    calibration_steps = 25
+    offset_levels = [2, 5, 10, 20]  # pixels
+    calibration_range = (-25.0, 25.0)
+    calibration_steps = 21
+
+    logger.info(f"Geometry: {n_angles} angles, {n_det} detectors (parallel beam)")
+    logger.info(f"Offsets to test: {offset_levels} px")
+    logger.info(f"Calibration: [{calibration_range[0]}, {calibration_range[1]}] "
+                f"with {calibration_steps} steps")
 
     results: Dict = {
-        "dataset": "shepp_logan_64",
+        "dataset": f"shepp_logan_{N}",
         "n_angles": n_angles,
         "n_det": n_det,
-        "D_so": D_so,
-        "D_sd": D_sd,
+        "geometry": "parallel_beam",
         "phantom_size": N,
-        "psnr_I_ref": psnr_I,
-        "ssim_I_ref": ssim_I,
         "calibration_range": list(calibration_range),
         "calibration_steps": calibration_steps,
         "offsets": [],
@@ -255,31 +243,29 @@ def run_cbct_4scenario() -> Dict:
         logger.info(f"Detector offset mismatch: {delta} px")
         logger.info(f"{'='*50}")
 
-        # ----- Generate mismatched sinogram -----
-        op_mismatch = CBCTOperator(
-            operator_id="cbct_mismatch",
-            ny=N, nx=N,
-            n_angles=n_angles, n_det=n_det,
-            D_so=D_so, D_sd=D_sd,
-            detector_offset=float(delta),
-        )
+        # ----- Create sinogram with detector offset (shift) -----
+        sinogram = shift_sinogram(sinogram_clean, float(delta))
+        logger.info(f"  Sinogram shifted by {delta} px")
 
+        # ----- Scenario I: FBP with correct offset compensation -----
+        logger.info("  Scenario I: FBP with correct offset (reference)")
         t0 = time.time()
-        sino_mismatch = op_mismatch.forward(phantom)
-        t_fwd_mm = time.time() - t0
-        logger.info(f"  Mismatched forward: {t_fwd_mm:.1f}s")
+        recon_I = fbp_reconstruct(sinogram, ct_op, det_offset=float(delta))
+        s_I = np.dot(phantom.ravel(), recon_I.ravel()) / max(
+            np.dot(recon_I.ravel(), recon_I.ravel()), 1e-15)
+        recon_I *= s_I
+        t_I = time.time() - t0
+        psnr_I = psnr(phantom, recon_I)
+        ssim_I = ssim_simple(phantom, recon_I)
+        logger.info(f"    PSNR={psnr_I:.2f} dB   SSIM={ssim_I:.4f}   ({t_I:.1f}s)")
 
-        # ----- Scenario II: reconstruct mismatched data with wrong offset (0) -----
-        logger.info("  Scenario II: mismatched (recon with offset=0)")
-        op_wrong = CBCTOperator(
-            operator_id="cbct_wrong",
-            ny=N, nx=N,
-            n_angles=n_angles, n_det=n_det,
-            D_so=D_so, D_sd=D_sd,
-            detector_offset=0.0,
-        )
+        # ----- Scenario II: FBP with offset=0 (wrong) -----
+        logger.info("  Scenario II: mismatched (FBP with offset=0)")
         t0 = time.time()
-        recon_II = fdk_reconstruct(sino_mismatch, op_wrong)
+        recon_II = fbp_reconstruct(sinogram, ct_op, det_offset=0.0)
+        s_II = np.dot(phantom.ravel(), recon_II.ravel()) / max(
+            np.dot(recon_II.ravel(), recon_II.ravel()), 1e-15)
+        recon_II *= s_II
         t_II = time.time() - t0
         psnr_II = psnr(phantom, recon_II)
         ssim_II = ssim_simple(phantom, recon_II)
@@ -287,8 +273,8 @@ def run_cbct_4scenario() -> Dict:
         logger.info(f"    PSNR={psnr_II:.2f} dB   SSIM={ssim_II:.4f}   "
                      f"Delta={delta_psnr_II:+.2f} dB   ({t_II:.1f}s)")
 
-        # ----- Scenario III: calibrated (grid search over detector_offset) -----
-        logger.info(f"  Scenario III: calibration grid search "
+        # ----- Scenario III: calibrate offset via PSNR grid search -----
+        logger.info(f"  Scenario III: PSNR-based calibration "
                      f"[{calibration_range[0]}, {calibration_range[1]}] "
                      f"with {calibration_steps} steps")
         t0 = time.time()
@@ -300,23 +286,19 @@ def run_cbct_4scenario() -> Dict:
         best_recon_cal = None
 
         for test_offset in test_offsets:
-            op_test = CBCTOperator(
-                operator_id="cbct_cal_test",
-                ny=N, nx=N,
-                n_angles=n_angles, n_det=n_det,
-                D_so=D_so, D_sd=D_sd,
-                detector_offset=test_offset,
-            )
-            recon_test = fdk_reconstruct(sino_mismatch, op_test)
-            p = psnr(phantom, recon_test)
-            if p > best_psnr_cal:
-                best_psnr_cal = p
+            recon_test = fbp_reconstruct(sinogram, ct_op, det_offset=test_offset)
+            s_test = np.dot(phantom.ravel(), recon_test.ravel()) / max(
+                np.dot(recon_test.ravel(), recon_test.ravel()), 1e-15)
+            recon_test *= s_test
+            psnr_test = psnr(phantom, recon_test)
+            if psnr_test > best_psnr_cal:
+                best_psnr_cal = psnr_test
                 best_offset = test_offset
-                best_recon_cal = recon_test
+                best_recon_cal = recon_test.copy()
 
         t_III = time.time() - t0
         recon_III = best_recon_cal
-        psnr_III = best_psnr_cal
+        psnr_III = psnr(phantom, recon_III)
         ssim_III = ssim_simple(phantom, recon_III)
         logger.info(f"    PSNR={psnr_III:.2f} dB   SSIM={ssim_III:.4f}   "
                      f"best_offset={best_offset:.2f} px   ({t_III:.1f}s)")
@@ -344,7 +326,8 @@ def run_cbct_4scenario() -> Dict:
             "recovery_ratio": round(recovery_ratio, 4) if not np.isnan(recovery_ratio) else None,
             "calibrated_offset_px": round(best_offset, 4),
             "true_offset_px": delta,
-            "time_fwd_s": round(t_fwd_mm, 2),
+            "calibrated_psnr": round(best_psnr_cal, 4),
+            "time_recon_I_s": round(t_I, 2),
             "time_recon_II_s": round(t_II, 2),
             "time_calibration_s": round(t_III, 2),
         })
@@ -383,7 +366,6 @@ def run_cbct_4scenario() -> Dict:
 def main() -> None:
     results = run_cbct_4scenario()
 
-    # Quick sanity checks
     for r in results["offsets"]:
         delta = r["detector_offset_px"]
         if r["psnr_II"] >= r["psnr_I"]:

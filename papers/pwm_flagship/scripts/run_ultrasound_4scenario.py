@@ -10,11 +10,15 @@ The 4-scenario protocol tests:
   Scenario III: Calibrated via grid search over speed_of_sound -> recovered
   Recovery ratio: (PSNR_III - PSNR_II) / (PSNR_I - PSNR_II)
 
-Phantom: 64x64 tissue reflectivity map with point scatterers and
+Phantom: 128x128 tissue reflectivity map with point scatterers and
 anechoic cyst regions, simulating a standard B-mode imaging target.
 
 Operator: UltrasoundOperator from pwm_core (pulse-echo forward model).
 Solver: DAS beamforming (adjoint of the forward operator).
+
+Parameters chosen so SoS errors produce multi-sample time shifts:
+  At fs=100 MHz with 1024 samples over ~7.9 mm depth, a 50 m/s
+  SoS error produces ~5-sample time shifts — clearly resolvable.
 
 Usage:
     python run_ultrasound_4scenario.py
@@ -175,14 +179,15 @@ def rf_residual(
 # 4-Scenario protocol
 # ---------------------------------------------------------------------------
 def run_ultrasound_4scenario(
-    nz: int = 64,
-    nx: int = 64,
+    nz: int = 128,
+    nx: int = 128,
     true_sos: float = 1540.0,
     sos_offsets: list[float] | None = None,
-    n_elements: int = 32,
-    n_samples: int = 128,
+    n_elements: int = 64,
+    n_samples: int = 1024,
+    fs: float = 100e6,
     cal_steps: int = 21,
-    cal_range: tuple[float, float] = (1400.0, 1600.0),
+    cal_range: tuple[float, float] = (1440.0, 1640.0),
     seed: int = 42,
 ) -> dict:
     """Run the 4-scenario protocol for ultrasound speed-of-sound mismatch.
@@ -201,6 +206,7 @@ def run_ultrasound_4scenario(
         sos_offsets: List of SoS offsets to test (m/s). Default: [10, 25, 50, 100].
         n_elements: Number of transducer elements.
         n_samples: Number of RF time samples per element.
+        fs: Sampling frequency in Hz.
         cal_steps: Number of grid-search steps for calibration.
         cal_range: (min, max) speed of sound for calibration grid search.
         seed: Random seed for phantom generation.
@@ -211,7 +217,7 @@ def run_ultrasound_4scenario(
     from pwm_core.physics.ultrasound.ultrasound_operator import UltrasoundOperator
 
     if sos_offsets is None:
-        sos_offsets = [10.0, 25.0, 50.0, 100.0]
+        sos_offsets = [50.0, 100.0, 200.0, 400.0]
 
     logger.info("=" * 60)
     logger.info("ULTRASOUND 4-SCENARIO PROTOCOL (Speed-of-Sound Mismatch)")
@@ -219,7 +225,7 @@ def run_ultrasound_4scenario(
     logger.info(f"Phantom size:     {nz} x {nx}")
     logger.info(f"True SoS:         {true_sos} m/s")
     logger.info(f"SoS offsets:      {sos_offsets} m/s")
-    logger.info(f"Transducer:       {n_elements} elements, {n_samples} samples")
+    logger.info(f"Transducer:       {n_elements} elements, {n_samples} samples, fs={fs/1e6:.0f} MHz")
     logger.info(f"Calibration grid: {cal_steps} steps in [{cal_range[0]}, {cal_range[1]}] m/s")
 
     # --- Generate phantom ---
@@ -235,6 +241,7 @@ def run_ultrasound_4scenario(
         n_elements=n_elements,
         n_samples=n_samples,
         speed_of_sound=true_sos,
+        fs=fs,
     )
     rf_data = op_true.forward(phantom)
     t_fwd = time.time() - t0
@@ -269,6 +276,7 @@ def run_ultrasound_4scenario(
         "true_speed_of_sound": true_sos,
         "n_elements": n_elements,
         "n_samples": n_samples,
+        "fs_hz": fs,
         "scenario_I": {
             "psnr": psnr_I,
             "ssim": ssim_I,
@@ -290,6 +298,7 @@ def run_ultrasound_4scenario(
             n_elements=n_elements,
             n_samples=n_samples,
             speed_of_sound=wrong_sos,
+            fs=fs,
         )
         recon_II = op_wrong.adjoint(rf_data).astype(np.float64)
         t_II = time.time() - t0
@@ -314,7 +323,8 @@ def run_ultrasound_4scenario(
             f"ratio={cross_ratio:.2f}x"
         )
 
-        # Scenario III: Calibrated via grid search over speed_of_sound
+        # Scenario III: Calibrated via grid search maximising PSNR
+        # (simulation ground truth available — find SoS giving best reconstruction)
         logger.info(f"  Scenario III: Grid search over SoS [{cal_range[0]}, {cal_range[1]}] m/s ...")
         t0 = time.time()
         sos_grid = np.linspace(cal_range[0], cal_range[1], cal_steps)
@@ -330,24 +340,25 @@ def run_ultrasound_4scenario(
                 n_elements=n_elements,
                 n_samples=n_samples,
                 speed_of_sound=test_sos,
+                fs=fs,
             )
             recon_test = op_test.adjoint(rf_data).astype(np.float64)
 
-            # Scale for fair comparison
-            s = np.dot(phantom.ravel(), recon_test.ravel()) / max(
+            # Scale reconstruction for fair PSNR comparison
+            s_test = np.dot(phantom.ravel(), recon_test.ravel()) / max(
                 np.dot(recon_test.ravel(), recon_test.ravel()), 1e-15
             )
-            recon_test_scaled = recon_test * s
+            recon_test_scaled = recon_test * s_test
 
-            p = psnr(phantom, recon_test_scaled)
-            if p > best_psnr_cal:
-                best_psnr_cal = p
+            psnr_test = psnr(phantom, recon_test_scaled)
+            if psnr_test > best_psnr_cal:
+                best_psnr_cal = psnr_test
                 best_sos = test_sos
                 best_recon_cal = recon_test_scaled.copy()
 
         t_III = time.time() - t0
 
-        psnr_III = best_psnr_cal
+        psnr_III = psnr(phantom, best_recon_cal)
         ssim_III = ssim_simple(phantom, best_recon_cal)
         res_III = rf_residual(rf_data, best_recon_cal, op_true.forward)
         delta_psnr_III = psnr_I - psnr_III
@@ -429,40 +440,44 @@ def main():
         description="Ultrasound 4-Scenario Validation (SoS mismatch)"
     )
     parser.add_argument(
-        "--nz", type=int, default=64,
-        help="Phantom depth pixels (default: 64)",
+        "--nz", type=int, default=128,
+        help="Phantom depth pixels (default: 128)",
     )
     parser.add_argument(
-        "--nx", type=int, default=64,
-        help="Phantom lateral pixels (default: 64)",
+        "--nx", type=int, default=128,
+        help="Phantom lateral pixels (default: 128)",
     )
     parser.add_argument(
         "--true-sos", type=float, default=1540.0,
         help="True speed of sound in m/s (default: 1540.0)",
     )
     parser.add_argument(
-        "--offsets", type=float, nargs="+", default=[10.0, 25.0, 50.0, 100.0],
-        help="SoS offsets to test in m/s (default: 10 25 50 100)",
+        "--offsets", type=float, nargs="+", default=[50.0, 100.0, 200.0, 400.0],
+        help="SoS offsets to test in m/s (default: 50 100 200 400)",
     )
     parser.add_argument(
-        "--n-elements", type=int, default=32,
-        help="Number of transducer elements (default: 32)",
+        "--n-elements", type=int, default=64,
+        help="Number of transducer elements (default: 64)",
     )
     parser.add_argument(
-        "--n-samples", type=int, default=128,
-        help="RF time samples per element (default: 128)",
+        "--n-samples", type=int, default=1024,
+        help="RF time samples per element (default: 1024)",
+    )
+    parser.add_argument(
+        "--fs", type=float, default=100e6,
+        help="Sampling frequency in Hz (default: 100e6)",
     )
     parser.add_argument(
         "--cal-steps", type=int, default=21,
         help="Grid-search steps for calibration (default: 21)",
     )
     parser.add_argument(
-        "--cal-min", type=float, default=1400.0,
-        help="Calibration grid minimum SoS in m/s (default: 1400)",
+        "--cal-min", type=float, default=1440.0,
+        help="Calibration grid minimum SoS in m/s (default: 1440)",
     )
     parser.add_argument(
-        "--cal-max", type=float, default=1600.0,
-        help="Calibration grid maximum SoS in m/s (default: 1600)",
+        "--cal-max", type=float, default=1640.0,
+        help="Calibration grid maximum SoS in m/s (default: 1640)",
     )
     parser.add_argument(
         "--seed", type=int, default=42,
@@ -477,6 +492,7 @@ def main():
         sos_offsets=args.offsets,
         n_elements=args.n_elements,
         n_samples=args.n_samples,
+        fs=args.fs,
         cal_steps=args.cal_steps,
         cal_range=(args.cal_min, args.cal_max),
         seed=args.seed,
