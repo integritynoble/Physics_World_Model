@@ -154,6 +154,57 @@
     </div>
     {% endif %}
 
+    <!-- ═══ Parameter Specifications ═══ -->
+    {% if spec_ranges %}
+    <div class="bg-white shadow rounded-lg p-6 space-y-4">
+        <h2 class="text-base font-semibold text-gray-800">Parameter Specifications</h2>
+
+        {% if true_spec %}
+        <div class="flex items-start gap-2 px-3 py-2 rounded-lg bg-green-50 border border-green-200">
+            <span class="text-green-600 mt-0.5">&#10003;</span>
+            <p class="text-sm text-green-800">True spec visible &mdash; use these exact values for Scenario III oracle reconstruction.</p>
+        </div>
+        {% elif tier_name == 'dev' %}
+        <div class="flex items-start gap-2 px-3 py-2 rounded-lg bg-amber-50 border border-amber-200">
+            <span class="text-amber-600 mt-0.5">&#128274;</span>
+            <p class="text-sm text-amber-800">True spec hidden &mdash; estimate parameters from spec ranges below.</p>
+        </div>
+        {% elif tier_name == 'hidden' %}
+        <div class="flex items-start gap-2 px-3 py-2 rounded-lg bg-purple-50 border border-purple-200">
+            <span class="text-purple-600 mt-0.5">&#128274;</span>
+            <p class="text-sm text-purple-800">True spec hidden &mdash; blind evaluation, only ranges available.</p>
+        </div>
+        {% endif %}
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+                <thead>
+                    <tr class="{% if true_spec %}bg-green-50{% elif tier_name == 'dev' %}bg-amber-50{% else %}bg-purple-50{% endif %}">
+                        <th class="px-4 py-2 text-left font-medium text-gray-700">Parameter</th>
+                        <th class="px-4 py-2 text-right font-medium text-gray-700">Spec Range</th>
+                        {% if true_spec %}
+                        <th class="px-4 py-2 text-right font-medium text-green-700">True Value</th>
+                        {% endif %}
+                        <th class="px-4 py-2 text-left font-medium text-gray-500">Unit</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for spec in spec_ranges %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-2 font-mono text-gray-700">{{ spec.name }}</td>
+                        <td class="px-4 py-2 text-right font-mono text-gray-600">{{ spec.min }} &ndash; {{ spec.max }}</td>
+                        {% if true_spec %}
+                        <td class="px-4 py-2 text-right font-mono font-bold text-green-700">{{ true_spec[spec.name] }}</td>
+                        {% endif %}
+                        <td class="px-4 py-2 text-gray-500">{{ spec.unit }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- ═══ Scores Section ═══ -->
     {% if tier_name in ('public', 'dev') and benchmark_gallery %}
     <div class="bg-white shadow rounded-lg p-6 space-y-4">
@@ -302,12 +353,12 @@
         </div>
         <div class="flex flex-wrap gap-3">
             {% if tier_name in ('public', 'dev') and tier.dataset and tier.dataset.download_url %}
-            <a href="{{ tier.dataset.download_url }}"
-               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white
+            <button onclick="startDownload(this, '{{ tier.dataset.download_url }}')"
+               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white cursor-pointer
                    {% if tier_name == 'public' %}bg-green-600 hover:bg-green-700{% else %}bg-amber-600 hover:bg-amber-700{% endif %}">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                Download Dataset
-            </a>
+                <svg class="w-4 h-4 mr-2 dl-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                <span class="dl-label">Download Dataset</span>
+            </button>
             {% elif tier_name == 'hidden' %}
             {% if challenge.links and challenge.links.get('submit_algorithm') %}
             <a href="{{ challenge.links.submit_algorithm }}" target="_blank" rel="noopener noreferrer"
@@ -320,35 +371,6 @@
             {% endif %}
         </div>
     </div>
-
-    <!-- Spec ranges table -->
-    {% if challenge.spec_ranges %}
-    <div class="bg-white shadow rounded-lg p-6">
-        <h2 class="text-base font-semibold text-amber-800 mb-3">Spec Ranges (Partial Information)</h2>
-        <div class="overflow-x-auto">
-            <table class="min-w-full text-sm">
-                <thead>
-                    <tr class="bg-amber-50">
-                        <th class="px-4 py-2 text-left font-medium text-amber-700">Parameter</th>
-                        <th class="px-4 py-2 text-right font-medium text-amber-700">Min</th>
-                        <th class="px-4 py-2 text-right font-medium text-amber-700">Max</th>
-                        <th class="px-4 py-2 text-left font-medium text-amber-700">Unit</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-amber-100">
-                    {% for spec in challenge.spec_ranges %}
-                    <tr class="hover:bg-amber-50/50">
-                        <td class="px-4 py-2 font-mono text-gray-700">{{ spec.name }}</td>
-                        <td class="px-4 py-2 text-right font-mono text-amber-600">{{ spec.min }}</td>
-                        <td class="px-4 py-2 text-right font-mono text-amber-600">{{ spec.max }}</td>
-                        <td class="px-4 py-2 text-gray-500">{{ spec.unit }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    {% endif %}
 
     <!-- Scoring formula -->
     {% if challenge.scoring %}
@@ -375,4 +397,31 @@
     </div>
 
 </div>
+
+{# ── Download button JS ── #}
+<script>
+function startDownload(btn, url) {
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = '';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    var icon = btn.querySelector('.dl-icon');
+    var label = btn.querySelector('.dl-label');
+    if (icon) icon.classList.add('animate-bounce');
+    if (label) label.textContent = 'Downloading\u2026';
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+
+    setTimeout(function() {
+        if (icon) icon.classList.remove('animate-bounce');
+        if (label) label.textContent = 'Download Dataset';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+    }, 4000);
+}
+</script>
 {% endblock %}

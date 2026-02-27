@@ -26,6 +26,10 @@ Routes to appropriate operator based on modality:
 - integral: IntegralOperator (plenoptic / integral photography)
 - phase_retrieval / cdi: CDIOperator (coherent diffraction imaging)
 - ultrasound: UltrasoundOperator (pulse-echo RF model)
+- cryo_em: CryoEMOperator (cryo-EM CTF + B-factor)
+- cbct: CBCTOperator (cone-beam CT)
+- compressive_holography: CompressiveHolographyOperator (multi-depth Fresnel)
+- fluorescence_microscopy: FluorescenceMicroscopyOperator (dual-PSF Stokes)
 - sem: SEMOperator (scanning electron microscopy)
 - tem: TEMOperator (transmission electron microscopy / CTF)
 - electron_tomography: ETOperator (tilt-series projection)
@@ -408,6 +412,22 @@ def _build_operator_by_id(
     # X-ray Radiography
     elif operator_id == "xray_radiography":
         return _build_xray_radiography_operator(dims, theta)
+
+    # Cryo-EM
+    elif operator_id in ("cryo_em", "cryoem"):
+        return _build_cryoem_operator(dims, theta)
+
+    # CBCT (Cone-Beam CT)
+    elif operator_id in ("cbct", "cone_beam_ct"):
+        return _build_cbct_operator(dims, theta)
+
+    # Compressive Holography
+    elif operator_id in ("compressive_holography", "comp_holo"):
+        return _build_compressive_holography_operator(dims, theta)
+
+    # Fluorescence Microscopy
+    elif operator_id in ("fluorescence_microscopy", "fluorescence"):
+        return _build_fluorescence_microscopy_operator(dims, theta)
 
     # Default fallback: try graph-first, then widefield
     graph_op = _try_build_graph_operator(operator_id, dims)
@@ -901,4 +921,82 @@ def _build_xray_radiography_operator(dims: Tuple[int, ...], theta: Dict[str, Any
         nx=nx,
         mu=theta.get("mu", 1.0),
         psf_sigma=theta.get("psf_sigma", 0.5),
+    )
+
+
+def _build_cryoem_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build a Cryo-EM operator."""
+    from pwm_core.physics.electron.cryoem_operator import CryoEMOperator
+
+    ny = dims[0] if len(dims) >= 1 else 64
+    nx = dims[1] if len(dims) >= 2 else 64
+
+    return CryoEMOperator(
+        operator_id="cryo_em",
+        theta=theta,
+        ny=ny,
+        nx=nx,
+        defocus_nm=theta.get("defocus_nm", -500.0),
+        Cs_mm=theta.get("Cs_mm", 2.0),
+        wavelength_pm=theta.get("wavelength_pm", 2.51),
+        B_factor=theta.get("B_factor", 50.0),
+        ice_thickness_nm=theta.get("ice_thickness_nm", 50.0),
+    )
+
+
+def _build_cbct_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build a CBCT (Cone-Beam CT) operator."""
+    from pwm_core.physics.tomography.cbct_operator import CBCTOperator
+
+    ny = dims[0] if len(dims) >= 1 else 64
+    nx = dims[1] if len(dims) >= 2 else 64
+
+    return CBCTOperator(
+        operator_id="cbct",
+        theta=theta,
+        ny=ny,
+        nx=nx,
+        n_angles=theta.get("n_angles", 180),
+        n_det=theta.get("n_det", int(nx * 1.44)),
+        D_so=theta.get("D_so", 100.0),
+        D_sd=theta.get("D_sd", 150.0),
+        detector_offset=theta.get("detector_offset", 0.0),
+    )
+
+
+def _build_compressive_holography_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build a Compressive Holography operator."""
+    from pwm_core.physics.microscopy.compressive_holography_operator import CompressiveHolographyOperator
+
+    ny = dims[0] if len(dims) >= 1 else 64
+    nx = dims[1] if len(dims) >= 2 else 64
+
+    return CompressiveHolographyOperator(
+        operator_id="compressive_holography",
+        theta=theta,
+        ny=ny,
+        nx=nx,
+        n_depths=theta.get("n_depths", 4),
+        depth_spacing_um=theta.get("depth_spacing_um", 100.0),
+        wavelength_nm=theta.get("wavelength_nm", 532.0),
+        carrier_freq=theta.get("carrier_freq", 0.15),
+    )
+
+
+def _build_fluorescence_microscopy_operator(dims: Tuple[int, ...], theta: Dict[str, Any]) -> BaseOperator:
+    """Build a Fluorescence Microscopy operator."""
+    from pwm_core.physics.microscopy.fluorescence_operator import FluorescenceMicroscopyOperator
+
+    ny = dims[0] if len(dims) >= 1 else 64
+    nx = dims[1] if len(dims) >= 2 else 64
+
+    return FluorescenceMicroscopyOperator(
+        operator_id="fluorescence_microscopy",
+        theta=theta,
+        ny=ny,
+        nx=nx,
+        psf_sigma_ex=theta.get("psf_sigma_ex", 1.5),
+        psf_sigma_em=theta.get("psf_sigma_em", 2.0),
+        quantum_yield=theta.get("quantum_yield", 0.7),
+        background=theta.get("background", 0.02),
     )

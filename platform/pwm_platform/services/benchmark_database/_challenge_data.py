@@ -458,6 +458,38 @@ def _derive_true_spec_for_tier(
     return spec
 
 
+def _derive_tier_spec_ranges(
+    base_spec_ranges: list[dict],
+    true_spec: dict[str, float],
+) -> list[dict]:
+    """Shift spec_ranges to center on a tier's true_spec values.
+
+    Keeps the same range width but re-centers on the true value.
+    """
+    result = []
+    for sr in base_spec_ranges:
+        name = sr["name"]
+        original_width = sr["max"] - sr["min"]
+        half_width = original_width / 2
+        center = true_spec.get(name, (sr["min"] + sr["max"]) / 2)
+        result.append({
+            "name": name,
+            "min": round(center - half_width, 6),
+            "max": round(center + half_width, 6),
+            "unit": sr["unit"],
+        })
+    return result
+
+
+# ── Backfill per-tier spec_ranges for hand-crafted configs ────────────────────
+
+for _cfg in CHALLENGE_CONFIG.values():
+    _base_ranges = _cfg.get("spec_ranges", [])
+    for _tier in _cfg["tiers"].values():
+        if "spec_ranges" not in _tier and "true_spec" in _tier:
+            _tier["spec_ranges"] = _derive_tier_spec_ranges(_base_ranges, _tier["true_spec"])
+
+
 # ── Category defaults ─────────────────────────────────────────────────────────
 
 _CATEGORY_NOISE_MODEL: dict[str, str] = {
@@ -589,10 +621,18 @@ def generate_challenge_config(
     mismatch_params: list[dict],
     category: str,
     dataset_config: dict | None = None,
+    baselines: dict | None = None,
 ) -> dict | None:
     """Auto-generate a challenge config from a variant's mismatch_params.
 
     Returns None if mismatch_params is empty (nothing to challenge on).
+
+    Parameters
+    ----------
+    baselines : dict, optional
+        Pre-computed baselines with keys "scenario_ii" and "scenario_iii",
+        each a list of {"method", "psnr", "ssim"} dicts.  If provided,
+        these replace the empty default baselines.
     """
     if not mismatch_params:
         return None
@@ -605,13 +645,20 @@ def generate_challenge_config(
 
     tiers = {}
     for tier_name, template in _TIER_TEMPLATES.items():
+        true_spec = _derive_true_spec_for_tier(mismatch_params, tier_name)
         tiers[tier_name] = {
-            "true_spec": _derive_true_spec_for_tier(mismatch_params, tier_name),
+            "true_spec": true_spec,
+            "spec_ranges": _derive_tier_spec_ranges(spec_ranges, true_spec),
             "seed": template["seed"],
             "visible_data": list(template["visible_data"]),
             "introduction": dict(template["introduction"]),
             "preview_image": dict(template["preview_image"]) if template["preview_image"] else None,
         }
+
+    default_baselines = {
+        "scenario_ii": [],
+        "scenario_iii": [],
+    }
 
     return {
         "_auto_generated": True,
@@ -624,8 +671,5 @@ def generate_challenge_config(
         "tiers": tiers,
         "data_format": "hdf5",
         "signal_shape": list(signal_shape),
-        "baselines": {
-            "scenario_ii": [],
-            "scenario_iii": [],
-        },
+        "baselines": baselines if baselines else default_baselines,
     }

@@ -132,6 +132,49 @@ async def list_user_sessions(
     ]
 
 
+# ── Dataset metadata helpers ────────────────────────────────────────────
+
+
+async def update_session_dataset_meta(
+    db: AsyncSession,
+    session_id: str,
+    dataset_meta: dict | None = None,
+    matrix_meta: dict | None = None,
+    gt_meta: dict | None = None,
+) -> None:
+    """Store uploaded dataset metadata on a session."""
+    result = await db.execute(
+        select(SpecChatSession).where(SpecChatSession.session_id == session_id)
+    )
+    row = result.scalar_one_or_none()
+    if row is None:
+        return
+    if dataset_meta is not None:
+        row.dataset_meta = dataset_meta
+    if matrix_meta is not None:
+        row.matrix_meta = matrix_meta
+    if gt_meta is not None:
+        row.ground_truth_meta = gt_meta
+    await db.commit()
+
+
+async def get_session_dataset_meta(
+    db: AsyncSession,
+    session_id: str,
+) -> tuple[dict | None, dict | None, dict | None]:
+    """Retrieve dataset metadata from a session.
+
+    Returns (dataset_meta, matrix_meta, ground_truth_meta).
+    """
+    result = await db.execute(
+        select(SpecChatSession).where(SpecChatSession.session_id == session_id)
+    )
+    row = result.scalar_one_or_none()
+    if row is None:
+        return None, None, None
+    return row.dataset_meta, row.matrix_meta, row.ground_truth_meta
+
+
 # ── LLM API call (via CompareGPT) ───────────────────────────────────────────
 
 

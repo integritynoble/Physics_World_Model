@@ -11,6 +11,11 @@ Supported modalities:
 - SPC: Multistage UPWMI correction (spatial + temporal + illumination + sensor)
 - Lensless: PSF shift calibration
 - Ptychography: Position offset calibration
+- Cryo-EM: CTF defocus calibration
+- CBCT: Fan-beam detector offset calibration
+- Compressive Holography: Propagation distance calibration
+- Fluorescence Microscopy: PSF sigma calibration
+- Ultrasound: Speed-of-sound calibration
 """
 
 from __future__ import annotations
@@ -1224,3 +1229,623 @@ def spc_multistage_correction(
     }
 
     return best_kw, metadata
+
+
+# =============================================================================
+# Cryo-EM: CTF Defocus Mismatch
+# =============================================================================
+
+def cryoem_ctf_forward(
+    img: np.ndarray,
+    defocus_nm: float = -500.0,
+    Cs_mm: float = 2.0,
+    wavelength_pm: float = 2.51,
+    B_factor: float = 50.0,
+) -> np.ndarray:
+    """Cryo-EM forward model: CTF + B-factor envelope.
+
+    Args:
+        img: Projected potential (ny, nx)
+        defocus_nm: Defocus in nm
+        Cs_mm: Spherical aberration in mm
+        wavelength_pm: Electron wavelength in pm
+        B_factor: B-factor for envelope (A^2)
+
+    Returns:
+        CTF-filtered image (ny, nx)
+    """
+    ny, nx = img.shape
+    fy = np.fft.fftfreq(ny)
+    fx = np.fft.fftfreq(nx)
+    FY, FX = np.meshgrid(fy, fx, indexing="ij")
+    q2 = FX ** 2 + FY ** 2
+
+    wl_nm = wavelength_pm * 1e-3
+    Cs_nm = Cs_mm * 1e6
+    chi = np.pi * wl_nm * defocus_nm * q2 - 0.5 * np.pi * Cs_nm * wl_nm ** 3 * q2 ** 2
+    ctf = np.sin(chi)
+    envelope = np.exp(-B_factor * q2 / 4.0)
+
+    X_f = np.fft.fft2(img.astype(np.float64))
+    Y_f = ctf * envelope * X_f
+    return np.real(np.fft.ifft2(Y_f)).astype(np.float32)
+
+
+def cryoem_wiener_recon(
+    measurement: np.ndarray,
+    defocus_nm: float = -500.0,
+    Cs_mm: float = 2.0,
+    wavelength_pm: float = 2.51,
+    B_factor: float = 50.0,
+    snr: float = 10.0,
+) -> np.ndarray:
+    """Wiener filter reconstruction for cryo-EM.
+
+    Args:
+        measurement: CTF-filtered image
+        defocus_nm: Defocus
+        Cs_mm: Spherical aberration
+        wavelength_pm: Electron wavelength
+        B_factor: B-factor
+        snr: Assumed signal-to-noise ratio
+
+    Returns:
+        Reconstructed potential (ny, nx)
+    """
+    ny, nx = measurement.shape
+    fy = np.fft.fftfreq(ny)
+    fx = np.fft.fftfreq(nx)
+    FY, FX = np.meshgrid(fy, fx, indexing="ij")
+    q2 = FX ** 2 + FY ** 2
+
+    wl_nm = wavelength_pm * 1e-3
+    Cs_nm = Cs_mm * 1e6
+    chi = np.pi * wl_nm * defocus_nm * q2 - 0.5 * np.pi * Cs_nm * wl_nm ** 3 * q2 ** 2
+    ctf = np.sin(chi)
+    envelope = np.exp(-B_factor * q2 / 4.0)
+    H = ctf * envelope
+
+    Y_f = np.fft.fft2(measurement.astype(np.float64))
+    # Wiener: H^* / (|H|^2 + 1/SNR)
+    wiener = np.conj(H) / (np.abs(H) ** 2 + 1.0 / snr)
+    X_f = wiener * Y_f
+    return np.real(np.fft.ifft2(X_f)).astype(np.float32)
+
+
+def cryoem_calibrate_defocus(
+    measurement: np.ndarray,
+    defocus_range: Tuple[float, float] = (-1000.0, 1000.0),
+    n_steps: int = 21,
+    Cs_mm: float = 2.0,
+    wavelength_pm: float = 2.51,
+    B_factor: float = 50.0,
+    gt_img: Optional[np.ndarray] = None,
+) -> float:
+    """Calibrate defocus for cryo-EM via grid search.
+
+    Args:
+        measurement: CTF-filtered image
+        defocus_range: Range to search
+        n_steps: Number of grid points
+        gt_img: Ground truth for PSNR metric (optional)
+
+    Returns:
+        Best defocus value
+    """
+    best_defocus = 0.0
+    best_metric = -float('inf')
+
+    for test_df in np.linspace(defocus_range[0], defocus_range[1], n_steps):
+        recon = cryoem_wiener_recon(measurement, test_df, Cs_mm, wavelength_pm, B_factor)
+        if gt_img is not None:
+            metric = compute_psnr(recon, gt_img)
+        else:
+            # Use image sharpness as proxy
+            metric = float(np.std(recon))
+        if metric > best_metric:
+            best_metric = metric
+            best_defocus = test_df
+
+    return best_defocus
+
+
+# =============================================================================
+# CBCT: Detector Offset Mismatch
+# =============================================================================
+
+def cbct_fanbeam_forward(
+    img: np.ndarray,
+    angles: np.ndarray,
+    det_offset: float = 0.0,
+    n_det: int = None,
+) -> np.ndarray:
+    """CBCT fan-beam forward model (simplified parallel-beam approximation).
+
+    Args:
+        img: 2D image (n, n)
+        angles: Projection angles in radians
+        det_offset: Detector offset in pixels
+        n_det: Number of detector pixels (default: img width)
+
+    Returns:
+        Sinogram (n_angles, n_det)
+    """
+    from scipy.ndimage import rotate, shift as ndshift
+    n = img.shape[0]
+    if n_det is None:
+        n_det = n
+
+    sinogram = np.zeros((len(angles), n_det), dtype=np.float32)
+    for i, theta in enumerate(angles):
+        rotated = rotate(img, np.degrees(theta), reshape=False, order=1)
+        proj = rotated.sum(axis=0)
+        # Pad/crop to n_det size
+        if n != n_det:
+            proj_full = np.zeros(n_det)
+            start = (n_det - n) // 2
+            proj_full[start:start + n] = proj
+            proj = proj_full
+        if abs(det_offset) > 1e-6:
+            proj = ndshift(proj, det_offset, order=1, mode='constant')
+        sinogram[i] = proj
+
+    return sinogram
+
+
+def cbct_fdk_recon(
+    sinogram: np.ndarray,
+    angles: np.ndarray,
+    n: int,
+    det_offset: float = 0.0,
+    iters: int = 25,
+    tv_weight: float = 0.05,
+) -> np.ndarray:
+    """FDK-style reconstruction for CBCT with detector offset correction.
+
+    Args:
+        sinogram: Sinogram (n_angles, n_det)
+        angles: Projection angles
+        n: Image size
+        det_offset: Detector offset to correct
+        iters: SART iterations
+        tv_weight: TV regularization weight
+
+    Returns:
+        Reconstructed image (n, n)
+    """
+    from scipy.ndimage import rotate, shift as ndshift
+    try:
+        from skimage.restoration import denoise_tv_chambolle
+    except ImportError:
+        denoise_tv_chambolle = None
+
+    n_angles, n_det = sinogram.shape
+
+    # Correct detector offset
+    sino_corrected = np.zeros_like(sinogram)
+    for i in range(n_angles):
+        sino_corrected[i] = ndshift(sinogram[i], -det_offset, order=1, mode='constant')
+
+    recon = np.zeros((n, n), dtype=np.float32)
+
+    for _ in range(iters):
+        for i, theta in enumerate(angles):
+            rotated = rotate(recon, np.degrees(theta), reshape=False, order=1)
+            proj = rotated.sum(axis=0)
+            # Match sizes
+            if n != n_det:
+                proj_full = np.zeros(n_det)
+                start = (n_det - n) // 2
+                proj_full[start:start + n] = proj
+                proj = proj_full
+
+            diff = (sino_corrected[i] - proj) / max(n, 1)
+            if n != n_det:
+                start = (n_det - n) // 2
+                diff = diff[start:start + n]
+
+            back = np.tile(diff, (n, 1))
+            back = rotate(back, -np.degrees(theta), reshape=False, order=1)
+            recon += 0.2 * back
+
+        if denoise_tv_chambolle is not None:
+            recon = denoise_tv_chambolle(recon, weight=tv_weight, max_num_iter=5)
+        recon = np.clip(recon, 0, 1)
+
+    return recon.astype(np.float32)
+
+
+def cbct_calibrate_offset(
+    sinogram: np.ndarray,
+    angles: np.ndarray,
+    n: int,
+    offset_range: Tuple[float, float] = (-8.0, 8.0),
+    n_steps: int = 17,
+    recon_iters: int = 10,
+    gt_img: Optional[np.ndarray] = None,
+) -> float:
+    """Calibrate detector offset for CBCT.
+
+    Returns:
+        Best detector offset
+    """
+    best_offset = 0.0
+    best_metric = -float('inf')
+
+    for test_offset in np.linspace(offset_range[0], offset_range[1], n_steps):
+        recon = cbct_fdk_recon(sinogram, angles, n, det_offset=test_offset, iters=recon_iters)
+        if gt_img is not None:
+            metric = compute_psnr(recon, gt_img)
+        else:
+            metric = float(np.std(recon))
+        if metric > best_metric:
+            best_metric = metric
+            best_offset = test_offset
+
+    return best_offset
+
+
+# =============================================================================
+# Compressive Holography: Propagation Distance Mismatch
+# =============================================================================
+
+def comp_holo_forward(
+    depths: np.ndarray,
+    wavelength_nm: float = 532.0,
+    pixel_size_um: float = 5.0,
+    depth_spacing_um: float = 100.0,
+    carrier_freq: float = 0.15,
+    prop_error_um: float = 0.0,
+) -> np.ndarray:
+    """Compressive holography forward model.
+
+    Args:
+        depths: Multi-depth object (n_depths, ny, nx)
+        wavelength_nm: Illumination wavelength
+        pixel_size_um: Pixel size
+        depth_spacing_um: Spacing between depth planes
+        carrier_freq: Reference wave carrier frequency
+        prop_error_um: Propagation distance error
+
+    Returns:
+        Hologram (ny, nx)
+    """
+    n_depths, ny, nx = depths.shape
+    wl_um = wavelength_nm * 1e-3
+    fy = np.fft.fftfreq(ny, d=pixel_size_um)
+    fx = np.fft.fftfreq(nx, d=pixel_size_um)
+    FY, FX = np.meshgrid(fy, fx, indexing="ij")
+    f2 = FX ** 2 + FY ** 2
+
+    yy, xx = np.meshgrid(np.arange(ny), np.arange(nx), indexing="ij")
+    ref_conj = np.exp(-1j * 2 * np.pi * carrier_freq * (xx + yy) / max(ny, nx))
+
+    hologram = np.zeros((ny, nx), dtype=np.float64)
+    for k in range(n_depths):
+        z_k = (k + 1) * depth_spacing_um + prop_error_um
+        kernel = np.exp(1j * np.pi * wl_um * z_k * f2)
+        X_f = np.fft.fft2(depths[k].astype(np.float64))
+        propagated = np.fft.ifft2(kernel * X_f)
+        hologram += np.real(ref_conj * propagated)
+
+    return hologram.astype(np.float32)
+
+
+def comp_holo_recon(
+    hologram: np.ndarray,
+    n_depths: int = 4,
+    wavelength_nm: float = 532.0,
+    pixel_size_um: float = 5.0,
+    depth_spacing_um: float = 100.0,
+    carrier_freq: float = 0.15,
+    prop_error_um: float = 0.0,
+    iters: int = 50,
+    tv_weight: float = 0.05,
+) -> np.ndarray:
+    """FISTA-TV reconstruction for compressive holography.
+
+    Args:
+        hologram: 2D hologram (ny, nx)
+        n_depths: Number of depth planes
+        Other args: physics parameters
+
+    Returns:
+        Reconstructed multi-depth object (n_depths, ny, nx)
+    """
+    try:
+        from skimage.restoration import denoise_tv_chambolle
+    except ImportError:
+        denoise_tv_chambolle = None
+
+    ny, nx = hologram.shape
+    wl_um = wavelength_nm * 1e-3
+    fy = np.fft.fftfreq(ny, d=pixel_size_um)
+    fx = np.fft.fftfreq(nx, d=pixel_size_um)
+    FY, FX = np.meshgrid(fy, fx, indexing="ij")
+    f2 = FX ** 2 + FY ** 2
+
+    yy, xx = np.meshgrid(np.arange(ny), np.arange(nx), indexing="ij")
+    ref = np.exp(1j * 2 * np.pi * carrier_freq * (xx + yy) / max(ny, nx))
+
+    # Back-propagation (adjoint) as initialization
+    x = np.zeros((n_depths, ny, nx), dtype=np.float64)
+    for k in range(n_depths):
+        z_k = (k + 1) * depth_spacing_um + prop_error_um
+        kernel_adj = np.exp(-1j * np.pi * wl_um * z_k * f2)
+        modulated = ref * hologram.astype(np.float64)
+        Y_f = np.fft.fft2(modulated)
+        x[k] = np.real(np.fft.ifft2(kernel_adj * Y_f))
+
+    # FISTA iterations
+    x_prev = x.copy()
+    t = 1.0
+    step_size = 0.5
+
+    for it in range(iters):
+        # Forward
+        y_pred = comp_holo_forward(x, wavelength_nm, pixel_size_um,
+                                   depth_spacing_um, carrier_freq, prop_error_um)
+        residual = hologram - y_pred
+
+        # Gradient (adjoint of residual)
+        grad = np.zeros_like(x)
+        for k in range(n_depths):
+            z_k = (k + 1) * depth_spacing_um + prop_error_um
+            kernel_adj = np.exp(-1j * np.pi * wl_um * z_k * f2)
+            modulated = ref * residual.astype(np.float64)
+            Y_f = np.fft.fft2(modulated)
+            grad[k] = np.real(np.fft.ifft2(kernel_adj * Y_f))
+
+        # Gradient step
+        x_new = x + step_size * grad
+
+        # TV proximal
+        if denoise_tv_chambolle is not None:
+            for k in range(n_depths):
+                x_new[k] = denoise_tv_chambolle(x_new[k], weight=tv_weight, max_num_iter=3)
+
+        x_new = np.clip(x_new, 0, None)
+
+        # FISTA momentum
+        t_new = (1 + np.sqrt(1 + 4 * t ** 2)) / 2
+        x = x_new + (t - 1) / t_new * (x_new - x_prev)
+        x_prev = x_new.copy()
+        t = t_new
+
+    return x.astype(np.float32)
+
+
+# =============================================================================
+# Fluorescence Microscopy: PSF Sigma Mismatch
+# =============================================================================
+
+def fluorescence_forward(
+    img: np.ndarray,
+    psf_sigma_ex: float = 1.5,
+    psf_sigma_em: float = 2.0,
+    quantum_yield: float = 0.7,
+    background: float = 0.02,
+) -> np.ndarray:
+    """Fluorescence microscopy forward model.
+
+    Args:
+        img: Fluorophore concentration (ny, nx)
+        psf_sigma_ex: Excitation PSF sigma
+        psf_sigma_em: Emission PSF sigma
+        quantum_yield: Quantum yield
+        background: Background level
+
+    Returns:
+        Fluorescence image
+    """
+    from scipy.ndimage import gaussian_filter
+    excited = gaussian_filter(img.astype(np.float64), sigma=psf_sigma_ex, mode="reflect")
+    emitted = quantum_yield * excited
+    detected = gaussian_filter(emitted, sigma=psf_sigma_em, mode="reflect")
+    return (detected + background).astype(np.float32)
+
+
+def fluorescence_rl_recon(
+    measurement: np.ndarray,
+    psf_sigma_ex: float = 1.5,
+    psf_sigma_em: float = 2.0,
+    quantum_yield: float = 0.7,
+    background: float = 0.02,
+    iters: int = 30,
+) -> np.ndarray:
+    """Richardson-Lucy reconstruction for fluorescence microscopy.
+
+    Args:
+        measurement: Fluorescence image
+        psf_sigma_ex: Excitation PSF sigma
+        psf_sigma_em: Emission PSF sigma
+        quantum_yield: Quantum yield
+        background: Background level
+        iters: Number of RL iterations
+
+    Returns:
+        Reconstructed concentration
+    """
+    from scipy.ndimage import gaussian_filter
+
+    # Effective PSF: convolution of ex and em Gaussians
+    # sigma_eff = sqrt(sigma_ex^2 + sigma_em^2)
+    sigma_eff = np.sqrt(psf_sigma_ex ** 2 + psf_sigma_em ** 2)
+
+    y = measurement.astype(np.float64) - background
+    y = np.maximum(y, 1e-8)
+
+    # RL iteration
+    recon = np.ones_like(y) * np.mean(y) / max(quantum_yield, 0.01)
+
+    for _ in range(iters):
+        fwd = gaussian_filter(recon, sigma=sigma_eff, mode="reflect") * quantum_yield
+        fwd = np.maximum(fwd, 1e-8)
+        ratio = y / fwd
+        update = gaussian_filter(ratio, sigma=sigma_eff, mode="reflect")
+        recon *= update
+        recon = np.maximum(recon, 0)
+
+    return recon.astype(np.float32)
+
+
+def fluorescence_calibrate_sigma(
+    measurement: np.ndarray,
+    sigma_ex_range: Tuple[float, float] = (0.5, 3.0),
+    sigma_em_range: Tuple[float, float] = (0.8, 4.0),
+    n_steps: int = 11,
+    quantum_yield: float = 0.7,
+    background: float = 0.02,
+    gt_img: Optional[np.ndarray] = None,
+) -> Tuple[float, float]:
+    """Calibrate PSF sigmas for fluorescence microscopy.
+
+    Returns:
+        (best_sigma_ex, best_sigma_em)
+    """
+    best_sigma_ex = 1.5
+    best_sigma_em = 2.0
+    best_metric = -float('inf')
+
+    for s_ex in np.linspace(sigma_ex_range[0], sigma_ex_range[1], n_steps):
+        for s_em in np.linspace(sigma_em_range[0], sigma_em_range[1], n_steps):
+            recon = fluorescence_rl_recon(measurement, s_ex, s_em, quantum_yield, background, iters=15)
+            if gt_img is not None:
+                metric = compute_psnr(recon, gt_img)
+            else:
+                metric = float(np.std(recon))
+            if metric > best_metric:
+                best_metric = metric
+                best_sigma_ex = s_ex
+                best_sigma_em = s_em
+
+    return best_sigma_ex, best_sigma_em
+
+
+# =============================================================================
+# Ultrasound: Speed of Sound Mismatch
+# =============================================================================
+
+def ultrasound_das_forward(
+    img: np.ndarray,
+    speed_of_sound: float = 1540.0,
+    n_elements: int = 32,
+    element_pitch: float = 0.3e-3,
+    fs: float = 40e6,
+    n_samples: int = 128,
+    attenuation_coeff: float = 0.5,
+    center_freq_hz: float = 5e6,
+) -> np.ndarray:
+    """Ultrasound forward model with frequency-dependent attenuation.
+
+    Args:
+        img: Tissue reflectivity (nz, nx)
+        speed_of_sound: Speed of sound in m/s
+        Other args: system parameters
+
+    Returns:
+        RF channel data (n_elements, n_samples)
+    """
+    nz, nx = img.shape
+    aperture = n_elements * element_pitch
+    pixel_size_x = aperture / nx
+    pixel_size_z = (n_samples / fs * speed_of_sound / 2.0) / nz
+
+    elem_x = np.array([(e - n_elements / 2.0) * element_pitch for e in range(n_elements)])
+    z_pos = (np.arange(nz) + 0.5) * pixel_size_z
+    x_pos = (np.arange(nx) - nx / 2.0) * pixel_size_x
+
+    f_mhz = center_freq_hz / 1e6
+    y = np.zeros((n_elements, n_samples), dtype=np.float64)
+
+    for e in range(n_elements):
+        for iz in range(nz):
+            dx = elem_x[e] - x_pos
+            dist = np.sqrt(dx ** 2 + z_pos[iz] ** 2)
+            t_round = 2.0 * dist / speed_of_sound
+            tidx = np.clip((t_round * fs).astype(np.int64), 0, n_samples - 1)
+            d_cm = dist * 100.0
+            atten = np.exp(-attenuation_coeff * f_mhz * d_cm * np.log(10) / 20.0)
+            np.add.at(y[e], tidx, img[iz].astype(np.float64) * atten)
+
+    return y.astype(np.float32)
+
+
+def ultrasound_das_recon(
+    rf_data: np.ndarray,
+    speed_of_sound: float = 1540.0,
+    n_elements: int = 32,
+    element_pitch: float = 0.3e-3,
+    fs: float = 40e6,
+    nz: int = 64,
+    nx: int = 64,
+    attenuation_coeff: float = 0.5,
+    center_freq_hz: float = 5e6,
+) -> np.ndarray:
+    """Delay-and-sum beamforming for ultrasound.
+
+    Args:
+        rf_data: RF channel data (n_elements, n_samples)
+        speed_of_sound: Speed of sound in m/s
+        Other args: system parameters
+
+    Returns:
+        Reconstructed image (nz, nx)
+    """
+    n_samples = rf_data.shape[1]
+    aperture = n_elements * element_pitch
+    pixel_size_x = aperture / nx
+    pixel_size_z = (n_samples / fs * speed_of_sound / 2.0) / nz
+
+    elem_x = np.array([(e - n_elements / 2.0) * element_pitch for e in range(n_elements)])
+    z_pos = (np.arange(nz) + 0.5) * pixel_size_z
+    x_pos = (np.arange(nx) - nx / 2.0) * pixel_size_x
+
+    f_mhz = center_freq_hz / 1e6
+    recon = np.zeros((nz, nx), dtype=np.float64)
+
+    for e in range(n_elements):
+        for iz in range(nz):
+            dx = elem_x[e] - x_pos
+            dist = np.sqrt(dx ** 2 + z_pos[iz] ** 2)
+            t_round = 2.0 * dist / speed_of_sound
+            tidx = np.clip((t_round * fs).astype(np.int64), 0, n_samples - 1)
+            d_cm = dist * 100.0
+            atten = np.exp(-attenuation_coeff * f_mhz * d_cm * np.log(10) / 20.0)
+            recon[iz] += rf_data[e, tidx].astype(np.float64) * atten
+
+    return recon.astype(np.float32)
+
+
+def ultrasound_calibrate_sos(
+    rf_data: np.ndarray,
+    sos_range: Tuple[float, float] = (1400.0, 1600.0),
+    n_steps: int = 21,
+    n_elements: int = 32,
+    element_pitch: float = 0.3e-3,
+    fs: float = 40e6,
+    nz: int = 64,
+    nx: int = 64,
+    gt_img: Optional[np.ndarray] = None,
+) -> float:
+    """Calibrate speed of sound for ultrasound.
+
+    Returns:
+        Best speed of sound value
+    """
+    best_sos = 1540.0
+    best_metric = -float('inf')
+
+    for test_sos in np.linspace(sos_range[0], sos_range[1], n_steps):
+        recon = ultrasound_das_recon(
+            rf_data, test_sos, n_elements, element_pitch, fs, nz, nx
+        )
+        if gt_img is not None:
+            metric = compute_psnr(recon, gt_img)
+        else:
+            metric = float(np.std(recon))
+        if metric > best_metric:
+            best_metric = metric
+            best_sos = test_sos
+
+    return best_sos

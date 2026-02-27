@@ -2446,3 +2446,96 @@ calibration_tables:
           solver_version: "pwm_core.recon.mlsd@0.1.0"
           date_generated: "2026-02-11"
           notes: "Maximum likelihood scattering density, long acquisition time"
+
+  # ===================================================================
+  # Cryo-EM (Nature paper validation)
+  # ===================================================================
+  cryo_em:
+    signal_prior_class: "deep_prior"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "wiener_filter"
+        recoverability: 0.78
+        expected_psnr_db: 26.5
+        provenance:
+          dataset_id: "cryoem_simulated_particles_2025"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_cryoem_v1.0"
+          solver_version: "pwm_core.recon.wiener@0.1.0"
+          date_generated: "2026-02-27"
+          notes: "Wiener filter CTF correction, simulated 300keV particles"
+      - cr: 1.0
+        noise: "read_limited"
+        solver: "ctf_refinement"
+        recoverability: 0.85
+        expected_psnr_db: 29.8
+        provenance:
+          dataset_id: "cryoem_simulated_particles_2025"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_cryoem_v1.0"
+          solver_version: "pwm_core.recon.ctf_refine@0.1.0"
+          date_generated: "2026-02-27"
+          notes: "Iterative CTF refinement with per-particle defocus estimation"
+
+  # ===================================================================
+  # Compressive Holography (Nature paper validation)
+  # ===================================================================
+  compressive_holography:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 0.25
+        noise: "shot_limited"
+        solver: "angular_spectrum_backprop"
+        recoverability: 0.72
+        expected_psnr_db: 24.8
+        provenance:
+          dataset_id: "comp_holo_usaf_simulation_2025"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_comp_holo_v1.0"
+          solver_version: "pwm_core.recon.backprop@0.1.0"
+          date_generated: "2026-02-27"
+          notes: "Angular spectrum back-propagation, 4 depths, USAF target"
+      - cr: 0.25
+        noise: "read_limited"
+        solver: "fista_tv"
+        recoverability: 0.83
+        expected_psnr_db: 28.5
+        provenance:
+          dataset_id: "comp_holo_usaf_simulation_2025"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_comp_holo_v1.0"
+          solver_version: "pwm_core.recon.fista_tv@0.1.0"
+          date_generated: "2026-02-27"
+          notes: "FISTA-TV multi-depth reconstruction, 4 depths"
+
+  # ===================================================================
+  # Fluorescence Microscopy (Nature paper validation)
+  # ===================================================================
+  fluorescence_microscopy:
+    signal_prior_class: "tv"
+    entries:
+      - cr: 1.0
+        noise: "shot_limited"
+        solver: "richardson_lucy"
+        recoverability: 0.80
+        expected_psnr_db: 27.0
+        provenance:
+          dataset_id: "fluorescence_simulated_cells_2025"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_fluorescence_v1.0"
+          solver_version: "pwm_core.recon.richardson_lucy@0.1.0"
+          date_generated: "2026-02-27"
+          notes: "Richardson-Lucy deconvolution, dual-PSF Stokes model"
+      - cr: 1.0
+        noise: "read_limited"
+        solver: "wiener_filter"
+        recoverability: 0.75
+        expected_psnr_db: 25.2
+        provenance:
+          dataset_id: "fluorescence_simulated_cells_2025"
+          seed_set: [42, 123, 456]
+          operator_version: "pwm_op_fluorescence_v1.0"
+          solver_version: "pwm_core.recon.wiener@0.1.0"
+          date_generated: "2026-02-27"
+          notes: "Wiener filter with effective PSF"

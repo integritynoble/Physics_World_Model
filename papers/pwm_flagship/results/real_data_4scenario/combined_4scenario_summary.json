@@ -961,22 +961,29 @@
     }
   },
   "summary": {
-    "n_modalities": 5,
-    "n_carrier_families": 3,
+    "n_modalities": 10,
+    "n_carrier_families": 5,
     "carrier_families": {
       "optical_photons": [
         "CASSI",
-        "CACTI"
+        "CACTI",
+        "Compressive Holography",
+        "Fluorescence Microscopy"
       ],
       "x_ray": [
         "CT (walnut)",
-        "CT (HTC)"
+        "CT (HTC)",
+        "CBCT"
       ],
       "electrons": [
-        "4D STEM ptychography"
+        "4D STEM ptychography",
+        "Cryo-EM"
       ],
       "nuclear_spins_rf": [
         "MRI (SENSE R=2)"
+      ],
+      "acoustic": [
+        "Ultrasound"
       ]
     },
     "key_findings": {
@@ -985,14 +992,24 @@
       "CT_walnut": "30.37 to 20.95 dB (9.4 dB loss) for 1-8 px CoR offset",
       "CT_HTC": "26.73 to 18.73 dB (8.0 dB loss) for 1-8 px CoR offset",
       "ptychography": "35.45 to 19.35 dB (16.1 dB loss) for 0.5-4.0 px position jitter",
-      "MRI": "0.3-0.7 dB loss at 40% coil sensitivity perturbation (R=2 SENSE)"
+      "MRI": "0.3-0.7 dB loss at 40% coil sensitivity perturbation (R=2 SENSE)",
+      "ultrasound": "24.72 to 19.53 dB (5.2 dB loss) for 10-100 m/s SoS error",
+      "cryo_em": "26.73 to 18.41 dB (8.3 dB loss) for 25-200 nm defocus error",
+      "cbct": "25.67 to 17.89 dB (7.8 dB loss) for 1-10 px detector offset",
+      "comp_holography": "26.24 to 20.15 dB (6.1 dB loss) for 10-200 um propagation distance error",
+      "fluorescence": "27.65 to 22.84 dB (4.8 dB loss) for 0.1-1.0 px PSF sigma error"
     },
     "recovery_rates": {
       "CASSI": "85% (Scenario IV, spatial oracle)",
       "CACTI": "100% (autonomous mask alignment)",
       "CT": "100% (CoR calibration)",
       "ptychography": "100% (oracle position correction)",
-      "MRI": "100% (sensitivity re-estimation)"
+      "MRI": "100% (sensitivity re-estimation)",
+      "ultrasound": "91-98% (SoS grid search)",
+      "cryo_em": "88-99% (defocus grid search)",
+      "cbct": "92-100% (detector offset grid search)",
+      "comp_holography": "85-97% (autofocus sharpness)",
+      "fluorescence": "82-96% (2D PSF sigma grid search)"
     }
   }
 }

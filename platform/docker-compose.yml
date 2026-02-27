@@ -40,6 +40,7 @@ services:
     volumes:
       - run_images:/app/pwm_platform/static/runs
       - sim_images:/app/pwm_platform/static/simulations
+      - upload_data:/app/pwm_platform/static/uploads
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -64,3 +65,4 @@ volumes:
   pgdata:
   run_images:
   sim_images:
+  upload_data:

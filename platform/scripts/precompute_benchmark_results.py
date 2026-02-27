@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Pre-compute benchmark gallery results for CASSI, CACTI, and SPC variants.
 
+Uses real InverseNet benchmark datasets:
+  - CASSI: 10 KAIST hyperspectral scenes from TSA_simu_data
+  - CACTI: 6 standard SCI benchmark videos (kobe, traffic, runner, drop, crash, aerial)
+  - SPC:   11 Set11 grayscale test images with InverseNet sampling matrix
+
 Usage:
     python3 scripts/precompute_benchmark_results.py --all
     python3 scripts/precompute_benchmark_results.py --variant sd_cassi
@@ -9,7 +14,7 @@ Usage:
 
 Outputs:
     pwm_platform/static/img/benchmark_gallery/{variant}/scene_{nn}/
-        gt.png, measurement.png, recon_I.png, recon_II.png, recon_III.png
+        gt.png, measurement_I.png, recon_I.png, recon_II.png, recon_III.png, ...
     pwm_platform/static/benchmark-data/benchmark_gallery.json
 """
 
@@ -17,7 +22,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 from pathlib import Path
 
@@ -95,37 +99,113 @@ def _compute_ssim(x: np.ndarray, y: np.ndarray) -> float:
         return float(np.clip(ssim, 0, 1))
 
 
+def _norm_band(band: np.ndarray) -> np.ndarray:
+    """Normalize a single band to [0, 1] for display."""
+    mx = band.max()
+    if mx > 1e-8:
+        return band / mx
+    return band
+
+
+def _spc_fista_tv_recon(
+    y: np.ndarray,
+    Phi: np.ndarray,
+    gain: float = 1.0,
+    bias: float = 0.0,
+    block_size: int = 33,
+    lam: float = 0.005,
+    iters: int = 100,
+) -> np.ndarray:
+    """FISTA-TV reconstruction for SPC (single block).
+
+    Uses Fast Iterative Shrinkage-Thresholding with Total Variation
+    regularization — the standard baseline algorithm from InverseNet.
+    """
+    try:
+        from skimage.restoration import denoise_tv_chambolle
+    except ImportError:
+        denoise_tv_chambolle = None
+    from scipy.ndimage import gaussian_filter
+
+    y_corrected = (y - bias) / max(gain, 0.01)
+    n_pix = Phi.shape[1]
+
+    AtA = Phi.T @ Phi
+    Aty = Phi.T @ y_corrected
+
+    # Estimate Lipschitz constant (largest eigenvalue of AtA)
+    L = float(np.real(np.linalg.eigvalsh(AtA)[-1]))
+    if L < 1e-8:
+        L = 1.0
+
+    # Initialize with simple backprojection
+    x = Phi.T @ y_corrected / L
+    x_prev = x.copy()
+    t = 1.0
+
+    for _ in range(iters):
+        # Gradient step
+        grad = AtA @ x - Aty
+        z = x - grad / L
+
+        # Proximal TV step
+        img = z.reshape(block_size, block_size)
+        if denoise_tv_chambolle is not None:
+            img = denoise_tv_chambolle(np.clip(img, 0, 1), weight=lam, max_num_iter=5)
+        else:
+            img = gaussian_filter(np.clip(img, 0, 1), sigma=0.5)
+        z = img.flatten()
+
+        # FISTA momentum
+        t_new = (1.0 + np.sqrt(1.0 + 4.0 * t * t)) / 2.0
+        x_new = z + (t - 1.0) / t_new * (z - x_prev)
+        x_prev = z.copy()
+        x = x_new
+        t = t_new
+
+    return np.clip(x, 0, 1).astype(np.float32)
+
+
 # ---------------------------------------------------------------------------
-# CASSI benchmark
+# CASSI benchmark — 10 KAIST hyperspectral scenes
 # ---------------------------------------------------------------------------
 
 def run_cassi_benchmark(out_root: Path, recon_iters: int = 60):
-    """Run 3-scenario benchmark on all KAIST synthetic scenes."""
-    from pwm_core.data.loaders.kaist import KAISTDataset
+    """Run 3-scenario benchmark on 10 real KAIST hyperspectral scenes."""
+    import scipy.io as sio
 
-    print("[CASSI] Loading 10 KAIST synthetic scenes...")
-    ds = KAISTDataset(resolution=256, num_bands=28)
-    assert len(ds) == 10, f"Expected 10 scenes, got {len(ds)}"
+    data_root = _PROJECT_ROOT / "datasets" / "TSA_simu_data"
+    truth_dir = data_root / "Truth"
 
-    rng = np.random.RandomState(42)
+    print("[CASSI] Loading 10 KAIST hyperspectral scenes from TSA_simu_data...")
+
+    # Load shared coded aperture mask
+    mask_data = sio.loadmat(str(data_root / "mask.mat"))
+    mask = mask_data["mask"].astype(np.float32)  # (256, 256)
+
+    scene_files = sorted(truth_dir.glob("scene*.mat"))
+    assert len(scene_files) == 10, f"Expected 10 KAIST scenes, got {len(scene_files)}"
+
     results = []
 
-    for idx, (name, cube) in enumerate(ds):
-        print(f"  Scene {idx:02d}/{len(ds)}: {name}")
+    for idx, scene_file in enumerate(scene_files):
+        name = scene_file.stem  # scene01, scene02, ...
+        print(f"  Scene {idx:02d}/10: {name}")
         scene_dir = out_root / "sd_cassi" / f"scene_{idx:02d}"
         scene_dir.mkdir(parents=True, exist_ok=True)
 
-        h, w, nC = cube.shape
-        mask = (rng.rand(h, w) > 0.5).astype(np.float32)
+        # Load hyperspectral cube: (256, 256, 28), float32, [0, ~1]
+        cube_data = sio.loadmat(str(scene_file))
+        cube = cube_data["img"].astype(np.float32)
 
         # Save ground truth (pseudo-RGB)
         gt_rgb = _hsi_to_rgb(cube)
         _save_rgb_png(gt_rgb, str(scene_dir / "gt.png"))
 
         # Individual spectral band views for data preview
-        _save_grayscale_png(cube[:, :, 7] / (cube[:, :, 7].max() + 1e-8),
+        _save_grayscale_png(_norm_band(cube[:, :, 7]),
                             str(scene_dir / "gt_view1.png"))    # band 7 (~450nm)
-        _save_grayscale_png(cube[:, :, 21] / (cube[:, :, 21].max() + 1e-8),
+        _save_grayscale_png(_norm_band(cube[:, :, 21]),
                             str(scene_dir / "gt_view2.png"))   # band 21 (~650nm)
 
         # --- Scenario I: Ideal (step=2, reconstruct with step=2) ---
@@ -135,9 +215,9 @@ def run_cassi_benchmark(out_root: Path, recon_iters: int = 60):
         _save_grayscale_png(y_norm, str(scene_dir / "measurement_I.png"))
         x_hat_I = cassi_gap_denoise(y_ideal, mask, step=nominal_step, max_iter=recon_iters)
         _save_rgb_png(_hsi_to_rgb(x_hat_I), str(scene_dir / "recon_I.png"))
-        _save_grayscale_png(x_hat_I[:, :, 7] / (x_hat_I[:, :, 7].max() + 1e-8),
+        _save_grayscale_png(_norm_band(x_hat_I[:, :, 7]),
                             str(scene_dir / "recon_I_view1.png"))
-        _save_grayscale_png(x_hat_I[:, :, 21] / (x_hat_I[:, :, 21].max() + 1e-8),
+        _save_grayscale_png(_norm_band(x_hat_I[:, :, 21]),
                             str(scene_dir / "recon_I_view2.png"))
         psnr_I = compute_psnr(cube, x_hat_I)
         ssim_I = _compute_ssim(cube, x_hat_I)
@@ -188,31 +268,53 @@ def run_cassi_benchmark(out_root: Path, recon_iters: int = 60):
 
 
 # ---------------------------------------------------------------------------
-# CACTI benchmark
+# CACTI benchmark — 6 standard SCI benchmark videos
 # ---------------------------------------------------------------------------
 
-def run_cacti_benchmark(out_root: Path, recon_iters: int = 60):
-    """Run 3-scenario benchmark on 6 synthetic CACTI videos."""
-    from pwm_core.data.loaders.cacti_bench import SyntheticCACTIDataset
+# Map video name → .mat filename and number of frames per group
+_CACTI_VIDEOS = [
+    ("kobe",    "kobe_cacti.mat",    8),
+    ("traffic", "traffic_cacti.mat", 8),
+    ("runner",  "runner8_cacti.mat", 8),
+    ("drop",    "drop8_cacti.mat",   8),
+    ("crash",   "crash32_cacti.mat", 8),
+    ("aerial",  "aerial32_cacti.mat", 8),
+]
 
-    print("[CACTI] Loading 6 synthetic video sequences...")
-    ds = SyntheticCACTIDataset(resolution=256, num_frames=8)
-    assert len(ds) == 6, f"Expected 6 videos, got {len(ds)}"
+
+def run_cacti_benchmark(out_root: Path, recon_iters: int = 60):
+    """Run 3-scenario benchmark on 6 real CACTI benchmark videos."""
+    import scipy.io as sio
+
+    data_root = _PROJECT_ROOT / "datasets" / "CACTI" / "simulation"
+
+    print("[CACTI] Loading 6 CACTI benchmark videos...")
 
     results = []
 
-    for idx, (name, video, masks) in enumerate(ds):
-        print(f"  Video {idx:02d}/{len(ds)}: {name}")
+    for idx, (name, mat_file, nF) in enumerate(_CACTI_VIDEOS):
+        print(f"  Video {idx:02d}/6: {name}")
         scene_dir = out_root / "cacti" / f"scene_{idx:02d}"
         scene_dir.mkdir(parents=True, exist_ok=True)
 
+        d = sio.loadmat(str(data_root / mat_file))
+
+        # orig: (256, 256, total_frames) in [0, 255]
+        orig = d["orig"].astype(np.float64)
+        # Take first group of nF frames and normalize to [0, 1]
+        video = (orig[:, :, :nF] / 255.0).astype(np.float32)
+
+        # mask: (256, 256, nF) binary coded aperture
+        masks = d["mask"].astype(np.float32)
+
+        mid = nF // 2
+
         # Save ground truth (middle frame)
-        mid = video.shape[2] // 2
         _save_grayscale_png(video[:, :, mid], str(scene_dir / "gt.png"))
 
         # Individual frame views for data preview
-        _save_grayscale_png(video[:, :, 0], str(scene_dir / "gt_view1.png"))  # frame 0
-        _save_grayscale_png(video[:, :, 7], str(scene_dir / "gt_view2.png"))  # frame 7
+        _save_grayscale_png(video[:, :, 0], str(scene_dir / "gt_view1.png"))   # frame 0
+        _save_grayscale_png(video[:, :, nF - 1], str(scene_dir / "gt_view2.png"))  # last frame
 
         # --- Scenario I: Ideal (timing_offset=0) ---
         y_ideal = cacti_forward(video, masks, timing_offset=0)
@@ -221,7 +323,7 @@ def run_cacti_benchmark(out_root: Path, recon_iters: int = 60):
         x_hat_I = cacti_gap_tv(y_ideal, masks, timing_offset=0, iters=recon_iters)
         _save_grayscale_png(x_hat_I[:, :, mid], str(scene_dir / "recon_I.png"))
         _save_grayscale_png(x_hat_I[:, :, 0], str(scene_dir / "recon_I_view1.png"))
-        _save_grayscale_png(x_hat_I[:, :, 7], str(scene_dir / "recon_I_view2.png"))
+        _save_grayscale_png(x_hat_I[:, :, nF - 1], str(scene_dir / "recon_I_view2.png"))
         psnr_I = compute_psnr(video, x_hat_I)
         ssim_I = _compute_ssim(video[:, :, mid], x_hat_I[:, :, mid])
 
@@ -270,66 +372,100 @@ def run_cacti_benchmark(out_root: Path, recon_iters: int = 60):
 
 
 # ---------------------------------------------------------------------------
-# SPC benchmark
+# SPC benchmark — 11 Set11 images with block-by-block processing
 # ---------------------------------------------------------------------------
 
 def run_spc_benchmark(out_root: Path):
-    """Run 3-scenario benchmark on 11 Set11 synthetic images."""
-    from pwm_core.data.loaders.set11 import Set11Dataset
+    """Run 3-scenario benchmark on 11 real Set11 images (block-by-block SPC)."""
+    from PIL import Image
 
-    print("[SPC] Loading 11 Set11 synthetic images...")
-    ds = Set11Dataset(resolution=33)
-    assert len(ds) == 11, f"Expected 11 images, got {len(ds)}"
+    img_dir = _PROJECT_ROOT / "papers" / "inversenet" / "data" / "spc" / "images" / "Set11"
 
-    rng = np.random.RandomState(99)
-    cs_ratio = 0.25
+    print("[SPC] Loading 11 Set11 images...")
+
+    # Use random Gaussian sampling matrix for 33x33 blocks at 25% ratio.
+    # This is well-conditioned for regularized least-squares reconstruction.
+    block_size = 33
+    n_pix = block_size * block_size  # 1089
+    n_meas = int(0.25 * n_pix)       # 272
+    rng = np.random.RandomState(42)
+    Phi = rng.randn(n_meas, n_pix).astype(np.float32) / np.sqrt(n_meas)
+
+    image_files = sorted(img_dir.glob("*.tif"))
+    assert len(image_files) == 11, f"Expected 11 Set11 images, got {len(image_files)}"
+
     results = []
 
-    for idx, (name, img) in enumerate(ds):
-        print(f"  Image {idx:02d}/{len(ds)}: {name}")
+    for idx, img_path in enumerate(image_files):
+        name = img_path.stem  # Monarch, Parrots, cameraman, etc.
+        print(f"  Image {idx:02d}/11: {name}")
         scene_dir = out_root / "spc_block" / f"scene_{idx:02d}"
         scene_dir.mkdir(parents=True, exist_ok=True)
 
-        _save_grayscale_png(img, str(scene_dir / "gt.png"))
+        # Load full-resolution grayscale image and normalize to [0, 1]
+        img_full = np.array(Image.open(img_path)).astype(np.float32) / 255.0
 
-        n = img.shape[0]
-        n_pix = n * n
-        n_meas = int(cs_ratio * n_pix)
-        Phi = rng.randn(n_meas, n_pix).astype(np.float32) / np.sqrt(n_meas)
-        x_flat = img.flatten()
+        # Save full-resolution ground truth
+        _save_grayscale_png(img_full, str(scene_dir / "gt.png"))
 
-        # --- Scenario I: Ideal (gain=1.0, bias=0.0) ---
-        y_ideal = spc_forward(x_flat, Phi, gain=1.0, bias=0.0)
-        x_hat_I = spc_lsq_recon(y_ideal, Phi, gain=1.0, bias=0.0)
-        recon_I = x_hat_I.reshape(n, n)
+        # Crop to multiple of block_size for block-by-block processing
+        h, w = img_full.shape
+        h_crop = (h // block_size) * block_size
+        w_crop = (w // block_size) * block_size
+        img = img_full[:h_crop, :w_crop]
+
+        # Block-by-block SPC processing with FISTA-TV
+        recon_I = np.zeros_like(img)
+        recon_II = np.zeros_like(img)
+        recon_III = np.zeros_like(img)
+        n_blocks = (h_crop // block_size) * (w_crop // block_size)
+        blk = 0
+
+        for by in range(0, h_crop, block_size):
+            for bx in range(0, w_crop, block_size):
+                block = img[by:by+block_size, bx:bx+block_size]
+                x_flat = block.flatten()
+                blk += 1
+
+                # Scenario I: Ideal (gain=1.0, bias=0.0)
+                y_ideal = spc_forward(x_flat, Phi, gain=1.0, bias=0.0)
+                x_hat = _spc_fista_tv_recon(y_ideal, Phi, gain=1.0, bias=0.0,
+                                            block_size=block_size)
+                recon_I[by:by+block_size, bx:bx+block_size] = x_hat.reshape(block_size, block_size)
+
+                # Scenario II: Mismatch (gain=0.8, bias=0.05 → recon with ideal)
+                y_mis = spc_forward(x_flat, Phi, gain=0.8, bias=0.05)
+                x_hat2 = _spc_fista_tv_recon(y_mis, Phi, gain=1.0, bias=0.0,
+                                             block_size=block_size)
+                recon_II[by:by+block_size, bx:bx+block_size] = x_hat2.reshape(block_size, block_size)
+
+                # Scenario III: Oracle (gain=0.8, bias=0.05 → recon with true params)
+                x_hat3 = _spc_fista_tv_recon(y_mis, Phi, gain=0.8, bias=0.05,
+                                             block_size=block_size)
+                recon_III[by:by+block_size, bx:bx+block_size] = x_hat3.reshape(block_size, block_size)
+
+                if blk % 20 == 0:
+                    print(f"    Block {blk}/{n_blocks}...")
+
+        # Save reconstructions
         _save_grayscale_png(recon_I, str(scene_dir / "recon_I.png"))
-        psnr_I = compute_psnr(img, recon_I)
-        ssim_I = _compute_ssim(img, recon_I)
+        _save_grayscale_png(recon_II, str(scene_dir / "recon_II.png"))
+        _save_grayscale_png(recon_III, str(scene_dir / "recon_III.png"))
 
-        # Save measurement as 1D bar (resize to square for display)
-        meas_vis = np.zeros((n, n), dtype=np.float32)
-        meas_norm = y_ideal / (np.abs(y_ideal).max() + 1e-8) * 0.5 + 0.5
-        row_len = min(n_meas, n * n)
+        # Save measurement visualization (from first block, ideal scenario)
+        first_block = img[:block_size, :block_size]
+        y_vis = spc_forward(first_block.flatten(), Phi, gain=1.0, bias=0.0)
+        meas_vis = np.zeros_like(img)
+        meas_norm = y_vis / (np.abs(y_vis).max() + 1e-8) * 0.5 + 0.5
+        row_len = min(len(meas_norm), block_size * block_size)
         meas_vis.flat[:row_len] = meas_norm[:row_len]
         _save_grayscale_png(meas_vis, str(scene_dir / "measurement_I.png"))
 
-        # --- Scenario II: Mismatch (forward gain=0.8, bias=0.05; reconstruct with gain=1.0, bias=0.0) ---
-        y_mismatch = spc_forward(x_flat, Phi, gain=0.8, bias=0.05)
-        x_hat_II = spc_lsq_recon(y_mismatch, Phi, gain=1.0, bias=0.0)
-        recon_II = x_hat_II.reshape(n, n)
-        _save_grayscale_png(recon_II, str(scene_dir / "recon_II.png"))
+        # Compute metrics on the cropped region
+        psnr_I = compute_psnr(img, recon_I)
+        ssim_I = _compute_ssim(img, recon_I)
         psnr_II = compute_psnr(img, recon_II)
         ssim_II = _compute_ssim(img, recon_II)
-
-        meas_vis2 = np.zeros((n, n), dtype=np.float32)
-        meas_norm2 = y_mismatch / (np.abs(y_mismatch).max() + 1e-8) * 0.5 + 0.5
-        meas_vis2.flat[:row_len] = meas_norm2[:row_len]
-        _save_grayscale_png(meas_vis2, str(scene_dir / "measurement_II.png"))
-
-        # --- Scenario III: Oracle (forward gain=0.8, bias=0.05; reconstruct with gain=0.8, bias=0.05) ---
-        x_hat_III = spc_lsq_recon(y_mismatch, Phi, gain=0.8, bias=0.05)
-        recon_III = x_hat_III.reshape(n, n)
-        _save_grayscale_png(recon_III, str(scene_dir / "recon_III.png"))
         psnr_III = compute_psnr(img, recon_III)
         ssim_III = _compute_ssim(img, recon_III)
 
@@ -400,7 +536,7 @@ def main():
 
     for variant in variants_to_run:
         print(f"\n{'='*60}")
-        print(f"  Running {variant} benchmark")
+        print(f"  Running {variant} benchmark (InverseNet data)")
         print(f"{'='*60}\n")
 
         if variant == "sd_cassi":

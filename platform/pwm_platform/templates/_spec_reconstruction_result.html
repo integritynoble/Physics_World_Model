@@ -1,0 +1,156 @@
+{# ── Reconstruction Result — real uploaded data ── #}
+
+<div class="flex justify-start">
+    <div class="max-w-[95%] w-full px-4 py-4 rounded-lg bg-white border border-amber-200 shadow-sm space-y-4">
+        {# ── Header ── #}
+        <div class="flex items-center gap-2">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-amber-100 text-amber-800">
+                <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Reconstruction Complete
+            </span>
+            <h4 class="text-sm font-bold text-gray-900">{{ result.display_name | replace("_", " ") | title }}</h4>
+            {% if result.category_module %}
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase
+                {% if result.category_module == 'medical_ct_radon' %}bg-blue-100 text-blue-700
+                {% elif result.category_module == 'medical_mri_kspace' %}bg-purple-100 text-purple-700
+                {% elif result.category_module == 'microscopy_psf' %}bg-green-100 text-green-700
+                {% elif result.category_module == 'electron_ctf' %}bg-yellow-100 text-yellow-700
+                {% elif result.category_module == 'compressive_mask' %}bg-violet-100 text-violet-700
+                {% elif result.category_module == 'remote_sensing_sar' %}bg-teal-100 text-teal-700
+                {% elif result.category_module == 'scanning_probe' %}bg-orange-100 text-orange-700
+                {% else %}bg-gray-100 text-gray-700{% endif %}">
+                {{ result.category_module | replace("_", " ") | title }}
+            </span>
+            {% endif %}
+            <span class="text-xs text-gray-400 ml-auto font-mono">{{ result.sim_id }}</span>
+        </div>
+
+        {# ── Image grid (2 or 3 panels) ── #}
+        {% if result.ground_truth_path %}
+        <div class="grid grid-cols-3 gap-2">
+            <div class="text-center">
+                <img src="{{ result.measurement_path }}" alt="Measurement"
+                     class="w-full rounded border border-gray-200" loading="lazy">
+                <span class="text-xs text-gray-500 mt-1 block">Measurement (uploaded)</span>
+            </div>
+            <div class="text-center">
+                <img src="{{ result.reconstructed_path }}" alt="Reconstructed"
+                     class="w-full rounded border border-gray-200" loading="lazy">
+                <span class="text-xs text-gray-500 mt-1 block">Reconstructed ({{ result.solver_name | replace("_", " ") | title }})</span>
+            </div>
+            <div class="text-center">
+                <img src="{{ result.ground_truth_path }}" alt="Ground Truth"
+                     class="w-full rounded border border-gray-200" loading="lazy">
+                <span class="text-xs text-gray-500 mt-1 block">Ground Truth</span>
+            </div>
+        </div>
+        {% else %}
+        <div class="grid grid-cols-2 gap-2">
+            <div class="text-center">
+                <img src="{{ result.measurement_path }}" alt="Measurement"
+                     class="w-full rounded border border-gray-200" loading="lazy">
+                <span class="text-xs text-gray-500 mt-1 block">Measurement (uploaded)</span>
+            </div>
+            <div class="text-center">
+                <img src="{{ result.reconstructed_path }}" alt="Reconstructed"
+                     class="w-full rounded border border-gray-200" loading="lazy">
+                <span class="text-xs text-gray-500 mt-1 block">Reconstructed ({{ result.solver_name | replace("_", " ") | title }})</span>
+            </div>
+        </div>
+        {% endif %}
+
+        {# ── Metrics (only if GT was provided) ── #}
+        {% if result.psnr is not none %}
+        <div class="grid grid-cols-2 gap-2">
+            <div class="px-3 py-2 bg-blue-50 rounded border border-blue-100 text-center">
+                <span class="block text-xs font-semibold text-blue-600 uppercase">PSNR</span>
+                <span class="block text-lg font-bold text-blue-800">{{ "%.2f"|format(result.psnr) }} <span class="text-xs font-normal">dB</span></span>
+            </div>
+            <div class="px-3 py-2 bg-blue-50 rounded border border-blue-100 text-center">
+                <span class="block text-xs font-semibold text-blue-600 uppercase">SSIM</span>
+                <span class="block text-lg font-bold text-blue-800">{{ "%.4f"|format(result.ssim) }}</span>
+            </div>
+        </div>
+        {% endif %}
+
+        {# ── Method Selection card ── #}
+        {% if result.best_method_rationale %}
+        <div class="px-3 py-2 bg-amber-50 rounded border border-amber-200">
+            <span class="block text-xs font-semibold text-amber-700 uppercase mb-0.5">Method Selection</span>
+            <p class="text-xs text-amber-900">{{ result.best_method_rationale }}</p>
+        </div>
+        {% endif %}
+
+        {# ── Methods Considered table ── #}
+        {% if result.methods_considered %}
+        <div class="space-y-2">
+            <h5 class="text-xs font-semibold text-gray-700 uppercase flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7"/></svg>
+                Methods Considered
+            </h5>
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs border-collapse">
+                    <thead>
+                        <tr class="border-b border-gray-200">
+                            <th class="text-left py-1.5 px-2 font-semibold text-gray-600">Method</th>
+                            <th class="text-left py-1.5 px-2 font-semibold text-gray-600">Type</th>
+                            <th class="text-center py-1.5 px-2 font-semibold text-gray-600">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for m in result.methods_considered %}
+                        <tr class="border-b border-gray-50 {% if m.name == result.solver_name %}bg-amber-50/50{% else %}hover:bg-gray-50{% endif %}">
+                            <td class="py-1.5 px-2 font-medium text-gray-800 whitespace-nowrap">
+                                {{ m.display_name }}
+                                {% if m.name == result.solver_name %}
+                                <span class="ml-1 text-[9px] text-amber-600 font-semibold">SELECTED</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-1.5 px-2 text-gray-500 capitalize">{{ m.method_type }}</td>
+                            <td class="text-center py-1.5 px-2">
+                                {% if m.name == result.solver_name %}
+                                <span class="inline-block w-2 h-2 rounded-full bg-amber-500"></span>
+                                {% else %}
+                                <span class="inline-block w-2 h-2 rounded-full bg-gray-300"></span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        {# ── Upload metadata summary ── #}
+        <div class="grid grid-cols-3 gap-2 text-xs">
+            <div class="px-3 py-2 bg-gray-50 rounded border border-gray-200">
+                <span class="font-semibold text-gray-500 uppercase">Data Shape</span>
+                <p class="text-gray-700 mt-0.5 font-mono">{{ result.data_shape }}</p>
+            </div>
+            <div class="px-3 py-2 bg-gray-50 rounded border border-gray-200">
+                <span class="font-semibold text-gray-500 uppercase">Solver</span>
+                <p class="text-gray-700 mt-0.5">{{ result.solver_name | replace("_", " ") | title }}</p>
+            </div>
+            <div class="px-3 py-2 bg-gray-50 rounded border border-gray-200">
+                <span class="font-semibold text-gray-500 uppercase">Time</span>
+                <p class="text-gray-700 mt-0.5">{{ result.reconstruction_time_s }}s</p>
+            </div>
+        </div>
+
+        {# ── Source attribution ── #}
+        <div class="text-[10px] text-gray-400 border-t border-gray-100 pt-2">
+            Reconstruction from uploaded data using <span class="font-medium">PWM</span>
+            {{ result.category_module | replace("_", " ") }} pipeline &mdash;
+            {{ result.method_type }} method ({{ result.solver_name | replace("_", " ") }})
+        </div>
+    </div>
+</div>
+
+{# Auto-scroll chat log #}
+<script>
+    (function() {
+        var log = document.getElementById('chat-log');
+        if (log) log.scrollTop = log.scrollHeight;
+    })();
+</script>

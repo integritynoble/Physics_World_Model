@@ -8424,3 +8424,115 @@ modalities:
         shape: '[64, 64]'
       required_params: []
       optional: []
+  compressive_holography:
+    display_name: Compressive Digital Holography
+    category: holography
+    keywords:
+    - holography
+    - compressive
+    - multi-depth
+    - Fresnel propagation
+    description: 'Compressive holography encodes a multi-depth 3D object into a single 2D hologram
+      via Fresnel propagation and interference with an off-axis reference wave. The forward model
+      sums coherent field contributions from K depth planes: y = sum_k Re{R* P(z_k) x_k}.
+
+      '
+    signal_dims:
+      x:
+      - 4
+      - 64
+      - 64
+      y:
+      - 64
+      - 64
+    forward_model_type: linear_operator
+    forward_model_equation: y = sum_k Re{R* P(z_k) x_k}
+    default_solver: fista_tv
+    default_template_id: compressive_holography_graph_v2
+    wavelength_range_nm:
+    - 400
+    - 700
+    elements:
+    - name: Coherent Laser Source
+      element_type: source
+      transfer_kind: identity
+      throughput: 1.0
+      noise_kinds: []
+      parameters:
+        type: laser
+        wavelength_nm: 532
+        power_mw: 10
+    - name: CCD/CMOS Detector
+      element_type: detector
+      transfer_kind: integration
+      throughput: 0.75
+      noise_kinds:
+      - shot_poisson
+      - read_gaussian
+      parameters:
+        pixel_size_um: 5.0
+        quantum_efficiency: 0.75
+        bit_depth: 16
+    upload_template:
+      required:
+      - name: hologram
+        description: 2D hologram measurement
+        shape: '[ny, nx]'
+      required_params:
+      - name: wavelength_nm
+        description: Illumination wavelength in nm
+      optional: []
+  fluorescence_microscopy:
+    display_name: Fluorescence Microscopy (Dual-PSF)
+    category: microscopy
+    keywords:
+    - fluorescence
+    - microscopy
+    - Stokes shift
+    - dual PSF
+    - deconvolution
+    description: 'Fluorescence microscopy with dual-PSF model for Stokes shift. Forward:
+      y = h_em ** (eta * h_ex ** x) + b. Both PSFs are symmetric Gaussians.
+
+      '
+    signal_dims:
+      x:
+      - 64
+      - 64
+      y:
+      - 64
+      - 64
+    forward_model_type: linear_operator
+    forward_model_equation: y = h_em ** (eta * h_ex ** x) + b
+    default_solver: richardson_lucy
+    default_template_id: fluorescence_microscopy_graph_v2
+    wavelength_range_nm:
+    - 400
+    - 700
+    elements:
+    - name: Excitation Light Source
+      element_type: source
+      transfer_kind: identity
+      throughput: 1.0
+      noise_kinds: []
+      parameters:
+        type: LED
+        wavelength_nm: 488
+    - name: sCMOS Detector
+      element_type: detector
+      transfer_kind: integration
+      throughput: 0.82
+      noise_kinds:
+      - shot_poisson
+      - read_gaussian
+      parameters:
+        pixel_size_um: 6.5
+        quantum_efficiency: 0.82
+        bit_depth: 16
+    upload_template:
+      required:
+      - name: fluorescence_image
+        description: Fluorescence microscopy image
+        shape: '[ny, nx]'
+      required_params: []
+      optional: []

@@ -2136,3 +2136,107 @@ modalities:
       detector_resolution: 0.30
       angular_acceptance: 0.30
     correction_method: "grid_search"
+
+  # ==========================================================================
+  # Cryo-EM (Nature paper validation)
+  # ==========================================================================
+
+  cryo_em:
+    parameters:
+      defocus_nm:
+        range: [-2000.0, 2000.0]
+        typical_error: 100.0
+        unit: "nm"
+        param_type: "offset"
+        description: "CTF defocus error from stage drift or specimen charging"
+      Cs_mm:
+        range: [0.5, 2.5]
+        typical_error: 0.3
+        unit: "mm"
+        param_type: "scale"
+        description: "Spherical aberration coefficient uncertainty"
+      B_factor:
+        range: [0.0, 200.0]
+        typical_error: 30.0
+        unit: "A^2"
+        param_type: "blur"
+        description: "B-factor from radiation damage and beam-induced motion"
+      ice_thickness_nm:
+        range: [20.0, 100.0]
+        typical_error: 15.0
+        unit: "nm"
+        param_type: "scale"
+        description: "Vitreous ice thickness variation across grid"
+    severity_weights:
+      defocus_nm: 0.45
+      B_factor: 0.25
+      Cs_mm: 0.15
+      ice_thickness_nm: 0.15
+    correction_method: "grid_search"
+
+  # ==========================================================================
+  # Compressive Holography (Nature paper validation)
+  # ==========================================================================
+
+  compressive_holography:
+    parameters:
+      propagation_distance_error:
+        range: [-100.0, 100.0]
+        typical_error: 20.0
+        unit: "um"
+        param_type: "offset"
+        description: "Propagation distance error from sample positioning"
+      carrier_freq_error:
+        range: [-0.05, 0.05]
+        typical_error: 0.01
+        unit: "normalized"
+        param_type: "offset"
+        description: "Off-axis carrier frequency estimation error"
+      wavelength_error:
+        range: [-5.0, 5.0]
+        typical_error: 1.0
+        unit: "nm"
+        param_type: "offset"
+        description: "Laser wavelength calibration error"
+    severity_weights:
+      propagation_distance_error: 0.50
+      carrier_freq_error: 0.30
+      wavelength_error: 0.20
+    correction_method: "autofocus_sharpness"
+
+  # ==========================================================================
+  # Fluorescence Microscopy (Nature paper validation)
+  # ==========================================================================
+
+  fluorescence_microscopy:
+    parameters:
+      psf_sigma_ex:
+        range: [0.5, 3.0]
+        typical_error: 0.3
+        unit: "pixels"
+        param_type: "blur"
+        description: "Excitation PSF width error from NA or wavelength mismatch"
+      psf_sigma_em:
+        range: [0.8, 4.0]
+        typical_error: 0.4
+        unit: "pixels"
+        param_type: "blur"
+        description: "Emission PSF width error from Stokes shift assumption"
+      quantum_yield:
+        range: [0.1, 1.0]
+        typical_error: 0.15
+        unit: "unitless"
+        param_type: "scale"
+        description: "Fluorophore quantum yield uncertainty"
+      background:
+        range: [0.0, 0.15]
+        typical_error: 0.03
+        unit: "normalized"
+        param_type: "offset"
+        description: "Autofluorescence and stray light background"
+    severity_weights:
+      psf_sigma_ex: 0.30
+      psf_sigma_em: 0.30
+      quantum_yield: 0.20
+      background: 0.20
+    correction_method: "grid_search"

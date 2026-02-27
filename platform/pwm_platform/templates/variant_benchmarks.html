@@ -370,15 +370,44 @@
         </div>
         {% endif %}
 
+        <!-- Per-tier spec ranges -->
+        {% if tier_data.spec_ranges %}
+        <details class="mb-2">
+            <summary class="text-xs font-semibold {{ text_light }} cursor-pointer hover:{{ text_c }}">Spec Ranges ({{ tier_data.spec_ranges | length }} parameters)</summary>
+            <div class="mt-1 overflow-x-auto">
+                <table class="min-w-full text-xs">
+                    <thead>
+                        <tr class="bg-white/60">
+                            <th class="px-2 py-1 text-left font-medium {{ text_light }}">Parameter</th>
+                            <th class="px-2 py-1 text-right font-medium {{ text_light }}">Min</th>
+                            <th class="px-2 py-1 text-right font-medium {{ text_light }}">Max</th>
+                            <th class="px-2 py-1 text-left font-medium text-gray-500">Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for spec in tier_data.spec_ranges %}
+                        <tr class="hover:bg-white/50">
+                            <td class="px-2 py-1 font-mono text-gray-700">{{ spec.name }}</td>
+                            <td class="px-2 py-1 text-right font-mono {{ text_light }}">{{ spec.min }}</td>
+                            <td class="px-2 py-1 text-right font-mono {{ text_light }}">{{ spec.max }}</td>
+                            <td class="px-2 py-1 text-gray-500">{{ spec.unit }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </details>
+        {% endif %}
+
         <!-- Actions -->
         <div class="flex flex-wrap items-center gap-2">
             {% if tier_key in ('public', 'dev') and tier_data.dataset and tier_data.dataset.download_url %}
-            <a href="{{ tier_data.dataset.download_url }}"
-               class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white
+            <button onclick="startDownload(this, '{{ tier_data.dataset.download_url }}')"
+               class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white cursor-pointer
                    {% if tier_key == 'public' %}bg-green-600 hover:bg-green-700{% else %}bg-amber-600 hover:bg-amber-700{% endif %}">
-                <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                Download
-            </a>
+                <svg class="w-3.5 h-3.5 mr-1.5 dl-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                <span class="dl-label">Download</span>
+            </button>
             {% endif %}
             {% if tier_key == 'dev' and bm.links.get('submit_reconstruction') %}
             <a href="{{ bm.links.submit_reconstruction }}" target="_blank" rel="noopener noreferrer"
@@ -497,35 +526,6 @@
             <span>Consistency: <strong>{{ (bm.scoring.consistency_weight * 100) | int }}%</strong></span>
         </div>
     </div>
-
-    <!-- 6. Spec Ranges (bottom) -->
-    {% if bm.spec_ranges %}
-    <div>
-        <h4 class="text-sm font-semibold text-amber-800 mb-2">Spec Ranges (Partial Information)</h4>
-        <div class="overflow-x-auto">
-            <table class="min-w-full text-sm">
-                <thead>
-                    <tr class="bg-amber-50">
-                        <th class="px-3 py-2 text-left font-medium text-amber-700">Parameter</th>
-                        <th class="px-3 py-2 text-right font-medium text-amber-700">Min</th>
-                        <th class="px-3 py-2 text-right font-medium text-amber-700">Max</th>
-                        <th class="px-3 py-2 text-left font-medium text-amber-700">Unit</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-amber-100">
-                    {% for spec in bm.spec_ranges %}
-                    <tr class="hover:bg-amber-50/50">
-                        <td class="px-3 py-2 font-mono text-gray-700">{{ spec.name }}</td>
-                        <td class="px-3 py-2 text-right font-mono text-amber-600">{{ spec.min }}</td>
-                        <td class="px-3 py-2 text-right font-mono text-amber-600">{{ spec.max }}</td>
-                        <td class="px-3 py-2 text-gray-500">{{ spec.unit }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    {% endif %}
 
     <!-- Credits info -->
     {% if bm.credits %}
@@ -1158,4 +1158,34 @@ function selectGalleryScene(idx) {
 }
 </script>
 {% endif %}
+
+{# ── Download button JS ── #}
+<script>
+function startDownload(btn, url) {
+    // Create a hidden link and click it to trigger the download
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = '';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // Visual feedback on button
+    var icon = btn.querySelector('.dl-icon');
+    var label = btn.querySelector('.dl-label');
+    if (icon) icon.classList.add('animate-bounce');
+    if (label) label.textContent = 'Downloading\u2026';
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+
+    // Reset after 4 seconds
+    setTimeout(function() {
+        if (icon) icon.classList.remove('animate-bounce');
+        if (label) label.textContent = 'Download';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+    }, 4000);
+}
+</script>
 {% endblock %}

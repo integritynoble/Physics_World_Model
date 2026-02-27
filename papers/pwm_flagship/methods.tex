@@ -660,6 +660,66 @@ coil coupling changes).  The default solver is CG-SENSE with $\ell_1$-wavelet
 regularization at $4\times$ acceleration.  Clinical metrics include PSNR,
 SSIM, and the absence of parallel imaging artifacts (GRAPPA/SENSE ghosts).
 
+\paragraph{Ultrasound configuration.}
+Pulse-echo B-mode imaging is simulated with a 64-element linear array,
+5\,MHz center frequency, element pitch $0.3$\,mm, and speed of sound (SoS)
+$c = 1540$\,m/s.  The tissue phantom is a $64 \times 64$ reflectivity map
+with Rayleigh-distributed speckle, point scatterers, and anechoic cyst
+regions.  Frequency-dependent attenuation follows
+$\alpha(f) = 0.5\,\text{dB\,cm}^{-1}\text{MHz}^{-1}$.  Mismatch is
+parameterized as SoS error $\Delta c \in \{10, 25, 50, 100\}$\,m/s,
+perturbing time-of-flight calculations.  The default solver is delay-and-sum
+(DAS) beamforming (operator adjoint).  Calibration uses grid search over
+21 SoS candidates in $[1400, 1600]$\,m/s, selecting the value that
+minimizes the RF channel residual $\|y - A_{\hat{c}} \hat{x}\|^2 / \|y\|^2$.
+
+\paragraph{Cryo-EM configuration.}
+Cryo-EM imaging is modeled as contrast transfer function (CTF) filtering
+of a 2D projected potential ($64 \times 64$).  The CTF is parameterized by
+defocus $\Delta f = -500$\,nm, spherical aberration $C_s = 2.0$\,mm,
+electron wavelength $\lambda = 0.00197$\,nm (300\,kV), with a B-factor
+envelope ($B = 50$\,\AA$^2$) and ice-thickness attenuation (mean free
+path $350$\,nm, thickness $80$\,nm).  Mismatch is parameterized as defocus
+error $\Delta(\Delta f) \in \{25, 50, 100, 200\}$\,nm.  The default solver
+is Wiener filtering with SNR\,$= 100$.  Calibration uses grid search over
+21 defocus values in $[-800, -200]$\,nm, selecting the value that minimizes
+the Fourier-domain measurement residual.
+
+\paragraph{Cone-beam CT configuration.}
+Fan-beam CBCT is simulated with source-to-origin distance $D_{\mathrm{so}} = 100$\,cm,
+source-to-detector distance $D_{\mathrm{sd}} = 150$\,cm, 180 projection
+angles over $[0, \pi)$, and 91 detector elements.  The object is a
+$64 \times 64$ Shepp--Logan phantom.  Mismatch is parameterized as detector
+offset $\Delta s \in \{1, 2, 5, 10\}$\,pixels.  The default solver is
+FDK reconstruction (Ram-Lak ramp filtering followed by distance-weighted
+backprojection).  Calibration uses grid search over 25 offset candidates in
+$[-12, 12]$\,px, selecting the value that maximizes reconstruction PSNR.
+
+\paragraph{Compressive holography configuration.}
+Multi-depth inline holography encodes a $(4 \times 64 \times 64)$ 3D
+object into a single $(64 \times 64)$ hologram via Fresnel propagation at
+four depth planes ($z \in \{500, 1000, 1500, 2000\}$\,\textmu m) with
+wavelength $\lambda = 632.8$\,nm and pixel pitch $6.45$\,\textmu m.
+Mismatch is parameterized as propagation distance error
+$\Delta z \in \{10, 50, 100, 200\}$\,\textmu m applied uniformly to all
+depth planes.  The default solver is FISTA-TV (200 iterations,
+$\lambda_{\mathrm{TV}} = 0.01$).  Calibration uses a sharpness-based
+autofocus: Brenner gradient is maximized over a coarse grid of 51
+candidates in $[-250, 250]$\,\textmu m, followed by local refinement.
+
+\paragraph{Fluorescence microscopy configuration.}
+Widefield fluorescence imaging uses a dual-PSF Stokes-shift model with
+Gaussian excitation PSF ($\sigma_{\mathrm{ex}} = 1.5$\,px) and emission
+PSF ($\sigma_{\mathrm{em}} = 2.0$\,px), quantum yield $\eta = 0.7$, and
+background level $b = 0.02$.  The specimen is a $64 \times 64$ image with
+fluorescent puncta, diffuse organelles, and filamentary structures.
+Mismatch is parameterized as PSF sigma error
+$\Delta\sigma \in \{0.1, 0.3, 0.5, 1.0\}$\,px applied to both excitation
+and emission PSFs.  The default solver is Richardson--Lucy (80 iterations).
+Calibration uses a $9 \times 9$ grid search over
+$(\sigma_{\mathrm{ex}}, \sigma_{\mathrm{em}})$ centered at the nominal
+values, selecting the pair that minimizes the measurement residual.
+
 
 %% =========================================================================
 \subsection*{Statistical Analysis}

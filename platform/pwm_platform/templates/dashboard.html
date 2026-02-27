@@ -22,45 +22,82 @@
         {% endif %}
     </div>
 
-    <!-- Introduction -->
-    <div class="bg-white shadow rounded-lg px-6 py-5 space-y-3">
+    <!-- Introduction — Two Usage Modes -->
+    <div class="bg-white shadow rounded-lg px-6 py-5 space-y-4">
         <h2 class="text-lg font-semibold text-gray-900">Spec Builder</h2>
         <p class="text-sm text-gray-600 leading-relaxed">
-            Design any imaging system using natural language. Describe a modality &mdash; from
+            Design any imaging system using natural language. Supports all 168 modalities &mdash; from
             <strong>CASSI</strong> and <strong>MRI</strong> to <strong>NeRF</strong> and
-            <strong>electron microscopy</strong> &mdash; and the AI will generate a complete physics
-            specification: forward-model DAG, noise model, mismatch parameters, and measurement matrix.
+            <strong>electron microscopy</strong>. Two usage modes:
         </p>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div class="flex items-start gap-2 px-3 py-2 bg-indigo-50 rounded border border-indigo-100">
-                <span class="text-indigo-600 font-bold text-base leading-none mt-0.5">1</span>
-                <div>
-                    <span class="font-semibold text-indigo-800">Describe</span>
-                    <p class="text-indigo-600 mt-0.5">Type a system description, e.g. &ldquo;Design a CT scanner&rdquo; or &ldquo;Design a CASSI system for hyperspectral imaging&rdquo;</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {# ── Mode 1: Simulation ── #}
+            <div class="rounded-lg border-2 border-indigo-200 bg-indigo-50/30 px-4 py-3 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-indigo-100 text-indigo-800">Mode 1</span>
+                    <h3 class="text-sm font-bold text-indigo-900">Prompt &rarr; Spec &rarr; Simulate</h3>
+                </div>
+                <p class="text-xs text-indigo-700">Design a system from scratch using natural language, then run synthetic benchmark simulations.</p>
+                <div class="space-y-1">
+                    <div class="flex items-start gap-2 text-xs">
+                        <span class="text-indigo-500 font-bold mt-0.5">1</span>
+                        <span class="text-indigo-800"><strong>Describe:</strong> &ldquo;Design a CT scanner with 360 projections&rdquo;</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs">
+                        <span class="text-indigo-500 font-bold mt-0.5">2</span>
+                        <span class="text-indigo-800"><strong>Refine:</strong> Adjust noise, mismatch, forward-model primitives</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs">
+                        <span class="text-green-600 font-bold mt-0.5">3</span>
+                        <span class="text-green-800"><strong>Simulate:</strong> Click <span class="px-1.5 py-0.5 bg-green-600 text-white rounded text-[10px] font-semibold">Run Simulation</span> for benchmark results</span>
+                    </div>
                 </div>
             </div>
-            <div class="flex items-start gap-2 px-3 py-2 bg-indigo-50 rounded border border-indigo-100">
-                <span class="text-indigo-600 font-bold text-base leading-none mt-0.5">2</span>
-                <div>
-                    <span class="font-semibold text-indigo-800">Refine</span>
-                    <p class="text-indigo-600 mt-0.5">Review the generated spec and ask follow-ups to adjust noise, mismatch, or forward-model primitives</p>
+
+            {# ── Mode 2: Dataset + Reconstruct ── #}
+            <div class="rounded-lg border-2 border-amber-200 bg-amber-50/30 px-4 py-3 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800">Mode 2</span>
+                    <h3 class="text-sm font-bold text-amber-900">Dataset &rarr; Spec &rarr; Reconstruct</h3>
                 </div>
-            </div>
-            <div class="flex items-start gap-2 px-3 py-2 bg-green-50 rounded border border-green-100">
-                <span class="text-green-600 font-bold text-base leading-none mt-0.5">3</span>
-                <div>
-                    <span class="font-semibold text-green-800">Simulate</span>
-                    <p class="text-green-600 mt-0.5">Click <strong>Run Simulation</strong> to see InverseNet baseline results across multiple methods and mismatch scenarios</p>
+                <p class="text-xs text-amber-700">Upload your own measurement data, build a matched spec, then reconstruct using PWM's best methods.</p>
+                <div class="space-y-1">
+                    <div class="flex items-start gap-2 text-xs">
+                        <span class="text-amber-500 font-bold mt-0.5">1</span>
+                        <span class="text-amber-800"><strong>Upload:</strong> Click <span class="px-1.5 py-0.5 bg-amber-600 text-white rounded text-[10px] font-semibold">Upload Dataset</span> (.npy, .mat, .h5, .npz)</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs">
+                        <span class="text-amber-500 font-bold mt-0.5">2</span>
+                        <span class="text-amber-800"><strong>Describe:</strong> &ldquo;This is MRI k-space data with 4x undersampling&rdquo;</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs">
+                        <span class="text-amber-500 font-bold mt-0.5">3</span>
+                        <span class="text-amber-800"><strong>Refine:</strong> Correct mismatch parameters to match your system</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs">
+                        <span class="text-amber-600 font-bold mt-0.5">4</span>
+                        <span class="text-amber-900"><strong>Reconstruct:</strong> Click <span class="px-1.5 py-0.5 bg-amber-600 text-white rounded text-[10px] font-semibold">Reconstruct from Dataset</span></span>
+                    </div>
                 </div>
             </div>
         </div>
+
         <p class="text-xs text-gray-400">
-            All 168 imaging modalities supported &mdash; each with modality-specific physics simulations (CT sinograms, MRI k-space, microscopy PSF, electron CTF, SAR phase history, and more).
+            All 168 imaging modalities supported &mdash; each with modality-specific physics simulations.
+            Download example datasets below to try Mode 2.
         </p>
     </div>
 
-    <!-- Spec Builder Chat -->
-    {% include "_spec_chat_box.html" %}
+    <!-- Spec Builder Chat + Sidebar -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="lg:col-span-2">
+            {% include "_spec_chat_box.html" %}
+        </div>
+        <div class="lg:col-span-1">
+            {% include "_spec_chat_sidebar.html" %}
+        </div>
+    </div>
 
     <!-- Recent Runs Table -->
     <div class="bg-white shadow rounded-lg">

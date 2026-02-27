@@ -254,6 +254,11 @@ class SpecChatSession(Base):
     created_at = Column(DateTime(timezone=True), default=_utcnow)
     updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 
+    # Dataset mode — uploaded measurement/matrix/ground-truth metadata
+    dataset_meta = Column(JSONB, nullable=True)
+    matrix_meta = Column(JSONB, nullable=True)
+    ground_truth_meta = Column(JSONB, nullable=True)
+
     # Relationships
     user = relationship("User")
 

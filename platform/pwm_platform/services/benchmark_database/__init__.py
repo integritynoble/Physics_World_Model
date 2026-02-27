@@ -20,17 +20,35 @@ from ._challenge_data import CHALLENGE_CONFIG, generate_challenge_config
 from ._factory import build_variant
 from ._flowcharts import FLOWCHARTS
 from ._leaderboard_data import LEADERBOARD_DATA
+from ._leaderboard_generator import generate_full_leaderboard
 from ._modality_catalog import MODALITY_CATALOG
 from ._primitives import SPEC_PRIMITIVES
 from ._variant_registry import VARIANT_REGISTRY
+
+# ── Hand-crafted variants that should NOT be auto-generated ───────────────────
+
+_HANDCRAFTED_VARIANTS = frozenset(LEADERBOARD_DATA.keys())
+
+# ── Helper: get or generate leaderboard data for a variant ────────────────────
+
+
+def _resolve_leaderboard(key: str, category: str) -> dict:
+    """Return hand-crafted leaderboard data if available, otherwise generate it."""
+    if key in LEADERBOARD_DATA:
+        return LEADERBOARD_DATA[key]
+    return generate_full_leaderboard(key, category)
+
 
 # ── Pre-populate CHALLENGE_CONFIG for variants without hand-crafted configs ───
 
 for _key, _entry in VARIANT_REGISTRY.items():
     if _key not in CHALLENGE_CONFIG:
+        _lb = _resolve_leaderboard(_key, _entry["category"])
+        _baselines = _lb.get("_baselines")
         _auto_cfg = generate_challenge_config(
             _key, _entry["mismatch_params"], _entry["category"],
             _entry.get("dataset_config"),
+            baselines=_baselines,
         )
         if _auto_cfg is not None:
             CHALLENGE_CONFIG[_key] = _auto_cfg
@@ -41,8 +59,11 @@ for _mod_id, _mod_entry in MODALITY_CATALOG.items():
     if (_mod_id not in _covered_parents_pre
             and _mod_id not in VARIANT_REGISTRY
             and _mod_id not in CHALLENGE_CONFIG):
+        _lb = _resolve_leaderboard(_mod_id, _mod_entry["category"])
+        _baselines = _lb.get("_baselines")
         _auto_cfg = generate_challenge_config(
             _mod_id, _mod_entry["mismatch_params"], _mod_entry["category"],
+            baselines=_baselines,
         )
         if _auto_cfg is not None:
             CHALLENGE_CONFIG[_mod_id] = _auto_cfg
@@ -51,7 +72,8 @@ for _mod_id, _mod_entry in MODALITY_CATALOG.items():
 
 VARIANT_DATABASE: dict[str, dict] = {}
 for _key, _entry in VARIANT_REGISTRY.items():
-    VARIANT_DATABASE[_key] = build_variant(_key, _entry, LEADERBOARD_DATA.get(_key))
+    _lb = _resolve_leaderboard(_key, _entry["category"])
+    VARIANT_DATABASE[_key] = build_variant(_key, _entry, _lb)
 
 # ── Auto-expand with catalog entries for modalities not yet covered ───────────
 
@@ -67,7 +89,8 @@ for _mod_id, _mod_entry in MODALITY_CATALOG.items():
             "spec_dag": _mod_entry["spec_dag"],
             "mismatch_params": _mod_entry["mismatch_params"],
         }
-        VARIANT_DATABASE[_mod_id] = build_variant(_mod_id, _auto_entry, None)
+        _lb = _resolve_leaderboard(_mod_id, _mod_entry["category"])
+        VARIANT_DATABASE[_mod_id] = build_variant(_mod_id, _auto_entry, _lb)
 
 # ── Auto-derive modality → variants mapping ──────────────────────────────────
 

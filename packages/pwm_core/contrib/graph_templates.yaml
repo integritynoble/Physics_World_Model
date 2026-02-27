@@ -5337,3 +5337,179 @@ templates:
       - 64
     nodes: *id003
     edges: *id004
+  cryo_em_graph_v2:
+    description: 'Cryo-EM: ElectronSource→ThinObjectPhase→CTFTransfer→BFactorEnvelope→ElectronDetector→GaussianNoise'
+    metadata:
+      modality: cryo_em
+      canonical_chain: true
+      x_shape:
+      - 64
+      - 64
+      y_shape:
+      - 64
+      - 64
+    nodes:
+    - node_id: source
+      primitive_id: electron_beam_source
+      role: source
+      params:
+        voltage_kv: 300
+    - node_id: thin_object
+      primitive_id: thin_object_phase
+      role: transport
+      params:
+        thickness_nm: 50.0
+    - node_id: ctf
+      primitive_id: ctf_transfer
+      role: transport
+      params:
+        defocus_nm: -500.0
+        Cs_mm: 2.0
+        wavelength_pm: 2.51
+      learnable:
+      - defocus_nm
+    - node_id: b_factor
+      primitive_id: b_factor_envelope
+      role: transport
+      params:
+        B_factor: 50.0
+      learnable:
+      - B_factor
+    - node_id: sensor
+      primitive_id: electron_detector_sensor
+      role: sensor
+      params:
+        dqe: 0.85
+    - node_id: noise
+      primitive_id: gaussian_sensor_noise
+      role: noise
+      params:
+        sigma: 0.02
+        seed: 0
+    edges:
+    - source: source
+      target: thin_object
+    - source: thin_object
+      target: ctf
+    - source: ctf
+      target: b_factor
+    - source: b_factor
+      target: sensor
+    - source: sensor
+      target: noise
+  compressive_holography_graph_v2:
+    description: 'Compressive Holography: PhotonSource→FresnelProp→Interference→PhotonSensor→PoissonGaussianNoise'
+    metadata:
+      modality: compressive_holography
+      canonical_chain: true
+      x_shape:
+      - 4
+      - 64
+      - 64
+      y_shape:
+      - 64
+      - 64
+    nodes:
+    - node_id: source
+      primitive_id: photon_source
+      role: source
+      params:
+        strength: 1.0
+    - node_id: propagate
+      primitive_id: fresnel_prop
+      role: transport
+      params:
+        wavelength_um: 0.000532
+        pixel_size_um: 5.0
+        z_um: 100.0
+      learnable:
+      - z_um
+    - node_id: interference
+      primitive_id: interference
+      role: transport
+      params:
+        carrier_freq: 0.15
+    - node_id: sensor
+      primitive_id: photon_sensor
+      role: sensor
+      params:
+        quantum_efficiency: 0.85
+        gain: 1.0
+    - node_id: noise
+      primitive_id: poisson_gaussian_sensor_noise
+      role: noise
+      params:
+        peak_photons: 50000.0
+        read_sigma: 0.01
+        seed: 0
+    edges:
+    - source: source
+      target: propagate
+    - source: propagate
+      target: interference
+    - source: interference
+      target: sensor
+    - source: sensor
+      target: noise
+  fluorescence_microscopy_graph_v2:
+    description: 'Fluorescence Microscopy: PhotonSource→Conv2d(ex)→YieldModel→Conv2d(em)→PhotonSensor→PoissonGaussianNoise'
+    metadata:
+      modality: fluorescence_microscopy
+      canonical_chain: true
+      x_shape:
+      - 64
+      - 64
+      y_shape:
+      - 64
+      - 64
+    nodes:
+    - node_id: source
+      primitive_id: photon_source
+      role: source
+      params:
+        strength: 1.0
+    - node_id: excitation_psf
+      primitive_id: conv2d
+      role: transport
+      params:
+        sigma: 1.5
+        mode: reflect
+      learnable:
+      - sigma
+    - node_id: fluorophore
+      primitive_id: yield_model
+      role: transport
+      params:
+        quantum_yield: 0.7
+    - node_id: emission_psf
+      primitive_id: conv2d
+      role: transport
+      params:
+        sigma: 2.0
+        mode: reflect
+      learnable:
+      - sigma
+    - node_id: sensor
+      primitive_id: photon_sensor
+      role: sensor
+      params:
+        quantum_efficiency: 0.82
+        gain: 1.0
+    - node_id: noise
+      primitive_id: poisson_gaussian_sensor_noise
+      role: noise
+      params:
+        peak_photons: 10000.0
+        read_sigma: 0.01
+        seed: 0
+    edges:
+    - source: source
+      target: excitation_psf
+    - source: excitation_psf
+      target: fluorophore
+    - source: fluorophore
+      target: emission_psf
+    - source: emission_psf
+      target: sensor
+    - source: sensor
+      target: noise

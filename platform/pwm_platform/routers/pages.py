@@ -9,6 +9,7 @@ Login: CompareGPT SSO redirect flow.
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 from types import SimpleNamespace
 from typing import Optional
 
@@ -28,6 +29,7 @@ from pwm_platform.db.models import (
     ModalityBasics,
     Run,
     TriadReport,
+
     User,
 )
 
@@ -168,6 +170,240 @@ async def sso_callback(
         return RedirectResponse("/login?error=sso_failed")
 
 
+_sidebar_cache: dict | None = None
+
+# ── Carrier → noise model suggestions for fine-tuning prompts ────────────
+_CARRIER_NOISE_SUGGESTIONS: dict[str, list[str]] = {
+    "Photon": [
+        "Switch to mixed Poisson-Gaussian noise with read noise σ=5 electrons",
+        "Use pure Poisson shot noise for photon-limited regime",
+    ],
+    "X-ray": [
+        "Switch to Poisson noise to model photon counting",
+        "Add beam-hardening artifacts to the noise model",
+    ],
+    "Gamma": [
+        "Set Poisson noise with mean count rate of 1000 counts/pixel",
+        "Add scatter noise as a fraction of total counts",
+    ],
+    "Spin/RF": [
+        "Set Gaussian noise with SNR=30 dB",
+        "Add Rician noise to model MRI magnitude images",
+    ],
+    "RF": [
+        "Use Gaussian noise with SNR=20 dB",
+        "Add multiplicative speckle noise",
+    ],
+    "Electron": [
+        "Set Poisson shot noise for low-dose imaging",
+        "Add detector DQE degradation to the noise model",
+    ],
+    "Acoustic": [
+        "Set Gaussian white noise with SNR=40 dB",
+        "Add reverberant clutter noise",
+    ],
+    "Mechanical": [
+        "Set Gaussian noise with thermal drift σ=0.1 nm",
+        "Add 1/f noise for low-frequency scanning artifacts",
+    ],
+    "Neutron": [
+        "Set Poisson noise for low-flux neutron beam",
+    ],
+}
+
+# ── Category → forward-model refinement suggestions ──────────────────────
+_CATEGORY_DAG_SUGGESTIONS: dict[str, list[str]] = {
+    "medical": [
+        "Add a projection primitive for multi-angle acquisition",
+        "Insert a Fourier sampling step for k-space encoding",
+    ],
+    "microscopy": [
+        "Add structured illumination before the PSF convolution",
+        "Insert a wavelength selection primitive for multi-channel imaging",
+    ],
+    "compressive": [
+        "Add a wavelength dispersion primitive for spectral coding",
+        "Replace the random mask with a Hadamard pattern",
+    ],
+    "electron_microscopy": [
+        "Add a CTF (contrast transfer function) convolution step",
+        "Insert a projection primitive for tilt-series tomography",
+    ],
+    "remote_sensing": [
+        "Add a Fourier sampling step for aperture synthesis",
+        "Insert a motion/rotation primitive for multi-pass acquisition",
+    ],
+    "coherent": [
+        "Add a second propagation branch for reference beam interference",
+        "Insert a rotation primitive for tomographic phase retrieval",
+    ],
+    "scanning_probe": [
+        "Add a convolution primitive for tip-sample interaction",
+        "Insert a structured illumination step for multi-probe operation",
+    ],
+    "depth_imaging": [
+        "Add a structured illumination primitive for coded patterns",
+        "Insert a temporal modulation step for time-gating",
+    ],
+    "quantum": [
+        "Add a summation primitive for coincidence counting",
+        "Insert a second detection branch for correlation measurements",
+    ],
+    "ultrafast": [
+        "Add temporal coding with a chirped mask",
+        "Insert a rotation primitive for angular multiplexing",
+    ],
+    "spectroscopy": [
+        "Add a wavelength dispersion step for spectral resolution",
+        "Insert a Fourier sampling primitive for interferometric encoding",
+    ],
+    "astronomy": [
+        "Add an atmospheric turbulence convolution step",
+        "Insert a rotation primitive for Earth-rotation synthesis",
+    ],
+}
+
+
+def _generate_finetune_examples(entry: dict) -> list[dict]:
+    """Generate per-modality fine-tuning prompt examples.
+
+    Each example is a dict with 'label' (short heading) and 'prompt' (full text).
+    """
+    import re as _re
+
+    examples: list[dict] = []
+    display_name = entry.get("display_name", "")
+    mismatch_params = entry.get("mismatch_params", [])
+    carrier = entry.get("carrier", "")
+    category = entry.get("category", "")
+    primitives = entry.get("primitives", [])
+    spec_notation = entry.get("spec_notation", "")
+
+    # 1. Mismatch parameter tuning (up to 2 examples from actual params)
+    for p in mismatch_params[:2]:
+        name = p.get("name", "")
+        desc = p.get("description", name.replace("_", " "))
+        nominal = p.get("nominal", 0)
+        perturbed = p.get("perturbed", 0)
+        # Clean human-readable name: strip trailing units like (px), (deg), (-)
+        human_name = _re.sub(r"\s*\([^)]*\)\s*$", "", desc).strip().lower()
+        if not human_name:
+            human_name = name.replace("_", " ")
+        if nominal == 0 and perturbed != 0:
+            examples.append({
+                "label": f"Tune {human_name}",
+                "prompt": f"Set the {human_name} to {perturbed} and show how it affects reconstruction quality",
+            })
+        elif nominal != 0:
+            # Suggest a different perturbation
+            delta = abs(perturbed - nominal)
+            new_val = nominal + 2 * delta if delta else nominal * 1.2
+            new_val = round(new_val, 4)
+            examples.append({
+                "label": f"Tune {human_name}",
+                "prompt": f"Change the {human_name} from {nominal} to {new_val} and explain the impact",
+            })
+
+    # 2. Add/remove mismatch param (if the modality has params, suggest adding another)
+    if mismatch_params:
+        existing_names = {p.get("name", "") for p in mismatch_params}
+        # Suggest a param that's physically relevant but not already listed
+        generic_suggestions = [
+            ("detector_gain", "detector gain", 1.0, 1.05),
+            ("noise_sigma", "noise level sigma", 0.01, 0.05),
+            ("alignment_error", "alignment error in pixels", 0.0, 0.5),
+            ("temperature_drift", "temperature drift", 0.0, 0.1),
+        ]
+        for pname, pdesc, pnom, ppert in generic_suggestions:
+            if pname not in existing_names:
+                examples.append({
+                    "label": "Add mismatch param",
+                    "prompt": f"Add a mismatch parameter for {pdesc} with nominal={pnom} and perturbed={ppert}",
+                })
+                break
+    else:
+        # No mismatch params — suggest adding one
+        examples.append({
+            "label": "Add mismatch param",
+            "prompt": f"Add a mismatch parameter for detector gain with nominal=1.0 and perturbed=1.05",
+        })
+
+    # 3. Noise model change (carrier-specific)
+    noise_suggestions = _CARRIER_NOISE_SUGGESTIONS.get(carrier, [])
+    if noise_suggestions:
+        examples.append({
+            "label": "Change noise model",
+            "prompt": noise_suggestions[0],
+        })
+    else:
+        examples.append({
+            "label": "Change noise model",
+            "prompt": "Switch to Gaussian noise with SNR=25 dB",
+        })
+
+    # 4. Forward model modification (category-specific)
+    dag_suggestions = _CATEGORY_DAG_SUGGESTIONS.get(category, [])
+    if dag_suggestions:
+        examples.append({
+            "label": "Modify forward model",
+            "prompt": dag_suggestions[0],
+        })
+
+    # 5. System variant / configuration change
+    if len(primitives) >= 2:
+        # Suggest simplifying or extending the DAG
+        examples.append({
+            "label": "Simplify pipeline",
+            "prompt": f"Simplify the {spec_notation} pipeline by removing the last intermediate step and explain the tradeoff",
+        })
+
+    return examples[:5]  # cap at 5 per modality
+
+
+def _build_sidebar_data() -> dict:
+    """Build sidebar context: categories with modalities + primitives.
+
+    Cached after first call (static data, never changes at runtime).
+    """
+    global _sidebar_cache
+    if _sidebar_cache is not None:
+        return _sidebar_cache
+
+    from pwm_platform.services.benchmark_database._modality_catalog import (
+        MODALITY_CATALOG,
+        get_categories,
+    )
+    from pwm_platform.services.benchmark_database._primitives import SPEC_PRIMITIVES
+
+    raw_cats = get_categories()
+
+    # Build ordered dict with per-modality fine-tuning examples
+    ordered_categories: dict[str, list[dict]] = {}
+    for cat_slug in sorted(raw_cats.keys()):
+        mod_ids = sorted(raw_cats[cat_slug])
+        mods = []
+        for mod_id in mod_ids:
+            entry = MODALITY_CATALOG.get(mod_id, {})
+            mods.append({
+                "id": mod_id,
+                "display_name": entry.get("display_name", mod_id),
+                "spec_notation": entry.get("spec_notation", ""),
+                "carrier": entry.get("carrier", ""),
+                "canonical_dag": entry.get("canonical_dag", ""),
+                "finetune_examples": _generate_finetune_examples(entry),
+            })
+        ordered_categories[cat_slug] = mods
+
+    total_count = sum(len(v) for v in ordered_categories.values())
+
+    _sidebar_cache = {
+        "sidebar_categories": ordered_categories,
+        "sidebar_modality_count": total_count,
+        "sidebar_primitives": SPEC_PRIMITIVES,
+    }
+    return _sidebar_cache
+
+
 @router.get("/", response_class=HTMLResponse)
 async def dashboard(
     request: Request,
@@ -186,11 +422,15 @@ async def dashboard(
     )
     runs = runs_result.scalars().all()
 
+    # Sidebar data: categories → modalities + primitives
+    sidebar_data = _build_sidebar_data()
+
     return templates.TemplateResponse("dashboard.html", {
         "request": request,
         "user": user,
         "runs": runs,
         "chat_variant_key": "sd_cassi",
+        **sidebar_data,
     })
 
 
@@ -509,27 +749,44 @@ async def challenge_tier_page(
     tier_leaderboard.sort(key=lambda e: e.get(tier_score_key, 0), reverse=True)
 
     # Data preview images for challenge tier pages
-    _DATA_PREVIEW = {
-        "sd_cassi": {
-            "is_multi": True,
-            "view1_label": "Band 7 (~450 nm)",
-            "view2_label": "Band 21 (~650 nm)",
-        },
-        "cacti": {
-            "is_multi": True,
-            "view1_label": "Frame 0 (t=0)",
-            "view2_label": "Frame 7 (t=7)",
-        },
-        "spc_block": {"is_multi": False},
+    # Multi-view labels for hand-crafted variants with spectral/temporal views
+    _MULTI_VIEW_LABELS = {
+        "sd_cassi": ("Band 7 (~450 nm)", "Band 21 (~650 nm)"),
+        "cacti": ("Frame 0 (t=0)", "Frame 7 (t=7)"),
     }
     _TIER_SCENE = {"public": 0, "dev": 1, "hidden": 2}
 
-    preview_cfg = _DATA_PREVIEW.get(variant_key)
+    # Auto-detect preview images from gallery directory
+    gallery_key = challenge.get("gallery_variant", variant_key)
+    scene_idx = _TIER_SCENE.get(tier_name, 0)
+    gallery_dir = (
+        Path(__file__).resolve().parent.parent
+        / "static" / "img" / "benchmark_gallery"
+        / gallery_key / f"scene_{scene_idx:02d}"
+    )
     data_preview = None
-    if preview_cfg is not None:
-        scene_idx = _TIER_SCENE.get(tier_name, 0)
-        base = f"/static/img/benchmark_gallery/{variant_key}/scene_{scene_idx:02d}"
-        data_preview = {**preview_cfg, "scene_idx": scene_idx, "base_url": base}
+    if gallery_dir.is_dir() and (gallery_dir / "gt.png").exists():
+        base = f"/static/img/benchmark_gallery/{gallery_key}/scene_{scene_idx:02d}"
+        if (gallery_dir / "gt_view1.png").exists():
+            labels = _MULTI_VIEW_LABELS.get(gallery_key, ("View 1", "View 2"))
+            data_preview = {
+                "is_multi": True,
+                "view1_label": labels[0],
+                "view2_label": labels[1],
+                "scene_idx": scene_idx,
+                "base_url": base,
+            }
+        else:
+            data_preview = {
+                "is_multi": False,
+                "scene_idx": scene_idx,
+                "base_url": base,
+            }
+
+    # Extract true_spec only if the tier's visible_data includes it
+    tier_true_spec = None
+    if "true_spec" in tier.get("visible_data", []):
+        tier_true_spec = tier.get("true_spec")
 
     return templates.TemplateResponse("challenge_tier.html", {
         "request": request,
@@ -544,6 +801,8 @@ async def challenge_tier_page(
         "paper_fig_dir": paper_fig_dir,
         "paper_extra_chart": paper_extra_chart,
         "data_preview": data_preview,
+        "spec_ranges": tier.get("spec_ranges", challenge.get("spec_ranges", [])),
+        "true_spec": tier_true_spec,
     })
 
 

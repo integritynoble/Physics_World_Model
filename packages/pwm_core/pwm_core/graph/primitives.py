@@ -3192,6 +3192,134 @@ class DMDPatternSequence(BasePrimitive):
         return (patterns.T @ y_corr).reshape(self._H, self._W)
 
 
+class ConeBeamRadon(BasePrimitive):
+    """Cone-beam / fan-beam Radon projection primitive.
+
+    Implements distance-weighted line integrals for divergent-beam
+    geometry (CBCT). Forward projects a 2D image into fan-beam sinogram.
+    Adjoint is FDK-style weighted backprojection.
+
+    Canonical: Pi (projection)
+    """
+
+    primitive_id = "cone_beam_radon"
+    _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "projection"
+    _canonical_id = CanonicalPrimitive.Pi
+    _physics_stage = PhysicsStageFamily.transport
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        n_angles = self._params.get("n_angles", 180)
+        H = self._params.get("H", x.shape[0] if x.ndim >= 2 else 64)
+        W = self._params.get("W", x.shape[1] if x.ndim >= 2 else 64)
+        D_so = self._params.get("D_so", 100.0)
+        D_sd = self._params.get("D_sd", 150.0)
+        det_offset = self._params.get("detector_offset", 0.0)
+
+        x2d = x.reshape(H, W).astype(np.float64)
+        angles = np.linspace(0, np.pi, n_angles, endpoint=False)
+        n_det = int(W * 1.44)
+        sinogram = np.zeros((n_angles, n_det), dtype=np.float64)
+        center_y, center_x = H / 2.0, W / 2.0
+
+        py = np.arange(H, dtype=np.float64) - center_y
+        px = np.arange(W, dtype=np.float64) - center_x
+        PY, PX = np.meshgrid(py, px, indexing="ij")
+        det_half = n_det / 2.0
+
+        for i, angle in enumerate(angles):
+            cos_a, sin_a = np.cos(angle), np.sin(angle)
+            t = PX * cos_a + PY * sin_a
+            U = D_so + PX * sin_a - PY * cos_a
+            fan_t = D_sd * t / np.maximum(U, 1e-6)
+            det_idx = fan_t + det_half - det_offset
+            weight = (D_so / np.maximum(U, 1e-6)) ** 2
+
+            det_floor = np.floor(det_idx).astype(int)
+            frac = det_idx - det_floor
+            valid = (det_floor >= 0) & (det_floor < n_det - 1)
+            vals = x2d * weight
+
+            np.add.at(sinogram[i], det_floor[valid], vals[valid] * (1 - frac[valid]))
+            np.add.at(sinogram[i], det_floor[valid] + 1, vals[valid] * frac[valid])
+
+        return sinogram
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        n_angles = self._params.get("n_angles", y.shape[0])
+        H = self._params.get("H", 64)
+        W = self._params.get("W", 64)
+        D_so = self._params.get("D_so", 100.0)
+        D_sd = self._params.get("D_sd", 150.0)
+        det_offset = self._params.get("detector_offset", 0.0)
+
+        n_det = y.shape[1]
+        angles = np.linspace(0, np.pi, n_angles, endpoint=False)
+        recon = np.zeros((H, W), dtype=np.float64)
+
+        py = np.arange(H, dtype=np.float64) - H / 2.0
+        px = np.arange(W, dtype=np.float64) - W / 2.0
+        PY, PX = np.meshgrid(py, px, indexing="ij")
+        det_half = n_det / 2.0
+
+        for i, angle in enumerate(angles):
+            cos_a, sin_a = np.cos(angle), np.sin(angle)
+            t = PX * cos_a + PY * sin_a
+            U = D_so + PX * sin_a - PY * cos_a
+            fan_t = D_sd * t / np.maximum(U, 1e-6)
+            det_idx = fan_t + det_half - det_offset
+            weight = (D_so / np.maximum(U, 1e-6)) ** 2
+
+            det_floor = np.floor(det_idx).astype(int)
+            frac = det_idx - det_floor
+            valid = (det_floor >= 0) & (det_floor < n_det - 1)
+
+            contrib = np.zeros((H, W), dtype=np.float64)
+            contrib[valid] = (
+                y[i, det_floor[valid]] * (1 - frac[valid])
+                + y[i, det_floor[valid] + 1] * frac[valid]
+            )
+            recon += contrib * weight
+
+        recon *= np.pi / n_angles
+        return recon
+
+
+class BFactorEnvelope(BasePrimitive):
+    """B-factor envelope for cryo-EM.
+
+    Applies Fourier-domain B-factor decay: E(f) = exp(-B*|f|^2/4).
+    Models radiation damage and specimen motion blur in cryo-EM.
+
+    Canonical: M (modulation/envelope)
+    """
+
+    primitive_id = "b_factor_envelope"
+    _is_linear = True
+    _physics_tier = "tier1_approx"
+    _physics_subrole = "envelope"
+    _canonical_id = CanonicalPrimitive.M
+    _physics_stage = PhysicsStageFamily.interaction
+
+    def forward(self, x: np.ndarray, **params: Any) -> np.ndarray:
+        B = self._params.get("B_factor", 50.0)
+        ny, nx = x.shape[-2], x.shape[-1]
+        fy = np.fft.fftfreq(ny)
+        fx = np.fft.fftfreq(nx)
+        FY, FX = np.meshgrid(fy, fx, indexing="ij")
+        q2 = FX ** 2 + FY ** 2
+        envelope = np.exp(-B * q2 / 4.0)
+
+        X_f = np.fft.fft2(x.astype(np.float64))
+        Y_f = envelope * X_f
+        return np.real(np.fft.ifft2(Y_f))
+
+    def adjoint(self, y: np.ndarray, **params: Any) -> np.ndarray:
+        # Envelope is real and symmetric → self-adjoint
+        return self.forward(y, **params)
+
+
 class BucketIntegration(BasePrimitive):
     """Bucket detector temporal integration for SPC.
 
@@ -3357,6 +3485,9 @@ _ALL_PRIMITIVES: List[type] = [
     ProjectionOptics,
     DMDPatternSequence,
     BucketIntegration,
+    # Nature paper: new modality primitives
+    ConeBeamRadon,
+    BFactorEnvelope,
 ]
 
 # Build canonical registry: maps each CanonicalPrimitive to its implementation primitive_ids

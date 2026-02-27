@@ -46,14 +46,14 @@
             </div>
         </div>
 
-        {# ── Best method headline metrics ── #}
+        {# ── Headline metrics (match displayed recon image) ── #}
         <div class="grid grid-cols-2 gap-2">
             <div class="px-3 py-2 bg-blue-50 rounded border border-blue-100 text-center">
-                <span class="block text-xs font-semibold text-blue-600 uppercase">Best PSNR</span>
+                <span class="block text-xs font-semibold text-blue-600 uppercase">{{ result.best_method }} PSNR</span>
                 <span class="block text-lg font-bold text-blue-800">{{ "%.2f"|format(result.psnr) }} <span class="text-xs font-normal">dB</span></span>
             </div>
             <div class="px-3 py-2 bg-blue-50 rounded border border-blue-100 text-center">
-                <span class="block text-xs font-semibold text-blue-600 uppercase">Best SSIM</span>
+                <span class="block text-xs font-semibold text-blue-600 uppercase">{{ result.best_method }} SSIM</span>
                 <span class="block text-lg font-bold text-blue-800">{{ "%.4f"|format(result.ssim) }}</span>
             </div>
         </div>

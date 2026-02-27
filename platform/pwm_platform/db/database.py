@@ -52,3 +52,9 @@ async def init_db() -> None:
         await conn.execute(text(
             "ALTER TABLE runs ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT TRUE"
         ))
+
+        # Idempotent migration: dataset-mode columns on spec_chat_sessions
+        for col in ("dataset_meta", "matrix_meta", "ground_truth_meta"):
+            await conn.execute(text(
+                f"ALTER TABLE spec_chat_sessions ADD COLUMN IF NOT EXISTS {col} JSONB"
+            ))

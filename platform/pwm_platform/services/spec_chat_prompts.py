@@ -20,6 +20,7 @@ from pwm_platform.services.benchmark_database._variant_registry import VARIANT_R
 _EXAMPLE_SPECS: dict[str, dict[str, Any]] = {
     "cassi": {
         "label": "SD-CASSI",
+        "variant_key": "sd_cassi",
         "spec_notation": VARIANT_REGISTRY["sd_cassi"]["spec_notation"],
         "forward_model": VARIANT_REGISTRY["sd_cassi"]["spec_dag"],
         "mismatch_params": VARIANT_REGISTRY["sd_cassi"]["mismatch_params"],
@@ -28,6 +29,7 @@ _EXAMPLE_SPECS: dict[str, dict[str, Any]] = {
     },
     "spc": {
         "label": "SPC-Block",
+        "variant_key": "spc_block",
         "spec_notation": VARIANT_REGISTRY["spc_block"]["spec_notation"],
         "forward_model": VARIANT_REGISTRY["spc_block"]["spec_dag"],
         "mismatch_params": VARIANT_REGISTRY["spc_block"]["mismatch_params"],
@@ -36,6 +38,7 @@ _EXAMPLE_SPECS: dict[str, dict[str, Any]] = {
     },
     "cacti": {
         "label": "CACTI",
+        "variant_key": "cacti",
         "spec_notation": VARIANT_REGISTRY["cacti"]["spec_notation"],
         "forward_model": VARIANT_REGISTRY["cacti"]["spec_dag"],
         "mismatch_params": VARIANT_REGISTRY["cacti"]["mismatch_params"],
@@ -159,8 +162,10 @@ def _format_example(name: str, ex: dict) -> str:
             f"[nominal={p['nominal']}, perturbed={p['perturbed']}]"
         )
 
+    vk = ex.get('variant_key', name)
     return (
         f"### {ex['label']}\n"
+        f"- variant_key: {vk}\n"
         f"- Spec notation: {ex['spec_notation']}\n"
         f"- Pipeline: {dag_str}\n"
         f"- Noise model: {ex['noise_model']}\n"
@@ -187,7 +192,11 @@ def _get_examples_for_variant(variant: dict) -> list[tuple[str, dict]]:
     return result
 
 
-def build_system_prompt(variant: dict) -> str:
+def build_system_prompt(
+    variant: dict,
+    dataset_meta: dict | None = None,
+    matrix_meta: dict | None = None,
+) -> str:
     """Assemble the system prompt for the spec-builder chat.
 
     Parameters
@@ -195,6 +204,10 @@ def build_system_prompt(variant: dict) -> str:
     variant : dict
         The current variant record (from VARIANT_DATABASE), containing at
         least ``spec_notation``, ``display_name``, and ``category``.
+    dataset_meta : dict | None
+        Metadata from an uploaded measurement file (dataset mode).
+    matrix_meta : dict | None
+        Metadata from an uploaded sensing matrix (dataset mode).
 
     Returns
     -------
@@ -231,6 +244,51 @@ def build_system_prompt(variant: dict) -> str:
             parts.append(f"Carrier type: **{carrier}**. Default noise model: {noise_model}.")
         carrier_section = "\n## Category Context\n\n" + " ".join(parts)
 
+    # Dataset mode section
+    dataset_section = ""
+    if dataset_meta:
+        shape = dataset_meta.get("shape", [])
+        stats = dataset_meta.get("stats", {})
+        fname = dataset_meta.get("original_filename", "unknown")
+        fmt = dataset_meta.get("file_format", "unknown")
+        dtype = dataset_meta.get("dtype", "unknown")
+
+        matrix_info = ""
+        if matrix_meta:
+            m_fname = matrix_meta.get("original_filename", "unknown")
+            m_shape = matrix_meta.get("shape", [])
+            matrix_info = f"\n- **Sensing matrix**: {m_fname}, shape={m_shape}"
+
+        dataset_section = f"""
+
+## Dataset Mode — Active
+
+The user has uploaded real measurement data:
+- **Measurement**: {fname} ({fmt}), shape={shape}, dtype={dtype}
+  Value range: [{stats.get('min', '?'):.4g}, {stats.get('max', '?'):.4g}], \
+mean={stats.get('mean', '?'):.4g}, std={stats.get('std', '?'):.4g}{matrix_info}
+
+## Your Task in Dataset Mode
+
+1. Design a spec whose y_shape is COMPATIBLE with the uploaded data shape {shape}.
+2. If a sensing matrix is provided, validate that Phi maps x_shape → y_shape.
+3. Based on data statistics, suggest appropriate noise model parameters.
+4. Identify the variant_key that best matches this data.
+5. After spec is finalized, the user clicks "Reconstruct from Dataset" to apply \
+the best reconstruction method from PWM benchmarks.
+"""
+
+    # Upload reminder for non-dataset mode
+    upload_reminder = ""
+    if not dataset_meta:
+        upload_reminder = """
+
+## File Upload Support
+
+If the user mentions having measurement data, remind them they can upload it \
+using the "Upload Dataset" button for reconstruction with their actual data.
+"""
+
     return f"""\
 You are the **PWM Spec Builder**, an expert assistant that helps researchers \
 design and refine imaging modality specifications using the Physics World Model \
@@ -254,6 +312,7 @@ When you produce or update a spec, ALWAYS include a JSON block fenced with \
 
 ```json
 {{
+  "variant_key": "modality_id (e.g. sd_cassi, spc_block, cacti, ct, mri, confocal_3d)",
   "spec_notation": "P1(...) → P2(...) → ... → D(g, η)",
   "forward_model": [
     {{"primitive": "KEY", "params": "...", "label": "Human-readable label"}},
@@ -267,6 +326,10 @@ When you produce or update a spec, ALWAYS include a JSON block fenced with \
   "measurement_matrix": "Description of the measurement/sensing matrix"
 }}
 ```
+
+The `variant_key` MUST match the imaging modality being described. Common values: \
+sd_cassi, dd_cassi, cacti, spc_block, spc_kronecker, ct, cbct, mri, pet, \
+confocal_3d, sem, tem, widefield, coded_exposure, ghost_imaging. Use snake_case.
 
 ## Example Specs
 
@@ -289,7 +352,7 @@ just the diff).
 5. If the user pastes a JSON spec, validate it against the primitive library \
 and describe what the spec represents.
 6. Keep explanations concise but technically accurate.
-"""
+{dataset_section}{upload_reminder}"""
 
 
 def get_example_spec(name: str) -> dict[str, Any] | None:
@@ -312,6 +375,7 @@ def get_example_spec(name: str) -> dict[str, Any] | None:
     carrier = cat_entry.get("carrier", "Photon")
     return {
         "label": cat_entry["display_name"],
+        "variant_key": name,
         "spec_notation": cat_entry["spec_notation"],
         "forward_model": cat_entry["spec_dag"],
         "mismatch_params": cat_entry["mismatch_params"],

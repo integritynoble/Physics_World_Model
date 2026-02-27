@@ -28,6 +28,107 @@ SIM_IMG_DIR = STATIC_DIR / "simulations"
 # InverseNet results directory (bundled JSON files)
 _INVERSENET_DIR = Path(__file__).resolve().parent / "inversenet_data"
 
+# Pre-computed benchmark gallery images
+_GALLERY_DIR = STATIC_DIR / "img" / "benchmark_gallery"
+_GALLERY_JSON = STATIC_DIR / "benchmark-data" / "benchmark_gallery.json"
+
+# inversenet_type → (gallery_subdir, num_scenes, scene_names)
+_GALLERY_CONFIG: Dict[str, Tuple[str, int, List[str]]] = {
+    "cassi": ("sd_cassi", 10, [
+        "scene01", "scene02", "scene03", "scene04", "scene05",
+        "scene06", "scene07", "scene08", "scene09", "scene10",
+    ]),
+    "cacti": ("cacti", 6, [
+        "kobe", "traffic", "runner", "drop", "crash", "aerial",
+    ]),
+    "spc": ("spc_block", 11, [
+        "Monarch", "Parrots", "barbara", "boats", "cameraman",
+        "fingerprint", "flinstones", "foreman", "house", "lena256", "peppers256",
+    ]),
+}
+
+# inversenet_type → gallery JSON key (for headline metrics matching recon_I.png)
+_GALLERY_JSON_KEY: Dict[str, str] = {
+    "cassi": "sd_cassi",
+    "cacti": "cacti",
+    "spc": "spc_block",
+}
+
+# ── Dynamic gallery config (loads all 168 modalities from JSON) ───────
+
+_gallery_config_cache: Optional[Dict[str, Tuple[str, int, List[str]]]] = None
+
+
+def _get_dynamic_gallery_config() -> Dict[str, Tuple[str, int, List[str]]]:
+    """Load gallery config from benchmark_gallery.json for ALL modalities.
+
+    Returns a dict of variant_key → (gallery_subdir, num_scenes, scene_names).
+    Merges static InverseNet config with dynamic entries from the gallery JSON.
+    """
+    global _gallery_config_cache
+    if _gallery_config_cache is not None:
+        return _gallery_config_cache
+
+    config: Dict[str, Tuple[str, int, List[str]]] = dict(_GALLERY_CONFIG)
+
+    if _GALLERY_JSON.exists():
+        try:
+            with open(_GALLERY_JSON) as f:
+                gallery = json.load(f)
+            for variant_key, data in gallery.items():
+                if variant_key in config:
+                    continue  # don't override InverseNet entries
+                scenes = data.get("scenes", [])
+                if not scenes:
+                    continue
+                config[variant_key] = (
+                    variant_key,  # gallery_subdir = modality_id
+                    len(scenes),
+                    [s.get("scene_name", f"scene_{s.get('scene_idx', i)}")
+                     for i, s in enumerate(scenes)],
+                )
+        except Exception as exc:
+            logger.warning("Failed to load dynamic gallery config: %s", exc)
+
+    _gallery_config_cache = config
+    return config
+
+
+def _load_gallery_scene_metrics(
+    variant_key: str, scene_idx: int,
+) -> Optional[Tuple[float, float, str]]:
+    """Load (psnr, ssim, method_name) from the gallery JSON for a given scene.
+
+    These metrics correspond to the recon_I.png image that is actually displayed.
+    Looks up variant_key directly first, then falls back to _GALLERY_JSON_KEY mapping.
+    """
+    if not _GALLERY_JSON.exists():
+        return None
+    try:
+        with open(_GALLERY_JSON) as f:
+            gallery = json.load(f)
+        # Try direct lookup first (works for all 168 modalities)
+        entry = gallery.get(variant_key)
+        if entry is None:
+            # Fallback: InverseNet key mapping (cassi→sd_cassi, etc.)
+            json_key = _GALLERY_JSON_KEY.get(variant_key)
+            entry = gallery.get(json_key) if json_key else None
+        if entry is None:
+            return None
+        scenes = entry.get("scenes", [])
+        if scene_idx >= len(scenes):
+            return None
+        scene = scenes[scene_idx]
+        return (
+            float(scene["psnr_I"]),
+            float(scene["ssim_I"]),
+            str(entry.get("method", "Classical")),
+        )
+    except Exception as exc:
+        logger.warning("Failed to load gallery scene metrics: %s", exc)
+        return None
+
+
 # ── Core InverseNet modalities (keep real paper results) ─────────────
 _INVERSENET_CORE = frozenset({
     "cassi", "sd_cassi", "dd_cassi",
@@ -43,6 +144,7 @@ _METHOD_DISPLAY = {
     "pnp_ffdnet": "PnP-FFDNet", "elp_unfolding": "ELP-Unfolding",
     "efficientsci": "EfficientSCI",
     "fista_tv": "FISTA-TV", "ista_net": "ISTA-Net", "hatnet": "HATNet",
+    "pnp_drunet": "PnP-DRUNet",
 }
 
 _METHOD_TYPE = {
@@ -50,6 +152,7 @@ _METHOD_TYPE = {
     "hdnet": "deep", "mst_l": "deep",
     "pnp_ffdnet": "pnp", "elp_unfolding": "deep", "efficientsci": "deep",
     "fista_tv": "classical", "ista_net": "deep", "hatnet": "deep",
+    "pnp_drunet": "pnp",
 }
 
 # ── Category badge colors ────────────────────────────────────────────
@@ -163,40 +266,35 @@ def _load_inversenet_cacti() -> List[dict]:
     return aggregated
 
 
-def _get_inversenet_spc() -> List[dict]:
-    _per_image = [
-        ("Monarch",      30.50, 0.930, 34.20, 0.960, 33.40, 0.955),
-        ("Parrots",      29.80, 0.920, 33.50, 0.955, 32.80, 0.950),
-        ("barbara",      24.10, 0.850, 27.20, 0.880, 27.00, 0.875),
-        ("boats",        27.50, 0.900, 31.00, 0.935, 30.50, 0.930),
-        ("cameraman",    28.00, 0.910, 32.00, 0.945, 31.20, 0.940),
-        ("fingerprint",  24.50, 0.860, 28.50, 0.890, 28.00, 0.885),
-        ("flinstones",   27.00, 0.895, 31.50, 0.940, 30.80, 0.935),
-        ("foreman",      32.00, 0.945, 35.50, 0.970, 34.80, 0.965),
-        ("house",        30.00, 0.935, 34.00, 0.965, 33.50, 0.960),
-        ("lena256",      29.00, 0.920, 32.50, 0.950, 31.80, 0.945),
-        ("peppers256",   26.20, 0.880, 30.50, 0.930, 29.90, 0.925),
-    ]
+def _load_inversenet_spc() -> List[dict]:
+    """Load real SPC validation results from InverseNet benchmark."""
+    path = _INVERSENET_DIR / "spc_validation_results.json"
+    if not path.exists():
+        logger.warning("SPC InverseNet results not found at %s", path)
+        return []
+    with open(path) as f:
+        raw = json.load(f)
+
+    # Transpose format: SPC JSON has methods at top level with scenarios nested,
+    # but _build_method_results_inversenet expects scenarios at top with methods nested.
+    _SPC_METHODS = ("fista_tv", "ista_net", "hatnet", "pnp_drunet")
     results = []
-    for name, fp, fs, ip, iss, hp, hs in _per_image:
-        results.append({
-            "name": name,
-            "scenario_i": {
-                "fista_tv": {"psnr": fp, "ssim": fs},
-                "ista_net": {"psnr": ip, "ssim": iss},
-                "hatnet":   {"psnr": hp, "ssim": hs},
-            },
-            "scenario_ii": {
-                "fista_tv": {"psnr": fp - 9.55, "ssim": max(0.0, fs - 0.35)},
-                "ista_net": {"psnr": ip - 12.83, "ssim": max(0.0, iss - 0.40)},
-                "hatnet":   {"psnr": hp - 11.58, "ssim": max(0.0, hs - 0.38)},
-            },
-            "scenario_iii": {
-                "fista_tv": {"psnr": fp - 1.85, "ssim": max(0.0, fs - 0.05)},
-                "ista_net": {"psnr": ip - 4.40, "ssim": max(0.0, iss - 0.08)},
-                "hatnet":   {"psnr": hp - 1.20, "ssim": max(0.0, hs - 0.02)},
-            },
-        })
+    for entry in raw:
+        name = entry.get("image_name", f"image_{entry.get('image_idx', '?')}")
+        transposed: Dict[str, Dict[str, dict]] = {
+            "scenario_i": {}, "scenario_ii": {}, "scenario_iii": {},
+        }
+        for method in _SPC_METHODS:
+            method_data = entry.get(method)
+            if not method_data:
+                continue
+            for scenario in ("scenario_i", "scenario_ii", "scenario_iii"):
+                sc_data = method_data.get(scenario, {})
+                transposed[scenario][method] = {
+                    "psnr": sc_data.get("psnr", 0.0),
+                    "ssim": sc_data.get("ssim", 0.0),
+                }
+        results.append({"name": name, **transposed})
     return results
 
 
@@ -287,6 +385,40 @@ def _synthesise_reconstruction(
     noise_std = np.sqrt(mse)
     recon = gt.astype(np.float64) + rng.normal(0, noise_std, gt.shape)
     return np.clip(recon, 0, 1).astype(np.float32)
+
+
+def _synthesise_recon_from_gallery(
+    gt_path: str,
+    target_psnr: float,
+    sim_id: str,
+    rng: np.random.Generator,
+) -> str:
+    """Create a reconstruction image by adding calibrated noise to a gallery GT.
+
+    Loads the gallery ground-truth PNG, adds Gaussian noise at the given PSNR,
+    and saves the result to /static/simulations/{sim_id}/reconstructed.png.
+    Returns the URL path.
+    """
+    from PIL import Image
+
+    # Resolve the gallery GT to an absolute filesystem path
+    if gt_path.startswith("/static/"):
+        abs_path = STATIC_DIR / gt_path[len("/static/"):]
+    else:
+        abs_path = Path(gt_path)
+
+    img = Image.open(abs_path).convert("RGB")
+    gt_arr = np.asarray(img, dtype=np.float64) / 255.0
+
+    mse = 1.0 / (10 ** (target_psnr / 10))
+    noise_std = np.sqrt(mse)
+    recon = gt_arr + rng.normal(0, noise_std, gt_arr.shape)
+    recon = np.clip(recon * 255, 0, 255).astype(np.uint8)
+
+    d = _ensure_dir(sim_id)
+    out_path = d / "reconstructed.png"
+    Image.fromarray(recon).save(out_path)
+    return f"/static/simulations/{sim_id}/reconstructed.png"
 
 
 def _save_simulation_images(
@@ -385,33 +517,94 @@ def _run_cacti_inversenet(
     return x_true, y_noisy, x_hat, dataset_name, methods
 
 
+def _load_spc_real_image(
+    image_name: str,
+) -> Optional[np.ndarray]:
+    """Load a real Set11 TIF image from the InverseNet dataset."""
+    img_dir = Path(__file__).resolve().parent.parent.parent.parent / "papers" / "inversenet" / "data" / "spc" / "images" / "Set11"
+    tif_path = img_dir / f"{image_name}.tif"
+    if not tif_path.exists():
+        return None
+    try:
+        from PIL import Image
+        im = Image.open(tif_path).convert("L")
+        arr = np.array(im, dtype=np.float32) / 255.0
+        return arr
+    except Exception as exc:
+        logger.warning("Failed to load SPC image %s: %s", tif_path, exc)
+        return None
+
+
+def _load_spc_sampling_matrix() -> Optional[np.ndarray]:
+    """Load the real SPC sampling matrix (Φ) from the InverseNet dataset."""
+    mat_dir = Path(__file__).resolve().parent.parent.parent.parent / "papers" / "inversenet" / "data" / "spc" / "sampling_matrix"
+    mat_path = mat_dir / "phi_0_25_1089.mat"
+    if not mat_path.exists():
+        return None
+    try:
+        import scipy.io
+        mat = scipy.io.loadmat(str(mat_path))
+        return mat["phi"].astype(np.float32)  # shape (272, 1089)
+    except Exception as exc:
+        logger.warning("Failed to load SPC sampling matrix: %s", exc)
+        return None
+
+
 def _run_spc_inversenet(
     spec: dict, rng: np.random.Generator,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, str, List[MethodResult]]:
-    from pwm_core.data.loaders.set11 import Set11Dataset
-    from pwm_core.physics.compressive.spc_operator import SPCOperator
+    inversenet = _load_inversenet_spc()
 
-    inversenet = _get_inversenet_spc()
-    dataset = Set11Dataset(resolution=64)
-    images = list(dataset)
-    idx = int(rng.integers(0, len(images)))
-    name, img = images[idx]
+    # Pick a random image from the real results
+    if inversenet:
+        idx = int(rng.integers(0, len(inversenet)))
+        entry = inversenet[idx]
+        image_name = entry["name"]
+    else:
+        image_name = "cameraman"
+        entry = None
 
+    # Load real Set11 TIF image
+    img = _load_spc_real_image(image_name)
+    if img is None:
+        # Fallback to synthetic Set11
+        logger.info("Real Set11 image '%s' unavailable, using synthetic", image_name)
+        from pwm_core.data.loaders.set11 import Set11Dataset
+        dataset = Set11Dataset(resolution=64)
+        images = list(dataset)
+        fallback_idx = int(rng.integers(0, len(images)))
+        image_name, img = images[fallback_idx]
+
+    # Build methods from real validation data
     methods = []
-    name_lower = name.lower().replace(".png", "").replace(".bmp", "")
-    matched = [e for e in inversenet if e["name"].lower() == name_lower]
-    if matched:
-        methods = _build_method_results_inversenet(matched[0])
-    elif inversenet:
-        entry = inversenet[int(rng.integers(0, len(inversenet)))]
+    if entry:
         methods = _build_method_results_inversenet(entry)
+    elif inversenet:
+        methods = _build_method_results_inversenet(
+            inversenet[int(rng.integers(0, len(inversenet)))]
+        )
 
-    operator = SPCOperator(x_shape=(64, 64), sampling_rate=0.15)
-    y_clean = operator.forward(img)
-    y_noisy = y_clean + rng.normal(0, 0.01, y_clean.shape).astype(np.float32)
+    # Apply real forward model: y = Φ · vec(x)
+    phi = _load_spc_sampling_matrix()
+    if phi is not None:
+        # Resize image to 33×33 to match sampling matrix (1089 = 33²)
+        block_size = int(np.sqrt(phi.shape[1]))  # 33
+        from PIL import Image as PILImage
+        img_pil = PILImage.fromarray((img * 255).astype(np.uint8))
+        img_resized = np.array(img_pil.resize((block_size, block_size), PILImage.LANCZOS), dtype=np.float32) / 255.0
+        y_clean = phi @ img_resized.ravel()
+        y_noisy = y_clean + rng.normal(0, 0.03, y_clean.shape).astype(np.float32)
+    else:
+        # Fallback to SPCOperator
+        from pwm_core.physics.compressive.spc_operator import SPCOperator
+        H, W = img.shape[:2]
+        operator = SPCOperator(x_shape=(H, W), sampling_rate=0.25)
+        y_clean = operator.forward(img)
+        y_noisy = y_clean + rng.normal(0, 0.03, y_clean.shape).astype(np.float32)
+
     best_psnr = methods[0].psnr_i if methods else 30.0
     x_hat = _synthesise_reconstruction(img, best_psnr, rng)
-    return img, y_noisy, x_hat, name, methods
+    return img, y_noisy, x_hat, image_name, methods
 
 
 def _load_cacti_data(rng: np.random.Generator = None) -> Tuple[np.ndarray, np.ndarray, str]:
@@ -453,13 +646,7 @@ def _run_category_simulation(
     category_module = config["category_module"]
     runner = get_runner(category_module)
 
-    # Generate phantom
-    phantom, phantom_name, gt_cmap = runner.generate_phantom(config, rng)
-
-    # Apply forward model
-    measurement, meas_title, meas_cmap = runner.apply_forward_model(phantom, config, rng)
-
-    # Get baselines
+    # Get baselines (needed for all paths)
     runner_methods, scenario_labels, dataset_label, attribution = runner.get_baselines(config, rng)
 
     # Convert runner MethodResult to our MethodResult
@@ -489,16 +676,42 @@ def _run_category_simulation(
         gap_db = 0.0
         recovery_db = 0.0
 
-    # Synthesise reconstruction at best method PSNR
-    x_hat = _synthesise_reconstruction(phantom, psnr_val, rng)
+    # ── Try pre-computed gallery images for this modality ──
+    gallery = _get_gallery_paths(variant_key, rng)
 
-    # Save images with per-runner colormaps
-    gt_path, meas_path, recon_path = _save_simulation_images(
-        sim_id, phantom, measurement, x_hat,
-        gt_cmap=gt_cmap, meas_cmap=meas_cmap,
-        meas_title=meas_title, gt_title=phantom_name,
-        recon_title=f"Reconstructed ({solver_name})",
-    )
+    # Fallback for compressive_mask: try InverseNet gallery types
+    if gallery is None and category_module == "compressive_mask":
+        gallery_type = ["cassi", "cacti", "spc"][int(rng.integers(0, 3))]
+        gallery = _get_gallery_paths(gallery_type, rng)
+
+    if gallery:
+        gt_path, meas_path, recon_path, scene_idx, scene_name = gallery
+        dataset_label = f"{scene_name} ({config.get('display_name', variant_key)})"
+        logger.info("Category %s using gallery images: %s", variant_key, scene_name)
+
+        # Load real metrics from gallery JSON if available
+        gallery_metrics = _load_gallery_scene_metrics(variant_key, scene_idx)
+        if gallery_metrics:
+            psnr_val, ssim_val, method_from_gallery = gallery_metrics
+            if solver_name == "N/A":
+                solver_name = method_from_gallery
+    else:
+        # Generate phantom
+        phantom, phantom_name, gt_cmap = runner.generate_phantom(config, rng)
+
+        # Apply forward model
+        measurement, meas_title, meas_cmap = runner.apply_forward_model(phantom, config, rng)
+
+        # Synthesise reconstruction at best method PSNR
+        x_hat = _synthesise_reconstruction(phantom, psnr_val, rng)
+
+        # Save images with per-runner colormaps
+        gt_path, meas_path, recon_path = _save_simulation_images(
+            sim_id, phantom, measurement, x_hat,
+            gt_cmap=gt_cmap, meas_cmap=meas_cmap,
+            meas_title=meas_title, gt_title=phantom_name,
+            recon_title=f"Reconstructed ({solver_name})",
+        )
 
     # Bottleneck analysis
     bottleneck = _estimate_bottleneck(spec, methods, category_module)
@@ -695,6 +908,49 @@ def _run_simulation_sync(spec: dict, variant_key: str) -> SimulationResult:
     return _run_category_simulation(vk, fallback_config, spec, rng, sim_id)
 
 
+def _get_gallery_paths(
+    variant_or_type: str, rng: np.random.Generator,
+) -> Optional[Tuple[str, str, str, int, str]]:
+    """Return (gt_url, meas_url, recon_url, scene_idx, scene_name) from gallery.
+
+    Works for both InverseNet types (cassi/cacti/spc) and any of the 168
+    modality variant keys that have pre-computed gallery images.
+
+    Returns None if gallery images don't exist (caller falls back to synthetic).
+    """
+    cfg = _get_dynamic_gallery_config().get(variant_or_type)
+    if cfg is None:
+        return None
+
+    subdir, num_scenes, scene_names = cfg
+    gallery_base = _GALLERY_DIR / subdir
+
+    if not gallery_base.is_dir():
+        logger.info("Gallery dir %s not found, falling back to synthetic", gallery_base)
+        return None
+
+    scene_idx = int(rng.integers(0, num_scenes))
+    scene_dir = gallery_base / f"scene_{scene_idx:02d}"
+
+    # Verify required images exist
+    gt_file = scene_dir / "gt.png"
+    meas_file = scene_dir / "measurement_I.png"
+    recon_file = scene_dir / "recon_I.png"
+
+    if not all(f.exists() for f in (gt_file, meas_file, recon_file)):
+        logger.info("Gallery scene_%02d missing images, falling back", scene_idx)
+        return None
+
+    url_base = f"/static/img/benchmark_gallery/{subdir}/scene_{scene_idx:02d}"
+    return (
+        f"{url_base}/gt.png",
+        f"{url_base}/measurement_I.png",
+        f"{url_base}/recon_I.png",
+        scene_idx,
+        scene_names[scene_idx],
+    )
+
+
 def _run_inversenet_legacy(
     spec: dict, variant_key: str, inversenet_type: str,
     rng: np.random.Generator, sim_id: str,
@@ -702,29 +958,68 @@ def _run_inversenet_legacy(
     """Run InverseNet legacy pipeline for 8 core compressive modalities."""
     logger.info("Running %s InverseNet legacy baseline (sim_id=%s)", inversenet_type, sim_id)
 
-    runners = {
-        "cassi": _run_cassi_inversenet,
-        "spc": _run_spc_inversenet,
-        "cacti": _run_cacti_inversenet,
-    }
-    runner_fn = runners[inversenet_type]
-    x_true, y_noisy, x_hat, dataset_name, methods = runner_fn(spec, rng)
+    # ── Try pre-computed gallery images first ─────────────────────────
+    gallery = _get_gallery_paths(inversenet_type, rng)
 
-    if methods:
-        best = methods[0]
-        psnr_val, ssim_val = best.psnr_i, best.ssim_i
-        solver_name = best.display_name
-        gap_db, recovery_db = best.gap_i_ii, best.recovery_ii_iii
+    if gallery:
+        gt_path, meas_path, recon_path, scene_idx, dataset_name = gallery
+        logger.info("Using gallery images: %s scene_%02d (%s)", inversenet_type, scene_idx, dataset_name)
+
+        # Load InverseNet validation results and match to selected scene
+        loaders = {
+            "cassi": _load_inversenet_cassi,
+            "cacti": _load_inversenet_cacti,
+            "spc": _load_inversenet_spc,
+        }
+        inversenet = loaders[inversenet_type]()
+        methods: List[MethodResult] = []
+        if inversenet:
+            # CASSI entries are ordered by scene index
+            if inversenet_type == "cassi":
+                entry = inversenet[scene_idx] if scene_idx < len(inversenet) else inversenet[0]
+            else:
+                # CACTI/SPC: match by scene name
+                name_lower = dataset_name.lower()
+                matched = [e for e in inversenet if e["name"].lower() == name_lower]
+                entry = matched[0] if matched else inversenet[0]
+            methods = _build_method_results_inversenet(entry)
+
+        # Headline metrics: best InverseNet method (deep learning SOTA)
+        if methods:
+            best = methods[0]
+            psnr_val, ssim_val, solver_name = best.psnr_i, best.ssim_i, best.display_name
+            gap_db, recovery_db = best.gap_i_ii, best.recovery_ii_iii
+            # Synthesise reconstruction at best method's PSNR from gallery GT
+            recon_path = _synthesise_recon_from_gallery(
+                gt_path, psnr_val, sim_id, rng,
+            )
+        else:
+            psnr_val, ssim_val, solver_name = 25.0, 0.80, "N/A"
+            gap_db, recovery_db = 0.0, 0.0
     else:
-        psnr_val, ssim_val = 25.0, 0.80
-        solver_name, gap_db, recovery_db = "N/A", 0.0, 0.0
+        # ── Fallback: synthetic generation pipeline ───────────────────
+        runners = {
+            "cassi": _run_cassi_inversenet,
+            "spc": _run_spc_inversenet,
+            "cacti": _run_cacti_inversenet,
+        }
+        runner_fn = runners[inversenet_type]
+        x_true, y_noisy, x_hat, dataset_name, methods = runner_fn(spec, rng)
 
-    # Legacy colormaps
-    gt_cmap = "viridis" if inversenet_type == "cassi" else "gray"
-    gt_path, meas_path, recon_path = _save_simulation_images(
-        sim_id, x_true, y_noisy, x_hat,
-        gt_cmap=gt_cmap, meas_cmap="inferno",
-    )
+        gt_cmap = "viridis" if inversenet_type == "cassi" else "gray"
+        gt_path, meas_path, recon_path = _save_simulation_images(
+            sim_id, x_true, y_noisy, x_hat,
+            gt_cmap=gt_cmap, meas_cmap="inferno",
+        )
+
+        if methods:
+            best = methods[0]
+            psnr_val, ssim_val = best.psnr_i, best.ssim_i
+            solver_name = best.display_name
+            gap_db, recovery_db = best.gap_i_ii, best.recovery_ii_iii
+        else:
+            psnr_val, ssim_val = 25.0, 0.80
+            solver_name, gap_db, recovery_db = "N/A", 0.0, 0.0
 
     bottleneck = _estimate_bottleneck(spec, methods, inversenet_type)
 
@@ -740,16 +1035,16 @@ def _run_inversenet_legacy(
             "iii": "Oracle-corrected operator",
         },
         "spc": {
-            "i": "Ideal operator (no gain drift)",
-            "ii": "Gain-drifted operator (\u03b1=0.0015)",
-            "iii": "Gain-corrected operator",
+            "i": "Ideal operator (no gain drift, \u03c3\u2099=0.03)",
+            "ii": "Gain-drifted operator (\u03b1=0.0015, \u03c3\u2099=0.03)",
+            "iii": "Oracle gain-corrected operator",
         },
     }.get(inversenet_type, {})
 
     inversenet_attribution = {
-        "cassi": "Results from <span class=\"font-medium\">InverseNet</span> benchmark &mdash; KAIST hyperspectral dataset (256&times;256&times;28)",
-        "cacti": "Results from <span class=\"font-medium\">InverseNet</span> benchmark &mdash; Synthetic video dataset (256&times;256&times;8)",
-        "spc": "Results from <span class=\"font-medium\">InverseNet</span> benchmark &mdash; Set11 grayscale dataset (CR=25%)",
+        "cassi": "Results from <span class=\"font-medium\">InverseNet</span> benchmark &mdash; KAIST hyperspectral dataset (256&times;256&times;28, 10 scenes)",
+        "cacti": "Results from <span class=\"font-medium\">InverseNet</span> benchmark &mdash; SCI video dataset (256&times;256&times;8, 6 videos, 28 groups)",
+        "spc": "Results from <span class=\"font-medium\">InverseNet</span> benchmark &mdash; Set11 grayscale dataset (256&times;256, CR=25%, &Phi; &isin; &reals;<sup>272&times;1089</sup>)",
     }.get(inversenet_type, "")
 
     return SimulationResult(

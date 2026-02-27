@@ -1559,3 +1559,74 @@ modalities:
         n_photons: 1.0e+02
         scenario: "Short acquisition, low statistics"
         read_sigma_fraction: 0.02
+
+  cryo_em:
+    model_id: "electron_detector"
+    parameters:
+      voltage_kv: 300
+      dose_e_per_A2: 40.0
+      dqe: 0.85
+    description: "Cryo-EM single particle imaging at 300 keV"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "High dose, thick ice"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard low-dose cryo-EM"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Ultra-low dose for radiation-sensitive specimens"
+        read_sigma_fraction: 0.02
+
+  compressive_holography:
+    model_id: "holographic_detector"
+    parameters:
+      wavelength_nm: 532
+      pixel_size_um: 5.0
+      na: 0.3
+      qe: 0.75
+    description: "Compressive digital holography with coherent illumination"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+06
+        scenario: "CW laser, long exposure"
+        read_sigma_fraction: 0.003
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard holographic exposure"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Pulsed illumination, short exposure"
+        read_sigma_fraction: 0.02
+
+  fluorescence_microscopy:
+    model_id: "microscopy_fluorescence"
+    parameters:
+      power_w: 0.002
+      wavelength_ex_nm: 488
+      wavelength_em_nm: 525
+      na: 1.4
+      n_medium: 1.515
+      qe: 0.82
+      exposure_s: 0.05
+    description: "Dual-PSF fluorescence microscopy with Stokes shift"
+    noise_model: "poisson_gaussian"
+    photon_levels:
+      bright:
+        n_photons: 1.0e+05
+        scenario: "High power illumination, bright fluorophores"
+        read_sigma_fraction: 0.005
+      standard:
+        n_photons: 1.0e+04
+        scenario: "Standard fluorescence imaging"
+        read_sigma_fraction: 0.01
+      low_light:
+        n_photons: 1.0e+03
+        scenario: "Low power, photosensitive specimen"
+        read_sigma_fraction: 0.02
