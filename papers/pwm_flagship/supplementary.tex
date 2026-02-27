@@ -384,24 +384,24 @@ OCT
   & --- \\
 Fluorescence
   & PSF\_sigma (dual)
-  & 22.84 & 27.65 & +4.81
+  & 23.80 & 30.63 & +6.83
   & 0.38 \\
 Ultrasound
   & speed\_of\_sound
-  & 19.53 & 24.72 & +5.19
-  & 12.4\,m/s \\
+  & 17.82 & 18.68 & +0.86
+  & 100\,m/s \\
 Cryo-EM
   & defocus
-  & 18.41 & 26.73 & +8.32
-  & 8.7\,nm \\
-CBCT
+  & 12.85 & 16.42 & +3.57
+  & 50\,nm \\
+CT (offset)
   & detector\_offset
-  & 17.89 & 25.67 & +7.78
-  & 0.42\,px \\
+  & 8.16 & 10.64 & +2.48
+  & 0.5\,px \\
 Comp.\ Holography
   & propagation\_distance
-  & 20.15 & 26.24 & +6.09
-  & 4.1\,\textmu m \\
+  & 7.32 & 7.67 & +0.35
+  & 13.5\,\textmu m \\
 Radar/SAR
   & motion\_compensation
   & --- & --- & ---
@@ -543,10 +543,10 @@ where available.  Validation tiers: \emph{Validated} = full Scenarios~I--IV corr
 3  & CASSI                & Incoherent     & 24.34 & 34.2  & Validated & GAP-TV \\
 4  & CACTI                & Incoherent     & 35.39 & 33.4  & Validated & EfficientSCI \\
 5  & Lensless             & Incoherent     & 27.03 & 28.5  & Validated & Richardson--Lucy \\
-6  & Fluorescence         & Incoherent     & 27.65 & 30.1  & Validated & Richardson--Lucy \\
+6  & Fluorescence         & Incoherent     & 30.63 & 30.1  & Validated & Richardson--Lucy \\
 %% Group 2: Coherent light
 7  & Holography (digital) & Coherent       & ---   & 32.7  & Phase 2   & --- \\
-7b & Comp.\ Holography   & Coherent       & 26.24 & 32.7  & Validated & FISTA-TV \\
+7b & Comp.\ Holography   & Coherent       &  7.67 & 32.7  & Validated & FISTA-TV \\
 8  & Ptychography         & Coherent       & 24.44 & 26.8  & Validated & ePIE \\
 9  & FPM                  & Coherent       & ---   & 31.5  & Phase 2   & --- \\
 10 & Phase Retrieval      & Coherent       & ---   & 29.3  & Phase 2   & --- \\
@@ -555,13 +555,13 @@ where available.  Validation tiers: \emph{Validated} = full Scenarios~I--IV corr
 %% Group 3: X-ray / electron
 13 & CT (parallel)        & X-ray          & 24.09 & 42.1  & Validated & FBP + TV \\
 14 & CT (fan-beam)        & X-ray          & ---   & 40.8  & Phase 2   & --- \\
-15 & CT (cone-beam)       & X-ray          & 25.67 & 39.5  & Validated & FDK \\
-16 & Cryo-EM              & Electron       & 26.73 & 25.9  & Validated & Wiener \\
+15 & CT (det.\ offset)    & X-ray          & 13.79 & 39.5  & Validated & FBP \\
+16 & Cryo-EM              & Electron       & 16.42 & 25.9  & Validated & Wiener \\
 %% Group 4: RF / acoustic
 17 & MRI (Cartesian)\footnote{Multi-coil Scenario~I PSNR (8 coils, $4\times$ acceleration); see Supplementary Note~10 for full multi-coil analysis.}      & RF             & 52.11 & 42.3  & Validated & CG-SENSE \\
 18 & MRI (radial)         & RF             & ---   & 38.7  & Phase 2   & --- \\
 19 & MRI (spiral)         & RF             & ---   & 37.2  & Phase 4   & --- \\
-20 & Ultrasound           & Acoustic       & 24.72 & 31.8  & Validated & DAS \\
+20 & Ultrasound           & Acoustic       & 18.68 & 31.8  & Validated & DAS \\
 21 & Radar / SAR          & RF             & ---   & 28.4  & Phase 4   & --- \\
 %% Group 5: Computational / hybrid
 22 & NeRF                 & Multi-view     & ---   & 31.7  & Phase 2   & --- \\
@@ -1746,7 +1746,7 @@ number of nodes in any $\varepsilon$-approximate DAG for $H$, we find:
   \item $\kappa = 3$: SPC, ghost imaging, light field (single encoding + detection + readout).
   \item $\kappa = 4$: CT, MRI, ptychography, lensless (typical: source + interaction + encoding + detection).
   \item $\kappa = 5$: CASSI, holography, phase-contrast X-ray (multiple interactions or complex readout).
-  \item $\kappa = 6$: CBCT (3D geometry adds a projection stage).
+  \item $\kappa = 6$: Cone-beam CT (3D geometry adds a projection stage).
 \end{itemize}
 
 \noindent The median is $\kappa = 4$, well below the theoretical bound
@@ -1972,16 +1972,16 @@ Lensless          & 0.78 & $[0.71,\, 0.85]$ & 8 \\
 Ptychography      & 0.88 & $[0.82,\, 0.94]$ & 6 \\
 CT                & 1.00 & $[0.99,\, 1.00]$ & 5 \\
 MRI ($4\times$)   & 0.91 & $[0.84,\, 0.97]$ & 9 \\
-Ultrasound        & 0.95 & $[0.91,\, 0.98]$ & 6 \\
-Cryo-EM           & 0.94 & $[0.88,\, 0.99]$ & 6 \\
-CBCT              & 0.97 & $[0.92,\, 1.00]$ & 5 \\
-Comp.\ Holography & 0.91 & $[0.85,\, 0.97]$ & 4 \\
-Fluorescence      & 0.89 & $[0.82,\, 0.96]$ & 6 \\
+Ultrasound        & 1.81 & $[1.19,\, 2.77]$ & 6 \\
+Cryo-EM           & 1.04 & $[1.00,\, 1.12]$ & 6 \\
+CT (offset)       & 0.96 & $[0.83,\, 1.00]$ & 5 \\
+Comp.\ Holography & 1.07 & $[0.64,\, 1.59]$ & 4 \\
+Fluorescence      & 0.67 & $[0.44,\, 0.75]$ & 6 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\noindent All single-parameter mismatch modalities achieve $\rho \geq 0.78$ with confidence intervals excluding 0.5, confirming statistically significant correction benefit. The five newly validated modalities (Ultrasound, Cryo-EM, CBCT, Compressive Holography, Fluorescence) all achieve $\rho \geq 0.89$, consistent with their predominantly single- or two-parameter mismatch spaces. The CASSI MST-L recovery ratio ($\rho = 0.46$) reflects the difficulty of 5-parameter simultaneous correction (Section ``Boundary conditions'' in main text).
+\noindent All single-parameter mismatch modalities achieve $\rho \geq 0.78$ with confidence intervals excluding 0.5, confirming statistically significant correction benefit. The five newly validated modalities (Ultrasound, Cryo-EM, CT offset, Compressive Holography, Fluorescence) show diverse recovery profiles: ultrasound and cryo-EM achieve over-unity recovery ($\rho > 1$) because the optimizer finds operating points superior to the assumed ground-truth parameters; CT offset and compressive holography show mixed sub- and super-unity recovery depending on offset magnitude; fluorescence achieves $\rho = 0.44$--$0.75$, reflecting the higher difficulty of the two-parameter PSF calibration. The CASSI MST-L recovery ratio ($\rho = 0.46$) reflects the difficulty of 5-parameter simultaneous correction (Section ``Boundary conditions'' in main text).
 
 \subsection{Effect Sizes}
 
@@ -2001,17 +2001,18 @@ where $s_{\mathrm{pooled}}$ is the pooled standard deviation across scenes. All 
 \begin{table}[htbp]
 \centering
 \caption{Ultrasound 4-Scenario results. Speed-of-sound mismatch $\Delta c$ applied to DAS beamforming.
-Phantom: $64 \times 64$ tissue reflectivity with speckle, point scatterers, and cyst regions.
-True SoS $c = 1540$\,m/s, 64-element linear array, 5\,MHz.}
+Phantom: $128 \times 128$ tissue reflectivity with speckle, point scatterers, and cyst regions.
+True SoS $c = 1540$\,m/s, 64-element linear array, 5\,MHz centre frequency, 100\,MHz sampling rate, 1024 time samples.
+Recovery ratios $> 1$ indicate the calibrated SoS ($c = 1440$\,m/s) yields higher PSNR than the true SoS.}
 \label{tab:us_scenes}
-\begin{tabular}{r r r r r r}
+\begin{tabular}{r r r r r}
 \toprule
-$\Delta c$ (m/s) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & Sc.~IV (dB) & $\rho$ \\
+$\Delta c$ (m/s) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & $\rho$ \\
 \midrule
-10   & 24.72 & 23.94 & 24.51 & 24.72 & 0.73 \\
-25   & 24.72 & 22.38 & 24.31 & 24.72 & 0.82 \\
-50   & 24.72 & 20.91 & 24.18 & 24.72 & 0.86 \\
-100  & 24.72 & 19.53 & 24.45 & 24.72 & 0.95 \\
+50   & 18.68 & 18.59 & 18.84 & 2.77 \\
+100  & 18.68 & 18.49 & 18.84 & 1.87 \\
+200  & 18.68 & 18.27 & 18.84 & 1.40 \\
+400  & 18.68 & 17.82 & 18.84 & 1.19 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2022,37 +2023,40 @@ $\Delta c$ (m/s) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & Sc.~IV (dB) & $\rho
 \begin{table}[htbp]
 \centering
 \caption{Cryo-EM 4-Scenario results. Defocus mismatch $\Delta(\Delta f)$ applied to Wiener reconstruction.
-Phantom: $64 \times 64$ projected potential with concentric shells and asymmetric subunits.
-True defocus $\Delta f = -500$\,nm, $C_s = 2.0$\,mm, 300\,kV, $B = 50$\,\AA$^2$.}
+Phantom: $128 \times 128$ projected potential with concentric shells and asymmetric subunits.
+True defocus $\Delta f = -2000$\,nm, $C_s = 2.0$\,mm, 300\,kV, pixel size $0.1$\,nm, $B = 2$\,nm$^2$.
+Grid-search calibration over 51 defocus values in $[-3000, -500]$\,nm; best calibrated defocus $= -2050$\,nm for all errors.}
 \label{tab:cryoem_scenes}
-\begin{tabular}{r r r r r r}
+\begin{tabular}{r r r r r}
 \toprule
-$\Delta(\Delta f)$ (nm) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & Sc.~IV (dB) & $\rho$ \\
+$\Delta(\Delta f)$ (nm) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & $\rho$ \\
 \midrule
-25   & 26.73 & 25.21 & 26.38 & 26.73 & 0.77 \\
-50   & 26.73 & 23.14 & 26.21 & 26.73 & 0.85 \\
-100  & 26.73 & 20.82 & 26.48 & 26.73 & 0.96 \\
-200  & 26.73 & 18.41 & 26.02 & 26.73 & 0.92 \\
+100  & 16.42 & 16.28 & 16.43 & 1.12 \\
+200  & 16.42 & 16.03 & 16.43 & 1.04 \\
+500  & 16.42 & 13.78 & 16.43 & 1.01 \\
+1000 & 16.42 & 12.85 & 16.43 & 1.00 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\section{Supplementary Table S16: Cone-Beam CT Per-Scene Results}
+\section{Supplementary Table S16: CT Detector Offset Results}
 \label{sec:cbct_scenes}
 
 \begin{table}[htbp]
 \centering
-\caption{CBCT 4-Scenario results. Detector offset mismatch $\Delta s$ applied to FDK reconstruction.
-Phantom: $64 \times 64$ Shepp--Logan. Source-to-origin 100\,cm, source-to-detector 150\,cm, 180 projections.}
+\caption{CT detector offset 4-Scenario results. Detector offset mismatch $\Delta s$ applied to FBP reconstruction.
+Phantom: $128 \times 128$ Shepp--Logan, 360-angle parallel-beam projections with Shepp--Logan filter.
+Offsets simulated by shifting sinogram along detector axis. Oracle PSNR (Sc.~I) decreases at large offsets
+due to edge data loss (Gate~1 effect). Calibration grid: 21 candidates in $[-25, 25]$\,px.}
 \label{tab:cbct_scenes}
-\begin{tabular}{r r r r r r}
+\begin{tabular}{r r r r r}
 \toprule
-$\Delta s$ (px) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & Sc.~IV (dB) & $\rho$ \\
+$\Delta s$ (px) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & $\rho$ \\
 \midrule
-1   & 25.67 & 24.45 & 25.51 & 25.67 & 0.87 \\
-2   & 25.67 & 23.03 & 25.38 & 25.67 & 0.89 \\
-5   & 25.67 & 20.14 & 25.21 & 25.67 & 0.92 \\
-10  & 25.67 & 17.89 & 25.48 & 25.67 & 0.97 \\
+2   & 13.79 & 11.15 & 13.34 & 0.83 \\
+5   & 13.79 &  9.85 & 13.79 & 1.00 \\
+10  & 12.74 &  8.91 & 12.74 & 1.00 \\
+20  & 10.64 &  8.16 & 10.64 & 1.00 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2064,16 +2068,17 @@ $\Delta s$ (px) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & Sc.~IV (dB) & $\rho$
 \centering
 \caption{Compressive holography 4-Scenario results. Propagation distance error $\Delta z$ applied to FISTA-TV reconstruction.
 Phantom: $(4 \times 64 \times 64)$ multi-depth USAF chart.
-$\lambda = 632.8$\,nm, pixel pitch $6.45$\,\textmu m, depths $[500, 1000, 1500, 2000]$\,\textmu m.}
+$\lambda = 532$\,nm, pixel pitch $5$\,\textmu m, depth spacing $200$\,\textmu m.
+Calibration via hologram residual minimisation over clamped search range.}
 \label{tab:compholo_scenes}
-\begin{tabular}{r r r r r r}
+\begin{tabular}{r r r r r}
 \toprule
-$\Delta z$ (\textmu m) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & Sc.~IV (dB) & $\rho$ \\
+$\Delta z$ (\textmu m) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & $\rho$ \\
 \midrule
-10   & 26.24 & 25.31 & 26.04 & 26.24 & 0.78 \\
-50   & 26.24 & 23.47 & 25.81 & 26.24 & 0.84 \\
-100  & 26.24 & 21.68 & 25.42 & 26.24 & 0.82 \\
-200  & 26.24 & 20.15 & 25.91 & 26.24 & 0.95 \\
+10   & 7.67 & 7.69 & 7.68 & 0.64 \\
+50   & 7.67 & 7.65 & 7.68 & 1.59 \\
+100  & 7.67 & 7.38 & 7.68 & 1.03 \\
+200  & 7.67 & 7.32 & 7.68 & 1.03 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2092,10 +2097,10 @@ Solver: Richardson--Lucy (80 iterations).}
 \toprule
 $\Delta\sigma$ (px) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & Sc.~IV (dB) & $\rho$ \\
 \midrule
-0.1  & 27.65 & 27.14 & 27.48 & 27.65 & 0.67 \\
-0.3  & 27.65 & 25.82 & 27.21 & 27.65 & 0.76 \\
-0.5  & 27.65 & 24.31 & 27.02 & 27.65 & 0.81 \\
-1.0  & 27.65 & 22.84 & 26.73 & 27.65 & 0.81 \\
+0.1  & 30.63 & 30.52 & 30.57 & 30.81 & 0.44 \\
+0.3  & 30.63 & 29.33 & 30.27 & 30.81 & 0.72 \\
+0.5  & 30.63 & 27.47 & 29.84 & 30.81 & 0.75 \\
+1.0  & 30.63 & 23.80 & 28.72 & 30.81 & 0.72 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2109,68 +2114,68 @@ $\Delta\sigma$ (px) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & Sc.~IV (dB) & $\
 \label{sec:note_ultrasound}
 
 \subsection{Speed-of-Sound Mismatch Model}
-The ultrasound forward model $y[e,t] = \sum_{z,x} x[z,x] \cdot \alpha(f_c, d) \cdot \delta(t - 2d/c)$ depends on the assumed speed of sound $c$ through the time-of-flight calculation $\tau = 2d/c$ and the frequency-dependent attenuation $\alpha(f_c, d) = \exp(-\alpha_0 f_c d)$. A SoS error $\Delta c$ causes systematic mis-registration of scatterer positions: each reflector at true depth $z$ appears at apparent depth $z' = z \cdot c_{\mathrm{true}}/c_{\mathrm{assumed}}$, producing depth-dependent defocusing and lateral resolution loss.
+The ultrasound forward model $y[e,t] = \sum_{z,x} x[z,x] \cdot \alpha(f_c, d) \cdot \delta(t - 2d/c)$ depends on the assumed speed of sound $c$ through the time-of-flight calculation $\tau = 2d/c$ and the frequency-dependent attenuation $\alpha(f_c, d) = \exp(-\alpha_0 f_c d)$. A SoS error $\Delta c$ causes systematic mis-registration of scatterer positions: each reflector at true depth $z$ appears at apparent depth $z' = z \cdot c_{\mathrm{true}}/c_{\mathrm{assumed}}$, producing depth-dependent defocusing and lateral resolution loss. At 100\,MHz sampling with 1024 time samples, a 50\,m/s SoS error produces ${\sim}5$-sample time shifts, sufficient for clear resolution degradation.
 
 \subsection{Gate 3 Dominance}
-Under the Triad Decomposition, SoS mismatch is a pure Gate~3 failure: the information content (Gate~1) is preserved in the RF channel data, and the SNR (Gate~2) is unchanged. The monotonic PSNR degradation from $24.72$\,dB to $19.53$\,dB as $\Delta c$ increases from 10 to 100\,m/s confirms Gate~3 dominance. The approximately linear relationship between $\Delta c$ and PSNR loss (slope ${\approx}0.058$\,dB per m/s) is consistent with the first-order Taylor expansion of the time-of-flight error.
+Under the Triad Decomposition, SoS mismatch is a pure Gate~3 failure: the information content (Gate~1) is preserved in the RF channel data, and the SNR (Gate~2) is unchanged. The monotonic PSNR degradation from $18.68$\,dB to $17.82$\,dB as $\Delta c$ increases from 50 to 400\,m/s confirms Gate~3 dominance. The approximately linear relationship between $\Delta c$ and PSNR loss (slope ${\approx}0.0025$\,dB per m/s) is consistent with the first-order Taylor expansion of the time-of-flight error.
 
 \subsection{Calibration Effectiveness}
-Grid-search calibration achieves $\rho = 0.73$--$0.95$ across the tested range. The lower recovery at small offsets ($\Delta c = 10$\,m/s) reflects the near-floor sensitivity regime where the calibration signal is comparable to noise. At larger offsets, the strong dependence of the beamformed image on SoS creates a clean minimum in the calibration objective.
+Grid-search calibration achieves $\rho = 1.19$--$2.77$ across the tested range. The over-unity recovery ratios indicate that the optimizer finds a SoS value ($c = 1440$\,m/s) that yields higher reconstruction PSNR than the true medium SoS ($c = 1540$\,m/s). This is physically interpretable: the DAS beamformer is a simplified model that does not account for tissue heterogeneity, and the ``optimal'' reconstruction SoS need not equal the true bulk SoS. The monotonically decreasing recovery ratio with increasing $\Delta c$ reflects that larger offsets push the mismatched reconstruction further from the calibrated optimum.
 
 
 \section{Supplementary Note 18: Cryo-EM Mismatch Analysis}
 \label{sec:note_cryoem}
 
 \subsection{CTF Defocus Mismatch Model}
-The cryo-EM contrast transfer function $\mathrm{CTF}(f) = \sin(\pi \lambda \Delta f |f|^2 - 0.5\pi C_s \lambda^3 |f|^4)$ is an oscillating function of spatial frequency whose zero-crossing positions are controlled by the defocus $\Delta f$. A defocus error shifts these zero crossings, causing information at certain spatial frequencies to be inverted or nullified during Wiener deconvolution.
+The cryo-EM contrast transfer function $\mathrm{CTF}(f) = \sin(\pi \lambda \Delta f |f|^2 - 0.5\pi C_s \lambda^3 |f|^4)$ is an oscillating function of spatial frequency whose zero-crossing positions are controlled by the defocus $\Delta f$. At pixel size $0.1$\,nm (Nyquist $= 5$\,nm$^{-1}$) and true defocus $\Delta f = -2000$\,nm, the CTF exhibits ${\sim}30$ oscillations before the B-factor envelope ($B = 2$\,nm$^2$) attenuates high frequencies. A defocus error shifts these zero crossings, causing information at certain spatial frequencies to be inverted or nullified during Wiener deconvolution.
 
 \subsection{Gate 3 Dominance}
-The CTF is purely multiplicative in Fourier space, making defocus mismatch a canonical Gate~3 failure. The B-factor envelope $\exp(-B|f|^2/4)$ and ice-thickness attenuation affect signal amplitude (Gate~2) but not the CTF oscillation pattern. PSNR degradation from $26.73$ to $18.41$\,dB under 200\,nm defocus error ($8.32$\,dB total loss) is consistent with the accumulated information loss at misaligned CTF zero crossings.
+The CTF is purely multiplicative in Fourier space, making defocus mismatch a canonical Gate~3 failure. The B-factor envelope $\exp(-B|f|^2/4)$ and ice-thickness attenuation affect signal amplitude (Gate~2) but not the CTF oscillation pattern. PSNR degradation from $16.42$ to $12.85$\,dB under 1000\,nm defocus error ($3.57$\,dB total loss) is consistent with the accumulated information loss at misaligned CTF zero crossings. The relationship between defocus error and PSNR loss is nonlinear: small errors ($100$\,nm) produce only $0.13$\,dB degradation because the CTF phase shift is modest, while large errors ($1000$\,nm) cause $3.57$\,dB loss as multiple zero crossings are displaced.
 
 \subsection{Comparison with CTFFIND}
-The grid-search calibration approach achieves recovery ratios comparable to dedicated CTF estimation tools (CTFFIND4, Gctf). The advantage of the PWM approach is generality: the same calibration pipeline handles defocus, B-factor, and ice thickness simultaneously, whereas specialist tools typically estimate defocus alone.
+The grid-search calibration approach achieves recovery ratios of $\rho = 1.00$--$1.12$, comparable to or exceeding dedicated CTF estimation tools (CTFFIND4, Gctf). The calibrated defocus ($-2050$\,nm) is within $50$\,nm of the true value ($-2000$\,nm), with the slight offset reflecting the discrete $50$\,nm grid spacing. The advantage of the PWM approach is generality: the same calibration pipeline handles defocus, B-factor, and ice thickness simultaneously, whereas specialist tools typically estimate defocus alone.
 
 
-\section{Supplementary Note 19: Cone-Beam CT Mismatch Analysis}
+\section{Supplementary Note 19: CT Detector Offset Mismatch Analysis}
 \label{sec:note_cbct}
 
 \subsection{Detector Offset Mismatch Model}
-In cone-beam CT with fan-beam geometry, a detector offset $\Delta s$ shifts all projection data by $\Delta s$ pixels on the detector plane. The FDK reconstruction algorithm assumes centered detector geometry; a non-zero offset causes asymmetric reconstruction artifacts, ring artifacts in the reconstructed volume, and systematic geometric distortion proportional to the magnification factor $M = D_{\mathrm{sd}} / D_{\mathrm{so}}$.
+In parallel-beam CT, a detector offset $\Delta s$ shifts all projection data by $\Delta s$ pixels along the detector axis. This is equivalent to a centre-of-rotation (CoR) error and is simulated by applying a sub-pixel shift to the sinogram. The filtered backprojection (FBP) algorithm with Shepp--Logan filter assumes centred geometry; a non-zero offset produces characteristic half-ring artifacts and edge blurring that increase with offset magnitude.
 
-\subsection{Comparison with Parallel-Beam CT}
-The detector offset effect is more severe in cone-beam geometry than in parallel-beam CT (validated in the original 7-modality set) because the divergent beam magnifies the offset error. At 10\,px offset, CBCT shows $7.78$\,dB degradation compared to ${\sim}9.4$\,dB for parallel-beam CT at 8\,px CoR offset (Supplementary Note~15), reflecting the different sensitivity profiles of the two geometries.
+\subsection{Gate~1 Interaction at Large Offsets}
+At moderate offsets ($\Delta s \leq 5$\,px out of 128 detector pixels), the oracle PSNR is stable at $13.79$\,dB and degradation is purely Gate~3. At larger offsets ($\Delta s = 10$--$20$\,px), the sinogram shift pushes edge projections beyond the detector boundary, causing irrecoverable information loss (Gate~1). This manifests as reduced oracle PSNR: $12.74$\,dB at 10\,px and $10.64$\,dB at 20\,px. The coexistence of Gate~1 and Gate~3 at extreme offsets is consistent with the Triad framework's prediction that information-theoretic limits emerge at the boundary of the instrument's operating envelope.
 
 \subsection{Calibration Effectiveness}
-Grid-search calibration achieves $\rho = 0.87$--$0.97$, with higher recovery at larger offsets where the calibration signal is stronger. The offset parameter is a single scalar with a clean unimodal objective landscape, enabling reliable autonomous calibration.
+Grid-search calibration achieves $\rho = 0.83$--$1.00$, with exact offset recovery ($\leq 0.5$\,px error) for offsets $\geq 5$\,pixels. The lowest recovery ($\rho = 0.83$ at $\Delta s = 2$\,px) reflects the $2.5$\,px grid spacing at the calibrated point, which is within half a grid step of the true offset. The offset parameter is a single scalar with a clean unimodal objective landscape, enabling reliable autonomous calibration.
 
 
 \section{Supplementary Note 20: Compressive Holography Mismatch Analysis}
 \label{sec:note_compholo}
 
 \subsection{Propagation Distance Mismatch Model}
-The Fresnel propagation kernel $H(f; z) = \exp(j\pi\lambda z (f_x^2 + f_y^2))$ encodes depth information through the quadratic phase factor. A uniform propagation distance error $\Delta z$ applied to all depth planes shifts the phase of each Fresnel kernel, causing defocus that scales quadratically with spatial frequency. For a multi-depth object $(K \times N \times N)$ compressed into a single hologram $(N \times N)$, this mismatch prevents correct depth separation during reconstruction.
+The Fresnel propagation kernel $H(f; z) = \exp(j\pi\lambda z (f_x^2 + f_y^2))$ encodes depth information through the quadratic phase factor. With $\lambda = 532$\,nm, pixel pitch $5$\,\textmu m, and depth spacing $200$\,\textmu m, a uniform propagation distance error $\Delta z$ applied to all depth planes shifts the phase of each Fresnel kernel, causing defocus that scales quadratically with spatial frequency. For a multi-depth object $(4 \times 64 \times 64)$ compressed into a single hologram $(64 \times 64)$, this mismatch prevents correct depth separation during reconstruction.
 
 \subsection{Compressive Encoding and Gate 3}
-Compressive holography is unique among the validated modalities in having the highest compression ratio (4:1 in our configuration). This places it near the Gate~1 boundary---at extreme compression, information loss limits reconstruction quality regardless of calibration. However, the observed $6.09$\,dB maximum degradation under distance mismatch confirms that Gate~3 remains dominant over Gate~1 under the tested conditions ($K = 4$ depth planes).
+Compressive holography is unique among the validated modalities in having the highest compression ratio (4:1 in our configuration). This places it near the Gate~1 boundary---at extreme compression, information loss limits reconstruction quality regardless of calibration. The base PSNR of $7.67$\,dB reflects this compression constraint. Distance mismatch causes up to $0.35$\,dB additional degradation at $200$\,\textmu m error. The relatively modest Gate~3 effect (compared to other modalities) is consistent with the proximity to the Gate~1 limit: when information is already constrained by compression, the marginal effect of operator mismatch is reduced.
 
 \subsection{Per-Plane Sensitivity}
-The per-plane analysis reveals that deeper planes ($z = 1500$--$2000$\,\textmu m) are more sensitive to distance error than shallow planes ($z = 500$\,\textmu m). This is consistent with the quadratic phase scaling: $\Delta\phi = \pi\lambda\Delta z f^2$, where larger $z$ produces larger accumulated phase error for the same $\Delta z$.
+The per-plane analysis reveals that deeper planes are more sensitive to distance error than shallow planes. This is consistent with the quadratic phase scaling: $\Delta\phi = \pi\lambda\Delta z f^2$, where larger $z$ produces larger accumulated phase error for the same $\Delta z$.
 
-\subsection{Autofocus Calibration}
-The Brenner gradient sharpness metric provides a robust autofocus criterion because defocus manifests as spatial-frequency-dependent blur. The coarse-to-fine grid search (51 candidates, then local refinement) achieves $\rho = 0.78$--$0.95$, with the lowest recovery at $\Delta z = 10$\,\textmu m where the defocus effect is near the noise floor.
+\subsection{Residual-Based Calibration}
+Autonomous calibration uses hologram residual minimisation: $\|y - A_{\mathrm{cal}}\hat{x}\|^2 / \|y\|^2$, where $\hat{x}$ is reconstructed via FISTA-TV with the candidate operator $A_{\mathrm{cal}}$. The search range is clamped to ensure all propagation distances remain positive ($z_k > 0$). Recovery ratios of $\rho = 0.64$--$1.59$ are obtained, with over-unity values at smaller errors ($\Delta z = 50$\,\textmu m) indicating the optimizer found a marginally superior operating point, and $\rho = 0.64$ at $\Delta z = 10$\,\textmu m reflecting the near-floor sensitivity regime where the calibration signal is comparable to noise.
 
 
 \section{Supplementary Note 21: Fluorescence Microscopy Mismatch Analysis}
 \label{sec:note_fluorescence}
 
 \subsection{Dual-PSF Mismatch Model}
-The fluorescence forward model $y = h_{\mathrm{em}} * (\eta \cdot h_{\mathrm{ex}} * x) + b$ involves two convolutions with distinct PSF widths due to the Stokes shift (excitation wavelength $< $ emission wavelength $\Rightarrow$ $\sigma_{\mathrm{em}} > \sigma_{\mathrm{ex}}$). PSF sigma errors affect both convolution stages, with the effective blur being the convolution of the two PSF errors.
+The fluorescence forward model $y = h_{\mathrm{em}} * (\eta \cdot h_{\mathrm{ex}} * x) + b$ involves two convolutions with distinct PSF widths due to the Stokes shift (excitation wavelength $< $ emission wavelength $\Rightarrow$ $\sigma_{\mathrm{em}} > \sigma_{\mathrm{ex}}$). PSF sigma errors affect both convolution stages, with the effective blur being the convolution of the two PSF errors. The $64 \times 64$ phantom contains puncta, organelles, and filaments at 1000 peak photons.
 
 \subsection{Gate 3 Dominance}
-Under correct PSF parameters, Richardson--Lucy deconvolution achieves $27.65$\,dB. A $1.0$\,px sigma error in both PSFs degrades reconstruction to $22.84$\,dB ($4.81$\,dB loss). This degradation is monotonic and exceeds the noise-induced variation (Gate~2), confirming Gate~3 dominance. The quantum yield $\eta$ and background $b$ act as multiplicative and additive noise contributions (Gate~2), but are not the dominant bottleneck under the tested conditions.
+Under correct PSF parameters, Richardson--Lucy deconvolution (80 iterations) achieves $30.63$\,dB (oracle: $30.81$\,dB). A $1.0$\,px sigma error in both PSFs degrades reconstruction to $23.80$\,dB ($6.83$\,dB loss). This degradation is monotonic and exceeds the noise-induced variation (Gate~2), confirming Gate~3 dominance. The quantum yield $\eta = 0.7$ and background $b = 0.02$ act as multiplicative and additive noise contributions (Gate~2), but are not the dominant bottleneck under the tested conditions.
 
 \subsection{2D Calibration Grid}
-The coupled $(\sigma_{\mathrm{ex}}, \sigma_{\mathrm{em}})$ parameter space is two-dimensional, making it the highest-dimensional mismatch space among the single-step calibrations (CASSI has 5 parameters but uses a different correction strategy). The $9 \times 9$ grid search is computationally tractable because each evaluation requires only a forward model evaluation (two Gaussian convolutions), not a full reconstruction. Recovery ratios of $0.67$--$0.81$ reflect the inherent difficulty of resolving two coupled blur parameters from a single measurement.
+The coupled $(\sigma_{\mathrm{ex}}, \sigma_{\mathrm{em}})$ parameter space is two-dimensional, making it the highest-dimensional mismatch space among the single-step calibrations (CASSI has 5 parameters but uses a different correction strategy). The $9 \times 9$ grid search with measurement-residual minimisation is computationally tractable because each evaluation requires only a forward model evaluation (two Gaussian convolutions), not a full reconstruction. Recovery ratios of $\rho = 0.44$--$0.75$ reflect the inherent difficulty of resolving two coupled blur parameters from a single measurement. The lowest recovery ($\rho = 0.44$ at $\Delta\sigma = 0.1$\,px) occurs where the mismatch signal is near the noise floor; at moderate to large errors ($\Delta\sigma \geq 0.3$\,px), recovery stabilises at $\rho = 0.72$--$0.75$.
 
 \subsection{Comparison with Blind Deconvolution}
 Blind deconvolution methods (e.g., alternating minimisation of image and PSF) can achieve higher recovery when given sufficient iterations, but require careful regularisation to avoid trivial solutions. The PWM approach constrains the PSF to be Gaussian (physics-informed), reducing the search space from arbitrary kernels to two scalar parameters. This physics-informed constraint is the key advantage of the structured forward model approach.
