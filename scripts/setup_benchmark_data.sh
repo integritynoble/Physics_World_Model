@@ -10,6 +10,7 @@
 #   ./scripts/setup_benchmark_data.sh sd_cassi      # download only sd_cassi
 #   ./scripts/setup_benchmark_data.sh cacti         # download only cacti
 #   ./scripts/setup_benchmark_data.sh --challenge   # download only challenge HDF5 files
+#   ./scripts/setup_benchmark_data.sh --checkpoints  # download pretrained model weights
 #   ./scripts/setup_benchmark_data.sh --list        # list available datasets
 #
 # Prerequisites:
@@ -27,9 +28,13 @@ GCS_BUCKET="gs://pwm-benchmark-datasets"
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BENCHMARK_DIR="${REPO_ROOT}/datasets/benchmark"
 CHALLENGE_DIR="${REPO_ROOT}/platform/pwm_platform/static/benchmark-data/challenge-data/v1.0"
+CHECKPOINT_DIR="${REPO_ROOT}/checkpoint"
 
 # Available benchmark datasets
 DATASETS=(sd_cassi cacti spc_kronecker)
+
+# Available model checkpoints (GPU algorithms)
+CHECKPOINTS=(DRUNet DnCNN ELP-Unfolding EfficientSCI HATNet-SPI ISTA-Net MST MST-HDNet PnP-CASSI PnP-SCI ProxUnroll)
 
 usage() {
     echo "Usage: $0 [OPTIONS] [DATASET...]"
@@ -39,15 +44,21 @@ usage() {
     echo "Datasets: ${DATASETS[*]}"
     echo ""
     echo "Options:"
-    echo "  --challenge    Download only challenge HDF5 files (no source images)"
-    echo "  --list         List available datasets and their sizes on GCS"
-    echo "  --help         Show this help"
+    echo "  --challenge      Download only challenge HDF5 files (no source images)"
+    echo "  --checkpoints    Download pretrained model weights (17 GB total)"
+    echo "  --checkpoint X   Download a specific checkpoint (e.g. ELP-Unfolding)"
+    echo "  --all            Download everything (datasets + checkpoints)"
+    echo "  --list           List available datasets, checkpoints, and sizes"
+    echo "  --help           Show this help"
     echo ""
     echo "Examples:"
-    echo "  $0                     # Download all datasets (source + challenge)"
-    echo "  $0 sd_cassi cacti      # Download specific datasets"
-    echo "  $0 --challenge         # Download only challenge HDF5 files"
-    echo "  $0 --challenge cacti   # Download only cacti challenge files"
+    echo "  $0                          # Download all datasets (source + challenge)"
+    echo "  $0 sd_cassi cacti           # Download specific datasets"
+    echo "  $0 --challenge              # Download only challenge HDF5 files"
+    echo "  $0 --challenge cacti        # Download only cacti challenge files"
+    echo "  $0 --checkpoints            # Download all model weights"
+    echo "  $0 --checkpoint ELP-Unfolding  # Download one checkpoint"
+    echo "  $0 --all                    # Download datasets + checkpoints"
 }
 
 list_datasets() {
@@ -66,6 +77,15 @@ list_datasets() {
         done
         echo ""
     done
+
+    echo "Available model checkpoints on GCS:"
+    echo ""
+    for ckpt in "${CHECKPOINTS[@]}"; do
+        size=$(gsutil du -sh "${GCS_BUCKET}/checkpoint/${ckpt}/" 2>/dev/null | head -1 | awk '{print $1" "$2}')
+        echo "  ${ckpt}: ${size:-not available}"
+    done
+    echo ""
+    gsutil du -sh "${GCS_BUCKET}/checkpoint/" 2>/dev/null | head -1 | awk '{print "  Total checkpoints: "$1" "$2}'
 }
 
 download_source() {
@@ -93,23 +113,48 @@ download_challenge() {
     echo "    Done."
 }
 
+download_checkpoints() {
+    local target="$1"  # "all" or specific checkpoint name
+    if [ "$target" = "all" ]; then
+        echo "==> Downloading all model checkpoints (17 GB)..."
+        mkdir -p "${CHECKPOINT_DIR}"
+        gsutil -m rsync -r "${GCS_BUCKET}/checkpoint/" "${CHECKPOINT_DIR}/"
+        echo "    Done: ${CHECKPOINT_DIR}/"
+    else
+        echo "==> Downloading checkpoint: ${target}"
+        mkdir -p "${CHECKPOINT_DIR}/${target}"
+        gsutil -m rsync -r "${GCS_BUCKET}/checkpoint/${target}/" "${CHECKPOINT_DIR}/${target}/"
+        echo "    Done: ${CHECKPOINT_DIR}/${target}/"
+    fi
+}
+
 # Parse arguments
 CHALLENGE_ONLY=false
+DOWNLOAD_CHECKPOINTS=false
+DOWNLOAD_ALL=false
+CHECKPOINT_TARGET=""
 SELECTED=()
 
 for arg in "$@"; do
     case "$arg" in
         --challenge) CHALLENGE_ONLY=true ;;
+        --checkpoints) DOWNLOAD_CHECKPOINTS=true ;;
+        --all) DOWNLOAD_ALL=true ;;
         --list) list_datasets; exit 0 ;;
         --help|-h) usage; exit 0 ;;
-        *) SELECTED+=("$arg") ;;
+        --checkpoint)
+            DOWNLOAD_CHECKPOINTS=true
+            # Next arg will be captured as checkpoint name
+            ;;
+        *)
+            if [ "$DOWNLOAD_CHECKPOINTS" = true ] && [ -z "$CHECKPOINT_TARGET" ] && [[ " ${CHECKPOINTS[*]} " =~ " ${arg} " ]]; then
+                CHECKPOINT_TARGET="$arg"
+            else
+                SELECTED+=("$arg")
+            fi
+            ;;
     esac
 done
-
-# Default: all datasets
-if [ ${#SELECTED[@]} -eq 0 ]; then
-    SELECTED=("${DATASETS[@]}")
-fi
 
 # Verify gsutil is available
 if ! command -v gsutil &>/dev/null; then
@@ -120,6 +165,24 @@ fi
 
 echo "PWM Benchmark Data Setup"
 echo "========================"
+
+# Handle --checkpoints only mode
+if [ "$DOWNLOAD_CHECKPOINTS" = true ] && [ "$DOWNLOAD_ALL" = false ] && [ ${#SELECTED[@]} -eq 0 ] && [ "$CHALLENGE_ONLY" = false ]; then
+    if [ -n "$CHECKPOINT_TARGET" ]; then
+        download_checkpoints "$CHECKPOINT_TARGET"
+    else
+        download_checkpoints "all"
+    fi
+    echo ""
+    echo "All done! Checkpoints ready at: ${CHECKPOINT_DIR}"
+    exit 0
+fi
+
+# Default: all datasets if none specified
+if [ ${#SELECTED[@]} -eq 0 ]; then
+    SELECTED=("${DATASETS[@]}")
+fi
+
 echo "Target: ${BENCHMARK_DIR}"
 echo "Datasets: ${SELECTED[*]}"
 echo "Mode: $([ "$CHALLENGE_ONLY" = true ] && echo 'challenge files only' || echo 'full (source + challenge)')"
@@ -138,5 +201,15 @@ for ds in "${SELECTED[@]}"; do
     fi
     echo ""
 done
+
+# Download checkpoints if --all or --checkpoints was passed alongside datasets
+if [ "$DOWNLOAD_ALL" = true ] || [ "$DOWNLOAD_CHECKPOINTS" = true ]; then
+    if [ -n "$CHECKPOINT_TARGET" ]; then
+        download_checkpoints "$CHECKPOINT_TARGET"
+    else
+        download_checkpoints "all"
+    fi
+    echo ""
+fi
 
 echo "All done! Benchmark data is ready at: ${BENCHMARK_DIR}"
