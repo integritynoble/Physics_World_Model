@@ -1,7 +1,7 @@
 """
 Pages Router — server-rendered HTML pages (Jinja2 + HTMX).
 
-Public pages: all viewing pages (dashboard, datasets, modalities, run status).
+Public pages: all viewing pages (SpecLab, datasets, modalities, run status).
 Auth-required: actions that run PWM reconstruction (new run, bootstrap, review).
 Login: CompareGPT SSO redirect flow.
 """
@@ -25,11 +25,11 @@ from pwm_platform.config import settings
 from pwm_platform.db.database import get_db
 from pwm_platform.db.models import (
     BootstrapProposal,
+    ChallengeSubmission,
     Dataset,
     ModalityBasics,
     Run,
     TriadReport,
-
     User,
 )
 
@@ -154,7 +154,7 @@ async def sso_callback(
 
     try:
         result = await auth_service.exchange_sso_token(sso_token, db)
-        redirect = RedirectResponse("/", status_code=302)
+        redirect = RedirectResponse("/benchmark", status_code=302)
         redirect.set_cookie(
             key="access_token",
             value=result["access_token"],
@@ -459,12 +459,24 @@ def _build_sidebar_data() -> dict:
 
 
 @router.get("/", response_class=HTMLResponse)
-async def dashboard(
+async def home_redirect():
+    """Redirect root to the benchmark page."""
+    return RedirectResponse("/benchmark", status_code=302)
+
+
+@router.get("/dashboard", response_class=HTMLResponse)
+async def dashboard_redirect():
+    """Redirect old /dashboard URL to /speclab."""
+    return RedirectResponse("/speclab", status_code=301)
+
+
+@router.get("/speclab", response_class=HTMLResponse)
+async def speclab(
     request: Request,
     user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Dashboard — shows public runs + own runs for logged-in users."""
+    """SpecLab — interactive spec builder with chat, simulation, and reconstruction."""
     # Visibility filter: logged-in users see public + own runs; anonymous see public only
     if user:
         visibility_filter = or_(Run.is_public == True, Run.user_id == user.id)  # noqa: E712
@@ -479,11 +491,20 @@ async def dashboard(
     # Sidebar data: categories → modalities + primitives
     sidebar_data = _build_sidebar_data()
 
-    return templates.TemplateResponse("dashboard.html", {
+    # Chat history: fetch user's recent sessions for this variant (server-side rendering)
+    chat_sessions: list[dict] = []
+    if user:
+        from pwm_platform.services.gemini_client import list_user_sessions
+        chat_sessions = await list_user_sessions(db, user.id, variant_key="sd_cassi")
+
+    return templates.TemplateResponse("speclab.html", {
         "request": request,
         "user": user,
         "runs": runs,
         "chat_variant_key": "sd_cassi",
+        "chat_sessions": chat_sessions,
+        "sessions": chat_sessions,
+        "current_session_id": "",
         **sidebar_data,
     })
 
@@ -885,6 +906,66 @@ async def challenge_tier_page(
     })
 
 
+@router.get("/benchmark/{variant_key}/compete", response_class=HTMLResponse)
+async def compete_page(
+    request: Request,
+    variant_key: str,
+    user: Optional[User] = Depends(get_optional_user),
+):
+    """Competition info page — public, sign-in only needed for submissions."""
+    from pwm_platform.services.benchmark_database import get_variant
+
+    variant = get_variant(variant_key)
+    if variant is None:
+        return templates.TemplateResponse("404.html", {
+            "request": request, "user": user, "message": "Variant not found"
+        }, status_code=404)
+
+    challenge = None
+    for bm in variant.get("benchmarks", []):
+        if bm.get("is_challenge"):
+            challenge = bm
+            break
+
+    # Wire download URLs for challenge tiers
+    if challenge:
+        for tk in ("public", "dev"):
+            tier_ds = challenge.get("tiers", {}).get(tk, {}).get("dataset")
+            if tier_ds and tier_ds.get("gcs_object_path"):
+                tier_ds["download_url"] = f"/gcs/{tier_ds['gcs_object_path']}"
+
+    return templates.TemplateResponse("compete.html", {
+        "request": request,
+        "user": user,
+        "variant": variant,
+        "variant_key": variant_key,
+        "challenge": challenge,
+    })
+
+
+@router.get("/benchmark/{variant_key}/contribute", response_class=HTMLResponse)
+async def contribute_page(
+    request: Request,
+    variant_key: str,
+    user: Optional[User] = Depends(get_optional_user),
+):
+    """Contribution info page — public, sign-in only needed for submissions."""
+    from pwm_platform.services.benchmark_database import get_variant
+
+    variant = get_variant(variant_key)
+    if variant is None:
+        return templates.TemplateResponse("404.html", {
+            "request": request, "user": user, "message": "Variant not found"
+        }, status_code=404)
+
+    return templates.TemplateResponse("contribute.html", {
+        "request": request,
+        "user": user,
+        "variant": variant,
+        "variant_key": variant_key,
+    })
+
+
 @router.get("/my-runs", response_class=HTMLResponse)
 async def my_runs_page(
     request: Request,
@@ -933,7 +1014,7 @@ async def bootstrap_review_page(
 ):
     """Bootstrap review queue (admin/reviewer) — requires login."""
     if user.role not in ("admin", "reviewer"):
-        return RedirectResponse("/")
+        return RedirectResponse("/benchmark")
 
     result = await db.execute(
         select(BootstrapProposal)
@@ -946,4 +1027,45 @@ async def bootstrap_review_page(
         "request": request,
         "user": user,
         "proposals": proposals,
+    })
+
+
+@router.get("/submissions/review", response_class=HTMLResponse)
+async def submissions_review_page(
+    request: Request,
+    status: str | None = None,
+    category: str | None = None,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Challenge submissions review queue (admin/reviewer) — requires login."""
+    from sqlalchemy import func
+
+    if user.role not in ("admin", "reviewer"):
+        return RedirectResponse("/benchmark")
+
+    stmt = select(ChallengeSubmission).order_by(ChallengeSubmission.submitted_at.desc())
+    if status in ("pending", "approved", "rejected"):
+        stmt = stmt.where(ChallengeSubmission.status == status)
+    if category in ("competition", "contribution"):
+        stmt = stmt.where(ChallengeSubmission.category == category)
+
+    result = await db.execute(stmt)
+    submissions = result.scalars().all()
+
+    # Counts for filter tabs
+    count_result = await db.execute(
+        select(ChallengeSubmission.category, func.count())
+        .group_by(ChallengeSubmission.category)
+    )
+    counts = dict(count_result.all())
+
+    return templates.TemplateResponse("submissions_review.html", {
+        "request": request,
+        "user": user,
+        "submissions": submissions,
+        "status_filter": status,
+        "category_filter": category,
+        "competition_count": counts.get("competition", 0),
+        "contribution_count": counts.get("contribution", 0),
     })

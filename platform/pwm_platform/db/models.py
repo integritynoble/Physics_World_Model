@@ -54,6 +54,9 @@ class User(Base):
     role = Column(String(20), default="user")                # user / admin / reviewer
     is_active = Column(Boolean, default=True)
 
+    # Credits (ComparGPT-style flex credits)
+    credit_balance = Column(Float, default=100.0)            # initial free credits
+
     created_at = Column(DateTime(timezone=True), default=_utcnow)
     updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 
@@ -239,6 +242,46 @@ class BootstrapProposal(Base):
 # ═══════════════════════════════════════════════════════════════════════════
 #  Modality Knowledge Base
 # ═══════════════════════════════════════════════════════════════════════════
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+#  Challenge Submissions
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class ChallengeSubmission(Base):
+    """Community submission for a blind reconstruction challenge tier."""
+
+    __tablename__ = "challenge_submissions"
+
+    id                 = Column(Integer, primary_key=True, autoincrement=True)
+    submission_id      = Column(String(100), unique=True, nullable=False, index=True)
+    submission_type    = Column(String(30), nullable=False)       # reconstruction / algorithm / dataset
+    category           = Column(String(30), default="competition")  # competition / contribution
+    variant_key        = Column(String(100), nullable=False, index=True)
+    tier_name          = Column(String(20), nullable=False)       # public / dev / hidden
+    credit_cost        = Column(Float, default=0.0)               # credits charged (hidden tier)
+    submitted_by       = Column(Integer, ForeignKey("users.id"), nullable=False)
+    submitted_at       = Column(DateTime(timezone=True), default=_utcnow)
+    method_name        = Column(String(255), nullable=False)
+    method_description = Column(Text, default="")
+    paper_url          = Column(String(1024), default="")
+    code_url           = Column(String(1024), default="")
+    file_path          = Column(String(1024), nullable=False)
+    original_filename  = Column(String(255), nullable=False)
+    file_size_bytes    = Column(Integer, default=0)
+    gcs_path           = Column(String(1024), default="")
+    corrected_spec     = Column(JSONB, nullable=True)
+    status             = Column(String(30), default="pending", index=True)  # pending/approved/rejected
+    reviewer_id        = Column(Integer, ForeignKey("users.id"), nullable=True)
+    review_notes       = Column(Text, default="")
+    reviewed_at        = Column(DateTime(timezone=True), nullable=True)
+    scores             = Column(JSONB, nullable=True)
+    created_at         = Column(DateTime(timezone=True), default=_utcnow)
+    updated_at         = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
+
+    submitter = relationship("User", foreign_keys=[submitted_by], lazy="selectin")
+    reviewer  = relationship("User", foreign_keys=[reviewer_id], lazy="selectin")
 
 
 class SpecChatSession(Base):

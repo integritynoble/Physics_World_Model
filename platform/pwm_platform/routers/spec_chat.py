@@ -22,7 +22,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from pwm_platform.auth.dependencies import get_optional_user
+from pwm_platform.auth.dependencies import get_current_user, get_optional_user
 from pwm_platform.db.database import get_db
 from pwm_platform.db.models import User
 from pwm_platform.services.benchmark_database import get_variant, get_spec_primitives
@@ -30,8 +30,11 @@ from pwm_platform.services.gemini_client import (
     append_to_conversation,
     call_gemini,
     create_conversation,
+    delete_session,
     get_conversation,
     get_session_dataset_meta,
+    get_session_row,
+    list_user_sessions,
     update_session_dataset_meta,
 )
 from pwm_platform.services.spec_chat_prompts import (
@@ -93,15 +96,15 @@ async def chat_message(
     message: str = Form(...),
     session_id: str = Form(""),
     input_mode: str = Form("describe"),
-    user: Optional[User] = Depends(get_optional_user),
+    user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Process a user chat message and return an HTMX partial."""
+    """Process a user chat message and return an HTMX partial (requires login)."""
     variant = get_variant(variant_key)
     if variant is None:
         raise HTTPException(status_code=404, detail="Variant not found")
 
-    user_id = user.id if user else None
+    user_id = user.id
 
     # Create or retrieve session
     if not session_id:
@@ -174,10 +177,10 @@ async def load_example(
     request: Request,
     variant_key: str,
     example: str = Form(...),
-    user: Optional[User] = Depends(get_optional_user),
+    user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Load an example spec and start a new chat session."""
+    """Load an example spec and start a new chat session (requires login)."""
     variant = get_variant(variant_key)
     if variant is None:
         raise HTTPException(status_code=404, detail="Variant not found")
@@ -186,7 +189,7 @@ async def load_example(
     if example_spec is None:
         raise HTTPException(status_code=400, detail=f"Unknown example: {example}")
 
-    user_id = user.id if user else None
+    user_id = user.id
 
     # Create a new session
     session_id = await create_conversation(db, user_id=user_id, variant_key=variant_key)
@@ -240,10 +243,10 @@ async def simulate_spec(
     variant_key: str,
     spec_json: str = Form(...),
     session_id: str = Form(""),
-    user: Optional[User] = Depends(get_optional_user),
+    user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Run simulation on a spec JSON and return results as an HTMX partial.
+    """Run simulation on a spec JSON (requires login).
 
     Simulation works for ALL modalities — the variant_key is used for
     classification but does not need to be in the platform registry.
@@ -265,7 +268,7 @@ async def simulate_spec(
     # Determine the correct modality:
     #   1. Explicit variant_key in spec JSON (Gemini output)
     #   2. Detected from spec content (mismatch params, measurement matrix, labels)
-    #   3. URL variant_key (fallback — may be the dashboard default "sd_cassi")
+    #   3. URL variant_key (fallback — may be the SpecLab default "sd_cassi")
     effective_vk = (
         spec.get("variant_key")
         or _detect_variant_from_spec(spec)
@@ -302,10 +305,10 @@ async def upload_dataset(
     matrix_file: UploadFile = File(None),
     ground_truth_file: UploadFile = File(None),
     session_id: str = Form(""),
-    user: Optional[User] = Depends(get_optional_user),
+    user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Upload measurement data (+ optional sensing matrix / ground truth).
+    """Upload measurement data (requires login).
 
     Saves files, extracts metadata, stores on session, returns HTMX partial.
     """
@@ -318,7 +321,7 @@ async def upload_dataset(
     if variant is None:
         raise HTTPException(status_code=404, detail="Variant not found")
 
-    user_id = user.id if user else None
+    user_id = user.id
 
     # Create session if needed
     if not session_id:
@@ -431,10 +434,10 @@ async def reconstruct_dataset(
     variant_key: str,
     spec_json: str = Form(...),
     session_id: str = Form(""),
-    user: Optional[User] = Depends(get_optional_user),
+    user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Reconstruct from uploaded data using the best benchmark method."""
+    """Reconstruct from uploaded data (requires login)."""
     from pwm_platform.services.dataset_reconstructor import run_reconstruction
 
     # Parse spec
@@ -480,6 +483,120 @@ async def reconstruct_dataset(
         "request": request,
         "result": result,
     })
+
+
+# ── Chat history endpoints ────────────────────────────────────────────────
+
+
+@router.get("/sessions", response_class=HTMLResponse)
+async def list_sessions(
+    request: Request,
+    current_session: str = "",
+    variant_key: str = "",
+    user: Optional[User] = Depends(get_optional_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """List chat sessions for the current user (returns HTML partial).
+
+    When ``variant_key`` is provided, only sessions for that variant are
+    returned (per-chatbox history).
+    """
+    sessions: list[dict] = []
+    if user:
+        sessions = await list_user_sessions(
+            db, user.id, variant_key=variant_key or None,
+        )
+
+    return templates.TemplateResponse("_spec_chat_history.html", {
+        "request": request,
+        "user": user,
+        "sessions": sessions,
+        "current_session_id": current_session,
+    })
+
+
+@router.get("/sessions/{session_id}/load", response_class=HTMLResponse)
+async def load_session(
+    request: Request,
+    session_id: str,
+    user: Optional[User] = Depends(get_optional_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Load the full conversation for a session (returns HTML messages)."""
+    row = await get_session_row(db, session_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    # Security: only the owning user can load their sessions
+    if user is None or row.user_id != user.id:
+        raise HTTPException(status_code=403, detail="Not your session")
+
+    history = row.history or []
+    variant_key = row.variant_key or "sd_cassi"
+
+    # Render each user+assistant pair as a _spec_chat_message.html partial
+    html_parts: list[str] = []
+    i = 0
+    while i < len(history):
+        turn = history[i]
+        if turn.get("role") == "user":
+            user_msg = turn.get("content", "")
+            assistant_text = ""
+            spec = None
+            # Look for the following assistant turn
+            if i + 1 < len(history) and history[i + 1].get("role") == "assistant":
+                assistant_text = history[i + 1].get("content", "")
+                _, spec = parse_spec_from_response(assistant_text)
+                # Use just the explanation portion
+                explanation, _ = parse_spec_from_response(assistant_text)
+                assistant_text = explanation
+                i += 2
+            else:
+                i += 1
+
+            rendered = templates.TemplateResponse("_spec_chat_message.html", {
+                "request": request,
+                "session_id": session_id,
+                "variant_key": variant_key,
+                "user_message": user_msg,
+                "assistant_text": assistant_text,
+                "spec": spec,
+                "primitives": get_spec_primitives(),
+                "dataset_mode": row.dataset_meta is not None,
+            })
+            html_parts.append(rendered.body.decode())
+        else:
+            i += 1
+
+    # Return concatenated HTML + a script to set the session ID
+    session_script = (
+        f'<script>(function(){{'
+        f'var el=document.getElementById("chat-session-id");'
+        f'if(el)el.value="{session_id}";'
+        f'var log=document.getElementById("chat-log");'
+        f'if(log)log.scrollTop=log.scrollHeight;'
+        f'}})();</script>'
+    )
+    return HTMLResponse("".join(html_parts) + session_script)
+
+
+@router.delete("/sessions/{session_id}", response_class=HTMLResponse)
+async def delete_session_endpoint(
+    request: Request,
+    session_id: str,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Delete a chat session (ownership check enforced)."""
+    row = await get_session_row(db, session_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    if row.user_id != user.id:
+        raise HTTPException(status_code=403, detail="Not your session")
+
+    await delete_session(db, session_id)
+    return HTMLResponse("")  # empty response for HTMX swap
 
 
 # ── Example dataset download ─────────────────────────────────────────────

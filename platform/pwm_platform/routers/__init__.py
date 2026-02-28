@@ -8,6 +8,7 @@ from pwm_platform.routers.modalities import router as modalities_router
 from pwm_platform.routers.pages import router as pages_router
 from pwm_platform.routers.runs import router as runs_router
 from pwm_platform.routers.spec_chat import router as spec_chat_router
+from pwm_platform.routers.submissions import router as submissions_router
 
 __all__ = [
     "auth_router",
@@ -18,4 +19,5 @@ __all__ = [
     "pages_router",
     "runs_router",
     "spec_chat_router",
+    "submissions_router",
 ]

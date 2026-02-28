@@ -132,7 +132,7 @@ async def logout(
     content_type = request.headers.get("content-type", "")
     accept = request.headers.get("accept", "")
     if "text/html" in accept or "application/x-www-form-urlencoded" in content_type:
-        redirect = RedirectResponse("/", status_code=303)
+        redirect = RedirectResponse("/benchmark", status_code=303)
         redirect.delete_cookie("access_token", path="/")
         return redirect
 

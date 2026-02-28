@@ -16,23 +16,18 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center space-x-8">
-                    <a href="/" class="text-xl font-bold text-indigo-600">Physics World Model</a>
-                    <a href="/" class="text-sm font-medium text-gray-700 hover:text-indigo-600">Dashboard</a>
+                    <a href="/benchmark" class="text-xl font-bold text-indigo-600">Physics World Model</a>
                     <a href="/benchmark" class="text-sm font-medium text-gray-700 hover:text-indigo-600">Benchmarks</a>
+                    <a href="/speclab" class="text-sm font-medium text-gray-700 hover:text-indigo-600">SpecLab</a>
                     <a href="/modalities" class="text-sm font-medium text-gray-700 hover:text-indigo-600">Modalities</a>
                 </div>
                 <div class="flex items-center space-x-4">
                     {% if user %}
-                        <a href="/my-runs" class="text-sm font-medium text-gray-700 hover:text-indigo-600">My Runs</a>
                         <span class="text-sm text-gray-600">{{ user.username }}</span>
-                        <span class="text-xs px-2 py-1 bg-gray-100 rounded">{{ user.role }}</span>
                         {% if user.role in ['admin', 'reviewer'] %}
                         <a href="/bootstrap/review" class="text-sm text-gray-700 hover:text-indigo-600">Review</a>
+                        <a href="/submissions/review" class="text-sm text-gray-700 hover:text-indigo-600">Submissions</a>
                         {% endif %}
-                        <a href="/runs/new"
-                           class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                            + New Run
-                        </a>
                         <form action="/api/v1/auth/logout" method="post" hx-boost="false" class="inline">
                             <button type="submit" class="text-sm text-gray-500 hover:text-red-600">Logout</button>
                         </form>

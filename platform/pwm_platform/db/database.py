@@ -58,3 +58,21 @@ async def init_db() -> None:
             await conn.execute(text(
                 f"ALTER TABLE spec_chat_sessions ADD COLUMN IF NOT EXISTS {col} JSONB"
             ))
+
+        # Idempotent migration: credit_balance on users
+        await conn.execute(text(
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS credit_balance DOUBLE PRECISION DEFAULT 100.0"
+        ))
+
+        # Idempotent migration: challenge_submissions new columns
+        await conn.execute(text(
+            "ALTER TABLE challenge_submissions ADD COLUMN IF NOT EXISTS category VARCHAR(30) DEFAULT 'competition'"
+        ))
+        await conn.execute(text(
+            "ALTER TABLE challenge_submissions ADD COLUMN IF NOT EXISTS credit_cost DOUBLE PRECISION DEFAULT 0.0"
+        ))
+
+        # Ensure platformaigpt@gmail.com is admin
+        await conn.execute(text(
+            "UPDATE users SET role = 'admin' WHERE email = 'platformaigpt@gmail.com' AND role != 'admin'"
+        ))

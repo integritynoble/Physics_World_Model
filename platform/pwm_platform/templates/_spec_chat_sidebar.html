@@ -129,11 +129,15 @@
                         <span class="text-[9px] px-1 py-0.5 bg-blue-100 text-blue-600 rounded font-mono">ct</span>
                     </div>
                     <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/ct/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-100 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-200">
+                        <a href="/api/v1/spec-chat/example-data/ct/measurement"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'measurement', 'ct_measurement.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-100 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-200" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             measurement.npy
                         </a>
-                        <a href="/api/v1/spec-chat/example-data/ct/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                        <a href="/api/v1/spec-chat/example-data/ct/ground_truth"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'ground_truth', 'ct_ground_truth.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             ground_truth.npy
                         </a>
@@ -151,15 +155,21 @@
                         <span class="text-[9px] px-1 py-0.5 bg-violet-100 text-violet-600 rounded font-mono">spc</span>
                     </div>
                     <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/spc/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-100 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-200">
+                        <a href="/api/v1/spec-chat/example-data/spc/measurement"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'measurement', 'spc_measurement.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-100 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-200" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             measurement.npy
                         </a>
-                        <a href="/api/v1/spec-chat/example-data/spc/matrix" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gray-50 border border-gray-200 rounded text-[9px] font-medium text-gray-600 hover:bg-gray-100">
+                        <a href="/api/v1/spec-chat/example-data/spc/matrix"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'matrix', 'spc_matrix.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gray-50 border border-gray-200 rounded text-[9px] font-medium text-gray-600 hover:bg-gray-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             matrix.npy
                         </a>
-                        <a href="/api/v1/spec-chat/example-data/spc/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                        <a href="/api/v1/spec-chat/example-data/spc/ground_truth"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'ground_truth', 'spc_ground_truth.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             ground_truth.npy
                         </a>
@@ -177,11 +187,15 @@
                         <span class="text-[9px] px-1 py-0.5 bg-blue-100 text-blue-600 rounded font-mono">mri</span>
                     </div>
                     <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/mri/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-100 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-200">
+                        <a href="/api/v1/spec-chat/example-data/mri/measurement"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'measurement', 'mri_kspace.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-100 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-200" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             kspace.npy
                         </a>
-                        <a href="/api/v1/spec-chat/example-data/mri/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                        <a href="/api/v1/spec-chat/example-data/mri/ground_truth"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'ground_truth', 'mri_ground_truth.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             ground_truth.npy
                         </a>
@@ -297,20 +311,23 @@
                             <p class="text-[10px] text-gray-500">Quick-start example data:</p>
                             <div class="flex flex-wrap gap-1">
                                 <a href="/api/v1/spec-chat/example-data/{{ mod.example_dataset.key }}/measurement"
-                                   class="inline-flex items-center gap-1 px-2 py-1 bg-amber-50 border border-amber-200 rounded text-[10px] font-medium text-amber-700 hover:bg-amber-100">
+                                   draggable="true" ondragstart="setDragData(event, this.href, 'measurement', '{{ mod.example_dataset.key }}_measurement.npy')"
+                                   class="inline-flex items-center gap-1 px-2 py-1 bg-amber-50 border border-amber-200 rounded text-[10px] font-medium text-amber-700 hover:bg-amber-100" title="Drag to upload area">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                     measurement.npy <span class="text-gray-400">{{ mod.example_dataset.measurement_shape }}</span>
                                 </a>
                                 {% if mod.example_dataset.has_matrix %}
                                 <a href="/api/v1/spec-chat/example-data/{{ mod.example_dataset.key }}/matrix"
-                                   class="inline-flex items-center gap-1 px-2 py-1 bg-gray-50 border border-gray-200 rounded text-[10px] font-medium text-gray-600 hover:bg-gray-100">
+                                   draggable="true" ondragstart="setDragData(event, this.href, 'matrix', '{{ mod.example_dataset.key }}_matrix.npy')"
+                                   class="inline-flex items-center gap-1 px-2 py-1 bg-gray-50 border border-gray-200 rounded text-[10px] font-medium text-gray-600 hover:bg-gray-100" title="Drag to upload area">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                     matrix.npy <span class="text-gray-400">{{ mod.example_dataset.matrix_shape }}</span>
                                 </a>
                                 {% endif %}
                                 {% if mod.example_dataset.has_gt %}
                                 <a href="/api/v1/spec-chat/example-data/{{ mod.example_dataset.key }}/ground_truth"
-                                   class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded text-[10px] font-medium text-green-600 hover:bg-green-100">
+                                   draggable="true" ondragstart="setDragData(event, this.href, 'ground_truth', '{{ mod.example_dataset.key }}_ground_truth.npy')"
+                                   class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded text-[10px] font-medium text-green-600 hover:bg-green-100" title="Drag to upload area">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                     ground_truth.npy
                                 </a>
@@ -328,7 +345,8 @@
                                 <div class="flex flex-wrap gap-1">
                                     {% for td in bv.tier_downloads %}
                                     <a href="{{ td.url }}" download
-                                       class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 border border-blue-200 rounded text-[10px] font-medium text-blue-700 hover:bg-blue-100">
+                                       draggable="true" ondragstart="setDragData(event, this.href, 'measurement', '{{ td.filename }}')"
+                                       class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 border border-blue-200 rounded text-[10px] font-medium text-blue-700 hover:bg-blue-100" title="Drag to upload area">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                         {{ td.filename }} <span class="text-blue-400">({{ td.tier }})</span>
                                     </a>
@@ -457,15 +475,21 @@
                     </div>
                     <p class="text-[10px] text-gray-400">Measurement (256,) + Matrix (256&times;1024) + GT (32&times;32)</p>
                     <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/spc/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100">
+                        <a href="/api/v1/spec-chat/example-data/spc/measurement"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'measurement', 'spc_measurement.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             measurement.npy
                         </a>
-                        <a href="/api/v1/spec-chat/example-data/spc/matrix" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gray-50 border border-gray-200 rounded text-[9px] font-medium text-gray-600 hover:bg-gray-100">
+                        <a href="/api/v1/spec-chat/example-data/spc/matrix"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'matrix', 'spc_matrix.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gray-50 border border-gray-200 rounded text-[9px] font-medium text-gray-600 hover:bg-gray-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             matrix.npy
                         </a>
-                        <a href="/api/v1/spec-chat/example-data/spc/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                        <a href="/api/v1/spec-chat/example-data/spc/ground_truth"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'ground_truth', 'spc_ground_truth.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             ground_truth.npy
                         </a>
@@ -480,11 +504,15 @@
                     </div>
                     <p class="text-[10px] text-gray-400">Measurement (64&times;91) + GT (64&times;64)</p>
                     <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/cassi/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100">
+                        <a href="/api/v1/spec-chat/example-data/cassi/measurement"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'measurement', 'cassi_measurement.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             measurement.npy
                         </a>
-                        <a href="/api/v1/spec-chat/example-data/cassi/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                        <a href="/api/v1/spec-chat/example-data/cassi/ground_truth"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'ground_truth', 'cassi_ground_truth.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             ground_truth.npy
                         </a>
@@ -499,11 +527,15 @@
                     </div>
                     <p class="text-[10px] text-gray-400">Sinogram (128&times;180) + GT (128&times;128)</p>
                     <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/ct/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100">
+                        <a href="/api/v1/spec-chat/example-data/ct/measurement"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'measurement', 'ct_sinogram.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             sinogram.npy
                         </a>
-                        <a href="/api/v1/spec-chat/example-data/ct/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                        <a href="/api/v1/spec-chat/example-data/ct/ground_truth"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'ground_truth', 'ct_ground_truth.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             ground_truth.npy
                         </a>
@@ -518,11 +550,15 @@
                     </div>
                     <p class="text-[10px] text-gray-400">k-space (128&times;128&times;2) + GT (128&times;128)</p>
                     <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/mri/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100">
+                        <a href="/api/v1/spec-chat/example-data/mri/measurement"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'measurement', 'mri_kspace.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             kspace.npy
                         </a>
-                        <a href="/api/v1/spec-chat/example-data/mri/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                        <a href="/api/v1/spec-chat/example-data/mri/ground_truth"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'ground_truth', 'mri_ground_truth.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             ground_truth.npy
                         </a>
@@ -537,11 +573,15 @@
                     </div>
                     <p class="text-[10px] text-gray-400">PSF-blurred (128&times;128) + GT (128&times;128)</p>
                     <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/confocal/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100">
+                        <a href="/api/v1/spec-chat/example-data/confocal/measurement"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'measurement', 'confocal_measurement.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             measurement.npy
                         </a>
-                        <a href="/api/v1/spec-chat/example-data/confocal/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                        <a href="/api/v1/spec-chat/example-data/confocal/ground_truth"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'ground_truth', 'confocal_ground_truth.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             ground_truth.npy
                         </a>
@@ -556,11 +596,15 @@
                     </div>
                     <p class="text-[10px] text-gray-400">CTF-modulated (128&times;128) + GT (128&times;128)</p>
                     <div class="flex flex-wrap gap-1">
-                        <a href="/api/v1/spec-chat/example-data/sem/measurement" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100">
+                        <a href="/api/v1/spec-chat/example-data/sem/measurement"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'measurement', 'sem_measurement.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[9px] font-medium text-amber-700 hover:bg-amber-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             measurement.npy
                         </a>
-                        <a href="/api/v1/spec-chat/example-data/sem/ground_truth" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100">
+                        <a href="/api/v1/spec-chat/example-data/sem/ground_truth"
+                           draggable="true" ondragstart="setDragData(event, this.href, 'ground_truth', 'sem_ground_truth.npy')"
+                           class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded text-[9px] font-medium text-green-600 hover:bg-green-100" title="Drag to upload area">
                             <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             ground_truth.npy
                         </a>
@@ -620,7 +664,7 @@
         {# ── Mode 2 multi-step workflow ── #}
         <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-gray-600 space-y-1.5">
             <h4 class="font-bold text-amber-800">Mode 2 Full Example (CT)</h4>
-            <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">1.</span><span>Download <a href="/api/v1/spec-chat/example-data/ct/measurement" class="text-amber-700 underline font-medium">sinogram.npy</a> + <a href="/api/v1/spec-chat/example-data/ct/ground_truth" class="text-green-600 underline font-medium">ground_truth.npy</a></span></div>
+            <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">1.</span><span>Download <a href="/api/v1/spec-chat/example-data/ct/measurement" draggable="true" ondragstart="setDragData(event, this.href, 'measurement', 'ct_sinogram.npy')" class="text-amber-700 underline font-medium" title="Drag to upload area">sinogram.npy</a> + <a href="/api/v1/spec-chat/example-data/ct/ground_truth" draggable="true" ondragstart="setDragData(event, this.href, 'ground_truth', 'ct_ground_truth.npy')" class="text-green-600 underline font-medium" title="Drag to upload area">ground_truth.npy</a></span></div>
             <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">2.</span><span>Click <strong>Upload Dataset</strong> &rarr; select sinogram.npy as measurement, ground_truth.npy as GT</span></div>
             <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">3.</span><span>Prompt: &ldquo;This is a CT sinogram with 180 projections&rdquo;</span></div>
             <div class="flex items-start gap-2"><span class="text-amber-600 font-bold">4.</span><span>Refine: &ldquo;Add center-of-rotation mismatch of 2 pixels&rdquo;</span></div>
@@ -704,5 +748,13 @@ function insertPrompt(text) {
         textarea.value = text;
         textarea.focus();
     }
+}
+
+// ── Drag data for sidebar-to-upload drag ──
+function setDragData(e, url, role, filename) {
+    e.dataTransfer.setData('text/x-pwm-url', url);
+    e.dataTransfer.setData('text/x-pwm-role', role);
+    e.dataTransfer.setData('text/x-pwm-filename', filename);
+    e.dataTransfer.effectAllowed = 'copy';
 }
 </script>

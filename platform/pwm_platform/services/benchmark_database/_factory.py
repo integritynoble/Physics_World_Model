@@ -95,8 +95,8 @@ def _make_b_challenge(key: str, display: str, leaderboard: list | None = None,
         },
         "baselines": cfg["baselines"],
         "links": {
-            "submit_reconstruction": "https://github.com/InverseNet/benchmark-data/issues/new?template=submit-reconstruction.md",
-            "submit_algorithm": "https://github.com/InverseNet/benchmark-data/issues/new?template=submit-algorithm.md",
+            "submit_reconstruction": f"/benchmark/{key}/challenge/dev#submission-area",
+            "submit_algorithm": f"/benchmark/{key}/challenge/hidden#submission-area",
         },
         "credits": {"winner_share_pct": 30, "pool_source": "platform_profit"},
     }

@@ -1,0 +1,24 @@
+{# Sign-in prompt — shown when unauthenticated user clicks a submission button #}
+<div class="bg-white shadow rounded-lg p-6 border-l-4
+    {% if tier_name == 'dev' %}border-amber-400{% elif tier_name == 'hidden' %}border-purple-400{% else %}border-green-400{% endif %}">
+    <div class="flex items-center justify-between mb-3">
+        <h3 class="text-base font-semibold text-gray-800">
+            {% if submission_type == 'score_report' %}Report Public Score
+            {% elif submission_type == 'reconstruction' %}Submit Reconstruction
+            {% elif submission_type == 'algorithm' %}Submit Algorithm
+            {% elif submission_type == 'dataset' %}Contribute Dataset
+            {% else %}Submit{% endif %}
+        </h3>
+        <button onclick="document.getElementById('submission-area').innerHTML=''"
+                class="text-xs text-gray-400 hover:text-gray-600">&times; Close</button>
+    </div>
+    <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg">
+        <svg class="w-5 h-5 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+        </svg>
+        <p class="text-sm text-gray-700">
+            Please <a href="/login" class="font-semibold text-indigo-600 hover:text-indigo-800 underline">sign in</a>
+            to submit. New accounts start with <strong>100 free credits</strong>.
+        </p>
+    </div>
+</div>

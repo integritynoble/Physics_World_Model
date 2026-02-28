@@ -1,30 +1,17 @@
 {% extends "base.html" %}
-{% block title %}Dashboard — Physics World Model{% endblock %}
+{% block title %}SpecLab — Physics World Model{% endblock %}
 
 {% block content %}
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex items-center justify-between">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Physics World Model</h1>
-            <p class="text-sm text-gray-500">Physics World Model for Imaging System Autonomy</p>
-        </div>
-        {% if user %}
-        <a href="/runs/new"
-           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
-            + New Run
-        </a>
-        {% else %}
-        <a href="/login"
-           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
-            Sign in to run experiments
-        </a>
-        {% endif %}
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">SpecLab</h1>
+        <p class="text-sm text-gray-500">Interactive Spec Builder for Imaging System Design</p>
     </div>
 
     <!-- Introduction — Two Usage Modes -->
     <div class="bg-white shadow rounded-lg px-6 py-5 space-y-4">
-        <h2 class="text-lg font-semibold text-gray-900">Spec Builder</h2>
+        <h2 class="text-lg font-semibold text-gray-900">SpecLab</h2>
         <p class="text-sm text-gray-600 leading-relaxed">
             Design any imaging system using natural language. Supports all 168 modalities &mdash; from
             <strong>CASSI</strong> and <strong>MRI</strong> to <strong>NeRF</strong> and

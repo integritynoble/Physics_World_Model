@@ -359,18 +359,40 @@
                 <svg class="w-4 h-4 mr-2 dl-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 <span class="dl-label">Download Dataset</span>
             </button>
+            {% endif %}
+
+            {# ── Competition buttons ── #}
+            {% if tier_name == 'public' %}
+            <button hx-get="/api/v1/submissions/form?variant_key={{ variant_key }}&tier_name=public&submission_type=score_report&category=competition"
+                    hx-target="#submission-area" hx-swap="innerHTML"
+                    class="inline-flex items-center px-4 py-2 border border-green-300 text-sm font-medium rounded-md text-green-700 bg-white hover:bg-green-50 cursor-pointer">
+                Report My Score
+            </button>
+            {% elif tier_name == 'dev' %}
+            <button hx-get="/api/v1/submissions/form?variant_key={{ variant_key }}&tier_name=dev&submission_type=reconstruction&category=competition"
+                    hx-target="#submission-area" hx-swap="innerHTML"
+                    class="inline-flex items-center px-4 py-2 border border-amber-300 text-sm font-medium rounded-md text-amber-700 bg-white hover:bg-amber-50 cursor-pointer">
+                Submit Reconstruction
+            </button>
             {% elif tier_name == 'hidden' %}
-            {% if challenge.links and challenge.links.get('submit_algorithm') %}
-            <a href="{{ challenge.links.submit_algorithm }}" target="_blank" rel="noopener noreferrer"
-               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700">
-                Submit Algorithm
-            </a>
-            {% else %}
-            <span class="text-sm text-purple-600 italic">Algorithm submission via server-side evaluation</span>
+            <button hx-get="/api/v1/submissions/form?variant_key={{ variant_key }}&tier_name=hidden&submission_type=algorithm&category=competition"
+                    hx-target="#submission-area" hx-swap="innerHTML"
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 cursor-pointer">
+                Submit Algorithm (10 Credits)
+            </button>
             {% endif %}
-            {% endif %}
+
+            {# ── Contribution button ── #}
+            <button hx-get="/api/v1/submissions/form?variant_key={{ variant_key }}&tier_name={{ tier_name }}&submission_type=dataset&category=contribution"
+                    hx-target="#submission-area" hx-swap="innerHTML"
+                    class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 cursor-pointer">
+                Contribute Dataset
+            </button>
         </div>
     </div>
+
+    <!-- Submission form area (HTMX target) -->
+    <div id="submission-area"></div>
 
     <!-- Scoring formula -->
     {% if challenge.scoring %}

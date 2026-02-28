@@ -4,9 +4,10 @@ Each variant entry defines scoring weights, spec ranges (what contestants see),
 per-tier mismatch configs (Public / Dev / Hidden), and baseline performance
 from InverseNet Scenarios II and III.
 
-All three tiers use ALL scenes but with different mismatch realizations
-(different true_spec values + different noise seeds), preventing cheating
-across tiers.
+Each tier uses DIFFERENT underlying datasets (different ground truth images)
+via ``tier_data_sources``, so that knowing the public data provides no
+shortcut for the blind tiers.  Tiers also use different mismatch realizations
+(different true_spec values + different noise seeds).
 """
 
 from __future__ import annotations
@@ -96,6 +97,11 @@ CHALLENGE_CONFIG: dict[str, dict] = {
         "data_source": "datasets/TSA_simu_data/Truth/",
         "data_format": "mat",
         "signal_shape": [256, 256, 28],
+        "tier_data_sources": {
+            "public":  {"path": "datasets/TSA_simu_data/Truth/", "format": "mat", "type": "experimental"},
+            "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "simulated"},
+            "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "simulated"},
+        },
         "baselines": {
             "scenario_ii": [
                 {"method": "MST-L",      "psnr": 20.83, "ssim": 0.744},
@@ -201,6 +207,11 @@ CHALLENGE_CONFIG: dict[str, dict] = {
         "data_source": "datasets/CACTI/simulation/",
         "data_format": "mat",
         "signal_shape": [256, 256, 8],
+        "tier_data_sources": {
+            "public":  {"path": "datasets/CACTI/simulation/", "format": "mat", "type": "experimental"},
+            "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "simulated"},
+            "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "simulated"},
+        },
         "baselines": {
             "scenario_ii": [
                 {"method": "EfficientSCI",  "psnr": 27.38, "ssim": 0.927},
@@ -286,6 +297,11 @@ CHALLENGE_CONFIG: dict[str, dict] = {
         "data_source": "datasets/SPC/Set11/",
         "data_format": "tif",
         "signal_shape": [256, 256],
+        "tier_data_sources": {
+            "public":  {"path": "datasets/SPC/Set11/", "format": "tif", "type": "experimental"},
+            "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "simulated"},
+            "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "simulated"},
+        },
         "baselines": {
             "scenario_ii": [
                 {"method": "ISTA-Net",   "psnr": 27.45, "ssim": 0.760},
@@ -372,6 +388,11 @@ CHALLENGE_CONFIG: dict[str, dict] = {
         "data_source": "datasets/SPC/Set11/",
         "data_format": "tif",
         "signal_shape": [256, 256],
+        "tier_data_sources": {
+            "public":  {"path": "datasets/SPC/Set11/", "format": "tif", "type": "experimental"},
+            "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "simulated"},
+            "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "simulated"},
+        },
         "baselines": {
             "scenario_ii": [
                 {"method": "ISTA-Net",   "psnr": 27.45, "ssim": 0.760},
@@ -613,6 +634,127 @@ _TIER_TEMPLATES: dict[str, dict] = {
 }
 
 
+# ── Per-tier data source mapping for auto-generated variants ─────────────────
+# Each category maps to a dict of tier → data source config.
+# Public tier may use real/web data; Dev and Hidden ALWAYS use simulated data
+# (generator-based) so they remain private to the server and cannot be found
+# by contestants online.
+# Fallback chain: path → registry_id → generator → default with seed offset.
+
+_CATEGORY_TIER_DATA_SOURCES: dict[str, dict[str, dict]] = {
+    "compressive": {
+        "public":  {"registry_id": "indian_pines_hs", "type": "web"},
+        "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "simulated"},
+        "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "simulated"},
+    },
+    "microscopy": {
+        "public":  {"registry_id": "bsd68_microscopy", "type": "web"},
+        "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "generated"},
+    },
+    "medical": {
+        "public":  {"registry_id": "lodopab_ct_sample", "type": "web"},
+        "dev":     {"generator": "generate_medical_phantom", "seed_offset": 10000, "type": "simulated"},
+        "hidden":  {"generator": "generate_medical_phantom", "seed_offset": 20000, "type": "simulated"},
+    },
+    "medical_ultrasound": {
+        "public":  {"generator": "generate_medical_phantom", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_medical_phantom", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_medical_phantom", "seed_offset": 20000, "type": "generated"},
+    },
+    "coherent": {
+        "public":  {"generator": "generate_resolution_target", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_resolution_target", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_resolution_target", "seed_offset": 20000, "type": "generated"},
+    },
+    "electron_microscopy": {
+        "public":  {"generator": "generate_em_phantom", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_em_phantom", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_em_phantom", "seed_offset": 20000, "type": "generated"},
+    },
+    "clinical_optics": {
+        "public":  {"generator": "generate_oct_phantom", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_oct_phantom", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_oct_phantom", "seed_offset": 20000, "type": "generated"},
+    },
+    "computational": {
+        "public":  {"generator": "generate_test_scene", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "generated"},
+    },
+    "computational_photography": {
+        "public":  {"generator": "generate_test_scene", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "generated"},
+    },
+    "neural_rendering": {
+        "public":  {"generator": "generate_test_scene", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "generated"},
+    },
+    "depth_imaging": {
+        "public":  {"generator": "generate_depth_map", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_depth_map", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_depth_map", "seed_offset": 20000, "type": "generated"},
+    },
+    "remote_sensing": {
+        "public":  {"registry_id": "kennedy_space_center_hs", "type": "web"},
+        "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "simulated"},
+        "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "simulated"},
+    },
+    "particle_imaging": {
+        "public":  {"generator": "generate_medical_phantom", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_medical_phantom", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_medical_phantom", "seed_offset": 20000, "type": "generated"},
+    },
+    "scanning_probe": {
+        "public":  {"generator": "generate_surface", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_surface", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_surface", "seed_offset": 20000, "type": "generated"},
+    },
+    "industrial_inspection": {
+        "public":  {"generator": "generate_ndt_phantom", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_ndt_phantom", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_ndt_phantom", "seed_offset": 20000, "type": "generated"},
+    },
+    "spectroscopy": {
+        "public":  {"registry_id": "pavia_university_hs", "type": "web"},
+        "dev":     {"generator": "generate_elemental_map", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_elemental_map", "seed_offset": 20000, "type": "generated"},
+    },
+    "astronomy": {
+        "public":  {"generator": "generate_star_field", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_star_field", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_star_field", "seed_offset": 20000, "type": "generated"},
+    },
+    "ultrafast": {
+        "public":  {"generator": "generate_test_scene", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "generated"},
+    },
+    "quantum": {
+        "public":  {"generator": "generate_test_scene", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "generated"},
+    },
+    "experimental_science": {
+        "public":  {"generator": "generate_test_scene", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "generated"},
+    },
+    "scientific_instrumentation": {
+        "public":  {"generator": "generate_diffraction_pattern", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_diffraction_pattern", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_diffraction_pattern", "seed_offset": 20000, "type": "generated"},
+    },
+    "multi_modal_fusion": {
+        "public":  {"generator": "generate_test_scene", "seed_offset": 0, "type": "generated"},
+        "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "generated"},
+        "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "generated"},
+    },
+}
+
+
 # ── Main auto-generation function ─────────────────────────────────────────────
 
 
@@ -660,7 +802,10 @@ def generate_challenge_config(
         "scenario_iii": [],
     }
 
-    return {
+    # Look up per-tier data sources from category mapping
+    tier_data_sources = _CATEGORY_TIER_DATA_SOURCES.get(category)
+
+    result = {
         "_auto_generated": True,
         "scoring": dict(_STANDARD_SCORING),
         "spec_ranges": spec_ranges,
@@ -673,3 +818,8 @@ def generate_challenge_config(
         "signal_shape": list(signal_shape),
         "baselines": baselines if baselines else default_baselines,
     }
+
+    if tier_data_sources:
+        result["tier_data_sources"] = tier_data_sources
+
+    return result

@@ -110,26 +110,75 @@ async def append_to_conversation(
 
 
 async def list_user_sessions(
-    db: AsyncSession, user_id: int, limit: int = 20,
+    db: AsyncSession,
+    user_id: int,
+    variant_key: str | None = None,
+    limit: int = 20,
 ) -> list[dict]:
-    """Return recent sessions for a user (for history sidebar)."""
-    result = await db.execute(
+    """Return recent sessions for a user (for history sidebar).
+
+    Each entry includes a *preview* — the first user message truncated to
+    60 characters — so the UI can show a meaningful label without loading
+    the full conversation.
+
+    Parameters
+    ----------
+    variant_key : str | None
+        If provided, only return sessions for this variant (per-chatbox history).
+    """
+    stmt = (
         select(SpecChatSession)
         .where(SpecChatSession.user_id == user_id)
         .order_by(SpecChatSession.updated_at.desc())
         .limit(limit)
     )
+    if variant_key:
+        stmt = stmt.where(SpecChatSession.variant_key == variant_key)
+    result = await db.execute(stmt)
     rows = result.scalars().all()
-    return [
-        {
+    sessions = []
+    for r in rows:
+        history = r.history or []
+        # Extract first user message as preview
+        preview = ""
+        for turn in history:
+            if turn.get("role") == "user":
+                preview = (turn.get("content") or "")[:60]
+                break
+        sessions.append({
             "session_id": r.session_id,
             "variant_key": r.variant_key,
-            "turns": len(r.history or []),
+            "turns": len(history),
+            "preview": preview,
             "created_at": r.created_at.isoformat() if r.created_at else None,
             "updated_at": r.updated_at.isoformat() if r.updated_at else None,
-        }
-        for r in rows
-    ]
+        })
+    return sessions
+
+
+async def delete_session(db: AsyncSession, session_id: str) -> bool:
+    """Delete a chat session from the DB and in-memory cache.
+
+    Returns True if the session was found and deleted, False otherwise.
+    """
+    result = await db.execute(
+        select(SpecChatSession).where(SpecChatSession.session_id == session_id)
+    )
+    row = result.scalar_one_or_none()
+    if row is None:
+        return False
+    await db.delete(row)
+    await db.commit()
+    _cache.pop(session_id, None)
+    return True
+
+
+async def get_session_row(db: AsyncSession, session_id: str) -> SpecChatSession | None:
+    """Return the raw SpecChatSession ORM object (for ownership checks)."""
+    result = await db.execute(
+        select(SpecChatSession).where(SpecChatSession.session_id == session_id)
+    )
+    return result.scalar_one_or_none()
 
 
 # ── Dataset metadata helpers ────────────────────────────────────────────

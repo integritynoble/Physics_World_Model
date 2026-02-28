@@ -1,0 +1,125 @@
+{# Inline HTMX submission form — loaded into #submission-area #}
+<div class="bg-white shadow rounded-lg p-6 space-y-4 border-l-4
+    {% if tier_name == 'dev' %}border-amber-400{% elif tier_name == 'hidden' %}border-purple-400{% else %}border-green-400{% endif %}">
+
+    <div class="flex items-center justify-between">
+        <h3 class="text-base font-semibold text-gray-800">
+            {% if submission_type == 'score_report' %}Report Public Score
+            {% elif submission_type == 'reconstruction' %}Submit Reconstruction
+            {% elif submission_type == 'algorithm' %}Submit Algorithm
+            {% elif submission_type == 'dataset' %}Contribute Dataset
+            {% endif %}
+        </h3>
+        <button onclick="document.getElementById('submission-area').innerHTML=''"
+                class="text-xs text-gray-400 hover:text-gray-600">&times; Close</button>
+    </div>
+
+    {# Credit warning for hidden tier #}
+    {% if submission_type == 'algorithm' and tier_name == 'hidden' %}
+    <div class="flex items-start gap-2 px-3 py-2 rounded-lg bg-purple-50 border border-purple-200">
+        <span class="text-purple-600 mt-0.5">&#9888;</span>
+        <div class="text-sm text-purple-800">
+            Hidden tier evaluation costs <strong>{{ hidden_credit_cost }} credits</strong>.
+            Your balance: <strong>{{ "%.1f" | format(credit_balance) }} credits</strong>.
+            {% if credit_balance < hidden_credit_cost %}
+            <span class="text-red-600 font-semibold">Insufficient credits.</span>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <form hx-post="/api/v1/submissions/"
+          hx-target="#submission-area"
+          hx-swap="innerHTML"
+          {% if submission_type != 'score_report' %}hx-encoding="multipart/form-data"{% endif %}
+          class="space-y-4">
+
+        <input type="hidden" name="variant_key" value="{{ variant_key }}">
+        <input type="hidden" name="tier_name" value="{{ tier_name }}">
+        <input type="hidden" name="submission_type" value="{{ submission_type }}">
+        <input type="hidden" name="category" value="{{ category }}">
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Method Name *</label>
+            <input type="text" name="method_name" required
+                   placeholder="e.g. PnP-ADMM with DnCNN denoiser"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea name="method_description" rows="3"
+                      placeholder="{% if submission_type == 'score_report' %}Describe your method and how you tested it on the public dataset.{% elif submission_type == 'dataset' %}Describe the dataset: imaging setup, number of samples, format, etc.{% else %}Brief description of your method, key hyperparameters, etc.{% endif %}"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+        </div>
+
+        {# Score fields for public tier score report #}
+        {% if submission_type == 'score_report' %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">PSNR (dB)</label>
+                <input type="number" step="0.01" name="reported_psnr"
+                       placeholder="e.g. 32.50"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">SSIM</label>
+                <input type="number" step="0.0001" name="reported_ssim"
+                       placeholder="e.g. 0.9500"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Paper URL</label>
+                <input type="url" name="paper_url"
+                       placeholder="https://arxiv.org/abs/..."
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Code URL</label>
+                <input type="url" name="code_url"
+                       placeholder="https://github.com/..."
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+        </div>
+
+        {# File upload — not needed for score reports #}
+        {% if submission_type != 'score_report' %}
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Upload File *</label>
+            <p class="text-xs text-gray-500 mb-2">
+                {% if submission_type == 'reconstruction' %}
+                HDF5 file with <code>x_hat</code> array (and optionally <code>corrected_spec</code>). Max 50 MB.
+                {% elif submission_type == 'algorithm' %}
+                Python file (.py), zip, or tar.gz archive. Max 50 MB.
+                {% elif submission_type == 'dataset' %}
+                HDF5, NumPy (.npy/.npz), or archive. Max 50 MB.
+                {% endif %}
+            </p>
+            <input type="file" name="file" required
+                   accept=".h5,.hdf5,.py,.zip,.tar.gz,.npy,.npz"
+                   class="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium
+                       {% if tier_name == 'dev' %}file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100
+                       {% elif tier_name == 'hidden' %}file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100
+                       {% else %}file:bg-green-50 file:text-green-700 hover:file:bg-green-100{% endif %}">
+        </div>
+        {% endif %}
+
+        <div class="flex justify-end">
+            <button type="submit"
+                    {% if submission_type == 'algorithm' and tier_name == 'hidden' and credit_balance < hidden_credit_cost %}disabled{% endif %}
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white
+                        {% if submission_type == 'algorithm' and tier_name == 'hidden' and credit_balance < hidden_credit_cost %}bg-gray-400 cursor-not-allowed
+                        {% elif tier_name == 'dev' %}bg-amber-600 hover:bg-amber-700
+                        {% elif tier_name == 'hidden' %}bg-purple-600 hover:bg-purple-700
+                        {% else %}bg-green-600 hover:bg-green-700{% endif %}">
+                {% if submission_type == 'score_report' %}Report Score
+                {% elif submission_type == 'algorithm' %}Submit Algorithm ({{ hidden_credit_cost }} credits)
+                {% else %}Submit{% endif %}
+            </button>
+        </div>
+    </form>
+</div>

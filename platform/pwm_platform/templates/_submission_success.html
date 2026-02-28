@@ -1,0 +1,52 @@
+{# Success partial — replaces #submission-area after successful upload #}
+<div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center space-y-3">
+    <svg class="w-10 h-10 mx-auto text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <h3 class="text-lg font-semibold text-green-800">
+        {% if submission.submission_type == 'score_report' %}Score Reported
+        {% elif submission.category == 'contribution' %}Dataset Contribution Received
+        {% else %}Submission Received{% endif %}
+    </h3>
+    <p class="text-sm text-green-700">
+        {% if submission.submission_type == 'score_report' %}
+        Your public tier score has been recorded.
+        {% elif submission.submission_type == 'reconstruction' %}
+        Your reconstruction has been submitted. The PWM team will evaluate it and return your score.
+        {% elif submission.submission_type == 'algorithm' %}
+        Your algorithm has been submitted for hidden tier evaluation. Results will be posted after review.
+        {% elif submission.category == 'contribution' %}
+        Your dataset contribution has been submitted for review by the PWM team.
+        {% else %}
+        Your submission has been received.
+        {% endif %}
+    </p>
+    <div class="text-xs text-green-600 space-y-1">
+        <p>ID: <span class="font-mono bg-green-100 px-2 py-0.5 rounded">{{ submission.submission_id }}</span></p>
+        <p>Method: <strong>{{ submission.method_name }}</strong></p>
+        {% if submission.scores %}
+            {% if submission.scores.psnr is defined %}
+            <p>Reported PSNR: <strong>{{ "%.2f" | format(submission.scores.psnr) }} dB</strong></p>
+            {% endif %}
+            {% if submission.scores.ssim is defined %}
+            <p>Reported SSIM: <strong>{{ "%.4f" | format(submission.scores.ssim) }}</strong></p>
+            {% endif %}
+        {% endif %}
+        {% if submission.file_size_bytes > 0 %}
+        <p>File: {{ submission.original_filename }} ({{ (submission.file_size_bytes / 1024) | round(1) }} KB)</p>
+        {% endif %}
+        {% if submission.credit_cost > 0 %}
+        <p class="text-purple-600">Credits charged: <strong>{{ "%.1f" | format(submission.credit_cost) }}</strong></p>
+        {% endif %}
+        <p>Status: <span class="font-semibold">Pending Review</span></p>
+    </div>
+    {% if submission.submission_type == 'score_report' %}
+    <p class="text-xs text-green-500 mt-2">
+        Next step: Download the Dev dataset and submit your reconstruction for official scoring.
+    </p>
+    {% elif submission.submission_type == 'reconstruction' %}
+    <p class="text-xs text-green-500 mt-2">
+        Next step: Once you receive your Dev score, consider submitting your algorithm for the Hidden tier evaluation.
+    </p>
+    {% endif %}
+</div>

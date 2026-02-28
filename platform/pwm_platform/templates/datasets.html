@@ -4,16 +4,18 @@
 {% block content %}
 <div class="space-y-8">
     <div>
-        <h1 class="text-2xl font-bold text-gray-900">Benchmarks</h1>
         <p class="mt-1 text-sm text-gray-600">
-            Blind reconstruction challenges across {{ total_variants }} imaging system variants — public and hidden test sets, leaderboards, and dataset downloads.
+            Blind reconstruction challenges across {{ total_variants }} imaging system variants — public and hidden test sets, <strong class="text-indigo-700">leaderboards</strong>, and dataset downloads.
         </p>
     </div>
 
     <!-- Flagship Leaderboards -->
     {% if featured %}
     <div>
-        <h2 class="text-lg font-bold text-gray-900">Flagship Leaderboards</h2>
+        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+            <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 4v12l-4-2-4 2V4M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            Flagship Leaderboards
+        </h2>
         <p class="mt-0.5 text-xs text-gray-500">Top-performing methods on 10 flagship imaging challenges — from medical to quantum.</p>
 
         <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">

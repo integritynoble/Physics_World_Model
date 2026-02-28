@@ -2,7 +2,8 @@
 """Generate HDF5 challenge datasets for the Blind Reconstruction Challenge.
 
 Creates Public, Dev, and Hidden HDF5 files for each variant.
-All three tiers use ALL scenes but with different mismatch realizations
+Each tier uses DIFFERENT underlying datasets (different ground truth images)
+via ``tier_data_sources``, plus different mismatch realizations
 (different true_spec values + different noise seeds).
 
 Supports all 168+ modalities via a generic generation pipeline that:
@@ -378,6 +379,376 @@ def _make_cell_phantom(H: int, W: int, rng: np.random.RandomState) -> np.ndarray
         mask = ((xx - cx) / max(rx, 1))**2 + ((yy - cy) / max(ry, 1))**2 < 1
         arr = np.maximum(arr, intensity * mask.astype(np.float64))
     return arr
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  Per-tier ground truth resolution
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Tier seed offsets ensure different phantom realizations per tier
+_TIER_SEED_OFFSETS: dict[str, int] = {
+    "public": 0,
+    "dev": 10000,
+    "hidden": 20000,
+}
+
+
+def _load_scenes_from_directory(
+    dir_path: Path,
+    fmt: str,
+    signal_shape: tuple[int, ...],
+    max_scenes: int,
+    seed: int = 42,
+) -> list[np.ndarray]:
+    """Load ground-truth scenes from a local directory.
+
+    Supports .mat, .tif, .png, .jpg formats. Returns a list of arrays
+    cropped/resized to signal_shape.
+    """
+    ext_map = {
+        "mat": ["*.mat"],
+        "tif": ["*.tif", "*.tiff"],
+        "png": ["*.png"],
+        "jpg": ["*.jpg", "*.jpeg"],
+    }
+    patterns = ext_map.get(fmt, [f"*.{fmt}"])
+
+    files = []
+    for pat in patterns:
+        files.extend(sorted(dir_path.glob(pat)))
+    if not files:
+        logger.warning("No %s files found in %s", fmt, dir_path)
+        return []
+
+    # Deterministic shuffle to avoid always using the same subset
+    rng = np.random.RandomState(seed)
+    indices = rng.permutation(len(files))[:max_scenes]
+
+    scenes = []
+    for idx in sorted(indices):
+        fpath = files[idx]
+        try:
+            if fmt == "mat":
+                arr = _load_mat_scene(fpath)
+            else:
+                arr = _load_tif_image(fpath, target_size=None)
+            # Normalize to [0, 1]
+            if arr.max() > 1.0:
+                arr = arr / max(arr.max(), 1e-8)
+            arr = np.clip(arr, 0, 1).astype(np.float64)
+            arr = _crop_or_resize_2d(arr, signal_shape)
+            scenes.append(arr)
+        except Exception as e:
+            logger.warning("Failed to load %s: %s", fpath, e)
+            continue
+
+    return scenes
+
+
+def _load_scenes_from_registry(
+    registry_id: str,
+    signal_shape: tuple[int, ...],
+    max_scenes: int,
+    seed: int = 42,
+    data_root: Path | None = None,
+) -> list[np.ndarray]:
+    """Load ground-truth scenes from a dataset registry entry.
+
+    Downloads if needed, then extracts and crops scenes.
+    """
+    try:
+        from benchmarks.datasets.registry import DATASET_REGISTRY
+        from benchmarks.datasets.downloaders import (
+            download_file, convert_mat, CACHE_ROOT,
+        )
+    except ImportError:
+        logger.warning("Cannot import registry/downloaders for %s", registry_id)
+        return []
+
+    entry = DATASET_REGISTRY.get(registry_id)
+    if entry is None:
+        logger.warning("Registry entry not found: %s", registry_id)
+        return []
+
+    # For generated entries, use the generator directly
+    if entry.source_type == "generated":
+        return _load_scenes_from_generator(
+            entry.converter, signal_shape, max_scenes, seed,
+        )
+
+    # For web entries, try to use cached data or download
+    cache_dir = CACHE_ROOT / registry_id
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    npy_path = cache_dir / "data.npy"
+
+    if npy_path.exists():
+        data = np.load(str(npy_path))
+    else:
+        # Try downloading
+        try:
+            ext = entry.format
+            if ext == "zip":
+                ext = "zip"
+            dl_path = cache_dir / f"download.{ext}"
+            download_file(entry.url, dl_path)
+
+            # Convert based on format
+            if entry.format == "mat":
+                data = _load_mat_scene(dl_path, key=entry.mat_key)
+            elif entry.format == "mat_v73":
+                import h5py as h5
+                with h5.File(dl_path, "r") as hf:
+                    key = entry.mat_key or list(hf.keys())[0]
+                    data = np.array(hf[key], dtype=np.float64)
+            elif entry.format == "hdf5":
+                import h5py as h5
+                with h5.File(dl_path, "r") as hf:
+                    key = entry.mat_key or "data"
+                    if key in hf:
+                        data = np.array(hf[key], dtype=np.float64)
+                    else:
+                        # Take first dataset
+                        first_key = list(hf.keys())[0]
+                        data = np.array(hf[first_key], dtype=np.float64)
+            elif entry.format == "zip":
+                # Extract images from ZIP and load them
+                import zipfile
+                from PIL import Image
+                extract_dir = cache_dir / "extracted"
+                extract_dir.mkdir(exist_ok=True)
+                with zipfile.ZipFile(dl_path, "r") as zf:
+                    zf.extractall(extract_dir)
+                # Find all image files
+                img_files = []
+                for ext in ("*.png", "*.jpg", "*.jpeg", "*.tif", "*.tiff"):
+                    img_files.extend(sorted(extract_dir.rglob(ext)))
+                if not img_files:
+                    logger.warning("No images found in ZIP for %s", registry_id)
+                    return []
+                # Load first image as representative data
+                rng_z = np.random.RandomState(seed)
+                chosen = rng_z.permutation(len(img_files))[:max(max_scenes, 1)]
+                all_imgs = []
+                for ci in sorted(chosen):
+                    img = Image.open(img_files[ci]).convert("L")
+                    arr = np.array(img, dtype=np.float64) / 255.0
+                    all_imgs.append(arr)
+                if all_imgs:
+                    # Stack into 3D array (scenes along last axis)
+                    target = tuple(signal_shape[:2])
+                    resized = []
+                    for im in all_imgs:
+                        im = _crop_or_resize_2d(im, signal_shape)
+                        resized.append(im)
+                    # Return scenes directly instead of going through numpy cache
+                    return resized[:max_scenes]
+                return []
+            else:
+                logger.warning("Unsupported format %s for registry %s", entry.format, registry_id)
+                return []
+
+            # Save cache
+            np.save(str(npy_path), data)
+        except Exception as e:
+            logger.warning("Failed to download/convert %s: %s", registry_id, e)
+            return []
+
+    # Normalize
+    if data.max() > 1.0:
+        data = data / max(data.max(), 1e-8)
+    data = np.clip(data, 0, 1).astype(np.float64)
+
+    # Extract scenes by slicing
+    scenes = []
+    rng = np.random.RandomState(seed)
+    if data.ndim == 3 and len(signal_shape) >= 2:
+        # 3D cube: extract 2D slices or spectral crops
+        n_slices = data.shape[2] if data.ndim == 3 else 1
+        if len(signal_shape) == 3 and signal_shape[2] <= n_slices:
+            # Need spectral subcubes
+            n_bands = signal_shape[2]
+            for _ in range(max_scenes):
+                start = rng.randint(0, max(1, n_slices - n_bands))
+                subcube = data[:, :, start:start + n_bands]
+                subcube = _crop_or_resize_2d(subcube, signal_shape)
+                scenes.append(subcube)
+        else:
+            # Extract 2D slices
+            indices = rng.permutation(n_slices)[:max_scenes]
+            for idx in sorted(indices):
+                sl = data[:, :, idx]
+                sl = _crop_or_resize_2d(sl, signal_shape)
+                scenes.append(sl)
+    elif data.ndim == 2:
+        # Single 2D image: augment to create multiple scenes
+        data = _crop_or_resize_2d(data, signal_shape)
+        for i in range(max_scenes):
+            scenes.append(_augment_scene(data, seed + i))
+    else:
+        data = _crop_or_resize_2d(data, signal_shape)
+        scenes.append(data)
+
+    return scenes[:max_scenes]
+
+
+def _load_scenes_from_generator(
+    generator_name: str,
+    signal_shape: tuple[int, ...],
+    max_scenes: int,
+    seed: int,
+) -> list[np.ndarray]:
+    """Generate scenes using a named generator function."""
+    try:
+        from benchmarks.datasets.downloaders import (
+            generate_medical_phantom, generate_em_phantom, generate_surface,
+            generate_oct_phantom, generate_smlm_phantom, generate_depth_map,
+            generate_test_scene, generate_star_field, generate_resolution_target,
+            generate_diffraction_pattern, generate_elemental_map,
+            generate_ndt_phantom, generate_velocity_model,
+        )
+    except ImportError:
+        return []
+
+    gen_map = {
+        "generate_medical_phantom": generate_medical_phantom,
+        "generate_em_phantom": generate_em_phantom,
+        "generate_surface": generate_surface,
+        "generate_oct_phantom": generate_oct_phantom,
+        "generate_smlm_phantom": generate_smlm_phantom,
+        "generate_depth_map": generate_depth_map,
+        "generate_test_scene": generate_test_scene,
+        "generate_star_field": generate_star_field,
+        "generate_resolution_target": generate_resolution_target,
+        "generate_diffraction_pattern": generate_diffraction_pattern,
+        "generate_elemental_map": generate_elemental_map,
+        "generate_ndt_phantom": generate_ndt_phantom,
+        "generate_velocity_model": generate_velocity_model,
+    }
+
+    gen_fn = gen_map.get(generator_name)
+    if gen_fn is None:
+        logger.warning("Unknown generator: %s", generator_name)
+        return []
+
+    target = tuple(signal_shape[:2])
+    scenes = []
+    for i in range(max_scenes):
+        arr = gen_fn(target_shape=target, seed=seed + i)
+        arr = arr.astype(np.float64)
+        arr = _crop_or_resize_2d(arr, signal_shape)
+        if arr.max() > 0:
+            arr = arr / max(arr.max(), 1e-8)
+        scenes.append(np.clip(arr, 0, 1))
+
+    return scenes
+
+
+def _augment_scene(x: np.ndarray, seed: int) -> np.ndarray:
+    """Augment a scene with deterministic flip/rotate/crop to create variety."""
+    rng = np.random.RandomState(seed)
+    out = x.copy()
+
+    # Random flip
+    if rng.rand() > 0.5:
+        out = np.flip(out, axis=0).copy()
+    if rng.rand() > 0.5:
+        out = np.flip(out, axis=1).copy()
+
+    # Random 90-degree rotation
+    k = rng.randint(0, 4)
+    if k > 0:
+        if out.ndim == 2:
+            out = np.rot90(out, k=k).copy()
+        else:
+            out = np.rot90(out, k=k, axes=(0, 1)).copy()
+
+    return out
+
+
+def _select_bands(cube: np.ndarray, n_bands: int, seed: int) -> np.ndarray:
+    """Select n_bands spectral bands from a hyperspectral cube."""
+    if cube.ndim != 3 or cube.shape[2] <= n_bands:
+        return cube
+    rng = np.random.RandomState(seed)
+    total = cube.shape[2]
+    # Evenly spaced with random offset
+    offset = rng.randint(0, max(1, total - n_bands))
+    step = max(1, (total - offset) // n_bands)
+    indices = list(range(offset, min(total, offset + step * n_bands), step))[:n_bands]
+    return cube[:, :, indices]
+
+
+def _resolve_tier_ground_truth(
+    variant_key: str,
+    tier_name: str,
+    signal_shape: tuple[int, ...],
+    scene_index: int,
+    seed: int,
+    tier_data_source: dict | None = None,
+    data_root: Path | None = None,
+) -> np.ndarray:
+    """Resolve a ground-truth signal for a specific tier.
+
+    Resolution chain:
+    1. tier_data_source with "path" → load from local directory
+    2. tier_data_source with "registry_id" → load from web/downloaded dataset
+    3. tier_data_source with "generator" → call named generator with seed offset
+    4. Fallback: call _resolve_ground_truth() with tier-offset seed
+
+    Each tier gets different data, preventing memorization attacks.
+    """
+    tier_offset = _TIER_SEED_OFFSETS.get(tier_name, 0)
+    effective_seed = seed + tier_offset
+
+    if tier_data_source is not None:
+        # 1. Local path
+        if "path" in tier_data_source:
+            if data_root is None:
+                data_root = _find_data_root()
+            dir_path = data_root.parent / tier_data_source["path"]
+            if not dir_path.exists():
+                # Try relative to project root
+                dir_path = _find_data_root().parent / tier_data_source["path"]
+            fmt = tier_data_source.get("format", "mat")
+            scenes = _load_scenes_from_directory(
+                dir_path, fmt, signal_shape,
+                max_scenes=scene_index + 1,
+                seed=effective_seed,
+            )
+            if scenes and scene_index < len(scenes):
+                return scenes[scene_index]
+
+        # 2. Registry ID
+        if "registry_id" in tier_data_source:
+            scenes = _load_scenes_from_registry(
+                tier_data_source["registry_id"],
+                signal_shape,
+                max_scenes=scene_index + 1,
+                seed=effective_seed,
+                data_root=data_root,
+            )
+            if scenes and scene_index < len(scenes):
+                return scenes[scene_index]
+
+        # 3. Named generator
+        if "generator" in tier_data_source:
+            gen_seed_offset = tier_data_source.get("seed_offset", tier_offset)
+            gen_seed = seed + gen_seed_offset + scene_index
+            scenes = _load_scenes_from_generator(
+                tier_data_source["generator"],
+                signal_shape,
+                max_scenes=1,
+                seed=gen_seed,
+            )
+            if scenes:
+                return scenes[0]
+
+    # 4. Fallback: original resolver with tier-offset seed
+    return _resolve_ground_truth(
+        variant_key, signal_shape,
+        seed=effective_seed + scene_index,
+        data_root=data_root,
+    )
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -910,13 +1281,20 @@ def _include_ground_truth(tier_name: str, visible_data: list[str]) -> bool:
 
 
 def _generate_cassi(cfg: dict, output_dir: Path, data_root: Path | None = None):
-    """Generate SD-CASSI challenge datasets (3 tiers)."""
+    """Generate SD-CASSI challenge datasets (3 tiers).
+
+    Each tier uses different hyperspectral scenes:
+      - Public: KAIST 10 scenes (TSA_simu_data/Truth/)
+      - Dev: PnP-CASSI-Dataset crops
+      - Hidden: Pavia University HS (web registry) or generated
+    """
     if data_root is None:
         data_root = _find_data_root()
-    truth_dir = data_root / "TSA_simu_data" / "Truth"
     mask_path = data_root / "TSA_simu_data" / "mask.mat"
 
     scenes = cfg["scenes"]
+    signal_shape = tuple(cfg.get("signal_shape", [256, 256, 28]))
+    tier_data_sources = cfg.get("tier_data_sources", {})
 
     # Load real CASSI coded aperture mask
     mask = None
@@ -930,11 +1308,13 @@ def _generate_cassi(cfg: dict, output_dir: Path, data_root: Path | None = None):
         tier_true_spec = tier_cfg["true_spec"]
         tier_seed = tier_cfg["seed"]
         visible_data = tier_cfg["visible_data"]
+        tier_source = tier_data_sources.get(tier_name)
 
         rng = np.random.default_rng(tier_seed)
 
         out_path = output_dir / f"sd_cassi_challenge_{tier_name}.h5"
-        logger.info("Generating %s -> %s", tier_name, out_path)
+        logger.info("Generating %s -> %s (tier_source=%s)", tier_name, out_path,
+                     tier_source.get("type", "?") if tier_source else "default")
 
         with h5py.File(out_path, "w") as f:
             f.attrs["variant"] = "sd_cassi"
@@ -942,15 +1322,40 @@ def _generate_cassi(cfg: dict, output_dir: Path, data_root: Path | None = None):
             f.attrs["version"] = "1.0"
 
             for i, scene_id in enumerate(scenes):
-                scene_path = truth_dir / f"scene{scene_id:02d}.mat"
-                if not scene_path.exists():
-                    logger.warning("Scene file not found: %s, skipping", scene_path)
-                    continue
+                # Resolve tier-specific ground truth
+                try:
+                    x = _resolve_tier_ground_truth(
+                        "sd_cassi", tier_name, signal_shape,
+                        scene_index=i, seed=tier_seed + i,
+                        tier_data_source=tier_source,
+                        data_root=data_root,
+                    )
+                except Exception as e:
+                    logger.warning("Tier %s scene %d: tier GT failed (%s), trying original", tier_name, i, e)
+                    # Fall back to original KAIST loading
+                    truth_dir = data_root / "TSA_simu_data" / "Truth"
+                    scene_path = truth_dir / f"scene{scene_id:02d}.mat"
+                    if scene_path.exists():
+                        x = _load_mat_scene(scene_path)
+                    else:
+                        logger.warning("Scene file not found: %s, skipping", scene_path)
+                        continue
 
-                x = _load_mat_scene(scene_path)
                 # Normalize to [0, 1]
                 if x.max() > 0:
                     x = x / x.max()
+
+                # Ensure correct spectral dimension
+                if x.ndim == 2 and len(signal_shape) == 3:
+                    # Expand 2D to 3D by repeating with variation
+                    n_bands = signal_shape[2]
+                    x_3d = np.stack([x * (0.8 + 0.2 * np.sin(np.pi * b / n_bands))
+                                     for b in range(n_bands)], axis=-1)
+                    x = x_3d
+                elif x.ndim == 3 and x.shape[2] != signal_shape[2]:
+                    x = _select_bands(x, signal_shape[2], seed=tier_seed + i)
+
+                x = _crop_or_resize_2d(x, signal_shape)
 
                 # Generate random mask if real one not available
                 if mask is None:
@@ -990,25 +1395,126 @@ def _cacti_scene_filename(scene_name: str) -> str:
     return _MAP.get(scene_name, f"{scene_name}_cacti.mat")
 
 
+def _load_cacti_real_data(
+    real_data_dir: Path, n_frames: int, max_scenes: int, seed: int,
+) -> list[np.ndarray]:
+    """Load real CACTI data from the real_data directory.
+
+    Real data is organized as: real_data/cr{N}/meas_{object}_cr_{N}.mat
+    We extract measurements from the lowest CR (cr10) for best quality.
+    """
+    import scipy.io as sio
+
+    cr_dir = real_data_dir / "cr10"
+    if not cr_dir.exists():
+        # Try any CR directory
+        cr_dirs = sorted(real_data_dir.glob("cr*"))
+        cr_dir = cr_dirs[0] if cr_dirs else real_data_dir
+
+    mat_files = sorted(cr_dir.glob("meas_*.mat"))
+    if not mat_files:
+        return []
+
+    rng = np.random.RandomState(seed)
+    indices = rng.permutation(len(mat_files))[:max_scenes]
+
+    scenes = []
+    for idx in sorted(indices):
+        fpath = mat_files[idx]
+        try:
+            mat = sio.loadmat(str(fpath))
+            # Real CACTI .mat files have 'meas' key with measurement data
+            # We need to create a synthetic video from the measurement
+            for key in ("orig", "meas", "meas_real"):
+                if key in mat:
+                    data = np.array(mat[key], dtype=np.float64)
+                    break
+            else:
+                continue
+
+            if data.max() > 1.0:
+                data = data / max(data.max(), 1e-8)
+            data = np.clip(data, 0, 1)
+
+            # Ensure n_frames temporal dimension
+            if data.ndim == 2:
+                # Single measurement: create video by tiling with variation
+                H, W = data.shape
+                x = np.stack([data * (0.85 + 0.15 * np.sin(np.pi * t / n_frames))
+                              for t in range(n_frames)], axis=-1)
+            elif data.ndim == 3:
+                if data.shape[2] > n_frames:
+                    data = data[:, :, :n_frames]
+                elif data.shape[2] < n_frames:
+                    # Pad by repeating frames
+                    reps = (n_frames + data.shape[2] - 1) // data.shape[2]
+                    data = np.tile(data, (1, 1, reps))[:, :, :n_frames]
+                x = data
+            else:
+                continue
+
+            scenes.append(x)
+        except Exception as e:
+            logger.warning("Failed to load CACTI real data %s: %s", fpath, e)
+
+    return scenes
+
+
 def _generate_cacti(cfg: dict, output_dir: Path, data_root: Path | None = None):
-    """Generate CACTI challenge datasets (3 tiers)."""
+    """Generate CACTI challenge datasets (3 tiers).
+
+    Each tier uses different video scenes:
+      - Public: 6 simulation videos (CACTI/simulation/)
+      - Dev: 4 real objects (CACTI/real_data/)
+      - Hidden: Generated video phantoms
+    """
     if data_root is None:
         data_root = _find_data_root()
     sim_dir = data_root / "CACTI" / "simulation"
 
     scenes = cfg["scenes"]
     n_frames = 8  # Challenge uses 8-frame videos
+    signal_shape = tuple(cfg.get("signal_shape", [256, 256, 8]))
+    tier_data_sources = cfg.get("tier_data_sources", {})
 
     for tier_name, tier_cfg in cfg["tiers"].items():
         tier_true_spec = tier_cfg["true_spec"]
         tier_seed = tier_cfg["seed"]
         visible_data = tier_cfg["visible_data"]
+        tier_source = tier_data_sources.get(tier_name)
 
         rng = np.random.default_rng(tier_seed)
         mask = None
 
         out_path = output_dir / f"cacti_challenge_{tier_name}.h5"
-        logger.info("Generating %s -> %s", tier_name, out_path)
+        logger.info("Generating %s -> %s (tier_source=%s)", tier_name, out_path,
+                     tier_source.get("type", "?") if tier_source else "default")
+
+        # Pre-load tier-specific scenes if not using default simulation data
+        tier_scenes = None
+        if tier_source and tier_source.get("type") != "experimental" or (
+            tier_source and "path" in tier_source and "simulation" not in tier_source["path"]
+        ):
+            if tier_source and "path" in tier_source:
+                real_dir = data_root.parent / tier_source["path"]
+                if not real_dir.exists():
+                    real_dir = _find_data_root().parent / tier_source["path"]
+                if real_dir.exists():
+                    tier_scenes = _load_cacti_real_data(
+                        real_dir, n_frames, len(scenes), tier_seed,
+                    )
+                    logger.info("  Loaded %d real CACTI scenes for tier %s", len(tier_scenes), tier_name)
+            elif tier_source and "generator" in tier_source:
+                seed_offset = tier_source.get("seed_offset", 0)
+                tier_scenes = []
+                for si in range(len(scenes)):
+                    gen_seed = tier_seed + seed_offset + si
+                    x_2d = _generate_fallback_phantom("cacti", signal_shape[:2], gen_seed)
+                    # Expand to video frames
+                    x = np.stack([x_2d * (0.85 + 0.15 * np.sin(np.pi * t / n_frames))
+                                  for t in range(n_frames)], axis=-1)
+                    tier_scenes.append(x)
+                logger.info("  Generated %d phantom scenes for tier %s", len(tier_scenes), tier_name)
 
         with h5py.File(out_path, "w") as f:
             f.attrs["variant"] = "cacti"
@@ -1016,28 +1522,46 @@ def _generate_cacti(cfg: dict, output_dir: Path, data_root: Path | None = None):
             f.attrs["version"] = "1.0"
 
             for i, scene_name in enumerate(scenes):
-                scene_path = sim_dir / _cacti_scene_filename(scene_name)
-                if not scene_path.exists():
-                    logger.warning("Scene file not found: %s, skipping", scene_path)
-                    continue
+                if tier_scenes is not None and i < len(tier_scenes):
+                    # Use tier-specific scene
+                    x = tier_scenes[i]
+                    # Crop/resize to signal shape
+                    x = _crop_or_resize_2d(x, signal_shape)
+                else:
+                    # Default: load from simulation directory
+                    scene_path = sim_dir / _cacti_scene_filename(scene_name)
+                    if not scene_path.exists():
+                        logger.warning("Scene file not found: %s, skipping", scene_path)
+                        continue
 
-                import scipy.io as sio
-                mat = sio.loadmat(str(scene_path))
+                    import scipy.io as sio
+                    mat = sio.loadmat(str(scene_path))
 
-                # Load video: take first n_frames from 'orig'
-                orig = np.array(mat["orig"], dtype=np.float64)
-                if orig.shape[2] > n_frames:
-                    orig = orig[:, :, :n_frames]
-                # Normalize to [0, 1]
-                if orig.max() > 1.0:
-                    orig = orig / 255.0
-                x = np.clip(orig, 0, 1)
+                    # Load video: take first n_frames from 'orig'
+                    orig = np.array(mat["orig"], dtype=np.float64)
+                    if orig.shape[2] > n_frames:
+                        orig = orig[:, :, :n_frames]
+                    # Normalize to [0, 1]
+                    if orig.max() > 1.0:
+                        orig = orig / 255.0
+                    x = np.clip(orig, 0, 1)
 
-                # Use real mask from data (first scene sets H_ideal for all)
+                    # Use real mask from data (first scene sets H_ideal for all)
+                    if mask is None:
+                        if "mask" in mat:
+                            mask = np.array(mat["mask"], dtype=np.float64)
+                            if mask.shape[2] > n_frames:
+                                mask = mask[:, :, :n_frames]
+
+                # Ensure mask exists
                 if mask is None:
-                    mask = np.array(mat["mask"], dtype=np.float64)
-                    if mask.shape[2] > n_frames:
-                        mask = mask[:, :, :n_frames]
+                    H, W = x.shape[:2]
+                    mask = (rng.random((H, W, n_frames)) > 0.5).astype(np.float64)
+
+                # Normalize
+                if x.max() > 1.0:
+                    x = x / max(x.max(), 1e-8)
+                x = np.clip(x, 0, 1)
 
                 y, H_ideal = _apply_cacti_mismatch(x, mask, tier_true_spec)
                 y = _add_noise(y, cfg["noise_model"], cfg["noise_params"], rng)
@@ -1059,27 +1583,51 @@ def _generate_cacti(cfg: dict, output_dir: Path, data_root: Path | None = None):
         logger.info("Written %d samples to %s", len(scenes), out_path)
 
 
+def _load_spc_images_from_dir(
+    dir_path: Path, fmt: str, max_images: int, seed: int,
+) -> list[np.ndarray]:
+    """Load grayscale images from a directory for SPC processing."""
+    ext_map = {"tif": ["*.tif", "*.tiff"], "png": ["*.png"], "jpg": ["*.jpg", "*.jpeg"]}
+    patterns = ext_map.get(fmt, [f"*.{fmt}"])
+
+    files = []
+    for pat in patterns:
+        files.extend(sorted(dir_path.glob(pat)))
+    if not files:
+        return []
+
+    rng = np.random.RandomState(seed)
+    indices = rng.permutation(len(files))[:max_images]
+
+    images = []
+    for idx in sorted(indices):
+        try:
+            img = _load_tif_image(files[idx], target_size=None)
+            images.append(img)
+        except Exception as e:
+            logger.warning("Failed to load %s: %s", files[idx], e)
+
+    return images
+
+
 def _generate_spc(variant_key: str, cfg: dict, output_dir: Path, data_root: Path | None = None):
     """Generate SPC challenge datasets (block-based, 3 tiers).
 
     Images are processed in 33x33 non-overlapping blocks.
     Each block uses the same sensing matrix phi (272 x 1089).
     The phi matrix is stored once per sample as H_ideal.
+
+    Each tier uses different image datasets:
+      - Public: Set11 images
+      - Dev: BSDS400 images
+      - Hidden: BrainImages_test
     """
     if data_root is None:
         data_root = _find_data_root()
-    set11_dir = data_root / "SPC" / "Set11"
 
     scenes = cfg["scenes"]
     block_size = 33
-
-    # List .tif files sorted
-    tif_files = sorted(set11_dir.glob("*.tif"))
-    if not tif_files:
-        tif_files = sorted(set11_dir.glob("*.png"))
-    if not tif_files:
-        logger.warning("No image files found in %s", set11_dir)
-        return
+    tier_data_sources = cfg.get("tier_data_sources", {})
 
     # Generate phi once (shared across all tiers and scenes)
     n = block_size * block_size  # 1089
@@ -1093,11 +1641,36 @@ def _generate_spc(variant_key: str, cfg: dict, output_dir: Path, data_root: Path
         tier_true_spec = tier_cfg["true_spec"]
         tier_seed = tier_cfg["seed"]
         visible_data = tier_cfg["visible_data"]
+        tier_source = tier_data_sources.get(tier_name)
 
         rng = np.random.default_rng(tier_seed)
 
+        # Resolve tier-specific image directory
+        if tier_source and "path" in tier_source:
+            img_dir = data_root.parent / tier_source["path"]
+            if not img_dir.exists():
+                img_dir = _find_data_root().parent / tier_source["path"]
+            img_fmt = tier_source.get("format", "tif")
+        else:
+            img_dir = data_root / "SPC" / "Set11"
+            img_fmt = "tif"
+
+        # Load images from the tier's directory
+        tier_images = _load_spc_images_from_dir(
+            img_dir, img_fmt, len(scenes), tier_seed,
+        )
+
+        # Fallback to Set11 if tier directory had no images
+        if not tier_images:
+            set11_dir = data_root / "SPC" / "Set11"
+            tier_images = _load_spc_images_from_dir(set11_dir, "tif", len(scenes), tier_seed)
+
+        if not tier_images:
+            logger.warning("No images found for %s tier %s, skipping", variant_key, tier_name)
+            continue
+
         out_path = output_dir / f"{variant_key}_challenge_{tier_name}.h5"
-        logger.info("Generating %s -> %s", tier_name, out_path)
+        logger.info("Generating %s -> %s (images from %s)", tier_name, out_path, img_dir)
 
         with h5py.File(out_path, "w") as f:
             f.attrs["variant"] = variant_key
@@ -1106,16 +1679,19 @@ def _generate_spc(variant_key: str, cfg: dict, output_dir: Path, data_root: Path
             f.attrs["block_size"] = block_size
 
             for i, scene_id in enumerate(scenes):
-                idx = scene_id - 1  # 1-indexed to 0-indexed
-                if idx >= len(tif_files):
-                    logger.warning("Image index %d out of range, skipping", scene_id)
-                    continue
+                idx = i % len(tier_images)
+                x = tier_images[idx]
 
-                # Load and crop image to multiple of block_size
-                x = _load_tif_image(tif_files[idx], target_size=None)
+                # Crop image to multiple of block_size
                 H, W = x.shape
                 H_crop = (H // block_size) * block_size
                 W_crop = (W // block_size) * block_size
+                if H_crop == 0 or W_crop == 0:
+                    # Image too small: resize to 256x256
+                    x = _crop_or_resize_2d(x, (256, 256))
+                    H, W = x.shape
+                    H_crop = (H // block_size) * block_size
+                    W_crop = (W // block_size) * block_size
                 x = x[:H_crop, :W_crop]
 
                 y, _ = _apply_spc_mismatch_block(x, phi, tier_true_spec, block_size)
@@ -1124,11 +1700,12 @@ def _generate_spc(variant_key: str, cfg: dict, output_dir: Path, data_root: Path
 
                 include_gt = _include_ground_truth(tier_name, visible_data)
 
+                scene_name = f"scene_{i:02d}" if i >= len(tier_images) else tier_images[idx].__class__.__name__
                 grp = f.create_group(f"sample_{i:02d}")
                 _write_sample(
                     grp, y, phi, cfg["spec_ranges"],
                     metadata={
-                        "scene": tif_files[idx].stem,
+                        "scene": f"scene_{i:02d}",
                         "shape": list(x.shape),
                         "block_size": block_size,
                         "noise_model": cfg["noise_model"],
@@ -1149,7 +1726,7 @@ def _generate_generic(variant_key: str, cfg: dict, output_dir: Path, data_root: 
     """Generate challenge datasets for any variant using the generic pipeline.
 
     Works for all 168+ modalities by:
-      1. Resolving ground-truth phantoms from the dataset registry
+      1. Resolving per-tier ground-truth via tier_data_sources
       2. Applying physics-accurate forward models via runner type
       3. Applying mismatch perturbations from true_spec
       4. Adding category-appropriate noise
@@ -1159,16 +1736,19 @@ def _generate_generic(variant_key: str, cfg: dict, output_dir: Path, data_root: 
     scene_count = cfg.get("scene_count", 5)
     noise_model = cfg.get("noise_model", "gaussian")
     noise_params = cfg.get("noise_params", {})
+    tier_data_sources = cfg.get("tier_data_sources", {})
 
     logger.info(
-        "Generic generator: %s  runner=%s  shape=%s  scenes=%d  noise=%s",
+        "Generic generator: %s  runner=%s  shape=%s  scenes=%d  noise=%s  tier_sources=%s",
         variant_key, runner_type, signal_shape, scene_count, noise_model,
+        "yes" if tier_data_sources else "no",
     )
 
     for tier_name, tier_cfg in cfg["tiers"].items():
         tier_true_spec = tier_cfg["true_spec"]
         tier_seed = tier_cfg["seed"]
         visible_data = tier_cfg["visible_data"]
+        tier_source = tier_data_sources.get(tier_name)
 
         rng = np.random.default_rng(tier_seed)
 
@@ -1185,15 +1765,18 @@ def _generate_generic(variant_key: str, cfg: dict, output_dir: Path, data_root: 
             for i in range(scene_count):
                 scene_seed = tier_seed + i
 
-                # 1. Get ground truth
+                # 1. Get tier-specific ground truth
                 try:
-                    x = _resolve_ground_truth(
-                        variant_key, signal_shape,
-                        seed=scene_seed, data_root=data_root,
+                    x = _resolve_tier_ground_truth(
+                        variant_key, tier_name, signal_shape,
+                        scene_index=i, seed=scene_seed,
+                        tier_data_source=tier_source,
+                        data_root=data_root,
                     )
                 except Exception as e:
                     logger.warning("  Scene %d: ground truth failed (%s), using fallback", i, e)
-                    x = _generate_fallback_phantom(variant_key, signal_shape, scene_seed)
+                    tier_offset = _TIER_SEED_OFFSETS.get(tier_name, 0)
+                    x = _generate_fallback_phantom(variant_key, signal_shape, scene_seed + tier_offset)
 
                 # Normalize to [0, 1]
                 xmax = x.max()

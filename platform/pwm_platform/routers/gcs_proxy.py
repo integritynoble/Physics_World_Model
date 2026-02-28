@@ -5,6 +5,9 @@ downloads from GCS server-side and streams to the client, acting as
 an authenticated proxy with caching headers.
 
 Falls back to local static files when GCS is unavailable.
+
+Security: Hidden-tier challenge files (containing ground truth) are
+blocked from public download. Only public and dev tier files are served.
 """
 
 from __future__ import annotations
@@ -28,6 +31,11 @@ _ALLOWED_PREFIXES = (
     "challenge-data/",
 )
 
+# Filename patterns that are BLOCKED from public download (contain ground truth)
+_BLOCKED_PATTERNS = (
+    "_challenge_hidden",   # hidden tier files contain x_true + true_spec
+)
+
 # Local static fallback directory
 _STATIC_DIR = Path(__file__).resolve().parent.parent / "static" / "benchmark-data"
 
@@ -41,7 +49,15 @@ async def gcs_proxy(path: str):
     if not any(path.startswith(prefix) for prefix in _ALLOWED_PREFIXES):
         raise HTTPException(status_code=403, detail="Path not allowed")
 
+    # Block access to hidden tier challenge files (contain ground truth)
     filename = PurePosixPath(path).name
+    if any(pattern in filename for pattern in _BLOCKED_PATTERNS):
+        logger.warning("Blocked access to restricted file: %s", path)
+        raise HTTPException(
+            status_code=403,
+            detail="Hidden tier data is not available for public download",
+        )
+
     suffix = PurePosixPath(path).suffix.lower()
     is_download = suffix in _DOWNLOAD_EXTENSIONS
 

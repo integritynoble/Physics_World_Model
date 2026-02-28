@@ -1,0 +1,375 @@
+{% extends "base.html" %}
+{% block title %}Join the Competition — {{ variant.display_name }} — Physics World Model{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+    <!-- Breadcrumb -->
+    <nav class="flex items-center flex-wrap gap-1 text-sm text-gray-500">
+        <a href="/benchmark" class="hover:text-indigo-600">Benchmarks</a>
+        <span>/</span>
+        <a href="/benchmark/{{ variant_key }}" class="hover:text-indigo-600">{{ variant.display_name }}</a>
+        <span>/</span>
+        <span class="font-medium text-gray-900">Join the Competition</span>
+    </nav>
+
+    <!-- Header -->
+    <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+        </div>
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Join the Competition</h1>
+            <p class="text-sm text-gray-500">{{ variant.display_name }} &mdash; Blind Reconstruction Challenge</p>
+        </div>
+    </div>
+
+    <!-- Introduction -->
+    <div class="bg-white shadow rounded-lg p-6 space-y-3">
+        <h2 class="text-lg font-bold text-gray-900">What is the Blind Reconstruction Challenge?</h2>
+        <p class="text-sm text-gray-600">
+            The Blind Reconstruction Challenge tests your algorithm's ability to reconstruct signals from measurements
+            with <strong>unknown mismatch parameters</strong>. In real-world imaging, the actual system parameters often
+            differ from the assumed ideal model. Your task is to produce high-quality reconstructions despite this
+            model mismatch.
+        </p>
+        {% if challenge and challenge.scoring %}
+        <div class="flex items-center gap-4 px-4 py-2 bg-amber-50 border border-amber-200 rounded-lg text-sm">
+            <span class="font-semibold text-amber-800">Scoring:</span>
+            <span class="font-mono text-amber-900">{{ challenge.scoring.formula_display }}</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Three steps -->
+    <div class="space-y-6">
+        <h2 class="text-lg font-bold text-gray-900">How to Participate</h2>
+
+        <!-- Step 1: Public -->
+        <div class="bg-white shadow rounded-lg p-6 border-l-4 border-green-400">
+            <div class="flex gap-4 items-start">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                    <span class="text-lg font-bold text-green-700">1</span>
+                </div>
+                <div class="space-y-3 flex-1">
+                    <div class="flex items-center gap-2">
+                        <h3 class="text-base font-bold text-green-800">Test on Public Dataset</h3>
+                        <span class="text-xs px-2 py-0.5 rounded font-medium bg-green-100 text-green-700">Free</span>
+                    </div>
+                    <p class="text-sm text-gray-600">
+                        Download the <strong>Public tier</strong> dataset which includes measurements, ground truth,
+                        and true spec parameters. Run your reconstruction algorithm locally and compute your
+                        PSNR / SSIM scores. Then report your score to PWM so we can track your progress.
+                    </p>
+                    <div class="text-xs text-gray-500 bg-green-50 border border-green-200 rounded px-3 py-2">
+                        <strong>What you get:</strong> Measurements (y), ideal forward model (H), spec ranges, ground truth (x), and true spec parameters.
+                    </div>
+                    <div class="flex flex-wrap gap-2 pt-1">
+                        {% if challenge and challenge.tiers.public.dataset and challenge.tiers.public.dataset.download_url %}
+                        <button onclick="startDownload(this, '{{ challenge.tiers.public.dataset.download_url }}')"
+                                class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 cursor-pointer">
+                            <svg class="w-4 h-4 mr-2 dl-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            <span class="dl-label">Download Public Dataset</span>
+                        </button>
+                        {% endif %}
+                        <button hx-get="/api/v1/submissions/form?variant_key={{ variant_key }}&tier_name=public&submission_type=score_report&category=competition"
+                                hx-target="#submission-area" hx-swap="innerHTML"
+                                class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-green-700 bg-white border border-green-300 hover:bg-green-50 cursor-pointer">
+                            Report My Score
+                        </button>
+                        <a href="/benchmark/{{ variant_key }}/challenge/public"
+                           class="inline-flex items-center px-4 py-2 text-sm font-medium text-green-600 hover:text-green-800">
+                            View Public Tier &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Dev -->
+        <div class="bg-white shadow rounded-lg p-6 border-l-4 border-amber-400">
+            <div class="flex gap-4 items-start">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                    <span class="text-lg font-bold text-amber-700">2</span>
+                </div>
+                <div class="space-y-3 flex-1">
+                    <div class="flex items-center gap-2">
+                        <h3 class="text-base font-bold text-amber-800">Submit Reconstruction on Dev Dataset</h3>
+                        <span class="text-xs px-2 py-0.5 rounded font-medium bg-amber-100 text-amber-700">Free</span>
+                    </div>
+                    <p class="text-sm text-gray-600">
+                        Download the <strong>Dev tier</strong> dataset (no ground truth provided). Run your algorithm
+                        and submit the reconstructed result as an HDF5 file containing <code class="text-xs bg-gray-100 px-1 rounded">x_hat</code>.
+                        PWM will evaluate your reconstruction and <strong>return your score</strong>.
+                    </p>
+                    <div class="text-xs text-gray-500 bg-amber-50 border border-amber-200 rounded px-3 py-2">
+                        <strong>What you get:</strong> Measurements (y), ideal forward model (H), and spec ranges.
+                        <strong>No ground truth</strong> &mdash; you must estimate the parameters and reconstruct blindly.
+                    </div>
+                    <div class="flex flex-wrap gap-2 pt-1">
+                        {% if challenge and challenge.tiers.dev.dataset and challenge.tiers.dev.dataset.download_url %}
+                        <button onclick="startDownload(this, '{{ challenge.tiers.dev.dataset.download_url }}')"
+                                class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700 cursor-pointer">
+                            <svg class="w-4 h-4 mr-2 dl-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            <span class="dl-label">Download Dev Dataset (no ground truth)</span>
+                        </button>
+                        {% endif %}
+                        <button hx-get="/api/v1/submissions/form?variant_key={{ variant_key }}&tier_name=dev&submission_type=reconstruction&category=competition"
+                                hx-target="#submission-area" hx-swap="innerHTML"
+                                class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-amber-700 bg-white border border-amber-300 hover:bg-amber-50 cursor-pointer">
+                            Submit Reconstruction
+                        </button>
+                        <a href="/benchmark/{{ variant_key }}/challenge/dev"
+                           class="inline-flex items-center px-4 py-2 text-sm font-medium text-amber-600 hover:text-amber-800">
+                            View Dev Tier &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Hidden -->
+        <div class="bg-white shadow rounded-lg p-6 border-l-4 border-purple-400">
+            <div class="flex gap-4 items-start">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                    <span class="text-lg font-bold text-purple-700">3</span>
+                </div>
+                <div class="space-y-3 flex-1">
+                    <div class="flex items-center gap-2">
+                        <h3 class="text-base font-bold text-purple-800">Submit Algorithm for Hidden Evaluation</h3>
+                        <span class="text-xs px-2 py-0.5 rounded font-medium bg-purple-100 text-purple-700">10 Credits</span>
+                    </div>
+                    <p class="text-sm text-gray-600">
+                        When you are confident in your method, submit your algorithm (Python script or archive) to PWM.
+                        We will run it on the <strong>hidden dataset</strong> with undisclosed mismatch parameters.
+                        This is the <strong>final evaluation</strong> that determines your leaderboard ranking.
+                    </p>
+                    <div class="text-xs text-gray-500 bg-purple-50 border border-purple-200 rounded px-3 py-2">
+                        <strong>Cost:</strong> Each hidden tier evaluation costs <strong>10 credits</strong> from your account.
+                        New accounts start with <strong>100 free credits</strong>. Credits are refunded if your submission is rejected.
+                    </div>
+                    <div class="flex flex-wrap gap-2 pt-1">
+                        <button hx-get="/api/v1/submissions/form?variant_key={{ variant_key }}&tier_name=hidden&submission_type=algorithm&category=competition"
+                                hx-target="#submission-area" hx-swap="innerHTML"
+                                class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 cursor-pointer">
+                            Submit Algorithm (10 Credits)
+                        </button>
+                        <a href="/benchmark/{{ variant_key }}/challenge/hidden"
+                           class="inline-flex items-center px-4 py-2 text-sm font-medium text-purple-600 hover:text-purple-800">
+                            View Hidden Tier &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Examples & Starter Code -->
+    <div class="space-y-6">
+        <h2 class="text-lg font-bold text-gray-900">Examples &amp; Starter Code</h2>
+        <p class="text-sm text-gray-500">
+            Download baseline algorithms and example datasets to get started quickly.
+            These examples use small 32&times;32 images so you can test the full pipeline in seconds.
+        </p>
+
+        <!-- Algorithm examples: CT and MRI side by side -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- CT Algorithm -->
+            <div class="bg-white shadow rounded-lg p-5 border border-gray-200 space-y-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-700">CT</span>
+                    <h3 class="text-sm font-bold text-gray-900">Baseline: Filtered Back-Projection</h3>
+                </div>
+                <details class="group">
+                    <summary class="text-xs text-indigo-600 cursor-pointer hover:text-indigo-800 font-medium select-none">
+                        Show code preview
+                    </summary>
+                    <pre class="mt-2 p-3 bg-gray-50 rounded text-xs text-gray-700 overflow-x-auto leading-relaxed"><code># ct_baseline_algorithm.py — key reconstruction logic
+
+def fbp_reconstruct(sinogram, angles, img_size=None):
+    """Filtered Back-Projection reconstruction."""
+    n_angles, n_det = sinogram.shape
+    # 1. Apply ramp filter in frequency domain
+    freqs = np.fft.fftfreq(n_det)
+    ramp = np.abs(freqs)
+    for i in range(n_angles):
+        proj_fft = np.fft.fft(sinogram[i])
+        filtered[i] = np.real(np.fft.ifft(proj_fft * ramp))
+    # 2. Back-project at each angle
+    for i, angle in enumerate(angles):
+        rotated = ndrotate(proj_img, angle, ...)
+        recon += rotated
+    return recon * np.pi / (2 * n_angles)
+
+def estimate_center_offset(sinogram):
+    """Compare 0° and 180° projections to find shift."""
+    ...</code></pre>
+                </details>
+                <div class="flex items-center gap-2 text-xs text-gray-500">
+                    <span>Dependencies:</span>
+                    <code class="bg-gray-100 px-1 rounded">numpy</code>
+                    <code class="bg-gray-100 px-1 rounded">h5py</code>
+                    <code class="bg-gray-100 px-1 rounded">scipy</code>
+                </div>
+                <div class="text-xs bg-blue-50 border border-blue-200 rounded px-3 py-2 font-mono text-blue-800">
+                    python ct_baseline_algorithm.py challenge.h5 submission.h5
+                </div>
+                <div class="flex gap-2">
+                    <a href="/static/examples/ct_baseline_algorithm.py" download
+                       class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        Download .py
+                    </a>
+                    <a href="/static/examples/ct_baseline_algorithm.py" target="_blank"
+                       class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-blue-700 bg-white border border-blue-300 hover:bg-blue-50">
+                        View Source
+                    </a>
+                </div>
+            </div>
+
+            <!-- MRI Algorithm -->
+            <div class="bg-white shadow rounded-lg p-5 border border-gray-200 space-y-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">MRI</span>
+                    <h3 class="text-sm font-bold text-gray-900">Baseline: Zero-Filled IFFT + ISTA</h3>
+                </div>
+                <details class="group">
+                    <summary class="text-xs text-indigo-600 cursor-pointer hover:text-indigo-800 font-medium select-none">
+                        Show code preview
+                    </summary>
+                    <pre class="mt-2 p-3 bg-gray-50 rounded text-xs text-gray-700 overflow-x-auto leading-relaxed"><code># mri_baseline_algorithm.py — key reconstruction logic
+
+def iterative_soft_threshold(y_kspace, mask, n_iter=30):
+    """ISTA: iterative soft-thresholding with data consistency."""
+    kspace_mag = np.expm1(y_kspace) * mask
+    x = zero_filled_ifft(y_kspace, mask)
+    for _ in range(n_iter):
+        kx = np.fft.fftshift(np.fft.fft2(x))
+        # Data consistency: keep measured k-space lines
+        kx_dc = kx * (1 - mask) + kspace_mag * mask
+        x = np.abs(np.fft.ifft2(np.fft.ifftshift(kx_dc)))
+        x = soft_threshold(x, lam=0.005)
+    return x
+
+def estimate_b0_inhomog(x_hat):
+    """Estimate B0 from spatial intensity variation."""
+    ...</code></pre>
+                </details>
+                <div class="flex items-center gap-2 text-xs text-gray-500">
+                    <span>Dependencies:</span>
+                    <code class="bg-gray-100 px-1 rounded">numpy</code>
+                    <code class="bg-gray-100 px-1 rounded">h5py</code>
+                    <code class="bg-gray-100 px-1 rounded">scipy</code>
+                </div>
+                <div class="text-xs bg-emerald-50 border border-emerald-200 rounded px-3 py-2 font-mono text-emerald-800">
+                    python mri_baseline_algorithm.py challenge.h5 submission.h5
+                </div>
+                <div class="flex gap-2">
+                    <a href="/static/examples/mri_baseline_algorithm.py" download
+                       class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700">
+                        <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        Download .py
+                    </a>
+                    <a href="/static/examples/mri_baseline_algorithm.py" target="_blank"
+                       class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-emerald-700 bg-white border border-emerald-300 hover:bg-emerald-50">
+                        View Source
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example data files -->
+        <div class="bg-white shadow rounded-lg p-5 border border-gray-200 space-y-4">
+            <h3 class="text-sm font-bold text-gray-900">Example Data Files</h3>
+            <p class="text-xs text-gray-500">
+                Small 32&times;32 HDF5 files demonstrating the exact challenge format.
+                Use these to test your pipeline before downloading the full datasets.
+            </p>
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead>
+                        <tr class="border-b border-gray-200">
+                            <th class="text-left py-2 pr-4 font-semibold text-gray-600">File</th>
+                            <th class="text-left py-2 pr-4 font-semibold text-gray-600">Tier</th>
+                            <th class="text-left py-2 pr-4 font-semibold text-gray-600">Contents</th>
+                            <th class="text-left py-2 font-semibold text-gray-600"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr>
+                            <td class="py-2 pr-4 font-mono text-blue-700">ct_example_public.h5</td>
+                            <td class="py-2 pr-4"><span class="px-1.5 py-0.5 rounded bg-green-100 text-green-700 font-medium">Public</span></td>
+                            <td class="py-2 pr-4 text-gray-500">y, H_ideal, x_true, spec_ranges, true_spec</td>
+                            <td class="py-2"><a href="/static/examples/ct_example_public.h5" download class="text-indigo-600 hover:text-indigo-800 font-medium">Download</a></td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 pr-4 font-mono text-blue-700">ct_example_dev.h5</td>
+                            <td class="py-2 pr-4"><span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 font-medium">Dev</span></td>
+                            <td class="py-2 pr-4 text-gray-500">y, H_ideal, spec_ranges (no ground truth)</td>
+                            <td class="py-2"><a href="/static/examples/ct_example_dev.h5" download class="text-indigo-600 hover:text-indigo-800 font-medium">Download</a></td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 pr-4 font-mono text-blue-700">ct_example_submission.h5</td>
+                            <td class="py-2 pr-4"><span class="px-1.5 py-0.5 rounded bg-gray-100 text-gray-700 font-medium">Submission</span></td>
+                            <td class="py-2 pr-4 text-gray-500">x_hat, corrected_spec</td>
+                            <td class="py-2"><a href="/static/examples/ct_example_submission.h5" download class="text-indigo-600 hover:text-indigo-800 font-medium">Download</a></td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 pr-4 font-mono text-emerald-700">mri_example_public.h5</td>
+                            <td class="py-2 pr-4"><span class="px-1.5 py-0.5 rounded bg-green-100 text-green-700 font-medium">Public</span></td>
+                            <td class="py-2 pr-4 text-gray-500">y, H_ideal, x_true, spec_ranges, true_spec</td>
+                            <td class="py-2"><a href="/static/examples/mri_example_public.h5" download class="text-indigo-600 hover:text-indigo-800 font-medium">Download</a></td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 pr-4 font-mono text-emerald-700">mri_example_dev.h5</td>
+                            <td class="py-2 pr-4"><span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 font-medium">Dev</span></td>
+                            <td class="py-2 pr-4 text-gray-500">y, H_ideal, spec_ranges (no ground truth)</td>
+                            <td class="py-2"><a href="/static/examples/mri_example_dev.h5" download class="text-indigo-600 hover:text-indigo-800 font-medium">Download</a></td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 pr-4 font-mono text-emerald-700">mri_example_submission.h5</td>
+                            <td class="py-2 pr-4"><span class="px-1.5 py-0.5 rounded bg-gray-100 text-gray-700 font-medium">Submission</span></td>
+                            <td class="py-2 pr-4 text-gray-500">x_hat, corrected_spec</td>
+                            <td class="py-2"><a href="/static/examples/mri_example_submission.h5" download class="text-indigo-600 hover:text-indigo-800 font-medium">Download</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submission form area (HTMX target) -->
+    <div id="submission-area"></div>
+
+    <!-- Back link -->
+    <div>
+        <a href="/benchmark/{{ variant_key }}"
+           class="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800 font-medium">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            Back to {{ variant.display_name }}
+        </a>
+    </div>
+
+</div>
+
+<script>
+function startDownload(btn, url) {
+    var a = document.createElement('a');
+    a.href = url; a.download = ''; a.style.display = 'none';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    var icon = btn.querySelector('.dl-icon');
+    var label = btn.querySelector('.dl-label');
+    if (icon) icon.classList.add('animate-bounce');
+    if (label) label.textContent = 'Downloading\u2026';
+    btn.disabled = true; btn.style.opacity = '0.7';
+    setTimeout(function() {
+        if (icon) icon.classList.remove('animate-bounce');
+        if (label) label.textContent = 'Download Dataset';
+        btn.disabled = false; btn.style.opacity = '1';
+    }, 4000);
+}
+</script>
+{% endblock %}
