@@ -857,16 +857,24 @@ async def challenge_tier_page(
     _TIER_SCENE = {"public": 0, "dev": 1, "hidden": 2}
 
     # Auto-detect preview images from gallery directory
+    # Try tier-specific gallery first (e.g. cacti/dev/scene_00), fall back to shared
     gallery_key = challenge.get("gallery_variant", variant_key)
     scene_idx = _TIER_SCENE.get(tier_name, 0)
-    gallery_dir = (
+    gallery_base = (
         Path(__file__).resolve().parent.parent
-        / "static" / "img" / "benchmark_gallery"
-        / gallery_key / f"scene_{scene_idx:02d}"
+        / "static" / "img" / "benchmark_gallery" / gallery_key
     )
+    # Prefer tier-specific directory with scene_00 (each tier has its own data)
+    tier_gallery_dir = gallery_base / tier_name / f"scene_{scene_idx:02d}"
+    shared_gallery_dir = gallery_base / f"scene_{scene_idx:02d}"
+    if tier_gallery_dir.is_dir() and (tier_gallery_dir / "gt.png").exists():
+        gallery_dir = tier_gallery_dir
+        base = f"/static/img/benchmark_gallery/{gallery_key}/{tier_name}/scene_{scene_idx:02d}"
+    else:
+        gallery_dir = shared_gallery_dir
+        base = f"/static/img/benchmark_gallery/{gallery_key}/scene_{scene_idx:02d}"
     data_preview = None
     if gallery_dir.is_dir() and (gallery_dir / "gt.png").exists():
-        base = f"/static/img/benchmark_gallery/{gallery_key}/scene_{scene_idx:02d}"
         if (gallery_dir / "gt_view1.png").exists():
             labels = _MULTI_VIEW_LABELS.get(gallery_key, ("View 1", "View 2"))
             data_preview = {
