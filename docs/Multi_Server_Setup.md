@@ -1,38 +1,36 @@
 # Multi-Server Benchmark Setup Guide
 
-This guide explains how to set up new servers to run PWM benchmark experiments in parallel across different imaging modalities, including GPU-accelerated algorithms via [Modal](https://modal.com/).
+This guide explains how to set up new servers to run PWM benchmark experiments in parallel across different imaging modalities, with GPU algorithms running on [Modal](https://modal.com/).
 
 ## Architecture Overview
 
 ```
-                    ┌──────────────────────────────┐
-                    │   GCS Bucket                 │
-                    │   pwm-benchmark-datasets     │
-                    │                              │
-                    │   datasets/sd_cassi/    2.6G │
-                    │   datasets/cacti/       1.6G │
-                    │   datasets/spc_kronecker/151M│
-                    │   checkpoint/            17G │
-                    │   challenge-data/v1.0/  5.2G │
-                    └──────┬───────────────────────┘
-                           │
-          ┌────────────────┼────────────────┐
-          ▼                ▼                ▼
-    ┌───────────┐   ┌───────────┐   ┌───────────┐
-    │ Server A  │   │ Server B  │   │ Server C  │
-    │ CACTI     │   │ SD-CASSI  │   │ SPC       │
-    │ (CPU)     │   │ (GPU)     │   │ (CPU)     │
-    └───────────┘   └─────┬─────┘   └───────────┘
-                          │
-                    ┌─────▼─────┐
-                    │  Modal    │
-                    │  (GPU)    │
-                    │ ELP, MST  │
-                    │ HDNet ... │
-                    └───────────┘
+       ┌────────────────────────────┐     ┌────────────────────┐
+       │  GCS Bucket                │     │  Modal Volume      │
+       │  pwm-benchmark-datasets    │     │  pwm-models        │
+       │                            │     │                    │
+       │  datasets/sd_cassi/   2.6G │     │  checkpoint/       │
+       │  datasets/cacti/      1.6G │     │    ELP-Unfolding/  │
+       │  datasets/spc_kronecker/   │     │    MST-HDNet/      │
+       │  challenge-data/v1.0/ 5.2G │     │    DRUNet/         │
+       └──────────┬─────────────────┘     │    EfficientSCI/   │
+                  │                       │    HATNet-SPI/      │
+     ┌────────────┼────────────┐          │    ... (17 GB)      │
+     ▼            ▼            ▼          └─────────┬──────────┘
+┌─────────┐ ┌─────────┐ ┌─────────┐                │
+│Server A │ │Server B │ │Server C │    ┌────────────┼────────────┐
+│ CACTI   │ │SD-CASSI │ │  SPC    │    ▼            ▼            ▼
+└────┬────┘ └────┬────┘ └────┬────┘  ┌───┐       ┌───┐       ┌───┐
+     │           │           │       │GPU│       │GPU│       │GPU│
+     └───────────┼───────────┘       │A10│       │A10│       │A10│
+                 │                   └───┘       └───┘       └───┘
+           modal run ...              Modal (on-demand GPUs)
 ```
 
-Benchmark datasets and model checkpoints are stored on Google Cloud Storage (GCS). Each server clones the repo and downloads only the data it needs. The `datasets/` and `checkpoint/` directories are gitignored — large data never goes into git.
+**Data flow:**
+- **Benchmark datasets** (HDF5, images): stored on GCS, downloaded to each server via `gsutil`
+- **Model checkpoints** (17 GB): stored on Modal volume `pwm-models`, mounted instantly by GPU functions — no download needed
+- **GPU compute**: on-demand via Modal (A10, A100, H100) — no GPU server management
 
 ---
 
@@ -111,190 +109,170 @@ pip install numpy scipy h5py matplotlib
 ./scripts/setup_benchmark_data.sh --challenge cacti
 ```
 
-## Step 7: Download Model Checkpoints
+## Step 7: Set Up Modal (for GPU algorithms)
 
-Pretrained model weights (17 GB total) are required for GPU-accelerated algorithms like ELP-Unfolding, MST, EfficientSCI, etc.
+All GPU algorithms (ELP-Unfolding, MST, EfficientSCI, etc.) run on Modal. Model checkpoints (17 GB) are stored on a shared Modal volume — no need to download them to your server.
 
 ```bash
-# Download all checkpoints
-./scripts/setup_benchmark_data.sh --checkpoints
+# Install Modal
+pip install modal
 
-# Or download only the checkpoint you need
-./scripts/setup_benchmark_data.sh --checkpoint ELP-Unfolding     # 13 GB
-./scripts/setup_benchmark_data.sh --checkpoint EfficientSCI      # 34 MB
-./scripts/setup_benchmark_data.sh --checkpoint MST-HDNet         # 35 MB
-
-# Download everything at once (datasets + checkpoints)
-./scripts/setup_benchmark_data.sh --all
+# Authenticate with Modal (one-time, uses same account as main server)
+modal setup
 ```
 
-### Available Checkpoints
-
-| Checkpoint | Size | GPU Required | Used By |
-|-----------|------|-------------|---------|
-| `ELP-Unfolding` | 13 GB | Yes | SD-CASSI, CACTI reconstruction |
-| `HATNet-SPI` | 3.7 GB | Yes | SPC reconstruction |
-| `DRUNet` | 250 MB | Yes | PnP denoiser (all modalities) |
-| `EfficientSCI` | 34 MB | Yes | CACTI reconstruction |
-| `MST-HDNet` | 35 MB | Yes | SD-CASSI reconstruction |
-| `ProxUnroll` | 38 MB | Yes | General inverse problems |
-| `PnP-SCI` | 42 MB | Yes | CACTI PnP reconstruction |
-| `ISTA-Net` | 21 MB | Yes | Compressive sensing |
-| `PnP-CASSI` | 7.5 MB | Yes | SD-CASSI PnP reconstruction |
-| `DnCNN` | 2.2 MB | Yes | Denoising prior |
-
-## Step 8: Run Your Experiment
+**Verify checkpoints are available:**
 
 ```bash
-# Each modality has its own experiment script
+# List checkpoints on the shared Modal volume
+modal volume ls pwm-models /checkpoint/
+
+# Run verification on a Modal GPU (loads every checkpoint)
+modal run scripts/verify_modal_checkpoints.py
+```
+
+### Available Checkpoints on Modal Volume
+
+All checkpoints are pre-uploaded to the `pwm-models` volume and shared across all servers using the same Modal account.
+
+| Checkpoint | Size | Algorithm |
+|-----------|------|-----------|
+| `ELP-Unfolding` | 13 GB | SD-CASSI / CACTI deep unfolding |
+| `HATNet-SPI` | 3.7 GB | SPC hybrid attention transformer |
+| `DRUNet` | 250 MB | PnP denoiser (all modalities) |
+| `EfficientSCI` | 34 MB | CACTI snapshot compressive imaging |
+| `MST-HDNet` | 35 MB | SD-CASSI spectral transformer |
+| `ProxUnroll` | 38 MB | General proximal unrolling |
+| `PnP-SCI` | 42 MB | CACTI PnP reconstruction |
+| `ISTA-Net` | 21 MB | Compressive sensing |
+| `PnP-CASSI` | 7.5 MB | SD-CASSI PnP reconstruction |
+| `DnCNN` | 2.2 MB | Gaussian denoiser prior |
+
+**Cost:** Modal volume storage is free. You only pay for GPU seconds when running functions.
+
+## Step 8: Run Experiments
+
+**CPU-only algorithms (run locally):**
+
+```bash
 python3 scripts/run_cacti_experiment.py          # Server A
 python3 scripts/run_cassi_experiment.py          # Server B
 python3 scripts/run_spc_experiment.py            # Server C
 ```
 
+**GPU algorithms (run on Modal):**
+
+```bash
+modal run scripts/modal_run_elp.py               # ELP-Unfolding on GPU
+```
+
 ---
 
-## GPU Setup with Modal
+## GPU Algorithms on Modal
 
-For algorithms that require GPU (ELP-Unfolding, MST, EfficientSCI, HATNet-SPI, etc.), you can use [Modal](https://modal.com/) to run GPU workloads without managing GPU servers.
+### How It Works
 
-### Why Modal?
-
-- No GPU server management — spin up A100/H100 GPUs on demand
-- Pay per second of GPU usage
-- Checkpoints can be mounted as Modal volumes (no re-download)
-- Works from any CPU-only server
-
-### Modal Setup
-
-```bash
-# 1. Install Modal
-pip install modal
-
-# 2. Authenticate (one-time, opens browser)
-modal setup
-
-# 3. Create a Modal volume for checkpoints (one-time)
-modal volume create pwm-checkpoints
-```
-
-### Upload Checkpoints to Modal Volume
-
-```bash
-# Upload all checkpoints to Modal volume (one-time)
-modal volume put pwm-checkpoints checkpoint/ /checkpoint/
-
-# Or upload specific ones
-modal volume put pwm-checkpoints checkpoint/ELP-Unfolding/ /checkpoint/ELP-Unfolding/
-modal volume put pwm-checkpoints checkpoint/MST-HDNet/ /checkpoint/MST-HDNet/
-```
-
-### Example: Run ELP-Unfolding on Modal GPU
-
-Create a file `modal_run_elp.py`:
+Modal functions mount the `pwm-models` volume at `/models/`. Checkpoints are available instantly at `/models/checkpoint/` — no download, no waiting.
 
 ```python
 import modal
 
 app = modal.App("pwm-benchmark")
-
-# Mount checkpoint volume and repo code
-vol = modal.Volume.from_name("pwm-checkpoints")
+vol = modal.Volume.from_name("pwm-models")
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
-    .pip_install("torch", "torchvision", "numpy", "scipy", "h5py", "matplotlib")
-    .pip_install("scikit-image")
+    .pip_install("torch", "torchvision", "numpy", "scipy", "h5py")
 )
 
 @app.function(
     image=image,
     gpu="A100",
-    volumes={"/checkpoint": vol},
+    volumes={"/models": vol},
     timeout=3600,
-    mounts=[modal.Mount.from_local_dir("packages/pwm_core", remote_path="/root/pwm_core")],
 )
-def run_elp_reconstruction(challenge_data: bytes, variant: str = "sd_cassi"):
-    """Run ELP-Unfolding reconstruction on GPU."""
-    import sys
-    sys.path.insert(0, "/root")
+def run_elp_reconstruction(challenge_data: bytes):
+    import torch, h5py, io
 
-    import numpy as np
-    import h5py
-    import io
-    import torch
+    # Checkpoints mounted instantly — no download needed
+    weights = "/models/checkpoint/ELP-Unfolding/ckptall.pth"
+    ckpt = torch.load(weights, map_location="cuda", weights_only=False)
 
-    # Load challenge data
+    # Load challenge data and reconstruct
     f = h5py.File(io.BytesIO(challenge_data), "r")
-
     results = {}
-    for sample_key in sorted(f.keys()):
-        sample = f[sample_key]
-        y = sample["y"][()]
-        H = sample["H_ideal"][()]
-
-        # Load ELP model with GPU checkpoint
-        from pwm_core.recon.elp_unfolding import build_elp_unfolding
-        solver = build_elp_unfolding(
-            weights_path="/checkpoint/ELP-Unfolding/ckptall.pth",
-            device="cuda",
-        )
-
-        # Reconstruct
-        x_recon = solver(torch.tensor(y).cuda(), torch.tensor(H).cuda())
-        results[sample_key] = x_recon.cpu().numpy()
-
+    for key in sorted(f.keys()):
+        y = torch.tensor(f[key]["y"][()]).cuda()
+        H = torch.tensor(f[key]["H_ideal"][()]).cuda()
+        # ... run reconstruction ...
+        results[key] = y.cpu().numpy()  # placeholder
     return results
-
 
 @app.local_entrypoint()
 def main():
-    # Read local challenge file
     with open("datasets/benchmark/sd_cassi/public/sd_cassi_challenge_public.h5", "rb") as f:
         data = f.read()
-
-    results = run_elp_reconstruction.remote(data, "sd_cassi")
+    results = run_elp_reconstruction.remote(data)
     print(f"Reconstructed {len(results)} scenes")
-
-    # Save results
-    import numpy as np
-    np.savez("results/elp_results.npz", **results)
 ```
 
-Run it:
-
-```bash
-# Run on Modal GPU from any machine (even CPU-only)
-modal run modal_run_elp.py
-```
-
-### Example: Run Multiple Modalities in Parallel on Modal
+### Run Multiple Modalities in Parallel
 
 ```python
 @app.local_entrypoint()
 def main():
-    import concurrent.futures
-
     variants = ["sd_cassi", "cacti", "spc_kronecker"]
     futures = []
-    for variant in variants:
-        with open(f"datasets/benchmark/{variant}/public/{variant}_challenge_public.h5", "rb") as f:
-            data = f.read()
-        futures.append(run_elp_reconstruction.remote(data, variant))
-
+    for v in variants:
+        path = f"datasets/benchmark/{v}/public/{v}_challenge_public.h5"
+        with open(path, "rb") as f:
+            futures.append(run_elp_reconstruction.remote(f.read()))
     # All three run in parallel on separate GPUs
-    for variant, result in zip(variants, futures):
-        print(f"{variant}: {len(result)} scenes reconstructed")
+    for v, result in zip(variants, futures):
+        print(f"{v}: {len(result)} scenes")
 ```
 
-### Modal vs GCS Checkpoints: When to Use Which
+### Algorithm → Checkpoint Path Mapping
 
-| Scenario | Use GCS | Use Modal Volume |
-|----------|---------|-----------------|
-| Server has GPU | Download via `--checkpoints` | Not needed |
-| Server is CPU-only, need GPU | Not needed | Upload once, mount in Modal functions |
-| Running on multiple GPU servers | Download to each | Share one volume across all |
-| One-off GPU experiment | Not needed | Upload + run, no server setup |
+When writing Modal functions, use these paths (mounted at `/models/`):
+
+| Algorithm | Checkpoint Path |
+|-----------|----------------|
+| ELP-Unfolding | `/models/checkpoint/ELP-Unfolding/ckptall.pth` |
+| ELP-Unfolding (small) | `/models/checkpoint/ELP-Unfolding/ckptallS.pth` |
+| MST-S | `/models/checkpoint/MST-HDNet/mst/mst_s.pth` |
+| MST-L | `/models/checkpoint/MST-HDNet/mst/mst_l.pth` |
+| HDNet | `/models/checkpoint/MST-HDNet/hdnet/hdnet.pth` |
+| DRUNet (color) | `/models/checkpoint/DRUNet/drunet_deepinv_color_finetune_22k.pth` |
+| DRUNet (gray) | `/models/checkpoint/DRUNet/drunet_deepinv_gray_finetune_26k.pth` |
+| EfficientSCI | `/models/checkpoint/EfficientSCI/efficientsci_base.pth` |
+| HATNet-SPI (cr=0.25) | `/models/checkpoint/HATNet-SPI/2024_pretraiend_weights/cr_0.25.pth` |
+| PnP-CASSI | `/models/checkpoint/PnP-CASSI/deep_denoiser.pth` |
+| PnP-SCI (FFDNet) | `/models/checkpoint/PnP-SCI/ffdnet/net_gray.pth` |
+| PnP-SCI (FastDVDnet) | `/models/checkpoint/PnP-SCI/fastdvdnet/model.pth` |
+| DnCNN | `/models/checkpoint/DnCNN/dncnn_25.pth` |
+| ProxUnroll (ADMM) | `/models/checkpoint/ProxUnroll/admm_proxunroll.pth` |
+| ProxUnroll (HQS) | `/models/checkpoint/ProxUnroll/hqs_proxunroll.pth` |
+| ISTA-Net+ (ratio=25) | `/models/checkpoint/ISTA-Net/CS_ISTA_Net_plus_layer_9_group_1_ratio_25_lr_0.0001/net_params_200.pkl` |
+
+---
+
+## Managing Checkpoints (Main Server Only)
+
+The main server is the source of truth for checkpoints. To add or update checkpoints:
+
+```bash
+# Upload a new checkpoint from main server to Modal volume
+modal volume put pwm-models /path/to/local/checkpoint /checkpoint/NewModel/
+
+# List what's on the volume
+modal volume ls pwm-models /checkpoint/
+
+# Verify all checkpoints load on GPU
+modal run scripts/verify_modal_checkpoints.py
+```
+
+All other servers using the same Modal account see the updated volume immediately.
 
 ---
 
@@ -305,55 +283,32 @@ def main():
 | `datasets/sd_cassi/` | 2.6 GB | SD-CASSI source data (all tiers + images) |
 | `datasets/cacti/` | 1.6 GB | CACTI source data (all tiers + images) |
 | `datasets/spc_kronecker/` | 151 MB | SPC Kronecker source data |
-| `checkpoint/` | 17 GB | Pretrained model weights (11 algorithms) |
 | `challenge-data/v1.0/` | 5.2 GB | All 507 challenge HDF5 files |
+
+Model checkpoints are **NOT** on GCS. They are on Modal volume `pwm-models` (17 GB, free storage).
 
 ---
 
 ## Parallel Deployment Example
 
-| Server | Modality | Setup Command | Run Command |
-|--------|----------|---------------|-------------|
-| A (CPU) | CACTI | `./scripts/setup_benchmark_data.sh cacti` | `python3 scripts/run_cacti_experiment.py` |
-| B (GPU) | SD-CASSI | `./scripts/setup_benchmark_data.sh --all sd_cassi` | `python3 scripts/run_cassi_experiment.py` |
-| C (CPU) | SPC | `./scripts/setup_benchmark_data.sh spc_kronecker` | `python3 scripts/run_spc_experiment.py` |
-| D (Modal) | All GPU | `modal run modal_run_elp.py` | Runs on Modal A100 |
+| Server | Modality | Data Setup | CPU Experiment | GPU Experiment |
+|--------|----------|------------|----------------|----------------|
+| A | CACTI | `./scripts/setup_benchmark_data.sh cacti` | `python3 scripts/run_cacti_experiment.py` | `modal run scripts/modal_run_elp.py` |
+| B | SD-CASSI | `./scripts/setup_benchmark_data.sh sd_cassi` | `python3 scripts/run_cassi_experiment.py` | `modal run scripts/modal_run_elp.py` |
+| C | SPC | `./scripts/setup_benchmark_data.sh spc_kronecker` | `python3 scripts/run_spc_experiment.py` | `modal run scripts/modal_run_elp.py` |
 
 ---
 
 ## Quick One-Liner Setup
 
-**CPU server (data + experiment):**
-
 ```bash
 git clone git@github.com:integritynoble/Physics_World_Model.git && \
 cd Physics_World_Model && \
 python3 -m venv .venv && source .venv/bin/activate && \
-pip install -e packages/pwm_core && \
+pip install -e packages/pwm_core modal && \
+modal setup && \
 ./scripts/setup_benchmark_data.sh cacti && \
 python3 scripts/run_cacti_experiment.py
-```
-
-**GPU server (data + checkpoints + experiment):**
-
-```bash
-git clone git@github.com:integritynoble/Physics_World_Model.git && \
-cd Physics_World_Model && \
-python3 -m venv .venv && source .venv/bin/activate && \
-pip install -e packages/pwm_core && \
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121 && \
-./scripts/setup_benchmark_data.sh --all && \
-python3 scripts/run_cassi_experiment.py
-```
-
-**Modal (no GPU server needed):**
-
-```bash
-git clone git@github.com:integritynoble/Physics_World_Model.git && \
-cd Physics_World_Model && \
-pip install modal && modal setup && \
-./scripts/setup_benchmark_data.sh sd_cassi && \
-modal run modal_run_elp.py
 ```
 
 ---
