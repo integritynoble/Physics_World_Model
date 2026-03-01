@@ -229,9 +229,9 @@
                         <th class="px-4 py-3 text-center font-bold text-amber-700">#</th>
                         <th class="px-4 py-3 text-left font-bold text-amber-700">Method</th>
                         <th class="px-4 py-3 text-right font-bold text-amber-700">Overall Score</th>
-                        <th class="px-4 py-3 text-right font-medium text-green-700">Public</th>
-                        <th class="px-4 py-3 text-right font-medium text-amber-700">Dev</th>
-                        <th class="px-4 py-3 text-right font-medium text-purple-700">Hidden</th>
+                        <th class="px-4 py-3 text-right font-medium text-green-700">Public<div class="text-[10px] font-normal text-gray-400">PSNR / SSIM</div></th>
+                        <th class="px-4 py-3 text-right font-medium text-amber-700">Dev<div class="text-[10px] font-normal text-gray-400">PSNR / SSIM</div></th>
+                        <th class="px-4 py-3 text-right font-medium text-purple-700">Hidden<div class="text-[10px] font-normal text-gray-400">PSNR / SSIM</div></th>
                         <th class="px-4 py-3 text-left font-medium text-gray-600">Source</th>
                     </tr>
                 </thead>
@@ -251,31 +251,20 @@
                         </td>
                         <td class="px-4 py-3 font-semibold text-gray-800">{{ entry.method }}</td>
                         <td class="px-4 py-3 text-right font-mono text-lg font-bold text-amber-800">{{ "%.3f" | format(entry.overall_score) }}</td>
-                        <td class="px-4 py-3 text-right font-mono text-green-600">{% if entry.public_score is not none %}{{ "%.3f" | format(entry.public_score) }}{% else %}&mdash;{% endif %}</td>
-                        <td class="px-4 py-3 text-right font-mono text-amber-600">{% if entry.dev_score is not none %}{{ "%.3f" | format(entry.dev_score) }}{% else %}&mdash;{% endif %}</td>
-                        <td class="px-4 py-3 text-right font-mono text-purple-600">{% if entry.hidden_score is not none %}{{ "%.3f" | format(entry.hidden_score) }}{% else %}&mdash;{% endif %}</td>
+                        {% for tier_key, tier_color in [('public', 'green'), ('dev', 'amber'), ('hidden', 'purple')] %}
+                        {% set score_key = tier_key ~ '_score' %}
+                        {% set td = entry.get('details', {}).get(tier_key, {}) %}
+                        <td class="px-4 py-2 text-right">
+                            {% if entry[score_key] is not none and entry[score_key] > 0 %}
+                            <div class="font-mono text-{{ tier_color }}-600">{{ "%.3f" | format(entry[score_key]) }}</div>
+                            <div class="text-[10px] text-gray-400 leading-tight mt-0.5">
+                                {% if td %}{{ td.psnr }} dB / {{ "%.3f" | format(td.ssim) }}{% endif %}
+                            </div>
+                            {% else %}&mdash;{% endif %}
+                        </td>
+                        {% endfor %}
                         <td class="px-4 py-3 text-xs text-gray-500">{{ entry.source }}</td>
                     </tr>
-                    {% if entry.details %}
-                    <tr>
-                        <td colspan="7" class="px-4 py-0">
-                            <details class="text-xs">
-                                <summary class="cursor-pointer text-gray-400 hover:text-amber-600 py-1">Per-tier metrics</summary>
-                                <div class="grid grid-cols-3 gap-2 pb-2 pt-1">
-                                    {% for tier_name in ['public', 'dev', 'hidden'] %}
-                                    {% if entry.details[tier_name] is defined and entry.details[tier_name] %}
-                                    {% set td = entry.details[tier_name] %}
-                                    <div class="px-2 py-1 rounded bg-gray-50 border border-gray-100">
-                                        <span class="font-semibold text-gray-600 capitalize">{{ tier_name }}</span>
-                                        <span class="ml-1 text-gray-400">PSNR {{ td.psnr }} | SSIM {{ td.ssim }} | Cons. {{ td.consistency }}</span>
-                                    </div>
-                                    {% endif %}
-                                    {% endfor %}
-                                </div>
-                            </details>
-                        </td>
-                    </tr>
-                    {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
@@ -713,6 +702,43 @@
                 {% endif %}
             </div>
             {% endif %}
+        </div>
+        {% endif %}
+
+        {# ── Algorithm Comparison Gallery ── #}
+        {% if algo_comparison and algo_comparison | length > 0 %}
+        <div class="md:col-span-2">
+            <h4 class="text-sm font-semibold text-gray-700 mb-3">Algorithm Comparison &mdash; Blind Calibration (Scenario IV)</h4>
+            <p class="text-xs text-gray-500 mb-4">Visual reconstruction quality from top-performing methods on public tier data with blind forward-model calibration.</p>
+
+            {# Column headers #}
+            {% set demo_algos = algo_comparison[0].algorithms %}
+            <div class="grid gap-2 text-xs font-medium text-center mb-2" style="grid-template-columns: repeat({{ demo_algos | length + 1 }}, minmax(0, 1fr));">
+                <div class="text-gray-600 font-bold">Ground Truth</div>
+                {% for algo in demo_algos %}
+                <div class="text-gray-600">{{ algo.name }}</div>
+                {% endfor %}
+            </div>
+
+            {% for scene in algo_comparison %}
+            <div class="grid gap-2 items-start mb-2" style="grid-template-columns: repeat({{ scene.algorithms | length + 1 }}, minmax(0, 1fr));">
+                {# Ground truth #}
+                <div class="relative">
+                    <img src="{{ scene.base_url }}/gt.png" alt="Ground truth scene {{ '%02d' | format(scene.scene_idx) }}"
+                         loading="lazy" class="w-full rounded border-2 border-gray-300">
+                    <span class="absolute bottom-1 left-1 text-[10px] bg-black/60 text-white px-1 rounded">Scene {{ '%02d' | format(scene.scene_idx) }}</span>
+                </div>
+                {# Per-algorithm reconstructions #}
+                {% for algo in scene.algorithms %}
+                <div>
+                    <img src="{{ scene.base_url }}/recon_{{ algo.key }}.png"
+                         alt="{{ algo.name }} scene {{ '%02d' | format(scene.scene_idx) }}"
+                         loading="lazy"
+                         class="w-full rounded border-2 border-gray-200">
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
         </div>
         {% endif %}
 

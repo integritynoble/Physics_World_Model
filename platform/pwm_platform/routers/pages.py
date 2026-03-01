@@ -757,6 +757,41 @@ async def variant_benchmarks_page(
     }
     paper_fig_dir = _PAPER_FIG_MAP.get(variant_key, variant_key)
 
+    # Build algorithm comparison gallery from algorithms/ subdirectory
+    # Maps gallery_variant (e.g. spc_block) -> algorithms/scene_XX/recon_{key}.png
+    algo_comparison = []
+    gallery_variant = None
+    for bm in variant.get("benchmarks", []):
+        if bm.get("is_challenge"):
+            gallery_variant = bm.get("gallery_variant", variant_key)
+            break
+    if gallery_variant is None:
+        gallery_variant = variant_key
+
+    algo_base = (
+        Path(__file__).resolve().parent.parent
+        / "static" / "img" / "benchmark_gallery" / gallery_variant / "algorithms"
+    )
+    if algo_base.is_dir():
+        # Auto-detect algorithm keys from first scene
+        for si in range(20):
+            sd = algo_base / f"scene_{si:02d}"
+            if not sd.is_dir() or not (sd / "gt.png").exists():
+                break
+            url_base = f"/static/img/benchmark_gallery/{gallery_variant}/algorithms/scene_{si:02d}"
+            # Find all recon_*.png files
+            recon_files = sorted(sd.glob("recon_*.png"))
+            algos = []
+            for rf in recon_files:
+                key = rf.stem.replace("recon_", "")
+                algos.append({"key": key, "name": key.replace("-", " ").replace("_", " ").title()})
+            if algos:
+                algo_comparison.append({
+                    "scene_idx": si,
+                    "base_url": url_base,
+                    "algorithms": algos,
+                })
+
     return templates.TemplateResponse("variant_benchmarks.html", {
         "request": request,
         "user": user,
@@ -766,6 +801,7 @@ async def variant_benchmarks_page(
         "primitives": get_spec_primitives(),
         "benchmark_gallery": benchmark_gallery,
         "paper_fig_dir": paper_fig_dir,
+        "algo_comparison": algo_comparison,
     })
 
 
@@ -819,8 +855,8 @@ async def challenge_tier_page(
         if tier_ds and tier_ds.get("gcs_object_path"):
             tier_ds["download_url"] = f"/gcs/{tier_ds['gcs_object_path']}"
 
-    # Load benchmark gallery for scores
-    benchmark_gallery = get_benchmark_gallery(variant_key)
+    # Load benchmark gallery for scores (public tier only — dev/hidden use simulated data)
+    benchmark_gallery = get_benchmark_gallery(variant_key) if tier_name == "public" else None
 
     # Map variant_key to InverseNet paper figure subdirectory
     _PAPER_FIG_MAP = {
@@ -854,27 +890,32 @@ async def challenge_tier_page(
         "sd_cassi": ("Band 7 (~450 nm)", "Band 21 (~650 nm)"),
         "cacti": ("Frame 0 (t=0)", "Frame 7 (t=7)"),
     }
-    _TIER_SCENE = {"public": 0, "dev": 1, "hidden": 2}
+    _TIER_SCENE_SHARED = {"public": 0, "dev": 1, "hidden": 2}
 
     # Auto-detect preview images from gallery directory
-    # Try tier-specific gallery first (e.g. cacti/dev/scene_00), fall back to shared
+    # Try tier-specific gallery first (e.g. spc_block/dev/scene_00), fall back to shared
     gallery_key = challenge.get("gallery_variant", variant_key)
-    scene_idx = _TIER_SCENE.get(tier_name, 0)
     gallery_base = (
         Path(__file__).resolve().parent.parent
         / "static" / "img" / "benchmark_gallery" / gallery_key
     )
-    # Prefer tier-specific directory with scene_00 (each tier has its own data)
-    tier_gallery_dir = gallery_base / tier_name / f"scene_{scene_idx:02d}"
-    shared_gallery_dir = gallery_base / f"scene_{scene_idx:02d}"
+    # Prefer tier-specific directory — dev uses scene_02 (best representative), public uses scene_00
+    _TIER_PREVIEW_SCENE = {"public": 0, "dev": 2}
+    tier_preview_idx = _TIER_PREVIEW_SCENE.get(tier_name, 0)
+    tier_gallery_dir = gallery_base / tier_name / f"scene_{tier_preview_idx:02d}"
+    scene_idx_shared = _TIER_SCENE_SHARED.get(tier_name, 0)
+    shared_gallery_dir = gallery_base / f"scene_{scene_idx_shared:02d}"
     if tier_gallery_dir.is_dir() and (tier_gallery_dir / "gt.png").exists():
+        scene_idx = tier_preview_idx
         gallery_dir = tier_gallery_dir
         base = f"/static/img/benchmark_gallery/{gallery_key}/{tier_name}/scene_{scene_idx:02d}"
     else:
+        scene_idx = scene_idx_shared
         gallery_dir = shared_gallery_dir
         base = f"/static/img/benchmark_gallery/{gallery_key}/scene_{scene_idx:02d}"
+    # Only show data preview for public and dev tiers (hidden has no visible data)
     data_preview = None
-    if gallery_dir.is_dir() and (gallery_dir / "gt.png").exists():
+    if tier_name in ("public", "dev") and gallery_dir.is_dir() and (gallery_dir / "gt.png").exists():
         if (gallery_dir / "gt_view1.png").exists():
             labels = _MULTI_VIEW_LABELS.get(gallery_key, ("View 1", "View 2"))
             data_preview = {
@@ -890,11 +931,61 @@ async def challenge_tier_page(
                 "scene_idx": scene_idx,
                 "base_url": base,
             }
+        # Check for best-algorithm reconstruction image
+        # Try tier-specific dir first (algorithms_dev/), then shared (algorithms/)
+        _BEST_RECON_PRIORITY = [
+            ("recon_pnp-drunet.png", "PnP-DRUNet + blind cal"),
+            ("recon_dolce.png", "DOLCE + gradient"),
+            ("recon_lpd.png", "Learned Primal-Dual"),
+        ]
+        for _algo_dir_name in (f"algorithms_{tier_name}", "algorithms"):
+            algo_scene_dir = gallery_base / _algo_dir_name / f"scene_{scene_idx:02d}"
+            if not algo_scene_dir.is_dir():
+                continue
+            for recon_file, recon_label in _BEST_RECON_PRIORITY:
+                if (algo_scene_dir / recon_file).exists():
+                    _url_algo_dir = _algo_dir_name
+                    data_preview["best_recon_url"] = (
+                        f"/static/img/benchmark_gallery/{gallery_key}"
+                        f"/{_url_algo_dir}/scene_{scene_idx:02d}/{recon_file}"
+                    )
+                    data_preview["best_recon_label"] = recon_label
+                    break
+            if "best_recon_url" in data_preview:
+                break
 
     # Extract true_spec only if the tier's visible_data includes it
     tier_true_spec = None
     if "true_spec" in tier.get("visible_data", []):
         tier_true_spec = tier.get("true_spec")
+
+    # Build algorithm comparison demo: auto-detect recon_*.png in gallery
+    # Public: algorithms/scene_XX/  Dev: algorithms_dev/scene_XX/
+    algo_demo = []
+    if tier_name in ("public", "dev"):
+        algo_dir_name = f"algorithms_{tier_name}" if tier_name == "dev" else "algorithms"
+        algo_base = gallery_base / algo_dir_name
+        if not algo_base.is_dir():
+            algo_base = gallery_base / "algorithms"
+            algo_dir_name = "algorithms"
+        for si in range(20):
+            sd = algo_base / f"scene_{si:02d}"
+            if not sd.is_dir() or not (sd / "gt.png").exists():
+                break
+            recon_files = sorted(sd.glob("recon_*.png"))
+            if not recon_files:
+                continue
+            algos = []
+            for rf in recon_files:
+                key = rf.stem.replace("recon_", "")
+                name = key.replace("-", " ").replace("_", " ").title()
+                algos.append({"key": key, "name": name})
+            url_algo_dir = algo_dir_name if (gallery_base / algo_dir_name / f"scene_{si:02d}").is_dir() else "algorithms"
+            algo_demo.append({
+                "scene_idx": si,
+                "base_url": f"/static/img/benchmark_gallery/{gallery_key}/{url_algo_dir}/scene_{si:02d}",
+                "algorithms": algos,
+            })
 
     return templates.TemplateResponse("challenge_tier.html", {
         "request": request,
@@ -909,6 +1000,8 @@ async def challenge_tier_page(
         "paper_fig_dir": paper_fig_dir,
         "paper_extra_chart": paper_extra_chart,
         "data_preview": data_preview,
+        "recon_gallery": [],
+        "algo_demo": algo_demo,
         "spec_ranges": tier.get("spec_ranges", challenge.get("spec_ranges", [])),
         "true_spec": tier_true_spec,
     })

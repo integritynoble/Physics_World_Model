@@ -390,8 +390,8 @@ CHALLENGE_CONFIG: dict[str, dict] = {
         "signal_shape": [256, 256],
         "tier_data_sources": {
             "public":  {"path": "datasets/SPC/Set11/", "format": "tif", "type": "experimental"},
-            "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "simulated"},
-            "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "simulated"},
+            "dev":     {"path": "datasets/SPC/BSDS400/", "format": "jpg", "type": "natural_images"},
+            "hidden":  {"path": "datasets/SPC/BrainImages_test/", "format": "png", "type": "medical"},
         },
         "baselines": {
             "scenario_ii": [
@@ -405,6 +405,14 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 {"method": "HATNet",     "psnr": 30.98, "ssim": 0.905},
                 {"method": "PnP-DRUNet", "psnr": 30.53, "ssim": 0.895},
                 {"method": "FISTA-TV",   "psnr": 28.06, "ssim": 0.850},
+            ],
+            "scenario_iv": [
+                {"method": "PnP-DRUNet",      "psnr": 26.03, "ssim": 0.806},
+                {"method": "FISTA-TV (tuned)", "psnr": 25.26, "ssim": 0.756},
+                {"method": "FISTA-TV (paper)", "psnr": 25.07, "ssim": 0.747},
+                {"method": "HATNet",           "psnr": 25.29, "ssim": 0.745},
+                {"method": "ISTA-Net",         "psnr": 23.38, "ssim": 0.560},
+                {"method": "PnP-BM3D",        "psnr": 19.49, "ssim": 0.533},
             ],
         },
     },

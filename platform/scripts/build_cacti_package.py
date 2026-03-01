@@ -44,31 +44,35 @@ from procedural_video_generator import (
 # ── Config ───────────────────────────────────────────────────────────────────
 
 SPEC_RANGES = [
-    {"name": "mask_dx",       "min": 0.2,   "max": 0.8,  "unit": "px"},
-    {"name": "mask_dy",       "min": 0.1,   "max": 0.5,  "unit": "px"},
-    {"name": "mask_rotation", "min": 0.0,   "max": 0.3,  "unit": "deg"},
-    {"name": "mask_blur",     "min": 0.0,   "max": 0.5,  "unit": "px"},
+    {"name": "mask_dx",       "min": -0.5,  "max": 0.5,  "unit": "px"},
+    {"name": "mask_dy",       "min": -0.3,  "max": 0.3,  "unit": "px"},
+    {"name": "mask_rotation", "min": -0.2,  "max": 0.2,  "unit": "deg"},
+    {"name": "mask_blur",     "min": 0.0,   "max": 0.3,  "unit": "px"},
     {"name": "clock_offset",  "min": -0.1,  "max": 0.1,  "unit": "frames"},
     {"name": "gain_drift",    "min": 0.95,  "max": 1.05, "unit": ""},
     {"name": "offset_drift",  "min": -0.02, "max": 0.02, "unit": ""},
 ]
 
-NOISE_PARAMS = {"poisson_alpha": 1.0, "gaussian_sigma": 0.01}
+NOISE_PARAMS = {"poisson_peak": 10000, "gaussian_sigma": 5.0}
 
+# Mismatch severity by tier:
+#   Public: very mild — expect GAP-TV ~26-28 dB (close to InverseNet paper)
+#   Dev:    moderate  — expect GAP-TV ~24-25 dB
+#   Hidden: harder    — expect GAP-TV ~22-24 dB
 TRUE_SPEC_PUBLIC = {
-    "mask_dx": 0.50, "mask_dy": 0.30, "mask_rotation": 0.15,
-    "mask_blur": 0.20, "clock_offset": 0.05,
-    "gain_drift": 1.02, "offset_drift": 0.01,
+    "mask_dx": 0.10, "mask_dy": 0.05, "mask_rotation": 0.03,
+    "mask_blur": 0.05, "clock_offset": 0.02,
+    "gain_drift": 1.01, "offset_drift": 0.005,
 }
 TRUE_SPEC_DEV = {
-    "mask_dx": 0.35, "mask_dy": 0.20, "mask_rotation": 0.08,
+    "mask_dx": 0.20, "mask_dy": 0.10, "mask_rotation": 0.08,
     "mask_blur": 0.10, "clock_offset": -0.03,
-    "gain_drift": 0.98, "offset_drift": -0.01,
+    "gain_drift": 0.98, "offset_drift": -0.008,
 }
 TRUE_SPEC_HIDDEN = {
-    "mask_dx": 0.65, "mask_dy": 0.40, "mask_rotation": 0.22,
-    "mask_blur": 0.35, "clock_offset": 0.08,
-    "gain_drift": 1.04, "offset_drift": 0.015,
+    "mask_dx": 0.35, "mask_dy": 0.20, "mask_rotation": 0.15,
+    "mask_blur": 0.15, "clock_offset": 0.05,
+    "gain_drift": 1.03, "offset_drift": 0.012,
 }
 
 # ── Secret manifests ─────────────────────────────────────────────────────────
@@ -149,14 +153,23 @@ def apply_cacti_mismatch(x, mask, true_spec):
 
 
 def add_noise(y, rng):
-    alpha, sigma = NOISE_PARAMS["poisson_alpha"], NOISE_PARAMS["gaussian_sigma"]
-    y_pos = np.maximum(y, 0)
-    if alpha > 0 and y_pos.max() > 0:
-        y_n = rng.poisson(np.maximum(y_pos / alpha, 0.001)).astype(np.float64) * alpha
-    else:
-        y_n = y.copy()
-    y_n += rng.normal(0, sigma, y.shape)
-    return y_n
+    """Add Poisson-Gaussian noise matching InverseNet paper noise model.
+
+    Scales measurement to peak photon count, applies Poisson shot noise,
+    adds Gaussian read noise, then scales back. This gives ~34 dB measurement
+    SNR (vs ~3 dB with the old alpha=1.0 model).
+    """
+    peak = NOISE_PARAMS["poisson_peak"]
+    sigma = NOISE_PARAMS["gaussian_sigma"]
+    y = np.maximum(y, 0).astype(np.float64)
+    y_max = y.max()
+    if y_max < 1e-10:
+        return y
+    y_scaled = y / y_max * peak
+    y_noisy = rng.poisson(np.maximum(y_scaled, 0).astype(np.int64)).astype(np.float64)
+    y_noisy += rng.normal(0, sigma, y_noisy.shape)
+    y_noisy = y_noisy / peak * y_max
+    return np.maximum(y_noisy, 0)
 
 
 def gen_mask(H, W, T, rng):
@@ -523,10 +536,13 @@ def main():
     gen_file = PACKAGE_DIR / "procedural_video_generator.py"
     gen_code = gen_file.read_text() if gen_file.exists() else None
 
+    # Files to preserve during cleanup
+    PRESERVE_FILES = {"procedural_video_generator.py", "modal_runner.py"}
+
     if PACKAGE_DIR.exists():
         print("  Cleaning existing package ...")
         for item in PACKAGE_DIR.iterdir():
-            if item.name == "procedural_video_generator.py":
+            if item.name in PRESERVE_FILES:
                 continue
             if item.is_dir():
                 shutil.rmtree(item)

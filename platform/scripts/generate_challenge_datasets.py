@@ -1271,12 +1271,10 @@ def _find_data_root() -> Path:
 def _include_ground_truth(tier_name: str, visible_data: list[str]) -> bool:
     """Determine whether to include ground truth in the HDF5 file.
 
-    Public tier: always includes x_true + true_spec (visible to contestants).
-    Hidden tier: always includes x_true + true_spec (for server-side eval).
-    Dev tier: never includes ground truth.
+    Internal files (local) always include x_true for scoring.
+    Public-facing files on GCS should be post-processed to strip x_true
+    from dev/hidden tiers before upload.
     """
-    if tier_name == "dev":
-        return False
     return True
 
 
@@ -1585,6 +1583,7 @@ def _generate_cacti(cfg: dict, output_dir: Path, data_root: Path | None = None):
 
 def _load_spc_images_from_dir(
     dir_path: Path, fmt: str, max_images: int, seed: int,
+    target_size: tuple[int, int] | None = (256, 256),
 ) -> list[np.ndarray]:
     """Load grayscale images from a directory for SPC processing."""
     ext_map = {"tif": ["*.tif", "*.tiff"], "png": ["*.png"], "jpg": ["*.jpg", "*.jpeg"]}
@@ -1602,7 +1601,7 @@ def _load_spc_images_from_dir(
     images = []
     for idx in sorted(indices):
         try:
-            img = _load_tif_image(files[idx], target_size=None)
+            img = _load_tif_image(files[idx], target_size=target_size)
             images.append(img)
         except Exception as e:
             logger.warning("Failed to load %s: %s", files[idx], e)
@@ -1629,13 +1628,27 @@ def _generate_spc(variant_key: str, cfg: dict, output_dir: Path, data_root: Path
     block_size = 33
     tier_data_sources = cfg.get("tier_data_sources", {})
 
-    # Generate phi once (shared across all tiers and scenes)
+    # Load ISTA-Net's trained Phi matrix (used in InverseNet paper)
+    # This ensures compatibility with pretrained deep unfolding methods.
     n = block_size * block_size  # 1089
     m = n // 4  # 272
-    rng_phi = np.random.default_rng(42)
-    phi = rng_phi.standard_normal((m, n)).astype(np.float64)
-    phi /= np.linalg.norm(phi, axis=1, keepdims=True)
-    logger.info("SPC sensing matrix: %s (shared across all tiers)", phi.shape)
+    ista_phi_path = (
+        Path(__file__).resolve().parent.parent.parent
+        / "papers" / "inversenet" / "data" / "spc" / "sampling_matrix"
+        / "phi_0_25_1089.mat"
+    )
+    if ista_phi_path.exists():
+        import scipy.io as sio
+        phi_mat = sio.loadmat(str(ista_phi_path))
+        phi_key = [k for k in phi_mat.keys() if not k.startswith("__")][0]
+        phi = phi_mat[phi_key].astype(np.float64)
+        logger.info("SPC sensing matrix: loaded ISTA-Net Phi from %s %s", ista_phi_path.name, phi.shape)
+    else:
+        # Fallback: random Gaussian if ISTA-Net Phi not available
+        rng_phi = np.random.default_rng(42)
+        phi = rng_phi.standard_normal((m, n)).astype(np.float64)
+        phi /= np.linalg.norm(phi, axis=1, keepdims=True)
+        logger.info("SPC sensing matrix: random Gaussian %s (ISTA-Net Phi not found)", phi.shape)
 
     for tier_name, tier_cfg in cfg["tiers"].items():
         tier_true_spec = tier_cfg["true_spec"]
@@ -1645,25 +1658,42 @@ def _generate_spc(variant_key: str, cfg: dict, output_dir: Path, data_root: Path
 
         rng = np.random.default_rng(tier_seed)
 
-        # Resolve tier-specific image directory
-        if tier_source and "path" in tier_source:
+        # Resolve tier-specific image source
+        tier_images = []
+        if tier_source and "generator" in tier_source:
+            # Use named generator for simulated scenes (dev/hidden tiers)
+            gen_seed_offset = tier_source.get("seed_offset", 0)
+            gen_seed = tier_seed + gen_seed_offset
+            signal_shape = tuple(cfg.get("signal_shape", [256, 256]))
+            tier_images = _load_scenes_from_generator(
+                tier_source["generator"],
+                signal_shape,
+                max_scenes=len(scenes),
+                seed=gen_seed,
+            )
+            img_dir = f"<generator:{tier_source['generator']}>"
+            logger.info("  Generated %d simulated scenes for tier %s", len(tier_images), tier_name)
+        elif tier_source and "path" in tier_source:
             img_dir = data_root.parent / tier_source["path"]
             if not img_dir.exists():
                 img_dir = _find_data_root().parent / tier_source["path"]
             img_fmt = tier_source.get("format", "tif")
+            signal_shape = tuple(cfg.get("signal_shape", [256, 256]))
+            tier_images = _load_spc_images_from_dir(
+                img_dir, img_fmt, len(scenes), tier_seed,
+                target_size=(signal_shape[0], signal_shape[1]),
+            )
         else:
             img_dir = data_root / "SPC" / "Set11"
             img_fmt = "tif"
+            tier_images = _load_spc_images_from_dir(
+                img_dir, img_fmt, len(scenes), tier_seed,
+            )
 
-        # Load images from the tier's directory
-        tier_images = _load_spc_images_from_dir(
-            img_dir, img_fmt, len(scenes), tier_seed,
-        )
-
-        # Fallback to Set11 if tier directory had no images
+        # Fallback to Set11 if tier source produced no images
         if not tier_images:
-            set11_dir = data_root / "SPC" / "Set11"
-            tier_images = _load_spc_images_from_dir(set11_dir, "tif", len(scenes), tier_seed)
+            img_dir = data_root / "SPC" / "Set11"
+            tier_images = _load_spc_images_from_dir(img_dir, "tif", len(scenes), tier_seed)
 
         if not tier_images:
             logger.warning("No images found for %s tier %s, skipping", variant_key, tier_name)

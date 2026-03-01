@@ -53,6 +53,9 @@ _ESCI_CKPT = os.path.join(_PROJECT_ROOT, "checkpoint", "EfficientSCI", "efficien
 _FFDNET_PKG = "/home/spiritai/PnP-SCI_python-master/packages"
 _FFDNET_WEIGHTS = os.path.join(_PROJECT_ROOT, "checkpoint", "PnP-SCI", "ffdnet", "net_gray.pth")
 _DNCNN_WEIGHTS = os.path.join(_PROJECT_ROOT, "checkpoint", "DnCNN", "dncnn_25.pth")
+_HISVIT_REPO = "/home/spiritai/HiSViT"
+_HISVIT9_CKPT = os.path.join(_PROJECT_ROOT, "checkpoint", "HiSViT", "hisvit9_gray.pth")
+_HISVIT13_CKPT = os.path.join(_PROJECT_ROOT, "checkpoint", "HiSViT", "hisvit13_gray.pth")
 
 # Model cache (singleton — load once, reuse across calls)
 _cached_models: Dict[str, Any] = {}
@@ -510,6 +513,101 @@ def _resolve_device(device: str) -> str:
 
 
 # ============================================================================
+# HiSViT: Hierarchical Separable Video Transformer (ECCV 2024)
+# ============================================================================
+
+def _load_hisvit(device_str: str, blocks: int = 9):
+    """Load HiSViT model with pretrained weights."""
+    cache_key = f"hisvit{blocks}_{device_str}"
+    if cache_key in _cached_models:
+        return _cached_models[cache_key]
+
+    ckpt_path = _HISVIT9_CKPT if blocks == 9 else _HISVIT13_CKPT
+    if not HAS_TORCH or not os.path.isfile(ckpt_path):
+        return None
+
+    try:
+        if _HISVIT_REPO not in sys.path:
+            sys.path.insert(0, _HISVIT_REPO)
+        from model.arch import HiSViT
+
+        dev = torch.device(device_str)
+        model = HiSViT(
+            dim=[128, 256, 128],
+            frames=8,
+            size=[256, 256],
+            color_ch=1,
+            blocks=blocks,
+        ).to(dev)
+        ckpt = torch.load(ckpt_path, map_location=dev, weights_only=False)
+        if isinstance(ckpt, dict) and "model_state_dict" in ckpt:
+            state_dict = ckpt["model_state_dict"]
+        elif isinstance(ckpt, dict) and "state_dict" in ckpt:
+            state_dict = ckpt["state_dict"]
+        else:
+            state_dict = ckpt
+        model.load_state_dict(state_dict, strict=False)
+        model.eval()
+        _cached_models[cache_key] = model
+        logger.info("HiSViT-%d loaded (%d params)", blocks, sum(p.numel() for p in model.parameters()))
+        return model
+    except Exception as e:
+        logger.warning("HiSViT-%d load failed: %s", blocks, e)
+        return None
+
+
+def hisvit_cacti(
+    y: np.ndarray,
+    mask: np.ndarray,
+    device: str = "cpu",
+    blocks: int = 9,
+    verbose: bool = False,
+    **_kw,
+) -> np.ndarray:
+    """HiSViT: Hierarchical Separable Video Transformer (ECCV 2024).
+
+    Uses the original pretrained HiSViT model.
+    Falls back to EfficientSCI or GAP-TV if model unavailable.
+    Expected PSNR: ~37.0 dB (HiSViT-9), ~37.3 dB (HiSViT-13).
+    """
+    dev_str = _resolve_device(device)
+    model = _load_hisvit(dev_str, blocks)
+    if model is None:
+        logger.warning("HiSViT-%d not available, falling back to EfficientSCI", blocks)
+        return efficient_sci_cacti(y, mask, device=device)
+
+    T = mask.shape[2]
+    H, W = y.shape[:2]
+    dev = torch.device(dev_str)
+
+    # Mask: (1, T, H, W)
+    Phi = torch.from_numpy(mask.transpose(2, 0, 1).copy()).unsqueeze(0).float().to(dev)
+    # Phi_s: (1, 1, H, W) — sum over temporal dim
+    Phi_s = Phi.sum(dim=1, keepdim=True)
+    Phi_s[Phi_s == 0] = 1
+    # meas: (1, 1, H, W)
+    meas_t = torch.from_numpy(y.copy()).unsqueeze(0).unsqueeze(0).float().to(dev)
+
+    # HiSViT initialization: meas_re = meas / mask_sum, x_init = meas_re + mask * meas_re
+    meas_re = meas_t / Phi_s  # (1, 1, H, W)
+    x_init = meas_re + Phi * meas_re  # (1, T, H, W)
+
+    # Network input: (batch, 2, T, H, W) — [x_init, meas_re_repeat]
+    inp = torch.cat(
+        (x_init.unsqueeze(1), meas_re.repeat(1, T, 1, 1).unsqueeze(1)),
+        dim=1,
+    )
+
+    with torch.no_grad():
+        out = model(inp)  # (1, 1, T, H, W) or (1, T, H, W)
+
+    recon = out.clamp(0, 1).squeeze().cpu().numpy()  # (T, H, W)
+    if recon.ndim == 2:
+        recon = recon[np.newaxis]
+    return recon.transpose(1, 2, 0).astype(np.float32)  # -> (H, W, T)
+
+
+# ============================================================================
 # Public API
 # ============================================================================
 
@@ -518,6 +616,8 @@ SOLVERS = {
     "pnp_ffdnet": pnp_ffdnet_cacti,
     "elp_unfolding": elp_unfolding_cacti,
     "efficient_sci": efficient_sci_cacti,
+    "hisvit9": hisvit_cacti,
+    "hisvit13": lambda y, mask, **kw: hisvit_cacti(y, mask, blocks=13, **kw),
 }
 
 

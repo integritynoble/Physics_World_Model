@@ -72,69 +72,98 @@
         </h2>
 
         {% if data_preview.is_multi %}
-        {# Multi-dimensional: CASSI (spectral) / CACTI (temporal) — 2 GT views, 1 measurement, 2 recon views #}
+        {# Multi-dimensional: CASSI (spectral) / CACTI (temporal) #}
+        {% if tier_name == 'public' %}
+        {# Public: show GT + measurement + reconstruction #}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Ground Truth column -->
             <div class="space-y-3">
                 <h3 class="text-sm font-semibold text-gray-700 text-center">Ground Truth</h3>
                 <div class="space-y-2">
                     <div>
                         <img src="{{ data_preview.base_url }}/gt_view1.png" alt="GT {{ data_preview.view1_label }}"
-                             loading="lazy"
-                             class="w-full rounded-lg border-2
-                                 {% if tier_name == 'public' %}border-green-200{% elif tier_name == 'dev' %}border-amber-200{% else %}border-purple-200{% endif %}">
+                             loading="lazy" class="w-full rounded-lg border-2 border-green-200">
                         <p class="text-xs text-gray-500 text-center mt-1">{{ data_preview.view1_label }}</p>
                     </div>
                     <div>
                         <img src="{{ data_preview.base_url }}/gt_view2.png" alt="GT {{ data_preview.view2_label }}"
-                             loading="lazy"
-                             class="w-full rounded-lg border-2
-                                 {% if tier_name == 'public' %}border-green-200{% elif tier_name == 'dev' %}border-amber-200{% else %}border-purple-200{% endif %}">
+                             loading="lazy" class="w-full rounded-lg border-2 border-green-200">
                         <p class="text-xs text-gray-500 text-center mt-1">{{ data_preview.view2_label }}</p>
                     </div>
                 </div>
             </div>
-            <!-- Measurement column -->
             <div class="space-y-3">
                 <h3 class="text-sm font-semibold text-gray-700 text-center">Measurement</h3>
                 <div>
                     <img src="{{ data_preview.base_url }}/measurement_I.png" alt="Compressed measurement"
-                         loading="lazy"
-                         class="w-full rounded-lg border-2 border-gray-200">
+                         loading="lazy" class="w-full rounded-lg border-2 border-gray-200">
                     <p class="text-xs text-gray-500 text-center mt-1">2D compressed</p>
                 </div>
             </div>
-            <!-- Reconstruction column -->
             <div class="space-y-3">
                 <h3 class="text-sm font-semibold text-gray-700 text-center">Reconstruction</h3>
                 <div class="space-y-2">
                     <div>
                         <img src="{{ data_preview.base_url }}/recon_I_view1.png" alt="Recon {{ data_preview.view1_label }}"
-                             loading="lazy"
-                             class="w-full rounded-lg border-2
-                                 {% if tier_name == 'public' %}border-green-200{% elif tier_name == 'dev' %}border-amber-200{% else %}border-purple-200{% endif %}">
+                             loading="lazy" class="w-full rounded-lg border-2 border-green-200">
                         <p class="text-xs text-gray-500 text-center mt-1">{{ data_preview.view1_label }}</p>
                     </div>
                     <div>
                         <img src="{{ data_preview.base_url }}/recon_I_view2.png" alt="Recon {{ data_preview.view2_label }}"
-                             loading="lazy"
-                             class="w-full rounded-lg border-2
-                                 {% if tier_name == 'public' %}border-green-200{% elif tier_name == 'dev' %}border-amber-200{% else %}border-purple-200{% endif %}">
+                             loading="lazy" class="w-full rounded-lg border-2 border-green-200">
                         <p class="text-xs text-gray-500 text-center mt-1">{{ data_preview.view2_label }}</p>
                     </div>
                 </div>
             </div>
         </div>
+        {% elif tier_name == 'dev' %}
+        {# Dev: measurement + reconstruction, ground truth locked (blind evaluation) #}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="space-y-3 flex flex-col items-center justify-center">
+                <h3 class="text-sm font-semibold text-amber-700 text-center">Ground Truth</h3>
+                <div class="w-full aspect-square rounded-lg border-2 border-dashed border-amber-300 bg-amber-50/50 flex items-center justify-center">
+                    <div class="text-center px-4">
+                        <p class="text-2xl mb-2">&#128274;</p>
+                        <p class="text-sm text-amber-700 font-medium">Hidden</p>
+                        <p class="text-xs text-amber-600 mt-1">Reconstruct from measurements only</p>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-3">
+                <h3 class="text-sm font-semibold text-gray-700 text-center">Measurement</h3>
+                <div>
+                    <img src="{{ data_preview.base_url }}/measurement_I.png" alt="Compressed measurement"
+                         loading="lazy" class="w-full rounded-lg border-2 border-gray-200">
+                    <p class="text-xs text-gray-500 text-center mt-1">2D compressed</p>
+                </div>
+            </div>
+            <div class="space-y-3">
+                <h3 class="text-sm font-semibold text-gray-700 text-center">Reconstruction</h3>
+                <div class="space-y-2">
+                    <div>
+                        <img src="{{ data_preview.base_url }}/recon_I_view1.png" alt="Recon {{ data_preview.view1_label }}"
+                             loading="lazy" class="w-full rounded-lg border-2 border-amber-200">
+                        <p class="text-xs text-gray-500 text-center mt-1">{{ data_preview.view1_label }}</p>
+                    </div>
+                    <div>
+                        <img src="{{ data_preview.base_url }}/recon_I_view2.png" alt="Recon {{ data_preview.view2_label }}"
+                             loading="lazy" class="w-full rounded-lg border-2 border-amber-200">
+                        <p class="text-xs text-gray-500 text-center mt-1">{{ data_preview.view2_label }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
 
         {% else %}
-        {# Single-image: SPC — 1 GT, 1 measurement, 1 reconstruction #}
+        {# Single-image: SPC / CT — 1 GT, 1 measurement, 1 reconstruction #}
+        {% if tier_name == 'public' %}
+        {# Public: show GT + measurement + best reconstruction #}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="space-y-2">
                 <h3 class="text-sm font-semibold text-gray-700 text-center">Ground Truth</h3>
                 <img src="{{ data_preview.base_url }}/gt.png" alt="Ground truth"
                      loading="lazy"
-                     class="w-full rounded-lg border-2
-                         {% if tier_name == 'public' %}border-green-200{% elif tier_name == 'dev' %}border-amber-200{% else %}border-purple-200{% endif %}">
+                     class="w-full rounded-lg border-2 border-green-200">
             </div>
             <div class="space-y-2">
                 <h3 class="text-sm font-semibold text-gray-700 text-center">Measurement</h3>
@@ -143,13 +172,53 @@
                      class="w-full rounded-lg border-2 border-gray-200">
             </div>
             <div class="space-y-2">
+                {% if data_preview.best_recon_url %}
+                <h3 class="text-sm font-semibold text-indigo-700 text-center">{{ data_preview.best_recon_label }}</h3>
+                <img src="{{ data_preview.best_recon_url }}" alt="{{ data_preview.best_recon_label }} reconstruction"
+                     loading="lazy"
+                     class="w-full rounded-lg border-2 border-indigo-300">
+                {% else %}
                 <h3 class="text-sm font-semibold text-gray-700 text-center">Reconstruction</h3>
                 <img src="{{ data_preview.base_url }}/recon_I.png" alt="Reconstruction"
                      loading="lazy"
-                     class="w-full rounded-lg border-2
-                         {% if tier_name == 'public' %}border-green-200{% elif tier_name == 'dev' %}border-amber-200{% else %}border-purple-200{% endif %}">
+                     class="w-full rounded-lg border-2 border-green-200">
+                {% endif %}
             </div>
         </div>
+        {% elif tier_name == 'dev' %}
+        {# Dev: measurement + reconstruction, ground truth locked (blind evaluation) #}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="space-y-2 flex flex-col items-center justify-center">
+                <h3 class="text-sm font-semibold text-amber-700 text-center">Ground Truth</h3>
+                <div class="w-full aspect-square rounded-lg border-2 border-dashed border-amber-300 bg-amber-50/50 flex items-center justify-center">
+                    <div class="text-center px-4">
+                        <p class="text-2xl mb-2">&#128274;</p>
+                        <p class="text-sm text-amber-700 font-medium">Hidden</p>
+                        <p class="text-xs text-amber-600 mt-1">Reconstruct from measurements only</p>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <h3 class="text-sm font-semibold text-gray-700 text-center">Measurement</h3>
+                <img src="{{ data_preview.base_url }}/measurement_I.png" alt="Compressed measurement"
+                     loading="lazy"
+                     class="w-full rounded-lg border-2 border-gray-200">
+            </div>
+            <div class="space-y-2">
+                {% if data_preview.best_recon_url %}
+                <h3 class="text-sm font-semibold text-indigo-700 text-center">{{ data_preview.best_recon_label }}</h3>
+                <img src="{{ data_preview.best_recon_url }}" alt="{{ data_preview.best_recon_label }} reconstruction"
+                     loading="lazy"
+                     class="w-full rounded-lg border-2 border-indigo-300">
+                {% else %}
+                <h3 class="text-sm font-semibold text-gray-700 text-center">Reconstruction</h3>
+                <img src="{{ data_preview.base_url }}/recon_I.png" alt="Baseline reconstruction"
+                     loading="lazy"
+                     class="w-full rounded-lg border-2 border-amber-200">
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
         {% endif %}
     </div>
     {% endif %}
@@ -206,7 +275,7 @@
     {% endif %}
 
     <!-- ═══ Scores Section ═══ -->
-    {% if tier_name in ('public', 'dev') and benchmark_gallery %}
+    {% if tier_name == 'public' and benchmark_gallery %}
     <div class="bg-white shadow rounded-lg p-6 space-y-4">
         <h2 class="text-base font-semibold text-gray-800">InverseNet Baseline Scores</h2>
         <p class="text-xs text-gray-500">Method: {{ benchmark_gallery.method }} &mdash; Mismatch parameter: {{ benchmark_gallery.mismatch_param }}</p>
@@ -262,6 +331,54 @@
                 </table>
             </div>
         </details>
+    </div>
+    {% endif %}
+
+    <!-- ═══ Algorithm Comparison ═══ -->
+    {% if algo_demo and algo_demo | length > 0 %}
+    <div class="bg-white shadow rounded-lg p-6 space-y-4">
+        <div class="flex items-center gap-3 flex-wrap">
+            <h2 class="text-base font-semibold text-gray-800">Algorithm Comparison</h2>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 font-medium">Blind Calibration (Scenario IV)</span>
+        </div>
+        <p class="text-xs text-gray-500">
+            Visual reconstruction quality from InverseNet baseline methods with blind forward-model calibration.
+        </p>
+
+        {% set demo_algos = algo_demo[0].algorithms %}
+        <div class="grid gap-2 text-xs font-medium text-center mb-2" style="grid-template-columns: repeat({{ demo_algos | length + 1 }}, minmax(0, 1fr));">
+            {% if tier_name == 'public' %}
+            <div class="text-gray-600 font-bold">Ground Truth</div>
+            {% else %}
+            <div class="text-gray-600 font-bold">Measurement</div>
+            {% endif %}
+            {% for algo in demo_algos %}
+            <div class="text-gray-600">{{ algo.name }}</div>
+            {% endfor %}
+        </div>
+
+        {% for scene in algo_demo %}
+        <div class="grid gap-2 items-start mb-2" style="grid-template-columns: repeat({{ scene.algorithms | length + 1 }}, minmax(0, 1fr));">
+            <div class="relative">
+                {% if tier_name == 'public' %}
+                <img src="{{ scene.base_url }}/gt.png" alt="Ground truth scene {{ '%02d' | format(scene.scene_idx) }}"
+                     loading="lazy" class="w-full rounded border-2 border-gray-300">
+                {% else %}
+                <img src="{{ scene.base_url }}/gt.png" alt="Measurement scene {{ '%02d' | format(scene.scene_idx) }}"
+                     loading="lazy" class="w-full rounded border-2 border-gray-300">
+                {% endif %}
+                <span class="absolute bottom-1 left-1 text-[10px] bg-black/60 text-white px-1 rounded">Scene {{ '%02d' | format(scene.scene_idx) }}</span>
+            </div>
+            {% for algo in scene.algorithms %}
+            <div>
+                <img src="{{ scene.base_url }}/recon_{{ algo.key }}.png"
+                     alt="{{ algo.name }} scene {{ '%02d' | format(scene.scene_idx) }}"
+                     loading="lazy"
+                     class="w-full rounded border-2 border-gray-200">
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
     </div>
     {% endif %}
 
