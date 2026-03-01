@@ -1,285 +1,38 @@
-"""Procedural MRI phantom generator for benchmark dev/hidden tiers.
+"""Procedural knee MRI phantom generator for PWM MRI benchmark.
 
-Generates fully synthetic 2D MRI cross-sections in [0, 1] representing
-the signal magnitude of a T2-weighted brain MRI. All phantoms are
-procedurally generated — no external datasets required.
+Produces synthetic 2D T2-weighted TSE knee MRI ground-truth images that
+mimic fastMRI multi-coil knee data appearance (320×320, float32 in [0,1]).
 
-Layer-based generation:
-  1) Brain mask  — elliptical FOV mask (randomised shape)
-  2) White matter — smooth interior at medium T2 signal
-  3) Gray matter  — slightly brighter rim (T2-weighted contrast)
-  4) Ventricles   — bright CSF cavities (high T2)
-  5) Vessels/structures — small bright features
-  6) Stress patterns   — lesions, fine structure, HDR (hidden only)
-  7) Postprocess       — blur, contrast, clipping
+T2w TSE signal intensity reference (normalised):
+  Joint fluid          ~0.90  (very bright — long T2)
+  Subcutaneous fat     ~0.83  (bright — short T1, moderate T2)
+  Bone marrow fat      ~0.78
+  Articular cartilage  ~0.52  (intermediate — thin layer)
+  Muscle               ~0.30  (intermediate-low)
+  Fibrocartilage       ~0.08  (dark — short T2, menisci)
+  Cortical bone        ~0.04  (dark — very short T2)
+  Background / air      0.00
 
-Recipe mix:
-  Dev  (brain-like, easier):   60% gray_white_matter, 25% with_vessels, 15% fat_saturated
-  Hidden (adversarial):        35% lesion_pathological, 35% fine_structure,
-                               20% high_contrast, 10% edge_heavy
+Recipes
+-------
+Dev (mild):
+  knee_coronal_normal   55%  Standard coronal TSE knee, mild effusion
+  knee_coronal_effusion 30%  Prominent joint fluid (synovial effusion)
+  knee_axial_patella    15%  Axial slice through patello-femoral joint
 
-Usage:
-    from simulate_scenes import generate_mri_gt
-    x, recipe = generate_mri_gt(seed=42, mode="dev", shape=(256, 256))
+Hidden (adversarial):
+  knee_osteophyte       35%  Bony spurs on condyle margins (stress test)
+  knee_multicompartment 35%  Posterior Baker's cyst + extra structure
+  knee_high_contrast    20%  Extreme fluid/bone contrast ratio
+  knee_thin_cartilage   10%  Very thin/absent cartilage (edge stress)
 """
 
 from __future__ import annotations
 
 import numpy as np
-from scipy.ndimage import gaussian_filter, binary_dilation
+from scipy.ndimage import gaussian_filter
 
-
-# ── Layer primitives ──────────────────────────────────────────────────────────
-
-def fbm_noise(
-    shape: tuple[int, int],
-    octaves: int = 5,
-    persistence: float = 0.55,
-    base_sigma: float = 2.0,
-    rng: np.random.Generator | None = None,
-) -> np.ndarray:
-    """Fractional Brownian motion-like noise: sum of blurred white noises."""
-    rng = np.random.default_rng() if rng is None else rng
-    h, w = shape
-    out = np.zeros((h, w), dtype=np.float32)
-    amp, total_amp, sigma = 1.0, 0.0, base_sigma
-    for _ in range(octaves):
-        n = rng.standard_normal((h, w)).astype(np.float32)
-        out += amp * gaussian_filter(n, sigma=sigma)
-        total_amp += amp
-        amp *= persistence
-        sigma *= 2.0
-    out /= max(total_amp, 1e-6)
-    out -= out.min()
-    out /= max(out.max(), 1e-6)
-    return out
-
-
-def brain_mask(
-    shape: tuple[int, int],
-    rng: np.random.Generator | None = None,
-) -> np.ndarray:
-    """Elliptical brain mask with smooth boundary and random shape jitter."""
-    rng = np.random.default_rng() if rng is None else rng
-    h, w = shape
-    yy, xx = np.mgrid[0:h, 0:w]
-    cy = h / 2 + rng.uniform(-0.02, 0.02) * h
-    cx = w / 2 + rng.uniform(-0.02, 0.02) * w
-    ry = rng.uniform(0.38, 0.44) * h
-    rx = rng.uniform(0.36, 0.42) * w
-    r = np.sqrt(((yy - cy) / ry) ** 2 + ((xx - cx) / rx) ** 2)
-    mask = (r <= 1.0).astype(np.float32)
-    mask = gaussian_filter(mask, sigma=rng.uniform(1.5, 3.0))
-    return np.clip(mask, 0.0, 1.0)
-
-
-def add_ventricles(
-    x: np.ndarray,
-    rng: np.random.Generator,
-    count: int = 2,
-    value: float = 0.90,
-) -> np.ndarray:
-    """Bright CSF ventricle regions (high T2 signal ~0.9)."""
-    h, w = x.shape
-    yy, xx = np.mgrid[0:h, 0:w]
-    out = x.copy()
-    for _ in range(count):
-        cy = h / 2 + rng.uniform(-0.10, 0.10) * h
-        cx = w / 2 + rng.uniform(-0.10, 0.10) * w
-        ry = rng.uniform(0.04, 0.10) * h
-        rx = rng.uniform(0.04, 0.12) * w
-        inside = ((yy - cy) / ry) ** 2 + ((xx - cx) / rx) ** 2 <= 1.0
-        vtx = gaussian_filter(inside.astype(np.float32), sigma=rng.uniform(1.5, 4.0))
-        vtx = (vtx / max(vtx.max(), 1e-6)) * rng.uniform(value - 0.05, value + 0.05)
-        out = np.where(inside, vtx, out)
-    return np.clip(out, 0.0, 1.0)
-
-
-def add_vessels(
-    x: np.ndarray,
-    rng: np.random.Generator,
-    count: int = 8,
-) -> np.ndarray:
-    """Small bright blood-vessel cross-sections (hyperintense point-like)."""
-    h, w = x.shape
-    yy, xx = np.mgrid[0:h, 0:w]
-    out = x.copy()
-    for _ in range(count):
-        cy = rng.uniform(0.2 * h, 0.8 * h)
-        cx = rng.uniform(0.2 * w, 0.8 * w)
-        r = rng.uniform(1.0, 4.0)
-        intensity = rng.uniform(0.70, 1.0)
-        vessel = intensity * np.exp(-((yy - cy) ** 2 + (xx - cx) ** 2) / (2 * r ** 2))
-        out = np.maximum(out, vessel.astype(np.float32))
-    return np.clip(out, 0.0, 1.0)
-
-
-def add_lesions(
-    x: np.ndarray,
-    rng: np.random.Generator,
-    count: int = 3,
-) -> np.ndarray:
-    """Bright focal lesions — hyperintense on T2 (e.g. MS plaques, tumours)."""
-    h, w = x.shape
-    yy, xx = np.mgrid[0:h, 0:w]
-    out = x.copy()
-    for _ in range(count):
-        cy = rng.uniform(0.25 * h, 0.75 * h)
-        cx = rng.uniform(0.25 * w, 0.75 * w)
-        ry = rng.uniform(0.03, 0.09) * h
-        rx = rng.uniform(0.03, 0.09) * w
-        intensity = rng.uniform(0.85, 1.0)
-        lesion = intensity * np.exp(
-            -(((yy - cy) / ry) ** 2 + ((xx - cx) / rx) ** 2) / 2.0
-        )
-        out = np.maximum(out, lesion.astype(np.float32))
-    return np.clip(out, 0.0, 1.0)
-
-
-def add_scalp_ring(
-    x: np.ndarray,
-    bmask: np.ndarray,
-    rng: np.random.Generator,
-) -> np.ndarray:
-    """Bright scalp / skull outer ring."""
-    inner = bmask > 0.5
-    outer = binary_dilation(inner, iterations=int(rng.integers(3, 9)))
-    scalp = (outer & ~inner).astype(np.float32)
-    scalp = gaussian_filter(scalp, sigma=rng.uniform(1.0, 2.5))
-    intensity = rng.uniform(0.30, 0.60)
-    return np.clip(x + intensity * scalp, 0.0, 1.0)
-
-
-def add_thin_edges(
-    x: np.ndarray,
-    rng: np.random.Generator,
-    count: int = 6,
-) -> np.ndarray:
-    """Sharp tissue-boundary bright/dark rims (edge stress-test)."""
-    h, w = x.shape
-    yy, xx = np.mgrid[0:h, 0:w]
-    out = x.copy()
-    for _ in range(count):
-        cy = rng.uniform(0.25 * h, 0.75 * h)
-        cx = rng.uniform(0.25 * w, 0.75 * w)
-        ry = rng.uniform(0.04, 0.14) * h
-        rx = rng.uniform(0.04, 0.14) * w
-        val = rng.uniform(0.2, 0.9)
-        dist = ((yy - cy) / ry) ** 2 + ((xx - cx) / rx) ** 2
-        inside = (dist <= 1.0).astype(np.float32)
-        rim = np.abs(
-            gaussian_filter(inside, sigma=0.5) - gaussian_filter(inside, sigma=2.0)
-        )
-        rim_max = rim.max()
-        if rim_max > 1e-6:
-            rim /= rim_max
-        out = np.clip(out + val * rim, 0.0, 1.0)
-    return out
-
-
-# ── Recipe types ──────────────────────────────────────────────────────────────
-
-def _recipe_gray_white_matter(rng: np.random.Generator, shape: tuple[int, int]) -> np.ndarray:
-    """60% of dev: classic T2 brain with GM/WM/CSF contrast."""
-    h, w = shape
-    bmask = brain_mask(shape, rng)
-    # White matter: medium T2 signal (~0.50) with fBm heterogeneity
-    wm = fbm_noise(shape, octaves=5, persistence=0.50, base_sigma=4.0, rng=rng) * 0.15 + 0.50
-    # Gray matter: slightly brighter (~0.65) at the rim
-    gm = fbm_noise(shape, octaves=4, persistence=0.55, base_sigma=2.0, rng=rng) * 0.12 + 0.65
-    # Spatial weight: WM in interior, GM at rim
-    yy, xx = np.mgrid[0:h, 0:w]
-    cy, cx = h / 2.0, w / 2.0
-    r_norm = np.sqrt(((yy - cy) / (h * 0.35)) ** 2 + ((xx - cx) / (w * 0.33)) ** 2)
-    wm_weight = np.clip(1.0 - r_norm, 0.0, 1.0)
-    x = wm_weight * wm + (1.0 - wm_weight) * gm
-    x = add_ventricles(x, rng, count=int(rng.integers(2, 5)))
-    x *= bmask
-    x = add_scalp_ring(x, bmask, rng)
-    x = gaussian_filter(x, sigma=rng.uniform(0.5, 1.2))
-    return np.clip(x, 0.0, 1.0)
-
-
-def _recipe_with_vessels(rng: np.random.Generator, shape: tuple[int, int]) -> np.ndarray:
-    """25% of dev: brain with small visible vessel cross-sections."""
-    x = _recipe_gray_white_matter(rng, shape)
-    x = add_vessels(x, rng, count=int(rng.integers(5, 16)))
-    return np.clip(x, 0.0, 1.0)
-
-
-def _recipe_fat_saturated(rng: np.random.Generator, shape: tuple[int, int]) -> np.ndarray:
-    """15% of dev: fat-saturated T2 — no bright scalp rim."""
-    shape_ = shape
-    bmask = brain_mask(shape_, rng)
-    base = fbm_noise(shape_, octaves=5, persistence=0.55, base_sigma=3.0, rng=rng)
-    x = np.clip(base * 0.30 + 0.45, 0.0, 1.0)
-    x = add_ventricles(x, rng, count=int(rng.integers(2, 4)), value=0.85)
-    x *= bmask  # fat suppressed — no scalp ring
-    x = gaussian_filter(x, sigma=rng.uniform(0.8, 1.5))
-    return np.clip(x, 0.0, 1.0)
-
-
-def _recipe_lesion_pathological(rng: np.random.Generator, shape: tuple[int, int]) -> np.ndarray:
-    """35% of hidden: T2 brain with hyperintense focal lesions."""
-    x = _recipe_gray_white_matter(rng, shape)
-    x = add_lesions(x, rng, count=int(rng.integers(2, 7)))
-    return np.clip(x, 0.0, 1.0)
-
-
-def _recipe_fine_structure(rng: np.random.Generator, shape: tuple[int, int]) -> np.ndarray:
-    """35% of hidden: many small vessels + fine texture (high spatial freq)."""
-    x = _recipe_gray_white_matter(rng, shape)
-    x = add_vessels(x, rng, count=int(rng.integers(15, 31)))
-    fine = fbm_noise(shape, octaves=7, persistence=0.50, base_sigma=0.8, rng=rng) * 0.08
-    x = np.clip(x + fine, 0.0, 1.0)
-    return x
-
-
-def _recipe_high_contrast(rng: np.random.Generator, shape: tuple[int, int]) -> np.ndarray:
-    """20% of hidden: extreme tissue contrast — stress-tests dynamic range."""
-    h, w = shape
-    bmask = brain_mask(shape, rng)
-    yy, xx = np.mgrid[0:h, 0:w]
-    cy, cx = h / 2.0, w / 2.0
-    r_norm = np.sqrt(((yy - cy) / (h * 0.35)) ** 2 + ((xx - cx) / (w * 0.33)) ** 2)
-    wm_core = gaussian_filter((r_norm < 0.55).astype(np.float32), sigma=1.5)
-    x = wm_core * 0.45 + (1.0 - wm_core) * 0.90  # WM=0.45, GM=0.90
-    x = add_ventricles(x, rng, count=3, value=0.98)
-    x *= bmask
-    x = add_scalp_ring(x, bmask, rng)
-    x = np.clip(x * rng.uniform(1.05, 1.30), 0.0, 1.0)
-    return np.clip(x, 0.0, 1.0)
-
-
-def _recipe_edge_heavy(rng: np.random.Generator, shape: tuple[int, int]) -> np.ndarray:
-    """10% of hidden: many sharp tissue-boundary rims (edge stress-test)."""
-    x = _recipe_gray_white_matter(rng, shape)
-    x = add_thin_edges(x, rng, count=int(rng.integers(6, 13)))
-    return np.clip(x, 0.0, 1.0)
-
-
-# ── Dev/Hidden recipe selection ───────────────────────────────────────────────
-
-_DEV_RECIPES = [
-    (0.60, _recipe_gray_white_matter),
-    (0.25, _recipe_with_vessels),
-    (0.15, _recipe_fat_saturated),
-]
-
-_HIDDEN_RECIPES = [
-    (0.35, _recipe_lesion_pathological),
-    (0.35, _recipe_fine_structure),
-    (0.20, _recipe_high_contrast),
-    (0.10, _recipe_edge_heavy),
-]
-
-
-def _pick_recipe(mode: str, rng: np.random.Generator):
-    recipes = _DEV_RECIPES if mode == "dev" else _HIDDEN_RECIPES
-    probs = [p for p, _ in recipes]
-    funcs = [f for _, f in recipes]
-    idx = rng.choice(len(funcs), p=probs)
-    return funcs[idx]
+SHAPE = (320, 320)
 
 
 # ── Public API ────────────────────────────────────────────────────────────────
@@ -287,117 +40,261 @@ def _pick_recipe(mode: str, rng: np.random.Generator):
 def generate_mri_gt(
     seed: int,
     mode: str = "dev",
-    shape: tuple[int, int] = (256, 256),
-) -> tuple[np.ndarray, str]:
-    """Generate a procedural MRI ground-truth phantom.
+    shape: tuple = SHAPE,
+) -> tuple:
+    """Generate a synthetic knee MRI phantom image.
 
-    Args:
-        seed: Random seed for reproducibility.
-        mode: "dev" (brain-like, easier) or "hidden" (adversarial, harder).
-        shape: Output image shape (H, W).
+    Parameters
+    ----------
+    seed : int
+        Random seed for full reproducibility.
+    mode : {'dev', 'hidden'}
+        Controls which recipe distribution is sampled.
+    shape : (H, W)
+        Output image size.  Default matches fastMRI knee (320x320).
 
-    Returns:
-        (x, recipe_name) where x is float32 in [0, 1].
+    Returns
+    -------
+    x : np.ndarray  float32  shape (H, W)  values in [0, 1]
+    recipe_name : str
     """
-    if mode not in ("dev", "hidden"):
-        raise ValueError(f"mode must be 'dev' or 'hidden', got {mode!r}")
     rng = np.random.default_rng(seed)
-    func = _pick_recipe(mode, rng)
-    recipe_name = func.__name__.replace("_recipe_", "")
-    x = func(rng, shape)
-    return np.clip(x, 0.0, 1.0).astype(np.float32), recipe_name
+
+    if mode == "dev":
+        recipes = [
+            ("knee_coronal_normal",   0.55),
+            ("knee_coronal_effusion", 0.30),
+            ("knee_axial_patella",    0.15),
+        ]
+    else:  # hidden — adversarial
+        recipes = [
+            ("knee_osteophyte",       0.35),
+            ("knee_multicompartment", 0.35),
+            ("knee_high_contrast",    0.20),
+            ("knee_thin_cartilage",   0.10),
+        ]
+
+    names, probs = zip(*recipes)
+    recipe = str(rng.choice(names, p=list(probs)))
+    x = _build_scene(recipe, shape, rng)
+    return x.astype(np.float32), recipe
 
 
-def generate_batch(
-    n: int,
-    mode: str = "dev",
-    base_seed: int = 5000,
-    shape: tuple[int, int] = (256, 256),
-) -> list[tuple[str, np.ndarray, str]]:
-    """Generate a batch of procedural MRI phantoms.
+# ── Scene dispatcher ──────────────────────────────────────────────────────────
 
-    Returns list of (name, image, recipe_name) tuples.
-    """
-    scenes = []
-    for i in range(n):
-        x, recipe = generate_mri_gt(base_seed + i, mode=mode, shape=shape)
-        scenes.append((f"proc_{mode}_{i:02d}", x, recipe))
-    return scenes
+def _build_scene(recipe, shape, rng):
+    if recipe == "knee_coronal_normal":
+        return _knee_coronal(shape, rng, effusion=rng.uniform(0.10, 0.30))
+    if recipe == "knee_coronal_effusion":
+        return _knee_coronal(shape, rng, effusion=rng.uniform(0.55, 0.88))
+    if recipe == "knee_axial_patella":
+        return _knee_axial_patella(shape, rng)
+    if recipe == "knee_osteophyte":
+        return _knee_coronal(shape, rng, effusion=rng.uniform(0.20, 0.50),
+                             osteophytes=True)
+    if recipe == "knee_multicompartment":
+        return _knee_multicompartment(shape, rng)
+    if recipe == "knee_high_contrast":
+        return _knee_coronal(shape, rng, effusion=rng.uniform(0.72, 0.95),
+                             high_contrast=True)
+    if recipe == "knee_thin_cartilage":
+        return _knee_coronal(shape, rng, effusion=rng.uniform(0.10, 0.40),
+                             thin_cartilage=True)
+    return _knee_coronal(shape, rng)
 
 
-def shepp_logan_phantom(
-    shape: tuple[int, int] = (256, 256),
-    variant: int = 0,
-) -> np.ndarray:
-    """Modified Shepp-Logan phantom with contrast variants for 11 public samples.
+# ── Geometry helpers ──────────────────────────────────────────────────────────
 
-    Returns float32 in [0, 1].
-    """
+def _ellipse(H, W, cy, cx, ry, rx, angle_deg=0.0):
+    """Boolean ellipse mask, shape (H, W)."""
+    yy = np.arange(H, dtype=np.float32)[:, None] - cy
+    xx = np.arange(W, dtype=np.float32)[None, :] - cx
+    if angle_deg:
+        ang = np.radians(angle_deg)
+        yr = yy * np.cos(ang) + xx * np.sin(ang)
+        xr = -yy * np.sin(ang) + xx * np.cos(ang)
+    else:
+        yr, xr = yy, xx
+    return ((yr / ry) ** 2 + (xr / rx) ** 2) <= 1.0
+
+
+def _soft(mask, sigma=2.5):
+    return gaussian_filter(mask.astype(np.float32), sigma=sigma)
+
+
+# ── Coronal knee phantom ──────────────────────────────────────────────────────
+
+def _knee_coronal(shape, rng, *, effusion=0.20, osteophytes=False,
+                  high_contrast=False, thin_cartilage=False):
+    """Coronal cross-section: femoral condyles + tibial plateau + joint space."""
     H, W = shape
-    yy = (np.arange(H) - H / 2.0) / (H / 2.0)
-    xx = (np.arange(W) - W / 2.0) / (W / 2.0)
-    XX, YY = np.meshgrid(xx, yy)
+    img = np.zeros((H, W), dtype=np.float32)
 
-    # Standard Shepp-Logan ellipse parameters: (intensity, a, b, x0, y0, theta_deg)
-    ellipses = [
-        ( 1.00,  0.69,   0.92,   0.00,   0.000,   0),
-        (-0.80,  0.6624, 0.874,  0.00,  -0.0184,  0),
-        (-0.20,  0.11,   0.31,  -0.22,   0.000,  -18),
-        (-0.20,  0.16,   0.41,   0.22,   0.000,   18),
-        ( 0.10,  0.21,   0.25,   0.00,   0.350,   0),
-        ( 0.10,  0.046,  0.046,  0.00,   0.100,   0),
-        ( 0.10,  0.046,  0.046,  0.00,  -0.100,   0),
-        (-0.02,  0.046,  0.023, -0.08,  -0.605,   0),
-        ( 0.01,  0.023,  0.023,  0.00,  -0.606,   0),
-        ( 0.01,  0.023,  0.046,  0.06,  -0.605,   0),
-    ]
+    jy = int(rng.integers(-12, 13))
+    jx = int(rng.integers(-10, 11))
+    cy, cx = H // 2 + jy, W // 2 + jx
 
-    phantom = np.zeros((H, W), dtype=np.float64)
-    for intens, a, b, x0, y0, theta_deg in ellipses:
-        theta = np.deg2rad(theta_deg)
-        cos_t, sin_t = np.cos(theta), np.sin(theta)
-        xr = cos_t * (XX - x0) + sin_t * (YY - y0)
-        yr = -sin_t * (XX - x0) + cos_t * (YY - y0)
-        inside = (xr / a) ** 2 + (yr / b) ** 2 <= 1.0
-        phantom[inside] += intens
+    # ── Limb + muscle background ───────────────────────────────────────────
+    limb = _ellipse(H, W, cy, cx, H * 0.44, W * 0.41).astype(np.float32)
+    muscle_sig = rng.uniform(0.18, 0.22) if high_contrast else rng.uniform(0.27, 0.38)
+    img += limb * muscle_sig
 
-    phantom = np.clip(phantom, 0.0, None)
-    phantom /= phantom.max() + 1e-6
+    # Subcutaneous fat ring
+    inner_limb = _ellipse(H, W, cy, cx, H * 0.395, W * 0.365).astype(np.float32)
+    fat_ring = _soft((limb - inner_limb).clip(0), sigma=2.0)
+    img += fat_ring * rng.uniform(0.74, 0.87)
 
-    # 11 contrast variants for distinct public samples
-    contrasts = [1.00, 0.85, 0.95, 1.10, 0.90, 1.05, 0.80, 0.75, 1.15, 1.20, 0.88]
-    phantom = np.clip(phantom * contrasts[variant % len(contrasts)], 0.0, 1.0)
+    # ── Femoral condyles ───────────────────────────────────────────────────
+    cond_y   = cy - int(H * 0.12)
+    cond_sep = int(W * 0.14)
+    cond_ry  = H * 0.135
+    cond_rx  = W * 0.10
 
-    return phantom.astype(np.float32)
+    for side, cx_c in [(-1, cx - cond_sep), (1, cx + cond_sep)]:
+        # Marrow
+        img += _soft(_ellipse(H, W, cond_y, cx_c, cond_ry * 0.73, cond_rx * 0.73),
+                     sigma=2.5) * rng.uniform(0.72, 0.82)
+
+        # Cortical rim
+        cort = _soft(
+            (_ellipse(H, W, cond_y, cx_c, cond_ry, cond_rx).astype(np.float32)
+             - _ellipse(H, W, cond_y, cx_c, cond_ry * 0.83, cond_rx * 0.83).astype(np.float32)
+             ).clip(0), sigma=1.5)
+        img -= cort * rng.uniform(0.40, 0.56)
+
+        # Articular cartilage (inferior condyle surface)
+        ct = 0.055 if thin_cartilage else rng.uniform(0.08, 0.13)
+        cart = _soft(_ellipse(H, W, cond_y + int(cond_ry * 0.86), cx_c,
+                               cond_ry * ct, cond_rx * 0.86), sigma=1.8)
+        img += cart * rng.uniform(0.46, 0.60)
+
+        # Osteophytes (hidden-tier bony spurs)
+        if osteophytes:
+            for _ in range(rng.integers(1, 4)):
+                ang = rng.uniform(-30, 30)
+                oy = cond_y + int(cond_ry * rng.uniform(0.72, 1.05))
+                ox = cx_c + int(cond_rx * rng.uniform(0.60, 0.95)) * side
+                spur = _soft(_ellipse(H, W, oy, ox,
+                                      H * rng.uniform(0.014, 0.030),
+                                      W * rng.uniform(0.013, 0.026),
+                                      angle_deg=ang), sigma=1.2)
+                img -= spur * rng.uniform(0.30, 0.50)
+
+    # ── Tibial plateau ─────────────────────────────────────────────────────
+    tib_y  = cy + int(H * 0.14)
+    tib_ry = H * 0.10
+    tib_rx = W * 0.285
+
+    img += _soft(_ellipse(H, W, tib_y, cx, tib_ry * 0.72, tib_rx * 0.88),
+                 sigma=2.5) * rng.uniform(0.68, 0.80)
+
+    tib_cort = _soft(
+        (_ellipse(H, W, tib_y, cx, tib_ry, tib_rx).astype(np.float32)
+         - _ellipse(H, W, tib_y, cx, tib_ry * 0.81, tib_rx * 0.91).astype(np.float32)
+         ).clip(0), sigma=1.5)
+    img -= tib_cort * rng.uniform(0.35, 0.50)
+
+    tib_cart_th = 0.055 if thin_cartilage else rng.uniform(0.09, 0.14)
+    img += _soft(_ellipse(H, W, tib_y - int(tib_ry * 0.86), cx,
+                           tib_ry * tib_cart_th, tib_rx * 0.84),
+                 sigma=1.8) * rng.uniform(0.44, 0.58)
+
+    # ── Joint space ────────────────────────────────────────────────────────
+    jt_y  = cy + int(H * 0.01)
+    jt_ry = H * 0.065
+    jt_rx = W * 0.28
+    joint = _soft(_ellipse(H, W, jt_y, cx, jt_ry, jt_rx), sigma=2.0)
+    fluid_sig = 0.91 if high_contrast else rng.uniform(0.82, 0.94)
+    img += joint * effusion * fluid_sig
+
+    # ── Menisci ────────────────────────────────────────────────────────────
+    for side in [-1, 1]:
+        men_cx = cx + side * int(W * 0.10)
+        men = _soft(_ellipse(H, W, jt_y, men_cx,
+                              jt_ry * 0.58, cond_rx * 0.52), sigma=2.0)
+        img -= men * rng.uniform(0.12, 0.22)
+
+    # ── Texture noise ──────────────────────────────────────────────────────
+    noise = rng.standard_normal((H, W)).astype(np.float32)
+    noise = gaussian_filter(noise, sigma=rng.uniform(1.2, 2.5))
+    img += noise * rng.uniform(0.018, 0.032) * limb
+
+    return img.clip(0.0, 1.0)
 
 
-# ── CLI demo ──────────────────────────────────────────────────────────────────
+# ── Axial patella phantom ─────────────────────────────────────────────────────
 
-if __name__ == "__main__":
-    import sys
+def _knee_axial_patella(shape, rng):
+    """Axial cross-section: patella + trochlear groove + Hoffa fat pad."""
+    H, W = shape
+    img = np.zeros((H, W), dtype=np.float32)
 
-    mode = sys.argv[1] if len(sys.argv) > 1 else "dev"
-    n = int(sys.argv[2]) if len(sys.argv) > 2 else 4
-    print(f"Generating {n} {mode} MRI phantoms...")
+    jy = int(rng.integers(-14, 15))
+    jx = int(rng.integers(-12, 13))
+    cy, cx = H // 2 + jy, W // 2 + jx
 
-    for name, x, recipe in generate_batch(n, mode=mode):
-        print(f"  {name}: shape={x.shape} range=[{x.min():.3f}, {x.max():.3f}] recipe={recipe}")
+    limb = _ellipse(H, W, cy, cx, H * 0.43, W * 0.42).astype(np.float32)
+    img += limb * rng.uniform(0.26, 0.35)
+    inner = _ellipse(H, W, cy, cx, H * 0.385, W * 0.375).astype(np.float32)
+    img += _soft((limb - inner).clip(0), sigma=2.5) * rng.uniform(0.73, 0.86)
 
-    try:
-        import matplotlib
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
+    # Femoral trochlea (posterior)
+    fem_y  = cy + int(H * 0.05)
+    fem_ry = H * 0.17
+    fem_rx = W * 0.22
+    img += _soft(_ellipse(H, W, fem_y, cx, fem_ry * 0.76, fem_rx * 0.76),
+                 sigma=2.5) * rng.uniform(0.72, 0.82)
+    img -= _soft(
+        (_ellipse(H, W, fem_y, cx, fem_ry, fem_rx).astype(np.float32)
+         - _ellipse(H, W, fem_y, cx, fem_ry * 0.82, fem_rx * 0.82).astype(np.float32)
+         ).clip(0), sigma=1.5) * rng.uniform(0.38, 0.52)
 
-        scenes = generate_batch(n, mode=mode)
-        fig, axes = plt.subplots(1, n, figsize=(4 * n, 4))
-        if n == 1:
-            axes = [axes]
-        for ax, (name, x, recipe) in zip(axes, scenes):
-            ax.imshow(x, cmap="gray", vmin=0, vmax=1)
-            ax.set_title(f"{name}\n{recipe}", fontsize=8)
-            ax.axis("off")
-        fig.tight_layout()
-        fig.savefig("_mri_preview.png", dpi=100)
-        print(f"\n  Preview saved to _mri_preview.png")
-    except Exception as e:
-        print(f"  (No preview: {e})")
+    # Patella (anterior)
+    pat_y  = cy - int(H * 0.17)
+    pat_ry = H * 0.08
+    pat_rx = W * 0.075
+    img += _soft(_ellipse(H, W, pat_y, cx, pat_ry * 0.70, pat_rx * 0.70),
+                 sigma=2.0) * rng.uniform(0.68, 0.80)
+    img -= _soft(
+        (_ellipse(H, W, pat_y, cx, pat_ry, pat_rx).astype(np.float32)
+         - _ellipse(H, W, pat_y, cx, pat_ry * 0.80, pat_rx * 0.80).astype(np.float32)
+         ).clip(0), sigma=1.5) * rng.uniform(0.35, 0.50)
+
+    # Patellar cartilage (posterior face)
+    img += _soft(_ellipse(H, W, pat_y + int(pat_ry * 0.82), cx,
+                           pat_ry * 0.17, pat_rx * 0.90), sigma=1.8) \
+           * rng.uniform(0.48, 0.60)
+
+    # Hoffa fat pad
+    img += _soft(_ellipse(H, W, cy - int(H * 0.04), cx, H * 0.10, W * 0.10),
+                 sigma=3.0) * rng.uniform(0.77, 0.87)
+
+    # Patellar joint fluid crescent
+    mid_y    = (pat_y + int(pat_ry) + fem_y - int(fem_ry)) // 2
+    fluid_ry = max(4, abs(pat_y + int(pat_ry) - fem_y + int(fem_ry)) // 2 + 3)
+    img += _soft(_ellipse(H, W, mid_y, cx, fluid_ry, W * 0.13), sigma=2.0) \
+           * rng.uniform(0.62, 0.90)
+
+    noise = rng.standard_normal((H, W)).astype(np.float32)
+    img += gaussian_filter(noise, sigma=rng.uniform(1.2, 2.5)) \
+           * rng.uniform(0.015, 0.030) * limb
+
+    return img.clip(0.0, 1.0)
+
+
+# ── Multi-compartment phantom (hidden tier) ───────────────────────────────────
+
+def _knee_multicompartment(shape, rng):
+    """Coronal + posterior Baker's cyst (popliteal fluid collection)."""
+    img = _knee_coronal(shape, rng, effusion=rng.uniform(0.35, 0.72))
+    H, W = shape
+    cy, cx = H // 2, W // 2
+
+    cyst_y  = cy + int(H * rng.uniform(0.30, 0.40))
+    cyst_cx = cx + int(W * rng.uniform(-0.12, 0.12))
+    cyst = _soft(_ellipse(H, W, cyst_y, cyst_cx,
+                           H * rng.uniform(0.05, 0.10),
+                           W * rng.uniform(0.06, 0.13)), sigma=2.5)
+    img += cyst * rng.uniform(0.76, 0.92)
+
+    return img.clip(0.0, 1.0)

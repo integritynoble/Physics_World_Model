@@ -1,43 +1,43 @@
 # MRI Dev Tier
 
 ## Source
-Procedural brain-like phantoms (20 samples, natural tissue statistics)
+Procedural knee-like phantoms (20 samples, TSE tissue statistics)
 
 ## Per-Sample Mismatch Values
 
-| Sample     | Scene                  | B0 (Hz) | grad_nonlin | coil_sens | k_traj | noise_σ | recipe |
-|------------|------------------------|---------|-------------|-----------|--------|---------|--------|
-| sample_00  | proc_dev_00            |   13.6 | 0.0036 | 0.011 | 0.0030 | 0.0229 | gray_white_matter |
-| sample_01  | proc_dev_01            |   15.6 | 0.0036 | 0.044 | 0.0015 | 0.0168 | gray_white_matter |
-| sample_02  | proc_dev_02            |   17.3 | 0.0025 | 0.019 | 0.0034 | 0.0286 | gray_white_matter |
-| sample_03  | proc_dev_03            |   10.8 | 0.0050 | 0.028 | 0.0049 | 0.0139 | gray_white_matter |
-| sample_04  | proc_dev_04            |   10.6 | 0.0030 | 0.030 | 0.0023 | 0.0265 | gray_white_matter |
-| sample_05  | proc_dev_05            |   13.1 | 0.0048 | 0.021 | 0.0015 | 0.0240 | gray_white_matter |
-| sample_06  | proc_dev_06            |   12.5 | 0.0011 | 0.018 | 0.0046 | 0.0219 | fat_saturated |
-| sample_07  | proc_dev_07            |   13.3 | 0.0047 | 0.019 | 0.0034 | 0.0234 | fat_saturated |
-| sample_08  | proc_dev_08            |   17.6 | 0.0044 | 0.027 | 0.0027 | 0.0149 | gray_white_matter |
-| sample_09  | proc_dev_09            |    7.4 | 0.0048 | 0.034 | 0.0020 | 0.0220 | gray_white_matter |
-| sample_10  | proc_dev_10            |    6.9 | 0.0036 | 0.033 | 0.0026 | 0.0162 | gray_white_matter |
-| sample_11  | proc_dev_11            |   19.4 | 0.0044 | 0.020 | 0.0019 | 0.0221 | gray_white_matter |
-| sample_12  | proc_dev_12            |   11.5 | 0.0032 | 0.043 | 0.0017 | 0.0157 | fat_saturated |
-| sample_13  | proc_dev_13            |   18.4 | 0.0032 | 0.048 | 0.0020 | 0.0116 | with_vessels |
-| sample_14  | proc_dev_14            |   18.2 | 0.0029 | 0.028 | 0.0011 | 0.0227 | with_vessels |
-| sample_15  | proc_dev_15            |   19.8 | 0.0040 | 0.026 | 0.0012 | 0.0229 | gray_white_matter |
-| sample_16  | proc_dev_16            |    8.5 | 0.0048 | 0.018 | 0.0048 | 0.0249 | with_vessels |
-| sample_17  | proc_dev_17            |   13.9 | 0.0015 | 0.013 | 0.0020 | 0.0113 | gray_white_matter |
-| sample_18  | proc_dev_18            |   16.8 | 0.0017 | 0.026 | 0.0015 | 0.0294 | gray_white_matter |
-| sample_19  | proc_dev_19            |   16.4 | 0.0032 | 0.030 | 0.0049 | 0.0144 | with_vessels |
+| Sample     | Scene                      | B0 (Hz) | grad_nonlin | coil_sens | k_traj | noise_σ | recipe |
+|------------|----------------------------|---------|-------------|-----------|--------|---------|--------|
+| sample_00  | proc_dev_00                |   13.6 | 0.0036 | 0.011 | 0.0030 | 0.0229 | knee_coronal_normal |
+| sample_01  | proc_dev_01                |    9.9 | 0.0027 | 0.011 | 0.0016 | 0.0147 | knee_coronal_normal |
+| sample_02  | proc_dev_02                |   10.2 | 0.0013 | 0.028 | 0.0014 | 0.0120 | knee_coronal_normal |
+| sample_03  | proc_dev_03                |   16.9 | 0.0044 | 0.047 | 0.0028 | 0.0275 | knee_coronal_normal |
+| sample_04  | proc_dev_04                |    8.7 | 0.0019 | 0.046 | 0.0012 | 0.0171 | knee_coronal_normal |
+| sample_05  | proc_dev_05                |   14.3 | 0.0049 | 0.032 | 0.0027 | 0.0290 | knee_coronal_normal |
+| sample_06  | proc_dev_06                |    5.8 | 0.0044 | 0.044 | 0.0018 | 0.0155 | knee_axial_patella |
+| sample_07  | proc_dev_07                |   13.2 | 0.0043 | 0.038 | 0.0045 | 0.0106 | knee_axial_patella |
+| sample_08  | proc_dev_08                |    8.6 | 0.0011 | 0.043 | 0.0031 | 0.0225 | knee_coronal_effusion |
+| sample_09  | proc_dev_09                |   17.9 | 0.0043 | 0.037 | 0.0043 | 0.0272 | knee_coronal_normal |
+| sample_10  | proc_dev_10                |   19.0 | 0.0026 | 0.030 | 0.0042 | 0.0221 | knee_coronal_normal |
+| sample_11  | proc_dev_11                |   15.6 | 0.0024 | 0.022 | 0.0037 | 0.0155 | knee_coronal_normal |
+| sample_12  | proc_dev_12                |   10.3 | 0.0041 | 0.042 | 0.0031 | 0.0256 | knee_axial_patella |
+| sample_13  | proc_dev_13                |    7.4 | 0.0045 | 0.046 | 0.0037 | 0.0188 | knee_coronal_effusion |
+| sample_14  | proc_dev_14                |   14.2 | 0.0048 | 0.037 | 0.0038 | 0.0196 | knee_coronal_effusion |
+| sample_15  | proc_dev_15                |   15.6 | 0.0026 | 0.022 | 0.0033 | 0.0170 | knee_coronal_normal |
+| sample_16  | proc_dev_16                |    8.1 | 0.0024 | 0.026 | 0.0015 | 0.0223 | knee_coronal_effusion |
+| sample_17  | proc_dev_17                |    8.9 | 0.0048 | 0.019 | 0.0022 | 0.0247 | knee_coronal_normal |
+| sample_18  | proc_dev_18                |   10.5 | 0.0032 | 0.011 | 0.0011 | 0.0115 | knee_coronal_normal |
+| sample_19  | proc_dev_19                |    6.4 | 0.0016 | 0.032 | 0.0043 | 0.0257 | knee_coronal_effusion |
 
 ## HDF5 Datasets (per sample)
 
-| Key           | Shape                        | Dtype     | Description                          |
-|---------------|------------------------------|-----------|--------------------------------------|
-| `x_true`      | (256, 256)                   | float32   | GT magnitude image [0, 1]            |
-| `y_kspace`    | (8, 256, 256)                | complex64 | Undersampled k-space per coil        |
-| `mask`        | (256,)                       | uint8     | 1D ky undersampling mask             |
-| `coil_maps`   | (8, 256, 256)                | complex64 | **Nominal** coil sensitivity maps    |
-| `B0_map`      | (256, 256)                   | float32   | True B0 field map (oracle)           |
-| `warp_field`  | (2, 256, 256)                | float32   | True gradient warp (dy, dx) px       |
+| Key           | Shape              | Dtype     | Description                             |
+|---------------|--------------------|-----------|---------------------------------------------|
+| `x_true`      | (320, 320)         | float32   | GT magnitude image [0, 1]               |
+| `y_kspace`    | (15, 320, 320)     | complex64 | Undersampled k-space per coil           |
+| `mask`        | (320,)             | uint8     | 1D ky undersampling mask                |
+| `coil_maps`   | (15, 320, 320)     | complex64 | Nominal coil sensitivity maps           |
+| `B0_map`      | (320, 320)         | float32   | True B0 field map (oracle)              |
+| `warp_field`  | (2, 320, 320)      | float32   | True gradient warp (dy, dx) in pixels   |
 
 ## Image Files (per sample)
 
@@ -45,7 +45,7 @@ Procedural brain-like phantoms (20 samples, natural tissue statistics)
 - `rss_reconstruction.png` — Zero-filled RSS (shows aliasing artefacts)
 - `kspace_magnitude.png`   — Log|y| averaged over coils
 - `undersampling_mask.png` — Cartesian ky undersampling pattern
-- `coil_sensitivity.png`   — Mosaic of |S_c| for all 8 coils
+- `coil_sensitivity.png`   — Mosaic of |S_c| for all 15 coils (3×5 grid)
 - `b0_map.png`             — B0 field inhomogeneity map
 - `overview.png`           — 2×3 summary grid
 - `spec.json`              — Per-sample mismatch specification
