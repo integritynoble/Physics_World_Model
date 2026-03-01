@@ -791,6 +791,71 @@ def write_tier_readme(tier, output_dir, table, spec_ranges_key,
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 
+def load_public_fastmri_brain(n_samples: int = PUBLIC_N_SAMPLES,
+                               target_shape: tuple = SHAPE) -> list[tuple] | None:
+    """Load slices from fastMRI brain multi-coil H5 files (FASTMRI_BRAIN_ROOT).
+
+    fastMRI brain files (file_brain_AXT2_*.h5) contain:
+      kspace             : (n_slices, n_coils, kH, kW)  complex64
+      reconstruction_rss : (n_slices, kH, kW)           float32
+      attrs['acquisition']: 'AXT2' | 'AXT1' | 'AXT1POST' | 'AXFLAIR'
+
+    Prefers AXT2 (T2-weighted) files.  Falls back to AXT1/FLAIR if needed.
+    Uses reconstruction_rss directly (skip edge slices, bicubic-zoom to target).
+    """
+    fastmri_brain_root = os.environ.get("FASTMRI_BRAIN_ROOT", "")
+    if not fastmri_brain_root:
+        return None
+
+    h5_files = sorted(glob.glob(os.path.join(fastmri_brain_root, "**", "*.h5"),
+                                              ) or
+                       glob.glob(os.path.join(fastmri_brain_root, "*.h5")))
+    if not h5_files:
+        return None
+
+    # Prefer T2 files
+    t2_files  = [f for f in h5_files if "AXT2" in os.path.basename(f).upper()
+                 and "POST" not in os.path.basename(f).upper()]
+    all_files = t2_files + [f for f in h5_files if f not in t2_files]
+
+    scenes: list[tuple] = []
+    H_tgt, W_tgt = target_shape
+
+    for h5_path in all_files:
+        fname = os.path.splitext(os.path.basename(h5_path))[0]
+        try:
+            with h5py.File(h5_path, "r") as hf:
+                rss_all = hf["reconstruction_rss"][:]
+                acq     = str(hf.attrs.get("acquisition", "brain"))
+        except Exception as exc:
+            print(f"  [WARNING] fastMRI brain: could not read {fname}: {exc}")
+            continue
+
+        n_slices = rss_all.shape[0]
+        sl_start = max(0, int(n_slices * 0.20))
+        sl_end   = min(n_slices, int(n_slices * 0.80))
+        step     = max(1, (sl_end - sl_start) // max(1, n_samples - len(scenes) + 2))
+
+        for sl_idx in range(sl_start, sl_end, step):
+            rss = rss_all[sl_idx].astype(np.float32)
+            rss_max = float(rss.max())
+            if rss_max < 1e-8:
+                continue
+            rss /= rss_max
+            kH, kW = rss.shape
+            if (kH, kW) != (H_tgt, W_tgt):
+                rss = _zoom(rss, (H_tgt / kH, W_tgt / kW), order=3).astype(np.float32)
+                rss = rss.clip(0.0, 1.0)
+            scene_name = f"fastmri_brain_{fname}_sl{sl_idx:02d}"
+            scenes.append((scene_name, rss, f"fastmri_{acq.lower()}"))
+            print(f"  [public] {len(scenes)-1:02d} {scene_name}: "
+                  f"shape={rss.shape}  mean={rss.mean():.3f}  ok")
+            if len(scenes) >= n_samples:
+                return scenes
+
+    return scenes if scenes else None
+
+
 def main():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     print("=" * 70)
@@ -801,18 +866,29 @@ def main():
     print("=" * 70)
 
     # ── Public tier ──────────────────────────────────────────────────────────
+    # Priority: (1) fastMRI brain (FASTMRI_BRAIN_ROOT), (2) local real_mri, (3) synthetic
     print(f"\n[public] Real brain MRI ({PUBLIC_N_SAMPLES} samples)...")
-    real_scenes = load_public_real_mri(PUBLIC_N_SAMPLES, SHAPE)
+    real_scenes = load_public_fastmri_brain(PUBLIC_N_SAMPLES, SHAPE)
+    if real_scenes:
+        print("  [public] Source: fastMRI brain multicoil (FASTMRI_BRAIN_ROOT)")
+        source_label = "fastmri_brain_t2"
+    else:
+        real_scenes = load_public_real_mri(PUBLIC_N_SAMPLES, SHAPE)
+        if real_scenes:
+            print("  [public] Source: local real_mri/multicoil_val")
+            source_label = "real_brain_t2"
+
     pub_is_real = real_scenes is not None
 
     if real_scenes is None:
         print("  [public] Falling back to synthetic brain T2w phantoms.")
+        print("  [public] Set FASTMRI_BRAIN_ROOT=/path/to/fastmri_brain for real data.")
         pub_scenes   = [(f"synth_brain_{i:02d}", *generate_mri_gt(9000 + i, "dev", SHAPE))
                         for i in range(PUBLIC_N_SAMPLES)]
         source_label = "synthetic"
     else:
         pub_scenes   = real_scenes
-        source_label = "real_brain_t2"
+
 
     pub_dir = os.path.join(base_dir, "public")
     pub_t   = build_tier("public", pub_scenes, pub_dir, "public",
