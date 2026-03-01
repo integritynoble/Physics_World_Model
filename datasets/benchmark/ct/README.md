@@ -2,11 +2,17 @@
 
 ## Public Data Source
 
-Real chest CT cross-sections from **LoDoPaB-CT** (Leuschner et al. 2021,
-*Scientific Data* doi:10.1038/s41597-021-00893-z), sourced from the
-LIDC/IDRI lung CT database.  11 diverse slices from the test set are used.
+All three tiers use **real patient CT images from LoDoPaB-CT**
+(Leuschner et al. 2021, *Scientific Data* doi:10.1038/s41597-021-00893-z),
+sourced from the LIDC/IDRI lung CT database. Zenodo record 3384092, CC BY 4.0.
 
-Zenodo record 3384092, CC BY 4.0.
+| Tier | Source | Patients | Scenes |
+|------|--------|----------|--------|
+| Public | LoDoPaB-CT **test** split | Test patients | 11 slices |
+| Dev | LoDoPaB-CT **validation** split — first half | Val patients 0–63 | 20 slices |
+| Hidden | LoDoPaB-CT **validation** split — second half + adversarial | Val patients 64–127 | 20 slices |
+
+Each tier uses entirely different patients — no shared scenes across tiers.
 
 ## Spec DAG
 
@@ -60,12 +66,14 @@ Score = 0.4 × PSNR_norm + 0.4 × SSIM + 0.2 × Consistency
 
 ```
 ct/
-├── lodopab_src/               LoDoPaB-CT source zip (gitignored; set LODOPAB_ROOT)
-├── simulate_scenes.py         Procedural chest/abdomen CT phantom generator
+├── lodopab_src/
+│   ├── ground_truth_test.zip        (~1.5 GB) — public tier source
+│   └── ground_truth_validation.zip  (~1.5 GB) — dev + hidden tier source
+├── simulate_scenes.py         Procedural phantom generator (fallback only)
 ├── generate_dataset.py        Builds all H5 files + PNG images
-├── public/    11 LoDoPaB-CT slices (or synthetic fallback)  — GT + ideal sino + true spec
-├── dev/       20 procedural chest phantoms (anatomy matches LoDoPaB-CT)
-└── hidden/    20 adversarial — metal, low-contrast, calcifications (hard mismatch)
+├── public/    11 real LoDoPaB-CT test slices — GT + ideal sino + true spec (visible)
+├── dev/       20 real LoDoPaB-CT validation slices (patients 0–63) — blind eval
+└── hidden/    20 real LoDoPaB-CT validation slices (patients 64–127) + adversarial mods
 ```
 
 ## Reading the HDF5

@@ -229,13 +229,14 @@ LODOPAB_PUBLIC_INDICES = [0, 320, 650, 980, 1310, 1640, 1970, 2300, 2630, 2960, 
 LODOPAB_SCENE_NAMES    = [f"lidc_test_{i:02d}" for i in range(11)]
 
 # Dev: 20 evenly-spaced slices from validation set first half (patients 0–63)
-# Validation has 3553 total slices; step=88 gives 20 slices across indices 0–1672
+# Validation has 3584 slices total (28 shards × 128 slices); 28 slices/patient.
+# step=88 gives 20 slices across indices 0–1672 (well within patients 0–63, boundary at 1792)
 LODOPAB_VAL_DEV_INDICES = [i * 88 for i in range(20)]
 LODOPAB_DEV_SCENE_NAMES = [f"lidc_val_{i:02d}" for i in range(20)]
 
 # Hidden: 20 evenly-spaced slices from validation set second half (patients 64–127)
-# Starts at index 1776 (patient boundary), step=88
-LODOPAB_VAL_HIDDEN_INDICES = [1776 + i * 88 for i in range(20)]
+# Patient boundary: 64 × 28 = 1792. Last index: 1792 + 88×19 = 3464 (< 3583 max).
+LODOPAB_VAL_HIDDEN_INDICES = [1792 + i * 88 for i in range(20)]
 LODOPAB_HIDDEN_SCENE_NAMES = [f"lidc_val_h{i:02d}" for i in range(20)]
 
 _LODOPAB_SOURCE = (

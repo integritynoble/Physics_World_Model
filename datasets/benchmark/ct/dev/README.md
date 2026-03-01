@@ -1,8 +1,12 @@
 # CT Dev Tier
 
-**Source:** Procedural chest/abdomen phantoms — anatomy and HU scale match LoDoPaB-CT
+**Source:** LoDoPaB-CT real chest CT — **validation split, first half** (patients 0–63, LIDC/IDRI)
+Leuschner et al. (2021), Sci Data 8:109, doi:10.1038/s41597-021-00893-z
+Zenodo record 3384092, CC BY 4.0.
+20 slices at indices [0, 88, 176, 264, 352, 440, 528, 616, 704, 792, 880, 968, 1056, 1144, 1232, 1320, 1408, 1496, 1584, 1672]
+Completely different patients from public tier (test split).
 
-**Access:** Blind (measured sinogram + spec ranges)
+**Access:** Blind (measured sinogram + spec ranges only)
 
 ## Mismatch Parameters
 
@@ -17,26 +21,26 @@
 
 | Sample | Scene | Views | Δc (px) | Δθ (°) | β | φ (°) |
 |--------|-------|-------|---------|--------|---|-------|
-| sample_00 | chest_upper | 60 | -0.175 | 3.275 | 0.138 | -0.970 |
-| sample_01 | chest_mid | 60 | -2.986 | -3.604 | 0.075 | 1.263 |
-| sample_02 | chest_lower | 60 | -1.824 | -2.626 | 0.150 | 0.314 |
-| sample_03 | abdomen_upper | 60 | 1.961 | -3.093 | 0.090 | 1.323 |
-| sample_04 | abdomen_mid | 60 | -2.053 | 2.810 | 0.092 | 0.319 |
-| sample_05 | chest_upper | 60 | 1.453 | 1.145 | 0.122 | 0.745 |
-| sample_06 | chest_mid | 60 | -2.413 | 2.880 | 0.057 | 0.475 |
-| sample_07 | chest_lower | 60 | -1.705 | -4.198 | 0.133 | 1.519 |
-| sample_08 | abdomen_upper | 60 | 0.910 | 4.226 | 0.075 | -1.179 |
-| sample_09 | abdomen_mid | 60 | 0.870 | -1.095 | 0.134 | -1.238 |
-| sample_10 | chest_upper | 60 | -2.782 | -1.513 | 0.099 | 0.417 |
-| sample_11 | chest_mid | 60 | -1.176 | -4.455 | 0.068 | 0.408 |
-| sample_12 | chest_lower | 60 | -2.062 | 3.364 | 0.074 | 0.930 |
-| sample_13 | abdomen_upper | 60 | -0.442 | -0.020 | 0.049 | 1.206 |
-| sample_14 | abdomen_mid | 60 | 0.139 | 0.201 | 0.099 | -0.545 |
-| sample_15 | chest_upper | 60 | 1.182 | 1.666 | 0.123 | -1.474 |
-| sample_16 | chest_mid | 60 | 2.904 | -3.804 | 0.117 | 0.217 |
-| sample_17 | chest_lower | 60 | -0.521 | -2.232 | 0.081 | -1.488 |
-| sample_18 | abdomen_upper | 60 | -2.069 | -4.945 | 0.146 | -0.828 |
-| sample_19 | abdomen_mid | 60 | -1.844 | 4.801 | 0.011 | -1.435 |
+| sample_00 | lidc_val_00 | 60 | -0.175 | 3.275 | 0.138 | -0.970 |
+| sample_01 | lidc_val_01 | 60 | -1.512 | -3.403 | 0.053 | -1.172 |
+| sample_02 | lidc_val_02 | 60 | -1.331 | 0.387 | 0.016 | -1.921 |
+| sample_03 | lidc_val_03 | 60 | 0.054 | 1.882 | 0.076 | 1.949 |
+| sample_04 | lidc_val_04 | 60 | -0.375 | -1.480 | 0.103 | 1.398 |
+| sample_05 | lidc_val_05 | 60 | 2.115 | 3.012 | 0.013 | -1.585 |
+| sample_06 | lidc_val_06 | 60 | 2.475 | 3.406 | 0.130 | 0.454 |
+| sample_07 | lidc_val_07 | 60 | -1.399 | 2.925 | 0.137 | 0.716 |
+| sample_08 | lidc_val_08 | 60 | 0.856 | 0.680 | 0.067 | -0.818 |
+| sample_09 | lidc_val_09 | 60 | -2.985 | 0.548 | 0.095 | -1.599 |
+| sample_10 | lidc_val_10 | 60 | -1.495 | -0.443 | 0.100 | 1.396 |
+| sample_11 | lidc_val_11 | 60 | 1.187 | 4.396 | 0.061 | -1.897 |
+| sample_12 | lidc_val_12 | 60 | 0.347 | 4.438 | 0.017 | -0.814 |
+| sample_13 | lidc_val_13 | 60 | -2.355 | -3.881 | 0.060 | -0.695 |
+| sample_14 | lidc_val_14 | 60 | 1.364 | 4.607 | 0.029 | -0.733 |
+| sample_15 | lidc_val_15 | 60 | -0.312 | 0.872 | 0.132 | -1.963 |
+| sample_16 | lidc_val_16 | 60 | 2.052 | -1.679 | 0.115 | -0.149 |
+| sample_17 | lidc_val_17 | 60 | 2.318 | 1.312 | 0.012 | 0.821 |
+| sample_18 | lidc_val_18 | 60 | 0.882 | -0.349 | 0.143 | -1.506 |
+| sample_19 | lidc_val_19 | 60 | 1.569 | 3.033 | 0.001 | 1.189 |
 
 ## HDF5 Datasets per Sample
 
