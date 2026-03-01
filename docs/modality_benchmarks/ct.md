@@ -67,6 +67,27 @@ Ranks 1–2 confirmed from the deterministic leaderboard generator. Scores 3–8
 
 ### Scenario Baselines
 
+**Scenario I — Blind reconstruction** (algorithm uses `H_nom`, data from measured noisy+mismatched sinogram):
+
+Measured on actual challenge HDF5 files (LoDoPaB-CT slices, Poisson I₀=10 000 + Gaussian σ=5 noise, geometric mismatch per tier).
+Run: `scripts/run_ct_benchmark.py` · Date: 2026-03-01
+
+| Algorithm | Tier | PSNR (dB) | SSIM | Consistency | Score | Notes |
+|-----------|------|-----------|------|-------------|-------|-------|
+| FBP | Public (11) | 21.84 | 0.382 | 0.844 | 0.440 | Feldkamp + Hann, FBP_CAL=1.655 |
+| FBP | Dev (20) | 22.68 | 0.445 | 0.851 | 0.475 | |
+| FBP | Hidden (20) | 18.47 | 0.522 | 0.752 | 0.444 | 40–90 views, adversarial mods |
+| PnP-ADMM | Public (11) | **23.21** | **0.621** | **0.877** | **0.556** | Gaussian denoiser σ: 21→3.6 px |
+| PnP-ADMM | Dev (20) | **23.42** | **0.645** | **0.849** | **0.562** | |
+| PnP-ADMM | Hidden (20) | **19.78** | **0.707** | **0.796** | **0.540** | |
+| TV-ADMM | Public (11) | 17.62 | 0.152 | 0.906 | 0.318 | λ=0.006 too small† |
+| TV-ADMM | Dev (20) | 20.15 | 0.297 | 0.915 | 0.403 | |
+| TV-ADMM | Hidden (20) | 16.98 | 0.344 | 0.805 | 0.368 | |
+
+†TV-ADMM underperforms with λ=0.006; λ×step≈0.007 ≪ image gradient ~0.03. Rerun with λ=0.05–0.10 expected to match or exceed FBP.
+
+FBP implementation: Feldkamp D_SSD pre-weight + Hann-windowed ramp + FBP_CAL=1.655 + sinogram clamp [−0.1, 6.5] nepers + σ=1 Gaussian smooth.
+
 **Scenario II — Mismatched operator** (algorithm uses `H_ideal`, data generated with true-spec):
 
 | Algorithm | PSNR (dB) | SSIM |
@@ -99,10 +120,13 @@ Deep-unrolling and diffusion models benefit most from geometric correction.
 |------|---------|
 | `datasets/benchmark/ct/simulate_scenes.py` | 5-background procedural phantom + adversarial mods |
 | `datasets/benchmark/ct/generate_dataset.py` | Fan-beam forward model, noise sim, HDF5 writer |
+| `scripts/run_ct_benchmark.py` | **CPU benchmark runner** — FBP, TV-ADMM, PnP-ADMM on all tiers |
+| `scripts/modal_run_ct_benchmark.py` | **GPU benchmark runner** — FBP/TV-ADMM/PnP-DRUNet on Modal T4 |
 | `platform/.../benchmark_database/_algorithm_catalog.py` | 8-algorithm override + `CATEGORY_REAL_SCORES["ct"]` |
 | `platform/.../benchmark_database/_challenge_data.py` | `CHALLENGE_CONFIG["ct"]`: tiers, mismatch ranges, baselines |
 | `scripts/setup_benchmark_data.sh` | Downloads CT from GCS + LoDoPaB-CT from Zenodo (~1.5 GB) |
 | `docs/Multi_Server_Setup.md` | Server D (CT) deployment guide |
+| `results/ct/benchmark_cpu_20260301T221045Z.{json,csv}` | Scenario I CPU benchmark results (2026-03-01) |
 
 ## References
 - [Detailed Benchmarks](../pwm_modality_benchmarks_detailed.md)
