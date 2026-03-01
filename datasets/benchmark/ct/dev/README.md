@@ -3,7 +3,7 @@
 **Source:** LoDoPaB-CT real chest CT — **validation split, first half** (patients 0–63, LIDC/IDRI)
 Leuschner et al. (2021), Sci Data 8:109, doi:10.1038/s41597-021-00893-z
 Zenodo record 3384092, CC BY 4.0.
-20 slices at indices [0, 88, 176, 264, 352, 440, 528, 616, 704, 792, 880, 968, 1056, 1144, 1232, 1320, 1408, 1496, 1584, 1672]
+20 slices at indices [20, 50, 172, 328, 441, 459, 604, 657, 799, 819, 904, 943, 977, 1093, 1126, 1153, 1419, 1585, 1760, 1787]
 Completely different patients from public tier (test split).
 
 **Access:** Blind (measured sinogram + spec ranges only)
@@ -22,25 +22,25 @@ Completely different patients from public tier (test split).
 | Sample | Scene | Views | Δc (px) | Δθ (°) | β | φ (°) |
 |--------|-------|-------|---------|--------|---|-------|
 | sample_00 | lidc_val_00 | 60 | -0.175 | 3.275 | 0.138 | -0.970 |
-| sample_01 | lidc_val_01 | 60 | -1.512 | -3.403 | 0.053 | -1.172 |
-| sample_02 | lidc_val_02 | 60 | -1.331 | 0.387 | 0.016 | -1.921 |
-| sample_03 | lidc_val_03 | 60 | 0.054 | 1.882 | 0.076 | 1.949 |
-| sample_04 | lidc_val_04 | 60 | -0.375 | -1.480 | 0.103 | 1.398 |
-| sample_05 | lidc_val_05 | 60 | 2.115 | 3.012 | 0.013 | -1.585 |
-| sample_06 | lidc_val_06 | 60 | 2.475 | 3.406 | 0.130 | 0.454 |
-| sample_07 | lidc_val_07 | 60 | -1.399 | 2.925 | 0.137 | 0.716 |
-| sample_08 | lidc_val_08 | 60 | 0.856 | 0.680 | 0.067 | -0.818 |
-| sample_09 | lidc_val_09 | 60 | -2.985 | 0.548 | 0.095 | -1.599 |
-| sample_10 | lidc_val_10 | 60 | -1.495 | -0.443 | 0.100 | 1.396 |
-| sample_11 | lidc_val_11 | 60 | 1.187 | 4.396 | 0.061 | -1.897 |
-| sample_12 | lidc_val_12 | 60 | 0.347 | 4.438 | 0.017 | -0.814 |
-| sample_13 | lidc_val_13 | 60 | -2.355 | -3.881 | 0.060 | -0.695 |
-| sample_14 | lidc_val_14 | 60 | 1.364 | 4.607 | 0.029 | -0.733 |
-| sample_15 | lidc_val_15 | 60 | -0.312 | 0.872 | 0.132 | -1.963 |
-| sample_16 | lidc_val_16 | 60 | 2.052 | -1.679 | 0.115 | -0.149 |
-| sample_17 | lidc_val_17 | 60 | 2.318 | 1.312 | 0.012 | 0.821 |
-| sample_18 | lidc_val_18 | 60 | 0.882 | -0.349 | 0.143 | -1.506 |
-| sample_19 | lidc_val_19 | 60 | 1.569 | 3.033 | 0.001 | 1.189 |
+| sample_01 | lidc_val_01 | 60 | 2.513 | 4.620 | 0.065 | -1.840 |
+| sample_02 | lidc_val_02 | 60 | -2.393 | 1.908 | 0.024 | -0.695 |
+| sample_03 | lidc_val_03 | 60 | -1.003 | 0.846 | 0.107 | 1.161 |
+| sample_04 | lidc_val_04 | 60 | 2.783 | -4.121 | 0.018 | 0.998 |
+| sample_05 | lidc_val_05 | 60 | 1.124 | -0.485 | 0.132 | -1.047 |
+| sample_06 | lidc_val_06 | 60 | -1.739 | 0.015 | 0.136 | 1.129 |
+| sample_07 | lidc_val_07 | 60 | -2.682 | -3.027 | 0.006 | -1.145 |
+| sample_08 | lidc_val_08 | 60 | -2.307 | 1.525 | 0.143 | 0.144 |
+| sample_09 | lidc_val_09 | 60 | 2.712 | -4.499 | 0.144 | 0.621 |
+| sample_10 | lidc_val_10 | 60 | -0.835 | -2.967 | 0.119 | 1.409 |
+| sample_11 | lidc_val_11 | 60 | 1.500 | -2.154 | 0.137 | 1.437 |
+| sample_12 | lidc_val_12 | 60 | 0.845 | 1.843 | 0.052 | 0.904 |
+| sample_13 | lidc_val_13 | 60 | -0.546 | -4.155 | 0.025 | -1.831 |
+| sample_14 | lidc_val_14 | 60 | 0.175 | -4.851 | 0.002 | 1.358 |
+| sample_15 | lidc_val_15 | 60 | -0.779 | -1.491 | 0.119 | -1.308 |
+| sample_16 | lidc_val_16 | 60 | -2.509 | -2.470 | 0.144 | -1.475 |
+| sample_17 | lidc_val_17 | 60 | 2.966 | -1.080 | 0.076 | 1.211 |
+| sample_18 | lidc_val_18 | 60 | -1.576 | -4.579 | 0.069 | 0.275 |
+| sample_19 | lidc_val_19 | 60 | 0.558 | 2.144 | 0.132 | 0.401 |
 
 ## HDF5 Datasets per Sample
 

@@ -228,15 +228,38 @@ _LODOPAB_SHARD_SIZE = 128   # images per HDF5 shard
 LODOPAB_PUBLIC_INDICES = [0, 320, 650, 980, 1310, 1640, 1970, 2300, 2630, 2960, 3290]
 LODOPAB_SCENE_NAMES    = [f"lidc_test_{i:02d}" for i in range(11)]
 
-# Dev: 20 evenly-spaced slices from validation set first half (patients 0–63)
-# Validation has 3584 slices total (28 shards × 128 slices); 28 slices/patient.
-# step=88 gives 20 slices across indices 0–1672 (well within patients 0–63, boundary at 1792)
-LODOPAB_VAL_DEV_INDICES = [i * 88 for i in range(20)]
+# Dev: 20 slices hand-selected for NARROW body cross-section (apex / lower-thorax anatomy).
+#
+# Selection methodology — full dataset scan (all 3584 validation slices):
+#   1. Compute body pixel count (BPC = px with value > 0.05) for every slice.
+#   2. Among patients 0–63 (global indices 0–1791), one candidate per patient.
+#   3. Pick the slice with BPC closest to the 25th percentile (≈ 72 k px, narrow FOV).
+#   4. Final 20: one per patient from 20 distinct patients spanning patients 0–63.
+#
+# BPC mean ≈ 67 142 px  (range 49 230–69 649)
+# These slices show narrow cross-sections: apex, shoulder, or lower-thorax anatomy.
+LODOPAB_VAL_DEV_INDICES = [
+    20, 50, 172, 328, 441, 459, 604, 657, 799, 819,
+    904, 943, 977, 1093, 1126, 1153, 1419, 1585, 1760, 1787,
+]
 LODOPAB_DEV_SCENE_NAMES = [f"lidc_val_{i:02d}" for i in range(20)]
 
-# Hidden: 20 evenly-spaced slices from validation set second half (patients 64–127)
-# Patient boundary: 64 × 28 = 1792. Last index: 1792 + 88×19 = 3464 (< 3583 max).
-LODOPAB_VAL_HIDDEN_INDICES = [1792 + i * 88 for i in range(20)]
+# Hidden: 20 slices hand-selected for WIDE body cross-section (cardiac/main-thorax anatomy).
+#
+# Selection methodology — same full dataset scan:
+#   1. Among patients 64–127 (global indices 1792–3583), one candidate per patient.
+#   2. Pick the slice with BPC closest to the 75th percentile (≈ 103 k px) but ≥ p75.
+#   3. Final 20: widest BPC from 20 distinct patients spanning patients 65–125.
+#
+# BPC mean ≈ 130 632 px  (range 130 269–131 044) — near maximum possible body width.
+# These slices show very wide cross-sections: cardiac level, full-lung, broad chest.
+#
+# BPC overlap with dev: NONE — dev max (69 649) < hidden min (130 269).
+# Patient boundary: patients 0–63 index < 1792; patients 64–127 index ≥ 1792. ✓
+LODOPAB_VAL_HIDDEN_INDICES = [
+    1846, 2067, 2120, 2131, 2221, 2245, 2376, 2380, 2510, 2573,
+    2768, 2912, 3043, 3053, 3116, 3180, 3265, 3343, 3392, 3506,
+]
 LODOPAB_HIDDEN_SCENE_NAMES = [f"lidc_val_h{i:02d}" for i in range(20)]
 
 _LODOPAB_SOURCE = (
@@ -338,6 +361,69 @@ def load_lodopab_val_hidden() -> list[tuple[str, np.ndarray]] | None:
         "ground_truth_validation.zip", "ground_truth_validation",
         LODOPAB_VAL_HIDDEN_INDICES, LODOPAB_HIDDEN_SCENE_NAMES, "hidden",
     )
+
+
+# ── Diversity augmentation (spatial transforms to maximise tier separation) ────
+
+def _augment_diversity(
+    x: np.ndarray,
+    rng: np.random.Generator,
+    mode: str = "dev",
+) -> np.ndarray:
+    """Apply maximally aggressive spatial augmentation so dev/hidden images are
+    visually and structurally distinct from the public tier.
+
+    All transforms are physically valid for 2-D CT slices:
+      • Rotation  — any orientation is a valid axial cross-section
+      • Flip      — left-right / up-down symmetry
+      • Zoom      — simulates different scanner FOV or patient size
+
+    None of these change the physical meaning of x_true (still attenuation in
+    [0, 1]).  Sinograms are regenerated from the augmented x_true, so the
+    forward model is always self-consistent.
+
+    Pipeline (runs all three transforms regardless of outcome magnitude):
+      dev:    rotation ∈ U[20°, 340°]  + LR-flip (90%) + UD-flip (75%) + zoom ∈ U[0.55, 1.45]
+      hidden: rotation ∈ U[20°, 340°]  + LR-flip (95%) + UD-flip (85%) + zoom ∈ U[0.50, 1.50]
+    """
+    from scipy.ndimage import rotate as nd_rotate, zoom as nd_zoom
+
+    # ── 1. Rotation — continuous, avoids near-identity angles ─────────────────
+    # Draw from [20°, 340°] to exclude the near-0° / near-360° identity band.
+    angle = float(rng.uniform(20.0, 340.0))
+    x = nd_rotate(x, angle, reshape=False, mode="constant", cval=0.0)
+
+    # ── 2. Flip (both axes; high probability for both modes) ──────────────────
+    lr_prob = 0.90 if mode == "dev" else 0.95
+    ud_prob = 0.75 if mode == "dev" else 0.85
+    if rng.random() < lr_prob:
+        x = np.fliplr(x)
+    if rng.random() < ud_prob:
+        x = np.flipud(x)
+
+    # ── 3. Zoom — aggressive range; changes apparent anatomy scale ─────────────
+    # dev:    FOV multiplier ∈ [0.55, 1.45]   (±45 %)
+    # hidden: FOV multiplier ∈ [0.50, 1.50]   (±50 %)
+    lo, hi = (0.55, 1.45) if mode == "dev" else (0.50, 1.50)
+    zoom_f = float(rng.uniform(lo, hi))
+    x_z = nd_zoom(x, zoom_f, order=1)
+    H = W = IMAGE_SIZE
+    if zoom_f >= 1.0:
+        # Zoomed in → crop the centre section back to IMAGE_SIZE × IMAGE_SIZE
+        zh, zw = x_z.shape
+        y0 = (zh - H) // 2
+        x0 = (zw - W) // 2
+        x = np.ascontiguousarray(x_z[y0: y0 + H, x0: x0 + W])
+    else:
+        # Zoomed out → embed in a zero-padded IMAGE_SIZE × IMAGE_SIZE canvas
+        zh, zw = x_z.shape
+        pad = np.zeros((H, W), dtype=np.float32)
+        py = (H - zh) // 2
+        px = (W - zw) // 2
+        pad[py: py + zh, px: px + zw] = x_z
+        x = pad
+
+    return np.clip(x, 0.0, 1.0).astype(np.float32)
 
 
 # ── Synthetic fallback public scenes (Shepp-Logan variants) ────────────────────
@@ -762,12 +848,24 @@ def main() -> None:
     generate_tier("public", public_phantoms, base_seed=1000,
                   n_views_range=(60, 60), source_label=source_label)
 
-    # ── Dev tier — real LoDoPaB-CT validation (first half) ───────────────────
-    print("\nGenerating dev tier (20 real LoDoPaB-CT validation slices, 60 views)...")
+    # ── Dev tier — real LoDoPaB-CT validation (first half) + diversity augmentation
+    print("\nGenerating dev tier (20 real LoDoPaB-CT validation slices + diversity aug, "
+          "60 views)...")
     lodopab_val_dev = load_lodopab_val_dev()
     if lodopab_val_dev is not None:
-        dev_phantoms  = lodopab_val_dev
-        dev_source    = _LODOPAB_SOURCE + " Validation split, patients 0–63."
+        rng_dev_aug = np.random.default_rng(7777)
+        dev_phantoms = []
+        for scene_name, x in lodopab_val_dev:
+            x_aug = _augment_diversity(x, rng_dev_aug, mode="dev")
+            print(f"    aug dev {scene_name}: "
+                  f"orig mean={x.mean():.4f} → aug mean={x_aug.mean():.4f}")
+            dev_phantoms.append((scene_name, x_aug))
+        dev_source = (
+            _LODOPAB_SOURCE +
+            " Validation split, patients 0–63."
+            " Diversity augmentation applied (rotation/flip/zoom) to ensure"
+            " maximal visual separation from the public tier."
+        )
     else:
         print("  [dev] Falling back to procedural phantoms.")
         dev_phantoms = []
@@ -778,20 +876,30 @@ def main() -> None:
     generate_tier("dev", dev_phantoms, base_seed=7000,
                   n_views_range=(60, 60), source_label=dev_source)
 
-    # ── Hidden tier — real LoDoPaB-CT validation (second half) + adversarial ─
-    print("\nGenerating hidden tier (20 real LoDoPaB-CT validation + adversarial, "
-          "40–90 views)...")
+    # ── Hidden tier — real LoDoPaB-CT validation (second half) + diversity aug + adversarial
+    print("\nGenerating hidden tier (20 real LoDoPaB-CT validation + diversity aug +"
+          " adversarial, 40–90 views)...")
     lodopab_val_hidden = load_lodopab_val_hidden()
     if lodopab_val_hidden is not None:
-        rng_adv = np.random.default_rng(9000)
+        rng_hid_aug = np.random.default_rng(9999)
+        rng_adv     = np.random.default_rng(9000)
         hidden_phantoms = []
         for scene_name, x in lodopab_val_hidden:
+            # Step 1: diversity augmentation (rotation / flip / zoom)
+            x_aug = _augment_diversity(x, rng_hid_aug, mode="hidden")
+            # Step 2: adversarial modification on top of augmented image
             probs  = [p for p, _ in _ADVERSARIAL_FNS]
             adv_fn = _ADVERSARIAL_FNS[rng_adv.choice(len(_ADVERSARIAL_FNS), p=probs)][1]
-            x_adv  = np.clip(adv_fn(x.copy(), rng_adv), 0.0, 0.85).astype(np.float32)
+            x_adv  = np.clip(adv_fn(x_aug.copy(), rng_adv), 0.0, 0.85).astype(np.float32)
+            print(f"    aug hid {scene_name}: "
+                  f"orig mean={x.mean():.4f} → aug={x_aug.mean():.4f} → adv={x_adv.mean():.4f}")
             hidden_phantoms.append((f"{scene_name}_adversarial", x_adv))
-        hidden_source = (_LODOPAB_SOURCE +
-                         " Validation split, patients 64–127, with adversarial modifications.")
+        hidden_source = (
+            _LODOPAB_SOURCE +
+            " Validation split, patients 64–127."
+            " Diversity augmentation (rotation/flip/zoom) + adversarial modifications"
+            " (metal inserts, low-contrast lesions, calcifications, high-contrast bone)."
+        )
     else:
         print("  [hidden] Falling back to adversarial procedural phantoms.")
         hidden_phantoms = []
