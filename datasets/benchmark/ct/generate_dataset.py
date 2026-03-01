@@ -606,8 +606,8 @@ def main() -> None:
     print("\nGenerating dev tier (20 procedural chest, 60 views)...")
     dev_phantoms = []
     for i in range(20):
-        x, recipe = generate_ct_gt(seed=7000 + i, mode="dev", shape=shape)
-        dev_phantoms.append((f"proc_dev_{i:02d}", x))
+        x, scene_type = generate_ct_gt(seed=7000 + i, mode="dev", shape=shape)
+        dev_phantoms.append((scene_type, x))
     generate_tier("dev", dev_phantoms, base_seed=7000,
                   n_views_range=(60, 60))
 
@@ -615,8 +615,8 @@ def main() -> None:
     print("\nGenerating hidden tier (20 adversarial, 40–90 views)...")
     hidden_phantoms = []
     for i in range(20):
-        x, recipe = generate_ct_gt(seed=9000 + i, mode="hidden", shape=shape)
-        hidden_phantoms.append((f"proc_hidden_{i:02d}", x))
+        x, scene_type = generate_ct_gt(seed=9000 + i, mode="hidden", shape=shape)
+        hidden_phantoms.append((scene_type, x))
     generate_tier("hidden", hidden_phantoms, base_seed=9000,
                   n_views_range=(40, 90))
 
