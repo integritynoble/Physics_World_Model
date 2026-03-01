@@ -32,7 +32,7 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BENCHMARK_DIR="${REPO_ROOT}/datasets/benchmark"
 
 # Available benchmark datasets
-DATASETS=(sd_cassi cacti spc_kronecker)
+DATASETS=(sd_cassi cacti spc_kronecker ct)
 
 usage() {
     echo "Usage: $0 [OPTIONS] [DATASET...]"
@@ -49,8 +49,9 @@ usage() {
     echo "Examples:"
     echo "  $0                     # Download all datasets (source + challenge)"
     echo "  $0 sd_cassi cacti      # Download specific datasets"
+    echo "  $0 ct                  # Download CT dataset (+ LoDoPaB-CT zip from Zenodo)"
     echo "  $0 --challenge         # Download only challenge HDF5 files"
-    echo "  $0 --challenge cacti   # Download only cacti challenge files"
+    echo "  $0 --challenge ct      # Download only CT challenge HDF5 files"
     echo ""
     echo "Note: Model checkpoints are on Modal volume 'pwm-models'."
     echo "      They are mounted automatically when running GPU functions."
@@ -86,6 +87,22 @@ download_source() {
     mkdir -p "${BENCHMARK_DIR}/${ds}"
     gsutil -m rsync -r "${GCS_BUCKET}/datasets/${ds}/" "${BENCHMARK_DIR}/${ds}/"
     echo "    Done: ${BENCHMARK_DIR}/${ds}/"
+
+    # CT public tier uses real LoDoPaB-CT images (not stored on GCS — too large).
+    # Download the ground-truth zip from Zenodo if not already present.
+    if [ "${ds}" = "ct" ]; then
+        local lodopab_zip="${BENCHMARK_DIR}/ct/lodopab_src/ground_truth_test.zip"
+        if [ ! -f "${lodopab_zip}" ]; then
+            echo "    Downloading LoDoPaB-CT ground_truth_test.zip from Zenodo (~1.5 GB)..."
+            mkdir -p "${BENCHMARK_DIR}/ct/lodopab_src"
+            wget -q --show-progress \
+                "https://zenodo.org/api/records/3384092/files/ground_truth_test.zip/content" \
+                -O "${lodopab_zip}"
+            echo "    Done: ${lodopab_zip}"
+        else
+            echo "    LoDoPaB-CT zip already present, skipping download."
+        fi
+    fi
 }
 
 download_challenge() {
