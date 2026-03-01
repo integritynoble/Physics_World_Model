@@ -1,26 +1,33 @@
 #!/usr/bin/env python3
 """Generate the fan-beam sparse-view / low-dose CT benchmark dataset.
 
-Public tier  — 11 real chest CT cross-sections from LoDoPaB-CT (LIDC/IDRI)
-Dev tier     — 20 procedural chest/abdomen phantoms (anatomy matches LoDoPaB-CT)
-Hidden tier  — 20 adversarial procedural phantoms
+All three tiers use real patient images from LoDoPaB-CT (LIDC/IDRI patients).
+Each tier draws from a DIFFERENT split so they share no scenes:
 
-Public data source — LoDoPaB-CT (most widely used CT reconstruction benchmark)
+Public tier  — 11 real chest CT slices from LoDoPaB-CT **test** split
+Dev tier     — 20 real chest CT slices from LoDoPaB-CT **validation** split
+               (first half, patients 0–63; entirely different patients from public)
+Hidden tier  — 20 real chest CT slices from LoDoPaB-CT **validation** split
+               (second half, patients 64–127) + adversarial modifications
+
+Data source — LoDoPaB-CT (most widely used CT reconstruction benchmark)
 -------------------------------------------------------------------------------
 Leuschner et al. (2021), Scientific Data 8:109, doi:10.1038/s41597-021-00893-z
 Sourced from LIDC/IDRI lung CT database.  Zenodo record 3384092, CC BY 4.0.
 
-To use real LoDoPaB-CT data for the public tier, either:
-  (a) Set LODOPAB_ROOT to a directory containing ground_truth_test.zip, OR
-  (b) Place the zip at   ct/lodopab_src/ground_truth_test.zip
+Required zips (place in ct/lodopab_src/ or set LODOPAB_ROOT):
+  ground_truth_test.zip        (~1.5 GB) — public tier
+  ground_truth_validation.zip  (~1.5 GB) — dev + hidden tiers
 
-Download command:
+Download commands:
   mkdir -p lodopab_src
   wget 'https://zenodo.org/api/records/3384092/files/ground_truth_test.zip/content' \\
        -O lodopab_src/ground_truth_test.zip
+  wget 'https://zenodo.org/api/records/3384092/files/ground_truth_validation.zip/content' \\
+       -O lodopab_src/ground_truth_validation.zip
 
-Without the zip the public tier falls back to synthetic Shepp-Logan / chest
-phantoms (clearly flagged in metadata as "source": "synthetic").
+Fallback: if a zip is missing the corresponding tier falls back to synthetic
+procedural phantoms (flagged in metadata as "source": "synthetic").
 
 Forward model spec (matches PWM benchmark page):
     R(θ) → Π(fan) → D(noise, mismatch)
@@ -72,7 +79,7 @@ from scipy.ndimage import map_coordinates, zoom
 
 # Self-contained import: simulate_scenes.py lives beside this file
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from simulate_scenes import generate_ct_gt  # noqa: E402
+from simulate_scenes import generate_ct_gt, _ADVERSARIAL_FNS  # noqa: E402
 
 BENCHMARK_DIR = Path(__file__).resolve().parent
 
@@ -213,55 +220,71 @@ def apply_mismatch(
     return (-np.log(I_noisy / I0)).astype(np.float32)
 
 
-# ── LoDoPaB-CT public-tier loader ─────────────────────────────────────────────
+# ── LoDoPaB-CT slice index tables ─────────────────────────────────────────────
 
-# 11 diverse slices from the LoDoPaB-CT test set:
-# deep lung, heart level, liver level, various body sizes
+_LODOPAB_SHARD_SIZE = 128   # images per HDF5 shard
+
+# Public:  11 diverse slices from test set (deep lung, heart, liver, various sizes)
 LODOPAB_PUBLIC_INDICES = [0, 320, 650, 980, 1310, 1640, 1970, 2300, 2630, 2960, 3290]
-LODOPAB_SCENE_NAMES   = [f"lidc_chest_{i:02d}" for i in range(11)]
-_LODOPAB_SHARD_SIZE   = 128   # images per HDF5 shard in the test zip
+LODOPAB_SCENE_NAMES    = [f"lidc_test_{i:02d}" for i in range(11)]
+
+# Dev: 20 evenly-spaced slices from validation set first half (patients 0–63)
+# Validation has 3553 total slices; step=88 gives 20 slices across indices 0–1672
+LODOPAB_VAL_DEV_INDICES = [i * 88 for i in range(20)]
+LODOPAB_DEV_SCENE_NAMES = [f"lidc_val_{i:02d}" for i in range(20)]
+
+# Hidden: 20 evenly-spaced slices from validation set second half (patients 64–127)
+# Starts at index 1776 (patient boundary), step=88
+LODOPAB_VAL_HIDDEN_INDICES = [1776 + i * 88 for i in range(20)]
+LODOPAB_HIDDEN_SCENE_NAMES = [f"lidc_val_h{i:02d}" for i in range(20)]
+
+_LODOPAB_SOURCE = (
+    "LoDoPaB-CT (Leuschner et al. 2021, Scientific Data 8:109, "
+    "doi:10.1038/s41597-021-00893-z). "
+    "Zenodo record 3384092, CC BY 4.0."
+)
 
 
-def _find_lodopab_zip() -> Path | None:
-    """Locate ground_truth_test.zip from env var or default path."""
+# ── Generic LoDoPaB-CT loader ──────────────────────────────────────────────────
+
+def _find_lodopab_zip(filename: str) -> Path | None:
+    """Locate a LoDoPaB-CT zip from env var or default lodopab_src/ path."""
     root = os.environ.get("LODOPAB_ROOT", "")
     candidates = []
     if root:
-        candidates.append(Path(root) / "ground_truth_test.zip")
-        candidates.append(Path(root))
-    candidates.append(BENCHMARK_DIR / "lodopab_src" / "ground_truth_test.zip")
+        candidates.append(Path(root) / filename)
+    candidates.append(BENCHMARK_DIR / "lodopab_src" / filename)
     for p in candidates:
         if p.is_file():
             return p
     return None
 
 
-def load_lodopab_public() -> list[tuple[str, np.ndarray]] | None:
-    """Extract 11 diverse ground-truth images from the LoDoPaB-CT test zip.
+def _load_lodopab_images(
+    zip_filename: str,
+    shard_prefix: str,
+    indices: list[int],
+    scene_names: list[str],
+    tier_label: str = "",
+) -> list[tuple[str, np.ndarray]] | None:
+    """Load images from any LoDoPaB-CT zip by global flat index.
 
-    Returns list of (scene_name, x_true float32 [0,1]) on success.
-    Returns None if the zip is not found, with clear download instructions.
+    Returns list of (scene_name, x_true float32 [0,1]) or None if zip absent.
     """
-    zip_path = _find_lodopab_zip()
-
+    zip_path = _find_lodopab_zip(zip_filename)
     if zip_path is None:
-        print("  [WARNING] LoDoPaB-CT ground_truth_test.zip not found.")
-        print("  [WARNING] Public tier will use SYNTHETIC PLACEHOLDER images.")
-        print("  [WARNING] To use real LoDoPaB-CT data:")
-        print("  [WARNING]   export LODOPAB_ROOT=/path/containing/ground_truth_test.zip")
-        print("  [WARNING]   — OR —")
-        print("  [WARNING]   Place zip at: ct/lodopab_src/ground_truth_test.zip")
-        print("  [WARNING] Download:")
-        print("  [WARNING]   mkdir -p lodopab_src && wget \\")
-        print("  [WARNING]     'https://zenodo.org/api/records/3384092/files/"
-              "ground_truth_test.zip/content' \\")
-        print("  [WARNING]     -O lodopab_src/ground_truth_test.zip")
+        label = f" ({tier_label} tier)" if tier_label else ""
+        print(f"  [WARNING] {zip_filename} not found{label}.")
+        print(f"  [WARNING] Place at: ct/lodopab_src/{zip_filename}")
+        print(f"  [WARNING] Download:")
+        print(f"  [WARNING]   wget 'https://zenodo.org/api/records/3384092/files/"
+              f"{zip_filename}/content' \\")
+        print(f"  [WARNING]   -O lodopab_src/{zip_filename}")
         return None
 
-    print(f"  Reading LoDoPaB-CT from {zip_path} ...")
-
+    print(f"  Reading {zip_filename} ({len(indices)} slices) ...")
     shard_map: dict[int, list[tuple[int, int]]] = {}
-    for global_i in LODOPAB_PUBLIC_INDICES:
+    for global_i in indices:
         shard_i = global_i // _LODOPAB_SHARD_SIZE
         local_i = global_i % _LODOPAB_SHARD_SIZE
         shard_map.setdefault(shard_i, []).append((local_i, global_i))
@@ -269,7 +292,7 @@ def load_lodopab_public() -> list[tuple[str, np.ndarray]] | None:
     found: dict[int, np.ndarray] = {}
     with zipfile.ZipFile(zip_path, "r") as zf:
         for shard_i, requests in sorted(shard_map.items()):
-            shard_name = f"ground_truth_test_{shard_i:03d}.hdf5"
+            shard_name = f"{shard_prefix}_{shard_i:03d}.hdf5"
             with zf.open(shard_name) as raw:
                 buf = _io.BytesIO(raw.read())
             with h5py.File(buf, "r") as hf:
@@ -282,14 +305,38 @@ def load_lodopab_public() -> list[tuple[str, np.ndarray]] | None:
                     found[global_i] = img
             print(f"    shard {shard_i:03d} → {[r[1] for r in requests]}")
 
-    if len(found) < len(LODOPAB_PUBLIC_INDICES):
-        print(f"  [WARNING] Only {len(found)}/{len(LODOPAB_PUBLIC_INDICES)} slices found.")
+    if len(found) < len(indices):
+        print(f"  [WARNING] Only {len(found)}/{len(indices)} slices loaded.")
 
     result = [(name, found[idx])
-              for idx, name in zip(LODOPAB_PUBLIC_INDICES, LODOPAB_SCENE_NAMES)
+              for idx, name in zip(indices, scene_names)
               if idx in found]
-    print(f"  Loaded {len(result)} LoDoPaB-CT images.")
+    print(f"  Loaded {len(result)} real CT images.")
     return result if result else None
+
+
+def load_lodopab_public() -> list[tuple[str, np.ndarray]] | None:
+    """Load 11 diverse slices from LoDoPaB-CT test split."""
+    return _load_lodopab_images(
+        "ground_truth_test.zip", "ground_truth_test",
+        LODOPAB_PUBLIC_INDICES, LODOPAB_SCENE_NAMES, "public",
+    )
+
+
+def load_lodopab_val_dev() -> list[tuple[str, np.ndarray]] | None:
+    """Load 20 slices from LoDoPaB-CT validation split (first half, dev tier)."""
+    return _load_lodopab_images(
+        "ground_truth_validation.zip", "ground_truth_validation",
+        LODOPAB_VAL_DEV_INDICES, LODOPAB_DEV_SCENE_NAMES, "dev",
+    )
+
+
+def load_lodopab_val_hidden() -> list[tuple[str, np.ndarray]] | None:
+    """Load 20 slices from LoDoPaB-CT validation split (second half, hidden tier)."""
+    return _load_lodopab_images(
+        "ground_truth_validation.zip", "ground_truth_validation",
+        LODOPAB_VAL_HIDDEN_INDICES, LODOPAB_HIDDEN_SCENE_NAMES, "hidden",
+    )
 
 
 # ── Synthetic fallback public scenes (Shepp-Logan variants) ────────────────────
@@ -390,8 +437,7 @@ def generate_tier(
             "mu_scale_note": "sinogram_ideal × mu_scale = physical attenuation (nepers)",
             "lodopab_normalisation": "x_true = (HU + 1000) / 4071",
         })
-        if tier == "public":
-            f.attrs["source"] = source_label
+        f.attrs["source"] = source_label
 
         for idx, (scene_name, x_true) in enumerate(phantoms):
             key = f"sample_{idx:02d}"
@@ -423,7 +469,7 @@ def generate_tier(
                 "scene": scene_name, "shape": list(x_true.shape),
                 "n_views": n_views, "n_det": N_DET,
                 "D_so_px": D_SO, "D_sd_px": D_SD,
-                "source": source_label if tier == "public" else "synthetic",
+                "source": source_label,
             })
             grp.attrs["spec_ranges"] = json.dumps(spec_ranges)
             grp.attrs["true_spec"]   = json.dumps({**mis, "n_views": n_views})
@@ -459,21 +505,44 @@ def generate_tier(
 
 def _write_tier_readme(tier: str, tier_dir: Path, rows: list,
                        source_label: str = "synthetic") -> None:
+    is_real = "leuschner" in source_label.lower() or "lodopab" in source_label.lower()
     if tier == "public":
-        if "lodopab" in source_label.lower() or "lidc" in source_label.lower():
-            source = ("LoDoPaB-CT real chest CT (LIDC/IDRI)\n"
+        if is_real:
+            source = ("LoDoPaB-CT real chest CT — **test split** (LIDC/IDRI)\n"
                       "Leuschner et al. (2021), Sci Data 8:109, doi:10.1038/s41597-021-00893-z\n"
-                      "Zenodo record 3384092, CC BY 4.0.")
+                      "Zenodo record 3384092, CC BY 4.0.\n"
+                      "11 slices, indices: " + str(LODOPAB_PUBLIC_INDICES))
         else:
             source = ("Synthetic Shepp-Logan variants (PLACEHOLDER)\n"
                       "Set LODOPAB_ROOT or place ground_truth_test.zip in lodopab_src/ "
                       "for real LoDoPaB-CT data.")
         access = "Full (GT + true spec + ideal sinogram)"
     elif tier == "dev":
-        source = "Procedural chest/abdomen phantoms — anatomy and HU scale match LoDoPaB-CT"
-        access = "Blind (measured sinogram + spec ranges)"
+        if is_real:
+            source = ("LoDoPaB-CT real chest CT — **validation split, first half** "
+                      "(patients 0–63, LIDC/IDRI)\n"
+                      "Leuschner et al. (2021), Sci Data 8:109, doi:10.1038/s41597-021-00893-z\n"
+                      "Zenodo record 3384092, CC BY 4.0.\n"
+                      "20 slices at indices " + str(LODOPAB_VAL_DEV_INDICES) + "\n"
+                      "Completely different patients from public tier (test split).")
+        else:
+            source = ("Procedural chest/abdomen phantoms (FALLBACK — "
+                      "ground_truth_validation.zip not found)\n"
+                      "Anatomy and HU scale match LoDoPaB-CT normalisation.")
+        access = "Blind (measured sinogram + spec ranges only)"
     else:
-        source = "Adversarial chest/abdomen phantoms (metal, calcification, low-contrast lesions)"
+        if is_real:
+            source = ("LoDoPaB-CT real chest CT — **validation split, second half** "
+                      "(patients 64–127, LIDC/IDRI) + adversarial modifications\n"
+                      "Leuschner et al. (2021), Sci Data 8:109, doi:10.1038/s41597-021-00893-z\n"
+                      "Zenodo record 3384092, CC BY 4.0.\n"
+                      "20 slices at indices " + str(LODOPAB_VAL_HIDDEN_INDICES) + "\n"
+                      "Adversarial: metal inserts, low-contrast lesions, "
+                      "calcifications, high-contrast bone.")
+        else:
+            source = ("Adversarial procedural phantoms (FALLBACK — "
+                      "ground_truth_validation.zip not found)\n"
+                      "Metal, calcification, low-contrast lesions on synthetic backgrounds.")
         access = "Server-only"
 
     spec = SPEC[tier]
@@ -526,19 +595,26 @@ def _write_tier_readme(tier: str, tier_dir: Path, rows: list,
 
 def _write_top_readme(pub_is_real: bool) -> None:
     pub_note = (
-        "Real chest CT cross-sections from **LoDoPaB-CT** (Leuschner et al. 2021,\n"
-        "*Scientific Data* doi:10.1038/s41597-021-00893-z), sourced from the\n"
-        "LIDC/IDRI lung CT database.  11 diverse slices from the test set are used.\n\n"
-        "Zenodo record 3384092, CC BY 4.0."
+        "All three tiers use **real patient CT images from LoDoPaB-CT**\n"
+        "(Leuschner et al. 2021, *Scientific Data* doi:10.1038/s41597-021-00893-z),\n"
+        "sourced from the LIDC/IDRI lung CT database. Zenodo record 3384092, CC BY 4.0.\n\n"
+        "| Tier | Source | Patients | Scenes |\n"
+        "|------|--------|----------|--------|\n"
+        "| Public | LoDoPaB-CT **test** split | Test patients | 11 slices |\n"
+        "| Dev | LoDoPaB-CT **validation** split — first half | Val patients 0–63 | 20 slices |\n"
+        "| Hidden | LoDoPaB-CT **validation** split — second half + adversarial | Val patients 64–127 | 20 slices |\n\n"
+        "Each tier uses entirely different patients — no shared scenes across tiers."
     ) if pub_is_real else (
-        "**PLACEHOLDER:** Synthetic Shepp-Logan phantoms (LoDoPaB-CT zip not found).\n\n"
-        "To use real data:\n"
+        "**PLACEHOLDER:** Some or all tiers used synthetic fallback (LoDoPaB-CT zip not found).\n\n"
+        "Required zips:\n"
         "```bash\n"
-        "export LODOPAB_ROOT=/path/to/dir/with/ground_truth_test.zip\n"
+        "mkdir -p lodopab_src\n"
+        "wget 'https://zenodo.org/api/records/3384092/files/ground_truth_test.zip/content' \\\n"
+        "     -O lodopab_src/ground_truth_test.zip\n"
+        "wget 'https://zenodo.org/api/records/3384092/files/ground_truth_validation.zip/content' \\\n"
+        "     -O lodopab_src/ground_truth_validation.zip\n"
         "python3 generate_dataset.py\n"
-        "```\n"
-        "Download: `wget 'https://zenodo.org/api/records/3384092/files/"
-        "ground_truth_test.zip/content' -O lodopab_src/ground_truth_test.zip`"
+        "```"
     )
 
     txt = f"""# CT — 2-D Fan-Beam Sparse-View / Low-Dose
@@ -599,12 +675,14 @@ Score = 0.4 × PSNR_norm + 0.4 × SSIM + 0.2 × Consistency
 
 ```
 ct/
-├── lodopab_src/               LoDoPaB-CT source zip (gitignored; set LODOPAB_ROOT)
-├── simulate_scenes.py         Procedural chest/abdomen CT phantom generator
+├── lodopab_src/
+│   ├── ground_truth_test.zip        (~1.5 GB) — public tier source
+│   └── ground_truth_validation.zip  (~1.5 GB) — dev + hidden tier source
+├── simulate_scenes.py         Procedural phantom generator (fallback only)
 ├── generate_dataset.py        Builds all H5 files + PNG images
-├── public/    11 LoDoPaB-CT slices (or synthetic fallback)  — GT + ideal sino + true spec
-├── dev/       20 procedural chest phantoms (anatomy matches LoDoPaB-CT)
-└── hidden/    20 adversarial — metal, low-contrast, calcifications (hard mismatch)
+├── public/    11 real LoDoPaB-CT test slices — GT + ideal sino + true spec (visible)
+├── dev/       20 real LoDoPaB-CT validation slices (patients 0–63) — blind eval
+└── hidden/    20 real LoDoPaB-CT validation slices (patients 64–127) + adversarial mods
 ```
 
 ## Reading the HDF5
@@ -683,23 +761,45 @@ def main() -> None:
     generate_tier("public", public_phantoms, base_seed=1000,
                   n_views_range=(60, 60), source_label=source_label)
 
-    # ── Dev tier ─────────────────────────────────────────────────────────────
-    print("\nGenerating dev tier (20 procedural chest/abdomen, 60 views)...")
-    dev_phantoms = []
-    for i in range(20):
-        x, scene_type = generate_ct_gt(seed=7000 + i, mode="dev", shape=shape)
-        dev_phantoms.append((scene_type, x))
+    # ── Dev tier — real LoDoPaB-CT validation (first half) ───────────────────
+    print("\nGenerating dev tier (20 real LoDoPaB-CT validation slices, 60 views)...")
+    lodopab_val_dev = load_lodopab_val_dev()
+    if lodopab_val_dev is not None:
+        dev_phantoms  = lodopab_val_dev
+        dev_source    = _LODOPAB_SOURCE + " Validation split, patients 0–63."
+    else:
+        print("  [dev] Falling back to procedural phantoms.")
+        dev_phantoms = []
+        for i in range(20):
+            x, scene_type = generate_ct_gt(seed=7000 + i, mode="dev", shape=shape)
+            dev_phantoms.append((scene_type, x))
+        dev_source = "synthetic"
     generate_tier("dev", dev_phantoms, base_seed=7000,
-                  n_views_range=(60, 60), source_label="synthetic")
+                  n_views_range=(60, 60), source_label=dev_source)
 
-    # ── Hidden tier ──────────────────────────────────────────────────────────
-    print("\nGenerating hidden tier (20 adversarial, 40–90 views)...")
-    hidden_phantoms = []
-    for i in range(20):
-        x, scene_type = generate_ct_gt(seed=9000 + i, mode="hidden", shape=shape)
-        hidden_phantoms.append((scene_type, x))
+    # ── Hidden tier — real LoDoPaB-CT validation (second half) + adversarial ─
+    print("\nGenerating hidden tier (20 real LoDoPaB-CT validation + adversarial, "
+          "40–90 views)...")
+    lodopab_val_hidden = load_lodopab_val_hidden()
+    if lodopab_val_hidden is not None:
+        rng_adv = np.random.default_rng(9000)
+        hidden_phantoms = []
+        for scene_name, x in lodopab_val_hidden:
+            probs  = [p for p, _ in _ADVERSARIAL_FNS]
+            adv_fn = _ADVERSARIAL_FNS[rng_adv.choice(len(_ADVERSARIAL_FNS), p=probs)][1]
+            x_adv  = np.clip(adv_fn(x.copy(), rng_adv), 0.0, 0.85).astype(np.float32)
+            hidden_phantoms.append((f"{scene_name}_adversarial", x_adv))
+        hidden_source = (_LODOPAB_SOURCE +
+                         " Validation split, patients 64–127, with adversarial modifications.")
+    else:
+        print("  [hidden] Falling back to adversarial procedural phantoms.")
+        hidden_phantoms = []
+        for i in range(20):
+            x, scene_type = generate_ct_gt(seed=9000 + i, mode="hidden", shape=shape)
+            hidden_phantoms.append((scene_type, x))
+        hidden_source = "synthetic"
     generate_tier("hidden", hidden_phantoms, base_seed=9000,
-                  n_views_range=(40, 90), source_label="synthetic")
+                  n_views_range=(40, 90), source_label=hidden_source)
 
     _write_top_readme(pub_is_real)
 

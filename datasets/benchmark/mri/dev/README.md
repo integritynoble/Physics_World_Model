@@ -1,32 +1,32 @@
 # MRI Dev Tier
 
 ## Source
-Procedural knee-like phantoms (20 samples, TSE tissue statistics)
+Procedural brain T2w axial phantoms (20 samples, mild mismatch)
 
 ## Per-Sample Mismatch Values
 
 | Sample     | Scene                      | B0 (Hz) | grad_nonlin | coil_sens | k_traj | noise_σ | recipe |
 |------------|----------------------------|---------|-------------|-----------|--------|---------|--------|
-| sample_00  | proc_dev_00                |   13.6 | 0.0036 | 0.011 | 0.0030 | 0.0229 | knee_coronal_normal |
-| sample_01  | proc_dev_01                |    9.9 | 0.0027 | 0.011 | 0.0016 | 0.0147 | knee_coronal_normal |
-| sample_02  | proc_dev_02                |   10.2 | 0.0013 | 0.028 | 0.0014 | 0.0120 | knee_coronal_normal |
-| sample_03  | proc_dev_03                |   16.9 | 0.0044 | 0.047 | 0.0028 | 0.0275 | knee_coronal_normal |
-| sample_04  | proc_dev_04                |    8.7 | 0.0019 | 0.046 | 0.0012 | 0.0171 | knee_coronal_normal |
-| sample_05  | proc_dev_05                |   14.3 | 0.0049 | 0.032 | 0.0027 | 0.0290 | knee_coronal_normal |
-| sample_06  | proc_dev_06                |    5.8 | 0.0044 | 0.044 | 0.0018 | 0.0155 | knee_axial_patella |
-| sample_07  | proc_dev_07                |   13.2 | 0.0043 | 0.038 | 0.0045 | 0.0106 | knee_axial_patella |
-| sample_08  | proc_dev_08                |    8.6 | 0.0011 | 0.043 | 0.0031 | 0.0225 | knee_coronal_effusion |
-| sample_09  | proc_dev_09                |   17.9 | 0.0043 | 0.037 | 0.0043 | 0.0272 | knee_coronal_normal |
-| sample_10  | proc_dev_10                |   19.0 | 0.0026 | 0.030 | 0.0042 | 0.0221 | knee_coronal_normal |
-| sample_11  | proc_dev_11                |   15.6 | 0.0024 | 0.022 | 0.0037 | 0.0155 | knee_coronal_normal |
-| sample_12  | proc_dev_12                |   10.3 | 0.0041 | 0.042 | 0.0031 | 0.0256 | knee_axial_patella |
-| sample_13  | proc_dev_13                |    7.4 | 0.0045 | 0.046 | 0.0037 | 0.0188 | knee_coronal_effusion |
-| sample_14  | proc_dev_14                |   14.2 | 0.0048 | 0.037 | 0.0038 | 0.0196 | knee_coronal_effusion |
-| sample_15  | proc_dev_15                |   15.6 | 0.0026 | 0.022 | 0.0033 | 0.0170 | knee_coronal_normal |
-| sample_16  | proc_dev_16                |    8.1 | 0.0024 | 0.026 | 0.0015 | 0.0223 | knee_coronal_effusion |
-| sample_17  | proc_dev_17                |    8.9 | 0.0048 | 0.019 | 0.0022 | 0.0247 | knee_coronal_normal |
-| sample_18  | proc_dev_18                |   10.5 | 0.0032 | 0.011 | 0.0011 | 0.0115 | knee_coronal_normal |
-| sample_19  | proc_dev_19                |    6.4 | 0.0016 | 0.032 | 0.0043 | 0.0257 | knee_coronal_effusion |
+| sample_00  | proc_dev_00                |   13.6 | 0.0036 | 0.011 | 0.0030 | 0.0229 | brain_t2_normal |
+| sample_01  | proc_dev_01                |    9.9 | 0.0027 | 0.011 | 0.0016 | 0.0147 | brain_t2_normal |
+| sample_02  | proc_dev_02                |   10.2 | 0.0013 | 0.028 | 0.0014 | 0.0120 | brain_t2_normal |
+| sample_03  | proc_dev_03                |   16.9 | 0.0044 | 0.047 | 0.0028 | 0.0275 | brain_t2_normal |
+| sample_04  | proc_dev_04                |    8.7 | 0.0019 | 0.046 | 0.0012 | 0.0171 | brain_t2_normal |
+| sample_05  | proc_dev_05                |   14.3 | 0.0049 | 0.032 | 0.0027 | 0.0290 | brain_t2_normal |
+| sample_06  | proc_dev_06                |    5.8 | 0.0044 | 0.044 | 0.0018 | 0.0155 | brain_t2_posterior |
+| sample_07  | proc_dev_07                |   13.2 | 0.0043 | 0.038 | 0.0045 | 0.0106 | brain_t2_posterior |
+| sample_08  | proc_dev_08                |    8.6 | 0.0011 | 0.043 | 0.0031 | 0.0225 | brain_t2_csf_rich |
+| sample_09  | proc_dev_09                |   17.9 | 0.0043 | 0.037 | 0.0043 | 0.0272 | brain_t2_normal |
+| sample_10  | proc_dev_10                |   19.0 | 0.0026 | 0.030 | 0.0042 | 0.0221 | brain_t2_normal |
+| sample_11  | proc_dev_11                |   15.6 | 0.0024 | 0.022 | 0.0037 | 0.0155 | brain_t2_normal |
+| sample_12  | proc_dev_12                |   10.3 | 0.0041 | 0.042 | 0.0031 | 0.0256 | brain_t2_posterior |
+| sample_13  | proc_dev_13                |    7.4 | 0.0045 | 0.046 | 0.0037 | 0.0188 | brain_t2_csf_rich |
+| sample_14  | proc_dev_14                |   14.2 | 0.0048 | 0.037 | 0.0038 | 0.0196 | brain_t2_csf_rich |
+| sample_15  | proc_dev_15                |   15.6 | 0.0026 | 0.022 | 0.0033 | 0.0170 | brain_t2_normal |
+| sample_16  | proc_dev_16                |    8.1 | 0.0024 | 0.026 | 0.0015 | 0.0223 | brain_t2_csf_rich |
+| sample_17  | proc_dev_17                |    8.9 | 0.0048 | 0.019 | 0.0022 | 0.0247 | brain_t2_normal |
+| sample_18  | proc_dev_18                |   10.5 | 0.0032 | 0.011 | 0.0011 | 0.0115 | brain_t2_normal |
+| sample_19  | proc_dev_19                |    6.4 | 0.0016 | 0.032 | 0.0043 | 0.0257 | brain_t2_csf_rich |
 
 ## HDF5 Datasets (per sample)
 

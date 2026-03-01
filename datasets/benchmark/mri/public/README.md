@@ -1,23 +1,24 @@
 # MRI Public Tier
 
 ## Source
-Synthetic Shepp-Logan variants (PLACEHOLDER — set FASTMRI_ROOT for real data)
+Real multi-coil brain MRI (axial T2w, 320×320, 4→15 coils)
+Source: local real_mri/multicoil_val — set REAL_MRI_ROOT for custom path
 
 ## Per-Sample Mismatch Values
 
 | Sample     | Scene                      | B0 (Hz) | grad_nonlin | coil_sens | k_traj | noise_σ | recipe |
 |------------|----------------------------|---------|-------------|-----------|--------|---------|--------|
-| sample_00  | shepp_logan_00             |   10.2 | 0.0022 | 0.019 | 0.0014 | 0.0153 | shepp_logan |
-| sample_01  | shepp_logan_01             |   10.5 | 0.0014 | 0.022 | 0.0019 | 0.0165 | shepp_logan |
-| sample_02  | shepp_logan_02             |    8.6 | 0.0022 | 0.013 | 0.0012 | 0.0146 | shepp_logan |
-| sample_03  | shepp_logan_03             |    7.1 | 0.0010 | 0.010 | 0.0017 | 0.0136 | shepp_logan |
-| sample_04  | shepp_logan_04             |    5.1 | 0.0018 | 0.013 | 0.0016 | 0.0130 | shepp_logan |
-| sample_05  | shepp_logan_05             |   13.0 | 0.0027 | 0.022 | 0.0018 | 0.0168 | shepp_logan |
-| sample_06  | shepp_logan_06             |   10.6 | 0.0017 | 0.026 | 0.0019 | 0.0127 | shepp_logan |
-| sample_07  | shepp_logan_07             |    8.8 | 0.0011 | 0.019 | 0.0026 | 0.0188 | shepp_logan |
-| sample_08  | shepp_logan_08             |   12.7 | 0.0018 | 0.025 | 0.0029 | 0.0184 | shepp_logan |
-| sample_09  | shepp_logan_09             |   12.9 | 0.0020 | 0.015 | 0.0015 | 0.0106 | shepp_logan |
-| sample_10  | shepp_logan_10             |   10.5 | 0.0011 | 0.012 | 0.0027 | 0.0170 | shepp_logan |
+| sample_00  | real_2022061203_T201_sl03  |   10.2 | 0.0022 | 0.019 | 0.0014 | 0.0153 | real_axt2 |
+| sample_01  | real_2022061203_T201_sl04  |   10.5 | 0.0014 | 0.022 | 0.0019 | 0.0165 | real_axt2 |
+| sample_02  | real_2022061203_T201_sl05  |    8.6 | 0.0022 | 0.013 | 0.0012 | 0.0146 | real_axt2 |
+| sample_03  | real_2022061203_T201_sl06  |    7.1 | 0.0010 | 0.010 | 0.0017 | 0.0136 | real_axt2 |
+| sample_04  | real_2022061203_T201_sl07  |    5.1 | 0.0018 | 0.013 | 0.0016 | 0.0130 | real_axt2 |
+| sample_05  | real_2022061203_T201_sl08  |   13.0 | 0.0027 | 0.022 | 0.0018 | 0.0168 | real_axt2 |
+| sample_06  | real_2022061203_T201_sl09  |   10.6 | 0.0017 | 0.026 | 0.0019 | 0.0127 | real_axt2 |
+| sample_07  | real_2022061203_T201_sl10  |    8.8 | 0.0011 | 0.019 | 0.0026 | 0.0188 | real_axt2 |
+| sample_08  | real_2022061203_T201_sl11  |   12.7 | 0.0018 | 0.025 | 0.0029 | 0.0184 | real_axt2 |
+| sample_09  | real_2022061203_T201_sl12  |   12.9 | 0.0020 | 0.015 | 0.0015 | 0.0106 | real_axt2 |
+| sample_10  | real_2022061203_T201_sl13  |   10.5 | 0.0011 | 0.012 | 0.0027 | 0.0170 | real_axt2 |
 
 ## HDF5 Datasets (per sample)
 

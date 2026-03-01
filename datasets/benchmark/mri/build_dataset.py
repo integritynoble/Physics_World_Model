@@ -56,7 +56,7 @@ import glob
 import h5py
 import numpy as np
 from PIL import Image
-from scipy.ndimage import gaussian_filter, map_coordinates
+from scipy.ndimage import gaussian_filter, map_coordinates, zoom as _zoom
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from simulate_scenes import generate_mri_gt
@@ -94,9 +94,12 @@ SPEC_RANGES = {
     },
 }
 
-# Deterministic subset of fastMRI volumes for public tier (11 samples).
-# Sorted by filename; we pick one middle slice from each chosen volume.
+# Deterministic subset of public MRI volumes (11 samples).
 PUBLIC_N_SAMPLES = 11
+
+# Default path for real multi-coil brain MRI (relative to this file's location)
+_THIS_DIR    = os.path.dirname(os.path.abspath(__file__))
+REAL_MRI_DIR = os.path.normpath(os.path.join(_THIS_DIR, "..", "..", "real_mri", "multicoil_val"))
 
 
 # ── fastMRI loader ─────────────────────────────────────────────────────────────
@@ -271,6 +274,81 @@ def load_public_fastmri(n_samples: int = PUBLIC_N_SAMPLES,
             scenes.append((scene_name, x_true, kspace_full, coil_maps, "fastmri_knee"))
         except Exception as exc:
             print(f" ERROR: {exc}  — skipping")
+    return scenes if scenes else None
+
+
+# ── Real brain MRI loader ──────────────────────────────────────────────────────
+
+def load_public_real_mri(n_samples: int = PUBLIC_N_SAMPLES,
+                         target_shape: tuple = SHAPE) -> list[tuple] | None:
+    """Load real multi-coil brain MRI slices from local directory.
+
+    Tries REAL_MRI_ROOT env-var first, then the bundled default path
+    ../../real_mri/multicoil_val/.  Prefers AXT2 (T2-weighted) acquisitions.
+
+    The RSS reconstruction is used as x_true.  Because real files have only
+    4 coils while the benchmark uses N_COILS=15, synthetic coil sensitivity
+    maps are applied in the forward model — only the anatomy (GT image) is real.
+
+    Resize: 256×256 → 320×320 via bicubic zoom (clean sinc-like interpolation
+    with no DC bias).  Normalised to [0, 1].
+
+    Returns list of (scene_name, x_true, recipe_str) or None if no data found.
+    """
+    real_mri_root = os.environ.get("REAL_MRI_ROOT", REAL_MRI_DIR)
+    h5_files = sorted(glob.glob(os.path.join(real_mri_root, "*.h5")))
+
+    if not h5_files:
+        print(f"  [WARNING] No .h5 files found in {real_mri_root}")
+        print("  [WARNING] Public tier will use SYNTHETIC PLACEHOLDER images.")
+        print("  [WARNING] To use real brain MRI data, set:")
+        print("  [WARNING]   export REAL_MRI_ROOT=/path/to/multicoil_val")
+        return None
+
+    # Prefer T2-weighted acquisitions (more clinically representative anatomy)
+    t2_files  = [f for f in h5_files if "T2"  in os.path.basename(f)]
+    all_files = t2_files + [f for f in h5_files if f not in t2_files]
+
+    scenes: list[tuple] = []
+    H_tgt, W_tgt = target_shape
+
+    for h5_path in all_files:
+        fname = os.path.splitext(os.path.basename(h5_path))[0]
+        try:
+            with h5py.File(h5_path, "r") as hf:
+                rss_all = hf["reconstruction_rss"][:]  # (n_slices, kH, kW) float32
+                acq     = str(hf.attrs.get("acquisition", "mri"))
+        except Exception as exc:
+            print(f"  [WARNING] Could not read {fname}: {exc}")
+            continue
+
+        n_slices = rss_all.shape[0]
+        # Skip first 20% and last 20% of slices (edge / scout slices)
+        sl_start = max(0, int(n_slices * 0.20))
+        sl_end   = min(n_slices, int(n_slices * 0.80))
+        step     = max(1, (sl_end - sl_start) // max(1, n_samples - len(scenes) + 2))
+
+        for sl_idx in range(sl_start, sl_end, step):
+            rss = rss_all[sl_idx].astype(np.float32)   # (kH, kW)
+            rss_max = float(rss.max())
+            if rss_max < 1e-8:
+                continue
+            rss /= rss_max   # normalise to [0, 1]
+
+            # Resize to target shape if needed (bicubic, preserves sharpness)
+            kH, kW = rss.shape
+            if (kH, kW) != (H_tgt, W_tgt):
+                rss = _zoom(rss, (H_tgt / kH, W_tgt / kW), order=3).astype(np.float32)
+                rss = rss.clip(0.0, 1.0)
+
+            scene_name = f"real_{fname}_sl{sl_idx:02d}"
+            scenes.append((scene_name, rss, f"real_{acq.lower()}"))
+            print(f"  [public] {len(scenes)-1:02d} {scene_name}: "
+                  f"shape={rss.shape}  mean={rss.mean():.3f}  ok")
+
+            if len(scenes) >= n_samples:
+                return scenes
+
     return scenes if scenes else None
 
 
@@ -553,7 +631,7 @@ def _make_coil_maps_for_sample(n_coils, shape, rng, kspace_full=None):
 
 
 def build_tier(tier, scenes, output_dir, spec_ranges_key, base_seed,
-               is_fastmri_public=False):
+               is_fastmri_public=False, source_label=None):
     """Build one tier: H5 file + per-sample PNG images.
 
     scenes items:
@@ -626,7 +704,7 @@ def build_tier(tier, scenes, output_dir, spec_ranges_key, base_seed,
                 "te_s":            TE_S,
                 "recipe":          recipe,
                 "n_sampled_lines": int(mask_1d.sum()),
-                "source":          "fastmri_knee" if is_fastmri_public else "synthetic",
+                "source":          source_label or ("fastmri_knee" if is_fastmri_public else "synthetic"),
             }
             grp.attrs["metadata"]    = json.dumps(metadata)
             grp.attrs["spec_ranges"] = json.dumps(sr)
@@ -650,7 +728,8 @@ def build_tier(tier, scenes, output_dir, spec_ranges_key, base_seed,
 
 # ── README writer ──────────────────────────────────────────────────────────────
 
-def write_tier_readme(tier, output_dir, table, spec_ranges_key, fastmri_public=False):
+def write_tier_readme(tier, output_dir, table, spec_ranges_key,
+                      fastmri_public=False, real_brain_public=False):
     sr = SPEC_RANGES[spec_ranges_key]
     rows = "".join(
         f"| sample_{s['sample_idx']:02d}  | {s['scene']:<26} | "
@@ -659,15 +738,18 @@ def write_tier_readme(tier, output_dir, table, spec_ranges_key, fastmri_public=F
         f"{s['noise_sigma']:.4f} | {s['recipe']} |\n"
         for s in table
     )
-    if fastmri_public:
+    if real_brain_public:
+        source = ("Real multi-coil brain MRI (axial T2w, 320×320, 4→15 coils)\n"
+                  "Source: local real_mri/multicoil_val — set REAL_MRI_ROOT for custom path")
+    elif fastmri_public:
         source = ("fastMRI multi-coil knee (2D Cartesian TSE, 320×320, 15 coils)\n"
                   "Reference: Zbontar et al., arXiv:1811.08839\n"
                   "Download:  https://fastmri.med.nyu.edu/")
     else:
         src_map = {
-            "dev":    "Procedural knee-like phantoms (20 samples, TSE tissue statistics)",
-            "hidden": "Adversarial knee phantoms (20 samples, severe mismatch)",
-            "public": "Synthetic Shepp-Logan variants (PLACEHOLDER — set FASTMRI_ROOT for real data)",
+            "dev":    "Procedural brain T2w axial phantoms (20 samples, mild mismatch)",
+            "hidden": "Adversarial brain T2w phantoms (20 samples, severe mismatch)",
+            "public": "Synthetic brain T2w fallback (PLACEHOLDER — set REAL_MRI_ROOT for real data)",
         }
         source = src_map.get(tier, "Procedural synthetic")
 
@@ -712,34 +794,34 @@ def write_tier_readme(tier, output_dir, table, spec_ranges_key, fastmri_public=F
 def main():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     print("=" * 70)
-    print("Multi-coil MRI benchmark (PWM parallel imaging / fastMRI knee)")
+    print("Multi-coil MRI benchmark (PWM parallel imaging — axial T2w brain)")
     print(f"Shape={SHAPE}  Coils={N_COILS}  Accel={ACCEL}x  "
           f"ACS={ACS_FRAC*100:.0f}%  TE={TE_S*1e3:.0f}ms")
     print("Mismatch: B0_inhomog · gradient_nonlin · coil_sensitivity · k_trajectory")
     print("=" * 70)
 
     # ── Public tier ──────────────────────────────────────────────────────────
-    print(f"\n[public] fastMRI multi-coil knee ({PUBLIC_N_SAMPLES} samples)...")
-    fastmri_scenes = load_public_fastmri(PUBLIC_N_SAMPLES, SHAPE)
-    pub_is_fastmri = fastmri_scenes is not None
+    print(f"\n[public] Real brain MRI ({PUBLIC_N_SAMPLES} samples)...")
+    real_scenes = load_public_real_mri(PUBLIC_N_SAMPLES, SHAPE)
+    pub_is_real = real_scenes is not None
 
-    if fastmri_scenes is None:
-        print("  [public] Falling back to Shepp-Logan synthetic placeholders.")
-        pub_scenes = [
-            (f"shepp_logan_{i:02d}", shepp_logan_phantom(SHAPE, i), "shepp_logan")
-            for i in range(PUBLIC_N_SAMPLES)
-        ]
+    if real_scenes is None:
+        print("  [public] Falling back to synthetic brain T2w phantoms.")
+        pub_scenes   = [(f"synth_brain_{i:02d}", *generate_mri_gt(9000 + i, "dev", SHAPE))
+                        for i in range(PUBLIC_N_SAMPLES)]
+        source_label = "synthetic"
     else:
-        pub_scenes = fastmri_scenes
+        pub_scenes   = real_scenes
+        source_label = "real_brain_t2"
 
     pub_dir = os.path.join(base_dir, "public")
     pub_t   = build_tier("public", pub_scenes, pub_dir, "public",
-                          base_seed=1000, is_fastmri_public=pub_is_fastmri)
+                          base_seed=1000, source_label=source_label)
     write_tier_readme("public", pub_dir, pub_t, "public",
-                      fastmri_public=pub_is_fastmri)
+                      real_brain_public=pub_is_real)
 
     # ── Dev tier ─────────────────────────────────────────────────────────────
-    print("\n[dev] Procedural knee-like (20 samples)...")
+    print("\n[dev] Procedural brain T2w axial (20 samples)...")
     dev_scenes = [
         (f"proc_dev_{i:02d}", *generate_mri_gt(5000 + i, "dev", SHAPE))
         for i in range(20)
@@ -749,7 +831,7 @@ def main():
     write_tier_readme("dev", dev_dir, dev_t, "dev")
 
     # ── Hidden tier ──────────────────────────────────────────────────────────
-    print("\n[hidden] Adversarial (20 samples)...")
+    print("\n[hidden] Adversarial brain T2w (20 samples)...")
     hid_scenes = [
         (f"proc_hidden_{i:02d}", *generate_mri_gt(8000 + i, "hidden", SHAPE))
         for i in range(20)
@@ -760,8 +842,8 @@ def main():
 
     print("\n" + "=" * 70)
     print(f"Done.  public={len(pub_t)}  dev={len(dev_t)}  hidden={len(hid_t)} samples")
-    if not pub_is_fastmri:
-        print("NOTE: Public tier used synthetic fallback — set FASTMRI_ROOT for real data.")
+    if not pub_is_real:
+        print("NOTE: Public tier used synthetic fallback — set REAL_MRI_ROOT for real data.")
     print("=" * 70)
 
 

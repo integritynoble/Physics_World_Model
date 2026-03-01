@@ -1,30 +1,46 @@
-"""Procedural knee MRI phantom generator for PWM MRI benchmark.
+"""Procedural brain axial T2w MRI phantom generator for PWM MRI benchmark.
 
-Produces synthetic 2D T2-weighted TSE knee MRI ground-truth images that
-mimic fastMRI multi-coil knee data appearance (320×320, float32 in [0,1]).
+Generates synthetic 2D T2-weighted brain MRI slices (320×320, float32 [0,1])
+matching the anatomy of real multi-coil axial T2 brain acquisitions.
 
-T2w TSE signal intensity reference (normalised):
-  Joint fluid          ~0.90  (very bright — long T2)
-  Subcutaneous fat     ~0.83  (bright — short T1, moderate T2)
-  Bone marrow fat      ~0.78
-  Articular cartilage  ~0.52  (intermediate — thin layer)
-  Muscle               ~0.30  (intermediate-low)
-  Fibrocartilage       ~0.08  (dark — short T2, menisci)
-  Cortical bone        ~0.04  (dark — very short T2)
+T2w signal intensity reference (normalised):
+  CSF / fluid          ~0.92  (very bright — long T2)
+  Scalp fat            ~0.82  (bright — short T1)
+  Gray matter (cortex) ~0.64  (intermediate — folded ribbon)
+  Basal ganglia / thal ~0.55  (slightly above WM)
+  White matter         ~0.40  (darker — long T1, moderate T2)
+  Cortical bone        ~0.03  (very dark)
   Background / air      0.00
+
+Layering strategy
+-----------------
+Uses alpha compositing (painter's algorithm):
+  img = img*(1-alpha) + signal*alpha     [_lerp helper]
+
+Tissue radii (normalised elliptical distance from brain centre):
+  1.000 + SCALP_T  → outer scalp surface
+  1.000            → outer skull (R_SKULL_OUTER)
+  1.000 - SKULL_T  → inner skull / outer SAS  (R_SKULL_INNER)
+  …   - SAS_T      → inner SAS / outer cortex  (R_SAS_INNER)
+  …   - CORTEX_T   → inner cortex / outer WM   (R_CORTEX_INNER)
+
+The gyral folding field G(θ) ∈ N(0,1) modulates R_SAS_INNER angularly:
+  R_CORTEX_OUTER_EFF(θ) = R_SAS_INNER + G(θ) * GYRAL_AMP
+Gyri  → R_CORTEX_OUTER_EFF > R_SAS_INNER (cortex protrudes into SAS)
+Sulci → R_CORTEX_OUTER_EFF < R_SAS_INNER (CSF fills the retracted gap)
 
 Recipes
 -------
-Dev (mild):
-  knee_coronal_normal   55%  Standard coronal TSE knee, mild effusion
-  knee_coronal_effusion 30%  Prominent joint fluid (synovial effusion)
-  knee_axial_patella    15%  Axial slice through patello-femoral joint
+Dev (mild mismatch):
+  brain_t2_normal      55%  Standard mid-brain: cortex, WM, lateral ventricles
+  brain_t2_csf_rich    30%  Enlarged ventricles (hydrocephalus-like)
+  brain_t2_posterior   15%  Posterior fossa: cerebellum + brainstem
 
-Hidden (adversarial):
-  knee_osteophyte       35%  Bony spurs on condyle margins (stress test)
-  knee_multicompartment 35%  Posterior Baker's cyst + extra structure
-  knee_high_contrast    20%  Extreme fluid/bone contrast ratio
-  knee_thin_cartilage   10%  Very thin/absent cartilage (edge stress)
+Hidden (adversarial, severe mismatch):
+  brain_t2_wm_lesions    35%  Focal WM hyperintensities (MS-like plaques)
+  brain_t2_atrophy       30%  Cortical atrophy — widened sulci and ventricles
+  brain_t2_high_contrast 20%  Extreme CSF / WM intensity ratio
+  brain_t2_fine_gyri     15%  Very fine cortical folding (resolution stress)
 """
 
 from __future__ import annotations
@@ -37,264 +53,341 @@ SHAPE = (320, 320)
 
 # ── Public API ────────────────────────────────────────────────────────────────
 
-def generate_mri_gt(
-    seed: int,
-    mode: str = "dev",
-    shape: tuple = SHAPE,
-) -> tuple:
-    """Generate a synthetic knee MRI phantom image.
-
-    Parameters
-    ----------
-    seed : int
-        Random seed for full reproducibility.
-    mode : {'dev', 'hidden'}
-        Controls which recipe distribution is sampled.
-    shape : (H, W)
-        Output image size.  Default matches fastMRI knee (320x320).
-
-    Returns
-    -------
-    x : np.ndarray  float32  shape (H, W)  values in [0, 1]
-    recipe_name : str
-    """
+def generate_mri_gt(seed: int, mode: str = "dev", shape: tuple = SHAPE) -> tuple:
+    """Return (x: float32 (H,W) in [0,1], recipe_name: str)."""
     rng = np.random.default_rng(seed)
-
     if mode == "dev":
-        recipes = [
-            ("knee_coronal_normal",   0.55),
-            ("knee_coronal_effusion", 0.30),
-            ("knee_axial_patella",    0.15),
-        ]
-    else:  # hidden — adversarial
-        recipes = [
-            ("knee_osteophyte",       0.35),
-            ("knee_multicompartment", 0.35),
-            ("knee_high_contrast",    0.20),
-            ("knee_thin_cartilage",   0.10),
-        ]
-
+        recipes = [("brain_t2_normal",    0.55),
+                   ("brain_t2_csf_rich",  0.30),
+                   ("brain_t2_posterior", 0.15)]
+    else:
+        recipes = [("brain_t2_wm_lesions",    0.35),
+                   ("brain_t2_atrophy",       0.30),
+                   ("brain_t2_high_contrast", 0.20),
+                   ("brain_t2_fine_gyri",     0.15)]
     names, probs = zip(*recipes)
     recipe = str(rng.choice(names, p=list(probs)))
-    x = _build_scene(recipe, shape, rng)
-    return x.astype(np.float32), recipe
+    return _build_scene(recipe, shape, rng).astype(np.float32), recipe
 
 
 # ── Scene dispatcher ──────────────────────────────────────────────────────────
 
 def _build_scene(recipe, shape, rng):
-    if recipe == "knee_coronal_normal":
-        return _knee_coronal(shape, rng, effusion=rng.uniform(0.10, 0.30))
-    if recipe == "knee_coronal_effusion":
-        return _knee_coronal(shape, rng, effusion=rng.uniform(0.55, 0.88))
-    if recipe == "knee_axial_patella":
-        return _knee_axial_patella(shape, rng)
-    if recipe == "knee_osteophyte":
-        return _knee_coronal(shape, rng, effusion=rng.uniform(0.20, 0.50),
-                             osteophytes=True)
-    if recipe == "knee_multicompartment":
-        return _knee_multicompartment(shape, rng)
-    if recipe == "knee_high_contrast":
-        return _knee_coronal(shape, rng, effusion=rng.uniform(0.72, 0.95),
-                             high_contrast=True)
-    if recipe == "knee_thin_cartilage":
-        return _knee_coronal(shape, rng, effusion=rng.uniform(0.10, 0.40),
-                             thin_cartilage=True)
-    return _knee_coronal(shape, rng)
+    if recipe == "brain_t2_normal":
+        return _brain_t2(shape, rng)
+    if recipe == "brain_t2_csf_rich":
+        return _brain_t2(shape, rng, enlarged_ventricles=True)
+    if recipe == "brain_t2_posterior":
+        return _brain_t2_posterior(shape, rng)
+    if recipe == "brain_t2_wm_lesions":
+        return _brain_t2(shape, rng, wm_lesions=True)
+    if recipe == "brain_t2_atrophy":
+        return _brain_t2(shape, rng, atrophy=True, enlarged_ventricles=True)
+    if recipe == "brain_t2_high_contrast":
+        return _brain_t2(shape, rng, high_contrast=True)
+    if recipe == "brain_t2_fine_gyri":
+        return _brain_t2(shape, rng, fine_gyri=True)
+    return _brain_t2(shape, rng)
 
 
 # ── Geometry helpers ──────────────────────────────────────────────────────────
 
 def _ellipse(H, W, cy, cx, ry, rx, angle_deg=0.0):
-    """Boolean ellipse mask, shape (H, W)."""
-    yy = np.arange(H, dtype=np.float32)[:, None] - cy
-    xx = np.arange(W, dtype=np.float32)[None, :] - cx
+    """Boolean ellipse mask (H, W)."""
+    yy = np.arange(H, dtype=np.float64)[:, None] - cy
+    xx = np.arange(W, dtype=np.float64)[None, :] - cx
     if angle_deg:
         ang = np.radians(angle_deg)
-        yr = yy * np.cos(ang) + xx * np.sin(ang)
+        yr =  yy * np.cos(ang) + xx * np.sin(ang)
         xr = -yy * np.sin(ang) + xx * np.cos(ang)
     else:
         yr, xr = yy, xx
     return ((yr / ry) ** 2 + (xr / rx) ** 2) <= 1.0
 
 
-def _soft(mask, sigma=2.5):
+def _soft(mask, sigma=1.0):
+    """Gaussian-smooth a binary mask → soft alpha [0, 1]."""
     return gaussian_filter(mask.astype(np.float32), sigma=sigma)
 
 
-# ── Coronal knee phantom ──────────────────────────────────────────────────────
+def _lerp(img, signal, alpha):
+    """Alpha-composite: replace img with signal proportional to alpha."""
+    return img * (1.0 - alpha) + float(signal) * alpha
 
-def _knee_coronal(shape, rng, *, effusion=0.20, osteophytes=False,
-                  high_contrast=False, thin_cartilage=False):
-    """Coronal cross-section: femoral condyles + tibial plateau + joint space."""
+
+def _gyral_field(theta, rng, n_min=5, n_max=13):
+    """Random angular sinusoidal field, normalised to unit std."""
+    field = np.zeros_like(theta, dtype=np.float64)
+    for n in range(n_min, n_max + 1):
+        field += rng.uniform(0.5, 1.5) * np.sin(n * theta + rng.uniform(0, 2 * np.pi))
+    return (field / (float(np.std(field)) + 1e-6)).astype(np.float32)
+
+
+# ── Main brain T2 axial phantom ───────────────────────────────────────────────
+
+def _brain_t2(shape, rng, *, enlarged_ventricles=False, atrophy=False,
+               wm_lesions=False, high_contrast=False, fine_gyri=False):
+    """Axial T2w brain phantom — layered alpha compositing.
+
+    Radial structure (normalised elliptical distance):
+      background → scalp → calvarium → SAS (CSF) → cortex (gyral) → WM
+      then subcortical structures and ventricles overlaid.
+    """
     H, W = shape
-    img = np.zeros((H, W), dtype=np.float32)
+    img = np.zeros((H, W), dtype=np.float32)  # background = air (0)
 
-    jy = int(rng.integers(-12, 13))
-    jx = int(rng.integers(-10, 11))
-    cy, cx = H // 2 + jy, W // 2 + jx
+    # ── Geometry ──────────────────────────────────────────────────────────────
+    cy = H / 2.0 + rng.uniform(-8.0,  8.0)
+    cx = W / 2.0 + rng.uniform(-6.0,  6.0)
+    skull_ry = H * rng.uniform(0.420, 0.448) * rng.uniform(0.97, 1.03)
+    skull_rx = W * rng.uniform(0.385, 0.415) * rng.uniform(0.97, 1.03)
 
-    # ── Limb + muscle background ───────────────────────────────────────────
-    limb = _ellipse(H, W, cy, cx, H * 0.44, W * 0.41).astype(np.float32)
-    muscle_sig = rng.uniform(0.18, 0.22) if high_contrast else rng.uniform(0.27, 0.38)
-    img += limb * muscle_sig
+    yy    = np.arange(H, dtype=np.float64)[:, None] - cy
+    xx    = np.arange(W, dtype=np.float64)[None, :] - cx
+    theta = np.arctan2(yy, xx).astype(np.float32)
+    r_norm = np.sqrt((yy / skull_ry) ** 2 + (xx / skull_rx) ** 2).astype(np.float32)
 
-    # Subcutaneous fat ring
-    inner_limb = _ellipse(H, W, cy, cx, H * 0.395, W * 0.365).astype(np.float32)
-    fat_ring = _soft((limb - inner_limb).clip(0), sigma=2.0)
-    img += fat_ring * rng.uniform(0.74, 0.87)
+    # ── Tissue signals ────────────────────────────────────────────────────────
+    SCALP_SIG = float(rng.uniform(0.76, 0.84))
+    SKULL_SIG = float(rng.uniform(0.02, 0.05))
+    WM_SIG    = float(rng.uniform(0.22, 0.30) if high_contrast else rng.uniform(0.35, 0.45))
+    GM_SIG    = float(rng.uniform(0.58, 0.70))
+    CSF_SIG   = float(rng.uniform(0.90, 0.96) if high_contrast else rng.uniform(0.88, 0.94))
+    BG_SIG    = float(rng.uniform(0.50, 0.62))
 
-    # ── Femoral condyles ───────────────────────────────────────────────────
-    cond_y   = cy - int(H * 0.12)
-    cond_sep = int(W * 0.14)
-    cond_ry  = H * 0.135
-    cond_rx  = W * 0.10
+    # ── Structural radii (normalised) ─────────────────────────────────────────
+    SCALP_T   = 0.060   # scalp fat thickness
+    SKULL_T   = 0.048   # calvarium bone thickness  (≈ 7 px at skull_ry=141)
+    SAS_T     = 0.028   # subarachnoid space CSF   (≈ 4 px)
+    CORTEX_T  = 0.096   # gray matter cortex       (≈ 13 px — clearly visible)
+    GYRAL_AMP = 0.025   # gyral perturbation ±     (≈ ±3.5 px)
 
-    for side, cx_c in [(-1, cx - cond_sep), (1, cx + cond_sep)]:
-        # Marrow
-        img += _soft(_ellipse(H, W, cond_y, cx_c, cond_ry * 0.73, cond_rx * 0.73),
-                     sigma=2.5) * rng.uniform(0.72, 0.82)
+    R_SKULL_OUTER  = 1.000
+    R_SKULL_INNER  = R_SKULL_OUTER  - SKULL_T          # ≈ 0.952
+    R_SAS_INNER    = R_SKULL_INNER  - SAS_T             # ≈ 0.924
+    R_CORTEX_INNER = R_SAS_INNER    - CORTEX_T          # ≈ 0.828
 
-        # Cortical rim
-        cort = _soft(
-            (_ellipse(H, W, cond_y, cx_c, cond_ry, cond_rx).astype(np.float32)
-             - _ellipse(H, W, cond_y, cx_c, cond_ry * 0.83, cond_rx * 0.83).astype(np.float32)
-             ).clip(0), sigma=1.5)
-        img -= cort * rng.uniform(0.40, 0.56)
+    # Atrophy: shrink brain contents (wider sulci, bigger ventricles handled separately)
+    if atrophy:
+        R_SAS_INNER    -= 0.022
+        R_CORTEX_INNER -= 0.022
 
-        # Articular cartilage (inferior condyle surface)
-        ct = 0.055 if thin_cartilage else rng.uniform(0.08, 0.13)
-        cart = _soft(_ellipse(H, W, cond_y + int(cond_ry * 0.86), cx_c,
-                               cond_ry * ct, cond_rx * 0.86), sigma=1.8)
-        img += cart * rng.uniform(0.46, 0.60)
+    # ── Gyral folding field ───────────────────────────────────────────────────
+    n_min = 7 if fine_gyri else 5
+    n_max = 17 if fine_gyri else 13
+    gyral = _gyral_field(theta, rng, n_min=n_min, n_max=n_max)
 
-        # Osteophytes (hidden-tier bony spurs)
-        if osteophytes:
-            for _ in range(rng.integers(1, 4)):
-                ang = rng.uniform(-30, 30)
-                oy = cond_y + int(cond_ry * rng.uniform(0.72, 1.05))
-                ox = cx_c + int(cond_rx * rng.uniform(0.60, 0.95)) * side
-                spur = _soft(_ellipse(H, W, oy, ox,
-                                      H * rng.uniform(0.014, 0.030),
-                                      W * rng.uniform(0.013, 0.026),
-                                      angle_deg=ang), sigma=1.2)
-                img -= spur * rng.uniform(0.30, 0.50)
+    # Perturbed outer cortex boundary (varies angularly)
+    R_CORTEX_OUTER_EFF = (R_SAS_INNER + gyral * GYRAL_AMP).astype(np.float32)
 
-    # ── Tibial plateau ─────────────────────────────────────────────────────
-    tib_y  = cy + int(H * 0.14)
-    tib_ry = H * 0.10
-    tib_rx = W * 0.285
+    # ── Layer 1: scalp fat ────────────────────────────────────────────────────
+    img = _lerp(img, SCALP_SIG,
+                _soft((r_norm < R_SKULL_OUTER + SCALP_T).astype(np.float32), 1.5))
 
-    img += _soft(_ellipse(H, W, tib_y, cx, tib_ry * 0.72, tib_rx * 0.88),
-                 sigma=2.5) * rng.uniform(0.68, 0.80)
+    # ── Layer 2: calvarium (dark bone ring) ───────────────────────────────────
+    skull_ring = (r_norm < R_SKULL_OUTER) & (r_norm >= R_SKULL_INNER)
+    img = _lerp(img, SKULL_SIG, _soft(skull_ring.astype(np.float32), 1.2))
 
-    tib_cort = _soft(
-        (_ellipse(H, W, tib_y, cx, tib_ry, tib_rx).astype(np.float32)
-         - _ellipse(H, W, tib_y, cx, tib_ry * 0.81, tib_rx * 0.91).astype(np.float32)
-         ).clip(0), sigma=1.5)
-    img -= tib_cort * rng.uniform(0.35, 0.50)
+    # ── Layer 3: subarachnoid space (base CSF just inside skull) ─────────────
+    # Paint the full SAS + a little extra so gyral perturbation is always covered
+    sas_wide = (r_norm < R_SKULL_INNER) & (r_norm >= R_SAS_INNER - GYRAL_AMP * 3.0)
+    img = _lerp(img, CSF_SIG, _soft(sas_wide.astype(np.float32), 1.2))
 
-    tib_cart_th = 0.055 if thin_cartilage else rng.uniform(0.09, 0.14)
-    img += _soft(_ellipse(H, W, tib_y - int(tib_ry * 0.86), cx,
-                           tib_ry * tib_cart_th, tib_rx * 0.84),
-                 sigma=1.8) * rng.uniform(0.44, 0.58)
+    # ── Layer 4: white matter (fills brain interior up to cortex) ────────────
+    wm_mask = r_norm < R_CORTEX_INNER
+    img = _lerp(img, WM_SIG, _soft(wm_mask.astype(np.float32), 2.0))
 
-    # ── Joint space ────────────────────────────────────────────────────────
-    jt_y  = cy + int(H * 0.01)
-    jt_ry = H * 0.065
-    jt_rx = W * 0.28
-    joint = _soft(_ellipse(H, W, jt_y, cx, jt_ry, jt_rx), sigma=2.0)
-    fluid_sig = 0.91 if high_contrast else rng.uniform(0.82, 0.94)
-    img += joint * effusion * fluid_sig
+    # ── Layer 5: cortex (GM ribbon with gyral outer boundary) ────────────────
+    cortex_mask = (r_norm < R_CORTEX_OUTER_EFF) & (r_norm >= R_CORTEX_INNER)
+    img = _lerp(img, GM_SIG, _soft(cortex_mask.astype(np.float32), 1.0))
 
-    # ── Menisci ────────────────────────────────────────────────────────────
+    # ── Layer 6: sulcal CSF (where cortex retracted, SAS fills deeper) ────────
+    sulcal_mask = (r_norm >= R_CORTEX_OUTER_EFF) & (r_norm < R_SKULL_INNER)
+    img = _lerp(img, CSF_SIG, _soft(sulcal_mask.astype(np.float32), 1.0))
+
+    # ── Layer 7: lateral ventricles ───────────────────────────────────────────
+    v_scale = float(rng.uniform(1.3, 1.9) if enlarged_ventricles else rng.uniform(0.75, 1.20))
+    vent_y  = cy + H * rng.uniform(-0.05,  0.01)
+    vent_dx = W  * rng.uniform( 0.088, 0.130)
+
     for side in [-1, 1]:
-        men_cx = cx + side * int(W * 0.10)
-        men = _soft(_ellipse(H, W, jt_y, men_cx,
-                              jt_ry * 0.58, cond_rx * 0.52), sigma=2.0)
-        img -= men * rng.uniform(0.12, 0.22)
+        vx  = cx + side * vent_dx
+        fh  = _ellipse(H, W, vent_y - H * 0.050, vx - side * W * 0.016,
+                       H * 0.065 * v_scale, W * 0.044 * v_scale, angle_deg=side * 14)
+        bdy = _ellipse(H, W, vent_y + H * 0.010, vx,
+                       H * 0.055 * v_scale, W * 0.055 * v_scale)
+        oh  = _ellipse(H, W, vent_y + H * 0.062, vx + side * W * 0.014,
+                       H * 0.058 * v_scale, W * 0.040 * v_scale, angle_deg=-side * 12)
+        vent = (fh | bdy | oh).astype(np.float32)
+        img = _lerp(img, CSF_SIG, _soft(vent, 2.0))
 
-    # ── Texture noise ──────────────────────────────────────────────────────
-    noise = rng.standard_normal((H, W)).astype(np.float32)
-    noise = gaussian_filter(noise, sigma=rng.uniform(1.2, 2.5))
-    img += noise * rng.uniform(0.018, 0.032) * limb
+    # Third ventricle (midline slit)
+    third = _ellipse(H, W, vent_y + H * 0.030, cx, H * 0.055, W * 0.013)
+    img = _lerp(img, CSF_SIG, _soft(third.astype(np.float32), 1.5))
+
+    # Cerebral aqueduct (present on ~40% of mid-brain slices)
+    if rng.random() < 0.40:
+        aq = _ellipse(H, W, vent_y + H * 0.075, cx, H * 0.016, W * 0.013)
+        img = _lerp(img, CSF_SIG, _soft(aq.astype(np.float32), 1.2))
+
+    # ── Layer 8: basal ganglia / thalami ──────────────────────────────────────
+    bg_y  = vent_y + H * rng.uniform(0.01, 0.03)
+    bg_dx = W      * rng.uniform(0.070, 0.100)
+
+    for side in [-1, 1]:
+        bgx  = cx + side * bg_dx
+        bg   = _ellipse(H, W, bg_y, bgx, H * 0.068, W * 0.055)
+        thal = _ellipse(H, W, bg_y + H * 0.028, cx + side * W * 0.044,
+                        H * 0.058, W * 0.052)
+        img = _lerp(img, BG_SIG,        _soft(bg.astype(np.float32),   2.5))
+        img = _lerp(img, BG_SIG - 0.06, _soft(thal.astype(np.float32), 2.5))
+        # Internal capsule (thin WM lane)
+        ic = _ellipse(H, W, bg_y + H * 0.012, cx + side * W * 0.062,
+                      H * 0.048, W * 0.012)
+        img = _lerp(img, WM_SIG * 0.88, _soft(ic.astype(np.float32), 1.5))
+
+    # ── Layer 9: corpus callosum (slightly darker WM) ─────────────────────────
+    cc_y = vent_y - H * 0.008
+    cc_g = _ellipse(H, W, cc_y - H * 0.028, cx, H * 0.028, W * 0.090)
+    cc_b = _ellipse(H, W, cc_y + H * 0.005, cx, H * 0.016, W * 0.155)
+    img  = _lerp(img, WM_SIG * 0.88, _soft((cc_g | cc_b).astype(np.float32), 1.5))
+
+    # ── Layer 10: focal WM lesions (hidden tier) ──────────────────────────────
+    if wm_lesions:
+        for _ in range(int(rng.integers(3, 9))):
+            ldir  = float(rng.uniform(0, 2 * np.pi))
+            ldist = H * float(rng.uniform(0.06, 0.22))
+            ly    = vent_y + ldist * np.cos(ldir)
+            lx    = cx     + ldist * np.sin(ldir)
+            lry   = H * float(rng.uniform(0.011, 0.028))
+            lrx   = W * float(rng.uniform(0.011, 0.028)) * float(rng.uniform(0.6, 1.8))
+            lesion = _ellipse(H, W, ly, lx, lry, lrx,
+                              angle_deg=float(rng.uniform(0, 180)))
+            img = _lerp(img, float(rng.uniform(0.55, 0.76)),
+                        _soft(lesion.astype(np.float32), 1.2))
+
+    # ── MRI-realistic field effects ───────────────────────────────────────────
+    brain_mask = (r_norm < R_SKULL_INNER).astype(np.float32)
+
+    # B1+ inhomogeneity (3T: brighter centre)
+    b1_sig = float(rng.uniform(0.50, 0.70))
+    b1_amp = float(rng.uniform(0.04, 0.10))
+    b1 = 1.0 + b1_amp * np.exp(-((yy / (H * b1_sig)) ** 2
+                                  + (xx / (W * b1_sig)) ** 2)).astype(np.float32)
+    img *= b1
+
+    # Receive coil roll-off (mild linear gradient)
+    ga   = float(rng.uniform(0, 2 * np.pi))
+    gamp = float(rng.uniform(0.02, 0.06))
+    ramp = 1.0 + gamp * (np.cos(ga) * yy / H + np.sin(ga) * xx / W).astype(np.float32)
+    img *= ramp.clip(0.85, 1.15)
+
+    # Rician-like noise
+    sn = float(rng.uniform(0.010, 0.022))
+    n1 = gaussian_filter(rng.standard_normal((H, W)).astype(np.float32),
+                         sigma=float(rng.uniform(0.8, 1.5)))
+    n2 = gaussian_filter(rng.standard_normal((H, W)).astype(np.float32),
+                         sigma=float(rng.uniform(0.8, 1.5)))
+    img += sn * (np.sqrt(n1 ** 2 + n2 ** 2) - float(np.sqrt(np.pi / 2))) * brain_mask
 
     return img.clip(0.0, 1.0)
 
 
-# ── Axial patella phantom ─────────────────────────────────────────────────────
+# ── Posterior fossa phantom ───────────────────────────────────────────────────
 
-def _knee_axial_patella(shape, rng):
-    """Axial cross-section: patella + trochlear groove + Hoffa fat pad."""
+def _brain_t2_posterior(shape, rng):
+    """Posterior fossa axial slice: bilateral cerebellum + brainstem.
+
+    Uses the same layered strategy as _brain_t2 but with different anatomy:
+    - Smaller oval cross-section (posterior fossa is narrower)
+    - Bilateral cerebellum with fine transverse foliation (folia)
+    - Central brainstem with 4th ventricle posteriorly
+    - Large cisterns with CSF signal
+    """
     H, W = shape
     img = np.zeros((H, W), dtype=np.float32)
 
-    jy = int(rng.integers(-14, 15))
-    jx = int(rng.integers(-12, 13))
-    cy, cx = H // 2 + jy, W // 2 + jx
+    cy = H / 2.0 + rng.uniform(-8.0, 8.0)
+    cx = W / 2.0 + rng.uniform(-6.0, 6.0)
+    skull_ry = H * rng.uniform(0.355, 0.398) * rng.uniform(0.96, 1.04)
+    skull_rx = W * rng.uniform(0.345, 0.388) * rng.uniform(0.96, 1.04)
 
-    limb = _ellipse(H, W, cy, cx, H * 0.43, W * 0.42).astype(np.float32)
-    img += limb * rng.uniform(0.26, 0.35)
-    inner = _ellipse(H, W, cy, cx, H * 0.385, W * 0.375).astype(np.float32)
-    img += _soft((limb - inner).clip(0), sigma=2.5) * rng.uniform(0.73, 0.86)
+    yy    = np.arange(H, dtype=np.float64)[:, None] - cy
+    xx    = np.arange(W, dtype=np.float64)[None, :] - cx
+    theta = np.arctan2(yy, xx).astype(np.float32)
+    r_norm = np.sqrt((yy / skull_ry) ** 2 + (xx / skull_rx) ** 2).astype(np.float32)
 
-    # Femoral trochlea (posterior)
-    fem_y  = cy + int(H * 0.05)
-    fem_ry = H * 0.17
-    fem_rx = W * 0.22
-    img += _soft(_ellipse(H, W, fem_y, cx, fem_ry * 0.76, fem_rx * 0.76),
-                 sigma=2.5) * rng.uniform(0.72, 0.82)
-    img -= _soft(
-        (_ellipse(H, W, fem_y, cx, fem_ry, fem_rx).astype(np.float32)
-         - _ellipse(H, W, fem_y, cx, fem_ry * 0.82, fem_rx * 0.82).astype(np.float32)
-         ).clip(0), sigma=1.5) * rng.uniform(0.38, 0.52)
+    SCALP_SIG = float(rng.uniform(0.76, 0.84))
+    SKULL_SIG = float(rng.uniform(0.02, 0.05))
+    WM_SIG    = float(rng.uniform(0.36, 0.46))
+    GM_SIG    = float(rng.uniform(0.58, 0.70))
+    CSF_SIG   = float(rng.uniform(0.88, 0.95))
 
-    # Patella (anterior)
-    pat_y  = cy - int(H * 0.17)
-    pat_ry = H * 0.08
-    pat_rx = W * 0.075
-    img += _soft(_ellipse(H, W, pat_y, cx, pat_ry * 0.70, pat_rx * 0.70),
-                 sigma=2.0) * rng.uniform(0.68, 0.80)
-    img -= _soft(
-        (_ellipse(H, W, pat_y, cx, pat_ry, pat_rx).astype(np.float32)
-         - _ellipse(H, W, pat_y, cx, pat_ry * 0.80, pat_rx * 0.80).astype(np.float32)
-         ).clip(0), sigma=1.5) * rng.uniform(0.35, 0.50)
+    # Skull + scalp
+    img = _lerp(img, SCALP_SIG, _soft((r_norm < 1.060).astype(np.float32), 1.5))
+    img = _lerp(img, SKULL_SIG,
+                _soft(((r_norm < 1.000) & (r_norm >= 0.952)).astype(np.float32), 1.2))
+    # SAS and WM background
+    img = _lerp(img, CSF_SIG,  _soft((r_norm < 0.952).astype(np.float32), 1.2))
+    img = _lerp(img, WM_SIG,   _soft((r_norm < 0.820).astype(np.float32), 2.0))
 
-    # Patellar cartilage (posterior face)
-    img += _soft(_ellipse(H, W, pat_y + int(pat_ry * 0.82), cx,
-                           pat_ry * 0.17, pat_rx * 0.90), sigma=1.8) \
-           * rng.uniform(0.48, 0.60)
+    # Cerebellar cortex with fine foliation (using the same gyral-modulation approach)
+    CEREBELLAR_CORTEX_T  = 0.090
+    CEREBELLAR_GYRAL_AMP = 0.022
+    cer_gyral = _gyral_field(theta, rng, n_min=9, n_max=20)
+    cer_cortex_inner = 0.820 - CEREBELLAR_CORTEX_T   # = 0.730
+    R_CER_CORTEX_OUTER = 0.820 + cer_gyral * CEREBELLAR_GYRAL_AMP
+    cer_cortex = (r_norm < R_CER_CORTEX_OUTER) & (r_norm >= cer_cortex_inner)
+    cer_sulcus = (r_norm >= R_CER_CORTEX_OUTER) & (r_norm < 0.952)
+    img = _lerp(img, GM_SIG,  _soft(cer_cortex.astype(np.float32), 1.0))
+    img = _lerp(img, CSF_SIG, _soft(cer_sulcus.astype(np.float32), 1.0))
 
-    # Hoffa fat pad
-    img += _soft(_ellipse(H, W, cy - int(H * 0.04), cx, H * 0.10, W * 0.10),
-                 sigma=3.0) * rng.uniform(0.77, 0.87)
+    # ── Brainstem (central oval) ──────────────────────────────────────────────
+    bs_cy = cy + H * float(rng.uniform(-0.02, 0.04))
+    bs_cx = cx + W * float(rng.uniform(-0.02, 0.02))
+    bs_ry = H * float(rng.uniform(0.105, 0.130))
+    bs_rx = W * float(rng.uniform(0.090, 0.115))
 
-    # Patellar joint fluid crescent
-    mid_y    = (pat_y + int(pat_ry) + fem_y - int(fem_ry)) // 2
-    fluid_ry = max(4, abs(pat_y + int(pat_ry) - fem_y + int(fem_ry)) // 2 + 3)
-    img += _soft(_ellipse(H, W, mid_y, cx, fluid_ry, W * 0.13), sigma=2.0) \
-           * rng.uniform(0.62, 0.90)
+    bs = _ellipse(H, W, bs_cy, bs_cx, bs_ry, bs_rx)
+    img = _lerp(img, WM_SIG, _soft(bs.astype(np.float32), 2.5))
 
-    noise = rng.standard_normal((H, W)).astype(np.float32)
-    img += gaussian_filter(noise, sigma=rng.uniform(1.2, 2.5)) \
-           * rng.uniform(0.015, 0.030) * limb
+    # 4th ventricle (tent-shaped CSF cavity posterior to brainstem)
+    v4 = _ellipse(H, W, bs_cy + bs_ry * 0.80, bs_cx,
+                  H * float(rng.uniform(0.035, 0.055)),
+                  W * float(rng.uniform(0.055, 0.080)))
+    img = _lerp(img, CSF_SIG, _soft(v4.astype(np.float32), 1.8))
 
-    return img.clip(0.0, 1.0)
+    # Cerebral aqueduct
+    aq = _ellipse(H, W, bs_cy - bs_ry * 0.60, bs_cx, H * 0.015, W * 0.013)
+    img = _lerp(img, CSF_SIG, _soft(aq.astype(np.float32), 1.2))
 
+    # Basilar artery flow void (dark dot anterior to brainstem)
+    ba = _ellipse(H, W, bs_cy - bs_ry * 0.90, bs_cx, H * 0.012, W * 0.012)
+    img = _lerp(img, 0.01, _soft(ba.astype(np.float32), 1.0))
 
-# ── Multi-compartment phantom (hidden tier) ───────────────────────────────────
+    # ── Prepontine cistern + CPA cisterns (large CSF) ─────────────────────────
+    cist = _ellipse(H, W, bs_cy - bs_ry * 1.30, bs_cx,
+                    H * 0.040, W * float(rng.uniform(0.16, 0.24)))
+    img = _lerp(img, CSF_SIG, _soft(cist.astype(np.float32), 3.0))
 
-def _knee_multicompartment(shape, rng):
-    """Coronal + posterior Baker's cyst (popliteal fluid collection)."""
-    img = _knee_coronal(shape, rng, effusion=rng.uniform(0.35, 0.72))
-    H, W = shape
-    cy, cx = H // 2, W // 2
+    for side in [-1, 1]:
+        cpa_cx = cx + side * W * float(rng.uniform(0.13, 0.18))
+        cpa    = _ellipse(H, W, bs_cy + H * 0.02, cpa_cx,
+                          H * float(rng.uniform(0.03, 0.05)),
+                          W * float(rng.uniform(0.04, 0.07)))
+        img = _lerp(img, CSF_SIG, _soft(cpa.astype(np.float32), 2.0))
 
-    cyst_y  = cy + int(H * rng.uniform(0.30, 0.40))
-    cyst_cx = cx + int(W * rng.uniform(-0.12, 0.12))
-    cyst = _soft(_ellipse(H, W, cyst_y, cyst_cx,
-                           H * rng.uniform(0.05, 0.10),
-                           W * rng.uniform(0.06, 0.13)), sigma=2.5)
-    img += cyst * rng.uniform(0.76, 0.92)
+    # ── Field effects + noise ─────────────────────────────────────────────────
+    b1 = 1.0 + float(rng.uniform(0.03, 0.08)) * np.exp(
+        -((yy / (H * 0.60)) ** 2 + (xx / (W * 0.60)) ** 2)).astype(np.float32)
+    img *= b1
+
+    brain_mask = (r_norm < 0.95).astype(np.float32)
+    sn = float(rng.uniform(0.010, 0.020))
+    n1 = gaussian_filter(rng.standard_normal((H, W)).astype(np.float32),
+                         sigma=float(rng.uniform(0.8, 1.5)))
+    n2 = gaussian_filter(rng.standard_normal((H, W)).astype(np.float32),
+                         sigma=float(rng.uniform(0.8, 1.5)))
+    img += sn * (np.sqrt(n1 ** 2 + n2 ** 2) - float(np.sqrt(np.pi / 2))) * brain_mask
 
     return img.clip(0.0, 1.0)

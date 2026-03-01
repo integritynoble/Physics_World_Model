@@ -49,7 +49,7 @@ usage() {
     echo "Examples:"
     echo "  $0                     # Download all datasets (source + challenge)"
     echo "  $0 sd_cassi cacti      # Download specific datasets"
-    echo "  $0 ct                  # Download CT dataset (+ LoDoPaB-CT zip from Zenodo)"
+    echo "  $0 ct                  # Download CT dataset (+ 2× LoDoPaB-CT zips from Zenodo, ~3 GB)"
     echo "  $0 --challenge         # Download only challenge HDF5 files"
     echo "  $0 --challenge ct      # Download only CT challenge HDF5 files"
     echo ""
@@ -88,19 +88,32 @@ download_source() {
     gsutil -m rsync -r "${GCS_BUCKET}/datasets/${ds}/" "${BENCHMARK_DIR}/${ds}/"
     echo "    Done: ${BENCHMARK_DIR}/${ds}/"
 
-    # CT public tier uses real LoDoPaB-CT images (not stored on GCS — too large).
-    # Download the ground-truth zip from Zenodo if not already present.
+    # CT uses real LoDoPaB-CT images (not stored on GCS — too large).
+    # All three tiers draw from LoDoPaB-CT but from different splits:
+    #   Public  → ground_truth_test.zip        (~1.5 GB)
+    #   Dev     → ground_truth_validation.zip  (~1.5 GB, first-half patients)
+    #   Hidden  → ground_truth_validation.zip  (~1.5 GB, second-half patients + adversarial)
     if [ "${ds}" = "ct" ]; then
-        local lodopab_zip="${BENCHMARK_DIR}/ct/lodopab_src/ground_truth_test.zip"
-        if [ ! -f "${lodopab_zip}" ]; then
+        mkdir -p "${BENCHMARK_DIR}/ct/lodopab_src"
+        local lodopab_test="${BENCHMARK_DIR}/ct/lodopab_src/ground_truth_test.zip"
+        local lodopab_val="${BENCHMARK_DIR}/ct/lodopab_src/ground_truth_validation.zip"
+        if [ ! -f "${lodopab_test}" ]; then
             echo "    Downloading LoDoPaB-CT ground_truth_test.zip from Zenodo (~1.5 GB)..."
-            mkdir -p "${BENCHMARK_DIR}/ct/lodopab_src"
             wget -q --show-progress \
                 "https://zenodo.org/api/records/3384092/files/ground_truth_test.zip/content" \
-                -O "${lodopab_zip}"
-            echo "    Done: ${lodopab_zip}"
+                -O "${lodopab_test}"
+            echo "    Done: ${lodopab_test}"
         else
-            echo "    LoDoPaB-CT zip already present, skipping download."
+            echo "    LoDoPaB-CT test zip already present, skipping."
+        fi
+        if [ ! -f "${lodopab_val}" ]; then
+            echo "    Downloading LoDoPaB-CT ground_truth_validation.zip from Zenodo (~1.5 GB)..."
+            wget -q --show-progress \
+                "https://zenodo.org/api/records/3384092/files/ground_truth_validation.zip/content" \
+                -O "${lodopab_val}"
+            echo "    Done: ${lodopab_val}"
+        else
+            echo "    LoDoPaB-CT validation zip already present, skipping."
         fi
     fi
 }

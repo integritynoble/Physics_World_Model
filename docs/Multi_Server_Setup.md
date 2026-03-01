@@ -112,11 +112,13 @@ pip install numpy scipy h5py matplotlib
 ./scripts/setup_benchmark_data.sh --challenge ct   # CT challenge HDF5s only (~26 MB)
 ```
 
-> **CT Note:** The CT benchmark uses real patient slices from [LoDoPaB-CT](https://zenodo.org/records/3384092) for the public tier.
-> The `setup_benchmark_data.sh ct` command automatically downloads `ground_truth_test.zip` (~1.5 GB) from Zenodo
-> into `datasets/benchmark/ct/lodopab_src/` if it is not already present.
-> The dev and hidden tiers use procedural phantoms stored on GCS (~40 MB total).
-> Subsequent runs skip the Zenodo download if the zip already exists.
+> **CT Note:** All three CT tiers use real patient slices from [LoDoPaB-CT](https://zenodo.org/records/3384092),
+> each from a **different patient split** — no shared scenes across tiers.
+> `setup_benchmark_data.sh ct` automatically downloads two Zenodo zips if not already present:
+> - `ground_truth_test.zip` (~1.5 GB) — public tier (test-split patients)
+> - `ground_truth_validation.zip` (~1.5 GB) — dev + hidden tiers (validation-split patients, two halves)
+>
+> Both downloads are skipped on subsequent runs if the zips already exist. Total first-time download: ~3 GB from Zenodo + ~40 MB from GCS.
 
 ## Step 7: Set Up Modal (for GPU algorithms)
 
@@ -299,8 +301,8 @@ All other servers using the same Modal account see the updated volume immediatel
 | `challenge-data/v1.0/ct_challenge_hidden.h5` | ~9 MB | CT hidden tier (20 adversarial phantoms, server-side only) |
 
 **CT-specific notes:**
-- `datasets/ct/` on GCS contains dev/hidden phantom parameters and generated sinograms (~40 MB).
-- The public-tier ground-truth images come from [LoDoPaB-CT on Zenodo](https://zenodo.org/records/3384092) (~1.5 GB) and are **not** stored on GCS (too large). `setup_benchmark_data.sh ct` downloads them automatically from Zenodo.
+- `datasets/ct/` on GCS contains generated sinograms and metadata for all tiers (~40 MB).
+- All three CT tiers use real [LoDoPaB-CT](https://zenodo.org/records/3384092) patient images from **different splits** — no scenes are shared across tiers. The Zenodo zips (~1.5 GB × 2) are **not** stored on GCS (too large); `setup_benchmark_data.sh ct` downloads them automatically.
 - Model checkpoints are **NOT** on GCS. They are on Modal volume `pwm-models` (17 GB, free storage).
 
 CT reconstruction uses CPU-based algorithms (FBP, TV-ADMM, PnP-ADMM) and deep learning models (RED-CNN, FBPConvNet, Learned Primal-Dual, DuDoTrans, DOLCE). Deep learning checkpoints for CT are uploaded separately to `pwm-models` as needed.

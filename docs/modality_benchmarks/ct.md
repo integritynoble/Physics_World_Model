@@ -9,13 +9,17 @@
 
 ### Dataset
 
-| Tier | Scenes | Source | Content |
-|------|--------|--------|---------|
-| **Public** | 11 | [LoDoPaB-CT (Zenodo 3384092)](https://zenodo.org/records/3384092) | Real chest slices (LIDC/IDRI) |
-| **Dev** | 20 | Procedural phantoms (GCS) | 5 anatomical backgrounds, round-robin |
-| **Hidden** | 20 | Procedural phantoms + adversarial (GCS) | Metal inserts, lesions, calcifications |
+All three tiers use **real patient CT images from LoDoPaB-CT** (LIDC/IDRI), each from a different patient split — no scenes are shared across tiers.
 
-Dev phantom types (`seed % 5`): `chest_upper`, `chest_mid`, `chest_lower`, `abdomen_upper`, `abdomen_mid`.
+| Tier | Scenes | LoDoPaB-CT split | Patients | Notes |
+|------|--------|-----------------|----------|-------|
+| **Public** | 11 | Test split | Test patients | Ground truth + true spec visible |
+| **Dev** | 20 | Validation split — first half | Val patients 0–63 | Blind evaluation |
+| **Hidden** | 20 | Validation split — second half | Val patients 64–127 | + adversarial mods; server-side only |
+
+Source: Leuschner et al. (2021), *Scientific Data* 8:109, doi:10.1038/s41597-021-00893-z · Zenodo 3384092, CC BY 4.0
+
+**Adversarial modifications (hidden)**: metal inserts (35%), low-contrast lesions (30%), calcifications (20%), high-contrast bone (15%) applied on top of real images.
 
 HDF5 at `datasets/benchmark/ct/{public,dev,hidden}/` · GCS: `gs://pwm-benchmark-datasets/challenge-data/v1.0/ct_challenge_{tier}.h5`
 
