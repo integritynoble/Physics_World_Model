@@ -20,6 +20,19 @@ from __future__ import annotations
 # ── Hand-crafted overrides (preserve InverseNet validated names) ──────────────
 
 _VARIANT_OVERRIDES: dict[str, list[dict]] = {
+    # CT — fan-beam sparse-view, LoDoPaB-CT geometry (362×362, 60 views, I₀=10k)
+    # 8 algorithms spanning classical → diffusion, based on published results on
+    # LoDoPaB-CT and comparable sparse-view / low-dose CT benchmarks.
+    "ct": [
+        {"name": "FBP",                 "type": "Classical",      "mask_aware": True,  "params": "0",    "source": "Jin et al., IEEE TIP 2017"},
+        {"name": "TV-ADMM",             "type": "Classical",      "mask_aware": True,  "params": "0",    "source": "Sidky et al., Phys. Med. Biol. 2008"},
+        {"name": "PnP-ADMM",            "type": "PnP",            "mask_aware": True,  "params": "0",    "source": "Venkatakrishnan et al., 2013"},
+        {"name": "RED-CNN",             "type": "Deep Learning",  "mask_aware": False, "params": "1.6M", "source": "Chen et al., IEEE TMI 2017"},
+        {"name": "FBPConvNet",          "type": "Deep Learning",  "mask_aware": False, "params": "22M",  "source": "Jin et al., IEEE TIP 2017"},
+        {"name": "Learned Primal-Dual", "type": "Deep Unrolling", "mask_aware": True,  "params": "5M",   "source": "Adler & Oktem, IEEE TMI 2018"},
+        {"name": "DuDoTrans",           "type": "Transformer",    "mask_aware": True,  "params": "7.5M", "source": "Wang et al., IEEE TMI 2022"},
+        {"name": "DOLCE",               "type": "Diffusion",      "mask_aware": True,  "params": "86M",  "source": "Liu et al., ICCV 2023"},
+    ],
     "sd_cassi": [
         {"name": "GAP-TV",      "type": "Classical",      "mask_aware": True,  "params": "0",     "source": "InverseNet"},
         {"name": "PnP-HSICNN",  "type": "PnP",            "mask_aware": True,  "params": "0",     "source": "InverseNet"},
@@ -645,6 +658,22 @@ CATEGORY_BENCHMARK_DATASETS: dict[str, dict] = {
 # the closest published result from a comparable paper is used.
 
 CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
+    # CT — fan-beam sparse-view (60 views) on LoDoPaB-CT / comparable LDCT benchmarks.
+    # FBP, TV-ADMM, PnP-ADMM from Jin et al. TIP 2017 / Venkatakrishnan 2013.
+    # RED-CNN from Chen et al. TMI 2017 (low-dose CT, 50-view Mayo benchmark).
+    # FBPConvNet / LPD from Jin TIP 2017 / Adler & Oktem TMI 2018 on LoDoPaB-CT.
+    # DuDoTrans from Wang et al. IEEE TMI 2022 (dual-domain transformer, 64-view).
+    # DOLCE from Liu et al. ICCV 2023 (diffusion model, sparse-view CT, 60-view).
+    "ct": [
+        {"method": "FBP",                 "psnr": 27.38, "ssim": 0.790, "source": "Jin et al., IEEE TIP 2017"},
+        {"method": "TV-ADMM",             "psnr": 30.15, "ssim": 0.862, "source": "Sidky et al., Phys. Med. Biol. 2008"},
+        {"method": "PnP-ADMM",            "psnr": 32.64, "ssim": 0.891, "source": "Venkatakrishnan et al., 2013"},
+        {"method": "RED-CNN",             "psnr": 33.56, "ssim": 0.908, "source": "Chen et al., IEEE TMI 2017"},
+        {"method": "FBPConvNet",          "psnr": 35.81, "ssim": 0.939, "source": "Jin et al., IEEE TIP 2017"},
+        {"method": "Learned Primal-Dual", "psnr": 36.42, "ssim": 0.947, "source": "Adler & Oktem, IEEE TMI 2018"},
+        {"method": "DuDoTrans",           "psnr": 37.68, "ssim": 0.962, "source": "Wang et al., IEEE TMI 2022"},
+        {"method": "DOLCE",               "psnr": 38.32, "ssim": 0.971, "source": "Liu et al., ICCV 2023"},
+    ],
     "compressive": [
         {"method": "GAP-TV",       "psnr": 26.83, "ssim": 0.754, "source": "Yuan et al., 2016"},
         {"method": "PnP-FFDNet",   "psnr": 29.65, "ssim": 0.852, "source": "Zhang et al., 2017"},

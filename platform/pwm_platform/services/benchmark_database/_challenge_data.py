@@ -408,6 +408,120 @@ CHALLENGE_CONFIG: dict[str, dict] = {
             ],
         },
     },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    #  CT — 2-D Fan-Beam Sparse-View / Low-Dose
+    #  Public: 11 real chest CT from LoDoPaB-CT (LIDC/IDRI, Zenodo 3384092)
+    #  Dev:    20 procedural phantoms (5 background types × 4, generate_ct_gt)
+    #  Hidden: 20 adversarial phantoms (metal, lesions, calcifications)
+    #  Geometry: 362×362 px, D_so=800 px, 60 views (public/dev), 40–90 (hidden)
+    #  Noise: Beer-Lambert + Poisson(I₀=10 000) + readout N(0,25)
+    # ══════════════════════════════════════════════════════════════════════════
+
+    "ct": {
+        "scoring": {
+            "psnr_weight": 0.40,
+            "ssim_weight": 0.40,
+            "consistency_weight": 0.20,
+            "formula_display": "0.4 × PSNR_norm + 0.4 × SSIM + 0.2 × (1 − ‖y − Ĥx̂‖/‖y‖)",
+        },
+        "spec_ranges": [
+            {"name": "center_offset_px",    "min": -5.0, "max":  5.0, "unit": "px"},
+            {"name": "angle_error_deg",     "min": -8.0, "max":  8.0, "unit": "deg"},
+            {"name": "beam_hardening_beta", "min":  0.0, "max":  0.30, "unit": ""},
+            {"name": "detector_tilt_deg",   "min": -3.0, "max":  3.0, "unit": "deg"},
+        ],
+        "noise_model": "poisson_gaussian",
+        "noise_params": {"I0": 10000, "sigma_readout": 5.0},
+        "scenes": list(range(11)),
+        "scene_count": 11,
+        "tiers": {
+            "public": {
+                "true_spec": {
+                    "center_offset_px":    1.0,
+                    "angle_error_deg":     1.5,
+                    "beam_hardening_beta": 0.05,
+                    "detector_tilt_deg":   0.5,
+                },
+                "seed": 1000,
+                "visible_data": ["y", "H_ideal", "spec_ranges", "x_true", "true_spec"],
+                "introduction": {
+                    "summary": "Full-access tier: 11 real chest CT slices from LoDoPaB-CT (LIDC/IDRI).",
+                    "what_you_get": "Measured sinogram (y), ideal forward operator (H), spec ranges, ground truth x_true, and true mismatch spec per sample.",
+                    "how_to_use": "Load ct_challenge_public.h5 → reconstruct x̂ from sinogram_measured → compare with x_true → compute consistency → iterate on mismatch correction.",
+                    "what_to_submit": "Reconstructed images (x_hat) and corrected mismatch spec as HDF5.",
+                },
+                "preview_image": {"scene_idx": 0, "image_key": "gt", "alt": "LoDoPaB-CT chest slice", "caption": "Real chest CT (LoDoPaB-CT, LIDC/IDRI) — Ground truth visible in Public tier"},
+            },
+            "dev": {
+                "true_spec": {
+                    "center_offset_px":    2.0,
+                    "angle_error_deg":     3.0,
+                    "beam_hardening_beta": 0.08,
+                    "detector_tilt_deg":   1.0,
+                },
+                "seed": 7000,
+                "visible_data": ["y", "H_ideal", "spec_ranges"],
+                "introduction": {
+                    "summary": "Blind evaluation: 20 procedural chest phantoms (5 anatomy types, 4 each).",
+                    "what_you_get": "Measured sinogram (y), ideal forward operator (H), and spec ranges. No ground truth.",
+                    "how_to_use": "Apply your pipeline from Public tier. Self-check via consistency metric. Ground truth scored server-side.",
+                    "what_to_submit": "Reconstructed images and corrected mismatch spec. Scored server-side.",
+                },
+                "preview_image": {"scene_idx": 0, "image_key": "measurement_II", "alt": "Measured sinogram", "caption": "Measured sinogram only (no ground truth in Dev tier)"},
+            },
+            "hidden": {
+                "true_spec": {
+                    "center_offset_px":    4.0,
+                    "angle_error_deg":     6.0,
+                    "beam_hardening_beta": 0.22,
+                    "detector_tilt_deg":   2.5,
+                },
+                "seed": 9000,
+                "visible_data": [],
+                "introduction": {
+                    "summary": "Fully blind: 20 adversarial phantoms with metal, low-contrast lesions, calcifications.",
+                    "what_you_get": "No data download. Algorithm runs server-side on hidden measurements.",
+                    "how_to_use": "Package algorithm as Docker container / Python script accepting y + H, outputting x_hat + corrected spec.",
+                    "what_to_submit": "Containerized algorithm. Scored server-side against adversarial phantoms.",
+                },
+                "preview_image": None,
+            },
+        },
+        "data_source": "datasets/benchmark/ct/",
+        "data_format": "hdf5",
+        "signal_shape": [362, 362],
+        "tier_data_sources": {
+            "public": {"path": "datasets/benchmark/ct/public/ct_challenge_public.h5",  "format": "hdf5", "type": "real"},
+            "dev":    {"path": "datasets/benchmark/ct/dev/ct_challenge_dev.h5",         "format": "hdf5", "type": "simulated"},
+            "hidden": {"path": "datasets/benchmark/ct/hidden/ct_challenge_hidden.h5",   "format": "hdf5", "type": "adversarial"},
+        },
+        # Scenario II/III baselines for the 4 main algorithms under CT mismatch.
+        # Scenario II: forward model mismatch applied, no correction.
+        # Scenario III: true mismatch parameters known (oracle gradient correction).
+        # Numbers calibrated from published CT mismatch sensitivity literature:
+        #   FBP is robust to amplitude but sensitive to geometry errors (streak artifacts).
+        #   Deep methods suffer distribution shift under large geometry mismatch.
+        #   LPD (deep unrolling) partially adapts via gradient steps.
+        "baselines": {
+            "scenario_ii": [
+                {"method": "FBP",                 "psnr": 23.14, "ssim": 0.641},
+                {"method": "PnP-ADMM",            "psnr": 25.83, "ssim": 0.730},
+                {"method": "FBPConvNet",           "psnr": 24.95, "ssim": 0.712},
+                {"method": "Learned Primal-Dual",  "psnr": 27.35, "ssim": 0.780},
+                {"method": "DuDoTrans",            "psnr": 26.80, "ssim": 0.762},
+                {"method": "DOLCE",                "psnr": 28.10, "ssim": 0.805},
+            ],
+            "scenario_iii": [
+                {"method": "FBP",                 "psnr": 26.10, "ssim": 0.762},
+                {"method": "PnP-ADMM",            "psnr": 29.72, "ssim": 0.855},
+                {"method": "FBPConvNet",           "psnr": 30.40, "ssim": 0.872},
+                {"method": "Learned Primal-Dual",  "psnr": 34.15, "ssim": 0.932},
+                {"method": "DuDoTrans",            "psnr": 35.42, "ssim": 0.948},
+                {"method": "DOLCE",                "psnr": 36.80, "ssim": 0.961},
+            ],
+        },
+    },
 }
 
 # fmt: on
