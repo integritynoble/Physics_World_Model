@@ -12,18 +12,19 @@ This guide explains how to set up new servers to run PWM benchmark experiments i
        │  datasets/sd_cassi/   2.6G │     │  checkpoint/       │
        │  datasets/cacti/      1.6G │     │    ELP-Unfolding/  │
        │  datasets/spc_kronecker/   │     │    MST-HDNet/      │
-       │  challenge-data/v1.0/ 5.2G │     │    DRUNet/         │
-       └──────────┬─────────────────┘     │    EfficientSCI/   │
-                  │                       │    HATNet-SPI/      │
-     ┌────────────┼────────────┐          │    ... (17 GB)      │
-     ▼            ▼            ▼          └─────────┬──────────┘
-┌─────────┐ ┌─────────┐ ┌─────────┐                │
-│Server A │ │Server B │ │Server C │    ┌────────────┼────────────┐
-│ CACTI   │ │SD-CASSI │ │  SPC    │    ▼            ▼            ▼
-└────┬────┘ └────┬────┘ └────┬────┘  ┌───┐       ┌───┐       ┌───┐
-     │           │           │       │GPU│       │GPU│       │GPU│
-     └───────────┼───────────┘       │A10│       │A10│       │A10│
-                 │                   └───┘       └───┘       └───┘
+       │  datasets/ct/        ~40MB │     │    DRUNet/         │
+       │  challenge-data/v1.0/ 5.2G │     │    EfficientSCI/   │
+       └──────────┬─────────────────┘     │    HATNet-SPI/      │
+                  │                       │    ... (17 GB)      │
+     ┌────────────┼─────────────┐         └─────────┬──────────┘
+     ▼            ▼             ▼                    │
+┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐   │
+│Server A │ │Server B │ │Server C │ │Server D │   │
+│ CACTI   │ │SD-CASSI │ │  SPC    │ │   CT    │   │
+└────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘   │
+     │           │            │           │         │
+     └───────────┼────────────┼───────────┘         │
+                 ▼            ▼                      ▼
            modal run ...              Modal (on-demand GPUs)
 ```
 
@@ -104,10 +105,18 @@ pip install numpy scipy h5py matplotlib
 ./scripts/setup_benchmark_data.sh cacti            # Server A: CACTI
 ./scripts/setup_benchmark_data.sh sd_cassi         # Server B: SD-CASSI
 ./scripts/setup_benchmark_data.sh spc_kronecker    # Server C: SPC Kronecker
+./scripts/setup_benchmark_data.sh ct               # Server D: CT
 
 # Or download just the challenge HDF5 files (smaller, no preview images)
 ./scripts/setup_benchmark_data.sh --challenge cacti
+./scripts/setup_benchmark_data.sh --challenge ct   # CT challenge HDF5s only (~26 MB)
 ```
+
+> **CT Note:** The CT benchmark uses real patient slices from [LoDoPaB-CT](https://zenodo.org/records/3384092) for the public tier.
+> The `setup_benchmark_data.sh ct` command automatically downloads `ground_truth_test.zip` (~1.5 GB) from Zenodo
+> into `datasets/benchmark/ct/lodopab_src/` if it is not already present.
+> The dev and hidden tiers use procedural phantoms stored on GCS (~40 MB total).
+> Subsequent runs skip the Zenodo download if the zip already exists.
 
 ## Step 7: Set Up Modal (for GPU algorithms)
 
@@ -221,7 +230,7 @@ def main():
 ```python
 @app.local_entrypoint()
 def main():
-    variants = ["sd_cassi", "cacti", "spc_kronecker"]
+    variants = ["sd_cassi", "cacti", "spc_kronecker", "ct"]
     futures = []
     for v in variants:
         path = f"datasets/benchmark/{v}/public/{v}_challenge_public.h5"
@@ -283,9 +292,18 @@ All other servers using the same Modal account see the updated volume immediatel
 | `datasets/sd_cassi/` | 2.6 GB | SD-CASSI source data (all tiers + images) |
 | `datasets/cacti/` | 1.6 GB | CACTI source data (all tiers + images) |
 | `datasets/spc_kronecker/` | 151 MB | SPC Kronecker source data |
-| `challenge-data/v1.0/` | 5.2 GB | All 507 challenge HDF5 files |
+| `datasets/ct/` | ~40 MB | CT source data (dev + hidden procedural phantoms; excludes LoDoPaB-CT) |
+| `challenge-data/v1.0/` | 5.2 GB | All challenge HDF5 files (sd_cassi, cacti, spc_kronecker, ct) |
+| `challenge-data/v1.0/ct_challenge_public.h5` | ~9 MB | CT public tier (11 real LoDoPaB-CT slices) |
+| `challenge-data/v1.0/ct_challenge_dev.h5` | ~9 MB | CT dev tier (20 procedural phantoms, 5 background types) |
+| `challenge-data/v1.0/ct_challenge_hidden.h5` | ~9 MB | CT hidden tier (20 adversarial phantoms, server-side only) |
 
-Model checkpoints are **NOT** on GCS. They are on Modal volume `pwm-models` (17 GB, free storage).
+**CT-specific notes:**
+- `datasets/ct/` on GCS contains dev/hidden phantom parameters and generated sinograms (~40 MB).
+- The public-tier ground-truth images come from [LoDoPaB-CT on Zenodo](https://zenodo.org/records/3384092) (~1.5 GB) and are **not** stored on GCS (too large). `setup_benchmark_data.sh ct` downloads them automatically from Zenodo.
+- Model checkpoints are **NOT** on GCS. They are on Modal volume `pwm-models` (17 GB, free storage).
+
+CT reconstruction uses CPU-based algorithms (FBP, TV-ADMM, PnP-ADMM) and deep learning models (RED-CNN, FBPConvNet, Learned Primal-Dual, DuDoTrans, DOLCE). Deep learning checkpoints for CT are uploaded separately to `pwm-models` as needed.
 
 ---
 
@@ -296,6 +314,9 @@ Model checkpoints are **NOT** on GCS. They are on Modal volume `pwm-models` (17 
 | A | CACTI | `./scripts/setup_benchmark_data.sh cacti` | `python3 scripts/run_cacti_experiment.py` | `modal run scripts/modal_run_elp.py` |
 | B | SD-CASSI | `./scripts/setup_benchmark_data.sh sd_cassi` | `python3 scripts/run_cassi_experiment.py` | `modal run scripts/modal_run_elp.py` |
 | C | SPC | `./scripts/setup_benchmark_data.sh spc_kronecker` | `python3 scripts/run_spc_experiment.py` | `modal run scripts/modal_run_elp.py` |
+| D | CT | `./scripts/setup_benchmark_data.sh ct` | `python3 scripts/run_ct_experiment.py` | `modal run scripts/modal_run_ct.py` |
+
+> **Server D (CT) first-time setup:** The CT data download fetches ~40 MB from GCS plus ~1.5 GB from Zenodo (LoDoPaB-CT public-tier ground truth). The Zenodo download only happens once and is skipped on subsequent runs.
 
 ---
 
@@ -329,4 +350,30 @@ gsutil -m cp -r results/ gs://pwm-benchmark-datasets/results/<server-name>/
 git add results/
 git commit -m "results: CACTI experiment from server-A"
 git push origin master
+```
+
+### CT Dataset Refresh (Main Server)
+
+When the CT dataset is updated (new phantoms, new LoDoPaB-CT slices), regenerate and re-upload:
+
+```bash
+# Regenerate all 3 tiers (public, dev, hidden)
+cd datasets/benchmark/ct
+python3 generate_dataset.py
+
+# Upload updated challenge HDF5 files to GCS
+gsutil cp datasets/benchmark/ct/public/ct_challenge_public.h5 \
+           gs://pwm-benchmark-datasets/challenge-data/v1.0/
+gsutil cp datasets/benchmark/ct/dev/ct_challenge_dev.h5 \
+           gs://pwm-benchmark-datasets/challenge-data/v1.0/
+gsutil cp datasets/benchmark/ct/hidden/ct_challenge_hidden.h5 \
+           gs://pwm-benchmark-datasets/challenge-data/v1.0/
+
+# Upload updated procedural phantom source data
+gsutil -m rsync -r datasets/benchmark/ct/ \
+                   gs://pwm-benchmark-datasets/datasets/ct/ \
+    --exclude '.*lodopab_src.*'
+
+# On any other server, refresh with:
+./scripts/setup_benchmark_data.sh ct
 ```
