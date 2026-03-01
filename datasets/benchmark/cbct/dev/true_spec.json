@@ -1,0 +1,8 @@
+{
+  "source_offset_x": 0.50,
+  "source_offset_z": 0.30,
+  "detector_tilt": 0.10,
+  "detector_shift_u": 0.80,
+  "beam_hardening": 0.04,
+  "scatter_fraction": 0.03
+}
