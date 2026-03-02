@@ -59,13 +59,13 @@ CHALLENGE_CONFIG: dict[str, dict] = {
             },
             "dev": {
                 "true_spec": {
-                    "mask_dx": 0.40,
-                    "mask_dy": 0.20,
-                    "mask_rotation": 0.05,
-                    "dispersion_slope": 2.08,
-                    "dispersion_axis": 0.10,
+                    "mask_dx": 0.60,
+                    "mask_dy": 0.40,
+                    "mask_rotation": 0.15,
+                    "dispersion_slope": 1.95,
+                    "dispersion_axis": 0.22,
                 },
-                "seed": 2001,
+                "seed": 3001,
                 "visible_data": ["y", "H_ideal", "spec_ranges"],
                 "introduction": {
                     "summary": "Blind evaluation tier — no ground truth available.",
@@ -77,13 +77,13 @@ CHALLENGE_CONFIG: dict[str, dict] = {
             },
             "hidden": {
                 "true_spec": {
-                    "mask_dx": 0.60,
-                    "mask_dy": 0.40,
-                    "mask_rotation": 0.15,
-                    "dispersion_slope": 1.95,
-                    "dispersion_axis": 0.22,
+                    "mask_dx": 0.40,
+                    "mask_dy": 0.20,
+                    "mask_rotation": 0.05,
+                    "dispersion_slope": 2.08,
+                    "dispersion_axis": 0.10,
                 },
-                "seed": 3001,
+                "seed": 2001,
                 "visible_data": [],
                 "introduction": {
                     "summary": "Fully blind server-side evaluation — no data download.",
@@ -99,8 +99,8 @@ CHALLENGE_CONFIG: dict[str, dict] = {
         "signal_shape": [256, 256, 28],
         "tier_data_sources": {
             "public":  {"path": "datasets/TSA_simu_data/Truth/", "format": "mat", "type": "experimental"},
-            "dev":     {"generator": "generate_test_scene", "seed_offset": 10000, "type": "simulated"},
-            "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "simulated"},
+            "dev":     {"generator": "generate_test_scene", "seed_offset": 20000, "type": "simulated"},
+            "hidden":  {"generator": "generate_test_scene", "seed_offset": 10000, "type": "simulated"},
         },
         "baselines": {
             "scenario_ii": [
@@ -248,6 +248,15 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 {"method": "HiSViT-9",       "psnr": 27.62, "ssim": 0.934},
                 {"method": "GAP-TV",         "psnr": 24.40, "ssim": 0.764},
                 {"method": "PnP-FFDNet",     "psnr": 23.41, "ssim": 0.772},
+            ],
+            # Scenario IV (Blind Cal): grid search + L-BFGS-B calibration
+            # Scores are placeholders — update after running benchmarks
+            "scenario_iv": [
+                {"method": "ELP-Unfolding",  "psnr": 0.0, "ssim": 0.0},
+                {"method": "EfficientSCI",   "psnr": 0.0, "ssim": 0.0},
+                {"method": "HiSViT-9",       "psnr": 0.0, "ssim": 0.0},
+                {"method": "GAP-TV",         "psnr": 0.0, "ssim": 0.0},
+                {"method": "PnP-FFDNet",     "psnr": 0.0, "ssim": 0.0},
             ],
         },
     },

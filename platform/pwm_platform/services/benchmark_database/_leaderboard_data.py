@@ -7,10 +7,10 @@ from __future__ import annotations
 LEADERBOARD_DATA: dict[str, dict[str, list[dict]]] = {
 
     # ══════════════════════════════════════════════════════════════════════════
-    #  SD-CASSI — Evaluated results (GAP-TV, MST-L, SSR-L on 3-tier challenge)
+    #  SD-CASSI — Evaluated results (5 solvers on 3-tier challenge)
     #  Public: 10 KAIST scenes 256×256, clean step=2 (v2.0 regenerated)
-    #  Dev: 20 PnP-CASSI crops 500×500, mismatch slope=2.08
-    #  Hidden: 20 Pavia crops 500×500, mismatch slope=1.95
+    #  Dev: 20 Pavia crops 500×500, mismatch slope=1.95
+    #  Hidden: 20 PnP-CASSI crops 500×500, mismatch slope=2.08
     #  Oracle mask correction applied for dev/hidden tiers
     # ══════════════════════════════════════════════════════════════════════════
 
@@ -18,27 +18,29 @@ LEADERBOARD_DATA: dict[str, dict[str, list[dict]]] = {
         # Challenge leaderboard — Blind Reconstruction Challenge (3-tier)
         # Scores: 0.4 × PSNR_norm + 0.4 × SSIM + 0.2 × consistency; overall = mean(public, dev, hidden)
         "challenge": [
-            {"rank": 1, "method": "SSR-L + gradient",      "public_score": 0.877, "dev_score": 0.456, "hidden_score": 0.545, "overall_score": 0.626, "details": {"public": {"psnr": 38.03, "ssim": 0.994, "consistency": 1.00}, "dev": {"psnr": 17.06, "ssim": 0.473, "consistency": 0.98}, "hidden": {"psnr": 19.53, "ssim": 0.626, "consistency": 1.00}}, "source": "PWM benchmark (CVPR 2024)"},
-            {"rank": 2, "method": "GAP-TV + gradient",     "public_score": 0.687, "dev_score": 0.516, "hidden_score": 0.576, "overall_score": 0.593, "details": {"public": {"psnr": 24.21, "ssim": 0.865, "consistency": 1.00}, "dev": {"psnr": 18.37, "ssim": 0.583, "consistency": 1.00}, "hidden": {"psnr": 19.69, "ssim": 0.699, "consistency": 1.00}}, "source": "PWM benchmark"},
-            {"rank": 3, "method": "MST-L + gradient",      "public_score": 0.794, "dev_score": 0.385, "hidden_score": 0.472, "overall_score": 0.550, "details": {"public": {"psnr": 31.29, "ssim": 0.977, "consistency": 0.95}, "dev": {"psnr": 15.45, "ssim": 0.384, "consistency": 0.88}, "hidden": {"psnr": 17.18, "ssim": 0.550, "consistency": 0.90}}, "source": "PWM benchmark"},
+            {"rank": 1, "method": "SSR-L + gradient",      "public_score": 0.877, "dev_score": 0.545, "hidden_score": 0.456, "overall_score": 0.626, "details": {"public": {"psnr": 38.03, "ssim": 0.994, "consistency": 1.00}, "dev": {"psnr": 19.53, "ssim": 0.626, "consistency": 1.00}, "hidden": {"psnr": 17.06, "ssim": 0.473, "consistency": 0.98}}, "source": "PWM benchmark (CVPR 2024)"},
+            {"rank": 2, "method": "GAP-TV + gradient",     "public_score": 0.687, "dev_score": 0.576, "hidden_score": 0.516, "overall_score": 0.593, "details": {"public": {"psnr": 24.21, "ssim": 0.865, "consistency": 1.00}, "dev": {"psnr": 19.69, "ssim": 0.699, "consistency": 1.00}, "hidden": {"psnr": 18.37, "ssim": 0.583, "consistency": 1.00}}, "source": "PWM benchmark"},
+            {"rank": 3, "method": "MST-L + gradient",      "public_score": 0.794, "dev_score": 0.472, "hidden_score": 0.385, "overall_score": 0.550, "details": {"public": {"psnr": 31.29, "ssim": 0.977, "consistency": 0.95}, "dev": {"psnr": 17.18, "ssim": 0.550, "consistency": 0.90}, "hidden": {"psnr": 15.45, "ssim": 0.384, "consistency": 0.88}}, "source": "PWM benchmark"},
+            {"rank": 4, "method": "PnP-HSICNN + gradient", "public_score": 0.549, "dev_score": 0.508, "hidden_score": 0.455, "overall_score": 0.504, "details": {"public": {"psnr": 20.06, "ssim": 0.675, "consistency": 0.89}, "dev": {"psnr": 16.88, "ssim": 0.621, "consistency": 0.95}, "hidden": {"psnr": 15.59, "ssim": 0.518, "consistency": 0.96}}, "source": "PWM benchmark"},
+            {"rank": 5, "method": "HDNet + gradient",      "public_score": 0.707, "dev_score": 0.329, "hidden_score": 0.280, "overall_score": 0.439, "details": {"public": {"psnr": 25.45, "ssim": 0.921, "consistency": 0.92}, "dev": {"psnr": 13.59, "ssim": 0.427, "consistency": 0.61}, "hidden": {"psnr": 10.96, "ssim": 0.373, "consistency": 0.61}}, "source": "PWM benchmark"},
         ],
     },
 
     # ══════════════════════════════════════════════════════════════════════════
     #  CACTI — Competition results (6 CACTI scenes, 20 samples, 5 algorithms)
     #  Dataset v3.0: paper's exact affine_transform warp, peak_photon=10000
-    #  Public: Scenario III (Oracle) results — paper's exact forward model
+    #  Public: Scenario IV (Blind Cal) — grid search + L-BFGS-B calibration
     #  Dev/Hidden: pending procedural tier evaluation
     #  Benchmark run 2026-03-01, ELP-Unfolding on Modal A10G, rest local
     # ══════════════════════════════════════════════════════════════════════════
 
     "cacti": {
         "challenge": [
-            {"rank": 1, "method": "EfficientSCI + oracle",            "public_score": 0.740, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.247, "details": {"public": {"psnr": 27.71, "ssim": 0.930, "consistency": 0.993}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario III (affine_transform warp, public tier)"},
-            {"rank": 2, "method": "HiSViT-9 + oracle",                "public_score": 0.740, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.247, "details": {"public": {"psnr": 27.62, "ssim": 0.934, "consistency": 0.993}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario III (affine_transform warp, public tier)"},
-            {"rank": 3, "method": "ELP-Unfolding + oracle",            "public_score": 0.725, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.242, "details": {"public": {"psnr": 29.34, "ssim": 0.926, "consistency": 0.816}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario III (Modal A10G, affine_transform warp)"},
-            {"rank": 4, "method": "GAP-TV + oracle",                   "public_score": 0.631, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.210, "details": {"public": {"psnr": 24.40, "ssim": 0.764, "consistency": 1.000}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario III (affine_transform warp, public tier)"},
-            {"rank": 5, "method": "PnP-DnCNN + oracle",               "public_score": 0.617, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.206, "details": {"public": {"psnr": 23.41, "ssim": 0.772, "consistency": 0.981}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario III (affine_transform warp, public tier)"},
+            {"rank": 1, "method": "EfficientSCI + blind cal",         "public_score": 0.740, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.247, "details": {"public": {"psnr": 27.71, "ssim": 0.930, "consistency": 0.993}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (blind cal, public tier)"},
+            {"rank": 2, "method": "HiSViT-9 + blind cal",             "public_score": 0.740, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.247, "details": {"public": {"psnr": 27.62, "ssim": 0.934, "consistency": 0.993}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (blind cal, public tier)"},
+            {"rank": 3, "method": "ELP-Unfolding + blind cal",        "public_score": 0.725, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.242, "details": {"public": {"psnr": 29.34, "ssim": 0.926, "consistency": 0.816}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (Modal A10G, blind cal)"},
+            {"rank": 4, "method": "GAP-TV + blind cal",               "public_score": 0.631, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.210, "details": {"public": {"psnr": 24.40, "ssim": 0.764, "consistency": 1.000}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (blind cal, public tier)"},
+            {"rank": 5, "method": "PnP-DnCNN + blind cal",            "public_score": 0.617, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.206, "details": {"public": {"psnr": 23.41, "ssim": 0.772, "consistency": 0.981}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (blind cal, public tier)"},
         ],
     },
 

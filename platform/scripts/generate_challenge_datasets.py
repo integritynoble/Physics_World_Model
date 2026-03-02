@@ -1339,8 +1339,8 @@ def _generate_cassi(cfg: dict, output_dir: Path, data_root: Path | None = None):
 
     Each tier uses different hyperspectral scenes:
       - Public: KAIST 10 scenes (TSA_simu_data/Truth/)
-      - Dev: PnP-CASSI-Dataset crops
-      - Hidden: Pavia University HS (web registry) or generated
+      - Dev: Pavia University HS (web registry) or generated
+      - Hidden: PnP-CASSI-Dataset crops
     """
     if data_root is None:
         data_root = _find_data_root()
