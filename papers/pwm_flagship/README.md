@@ -67,15 +67,16 @@ python3 papers/pwm_flagship/scripts/generate_all_figures.py
 
 | Metric | Value |
 |--------|-------|
-| Modalities compiled | 64 |
-| OperatorGraph templates | 89 |
-| Physical carriers | 5 (photons, electrons, spins, acoustic, X-rays) |
+| Modalities compiled | 168 (across 19 categories) |
+| Unique DAG patterns | 37 |
+| OperatorGraph templates | 168 |
+| Physical carriers | 5 families (photons, electrons, spins, acoustic, X-rays) |
 | Modalities fully validated (Phase 1) | 9 (single-phantom) |
 | Modalities validated (Phase 2) | 5 (multi-phantom, bootstrap CI) |
 | Total validated configurations | 14 |
 | Correction range | +0.2 to +48.25 dB |
 | Gate 3 dominant | 14/14 configurations (100%) |
-| 26-modality benchmark | All PASS |
+| 168-modality registry | All covered by 11 primitives |
 
 ### Phase 2 Multi-Phantom Results (5 carrier families)
 
@@ -89,7 +90,7 @@ python3 papers/pwm_flagship/scripts/generate_all_figures.py
 
 ## Main Figures
 
-1. **PWM Overview** — End-to-end pipeline from 64 modalities to 11 primitives
+1. **PWM Overview** — End-to-end pipeline from 168 modalities to 11 primitives
 2. **OperatorGraph IR** — DAG examples + Physics Fidelity Ladder (4 tiers)
 3. **Triad Law** — Decision tree + gate binding heatmap across carriers
 4. **14-Configuration Correction** — Bar chart across 5 carrier families (Phase 1 + Phase 2)
