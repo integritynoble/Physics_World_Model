@@ -139,7 +139,7 @@ CHALLENGE_CONFIG: dict[str, dict] = {
             {"name": "offset_drift",  "min": -0.02, "max": 0.02, "unit": ""},
         ],
         "noise_model": "poisson_gaussian",
-        "noise_params": {"poisson_alpha": 1.0, "gaussian_sigma": 0.01},
+        "noise_params": {"peak_photon": 10000, "gaussian_sigma_photon": 1.0},
         "scenes": ["kobe", "traffic", "runner", "drop", "crash", "aerial"],
         "scene_count": 6,
         "tiers": {
@@ -147,11 +147,11 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 "true_spec": {
                     "mask_dx": 0.50,
                     "mask_dy": 0.30,
-                    "mask_rotation": 0.15,
-                    "mask_blur": 0.20,
+                    "mask_rotation": 0.10,
+                    "mask_blur": 0.0,
                     "clock_offset": 0.05,
                     "gain_drift": 1.02,
-                    "offset_drift": 0.01,
+                    "offset_drift": 0.002,
                 },
                 "seed": 1001,
                 "visible_data": ["y", "H_ideal", "spec_ranges", "x_true", "true_spec"],

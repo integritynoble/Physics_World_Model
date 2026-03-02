@@ -46,14 +46,22 @@ except ImportError:
 # External repository paths (for original pretrained models)
 # ---------------------------------------------------------------------------
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-_ELP_REPO = "/home/spiritai/ELP-Unfolding-master"
+_ELP_REPO = os.environ.get("ELP_REPO", os.path.join(_PROJECT_ROOT, "repos", "ELP-Unfolding"))
+if not os.path.isdir(_ELP_REPO):
+    _ELP_REPO = "/home/spiritai/ELP-Unfolding-master"
 _ELP_CKPT = os.path.join(_PROJECT_ROOT, "checkpoint", "ELP-Unfolding", "ckptall.pth")
-_ESCI_REPO = "/home/spiritai/EfficientSCI-main"
+_ESCI_REPO = os.environ.get("ESCI_REPO", os.path.join(_PROJECT_ROOT, "repos", "EfficientSCI"))
+if not os.path.isdir(_ESCI_REPO):
+    _ESCI_REPO = "/home/spiritai/EfficientSCI-main"
 _ESCI_CKPT = os.path.join(_PROJECT_ROOT, "checkpoint", "EfficientSCI", "efficientsci_base.pth")
-_FFDNET_PKG = "/home/spiritai/PnP-SCI_python-master/packages"
+_FFDNET_PKG = os.environ.get("FFDNET_PKG", os.path.join(_PROJECT_ROOT, "repos", "PnP-SCI_python", "packages"))
+if not os.path.isdir(_FFDNET_PKG):
+    _FFDNET_PKG = "/home/spiritai/PnP-SCI_python-master/packages"
 _FFDNET_WEIGHTS = os.path.join(_PROJECT_ROOT, "checkpoint", "PnP-SCI", "ffdnet", "net_gray.pth")
 _DNCNN_WEIGHTS = os.path.join(_PROJECT_ROOT, "checkpoint", "DnCNN", "dncnn_25.pth")
-_HISVIT_REPO = "/home/spiritai/HiSViT"
+_HISVIT_REPO = os.environ.get("HISVIT_REPO", os.path.join(_PROJECT_ROOT, "repos", "HiSViT"))
+if not os.path.isdir(_HISVIT_REPO):
+    _HISVIT_REPO = "/home/spiritai/HiSViT"
 _HISVIT9_CKPT = os.path.join(_PROJECT_ROOT, "checkpoint", "HiSViT", "hisvit9_gray.pth")
 _HISVIT13_CKPT = os.path.join(_PROJECT_ROOT, "checkpoint", "HiSViT", "hisvit13_gray.pth")
 
@@ -506,7 +514,7 @@ def efficient_sci_cacti(
 def _resolve_device(device: str) -> str:
     """Resolve device string, preferring GPU when available."""
     if HAS_TORCH and torch.cuda.is_available():
-        if device and device != "cpu":
+        if device and device not in ("cpu", "auto"):
             return device
         return "cuda:0"
     return "cpu"
@@ -546,6 +554,14 @@ def _load_hisvit(device_str: str, blocks: int = 9):
             state_dict = ckpt["state_dict"]
         else:
             state_dict = ckpt
+        # HiSViT has position-dependent attention mask buffers that may differ
+        # in shape from the checkpoint (input-size dependent). Use the model's
+        # own buffers for mismatched shapes (matching original load_checkpoint).
+        model_dict = model.state_dict()
+        for k in list(state_dict.keys()):
+            if k in model_dict and state_dict[k].shape != model_dict[k].shape:
+                logger.info("HiSViT skip %s: ckpt %s vs model %s", k, state_dict[k].shape, model_dict[k].shape)
+                state_dict[k] = model_dict[k]
         model.load_state_dict(state_dict, strict=False)
         model.eval()
         _cached_models[cache_key] = model

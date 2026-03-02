@@ -53,16 +53,16 @@ SPEC_RANGES = [
     {"name": "offset_drift",  "min": -0.02, "max": 0.02, "unit": ""},
 ]
 
-NOISE_PARAMS = {"poisson_peak": 10000, "gaussian_sigma": 5.0}
+NOISE_PARAMS = {"poisson_peak": 10000, "gaussian_sigma": 1.0}
 
 # Mismatch severity by tier:
 #   Public: very mild — expect GAP-TV ~26-28 dB (close to InverseNet paper)
 #   Dev:    moderate  — expect GAP-TV ~24-25 dB
 #   Hidden: harder    — expect GAP-TV ~22-24 dB
 TRUE_SPEC_PUBLIC = {
-    "mask_dx": 0.10, "mask_dy": 0.05, "mask_rotation": 0.03,
-    "mask_blur": 0.05, "clock_offset": 0.02,
-    "gain_drift": 1.01, "offset_drift": 0.005,
+    "mask_dx": 0.50, "mask_dy": 0.30, "mask_rotation": 0.10,
+    "mask_blur": 0.0, "clock_offset": 0.05,
+    "gain_drift": 1.02, "offset_drift": 0.002,
 }
 TRUE_SPEC_DEV = {
     "mask_dx": 0.20, "mask_dy": 0.10, "mask_rotation": 0.08,
@@ -144,6 +144,8 @@ def apply_cacti_mismatch(x, mask, true_spec):
         if blur > 0:
             f = gaussian_filter(f, sigma=blur)
         mm[:, :, t] = f
+    # Binarize warped mask before computing measurement (matching InverseNet paper)
+    mm = (mm > 0.5).astype(np.float64)
     gain, offset = true_spec["gain_drift"], true_spec["offset_drift"]
     y = np.zeros((H, W), dtype=np.float64)
     for t in range(T):
@@ -156,8 +158,8 @@ def add_noise(y, rng):
     """Add Poisson-Gaussian noise matching InverseNet paper noise model.
 
     Scales measurement to peak photon count, applies Poisson shot noise,
-    adds Gaussian read noise, then scales back. This gives ~34 dB measurement
-    SNR (vs ~3 dB with the old alpha=1.0 model).
+    adds Gaussian read noise, then scales back. This gives ~40 dB measurement
+    SNR (peak=10000, sigma=1.0).
     """
     peak = NOISE_PARAMS["poisson_peak"]
     sigma = NOISE_PARAMS["gaussian_sigma"]
@@ -446,8 +448,11 @@ Each group contains T=8 consecutive frames compressed into one snapshot.
 
 Per sample: `y` (256,256), `H_ideal` (256,256,8), `x_true` (256,256,8)
 
-True mismatch: mask_dx=0.50, mask_dy=0.30, mask_rotation=0.15,
-mask_blur=0.20, clock_offset=0.05, gain_drift=1.02, offset_drift=0.01
+True mismatch: mask_dx=0.50, mask_dy=0.30, mask_rotation=0.10,
+mask_blur=0.0, clock_offset=0.05, gain_drift=1.02, offset_drift=0.002
+
+Noise: peak_photon=10000, gaussian_sigma=1.0 (~40 dB measurement SNR)
+Forward model: binarized warped mask (matching InverseNet paper)
 """
 
 DEV_README = """\
