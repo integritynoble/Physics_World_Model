@@ -40,10 +40,11 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "MST-L",       "type": "Transformer",    "mask_aware": True,  "params": "2.03M", "source": "InverseNet"},
     ],
     "cacti": [
-        {"name": "GAP-TV",        "type": "Classical",      "mask_aware": True,  "params": "0",    "source": "InverseNet"},
-        {"name": "PnP-FFDNet",    "type": "PnP",            "mask_aware": True,  "params": "0",    "source": "InverseNet"},
-        {"name": "ELP-Unfolding", "type": "Deep Unfolding", "mask_aware": True,  "params": "1.6M", "source": "InverseNet"},
-        {"name": "EfficientSCI",  "type": "Deep Learning",  "mask_aware": True,  "params": "4.2M", "source": "InverseNet"},
+        {"name": "GAP-TV",        "type": "Classical",      "mask_aware": True,  "params": "0",     "source": "InverseNet"},
+        {"name": "PnP-FFDNet",    "type": "PnP",            "mask_aware": True,  "params": "0",     "source": "InverseNet"},
+        {"name": "ELP-Unfolding", "type": "Deep Unfolding", "mask_aware": True,  "params": "565M",  "source": "ECCV 2022"},
+        {"name": "EfficientSCI",  "type": "Deep Learning",  "mask_aware": True,  "params": "4.2M",  "source": "CVPR 2023"},
+        {"name": "HiSViT-9",      "type": "Transformer",    "mask_aware": True,  "params": "6.2M",  "source": "ECCV 2024"},
     ],
     "spc_block": [
         {"name": "FISTA-TV",   "type": "Classical",      "mask_aware": True,  "params": "0",    "source": "InverseNet"},

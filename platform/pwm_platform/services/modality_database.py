@@ -6683,12 +6683,12 @@ _MODALITY_MISMATCHES: dict[str, dict] = {
         "inversenet_metrics": {
             "best_method": "efficientsci",
             "num_videos": 6,
-            "scenario_i": {"psnr_mean": 35.39, "ssim_mean": 0.9729},
-            "scenario_ii": {"psnr_mean": 14.81, "ssim_mean": 0.3031},
-            "scenario_iii": {"psnr_mean": 27.38, "ssim_mean": 0.9268},
-            "psnr_drop": 20.58,
-            "psnr_recovery": 12.57,
-            "mismatch_params": {"mask_dx": 0.5, "mask_dy": 0.3, "mask_theta": 0.1, "clock_offset": 0.05, "duty_cycle": 0.95, "gain": 1.02},
+            "scenario_i": {"psnr_mean": 33.29, "ssim_mean": 0.9672},
+            "scenario_ii": {"psnr_mean": 15.09, "ssim_mean": 0.3109},
+            "scenario_iii": {"psnr_mean": 27.71, "ssim_mean": 0.9303},
+            "psnr_drop": 18.20,
+            "psnr_recovery": 12.62,
+            "mismatch_params": {"mask_dx": 0.5, "mask_dy": 0.3, "mask_theta": 0.1, "clock_offset": 0.05, "gain": 1.02, "offset": 0.002},
         },
     },
 

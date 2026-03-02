@@ -213,17 +213,41 @@ CHALLENGE_CONFIG: dict[str, dict] = {
             "hidden":  {"generator": "generate_test_scene", "seed_offset": 20000, "type": "simulated"},
         },
         "baselines": {
-            "scenario_ii": [
+            # InverseNet paper reference values (Table 2)
+            "paper_scenario_ii": [
                 {"method": "EfficientSCI",  "psnr": 27.38, "ssim": 0.927},
                 {"method": "ELP-Unfolding", "psnr": 26.50, "ssim": 0.910},
                 {"method": "PnP-FFDNet",    "psnr": 20.15, "ssim": 0.650},
                 {"method": "GAP-TV",        "psnr": 14.81, "ssim": 0.303},
             ],
-            "scenario_iii": [
+            "paper_scenario_iii": [
                 {"method": "EfficientSCI",  "psnr": 35.39, "ssim": 0.973},
                 {"method": "ELP-Unfolding", "psnr": 34.09, "ssim": 0.965},
                 {"method": "PnP-FFDNet",    "psnr": 29.28, "ssim": 0.910},
                 {"method": "GAP-TV",        "psnr": 26.75, "ssim": 0.870},
+            ],
+            # PWM benchmark — actual results on public tier (20 samples, 256×256×8)
+            # Dataset v3.0: paper's exact affine_transform warp, peak_photon=10000
+            "scenario_i": [
+                {"method": "HiSViT-9",      "psnr": 33.69, "ssim": 0.971},
+                {"method": "EfficientSCI",   "psnr": 33.29, "ssim": 0.967},
+                {"method": "ELP-Unfolding",  "psnr": 32.15, "ssim": 0.958},
+                {"method": "PnP-FFDNet",     "psnr": 24.92, "ssim": 0.825},
+                {"method": "GAP-TV",         "psnr": 24.79, "ssim": 0.807},
+            ],
+            "scenario_ii": [
+                {"method": "GAP-TV",         "psnr": 15.88, "ssim": 0.304},
+                {"method": "HiSViT-9",       "psnr": 15.71, "ssim": 0.310},
+                {"method": "ELP-Unfolding",  "psnr": 15.57, "ssim": 0.315},
+                {"method": "EfficientSCI",   "psnr": 15.09, "ssim": 0.311},
+                {"method": "PnP-FFDNet",     "psnr": 11.64, "ssim": 0.229},
+            ],
+            "scenario_iii": [
+                {"method": "ELP-Unfolding",  "psnr": 29.34, "ssim": 0.926},
+                {"method": "EfficientSCI",   "psnr": 27.71, "ssim": 0.930},
+                {"method": "HiSViT-9",       "psnr": 27.62, "ssim": 0.934},
+                {"method": "GAP-TV",         "psnr": 24.40, "ssim": 0.764},
+                {"method": "PnP-FFDNet",     "psnr": 23.41, "ssim": 0.772},
             ],
         },
     },

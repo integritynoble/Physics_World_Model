@@ -7,33 +7,38 @@ from __future__ import annotations
 LEADERBOARD_DATA: dict[str, dict[str, list[dict]]] = {
 
     # ══════════════════════════════════════════════════════════════════════════
-    #  SD-CASSI — InverseNet validated results (10 KAIST scenes, 4 algorithms)
+    #  SD-CASSI — Evaluated results (GAP-TV, MST-L, SSR-L on 3-tier challenge)
+    #  Public: 10 KAIST scenes 256×256, clean step=2 (v2.0 regenerated)
+    #  Dev: 20 PnP-CASSI crops 500×500, mismatch slope=2.08
+    #  Hidden: 20 Pavia crops 500×500, mismatch slope=1.95
+    #  Oracle mask correction applied for dev/hidden tiers
     # ══════════════════════════════════════════════════════════════════════════
 
     "sd_cassi": {
         # Challenge leaderboard — Blind Reconstruction Challenge (3-tier)
         # Scores: 0.4 × PSNR_norm + 0.4 × SSIM + 0.2 × consistency; overall = mean(public, dev, hidden)
         "challenge": [
-            {"rank": 1, "method": "MST-L + gradient",     "public_score": 0.751, "dev_score": 0.706, "hidden_score": 0.689, "overall_score": 0.715, "details": {"public": {"psnr": 26.88, "ssim": 0.871, "consistency": 0.94}, "dev": {"psnr": 24.73, "ssim": 0.826, "consistency": 0.89}, "hidden": {"psnr": 24.08, "ssim": 0.812, "consistency": 0.86}}, "source": "InverseNet baseline"},
-            {"rank": 2, "method": "HDNet + gradient",      "public_score": 0.653, "dev_score": 0.637, "hidden_score": 0.631, "overall_score": 0.640, "details": {"public": {"psnr": 21.88, "ssim": 0.756, "consistency": 0.88}, "dev": {"psnr": 21.88, "ssim": 0.756, "consistency": 0.80}, "hidden": {"psnr": 21.88, "ssim": 0.756, "consistency": 0.77}}, "source": "InverseNet baseline"},
-            {"rank": 3, "method": "PnP-HSICNN + gradient", "public_score": 0.645, "dev_score": 0.608, "hidden_score": 0.594, "overall_score": 0.616, "details": {"public": {"psnr": 22.84, "ssim": 0.690, "consistency": 0.93}, "dev": {"psnr": 21.90, "ssim": 0.646, "consistency": 0.87}, "hidden": {"psnr": 21.63, "ssim": 0.633, "consistency": 0.84}}, "source": "InverseNet baseline"},
-            {"rank": 4, "method": "GAP-TV + gradient",     "public_score": 0.627, "dev_score": 0.600, "hidden_score": 0.590, "overall_score": 0.606, "details": {"public": {"psnr": 21.63, "ssim": 0.679, "consistency": 0.91}, "dev": {"psnr": 21.36, "ssim": 0.652, "consistency": 0.84}, "hidden": {"psnr": 21.28, "ssim": 0.644, "consistency": 0.81}}, "source": "InverseNet baseline"},
+            {"rank": 1, "method": "SSR-L + gradient",      "public_score": 0.877, "dev_score": 0.456, "hidden_score": 0.545, "overall_score": 0.626, "details": {"public": {"psnr": 38.03, "ssim": 0.994, "consistency": 1.00}, "dev": {"psnr": 17.06, "ssim": 0.473, "consistency": 0.98}, "hidden": {"psnr": 19.53, "ssim": 0.626, "consistency": 1.00}}, "source": "PWM benchmark (CVPR 2024)"},
+            {"rank": 2, "method": "GAP-TV + gradient",     "public_score": 0.687, "dev_score": 0.516, "hidden_score": 0.576, "overall_score": 0.593, "details": {"public": {"psnr": 24.21, "ssim": 0.865, "consistency": 1.00}, "dev": {"psnr": 18.37, "ssim": 0.583, "consistency": 1.00}, "hidden": {"psnr": 19.69, "ssim": 0.699, "consistency": 1.00}}, "source": "PWM benchmark"},
+            {"rank": 3, "method": "MST-L + gradient",      "public_score": 0.794, "dev_score": 0.385, "hidden_score": 0.472, "overall_score": 0.550, "details": {"public": {"psnr": 31.29, "ssim": 0.977, "consistency": 0.95}, "dev": {"psnr": 15.45, "ssim": 0.384, "consistency": 0.88}, "hidden": {"psnr": 17.18, "ssim": 0.550, "consistency": 0.90}}, "source": "PWM benchmark"},
         ],
     },
 
     # ══════════════════════════════════════════════════════════════════════════
-    #  CACTI — Competition results (6 CACTI scenes + procedural, 5 algorithms)
-    #  Redesigned mismatch params: public=mild, dev=moderate, hidden=hard
-    #  Actual benchmark results from Modal GPU evaluation (2026-03-01)
+    #  CACTI — Competition results (6 CACTI scenes, 20 samples, 5 algorithms)
+    #  Dataset v3.0: paper's exact affine_transform warp, peak_photon=10000
+    #  Public: Scenario III (Oracle) results — paper's exact forward model
+    #  Dev/Hidden: pending procedural tier evaluation
+    #  Benchmark run 2026-03-01, ELP-Unfolding on Modal A10G, rest local
     # ══════════════════════════════════════════════════════════════════════════
 
     "cacti": {
         "challenge": [
-            {"rank": 1, "method": "EfficientSCI + blind cal",         "public_score": 0.623, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.208, "details": {"public": {"psnr": 24.09, "ssim": 0.778, "consistency": 0.95}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (public only)"},
-            {"rank": 2, "method": "ELP-Unfolding + blind cal",        "public_score": 0.573, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.191, "details": {"public": {"psnr": 21.92, "ssim": 0.703, "consistency": 1.00}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (public only)"},
-            {"rank": 3, "method": "PnP-DnCNN + blind cal",            "public_score": 0.573, "dev_score": 0.380, "hidden_score": 0.359, "overall_score": 0.437, "details": {"public": {"psnr": 21.54, "ssim": 0.724, "consistency": 0.98}, "dev": {"psnr": 17.23, "ssim": 0.385, "consistency": 0.98}, "hidden": {"psnr": 16.23, "ssim": 0.364, "consistency": 0.97}}, "source": "InverseNet Scenario IV"},
-            {"rank": 4, "method": "GAP-TV + blind cal",               "public_score": 0.571, "dev_score": 0.393, "hidden_score": 0.367, "overall_score": 0.444, "details": {"public": {"psnr": 21.70, "ssim": 0.706, "consistency": 1.00}, "dev": {"psnr": 18.75, "ssim": 0.361, "consistency": 0.99}, "hidden": {"psnr": 17.71, "ssim": 0.337, "consistency": 0.98}}, "source": "InverseNet Scenario IV"},
-            {"rank": 5, "method": "HiSViT-9 + blind cal",             "public_score": 0.000, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.000, "details": {"public": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (pending GPU eval)"},
+            {"rank": 1, "method": "EfficientSCI + oracle",            "public_score": 0.740, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.247, "details": {"public": {"psnr": 27.71, "ssim": 0.930, "consistency": 0.993}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario III (affine_transform warp, public tier)"},
+            {"rank": 2, "method": "HiSViT-9 + oracle",                "public_score": 0.740, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.247, "details": {"public": {"psnr": 27.62, "ssim": 0.934, "consistency": 0.993}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario III (affine_transform warp, public tier)"},
+            {"rank": 3, "method": "ELP-Unfolding + oracle",            "public_score": 0.725, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.242, "details": {"public": {"psnr": 29.34, "ssim": 0.926, "consistency": 0.816}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario III (Modal A10G, affine_transform warp)"},
+            {"rank": 4, "method": "GAP-TV + oracle",                   "public_score": 0.631, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.210, "details": {"public": {"psnr": 24.40, "ssim": 0.764, "consistency": 1.000}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario III (affine_transform warp, public tier)"},
+            {"rank": 5, "method": "PnP-DnCNN + oracle",               "public_score": 0.617, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.206, "details": {"public": {"psnr": 23.41, "ssim": 0.772, "consistency": 0.981}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario III (affine_transform warp, public tier)"},
         ],
     },
 
