@@ -30,46 +30,68 @@ Where:
 | Dev    | Procedural (anatomy-inspired) | 256^3  | 20      | 128, 256, 512   | Blind (p+spec) |
 | Hidden | Procedural (adversarial)      | 256^3  | 20      | 128, 256, 512   | Server-only    |
 
-**Public** uses slices/volumes from widely-cited open-access CT datasets.
+**Public** uses slices/volumes from the most recent and widely-cited
+open-access CBCT/CT datasets (AAPM 2017, LIDC-IDRI/ICASSP 2024, CBCTLiTS
+2024, MMDental 2025, CTooth+, 2DeteCT 2023, HTC 2022, Walnut CT/PCCT 2025,
+CQ500, DM4CT 2025).
 
 **Dev/Hidden are generated procedurally** using a computationally intensive
-generator (~1200 lines) that produces phantoms with: multi-scale fBm + Worley
-cellular noise, gyroid/Schwarz-P TPMS surfaces, L-system vascular trees,
-reaction-diffusion Turing patterns, elastic deformation fields, anisotropic
-fiber textures, and SDF-based multi-material compositing. The generator
-code + secret seeds (kept private on PWM servers) fully determine each sample.
+generator (~1700 lines) that produces phantoms explicitly inspired by the
+structural characteristics found in these real CBCT datasets. The generator
+uses multi-scale fBm + Worley cellular noise, gyroid/Schwarz-P TPMS surfaces,
+L-system vascular trees, reaction-diffusion Turing patterns, elastic
+deformation fields, anisotropic fiber textures, and SDF-based multi-material
+compositing. The generator code + secret seeds (kept private on PWM servers)
+fully determine each sample.
+
+## Real Dataset Basis
+
+Dev and hidden phantoms are designed to mimic the types of anatomy, objects,
+and imaging challenges found in recent CBCT/CT benchmark datasets:
+
+| Real Dataset                    | Year | Used In           | Phantom Features Derived From                          |
+|---------------------------------|------|-------------------|--------------------------------------------------------|
+| AAPM Low-Dose CT (Mayo)         | 2017 | Dev + Hidden      | Chest/abdomen anatomy, dose-dependent scatter          |
+| LIDC-IDRI / ICASSP 3D CBCT     | 2024 | Hidden            | Lung nodules, bronchial trees, GGO, alveolar texture   |
+| CBCTLiTS                        | 2024 | Dev + Hidden      | Liver tumors, portal vasculature, organ boundaries     |
+| MMDental / CTooth+              | 2025 | Dev + Hidden      | Dental arch, tooth roots, nerve canals, metal crowns   |
+| 2DeteCT                         | 2023 | Hidden            | Multi-material industrial parts, beam hardening modes  |
+| Helsinki Tomography (HTC)       | 2022 | Dev               | Small-object geometry, limited-angle challenges        |
+| Walnut CT (CWI) / PCCT          | 2025 | Hidden            | Shell micro-structure, gyroid-like porosity patterns    |
+| CQ500                           | 2018 | Dev               | Head anatomy, skull vault, ventricles, hemorrhage       |
+| DM4CT (Synchrotron)             | 2025 | Hidden            | Rock porosity, micro-structure, Turing-like patterns   |
 
 ## Procedural Phantom Types
 
 ### Dev Recipes (anatomy-inspired, medium-to-high complexity)
 
-| ID | Name              | Features                                                    |
-|----|-------------------|-------------------------------------------------------------|
-| 0  | head_cranial      | Skull + cortical folds + ventricles + sinuses + scalp       |
-| 1  | torso_thorax      | Ribs (tori) + spine + lung parenchyma + heart + aorta tree  |
-| 2  | abdomen_organs    | Liver + kidneys + spleen + bowel loops + mesenteric vessels  |
-| 3  | extremity_bone    | Cortex + marrow + 4 muscle bundles (fiber texture) + fat    |
-| 4  | dental_arch       | 16 teeth (enamel/dentin/pulp) + mandible + tongue + nerves  |
-| 5  | pelvis_hip        | Iliac bones + sacrum + femoral heads + bladder + vessels    |
-| 6  | shoulder_complex  | Humerus + glenoid + scapula + clavicle + rotator cuff       |
-| 7  | knee_joint        | Condyles + menisci + cartilage + patella + popliteal tree   |
-| 8  | spine_segment     | 3-4 vertebrae + discs + canal + processes + paraspinal      |
-| 9  | hand_wrist        | 8 carpals + 5 metacarpals + phalanges + tendons + forearm   |
+| ID | Name              | Inspired By                   | Features                                                    |
+|----|-------------------|-------------------------------|-------------------------------------------------------------|
+| 0  | head_cranial      | CQ500                         | Skull + cortical folds + ventricles + sinuses + scalp       |
+| 1  | torso_thorax      | AAPM / ICASSP 2024            | Ribs (tori) + spine + lung parenchyma + heart + aorta tree  |
+| 2  | abdomen_organs    | CBCTLiTS 2024                 | Liver + kidneys + spleen + bowel loops + mesenteric vessels  |
+| 3  | extremity_bone    | LoDoPaB-CT                    | Cortex + marrow + 4 muscle bundles (fiber texture) + fat    |
+| 4  | dental_arch       | MMDental 2025 / CTooth+       | 16 teeth (enamel/dentin/pulp) + mandible + tongue + nerves  |
+| 5  | pelvis_hip        | AAPM Low-Dose CT              | Iliac bones + sacrum + femoral heads + bladder + vessels    |
+| 6  | shoulder_complex  | AAPM Low-Dose CT              | Humerus + glenoid + scapula + clavicle + rotator cuff       |
+| 7  | knee_joint        | LoDoPaB-CT                    | Condyles + menisci + cartilage + patella + popliteal tree   |
+| 8  | spine_segment     | AAPM Low-Dose CT              | 3-4 vertebrae + discs + canal + processes + paraspinal      |
+| 9  | hand_wrist        | HTC 2022                      | 8 carpals + 5 metacarpals + phalanges + tendons + forearm   |
 
 ### Hidden Recipes (adversarial stress-tests, extreme complexity)
 
-| ID | Name                | Features                                                       |
-|----|---------------------|----------------------------------------------------------------|
-| 0  | trabecular_micro    | Gyroid + Schwarz-P + Worley porosity + Haversian canals        |
-| 1  | multi_metal         | Ti prosthesis + screws + plate + wire + amalgam — streaks      |
-| 2  | vascular_tree       | Aorta + veins + portal system (depth-6 branching) + capillary  |
-| 3  | lung_parenchyma     | Bronchial tree + alveolar Worley + nodules + ground-glass      |
-| 4  | fractal_membrane    | Fractal-boundary organs + ultra-thin peritoneal folds          |
-| 5  | gyroid_scaffold     | Multi-scale TPMS metamaterial + Worley cells + dense core      |
-| 6  | dental_metal        | Full dental arch + metal crowns + amalgam + orthodontic wire   |
-| 7  | cardiac_chambers    | LV/RV/atria + coronary tree + valve calcifications             |
-| 8  | multi_contrast      | All materials (air/fat/muscle/bone/metal) + fiber + trabecular |
-| 9  | reaction_diffusion  | Turing-pattern 3D + periodic grid + Worley + metal inclusions  |
+| ID | Name                | Inspired By (extreme)              | Features                                                       |
+|----|---------------------|------------------------------------|----------------------------------------------------------------|
+| 0  | trabecular_micro    | Walnut CT / PCCT 2025              | Gyroid + Schwarz-P + Worley porosity + Haversian canals        |
+| 1  | multi_metal         | AAPM + orthopedic implants         | Ti prosthesis + screws + plate + wire + amalgam — streaks      |
+| 2  | vascular_tree       | CBCTLiTS 2024 portal vasculature   | Aorta + veins + portal system (depth-6 branching) + capillary  |
+| 3  | lung_parenchyma     | LIDC-IDRI / ICASSP 2024 CBCT      | Bronchial tree + alveolar Worley + nodules + ground-glass      |
+| 4  | fractal_membrane    | CBCTLiTS 2024 organ boundaries     | Fractal-boundary organs + ultra-thin peritoneal folds          |
+| 5  | gyroid_scaffold     | 2DeteCT 2023 / DM4CT 2025         | Multi-scale TPMS metamaterial + Worley cells + dense core      |
+| 6  | dental_metal        | MMDental 2025 / CTooth+ extreme    | Full dental arch + metal crowns + amalgam + orthodontic wire   |
+| 7  | cardiac_chambers    | AAPM cardiac anatomy               | LV/RV/atria + coronary tree + valve calcifications             |
+| 8  | multi_contrast      | 2DeteCT 2023 multi-beam modes      | All materials (air/fat/muscle/bone/metal) + fiber + trabecular |
+| 9  | reaction_diffusion  | DM4CT 2025 complex microstructure  | Turing-pattern 3D + periodic grid + Worley + metal inclusions  |
 
 ## Computational Complexity per Phantom
 
@@ -133,11 +155,24 @@ Score = 0.4 x PSNR_norm + 0.4 x SSIM + 0.2 x Consistency
 
 ## References
 
+### Public Tier Source Datasets
+
+- McCollough, C.H. et al. "Low-dose CT for the detection and classification of metastatic liver lesions." Med. Phys. 2017. (AAPM Mayo)
+- Armato, S.G. et al. "The LIDC-IDRI Lung Image Database." Med. Image Anal. 2011. (LIDC-IDRI)
+- Zhang, Y. et al. "ICASSP 2024 3D CBCT Reconstruction Challenge." ICASSP 2024. (LIDC-IDRI CBCT sinograms via ASTRA toolbox)
+- Huo, Y. et al. "CBCTLiTS: Synthetic CBCT/CT paired dataset from LiTS." 2024. (201 paired CBCT/CT, 5 quality levels)
+- Feng, X. et al. "MMDental: A multi-modal dental dataset with 3D CBCT." Med. Image Anal. 2025. (660 patients)
+- Cui, Z. et al. "CTooth+: A large-scale dental CBCT dataset for tooth segmentation." 2022. (22+146 volumes)
+- Coban, S.B. et al. "2DeteCT — A large 2D expandable, trainable, experimental CT dataset." Sci. Data 2023. (5000 slices, 3 beam modes)
+- Meaney, A. et al. "Helsinki Tomography Challenge 2022." arXiv 2212.07671. (7 difficulty levels)
+- Der Sarkissian, H. et al. "A cone-beam X-ray CT data collection designed for ML." Sci. Data 2019. (Walnut CT)
+- Bauer, F. et al. "Cone-beam photon-counting CT dataset." Sci. Data 2025. (15 walnuts, dual energy, 172,800 projections)
+- Chilamkurthy, S. et al. "CQ500: Development and validation of deep learning algorithms for head CT." 2018. (491 head CTs)
+- Shao, J. et al. "DM4CT: A diffusion model benchmark for CT reconstruction." 2025. (Synchrotron rock samples, 10 diffusion methods)
+- Leuschner, J. et al. "LoDoPaB-CT, a benchmark dataset for low-dose CT." Sci. Data 2021.
+
+### Methodology
+
 - Feldkamp, L.A., Davis, L.C., Kress, J.W. "Practical cone-beam algorithm." JOSA A 1984.
 - Buzug, T.M. "Computed Tomography." Springer 2008.
-- McCollough, C.H. et al. "Low-dose CT for the detection and classification of metastatic liver lesions: Results of the 2016 Low Dose CT Grand Challenge." Med. Phys. 2017.
-- Coban, S.B. et al. "2DeteCT — A large 2D expandable, trainable, experimental CT dataset." Sci. Data 2023.
-- Meaney, A. et al. "Helsinki Tomography Challenge 2022." arXiv 2212.07671.
-- Leuschner, J. et al. "LoDoPaB-CT, a benchmark dataset for low-dose CT." Sci. Data 2021.
-- Der Sarkissian, H. et al. "A cone-beam X-ray CT data collection designed for ML." Sci. Data 2019. (Walnut CT)
 - PWM Benchmark: https://pwm.platformai.org/benchmark/cbct

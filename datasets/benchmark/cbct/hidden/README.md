@@ -3,35 +3,55 @@
 Server-side evaluation only. 20 procedurally generated phantoms at 256^3,
 N_views in {128, 256, 512}. Strongest mismatch. Never leaves PWM servers.
 
-Hidden-tier phantoms use the most computationally intensive generation:
+Hidden-tier phantoms are extreme stress-test versions of real CBCT dataset
+characteristics. They push reconstruction algorithms to breaking point using
 reaction-diffusion PDE solvers, gyroid/Schwarz-P TPMS surfaces, depth-6
 L-system vascular trees, Worley noise with 300 seed points, fractal
 boundary perturbation, and extreme multi-material dynamic range.
 
+## Dataset Inspirations (Adversarial)
+
+Hidden recipes take the most challenging features from recent CBCT datasets
+and amplify them to create adversarial phantoms that stress-test every aspect
+of reconstruction.
+
+| Recipe              | Inspired By (extreme)                    | Adversarial Feature                               |
+|---------------------|------------------------------------------|----------------------------------------------------|
+| trabecular_micro    | Walnut CT / PCCT 2025                    | Gyroid + Schwarz-P + Worley porosity like walnut shell micro-structure |
+| multi_metal         | AAPM Low-Dose CT + orthopedic implants   | Ti prosthesis + screws + plate + wire — extreme streaks |
+| vascular_tree       | CBCTLiTS 2024 portal vasculature         | Depth-6 arterial + venous + portal + capillary bed  |
+| lung_parenchyma     | LIDC-IDRI / ICASSP 2024 CBCT Challenge   | Bronchial tree + alveolar Worley + nodules + GGO    |
+| fractal_membrane    | CBCTLiTS 2024 organ boundaries           | Fractal-boundary organs + thin peritoneal folds     |
+| gyroid_scaffold     | 2DeteCT 2023 industrial + DM4CT 2025     | Multi-scale TPMS metamaterial + Worley cells + dense core |
+| dental_metal        | MMDental 2025 / CTooth+ extreme          | Full dental arch + metal crowns + amalgam + ortho wire |
+| cardiac_chambers    | AAPM Low-Dose CT cardiac                 | LV/RV/atria + coronary tree + calcifications        |
+| multi_contrast      | 2DeteCT 2023 multi-beam modes            | All materials (air/fat/muscle/bone/metal) stacked   |
+| reaction_diffusion  | DM4CT 2025 complex microstructure        | Turing-pattern 3D + periodic grid + Worley + metal  |
+
 ## Samples
 
-| #  | Recipe              | N_views | Difficulty | Key Features                                       |
-|----|---------------------|---------|------------|----------------------------------------------------|
-| 00 | trabecular_micro    | 128     | hard       | Gyroid + Schwarz-P + Worley porosity + canals      |
-| 01 | multi_metal         | 128     | hard       | Ti prosthesis + screws + plate + wire + amalgam    |
-| 02 | vascular_tree       | 128     | hard       | Depth-6 arterial + venous + portal + capillary bed |
-| 03 | lung_parenchyma     | 128     | hard       | Bronchial tree + alveolar Worley + nodules + GGO   |
-| 04 | fractal_membrane    | 256     | hard       | Fractal-boundary organs + thin peritoneal folds    |
-| 05 | gyroid_scaffold     | 128     | hard       | Multi-scale TPMS + Worley + dense core             |
-| 06 | dental_metal        | 256     | hard       | Dental arch + metal crowns + amalgam + ortho wire  |
-| 07 | cardiac_chambers    | 128     | hard       | LV/RV/atria + coronary tree + calcifications       |
-| 08 | multi_contrast      | 256     | hard       | All materials: air/fat/muscle/bone/metal stacked   |
-| 09 | reaction_diffusion  | 128     | extreme    | Turing patterns + periodic grid + Worley + metal   |
-| 10 | trabecular_micro    | 256     | hard       | Gyroid trabecular (different seed, more views)     |
-| 11 | multi_metal         | 256     | hard       | Multiple metal types (different seed)              |
-| 12 | vascular_tree       | 512     | hard       | Full vascular anatomy (different seed)             |
-| 13 | lung_parenchyma     | 256     | hard       | Lung with nodules (different seed)                 |
-| 14 | fractal_membrane    | 512     | hard       | Fractal organs (different seed)                    |
-| 15 | gyroid_scaffold     | 256     | hard       | TPMS metamaterial (different seed)                 |
-| 16 | dental_metal        | 128     | extreme    | Sparse-view dental metal — worst case              |
-| 17 | cardiac_chambers    | 512     | hard       | Cardiac anatomy (different seed)                   |
-| 18 | multi_contrast      | 128     | extreme    | Sparse-view extreme dynamic range                  |
-| 19 | reaction_diffusion  | 256     | extreme    | Turing patterns (different seed)                   |
+| #  | Recipe              | Inspired By             | N_views | Difficulty | Key Features                                       |
+|----|---------------------|-------------------------|---------|------------|----------------------------------------------------|
+| 00 | trabecular_micro    | Walnut CT/PCCT          | 128     | hard       | Gyroid + Schwarz-P + Worley porosity + canals      |
+| 01 | multi_metal         | AAPM + ortho implants   | 128     | hard       | Ti prosthesis + screws + plate + wire + amalgam    |
+| 02 | vascular_tree       | CBCTLiTS 2024           | 128     | hard       | Depth-6 arterial + venous + portal + capillary bed |
+| 03 | lung_parenchyma     | LIDC/ICASSP 2024        | 128     | hard       | Bronchial tree + alveolar Worley + nodules + GGO   |
+| 04 | fractal_membrane    | CBCTLiTS 2024           | 256     | hard       | Fractal-boundary organs + thin peritoneal folds    |
+| 05 | gyroid_scaffold     | 2DeteCT/DM4CT 2025      | 128     | hard       | Multi-scale TPMS + Worley + dense core             |
+| 06 | dental_metal        | MMDental/CTooth+        | 256     | hard       | Dental arch + metal crowns + amalgam + ortho wire  |
+| 07 | cardiac_chambers    | AAPM cardiac            | 128     | hard       | LV/RV/atria + coronary tree + calcifications       |
+| 08 | multi_contrast      | 2DeteCT multi-beam      | 256     | hard       | All materials: air/fat/muscle/bone/metal stacked   |
+| 09 | reaction_diffusion  | DM4CT 2025              | 128     | extreme    | Turing patterns + periodic grid + Worley + metal   |
+| 10 | trabecular_micro    | Walnut CT/PCCT          | 256     | hard       | Gyroid trabecular (different seed, more views)     |
+| 11 | multi_metal         | AAPM + ortho implants   | 256     | hard       | Multiple metal types (different seed)              |
+| 12 | vascular_tree       | CBCTLiTS 2024           | 512     | hard       | Full vascular anatomy (different seed)             |
+| 13 | lung_parenchyma     | LIDC/ICASSP 2024        | 256     | hard       | Lung with nodules (different seed)                 |
+| 14 | fractal_membrane    | CBCTLiTS 2024           | 512     | hard       | Fractal organs (different seed)                    |
+| 15 | gyroid_scaffold     | 2DeteCT/DM4CT 2025      | 256     | hard       | TPMS metamaterial (different seed)                 |
+| 16 | dental_metal        | MMDental/CTooth+        | 128     | extreme    | Sparse-view dental metal — worst case              |
+| 17 | cardiac_chambers    | AAPM cardiac            | 512     | hard       | Cardiac anatomy (different seed)                   |
+| 18 | multi_contrast      | 2DeteCT multi-beam      | 128     | extreme    | Sparse-view extreme dynamic range                  |
+| 19 | reaction_diffusion  | DM4CT 2025              | 256     | extreme    | Turing patterns (different seed)                   |
 
 ## Computational Cost per Sample
 
