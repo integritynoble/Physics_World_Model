@@ -1,0 +1,452 @@
+{
+  "modality": "cbct",
+  "geometry": "parallel_beam_with_detector_offset",
+  "n_phantoms": 5,
+  "phantom_size": 128,
+  "n_angles": 360,
+  "offset_levels": [
+    2,
+    5,
+    10,
+    15,
+    20
+  ],
+  "calibration_range": [
+    -25.0,
+    25.0
+  ],
+  "calibration_steps": 51,
+  "per_phantom": [
+    {
+      "phantom_name": "shepp_logan",
+      "offsets": [
+        {
+          "detector_offset_px": 2,
+          "psnr_I": 13.7905,
+          "psnr_II": 11.1521,
+          "psnr_III": 13.7905,
+          "ssim_I": 0.4417,
+          "ssim_II": 0.3182,
+          "ssim_III": 0.4417,
+          "delta_psnr_db": 2.6384,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 2.0,
+          "cal_time_s": 24.28
+        },
+        {
+          "detector_offset_px": 5,
+          "psnr_I": 13.7905,
+          "psnr_II": 9.8499,
+          "psnr_III": 13.7905,
+          "ssim_I": 0.4417,
+          "ssim_II": 0.2689,
+          "ssim_III": 0.4417,
+          "delta_psnr_db": 3.9406,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 5.0,
+          "cal_time_s": 21.4
+        },
+        {
+          "detector_offset_px": 10,
+          "psnr_I": 12.7438,
+          "psnr_II": 8.9052,
+          "psnr_III": 12.7438,
+          "ssim_I": 0.4134,
+          "ssim_II": 0.2081,
+          "ssim_III": 0.4134,
+          "delta_psnr_db": 3.8386,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 10.0,
+          "cal_time_s": 14.71
+        },
+        {
+          "detector_offset_px": 15,
+          "psnr_I": 11.6118,
+          "psnr_II": 8.4346,
+          "psnr_III": 11.6118,
+          "ssim_I": 0.3716,
+          "ssim_II": 0.1487,
+          "ssim_III": 0.3716,
+          "delta_psnr_db": 3.1772,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 15.0,
+          "cal_time_s": 14.78
+        },
+        {
+          "detector_offset_px": 20,
+          "psnr_I": 10.6437,
+          "psnr_II": 8.1637,
+          "psnr_III": 10.6437,
+          "ssim_I": 0.3148,
+          "ssim_II": 0.0895,
+          "ssim_III": 0.3148,
+          "delta_psnr_db": 2.48,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 20.0,
+          "cal_time_s": 15.01
+        }
+      ]
+    },
+    {
+      "phantom_name": "thorax",
+      "offsets": [
+        {
+          "detector_offset_px": 2,
+          "psnr_I": 21.523,
+          "psnr_II": 18.6085,
+          "psnr_III": 21.523,
+          "ssim_I": 0.383,
+          "ssim_II": 0.2228,
+          "ssim_III": 0.383,
+          "delta_psnr_db": 2.9144,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 2.0,
+          "cal_time_s": 14.62
+        },
+        {
+          "detector_offset_px": 5,
+          "psnr_I": 21.523,
+          "psnr_II": 16.1104,
+          "psnr_III": 21.523,
+          "ssim_I": 0.383,
+          "ssim_II": 0.104,
+          "ssim_III": 0.383,
+          "delta_psnr_db": 5.4126,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 5.0,
+          "cal_time_s": 14.47
+        },
+        {
+          "detector_offset_px": 10,
+          "psnr_I": 21.5233,
+          "psnr_II": 14.6414,
+          "psnr_III": 21.5233,
+          "ssim_I": 0.383,
+          "ssim_II": 0.1383,
+          "ssim_III": 0.383,
+          "delta_psnr_db": 6.882,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 10.0,
+          "cal_time_s": 15.14
+        },
+        {
+          "detector_offset_px": 15,
+          "psnr_I": 20.5804,
+          "psnr_II": 14.2979,
+          "psnr_III": 20.5804,
+          "ssim_I": 0.3499,
+          "ssim_II": 0.1777,
+          "ssim_III": 0.3499,
+          "delta_psnr_db": 6.2824,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 15.0,
+          "cal_time_s": 23.61
+        },
+        {
+          "detector_offset_px": 20,
+          "psnr_I": 19.0184,
+          "psnr_II": 14.1988,
+          "psnr_III": 19.0184,
+          "ssim_I": 0.3113,
+          "ssim_II": 0.2057,
+          "ssim_III": 0.3113,
+          "delta_psnr_db": 4.8196,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 20.0,
+          "cal_time_s": 23.14
+        }
+      ]
+    },
+    {
+      "phantom_name": "abdomen",
+      "offsets": [
+        {
+          "detector_offset_px": 2,
+          "psnr_I": 18.5644,
+          "psnr_II": 16.9193,
+          "psnr_III": 18.5644,
+          "ssim_I": 0.3712,
+          "ssim_II": 0.2331,
+          "ssim_III": 0.3712,
+          "delta_psnr_db": 1.6451,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 2.0,
+          "cal_time_s": 23.63
+        },
+        {
+          "detector_offset_px": 5,
+          "psnr_I": 18.5644,
+          "psnr_II": 14.9842,
+          "psnr_III": 18.5644,
+          "ssim_I": 0.3712,
+          "ssim_II": 0.1279,
+          "ssim_III": 0.3712,
+          "delta_psnr_db": 3.5802,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 5.0,
+          "cal_time_s": 22.38
+        },
+        {
+          "detector_offset_px": 10,
+          "psnr_I": 18.5644,
+          "psnr_II": 13.3567,
+          "psnr_III": 18.5644,
+          "ssim_I": 0.3713,
+          "ssim_II": 0.07,
+          "ssim_III": 0.3713,
+          "delta_psnr_db": 5.2077,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 10.0,
+          "cal_time_s": 20.56
+        },
+        {
+          "detector_offset_px": 15,
+          "psnr_I": 18.1738,
+          "psnr_II": 12.6659,
+          "psnr_III": 18.1738,
+          "ssim_I": 0.3466,
+          "ssim_II": 0.0815,
+          "ssim_III": 0.3466,
+          "delta_psnr_db": 5.5079,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 15.0,
+          "cal_time_s": 14.74
+        },
+        {
+          "detector_offset_px": 20,
+          "psnr_I": 17.3224,
+          "psnr_II": 12.2323,
+          "psnr_III": 17.3224,
+          "ssim_I": 0.2969,
+          "ssim_II": 0.1,
+          "ssim_III": 0.2969,
+          "delta_psnr_db": 5.0901,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 20.0,
+          "cal_time_s": 14.67
+        }
+      ]
+    },
+    {
+      "phantom_name": "pelvis",
+      "offsets": [
+        {
+          "detector_offset_px": 2,
+          "psnr_I": 18.7224,
+          "psnr_II": 16.127,
+          "psnr_III": 18.7224,
+          "ssim_I": 0.3237,
+          "ssim_II": 0.178,
+          "ssim_III": 0.3237,
+          "delta_psnr_db": 2.5955,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 2.0,
+          "cal_time_s": 14.39
+        },
+        {
+          "detector_offset_px": 5,
+          "psnr_I": 18.7224,
+          "psnr_II": 13.7203,
+          "psnr_III": 18.7224,
+          "ssim_I": 0.3237,
+          "ssim_II": 0.0897,
+          "ssim_III": 0.3237,
+          "delta_psnr_db": 5.0022,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 5.0,
+          "cal_time_s": 14.89
+        },
+        {
+          "detector_offset_px": 10,
+          "psnr_I": 18.7224,
+          "psnr_II": 11.9679,
+          "psnr_III": 18.7224,
+          "ssim_I": 0.3237,
+          "ssim_II": 0.0991,
+          "ssim_III": 0.3237,
+          "delta_psnr_db": 6.7546,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 10.0,
+          "cal_time_s": 14.75
+        },
+        {
+          "detector_offset_px": 15,
+          "psnr_I": 18.6583,
+          "psnr_II": 11.0412,
+          "psnr_III": 18.6583,
+          "ssim_I": 0.3194,
+          "ssim_II": 0.1284,
+          "ssim_III": 0.3194,
+          "delta_psnr_db": 7.6171,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 15.0,
+          "cal_time_s": 14.71
+        },
+        {
+          "detector_offset_px": 20,
+          "psnr_I": 18.0828,
+          "psnr_II": 10.6444,
+          "psnr_III": 18.0828,
+          "ssim_I": 0.2934,
+          "ssim_II": 0.19,
+          "ssim_III": 0.2934,
+          "delta_psnr_db": 7.4383,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 20.0,
+          "cal_time_s": 14.64
+        }
+      ]
+    },
+    {
+      "phantom_name": "dental",
+      "offsets": [
+        {
+          "detector_offset_px": 2,
+          "psnr_I": 28.7507,
+          "psnr_II": 22.9375,
+          "psnr_III": 28.7507,
+          "ssim_I": 0.2935,
+          "ssim_II": 0.229,
+          "ssim_III": 0.2935,
+          "delta_psnr_db": 5.8132,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 2.0,
+          "cal_time_s": 17.24
+        },
+        {
+          "detector_offset_px": 5,
+          "psnr_I": 28.7507,
+          "psnr_II": 20.1011,
+          "psnr_III": 28.7507,
+          "ssim_I": 0.2935,
+          "ssim_II": 0.2578,
+          "ssim_III": 0.2935,
+          "delta_psnr_db": 8.6495,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 5.0,
+          "cal_time_s": 18.51
+        },
+        {
+          "detector_offset_px": 10,
+          "psnr_I": 28.7507,
+          "psnr_II": 18.7987,
+          "psnr_III": 28.7507,
+          "ssim_I": 0.2935,
+          "ssim_II": 0.3867,
+          "ssim_III": 0.2935,
+          "delta_psnr_db": 9.952,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 10.0,
+          "cal_time_s": 18.16
+        },
+        {
+          "detector_offset_px": 15,
+          "psnr_I": 28.7507,
+          "psnr_II": 18.389,
+          "psnr_III": 28.7507,
+          "ssim_I": 0.2935,
+          "ssim_II": 0.5656,
+          "ssim_III": 0.2935,
+          "delta_psnr_db": 10.3616,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 15.0,
+          "cal_time_s": 18.62
+        },
+        {
+          "detector_offset_px": 20,
+          "psnr_I": 28.7507,
+          "psnr_II": 18.3294,
+          "psnr_III": 28.7507,
+          "ssim_I": 0.2935,
+          "ssim_II": 0.6449,
+          "ssim_III": 0.2935,
+          "delta_psnr_db": 10.4213,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 20.0,
+          "cal_time_s": 18.5
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "per_offset": [
+      {
+        "detector_offset_px": 2,
+        "mean_delta_psnr": 3.1213,
+        "std_delta_psnr": 1.4127,
+        "ci95_delta_psnr": [
+          2.0976,
+          4.5433
+        ],
+        "mean_recovery": 1.0,
+        "ci95_recovery": [
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "detector_offset_px": 5,
+        "mean_delta_psnr": 5.317,
+        "std_delta_psnr": 1.7958,
+        "ci95_delta_psnr": [
+          4.0088,
+          6.9883
+        ],
+        "mean_recovery": 1.0,
+        "ci95_recovery": [
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "detector_offset_px": 10,
+        "mean_delta_psnr": 6.527,
+        "std_delta_psnr": 2.0434,
+        "ci95_delta_psnr": [
+          4.7211,
+          8.3637
+        ],
+        "mean_recovery": 1.0,
+        "ci95_recovery": [
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "detector_offset_px": 15,
+        "mean_delta_psnr": 6.5892,
+        "std_delta_psnr": 2.3746,
+        "ci95_delta_psnr": [
+          4.5756,
+          8.7149
+        ],
+        "mean_recovery": 1.0,
+        "ci95_recovery": [
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "detector_offset_px": 20,
+        "mean_delta_psnr": 6.0499,
+        "std_delta_psnr": 2.6913,
+        "ci95_delta_psnr": [
+          3.9365,
+          8.2377
+        ],
+        "mean_recovery": 1.0,
+        "ci95_recovery": [
+          1.0,
+          1.0
+        ]
+      }
+    ]
+  },
+  "key_findings": {
+    "carrier": "x_ray",
+    "gate3_parameter": "detector_offset",
+    "gate3_dominance": true,
+    "monotonic_degradation": true,
+    "clinical_relevance": "Detector offset calibration is critical for CBCT in dental imaging, image-guided radiotherapy, and interventional procedures"
+  }
+}

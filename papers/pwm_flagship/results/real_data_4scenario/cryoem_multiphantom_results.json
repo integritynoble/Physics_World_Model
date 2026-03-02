@@ -1,0 +1,505 @@
+{
+  "modality": "cryo_em",
+  "n_phantoms": 5,
+  "image_size": 128,
+  "true_defocus_nm": -2000.0,
+  "Cs_mm": 2.0,
+  "B_factor": 2.0,
+  "ice_thickness_nm": 50.0,
+  "pixel_size_nm": 0.1,
+  "noise_sigma": 0.05,
+  "wiener_snr": 50.0,
+  "per_phantom": [
+    {
+      "phantom_name": "protein_rings",
+      "psnr_I": 14.967,
+      "ssim_I": 0.0607,
+      "offsets": [
+        {
+          "defocus_error_nm": 50.0,
+          "wrong_defocus_nm": -1950.0,
+          "psnr_I": 14.967,
+          "psnr_II": 14.9451,
+          "psnr_III": 14.967,
+          "ssim_I": 0.0607,
+          "ssim_II": 0.0604,
+          "ssim_III": 0.0607,
+          "delta_psnr_db": 0.0219,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.08
+        },
+        {
+          "defocus_error_nm": 100.0,
+          "wrong_defocus_nm": -1900.0,
+          "psnr_I": 14.967,
+          "psnr_II": 14.7444,
+          "psnr_III": 14.967,
+          "ssim_I": 0.0607,
+          "ssim_II": 0.0697,
+          "ssim_III": 0.0607,
+          "delta_psnr_db": 0.2225,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.15
+        },
+        {
+          "defocus_error_nm": 200.0,
+          "wrong_defocus_nm": -1800.0,
+          "psnr_I": 14.967,
+          "psnr_II": 14.4246,
+          "psnr_III": 14.967,
+          "ssim_I": 0.0607,
+          "ssim_II": 0.0802,
+          "ssim_III": 0.0607,
+          "delta_psnr_db": 0.5424,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.08
+        },
+        {
+          "defocus_error_nm": 500.0,
+          "wrong_defocus_nm": -1500.0,
+          "psnr_I": 14.967,
+          "psnr_II": 12.2831,
+          "psnr_III": 14.967,
+          "ssim_I": 0.0607,
+          "ssim_II": 0.0589,
+          "ssim_III": 0.0607,
+          "delta_psnr_db": 2.6839,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.07
+        },
+        {
+          "defocus_error_nm": 1000.0,
+          "wrong_defocus_nm": -1000.0,
+          "psnr_I": 14.967,
+          "psnr_II": 11.6671,
+          "psnr_III": 14.967,
+          "ssim_I": 0.0607,
+          "ssim_II": 0.069,
+          "ssim_III": 0.0607,
+          "delta_psnr_db": 3.2999,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.06
+        }
+      ]
+    },
+    {
+      "phantom_name": "helical_filament",
+      "psnr_I": 20.4289,
+      "ssim_I": 0.1751,
+      "offsets": [
+        {
+          "defocus_error_nm": 50.0,
+          "wrong_defocus_nm": -1950.0,
+          "psnr_I": 20.4289,
+          "psnr_II": 20.4057,
+          "psnr_III": 20.4289,
+          "ssim_I": 0.1751,
+          "ssim_II": 0.1815,
+          "ssim_III": 0.1751,
+          "delta_psnr_db": 0.0233,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.11
+        },
+        {
+          "defocus_error_nm": 100.0,
+          "wrong_defocus_nm": -1900.0,
+          "psnr_I": 20.4289,
+          "psnr_II": 20.2544,
+          "psnr_III": 20.4289,
+          "ssim_I": 0.1751,
+          "ssim_II": 0.1742,
+          "ssim_III": 0.1751,
+          "delta_psnr_db": 0.1746,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.11
+        },
+        {
+          "defocus_error_nm": 200.0,
+          "wrong_defocus_nm": -1800.0,
+          "psnr_I": 20.4289,
+          "psnr_II": 19.4505,
+          "psnr_III": 20.4289,
+          "ssim_I": 0.1751,
+          "ssim_II": 0.1169,
+          "ssim_III": 0.1751,
+          "delta_psnr_db": 0.9784,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.07
+        },
+        {
+          "defocus_error_nm": 500.0,
+          "wrong_defocus_nm": -1500.0,
+          "psnr_I": 20.4289,
+          "psnr_II": 18.123,
+          "psnr_III": 20.4289,
+          "ssim_I": 0.1751,
+          "ssim_II": 0.075,
+          "ssim_III": 0.1751,
+          "delta_psnr_db": 2.306,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.08
+        },
+        {
+          "defocus_error_nm": 1000.0,
+          "wrong_defocus_nm": -1000.0,
+          "psnr_I": 20.4289,
+          "psnr_II": 16.7308,
+          "psnr_III": 20.4289,
+          "ssim_I": 0.1751,
+          "ssim_II": 0.1528,
+          "ssim_III": 0.1751,
+          "delta_psnr_db": 3.6982,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.07
+        }
+      ]
+    },
+    {
+      "phantom_name": "ribosome",
+      "psnr_I": 21.0535,
+      "ssim_I": -0.147,
+      "offsets": [
+        {
+          "defocus_error_nm": 50.0,
+          "wrong_defocus_nm": -1950.0,
+          "psnr_I": 21.0535,
+          "psnr_II": 21.0121,
+          "psnr_III": 21.0553,
+          "ssim_I": -0.147,
+          "ssim_II": -0.1369,
+          "ssim_III": -0.1416,
+          "delta_psnr_db": 0.0413,
+          "recovery_ratio": 1.0458,
+          "calibrated_defocus_nm": -2050.0,
+          "defocus_est_error_nm": 50.0,
+          "cal_time_s": 0.13
+        },
+        {
+          "defocus_error_nm": 100.0,
+          "wrong_defocus_nm": -1900.0,
+          "psnr_I": 21.0535,
+          "psnr_II": 20.9012,
+          "psnr_III": 21.0553,
+          "ssim_I": -0.147,
+          "ssim_II": -0.1185,
+          "ssim_III": -0.1416,
+          "delta_psnr_db": 0.1522,
+          "recovery_ratio": 1.0124,
+          "calibrated_defocus_nm": -2050.0,
+          "defocus_est_error_nm": 50.0,
+          "cal_time_s": 0.07
+        },
+        {
+          "defocus_error_nm": 200.0,
+          "wrong_defocus_nm": -1800.0,
+          "psnr_I": 21.0535,
+          "psnr_II": 20.6988,
+          "psnr_III": 21.0553,
+          "ssim_I": -0.147,
+          "ssim_II": -0.0942,
+          "ssim_III": -0.1416,
+          "delta_psnr_db": 0.3547,
+          "recovery_ratio": 1.0053,
+          "calibrated_defocus_nm": -2050.0,
+          "defocus_est_error_nm": 50.0,
+          "cal_time_s": 0.06
+        },
+        {
+          "defocus_error_nm": 500.0,
+          "wrong_defocus_nm": -1500.0,
+          "psnr_I": 21.0535,
+          "psnr_II": 19.7396,
+          "psnr_III": 21.0553,
+          "ssim_I": -0.147,
+          "ssim_II": -0.0307,
+          "ssim_III": -0.1416,
+          "delta_psnr_db": 1.3139,
+          "recovery_ratio": 1.0014,
+          "calibrated_defocus_nm": -2050.0,
+          "defocus_est_error_nm": 50.0,
+          "cal_time_s": 0.06
+        },
+        {
+          "defocus_error_nm": 1000.0,
+          "wrong_defocus_nm": -1000.0,
+          "psnr_I": 21.0535,
+          "psnr_II": 18.9769,
+          "psnr_III": 21.0553,
+          "ssim_I": -0.147,
+          "ssim_II": -0.0729,
+          "ssim_III": -0.1416,
+          "delta_psnr_db": 2.0766,
+          "recovery_ratio": 1.0009,
+          "calibrated_defocus_nm": -2050.0,
+          "defocus_est_error_nm": 50.0,
+          "cal_time_s": 0.07
+        }
+      ]
+    },
+    {
+      "phantom_name": "membrane_protein",
+      "psnr_I": 19.7478,
+      "ssim_I": 0.0617,
+      "offsets": [
+        {
+          "defocus_error_nm": 50.0,
+          "wrong_defocus_nm": -1950.0,
+          "psnr_I": 19.7478,
+          "psnr_II": 19.6767,
+          "psnr_III": 19.7478,
+          "ssim_I": 0.0617,
+          "ssim_II": 0.0529,
+          "ssim_III": 0.0617,
+          "delta_psnr_db": 0.0711,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.08
+        },
+        {
+          "defocus_error_nm": 100.0,
+          "wrong_defocus_nm": -1900.0,
+          "psnr_I": 19.7478,
+          "psnr_II": 19.5521,
+          "psnr_III": 19.7478,
+          "ssim_I": 0.0617,
+          "ssim_II": 0.0323,
+          "ssim_III": 0.0617,
+          "delta_psnr_db": 0.1957,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.06
+        },
+        {
+          "defocus_error_nm": 200.0,
+          "wrong_defocus_nm": -1800.0,
+          "psnr_I": 19.7478,
+          "psnr_II": 19.4317,
+          "psnr_III": 19.7478,
+          "ssim_I": 0.0617,
+          "ssim_II": 0.0136,
+          "ssim_III": 0.0617,
+          "delta_psnr_db": 0.3162,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.06
+        },
+        {
+          "defocus_error_nm": 500.0,
+          "wrong_defocus_nm": -1500.0,
+          "psnr_I": 19.7478,
+          "psnr_II": 18.324,
+          "psnr_III": 19.7478,
+          "ssim_I": 0.0617,
+          "ssim_II": 0.0076,
+          "ssim_III": 0.0617,
+          "delta_psnr_db": 1.4238,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.05
+        },
+        {
+          "defocus_error_nm": 1000.0,
+          "wrong_defocus_nm": -1000.0,
+          "psnr_I": 19.7478,
+          "psnr_II": 17.6837,
+          "psnr_III": 19.7478,
+          "ssim_I": 0.0617,
+          "ssim_II": 0.0348,
+          "ssim_III": 0.0617,
+          "delta_psnr_db": 2.0641,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.06
+        }
+      ]
+    },
+    {
+      "phantom_name": "virus_capsid",
+      "psnr_I": 18.6301,
+      "ssim_I": 0.0552,
+      "offsets": [
+        {
+          "defocus_error_nm": 50.0,
+          "wrong_defocus_nm": -1950.0,
+          "psnr_I": 18.6301,
+          "psnr_II": 18.5864,
+          "psnr_III": 18.6301,
+          "ssim_I": 0.0552,
+          "ssim_II": 0.0656,
+          "ssim_III": 0.0552,
+          "delta_psnr_db": 0.0437,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.07
+        },
+        {
+          "defocus_error_nm": 100.0,
+          "wrong_defocus_nm": -1900.0,
+          "psnr_I": 18.6301,
+          "psnr_II": 18.3595,
+          "psnr_III": 18.6301,
+          "ssim_I": 0.0552,
+          "ssim_II": 0.0749,
+          "ssim_III": 0.0552,
+          "delta_psnr_db": 0.2706,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.11
+        },
+        {
+          "defocus_error_nm": 200.0,
+          "wrong_defocus_nm": -1800.0,
+          "psnr_I": 18.6301,
+          "psnr_II": 17.9232,
+          "psnr_III": 18.6301,
+          "ssim_I": 0.0552,
+          "ssim_II": 0.0978,
+          "ssim_III": 0.0552,
+          "delta_psnr_db": 0.707,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.06
+        },
+        {
+          "defocus_error_nm": 500.0,
+          "wrong_defocus_nm": -1500.0,
+          "psnr_I": 18.6301,
+          "psnr_II": 14.9931,
+          "psnr_III": 18.6301,
+          "ssim_I": 0.0552,
+          "ssim_II": 0.1074,
+          "ssim_III": 0.0552,
+          "delta_psnr_db": 3.637,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.06
+        },
+        {
+          "defocus_error_nm": 1000.0,
+          "wrong_defocus_nm": -1000.0,
+          "psnr_I": 18.6301,
+          "psnr_II": 13.2463,
+          "psnr_III": 18.6301,
+          "ssim_I": 0.0552,
+          "ssim_II": 0.0764,
+          "ssim_III": 0.0552,
+          "delta_psnr_db": 5.3838,
+          "recovery_ratio": 1.0,
+          "calibrated_defocus_nm": -2000.0,
+          "defocus_est_error_nm": 0.0,
+          "cal_time_s": 0.08
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "per_offset": [
+      {
+        "defocus_error_nm": 50.0,
+        "mean_delta_psnr": 0.0403,
+        "std_delta_psnr": 0.0178,
+        "ci95_delta_psnr": [
+          0.026340000000000002,
+          0.055779999999999996
+        ],
+        "mean_recovery": 1.0092,
+        "ci95_recovery": [
+          1.0,
+          1.02748
+        ]
+      },
+      {
+        "defocus_error_nm": 100.0,
+        "mean_delta_psnr": 0.2031,
+        "std_delta_psnr": 0.041,
+        "ci95_delta_psnr": [
+          0.17074,
+          0.24178000000000002
+        ],
+        "mean_recovery": 1.0025,
+        "ci95_recovery": [
+          1.0,
+          1.0074400000000001
+        ]
+      },
+      {
+        "defocus_error_nm": 200.0,
+        "mean_delta_psnr": 0.5797,
+        "std_delta_psnr": 0.2436,
+        "ci95_delta_psnr": [
+          0.37684,
+          0.79168
+        ],
+        "mean_recovery": 1.0011,
+        "ci95_recovery": [
+          1.0,
+          1.00318
+        ]
+      },
+      {
+        "defocus_error_nm": 500.0,
+        "mean_delta_psnr": 2.2729,
+        "std_delta_psnr": 0.8569,
+        "ci95_delta_psnr": [
+          1.5777105,
+          3.06514
+        ],
+        "mean_recovery": 1.0003,
+        "ci95_recovery": [
+          1.0,
+          1.0008400000000002
+        ]
+      },
+      {
+        "defocus_error_nm": 1000.0,
+        "mean_delta_psnr": 3.3045,
+        "std_delta_psnr": 1.2268,
+        "ci95_delta_psnr": [
+          2.3162599999999998,
+          4.3852400000000005
+        ],
+        "mean_recovery": 1.0002,
+        "ci95_recovery": [
+          1.0,
+          1.0005399999999998
+        ]
+      }
+    ]
+  },
+  "key_findings": {
+    "carrier": "electron",
+    "gate3_parameter": "defocus",
+    "gate3_dominance": true,
+    "monotonic_degradation": true,
+    "biology_relevance": "CTF estimation is the rate-limiting calibration step in single-particle cryo-EM"
+  }
+}

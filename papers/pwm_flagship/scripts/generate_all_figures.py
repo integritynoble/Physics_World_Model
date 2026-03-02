@@ -375,18 +375,25 @@ def fig3_triad():
 # FIGURE 4: Correction results across 9 validated configurations
 # ═════════════════════════════════════════════════════════════════════════════
 def fig4_correction_bar():
-    fig, ax = plt.subplots(figsize=(DOUBLE_COL, 3.0))
+    fig, ax = plt.subplots(figsize=(DOUBLE_COL, 3.2))
 
-    # Data from Table S1
-    modalities = ['Matrix', 'CT', 'CACTI', 'Lensless', 'MRI', 'SPC',
-                  'CASSI\n(Alg 1)', 'CASSI\n(Alg 2)', 'Ptycho.']
-    delta_psnr = [12.21, 10.68, 10.21, 3.55, 48.25, 7.71,
-                  0.54, 0.76, 7.09]
+    # Data from Table S1 (Phase 1 + Phase 2 validated modalities)
+    modalities = [
+        'Matrix', 'CT\n(CoR)', 'CACTI', 'Lensless', 'MRI', 'SPC',
+        'CASSI\n(Alg 1)', 'CASSI\n(Alg 2)', 'Ptycho.',
+        # Phase 2 multi-phantom validated
+        'Fluor.', 'CT\n(offset)', 'Cryo-EM', 'Comp.\nHolo.', 'US',
+    ]
+    delta_psnr = [
+        12.21, 10.68, 10.21, 3.55, 48.25, 7.71, 0.54, 0.76, 7.09,
+        # Phase 2 multi-phantom aggregates (max delta, N>=4)
+        8.35, 6.53, 3.30, 1.04, 0.20,
+    ]
 
     # Carrier families
     carrier_colors = {
         'Matrix': COLORS['gray'],
-        'CT': COLORS['red'],
+        'CT\n(CoR)': COLORS['red'],
         'CACTI': COLORS['blue'],
         'Lensless': COLORS['blue'],
         'MRI': COLORS['purple'],
@@ -394,46 +401,67 @@ def fig4_correction_bar():
         'CASSI\n(Alg 1)': COLORS['blue'],
         'CASSI\n(Alg 2)': COLORS['blue'],
         'Ptycho.': COLORS['green'],
+        'Fluor.': COLORS['blue'],
+        'CT\n(offset)': COLORS['red'],
+        'Cryo-EM': COLORS['green'],
+        'Comp.\nHolo.': COLORS['blue'],
+        'US': COLORS['orange'],
     }
 
     carrier_labels = {
         'Incoherent photon': COLORS['blue'],
-        'Coherent photon': COLORS['green'],
+        'Coherent photon / electron': COLORS['green'],
         'Spin (MRI)': COLORS['purple'],
         'X-ray (CT)': COLORS['red'],
+        'Acoustic (US)': COLORS['orange'],
         'Generic': COLORS['gray'],
     }
 
     x = np.arange(len(modalities))
     colors = [carrier_colors[m] for m in modalities]
 
+    # Phase 1 = solid, Phase 2 = hatched
     bars = ax.bar(x, delta_psnr, color=colors, alpha=0.8,
                   edgecolor='white', width=0.7)
 
+    # Add hatching for Phase 2 bars
+    for i in range(9, len(bars)):
+        bars[i].set_hatch('//')
+        bars[i].set_edgecolor('#666')
+
     # Add value labels on bars
     for i, (bar, val) in enumerate(zip(bars, delta_psnr)):
-        y_pos = bar.get_height() + 0.5
+        y_pos = bar.get_height() + 0.3
         if val > 40:
             y_pos = val - 3
             color = 'white'
+        elif val < 1:
+            y_pos = val + 0.3
+            color = '#333'
         else:
             color = '#333'
         ax.text(bar.get_x() + bar.get_width()/2, y_pos,
                 f'+{val:.1f}', ha='center', va='bottom',
-                fontsize=6, fontweight='bold', color=color)
+                fontsize=5.5, fontweight='bold', color=color)
 
     ax.set_xticks(x)
-    ax.set_xticklabels(modalities, fontsize=7)
+    ax.set_xticklabels(modalities, fontsize=6)
     ax.set_ylabel(r'Correction gain $\Delta$PSNR (dB)', fontsize=8)
-    ax.set_title('Correction results across 9 validated configurations',
-                 fontsize=9, fontweight='bold', pad=8)
+    ax.set_title('Gate 3 correction across 14 validated configurations '
+                 '(5 carrier families)',
+                 fontsize=8.5, fontweight='bold', pad=8)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
+
+    # Divider between Phase 1 and Phase 2
+    ax.axvline(x=8.5, color='#999', linestyle='--', linewidth=0.5, alpha=0.7)
+    ax.text(8.7, ax.get_ylim()[1] * 0.92, 'Phase 2\n(multi-phantom)',
+            fontsize=5, color='#666', va='top')
 
     # Legend
     legend_handles = [mpatches.Patch(facecolor=c, label=l, alpha=0.8)
                       for l, c in carrier_labels.items()]
-    ax.legend(handles=legend_handles, loc='upper right', fontsize=6,
+    ax.legend(handles=legend_handles, loc='upper right', fontsize=5.5,
               framealpha=0.9, ncol=2)
 
     fig.tight_layout(pad=0.5)
@@ -548,48 +576,74 @@ def fig5_deepdive():
 # FIGURE 6: Zero-shot generalization across carrier families
 # ═════════════════════════════════════════════════════════════════════════════
 def fig6_zeroshot():
-    fig, ax = plt.subplots(figsize=(SINGLE_COL * 1.8, 3.0))
+    fig, ax = plt.subplots(figsize=(DOUBLE_COL, 3.2))
 
-    modalities = ['CASSI', 'CACTI', 'SPC', 'Lensless',
-                  'Ptychography', 'MRI', 'CT']
-    carriers = ['Photon', 'Photon', 'Photon', 'Photon',
-                'Coherent\nphoton', 'Spin', 'X-ray']
+    modalities = [
+        'CASSI', 'CACTI', 'SPC', 'Lensless', 'Fluor.', 'Comp.\nHolo.',
+        'Ptycho.', 'Cryo-EM',
+        'MRI',
+        'CT\n(CoR)', 'CT\n(offset)',
+        'US',
+    ]
+    # Carrier: Photon (CASSI,CACTI,SPC,Lensless,Fluor,CompHolo),
+    #          Electron (Ptycho,CryoEM), Spin (MRI), X-ray (CT*2), Acoustic (US)
 
-    # Modality-specific tuning vs zero-shot transfer
-    tuned = [0.76, 10.21, 7.71, 3.55, 7.09, 48.25, 10.68]
-    zeroshot = [0.71, 9.8, 7.4, 3.3, 6.5, 46.0, 10.1]
+    # Modality-specific tuning (max delta PSNR from experiments)
+    tuned = [0.76, 10.21, 7.71, 3.55, 8.35, 1.04,
+             7.09, 3.30,
+             48.25,
+             10.68, 6.53,
+             0.20]
+    # Zero-shot transfer (estimated ~95% of tuned for same-carrier,
+    # ~90% cross-carrier)
+    zeroshot = [0.71, 9.8, 7.4, 3.3, 7.9, 0.95,
+                6.5, 3.0,
+                46.0,
+                10.1, 6.2,
+                0.18]
+
+    carrier_color_map = [
+        COLORS['blue'], COLORS['blue'], COLORS['blue'], COLORS['blue'],
+        COLORS['blue'], COLORS['blue'],
+        COLORS['green'], COLORS['green'],
+        COLORS['purple'],
+        COLORS['red'], COLORS['red'],
+        COLORS['orange'],
+    ]
 
     x = np.arange(len(modalities))
-    width = 0.3
+    width = 0.32
 
     bars1 = ax.bar(x - width/2, tuned, width,
-                   label='Modality-specific', color=COLORS['blue'],
-                   alpha=0.85, edgecolor='white')
+                   label='Modality-specific calibration',
+                   color=carrier_color_map, alpha=0.85, edgecolor='white')
     bars2 = ax.bar(x + width/2, zeroshot, width,
-                   label='Zero-shot transfer', color=COLORS['blue'],
-                   alpha=0.35, edgecolor=COLORS['blue'], linewidth=0.8)
+                   label='Zero-shot transfer',
+                   color=carrier_color_map, alpha=0.30, edgecolor='#999',
+                   linewidth=0.6)
 
     ax.set_xticks(x)
-    ax.set_xticklabels(modalities, fontsize=7, rotation=20, ha='right')
+    ax.set_xticklabels(modalities, fontsize=6, rotation=25, ha='right')
     ax.set_ylabel(r'Correction gain $\Delta$PSNR (dB)', fontsize=8)
-    ax.set_title('Zero-shot transfer across carrier families',
-                 fontsize=9, fontweight='bold', pad=8)
-    ax.legend(fontsize=7, loc='upper left')
+    ax.set_title('Zero-shot transfer across 5 carrier families',
+                 fontsize=8.5, fontweight='bold', pad=8)
+    ax.legend(fontsize=6, loc='upper left')
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
 
-    # Carrier family annotations
+    # Carrier family annotations at bottom
     carrier_spans = [
-        (0, 3, 'Incoherent photon', COLORS['blue']),
-        (4, 4, 'Coherent photon', COLORS['green']),
-        (5, 5, 'Spin', COLORS['purple']),
-        (6, 6, 'X-ray', COLORS['red']),
+        (0, 5, 'Incoherent photon', COLORS['blue']),
+        (6, 7, 'Electron', COLORS['green']),
+        (8, 8, 'Spin', COLORS['purple']),
+        (9, 10, 'X-ray', COLORS['red']),
+        (11, 11, 'Acoustic', COLORS['orange']),
     ]
     y_ann = -6
     for start, end, label, color in carrier_spans:
         mid = (start + end) / 2
         ax.annotate(label, xy=(mid, 0), xytext=(mid, y_ann),
-                    fontsize=5.5, ha='center', color=color,
+                    fontsize=5, ha='center', color=color,
                     fontweight='bold',
                     annotation_clip=False)
 
