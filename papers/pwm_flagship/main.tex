@@ -7,11 +7,10 @@ The Universal Structure of Computational Imaging}
 Chengshuai Yang$^{1,*}$
 \and
 Xin Yuan$^{2}$
-%% Placeholder for collaborator co-authors (uncomment when confirmed):
-%\and
-%David J.\ Brady$^{3}$
-%\and
-%Steve B.\ Jiang$^{4}$
+\and
+David J.\ Brady$^{3}$
+\and
+Steve B.\ Jiang$^{4}$
 }
 
 \date{}
@@ -19,8 +18,8 @@ Xin Yuan$^{2}$
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 \footnotetext[1]{$^1$NextGen PlatformAI C Corp, USA.
 $^2$School of Engineering, Westlake University, Hangzhou, China.
-%$^3$Department of Electrical and Computer Engineering, University of Arizona, Tucson, AZ, USA.
-%$^4$Department of Radiation Oncology, UT Southwestern Medical Center, Dallas, TX, USA.
+$^3$Department of Electrical and Computer Engineering, University of Arizona, Tucson, AZ, USA.
+$^4$Department of Radiation Oncology, UT Southwestern Medical Center, Dallas, TX, USA.
 $^*$Correspondence: \texttt{integrityyang@gmail.com}}
 \renewcommand{\thefootnote}{\arabic{footnote}}
 
@@ -282,7 +281,7 @@ The bounded complexity of imaging physics has consequences that extend beyond ca
 The Finite Primitive Basis implies that imaging system design is a combinatorial optimization over 11 typed primitives, not an open-ended search. The \opg{} representation makes this explicit: a designer specifies which primitives are active, their parameters, and their interconnection topology. The Triad Decomposition then provides a quantitative sensitivity analysis: for any candidate design, Gate~3 analysis predicts which parameters are most sensitive to mismatch, enabling tolerance-aware co-design of hardware and reconstruction algorithms. This is directly relevant to multi-scale camera architectures~\cite{brady2012multiscale}, where dozens of sub-apertures must be jointly calibrated, and to snapshot compressive imaging systems~\cite{yuan2021sci}, where the measurement operator encodes the entire signal recovery problem.
 
 \paragraph{Implications for biology and medicine.}
-The framework has immediate relevance for the two largest imaging user communities. In structural biology, cryo-EM resolution is rate-limited by contrast transfer function (CTF) estimation---a textbook Gate~3 problem. A 200\,nm defocus error at 300\,kV limits the achievable resolution from ${\sim}2$\,\AA{} to ${\sim}3$\,\AA{}, and CTFFIND-class estimators require thousands of particles to converge. The PWM Triad diagnoses this as Gate~3 dominance with a 1-parameter correction manifold ($\Delta f$), and autonomous defocus calibration recovers $\recoveryratio = 1.00$--$1.12$ of the oracle (Supplementary Table~S15). In clinical imaging, CBCT geometric calibration drift is a recognised quality-assurance concern: AAPM Task Group 142~\cite{klein2009tg142} mandates monthly mechanical isocentre verification ($\leq 2$\,mm tolerance) and AAPM Task Group 66~\cite{mutic2003tg66} specifies CT-simulator geometric accuracy requirements for treatment planning. Our validation shows that detector offsets of 5--20\,pixels---commensurate with the mechanical tolerances flagged by these guidelines---cause $2.5$--$3.9$\,dB PSNR degradation with $100\%$ oracle recovery, suggesting that automated Gate~3 monitoring could complement existing QA protocols. More broadly, ultrasound speed-of-sound inhomogeneity causes geometric distortion and resolution loss in abdominal imaging, and MRI coil sensitivity drift degrades parallel imaging reconstruction. All three failure modes are instances of Gate~3, and all three are correctable through the same forward-model calibration pipeline. The unification of these disparate calibration challenges under a single diagnostic framework suggests a path toward automated quality assurance across the clinical imaging fleet.
+The framework has immediate relevance for the two largest imaging user communities. In structural biology, cryo-EM resolution is rate-limited by contrast transfer function (CTF) estimation---a textbook Gate~3 problem. A 200\,nm defocus error at 300\,kV limits the achievable resolution from ${\sim}2$\,\AA{} to ${\sim}3$\,\AA{}, and CTFFIND-class estimators require thousands of particles to converge. The PWM Triad diagnoses this as Gate~3 dominance with a 1-parameter correction manifold ($\Delta f$), and autonomous defocus calibration recovers $\recoveryratio = 1.00$--$1.12$ of the oracle (Supplementary Table~S15). In clinical imaging, CBCT image quality in radiation therapy is limited by scatter contamination and geometric mismatch---problems that have driven both physics-based correction via Monte Carlo scatter estimation~\cite{xu2015cbct} and data-driven approaches including deep learning~\cite{liang2019cyclegan} and reinforcement-learning-based parameter tuning~\cite{shen2018drl}. AAPM Task Group 142~\cite{klein2009tg142} mandates monthly mechanical isocentre verification ($\leq 2$\,mm tolerance) and AAPM Task Group 66~\cite{mutic2003tg66} specifies CT-simulator geometric accuracy requirements for treatment planning. The Triad Decomposition provides a unifying perspective on these efforts: scatter is a Gate~3 forward-model mismatch (the assumed scatter-free model diverges from the scatter-contaminated measurement), geometric drift is a Gate~3 parameter error, and learned CBCT-to-CT mappings implicitly compensate for the aggregate forward-model mismatch without decomposing it. Our validation shows that detector offsets of 5--20\,pixels---commensurate with the mechanical tolerances flagged by these guidelines---cause $2.5$--$3.9$\,dB PSNR degradation with $100\%$ oracle recovery, suggesting that automated Gate~3 monitoring could complement existing QA protocols. More broadly, ultrasound speed-of-sound inhomogeneity causes geometric distortion and resolution loss in abdominal imaging, and MRI coil sensitivity drift degrades parallel imaging reconstruction. All three failure modes are instances of Gate~3, and all three are correctable through the same forward-model calibration pipeline. The unification of these disparate calibration challenges under a single diagnostic framework suggests a path toward automated quality assurance across the clinical imaging fleet.
 
 \paragraph{Comparison with specialist calibration.}
 Specialist calibration methods---ESPIRiT~\cite{uecker2014espirit} for MRI, ePIE~\cite{maiden2009ptychography} for ptychography, cross-correlation auto-focus for CT, CTFFIND for cryo-EM---outperform PWM on their home modality when adequate calibration data is available (Supplementary Note~S14). However, they degrade under data-limited conditions (ESPIRiT: $-9.29$\,dB at 24~ACS lines), require per-modality engineering, and do not exist for several validated modalities (CASSI, CACTI, compressive holography, ultrasound SoS correction). PWM's value is \emph{generality}: a single pipeline serving 12 modalities across all five carrier families---including two Nobel Prize--winning techniques and four clinical instruments---with robust performance across calibration data regimes. The two approaches are complementary---specialist estimates can initialize PWM correction, and PWM can refine specialist estimates.

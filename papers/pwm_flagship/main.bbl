@@ -1,4 +1,4 @@
-\begin{thebibliography}{36}
+\begin{thebibliography}{39}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -185,6 +185,34 @@ David~J. Brady, Michael~E. Gehm, Ronald~A. Stack, Daniel~L. Marks, David~S.
   Kittle, Dathon~R. Golish, E.~M. Vera, and Steven~D. Feller.
 \newblock Multiscale gigapixel photography.
 \newblock \emph{Nature}, 486\penalty0 (7403):\penalty0 386--389, 2012.
+
+\bibitem[Xu et~al.(2015)Xu, Bai, Yan, Ouyang, Pompos, Wang, Zhou, Jiang, and
+  Jia]{xu2015cbct}
+Yuan Xu, Ti~Bai, Hao Yan, Luo Ouyang, Arnold Pompos, Jing Wang, Linghong Zhou,
+  Steve~B. Jiang, and Xun Jia.
+\newblock A practical cone-beam {CT} scatter correction method with optimized
+  {M}onte {C}arlo simulations for image-guided radiation therapy.
+\newblock \emph{Physics in Medicine and Biology}, 60\penalty0 (9):\penalty0
+  3567--3587, 2015.
+\newblock \doi{10.1088/0031-9155/60/9/3567}.
+
+\bibitem[Liang et~al.(2019)Liang, Chen, Nguyen, Zhou, Gu, Yang, Wang, and
+  Jiang]{liang2019cyclegan}
+Xiao Liang, Liyuan Chen, Dan Nguyen, Zhiguo Zhou, Xuejun Gu, Ming Yang, Jing
+  Wang, and Steve Jiang.
+\newblock Generating synthesized computed tomography ({CT}) from cone-beam
+  computed tomography ({CBCT}) using {CycleGAN} for adaptive radiation therapy.
+\newblock \emph{Physics in Medicine and Biology}, 64\penalty0 (12):\penalty0
+  125002, 2019.
+\newblock \doi{10.1088/1361-6560/ab22f9}.
+
+\bibitem[Shen et~al.(2018)Shen, Gonzalez, Chen, Jiang, and Jia]{shen2018drl}
+Chenyang Shen, Yesenia Gonzalez, Liyuan Chen, Steve~B. Jiang, and Xun Jia.
+\newblock Intelligent parameter tuning in optimization-based iterative {CT}
+  reconstruction via deep reinforcement learning.
+\newblock \emph{IEEE Transactions on Medical Imaging}, 37\penalty0
+  (6):\penalty0 1430--1439, 2018.
+\newblock \doi{10.1109/TMI.2018.2823679}.
 
 \bibitem[Klein et~al.(2009)Klein, Hanley, Bayouth, Yin, Simon, Dresser, Serago,
   Aguirre, Ma, Arjomandy, Liu, Sandin, and Holmes]{klein2009tg142}
