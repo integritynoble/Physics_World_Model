@@ -23,7 +23,7 @@ from pathlib import Path
 import h5py
 import numpy as np
 import scipy.io as sio
-from scipy.ndimage import shift, rotate, gaussian_filter
+from scipy.ndimage import affine_transform, gaussian_filter
 
 import matplotlib
 matplotlib.use('Agg')
@@ -132,25 +132,31 @@ def ensure_dir(p: Path):
 
 
 def apply_cacti_mismatch(x, mask, true_spec):
+    """Forward model with paper's exact affine_transform warp + binarization.
+
+    Matches validate_cacti_inversenet.py:129-146 exactly.
+    """
     H, W, T = x.shape
-    mm = mask.copy()
+    mm = np.zeros_like(mask)
     dx, dy = true_spec["mask_dx"], true_spec["mask_dy"]
     rot, blur = true_spec["mask_rotation"], true_spec["mask_blur"]
+    cx, cy = W / 2.0, H / 2.0
+    th = np.radians(rot)
+    cos_t, sin_t = np.cos(th), np.sin(th)
     for t in range(T):
-        f = mm[:, :, t]
-        f = shift(f, [dy, dx], order=1, mode="constant")
-        if abs(rot) > 1e-6:
-            f = rotate(f, rot, reshape=False, order=1, mode="constant")
+        mat = np.array([
+            [cos_t,  sin_t, -cx * cos_t - cy * sin_t + cx + dx],
+            [-sin_t, cos_t,  cx * sin_t - cy * cos_t + cy + dy],
+        ])
+        inv = np.linalg.inv(np.vstack([mat, [0, 0, 1]]))[:2, :]
+        frame = affine_transform(mask[:, :, t], inv[:2, :2], offset=inv[:2, 2], cval=0)
         if blur > 0:
-            f = gaussian_filter(f, sigma=blur)
-        mm[:, :, t] = f
+            frame = gaussian_filter(frame, sigma=blur)
+        mm[:, :, t] = frame
     # Binarize warped mask before computing measurement (matching InverseNet paper)
     mm = (mm > 0.5).astype(np.float64)
     gain, offset = true_spec["gain_drift"], true_spec["offset_drift"]
-    y = np.zeros((H, W), dtype=np.float64)
-    for t in range(T):
-        y += mm[:, :, t] * x[:, :, t]
-    y = gain * y + offset
+    y = gain * np.sum(mm * x, axis=2) + offset
     return y, mask
 
 

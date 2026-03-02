@@ -127,19 +127,27 @@ def elp_reconstruct(y, mask, model, device_str: str):
 
 
 def apply_mismatch(mask, dx, dy, rot, blur):
-    """Apply spatial mismatch to mask."""
-    from scipy.ndimage import shift, rotate as sp_rotate, gaussian_filter
+    """Apply spatial mismatch using the paper's exact affine_transform.
+
+    Matches validate_cacti_inversenet.py:129-146 exactly.
+    """
+    from scipy.ndimage import affine_transform, gaussian_filter
     H, W, T = mask.shape
-    out = mask.copy()
+    out = np.zeros_like(mask)
+    cx, cy = W / 2.0, H / 2.0
+    th = np.radians(rot)
+    cos_t, sin_t = np.cos(th), np.sin(th)
     for t in range(T):
-        m = out[:, :, t]
-        m = shift(m, [dy, dx], order=1, mode="constant")
-        if abs(rot) > 1e-6:
-            m = sp_rotate(m, rot, reshape=False, order=1, mode="constant")
+        mat = np.array([
+            [cos_t,  sin_t, -cx * cos_t - cy * sin_t + cx + dx],
+            [-sin_t, cos_t,  cx * sin_t - cy * cos_t + cy + dy],
+        ])
+        inv = np.linalg.inv(np.vstack([mat, [0, 0, 1]]))[:2, :]
+        frame = affine_transform(mask[:, :, t], inv[:2, :2], offset=inv[:2, 2], cval=0)
         if blur > 0:
-            m = gaussian_filter(m, sigma=blur)
-        out[:, :, t] = m
-    return out
+            frame = gaussian_filter(frame, sigma=blur)
+        out[:, :, t] = frame
+    return out.astype(np.float32)
 
 
 def binarize_mask(mask):

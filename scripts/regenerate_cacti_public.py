@@ -22,7 +22,7 @@ from pathlib import Path
 import h5py
 import numpy as np
 import scipy.io as sio
-from scipy.ndimage import shift, rotate as sp_rotate, gaussian_filter
+from scipy.ndimage import affine_transform, gaussian_filter
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -65,19 +65,29 @@ SEED = 1001
 
 # ── Physics ──────────────────────────────────────────────────────────────────
 
-def warp_mask(mask: np.ndarray, dx, dy, rot_deg, blur_sigma=0.0):
-    """Apply spatial mismatch to mask (H, W, T)."""
+def warp_mask(mask: np.ndarray, dx, dy, theta_deg, blur_sigma=0.0):
+    """Affine-warp each temporal frame of mask (H,W,T).
+
+    Exact copy of validate_cacti_inversenet.py:129-146.
+    Uses a single affine_transform combining shift + rotation, matching
+    the paper's forward model exactly.
+    """
     H, W, T = mask.shape
-    out = mask.copy()
+    out = np.zeros_like(mask)
+    cx, cy = W / 2.0, H / 2.0
+    th = np.radians(theta_deg)
+    cos_t, sin_t = np.cos(th), np.sin(th)
     for t in range(T):
-        m = out[:, :, t]
-        m = shift(m, [dy, dx], order=1, mode='constant')
-        if abs(rot_deg) > 1e-6:
-            m = sp_rotate(m, rot_deg, reshape=False, order=1, mode='constant')
+        mat = np.array([
+            [cos_t,  sin_t, -cx * cos_t - cy * sin_t + cx + dx],
+            [-sin_t, cos_t,  cx * sin_t - cy * cos_t + cy + dy],
+        ])
+        inv = np.linalg.inv(np.vstack([mat, [0, 0, 1]]))[:2, :]
+        frame = affine_transform(mask[:, :, t], inv[:2, :2], offset=inv[:2, 2], cval=0)
         if blur_sigma > 0:
-            m = gaussian_filter(m, sigma=blur_sigma)
-        out[:, :, t] = m
-    return out
+            frame = gaussian_filter(frame, sigma=blur_sigma)
+        out[:, :, t] = frame
+    return out.astype(np.float32)
 
 
 def add_noise(y, rng, peak=NOISE_PEAK, sigma=NOISE_SIGMA):
