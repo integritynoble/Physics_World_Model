@@ -16,6 +16,7 @@ def _make_b_challenge(key: str, display: str, leaderboard: list | None = None,
         return None
 
     scene_count = cfg["scene_count"]
+    tier_scene_counts = cfg.get("tier_scene_counts", {})
     tiers_cfg = cfg["tiers"]
 
     bm_dataset = CATEGORY_BENCHMARK_DATASETS.get(category) if category else None
@@ -41,10 +42,10 @@ def _make_b_challenge(key: str, display: str, leaderboard: list | None = None,
             "public": {
                 "name": "Public",
                 "description": (
-                    f"All {scene_count} scenes with measurements, ideal operator, "
+                    f"All {tier_scene_counts.get('public', scene_count)} scenes with measurements, ideal operator, "
                     "spec ranges, ground truth, and true spec. Includes all InverseNet datasets."
                 ),
-                "count": scene_count,
+                "count": tier_scene_counts.get("public", scene_count),
                 "includes_ground_truth": True,
                 "introduction": tiers_cfg["public"].get("introduction"),
                 "preview_image": tiers_cfg["public"].get("preview_image"),
@@ -54,7 +55,7 @@ def _make_b_challenge(key: str, display: str, leaderboard: list | None = None,
                 "dataset": {
                     "name": f"{display} Challenge Public Dataset",
                     "format": "HDF5",
-                    "num_samples": scene_count,
+                    "num_samples": tier_scene_counts.get("public", scene_count),
                     "gcs_object_path": f"challenge-data/v1.0/{key}_challenge_public.h5",
                     "download_url": None,
                 },
@@ -62,10 +63,10 @@ def _make_b_challenge(key: str, display: str, leaderboard: list | None = None,
             "dev": {
                 "name": "Dev",
                 "description": (
-                    f"All {scene_count} scenes with measurements + ideal operator + "
+                    f"All {tier_scene_counts.get('dev', scene_count)} scenes with measurements + ideal operator + "
                     "spec ranges (no ground truth). Submit your reconstruction."
                 ),
-                "count": scene_count,
+                "count": tier_scene_counts.get("dev", scene_count),
                 "introduction": tiers_cfg["dev"].get("introduction"),
                 "preview_image": tiers_cfg["dev"].get("preview_image"),
                 "visible_data": tiers_cfg["dev"].get("visible_data", []),
@@ -74,7 +75,7 @@ def _make_b_challenge(key: str, display: str, leaderboard: list | None = None,
                 "dataset": {
                     "name": f"{display} Challenge Dev Dataset",
                     "format": "HDF5",
-                    "num_samples": scene_count,
+                    "num_samples": tier_scene_counts.get("dev", scene_count),
                     "gcs_object_path": f"challenge-data/v1.0/{key}_challenge_dev.h5",
                     "download_url": None,
                 },
@@ -82,10 +83,10 @@ def _make_b_challenge(key: str, display: str, leaderboard: list | None = None,
             "hidden": {
                 "name": "Hidden",
                 "description": (
-                    f"All {scene_count} scenes held server-side. "
+                    f"All {tier_scene_counts.get('hidden', scene_count)} scenes held server-side. "
                     "Submit your algorithm; we run it on hidden data."
                 ),
-                "count": scene_count,
+                "count": tier_scene_counts.get("hidden", scene_count),
                 "introduction": tiers_cfg["hidden"].get("introduction"),
                 "preview_image": tiers_cfg["hidden"].get("preview_image"),
                 "visible_data": tiers_cfg["hidden"].get("visible_data", []),

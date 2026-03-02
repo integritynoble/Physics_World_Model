@@ -441,8 +441,11 @@ CHALLENGE_CONFIG: dict[str, dict] = {
         ],
         "noise_model": "poisson_gaussian",
         "noise_params": {"I0": 10000, "sigma_readout": 5.0},
+        # Public tier has 11 scenes (test-split patients); dev/hidden have 20 each.
+        # scene_count is used as the default by _factory.py; per-tier counts override it.
         "scenes": list(range(11)),
         "scene_count": 11,
+        "tier_scene_counts": {"public": 11, "dev": 20, "hidden": 20},
         "tiers": {
             "public": {
                 "true_spec": {
@@ -454,7 +457,7 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 "seed": 1000,
                 "visible_data": ["y", "H_ideal", "spec_ranges", "x_true", "true_spec"],
                 "introduction": {
-                    "summary": "Full-access tier: 11 real chest CT slices from LoDoPaB-CT (LIDC/IDRI).",
+                    "summary": "Full-access tier: 11 real patient CT slices from LoDoPaB-CT (LIDC/IDRI test split).",
                     "what_you_get": "Measured sinogram (y), ideal forward operator (H), spec ranges, ground truth x_true, and true mismatch spec per sample.",
                     "how_to_use": "Load ct_challenge_public.h5 → reconstruct x̂ from sinogram_measured → compare with x_true → compute consistency → iterate on mismatch correction.",
                     "what_to_submit": "Reconstructed images (x_hat) and corrected mismatch spec as HDF5.",
@@ -471,7 +474,7 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 "seed": 7000,
                 "visible_data": ["y", "H_ideal", "spec_ranges"],
                 "introduction": {
-                    "summary": "Blind evaluation: 20 procedural chest phantoms (5 anatomy types, 4 each).",
+                    "summary": "Blind evaluation: 20 real patient CT slices from LoDoPaB-CT (validation split, patients 0–63).",
                     "what_you_get": "Measured sinogram (y), ideal forward operator (H), and spec ranges. No ground truth.",
                     "how_to_use": "Apply your pipeline from Public tier. Self-check via consistency metric. Ground truth scored server-side.",
                     "what_to_submit": "Reconstructed images and corrected mismatch spec. Scored server-side.",
@@ -488,7 +491,7 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 "seed": 9000,
                 "visible_data": [],
                 "introduction": {
-                    "summary": "Fully blind: 20 adversarial phantoms with metal, low-contrast lesions, calcifications.",
+                    "summary": "Fully blind: 20 real LoDoPaB-CT slices (validation split, patients 64–127) with adversarial modifications (metal inserts, lesions, calcifications).",
                     "what_you_get": "No data download. Algorithm runs server-side on hidden measurements.",
                     "how_to_use": "Package algorithm as Docker container / Python script accepting y + H, outputting x_hat + corrected spec.",
                     "what_to_submit": "Containerized algorithm. Scored server-side against adversarial phantoms.",
@@ -501,17 +504,22 @@ CHALLENGE_CONFIG: dict[str, dict] = {
         "signal_shape": [362, 362],
         "tier_data_sources": {
             "public": {"path": "datasets/benchmark/ct/public/ct_challenge_public.h5",  "format": "hdf5", "type": "real"},
-            "dev":    {"path": "datasets/benchmark/ct/dev/ct_challenge_dev.h5",         "format": "hdf5", "type": "simulated"},
-            "hidden": {"path": "datasets/benchmark/ct/hidden/ct_challenge_hidden.h5",   "format": "hdf5", "type": "adversarial"},
+            "dev":    {"path": "datasets/benchmark/ct/dev/ct_challenge_dev.h5",         "format": "hdf5", "type": "real"},
+            "hidden": {"path": "datasets/benchmark/ct/hidden/ct_challenge_hidden.h5",   "format": "hdf5", "type": "real_adversarial"},
         },
-        # Scenario II/III baselines for the 4 main algorithms under CT mismatch.
-        # Scenario II: forward model mismatch applied, no correction.
-        # Scenario III: true mismatch parameters known (oracle gradient correction).
-        # Numbers calibrated from published CT mismatch sensitivity literature:
-        #   FBP is robust to amplitude but sensitive to geometry errors (streak artifacts).
-        #   Deep methods suffer distribution shift under large geometry mismatch.
-        #   LPD (deep unrolling) partially adapts via gradient steps.
+        # Scenario I: blind reconstruction — algorithm uses H_nom, measured noisy sinogram.
+        # Measured on actual LoDoPaB-CT challenge HDF5s (public tier, 11 scenes).
+        # Run: scripts/run_ct_benchmark.py + scripts/modal_run_ct_benchmark.py · 2026-03-01
+        #
+        # Scenario II: mismatched operator — algorithm uses H_ideal, true-spec data.
+        # Scenario III: corrected operator — true mismatch params known (oracle).
+        # Numbers from published CT literature calibrated to our geometry.
         "baselines": {
+            "scenario_i": [
+                {"method": "FBP",           "psnr": 21.84, "ssim": 0.382, "score": 0.440, "tier": "public"},
+                {"method": "PnP-ADMM",      "psnr": 23.21, "ssim": 0.621, "score": 0.556, "tier": "public"},
+                {"method": "PnP-DRUNet",    "psnr": 24.51, "ssim": 0.707, "score": 0.610, "tier": "public", "device": "T4"},
+            ],
             "scenario_ii": [
                 {"method": "FBP",                 "psnr": 23.14, "ssim": 0.641},
                 {"method": "PnP-ADMM",            "psnr": 25.83, "ssim": 0.730},
