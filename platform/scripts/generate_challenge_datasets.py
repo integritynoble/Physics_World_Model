@@ -591,13 +591,69 @@ def _load_scenes_from_registry(
     return scenes[:max_scenes]
 
 
+def _load_synthetic_source_pool(data_root: Path | None = None) -> list[np.ndarray]:
+    """Load BSDS400 + BrainImages as raw material for synthetic scene generation."""
+    if data_root is None:
+        data_root = _find_data_root()
+    # data_root IS the datasets/ directory (e.g. .../datasets/)
+    datasets_root = data_root
+
+    from PIL import Image as _PILImage
+
+    sources: list[np.ndarray] = []
+    for subdir, fmt in [("SPC/BSDS400", "*.jpg"), ("SPC/BrainImages_test", "*.png")]:
+        src_dir = datasets_root / subdir
+        if not src_dir.exists():
+            continue
+        for fp in sorted(src_dir.glob(fmt)):
+            try:
+                img = _PILImage.open(fp).convert("L")
+                sources.append(np.array(img, dtype=np.float64) / 255.0)
+            except Exception:
+                continue
+    return sources
+
+
+# Cached source pool (loaded once per process)
+_SYNTHETIC_SOURCE_POOL: list[np.ndarray] | None = None
+
+
+def _get_synthetic_source_pool(data_root: Path | None = None) -> list[np.ndarray]:
+    global _SYNTHETIC_SOURCE_POOL
+    if _SYNTHETIC_SOURCE_POOL is None:
+        _SYNTHETIC_SOURCE_POOL = _load_synthetic_source_pool(data_root)
+        logger.info("Loaded %d source images for synthetic generation",
+                     len(_SYNTHETIC_SOURCE_POOL))
+    return _SYNTHETIC_SOURCE_POOL
+
+
 def _load_scenes_from_generator(
     generator_name: str,
     signal_shape: tuple[int, ...],
     max_scenes: int,
     seed: int,
+    data_root: Path | None = None,
 ) -> list[np.ndarray]:
     """Generate scenes using a named generator function."""
+
+    # Special case: complex synthetic scene generator
+    if generator_name == "generate_synthetic_scene":
+        from scripts.generate_synthetic_scenes import generate_synthetic_scene
+        source_pool = _get_synthetic_source_pool(data_root)
+        if len(source_pool) < 5:
+            logger.warning("Synthetic generator needs >=5 source images, got %d",
+                           len(source_pool))
+            return []
+        target_size = signal_shape[0]
+        scenes = []
+        for i in range(max_scenes):
+            scene_seed = seed + i * 137  # Match the CLI script's seed spacing
+            arr = generate_synthetic_scene(source_pool, target_size, scene_seed)
+            arr = arr.astype(np.float64)
+            arr = _crop_or_resize_2d(arr, signal_shape)
+            scenes.append(np.clip(arr, 0, 1))
+        return scenes
+
     try:
         from benchmarks.datasets.downloaders import (
             generate_medical_phantom, generate_em_phantom, generate_surface,
@@ -1670,6 +1726,7 @@ def _generate_spc(variant_key: str, cfg: dict, output_dir: Path, data_root: Path
                 signal_shape,
                 max_scenes=len(scenes),
                 seed=gen_seed,
+                data_root=data_root,
             )
             img_dir = f"<generator:{tier_source['generator']}>"
             logger.info("  Generated %d simulated scenes for tier %s", len(tier_images), tier_name)

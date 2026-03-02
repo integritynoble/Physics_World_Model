@@ -935,6 +935,7 @@ async def challenge_tier_page(
         # Try tier-specific dir first (algorithms_dev/), then shared (algorithms/)
         _BEST_RECON_PRIORITY = [
             ("recon_pnp-drunet.png", "PnP-DRUNet + blind cal"),
+            ("recon_fista-tv-tuned.png", "FISTA-TV + blind cal"),
             ("recon_dolce.png", "DOLCE + gradient"),
             ("recon_lpd.png", "Learned Primal-Dual"),
         ]

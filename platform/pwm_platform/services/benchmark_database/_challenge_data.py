@@ -390,8 +390,8 @@ CHALLENGE_CONFIG: dict[str, dict] = {
         "signal_shape": [256, 256],
         "tier_data_sources": {
             "public":  {"path": "datasets/SPC/Set11/", "format": "tif", "type": "experimental"},
-            "dev":     {"path": "datasets/SPC/BSDS400/", "format": "jpg", "type": "natural_images"},
-            "hidden":  {"path": "datasets/SPC/BrainImages_test/", "format": "png", "type": "medical"},
+            "dev":     {"generator": "generate_synthetic_scene", "seed_offset": 77777, "type": "synthetic"},
+            "hidden":  {"generator": "generate_synthetic_scene", "seed_offset": 99999, "type": "synthetic"},
         },
         "baselines": {
             "scenario_ii": [
