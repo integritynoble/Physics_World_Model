@@ -1,0 +1,37 @@
+{
+  "scene": "ixi_IXI035-IOP-0873-T2_sl067",
+  "spec_ranges": {
+    "B0_inhomog_hz": {
+      "min": 5.0,
+      "max": 20.0,
+      "unit": "Hz"
+    },
+    "gradient_nonlin_frac": {
+      "min": 0.001,
+      "max": 0.005,
+      "unit": "frac"
+    },
+    "coil_sensitivity_frac": {
+      "min": 0.01,
+      "max": 0.05,
+      "unit": "frac"
+    },
+    "k_trajectory_frac": {
+      "min": 0.001,
+      "max": 0.005,
+      "unit": "frac"
+    },
+    "noise_sigma": {
+      "min": 0.01,
+      "max": 0.03,
+      "unit": "rel"
+    }
+  },
+  "true_spec": {
+    "B0_inhomog_hz": 10.198618,
+    "gradient_nonlin_frac": 0.001344,
+    "coil_sensitivity_frac": 0.028396,
+    "k_trajectory_frac": 0.001404,
+    "noise_sigma": 0.012025
+  }
+}
