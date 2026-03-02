@@ -111,15 +111,15 @@ def fig1_overview():
                     arrowprops=dict(arrowstyle='->', color='#444444',
                                    lw=1.5, mutation_scale=12))
 
-    # Gate labels below diagnosis
+    # Gate labels below diagnosis (spaced to avoid overlap)
     gate_labels = [
-        (3.5, 0.35, 'G1: Recoverability', COLORS['gate1']),
+        (2.8, 0.35, 'G1: Recoverability', COLORS['gate1']),
         (4.1, 0.35, 'G2: Carrier Budget', COLORS['gate2']),
-        (4.7, 0.35, 'G3: Mismatch', COLORS['gate3']),
+        (5.4, 0.35, 'G3: Mismatch', COLORS['gate3']),
     ]
     for x, y, text, color in gate_labels:
         ax.text(x, y, text, ha='center', va='center',
-                fontsize=5.5, color=color, fontweight='bold')
+                fontsize=6, color=color, fontweight='bold')
 
     # TriadReport label
     ax.text(5.0, 2.7, 'TriadReport', ha='center', va='center',
@@ -191,7 +191,7 @@ def fig2_operatorgraph():
     ax_b.text(0, 4.8, 'b', fontsize=10, fontweight='bold')
 
     tiers = [
-        (4, 'Tier 4', 'Full-wave / Monte Carlo', '#8B0000', 0.3),
+        (4, 'Tier 4', 'Full-wave / stochastic transport', '#8B0000', 0.3),
         (3, 'Tier 3', 'Nonlinear, ray/wave', '#CC4400', 0.4),
         (2, 'Tier 2', 'Linear, shift-variant', '#DD8800', 0.5),
         (1, 'Tier 1', 'Linear, shift-invariant', '#228B22', 0.6),
@@ -223,10 +223,10 @@ def fig2_operatorgraph():
               transform=ax_c.transAxes)
 
     stats = [
-        ('26', 'Validated\nmodalities'),
-        ('7', 'End-to-end\ncorrection'),
+        ('168', 'Registered\nmodalities'),
+        ('12', 'End-to-end\ncorrection'),
         ('5', 'Physical\ncarriers'),
-        ('2', 'Hardware\nvalidated'),
+        ('10', 'Hardware\nvalidated'),
     ]
 
     for i, (num, label) in enumerate(stats):
@@ -248,7 +248,7 @@ def fig2_operatorgraph():
 # FIGURE 3: Triad Decomposition structure and gate binding
 # ═════════════════════════════════════════════════════════════════════════════
 def fig3_triad():
-    fig = plt.figure(figsize=(DOUBLE_COL, 3.0))
+    fig = plt.figure(figsize=(DOUBLE_COL, 4.5))
     gs = gridspec.GridSpec(1, 3, width_ratios=[1, 1.2, 0.8], wspace=0.35)
 
     # Panel a: Decision tree
@@ -293,21 +293,27 @@ def fig3_triad():
     ax_b.text(-0.15, 1.05, 'b', fontsize=10, fontweight='bold',
               transform=ax_b.transAxes)
 
-    modalities = ['Matrix', 'CT', 'CACTI', 'Lensless', 'MRI',
-                  'SPC', 'CASSI\n(Alg 1)', 'CASSI\n(Alg 2)', 'Ptycho.']
-    # Gate 3 dominates all - create heatmap data
+    modalities = ['Matrix', 'CT (CoR)', 'CACTI', 'Lensless', 'MRI',
+                  'SPC', 'CASSI\n(Alg 1)', 'CASSI\n(Alg 2)', 'Ptycho.',
+                  'Fluor.', 'CT (offset)', 'Cryo-EM', 'Comp. Holo.', 'US']
+    # Gate 3 dominates all 14 configurations - create heatmap data
     # Rows = modalities, Cols = [G1, G2, G3]
     # All G3 dominant
     heatmap_data = np.array([
-        [0.1, 0.05, 0.85],  # Matrix
-        [0.15, 0.1, 0.75],  # CT
+        [0.10, 0.05, 0.85],  # Matrix
+        [0.15, 0.10, 0.75],  # CT (CoR)
         [0.05, 0.05, 0.90],  # CACTI
-        [0.2, 0.1, 0.70],   # Lensless
+        [0.20, 0.10, 0.70],  # Lensless
         [0.05, 0.02, 0.93],  # MRI
-        [0.1, 0.05, 0.85],  # SPC
-        [0.2, 0.1, 0.70],   # CASSI Alg1
-        [0.2, 0.1, 0.70],   # CASSI Alg2
+        [0.10, 0.05, 0.85],  # SPC
+        [0.20, 0.10, 0.70],  # CASSI Alg1
+        [0.20, 0.10, 0.70],  # CASSI Alg2
         [0.15, 0.05, 0.80],  # Ptychography
+        [0.10, 0.10, 0.80],  # Fluorescence
+        [0.15, 0.05, 0.80],  # CT (offset)
+        [0.10, 0.05, 0.85],  # Cryo-EM
+        [0.20, 0.10, 0.70],  # Comp. Holography
+        [0.15, 0.10, 0.75],  # Ultrasound
     ])
 
     from matplotlib.colors import LinearSegmentedColormap
@@ -335,17 +341,22 @@ def fig3_triad():
     ax_c.text(-0.2, 1.05, 'c', fontsize=10, fontweight='bold',
               transform=ax_c.transAxes)
 
-    # Recovery ratios from the paper
+    # Recovery ratios from the paper (14 configurations, 5 carrier families)
     recovery_ratios = {
         'Matrix': 1.0,
-        'CT': 0.89,
-        'CACTI': 1.1,  # >1 due to regularization
+        'CT (CoR)': 0.89,
+        'CACTI': 1.1,
         'Lensless': 0.78,
         'MRI': 1.0,
         'SPC': 1.0,
         'CASSI\n(Alg 1)': 0.16,
         'CASSI\n(Alg 2)': 0.22,
         'Ptycho.': 0.65,
+        'Fluor.': 0.53,
+        'CT (offset)': 1.0,
+        'Cryo-EM': 1.0,
+        'Comp. Holo.': 1.10,
+        'US': 1.19,
     }
 
     names = list(recovery_ratios.keys())

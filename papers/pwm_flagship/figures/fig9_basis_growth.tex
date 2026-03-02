@@ -8,16 +8,17 @@
 \definecolor{pwmOrange}{HTML}{E8712B}
 \definecolor{pwmGreen}{HTML}{3D9E3F}
 \definecolor{pwmRed}{HTML}{C93C3C}
+\definecolor{pwmPurple}{HTML}{7B4EA3}
 
 \begin{document}
 \begin{tikzpicture}
 \begin{axis}[
-    width=12cm, height=7.5cm,
+    width=14cm, height=7.5cm,
     xlabel={Number of registered modalities $N$},
     ylabel={Number of distinct primitives $K$},
-    xmin=0, xmax=33,
-    ymin=0, ymax=12,
-    xtick={0,5,10,15,20,25,30},
+    xmin=0, xmax=175,
+    ymin=0, ymax=13,
+    xtick={0,20,40,60,80,100,120,140,160},
     ytick={0,2,4,6,8,10,12},
     grid=major,
     grid style={gray!30},
@@ -27,19 +28,22 @@
     label style={font=\small},
 ]
 
-% Staircase line
+% Staircase line: K grows from 1 to 11, then saturates
 \addplot[pwmBlue, ultra thick, mark=*, mark size=1.5pt] coordinates {
     (1,1) (2,2) (3,4) (4,5) (5,6) (6,7) (7,8) (8,8)
     (9,8) (10,8) (11,8) (12,9) (13,9) (14,9) (15,9)
     (16,9) (17,9) (18,9) (19,9) (20,9) (21,9) (22,9)
     (23,9) (24,9) (25,9) (26,9) (27,10) (28,10) (29,10)
-    (30,10) (31,10)
+    (30,10) (31,10) (32,11) (33,11) (34,11) (35,11)
+    (40,11) (50,11) (60,11) (70,11) (80,11) (90,11)
+    (100,11) (110,11) (120,11) (130,11) (140,11) (150,11)
+    (160,11) (168,11)
 };
 \addlegendentry{Primitives required}
 
-% Saturated region shading
+% Saturated region shading (N=35 to N=168)
 \addplot[fill=pwmGreen, fill opacity=0.08, draw=none, forget plot]
-    coordinates {(12,0) (31,0) (31,12) (12,12)} \closedcycle;
+    coordinates {(35,0) (175,0) (175,13) (35,13)} \closedcycle;
 
 % Annotations for key primitives
 \node[font=\tiny, pwmBlue, anchor=south west] at (axis cs:1,1.3) {$D$};
@@ -51,14 +55,18 @@
 \node[font=\tiny, pwmBlue, anchor=south west] at (axis cs:7,8.3) {$P$};
 \node[font=\tiny, pwmOrange, anchor=south west] at (axis cs:12,9.3) {$W$};
 \node[font=\tiny, pwmRed, anchor=south west] at (axis cs:27,10.3) {$R$};
+\node[font=\tiny, pwmPurple, anchor=south west] at (axis cs:32,11.3) {$\Lambda$};
 
-% Dashed line at K=10
-\addplot[dashed, gray, thin, forget plot] coordinates {(0,10) (33,10)};
-\node[font=\tiny, gray, anchor=south east] at (axis cs:33,10) {$K=10$};
+% Dashed line at K=11
+\addplot[dashed, gray, thin, forget plot] coordinates {(0,11) (175,11)};
+\node[font=\tiny, gray, anchor=south east] at (axis cs:175,11) {$K=11$};
 
 % Annotation for saturated region
-\node[font=\scriptsize, pwmGreen!70!black, anchor=north] at (axis cs:22,11.5) {Saturated: no new};
-\node[font=\scriptsize, pwmGreen!70!black, anchor=north] at (axis cs:22,10.8) {primitive for 19 modalities};
+\node[font=\scriptsize, pwmGreen!70!black, anchor=north] at (axis cs:105,12.5) {Saturated: no new primitive};
+\node[font=\scriptsize, pwmGreen!70!black, anchor=north] at (axis cs:105,11.8) {for 133 subsequent modalities (19 categories)};
+
+% N=168 endpoint marker
+\node[font=\tiny, pwmBlue, anchor=south] at (axis cs:168,11.5) {$N=168$};
 
 \end{axis}
 \end{tikzpicture}
