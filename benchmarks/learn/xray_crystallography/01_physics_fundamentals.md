@@ -1,0 +1,85 @@
+# 01 — Physics Fundamentals: X-ray Crystallography
+
+## 1. Overview
+
+X-ray Crystallography imaging modality with DAG: F --> S --> D.
+
+**Category**: Scientific Instrumentation
+**Carrier**: X-ray
+
+---
+
+## 2. X-ray Physics
+
+X-rays are high-energy electromagnetic radiation (photon energies ~20-150 keV) that penetrate matter and are attenuated according to Beer-Lambert law: I = I₀ exp(-∫μ(x,y,z) dl). Different tissues have different linear attenuation coefficients μ, creating contrast.
+
+### Key Concepts
+
+- Beer-Lambert attenuation law
+- Linear attenuation coefficient μ (energy-dependent)
+- Polychromatic spectrum and beam hardening
+- Detector types: scintillator + photodiode, photon-counting
+- Dose considerations: ALARA principle
+
+### Wavelength / Energy Range
+
+0 – 0 nm
+
+---
+
+## 3. Signal Equation
+
+The fundamental signal equation for this modality:
+
+```
+I(d) = I₀ · exp(-∫ μ(l) dl) + noise
+```
+
+This describes how the object (x) produces measurements (y) through the
+physical imaging process. The goal of reconstruction is to invert this
+relationship.
+
+---
+
+## 4. Hardware and Imaging Chain
+
+### Imaging Chain Elements
+
+| Element | Type | Transfer | Throughput | Noise |
+|---------|------|----------|------------|-------|
+| Fourier Sampling | filter | modulation | 1.0 | — |
+| Signal Encoding | medium | modulation | 0.9 | — |
+| Detector | detector | integration | 0.85 | gaussian |
+
+### System Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| Image shape (x) | [64, 64] |
+| Measurement shape (y) | [64, 64] |
+| Forward model type | nonlinear_operator |
+| Category module | medical_mri_kspace |
+
+---
+
+## 5. Key Physics Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| Acceleration | 4 |
+
+
+---
+
+## 6. Summary
+
+| Aspect | Details |
+|--------|---------|
+| Physical probe | X-ray |
+| Primary contrast | Determined by x-ray-matter interaction |
+| Resolution limit | Set by wavelength / aperture / probe geometry |
+| Noise model | Signal-dependent (Poisson/speckle) + signal-independent (Gaussian) |
+
+---
+
+*Next: [02 — Forward Model](02_forward_model.md)*

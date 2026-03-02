@@ -2,6 +2,7 @@
 
 ## Source
 Adversarial brain T2w phantoms (20 samples, severe mismatch)
+Note: Set BRATS_ROOT for real pathological brain anatomy
 
 ## Per-Sample Mismatch Values
 

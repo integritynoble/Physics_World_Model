@@ -1,0 +1,88 @@
+# 01 — Physics Fundamentals: Sonar Imaging
+
+## 1. Overview
+
+Sonar imaging uses acoustic waves to map underwater environments. Active sonar transmits acoustic pulses and processes the backscattered echoes via beamforming for spatial resolution.
+
+**Category**: Remote Sensing
+**Carrier**: Acoustic
+
+---
+
+## 2. Acoustic Physics
+
+Acoustic imaging uses sound waves (1-50 MHz for medical ultrasound, kHz for sonar). Waves are transmitted into the medium, and reflections from impedance boundaries are received and beamformed to create images. The speed of sound (~1540 m/s in tissue) and acoustic impedance Z = ρ·c determine contrast.
+
+### Key Concepts
+
+- Acoustic impedance Z = ρ·c and reflection coefficient
+- Beamforming: delay-and-sum (DAS), adaptive methods
+- Frequency-dependent attenuation
+- Phased arrays and synthetic aperture focusing
+- Doppler effect for flow measurement
+
+### Wavelength / Energy Range
+
+1000000.0 – 1000000000.0 nm
+
+---
+
+## 3. Signal Equation
+
+The fundamental signal equation for this modality:
+
+```
+y(t) = Σ_i  A_i · s(t - 2r_i/c) + noise
+```
+
+This describes how the object (x) produces measurements (y) through the
+physical imaging process. The goal of reconstruction is to invert this
+relationship.
+
+---
+
+## 4. Hardware and Imaging Chain
+
+### Imaging Chain Elements
+
+| Element | Type | Transfer | Throughput | Noise |
+|---------|------|----------|------------|-------|
+| Sonar Transmitter | source | identity | 1.0 | — |
+| Hydrophone Array | detector | integration | 0.8 | thermal, ambient_acoustic |
+
+### System Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| Image shape (x) | [256, 256] |
+| Measurement shape (y) | [128] |
+| Forward model type | linear_operator |
+| Category module | remote_sensing_sar |
+
+---
+
+## 5. Key Physics Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| Type | piezoelectric |
+| Frequency Khz | 200 |
+| Source Level Db | 220 |
+| N Elements | 64 |
+| Element Spacing Mm | 7.5 |
+
+
+---
+
+## 6. Summary
+
+| Aspect | Details |
+|--------|---------|
+| Physical probe | Acoustic |
+| Primary contrast | Determined by acoustic-matter interaction |
+| Resolution limit | Set by wavelength / aperture / probe geometry |
+| Noise model | Signal-dependent (Poisson/speckle) + signal-independent (Gaussian) |
+
+---
+
+*Next: [02 — Forward Model](02_forward_model.md)*
