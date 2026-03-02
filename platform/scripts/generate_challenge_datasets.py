@@ -592,26 +592,16 @@ def _load_scenes_from_registry(
 
 
 def _load_synthetic_source_pool(data_root: Path | None = None) -> list[np.ndarray]:
-    """Load BSDS400 + BrainImages as raw material for synthetic scene generation."""
+    """Load multi-domain source pool for synthetic scene generation.
+
+    Sources: BSDS400, BrainImages, TSA hyperspectral, CACTI video, real MRI.
+    """
     if data_root is None:
         data_root = _find_data_root()
-    # data_root IS the datasets/ directory (e.g. .../datasets/)
     datasets_root = data_root
 
-    from PIL import Image as _PILImage
-
-    sources: list[np.ndarray] = []
-    for subdir, fmt in [("SPC/BSDS400", "*.jpg"), ("SPC/BrainImages_test", "*.png")]:
-        src_dir = datasets_root / subdir
-        if not src_dir.exists():
-            continue
-        for fp in sorted(src_dir.glob(fmt)):
-            try:
-                img = _PILImage.open(fp).convert("L")
-                sources.append(np.array(img, dtype=np.float64) / 255.0)
-            except Exception:
-                continue
-    return sources
+    from scripts.generate_synthetic_scenes import load_all_sources
+    return load_all_sources(datasets_root)
 
 
 # Cached source pool (loaded once per process)

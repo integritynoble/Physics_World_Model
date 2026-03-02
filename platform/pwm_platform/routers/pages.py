@@ -934,10 +934,10 @@ async def challenge_tier_page(
         # Check for best-algorithm reconstruction image
         # Try tier-specific dir first (algorithms_dev/), then shared (algorithms/)
         _BEST_RECON_PRIORITY = [
+            ("recon_lpd.png", "Learned Primal-Dual + gradient"),
+            ("recon_dolce.png", "DOLCE + gradient"),
             ("recon_pnp-drunet.png", "PnP-DRUNet + blind cal"),
             ("recon_fista-tv-tuned.png", "FISTA-TV + blind cal"),
-            ("recon_dolce.png", "DOLCE + gradient"),
-            ("recon_lpd.png", "Learned Primal-Dual"),
         ]
         for _algo_dir_name in (f"algorithms_{tier_name}", "algorithms"):
             algo_scene_dir = gallery_base / _algo_dir_name / f"scene_{scene_idx:02d}"
@@ -961,14 +961,11 @@ async def challenge_tier_page(
         tier_true_spec = tier.get("true_spec")
 
     # Build algorithm comparison demo: auto-detect recon_*.png in gallery
-    # Public: algorithms/scene_XX/  Dev: algorithms_dev/scene_XX/
+    # Only for public tier (dev has no visible ground truth for meaningful comparison)
     algo_demo = []
-    if tier_name in ("public", "dev"):
-        algo_dir_name = f"algorithms_{tier_name}" if tier_name == "dev" else "algorithms"
+    if tier_name == "public":
+        algo_dir_name = "algorithms"
         algo_base = gallery_base / algo_dir_name
-        if not algo_base.is_dir():
-            algo_base = gallery_base / "algorithms"
-            algo_dir_name = "algorithms"
         for si in range(20):
             sd = algo_base / f"scene_{si:02d}"
             if not sd.is_dir() or not (sd / "gt.png").exists():
@@ -976,10 +973,15 @@ async def challenge_tier_page(
             recon_files = sorted(sd.glob("recon_*.png"))
             if not recon_files:
                 continue
+            _ALGO_DISPLAY = {
+                "fbp": "FBP", "fbpconv": "FBPConvNet", "lpd": "Learned Primal-Dual",
+                "dolce": "DOLCE", "pnp-admm": "PnP-ADMM", "pnp-drunet": "PnP-DRUNet",
+                "tv-admm": "TV-ADMM", "red-cnn": "RED-CNN", "dudotrans": "DuDoTrans",
+            }
             algos = []
             for rf in recon_files:
                 key = rf.stem.replace("recon_", "")
-                name = key.replace("-", " ").replace("_", " ").title()
+                name = _ALGO_DISPLAY.get(key, key.replace("-", " ").replace("_", " ").title())
                 algos.append({"key": key, "name": name})
             url_algo_dir = algo_dir_name if (gallery_base / algo_dir_name / f"scene_{si:02d}").is_dir() else "algorithms"
             algo_demo.append({
@@ -987,6 +989,16 @@ async def challenge_tier_page(
                 "base_url": f"/static/img/benchmark_gallery/{gallery_key}/{url_algo_dir}/scene_{si:02d}",
                 "algorithms": algos,
             })
+
+    # Extract Scenario I baselines for this tier (measured results from actual HDF5)
+    baselines = challenge.get("baselines", {})
+    scenario_i_baselines = [
+        b for b in baselines.get("scenario_i", [])
+        if b.get("tier", "public") == tier_name
+    ]
+    # Scenario II/III (published literature) — show on public tier only
+    scenario_ii_baselines = baselines.get("scenario_ii", []) if tier_name == "public" else []
+    scenario_iii_baselines = baselines.get("scenario_iii", []) if tier_name == "public" else []
 
     return templates.TemplateResponse("challenge_tier.html", {
         "request": request,
@@ -1005,6 +1017,9 @@ async def challenge_tier_page(
         "algo_demo": algo_demo,
         "spec_ranges": tier.get("spec_ranges", challenge.get("spec_ranges", [])),
         "true_spec": tier_true_spec,
+        "scenario_i_baselines": scenario_i_baselines,
+        "scenario_ii_baselines": scenario_ii_baselines,
+        "scenario_iii_baselines": scenario_iii_baselines,
     })
 
 

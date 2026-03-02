@@ -369,8 +369,8 @@ CHALLENGE_CONFIG: dict[str, dict] = {
         ],
         "noise_model": "gaussian",
         "noise_params": {"sigma": 0.03},
-        "scenes": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-        "scene_count": 11,
+        "scenes": list(range(1, 21)),
+        "scene_count": 20,
         "tiers": {
             "public": {
                 "true_spec": {
@@ -549,9 +549,24 @@ CHALLENGE_CONFIG: dict[str, dict] = {
         # Numbers from published CT literature calibrated to our geometry.
         "baselines": {
             "scenario_i": [
-                {"method": "FBP",           "psnr": 21.84, "ssim": 0.382, "score": 0.440, "tier": "public"},
-                {"method": "PnP-ADMM",      "psnr": 23.21, "ssim": 0.621, "score": 0.556, "tier": "public"},
-                {"method": "PnP-DRUNet",    "psnr": 24.51, "ssim": 0.707, "score": 0.610, "tier": "public", "device": "T4"},
+                # Public tier (11 LoDoPaB-CT test-split scenes)
+                {"method": "FBP",           "psnr": 21.84, "ssim": 0.382, "consistency": 0.844, "score": 0.440, "tier": "public"},
+                {"method": "TV-ADMM",       "psnr": 17.62, "ssim": 0.152, "consistency": 0.906, "score": 0.318, "tier": "public"},
+                {"method": "LS-GD",         "psnr": 23.41, "ssim": 0.489, "consistency": 0.913, "score": 0.512, "tier": "public"},
+                {"method": "PnP-ADMM",      "psnr": 23.21, "ssim": 0.621, "consistency": 0.877, "score": 0.556, "tier": "public"},
+                {"method": "PnP-DRUNet",    "psnr": 24.51, "ssim": 0.707, "consistency": 0.908, "score": 0.610, "tier": "public", "device": "T4"},
+                # Dev tier (20 LoDoPaB-CT validation-split scenes, patients 0–63)
+                {"method": "FBP",           "psnr": 22.68, "ssim": 0.445, "consistency": 0.851, "score": 0.475, "tier": "dev"},
+                {"method": "TV-ADMM",       "psnr": 20.15, "ssim": 0.297, "consistency": 0.915, "score": 0.403, "tier": "dev"},
+                {"method": "LS-GD",         "psnr": 23.23, "ssim": 0.583, "consistency": 0.925, "score": 0.550, "tier": "dev"},
+                {"method": "PnP-ADMM",      "psnr": 23.42, "ssim": 0.645, "consistency": 0.849, "score": 0.562, "tier": "dev"},
+                {"method": "PnP-DRUNet",    "psnr": 23.72, "ssim": 0.725, "consistency": 0.918, "score": 0.611, "tier": "dev", "device": "T4"},
+                # Hidden tier (20 LoDoPaB-CT validation-split scenes, patients 64–127, adversarial mods)
+                {"method": "FBP",           "psnr": 18.47, "ssim": 0.522, "consistency": 0.752, "score": 0.444, "tier": "hidden"},
+                {"method": "TV-ADMM",       "psnr": 16.98, "ssim": 0.344, "consistency": 0.805, "score": 0.368, "tier": "hidden"},
+                {"method": "LS-GD",         "psnr": 18.55, "ssim": 0.596, "consistency": 0.805, "score": 0.485, "tier": "hidden"},
+                {"method": "PnP-ADMM",      "psnr": 19.78, "ssim": 0.707, "consistency": 0.795, "score": 0.540, "tier": "hidden"},
+                {"method": "PnP-DRUNet",    "psnr": 15.74, "ssim": 0.668, "consistency": 0.562, "score": 0.437, "tier": "hidden", "device": "T4"},
             ],
             "scenario_ii": [
                 {"method": "FBP",                 "psnr": 23.14, "ssim": 0.641},
