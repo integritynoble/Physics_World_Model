@@ -1,4 +1,4 @@
-\begin{thebibliography}{29}
+\begin{thebibliography}{36}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -36,6 +36,12 @@ Singanallur~V. Venkatakrishnan, Charles~A. Bouman, and Brendt Wohlberg.
   Information Processing (GlobalSIP)}, pages 945--948, 2013.
 \newblock \doi{10.1109/GlobalSIP.2013.6737048}.
 
+\bibitem[Yuan et~al.(2021{\natexlab{a}})Yuan, Liu, Suo, and Dai]{yuan2021pnp}
+Xin Yuan, Yang Liu, Jinli Suo, and Qionghai Dai.
+\newblock Plug-and-play algorithms for video snapshot compressive imaging.
+\newblock \emph{IEEE Transactions on Pattern Analysis and Machine
+  Intelligence}, 44\penalty0 (10):\penalty0 7093--7111, 2021{\natexlab{a}}.
+
 \bibitem[Monga et~al.(2021)Monga, Li, and Eldar]{monga2021unrolling}
 Vishal Monga, Yuelong Li, and Yonina~C. Eldar.
 \newblock Algorithm unrolling: Interpretable, efficient deep learning for
@@ -52,6 +58,13 @@ Yuanhao Cai, Jing Lin, Xiaowan Hu, Haoqian Wang, Xin Yuan, Yulun Zhang, Radu
   image reconstruction.
 \newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
   and Pattern Recognition (CVPR)}, pages 17502--17511, 2022{\natexlab{a}}.
+
+\bibitem[Yuan et~al.(2021{\natexlab{b}})Yuan, Brady, and
+  Katsaggelos]{yuan2021sci}
+Xin Yuan, David~J. Brady, and Aggelos~K. Katsaggelos.
+\newblock Snapshot compressive imaging: Theory, algorithms, and applications.
+\newblock \emph{IEEE Signal Processing Magazine}, 38\penalty0 (2):\penalty0
+  65--88, 2021{\natexlab{b}}.
 
 \bibitem[Antun et~al.(2020)Antun, Renna, Poon, Adcock, and
   Hansen]{antun2020instabilities}
@@ -134,6 +147,11 @@ Michael Lustig, David Donoho, and John~M. Pauly.
   1182--1195, 2007.
 \newblock \doi{10.1002/mrm.21391}.
 
+\bibitem[Brady(2009)]{brady2009optical}
+David~J. Brady.
+\newblock \emph{Optical Imaging and Spectroscopy}.
+\newblock John Wiley \& Sons, 2009.
+
 \bibitem[Yang(2026{\natexlab{b}})]{yang2026inversenet}
 Chengshuai Yang.
 \newblock {InverseNet}: Benchmarking operator mismatch in snapshot compressive
@@ -148,12 +166,43 @@ Lishun Wang, Miao Cao, and Xin Yuan.
 \newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
   and Pattern Recognition (CVPR)}, pages 18477--18486, 2023{\natexlab{a}}.
 
+\bibitem[Brady et~al.(2009)Brady, Choi, Marks, Horisaki, and
+  Lim]{brady2009compressive}
+David~J. Brady, Kerkil Choi, Daniel~L. Marks, Ryoichi Horisaki, and Sehoon Lim.
+\newblock Compressive holography.
+\newblock \emph{Optics Express}, 17\penalty0 (15):\penalty0 13040--13049, 2009.
+
 \bibitem[Wang et~al.(2023{\natexlab{b}})Wang, Fu, Du, Gao, Huang, Liu, Chandak,
   Liu, Van~Katwyk, Deac, et~al.]{wang2023scientific}
 Hanchen Wang, Tianfan Fu, Yuanqi Du, Wenhao Gao, Kexin Huang, Ziming Liu, Payal
   Chandak, Shengchao Liu, Peter Van~Katwyk, Andreea Deac, et~al.
 \newblock Scientific discovery in the age of artificial intelligence.
 \newblock \emph{Nature}, 620:\penalty0 47--60, 2023{\natexlab{b}}.
+
+\bibitem[Brady et~al.(2012)Brady, Gehm, Stack, Marks, Kittle, Golish, Vera, and
+  Feller]{brady2012multiscale}
+David~J. Brady, Michael~E. Gehm, Ronald~A. Stack, Daniel~L. Marks, David~S.
+  Kittle, Dathon~R. Golish, E.~M. Vera, and Steven~D. Feller.
+\newblock Multiscale gigapixel photography.
+\newblock \emph{Nature}, 486\penalty0 (7403):\penalty0 386--389, 2012.
+
+\bibitem[Klein et~al.(2009)Klein, Hanley, Bayouth, Yin, Simon, Dresser, Serago,
+  Aguirre, Ma, Arjomandy, Liu, Sandin, and Holmes]{klein2009tg142}
+Eric~E. Klein, Joseph Hanley, John Bayouth, Fang-Fang Yin, William Simon, Sean
+  Dresser, Christopher Serago, Francisco Aguirre, Lijun Ma, Bijan Arjomandy,
+  Chihray Liu, Craig Sandin, and Timothy Holmes.
+\newblock Task {G}roup 142 report: Quality assurance of medical accelerators.
+\newblock \emph{Medical Physics}, 36\penalty0 (9):\penalty0 4197--4212, 2009.
+
+\bibitem[Mutic et~al.(2003)Mutic, Palta, Butker, Das, Huq, Loo, Salter,
+  McCollough, and Van~Dyk]{mutic2003tg66}
+Sasa Mutic, Jatinder~R. Palta, Elizabeth~K. Butker, Indra~J. Das, M.~Saiful
+  Huq, Leh-Nien~Dick Loo, Bill~J. Salter, Cynthia~H. McCollough, and Jacob
+  Van~Dyk.
+\newblock Quality assurance for computed-tomography simulators and the
+  computed-tomography-simulation process: Report of the {AAPM} {R}adiation
+  {T}herapy {C}ommittee {T}ask {G}roup {N}o.\ 66.
+\newblock \emph{Medical Physics}, 30\penalty0 (10):\penalty0 2762--2792, 2003.
 
 \bibitem[Choi et~al.(2017)Choi, Jeon, Nam, Gutierrez, and Kim]{choi2017kaist}
 Inchang Choi, Daniel~S. Jeon, Giljoo Nam, Diego Gutierrez, and Min~H. Kim.

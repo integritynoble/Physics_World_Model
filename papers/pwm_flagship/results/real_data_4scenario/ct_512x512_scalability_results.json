@@ -1,0 +1,75 @@
+{
+  "experiment": "ct_512x512_scalability",
+  "dataset": "shepp_logan_512",
+  "phantom_size": 512,
+  "n_angles": 720,
+  "n_det": 512,
+  "geometry": "parallel_beam",
+  "calibration_range": [
+    -25.0,
+    25.0
+  ],
+  "calibration_steps": 21,
+  "offsets": [
+    {
+      "detector_offset_px": 2,
+      "psnr_I": 13.8382,
+      "psnr_II": 12.8692,
+      "psnr_III": 13.7217,
+      "ssim_I": 0.4635,
+      "ssim_II": 0.4219,
+      "ssim_III": 0.4595,
+      "delta_psnr": 0.969,
+      "recovery_ratio": 0.8797,
+      "calibrated_offset_px": 2.5,
+      "time_I_s": 7.87,
+      "time_II_s": 8.03,
+      "time_III_s": 164.03
+    },
+    {
+      "detector_offset_px": 5,
+      "psnr_I": 13.8382,
+      "psnr_II": 11.5317,
+      "psnr_III": 13.8382,
+      "ssim_I": 0.4635,
+      "ssim_II": 0.3763,
+      "ssim_III": 0.4635,
+      "delta_psnr": 2.3065,
+      "recovery_ratio": 1.0,
+      "calibrated_offset_px": 5.0,
+      "time_I_s": 7.9,
+      "time_II_s": 7.85,
+      "time_III_s": 169.98
+    },
+    {
+      "detector_offset_px": 10,
+      "psnr_I": 13.8382,
+      "psnr_II": 10.4787,
+      "psnr_III": 13.8382,
+      "ssim_I": 0.4635,
+      "ssim_II": 0.3474,
+      "ssim_III": 0.4635,
+      "delta_psnr": 3.3596,
+      "recovery_ratio": 1.0,
+      "calibrated_offset_px": 10.0,
+      "time_I_s": 7.84,
+      "time_II_s": 8.06,
+      "time_III_s": 180.67
+    },
+    {
+      "detector_offset_px": 20,
+      "psnr_I": 13.8382,
+      "psnr_II": 9.6968,
+      "psnr_III": 13.8382,
+      "ssim_I": 0.4635,
+      "ssim_II": 0.3112,
+      "ssim_III": 0.4635,
+      "delta_psnr": 4.1414,
+      "recovery_ratio": 1.0,
+      "calibrated_offset_px": 20.0,
+      "time_I_s": 8.57,
+      "time_II_s": 8.39,
+      "time_III_s": 182.06
+    }
+  ]
+}
