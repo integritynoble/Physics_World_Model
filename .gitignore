@@ -95,3 +95,7 @@ Thumbs.db
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+
+# Private co-author strategy (local + GCS only, not public)
+papers/pwm_flagship/thoughts/
+papers/pwm_flagship/contribution_packages/
