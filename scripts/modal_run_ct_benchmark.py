@@ -567,7 +567,7 @@ def main(
     print("CT GPU Benchmark — Modal T4")
     print(f"Tiers: {tiers}  |  Algos: {algos}")
 
-    # Submit all tiers in parallel
+    # Submit all tiers in parallel using spawn()
     futures = {}
     for t in tiers:
         h5_path = DATA_ROOT / t / f"ct_challenge_{t}.h5"
@@ -576,13 +576,16 @@ def main(
             continue
         with open(h5_path, "rb") as fh:
             h5_bytes = fh.read()
-        futures[t] = run_ct_tier_gpu.remote(h5_bytes, t, algos)
+        print(f"  [SUBMIT] {t} ({len(h5_bytes) // 1024} KB)")
+        futures[t] = run_ct_tier_gpu.spawn(h5_bytes, t, algos)
 
-    # Collect results
+    # Collect results (each .get() blocks until that tier finishes)
     all_rows = []
     for t, future in futures.items():
+        print(f"  [WAITING] {t} ...")
         rows = future.get()
         all_rows.extend(rows)
+        print(f"  [DONE] {t}: {len(rows)} results")
 
     # Save outputs
     ts       = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")

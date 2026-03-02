@@ -70,13 +70,18 @@ Ranks 1–2 confirmed from the deterministic leaderboard generator. Scores 3–8
 **Scenario I — Blind reconstruction** (algorithm uses `H_nom`, data from measured noisy+mismatched sinogram):
 
 Measured on actual challenge HDF5 files (LoDoPaB-CT slices, Poisson I₀=10 000 + Gaussian σ=5 noise, geometric mismatch per tier).
-Run: `scripts/run_ct_benchmark.py` · Date: 2026-03-01
+CPU run: `scripts/run_ct_benchmark.py` · GPU run: `scripts/modal_run_ct_benchmark.py` (Modal T4) · Date: 2026-03-01/02
+
+**CPU algorithms:**
 
 | Algorithm | Tier | PSNR (dB) | SSIM | Consistency | Score | Notes |
 |-----------|------|-----------|------|-------------|-------|-------|
 | FBP | Public (11) | 21.84 | 0.382 | 0.844 | 0.440 | Feldkamp + Hann, FBP_CAL=1.655 |
 | FBP | Dev (20) | 22.68 | 0.445 | 0.851 | 0.475 | |
 | FBP | Hidden (20) | 18.47 | 0.522 | 0.752 | 0.444 | 40–90 views, adversarial mods |
+| LS-GD | Public (11) | 23.41 | 0.489 | 0.913 | 0.512 | GD from FBP init, 30 iters, no reg |
+| LS-GD | Dev (20) | 23.23 | 0.583 | 0.925 | 0.551 | |
+| LS-GD | Hidden (20) | 18.55 | 0.596 | 0.805 | 0.485 | |
 | PnP-ADMM | Public (11) | **23.21** | **0.621** | **0.877** | **0.556** | Gaussian denoiser σ: 21→3.6 px |
 | PnP-ADMM | Dev (20) | **23.42** | **0.645** | **0.849** | **0.562** | |
 | PnP-ADMM | Hidden (20) | **19.78** | **0.707** | **0.796** | **0.540** | |
@@ -85,6 +90,23 @@ Run: `scripts/run_ct_benchmark.py` · Date: 2026-03-01
 | TV-ADMM | Hidden (20) | 16.98 | 0.344 | 0.805 | 0.368 | |
 
 †TV-ADMM underperforms with λ=0.006; λ×step≈0.007 ≪ image gradient ~0.03. Rerun with λ=0.05–0.10 expected to match or exceed FBP.
+‡LS-GD (least-squares gradient descent, 30 iters from FBP init) matches PnP-ADMM in PSNR on public tier; lower SSIM due to absent texture prior.
+
+**GPU algorithms (Modal T4, 2–3s/scene):**
+
+| Algorithm | Tier | PSNR (dB) | SSIM | Consistency | Score | Notes |
+|-----------|------|-----------|------|-------------|-------|-------|
+| FBP-GPU | Public (11) | 21.84 | 0.382 | 0.844 | 0.440 | Same calibration as CPU |
+| FBP-GPU | Dev (20) | 22.68 | 0.445 | 0.851 | 0.475 | |
+| FBP-GPU | Hidden (20) | 18.47 | 0.522 | 0.753 | 0.444 | |
+| PnP-DRUNet | Public (11) | **24.51** | **0.707** | **0.908** | **0.610** | DRUNet gray, σ: 0.06→0.01, 15 iters |
+| PnP-DRUNet | Dev (20) | **23.72** | **0.725** | **0.918** | **0.611** | |
+| PnP-DRUNet | Hidden (20) | 15.74 | 0.668 | 0.562 | 0.437 | 5/20 diverge (adversarial mods)§ |
+| TV-ADMM-GPU | Public (11) | 18.82 | 0.195 | 0.901 | 0.346 | Same root cause as CPU TV-ADMM |
+| TV-ADMM-GPU | Dev (20) | 21.10 | 0.346 | 0.912 | 0.432 | |
+| TV-ADMM-GPU | Hidden (20) | 15.14 | 0.234 | 0.607 | 0.266 | |
+
+§PnP-DRUNet diverges on 5/20 hidden scenes (adversarial metal inserts, PSNR as low as 3.1 dB). σ schedule needs tuning for adversarial inputs.
 
 FBP implementation: Feldkamp D_SSD pre-weight + Hann-windowed ramp + FBP_CAL=1.655 + sinogram clamp [−0.1, 6.5] nepers + σ=1 Gaussian smooth.
 
@@ -126,7 +148,9 @@ Deep-unrolling and diffusion models benefit most from geometric correction.
 | `platform/.../benchmark_database/_challenge_data.py` | `CHALLENGE_CONFIG["ct"]`: tiers, mismatch ranges, baselines |
 | `scripts/setup_benchmark_data.sh` | Downloads CT from GCS + LoDoPaB-CT from Zenodo (~1.5 GB) |
 | `docs/Multi_Server_Setup.md` | Server D (CT) deployment guide |
-| `results/ct/benchmark_cpu_20260301T221045Z.{json,csv}` | Scenario I CPU benchmark results (2026-03-01) |
+| `results/ct/benchmark_cpu_20260301T221045Z.{json,csv}` | Scenario I CPU results: FBP, TV-ADMM, PnP-ADMM (2026-03-01) |
+| `results/ct/benchmark_cpu_20260301T232340Z.{json,csv}` | Scenario I CPU results: LS-GD on all 3 tiers (2026-03-01) |
+| `results/ct/benchmark_gpu_20260302T002953Z.{json,csv}` | Scenario I GPU results: FBP/TV-ADMM/PnP-DRUNet on Modal T4 (2026-03-02) |
 
 ## References
 - [Detailed Benchmarks](../pwm_modality_benchmarks_detailed.md)
