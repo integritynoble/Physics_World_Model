@@ -12,38 +12,38 @@ where:
 Nominal operator (what algorithms see):
   H_nominal:  y_c = mask · F( S_c_nominal · x )
 
-Dataset parameters (matches fastMRI multi-coil knee):
+Dataset parameters:
   Shape   = 320 × 320
   Coils   = 15
   Accel   = 4×  (variable-density Cartesian, center fraction 0.08)
   TE      = 25 ms
 
-Public tier — real fastMRI multi-coil knee k-space
---------------------------------------------------
-Set the environment variable FASTMRI_ROOT to the directory containing
-fastMRI multi-coil knee H5 files (the *_multicoil_train or *_multicoil_val
-subdirectories from the official download).
+Data sources (priority order)
+──────────────────────────────
+Public tier:
+  1. fastMRI brain (FASTMRI_BRAIN_ROOT) — real multicoil T2w k-space
+  2. Local real_mri/multicoil_val       — bundled brain MRI slices
+  3. Synthetic brain T2w phantoms       — procedural fallback
 
-  export FASTMRI_ROOT=/path/to/knee_multicoil_train
+Dev tier  (healthy anatomy, multi-site, multi-field-strength):
+  1. IXI T2w dataset (IXI_T2_ROOT)     — 578 healthy brains, 3 sites, 1.5/3 T
+     Reference: brain-development.org/ixi-dataset/  (CC BY-SA 3.0)
+     Download:  python download_datasets.py --ixi-dir ~/pwm_data/ixi_t2
+  2. Procedural brain T2w phantoms      — fallback
 
-Files are named fileNNNNNN.h5 and contain:
-  kspace : (n_slices, n_coils, kH, kW)  complex64
-
-Download instructions:
-  1. Register at https://fastmri.med.nyu.edu/
-  2. Download "Knee MRI multi-coil raw data" (multicoil_train + multicoil_val)
-  3. Set FASTMRI_ROOT to the directory containing the .h5 files
-
-If FASTMRI_ROOT is not set or contains no files, the public tier is built
-from synthetic Shepp-Logan phantoms as a placeholder (clearly labelled).
+Hidden tier  (real pathology: GBM, LGG, meningioma, metastases):
+  1. BraTS T2w dataset (BRATS_ROOT)    — radiologist-annotated tumour cases
+     Reference: synapse.org/brats2024  (data-use agreement)
+     Download:  python download_datasets.py  (prints instructions)
+  2. Procedural adversarial phantoms    — fallback
 
 Run from the mri/ directory:
     python build_dataset.py
 
 Creates:
   public/   mri_challenge_public.h5  + images/  (11 samples, mild mismatch)
-  dev/      mri_challenge_dev.h5     + images/  (20 knee-like, mild mismatch)
-  hidden/   mri_challenge_hidden.h5  + images/  (20 adversarial, severe mismatch)
+  dev/      mri_challenge_dev.h5     + images/  (20 samples, mild mismatch)
+  hidden/   mri_challenge_hidden.h5  + images/  (20 samples, severe mismatch)
 """
 
 from __future__ import annotations
@@ -60,6 +60,7 @@ from scipy.ndimage import gaussian_filter, map_coordinates, zoom as _zoom
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from simulate_scenes import generate_mri_gt
+from real_loaders import load_ixi_t2_slices, load_brats_t2_slices
 
 
 # ── Constants ──────────────────────────────────────────────────────────────────
@@ -729,7 +730,8 @@ def build_tier(tier, scenes, output_dir, spec_ranges_key, base_seed,
 # ── README writer ──────────────────────────────────────────────────────────────
 
 def write_tier_readme(tier, output_dir, table, spec_ranges_key,
-                      fastmri_public=False, real_brain_public=False):
+                      fastmri_public=False, real_brain_public=False,
+                      source_label=None):
     sr = SPEC_RANGES[spec_ranges_key]
     rows = "".join(
         f"| sample_{s['sample_idx']:02d}  | {s['scene']:<26} | "
@@ -745,10 +747,23 @@ def write_tier_readme(tier, output_dir, table, spec_ranges_key,
         source = ("fastMRI multi-coil knee (2D Cartesian TSE, 320×320, 15 coils)\n"
                   "Reference: Zbontar et al., arXiv:1811.08839\n"
                   "Download:  https://fastmri.med.nyu.edu/")
+    elif source_label == "ixi_t2":
+        source = ("IXI T2w brain MRI — 578 healthy subjects, 3 sites, 1.5 T / 3 T\n"
+                  "Sites: Hammersmith (3 T Philips), Guy's (1.5 T Philips), IOP (1.5 T GE)\n"
+                  "Licence: CC BY-SA 3.0\n"
+                  "Reference: brain-development.org/ixi-dataset/\n"
+                  "Download:  python download_datasets.py --ixi-dir ~/pwm_data/ixi_t2")
+    elif source_label == "brats_t2":
+        source = ("BraTS brain tumour MRI — radiologist-annotated T2w slices\n"
+                  "Pathologies: GBM, LGG, meningioma, metastases, paediatric glioma\n"
+                  "Reference: Baid et al., 2021, arXiv:2107.02314\n"
+                  "Download:  https://www.synapse.org/brats2024")
     else:
         src_map = {
-            "dev":    "Procedural brain T2w axial phantoms (20 samples, mild mismatch)",
-            "hidden": "Adversarial brain T2w phantoms (20 samples, severe mismatch)",
+            "dev":    "Procedural brain T2w axial phantoms (20 samples, mild mismatch)\n"
+                      "Note: Set IXI_T2_ROOT for real healthy brain anatomy",
+            "hidden": "Adversarial brain T2w phantoms (20 samples, severe mismatch)\n"
+                      "Note: Set BRATS_ROOT for real pathological brain anatomy",
             "public": "Synthetic brain T2w fallback (PLACEHOLDER — set REAL_MRI_ROOT for real data)",
         }
         source = src_map.get(tier, "Procedural synthetic")
@@ -897,29 +912,73 @@ def main():
                       real_brain_public=pub_is_real)
 
     # ── Dev tier ─────────────────────────────────────────────────────────────
-    print("\n[dev] Procedural brain T2w axial (20 samples)...")
-    dev_scenes = [
-        (f"proc_dev_{i:02d}", *generate_mri_gt(5000 + i, "dev", SHAPE))
-        for i in range(20)
-    ]
+    # Priority: (1) IXI T2w real healthy brains, (2) procedural phantoms
+    print("\n[dev] Brain T2w healthy anatomy (20 samples)...")
+    ixi_root = os.environ.get("IXI_T2_ROOT", "")
+    dev_scenes = None
+    dev_source_label = None
+
+    if ixi_root:
+        print(f"  [dev] Trying IXI T2w from {ixi_root}...")
+        dev_scenes = load_ixi_t2_slices(ixi_root, n_samples=20, target_shape=SHAPE, seed=2000)
+        if dev_scenes:
+            dev_source_label = "ixi_t2"
+            print(f"  [dev] Source: IXI T2w ({len(dev_scenes)} slices from real healthy brains)")
+    else:
+        print("  [dev] IXI_T2_ROOT not set — using procedural phantoms.")
+        print("  [dev]   To use real healthy brain MRI:")
+        print("  [dev]     python download_datasets.py --ixi-dir ~/pwm_data/ixi_t2")
+        print("  [dev]     export IXI_T2_ROOT=~/pwm_data/ixi_t2")
+
+    if dev_scenes is None:
+        print("  [dev] Falling back to procedural brain T2w phantoms.")
+        dev_scenes = [
+            (f"proc_dev_{i:02d}", *generate_mri_gt(5000 + i, "dev", SHAPE))
+            for i in range(20)
+        ]
+
     dev_dir = os.path.join(base_dir, "dev")
     dev_t   = build_tier("dev", dev_scenes, dev_dir, "dev", base_seed=2000)
-    write_tier_readme("dev", dev_dir, dev_t, "dev")
+    write_tier_readme("dev", dev_dir, dev_t, "dev", source_label=dev_source_label)
 
     # ── Hidden tier ──────────────────────────────────────────────────────────
-    print("\n[hidden] Adversarial brain T2w (20 samples)...")
-    hid_scenes = [
-        (f"proc_hidden_{i:02d}", *generate_mri_gt(8000 + i, "hidden", SHAPE))
-        for i in range(20)
-    ]
+    # Priority: (1) BraTS T2w real pathological brains, (2) procedural phantoms
+    print("\n[hidden] Brain T2w pathological anatomy (20 samples)...")
+    brats_root = os.environ.get("BRATS_ROOT", "")
+    hid_scenes = None
+    hid_source_label = None
+
+    if brats_root:
+        print(f"  [hidden] Trying BraTS T2w from {brats_root}...")
+        hid_scenes = load_brats_t2_slices(brats_root, n_samples=20, target_shape=SHAPE, seed=3000)
+        if hid_scenes:
+            hid_source_label = "brats_t2"
+            print(f"  [hidden] Source: BraTS T2w ({len(hid_scenes)} slices from real tumour cases)")
+    else:
+        print("  [hidden] BRATS_ROOT not set — using procedural adversarial phantoms.")
+        print("  [hidden]   To use real pathological brain MRI:")
+        print("  [hidden]     python download_datasets.py  # prints BraTS download instructions")
+        print("  [hidden]     export BRATS_ROOT=~/pwm_data/brats2024")
+
+    if hid_scenes is None:
+        print("  [hidden] Falling back to procedural adversarial brain T2w phantoms.")
+        hid_scenes = [
+            (f"proc_hidden_{i:02d}", *generate_mri_gt(8000 + i, "hidden", SHAPE))
+            for i in range(20)
+        ]
+
     hid_dir = os.path.join(base_dir, "hidden")
     hid_t   = build_tier("hidden", hid_scenes, hid_dir, "hidden", base_seed=3000)
-    write_tier_readme("hidden", hid_dir, hid_t, "hidden")
+    write_tier_readme("hidden", hid_dir, hid_t, "hidden", source_label=hid_source_label)
 
     print("\n" + "=" * 70)
     print(f"Done.  public={len(pub_t)}  dev={len(dev_t)}  hidden={len(hid_t)} samples")
     if not pub_is_real:
         print("NOTE: Public tier used synthetic fallback — set REAL_MRI_ROOT for real data.")
+    if dev_source_label is None:
+        print("NOTE: Dev tier used procedural phantoms — set IXI_T2_ROOT for real healthy brains.")
+    if hid_source_label is None:
+        print("NOTE: Hidden tier used procedural phantoms — set BRATS_ROOT for real tumour MRI.")
     print("=" * 70)
 
 
