@@ -1,45 +1,104 @@
-# Quality Check: `tem`
+# Benchmark QA Check — tem
 
-**Checked:** 2026-03-03T14:11:18.032331+00:00
 **URL:** https://pwm.platformai.org/benchmark/tem
+**HTTP Status:** 200
+**Page Size:** 111,332 bytes
+**Check Date:** 2026-03-03 14:22 UTC
 
-## Status: WARN
+## Summary
 
-| Category | Count |
+| Severity | Count |
 |----------|-------|
-| Passed | 25 |
-| Warnings | 2 |
-| Errors | 0 |
+| WARNING | 15 |
+| INFO | 56 |
 
-## Warnings
+## Issues by Category
 
-- [ ] PSNR 2.7 dB < 5 (unrealistically low)
-- [ ] PSNR 4.3 dB < 5 (unrealistically low)
+### Leaderboard Consistency
 
-## Passed Checks
+- 🟡 **WARNING**: Very low score value found: 0.0100 — may indicate broken solver
+- 🟡 **WARNING**: Very low score value found: 0.0200 — may indicate broken solver
+- 🟡 **WARNING**: Very low score value found: 0.0120 — may indicate broken solver
+- 🟡 **WARNING**: Very low score value found: 0.0180 — may indicate broken solver
+- 🟡 **WARNING**: Very low score value found: 0.0070 — may indicate broken solver
+- 🟡 **WARNING**: Very low score value found: 0.0230 — may indicate broken solver
+- 🟡 **WARNING**: Very low score value found: 0.0200 — may indicate broken solver
+- 🟡 **WARNING**: Very low score value found: 0.0100 — may indicate broken solver
+- 🟡 **WARNING**: Very low PSNR value: 2.7 dB — may indicate failed reconstruction
+- 🟡 **WARNING**: Very low PSNR value: 4.3 dB — may indicate failed reconstruction
 
-- [x] Main page loads (HTTP 200)
-- [x] Page title: TEM — Physics World Model
-- [x] Challenge Leaderboard section present
-- [x] Leaderboard has 4 entries
-- [x] Spec notation present: P(e⁻) → C(CTF) → D(g, η₁)
-- [x] Description: Transmission Electron Microscopy
-- [x] Data Preview / Gallery section present
-- [x] Gallery gt.png (scene_00) loads
-- [x] Gallery recon_I.png (scene_00) loads
-- [x] Gallery recon_II.png (scene_00) loads
-- [x] Gallery recon_III.png (scene_00) loads
-- [x] Challenge public page loads (HTTP 200)
-- [x] Challenge public page has dataset reference
-- [x] Challenge dev page loads (HTTP 200)
-- [x] Challenge dev page has dataset reference
-- [x] Public challenge HDF5 accessible on GCS
-- [x] Learning materials directory exists
-- [x] Learn file README.md exists (1460 bytes)
-- [x] Learn file 01_physics_fundamentals.md exists (2893 bytes)
-- [x] Learn file 02_forward_model.md exists (2497 bytes)
-- [x] Learn file 03_reconstruction_algorithms.md exists (1855 bytes)
-- [x] Learn file 04_pwm_benchmark.md exists (2312 bytes)
-- [x] Learn file 05_hands_on_tutorial.md exists (3561 bytes)
-- [x] Compete page loads (HTTP 200)
-- [x] Contribute page loads (HTTP 200)
+### Forward Model
+
+- 🟡 **WARNING**: No explicit forward model equation (y = ...) found on page
+- 🟡 **WARNING**: Notation inconsistency: Forward operator denoted as both H and A
+- 🔵 **INFO**: YAML forward model uses symbols ['IFFT', 'FFT'] not found on page (YAML eq: y = |IFFT(CTF * FFT(exp(i*sigma*V*x) * beam))|^2 + n)
+
+### Spec Ranges
+
+- 🟡 **WARNING**: Negative physical quantity: -300 keV — verify sign is intended
+- 🟡 **WARNING**: Negative physical quantity: -300 keV — verify sign is intended
+- 🟡 **WARNING**: Negative physical quantity: -0.2 nm — verify sign is intended
+
+### Images & Links
+
+- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/tem_challenge_public.h5 — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/tem_challenge_dev.h5 — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_00/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_00/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_00/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_00/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_00/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_00/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_01/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_01/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_01/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_01/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_01/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_01/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_02/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_02/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_02/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_02/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_02/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_02/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_03/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_03/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_03/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_03/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_03/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_03/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_00/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_00/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_00/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_01/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_01/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_01/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_02/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_02/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_02/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_03/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_03/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/tem/scene_03/recon_III.png — verify it loads
+
+### Physics Consistency
+
+- 🔵 **INFO**: Signal shape [512, 512] from YAML not clearly shown on page
+
+---
+*Auto-generated by `benchmarks/learn/check_all_modalities.py`*
