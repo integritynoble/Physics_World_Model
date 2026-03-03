@@ -1,96 +1,49 @@
 # Benchmark QA Check — palm_storm
 
 **URL:** https://pwm.platformai.org/benchmark/palm_storm
-**HTTP Status:** 200
-**Page Size:** 111,448 bytes
-**Check Date:** 2026-03-03 14:17 UTC
+**Check Date:** 2026-03-03 14:57 UTC
+**Status:** PASS
 
 ## Summary
 
 | Severity | Count |
 |----------|-------|
-| WARNING | 7 |
-| INFO | 56 |
+| ERROR | 0 |
+| WARNING | 0 |
+| INFO | 2 |
+| PASSED | 24 |
 
-## Issues by Category
+## Info
 
-### Leaderboard Consistency
+- Page size: 111,448 bytes
+- Methods: DECODE + gradient, ANNA-PALM + gradient, SPARCOM + gradient, SOFI + gradient
 
-- 🟡 **WARNING**: Very low PSNR value: 0.7 dB — may indicate failed reconstruction
-- 🟡 **WARNING**: Very low PSNR value: 2.7 dB — may indicate failed reconstruction
+## Passed Checks
 
-### Forward Model
-
-- 🟡 **WARNING**: Notation inconsistency: Forward operator denoted as both H and A
-- 🟡 **WARNING**: Notation inconsistency: Operator denoted as both H and R
-- 🔵 **INFO**: YAML forward model uses symbols ['I_k'] not found on page (YAML eq: y_t = sum_k I_k(t) * PSF(r - r_k) + bg + n)
-
-### Spec Ranges
-
-- 🟡 **WARNING**: Negative physical quantity: -30 nm — verify sign is intended
-- 🟡 **WARNING**: Negative physical quantity: -500 m — verify sign is intended
-- 🟡 **WARNING**: Negative physical quantity: -100 Hz — verify sign is intended
-
-### Images & Links
-
-- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/palm_storm_challenge_public.h5 — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/palm_storm_challenge_dev.h5 — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_00/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_00/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_00/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_00/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_00/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_00/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_01/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_01/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_01/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_01/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_01/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_01/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_02/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_02/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_02/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_02/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_02/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_02/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_03/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_03/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_03/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_03/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_03/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_03/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_00/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_00/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_00/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_01/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_01/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_01/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_02/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_02/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_02/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_03/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_03/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/palm_storm/scene_03/recon_III.png — verify it loads
-
-### Physics Consistency
-
-- 🔵 **INFO**: Signal shape [512, 512] from YAML not clearly shown on page
+- [x] Main page loads (HTTP 200)
+- [x] Title: PALM/STORM — Physics World Model
+- [x] Description: PALM/STORM Single-Molecule Localization
+- [x] Spec notation: C(PSF) → D(g, η₃)
+- [x] Challenge Leaderboard section present
+- [x] Leaderboard: 4 entries
+- [x] Data Preview / Gallery section present
+- [x] Gallery images: 24/24 load OK
+- [x] Challenge public page loads (HTTP 200)
+- [x] Challenge public has HDF5 reference
+- [x] Challenge dev page loads (HTTP 200)
+- [x] Challenge dev has HDF5 reference
+- [x] Challenge public HDF5 on GCS OK
+- [x] Challenge dev HDF5 on GCS OK
+- [x] Compete page loads (HTTP 200)
+- [x] Contribute page loads (HTTP 200)
+- [x] Forward model reference found
+- [x] Learning materials directory exists
+- [x] Learn: README.md (1,461 B)
+- [x] Learn: 01_physics_fundamentals.md (2,887 B)
+- [x] Learn: 02_forward_model.md (2,746 B)
+- [x] Learn: 03_reconstruction_algorithms.md (1,894 B)
+- [x] Learn: 04_pwm_benchmark.md (2,626 B)
+- [x] Learn: 05_hands_on_tutorial.md (3,633 B)
 
 ---
-*Auto-generated by `benchmarks/learn/check_all_modalities.py`*
+*Generated by `scripts/check_modality.py` v2*

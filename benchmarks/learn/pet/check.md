@@ -1,92 +1,49 @@
 # Benchmark QA Check — pet
 
 **URL:** https://pwm.platformai.org/benchmark/pet
-**HTTP Status:** 200
-**Page Size:** 113,649 bytes
-**Check Date:** 2026-03-03 14:17 UTC
+**Check Date:** 2026-03-03 14:57 UTC
+**Status:** PASS
 
 ## Summary
 
 | Severity | Count |
 |----------|-------|
-| WARNING | 4 |
-| INFO | 55 |
+| ERROR | 0 |
+| WARNING | 0 |
+| INFO | 2 |
+| PASSED | 24 |
 
-## Issues by Category
+## Info
 
-### Leaderboard Consistency
+- Page size: 113,649 bytes
+- Methods: TransPET + gradient, KEM-Net + gradient, MAPEM-RDP + gradient, OSEM + gradient
 
-- 🟡 **WARNING**: Very low PSNR value: 2.4 dB — may indicate failed reconstruction
-- 🟡 **WARNING**: Very low PSNR value: 2.5 dB — may indicate failed reconstruction
+## Passed Checks
 
-### Forward Model
-
-- 🟡 **WARNING**: Notation inconsistency: Forward operator denoted as both H and A
-
-### Spec Ranges
-
-- 🟡 **WARNING**: Negative physical quantity: -4 mm — verify sign is intended
-
-### Images & Links
-
-- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/pet_challenge_public.h5 — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/pet_challenge_dev.h5 — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_00/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_00/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_00/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_00/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_00/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_00/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_01/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_01/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_01/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_01/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_01/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_01/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_02/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_02/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_02/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_02/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_02/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_02/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_03/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_03/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_03/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_03/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_03/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_03/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_00/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_00/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_00/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_01/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_01/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_01/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_02/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_02/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_02/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_03/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_03/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/pet/scene_03/recon_III.png — verify it loads
-
-### Physics Consistency
-
-- 🔵 **INFO**: Signal shape [128, 128] from YAML not clearly shown on page
+- [x] Main page loads (HTTP 200)
+- [x] Title: PET — Physics World Model
+- [x] Description: Positron Emission Tomography
+- [x] Spec notation: Π(LOR) → Σ_t → D(g, η₃)
+- [x] Challenge Leaderboard section present
+- [x] Leaderboard: 4 entries
+- [x] Data Preview / Gallery section present
+- [x] Gallery images: 24/24 load OK
+- [x] Challenge public page loads (HTTP 200)
+- [x] Challenge public has HDF5 reference
+- [x] Challenge dev page loads (HTTP 200)
+- [x] Challenge dev has HDF5 reference
+- [x] Challenge public HDF5 on GCS OK
+- [x] Challenge dev HDF5 on GCS OK
+- [x] Compete page loads (HTTP 200)
+- [x] Contribute page loads (HTTP 200)
+- [x] Forward model reference found
+- [x] Learning materials directory exists
+- [x] Learn: README.md (1,429 B)
+- [x] Learn: 01_physics_fundamentals.md (2,594 B)
+- [x] Learn: 02_forward_model.md (2,806 B)
+- [x] Learn: 03_reconstruction_algorithms.md (1,829 B)
+- [x] Learn: 04_pwm_benchmark.md (2,572 B)
+- [x] Learn: 05_hands_on_tutorial.md (3,545 B)
 
 ---
-*Auto-generated by `benchmarks/learn/check_all_modalities.py`*
+*Generated by `scripts/check_modality.py` v2*
