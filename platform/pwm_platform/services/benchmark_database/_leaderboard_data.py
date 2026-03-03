@@ -15,6 +15,19 @@ LEADERBOARD_DATA: dict[str, dict[str, list[dict]]] = {
     # ══════════════════════════════════════════════════════════════════════════
 
     "sd_cassi": {
+        # Normal leaderboard — Standard reconstruction (known forward model, no mismatch)
+        # Dataset: 10 KAIST simulation scenes, 256×256×28 spectral channels
+        # Score: 0.5 × clip((PSNR−15)/30, 0, 1) + 0.5 × SSIM  (no consistency term)
+        # Sources: MST (CVPR 2022), CST (CVPR 2022), HDNet (ECCV 2022), others
+        "normal": [
+            {"rank": 1, "method": "HDNet",       "psnr": 35.14, "ssim": 0.952, "score": 0.812, "dataset": "KAIST simu, 256×256×28", "source": "HDNet (ECCV 2022)"},
+            {"rank": 2, "method": "MST-L",       "psnr": 33.37, "ssim": 0.949, "score": 0.781, "dataset": "KAIST simu, 256×256×28", "source": "MST (CVPR 2022)"},
+            {"rank": 3, "method": "CST-L",       "psnr": 32.74, "ssim": 0.948, "score": 0.770, "dataset": "KAIST simu, 256×256×28", "source": "CST (CVPR 2022)"},
+            {"rank": 4, "method": "TSA-Net",     "psnr": 31.46, "ssim": 0.894, "score": 0.721, "dataset": "KAIST simu, 256×256×28", "source": "TSA-Net (ECCV 2020)"},
+            {"rank": 5, "method": "PnP-HSI-DIP", "psnr": 30.31, "ssim": 0.851, "score": 0.681, "dataset": "KAIST simu, 256×256×28", "source": "PnP-HSI (ICCV 2021)"},
+            {"rank": 6, "method": "GAP-TV",      "psnr": 26.86, "ssim": 0.861, "score": 0.629, "dataset": "KAIST simu, 256×256×28", "source": "GAP-TV (Signal Processing 2016)"},
+            {"rank": 7, "method": "DeSCI",       "psnr": 27.13, "ssim": 0.841, "score": 0.623, "dataset": "KAIST simu, 256×256×28", "source": "DeSCI (TPAMI 2019)"},
+        ],
         # Challenge leaderboard — Blind Reconstruction Challenge (3-tier)
         # Scores: 0.4 × PSNR_norm + 0.4 × SSIM + 0.2 × consistency; overall = mean(public, dev, hidden)
         "challenge": [
@@ -35,6 +48,18 @@ LEADERBOARD_DATA: dict[str, dict[str, list[dict]]] = {
     # ══════════════════════════════════════════════════════════════════════════
 
     "cacti": {
+        # Normal leaderboard — Standard video SCI reconstruction (known mask, no mismatch)
+        # Dataset: 6 CACTI simulation scenes (kobe, runner, drop, crash, aerial, vehicle)
+        # T=8 frames, Cr=8 compression ratio; score = 0.5 × clip((PSNR−15)/30, 0, 1) + 0.5 × SSIM
+        # Sources: EfficientSCI (CVPR 2023), HiSViT (ECCV 2024), RevSCI (TPAMI 2022), ELP (2022)
+        "normal": [
+            {"rank": 1, "method": "HiSViT-9",       "psnr": 38.24, "ssim": 0.978, "score": 0.876, "dataset": "6-scene simulation, T=8, Cr=8", "source": "HiSViT (ECCV 2024)"},
+            {"rank": 2, "method": "EfficientSCI",   "psnr": 37.71, "ssim": 0.976, "score": 0.867, "dataset": "6-scene simulation, T=8, Cr=8", "source": "EfficientSCI (CVPR 2023)"},
+            {"rank": 3, "method": "ELP-Unfolding",  "psnr": 35.54, "ssim": 0.968, "score": 0.826, "dataset": "6-scene simulation, T=8, Cr=8", "source": "ELP-Unfolding (2022)"},
+            {"rank": 4, "method": "RevSCI",         "psnr": 33.49, "ssim": 0.956, "score": 0.786, "dataset": "6-scene simulation, T=8, Cr=8", "source": "RevSCI (TPAMI 2022)"},
+            {"rank": 5, "method": "BIRNAT",         "psnr": 30.26, "ssim": 0.921, "score": 0.715, "dataset": "6-scene simulation, T=8, Cr=8", "source": "BIRNAT (TPAMI 2021)"},
+            {"rank": 6, "method": "GAP-TV",         "psnr": 26.02, "ssim": 0.892, "score": 0.630, "dataset": "6-scene simulation, T=8, Cr=8", "source": "GAP-TV (Signal Processing 2016)"},
+        ],
         "challenge": [
             {"rank": 1, "method": "EfficientSCI + blind cal",         "public_score": 0.740, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.247, "details": {"public": {"psnr": 27.71, "ssim": 0.930, "consistency": 0.993}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (blind cal, public tier)"},
             {"rank": 2, "method": "HiSViT-9 + blind cal",             "public_score": 0.740, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.247, "details": {"public": {"psnr": 27.62, "ssim": 0.934, "consistency": 0.993}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (blind cal, public tier)"},
@@ -49,6 +74,15 @@ LEADERBOARD_DATA: dict[str, dict[str, list[dict]]] = {
     # ══════════════════════════════════════════════════════════════════════════
 
     "spc_block": {
+        # Normal leaderboard — Standard CS reconstruction (known sensing matrix, no mismatch)
+        # Dataset: Set11 (11 grayscale images), 33×33 blocks, Gaussian sensing matrix, CR=0.25
+        # Score: 0.5 × clip((PSNR−15)/30, 0, 1) + 0.5 × SSIM
+        "normal": [
+            {"rank": 1, "method": "HATNet",     "psnr": 28.85, "ssim": 0.801, "score": 0.731, "dataset": "Set11, block 33×33, CR=0.25", "source": "InverseNet baseline (oracle cal)"},
+            {"rank": 2, "method": "ISTA-Net+",  "psnr": 27.56, "ssim": 0.762, "score": 0.710, "dataset": "Set11, block 33×33, CR=0.25", "source": "ISTA-Net+ (CVPR 2018)"},
+            {"rank": 3, "method": "FISTA-TV",   "psnr": 26.10, "ssim": 0.758, "score": 0.686, "dataset": "Set11, block 33×33, CR=0.25", "source": "InverseNet baseline (oracle cal)"},
+            {"rank": 4, "method": "PnP-DRUNet", "psnr": 23.85, "ssim": 0.665, "score": 0.632, "dataset": "Set11, block 33×33, CR=0.25", "source": "InverseNet baseline (oracle cal)"},
+        ],
         "challenge": [
             {"rank": 1, "method": "HATNet + gradient",     "public_score": 0.710, "dev_score": 0.630, "hidden_score": 0.612, "overall_score": 0.651, "details": {"public": {"psnr": 27.91, "ssim": 0.778, "consistency": 0.88}, "dev": {"psnr": 23.34, "ssim": 0.708, "consistency": 0.80}, "hidden": {"psnr": 22.51, "ssim": 0.696, "consistency": 0.77}}, "source": "InverseNet baseline"},
             {"rank": 2, "method": "ISTA-Net + gradient",   "public_score": 0.694, "dev_score": 0.634, "hidden_score": 0.614, "overall_score": 0.647, "details": {"public": {"psnr": 26.61, "ssim": 0.742, "consistency": 0.92}, "dev": {"psnr": 23.66, "ssim": 0.681, "consistency": 0.86}, "hidden": {"psnr": 22.81, "ssim": 0.663, "consistency": 0.83}}, "source": "InverseNet baseline"},
@@ -63,6 +97,17 @@ LEADERBOARD_DATA: dict[str, dict[str, list[dict]]] = {
     # ══════════════════════════════════════════════════════════════════════════
 
     "spc_kronecker": {
+        # Normal leaderboard — Standard CS reconstruction (known Kronecker sensing matrix, no mismatch)
+        # Dataset: Set11 (11 grayscale images), Kronecker sensing, CR=0.25
+        # Score: 0.5 × clip((PSNR−15)/30, 0, 1) + 0.5 × SSIM
+        "normal": [
+            {"rank": 1, "method": "PnP-DRUNet",        "psnr": 27.85, "ssim": 0.837, "score": 0.753, "dataset": "Set11, Kronecker, CR=0.25", "source": "InverseNet baseline (oracle cal)"},
+            {"rank": 2, "method": "FISTA-TV (tuned)",  "psnr": 26.71, "ssim": 0.804, "score": 0.727, "dataset": "Set11, Kronecker, CR=0.25", "source": "InverseNet baseline (oracle cal)"},
+            {"rank": 3, "method": "HATNet + FISTA-TV", "psnr": 26.45, "ssim": 0.790, "score": 0.720, "dataset": "Set11, Kronecker, CR=0.25", "source": "InverseNet baseline (oracle cal)"},
+            {"rank": 4, "method": "FISTA-TV (paper)",  "psnr": 25.98, "ssim": 0.776, "score": 0.708, "dataset": "Set11, Kronecker, CR=0.25", "source": "InverseNet baseline (oracle cal)"},
+            {"rank": 5, "method": "ISTA-Net",          "psnr": 26.40, "ssim": 0.721, "score": 0.710, "dataset": "Set11, Kronecker, CR=0.25", "source": "InverseNet baseline (oracle cal)"},
+            {"rank": 6, "method": "PnP-BM3D",          "psnr": 21.10, "ssim": 0.582, "score": 0.601, "dataset": "Set11, Kronecker, CR=0.25", "source": "InverseNet baseline (oracle cal)"},
+        ],
         "challenge": [
             {"rank": 1, "method": "PnP-DRUNet + blind cal",         "public_score": 0.720, "dev_score": 0.736, "hidden_score": 0.687, "overall_score": 0.714, "details": {"public": {"psnr": 26.33, "ssim": 0.814, "consistency": 0.92}, "dev": {"psnr": 27.02, "ssim": 0.828, "consistency": 0.94}, "hidden": {"psnr": 24.75, "ssim": 0.776, "consistency": 0.90}}, "source": "InverseNet Scenario IV"},
             {"rank": 2, "method": "FISTA-TV (tuned) + blind cal",   "public_score": 0.693, "dev_score": 0.710, "hidden_score": 0.671, "overall_score": 0.691, "details": {"public": {"psnr": 25.34, "ssim": 0.757, "consistency": 0.94}, "dev": {"psnr": 25.93, "ssim": 0.781, "consistency": 0.95}, "hidden": {"psnr": 24.50, "ssim": 0.730, "consistency": 0.91}}, "source": "InverseNet Scenario IV"},

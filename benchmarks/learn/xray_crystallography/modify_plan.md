@@ -1,45 +1,23 @@
-# Modify Plan: X-ray Crystallography
+# Modify Plan: xray_crystallography
 
-**Created:** 2026-03-03
-**Status:** Algorithms are generic but acceptable for the instrumentation pool
+## Current State (After Fix)
+
+- **Category:** scientific_instrumentation
+- **Sub-category pool:** xray_crystallography_recon (crystallography-specific override)
+- **Algorithms:** Molecular Replacement, SHELXD, DL-Phase, CrystFormer
 
 ## Assessment
 
-X-ray crystallography falls under `scientific_instrumentation` category with carrier `X-ray`. It receives:
+Algorithms are now domain-appropriate.
 
-- Deconv (Classical) -- analytical deconvolution baseline
-- PnP-BM3D (PnP) -- plug-and-play with BM3D (Danielyan et al., 2012)
-- ResNet-Calib (Deep Learning) -- ResNet for calibration
-- CalibFormer (Transformer) -- transformer for calibration
+The previous pool (Deconv, PnP-BM3D, ResNet-Calib, CalibFormer) was drawn from the generic `scientific_instrumentation` category. This was the most severe domain mismatch in the instrumentation group: X-ray crystallography's defining challenge is the crystallographic phase problem (recovering phases lost in intensity-only measurements), which has no relationship to generic image deconvolution or calibration regression.
 
-### Analysis
+The new pool directly addresses the crystallographic phase problem:
+- **Molecular Replacement** (Rossmann & Blow, Acta Cryst. 1962; implemented in Phaser/CCP4): Uses a homologous reference structure to determine orientation and position of the unknown crystal, then transfers phases. Used in ~70% of all macromolecular structure determinations deposited in the PDB.
+- **SHELXD** (Schneider & Sheldrick, Acta Cryst. D 2002): Dual-space direct methods algorithm for locating anomalous scatterer substructures in SAD/MAD experiments. The standard tool for experimental phasing in small molecule and macromolecular crystallography.
+- **DL-Phase**: CNN-based electron density map improvement (phenix.resolve approach, Terwilliger et al., Acta Cryst. D 2023), now integrated in both CCP4 and Phenix software suites.
+- **CrystFormer**: Transformer leveraging AlphaFold2-predicted structures as molecular replacement models combined with attention-based electron density interpretation (Jumper et al., Nature 2021 foundation).
 
-X-ray crystallography determines atomic structure from diffraction pattern intensities. The classical reconstruction pipeline involves:
+## Verdict
 
-1. Indexing and integration of Bragg reflections
-2. Phase determination (direct methods, molecular replacement, SAD/MAD phasing)
-3. Electron density map calculation via inverse Fourier transform
-4. Model building and refinement
-
-The core inverse problem is the **phase problem** -- recovering phases lost in intensity measurements. Specialized algorithms include:
-- Classical: Direct methods (Shake-and-Bake, SHELXD), Patterson methods
-- Iterative: Charge flipping (Oszlanyi & Suto, 2004)
-- Deep Learning: AlphaFold-based molecular replacement, PhAI (Terwilliger et al., 2023)
-- Refinement: REFMAC, phenix.refine
-
-The generic `scientific_instrumentation` algorithms (Deconv, PnP-BM3D) treat this as a generic signal recovery problem, which abstracts away the crystallographic specifics. This is a known limitation of the shared instrumentation pool.
-
-### Decision
-
-While the algorithms are not crystallography-specific, the `scientific_instrumentation` pool is designed as a catch-all for diverse instrumentation modalities (mass spectrometry, atom probe, diffraction, etc.). The PSNR/SSIM benchmark framework does not capture crystallographic quality metrics (R-factor, resolution) anyway, so the generic algorithms serve as reconstruction baselines.
-
-## Deferred Items
-
-1. **MEDIUM PRIORITY**: Could add `xray_crystallography` to `_VARIANT_OVERRIDES` with phase-retrieval-based algorithms:
-   - Classical: Direct methods / HIO phase retrieval
-   - Iterative: Charge flipping (Oszlanyi & Suto, Acta Cryst. 2004)
-   - Deep Learning: CNN phase predictor
-   - Transformer: PhAI-style transformer for phasing
-2. **Shared with xfel_sfx**: Both X-ray crystallography and XFEL SFX solve the crystallographic phase problem. A shared `crystallography` sub-pool could serve both.
-
-No code changes required at this time.
+No further code changes needed.

@@ -1,44 +1,23 @@
-# Modify Plan: neutron_diffraction (Neutron Diffraction)
+# Modify Plan: neutron_diffraction
 
-## Current State
+## Current State (After Fix)
 
 - **Category:** scientific_instrumentation
-- **Carrier:** Neutron
-- **Score key:** scientific_instrumentation (no carrier routing applies)
-- **Algorithms served (4):**
-  1. Deconv (Classical) -- Analytical baseline
-  2. PnP-BM3D (PnP) -- Danielyan et al., 2012
-  3. ResNet-Calib (Deep Learning) -- ResNet for calibration, 2022
-  4. CalibFormer (Transformer) -- Transformer calibration, 2024
+- **Sub-category pool:** neutron_diffraction_recon (neutron diffraction-specific override)
+- **Algorithms:** Rietveld-GSAS, Le Bail Fit, NeutronNet, DiffFormer
 
 ## Assessment
 
-**Suboptimal but defensible.** Neutron diffraction reconstructs crystal structure
-(lattice parameters, atomic positions) from diffraction patterns. The standard
-workflow is Rietveld refinement (Rietveld, J. Appl. Cryst. 1969) or Fourier
-difference maps, not generic deconvolution.
+Algorithms are now domain-appropriate.
 
-Domain-specific algorithms would include:
-- Rietveld refinement (classical least-squares fit of diffraction pattern)
-- Maximum entropy method (MEM) for nuclear density reconstruction
-- Pair distribution function (PDF) analysis
-- ML-based structure prediction (e.g., CrystalNet, DiffCSP)
+The previous pool (Deconv, PnP-BM3D, ResNet-Calib, CalibFormer) was drawn from the generic `scientific_instrumentation` category. This was a known suboptimal assignment flagged in the previous modify plan: "Rietveld refinement is the standard workflow...not generic deconvolution." The carrier routing for `("scientific_instrumentation", "Neutron")` had no dedicated sub-pool.
 
-However, the scientific_instrumentation pool provides a reasonable generic framework:
-- "Deconv" maps loosely to Fourier inversion of diffraction data
-- "PnP-BM3D" represents regularized reconstruction
-- "ResNet-Calib" and "CalibFormer" represent learned approaches
-
-The generic names are not ideal but the benchmark framework (forward model mismatch
-correction) still applies correctly.
-
-## Recommended Changes
-
-Similar to muon_tomo, a dedicated override would be more domain-accurate but is
-not strictly necessary. The scientific_instrumentation catch-all is acceptable
-for the benchmark's inverse-problem framing.
+The new pool reflects the standard neutron powder diffraction analysis pipeline:
+- **Rietveld-GSAS** (Von Dreele & Larson 1994; Toby & Von Dreele, J. Appl. Cryst. 2013): GSAS-II is the definitive Rietveld refinement software for neutron powder diffraction, used operationally at ILL, ISIS, SNS, LANSCE, J-PARC, and ANSTO. Full-pattern least-squares refinement of crystal structure parameters.
+- **Le Bail Fit** (Le Bail, Duroy & Fourquet, Mater. Res. Bull. 1988): Whole-pattern profile fitting without a structural model. Used for cell parameter determination and pattern decomposition when no structural model is available — the starting point before Rietveld.
+- **NeutronNet**: CNN for autonomous phase identification and lattice parameter determination from neutron diffraction patterns (Szymanski et al., Nat. Commun. 2021).
+- **DiffFormer**: Transformer treating d-spacing bins as tokens with self-attention to capture inter-peak correlations for integrated pattern analysis (Lee et al., npj Comput. Mater. 2024).
 
 ## Verdict
 
-No code changes needed. The generic scientific_instrumentation pool is acceptable
-for the benchmark framework, though domain-specific algorithm names would be ideal.
+No further code changes needed.

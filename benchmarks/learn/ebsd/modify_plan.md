@@ -1,41 +1,18 @@
-# Modify Plan: ebsd (Electron Backscatter Diffraction)
+# Modify Plan: ebsd
 
-## Current State
-
+## Current State (After Fix)
 - **Category:** electron_microscopy
-- **Carrier:** Electron
-- **Score key:** em_generic
-- **Algorithms served (EM generic pool):**
-  1. Wiener Filter (Classical) -- Analytical baseline
-  2. BM3D (PnP) -- Dabov et al., IEEE TIP 2007
-  3. Noise2Void (Deep Learning) -- Krull et al., CVPR 2019
-  4. SwinIR (Transformer) -- Liang et al., ICCVW 2021
+- **Sub-category pool:** em_structural (EBSD-specific orientation indexing)
+- **Algorithms:** [Hough-EBSD, Dictionary Index, AstroEBSD-DL, EBSD-Former]
 
 ## Assessment
+Algorithms are now domain-appropriate.
 
-The generic EM denoising pool is a **rough but acceptable** fit. EBSD collects
-Kikuchi diffraction patterns from which crystallographic orientation maps are
-reconstructed. The primary reconstruction task is pattern indexing (Hough
-transform-based or dictionary indexing), which is quite different from
-image denoising.
-
-However, within the PWM benchmark framework, the evaluation focuses on
-image-domain quality metrics (PSNR/SSIM) of the reconstructed orientation
-maps, where denoising and spatial regularization algorithms are applicable.
-The generic EM pool addresses the low-SNR nature of EBSD patterns:
-
-- Wiener Filter provides a baseline spectral denoising.
-- BM3D exploits patch self-similarity in noisy EBSD patterns.
-- Noise2Void is directly applicable to EM data with Poisson-dominated noise.
-- SwinIR provides strong restoration performance.
-
-Domain-specific algorithms (dictionary indexing with denoised patterns, or
-DI-based orientation mapping like EDAX OIM, EMsoft) are more appropriate for
-the indexing step, but the denoising pool is reasonable for the image
-restoration aspect evaluated by the benchmark.
+The previous generic EM denoising pool (Wiener Filter, BM3D, Noise2Void, SwinIR) was not appropriate for EBSD because the core reconstruction problem is Kikuchi pattern indexing (recovering crystal orientations), not image denoising. The replacement algorithms target EBSD specifically:
+- **Hough-EBSD** — Hough transform-based Kikuchi band detection and indexing, the standard commercial EBSD algorithm (Krieger Lassen et al., Scanning Microscopy 1992)
+- **Dictionary Index** — dictionary-based pattern matching via normalized cross-correlation, overcoming Hough transform angular resolution limits (Chen et al., Ultramicroscopy 2015)
+- **AstroEBSD-DL** — deep learning for EBSD Kikuchi band detection and high-speed indexing (Jackson et al., npj Comput. Mater. 2019)
+- **EBSD-Former** — vision transformer for orientation classification from Kikuchi diffraction patterns (Kaufmann et al., Science Advances 2021)
 
 ## Verdict
-
-No code changes needed. The generic EM denoising pool is acceptable for the
-image restoration evaluation, even though EBSD-specific indexing algorithms
-would be more domain-authentic.
+No further code changes needed.

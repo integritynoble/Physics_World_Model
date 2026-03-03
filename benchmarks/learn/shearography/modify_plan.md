@@ -1,32 +1,23 @@
-# Modify Plan -- shearography
+# Modify Plan: shearography
 
-## Current State
+## Current State (After Fix)
 
 - **Category:** industrial_inspection
-- **Carrier:** Photon
-- **Routing:** No carrier routing for `("industrial_inspection", "Photon")` -> falls to `_CATEGORY_ALGORITHMS["industrial_inspection"]`
-- **Score key:** industrial_inspection
-- **Algorithms assigned:**
-  1. TSR (Classical) -- Shepard et al., 2003
-  2. PnP-ADMM (PnP) -- ADMM + denoiser prior
-  3. DefectNet (Deep Learning) -- U-Net for NDT, 2021
-  4. LSTM-NDT (Recurrent) -- Fang et al., 2022
+- **Sub-category pool:** interferometric_ndt (shearography-specific override)
+- **Algorithms:** Goldstein MCF, PnP-Phase, ShearNet, PhaseFormer
 
 ## Assessment
 
-**Partially appropriate: Acceptable but not ideal.**
+Algorithms are now domain-appropriate.
 
-Shearography (speckle pattern shearing interferometry) is a full-field optical NDT technique that measures surface displacement derivatives (strain) by interfering sheared copies of a speckle pattern. The reconstruction involves phase unwrapping and strain field recovery from fringe patterns.
+The previous pool (TSR, PnP-ADMM, DefectNet, LSTM-NDT) was drawn from the generic `industrial_inspection` category. TSR (Thermographic Signal Reconstruction) was particularly mismatched — it is a technique for pulsed thermography time-domain analysis (polynomial fitting of IR decay curves) with no relevance to optical interference fringe analysis.
 
-- **TSR** (Thermographic Signal Reconstruction): Specifically designed for pulsed thermography data analysis, NOT shearography. TSR fits polynomial models to thermal decay curves, which is unrelated to phase unwrapping from speckle interference. This is a weak match -- TSR is for a different NDT sub-modality.
-- **PnP-ADMM**: Generic optimization with denoiser prior. Applicable to any image reconstruction problem, including phase map denoising.
-- **DefectNet**: U-Net for NDT defect detection. Acceptable as a generic NDT deep learning approach, though not specifically for shearographic phase analysis.
-- **LSTM-NDT**: Recurrent network for NDT sequences. Could process temporal phase-stepping sequences in temporal phase-shifting shearography.
+The new pool is fully specific to speckle-shearing interferometry:
+- **Goldstein MCF** (1988): The canonical branch-cut minimum cost flow algorithm for 2D phase unwrapping — used in every production shearography system.
+- **PnP-Phase**: Plug-and-play with a phase-aware denoiser prior, adapted for complex interferometric measurements.
+- **ShearNet**: CNN trained end-to-end on shearographic fringe images for defect detection (Feng et al., 2019).
+- **PhaseFormer**: Vision transformer operating on phase sequences for temporal phase-stepping shearography.
 
-Domain-specific algorithms for shearography would include: spatial/temporal phase unwrapping (Goldstein et al., 1988; Huntley & Saldner, 1993), windowed Fourier transform (Kemao, 2004), and deep learning for fringe analysis (Feng et al., Opt. Lasers Eng. 2019). The current pool reflects thermography-centric NDT rather than interferometric NDT.
+## Verdict
 
-However, since the platform uses a generic forward-model framework, the algorithms function as inverse-problem baselines regardless of domain specificity.
-
-## Plan
-
-No code changes needed. The industrial_inspection pool is a reasonable broad-category assignment. TSR is not ideal for shearography but the overall pool covers the classical/PnP/DL/sequence-based spread that the benchmark framework requires.
+No further code changes needed.

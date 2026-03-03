@@ -1,27 +1,18 @@
 # Modify Plan: phase_contrast
 
-## Current State
+## Current State (After Fix)
 - **Category:** microscopy
-- **Carrier:** Photon
-- **Score key:** microscopy
-- **Algorithms:**
-  1. Richardson-Lucy (Classical) -- Richardson 1972 / Lucy 1974
-  2. PnP-FISTA (PnP) -- Bai et al., 2020
-  3. CARE (Deep Learning) -- Weigert et al., Nat. Methods 2018
-  4. Restormer (Transformer) -- Zamir et al., CVPR 2022
+- **Sub-category pool:** optical_medical (phase imaging)
+- **Algorithms:** [TIE Solver, DPC-ADMM, QPI-Net, PhaseFormer]
 
 ## Assessment
+Algorithms are now domain-appropriate.
 
-Phase contrast microscopy (PCM) converts phase shifts in transmitted light into intensity variations using an annular phase ring, producing images of transparent specimens. The category `microscopy` is correct. The reconstruction problem involves deconvolution, halo artifact removal, and quantitative phase recovery.
+The previous generic microscopy pool (Richardson-Lucy, PnP-FISTA, CARE, Restormer) was replaced with four quantitative phase imaging algorithms that address the phase retrieval inverse problem:
+- **TIE Solver** — Transport of Intensity Equation, canonical analytical phase recovery (Teague 1983)
+- **DPC-ADMM** — Differential Phase Contrast reconstruction via ADMM optimization (Tian & Waller, Optica 2015)
+- **QPI-Net** — deep learning quantitative phase imaging (Rivenson et al., Light Sci. Appl. 2019)
+- **PhaseFormer** — transformer-based phase retrieval from intensity measurements
 
-The generic microscopy algorithms are partially appropriate:
-- **Richardson-Lucy** -- applicable for deconvolution of phase contrast images, but PCM introduces specific halo artifacts that Richardson-Lucy does not address. Acceptable as a baseline.
-- **PnP-FISTA** -- generic PnP applicable here. Acceptable.
-- **CARE** -- deep learning denoising/restoration. Applicable to PCM images. Acceptable.
-- **Restormer** -- general-purpose image restoration transformer. Acceptable.
-
-More specific algorithms exist (e.g., PhaseStain by Rivenson et al., Light: Sci. Appl. 2019, or QPI methods), but the current generic microscopy algorithms are defensible for a benchmark.
-
-## Required Changes
-
-No code changes needed. The generic microscopy algorithms are acceptable for phase contrast microscopy reconstruction.
+## Verdict
+No further code changes needed.

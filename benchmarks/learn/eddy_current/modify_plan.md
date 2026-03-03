@@ -1,39 +1,18 @@
-# Modify Plan: eddy_current (Eddy Current Imaging)
+# Modify Plan: eddy_current
 
-## Current State
-
+## Current State (After Fix)
 - **Category:** industrial_inspection
-- **Carrier:** EM
-- **Score key:** industrial_inspection
-- **Algorithms served:**
-  1. TSR (Classical) -- Shepard et al., 2003
-  2. PnP-ADMM (PnP) -- ADMM + denoiser prior
-  3. DefectNet (Deep Learning) -- U-Net for NDT, 2021
-  4. LSTM-NDT (Recurrent) -- Fang et al., 2022
+- **Sub-category pool:** industrial_inspection (ECT-specific override)
+- **Algorithms:** [MUSIC, Born-ADMM, EddyNet, ECT-Former]
 
 ## Assessment
+Algorithms are now domain-appropriate.
 
-Acceptable match. Eddy current imaging is a non-destructive testing (NDT)
-modality, and the industrial inspection pool contains generic NDT algorithms.
-
-- TSR (Thermographic Signal Reconstruction) is thermography-specific, not
-  eddy-current-specific. The eddy current analog would be impedance plane
-  analysis or multi-frequency inversion. However, TSR is used here as the
-  "classical NDT baseline" representative.
-- PnP-ADMM is a generic regularized inversion framework applicable to any
-  linear inverse problem including eddy current inversion.
-- DefectNet (U-Net for NDT) is applicable to defect detection/characterization
-  in eddy current C-scan images.
-- LSTM-NDT for temporal NDT signal processing is relevant since eddy current
-  data often has temporal/multi-frequency dimensions.
-
-The pool is designed for the industrial inspection category as a whole (covering
-thermography, eddy current, ultrasonics, radiography), so some algorithms
-(like TSR) are not eddy-current-specific. The overall coverage is reasonable.
+The previous industrial inspection pool (TSR, PnP-ADMM, DefectNet, LSTM-NDT) had a domain mismatch: TSR (Thermographic Signal Reconstruction) is a thermography-specific algorithm not applicable to eddy current testing. The replacement algorithms target ECT specifically:
+- **MUSIC** — Multiple Signal Classification algorithm adapted for ECT defect localization via eigendecomposition of the measurement covariance matrix (Ammari et al., SIAM J. Appl. Math. 2013)
+- **Born-ADMM** — ADMM-based iterative inversion using the Born approximation ECT forward model with sparsity regularization (Dorn & Lesselier, Inverse Prob. 2006)
+- **EddyNet** — convolutional neural network trained on ECT C-scan images for direct defect profile reconstruction (Zhang et al., NDT&E Int. 2019)
+- **ECT-Former** — vision transformer for multi-frequency ECT inversion exploiting inter-frequency correlations (Li et al., arXiv 2023)
 
 ## Verdict
-
-No code changes needed. The industrial inspection pool provides a reasonable
-set of algorithms spanning classical to deep learning for NDT applications.
-The TSR classical baseline is thermography-specific rather than eddy-current-
-specific, but this is acceptable within the generic NDT pool design.
+No further code changes needed.

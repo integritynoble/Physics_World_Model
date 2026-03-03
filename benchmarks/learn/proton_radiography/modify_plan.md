@@ -1,33 +1,23 @@
 # Modify Plan: proton_radiography
 
-## Current State
+## Current State (After Fix)
+
 - **Category:** scientific_instrumentation
-- **Carrier:** Proton
-- **Score key:** scientific_instrumentation
-- **Algorithms:**
-  1. Deconv (Classical) -- Analytical baseline
-  2. PnP-BM3D (PnP) -- Danielyan et al., 2012
-  3. ResNet-Calib (Deep Learning) -- ResNet for calibration, 2022
-  4. CalibFormer (Transformer) -- Transformer calibration, 2024
+- **Sub-category pool:** pct_recon (proton CT-specific override)
+- **Algorithms:** FBP-MLP, DROP-TVS, ProtonNet, pCT-Former
 
 ## Assessment
 
-Proton radiography uses proton beams to image the internal density/areal density of objects by measuring energy loss and multiple Coulomb scattering. It is used in both high-energy physics (e.g., pRad at LANL) and medical proton CT. The category `scientific_instrumentation` is reasonable.
+Algorithms are now domain-appropriate.
 
-The algorithms are generic "scientific instrumentation" methods:
-- **Deconv** -- generic deconvolution baseline. Minimally applicable. Proton radiography reconstruction involves more than deconvolution; it requires reconstructing density from energy loss and scattering angle measurements.
-- **PnP-BM3D** -- generic denoising prior. Applicable as a regularizer but not domain-specific.
-- **ResNet-Calib** -- generic calibration network. Not specific.
-- **CalibFormer** -- generic calibration transformer. Not specific.
+The previous pool (Deconv, PnP-BM3D, ResNet-Calib, CalibFormer) was drawn from the generic `scientific_instrumentation` category. As noted in the previous modify plan, this was a "moderate mismatch" since proton radiography reconstruction requires MCS-path-aware algorithms, not generic deconvolution. The carrier routing for `("scientific_instrumentation", "Proton")` had no dedicated sub-pool.
 
-More domain-specific algorithms:
-- Most-Likely Path (MLP) estimation (Schulte et al., Med. Phys. 2008) -- reconstructs proton path from entry/exit measurements
-- Filtered Back-Projection for proton CT (Penfold et al., Med. Phys. 2010)
-- Algebraic Reconstruction (ART/SIRT) (Penfold et al., 2009) -- iterative proton CT
-- CNN-pCT (Krah et al., Phys. Med. Biol. 2019) -- deep learning proton CT
+The new pool reflects the proton computed tomography literature:
+- **FBP-MLP** (Penfold et al., Med. Phys. 2010): Filtered back-projection with Most-Likely Path (MLP) correction for proton multiple Coulomb scattering — the direct analog of X-ray CT FBP adapted for proton physics. MLP accounts for the curved proton trajectory through matter.
+- **DROP-TVS** (Penfold et al., Med. Phys. 2009): Diagonally-Relaxed Orthogonal Projections with total variation superiorization — the established iterative algorithm for clinical pCT achieving 0.3% RSP accuracy in phantom studies. Reference implementation used at UC Santa Cruz and University of Wollongong pCT collaborations.
+- **ProtonNet**: CNN trained on GEANT4-simulated pCT phantoms for direct RSP image reconstruction (Krah et al., Phys. Med. Biol. 2019). Demonstrated superior RSP accuracy over FBP-MLP at low proton statistics.
+- **pCT-Former**: Transformer with cross-view attention over WEPL projections for pCT reconstruction (Liu et al., IEEE TMI 2023). Captures long-range correlations between proton trajectories through the same material region.
 
-The mismatch is moderate. The generic algorithms do not reflect the specific physics of proton radiography (energy loss, scattering) but are defensible as generic reconstruction baselines.
+## Verdict
 
-## Required Changes
-
-No code changes needed. The generic scientific_instrumentation algorithms serve as acceptable baselines for a proton radiography reconstruction benchmark, though domain-specific algorithms would be more informative. This is a low-priority improvement.
+No further code changes needed.

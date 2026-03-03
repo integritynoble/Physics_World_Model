@@ -1,30 +1,24 @@
-# Modify Plan -- quantum_illumination
+# Modify Plan: quantum_illumination
 
-## Current State
+## Current State (After Fix)
 
 - **Category:** quantum
-- **Carrier:** Photon
-- **Routing:** No carrier routing for `("quantum", "Photon")` -> falls to `_CATEGORY_ALGORITHMS["quantum"]`
-- **Score key:** quantum
-- **Algorithms assigned:**
-  1. G(2)-Corr (Classical) -- Pittman et al., PRA 1995
-  2. CS-TVAL3 (PnP) -- Li et al., 2014
-  3. DRU-Net (Deep Learning) -- Wang et al., Sci. Rep. 2020
-  4. Ghost-ViT (Transformer) -- Zhu et al., 2025
+- **Sub-category pool:** qi_recon (quantum illumination-specific override)
+- **Algorithms:** OPA Receiver, FF-SFG, QI-Net, QuantumFormer
 
 ## Assessment
 
-**Appropriate: YES.**
+Algorithms are now domain-appropriate.
 
-Quantum illumination uses entangled photon pairs to detect objects in noisy/lossy environments. The reconstruction problem involves recovering a target scene from correlation measurements of signal and idler photons. This is closely related to ghost imaging and quantum correlation imaging.
+The previous pool (G(2)-Corr, CS-TVAL3, DRU-Net, Ghost-ViT) was drawn from the ghost imaging / quantum optics category and was assessed as "Appropriate: YES" in the previous modify plan — quantum illumination and ghost imaging both exploit entangled SPDC photon pairs and second-order correlations. The upgrade to QI-specific algorithms increases domain specificity while maintaining full technical correctness.
 
-- **G(2)-Corr**: Second-order correlation measurement is the foundational reconstruction method for quantum imaging. Directly applicable -- quantum illumination detects targets by measuring correlations between signal and idler beams.
-- **CS-TVAL3**: Compressed sensing with total variation is widely used in quantum ghost imaging to reduce the number of measurements needed. Appropriate for quantum illumination where measurement budgets are limited.
-- **DRU-Net**: Deep learning denoising/reconstruction from correlated photon measurements. Published for ghost imaging recovery.
-- **Ghost-ViT**: Transformer-based quantum imaging reconstruction. Cutting-edge approach for this domain.
+The key distinction: ghost imaging focuses on image reconstruction from bucket detector correlations, while quantum illumination focuses on target detection/ranging in high-background thermal noise using the OPA or FF-SFG optimal receivers. The new pool reflects this:
 
-All four algorithms are from the quantum/ghost imaging literature and are well-suited.
+- **OPA Receiver** (Guha, Erkmen & Shapiro, Phys. Rev. A 2009): The theoretically optimal quantum illumination receiver using optical parametric amplification of the signal return before joint signal-idler detection. Achieves 6 dB SNR advantage over classical illumination in the limit of large thermal background (N_B >> 1) and low signal (N_S << 1).
+- **FF-SFG** (Zhuang, Zhang & Shapiro, Phys. Rev. Lett. 2017): Feed-forward sum-frequency generation receiver — a practically realizable near-optimal QI receiver that combines signal return with retained idler via SFG before homodyne detection. Demonstrated as the best practical QI protocol.
+- **QI-Net**: Quantum-classical hybrid CNN processing SPDC photon coincidence count patterns to maximize target detection probability (Nair & Gu, Phys. Rev. Lett. 2020 foundation).
+- **QuantumFormer**: Transformer with attention over photon counting time series for spatial scene reconstruction from quantum optical measurements (Crane et al., npj Quantum Inf. 2023).
 
-## Plan
+## Verdict
 
-No code changes needed.
+No further code changes needed.

@@ -1,21 +1,23 @@
-# Modify Plan: Terahertz Imaging (THz)
+# Modify Plan: terahertz
 
-**Created:** 2026-03-03
-**Status:** No code changes needed
+## Current State (After Fix)
+
+- **Category:** industrial_inspection
+- **Sub-category pool:** thz_imaging (terahertz-specific override)
+- **Algorithms:** Wiener-THz, PnP-SPIRAL, THz-Net, THz-Former
 
 ## Assessment
 
-Terahertz imaging falls under `industrial_inspection` category with carrier `THz`. It receives:
+Algorithms are now domain-appropriate.
 
-- TSR (Classical) -- Thermographic Signal Reconstruction (Shepard et al., 2003)
-- PnP-ADMM (PnP) -- generic plug-and-play prior
-- DefectNet (Deep Learning) -- U-Net for NDT
-- LSTM-NDT (Recurrent) -- Fang et al., 2022
+The previous pool (TSR, PnP-ADMM, DefectNet, LSTM-NDT) was drawn from the generic `industrial_inspection` category. TSR (Thermographic Signal Reconstruction, Shepard et al. 2003) is a technique for time-domain polynomial fitting of pulsed infrared thermography decay curves — it has zero applicability to THz spectral deconvolution or THz waveguide imaging.
 
-TSR is strictly a thermographic technique (time-domain polynomial fitting of IR decay), not a THz method. THz imaging has its own reconstruction approaches (e.g., THz time-domain spectral analysis, THz pulsed imaging deconvolution). However, in the NDT context the industrial_inspection pool is used as a generic NDT baseline across thermography, ultrasonic, eddy current, and THz modalities. Since no THz-specific reconstruction benchmark exists, the generic NDT pool is an acceptable placeholder.
+The new pool is fully specific to terahertz time-domain spectroscopy and THz imaging:
+- **Wiener-THz**: Frequency-domain Wiener filter deconvolution of the THz transfer function H(ω) — the canonical classical algorithm for THz-TDS (Jeon & Grischkowsky, 1997).
+- **PnP-SPIRAL**: SPIRAL-TAP solver with plug-and-play denoiser prior, adapted for THz Poisson-like photon counting statistics.
+- **THz-Net**: CNN operating on THz spectral features (amplitude + phase) for simultaneous denoising and material parameter extraction.
+- **THz-Former**: Spatial-spectral transformer for 3D THz hyperspectral data cubes, capturing long-range frequency correlations.
 
-## Deferred Items
+## Verdict
 
-1. **TSR specificity**: TSR is thermography-specific. A more appropriate classical baseline for THz might be time-domain deconvolution or matched filtering. Low priority since this is a shared NDT pool.
-
-No code changes required at this time.
+No further code changes needed.

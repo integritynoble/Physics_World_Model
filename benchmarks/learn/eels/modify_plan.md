@@ -1,40 +1,18 @@
-# Modify Plan: eels (Electron Energy Loss Spectroscopy)
+# Modify Plan: eels
 
-## Current State
-
+## Current State (After Fix)
 - **Category:** electron_microscopy
-- **Carrier:** Electron
-- **Score key:** em_generic
-- **Algorithms served (EM generic pool):**
-  1. Wiener Filter (Classical) -- Analytical baseline
-  2. BM3D (PnP) -- Dabov et al., IEEE TIP 2007
-  3. Noise2Void (Deep Learning) -- Krull et al., CVPR 2019
-  4. SwinIR (Transformer) -- Liang et al., ICCVW 2021
+- **Sub-category pool:** em_analytical (EELS-specific spectral deconvolution)
+- **Algorithms:** [Fourier-Ratio, RL-EELS, NMF-EELS, EELS-Net]
 
 ## Assessment
+Algorithms are now domain-appropriate.
 
-Reasonable match. EELS produces spectrum images where each pixel contains an
-energy-loss spectrum. The primary reconstruction tasks are: (1) denoising of
-low-dose spectrum images, (2) deconvolution of plural scattering (Fourier-ratio
-or Fourier-log methods), and (3) background subtraction (power-law fitting).
-
-The generic EM denoising pool addresses the spatial denoising aspect:
-
-- Wiener Filter is a standard spectral denoising baseline directly applicable
-  to EELS spectrum images.
-- BM3D exploits spatial self-similarity in EELS maps (useful for crystalline
-  materials with repeated unit cells).
-- Noise2Void handles the photon-limited noise regime common in EELS without
-  requiring clean reference data.
-- SwinIR provides strong image restoration for the 2D elemental/bonding maps
-  extracted from EELS data cubes.
-
-The Fourier-ratio deconvolution step is specific to EELS and not captured by
-the generic pool, but this is handled by the forward model's default solver
-(fourier_ratio) rather than the algorithm catalog.
+The previous generic EM denoising pool (Wiener Filter, BM3D, Noise2Void, SwinIR) addressed spatial image denoising but missed the spectral deconvolution problem that is central to EELS. The replacement algorithms target EELS specifically:
+- **Fourier-Ratio** — the canonical ZLP deconvolution method, divides the measured spectrum by the ZLP in Fourier space (Egerton, EELS in the Electron Microscope, 2011)
+- **RL-EELS** — Richardson-Lucy iterative deconvolution using the ZLP as the PSF (Gloter et al., Ultramicroscopy 2003)
+- **NMF-EELS** — Non-negative Matrix Factorization for spectral unmixing of overlapping EELS edges (de la Pena et al., HyperSpy 2016)
+- **EELS-Net** — deep learning CNN for end-to-end ZLP deconvolution and background subtraction (Schwartz et al., npj Comput. Mater. 2022)
 
 ## Verdict
-
-No code changes needed. The generic EM denoising pool is appropriate for
-EELS spectrum image restoration, which is fundamentally a low-SNR
-denoising/deconvolution problem in the spatial domain.
+No further code changes needed.

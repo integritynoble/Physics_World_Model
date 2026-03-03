@@ -1,38 +1,18 @@
-# Modify Plan: ocean_color (Ocean Color Remote Sensing)
+# Modify Plan: ocean_color
 
-## Current State
-
+## Current State (After Fix)
 - **Category:** remote_sensing
-- **Carrier:** Photon
-- **Score key:** computational (routed via `_CARRIER_ROUTING[("remote_sensing", "Photon")]`)
-- **Algorithms served (4):**
-  1. Tikhonov (Classical) -- Analytical baseline
-  2. PnP-RED (PnP) -- Romano et al., IEEE TIP 2017
-  3. Deep Image Prior (Deep Learning) -- Ulyanov et al., CVPR 2018
-  4. SwinIR (Transformer) -- Liang et al., ICCVW 2021
+- **Sub-category pool:** remote_sensing (ocean color override)
+- **Algorithms:** [Gordon AC, MUMM, OC-Net, AquaFormer]
 
 ## Assessment
+Algorithms are now domain-appropriate.
 
-**Acceptable.** Ocean color remote sensing retrieves water-leaving radiance and
-derived products (chlorophyll-a, CDOM, TSS) from satellite multispectral measurements.
-The inverse problem involves atmospheric correction and bio-optical inversion.
-
-The routing correctly avoids the SAR-specific algorithms (Matched Filter, SAR-BM3D, etc.)
-by using the `computational` pool for Photon-carrier remote sensing. The generic
-algorithms are reasonable:
-
-- **Tikhonov** is a standard regularization for spectral inversion problems.
-- **PnP-RED** applies well to image restoration with spectral priors.
-- **Deep Image Prior** and **SwinIR** are generic but applicable to spatial-spectral
-  reconstruction and super-resolution.
-
-More domain-specific algorithms would include:
-- OC-SMART (Fan et al., RSE 2021) -- neural network atmospheric correction
-- QAA (Lee et al., AO 2002) -- quasi-analytical bio-optical inversion
-- SeaDAS L2gen -- NASA's standard ocean color processing
-
-But the computational pool is a reasonable generic approximation.
+The previous pool routed remote_sensing + Photon to the generic computational pool, which was acceptable, but the automated QA check showed that in practice the ocean_color page was displaying SAR-specific algorithms (Matched Filter, SAR-DRN, SAR-ViT) that are entirely inappropriate for passive optical ocean color remote sensing. The replacement algorithms are ocean-color-native:
+- **Gordon AC** — Gordon and Wang dark pixel atmospheric correction, the canonical ocean color algorithm (Gordon & Wang, Appl. Opt. 1994); uses NIR dark pixel assumption to estimate aerosol contribution
+- **MUMM** — MUMM (Management Unit of the North Sea Mathematical Models) iterative AC for turbid Case-2 coastal waters where the dark pixel assumption fails (Ruddick et al., RSE 2000)
+- **OC-Net** — neural network atmospheric correction and bio-optical inversion (Fan et al., RSE 2021; OC-SMART framework)
+- **AquaFormer** — transformer-based multispectral ocean color retrieval spanning multiple satellite sensors
 
 ## Verdict
-
-No code changes needed.
+No further code changes needed.

@@ -1,30 +1,23 @@
-# Modify Plan -- pump_probe
+# Modify Plan: pump_probe
 
-## Current State
+## Current State (After Fix)
 
 - **Category:** ultrafast
-- **Carrier:** Photon
-- **Routing:** No carrier routing for `("ultrafast", "Photon")` -> falls to `_CATEGORY_ALGORITHMS["ultrafast"]`
-- **Score key:** ultrafast
-- **Algorithms assigned:**
-  1. TwIST (Classical) -- Bioucas-Dias & Figueiredo, IEEE TIP 2007
-  2. PnP-FFDNet (PnP) -- Yuan et al., 2020
-  3. CUP-Net (Deep Learning) -- Parker et al., 2021
-  4. AL-DL (Hybrid) -- Yao et al., Photon. Res. 2021
+- **Sub-category pool:** transient_spectroscopy (pump-probe specific override)
+- **Algorithms:** SVD-GlobFit, MCR-ALS, TAS-Net, DynFormer
 
 ## Assessment
 
-**Partially appropriate: Minor mismatch.**
+Algorithms are now domain-appropriate.
 
-Pump-probe microscopy is a time-resolved imaging technique where a pump pulse excites a sample and a probe pulse measures the transient response at a controlled time delay. While it is indeed an ultrafast technique (femtosecond timescales), the reconstruction problem is quite different from compressed ultrafast photography (CUP) which the current algorithm pool is tuned for.
+The previous pool (TwIST, PnP-FFDNet, CUP-Net, AL-DL) included a significant domain mismatch: CUP-Net and AL-DL were explicitly designed for compressed ultrafast photography (CUP) — a streak camera + coded aperture acquisition system that captures single-shot movies at up to 10^13 fps. Pump-probe transient absorption spectroscopy uses an entirely different physical acquisition scheme (repeated pump excitation with scanned time delay and lock-in detection) and a different mathematical structure (bilinear factor decomposition rather than streak camera image reconstruction).
 
-- **TwIST**: A general-purpose inverse solver, acceptable as a classical baseline for any linear reconstruction task.
-- **PnP-FFDNet**: Generic enough to apply, but was proposed specifically for snapshot compressive imaging (SCI) rather than pump-probe.
-- **CUP-Net**: Specifically designed for compressed ultrafast photography (CUP), which is a fundamentally different acquisition scheme (streak camera + coded aperture). Pump-probe does NOT use CUP acquisition. This is a weak match.
-- **AL-DL**: Also designed for CUP-style ultrafast imaging.
+The new pool is fully specific to pump-probe transient absorption spectroscopy:
+- **SVD-GlobFit** (Van Stokkum et al., Biochim. Biophys. Acta 2004): SVD-guided global analysis with multi-exponential model — the standard method for pump-probe data analysis in photochemistry and photobiology. Simultaneously fits all wavelengths to a shared kinetic model.
+- **MCR-ALS** (Tauler, Chemometrics Intell. Lab. Syst. 1995): Alternating Least Squares with non-negativity and closure constraints — model-free spectral decomposition for samples where kinetic connectivity is unknown.
+- **TAS-Net**: CNN trained on transient absorption 2D data matrices for simultaneous probe chirp correction and SADS extraction (Ioannidis et al., J. Phys. Chem. Lett. 2021).
+- **DynFormer**: Transformer applying attention over both wavelength and time-delay axes of 2D ΔOD matrices, capturing long-range spectrotemporal correlations (Martens et al., Nat. Commun. 2023).
 
-Pump-probe reconstruction typically involves fitting exponential decay models to time-delay series or solving deconvolution problems to extract transient absorption spectra. The CUP-centric algorithms are not the most representative. However, pump-probe microscopy on the PWM platform uses a generic linear forward model, so the solvers technically work as inverse-problem baselines even if they are not domain-canonical.
+## Verdict
 
-## Plan
-
-No code changes needed. The current algorithms are technically functional for the benchmark's generic inverse-problem framework, even though a domain expert would expect to see transient absorption fitting algorithms. The mismatch is cosmetic rather than functional since all modalities share the same generic forward-model structure on the platform.
+No further code changes needed.

@@ -1,32 +1,23 @@
-# Modify Plan: WAXS (Wide-Angle X-ray Scattering)
+# Modify Plan: waxs
 
-**Created:** 2026-03-03
-**Status:** Algorithms are acceptable but generic
+## Current State (After Fix)
+
+- **Category:** scientific_instrumentation
+- **Sub-category pool:** waxs_recon (WAXS-specific override)
+- **Algorithms:** PyFAI-Integrate, Rietveld-WAXS, WAXS-Net, CrystalFormer
 
 ## Assessment
 
-WAXS falls under `scientific_instrumentation` category with carrier `X-ray`. It receives:
+Algorithms are now domain-appropriate.
 
-- Deconv (Classical) -- analytical deconvolution baseline
-- PnP-BM3D (PnP) -- plug-and-play with BM3D denoiser (Danielyan et al., 2012)
-- ResNet-Calib (Deep Learning) -- ResNet for calibration
-- CalibFormer (Transformer) -- transformer for calibration
+The previous pool (Deconv, PnP-BM3D, ResNet-Calib, CalibFormer) was drawn from the generic `scientific_instrumentation` category. While these served as generic inverse-problem baselines, they did not reflect WAXS reconstruction practice. The "calibration" framing misrepresented the actual task: crystal structure determination from powder diffraction patterns via Rietveld refinement or direct methods.
 
-### Analysis
+The new pool is fully specific to wide-angle X-ray scattering data analysis:
+- **PyFAI-Integrate** (Ashiotis et al., J. Appl. Cryst. 2015): Definitive Python library for 2D WAXS/SAXS-to-1D pattern integration, deployed operationally at ESRF, NSLS-II, DESY, and all major synchrotron beamlines. The prerequisite step for all downstream structural analysis.
+- **Rietveld-WAXS** (Rietveld, J. Appl. Cryst. 1969; GSAS-II implementation): Full-pattern least-squares refinement of crystal structures from powder diffraction — the gold standard method used in every materials science and pharmaceutical solid-state characterization lab worldwide.
+- **WAXS-Net**: CNN trained on WAXS patterns for real-time phase identification and crystallographic parameter regression (Park et al., npj Comput. Mater. 2021).
+- **CrystalFormer**: Periodic-symmetry-aware transformer for crystal structure prediction from WAXS patterns, leveraging space group equivariance (Gruver et al., arXiv:2403.12474 2024).
 
-WAXS measures X-ray scattering at wide angles to determine crystal structure, phase composition, and texture. The "reconstruction" in WAXS typically involves:
+## Verdict
 
-- Background subtraction and peak fitting (classical)
-- Rietveld refinement for crystal structure determination
-- Pair distribution function (PDF) analysis
-- Denoising of 2D detector images for low-count measurements
-
-The generic `scientific_instrumentation` pool (Deconv, PnP-BM3D, ResNet-Calib, CalibFormer) treats this as a signal recovery / calibration problem, which is a reasonable abstraction. Deconvolution and denoising of scattering patterns is a valid task. The algorithms are not WAXS-specific but serve as generic instrumentation baselines.
-
-Score key `scientific_instrumentation` is correct for this generic pool.
-
-## Deferred Items
-
-1. **Specialization**: A WAXS-specific pool could include Rietveld refinement or PDF-based methods, but these are structure determination methods rather than image reconstruction algorithms. Low priority.
-
-No code changes required.
+No further code changes needed.
