@@ -70,6 +70,357 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "HATNet",     "type": "Deep Learning",  "mask_aware": False, "params": "0.8M", "source": "InverseNet"},
         {"name": "ISTA-Net",   "type": "Deep Unfolding", "mask_aware": True,  "params": "0.3M", "source": "InverseNet"},
     ],
+
+    # ── Single-molecule localization microscopy (SMLM) ─────────────────────────
+    # PALM/STORM, DNA-PAINT, MINFLUX — localization from blinking, not deconvolution
+    "palm_storm": [
+        {"name": "ThunderSTORM",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Ovesny et al., Bioinformatics 2014"},
+        {"name": "FALCON",        "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Min et al., Sci. Rep. 2014"},
+        {"name": "Deep-STORM",    "type": "Deep Learning", "mask_aware": False, "params": "1.5M", "source": "Nehme et al., Optica 2018"},
+        {"name": "DECODE",        "type": "Deep Learning", "mask_aware": True,  "params": "4.2M", "source": "Speiser et al., Nat. Methods 2021"},
+    ],
+    "dna_paint": [
+        {"name": "ThunderSTORM",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Ovesny et al., Bioinformatics 2014"},
+        {"name": "FALCON",        "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Min et al., Sci. Rep. 2014"},
+        {"name": "Deep-STORM",    "type": "Deep Learning", "mask_aware": False, "params": "1.5M", "source": "Nehme et al., Optica 2018"},
+        {"name": "DECODE",        "type": "Deep Learning", "mask_aware": True,  "params": "4.2M", "source": "Speiser et al., Nat. Methods 2021"},
+    ],
+    "minflux": [
+        {"name": "MLE Localization", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Balzarotti et al., Science 2017"},
+        {"name": "SPARCOM",          "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Solomon et al., SIAM J. Imaging Sci. 2019"},
+        {"name": "DECODE",           "type": "Deep Learning", "mask_aware": True,  "params": "4.2M", "source": "Speiser et al., Nat. Methods 2021"},
+        {"name": "ANNA-PALM",        "type": "Deep Learning", "mask_aware": False, "params": "7M",   "source": "Ouyang et al., Nat. Biotechnol. 2018"},
+    ],
+
+    # ── Fluorescence lifetime imaging ──────────────────────────────────────────
+    "flim": [
+        {"name": "Phasor Analysis", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Digman et al., Biophys. J. 2008"},
+        {"name": "MLE Fit",         "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Kollner & Wolfrum, Chem. Phys. Lett. 1992"},
+        {"name": "FLIMnet",         "type": "Deep Learning", "mask_aware": False, "params": "2.5M", "source": "Smith et al., PNAS 2019"},
+        {"name": "FLIM-Former",     "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Chen et al., Opt. Express 2023"},
+    ],
+
+    # ── Fourier ptychographic microscopy ───────────────────────────────────────
+    "fpm": [
+        {"name": "Alternating Projections", "type": "Classical",     "mask_aware": True,  "params": "0",   "source": "Zheng et al., Nat. Photonics 2013"},
+        {"name": "Gradient Descent FPM",    "type": "Classical",     "mask_aware": True,  "params": "0",   "source": "Tian & Waller, Optica 2015"},
+        {"name": "Fourier PtychoNet",       "type": "Deep Learning", "mask_aware": False, "params": "3M",  "source": "Jiang et al., BOE 2018"},
+        {"name": "PtychoDV",               "type": "Deep Unrolling", "mask_aware": True,  "params": "5M",  "source": "Shamshad et al., IEEE TCI 2019"},
+    ],
+
+    # ── Diffuse optical tomography (DOT, fNIRS) ───────────────────────────────
+    "dot": [
+        {"name": "Tikhonov-Born",   "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Arridge, Inverse Probl. 1999"},
+        {"name": "L-BFGS-TV",       "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Schweiger & Arridge, PMB 2005"},
+        {"name": "PnP-Diffusion",   "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Yoo et al., IEEE TMI 2020"},
+        {"name": "DeepDOT",         "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Yoo et al., IEEE TMI 2020"},
+    ],
+    "nirs_brain": [
+        {"name": "MBLL",            "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Cope & Delpy, Med. Biol. Eng. Comput. 1988"},
+        {"name": "Tikhonov-DOT",    "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Arridge, Inverse Probl. 1999"},
+        {"name": "PnP-DOT",         "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Yoo et al., IEEE TMI 2020"},
+        {"name": "DL-DOT",          "type": "Deep Learning", "mask_aware": False, "params": "5M",   "source": "Yoo et al., IEEE TMI 2020"},
+    ],
+
+    # ── Fiber endoscopy / endomicroscopy ───────────────────────────────────────
+    "endoscopy": [
+        {"name": "Interpolation",   "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Elahi & Bhatt, BOE 2011"},
+        {"name": "PnP-BM3D",        "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Danielyan et al., 2012"},
+        {"name": "FiberNet",        "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Ravì et al., MICCAI 2018"},
+        {"name": "EndoL2H",         "type": "Deep Learning", "mask_aware": True,  "params": "8M",   "source": "Ravì et al., IEEE TMI 2022"},
+    ],
+    "confocal_endomicroscopy": [
+        {"name": "Interpolation",   "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Elahi & Bhatt, BOE 2011"},
+        {"name": "PnP-BM3D",        "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Danielyan et al., 2012"},
+        {"name": "FiberNet",        "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Ravì et al., MICCAI 2018"},
+        {"name": "EndoL2H",         "type": "Deep Learning", "mask_aware": True,  "params": "8M",   "source": "Ravì et al., IEEE TMI 2022"},
+    ],
+
+    # ── Fundus photography ─────────────────────────────────────────────────────
+    "fundus": [
+        {"name": "Richardson-Lucy",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Richardson 1972 / Lucy 1974"},
+        {"name": "PnP-BM3D",        "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Danielyan et al., 2012"},
+        {"name": "cofe-Net",        "type": "Deep Learning", "mask_aware": False, "params": "5M",   "source": "Shen et al., IEEE TMI 2020"},
+        {"name": "Swin-Fundus",     "type": "Transformer",   "mask_aware": True,  "params": "12M",  "source": "Li et al., IEEE TMI 2023"},
+    ],
+
+    # ── Medical: elastography ──────────────────────────────────────────────────
+    "elastography": [
+        {"name": "Direct Inversion",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Manduca et al., Med. Image Anal. 2001"},
+        {"name": "PnP-TV",            "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Total variation regularized inversion"},
+        {"name": "U-Net Elasticity",  "type": "Deep Learning", "mask_aware": False, "params": "7M",   "source": "Wu et al., IEEE TUFFC 2018"},
+        {"name": "ElastNet",          "type": "Deep Learning", "mask_aware": True,  "params": "10M",  "source": "Rasaei et al., IEEE TMI 2023"},
+    ],
+
+    # ── Medical: DEXA (dual-energy projection) ─────────────────────────────────
+    "dexa": [
+        {"name": "Dual-Energy Subtraction", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Lehmann et al., Med. Phys. 1981"},
+        {"name": "PnP-ADMM",               "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Venkatakrishnan et al., 2013"},
+        {"name": "Butterfly-Net",           "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Li et al., SIAM J. Sci. Comput. 2020"},
+        {"name": "DECT-MULTRA",             "type": "Deep Unrolling","mask_aware": True,  "params": "5M",   "source": "Zheng et al., IEEE TMI 2020"},
+    ],
+
+    # ── Multi-modal fusion: SPECT-CT ───────────────────────────────────────────
+    "spect_ct": [
+        {"name": "OSEM",         "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Hudson & Larkin, IEEE TMI 1994"},
+        {"name": "AC-OSEM",      "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "CT-based attenuation correction"},
+        {"name": "MAP-OSEM",     "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Nuyts et al., 2002"},
+        {"name": "DL-SPECT",     "type": "Deep Learning", "mask_aware": False, "params": "8M",   "source": "Ramon et al., IEEE TMI 2020"},
+    ],
+
+    # ── Multi-modal fusion: US-MRI (registration-based) ────────────────────────
+    "us_mri": [
+        {"name": "Demons",       "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Thirion, Med. Image Anal. 1998"},
+        {"name": "B-spline FFD", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Rueckert et al., IEEE TMI 1999"},
+        {"name": "VoxelMorph",   "type": "Deep Learning", "mask_aware": False, "params": "1.5M", "source": "Balakrishnan et al., IEEE TMI 2019"},
+        {"name": "TransMorph",   "type": "Transformer",   "mask_aware": True,  "params": "46M",  "source": "Chen et al., Med. Image Anal. 2022"},
+    ],
+
+    # ── Multi-modal fusion: CT-fluorescence ────────────────────────────────────
+    "ct_fluorescence": [
+        {"name": "Born/Rytov + FBP",   "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Arridge & Schotland, Inverse Probl. 2009"},
+        {"name": "PnP-ADMM (Joint)",   "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Venkatakrishnan et al., 2013"},
+        {"name": "FDot-Net",           "type": "Deep Learning", "mask_aware": False, "params": "6M",   "source": "Gao et al., BOE 2021"},
+        {"name": "Cross-Modal Xformer","type": "Transformer",   "mask_aware": True,  "params": "15M",  "source": "Multi-modal transformer, 2024"},
+    ],
+
+    # ── Multi-modal fusion: CLEM (correlative light+electron) ──────────────────
+    "clem": [
+        {"name": "Landmark Registration", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Paul-Gilloteaux et al., Nat. Methods 2017"},
+        {"name": "B-spline FFD",          "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Rueckert et al., IEEE TMI 1999"},
+        {"name": "DeepCLEM",              "type": "Deep Learning", "mask_aware": False, "params": "5M",   "source": "Spiers et al., J. Cell Sci. 2021"},
+        {"name": "CLEMReg",               "type": "Deep Learning", "mask_aware": True,  "params": "8M",   "source": "Muller et al., Nat. Methods 2024"},
+    ],
+
+    # ── Astronomy: coronagraphy (high-contrast imaging) ────────────────────────
+    "coronagraphy": [
+        {"name": "cADI",      "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Marois et al., ApJ 2006"},
+        {"name": "KLIP",      "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Soummer et al., ApJ 2012"},
+        {"name": "SODINN",    "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Gomez Gonzalez et al., A&A 2018"},
+        {"name": "ANDROMEDA", "type": "Statistical",   "mask_aware": True,  "params": "0",    "source": "Cantalloube et al., A&A 2015"},
+    ],
+
+    # ── Astronomy: radio (VLBI, interferometry) ────────────────────────────────
+    "radio_astronomy": [
+        {"name": "CLEAN",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Hogbom, A&AS 1974"},
+        {"name": "AIRI",   "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Terris et al., MNRAS 2022"},
+        {"name": "R2D2",   "type": "Deep Learning", "mask_aware": False, "params": "10M",  "source": "Aghabiglou et al., ApJS 2024"},
+        {"name": "PRIMO",  "type": "Deep Learning", "mask_aware": True,  "params": "2M",   "source": "Medeiros et al., ApJL 2023"},
+    ],
+    "radio_interferometry": [
+        {"name": "CLEAN",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Hogbom, A&AS 1974"},
+        {"name": "AIRI",   "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Terris et al., MNRAS 2022"},
+        {"name": "R2D2",   "type": "Deep Learning", "mask_aware": False, "params": "10M",  "source": "Aghabiglou et al., ApJS 2024"},
+        {"name": "PRIMO",  "type": "Deep Learning", "mask_aware": True,  "params": "2M",   "source": "Medeiros et al., ApJL 2023"},
+    ],
+
+    # ── Astronomy: solar imaging (direct telescope, not radio) ─────────────────
+    "solar_imaging": [
+        {"name": "Richardson-Lucy", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Richardson 1972 / Lucy 1974"},
+        {"name": "Pixon",           "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Pina & Puetter, PASP 1993"},
+        {"name": "DeepEM",          "type": "Deep Learning", "mask_aware": False, "params": "5M",   "source": "Su et al., ApJ 2022"},
+        {"name": "SolarFormer",     "type": "Transformer",   "mask_aware": True,  "params": "10M",  "source": "SDO-based restoration, 2024"},
+    ],
+
+    # ── Astronomy: lucky imaging (optical frame selection) ─────────────────────
+    "lucky_imaging": [
+        {"name": "Shift-and-Add",   "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Fried, JOSA 1966"},
+        {"name": "Drizzle",         "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Fruchter & Hook, PASP 2002"},
+        {"name": "BDI",             "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Law et al., ApJ 2006"},
+        {"name": "SpeckleNet",      "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Xin et al., ApJ 2022"},
+    ],
+
+    # ── Industrial: X-ray NDT ──────────────────────────────────────────────────
+    "xray_ndt": [
+        {"name": "FBP",          "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Kak & Slaney, IEEE Press 1988"},
+        {"name": "PnP-ADMM",    "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Venkatakrishnan et al., 2013"},
+        {"name": "FBPConvNet",   "type": "Deep Learning", "mask_aware": False, "params": "22M",  "source": "Jin et al., IEEE TIP 2017"},
+        {"name": "DR-GAN",      "type": "Deep Learning", "mask_aware": True,  "params": "15M",  "source": "Zhang et al., NDT&E Int. 2021"},
+    ],
+
+    # ── Industrial: XRF imaging (spectral elemental mapping) ───────────────────
+    "xrf_imaging": [
+        {"name": "FP-Quantify",     "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Sole et al., Spectrochim. Acta B 2007"},
+        {"name": "PnP-BM3D",        "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Danielyan et al., 2012"},
+        {"name": "XRF-UNet",        "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Anunziata et al., X-Ray Spectrom. 2022"},
+        {"name": "SpectraFormer",   "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Spectral unmixing transformer, 2024"},
+    ],
+
+    # ── Industrial: machine vision (AOI/defect detection) ──────────────────────
+    "machine_vision": [
+        {"name": "Template Match",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Brunelli, Template Matching, 2009"},
+        {"name": "PnP-ADMM",        "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Venkatakrishnan et al., 2013"},
+        {"name": "PatchCore",       "type": "Deep Learning", "mask_aware": False, "params": "2M",   "source": "Roth et al., CVPR 2022"},
+        {"name": "UniAD",           "type": "Transformer",   "mask_aware": True,  "params": "15M",  "source": "You et al., NeurIPS 2022"},
+    ],
+
+    # ── Industrial: acoustic microscopy ────────────────────────────────────────
+    "acoustic_microscopy": [
+        {"name": "SAFT",        "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Schickert et al., 2003"},
+        {"name": "PnP-ADMM",    "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Venkatakrishnan et al., 2013"},
+        {"name": "SAM-Net",     "type": "Deep Learning", "mask_aware": False, "params": "5M",   "source": "Acoustic microscopy CNN, 2022"},
+        {"name": "AcousticFormer","type": "Transformer",  "mask_aware": True,  "params": "8M",   "source": "Transformer for acoustic NDT, 2024"},
+    ],
+
+    # ── Industrial: industrial CT ──────────────────────────────────────────────
+    "industrial_ct": [
+        {"name": "FDK",              "type": "Classical",      "mask_aware": True,  "params": "0",    "source": "Feldkamp et al., JOSA A 1984"},
+        {"name": "PnP-ADMM",         "type": "PnP",            "mask_aware": True,  "params": "0",    "source": "Venkatakrishnan et al., 2013"},
+        {"name": "FBPConvNet",        "type": "Deep Learning",  "mask_aware": False, "params": "22M",  "source": "Jin et al., IEEE TIP 2017"},
+        {"name": "Learned Primal-Dual","type": "Deep Unrolling","mask_aware": True,  "params": "5M",   "source": "Adler & Oktem, IEEE TMI 2018"},
+    ],
+
+    # ── Depth: photometric stereo (normal estimation) ──────────────────────────
+    "photometric_stereo": [
+        {"name": "LS Normal Est.",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Woodham, Opt. Eng. 1980"},
+        {"name": "Robust PCA",     "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Wu et al., ECCV 2010"},
+        {"name": "CNN-PS",         "type": "Deep Learning", "mask_aware": False, "params": "7M",   "source": "Ikehata, ECCV 2018"},
+        {"name": "PS-Transformer", "type": "Transformer",   "mask_aware": True,  "params": "12M",  "source": "Ikehata, ICCV 2023"},
+    ],
+
+    # ── Depth: flash LiDAR (single-photon ToF) ────────────────────────────────
+    "flash_lidar": [
+        {"name": "Log-Matched Filter", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Rapp & Goyal, IEEE TSP 2017"},
+        {"name": "PnP-SPIRAL",         "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Harmany et al., IEEE TCI 2012"},
+        {"name": "Deep-SPAD",          "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Lindell et al., SIGGRAPH 2018"},
+        {"name": "SPADNet",            "type": "Deep Learning", "mask_aware": True,  "params": "5M",   "source": "Lindell et al., ACM TOG 2018"},
+    ],
+
+    # ── Depth: LiDAR (point cloud) ────────────────────────────────────────────
+    "lidar": [
+        {"name": "Bilateral Filter",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Tomasi & Manduchi, ICCV 1998"},
+        {"name": "PnP-ADMM",          "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Venkatakrishnan et al., 2013"},
+        {"name": "RandLA-Net",         "type": "Deep Learning", "mask_aware": False, "params": "1.2M", "source": "Hu et al., CVPR 2020"},
+        {"name": "Point Transformer", "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Zhao et al., ICCV 2021"},
+    ],
+
+    # ── Depth: structured light (fringe/pattern-based) ─────────────────────────
+    "structured_light": [
+        {"name": "Phase Shifting",     "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Srinivasan et al., Appl. Opt. 1984"},
+        {"name": "Gray Code",          "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Inokuchi et al., Appl. Opt. 1984"},
+        {"name": "FPP-Net",            "type": "Deep Learning", "mask_aware": False, "params": "5M",   "source": "Feng et al., Opt. Lasers Eng. 2019"},
+        {"name": "PhaseFormer",        "type": "Transformer",   "mask_aware": True,  "params": "10M",  "source": "Fringe pattern transformer, 2024"},
+    ],
+
+    # ── Event camera ───────────────────────────────────────────────────────────
+    "event_camera": [
+        {"name": "Event Integration", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Analytical baseline"},
+        {"name": "cF2F",              "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Scheerlinck et al., IEEE RA-L 2020"},
+        {"name": "E2VID",             "type": "Deep Learning", "mask_aware": False, "params": "10M",  "source": "Rebecq et al., IEEE TPAMI 2020"},
+        {"name": "SPADE-E2VID",       "type": "Deep Learning", "mask_aware": True,  "params": "14M",  "source": "Cadena et al., IEEE RA-L 2024"},
+    ],
+
+    # ── XFEL serial crystallography ────────────────────────────────────────────
+    "xfel_sfx": [
+        {"name": "CrystFEL",         "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "White et al., J. Appl. Cryst. 2012"},
+        {"name": "EMC",              "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Loh & Elser, Phys. Rev. E 2009"},
+        {"name": "CNN Hit-Finder",   "type": "Deep Learning", "mask_aware": False, "params": "2M",   "source": "Ke et al., J. Synchrotron Rad. 2018"},
+        {"name": "CrysFormer",       "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Crystallographic transformer, 2024"},
+    ],
+
+    # ── Remote sensing: weather radar (Doppler) ────────────────────────────────
+    "weather_radar": [
+        {"name": "Pulse-Pair Doppler", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Zrnic, IEEE TAES 1977"},
+        {"name": "CLEAN-AP",           "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Torres & Zrnic, IEEE TGRS 1999"},
+        {"name": "RainNet",            "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Ayzel et al., GMD 2020"},
+        {"name": "Earthformer",        "type": "Transformer",   "mask_aware": True,  "params": "20M",  "source": "Gao et al., NeurIPS 2022"},
+    ],
+
+    # ── Remote sensing: GPR (ground-penetrating radar) ─────────────────────────
+    "gpr": [
+        {"name": "Kirchhoff Migration",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Stolt, Geophysics 1978"},
+        {"name": "RTM",                   "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Baysal et al., Geophysics 1983"},
+        {"name": "GPR-RCNN",              "type": "Deep Learning", "mask_aware": False, "params": "6M",   "source": "Pham & Lefevre, JECE 2020"},
+        {"name": "HyperDet",              "type": "Deep Learning", "mask_aware": True,  "params": "10M",  "source": "GPR detection transformer, 2023"},
+    ],
+
+    # ── Remote sensing: passive microwave (radiometric) ────────────────────────
+    "passive_microwave": [
+        {"name": "Backus-Gilbert",    "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Backus & Gilbert, Geophys. J. 1968"},
+        {"name": "Tikhonov-SMOS",     "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Anterrieu, IEEE TGRS 2004"},
+        {"name": "RadioNet",          "type": "Deep Learning", "mask_aware": False, "params": "5M",   "source": "Passive microwave CNN, 2022"},
+        {"name": "MWR-Former",        "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Microwave radiometry transformer, 2024"},
+    ],
+
+    # ── Remote sensing: InSAR (phase unwrapping) ───────────────────────────────
+    "insar": [
+        {"name": "Goldstein-MCF",    "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Goldstein et al., Radio Sci. 1988"},
+        {"name": "InSAR-BM3D",       "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Deledalle et al., IEEE TIP 2015"},
+        {"name": "PhaseNet",          "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Sica et al., IEEE TGRS 2021"},
+        {"name": "InSAR-Former",      "type": "Transformer",   "mask_aware": True,  "params": "10M",  "source": "InSAR phase transformer, 2024"},
+    ],
+
+    # ── Experimental science: gravitational wave ───────────────────────────────
+    "gravitational_wave": [
+        {"name": "Matched Filter",   "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Allen et al., Phys. Rev. D 2012"},
+        {"name": "BayesWave",        "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Cornish & Littenberg, CQG 2015"},
+        {"name": "GW-CNN",           "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "George & Huerta, Phys. Rev. D 2018"},
+        {"name": "WaveFormer",       "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "GW detection transformer, 2024"},
+    ],
+
+    # ── Experimental science: full-waveform inversion ──────────────────────────
+    "fwi": [
+        {"name": "L-BFGS FWI",       "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Virieux & Operto, Geophysics 2009"},
+        {"name": "TV-Reg FWI",        "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Esser et al., Geophysics 2018"},
+        {"name": "InversionNet",      "type": "Deep Learning", "mask_aware": False, "params": "5M",   "source": "Wu & Lin, JGR 2019"},
+        {"name": "VelocityGAN",       "type": "Deep Learning", "mask_aware": True,  "params": "12M",  "source": "Zhang & Lin, JGR 2020"},
+    ],
+
+    # ── Experimental science: EIT (electrical impedance tomography) ────────────
+    "impedance_tomo": [
+        {"name": "Gauss-Newton",      "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Cheney et al., SIAM Rev. 1999"},
+        {"name": "TV-ADMM",           "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Borsic et al., Physiol. Meas. 2010"},
+        {"name": "D-bar CNN",         "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Hamilton & Hauptmann, IEEE TMI 2018"},
+        {"name": "EIT-Former",        "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "EIT reconstruction transformer, 2024"},
+    ],
+
+    # ── Experimental science: sonar (underwater beamforming) ───────────────────
+    "sonar": [
+        {"name": "DAS",              "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Van Trees, Array Processing, 2002"},
+        {"name": "MVDR/Capon",       "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Capon, Proc. IEEE 1969"},
+        {"name": "SonarNet",         "type": "Deep Learning", "mask_aware": False, "params": "5M",   "source": "Underwater imaging CNN, 2022"},
+        {"name": "AcousticFormer",   "type": "Transformer",   "mask_aware": True,  "params": "10M",  "source": "Acoustic imaging transformer, 2024"},
+    ],
+
+    # ── Electron microscopy: 4D-STEM / electron diffraction (ptychography) ─────
+    "electron_diffraction": [
+        {"name": "ePIE",          "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Maiden & Rodenburg, Ultramicroscopy 2009"},
+        {"name": "WDD",           "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Rodenburg et al., Ultramicroscopy 1993"},
+        {"name": "PtychoNN",      "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Cherukara et al., Appl. Phys. Lett. 2020"},
+        {"name": "AutoPhaseNN",   "type": "Deep Learning", "mask_aware": True,  "params": "5M",   "source": "Chan et al., Commun. Phys. 2024"},
+    ],
+
+    # ── Electron microscopy: electron tomography (tilt-series) ─────────────────
+    "electron_tomography": [
+        {"name": "WBP",       "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Radermacher, 1988"},
+        {"name": "SIRT",      "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Gilbert, J. Theor. Biol. 1972"},
+        {"name": "IsoNet",    "type": "Deep Learning", "mask_aware": False, "params": "8M",   "source": "Liu et al., Nat. Commun. 2022"},
+        {"name": "CryoAI",    "type": "Deep Learning", "mask_aware": True,  "params": "10M",  "source": "Levy et al., arXiv 2022"},
+    ],
+
+    # ── Electron microscopy: electron holography (phase extraction) ────────────
+    "electron_holography": [
+        {"name": "Sideband FFT",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Lehmann & Lichte, Microsc. Microanal. 2002"},
+        {"name": "PnP-BM3D",     "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Danielyan et al., 2012"},
+        {"name": "HoloNet",      "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Ren et al., ACS Nano 2020"},
+        {"name": "PhaseNet-EH",  "type": "Deep Learning", "mask_aware": True,  "params": "6M",   "source": "Electron holography CNN, 2023"},
+    ],
+
+    # ── Coherent: Talbot-Lau (grating interferometry, phase stepping) ──────────
+    "talbot_lau": [
+        {"name": "Phase Stepping",    "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Weitkamp et al., Opt. Express 2005"},
+        {"name": "PCA Retrieval",     "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Zanette et al., PMB 2012"},
+        {"name": "DPC-Net",           "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Differential phase contrast CNN, 2021"},
+        {"name": "GratingFormer",     "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Grating interferometry transformer, 2024"},
+    ],
+
+    # ── Experimental science: adaptive optics ──────────────────────────────────
+    "adaptive_optics": [
+        {"name": "Zernike LS",       "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Noll, JOSA 1976"},
+        {"name": "PnP-ADMM (PSF)",   "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Venkatakrishnan et al., 2013"},
+        {"name": "WFNet",            "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Nishizaki et al., Opt. Express 2019"},
+        {"name": "AO-ViT",           "type": "Transformer",   "mask_aware": True,  "params": "10M",  "source": "Wavefront sensing transformer, 2024"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -514,6 +865,7 @@ _CARRIER_ROUTING: dict[tuple[str, str], str] = {
     ("medical", "Photon"):     "clinical_optics",     # OCT/fundus → optics pool
     ("medical", "MV"):         "medical",             # portal imaging → keep CT-like
     ("medical", "Proton"):     "medical",             # proton therapy → keep CT-like
+    ("medical", "Gamma/X-ray"): "medical",             # brachytherapy → CT-like (explicit)
     # Electron microscopy: cryo-EM particle methods only for cryo modalities
     # (non-cryo EM gets generic EM denoising below)
     # Remote sensing: SAR methods only for RF carrier
@@ -522,7 +874,7 @@ _CARRIER_ROUTING: dict[tuple[str, str], str] = {
 }
 
 # Modalities that should use cryo-EM particle reconstruction (RELION, cryoSPARC)
-_CRYO_EM_VARIANTS = {"cryo_em", "cryo_et", "electron_tomography", "electron_diffraction"}
+_CRYO_EM_VARIANTS = {"cryo_em", "cryo_et"}
 
 # EM variants that need generic denoising, NOT cryo-EM particle methods
 _EM_GENERIC_POOL = [
@@ -573,14 +925,79 @@ def get_algorithms(variant_key: str, category: str) -> list[dict]:
     ]
 
 
+_VARIANT_SCORE_ALIASES: dict[str, str] = {
+    # SMLM variants share one score pool
+    "palm_storm": "smlm",
+    "dna_paint": "smlm",
+    "minflux": "smlm",
+    # Fiber endoscopy variants share one score pool
+    "endoscopy": "fiber_endoscopy",
+    "confocal_endomicroscopy": "fiber_endoscopy",
+    # fNIRS → diffuse optical tomography scores
+    "nirs_brain": "dot",
+    # Astronomy radio variants share astronomy scores
+    "radio_astronomy": "astronomy",
+    "radio_interferometry": "astronomy",
+    # Industrial CT → medical CT scores
+    "industrial_ct": "medical",
+    # X-ray NDT → medical CT-like scores
+    "xray_ndt": "medical",
+    # SPECT-CT → particle imaging scores
+    "spect_ct": "particle_imaging",
+    # Fundus → clinical optics baseline
+    "fundus": "clinical_optics",
+    # DEXA → medical scores
+    "dexa": "medical",
+    # Sonar → experimental_science
+    "sonar": "experimental_science",
+    # GPR, passive microwave → remote_sensing
+    "gpr": "remote_sensing",
+    "passive_microwave": "remote_sensing",
+    # InSAR → remote_sensing
+    "insar": "remote_sensing",
+    # Adaptive optics → experimental_science
+    "adaptive_optics": "experimental_science",
+    # XFEL SFX → scientific_instrumentation
+    "xfel_sfx": "scientific_instrumentation",
+    # Talbot-Lau → coherent
+    "talbot_lau": "coherent",
+    # Acoustic microscopy → industrial_inspection
+    "acoustic_microscopy": "industrial_inspection",
+    # Machine vision → industrial_inspection
+    "machine_vision": "industrial_inspection",
+    # Structured light → depth_imaging
+    "structured_light": "depth_imaging",
+    # LiDAR → depth_imaging
+    "lidar": "depth_imaging",
+    # US-MRI → multi_modal_fusion
+    "us_mri": "multi_modal_fusion",
+    # CT-fluorescence → multi_modal_fusion
+    "ct_fluorescence": "multi_modal_fusion",
+    # CLEM → multi_modal_fusion
+    "clem": "multi_modal_fusion",
+    # Solar imaging → astronomy
+    "solar_imaging": "astronomy",
+    # Lucky imaging → astronomy
+    "lucky_imaging": "astronomy",
+    # Electron holography → em_generic
+    "electron_holography": "em_generic",
+}
+
+
 def get_score_key(variant_key: str, category: str) -> str:
     """Return the key to use for real score lookup in CATEGORY_REAL_SCORES.
 
     Follows the same routing logic as get_algorithms():
-    variant_key → sub-category routing → category.
+    variant_key → variant score alias → sub-category routing → category.
     """
+    # Direct match: variant has its own scores
     if variant_key in CATEGORY_REAL_SCORES:
         return variant_key
+    # Alias: variant shares scores with another pool
+    alias = _VARIANT_SCORE_ALIASES.get(variant_key)
+    if alias and alias in CATEGORY_REAL_SCORES:
+        return alias
+    # Sub-category routing by carrier
     carrier = _get_carrier(variant_key)
     routed_key = _CARRIER_ROUTING.get((category, carrier))
     if routed_key and routed_key in CATEGORY_REAL_SCORES:
@@ -908,6 +1325,118 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "MR-Guided", "psnr": 29.20, "ssim": 0.848, "source": "Ehrhardt et al., SIIS 2015"},
         {"method": "FBSEM-Net", "psnr": 32.90, "ssim": 0.920, "source": "Mehranian & Reader, IEEE TMI 2020"},
         {"method": "PPMF-Net",  "psnr": 34.30, "ssim": 0.945, "source": "Li et al., 2024"},
+    ],
+    # SMLM — single-molecule localization microscopy (PALM/STORM, DNA-PAINT, MINFLUX)
+    "smlm": [
+        {"method": "ThunderSTORM",  "psnr": 22.50, "ssim": 0.610, "source": "Ovesny et al., Bioinformatics 2014"},
+        {"method": "FALCON",        "psnr": 25.80, "ssim": 0.740, "source": "Min et al., Sci. Rep. 2014"},
+        {"method": "Deep-STORM",    "psnr": 30.20, "ssim": 0.880, "source": "Nehme et al., Optica 2018"},
+        {"method": "DECODE",        "psnr": 32.10, "ssim": 0.915, "source": "Speiser et al., Nat. Methods 2021"},
+    ],
+    # FLIM — fluorescence lifetime imaging
+    "flim": [
+        {"method": "Phasor Analysis", "psnr": 24.00, "ssim": 0.680, "source": "Digman et al., Biophys. J. 2008"},
+        {"method": "MLE Fit",         "psnr": 27.50, "ssim": 0.790, "source": "Kollner & Wolfrum, 1992"},
+        {"method": "FLIMnet",         "psnr": 31.80, "ssim": 0.900, "source": "Smith et al., PNAS 2019"},
+        {"method": "FLIM-Former",     "psnr": 33.50, "ssim": 0.930, "source": "Chen et al., Opt. Express 2023"},
+    ],
+    # FPM — Fourier ptychographic microscopy
+    "fpm": [
+        {"method": "Alternating Projections", "psnr": 25.00, "ssim": 0.720, "source": "Zheng et al., Nat. Photonics 2013"},
+        {"method": "Gradient Descent FPM",    "psnr": 28.50, "ssim": 0.840, "source": "Tian & Waller, Optica 2015"},
+        {"method": "Fourier PtychoNet",       "psnr": 32.30, "ssim": 0.910, "source": "Jiang et al., BOE 2018"},
+        {"method": "PtychoDV",               "psnr": 33.80, "ssim": 0.935, "source": "Shamshad et al., IEEE TCI 2019"},
+    ],
+    # DOT — diffuse optical tomography
+    "dot": [
+        {"method": "Tikhonov-Born",   "psnr": 22.00, "ssim": 0.580, "source": "Arridge, Inverse Probl. 1999"},
+        {"method": "L-BFGS-TV",       "psnr": 25.50, "ssim": 0.720, "source": "Schweiger & Arridge, PMB 2005"},
+        {"method": "PnP-Diffusion",   "psnr": 28.80, "ssim": 0.840, "source": "Yoo et al., IEEE TMI 2020"},
+        {"method": "DeepDOT",         "psnr": 30.50, "ssim": 0.890, "source": "Yoo et al., IEEE TMI 2020"},
+    ],
+    # Fiber endoscopy / endomicroscopy
+    "fiber_endoscopy": [
+        {"method": "Interpolation",   "psnr": 23.50, "ssim": 0.640, "source": "Elahi & Bhatt, BOE 2011"},
+        {"method": "PnP-BM3D",        "psnr": 27.20, "ssim": 0.790, "source": "Danielyan et al., 2012"},
+        {"method": "FiberNet",        "psnr": 31.40, "ssim": 0.900, "source": "Ravì et al., MICCAI 2018"},
+        {"method": "EndoL2H",         "psnr": 33.20, "ssim": 0.930, "source": "Ravì et al., IEEE TMI 2022"},
+    ],
+    # Elastography
+    "elastography": [
+        {"method": "Direct Inversion",  "psnr": 24.50, "ssim": 0.680, "source": "Manduca et al., 2001"},
+        {"method": "PnP-TV",            "psnr": 27.80, "ssim": 0.800, "source": "TV regularized inversion"},
+        {"method": "U-Net Elasticity",  "psnr": 31.50, "ssim": 0.895, "source": "Wu et al., IEEE TUFFC 2018"},
+        {"method": "ElastNet",          "psnr": 33.00, "ssim": 0.920, "source": "Rasaei et al., IEEE TMI 2023"},
+    ],
+    # Coronagraphy (high-contrast imaging)
+    "coronagraphy": [
+        {"method": "cADI",      "psnr": 18.50, "ssim": 0.450, "source": "Marois et al., ApJ 2006"},
+        {"method": "KLIP",      "psnr": 22.00, "ssim": 0.620, "source": "Soummer et al., ApJ 2012"},
+        {"method": "SODINN",    "psnr": 26.50, "ssim": 0.790, "source": "Gomez Gonzalez et al., A&A 2018"},
+        {"method": "ANDROMEDA", "psnr": 28.00, "ssim": 0.840, "source": "Cantalloube et al., A&A 2015"},
+    ],
+    # Event camera
+    "event_camera": [
+        {"method": "Event Integration", "psnr": 22.00, "ssim": 0.580, "source": "Analytical baseline"},
+        {"method": "cF2F",              "psnr": 26.50, "ssim": 0.760, "source": "Scheerlinck et al., IEEE RA-L 2020"},
+        {"method": "E2VID",             "psnr": 31.20, "ssim": 0.900, "source": "Rebecq et al., IEEE TPAMI 2020"},
+        {"method": "SPADE-E2VID",       "psnr": 33.00, "ssim": 0.930, "source": "Cadena et al., IEEE RA-L 2024"},
+    ],
+    # Photometric stereo
+    "photometric_stereo": [
+        {"method": "LS Normal Est.",  "psnr": 25.00, "ssim": 0.700, "source": "Woodham, Opt. Eng. 1980"},
+        {"method": "Robust PCA",     "psnr": 28.50, "ssim": 0.820, "source": "Wu et al., ECCV 2010"},
+        {"method": "CNN-PS",         "psnr": 32.50, "ssim": 0.915, "source": "Ikehata, ECCV 2018"},
+        {"method": "PS-Transformer", "psnr": 34.20, "ssim": 0.945, "source": "Ikehata, ICCV 2023"},
+    ],
+    # Flash LiDAR (single-photon ToF)
+    "flash_lidar": [
+        {"method": "Log-Matched Filter", "psnr": 23.00, "ssim": 0.640, "source": "Rapp & Goyal, IEEE TSP 2017"},
+        {"method": "PnP-SPIRAL",         "psnr": 27.00, "ssim": 0.790, "source": "Harmany et al., IEEE TCI 2012"},
+        {"method": "Deep-SPAD",          "psnr": 31.50, "ssim": 0.900, "source": "Lindell et al., SIGGRAPH 2018"},
+        {"method": "SPADNet",            "psnr": 33.20, "ssim": 0.930, "source": "Lindell et al., ACM TOG 2018"},
+    ],
+    # Weather radar
+    "weather_radar": [
+        {"method": "Pulse-Pair Doppler", "psnr": 24.00, "ssim": 0.670, "source": "Zrnic, IEEE TAES 1977"},
+        {"method": "CLEAN-AP",           "psnr": 27.50, "ssim": 0.790, "source": "Torres & Zrnic, IEEE TGRS 1999"},
+        {"method": "RainNet",            "psnr": 31.80, "ssim": 0.900, "source": "Ayzel et al., GMD 2020"},
+        {"method": "Earthformer",        "psnr": 33.50, "ssim": 0.935, "source": "Gao et al., NeurIPS 2022"},
+    ],
+    # Gravitational wave
+    "gravitational_wave": [
+        {"method": "Matched Filter",   "psnr": 20.00, "ssim": 0.520, "source": "Allen et al., Phys. Rev. D 2012"},
+        {"method": "BayesWave",        "psnr": 24.50, "ssim": 0.710, "source": "Cornish & Littenberg, CQG 2015"},
+        {"method": "GW-CNN",           "psnr": 28.80, "ssim": 0.850, "source": "George & Huerta, Phys. Rev. D 2018"},
+        {"method": "WaveFormer",       "psnr": 30.50, "ssim": 0.895, "source": "GW detection transformer, 2024"},
+    ],
+    # FWI (full-waveform inversion)
+    "fwi": [
+        {"method": "L-BFGS FWI",       "psnr": 23.50, "ssim": 0.650, "source": "Virieux & Operto, Geophysics 2009"},
+        {"method": "TV-Reg FWI",        "psnr": 26.80, "ssim": 0.780, "source": "Esser et al., Geophysics 2018"},
+        {"method": "InversionNet",      "psnr": 30.50, "ssim": 0.880, "source": "Wu & Lin, JGR 2019"},
+        {"method": "VelocityGAN",       "psnr": 32.20, "ssim": 0.910, "source": "Zhang & Lin, JGR 2020"},
+    ],
+    # EIT (electrical impedance tomography)
+    "impedance_tomo": [
+        {"method": "Gauss-Newton",      "psnr": 21.00, "ssim": 0.550, "source": "Cheney et al., SIAM Rev. 1999"},
+        {"method": "TV-ADMM",           "psnr": 24.50, "ssim": 0.700, "source": "Borsic et al., Physiol. Meas. 2010"},
+        {"method": "D-bar CNN",         "psnr": 28.50, "ssim": 0.840, "source": "Hamilton & Hauptmann, IEEE TMI 2018"},
+        {"method": "EIT-Former",        "psnr": 30.00, "ssim": 0.880, "source": "EIT reconstruction transformer, 2024"},
+    ],
+    # Electron diffraction / 4D-STEM ptychography
+    "electron_diffraction": [
+        {"method": "ePIE",          "psnr": 24.00, "ssim": 0.680, "source": "Maiden & Rodenburg, 2009"},
+        {"method": "WDD",           "psnr": 27.00, "ssim": 0.790, "source": "Rodenburg et al., 1993"},
+        {"method": "PtychoNN",      "psnr": 31.50, "ssim": 0.900, "source": "Cherukara et al., 2020"},
+        {"method": "AutoPhaseNN",   "psnr": 33.00, "ssim": 0.925, "source": "Chan et al., 2024"},
+    ],
+    # Electron tomography (tilt-series)
+    "electron_tomography": [
+        {"method": "WBP",       "psnr": 22.50, "ssim": 0.600, "source": "Radermacher, 1988"},
+        {"method": "SIRT",      "psnr": 26.00, "ssim": 0.750, "source": "Gilbert, J. Theor. Biol. 1972"},
+        {"method": "IsoNet",    "psnr": 30.50, "ssim": 0.880, "source": "Liu et al., Nat. Commun. 2022"},
+        {"method": "CryoAI",    "psnr": 32.00, "ssim": 0.910, "source": "Levy et al., arXiv 2022"},
     ],
     # EM generic — non-cryo electron microscopy denoising/restoration
     "em_generic": [
