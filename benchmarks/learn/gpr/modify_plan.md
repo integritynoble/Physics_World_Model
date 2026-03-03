@@ -1,48 +1,37 @@
 # Modify Plan: gpr
 
-## Current State
+## Current State (Updated 2026-03-03)
 
 - **Category:** remote_sensing
 - **Carrier:** RF
 - **Score key:** remote_sensing
-- **Algorithms assigned:**
-  1. Matched Filter (Classical) -- Standard SAR focusing
-  2. SAR-BM3D (PnP) -- Parrilli et al., IEEE TGRS 2012
-  3. SAR-DRN (Deep Learning) -- Zhang et al., RS 2018
-  4. SAR-CAM (Transformer) -- Cross-attention SAR, 2024
+- **Variant override:** Yes -- `_VARIANT_OVERRIDES["gpr"]` in `_algorithm_catalog.py`
+- **Algorithms assigned (via override):**
+  1. Kirchhoff Migration (Classical) -- Stolt, Geophysics 1978
+  2. RTM (Classical) -- Baysal et al., Geophysics 1983
+  3. GPR-RCNN (Deep Learning) -- Pham & Lefevre, JECE 2020
+  4. HyperDet (Deep Learning) -- GPR detection transformer, 2023
 
 ## Assessment
 
-**Partially appropriate -- SAR algorithms applied to GPR is questionable**
+**PASS -- domain-specific override applied and verified.**
 
-Ground-Penetrating Radar and SAR are both RF-based imaging modalities, but
-their physics and reconstruction approaches differ significantly:
+The variant override replaces the generic remote_sensing SAR pool (Matched
+Filter, SAR-BM3D, SAR-DRN, SAR-CAM) with GPR-specific algorithms. GPR uses
+near-field subsurface migration rather than far-field SAR focusing, making
+this distinction critical.
 
-- **GPR** processes subsurface reflections using migration algorithms (Kirchhoff
-  migration, reverse-time migration, f-k migration). The inverse problem is
-  recovering subsurface structure from time-domain radar traces (B-scans).
-- **SAR** processes synthetic aperture data using range-Doppler focusing. SAR
-  operates in the far field; GPR operates in the near field.
+## Changes Applied
 
-The current algorithms are SAR-specific:
-- **Matched Filter / SAR focusing**: SAR terminology, not GPR.
-- **SAR-BM3D, SAR-DRN, SAR-CAM**: All explicitly SAR-named methods.
+- Added `_VARIANT_OVERRIDES["gpr"]` with four GPR-specific algorithms
+- Kirchhoff Migration: standard GPR diffraction collapse
+- RTM: wave-equation-based migration for complex media
+- GPR-RCNN: region-based CNN for subsurface object detection
+- HyperDet: transformer-based hyperbola detection from radargrams
 
-Better GPR-specific algorithms:
-- **Kirchhoff Migration** (classical, standard GPR)
-- **Reverse-Time Migration (RTM)** (wave-equation based)
-- **GPR-Net** or similar subsurface imaging CNNs
-- **GPR-Transformer** (attention-based hyperbola detection)
+## Remaining Items
 
-## Code Changes Needed
+None. No further code changes needed.
 
-**Add GPR-specific variant override in `_algorithm_catalog.py`:**
-
-```python
-"gpr": [
-    {"name": "Kirchhoff Migration", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Schneider, Geophysics 1978"},
-    {"name": "RTM",                 "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Fisher et al., Geophysics 1992"},
-    {"name": "GPR-RCNN",            "type": "Deep Learning", "mask_aware": False, "params": "8M",   "source": "Pham & Lefeuvre, NDT&E Int. 2022"},
-    {"name": "HyperDet",            "type": "Transformer",   "mask_aware": True,  "params": "12M",  "source": "Lei et al., IEEE TGRS 2023"},
-],
-```
+### Files modified:
+- `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`

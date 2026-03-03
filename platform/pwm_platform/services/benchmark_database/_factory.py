@@ -133,6 +133,7 @@ def build_variant(key: str, registry_entry: dict, leaderboard: dict | None = Non
         "spec_dag": registry_entry["spec_dag"],
         "mismatch_params": registry_entry["mismatch_params"],
         "benchmarks": _build_benchmarks(key, display, lb, category=category),
+        "normal_leaderboard": lb.get("normal"),
         "credits_config": {
             "profit_pool_pct": 40,
             "winner_share_pct": 30,

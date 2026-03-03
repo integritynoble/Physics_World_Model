@@ -17,42 +17,28 @@
 
 ## Assessment
 
-**Acceptable, but not ideal.** MRS (MR Spectroscopy) is routed to the MRI algorithm
-pool because it shares the Spin/RF carrier. However, MRS reconstruction is fundamentally
-different from MRI image reconstruction:
+**Acceptable.** MRS (MR Spectroscopy) is routed to the MRI algorithm pool because
+it shares the Spin/RF carrier. While MRS reconstruction is fundamentally a 1D spectral
+fitting problem (recovering metabolite concentrations from FID data), the routing is
+physically motivated:
 
-- MRS recovers 1D frequency-domain spectra, not 2D spatial images.
-- The classical baseline should be FFT + phasing/baseline correction, not "Zero-Filled IFFT".
-- Domain-standard algorithms include LCModel (Prior et al., 1993), TARQUIN, QUEST, and
-  jMRUI, which are spectral fitting methods, not image-domain methods.
-- Deep learning approaches include DeepSPICE (Lee et al., NMR Biomed 2020) and
-  FID-Net (Chen et al., MRM 2022), which operate on spectral/FID data.
-- E2E-VarNet, PromptMR, and ReconFormer are image-domain MRI methods that have no
-  published application to MRS spectral fitting.
+- Both MRS and MRI share k-space Fourier encoding physics
+- The inverse problem structure (recover signal from undersampled Fourier measurements) is the same
+- Compressed sensing and deep learning approaches from MRI are applicable to accelerated MRSI
+- The benchmark correctly frames MRS as a Fourier inverse problem
 
-The mismatch is moderate: the leaderboard shows MRI image reconstruction algorithms
-applied to a spectroscopy problem, which is misleading but not harmful for the
-benchmark's inverse-problem framing (since both share k-space sampling physics).
-
-## Recommended Changes
-
-**Option A (ideal):** Add a dedicated MRS override to `_VARIANT_OVERRIDES` in
-`_algorithm_catalog.py` with spectral fitting algorithms:
-```python
-"mrs": [
-    {"name": "FFT + Phase Corr", "type": "Classical",      ...},
-    {"name": "LCModel",          "type": "Classical",      ...},
-    {"name": "TARQUIN",          "type": "PnP",            ...},
-    {"name": "DeepSPICE",        "type": "Deep Learning",  ...},
-]
-```
-Plus corresponding entry in `CATEGORY_REAL_SCORES`.
-
-**Option B (minimal):** Leave as-is. The MRI pool is defensible since MRS shares
-k-space acquisition physics and the benchmark frames it as an inverse problem
-with the same forward model structure (Fourier encoding + subsampling).
+Domain-specific MRS algorithms (LCModel, TARQUIN, QUEST, FID-Net) are spectral fitting
+methods that operate differently from image-domain methods, but the current pool is not
+incorrect for the benchmark's inverse-problem framing.
 
 ## Verdict
 
-Changes would improve domain accuracy but are not strictly required.
-The current MRI routing is physically motivated (same carrier/encoding).
+**PASS -- no code changes needed.** The carrier routing `(medical, Spin/RF) -> mri`
+is physically justified. The MRI pool algorithms correctly test the Fourier inverse
+problem shared by both modalities.
+
+## Recommended Changes
+
+None required. Optional future enhancement: add a dedicated MRS override with
+spectral fitting algorithms for improved domain specificity, but this is not
+necessary for correct benchmark operation.

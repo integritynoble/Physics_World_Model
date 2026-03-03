@@ -1,48 +1,37 @@
 # Modify Plan: fwi
 
-## Current State
+## Current State (Updated 2026-03-03)
 
 - **Category:** experimental_science
 - **Carrier:** Seismic/Acoustic
 - **Score key:** experimental_science
-- **Algorithms assigned:**
-  1. Tikhonov (Classical) -- Analytical baseline
-  2. PnP-RED (PnP) -- Romano et al., IEEE TIP 2017
-  3. ResUNet (Deep Learning) -- Residual U-Net baseline
-  4. SwinIR (Transformer) -- Liang et al., ICCVW 2021
+- **Variant override:** Yes -- `_VARIANT_OVERRIDES["fwi"]` in `_algorithm_catalog.py`
+- **Algorithms assigned (via override):**
+  1. L-BFGS FWI (Classical) -- Virieux & Operto, Geophysics 2009
+  2. TV-Reg FWI (Classical) -- Esser et al., Geophysics 2018
+  3. InversionNet (Deep Learning) -- Wu & Lin, JGR 2019
+  4. VelocityGAN (Deep Learning) -- Zhang & Lin, JGR 2020
 
 ## Assessment
 
-**Partially appropriate -- generic experimental_science pool; FWI-specific
-algorithms exist and would be better**
+**PASS -- domain-specific override applied and verified.**
 
-Full-Waveform Inversion is a major geophysics inverse problem with a rich
-published algorithm landscape. The current generic experimental_science pool
-(Tikhonov, PnP-RED, ResUNet, SwinIR) is not wrong but is generic and misses
-domain-specific methods:
+The variant override replaces the generic experimental_science pool (Tikhonov,
+PnP-RED, ResUNet, SwinIR) with FWI-specific algorithms. All four methods are
+well-cited, domain-appropriate, and cover the classical-to-deep-learning
+spectrum for seismic velocity inversion.
 
-- **Tikhonov**: Acceptable as a classical baseline but FWI typically uses
-  L-BFGS gradient descent on the waveform misfit functional, not Tikhonov.
-- **PnP-RED**: Generic, not widely used in FWI literature.
-- **ResUNet**: Generic image-domain network.
-- **SwinIR**: An image restoration transformer, not FWI-specific.
+## Changes Applied
 
-Better FWI-specific algorithms:
-- **L-BFGS FWI** (classical gradient-based, the standard)
-- **TV-regularized FWI** (Anagaw & Sacchi, 2012)
-- **InversionNet** (Wu & Lin, 2019) -- CNN-based velocity inversion
-- **VelocityGAN** (Zhang & Alkhalifah, 2022) -- GAN-based FWI
-- **WISE** (Huang et al., 2024) -- Wavefield-Informed Seismic Estimator
+- Added `_VARIANT_OVERRIDES["fwi"]` with four FWI-specific algorithms
+- L-BFGS FWI: standard gradient-based waveform misfit optimizer
+- TV-Reg FWI: total-variation regularized FWI for sharp boundaries
+- InversionNet: direct CNN mapping from seismograms to velocity
+- VelocityGAN: adversarial training for velocity estimation
 
-## Code Changes Needed
+## Remaining Items
 
-**Add FWI-specific variant override in `_algorithm_catalog.py`:**
+None. No further code changes needed.
 
-```python
-"fwi": [
-    {"name": "L-BFGS FWI",     "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Pratt et al., Geophysics 1998"},
-    {"name": "TV-Reg FWI",     "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Anagaw & Sacchi, Geophysics 2012"},
-    {"name": "InversionNet",   "type": "Deep Learning", "mask_aware": False, "params": "10M",  "source": "Wu & Lin, IEEE TGRS 2019"},
-    {"name": "VelocityGAN",    "type": "Transformer",   "mask_aware": True,  "params": "20M",  "source": "Zhang & Alkhalifah, IEEE TGRS 2022"},
-],
-```
+### Files modified:
+- `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`
