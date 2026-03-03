@@ -1,45 +1,101 @@
-# Quality Check: `sim`
+# Benchmark QA Check — sim
 
-**Checked:** 2026-03-03T14:12:55.582339+00:00
 **URL:** https://pwm.platformai.org/benchmark/sim
+**HTTP Status:** 200
+**Page Size:** 112,899 bytes
+**Check Date:** 2026-03-03 14:20 UTC
 
-## Status: WARN
+## Summary
 
-| Category | Count |
+| Severity | Count |
 |----------|-------|
-| Passed | 25 |
-| Warnings | 2 |
-| Errors | 0 |
+| WARNING | 6 |
+| INFO | 59 |
 
-## Warnings
+## Issues by Category
 
-- [ ] PSNR 2.0 dB < 5 (unrealistically low)
-- [ ] PSNR 4.8 dB < 5 (unrealistically low)
+### Leaderboard Consistency
 
-## Passed Checks
+- 🟡 **WARNING**: Very low score value found: 0.0350 — may indicate broken solver
+- 🟡 **WARNING**: Very low PSNR value: 2.0 dB — may indicate failed reconstruction
+- 🟡 **WARNING**: Very low PSNR value: 4.8 dB — may indicate failed reconstruction
 
-- [x] Main page loads (HTTP 200)
-- [x] Page title: SIM — Physics World Model
-- [x] Challenge Leaderboard section present
-- [x] Leaderboard has 4 entries
-- [x] Spec notation present: S(grating) → C(PSF) → Σ_φ → D(g, η₃)
-- [x] Description: Structured Illumination Microscopy
-- [x] Data Preview / Gallery section present
-- [x] Gallery gt.png (scene_00) loads
-- [x] Gallery recon_I.png (scene_00) loads
-- [x] Gallery recon_II.png (scene_00) loads
-- [x] Gallery recon_III.png (scene_00) loads
-- [x] Challenge public page loads (HTTP 200)
-- [x] Challenge public page has dataset reference
-- [x] Challenge dev page loads (HTTP 200)
-- [x] Challenge dev page has dataset reference
-- [x] Public challenge HDF5 accessible on GCS
-- [x] Learning materials directory exists
-- [x] Learn file README.md exists (1444 bytes)
-- [x] Learn file 01_physics_fundamentals.md exists (3146 bytes)
-- [x] Learn file 02_forward_model.md exists (2738 bytes)
-- [x] Learn file 03_reconstruction_algorithms.md exists (2666 bytes)
-- [x] Learn file 04_pwm_benchmark.md exists (2562 bytes)
-- [x] Learn file 05_hands_on_tutorial.md exists (3545 bytes)
-- [x] Compete page loads (HTTP 200)
-- [x] Contribute page loads (HTTP 200)
+### Forward Model
+
+- 🟡 **WARNING**: No explicit forward model equation (y = ...) found on page
+- 🟡 **WARNING**: Notation inconsistency: Forward operator denoted as both H and A
+- 🔵 **INFO**: YAML forward model uses symbols ['N_patterns'] not found on page (YAML eq: y_k = PSF ** (I_k * x) + n,  k = 1..N_patterns)
+
+### Spec Ranges
+
+- 🟡 **WARNING**: Negative physical quantity: -500 m — verify sign is intended
+
+### Images & Links
+
+- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/sim_challenge_public.h5 — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/sim_challenge_dev.h5 — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_00/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_00/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_00/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_00/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_00/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_00/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_01/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_01/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_01/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_01/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_01/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_01/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_02/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_02/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_02/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_02/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_02/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_02/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_03/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_03/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_03/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_03/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_03/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_03/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_00/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_00/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_00/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_01/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_01/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_01/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_02/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_02/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_02/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_03/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_03/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sim/scene_03/recon_III.png — verify it loads
+
+### Algorithm Names
+
+- 🔵 **INFO**: Solver 'HiFi-SIM' from registry not found on page
+- 🔵 **INFO**: Solver 'DL-SIM' from registry not found on page
+
+### Physics Consistency
+
+- 🔵 **INFO**: Signal shape [512, 512] from YAML not clearly shown on page
+- 🔵 **INFO**: Wavelength range 400–650 nm from YAML not found on page
+
+---
+*Auto-generated by `benchmarks/learn/check_all_modalities.py`*
