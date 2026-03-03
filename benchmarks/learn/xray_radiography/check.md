@@ -1,45 +1,100 @@
-# Quality Check: `xray_radiography`
+# Benchmark QA Check — xray_radiography
 
-**Checked:** 2026-03-03T14:09:00.155200+00:00
 **URL:** https://pwm.platformai.org/benchmark/xray_radiography
+**HTTP Status:** 200
+**Page Size:** 110,381 bytes
+**Check Date:** 2026-03-03 14:24 UTC
 
-## Status: WARN
+## Summary
 
-| Category | Count |
+| Severity | Count |
 |----------|-------|
-| Passed | 25 |
-| Warnings | 2 |
-| Errors | 0 |
+| WARNING | 12 |
+| INFO | 55 |
 
-## Warnings
+## Issues by Category
 
-- [ ] PSNR 2.3 dB < 5 (unrealistically low)
-- [ ] PSNR 1.6 dB < 5 (unrealistically low)
+### Leaderboard Consistency
 
-## Passed Checks
+- 🟡 **WARNING**: Very low score value found: 0.0200 — may indicate broken solver
+- 🟡 **WARNING**: Very low score value found: 0.0400 — may indicate broken solver
+- 🟡 **WARNING**: Very low score value found: 0.0240 — may indicate broken solver
+- 🟡 **WARNING**: Very low score value found: 0.0360 — may indicate broken solver
+- 🟡 **WARNING**: Very low score value found: 0.0140 — may indicate broken solver
+- 🟡 **WARNING**: Very low score value found: 0.0460 — may indicate broken solver
+- 🟡 **WARNING**: Very low score value found: 0.0350 — may indicate broken solver
+- 🟡 **WARNING**: Very low score value found: 0.0200 — may indicate broken solver
+- 🟡 **WARNING**: Very low PSNR value: 2.3 dB — may indicate failed reconstruction
+- 🟡 **WARNING**: Very low PSNR value: 1.6 dB — may indicate failed reconstruction
 
-- [x] Main page loads (HTTP 200)
-- [x] Page title: X-ray Radiography — Physics World Model
-- [x] Challenge Leaderboard section present
-- [x] Leaderboard has 4 entries
-- [x] Spec notation present: Π(proj) → D(g, η₁)
-- [x] Description: X-ray Radiography
-- [x] Data Preview / Gallery section present
-- [x] Gallery gt.png (scene_00) loads
-- [x] Gallery recon_I.png (scene_00) loads
-- [x] Gallery recon_II.png (scene_00) loads
-- [x] Gallery recon_III.png (scene_00) loads
-- [x] Challenge public page loads (HTTP 200)
-- [x] Challenge public page has dataset reference
-- [x] Challenge dev page loads (HTTP 200)
-- [x] Challenge dev page has dataset reference
-- [x] Public challenge HDF5 accessible on GCS
-- [x] Learning materials directory exists
-- [x] Learn file README.md exists (1428 bytes)
-- [x] Learn file 01_physics_fundamentals.md exists (2509 bytes)
-- [x] Learn file 02_forward_model.md exists (2626 bytes)
-- [x] Learn file 03_reconstruction_algorithms.md exists (1808 bytes)
-- [x] Learn file 04_pwm_benchmark.md exists (2461 bytes)
-- [x] Learn file 05_hands_on_tutorial.md exists (3570 bytes)
-- [x] Compete page loads (HTTP 200)
-- [x] Contribute page loads (HTTP 200)
+### Forward Model
+
+- 🟡 **WARNING**: Notation inconsistency: Forward operator denoted as both H and A
+
+### Spec Ranges
+
+- 🟡 **WARNING**: Negative physical quantity: -150 kV — verify sign is intended
+
+### Images & Links
+
+- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/xray_radiography_challenge_public.h5 — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/xray_radiography_challenge_dev.h5 — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_00/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_00/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_00/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_00/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_00/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_00/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_01/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_01/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_01/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_01/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_01/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_01/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_02/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_02/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_02/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_02/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_02/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_02/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_03/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_03/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_03/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_03/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_03/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_03/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_00/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_00/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_00/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_01/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_01/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_01/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_02/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_02/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_02/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_03/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_03/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/xray_radiography/scene_03/recon_III.png — verify it loads
+
+### Physics Consistency
+
+- 🔵 **INFO**: Signal shape [512, 512] from YAML not clearly shown on page
+
+---
+*Auto-generated by `benchmarks/learn/check_all_modalities.py`*
