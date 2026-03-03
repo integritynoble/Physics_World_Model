@@ -1,109 +1,58 @@
 # Benchmark QA Check — cacti
 
 **URL:** https://pwm.platformai.org/benchmark/cacti
-**HTTP Status:** 200
-**Page Size:** 133,141 bytes
-**Check Date:** 2026-03-03 14:05 UTC
+**Check Date:** 2026-03-03 14:36 UTC
+**Status:** FAIL
 
 ## Summary
 
 | Severity | Count |
 |----------|-------|
-| WARNING | 18 |
-| INFO | 64 |
+| ERROR | 6 |
+| WARNING | 0 |
+| INFO | 2 |
+| PASSED | 24 |
 
-## Issues by Category
+## Errors
 
-### Leaderboard Consistency
+- [ ] Gallery image broken: /gcs/img/benchmark_gallery/cacti/algorithms/scene_00/gt.png → HTTP 404
+- [ ] Gallery image broken: /gcs/img/benchmark_gallery/cacti/algorithms/scene_00/recon_pnp-drunet.png → HTTP 404
+- [ ] Gallery image broken: /gcs/img/benchmark_gallery/cacti/algorithms/scene_01/gt.png → HTTP 404
+- [ ] Gallery image broken: /gcs/img/benchmark_gallery/cacti/algorithms/scene_01/recon_pnp-drunet.png → HTTP 404
+- [ ] Gallery image broken: /gcs/img/benchmark_gallery/cacti/algorithms/scene_02/gt.png → HTTP 404
+- [ ] ... and 3 more broken images
 
-- 🟡 **WARNING**: Very low score value found: 0.0180 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0220 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0000 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0000 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0000 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0000 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0000 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0300 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0100 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0000 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0000 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0000 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0000 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0000 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0200 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0050 — may indicate broken solver
-- 🟡 **WARNING**: Very low score value found: 0.0350 — may indicate broken solver
+## Info
 
-### Forward Model
+- Page size: 133,141 bytes
+- Methods: EfficientSCI + blind cal, HiSViT-9 + blind cal, ELP-Unfolding + blind cal, GAP-TV + blind cal
 
-- 🟡 **WARNING**: Notation inconsistency: Forward operator denoted as both H and A
+## Passed Checks
 
-### Images & Links
-
-- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/cacti_challenge_public.h5 — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/cacti_challenge_dev.h5 — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_00/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_00/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_00/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_00/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_00/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_00/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_01/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_01/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_01/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_01/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_01/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_01/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_02/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_02/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_02/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_02/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_02/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_02/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_03/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_03/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_03/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_03/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_03/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_03/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_04/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_04/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_04/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_04/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_04/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_04/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_04/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_04/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_04/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_05/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_05/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_05/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_05/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_05/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_05/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_05/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_05/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/scene_05/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/algorithms/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/algorithms/scene_00/recon_pnp-drunet.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/algorithms/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/algorithms/scene_01/recon_pnp-drunet.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/algorithms/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/algorithms/scene_02/recon_pnp-drunet.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/algorithms/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/cacti/algorithms/scene_03/recon_pnp-drunet.png — verify it loads
+- [x] Main page loads (HTTP 200)
+- [x] Title: CACTI — Physics World Model
+- [x] Description: Coded Aperture Compressive Temporal Imaging
+- [x] Spec notation: M(m_t) → Σ_t → D(g, η₄)
+- [x] Challenge Leaderboard section present
+- [x] Leaderboard: 5 entries
+- [x] Data Preview / Gallery section present
+- [x] Gallery images: 36/44 load OK
+- [x] Challenge public page loads (HTTP 200)
+- [x] Challenge public has HDF5 reference
+- [x] Challenge dev page loads (HTTP 200)
+- [x] Challenge dev has HDF5 reference
+- [x] Challenge public HDF5 on GCS OK
+- [x] Challenge dev HDF5 on GCS OK
+- [x] Compete page loads (HTTP 200)
+- [x] Contribute page loads (HTTP 200)
+- [x] Forward model reference found
+- [x] Learning materials directory exists
+- [x] Learn: README.md (1,475 B)
+- [x] Learn: 01_physics_fundamentals.md (3,024 B)
+- [x] Learn: 02_forward_model.md (2,833 B)
+- [x] Learn: 03_reconstruction_algorithms.md (2,692 B)
+- [x] Learn: 04_pwm_benchmark.md (2,618 B)
+- [x] Learn: 05_hands_on_tutorial.md (3,550 B)
 
 ---
-*Auto-generated by `benchmarks/learn/check_all_modalities.py`*
+*Generated by `scripts/check_modality.py` v2*
