@@ -1,45 +1,98 @@
-# Quality Check: `photoacoustic`
+# Benchmark QA Check — photoacoustic
 
-**Checked:** 2026-03-03T14:14:41.361131+00:00
 **URL:** https://pwm.platformai.org/benchmark/photoacoustic
+**HTTP Status:** 200
+**Page Size:** 112,534 bytes
+**Check Date:** 2026-03-03 14:18 UTC
 
-## Status: WARN
+## Summary
 
-| Category | Count |
+| Severity | Count |
 |----------|-------|
-| Passed | 25 |
-| Warnings | 2 |
-| Errors | 0 |
+| WARNING | 10 |
+| INFO | 55 |
 
-## Warnings
+## Issues by Category
 
-- [ ] PSNR 1.6 dB < 5 (unrealistically low)
-- [ ] PSNR 4.7 dB < 5 (unrealistically low)
+### Leaderboard Consistency
 
-## Passed Checks
+- 🟡 **WARNING**: Very low score value found: 0.0200 — may indicate broken solver
+- 🟡 **WARNING**: Very low PSNR value: 1.6 dB — may indicate failed reconstruction
+- 🟡 **WARNING**: Very low PSNR value: 4.7 dB — may indicate failed reconstruction
 
-- [x] Main page loads (HTTP 200)
-- [x] Page title: Photoacoustic — Physics World Model
-- [x] Challenge Leaderboard section present
-- [x] Leaderboard has 4 entries
-- [x] Spec notation present: P(acoustic) → Σ_t → D(g, η₂)
-- [x] Description: Photoacoustic Imaging
-- [x] Data Preview / Gallery section present
-- [x] Gallery gt.png (scene_00) loads
-- [x] Gallery recon_I.png (scene_00) loads
-- [x] Gallery recon_II.png (scene_00) loads
-- [x] Gallery recon_III.png (scene_00) loads
-- [x] Challenge public page loads (HTTP 200)
-- [x] Challenge public page has dataset reference
-- [x] Challenge dev page loads (HTTP 200)
-- [x] Challenge dev page has dataset reference
-- [x] Public challenge HDF5 accessible on GCS
-- [x] Learning materials directory exists
-- [x] Learn file README.md exists (1440 bytes)
-- [x] Learn file 01_physics_fundamentals.md exists (3336 bytes)
-- [x] Learn file 02_forward_model.md exists (2505 bytes)
-- [x] Learn file 03_reconstruction_algorithms.md exists (2797 bytes)
-- [x] Learn file 04_pwm_benchmark.md exists (2292 bytes)
-- [x] Learn file 05_hands_on_tutorial.md exists (3610 bytes)
-- [x] Compete page loads (HTTP 200)
-- [x] Contribute page loads (HTTP 200)
+### Forward Model
+
+- 🟡 **WARNING**: No explicit forward model equation (y = ...) found on page
+- 🟡 **WARNING**: Notation inconsistency: Forward operator denoted as both H and A
+- 🟡 **WARNING**: Notation inconsistency: Operator denoted as both H and R
+
+### Spec Ranges
+
+- 🟡 **WARNING**: Negative physical quantity: -1100 nm — verify sign is intended
+- 🟡 **WARNING**: Negative physical quantity: -20 Hz — verify sign is intended
+- 🟡 **WARNING**: Negative physical quantity: -40 MHz — verify sign is intended
+- 🟡 **WARNING**: Negative physical quantity: -900 nm — verify sign is intended
+
+### Images & Links
+
+- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/photoacoustic_challenge_public.h5 — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/photoacoustic_challenge_dev.h5 — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_00/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_00/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_00/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_00/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_00/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_00/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_01/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_01/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_01/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_01/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_01/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_01/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_02/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_02/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_02/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_02/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_02/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_02/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_03/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_03/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_03/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_03/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_03/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_03/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_00/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_00/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_00/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_01/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_01/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_01/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_02/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_02/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_02/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_03/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_03/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/photoacoustic/scene_03/recon_III.png — verify it loads
+
+### Physics Consistency
+
+- 🔵 **INFO**: Wavelength range 532–1064 nm from YAML not found on page
+
+---
+*Auto-generated by `benchmarks/learn/check_all_modalities.py`*
