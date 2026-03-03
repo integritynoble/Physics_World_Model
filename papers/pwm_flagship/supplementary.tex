@@ -291,13 +291,14 @@ The graph is serialized to a JSON document for reproducibility and sharing:
 %% ============================================================
 %% SUPPLEMENTARY TABLES S1--S4
 %% ============================================================
-\section{Supplementary Table S1: All 16 Correction Configurations}
+\section{Supplementary Table S1: All 19 Correction Configurations}
 \label{sec:params}
 
-Table~\ref{tab:correction_params} reports the correction results for all 21
-correction configurations across the validated modalities.  The first 14 modalities
+Table~\ref{tab:correction_params} reports the correction results for all 19
+correction configurations across the validated modalities.  The first 9 configurations
 have full end-to-end validation from Phase~1; the next 5 have multi-phantom
-validation with bootstrap confidence intervals from Phase~2; the remaining 5 are
+validation with bootstrap confidence intervals from Phase~2 (14 validated total,
+spanning 12 modalities across 5 carrier families); the remaining 5 are
 designated Phase~3/4 additions with planned validation.
 
 \begin{longtable}{>{\raggedright}p{2.0cm} >{\raggedright}p{2.8cm}
@@ -343,10 +344,10 @@ Lensless
   & psf\_shift
   & 23.48 & 27.03 & +3.55
   & 0.0089 \\
-MRI
+MRI\footnote{Multi-coil clinically realistic scenario (8 coils, $4\times$ acceleration, 5\% Biot-Savart sensitivity error). A single-coil pathological stress-test yields $+48.25$\,dB; see Supplementary Note~11.}
   & coil\_sensitivities
-  & 6.94 & 55.19 & +48.25
-  & 0.0003 \\
+  & 40.91 & 52.11 & +11.20
+  & 0.0017 \\
 SPC\footnote{SPC uses FISTA-TV as the reconstruction solver for Table~S1 consistency.  Values from InverseNet validation under exponential gain drift ($\alpha{=}0.0015$).  HATNet achieves Sc.~II$\,=\,$19.40\,dB and Sc.~III$\,=\,$29.78\,dB; see main text.}
   & gain\_drift
   & 18.51 & 26.21 & +7.71
@@ -691,7 +692,7 @@ Matrix           &   200 &     12 & +12.21 & 3663.0 \\
 CT               &   500 &     85 & +10.68 &  452.3 \\
 CACTI            &  1000 &    180 & +10.21 &  204.2 \\
 Lensless         &   300 &     45 &  +3.55 &  284.0 \\
-MRI              &   150 &     30 & +48.25 & 5790.0 \\
+MRI              &   150 &     30 & +11.20 & 1344.0 \\
 SPC              &   200 &     15 & +7.71  & 1850.4 \\
 CASSI (Alg~1)    &   500 &    300 &  +0.54 &    6.5 \\
 CASSI (Alg~2)    &  2000 &   3200 &  +0.76 &    0.9 \\
@@ -712,11 +713,12 @@ where $T_{\mathrm{GPU}}$ is the wall-clock GPU time.
 
 \noindent\textbf{Key observations:}
 \begin{itemize}
-  \item \textbf{MRI} achieves the highest RoIC (5790\,dB/GPU-hr) because coil
-        sensitivity correction yields massive PSNR gains with a well-conditioned
+  \item \textbf{Matrix/SPC} achieve the highest RoIC (3663 and 1850\,dB/GPU-hr
+        respectively) due to the simplicity of the gain--bias correction model.
+  \item \textbf{MRI} achieves the third-highest RoIC (1344\,dB/GPU-hr) because coil
+        sensitivity correction yields substantial PSNR gains ($+11.20$\,dB under
+        clinically realistic 8-coil, $4\times$ acceleration) with a well-conditioned
         linear operator that converges rapidly.
-  \item \textbf{Matrix/SPC} also show high RoIC due to the simplicity of the
-        gain--bias correction model.
   \item \textbf{CASSI Algorithm~2} has the lowest RoIC (0.9\,dB/GPU-hr)
         because it jointly optimizes mask geometry and dispersion over 2000
         iterations, each requiring a full forward--adjoint cycle through the
@@ -1494,7 +1496,7 @@ PWM's modality-agnostic correction achieves comparable recovery on validated mod
 \section{Supplementary Note 11: MRI Under Clinically Realistic Conditions}
 \label{sec:mri_realistic}
 
-The $+48.25$\,dB correction gain reported for MRI in the main text reflects a single-coil scenario with 5\% multiplicative sensitivity error---a pathological case chosen to stress-test the framework. Under clinically realistic multi-coil conditions (8 coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE reconstruction) on a Shepp-Logan phantom with spatially smooth Biot-Savart sensitivity errors simulating patient repositioning, the correction gains are substantially more modest but clinically meaningful.  Note: the Sc.~I baseline here (52.11\,dB) is higher than in Note~9 (34.98\,dB) because this experiment uses a smooth Shepp-Logan phantom; the structurally complex brain phantom in Note~9 is harder to reconstruct, yielding lower absolute PSNR across all scenarios.
+Table~S1 reports the MRI correction gain under clinically realistic multi-coil conditions (8 coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE reconstruction, 5\% Biot-Savart sensitivity error): $\Delta\mathrm{PSNR} = +11.20$\,dB (Sc.~II $= 40.91$\,dB $\to$ Sc.~III $= 52.11$\,dB). A single-coil pathological stress-test with uniform 5\% multiplicative error yields $+48.25$\,dB, demonstrating framework robustness under extreme conditions but not representative of clinical practice. Under the clinically realistic multi-coil scenario on a Shepp-Logan phantom with spatially smooth Biot-Savart sensitivity errors simulating patient repositioning, the correction gains are clinically meaningful across the full mismatch range.  Note: the Sc.~I baseline here (52.11\,dB) is higher than in Note~9 (34.98\,dB) because this experiment uses a smooth Shepp-Logan phantom; the structurally complex brain phantom in Note~9 is harder to reconstruct, yielding lower absolute PSNR across all scenarios.
 
 \begin{table}[ht]
 \centering\small

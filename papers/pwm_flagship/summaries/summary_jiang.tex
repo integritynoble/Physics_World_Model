@@ -109,7 +109,7 @@ Physicist review/sign-off & 7.0  & 4.0 \\
 
 \subsection*{5. MRI Validation}
 
-For MRI, the paper validates on fastMRI data with coil sensitivity mismatch (5--15\% multiplicative deviation).  A 5\% coil sensitivity error produces $6.94$\,dB degradation; PWM correction recovers \textbf{$+48.25$\,dB}, the largest correction gain among all modalities.
+For MRI, the paper validates on multi-coil data with coil sensitivity mismatch (5--15\% multiplicative deviation).  Under clinically realistic conditions (8 coils, $4\times$ acceleration), a 5\% Biot-Savart sensitivity error produces $11.20$\,dB degradation; PWM correction recovers \textbf{$+7.14$\,dB} via autonomous calibration (Supplementary Note~11).
 
 \subsection*{6. CT Correction Results}
 
@@ -129,7 +129,7 @@ For CT, a sub-degree center-of-rotation offset produces characteristic ring arti
   \item Main paper: 34 pages (Nature review format), 7 figures
   \item Supplementary: 22 pages, including Supplementary Note~7 (Clinical CT QC Validation with 4 tables)
   \item Clinical metrics: 9 ACR-aligned QC metrics, 94\% workflow time reduction
-  \item MRI correction: $+48.25$\,dB (largest gain), CT correction: $+10.68$\,dB
+  \item MRI correction: $+11.20$\,dB oracle / $+7.14$\,dB autonomous (8-coil, $4\times$), CT correction: $+10.68$\,dB
 \end{itemize}
 
 \end{document}
