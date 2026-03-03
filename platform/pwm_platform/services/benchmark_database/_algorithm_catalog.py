@@ -494,16 +494,71 @@ CATEGORY_CORRECTION_DESC: dict[str, str] = {
 # ── Public API ────────────────────────────────────────────────────────────────
 
 
+def _get_carrier(variant_key: str) -> str:
+    """Look up carrier type from modality catalog (lazy import to avoid cycles)."""
+    try:
+        from pwm_platform.services.benchmark_database._modality_catalog import MODALITY_CATALOG
+        entry = MODALITY_CATALOG.get(variant_key, {})
+        return entry.get("carrier", "")
+    except Exception:
+        return ""
+
+
+# Sub-category routing: (category, carrier) → algorithm pool key
+# This fixes ~40 modalities that get wrong algorithms from their broad category.
+_CARRIER_ROUTING: dict[tuple[str, str], str] = {
+    # Medical: route by carrier instead of using CT algorithms for everything
+    ("medical", "Spin/RF"):    "mri",              # MRI family → MRI pool
+    ("medical", "Acoustic"):   "medical_ultrasound",  # US family → US pool
+    ("medical", "Gamma"):      "particle_imaging",    # PET/SPECT → nuclear pool
+    ("medical", "Photon"):     "clinical_optics",     # OCT/fundus → optics pool
+    ("medical", "MV"):         "medical",             # portal imaging → keep CT-like
+    ("medical", "Proton"):     "medical",             # proton therapy → keep CT-like
+    # Electron microscopy: cryo-EM particle methods only for cryo modalities
+    # (non-cryo EM gets generic EM denoising below)
+    # Remote sensing: SAR methods only for RF carrier
+    ("remote_sensing", "Photon"):   "computational",   # optical RS → generic
+    ("remote_sensing", "Acoustic"): "experimental_science",  # sonar → generic
+}
+
+# Modalities that should use cryo-EM particle reconstruction (RELION, cryoSPARC)
+_CRYO_EM_VARIANTS = {"cryo_em", "cryo_et", "electron_tomography", "electron_diffraction"}
+
+# EM variants that need generic denoising, NOT cryo-EM particle methods
+_EM_GENERIC_POOL = [
+    {"name": "Wiener Filter", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Analytical baseline"},
+    {"name": "BM3D",          "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Dabov et al., IEEE TIP 2007"},
+    {"name": "Noise2Void",    "type": "Deep Learning", "mask_aware": False, "params": "1.2M", "source": "Krull et al., CVPR 2019"},
+    {"name": "SwinIR",        "type": "Transformer",   "mask_aware": True,  "params": "12M",  "source": "Liang et al., ICCVW 2021"},
+]
+
+
 def get_algorithms(variant_key: str, category: str) -> list[dict]:
-    """Return 4 algorithm definitions for a variant.
+    """Return algorithm definitions for a variant.
 
     Priority:
     1. Hand-crafted overrides for InverseNet-validated variants
-    2. Category-level algorithm mapping
-    3. Fallback generic algorithms
+    2. Sub-category routing (carrier-based) for broad categories
+    3. Category-level algorithm mapping
+    4. Fallback generic algorithms
     """
     if variant_key in _VARIANT_OVERRIDES:
         return [dict(a) for a in _VARIANT_OVERRIDES[variant_key]]
+
+    # Sub-category routing based on carrier type
+    carrier = _get_carrier(variant_key)
+    routed_key = _CARRIER_ROUTING.get((category, carrier))
+    if routed_key:
+        # Check if the routed key is a variant override first
+        if routed_key in _VARIANT_OVERRIDES:
+            return [dict(a) for a in _VARIANT_OVERRIDES[routed_key]]
+        algos = _CATEGORY_ALGORITHMS.get(routed_key)
+        if algos is not None:
+            return [dict(a) for a in algos]
+
+    # Electron microscopy: route cryo vs generic EM
+    if category == "electron_microscopy" and variant_key not in _CRYO_EM_VARIANTS:
+        return [dict(a) for a in _EM_GENERIC_POOL]
 
     algos = _CATEGORY_ALGORITHMS.get(category)
     if algos is not None:
@@ -516,6 +571,24 @@ def get_algorithms(variant_key: str, category: str) -> list[dict]:
         {"name": "U-Net",     "type": "Deep Learning", "mask_aware": False, "params": "7.8M","source": "Ronneberger et al., MICCAI 2015"},
         {"name": "SwinIR",    "type": "Transformer",   "mask_aware": True,  "params": "12M", "source": "Liang et al., ICCVW 2021"},
     ]
+
+
+def get_score_key(variant_key: str, category: str) -> str:
+    """Return the key to use for real score lookup in CATEGORY_REAL_SCORES.
+
+    Follows the same routing logic as get_algorithms():
+    variant_key → sub-category routing → category.
+    """
+    if variant_key in CATEGORY_REAL_SCORES:
+        return variant_key
+    carrier = _get_carrier(variant_key)
+    routed_key = _CARRIER_ROUTING.get((category, carrier))
+    if routed_key and routed_key in CATEGORY_REAL_SCORES:
+        return routed_key
+    # Non-cryo EM gets em_generic scores
+    if category == "electron_microscopy" and variant_key not in _CRYO_EM_VARIANTS:
+        return "em_generic"
+    return category
 
 
 def get_scene_names(category: str, count: int) -> list[str]:
@@ -835,6 +908,13 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "MR-Guided", "psnr": 29.20, "ssim": 0.848, "source": "Ehrhardt et al., SIIS 2015"},
         {"method": "FBSEM-Net", "psnr": 32.90, "ssim": 0.920, "source": "Mehranian & Reader, IEEE TMI 2020"},
         {"method": "PPMF-Net",  "psnr": 34.30, "ssim": 0.945, "source": "Li et al., 2024"},
+    ],
+    # EM generic — non-cryo electron microscopy denoising/restoration
+    "em_generic": [
+        {"method": "Wiener Filter", "psnr": 24.80, "ssim": 0.680, "source": "Analytical baseline"},
+        {"method": "BM3D",          "psnr": 28.50, "ssim": 0.820, "source": "Dabov et al., IEEE TIP 2007"},
+        {"method": "Noise2Void",    "psnr": 31.60, "ssim": 0.895, "source": "Krull et al., CVPR 2019"},
+        {"method": "SwinIR",        "psnr": 33.40, "ssim": 0.930, "source": "Liang et al., ICCVW 2021"},
     ],
 }
 

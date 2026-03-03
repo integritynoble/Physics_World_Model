@@ -28,6 +28,7 @@ from ._algorithm_catalog import (
     get_correction_description,
     get_mismatch_description,
     get_scene_names,
+    get_score_key,
 )
 
 # ── PSNR ranges per solver class (low, high) ─────────────────────────────────
@@ -148,8 +149,9 @@ def _generate_b2_leaderboard(
     for the category. Falls back to synthetic PSNR-range generation for
     categories without real scores or for unmatched method names.
     """
-    # Check variant-specific scores first, then fall back to category
-    real_scores = CATEGORY_REAL_SCORES.get(variant_key) or CATEGORY_REAL_SCORES.get(category)
+    # Use sub-category routing to find the right score pool
+    score_key = get_score_key(variant_key, category)
+    real_scores = CATEGORY_REAL_SCORES.get(score_key)
     # Build a lookup from method name → real score entry
     real_lookup: dict[str, dict] = {}
     if real_scores:
