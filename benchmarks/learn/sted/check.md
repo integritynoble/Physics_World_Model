@@ -1,44 +1,94 @@
-# Quality Check: `sted`
+# Benchmark QA Check — sted
 
-**Checked:** 2026-03-03T14:11:22.189990+00:00
 **URL:** https://pwm.platformai.org/benchmark/sted
+**HTTP Status:** 200
+**Page Size:** 111,550 bytes
+**Check Date:** 2026-03-03 14:21 UTC
 
-## Status: WARN
+## Summary
 
-| Category | Count |
+| Severity | Count |
 |----------|-------|
-| Passed | 25 |
-| Warnings | 1 |
-| Errors | 0 |
+| WARNING | 6 |
+| INFO | 55 |
 
-## Warnings
+## Issues by Category
 
-- [ ] PSNR 0.2 dB < 5 (unrealistically low)
+### Leaderboard Consistency
 
-## Passed Checks
+- 🟡 **WARNING**: Very low PSNR value: 0.2 dB — may indicate failed reconstruction
 
-- [x] Main page loads (HTTP 200)
-- [x] Page title: STED — Physics World Model
-- [x] Challenge Leaderboard section present
-- [x] Leaderboard has 4 entries
-- [x] Spec notation present: C(PSF_STED) → D(g, η₃)
-- [x] Description: STED Microscopy
-- [x] Data Preview / Gallery section present
-- [x] Gallery gt.png (scene_00) loads
-- [x] Gallery recon_I.png (scene_00) loads
-- [x] Gallery recon_II.png (scene_00) loads
-- [x] Gallery recon_III.png (scene_00) loads
-- [x] Challenge public page loads (HTTP 200)
-- [x] Challenge public page has dataset reference
-- [x] Challenge dev page loads (HTTP 200)
-- [x] Challenge dev page has dataset reference
-- [x] Public challenge HDF5 accessible on GCS
-- [x] Learning materials directory exists
-- [x] Learn file README.md exists (1404 bytes)
-- [x] Learn file 01_physics_fundamentals.md exists (2859 bytes)
-- [x] Learn file 02_forward_model.md exists (2641 bytes)
-- [x] Learn file 03_reconstruction_algorithms.md exists (1831 bytes)
-- [x] Learn file 04_pwm_benchmark.md exists (2454 bytes)
-- [x] Learn file 05_hands_on_tutorial.md exists (3537 bytes)
-- [x] Compete page loads (HTTP 200)
-- [x] Contribute page loads (HTTP 200)
+### Forward Model
+
+- 🟡 **WARNING**: No explicit forward model equation (y = ...) found on page
+- 🟡 **WARNING**: Notation inconsistency: Forward operator denoted as both H and A
+
+### Spec Ranges
+
+- 🟡 **WARNING**: Negative physical quantity: -70 nm — verify sign is intended
+- 🟡 **WARNING**: Negative physical quantity: -70 nm — verify sign is intended
+- 🟡 **WARNING**: Negative physical quantity: -70 nm — verify sign is intended
+
+### Images & Links
+
+- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/sted_challenge_public.h5 — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/sted_challenge_dev.h5 — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_00/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_00/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_00/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_00/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_00/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_00/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_01/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_01/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_01/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_01/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_01/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_01/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_02/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_02/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_02/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_02/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_02/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_02/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_03/measurement_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_03/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_03/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_03/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_03/measurement_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_03/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_00/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_00/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_00/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_00/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_01/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_01/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_01/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_01/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_02/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_02/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_02/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_02/recon_III.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_03/gt.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_03/recon_I.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_03/recon_II.png — verify it loads
+- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/sted/scene_03/recon_III.png — verify it loads
+
+### Physics Consistency
+
+- 🔵 **INFO**: Signal shape [512, 512] from YAML not clearly shown on page
+
+---
+*Auto-generated by `benchmarks/learn/check_all_modalities.py`*
