@@ -1,122 +1,122 @@
-# Comprehensive 6-Point Check -- impedance_tomo
+# Comprehensive Benchmark QA Check — impedance_tomo
 
-**Modality:** Electrical Impedance Tomography (EIT)
-**Category:** experimental_science
-**Variant override:** Yes (in `_VARIANT_OVERRIDES`)
-**Check date:** 2026-03-03
-**Status:** PASS
+**URL:** https://pwm.platformai.org/benchmark/impedance_tomo
+**HTTP Status:** TBD (check on deployment)
+**Check Date:** 2026-03-03 (automated 6-point review)
+**Reviewer:** Automated generator + modality database
 
 ---
 
-## 1. Physics & Forward Model
+## Table of Contents
 
-EIT reconstructs internal conductivity distributions from boundary voltage
-measurements. The forward model is governed by the generalized Laplace
-equation:
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
 
-    div(sigma(x) * grad(u)) = 0    in Omega
-    V_measured = integral sigma * (du/dn) dS
+---
 
-where `sigma(x)` is the spatially varying conductivity, `u` is the electric
-potential, and boundary voltages are measured for multiple current injection
-patterns. The inverse problem is:
+## 1. Benchmark Page Errors
 
-    min_sigma || F(sigma) - V_measured ||^2 + R(sigma)
+### Summary
 
-where `F` is the nonlinear forward operator mapping conductivity to boundary
-voltages. EIT is severely ill-posed (exponential ill-conditioning) with a
-nonlinear forward model.
+| Severity | Count |
+|----------|-------|
+| HIGH     | 1     |
+| MEDIUM   | 1     |
+| LOW      | 1     |
 
-Key physics: current injection patterns (adjacent, opposite, trigonometric),
-contact impedance at electrodes, frequency-dependent conductivity (for
-multi-frequency EIT), and the complete electrode model.
+### HIGH Severity
 
-**Verdict:** Physics correctly represented. The nonlinear, severely ill-posed
-nature of EIT is appropriately captured.
+**H1. Benchmark page not yet live**
+- This modality is in the database but the challenge dataset is not yet available
+**Status:** Awaiting challenge data generation and deployment
 
-## 2. Mismatch Parameters
+### MEDIUM Severity
 
-Relevant mismatch/calibration parameters:
-- Contact impedance at electrodes
-- Electrode position uncertainty
-- Domain boundary shape uncertainty
-- Forward model linearization error (Born vs. nonlinear)
-- Frequency-dependent tissue properties (for multi-frequency EIT)
-- Movement artifacts (for lung EIT monitoring)
 
-The benchmark models electrode contact impedance and position uncertainties
-as primary mismatch parameters, which dominate EIT reconstruction quality.
+### LOW Severity
 
-**Verdict:** Appropriate. Key EIT-specific calibration errors captured.
+| ID | Issue |
+|----|-------|
+| L1 | Documentation may need updates as benchmark matures |
 
-## 3. Reconstruction Methods
+---
 
-Current algorithms (from `_VARIANT_OVERRIDES["impedance_tomo"]`):
+## 2. Local Dataset Inspection
 
-| # | Algorithm | Type | Params | Source |
-|---|-----------|------|--------|--------|
-| 1 | Gauss-Newton | Classical | 0 | Cheney et al., SIAM Rev. 1999 |
-| 2 | TV-ADMM | PnP | 0 | Borsic et al., Physiol. Meas. 2010 |
-| 3 | D-bar CNN | Deep Learning | 3M | Hamilton & Hauptmann, IEEE TMI 2018 |
-| 4 | EIT-Former | Transformer | 8M | EIT reconstruction transformer, 2024 |
+### File Inventory
 
-- **Gauss-Newton** is the standard iterative EIT reconstruction method that
-  linearizes the nonlinear forward map and solves with Tikhonov
-  regularization at each step. Universal EIT baseline. Correct.
-- **TV-ADMM** applies total variation regularization via ADMM to promote
-  piecewise-constant conductivity maps (organ boundaries). Well-established
-  for EIT. Correct.
-- **D-bar CNN** combines the D-bar direct reconstruction method (based on
-  scattering theory) with CNN post-processing. A landmark hybrid method
-  for EIT. Correct.
-- **EIT-Former** is a transformer-based architecture for direct EIT
-  reconstruction. Represents the 2024 state-of-the-art. Correct.
+No local challenge dataset currently available.
 
-**Verdict:** PASS. All four algorithms are EIT-specific, replacing the generic
-experimental_science pool (Tikhonov, PnP-RED, ResUNet, SwinIR) that lacked
-awareness of EIT's nonlinear forward model.
+Status: Awaiting benchmark dataset generation.
 
-## 4. Literature (2024-2025)
+### Modality Information
 
-Recent relevant publications:
-- Liu et al., "Diffusion-Based EIT Reconstruction," IEEE TMI 2024 --
-  score-based diffusion model for conductivity imaging
-- Hamilton et al., "Physics-Informed D-bar Networks," Inverse Problems 2024
-- Herzberg et al., "Graph Neural Networks for EIT," IEEE TIM 2024
-- KIT4 EIT benchmark dataset updates (2024)
+Modality information not yet in database.
+### Dataset Integrity Assessment: TODO
 
-The current set covers classical (Gauss-Newton), regularization (TV-ADMM),
-hybrid (D-bar CNN), and transformer methods. 2024 adds diffusion and GNN
-approaches. The core coverage is representative.
+---
 
-**Verdict:** Acceptable. D-bar CNN remains a strong representative of the
-physics-informed DL approach.
+## 3. Public Dataset Source Assessment
 
-## 5. Dataset & GCS Status
+### Assessment: TODO
 
-- Challenge HDF5 files on GCS: `impedance_tomo_challenge_public.h5`,
-  `impedance_tomo_challenge_dev.h5`, `impedance_tomo_challenge_hidden.h5`
-  -- all present in `challenge-data/v1.0/`
-- Gallery images on GCS: `img/benchmark_gallery/impedance_tomo/scene_0{0-3}/`
-  -- present
-- Per-tier differentiation: different phantom conductivity maps per tier
-- Dev tier: no `x_true` (ground truth stripped)
-- Hidden tier: download blocked (403)
-- Learning materials: 5 markdown files + README present
+To be completed upon dataset publication.
 
-**Verdict:** PASS. All dataset and GCS assets verified.
+---
 
-## 6. Assessment
+## 4. Algorithm Coverage Assessment
 
-| Criterion | Status |
-|-----------|--------|
-| Physics accuracy | PASS |
-| Algorithm correctness | PASS |
-| Algorithm domain-specificity | PASS -- all 4 are EIT-specific |
-| Literature coverage | PASS (through 2024) |
-| Dataset completeness | PASS |
-| Overall | **PASS** |
+### Currently Tested: 4 algorithms
 
-No code changes required. The variant override provides domain-appropriate
-EIT algorithms that correctly address the nonlinear, severely ill-posed
-inverse problem.
+| # | Algorithm | Type | Source |
+|---|-----------|------|--------|
+| 1 | Gauss-Newton | Classical | Cheney et al., SIAM Rev. 1999 |
+| 2 | TV-ADMM | PnP | Borsic et al., Physiol. Meas. 2010 |
+| 3 | D-bar CNN | Deep Learning | Hamilton & Hauptmann, IEEE TMI 2018 |
+| 4 | EIT-Former | Transformer | EIT reconstruction transformer, 2024 |
+
+### Known Gaps
+
+To be completed during algorithm development phase.
+
+---
+
+## 5. Improvement Suggestions
+
+### Priority Actions
+
+1. **Generate challenge dataset** — Implement forward model and phantom generator
+3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
+4. **Document physics** — Add to modality database with calibration parameters
+
+---
+
+## 6. Action Items
+
+| Priority | Action | Status |
+|----------|--------|--------|
+| CRITICAL | Generate challenge dataset | TODO |
+| HIGH | Validate assessment metrics | TODO |
+| HIGH | Complete modality database entry | TODO |
+| MEDIUM | Add missing references | TODO |
+| MEDIUM | Identify algorithm gaps | TODO |
+| LOW | Optimize gallery previews | TODO |
+
+---
+
+## Appendix: Key References
+
+(References to be added as dataset and algorithms are finalized)
+
+## Algorithm References
+
+- Borsic et al., Physiol. Meas. 2010
+- Cheney et al., SIAM Rev. 1999
+- EIT reconstruction transformer, 2024
+- Hamilton & Hauptmann, IEEE TMI 2018
+
+*Automated 6-point review on 2026-03-03 — impedance_tomo*

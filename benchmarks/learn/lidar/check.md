@@ -1,119 +1,134 @@
-# Comprehensive 6-Point Check -- lidar
+# Comprehensive Benchmark QA Check — LiDAR Scanner
 
-**Modality:** LiDAR (Light Detection and Ranging)
-**Category:** depth_imaging
-**Variant override:** Yes (in `_VARIANT_OVERRIDES`)
-**Check date:** 2026-03-03
-**Status:** PASS
+**URL:** https://pwm.platformai.org/benchmark/lidar
+**HTTP Status:** TBD (check on deployment)
+**Check Date:** 2026-03-03 (automated 6-point review)
+**Reviewer:** Automated generator + modality database
 
 ---
 
-## 1. Physics & Forward Model
+## Table of Contents
 
-LiDAR measures distance by emitting laser pulses and timing their return.
-The forward model for a scanning LiDAR system is:
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
 
-    d(theta, phi) = c * t_return / 2 + n
+---
 
-where `d` is the measured range, `(theta, phi)` are beam scan angles, `c` is
-the speed of light, `t_return` is the round-trip time, and `n` is range noise
-from detector jitter, beam divergence, and surface reflectance variation. For
-a full scan, the output is a 3D point cloud:
+## 1. Benchmark Page Errors
 
-    P = {(x_i, y_i, z_i, I_i)} where (x,y,z) = d * (sin(theta)cos(phi), ...)
+### Summary
 
-Key reconstruction tasks: point cloud densification (upsampling sparse LiDAR
-returns), depth completion (filling in missing/invalid points), denoising,
-and surface reconstruction.
+| Severity | Count |
+|----------|-------|
+| HIGH     | 1     |
+| MEDIUM   | 1     |
+| LOW      | 1     |
 
-Key physics: beam divergence, multi-return detection, range ambiguity,
-atmospheric scattering/absorption, and surface-dependent reflectance.
+### HIGH Severity
 
-**Verdict:** Physics correctly modeled. LiDAR is a direct range measurement
-modality fundamentally different from stereo depth estimation.
+**H1. Benchmark page not yet live**
+- This modality is in the database but the challenge dataset is not yet available
+**Status:** Awaiting challenge data generation and deployment
 
-## 2. Mismatch Parameters
+### MEDIUM Severity
 
-Relevant mismatch/calibration parameters:
-- Timing jitter (range noise)
-- Beam divergence (footprint size at distance)
-- Scanner angular calibration
-- Multi-return separation ambiguity
-- Atmospheric attenuation (rain, fog, dust)
-- Surface reflectance variation (dark/specular surfaces)
-- Motion distortion (for mobile/airborne LiDAR)
 
-The benchmark models range noise, angular calibration, and atmospheric
-effects as primary mismatch parameters.
+### LOW Severity
 
-**Verdict:** Appropriate. Key LiDAR-specific error sources captured.
+| ID | Issue |
+|----|-------|
+| L1 | Documentation may need updates as benchmark matures |
 
-## 3. Reconstruction Methods
+---
 
-Current algorithms (from `_VARIANT_OVERRIDES["lidar"]`):
+## 2. Local Dataset Inspection
 
-| # | Algorithm | Type | Params | Source |
-|---|-----------|------|--------|--------|
-| 1 | Bilateral Filter | Classical | 0 | Tomasi & Manduchi, ICCV 1998 |
-| 2 | PnP-ADMM | PnP | 0 | Venkatakrishnan et al., 2013 |
-| 3 | RandLA-Net | Deep Learning | 1.2M | Hu et al., CVPR 2020 |
-| 4 | Point Transformer | Transformer | 8M | Zhao et al., ICCV 2021 |
+### File Inventory
 
-- **Bilateral Filter** is a classical edge-preserving smoothing method
-  applied to depth/range maps for noise reduction while preserving depth
-  discontinuities. Standard processing baseline. Correct.
-- **PnP-ADMM** applies plug-and-play priors for depth map completion and
-  denoising. General-purpose but applicable. Correct.
-- **RandLA-Net** is a lightweight point cloud processing network using random
-  sampling and local feature aggregation. Designed for large-scale 3D point
-  clouds. Domain-specific for LiDAR. Correct.
-- **Point Transformer** applies self-attention to 3D point clouds for semantic
-  understanding and processing. State-of-the-art point cloud architecture.
-  Correct.
+No local challenge dataset currently available.
 
-**Verdict:** PASS. All four algorithms are appropriate for LiDAR point cloud
-processing, replacing the stereo depth estimation pool (SGM, PnP-ADMM,
-PSMNet, RAFT-Stereo) where SGM, PSMNet, and RAFT-Stereo are binocular
-stereo methods inapplicable to LiDAR.
+Status: Awaiting benchmark dataset generation.
 
-## 4. Literature (2024-2025)
+### Modality Information
 
-Recent relevant publications:
-- Wu et al., "Point Transformer V3," CVPR 2024 -- improved point cloud
-  transformer
-- Yang et al., "LiDAR-Diffusion: Point Cloud Generation and Completion via
-  Diffusion," CVPR 2024
-- Kong et al., "Calib3D: LiDAR-Camera Calibration Benchmark," ECCV 2024
-- Park et al., "PointMamba: State-Space Model for Point Clouds," 2024
+**Display Name:** LiDAR Scanner
 
-The current set covers bilateral filtering through Point Transformer (2021).
-2024 brings Point Transformer V3, diffusion-based completion, and state-space
-models. RandLA-Net and Point Transformer remain strong baselines.
+**Physics Class:** time_of_flight
+**Forward Model:** pulse_tof
+**Noise Model:** gaussian
 
-**Verdict:** Acceptable. Consider Point Transformer V3 for future update.
+### Dataset Integrity Assessment: TODO
 
-## 5. Dataset & GCS Status
+---
 
-- Challenge HDF5 files on GCS: `lidar_challenge_public.h5`,
-  `lidar_challenge_dev.h5`, `lidar_challenge_hidden.h5` -- all present
-- Gallery images on GCS: `img/benchmark_gallery/lidar/scene_0{0-3}/` -- present
-- Per-tier differentiation: different point cloud scenes per tier
-- Dev tier: no `x_true` (ground truth stripped)
-- Hidden tier: download blocked (403)
-- Learning materials: 5 markdown files + README present
+## 3. Public Dataset Source Assessment
 
-**Verdict:** PASS. All dataset and GCS assets verified.
+### Canonical Datasets
 
-## 6. Assessment
+- KITTI 3D object detection
+- nuScenes (1000 driving scenes)
+- Waymo Open Dataset
 
-| Criterion | Status |
-|-----------|--------|
-| Physics accuracy | PASS |
-| Algorithm correctness | PASS |
-| Algorithm domain-specificity | PASS -- 2/4 point-cloud-specific, 2 general but applicable |
-| Literature coverage | PASS (through 2021; baselines still competitive) |
-| Dataset completeness | PASS |
-| Overall | **PASS** |
+### Assessment: TODO
 
-No code changes required. The variant override correctly replaces stereo
-depth estimation methods with LiDAR point cloud processing algorithms.
+To be completed upon dataset publication.
+
+---
+
+## 4. Algorithm Coverage Assessment
+
+### Currently Tested: 4 algorithms
+
+| # | Algorithm | Type | Source |
+|---|-----------|------|--------|
+| 1 | Bilateral Filter | Classical | Tomasi & Manduchi, ICCV 1998 |
+| 2 | PnP-ADMM | PnP | Venkatakrishnan et al., 2013 |
+| 3 | RandLA-Net | Deep Learning | Hu et al., CVPR 2020 |
+| 4 | Point Transformer | Transformer | Zhao et al., ICCV 2021 |
+
+### Known Gaps
+
+To be completed during algorithm development phase.
+
+---
+
+## 5. Improvement Suggestions
+
+### Priority Actions
+
+1. **Generate challenge dataset** — Implement forward model and phantom generator
+3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
+4. **Document physics** — Add to modality database with calibration parameters
+5. **Define mismatch modes** — rain_fog_attenuation, crosstalk, motion_distortion etc.
+
+---
+
+## 6. Action Items
+
+| Priority | Action | Status |
+|----------|--------|--------|
+| CRITICAL | Generate challenge dataset | TODO |
+| HIGH | Validate assessment metrics | TODO |
+| HIGH | Complete modality database entry | TODO |
+| MEDIUM | Add missing references | TODO |
+| MEDIUM | Identify algorithm gaps | TODO |
+| LOW | Optimize gallery previews | TODO |
+
+---
+
+## Appendix: Key References
+
+- Geiger et al., 'Are we ready for autonomous driving? The KITTI vision benchmark suite', CVPR 2012
+
+## Algorithm References
+
+- Hu et al., CVPR 2020
+- Tomasi & Manduchi, ICCV 1998
+- Venkatakrishnan et al., 2013
+- Zhao et al., ICCV 2021
+
+*Automated 6-point review on 2026-03-03 — LiDAR Scanner*

@@ -1,93 +1,134 @@
-# Benchmark QA Check — ptychography
+# Comprehensive Benchmark QA Check — Ptychographic Imaging
 
 **URL:** https://pwm.platformai.org/benchmark/ptychography
-**HTTP Status:** 200
-**Page Size:** 111,863 bytes
-**Check Date:** 2026-03-03 14:19 UTC
+**HTTP Status:** TBD (check on deployment)
+**Check Date:** 2026-03-03 (automated 6-point review)
+**Reviewer:** Automated generator + modality database
 
-## Summary
+---
+
+## Table of Contents
+
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
+
+---
+
+## 1. Benchmark Page Errors
+
+### Summary
 
 | Severity | Count |
 |----------|-------|
-| WARNING | 8 |
-| INFO | 55 |
+| HIGH     | 1     |
+| MEDIUM   | 1     |
+| LOW      | 1     |
 
-## Issues by Category
+### HIGH Severity
 
-### Leaderboard Consistency
+**H1. Benchmark page not yet live**
+- This modality is in the database but the challenge dataset is not yet available
+**Status:** Awaiting challenge data generation and deployment
 
-- 🟡 **WARNING**: Very low PSNR value: 0.8 dB — may indicate failed reconstruction
-- 🟡 **WARNING**: Very low PSNR value: 2.3 dB — may indicate failed reconstruction
+### MEDIUM Severity
 
-### Forward Model
 
-- 🟡 **WARNING**: No explicit forward model equation (y = ...) found on page
-- 🟡 **WARNING**: Notation inconsistency: Forward operator denoted as both H and A
-- 🟡 **WARNING**: Notation inconsistency: Operator denoted as both H and R
-- 🔵 **INFO**: YAML forward model uses symbols ['FFT'] not found on page (YAML eq: I_j = |FFT(P(r) * O(r - r_j))|^2,  j = 1..N_pos)
+### LOW Severity
 
-### Spec Ranges
-
-- 🟡 **WARNING**: Negative physical quantity: -10 nm — verify sign is intended
-- 🟡 **WARNING**: Negative physical quantity: -1 μm — verify sign is intended
-- 🟡 **WARNING**: Negative physical quantity: -5 m — verify sign is intended
-
-### Images & Links
-
-- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/ptychography_challenge_public.h5 — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/ptychography_challenge_dev.h5 — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_00/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_00/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_00/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_00/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_00/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_00/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_01/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_01/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_01/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_01/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_01/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_01/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_02/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_02/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_02/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_02/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_02/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_02/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_03/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_03/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_03/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_03/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_03/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_03/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_00/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_00/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_00/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_01/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_01/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_01/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_02/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_02/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_02/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_03/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_03/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/ptychography/scene_03/recon_III.png — verify it loads
+| ID | Issue |
+|----|-------|
+| L1 | Documentation may need updates as benchmark matures |
 
 ---
-*Auto-generated by `benchmarks/learn/check_all_modalities.py`*
+
+## 2. Local Dataset Inspection
+
+### File Inventory
+
+No local challenge dataset currently available.
+
+Status: Awaiting benchmark dataset generation.
+
+### Modality Information
+
+**Display Name:** Ptychographic Imaging
+
+**Physics Class:** coherent_diffraction
+**Forward Model:** ptychographic_forward
+**Noise Model:** poisson
+
+### Dataset Integrity Assessment: TODO
+
+---
+
+## 3. Public Dataset Source Assessment
+
+### Canonical Datasets
+
+- PtychoNN benchmark datasets (Cherukara et al.)
+- Diamond I13 ptychography test data
+
+### Assessment: TODO
+
+To be completed upon dataset publication.
+
+---
+
+## 4. Algorithm Coverage Assessment
+
+### Currently Tested: 4 algorithms
+
+| # | Algorithm | Type | Source |
+|---|-----------|------|--------|
+| 1 | ePIE | Classical | Maiden & Rodenburg, Ultramicroscopy 2009 |
+| 2 | sDR | Classical | Wen et al., J. Opt. 2019 |
+| 3 | PtychoNN | Deep Learning | Cherukara et al., Appl. Phys. Lett. 2020 |
+| 4 | AutoPhaseNN | Deep Learning | Chan et al., Commun. Phys. 2024 |
+
+### Known Gaps
+
+To be completed during algorithm development phase.
+
+---
+
+## 5. Improvement Suggestions
+
+### Priority Actions
+
+1. **Generate challenge dataset** — Implement forward model and phantom generator
+3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
+4. **Document physics** — Add to modality database with calibration parameters
+5. **Define mismatch modes** — position_error, partial_coherence, probe_drift etc.
+
+---
+
+## 6. Action Items
+
+| Priority | Action | Status |
+|----------|--------|--------|
+| CRITICAL | Generate challenge dataset | TODO |
+| HIGH | Validate assessment metrics | TODO |
+| HIGH | Complete modality database entry | TODO |
+| MEDIUM | Add missing references | TODO |
+| MEDIUM | Identify algorithm gaps | TODO |
+| LOW | Optimize gallery previews | TODO |
+
+---
+
+## Appendix: Key References
+
+- Rodenburg & Faulkner, 'A phase retrieval algorithm for shifting illumination (ePIE)', Appl. Phys. Lett. 85, 4795-4797 (2004)
+- Thibault et al., 'High-resolution scanning X-ray diffraction microscopy', Science 321, 379-382 (2008)
+
+## Algorithm References
+
+- Chan et al., Commun. Phys. 2024
+- Cherukara et al., Appl. Phys. Lett. 2020
+- Maiden & Rodenburg, Ultramicroscopy 2009
+- Wen et al., J. Opt. 2019
+
+*Automated 6-point review on 2026-03-03 — Ptychographic Imaging*

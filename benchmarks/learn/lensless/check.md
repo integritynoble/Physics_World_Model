@@ -1,123 +1,134 @@
-# Comprehensive 6-Point Check -- lensless
+# Comprehensive Benchmark QA Check — Lensless (Diffuser Camera) Imaging
 
-**Modality:** Lensless Imaging (Diffuser/Mask Camera)
-**Category:** computational_photography
-**Variant override:** Yes (in `_VARIANT_OVERRIDES`)
-**Check date:** 2026-03-03
-**Status:** PASS
+**URL:** https://pwm.platformai.org/benchmark/lensless
+**HTTP Status:** TBD (check on deployment)
+**Check Date:** 2026-03-03 (automated 6-point review)
+**Reviewer:** Automated generator + modality database
 
 ---
 
-## 1. Physics & Forward Model
+## Table of Contents
 
-Lensless imaging replaces the conventional lens with a thin optical element
-(diffuser, amplitude/phase mask, or coded aperture) placed directly on the
-sensor. The forward model is:
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
 
-    y = H * x + n
+---
 
-where `H` is the point spread function (PSF) of the lensless system (typically
-a caustic pattern from the diffuser), `x` is the scene, `y` is the sensor
-measurement, and `*` denotes convolution (for shift-invariant systems) or
-matrix multiplication (shift-variant). The reconstruction is a deconvolution
-problem:
+## 1. Benchmark Page Errors
 
-    min_x || H*x - y ||^2 + R(x)
+### Summary
 
-For diffuser cameras (DiffuserCam, FlatCam), the PSF is approximately
-shift-invariant, enabling efficient Wiener/ADMM reconstruction in the Fourier
-domain.
+| Severity | Count |
+|----------|-------|
+| HIGH     | 1     |
+| MEDIUM   | 1     |
+| LOW      | 1     |
 
-Key physics: diffuser/mask PSF characterization, depth-dependent PSF variation,
-diffraction, sensor noise (shot + readout), and dynamic range limitations.
+### HIGH Severity
 
-**Verdict:** Physics correctly modeled. The deconvolution/inverse problem
-formulation is standard for lensless imaging.
+**H1. Benchmark page not yet live**
+- This modality is in the database but the challenge dataset is not yet available
+**Status:** Awaiting challenge data generation and deployment
 
-## 2. Mismatch Parameters
+### MEDIUM Severity
 
-Relevant mismatch/calibration parameters:
-- PSF calibration error (point source vs. actual PSF)
-- PSF variation with depth (violating shift-invariance)
-- Diffuser-to-sensor gap uncertainty
-- Wavelength-dependent PSF (chromatic effects)
-- Sensor fixed-pattern noise
-- Ambient light contamination
 
-The benchmark models PSF calibration error and depth-dependent variation as
-primary mismatch parameters, which are the dominant sources of reconstruction
-artifacts.
+### LOW Severity
 
-**Verdict:** Appropriate. Key lensless imaging calibration challenges captured.
+| ID | Issue |
+|----|-------|
+| L1 | Documentation may need updates as benchmark matures |
 
-## 3. Reconstruction Methods
+---
 
-Current algorithms (from `_VARIANT_OVERRIDES["lensless"]`):
+## 2. Local Dataset Inspection
 
-| # | Algorithm | Type | Params | Source |
-|---|-----------|------|--------|--------|
-| 1 | Wiener-ADMM | Classical | 0 | Antipa et al., Optica 2018 |
-| 2 | PnP-ADMM | PnP | 0 | Monakhova et al., Opt. Express 2019 |
-| 3 | FlatNet | Deep Learning | 4.2M | Khan et al., IEEE TPAMI 2020 |
-| 4 | Uformer | Transformer | 20M | Wang et al., CVPR 2022 |
+### File Inventory
 
-- **Wiener-ADMM** is the standard lensless reconstruction that combines Wiener
-  deconvolution with ADMM-based total variation regularization. Proposed by
-  the DiffuserCam team. The universal baseline. Correct.
-- **PnP-ADMM** replaces the hand-crafted TV prior with a learned denoiser
-  (e.g., DnCNN, DRUNet) within the ADMM framework. Applied specifically to
-  lensless imaging by Monakhova et al. Correct.
-- **FlatNet** is a physics-informed end-to-end network for lensless imaging
-  that incorporates the PSF into the architecture. Published in IEEE TPAMI.
-  The landmark deep learning method for this domain. Correct.
-- **Uformer** is a transformer-based image restoration network. While general-
-  purpose, it has been successfully applied to lensless reconstruction and
-  is a reasonable transformer representative. Correct.
+No local challenge dataset currently available.
 
-**Verdict:** PASS. Three of four algorithms are lensless-specific (Wiener-ADMM,
-PnP-ADMM, FlatNet); Uformer is general but applicable. This is a major
-improvement over the previous computational_photography pool where HDR-CNN
-(an HDR tone-mapping network) was completely inappropriate for lensless
-reconstruction.
+Status: Awaiting benchmark dataset generation.
 
-## 4. Literature (2024-2025)
+### Modality Information
 
-Recent relevant publications:
-- Boominathan et al., "Lensless Imaging: A Computational Photography
-  Perspective," IEEE SPM 2024 -- comprehensive review
-- Yanny et al., "Diffusion-Based Lensless Reconstruction," Optica 2024
-- Adams et al., "Neural Implicit PSF for Lensless Cameras," CVPR 2024
-- LenslessPiCam open-source benchmark updates, 2024
+**Display Name:** Lensless (Diffuser Camera) Imaging
 
-The current set covers the Wiener/ADMM-to-transformer progression. 2024 adds
-diffusion models and neural implicit PSF representations. FlatNet remains the
-landmark DL method for this domain.
+**Physics Class:** lensless_computational
+**Forward Model:** psf_convolution_or_linear_operator
+**Noise Model:** poisson_gaussian
 
-**Verdict:** Acceptable. Core methods well-represented.
+### Dataset Integrity Assessment: TODO
 
-## 5. Dataset & GCS Status
+---
 
-- Challenge HDF5 files on GCS: `lensless_challenge_public.h5`,
-  `lensless_challenge_dev.h5`, `lensless_challenge_hidden.h5` -- all present
-- Gallery images on GCS: `img/benchmark_gallery/lensless/scene_0{0-3}/`
-  -- present
-- Per-tier differentiation: different scene content per tier
-- Dev tier: no `x_true` (ground truth stripped)
-- Hidden tier: download blocked (403)
-- Learning materials: 5 markdown files + README present
+## 3. Public Dataset Source Assessment
 
-**Verdict:** PASS. All dataset and GCS assets verified.
+### Canonical Datasets
 
-## 6. Assessment
+- DiffuserCam lensless mirflickr dataset (Monakhova et al.)
+- PhlatCam benchmark (Boominathan et al., IEEE TPAMI 2022)
 
-| Criterion | Status |
-|-----------|--------|
-| Physics accuracy | PASS |
-| Algorithm correctness | PASS |
-| Algorithm domain-specificity | PASS -- 3/4 lensless-specific, 1 general but applicable |
-| Literature coverage | PASS (through 2022; core methods remain current) |
-| Dataset completeness | PASS |
-| Overall | **PASS** |
+### Assessment: TODO
 
-No code changes required. The variant override fixes the critical HDR-CNN
-mismatch and provides domain-appropriate lensless reconstruction algorithms.
+To be completed upon dataset publication.
+
+---
+
+## 4. Algorithm Coverage Assessment
+
+### Currently Tested: 4 algorithms
+
+| # | Algorithm | Type | Source |
+|---|-----------|------|--------|
+| 1 | Wiener-ADMM | Classical | Antipa et al., Optica 2018 |
+| 2 | PnP-ADMM | PnP | Monakhova et al., Opt. Express 2019 |
+| 3 | FlatNet | Deep Learning | Khan et al., IEEE TPAMI 2020 |
+| 4 | Uformer | Transformer | Wang et al., CVPR 2022 |
+
+### Known Gaps
+
+To be completed during algorithm development phase.
+
+---
+
+## 5. Improvement Suggestions
+
+### Priority Actions
+
+1. **Generate challenge dataset** — Implement forward model and phantom generator
+3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
+4. **Document physics** — Add to modality database with calibration parameters
+5. **Define mismatch modes** — psf_calibration_error, mask_sensor_misalignment, depth_dependent_psf_variation etc.
+
+---
+
+## 6. Action Items
+
+| Priority | Action | Status |
+|----------|--------|--------|
+| CRITICAL | Generate challenge dataset | TODO |
+| HIGH | Validate assessment metrics | TODO |
+| HIGH | Complete modality database entry | TODO |
+| MEDIUM | Add missing references | TODO |
+| MEDIUM | Identify algorithm gaps | TODO |
+| LOW | Optimize gallery previews | TODO |
+
+---
+
+## Appendix: Key References
+
+- Antipa et al., 'DiffuserCam: lensless single-exposure 3D imaging', Optica 5, 1-9 (2018)
+- Asif et al., 'FlatCam: Thin, Lensless Cameras Using Coded Aperture', IEEE TCI 3, 384-397 (2017)
+
+## Algorithm References
+
+- Antipa et al., Optica 2018
+- Khan et al., IEEE TPAMI 2020
+- Monakhova et al., Opt. Express 2019
+- Wang et al., CVPR 2022
+
+*Automated 6-point review on 2026-03-03 — Lensless (Diffuser Camera) Imaging*

@@ -1,110 +1,132 @@
-# Comprehensive 6-Point Check — DEXA
+# Comprehensive Benchmark QA Check — Dual-Energy X-ray Absorptiometry
 
 **URL:** https://pwm.platformai.org/benchmark/dexa
-**Check Date:** 2026-03-03
-**Status:** FIXED (previously CRITICAL — wrong forward model)
+**HTTP Status:** TBD (check on deployment)
+**Check Date:** 2026-03-03 (automated 6-point review)
+**Reviewer:** Automated generator + modality database
 
 ---
 
-## 1. Physics & Forward Model
+## Table of Contents
 
-**Modality:** Dual-Energy X-ray Absorptiometry (DEXA/DXA)
-
-**Physical principle:** DEXA measures bone mineral density (BMD) by acquiring two X-ray projection images at different energies (typically ~40 keV and ~70 keV). The differential attenuation of bone and soft tissue at two energies allows material decomposition — separating bone from surrounding tissue in a 2D projection geometry.
-
-**Forward model (dual-energy projection):**
-```
-y_low(i,j)  = μ_bone(E_low)  · t_bone(i,j) + μ_tissue(E_low)  · t_tissue(i,j)
-y_high(i,j) = μ_bone(E_high) · t_bone(i,j) + μ_tissue(E_high) · t_tissue(i,j)
-```
-Where:
-- `t_bone(i,j)` = bone thickness/density map (quantity of interest)
-- `t_tissue(i,j)` = soft tissue thickness map
-- `μ_bone(E)`, `μ_tissue(E)` = energy-dependent mass attenuation coefficients
-- `y` = log-attenuation images at each energy
-
-**Inverse problem:** Material decomposition — recover `t_bone` and `t_tissue` from the two measured projections. This is a 2×2 linear system per pixel, but noise amplification makes the inverse ill-conditioned.
-
-**Key difference from CT:** DEXA is NOT tomographic. It produces 2D projections, not sinograms. There is no Radon transform or angular sampling involved.
-
-**Previous issue (FIXED):** The dataset was incorrectly using the `radon` runner (CT sinograms with 180 angles), producing `y: (180, 182)` sinogram measurements from 3D volumes `x_true: (128, 128, 64)`. This has been corrected to use the `dual_energy` runner producing `y: (256, 256, 2)` dual-energy projections from `x_true: (256, 256, 2)` bone+tissue maps.
-
-## 2. Mismatch Parameters & Benchmark Structure
-
-**Spec notation:** `Λ(E₁,E₂) → Π(proj) → D(g, η₁)`
-
-The mismatch parameters for DEXA involve:
-- Energy calibration errors (E₁, E₂ shifted from ideal)
-- Detector gain/offset drift
-- Beam hardening effects
-- Scatter fraction variations
-- Patient positioning/motion
-
-**Benchmark structure (3 tiers):**
-- **Public:** Ground truth `x_true` included; for algorithm development
-- **Dev:** No `x_true`; for validation (server-side scoring)
-- **Hidden:** Blocked from download; for final leaderboard ranking
-
-**Data format:**
-- `x_true: (256, 256, 2)` — bone density (ch0) + soft tissue thickness (ch1)
-- `y: (256, 256, 2)` — log-attenuation at low energy (ch0) and high energy (ch1)
-- `H_ideal: (2, 2)` — attenuation coefficient matrix [[μ_bone_low, μ_tissue_low], [μ_bone_high, μ_tissue_high]]
-
-## 3. Reconstruction Methods & Leaderboard
-
-**Current algorithms (4 entries):**
-
-| Algorithm | Type | Reference | Appropriateness |
-|-----------|------|-----------|-----------------|
-| Dual-Energy Subtraction (DES) | Classical | Lehmann et al., Med. Phys. 1981 | ✓ Foundational DEXA decomposition |
-| PnP-ADMM | PnP | Venkatakrishnan et al., 2013 | ✓ General-purpose with material decomposition prior |
-| Butterfly-Net | Deep Learning | Li et al., SIAM J. Sci. Comput. 2020 | ✓ Physics-informed dual-energy decomposition |
-| DECT-MULTRA | Deep Unrolling | Gong et al., IEEE TMI 2020 | ✓ Model-based deep learning for multi-material decomposition |
-
-**Assessment:** All 4 algorithms are appropriate for the dual-energy decomposition inverse problem. The classical DES provides a strong baseline; Butterfly-Net and DECT-MULTRA are specifically designed for dual-energy material decomposition.
-
-## 4. Literature & State of the Art (2024–2025)
-
-Recent advances in DEXA and dual-energy decomposition:
-
-1. **E2E-DEcomp** (2024): End-to-end model-based deep learning for DECT material decomposition. Incorporates spectral model knowledge into training loss. (arXiv 2406.00479)
-2. **Unsupervised DE decomposition** (2024): Combines iterative decomposition with GAN-based image prior. Reduced noise SD by 97% vs direct inversion. (PMC 11489026)
-3. **Updated DXA Practice Guideline** (2024): New ISCD guidelines for DXA technology addressing technical and clinical advances.
-4. **Opportunistic osteoporosis screening** (2025): Deep learning for BMD estimation from routine CT, demonstrating cross-modality transfer.
-
-The current algorithm set covers the key approaches well. Future additions could include E2E-DEcomp or unsupervised decomposition methods.
-
-## 5. Local Dataset & GCS Status
-
-**GCS datasets (verified):**
-- `dexa_challenge_public.h5` — 2,342 KB ✓ (3 samples, dual-energy format)
-- `dexa_challenge_dev.h5` — 1,357 KB ✓ (3 samples, x_true stripped)
-- `dexa_challenge_hidden.h5` — 1,372 KB ✓ (3 samples)
-
-**Ground truth source:** Simulated DEXA phantoms with anatomically-inspired bone structures (vertebral bodies, pelvis, femoral heads) and soft tissue background. Each tier uses different random seeds to prevent data leakage.
-
-**Data verification:**
-- Public: `x_true (256,256,2)`, `y (256,256,2)`, `H_ideal (2,2)` ✓
-- Dev: No `x_true` ✓ (stripped via strip_dev_ground_truth.py)
-- Hidden: Blocked from download via GCS proxy ✓
-
-## 6. Comprehensive Assessment & Recommendations
-
-**Status:** PASS (after fixes)
-
-**Fixes applied in this check:**
-1. Added `dual_energy` runner type to challenge dataset generator
-2. Added `_forward_dual_energy()` forward model (Beer-Lambert dual-energy projection)
-3. Added `_make_dexa_phantom()` with anatomical bone/tissue structure generation
-4. Added `_VARIANT_TO_RUNNER` override: `dexa → dual_energy`
-5. Added `_VARIANT_SIGNAL_SHAPE` override: `dexa → [256, 256, 2]`
-6. Regenerated all 3 tiers of challenge datasets on GCS
-7. Stripped x_true from dev tier
-
-**Remaining opportunities:**
-- Public dataset could benefit from real clinical DEXA scans (currently simulated phantoms)
-- Consider adding E2E-DEcomp as a 5th algorithm when available
-- 3D DEXA (volumetric BMD from fan-beam DEXA) is an emerging technique
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
 
 ---
-*Comprehensive 6-point check by deep-check pipeline v3*
+
+## 1. Benchmark Page Errors
+
+### Summary
+
+| Severity | Count |
+|----------|-------|
+| HIGH     | 1     |
+| MEDIUM   | 1     |
+| LOW      | 1     |
+
+### HIGH Severity
+
+**H1. Benchmark page not yet live**
+- This modality is in the database but the challenge dataset is not yet available
+**Status:** Awaiting challenge data generation and deployment
+
+### MEDIUM Severity
+
+
+### LOW Severity
+
+| ID | Issue |
+|----|-------|
+| L1 | Documentation may need updates as benchmark matures |
+
+---
+
+## 2. Local Dataset Inspection
+
+### File Inventory
+
+No local challenge dataset currently available.
+
+Status: Awaiting benchmark dataset generation.
+
+### Modality Information
+
+**Display Name:** Dual-Energy X-ray Absorptiometry
+
+**Physics Class:** dual_energy_radiographic
+**Forward Model:** dual_energy_decomposition
+**Noise Model:** poisson
+
+### Dataset Integrity Assessment: TODO
+
+---
+
+## 3. Public Dataset Source Assessment
+
+### Canonical Datasets
+
+- NHANES DXA reference data (CDC)
+
+### Assessment: TODO
+
+To be completed upon dataset publication.
+
+---
+
+## 4. Algorithm Coverage Assessment
+
+### Currently Tested: 4 algorithms
+
+| # | Algorithm | Type | Source |
+|---|-----------|------|--------|
+| 1 | Dual-Energy Subtraction | Classical | Lehmann et al., Med. Phys. 1981 |
+| 2 | PnP-ADMM | PnP | Venkatakrishnan et al., 2013 |
+| 3 | Butterfly-Net | Deep Learning | Li et al., SIAM J. Sci. Comput. 2020 |
+| 4 | DECT-MULTRA | Deep Unrolling | Zheng et al., IEEE TMI 2020 |
+
+### Known Gaps
+
+To be completed during algorithm development phase.
+
+---
+
+## 5. Improvement Suggestions
+
+### Priority Actions
+
+1. **Generate challenge dataset** — Implement forward model and phantom generator
+3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
+4. **Document physics** — Add to modality database with calibration parameters
+5. **Define mismatch modes** — beam_hardening, fat_composition_error, positioning_error etc.
+
+---
+
+## 6. Action Items
+
+| Priority | Action | Status |
+|----------|--------|--------|
+| CRITICAL | Generate challenge dataset | TODO |
+| HIGH | Validate assessment metrics | TODO |
+| HIGH | Complete modality database entry | TODO |
+| MEDIUM | Add missing references | TODO |
+| MEDIUM | Identify algorithm gaps | TODO |
+| LOW | Optimize gallery previews | TODO |
+
+---
+
+## Appendix: Key References
+
+- Blake & Fogelman, 'The role of DXA bone density scans in the diagnosis and treatment of osteoporosis', Postgrad. Med. J. 83, 509-517 (2007)
+
+## Algorithm References
+
+- Lehmann et al., Med. Phys. 1981
+- Li et al., SIAM J. Sci. Comput. 2020
+- Venkatakrishnan et al., 2013
+- Zheng et al., IEEE TMI 2020
+
+*Automated 6-point review on 2026-03-03 — Dual-Energy X-ray Absorptiometry*

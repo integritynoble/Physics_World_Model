@@ -1,239 +1,122 @@
-# Comprehensive Check: event_camera
+# Comprehensive Benchmark QA Check — event_camera
 
-**Modality:** Event Camera / Dynamic Vision Sensor (DVS)
-**Category:** computational_photography
-**Carrier:** Photon
-**Check Date:** 2026-03-03
-**Status:** PASS
-
----
-
-## 1. Physics & Forward Model
-
-### Signal Physics
-
-Event cameras (Dynamic Vision Sensors) are neuromorphic sensors where each pixel
-independently and asynchronously reports logarithmic brightness changes that
-exceed a contrast threshold C. When the log-intensity change at pixel (x, y)
-crosses the threshold, an event e = (x, y, t, p) is emitted, where t is the
-microsecond timestamp and p is the polarity (ON for brightening, OFF for
-darkening). The sensor output is a variable-rate, sparse, asynchronous event
-stream -- not a conventional frame.
-
-The event generation model is:
-
-```
-e_k = (x_k, y_k, t_k, p_k)  where  p_k = sign(log I(x_k, t_k) - log I(x_k, t_k - dt) - C)
-```
-
-The inverse problem is to reconstruct a dense intensity video I(x, y, t) from
-the asynchronous event stream {e_k}.
-
-### Forward Model Assessment
-
-The learning materials describe the forward model type as `nonlinear_operator`
-with category module `compressive_mask`. The nonlinear classification is correct
--- event generation is fundamentally nonlinear (threshold + sign function). The
-`compressive_mask` category module is a reasonable abstraction for the benchmark
-phantom generator, even though it does not capture the full temporal dynamics of
-real DVS operation.
-
-The DAG notation is `M -> D`, representing the event generation (mask/modulation)
-followed by detection. This captures the essential structure.
-
-**Mismatch parameters** are physically appropriate:
-- Contrast threshold (0.1-0.5 log intensity): controls event sensitivity
-- Refractory period (0.1-10.0 us): dead time after each event
-- Noise event rate (0.0-1.0 relative): spurious background events
-- Hot pixel fraction (0.0-0.5): stuck pixels firing continuously
-
-### Verdict: ACCEPTABLE
-
-The forward model correctly identifies the nonlinear nature of event generation.
-The mismatch parameters target the right physical phenomena. The compressive mask
-abstraction is a simplification but valid for benchmarking purposes.
+**URL:** https://pwm.platformai.org/benchmark/event_camera
+**HTTP Status:** TBD (check on deployment)
+**Check Date:** 2026-03-03 (automated 6-point review)
+**Reviewer:** Automated generator + modality database
 
 ---
 
-## 2. Mismatch Parameters & Benchmark Structure
+## Table of Contents
 
-### Three-Tier Structure
-
-| Tier | Mismatch Level | Ground Truth | Download |
-|------|---------------|--------------|----------|
-| Public | Mild | Included | Available |
-| Dev | Moderate | Excluded | Available |
-| Hidden | Severe | Excluded | Blocked (403) |
-
-### Mismatch Parameter Coverage
-
-| Parameter | Nominal | Range | Physical Basis |
-|-----------|---------|-------|---------------|
-| Contrast threshold | 0.3 | 0.1 - 0.5 | DVS pixel comparator bias |
-| Refractory period | 1.0 us | 0.1 - 10.0 us | Post-event reset delay |
-| Noise event rate | 0.0 | 0.0 - 1.0 | Dark current / junction leakage |
-| Hot pixel fraction | 0.0 | 0.0 - 0.5 | Manufacturing defects |
-
-The mismatch parameters are well-chosen for event cameras. Contrast threshold
-variation is the single most impactful parameter -- algorithms that assume a
-fixed threshold will degrade. Refractory period mismatch causes temporal
-resolution loss. Noise events and hot pixels are well-documented DVS artifacts.
-
-### Data Format
-
-- Object shape: [64, 64]
-- Measurement shape: [64, 64]
-- Data source: hdr_dataset (Hasinoff et al., SIGGRAPH Asia 2016)
-- Metrics: PSNR (primary), SSIM
-
-### Verdict: GOOD
-
-The three-tier mismatch structure with physically motivated parameters is
-well-designed for evaluating event-to-video reconstruction robustness.
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
 
 ---
 
-## 3. Reconstruction Methods & Leaderboard
+## 1. Benchmark Page Errors
 
-### Algorithm Override (Verified in _algorithm_catalog.py)
+### Summary
 
-| Algorithm | Type | Params | Source |
-|-----------|------|--------|--------|
-| Event Integration | Classical | 0 | Analytical baseline |
-| cF2F | PnP | 0 | Scheerlinck et al., IEEE RA-L 2020 |
-| E2VID | Deep Learning | 10M | Rebecq et al., IEEE TPAMI 2020 |
-| SPADE-E2VID | Transformer | 15M | Cadena et al., 2024 |
+| Severity | Count |
+|----------|-------|
+| HIGH     | 1     |
+| MEDIUM   | 1     |
+| LOW      | 1     |
 
-### Algorithm Appropriateness
+### HIGH Severity
 
-All four algorithms are domain-appropriate for event camera reconstruction:
+**H1. Benchmark page not yet live**
+- This modality is in the database but the challenge dataset is not yet available
+**Status:** Awaiting challenge data generation and deployment
 
-1. **Event Integration** -- the simplest baseline: accumulate events within a
-   time window to form a pseudo-frame. Zero learned parameters. Establishes
-   the performance floor.
+### MEDIUM Severity
 
-2. **cF2F (Complementary Frames to Frames)** -- Scheerlinck et al. (IEEE RA-L
-   2020) reconstructs intensity by combining an event-driven complementary filter
-   with frame-based priors. Classified as PnP for its iterative prior structure.
 
-3. **E2VID** -- Rebecq et al. (IEEE TPAMI 2020) is the foundational deep
-   learning approach for event-to-video reconstruction. Uses a recurrent
-   ConvLSTM architecture (approx. 10M parameters). Widely cited benchmark.
+### LOW Severity
 
-4. **SPADE-E2VID** -- Cadena et al. (2024) extends E2VID with spatially adaptive
-   denormalization and transformer-based temporal attention. Represents the
-   current state of the art.
-
-### Leaderboard Scores (from CATEGORY_REAL_SCORES)
-
-| Method | PSNR (dB) | SSIM |
-|--------|-----------|------|
-| Event Integration | 22.00 | 0.580 |
-| cF2F | 26.50 | 0.760 |
-| E2VID | 31.20 | 0.900 |
-| SPADE-E2VID | 33.50 | 0.935 |
-
-The progression from classical (22 dB) to state-of-the-art transformer (33.5 dB)
-is realistic and consistent with published results.
-
-### Verdict: EXCELLENT
-
-The algorithm override correctly replaces the generic computational_photography
-pool (which had Wiener-Deconv, PnP-FFDNet, HDR-CNN, Uformer -- none relevant
-to event streams) with domain-specific event camera algorithms.
+| ID | Issue |
+|----|-------|
+| L1 | Documentation may need updates as benchmark matures |
 
 ---
 
-## 4. Literature & State of the Art (2024-2025)
+## 2. Local Dataset Inspection
 
-### Key References
+### File Inventory
 
-| Year | Paper | Venue | Contribution |
-|------|-------|-------|-------------|
-| 2019 | Scheerlinck et al., "CED: Color event camera dataset" | CVPRW | cF2F filter approach |
-| 2020 | Rebecq et al., "High speed and HDR video with an event camera" | TPAMI | E2VID: ConvLSTM event-to-video |
-| 2020 | Stoffregen et al., "Reducing the sim-to-real gap for event cameras" | ECCV | Domain adaptation for events |
-| 2021 | Paredes-Valles et al., "Back to event basics" | CVPR | Self-supervised event reconstruction |
-| 2023 | Ercan et al., "HyperE2VID" | CVPR | Hypernetwork-based adaptive E2VID |
-| 2024 | Cadena et al., "SPADE-E2VID" | arXiv | Spatially adaptive event reconstruction |
-| 2024 | Zhu et al., "Event camera survey" | TPAMI | Comprehensive survey of event methods |
+No local challenge dataset currently available.
 
-### State of the Art Assessment
+Status: Awaiting benchmark dataset generation.
 
-The event camera reconstruction field has matured significantly. E2VID (2020)
-remains the canonical deep learning baseline, with SPADE-E2VID (2024) and
-HyperE2VID (2023) pushing performance further. The benchmark's algorithm
-selection spans the full range from simple accumulation to transformer-augmented
-reconstruction.
+### Modality Information
 
-### Verdict: CURRENT
-
-Algorithm selection reflects 2024-2025 state of the art. The field is active
-with new methods (HyperE2VID, SPADE-E2VID) continuing to improve upon E2VID.
+Modality information not yet in database.
+### Dataset Integrity Assessment: TODO
 
 ---
 
-## 5. Local Dataset & GCS Status
+## 3. Public Dataset Source Assessment
 
-### Challenge Datasets on GCS
+### Assessment: TODO
 
-| Tier | File | Status |
-|------|------|--------|
-| Public | `challenge-data/v1.0/event_camera_challenge_public.h5` | OK |
-| Dev | `challenge-data/v1.0/event_camera_challenge_dev.h5` | OK |
-| Hidden | `challenge-data/v1.0/event_camera_challenge_hidden.h5` | Blocked (403) |
-
-### Gallery Images
-
-Gallery images served from GCS via `/gcs/img/benchmark_gallery/event_camera/`.
-
-### Learning Materials
-
-| File | Status | Size |
-|------|--------|------|
-| README.md | Present | 1,488 B |
-| 01_physics_fundamentals.md | Present | 2,157 B |
-| 02_forward_model.md | Present | 2,752 B |
-| 03_reconstruction_algorithms.md | Present | 2,061 B |
-| 04_pwm_benchmark.md | Present | 2,503 B |
-| 05_hands_on_tutorial.md | Present | 3,558 B |
-
-### Verdict: COMPLETE
-
-All HDF5 challenge datasets present on GCS. Learning materials complete.
+To be completed upon dataset publication.
 
 ---
 
-## 6. Comprehensive Assessment & Recommendations
+## 4. Algorithm Coverage Assessment
 
-### Overall Status: PASS
+### Currently Tested: 4 algorithms
 
-| Check | Result |
-|-------|--------|
-| Physics & forward model | Correct nonlinear event generation model |
-| Mismatch parameters | Physically appropriate (threshold, refractory, noise, hot pixels) |
-| Algorithm override | In place -- all 4 algorithms are event-camera-specific |
-| Leaderboard scores | Realistic progression from 22.0 to 33.5 dB PSNR |
-| Literature coverage | Current through 2024 (SPADE-E2VID) |
-| GCS datasets | All 3 tiers present |
-| Learning materials | Complete 5-file set |
+| # | Algorithm | Type | Source |
+|---|-----------|------|--------|
+| 1 | Event Integration | Classical | Analytical baseline |
+| 2 | cF2F | PnP | Scheerlinck et al., IEEE RA-L 2020 |
+| 3 | E2VID | Deep Learning | Rebecq et al., IEEE TPAMI 2020 |
+| 4 | SPADE-E2VID | Deep Learning | Cadena et al., IEEE RA-L 2024 |
 
-### What Was Fixed
+### Known Gaps
 
-The original assignment used generic computational_photography algorithms
-(Wiener-Deconv, PnP-FFDNet, HDR-CNN, Uformer) which are frame-based image
-restoration methods with no relevance to asynchronous event streams. The
-variant override replaced these with Event Integration, cF2F, E2VID, and
-SPADE-E2VID -- all purpose-built for event-to-video reconstruction.
+To be completed during algorithm development phase.
 
-### Minor Notes
+---
 
-- The learning materials (01_physics_fundamentals.md) use a generic PSF
-  convolution signal equation rather than the event generation model. This is a
-  documentation gap but does not affect the benchmark operation.
-- The overview correctly identifies the modality as a DVS with the forward model
-  described in the detailed section 1 overview.
+## 5. Improvement Suggestions
 
-### Recommendations
+### Priority Actions
 
-No further code changes needed. The algorithm override is in place and verified.
+1. **Generate challenge dataset** — Implement forward model and phantom generator
+3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
+4. **Document physics** — Add to modality database with calibration parameters
+
+---
+
+## 6. Action Items
+
+| Priority | Action | Status |
+|----------|--------|--------|
+| CRITICAL | Generate challenge dataset | TODO |
+| HIGH | Validate assessment metrics | TODO |
+| HIGH | Complete modality database entry | TODO |
+| MEDIUM | Add missing references | TODO |
+| MEDIUM | Identify algorithm gaps | TODO |
+| LOW | Optimize gallery previews | TODO |
+
+---
+
+## Appendix: Key References
+
+(References to be added as dataset and algorithms are finalized)
+
+## Algorithm References
+
+- Analytical baseline
+- Cadena et al., IEEE RA-L 2024
+- Rebecq et al., IEEE TPAMI 2020
+- Scheerlinck et al., IEEE RA-L 2020
+
+*Automated 6-point review on 2026-03-03 — event_camera*

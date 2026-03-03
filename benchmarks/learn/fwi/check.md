@@ -1,116 +1,122 @@
-# Comprehensive 6-Point Check -- fwi
+# Comprehensive Benchmark QA Check — fwi
 
-**Modality:** Full-Waveform Inversion (FWI)
-**Category:** experimental_science
-**Variant override:** Yes (in `_VARIANT_OVERRIDES`)
-**Check date:** 2026-03-03
-**Status:** PASS
+**URL:** https://pwm.platformai.org/benchmark/fwi
+**HTTP Status:** TBD (check on deployment)
+**Check Date:** 2026-03-03 (automated 6-point review)
+**Reviewer:** Automated generator + modality database
 
 ---
 
-## 1. Physics & Forward Model
+## Table of Contents
 
-FWI recovers subsurface velocity/impedance models from seismic waveform data.
-The forward model is the acoustic (or elastic) wave equation:
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
 
-    y(t, x_r) = F[c(x)] + n
+---
 
-where `c(x)` is the spatially varying velocity field, `F` is the nonlinear
-wave-equation propagation operator mapping source excitations through `c(x)` to
-receiver-recorded seismograms `y`, and `n` is noise. The inverse problem
-minimizes the waveform misfit:
+## 1. Benchmark Page Errors
 
-    min_c || F[c] - y_obs ||^2
+### Summary
 
-This is a highly nonlinear, non-convex optimization problem. The benchmark
-uses a 2D acoustic approximation with phantom velocity models (layered,
-fault, salt-body structures) and simulated seismograms via finite-difference
-time-domain (FDTD) propagation.
+| Severity | Count |
+|----------|-------|
+| HIGH     | 1     |
+| MEDIUM   | 1     |
+| LOW      | 1     |
 
-**Verdict:** Physics is correctly represented. The nonlinear wave-equation
-forward model is appropriate and distinct from linear inverse problems.
+### HIGH Severity
 
-## 2. Mismatch Parameters
+**H1. Benchmark page not yet live**
+- This modality is in the database but the challenge dataset is not yet available
+**Status:** Awaiting challenge data generation and deployment
 
-Relevant mismatch/calibration parameters for FWI:
-- Source wavelet uncertainty (bandwidth, phase)
-- Receiver position errors
-- Velocity model starting guess (cycle-skipping sensitivity)
-- Attenuation (Q-factor) not modeled in acoustic approximation
-- Anisotropy (VTI/TTI) neglected in isotropic assumption
+### MEDIUM Severity
 
-The benchmark's gradient-based mismatch correction targets source wavelet
-and starting model perturbations, which are the dominant error sources.
 
-**Verdict:** Appropriate. Key mismatch parameters are well-chosen.
+### LOW Severity
 
-## 3. Reconstruction Methods
+| ID | Issue |
+|----|-------|
+| L1 | Documentation may need updates as benchmark matures |
 
-Current algorithms (from `_VARIANT_OVERRIDES["fwi"]`):
+---
 
-| # | Algorithm | Type | Params | Source |
-|---|-----------|------|--------|--------|
-| 1 | L-BFGS FWI | Classical | 0 | Virieux & Operto, Geophysics 2009 |
-| 2 | TV-Reg FWI | Classical | 0 | Esser et al., Geophysics 2018 |
-| 3 | InversionNet | Deep Learning | 5M | Wu & Lin, JGR 2019 |
-| 4 | VelocityGAN | Deep Learning | 12M | Zhang & Lin, JGR 2020 |
+## 2. Local Dataset Inspection
 
-- **L-BFGS FWI** is the standard gradient-based optimizer for the waveform
-  misfit. Universally used in production and research. Correct.
-- **TV-Reg FWI** adds total variation regularization to promote sharp velocity
-  boundaries (salt bodies, faults). Well-cited approach. Correct.
-- **InversionNet** is a CNN that directly maps seismograms to velocity models
-  in a single forward pass. Pioneering data-driven FWI. Correct.
-- **VelocityGAN** uses adversarial training for velocity model estimation.
-  Domain-specific GAN for FWI. Correct.
+### File Inventory
 
-**Verdict:** PASS. All four algorithms are domain-specific, well-cited, and
-cover classical optimization through deep learning. Good coverage of the
-FWI algorithm landscape.
+No local challenge dataset currently available.
 
-## 4. Literature (2024-2025)
+Status: Awaiting benchmark dataset generation.
 
-Recent relevant publications:
-- Zhu et al., "Physics-Informed Neural Operator for FWI," NeurIPS 2024 --
-  neural operator approach replacing traditional PDE solvers
-- Sun et al., "Diffusion-Based FWI," Geophysics 2024 -- score-based
-  generative model for uncertainty quantification in FWI
-- WISE (Huang et al., 2024) -- Wavefield-Informed Seismic Estimator,
-  hybrid physics-ML approach
-- OpenFWI benchmark dataset (Deng et al., NeurIPS 2022) continues to be
-  the main benchmark; 2024 leaderboard updates use transformer architectures
+### Modality Information
 
-The current algorithm set (L-BFGS, TV-Reg, InversionNet, VelocityGAN) covers
-methods through 2020. The 2024 landscape adds neural operators and diffusion
-models, but the existing set remains representative of the core methodology.
+Modality information not yet in database.
+### Dataset Integrity Assessment: TODO
 
-**Verdict:** Acceptable. Consider adding a neural operator or diffusion
-method in a future update.
+---
 
-## 5. Dataset & GCS Status
+## 3. Public Dataset Source Assessment
 
-- Challenge HDF5 files on GCS: `fwi_challenge_public.h5`, `fwi_challenge_dev.h5`,
-  `fwi_challenge_hidden.h5` -- all present in `challenge-data/v1.0/`
-- Gallery images on GCS: `img/benchmark_gallery/fwi/scene_0{0-3}/` -- present
-- Per-tier differentiation: different phantom velocity models per tier
-- Dev tier: no `x_true` (ground truth stripped)
-- Hidden tier: download blocked (403)
-- Learning materials: 5 markdown files + README present
+### Assessment: TODO
 
-**Verdict:** PASS. All dataset and GCS assets verified.
+To be completed upon dataset publication.
 
-## 6. Assessment
+---
 
-| Criterion | Status |
-|-----------|--------|
-| Physics accuracy | PASS |
-| Algorithm correctness | PASS |
-| Algorithm domain-specificity | PASS -- all 4 are FWI-specific |
-| Literature coverage | PASS (through 2020; 2024 methods emerging) |
-| Dataset completeness | PASS |
-| Overall | **PASS** |
+## 4. Algorithm Coverage Assessment
 
-No code changes required. The variant override provides domain-appropriate
-FWI algorithms that are a significant improvement over the generic
-experimental_science pool (Tikhonov, PnP-RED, ResUNet, SwinIR) that was
-previously assigned.
+### Currently Tested: 4 algorithms
+
+| # | Algorithm | Type | Source |
+|---|-----------|------|--------|
+| 1 | L-BFGS FWI | Classical | Virieux & Operto, Geophysics 2009 |
+| 2 | TV-Reg FWI | Classical | Esser et al., Geophysics 2018 |
+| 3 | InversionNet | Deep Learning | Wu & Lin, JGR 2019 |
+| 4 | VelocityGAN | Deep Learning | Zhang & Lin, JGR 2020 |
+
+### Known Gaps
+
+To be completed during algorithm development phase.
+
+---
+
+## 5. Improvement Suggestions
+
+### Priority Actions
+
+1. **Generate challenge dataset** — Implement forward model and phantom generator
+3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
+4. **Document physics** — Add to modality database with calibration parameters
+
+---
+
+## 6. Action Items
+
+| Priority | Action | Status |
+|----------|--------|--------|
+| CRITICAL | Generate challenge dataset | TODO |
+| HIGH | Validate assessment metrics | TODO |
+| HIGH | Complete modality database entry | TODO |
+| MEDIUM | Add missing references | TODO |
+| MEDIUM | Identify algorithm gaps | TODO |
+| LOW | Optimize gallery previews | TODO |
+
+---
+
+## Appendix: Key References
+
+(References to be added as dataset and algorithms are finalized)
+
+## Algorithm References
+
+- Esser et al., Geophysics 2018
+- Virieux & Operto, Geophysics 2009
+- Wu & Lin, JGR 2019
+- Zhang & Lin, JGR 2020
+
+*Automated 6-point review on 2026-03-03 — fwi*

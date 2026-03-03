@@ -1,87 +1,122 @@
-# Comprehensive 6-Point Check -- radio_astronomy
+# Comprehensive Benchmark QA Check — radio_astronomy
 
 **URL:** https://pwm.platformai.org/benchmark/radio_astronomy
-**Check Date:** 2026-03-03
-**Status:** PASS (correct astronomy override, no code changes needed)
+**HTTP Status:** TBD (check on deployment)
+**Check Date:** 2026-03-03 (automated 6-point review)
+**Reviewer:** Automated generator + modality database
 
 ---
 
-## 1. Physics & Forward Model
+## Table of Contents
 
-**Modality:** Radio Astronomy (Aperture Synthesis Imaging)
-
-**Physical principle:** Radio telescopes (single-dish or interferometric arrays) observe celestial radio sources at frequencies from ~10 MHz to ~300 GHz. In aperture synthesis, pairs of antennas measure the complex visibility function V(u,v) -- the Fourier transform of the sky brightness distribution I(l,m) -- at spatial frequencies determined by the antenna separation (baseline):
-```
-V(u, v) = integral integral  I(l, m) * exp(-j*2*pi*(u*l + v*m)) dl dm
-```
-The (u,v) coverage is incomplete (sparse sampling), making image reconstruction an ill-posed inverse problem.
-
-**Inverse problem:** Recover the sky brightness distribution I(l,m) from sparse, noisy visibility measurements V(u,v). This is a Fourier inversion problem with incomplete sampling, requiring deconvolution of the "dirty beam" (PSF determined by the (u,v) coverage).
-
-**Current physics engine:** Fourier-sampling forward model, appropriate for aperture synthesis.
-
-## 2. Mismatch Parameters & Benchmark Structure
-
-**Spec notation:** R(theta) -> Sigma(visibility) -> D(g, eta_1)
-
-**Mismatch sources in radio astronomy:**
-- Incomplete (u,v) coverage (Earth rotation synthesis)
-- Antenna-based gain and phase errors (calibration)
-- Atmospheric phase fluctuations (tropospheric/ionospheric)
-- Radio frequency interference (RFI)
-- Wide-field effects (w-term, non-coplanar baselines)
-- Bandwidth smearing and time-average smearing
-- Primary beam variations across the field
-
-**Dataset format (GCS):**
-- `x_true` -- ground truth sky brightness distribution
-- `y` -- visibility measurements (sparse Fourier samples)
-- `H_ideal` -- forward model parameters / (u,v) coverage
-
-**Tier structure:** Public (with x_true), Dev (no x_true), Hidden (blocked).
-
-## 3. Reconstruction Methods & Leaderboard
-
-**Algorithms (astronomy override):**
-
-| Algorithm | Type | Reference | Appropriateness |
-|-----------|------|-----------|-----------------|
-| CLEAN | Classical | Hogbom, A&AS 1974 | CORRECT -- the foundational radio imaging algorithm, used for 50 years |
-| AIRI | PnP | Terris et al., MNRAS 2022 | CORRECT -- PnP approach specifically for radio interferometric imaging |
-| R2D2 | Deep Learning | Aghabiglou et al., ApJS 2024 | CORRECT -- deep learning for radio imaging |
-| PRIMO | Deep Learning | Medeiros et al., ApJL 2023 | CORRECT -- principal-component interferometric modeling (used for EHT M87 image) |
-
-All 4 algorithms are domain-appropriate for radio astronomy imaging. This is a significant improvement over the previous assignment (generic experimental_science: Tikhonov, PnP-RED, ResUNet, SwinIR).
-
-## 4. Literature & State of the Art (2024--2025)
-
-1. **CLEAN** (Hogbom, 1974): The standard radio imaging deconvolution algorithm. Variants include MS-CLEAN, MF-CLEAN, and MTMFS. Still the default in CASA.
-2. **AIRI** (Terris et al., MNRAS 2022): AI for Regularization in Radio-Interferometric Imaging -- PnP with learned denoisers. Already in pool.
-3. **R2D2** (Aghabiglou et al., ApJS 2024): Residual-to-Residual DNN series for radio imaging. Already in pool.
-4. **PRIMO** (Medeiros et al., ApJL 2023): Used to produce the sharpest EHT image of M87*. Already in pool.
-5. **uSARA** (Terris et al., MNRAS 2023): Unconstrained Sparsity Averaging Reweighted Analysis for wide-band radio imaging.
-6. **ngEHT imaging** (2024--2025): Next-generation Event Horizon Telescope with ML-driven image reconstruction pipelines.
-
-## 5. Local Dataset & GCS Status
-
-**GCS datasets verified:**
-- `radio_astronomy_challenge_public.h5` -- present on GCS
-- `radio_astronomy_challenge_dev.h5` -- present on GCS (x_true stripped)
-- `radio_astronomy_challenge_hidden.h5` -- present on GCS (blocked from download)
-
-**Gallery images:** No gallery section for this modality (page size 57,262 bytes).
-
-**Learning materials:** Complete 5-module set present (README, physics fundamentals, forward model, reconstruction algorithms, PWM benchmark, hands-on tutorial).
-
-## 6. Comprehensive Assessment & Recommendations
-
-**Status:** PASS -- no code changes needed.
-
-**Routing:** Radio astronomy is correctly routed to the astronomy algorithm pool (CLEAN, AIRI, R2D2, PRIMO). This was previously fixed from the generic experimental_science pool.
-
-**Previously fixed:** radio_astronomy was originally categorized under `experimental_science` and received generic algorithms (Tikhonov, PnP-RED, ResUNet, SwinIR). The astronomy override provides the correct domain-specific algorithms.
-
-**No further changes required.** The algorithm assignment is correct and domain-appropriate.
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
 
 ---
-*Comprehensive 6-point check by deep-check pipeline v3*
+
+## 1. Benchmark Page Errors
+
+### Summary
+
+| Severity | Count |
+|----------|-------|
+| HIGH     | 1     |
+| MEDIUM   | 1     |
+| LOW      | 1     |
+
+### HIGH Severity
+
+**H1. Benchmark page not yet live**
+- This modality is in the database but the challenge dataset is not yet available
+**Status:** Awaiting challenge data generation and deployment
+
+### MEDIUM Severity
+
+
+### LOW Severity
+
+| ID | Issue |
+|----|-------|
+| L1 | Documentation may need updates as benchmark matures |
+
+---
+
+## 2. Local Dataset Inspection
+
+### File Inventory
+
+No local challenge dataset currently available.
+
+Status: Awaiting benchmark dataset generation.
+
+### Modality Information
+
+Modality information not yet in database.
+### Dataset Integrity Assessment: TODO
+
+---
+
+## 3. Public Dataset Source Assessment
+
+### Assessment: TODO
+
+To be completed upon dataset publication.
+
+---
+
+## 4. Algorithm Coverage Assessment
+
+### Currently Tested: 4 algorithms
+
+| # | Algorithm | Type | Source |
+|---|-----------|------|--------|
+| 1 | CLEAN | Classical | Hogbom, A&AS 1974 |
+| 2 | AIRI | PnP | Terris et al., MNRAS 2022 |
+| 3 | R2D2 | Deep Learning | Aghabiglou et al., ApJS 2024 |
+| 4 | PRIMO | Deep Learning | Medeiros et al., ApJL 2023 |
+
+### Known Gaps
+
+To be completed during algorithm development phase.
+
+---
+
+## 5. Improvement Suggestions
+
+### Priority Actions
+
+1. **Generate challenge dataset** — Implement forward model and phantom generator
+3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
+4. **Document physics** — Add to modality database with calibration parameters
+
+---
+
+## 6. Action Items
+
+| Priority | Action | Status |
+|----------|--------|--------|
+| CRITICAL | Generate challenge dataset | TODO |
+| HIGH | Validate assessment metrics | TODO |
+| HIGH | Complete modality database entry | TODO |
+| MEDIUM | Add missing references | TODO |
+| MEDIUM | Identify algorithm gaps | TODO |
+| LOW | Optimize gallery previews | TODO |
+
+---
+
+## Appendix: Key References
+
+(References to be added as dataset and algorithms are finalized)
+
+## Algorithm References
+
+- Aghabiglou et al., ApJS 2024
+- Hogbom, A&AS 1974
+- Medeiros et al., ApJL 2023
+- Terris et al., MNRAS 2022
+
+*Automated 6-point review on 2026-03-03 — radio_astronomy*

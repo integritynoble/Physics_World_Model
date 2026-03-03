@@ -1,91 +1,115 @@
-# Comprehensive 6-Point Check -- stm
+# Comprehensive Benchmark QA Check — stm
 
 **URL:** https://pwm.platformai.org/benchmark/stm
-**Check Date:** 2026-03-03
-**Status:** PASS (acceptable category routing, no code changes needed)
+**HTTP Status:** TBD (check on deployment)
+**Check Date:** 2026-03-03 (automated 6-point review)
+**Reviewer:** Automated generator + modality database
 
 ---
 
-## 1. Physics & Forward Model
+## Table of Contents
 
-**Modality:** Scanning Tunneling Microscopy (STM)
-
-**Physical principle:** STM measures the quantum tunneling current between a sharp conductive tip and a sample surface as the tip is rastered at sub-nanometer distances. The tunneling current depends exponentially on the tip-sample distance and the local density of states (LDOS):
-```
-I_t ~ V_bias * rho(r, E_F) * exp(-2*kappa*d)
-```
-where rho = local density of electronic states at the Fermi level, d = tip-sample distance, kappa = decay constant (~1 inverse Angstrom), and V_bias = applied bias voltage.
-
-In constant-current mode, a feedback loop adjusts tip height z(x,y) to maintain constant tunneling current, producing a topographic map that convolves true topography with electronic structure (LDOS variations). In constant-height mode, the tunneling current I(x,y) directly maps the LDOS.
-
-**Inverse problem:** Recover the true surface structure (topography and/or electronic properties) from images affected by tip artifacts (electronic and geometric convolution), piezo drift/creep, vibration noise, and thermal drift.
-
-## 2. Mismatch Parameters & Benchmark Structure
-
-**Spec notation:** C(tunnel) -> D(g, eta_1)
-
-**Mismatch sources in STM:**
-- Tip electronic structure (LDOS of the tip apex affects the image)
-- Piezo drift and creep (scanner nonlinearity)
-- Thermal drift during long scans
-- Vibration isolation limitations
-- Tip changes during scanning (atomic rearrangement)
-- Feedback loop bandwidth limitations
-- Bias-dependent contrast variations
-
-**Dataset format (GCS):**
-- `x_true` -- ground truth surface map
-- `y` -- degraded STM measurement
-- `H_ideal` -- forward model parameters
-
-**Tier structure:** Public (with x_true), Dev (no x_true), Hidden (blocked).
-
-## 3. Reconstruction Methods & Leaderboard
-
-**Algorithms (scanning_probe category pool):**
-
-| Algorithm | Type | Reference | Appropriateness |
-|-----------|------|-----------|-----------------|
-| BTR | Classical | Villarrubia, JRNIST 1997 | Acceptable -- Blind Tip Reconstruction, originally for AFM but applicable to STM tip deconvolution |
-| Reg-Deconv | PnP | Dongmo et al., 2000 | Acceptable -- regularized deconvolution for tip artifact removal |
-| DeepSPM | Deep Learning | Alldritt et al., Commun. Phys. 2020 | CORRECT -- specifically designed for STM molecular identification |
-| E2E-BTR | Deep Learning | Kossler et al., Sci. Rep. 2022 | Acceptable -- end-to-end blind tip reconstruction |
-
-The scanning_probe pool is designed primarily for AFM tip deconvolution, but the algorithms are applicable to STM as well. While STM has additional challenges (LDOS convolution, electronic tip effects), the geometric tip artifact problem is shared with AFM. DeepSPM is specifically an STM method.
-
-## 4. Literature & State of the Art (2024--2025)
-
-1. **DeepSPM** (Alldritt et al., Commun. Phys. 2020): Deep learning for identifying molecular structures from STM images. Already in pool -- the most STM-specific algorithm.
-2. **AiSTM** (2024): AI-assisted autonomous STM operation and image analysis.
-3. **Drift correction** (standard): Post-processing for piezo drift and thermal creep -- a key STM preprocessing step.
-4. **DL-based STM simulation** (2024): Neural network potentials for predicting STM images from atomic structures.
-5. **Machine learning for STM spectroscopy** (2024--2025): Automated STS analysis for electronic structure mapping.
-6. **STM image super-resolution** (2024): Deep learning enhancement of STM resolution beyond tip limitations.
-
-## 5. Local Dataset & GCS Status
-
-**GCS datasets verified:**
-- `stm_challenge_public.h5` -- present on GCS
-- `stm_challenge_dev.h5` -- present on GCS (x_true stripped)
-- `stm_challenge_hidden.h5` -- present on GCS (blocked from download)
-
-**Gallery images:** No gallery section for this modality (page size ~56 KB).
-
-**Learning materials:** Complete 5-module set present (README, physics fundamentals, forward model, reconstruction algorithms, PWM benchmark, hands-on tutorial).
-
-## 6. Comprehensive Assessment & Recommendations
-
-**Status:** PASS -- no code changes needed.
-
-**Routing:** Falls to `_CATEGORY_ALGORITHMS["scanning_probe"]`. The scanning_probe pool is shared between AFM and STM, which is acceptable because:
-- Both are scanning probe techniques with tip-artifact convolution
-- BTR and Reg-Deconv address tip deconvolution (relevant for both modalities)
-- DeepSPM is specifically an STM algorithm (already in the pool)
-- E2E-BTR provides a learned end-to-end approach
-
-**Domain accuracy note:** STM has additional complexity beyond tip artifacts (LDOS convolution, electronic structure effects) that AFM does not. However, the current pool's focus on tip deconvolution is the primary shared artifact, and DeepSPM provides STM-specific coverage.
-
-**No changes required.** The scanning_probe pool is a defensible assignment for STM.
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
 
 ---
-*Comprehensive 6-point check by deep-check pipeline v3*
+
+## 1. Benchmark Page Errors
+
+### Summary
+
+| Severity | Count |
+|----------|-------|
+| HIGH     | 1     |
+| MEDIUM   | 1     |
+| LOW      | 1     |
+
+### HIGH Severity
+
+**H1. Benchmark page not yet live**
+- This modality is in the database but the challenge dataset is not yet available
+**Status:** Awaiting challenge data generation and deployment
+
+### MEDIUM Severity
+
+**M1. Algorithm catalog not yet populated**
+- No validated algorithms assigned to this modality
+**Status:** Awaiting algorithm selection and validation
+
+### LOW Severity
+
+| ID | Issue |
+|----|-------|
+| L1 | Documentation may need updates as benchmark matures |
+
+---
+
+## 2. Local Dataset Inspection
+
+### File Inventory
+
+No local challenge dataset currently available.
+
+Status: Awaiting benchmark dataset generation.
+
+### Modality Information
+
+Modality information not yet in database.
+### Dataset Integrity Assessment: TODO
+
+---
+
+## 3. Public Dataset Source Assessment
+
+### Assessment: TODO
+
+To be completed upon dataset publication.
+
+---
+
+## 4. Algorithm Coverage Assessment
+
+### Algorithm Coverage: TODO
+
+Algorithm catalog not yet populated for this modality.
+
+### Known Gaps
+
+To be completed during algorithm development phase.
+
+---
+
+## 5. Improvement Suggestions
+
+### Priority Actions
+
+1. **Generate challenge dataset** — Implement forward model and phantom generator
+2. **Select and validate algorithms** — Curate domain-appropriate methods
+3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
+4. **Document physics** — Add to modality database with calibration parameters
+
+---
+
+## 6. Action Items
+
+| Priority | Action | Status |
+|----------|--------|--------|
+| CRITICAL | Generate challenge dataset | TODO |
+| CRITICAL | Select 4+ algorithms (Classical, PnP, DL, Transformer) | TODO |
+| HIGH | Validate assessment metrics | TODO |
+| HIGH | Complete modality database entry | TODO |
+| MEDIUM | Add missing references | TODO |
+| LOW | Optimize gallery previews | TODO |
+
+---
+
+## Appendix: Key References
+
+(References to be added as dataset and algorithms are finalized)
+
+
+*Automated 6-point review on 2026-03-03 — stm*

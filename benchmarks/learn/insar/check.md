@@ -1,114 +1,122 @@
-# Comprehensive 6-Point Check -- insar
+# Comprehensive Benchmark QA Check — insar
 
-**Modality:** Interferometric Synthetic Aperture Radar (InSAR)
-**Category:** remote_sensing
-**Variant override:** Yes (in `_VARIANT_OVERRIDES`)
-**Check date:** 2026-03-03
-**Status:** PASS
+**URL:** https://pwm.platformai.org/benchmark/insar
+**HTTP Status:** TBD (check on deployment)
+**Check Date:** 2026-03-03 (automated 6-point review)
+**Reviewer:** Automated generator + modality database
 
 ---
 
-## 1. Physics & Forward Model
+## Table of Contents
 
-InSAR forms interferograms from pairs of SAR images acquired from slightly
-different positions or times. The forward model for the wrapped
-interferometric phase is:
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
 
-    phi_wrapped = W{ (4*pi/lambda) * delta_R + phi_topo + phi_defo + phi_atm + phi_noise }
+---
 
-where `W{}` is the wrapping operator (modulo 2*pi), `delta_R` is the
-differential range, `phi_topo` is the topographic phase, `phi_defo` is the
-deformation phase, `phi_atm` is atmospheric phase delay, and `phi_noise`
-accounts for decorrelation and thermal noise. The key inverse problem is
-**phase unwrapping**: recovering the absolute (unwrapped) phase from wrapped
-observations, which is an inherently ambiguous problem.
+## 1. Benchmark Page Errors
 
-Key physics: baseline geometry, Earth curvature, atmospheric delay, temporal
-decorrelation, and phase aliasing at steep slopes.
+### Summary
 
-**Verdict:** Physics correctly represented. The phase unwrapping formulation
-is the core InSAR reconstruction challenge.
+| Severity | Count |
+|----------|-------|
+| HIGH     | 1     |
+| MEDIUM   | 1     |
+| LOW      | 1     |
 
-## 2. Mismatch Parameters
+### HIGH Severity
 
-Relevant mismatch/calibration parameters:
-- Baseline estimation error
-- Atmospheric phase screen (turbulent + stratified)
-- Temporal decorrelation (vegetation, soil moisture changes)
-- Orbital inaccuracies (residual flat-earth phase)
-- DEM error (topographic phase residuals)
-- Phase unwrapping ambiguities at discontinuities
+**H1. Benchmark page not yet live**
+- This modality is in the database but the challenge dataset is not yet available
+**Status:** Awaiting challenge data generation and deployment
 
-The benchmark models atmospheric phase delay and baseline uncertainty as
-primary mismatch parameters. These are the dominant error sources in
-operational InSAR processing.
+### MEDIUM Severity
 
-**Verdict:** Appropriate. Key InSAR-specific error sources captured.
 
-## 3. Reconstruction Methods
+### LOW Severity
 
-Current algorithms (from `_VARIANT_OVERRIDES["insar"]`):
+| ID | Issue |
+|----|-------|
+| L1 | Documentation may need updates as benchmark matures |
 
-| # | Algorithm | Type | Params | Source |
-|---|-----------|------|--------|--------|
-| 1 | Goldstein-MCF | Classical | 0 | Goldstein et al., Radio Sci. 1988 |
-| 2 | InSAR-BM3D | PnP | 0 | Deledalle et al., IEEE TIP 2015 |
-| 3 | PhaseNet | Deep Learning | 4M | Sica et al., IEEE TGRS 2021 |
-| 4 | InSAR-Former | Transformer | 10M | InSAR phase transformer, 2024 |
+---
 
-- **Goldstein-MCF** combines Goldstein's branch-cut algorithm with minimum
-  cost flow (MCF) optimization for phase unwrapping. The standard classical
-  approach for InSAR. Correct.
-- **InSAR-BM3D** applies nonlocal denoising (BM3D adapted for complex-valued
-  interferograms) for interferometric phase filtering. Published in IEEE TIP.
-  Correct.
-- **PhaseNet** is a deep learning method for InSAR phase unwrapping that
-  handles complex phase patterns. Domain-specific. Correct.
-- **InSAR-Former** is a transformer-based architecture for interferometric
-  phase estimation and unwrapping. Represents the current frontier. Correct.
+## 2. Local Dataset Inspection
 
-**Verdict:** PASS. All four algorithms address InSAR-specific phase processing,
-replacing the generic SAR pool (Matched Filter, SAR-BM3D, SAR-DRN, SAR-CAM)
-that focused on SAR image formation rather than interferometric phase analysis.
+### File Inventory
 
-## 4. Literature (2024-2025)
+No local challenge dataset currently available.
 
-Recent relevant publications:
-- Wu et al., "Deep Learning for InSAR Phase Unwrapping: A Comprehensive
-  Review," IEEE GRSM 2024
-- Zhou et al., "SNAPHU-DL: Deep Learning Enhanced Phase Unwrapping," IEEE
-  TGRS 2024
-- Ansari et al., "Foundation Models for SAR/InSAR Processing," IEEE TGRS 2025
-- Persistent Scatterer InSAR (PSI) with DL-based atmospheric correction, 2024
+Status: Awaiting benchmark dataset generation.
 
-The current set covers the classical (Goldstein-MCF), filtering (InSAR-BM3D),
-DL (PhaseNet), and transformer paradigms. 2024 adds SNAPHU-DL hybrids and
-foundation models.
+### Modality Information
 
-**Verdict:** Acceptable. Core phase unwrapping methods well-represented.
+Modality information not yet in database.
+### Dataset Integrity Assessment: TODO
 
-## 5. Dataset & GCS Status
+---
 
-- Challenge HDF5 files on GCS: `insar_challenge_public.h5`,
-  `insar_challenge_dev.h5`, `insar_challenge_hidden.h5` -- all present
-- Gallery images on GCS: `img/benchmark_gallery/insar/scene_0{0-3}/` -- present
-- Per-tier differentiation: different interferometric phase patterns per tier
-- Dev tier: no `x_true` (ground truth stripped)
-- Hidden tier: download blocked (403)
-- Learning materials: 5 markdown files + README present
+## 3. Public Dataset Source Assessment
 
-**Verdict:** PASS. All dataset and GCS assets verified.
+### Assessment: TODO
 
-## 6. Assessment
+To be completed upon dataset publication.
 
-| Criterion | Status |
-|-----------|--------|
-| Physics accuracy | PASS |
-| Algorithm correctness | PASS |
-| Algorithm domain-specificity | PASS -- all 4 are InSAR phase-specific |
-| Literature coverage | PASS (through 2024) |
-| Dataset completeness | PASS |
-| Overall | **PASS** |
+---
 
-No code changes required. The variant override correctly separates InSAR
-(phase unwrapping) from generic SAR (image formation/focusing).
+## 4. Algorithm Coverage Assessment
+
+### Currently Tested: 4 algorithms
+
+| # | Algorithm | Type | Source |
+|---|-----------|------|--------|
+| 1 | Goldstein-MCF | Classical | Goldstein et al., Radio Sci. 1988 |
+| 2 | InSAR-BM3D | PnP | Deledalle et al., IEEE TIP 2015 |
+| 3 | PhaseNet | Deep Learning | Sica et al., IEEE TGRS 2021 |
+| 4 | InSAR-Former | Transformer | InSAR phase transformer, 2024 |
+
+### Known Gaps
+
+To be completed during algorithm development phase.
+
+---
+
+## 5. Improvement Suggestions
+
+### Priority Actions
+
+1. **Generate challenge dataset** — Implement forward model and phantom generator
+3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
+4. **Document physics** — Add to modality database with calibration parameters
+
+---
+
+## 6. Action Items
+
+| Priority | Action | Status |
+|----------|--------|--------|
+| CRITICAL | Generate challenge dataset | TODO |
+| HIGH | Validate assessment metrics | TODO |
+| HIGH | Complete modality database entry | TODO |
+| MEDIUM | Add missing references | TODO |
+| MEDIUM | Identify algorithm gaps | TODO |
+| LOW | Optimize gallery previews | TODO |
+
+---
+
+## Appendix: Key References
+
+(References to be added as dataset and algorithms are finalized)
+
+## Algorithm References
+
+- Deledalle et al., IEEE TIP 2015
+- Goldstein et al., Radio Sci. 1988
+- InSAR phase transformer, 2024
+- Sica et al., IEEE TGRS 2021
+
+*Automated 6-point review on 2026-03-03 — insar*

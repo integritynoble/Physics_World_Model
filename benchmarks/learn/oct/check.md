@@ -1,86 +1,128 @@
-# Comprehensive 6-Point Check -- oct
+# Comprehensive Benchmark QA Check — Optical Coherence Tomography
 
 **URL:** https://pwm.platformai.org/benchmark/oct
-**Check Date:** 2026-03-03
-**Status:** PASS (correct carrier routing, no code changes needed)
+**HTTP Status:** TBD (check on deployment)
+**Check Date:** 2026-03-03 (automated 6-point review)
+**Reviewer:** Automated generator + modality database
 
 ---
 
-## 1. Physics & Forward Model
+## Table of Contents
 
-**Modality:** Optical Coherence Tomography (OCT)
-
-**Physical principle:** OCT uses low-coherence interferometry to produce depth-resolved cross-sectional images of biological tissue (primarily retina, skin, and vasculature). A broadband light source is split into sample and reference arms; interference between backscattered sample light and the reference beam encodes depth information. In spectral-domain OCT (SD-OCT), the spectral interferogram is Fourier-transformed to recover the depth profile:
-```
-I(k) = |E_r|^2 + |E_s|^2 + 2*Re{E_r * E_s* * exp(j*2*k*z)}
-```
-where k = wavenumber, z = depth, E_r = reference field, E_s = sample field.
-
-**Inverse problem:** Recover the depth-resolved reflectivity profile (A-scan) from the spectral interferogram, then assemble B-scans (cross-sections) and C-scans (volumes). Key challenges include speckle noise reduction, dispersion compensation, and motion artifact correction.
-
-**Current physics engine:** Interferometric forward model with PSF convolution. The carrier routing `(medical, Photon) -> clinical_optics` correctly sends OCT to the optics-specific algorithm pool.
-
-## 2. Mismatch Parameters & Benchmark Structure
-
-**Spec notation:** P(low-coherence) -> Sigma(interference) -> D(g, eta_1)
-
-**Mismatch sources in OCT:**
-- Speckle noise (inherent in coherent imaging)
-- Dispersion mismatch between sample and reference arms
-- Motion artifacts (patient eye movement)
-- Roll-off (signal attenuation with depth in SD-OCT)
-- Complex conjugate ambiguity
-- Polarization mode dispersion
-
-**Dataset format (GCS):**
-- `x_true` -- ground truth reflectivity map
-- `y` -- degraded/noisy OCT measurement
-- `H_ideal` -- forward model parameters
-
-**Tier structure:** Public (with x_true), Dev (no x_true), Hidden (blocked).
-
-## 3. Reconstruction Methods & Leaderboard
-
-**Algorithms (clinical_optics pool via carrier routing: medical + Photon -> clinical_optics):**
-
-| Algorithm | Type | Reference | Appropriateness |
-|-----------|------|-----------|-----------------|
-| FFT-OCT | Classical | Standard Fourier-domain OCT processing | CORRECT -- the standard OCT reconstruction baseline |
-| BM4D | PnP | Maggioni et al., IEEE TIP 2013 | CORRECT -- 3D block-matching for volumetric speckle reduction |
-| Speckle-DenoiseNet | Deep Learning | Devalla et al., BOE 2019 | CORRECT -- CNN for OCT speckle denoising |
-| OCTA-Net | Deep Learning | Ma et al., BOE 2020 | CORRECT -- deep learning for OCT angiography |
-
-All 4 algorithms are domain-appropriate for OCT reconstruction and denoising.
-
-## 4. Literature & State of the Art (2024--2025)
-
-1. **FFT-OCT** (standard): Fourier-domain processing is the universal baseline for all spectral-domain and swept-source OCT systems.
-2. **DnCNN/BM3D for OCT** (ongoing): Classical denoising applied to OCT -- widely benchmarked.
-3. **Self-supervised OCT denoising** (2024): Noise2Void and Noise2Self variants adapted for OCT speckle.
-4. **Retinal layer segmentation + reconstruction** (2024): Joint segmentation-denoising networks for retinal OCT.
-5. **OCT angiography deep learning** (2024--2025): Transformer-based OCTA networks for vascular imaging.
-6. **Computational OCT** (2024): Hardware-software co-design for compressed OCT acquisition.
-
-## 5. Local Dataset & GCS Status
-
-**GCS datasets verified:**
-- `oct_challenge_public.h5` -- present on GCS
-- `oct_challenge_dev.h5` -- present on GCS (x_true stripped)
-- `oct_challenge_hidden.h5` -- present on GCS (blocked from download)
-
-**Gallery images:** 24/24 load OK from GCS.
-
-**Learning materials:** Complete 5-module set present (README, physics fundamentals, forward model, reconstruction algorithms, PWM benchmark, hands-on tutorial).
-
-## 6. Comprehensive Assessment & Recommendations
-
-**Status:** PASS -- no code changes needed.
-
-**Routing:** `(medical, Photon)` -> `clinical_optics` pool. This was previously fixed from the generic medical/CT pool (FBP, FBPConvNet) to the correct clinical optics pool. The current algorithms (FFT-OCT, BM4D, Speckle-DenoiseNet, OCTA-Net) are all domain-appropriate.
-
-**Previously fixed:** OCT was incorrectly getting CT algorithms via the generic medical category. The carrier-based routing `(medical, Photon) -> clinical_optics` resolved this.
-
-**No further changes required.** The algorithm assignment is correct.
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
 
 ---
-*Comprehensive 6-point check by deep-check pipeline v3*
+
+## 1. Benchmark Page Errors
+
+### Summary
+
+| Severity | Count |
+|----------|-------|
+| HIGH     | 1     |
+| MEDIUM   | 1     |
+| LOW      | 1     |
+
+### HIGH Severity
+
+**H1. Benchmark page not yet live**
+- This modality is in the database but the challenge dataset is not yet available
+**Status:** Awaiting challenge data generation and deployment
+
+### MEDIUM Severity
+
+**M1. Algorithm catalog not yet populated**
+- No validated algorithms assigned to this modality
+**Status:** Awaiting algorithm selection and validation
+
+### LOW Severity
+
+| ID | Issue |
+|----|-------|
+| L1 | Documentation may need updates as benchmark matures |
+
+---
+
+## 2. Local Dataset Inspection
+
+### File Inventory
+
+No local challenge dataset currently available.
+
+Status: Awaiting benchmark dataset generation.
+
+### Modality Information
+
+**Display Name:** Optical Coherence Tomography
+
+**Physics Class:** interferometric
+**Forward Model:** low_coherence_interferometry
+**Noise Model:** speckle
+
+### Dataset Integrity Assessment: TODO
+
+---
+
+## 3. Public Dataset Source Assessment
+
+### Canonical Datasets
+
+- Duke SD-OCT DME dataset (Chiu et al.)
+- RETOUCH Challenge (retinal OCT)
+- OCTA-500 (Li et al., Scientific Data 2024)
+
+### Assessment: TODO
+
+To be completed upon dataset publication.
+
+---
+
+## 4. Algorithm Coverage Assessment
+
+### Algorithm Coverage: TODO
+
+Algorithm catalog not yet populated for this modality.
+
+### Known Gaps
+
+To be completed during algorithm development phase.
+
+---
+
+## 5. Improvement Suggestions
+
+### Priority Actions
+
+1. **Generate challenge dataset** — Implement forward model and phantom generator
+2. **Select and validate algorithms** — Curate domain-appropriate methods
+3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
+4. **Document physics** — Add to modality database with calibration parameters
+5. **Define mismatch modes** — dispersion_mismatch, motion_artifact, sensitivity_rolloff etc.
+
+---
+
+## 6. Action Items
+
+| Priority | Action | Status |
+|----------|--------|--------|
+| CRITICAL | Generate challenge dataset | TODO |
+| CRITICAL | Select 4+ algorithms (Classical, PnP, DL, Transformer) | TODO |
+| HIGH | Validate assessment metrics | TODO |
+| HIGH | Complete modality database entry | TODO |
+| MEDIUM | Add missing references | TODO |
+| LOW | Optimize gallery previews | TODO |
+
+---
+
+## Appendix: Key References
+
+- Huang et al., 'Optical coherence tomography', Science 254, 1178 (1991)
+- de Boer et al., 'Twenty-five years of OCT', Biomed. Opt. Express 8, 3248 (2017)
+
+
+*Automated 6-point review on 2026-03-03 — Optical Coherence Tomography*

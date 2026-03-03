@@ -1,124 +1,122 @@
-# Comprehensive 6-Point Check -- lucky_imaging
+# Comprehensive Benchmark QA Check — lucky_imaging
 
-**Modality:** Lucky Imaging (Optical Frame Selection)
-**Category:** astronomy
-**Variant override:** Yes (in `_VARIANT_OVERRIDES`)
-**Check date:** 2026-03-03
-**Status:** PASS
+**URL:** https://pwm.platformai.org/benchmark/lucky_imaging
+**HTTP Status:** TBD (check on deployment)
+**Check Date:** 2026-03-03 (automated 6-point review)
+**Reviewer:** Automated generator + modality database
 
 ---
 
-## 1. Physics & Forward Model
+## Table of Contents
 
-Lucky imaging is an optical astronomy technique that takes many short-exposure
-images (faster than atmospheric coherence time ~10-50 ms) and selects the
-sharpest frames (those captured during moments of good seeing). The forward
-model for each frame is:
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
 
-    y_k(r) = [x * h_k(r)] + n_k
+---
 
-where `x` is the true astronomical scene, `h_k(r)` is the instantaneous
-atmospheric PSF for frame k (random, varies from frame to frame), `*` is
-convolution, and `n_k` is photon/readout noise. The atmospheric PSF is
-determined by Kolmogorov turbulence statistics with Fried parameter `r_0`.
+## 1. Benchmark Page Errors
 
-The reconstruction pipeline: (1) quality metric (e.g., Strehl ratio,
-sharpness) to select best ~1-10% of frames, (2) sub-pixel registration and
-alignment, (3) stacking/combining selected frames.
+### Summary
 
-Key physics: atmospheric turbulence (Kolmogorov spectrum), isoplanatic angle
-(~few arcseconds), Fried parameter r_0, short-exposure speckle statistics,
-and photon-limited imaging.
+| Severity | Count |
+|----------|-------|
+| HIGH     | 1     |
+| MEDIUM   | 1     |
+| LOW      | 1     |
 
-**Verdict:** Physics correctly modeled. Lucky imaging is an optical technique
-fundamentally different from radio interferometry.
+### HIGH Severity
 
-## 2. Mismatch Parameters
+**H1. Benchmark page not yet live**
+- This modality is in the database but the challenge dataset is not yet available
+**Status:** Awaiting challenge data generation and deployment
 
-Relevant mismatch/calibration parameters:
-- Seeing variation (r_0 changes during observation)
-- Anisoplanatism (PSF varies across field of view)
-- Frame selection threshold (too strict = low SNR; too lax = poor resolution)
-- Sub-pixel registration accuracy
-- Detector readout noise and dark current
-- Field rotation during long observation sequences
+### MEDIUM Severity
 
-The benchmark models seeing variation and anisoplanatism as primary mismatch
-parameters, which dominate lucky imaging performance.
 
-**Verdict:** Appropriate. Key atmospheric seeing parameters captured.
+### LOW Severity
 
-## 3. Reconstruction Methods
+| ID | Issue |
+|----|-------|
+| L1 | Documentation may need updates as benchmark matures |
 
-Current algorithms (from `_VARIANT_OVERRIDES["lucky_imaging"]`):
+---
 
-| # | Algorithm | Type | Params | Source |
-|---|-----------|------|--------|--------|
-| 1 | Shift-and-Add | Classical | 0 | Fried, JOSA 1966 |
-| 2 | Drizzle | Classical | 0 | Fruchter & Hook, PASP 2002 |
-| 3 | BDI | PnP | 0 | Law et al., ApJ 2006 |
-| 4 | SpeckleNet | Deep Learning | 4M | Xin et al., ApJ 2022 |
+## 2. Local Dataset Inspection
 
-- **Shift-and-Add** is the foundational lucky imaging algorithm: register
-  frames to a common reference and sum. Simple, robust, and universally
-  used. Correct.
-- **Drizzle** is an improved stacking method that handles sub-pixel offsets
-  and produces super-resolved output by distributing flux onto a finer
-  output grid. Widely used in HST and ground-based astronomy. Correct.
-- **BDI (Brightest-pixel Deconvolution Imaging)** selects the brightest pixel
-  in each short exposure as a proxy for the best instantaneous PSF, used for
-  deconvolution. Developed for lucky imaging. Correct.
-- **SpeckleNet** is a deep learning method for speckle/atmospheric restoration
-  in astronomical imaging. Domain-specific neural network. Correct.
+### File Inventory
 
-**Verdict:** PASS. All four algorithms are appropriate for optical frame
-selection and atmospheric restoration, replacing the radio interferometry
-pool (CLEAN, AIRI, R2D2, PRIMO) that was completely inappropriate for
-optical lucky imaging.
+No local challenge dataset currently available.
 
-## 4. Literature (2024-2025)
+Status: Awaiting benchmark dataset generation.
 
-Recent relevant publications:
-- Turpin et al., "Deep Lucky Imaging: Multi-Frame Super-Resolution with
-  Atmospheric Turbulence," CVPR 2024
-- Mao et al., "Atmospheric Turbulence Restoration via Diffusion Models,"
-  IEEE TIP 2024
-- Zhang et al., "TurbNet: Transformer for Turbulence Mitigation," Optics
-  Letters 2024
-- Adaptive optics + lucky imaging hybrid systems, 2024
+### Modality Information
 
-The current set covers the classical stacking methods and early deep learning.
-2024 adds diffusion-based turbulence restoration and more sophisticated
-transformers, but the core shift-and-add paradigm remains fundamental.
+Modality information not yet in database.
+### Dataset Integrity Assessment: TODO
 
-**Verdict:** Acceptable. Core lucky imaging methods well-represented.
+---
 
-## 5. Dataset & GCS Status
+## 3. Public Dataset Source Assessment
 
-- Challenge HDF5 files on GCS: `lucky_imaging_challenge_public.h5`,
-  `lucky_imaging_challenge_dev.h5`, `lucky_imaging_challenge_hidden.h5`
-  -- all present
-- Gallery images on GCS: `img/benchmark_gallery/lucky_imaging/scene_0{0-3}/`
-  -- present
-- Per-tier differentiation: different astronomical scenes per tier
-- Dev tier: no `x_true` (ground truth stripped)
-- Hidden tier: download blocked (403)
-- Learning materials: 5 markdown files + README present
+### Assessment: TODO
 
-**Verdict:** PASS. All dataset and GCS assets verified.
+To be completed upon dataset publication.
 
-## 6. Assessment
+---
 
-| Criterion | Status |
-|-----------|--------|
-| Physics accuracy | PASS |
-| Algorithm correctness | PASS |
-| Algorithm domain-specificity | PASS -- all 4 are optical astronomy frame stacking methods |
-| Literature coverage | PASS (through 2022; core methods remain standard) |
-| Dataset completeness | PASS |
-| Overall | **PASS** |
+## 4. Algorithm Coverage Assessment
 
-No code changes required. The variant override was critical -- the previous
-astronomy pool (CLEAN, AIRI, R2D2, PRIMO) contained exclusively radio
-interferometry algorithms that have no applicability to optical frame
-selection imaging.
+### Currently Tested: 4 algorithms
+
+| # | Algorithm | Type | Source |
+|---|-----------|------|--------|
+| 1 | Shift-and-Add | Classical | Fried, JOSA 1966 |
+| 2 | Drizzle | Classical | Fruchter & Hook, PASP 2002 |
+| 3 | BDI | PnP | Law et al., ApJ 2006 |
+| 4 | SpeckleNet | Deep Learning | Xin et al., ApJ 2022 |
+
+### Known Gaps
+
+To be completed during algorithm development phase.
+
+---
+
+## 5. Improvement Suggestions
+
+### Priority Actions
+
+1. **Generate challenge dataset** — Implement forward model and phantom generator
+3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
+4. **Document physics** — Add to modality database with calibration parameters
+
+---
+
+## 6. Action Items
+
+| Priority | Action | Status |
+|----------|--------|--------|
+| CRITICAL | Generate challenge dataset | TODO |
+| HIGH | Validate assessment metrics | TODO |
+| HIGH | Complete modality database entry | TODO |
+| MEDIUM | Add missing references | TODO |
+| MEDIUM | Identify algorithm gaps | TODO |
+| LOW | Optimize gallery previews | TODO |
+
+---
+
+## Appendix: Key References
+
+(References to be added as dataset and algorithms are finalized)
+
+## Algorithm References
+
+- Fried, JOSA 1966
+- Fruchter & Hook, PASP 2002
+- Law et al., ApJ 2006
+- Xin et al., ApJ 2022
+
+*Automated 6-point review on 2026-03-03 — lucky_imaging*

@@ -1,118 +1,134 @@
-# Comprehensive 6-Point Check -- integral
+# Comprehensive Benchmark QA Check — Integral Photography
 
-**Modality:** Integral Imaging (Microlens Array Light Field)
-**Category:** computational
-**Variant override:** Yes (in `_VARIANT_OVERRIDES`)
-**Check date:** 2026-03-03
-**Status:** PASS
+**URL:** https://pwm.platformai.org/benchmark/integral
+**HTTP Status:** TBD (check on deployment)
+**Check Date:** 2026-03-03 (automated 6-point review)
+**Reviewer:** Automated generator + modality database
 
 ---
 
-## 1. Physics & Forward Model
+## Table of Contents
 
-Integral imaging captures the 4D light field L(x, y, u, v) through a
-microlens array (MLA) placed in front of the image sensor. The forward model
-is:
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
 
-    I(s, t) = integral integral L(x, y, u(s), v(t)) * M(s, t) du dv
+---
 
-where `(s, t)` are sensor pixel coordinates, `(x, y)` are spatial positions,
-`(u, v)` are angular coordinates determined by the microlens geometry, and
-`M(s, t)` is the microlens aperture function. Each microlens captures a
-sub-image encoding angular information, trading spatial resolution for
-angular sampling.
+## 1. Benchmark Page Errors
 
-The reconstruction tasks include: depth estimation from the 4D light field,
-spatial super-resolution (recovering full resolution from sub-aperture images),
-refocusing, and all-in-focus image synthesis.
+### Summary
 
-Key physics: microlens pitch and f-number, diffraction at microlens apertures,
-vignetting, chromatic aberration, and the spatial-angular resolution tradeoff.
+| Severity | Count |
+|----------|-------|
+| HIGH     | 1     |
+| MEDIUM   | 1     |
+| LOW      | 1     |
 
-**Verdict:** Physics correctly modeled. Integral imaging is a plenoptic/light
-field modality using a microlens array.
+### HIGH Severity
 
-## 2. Mismatch Parameters
+**H1. Benchmark page not yet live**
+- This modality is in the database but the challenge dataset is not yet available
+**Status:** Awaiting challenge data generation and deployment
 
-Relevant mismatch/calibration parameters:
-- Microlens array alignment (rotation, translation)
-- Microlens focal length variation
-- Vignetting across sub-aperture images
-- Chromatic aberration from microlens
-- Sensor pixel crosstalk
-- Main lens aberrations
+### MEDIUM Severity
 
-The benchmark models microlens alignment and vignetting as primary mismatch
-parameters, which are the dominant calibration challenges for integral cameras.
 
-**Verdict:** Appropriate. Key plenoptic camera calibration errors captured.
+### LOW Severity
 
-## 3. Reconstruction Methods
+| ID | Issue |
+|----|-------|
+| L1 | Documentation may need updates as benchmark matures |
 
-Current algorithms (from `_VARIANT_OVERRIDES["integral"]`):
+---
 
-| # | Algorithm | Type | Params | Source |
-|---|-----------|------|--------|--------|
-| 1 | Shift-and-Add | Classical | 0 | Ng et al., Stanford Tech Report 2005 |
-| 2 | PnP-LF | PnP | 0 | PnP-ADMM with LF prior |
-| 3 | LFAttNet | Deep Learning | 4.5M | Tsai et al., IEEE TIP 2020 |
-| 4 | DistgSSR | Transformer | 12M | Wang et al., CVPR 2022 |
+## 2. Local Dataset Inspection
 
-- **Shift-and-Add** is the fundamental light field refocusing algorithm that
-  shifts sub-aperture images according to target depth and sums them.
-  Universal baseline for plenoptic imaging. Correct.
-- **PnP-LF** applies plug-and-play ADMM with light-field-aware priors
-  (angular consistency, disparity regularization). Appropriate. Correct.
-- **LFAttNet** is an attention-based network for light field depth estimation
-  and angular super-resolution. Published in IEEE TIP 2020. Correct.
-- **DistgSSR** (Disentangling Spatial-Angular Super-Resolution) is a
-  transformer-based method for light field super-resolution that separately
-  processes spatial and angular dimensions. CVPR 2022. Correct.
+### File Inventory
 
-**Verdict:** PASS. All four algorithms are light-field-specific, replacing
-the generic computational pool (Tikhonov, PnP-RED, DIP, SwinIR) that had
-no awareness of the 4D light field structure.
+No local challenge dataset currently available.
 
-## 4. Literature (2024-2025)
+Status: Awaiting benchmark dataset generation.
 
-Recent relevant publications:
-- Jin et al., "Light Field Super-Resolution via Implicit Neural
-  Representations," CVPR 2024
-- Wang et al., "Epipolar Transformer for Light Field Processing," IEEE TPAMI
-  2024
-- Liang et al., "DistgSSR-V2: Improved Light Field SR," IEEE TIP 2024
-- Neural light field compression and rendering, SIGGRAPH 2024
+### Modality Information
 
-The current set covers methods through CVPR 2022 (DistgSSR). 2024 adds
-neural implicit representations and improved transformers but the core
-paradigm (shift-and-add -> attention -> transformer SR) is well-represented.
+**Display Name:** Integral Photography
 
-**Verdict:** Acceptable. DistgSSR remains competitive.
+**Physics Class:** light_field
+**Forward Model:** elemental_image_formation
+**Noise Model:** gaussian
 
-## 5. Dataset & GCS Status
+### Dataset Integrity Assessment: TODO
 
-- Challenge HDF5 files on GCS: `integral_challenge_public.h5`,
-  `integral_challenge_dev.h5`, `integral_challenge_hidden.h5` -- all present
-- Gallery images on GCS: `img/benchmark_gallery/integral/scene_0{0-3}/`
-  -- present
-- Per-tier differentiation: different light field scenes per tier
-- Dev tier: no `x_true` (ground truth stripped)
-- Hidden tier: download blocked (403)
-- Learning materials: 5 markdown files + README present
+---
 
-**Verdict:** PASS. All dataset and GCS assets verified.
+## 3. Public Dataset Source Assessment
 
-## 6. Assessment
+### Canonical Datasets
 
-| Criterion | Status |
-|-----------|--------|
-| Physics accuracy | PASS |
-| Algorithm correctness | PASS |
-| Algorithm domain-specificity | PASS -- all 4 are light-field-specific |
-| Literature coverage | PASS (through 2022; still competitive in 2024) |
-| Dataset completeness | PASS |
-| Overall | **PASS** |
+- ETRI integral imaging test set
+- Middlebury multi-view stereo (adapted)
 
-No code changes required. The variant override provides light-field-specific
-algorithms that exploit the 4D plenoptic structure, a critical improvement
-over the generic computational pool.
+### Assessment: TODO
+
+To be completed upon dataset publication.
+
+---
+
+## 4. Algorithm Coverage Assessment
+
+### Currently Tested: 4 algorithms
+
+| # | Algorithm | Type | Source |
+|---|-----------|------|--------|
+| 1 | Shift-and-Add | Classical | Ng et al., Stanford Tech Report 2005 |
+| 2 | PnP-LF | PnP | PnP-ADMM with LF prior |
+| 3 | LFAttNet | Deep Learning | Tsai et al., IEEE TIP 2020 |
+| 4 | DistgSSR | Transformer | Wang et al., CVPR 2022 |
+
+### Known Gaps
+
+To be completed during algorithm development phase.
+
+---
+
+## 5. Improvement Suggestions
+
+### Priority Actions
+
+1. **Generate challenge dataset** — Implement forward model and phantom generator
+3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
+4. **Document physics** — Add to modality database with calibration parameters
+5. **Define mismatch modes** — microlens_alignment, crosstalk, fill_factor_loss etc.
+
+---
+
+## 6. Action Items
+
+| Priority | Action | Status |
+|----------|--------|--------|
+| CRITICAL | Generate challenge dataset | TODO |
+| HIGH | Validate assessment metrics | TODO |
+| HIGH | Complete modality database entry | TODO |
+| MEDIUM | Add missing references | TODO |
+| MEDIUM | Identify algorithm gaps | TODO |
+| LOW | Optimize gallery previews | TODO |
+
+---
+
+## Appendix: Key References
+
+- Lippmann, C. R. Acad. Sci. Paris 146, 446 (1908)
+- Park et al., 'Recent progress in 3D imaging systems', J. Opt. Soc. Am. A 26, 2538 (2009)
+
+## Algorithm References
+
+- Ng et al., Stanford Tech Report 2005
+- PnP-ADMM with LF prior
+- Tsai et al., IEEE TIP 2020
+- Wang et al., CVPR 2022
+
+*Automated 6-point review on 2026-03-03 — Integral Photography*

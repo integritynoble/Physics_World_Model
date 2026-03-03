@@ -1,124 +1,122 @@
-# Comprehensive 6-Point Check -- minflux
+# Comprehensive Benchmark QA Check — minflux
 
-**Modality:** MINFLUX Nanoscopy
-**Category:** microscopy
-**Variant override:** Yes (in `_VARIANT_OVERRIDES`)
-**Check date:** 2026-03-03
-**Status:** PASS
+**URL:** https://pwm.platformai.org/benchmark/minflux
+**HTTP Status:** TBD (check on deployment)
+**Check Date:** 2026-03-03 (automated 6-point review)
+**Reviewer:** Automated generator + modality database
 
 ---
 
-## 1. Physics & Forward Model
+## Table of Contents
 
-MINFLUX (MINimal photon FLUXes) is a single-molecule localization nanoscopy
-technique that achieves sub-nanometer localization precision. The forward
-model describes photon emission under patterned excitation:
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
 
-    n_k = N * p_k(r_emitter) + b_k
+---
 
-where `n_k` is the detected photon count at excitation position k, `N` is the
-total photon budget, `p_k(r)` is the excitation intensity profile (donut beam)
-evaluated at the emitter position `r_emitter`, and `b_k` is background. The
-localization is a parameter estimation problem:
+## 1. Benchmark Page Errors
 
-    r_hat = argmax_r P(n_1, ..., n_K | r, N)
+### Summary
 
-This is a maximum likelihood estimation from photon ratios, fundamentally
-different from PSF deconvolution (which operates on images).
+| Severity | Count |
+|----------|-------|
+| HIGH     | 1     |
+| MEDIUM   | 1     |
+| LOW      | 1     |
 
-Key physics: donut-shaped excitation beam (STED-like zero-intensity minimum),
-photon-limited statistics, fluorophore blinking/bleaching, and the
-localization precision scaling as ~1/sqrt(N) rather than being diffraction-
-limited.
+### HIGH Severity
 
-**Verdict:** Physics correctly modeled. MINFLUX is a localization problem,
-not a deconvolution problem.
+**H1. Benchmark page not yet live**
+- This modality is in the database but the challenge dataset is not yet available
+**Status:** Awaiting challenge data generation and deployment
 
-## 2. Mismatch Parameters
+### MEDIUM Severity
 
-Relevant mismatch/calibration parameters:
-- Excitation beam alignment (donut center position)
-- Beam intensity pattern imperfections (residual intensity at zero)
-- Background fluorescence level
-- Photon detection efficiency variation
-- Sample drift during acquisition
-- Fluorophore photophysics (blinking rate, bleaching)
 
-The benchmark models beam alignment and background level as primary mismatch
-parameters, which directly affect localization precision.
+### LOW Severity
 
-**Verdict:** Appropriate. Key MINFLUX-specific calibration errors captured.
+| ID | Issue |
+|----|-------|
+| L1 | Documentation may need updates as benchmark matures |
 
-## 3. Reconstruction Methods
+---
 
-Current algorithms (from `_VARIANT_OVERRIDES["minflux"]`):
+## 2. Local Dataset Inspection
 
-| # | Algorithm | Type | Params | Source |
-|---|-----------|------|--------|--------|
-| 1 | MLE Localization | Classical | 0 | Balzarotti et al., Science 2017 |
-| 2 | SPARCOM | PnP | 0 | Solomon et al., SIAM J. Imaging Sci. 2019 |
-| 3 | DECODE | Deep Learning | 4.2M | Speiser et al., Nat. Methods 2021 |
-| 4 | ANNA-PALM | Deep Learning | 7M | Ouyang et al., Nat. Biotechnol. 2018 |
+### File Inventory
 
-- **MLE Localization** is the maximum likelihood estimator for molecule position
-  from MINFLUX photon counts. This is the standard analysis method introduced
-  with MINFLUX itself. Correct.
-- **SPARCOM** (Sparsity-Based Super-Resolution Correlation Microscopy) exploits
-  the sparsity of fluorescent emitter distributions. Applicable to localization
-  microscopy. Correct.
-- **DECODE** (Deep Context Dependent) is a deep learning method for single-
-  molecule localization that jointly estimates positions, photon counts, and
-  uncertainties. Published in Nature Methods. The state-of-the-art for
-  localization microscopy. Correct.
-- **ANNA-PALM** (Artificial Neural Network Accelerated PALM) uses deep learning
-  to reconstruct super-resolution images from sparse localization data.
-  Published in Nature Biotechnology. Correct.
+No local challenge dataset currently available.
 
-**Verdict:** PASS. All four algorithms are localization-microscopy-specific,
-replacing the completely inappropriate microscopy pool (Richardson-Lucy,
-PnP-FISTA, CARE, Restormer) that treated MINFLUX data as conventional
-microscopy images requiring PSF deconvolution.
+Status: Awaiting benchmark dataset generation.
 
-## 4. Literature (2024-2025)
+### Modality Information
 
-Recent relevant publications:
-- Gwosch et al., "MINFLUX 3D at 1 nm Precision," Nature Methods 2024
-- Ostersehlt et al., "MINFLUX Multi-Color Imaging," Nature Methods 2024
-- Speiser et al., "DECODE v2: Improved Single-Molecule Localization," 2024
-- Nehme et al., "DeepSTORM3D Extension to MINFLUX Geometries," 2024
+Modality information not yet in database.
+### Dataset Integrity Assessment: TODO
 
-DECODE remains the dominant deep learning method for single-molecule
-localization. MLE is the standard classical approach for MINFLUX. The
-current set is well-aligned with the 2024 landscape.
+---
 
-**Verdict:** Good coverage. DECODE and MLE are the primary methods used
-in MINFLUX analysis.
+## 3. Public Dataset Source Assessment
 
-## 5. Dataset & GCS Status
+### Assessment: TODO
 
-- Challenge HDF5 files on GCS: `minflux_challenge_public.h5`,
-  `minflux_challenge_dev.h5`, `minflux_challenge_hidden.h5` -- all present
-- Gallery images on GCS: `img/benchmark_gallery/minflux/scene_0{0-3}/`
-  -- present
-- Per-tier differentiation: different molecule distributions per tier
-- Dev tier: no `x_true` (ground truth stripped)
-- Hidden tier: download blocked (403)
-- Learning materials: 5 markdown files + README present
+To be completed upon dataset publication.
 
-**Verdict:** PASS. All dataset and GCS assets verified.
+---
 
-## 6. Assessment
+## 4. Algorithm Coverage Assessment
 
-| Criterion | Status |
-|-----------|--------|
-| Physics accuracy | PASS |
-| Algorithm correctness | PASS |
-| Algorithm domain-specificity | PASS -- all 4 are localization microscopy methods |
-| Literature coverage | PASS (DECODE/MLE remain state-of-the-art in 2024) |
-| Dataset completeness | PASS |
-| Overall | **PASS** |
+### Currently Tested: 4 algorithms
 
-No code changes required. The variant override was critical -- the previous
-microscopy pool (Richardson-Lucy, CARE, Restormer) solves a fundamentally
-different problem (image deconvolution) from what MINFLUX requires (single-
-molecule localization from photon statistics).
+| # | Algorithm | Type | Source |
+|---|-----------|------|--------|
+| 1 | MLE Localization | Classical | Balzarotti et al., Science 2017 |
+| 2 | SPARCOM | PnP | Solomon et al., SIAM J. Imaging Sci. 2019 |
+| 3 | DECODE | Deep Learning | Speiser et al., Nat. Methods 2021 |
+| 4 | ANNA-PALM | Deep Learning | Ouyang et al., Nat. Biotechnol. 2018 |
+
+### Known Gaps
+
+To be completed during algorithm development phase.
+
+---
+
+## 5. Improvement Suggestions
+
+### Priority Actions
+
+1. **Generate challenge dataset** — Implement forward model and phantom generator
+3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
+4. **Document physics** — Add to modality database with calibration parameters
+
+---
+
+## 6. Action Items
+
+| Priority | Action | Status |
+|----------|--------|--------|
+| CRITICAL | Generate challenge dataset | TODO |
+| HIGH | Validate assessment metrics | TODO |
+| HIGH | Complete modality database entry | TODO |
+| MEDIUM | Add missing references | TODO |
+| MEDIUM | Identify algorithm gaps | TODO |
+| LOW | Optimize gallery previews | TODO |
+
+---
+
+## Appendix: Key References
+
+(References to be added as dataset and algorithms are finalized)
+
+## Algorithm References
+
+- Balzarotti et al., Science 2017
+- Ouyang et al., Nat. Biotechnol. 2018
+- Solomon et al., SIAM J. Imaging Sci. 2019
+- Speiser et al., Nat. Methods 2021
+
+*Automated 6-point review on 2026-03-03 — minflux*

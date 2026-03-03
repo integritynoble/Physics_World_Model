@@ -1,121 +1,135 @@
-# Comprehensive 6-Point Check -- light_field
+# Comprehensive Benchmark QA Check — Light Field Imaging
 
-**Modality:** Light Field Imaging
-**Category:** computational
-**Variant override:** Yes (in `_VARIANT_OVERRIDES`)
-**Check date:** 2026-03-03
-**Status:** PASS
+**URL:** https://pwm.platformai.org/benchmark/light_field
+**HTTP Status:** TBD (check on deployment)
+**Check Date:** 2026-03-03 (automated 6-point review)
+**Reviewer:** Automated generator + modality database
 
 ---
 
-## 1. Physics & Forward Model
+## Table of Contents
 
-Light field imaging captures the full 4D light field L(x, y, u, v) using
-either a camera array (multi-view) or a plenoptic camera with microlens
-array. The forward model for a camera array is:
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
 
-    I_k(p, q) = L(x_k, y_k, p, q) + n_k
+---
 
-where `(x_k, y_k)` is the position of camera k, `(p, q)` are pixel
-coordinates, and `I_k` is the captured image from viewpoint k. The angular
-sampling is determined by camera spacing; spatial sampling by pixel pitch.
+## 1. Benchmark Page Errors
 
-For a plenoptic camera:
+### Summary
 
-    I(s, t) = integral L(x(s), y(s), u(s,t), v(s,t)) du dv + n
+| Severity | Count |
+|----------|-------|
+| HIGH     | 1     |
+| MEDIUM   | 1     |
+| LOW      | 1     |
 
-Key reconstruction tasks: view synthesis (interpolating between captured
-viewpoints), spatial/angular super-resolution, depth estimation, and
-all-in-focus rendering.
+### HIGH Severity
 
-Key physics: disparity-depth relationship, occlusion handling, sub-pixel
-disparity estimation, lens aberrations, and the spatial-angular resolution
-tradeoff in plenoptic cameras.
+**H1. Benchmark page not yet live**
+- This modality is in the database but the challenge dataset is not yet available
+**Status:** Awaiting challenge data generation and deployment
 
-**Verdict:** Physics correctly modeled. Light field reconstruction is
-appropriately formulated as a 4D signal processing problem.
+### MEDIUM Severity
 
-## 2. Mismatch Parameters
 
-Relevant mismatch/calibration parameters:
-- Camera array baseline/spacing uncertainty
-- Inter-camera color and exposure calibration
-- Lens distortion per viewpoint
-- Synchronization errors (for dynamic scenes)
-- Vignetting and microlens calibration (for plenoptic cameras)
-- Depth-dependent disparity errors
+### LOW Severity
 
-The benchmark models baseline uncertainty and inter-camera calibration as
-primary mismatch parameters.
+| ID | Issue |
+|----|-------|
+| L1 | Documentation may need updates as benchmark matures |
 
-**Verdict:** Appropriate. Key light field calibration challenges captured.
+---
 
-## 3. Reconstruction Methods
+## 2. Local Dataset Inspection
 
-Current algorithms (from `_VARIANT_OVERRIDES["light_field"]`):
+### File Inventory
 
-| # | Algorithm | Type | Params | Source |
-|---|-----------|------|--------|--------|
-| 1 | Shift-and-Sum | Classical | 0 | Ng et al., Stanford Tech Report 2005 |
-| 2 | PnP-LF | PnP | 0 | PnP-ADMM with angular prior |
-| 3 | LFNet | Deep Learning | 5.8M | Wang et al., IEEE TPAMI 2020 |
-| 4 | DistgSSR | Transformer | 12M | Wang et al., CVPR 2022 |
+No local challenge dataset currently available.
 
-- **Shift-and-Sum** is the fundamental light field refocusing algorithm. Shifts
-  sub-aperture images by disparity and sums for digital refocusing. The
-  universal plenoptic baseline. Correct.
-- **PnP-LF** applies plug-and-play ADMM with angular consistency and disparity-
-  guided regularization priors. Appropriate for light field reconstruction.
-  Correct.
-- **LFNet** is a deep learning network specifically designed for light field
-  processing (view synthesis, angular SR). Published in IEEE TPAMI. Correct.
-- **DistgSSR** disentangles spatial and angular super-resolution for light
-  fields using a transformer architecture. CVPR 2022. Correct.
+Status: Awaiting benchmark dataset generation.
 
-**Verdict:** PASS. All four algorithms are light-field-specific, replacing the
-generic computational pool (Tikhonov, PnP-RED, DIP, SwinIR) that had no
-awareness of the 4D light field structure or angular consistency requirements.
+### Modality Information
 
-## 4. Literature (2024-2025)
+**Display Name:** Light Field Imaging
 
-Recent relevant publications:
-- Jin et al., "Neural Light Field Super-Resolution," CVPR 2024
-- Wang et al., "Epipolar Transformer for Light Field Processing," IEEE TPAMI
-  2024
-- Kalantari et al., "Light Field Video Synthesis," SIGGRAPH 2024
-- Liang et al., "DistgSSR-V2," IEEE TIP 2024
+**Physics Class:** light_field
+**Forward Model:** plenoptic_sampling
+**Noise Model:** gaussian
 
-The current set covers methods through CVPR 2022. The core approach (shift-
-and-sum -> CNN -> transformer) remains the dominant paradigm. Neural implicit
-representations are emerging but not yet standard.
+### Dataset Integrity Assessment: TODO
 
-**Verdict:** Acceptable. DistgSSR remains competitive in 2024.
+---
 
-## 5. Dataset & GCS Status
+## 3. Public Dataset Source Assessment
 
-- Challenge HDF5 files on GCS: `light_field_challenge_public.h5`,
-  `light_field_challenge_dev.h5`, `light_field_challenge_hidden.h5` -- all
-  present
-- Gallery images on GCS: `img/benchmark_gallery/light_field/scene_0{0-3}/`
-  -- present
-- Per-tier differentiation: different light field scenes per tier
-- Dev tier: no `x_true` (ground truth stripped)
-- Hidden tier: download blocked (403)
-- Learning materials: 5 markdown files + README present
+### Canonical Datasets
 
-**Verdict:** PASS. All dataset and GCS assets verified.
+- HCI 4D Light Field Benchmark
+- Stanford Lego Gantry Archive
+- INRIA Lytro Light Field Dataset
 
-## 6. Assessment
+### Assessment: TODO
 
-| Criterion | Status |
-|-----------|--------|
-| Physics accuracy | PASS |
-| Algorithm correctness | PASS |
-| Algorithm domain-specificity | PASS -- all 4 are light-field-specific |
-| Literature coverage | PASS (through 2022; still competitive) |
-| Dataset completeness | PASS |
-| Overall | **PASS** |
+To be completed upon dataset publication.
 
-No code changes required. The variant override provides light-field-specific
-algorithms shared with the `integral` modality (both are plenoptic systems),
-with `light_field` using LFNet while `integral` uses LFAttNet.
+---
+
+## 4. Algorithm Coverage Assessment
+
+### Currently Tested: 4 algorithms
+
+| # | Algorithm | Type | Source |
+|---|-----------|------|--------|
+| 1 | Shift-and-Sum | Classical | Ng et al., Stanford Tech Report 2005 |
+| 2 | PnP-LF | PnP | PnP-ADMM with angular prior |
+| 3 | LFNet | Deep Learning | Wang et al., IEEE TPAMI 2020 |
+| 4 | DistgSSR | Transformer | Wang et al., CVPR 2022 |
+
+### Known Gaps
+
+To be completed during algorithm development phase.
+
+---
+
+## 5. Improvement Suggestions
+
+### Priority Actions
+
+1. **Generate challenge dataset** — Implement forward model and phantom generator
+3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
+4. **Document physics** — Add to modality database with calibration parameters
+5. **Define mismatch modes** — microlens_crosstalk, vignetting, depth_range_limitation etc.
+
+---
+
+## 6. Action Items
+
+| Priority | Action | Status |
+|----------|--------|--------|
+| CRITICAL | Generate challenge dataset | TODO |
+| HIGH | Validate assessment metrics | TODO |
+| HIGH | Complete modality database entry | TODO |
+| MEDIUM | Add missing references | TODO |
+| MEDIUM | Identify algorithm gaps | TODO |
+| LOW | Optimize gallery previews | TODO |
+
+---
+
+## Appendix: Key References
+
+- Levoy & Hanrahan, 'Light field rendering', SIGGRAPH 1996
+- Ng et al., 'Light field photography with a hand-held plenoptic camera', Stanford Tech Report CTSR 2005-02
+
+## Algorithm References
+
+- Ng et al., Stanford Tech Report 2005
+- PnP-ADMM with angular prior
+- Wang et al., CVPR 2022
+- Wang et al., IEEE TPAMI 2020
+
+*Automated 6-point review on 2026-03-03 — Light Field Imaging*

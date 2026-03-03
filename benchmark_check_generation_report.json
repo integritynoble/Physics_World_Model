@@ -1,0 +1,1185 @@
+{
+  "timestamp": "2026-03-03T23:36:50.869493",
+  "total_modalities": 168,
+  "generated": 167,
+  "skipped_hand_crafted": 1,
+  "errors": [],
+  "modalities": [
+    {
+      "variant": "MRI",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "acoustic_emission",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "acoustic_microscopy",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "active_thermography",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "adaptive_optics",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "afm",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "angiography",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "asl_mri",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "atom_probe",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "bioluminescence_tomo",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "brachytherapy_img",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "brillouin",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "cacti",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 5,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "cars",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "cassi",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "cathodoluminescence",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "cbct",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "cest_mri",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "ceus",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "clem",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "coded_exposure",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "confocal_3d",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "confocal_endomicroscopy",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "confocal_livecell",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "coronagraphy",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "cryo_em",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "cryo_et",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "ct",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 8,
+      "status": "SKIPPED_HAND_CRAFTED"
+    },
+    {
+      "variant": "ct_fluorescence",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "cup",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "dark_field",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "desi",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "dexa",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "dic",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "diffusion_mri",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "digital_breast_tomo",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "dna_paint",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "doppler_ultrasound",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "dot",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "ebsd",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "eddy_current",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "edx_mapping",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "eels",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "eht_imaging",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "elastography",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "electron_diffraction",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "electron_holography",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "electron_tomography",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "endoscopy",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "entangled_photon",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "event_camera",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "expansion",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "fib_sem",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "flash_lidar",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "flim",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "fluoroscopy",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "fmri",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "fpm",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "ftir_imaging",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "fundus",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "fwi",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "gaussian_splatting",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "ghost_imaging",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "gpr",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "gravitational_wave",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "hdr_imaging",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "holography",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "hyperspectral_remote",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "impedance_tomo",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "industrial_ct",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "insar",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "integral",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "ism",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "ivus",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "lattice_lightsheet",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "lensless",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "libs",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "lidar",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "light_field",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "lightsheet",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "lucky_imaging",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "machine_vision",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "magnetic_particle",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "maldi_msi",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "mammography",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "matrix",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "mfm",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "minflux",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "mr_elastography",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "mr_fingerprinting",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "mra",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "mrs",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "multispectral_sat",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "muon_tomo",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "nerf",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "neutron_diffraction",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "neutron_tomo",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "nirs_brain",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "nsom",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "ocean_acoustic_tomo",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "ocean_color",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "oct",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "octa",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "odt",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "palm_storm",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "panorama",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "particle_calorimetry",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "passive_microwave",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "pet",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "pet_ct",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "pet_mr",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "phase_contrast",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "phase_retrieval",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "photoacoustic",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "photometric_stereo",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "polarization",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "polsar",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "portal_imaging",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "proton_radiography",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "proton_therapy_img",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "ptychography",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "pump_probe",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "quantum_illumination",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "radio_astronomy",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "radio_interferometry",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "raman_imaging",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "sar",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "saxs",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "seismic_tomo",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "sem",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "shearography",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "shg",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "sim",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "sims",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "solar_imaging",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "sonar",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "spc",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "spect",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "spect_ct",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "spectral_ct",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "spinning_disk",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "srs",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "sted",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "stem",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "stm",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "streak_camera",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "structured_light",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "swi",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "talbot_lau",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "tem",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "terahertz",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "three_photon",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "tirf",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "tof_camera",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "two_photon",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "ultrasonic_phased_array",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "ultrasound",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "us_mri",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "waxs",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "weather_radar",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "widefield",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "widefield_lowdose",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "xfel_sfx",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "xray_crystallography",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "xray_ndt",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "xray_radiography",
+      "check_md_exists": true,
+      "in_database": true,
+      "algorithms": 0,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "xrf_imaging",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 4,
+      "status": "GENERATED"
+    },
+    {
+      "variant": "xrf_tomo",
+      "check_md_exists": true,
+      "in_database": false,
+      "algorithms": 0,
+      "status": "GENERATED"
+    }
+  ]
+}

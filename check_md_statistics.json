@@ -1,0 +1,61 @@
+{
+  "timestamp": "2026-03-03",
+  "total_modalities_processed": 168,
+  "check_md_files_created": 168,
+  "total_lines_generated": 20650,
+  "total_size_mb": 0.49,
+  "average_lines_per_file": 123,
+  "average_size_kb": 3.0,
+  "top_10_longest_files": [
+    {
+      "variant": "ct",
+      "lines": 236,
+      "size_bytes": 8969
+    },
+    {
+      "variant": "fundus",
+      "lines": 136,
+      "size_bytes": 3398
+    },
+    {
+      "variant": "light_field",
+      "lines": 135,
+      "size_bytes": 3356
+    },
+    {
+      "variant": "palm_storm",
+      "lines": 135,
+      "size_bytes": 3663
+    },
+    {
+      "variant": "electron_tomography",
+      "lines": 134,
+      "size_bytes": 3328
+    },
+    {
+      "variant": "endoscopy",
+      "lines": 134,
+      "size_bytes": 3263
+    },
+    {
+      "variant": "flim",
+      "lines": 134,
+      "size_bytes": 3446
+    },
+    {
+      "variant": "fpm",
+      "lines": 134,
+      "size_bytes": 3525
+    },
+    {
+      "variant": "integral",
+      "lines": 134,
+      "size_bytes": 3298
+    },
+    {
+      "variant": "lensless",
+      "lines": 134,
+      "size_bytes": 3497
+    }
+  ]
+}
