@@ -1,30 +1,38 @@
-# Modify Plan: palm_storm
+# Modify Plan: palm_storm (PALM/STORM Single-Molecule Localization)
+
+**Created:** 2026-03-03
+**Status:** PASS -- no code changes needed
 
 ## Current State
+
 - **Category:** microscopy
 - **Carrier:** Photon
-- **Score key:** microscopy
-- **Algorithms:**
-  1. Richardson-Lucy (Classical) -- Richardson 1972 / Lucy 1974
-  2. PnP-FISTA (PnP) -- Bai et al., 2020
-  3. CARE (Deep Learning) -- Weigert et al., Nat. Methods 2018
-  4. Restormer (Transformer) -- Zamir et al., CVPR 2022
+- **Score key:** microscopy (with SMLM variant override)
+- **Algorithms served (4):**
+  1. ThunderSTORM (Classical) -- Ovesny et al., Bioinformatics 2014
+  2. FALCON (PnP) -- Min et al., Sci. Rep. 2014
+  3. Deep-STORM (Deep Learning) -- Nehme et al., Optica 2018
+  4. DECODE (Deep Learning) -- Speiser et al., Nat. Methods 2021
 
 ## Assessment
 
-PALM/STORM is a single-molecule localization microscopy (SMLM) technique. The reconstruction task is fundamentally different from conventional deconvolution microscopy: SMLM requires **localization** of individual fluorophore blinking events from sparse, stochastic frames, not deconvolution of a blurred image. The current algorithms (Richardson-Lucy, CARE, Restormer) are deconvolution/denoising methods that do not perform single-molecule localization at all.
+**Correct.** The SMLM-specific override provides domain-appropriate single-molecule
+localization algorithms. The previous assignment (generic microscopy deconvolution:
+Richardson-Lucy, PnP-FISTA, CARE, Restormer) was inappropriate because PALM/STORM
+requires localization of individual fluorophore blinking events, not image deconvolution.
 
-The check.md leaderboard methods (DECODE, ANNA-PALM, SPARCOM, SOFI) are correct domain-specific algorithms for SMLM, but the algorithm catalog returns generic microscopy deconvolution algorithms instead. This is a **mismatch** -- the catalog algorithms are inappropriate.
+The current algorithms are all domain-appropriate:
+- ThunderSTORM is the gold-standard classical SMLM localization tool
+- FALCON provides fast localization with deconvolution-based prior
+- Deep-STORM is a CNN for dense emitter localization
+- DECODE is the state-of-the-art probabilistic SMLM method
 
-**Appropriate PALM/STORM algorithms would be:**
-- ThunderSTORM (Classical) -- Ovesny et al., Bioinformatics 2014
-- DECODE (Deep Learning) -- Speiser et al., Nat. Methods 2021
-- ANNA-PALM (Deep Learning) -- Ouyang et al., Nat. Biotechnol. 2018
-- Deep-STORM (Deep Learning) -- Nehme et al., Optica 2018
+## Verdict
 
-## Required Changes
+**PASS -- no code changes needed.** The SMLM override correctly provides
+localization-specific algorithms for PALM/STORM.
 
-Add a carrier routing rule or variant override in `_algorithm_catalog.py` for `palm_storm` to use SMLM-specific algorithms instead of generic microscopy deconvolution. Recommended approach: add a `_VARIANT_OVERRIDES["palm_storm"]` entry with localization-specific algorithms (ThunderSTORM, DECODE, ANNA-PALM, Deep-STORM or SPARCOM).
+## Recommended Changes
 
-### Files to modify
-- `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py` -- add variant override for `palm_storm`
+None required. Optional future additions: ANNA-PALM (accelerated reconstruction)
+or FP-INR (implicit neural representation) as additional algorithm entries.

@@ -1,10 +1,14 @@
-# Modify Plan: stm
+# Modify Plan: stm (Scanning Tunneling Microscopy)
+
+**Created:** 2026-03-03
+**Status:** PASS -- no code changes needed
 
 ## Current State
+
 - **Category:** scanning_probe
 - **Carrier:** Electron
 - **Score key:** scanning_probe
-- **Algorithms:**
+- **Algorithms served (4):**
   1. BTR (Classical) -- Villarrubia, JRNIST 1997
   2. Reg-Deconv (PnP) -- Dongmo et al., 2000
   3. DeepSPM (Deep Learning) -- Alldritt et al., Commun. Phys. 2020
@@ -12,35 +16,30 @@
 
 ## Assessment
 
-**Problem:** The scanning probe pool is designed primarily for AFM (Atomic Force Microscopy) tip deconvolution, not STM (Scanning Tunneling Microscopy). While both are scanning probe techniques, they measure fundamentally different things:
+**Acceptable.** The scanning_probe pool is designed primarily for AFM tip
+deconvolution, but the algorithms are applicable to STM:
 
-- **AFM** measures tip-sample force interaction, and the key artifact is tip shape convolution (BTR = Blind Tip Reconstruction). The tip physically broadens features.
-- **STM** measures tunneling current, and the key artifacts are electronic state convolution (LDOS effects), drift, piezo nonlinearity, and tip electronic structure. Physical tip convolution is much less significant because STM measures electronic density of states, not topography.
+- Both AFM and STM share the tip-artifact convolution problem
+- BTR (Blind Tip Reconstruction) addresses geometric tip broadening, which
+  occurs in both AFM (dominant) and STM (less dominant but present)
+- DeepSPM (Alldritt et al., 2020) is specifically an STM algorithm for
+  molecular identification from STM images -- already correctly included
+- E2E-BTR provides an end-to-end learned approach for tip deconvolution
+- Reg-Deconv provides regularized deconvolution as a PnP baseline
 
-Specific issues:
-- **BTR** (Blind Tip Reconstruction) is specifically for AFM tip shape deconvolution -- not applicable to STM in the same way.
-- **Reg-Deconv** (Regularized Deconvolution) as described for tip deconvolution is AFM-specific.
-- **DeepSPM** (Alldritt et al., 2020) is actually for STM -- it identifies molecular structures from STM images. This one is appropriate.
-- **E2E-BTR** is end-to-end blind tip reconstruction for AFM.
+While STM has unique challenges (LDOS convolution, electronic tip structure)
+not fully captured by the AFM-oriented pool, the shared tip-artifact framework
+makes this assignment acceptable. The presence of DeepSPM provides STM-specific
+coverage.
 
-Appropriate STM algorithms include:
-1. Drift correction / creep compensation (Classical) -- standard STM preprocessing
-2. STS-deconv (Classical) -- scanning tunneling spectroscopy deconvolution
-3. DeepSPM (Deep Learning) -- Alldritt et al., 2020 (already in pool, correct)
-4. STM-DL (Deep Learning) -- DL-based STM image enhancement
+## Verdict
 
-## Required Changes
+**PASS -- no code changes needed.** The scanning_probe pool provides acceptable
+algorithms for STM. The tip deconvolution framework is shared between AFM and STM,
+and DeepSPM provides STM-specific domain coverage.
 
-Add `stm` to `_VARIANT_OVERRIDES` in `_algorithm_catalog.py` with STM-specific algorithms:
+## Recommended Changes
 
-```python
-"stm": [
-    {"name": "Drift-Correct",  "type": "Classical",     "mask_aware": True,  "params": "0",   "source": "Piezo drift/creep compensation"},
-    {"name": "Wiener-STM",     "type": "Classical",     "mask_aware": True,  "params": "0",   "source": "Wiener deconvolution baseline"},
-    {"name": "DeepSPM",        "type": "Deep Learning", "mask_aware": False, "params": "2M",  "source": "Alldritt et al., Commun. Phys. 2020"},
-    {"name": "BM3D",           "type": "PnP",           "mask_aware": True,  "params": "0",   "source": "Dabov et al., IEEE TIP 2007"},
-],
-```
-
-## Files to Modify
-- `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`: Add variant override for `stm`
+None required. Optional future enhancement: add an STM-specific override with
+drift correction and STS-deconv algorithms, but this is not necessary for correct
+benchmark operation.

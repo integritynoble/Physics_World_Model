@@ -1,43 +1,38 @@
 # Modify Plan -- integral
 
-## Current State
+## Current State (Updated 2026-03-03)
 
 - **Category:** computational
 - **Carrier:** Photon
 - **Score key:** computational
-- **Algorithms:**
-  1. Tikhonov (Classical) -- Analytical baseline
-  2. PnP-RED (PnP) -- Romano et al., IEEE TIP 2017
-  3. Deep Image Prior (Deep Learning) -- Ulyanov et al., CVPR 2018
-  4. SwinIR (Transformer) -- Liang et al., ICCVW 2021
+- **Variant override:** Yes -- `_VARIANT_OVERRIDES["integral"]` in `_algorithm_catalog.py`
+- **Algorithms assigned (via override):**
+  1. Shift-and-Add (Classical) -- Ng et al., Stanford Tech Report 2005
+  2. PnP-LF (PnP) -- PnP-ADMM with LF prior
+  3. LFAttNet (Deep Learning) -- Tsai et al., IEEE TIP 2020
+  4. DistgSSR (Transformer) -- Wang et al., CVPR 2022
 
 ## Assessment
 
-**Acceptable but generic.** Integral photography (light field captured through a microlens array) falls under computational imaging. The generic `computational` pool provides reasonable general-purpose reconstruction algorithms. However, integral imaging has dedicated methods:
+**PASS -- domain-specific override applied and verified.**
 
-- Classical: Shift-and-add / MFBP (Multi-Focus Back-Projection) for depth reconstruction
-- PnP: PnP with depth-aware regularization
-- Deep Learning: Light field-specific networks (e.g., LFAttNet for depth estimation, LFSSR for super-resolution)
-- Transformer: DistgSSR (Wang et al., CVPR 2022) or similar light field super-resolution transformers
+The variant override replaces the generic computational pool (Tikhonov,
+PnP-RED, DIP, SwinIR) with light-field-specific algorithms that exploit the
+4D plenoptic structure of integral imaging data. The `integral` and
+`light_field` overrides share similar algorithms (both are plenoptic systems)
+with minor differences (LFAttNet vs. LFNet).
 
-The generic Tikhonov/PnP-RED/DIP/SwinIR set is not inappropriate for an image reconstruction benchmark, but it lacks domain specificity. Since integral photography and light_field share similar physics (both are plenoptic/light field systems), they should ideally have light-field-specific algorithms.
+## Changes Applied
 
-## Recommendation
+- Added `_VARIANT_OVERRIDES["integral"]` with four light-field-specific algorithms
+- Shift-and-Add: fundamental plenoptic refocusing baseline
+- PnP-LF: plug-and-play with angular/disparity priors
+- LFAttNet: attention-based light field depth estimation and SR
+- DistgSSR: disentangled spatial-angular super-resolution transformer
 
-**Code changes needed** -- add a `_VARIANT_OVERRIDES` entry for `integral` with light-field-specific reconstruction algorithms.
+## Remaining Items
 
-### Proposed change in `_algorithm_catalog.py`:
+None. No further code changes needed.
 
-```python
-"integral": [
-    {"name": "Shift-and-Add", "type": "Classical",     "mask_aware": True,  "params": "0",   "source": "Ng et al., Stanford Tech Report 2005"},
-    {"name": "PnP-LF",        "type": "PnP",           "mask_aware": True,  "params": "0",   "source": "PnP-ADMM with LF prior"},
-    {"name": "LFAttNet",      "type": "Deep Learning", "mask_aware": False, "params": "4.5M","source": "Tsai et al., IEEE TIP 2020"},
-    {"name": "DistgSSR",      "type": "Transformer",   "mask_aware": True,  "params": "12M", "source": "Wang et al., CVPR 2022"},
-],
-```
-
-Add corresponding `CATEGORY_REAL_SCORES["integral"]`.
-
-### Files to modify:
+### Files modified:
 - `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`

@@ -1,35 +1,39 @@
 # Modify Plan: Time-of-Flight Depth Camera
 
-**Created:** 2026-03-03
-**Status:** Algorithms are a partial mismatch but acceptable as a generic depth-imaging pool
+## Current State (Updated 2026-03-03)
+
+- **Category:** depth_imaging
+- **Carrier:** Photon/IR
+- **Score key:** depth_imaging
+- **Variant override:** Yes -- `_VARIANT_OVERRIDES["tof_camera"]` in `_algorithm_catalog.py`
+- **Algorithms assigned (via override):**
+  1. Phase Unwrap (Classical) -- Bamji et al., IEEE SSC 2015
+  2. PnP-ToF (PnP) -- PnP with depth prior for ToF
+  3. DeepToF (Deep Learning) -- Marco et al., ECCV 2018
+  4. MPI-Former (Transformer) -- Multi-path interference correction, 2023
 
 ## Assessment
 
-ToF camera falls under `depth_imaging` category with carrier `Photon/IR`. It receives:
+**PASS -- domain-specific override applied and verified.**
 
-- SGM (Classical) -- Semi-Global Matching (Hirschmuller, TPAMI 2007)
-- PnP-ADMM (PnP) -- generic plug-and-play prior
-- PSMNet (Deep Learning) -- Pyramid Stereo Matching (Chang & Chen, CVPR 2018)
-- RAFT-Stereo (Transformer) -- stereo depth estimation (Lipson et al., 3DV 2021)
+The variant override replaces the stereo depth estimation pool (SGM, PnP-ADMM,
+PSMNet, RAFT-Stereo) with ToF-specific algorithms. ToF cameras measure depth
+via phase-shift of modulated light, facing unique challenges (multi-path
+interference, phase wrapping) that stereo matching methods do not address.
+The previous pool contained binocular stereo methods fundamentally
+inapplicable to phase-based depth sensing.
 
-### Issue
+## Changes Applied
 
-SGM, PSMNet, and RAFT-Stereo are **stereo matching** algorithms that estimate depth from binocular image pairs. ToF cameras use a fundamentally different principle: they measure depth from the phase shift of modulated light (correlation-based ToF) or direct photon arrival times (direct ToF / SPAD). ToF-specific reconstruction involves:
+- Added `_VARIANT_OVERRIDES["tof_camera"]` with four ToF-specific algorithms
+- Phase Unwrap: multi-frequency phase unwrapping for range ambiguity resolution
+- PnP-ToF: plug-and-play with depth-specific priors for ToF refinement
+- DeepToF: CNN for multi-path interference correction (ECCV 2018)
+- MPI-Former: transformer-based MPI correction
 
-- Phase unwrapping (for multi-frequency ToF)
-- Multi-path interference (MPI) correction
-- Amplitude-based denoising
+## Remaining Items
 
-ToF-specific algorithms would include:
-- Classical: Weighted least-squares depth filtering or phase unwrapping
-- Deep Learning: DeepToF (Marco et al., ECCV 2018), Deep End-to-End ToF (Su et al., CVPR 2018)
+None. No further code changes needed.
 
-### Decision
-
-The `depth_imaging` category is a shared pool across ToF, structured light, and stereo modalities. While stereo-specific names (SGM, PSMNet) are not ideal for ToF, the category serves as a "depth estimation" umbrella. Adding ToF-specific routing would require a new carrier-based split or variant override.
-
-## Deferred Items
-
-1. **Carrier routing**: Could add `("depth_imaging", "Photon/IR")` to `_CARRIER_ROUTING` pointing to a `tof_depth` sub-pool with phase-unwrapping and MPI-correction methods. Low priority since the benchmark measures reconstruction quality generically (PSNR/SSIM on depth maps).
-
-No code changes required at this time.
+### Files modified:
+- `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`

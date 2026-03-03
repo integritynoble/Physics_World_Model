@@ -1,10 +1,14 @@
-# Modify Plan: spectral_ct
+# Modify Plan: spectral_ct (Spectral CT / Photon-Counting CT)
+
+**Created:** 2026-03-03
+**Status:** PASS -- no code changes needed
 
 ## Current State
+
 - **Category:** medical
 - **Carrier:** X-ray
-- **Score key:** medical
-- **Algorithms:**
+- **Score key:** medical (default CT pool)
+- **Algorithms served (4):**
   1. FBP (Classical) -- Analytical baseline
   2. PnP-ADMM (PnP) -- Venkatakrishnan et al., 2013
   3. FBPConvNet (Deep Learning) -- Jin et al., IEEE TIP 2017
@@ -12,33 +16,26 @@
 
 ## Assessment
 
-**Problem:** Spectral CT (photon-counting CT) gets the generic medical/CT pool. While these are valid CT reconstruction algorithms, spectral CT has a unique additional challenge: material decomposition across energy bins. The reconstruction problem is not just image reconstruction but also energy-dependent material separation.
+**Acceptable.** Spectral CT gets the generic medical/CT pool. While these are
+conventional CT reconstruction algorithms that do not exploit cross-energy
+information, they are valid for the tomographic inverse-problem framework:
 
-- **FBP** can be applied per energy bin but ignores cross-channel information.
-- **PnP-ADMM** is a generic method, applicable but not spectral-specific.
-- **FBPConvNet** was designed for conventional CT, not multi-energy.
-- **Learned Primal-Dual** was designed for conventional CT, not multi-energy.
+- FBP is the standard baseline for any CT problem (applicable per energy bin)
+- PnP-ADMM is a general-purpose regularized reconstruction framework
+- FBPConvNet and Learned Primal-Dual are proven CT methods
+- The algorithms are not wrong -- they miss the opportunity for spectral-specific
+  material decomposition but correctly solve the per-bin reconstruction problem
 
-Appropriate spectral CT algorithms include:
-1. **FBP + Material Decomposition** (Classical) -- Alvarez & Macovski, Phys. Med. Biol. 1976; sinogram-domain decomposition
-2. **One-Step Spectral CT** (Iterative) -- Long & Fessler, IEEE TMI 2014; joint reconstruction + decomposition
-3. **Butterfly-Net** (Deep Learning) -- Fan et al., SIAM JSC 2019; multi-scale spectral CT
-4. **DECT-MULTRA** (Dictionary) -- Zeng et al., IEEE TMI 2021; multi-energy learned transform
+Spectral-specific algorithms (One-Step Spectral CT, Butterfly-Net, DECT-MULTRA)
+would better represent the field but are not required for benchmark correctness.
 
-However, the existing algorithms are still applicable as a baseline (FBP and iterative methods work on each energy channel), and the mismatch is more about missing spectral-specific methods than having wrong methods. This is a "could be better" situation rather than a "fundamentally wrong" situation.
+## Verdict
 
-## Required Changes
+**PASS -- no code changes needed.** The medical/CT pool is acceptable for spectral
+CT. The algorithms correctly test tomographic reconstruction, even though they do
+not exploit cross-energy correlations.
 
-Optionally add `spectral_ct` to `_VARIANT_OVERRIDES` to include material-decomposition-aware algorithms. This is a low-priority enhancement.
+## Recommended Changes
 
-```python
-"spectral_ct": [
-    {"name": "FBP",                 "type": "Classical",      "mask_aware": True,  "params": "0",    "source": "Analytical baseline (per-bin)"},
-    {"name": "One-Step Spectral",   "type": "Iterative",      "mask_aware": True,  "params": "0",    "source": "Long & Fessler, IEEE TMI 2014"},
-    {"name": "PnP-ADMM",            "type": "PnP",            "mask_aware": True,  "params": "0",    "source": "Venkatakrishnan et al., 2013"},
-    {"name": "Butterfly-Net",       "type": "Deep Learning",  "mask_aware": False, "params": "5M",   "source": "Fan et al., SIAM JSC 2019"},
-],
-```
-
-## Files to Modify
-- `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`: Optionally add variant override for `spectral_ct`
+None required. Optional future enhancement: add a `_VARIANT_OVERRIDES["spectral_ct"]`
+entry with material-decomposition-aware algorithms for improved domain specificity.

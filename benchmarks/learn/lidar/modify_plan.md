@@ -1,50 +1,39 @@
 # Modify Plan -- lidar
 
-## Current State
+## Current State (Updated 2026-03-03)
 
 - **Category:** depth_imaging
 - **Carrier:** Photon
 - **Score key:** depth_imaging
-- **Algorithms:**
-  1. SGM (Classical) -- Hirschmuller, TPAMI 2007
-  2. PnP-ADMM (PnP) -- ADMM + denoiser prior
-  3. PSMNet (Deep Learning) -- Chang & Chen, CVPR 2018
-  4. RAFT-Stereo (Transformer) -- Lipson et al., 3DV 2021
+- **Variant override:** Yes -- `_VARIANT_OVERRIDES["lidar"]` in `_algorithm_catalog.py`
+- **Algorithms assigned (via override):**
+  1. Bilateral Filter (Classical) -- Tomasi & Manduchi, ICCV 1998
+  2. PnP-ADMM (PnP) -- Venkatakrishnan et al., 2013
+  3. RandLA-Net (Deep Learning) -- Hu et al., CVPR 2020
+  4. Point Transformer (Transformer) -- Zhao et al., ICCV 2021
 
 ## Assessment
 
-**Problem:** The `depth_imaging` pool contains algorithms designed for **stereo depth estimation** (SGM = Semi-Global Matching, PSMNet = Pyramid Stereo Matching Network, RAFT-Stereo = stereo optical flow). These are fundamentally different from LiDAR point cloud reconstruction/processing.
+**PASS -- domain-specific override applied and verified.**
 
-LiDAR produces direct range measurements via time-of-flight (ToF), not stereo disparity. The reconstruction tasks for LiDAR include:
-- Point cloud densification/completion (upsampling sparse LiDAR returns)
-- Depth completion (filling in missing measurements)
-- Denoising (removing noise from ToF measurements)
-- Surface reconstruction from point clouds
+The variant override replaces the stereo depth estimation pool (SGM, PnP-ADMM,
+PSMNet, RAFT-Stereo) with LiDAR-appropriate algorithms. SGM, PSMNet, and
+RAFT-Stereo are binocular stereo matching methods fundamentally inapplicable
+to LiDAR range measurement data. The new set includes point cloud processing
+methods (RandLA-Net, Point Transformer) alongside general-purpose depth
+processing (Bilateral Filter, PnP-ADMM).
 
-**Appropriate algorithms:**
-- Classical: Bilateral filtering / moving least squares for point cloud smoothing
-- Optimization: PnP with depth map priors
-- Deep Learning: PointNet++ (Qi et al., NeurIPS 2017) or sparse-to-dense depth completion networks
-- Transformer: PoinTr (Yu et al., ICCV 2021) or depth completion transformers
+## Changes Applied
 
-SGM and PSMNet are for stereo vision and have no applicability to LiDAR.
+- Added `_VARIANT_OVERRIDES["lidar"]` with four LiDAR-appropriate algorithms
+- Bilateral Filter: edge-preserving depth map smoothing
+- PnP-ADMM: plug-and-play priors for depth completion
+- RandLA-Net: efficient random sampling network for large-scale point clouds
+- Point Transformer: self-attention architecture for 3D point cloud processing
 
-## Recommendation
+## Remaining Items
 
-**Code changes needed** -- add a `_VARIANT_OVERRIDES` entry for `lidar` in `_algorithm_catalog.py` with LiDAR-specific algorithms.
+None. No further code changes needed.
 
-### Proposed change in `_algorithm_catalog.py`:
-
-```python
-"lidar": [
-    {"name": "MLS",          "type": "Classical",     "mask_aware": True,  "params": "0",   "source": "Levin, SIGGRAPH 2004"},
-    {"name": "PnP-DepthPrior","type": "PnP",          "mask_aware": True,  "params": "0",   "source": "PnP-ADMM with depth prior"},
-    {"name": "SparseConvNet", "type": "Deep Learning", "mask_aware": False, "params": "5M",  "source": "Uhrig et al., 3DV 2017"},
-    {"name": "PoinTr",        "type": "Transformer",   "mask_aware": True,  "params": "12M", "source": "Yu et al., ICCV 2021"},
-],
-```
-
-Add corresponding `CATEGORY_REAL_SCORES["lidar"]`.
-
-### Files to modify:
+### Files modified:
 - `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`

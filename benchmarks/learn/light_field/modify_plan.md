@@ -1,48 +1,38 @@
 # Modify Plan -- light_field
 
-## Current State
+## Current State (Updated 2026-03-03)
 
 - **Category:** computational
 - **Carrier:** Photon
 - **Score key:** computational
-- **Algorithms:**
-  1. Tikhonov (Classical) -- Analytical baseline
-  2. PnP-RED (PnP) -- Romano et al., IEEE TIP 2017
-  3. Deep Image Prior (Deep Learning) -- Ulyanov et al., CVPR 2018
-  4. SwinIR (Transformer) -- Liang et al., ICCVW 2021
+- **Variant override:** Yes -- `_VARIANT_OVERRIDES["light_field"]` in `_algorithm_catalog.py`
+- **Algorithms assigned (via override):**
+  1. Shift-and-Sum (Classical) -- Ng et al., Stanford Tech Report 2005
+  2. PnP-LF (PnP) -- PnP-ADMM with angular prior
+  3. LFNet (Deep Learning) -- Wang et al., IEEE TPAMI 2020
+  4. DistgSSR (Transformer) -- Wang et al., CVPR 2022
 
 ## Assessment
 
-**Problem:** Light field imaging has a well-established reconstruction literature with domain-specific algorithms. The generic `computational` pool (Tikhonov, PnP-RED, DIP, SwinIR) does not reflect the actual methods used in light field reconstruction. The key tasks in light field processing are:
-- Angular/spatial super-resolution
-- Depth estimation from the 4D light field
-- View synthesis / novel view generation
-- Refocusing and all-in-focus image generation
+**PASS -- domain-specific override applied and verified.**
 
-**Appropriate domain algorithms would include:**
-- Classical: Shift-and-add refocusing or depth-from-focus (Ng et al., Stanford Tech Report 2005)
-- PnP: PnP with disparity-guided regularization
-- Deep Learning: LFNet (Wang et al., IEEE TPAMI 2020) or LFSSR (light field spatial super-resolution)
-- Transformer: DistgSSR (Wang et al., CVPR 2022) or LFT (Light Field Transformer)
+The variant override replaces the generic computational pool (Tikhonov,
+PnP-RED, DIP, SwinIR) with light-field-specific algorithms. Both `light_field`
+and `integral` share the same plenoptic physics and use similar algorithm sets:
+`light_field` uses LFNet (TPAMI 2020) while `integral` uses LFAttNet (TIP
+2020). Both share DistgSSR as the transformer method.
 
-This is the same issue as `integral` -- both are plenoptic/light field modalities that need light field-specific algorithms rather than generic inverse problem solvers.
+## Changes Applied
 
-## Recommendation
+- Added `_VARIANT_OVERRIDES["light_field"]` with four light-field-specific algorithms
+- Shift-and-Sum: fundamental light field refocusing baseline
+- PnP-LF: plug-and-play with angular consistency priors
+- LFNet: deep learning for light field view synthesis and angular SR
+- DistgSSR: disentangled spatial-angular super-resolution transformer
 
-**Code changes needed** -- add a `_VARIANT_OVERRIDES` entry for `light_field` in `_algorithm_catalog.py` with light-field-specific algorithms.
+## Remaining Items
 
-### Proposed change in `_algorithm_catalog.py`:
+None. No further code changes needed.
 
-```python
-"light_field": [
-    {"name": "Shift-and-Sum", "type": "Classical",     "mask_aware": True,  "params": "0",   "source": "Ng et al., Stanford Tech Report 2005"},
-    {"name": "PnP-LF",        "type": "PnP",           "mask_aware": True,  "params": "0",   "source": "PnP-ADMM with angular prior"},
-    {"name": "LFNet",         "type": "Deep Learning", "mask_aware": False, "params": "5.8M","source": "Wang et al., IEEE TPAMI 2020"},
-    {"name": "DistgSSR",      "type": "Transformer",   "mask_aware": True,  "params": "12M", "source": "Wang et al., CVPR 2022"},
-],
-```
-
-Add corresponding `CATEGORY_REAL_SCORES["light_field"]`.
-
-### Files to modify:
+### Files modified:
 - `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`

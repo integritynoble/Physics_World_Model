@@ -1,38 +1,40 @@
 # Modify Plan: photoacoustic
 
-## Current State
+## Current State (Updated 2026-03-03)
+
 - **Category:** medical
 - **Carrier:** Acoustic
 - **Score key:** medical_ultrasound (via carrier routing)
-- **Algorithms:**
-  1. DAS (Classical) -- Analytical baseline
+- **Variant override:** Yes -- `_VARIANT_OVERRIDES["photoacoustic"]` in `_algorithm_catalog.py`
+- **Algorithms assigned (via override):**
+  1. Universal Back-Proj (Classical) -- Xu & Wang, Phys. Rev. E 2005
   2. PnP-ADMM (PnP) -- Goudarzi et al., 2020
-  3. ABLE (Deep Learning) -- Luijten et al., IEEE TMI 2020
-  4. MU-Net (Deep Learning) -- Hyun et al., IEEE TUFFC 2022
+  3. Deep-PAI (Deep Learning) -- Hauptmann et al., IEEE TMI 2018
+  4. PAT-Former (Transformer) -- PAT reconstruction transformer, 2024
 
 ## Assessment
 
-Photoacoustic imaging (PAI) uses pulsed laser excitation to generate acoustic waves, which are then detected by ultrasound transducers. The carrier routing `("medical", "Acoustic") -> "medical_ultrasound"` routes photoacoustic to the ultrasound algorithm pool. While PAI shares some reconstruction aspects with ultrasound (both use acoustic wave detection and beamforming), the physics is fundamentally different:
+**PASS -- domain-specific override applied and verified.**
 
-- In ultrasound, the transducer both transmits and receives. DAS beamforming is standard.
-- In PAI, laser absorption generates acoustic sources within tissue. The reconstruction is a **thermoacoustic inverse problem** -- reconstructing the initial pressure distribution from time-series acoustic measurements.
+The variant override replaces the medical ultrasound pool (DAS, PnP-ADMM,
+ABLE, MU-Net) with photoacoustic-specific reconstruction algorithms. While PAI
+shares acoustic detection hardware with ultrasound, the physics is fundamentally
+different: PAI reconstructs initial pressure distributions from laser-generated
+acoustic waves (thermoacoustic inverse problem), whereas ultrasound performs
+pulse-echo beamforming. ABLE and MU-Net are ultrasound beamforming networks
+not designed for PAI.
 
-The algorithms are partially appropriate:
-- **DAS** -- Delay-and-Sum is used in PAI as a simple baseline. Appropriate.
-- **PnP-ADMM** (Goudarzi et al., 2020) -- referenced as ultrasound PnP, but PnP-ADMM is applicable to PAI. Acceptable.
-- **ABLE** (Luijten et al., IEEE TMI 2020) -- this is specifically an ultrasound beamforming network, not designed for PAI. Somewhat mismatched.
-- **MU-Net** (Hyun et al., IEEE TUFFC 2022) -- ultrasound-specific network. Mismatched.
+## Changes Applied
 
-More domain-specific PAI algorithms:
-- Universal Back-Projection (Xu & Wang, PRE 2005) -- standard PAI reconstruction
-- Model-Based (Rosenthal et al., IEEE TMI 2013) -- model-based PAI reconstruction
-- Deep-PAI (Hauptmann et al., IEEE TMI 2018) -- learned PAI reconstruction
+- Added `_VARIANT_OVERRIDES["photoacoustic"]` with four PAI-specific algorithms
+- Universal Back-Projection: standard analytical PAI reconstruction
+- PnP-ADMM: iterative reconstruction with learned denoisers for limited-view PAI
+- Deep-PAI: deep learning for photoacoustic image reconstruction
+- PAT-Former: transformer-based photoacoustic tomography reconstruction
 
-The mismatch is moderate. DAS and PnP-ADMM are fine, but ABLE and MU-Net are ultrasound-specific.
+## Remaining Items
 
-## Required Changes
+None. No further code changes needed.
 
-Consider adding a variant override in `_algorithm_catalog.py` for `photoacoustic` with PAI-specific algorithms. However, since the reconstruction pipeline (acoustic wave to image) shares significant overlap with ultrasound, the current assignment is not severely wrong. This is a low-priority change.
-
-### Files to modify (optional)
-- `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py` -- optionally add variant override for `photoacoustic` with PAI-specific algorithms (Universal Back-Projection, Model-Based, Deep-PAI, PAT-Transformer)
+### Files modified:
+- `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`

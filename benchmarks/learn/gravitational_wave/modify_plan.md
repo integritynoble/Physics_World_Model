@@ -1,45 +1,38 @@
 # Modify Plan: gravitational_wave
 
-## Current State
+## Current State (Updated 2026-03-03)
 
 - **Category:** experimental_science
 - **Carrier:** Gravitational
 - **Score key:** experimental_science
-- **Algorithms assigned:**
-  1. Tikhonov (Classical) -- Analytical baseline
-  2. PnP-RED (PnP) -- Romano et al., IEEE TIP 2017
-  3. ResUNet (Deep Learning) -- Residual U-Net baseline
-  4. SwinIR (Transformer) -- Liang et al., ICCVW 2021
+- **Variant override:** Yes -- `_VARIANT_OVERRIDES["gravitational_wave"]` in `_algorithm_catalog.py`
+- **Algorithms assigned (via override):**
+  1. Matched Filter (Classical) -- Allen et al., Phys. Rev. D 2012
+  2. BayesWave (PnP) -- Cornish & Littenberg, CQG 2015
+  3. GW-CNN (Deep Learning) -- George & Huerta, Phys. Rev. D 2018
+  4. WaveFormer (Transformer) -- GW detection transformer, 2024
 
 ## Assessment
 
-**Problematic -- generic algorithms; GW-specific methods exist and are well-known**
+**PASS -- domain-specific override applied and verified.**
 
-Gravitational wave detection/signal extraction has a very specific set of
-published algorithms. The current generic experimental_science pool (Tikhonov,
-PnP-RED, ResUNet, SwinIR) is inappropriate because:
+The variant override replaces the completely inappropriate generic
+experimental_science pool (Tikhonov, PnP-RED, ResUNet, SwinIR) with GW-specific
+algorithms. The previous set treated 1D time-series strain data as 2D images,
+which was fundamentally wrong. All four replacements are standard GW detection
+and signal extraction methods.
 
-- **Tikhonov**: GW signal extraction is NOT a standard Tikhonov regularization
-  problem. The classical method is matched filtering against template banks.
-- **PnP-RED, SwinIR**: These are image restoration methods. GW data is 1D
-  time-series strain data, not 2D images.
-- **ResUNet**: Generic, not GW-specific.
+## Changes Applied
 
-Well-known GW-specific algorithms:
-- **Matched Filtering** (Abbott et al., LIGO/Virgo standard pipeline)
-- **BayesWave** (Cornish & Littenberg, CQG 2015) -- Bayesian wavelet-based
-- **MLy** / **GW-CNN** (Gebhard et al., PRD 2019) -- deep learning for GW
-- **WaveFormer** (Zhao et al., 2023) -- transformer-based GW detection
+- Added `_VARIANT_OVERRIDES["gravitational_wave"]` with four GW-specific algorithms
+- Matched Filter: LIGO/Virgo standard template-based detection pipeline
+- BayesWave: Bayesian wavelet-based unmodeled transient analysis
+- GW-CNN: deep learning detection from raw strain data
+- WaveFormer: transformer-based GW detection and parameter estimation
 
-## Code Changes Needed
+## Remaining Items
 
-**Add GW-specific variant override in `_algorithm_catalog.py`:**
+None. No further code changes needed.
 
-```python
-"gravitational_wave": [
-    {"name": "Matched Filter (Template Bank)", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Allen et al., PRD 2012"},
-    {"name": "BayesWave",                      "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Cornish & Littenberg, CQG 2015"},
-    {"name": "GW-CNN",                         "type": "Deep Learning", "mask_aware": False, "params": "2M",   "source": "Gebhard et al., PRD 2019"},
-    {"name": "WaveFormer",                     "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Zhao et al., arXiv 2023"},
-],
-```
+### Files modified:
+- `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`

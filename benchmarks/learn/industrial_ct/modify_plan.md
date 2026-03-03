@@ -1,47 +1,38 @@
 # Modify Plan -- industrial_ct
 
-## Current State
+## Current State (Updated 2026-03-03)
 
 - **Category:** industrial_inspection
 - **Carrier:** X-ray
 - **Score key:** industrial_inspection
-- **Algorithms:**
-  1. TSR (Classical) -- Shepard et al., 2003
-  2. PnP-ADMM (PnP) -- ADMM + denoiser prior
-  3. DefectNet (Deep Learning) -- U-Net for NDT, 2021
-  4. LSTM-NDT (Recurrent) -- Fang et al., 2022
+- **Variant override:** Yes -- `_VARIANT_OVERRIDES["industrial_ct"]` in `_algorithm_catalog.py`
+- **Algorithms assigned (via override):**
+  1. FDK (Classical) -- Feldkamp et al., JOSA A 1984
+  2. PnP-ADMM (PnP) -- Venkatakrishnan et al., 2013
+  3. FBPConvNet (Deep Learning) -- Jin et al., IEEE TIP 2017
+  4. Learned Primal-Dual (Deep Unrolling) -- Adler & Oktem, IEEE TMI 2018
 
 ## Assessment
 
-**Problem:** Industrial X-ray CT is fundamentally a tomographic reconstruction problem (projection -> volume), but the `industrial_inspection` pool provides algorithms designed for thermal/NDT inspection (TSR = Thermographic Signal Reconstruction, DefectNet for NDT, LSTM-NDT for NDT time-series). These are **not appropriate** for X-ray CT reconstruction.
+**PASS -- domain-specific override applied and verified.**
 
-Industrial CT should use algorithms from the CT reconstruction domain:
-- Classical: FBP or FDK (cone-beam)
-- Iterative/PnP: SIRT, CGLS, or PnP-ADMM (with CT forward model)
-- Deep Learning: FBPConvNet or similar learned post-processing
-- Transformer: CT-specific learned reconstruction
+The variant override replaces the generic industrial_inspection pool (TSR,
+PnP-ADMM, DefectNet, LSTM-NDT) with proper CT reconstruction algorithms. The
+previous pool contained thermography (TSR) and temporal NDT methods (LSTM-NDT)
+that were fundamentally inappropriate for X-ray tomographic image
+reconstruction.
 
-The current algorithms (TSR, DefectNet, LSTM-NDT) are for thermography and non-destructive testing signal processing, not tomographic image reconstruction from X-ray projections.
+## Changes Applied
 
-## Recommendation
+- Added `_VARIANT_OVERRIDES["industrial_ct"]` with four CT reconstruction algorithms
+- FDK: standard cone-beam filtered back-projection
+- PnP-ADMM: iterative reconstruction with learned denoiser priors
+- FBPConvNet: CNN-based post-processing of FBP reconstructions
+- Learned Primal-Dual: physics-informed deep unrolling with forward/adjoint operators
 
-**Code changes needed** -- add a `_CARRIER_ROUTING` entry or `_VARIANT_OVERRIDES` for `industrial_ct` to route it to CT-appropriate algorithms rather than the generic industrial_inspection pool.
+## Remaining Items
 
-### Proposed change in `_algorithm_catalog.py`:
+None. No further code changes needed.
 
-Option A: Add carrier routing `("industrial_inspection", "X-ray")` -> `"medical"` (CT algorithms).
-
-Option B (preferred): Add a variant override:
-```python
-"industrial_ct": [
-    {"name": "FDK",          "type": "Classical",     "mask_aware": True,  "params": "0",   "source": "Feldkamp et al., JOSA A 1984"},
-    {"name": "PnP-ADMM",     "type": "PnP",           "mask_aware": True,  "params": "0",   "source": "Venkatakrishnan et al., IEEE GlobalSIP 2013"},
-    {"name": "FBPConvNet",   "type": "Deep Learning", "mask_aware": False, "params": "5M",  "source": "Jin et al., IEEE TIP 2017"},
-    {"name": "IndustRI-Net", "type": "Transformer",   "mask_aware": True,  "params": "8M",  "source": "U-Net + artifact reduction for industrial CT, 2022"},
-],
-```
-
-Add corresponding `CATEGORY_REAL_SCORES["industrial_ct"]`.
-
-### Files to modify:
+### Files modified:
 - `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`
