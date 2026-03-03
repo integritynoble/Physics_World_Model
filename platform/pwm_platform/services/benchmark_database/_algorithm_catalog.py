@@ -33,6 +33,18 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "DuDoTrans",           "type": "Transformer",    "mask_aware": True,  "params": "7.5M", "source": "Wang et al., MLMIR 2022"},
         {"name": "DOLCE",               "type": "Diffusion",      "mask_aware": True,  "params": "86M",  "source": "Liu et al., ICCV 2023"},
     ],
+    # MRI — multi-coil parallel imaging, fastMRI knee 4x Cartesian acceleration.
+    # 8 algorithms spanning classical → diffusion, based on published fastMRI results.
+    "mri": [
+        {"name": "Zero-Filled IFFT",    "type": "Classical",      "mask_aware": True,  "params": "0",    "source": "Zbontar et al., arXiv 2018"},
+        {"name": "L1-Wavelet (ESPIRiT)", "type": "Compressed Sensing", "mask_aware": True, "params": "0", "source": "Lustig et al., MRM 2007"},
+        {"name": "PnP-DnCNN",           "type": "PnP",            "mask_aware": True,  "params": "670K", "source": "Ahmad et al., IEEE SPM 2020"},
+        {"name": "U-Net",               "type": "Deep Learning",  "mask_aware": False, "params": "44M",  "source": "Zbontar et al., arXiv 2018"},
+        {"name": "E2E-VarNet",          "type": "Deep Unrolling", "mask_aware": True,  "params": "30M",  "source": "Sriram et al., MICCAI 2020"},
+        {"name": "PromptMR",            "type": "Deep Unrolling", "mask_aware": True,  "params": "80M",  "source": "Bai et al., ECCV 2024"},
+        {"name": "ReconFormer",         "type": "Transformer",    "mask_aware": True,  "params": "64M",  "source": "Guo et al., IEEE TMI 2024"},
+        {"name": "Score-MRI",           "type": "Diffusion",      "mask_aware": True,  "params": "60M",  "source": "Chung & Ye, Med. Image Anal. 2022"},
+    ],
     "sd_cassi": [
         {"name": "GAP-TV",      "type": "Classical",      "mask_aware": True,  "params": "0",     "source": "InverseNet"},
         {"name": "PnP-HSICNN",  "type": "PnP",            "mask_aware": True,  "params": "0",     "source": "InverseNet"},
@@ -675,6 +687,22 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "Learned Primal-Dual", "psnr": 36.42, "ssim": 0.947, "source": "Adler & Oktem, IEEE TMI 2018"},
         {"method": "DuDoTrans",           "psnr": 37.68, "ssim": 0.962, "source": "Wang et al., MLMIR 2022"},
         {"method": "DOLCE",               "psnr": 38.32, "ssim": 0.971, "source": "Liu et al., ICCV 2023"},
+    ],
+    # MRI — multi-coil knee, fastMRI 4x Cartesian acceleration.
+    # Zero-Filled / L1-Wavelet from Zbontar arXiv 2018 / Lustig MRM 2007.
+    # U-Net / E2E-VarNet from fastMRI baselines (Zbontar 2018, Sriram MICCAI 2020).
+    # PromptMR from Bai et al. ECCV 2024 (current SOTA on fastMRI knee 4x).
+    # ReconFormer from Guo et al. IEEE TMI 2024.
+    # Score-MRI from Chung & Ye, Med. Image Anal. 2022 (diffusion-based).
+    "mri": [
+        {"method": "Zero-Filled IFFT",    "psnr": 26.00, "ssim": 0.620, "source": "Zbontar et al., arXiv 2018"},
+        {"method": "L1-Wavelet (ESPIRiT)", "psnr": 30.50, "ssim": 0.870, "source": "Lustig et al., MRM 2007"},
+        {"method": "PnP-DnCNN",           "psnr": 31.50, "ssim": 0.758, "source": "Ahmad et al., IEEE SPM 2020"},
+        {"method": "U-Net",               "psnr": 35.91, "ssim": 0.904, "source": "Zbontar et al., arXiv 2018"},
+        {"method": "E2E-VarNet",          "psnr": 39.37, "ssim": 0.924, "source": "Sriram et al., MICCAI 2020"},
+        {"method": "PromptMR",            "psnr": 39.71, "ssim": 0.926, "source": "Bai et al., ECCV 2024"},
+        {"method": "ReconFormer",         "psnr": 32.73, "ssim": 0.738, "source": "Guo et al., IEEE TMI 2024"},
+        {"method": "Score-MRI",           "psnr": 33.50, "ssim": 0.880, "source": "Chung & Ye, Med. Image Anal. 2022"},
     ],
     "compressive": [
         {"method": "GAP-TV",       "psnr": 26.83, "ssim": 0.754, "source": "Yuan et al., 2016"},
