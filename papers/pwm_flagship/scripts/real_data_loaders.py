@@ -75,12 +75,18 @@ def load_picmus_real(n_samples: int = 5) -> list[tuple[str, dict]]:
                     c = float(cd["sound_speed"][0, 0])
                     n_elem = int(cd["probe/N"][0, 0])
                     pitch = float(cd["probe/pitch"][0, 0])
+                # Read steering angles; fall back to standard PICMUS 75-angle range
+                try:
+                    angles = cd["sequence/source/angle"][:].ravel().astype(np.float64)
+                except Exception:
+                    angles = np.linspace(np.radians(-16), np.radians(16), 75)
                 results.append((scene_name, {
                     "rf_75": rf,
                     "fs": fs,
                     "c": c,
                     "n_elements": n_elem,
                     "pitch": pitch,
+                    "angles": angles,
                     "source": f"PICMUS/{uff_path.name}",
                 }))
             except Exception as e:
@@ -103,6 +109,7 @@ def load_picmus_real(n_samples: int = 5) -> list[tuple[str, dict]]:
                         "c": 1540.0,
                         "n_elements": 128,
                         "pitch": 0.195e-3,
+                        "angles": np.linspace(np.radians(-16), np.radians(16), 75),
                         "source": f"DeepUS/{mat_path.name}",
                     }))
                 except Exception as e:

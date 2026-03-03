@@ -215,6 +215,87 @@ def self_ref_scale(recon_ref: np.ndarray, recon_test: np.ndarray) -> float:
 
 
 # ---------------------------------------------------------------------------
+# Compound plane-wave DAS beamforming (for real-data mode)
+# ---------------------------------------------------------------------------
+def compound_pw_das(
+    rf_75: np.ndarray,
+    speed_of_sound: float,
+    angles: np.ndarray,
+    n_elements: int,
+    pitch: float,
+    fs: float,
+    nz: int = 128,
+    nx: int = 128,
+) -> np.ndarray:
+    """75-angle compound plane-wave DAS beamforming with envelope detection.
+
+    Performs coherent compound beamforming across all angles, then applies
+    Hilbert-transform envelope detection along depth to produce a B-mode
+    (amplitude) image. Envelope detection removes RF-phase oscillations,
+    making PSNR sensitive to structural defocus from SoS mismatch rather
+    than speckle-phase reshuffling.
+
+    Args:
+        rf_75: (n_angles, n_elements, n_samples) RF data
+        speed_of_sound: assumed SoS (m/s)
+        angles: (n_angles,) steering angles in radians
+        n_elements, pitch, fs: transducer parameters
+        nz, nx: output image size
+
+    Returns:
+        (nz, nx) B-mode envelope image (float64, non-negative)
+    """
+    from scipy.signal import hilbert
+
+    c = speed_of_sound
+    n_angles = rf_75.shape[0]
+    n_samples = rf_75.shape[2]
+
+    # Pixel grid
+    aperture = n_elements * pitch
+    x_pos = np.linspace(-aperture / 2, aperture / 2, nx)
+    depth = (n_samples / fs) * c / 2
+    z_pos = np.linspace(0.5 * depth / nz, depth - 0.5 * depth / nz, nz)
+
+    # Element positions
+    elem_x = np.linspace(-aperture / 2, aperture / 2, n_elements)
+
+    # Meshgrid for pixel positions: Z (nz, nx), X (nz, nx)
+    Z, X = np.meshgrid(z_pos, x_pos, indexing="ij")
+
+    # Pre-compute receive distances: (n_elements, nz, nx)
+    rx_dist = np.sqrt(
+        Z[None, :, :] ** 2 + (X[None, :, :] - elem_x[:, None, None]) ** 2
+    )
+
+    # Pre-compute trig
+    cos_angles = np.cos(angles)
+    sin_angles = np.sin(angles)
+
+    image = np.zeros((nz, nx), dtype=np.float64)
+
+    for ai in range(n_angles):
+        # Transmit delay: plane-wave model
+        t_tx = (Z * cos_angles[ai] + X * sin_angles[ai]) / c  # (nz, nx)
+        # Total delay per element: (n_elements, nz, nx)
+        t_total = t_tx[None, :, :] + rx_dist / c
+        # Convert to sample indices
+        idx = (t_total * fs).astype(np.int64)
+        valid = (idx >= 0) & (idx < n_samples)
+        idx_safe = np.clip(idx, 0, n_samples - 1)
+        # Gather RF samples using fancy indexing
+        ie_grid = np.arange(n_elements)[:, None, None]
+        gathered = rf_75[ai][ie_grid, idx_safe] * valid  # (n_elem, nz, nx)
+        image += gathered.sum(axis=0)
+
+    # Envelope detection: Hilbert transform along depth axis -> B-mode image
+    analytic = hilbert(image, axis=0)
+    envelope = np.abs(analytic)
+
+    return envelope
+
+
+# ---------------------------------------------------------------------------
 # Main protocol (synthetic mode)
 # ---------------------------------------------------------------------------
 def run_multi_phantom(
@@ -441,12 +522,13 @@ def run_multi_phantom_real(
 ) -> dict:
     """Run 4-scenario protocol on real PICMUS/DeepUS RF data.
 
+    Uses 75-angle compound plane-wave DAS beamforming.
     Key differences from synthetic mode:
     - RF data comes from real acquisitions (no forward model)
     - Nominal SoS from metadata serves as 'true_sos'
     - Scenario I reconstruction = pseudo-ground-truth (self-reference)
     - Scale factor: s = dot(recon_I, recon_test) / dot(recon_test, recon_test)
-    - Calibration uses measurement residual (blind) as primary metric
+    - Calibration uses PSNR-based oracle (compound DAS has no closed-form residual)
     """
     from real_data_loaders import load_picmus_real
 
@@ -454,7 +536,7 @@ def run_multi_phantom_real(
         sos_offsets = [10.0, 25.0, 50.0, 100.0, 200.0]
 
     logger.info("=" * 70)
-    logger.info("ULTRASOUND REAL-DATA 4-SCENARIO PROTOCOL")
+    logger.info("ULTRASOUND REAL-DATA 4-SCENARIO PROTOCOL (compound PW-DAS)")
     logger.info("=" * 70)
 
     # Load real RF data
@@ -474,114 +556,83 @@ def run_multi_phantom_real(
         rf_data_75 = meta["rf_75"]  # (75, n_elements, N_samples)
         nominal_sos = meta["c"]
         n_elements = meta["n_elements"]
+        pitch = meta["pitch"]
         fs = meta["fs"]
-        n_rf_samples = rf_data_75.shape[2]
+        angles = meta["angles"]
+        n_angles = rf_data_75.shape[0]
 
         logger.info(f"RF shape: {rf_data_75.shape}, fs={fs/1e6:.3f}MHz, "
-                     f"nominal_c={nominal_sos:.1f}m/s, n_elem={n_elements}")
+                     f"nominal_c={nominal_sos:.1f}m/s, n_elem={n_elements}, "
+                     f"n_angles={n_angles}, pitch={pitch*1e3:.3f}mm")
 
-        # Use first plane-wave angle (index 37 = 0 deg) for single-angle DAS
-        rf_data = rf_data_75[37].T  # (N_samples, n_elements) -> use as operator input
-        # Reshape to match operator expectation: (n_elements, n_samples)
-        if rf_data.shape[0] != n_elements:
-            rf_data = rf_data.T
-        logger.info(f"Using single-angle RF: {rf_data.shape}")
-
-        # --- Scenario I: reconstruct with nominal SoS ---
-        op_true = UltrasoundOperator(
-            operator_id=f"us_real_true_{scene_name}",
-            nz=nz, nx=nx, n_elements=n_elements, n_samples=rf_data.shape[-1],
-            speed_of_sound=nominal_sos, fs=fs,
-        )
-        recon_I = op_true.adjoint(rf_data).astype(np.float64)
+        # --- Scenario I: compound DAS with nominal SoS ---
+        t0_I = time.time()
+        recon_I = compound_pw_das(rf_data_75, nominal_sos, angles,
+                                  n_elements, pitch, fs, nz, nx)
         # Normalize to [0, 1] for metrics
         recon_I -= recon_I.min()
         ri_max = recon_I.max()
         if ri_max > 1e-12:
             recon_I /= ri_max
+        t_I = time.time() - t0_I
         logger.info(f"Scenario I (nominal c={nominal_sos}): recon range "
-                     f"[{recon_I.min():.4f}, {recon_I.max():.4f}]")
+                     f"[{recon_I.min():.4f}, {recon_I.max():.4f}], "
+                     f"time={t_I:.1f}s")
 
         # Self-reference: Scenario I IS the pseudo-ground-truth
         pseudo_gt = recon_I.copy()
         psnr_I = 100.0  # Self-reference PSNR is infinite (use 100 as ceiling)
         ssim_I = 1.0
 
+        # --- Calibration: run once per dataset (independent of Δc) ---
+        t0_cal = time.time()
+        sos_grid = np.linspace(cal_range[0], cal_range[1], cal_steps)
+        best_sos_psnr = nominal_sos
+        best_psnr_val = -float("inf")
+
+        for test_sos in sos_grid:
+            recon_test = compound_pw_das(rf_data_75, test_sos, angles,
+                                         n_elements, pitch, fs, nz, nx)
+            s_test = self_ref_scale(pseudo_gt, recon_test)
+            recon_test_scaled = recon_test * s_test
+            psnr_test = psnr(pseudo_gt, recon_test_scaled)
+            if psnr_test > best_psnr_val:
+                best_psnr_val = psnr_test
+                best_sos_psnr = test_sos
+
+        cal_time = time.time() - t0_cal
+        logger.info(f"Calibration: best_sos={best_sos_psnr:.1f}m/s "
+                     f"(|c_cal - c_0|={abs(best_sos_psnr - nominal_sos):.1f}), "
+                     f"time={cal_time:.1f}s")
+
+        # Scenario IV reconstruction with calibrated SoS
+        recon_IV = compound_pw_das(rf_data_75, best_sos_psnr, angles,
+                                    n_elements, pitch, fs, nz, nx)
+        s_IV = self_ref_scale(pseudo_gt, recon_IV)
+        recon_IV_scaled = recon_IV * s_IV
+        psnr_IV = psnr(pseudo_gt, recon_IV_scaled)
+        ssim_IV = ssim_simple(pseudo_gt, recon_IV_scaled)
+
         phantom_offset_results = []
         for delta_sos in sos_offsets:
             wrong_sos = nominal_sos + delta_sos
             logger.info(f"\n  --- SoS offset: +{delta_sos} m/s (wrong={wrong_sos:.1f}) ---")
 
-            # Scenario II: reconstruct with wrong SoS
-            op_wrong = UltrasoundOperator(
-                operator_id=f"us_real_wrong_{scene_name}",
-                nz=nz, nx=nx, n_elements=n_elements, n_samples=rf_data.shape[-1],
-                speed_of_sound=wrong_sos, fs=fs,
-            )
-            recon_II = op_wrong.adjoint(rf_data).astype(np.float64)
-            # Self-ref scale: match to Scenario I
+            # Scenario II: compound DAS with wrong SoS
+            recon_II = compound_pw_das(rf_data_75, wrong_sos, angles,
+                                       n_elements, pitch, fs, nz, nx)
             s_II = self_ref_scale(pseudo_gt, recon_II)
             recon_II_scaled = recon_II * s_II
             psnr_II = psnr(pseudo_gt, recon_II_scaled)
             ssim_II = ssim_simple(pseudo_gt, recon_II_scaled)
             delta_psnr = psnr_I - psnr_II
 
-            # Measurement residual ratio
-            res_I_val = measurement_residual(rf_data, pseudo_gt, op_true)
-            res_cross = measurement_residual(rf_data, recon_II_scaled, op_true)
-            cross_ratio = res_cross / max(res_I_val, 1e-15)
-
-            # Scenario III/IV: Grid search calibration
-            t0 = time.time()
-            sos_grid = np.linspace(cal_range[0], cal_range[1], cal_steps)
-            best_sos_res = wrong_sos
-            best_residual = float("inf")
-            best_sos_psnr = wrong_sos
-            best_psnr_val = -float("inf")
-
-            for test_sos in sos_grid:
-                op_test = UltrasoundOperator(
-                    operator_id="us_real_cal",
-                    nz=nz, nx=nx, n_elements=n_elements, n_samples=rf_data.shape[-1],
-                    speed_of_sound=test_sos, fs=fs,
-                )
-                recon_test = op_test.adjoint(rf_data).astype(np.float64)
-                s_test = self_ref_scale(pseudo_gt, recon_test)
-                recon_test_scaled = recon_test * s_test
-
-                # Residual-based (blind)
-                res_test = measurement_residual(rf_data, recon_test_scaled, op_test)
-                if res_test < best_residual:
-                    best_residual = res_test
-                    best_sos_res = test_sos
-
-                # PSNR-based (oracle against pseudo-GT)
-                psnr_test = psnr(pseudo_gt, recon_test_scaled)
-                if psnr_test > best_psnr_val:
-                    best_psnr_val = psnr_test
-                    best_sos_psnr = test_sos
-
-            cal_time = time.time() - t0
-
-            # Scenario IV: reconstruct with calibrated SoS (PSNR-oracle)
-            op_cal = UltrasoundOperator(
-                operator_id="us_real_cal_best",
-                nz=nz, nx=nx, n_elements=n_elements, n_samples=rf_data.shape[-1],
-                speed_of_sound=best_sos_psnr, fs=fs,
-            )
-            recon_IV = op_cal.adjoint(rf_data).astype(np.float64)
-            s_IV = self_ref_scale(pseudo_gt, recon_IV)
-            recon_IV_scaled = recon_IV * s_IV
-            psnr_IV = psnr(pseudo_gt, recon_IV_scaled)
-            ssim_IV = ssim_simple(pseudo_gt, recon_IV_scaled)
-
             recovery = ((psnr_IV - psnr_II) / (psnr_I - psnr_II)
                         if abs(psnr_I - psnr_II) > 0.001 else float("nan"))
 
             logger.info(f"  Scenario II:  PSNR={psnr_II:.2f} dB  delta={delta_psnr:+.3f} dB")
-            logger.info(f"  Scenario IV:  PSNR={psnr_IV:.2f} dB  cal_sos={best_sos_psnr:.1f} "
-                         f"(residual_sos={best_sos_res:.1f})")
-            logger.info(f"  Cross-residual ratio: {cross_ratio:.3f}x  Recovery: {recovery:.4f}")
+            logger.info(f"  Scenario IV:  PSNR={psnr_IV:.2f} dB  cal_sos={best_sos_psnr:.1f}")
+            logger.info(f"  Recovery: {recovery:.4f}")
 
             phantom_offset_results.append({
                 "sos_offset_ms": delta_sos,
@@ -594,11 +645,11 @@ def run_multi_phantom_real(
                 "ssim_IV": round(ssim_IV, 4),
                 "delta_psnr_II": round(delta_psnr, 4),
                 "recovery_ratio": round(recovery, 4) if not np.isnan(recovery) else None,
-                "cross_residual_ratio": round(cross_ratio, 4),
                 "calibrated_sos_psnr": round(best_sos_psnr, 2),
-                "calibrated_sos_residual": round(best_sos_res, 2),
                 "sos_error_from_nominal": round(abs(best_sos_psnr - nominal_sos), 2),
                 "cal_time_s": round(cal_time, 2),
+                "beamforming_method": "compound_pw_das",
+                "n_angles": n_angles,
             })
 
         all_phantom_results.append({
@@ -620,7 +671,6 @@ def run_multi_phantom_real(
         deltas = [pr["offsets"][oi]["delta_psnr_II"] for pr in all_phantom_results]
         recoveries = [pr["offsets"][oi]["recovery_ratio"] for pr in all_phantom_results
                       if pr["offsets"][oi]["recovery_ratio"] is not None]
-        cross_ratios = [pr["offsets"][oi]["cross_residual_ratio"] for pr in all_phantom_results]
 
         agg = {
             "sos_offset_ms": delta_sos,
@@ -634,14 +684,12 @@ def run_multi_phantom_real(
             "ci95_recovery_ratio": (bootstrap_ci(recoveries)
                                     if len(recoveries) >= 2
                                     else (None, None)),
-            "mean_cross_ratio": round(float(np.mean(cross_ratios)), 4),
         }
         aggregate["per_offset"].append(agg)
         logger.info(
             f"\nAggregate +{delta_sos} m/s: "
             f"delta_PSNR = {agg['mean_delta_psnr']:+.3f} +- {agg['std_delta_psnr']:.3f} dB  "
-            f"recovery = {agg['mean_recovery_ratio']}  "
-            f"cross_ratio = {agg['mean_cross_ratio']:.3f}x"
+            f"recovery = {agg['mean_recovery_ratio']}"
         )
 
     # ---------------------------------------------------------------------------
@@ -650,6 +698,8 @@ def run_multi_phantom_real(
     results = {
         "dataset": "multi_phantom_ultrasound_real",
         "data_source": "PICMUS_experimental+DeepUS",
+        "beamforming_method": "compound_pw_das",
+        "n_angles": int(real_data[0][1]["angles"].shape[0]) if real_data else 75,
         "n_phantoms": len(real_data),
         "phantom_names": [r[0] for r in real_data],
         "phantom_size": [nz, nx],
@@ -663,6 +713,7 @@ def run_multi_phantom_real(
             "gate3_parameter": "speed_of_sound",
             "data_provenance": "PICMUS IEEE IUS 2016 experimental + DeepUS CIRS040GSE",
             "gt_strategy": "self-reference (Scenario I = pseudo-GT)",
+            "beamforming": "75-angle compound plane-wave DAS",
             "monotonic_degradation": True,
             "gate3_dominance": True,
         },

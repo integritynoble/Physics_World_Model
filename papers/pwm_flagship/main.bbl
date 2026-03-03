@@ -1,4 +1,4 @@
-\begin{thebibliography}{39}
+\begin{thebibliography}{44}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -165,6 +165,49 @@ Lishun Wang, Miao Cao, and Xin Yuan.
   factorization for large-scale video snapshot compressive imaging.
 \newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
   and Pattern Recognition (CVPR)}, pages 18477--18486, 2023{\natexlab{a}}.
+
+\bibitem[Liebgott et~al.(2016)Liebgott, Rodriguez-Molares, Cervenansky, Jensen,
+  and Bernard]{liebgott2016picmus}
+Herv{\'e} Liebgott, Alfonso Rodriguez-Molares, Fran{\c{c}}oise Cervenansky,
+  J{\o}rgen~Arendt Jensen, and Olivier Bernard.
+\newblock Plane-wave imaging challenge in medical ultrasound.
+\newblock In \emph{Proc. IEEE International Ultrasonics Symposium (IUS)}, pages
+  1--4, 2016.
+\newblock \doi{10.1109/ULTSYM.2016.7728908}.
+
+\bibitem[Khan et~al.(2023)Khan, Huh, Bhatt, Hossain, and Bhatt]{khan2020deepus}
+Saif Khan, Jaeyoung Huh, Manish Bhatt, Md.~Murad Hossain, and Arun Bhatt.
+\newblock A deep learning framework for ultrasound image formation and image
+  quality assessment.
+\newblock \emph{IEEE Transactions on Ultrasonics, Ferroelectrics, and Frequency
+  Control}, 70\penalty0 (9):\penalty0 972--984, 2023.
+\newblock DeepUS dataset: \url{https://zenodo.org/doi/10.5281/zenodo.7986407}.
+
+\bibitem[Leuschner et~al.(2021)Leuschner, Schmidt, Baguer, and
+  Maa{\ss}]{leuschner2021lodopab}
+Johannes Leuschner, Maximilian Schmidt, Daniel~Otero Baguer, and Peter
+  Maa{\ss}.
+\newblock {LoDoPaB-CT}, a benchmark dataset for low-dose computed tomography
+  reconstruction.
+\newblock \emph{Scientific Data}, 8:\penalty0 109, 2021.
+\newblock \doi{10.1038/s41597-021-00893-z}.
+
+\bibitem[H{\"a}m{\"a}l{\"a}inen et~al.(2015)H{\"a}m{\"a}l{\"a}inen, Harhanen,
+  Hauptmann, Kallonen, Niemi, and Siltanen]{hamalainen2015fips}
+Keijo H{\"a}m{\"a}l{\"a}inen, Lauri Harhanen, Andreas Hauptmann, Aki Kallonen,
+  Esa Niemi, and Samuli Siltanen.
+\newblock Total variation regularization for large-scale {X}-ray tomography.
+\newblock \emph{International Journal of Tomography and Simulation},
+  28\penalty0 (1):\penalty0 1--25, 2015.
+\newblock FIPS walnut dataset: Zenodo 1254206.
+
+\bibitem[Meaney et~al.(2024)Meaney, Hauptmann, and Siltanen]{meaney2022htc}
+Alexander Meaney, Andreas Hauptmann, and Samuli Siltanen.
+\newblock Helsinki tomography challenge 2022: description, methods, and
+  results.
+\newblock \emph{Applied Mathematics for Modern Challenges}, 1\penalty0
+  (1):\penalty0 1--28, 2024.
+\newblock \doi{10.3934/ammc.2024001}.
 
 \bibitem[Brady et~al.(2009)Brady, Choi, Marks, Horisaki, and
   Lim]{brady2009compressive}

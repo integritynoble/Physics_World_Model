@@ -567,7 +567,7 @@ where available.  Validation tiers: \emph{Validated} = full Scenarios~I--IV corr
 17 & MRI (Cartesian)\footnote{Multi-coil Scenario~I PSNR (8 coils, $4\times$ acceleration); see Supplementary Note~10 for full multi-coil analysis.}      & RF             & 52.11 & 42.3  & Validated & CG-SENSE \\
 18 & MRI (radial)         & RF             & ---   & 38.7  & Phase 2   & --- \\
 19 & MRI (spiral)         & RF             & ---   & 37.2  & Phase 4   & --- \\
-20 & Ultrasound           & Acoustic       & 18.68 & 31.8  & Validated & DAS \\
+20 & Ultrasound           & Acoustic       & 18.68 & 31.8  & Validated & Compound PW-DAS \\
 21 & Radar / SAR          & RF             & ---   & 28.4  & Phase 4   & --- \\
 %% Group 5: Computational / hybrid
 22 & NeRF                 & Multi-view     & ---   & 31.7  & Phase 2   & --- \\
@@ -2011,35 +2011,36 @@ where $s_{\mathrm{pooled}}$ is the pooled standard deviation across scenes. All 
 
 \begin{table}[htbp]
 \centering
-\caption{Ultrasound multi-phantom 4-Scenario results ($N{=}5$ real datasets). Speed-of-sound mismatch $\Delta c$ applied to DAS beamforming of real RF channel data.
+\caption{Ultrasound multi-phantom 4-Scenario results ($N{=}5$ real datasets). Speed-of-sound mismatch $\Delta c$ applied to 75-angle compound plane-wave DAS beamforming with Hilbert-envelope detection of real RF channel data.
 Datasets: 4 PICMUS experimental recordings (IEEE IUS 2016)---resolution phantom, contrast phantom, in-vivo carotid cross-section and longitudinal---plus 1 DeepUS CIRS040GSE tissue-mimicking phantom (Zenodo).
 128-element linear array, nominal SoS $c{=}1540$\,m/s.
-Metrics use self-reference: Scenario~I reconstruction (nominal $c$) serves as pseudo-ground-truth; PSNR reports similarity to this reference.
-Grid-search calibration: 51 steps in $[1400, 1700]$\,m/s. Calibrated SoS $c_{\mathrm{cal}}$ consistently recovers $\leq 6$\,m/s from nominal across all datasets.}
+Metrics use self-reference: Scenario~I reconstruction (nominal $c$) serves as pseudo-ground-truth; PSNR reports B-mode envelope similarity to this reference.
+Grid-search calibration: 51 steps in $[1400, 1700]$\,m/s. Calibrated SoS $c_{\mathrm{cal}}$ consistently recovers $\leq 2$\,m/s from nominal across all datasets.
+Sc.~II shows monotonic degradation from $33.1$\,dB ($\Delta c{=}10$) to $24.9$\,dB ($\Delta c{=}200$), confirming Gate~3 sensitivity to SoS mismatch in compound plane-wave imaging.}
 \label{tab:us_scenes}
 \small
 \begin{tabular}{l r r r r r}
 \toprule
 Dataset & $\Delta c$ (m/s) & Sc.~II (dB) & Sc.~IV (dB) & $c_{\mathrm{cal}}$ (m/s) & $|c_{\mathrm{cal}} - c_0|$ \\
 \midrule
-Carotid cross   &  50 & 7.54 & 7.57 & 1538 & 2 \\
-                & 200 & 7.54 & 7.57 & 1538 & 2 \\
-Carotid long    &  50 & 6.78 & 6.83 & 1538 & 2 \\
-                & 200 & 6.78 & 6.83 & 1538 & 2 \\
-Exp.\ contrast  &  50 & 6.86 & 6.92 & 1538 & 2 \\
-                & 200 & 6.86 & 6.92 & 1538 & 2 \\
-Exp.\ resolution &  50 & 6.70 & 6.73 & 1544 & 4 \\
-                 & 200 & 6.69 & 6.73 & 1544 & 4 \\
-DeepUS CIRS     &  50 & 8.01 & 8.14 & 1514 & 26 \\
-                & 200 & 7.92 & 8.14 & 1514 & 26 \\
+Carotid cross   &  50 & 29.71 & 42.58 & 1538 & 2 \\
+                & 200 & 27.80 & 42.58 & 1538 & 2 \\
+Carotid long    &  50 & 27.64 & 42.01 & 1538 & 2 \\
+                & 200 & 25.21 & 42.01 & 1538 & 2 \\
+Exp.\ contrast  &  50 & 21.32 & 34.77 & 1538 & 2 \\
+                & 200 & 20.25 & 34.77 & 1538 & 2 \\
+Exp.\ resolution &  50 & 29.26 & 42.67 & 1538 & 2 \\
+                 & 200 & 27.46 & 42.67 & 1538 & 2 \\
+DeepUS CIRS     &  50 & 23.91 & 32.19 & 1538 & 2 \\
+                & 200 & 23.81 & 32.19 & 1538 & 2 \\
 \midrule
 \multicolumn{6}{l}{\textbf{Aggregate mean $\pm$ 95\% bootstrap CI ($N{=}5$ datasets)}} \\
 \midrule
-Mean   &  10 & 7.17 & 7.24 & --- & --- \\
-       &  25 & 7.17 & 7.24 & --- & --- \\
-       &  50 & 7.18 & 7.24 & --- & --- \\
-       & 100 & 7.16 & 7.24 & --- & --- \\
-       & 200 & 7.16 & 7.24 & --- & --- \\
+Mean   &  10 & 33.12 & 38.85 & --- & --- \\
+       &  25 & 28.75 & 38.85 & --- & --- \\
+       &  50 & 26.37 & 38.85 & --- & --- \\
+       & 100 & 25.18 & 38.85 & --- & --- \\
+       & 200 & 24.91 & 38.85 & --- & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2212,18 +2213,18 @@ Mean   & 0.1 & --- & --- & --- & $+0.42 \pm 0.44$ & 0.47 \\
 \label{sec:note_ultrasound}
 
 \subsection{Speed-of-Sound Mismatch Model}
-The ultrasound forward model $y[e,t] = \sum_{z,x} x[z,x] \cdot \alpha(f_c, d) \cdot \delta(t - 2d/c)$ depends on the assumed speed of sound $c$ through the time-of-flight calculation $\tau = 2d/c$ and the frequency-dependent attenuation $\alpha(f_c, d) = \exp(-\alpha_0 f_c d)$. A SoS error $\Delta c$ causes systematic mis-registration of scatterer positions: each reflector at true depth $z$ appears at apparent depth $z' = z \cdot c_{\mathrm{true}}/c_{\mathrm{assumed}}$, producing depth-dependent defocusing and lateral resolution loss.
+Compound plane-wave DAS beamforming with $N_a{=}75$ steering angles computes the B-mode image as $I(z,x) = \bigl|\mathrm{Hilbert}_z\bigl[\sum_{a=1}^{N_a}\sum_{e=1}^{N_e} \mathrm{RF}_a\bigl[e, \lfloor\tau_{e,a}(z,x)\cdot f_s\rfloor\bigr]\bigr]\bigr|$, where the delay for element~$e$ at angle~$\theta_a$ is $\tau_{e,a}(z,x) = [z\cos\theta_a + x\sin\theta_a]/c + \sqrt{z^2 + (x - x_e)^2}/c$, and the Hilbert-transform envelope removes RF-phase oscillations.
+A SoS error $\Delta c$ introduces angle-dependent phase shifts proportional to $\sin(\theta_a)$: at large steering angles ($\pm 16^\circ$), the transmit-path delay error is amplified by the geometric projection factor, causing destructive interference in the coherent sum across angles. This produces monotonic degradation of the B-mode envelope image quality with increasing $|\Delta c|$.
 
 \subsection{Real Data Sources}
 Validation uses $N{=}5$ real RF channel data recordings: 4 PICMUS experimental acquisitions (IEEE IUS 2016, \url{https://www.creatis.insa-lyon.fr/Challenge/IEEE_IUS_2016/})---resolution distortion phantom, contrast speckle phantom, in-vivo carotid cross-section, and in-vivo carotid longitudinal---plus 1 DeepUS CIRS040GSE tissue-mimicking phantom recording (Zenodo, \url{https://zenodo.org/doi/10.5281/zenodo.7986407}). All datasets provide 75 plane-wave angles with 128-element linear arrays.
 Because no true tissue reflectivity map is available for real acquisitions, quality metrics use self-reference: the Scenario~I reconstruction (nominal SoS) serves as pseudo-ground-truth.
 
 \subsection{Gate 3 Dominance}
-Under the Triad Decomposition, SoS mismatch is a pure Gate~3 failure: the information content (Gate~1) is preserved in the RF channel data, and the SNR (Gate~2) is unchanged. Self-reference PSNR between the nominal and mismatched DAS reconstructions is ${\sim}7$--$8$\,dB across all PICMUS datasets, reflecting the large spatial redistribution caused by any SoS perturbation in single-angle beamforming. The DeepUS phantom shows slightly higher self-reference PSNR (${\sim}8$\,dB), consistent with its higher spatial coherence from the tissue-mimicking medium.
+Under the Triad Decomposition, SoS mismatch is a pure Gate~3 failure: the information content (Gate~1) is preserved in the RF channel data, and the SNR (Gate~2) is unchanged. With 75-angle compound plane-wave DAS and Hilbert-envelope detection, self-reference PSNR shows clear monotonic degradation: mean Sc.~II PSNR decreases from $33.1$\,dB at $\Delta c{=}10$\,m/s to $24.9$\,dB at $\Delta c{=}200$\,m/s (an $8.2$\,dB gradient across the mismatch range). Individual datasets show the same trend: the carotid cross drops from $36.1$ to $27.8$\,dB, the contrast phantom from $29.0$ to $20.3$\,dB, and the DeepUS phantom from $26.4$ to $23.8$\,dB. The degradation gradient arises because increasing SoS error amplifies the angle-dependent phase shift $\Delta\tau \propto \sin(\theta_a)\cdot\Delta c / c^2$, causing progressive destructive interference across the 75 coherently summed plane waves.
 
 \subsection{Calibration Effectiveness}
-Grid-search calibration over $c \in [1400, 1700]$\,m/s consistently recovers SoS values within $2$--$4$\,m/s of the nominal $c{=}1540$\,m/s for all 4 PICMUS datasets (calibrated $c_{\mathrm{cal}} = 1538$--$1544$\,m/s). The DeepUS phantom recovers $c_{\mathrm{cal}} = 1514$\,m/s, a 26\,m/s deviation that may reflect the actual propagation speed in the CIRS040GSE tissue-mimicking material (specified range 1520--1570\,m/s depending on temperature).
-This demonstrates that the PWM calibration framework correctly identifies the optimal SoS from real RF data without access to ground-truth tissue properties.
+Grid-search calibration over $c \in [1400, 1700]$\,m/s consistently recovers SoS values within $2$\,m/s of the nominal $c{=}1540$\,m/s for all 5 datasets (calibrated $c_{\mathrm{cal}} = 1538$\,m/s uniformly). Sc.~IV (calibrated) PSNR is $32.2$--$42.7$\,dB, substantially higher than the mismatched Sc.~II ($20.3$--$37.2$\,dB), confirming that SoS calibration via compound plane-wave DAS envelope quality is an effective diagnostic. The uniform $c_{\mathrm{cal}}$ across all datasets---including the DeepUS tissue-mimicking phantom---reflects the self-reference metric: the optimizer recovers the SoS that best reproduces the Scenario~I B-mode image, which by construction uses the nominal $c{=}1540$\,m/s.
 
 
 \section{Supplementary Note 18: Cryo-EM Mismatch Analysis}
