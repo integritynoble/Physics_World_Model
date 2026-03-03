@@ -1,0 +1,466 @@
+{
+  "modality": "cbct",
+  "data_source": "real_CT (LoDoPaB + FIPS walnut + HTC 2022)",
+  "geometry": "parallel_beam_with_detector_offset",
+  "n_phantoms": 5,
+  "phantom_names": [
+    "lodopab_sample_00",
+    "lodopab_sample_05",
+    "lodopab_sample_10",
+    "fips_walnut",
+    "htc2022_sampleA"
+  ],
+  "phantom_size": 128,
+  "n_angles": 360,
+  "offset_levels": [
+    2,
+    5,
+    10,
+    15,
+    20
+  ],
+  "calibration_range": [
+    -25.0,
+    25.0
+  ],
+  "calibration_steps": 51,
+  "per_phantom": [
+    {
+      "phantom_name": "lodopab_sample_00",
+      "data_source": "real_CT",
+      "offsets": [
+        {
+          "detector_offset_px": 2,
+          "psnr_I": 8.0129,
+          "psnr_II": 7.6936,
+          "psnr_IV": 10.1809,
+          "ssim_I": 0.2634,
+          "ssim_II": 0.1896,
+          "ssim_IV": 0.3371,
+          "delta_psnr_db": 0.3193,
+          "recovery_ratio": 7.7902,
+          "calibrated_offset_px": 1.0,
+          "cal_time_s": 30.02
+        },
+        {
+          "detector_offset_px": 5,
+          "psnr_I": 7.5784,
+          "psnr_II": 7.2802,
+          "psnr_IV": 8.1161,
+          "ssim_I": 0.168,
+          "ssim_II": 0.0988,
+          "ssim_IV": 0.2352,
+          "delta_psnr_db": 0.2982,
+          "recovery_ratio": 2.8028,
+          "calibrated_offset_px": 4.0,
+          "cal_time_s": 20.11
+        },
+        {
+          "detector_offset_px": 10,
+          "psnr_I": 7.4118,
+          "psnr_II": 7.1318,
+          "psnr_IV": 7.706,
+          "ssim_I": 0.1196,
+          "ssim_II": 0.0506,
+          "ssim_IV": 0.1563,
+          "delta_psnr_db": 0.2799,
+          "recovery_ratio": 2.051,
+          "calibrated_offset_px": 9.0,
+          "cal_time_s": 20.86
+        },
+        {
+          "detector_offset_px": 15,
+          "psnr_I": 7.335,
+          "psnr_II": 7.0828,
+          "psnr_IV": 7.5481,
+          "ssim_I": 0.0841,
+          "ssim_II": 0.0227,
+          "ssim_IV": 0.1098,
+          "delta_psnr_db": 0.2522,
+          "recovery_ratio": 1.845,
+          "calibrated_offset_px": 14.0,
+          "cal_time_s": 22.46
+        },
+        {
+          "detector_offset_px": 20,
+          "psnr_I": 7.2717,
+          "psnr_II": 7.066,
+          "psnr_IV": 7.4421,
+          "ssim_I": 0.0605,
+          "ssim_II": 0.0126,
+          "ssim_IV": 0.0758,
+          "delta_psnr_db": 0.2057,
+          "recovery_ratio": 1.8283,
+          "calibrated_offset_px": 19.0,
+          "cal_time_s": 22.25
+        }
+      ]
+    },
+    {
+      "phantom_name": "lodopab_sample_05",
+      "data_source": "real_CT",
+      "offsets": [
+        {
+          "detector_offset_px": 2,
+          "psnr_I": 12.017,
+          "psnr_II": 10.7584,
+          "psnr_IV": 12.5144,
+          "ssim_I": -0.0013,
+          "ssim_II": 0.0215,
+          "ssim_IV": 0.0531,
+          "delta_psnr_db": 1.2586,
+          "recovery_ratio": 1.3952,
+          "calibrated_offset_px": 1.0,
+          "cal_time_s": 21.29
+        },
+        {
+          "detector_offset_px": 5,
+          "psnr_I": 11.2825,
+          "psnr_II": 9.7043,
+          "psnr_IV": 11.6004,
+          "ssim_I": 0.0197,
+          "ssim_II": -0.0073,
+          "ssim_IV": 0.0421,
+          "delta_psnr_db": 1.5783,
+          "recovery_ratio": 1.2014,
+          "calibrated_offset_px": 4.0,
+          "cal_time_s": 22.96
+        },
+        {
+          "detector_offset_px": 10,
+          "psnr_I": 10.788,
+          "psnr_II": 9.3699,
+          "psnr_IV": 10.9291,
+          "ssim_I": 0.0733,
+          "ssim_II": 0.0348,
+          "ssim_IV": 0.0719,
+          "delta_psnr_db": 1.418,
+          "recovery_ratio": 1.0995,
+          "calibrated_offset_px": 9.0,
+          "cal_time_s": 22.56
+        },
+        {
+          "detector_offset_px": 15,
+          "psnr_I": 10.6611,
+          "psnr_II": 9.2919,
+          "psnr_IV": 10.769,
+          "ssim_I": 0.1067,
+          "ssim_II": 0.033,
+          "ssim_IV": 0.0864,
+          "delta_psnr_db": 1.3692,
+          "recovery_ratio": 1.0788,
+          "calibrated_offset_px": 14.0,
+          "cal_time_s": 22.28
+        },
+        {
+          "detector_offset_px": 20,
+          "psnr_I": 10.5955,
+          "psnr_II": 9.2506,
+          "psnr_IV": 10.6966,
+          "ssim_I": 0.1136,
+          "ssim_II": 0.0207,
+          "ssim_IV": 0.0966,
+          "delta_psnr_db": 1.3449,
+          "recovery_ratio": 1.0752,
+          "calibrated_offset_px": 19.0,
+          "cal_time_s": 22.94
+        }
+      ]
+    },
+    {
+      "phantom_name": "lodopab_sample_10",
+      "data_source": "real_CT",
+      "offsets": [
+        {
+          "detector_offset_px": 2,
+          "psnr_I": 16.6747,
+          "psnr_II": 15.8284,
+          "psnr_IV": 17.1968,
+          "ssim_I": 0.3155,
+          "ssim_II": 0.1469,
+          "ssim_IV": 0.2566,
+          "delta_psnr_db": 0.8463,
+          "recovery_ratio": 1.6169,
+          "calibrated_offset_px": 1.0,
+          "cal_time_s": 21.72
+        },
+        {
+          "detector_offset_px": 5,
+          "psnr_I": 16.2072,
+          "psnr_II": 15.0664,
+          "psnr_IV": 16.501,
+          "ssim_I": 0.2889,
+          "ssim_II": 0.1109,
+          "ssim_IV": 0.2237,
+          "delta_psnr_db": 1.1407,
+          "recovery_ratio": 1.2575,
+          "calibrated_offset_px": 4.0,
+          "cal_time_s": 21.99
+        },
+        {
+          "detector_offset_px": 10,
+          "psnr_I": 15.8162,
+          "psnr_II": 14.5509,
+          "psnr_IV": 16.0304,
+          "ssim_I": 0.2325,
+          "ssim_II": 0.1213,
+          "ssim_IV": 0.1841,
+          "delta_psnr_db": 1.2653,
+          "recovery_ratio": 1.1693,
+          "calibrated_offset_px": 9.0,
+          "cal_time_s": 23.53
+        },
+        {
+          "detector_offset_px": 15,
+          "psnr_I": 15.4924,
+          "psnr_II": 14.2539,
+          "psnr_IV": 15.6566,
+          "ssim_I": 0.1647,
+          "ssim_II": 0.0904,
+          "ssim_IV": 0.1283,
+          "delta_psnr_db": 1.2385,
+          "recovery_ratio": 1.1326,
+          "calibrated_offset_px": 14.0,
+          "cal_time_s": 23.69
+        },
+        {
+          "detector_offset_px": 20,
+          "psnr_I": 15.2221,
+          "psnr_II": 14.0855,
+          "psnr_IV": 15.3594,
+          "ssim_I": 0.1185,
+          "ssim_II": 0.0882,
+          "ssim_IV": 0.0878,
+          "delta_psnr_db": 1.1366,
+          "recovery_ratio": 1.1208,
+          "calibrated_offset_px": 19.0,
+          "cal_time_s": 23.89
+        }
+      ]
+    },
+    {
+      "phantom_name": "fips_walnut",
+      "data_source": "real_CT",
+      "offsets": [
+        {
+          "detector_offset_px": 2,
+          "psnr_I": 12.6188,
+          "psnr_II": 10.6496,
+          "psnr_IV": 12.6188,
+          "ssim_I": 0.1461,
+          "ssim_II": 0.0005,
+          "ssim_IV": 0.1461,
+          "delta_psnr_db": 1.9692,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 2.0,
+          "cal_time_s": 21.68
+        },
+        {
+          "detector_offset_px": 5,
+          "psnr_I": 12.1499,
+          "psnr_II": 9.5063,
+          "psnr_IV": 12.1499,
+          "ssim_I": 0.2039,
+          "ssim_II": -0.0542,
+          "ssim_IV": 0.2039,
+          "delta_psnr_db": 2.6436,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 5.0,
+          "cal_time_s": 24.52
+        },
+        {
+          "detector_offset_px": 10,
+          "psnr_I": 11.8429,
+          "psnr_II": 9.2559,
+          "psnr_IV": 11.8429,
+          "ssim_I": 0.2317,
+          "ssim_II": -0.0291,
+          "ssim_IV": 0.2317,
+          "delta_psnr_db": 2.5869,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 10.0,
+          "cal_time_s": 22.87
+        },
+        {
+          "detector_offset_px": 15,
+          "psnr_I": 11.6352,
+          "psnr_II": 9.2728,
+          "psnr_IV": 11.6352,
+          "ssim_I": 0.1995,
+          "ssim_II": -0.0203,
+          "ssim_IV": 0.1995,
+          "delta_psnr_db": 2.3623,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 15.0,
+          "cal_time_s": 20.53
+        },
+        {
+          "detector_offset_px": 20,
+          "psnr_I": 11.0839,
+          "psnr_II": 9.1829,
+          "psnr_IV": 11.0839,
+          "ssim_I": 0.1311,
+          "ssim_II": -0.0065,
+          "ssim_IV": 0.1311,
+          "delta_psnr_db": 1.901,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 20.0,
+          "cal_time_s": 19.86
+        }
+      ]
+    },
+    {
+      "phantom_name": "htc2022_sampleA",
+      "data_source": "real_CT",
+      "offsets": [
+        {
+          "detector_offset_px": 2,
+          "psnr_I": 8.7752,
+          "psnr_II": 7.3557,
+          "psnr_IV": 8.7752,
+          "ssim_I": 0.2645,
+          "ssim_II": 0.1156,
+          "ssim_IV": 0.2645,
+          "delta_psnr_db": 1.4195,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 2.0,
+          "cal_time_s": 19.06
+        },
+        {
+          "detector_offset_px": 5,
+          "psnr_I": 8.3851,
+          "psnr_II": 5.71,
+          "psnr_IV": 8.3851,
+          "ssim_I": 0.2471,
+          "ssim_II": 0.0096,
+          "ssim_IV": 0.2471,
+          "delta_psnr_db": 2.6751,
+          "recovery_ratio": 1.0,
+          "calibrated_offset_px": 5.0,
+          "cal_time_s": 20.01
+        },
+        {
+          "detector_offset_px": 10,
+          "psnr_I": 6.8265,
+          "psnr_II": 5.0818,
+          "psnr_IV": 6.9803,
+          "ssim_I": 0.147,
+          "ssim_II": -0.0311,
+          "ssim_IV": 0.0926,
+          "delta_psnr_db": 1.7447,
+          "recovery_ratio": 1.0881,
+          "calibrated_offset_px": 9.0,
+          "cal_time_s": 21.16
+        },
+        {
+          "detector_offset_px": 15,
+          "psnr_I": 6.1085,
+          "psnr_II": 4.9647,
+          "psnr_IV": 6.1992,
+          "ssim_I": 0.0881,
+          "ssim_II": -0.0307,
+          "ssim_IV": 0.0595,
+          "delta_psnr_db": 1.1438,
+          "recovery_ratio": 1.0793,
+          "calibrated_offset_px": 14.0,
+          "cal_time_s": 22.83
+        },
+        {
+          "detector_offset_px": 20,
+          "psnr_I": 5.7352,
+          "psnr_II": 4.9536,
+          "psnr_IV": 5.791,
+          "ssim_I": 0.0468,
+          "ssim_II": -0.0332,
+          "ssim_IV": 0.0283,
+          "delta_psnr_db": 0.7815,
+          "recovery_ratio": 1.0714,
+          "calibrated_offset_px": 19.0,
+          "cal_time_s": 20.41
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "per_offset": [
+      {
+        "detector_offset_px": 2,
+        "mean_delta_psnr": 1.1626,
+        "std_delta_psnr": 0.5544,
+        "ci95_delta_psnr": [
+          0.6447,
+          1.6347
+        ],
+        "mean_recovery": 2.5605,
+        "ci95_recovery": [
+          1.079,
+          5.1975
+        ]
+      },
+      {
+        "detector_offset_px": 5,
+        "mean_delta_psnr": 1.6672,
+        "std_delta_psnr": 0.9087,
+        "ci95_delta_psnr": [
+          0.8101,
+          2.4431
+        ],
+        "mean_recovery": 1.4523,
+        "ci95_recovery": [
+          1.0403,
+          2.1332
+        ]
+      },
+      {
+        "detector_offset_px": 10,
+        "mean_delta_psnr": 1.459,
+        "std_delta_psnr": 0.7461,
+        "ci95_delta_psnr": [
+          0.7699,
+          2.0888
+        ],
+        "mean_recovery": 1.2816,
+        "ci95_recovery": [
+          1.0529,
+          1.6821
+        ]
+      },
+      {
+        "detector_offset_px": 15,
+        "mean_delta_psnr": 1.2732,
+        "std_delta_psnr": 0.6717,
+        "ci95_delta_psnr": [
+          0.6539,
+          1.8938
+        ],
+        "mean_recovery": 1.2271,
+        "ci95_recovery": [
+          1.0423,
+          1.5493
+        ]
+      },
+      {
+        "detector_offset_px": 20,
+        "mean_delta_psnr": 1.0739,
+        "std_delta_psnr": 0.5658,
+        "ci95_delta_psnr": [
+          0.5512,
+          1.5659
+        ],
+        "mean_recovery": 1.2191,
+        "ci95_recovery": [
+          1.0392,
+          1.5354
+        ]
+      }
+    ]
+  },
+  "key_findings": {
+    "carrier": "x_ray",
+    "gate3_parameter": "detector_offset",
+    "data_provenance": "LoDoPaB-CT (3 patient slices) + FIPS walnut + HTC 2022 sample A",
+    "gt_strategy": "real_gt (original CT image)",
+    "gate3_dominance": true,
+    "monotonic_degradation": true
+  }
+}

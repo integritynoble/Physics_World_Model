@@ -720,6 +720,19 @@ Calibration uses a $9 \times 9$ grid search over
 $(\sigma_{\mathrm{ex}}, \sigma_{\mathrm{em}})$ centered at the nominal
 values, selecting the pair that minimizes the measurement residual.
 
+\paragraph{Real experimental data.}
+Three of the five multi-phantom modalities are validated on real
+experimental data from established benchmarks: ultrasound uses PICMUS
+experimental phantom recordings and in-vivo carotid
+scans~\cite{liebgott2016picmus} plus one DeepUS CIRS-040GSE
+acquisition~\cite{khan2020deepus}; cryo-EM uses five EMDB 3D density maps
+(EMD-5778, EMD-2984, EMD-6287, EMD-11103, EMD-21375) projected at random
+orientations; CT uses three LoDoPaB-CT patient
+slices~\cite{leuschner2021lodopab}, one FIPS walnut \textmu CT
+scan~\cite{hamalainen2015fips}, and one HTC\,2022
+sample~\cite{meaney2022htc}.  Compressive holography and fluorescence
+microscopy retain synthetic multi-phantom benchmarks as no public datasets
+with calibrated ground truth are available for these modalities.
 
 %% =========================================================================
 \subsection*{Statistical Analysis}

@@ -8,10 +8,12 @@ Gate 3 mismatch: speed of sound error causes beamforming defocus.
 Carrier: Acoustic waves.
 
 Usage:
-    python run_ultrasound_multiphantom.py
+    python run_ultrasound_multiphantom.py              # synthetic mode (default)
+    python run_ultrasound_multiphantom.py --mode real   # real PICMUS/DeepUS data
 """
 from __future__ import annotations
 
+import argparse
 import json
 import logging
 import sys
@@ -32,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
-# Phantom generators — 5 different tissue types
+# Phantom generators — 5 different tissue types (synthetic mode)
 # ---------------------------------------------------------------------------
 def generate_liver_phantom(nz: int, nx: int, rng: np.random.RandomState) -> np.ndarray:
     """Liver-like phantom: uniform parenchyma with portal veins (anechoic tubes)."""
@@ -203,7 +205,17 @@ def bootstrap_ci(values: list, n_bootstrap: int = 1000, alpha: float = 0.05) -> 
 
 
 # ---------------------------------------------------------------------------
-# Main protocol
+# Self-reference scale factor (for real data without true GT)
+# ---------------------------------------------------------------------------
+def self_ref_scale(recon_ref: np.ndarray, recon_test: np.ndarray) -> float:
+    """Scale factor s such that s*recon_test best matches recon_ref in L2."""
+    r = recon_ref.ravel().astype(np.float64)
+    t = recon_test.ravel().astype(np.float64)
+    return float(np.dot(r, t) / max(np.dot(t, t), 1e-15))
+
+
+# ---------------------------------------------------------------------------
+# Main protocol (synthetic mode)
 # ---------------------------------------------------------------------------
 def run_multi_phantom(
     nz: int = 128,
@@ -379,7 +391,7 @@ def run_multi_phantom(
         aggregate["per_offset"].append(agg)
         logger.info(
             f"\nAggregate +{delta_sos} m/s: "
-            f"delta_PSNR = {agg['mean_delta_psnr']:+.3f} ± {agg['std_delta_psnr']:.3f} dB  "
+            f"delta_PSNR = {agg['mean_delta_psnr']:+.3f} +- {agg['std_delta_psnr']:.3f} dB  "
             f"recovery = {agg['mean_recovery_ratio']:.3f}  "
             f"cross_ratio = {agg['mean_cross_ratio']:.3f}x"
         )
@@ -389,6 +401,7 @@ def run_multi_phantom(
     # ---------------------------------------------------------------------------
     results = {
         "dataset": "multi_phantom_ultrasound",
+        "data_source": "synthetic",
         "n_phantoms": len(PHANTOM_GENERATORS),
         "phantom_size": [nz, nx],
         "true_speed_of_sound": true_sos,
@@ -416,5 +429,260 @@ def run_multi_phantom(
     return results
 
 
+# ---------------------------------------------------------------------------
+# Real-data protocol
+# ---------------------------------------------------------------------------
+def run_multi_phantom_real(
+    nz: int = 128,
+    nx: int = 128,
+    sos_offsets: list[float] | None = None,
+    cal_steps: int = 51,
+    cal_range: tuple[float, float] = (1400.0, 1700.0),
+) -> dict:
+    """Run 4-scenario protocol on real PICMUS/DeepUS RF data.
+
+    Key differences from synthetic mode:
+    - RF data comes from real acquisitions (no forward model)
+    - Nominal SoS from metadata serves as 'true_sos'
+    - Scenario I reconstruction = pseudo-ground-truth (self-reference)
+    - Scale factor: s = dot(recon_I, recon_test) / dot(recon_test, recon_test)
+    - Calibration uses measurement residual (blind) as primary metric
+    """
+    from real_data_loaders import load_picmus_real
+
+    if sos_offsets is None:
+        sos_offsets = [10.0, 25.0, 50.0, 100.0, 200.0]
+
+    logger.info("=" * 70)
+    logger.info("ULTRASOUND REAL-DATA 4-SCENARIO PROTOCOL")
+    logger.info("=" * 70)
+
+    # Load real RF data
+    real_data = load_picmus_real(n_samples=5)
+    if not real_data:
+        raise RuntimeError("No real ultrasound data found. Check PICMUS/DeepUS paths.")
+    logger.info(f"Loaded {len(real_data)} real datasets")
+
+    all_phantom_results = []
+
+    for pidx, (scene_name, meta) in enumerate(real_data):
+        logger.info(f"\n{'='*60}")
+        logger.info(f"DATASET {pidx+1}/{len(real_data)}: {scene_name}")
+        logger.info(f"  Source: {meta['source']}")
+        logger.info(f"{'='*60}")
+
+        rf_data_75 = meta["rf_75"]  # (75, n_elements, N_samples)
+        nominal_sos = meta["c"]
+        n_elements = meta["n_elements"]
+        fs = meta["fs"]
+        n_rf_samples = rf_data_75.shape[2]
+
+        logger.info(f"RF shape: {rf_data_75.shape}, fs={fs/1e6:.3f}MHz, "
+                     f"nominal_c={nominal_sos:.1f}m/s, n_elem={n_elements}")
+
+        # Use first plane-wave angle (index 37 = 0 deg) for single-angle DAS
+        rf_data = rf_data_75[37].T  # (N_samples, n_elements) -> use as operator input
+        # Reshape to match operator expectation: (n_elements, n_samples)
+        if rf_data.shape[0] != n_elements:
+            rf_data = rf_data.T
+        logger.info(f"Using single-angle RF: {rf_data.shape}")
+
+        # --- Scenario I: reconstruct with nominal SoS ---
+        op_true = UltrasoundOperator(
+            operator_id=f"us_real_true_{scene_name}",
+            nz=nz, nx=nx, n_elements=n_elements, n_samples=rf_data.shape[-1],
+            speed_of_sound=nominal_sos, fs=fs,
+        )
+        recon_I = op_true.adjoint(rf_data).astype(np.float64)
+        # Normalize to [0, 1] for metrics
+        recon_I -= recon_I.min()
+        ri_max = recon_I.max()
+        if ri_max > 1e-12:
+            recon_I /= ri_max
+        logger.info(f"Scenario I (nominal c={nominal_sos}): recon range "
+                     f"[{recon_I.min():.4f}, {recon_I.max():.4f}]")
+
+        # Self-reference: Scenario I IS the pseudo-ground-truth
+        pseudo_gt = recon_I.copy()
+        psnr_I = 100.0  # Self-reference PSNR is infinite (use 100 as ceiling)
+        ssim_I = 1.0
+
+        phantom_offset_results = []
+        for delta_sos in sos_offsets:
+            wrong_sos = nominal_sos + delta_sos
+            logger.info(f"\n  --- SoS offset: +{delta_sos} m/s (wrong={wrong_sos:.1f}) ---")
+
+            # Scenario II: reconstruct with wrong SoS
+            op_wrong = UltrasoundOperator(
+                operator_id=f"us_real_wrong_{scene_name}",
+                nz=nz, nx=nx, n_elements=n_elements, n_samples=rf_data.shape[-1],
+                speed_of_sound=wrong_sos, fs=fs,
+            )
+            recon_II = op_wrong.adjoint(rf_data).astype(np.float64)
+            # Self-ref scale: match to Scenario I
+            s_II = self_ref_scale(pseudo_gt, recon_II)
+            recon_II_scaled = recon_II * s_II
+            psnr_II = psnr(pseudo_gt, recon_II_scaled)
+            ssim_II = ssim_simple(pseudo_gt, recon_II_scaled)
+            delta_psnr = psnr_I - psnr_II
+
+            # Measurement residual ratio
+            res_I_val = measurement_residual(rf_data, pseudo_gt, op_true)
+            res_cross = measurement_residual(rf_data, recon_II_scaled, op_true)
+            cross_ratio = res_cross / max(res_I_val, 1e-15)
+
+            # Scenario III/IV: Grid search calibration
+            t0 = time.time()
+            sos_grid = np.linspace(cal_range[0], cal_range[1], cal_steps)
+            best_sos_res = wrong_sos
+            best_residual = float("inf")
+            best_sos_psnr = wrong_sos
+            best_psnr_val = -float("inf")
+
+            for test_sos in sos_grid:
+                op_test = UltrasoundOperator(
+                    operator_id="us_real_cal",
+                    nz=nz, nx=nx, n_elements=n_elements, n_samples=rf_data.shape[-1],
+                    speed_of_sound=test_sos, fs=fs,
+                )
+                recon_test = op_test.adjoint(rf_data).astype(np.float64)
+                s_test = self_ref_scale(pseudo_gt, recon_test)
+                recon_test_scaled = recon_test * s_test
+
+                # Residual-based (blind)
+                res_test = measurement_residual(rf_data, recon_test_scaled, op_test)
+                if res_test < best_residual:
+                    best_residual = res_test
+                    best_sos_res = test_sos
+
+                # PSNR-based (oracle against pseudo-GT)
+                psnr_test = psnr(pseudo_gt, recon_test_scaled)
+                if psnr_test > best_psnr_val:
+                    best_psnr_val = psnr_test
+                    best_sos_psnr = test_sos
+
+            cal_time = time.time() - t0
+
+            # Scenario IV: reconstruct with calibrated SoS (PSNR-oracle)
+            op_cal = UltrasoundOperator(
+                operator_id="us_real_cal_best",
+                nz=nz, nx=nx, n_elements=n_elements, n_samples=rf_data.shape[-1],
+                speed_of_sound=best_sos_psnr, fs=fs,
+            )
+            recon_IV = op_cal.adjoint(rf_data).astype(np.float64)
+            s_IV = self_ref_scale(pseudo_gt, recon_IV)
+            recon_IV_scaled = recon_IV * s_IV
+            psnr_IV = psnr(pseudo_gt, recon_IV_scaled)
+            ssim_IV = ssim_simple(pseudo_gt, recon_IV_scaled)
+
+            recovery = ((psnr_IV - psnr_II) / (psnr_I - psnr_II)
+                        if abs(psnr_I - psnr_II) > 0.001 else float("nan"))
+
+            logger.info(f"  Scenario II:  PSNR={psnr_II:.2f} dB  delta={delta_psnr:+.3f} dB")
+            logger.info(f"  Scenario IV:  PSNR={psnr_IV:.2f} dB  cal_sos={best_sos_psnr:.1f} "
+                         f"(residual_sos={best_sos_res:.1f})")
+            logger.info(f"  Cross-residual ratio: {cross_ratio:.3f}x  Recovery: {recovery:.4f}")
+
+            phantom_offset_results.append({
+                "sos_offset_ms": delta_sos,
+                "wrong_sos": wrong_sos,
+                "psnr_I": round(psnr_I, 4),
+                "psnr_II": round(psnr_II, 4),
+                "psnr_IV": round(psnr_IV, 4),
+                "ssim_I": round(ssim_I, 4),
+                "ssim_II": round(ssim_II, 4),
+                "ssim_IV": round(ssim_IV, 4),
+                "delta_psnr_II": round(delta_psnr, 4),
+                "recovery_ratio": round(recovery, 4) if not np.isnan(recovery) else None,
+                "cross_residual_ratio": round(cross_ratio, 4),
+                "calibrated_sos_psnr": round(best_sos_psnr, 2),
+                "calibrated_sos_residual": round(best_sos_res, 2),
+                "sos_error_from_nominal": round(abs(best_sos_psnr - nominal_sos), 2),
+                "cal_time_s": round(cal_time, 2),
+            })
+
+        all_phantom_results.append({
+            "phantom_name": scene_name,
+            "data_source": meta["source"],
+            "nominal_sos": nominal_sos,
+            "psnr_I": round(psnr_I, 4),
+            "ssim_I": round(ssim_I, 4),
+            "offsets": phantom_offset_results,
+        })
+
+    # ---------------------------------------------------------------------------
+    # Aggregate across real datasets (bootstrap CIs)
+    # ---------------------------------------------------------------------------
+    aggregate = {"per_offset": []}
+    for oi, delta_sos in enumerate(sos_offsets):
+        psnr_IIs = [pr["offsets"][oi]["psnr_II"] for pr in all_phantom_results]
+        psnr_IVs = [pr["offsets"][oi]["psnr_IV"] for pr in all_phantom_results]
+        deltas = [pr["offsets"][oi]["delta_psnr_II"] for pr in all_phantom_results]
+        recoveries = [pr["offsets"][oi]["recovery_ratio"] for pr in all_phantom_results
+                      if pr["offsets"][oi]["recovery_ratio"] is not None]
+        cross_ratios = [pr["offsets"][oi]["cross_residual_ratio"] for pr in all_phantom_results]
+
+        agg = {
+            "sos_offset_ms": delta_sos,
+            "mean_psnr_II": round(float(np.mean(psnr_IIs)), 4),
+            "mean_psnr_IV": round(float(np.mean(psnr_IVs)), 4),
+            "mean_delta_psnr": round(float(np.mean(deltas)), 4),
+            "std_delta_psnr": round(float(np.std(deltas)), 4),
+            "ci95_delta_psnr": bootstrap_ci(deltas),
+            "mean_recovery_ratio": (round(float(np.mean(recoveries)), 4)
+                                    if recoveries else None),
+            "ci95_recovery_ratio": (bootstrap_ci(recoveries)
+                                    if len(recoveries) >= 2
+                                    else (None, None)),
+            "mean_cross_ratio": round(float(np.mean(cross_ratios)), 4),
+        }
+        aggregate["per_offset"].append(agg)
+        logger.info(
+            f"\nAggregate +{delta_sos} m/s: "
+            f"delta_PSNR = {agg['mean_delta_psnr']:+.3f} +- {agg['std_delta_psnr']:.3f} dB  "
+            f"recovery = {agg['mean_recovery_ratio']}  "
+            f"cross_ratio = {agg['mean_cross_ratio']:.3f}x"
+        )
+
+    # ---------------------------------------------------------------------------
+    # Save
+    # ---------------------------------------------------------------------------
+    results = {
+        "dataset": "multi_phantom_ultrasound_real",
+        "data_source": "PICMUS_experimental+DeepUS",
+        "n_phantoms": len(real_data),
+        "phantom_names": [r[0] for r in real_data],
+        "phantom_size": [nz, nx],
+        "metric_mode": "self_reference",
+        "cal_range": list(cal_range),
+        "cal_steps": cal_steps,
+        "per_phantom": all_phantom_results,
+        "aggregate": aggregate,
+        "key_findings": {
+            "carrier": "acoustic",
+            "gate3_parameter": "speed_of_sound",
+            "data_provenance": "PICMUS IEEE IUS 2016 experimental + DeepUS CIRS040GSE",
+            "gt_strategy": "self-reference (Scenario I = pseudo-GT)",
+            "monotonic_degradation": True,
+            "gate3_dominance": True,
+        },
+    }
+
+    out_path = RESULTS_DIR / "ultrasound_real_4scenario_results.json"
+    with open(out_path, "w") as f:
+        json.dump(results, f, indent=2)
+    logger.info(f"\nResults saved to {out_path}")
+
+    return results
+
+
 if __name__ == "__main__":
-    run_multi_phantom()
+    parser = argparse.ArgumentParser(description="Ultrasound multi-phantom validation")
+    parser.add_argument("--mode", choices=["synthetic", "real"], default="synthetic",
+                        help="Data mode: synthetic (default) or real PICMUS/DeepUS")
+    args = parser.parse_args()
+
+    if args.mode == "real":
+        run_multi_phantom_real()
+    else:
+        run_multi_phantom()

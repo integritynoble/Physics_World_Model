@@ -1,0 +1,591 @@
+{
+  "dataset": "multi_phantom_ultrasound_real",
+  "data_source": "PICMUS_experimental+DeepUS",
+  "n_phantoms": 5,
+  "phantom_names": [
+    "invivo_carotid_cross",
+    "invivo_carotid_long",
+    "exp_contrast",
+    "exp_resolution",
+    "deepus_cirs_lo"
+  ],
+  "phantom_size": [
+    128,
+    128
+  ],
+  "metric_mode": "self_reference",
+  "cal_range": [
+    1400.0,
+    1700.0
+  ],
+  "cal_steps": 51,
+  "per_phantom": [
+    {
+      "phantom_name": "invivo_carotid_cross",
+      "data_source": "PICMUS/PICMUS_carotid_cross.uff",
+      "nominal_sos": 1540.0,
+      "psnr_I": 100.0,
+      "ssim_I": 1.0,
+      "offsets": [
+        {
+          "sos_offset_ms": 10.0,
+          "wrong_sos": 1550.0,
+          "psnr_I": 100.0,
+          "psnr_II": 7.5378,
+          "psnr_IV": 7.5746,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0003,
+          "ssim_IV": 0.0007,
+          "delta_psnr_II": 92.4622,
+          "recovery_ratio": 0.0004,
+          "cross_residual_ratio": 0.0005,
+          "calibrated_sos_psnr": 1538.0,
+          "calibrated_sos_residual": 1430.0,
+          "sos_error_from_nominal": 2.0,
+          "cal_time_s": 23.72
+        },
+        {
+          "sos_offset_ms": 25.0,
+          "wrong_sos": 1565.0,
+          "psnr_I": 100.0,
+          "psnr_II": 7.5378,
+          "psnr_IV": 7.5746,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0004,
+          "ssim_IV": 0.0007,
+          "delta_psnr_II": 92.4622,
+          "recovery_ratio": 0.0004,
+          "cross_residual_ratio": 0.0005,
+          "calibrated_sos_psnr": 1538.0,
+          "calibrated_sos_residual": 1430.0,
+          "sos_error_from_nominal": 2.0,
+          "cal_time_s": 23.81
+        },
+        {
+          "sos_offset_ms": 50.0,
+          "wrong_sos": 1590.0,
+          "psnr_I": 100.0,
+          "psnr_II": 7.5384,
+          "psnr_IV": 7.5746,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0006,
+          "ssim_IV": 0.0007,
+          "delta_psnr_II": 92.4616,
+          "recovery_ratio": 0.0004,
+          "cross_residual_ratio": 0.0005,
+          "calibrated_sos_psnr": 1538.0,
+          "calibrated_sos_residual": 1430.0,
+          "sos_error_from_nominal": 2.0,
+          "cal_time_s": 24.84
+        },
+        {
+          "sos_offset_ms": 100.0,
+          "wrong_sos": 1640.0,
+          "psnr_I": 100.0,
+          "psnr_II": 7.537,
+          "psnr_IV": 7.5746,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0004,
+          "ssim_IV": 0.0007,
+          "delta_psnr_II": 92.463,
+          "recovery_ratio": 0.0004,
+          "cross_residual_ratio": 0.0005,
+          "calibrated_sos_psnr": 1538.0,
+          "calibrated_sos_residual": 1430.0,
+          "sos_error_from_nominal": 2.0,
+          "cal_time_s": 31.92
+        },
+        {
+          "sos_offset_ms": 200.0,
+          "wrong_sos": 1740.0,
+          "psnr_I": 100.0,
+          "psnr_II": 7.5358,
+          "psnr_IV": 7.5746,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0003,
+          "ssim_IV": 0.0007,
+          "delta_psnr_II": 92.4642,
+          "recovery_ratio": 0.0004,
+          "cross_residual_ratio": 0.0005,
+          "calibrated_sos_psnr": 1538.0,
+          "calibrated_sos_residual": 1430.0,
+          "sos_error_from_nominal": 2.0,
+          "cal_time_s": 51.18
+        }
+      ]
+    },
+    {
+      "phantom_name": "invivo_carotid_long",
+      "data_source": "PICMUS/PICMUS_carotid_long.uff",
+      "nominal_sos": 1540.0,
+      "psnr_I": 100.0,
+      "ssim_I": 1.0,
+      "offsets": [
+        {
+          "sos_offset_ms": 10.0,
+          "wrong_sos": 1550.0,
+          "psnr_I": 100.0,
+          "psnr_II": 6.7814,
+          "psnr_IV": 6.8262,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0004,
+          "ssim_IV": 0.0019,
+          "delta_psnr_II": 93.2186,
+          "recovery_ratio": 0.0005,
+          "cross_residual_ratio": 0.0004,
+          "calibrated_sos_psnr": 1538.0,
+          "calibrated_sos_residual": 1652.0,
+          "sos_error_from_nominal": 2.0,
+          "cal_time_s": 34.73
+        },
+        {
+          "sos_offset_ms": 25.0,
+          "wrong_sos": 1565.0,
+          "psnr_I": 100.0,
+          "psnr_II": 6.7806,
+          "psnr_IV": 6.8262,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0002,
+          "ssim_IV": 0.0019,
+          "delta_psnr_II": 93.2194,
+          "recovery_ratio": 0.0005,
+          "cross_residual_ratio": 0.0004,
+          "calibrated_sos_psnr": 1538.0,
+          "calibrated_sos_residual": 1652.0,
+          "sos_error_from_nominal": 2.0,
+          "cal_time_s": 29.06
+        },
+        {
+          "sos_offset_ms": 50.0,
+          "wrong_sos": 1590.0,
+          "psnr_I": 100.0,
+          "psnr_II": 6.782,
+          "psnr_IV": 6.8262,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0003,
+          "ssim_IV": 0.0019,
+          "delta_psnr_II": 93.218,
+          "recovery_ratio": 0.0005,
+          "cross_residual_ratio": 0.0005,
+          "calibrated_sos_psnr": 1538.0,
+          "calibrated_sos_residual": 1652.0,
+          "sos_error_from_nominal": 2.0,
+          "cal_time_s": 29.83
+        },
+        {
+          "sos_offset_ms": 100.0,
+          "wrong_sos": 1640.0,
+          "psnr_I": 100.0,
+          "psnr_II": 6.7832,
+          "psnr_IV": 6.8262,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0005,
+          "ssim_IV": 0.0019,
+          "delta_psnr_II": 93.2168,
+          "recovery_ratio": 0.0005,
+          "cross_residual_ratio": 0.0005,
+          "calibrated_sos_psnr": 1538.0,
+          "calibrated_sos_residual": 1652.0,
+          "sos_error_from_nominal": 2.0,
+          "cal_time_s": 29.66
+        },
+        {
+          "sos_offset_ms": 200.0,
+          "wrong_sos": 1740.0,
+          "psnr_I": 100.0,
+          "psnr_II": 6.7794,
+          "psnr_IV": 6.8262,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0003,
+          "ssim_IV": 0.0019,
+          "delta_psnr_II": 93.2206,
+          "recovery_ratio": 0.0005,
+          "cross_residual_ratio": 0.0004,
+          "calibrated_sos_psnr": 1538.0,
+          "calibrated_sos_residual": 1652.0,
+          "sos_error_from_nominal": 2.0,
+          "cal_time_s": 31.29
+        }
+      ]
+    },
+    {
+      "phantom_name": "exp_contrast",
+      "data_source": "PICMUS/PICMUS_experiment_contrast_speckle.uff",
+      "nominal_sos": 1540.0,
+      "psnr_I": 100.0,
+      "ssim_I": 1.0,
+      "offsets": [
+        {
+          "sos_offset_ms": 10.0,
+          "wrong_sos": 1550.0,
+          "psnr_I": 100.0,
+          "psnr_II": 6.8706,
+          "psnr_IV": 6.9241,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0011,
+          "ssim_IV": 0.006,
+          "delta_psnr_II": 93.1294,
+          "recovery_ratio": 0.0006,
+          "cross_residual_ratio": 0.0022,
+          "calibrated_sos_psnr": 1538.0,
+          "calibrated_sos_residual": 1430.0,
+          "sos_error_from_nominal": 2.0,
+          "cal_time_s": 31.96
+        },
+        {
+          "sos_offset_ms": 25.0,
+          "wrong_sos": 1565.0,
+          "psnr_I": 100.0,
+          "psnr_II": 6.8639,
+          "psnr_IV": 6.9241,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0006,
+          "ssim_IV": 0.006,
+          "delta_psnr_II": 93.1361,
+          "recovery_ratio": 0.0006,
+          "cross_residual_ratio": 0.0012,
+          "calibrated_sos_psnr": 1538.0,
+          "calibrated_sos_residual": 1430.0,
+          "sos_error_from_nominal": 2.0,
+          "cal_time_s": 29.54
+        },
+        {
+          "sos_offset_ms": 50.0,
+          "wrong_sos": 1590.0,
+          "psnr_I": 100.0,
+          "psnr_II": 6.8629,
+          "psnr_IV": 6.9241,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0008,
+          "ssim_IV": 0.006,
+          "delta_psnr_II": 93.1371,
+          "recovery_ratio": 0.0007,
+          "cross_residual_ratio": 0.001,
+          "calibrated_sos_psnr": 1538.0,
+          "calibrated_sos_residual": 1430.0,
+          "sos_error_from_nominal": 2.0,
+          "cal_time_s": 29.54
+        },
+        {
+          "sos_offset_ms": 100.0,
+          "wrong_sos": 1640.0,
+          "psnr_I": 100.0,
+          "psnr_II": 6.8582,
+          "psnr_IV": 6.9241,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0005,
+          "ssim_IV": 0.006,
+          "delta_psnr_II": 93.1418,
+          "recovery_ratio": 0.0007,
+          "cross_residual_ratio": 0.0003,
+          "calibrated_sos_psnr": 1538.0,
+          "calibrated_sos_residual": 1430.0,
+          "sos_error_from_nominal": 2.0,
+          "cal_time_s": 30.92
+        },
+        {
+          "sos_offset_ms": 200.0,
+          "wrong_sos": 1740.0,
+          "psnr_I": 100.0,
+          "psnr_II": 6.859,
+          "psnr_IV": 6.9241,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0005,
+          "ssim_IV": 0.006,
+          "delta_psnr_II": 93.141,
+          "recovery_ratio": 0.0007,
+          "cross_residual_ratio": 0.0005,
+          "calibrated_sos_psnr": 1538.0,
+          "calibrated_sos_residual": 1430.0,
+          "sos_error_from_nominal": 2.0,
+          "cal_time_s": 32.1
+        }
+      ]
+    },
+    {
+      "phantom_name": "exp_resolution",
+      "data_source": "PICMUS/PICMUS_experiment_resolution_distortion.uff",
+      "nominal_sos": 1540.0,
+      "psnr_I": 100.0,
+      "ssim_I": 1.0,
+      "offsets": [
+        {
+          "sos_offset_ms": 10.0,
+          "wrong_sos": 1550.0,
+          "psnr_I": 100.0,
+          "psnr_II": 6.6982,
+          "psnr_IV": 6.7275,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0009,
+          "ssim_IV": 0.0025,
+          "delta_psnr_II": 93.3018,
+          "recovery_ratio": 0.0003,
+          "cross_residual_ratio": 0.0014,
+          "calibrated_sos_psnr": 1544.0,
+          "calibrated_sos_residual": 1430.0,
+          "sos_error_from_nominal": 4.0,
+          "cal_time_s": 32.02
+        },
+        {
+          "sos_offset_ms": 25.0,
+          "wrong_sos": 1565.0,
+          "psnr_I": 100.0,
+          "psnr_II": 6.695,
+          "psnr_IV": 6.7275,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0006,
+          "ssim_IV": 0.0025,
+          "delta_psnr_II": 93.305,
+          "recovery_ratio": 0.0003,
+          "cross_residual_ratio": 0.0009,
+          "calibrated_sos_psnr": 1544.0,
+          "calibrated_sos_residual": 1430.0,
+          "sos_error_from_nominal": 4.0,
+          "cal_time_s": 31.28
+        },
+        {
+          "sos_offset_ms": 50.0,
+          "wrong_sos": 1590.0,
+          "psnr_I": 100.0,
+          "psnr_II": 6.6953,
+          "psnr_IV": 6.7275,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0005,
+          "ssim_IV": 0.0025,
+          "delta_psnr_II": 93.3047,
+          "recovery_ratio": 0.0003,
+          "cross_residual_ratio": 0.001,
+          "calibrated_sos_psnr": 1544.0,
+          "calibrated_sos_residual": 1430.0,
+          "sos_error_from_nominal": 4.0,
+          "cal_time_s": 31.15
+        },
+        {
+          "sos_offset_ms": 100.0,
+          "wrong_sos": 1640.0,
+          "psnr_I": 100.0,
+          "psnr_II": 6.6924,
+          "psnr_IV": 6.7275,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0005,
+          "ssim_IV": 0.0025,
+          "delta_psnr_II": 93.3076,
+          "recovery_ratio": 0.0004,
+          "cross_residual_ratio": 0.0005,
+          "calibrated_sos_psnr": 1544.0,
+          "calibrated_sos_residual": 1430.0,
+          "sos_error_from_nominal": 4.0,
+          "cal_time_s": 26.93
+        },
+        {
+          "sos_offset_ms": 200.0,
+          "wrong_sos": 1740.0,
+          "psnr_I": 100.0,
+          "psnr_II": 6.6916,
+          "psnr_IV": 6.7275,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0004,
+          "ssim_IV": 0.0025,
+          "delta_psnr_II": 93.3084,
+          "recovery_ratio": 0.0004,
+          "cross_residual_ratio": 0.0004,
+          "calibrated_sos_psnr": 1544.0,
+          "calibrated_sos_residual": 1430.0,
+          "sos_error_from_nominal": 4.0,
+          "cal_time_s": 25.8
+        }
+      ]
+    },
+    {
+      "phantom_name": "deepus_cirs_lo",
+      "data_source": "DeepUS/USDATA_20220330104522673.mat",
+      "nominal_sos": 1540.0,
+      "psnr_I": 100.0,
+      "ssim_I": 1.0,
+      "offsets": [
+        {
+          "sos_offset_ms": 10.0,
+          "wrong_sos": 1550.0,
+          "psnr_I": 100.0,
+          "psnr_II": 8.026,
+          "psnr_IV": 8.1415,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0109,
+          "ssim_IV": 0.0219,
+          "delta_psnr_II": 91.974,
+          "recovery_ratio": 0.0013,
+          "cross_residual_ratio": 1.0,
+          "calibrated_sos_psnr": 1514.0,
+          "calibrated_sos_residual": 1520.0,
+          "sos_error_from_nominal": 26.0,
+          "cal_time_s": 26.84
+        },
+        {
+          "sos_offset_ms": 25.0,
+          "wrong_sos": 1565.0,
+          "psnr_I": 100.0,
+          "psnr_II": 8.0011,
+          "psnr_IV": 8.1415,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0101,
+          "ssim_IV": 0.0219,
+          "delta_psnr_II": 91.9989,
+          "recovery_ratio": 0.0015,
+          "cross_residual_ratio": 1.0,
+          "calibrated_sos_psnr": 1514.0,
+          "calibrated_sos_residual": 1520.0,
+          "sos_error_from_nominal": 26.0,
+          "cal_time_s": 28.8
+        },
+        {
+          "sos_offset_ms": 50.0,
+          "wrong_sos": 1590.0,
+          "psnr_I": 100.0,
+          "psnr_II": 8.0073,
+          "psnr_IV": 8.1415,
+          "ssim_I": 1.0,
+          "ssim_II": -0.0032,
+          "ssim_IV": 0.0219,
+          "delta_psnr_II": 91.9927,
+          "recovery_ratio": 0.0015,
+          "cross_residual_ratio": 1.0,
+          "calibrated_sos_psnr": 1514.0,
+          "calibrated_sos_residual": 1520.0,
+          "sos_error_from_nominal": 26.0,
+          "cal_time_s": 28.65
+        },
+        {
+          "sos_offset_ms": 100.0,
+          "wrong_sos": 1640.0,
+          "psnr_I": 100.0,
+          "psnr_II": 7.9421,
+          "psnr_IV": 8.1415,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0028,
+          "ssim_IV": 0.0219,
+          "delta_psnr_II": 92.0579,
+          "recovery_ratio": 0.0022,
+          "cross_residual_ratio": 1.0,
+          "calibrated_sos_psnr": 1514.0,
+          "calibrated_sos_residual": 1520.0,
+          "sos_error_from_nominal": 26.0,
+          "cal_time_s": 24.61
+        },
+        {
+          "sos_offset_ms": 200.0,
+          "wrong_sos": 1740.0,
+          "psnr_I": 100.0,
+          "psnr_II": 7.9192,
+          "psnr_IV": 8.1415,
+          "ssim_I": 1.0,
+          "ssim_II": 0.0005,
+          "ssim_IV": 0.0219,
+          "delta_psnr_II": 92.0808,
+          "recovery_ratio": 0.0024,
+          "cross_residual_ratio": 1.0,
+          "calibrated_sos_psnr": 1514.0,
+          "calibrated_sos_residual": 1520.0,
+          "sos_error_from_nominal": 26.0,
+          "cal_time_s": 25.1
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "per_offset": [
+      {
+        "sos_offset_ms": 10.0,
+        "mean_psnr_II": 7.1828,
+        "mean_psnr_IV": 7.2388,
+        "mean_delta_psnr": 92.8172,
+        "std_delta_psnr": 0.5158,
+        "ci95_delta_psnr": [
+          92.32056,
+          93.23404
+        ],
+        "mean_recovery_ratio": 0.0006,
+        "ci95_recovery_ratio": [
+          0.00038,
+          0.0009600000000000001
+        ],
+        "mean_cross_ratio": 0.2009
+      },
+      {
+        "sos_offset_ms": 25.0,
+        "mean_psnr_II": 7.1757,
+        "mean_psnr_IV": 7.2388,
+        "mean_delta_psnr": 92.8243,
+        "std_delta_psnr": 0.5093,
+        "ci95_delta_psnr": [
+          92.33565999999999,
+          93.23697999999999
+        ],
+        "mean_recovery_ratio": 0.0007,
+        "ci95_recovery_ratio": [
+          0.00038,
+          0.00108
+        ],
+        "mean_cross_ratio": 0.2006
+      },
+      {
+        "sos_offset_ms": 50.0,
+        "mean_psnr_II": 7.1772,
+        "mean_psnr_IV": 7.2388,
+        "mean_delta_psnr": 92.8228,
+        "std_delta_psnr": 0.5112,
+        "ci95_delta_psnr": [
+          92.33154,
+          93.2365
+        ],
+        "mean_recovery_ratio": 0.0007,
+        "ci95_recovery_ratio": [
+          0.0004,
+          0.0010999999999999998
+        ],
+        "mean_cross_ratio": 0.2006
+      },
+      {
+        "sos_offset_ms": 100.0,
+        "mean_psnr_II": 7.1626,
+        "mean_psnr_IV": 7.2388,
+        "mean_delta_psnr": 92.8374,
+        "std_delta_psnr": 0.491,
+        "ci95_delta_psnr": [
+          92.37070000000001,
+          93.23812
+        ],
+        "mean_recovery_ratio": 0.0008,
+        "ci95_recovery_ratio": [
+          0.00043999999999999996,
+          0.00152
+        ],
+        "mean_cross_ratio": 0.2004
+      },
+      {
+        "sos_offset_ms": 200.0,
+        "mean_psnr_II": 7.157,
+        "mean_psnr_IV": 7.2388,
+        "mean_delta_psnr": 92.843,
+        "std_delta_psnr": 0.4842,
+        "ci95_delta_psnr": [
+          92.38544,
+          93.2398
+        ],
+        "mean_recovery_ratio": 0.0009,
+        "ci95_recovery_ratio": [
+          0.00043999999999999996,
+          0.0016399999999999997
+        ],
+        "mean_cross_ratio": 0.2004
+      }
+    ]
+  },
+  "key_findings": {
+    "carrier": "acoustic",
+    "gate3_parameter": "speed_of_sound",
+    "data_provenance": "PICMUS IEEE IUS 2016 experimental + DeepUS CIRS040GSE",
+    "gt_strategy": "self-reference (Scenario I = pseudo-GT)",
+    "monotonic_degradation": true,
+    "gate3_dominance": true
+  }
+}
