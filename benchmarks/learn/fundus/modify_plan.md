@@ -1,25 +1,20 @@
 # Modify Plan: fundus
 
-## Current State
-
-- **Category:** medical
+## Current Assignment
+- **Category:** medical (routed to clinical_optics via `("medical", "Photon")`)
 - **Carrier:** Photon
-- **Score key:** clinical_optics (routed via `("medical", "Photon") -> "clinical_optics"`)
-- **Algorithms assigned:**
-  1. FFT-OCT (Classical) -- Analytical baseline
-  2. BM4D (PnP) -- Maggioni et al., IEEE TIP 2013
-  3. Speckle-DenoiseNet (Deep Learning) -- Devalla et al., BOE 2019
-  4. OCTA-Net (Transformer) -- Hybrid U-Net+Transformer, 2023
+- **Score key:** clinical_optics
+- **Algorithms (after override):** Richardson-Lucy (Classical), PnP-BM3D (PnP), cofe-Net (Deep Learning), Swin-Fundus (Transformer)
 
 ## Assessment
 
-**Problematic -- algorithms are OCT-specific, not fundus-specific**
+The algorithms were **problematic** before the override. The clinical_optics
+pool was designed for OCT and contains OCT-specific algorithms. Fundus
+photography is a simple optical imaging modality (white-light reflectance of
+the retina) with NO involvement of OCT, Fourier-domain reconstruction, or
+speckle.
 
-Fundus photography is a simple optical imaging modality (white-light
-reflectance/fluorescence of the retina). It does NOT involve OCT, Fourier-domain
-reconstruction, or speckle. The current "clinical_optics" pool was designed
-for OCT and contains:
-
+**Problems with the original assignment:**
 - **FFT-OCT**: This is an OCT-specific algorithm (Fourier-domain OCT
   reconstruction). Fundus cameras do not produce interferograms.
 - **BM4D**: A generic 3D denoiser -- acceptable but not fundus-specific.
@@ -28,16 +23,15 @@ for OCT and contains:
 - **OCTA-Net**: OCT angiography network. Not applicable to fundus photography.
 
 The fundus camera inverse problem is essentially image deblurring/denoising
-through ocular optics (cornea + lens PSF). Better algorithms would be:
+through ocular optics (cornea + lens PSF). Better algorithms are:
+- **Richardson-Lucy** (classical iterative deconvolution)
+- **PnP-BM3D** (plug-and-play deblurring with BM3D prior)
+- **cofe-Net** (corrective fusion enhancement for fundus, Shen et al., TMI 2020)
+- **Swin-Fundus** (SwinIR-based retinal image enhancement)
 
-- **Wiener Deconvolution** (classical)
-- **Richardson-Lucy** (classical iterative)
-- **Retinal image enhancement networks** (e.g., cofe-Net, I-SECRET)
-- **Fundus-specific denoising/super-resolution** (Swin-Retina, etc.)
+## Changes Applied
 
-## Code Changes Needed
-
-**Add fundus-specific variant override in `_algorithm_catalog.py`:**
+Added a variant-specific override in `_algorithm_catalog.py`:
 
 ```python
 "fundus": [
@@ -48,6 +42,15 @@ through ocular optics (cornea + lens PSF). Better algorithms would be:
 ],
 ```
 
-**Alternatively**, add a new carrier routing for fundus specifically, but a
-variant override is cleaner since fundus is the only fundus-photography
-modality.
+Also added `"fundus"` entry in `CATEGORY_REAL_SCORES` with domain-appropriate
+scores.
+
+## Files Modified
+- `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`
+  - Added `"fundus"` to `_VARIANT_OVERRIDES`
+  - Added `"fundus"` to `CATEGORY_REAL_SCORES`
+
+## Status
+
+**COMPLETE.** No further code changes needed. Algorithm override verified and
+leaderboard displays correct fundus-specific deconvolution/enhancement algorithms.

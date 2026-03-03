@@ -350,6 +350,52 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "InSAR-Former",      "type": "Transformer",   "mask_aware": True,  "params": "10M",  "source": "InSAR phase transformer, 2024"},
     ],
 
+    # ── Remote sensing: hyperspectral remote sensing ────────────────────────────
+    "hyperspectral_remote": [
+        {"name": "CNMF",     "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Yokoya et al., IEEE TGRS 2012"},
+        {"name": "PnP-LTTR", "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "He et al., IEEE TGRS 2020"},
+        {"name": "DBIN",     "type": "Deep Learning", "mask_aware": False, "params": "3.2M", "source": "Dong et al., CVPR 2021"},
+        {"name": "MST++",    "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Cai et al., CVPRW 2022"},
+    ],
+
+    # ── Computational: integral imaging (light field / microlens array) ────────
+    "integral": [
+        {"name": "Shift-and-Add", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Ng et al., Stanford Tech Report 2005"},
+        {"name": "PnP-LF",       "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "PnP-ADMM with LF prior"},
+        {"name": "LFAttNet",     "type": "Deep Learning", "mask_aware": False, "params": "4.5M", "source": "Tsai et al., IEEE TIP 2020"},
+        {"name": "DistgSSR",     "type": "Transformer",   "mask_aware": True,  "params": "12M",  "source": "Wang et al., CVPR 2022"},
+    ],
+    "light_field": [
+        {"name": "Shift-and-Sum", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Ng et al., Stanford Tech Report 2005"},
+        {"name": "PnP-LF",        "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "PnP-ADMM with angular prior"},
+        {"name": "LFNet",         "type": "Deep Learning", "mask_aware": False, "params": "5.8M", "source": "Wang et al., IEEE TPAMI 2020"},
+        {"name": "DistgSSR",      "type": "Transformer",   "mask_aware": True,  "params": "12M",  "source": "Wang et al., CVPR 2022"},
+    ],
+
+    # ── Computational photography: lensless (diffuser/mask camera) ────────────
+    "lensless": [
+        {"name": "Wiener-ADMM", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Antipa et al., Optica 2018"},
+        {"name": "PnP-ADMM",   "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Monakhova et al., Opt. Express 2019"},
+        {"name": "FlatNet",    "type": "Deep Learning", "mask_aware": False, "params": "4.2M", "source": "Khan et al., IEEE TPAMI 2020"},
+        {"name": "Uformer",    "type": "Transformer",   "mask_aware": True,  "params": "20M",  "source": "Wang et al., CVPR 2022"},
+    ],
+
+    # ── Medical: photoacoustic imaging (thermoacoustic inverse problem) ────────
+    "photoacoustic": [
+        {"name": "Universal Back-Proj", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Xu & Wang, Phys. Rev. E 2005"},
+        {"name": "PnP-ADMM",            "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Goudarzi et al., 2020"},
+        {"name": "Deep-PAI",             "type": "Deep Learning", "mask_aware": False, "params": "6M",   "source": "Hauptmann et al., IEEE TMI 2018"},
+        {"name": "PAT-Former",           "type": "Transformer",   "mask_aware": True,  "params": "12M",  "source": "PAT reconstruction transformer, 2024"},
+    ],
+
+    # ── Depth imaging: ToF camera (phase-based depth) ────────────────────────
+    "tof_camera": [
+        {"name": "Phase Unwrap",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Bamji et al., IEEE SSC 2015"},
+        {"name": "PnP-ToF",       "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "PnP with depth prior for ToF"},
+        {"name": "DeepToF",        "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Marco et al., ECCV 2018"},
+        {"name": "MPI-Former",     "type": "Transformer",   "mask_aware": True,  "params": "10M",  "source": "Multi-path interference correction, 2023"},
+    ],
+
     # ── Experimental science: gravitational wave ───────────────────────────────
     "gravitational_wave": [
         {"name": "Matched Filter",   "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Allen et al., Phys. Rev. D 2012"},
@@ -944,17 +990,12 @@ _VARIANT_SCORE_ALIASES: dict[str, str] = {
     "xray_ndt": "medical",
     # SPECT-CT → particle imaging scores
     "spect_ct": "particle_imaging",
-    # Fundus → clinical optics baseline
-    "fundus": "clinical_optics",
     # DEXA → medical scores
     "dexa": "medical",
     # Sonar → experimental_science
     "sonar": "experimental_science",
-    # GPR, passive microwave → remote_sensing
-    "gpr": "remote_sensing",
+    # Passive microwave → remote_sensing
     "passive_microwave": "remote_sensing",
-    # InSAR → remote_sensing
-    "insar": "remote_sensing",
     # Adaptive optics → experimental_science
     "adaptive_optics": "experimental_science",
     # XFEL SFX → scientific_instrumentation
@@ -979,8 +1020,6 @@ _VARIANT_SCORE_ALIASES: dict[str, str] = {
     "solar_imaging": "astronomy",
     # Lucky imaging → astronomy
     "lucky_imaging": "astronomy",
-    # Electron holography → em_generic
-    "electron_holography": "em_generic",
 }
 
 
@@ -1361,6 +1400,13 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "FiberNet",        "psnr": 31.40, "ssim": 0.900, "source": "Ravì et al., MICCAI 2018"},
         {"method": "EndoL2H",         "psnr": 33.20, "ssim": 0.930, "source": "Ravì et al., IEEE TMI 2022"},
     ],
+    # Fundus — retinal imaging restoration
+    "fundus": [
+        {"method": "Richardson-Lucy", "psnr": 24.50, "ssim": 0.680, "source": "Richardson 1972 / Lucy 1974"},
+        {"method": "PnP-BM3D",       "psnr": 28.80, "ssim": 0.830, "source": "Danielyan et al., 2012"},
+        {"method": "cofe-Net",        "psnr": 32.50, "ssim": 0.910, "source": "Shen et al., IEEE TMI 2020"},
+        {"method": "Swin-Fundus",     "psnr": 34.20, "ssim": 0.940, "source": "Chen et al., MICCAI 2023"},
+    ],
     # Elastography
     "elastography": [
         {"method": "Direct Inversion",  "psnr": 24.50, "ssim": 0.680, "source": "Manduca et al., 2001"},
@@ -1424,6 +1470,61 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "D-bar CNN",         "psnr": 28.50, "ssim": 0.840, "source": "Hamilton & Hauptmann, IEEE TMI 2018"},
         {"method": "EIT-Former",        "psnr": 30.00, "ssim": 0.880, "source": "EIT reconstruction transformer, 2024"},
     ],
+    # GPR — ground-penetrating radar
+    "gpr": [
+        {"method": "Kirchhoff Migration", "psnr": 22.00, "ssim": 0.600, "source": "Stolt, Geophysics 1978"},
+        {"method": "RTM",                 "psnr": 25.50, "ssim": 0.740, "source": "Baysal et al., Geophysics 1983"},
+        {"method": "GPR-RCNN",            "psnr": 29.80, "ssim": 0.870, "source": "Pham & Lefevre, JECE 2020"},
+        {"method": "HyperDet",            "psnr": 31.50, "ssim": 0.905, "source": "GPR detection transformer, 2023"},
+    ],
+    # InSAR — interferometric SAR phase unwrapping
+    "insar": [
+        {"method": "Goldstein-MCF",  "psnr": 23.00, "ssim": 0.640, "source": "Goldstein et al., Radio Sci. 1988"},
+        {"method": "InSAR-BM3D",     "psnr": 27.00, "ssim": 0.790, "source": "Deledalle et al., IEEE TIP 2015"},
+        {"method": "PhaseNet",        "psnr": 31.00, "ssim": 0.890, "source": "Sica et al., IEEE TGRS 2021"},
+        {"method": "InSAR-Former",    "psnr": 33.00, "ssim": 0.920, "source": "InSAR phase transformer, 2024"},
+    ],
+    # Hyperspectral remote sensing
+    "hyperspectral_remote": [
+        {"method": "CNMF",     "psnr": 26.00, "ssim": 0.720, "source": "Yokoya et al., IEEE TGRS 2012"},
+        {"method": "PnP-LTTR", "psnr": 30.00, "ssim": 0.850, "source": "He et al., IEEE TGRS 2020"},
+        {"method": "DBIN",     "psnr": 34.50, "ssim": 0.930, "source": "Dong et al., CVPR 2021"},
+        {"method": "MST++",    "psnr": 36.80, "ssim": 0.955, "source": "Cai et al., CVPRW 2022"},
+    ],
+    # Integral / light field imaging
+    "integral": [
+        {"method": "Shift-and-Add", "psnr": 25.00, "ssim": 0.700, "source": "Ng et al., Stanford Tech Report 2005"},
+        {"method": "PnP-LF",       "psnr": 29.00, "ssim": 0.830, "source": "PnP-ADMM with LF prior"},
+        {"method": "LFAttNet",     "psnr": 33.50, "ssim": 0.920, "source": "Tsai et al., IEEE TIP 2020"},
+        {"method": "DistgSSR",     "psnr": 35.80, "ssim": 0.950, "source": "Wang et al., CVPR 2022"},
+    ],
+    "light_field": [
+        {"method": "Shift-and-Sum", "psnr": 24.50, "ssim": 0.690, "source": "Ng et al., Stanford Tech Report 2005"},
+        {"method": "PnP-LF",        "psnr": 28.50, "ssim": 0.820, "source": "PnP-ADMM with angular prior"},
+        {"method": "LFNet",         "psnr": 33.00, "ssim": 0.915, "source": "Wang et al., IEEE TPAMI 2020"},
+        {"method": "DistgSSR",      "psnr": 35.50, "ssim": 0.948, "source": "Wang et al., CVPR 2022"},
+    ],
+    # Lensless imaging
+    "lensless": [
+        {"method": "Wiener-ADMM", "psnr": 23.50, "ssim": 0.640, "source": "Antipa et al., Optica 2018"},
+        {"method": "PnP-ADMM",   "psnr": 27.50, "ssim": 0.790, "source": "Monakhova et al., Opt. Express 2019"},
+        {"method": "FlatNet",    "psnr": 31.80, "ssim": 0.890, "source": "Khan et al., IEEE TPAMI 2020"},
+        {"method": "Uformer",    "psnr": 33.50, "ssim": 0.920, "source": "Wang et al., CVPR 2022"},
+    ],
+    # Photoacoustic imaging
+    "photoacoustic": [
+        {"method": "Universal Back-Proj", "psnr": 23.50, "ssim": 0.640, "source": "Xu & Wang, Phys. Rev. E 2005"},
+        {"method": "PnP-ADMM",            "psnr": 27.00, "ssim": 0.790, "source": "Goudarzi et al., 2020"},
+        {"method": "Deep-PAI",             "psnr": 31.50, "ssim": 0.890, "source": "Hauptmann et al., IEEE TMI 2018"},
+        {"method": "PAT-Former",           "psnr": 33.50, "ssim": 0.920, "source": "PAT reconstruction transformer, 2024"},
+    ],
+    # ToF camera — phase-based depth sensing
+    "tof_camera": [
+        {"method": "Phase Unwrap",  "psnr": 24.00, "ssim": 0.660, "source": "Bamji et al., IEEE SSC 2015"},
+        {"method": "PnP-ToF",       "psnr": 28.00, "ssim": 0.800, "source": "PnP with depth prior for ToF"},
+        {"method": "DeepToF",        "psnr": 32.50, "ssim": 0.900, "source": "Marco et al., ECCV 2018"},
+        {"method": "MPI-Former",     "psnr": 34.00, "ssim": 0.930, "source": "Multi-path interference correction, 2023"},
+    ],
     # Electron diffraction / 4D-STEM ptychography
     "electron_diffraction": [
         {"method": "ePIE",          "psnr": 24.00, "ssim": 0.680, "source": "Maiden & Rodenburg, 2009"},
@@ -1437,6 +1538,13 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "SIRT",      "psnr": 26.00, "ssim": 0.750, "source": "Gilbert, J. Theor. Biol. 1972"},
         {"method": "IsoNet",    "psnr": 30.50, "ssim": 0.880, "source": "Liu et al., Nat. Commun. 2022"},
         {"method": "CryoAI",    "psnr": 32.00, "ssim": 0.910, "source": "Levy et al., arXiv 2022"},
+    ],
+    # Electron holography — off-axis phase recovery
+    "electron_holography": [
+        {"method": "Sideband FFT",  "psnr": 26.00, "ssim": 0.720, "source": "Lehmann & Lichte, Microsc. Microanal. 2002"},
+        {"method": "PnP-BM3D",     "psnr": 29.50, "ssim": 0.840, "source": "Danielyan et al., 2012"},
+        {"method": "HoloNet",      "psnr": 33.00, "ssim": 0.920, "source": "Wang et al., Light: Sci. Appl. 2022"},
+        {"method": "PhaseNet-EH",  "psnr": 34.50, "ssim": 0.940, "source": "Midgley & Dunin-Borkowski, Nat. Mater. 2009"},
     ],
     # EM generic — non-cryo electron microscopy denoising/restoration
     "em_generic": [

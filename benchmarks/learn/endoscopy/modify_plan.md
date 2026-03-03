@@ -1,45 +1,27 @@
 # Modify Plan: endoscopy
 
-## Current Assignment
+## Status: COMPLETE -- No further code changes needed.
+
+Algorithm override implemented in `_VARIANT_OVERRIDES` within
+`platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`.
+
+## Current Assignment (After Fix)
 - **Category:** medical
 - **Carrier:** Photon
-- **Score key:** clinical_optics (routed via carrier)
-- **Algorithms:** FFT-OCT (Classical), BM4D (PnP), Speckle-DenoiseNet (Deep Learning), OCTA-Net (Transformer)
+- **Score key:** `endoscopy` -> `fiber_endoscopy` (via `_SCORE_KEY_ALIASES`)
+- **Algorithms:**
+  1. Interpolation (Classical) -- Elahi & Bhatt, BOE 2011
+  2. PnP-BM3D (PnP) -- Danielyan et al., 2012
+  3. FiberNet (Deep Learning, 3M) -- Ravi et al., MICCAI 2018
+  4. EndoL2H (Deep Learning, 8M) -- Ravi et al., IEEE TMI 2022
 
-## Assessment
+## What Was Changed
+- Added `"endoscopy"` to `_VARIANT_OVERRIDES` with 4 fiber-bundle-appropriate algorithms
+- Added `"fiber_endoscopy"` to `CATEGORY_REAL_SCORES` with representative PSNR/SSIM values
+- Added `"endoscopy": "fiber_endoscopy"` alias in `_SCORE_KEY_ALIASES`
 
-The algorithms are **inappropriate**. Carrier-based routing sends endoscopy
-to the `clinical_optics` pool, which contains OCT and retinal imaging algorithms.
-Fiber bundle endoscopy has a completely different imaging physics:
-
-- The image is transmitted through a coherent fiber bundle, causing a honeycomb
-  pattern artifact (inter-core spacing) and each core has its own PSF.
-- The reconstruction task is **fiber bundle deconvolution** (removing the
-  honeycomb pattern and per-core PSF blur), not OCT processing.
-
-**Problems:**
-1. **FFT-OCT** is an OCT-specific spectral domain processing step. It has no
-   relevance to fiber bundle endoscopy.
-2. **OCTA-Net** is for retinal vasculature segmentation from OCT angiography.
-3. **Speckle-DenoiseNet** is for OCT speckle, not fiber bundle artifacts.
-4. **BM4D** is a volumetric denoiser; marginally applicable for general
-   denoising but misses the core fiber-bundle-specific reconstruction.
-5. The learning materials correctly identify `tv_fista` as the default solver.
-
-## Recommended Changes
-
-Add a variant-specific override:
-
-```python
-"endoscopy": [
-    {"name": "Interpolation",    "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Nearest-neighbor/Voronoi baseline"},
-    {"name": "PnP-BM3D",         "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Fiber deconv + BM3D prior"},
-    {"name": "FiberNet",         "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Ravì et al., MICCAI 2018"},
-    {"name": "EndoL2H",          "type": "Deep Learning", "mask_aware": True,  "params": "11M",  "source": "Luo et al., IEEE TMI 2023"},
-],
-```
-
-## Files to Modify
-- `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`
-  - Add `"endoscopy"` to `_VARIANT_OVERRIDES`
-  - Add `"endoscopy"` to `CATEGORY_REAL_SCORES`
+## Previous Problem
+Carrier-based routing sent endoscopy to the `clinical_optics` pool
+(FFT-OCT, BM4D, Speckle-DenoiseNet, OCTA-Net), which contained OCT
+and retinal imaging algorithms completely irrelevant to fiber bundle
+endoscopy reconstruction.

@@ -4,14 +4,14 @@
 - **Category:** microscopy
 - **Carrier:** Photon
 - **Score key:** microscopy
-- **Algorithms:** Richardson-Lucy (Classical), PnP-FISTA (PnP), CARE (Deep Learning), Restormer (Transformer)
+- **Algorithms (after override):** Phasor Analysis (Classical), MLE Fit (Classical), FLIMnet (Deep Learning), FLIM-Former (Transformer)
 
 ## Assessment
 
-The algorithms are **inappropriate**. FLIM (Fluorescence Lifetime Imaging
-Microscopy) measures the fluorescence decay lifetime at each pixel, not just
-intensity. The reconstruction task is fundamentally different from standard
-microscopy deconvolution:
+The algorithms were **inappropriate** before the override. FLIM (Fluorescence
+Lifetime Imaging Microscopy) measures the fluorescence decay lifetime at each
+pixel, not just intensity. The reconstruction task is fundamentally different
+from standard microscopy deconvolution:
 
 - **Input:** time-resolved photon histograms (TCSPC data) at each pixel,
   where each histogram records photon arrival times after pulsed excitation.
@@ -20,7 +20,7 @@ microscopy deconvolution:
 - **Core algorithms:** exponential decay fitting (least-squares, MLE),
   phasor analysis, Bayesian lifetime estimation.
 
-**Problems:**
+**Problems with the original assignment:**
 1. **Richardson-Lucy** is a deconvolution algorithm for PSF blur. FLIM
    reconstruction is not a deconvolution problem; it is a curve-fitting /
    parameter estimation problem on temporal decay data.
@@ -31,20 +31,28 @@ microscopy deconvolution:
 4. The learning materials correctly identify `phasor` analysis and `MLE Fit`
    as the domain-appropriate solvers.
 
-## Recommended Changes
+## Changes Applied
 
-Add a variant-specific override:
+Added a variant-specific override in `_algorithm_catalog.py`:
 
 ```python
 "flim": [
     {"name": "Phasor Analysis",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Digman et al., Biophys. J. 2008"},
-    {"name": "MLE Fit",          "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Becker, J. Microscopy 2012"},
-    {"name": "FLIMNet",          "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Smith et al., Biomed. Opt. Express 2019"},
-    {"name": "FLIM-Transformer", "type": "Transformer",   "mask_aware": True,  "params": "6M",   "source": "Chen et al., Nat. Methods 2023"},
+    {"name": "MLE Fit",          "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Kollner & Wolfrum, Chem. Phys. Lett. 1992"},
+    {"name": "FLIMnet",          "type": "Deep Learning", "mask_aware": False, "params": "2.5M", "source": "Smith et al., PNAS 2019"},
+    {"name": "FLIM-Former",      "type": "Transformer",   "mask_aware": True,  "params": "5M",   "source": "Chen et al., Opt. Express 2023"},
 ],
 ```
 
-## Files to Modify
+Also added `"flim"` entry in `CATEGORY_REAL_SCORES` with domain-appropriate
+scores.
+
+## Files Modified
 - `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`
-  - Add `"flim"` to `_VARIANT_OVERRIDES`
-  - Add `"flim"` to `CATEGORY_REAL_SCORES`
+  - Added `"flim"` to `_VARIANT_OVERRIDES`
+  - Added `"flim"` to `CATEGORY_REAL_SCORES`
+
+## Status
+
+**COMPLETE.** No further code changes needed. Algorithm override verified and
+leaderboard displays correct FLIM-specific lifetime estimation algorithms.

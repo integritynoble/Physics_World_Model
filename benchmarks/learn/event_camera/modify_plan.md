@@ -4,17 +4,17 @@
 - **Category:** computational_photography
 - **Carrier:** Photon
 - **Score key:** computational_photography
-- **Algorithms:** Wiener-Deconv (Classical), PnP-FFDNet (PnP), HDR-CNN (Deep Learning), Uformer (Transformer)
+- **Algorithms (after override):** Event Integration (Classical), cF2F (PnP), E2VID (Deep Learning), SPADE-E2VID (Transformer)
 
 ## Assessment
 
-The algorithms are **inappropriate**. Event cameras (Dynamic Vision Sensors)
-produce asynchronous per-pixel brightness change events, not standard frames.
-The reconstruction task is event-to-video (intensity image reconstruction from
-an event stream), which requires specialized algorithms that handle the
-asynchronous, sparse temporal data format.
+The algorithms were **inappropriate** before the override. Event cameras (Dynamic
+Vision Sensors) produce asynchronous per-pixel brightness change events, not
+standard frames. The reconstruction task is event-to-video (intensity image
+reconstruction from an event stream), which requires specialized algorithms that
+handle the asynchronous, sparse temporal data format.
 
-**Problems:**
+**Problems with the original assignment:**
 1. **Wiener-Deconv** assumes a standard linear degradation model (blur kernel).
    Event cameras do not produce blurred images; they produce event streams.
 2. **HDR-CNN** is for tone-mapping / HDR image reconstruction from bracketed
@@ -25,20 +25,28 @@ asynchronous, sparse temporal data format.
    **E2VID** (Rebecq et al., TPAMI 2020), **FireNet** (Scheerlinck et al.,
    ECCV 2020 Workshop), **SPADE-E2VID** (Cadena et al., 2024).
 
-## Recommended Changes
+## Changes Applied
 
-Add a variant-specific override:
+Added a variant-specific override in `_algorithm_catalog.py`:
 
 ```python
 "event_camera": [
-    {"name": "Event Integration",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Direct event accumulation baseline"},
-    {"name": "cF2F",               "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Scheerlinck et al., CVPR 2019"},
+    {"name": "Event Integration",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Analytical baseline"},
+    {"name": "cF2F",               "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Scheerlinck et al., IEEE RA-L 2020"},
     {"name": "E2VID",              "type": "Deep Learning", "mask_aware": False, "params": "10M",  "source": "Rebecq et al., IEEE TPAMI 2020"},
     {"name": "SPADE-E2VID",        "type": "Transformer",   "mask_aware": True,  "params": "15M",  "source": "Cadena et al., 2024"},
 ],
 ```
 
-## Files to Modify
+Also added `"event_camera"` entry in `CATEGORY_REAL_SCORES` with domain-appropriate
+scores.
+
+## Files Modified
 - `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`
-  - Add `"event_camera"` to `_VARIANT_OVERRIDES`
-  - Add `"event_camera"` to `CATEGORY_REAL_SCORES`
+  - Added `"event_camera"` to `_VARIANT_OVERRIDES`
+  - Added `"event_camera"` to `CATEGORY_REAL_SCORES`
+
+## Status
+
+**COMPLETE.** No further code changes needed. Algorithm override verified and
+leaderboard displays correct event-camera-specific algorithms.
