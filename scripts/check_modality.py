@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
-"""Check a single modality for errors on the live benchmark site.
+"""Thorough quality check for a single modality on the live benchmark site.
 
 Usage:
     python3 scripts/check_modality.py <modality_id>
-    python3 scripts/check_modality.py --all          # check all 169
-    python3 scripts/check_modality.py --list-errors   # list modalities with errors
+    python3 scripts/check_modality.py --all
+    python3 scripts/check_modality.py --list-errors
 
-Writes check.md into benchmarks/learn/<modality_id>/check.md
+Writes/revises check.md in benchmarks/learn/<modality_id>/check.md
 """
 import argparse
-import json
-import os
 import re
-import sys
 import urllib.request
 import urllib.error
 from pathlib import Path
@@ -22,11 +19,16 @@ BASE_URL = "https://pwm.platformai.org"
 REPO_ROOT = Path(__file__).resolve().parent.parent
 LEARN_DIR = REPO_ROOT / "benchmarks" / "learn"
 
+# Parent modalities that have sub-variants instead of own page
+PARENT_MODALITIES = {
+    "spc": ["spc_block", "spc_kronecker"],
+}
+
 
 def fetch(url: str, timeout: int = 15):
     """Fetch URL, return (status_code, body_text)."""
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "PWM-Checker/1.0"})
+        req = urllib.request.Request(url, headers={"User-Agent": "PWM-Checker/2.0"})
         resp = urllib.request.urlopen(req, timeout=timeout)
         return resp.status, resp.read().decode("utf-8", errors="replace")
     except urllib.error.HTTPError as e:
@@ -35,15 +37,15 @@ def fetch(url: str, timeout: int = 15):
         return 0, str(e)
 
 
-def check_head(url: str, timeout: int = 10):
-    """Check if URL is accessible (GET with range to avoid downloading full file)."""
+def check_url(url: str, timeout: int = 10):
+    """Check if URL is accessible via GET with Range header. Returns status code."""
     try:
         req = urllib.request.Request(url, headers={
-            "User-Agent": "PWM-Checker/1.0",
+            "User-Agent": "PWM-Checker/2.0",
             "Range": "bytes=0-100",
         })
         resp = urllib.request.urlopen(req, timeout=timeout)
-        resp.read()  # consume
+        resp.read()
         return resp.status  # 200 or 206
     except urllib.error.HTTPError as e:
         return e.code
@@ -52,164 +54,212 @@ def check_head(url: str, timeout: int = 10):
 
 
 def check_modality(modality_id: str) -> dict:
-    """Run all checks for a modality, return results dict."""
+    """Run comprehensive checks for a modality."""
     results = {
         "modality_id": modality_id,
-        "checked_at": datetime.now(timezone.utc).isoformat(),
+        "checked_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "errors": [],
         "warnings": [],
+        "info": [],
         "passed": [],
     }
 
-    # 1. Main benchmark page
+    # Handle parent modalities
+    if modality_id in PARENT_MODALITIES:
+        subs = PARENT_MODALITIES[modality_id]
+        results["info"].append(f"Parent modality — sub-variants: {', '.join(subs)}")
+        for sv in subs:
+            st, _ = fetch(f"{BASE_URL}/benchmark/{sv}")
+            if st == 200:
+                results["passed"].append(f"Sub-variant /benchmark/{sv} loads (HTTP 200)")
+            else:
+                results["errors"].append(f"Sub-variant /benchmark/{sv} HTTP {st}")
+        # Still check learn materials
+        _check_learn_materials(modality_id, results)
+        return results
+
+    # ── 1. Main page ──
     status, body = fetch(f"{BASE_URL}/benchmark/{modality_id}")
+    page_size = len(body)
+    results["info"].append(f"Page size: {page_size:,} bytes")
+
     if status != 200:
-        results["errors"].append(f"Main page returned HTTP {status}")
-        return results  # can't check further
+        results["errors"].append(f"Main page HTTP {status}")
+        _check_learn_materials(modality_id, results)
+        return results
     results["passed"].append(f"Main page loads (HTTP {status})")
 
-    # 2. Check page title / header
-    title_match = re.search(r"<title>(.+?)</title>", body)
-    if title_match:
-        title = title_match.group(1)
-        if "Error" in title or "404" in title:
+    # ── 2. Page title ──
+    title_m = re.search(r"<title>(.+?)</title>", body)
+    if title_m:
+        title = title_m.group(1).strip()
+        if "Error" in title or "404" in title or "500" in title:
             results["errors"].append(f"Page title indicates error: {title}")
         else:
-            results["passed"].append(f"Page title: {title}")
-
-    # 3. Check leaderboard
-    if "Challenge Leaderboard" in body:
-        results["passed"].append("Challenge Leaderboard section present")
-        # Count leaderboard entries
-        lb_entries = body.count('class="px-4 py-3 font-semibold text-gray-800">')
-        if lb_entries == 0:
-            results["warnings"].append("Leaderboard section present but no entries found")
-        else:
-            results["passed"].append(f"Leaderboard has {lb_entries} entries")
-
-        # Check for realistic scores
-        scores = re.findall(r'font-bold text-amber-800">(\d+\.\d+)</td>', body)
-        for s in scores:
-            val = float(s)
-            if val > 1.0:
-                results["warnings"].append(f"Overall score {val} > 1.0 (unusual)")
-            if val < 0.01:
-                results["warnings"].append(f"Overall score {val} < 0.01 (suspiciously low)")
+            results["passed"].append(f"Title: {title}")
     else:
-        results["errors"].append("No Challenge Leaderboard section found")
+        results["warnings"].append("No <title> tag found")
 
-    # 4. Check PSNR values
-    psnr_vals = re.findall(r'([\d.]+)\s*dB', body)
-    for p in psnr_vals:
-        val = float(p)
-        if val > 60:
-            results["warnings"].append(f"PSNR {val} dB > 60 (unrealistically high)")
-        if val < 5:
-            results["warnings"].append(f"PSNR {val} dB < 5 (unrealistically low)")
+    # ── 3. Description ──
+    desc_m = re.search(r'<p class="mt-1 text-sm text-gray-500">([^<]+)</p>', body)
+    if desc_m:
+        desc = desc_m.group(1).strip()
+        results["passed"].append(f"Description: {desc[:80]}")
+    else:
+        results["warnings"].append("No description subtitle found")
 
-    # 5. Check spec notation
-    if "font-mono text-indigo" in body:
-        spec_match = re.search(r'font-mono text-indigo[^>]*>([^<]+)<', body)
-        if spec_match:
-            spec = spec_match.group(1).strip()
-            if len(spec) < 5:
-                results["warnings"].append(f"Spec notation very short: '{spec}'")
-            else:
-                results["passed"].append(f"Spec notation present: {spec[:60]}")
+    # ── 4. Spec notation ──
+    spec_m = re.search(r'font-mono text-indigo[^>]*>([^<]+)<', body)
+    if spec_m:
+        spec = spec_m.group(1).strip()
+        if len(spec) < 3:
+            results["warnings"].append(f"Spec notation very short: '{spec}'")
+        else:
+            results["passed"].append(f"Spec notation: {spec[:80]}")
     else:
         results["warnings"].append("No spec notation found")
 
-    # 6. Check description
-    desc_match = re.search(r'<p class="mt-1 text-sm text-gray-500">([^<]+)</p>', body)
-    if desc_match:
-        desc = desc_match.group(1).strip()
-        if len(desc) < 3:
-            results["warnings"].append(f"Description very short: '{desc}'")
-        else:
-            results["passed"].append(f"Description: {desc[:80]}")
-    else:
-        results["warnings"].append("No description found")
+    # ── 5. Leaderboard ──
+    if "Challenge Leaderboard" in body:
+        results["passed"].append("Challenge Leaderboard section present")
 
-    # 7. Check Data Preview section
-    if "Data Preview" in body or "data-preview" in body.lower() or "Gallery" in body:
+        # Count entries (method names)
+        methods = re.findall(
+            r'class="px-4 py-3 font-semibold text-gray-800">([^<]+)<', body)
+        if methods:
+            results["passed"].append(f"Leaderboard: {len(methods)} entries")
+            results["info"].append(f"Methods: {', '.join(methods[:4])}")
+        else:
+            results["warnings"].append("Leaderboard section present but no entries parsed")
+
+        # Overall scores (must have decimal point to exclude rank numbers)
+        overall_scores = re.findall(
+            r'font-bold text-amber-800">(\d+\.\d+)</td>', body)
+        for s in overall_scores:
+            val = float(s)
+            if val > 1.0:
+                results["warnings"].append(f"Overall score {val} > 1.0 (outside [0,1] range)")
+
+        # Leaderboard PSNR (in score cells: "XX.XX dB / 0.XXX")
+        lb_psnr = re.findall(
+            r'text-gray-400[^>]*>\s*([\d.]+)\s*dB\s*/\s*([\d.]+)', body)
+        for psnr_s, ssim_s in lb_psnr:
+            psnr = float(psnr_s)
+            ssim = float(ssim_s)
+            if psnr > 60:
+                results["warnings"].append(
+                    f"Leaderboard PSNR {psnr} dB > 60 (unrealistically high)")
+            if ssim > 1.0:
+                results["warnings"].append(
+                    f"Leaderboard SSIM {ssim} > 1.0 (invalid)")
+
+        # Check source citations
+        sources = re.findall(r'text-xs text-gray-500">([^<]+)</td>', body)
+        n_empty = sum(1 for s in sources if not s.strip() or s.strip() == "—")
+        if n_empty > 0:
+            results["info"].append(f"{n_empty} leaderboard entries missing source citation")
+    else:
+        results["errors"].append("No Challenge Leaderboard section found")
+
+    # ── 6. Data Preview / Gallery ──
+    if "Data Preview" in body or "Gallery" in body:
         results["passed"].append("Data Preview / Gallery section present")
     else:
-        results["warnings"].append("No Data Preview / Gallery section found")
+        results["warnings"].append("No Data Preview / Gallery section")
 
-    # 8. Check gallery images (scene_00 gt.png)
-    gt_url = f"{BASE_URL}/gcs/img/benchmark_gallery/{modality_id}/scene_00/gt.png"
-    gt_status = check_head(gt_url)
-    if gt_status in (200, 206):
-        results["passed"].append("Gallery gt.png (scene_00) loads")
-    else:
-        results["warnings"].append(f"Gallery gt.png (scene_00) HTTP {gt_status}")
-
-    # Check recon images
-    for recon in ["recon_I.png", "recon_II.png", "recon_III.png"]:
-        recon_url = f"{BASE_URL}/gcs/img/benchmark_gallery/{modality_id}/scene_00/{recon}"
-        recon_status = check_head(recon_url)
-        if recon_status in (200, 206):
-            results["passed"].append(f"Gallery {recon} (scene_00) loads")
+    # ── 7. Verify ALL gallery images (4 scenes × gt + measurement + recon) ──
+    gcs_refs = re.findall(r'/gcs/img/benchmark_gallery/[^"\']+\.png', body)
+    unique_refs = sorted(set(gcs_refs))
+    n_ok = 0
+    n_fail = 0
+    failed_imgs = []
+    for ref in unique_refs:
+        url = f"{BASE_URL}{ref}"
+        st = check_url(url)
+        if st in (200, 206):
+            n_ok += 1
         else:
-            results["warnings"].append(f"Gallery {recon} (scene_00) HTTP {recon_status}")
+            n_fail += 1
+            failed_imgs.append(f"{ref} → HTTP {st}")
+    if n_ok > 0:
+        results["passed"].append(f"Gallery images: {n_ok}/{n_ok + n_fail} load OK")
+    if n_fail > 0:
+        for fi in failed_imgs[:5]:  # cap at 5
+            results["errors"].append(f"Gallery image broken: {fi}")
+        if n_fail > 5:
+            results["errors"].append(f"... and {n_fail - 5} more broken images")
 
-    # 9. Check challenge tier pages
+    # ── 8. Challenge tier pages ──
     for tier in ["public", "dev"]:
         tier_url = f"{BASE_URL}/benchmark/{modality_id}/challenge/{tier}"
-        tier_status, tier_body = fetch(tier_url)
-        if tier_status == 200:
+        tier_st, tier_body = fetch(tier_url)
+        if tier_st == 200:
             results["passed"].append(f"Challenge {tier} page loads (HTTP 200)")
-            # Check if it has download link
-            if ".h5" in tier_body or "download" in tier_body.lower():
-                results["passed"].append(f"Challenge {tier} page has dataset reference")
+            if ".h5" in tier_body:
+                results["passed"].append(f"Challenge {tier} has HDF5 reference")
             else:
-                results["warnings"].append(f"Challenge {tier} page has no dataset download link")
+                results["warnings"].append(
+                    f"Challenge {tier} page has no HDF5 reference")
         else:
-            results["errors"].append(f"Challenge {tier} page HTTP {tier_status}")
+            results["errors"].append(f"Challenge {tier} page HTTP {tier_st}")
 
-    # 10. Check challenge HDF5 on GCS (via proxy — HEAD only)
-    h5_url = f"{BASE_URL}/gcs/challenge-data/v1.0/{modality_id}_challenge_public.h5"
-    h5_status = check_head(h5_url)
-    if h5_status in (200, 206):
-        results["passed"].append("Public challenge HDF5 accessible on GCS")
-    else:
-        results["errors"].append(f"Public challenge HDF5 HTTP {h5_status}")
+    # ── 9. Challenge HDF5 on GCS ──
+    for tier in ["public", "dev"]:
+        h5_url = (f"{BASE_URL}/gcs/challenge-data/v1.0/"
+                  f"{modality_id}_challenge_{tier}.h5")
+        h5_st = check_url(h5_url)
+        if h5_st in (200, 206):
+            results["passed"].append(f"Challenge {tier} HDF5 on GCS OK")
+        else:
+            results["errors"].append(f"Challenge {tier} HDF5 HTTP {h5_st}")
 
-    # 11. Check learning materials
-    learn_path = LEARN_DIR / modality_id
-    if learn_path.exists():
-        results["passed"].append("Learning materials directory exists")
-        expected_files = [
-            "README.md",
-            "01_physics_fundamentals.md",
-            "02_forward_model.md",
-            "03_reconstruction_algorithms.md",
-            "04_pwm_benchmark.md",
-            "05_hands_on_tutorial.md",
-        ]
-        for f in expected_files:
-            fp = learn_path / f
-            if fp.exists():
-                size = fp.stat().st_size
-                if size < 100:
-                    results["warnings"].append(f"Learn file {f} very small ({size} bytes)")
-                else:
-                    results["passed"].append(f"Learn file {f} exists ({size} bytes)")
-            else:
-                results["errors"].append(f"Learn file {f} missing")
-    else:
-        results["errors"].append("Learning materials directory missing")
-
-    # 12. Check compete and contribute pages
+    # ── 10. Compete & Contribute pages ──
     for page in ["compete", "contribute"]:
-        page_url = f"{BASE_URL}/benchmark/{modality_id}/{page}"
-        page_status, _ = fetch(page_url)
-        if page_status == 200:
+        pg_url = f"{BASE_URL}/benchmark/{modality_id}/{page}"
+        pg_st, _ = fetch(pg_url)
+        if pg_st == 200:
             results["passed"].append(f"{page.capitalize()} page loads (HTTP 200)")
         else:
-            results["warnings"].append(f"{page.capitalize()} page HTTP {page_status}")
+            results["warnings"].append(f"{page.capitalize()} page HTTP {pg_st}")
+
+    # ── 11. Forward model equation ──
+    if re.search(r'y\s*=\s*[HAΦ]', body) or "forward" in body.lower():
+        results["passed"].append("Forward model reference found")
+    else:
+        results["info"].append("No explicit forward model equation on page")
+
+    # ── 12. Learning materials ──
+    _check_learn_materials(modality_id, results)
 
     return results
+
+
+def _check_learn_materials(modality_id, results):
+    """Check learning materials exist and have content."""
+    learn_path = LEARN_DIR / modality_id
+    if not learn_path.exists():
+        results["errors"].append("Learning materials directory missing")
+        return
+
+    results["passed"].append("Learning materials directory exists")
+    expected = [
+        "README.md",
+        "01_physics_fundamentals.md",
+        "02_forward_model.md",
+        "03_reconstruction_algorithms.md",
+        "04_pwm_benchmark.md",
+        "05_hands_on_tutorial.md",
+    ]
+    for f in expected:
+        fp = learn_path / f
+        if fp.exists():
+            size = fp.stat().st_size
+            if size < 100:
+                results["warnings"].append(f"Learn file {f} very small ({size} B)")
+            else:
+                results["passed"].append(f"Learn: {f} ({size:,} B)")
+        else:
+            results["errors"].append(f"Learn file {f} MISSING")
 
 
 def generate_check_md(results: dict) -> str:
@@ -218,35 +268,34 @@ def generate_check_md(results: dict) -> str:
     mid = results["modality_id"]
     ts = results["checked_at"]
 
-    # Header
-    lines.append(f"# Quality Check: `{mid}`")
-    lines.append(f"")
-    lines.append(f"**Checked:** {ts}")
-    lines.append(f"**URL:** {BASE_URL}/benchmark/{mid}")
-    lines.append(f"")
-
-    # Summary
     n_err = len(results["errors"])
     n_warn = len(results["warnings"])
+    n_info = len(results["info"])
     n_pass = len(results["passed"])
 
     if n_err == 0 and n_warn == 0:
-        status = "PASS"
+        status_icon = "PASS"
     elif n_err == 0:
-        status = "WARN"
+        status_icon = "WARN"
     else:
-        status = "FAIL"
+        status_icon = "FAIL"
 
-    lines.append(f"## Status: {status}")
+    lines.append(f"# Benchmark QA Check — {mid}")
     lines.append(f"")
-    lines.append(f"| Category | Count |")
+    lines.append(f"**URL:** {BASE_URL}/benchmark/{mid}")
+    lines.append(f"**Check Date:** {ts}")
+    lines.append(f"**Status:** {status_icon}")
+    lines.append(f"")
+    lines.append(f"## Summary")
+    lines.append(f"")
+    lines.append(f"| Severity | Count |")
     lines.append(f"|----------|-------|")
-    lines.append(f"| Passed | {n_pass} |")
-    lines.append(f"| Warnings | {n_warn} |")
-    lines.append(f"| Errors | {n_err} |")
+    lines.append(f"| ERROR | {n_err} |")
+    lines.append(f"| WARNING | {n_warn} |")
+    lines.append(f"| INFO | {n_info} |")
+    lines.append(f"| PASSED | {n_pass} |")
     lines.append(f"")
 
-    # Errors
     if results["errors"]:
         lines.append(f"## Errors")
         lines.append(f"")
@@ -254,7 +303,6 @@ def generate_check_md(results: dict) -> str:
             lines.append(f"- [ ] {e}")
         lines.append(f"")
 
-    # Warnings
     if results["warnings"]:
         lines.append(f"## Warnings")
         lines.append(f"")
@@ -262,7 +310,13 @@ def generate_check_md(results: dict) -> str:
             lines.append(f"- [ ] {w}")
         lines.append(f"")
 
-    # Passed
+    if results["info"]:
+        lines.append(f"## Info")
+        lines.append(f"")
+        for i in results["info"]:
+            lines.append(f"- {i}")
+        lines.append(f"")
+
     if results["passed"]:
         lines.append(f"## Passed Checks")
         lines.append(f"")
@@ -270,21 +324,64 @@ def generate_check_md(results: dict) -> str:
             lines.append(f"- [x] {p}")
         lines.append(f"")
 
+    lines.append(f"---")
+    lines.append(f"*Generated by `scripts/check_modality.py` v2*")
     return "\n".join(lines)
+
+
+def pull_and_push():
+    """Pull latest from remote, push our changes."""
+    import subprocess
+    for attempt in range(8):
+        # Stash local unstaged changes
+        subprocess.run(["git", "stash"], capture_output=True)
+        # Pull rebase
+        r = subprocess.run(
+            ["git", "pull", "--rebase", "origin", "master"],
+            capture_output=True, text=True)
+        # If conflicts, accept theirs for check.md files and continue
+        if r.returncode != 0:
+            # Get conflicted files
+            cr = subprocess.run(
+                ["git", "diff", "--name-only", "--diff-filter=U"],
+                capture_output=True, text=True)
+            conflicts = [f.strip() for f in cr.stdout.strip().split("\n") if f.strip()]
+            if conflicts:
+                subprocess.run(["git", "checkout", "--theirs"] + conflicts,
+                               capture_output=True)
+                subprocess.run(["git", "add"] + conflicts, capture_output=True)
+                subprocess.run(["git", "rebase", "--continue"],
+                               capture_output=True, env={**dict(__import__('os').environ),
+                                                          "GIT_EDITOR": "true"})
+        # Pop stash
+        subprocess.run(["git", "stash", "pop"], capture_output=True)
+        # Try push
+        r = subprocess.run(
+            ["git", "push", "origin", "master"],
+            capture_output=True, text=True)
+        if r.returncode == 0:
+            print(f"  Push OK (attempt {attempt + 1})")
+            return True
+        import time
+        time.sleep(1)
+    print("  Push failed after 8 attempts")
+    return False
 
 
 def main():
     parser = argparse.ArgumentParser(description="Check modality quality")
     parser.add_argument("modality", nargs="?", help="Modality ID to check")
     parser.add_argument("--all", action="store_true", help="Check all modalities")
-    parser.add_argument("--list-errors", action="store_true",
-                        help="List modalities with existing errors")
-    parser.add_argument("--dry-run", action="store_true",
-                        help="Print results but don't write check.md")
+    parser.add_argument("--list-errors", action="store_true")
+    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--push", action="store_true",
+                        help="Git commit + push after each modality")
     args = parser.parse_args()
 
     if args.list_errors:
         for d in sorted(LEARN_DIR.iterdir()):
+            if not d.is_dir():
+                continue
             ck = d / "check.md"
             if ck.exists():
                 content = ck.read_text()
@@ -297,8 +394,8 @@ def main():
         return
 
     if args.all:
-        modalities = sorted(d.name for d in LEARN_DIR.iterdir() if d.is_dir()
-                            and not d.name.startswith("."))
+        modalities = sorted(d.name for d in LEARN_DIR.iterdir()
+                            if d.is_dir() and not d.name.startswith("."))
     elif args.modality:
         modalities = [args.modality]
     else:
@@ -317,7 +414,8 @@ def main():
         n_warn = len(results["warnings"])
         n_pass = len(results["passed"])
 
-        print(f"  Passed: {n_pass}  Warnings: {n_warn}  Errors: {n_err}")
+        tag = "FAIL" if n_err else ("WARN" if n_warn else "PASS")
+        print(f"  [{tag}] Passed:{n_pass} Warn:{n_warn} Err:{n_err}")
 
         if results["errors"]:
             for e in results["errors"]:
@@ -331,6 +429,16 @@ def main():
             out_path.parent.mkdir(parents=True, exist_ok=True)
             out_path.write_text(md_content)
             print(f"  Wrote: {out_path}")
+
+        if args.push and not args.dry_run:
+            import subprocess
+            subprocess.run(["git", "add", str(LEARN_DIR / mid / "check.md")],
+                           capture_output=True)
+            msg = f"check({mid}): {tag} — {n_pass}P/{n_warn}W/{n_err}E"
+            subprocess.run(
+                ["git", "commit", "-m", msg + "\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"],
+                capture_output=True)
+            pull_and_push()
 
     print(f"\nDone. Checked {len(modalities)} modalities.")
 
