@@ -166,6 +166,93 @@ def _find_dataset_for_modality(modality_id: str, manifest: Dict[str, dict]) -> O
     return None
 
 
+_CHALLENGE_CACHE = Path("/tmp/pwm_challenge_cache")
+
+
+def _download_challenge_h5(variant: str, tier: str) -> Path:
+    """Download challenge HDF5 from GCS, with local cache."""
+    _CHALLENGE_CACHE.mkdir(parents=True, exist_ok=True)
+    filename = f"{variant}_challenge_{tier}.h5"
+    local = _CHALLENGE_CACHE / filename
+    if local.exists() and local.stat().st_size > 0:
+        return local
+    from google.cloud import storage as gcs_storage
+    client = gcs_storage.Client()
+    bucket = client.bucket("pwm-benchmark-datasets")
+    blob = bucket.blob(f"challenge-data/v1.0/{filename}")
+    if not blob.exists():
+        raise FileNotFoundError(f"No challenge data: {filename}")
+    blob.download_to_filename(str(local))
+    return local
+
+
+def _resize_to_gallery(arr: np.ndarray, target: int = 256) -> np.ndarray:
+    """Resize or center-crop array to target×target for gallery display."""
+    from PIL import Image as PILImage
+    if arr.ndim == 2:
+        H, W = arr.shape
+        if H >= target and W >= target:
+            cy, cx = (H - target) // 2, (W - target) // 2
+            return arr[cy:cy+target, cx:cx+target].copy()
+        pil = PILImage.fromarray((np.clip(arr, 0, 1) * 255).astype(np.uint8))
+        pil = pil.resize((target, target), PILImage.LANCZOS)
+        return np.array(pil, dtype=np.float32) / 255.0
+    # 3-channel
+    H, W = arr.shape[:2]
+    if H >= target and W >= target:
+        cy, cx = (H - target) // 2, (W - target) // 2
+        return arr[cy:cy+target, cx:cx+target].copy()
+    bands = []
+    for c in range(arr.shape[2]):
+        pil = PILImage.fromarray((np.clip(arr[:, :, c], 0, 1) * 255).astype(np.uint8))
+        pil = pil.resize((target, target), PILImage.LANCZOS)
+        bands.append(np.array(pil, dtype=np.float32) / 255.0)
+    return np.stack(bands, axis=-1)
+
+
+def _try_load_challenge_public(
+    modality_id: str, num_scenes: int = 4,
+) -> Optional[Tuple[List[Tuple[np.ndarray, str]], str]]:
+    """Priority 0: Load ground truth samples from the public challenge HDF5 on GCS.
+
+    Returns (list_of_(scene_array, scene_label), source_label), or None if unavailable.
+    Each scene is resized/cropped to 256×256.
+    """
+    import h5py
+    try:
+        h5_path = _download_challenge_h5(modality_id, "public")
+    except Exception:
+        return None
+
+    scenes: List[Tuple[np.ndarray, str]] = []
+    try:
+        with h5py.File(h5_path, "r") as f:
+            sample_keys = sorted([k for k in f.keys() if k.startswith("sample_")])
+            for i, sk in enumerate(sample_keys[:num_scenes]):
+                if "x_true" not in f[sk]:
+                    continue
+                xt = f[sk]["x_true"][()].astype(np.float64)
+                # Handle 3D: take mid-slice for display
+                if xt.ndim == 3 and xt.shape[2] > 3:
+                    xt = xt[:, :, xt.shape[2] // 2]
+                xt = _norm(xt)
+                xt = _resize_to_gallery(xt, 256)
+                scenes.append((xt, f"challenge_sample_{i}"))
+    except Exception:
+        return None
+
+    if not scenes:
+        return None
+
+    # Pad with augmentations if fewer samples than needed
+    while len(scenes) < num_scenes:
+        base = scenes[len(scenes) % len(scenes)][0]
+        aug = np.flip(base, axis=len(scenes) % 2).copy()
+        scenes.append((aug, f"aug_{len(scenes)}"))
+
+    return scenes, "challenge_public"
+
+
 def _try_load_real(modality_id: str, category_module: str) -> Optional[np.ndarray]:
     """Priority 1: Try to load real experimental datasets from local disk."""
     if category_module == "medical_ct_radon":
@@ -251,9 +338,16 @@ def _load_ground_truth(
 ) -> Tuple[np.ndarray, str]:
     """Load ground truth data via the priority chain.
 
-    Returns (data_array, data_source_label).
+    Returns either:
+    - (data_array, data_source_label) for single ground truth arrays
+    - (list_of_(scene_array, label), source_label) when challenge data provides pre-split scenes
     """
     category_module = config["category_module"]
+
+    # Priority 0: Public challenge dataset from GCS (authoritative source)
+    challenge_result = _try_load_challenge_public(modality_id)
+    if challenge_result is not None:
+        return challenge_result  # (scenes_list, "challenge_public")
 
     # Priority 1: Real experimental data
     real = _try_load_real(modality_id, category_module)
@@ -705,9 +799,12 @@ def process_modality(
     # Load ground truth
     gt_data, data_source = _load_ground_truth(modality_id, config, manifest)
 
-    # Generate scenes
-    rng = np.random.RandomState(hash(modality_id) % 2**31)
-    scenes = _generate_scenes(gt_data, num_scenes, rng)
+    # Generate scenes — challenge data returns pre-split scenes list
+    if isinstance(gt_data, list):
+        scenes = gt_data[:num_scenes]
+    else:
+        rng = np.random.RandomState(hash(modality_id) % 2**31)
+        scenes = _generate_scenes(gt_data, num_scenes, rng)
 
     # Get solver info for display
     solvers = config.get("solvers") or {}
