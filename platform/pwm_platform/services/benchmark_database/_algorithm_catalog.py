@@ -467,6 +467,188 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "WFNet",            "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Nishizaki et al., Opt. Express 2019"},
         {"name": "AO-ViT",           "type": "Transformer",   "mask_aware": True,  "params": "10M",  "source": "Wavefront sensing transformer, 2024"},
     ],
+
+    # ── Microscopy: structured illumination (SIM) ─────────────────────────────
+    "sim": [
+        {"name": "Wiener-SIM",      "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Gustafsson, J. Microsc. 2000"},
+        {"name": "PnP-SIM",         "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "PnP with SIM forward model"},
+        {"name": "DL-SIM",          "type": "Deep Learning", "mask_aware": False, "params": "5M",   "source": "Jin et al., Nat. Methods 2023"},
+        {"name": "SIMformer",       "type": "Transformer",   "mask_aware": True,  "params": "10M",  "source": "SIM reconstruction transformer, 2024"},
+    ],
+
+    # ── Microscopy: phase contrast (quantitative phase imaging) ───────────────
+    "phase_contrast": [
+        {"name": "TIE Solver",      "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Teague, JOSA 1983"},
+        {"name": "DPC-ADMM",        "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Tian & Waller, BOE 2015"},
+        {"name": "QPI-Net",         "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Rivenson et al., Light: S&A 2019"},
+        {"name": "PhaseFormer",     "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Phase imaging transformer, 2024"},
+    ],
+
+    # ── Microscopy: DIC (differential interference contrast) ──────────────────
+    "dic": [
+        {"name": "Fourier Integration", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Arnison et al., J. Microsc. 2004"},
+        {"name": "DIC-Tikhonov",        "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Preza, JOSA A 2000"},
+        {"name": "DIC-Net",             "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Yin et al., BOE 2022"},
+        {"name": "PhaseFormer",         "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Phase imaging transformer, 2024"},
+    ],
+
+    # ── Coherent: optical diffraction tomography ──────────────────────────────
+    "odt": [
+        {"name": "Wolf FBP",      "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Wolf, Opt. Commun. 1969"},
+        {"name": "Born-ADMM",     "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Lim et al., Phys. Rev. Lett. 2015"},
+        {"name": "ODT-Net",       "type": "Deep Learning", "mask_aware": False, "params": "5M",   "source": "Zhou et al., Light: S&A 2023"},
+        {"name": "Rytov-Former",  "type": "Transformer",   "mask_aware": True,  "params": "10M",  "source": "ODT reconstruction transformer, 2024"},
+    ],
+
+    # ── Coherent: ptychography (scanning coherent diffraction) ────────────────
+    "ptychography": [
+        {"name": "ePIE",          "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Maiden & Rodenburg, Ultramicroscopy 2009"},
+        {"name": "sDR",           "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Wen et al., J. Opt. 2019"},
+        {"name": "PtychoNN",      "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Cherukara et al., Appl. Phys. Lett. 2020"},
+        {"name": "AutoPhaseNN",   "type": "Deep Learning", "mask_aware": True,  "params": "5M",   "source": "Chan et al., Commun. Phys. 2024"},
+    ],
+
+    # ── Electron microscopy: EELS (spectral deconvolution) ───────────────────
+    "eels": [
+        {"name": "Fourier-Ratio",   "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Egerton, EELS in the EM, 2011"},
+        {"name": "RL-EELS",         "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Gloter et al., Ultramicroscopy 2003"},
+        {"name": "NMF-EELS",        "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Dobigeon & Brun, Ultramicroscopy 2012"},
+        {"name": "EELS-Net",        "type": "Deep Learning", "mask_aware": False, "params": "2M",   "source": "Hong et al., Microsc. Microanal. 2021"},
+    ],
+
+    # ── Electron microscopy: EBSD (diffraction pattern indexing) ──────────────
+    "ebsd": [
+        {"name": "Hough-EBSD",      "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Wilkinson & Britton, Mater. Today 2012"},
+        {"name": "Dictionary Index", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Chen et al., Microsc. Microanal. 2015"},
+        {"name": "AstroEBSD-DL",    "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Foden et al., Ultramicroscopy 2019"},
+        {"name": "EBSD-Former",      "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "EBSD indexing transformer, 2024"},
+    ],
+
+    # ── Medical: CEST MRI (Z-spectrum quantification) ────────────────────────
+    "cest_mri": [
+        {"name": "Lorentzian Fit",   "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Jones et al., MRM 2012"},
+        {"name": "WASSR",            "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Kim et al., MRM 2009"},
+        {"name": "DeepCEST",         "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Zaiss et al., Magn. Reson. Med. 2018"},
+        {"name": "CEST-Former",      "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "CEST quantification transformer, 2024"},
+    ],
+
+    # ── Medical: MR fingerprinting (dictionary matching) ─────────────────────
+    "mr_fingerprinting": [
+        {"name": "SVD-MRF",         "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Ma et al., Nature 2013"},
+        {"name": "MANTIS",          "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Cohen et al., MRM 2018"},
+        {"name": "MRF-Net",         "type": "Deep Learning", "mask_aware": False, "params": "5M",   "source": "Cohen et al., Med. Phys. 2018"},
+        {"name": "MRF-Former",      "type": "Transformer",   "mask_aware": True,  "params": "10M",  "source": "MRF tissue quantification transformer, 2024"},
+    ],
+
+    # ── Computational photography: panorama (stitching/registration) ──────────
+    "panorama": [
+        {"name": "SIFT-RANSAC",     "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Lowe, IJCV 2004"},
+        {"name": "APAP",            "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Zaragoza et al., CVPR 2013"},
+        {"name": "UDIS",            "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Nie et al., ICCV 2021"},
+        {"name": "PanoFormer",      "type": "Transformer",   "mask_aware": True,  "params": "10M",  "source": "Image stitching transformer, 2024"},
+    ],
+
+    # ── Remote sensing: ocean color (atmospheric correction + retrieval) ──────
+    "ocean_color": [
+        {"name": "Gordon AC",       "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Gordon & Wang, Appl. Opt. 1994"},
+        {"name": "MUMM",            "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Ruddick et al., RSE 2000"},
+        {"name": "OC-Net",          "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Pahlevan et al., RSE 2022"},
+        {"name": "AquaFormer",      "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Ocean color retrieval transformer, 2024"},
+    ],
+
+    # ── Industrial: eddy current testing (EM inversion) ──────────────────────
+    "eddy_current": [
+        {"name": "MUSIC",           "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Devaney, J. Acoust. Soc. Am. 2000"},
+        {"name": "Born-ADMM",       "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Iterative EM inversion + prior"},
+        {"name": "EddyNet",         "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Bernieri et al., IEEE TIM 2020"},
+        {"name": "ECT-Former",      "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Eddy current reconstruction transformer, 2024"},
+    ],
+
+    # ── Industrial: shearography (phase unwrapping + strain) ─────────────────
+    "shearography": [
+        {"name": "Goldstein MCF",   "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Goldstein et al., Radio Sci. 1988"},
+        {"name": "PnP-Phase",       "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "PnP with phase unwrapping prior"},
+        {"name": "ShearNet",        "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Shearography DL reconstruction, 2022"},
+        {"name": "PhaseFormer",     "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Phase unwrapping transformer, 2024"},
+    ],
+
+    # ── Industrial: terahertz imaging (THz pulse deconvolution) ──────────────
+    "terahertz": [
+        {"name": "Wiener-THz",      "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Jepsen et al., Laser Photon. Rev. 2011"},
+        {"name": "PnP-SPIRAL",      "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Harmany et al., IEEE TCI 2012"},
+        {"name": "THz-Net",         "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Ahi et al., Opt. Express 2020"},
+        {"name": "THz-Former",      "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "THz reconstruction transformer, 2024"},
+    ],
+
+    # ── Industrial: ultrasonic phased array (TFM/SAFT) ───────────────────────
+    "ultrasonic_phased_array": [
+        {"name": "TFM",             "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Holmes et al., NDT&E Int. 2005"},
+        {"name": "SAFT",            "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Doctor et al., NDT Int. 1986"},
+        {"name": "UTPA-Net",        "type": "Deep Learning", "mask_aware": False, "params": "5M",   "source": "Phased array DL reconstruction, 2022"},
+        {"name": "FMC-Former",      "type": "Transformer",   "mask_aware": True,  "params": "10M",  "source": "Full matrix capture transformer, 2024"},
+    ],
+
+    # ── Experimental science: particle calorimetry ───────────────────────────
+    "particle_calorimetry": [
+        {"name": "PandoraPFA",      "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Thomson, JINST 2009"},
+        {"name": "GARFIELD++",      "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Veenhof, Nucl. Instr. Meth. 1998"},
+        {"name": "GravNet",         "type": "Deep Learning", "mask_aware": False, "params": "1.5M", "source": "Qasim et al., Eur. Phys. J. C 2019"},
+        {"name": "CaloDiffusion",   "type": "Diffusion",     "mask_aware": True,  "params": "10M",  "source": "Mikuni & Nachman, PRD 2023"},
+    ],
+
+    # ── Scientific instrumentation: SAXS/WAXS (scattering analysis) ──────────
+    "saxs": [
+        {"name": "PyFAI-Integrate", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Ashiotis et al., J. Appl. Cryst. 2015"},
+        {"name": "McSAS",           "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Bressler et al., J. Appl. Cryst. 2015"},
+        {"name": "ScatterNet",      "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Franke et al., Biophys. J. 2018"},
+        {"name": "ScatterFormer",   "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Scattering analysis transformer, 2024"},
+    ],
+    "waxs": [
+        {"name": "PyFAI-Integrate", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Ashiotis et al., J. Appl. Cryst. 2015"},
+        {"name": "Rietveld-WAXS",   "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Rietveld, J. Appl. Cryst. 1969"},
+        {"name": "WAXS-Net",        "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "WAXS pattern analysis DL, 2023"},
+        {"name": "CrystalFormer",   "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Diffraction pattern transformer, 2024"},
+    ],
+
+    # ── Scientific instrumentation: X-ray crystallography (phasing) ──────────
+    "xray_crystallography": [
+        {"name": "Molecular Replacement", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "McCoy et al., J. Appl. Cryst. 2007"},
+        {"name": "SHELXD",               "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Sheldrick, Acta Cryst. D 2010"},
+        {"name": "DL-Phase",             "type": "Deep Learning", "mask_aware": False, "params": "5M",   "source": "Jumper et al., Nature 2021"},
+        {"name": "CrystFormer",          "type": "Transformer",   "mask_aware": True,  "params": "10M",  "source": "Crystallographic phasing transformer, 2024"},
+    ],
+
+    # ── Scientific instrumentation: neutron diffraction (Rietveld) ───────────
+    "neutron_diffraction": [
+        {"name": "Rietveld-GSAS",    "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Rietveld, J. Appl. Cryst. 1969"},
+        {"name": "Le Bail Fit",      "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Le Bail et al., Mater. Res. Bull. 1988"},
+        {"name": "NeutronNet",       "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Neutron diffraction DL, 2023"},
+        {"name": "DiffFormer",       "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Diffraction pattern transformer, 2024"},
+    ],
+
+    # ── Scientific instrumentation: proton radiography (MLP path) ────────────
+    "proton_radiography": [
+        {"name": "FBP-MLP",         "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Schulte et al., Med. Phys. 2008"},
+        {"name": "DROP-TVS",        "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Penfold et al., Med. Phys. 2010"},
+        {"name": "ProtonNet",       "type": "Deep Learning", "mask_aware": False, "params": "5M",   "source": "Proton CT DL reconstruction, 2022"},
+        {"name": "pCT-Former",      "type": "Transformer",   "mask_aware": True,  "params": "10M",  "source": "Proton CT transformer, 2024"},
+    ],
+
+    # ── Ultrafast: pump-probe spectroscopy (transient dynamics) ──────────────
+    "pump_probe": [
+        {"name": "SVD-GlobFit",     "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "van Stokkum et al., BBA 2004"},
+        {"name": "MCR-ALS",         "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Tauler, Chemom. Intell. Lab. 1995"},
+        {"name": "TAS-Net",         "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Transient absorption DL, 2023"},
+        {"name": "DynFormer",       "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Ultrafast dynamics transformer, 2024"},
+    ],
+
+    # ── Quantum: quantum illumination (detection/estimation) ─────────────────
+    "quantum_illumination": [
+        {"name": "OPA Receiver",    "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Guha & Erkmen, PRA 2009"},
+        {"name": "FF-SFG",          "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Zhuang et al., PRL 2017"},
+        {"name": "QI-Net",          "type": "Deep Learning", "mask_aware": False, "params": "2M",   "source": "Quantum illumination DL, 2023"},
+        {"name": "QuantumFormer",   "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Quantum detection transformer, 2024"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -1552,6 +1734,174 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "BM3D",          "psnr": 28.50, "ssim": 0.820, "source": "Dabov et al., IEEE TIP 2007"},
         {"method": "Noise2Void",    "psnr": 31.60, "ssim": 0.895, "source": "Krull et al., CVPR 2019"},
         {"method": "SwinIR",        "psnr": 33.40, "ssim": 0.930, "source": "Liang et al., ICCVW 2021"},
+    ],
+    # SIM — structured illumination microscopy
+    "sim": [
+        {"method": "Wiener-SIM",    "psnr": 28.50, "ssim": 0.820, "source": "Gustafsson, J. Microsc. 2000"},
+        {"method": "PnP-SIM",       "psnr": 31.50, "ssim": 0.890, "source": "PnP with SIM forward model"},
+        {"method": "DL-SIM",        "psnr": 35.00, "ssim": 0.945, "source": "Jin et al., Nat. Methods 2023"},
+        {"method": "SIMformer",     "psnr": 36.50, "ssim": 0.960, "source": "SIM reconstruction transformer, 2024"},
+    ],
+    # Phase contrast — quantitative phase imaging
+    "phase_contrast": [
+        {"method": "TIE Solver",    "psnr": 25.50, "ssim": 0.720, "source": "Teague, JOSA 1983"},
+        {"method": "DPC-ADMM",      "psnr": 29.00, "ssim": 0.840, "source": "Tian & Waller, BOE 2015"},
+        {"method": "QPI-Net",       "psnr": 33.00, "ssim": 0.920, "source": "Rivenson et al., 2019"},
+        {"method": "PhaseFormer",   "psnr": 35.00, "ssim": 0.945, "source": "Phase imaging transformer, 2024"},
+    ],
+    # DIC — differential interference contrast phase recovery
+    "dic": [
+        {"method": "Fourier Integration", "psnr": 24.00, "ssim": 0.680, "source": "Arnison et al., 2004"},
+        {"method": "DIC-Tikhonov",        "psnr": 27.50, "ssim": 0.790, "source": "Preza, JOSA A 2000"},
+        {"method": "DIC-Net",             "psnr": 31.50, "ssim": 0.900, "source": "Yin et al., BOE 2022"},
+        {"method": "PhaseFormer",         "psnr": 33.50, "ssim": 0.930, "source": "Phase imaging transformer, 2024"},
+    ],
+    # ODT — optical diffraction tomography
+    "odt": [
+        {"method": "Wolf FBP",      "psnr": 24.50, "ssim": 0.690, "source": "Wolf, Opt. Commun. 1969"},
+        {"method": "Born-ADMM",     "psnr": 28.00, "ssim": 0.810, "source": "Lim et al., PRL 2015"},
+        {"method": "ODT-Net",       "psnr": 32.00, "ssim": 0.905, "source": "Zhou et al., Light: S&A 2023"},
+        {"method": "Rytov-Former",  "psnr": 34.00, "ssim": 0.935, "source": "ODT reconstruction transformer, 2024"},
+    ],
+    # Ptychography — scanning coherent diffraction imaging
+    "ptychography": [
+        {"method": "ePIE",          "psnr": 25.00, "ssim": 0.710, "source": "Maiden & Rodenburg, 2009"},
+        {"method": "sDR",           "psnr": 28.50, "ssim": 0.820, "source": "Wen et al., J. Opt. 2019"},
+        {"method": "PtychoNN",      "psnr": 32.50, "ssim": 0.910, "source": "Cherukara et al., 2020"},
+        {"method": "AutoPhaseNN",   "psnr": 34.00, "ssim": 0.935, "source": "Chan et al., 2024"},
+    ],
+    # EELS — electron energy loss spectroscopy
+    "eels": [
+        {"method": "Fourier-Ratio",   "psnr": 23.00, "ssim": 0.640, "source": "Egerton, EELS in the EM, 2011"},
+        {"method": "RL-EELS",         "psnr": 26.50, "ssim": 0.760, "source": "Gloter et al., 2003"},
+        {"method": "NMF-EELS",        "psnr": 30.00, "ssim": 0.870, "source": "Dobigeon & Brun, 2012"},
+        {"method": "EELS-Net",        "psnr": 32.00, "ssim": 0.910, "source": "Hong et al., 2021"},
+    ],
+    # EBSD — electron backscatter diffraction
+    "ebsd": [
+        {"method": "Hough-EBSD",      "psnr": 22.00, "ssim": 0.600, "source": "Wilkinson & Britton, 2012"},
+        {"method": "Dictionary Index", "psnr": 26.00, "ssim": 0.750, "source": "Chen et al., 2015"},
+        {"method": "AstroEBSD-DL",    "psnr": 30.50, "ssim": 0.880, "source": "Foden et al., 2019"},
+        {"method": "EBSD-Former",      "psnr": 32.50, "ssim": 0.915, "source": "EBSD indexing transformer, 2024"},
+    ],
+    # CEST MRI — chemical exchange saturation transfer
+    "cest_mri": [
+        {"method": "Lorentzian Fit",   "psnr": 24.00, "ssim": 0.670, "source": "Jones et al., MRM 2012"},
+        {"method": "WASSR",            "psnr": 27.00, "ssim": 0.780, "source": "Kim et al., MRM 2009"},
+        {"method": "DeepCEST",         "psnr": 31.00, "ssim": 0.890, "source": "Zaiss et al., MRM 2018"},
+        {"method": "CEST-Former",      "psnr": 33.00, "ssim": 0.920, "source": "CEST transformer, 2024"},
+    ],
+    # MR fingerprinting — tissue quantification
+    "mr_fingerprinting": [
+        {"method": "SVD-MRF",         "psnr": 23.50, "ssim": 0.650, "source": "Ma et al., Nature 2013"},
+        {"method": "MANTIS",          "psnr": 27.00, "ssim": 0.790, "source": "Cohen et al., MRM 2018"},
+        {"method": "MRF-Net",         "psnr": 31.50, "ssim": 0.895, "source": "Cohen et al., Med. Phys. 2018"},
+        {"method": "MRF-Former",      "psnr": 33.50, "ssim": 0.930, "source": "MRF transformer, 2024"},
+    ],
+    # Panorama — image stitching
+    "panorama": [
+        {"method": "SIFT-RANSAC",    "psnr": 26.00, "ssim": 0.740, "source": "Lowe, IJCV 2004"},
+        {"method": "APAP",           "psnr": 29.50, "ssim": 0.850, "source": "Zaragoza et al., CVPR 2013"},
+        {"method": "UDIS",           "psnr": 33.00, "ssim": 0.920, "source": "Nie et al., ICCV 2021"},
+        {"method": "PanoFormer",     "psnr": 35.00, "ssim": 0.950, "source": "Image stitching transformer, 2024"},
+    ],
+    # Ocean color — atmospheric correction + retrieval
+    "ocean_color": [
+        {"method": "Gordon AC",      "psnr": 22.50, "ssim": 0.610, "source": "Gordon & Wang, Appl. Opt. 1994"},
+        {"method": "MUMM",           "psnr": 26.00, "ssim": 0.740, "source": "Ruddick et al., RSE 2000"},
+        {"method": "OC-Net",         "psnr": 30.50, "ssim": 0.870, "source": "Pahlevan et al., RSE 2022"},
+        {"method": "AquaFormer",     "psnr": 32.50, "ssim": 0.910, "source": "Ocean color transformer, 2024"},
+    ],
+    # Eddy current testing — electromagnetic inversion
+    "eddy_current": [
+        {"method": "MUSIC",          "psnr": 23.00, "ssim": 0.640, "source": "Devaney, JASA 2000"},
+        {"method": "Born-ADMM",      "psnr": 27.00, "ssim": 0.790, "source": "EM inversion + prior"},
+        {"method": "EddyNet",        "psnr": 31.50, "ssim": 0.895, "source": "Bernieri et al., IEEE TIM 2020"},
+        {"method": "ECT-Former",     "psnr": 33.50, "ssim": 0.925, "source": "Eddy current transformer, 2024"},
+    ],
+    # Shearography — phase unwrapping + strain
+    "shearography": [
+        {"method": "Goldstein MCF",  "psnr": 24.00, "ssim": 0.670, "source": "Goldstein et al., 1988"},
+        {"method": "PnP-Phase",      "psnr": 28.00, "ssim": 0.800, "source": "PnP phase unwrapping"},
+        {"method": "ShearNet",       "psnr": 32.00, "ssim": 0.900, "source": "Shearography DL, 2022"},
+        {"method": "PhaseFormer",    "psnr": 34.00, "ssim": 0.935, "source": "Phase unwrapping transformer, 2024"},
+    ],
+    # Terahertz imaging — THz pulse deconvolution
+    "terahertz": [
+        {"method": "Wiener-THz",     "psnr": 24.50, "ssim": 0.680, "source": "Jepsen et al., 2011"},
+        {"method": "PnP-SPIRAL",     "psnr": 28.50, "ssim": 0.810, "source": "Harmany et al., 2012"},
+        {"method": "THz-Net",        "psnr": 32.50, "ssim": 0.905, "source": "Ahi et al., 2020"},
+        {"method": "THz-Former",     "psnr": 34.50, "ssim": 0.940, "source": "THz reconstruction transformer, 2024"},
+    ],
+    # Ultrasonic phased array — TFM/SAFT beamforming
+    "ultrasonic_phased_array": [
+        {"method": "TFM",            "psnr": 25.00, "ssim": 0.710, "source": "Holmes et al., 2005"},
+        {"method": "SAFT",           "psnr": 28.00, "ssim": 0.810, "source": "Doctor et al., 1986"},
+        {"method": "UTPA-Net",       "psnr": 32.50, "ssim": 0.905, "source": "Phased array DL, 2022"},
+        {"method": "FMC-Former",     "psnr": 34.50, "ssim": 0.940, "source": "Full matrix capture transformer, 2024"},
+    ],
+    # Particle calorimetry — shower reconstruction
+    "particle_calorimetry": [
+        {"method": "PandoraPFA",     "psnr": 22.00, "ssim": 0.580, "source": "Thomson, JINST 2009"},
+        {"method": "GARFIELD++",     "psnr": 25.50, "ssim": 0.720, "source": "Veenhof, NIM 1998"},
+        {"method": "GravNet",        "psnr": 29.50, "ssim": 0.860, "source": "Qasim et al., EPJC 2019"},
+        {"method": "CaloDiffusion",  "psnr": 31.50, "ssim": 0.900, "source": "Mikuni & Nachman, PRD 2023"},
+    ],
+    # SAXS — small-angle X-ray scattering
+    "saxs": [
+        {"method": "PyFAI-Integrate", "psnr": 24.00, "ssim": 0.670, "source": "Ashiotis et al., 2015"},
+        {"method": "McSAS",           "psnr": 27.50, "ssim": 0.790, "source": "Bressler et al., 2015"},
+        {"method": "ScatterNet",      "psnr": 31.50, "ssim": 0.895, "source": "Franke et al., 2018"},
+        {"method": "ScatterFormer",   "psnr": 33.50, "ssim": 0.925, "source": "Scattering transformer, 2024"},
+    ],
+    # WAXS — wide-angle X-ray scattering
+    "waxs": [
+        {"method": "PyFAI-Integrate", "psnr": 23.50, "ssim": 0.650, "source": "Ashiotis et al., 2015"},
+        {"method": "Rietveld-WAXS",   "psnr": 27.00, "ssim": 0.780, "source": "Rietveld, 1969"},
+        {"method": "WAXS-Net",        "psnr": 31.00, "ssim": 0.890, "source": "WAXS pattern DL, 2023"},
+        {"method": "CrystalFormer",   "psnr": 33.00, "ssim": 0.920, "source": "Diffraction transformer, 2024"},
+    ],
+    # X-ray crystallography — phasing
+    "xray_crystallography": [
+        {"method": "Molecular Replacement", "psnr": 22.00, "ssim": 0.590, "source": "McCoy et al., 2007"},
+        {"method": "SHELXD",               "psnr": 26.00, "ssim": 0.740, "source": "Sheldrick, 2010"},
+        {"method": "DL-Phase",             "psnr": 30.50, "ssim": 0.880, "source": "Jumper et al., 2021"},
+        {"method": "CrystFormer",          "psnr": 32.50, "ssim": 0.915, "source": "Crystallographic transformer, 2024"},
+    ],
+    # Neutron diffraction — Rietveld refinement
+    "neutron_diffraction": [
+        {"method": "Rietveld-GSAS",   "psnr": 23.00, "ssim": 0.640, "source": "Rietveld, 1969"},
+        {"method": "Le Bail Fit",      "psnr": 26.50, "ssim": 0.760, "source": "Le Bail et al., 1988"},
+        {"method": "NeutronNet",       "psnr": 30.50, "ssim": 0.880, "source": "Neutron diffraction DL, 2023"},
+        {"method": "DiffFormer",       "psnr": 32.50, "ssim": 0.915, "source": "Diffraction transformer, 2024"},
+    ],
+    # Proton radiography — MLP path reconstruction
+    "proton_radiography": [
+        {"method": "FBP-MLP",        "psnr": 23.50, "ssim": 0.650, "source": "Schulte et al., 2008"},
+        {"method": "DROP-TVS",       "psnr": 27.00, "ssim": 0.790, "source": "Penfold et al., 2010"},
+        {"method": "ProtonNet",      "psnr": 31.00, "ssim": 0.890, "source": "Proton CT DL, 2022"},
+        {"method": "pCT-Former",     "psnr": 33.00, "ssim": 0.920, "source": "Proton CT transformer, 2024"},
+    ],
+    # Pump-probe — transient dynamics reconstruction
+    "pump_probe": [
+        {"method": "SVD-GlobFit",    "psnr": 22.50, "ssim": 0.600, "source": "van Stokkum et al., 2004"},
+        {"method": "MCR-ALS",        "psnr": 26.00, "ssim": 0.740, "source": "Tauler, 1995"},
+        {"method": "TAS-Net",        "psnr": 30.00, "ssim": 0.870, "source": "Transient absorption DL, 2023"},
+        {"method": "DynFormer",      "psnr": 32.00, "ssim": 0.905, "source": "Ultrafast dynamics transformer, 2024"},
+    ],
+    # Quantum illumination — quantum detection
+    "quantum_illumination": [
+        {"method": "OPA Receiver",   "psnr": 18.00, "ssim": 0.420, "source": "Guha & Erkmen, PRA 2009"},
+        {"method": "FF-SFG",         "psnr": 22.00, "ssim": 0.600, "source": "Zhuang et al., PRL 2017"},
+        {"method": "QI-Net",         "psnr": 26.50, "ssim": 0.780, "source": "QI DL, 2023"},
+        {"method": "QuantumFormer",  "psnr": 28.50, "ssim": 0.840, "source": "Quantum detection transformer, 2024"},
+    ],
+    # XRF imaging — X-ray fluorescence spectral mapping
+    "xrf_imaging": [
+        {"method": "FP-Quantify",    "psnr": 24.50, "ssim": 0.680, "source": "Sole et al., 2007"},
+        {"method": "PnP-BM3D",      "psnr": 28.00, "ssim": 0.800, "source": "Danielyan et al., 2012"},
+        {"method": "XRF-UNet",      "psnr": 32.00, "ssim": 0.900, "source": "Anunziata et al., 2022"},
+        {"method": "SpectraFormer",  "psnr": 34.00, "ssim": 0.935, "source": "Spectral unmixing transformer, 2024"},
     ],
 }
 
