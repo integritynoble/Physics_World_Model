@@ -29,6 +29,7 @@ _ALLOWED_PREFIXES = (
     "benchmark_gallery/",
     "benchmark-data/",
     "challenge-data/",
+    "img/",
 )
 
 # Filename patterns that are BLOCKED from public download (contain ground truth)

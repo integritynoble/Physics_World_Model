@@ -537,12 +537,44 @@ def run_ct_tier_gpu(h5_bytes: bytes, tier: str, algos: list[str]) -> list[dict]:
 # ══════════════════════════════════════════════════════════════════════════════
 
 
+def _download_from_gcs(variant: str, tier: str) -> bytes:
+    """Download challenge HDF5 from GCS bucket, return bytes."""
+    from google.cloud import storage as gcs_storage
+
+    bucket_name = "pwm-benchmark-datasets"
+    blob_key = f"challenge-data/v1.0/{variant}_challenge_{tier}.h5"
+
+    client = gcs_storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(blob_key)
+
+    if not blob.exists():
+        raise FileNotFoundError(f"Not found: gs://{bucket_name}/{blob_key}")
+
+    return blob.download_as_bytes()
+
+
+def _upload_results_to_gcs(local_path: Path, gcs_key: str) -> str:
+    """Upload results file to GCS bucket. Returns gs:// URI."""
+    from google.cloud import storage as gcs_storage
+
+    bucket_name = "pwm-benchmark-datasets"
+    client = gcs_storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(gcs_key)
+    blob.upload_from_filename(str(local_path))
+    return f"gs://{bucket_name}/{gcs_key}"
+
+
 @app.local_entrypoint()
 def main(
     tier:  str = "all",
     algo:  str = "all",
 ):
     """Run CT GPU benchmark on Modal T4.
+
+    Downloads datasets from GCS, runs on Modal T4, saves results locally
+    and uploads to GCS.
 
     --tier  public|dev|hidden|all   (default: all)
     --algo  fbp_gpu|tv_admm_gpu|pnp_drunet|all  (default: all)
@@ -554,7 +586,6 @@ def main(
     from datetime import datetime, timezone
 
     PROJECT_ROOT = Path(__file__).resolve().parents[1]
-    DATA_ROOT    = PROJECT_ROOT / "datasets" / "benchmark" / "ct"
     RESULTS_DIR  = PROJECT_ROOT / "results" / "ct"
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -566,16 +597,17 @@ def main(
 
     print("CT GPU Benchmark — Modal T4")
     print(f"Tiers: {tiers}  |  Algos: {algos}")
+    print("Datasets: GCS (gs://pwm-benchmark-datasets/challenge-data/v1.0/)")
 
     # Submit all tiers in parallel using spawn()
     futures = {}
     for t in tiers:
-        h5_path = DATA_ROOT / t / f"ct_challenge_{t}.h5"
-        if not h5_path.exists():
-            print(f"  [SKIP] {h5_path} not found")
+        print(f"  [DOWNLOAD] ct_challenge_{t}.h5 from GCS ...")
+        try:
+            h5_bytes = _download_from_gcs("ct", t)
+        except FileNotFoundError as e:
+            print(f"  [SKIP] {e}")
             continue
-        with open(h5_path, "rb") as fh:
-            h5_bytes = fh.read()
         print(f"  [SUBMIT] {t} ({len(h5_bytes) // 1024} KB)")
         futures[t] = run_ct_tier_gpu.spawn(h5_bytes, t, algos)
 
@@ -587,7 +619,7 @@ def main(
         all_rows.extend(rows)
         print(f"  [DONE] {t}: {len(rows)} results")
 
-    # Save outputs
+    # Save outputs locally
     ts       = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out_json = RESULTS_DIR / f"benchmark_gpu_{ts}.json"
     out_csv  = RESULTS_DIR / f"benchmark_gpu_{ts}.csv"
@@ -597,6 +629,7 @@ def main(
         "tiers":     tiers,
         "algos":     algos,
         "gpu":       "T4",
+        "source":    "gcs://pwm-benchmark-datasets/challenge-data/v1.0/",
         "scenes":    all_rows,
     }
     with open(out_json, "w") as fj:
@@ -609,6 +642,18 @@ def main(
             writer.writeheader()
             writer.writerows(all_rows)
         print(f"CSV saved     → {out_csv}")
+
+    # Upload results to GCS
+    try:
+        gcs_json = f"benchmark-results/ct/benchmark_gpu_{ts}.json"
+        gcs_csv  = f"benchmark-results/ct/benchmark_gpu_{ts}.csv"
+        uri_json = _upload_results_to_gcs(out_json, gcs_json)
+        print(f"Uploaded → {uri_json}")
+        if out_csv.exists():
+            uri_csv = _upload_results_to_gcs(out_csv, gcs_csv)
+            print(f"Uploaded → {uri_csv}")
+    except Exception as e:
+        print(f"[WARN] GCS upload failed: {e}")
 
     # Summary
     print("\n" + "=" * 70)
