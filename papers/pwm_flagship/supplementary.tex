@@ -144,7 +144,7 @@ We define the \emph{recovery ratio} as
   \label{eq:rho}
 \end{equation}
 
-\noindent In rare cases where Scenario~III exceeds Scenario~I (e.g., due to
+\noindent In rare cases where Scenario~IV exceeds Scenario~I (e.g., due to
 regularization benefits from the corrected operator), $\rho$ may exceed~1.
 
 \begin{proposition}
@@ -303,20 +303,20 @@ designated Phase~3/4 additions with planned validation.
 \begin{longtable}{>{\raggedright}p{2.0cm} >{\raggedright}p{2.8cm}
                   r r r r}
 \caption{Oracle correction ceiling summary.  $\Delta$PSNR is the
-improvement from Scenario~II (mismatch) to Scenario~IV (oracle: true operator applied to mismatched data).
-For modalities with low-dimensional mismatch (Matrix, CT, Lensless, MRI, Ptychography), autonomous correction achieves near-oracle performance (Sc.~III $\approx$ Sc.~IV); for CASSI and CACTI with multi-parameter mismatch, the gap between Sc.~III and Sc.~IV is reported in Table~S9. CASSI correction results use GAP-TV as the reconstruction solver.
+improvement from Scenario~II (mismatch) to Scenario~III (oracle: true operator applied to mismatched data).
+For modalities with low-dimensional mismatch (Matrix, CT, Lensless, MRI, Ptychography), autonomous correction achieves near-oracle performance (Sc.~IV $\approx$ Sc.~III); for CASSI and CACTI with multi-parameter mismatch, the gap between Sc.~IV and Sc.~III is reported in Table~S9. CASSI correction results use GAP-TV as the reconstruction solver.
 Scenario~I (ideal) PSNR values are available in the RunBundle manifests in the code repository.}
 \label{tab:correction_params} \\
 \toprule
 \textbf{Modality} & \textbf{Mismatch Parameter} &
-  \textbf{Sc.~II} & \textbf{Sc.~IV} &
+  \textbf{Sc.~II} & \textbf{Sc.~III} &
   \textbf{$\Delta$PSNR} & \textbf{RMSE} \\
   & & \textbf{(dB)} & \textbf{(dB)} & \textbf{(dB)} & \\
 \midrule
 \endfirsthead
 \toprule
 \textbf{Modality} & \textbf{Mismatch Parameter} &
-  \textbf{Sc.~II} & \textbf{Sc.~IV} &
+  \textbf{Sc.~II} & \textbf{Sc.~III} &
   \textbf{$\Delta$PSNR} & \textbf{RMSE} \\
   & & \textbf{(dB)} & \textbf{(dB)} & \textbf{(dB)} & \\
 \midrule
@@ -335,7 +335,7 @@ CT
   & center\_of\_rotation
   & 13.41 & 24.09 & +10.68
   & 0.0031 \\
-CACTI\footnote{CACTI uses GAP-TV as the reconstruction solver for Table~S1 consistency.  Oracle values from InverseNet validation under 8-parameter mismatch ($dx{=}0.5$\,px, $dy{=}0.3$\,px, $\theta{=}0.1^\circ$, $\Delta t{=}0.05$, $\eta{=}0.95$, $g{=}1.02$, $o{=}0.002$, $\sigma_n{=}1.0$).  State-of-the-art EfficientSCI achieves Sc.~II$\,=\,$14.81\,dB and Sc.~IV$\,=\,$27.38\,dB; see main text.}
+CACTI\footnote{CACTI uses GAP-TV as the reconstruction solver for Table~S1 consistency.  Oracle values from InverseNet validation under 8-parameter mismatch ($dx{=}0.5$\,px, $dy{=}0.3$\,px, $\theta{=}0.1^\circ$, $\Delta t{=}0.05$, $\eta{=}0.95$, $g{=}1.02$, $o{=}0.002$, $\sigma_n{=}1.0$).  State-of-the-art EfficientSCI achieves Sc.~II$\,=\,$14.81\,dB and Sc.~III$\,=\,$27.38\,dB; see main text.}
   & 8-param mismatch
   & 15.81 & 26.01 & +10.21
   & --- \\
@@ -347,15 +347,15 @@ MRI
   & coil\_sensitivities
   & 6.94 & 55.19 & +48.25
   & 0.0003 \\
-SPC\footnote{SPC uses FISTA-TV as the reconstruction solver for Table~S1 consistency.  Values from InverseNet validation under exponential gain drift ($\alpha{=}0.0015$).  HATNet achieves Sc.~II$\,=\,$19.40\,dB and Sc.~IV$\,=\,$29.78\,dB; see main text.}
+SPC\footnote{SPC uses FISTA-TV as the reconstruction solver for Table~S1 consistency.  Values from InverseNet validation under exponential gain drift ($\alpha{=}0.0015$).  HATNet achieves Sc.~II$\,=\,$19.40\,dB and Sc.~III$\,=\,$29.78\,dB; see main text.}
   & gain\_drift
   & 18.51 & 26.21 & +7.71
   & --- \\
-CASSI (Alg~1)\footnote{Reported values are averaged over 10 test scenes using GAP-TV as the reconstruction solver. Sc.~II from InverseNet validation; Sc.~IV values are oracle upper bounds (true operator applied to mismatched data). Autonomous correction achieves 85\% of oracle (Table~S9).}
+CASSI (Alg~1)\footnote{Reported values are averaged over 10 test scenes using GAP-TV as the reconstruction solver. Sc.~II from InverseNet validation; Sc.~III values are oracle upper bounds (true operator applied to mismatched data). Autonomous correction achieves 85\% of oracle (Table~S9).}
   & mask\_geo + dispersion
   & 20.96 & 21.50 & +0.54
   & 0.0105 \\
-CASSI (Alg~2)\footnote{The correction-table PSNR reflects GAP-TV reconstruction; state-of-the-art solvers (e.g., MST-L) achieve 27.33\,dB under Sc.~IV (see main text and Table~S2).}
+CASSI (Alg~2)\footnote{The correction-table PSNR reflects GAP-TV reconstruction; state-of-the-art solvers (e.g., MST-L) achieve 27.33\,dB under Sc.~III (see main text and Table~S2).}
   & mask\_geo + dispersion
   & 20.96 & 21.72 & +0.76
   & 0.0098 \\
@@ -426,20 +426,20 @@ four methods under three scenarios, matching the InverseNet benchmark~\cite{yang
 
 \begin{footnotesize}
 \begin{longtable}{l l r r r r}
-\caption{CASSI per-scene PSNR (dB) and oracle recovery ratio $\rho_{\mathrm{IV}}$.  Sc.~I = ideal forward model;
-Sc.~II = mismatched (baseline); Sc.~IV = oracle correction (true operator applied to mismatched data).
+\caption{CASSI per-scene PSNR (dB) and oracle recovery ratio $\rho_{\mathrm{III}}$.  Sc.~I = ideal forward model;
+Sc.~II = mismatched (baseline); Sc.~III = oracle correction (true operator applied to mismatched data).
 All values from InverseNet validation under the 5-parameter mismatch ($dx{=}0.5$\,px, $dy{=}0.3$\,px, $\theta{=}0.1^\circ$, $a_1{=}2.02$, $\alpha{=}0.15^\circ$).
-$\rho_{\mathrm{IV}} = (\mathrm{Sc.~IV} - \mathrm{Sc.~II}) / (\mathrm{Sc.~I} - \mathrm{Sc.~II})$ is the oracle recovery ceiling.
-HDNet shows $\rho_{\mathrm{IV}}{=}0\%$ across all scenes due to its mask-oblivious architecture.}
+$\rho_{\mathrm{III}} = (\mathrm{Sc.~III} - \mathrm{Sc.~II}) / (\mathrm{Sc.~I} - \mathrm{Sc.~II})$ is the oracle recovery ceiling.
+HDNet shows $\rho_{\mathrm{III}}{=}0\%$ across all scenes due to its mask-oblivious architecture.}
 \label{tab:cassi_scenes} \\
 \toprule
 \textbf{Scene} & \textbf{Method} &
-  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~IV} & $\boldsymbol{\rho}_{\textbf{IV}}$ \\
+  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III} & $\boldsymbol{\rho}_{\textbf{III}}$ \\
 \midrule
 \endfirsthead
 \toprule
 \textbf{Scene} & \textbf{Method} &
-  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~IV} & $\boldsymbol{\rho}_{\textbf{IV}}$ \\
+  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III} & $\boldsymbol{\rho}_{\textbf{III}}$ \\
 \midrule
 \endhead
 \bottomrule
@@ -679,7 +679,7 @@ with PyTorch 2.1 and CUDA 12.1.
 
 \begin{table}[htbp]
 \centering
-\caption{Computational cost for correction (Scenario~II $\to$ III).
+\caption{Computational cost for correction (Scenario~II $\to$ IV).
 RoIC = dB recovered per GPU-hour.}
 \label{tab:cost}
 \begin{tabular}{l r r r r}
@@ -896,9 +896,9 @@ more sensitive to operator mismatch than spectral compressive modalities
 \centering
 \caption{Grid-search calibration results on
 simulated data with known ground truth.  PSNR values in dB.
-Sc.~II = mismatch (no calibration); Sc.~III = PWM grid-search corrected;
-Sc.~IV = oracle (true operator on mismatched data).
-Recovery = (Sc.~III $-$ Sc.~II) / (Sc.~IV $-$ Sc.~II).
+Sc.~II = mismatch (no calibration); Sc.~III = oracle (true operator on mismatched data);
+Sc.~IV = PWM grid-search corrected.
+Recovery = (Sc.~IV $-$ Sc.~II) / (Sc.~III $-$ Sc.~II).
 CASSI/CACTI use measurement-residual objective; SPC uses
 reconstruction-TV objective.  Note: Sc.~II values here differ from Table~S1 because Table~S1 reports the full InverseNet multi-parameter mismatch, whereas this table uses simplified single-parameter mismatch for grid-search tractability.}
 \label{tab:scenario_iv}
@@ -908,10 +908,10 @@ reconstruction-TV objective.  Note: Sc.~II values here differ from Table~S1 beca
   \textbf{Sc.~II} & \textbf{Sc.~III} & \textbf{Sc.~IV} &
   \textbf{Time (s)} & \textbf{Recovery} \\
 \midrule
-CASSI  & GAP-TV     & 21.52 & 22.96 & 23.21 & 1140 & 85\% \\
+CASSI  & GAP-TV     & 21.52 & 23.21 & 22.96 & 1140 & 85\% \\
 CACTI  & GAP-TV     & 17.60 & 26.99 & 26.99 &   60 & 100\% \\
-SPC    & FISTA-TV   & 19.78 & 26.54 & 27.60 &  166 &  86\% \\
-SPC    & PnP-DRUNet & 18.34 & 25.39 & 26.01 &  247 &  92\% \\
+SPC    & FISTA-TV   & 19.78 & 27.60 & 26.54 &  166 &  86\% \\
+SPC    & PnP-DRUNet & 18.34 & 26.01 & 25.39 &  247 &  92\% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -950,13 +950,13 @@ quality, particularly structural distortions from operator mismatch.
 \begin{table}[htbp]
 \centering
 \caption{SSIM comparison across modalities and scenarios.
-Sc.~IV = oracle (true operator on mismatched data).
+Sc.~III = oracle (true operator on mismatched data).
 Values are mean $\pm$ s.d.\ across test scenes/images.}
 \label{tab:ssim}
 \begin{tabular}{l l r r r}
 \toprule
 \textbf{Modality} & \textbf{Method} &
-  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~IV} \\
+  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III} \\
 \midrule
 \multicolumn{5}{l}{\emph{CASSI (10 KAIST scenes, 28 spectral bands)}} \\
 \midrule
@@ -1005,15 +1005,15 @@ Lower values indicate better spectral reconstruction.
 \begin{table}[htbp]
 \centering
 \caption{CASSI spectral angle mapper (SAM, degrees). Lower is better.
-Sc.~IV = oracle (true operator on mismatched data).
+Sc.~III = oracle (true operator on mismatched data).
 Values are mean $\pm$ s.d.\ across 10 KAIST scenes.}
 \label{tab:sam}
 \begin{tabular}{l r r r}
 \toprule
 \textbf{Method} &
-  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~IV} \\
+  \textbf{Sc.~I} & \textbf{Sc.~II} & \textbf{Sc.~III} \\
 \midrule
-GAP-TV\footnote{GAP-TV's SAM under Sc.~IV ($25.97^\circ$) exceeds Sc.~II ($24.27^\circ$) because PSNR-optimal oracle correction redistributes spectral energy in a way that improves intensity fidelity (PSNR) while slightly degrading angular fidelity (SAM).  This PSNR--SAM trade-off is specific to GAP-TV's TV regularization; learned methods (MST-L) improve on both metrics.}      & $16.66 \pm 3.32$ & $24.27 \pm 2.92$ & $25.97 \pm 2.54$ \\
+GAP-TV\footnote{GAP-TV's SAM under Sc.~III ($25.97^\circ$) exceeds Sc.~II ($24.27^\circ$) because PSNR-optimal oracle correction redistributes spectral energy in a way that improves intensity fidelity (PSNR) while slightly degrading angular fidelity (SAM).  This PSNR--SAM trade-off is specific to GAP-TV's TV regularization; learned methods (MST-L) improve on both metrics.}      & $16.66 \pm 3.32$ & $24.27 \pm 2.92$ & $25.97 \pm 2.54$ \\
 PnP-HSI-CNN & $16.10 \pm 3.25$ & $23.73 \pm 2.81$ & $18.66 \pm 2.75$ \\
 HDNet       & $6.67 \pm 0.96$  & $17.03 \pm 2.76$ & $17.03 \pm 2.76$ \\
 MST-L       & $7.44 \pm 1.24$  & $23.92 \pm 4.58$ & $11.74 \pm 1.32$ \\
@@ -1024,7 +1024,7 @@ MST-L       & $7.44 \pm 1.24$  & $23.92 \pm 4.58$ & $11.74 \pm 1.32$ \\
 \noindent\textbf{Key observations.}
 Spectral fidelity degrades severely under mismatch: MST-L's SAM increases
 from $7.44^\circ$ (near-perfect spectral reconstruction) to $23.92^\circ$
-(substantial spectral mixing). Under Scenario~IV (oracle), SAM partially recovers
+(substantial spectral mixing). Under Scenario~III (oracle), SAM partially recovers
 to $11.74^\circ$, but the residual SAM error confirms
 that multi-parameter mismatch produces irreversible spectral distortions
 not fully correctable by mask-only correction. The SAM metric is
@@ -1504,12 +1504,12 @@ The $+48.25$\,dB correction gain reported for MRI in the main text reflects a si
 \toprule
 Mismatch & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & Sc.~IV (dB) & Gain (dB) \\
 \midrule
-1\%  & 52.11 & 50.91 & 51.48 & 52.11 & $+0.58$ \\
-2\%  & 52.11 & 49.40 & 48.72 & 52.11 & $-0.68$ \\
-3\%  & 52.11 & 47.96 & 49.72 & 52.11 & $+1.75$ \\
-5\%  & 52.11 & 40.91 & 48.05 & 52.11 & $+7.14$ \\
-10\% & 52.11 & 38.21 & 41.74 & 52.11 & $+3.52$ \\
-15\% & 52.11 & 32.97 & 36.25 & 52.11 & $+3.28$ \\
+1\%  & 52.11 & 50.91 & 52.11 & 51.48 & $+0.58$ \\
+2\%  & 52.11 & 49.40 & 52.11 & 48.72 & $-0.68$ \\
+3\%  & 52.11 & 47.96 & 52.11 & 49.72 & $+1.75$ \\
+5\%  & 52.11 & 40.91 & 52.11 & 48.05 & $+7.14$ \\
+10\% & 52.11 & 38.21 & 52.11 & 41.74 & $+3.52$ \\
+15\% & 52.11 & 32.97 & 52.11 & 36.25 & $+3.28$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1824,7 +1824,7 @@ Mask shift $\Delta x$ & Self-residual ratio & Cross-residual ratio & Corrected r
 \noindent The self-residual barely changes ($1.00$--$1.12\times$) because the solver adapts to the wrong model and finds an $\mathbf{x}$ that satisfies $A'\hat{\mathbf{x}} \approx \mathbf{y}$.
 However, when the same reconstruction is evaluated under the \emph{true} forward model ($A$), the cross-residual explodes $44$--$462\times$.
 This demonstrates that \textbf{self-consistency is not a reliable diagnostic for operator mismatch in underdetermined systems}---a finding with direct implications for quality control in compressive sensing.
-Autonomous calibration (Scenario~III) recovers a corrected ratio $\leq 1.0\times$ by grid search over the 2D shift space.
+Autonomous calibration (Scenario~IV) recovers a corrected ratio $\leq 1.0\times$ by grid search over the 2D shift space.
 
 \subsection{CT: Center-of-Rotation Mismatch (Public Sinograms)}
 \label{sec:ct_cor}
@@ -1958,7 +1958,7 @@ Mean $\pm$ s.d. & $24.34 \pm 1.39$ & $23.58 \pm 1.37$ & $24.17 \pm 1.38$ & $24.2
 
 \subsection{Bootstrap Confidence Intervals for Recovery Ratio}
 
-The recovery ratio $\rho = (\mathrm{PSNR}_{\mathrm{III}} - \mathrm{PSNR}_{\mathrm{II}}) / (\mathrm{PSNR}_{\mathrm{I}} - \mathrm{PSNR}_{\mathrm{II}})$ is computed per modality. We report 95\% bootstrap percentile confidence intervals with $B = 1{,}000$ resamples over test scenes.
+The recovery ratio $\rho = (\mathrm{PSNR}_{\mathrm{IV}} - \mathrm{PSNR}_{\mathrm{II}}) / (\mathrm{PSNR}_{\mathrm{I}} - \mathrm{PSNR}_{\mathrm{II}})$ is computed per modality. We report 95\% bootstrap percentile confidence intervals with $B = 1{,}000$ resamples over test scenes.
 
 \begin{table}[!ht]
 \centering\small
@@ -2014,7 +2014,7 @@ Over-unity recovery ratios indicate the DAS beamformer's optimal reconstruction 
 \small
 \begin{tabular}{l r r r r r r}
 \toprule
-Phantom & $\Delta c$ (m/s) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & $\Delta$(dB) & $\rho$ \\
+Phantom & $\Delta c$ (m/s) & Sc.~I (dB) & Sc.~II (dB) & Sc.~IV (dB) & $\Delta$(dB) & $\rho$ \\
 \midrule
 Liver        &  50 & 14.23 & 14.13 & 14.44 & 0.09 & 3.28 \\
              & 200 & 14.23 & 13.84 & 14.44 & 0.39 & 1.54 \\
@@ -2051,7 +2051,7 @@ Grid-search calibration: 51 defocus values in $[-3000, -500]$\,nm. All phantoms 
 \small
 \begin{tabular}{l r r r r r r}
 \toprule
-Phantom & $\Delta(\Delta f)$ (nm) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & $\Delta$(dB) & $\rho$ \\
+Phantom & $\Delta(\Delta f)$ (nm) & Sc.~I (dB) & Sc.~II (dB) & Sc.~IV (dB) & $\Delta$(dB) & $\rho$ \\
 \midrule
 Protein rings      & 100  & 14.97 & 14.74 & 14.97 & 0.22 & 1.00 \\
                    & 1000 & 14.97 & 11.67 & 14.97 & 3.30 & 1.00 \\
@@ -2088,7 +2088,7 @@ At large offsets ($\geq 15$\,px), Sc.~I PSNR decreases due to sinogram edge trun
 \small
 \begin{tabular}{l r r r r r r}
 \toprule
-Phantom & $\Delta s$ (px) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & $\Delta$(dB) & $\rho$ \\
+Phantom & $\Delta s$ (px) & Sc.~I (dB) & Sc.~II (dB) & Sc.~IV (dB) & $\Delta$(dB) & $\rho$ \\
 \midrule
 Shepp--Logan   &  2 & 13.79 & 11.15 & 13.79 & 2.64 & 1.00 \\
                & 10 & 12.74 &  8.91 & 12.74 & 3.84 & 1.00 \\
@@ -2132,7 +2132,7 @@ Negative $\Delta$(dB) at small errors ($\Delta z{=}50$\,\textmu m) reflects near
 \small
 \begin{tabular}{l r r r r r r}
 \toprule
-Phantom & $\Delta z$ (\textmu m) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & $\Delta$(dB) & $\rho$ \\
+Phantom & $\Delta z$ (\textmu m) & Sc.~I (dB) & Sc.~II (dB) & Sc.~IV (dB) & $\Delta$(dB) & $\rho$ \\
 \midrule
 USAF chart     &  100 &  8.10 &  7.72 &  8.07 & 0.38 & 0.91 \\
                &  400 &  8.10 &  7.00 &  8.07 & 1.10 & 0.97 \\
@@ -2167,7 +2167,7 @@ High variance across phantoms reflects structure-dependent PSF sensitivity: punc
 \small
 \begin{tabular}{l r r r r r r}
 \toprule
-Phantom & $\Delta\sigma$ (px) & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & $\Delta$(dB) & $\rho$ \\
+Phantom & $\Delta\sigma$ (px) & Sc.~I (dB) & Sc.~II (dB) & Sc.~IV (dB) & $\Delta$(dB) & $\rho$ \\
 \midrule
 Puncta       & 0.1 & 28.72 & 27.26 & 28.69 &  1.46 & 0.98 \\
              & 0.5 & 28.72 & 19.35 & 26.20 &  9.36 & 0.73 \\
@@ -2278,7 +2278,7 @@ This structure dependence is consistent with the PSF's Fourier-space action: dec
 \subsection{2D Calibration Grid}
 The coupled $(\sigma_{\mathrm{ex}}, \sigma_{\mathrm{em}})$ parameter space is two-dimensional, making it the highest-dimensional mismatch space among the single-step calibrations (CASSI has 5 parameters but uses a different correction strategy). The $9 \times 9$ grid search with measurement-residual minimisation achieves mean recovery $\rho{=}0.47$ at 0.1\,px (near-floor regime) and $\rho{=}0.53$ at 1.0\,px.
 The sub-unity recovery ratios (compared to $\rho{=}1.0$ for cryo-EM and CT) reflect the inherent difficulty of resolving two coupled blur parameters from a single measurement: the $(\sigma_{\mathrm{ex}}, \sigma_{\mathrm{em}})$ residual surface has a ridge structure (the effective PSF width $\sigma_{\mathrm{eff}}^2 = \sigma_{\mathrm{ex}}^2 + \sigma_{\mathrm{em}}^2$ is constrained, but individual components are partially degenerate).
-Individual phantom recovery varies from $\rho < 0$ (nuclei at 0.1\,px, where Sc.~III slightly undershoots Sc.~I) to $\rho = 0.98$ (puncta at 0.1\,px), with the spread decreasing at larger errors as the mismatch signal rises above the noise floor.
+Individual phantom recovery varies from $\rho < 0$ (nuclei at 0.1\,px, where Sc.~IV slightly undershoots Sc.~I) to $\rho = 0.98$ (puncta at 0.1\,px), with the spread decreasing at larger errors as the mismatch signal rises above the noise floor.
 
 \subsection{Comparison with Blind Deconvolution}
 Blind deconvolution methods (e.g., alternating minimisation of image and PSF) can achieve higher recovery when given sufficient iterations, but require careful regularisation to avoid trivial solutions. The PWM approach constrains the PSF to be Gaussian (physics-informed), reducing the search space from arbitrary kernels to two scalar parameters. This physics-informed constraint is the key advantage of the structured forward model approach, and the multi-phantom validation demonstrates that the improvement generalises across structurally diverse specimens rather than being specific to a particular phantom geometry.

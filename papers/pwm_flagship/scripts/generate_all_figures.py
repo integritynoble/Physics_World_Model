@@ -513,7 +513,7 @@ def fig5_deepdive():
                        color=COLORS['sc_ii'], alpha=0.8)
     bars_iii = ax_a.bar(x + width, sc_iii, width,
                         label='Sc. III (Oracle)',
-                        color=COLORS['sc_iv'], alpha=0.8)
+                        color=COLORS['sc_iii'], alpha=0.8)
 
     ax_a.set_xticks(x)
     ax_a.set_xticklabels(methods, fontsize=7)
@@ -555,7 +555,7 @@ def fig5_deepdive():
              color=COLORS['sc_i'], alpha=0.8)
     ax_b.bar(x2, c_sc_ii, width2, label='Sc. II (Mismatch)',
              color=COLORS['sc_ii'], alpha=0.8)
-    ax_b.bar(x2 + width2, c_sc_iii, width2, label='Sc. III (Corrected)',
+    ax_b.bar(x2 + width2, c_sc_iii, width2, label='Sc. III (Oracle)',
              color=COLORS['sc_iii'], alpha=0.8)
 
     ax_b.set_xticks(x2)
@@ -794,10 +794,10 @@ def fig7_hardware():
 
     ax_d.bar(x4 - width4, sc_ii_vals, width4, label='Sc. II (Mismatch)',
              color=COLORS['sc_ii'], alpha=0.8)
-    ax_d.bar(x4, sc_iii_vals, width4, label='Sc. III (Calibrated)',
-             color=COLORS['sc_iii'], alpha=0.8)
-    ax_d.bar(x4 + width4, sc_iv_vals, width4, label='Sc. IV (Oracle)',
+    ax_d.bar(x4, sc_iv_vals, width4, label='Sc. III (Oracle)',
              color=COLORS['sc_iv'], alpha=0.8)
+    ax_d.bar(x4 + width4, sc_iii_vals, width4, label='Sc. IV (Calibrated)',
+             color=COLORS['sc_iii'], alpha=0.8)
 
     # Recovery percentage labels
     for i, pct in enumerate(recovery_pcts):
