@@ -372,18 +372,18 @@ Fluorescence\footnote{$N{=}5$ phantoms (puncta, filaments, nuclei, membranes, mi
   & PSF\_sigma (dual)
   & 21.65 & 30.00 & +8.35
   & 0.50\,px \\
-Ultrasound\footnote{$N{=}5$ phantoms (liver, breast, kidney, muscle, fetal head). SoS error $\Delta c{=}200$\,m/s (worst case). 51-step grid-search over $c \in [1400, 1700]$\,m/s.}
+Ultrasound\footnote{$N{=}5$ real datasets (4 PICMUS experimental + 1 DeepUS CIRS040GSE). SoS error $\Delta c{=}200$\,m/s. 51-step grid-search over $c \in [1400, 1700]$\,m/s. Self-reference metrics (Sc.~I $=$ pseudo-GT); Sc.~II and Sc.~IV are PSNR vs.\ nominal-SoS reconstruction. Calibrated SoS within 2--4\,m/s of nominal for PICMUS, 26\,m/s for DeepUS.}
   & speed\_of\_sound
-  & 12.81 & 13.01 & +0.20
-  & 140\,m/s \\
-Cryo-EM\footnote{$N{=}5$ phantoms (protein rings, helical filament, ribosome, membrane protein, virus capsid). Defocus error $\Delta(\Delta f){=}1000$\,nm (worst case). 51-step grid-search over $\Delta f \in [-3000, -500]$\,nm. Calibration error $= 0$\,nm (exact recovery).}
+  & 7.16 & 7.24 & +0.08
+  & 2--26\,m/s \\
+Cryo-EM\footnote{$N{=}5$ real EMDB structures (TRPV1, $\beta$-gal, T20S, apoferritin, SARS-CoV-2 spike). Defocus error $\Delta(\Delta f){=}1000$\,nm (worst case). 51-step grid-search over $\Delta f \in [-3000, -500]$\,nm. Exact defocus recovery for all 5 structures.}
   & defocus
-  & 15.67 & 18.97 & +3.30
+  & 18.54 & 20.90 & +2.36
   & 0\,nm \\
-CT (offset)\footnote{$N{=}5$ phantoms (Shepp--Logan, thorax, abdomen, pelvis, dental). Detector offset $\Delta s{=}10$\,px. 51-step calibration in $[-25, 25]$\,px. Recovery $\rho{=}1.000$ for all phantoms and offsets.}
+CT (offset)\footnote{$N{=}5$ real images (3 LoDoPaB-CT patient slices, FIPS walnut, HTC~2022). Detector offset $\Delta s{=}10$\,px. 51-step calibration in $[-25, 25]$\,px. Over-unity $\rho$ reflects grid-resolution effect.}
   & detector\_offset
-  & 13.54 & 20.06 & +6.53
-  & 0\,px \\
+  & 9.08 & 10.54 & +1.46
+  & 1\,px \\
 Comp.\ Holography\footnote{$N{=}4$ phantoms (USAF chart, bio cells, particles, sparse dots). Propagation error $\Delta z{=}400$\,\textmu m (worst case). 21-step calibration via hologram residual minimisation.}
   & propagation\_distance
   & 10.43 & 11.47 & +1.04
