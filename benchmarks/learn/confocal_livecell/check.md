@@ -1,93 +1,49 @@
 # Benchmark QA Check — confocal_livecell
 
 **URL:** https://pwm.platformai.org/benchmark/confocal_livecell
-**HTTP Status:** 200
-**Page Size:** 110,774 bytes
-**Check Date:** 2026-03-03 14:06 UTC
+**Check Date:** 2026-03-03 14:37 UTC
+**Status:** PASS
 
 ## Summary
 
 | Severity | Count |
 |----------|-------|
-| WARNING | 4 |
-| INFO | 56 |
+| ERROR | 0 |
+| WARNING | 0 |
+| INFO | 2 |
+| PASSED | 24 |
 
-## Issues by Category
+## Info
 
-### Leaderboard Consistency
+- Page size: 110,774 bytes
+- Methods: Restormer + gradient, PnP-FISTA + gradient, Noise2Void + gradient, Wiener Deconv + gradient
 
-- 🟡 **WARNING**: Very low PSNR value: 0.8 dB — may indicate failed reconstruction
-- 🟡 **WARNING**: Very low PSNR value: 4.1 dB — may indicate failed reconstruction
+## Passed Checks
 
-### Forward Model
-
-- 🟡 **WARNING**: No explicit forward model equation (y = ...) found on page
-- 🟡 **WARNING**: Notation inconsistency: Forward operator denoted as both H and A
-
-### Images & Links
-
-- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/confocal_livecell_challenge_public.h5 — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/confocal_livecell_challenge_dev.h5 — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_00/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_00/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_00/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_00/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_00/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_00/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_01/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_01/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_01/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_01/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_01/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_01/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_02/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_02/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_02/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_02/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_02/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_02/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_03/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_03/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_03/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_03/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_03/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_03/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_00/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_00/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_00/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_01/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_01/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_01/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_02/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_02/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_02/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_03/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_03/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_livecell/scene_03/recon_III.png — verify it loads
-
-### Algorithm Names
-
-- 🔵 **INFO**: Solver 'CARE' from registry not found on page
-
-### Physics Consistency
-
-- 🔵 **INFO**: Wavelength range 400–650 nm from YAML not found on page
+- [x] Main page loads (HTTP 200)
+- [x] Title: Confocal Live-Cell — Physics World Model
+- [x] Description: Confocal Live-Cell Microscopy
+- [x] Spec notation: C(PSF_confocal) → D(g, η₃)
+- [x] Challenge Leaderboard section present
+- [x] Leaderboard: 4 entries
+- [x] Data Preview / Gallery section present
+- [x] Gallery images: 24/24 load OK
+- [x] Challenge public page loads (HTTP 200)
+- [x] Challenge public has HDF5 reference
+- [x] Challenge dev page loads (HTTP 200)
+- [x] Challenge dev has HDF5 reference
+- [x] Challenge public HDF5 on GCS OK
+- [x] Challenge dev HDF5 on GCS OK
+- [x] Compete page loads (HTTP 200)
+- [x] Contribute page loads (HTTP 200)
+- [x] Forward model reference found
+- [x] Learning materials directory exists
+- [x] Learn: README.md (1,455 B)
+- [x] Learn: 01_physics_fundamentals.md (3,019 B)
+- [x] Learn: 02_forward_model.md (2,729 B)
+- [x] Learn: 03_reconstruction_algorithms.md (2,522 B)
+- [x] Learn: 04_pwm_benchmark.md (2,589 B)
+- [x] Learn: 05_hands_on_tutorial.md (3,607 B)
 
 ---
-*Auto-generated by `benchmarks/learn/check_all_modalities.py`*
+*Generated by `scripts/check_modality.py` v2*

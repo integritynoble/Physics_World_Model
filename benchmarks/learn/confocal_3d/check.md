@@ -1,94 +1,49 @@
 # Benchmark QA Check — confocal_3d
 
 **URL:** https://pwm.platformai.org/benchmark/confocal_3d
-**HTTP Status:** 200
-**Page Size:** 111,255 bytes
-**Check Date:** 2026-03-03 14:06 UTC
+**Check Date:** 2026-03-03 14:37 UTC
+**Status:** PASS
 
 ## Summary
 
 | Severity | Count |
 |----------|-------|
-| WARNING | 5 |
-| INFO | 56 |
+| ERROR | 0 |
+| WARNING | 0 |
+| INFO | 2 |
+| PASSED | 24 |
 
-## Issues by Category
+## Info
 
-### Leaderboard Consistency
+- Page size: 111,255 bytes
+- Methods: Restormer + gradient, PnP-FISTA + gradient, Noise2Void + gradient, Wiener Deconv + gradient
 
-- 🟡 **WARNING**: Very low PSNR value: 3.7 dB — may indicate failed reconstruction
-- 🟡 **WARNING**: Very low PSNR value: 1.1 dB — may indicate failed reconstruction
+## Passed Checks
 
-### Forward Model
-
-- 🟡 **WARNING**: No explicit forward model equation (y = ...) found on page
-- 🟡 **WARNING**: Notation inconsistency: Forward operator denoted as both H and A
-
-### Spec Ranges
-
-- 🟡 **WARNING**: Negative physical quantity: -300 nm — verify sign is intended
-
-### Images & Links
-
-- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/confocal_3d_challenge_public.h5 — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/challenge-data/v1.0/confocal_3d_challenge_dev.h5 — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_00/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_00/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_00/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_00/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_00/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_00/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_01/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_01/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_01/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_01/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_01/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_01/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_02/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_02/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_02/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_02/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_02/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_02/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_03/measurement_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_03/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_03/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_03/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_03/measurement_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_03/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_00/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_00/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_00/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_00/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_01/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_01/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_01/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_01/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_02/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_02/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_02/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_02/recon_III.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_03/gt.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_03/recon_I.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_03/recon_II.png — verify it loads
-- 🔵 **INFO**: GCS image reference: /gcs/img/benchmark_gallery/confocal_3d/scene_03/recon_III.png — verify it loads
-
-### Physics Consistency
-
-- 🔵 **INFO**: Signal shape [256, 256, 64] from YAML not clearly shown on page
-- 🔵 **INFO**: Wavelength range 400–650 nm from YAML not found on page
+- [x] Main page loads (HTTP 200)
+- [x] Title: Confocal 3D — Physics World Model
+- [x] Description: Confocal 3D Z-Stack
+- [x] Spec notation: C(PSF_3D) → D(g, η₃)
+- [x] Challenge Leaderboard section present
+- [x] Leaderboard: 4 entries
+- [x] Data Preview / Gallery section present
+- [x] Gallery images: 24/24 load OK
+- [x] Challenge public page loads (HTTP 200)
+- [x] Challenge public has HDF5 reference
+- [x] Challenge dev page loads (HTTP 200)
+- [x] Challenge dev has HDF5 reference
+- [x] Challenge public HDF5 on GCS OK
+- [x] Challenge dev HDF5 on GCS OK
+- [x] Compete page loads (HTTP 200)
+- [x] Contribute page loads (HTTP 200)
+- [x] Forward model reference found
+- [x] Learning materials directory exists
+- [x] Learn: README.md (1,426 B)
+- [x] Learn: 01_physics_fundamentals.md (2,873 B)
+- [x] Learn: 02_forward_model.md (2,727 B)
+- [x] Learn: 03_reconstruction_algorithms.md (2,549 B)
+- [x] Learn: 04_pwm_benchmark.md (2,584 B)
+- [x] Learn: 05_hands_on_tutorial.md (3,572 B)
 
 ---
-*Auto-generated by `benchmarks/learn/check_all_modalities.py`*
+*Generated by `scripts/check_modality.py` v2*
