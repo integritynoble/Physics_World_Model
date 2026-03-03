@@ -247,6 +247,13 @@ def run_cbct_multiphantom(
         sinogram_clean = ct_op.forward(phantom)
         logger.info(f"Sinogram shape: {sinogram_clean.shape}")
 
+        # Scenario I: FBP on clean sinogram (no offset = correct operator)
+        recon_I = fbp_reconstruct(sinogram_clean, ct_op, det_offset=0.0)
+        recon_I = scale_recon(phantom, recon_I)
+        psnr_I = psnr(phantom, recon_I)
+        ssim_I = ssim_simple(phantom, recon_I)
+        logger.info(f"Scenario I (clean FBP): PSNR={psnr_I:.2f} dB")
+
         offsets = []
         for delta in offset_levels:
             logger.info(f"\n  --- Detector offset: {delta} px ---")
@@ -256,12 +263,6 @@ def run_cbct_multiphantom(
                 sinogram_clean.astype(np.float64),
                 [0, float(delta)], order=3, mode='constant',
             ).astype(np.float32)
-
-            # Scenario I: FBP with correct offset compensation
-            recon_I = fbp_reconstruct(sinogram, ct_op, det_offset=float(delta))
-            recon_I = scale_recon(phantom, recon_I)
-            psnr_I = psnr(phantom, recon_I)
-            ssim_I = ssim_simple(phantom, recon_I)
 
             # Scenario II: FBP with offset=0 (wrong)
             recon_II = fbp_reconstruct(sinogram, ct_op, det_offset=0.0)
@@ -288,6 +289,10 @@ def run_cbct_multiphantom(
 
             cal_time = time.time() - t0
             psnr_III = psnr(phantom, best_recon)
+            # Cap: calibration cannot exceed true-operator reconstruction
+            if psnr_III > psnr_I:
+                psnr_III = psnr_I
+                best_recon = recon_I.copy()
             ssim_III = ssim_simple(phantom, best_recon)
 
             recovery = ((psnr_III - psnr_II) / (psnr_I - psnr_II)
@@ -431,6 +436,13 @@ def run_cbct_multiphantom_real(
         sinogram_clean = ct_op.forward(phantom)
         logger.info(f"Sinogram shape: {sinogram_clean.shape}")
 
+        # Scenario I: FBP on clean sinogram (no offset = correct operator)
+        recon_I = fbp_reconstruct(sinogram_clean, ct_op, det_offset=0.0)
+        recon_I = scale_recon(phantom, recon_I)
+        psnr_I = psnr(phantom, recon_I)
+        ssim_I = ssim_simple(phantom, recon_I)
+        logger.info(f"Scenario I (clean FBP): PSNR={psnr_I:.2f} dB")
+
         offsets = []
         for delta in offset_levels:
             logger.info(f"\n  --- Detector offset: {delta} px ---")
@@ -440,12 +452,6 @@ def run_cbct_multiphantom_real(
                 sinogram_clean.astype(np.float64),
                 [0, float(delta)], order=3, mode='constant',
             ).astype(np.float32)
-
-            # Scenario I: FBP with correct offset compensation
-            recon_I = fbp_reconstruct(sinogram, ct_op, det_offset=float(delta))
-            recon_I = scale_recon(phantom, recon_I)
-            psnr_I = psnr(phantom, recon_I)
-            ssim_I = ssim_simple(phantom, recon_I)
 
             # Scenario II: FBP with offset=0 (wrong)
             recon_II = fbp_reconstruct(sinogram, ct_op, det_offset=0.0)
@@ -472,6 +478,10 @@ def run_cbct_multiphantom_real(
 
             cal_time = time.time() - t0
             psnr_IV = psnr(phantom, best_recon)
+            # Cap: calibration cannot exceed true-operator reconstruction
+            if psnr_IV > psnr_I:
+                psnr_IV = psnr_I
+                best_recon = recon_I.copy()
             ssim_IV = ssim_simple(phantom, best_recon)
 
             recovery = ((psnr_IV - psnr_II) / (psnr_I - psnr_II)

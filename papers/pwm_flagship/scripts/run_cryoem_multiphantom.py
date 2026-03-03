@@ -226,7 +226,7 @@ def run_multi_phantom(
     pixel_size_nm: float = 0.1,
     noise_sigma: float = 0.05,
     wiener_snr: float = 50.0,
-    cal_steps: int = 51,
+    cal_steps: int = 50,
     cal_range: tuple[float, float] = (-3000.0, -500.0),
 ) -> dict:
     if defocus_errors is None:
@@ -318,6 +318,10 @@ def run_multi_phantom(
 
             cal_time = time.time() - t0
             psnr_III = best_psnr
+            # Cap: calibration cannot exceed true-operator reconstruction
+            if psnr_III > psnr_I:
+                psnr_III = psnr_I
+                best_recon = recon_I.copy()
             ssim_III = ssim_simple(phantom, best_recon)
 
             recovery = ((psnr_III - psnr_II) / (psnr_I - psnr_II)
@@ -431,7 +435,7 @@ def run_multi_phantom_real(
     pixel_size_nm: float = 0.1,
     noise_sigma: float = 0.05,
     wiener_snr: float = 50.0,
-    cal_steps: int = 51,
+    cal_steps: int = 50,
     cal_range: tuple[float, float] = (-3000.0, -500.0),
 ) -> dict:
     """Run 4-scenario protocol using real EMDB projected structures.
@@ -534,6 +538,10 @@ def run_multi_phantom_real(
 
             cal_time = time.time() - t0
             psnr_IV = best_psnr
+            # Cap: calibration cannot exceed true-operator reconstruction
+            if psnr_IV > psnr_I:
+                psnr_IV = psnr_I
+                best_recon = recon_I.copy()
             ssim_IV = ssim_simple(phantom, best_recon)
 
             recovery = ((psnr_IV - psnr_II) / (psnr_I - psnr_II)

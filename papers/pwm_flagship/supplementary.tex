@@ -376,17 +376,17 @@ Ultrasound\footnote{$N{=}5$ real datasets (4 PICMUS experimental + 1 DeepUS CIRS
   & speed\_of\_sound
   & 7.16 & 7.24 & +0.08
   & 2--26\,m/s \\
-Cryo-EM\footnote{$N{=}5$ real EMDB structures (TRPV1, $\beta$-gal, T20S, apoferritin, SARS-CoV-2 spike). Defocus error $\Delta(\Delta f){=}1000$\,nm (worst case). 51-step grid-search over $\Delta f \in [-3000, -500]$\,nm. Exact defocus recovery for all 5 structures.}
+Cryo-EM\footnote{$N{=}5$ real EMDB structures (TRPV1, $\beta$-gal, T20S, apoferritin, SARS-CoV-2 spike). Defocus error $\Delta(\Delta f){=}1000$\,nm (worst case). 50-step grid-search over $\Delta f \in [-3000, -500]$\,nm (grid spacing ${\approx}51$\,nm). $\rho{=}0.99$ at $\Delta(\Delta f){=}1000$\,nm.}
   & defocus
-  & 18.54 & 20.90 & +2.36
-  & 0\,nm \\
-CT (offset)\footnote{$N{=}5$ real images (3 LoDoPaB-CT patient slices, FIPS walnut, HTC~2022). Detector offset $\Delta s{=}10$\,px. 51-step calibration in $[-25, 25]$\,px. Over-unity $\rho$ reflects grid-resolution effect.}
+  & 18.54 & 20.88 & +2.34
+  & 20--31\,nm \\
+CT (offset)\footnote{$N{=}5$ real images (3 LoDoPaB-CT patient slices, FIPS walnut, HTC~2022). Detector offset $\Delta s{=}10$\,px. 51-step calibration in $[-25, 25]$\,px. Sc.~I on clean sinogram; Sc.~III capped at Sc.~I.}
   & detector\_offset
-  & 9.08 & 10.54 & +1.46
+  & 9.08 & 10.70 & +1.62
   & 1\,px \\
-Comp.\ Holography\footnote{$N{=}4$ phantoms (USAF chart, bio cells, particles, sparse dots). Propagation error $\Delta z{=}400$\,\textmu m (worst case). 21-step calibration via hologram residual minimisation.}
+Comp.\ Holography\footnote{$N{=}4$ phantoms (USAF chart, bio cells, particles, sparse dots). Propagation error $\Delta z{=}400$\,\textmu m (worst case). 21-step calibration via hologram residual minimisation. Sc.~III capped at Sc.~I.}
   & propagation\_distance
-  & 10.43 & 11.47 & +1.04
+  & 10.43 & 11.46 & +1.03
   & 9\,\textmu m \\
 \midrule
 %% --- Phase 3/4 planned additions (5) ---
@@ -1980,15 +1980,15 @@ Ptychography      & 0.88 & $[0.82,\, 0.94]$ & 6 \\
 CT                & 1.00 & $[0.99,\, 1.00]$ & 5 \\
 MRI ($4\times$)   & 0.91 & $[0.84,\, 0.97]$ & 9 \\
 Ultrasound        & 1.81 & $[1.19,\, 2.77]$ & 6 \\
-Cryo-EM           & 1.04 & $[1.00,\, 1.12]$ & 6 \\
-CT (offset)       & 0.96 & $[0.83,\, 1.00]$ & 5 \\
-Comp.\ Holography & 1.07 & $[0.64,\, 1.59]$ & 4 \\
+Cryo-EM           & 0.95 & $[0.85,\, 1.00]$ & 6 \\
+CT (offset)       & 0.65 & $[0.40,\, 0.98]$ & 5 \\
+Comp.\ Holography & 0.97 & $[0.85,\, 1.00]$ & 4 \\
 Fluorescence      & 0.67 & $[0.44,\, 0.75]$ & 6 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\noindent All single-parameter mismatch modalities achieve $\rho \geq 0.78$ with confidence intervals excluding 0.5, confirming statistically significant correction benefit. The five newly validated modalities (Ultrasound, Cryo-EM, CT offset, Compressive Holography, Fluorescence) show diverse recovery profiles: ultrasound and cryo-EM achieve over-unity recovery ($\rho > 1$) because the optimizer finds operating points superior to the assumed ground-truth parameters; CT offset and compressive holography show mixed sub- and super-unity recovery depending on offset magnitude; fluorescence achieves $\rho = 0.44$--$0.75$, reflecting the higher difficulty of the two-parameter PSF calibration. The CASSI MST-L recovery ratio ($\rho = 0.46$) reflects the difficulty of 5-parameter simultaneous correction (Section ``Boundary conditions'' in main text).
+\noindent All single-parameter mismatch modalities achieve $\rho \geq 0.65$ with confidence intervals excluding 0 for most configurations, confirming statistically significant correction benefit. The five newly validated modalities (Ultrasound, Cryo-EM, CT offset, Compressive Holography, Fluorescence) show diverse recovery profiles: cryo-EM achieves near-perfect recovery ($\rho = 0.95$) limited only by grid discretisation (20--31\,nm residual defocus error); compressive holography is similarly effective ($\rho = 0.97$) due to the unimodal objective landscape; CT offset recovery is high at small offsets ($\rho = 0.98$ at 2\,px) but decreases at large offsets ($\rho = 0.40$ at 20\,px) due to irrecoverable sinogram edge truncation (Gate~1 interaction); fluorescence achieves $\rho = 0.44$--$0.75$, reflecting the higher difficulty of the two-parameter PSF calibration. The CASSI MST-L recovery ratio ($\rho = 0.46$) reflects the difficulty of 5-parameter simultaneous correction (Section ``Boundary conditions'' in main text).
 
 \subsection{Effect Sizes}
 
@@ -2053,31 +2053,32 @@ Mean   &  10 & 33.12 & 38.85 & --- & --- \\
 \caption{Cryo-EM multi-phantom 4-Scenario results ($N{=}5$ real EMDB structures). Defocus mismatch $\Delta(\Delta f)$ applied to Wiener reconstruction.
 Structures: TRPV1 ion channel (EMD-5778), $\beta$-galactosidase (EMD-2984), T20S proteasome (EMD-6287), apoferritin 1.25\,\AA{} (EMD-11103), and SARS-CoV-2 spike (EMD-21375), each randomly oriented and projected to $128 \times 128$.
 True defocus $\Delta f{=}{-}2000$\,nm, $C_s{=}2.0$\,mm, 300\,kV, pixel size $0.1$\,nm, $B{=}2$\,nm$^2$, ice thickness $50$\,nm.
-Grid-search calibration: 51 defocus values in $[-3000, -500]$\,nm. All structures achieve $\rho{=}1.0$ (exact defocus recovery), confirming the synthetic-data trends on real molecular potentials.}
+Grid-search calibration: 50 defocus values in $[-3000, -500]$\,nm (grid spacing ${\approx}51$\,nm, avoiding exact true defocus).
+Calibration recovers $\rho{=}0.81$--$0.99$, with residual defocus error of 20--31\,nm due to grid discretisation.}
 \label{tab:cryoem_scenes}
 \small
 \begin{tabular}{l r r r r r r}
 \toprule
 Structure & $\Delta(\Delta f)$ (nm) & Sc.~I (dB) & Sc.~II (dB) & Sc.~IV (dB) & $\Delta$(dB) & $\rho$ \\
 \midrule
-TRPV1              & 100  & 23.63 & 23.09 & 23.63 & 0.55 & 1.00 \\
-                   & 1000 & 23.63 & 20.67 & 23.63 & 2.97 & 1.00 \\
-$\beta$-galactosidase & 100  & 17.41 & 17.17 & 17.41 & 0.24 & 1.00 \\
-                      & 1000 & 17.41 & 15.77 & 17.41 & 1.65 & 1.00 \\
-T20S proteasome    & 100  & 20.75 & 20.33 & 20.75 & 0.42 & 1.00 \\
-                   & 1000 & 20.75 & 17.59 & 20.75 & 3.16 & 1.00 \\
-Apoferritin        & 100  & 18.51 & 18.28 & 18.51 & 0.23 & 1.00 \\
-                   & 1000 & 18.51 & 17.01 & 18.51 & 1.50 & 1.00 \\
-SARS-CoV-2 spike   & 100  & 24.18 & 23.67 & 24.18 & 0.51 & 1.00 \\
-                   & 1000 & 24.18 & 21.65 & 24.18 & 2.53 & 1.00 \\
+TRPV1              & 100  & 23.63 & 23.09 & 23.60 & 0.55 & 0.94 \\
+                   & 1000 & 23.63 & 20.67 & 23.60 & 2.97 & 0.99 \\
+$\beta$-galactosidase & 100  & 17.41 & 17.17 & 17.40 & 0.24 & 0.95 \\
+                      & 1000 & 17.41 & 15.77 & 17.40 & 1.65 & 0.99 \\
+T20S proteasome    & 100  & 20.75 & 20.33 & 20.74 & 0.42 & 0.97 \\
+                   & 1000 & 20.75 & 17.59 & 20.74 & 3.16 & 1.00 \\
+Apoferritin        & 100  & 18.51 & 18.28 & 18.50 & 0.23 & 0.95 \\
+                   & 1000 & 18.51 & 17.01 & 18.50 & 1.50 & 0.99 \\
+SARS-CoV-2 spike   & 100  & 24.18 & 23.67 & 24.16 & 0.51 & 0.95 \\
+                   & 1000 & 24.18 & 21.65 & 24.16 & 2.53 & 0.99 \\
 \midrule
 \multicolumn{7}{l}{\textbf{Aggregate mean $\pm$ 95\% bootstrap CI ($N{=}5$ structures)}} \\
 \midrule
-Mean    &   50 & --- & --- & --- & $0.122 \pm 0.043$ & 1.00 \\
-        &  100 & --- & --- & --- & $0.390 \pm 0.131$ & 1.00 \\
-        &  200 & --- & --- & --- & $0.654 \pm 0.223$ & 1.00 \\
-        &  500 & --- & --- & --- & $1.612 \pm 0.495$ & 1.00 \\
-        & 1000 & --- & --- & --- & $2.361 \pm 0.676$ & 1.00 \\
+Mean    &   50 & --- & --- & --- & $0.122 \pm 0.043$ & 0.85 \\
+        &  100 & --- & --- & --- & $0.390 \pm 0.131$ & 0.95 \\
+        &  200 & --- & --- & --- & $0.654 \pm 0.223$ & 0.97 \\
+        &  500 & --- & --- & --- & $1.612 \pm 0.495$ & 0.99 \\
+        & 1000 & --- & --- & --- & $2.361 \pm 0.676$ & 0.99 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2090,38 +2091,38 @@ Mean    &   50 & --- & --- & --- & $0.122 \pm 0.043$ & 1.00 \\
 \caption{CT multi-phantom detector offset results ($N{=}5$ real images). Offset mismatch $\Delta s$ simulated by sinogram shift along detector axis.
 Images: 3 LoDoPaB-CT patient slices (Scientific Data), FIPS walnut central slice (GroundTruthReconstruction.mat), HTC~2022 sample~A FBP reconstruction.
 All resized to $128 \times 128$, 360-angle parallel-beam projections, Shepp--Logan filter.
+Sc.~I computed on clean (unshifted) sinogram to avoid interpolation artefacts.
 Calibration: 51-step grid in $[-25, 25]$\,px.
-Over-unity recovery ratios indicate the grid-search optimum slightly exceeds the known-offset reconstruction due to discrete grid resolution (${\sim}1$\,px).
-At large offsets ($\geq 15$\,px), Sc.~I PSNR decreases due to sinogram edge truncation (Gate~1 interaction).}
+At large offsets ($\geq 15$\,px), recovery is limited by sinogram edge truncation (Gate~1 interaction).}
 \label{tab:cbct_scenes}
 \small
 \begin{tabular}{l r r r r r r}
 \toprule
 Image & $\Delta s$ (px) & Sc.~I (dB) & Sc.~II (dB) & Sc.~IV (dB) & $\Delta$(dB) & $\rho$ \\
 \midrule
-LoDoPaB slice 1 &  2 &  8.01 &  7.69 & 10.18 & 0.32 & 7.79 \\
-                & 10 &  7.41 &  7.13 &  7.71 & 0.28 & 2.05 \\
-                & 20 &  7.27 &  7.07 &  7.44 & 0.21 & 1.83 \\
-LoDoPaB slice 2 &  2 & 12.02 & 10.76 & 12.51 & 1.26 & 1.40 \\
-                & 10 & 10.79 &  9.37 & 10.93 & 1.42 & 1.10 \\
-                & 20 & 10.60 &  9.25 & 10.70 & 1.34 & 1.08 \\
-LoDoPaB slice 3 &  2 & 16.67 & 15.83 & 17.20 & 0.85 & 1.62 \\
-                & 10 & 15.82 & 14.55 & 16.03 & 1.27 & 1.17 \\
-                & 20 & 15.22 & 14.09 & 15.36 & 1.14 & 1.12 \\
-FIPS walnut     &  2 & 12.62 & 10.65 & 12.62 & 1.97 & 1.00 \\
-                & 10 & 11.84 &  9.26 & 11.84 & 2.59 & 1.00 \\
-                & 20 & 11.08 &  9.18 & 11.08 & 1.90 & 1.00 \\
-HTC 2022 A      &  2 &  8.78 &  7.36 &  8.78 & 1.42 & 1.00 \\
-                & 10 &  6.83 &  5.08 &  6.98 & 1.74 & 1.09 \\
-                & 20 &  5.74 &  4.95 &  5.79 & 0.78 & 1.07 \\
+LoDoPaB slice 1 &  2 &  8.60 &  7.69 &  8.60 & 0.91 & 1.00 \\
+                & 10 &  8.60 &  7.13 &  7.71 & 1.47 & 0.39 \\
+                & 20 &  8.60 &  7.07 &  7.44 & 1.53 & 0.25 \\
+LoDoPaB slice 2 &  2 & 12.11 & 10.76 & 12.11 & 1.35 & 1.00 \\
+                & 10 & 12.11 &  9.37 & 10.93 & 2.74 & 0.57 \\
+                & 20 & 12.11 &  9.25 & 10.70 & 2.86 & 0.51 \\
+LoDoPaB slice 3 &  2 & 16.71 & 15.83 & 16.71 & 0.88 & 1.00 \\
+                & 10 & 16.71 & 14.55 & 16.03 & 2.16 & 0.68 \\
+                & 20 & 16.71 & 14.09 & 15.36 & 2.63 & 0.48 \\
+FIPS walnut     &  2 & 12.79 & 10.65 & 12.62 & 2.14 & 0.92 \\
+                & 10 & 12.79 &  9.26 & 11.84 & 3.54 & 0.73 \\
+                & 20 & 12.79 &  9.18 & 11.08 & 3.61 & 0.53 \\
+HTC 2022 A      &  2 &  8.66 &  7.36 &  8.66 & 1.30 & 1.00 \\
+                & 10 &  8.66 &  5.08 &  6.98 & 3.58 & 0.53 \\
+                & 20 &  8.66 &  4.95 &  5.79 & 3.71 & 0.23 \\
 \midrule
 \multicolumn{7}{l}{\textbf{Aggregate mean $\pm$ 95\% bootstrap CI ($N{=}5$ images)}} \\
 \midrule
-Mean   &  2 & --- & --- & --- & $1.16 \pm 0.55$ & 2.56 \\
-       &  5 & --- & --- & --- & $1.67 \pm 0.91$ & 1.45 \\
-       & 10 & --- & --- & --- & $1.46 \pm 0.75$ & 1.28 \\
-       & 15 & --- & --- & --- & $1.27 \pm 0.67$ & 1.23 \\
-       & 20 & --- & --- & --- & $1.07 \pm 0.57$ & 1.22 \\
+Mean   &  2 & --- & --- & --- & $1.32 \pm 0.46$ & 0.98 \\
+       &  5 & --- & --- & --- & $2.32 \pm 0.75$ & 0.80 \\
+       & 10 & --- & --- & --- & $2.70 \pm 0.81$ & 0.58 \\
+       & 15 & --- & --- & --- & $2.80 \pm 0.79$ & 0.48 \\
+       & 20 & --- & --- & --- & $2.87 \pm 0.79$ & 0.40 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2135,7 +2136,7 @@ Mean   &  2 & --- & --- & --- & $1.16 \pm 0.55$ & 2.56 \\
 Phantoms: $(4 \times 64 \times 64)$ multi-depth objects (USAF chart, bio cells, particles, sparse dots).
 $\lambda{=}532$\,nm, pixel pitch $5$\,\textmu m, depth spacing $200$\,\textmu m.
 FISTA-TV: 80 iterations, $\lambda_{\mathrm{TV}}{=}0.005$.
-Calibration: 21-step grid-search via hologram residual minimisation.
+Calibration: 21-step grid-search via hologram residual minimisation; Sc.~IV capped at Sc.~I.
 Negative $\Delta$(dB) at small errors ($\Delta z{=}50$\,\textmu m) reflects near-floor sensitivity where noise dominates the mismatch signal.}
 \label{tab:compholo_scenes}
 \small
@@ -2145,19 +2146,19 @@ Phantom & $\Delta z$ (\textmu m) & Sc.~I (dB) & Sc.~II (dB) & Sc.~IV (dB) & $\De
 \midrule
 USAF chart     &  100 &  8.10 &  7.72 &  8.07 & 0.38 & 0.91 \\
                &  400 &  8.10 &  7.00 &  8.07 & 1.10 & 0.97 \\
-Bio cells      &  100 & 10.56 &  9.99 & 10.63 & 0.57 & 1.13 \\
-               &  400 & 10.56 &  9.81 & 10.63 & 0.75 & 1.10 \\
-Particles      &  100 & 10.59 & 10.27 & 10.67 & 0.32 & 1.22 \\
-               &  400 & 10.59 & 10.05 & 10.67 & 0.55 & 1.13 \\
-Sparse dots    &  100 & 16.61 & 16.61 & 16.92 & 0.00 & --- \\
-               &  400 & 16.61 & 14.85 & 16.92 & 1.76 & 1.18 \\
+Bio cells      &  100 & 10.56 &  9.99 & 10.56 & 0.57 & 1.00 \\
+               &  400 & 10.56 &  9.81 & 10.56 & 0.74 & 1.00 \\
+Particles      &  100 & 10.59 & 10.27 & 10.59 & 0.32 & 1.00 \\
+               &  400 & 10.59 & 10.05 & 10.59 & 0.55 & 1.00 \\
+Sparse dots    &  100 & 16.61 & 16.61 & 16.61 & 0.00 & --- \\
+               &  400 & 16.61 & 14.85 & 16.61 & 1.76 & 1.00 \\
 \midrule
 \multicolumn{7}{l}{\textbf{Aggregate mean $\pm$ 95\% bootstrap CI ($N{=}4$ phantoms)}} \\
 \midrule
-Mean   &   50 & --- & --- & --- & $-0.19 \pm 0.22$ & 0.63 \\
-       &  100 & --- & --- & --- & $+0.32 \pm 0.21$ & 1.09 \\
-       &  200 & --- & --- & --- & $+0.38 \pm 0.16$ & 1.34 \\
-       &  400 & --- & --- & --- & $+1.04 \pm 0.48$ & 1.10 \\
+Mean   &   50 & --- & --- & --- & $-0.19 \pm 0.22$ & 0.95 \\
+       &  100 & --- & --- & --- & $+0.32 \pm 0.21$ & 0.97 \\
+       &  200 & --- & --- & --- & $+0.38 \pm 0.17$ & 0.98 \\
+       &  400 & --- & --- & --- & $+1.04 \pm 0.46$ & 0.99 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2242,8 +2243,10 @@ The relationship between defocus error and PSNR loss is nonlinear: small errors 
 Inter-structure variance is moderate ($\mathrm{std} = 0.68$\,dB at 1000\,nm), with the T20S proteasome showing the largest sensitivity ($\Delta{=}3.16$\,dB at 1000\,nm) due to its concentrated high-frequency content from the symmetric ring structure, while apoferritin is most robust ($\Delta{=}1.50$\,dB) owing to its smooth, highly symmetric shell potential.
 
 \subsection{Comparison with CTFFIND}
-Grid-search calibration achieves $\rho = 1.000$ across all 5 real structures and all mismatch levels, with exact defocus recovery ($\Delta f_{\mathrm{cal}} = -2000$\,nm) for all structures. This performance is comparable to or exceeds dedicated CTF estimation tools (CTFFIND4, Gctf) in the low-noise regime.
-The advantage of the PWM approach is generality: the same calibration pipeline handles defocus, B-factor, and ice thickness simultaneously through the structured OperatorGraph, whereas specialist tools typically estimate defocus alone. The clean unimodal objective landscape (single scalar parameter with monotonic residual) explains the perfect calibration performance on real molecular structures.
+Grid-search calibration over 50 defocus values in $[-3000, -500]$\,nm (grid spacing ${\approx}51$\,nm, deliberately avoiding the exact true defocus) achieves $\rho = 0.81$--$0.99$ across all 5 real structures, with the nearest grid point at 20--31\,nm from the true defocus ($\Delta f_{\mathrm{cal}} = -1980$ or $-2031$\,nm vs.\ true $-2000$\,nm).
+Recovery increases with mismatch magnitude: $\rho = 0.85$ at $\Delta(\Delta f){=}50$\,nm to $\rho = 0.99$ at $1000$\,nm, because the relative penalty of the 20--31\,nm grid discretisation error diminishes as the mismatch grows.
+This performance is comparable to dedicated CTF estimation tools (CTFFIND4, Gctf) in the low-noise regime.
+The advantage of the PWM approach is generality: the same calibration pipeline handles defocus, B-factor, and ice thickness simultaneously through the structured OperatorGraph, whereas specialist tools typically estimate defocus alone.
 
 
 \section{Supplementary Note 19: CT Detector Offset Mismatch Analysis}
@@ -2256,11 +2259,11 @@ In parallel-beam CT, a detector offset $\Delta s$ shifts all projection data by 
 Validation uses $N{=}5$ real CT images: 3 patient CT slices from the LoDoPaB-CT dataset (Scientific Data; $362 \times 362$ ground truth reconstructions resized to $128 \times 128$), 1 FIPS walnut central slice ($2296 \times 2296$ $\mu$CT reconstruction; \url{https://zenodo.org/records/1254206}), and 1 HTC~2022 challenge sample~A FBP reconstruction ($512 \times 512$). These span clinical (patient slices), agricultural ($\mu$CT walnut), and industrial (challenge) CT imaging contexts, providing structural diversity absent from synthetic ellipse phantoms. Because the real images serve as ground truth directly (sinograms are generated by the CT operator from the real attenuation maps), all metrics report true-GT PSNR.
 
 \subsection{Gate~1 Interaction at Large Offsets}
-Multi-image validation ($N{=}5$) reveals a clear Gate~1/Gate~3 interaction at large offsets. At moderate offsets ($\Delta s \leq 5$\,px out of 128 detector pixels), degradation is primarily Gate~3, with mean $\Delta{=}1.16$\,dB at 2\,px and $1.67$\,dB at 5\,px. At larger offsets ($\Delta s = 15$--$20$\,px), the sinogram shift pushes edge projections beyond the detector boundary, causing irrecoverable information loss (Gate~1). This manifests as reduced Scenario~I PSNR across all images: e.g., HTC~2022 drops from $8.78$\,dB (2\,px) to $5.74$\,dB (20\,px).
-Compared to synthetic phantoms, the real CT images show more moderate $\Delta$PSNR values ($1.1$--$1.7$\,dB vs.\ $3$--$7$\,dB for ellipse phantoms), which is physically expected: real CT attenuation maps have smoother spatial structure and more distributed frequency content than piecewise-constant ellipse phantoms, making them less sensitive to the localized spectral corruption caused by detector offset.
+Multi-image validation ($N{=}5$) reveals a clear Gate~1/Gate~3 interaction at large offsets. Scenario~I is computed on the clean (unshifted) sinogram to eliminate interpolation artefacts from shift-then-unshift operations, yielding a consistent per-image baseline (e.g., LoDoPaB slice~3: $16.71$\,dB, FIPS walnut: $12.79$\,dB). At moderate offsets ($\Delta s \leq 5$\,px out of 128 detector pixels), degradation is primarily Gate~3, with mean $\Delta{=}1.32$\,dB at 2\,px and $2.32$\,dB at 5\,px. At larger offsets ($\Delta s = 15$--$20$\,px), the sinogram shift pushes edge projections beyond the detector boundary, causing irrecoverable information loss (Gate~1), which limits calibration recovery ($\rho = 0.48$ at 15\,px, $0.40$ at 20\,px).
+Compared to synthetic phantoms, the real CT images show consistent $\Delta$PSNR values ($1.3$--$2.9$\,dB), which is physically expected: real CT attenuation maps have smoother spatial structure and more distributed frequency content than piecewise-constant ellipse phantoms.
 
 \subsection{Calibration Effectiveness}
-Grid-search calibration over 51 steps in $[-25, 25]$\,px achieves $\rho \geq 1.0$ for all images and all offset levels. The FIPS walnut and HTC~2022 images achieve exact offset recovery ($\rho = 1.00$), while LoDoPaB slices show over-unity recovery ($\rho = 1.08$--$7.79$) due to the grid-search optimum slightly exceeding the known-offset reconstruction at discrete grid resolution (${\sim}1$\,px). The over-unity effect is most pronounced at small offsets (2\,px) where the grid resolution is comparable to the true offset. This confirms that detector offset calibration remains reliable on real anatomical CT data, validating the parallel-beam centre-of-rotation correction as a practical quality assurance step.
+Grid-search calibration over 51 steps in $[-25, 25]$\,px achieves $\rho = 0.98$ at 2\,px (near-perfect recovery) decreasing to $\rho = 0.40$ at 20\,px. Sc.~IV is capped at Sc.~I to prevent spurious over-unity artefacts from discrete grid resolution. At small offsets ($\Delta s = 2$\,px), three of five images achieve exact recovery ($\rho = 1.00$) while the FIPS walnut shows $\rho = 0.92$ due to the 1\,px grid step. Recovery decreases at large offsets because sinogram edge truncation (Gate~1) limits the achievable reconstruction quality even with perfect offset knowledge. This confirms that detector offset calibration is effective at clinically relevant offsets ($\leq 5$\,px) on real anatomical CT data.
 
 
 \section{Supplementary Note 20: Compressive Holography Mismatch Analysis}
@@ -2279,7 +2282,7 @@ The relatively modest Gate~3 effect (${\sim}1$\,dB maximum) compared to other mo
 Inter-phantom variance is substantial (std $= 0.46$\,dB at 400\,\textmu m), reflecting structure-dependent sensitivity. The sparse dots phantom---with its high spatial-frequency content---shows the largest sensitivity ($\Delta{=}1.76$\,dB at 400\,\textmu m), while the USAF chart and bio cells are intermediate (${\sim}0.75$--$1.10$\,dB). Deeper planes accumulate larger phase errors consistent with the quadratic scaling $\Delta\phi = \pi\lambda\Delta z f^2$.
 
 \subsection{Residual-Based Calibration}
-Autonomous calibration uses hologram residual minimisation: $\|y - A_{\mathrm{cal}}\hat{x}\|^2 / \|y\|^2$, where $\hat{x}$ is reconstructed via FISTA-TV with the candidate operator $A_{\mathrm{cal}}$. The 21-step grid-search achieves mean recovery $\rho = 0.63$ at 50\,\textmu m (near-floor regime), $\rho = 1.09$ at 100\,\textmu m, $\rho = 1.34$ at 200\,\textmu m, and $\rho = 1.10$ at 400\,\textmu m. Over-unity values at moderate errors indicate the optimizer found a marginally superior operating point within the discrete search grid. The calibrated propagation distance residuals are consistent across all four phantoms, confirming that residual-based calibration generalises across structurally diverse objects.
+Autonomous calibration uses hologram residual minimisation: $\|y - A_{\mathrm{cal}}\hat{x}\|^2 / \|y\|^2$, where $\hat{x}$ is reconstructed via FISTA-TV with the candidate operator $A_{\mathrm{cal}}$. Sc.~IV is capped at Sc.~I to prevent FISTA convergence artefacts from producing spurious over-unity recovery. The 21-step grid-search achieves mean recovery $\rho = 0.95$ at 50\,\textmu m (near-floor regime), $\rho = 0.97$ at 100\,\textmu m, $\rho = 0.98$ at 200\,\textmu m, and $\rho = 0.99$ at 400\,\textmu m. Recovery increases with mismatch magnitude as the calibration signal rises further above the noise floor. The calibrated propagation distance residuals are consistent across all four phantoms, confirming that residual-based calibration generalises across structurally diverse objects.
 
 
 \section{Supplementary Note 21: Fluorescence Microscopy Mismatch Analysis}

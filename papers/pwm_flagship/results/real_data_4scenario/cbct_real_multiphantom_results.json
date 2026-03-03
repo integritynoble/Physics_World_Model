@@ -31,68 +31,68 @@
       "offsets": [
         {
           "detector_offset_px": 2,
-          "psnr_I": 8.0129,
+          "psnr_I": 8.5988,
           "psnr_II": 7.6936,
-          "psnr_IV": 10.1809,
-          "ssim_I": 0.2634,
+          "psnr_IV": 8.5988,
+          "ssim_I": 0.3167,
           "ssim_II": 0.1896,
-          "ssim_IV": 0.3371,
-          "delta_psnr_db": 0.3193,
-          "recovery_ratio": 7.7902,
+          "ssim_IV": 0.3167,
+          "delta_psnr_db": 0.9052,
+          "recovery_ratio": 1.0,
           "calibrated_offset_px": 1.0,
-          "cal_time_s": 30.02
+          "cal_time_s": 26.57
         },
         {
           "detector_offset_px": 5,
-          "psnr_I": 7.5784,
+          "psnr_I": 8.5988,
           "psnr_II": 7.2802,
           "psnr_IV": 8.1161,
-          "ssim_I": 0.168,
+          "ssim_I": 0.3167,
           "ssim_II": 0.0988,
           "ssim_IV": 0.2352,
-          "delta_psnr_db": 0.2982,
-          "recovery_ratio": 2.8028,
+          "delta_psnr_db": 1.3186,
+          "recovery_ratio": 0.6339,
           "calibrated_offset_px": 4.0,
-          "cal_time_s": 20.11
+          "cal_time_s": 29.17
         },
         {
           "detector_offset_px": 10,
-          "psnr_I": 7.4118,
+          "psnr_I": 8.5988,
           "psnr_II": 7.1318,
           "psnr_IV": 7.706,
-          "ssim_I": 0.1196,
+          "ssim_I": 0.3167,
           "ssim_II": 0.0506,
           "ssim_IV": 0.1563,
-          "delta_psnr_db": 0.2799,
-          "recovery_ratio": 2.051,
+          "delta_psnr_db": 1.4669,
+          "recovery_ratio": 0.3914,
           "calibrated_offset_px": 9.0,
-          "cal_time_s": 20.86
+          "cal_time_s": 27.64
         },
         {
           "detector_offset_px": 15,
-          "psnr_I": 7.335,
+          "psnr_I": 8.5988,
           "psnr_II": 7.0828,
           "psnr_IV": 7.5481,
-          "ssim_I": 0.0841,
+          "ssim_I": 0.3167,
           "ssim_II": 0.0227,
           "ssim_IV": 0.1098,
-          "delta_psnr_db": 0.2522,
-          "recovery_ratio": 1.845,
+          "delta_psnr_db": 1.516,
+          "recovery_ratio": 0.3069,
           "calibrated_offset_px": 14.0,
-          "cal_time_s": 22.46
+          "cal_time_s": 26.81
         },
         {
           "detector_offset_px": 20,
-          "psnr_I": 7.2717,
+          "psnr_I": 8.5988,
           "psnr_II": 7.066,
           "psnr_IV": 7.4421,
-          "ssim_I": 0.0605,
+          "ssim_I": 0.3167,
           "ssim_II": 0.0126,
           "ssim_IV": 0.0758,
-          "delta_psnr_db": 0.2057,
-          "recovery_ratio": 1.8283,
+          "delta_psnr_db": 1.5328,
+          "recovery_ratio": 0.2454,
           "calibrated_offset_px": 19.0,
-          "cal_time_s": 22.25
+          "cal_time_s": 27.13
         }
       ]
     },
@@ -102,68 +102,68 @@
       "offsets": [
         {
           "detector_offset_px": 2,
-          "psnr_I": 12.017,
+          "psnr_I": 12.1133,
           "psnr_II": 10.7584,
-          "psnr_IV": 12.5144,
-          "ssim_I": -0.0013,
+          "psnr_IV": 12.1133,
+          "ssim_I": -0.0114,
           "ssim_II": 0.0215,
-          "ssim_IV": 0.0531,
-          "delta_psnr_db": 1.2586,
-          "recovery_ratio": 1.3952,
+          "ssim_IV": -0.0114,
+          "delta_psnr_db": 1.3549,
+          "recovery_ratio": 1.0,
           "calibrated_offset_px": 1.0,
-          "cal_time_s": 21.29
+          "cal_time_s": 15.69
         },
         {
           "detector_offset_px": 5,
-          "psnr_I": 11.2825,
+          "psnr_I": 12.1133,
           "psnr_II": 9.7043,
           "psnr_IV": 11.6004,
-          "ssim_I": 0.0197,
+          "ssim_I": -0.0114,
           "ssim_II": -0.0073,
           "ssim_IV": 0.0421,
-          "delta_psnr_db": 1.5783,
-          "recovery_ratio": 1.2014,
+          "delta_psnr_db": 2.4091,
+          "recovery_ratio": 0.7871,
           "calibrated_offset_px": 4.0,
-          "cal_time_s": 22.96
+          "cal_time_s": 15.63
         },
         {
           "detector_offset_px": 10,
-          "psnr_I": 10.788,
+          "psnr_I": 12.1133,
           "psnr_II": 9.3699,
           "psnr_IV": 10.9291,
-          "ssim_I": 0.0733,
+          "ssim_I": -0.0114,
           "ssim_II": 0.0348,
           "ssim_IV": 0.0719,
-          "delta_psnr_db": 1.418,
-          "recovery_ratio": 1.0995,
+          "delta_psnr_db": 2.7434,
+          "recovery_ratio": 0.5683,
           "calibrated_offset_px": 9.0,
-          "cal_time_s": 22.56
+          "cal_time_s": 15.52
         },
         {
           "detector_offset_px": 15,
-          "psnr_I": 10.6611,
+          "psnr_I": 12.1133,
           "psnr_II": 9.2919,
           "psnr_IV": 10.769,
-          "ssim_I": 0.1067,
+          "ssim_I": -0.0114,
           "ssim_II": 0.033,
           "ssim_IV": 0.0864,
-          "delta_psnr_db": 1.3692,
-          "recovery_ratio": 1.0788,
+          "delta_psnr_db": 2.8215,
+          "recovery_ratio": 0.5235,
           "calibrated_offset_px": 14.0,
-          "cal_time_s": 22.28
+          "cal_time_s": 15.54
         },
         {
           "detector_offset_px": 20,
-          "psnr_I": 10.5955,
+          "psnr_I": 12.1133,
           "psnr_II": 9.2506,
           "psnr_IV": 10.6966,
-          "ssim_I": 0.1136,
+          "ssim_I": -0.0114,
           "ssim_II": 0.0207,
           "ssim_IV": 0.0966,
-          "delta_psnr_db": 1.3449,
-          "recovery_ratio": 1.0752,
+          "delta_psnr_db": 2.8627,
+          "recovery_ratio": 0.5051,
           "calibrated_offset_px": 19.0,
-          "cal_time_s": 22.94
+          "cal_time_s": 15.45
         }
       ]
     },
@@ -173,68 +173,68 @@
       "offsets": [
         {
           "detector_offset_px": 2,
-          "psnr_I": 16.6747,
+          "psnr_I": 16.7128,
           "psnr_II": 15.8284,
-          "psnr_IV": 17.1968,
-          "ssim_I": 0.3155,
+          "psnr_IV": 16.7128,
+          "ssim_I": 0.3305,
           "ssim_II": 0.1469,
-          "ssim_IV": 0.2566,
-          "delta_psnr_db": 0.8463,
-          "recovery_ratio": 1.6169,
+          "ssim_IV": 0.3305,
+          "delta_psnr_db": 0.8844,
+          "recovery_ratio": 1.0,
           "calibrated_offset_px": 1.0,
-          "cal_time_s": 21.72
+          "cal_time_s": 15.99
         },
         {
           "detector_offset_px": 5,
-          "psnr_I": 16.2072,
+          "psnr_I": 16.7128,
           "psnr_II": 15.0664,
           "psnr_IV": 16.501,
-          "ssim_I": 0.2889,
+          "ssim_I": 0.3305,
           "ssim_II": 0.1109,
           "ssim_IV": 0.2237,
-          "delta_psnr_db": 1.1407,
-          "recovery_ratio": 1.2575,
+          "delta_psnr_db": 1.6464,
+          "recovery_ratio": 0.8713,
           "calibrated_offset_px": 4.0,
-          "cal_time_s": 21.99
+          "cal_time_s": 16.25
         },
         {
           "detector_offset_px": 10,
-          "psnr_I": 15.8162,
+          "psnr_I": 16.7128,
           "psnr_II": 14.5509,
           "psnr_IV": 16.0304,
-          "ssim_I": 0.2325,
+          "ssim_I": 0.3305,
           "ssim_II": 0.1213,
           "ssim_IV": 0.1841,
-          "delta_psnr_db": 1.2653,
-          "recovery_ratio": 1.1693,
+          "delta_psnr_db": 2.1619,
+          "recovery_ratio": 0.6843,
           "calibrated_offset_px": 9.0,
-          "cal_time_s": 23.53
+          "cal_time_s": 15.57
         },
         {
           "detector_offset_px": 15,
-          "psnr_I": 15.4924,
+          "psnr_I": 16.7128,
           "psnr_II": 14.2539,
           "psnr_IV": 15.6566,
-          "ssim_I": 0.1647,
+          "ssim_I": 0.3305,
           "ssim_II": 0.0904,
           "ssim_IV": 0.1283,
-          "delta_psnr_db": 1.2385,
-          "recovery_ratio": 1.1326,
+          "delta_psnr_db": 2.4589,
+          "recovery_ratio": 0.5705,
           "calibrated_offset_px": 14.0,
-          "cal_time_s": 23.69
+          "cal_time_s": 15.51
         },
         {
           "detector_offset_px": 20,
-          "psnr_I": 15.2221,
+          "psnr_I": 16.7128,
           "psnr_II": 14.0855,
           "psnr_IV": 15.3594,
-          "ssim_I": 0.1185,
+          "ssim_I": 0.3305,
           "ssim_II": 0.0882,
           "ssim_IV": 0.0878,
-          "delta_psnr_db": 1.1366,
-          "recovery_ratio": 1.1208,
+          "delta_psnr_db": 2.6272,
+          "recovery_ratio": 0.4849,
           "calibrated_offset_px": 19.0,
-          "cal_time_s": 23.89
+          "cal_time_s": 15.64
         }
       ]
     },
@@ -244,68 +244,68 @@
       "offsets": [
         {
           "detector_offset_px": 2,
-          "psnr_I": 12.6188,
+          "psnr_I": 12.7938,
           "psnr_II": 10.6496,
           "psnr_IV": 12.6188,
-          "ssim_I": 0.1461,
+          "ssim_I": 0.055,
           "ssim_II": 0.0005,
           "ssim_IV": 0.1461,
-          "delta_psnr_db": 1.9692,
-          "recovery_ratio": 1.0,
+          "delta_psnr_db": 2.1443,
+          "recovery_ratio": 0.9184,
           "calibrated_offset_px": 2.0,
-          "cal_time_s": 21.68
+          "cal_time_s": 15.31
         },
         {
           "detector_offset_px": 5,
-          "psnr_I": 12.1499,
+          "psnr_I": 12.7938,
           "psnr_II": 9.5063,
           "psnr_IV": 12.1499,
-          "ssim_I": 0.2039,
+          "ssim_I": 0.055,
           "ssim_II": -0.0542,
           "ssim_IV": 0.2039,
-          "delta_psnr_db": 2.6436,
-          "recovery_ratio": 1.0,
+          "delta_psnr_db": 3.2876,
+          "recovery_ratio": 0.8041,
           "calibrated_offset_px": 5.0,
-          "cal_time_s": 24.52
+          "cal_time_s": 15.37
         },
         {
           "detector_offset_px": 10,
-          "psnr_I": 11.8429,
+          "psnr_I": 12.7938,
           "psnr_II": 9.2559,
           "psnr_IV": 11.8429,
-          "ssim_I": 0.2317,
+          "ssim_I": 0.055,
           "ssim_II": -0.0291,
           "ssim_IV": 0.2317,
-          "delta_psnr_db": 2.5869,
-          "recovery_ratio": 1.0,
+          "delta_psnr_db": 3.5379,
+          "recovery_ratio": 0.7312,
           "calibrated_offset_px": 10.0,
-          "cal_time_s": 22.87
+          "cal_time_s": 15.15
         },
         {
           "detector_offset_px": 15,
-          "psnr_I": 11.6352,
+          "psnr_I": 12.7938,
           "psnr_II": 9.2728,
           "psnr_IV": 11.6352,
-          "ssim_I": 0.1995,
+          "ssim_I": 0.055,
           "ssim_II": -0.0203,
           "ssim_IV": 0.1995,
-          "delta_psnr_db": 2.3623,
-          "recovery_ratio": 1.0,
+          "delta_psnr_db": 3.521,
+          "recovery_ratio": 0.6709,
           "calibrated_offset_px": 15.0,
-          "cal_time_s": 20.53
+          "cal_time_s": 15.49
         },
         {
           "detector_offset_px": 20,
-          "psnr_I": 11.0839,
+          "psnr_I": 12.7938,
           "psnr_II": 9.1829,
           "psnr_IV": 11.0839,
-          "ssim_I": 0.1311,
+          "ssim_I": 0.055,
           "ssim_II": -0.0065,
           "ssim_IV": 0.1311,
-          "delta_psnr_db": 1.901,
-          "recovery_ratio": 1.0,
+          "delta_psnr_db": 3.6109,
+          "recovery_ratio": 0.5265,
           "calibrated_offset_px": 20.0,
-          "cal_time_s": 19.86
+          "cal_time_s": 15.4
         }
       ]
     },
@@ -315,68 +315,68 @@
       "offsets": [
         {
           "detector_offset_px": 2,
-          "psnr_I": 8.7752,
+          "psnr_I": 8.6599,
           "psnr_II": 7.3557,
-          "psnr_IV": 8.7752,
-          "ssim_I": 0.2645,
+          "psnr_IV": 8.6599,
+          "ssim_I": 0.2477,
           "ssim_II": 0.1156,
-          "ssim_IV": 0.2645,
-          "delta_psnr_db": 1.4195,
+          "ssim_IV": 0.2477,
+          "delta_psnr_db": 1.3042,
           "recovery_ratio": 1.0,
           "calibrated_offset_px": 2.0,
-          "cal_time_s": 19.06
+          "cal_time_s": 15.36
         },
         {
           "detector_offset_px": 5,
-          "psnr_I": 8.3851,
+          "psnr_I": 8.6599,
           "psnr_II": 5.71,
           "psnr_IV": 8.3851,
-          "ssim_I": 0.2471,
+          "ssim_I": 0.2477,
           "ssim_II": 0.0096,
           "ssim_IV": 0.2471,
-          "delta_psnr_db": 2.6751,
-          "recovery_ratio": 1.0,
+          "delta_psnr_db": 2.9499,
+          "recovery_ratio": 0.9068,
           "calibrated_offset_px": 5.0,
-          "cal_time_s": 20.01
+          "cal_time_s": 15.85
         },
         {
           "detector_offset_px": 10,
-          "psnr_I": 6.8265,
+          "psnr_I": 8.6599,
           "psnr_II": 5.0818,
           "psnr_IV": 6.9803,
-          "ssim_I": 0.147,
+          "ssim_I": 0.2477,
           "ssim_II": -0.0311,
           "ssim_IV": 0.0926,
-          "delta_psnr_db": 1.7447,
-          "recovery_ratio": 1.0881,
+          "delta_psnr_db": 3.5781,
+          "recovery_ratio": 0.5306,
           "calibrated_offset_px": 9.0,
-          "cal_time_s": 21.16
+          "cal_time_s": 15.48
         },
         {
           "detector_offset_px": 15,
-          "psnr_I": 6.1085,
+          "psnr_I": 8.6599,
           "psnr_II": 4.9647,
           "psnr_IV": 6.1992,
-          "ssim_I": 0.0881,
+          "ssim_I": 0.2477,
           "ssim_II": -0.0307,
           "ssim_IV": 0.0595,
-          "delta_psnr_db": 1.1438,
-          "recovery_ratio": 1.0793,
+          "delta_psnr_db": 3.6952,
+          "recovery_ratio": 0.3341,
           "calibrated_offset_px": 14.0,
-          "cal_time_s": 22.83
+          "cal_time_s": 15.24
         },
         {
           "detector_offset_px": 20,
-          "psnr_I": 5.7352,
+          "psnr_I": 8.6599,
           "psnr_II": 4.9536,
           "psnr_IV": 5.791,
-          "ssim_I": 0.0468,
+          "ssim_I": 0.2477,
           "ssim_II": -0.0332,
           "ssim_IV": 0.0283,
-          "delta_psnr_db": 0.7815,
-          "recovery_ratio": 1.0714,
+          "delta_psnr_db": 3.7063,
+          "recovery_ratio": 0.2259,
           "calibrated_offset_px": 19.0,
-          "cal_time_s": 20.41
+          "cal_time_s": 15.56
         }
       ]
     }
@@ -385,72 +385,72 @@
     "per_offset": [
       {
         "detector_offset_px": 2,
-        "mean_delta_psnr": 1.1626,
-        "std_delta_psnr": 0.5544,
+        "mean_delta_psnr": 1.3186,
+        "std_delta_psnr": 0.4567,
         "ci95_delta_psnr": [
-          0.6447,
-          1.6347
+          0.9767,
+          1.7345
         ],
-        "mean_recovery": 2.5605,
+        "mean_recovery": 0.9837,
         "ci95_recovery": [
-          1.079,
-          5.1975
+          0.951,
+          1.0
         ]
       },
       {
         "detector_offset_px": 5,
-        "mean_delta_psnr": 1.6672,
-        "std_delta_psnr": 0.9087,
+        "mean_delta_psnr": 2.3223,
+        "std_delta_psnr": 0.748,
         "ci95_delta_psnr": [
-          0.8101,
-          2.4431
+          1.6672,
+          2.9768
         ],
-        "mean_recovery": 1.4523,
+        "mean_recovery": 0.8006,
         "ci95_recovery": [
-          1.0403,
-          2.1332
+          0.7154,
+          0.8721
         ]
       },
       {
         "detector_offset_px": 10,
-        "mean_delta_psnr": 1.459,
-        "std_delta_psnr": 0.7461,
+        "mean_delta_psnr": 2.6976,
+        "std_delta_psnr": 0.8106,
         "ci95_delta_psnr": [
-          0.7699,
-          2.0888
+          1.9753,
+          3.3951
         ],
-        "mean_recovery": 1.2816,
+        "mean_recovery": 0.5812,
         "ci95_recovery": [
-          1.0529,
-          1.6821
+          0.4749,
+          0.6799
         ]
       },
       {
         "detector_offset_px": 15,
-        "mean_delta_psnr": 1.2732,
-        "std_delta_psnr": 0.6717,
+        "mean_delta_psnr": 2.8025,
+        "std_delta_psnr": 0.7857,
         "ci95_delta_psnr": [
-          0.6539,
-          1.8938
+          2.0817,
+          3.4508
         ],
-        "mean_recovery": 1.2271,
+        "mean_recovery": 0.4812,
         "ci95_recovery": [
-          1.0423,
-          1.5493
+          0.3596,
+          0.6013
         ]
       },
       {
         "detector_offset_px": 20,
-        "mean_delta_psnr": 1.0739,
-        "std_delta_psnr": 0.5658,
+        "mean_delta_psnr": 2.868,
+        "std_delta_psnr": 0.7868,
         "ci95_delta_psnr": [
-          0.5512,
-          1.5659
+          2.1673,
+          3.4994
         ],
-        "mean_recovery": 1.2191,
+        "mean_recovery": 0.3976,
         "ci95_recovery": [
-          1.0392,
-          1.5354
+          0.2854,
+          0.5096
         ]
       }
     ]

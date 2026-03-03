@@ -29,44 +29,44 @@
           "wrong_defocus_nm": -1950.0,
           "psnr_I": 23.6346,
           "psnr_II": 23.447,
-          "psnr_IV": 23.6346,
+          "psnr_IV": 23.5992,
           "ssim_I": -0.1042,
           "ssim_II": -0.0939,
-          "ssim_IV": -0.1042,
+          "ssim_IV": -0.1017,
           "delta_psnr_db": 0.1877,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
-          "cal_time_s": 0.08
+          "recovery_ratio": 0.811,
+          "calibrated_defocus_nm": -1979.59,
+          "defocus_est_error_nm": 20.41,
+          "cal_time_s": 0.07
         },
         {
           "defocus_error_nm": 100.0,
           "wrong_defocus_nm": -1900.0,
           "psnr_I": 23.6346,
           "psnr_II": 23.0881,
-          "psnr_IV": 23.6346,
+          "psnr_IV": 23.5992,
           "ssim_I": -0.1042,
           "ssim_II": -0.0884,
-          "ssim_IV": -0.1042,
+          "ssim_IV": -0.1017,
           "delta_psnr_db": 0.5466,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
-          "cal_time_s": 0.08
+          "recovery_ratio": 0.9351,
+          "calibrated_defocus_nm": -1979.59,
+          "defocus_est_error_nm": 20.41,
+          "cal_time_s": 0.06
         },
         {
           "defocus_error_nm": 200.0,
           "wrong_defocus_nm": -1800.0,
           "psnr_I": 23.6346,
           "psnr_II": 22.7239,
-          "psnr_IV": 23.6346,
+          "psnr_IV": 23.5992,
           "ssim_I": -0.1042,
           "ssim_II": -0.073,
-          "ssim_IV": -0.1042,
+          "ssim_IV": -0.1017,
           "delta_psnr_db": 0.9107,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
+          "recovery_ratio": 0.961,
+          "calibrated_defocus_nm": -1979.59,
+          "defocus_est_error_nm": 20.41,
           "cal_time_s": 0.06
         },
         {
@@ -74,29 +74,29 @@
           "wrong_defocus_nm": -1500.0,
           "psnr_I": 23.6346,
           "psnr_II": 21.4242,
-          "psnr_IV": 23.6346,
+          "psnr_IV": 23.5992,
           "ssim_I": -0.1042,
           "ssim_II": -0.0171,
-          "ssim_IV": -0.1042,
+          "ssim_IV": -0.1017,
           "delta_psnr_db": 2.2105,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
-          "cal_time_s": 0.06
+          "recovery_ratio": 0.9839,
+          "calibrated_defocus_nm": -1979.59,
+          "defocus_est_error_nm": 20.41,
+          "cal_time_s": 0.07
         },
         {
           "defocus_error_nm": 1000.0,
           "wrong_defocus_nm": -1000.0,
           "psnr_I": 23.6346,
           "psnr_II": 20.6656,
-          "psnr_IV": 23.6346,
+          "psnr_IV": 23.5992,
           "ssim_I": -0.1042,
           "ssim_II": 0.1768,
-          "ssim_IV": -0.1042,
+          "ssim_IV": -0.1017,
           "delta_psnr_db": 2.9691,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
+          "recovery_ratio": 0.9881,
+          "calibrated_defocus_nm": -1979.59,
+          "defocus_est_error_nm": 20.41,
           "cal_time_s": 0.07
         }
       ]
@@ -112,14 +112,14 @@
           "wrong_defocus_nm": -1950.0,
           "psnr_I": 17.413,
           "psnr_II": 17.3351,
-          "psnr_IV": 17.413,
+          "psnr_IV": 17.4013,
           "ssim_I": -0.0668,
           "ssim_II": -0.0671,
           "ssim_IV": -0.0668,
           "delta_psnr_db": 0.0779,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
+          "recovery_ratio": 0.8493,
+          "calibrated_defocus_nm": -2030.61,
+          "defocus_est_error_nm": 30.61,
           "cal_time_s": 0.06
         },
         {
@@ -127,14 +127,14 @@
           "wrong_defocus_nm": -1900.0,
           "psnr_I": 17.413,
           "psnr_II": 17.1688,
-          "psnr_IV": 17.413,
+          "psnr_IV": 17.4013,
           "ssim_I": -0.0668,
           "ssim_II": -0.0697,
           "ssim_IV": -0.0668,
           "delta_psnr_db": 0.2442,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
+          "recovery_ratio": 0.9519,
+          "calibrated_defocus_nm": -2030.61,
+          "defocus_est_error_nm": 30.61,
           "cal_time_s": 0.07
         },
         {
@@ -142,29 +142,29 @@
           "wrong_defocus_nm": -1800.0,
           "psnr_I": 17.413,
           "psnr_II": 17.0131,
-          "psnr_IV": 17.413,
+          "psnr_IV": 17.4013,
           "ssim_I": -0.0668,
           "ssim_II": -0.0687,
           "ssim_IV": -0.0668,
           "delta_psnr_db": 0.3999,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
-          "cal_time_s": 0.12
+          "recovery_ratio": 0.9706,
+          "calibrated_defocus_nm": -2030.61,
+          "defocus_est_error_nm": 30.61,
+          "cal_time_s": 0.06
         },
         {
           "defocus_error_nm": 500.0,
           "wrong_defocus_nm": -1500.0,
           "psnr_I": 17.413,
           "psnr_II": 16.3473,
-          "psnr_IV": 17.413,
+          "psnr_IV": 17.4013,
           "ssim_I": -0.0668,
           "ssim_II": -0.0429,
           "ssim_IV": -0.0668,
           "delta_psnr_db": 1.0657,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
+          "recovery_ratio": 0.989,
+          "calibrated_defocus_nm": -2030.61,
+          "defocus_est_error_nm": 30.61,
           "cal_time_s": 0.07
         },
         {
@@ -172,15 +172,15 @@
           "wrong_defocus_nm": -1000.0,
           "psnr_I": 17.413,
           "psnr_II": 15.7672,
-          "psnr_IV": 17.413,
+          "psnr_IV": 17.4013,
           "ssim_I": -0.0668,
           "ssim_II": -0.0517,
           "ssim_IV": -0.0668,
           "delta_psnr_db": 1.6458,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
-          "cal_time_s": 0.08
+          "recovery_ratio": 0.9929,
+          "calibrated_defocus_nm": -2030.61,
+          "defocus_est_error_nm": 30.61,
+          "cal_time_s": 0.07
         }
       ]
     },
@@ -195,75 +195,75 @@
           "wrong_defocus_nm": -1950.0,
           "psnr_I": 20.7493,
           "psnr_II": 20.6414,
-          "psnr_IV": 20.7493,
+          "psnr_IV": 20.7378,
           "ssim_I": 0.2435,
           "ssim_II": 0.2249,
-          "ssim_IV": 0.2435,
+          "ssim_IV": 0.2416,
           "delta_psnr_db": 0.108,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
-          "cal_time_s": 0.07
+          "recovery_ratio": 0.893,
+          "calibrated_defocus_nm": -1979.59,
+          "defocus_est_error_nm": 20.41,
+          "cal_time_s": 0.06
         },
         {
           "defocus_error_nm": 100.0,
           "wrong_defocus_nm": -1900.0,
           "psnr_I": 20.7493,
           "psnr_II": 20.3337,
-          "psnr_IV": 20.7493,
+          "psnr_IV": 20.7378,
           "ssim_I": 0.2435,
           "ssim_II": 0.173,
-          "ssim_IV": 0.2435,
+          "ssim_IV": 0.2416,
           "delta_psnr_db": 0.4156,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
-          "cal_time_s": 0.06
+          "recovery_ratio": 0.9722,
+          "calibrated_defocus_nm": -1979.59,
+          "defocus_est_error_nm": 20.41,
+          "cal_time_s": 0.05
         },
         {
           "defocus_error_nm": 200.0,
           "wrong_defocus_nm": -1800.0,
           "psnr_I": 20.7493,
           "psnr_II": 20.0532,
-          "psnr_IV": 20.7493,
+          "psnr_IV": 20.7378,
           "ssim_I": 0.2435,
           "ssim_II": 0.1448,
-          "ssim_IV": 0.2435,
+          "ssim_IV": 0.2416,
           "delta_psnr_db": 0.6961,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
-          "cal_time_s": 0.07
+          "recovery_ratio": 0.9834,
+          "calibrated_defocus_nm": -1979.59,
+          "defocus_est_error_nm": 20.41,
+          "cal_time_s": 0.06
         },
         {
           "defocus_error_nm": 500.0,
           "wrong_defocus_nm": -1500.0,
           "psnr_I": 20.7493,
           "psnr_II": 18.9302,
-          "psnr_IV": 20.7493,
+          "psnr_IV": 20.7378,
           "ssim_I": 0.2435,
           "ssim_II": 0.1058,
-          "ssim_IV": 0.2435,
+          "ssim_IV": 0.2416,
           "delta_psnr_db": 1.8191,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
-          "cal_time_s": 0.12
+          "recovery_ratio": 0.9937,
+          "calibrated_defocus_nm": -1979.59,
+          "defocus_est_error_nm": 20.41,
+          "cal_time_s": 0.07
         },
         {
           "defocus_error_nm": 1000.0,
           "wrong_defocus_nm": -1000.0,
           "psnr_I": 20.7493,
           "psnr_II": 17.593,
-          "psnr_IV": 20.7493,
+          "psnr_IV": 20.7378,
           "ssim_I": 0.2435,
           "ssim_II": 0.1193,
-          "ssim_IV": 0.2435,
+          "ssim_IV": 0.2416,
           "delta_psnr_db": 3.1563,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
-          "cal_time_s": 0.07
+          "recovery_ratio": 0.9963,
+          "calibrated_defocus_nm": -1979.59,
+          "defocus_est_error_nm": 20.41,
+          "cal_time_s": 0.09
         }
       ]
     },
@@ -278,14 +278,14 @@
           "wrong_defocus_nm": -1950.0,
           "psnr_I": 18.5144,
           "psnr_II": 18.4355,
-          "psnr_IV": 18.5144,
+          "psnr_IV": 18.5025,
           "ssim_I": -0.1497,
           "ssim_II": -0.1445,
-          "ssim_IV": -0.1497,
+          "ssim_IV": -0.1488,
           "delta_psnr_db": 0.079,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
+          "recovery_ratio": 0.8485,
+          "calibrated_defocus_nm": -2030.61,
+          "defocus_est_error_nm": 30.61,
           "cal_time_s": 0.06
         },
         {
@@ -293,14 +293,14 @@
           "wrong_defocus_nm": -1900.0,
           "psnr_I": 18.5144,
           "psnr_II": 18.2831,
-          "psnr_IV": 18.5144,
+          "psnr_IV": 18.5025,
           "ssim_I": -0.1497,
           "ssim_II": -0.1374,
-          "ssim_IV": -0.1497,
+          "ssim_IV": -0.1488,
           "delta_psnr_db": 0.2313,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
+          "recovery_ratio": 0.9483,
+          "calibrated_defocus_nm": -2030.61,
+          "defocus_est_error_nm": 30.61,
           "cal_time_s": 0.06
         },
         {
@@ -308,44 +308,44 @@
           "wrong_defocus_nm": -1800.0,
           "psnr_I": 18.5144,
           "psnr_II": 18.1235,
-          "psnr_IV": 18.5144,
+          "psnr_IV": 18.5025,
           "ssim_I": -0.1497,
           "ssim_II": -0.1304,
-          "ssim_IV": -0.1497,
+          "ssim_IV": -0.1488,
           "delta_psnr_db": 0.3909,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
-          "cal_time_s": 0.06
+          "recovery_ratio": 0.9694,
+          "calibrated_defocus_nm": -2030.61,
+          "defocus_est_error_nm": 30.61,
+          "cal_time_s": 0.09
         },
         {
           "defocus_error_nm": 500.0,
           "wrong_defocus_nm": -1500.0,
           "psnr_I": 18.5144,
           "psnr_II": 17.5291,
-          "psnr_IV": 18.5144,
+          "psnr_IV": 18.5025,
           "ssim_I": -0.1497,
           "ssim_II": -0.1092,
-          "ssim_IV": -0.1497,
+          "ssim_IV": -0.1488,
           "delta_psnr_db": 0.9854,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
-          "cal_time_s": 0.07
+          "recovery_ratio": 0.9879,
+          "calibrated_defocus_nm": -2030.61,
+          "defocus_est_error_nm": 30.61,
+          "cal_time_s": 0.1
         },
         {
           "defocus_error_nm": 1000.0,
           "wrong_defocus_nm": -1000.0,
           "psnr_I": 18.5144,
           "psnr_II": 17.013,
-          "psnr_IV": 18.5144,
+          "psnr_IV": 18.5025,
           "ssim_I": -0.1497,
           "ssim_II": -0.1043,
-          "ssim_IV": -0.1497,
+          "ssim_IV": -0.1488,
           "delta_psnr_db": 1.5014,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
+          "recovery_ratio": 0.992,
+          "calibrated_defocus_nm": -2030.61,
+          "defocus_est_error_nm": 30.61,
           "cal_time_s": 0.06
         }
       ]
@@ -361,14 +361,14 @@
           "wrong_defocus_nm": -1950.0,
           "psnr_I": 24.1835,
           "psnr_II": 24.0276,
-          "psnr_IV": 24.1835,
+          "psnr_IV": 24.156,
           "ssim_I": -0.0009,
           "ssim_II": -0.0015,
-          "ssim_IV": -0.0009,
+          "ssim_IV": -0.0004,
           "delta_psnr_db": 0.1559,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
+          "recovery_ratio": 0.8237,
+          "calibrated_defocus_nm": -1979.59,
+          "defocus_est_error_nm": 20.41,
           "cal_time_s": 0.06
         },
         {
@@ -376,59 +376,59 @@
           "wrong_defocus_nm": -1900.0,
           "psnr_I": 24.1835,
           "psnr_II": 23.6738,
-          "psnr_IV": 24.1835,
+          "psnr_IV": 24.156,
           "ssim_I": -0.0009,
           "ssim_II": -0.0055,
-          "ssim_IV": -0.0009,
+          "ssim_IV": -0.0004,
           "delta_psnr_db": 0.5098,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
-          "cal_time_s": 0.07
+          "recovery_ratio": 0.9461,
+          "calibrated_defocus_nm": -1979.59,
+          "defocus_est_error_nm": 20.41,
+          "cal_time_s": 0.11
         },
         {
           "defocus_error_nm": 200.0,
           "wrong_defocus_nm": -1800.0,
           "psnr_I": 24.1835,
           "psnr_II": 23.3128,
-          "psnr_IV": 24.1835,
+          "psnr_IV": 24.156,
           "ssim_I": -0.0009,
           "ssim_II": -0.0055,
-          "ssim_IV": -0.0009,
+          "ssim_IV": -0.0004,
           "delta_psnr_db": 0.8707,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
-          "cal_time_s": 0.11
+          "recovery_ratio": 0.9684,
+          "calibrated_defocus_nm": -1979.59,
+          "defocus_est_error_nm": 20.41,
+          "cal_time_s": 0.09
         },
         {
           "defocus_error_nm": 500.0,
           "wrong_defocus_nm": -1500.0,
           "psnr_I": 24.1835,
           "psnr_II": 22.2033,
-          "psnr_IV": 24.1835,
+          "psnr_IV": 24.156,
           "ssim_I": -0.0009,
           "ssim_II": 0.0448,
-          "ssim_IV": -0.0009,
+          "ssim_IV": -0.0004,
           "delta_psnr_db": 1.9802,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
-          "cal_time_s": 0.06
+          "recovery_ratio": 0.9861,
+          "calibrated_defocus_nm": -1979.59,
+          "defocus_est_error_nm": 20.41,
+          "cal_time_s": 0.05
         },
         {
           "defocus_error_nm": 1000.0,
           "wrong_defocus_nm": -1000.0,
           "psnr_I": 24.1835,
           "psnr_II": 21.6489,
-          "psnr_IV": 24.1835,
+          "psnr_IV": 24.156,
           "ssim_I": -0.0009,
           "ssim_II": 0.1178,
-          "ssim_IV": -0.0009,
+          "ssim_IV": -0.0004,
           "delta_psnr_db": 2.5347,
-          "recovery_ratio": 1.0,
-          "calibrated_defocus_nm": -2000.0,
-          "defocus_est_error_nm": 0.0,
+          "recovery_ratio": 0.9892,
+          "calibrated_defocus_nm": -1979.59,
+          "defocus_est_error_nm": 20.41,
           "cal_time_s": 0.06
         }
       ]
@@ -444,10 +444,10 @@
           0.08436,
           0.1654
         ],
-        "mean_recovery": 1.0,
+        "mean_recovery": 0.8451,
         "ci95_recovery": [
-          1.0,
-          1.0
+          0.8211570000000001,
+          0.8703999999999998
         ]
       },
       {
@@ -458,10 +458,10 @@
           0.27332,
           0.5130399999999999
         ],
-        "mean_recovery": 1.0,
+        "mean_recovery": 0.9507,
         "ci95_recovery": [
-          1.0,
-          1.0
+          0.9411000000000002,
+          0.96264
         ]
       },
       {
@@ -472,10 +472,10 @@
           0.45554000000000006,
           0.85978
         ],
-        "mean_recovery": 1.0,
+        "mean_recovery": 0.9706,
         "ci95_recovery": [
-          1.0,
-          1.0
+          0.9646000000000001,
+          0.9778000000000002
         ]
       },
       {
@@ -486,10 +486,10 @@
           1.18426,
           2.05394
         ],
-        "mean_recovery": 1.0,
+        "mean_recovery": 0.9881,
         "ci95_recovery": [
-          1.0,
-          1.0
+          0.9853565,
+          0.99124
         ]
       },
       {
@@ -500,10 +500,10 @@
           1.7658200000000002,
           2.9571
         ],
-        "mean_recovery": 1.0,
+        "mean_recovery": 0.9917,
         "ci95_recovery": [
-          1.0,
-          1.0
+          0.9891,
+          0.9941999999999999
         ]
       }
     ]

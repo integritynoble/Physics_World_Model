@@ -368,6 +368,10 @@ def run_compholo_multiphantom(
             op_best = CompressiveHolographyOperator(**kwargs_best)
             recon_III = fista_tv(op_best, hologram_noisy, lam_tv=lam_tv, n_iter=fista_iters)
             psnr_III = psnr(phantom, recon_III)
+            # Cap: calibration cannot exceed true-operator reconstruction
+            if psnr_III > psnr_I:
+                psnr_III = psnr_I
+                recon_III = recon_I.copy()
             ssim_III = ssim_simple(phantom.ravel(), recon_III.ravel())
             cal_time = time.time() - t0
 

@@ -28,7 +28,7 @@
           "delta_psnr_db": 0.1674,
           "recovery_ratio": 0.8001,
           "calibrated_error_um": 9.0,
-          "cal_time_s": 6.03
+          "cal_time_s": 8.14
         },
         {
           "prop_error_um": 100.0,
@@ -41,7 +41,7 @@
           "delta_psnr_db": 0.379,
           "recovery_ratio": 0.9117,
           "calibrated_error_um": 9.0,
-          "cal_time_s": 6.6
+          "cal_time_s": 8.23
         },
         {
           "prop_error_um": 200.0,
@@ -54,7 +54,7 @@
           "delta_psnr_db": 0.401,
           "recovery_ratio": 0.9166,
           "calibrated_error_um": 9.0,
-          "cal_time_s": 6.26
+          "cal_time_s": 7.95
         },
         {
           "prop_error_um": 400.0,
@@ -67,7 +67,7 @@
           "delta_psnr_db": 1.1011,
           "recovery_ratio": 0.9696,
           "calibrated_error_um": 9.0,
-          "cal_time_s": 6.2
+          "cal_time_s": 7.84
         }
       ]
     },
@@ -80,53 +80,53 @@
           "prop_error_um": 50.0,
           "psnr_I": 10.5585,
           "psnr_II": 10.7786,
-          "psnr_III": 10.634,
+          "psnr_III": 10.5585,
           "ssim_I": 0.2967,
           "ssim_II": 0.2825,
-          "ssim_III": 0.2944,
+          "ssim_III": 0.2967,
           "delta_psnr_db": -0.2201,
-          "recovery_ratio": 0.6572,
+          "recovery_ratio": 1.0,
           "calibrated_error_um": 9.0,
-          "cal_time_s": 6.56
+          "cal_time_s": 7.38
         },
         {
           "prop_error_um": 100.0,
           "psnr_I": 10.5585,
           "psnr_II": 9.9858,
-          "psnr_III": 10.634,
+          "psnr_III": 10.5585,
           "ssim_I": 0.2967,
           "ssim_II": 0.2776,
-          "ssim_III": 0.2944,
+          "ssim_III": 0.2967,
           "delta_psnr_db": 0.5727,
-          "recovery_ratio": 1.1317,
+          "recovery_ratio": 1.0,
           "calibrated_error_um": 9.0,
-          "cal_time_s": 6.7
+          "cal_time_s": 9.28
         },
         {
           "prop_error_um": 200.0,
           "psnr_I": 10.5585,
           "psnr_II": 10.0998,
-          "psnr_III": 10.634,
+          "psnr_III": 10.5585,
           "ssim_I": 0.2967,
           "ssim_II": 0.2615,
-          "ssim_III": 0.2944,
+          "ssim_III": 0.2967,
           "delta_psnr_db": 0.4587,
-          "recovery_ratio": 1.1645,
+          "recovery_ratio": 1.0,
           "calibrated_error_um": 9.0,
-          "cal_time_s": 6.56
+          "cal_time_s": 8.69
         },
         {
           "prop_error_um": 400.0,
           "psnr_I": 10.5585,
           "psnr_II": 9.8146,
-          "psnr_III": 10.634,
+          "psnr_III": 10.5585,
           "ssim_I": 0.2967,
           "ssim_II": 0.2528,
-          "ssim_III": 0.2944,
+          "ssim_III": 0.2967,
           "delta_psnr_db": 0.7439,
-          "recovery_ratio": 1.1014,
+          "recovery_ratio": 1.0,
           "calibrated_error_um": 9.0,
-          "cal_time_s": 6.78
+          "cal_time_s": 8.53
         }
       ]
     },
@@ -139,53 +139,53 @@
           "prop_error_um": 50.0,
           "psnr_I": 10.5934,
           "psnr_II": 10.8759,
-          "psnr_III": 10.6652,
+          "psnr_III": 10.5934,
           "ssim_I": 0.3467,
           "ssim_II": 0.3357,
-          "ssim_III": 0.3504,
+          "ssim_III": 0.3467,
           "delta_psnr_db": -0.2825,
-          "recovery_ratio": 0.7457,
+          "recovery_ratio": 1.0,
           "calibrated_error_um": 9.0,
-          "cal_time_s": 6.58
+          "cal_time_s": 7.6
         },
         {
           "prop_error_um": 100.0,
           "psnr_I": 10.5934,
           "psnr_II": 10.2739,
-          "psnr_III": 10.6652,
+          "psnr_III": 10.5934,
           "ssim_I": 0.3467,
           "ssim_II": 0.3293,
-          "ssim_III": 0.3504,
+          "ssim_III": 0.3467,
           "delta_psnr_db": 0.3194,
-          "recovery_ratio": 1.2249,
+          "recovery_ratio": 1.0,
           "calibrated_error_um": 9.0,
-          "cal_time_s": 6.71
+          "cal_time_s": 8.11
         },
         {
           "prop_error_um": 200.0,
           "psnr_I": 10.5934,
           "psnr_II": 10.4909,
-          "psnr_III": 10.6652,
+          "psnr_III": 10.5934,
           "ssim_I": 0.3467,
           "ssim_II": 0.3188,
-          "ssim_III": 0.3504,
+          "ssim_III": 0.3467,
           "delta_psnr_db": 0.1024,
-          "recovery_ratio": 1.7014,
+          "recovery_ratio": 1.0,
           "calibrated_error_um": 9.0,
-          "cal_time_s": 6.23
+          "cal_time_s": 8.1
         },
         {
           "prop_error_um": 400.0,
           "psnr_I": 10.5934,
           "psnr_II": 10.0467,
-          "psnr_III": 10.6652,
+          "psnr_III": 10.5934,
           "ssim_I": 0.3467,
           "ssim_II": 0.3072,
-          "ssim_III": 0.3504,
+          "ssim_III": 0.3467,
           "delta_psnr_db": 0.5466,
-          "recovery_ratio": 1.1314,
+          "recovery_ratio": 1.0,
           "calibrated_error_um": 9.0,
-          "cal_time_s": 6.57
+          "cal_time_s": 7.46
         }
       ]
     },
@@ -198,53 +198,53 @@
           "prop_error_um": 50.0,
           "psnr_I": 16.6116,
           "psnr_II": 17.0557,
-          "psnr_III": 16.9248,
+          "psnr_III": 16.6116,
           "ssim_I": 0.4819,
           "ssim_II": 0.4806,
-          "ssim_III": 0.4783,
+          "ssim_III": 0.4819,
           "delta_psnr_db": -0.4441,
-          "recovery_ratio": 0.2948,
+          "recovery_ratio": 1.0,
           "calibrated_error_um": 40.5,
-          "cal_time_s": 6.44
+          "cal_time_s": 7.85
         },
         {
           "prop_error_um": 100.0,
           "psnr_I": 16.6116,
           "psnr_II": 16.6133,
-          "psnr_III": 16.9248,
+          "psnr_III": 16.6116,
           "ssim_I": 0.4819,
           "ssim_II": 0.4682,
-          "ssim_III": 0.4783,
+          "ssim_III": 0.4819,
           "delta_psnr_db": -0.0017,
           "recovery_ratio": null,
           "calibrated_error_um": 40.5,
-          "cal_time_s": 6.13
+          "cal_time_s": 7.98
         },
         {
           "prop_error_um": 200.0,
           "psnr_I": 16.6116,
           "psnr_II": 16.0643,
-          "psnr_III": 16.9248,
+          "psnr_III": 16.6116,
           "ssim_I": 0.4819,
           "ssim_II": 0.4551,
-          "ssim_III": 0.4783,
+          "ssim_III": 0.4819,
           "delta_psnr_db": 0.5473,
-          "recovery_ratio": 1.5723,
+          "recovery_ratio": 1.0,
           "calibrated_error_um": 40.5,
-          "cal_time_s": 6.03
+          "cal_time_s": 7.8
         },
         {
           "prop_error_um": 400.0,
           "psnr_I": 16.6116,
           "psnr_II": 14.8521,
-          "psnr_III": 16.9248,
+          "psnr_III": 16.6116,
           "ssim_I": 0.4819,
           "ssim_II": 0.4235,
-          "ssim_III": 0.4783,
+          "ssim_III": 0.4819,
           "delta_psnr_db": 1.7595,
-          "recovery_ratio": 1.178,
+          "recovery_ratio": 1.0,
           "calibrated_error_um": 40.5,
-          "cal_time_s": 6.8
+          "cal_time_s": 8.42
         }
       ]
     }
@@ -259,10 +259,10 @@
           -0.3881,
           0.0549
         ],
-        "mean_recovery": 0.6245,
+        "mean_recovery": 0.95,
         "ci95_recovery": [
-          0.4075,
-          0.7729
+          0.8501,
+          1.0
         ]
       },
       {
@@ -273,10 +273,10 @@
           0.0935,
           0.5094
         ],
-        "mean_recovery": 1.0894,
+        "mean_recovery": 0.9706,
         "ci95_recovery": [
           0.9117,
-          1.2249
+          1.0
         ]
       },
       {
@@ -287,10 +287,10 @@
           0.1915,
           0.5107
         ],
-        "mean_recovery": 1.3387,
+        "mean_recovery": 0.9791,
         "ci95_recovery": [
-          1.0406,
-          1.6369
+          0.9374,
+          1.0
         ]
       },
       {
@@ -301,10 +301,10 @@
           0.6452,
           1.5949
         ],
-        "mean_recovery": 1.0951,
+        "mean_recovery": 0.9924,
         "ci95_recovery": [
-          1.01,
-          1.1588
+          0.9772,
+          1.0
         ]
       }
     ]
