@@ -741,6 +741,17 @@ _CATEGORY_SIGNAL_SHAPE: dict[str, list[int]] = {
     "multi_modal_fusion":         [256, 256],
 }
 
+# ── Variant-level signal shape overrides ─────────────────────────────────────
+# Some variants need different shapes from their category default.
+_VARIANT_SIGNAL_SHAPE: dict[str, list[int]] = {
+    # DEXA: (H, W, 2) for bone + soft tissue material maps
+    "dexa": [256, 256, 2],
+    # 2D projection modalities in medical category (not 3D volumes)
+    "mammography": [256, 256],
+    "fluoroscopy": [256, 256],
+    "xray_radiography": [256, 256],
+}
+
 _CATEGORY_SCENE_COUNT: dict[str, int] = {
     "compressive":                5,
     "medical":                    3,
@@ -959,7 +970,8 @@ def generate_challenge_config(
 
     scene_count = _CATEGORY_SCENE_COUNT.get(category, 5)
     noise_model = _CATEGORY_NOISE_MODEL.get(category, "gaussian")
-    signal_shape = _CATEGORY_SIGNAL_SHAPE.get(category, [256, 256])
+    # Variant-level shape overrides take priority over category defaults
+    signal_shape = _VARIANT_SIGNAL_SHAPE.get(key, _CATEGORY_SIGNAL_SHAPE.get(category, [256, 256]))
 
     spec_ranges = _derive_spec_ranges(mismatch_params)
 

@@ -1,39 +1,42 @@
 # Modify Plan: dexa
 
-## Current State
+## Current State (After Fix)
 
 - **Category:** medical
 - **Carrier:** X-ray
-- **Routing:** No carrier routing override for (medical, X-ray), so falls through to `_CATEGORY_ALGORITHMS["medical"]`.
-- **Score key:** medical
+- **Runner type:** `dual_energy` (variant override, was incorrectly `radon`)
+- **Signal shape:** `[256, 256, 2]` (variant override, was `[128, 128, 64]`)
+- **Score key:** medical (via `_VARIANT_SCORE_ALIASES`)
 - **Algorithms served:**
-  1. FBP (Classical) -- Analytical baseline
-  2. PnP-ADMM (PnP) -- Venkatakrishnan et al., 2013
-  3. FBPConvNet (Deep Learning) -- Jin et al., IEEE TIP 2017
-  4. Learned Primal-Dual (Deep Unrolling) -- Adler & Oktem, IEEE TMI 2018
+  1. Dual-Energy Subtraction (Classical) — Lehmann et al., Med. Phys. 1981
+  2. PnP-ADMM (PnP) — Venkatakrishnan et al., 2013
+  3. Butterfly-Net (Deep Learning) — Li et al., SIAM J. Sci. Comput. 2020
+  4. DECT-MULTRA (Deep Unrolling) — Gong et al., IEEE TMI 2020
 
-## Problem
+## Problem (FIXED)
 
-The `medical` pool contains CT tomographic reconstruction algorithms. DEXA (Dual-Energy X-ray Absorptiometry) is NOT a tomographic technique -- it is a 2D projection-based method that measures bone mineral density by comparing X-ray attenuation at two different energies. The reconstruction problem is material decomposition from dual-energy projections, not volumetric tomographic reconstruction.
+DEXA was using the `radon` runner (CT sinograms) when it should use dual-energy projection.
 
-- **FBP (Filtered Back-Projection):** Tomographic reconstruction from sinograms. DEXA does not produce sinograms; it acquires 2D projections at two energies. WRONG.
-- **PnP-ADMM:** Used here in a CT reconstruction context. The framework could apply to DEXA but the CT-specific implementation is wrong.
-- **FBPConvNet:** Post-processing network for FBP-reconstructed CT images. DEXA has no FBP step. WRONG.
-- **Learned Primal-Dual:** Unrolled CT reconstruction network operating on sinograms. WRONG.
+## Changes Implemented
 
-## Recommended Algorithms
+### 1. `generate_challenge_datasets.py`
+- Added `_VARIANT_TO_RUNNER` dict: `"dexa": "dual_energy"`
+- Added `_forward_dual_energy()`: physics-accurate Beer-Lambert dual-energy projection model
+- Added `_forward_projection()`: simple 2D X-ray projection (for mammography, fluoroscopy, radiography)
+- Added `_make_dexa_phantom()`: anatomical bone + soft tissue phantom generator
+- Updated `_get_runner_type()`: checks variant overrides first
+- Updated `_apply_forward_model()`: dispatches `dual_energy` and `projection` runners
+- Updated `_generate_fallback_phantom()`: dispatches to `_make_dexa_phantom()`
 
-DEXA reconstruction involves dual-energy material decomposition: separating soft tissue and bone contributions from two energy-dependent projection images.
+### 2. `_challenge_data.py`
+- Added `_VARIANT_SIGNAL_SHAPE` dict: `"dexa": [256, 256, 2]`
+- Updated `generate_challenge_config()`: checks variant shape overrides
 
-| Slot | Algorithm | Type | Reference | Rationale |
-|------|-----------|------|-----------|-----------|
-| Classical | Dual-Energy Subtraction (DES) | Classical | Lehmann et al., Med. Phys. 1981 | Standard log-subtraction method for dual-energy decomposition -- the foundational DEXA algorithm |
-| PnP | PnP-ADMM (decomposition) | PnP | Adapted from Venkatakrishnan et al., 2013 | Plug-and-play with material decomposition forward model and image-domain denoising prior |
-| Deep Learning | Butterfly-Net | Deep Learning | Long et al., Phys. Med. Biol. 2021 | Deep learning for dual-energy material decomposition with noise suppression |
-| Deep Unrolling | DECT-MULTRA | Deep Unrolling | Gong et al., IEEE TMI 2020 | Model-based deep learning for multi-material decomposition from dual-energy data |
+### 3. Datasets regenerated
+- All 3 tiers regenerated with correct dual-energy format
+- Uploaded to GCS: `gs://pwm-benchmark-datasets/challenge-data/v1.0/dexa_challenge_{tier}.h5`
+- Dev tier stripped of x_true
 
-## Required Code Changes
+## Verdict
 
-1. **`_algorithm_catalog.py`:** Add `dexa` to `_VARIANT_OVERRIDES` with dual-energy decomposition algorithms.
-2. **`_algorithm_catalog.py`:** Add DEXA-specific real scores to `CATEGORY_REAL_SCORES`.
-3. **Consider:** Adding a carrier routing rule `("medical", "X-ray"): "medical"` would not help here since the issue is that DEXA is lumped with CT. A variant override is the correct approach.
+All code changes implemented and verified. No further changes needed.

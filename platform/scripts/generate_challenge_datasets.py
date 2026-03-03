@@ -97,7 +97,21 @@ _CATEGORY_TO_RUNNER: dict[str, str] = {
     "scanning_probe":             "tip",
 }
 
-# ── Data loaders ──────────────────────────────────────────────────────────────
+# ── Variant-level runner overrides ───────────────────────────────────────────
+# Some variants in a broad category need a different forward model.
+_VARIANT_TO_RUNNER: dict[str, str] = {
+    # DEXA is dual-energy projection, not CT sinogram
+    "dexa": "dual_energy",
+    # Mammography is 2D projection, not tomographic
+    "mammography": "projection",
+    # Fluoroscopy is real-time 2D projection
+    "fluoroscopy": "projection",
+    # X-ray radiography is 2D projection
+    "xray_radiography": "projection",
+}
+
+
+# ── Data loaders──────────────────────────────────────────────────────────────
 
 
 def _load_mat_scene(path: Path, key: str | None = None) -> np.ndarray:
@@ -157,7 +171,12 @@ def _get_variant_category(variant_key: str) -> str:
 
 
 def _get_runner_type(variant_key: str) -> str:
-    """Determine the runner type for a variant."""
+    """Determine the runner type for a variant.
+
+    Checks variant-level overrides first, then falls back to category mapping.
+    """
+    if variant_key in _VARIANT_TO_RUNNER:
+        return _VARIANT_TO_RUNNER[variant_key]
     category = _get_variant_category(variant_key)
     return _CATEGORY_TO_RUNNER.get(category, "psf")
 
@@ -257,10 +276,15 @@ def _generate_fallback_phantom(
     H = signal_shape[0]
     W = signal_shape[1] if len(signal_shape) > 1 else H
 
-    category = _get_variant_category(variant_key)
-    runner_type = _CATEGORY_TO_RUNNER.get(category, "psf")
+    runner_type = _get_runner_type(variant_key)
 
-    if runner_type == "radon":
+    if runner_type == "dual_energy":
+        # DEXA: bone + soft tissue material maps
+        return _make_dexa_phantom(H, W, rng)
+    elif runner_type == "projection":
+        # 2D X-ray projection (mammography, fluoroscopy, radiography)
+        arr = _make_shepp_logan(H, W)  # anatomical phantom
+    elif runner_type == "radon":
         # Shepp-Logan-like phantom
         arr = _make_shepp_logan(H, W)
     elif runner_type == "kspace":
@@ -365,6 +389,64 @@ def _make_surface(H: int, W: int, rng: np.random.RandomState) -> np.ndarray:
     if smax - smin > 1e-8:
         surface = (surface - smin) / (smax - smin)
     return surface.astype(np.float64)
+
+
+def _make_dexa_phantom(H: int, W: int, rng: np.random.RandomState) -> np.ndarray:
+    """DEXA phantom: bone mineral density + soft tissue thickness maps.
+
+    Returns shape (H, W, 2) where channel 0 = bone, channel 1 = soft tissue.
+    Simulates a lumbar spine / hip DEXA scan geometry with:
+    - Vertebral bodies or femoral head as bone structures
+    - Surrounding soft tissue of varying thickness
+    """
+    yy = np.linspace(-1, 1, H)
+    xx = np.linspace(-1, 1, W)
+    X, Y = np.meshgrid(xx, yy)
+
+    bone = np.zeros((H, W), dtype=np.float64)
+    tissue = np.ones((H, W), dtype=np.float64) * 0.3  # uniform soft tissue background
+
+    # Simulate spine-like bone structures (vertebral bodies)
+    n_vertebrae = rng.randint(3, 6)
+    y_positions = np.linspace(-0.6, 0.6, n_vertebrae)
+    for yp in y_positions:
+        # Vertebral body: rectangular with rounded edges
+        vw = rng.uniform(0.15, 0.25)  # width
+        vh = rng.uniform(0.08, 0.15)  # height
+        density = rng.uniform(0.5, 1.0)  # bone density
+        x_off = rng.uniform(-0.05, 0.05)  # slight lateral offset
+        mask = (np.abs(X - x_off) < vw) & (np.abs(Y - yp) < vh)
+        bone[mask] = density
+
+        # Spinous process (posterior element)
+        sp_mask = (np.abs(X - x_off - 0.3) < 0.04) & (np.abs(Y - yp) < vh * 0.6)
+        bone[sp_mask] = density * 0.7
+
+    # Add pelvis/hip bone region
+    pelvis_y = rng.uniform(0.5, 0.7)
+    for side in [-1, 1]:
+        px = side * rng.uniform(0.25, 0.4)
+        pr = rng.uniform(0.12, 0.2)
+        dist = np.sqrt((X - px)**2 + (Y - pelvis_y)**2)
+        pelvis_mask = dist < pr
+        bone[pelvis_mask] = rng.uniform(0.6, 0.9)
+        # Femoral head (small dense circle)
+        fh_dist = np.sqrt((X - px)**2 + (Y - pelvis_y - pr * 0.8)**2)
+        fh_mask = fh_dist < pr * 0.35
+        bone[fh_mask] = rng.uniform(0.8, 1.0)
+
+    # Soft tissue varies spatially (thicker around abdomen)
+    tissue += 0.3 * np.exp(-X**2 / 0.5) * np.exp(-(Y - 0.1)**2 / 0.8)
+    tissue += 0.05 * rng.randn(H, W)
+    tissue = np.clip(tissue, 0.05, 1.0)
+
+    # Where bone is present, soft tissue is partially displaced
+    tissue = tissue * (1.0 - 0.5 * bone)
+
+    bone = np.clip(bone, 0, 1)
+    tissue = np.clip(tissue, 0, 1)
+
+    return np.stack([bone, tissue], axis=-1)
 
 
 def _make_cell_phantom(H: int, W: int, rng: np.random.RandomState) -> np.ndarray:
@@ -980,6 +1062,76 @@ def _forward_tip(x: np.ndarray, tip_radius: int = 5) -> tuple[np.ndarray, np.nda
     return convolved, tip
 
 
+def _forward_dual_energy(
+    x: np.ndarray,
+    mu_bone: tuple[float, float] = (0.55, 0.30),
+    mu_tissue: tuple[float, float] = (0.20, 0.18),
+) -> tuple[np.ndarray, np.ndarray]:
+    """Dual-energy X-ray projection (DEXA).
+
+    The ground truth x has shape (H, W, 2) where:
+      x[:,:,0] = bone thickness map (BMD proxy)
+      x[:,:,1] = soft tissue thickness map
+
+    Returns:
+      y: (H, W, 2) — log-attenuation images at low and high energy
+      H_ideal: (2, 2) — attenuation coefficient matrix
+        [[mu_bone_low, mu_tissue_low],
+         [mu_bone_high, mu_tissue_high]]
+
+    The forward model: y_e(i,j) = mu_bone(E) * t_bone(i,j) + mu_tissue(E) * t_tissue(i,j)
+    """
+    if x.ndim == 2:
+        # If 2D, treat as bone density only; synthesize soft tissue as complement
+        bone = x.copy()
+        tissue = 1.0 - 0.3 * bone + 0.1  # soft tissue background
+        x = np.stack([bone, tissue], axis=-1)
+
+    H, W = x.shape[:2]
+    bone_map = x[:, :, 0]  # bone thickness
+    tissue_map = x[:, :, 1]  # soft tissue thickness
+
+    # Attenuation coefficient matrix (2 energies × 2 materials)
+    A = np.array([[mu_bone[0], mu_tissue[0]],   # low energy
+                  [mu_bone[1], mu_tissue[1]]])   # high energy
+
+    # Log-attenuation at each energy
+    y = np.zeros((H, W, 2), dtype=np.float64)
+    y[:, :, 0] = A[0, 0] * bone_map + A[0, 1] * tissue_map  # low energy
+    y[:, :, 1] = A[1, 0] * bone_map + A[1, 1] * tissue_map  # high energy
+
+    return y, A
+
+
+def _forward_projection(
+    x: np.ndarray,
+    scatter_frac: float = 0.05,
+) -> tuple[np.ndarray, np.ndarray]:
+    """2D X-ray projection (radiography, mammography, fluoroscopy).
+
+    Simulates Beer-Lambert attenuation: I = I_0 * exp(-integral(mu * t)).
+    For a 2D phantom, the projection is the image itself (no tomographic geometry).
+
+    Returns:
+      y: (H, W) — log-attenuation projection image
+      H_ideal: (2,) — [I_0, scatter_fraction]
+    """
+    if x.ndim == 3:
+        # If 3D, sum along depth to get projection
+        x_proj = x.sum(axis=-1)
+        xmax = x_proj.max()
+        if xmax > 0:
+            x_proj = x_proj / xmax
+    else:
+        x_proj = x.copy()
+
+    # Log-attenuation: y = -ln(I/I0) = mu * t (proportional to thickness/density)
+    y = x_proj.copy()
+
+    H_ideal = np.array([1.0, scatter_frac])
+    return y, H_ideal
+
+
 # ── Forward model dispatch ───────────────────────────────────────────────────
 
 
@@ -1002,6 +1154,10 @@ def _apply_forward_model(
         return _forward_mask(x, density=0.5, seed=seed)
     elif runner_type == "tip":
         return _forward_tip(x, tip_radius=5)
+    elif runner_type == "dual_energy":
+        return _forward_dual_energy(x)
+    elif runner_type == "projection":
+        return _forward_projection(x)
     else:
         # Default: PSF-based
         return _forward_psf(x, sigma=2.0)
