@@ -1903,7 +1903,7 @@ These results validate the falsifiable prediction in the main text: probe positi
 \subsection{MRI: Coil Sensitivity Mismatch (Multi-Coil Brain Data)}
 \label{sec:mri_real}
 
-We validate Gate~3 for MRI---the nuclear spin / RF carrier family---using the M4Raw multi-coil brain dataset from Zenodo~8056074 (0.3\,T, 4 receiver coils, $256\times256$ $k$-space, T1w and T2w contrasts).
+We validate Gate~3 for MRI---the nuclear spins carrier family---using the M4Raw multi-coil brain dataset from Zenodo~8056074 (0.3\,T, 4 receiver coils, $256\times256$ $k$-space, T1w and T2w contrasts).
 The Gate~3 parameter is \emph{coil sensitivity perturbation}: smooth spatial magnitude and phase perturbations applied to the estimated sensitivity maps, modelling coil repositioning between scans.
 Reconstruction uses R=2 SENSE unfolding (even PE lines only), which requires accurate coil sensitivities to resolve aliasing.
 
@@ -1930,7 +1930,7 @@ Importantly, the effect size for MRI ($< 1$\,dB at R=2 with 4 coils) is substant
 At higher acceleration factors (R=4 with 8 coils), the simulation experiments in Supplementary Note~S13 show much larger degradation ($1.75$--$7.14$\,dB), confirming that Gate~3 severity scales with the condition number of the encoding matrix.
 
 \vspace{1em}
-\noindent\textbf{Summary.} Supplementary Note~S15 validates Gate~3 dominance across 5 modalities spanning 4 carrier families: optical photons (CASSI, CACTI), X-ray photons (CT), electrons (ptychography), and nuclear spins/RF (MRI). The mismatch signal is monotonic and scene-independent in all cases, with 100\% recovery via autonomous or oracle calibration. The only modality with sub-dB degradation (MRI at R=2) is explained by the inherent robustness of over-determined coil encoding.
+\noindent\textbf{Summary.} Supplementary Note~S15 validates Gate~3 dominance across 5 modalities spanning 4 carrier families: optical photons (CASSI, CACTI), X-ray photons (CT), electrons (ptychography), and nuclear spins (MRI). The mismatch signal is monotonic and scene-independent in all cases, with 100\% recovery via autonomous or oracle calibration. The only modality with sub-dB degradation (MRI at R=2) is explained by the inherent robustness of over-determined coil encoding.
 
 
 %% ============================================================
