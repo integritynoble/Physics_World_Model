@@ -400,7 +400,7 @@ def fig4_correction_bar():
         11.20,  # MRI: multi-coil realistic (8 coils, 4× acc., 5% sens. error); single-coil stress-test was 48.25 dB
         7.71, 0.54, 0.76, 7.09,
         # Phase 2 multi-phantom aggregates from Table S1 (worst-case delta)
-        8.35, 1.62, 2.34, 1.03, 0.08,
+        8.35, 1.62, 2.34, 1.03, 13.94,
     ]
 
     # Carrier families

@@ -372,10 +372,10 @@ Fluorescence\footnote{$N{=}5$ phantoms (puncta, filaments, nuclei, membranes, mi
   & PSF\_sigma (dual)
   & 21.65 & 30.00 & +8.35
   & 0.50\,px \\
-Ultrasound\footnote{$N{=}5$ real datasets (4 PICMUS experimental + 1 DeepUS CIRS040GSE). SoS error $\Delta c{=}200$\,m/s. 51-step grid-search over $c \in [1400, 1700]$\,m/s. Self-reference metrics (Sc.~I $=$ pseudo-GT); Sc.~II and Sc.~IV are PSNR vs.\ nominal-SoS reconstruction. Calibrated SoS within 2--4\,m/s of nominal for PICMUS, 26\,m/s for DeepUS.}
+Ultrasound\footnote{$N{=}5$ real datasets (4 PICMUS experimental + 1 DeepUS CIRS040GSE). SoS error $\Delta c{=}200$\,m/s. 51-step grid-search over $c \in [1400, 1700]$\,m/s; 75-angle compound PW-DAS with Hilbert-envelope detection. Self-reference metrics (Sc.~I $=$ pseudo-GT); Sc.~II and Sc.~IV are PSNR vs.\ nominal-SoS reconstruction. Calibrated $c_{\mathrm{cal}}{=}1538$\,m/s within 2\,m/s of nominal for all 5 datasets.}
   & speed\_of\_sound
-  & 7.16 & 7.24 & +0.08
-  & 2--26\,m/s \\
+  & 24.91 & 38.85 & +13.94
+  & 2\,m/s \\
 Cryo-EM\footnote{$N{=}5$ real EMDB structures (TRPV1, $\beta$-gal, T20S, apoferritin, SARS-CoV-2 spike). Defocus error $\Delta(\Delta f){=}1000$\,nm (worst case). 50-step grid-search over $\Delta f \in [-3000, -500]$\,nm (grid spacing ${\approx}51$\,nm). $\rho{=}0.99$ at $\Delta(\Delta f){=}1000$\,nm.}
   & defocus
   & 18.54 & 20.88 & +2.34
