@@ -559,6 +559,17 @@ $\mismatchparam_{\text{true}} = (dx = 0.5\;\text{px},\; dy = 0.3\;\text{px},\;
 \theta = 0.1^\circ,\; a_1 = 2.02,\;
 \alpha = 0.15^\circ)$.
 Solvers evaluated include TwIST~\cite{bioucasdias2007twist}, GAP-TV~\cite{yuan2016gaptv}, DGSMP~\cite{huang2021dgsmp}, MST-L~\cite{cai2022mst}, and CST-L~\cite{cai2022cst}, all of which receive the same operator and differ only in their reconstruction algorithm. The supplementary per-scene analysis additionally includes DeSCI~\cite{liu2019rank} and HDNet~\cite{hu2022hdnet}.
+\textit{Real-data validation.}
+The TSA real hyperspectral dataset~\cite{wagadarikar2008cassi} consists of
+5 scenes at $660 \times 660$ spatial resolution with 28 spectral bands
+and mask-shift step~2.  Four solvers are evaluated: GAP-TV (200 iterations),
+HDNet (pre-trained checkpoint, full spatial resolution), MST-S and MST-L
+(pre-trained checkpoints, centre-cropped to $256 \times 256$ due to
+hardcoded spatial assumptions in the model architecture).  The coded
+aperture mask is perturbed by $dx = 0.5$\,px, $dy = 0.3$\,px to simulate
+assembly-induced mismatch.  No ground truth is available; quality is
+assessed via the normalised measurement residual
+$r = \|\mathbf{y} - H\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$.
 
 \paragraph{CACTI configuration.}
 The coded aperture compressive temporal imaging system uses binary
@@ -566,6 +577,15 @@ temporal masks of dimensions $256 \times 256$, encoding 8 video frames
 into a single snapshot measurement.  Mismatch is parameterized as a
 temporal mask timing offset (sub-frame shift).  The default solver is
 EfficientSCI~\cite{wang2023efficientsci}.
+\textit{Real-data validation.}
+The EfficientSCI real temporal dataset~\cite{wang2023efficientsci} consists
+of 4 dynamic scenes (duomino, hand, pendulumBall, waterBalloon) at
+$512 \times 512$ with compression ratio~10.  The real mask is stored
+separately from the measurement data.  Two solvers are evaluated:
+GAP-TV (50 iterations) and PnP-FFDNet (50 iterations with FFDNet denoiser).
+Mismatch is induced by shifting the mask by $dx = 0.5$\,px, $dy = 0.3$\,px.
+Quality is assessed via the normalised measurement residual and total
+variation of the reconstruction.
 
 \paragraph{SPC configuration.}
 The single-pixel camera uses random binary measurement patterns at three
@@ -578,17 +598,9 @@ is FISTA-TV with total-variation regularization.
 Cartesian $k$-space sampling with 4$\times$ acceleration (25\% of
 $k$-space lines acquired).  Mismatch is parameterized as a 5\% multiplicative
 error in the coil sensitivity maps used for parallel imaging reconstruction.
-The default solver is SENSE~\cite{pruessmann1999sense} with $\ell_1$-wavelet regularization.
-
-\paragraph{ESPIRiT comparison protocol.}
-To quantitatively compare PWM with ESPIRiT~\cite{uecker2014espirit}, we evaluate
-four conditions on the same multi-coil MRI configuration: (1)~Scenario~I (true maps),
-(2)~Scenario~II (5\% mismatched maps), (3)~ESPIRiT auto-calibrated maps estimated
-from the 24-line ACS region via eigenvalue decomposition of the calibration matrix,
-and (4)~PWM beam-search corrected maps (grid search over per-coil amplitude and phase
-scaling). All four conditions use the same CG-SENSE solver ($\ell = 10^{-3}$, 30~iterations).
-The comparison isolates the effect of map quality on reconstruction,
-holding the solver constant.
+The default solver is CG-SENSE~\cite{pruessmann1999sense} with $\ell_1$-wavelet regularization ($\lambda = 10^{-3}$, 30 iterations).
+\textit{Scenario~IV calibration (ESPIRiT-adopted).}
+For MRI, Scenario~IV adopts ESPIRiT~\cite{uecker2014espirit} as the calibration method: coil sensitivity maps are estimated directly from the central $k$-space autocalibration signal (ACS) region via eigenvalue decomposition of the calibration matrix, then used in the CG-SENSE reconstruction.  When ACS data is sufficient ($\geq 48$ lines), ESPIRiT achieves 85--95\% of the oracle correction ceiling.  For data-limited regimes ($< 32$ ACS lines) where ESPIRiT degrades, the fallback is a grid search over per-coil amplitude and phase scaling (beam-search); this fallback is also the Sc.~IV method for all modalities without an established specialist calibration algorithm (CASSI, CACTI, compressive holography, ultrasound).  The protocol evaluates three conditions---Sc.~I (true maps), Sc.~II (5\% mismatched maps), and Sc.~IV (ESPIRiT-calibrated maps)---on the same CG-SENSE solver to isolate calibration quality from solver design.
 
 \paragraph{CT configuration.}
 Fan-beam geometry with 180 projections over $180^\circ$.  Mismatch is
@@ -597,27 +609,6 @@ characteristic arc artifacts in the reconstruction.  The default solver
 is filtered back-projection (FBP)~\cite{feldkamp1984practical} with a Ram-Lak filter, supplemented
 by iterative SART for comparison.
 
-\paragraph{CASSI real-data configuration.}
-The TSA real hyperspectral dataset~\cite{wagadarikar2008cassi} consists of
-5 scenes at $660 \times 660$ spatial resolution with 28 spectral bands
-and mask-shift step~2.  Four solvers are evaluated: GAP-TV (200 iterations),
-HDNet (pre-trained checkpoint, full spatial resolution), MST-S and MST-L
-(pre-trained checkpoints, centre-cropped to $256 \times 256$ due to
-hardcoded spatial assumptions in the model architecture).  The coded
-aperture mask is perturbed by $dx = 0.5$\,px, $dy = 0.3$\,px to simulate
-assembly-induced mismatch.  No ground truth is available; quality is
-assessed via the normalised measurement residual
-$r = \|\mathbf{y} - H\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$.
-
-\paragraph{CACTI real-data configuration.}
-The EfficientSCI real temporal dataset~\cite{wang2023efficientsci} consists
-of 4 dynamic scenes (duomino, hand, pendulumBall, waterBalloon) at
-$512 \times 512$ with compression ratio~10.  The real mask is stored
-separately from the measurement data.  Two solvers are evaluated:
-GAP-TV (50 iterations) and PnP-FFDNet (50 iterations with FFDNet denoiser).
-Mismatch is induced by shifting the mask by $dx = 0.5$\,px, $dy = 0.3$\,px.
-Quality is assessed via the normalised measurement residual and total
-variation of the reconstruction.
 
 \paragraph{Controlled hardware experiment protocol.}
 The software-perturbation protocol above applies calibrated mask shifts to
