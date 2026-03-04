@@ -1,0 +1,417 @@
+{
+  "modality": "spc",
+  "n_phantoms": 5,
+  "image_size": [
+    32,
+    32
+  ],
+  "sampling_rate": 0.25,
+  "n_measurements": 256,
+  "noise_sigma": 0.01,
+  "true_sigma_ig": 10.0,
+  "calib_steps": 21,
+  "per_phantom": [
+    {
+      "phantom_name": "puncta",
+      "psnr_I": 17.6971,
+      "ssim_I": 0.17,
+      "offsets": [
+        {
+          "sigma_ig_error": 5.0,
+          "sigma_wrong": 15.0,
+          "psnr_I": 17.6971,
+          "psnr_II": 17.2529,
+          "psnr_IV": 17.6746,
+          "ssim_I": 0.17,
+          "ssim_II": 0.1261,
+          "ssim_IV": 0.1667,
+          "delta_psnr_db": 0.4443,
+          "recovery_ratio": 0.9494,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 10.0,
+          "sigma_wrong": 20.0,
+          "psnr_I": 17.6971,
+          "psnr_II": 17.0633,
+          "psnr_IV": 17.6746,
+          "ssim_I": 0.17,
+          "ssim_II": 0.115,
+          "ssim_IV": 0.1667,
+          "delta_psnr_db": 0.6338,
+          "recovery_ratio": 0.9645,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 20.0,
+          "sigma_wrong": 30.0,
+          "psnr_I": 17.6971,
+          "psnr_II": 16.9277,
+          "psnr_IV": 17.6746,
+          "ssim_I": 0.17,
+          "ssim_II": 0.1095,
+          "ssim_IV": 0.1667,
+          "delta_psnr_db": 0.7694,
+          "recovery_ratio": 0.9708,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 9989.0,
+          "sigma_wrong": 9999.0,
+          "psnr_I": 17.6971,
+          "psnr_II": 16.8219,
+          "psnr_IV": 17.6746,
+          "ssim_I": 0.17,
+          "ssim_II": 0.1069,
+          "ssim_IV": 0.1667,
+          "delta_psnr_db": 0.8752,
+          "recovery_ratio": 0.9743,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        }
+      ]
+    },
+    {
+      "phantom_name": "filaments",
+      "psnr_I": 18.6151,
+      "ssim_I": 0.2691,
+      "offsets": [
+        {
+          "sigma_ig_error": 5.0,
+          "sigma_wrong": 15.0,
+          "psnr_I": 18.6151,
+          "psnr_II": 17.8608,
+          "psnr_IV": 18.571,
+          "ssim_I": 0.2691,
+          "ssim_II": 0.187,
+          "ssim_IV": 0.2634,
+          "delta_psnr_db": 0.7543,
+          "recovery_ratio": 0.9414,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 10.0,
+          "sigma_wrong": 20.0,
+          "psnr_I": 18.6151,
+          "psnr_II": 17.5668,
+          "psnr_IV": 18.571,
+          "ssim_I": 0.2691,
+          "ssim_II": 0.1606,
+          "ssim_IV": 0.2634,
+          "delta_psnr_db": 1.0484,
+          "recovery_ratio": 0.9579,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 20.0,
+          "sigma_wrong": 30.0,
+          "psnr_I": 18.6151,
+          "psnr_II": 17.3599,
+          "psnr_IV": 18.571,
+          "ssim_I": 0.2691,
+          "ssim_II": 0.144,
+          "ssim_IV": 0.2634,
+          "delta_psnr_db": 1.2552,
+          "recovery_ratio": 0.9648,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 9989.0,
+          "sigma_wrong": 9999.0,
+          "psnr_I": 18.6151,
+          "psnr_II": 17.2002,
+          "psnr_IV": 18.571,
+          "ssim_I": 0.2691,
+          "ssim_II": 0.1327,
+          "ssim_IV": 0.2634,
+          "delta_psnr_db": 1.415,
+          "recovery_ratio": 0.9688,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        }
+      ]
+    },
+    {
+      "phantom_name": "nuclei",
+      "psnr_I": 12.1238,
+      "ssim_I": 0.1357,
+      "offsets": [
+        {
+          "sigma_ig_error": 5.0,
+          "sigma_wrong": 15.0,
+          "psnr_I": 12.1238,
+          "psnr_II": 11.147,
+          "psnr_IV": 12.0585,
+          "ssim_I": 0.1357,
+          "ssim_II": 0.0893,
+          "ssim_IV": 0.1326,
+          "delta_psnr_db": 0.9768,
+          "recovery_ratio": 0.9331,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 10.0,
+          "sigma_wrong": 20.0,
+          "psnr_I": 12.1238,
+          "psnr_II": 10.8112,
+          "psnr_IV": 12.0585,
+          "ssim_I": 0.1357,
+          "ssim_II": 0.0723,
+          "ssim_IV": 0.1326,
+          "delta_psnr_db": 1.3126,
+          "recovery_ratio": 0.9502,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 20.0,
+          "sigma_wrong": 30.0,
+          "psnr_I": 12.1238,
+          "psnr_II": 10.5839,
+          "psnr_IV": 12.0585,
+          "ssim_I": 0.1357,
+          "ssim_II": 0.0602,
+          "ssim_IV": 0.1326,
+          "delta_psnr_db": 1.5399,
+          "recovery_ratio": 0.9576,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 9989.0,
+          "sigma_wrong": 9999.0,
+          "psnr_I": 12.1238,
+          "psnr_II": 10.4126,
+          "psnr_IV": 12.0585,
+          "ssim_I": 0.1357,
+          "ssim_II": 0.0509,
+          "ssim_IV": 0.1326,
+          "delta_psnr_db": 1.7112,
+          "recovery_ratio": 0.9618,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        }
+      ]
+    },
+    {
+      "phantom_name": "membranes",
+      "psnr_I": 12.9651,
+      "ssim_I": 0.174,
+      "offsets": [
+        {
+          "sigma_ig_error": 5.0,
+          "sigma_wrong": 15.0,
+          "psnr_I": 12.9651,
+          "psnr_II": 12.6893,
+          "psnr_IV": 12.9591,
+          "ssim_I": 0.174,
+          "ssim_II": 0.1161,
+          "ssim_IV": 0.1703,
+          "delta_psnr_db": 0.2758,
+          "recovery_ratio": 0.9782,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 10.0,
+          "sigma_wrong": 20.0,
+          "psnr_I": 12.9651,
+          "psnr_II": 12.5289,
+          "psnr_IV": 12.9591,
+          "ssim_I": 0.174,
+          "ssim_II": 0.0959,
+          "ssim_IV": 0.1703,
+          "delta_psnr_db": 0.4362,
+          "recovery_ratio": 0.9862,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 20.0,
+          "sigma_wrong": 30.0,
+          "psnr_I": 12.9651,
+          "psnr_II": 12.4064,
+          "psnr_IV": 12.9591,
+          "ssim_I": 0.174,
+          "ssim_II": 0.0826,
+          "ssim_IV": 0.1703,
+          "delta_psnr_db": 0.5587,
+          "recovery_ratio": 0.9893,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 9989.0,
+          "sigma_wrong": 9999.0,
+          "psnr_I": 12.9651,
+          "psnr_II": 12.3071,
+          "psnr_IV": 12.9591,
+          "ssim_I": 0.174,
+          "ssim_II": 0.0731,
+          "ssim_IV": 0.1703,
+          "delta_psnr_db": 0.658,
+          "recovery_ratio": 0.9909,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        }
+      ]
+    },
+    {
+      "phantom_name": "mixed",
+      "psnr_I": 15.8991,
+      "ssim_I": 0.1697,
+      "offsets": [
+        {
+          "sigma_ig_error": 5.0,
+          "sigma_wrong": 15.0,
+          "psnr_I": 15.8991,
+          "psnr_II": 15.1804,
+          "psnr_IV": 15.8568,
+          "ssim_I": 0.1697,
+          "ssim_II": 0.1106,
+          "ssim_IV": 0.1658,
+          "delta_psnr_db": 0.7186,
+          "recovery_ratio": 0.9412,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 10.0,
+          "sigma_wrong": 20.0,
+          "psnr_I": 15.8991,
+          "psnr_II": 14.9036,
+          "psnr_IV": 15.8568,
+          "ssim_I": 0.1697,
+          "ssim_II": 0.0897,
+          "ssim_IV": 0.1658,
+          "delta_psnr_db": 0.9954,
+          "recovery_ratio": 0.9575,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 20.0,
+          "sigma_wrong": 30.0,
+          "psnr_I": 15.8991,
+          "psnr_II": 14.7105,
+          "psnr_IV": 15.8568,
+          "ssim_I": 0.1697,
+          "ssim_II": 0.0756,
+          "ssim_IV": 0.1658,
+          "delta_psnr_db": 1.1886,
+          "recovery_ratio": 0.9644,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 9989.0,
+          "sigma_wrong": 9999.0,
+          "psnr_I": 15.8991,
+          "psnr_II": 14.5623,
+          "psnr_IV": 15.8568,
+          "ssim_I": 0.1697,
+          "ssim_II": 0.0651,
+          "ssim_IV": 0.1658,
+          "delta_psnr_db": 1.3367,
+          "recovery_ratio": 0.9684,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "per_sigma_error": [
+      {
+        "sigma_ig_error": 5.0,
+        "mean_delta_psnr": 0.634,
+        "std_delta_psnr": 0.2463,
+        "ci95_delta_psnr": [
+          0.4318,
+          0.8362
+        ],
+        "mean_recovery": 0.9487,
+        "ci95_recovery": [
+          0.938,
+          0.9634
+        ]
+      },
+      {
+        "sigma_ig_error": 10.0,
+        "mean_delta_psnr": 0.8853,
+        "std_delta_psnr": 0.3118,
+        "ci95_delta_psnr": [
+          0.6271,
+          1.1435
+        ],
+        "mean_recovery": 0.9633,
+        "ci95_recovery": [
+          0.9547,
+          0.9748
+        ]
+      },
+      {
+        "sigma_ig_error": 20.0,
+        "mean_delta_psnr": 1.0624,
+        "std_delta_psnr": 0.3523,
+        "ci95_delta_psnr": [
+          0.769,
+          1.3558
+        ],
+        "mean_recovery": 0.9694,
+        "ci95_recovery": [
+          0.9618,
+          0.9794
+        ]
+      },
+      {
+        "sigma_ig_error": 9989.0,
+        "mean_delta_psnr": 1.1992,
+        "std_delta_psnr": 0.3809,
+        "ci95_delta_psnr": [
+          0.8806,
+          1.5178
+        ],
+        "mean_recovery": 0.9728,
+        "ci95_recovery": [
+          0.9658,
+          0.982
+        ]
+      }
+    ]
+  },
+  "key_findings": {
+    "carrier": "photon",
+    "gate3_parameter": "illumination_sigma",
+    "gate3_dominance": true,
+    "monotonic_degradation": true,
+    "spc_relevance": "Illumination non-uniformity (vignetting) is a primary calibration challenge in DMD-based single-pixel cameras; uncorrected vignetting biases edge reconstructions."
+  }
+}

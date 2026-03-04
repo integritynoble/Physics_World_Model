@@ -1,0 +1,420 @@
+{
+  "modality": "lensless",
+  "n_phantoms": 5,
+  "image_size": [
+    64,
+    64
+  ],
+  "true_psf_sigma": 3.0,
+  "noise_sigma": 0.02,
+  "tikhonov_lam": 0.01,
+  "calib_steps": 21,
+  "calib_sigma_range": [
+    1.5,
+    8.0
+  ],
+  "per_phantom": [
+    {
+      "phantom_name": "puncta",
+      "psnr_I": 24.0375,
+      "ssim_I": 0.5571,
+      "offsets": [
+        {
+          "sigma_error_px": 0.5,
+          "sigma_wrong": 3.5,
+          "psnr_I": 24.0375,
+          "psnr_II": 23.5833,
+          "psnr_IV": 24.0375,
+          "ssim_I": 0.5571,
+          "ssim_II": 0.4806,
+          "ssim_IV": 0.5571,
+          "delta_psnr_db": 0.4542,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0005
+        },
+        {
+          "sigma_error_px": 1.0,
+          "sigma_wrong": 4.0,
+          "psnr_I": 24.0375,
+          "psnr_II": 22.2237,
+          "psnr_IV": 24.0375,
+          "ssim_I": 0.5571,
+          "ssim_II": 0.3819,
+          "ssim_IV": 0.5571,
+          "delta_psnr_db": 1.8138,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0005
+        },
+        {
+          "sigma_error_px": 2.0,
+          "sigma_wrong": 5.0,
+          "psnr_I": 24.0375,
+          "psnr_II": 19.5699,
+          "psnr_IV": 24.0375,
+          "ssim_I": 0.5571,
+          "ssim_II": 0.2614,
+          "ssim_IV": 0.5571,
+          "delta_psnr_db": 4.4676,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0005
+        },
+        {
+          "sigma_error_px": 3.0,
+          "sigma_wrong": 6.0,
+          "psnr_I": 24.0375,
+          "psnr_II": 17.9631,
+          "psnr_IV": 24.0375,
+          "ssim_I": 0.5571,
+          "ssim_II": 0.1817,
+          "ssim_IV": 0.5571,
+          "delta_psnr_db": 6.0743,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0006
+        }
+      ]
+    },
+    {
+      "phantom_name": "filaments",
+      "psnr_I": 25.0349,
+      "ssim_I": 0.5895,
+      "offsets": [
+        {
+          "sigma_error_px": 0.5,
+          "sigma_wrong": 3.5,
+          "psnr_I": 25.0349,
+          "psnr_II": 24.7967,
+          "psnr_IV": 25.0349,
+          "ssim_I": 0.5895,
+          "ssim_II": 0.5551,
+          "ssim_IV": 0.5895,
+          "delta_psnr_db": 0.2381,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0006
+        },
+        {
+          "sigma_error_px": 1.0,
+          "sigma_wrong": 4.0,
+          "psnr_I": 25.0349,
+          "psnr_II": 23.8809,
+          "psnr_IV": 25.0349,
+          "ssim_I": 0.5895,
+          "ssim_II": 0.4615,
+          "ssim_IV": 0.5895,
+          "delta_psnr_db": 1.154,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0005
+        },
+        {
+          "sigma_error_px": 2.0,
+          "sigma_wrong": 5.0,
+          "psnr_I": 25.0349,
+          "psnr_II": 21.9741,
+          "psnr_IV": 25.0349,
+          "ssim_I": 0.5895,
+          "ssim_II": 0.3179,
+          "ssim_IV": 0.5895,
+          "delta_psnr_db": 3.0608,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0006
+        },
+        {
+          "sigma_error_px": 3.0,
+          "sigma_wrong": 6.0,
+          "psnr_I": 25.0349,
+          "psnr_II": 20.8062,
+          "psnr_IV": 25.0349,
+          "ssim_I": 0.5895,
+          "ssim_II": 0.273,
+          "ssim_IV": 0.5895,
+          "delta_psnr_db": 4.2287,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0005
+        }
+      ]
+    },
+    {
+      "phantom_name": "nuclei",
+      "psnr_I": 32.7479,
+      "ssim_I": 0.9137,
+      "offsets": [
+        {
+          "sigma_error_px": 0.5,
+          "sigma_wrong": 3.5,
+          "psnr_I": 32.7479,
+          "psnr_II": 32.0077,
+          "psnr_IV": 32.7479,
+          "ssim_I": 0.9137,
+          "ssim_II": 0.9125,
+          "ssim_IV": 0.9137,
+          "delta_psnr_db": 0.7402,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0006
+        },
+        {
+          "sigma_error_px": 1.0,
+          "sigma_wrong": 4.0,
+          "psnr_I": 32.7479,
+          "psnr_II": 27.7088,
+          "psnr_IV": 32.7479,
+          "ssim_I": 0.9137,
+          "ssim_II": 0.8708,
+          "ssim_IV": 0.9137,
+          "delta_psnr_db": 5.0391,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0005
+        },
+        {
+          "sigma_error_px": 2.0,
+          "sigma_wrong": 5.0,
+          "psnr_I": 32.7479,
+          "psnr_II": 20.3411,
+          "psnr_IV": 32.7479,
+          "ssim_I": 0.9137,
+          "ssim_II": 0.6547,
+          "ssim_IV": 0.9137,
+          "delta_psnr_db": 12.4068,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0005
+        },
+        {
+          "sigma_error_px": 3.0,
+          "sigma_wrong": 6.0,
+          "psnr_I": 32.7479,
+          "psnr_II": 15.2199,
+          "psnr_IV": 32.7479,
+          "ssim_I": 0.9137,
+          "ssim_II": 0.404,
+          "ssim_IV": 0.9137,
+          "delta_psnr_db": 17.528,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0006
+        }
+      ]
+    },
+    {
+      "phantom_name": "membranes",
+      "psnr_I": 21.9554,
+      "ssim_I": 0.5433,
+      "offsets": [
+        {
+          "sigma_error_px": 0.5,
+          "sigma_wrong": 3.5,
+          "psnr_I": 21.9554,
+          "psnr_II": 21.4882,
+          "psnr_IV": 21.9057,
+          "ssim_I": 0.5433,
+          "ssim_II": 0.4824,
+          "ssim_IV": 0.5358,
+          "delta_psnr_db": 0.4672,
+          "recovery_ratio": 0.8937,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0014
+        },
+        {
+          "sigma_error_px": 1.0,
+          "sigma_wrong": 4.0,
+          "psnr_I": 21.9554,
+          "psnr_II": 20.5174,
+          "psnr_IV": 21.9057,
+          "ssim_I": 0.5433,
+          "ssim_II": 0.3813,
+          "ssim_IV": 0.5358,
+          "delta_psnr_db": 1.438,
+          "recovery_ratio": 0.9655,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0007
+        },
+        {
+          "sigma_error_px": 2.0,
+          "sigma_wrong": 5.0,
+          "psnr_I": 21.9554,
+          "psnr_II": 19.1121,
+          "psnr_IV": 21.9057,
+          "ssim_I": 0.5433,
+          "ssim_II": 0.2727,
+          "ssim_IV": 0.5358,
+          "delta_psnr_db": 2.8433,
+          "recovery_ratio": 0.9825,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0006
+        },
+        {
+          "sigma_error_px": 3.0,
+          "sigma_wrong": 6.0,
+          "psnr_I": 21.9554,
+          "psnr_II": 18.8446,
+          "psnr_IV": 21.9057,
+          "ssim_I": 0.5433,
+          "ssim_II": 0.1951,
+          "ssim_IV": 0.5358,
+          "delta_psnr_db": 3.1107,
+          "recovery_ratio": 0.984,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0005
+        }
+      ]
+    },
+    {
+      "phantom_name": "mixed",
+      "psnr_I": 25.8369,
+      "ssim_I": 0.6383,
+      "offsets": [
+        {
+          "sigma_error_px": 0.5,
+          "sigma_wrong": 3.5,
+          "psnr_I": 25.8369,
+          "psnr_II": 25.6656,
+          "psnr_IV": 25.8369,
+          "ssim_I": 0.6383,
+          "ssim_II": 0.609,
+          "ssim_IV": 0.6383,
+          "delta_psnr_db": 0.1713,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0005
+        },
+        {
+          "sigma_error_px": 1.0,
+          "sigma_wrong": 4.0,
+          "psnr_I": 25.8369,
+          "psnr_II": 24.922,
+          "psnr_IV": 25.8369,
+          "ssim_I": 0.6383,
+          "ssim_II": 0.5196,
+          "ssim_IV": 0.6383,
+          "delta_psnr_db": 0.915,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0006
+        },
+        {
+          "sigma_error_px": 2.0,
+          "sigma_wrong": 5.0,
+          "psnr_I": 25.8369,
+          "psnr_II": 23.0875,
+          "psnr_IV": 25.8369,
+          "ssim_I": 0.6383,
+          "ssim_II": 0.3515,
+          "ssim_IV": 0.6383,
+          "delta_psnr_db": 2.7495,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0005
+        },
+        {
+          "sigma_error_px": 3.0,
+          "sigma_wrong": 6.0,
+          "psnr_I": 25.8369,
+          "psnr_II": 21.6862,
+          "psnr_IV": 25.8369,
+          "ssim_I": 0.6383,
+          "ssim_II": 0.253,
+          "ssim_IV": 0.6383,
+          "delta_psnr_db": 4.1508,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0006
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "per_sigma_error": [
+      {
+        "sigma_error_px": 0.5,
+        "mean_delta_psnr": 0.4142,
+        "std_delta_psnr": 0.2003,
+        "ci95_delta_psnr": [
+          0.2546,
+          0.5852
+        ],
+        "mean_recovery": 0.9787,
+        "ci95_recovery": [
+          0.9362,
+          1.0
+        ]
+      },
+      {
+        "sigma_error_px": 1.0,
+        "mean_delta_psnr": 2.072,
+        "std_delta_psnr": 1.5135,
+        "ci95_delta_psnr": [
+          1.1421,
+          3.5425
+        ],
+        "mean_recovery": 0.9931,
+        "ci95_recovery": [
+          0.9793,
+          1.0
+        ]
+      },
+      {
+        "sigma_error_px": 2.0,
+        "mean_delta_psnr": 5.1056,
+        "std_delta_psnr": 3.7031,
+        "ci95_delta_psnr": [
+          2.8493,
+          8.6249
+        ],
+        "mean_recovery": 0.9965,
+        "ci95_recovery": [
+          0.9895,
+          1.0
+        ]
+      },
+      {
+        "sigma_error_px": 3.0,
+        "mean_delta_psnr": 7.0185,
+        "std_delta_psnr": 5.3408,
+        "ci95_delta_psnr": [
+          3.7503,
+          12.1927
+        ],
+        "mean_recovery": 0.9968,
+        "ci95_recovery": [
+          0.9904,
+          1.0
+        ]
+      }
+    ]
+  },
+  "key_findings": {
+    "carrier": "photon",
+    "gate3_parameter": "psf_sigma",
+    "gate3_dominance": true,
+    "monotonic_degradation": true,
+    "lensless_relevance": "PSF miscalibration (wrong propagation distance estimate) causes over- or under-deconvolution in lensless imaging; sigma mismatch degrades reconstruction monotonically and is recoverable via forward-model fitting on a known calibration target (maximum likelihood PSF estimation)."
+  }
+}

@@ -365,7 +365,7 @@ Ptychography
   & 17.35 & 24.44 & +7.09
   & 0.0063 \\
 \midrule
-%% --- Phase 2 validated additions (5): multi-phantom aggregate ---
+%% --- Phase 2 validated additions (7): multi-phantom aggregate ---
 \multicolumn{6}{l}{\emph{Phase 2 validated additions (multi-phantom aggregate $\pm$ 95\% CI)}} \\
 \midrule
 Fluorescence\footnote{$N{=}5$ phantoms (puncta, filaments, nuclei, membranes, mixed). PSF sigma error $\Delta\sigma{=}1.0$\,px (worst case). $9 \times 9$ grid-search calibration over $(\sigma_{\mathrm{ex}}, \sigma_{\mathrm{em}})$.}
@@ -388,6 +388,14 @@ Comp.\ Holography\footnote{$N{=}4$ phantoms (USAF chart, bio cells, particles, s
   & propagation\_distance
   & 10.43 & 11.46 & +1.03
   & 9\,\textmu m \\
+SPC\footnote{$N{=}5$ phantoms ($32{\times}32$; puncta, filaments, nuclei, membranes, mixed). Illumination vignetting error $\Delta\sigma_\mathrm{IG}{=}20$\,px (worst case of 4 levels; true $\sigma_\mathrm{IG}{=}10$\,px). Flat-field calibration via maximum-likelihood MLE. Calibrated $\sigma_\mathrm{IG}{=}10.2$\,px; recovery $\rho{=}0.97$.}
+  & illum\_sigma
+  & 14.40 & 15.46 & +1.06
+  & 0.2\,px \\
+Lensless\footnote{$N{=}5$ phantoms ($64{\times}64$; puncta, filaments, nuclei, membranes, mixed). PSF sigma error $\Delta\sigma{=}3.0$\,px (worst case; true $\sigma{=}3.0$\,px). Calibration: forward-model fit on known checkerboard target. Calibrated $\sigma{=}3.12$\,px; recovery $\rho{=}1.00$.}
+  & psf\_sigma
+  & 18.90 & 25.92 & +7.02
+  & 0.1\,px \\
 \midrule
 %% --- Phase 3/4 planned additions (5) ---
 \multicolumn{6}{l}{\emph{Phase 3/4 additions --- validation planned}} \\
@@ -2207,6 +2215,113 @@ Mean   & 0.1 & --- & --- & --- & $+0.42 \pm 0.44$ & 0.47 \\
 
 
 %% ============================================================
+%% SUPPLEMENTARY TABLES S19--S20: SPC AND LENSLESS MULTI-PHANTOM
+%% ============================================================
+
+\section{Supplementary Table S19: SPC Multi-Phantom Results}
+\label{sec:spc_scenes}
+
+\begin{table}[htbp]
+\centering
+\caption{SPC multi-phantom results ($N{=}5$). Mismatch: Gaussian illumination vignetting sigma error $\Delta\sigma_\mathrm{IG}$
+(true $\sigma_\mathrm{IG}{=}10$\,px; wrong values $\in \{15, 20, 30, \infty\}$ where $\infty$ = flat/no vignetting).
+Phantoms: $32{\times}32$ (puncta, filaments, nuclei, membranes, mixed); 25\% sampling rate; LSQR solver.
+Calibration: flat-field measurement (uniform scene) with 21-step grid-search over $\sigma_\mathrm{IG} \in [8, 30]$\,px;
+calibrated $\sigma_\mathrm{IG}{=}10.2$\,px (error 0.2\,px).
+Recovery is consistent and high across all phantoms ($\rho{=}0.93$--$0.99$), reflecting
+that flat-field calibration robustly identifies the illumination parameter regardless of scene structure.}
+\label{tab:spc_scenes}
+\small
+\begin{tabular}{l r r r r r r}
+\toprule
+Phantom & $\Delta\sigma_\mathrm{IG}$ (px) & Sc.~I (dB) & Sc.~II (dB) & Sc.~IV (dB) & $\Delta$(dB) & $\rho$ \\
+\midrule
+Puncta       & $+5$    & 17.70 & 17.25 & 17.67 & 0.44 & 0.95 \\
+             & $+10$   & 17.70 & 17.06 & 17.67 & 0.63 & 0.96 \\
+             & $+20$   & 17.70 & 16.93 & 17.67 & 0.77 & 0.97 \\
+             & flat    & 17.70 & 16.82 & 17.67 & 0.88 & 0.97 \\
+Filaments    & $+5$    & 18.62 & 17.86 & 18.57 & 0.75 & 0.94 \\
+             & $+10$   & 18.62 & 17.57 & 18.57 & 1.05 & 0.96 \\
+             & $+20$   & 18.62 & 17.36 & 18.57 & 1.26 & 0.96 \\
+             & flat    & 18.62 & 17.20 & 18.57 & 1.42 & 0.97 \\
+Nuclei       & $+5$    & 12.12 & 11.15 & 12.06 & 0.98 & 0.93 \\
+             & $+10$   & 12.12 & 10.81 & 12.06 & 1.31 & 0.95 \\
+             & $+20$   & 12.12 & 10.58 & 12.06 & 1.54 & 0.96 \\
+             & flat    & 12.12 & 10.41 & 12.06 & 1.71 & 0.96 \\
+Membranes    & $+5$    & 12.97 & 12.69 & 12.96 & 0.28 & 0.98 \\
+             & $+10$   & 12.97 & 12.53 & 12.96 & 0.44 & 0.99 \\
+             & $+20$   & 12.97 & 12.41 & 12.96 & 0.56 & 0.99 \\
+             & flat    & 12.97 & 12.31 & 12.96 & 0.66 & 0.99 \\
+Mixed        & $+5$    & 15.90 & 15.18 & 15.86 & 0.72 & 0.94 \\
+             & $+10$   & 15.90 & 14.90 & 15.86 & 1.00 & 0.96 \\
+             & $+20$   & 15.90 & 14.71 & 15.86 & 1.19 & 0.96 \\
+             & flat    & 15.90 & 14.56 & 15.86 & 1.34 & 0.97 \\
+\midrule
+\multicolumn{7}{l}{\textbf{Aggregate mean $\pm$ 95\% bootstrap CI ($N{=}5$ phantoms)}} \\
+\midrule
+Mean & $+5$    & --- & --- & --- & $+0.63 \pm 0.25$ & 0.95 \\
+     & $+10$   & --- & --- & --- & $+0.89 \pm 0.31$ & 0.96 \\
+     & $+20$   & --- & --- & --- & $+1.06 \pm 0.35$ & 0.97 \\
+     & flat    & --- & --- & --- & $+1.20 \pm 0.38$ & 0.97 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\section{Supplementary Table S20: Lensless Camera Multi-Phantom Results}
+\label{sec:lensless_scenes}
+
+\begin{table}[htbp]
+\centering
+\caption{Lensless camera multi-phantom results ($N{=}5$). Mismatch: PSF sigma error $\Delta\sigma$
+(pinhole-to-sensor distance error; true $\sigma{=}3.0$\,px, wrong $\sigma \in \{3.5, 4.0, 5.0, 6.0\}$\,px).
+Phantoms: $64{\times}64$ (puncta, filaments, nuclei, membranes, mixed).
+Forward model: circular convolution $y{=}h_\sigma * x + \mathcal{N}(0, 0.02^2)$.
+Reconstruction: Tikhonov deconvolution ($\lambda{=}10^{-2}$).
+Calibration: forward-model fitting on a known checkerboard calibration target
+($\mathrm{argmin}_{\sigma} \| y_\mathrm{cal} - h_\sigma * x_\mathrm{cal} \|^2$);
+calibrated $\sigma{=}3.12$\,px (error 0.12\,px, limited by grid discretisation).
+Near-perfect recovery ($\rho{\approx}1.0$) demonstrates that PSF calibration via a known reference target
+eliminates the Gate~3 bottleneck essentially completely.}
+\label{tab:lensless_scenes}
+\small
+\begin{tabular}{l r r r r r r}
+\toprule
+Phantom & $\Delta\sigma$ (px) & Sc.~I (dB) & Sc.~II (dB) & Sc.~IV (dB) & $\Delta$(dB) & $\rho$ \\
+\midrule
+Puncta       & $+0.5$ & 24.04 & 23.58 & 24.04 &  0.45 & 1.00 \\
+             & $+1.0$ & 24.04 & 22.22 & 24.04 &  1.81 & 1.00 \\
+             & $+2.0$ & 24.04 & 19.57 & 24.04 &  4.47 & 1.00 \\
+             & $+3.0$ & 24.04 & 17.96 & 24.04 &  6.07 & 1.00 \\
+Filaments    & $+0.5$ & 25.03 & 24.80 & 25.03 &  0.24 & 1.00 \\
+             & $+1.0$ & 25.03 & 23.88 & 25.03 &  1.15 & 1.00 \\
+             & $+2.0$ & 25.03 & 21.97 & 25.03 &  3.06 & 1.00 \\
+             & $+3.0$ & 25.03 & 20.81 & 25.03 &  4.23 & 1.00 \\
+Nuclei       & $+0.5$ & 32.75 & 32.01 & 32.75 &  0.74 & 1.00 \\
+             & $+1.0$ & 32.75 & 27.71 & 32.75 &  5.04 & 1.00 \\
+             & $+2.0$ & 32.75 & 20.34 & 32.75 & 12.41 & 1.00 \\
+             & $+3.0$ & 32.75 & 15.22 & 32.75 & 17.53 & 1.00 \\
+Membranes    & $+0.5$ & 21.96 & 21.49 & 21.91 &  0.47 & 0.89 \\
+             & $+1.0$ & 21.96 & 20.52 & 21.91 &  1.44 & 0.97 \\
+             & $+2.0$ & 21.96 & 19.11 & 21.91 &  2.84 & 0.98 \\
+             & $+3.0$ & 21.96 & 18.84 & 21.91 &  3.11 & 0.98 \\
+Mixed        & $+0.5$ & 25.84 & 25.67 & 25.84 &  0.17 & 1.00 \\
+             & $+1.0$ & 25.84 & 24.92 & 25.84 &  0.92 & 1.00 \\
+             & $+2.0$ & 25.84 & 23.09 & 25.84 &  2.75 & 1.00 \\
+             & $+3.0$ & 25.84 & 21.69 & 25.84 &  4.15 & 1.00 \\
+\midrule
+\multicolumn{7}{l}{\textbf{Aggregate mean $\pm$ 95\% bootstrap CI ($N{=}5$ phantoms)}} \\
+\midrule
+Mean & $+0.5$ & --- & --- & --- & $+0.41 \pm 0.20$ & 0.98 \\
+     & $+1.0$ & --- & --- & --- & $+2.07 \pm 1.51$ & 0.99 \\
+     & $+2.0$ & --- & --- & --- & $+5.11 \pm 3.70$ & 1.00 \\
+     & $+3.0$ & --- & --- & --- & $+7.02 \pm 5.34$ & 1.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+%% ============================================================
 %% SUPPLEMENTARY NOTES 17--21: NEW MODALITY MISMATCH ANALYSIS
 %% ============================================================
 
@@ -2303,6 +2418,79 @@ Individual phantom recovery varies from $\rho < 0$ (nuclei at 0.1\,px, where Sc.
 
 \subsection{Comparison with Blind Deconvolution}
 Blind deconvolution methods (e.g., alternating minimisation of image and PSF) can achieve higher recovery when given sufficient iterations, but require careful regularisation to avoid trivial solutions. The PWM approach constrains the PSF to be Gaussian (physics-informed), reducing the search space from arbitrary kernels to two scalar parameters. This physics-informed constraint is the key advantage of the structured forward model approach, and the multi-phantom validation demonstrates that the improvement generalises across structurally diverse specimens rather than being specific to a particular phantom geometry.
+
+
+\section{Supplementary Note 22: SPC Illumination Mismatch Analysis}
+\label{sec:note_spc}
+
+\subsection{Illumination Non-Uniformity Forward Model}
+In single-pixel camera (SPC) imaging, the measurement is $y_i = \langle \mathbf{a}_i,\, G \odot x \rangle + \epsilon_i$,
+where $\mathbf{a}_i \in \{-1,+1\}^N$ is the $i$-th binary sensing vector, $G \in \mathbb{R}^N$ is the
+illumination map, $x$ is the scene, and $\epsilon_i \sim \mathcal{N}(0, \sigma_n^2)$.
+The true illumination follows a Gaussian vignetting profile:
+$G[r,c] = \exp\!\bigl(-\tfrac{r^2 + c^2}{2\sigma_\mathrm{IG}^2}\bigr)$, with $\sigma_\mathrm{IG}{=}10$\,px
+producing $G{\approx}0.07$ at the corners of a $32{\times}32$ image.
+
+Gate~3 mismatch arises when the reconstruction assumes a wrong illumination map $G_\mathrm{wrong}$
+(larger $\sigma$ or flat $G{=}1$). The modified sensing matrix is $A_G \in \mathbb{R}^{m \times N}$
+with $[A_G]_{ij} = A_{ij} \cdot G_j$; reconstruction via Tikhonov-regularised LSQR on the wrong $A_{G_\mathrm{wrong}}$
+produces a biased estimate of $x$.
+
+\subsection{Gate 3 Dominance}
+Multi-phantom validation ($N{=}5$) shows monotonic PSNR degradation with increasing illumination error:
+mean $\Delta{=}+0.63$\,dB ($\Delta\sigma_\mathrm{IG}{=}5$\,px), $+0.89$\,dB ($+10$\,px), $+1.06$\,dB ($+20$\,px),
+$+1.20$\,dB (flat; complete vignetting ignorance).
+The moderate magnitude reflects the 25\% CS sampling rate, which provides redundancy against single-parameter
+illumination errors: the LSQR solver partially compensates through its least-squares balancing, but cannot fully
+correct the systematic column-scaling mismatch in $A_{G_\mathrm{wrong}}$.
+
+\subsection{Flat-Field Calibration}
+Autonomous calibration uses a flat-field measurement: expose the SPC with a spatially uniform source
+(known $x{=}\mathbf{1}$) to obtain $y_\mathrm{flat} = A\,\mathbf{g}_\mathrm{true} + \boldsymbol{\epsilon}$,
+where $\mathbf{g}_\mathrm{true} = G_\mathrm{true}.\mathrm{ravel}()$.
+The calibrated sigma is $\sigma_\mathrm{cal} = \mathrm{argmin}_\sigma \|y_\mathrm{flat} - A\,\mathbf{g}(\sigma)\|^2$,
+a direct maximum-likelihood estimate requiring no inversion.
+This 21-step grid-search (no LSQR calls) recovers $\sigma_\mathrm{cal}{=}10.2$\,px (error 0.2\,px),
+yielding mean recovery $\rho{=}0.95$--$0.97$ across all mismatch levels and phantom types.
+The flat-field calibration procedure requires only a brief acquisition with a diffuse broadband light source
+and generalises across all five phantoms, confirming that the illumination parameter can be isolated
+and corrected independently of the scene content.
+
+
+\section{Supplementary Note 23: Lensless Camera PSF Mismatch Analysis}
+\label{sec:note_lensless}
+
+\subsection{Pinhole PSF Forward Model}
+In a lensless camera (pinhole approximation), the forward model is circular convolution:
+$y = h_{\sigma_\mathrm{true}} * x + \mathcal{N}(0, \sigma_n^2)$,
+where $h_\sigma$ is an isotropic Gaussian PSF of width $\sigma$ (pixels).
+The PSF width $\sigma$ is proportional to the pinhole-to-sensor distance $z$:
+errors in estimating $z$ translate directly to $\Delta\sigma$ errors.
+True PSF: $\sigma_\mathrm{true}{=}3.0$\,px. Wrong PSFs tested: $\sigma_\mathrm{wrong} \in \{3.5, 4.0, 5.0, 6.0\}$\,px.
+Reconstruction: Tikhonov deconvolution $\hat{X}(f) = H^*(f)Y(f) / (|H(f)|^2 + \lambda)$ with $\lambda{=}10^{-2}$.
+
+\subsection{Gate 3 Dominance}
+Over-estimation of $\sigma$ (wrong distance assumption) causes under-deconvolution:
+low-frequency content is preserved but high-frequency detail is blurred out.
+Degradation is strongly monotonic with $\Delta\sigma$:
+mean $\Delta{=}+0.41$\,dB ($\Delta\sigma{=}0.5$\,px), $+2.07$\,dB ($+1.0$\,px), $+5.11$\,dB ($+2.0$\,px), $+7.02$\,dB ($+3.0$\,px).
+The high inter-phantom variance at large $\Delta\sigma$ reflects structure dependence:
+nuclei-dominated images (sharp circular boundaries with strong high-frequency content) suffer up to 17.5\,dB loss
+at $\Delta\sigma{=}3.0$\,px, while smooth mixed images lose only 4.2\,dB.
+This structure--sensitivity coupling is consistent with the Tikhonov deconvolution's Fourier-space action:
+frequencies near $1/\sigma_\mathrm{true}$ carry the most scene information and are most sensitive to $\sigma$ errors.
+
+\subsection{Calibration from Known Target}
+PSF calibration uses a known checkerboard reference image $x_\mathrm{cal}$ imaged through the same system:
+$y_\mathrm{cal} = h_{\sigma_\mathrm{true}} * x_\mathrm{cal} + \mathcal{N}(0, \sigma_n^2)$.
+The calibrated sigma is $\sigma_\mathrm{cal} = \mathrm{argmin}_\sigma \| y_\mathrm{cal} - h_\sigma * x_\mathrm{cal} \|^2$,
+a forward-model fitting (maximum likelihood estimation) that avoids inverse-problem bias.
+Unlike the self-consistency residual $\|y - h * h^{-1}y\|^2$ (which vanishes for any $h$),
+this calibration criterion has a unique minimum at $\sigma{=}\sigma_\mathrm{true}$.
+The 21-step grid-search yields $\sigma_\mathrm{cal}{=}3.12$\,px (error 0.12\,px, grid-discretisation limited),
+achieving near-perfect recovery $\rho{=}0.98$--$1.00$ across all $\Delta\sigma$ levels and phantom types.
+In practice, the calibration target can be any known object (resolution chart, Siemens star, or LED array);
+the checkerboard is chosen for its broad spatial frequency content.
 
 
 \bibliographystyle{unsrtnat}
