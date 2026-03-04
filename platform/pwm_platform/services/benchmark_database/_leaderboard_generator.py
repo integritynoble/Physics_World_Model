@@ -177,10 +177,15 @@ def _generate_b2_leaderboard(
             ssim = _round3(_psnr_to_ssim(psnr))
             source = algo.get("source", "PWM Baseline")
 
+        # Standard scoring: 0.5 × clip((PSNR−15)/30, 0, 1) + 0.5 × SSIM
+        psnr_score = max(0.0, min(1.0, (psnr - 15.0) / 30.0))
+        score = 0.5 * psnr_score + 0.5 * ssim
+
         entries.append({
             "method": algo["name"],
             "psnr": psnr,
             "ssim": ssim,
+            "score": _round3(score),
             "source": source,
             "adopted": False,
         })
@@ -190,6 +195,8 @@ def _generate_b2_leaderboard(
     entries[0]["adopted"] = True
     for i, e in enumerate(entries, 1):
         e["rank"] = i
+        # Add dataset name for template display
+        e["dataset"] = f"PWM Benchmark ({len(entries)} algorithms)"
 
     return entries
 
