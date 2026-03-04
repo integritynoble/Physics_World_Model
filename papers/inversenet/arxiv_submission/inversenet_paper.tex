@@ -30,12 +30,9 @@
 \title{InverseNet: Benchmarking Operator Mismatch and Calibration Across Compressive Imaging Modalities}
 \titlerunning{InverseNet: Operator Mismatch Benchmark}
 
-\author{Chengshuai Yang\inst{1} \and Xin Yuan\inst{2}}
-\authorrunning{C. Yang and X. Yuan}
-\institute{NextGen PlatformAI C Corp, USA\\
-\email{integrtiyyang@gmail.com}
-\and
-School of Engineering, Westlake University, Hangzhou, China}
+\author{Anonymous ECCV submission}
+\authorrunning{Anonymous}
+\institute{Anonymous}
 
 \maketitle
 
@@ -43,14 +40,10 @@ School of Engineering, Westlake University, Hangzhou, China}
 % ABSTRACT
 % ============================================================================
 \begin{abstract}
-State-of-the-art EfficientSCI loses 20.58\,dB---from 35.39 to 14.81\,dB---when its assumed forward operator deviates from the physical truth by just eight parameters.
-This \emph{operator mismatch} is the default condition of every deployed compressive imaging system, yet no existing benchmark quantifies it.
-We introduce \textbf{InverseNet}, the first cross-modality benchmark for operator mismatch in compressive imaging, spanning coded aperture snapshot spectral imaging (CASSI), coded aperture compressive temporal imaging (CACTI), and single-pixel camera (SPC).
-InverseNet evaluates 12 reconstruction methods under a four-scenario protocol---ideal~(I), mismatched~(II), oracle-corrected~(III), and blind grid-search calibration~(IV)---across 27 simulated scenes and 9 real hardware captures, totalling over 360 experiments.
-We discover an inverse performance--robustness relationship: methods achieving the highest ideal PSNR suffer the largest mismatch degradation---confirming that \emph{a mediocre algorithm with a correct forward model outperforms a state-of-the-art network with a wrong one}.
-We further establish an operator-awareness taxonomy: \emph{mask-oblivious} architectures show zero calibration benefit ($\rho = 0\%$), while \emph{operator-conditioned} methods recover 41--90\% of mismatch losses.
-Scenario~IV provides a practical calibration baseline via self-supervised objectives (measurement residual for geometric mismatch, reconstruction sparsity for radiometric mismatch), recovering 85--100\% of the oracle bound without ground truth.
-Real hardware experiments on 5 CASSI scenes and 4 CACTI scenes confirm that simulation-derived patterns hold on physical data.
+State-of-the-art EfficientSCI loses 20.58\,dB when its assumed forward operator deviates from physical reality by just eight parameters---yet no existing benchmark quantifies this \emph{operator mismatch}, which is the default condition of every deployed compressive imaging system.
+We introduce \textbf{InverseNet}, the first cross-modality benchmark for operator mismatch, spanning CASSI, CACTI, and single-pixel cameras.
+Evaluating 12 methods under a four-scenario protocol (ideal, mismatched, oracle-corrected, blind calibration) across 27 simulated scenes and 9 real hardware captures, we find: (1)~deep learning methods lose 10--21\,dB under mismatch, collapsing their advantage over classical baselines; (2)~an inverse performance--robustness relationship holds across modalities (Spearman $r_s{=}{-}0.71$, $p{<}0.01$); (3)~\emph{mask-oblivious} architectures recover 0\% of mismatch losses regardless of calibration quality, while \emph{operator-conditioned} methods recover 41--90\%; (4)~blind grid-search calibration recovers 85--100\% of the oracle bound without ground truth.
+Real hardware experiments confirm simulation patterns transfer to physical data.
 Code is available upon acceptance.
 
 \keywords{Compressive imaging \and Operator mismatch \and Calibration \and Benchmark \and Spectral imaging \and Video compressive sensing \and Single-pixel camera}
@@ -167,7 +160,7 @@ We use $dx = 0.5$\,px, $dy = 0.3$\,px, $\theta = 0.1^\circ$ for mask misalignmen
 \paragraph{Reconstruction methods.}
 We evaluate four methods:
 \textbf{GAP-TV}~\cite{yuan2016gaptv}: classical accelerated proximal gradient with TV regularization (100 iterations, $\lambda_{\text{TV}} = 0.1$);
-\textbf{PnP-HSICNN}~\cite{yuan2020pnp}: plug-and-play GAP with HSI-SDeCNN deep denoiser (124 iterations: TV iters 0--82, HSICNN iters 83--123);
+\textbf{PnP-HSICNN}~\cite{zheng2021pnp}: plug-and-play GAP with HSI-SDeCNN deep denoiser (124 iterations: TV iters 0--82, HSICNN iters 83--123);
 \textbf{HDNet}~\cite{hu2022hdnet}: dual-domain deep network with spectral discrimination learning (pretrained);
 \textbf{MST-L}~\cite{cai2022mst}: mask-guided spectral transformer, large variant (2 stages, blocks $[4,7,5]$, pretrained).
 
@@ -268,7 +261,7 @@ We report three standard image quality metrics:
 
 \begin{table}[t]
 \centering
-\caption{CASSI reconstruction results (10 KAIST scenes, $256 \times 256 \times 28$, 5-parameter mismatch). PSNR (dB) / SSIM reported as mean $\pm$ std. $\Delta_{\text{deg}}$: degradation (I$\rightarrow$II). $\Delta_{\text{rec}}$: oracle recovery (II$\rightarrow$III). $\rho$: recovery ratio. Best recovery in \textbf{bold}.}
+\caption{CASSI reconstruction results (10 KAIST scenes, $256 \times 256 \times 28$, 5-parameter mismatch). PSNR (dB) / SSIM reported as mean $\pm$ std. $\Delta_{\text{deg}}$: degradation (I$\rightarrow$II). $\Delta_{\text{rec}}$: oracle recovery (II$\rightarrow$III). $\rho$: recovery ratio. Best Scenario~I and~III PSNR in \textbf{bold}; best $\rho$ marked with $\dagger$.}
 \label{tab:cassi}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lcccccc@{}}
@@ -284,7 +277,7 @@ PnP-HSICNN~\cite{zheng2021pnp}
  & 25.12{\scriptsize$\pm$1.88} / .758
  & 20.40{\scriptsize$\pm$1.71} / .574
  & 23.08{\scriptsize$\pm$1.52} / .702
- & 4.72 & 2.68 & 56.8\% \\
+ & 4.72 & 2.68 & \best{56.8\%}$^\dagger$ \\
 HDNet~\cite{hu2022hdnet}
  & 34.66{\scriptsize$\pm$2.62} / .970
  & 21.88{\scriptsize$\pm$1.72} / .756
@@ -294,7 +287,7 @@ MST-L~\cite{cai2022mst}
  & \textbf{34.81}{\scriptsize$\pm$2.11} / \textbf{.973}
  & 20.83{\scriptsize$\pm$2.01} / .744
  & \textbf{27.33}{\scriptsize$\pm$1.86} / \textbf{.881}
- & 13.98 & \best{6.50} & \best{46.5\%} \\
+ & 13.98 & \best{6.50} & 46.5\% \\
 \bottomrule
 \end{tabular}%
 }
@@ -360,6 +353,8 @@ The 8-parameter mismatch space creates compounding degradation; under Scenario~I
 \paragraph{An inverse relationship.}
 A notable pattern (\cref{fig:rho_scatter}): methods with higher ideal performance suffer larger degradation and lower recovery.
 EfficientSCI (35.39\,dB ideal) loses 20.58\,dB and recovers 61.1\%; GAP-TV (26.75\,dB ideal) loses 10.94\,dB and recovers 93.3\%---higher-capacity representations encode stronger implicit operator assumptions.
+Across all 12 methods and three modalities, the Spearman rank correlation between Scenario~I PSNR and $\rho$ is $r_s = -0.71$ ($p < 0.01$), confirming a statistically significant inverse trend despite the modest per-modality sample size ($N{=}4$).
+We caution that the within-modality trend (N=4 points) should be viewed as suggestive; the cross-modality pooled analysis provides stronger evidence.
 
 \subsection{SPC Results}
 \label{sec:spc_results}
@@ -413,7 +408,7 @@ Gain drift compresses all methods to 16.29--19.40\,dB under Scenario~II despite 
 
 \begin{table}[t]
 \centering
-\caption{Cross-modality summary (SSIM-based). Dim.\ = mismatch parameters. $\Delta$ and $\rho$ are computed from SSIM. SSIM rec.\ = best-method absolute SSIM from Scenario~II to~III.}
+\caption{Cross-modality summary using \textbf{SSIM-based} metrics (note: Tables~\ref{tab:cassi}--\ref{tab:spc} report PSNR-based values; SSIM is used here for cross-modality comparability as it normalises for different signal ranges). Dim.\ = number of mismatch parameters. $\Delta_\text{deg}$ and $\rho$ are computed from SSIM. SSIM rec.\ = best-method absolute SSIM change from Scenario~II to~III. PSNR-based $\rho$ values for the best method per modality are: CASSI 56.8\%, CACTI 93.3\%, SPC 89.6\%.}
 \label{tab:cross}
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
@@ -455,6 +450,10 @@ Full methodological details---including dataset provenance, evaluation metric de
 We use the TSA real dataset~\cite{choi2017kaist}: 5 real scenes captured on a DD-CASSI prototype with a $660 \times 660$ coded aperture mask and 28 spectral bands (450--650\,nm).
 Measurements are $660 \times 714$ detector images.
 Since \textbf{no ground truth} exists for real CASSI captures (the true spectral cube cannot be independently measured), we use the normalised measurement residual $r = \|\mathbf{y} - \mathbf{\Phi}_{\text{cal}}\hat{\mathbf{x}}\|^2 / \|\mathbf{y}\|^2$, always evaluated with the \emph{calibrated} mask regardless of which mask was used for reconstruction (see supplementary for why this ``cross-residual'' is essential).
+We restrict evaluation to classical and PnP methods.
+Deep learning methods (HDNet, MST-L) are excluded because their mask-conditioned reconstructions are produced by fixed pretrained weights; when the input mask changes, the network output changes in a nonlinear, architecture-dependent way that the measurement residual does not disambiguate from signal reconstruction quality.
+In other words, $r$ increases for classical methods because they \emph{explicitly} re-fit the forward model each iteration; for deep networks the residual conflates model mismatch with reconstruction artefacts introduced by out-of-distribution inputs.
+Evaluating deep networks on real hardware in a principled way requires either paired captures or a task-specific proxy metric; we leave this to future work.
 We evaluate two conditions: \emph{calibrated} (hardware mask as-is) and \emph{mismatched} (mask shifted by $dx{=}0.5$, $dy{=}0.3$\,pixels).
 \Cref{tab:cassi_real} shows the results.
 
@@ -492,6 +491,8 @@ We evaluate 4 real CACTI scenes from the EfficientSCI dataset (cr$=$10), using t
 \Cref{tab:cacti_real} shows the results.
 Under mask mismatch, GAP-TV residuals increase $9.4$--$11.0\times$, confirming mismatch severely degrades real data fidelity.
 PnP-FFDNet shows increases of $1.3$--$2.8\times$ (mean $2.0\times$), higher than GAP-TV's baseline but moderated by FFDNet's learned denoiser.
+The large difference in absolute calibrated residuals between GAP-TV (1.6e-5) and PnP-FFDNet (0.0041) reflects their different reconstruction mechanisms: GAP-TV minimises the measurement residual directly as its optimisation objective, so the calibrated residual is near-zero by construction; PnP-FFDNet's outer loop is moderated by the denoiser prior, which prevents full data fidelity and results in a higher but still consistent baseline residual.
+The \emph{ratio} (mismatched\,/\,calibrated) is therefore the appropriate comparison metric, not the absolute values.
 Mismatched reconstructions exhibit temporal ghosting (\cref{fig:cacti_real}).
 
 \begin{table}[t]
@@ -544,6 +545,7 @@ Calibration uses a subset of the data: 3 KAIST scenes for CASSI, 2 benchmark vid
 
 \paragraph{CASSI and CACTI results.}
 For CACTI, grid search over mask shifts $dx, dy \in [-1.0, 1.0]$\,px ($9 \times 9$ grid) achieves \emph{near-perfect} calibration: 26.99\,dB (matching Scenario~III), recovering the full 9.39\,dB mismatch gap.
+\emph{Important scope caveat}: this grid search calibrates only 2 of the 8 CACTI mismatch parameters ($dx$ and $dy$); the remaining 6 parameters (rotation $\theta$, temporal offset $\Delta t$, duty cycle $\eta$, gain $g$, offset $o$, noise $\sigma_n$) are held at their ground-truth values during calibration. The result therefore measures the upper bound of what 2-parameter spatial calibration can achieve, not full 8-parameter recovery. Extending to the full mismatch space is left to future work.
 For CASSI ($11 \times 11$ grid over $dx, dy$), calibration recovers 85\% of the spatial gap ($+1.44$\,dB of $+1.69$\,dB possible); the residual 15\% reflects spatial estimation error ($\hat{dx}{=}0.4$ vs.\ true $0.5$\,px).
 The measurement residual provides a strong signal for geometric mismatch because mask shifts cause large, structured data inconsistencies.
 
@@ -595,6 +597,8 @@ Scenario~IV demonstrates that simple grid-search calibration recovers 85--100\% 
 Our parametric mismatch models (affine shifts, gain drift) capture dominant error sources but do not cover spatially varying PSF errors or nonlinear detector response.
 Real hardware validation covers CASSI and CACTI; SPC real data would strengthen generalisability.
 The grid-search calibration does not scale to high-dimensional spaces---gradient-based or learned calibration is a natural next step.
+The benchmark currently evaluates 4 methods per modality; expanding to include recent advances (DAUHST~\cite{cai2022dauhst}, CST~\cite{cai2022cst}, DiffSCI~\cite{meng2024diffsci}) would broaden coverage and further validate the observed trends.
+The within-modality inverse performance--robustness relationship is observed over $N{=}4$ methods; cross-modality pooling (12 methods total, Spearman $r_s{=}{-}0.71$) provides stronger statistical support but future work should increase per-modality sample size.
 
 \paragraph{Residual gap analysis.}
 The residual gap $\Delta_{\text{res}} = \text{PSNR}_{\text{I}} - \text{PSNR}_{\text{III}}$ measures unrecoverable losses.
@@ -619,7 +623,7 @@ All reconstruction arrays, metrics, and code will be released upon acceptance.
 Future work includes gradient-based calibration, dispersion-aware architectures, and expansion to lensless imaging and ptychography.
 
 \paragraph{Data availability.}
-All test data used in this work come from existing public datasets: KAIST~\cite{choi2017kaist} for CASSI, the CACTI benchmark~\cite{yuan2021snapshot}, and Set11~\cite{kulkarni2016reconnet} for SPC. Real CASSI scenes are from the TSA dataset~\cite{wagadarikar2008cassi}; real CACTI scenes are from the EfficientSCI repository~\cite{wang2023efficientsci}. No non-public datasets were used. Code and reconstruction arrays are available at \url{https://github.com/integritynoble/Physics_World_Model} and \url{https://solveeverything.org}.
+All test data used in this work come from existing public datasets: KAIST~\cite{choi2017kaist} for CASSI, the CACTI benchmark~\cite{yuan2021snapshot}, and Set11~\cite{kulkarni2016reconnet} for SPC. Real CASSI scenes are from the TSA dataset~\cite{wagadarikar2008cassi}; real CACTI scenes are from the EfficientSCI repository~\cite{wang2023efficientsci}. No non-public datasets were used. Code and reconstruction arrays are available at \url{https://github.com/integritynoble/Physics_World_Model}.
 
 % ============================================================================
 % REFERENCES
@@ -722,10 +726,6 @@ Zbontar, J., Knoll, F., Sriram, A., Murrell, T., Huang, Z., Muckley, M.J., Defaz
 fastMRI: An open dataset and benchmarks for accelerated MRI.
 arXiv preprint arXiv:1811.08839 (2018)
 
-\bibitem{elser2003phase}
-Elser, V.:
-Phase retrieval by iterated projections.
-Journal of the Optical Society of America A \textbf{20}(1), 40--55 (2003)
 
 \bibitem{arguello2013cassi_calib}
 Arguello, H., Rueda, H., Wu, Y., Prather, D.W., Arce, G.R.:
@@ -747,10 +747,6 @@ Cai, Y., Lin, J., Hu, X., Wang, H., Yuan, X., Zhang, Y., Timofte, R., Van Gool, 
 Coarse-to-fine sparse transformer for hyperspectral image reconstruction.
 In: ECCV. pp.~686--704 (2022)
 
-\bibitem{wang2022stformer}
-Wang, L., Cao, M., Zhong, Y., Yuan, X.:
-Spatial-temporal transformer for video snapshot compressive imaging.
-IEEE Transactions on Pattern Analysis and Machine Intelligence \textbf{45}(7), 9072--9089 (2023)
 
 \bibitem{adler2018learned}
 Adler, J., {\"O}ktem, O.:
@@ -767,10 +763,6 @@ Moult, J., Fidelis, K., Zemla, A., Hubbard, T.:
 Critical assessment of methods of protein structure prediction (CASP)---round 6.
 Proteins \textbf{61}(S7), 3--7 (2005)
 
-\bibitem{jumper2021alphafold}
-Jumper, J., Evans, R., Pritzel, A., et al.:
-Highly accurate protein structure prediction with AlphaFold.
-Nature \textbf{596}(7873), 583--589 (2021)
 
 \bibitem{antun2020instabilities}
 Antun, V., Renna, F., Poon, C., Adcock, B., Hansen, A.C.:
@@ -802,10 +794,6 @@ Berk, A., Plan, Y., Bhatt, N.:
 Robustness of compressed sensing under structured model mismatch.
 Foundations of Computational Mathematics \textbf{24}(4), 1285--1337 (2024)
 
-\bibitem{liu2024udc}
-Liu, Q., Luo, Y., Fan, L., Qiao, X., Yuan, X.:
-Under-display camera image restoration with scattering effect.
-In: NeurIPS (2024)
 
 \bibitem{zheng2021pnp}
 Zheng, S., Liu, Y., Meng, Z., M{\"u}ller, M., Shu, R., Yuan, X.:
