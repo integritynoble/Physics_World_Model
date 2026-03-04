@@ -26,19 +26,19 @@ from pathlib import Path
 plt.rcParams.update({
     'font.family': 'sans-serif',
     'font.sans-serif': ['Arial', 'Helvetica', 'DejaVu Sans'],
-    'font.size': 8,
-    'axes.labelsize': 9,
-    'axes.titlesize': 10,
-    'legend.fontsize': 7,
-    'xtick.labelsize': 7,
-    'ytick.labelsize': 7,
+    'font.size': 9,
+    'axes.labelsize': 10,
+    'axes.titlesize': 11,
+    'legend.fontsize': 8,
+    'xtick.labelsize': 8,
+    'ytick.labelsize': 8,
     'figure.dpi': 300,
     'savefig.dpi': 300,
     'pdf.fonttype': 42,
     'ps.fonttype': 42,
-    'axes.linewidth': 0.6,
-    'xtick.major.width': 0.6,
-    'ytick.major.width': 0.6,
+    'axes.linewidth': 0.7,
+    'xtick.major.width': 0.7,
+    'ytick.major.width': 0.7,
     'lines.linewidth': 1.0,
 })
 
@@ -588,7 +588,7 @@ def fig5_deepdive():
 # FIGURE 6: Zero-shot generalization across carrier families
 # ═════════════════════════════════════════════════════════════════════════════
 def fig6_zeroshot():
-    fig, ax = plt.subplots(figsize=(DOUBLE_COL, 3.2))
+    fig, ax = plt.subplots(figsize=(DOUBLE_COL, 4.5))
 
     modalities = [
         'CASSI', 'CACTI', 'SPC', 'Lensless', 'Fluor.', 'Comp.\nHolo.',
@@ -633,16 +633,22 @@ def fig6_zeroshot():
                    color=carrier_color_map, alpha=0.30, edgecolor='#999',
                    linewidth=0.6)
 
+    # Explicit ylim with headroom so legend fits below the title
+    ylim_top = max(max(tuned), max(zeroshot)) * 1.28
+    ax.set_ylim(0, ylim_top)
+
     ax.set_xticks(x)
-    ax.set_xticklabels(modalities, fontsize=6, rotation=25, ha='right')
-    ax.set_ylabel(r'Correction gain $\Delta$PSNR (dB)', fontsize=8)
+    ax.set_xticklabels(modalities, fontsize=8, rotation=30, ha='right')
+    ax.set_ylabel(r'Correction gain $\Delta$PSNR (dB)', fontsize=10)
     ax.set_title('Zero-shot transfer across 5 carrier families',
-                 fontsize=8.5, fontweight='bold', pad=8)
-    ax.legend(fontsize=6, loc='upper left')
+                 fontsize=11, fontweight='bold', pad=10)
+    # Place legend in center-right to avoid overlapping tall bars on left/right
+    ax.legend(fontsize=8, loc='upper center',
+              bbox_to_anchor=(0.52, 0.98), ncol=2)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
 
-    # Carrier family annotations at bottom
+    # Carrier family annotations using xaxis transform so bbox_inches='tight' captures them
     carrier_spans = [
         (0, 5, 'Incoherent photon', COLORS['blue']),
         (6, 7, 'Electron', COLORS['green']),
@@ -650,15 +656,15 @@ def fig6_zeroshot():
         (9, 10, 'X-ray', COLORS['red']),
         (11, 11, 'Acoustic', COLORS['orange']),
     ]
-    y_ann = -6
+    # xaxis transform: x in data coords, y in axes fraction (0=bottom axis, negative=below)
+    trans = ax.get_xaxis_transform()
     for start, end, label, color in carrier_spans:
         mid = (start + end) / 2
-        ax.annotate(label, xy=(mid, 0), xytext=(mid, y_ann),
-                    fontsize=5, ha='center', color=color,
-                    fontweight='bold',
-                    annotation_clip=False)
+        ax.text(mid, -0.22, label, transform=trans,
+                fontsize=8, ha='center', va='top', color=color,
+                fontweight='bold', clip_on=False)
 
-    fig.tight_layout(pad=0.5)
+    fig.tight_layout(pad=1.0)
     fig.savefig(FIGDIR / 'fig6_zeroshot.pdf', bbox_inches='tight')
     fig.savefig(FIGDIR / 'fig6_zeroshot.png', bbox_inches='tight')
     plt.close(fig)
