@@ -8,11 +8,8 @@
 \bibitem[Yang(2026{\natexlab{a}})]{yang2026fpt}
 Chengshuai Yang.
 \newblock The finite primitive basis theorem for computational imaging: Formal
-  foundations of the {OperatorGraph} representation.
-\newblock \emph{Under review at SIAM Journal on Imaging Sciences},
-  2026{\natexlab{a}}.
-\newblock Manuscript available at
-  \url{https://github.com/integritynoble/Physics_World_Model}.
+  foundations of the {OperatorGraph} representation, 2026{\natexlab{a}}.
+\newblock URL \url{https://arxiv.org/abs/2602.20550}.
 
 \bibitem[Cand{\`e}s and Wakin(2008)]{candes2008compressed}
 Emmanuel~J. Cand{\`e}s and Michael~B. Wakin.
