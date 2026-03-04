@@ -396,9 +396,11 @@ def fig4_correction_bar():
         'Fluor.', 'CT\n(offset)', 'Cryo-EM', 'Comp.\nHolo.', 'US',
     ]
     delta_psnr = [
-        12.21, 10.68, 10.21, 3.55, 48.25, 7.71, 0.54, 0.76, 7.09,
-        # Phase 2 multi-phantom aggregates (max delta, N>=4)
-        8.35, 6.53, 3.30, 1.04, 0.20,
+        12.21, 10.68, 10.21, 3.55,
+        11.20,  # MRI: multi-coil realistic (8 coils, 4× acc., 5% sens. error); single-coil stress-test was 48.25 dB
+        7.71, 0.54, 0.76, 7.09,
+        # Phase 2 multi-phantom aggregates from Table S1 (worst-case delta)
+        8.35, 1.62, 2.34, 1.03, 0.08,
     ]
 
     # Carrier families
