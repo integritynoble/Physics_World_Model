@@ -183,37 +183,43 @@ def fig2_operatorgraph():
                               arrowprops=dict(arrowstyle='<-', color=color,
                                               lw=0.6, mutation_scale=8))
 
-    # Panel b: Physics Fidelity Ladder
+    # Panel b: Physics Fidelity Ladder — uniform wide boxes, text fully inside
     ax_b = fig.add_subplot(gs[1])
     ax_b.set_xlim(0, 4)
-    ax_b.set_ylim(0, 5)
+    ax_b.set_ylim(0, 5.5)
     ax_b.axis('off')
-    ax_b.text(0, 4.8, 'b', fontsize=10, fontweight='bold')
+    ax_b.text(0, 5.3, 'b', fontsize=10, fontweight='bold')
 
     tiers = [
-        (4, 'Tier 4', 'Full-wave / stochastic transport', '#8B0000', 0.3),
+        (4, 'Tier 4', 'Full-wave / stochastic', '#8B0000', 0.3),
         (3, 'Tier 3', 'Nonlinear, ray/wave', '#CC4400', 0.4),
         (2, 'Tier 2', 'Linear, shift-variant', '#DD8800', 0.5),
         (1, 'Tier 1', 'Linear, shift-invariant', '#228B22', 0.6),
     ]
 
+    box_w = 3.0   # uniform width — wide enough for longest description
+    box_h = 0.85  # tall enough for two text lines
+    x_center = 1.8
+
     for tier_num, name, desc, color, alpha in tiers:
-        y = tier_num * 1.0 + 0.1
-        w = 0.4 + tier_num * 0.3
-        box = FancyBboxPatch((2.0 - w/2, y - 0.35), w, 0.7,
+        y = tier_num * 1.05 + 0.15
+        box = FancyBboxPatch((x_center - box_w / 2, y - box_h / 2), box_w, box_h,
                              boxstyle="round,pad=0.05",
                              facecolor=color, alpha=alpha * 0.5,
                              edgecolor=color, linewidth=1.0)
         ax_b.add_patch(box)
-        ax_b.text(2.0, y, f'{name}', ha='center', va='center',
+        # Tier name (bold) in upper half of box
+        ax_b.text(x_center, y + 0.17, name, ha='center', va='center',
                   fontsize=7, fontweight='bold', color=color)
-        ax_b.text(2.0, y - 0.22, desc, ha='center', va='center',
-                  fontsize=5, color=color)
+        # Description in lower half of box
+        ax_b.text(x_center, y - 0.17, desc, ha='center', va='center',
+                  fontsize=6, color=color)
 
-    ax_b.annotate('', xy=(3.5, 4.6), xytext=(3.5, 0.9),
+    # Fidelity arrow on the right
+    ax_b.annotate('', xy=(3.6, 5.0), xytext=(3.6, 1.0),
                   arrowprops=dict(arrowstyle='->', color='#555555',
                                   lw=1.2, mutation_scale=12))
-    ax_b.text(3.65, 2.7, 'Fidelity', ha='left', va='center',
+    ax_b.text(3.76, 3.0, 'Fidelity', ha='left', va='center',
               fontsize=6, color='#555555', rotation=90)
 
     # Panel c: Summary stats
