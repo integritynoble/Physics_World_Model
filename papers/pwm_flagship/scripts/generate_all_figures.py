@@ -386,7 +386,7 @@ def fig3_triad():
 # FIGURE 4: Correction results across 9 validated configurations
 # ═════════════════════════════════════════════════════════════════════════════
 def fig4_correction_bar():
-    fig, ax = plt.subplots(figsize=(DOUBLE_COL, 3.2))
+    fig, ax = plt.subplots(figsize=(DOUBLE_COL, 4.0))
 
     # Data from Table S1 (Phase 1 + Phase 2 validated modalities)
     modalities = [
@@ -442,17 +442,14 @@ def fig4_correction_bar():
         bars[i].set_hatch('//')
         bars[i].set_edgecolor('#666')
 
+    # Set explicit y-axis limit with headroom so labels never touch title
+    ylim_top = max(delta_psnr) * 1.30  # 30% headroom above tallest bar
+    ax.set_ylim(0, ylim_top)
+
     # Add value labels on bars
     for i, (bar, val) in enumerate(zip(bars, delta_psnr)):
-        y_pos = bar.get_height() + 0.3
-        if val > 40:
-            y_pos = val - 3
-            color = 'white'
-        elif val < 1:
-            y_pos = val + 0.3
-            color = '#333'
-        else:
-            color = '#333'
+        y_pos = bar.get_height() + 0.25
+        color = '#333'
         ax.text(bar.get_x() + bar.get_width()/2, y_pos,
                 f'+{val:.1f}', ha='center', va='bottom',
                 fontsize=5.5, fontweight='bold', color=color)
@@ -462,22 +459,24 @@ def fig4_correction_bar():
     ax.set_ylabel(r'Correction gain $\Delta$PSNR (dB)', fontsize=8)
     ax.set_title('Gate 3 correction across 14 validated configurations '
                  '(5 carrier families)',
-                 fontsize=8.5, fontweight='bold', pad=8)
+                 fontsize=8.5, fontweight='bold', pad=10)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
 
     # Divider between Phase 1 and Phase 2
     ax.axvline(x=8.5, color='#999', linestyle='--', linewidth=0.5, alpha=0.7)
-    ax.text(8.7, ax.get_ylim()[1] * 0.92, 'Phase 2\n(multi-phantom)',
+    # Phase 2 annotation: place in the gap between Ptycho and Fluor bars
+    ax.text(8.7, ylim_top * 0.72, 'Phase 2\n(multi-phantom)',
             fontsize=5, color='#666', va='top')
 
-    # Legend
+    # Legend: placed in the lower-right gap (Phase 2 bars are short except US)
     legend_handles = [mpatches.Patch(facecolor=c, label=l, alpha=0.8)
                       for l, c in carrier_labels.items()]
-    ax.legend(handles=legend_handles, loc='upper right', fontsize=5.5,
-              framealpha=0.9, ncol=2)
+    ax.legend(handles=legend_handles, loc='upper left',
+              bbox_to_anchor=(0.60, 0.98),
+              fontsize=5.5, framealpha=0.9, ncol=2)
 
-    fig.tight_layout(pad=0.5)
+    fig.tight_layout(pad=0.8)
     fig.savefig(FIGDIR / 'fig4_correction_bar.pdf', bbox_inches='tight')
     fig.savefig(FIGDIR / 'fig4_correction_bar.png', bbox_inches='tight')
     plt.close(fig)
