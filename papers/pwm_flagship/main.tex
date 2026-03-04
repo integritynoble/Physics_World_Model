@@ -383,7 +383,7 @@ The Physics World Models pipeline. \textbf{a},~A computational imaging system is
 \includegraphics[width=\textwidth]{figures/fig4_correction_bar.pdf}\\[6pt]
 \includegraphics[width=0.85\textwidth]{figures/fig6_zeroshot.pdf}
 \caption{\textbf{Cross-modality mismatch correction: the centerpiece experiment.}
-\textbf{a},~PSNR across the 4-Scenario Protocol for all 12 validated modalities, grouped by carrier family: optical photons (CASSI, CACTI, holography, fluorescence), X-ray photons (CT, CBCT), electrons (ptychography, cryo-EM), nuclear spins (MRI), and acoustic waves (ultrasound). For each modality, four bars show: Scenario~I (ideal, ceiling), Scenario~II (mismatched, floor), Scenario~III (oracle correction ceiling), and Scenario~IV (PWM-corrected). Error bars show 95\% bootstrap CIs over test scenes. The gap between Scenario~I and~II is the mismatch-induced degradation; the gap between Scenario~II and~IV is the autonomous recovery. In 10 of 12 modalities, a simple solver on the corrected operator (Scenario~IV) outperforms the best available solver on the mismatched operator (Scenario~II), demonstrating that calibration beats solver upgrades.
+\textbf{a},~PSNR across the 4-Scenario Protocol for all 12 validated modalities, grouped by carrier family: optical photons (CASSI, CACTI, holography, fluorescence), X-ray photons (CT, CBCT), electrons (ptychography, cryo-EM), nuclear spins (MRI), and acoustic waves (ultrasound). For each modality, four bars show: Scenario~I (ideal, ceiling), Scenario~II (mismatched, floor), Scenario~III (oracle correction ceiling), and Scenario~IV (Corrected: ESPIRiT for MRI, ePIE for ptychography, grid-search for all others). Error bars show 95\% bootstrap CIs over test scenes. The gap between Scenario~I and~II is the mismatch-induced degradation; the gap between Scenario~II and~IV is the autonomous recovery. In 10 of 12 modalities, a simple solver on the corrected operator (Scenario~IV) outperforms the best available solver on the mismatched operator (Scenario~II), demonstrating that calibration beats solver upgrades.
 \textbf{b},~Zero-shot generalization: hyperparameters tuned on photon-domain modalities (CASSI, CACTI, SPC) transfer without modification to coherent-photon, spin, X-ray, electron, and acoustic domains, with comparable correction gains ($< 0.5$\,dB difference). Dark bars: modality-specific tuning; light bars: zero-shot transfer.}
 \label{fig:correction_zeroshot}
 \end{figure}
@@ -397,7 +397,7 @@ The Physics World Models pipeline. \textbf{a},~A computational imaging system is
 \caption{\textbf{Modality deep dives and visual comparison.}
 \textbf{a},~CASSI: PSNR across 4 scenarios for GAP-TV, MST-L, and HDNet; uniform collapse under Scenario~II ($20.83$--$21.88$\,dB) confirms operator-driven failure.
 \textbf{b},~CACTI: four methods across 4 scenarios, showing up to $20.58$\,dB mismatch degradation.
-\textbf{c--e},~Visual comparison (CASSI, CACTI, MRI): ground truth, Scenario~I, II (structured artifacts), III (PWM-corrected), and error map.}
+\textbf{c--e},~Visual comparison (CASSI, CACTI, MRI): ground truth, Scenario~I, II (structured artifacts), III (Oracle-corrected), and error map.}
 \label{fig:deepdive_visual}
 \end{figure}
 
