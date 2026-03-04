@@ -148,8 +148,14 @@ Table~S3). Representative modalities by carrier family include:
   \item \textbf{Acoustic waves:}  Ultrasound B-mode, Doppler ultrasound,
     shear-wave elastography, sonar, and photoacoustic tomography
     (combines optical excitation with acoustic detection).
-  \item \textbf{Particles:}  Neutron tomography, proton radiography,
-    and muon tomography.
+  \item \textbf{Particle-beam probes:}  Neutron tomography, proton CT,
+    and muon tomography.  Each decomposes into existing primitives with
+    no extension required: neutron CT follows the X-ray CT DAG
+    ($P \!\to\! \Lambda \!\to\! D$, Beer--Lambert attenuation with nuclear
+    cross-section $\mu_n$); proton CT inserts a Bethe--Bloch
+    stopping-power stage as Transform~$\Lambda$ (\#11); muon tomography
+    uses Scatter~$R$ (\#10) for multiple Coulomb scattering and
+    POCA vertex reconstruction (Supplementary Note~S24).
 \end{itemize}
 
 \paragraph{Fidelity levels.}

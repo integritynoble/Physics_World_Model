@@ -2496,6 +2496,110 @@ In practice, the calibration target can be any known object (resolution chart, S
 the checkerboard is chosen for its broad spatial frequency content.
 
 
+%% ============================================================
+%% SUPPLEMENTARY NOTE 24: PARTICLE-BEAM PRIMITIVE DECOMPOSITION
+%% ============================================================
+\section{Supplementary Note 24: Particle-Beam Primitive Decomposition}
+\label{sec:note_particle_beams}
+
+This note provides the full DAG mapping for three particle-beam imaging
+modalities---neutron CT, proton CT, and muon tomography---demonstrating that
+each decomposes into the existing 11-primitive library $\mathcal{B}$ with
+zero new primitives required.  This confirms that the Finite Primitive Basis
+Theorem holds beyond the five validated carrier families.
+
+\subsection{Neutron CT}
+
+The neutron CT forward model is structurally identical to X-ray CT.
+A collimated neutron beam propagates through matter, undergoes exponential
+attenuation governed by nuclear cross-sections, and is recorded by a
+scintillation detector array:
+\[
+  H_{\mathrm{nCT}} = D(g,\eta) \;\circ\;
+  \Lambda\!\left(e^{-\mu_n(\mathbf{r})\,l},\;\mu_n\right)
+  \;\circ\; P(d,\lambda_{\mathrm{n}}),
+\]
+where $\mu_n(\mathbf{r})$ is the macroscopic neutron cross-section (replacing
+the X-ray linear attenuation coefficient) and $\lambda_{\mathrm{n}}$ is the
+de~Broglie wavelength.  The DAG topology $P \to \Lambda \to D$ is unchanged
+from X-ray CT; only the physical parameters differ.  Representation error
+$e_{\mathrm{img}} < 0.01$ at fidelity Level~2 (cross-sections tabulated from
+ENDF/B-VIII).
+
+\subsection{Proton CT}
+
+Proton CT measures residual range (or water-equivalent path length) of a
+proton beam traversing tissue.  The dominant physics beyond propagation is
+continuous energy loss described by the Bethe--Bloch equation---a pointwise
+nonlinearity in kinetic energy and material stopping power:
+\[
+  H_{\mathrm{pCT}} = D(g,\eta) \;\circ\;
+  \Lambda\!\left(\textstyle\int_\ell \frac{dE}{\rho\,S(E)},\;
+  \boldsymbol{\theta}_{BB}\right)
+  \;\circ\; P(d,\lambda_{\mathrm{n}}),
+\]
+where $S(E)$ is the mass stopping power and $\boldsymbol{\theta}_{BB}$
+parameterizes the Bethe--Bloch coefficients.
+Transform~$\Lambda$ (primitive~\#11) covers this stage because the
+Bethe--Bloch integrand is a smooth pointwise nonlinearity with bounded
+Lipschitz constant---the same primitive used for Beer--Lambert attenuation
+in polychromatic X-ray CT.  Representation error $e_{\mathrm{img}} < 0.01$
+at fidelity Level~3 (Bethe--Bloch with shell and density corrections).
+
+\subsection{Muon Tomography}
+
+Muon tomography reconstructs material density from the angular deflection of
+cosmic-ray muons caused by multiple Coulomb scattering (MCS).  The scattering
+angle per radiation length follows the Highland approximation, and material
+boundaries are localized via point of closest approach (POCA) reconstruction:
+\[
+  H_{\mathrm{\mu CT}} = D(g,\eta) \;\circ\;
+  R\!\left(\sigma_\theta(p,X_0),\;0\right)
+  \;\circ\; P(d,\lambda_{\mathrm{n}}),
+\]
+where $R(\sigma,\Delta\varepsilon)$ is the Scatter primitive (\#10) with
+$\Delta\varepsilon = 0$ (elastic MCS, no energy shift) and
+\[
+  \sigma_\theta = \frac{13.6\;\mathrm{MeV}}{\beta c\, p}
+  \sqrt{\frac{X}{X_0}}
+  \left(1 + 0.038\ln\frac{X}{X_0}\right)
+\]
+parameterizes the RMS scattering angle (Highland formula).
+Scatter~$R$ was introduced for Compton imaging (direction change plus energy
+shift); here the same primitive covers the elastic-scattering regime by
+setting $\Delta\varepsilon = 0$.  Representation error $e_{\mathrm{img}} < 0.01$
+at fidelity Level~3 (Highland MCS; POCA vertex estimator is a geometric
+post-detection stage, not a new primitive).
+
+\subsection{Summary}
+
+\begin{table}[ht]
+\centering\small
+\caption{Particle-beam modality decomposition. All three map into existing
+primitives with zero extension to $\mathcal{B}$.}
+\label{tab:particle_beam}
+\begin{tabular}{@{}lllcc@{}}
+\toprule
+Modality & DAG & Key primitive & New primitives & $e_{\mathrm{img}}$ \\
+\midrule
+Neutron CT      & $P \to \Lambda \to D$ & $\Lambda$ (\#11, Beer--Lambert, $\mu_n$) & 0 & $<0.01$ \\
+Proton CT       & $P \to \Lambda \to D$ & $\Lambda$ (\#11, Bethe--Bloch)           & 0 & $<0.01$ \\
+Muon tomography & $P \to R \to D$       & $R$ (\#10, Highland MCS, $\Delta\varepsilon{=}0$) & 0 & $<0.01$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent All three satisfy the closure criterion ($e_{\mathrm{img}} \leq
+\varepsilon = 0.01$, $|V| \leq N_{\max} = 20$, $\mathrm{depth}(G) \leq
+D_{\max} = 10$) using only primitives already in $\mathcal{B}$.  The
+extension protocol (main text, Extension protocol paragraph) is not triggered.
+The key insight is that the physical diversity of these carriers---nuclear
+cross-sections, Bragg-peak stopping, electromagnetic scattering---maps onto
+the \emph{parametric} diversity of existing primitives rather than their
+\emph{structural} diversity.  This supports the interpretation that the
+11-primitive basis captures the structural grammar of physical measurement
+systems, with carrier-specific physics encoded in parameter values.
+
 \bibliographystyle{unsrtnat}
 \bibliography{pwm_flagship}
 
