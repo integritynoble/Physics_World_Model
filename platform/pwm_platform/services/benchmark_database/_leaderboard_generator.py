@@ -471,9 +471,11 @@ def generate_full_leaderboard(
 ) -> dict:
     """Generate complete leaderboard data dict for a single variant.
 
-    Returns a dict with keys: challenge, _baselines
+    Returns a dict with keys: normal, challenge, _baselines
     matching the format expected by _factory.build_variant().
 
+    The normal key provides the Standard benchmark leaderboard (B2 Scenario I).
+    The challenge key provides the Blind Reconstruction Challenge (3-tier).
     The _baselines key is consumed by __init__.py to fill challenge configs
     with Scenario II/III baseline performance.
 
@@ -494,6 +496,7 @@ def generate_full_leaderboard(
     )
 
     return {
+        "normal": b2,
         "challenge": challenge,
         "_baselines": baselines,
     }
