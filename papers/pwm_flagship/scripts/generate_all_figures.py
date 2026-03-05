@@ -795,22 +795,29 @@ def fig7_hardware():
     sc_ii_vals = [scenario_iv['cassi']['scenario_ii_psnr'],
                   scenario_iv['cacti']['scenario_ii_psnr'],
                   scenario_iv['spc']['scenario_ii_psnr']]
-    sc_iv_vals = [scenario_iv['cassi']['scenario_iv_psnr'],
-                  scenario_iv['cacti']['scenario_iv_psnr'],
-                  scenario_iv['spc']['scenario_iv_psnr']]
+    # sc_iii = Scenario III oracle; sc_iv = Scenario IV calibrated
     sc_iii_vals = [scenario_iv['cassi']['scenario_iii_psnr'],
                    scenario_iv['cacti']['scenario_iii_psnr'],
                    scenario_iv['spc']['scenario_iii_psnr']]
-    recovery_pcts = [78, 100, 0]
+    sc_iv_vals = [scenario_iv['cassi']['scenario_iv_psnr'],
+                  scenario_iv['cacti']['scenario_iv_psnr'],
+                  scenario_iv['spc']['scenario_iv_psnr']]
+    # Recovery % = (Sc.IV - Sc.II) / (Sc.III - Sc.II) * 100
+    recovery_pcts = [
+        int(round((sc_iv_vals[i] - sc_ii_vals[i]) /
+                  (sc_iii_vals[i] - sc_ii_vals[i]) * 100))
+        if (sc_iii_vals[i] - sc_ii_vals[i]) > 0 else 0
+        for i in range(len(cal_modalities))
+    ]
 
     x4 = np.arange(len(cal_modalities))
     width4 = 0.22
 
     ax_d.bar(x4 - width4, sc_ii_vals, width4, label='Sc. II (Mismatch)',
              color=COLORS['sc_ii'], alpha=0.8)
-    ax_d.bar(x4, sc_iv_vals, width4, label='Sc. III (Oracle)',
+    ax_d.bar(x4, sc_iii_vals, width4, label='Sc. III (Oracle)',
              color=COLORS['sc_iv'], alpha=0.8)
-    ax_d.bar(x4 + width4, sc_iii_vals, width4, label='Sc. IV (Calibrated)',
+    ax_d.bar(x4 + width4, sc_iv_vals, width4, label='Sc. IV (Calibrated)',
              color=COLORS['sc_iii'], alpha=0.8)
 
     d_max = max(max(sc_ii_vals), max(sc_iv_vals), max(sc_iii_vals))
@@ -819,7 +826,7 @@ def fig7_hardware():
 
     # Recovery percentage labels — placed just above tallest bar per group
     for i, pct in enumerate(recovery_pcts):
-        bar_top = max(sc_ii_vals[i], sc_iii_vals[i], sc_iv_vals[i])
+        bar_top = max(sc_ii_vals[i], sc_iii_vals[i], sc_iv_vals[i])  # oracle is always tallest
         color = COLORS['sc_iii'] if pct > 50 else COLORS['sc_ii']
         ax_d.text(i, bar_top + d_ylim * 0.03,
                   f'{pct}%', ha='center', fontsize=7, fontweight='bold',
