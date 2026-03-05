@@ -448,7 +448,53 @@ Transform $\Lambda$ & Polychromatic CT   & Non-terminal pointwise nonlinearity  
 \noindent\textbf{Extended Data Table~1} $|$ Oracle correction ceiling (Scenario~III) across 14 validated configurations (12 modalities, 5 carrier families). Full table with per-scene metrics in Supplementary Table~S1; autonomous correction recovery (Scenario~IV) in Supplementary Table~S9. Per-modality supplementary tables: ultrasound (S14), cryo-EM (S15), CBCT (S16), compressive holography (S17), fluorescence microscopy (S18), SPC (S19), lensless imaging (S20).
 
 \medskip
-\noindent\textbf{Extended Data Table~2} $|$ 26-modality PWM benchmark registry spanning five physical carrier families (a validated subset of the 168-modality full template library described in~\cite{yang2026fpt}). Validation tiers: \emph{Validated} = full Scenarios~I--IV correction (12 modalities); \emph{Test} = pipeline consistency test; \emph{Phase~2} = template validated, correction in progress; \emph{Phase~4} = template registered, validation planned. Full table in Supplementary Table~S3.
+\noindent\textbf{Extended Data Table~2} $|$ 26-modality PWM benchmark registry spanning five physical carrier families (a validated subset of the 168-modality full template library described in~\cite{yang2026fpt}). PSNR values are representative (Scenario~I, default solver). Ref.\ PSNR is the best published result where available. Status: \emph{Validated} = full Scenarios~I--IV correction; \emph{Test} = pipeline consistency test; \emph{Phase~2} = template validated, correction in progress; \emph{Phase~4} = template registered, validation planned. Full per-scene metrics in Supplementary Table~S3.
+
+\medskip
+\noindent\begin{tabular}{@{}rllrrll@{}}
+\toprule
+\textbf{\#} & \textbf{Modality} & \textbf{Carrier} &
+  \textbf{PSNR (dB)} & \textbf{Ref.\ PSNR (dB)} &
+  \textbf{Status} & \textbf{Default Solver} \\
+\midrule
+\multicolumn{7}{l}{\textit{Incoherent photon}} \\
+1  & Matrix (toy)       & Incoherent & 23.35 & ---  & Test      & FISTA-L2 \\
+2  & SPC                & Incoherent & 28.06 & 31.0 & Validated & FISTA-TV \\
+3  & CASSI              & Incoherent & 24.34 & 34.2 & Validated & GAP-TV \\
+4  & CACTI              & Incoherent & 35.39 & 33.4 & Validated & EfficientSCI \\
+5  & Lensless           & Incoherent & 27.03 & 28.5 & Validated & Richardson--Lucy \\
+6  & Fluorescence       & Incoherent & 30.63 & 30.1 & Validated & Richardson--Lucy \\
+25 & Structured Illum.\ & Incoherent & ---   & 32.4 & Phase 4   & --- \\
+26 & Ghost Imaging      & Incoherent & ---   & 22.8 & Phase 4   & --- \\
+\midrule
+\multicolumn{7}{l}{\textit{Coherent photon}} \\
+7  & Digital Holography & Coherent   & ---   & 32.7 & Phase 2   & --- \\
+7b & Comp.\ Holography  & Coherent   &  7.67 & 32.7 & Validated & FISTA-TV \\
+8  & Ptychography       & Coherent   & 24.44 & 26.8 & Validated & ePIE \\
+9  & FPM                & Coherent   & ---   & 31.5 & Phase 2   & --- \\
+10 & Phase Retrieval    & Coherent   & ---   & 29.3 & Phase 2   & --- \\
+11 & CDI                & Coherent   & ---   & 27.4 & Phase 4   & --- \\
+12 & OCT                & Coherent   & ---   & 35.2 & Phase 4   & --- \\
+\midrule
+\multicolumn{7}{l}{\textit{X-ray photon / electron}} \\
+13 & CT (parallel)      & X-ray      & 24.09 & 42.1 & Validated & FBP + TV \\
+14 & CT (fan-beam)      & X-ray      & ---   & 40.8 & Phase 2   & --- \\
+15 & CT (det.\ offset)  & X-ray      & 13.79 & 39.5 & Validated & FBP \\
+16 & Cryo-EM            & Electron   & 16.42 & 25.9 & Validated & Wiener \\
+\midrule
+\multicolumn{7}{l}{\textit{Nuclear spin / acoustic}} \\
+17 & MRI (Cartesian)    & RF         & 52.11 & 42.3 & Validated & CG-SENSE \\
+18 & MRI (radial)       & RF         & ---   & 38.7 & Phase 2   & --- \\
+19 & MRI (spiral)       & RF         & ---   & 37.2 & Phase 4   & --- \\
+20 & Ultrasound         & Acoustic   & 18.68 & 31.8 & Validated & Compound PW-DAS \\
+21 & Radar / SAR        & RF         & ---   & 28.4 & Phase 4   & --- \\
+\midrule
+\multicolumn{7}{l}{\textit{Multi-view / computational}} \\
+22 & NeRF               & Multi-view & ---   & 31.7 & Phase 2   & --- \\
+23 & 3DGS               & Multi-view & ---   & 33.2 & Phase 2   & --- \\
+24 & Light Field        & Multi-view & ---   & 36.1 & Phase 4   & --- \\
+\bottomrule
+\end{tabular}
 
 
 \end{document}
