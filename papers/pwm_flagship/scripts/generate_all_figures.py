@@ -299,26 +299,24 @@ def fig3_triad():
     ax_b.text(-0.15, 1.05, 'b', fontsize=10, fontweight='bold',
               transform=ax_b.transAxes)
 
-    modalities = ['Matrix', 'CT (CoR)', 'CACTI', 'Lensless', 'MRI',
-                  'SPC', 'CASSI\n(Alg 1)', 'CASSI\n(Alg 2)', 'Ptycho.',
-                  'Fluor.', 'CT (offset)', 'Cryo-EM', 'Comp. Holo.', 'US']
-    # Gate 3 dominates all 14 configurations - create heatmap data
+    # Canonical 12 modalities (5 carrier families)
+    modalities = ['CASSI', 'CACTI', 'SPC', 'Lensless', 'Fluor.',
+                  'Comp.\nHolo.', 'Ptycho.', 'Cryo-EM',
+                  'MRI', 'CT', 'CBCT', 'US']
+    # Gate 3 dominates all 12 modalities - create heatmap data
     # Rows = modalities, Cols = [G1, G2, G3]
-    # All G3 dominant
     heatmap_data = np.array([
-        [0.10, 0.05, 0.85],  # Matrix
-        [0.15, 0.10, 0.75],  # CT (CoR)
+        [0.20, 0.10, 0.70],  # CASSI
         [0.05, 0.05, 0.90],  # CACTI
-        [0.20, 0.10, 0.70],  # Lensless
-        [0.05, 0.02, 0.93],  # MRI
         [0.10, 0.05, 0.85],  # SPC
-        [0.20, 0.10, 0.70],  # CASSI Alg1
-        [0.20, 0.10, 0.70],  # CASSI Alg2
-        [0.15, 0.05, 0.80],  # Ptychography
+        [0.20, 0.10, 0.70],  # Lensless
         [0.10, 0.10, 0.80],  # Fluorescence
-        [0.15, 0.05, 0.80],  # CT (offset)
-        [0.10, 0.05, 0.85],  # Cryo-EM
         [0.20, 0.10, 0.70],  # Comp. Holography
+        [0.15, 0.05, 0.80],  # Ptychography
+        [0.10, 0.05, 0.85],  # Cryo-EM
+        [0.05, 0.02, 0.93],  # MRI
+        [0.15, 0.10, 0.75],  # CT
+        [0.15, 0.05, 0.80],  # CBCT
         [0.15, 0.10, 0.75],  # Ultrasound
     ])
 
@@ -347,21 +345,19 @@ def fig3_triad():
     ax_c.text(-0.08, 1.05, 'c', fontsize=10, fontweight='bold',
               transform=ax_c.transAxes)
 
-    # Recovery ratios from the paper (14 configurations, 5 carrier families)
+    # Recovery ratios from the paper (12 modalities, 5 carrier families)
     recovery_ratios = {
-        'Matrix': 1.0,
-        'CT (CoR)': 0.89,
-        'CACTI': 1.1,
+        'CASSI': 0.22,
+        'CACTI': 1.10,
+        'SPC': 1.00,
         'Lensless': 0.78,
-        'MRI': 1.0,
-        'SPC': 1.0,
-        'CASSI\n(Alg 1)': 0.16,
-        'CASSI\n(Alg 2)': 0.22,
-        'Ptycho.': 0.65,
         'Fluor.': 0.53,
-        'CT (offset)': 1.0,
-        'Cryo-EM': 1.0,
-        'Comp. Holo.': 1.10,
+        'Comp.\nHolo.': 0.97,
+        'Ptycho.': 0.65,
+        'Cryo-EM': 1.00,
+        'MRI': 1.00,
+        'CT': 0.89,
+        'CBCT': 1.00,
         'US': 1.19,
     }
 
@@ -394,59 +390,51 @@ def fig3_triad():
 def fig4_correction_bar():
     fig, ax = plt.subplots(figsize=(DOUBLE_COL, 4.0))
 
-    # Data from Table S1 (Phase 1 + Phase 2 validated modalities)
+    # Canonical 12 modalities grouped by carrier family
     modalities = [
-        'Matrix', 'CT\n(CoR)', 'CACTI', 'Lensless', 'MRI', 'SPC',
-        'CASSI\n(Alg 1)', 'CASSI\n(Alg 2)', 'Ptycho.',
-        # Phase 2 multi-phantom validated
-        'Fluor.', 'CT\n(offset)', 'Cryo-EM', 'Comp.\nHolo.', 'US',
+        'CASSI', 'CACTI', 'SPC', 'Lensless', 'Fluor.', 'Comp.\nHolo.',
+        'Ptycho.', 'Cryo-EM',
+        'MRI',
+        'CT', 'CBCT',
+        'US',
     ]
     delta_psnr = [
-        12.21, 10.68, 10.21, 3.55,
-        11.20,  # MRI: multi-coil realistic (8 coils, 4× acc., 5% sens. error); single-coil stress-test was 48.25 dB
-        7.71, 0.54, 0.76, 7.09,
-        # Phase 2 multi-phantom aggregates from Table S1 (worst-case delta)
-        8.35, 1.62, 2.34, 1.03, 13.94,
+        0.76, 10.21, 7.71, 3.55, 8.35, 1.03,   # Optical photon (6)
+        7.09, 2.34,                               # Electron (2)
+        11.20,                                    # Nuclear spin (1)
+        10.68, 1.62,                              # X-ray (2)
+        13.94,                                    # Acoustic (1)
     ]
 
     # Carrier families
     carrier_colors = {
-        'Matrix': COLORS['gray'],
-        'CT\n(CoR)': COLORS['red'],
+        'CASSI': COLORS['blue'],
         'CACTI': COLORS['blue'],
-        'Lensless': COLORS['blue'],
-        'MRI': COLORS['purple'],
         'SPC': COLORS['blue'],
-        'CASSI\n(Alg 1)': COLORS['blue'],
-        'CASSI\n(Alg 2)': COLORS['blue'],
-        'Ptycho.': COLORS['green'],
+        'Lensless': COLORS['blue'],
         'Fluor.': COLORS['blue'],
-        'CT\n(offset)': COLORS['red'],
-        'Cryo-EM': COLORS['green'],
         'Comp.\nHolo.': COLORS['blue'],
+        'Ptycho.': COLORS['green'],
+        'Cryo-EM': COLORS['green'],
+        'MRI': COLORS['purple'],
+        'CT': COLORS['red'],
+        'CBCT': COLORS['red'],
         'US': COLORS['orange'],
     }
 
     carrier_labels = {
-        'Incoherent photon': COLORS['blue'],
-        'Coherent photon / electron': COLORS['green'],
-        'Spin (MRI)': COLORS['purple'],
-        'X-ray (CT)': COLORS['red'],
-        'Acoustic (US)': COLORS['orange'],
-        'Generic': COLORS['gray'],
+        'Optical photon': COLORS['blue'],
+        'Electron': COLORS['green'],
+        'Nuclear spin': COLORS['purple'],
+        'X-ray': COLORS['red'],
+        'Acoustic': COLORS['orange'],
     }
 
     x = np.arange(len(modalities))
     colors = [carrier_colors[m] for m in modalities]
 
-    # Phase 1 = solid, Phase 2 = hatched
     bars = ax.bar(x, delta_psnr, color=colors, alpha=0.8,
                   edgecolor='white', width=0.7)
-
-    # Add hatching for Phase 2 bars
-    for i in range(9, len(bars)):
-        bars[i].set_hatch('//')
-        bars[i].set_edgecolor('#666')
 
     # Set explicit y-axis limit with headroom so labels never touch title
     ylim_top = max(delta_psnr) * 1.30  # 30% headroom above tallest bar
@@ -455,27 +443,24 @@ def fig4_correction_bar():
     # Add value labels on bars
     for i, (bar, val) in enumerate(zip(bars, delta_psnr)):
         y_pos = bar.get_height() + 0.25
-        color = '#333'
         ax.text(bar.get_x() + bar.get_width()/2, y_pos,
                 f'+{val:.1f}', ha='center', va='bottom',
-                fontsize=5.5, fontweight='bold', color=color)
+                fontsize=5.5, fontweight='bold', color='#333')
 
     ax.set_xticks(x)
     ax.set_xticklabels(modalities, fontsize=6)
     ax.set_ylabel(r'Correction gain $\Delta$PSNR (dB)', fontsize=8)
-    ax.set_title('Gate 3 correction across 14 validated configurations '
+    ax.set_title('Gate 3 correction across 12 validated modalities '
                  '(5 carrier families)',
                  fontsize=8.5, fontweight='bold', pad=10)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
 
-    # Divider between Phase 1 and Phase 2
-    ax.axvline(x=8.5, color='#999', linestyle='--', linewidth=0.5, alpha=0.7)
-    # Phase 2 annotation: place in the gap between Ptycho and Fluor bars
-    ax.text(8.7, ylim_top * 0.72, 'Phase 2\n(multi-phantom)',
-            fontsize=5, color='#666', va='top')
+    # Carrier family dividers
+    for xdiv in [5.5, 7.5, 8.5, 10.5]:
+        ax.axvline(x=xdiv, color='#ccc', linestyle='--', linewidth=0.5)
 
-    # Legend: placed in the lower-right gap (Phase 2 bars are short except US)
+    # Legend
     legend_handles = [mpatches.Patch(facecolor=c, label=l, alpha=0.8)
                       for l, c in carrier_labels.items()]
     ax.legend(handles=legend_handles, loc='upper left',
@@ -596,21 +581,22 @@ def fig5_deepdive():
 def fig6_zeroshot():
     fig, ax = plt.subplots(figsize=(DOUBLE_COL, 4.5))
 
+    # Canonical 12 modalities (5 carrier families)
     modalities = [
         'CASSI', 'CACTI', 'SPC', 'Lensless', 'Fluor.', 'Comp.\nHolo.',
         'Ptycho.', 'Cryo-EM',
         'MRI',
-        'CT\n(CoR)', 'CT\n(offset)',
+        'CT', 'CBCT',
         'US',
     ]
-    # Carrier: Photon (CASSI,CACTI,SPC,Lensless,Fluor,CompHolo),
-    #          Electron (Ptycho,CryoEM), Spin (MRI), X-ray (CT*2), Acoustic (US)
+    # Carrier: Optical photon (CASSI,CACTI,SPC,Lensless,Fluor,CompHolo),
+    #          Electron (Ptycho,CryoEM), Nuclear spin (MRI), X-ray (CT,CBCT), Acoustic (US)
 
     # Modality-specific tuning (max delta PSNR from Table S1)
     tuned = [0.76, 10.21, 7.71, 3.55, 8.35, 1.04,
-             7.09, 2.34,   # Cryo-EM: 2.34 dB (real EMDB, Δf=1000 nm)
-             11.20,         # MRI: 11.20 dB (multi-coil realistic, 8 coils, 4×acc.)
-             10.68, 1.62,  # CT(offset): 1.62 dB (real images, Δs=10 px)
+             7.09, 2.34,   # Electron: Ptycho, Cryo-EM
+             11.20,         # MRI: multi-coil realistic (8 coils, 4×acc.)
+             10.68, 1.62,  # X-ray: CT, CBCT
              13.94]         # US: 13.94 dB (compound PW-DAS, Δc=200 m/s)
     # Zero-shot transfer (within <0.5 dB of tuned for all modalities)
     zeroshot = [0.71, 9.8, 7.4, 3.3, 7.9, 0.95,
@@ -656,9 +642,9 @@ def fig6_zeroshot():
 
     # Carrier family annotations using xaxis transform so bbox_inches='tight' captures them
     carrier_spans = [
-        (0, 5, 'Incoherent photon', COLORS['blue']),
+        (0, 5, 'Optical photon', COLORS['blue']),
         (6, 7, 'Electron', COLORS['green']),
-        (8, 8, 'Spin', COLORS['purple']),
+        (8, 8, 'Nuclear spin', COLORS['purple']),
         (9, 10, 'X-ray', COLORS['red']),
         (11, 11, 'Acoustic', COLORS['orange']),
     ]
