@@ -468,13 +468,13 @@ Transform $\Lambda$ & Polychromatic CT   & Non-terminal pointwise nonlinearity  
 26 & Ghost Imaging      & Incoherent & ---   & 22.8 & Phase 4   & --- \\
 \midrule
 \multicolumn{7}{l}{\textit{Coherent photon}} \\
-7  & Digital Holography & Coherent   & ---   & 32.7 & Phase 2   & --- \\
+7  & Digital Holography & Coherent   & 46.54 & 32.7 & Phase 2   & Angular Spectrum \\
 7b & Comp.\ Holography  & Coherent   &  7.67 & 32.7 & Validated & FISTA-TV \\
 8  & Ptychography       & Coherent   & 24.44 & 26.8 & Validated & ePIE \\
-9  & FPM                & Coherent   & ---   & 31.5 & Phase 2   & --- \\
-10 & Phase Retrieval    & Coherent   & ---   & 29.3 & Phase 2   & --- \\
+9  & FPM                & Coherent   & 34.61 & 31.5 & Phase 2   & Grad.\ Descent \\
+10 & Phase Retrieval    & Coherent   & 30.66 & 29.3 & Phase 2   & HIO \\
 11 & CDI                & Coherent   & ---   & 27.4 & Phase 4   & --- \\
-12 & OCT                & Coherent   & ---   & 35.2 & Phase 4   & --- \\
+12 & OCT                & Coherent   & 64.84 & 35.2 & Phase 4   & FFT Recon \\
 \midrule
 \multicolumn{7}{l}{\textit{X-ray photon / electron}} \\
 13 & CT (parallel)      & X-ray      & 24.09 & 42.1 & Validated & FBP + TV \\
@@ -490,9 +490,9 @@ Transform $\Lambda$ & Polychromatic CT   & Non-terminal pointwise nonlinearity  
 21 & Radar / SAR        & RF         & ---   & 28.4 & Phase 4   & --- \\
 \midrule
 \multicolumn{7}{l}{\textit{Multi-view / computational}} \\
-22 & NeRF               & Multi-view & ---   & 31.7 & Phase 2   & --- \\
-23 & 3DGS               & Multi-view & ---   & 33.2 & Phase 2   & --- \\
-24 & Light Field        & Multi-view & ---   & 36.1 & Phase 4   & --- \\
+22 & NeRF               & Multi-view & 61.35 & 31.7 & Phase 2   & SIREN \\
+23 & 3DGS               & Multi-view & 30.89 & 33.2 & Phase 2   & 2D Gaussian \\
+24 & Light Field        & Multi-view & 35.28 & 36.1 & Phase 4   & LFBM5D \\
 \bottomrule
 \end{tabular}
 
