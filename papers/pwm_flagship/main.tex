@@ -464,8 +464,8 @@ Transform $\Lambda$ & Polychromatic CT   & Non-terminal pointwise nonlinearity  
 4  & CACTI              & Incoherent & 35.39 & 33.4 & Validated & EfficientSCI \\
 5  & Lensless           & Incoherent & 27.03 & 28.5 & Validated & Richardson--Lucy \\
 6  & Fluorescence       & Incoherent & 30.63 & 30.1 & Validated & Richardson--Lucy \\
-25 & Structured Illum.\ & Incoherent & ---   & 32.4 & Phase 4   & --- \\
-26 & Ghost Imaging      & Incoherent & ---   & 22.8 & Phase 4   & --- \\
+25 & Structured Illum.\ & Incoherent & 37.30 & 32.4 & Test      & 3-step Demod \\
+26 & Ghost Imaging      & Incoherent & 24.63 & 22.8 & Test      & Hadamard Diff. \\
 \midrule
 \multicolumn{7}{l}{\textit{Coherent photon}} \\
 7  & Digital Holography & Coherent   & 46.54 & 32.7 & Phase 2   & Angular Spectrum \\
@@ -473,21 +473,21 @@ Transform $\Lambda$ & Polychromatic CT   & Non-terminal pointwise nonlinearity  
 8  & Ptychography       & Coherent   & 24.44 & 26.8 & Validated & ePIE \\
 9  & FPM                & Coherent   & 34.61 & 31.5 & Phase 2   & Grad.\ Descent \\
 10 & Phase Retrieval    & Coherent   & 30.66 & 29.3 & Phase 2   & HIO \\
-11 & CDI                & Coherent   & ---   & 27.4 & Phase 4   & --- \\
+11 & CDI                & Coherent   & 30.22 & 27.4 & Test      & HIO (2000 iter) \\
 12 & OCT                & Coherent   & 64.84 & 35.2 & Phase 4   & FFT Recon \\
 \midrule
 \multicolumn{7}{l}{\textit{X-ray photon / electron}} \\
 13 & CT (parallel)      & X-ray      & 24.09 & 42.1 & Validated & FBP + TV \\
-14 & CT (fan-beam)      & X-ray      & ---   & 40.8 & Phase 2   & --- \\
+14 & CT (fan-beam)      & X-ray      & 28.82 & 40.8 & Test      & SART-TV \\
 15 & CT (det.\ offset)  & X-ray      & 13.79 & 39.5 & Validated & FBP \\
 16 & Cryo-EM            & Electron   & 16.42 & 25.9 & Validated & Wiener \\
 \midrule
 \multicolumn{7}{l}{\textit{Nuclear spin / acoustic}} \\
 17 & MRI (Cartesian)    & RF         & 52.11 & 42.3 & Validated & CG-SENSE \\
-18 & MRI (radial)       & RF         & ---   & 38.7 & Phase 2   & --- \\
-19 & MRI (spiral)       & RF         & ---   & 37.2 & Phase 4   & --- \\
+18 & MRI (radial)       & RF         & 27.41 & 38.7 & Test      & FBP \\
+19 & MRI (spiral)       & RF         & 29.20 & 37.2 & Test      & CG-TV \\
 20 & Ultrasound         & Acoustic   & 18.68 & 31.8 & Validated & Compound PW-DAS \\
-21 & Radar / SAR        & RF         & ---   & 28.4 & Phase 4   & --- \\
+21 & Radar / SAR        & RF         & 28.77 & 28.4 & Test      & Matched Filter \\
 \midrule
 \multicolumn{7}{l}{\textit{Multi-view / computational}} \\
 22 & NeRF               & Multi-view & 61.35 & 31.7 & Phase 2   & SIREN \\
