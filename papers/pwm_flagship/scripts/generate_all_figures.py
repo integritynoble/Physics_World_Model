@@ -738,7 +738,9 @@ def fig7_hardware():
     ax_b.set_xticklabels(cacti_scenes, fontsize=6, rotation=30)
     ax_b.set_ylabel('Residual ratio\n(mismatched / calibrated)', fontsize=7)
     ax_b.set_title('CACTI real data', fontsize=8, fontweight='bold')
-    ax_b.legend(fontsize=5.5)
+    b_max = max(max(cacti_gaptv), max(cacti_pnp), 10.4)
+    ax_b.set_ylim(0, b_max * 1.35)  # headroom for legend
+    ax_b.legend(fontsize=5.5, loc='upper right')
     ax_b.spines['top'].set_visible(False)
     ax_b.spines['right'].set_visible(False)
 
@@ -811,10 +813,15 @@ def fig7_hardware():
     ax_d.bar(x4 + width4, sc_iii_vals, width4, label='Sc. IV (Calibrated)',
              color=COLORS['sc_iii'], alpha=0.8)
 
-    # Recovery percentage labels
+    d_max = max(max(sc_ii_vals), max(sc_iv_vals), max(sc_iii_vals))
+    d_ylim = d_max * 1.40  # headroom for pct labels and legend
+    ax_d.set_ylim(0, d_ylim)
+
+    # Recovery percentage labels — placed just above tallest bar per group
     for i, pct in enumerate(recovery_pcts):
+        bar_top = max(sc_ii_vals[i], sc_iii_vals[i], sc_iv_vals[i])
         color = COLORS['sc_iii'] if pct > 50 else COLORS['sc_ii']
-        ax_d.text(i, max(sc_ii_vals[i], sc_iii_vals[i], sc_iv_vals[i]) + 0.8,
+        ax_d.text(i, bar_top + d_ylim * 0.03,
                   f'{pct}%', ha='center', fontsize=7, fontweight='bold',
                   color=color)
 
@@ -823,7 +830,7 @@ def fig7_hardware():
     ax_d.set_ylabel('PSNR (dB)', fontsize=7)
     ax_d.set_title('Autonomous calibration recovery', fontsize=8,
                    fontweight='bold')
-    ax_d.legend(fontsize=5.5)
+    ax_d.legend(fontsize=5.5, loc='upper right')
     ax_d.spines['top'].set_visible(False)
     ax_d.spines['right'].set_visible(False)
 
