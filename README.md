@@ -425,7 +425,7 @@ PWM supports **64 validated imaging modalities** with prompt-driven workflows:
 **Coherent Imaging:**
 - `ptychography` - Phase retrieval with Neural Network (59.41 dB)
 - `holography` - Off-axis holography with Angular Spectrum (46.54 dB)
-- `phase_retrieval` - CDI with Hybrid Input-Output (100.00 dB)
+- `phase_retrieval` - CDI with Hybrid Input-Output (30.66 dB)
 - `fpm` - Fourier Ptychographic Microscopy with Gradient Descent (34.61 dB)
 
 **Optical Imaging:**
@@ -777,7 +777,7 @@ See `docs/PLAN_v4_report_contract.md` for full per-modality reports.
 | 18 | Panorama Multifocal | Neural Fusion | 27.90 | 28.0 | Pass |
 | 19 | Light Field | LFBM5D | 35.28 | 28.0 | Pass |
 | 20 | Integral | DIBR | 28.14 | 27.0 | Pass |
-| 21 | Phase Retrieval | HIO | 100.00 | 30.0 | Pass |
+| 21 | Phase Retrieval | HIO | 30.66 | 30.0 | Pass |
 | 22 | FLIM | MLE Fit | 48.11 | 25.0 | Pass |
 | 23 | Photoacoustic | Time Reversal | 50.54 | 32.0 | Pass |
 | 24 | OCT | FFT Recon | 64.84 | 36.0 | Pass |

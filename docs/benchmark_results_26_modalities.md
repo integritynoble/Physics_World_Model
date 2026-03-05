@@ -28,7 +28,7 @@
 | 18 | Panorama Multifocal | 27.90 | 28.0 | PASS |
 | 19 | Light Field | 30.35 | 28.0 | PASS |
 | 20 | Integral Photography | 27.85 | 27.0 | PASS |
-| 21 | Phase Retrieval | 100.00 | 30.0 | PASS |
+| 21 | Phase Retrieval | 30.66 | 30.0 | PASS |
 | 22 | FLIM | 35.38 | 25.0 | PASS |
 | 23 | Photoacoustic | 50.54 | 32.0 | PASS |
 | 24 | OCT | 64.84 | 36.0 | PASS |
@@ -43,6 +43,7 @@
 | Light Field | 21.39 dB | 30.35 dB | Added sharpness-based disparity estimation |
 | Light-Sheet | 20.68 dB | 26.05 dB | Fixed best-PSNR tracking, tuned Fourier Notch parameters |
 | FPM | 28.70 dB | 34.57 dB | Increased LED grid from 5x5 to 9x9 for full k-space coverage |
+| Phase Retrieval | 100.00 dB (sentinel) | 30.66 dB | Fixed trivial convergence: use complex object (amplitude + phase, 0–0.6 rad), disable positivity constraint; HIO now retrieves both amplitude and phase |
 
 ## CASSI UPWMI Calibration (Algorithm 2)
 
