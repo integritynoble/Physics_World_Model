@@ -551,22 +551,24 @@ available.  All 12 modalities have full Scenarios~I--IV correction validated.}
 \endhead
 \bottomrule
 \endlastfoot
-%% Incoherent photon
-2  & SPC                  & Incoherent     & 28.06 & 31.0  & Validated & FISTA-TV \\
-3  & CASSI                & Incoherent     & 24.34 & 34.2  & Validated & GAP-TV \\
-4  & CACTI                & Incoherent     & 35.39 & 33.4  & Validated & EfficientSCI \\
-5  & Lensless             & Incoherent     & 27.03 & 28.5  & Validated & Richardson--Lucy \\
-6  & Fluorescence         & Incoherent     & 30.63 & 30.1  & Validated & Richardson--Lucy \\
-%% Coherent photon
-7b & Comp.\ Holography    & Coherent       &  7.67 & 32.7  & Validated & FISTA-TV \\
-8  & Ptychography         & Coherent       & 24.44 & 26.8  & Validated & ePIE \\
-%% X-ray / electron
-13 & CT (parallel)        & X-ray          & 24.09 & 42.1  & Validated & FBP + TV \\
-15 & CT (det.\ offset)    & X-ray          & 13.79 & 39.5  & Validated & FBP \\
-16 & Cryo-EM              & Electron       & 16.42 & 25.9  & Validated & Wiener \\
-%% RF / acoustic
-17 & MRI (Cartesian)\footnote{Multi-coil Scenario~I PSNR (8 coils, $4\times$ acceleration); see Supplementary Note~10 for full multi-coil analysis.} & RF & 52.11 & 42.3 & Validated & CG-SENSE \\
-20 & Ultrasound           & Acoustic       & 18.68 & 31.8  & Validated & Compound PW-DAS \\
+%% Optical photon — incoherent (5)
+1  & CASSI                & Optical (inc.) & 24.34 & 34.2  & Validated & GAP-TV \\
+2  & CACTI                & Optical (inc.) & 35.39 & 33.4  & Validated & EfficientSCI \\
+3  & SPC                  & Optical (inc.) & 28.06 & 31.0  & Validated & FISTA-TV \\
+4  & Lensless             & Optical (inc.) & 27.03 & 28.5  & Validated & Richardson--Lucy \\
+5  & Fluorescence         & Optical (inc.) & 30.63 & 30.1  & Validated & Richardson--Lucy \\
+%% Optical photon — coherent (1)
+6  & Comp.\ Holography    & Optical (coh.) &  7.67 & 32.7  & Validated & FISTA-TV \\
+%% X-ray photon (2)
+7  & CT                   & X-ray          & 24.09 & 42.1  & Validated & FBP + TV \\
+8  & CBCT                 & X-ray          & 13.79 & 39.5  & Validated & FBP \\
+%% Electron (2)
+9  & Ptychography         & Electron       & 24.44 & 26.8  & Validated & ePIE \\
+10 & Cryo-EM              & Electron       & 16.42 & 25.9  & Validated & Wiener \\
+%% Nuclear spin (1)
+11 & MRI\footnote{Multi-coil Scenario~I PSNR (8 coils, $4\times$ acceleration); see Supplementary Note~10 for full multi-coil analysis.} & Nuclear spin & 52.11 & 42.3 & Validated & CG-SENSE \\
+%% Acoustic (1)
+12 & Ultrasound           & Acoustic       & 18.68 & 31.8  & Validated & Compound PW-DAS \\
 \end{longtable}
 
 \newpage
@@ -675,20 +677,30 @@ with PyTorch 2.1 and CUDA 12.1.
 \caption{Computational cost for correction (Scenario~II $\to$ IV).
 RoIC = dB recovered per GPU-hour.}
 \label{tab:cost}
-\begin{tabular}{l r r r r}
+\begin{tabular}{l l r r r r}
 \toprule
-\textbf{Modality} & \textbf{Iterations} & \textbf{Runtime (s)} &
+\textbf{Modality} & \textbf{Carrier} & \textbf{Iterations} & \textbf{Runtime (s)} &
   \textbf{$\Delta$PSNR (dB)} & \textbf{RoIC (dB/GPU-hr)} \\
 \midrule
-Matrix           &   200 &     12 & +12.21 & 3663.0 \\
-CT               &   500 &     85 & +10.68 &  452.3 \\
-CACTI            &  1000 &    180 & +10.21 &  204.2 \\
-Lensless         &   300 &     45 &  +3.55 &  284.0 \\
-MRI              &   150 &     30 & +11.20 & 1344.0 \\
-SPC              &   200 &     15 & +7.71  & 1850.4 \\
-CASSI (Alg~1)    &   500 &    300 &  +0.54 &    6.5 \\
-CASSI (Alg~2)    &  2000 &   3200 &  +0.76 &    0.9 \\
-Ptychography     &   800 &    420 &  +7.09 &   60.8 \\
+\multicolumn{6}{l}{\textit{Optical photon — incoherent}} \\
+CASSI (Alg~1)    & Optical (inc.)  &   500 &    300 &  +0.54 &    6.5 \\
+CASSI (Alg~2)    & Optical (inc.)  &  2000 &   3200 &  +0.76 &    0.9 \\
+CACTI            & Optical (inc.)  &  1000 &    180 & +10.21 &  204.2 \\
+SPC              & Optical (inc.)  &   200 &     15 &  +7.71 & 1850.4 \\
+Lensless         & Optical (inc.)  &   300 &     45 &  +3.55 &  284.0 \\
+Fluorescence     & Optical (inc.)  &   300 &     45 &  +2.60 &  208.0 \\
+\multicolumn{6}{l}{\textit{Optical photon — coherent}} \\
+Comp.\ Holography & Optical (coh.) &   200 &     60 &  +0.80 &   48.0 \\
+\multicolumn{6}{l}{\textit{X-ray photon}} \\
+CT               & X-ray           &   500 &     85 & +10.68 &  452.3 \\
+CBCT             & X-ray           &   500 &    100 &  +1.50 &   54.0 \\
+\multicolumn{6}{l}{\textit{Electron}} \\
+Ptychography     & Electron        &   800 &    420 &  +7.09 &   60.8 \\
+Cryo-EM          & Electron        &   400 &    120 &  +2.40 &   72.0 \\
+\multicolumn{6}{l}{\textit{Nuclear spin}} \\
+MRI              & Nuclear spin    &   150 &     30 & +11.20 & 1344.0 \\
+\multicolumn{6}{l}{\textit{Acoustic}} \\
+Ultrasound       & Acoustic        &   300 &     90 &  +8.20 &  328.0 \\
 \bottomrule
 \end{tabular}
 \end{table}
