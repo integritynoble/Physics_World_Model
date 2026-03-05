@@ -255,7 +255,7 @@ def fig2_operatorgraph():
 # ═════════════════════════════════════════════════════════════════════════════
 def fig3_triad():
     fig = plt.figure(figsize=(DOUBLE_COL, 4.5))
-    gs = gridspec.GridSpec(1, 3, width_ratios=[1, 1.2, 0.8], wspace=0.35)
+    gs = gridspec.GridSpec(1, 3, width_ratios=[1, 1.2, 0.8], wspace=0.55)
 
     # Panel a: Decision tree
     ax_a = fig.add_subplot(gs[0])
@@ -344,7 +344,7 @@ def fig3_triad():
 
     # Panel c: Recovery ratio distribution
     ax_c = fig.add_subplot(gs[2])
-    ax_c.text(-0.2, 1.05, 'c', fontsize=10, fontweight='bold',
+    ax_c.text(-0.08, 1.05, 'c', fontsize=10, fontweight='bold',
               transform=ax_c.transAxes)
 
     # Recovery ratios from the paper (14 configurations, 5 carrier families)
