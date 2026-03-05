@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.24)  5 MAR 2026 00:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.24)  5 MAR 2026 00:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -569,14 +569,7 @@ m/n/10.95 (\OT1/cmr/bx/n/10.95 x\OT1/cmr/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^@ []
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[5] [6] [7]
-Overfull \hbox (25.2136pt too wide) in paragraph at lines 193--194
-\OT1/cmr/m/n/10.95 span-ning 5 car-rier fam-i-lies), \OT1/cmr/bx/n/10.95 Gate3 
-\OT1/cmr/m/n/10.95 is the dom-i-nant fail-ure gate ($\OML/cmm/m/it/10.95 C[] > 
-[]\OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 C[]; C[]\OT1/cmr/m/n/10.95 )$
- []
-
-[8]
+[5] [6] [7] [8]
 Overfull \hbox (3.00143pt too wide) in paragraph at lines 223--224
 \OT1/cmr/m/n/10.95 TV/MST-L]; CACTI: $+10\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.9
 5 21 \OMS/cmsy/m/n/10.95 ^^F \OT1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 :\OT1/cmr/
@@ -710,29 +703,29 @@ r/m/n/10.95 The software-perturbation pro-to-col above
  []
 
 [30] [31] [32]) [33] (./main.bbl [34] [35] [36] [37]) [38]
-<figures/fig1_overview.pdf, id=487, 531.32437pt x 211.38976pt>
+<figures/fig1_overview.pdf, id=497, 531.32437pt x 211.38976pt>
 File: figures/fig1_overview.pdf Graphic file (type pdf)
 <use figures/fig1_overview.pdf>
 Package pdftex.def Info: figures/fig1_overview.pdf  used on input line 359.
 (pdftex.def)             Requested size: 433.33589pt x 172.40529pt.
-<figures/fig2_operatorgraph.pdf, id=488, 427.78806pt x 209.76141pt>
+<figures/fig2_operatorgraph.pdf, id=498, 427.78806pt x 209.76141pt>
 File: figures/fig2_operatorgraph.pdf Graphic file (type pdf)
 <use figures/fig2_operatorgraph.pdf>
 Package pdftex.def Info: figures/fig2_operatorgraph.pdf  used on input line 367
 .
 (pdftex.def)             Requested size: 433.33589pt x 212.48148pt.
-<figures/fig3_triad.pdf, id=489, 423.3255pt x 311.86287pt>
+<figures/fig3_triad.pdf, id=499, 423.3255pt x 311.86287pt>
 File: figures/fig3_triad.pdf Graphic file (type pdf)
 <use figures/fig3_triad.pdf>
 Package pdftex.def Info: figures/fig3_triad.pdf  used on input line 375.
 (pdftex.def)             Requested size: 433.33589pt x 319.24274pt.
-<figures/fig4_correction_bar.pdf, id=490, 520.74359pt x 289.551pt>
+<figures/fig4_correction_bar.pdf, id=500, 520.74359pt x 289.551pt>
 File: figures/fig4_correction_bar.pdf Graphic file (type pdf)
 <use figures/fig4_correction_bar.pdf>
 Package pdftex.def Info: figures/fig4_correction_bar.pdf  used on input line 38
 3.
 (pdftex.def)             Requested size: 433.33589pt x 240.95906pt.
-<figures/fig6_zeroshot.pdf, id=491, 517.00905pt x 315.93889pt>
+<figures/fig6_zeroshot.pdf, id=501, 517.00905pt x 315.93889pt>
 File: figures/fig6_zeroshot.pdf Graphic file (type pdf)
 <use figures/fig6_zeroshot.pdf>
 Package pdftex.def Info: figures/fig6_zeroshot.pdf  used on input line 384.
@@ -741,23 +734,23 @@ Package pdftex.def Info: figures/fig6_zeroshot.pdf  used on input line 384.
 
 LaTeX Warning: Float too large for page by 50.21826pt on input line 389.
 
-<figures/fig5_deepdive.pdf, id=492, 453.01776pt x 279.23903pt>
+<figures/fig5_deepdive.pdf, id=502, 453.01776pt x 279.23903pt>
 File: figures/fig5_deepdive.pdf Graphic file (type pdf)
 <use figures/fig5_deepdive.pdf>
 Package pdftex.def Info: figures/fig5_deepdive.pdf  used on input line 394.
 (pdftex.def)             Requested size: 398.66821pt x 245.74388pt.
-<figures/fig8_visual_comparison.pdf, id=493, 517.48447pt x 420.4188pt>
+<figures/fig8_visual_comparison.pdf, id=503, 517.48447pt x 420.4188pt>
 File: figures/fig8_visual_comparison.pdf Graphic file (type pdf)
 <use figures/fig8_visual_comparison.pdf>
 Package pdftex.def Info: figures/fig8_visual_comparison.pdf  used on input line
  395.
 (pdftex.def)             Requested size: 398.66821pt x 323.89667pt.
-<figures/fig7_hardware.pdf, id=494, 456.4725pt x 397.3199pt>
+<figures/fig7_hardware.pdf, id=504, 456.4725pt x 397.3199pt>
 File: figures/fig7_hardware.pdf Graphic file (type pdf)
 <use figures/fig7_hardware.pdf>
 Package pdftex.def Info: figures/fig7_hardware.pdf  used on input line 406.
 (pdftex.def)             Requested size: 433.33589pt x 377.17894pt.
-<figures/fig9_basis_growth.pdf, id=495, 394.51991pt x 206.12709pt>
+<figures/fig9_basis_growth.pdf, id=505, 394.51991pt x 206.12709pt>
 File: figures/fig9_basis_growth.pdf Graphic file (type pdf)
 <use figures/fig9_basis_growth.pdf>
 Package pdftex.def Info: figures/fig9_basis_growth.pdf  used on input line 414.
@@ -820,10 +813,10 @@ onts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
 /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/sh
 are/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (45 pages, 1469785 bytes).
+Output written on main.pdf (45 pages, 1470978 bytes).
 PDF statistics:
- 916 PDF objects out of 1000 (max. 8388607)
- 708 compressed objects within 8 object streams
+ 922 PDF objects out of 1000 (max. 8388607)
+ 714 compressed objects within 8 object streams
  246 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
