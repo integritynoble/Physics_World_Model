@@ -685,8 +685,8 @@ def fig7_hardware():
     cacti_real = load_json(RESULTS / 'cacti_real_results.json')
     scenario_iv = load_json(RESULTS / 'scenario_iv_results.json')
 
-    fig = plt.figure(figsize=(DOUBLE_COL, 5.5))
-    gs = gridspec.GridSpec(2, 2, hspace=0.45, wspace=0.35)
+    fig = plt.figure(figsize=(DOUBLE_COL, 6.2))
+    gs = gridspec.GridSpec(2, 2, hspace=0.60, wspace=0.35)
 
     # Panel a: CASSI real data residual ratio
     ax_a = fig.add_subplot(gs[0, 0])
@@ -814,7 +814,7 @@ def fig7_hardware():
              color=COLORS['sc_iii'], alpha=0.8)
 
     d_max = max(max(sc_ii_vals), max(sc_iv_vals), max(sc_iii_vals))
-    d_ylim = d_max * 1.40  # headroom for pct labels and legend
+    d_ylim = d_max * 1.55  # generous headroom for pct labels + legend
     ax_d.set_ylim(0, d_ylim)
 
     # Recovery percentage labels — placed just above tallest bar per group
@@ -830,7 +830,10 @@ def fig7_hardware():
     ax_d.set_ylabel('PSNR (dB)', fontsize=7)
     ax_d.set_title('Autonomous calibration recovery', fontsize=8,
                    fontweight='bold')
-    ax_d.legend(fontsize=5.5, loc='upper right')
+    # Legend in upper-left: CASSI bars are shorter (max ~23 dB vs ylim ~43 dB)
+    # leaving ample room; avoids overlapping taller CACTI/SPC bars on the right
+    ax_d.legend(fontsize=5.5, loc='upper left',
+                borderpad=0.4, handlelength=1.0)
     ax_d.spines['top'].set_visible(False)
     ax_d.spines['right'].set_visible(False)
 
