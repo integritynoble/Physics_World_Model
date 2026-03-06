@@ -308,7 +308,7 @@ def fig2_operatorgraph():
 # ═════════════════════════════════════════════════════════════════════════════
 def fig3_triad():
     fig = plt.figure(figsize=(DOUBLE_COL, 4.5))
-    gs = gridspec.GridSpec(1, 3, width_ratios=[1, 1.2, 0.8], wspace=0.55)
+    gs = gridspec.GridSpec(1, 3, width_ratios=[1.5, 1.2, 0.8], wspace=0.45)
 
     # Panel a: Decision tree
     ax_a = fig.add_subplot(gs[0])
@@ -329,9 +329,9 @@ def fig3_triad():
         (3.3, 2.3, 'G3\nMismatch', COLORS['gate3']),
     ]
     for x, y, text, color in gates:
-        ax_a.text(x, y, text, ha='center', va='center', fontsize=6,
+        ax_a.text(x, y, text, ha='center', va='center', fontsize=5,
                   fontweight='bold', color='white',
-                  bbox=dict(boxstyle='round,pad=0.2', facecolor=color,
+                  bbox=dict(boxstyle='round,pad=0.15', facecolor=color,
                             edgecolor=color, linewidth=0.8))
         ax_a.annotate('', xy=(x, y + 0.45), xytext=(2, 3.55),
                       arrowprops=dict(arrowstyle='->', color='#555',
