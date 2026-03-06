@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.24)  5 MAR 2026 04:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.24)  6 MAR 2026 15:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -703,29 +703,29 @@ r/m/n/10.95 The software-perturbation pro-to-col above
  []
 
 [30] [31] [32]) [33] (./main.bbl [34] [35] [36] [37]) [38]
-<figures/fig1_overview.pdf, id=497, 531.32437pt x 211.38976pt>
+<figures/fig1_overview.pdf, id=499, 531.32437pt x 211.38976pt>
 File: figures/fig1_overview.pdf Graphic file (type pdf)
 <use figures/fig1_overview.pdf>
 Package pdftex.def Info: figures/fig1_overview.pdf  used on input line 359.
 (pdftex.def)             Requested size: 433.33589pt x 172.40529pt.
-<figures/fig2_operatorgraph.pdf, id=498, 427.78806pt x 209.76141pt>
+<figures/fig2_operatorgraph.pdf, id=500, 427.78806pt x 209.76141pt>
 File: figures/fig2_operatorgraph.pdf Graphic file (type pdf)
 <use figures/fig2_operatorgraph.pdf>
 Package pdftex.def Info: figures/fig2_operatorgraph.pdf  used on input line 367
 .
 (pdftex.def)             Requested size: 433.33589pt x 212.48148pt.
-<figures/fig3_triad.pdf, id=499, 423.3255pt x 311.86287pt>
+<figures/fig3_triad.pdf, id=501, 425.18762pt x 311.86287pt>
 File: figures/fig3_triad.pdf Graphic file (type pdf)
 <use figures/fig3_triad.pdf>
 Package pdftex.def Info: figures/fig3_triad.pdf  used on input line 375.
-(pdftex.def)             Requested size: 433.33589pt x 319.24274pt.
-<figures/fig4_correction_bar.pdf, id=500, 520.74359pt x 289.551pt>
+(pdftex.def)             Requested size: 433.33589pt x 317.85797pt.
+<figures/fig4_correction_bar.pdf, id=502, 520.74359pt x 289.551pt>
 File: figures/fig4_correction_bar.pdf Graphic file (type pdf)
 <use figures/fig4_correction_bar.pdf>
 Package pdftex.def Info: figures/fig4_correction_bar.pdf  used on input line 38
 3.
 (pdftex.def)             Requested size: 433.33589pt x 240.95906pt.
-<figures/fig6_zeroshot.pdf, id=501, 517.00905pt x 315.93889pt>
+<figures/fig6_zeroshot.pdf, id=503, 517.00905pt x 315.93889pt>
 File: figures/fig6_zeroshot.pdf Graphic file (type pdf)
 <use figures/fig6_zeroshot.pdf>
 Package pdftex.def Info: figures/fig6_zeroshot.pdf  used on input line 384.
@@ -734,23 +734,23 @@ Package pdftex.def Info: figures/fig6_zeroshot.pdf  used on input line 384.
 
 LaTeX Warning: Float too large for page by 50.21826pt on input line 389.
 
-<figures/fig5_deepdive.pdf, id=502, 453.01776pt x 279.23903pt>
+<figures/fig5_deepdive.pdf, id=504, 453.01776pt x 279.23903pt>
 File: figures/fig5_deepdive.pdf Graphic file (type pdf)
 <use figures/fig5_deepdive.pdf>
 Package pdftex.def Info: figures/fig5_deepdive.pdf  used on input line 394.
 (pdftex.def)             Requested size: 398.66821pt x 245.74388pt.
-<figures/fig8_visual_comparison.pdf, id=503, 517.48447pt x 420.4188pt>
+<figures/fig8_visual_comparison.pdf, id=505, 517.48447pt x 420.4188pt>
 File: figures/fig8_visual_comparison.pdf Graphic file (type pdf)
 <use figures/fig8_visual_comparison.pdf>
 Package pdftex.def Info: figures/fig8_visual_comparison.pdf  used on input line
  395.
 (pdftex.def)             Requested size: 398.66821pt x 323.89667pt.
-<figures/fig7_hardware.pdf, id=504, 456.4725pt x 397.3199pt>
+<figures/fig7_hardware.pdf, id=506, 456.4725pt x 397.3199pt>
 File: figures/fig7_hardware.pdf Graphic file (type pdf)
 <use figures/fig7_hardware.pdf>
 Package pdftex.def Info: figures/fig7_hardware.pdf  used on input line 406.
 (pdftex.def)             Requested size: 433.33589pt x 377.17894pt.
-<figures/fig9_basis_growth.pdf, id=505, 394.51991pt x 206.12709pt>
+<figures/fig9_basis_growth.pdf, id=507, 394.51991pt x 206.12709pt>
 File: figures/fig9_basis_growth.pdf Graphic file (type pdf)
 <use figures/fig9_basis_growth.pdf>
 Package pdftex.def Info: figures/fig9_basis_growth.pdf  used on input line 414.
@@ -778,10 +778,10 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 15200 strings out of 475662
- 250265 string characters out of 5784442
+ 15204 strings out of 475662
+ 250334 string characters out of 5784442
  1943975 words of memory out of 5000000
- 36910 multiletter control sequences out of 15000+600000
+ 36913 multiletter control sequences out of 15000+600000
  577197 words of font info for 107 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
  74i,14n,82p,2486b,652s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -813,10 +813,10 @@ onts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
 /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/sh
 are/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (45 pages, 1470204 bytes).
+Output written on main.pdf (45 pages, 1464617 bytes).
 PDF statistics:
- 921 PDF objects out of 1000 (max. 8388607)
- 713 compressed objects within 8 object streams
- 246 named destinations out of 1000 (max. 500000)
+ 920 PDF objects out of 1000 (max. 8388607)
+ 716 compressed objects within 8 object streams
+ 247 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 

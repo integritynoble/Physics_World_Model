@@ -1,4 +1,4 @@
-\begin{thebibliography}{44}
+\begin{thebibliography}{45}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -211,6 +211,16 @@ Alexander Meaney, Andreas Hauptmann, and Samuli Siltanen.
 David~J. Brady, Kerkil Choi, Daniel~L. Marks, Ryoichi Horisaki, and Sehoon Lim.
 \newblock Compressive holography.
 \newblock \emph{Optics Express}, 17\penalty0 (15):\penalty0 13040--13049, 2009.
+
+\bibitem[Antipa et~al.(2018)Antipa, Kuo, Heckel, Mildenhall, Bostan, Ng, and
+  Waller]{Antipa2018}
+Nick Antipa, Grace Kuo, Reinhard Heckel, Ben Mildenhall, Emrah Bostan, Ren Ng,
+  and Laura Waller.
+\newblock {DiffuserCam}: lensless single-exposure 3{D} imaging.
+\newblock \emph{Optica}, 5\penalty0 (1):\penalty0 1--9, 2018.
+\newblock \doi{10.1364/OPTICA.5.000001}.
+\newblock DiffuserCam DLMD dataset: HuggingFace
+  bezzam/DiffuserCam-Lensless-Mirflickr-Dataset.
 
 \bibitem[Wang et~al.(2023{\natexlab{b}})Wang, Fu, Du, Gao, Huang, Liu, Chandak,
   Liu, Van~Katwyk, Deac, et~al.]{wang2023scientific}
