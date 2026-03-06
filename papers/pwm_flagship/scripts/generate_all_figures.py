@@ -232,7 +232,7 @@ def fig2_operatorgraph():
         ('168', 'Registered\nmodalities'),
         ('12', 'End-to-end\ncorrection'),
         ('5', 'Physical\ncarriers'),
-        ('10', 'Hardware\nvalidated'),
+        ('12', 'Hardware\nvalidated'),
     ]
 
     for i, (num, label) in enumerate(stats):
