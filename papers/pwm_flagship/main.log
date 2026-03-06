@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.24)  6 MAR 2026 19:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.24)  6 MAR 2026 20:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -617,7 +617,7 @@ Overfull \hbox (1.92677pt too wide) in paragraph at lines 345--346
 al-u-a-tion pipelines, is avail-able at [][]$\OT1/cmtt/m/n/10.95 https :
  []
 
-(./methods.tex [19] [20]
+[19] (./methods.tex [20]
 Overfull \hbox (13.1501pt too wide) in paragraph at lines 113--115
 []\OT1/cmr/bx/n/10.95 Plan for-ward. \OT1/cmr/m/n/10.95 The topo-log-i-cal sort
  yields a se-quen-tial ex-e-cu-tion plan $(\OML/cmm/m/it/10.95 v[]; [] ; v[]\OT
@@ -642,13 +642,13 @@ Overfull \hbox (1.43315pt too wide) in paragraph at lines 169--174
 form
  []
 
-
+[22]
 Overfull \hbox (11.52202pt too wide) in paragraph at lines 179--183
 []\OT1/cmr/m/n/10.95 Complete phys-i-cal sim-u-la-tion in-clud-ing wave-optical
 
  []
 
-[22] [23]
+[23]
 Overfull \hbox (0.74269pt too wide) in paragraph at lines 262--273
  []\OT1/cmr/bx/n/10.95 TriadReport.[] \OT1/cmr/m/n/10.95 For ev-ery di-ag-no-si
 s, \OT1/cmr/m/sc/10.95 pwm \OT1/cmr/m/n/10.95 pro-duces a \OT1/cmr/m/sc/10.95 T
@@ -708,57 +708,38 @@ File: figures/fig1_overview.pdf Graphic file (type pdf)
 <use figures/fig1_overview.pdf>
 Package pdftex.def Info: figures/fig1_overview.pdf  used on input line 369.
 (pdftex.def)             Requested size: 433.33589pt x 219.5589pt.
-<figures/fig2_operatorgraph.pdf, id=504, 427.78806pt x 209.76141pt>
+<figures/fig2_operatorgraph.pdf, id=504, 454.96687pt x 349.94258pt>
 File: figures/fig2_operatorgraph.pdf Graphic file (type pdf)
 <use figures/fig2_operatorgraph.pdf>
 Package pdftex.def Info: figures/fig2_operatorgraph.pdf  used on input line 377
 .
-(pdftex.def)             Requested size: 433.33589pt x 212.48148pt.
+(pdftex.def)             Requested size: 433.33589pt x 333.32462pt.
 <figures/fig3_triad.pdf, id=505, 418.00064pt x 311.86287pt>
 File: figures/fig3_triad.pdf Graphic file (type pdf)
 <use figures/fig3_triad.pdf>
 Package pdftex.def Info: figures/fig3_triad.pdf  used on input line 385.
 (pdftex.def)             Requested size: 433.33589pt x 323.32564pt.
-<figures/fig4_correction_bar.pdf, id=506, 520.74359pt x 289.551pt>
-File: figures/fig4_correction_bar.pdf Graphic file (type pdf)
-<use figures/fig4_correction_bar.pdf>
-Package pdftex.def Info: figures/fig4_correction_bar.pdf  used on input line 39
-3.
-(pdftex.def)             Requested size: 433.33589pt x 240.95906pt.
-<figures/fig5_deepdive.pdf, id=507, 453.01776pt x 279.23903pt>
-File: figures/fig5_deepdive.pdf Graphic file (type pdf)
-<use figures/fig5_deepdive.pdf>
-Package pdftex.def Info: figures/fig5_deepdive.pdf  used on input line 402.
-(pdftex.def)             Requested size: 398.66821pt x 245.74388pt.
-<figures/fig8_visual_comparison.pdf, id=508, 517.48447pt x 420.4188pt>
-File: figures/fig8_visual_comparison.pdf Graphic file (type pdf)
-<use figures/fig8_visual_comparison.pdf>
-Package pdftex.def Info: figures/fig8_visual_comparison.pdf  used on input line
- 403.
-(pdftex.def)             Requested size: 398.66821pt x 323.89667pt.
-<figures/fig7_hardware.pdf, id=509, 456.4725pt x 397.3199pt>
-File: figures/fig7_hardware.pdf Graphic file (type pdf)
-<use figures/fig7_hardware.pdf>
-Package pdftex.def Info: figures/fig7_hardware.pdf  used on input line 414.
+<figures/fig4_scenario_protocol.pdf, id=506, 449.22667pt x 319.998pt>
+File: figures/fig4_scenario_protocol.pdf Graphic file (type pdf)
+<use figures/fig4_scenario_protocol.pdf>
+Package pdftex.def Info: figures/fig4_scenario_protocol.pdf  used on input line
+ 393.
+(pdftex.def)             Requested size: 433.33589pt x 308.67894pt.
+<figures/fig5_hardware.pdf, id=507, 456.4725pt x 397.3199pt>
+File: figures/fig5_hardware.pdf Graphic file (type pdf)
+<use figures/fig5_hardware.pdf>
+Package pdftex.def Info: figures/fig5_hardware.pdf  used on input line 401.
 (pdftex.def)             Requested size: 433.33589pt x 377.17894pt.
-<figures/fig9_basis_growth.pdf, id=510, 394.51991pt x 206.12709pt>
-File: figures/fig9_basis_growth.pdf Graphic file (type pdf)
-<use figures/fig9_basis_growth.pdf>
-Package pdftex.def Info: figures/fig9_basis_growth.pdf  used on input line 422.
+ [40
 
-(pdftex.def)             Requested size: 368.33815pt x 192.4542pt.
-
-Overfull \hbox (49.87233pt too wide) in paragraph at lines 430--447
- [][] 
+ <./figures/fig1_overview.pdf>] [41 <./figures/fig2_operatorgraph.pdf>] [42 <./
+figures/fig3_triad.pdf>] [43 <./figures/fig4_scenario_protocol.pdf>] [44 <./fig
+ures/fig5_hardware.pdf>]
+Overfull \hbox (49.87233pt too wide) in paragraph at lines 415--432
+ [] 
  []
 
-[40
-
- <./figures/fig1_overview.pdf>] [41 <./figures/fig2_operatorgraph.pdf>]
-[42 <./figures/fig3_triad.pdf>] [43 <./figures/fig4_correction_bar.pdf>]
-[44 <./figures/fig5_deepdive.pdf> <./figures/fig8_visual_comparison.pdf>]
-[45 <./figures/fig7_hardware.pdf>] [46 <./figures/fig9_basis_growth.pdf>]
-[47
+[45
 
 ] (./main.aux)
  ***********
@@ -769,13 +750,13 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 15200 strings out of 475662
- 250110 string characters out of 5784442
+ 15169 strings out of 475662
+ 249121 string characters out of 5784442
  1943975 words of memory out of 5000000
- 36905 multiletter control sequences out of 15000+600000
+ 36879 multiletter control sequences out of 15000+600000
  576851 words of font info for 106 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 74i,14n,82p,2442b,658s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 74i,14n,82p,2442b,656s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/spiritai/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1095.
 600pk> </home/spiritai/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm0
 600.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.
@@ -784,30 +765,29 @@ usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/te
 xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr1
-7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></
-usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10
-.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (47 pages, 1452480 bytes).
+dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmt
+t9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam1
+0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10
+.pfb>
+Output written on main.pdf (45 pages, 624195 bytes).
 PDF statistics:
- 919 PDF objects out of 1000 (max. 8388607)
- 717 compressed objects within 8 object streams
- 251 named destinations out of 1000 (max. 500000)
- 41 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 814 PDF objects out of 1000 (max. 8388607)
+ 653 compressed objects within 7 object streams
+ 246 named destinations out of 1000 (max. 500000)
+ 26 words of extra memory for PDF output out of 10000 (max. 10000000)
 

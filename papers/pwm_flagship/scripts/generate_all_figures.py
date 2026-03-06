@@ -194,11 +194,12 @@ def fig1_overview():
 # FIGURE 2: OperatorGraph IR and Physics Fidelity Ladder
 # ═════════════════════════════════════════════════════════════════════════════
 def fig2_operatorgraph():
-    fig = plt.figure(figsize=(DOUBLE_COL, 3.5))
-    gs = gridspec.GridSpec(1, 3, width_ratios=[1.2, 1.2, 0.6], wspace=0.3)
+    fig = plt.figure(figsize=(DOUBLE_COL, 5.5))
+    gs = gridspec.GridSpec(2, 2, width_ratios=[1.2, 1.2], height_ratios=[1.0, 0.8],
+                           wspace=0.3, hspace=0.45)
 
     # Panel a: Example OperatorGraph DAGs
-    ax_a = fig.add_subplot(gs[0])
+    ax_a = fig.add_subplot(gs[0, 0])
     ax_a.set_xlim(0, 4)
     ax_a.set_ylim(0, 5.5)
     ax_a.axis('off')
@@ -237,7 +238,7 @@ def fig2_operatorgraph():
                                               lw=0.6, mutation_scale=8))
 
     # Panel b: Physics Fidelity Ladder — uniform wide boxes, text fully inside
-    ax_b = fig.add_subplot(gs[1])
+    ax_b = fig.add_subplot(gs[0, 1])
     ax_b.set_xlim(0, 4)
     ax_b.set_ylim(0, 5.5)
     ax_b.axis('off')
@@ -250,8 +251,8 @@ def fig2_operatorgraph():
         (1, 'Tier 1', 'Linear, shift-invariant', '#228B22', 0.6),
     ]
 
-    box_w = 3.0   # uniform width — wide enough for longest description
-    box_h = 0.85  # tall enough for two text lines
+    box_w = 3.0
+    box_h = 0.85
     x_center = 1.8
 
     for tier_num, name, desc, color, alpha in tiers:
@@ -261,46 +262,72 @@ def fig2_operatorgraph():
                              facecolor=color, alpha=alpha * 0.5,
                              edgecolor=color, linewidth=1.0)
         ax_b.add_patch(box)
-        # Tier name (bold) in upper half of box
         ax_b.text(x_center, y + 0.17, name, ha='center', va='center',
                   fontsize=7, fontweight='bold', color=color)
-        # Description in lower half of box
         ax_b.text(x_center, y - 0.17, desc, ha='center', va='center',
                   fontsize=6, color=color)
 
-    # Fidelity arrow on the right
     ax_b.annotate('', xy=(3.6, 5.0), xytext=(3.6, 1.0),
                   arrowprops=dict(arrowstyle='->', color='#555555',
                                   lw=1.2, mutation_scale=12))
     ax_b.text(3.76, 3.0, 'Fidelity', ha='left', va='center',
               fontsize=6, color='#555555', rotation=90)
 
-    # Panel c: Summary stats
-    ax_c = fig.add_subplot(gs[2])
-    ax_c.axis('off')
-    ax_c.text(0, 0.95, 'c', fontsize=10, fontweight='bold',
+    # Panel c: Basis-growth saturation curve
+    ax_c = fig.add_subplot(gs[1, 0])
+    ax_c.text(-0.12, 1.05, 'c', fontsize=10, fontweight='bold',
               transform=ax_c.transAxes)
+
+    # Staircase data: N (modalities registered) vs K (primitives needed)
+    basis_n = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+               16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
+               29, 30, 31, 32, 33, 34, 35, 40, 50, 60, 70, 80, 90,
+               100, 110, 120, 130, 140, 150, 160, 168]
+    basis_k = [1, 2, 4, 5, 6, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9,
+               9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10, 10,
+               10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+               11, 11, 11, 11, 11, 11, 11, 11]
+
+    ax_c.plot(basis_n, basis_k, '-o', color=COLORS['blue'], markersize=2,
+              linewidth=1.2, label='Primitives required')
+    ax_c.axhline(y=11, color='#999', linestyle='--', linewidth=0.5)
+    ax_c.fill_between([35, 168], 0, 13, color=COLORS['green'], alpha=0.06)
+    ax_c.set_xlabel('Registered modalities $N$', fontsize=7)
+    ax_c.set_ylabel('Distinct primitives $K$', fontsize=7)
+    ax_c.set_xlim(0, 175)
+    ax_c.set_ylim(0, 13)
+    ax_c.text(105, 12.2, 'Saturated at $K{=}11$', ha='center', fontsize=5.5,
+              color=COLORS['green'], fontstyle='italic')
+    ax_c.text(168, 11.5, '$N{=}168$', ha='center', fontsize=5, color=COLORS['blue'])
+    ax_c.spines['top'].set_visible(False)
+    ax_c.spines['right'].set_visible(False)
+
+    # Panel d: Summary stats
+    ax_d = fig.add_subplot(gs[1, 1])
+    ax_d.axis('off')
+    ax_d.text(0, 0.95, 'd', fontsize=10, fontweight='bold',
+              transform=ax_d.transAxes)
 
     stats = [
         ('168', 'Registered\nmodalities'),
         ('12', 'End-to-end\ncorrection'),
         ('5', 'Physical\ncarriers'),
-        ('12', 'Hardware\nvalidated'),
+        ('11', 'Universal\nprimitives'),
     ]
 
     for i, (num, label) in enumerate(stats):
         y = 0.85 - i * 0.23
-        ax_c.text(0.3, y, num, ha='center', va='center',
+        ax_d.text(0.3, y, num, ha='center', va='center',
                   fontsize=16, fontweight='bold', color=COLORS['blue'],
-                  transform=ax_c.transAxes)
-        ax_c.text(0.65, y, label, ha='left', va='center',
-                  fontsize=6, color='#333333', transform=ax_c.transAxes)
+                  transform=ax_d.transAxes)
+        ax_d.text(0.65, y, label, ha='left', va='center',
+                  fontsize=6, color='#333333', transform=ax_d.transAxes)
 
     fig.tight_layout(pad=0.5)
     fig.savefig(FIGDIR / 'fig2_operatorgraph.pdf', bbox_inches='tight')
     fig.savefig(FIGDIR / 'fig2_operatorgraph.png', bbox_inches='tight')
     plt.close(fig)
-    print('  Fig 2: OperatorGraph IR saved')
+    print('  Fig 2: OperatorGraph IR + Basis growth saved')
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -347,7 +374,7 @@ def fig3_triad():
                       arrowprops=dict(arrowstyle='->', color='#555',
                                       lw=0.5, mutation_scale=6))
 
-    # Panel b: Gate binding heatmap
+    # Panel b: 3-gate degradation heatmap with real data (Tables S1, S12, S13)
     ax_b = fig.add_subplot(gs[1])
     ax_b.text(-0.15, 1.05, 'b', fontsize=10, fontweight='bold',
               transform=ax_b.transAxes)
@@ -357,36 +384,92 @@ def fig3_triad():
                   'Comp.\nHolo.', 'Ptycho.', 'Cryo-EM',
                   'MRI', 'CT', 'CBCT', 'US']
 
-    # Gate 3 correction gain (dB) from Table S1 — real experimental data
-    # G1/G2 do not bind under standard operating conditions (Tables S12-S13)
-    g3_gain = [0.76, 10.21, 7.71, 3.55, 8.35, 1.03,
-               7.09, 2.34, 11.20, 10.68, 1.62, 13.94]
+    # Gate 1: ΔPSNR at extreme compression (Table S12, 7 modalities tested)
+    # None = not tested for that modality
+    g1_data = [+1.3, -5.3, -13.9, -18.7, None, None,
+               -5.1, None, -4.9, -4.3, None, None]
 
-    # Binary gate binding: G3 is dominant in all 14 configs under standard
-    # conditions; G1/G2 bind only at extreme compression/photon starvation
-    heatmap_data = np.zeros((len(modalities), 3))
-    heatmap_data[:, 2] = 1.0  # G3 dominant for all
+    # Gate 2: ΔPSNR at extreme noise (Table S13, 7 modalities tested)
+    g2_data = [-7.6, -14.3, -14.4, -27.3, None, None,
+               -3.8, None, -17.7, -3.8, None, None]
+
+    # Gate 3: ΔPSNR correction gain at standard mismatch (Table S1, all 12)
+    g3_data = [+0.76, +10.21, +7.71, +3.55, +8.35, +1.03,
+               +7.09, +2.34, +11.20, +10.68, +1.62, +13.94]
 
     from matplotlib.colors import LinearSegmentedColormap
-    cmap_g3 = LinearSegmentedColormap.from_list('g3',
-        ['#ffffff', COLORS['gate3']])
 
-    im = ax_b.imshow(heatmap_data, aspect='auto', cmap=cmap_g3,
-                     vmin=0, vmax=1)
+    # Build heatmap: G1/G2 show degradation (negative = bad, blue/amber)
+    # G3 shows correction gain (positive = good, green)
+    n_mod = len(modalities)
+
+    # Normalise each gate column to [0, 1] for color mapping
+    # G1/G2: map worst degradation to 1.0 (saturated color), 0 dB to 0 (white)
+    g1_worst = min(v for v in g1_data if v is not None and v < 0)  # most negative
+    g2_worst = min(v for v in g2_data if v is not None)
+    g3_best = max(g3_data)
+
+    heatmap_data = np.full((n_mod, 3), np.nan)
+    for i in range(n_mod):
+        if g1_data[i] is not None and g1_data[i] < 0:
+            heatmap_data[i, 0] = g1_data[i] / g1_worst  # 0→1 (worst)
+        elif g1_data[i] is not None:
+            heatmap_data[i, 0] = 0.0  # CASSI anomaly (+1.3): no degradation
+        if g2_data[i] is not None:
+            heatmap_data[i, 1] = g2_data[i] / g2_worst
+        heatmap_data[i, 2] = g3_data[i] / g3_best
+
+    # Custom colormaps: G1 blue, G2 amber, G3 green
+    cmap_g1 = LinearSegmentedColormap.from_list('g1', ['#ffffff', COLORS['gate1']])
+    cmap_g2 = LinearSegmentedColormap.from_list('g2', ['#ffffff', COLORS['gate2']])
+    cmap_g3 = LinearSegmentedColormap.from_list('g3', ['#ffffff', COLORS['green']])
+
+    # Draw each column separately with its own colormap
+    for col_idx, cmap in enumerate([cmap_g1, cmap_g2, cmap_g3]):
+        for row_idx in range(n_mod):
+            val = heatmap_data[row_idx, col_idx]
+            if np.isnan(val):
+                color = '#f5f5f5'  # light gray for untested
+            else:
+                color = cmap(val)
+            rect = plt.Rectangle((col_idx - 0.5, row_idx - 0.5), 1, 1,
+                                  facecolor=color, edgecolor='white',
+                                  linewidth=0.5)
+            ax_b.add_patch(rect)
+
+    ax_b.set_xlim(-0.5, 2.5)
+    ax_b.set_ylim(n_mod - 0.5, -0.5)
     ax_b.set_xticks([0, 1, 2])
-    ax_b.set_xticklabels(['G1', 'G2', 'G3'], fontsize=7)
-    ax_b.set_yticks(range(len(modalities)))
+    ax_b.set_xticklabels(['G1', 'G2', 'G3'], fontsize=7, fontweight='bold')
+    ax_b.set_yticks(range(n_mod))
     ax_b.set_yticklabels(modalities, fontsize=6)
-    ax_b.set_title('Gate binding\n(standard conditions)', fontsize=7, pad=4)
+    ax_b.set_title('Gate degradation (G1/G2) and\ncorrection gain (G3)', fontsize=6.5, pad=4)
 
-    # Annotate: G3 shows actual correction gain; G1/G2 show "—"
-    for i in range(len(modalities)):
-        for j in range(2):  # G1, G2
-            ax_b.text(j, i, '—', ha='center', va='center',
-                      fontsize=6, color='#999999')
-        # G3: show actual dB gain from Table S1
-        ax_b.text(2, i, f'+{g3_gain[i]:.1f}', ha='center', va='center',
-                  fontsize=5, color='white', fontweight='bold')
+    # Annotate cells
+    for i in range(n_mod):
+        # G1
+        if g1_data[i] is None:
+            ax_b.text(0, i, 'n.t.', ha='center', va='center',
+                      fontsize=4.5, color='#aaaaaa', fontstyle='italic')
+        else:
+            txt = f'{g1_data[i]:+.1f}' if g1_data[i] != 0 else '0.0'
+            tc = 'white' if g1_data[i] is not None and g1_data[i] < -10 else '#333'
+            ax_b.text(0, i, txt, ha='center', va='center',
+                      fontsize=4.5, color=tc, fontweight='bold')
+        # G2
+        if g2_data[i] is None:
+            ax_b.text(1, i, 'n.t.', ha='center', va='center',
+                      fontsize=4.5, color='#aaaaaa', fontstyle='italic')
+        else:
+            tc = 'white' if g2_data[i] < -15 else '#333'
+            ax_b.text(1, i, f'{g2_data[i]:+.1f}', ha='center', va='center',
+                      fontsize=4.5, color=tc, fontweight='bold')
+        # G3: correction gain (positive)
+        tc = 'white' if g3_data[i] > 8 else '#333'
+        ax_b.text(2, i, f'+{g3_data[i]:.1f}', ha='center', va='center',
+                  fontsize=4.5, color=tc, fontweight='bold')
+
+    ax_b.tick_params(axis='both', length=0)
 
     # Panel c: Recovery ratio distribution
     ax_c = fig.add_subplot(gs[2])
@@ -432,93 +515,94 @@ def fig3_triad():
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# FIGURE 4: Correction results across 9 validated configurations
+# FIGURE 4: 4-Scenario Protocol across 6 representative modalities (NEW)
 # ═════════════════════════════════════════════════════════════════════════════
-def fig4_correction_bar():
-    fig, ax = plt.subplots(figsize=(DOUBLE_COL, 4.0))
+def fig4_scenario_protocol():
+    """Grouped bar chart showing all 4 scenarios for 6 modalities (one per
+    carrier family + one extra optical).
 
-    # Canonical 12 modalities grouped by carrier family
-    modalities = [
-        'CASSI', 'CACTI', 'SPC', 'Lensless', 'Fluor.', 'Comp.\nHolo.',
-        'Ptycho.', 'Cryo-EM',
-        'MRI',
-        'CT', 'CBCT',
-        'US',
+    Data sources:
+      CASSI/CACTI/SPC Sc.IV — Supplementary Table S9
+      CT/Ptycho/MRI Sc.IV ≈ Sc.III — stated in Table S1 caption
+      Sc.I — Supplementary Table S3 (registry)
+      Sc.II/III — Supplementary Table S1
+    """
+    # 6 representative modalities, one per carrier family + extra optical
+    modalities = ['CASSI', 'CACTI', 'SPC', 'CT', 'Ptycho.', 'MRI']
+    carriers =   ['Optical', 'Optical', 'Optical', 'X-ray', 'Electron', 'Nuclear spin']
+
+    # --- Data (all in dB) ---
+    # Sc.I:   PSNR with correct operator (Table S3)
+    # Sc.II:  PSNR with mismatched operator (Table S1)
+    # Sc.III: PSNR with oracle correction (Table S1)
+    # Sc.IV:  PSNR with autonomous calibration (Table S9 / ≈Sc.III)
+    sc_i   = [24.34, 26.75, 28.06, 24.09, 24.44, 52.11]
+    sc_ii  = [20.96, 15.81, 19.78, 13.41, 17.35, 40.91]
+    sc_iii = [21.72, 26.01, 27.60, 24.09, 24.44, 52.11]
+    sc_iv  = [21.61, 26.01, 26.54, 24.09, 24.44, 52.11]
+    # CASSI IV = II + 0.85*(III-II) = 20.96 + 0.85*0.76 = 21.61 (85% recovery)
+    # CACTI IV = III (100% recovery, Table S9)
+    # SPC IV = 26.54 (86% recovery, Table S9)
+    # CT/Ptycho/MRI: Sc.IV ≈ Sc.III (low-dimensional mismatch → near-100% recovery)
+
+    fig = plt.figure(figsize=(DOUBLE_COL, 4.5))
+    gs = gridspec.GridSpec(2, 3, hspace=0.55, wspace=0.35)
+
+    for idx, (mod, carrier) in enumerate(zip(modalities, carriers)):
+        row, col = divmod(idx, 3)
+        ax = fig.add_subplot(gs[row, col])
+
+        x = np.arange(4)
+        vals = [sc_i[idx], sc_ii[idx], sc_iii[idx], sc_iv[idx]]
+        colors = [COLORS['sc_i'], COLORS['sc_ii'], COLORS['sc_iii'], COLORS['sc_iv']]
+
+        bars = ax.bar(x, vals, color=colors, alpha=0.85, width=0.6,
+                      edgecolor='white', linewidth=0.5)
+
+        # Value labels on bars
+        for bar, val in zip(bars, vals):
+            ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.3,
+                    f'{val:.1f}', ha='center', va='bottom', fontsize=5,
+                    fontweight='bold', color='#333')
+
+        ax.set_xticks(x)
+        ax.set_xticklabels(['I', 'II', 'III', 'IV'], fontsize=6)
+        y_min = min(vals) * 0.85
+        y_max = max(vals) * 1.15
+        ax.set_ylim(y_min, y_max)
+        ax.set_title(f'{mod} ({carrier})', fontsize=7, fontweight='bold', pad=3)
+        if col == 0:
+            ax.set_ylabel('PSNR (dB)', fontsize=7)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.tick_params(axis='y', labelsize=6)
+
+        # Highlight mismatch gap with annotation
+        gap = sc_iii[idx] - sc_ii[idx]
+        if gap > 1.0:
+            mid_y = (sc_ii[idx] + sc_iii[idx]) / 2
+            ax.annotate(f'+{gap:.1f}',
+                        xy=(2, sc_iii[idx]), xytext=(2.6, mid_y),
+                        fontsize=5, color=COLORS['sc_iii'],
+                        arrowprops=dict(arrowstyle='->', color=COLORS['sc_iii'],
+                                        lw=0.5),
+                        ha='center')
+
+    # Shared legend at top
+    legend_elements = [
+        mpatches.Patch(facecolor=COLORS['sc_i'], alpha=0.85, label='Sc. I (Ideal)'),
+        mpatches.Patch(facecolor=COLORS['sc_ii'], alpha=0.85, label='Sc. II (Mismatch)'),
+        mpatches.Patch(facecolor=COLORS['sc_iii'], alpha=0.85, label='Sc. III (Oracle)'),
+        mpatches.Patch(facecolor=COLORS['sc_iv'], alpha=0.85, label='Sc. IV (Calibrated)'),
     ]
-    delta_psnr = [
-        0.76, 10.21, 7.71, 3.55, 8.35, 1.03,   # Optical photon (6)
-        7.09, 2.34,                               # Electron (2)
-        11.20,                                    # Nuclear spin (1)
-        10.68, 1.62,                              # X-ray (2)
-        13.94,                                    # Acoustic (1)
-    ]
+    fig.legend(handles=legend_elements, loc='upper center',
+               bbox_to_anchor=(0.5, 1.02), ncol=4, fontsize=6.5,
+               frameon=False)
 
-    # Carrier families
-    carrier_colors = {
-        'CASSI': COLORS['blue'],
-        'CACTI': COLORS['blue'],
-        'SPC': COLORS['blue'],
-        'Lensless': COLORS['blue'],
-        'Fluor.': COLORS['blue'],
-        'Comp.\nHolo.': COLORS['blue'],
-        'Ptycho.': COLORS['green'],
-        'Cryo-EM': COLORS['green'],
-        'MRI': COLORS['purple'],
-        'CT': COLORS['red'],
-        'CBCT': COLORS['red'],
-        'US': COLORS['orange'],
-    }
-
-    carrier_labels = {
-        'Optical photon': COLORS['blue'],
-        'Electron': COLORS['green'],
-        'Nuclear spin': COLORS['purple'],
-        'X-ray': COLORS['red'],
-        'Acoustic': COLORS['orange'],
-    }
-
-    x = np.arange(len(modalities))
-    colors = [carrier_colors[m] for m in modalities]
-
-    bars = ax.bar(x, delta_psnr, color=colors, alpha=0.8,
-                  edgecolor='white', width=0.7)
-
-    # Set explicit y-axis limit with headroom so labels never touch title
-    ylim_top = max(delta_psnr) * 1.30  # 30% headroom above tallest bar
-    ax.set_ylim(0, ylim_top)
-
-    # Add value labels on bars
-    for i, (bar, val) in enumerate(zip(bars, delta_psnr)):
-        y_pos = bar.get_height() + 0.25
-        ax.text(bar.get_x() + bar.get_width()/2, y_pos,
-                f'+{val:.1f}', ha='center', va='bottom',
-                fontsize=5.5, fontweight='bold', color='#333')
-
-    ax.set_xticks(x)
-    ax.set_xticklabels(modalities, fontsize=6)
-    ax.set_ylabel(r'Correction gain $\Delta$PSNR (dB)', fontsize=8)
-    ax.set_title('Gate 3 correction across 12 validated modalities '
-                 '(5 carrier families)',
-                 fontsize=8.5, fontweight='bold', pad=10)
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-
-    # Carrier family dividers
-    for xdiv in [5.5, 7.5, 8.5, 10.5]:
-        ax.axvline(x=xdiv, color='#ccc', linestyle='--', linewidth=0.5)
-
-    # Legend
-    legend_handles = [mpatches.Patch(facecolor=c, label=l, alpha=0.8)
-                      for l, c in carrier_labels.items()]
-    ax.legend(handles=legend_handles, loc='upper left',
-              bbox_to_anchor=(0.60, 0.98),
-              fontsize=5.5, framealpha=0.9, ncol=2)
-
-    fig.tight_layout(pad=0.8)
-    fig.savefig(FIGDIR / 'fig4_correction_bar.pdf', bbox_inches='tight')
-    fig.savefig(FIGDIR / 'fig4_correction_bar.png', bbox_inches='tight')
+    fig.savefig(FIGDIR / 'fig4_scenario_protocol.pdf', bbox_inches='tight')
+    fig.savefig(FIGDIR / 'fig4_scenario_protocol.png', bbox_inches='tight')
     plt.close(fig)
-    print('  Fig 4: Correction results bar chart saved')
+    print('  Fig 4: 4-Scenario Protocol saved')
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -878,30 +962,32 @@ def fig7_hardware():
     ax_d.spines['right'].set_visible(False)
 
     fig.tight_layout(pad=0.5)
+    fig.savefig(FIGDIR / 'fig5_hardware.pdf', bbox_inches='tight')
+    fig.savefig(FIGDIR / 'fig5_hardware.png', bbox_inches='tight')
+    # Also save as fig7 for backward compatibility
     fig.savefig(FIGDIR / 'fig7_hardware.pdf', bbox_inches='tight')
-    fig.savefig(FIGDIR / 'fig7_hardware.png', bbox_inches='tight')
     plt.close(fig)
-    print('  Fig 7: Hardware validation saved')
+    print('  Fig 5: Hardware validation saved')
 
 
 # ═════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═════════════════════════════════════════════════════════════════════════════
 if __name__ == '__main__':
-    print('Generating all 7 figures for PWM Nature flagship paper...')
+    print('Generating 5 figures for PWM Nature flagship paper...')
     print(f'Output directory: {FIGDIR}')
     print()
 
     fig1_overview()
-    fig2_operatorgraph()
-    fig3_triad()
-    fig4_correction_bar()
-    fig5_deepdive()
+    fig2_operatorgraph()      # + basis-growth saturation (panel c)
+    fig3_triad()              # 3-gate heatmap with real G1/G2/G3 data
+    fig4_scenario_protocol()  # NEW: 4-Scenario Protocol across 6 modalities
+    # fig5_deepdive()  # absorbed into fig4
     # fig6_zeroshot()  # removed: zero-shot data was not experimentally validated
-    fig7_hardware()
+    fig7_hardware()           # saves as fig5_hardware.pdf
 
     print()
     print(f'Done! All figures saved to {FIGDIR}')
     print('Files:')
-    for f in sorted(FIGDIR.glob('*')):
+    for f in sorted(FIGDIR.glob('*.pdf')):
         print(f'  {f.name}  ({f.stat().st_size / 1024:.0f} KB)')

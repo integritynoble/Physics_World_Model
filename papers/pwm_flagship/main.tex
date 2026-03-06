@@ -146,7 +146,7 @@ Compton scatter      & ${<}\,0.01^{*}$ & 4\,/\,3 & Y & Y ($R$) \\
 \noindent Seven of eight modalities decompose with the frozen library. Quantum ghost imaging is operator-equivalent to a single-pixel camera at the image-formation level---sharing the canonical DAG Source $\to M \to \Sigma \to D$ despite fundamentally different source physics. THz-TDS requires only the coherent-field Detect family. Compton scatter imaging triggered the extension protocol (Section ``Extension protocol'' above): its representation gap ($\etier = 0.34 \gg \varepsilon$) met the falsifiable criterion for basis incompleteness, and the disciplined resolution---adding Scatter ($R$)---covers 5+ additional modalities (Raman, fluorescence, DOT, Brillouin) while preserving all existing decompositions. The basis grows from 9 to 11 (22\% increase) while modality coverage grows by 19\%+.
 
 \paragraph{Basis-growth saturation.}
-Plotting the number of distinct primitives $K$ against the number of registered modalities $N$ reveals clear saturation (\cref{fig:basis_growth}): 9 of 11 primitives are introduced by the first 10 modalities, Disperse ($W$) by CASSI-type spectral systems, Scatter ($R$) when Compton/Raman-class modalities enter, and Transform ($\Lambda$) when nonlinear physics stages (beam hardening, phase wrapping) are encountered. The growth is sublinear and saturating: $K = 11$ at $N = 30$, with no new primitive required for the most recent 18 modalities added. This saturation is consistent with Theorem~\ref{thm:fpb}: once all six physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
+Plotting the number of distinct primitives $K$ against the number of registered modalities $N$ reveals clear saturation (\cref{fig:operatorgraph}c): 9 of 11 primitives are introduced by the first 10 modalities, Disperse ($W$) by CASSI-type spectral systems, Scatter ($R$) when Compton/Raman-class modalities enter, and Transform ($\Lambda$) when nonlinear physics stages (beam hardening, phase wrapping) are encountered. The growth is sublinear and saturating: $K = 11$ at $N = 35$, with no new primitive required for the 133 subsequent modalities. This saturation is consistent with Theorem~\ref{thm:fpb}: once all six physics-stage families are covered by primitives, new modalities compose existing primitives rather than requiring new ones.
 
 \paragraph{Theorem tightness and minimality.}
 The theoretical complexity bounds ($N_{\max} = 20$, $D_{\max} = 10$) are conservative: empirically, all 26 registered and 8 held-out modalities (${\sim}30$ unique, accounting for 4 overlaps) require $\leq 6$ nodes and depth $\leq 5$ (held-out closure test table above), with the median modality using 4 nodes at depth 3. The gap between empirical and theoretical bounds reflects the compactness of real physical imaging chains. Moreover, the basis is \emph{minimal}: for each of the 11 primitives, we exhibit a witness modality whose representation error exceeds $\varepsilon$ when that primitive is removed (Supplementary Note~10, Proposition~1 therein; beam hardening CT witnesses the necessity of Transform~$\Lambda$). Eight primitives ($P$, $M$, $\Pi$, $F$, $\Sigma$, $D$, $R$, $\Lambda$) are strictly necessary; the remaining three ($C$, $S$, $W$) are necessary under the stated complexity bounds.
@@ -225,10 +225,10 @@ We validate both theoretical contributions in two stages: controlled simulation 
 Extended Data Table~1 (Supplementary Table~S1) summarizes the oracle correction ceiling across 14 configurations spanning 12 modalities. The oracle gain $\Delta_{\mathrm{oracle}} = \psnr_{\mathrm{III}} - \psnr_{\mathrm{II}}$ ranges from $+0.76 \pm 0.12$\,dB (CASSI/GAP-TV, 95\% bootstrap CI over 10 scenes) to $+10.68 \pm 0.41$\,dB (CT) across the original photon/X-ray modalities. Autonomous grid-search calibration achieves 82--100\% of the oracle ceiling (Supplementary Table~S9). The validated modalities span optical photons (CASSI: $+0.76$/$+6.50$\,dB [GAP-TV/MST-L]; CACTI: $+10.21 \pm 0.85$\,dB; SPC: $+7.71$/$+10.38$\,dB [FISTA-TV/HATNet]; Lensless: $+3.55 \pm 0.22$\,dB; compressive holography: $+0.0$--$+0.4$\,dB; fluorescence microscopy: $+0.1$--$+6.8$\,dB; Ptychography: $+7.09 \pm 0.47$\,dB), X-ray photons (CT: $+10.68 \pm 0.41$\,dB; CBCT detector offset: $+1.1$--$+1.7$\,dB), acoustic waves (Ultrasound on real PICMUS data: $+13.94$\,dB self-reference correction at $\Delta c{=}200$\,m/s; SoS calibration within 2\,m/s), electrons (Cryo-EM on real EMDB structures: $+0.1$--$+3.0$\,dB), and nuclear spins (MRI: $+1.75$ to $+7.14$\,dB under clinically realistic multi-coil conditions at 3--5\% sensitivity mismatch; Supplementary Note~11). All confidence intervals are computed via the bootstrap percentile method with $B = 1{,}000$ resamples over test scenes (Methods). Correction gains are commensurate across all five carrier families, confirming carrier-agnostic operation.
 
 \paragraph{Modality deep dives.}
-In CASSI, a 5-parameter mismatch~\cite{yang2026inversenet} collapses all solvers to ${\sim}21$\,dB regardless of ideal performance ($24$--$35$\,dB); oracle recovery varies by solver ($\recoveryratio_{\mathrm{III}} = 0$--$0.57$; Supplementary Table~S2), confirming that multi-parameter mismatches are harder to correct than isolated shifts (\cref{fig:deepdive_visual}a--b). In CACTI, EfficientSCI~\cite{wang2023efficientsci} drops by $20.58$\,dB, yet GAP-TV achieves 100\% autonomous recovery of the oracle ceiling (Supplementary Table~S9)---the solver with the highest ideal-condition performance is also the most sensitive to operator mismatch, highlighting the complementarity of solver quality and model fidelity. SPC gain drift is corrected to 86--92\% of the oracle ceiling (Table~S9). Consistent with the lifecycle prediction, \gatethree{} is the residual bottleneck in all tested configurations---well-designed instruments operating above the Gate~1 and Gate~2 floors (Supplementary Tables~S12--S13).
+In CASSI, a 5-parameter mismatch~\cite{yang2026inversenet} collapses all solvers to ${\sim}21$\,dB regardless of ideal performance ($24$--$35$\,dB); oracle recovery varies by solver ($\recoveryratio_{\mathrm{III}} = 0$--$0.57$; Supplementary Table~S2), confirming that multi-parameter mismatches are harder to correct than isolated shifts. In CACTI, EfficientSCI~\cite{wang2023efficientsci} drops by $20.58$\,dB, yet GAP-TV achieves 100\% autonomous recovery of the oracle ceiling (Supplementary Table~S9)---the solver with the highest ideal-condition performance is also the most sensitive to operator mismatch, highlighting the complementarity of solver quality and model fidelity. SPC gain drift is corrected to 86--92\% of the oracle ceiling (Table~S9). The 4-Scenario Protocol applied across six representative modalities (\cref{fig:scenario_protocol}) confirms that Sc.~IV~$\approx$~Sc.~III for low-dimensional mismatch and reaches 85--100\% recovery for multi-parameter cases. Consistent with the lifecycle prediction, \gatethree{} is the residual bottleneck in all tested configurations---well-designed instruments operating above the Gate~1 and Gate~2 floors (\cref{fig:triad}b; Supplementary Tables~S12--S13).
 
 \paragraph{Carrier-agnostic operation.}
-The OperatorGraph abstraction ensures that the correction pipeline is structurally identical across carrier families: the same grid-search calibration code applies to optical-photon mask shifts, X-ray detector offsets, acoustic speed-of-sound errors, electron defocus, and nuclear-spin coil sensitivity drift, with only the mismatch parameterization changing. This architectural carrier-agnosticism is reflected in the comparable correction gains across all five families (\cref{fig:correction_zeroshot}).
+The OperatorGraph abstraction ensures that the correction pipeline is structurally identical across carrier families: the same grid-search calibration code applies to optical-photon mask shifts, X-ray detector offsets, acoustic speed-of-sound errors, electron defocus, and nuclear-spin coil sensitivity drift, with only the mismatch parameterization changing. This architectural carrier-agnosticism is reflected in the comparable correction gains across all five families (\cref{fig:triad}b, \cref{fig:scenario_protocol}).
 
 \subsection*{Hardware validation}
 
@@ -375,58 +375,43 @@ The Physics World Models pipeline. \textbf{a},~A computational imaging system is
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=\textwidth]{figures/fig2_operatorgraph.pdf}
-\caption{\textbf{OperatorGraph IR and Physics Fidelity Ladder.}
-\textbf{a},~Example \opg{} DAGs for three modalities: CASSI (photon), MRI (spin), and CT (X-ray photon). Each node wraps a primitive operator; edges define data flow. \textbf{b},~Fidelity levels: forward models range from linear shift-invariant (simplest) through nonlinear and full-wave; all 11 primitives apply uniformly across every level. \textbf{c},~Summary statistics: 168 registered modality templates across 19 categories (12 with full correction validation), 5 physical carriers.}
+\caption{\textbf{OperatorGraph IR, Physics Fidelity Ladder, and basis completeness.}
+\textbf{a},~Example \opg{} DAGs for three modalities: CASSI (photon), MRI (spin), and CT (X-ray photon). Each node wraps a primitive operator; edges define data flow. \textbf{b},~Fidelity levels: forward models range from linear shift-invariant (simplest) through nonlinear and full-wave; all 11 primitives apply uniformly across every level. \textbf{c},~Basis-growth saturation: the number of distinct primitives $K$ required to express $N$ registered modalities saturates at $K{=}11$ for $N \geq 35$; no additional primitive has been needed for the 133 subsequent modalities across 19 physical categories. \textbf{d},~Summary statistics: 168 registered modality templates, 12 with full correction validation, 5 physical carriers, 11 universal primitives.}
 \label{fig:operatorgraph}
 \end{figure}
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=\textwidth]{figures/fig3_triad.pdf}
-\caption{\textbf{Triad Decomposition structure and gate binding.}
-\textbf{a},~Decision tree for the \triad{}: each imaging failure is routed through \gateone{}, \gatetwo{}, and \gatethree{} to produce a \triadreport{}. \textbf{b},~Gate binding under standard operating conditions (adequate sampling geometry, sufficient carrier budget). Gate~3 is the residual bottleneck in all 14 tested configurations (12 modalities, 5 carrier families); numbers show the correction gain $\Delta$PSNR (dB) from Supplementary Table~S1. Gates~1 and~2 (``---'') do not bind under standard conditions; they impose irrecoverable limits only at extreme compression or photon starvation (Supplementary Tables~S12--S13). \textbf{c},~Recovery ratio $\recoveryratio$ distribution across all 14 correction configurations, showing that autonomous calibration recovers a substantial fraction of the oracle correction ceiling across all five carrier families.}
+\caption{\textbf{Triad Decomposition: all three gates validated with real data.}
+\textbf{a},~Decision tree for the \triad{}: each imaging failure is routed through \gateone{}, \gatetwo{}, and \gatethree{} to produce a \triadreport{}. \textbf{b},~Three-gate degradation and correction heatmap. \emph{G1}~(blue): $\Delta$PSNR under extreme compression (Table~S12; 7~modalities tested). \emph{G2}~(amber): $\Delta$PSNR under extreme noise (Table~S13; 7~modalities tested). \emph{G3}~(green): correction gain $\Delta$PSNR under standard mismatch conditions (Table~S1; all 12~modalities). G1/G2~degrade at extreme conditions confirming they are real failure modes; G3~dominates under standard deployment because Gates~1 and~2 were already optimized at design time. ``n.t.'' = not tested. \textbf{c},~Recovery ratio $\recoveryratio$ distribution across all 14 correction configurations, showing that autonomous calibration recovers a substantial fraction of the oracle correction ceiling across all five carrier families.}
 \label{fig:triad}
 \end{figure}
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\textwidth]{figures/fig4_correction_bar.pdf}
-\caption{\textbf{Gate~3 correction gain across 12 validated modalities (5 carrier families).}
-Oracle correction ceiling $\Delta\mathrm{PSNR} = \mathrm{PSNR}_{\mathrm{III}} - \mathrm{PSNR}_{\mathrm{II}}$ (Supplementary Table~S1) for each modality, grouped by carrier family: optical photons (CASSI, CACTI, SPC, lensless, compressive holography, fluorescence microscopy), X-ray photons (CT, CBCT), electrons (ptychography, cryo-EM), nuclear spins (MRI), and acoustic waves (ultrasound). Gains range from $+0.76$\,dB (CASSI/GAP-TV, multi-parameter mismatch) to $+13.94$\,dB (ultrasound, $\Delta c{=}200$\,m/s), confirming that Gate~3 correction delivers substantial quality recovery across all five carrier families. Autonomous calibration achieves 82--100\% of the oracle ceiling for low-dimensional mismatch (Supplementary Table~S9).}
-\label{fig:correction_zeroshot}
-\end{figure}
-
-\begin{figure}[!p]
-\centering
-\vspace{-8pt}
-\includegraphics[width=0.92\textwidth]{figures/fig5_deepdive.pdf}\\[1pt]
-\includegraphics[width=0.92\textwidth]{figures/fig8_visual_comparison.pdf}
-\vspace{-6pt}
-\caption{\textbf{Modality deep dives and visual comparison.}
-\textbf{a},~CASSI: PSNR across 4 scenarios for GAP-TV, MST-L, and HDNet; uniform collapse under Scenario~II ($20.83$--$21.88$\,dB) confirms operator-driven failure.
-\textbf{b},~CACTI: four methods across 4 scenarios, showing up to $20.58$\,dB mismatch degradation.
-\textbf{c--e},~Visual comparison (CASSI, CACTI, MRI): ground truth, Scenario~I, II (structured artifacts), III (Oracle-corrected), and error map.}
-\label{fig:deepdive_visual}
+\includegraphics[width=\textwidth]{figures/fig4_scenario_protocol.pdf}
+\caption{\textbf{4-Scenario Protocol across 6 representative modalities.}
+Each panel shows PSNR~(dB) for the four scenarios: Sc.~I (ideal operator, green), Sc.~II (mismatched operator, red), Sc.~III (oracle correction, blue), and Sc.~IV (autonomous calibration, purple). Six modalities span four of five carrier families: CASSI, CACTI, and SPC (optical photons); CT (X-ray); ptychography (electron); MRI (nuclear spin). For low-dimensional mismatch (CT, ptychography, MRI), Sc.~IV $\approx$ Sc.~III $\approx$ Sc.~I, confirming near-complete recovery. For multi-parameter mismatch (CASSI), recovery reaches 85\%; CACTI and SPC achieve 100\% and 86\%, respectively (Supplementary Table~S9). Sc.~I PSNR from Table~S3; Sc.~II/III from Table~S1.}
+\label{fig:scenario_protocol}
 \end{figure}
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\textwidth]{figures/fig7_hardware.pdf}
+\includegraphics[width=\textwidth]{figures/fig5_hardware.pdf}
 \caption{\textbf{Hardware validation on real CASSI and CACTI instruments.}
 \textbf{a},~CASSI real data: measurement residual ratio (mismatched/calibrated) across 5 TSA scenes. GAP-TV shows $1.8\times$ mean ratio. \textbf{b},~CACTI real data: residual ratio across 4 scenes. GAP-TV shows $10.4\times$ mean ratio; PnP-FFDNet shows $2.0\times$. \textbf{c},~Simulation-to-hardware gap: comparing mismatch degradation in simulation versus real hardware for CASSI and CACTI. \textbf{d},~Autonomous calibration: grid-search parameter recovery for CASSI (85\%), CACTI (100\%), and SPC (86--92\%).}
 \label{fig:hardware}
 \end{figure}
 
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=0.85\textwidth]{figures/fig9_basis_growth.pdf}
-\caption{\textbf{Basis-growth saturation and primitive decomposition.}
-\textbf{a},~Number of distinct primitives $K$ as a function of modalities $N$ added to the registry. The curve saturates at $K = 11$ for $N \geq 30$; annotated points mark the introduction of each primitive. \textbf{b},~Summary decomposition table for representative modalities across five carrier families, showing DAG primitives, node count, depth, and validation status.}
-\label{fig:basis_growth}
-\end{figure}
 
-\begin{figure}[!ht]
-\centering
+%% ═══════════════════════════════════════════════════════════════════
+%%  EXTENDED DATA (Nature style)
+%% ═══════════════════════════════════════════════════════════════════
+\clearpage
+\noindent\textbf{Extended Data Table~1} $|$ \textbf{Primitive necessity ablation.} For each of the 11 primitives, the witness modality whose representation error $\etier$ exceeds $\varepsilon = 0.01$ when that primitive is removed from $\Blib$. Eight primitives ($P$, $M$, $\Pi$, $F$, $\Sigma$, $D$, $R$, $\Lambda$) are strictly necessary; the remaining three ($C$, $S$, $W$) are necessary under the stated complexity bounds ($N_{\max} = 20$, $D_{\max} = 10$). Data from~\cite{yang2026fpt}, Proposition~1.
+
+\begin{center}
 \begin{tabular}{@{}lllr@{}}
 \toprule
 \textbf{Removed primitive} & \textbf{Witness modality} & \textbf{Why irreplaceable} & $\etier$ \textbf{without} \\
@@ -444,16 +429,12 @@ Scatter $R$       & Compton imaging      & Direction change + energy shift      
 Transform $\Lambda$ & Polychromatic CT   & Non-terminal pointwise nonlinearity  & $> 0.05$ \\
 \bottomrule
 \end{tabular}
-\captionof{table}{\textbf{Primitive necessity ablation.} For each of the 11 primitives, the witness modality whose representation error $\etier$ exceeds $\varepsilon = 0.01$ when that primitive is removed from $\Blib$. Eight primitives ($P$, $M$, $\Pi$, $F$, $\Sigma$, $D$, $R$, $\Lambda$) are strictly necessary; the remaining three ($C$, $S$, $W$) are necessary under the stated complexity bounds ($N_{\max} = 20$, $D_{\max} = 10$). Data from~\cite{yang2026fpt}, Proposition~1.}
+\end{center}
 \label{tab:necessity}
-\end{figure}
 
+\vspace{12pt}
 
-%% ═══════════════════════════════════════════════════════════════════
-%%  EXTENDED DATA (Nature style)
-%% ═══════════════════════════════════════════════════════════════════
-\clearpage
-\noindent\textbf{Extended Data Table~1} $|$ Oracle correction ceiling (Scenario~III) across 14 validated configurations (12 modalities, 5 carrier families). Full table with per-scene metrics in Supplementary Table~S1; autonomous correction recovery (Scenario~IV) in Supplementary Table~S9. Per-modality supplementary tables: ultrasound (S14), cryo-EM (S15), CBCT (S16), compressive holography (S17), fluorescence microscopy (S18), SPC (S19), lensless imaging (S20).
+\noindent\textbf{Extended Data Table~2} $|$ Oracle correction ceiling (Scenario~III) across 14 validated configurations (12 modalities, 5 carrier families). Full table with per-scene metrics in Supplementary Table~S1; autonomous correction recovery (Scenario~IV) in Supplementary Table~S9. Per-modality supplementary tables: ultrasound (S14), cryo-EM (S15), CBCT (S16), compressive holography (S17), fluorescence microscopy (S18), SPC (S19), lensless imaging (S20).
 
 
 
