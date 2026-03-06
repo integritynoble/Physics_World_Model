@@ -166,7 +166,7 @@ $\mathrm{PSNR}_{\mathrm{mismatch}} \leq \mathrm{PSNR}_{\mathrm{achieved}}
 
 \subsection{Conditions for Gate~3 Dominance}
 
-The empirical finding that Gate~3 dominates across all validated modalities admits a theoretical justification.
+The empirical finding that Gate~3 is the residual bottleneck in well-designed instruments---where Gates~1 and~2 have been optimized at design time---admits a theoretical justification.
 
 \begin{proposition}[Gate~3 dominance condition]
 For any instrument operating above its Gate~1 floor ($\gamma > \gamma_{\min}$, where $\gamma_{\min}$ is the minimum compression ratio for which $\mathrm{PSNR}_{\max}^{(G1)}$ exceeds the target quality) and Gate~2 floor ($\mathrm{SNR} > \mathrm{SNR}_{\min}$, where $\mathrm{SNR}_{\min}$ is the minimum carrier budget for which $\mathrm{PSNR}_{\max}^{(G2)}$ exceeds the target quality), Gate~3 becomes the binding constraint whenever the calibration error exceeds the noise-equivalent resolution:
@@ -187,7 +187,7 @@ Gate~3 dominates when $\Delta\mathrm{PSNR}_{\mathrm{mismatch}} > \Delta\mathrm{P
 \end{proof}
 
 \noindent\textbf{Interpretation.}
-Proposition~2 formalizes the intuition that as instruments improve in information capacity (Gate~1) and signal quality (Gate~2), the binding constraint shifts to calibration fidelity (Gate~3). This is precisely the regime occupied by modern computational imaging systems, explaining the universal Gate~3 dominance observed empirically across all seven validated modalities.
+Proposition~2 formalizes the intuition that as instruments improve in information capacity (Gate~1) and signal quality (Gate~2), the binding constraint shifts to calibration fidelity (Gate~3). This is precisely the regime occupied by modern computational imaging systems, explaining why Gate~3 emerges as the residual bottleneck across all twelve validated modalities: these are well-designed instruments where Gates~1 and~2 operate well above their respective floors.
 
 \newpage
 
@@ -1045,8 +1045,9 @@ accuracy is more important than spatial quality.
 \section{Supplementary Tables S12--S13: Gate~1 and Gate~2 Validation}
 \label{sec:gate12}
 
-The main text argues that Gate~3 (operator mismatch) is the dominant
-bottleneck under standard operating conditions. To demonstrate that
+The main text shows that, in well-designed instruments where Gates~1 and~2
+have been optimized at design time, Gate~3 (operator mismatch) emerges as the
+residual bottleneck. To demonstrate that
 Gate~1 (information deficiency) and Gate~2 (carrier budget) are real and
 measurable, we sweep the compression level and noise level across all
 seven validated modalities while keeping the forward model perfectly
@@ -1863,7 +1864,7 @@ HTC 2022       & 26.73 & 25.86 & 24.20 & 21.31 & 18.73 \\
 \noindent Both datasets show monotonic PSNR degradation with CoR offset.
 The walnut dataset loses $9.4$\,dB over the 1--8 pixel range; HTC loses $8.0$\,dB.
 Oracle calibration (grid search over CoR values) recovers 100\% of the degradation, confirming that CoR is a pure Gate~3 (operator mismatch) parameter.
-These results on \emph{real sinogram data} corroborate the simulation results in Table~S1 and confirm the universality of Gate~3 dominance across carrier families (X-ray photons for CT, optical photons for CASSI/CACTI).
+These results on \emph{real sinogram data} corroborate the simulation results in Table~S1 and confirm that Gate~3 is the residual bottleneck across carrier families (X-ray photons for CT, optical photons for CASSI/CACTI) in deployed instruments where Gates~1 and~2 operate above their design floors.
 
 \subsection{Electron Ptychography: Probe Position Jitter (4D STEM SrTiO\texorpdfstring{$_3$}{3})}
 \label{sec:ptycho_real}
@@ -1926,7 +1927,7 @@ Importantly, the effect size for MRI ($< 1$\,dB at R=2 with 4 coils) is substant
 At higher acceleration factors (R=4 with 8 coils), the simulation experiments in Supplementary Note~S13 show much larger degradation ($1.75$--$7.14$\,dB), confirming that Gate~3 severity scales with the condition number of the encoding matrix.
 
 \vspace{1em}
-\noindent\textbf{Summary.} Supplementary Note~S15 validates Gate~3 dominance across 5 modalities spanning 4 carrier families: optical photons (CASSI, CACTI), X-ray photons (CT), electrons (ptychography), and nuclear spins (MRI). The mismatch signal is monotonic and scene-independent in all cases, with 100\% recovery via autonomous or oracle calibration. The only modality with sub-dB degradation (MRI at R=2) is explained by the inherent robustness of over-determined coil encoding.
+\noindent\textbf{Summary.} Supplementary Note~S15 validates that Gate~3 is the residual bottleneck across 5 modalities spanning 4 carrier families---optical photons (CASSI, CACTI), X-ray photons (CT), electrons (ptychography), and nuclear spins (MRI)---all well-designed instruments operating above their Gate~1 and Gate~2 floors. The mismatch signal is monotonic and scene-independent in all cases, with 100\% recovery via autonomous or oracle calibration. The only modality with sub-dB degradation (MRI at R=2) is explained by the inherent robustness of over-determined coil encoding.
 
 
 %% ============================================================
@@ -2333,7 +2334,7 @@ Forward model: Gaussian PSF convolution with true $\sigma{=}3.0$\,px; wrong $\si
 $\sigma_\mathrm{wrong} \in \{3.5, 4.0, 5.0, 6.0\}$\,px.
 Calibration: same forward-model fitting on known checkerboard target as Table~S20
 ($\sigma_\mathrm{cal}{=}3.12$\,px, error 0.12\,px).
-Results confirm Gate~3 dominance on real photographic content: monotonic degradation ($+0.4$--$+8.1$\,dB)
+Results confirm that Gate~3 is the residual bottleneck on real photographic content: monotonic degradation ($+0.4$--$+8.1$\,dB)
 with near-perfect calibration recovery ($\rho{=}0.946$--$0.999$).}
 \label{tab:lensless_real}
 \small
@@ -2545,12 +2546,12 @@ In practice, the calibration target can be any known object (resolution chart, S
 the checkerboard is chosen for its broad spatial frequency content.
 
 \subsection{Real-Image Corroboration (DiffuserCam DLMD)}
-To confirm that Gate~3 dominance is not an artefact of the sparse synthetic phantoms used in Table~S20,
+To confirm that the Gate~3 residual bottleneck finding is not an artefact of the sparse synthetic phantoms used in Table~S20,
 we repeat the validation on $N{=}5$ real photographic scenes from the DiffuserCam DLMD dataset
 \cite{Antipa2018} (Table~S21).
 The sharp lensed images (480$\times$270, from a real DiffuserCam hardware system)
 serve as scene phantoms; measurements are simulated with the same Gaussian PSF model.
-Gate~3 dominance holds on real photographic content:
+The Gate~3 residual bottleneck pattern holds on real photographic content:
 mean $\Delta{=}+0.37$\,dB ($\Delta\sigma{=}0.5$\,px), $+1.50$\,dB ($+1.0$\,px),
 $+4.40$\,dB ($+2.0$\,px), $+6.69$\,dB ($+3.0$\,px)---comparable to the synthetic results ($+7.02$\,dB)---
 with near-perfect calibration recovery $\rho{=}0.965$--$0.998$ across all images and mismatch levels.
