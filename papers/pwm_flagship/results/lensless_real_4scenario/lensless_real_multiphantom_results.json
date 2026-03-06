@@ -1,0 +1,428 @@
+{
+  "modality": "lensless_real",
+  "dataset": "DiffuserCam-DLMD (HuggingFace: bezzam/DiffuserCam-Lensless-Mirflickr-Dataset)",
+  "n_images": 5,
+  "image_names": [
+    "diffusercam_00",
+    "diffusercam_01",
+    "diffusercam_02",
+    "diffusercam_03",
+    "diffusercam_04"
+  ],
+  "image_size": [
+    64,
+    64
+  ],
+  "true_psf_sigma": 3.0,
+  "noise_sigma": 0.02,
+  "tikhonov_lam": 0.01,
+  "calib_steps": 21,
+  "calib_sigma_range": [
+    1.5,
+    8.0
+  ],
+  "per_image": [
+    {
+      "image_name": "diffusercam_00",
+      "psnr_I": 18.9371,
+      "ssim_I": 0.4184,
+      "offsets": [
+        {
+          "sigma_error_px": 0.5,
+          "sigma_wrong": 3.5,
+          "psnr_I": 18.9371,
+          "psnr_II": 18.6481,
+          "psnr_IV": 18.9289,
+          "ssim_I": 0.4184,
+          "ssim_II": 0.3648,
+          "ssim_IV": 0.4023,
+          "delta_psnr_db": 0.289,
+          "recovery_ratio": 0.9716,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0009
+        },
+        {
+          "sigma_error_px": 1.0,
+          "sigma_wrong": 4.0,
+          "psnr_I": 18.9371,
+          "psnr_II": 17.7831,
+          "psnr_IV": 18.9289,
+          "ssim_I": 0.4184,
+          "ssim_II": 0.3302,
+          "ssim_IV": 0.4023,
+          "delta_psnr_db": 1.1539,
+          "recovery_ratio": 0.9929,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0007
+        },
+        {
+          "sigma_error_px": 2.0,
+          "sigma_wrong": 5.0,
+          "psnr_I": 18.9371,
+          "psnr_II": 15.619,
+          "psnr_IV": 18.9289,
+          "ssim_I": 0.4184,
+          "ssim_II": 0.2581,
+          "ssim_IV": 0.4023,
+          "delta_psnr_db": 3.3181,
+          "recovery_ratio": 0.9975,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0007
+        },
+        {
+          "sigma_error_px": 3.0,
+          "sigma_wrong": 6.0,
+          "psnr_I": 18.9371,
+          "psnr_II": 13.3854,
+          "psnr_IV": 18.9289,
+          "ssim_I": 0.4184,
+          "ssim_II": 0.1971,
+          "ssim_IV": 0.4023,
+          "delta_psnr_db": 5.5517,
+          "recovery_ratio": 0.9985,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0007
+        }
+      ]
+    },
+    {
+      "image_name": "diffusercam_01",
+      "psnr_I": 16.1807,
+      "ssim_I": 0.4935,
+      "offsets": [
+        {
+          "sigma_error_px": 0.5,
+          "sigma_wrong": 3.5,
+          "psnr_I": 16.1807,
+          "psnr_II": 15.8839,
+          "psnr_IV": 16.1648,
+          "ssim_I": 0.4935,
+          "ssim_II": 0.4367,
+          "ssim_IV": 0.4817,
+          "delta_psnr_db": 0.2968,
+          "recovery_ratio": 0.9463,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0012
+        },
+        {
+          "sigma_error_px": 1.0,
+          "sigma_wrong": 4.0,
+          "psnr_I": 16.1807,
+          "psnr_II": 14.9634,
+          "psnr_IV": 16.1648,
+          "ssim_I": 0.4935,
+          "ssim_II": 0.3739,
+          "ssim_IV": 0.4817,
+          "delta_psnr_db": 1.2173,
+          "recovery_ratio": 0.9869,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0008
+        },
+        {
+          "sigma_error_px": 2.0,
+          "sigma_wrong": 5.0,
+          "psnr_I": 16.1807,
+          "psnr_II": 12.3902,
+          "psnr_IV": 16.1648,
+          "ssim_I": 0.4935,
+          "ssim_II": 0.2689,
+          "ssim_IV": 0.4817,
+          "delta_psnr_db": 3.7905,
+          "recovery_ratio": 0.9958,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0006
+        },
+        {
+          "sigma_error_px": 3.0,
+          "sigma_wrong": 6.0,
+          "psnr_I": 16.1807,
+          "psnr_II": 10.7657,
+          "psnr_IV": 16.1648,
+          "ssim_I": 0.4935,
+          "ssim_II": 0.2262,
+          "ssim_IV": 0.4817,
+          "delta_psnr_db": 5.415,
+          "recovery_ratio": 0.9971,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0011
+        }
+      ]
+    },
+    {
+      "image_name": "diffusercam_02",
+      "psnr_I": 18.731,
+      "ssim_I": 0.5524,
+      "offsets": [
+        {
+          "sigma_error_px": 0.5,
+          "sigma_wrong": 3.5,
+          "psnr_I": 18.731,
+          "psnr_II": 18.2147,
+          "psnr_IV": 18.7181,
+          "ssim_I": 0.5524,
+          "ssim_II": 0.4562,
+          "ssim_IV": 0.5305,
+          "delta_psnr_db": 0.5163,
+          "recovery_ratio": 0.9751,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0006
+        },
+        {
+          "sigma_error_px": 1.0,
+          "sigma_wrong": 4.0,
+          "psnr_I": 18.731,
+          "psnr_II": 16.6844,
+          "psnr_IV": 18.7181,
+          "ssim_I": 0.5524,
+          "ssim_II": 0.3854,
+          "ssim_IV": 0.5305,
+          "delta_psnr_db": 2.0466,
+          "recovery_ratio": 0.9937,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0013
+        },
+        {
+          "sigma_error_px": 2.0,
+          "sigma_wrong": 5.0,
+          "psnr_I": 18.731,
+          "psnr_II": 12.9576,
+          "psnr_IV": 18.7181,
+          "ssim_I": 0.5524,
+          "ssim_II": 0.2691,
+          "ssim_IV": 0.5305,
+          "delta_psnr_db": 5.7734,
+          "recovery_ratio": 0.9978,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.001
+        },
+        {
+          "sigma_error_px": 3.0,
+          "sigma_wrong": 6.0,
+          "psnr_I": 18.731,
+          "psnr_II": 10.681,
+          "psnr_IV": 18.7181,
+          "ssim_I": 0.5524,
+          "ssim_II": 0.238,
+          "ssim_IV": 0.5305,
+          "delta_psnr_db": 8.05,
+          "recovery_ratio": 0.9984,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0008
+        }
+      ]
+    },
+    {
+      "image_name": "diffusercam_03",
+      "psnr_I": 19.3193,
+      "ssim_I": 0.5242,
+      "offsets": [
+        {
+          "sigma_error_px": 0.5,
+          "sigma_wrong": 3.5,
+          "psnr_I": 19.3193,
+          "psnr_II": 18.9316,
+          "psnr_IV": 19.3135,
+          "ssim_I": 0.5242,
+          "ssim_II": 0.4875,
+          "ssim_IV": 0.5147,
+          "delta_psnr_db": 0.3877,
+          "recovery_ratio": 0.9851,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0007
+        },
+        {
+          "sigma_error_px": 1.0,
+          "sigma_wrong": 4.0,
+          "psnr_I": 19.3193,
+          "psnr_II": 17.622,
+          "psnr_IV": 19.3135,
+          "ssim_I": 0.5242,
+          "ssim_II": 0.4596,
+          "ssim_IV": 0.5147,
+          "delta_psnr_db": 1.6973,
+          "recovery_ratio": 0.9966,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0011
+        },
+        {
+          "sigma_error_px": 2.0,
+          "sigma_wrong": 5.0,
+          "psnr_I": 19.3193,
+          "psnr_II": 14.2217,
+          "psnr_IV": 19.3135,
+          "ssim_I": 0.5242,
+          "ssim_II": 0.3883,
+          "ssim_IV": 0.5147,
+          "delta_psnr_db": 5.0976,
+          "recovery_ratio": 0.9989,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0007
+        },
+        {
+          "sigma_error_px": 3.0,
+          "sigma_wrong": 6.0,
+          "psnr_I": 19.3193,
+          "psnr_II": 11.3817,
+          "psnr_IV": 19.3135,
+          "ssim_I": 0.5242,
+          "ssim_II": 0.3229,
+          "ssim_IV": 0.5147,
+          "delta_psnr_db": 7.9376,
+          "recovery_ratio": 0.9993,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0007
+        }
+      ]
+    },
+    {
+      "image_name": "diffusercam_04",
+      "psnr_I": 18.7998,
+      "ssim_I": 0.5629,
+      "offsets": [
+        {
+          "sigma_error_px": 0.5,
+          "sigma_wrong": 3.5,
+          "psnr_I": 18.7998,
+          "psnr_II": 18.4165,
+          "psnr_IV": 18.779,
+          "ssim_I": 0.5629,
+          "ssim_II": 0.5269,
+          "ssim_IV": 0.5589,
+          "delta_psnr_db": 0.3833,
+          "recovery_ratio": 0.9456,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0006
+        },
+        {
+          "sigma_error_px": 1.0,
+          "sigma_wrong": 4.0,
+          "psnr_I": 18.7998,
+          "psnr_II": 17.3962,
+          "psnr_IV": 18.779,
+          "ssim_I": 0.5629,
+          "ssim_II": 0.4597,
+          "ssim_IV": 0.5589,
+          "delta_psnr_db": 1.4036,
+          "recovery_ratio": 0.9851,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0007
+        },
+        {
+          "sigma_error_px": 2.0,
+          "sigma_wrong": 5.0,
+          "psnr_I": 18.7998,
+          "psnr_II": 14.7994,
+          "psnr_IV": 18.779,
+          "ssim_I": 0.5629,
+          "ssim_II": 0.3388,
+          "ssim_IV": 0.5589,
+          "delta_psnr_db": 4.0004,
+          "recovery_ratio": 0.9948,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0009
+        },
+        {
+          "sigma_error_px": 3.0,
+          "sigma_wrong": 6.0,
+          "psnr_I": 18.7998,
+          "psnr_II": 12.2842,
+          "psnr_IV": 18.779,
+          "ssim_I": 0.5629,
+          "ssim_II": 0.2709,
+          "ssim_IV": 0.5589,
+          "delta_psnr_db": 6.5157,
+          "recovery_ratio": 0.9968,
+          "calibrated_sigma": 3.125,
+          "calibrated_sigma_error": 0.125,
+          "cal_time_s": 0.0006
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "per_sigma_error": [
+      {
+        "sigma_error_px": 0.5,
+        "mean_delta_psnr": 0.3746,
+        "std_delta_psnr": 0.0821,
+        "ci95_delta_psnr": [
+          0.311,
+          0.4458
+        ],
+        "mean_recovery": 0.9647,
+        "ci95_recovery": [
+          0.9511,
+          0.9784
+        ]
+      },
+      {
+        "sigma_error_px": 1.0,
+        "mean_delta_psnr": 1.5037,
+        "std_delta_psnr": 0.3306,
+        "ci95_delta_psnr": [
+          1.2416,
+          1.7982
+        ],
+        "mean_recovery": 0.991,
+        "ci95_recovery": [
+          0.9874,
+          0.9947
+        ]
+      },
+      {
+        "sigma_error_px": 2.0,
+        "mean_delta_psnr": 4.396,
+        "std_delta_psnr": 0.9027,
+        "ci95_delta_psnr": [
+          3.6435,
+          5.1506
+        ],
+        "mean_recovery": 0.997,
+        "ci95_recovery": [
+          0.9957,
+          0.9982
+        ]
+      },
+      {
+        "sigma_error_px": 3.0,
+        "mean_delta_psnr": 6.694,
+        "std_delta_psnr": 1.1276,
+        "ci95_delta_psnr": [
+          5.6898,
+          7.6982
+        ],
+        "mean_recovery": 0.998,
+        "ci95_recovery": [
+          0.9972,
+          0.9988
+        ]
+      }
+    ]
+  },
+  "key_findings": {
+    "carrier": "photon",
+    "gate3_parameter": "psf_sigma",
+    "gate3_dominance": true,
+    "monotonic_degradation": true,
+    "validation_note": "Real photographic scenes from DiffuserCam DLMD (Antipa et al. 2018; bezzam/DiffuserCam-Lensless-Mirflickr-Dataset); Gaussian PSF simulation models pinhole propagation distance uncertainty, the dominant lensless calibration parameter."
+  }
+}

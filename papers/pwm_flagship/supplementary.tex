@@ -2320,6 +2320,59 @@ Mean & $+0.5$ & --- & --- & --- & $+0.41 \pm 0.20$ & 0.98 \\
 \end{table}
 
 
+
+\section{Supplementary Table S21: Lensless Camera Real-Image Validation}
+\label{sec:lensless_real}
+
+\begin{table}[htbp]
+\centering
+\caption{Lensless camera validation on $N{=}5$ real photographic scenes from the
+DiffuserCam DLMD dataset \cite{Antipa2018} (HuggingFace: \texttt{bezzam/DiffuserCam-Lensless-Mirflickr-Dataset}).
+Images (480$\times$270 lensed captures from a real DiffuserCam system) are resized to $64{\times}64$.
+Forward model: Gaussian PSF convolution with true $\sigma{=}3.0$\,px; wrong $\sigma$ tested:
+$\sigma_\mathrm{wrong} \in \{3.5, 4.0, 5.0, 6.0\}$\,px.
+Calibration: same forward-model fitting on known checkerboard target as Table~S20
+($\sigma_\mathrm{cal}{=}3.12$\,px, error 0.12\,px).
+Results confirm Gate~3 dominance on real photographic content: monotonic degradation ($+0.4$--$+8.1$\,dB)
+with near-perfect calibration recovery ($\rho{=}0.946$--$0.999$).}
+\label{tab:lensless_real}
+\small
+\begin{tabular}{l r r r r r r}
+\toprule
+Scene & $\Delta\sigma$ (px) & Sc.~I (dB) & Sc.~II (dB) & Sc.~IV (dB) & $\Delta$(dB) & $\rho$ \\
+\midrule
+DiffuserCam\,00 & $+0.5$ & 18.94 & 18.65 & 18.93 & 0.289 & 0.972 \\
+                & $+1.0$ & 18.94 & 17.78 & 18.93 & 1.154 & 0.993 \\
+                & $+2.0$ & 18.94 & 15.62 & 18.93 & 3.318 & 0.998 \\
+                & $+3.0$ & 18.94 & 13.39 & 18.93 & 5.552 & 0.9985 \\
+DiffuserCam\,01 & $+0.5$ & 16.18 & 15.88 & 16.16 & 0.297 & 0.946 \\
+                & $+1.0$ & 16.18 & 14.96 & 16.16 & 1.217 & 0.987 \\
+                & $+2.0$ & 16.18 & 12.39 & 16.16 & 3.791 & 0.996 \\
+                & $+3.0$ & 16.18 & 10.77 & 16.16 & 5.415 & 0.9971 \\
+DiffuserCam\,02 & $+0.5$ & 18.73 & 18.21 & 18.72 & 0.516 & 0.975 \\
+                & $+1.0$ & 18.73 & 16.68 & 18.72 & 2.047 & 0.994 \\
+                & $+2.0$ & 18.73 & 12.96 & 18.72 & 5.773 & 0.998 \\
+                & $+3.0$ & 18.73 & 10.68 & 18.72 & 8.050 & 0.9984 \\
+DiffuserCam\,03 & $+0.5$ & 19.32 & 18.93 & 19.31 & 0.388 & 0.985 \\
+                & $+1.0$ & 19.32 & 17.62 & 19.31 & 1.697 & 0.997 \\
+                & $+2.0$ & 19.32 & 14.22 & 19.31 & 5.098 & 0.999 \\
+                & $+3.0$ & 19.32 & 11.38 & 19.31 & 7.938 & 0.9993 \\
+DiffuserCam\,04 & $+0.5$ & 18.80 & 18.42 & 18.78 & 0.383 & 0.946 \\
+                & $+1.0$ & 18.80 & 17.40 & 18.78 & 1.404 & 0.985 \\
+                & $+2.0$ & 18.80 & 14.80 & 18.78 & 4.000 & 0.995 \\
+                & $+3.0$ & 18.80 & 12.28 & 18.78 & 6.516 & 0.9968 \\
+\midrule
+\multicolumn{7}{l}{\textbf{Aggregate mean $\pm$ 95\% bootstrap CI ($N{=}5$ real images)}} \\
+\midrule
+Mean & $+0.5$ & --- & --- & --- & $+0.37 \pm 0.10$ & 0.965 \\
+     & $+1.0$ & --- & --- & --- & $+1.50 \pm 0.39$ & 0.991 \\
+     & $+2.0$ & --- & --- & --- & $+4.40 \pm 1.08$ & 0.997 \\
+     & $+3.0$ & --- & --- & --- & $+6.69 \pm 1.36$ & 0.998 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
 %% ============================================================
 %% SUPPLEMENTARY NOTES 17--21: NEW MODALITY MISMATCH ANALYSIS
 %% ============================================================
@@ -2490,6 +2543,19 @@ The 21-step grid-search yields $\sigma_\mathrm{cal}{=}3.12$\,px (error 0.12\,px,
 achieving near-perfect recovery $\rho{=}0.98$--$1.00$ across all $\Delta\sigma$ levels and phantom types.
 In practice, the calibration target can be any known object (resolution chart, Siemens star, or LED array);
 the checkerboard is chosen for its broad spatial frequency content.
+
+\subsection{Real-Image Corroboration (DiffuserCam DLMD)}
+To confirm that Gate~3 dominance is not an artefact of the sparse synthetic phantoms used in Table~S20,
+we repeat the validation on $N{=}5$ real photographic scenes from the DiffuserCam DLMD dataset
+\cite{Antipa2018} (Table~S21).
+The sharp lensed images (480$\times$270, from a real DiffuserCam hardware system)
+serve as scene phantoms; measurements are simulated with the same Gaussian PSF model.
+Gate~3 dominance holds on real photographic content:
+mean $\Delta{=}+0.37$\,dB ($\Delta\sigma{=}0.5$\,px), $+1.50$\,dB ($+1.0$\,px),
+$+4.40$\,dB ($+2.0$\,px), $+6.69$\,dB ($+3.0$\,px)---comparable to the synthetic results ($+7.02$\,dB)---
+with near-perfect calibration recovery $\rho{=}0.965$--$0.998$ across all images and mismatch levels.
+The consistency between synthetic phantoms and real DiffuserCam scenes validates that the PSF mismatch
+sensitivity is a property of the forward model, not of the phantom choice.
 
 
 %% ============================================================

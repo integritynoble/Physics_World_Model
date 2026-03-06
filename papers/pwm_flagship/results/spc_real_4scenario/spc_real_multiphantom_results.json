@@ -1,0 +1,425 @@
+{
+  "modality": "spc_real",
+  "dataset": "BSDS400/Set11",
+  "n_images": 5,
+  "image_names": [
+    "Monarch",
+    "Parrots",
+    "barbara",
+    "boats",
+    "cameraman"
+  ],
+  "image_size": [
+    32,
+    32
+  ],
+  "sampling_rate": 0.25,
+  "n_measurements": 256,
+  "noise_sigma": 0.01,
+  "true_sigma_ig": 10.0,
+  "calib_steps": 21,
+  "per_image": [
+    {
+      "image_name": "Monarch",
+      "psnr_I": 6.9542,
+      "ssim_I": 0.1217,
+      "offsets": [
+        {
+          "sigma_ig_error": 5.0,
+          "sigma_wrong": 15.0,
+          "psnr_I": 6.9542,
+          "psnr_II": 6.7237,
+          "psnr_IV": 6.9511,
+          "ssim_I": 0.1217,
+          "ssim_II": 0.0857,
+          "ssim_IV": 0.1199,
+          "delta_psnr_db": 0.2306,
+          "recovery_ratio": 0.9864,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 10.0,
+          "sigma_wrong": 20.0,
+          "psnr_I": 6.9542,
+          "psnr_II": 6.5777,
+          "psnr_IV": 6.9511,
+          "ssim_I": 0.1217,
+          "ssim_II": 0.07,
+          "ssim_IV": 0.1199,
+          "delta_psnr_db": 0.3766,
+          "recovery_ratio": 0.9917,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 20.0,
+          "sigma_wrong": 30.0,
+          "psnr_I": 6.9542,
+          "psnr_II": 6.4643,
+          "psnr_IV": 6.9511,
+          "ssim_I": 0.1217,
+          "ssim_II": 0.0588,
+          "ssim_IV": 0.1199,
+          "delta_psnr_db": 0.49,
+          "recovery_ratio": 0.9936,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 9989.0,
+          "sigma_wrong": 9999.0,
+          "psnr_I": 6.9542,
+          "psnr_II": 6.3714,
+          "psnr_IV": 6.9511,
+          "ssim_I": 0.1217,
+          "ssim_II": 0.0503,
+          "ssim_IV": 0.1199,
+          "delta_psnr_db": 0.5828,
+          "recovery_ratio": 0.9946,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        }
+      ]
+    },
+    {
+      "image_name": "Parrots",
+      "psnr_I": 0.721,
+      "ssim_I": 0.0088,
+      "offsets": [
+        {
+          "sigma_ig_error": 5.0,
+          "sigma_wrong": 15.0,
+          "psnr_I": 0.721,
+          "psnr_II": 0.5379,
+          "psnr_IV": 0.7183,
+          "ssim_I": 0.0088,
+          "ssim_II": 0.0066,
+          "ssim_IV": 0.0087,
+          "delta_psnr_db": 0.1831,
+          "recovery_ratio": 0.9856,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 10.0,
+          "sigma_wrong": 20.0,
+          "psnr_I": 0.721,
+          "psnr_II": 0.4207,
+          "psnr_IV": 0.7183,
+          "ssim_I": 0.0088,
+          "ssim_II": 0.0054,
+          "ssim_IV": 0.0087,
+          "delta_psnr_db": 0.3003,
+          "recovery_ratio": 0.9912,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 20.0,
+          "sigma_wrong": 30.0,
+          "psnr_I": 0.721,
+          "psnr_II": 0.3293,
+          "psnr_IV": 0.7183,
+          "ssim_I": 0.0088,
+          "ssim_II": 0.0046,
+          "ssim_IV": 0.0087,
+          "delta_psnr_db": 0.3917,
+          "recovery_ratio": 0.9933,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 9989.0,
+          "sigma_wrong": 9999.0,
+          "psnr_I": 0.721,
+          "psnr_II": 0.2543,
+          "psnr_IV": 0.7183,
+          "ssim_I": 0.0088,
+          "ssim_II": 0.0039,
+          "ssim_IV": 0.0087,
+          "delta_psnr_db": 0.4666,
+          "recovery_ratio": 0.9944,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        }
+      ]
+    },
+    {
+      "image_name": "barbara",
+      "psnr_I": 0.8597,
+      "ssim_I": 0.0189,
+      "offsets": [
+        {
+          "sigma_ig_error": 5.0,
+          "sigma_wrong": 15.0,
+          "psnr_I": 0.8597,
+          "psnr_II": 0.6308,
+          "psnr_IV": 0.854,
+          "ssim_I": 0.0189,
+          "ssim_II": 0.0156,
+          "ssim_IV": 0.0188,
+          "delta_psnr_db": 0.2289,
+          "recovery_ratio": 0.975,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 10.0,
+          "sigma_wrong": 20.0,
+          "psnr_I": 0.8597,
+          "psnr_II": 0.4986,
+          "psnr_IV": 0.854,
+          "ssim_I": 0.0189,
+          "ssim_II": 0.0134,
+          "ssim_IV": 0.0188,
+          "delta_psnr_db": 0.3611,
+          "recovery_ratio": 0.9841,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 20.0,
+          "sigma_wrong": 30.0,
+          "psnr_I": 0.8597,
+          "psnr_II": 0.3974,
+          "psnr_IV": 0.854,
+          "ssim_I": 0.0189,
+          "ssim_II": 0.0117,
+          "ssim_IV": 0.0188,
+          "delta_psnr_db": 0.4623,
+          "recovery_ratio": 0.9876,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 9989.0,
+          "sigma_wrong": 9999.0,
+          "psnr_I": 0.8597,
+          "psnr_II": 0.3156,
+          "psnr_IV": 0.854,
+          "ssim_I": 0.0189,
+          "ssim_II": 0.0102,
+          "ssim_IV": 0.0188,
+          "delta_psnr_db": 0.5442,
+          "recovery_ratio": 0.9895,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        }
+      ]
+    },
+    {
+      "image_name": "boats",
+      "psnr_I": 0.9656,
+      "ssim_I": 0.0298,
+      "offsets": [
+        {
+          "sigma_ig_error": 5.0,
+          "sigma_wrong": 15.0,
+          "psnr_I": 0.9656,
+          "psnr_II": 0.7268,
+          "psnr_IV": 0.9582,
+          "ssim_I": 0.0298,
+          "ssim_II": 0.0244,
+          "ssim_IV": 0.0296,
+          "delta_psnr_db": 0.2388,
+          "recovery_ratio": 0.969,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 10.0,
+          "sigma_wrong": 20.0,
+          "psnr_I": 0.9656,
+          "psnr_II": 0.5968,
+          "psnr_IV": 0.9582,
+          "ssim_I": 0.0298,
+          "ssim_II": 0.0215,
+          "ssim_IV": 0.0296,
+          "delta_psnr_db": 0.3688,
+          "recovery_ratio": 0.9799,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 20.0,
+          "sigma_wrong": 30.0,
+          "psnr_I": 0.9656,
+          "psnr_II": 0.4981,
+          "psnr_IV": 0.9582,
+          "ssim_I": 0.0298,
+          "ssim_II": 0.0192,
+          "ssim_IV": 0.0296,
+          "delta_psnr_db": 0.4675,
+          "recovery_ratio": 0.9842,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 9989.0,
+          "sigma_wrong": 9999.0,
+          "psnr_I": 0.9656,
+          "psnr_II": 0.4185,
+          "psnr_IV": 0.9582,
+          "ssim_I": 0.0298,
+          "ssim_II": 0.0173,
+          "ssim_IV": 0.0296,
+          "delta_psnr_db": 0.5471,
+          "recovery_ratio": 0.9865,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        }
+      ]
+    },
+    {
+      "image_name": "cameraman",
+      "psnr_I": 7.8504,
+      "ssim_I": 0.1187,
+      "offsets": [
+        {
+          "sigma_ig_error": 5.0,
+          "sigma_wrong": 15.0,
+          "psnr_I": 7.8504,
+          "psnr_II": 7.7448,
+          "psnr_IV": 7.8504,
+          "ssim_I": 0.1187,
+          "ssim_II": 0.0854,
+          "ssim_IV": 0.1187,
+          "delta_psnr_db": 0.1055,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 10.0,
+          "sigma_wrong": 20.0,
+          "psnr_I": 7.8504,
+          "psnr_II": 7.6557,
+          "psnr_IV": 7.8504,
+          "ssim_I": 0.1187,
+          "ssim_II": 0.07,
+          "ssim_IV": 0.1187,
+          "delta_psnr_db": 0.1947,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 20.0,
+          "sigma_wrong": 30.0,
+          "psnr_I": 7.8504,
+          "psnr_II": 7.5835,
+          "psnr_IV": 7.8504,
+          "ssim_I": 0.1187,
+          "ssim_II": 0.0589,
+          "ssim_IV": 0.1187,
+          "delta_psnr_db": 0.2668,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        },
+        {
+          "sigma_ig_error": 9989.0,
+          "sigma_wrong": 9999.0,
+          "psnr_I": 7.8504,
+          "psnr_II": 7.5231,
+          "psnr_IV": 7.8504,
+          "ssim_I": 0.1187,
+          "ssim_II": 0.0503,
+          "ssim_IV": 0.1187,
+          "delta_psnr_db": 0.3272,
+          "recovery_ratio": 1.0,
+          "calibrated_sigma_ig": 10.2,
+          "sigma_ig_cal_error": 0.2,
+          "cal_time_s": 0.01
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "per_sigma_error": [
+      {
+        "sigma_ig_error": 5.0,
+        "mean_delta_psnr": 0.1974,
+        "std_delta_psnr": 0.0499,
+        "ci95_delta_psnr": [
+          0.1547,
+          0.2335
+        ],
+        "mean_recovery": 0.9832,
+        "ci95_recovery": [
+          0.9747,
+          0.9923
+        ]
+      },
+      {
+        "sigma_ig_error": 10.0,
+        "mean_delta_psnr": 0.3203,
+        "std_delta_psnr": 0.0684,
+        "ci95_delta_psnr": [
+          0.261,
+          0.3704
+        ],
+        "mean_recovery": 0.9894,
+        "ci95_recovery": [
+          0.9838,
+          0.9952
+        ]
+      },
+      {
+        "sigma_ig_error": 20.0,
+        "mean_delta_psnr": 0.4157,
+        "std_delta_psnr": 0.0814,
+        "ci95_delta_psnr": [
+          0.3448,
+          0.4755
+        ],
+        "mean_recovery": 0.9917,
+        "ci95_recovery": [
+          0.9874,
+          0.9962
+        ]
+      },
+      {
+        "sigma_ig_error": 9989.0,
+        "mean_delta_psnr": 0.4936,
+        "std_delta_psnr": 0.0914,
+        "ci95_delta_psnr": [
+          0.4138,
+          0.5608
+        ],
+        "mean_recovery": 0.993,
+        "ci95_recovery": [
+          0.9893,
+          0.9968
+        ]
+      }
+    ]
+  },
+  "key_findings": {
+    "carrier": "photon",
+    "gate3_parameter": "illumination_sigma",
+    "gate3_dominance": true,
+    "monotonic_degradation": true,
+    "validation_note": "Real natural images from BSDS400/Set11 benchmark; forward model uses random measurement matrix with Gaussian illumination non-uniformity (physically motivated for DMD-based SPC)."
+  }
+}
