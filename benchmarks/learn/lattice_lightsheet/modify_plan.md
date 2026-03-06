@@ -22,6 +22,12 @@
 
 CARE in particular was demonstrated on lattice light-sheet data in the original Weigert et al., Nat. Methods 2018 paper, making this pool especially well-matched.
 
+## Current Algorithm Count (updated 2026-03-06)
+
+Full pool (13 algorithms): Richardson-Lucy, Wiener Filter, TV-Deconvolution, PnP-FISTA, PnP-DnCNN, CARE, U-Net, ResUNet, Restormer, DeconvFormer, Restormer+, DiffDeconv, ScoreMicro.
+
+**Status:** PASS — check.md written 2026-03-06
+
 ## Recommendation
 
 No code changes needed.

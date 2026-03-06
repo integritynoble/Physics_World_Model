@@ -33,6 +33,12 @@ More domain-specific algorithms would include:
 
 But the current generic computational pool is a reasonable approximation.
 
+## Current Algorithm Count (updated 2026-03-06)
+
+Full pool (13 algorithms, computational pool): Tikhonov, LSQR, ART, PnP-RED, PnP-ADMM, Deep Image Prior, Plug-and-Play, SwinIR, Restormer, NAFNet, CompFormer, DiffusionCompute, FlowCompute.
+
+**Status:** PASS — check.md written 2026-03-06
+
 ## Verdict
 
 No code changes needed.

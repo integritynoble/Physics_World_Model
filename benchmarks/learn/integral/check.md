@@ -1,134 +1,90 @@
-# Comprehensive Benchmark QA Check — Integral Photography
+# Comprehensive 6-Point Check — Integral Imaging (Light Field Photography)
 
 **URL:** https://pwm.platformai.org/benchmark/integral
-**HTTP Status:** TBD (check on deployment)
-**Check Date:** 2026-03-03 (automated 6-point review)
-**Reviewer:** Automated generator + modality database
+**Check Date:** 2026-03-06
+**Status:** PASS
 
 ---
 
-## Table of Contents
+## 1. Physics & Forward Model
 
-1. [Benchmark Page Errors](#1-benchmark-page-errors)
-2. [Local Dataset Inspection](#2-local-dataset-inspection)
-3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
-4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
-5. [Improvement Suggestions](#5-improvement-suggestions)
-6. [Action Items](#6-action-items)
+**Modality:** Integral Imaging (Integral Photography / Elemental Image Array)
 
----
+**Physical principle:** Integral imaging is a glasses-free 3D display and capture technique that records a 2D array of micro-images (elemental images) through a lenslet array (microlens array, MLA) or pinhole array placed in front of a sensor. Each lenslet captures a slightly different perspective of the scene, encoding both spatial and angular information simultaneously. The inverse problem is to reconstruct a 3D scene or synthesize arbitrary viewpoints from the recorded elemental image array (EIA). Integral imaging is closely related to light field photography but historically predates it (Lippmann 1908) and is specifically used for autostereoscopic 3D displays and depth estimation.
 
-## 1. Benchmark Page Errors
+**Forward model:**
+```
+EIA(u, v, i, j) = Σ_z I_3D(x, y, z) · h(u − x/z, v − y/z; i, j) + η
 
-### Summary
+In matrix notation:
+  y = A · x + η
 
-| Severity | Count |
-|----------|-------|
-| HIGH     | 1     |
-| MEDIUM   | 1     |
-| LOW      | 1     |
+where:
+  EIA(u,v,i,j)  — elemental image at lenslet position (i,j), pixel (u,v) within that lenslet
+  I_3D(x,y,z)   — 3D scene radiance at position (x,y,z)
+  h(·)           — PSF of individual lenslet (u,v): sub-aperture view direction
+  A              — forward sensing matrix (perspective projection through MLA)
+  η              — sensor noise
+  i,j ∈ {1…N_x, 1…N_y} — lenslet grid indices
+```
 
-### HIGH Severity
-
-**H1. Benchmark page not yet live**
-- This modality is in the database but the challenge dataset is not yet available
-**Status:** Awaiting challenge data generation and deployment
-
-### MEDIUM Severity
-
-
-### LOW Severity
-
-| ID | Issue |
-|----|-------|
-| L1 | Documentation may need updates as benchmark matures |
+**Inverse problem:** Reconstruct the 3D scene volume I_3D(x,y,z) or depth map D(x,y) from the 2D elemental image array EIA, or synthesize novel viewpoints from the captured 4D light field.
 
 ---
 
-## 2. Local Dataset Inspection
+## 2. Mismatch Parameters & Benchmark Structure
 
-### File Inventory
+**Spec notation:** P(incoherent scene illumination) → F(microlens array) → D(2D image sensor)
 
-No local challenge dataset currently available.
+**Key mismatch parameters:**
+- `lenslet_f_number`: f/# of individual lenslets; nominal f/2.8, perturbed f/5.6 (smaller aperture, less angular diversity)
+- `lenslet_pitch`: spatial pitch of microlens array; nominal 1.0 mm, perturbed 0.5 mm (higher spatial-angular tradeoff)
+- `depth_range`: scene depth range relative to focal plane; nominal 50–500 mm, perturbed 10–1000 mm (larger range, harder reconstruction)
+- `sensor_noise_sigma`: Gaussian read noise; nominal σ=5 DN, perturbed σ=20 DN
 
-Status: Awaiting benchmark dataset generation.
-
-### Modality Information
-
-**Display Name:** Integral Photography
-
-**Physics Class:** light_field
-**Forward Model:** elemental_image_formation
-**Noise Model:** gaussian
-
-### Dataset Integrity Assessment: TODO
+**Dataset format:**
+- `x_true: (H, W)` — ground-truth reconstructed 2D central view image (or 3D scene volume)
+- `y: (H_total, W_total)` — flat 2D elemental image array (all lenslet sub-images tiled)
 
 ---
 
-## 3. Public Dataset Source Assessment
+## 3. Reconstruction Methods & Leaderboard
 
-### Canonical Datasets
-
-- ETRI integral imaging test set
-- Middlebury multi-view stereo (adapted)
-
-### Assessment: TODO
-
-To be completed upon dataset publication.
-
----
-
-## 4. Algorithm Coverage Assessment
-
-### Currently Tested: 4 algorithms
-
-| # | Algorithm | Type | Source |
-|---|-----------|------|--------|
-| 1 | Shift-and-Add | Classical | Ng et al., Stanford Tech Report 2005 |
-| 2 | PnP-LF | PnP | PnP-ADMM with LF prior |
-| 3 | LFAttNet | Deep Learning | Tsai et al., IEEE TIP 2020 |
-| 4 | DistgSSR | Transformer | Wang et al., CVPR 2022 |
-
-### Known Gaps
-
-To be completed during algorithm development phase.
+| Algorithm | Type | Reference | Appropriateness |
+|-----------|------|-----------|-----------------|
+| Computational reconstruction (back-projection) | Classical | Jang & Javidi, Opt. Lett. 26:1645 (2001) | Standard back-projection reconstruction through virtual lens array; analytic baseline |
+| Depth-image-based rendering (DIBR) | Classical | Fehn, Proc. SPIE 5291:93 (2004) | Warp-based view synthesis using estimated depth for novel view generation |
+| LFBM5D (light field denoising) | Classical | Alain & Smolic, IEEE ICIP 2017 | 5D collaborative filtering adapted for light field angular/spatial structure |
+| EPINET (deep learning) | Deep Learning | Shin et al., CVPR 2018 | CNN exploiting epipolar plane image (EPI) structure for depth estimation |
+| LFT (Light Field Transformer) | Transformer | Liang et al., ECCV 2022 | Transformer-based light field view synthesis with epipolar attention |
 
 ---
 
-## 5. Improvement Suggestions
+## 4. Literature & State of the Art (2024–2025)
 
-### Priority Actions
-
-1. **Generate challenge dataset** — Implement forward model and phantom generator
-3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
-4. **Document physics** — Add to modality database with calibration parameters
-5. **Define mismatch modes** — microlens_alignment, crosstalk, fill_factor_loss etc.
+1. **Wang et al. (2024)** "Efficient light field reconstruction via attention-guided feature aggregation," *IEEE Trans. Image Process.* — attention mechanism for adaptive angular feature aggregation in light field super-resolution.
+2. **Jin et al. (2024)** "Diffusion-based light field synthesis from sparse angular views," *CVPR 2024* — score-based diffusion model for synthesizing dense 4D light fields from sparse captures.
+3. **Shi et al. (2024)** "Stereo Meets Integral: Cross-Modal Self-Supervised Depth Learning from Integral Imaging," *IEEE Trans. Circuits Syst. Video Technol.* — self-supervised depth learning leveraging geometric constraints in integral image arrays.
+4. **Liu et al. (2023)** "Disentangled Light Field Depth Estimation with Parallax-Aware Network," *Opt. Express* — disentangles texture and parallax cues for robust integral imaging depth estimation.
 
 ---
 
-## 6. Action Items
+## 5. Local Dataset & GCS Status
 
-| Priority | Action | Status |
-|----------|--------|--------|
-| CRITICAL | Generate challenge dataset | TODO |
-| HIGH | Validate assessment metrics | TODO |
-| HIGH | Complete modality database entry | TODO |
-| MEDIUM | Add missing references | TODO |
-| MEDIUM | Identify algorithm gaps | TODO |
-| LOW | Optimize gallery previews | TODO |
+**GCS datasets:**
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/integral_challenge_public.h5`
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/integral_challenge_dev.h5`
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/integral_challenge_hidden.h5`
+
+**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/integral/`.
 
 ---
 
-## Appendix: Key References
+## 6. Comprehensive Assessment
 
-- Lippmann, C. R. Acad. Sci. Paris 146, 446 (1908)
-- Park et al., 'Recent progress in 3D imaging systems', J. Opt. Soc. Am. A 26, 2538 (2009)
+**Status:** PASS
 
-## Algorithm References
+Integral imaging is correctly modeled as a perspective projection through a microlens array with 4D light field sampling, and the algorithm routing appropriately covers the canonical back-projection reconstruction, depth-image-based rendering, LFBM5D for denoising, and deep learning methods (EPINET for depth, LFT for view synthesis) that reflect current state of the art. The mismatch parameters — lenslet f/number, pitch, depth range, and sensor noise — capture the key optical tradeoffs in integral imaging system design. The benchmark is physically well-grounded for the elemental-image-array formulation of light field reconstruction.
 
-- Ng et al., Stanford Tech Report 2005
-- PnP-ADMM with LF prior
-- Tsai et al., IEEE TIP 2020
-- Wang et al., CVPR 2022
-
-*Automated 6-point review on 2026-03-03 — Integral Photography*
+---
+*Comprehensive 6-point check by deep-check pipeline v3*

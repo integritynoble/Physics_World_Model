@@ -28,3 +28,11 @@ All four algorithms are directly relevant to Raman spectroscopy reconstruction a
 ## Plan
 
 No code changes needed.
+
+## 2026-03-06 Comprehensive Check Update
+
+- Physics: y(nu) = sum_k c_k * s_k(nu) * A(nu) + b_fluorescence + n_shot; fluorescence background 10^3-10^6 x stronger than Raman
+- Key mismatch: instrument response A(nu), fluorescence background model, laser power uniformity, reference spectra purity
+- GCS datasets: 3 tiers confirmed
+- Algorithm pool: PASS — SG-ALS (baseline removal), SVD (dimensionality reduction), CDAE (deep denoising), SpectraFormer (transformer) cover the full pipeline
+- Note: Full catalog includes SpectraFormer (2024) and DiffusionSpectra as state-of-the-art

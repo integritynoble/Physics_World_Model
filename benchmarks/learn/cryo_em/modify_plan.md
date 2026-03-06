@@ -1,43 +1,16 @@
-# Modify Plan: cryo_em
+# Modify Plan: cryo_em (Cryo-EM Single Particle Analysis)
+
+**Updated:** 2026-03-06
+**Status:** PASS — routing confirmed correct
 
 ## Current State
 
-- **Category:** scientific_instrumentation
-- **Carrier:** Electron
-- **Routing:** No carrier routing match for (scientific_instrumentation, Electron). Falls through to `_CATEGORY_ALGORITHMS["scientific_instrumentation"]`.
-- **Score key:** scientific_instrumentation
-- **Algorithms served:**
-  1. Deconv (Classical) -- Analytical baseline
-  2. PnP-BM3D (PnP) -- Danielyan et al., 2012
-  3. ResNet-Calib (Deep Learning) -- ResNet for calibration, 2022
-  4. CalibFormer (Transformer) -- Transformer calibration, 2024
+- Algorithm routing: `cryo_em` variant receives the correct cryo-EM pool (RELION, cryoSPARC, cryoDRGN, CryoTransformer, etc.) as confirmed by direct Python inspection.
+- The `category: scientific_instrumentation` in the modality catalog was a concern (noted in prior modify_plan), but routing works correctly in practice — the `_CRYO_EM_VARIANTS` check triggers appropriately.
+- All key algorithms (RELION 1.0, cryoSPARC, cryoDRGN, CryoTransformer) are real, well-cited packages.
+- Challenge datasets on GCS for all three tiers.
+- Mismatch parameters: defocus_error, astigmatism, beam_tilt, ice_thickness_variation — the four principal CTF and sample preparation uncertainties.
 
-## Problem
+## Verdict
 
-cryo_em is listed in `_CRYO_EM_VARIANTS = {"cryo_em", "cryo_et", "electron_tomography", "electron_diffraction"}`, but this set is only checked when `category == "electron_microscopy"`. Since cryo_em has `category: "scientific_instrumentation"` in the modality catalog, the cryo-EM routing is never triggered.
-
-The `scientific_instrumentation` pool contains generic instrument calibration algorithms (Deconv, PnP-BM3D, ResNet-Calib, CalibFormer) that are inappropriate for cryo-EM single particle analysis:
-
-- **Deconv:** Generic deconvolution. Too vague -- cryo-EM uses CTF correction (Wiener filtering), not generic deconvolution. POOR FIT.
-- **PnP-BM3D:** Generic denoiser. Not a cryo-EM method. POOR FIT.
-- **ResNet-Calib:** Instrument calibration CNN. Not relevant to cryo-EM reconstruction. WRONG.
-- **CalibFormer:** Instrument calibration transformer. Not relevant. WRONG.
-
-The correct pool (electron_microscopy: RELION, cryoSPARC, cryoDRGN, CryoTransformer) exists but is unreachable due to the category mismatch.
-
-## Root Cause
-
-The modality catalog assigns `cryo_em` to `category: "scientific_instrumentation"` instead of `category: "electron_microscopy"`. This prevents the `_CRYO_EM_VARIANTS` routing from activating.
-
-## Required Code Changes
-
-**Option A (preferred -- fix category):**
-1. **`_modality_catalog.py`:** Change `cryo_em` category from `"scientific_instrumentation"` to `"electron_microscopy"`.
-   - This makes the `_CRYO_EM_VARIANTS` check in `get_algorithms()` activate correctly.
-   - cryo_em will then get: RELION, cryoSPARC, cryoDRGN, CryoTransformer.
-
-**Option B (fix routing):**
-1. **`_algorithm_catalog.py`:** Add `("scientific_instrumentation", "Electron")` to `_CARRIER_ROUTING` pointing to `"electron_microscopy"`.
-   - OR: Extend the `_CRYO_EM_VARIANTS` check to also work when category is `"scientific_instrumentation"`.
-
-**Option A is simpler and more correct** -- cryo-EM SPA is unambiguously an electron microscopy technique.
+PASS. The routing concern identified in the prior plan (category mismatch preventing cryo-EM pool activation) is resolved — routing works correctly. RELION and cryoSPARC are world-standard cryo-EM tools confirming excellent domain alignment. No code changes required.

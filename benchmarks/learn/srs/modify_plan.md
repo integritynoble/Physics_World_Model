@@ -29,3 +29,11 @@ No code changes needed.
 
 ## Files to Modify
 None.
+
+## 2026-03-06 Comprehensive Check Update
+
+- Physics: S_SRS ~ N(r) * I_pump * I_Stokes * PSF; non-resonant background from XPM/TPA; lock-in detection
+- Key mismatch: NR background (XPM), pulse temporal synchronization, chi^(3) heterogeneity, laser intensity fluctuations
+- GCS datasets: 3 tiers confirmed
+- Algorithm pool: PASS — SG-ALS (NR background subtraction), SVD/MCR (unmixing), CDAE (denoising), SpectraFormer (spectral decomposition)
+- Note: SRS is distinguished from spontaneous Raman by the NR background mismatch parameter; spectroscopy pool correctly captures this challenge

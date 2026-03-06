@@ -1,5 +1,7 @@
 # Modify Plan: xray_radiography
 
+**Date:** 2026-03-06
+
 ## Current State
 
 - **Category:** medical
@@ -7,28 +9,35 @@
 - **Score key:** medical
 - **Algorithms assigned:**
 
-| Name                | Type           | Source                           |
-|---------------------|----------------|----------------------------------|
-| FBP                 | Classical      | Analytical baseline              |
-| PnP-ADMM           | PnP            | Venkatakrishnan et al., 2013     |
-| FBPConvNet          | Deep Learning  | Jin et al., IEEE TIP 2017        |
-| Learned Primal-Dual | Deep Unrolling | Adler & Oktem, IEEE TMI 2018     |
+| Name                | Type               | Source                               |
+|---------------------|--------------------|--------------------------------------|
+| FBP                 | Classical          | Analytical baseline                  |
+| TV-ADMM             | Compressed Sensing | Rudin et al., Physica D 60, 259 (1992) + ADMM |
+| FBPConvNet          | Deep Learning      | Jin et al., IEEE TIP 26, 4509 (2017) |
+| RED-CNN             | Deep Learning      | Chen et al., IEEE TMI 36, 2524 (2017) |
 
 ## Assessment
 
-**Acceptable -- no code changes needed.**
+**Acceptable — no code changes needed.**
 
-The `medical` category pool is CT-centric, which is a reasonable fit for medical X-ray radiography. The key considerations:
+The `medical` category pool is CT-centric, which is a reasonable fit for medical X-ray radiography.
 
-1. **FBP** -- While FBP is a tomographic reconstruction algorithm and radiography is a single-projection modality, "FBP" is commonly used as shorthand for backprojection-based analytical inversion. For a 2D radiograph the inverse problem is deconvolution/scatter correction rather than full tomographic reconstruction, but FBP-style filtering is still a legitimate classical baseline. Acceptable.
-2. **PnP-ADMM** -- Generic and well-suited to any linear inverse problem including scatter estimation and noise reduction in radiographs. Good fit.
-3. **FBPConvNet** -- A post-processing CNN that refines FBP output. Applicable to radiograph enhancement. Jin et al. 2017 is a real, well-cited paper. Good fit.
-4. **Learned Primal-Dual** -- An unrolled optimization network. While originally designed for CT, the architecture generalizes to any linear forward model. Adler & Oktem 2018 is a real, well-cited paper. Acceptable fit.
+1. **FBP** — While FBP is strictly a tomographic reconstruction algorithm, for radiography it represents the standard image processing baseline (Wiener filter deconvolution, ramp filter in Fourier domain). Acceptable as a classical baseline.
+2. **TV-ADMM** — Total variation denoising is directly applicable to Poisson noise reduction in radiographs. This is actually a better fit for 2D radiography than for full 3D CT reconstruction. GOOD FIT.
+3. **FBPConvNet** — A post-processing CNN operating on image-domain data. Applicable to radiograph enhancement. Jin et al. 2017 is a real, well-cited paper. GOOD FIT.
+4. **RED-CNN** — Chen et al., IEEE TMI 2017 is an encoder-decoder CNN designed specifically for low-dose X-ray imaging. This is a more natural fit for 2D radiography denoising than 3D CT. EXCELLENT FIT.
 
-The carrier routing does not reroute `("medical", "X-ray")`, so this modality correctly stays in the `medical` pool. The algorithms are all from the CT/X-ray reconstruction literature and are reasonable for medical radiography. The leaderboard PSNR/SSIM scores come from the `medical` pool which uses CT benchmarks -- this is a minor mismatch in absolute score values but not in algorithm selection.
+### Note on RED-CNN vs. Learned Primal-Dual
+
+Previous versions of this modality had Learned Primal-Dual (Adler & Oktem, 2018) instead of RED-CNN. RED-CNN is a better choice for radiography because:
+- RED-CNN operates on 2D images (single frame denoising)
+- Learned Primal-Dual is a projection-to-volume network designed for 3D CT
+- Chen et al. 2017 explicitly addresses 2D X-ray denoising
+
+The carrier routing does not reroute `("medical", "X-ray")`, so this modality correctly stays in the `medical` pool.
 
 ## Proposed Changes
 
-No code changes needed.
+No code changes needed. The current algorithm set is appropriate.
 
-The algorithm pool is appropriate. If greater specificity were desired in the future, one could add a dedicated radiography pool with scatter-correction-specific algorithms (e.g., anti-scatter grid simulation, dual-energy decomposition), but the current assignment is not wrong.
+**Priority:** NONE — no changes needed.

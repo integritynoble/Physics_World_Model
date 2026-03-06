@@ -27,3 +27,11 @@ The main difference from X-ray CT is that proton trajectories are curved (multip
 ## Plan
 
 No code changes needed.
+
+## 2026-03-06 Comprehensive Check Update
+
+- Physics: WEPL sinogram via most-likely path (MLP) integral of RSP; Gaussian energy spread noise
+- Key mismatch: MLP model (Highland formula), beam energy spread, detector hull geometry, prior RSP from CT
+- GCS datasets: 3 tiers confirmed in challenge-data/v1.0/
+- Algorithm pool: PASS — CT pool (FBP, TV-ADMM, Learned Primal-Dual, DiffusionCT) is correct since pCT shares the Radon-integral reconstruction structure with X-ray CT
+- Note: Learned Primal-Dual is particularly well-suited for pCT since it can embed the MLP forward model as a differentiable layer

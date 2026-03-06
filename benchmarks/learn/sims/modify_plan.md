@@ -28,3 +28,11 @@ The spectroscopy pool is a good fit for SIMS imaging.
 ## Plan
 
 No code changes needed.
+
+## 2026-03-06 Comprehensive Check Update
+
+- Physics: y(i,j, m/z) = I_primary * Y(m/z, matrix) * T(m/z) * c(i,j) + b_background + n_Poisson; matrix ionization yield Y varies 2-3 orders of magnitude
+- Key mismatch: matrix ionization yield Y(m/z), spectrometer transmission T(m/z), depth resolution (beam mixing), primary beam dose accumulation
+- GCS datasets: 3 tiers confirmed
+- Algorithm pool: PASS — SG-ALS (mass spectral baseline), SVD/PCA (standard for ToF-SIMS multivariate analysis), CDAE (count-map denoising), SpectraFormer (peak deconvolution)
+- Note: SVD/MCR-ALS is the gold-standard analysis for SIMS hyperspectral data; its inclusion is essential

@@ -28,3 +28,11 @@ Domain-specific algorithms would include: LSQR (Paige & Saunders, 1982), conjuga
 ## Plan
 
 No code changes needed. Tikhonov as the classical baseline is domain-correct for seismic travel-time tomography. The other algorithms are generic but functional.
+
+## 2026-03-06 Comprehensive Check Update
+
+- Physics: travel-time integral t = integral dl/v(x,z); linearized delta_t = G * delta_s + n; eikonal equation
+- Key mismatch: reference velocity model v_0, source wavelet, ray coverage geometry, ellipticity corrections
+- GCS datasets: 3 tiers confirmed
+- Algorithm pool: PASS — Tikhonov (standard for seismic travel-time inversion since Aki 1977), PnP-RED, ResUNet (supported by Wu & McMechan 2019), ExpFormer
+- Note: Full catalog also includes DiffusionExperimental and ScoreExperimental for probabilistic inversion

@@ -22,6 +22,12 @@
 
 While LIBS has some unique aspects (multi-elemental mapping, plasma emission dynamics), the core reconstruction task of spectral signal recovery and denoising is well-served by the spectroscopy pool. More LIBS-specific methods exist (e.g., calibration-free LIBS, CF-LIBS based on Boltzmann plots) but these are more about quantification than image/signal reconstruction, which is the benchmark focus.
 
+## Current Algorithm Count (updated 2026-03-06)
+
+Full pool (11 algorithms): SG-ALS, Baseline Correction, SVD, PnP-DnCNN, CDAE, U-Net-Spectra, Cascade-UNet, PINN-Spectra, SpectraFormer, DiffusionSpectra, ScoreSpectra.
+
+**Status:** PASS — check.md written 2026-03-06
+
 ## Recommendation
 
 No code changes needed.

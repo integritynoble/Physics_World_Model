@@ -1,26 +1,22 @@
-# Modify Plan: desi
+# Modify Plan: desi (DESI Mass Spectrometry Imaging)
+
+**Updated:** 2026-03-06
+**Status:** PASS — no code changes required
 
 ## Current State
 
-- **Category:** spectroscopy
-- **Carrier:** Ion
-- **Routing:** Direct to `spectroscopy` pool (no carrier routing override)
-- **Score key:** spectroscopy
-- **Algorithms served:**
-  1. SG-ALS (Classical) -- Savitzky-Golay + ALS baseline
-  2. PnP-DnCNN (PnP) -- Zhang et al., 2017
-  3. CDAE (Deep Learning) -- Zhang et al., Sensors 2024
-  4. Cascade-UNet (Transformer) -- Physics-informed UNet, 2025
+- Algorithm routing: `spectroscopy` category + `Ion` carrier → 11-method spectroscopy pool.
+- SG-ALS and Baseline Correction are standard mass spectral preprocessing methods.
+- PnP-DnCNN (Zhang et al., IEEE TIP 2017) is real and applicable to spatial MSI denoising.
+- CDAE (Zhang et al., Sensors 2024) is a real citation.
+- Challenge datasets on GCS for all three tiers.
+- Mismatch parameters: spray_angle_error, solvent_flow_variation, ion_suppression_matrix_effect, spatial_resolution_degradation — four DESI-specific calibration uncertainties.
 
-## Assessment
+## Noted Limitations
 
-The spectroscopy pool is a reasonable but imperfect fit for DESI Mass Spectrometry Imaging. DESI (Desorption Electrospray Ionization) MSI produces spatially-resolved mass spectra, creating hyperspectral-like datacubes (x, y, m/z). The reconstruction challenge involves both spectral processing (baseline correction, peak identification, denoising) and spatial image reconstruction (ion image denoising, spatial deconvolution).
+- Domain-specific MSI methods (MCR-ALS for multivariate unmixing, NMF for spectral decomposition, msImpute for missing values) are absent; the spectroscopy pool covers the spectral denoising aspect but not full MSI analysis workflow.
+- Cascade-UNet mislabelled as "Transformer" (it is a UNet) — cosmetic issue.
 
-- **SG-ALS (Savitzky-Golay + Asymmetric Least Squares):** Standard spectral preprocessing -- smoothing and baseline correction. Applicable to mass spectra. ACCEPTABLE.
-- **PnP-DnCNN:** Generic denoiser in a plug-and-play framework. Can be applied to either spectral or spatial dimensions. ACCEPTABLE.
-- **CDAE (Convolutional Denoising Autoencoder):** For spectral denoising. ACCEPTABLE.
-- **Cascade-UNet:** Physics-informed UNet. Generic but applicable. ACCEPTABLE.
+## Verdict
 
-More domain-specific MSI algorithms exist (e.g., MCR-ALS for multivariate curve resolution, NMF for spectral unmixing, msImpute for missing value imputation, SCiLS for spatial segmentation), but the current pool covers the spectral denoising/reconstruction aspect adequately.
-
-No code changes needed.
+PASS. Spectroscopy pool provides adequate coverage for the spectral reconstruction benchmark task. No code changes required.

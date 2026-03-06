@@ -24,6 +24,12 @@ The carrier-based routing correctly identifies IVUS as an ultrasound modality an
 
 Note: Both ABLE and MU-Net have type "Deep Learning" (no Transformer class), which means 2 of the 4 are deep learning. This is a minor non-uniformity but acceptable since these are the real published methods in the field.
 
+## Current Algorithm Count (updated 2026-03-06)
+
+Full pool (14 algorithms): DAS, DAS-CF, PW-DAS, PnP-ADMM, PnP-TV, ABLE, MU-Net, Phase-ADMM-Net, UltrasoundFormer, BeamFormer, AttentionBeam, BeamDATA, DiffUS, ScoreUS.
+
+**Status:** PASS — check.md written 2026-03-06
+
 ## Recommendation
 
 No code changes needed.

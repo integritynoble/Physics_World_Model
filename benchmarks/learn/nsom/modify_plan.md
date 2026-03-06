@@ -30,6 +30,12 @@ More NSOM-specific algorithms would include near-field deconvolution methods
 (e.g., Taubner et al., 2004) and nano-FTIR spectral deconvolution, but the
 scanning_probe pool captures the key reconstruction paradigms.
 
+## Current Algorithm Count (updated 2026-03-06)
+
+Full pool (10 algorithms): BTR, MLE Reconstruction, Reg-Deconv, TV-Deconvolution, DeepSPM, U-Net-SPM, E2E-BTR, SPM-Former, DiffusionSPM, ScoreSPM.
+
+**Status:** PASS — check.md written 2026-03-06
+
 ## Verdict
 
 No code changes needed.

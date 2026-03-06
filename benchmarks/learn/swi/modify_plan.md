@@ -31,3 +31,11 @@ No code changes needed.
 
 ## Files to Modify
 None.
+
+## 2026-03-06 Comprehensive Check Update
+
+- Physics: s(k) = integral rho(r)*exp(i*phi(r))*exp(-R2*TE)*exp(-i2pi*k.r) dr; phi = gamma*TE*chi(k)*D(k) dipole kernel
+- Key mismatch: B_0 field inhomogeneity, k-space undersampling pattern, coil sensitivity maps, TE mismatch
+- GCS datasets: 3 tiers confirmed
+- Algorithm pool: PASS — MRI pool (Zero-Filled IFFT, L1-Wavelet, E2E-VarNet, Score-MRI) is correct; SWI uses same k-space reconstruction framework as standard MRI
+- Note: SWI phase accuracy critical for susceptibility mapping; Score-MRI provides principled uncertainty quantification for phase estimates

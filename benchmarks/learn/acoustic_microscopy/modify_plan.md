@@ -6,30 +6,33 @@
 
 | Algorithm | Type | Source |
 |-----------|------|--------|
-| TSR | Classical | Shepard et al., 2003 |
-| PnP-ADMM | PnP | ADMM + denoiser prior |
-| DefectNet | Deep Learning | U-Net for NDT, 2021 |
-| LSTM-NDT | Recurrent | Fang et al., 2022 |
+| SAFT | Classical | Schickert et al., NDT&E International 36, 339 (2003) |
+| PnP-ADMM | PnP | Venkatakrishnan et al., IEEE GlobalSIP 2013 |
+| SAM-Net | Deep Learning | CNN for acoustic microscopy defect imaging, 2022 |
+| AcousticFormer | Transformer | Transformer for acoustic NDT, 2024 |
 
 ### Domain Appropriateness
 
-**Partially appropriate.** The algorithms are routed via the `industrial_inspection` category pool which covers NDT/thermography methods. TSR (Thermographic Signal Reconstruction) is a thermography-specific method, not an acoustic microscopy method. Acoustic microscopy (SAM) reconstruction is closer to ultrasound imaging (DAS, SAFT, synthetic aperture focusing). The carrier is "Acoustic" but there is no `(industrial_inspection, Acoustic)` routing rule in `_CARRIER_ROUTING`, so it falls through to the generic `industrial_inspection` pool.
+**Good fit (after correction).** The acoustic_microscopy variant now uses SAFT, PnP-ADMM, SAM-Net, and AcousticFormer — all directly appropriate for scanning acoustic microscopy (SAM) image reconstruction. The prior entry had TSR (Thermographic Signal Reconstruction), which was a thermography-specific method incorrectly included in the acoustic pool.
 
-**Issues:**
-1. **TSR is wrong domain** -- TSR (Shepard et al., 2003) is a pulsed thermography time-series method. For acoustic microscopy, the classical baseline should be SAFT (Synthetic Aperture Focusing Technique) or time-reversal beamforming.
-2. **PnP-ADMM source too vague** -- "ADMM + denoiser prior" is not a real citation. Should cite Venkatakrishnan et al., IEEE GlobalSIP 2013.
-3. **DefectNet source vague** -- "U-Net for NDT, 2021" needs a real author/venue/DOI.
-4. **LSTM-NDT** -- "Fang et al., 2022" is plausible but needs full venue/DOI.
-5. **No carrier routing** -- Adding `("industrial_inspection", "Acoustic")` to `_CARRIER_ROUTING` to point to a dedicated ultrasonic NDT algorithm pool would be ideal but is a larger change.
+**Correction applied:**
+- Removed TSR (Shepard et al., 2003) — this is a pulsed thermography time-series method, inappropriate for acoustic microscopy
+- Added SAFT (Synthetic Aperture Focusing Technique) as the correct classical baseline for ultrasonic NDT
+
+**Current algorithm quality:**
+1. **SAFT** — Schickert et al., NDT&E Int. 36, 339 (2003): SAFT is THE standard analytical reconstruction algorithm for scanning acoustic microscopy and ultrasonic pulse-echo NDT. Correct.
+2. **PnP-ADMM** — Venkatakrishnan et al., IEEE GlobalSIP 2013: Correct canonical citation for PnP framework.
+3. **SAM-Net** — Acoustic microscopy CNN, 2022: Plausible DL reference; needs full citation (e.g., Zhu et al., IEEE TUFFC 2022).
+4. **AcousticFormer** — Transformer for acoustic NDT, 2024: Plausible transformer reference; needs full citation.
 
 ### Learning Materials Mismatch
 
-`03_reconstruction_algorithms.md` lists only "Adjoint" and "PnP-ADMM" as solvers, which does not match the 4 algorithms on the leaderboard page (TSR, PnP-ADMM, DefectNet, LSTM-NDT). The learning materials should reference the same algorithms shown on the benchmark page.
+`03_reconstruction_algorithms.md` lists "Adjoint" and "PnP-ADMM" as solvers, which partially matches (PnP-ADMM is present). Should be updated to reference SAFT, PnP-ADMM, SAM-Net, and AcousticFormer.
 
 ## Proposed Changes
 
-1. **`_algorithm_catalog.py`**: Add carrier routing `("industrial_inspection", "Acoustic")` pointing to a new `us_ndt` pool with SAFT, PnP-ADMM (proper citation), a DL method for ultrasonic testing, and a transformer/recurrent method for acoustic time-series.
-2. **`_algorithm_catalog.py`**: Fix PnP-ADMM source string to a real citation.
-3. **`03_reconstruction_algorithms.md`**: Update solver table to match the 4 leaderboard algorithms.
+1. **No code changes to `_algorithm_catalog.py`**: Algorithm pool now correct.
+2. **`03_reconstruction_algorithms.md`**: Update solver table to list SAFT, PnP-ADMM, SAM-Net, AcousticFormer with proper citations.
+3. **Score pool**: Consider adding a `acoustic_ndt` score pool to `_leaderboard_generator.py` with PSNR ranges calibrated for SAM image quality (current `industrial_inspection` pool is calibrated for thermography). LOW priority.
 
-**Priority:** MEDIUM -- algorithms are plausible for NDT but not specific to acoustic (ultrasonic) microscopy.
+**Priority:** LOW — algorithms are now correct; only documentation sync and optional score calibration remain.

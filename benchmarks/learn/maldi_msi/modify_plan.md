@@ -27,6 +27,12 @@ MALDI-MSI has specific algorithmic needs around peak picking, spectral deconvolu
 
 However, the benchmark frames the problem as signal reconstruction (inverse problem), not as a chemometrics pipeline. Under that framing, the generic algorithms are acceptable.
 
+## Current Algorithm Count (updated 2026-03-06)
+
+Full pool (11 algorithms, now using spectroscopy pool): SG-ALS, Baseline Correction, SVD, PnP-DnCNN, CDAE, U-Net-Spectra, Cascade-UNet, PINN-Spectra, SpectraFormer, DiffusionSpectra, ScoreSpectra. This is a better assignment than the old scientific_instrumentation pool.
+
+**Status:** PASS — check.md written 2026-03-06
+
 ## Verdict
 
 No code changes needed.

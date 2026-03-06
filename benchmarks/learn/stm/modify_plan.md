@@ -43,3 +43,11 @@ and DeepSPM provides STM-specific domain coverage.
 None required. Optional future enhancement: add an STM-specific override with
 drift correction and STS-deconv algorithms, but this is not necessary for correct
 benchmark operation.
+
+## 2026-03-06 Comprehensive Check Update
+
+- Physics: I_tunnel ~ V_bias * exp(-2*kappa*d); Tersoff-Hamann model; tip-sample convolution in constant-current mode
+- Key mismatch: tip shape/apex geometry, piezo drift (0.1-1 nm/min), work function calibration, feedback bandwidth
+- GCS datasets: 3 tiers confirmed
+- Algorithm pool: PASS — BTR (classical tip reconstruction), Reg-Deconv (regularized deconvolution), DeepSPM (STM-specific DL), SPM-Former (transformer, NanoLett 2024)
+- Note: Full catalog now includes SPM-Former (2024) which is specific to scanning probe microscopy

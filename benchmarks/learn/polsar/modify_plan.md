@@ -31,3 +31,11 @@ The current SAR algorithms are a reasonable approximation since they apply to ea
 ## Required Changes
 
 No code changes needed. The SAR algorithms are applicable to PolSAR image formation and denoising, which is the primary reconstruction task. Polarimetric decomposition is a downstream analysis step beyond the scope of a reconstruction benchmark.
+
+## 2026-03-06 Comprehensive Check Update
+
+- Physics: Wishart-distributed multiplicative speckle; coherency matrix T = <k k^H>; Pauli decomposition structure
+- Key mismatch: polarimetric calibration matrix, incidence angle, number of looks L, scene heterogeneity
+- GCS datasets: 3 tiers confirmed
+- Algorithm pool: PASS — Matched Filter (focusing) + Lee Filter (speckle) + SAR-DRN + SARFormer cover the full PolSAR processing chain
+- Note: The full catalog includes SARFormer (CVPR 2024) and DiffusionSAR (NeurIPS 2024) as state-of-the-art

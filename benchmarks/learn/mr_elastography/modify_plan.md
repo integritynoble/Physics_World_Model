@@ -34,6 +34,12 @@ However, the **distinctive** reconstruction challenge in MRE is Stage 2: the ela
 
 The MRI reconstruction algorithms are defensible because MRE does rely on MRI acquisition (and accelerated MRE acquisition is an active research area), but they represent only the first half of the MRE pipeline.
 
+## Current Algorithm Count (updated 2026-03-06)
+
+Full pool (10 algorithms, MRI pool): Zero-Filled IFFT, L1-Wavelet (ESPIRiT), PnP-DnCNN, U-Net, E2E-VarNet, PromptMR, ReconFormer, MRI-DiffusionNet, Score-MRI, MRDynamo.
+
+**Status:** PASS — check.md written 2026-03-06
+
 ## Verdict
 
-No code changes needed. The MRI pool algorithms correctly address the k-space reconstruction stage of MRE, which is a valid inverse problem. The elastogram inversion stage is a separate downstream task. Listing all 8 MRI algorithms provides a comprehensive benchmark set.
+No code changes needed. The MRI pool algorithms correctly address the k-space reconstruction stage of MRE, which is a valid inverse problem. The elastogram inversion stage is a separate downstream task. Listing all 10 MRI algorithms provides a comprehensive benchmark set.

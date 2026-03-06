@@ -39,3 +39,11 @@ not exploit cross-energy correlations.
 
 None required. Optional future enhancement: add a `_VARIANT_OVERRIDES["spectral_ct"]`
 entry with material-decomposition-aware algorithms for improved domain specificity.
+
+## 2026-03-06 Comprehensive Check Update
+
+- Physics: y_k(d) = Poisson(integral_{E_k} N_0(E) * exp(-integral sum_m rho_m * mu_m^mass(E) dl) * eta_k(E) dE); material decomposition from K energy bins
+- Key mismatch: X-ray spectrum calibration, charge sharing between detector pixels, energy threshold accuracy, beam hardening
+- GCS datasets: 3 tiers confirmed
+- Algorithm pool: PASS — CT pool (FBP, TV-ADMM, Learned Primal-Dual, DiffusionCT) correctly addresses spectral CT as extended multi-channel CT reconstruction
+- Note: Full catalog now also includes CT-ViT and CTFormer with cross-energy channel attention, which are more spectral-CT-specific

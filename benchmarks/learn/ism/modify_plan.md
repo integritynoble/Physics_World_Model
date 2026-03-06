@@ -22,6 +22,12 @@
 
 While ISM has some ISM-specific methods (e.g., pixel reassignment, multi-image ISM-SOFI), the generic microscopy pool covers the core deconvolution/restoration task well. The algorithm names are all credible and commonly used in this domain.
 
+## Current Algorithm Count (updated 2026-03-06)
+
+Full pool (13 algorithms): Richardson-Lucy, Wiener Filter, TV-Deconvolution, PnP-FISTA, PnP-DnCNN, CARE, U-Net, ResUNet, Restormer, DeconvFormer, Restormer+, DiffDeconv, ScoreMicro.
+
+**Status:** PASS — check.md written 2026-03-06
+
 ## Recommendation
 
 No code changes needed.

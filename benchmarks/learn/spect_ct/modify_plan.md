@@ -40,3 +40,17 @@ Add `spect_ct` to `_VARIANT_OVERRIDES` in `_algorithm_catalog.py` with SPECT-CT 
 
 ## Files to Modify
 - `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`: Add variant override for `spect_ct`
+
+## 2026-03-06 Comprehensive Check Update
+
+STATUS: The variant override has been IMPLEMENTED. Current algorithms (from get_algorithms):
+  1. OSEM (Classical) -- Hudson & Larkin, IEEE TMI 1994  [CORRECT]
+  2. AC-OSEM (Classical) -- CT-based attenuation correction  [CORRECT]
+  3. MAP-OSEM (PnP) -- Nuyts et al., 2002  [CORRECT]
+  4. DL-SPECT (Deep Learning) -- Ramon et al., IEEE TMI 2020  [CORRECT]
+
+- Physics: y(b) = Poisson(H_b * lambda * ACF + scatter); depth-dependent CDR blurring; OSEM iteration
+- Key mismatch: CDR model, ACF calibration, scatter fraction (30-50%), dead time
+- GCS datasets: 3 tiers confirmed
+- Algorithm pool: PASS — all 4 algorithms are SPECT-CT specific and highly appropriate
+- Note: This is one of the best-curated algorithm pools in the catalog — all 4 are domain-optimal

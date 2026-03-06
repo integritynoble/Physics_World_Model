@@ -28,3 +28,11 @@ The microscopy pool is well-suited for SHG. SHG images are processed with the sa
 ## Plan
 
 No code changes needed.
+
+## 2026-03-06 Comprehensive Check Update
+
+- Physics: I_SHG = |chi^(2)|^2 * PSF_SHG; coherent forward-directed emission; non-centrosymmetric structures (collagen, myosin)
+- Key mismatch: PSF aberrations at depth (spherical aberration from RI mismatch), group velocity mismatch (pulse stretching), TPEF autofluorescence background, detector QE at 2*omega
+- GCS datasets: 3 tiers confirmed
+- Algorithm pool: PASS — Richardson-Lucy (standard SHG deconvolution), PnP-FISTA (photon-limited), CARE (validated for nonlinear microscopy), Restormer (state-of-the-art restoration)
+- Note: SHG uses identical algorithm pool to other optical microscopy modalities; chi^(2) nonlinearity is captured in PSF calibration mismatch, not requiring different algorithms

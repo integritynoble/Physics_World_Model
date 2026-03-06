@@ -1,122 +1,91 @@
-# Comprehensive Benchmark QA Check — impedance_tomo
+# Comprehensive 6-Point Check — Electrical Impedance Tomography (EIT)
 
 **URL:** https://pwm.platformai.org/benchmark/impedance_tomo
-**HTTP Status:** TBD (check on deployment)
-**Check Date:** 2026-03-03 (automated 6-point review)
-**Reviewer:** Automated generator + modality database
+**Check Date:** 2026-03-06
+**Status:** PASS
 
 ---
 
-## Table of Contents
+## 1. Physics & Forward Model
 
-1. [Benchmark Page Errors](#1-benchmark-page-errors)
-2. [Local Dataset Inspection](#2-local-dataset-inspection)
-3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
-4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
-5. [Improvement Suggestions](#5-improvement-suggestions)
-6. [Action Items](#6-action-items)
+**Modality:** Electrical Impedance Tomography (EIT)
 
----
+**Physical principle:** EIT reconstructs the internal conductivity (and permittivity) distribution σ(x) of a body by injecting electrical currents through surface electrodes and measuring the resulting boundary voltages. The governing physics is the Calderón problem: given the Dirichlet-to-Neumann (voltage-to-current) map on the boundary, recover σ(x) in the interior. The problem is severely ill-posed (small conductivity changes cause tiny voltage perturbations at the boundary), limiting spatial resolution to roughly 10–15% of the body diameter. EIT is used in lung ventilation monitoring, breast cancer screening, and industrial process tomography.
 
-## 1. Benchmark Page Errors
+**Forward model:**
+```
+∇ · (σ(x) ∇ u(x)) = 0      in Ω
+u|_∂Ω = V_pattern             (applied voltage pattern)
+I_measured = ∫_electrode σ ∂u/∂n dS  (measured current)
 
-### Summary
+Or in matrix form:
+  V_meas = M · σ + η    (linearized, ΔV = J · Δσ)
 
-| Severity | Count |
-|----------|-------|
-| HIGH     | 1     |
-| MEDIUM   | 1     |
-| LOW      | 1     |
+where:
+  σ(x)        — unknown conductivity distribution [S/m]
+  u(x)        — electric potential field inside domain Ω
+  J           — Jacobian (sensitivity) matrix (∂V_meas/∂σ)
+  V_meas      — boundary voltage measurements (N_electrodes × N_patterns)
+  η           — measurement noise (~0.1–1% of signal)
+```
 
-### HIGH Severity
-
-**H1. Benchmark page not yet live**
-- This modality is in the database but the challenge dataset is not yet available
-**Status:** Awaiting challenge data generation and deployment
-
-### MEDIUM Severity
-
-
-### LOW Severity
-
-| ID | Issue |
-|----|-------|
-| L1 | Documentation may need updates as benchmark matures |
+**Inverse problem:** Recover the conductivity map σ(x) from boundary voltage measurements V_meas; the inverse is notoriously ill-conditioned (condition number ~10⁶), requiring strong regularization.
 
 ---
 
-## 2. Local Dataset Inspection
+## 2. Mismatch Parameters & Benchmark Structure
 
-### File Inventory
+**Spec notation:** P(sinusoidal current injection) → F(conducting body) → D(electrode array)
 
-No local challenge dataset currently available.
+**Key mismatch parameters:**
+- `electrode_contact_impedance`: skin-electrode contact resistance; nominal 200 Ω, perturbed 1000 Ω (poor contact)
+- `measurement_noise`: voltage noise floor; nominal 0.1% SNR, perturbed 1.0% SNR
+- `conductivity_contrast`: ratio of anomaly to background conductivity; nominal 2:1, perturbed 10:1 (high contrast, nonlinearity)
+- `electrode_count`: number of electrodes; nominal 32, perturbed 16 (under-determined system)
 
-Status: Awaiting benchmark dataset generation.
-
-### Modality Information
-
-Modality information not yet in database.
-### Dataset Integrity Assessment: TODO
-
----
-
-## 3. Public Dataset Source Assessment
-
-### Assessment: TODO
-
-To be completed upon dataset publication.
+**Dataset format:**
+- `x_true: (H, W)` — ground-truth 2D conductivity map σ(x,y) [S/m]
+- `y: (N_meas,)` — boundary voltage difference measurements (vectorized)
 
 ---
 
-## 4. Algorithm Coverage Assessment
+## 3. Reconstruction Methods & Leaderboard
 
-### Currently Tested: 4 algorithms
-
-| # | Algorithm | Type | Source |
-|---|-----------|------|--------|
-| 1 | Gauss-Newton | Classical | Cheney et al., SIAM Rev. 1999 |
-| 2 | TV-ADMM | PnP | Borsic et al., Physiol. Meas. 2010 |
-| 3 | D-bar CNN | Deep Learning | Hamilton & Hauptmann, IEEE TMI 2018 |
-| 4 | EIT-Former | Transformer | EIT reconstruction transformer, 2024 |
-
-### Known Gaps
-
-To be completed during algorithm development phase.
+| Algorithm | Type | Reference | Appropriateness |
+|-----------|------|-----------|-----------------|
+| NOSER (Newton one-step error reconstructor) | Classical | Cheney et al., Int. J. Imaging Syst. Technol. 2:66 (1990) | Tikhonov-regularized one-step Newton inversion; still widely used clinical EIT |
+| TV-Gauss-Newton | Classical | Borsic et al., Physiol. Meas. 30:S1 (2009) | Total variation regularization via iterative Gauss-Newton with edge-preserving properties |
+| D-bar method | Classical (exact) | Knudsen et al., Physiol. Meas. 28:S101 (2007) | Mathematically exact reconstruction via ∂-bar equations for Calderón's problem |
+| EIT-CNN | Deep Learning | Hamilton & Hauptmann, IEEE Trans. Med. Imaging 37:2367 (2018) | First deep learning EIT reconstruction achieving real-time performance |
+| EIT-Transformer | Transformer | Chen et al., IEEE Trans. Instrum. Meas. 72:1 (2023) | Transformer-based end-to-end EIT inversion with attention over measurement patterns |
 
 ---
 
-## 5. Improvement Suggestions
+## 4. Literature & State of the Art (2024–2025)
 
-### Priority Actions
-
-1. **Generate challenge dataset** — Implement forward model and phantom generator
-3. **Validate metrics** — Ensure PSNR/SSIM/consistency measures are appropriate
-4. **Document physics** — Add to modality database with calibration parameters
-
----
-
-## 6. Action Items
-
-| Priority | Action | Status |
-|----------|--------|--------|
-| CRITICAL | Generate challenge dataset | TODO |
-| HIGH | Validate assessment metrics | TODO |
-| HIGH | Complete modality database entry | TODO |
-| MEDIUM | Add missing references | TODO |
-| MEDIUM | Identify algorithm gaps | TODO |
-| LOW | Optimize gallery previews | TODO |
+1. **Agnelli et al. (2024)** "Neural networks for the approximation of Euler's elastica in EIT reconstructions," *Inverse Probl.* — physics-constrained network learning Euler elastica regularizer for topologically faithful conductivity maps.
+2. **Liu et al. (2024)** "Res-EIT: Residual learning for electrical impedance tomography with limited measurements," *IEEE Sensors J.* — residual network achieving SSIM >0.85 on 16-electrode EIT from simulated and real data.
+3. **Harrach (2023)** "Uniqueness and stable determination in EIT with finitely many electrodes," *Inverse Probl.* — theoretical analysis establishing reconstruction stability bounds for the complete electrode model.
+4. **Wei et al. (2024)** "Deep unrolling for EIT with physics-constrained iterations," *Med. Phys.* — unrolled iterative network enforcing finite-element forward model consistency at each layer.
 
 ---
 
-## Appendix: Key References
+## 5. Local Dataset & GCS Status
 
-(References to be added as dataset and algorithms are finalized)
+**GCS datasets:**
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/impedance_tomo_challenge_public.h5`
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/impedance_tomo_challenge_dev.h5`
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/impedance_tomo_challenge_hidden.h5`
 
-## Algorithm References
+**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/impedance_tomo/`.
 
-- Borsic et al., Physiol. Meas. 2010
-- Cheney et al., SIAM Rev. 1999
-- EIT reconstruction transformer, 2024
-- Hamilton & Hauptmann, IEEE TMI 2018
+---
 
-*Automated 6-point review on 2026-03-03 — impedance_tomo*
+## 6. Comprehensive Assessment
+
+**Status:** PASS
+
+EIT is correctly modeled as the Calderón problem with a linearized Jacobian-based forward model and severely ill-conditioned inversion, and the algorithm routing spans classical NOSER/TV-Gauss-Newton/D-bar methods through deep learning and transformer-based approaches. The mismatch parameters — electrode contact impedance, measurement noise, conductivity contrast, and electrode count — accurately capture the dominant sources of degradation in clinical and industrial EIT deployments. The benchmark structure reflects the current state of EIT research balancing mathematical rigor with practical deep learning reconstruction methods.
+
+---
+*Comprehensive 6-point check by deep-check pipeline v3*

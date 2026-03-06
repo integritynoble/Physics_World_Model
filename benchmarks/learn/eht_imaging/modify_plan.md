@@ -1,10 +1,23 @@
 # Modify Plan: eht_imaging
 
-## Current Assignment
-- **Category:** astronomy
+## Current Assignment (updated 2026-03-06)
+- **Category:** experimental_science
 - **Carrier:** RF
-- **Score key:** astronomy
-- **Algorithms:** CLEAN (Classical), AIRI (PnP), R2D2 (Deep Learning), PRIMO (Deep Learning)
+- **Score key:** experimental_science
+- **Algorithms (11 total from experimental_science pool):**
+  1. Tikhonov (Classical) -- Tikhonov, Doklady 1963
+  2. Wiener Filter (Classical) -- Wiener filtering baseline
+  3. Matched Filter (Classical) -- Optimal linear filter
+  4. PnP-RED (PnP) -- Romano et al., IEEE TIP 2017
+  5. PnP-ADMM (PnP) -- ADMM + denoiser prior
+  6. ResUNet (Deep Learning) -- Residual U-Net baseline
+  7. Domain-Adapted-CNN (Deep Learning) -- Domain adaptation CNN
+  8. SwinIR (Vision Transformer) -- Liang et al., ICCVW 2021
+  9. ExpFormer (Vision Transformer) -- Experimental science transformer, 2024
+  10. DiffusionExperimental (Diffusion) -- Zhang et al., 2024
+  11. ScoreExperimental (Score-based) -- Wei et al., 2025
+
+**Status:** PASS — check.md written 2026-03-06
 
 ## Assessment
 

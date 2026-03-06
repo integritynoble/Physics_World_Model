@@ -31,6 +31,14 @@ The algorithms are not wrong per se, but they are generic scientific-instrument 
 - Deep-learning-based self-absorption correction networks
 - Total-variation regularized reconstruction for sparse-angle XRF-CT
 
+## 2026-03-06 Comprehensive Check Update
+
+- Physics: y(x_0, phi, E_k) = I_0 * integral c_k * mu_k^abs * omega_k * exp(-integral mu_total dl) dl + n_Poisson; self-absorption coupling to transmission CT
+- Key mismatch: self-absorption correction (dominant error in thick samples), detector efficiency calibration eta_k(E), beam flux stability, monochromator energy calibration
+- GCS datasets: 3 tiers confirmed
+- Algorithm pool: PASS — Deconv/FBP (standard XRF-CT baseline), Peak Fitting (essential spectral step), PnP-BM3D (denoising), CalibFormer (self-absorption correction transformer)
+- Note: Peak Fitting (Gaussian peak fitting) correctly identified as key pre-processing step unique to XRF that distinguishes it from standard X-ray CT
+
 ## Proposed Changes
 
 No code changes needed.

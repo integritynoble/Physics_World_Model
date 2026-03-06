@@ -22,3 +22,11 @@ PET/MR fusion is a multi-modal medical imaging technique combining PET (nuclear)
 ## Required Changes
 
 No code changes needed. The algorithms are perfectly matched for PET/MR fusion.
+
+## 2026-03-06 Comprehensive Check Update
+
+- Physics: Poisson OSEM (PET) + undersampled k-space MRI with MRAC coupling
+- Key mismatch: MRAC bone error (5-15% SUV bias), simultaneous motion, k-undersampling, B0 inhomogeneity
+- GCS datasets: 3 tiers confirmed in challenge-data/v1.0/
+- Algorithm pool: PASS — MLAA (MR-specific joint AC) + MR-Guided PnP + FBSEM-Net + transformers are all ideal for PET-MR
+- Note: PET-MR is the best-matched modality in the entire multi_modal_fusion pool

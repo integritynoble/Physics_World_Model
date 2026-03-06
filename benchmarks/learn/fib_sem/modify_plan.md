@@ -32,6 +32,12 @@ the better assignment. One could argue for adding FIB-SEM-specific tools like
 IsoNet (Liu et al., Nat. Commun. 2022) for missing-wedge compensation, but
 the current generic EM pool is defensible for the denoising task.
 
+## Current Algorithm Count (updated 2026-03-06)
+
+Full pool (4 algorithms): Wiener Filter, BM3D, Noise2Void, SwinIR.
+
+**Status:** PASS — check.md written 2026-03-06
+
 ## Verdict
 
 No code changes needed. The current em_generic pool is appropriate for the

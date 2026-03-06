@@ -1,15 +1,17 @@
 # Modify Plan: edx_mapping (STEM-EDX Elemental Mapping)
 
-## Current State
+## Current State (updated 2026-03-06)
 
 - **Category:** electron_microscopy
 - **Carrier:** Electron
 - **Score key:** em_generic
-- **Algorithms served (EM generic pool):**
+- **Algorithms served (EM generic pool, 4 total):**
   1. Wiener Filter (Classical) -- Analytical baseline
   2. BM3D (PnP) -- Dabov et al., IEEE TIP 2007
   3. Noise2Void (Deep Learning) -- Krull et al., CVPR 2019
   4. SwinIR (Transformer) -- Liang et al., ICCVW 2021
+
+**Status:** PASS — check.md written 2026-03-06
 
 ## Assessment
 

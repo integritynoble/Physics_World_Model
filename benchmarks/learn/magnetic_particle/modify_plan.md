@@ -34,6 +34,12 @@ If improving specificity:
 
 These are minor improvements. The current generic algorithms are not wrong, just not MPI-specific.
 
+## Current Algorithm Count (updated 2026-03-06)
+
+Full pool (11 algorithms): Tikhonov, Wiener Filter, Matched Filter, PnP-RED, PnP-ADMM, ResUNet, Domain-Adapted-CNN, SwinIR, ExpFormer, DiffusionExperimental, ScoreExperimental.
+
+**Status:** PASS — check.md written 2026-03-06
+
 ## Verdict
 
 No code changes needed (generic algorithms are acceptable). Optional improvement: replace ResUNet with MPI-NET for better domain specificity.

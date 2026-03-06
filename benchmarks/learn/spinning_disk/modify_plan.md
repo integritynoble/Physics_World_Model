@@ -25,3 +25,11 @@ No code changes needed.
 
 ## Files to Modify
 None.
+
+## 2026-03-06 Comprehensive Check Update
+
+- Physics: y = (x * h_conf) + n_bg + n_photon; confocal PSF = h_ill * pinhole; axial FWHM ~ 2n*lambda/NA^2
+- Key mismatch: pinhole size (Airy units), refractive index mismatch (spherical aberration at depth), photobleaching, sCMOS gain non-uniformity
+- GCS datasets: 3 tiers confirmed
+- Algorithm pool: PASS — RL (standard confocal deconvolution), PnP-FISTA (photon-limited), CARE (demonstrated on spinning disk data), Restormer (state-of-the-art restoration)
+- Note: CARE is the strongest algorithm for this modality, having been validated specifically on spinning disk live-cell data

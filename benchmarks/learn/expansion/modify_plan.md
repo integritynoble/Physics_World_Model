@@ -28,6 +28,12 @@ The microscopy category score ranges and mismatch descriptions (PSF
 aberrations, refractive index, coverslip thickness) are all relevant to
 expansion microscopy.
 
+## Current Algorithm Count (updated 2026-03-06)
+
+Full pool (13 algorithms): Richardson-Lucy, Wiener Filter, TV-Deconvolution, PnP-FISTA, PnP-DnCNN, CARE, U-Net, ResUNet, Restormer, DeconvFormer, Restormer+, DiffDeconv, ScoreMicro.
+
+**Status:** PASS — check.md written 2026-03-06
+
 ## Verdict
 
 No code changes needed.

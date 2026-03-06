@@ -29,3 +29,11 @@ The leaderboard shows these same methods, confirming the assignment.
 ## Required Changes
 
 No code changes needed. The medical (CT-like) algorithms are appropriate for EPID/MV portal imaging.
+
+## 2026-03-06 Comprehensive Check Update
+
+- Physics: Beer-Lambert at MV energies (Compton-dominated); scatter-to-primary ratio SPR ~ 0.5-2.0; EPID glare kernel
+- Key mismatch: SPR model, EPID glare kernel, MV spectrum hardening, patient setup error
+- GCS datasets: 3 tiers confirmed
+- Algorithm pool: PASS — CT pool is correct since portal/MVCBCT shares Beer-Lambert structure with kV CT
+- Note: TV-ADMM specifically addresses low-contrast MV sparse-view reconstruction

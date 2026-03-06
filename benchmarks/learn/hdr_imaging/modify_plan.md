@@ -30,6 +30,12 @@ HDR imaging is a computational photography technique. The pool is well-chosen:
 The computational_photography pool was clearly designed with HDR in mind
 (HDR-CNN is literally an HDR-specific method). This is a good fit.
 
+## Current Algorithm Count (updated 2026-03-06)
+
+Full pool (14 algorithms): Wiener-Deconv, Laplacian Pyramid, Lucy-Richardson, PnP-FFDNet, PnP-ADMM, HDR-CNN, U-Net, LaplacianFormer, Uformer, DeblurGaussian, HDRFormer, PhotoFormer, DiffusionPhoto, ScorePhoto.
+
+**Status:** PASS — check.md written 2026-03-06
+
 ## Code Changes Needed
 
 No code changes needed.

@@ -32,6 +32,12 @@ All 8 MRI pool algorithms are directly applicable:
 - VarNet, PromptMR, and the other deep methods have been successfully applied to MRA reconstruction (e.g., Hammernik et al. demonstrated VarNet on cardiac MRI including MRA-like sequences).
 - Compressed sensing MRA is an active clinical research area (Lustig et al.'s original CS-MRI work included angiography applications).
 
+## Current Algorithm Count (updated 2026-03-06)
+
+Full pool (10 algorithms, MRI pool): Zero-Filled IFFT, L1-Wavelet (ESPIRiT), PnP-DnCNN, U-Net, E2E-VarNet, PromptMR, ReconFormer, MRI-DiffusionNet, Score-MRI, MRDynamo.
+
+**Status:** PASS — check.md written 2026-03-06
+
 ## Verdict
 
 No code changes needed.

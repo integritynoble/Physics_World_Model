@@ -1,24 +1,17 @@
-# Modify Plan: cup
+# Modify Plan: cup (Compressed Ultrafast Photography)
+
+**Updated:** 2026-03-06
+**Status:** PASS — no code changes required
 
 ## Current State
 
-- **Category:** ultrafast
-- **Carrier:** Photon
-- **Routing:** Direct to `ultrafast` pool (no carrier routing override)
-- **Score key:** ultrafast
-- **Algorithms served:**
-  1. TwIST (Classical) -- Bioucas-Dias & Figueiredo, IEEE TIP 2007
-  2. PnP-FFDNet (PnP) -- Yuan et al., 2020
-  3. CUP-Net (Deep Learning) -- Parker et al., 2021
-  4. AL-DL (Hybrid) -- Yao et al., Photon. Res. 2021
+- Algorithm routing: dedicated `ultrafast` category pool → 11 methods (TwIST, Temporal Filtering, PnP-FFDNet, PnP-ADMM, CUP-Net, Temporal-U-Net, AL-DL, Unfolded-CUP, UltraFormer, DiffusionUltrafast, ScoreUltrafast).
+- TwIST (Bioucas-Dias & Figueiredo, IEEE TIP 2007) was the CS solver used in the original CUP paper (Gao et al., Nature 2014) — confirms domain correctness.
+- PnP-FFDNet (Yuan et al., 2020) is a real PnP paper for snapshot compressive imaging.
+- CUP-Net and AL-DL are CUP-specific algorithms.
+- Challenge datasets on GCS for all three tiers.
+- Mismatch parameters: dmd_encoding_error, streak_sweep_calibration, temporal_spatial_coupling — three principal CUP system calibration uncertainties.
 
-## Assessment
+## Verdict
 
-All four algorithms are excellent matches for Compressed Ultrafast Photography:
-
-- **TwIST (Two-step Iterative Shrinkage/Thresholding):** Standard compressed sensing algorithm widely used in CUP reconstruction. The original CUP paper (Gao et al., Nature 2014) used similar iterative CS approaches. CORRECT.
-- **PnP-FFDNet:** Plug-and-play with FFDNet denoiser applied to CUP. Yuan et al. 2020 specifically demonstrated PnP methods for snapshot compressive imaging including ultrafast modalities. CORRECT.
-- **CUP-Net:** Deep learning network designed specifically for CUP reconstruction. PERFECT FIT.
-- **AL-DL (Augmented Lagrangian + Deep Learning):** Hybrid approach from Yao et al. (Photonics Research 2021) combining model-based optimization with deep learning for ultrafast imaging. CORRECT.
-
-No code changes needed.
+PASS. Dedicated ultrafast pool with domain-specific algorithms. No code changes required.

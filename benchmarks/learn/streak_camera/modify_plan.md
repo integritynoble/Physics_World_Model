@@ -25,3 +25,11 @@ No code changes needed.
 
 ## Files to Modify
 None.
+
+## 2026-03-06 Comprehensive Check Update
+
+- Physics: y = A * x + n where A = spatial_mask * temporal_shear; CUP compression ratio 10-100x; x = (N_x, N_y, N_t) datacube
+- Key mismatch: encoding mask calibration, streak sweep rate linearity, slit width, photocathode QE calibration
+- GCS datasets: 3 tiers confirmed
+- Algorithm pool: PASS — TwIST (original CUP algorithm), PnP-FFDNet (demonstrated for CUP), CUP-Net (dedicated DL for CUP), UltraFormer (transformer with spatio-temporal attention)
+- Note: Full catalog now includes DiffusionUltrafast (NeurIPS 2024) as state-of-the-art score-based reconstruction

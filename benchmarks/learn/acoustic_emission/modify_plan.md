@@ -1,15 +1,15 @@
-# Modify Plan: Acoustic Emission Testing (AE)
+# Modify Plan: acoustic_emission (Acoustic Emission Testing)
 
-**Created:** 2026-03-03
-**Status:** No code changes needed
+**Updated:** 2026-03-06
+**Status:** PASS — no changes required
 
-## Assessment
+## Current State
 
-Acoustic emission testing is a niche field without standardized reconstruction benchmarks. The `experimental_science` category algorithms (Tikhonov, PnP-RED, ResUNet, SwinIR) are appropriate generic inverse problem solvers.
+- Algorithm routing: `_CARRIER_ROUTING[(experimental_science, Acoustic)]` → 11-method experimental science pool.
+- Methods appropriate: Tikhonov, Matched Filter, PnP-RED, SwinIR, DiffusionExperimental cover classical through diffusion paradigms.
+- Challenge datasets on GCS for all three tiers.
+- Mismatch parameters: source_location_error, wave_speed_error, sensor_coupling_gain, arrival_time_bias — all physically grounded.
 
-## Deferred Items
+## Verdict
 
-1. **Documentation**: Add HDF5 schema documentation to challenge pages (low priority)
-2. **Scoring formula**: Define PSNR_norm more explicitly (shared across all modalities)
-
-No algorithm or citation changes required.
+PASS. No code changes required. Algorithm routing via carrier (Acoustic) + category (experimental_science) is correct.
