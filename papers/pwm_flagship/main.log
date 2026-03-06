@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.24)  6 MAR 2026 15:13
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.24)  6 MAR 2026 15:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -590,13 +590,13 @@ ts use phys-i-cal mea-sure-ments from hardware-calibrated
  []
 
 [10] [11]
-Overfull \hbox (9.58536pt too wide) in paragraph at lines 255--256
+Overfull \hbox (9.58536pt too wide) in paragraph at lines 261--262
  []\OT1/cmr/bx/n/10.95 Fluorescence mi-croscopy.[] \OT1/cmr/m/n/10.95 Dual-PSF 
 Stokes-shift imaging---excitation and emis-sion wave-
  []
 
 
-Overfull \hbox (51.68683pt too wide) in paragraph at lines 255--256
+Overfull \hbox (51.68683pt too wide) in paragraph at lines 261--262
 \OT1/cmr/m/n/10.95 lengths pro-duce dis-tinct PSF widths---is val-i-dated un-de
 r PSF sigma mis-match of $[0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 1\OML/cmm/m
 /it/10.95 ; \OT1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 3\OML/c
@@ -606,13 +606,13 @@ ML/cmm/m/it/10.95 ; \OT1/cmr/m/n/10.95 1\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95
  []
 
 [12] [13] [14] [15] [16]
-Overfull \hbox (0.88287pt too wide) in paragraph at lines 295--296
+Overfull \hbox (0.88287pt too wide) in paragraph at lines 301--302
 \OT1/cmr/m/n/10.95 rect-ing mul-ti-ple cou-pled pa-ram-e-ters on a high-dimensi
 onal man-i-fold. Single-parameter
  []
 
 [17] [18]
-Overfull \hbox (1.92677pt too wide) in paragraph at lines 335--336
+Overfull \hbox (1.92677pt too wide) in paragraph at lines 341--342
 \OT1/cmr/m/n/10.95 im-ple-men-ta-tions, real-data val-i-da-tion scripts, and ev
 al-u-a-tion pipelines, is avail-able at [][]$\OT1/cmtt/m/n/10.95 https :
  []
@@ -703,61 +703,61 @@ r/m/n/10.95 The software-perturbation pro-to-col above
  []
 
 [30] [31] [32]) [33] (./main.bbl [34] [35] [36] [37]) [38]
-<figures/fig1_overview.pdf, id=499, 531.32437pt x 211.38976pt>
+<figures/fig1_overview.pdf, id=500, 531.32437pt x 211.38976pt>
 File: figures/fig1_overview.pdf Graphic file (type pdf)
 <use figures/fig1_overview.pdf>
-Package pdftex.def Info: figures/fig1_overview.pdf  used on input line 359.
+Package pdftex.def Info: figures/fig1_overview.pdf  used on input line 365.
 (pdftex.def)             Requested size: 433.33589pt x 172.40529pt.
-<figures/fig2_operatorgraph.pdf, id=500, 427.78806pt x 209.76141pt>
+<figures/fig2_operatorgraph.pdf, id=501, 427.78806pt x 209.76141pt>
 File: figures/fig2_operatorgraph.pdf Graphic file (type pdf)
 <use figures/fig2_operatorgraph.pdf>
-Package pdftex.def Info: figures/fig2_operatorgraph.pdf  used on input line 367
+Package pdftex.def Info: figures/fig2_operatorgraph.pdf  used on input line 373
 .
 (pdftex.def)             Requested size: 433.33589pt x 212.48148pt.
-<figures/fig3_triad.pdf, id=501, 425.18762pt x 311.86287pt>
+<figures/fig3_triad.pdf, id=502, 425.18762pt x 311.86287pt>
 File: figures/fig3_triad.pdf Graphic file (type pdf)
 <use figures/fig3_triad.pdf>
-Package pdftex.def Info: figures/fig3_triad.pdf  used on input line 375.
+Package pdftex.def Info: figures/fig3_triad.pdf  used on input line 381.
 (pdftex.def)             Requested size: 433.33589pt x 317.85797pt.
-<figures/fig4_correction_bar.pdf, id=502, 520.74359pt x 289.551pt>
+<figures/fig4_correction_bar.pdf, id=503, 520.74359pt x 289.551pt>
 File: figures/fig4_correction_bar.pdf Graphic file (type pdf)
 <use figures/fig4_correction_bar.pdf>
 Package pdftex.def Info: figures/fig4_correction_bar.pdf  used on input line 38
-3.
+9.
 (pdftex.def)             Requested size: 433.33589pt x 240.95906pt.
-<figures/fig6_zeroshot.pdf, id=503, 517.00905pt x 315.93889pt>
+<figures/fig6_zeroshot.pdf, id=504, 517.00905pt x 315.93889pt>
 File: figures/fig6_zeroshot.pdf Graphic file (type pdf)
 <use figures/fig6_zeroshot.pdf>
-Package pdftex.def Info: figures/fig6_zeroshot.pdf  used on input line 384.
+Package pdftex.def Info: figures/fig6_zeroshot.pdf  used on input line 390.
 (pdftex.def)             Requested size: 368.33815pt x 225.0895pt.
 
 
-LaTeX Warning: Float too large for page by 50.21826pt on input line 389.
+LaTeX Warning: Float too large for page by 50.21826pt on input line 395.
 
-<figures/fig5_deepdive.pdf, id=504, 453.01776pt x 279.23903pt>
+<figures/fig5_deepdive.pdf, id=505, 453.01776pt x 279.23903pt>
 File: figures/fig5_deepdive.pdf Graphic file (type pdf)
 <use figures/fig5_deepdive.pdf>
-Package pdftex.def Info: figures/fig5_deepdive.pdf  used on input line 394.
+Package pdftex.def Info: figures/fig5_deepdive.pdf  used on input line 400.
 (pdftex.def)             Requested size: 398.66821pt x 245.74388pt.
-<figures/fig8_visual_comparison.pdf, id=505, 517.48447pt x 420.4188pt>
+<figures/fig8_visual_comparison.pdf, id=506, 517.48447pt x 420.4188pt>
 File: figures/fig8_visual_comparison.pdf Graphic file (type pdf)
 <use figures/fig8_visual_comparison.pdf>
 Package pdftex.def Info: figures/fig8_visual_comparison.pdf  used on input line
- 395.
+ 401.
 (pdftex.def)             Requested size: 398.66821pt x 323.89667pt.
-<figures/fig7_hardware.pdf, id=506, 456.4725pt x 397.3199pt>
+<figures/fig7_hardware.pdf, id=507, 456.4725pt x 397.3199pt>
 File: figures/fig7_hardware.pdf Graphic file (type pdf)
 <use figures/fig7_hardware.pdf>
-Package pdftex.def Info: figures/fig7_hardware.pdf  used on input line 406.
+Package pdftex.def Info: figures/fig7_hardware.pdf  used on input line 412.
 (pdftex.def)             Requested size: 433.33589pt x 377.17894pt.
-<figures/fig9_basis_growth.pdf, id=507, 394.51991pt x 206.12709pt>
+<figures/fig9_basis_growth.pdf, id=508, 394.51991pt x 206.12709pt>
 File: figures/fig9_basis_growth.pdf Graphic file (type pdf)
 <use figures/fig9_basis_growth.pdf>
-Package pdftex.def Info: figures/fig9_basis_growth.pdf  used on input line 414.
+Package pdftex.def Info: figures/fig9_basis_growth.pdf  used on input line 420.
 
 (pdftex.def)             Requested size: 368.33815pt x 192.4542pt.
 
-Overfull \hbox (49.87233pt too wide) in paragraph at lines 422--439
+Overfull \hbox (49.87233pt too wide) in paragraph at lines 428--445
  [][] 
  []
 
@@ -774,12 +774,16 @@ oshot.pdf>] [42 <./figures/fig5_deepdive.pdf> <./figures/fig8_visual_comparison
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 15204 strings out of 475662
- 250334 string characters out of 5784442
+ 15206 strings out of 475662
+ 250358 string characters out of 5784442
  1943975 words of memory out of 5000000
  36913 multiletter control sequences out of 15000+600000
  577197 words of font info for 107 fonts, out of 8000000 for 9000
@@ -813,10 +817,10 @@ onts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
 /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/sh
 are/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (45 pages, 1464617 bytes).
+Output written on main.pdf (45 pages, 1464388 bytes).
 PDF statistics:
- 920 PDF objects out of 1000 (max. 8388607)
- 716 compressed objects within 8 object streams
- 247 named destinations out of 1000 (max. 500000)
+ 921 PDF objects out of 1000 (max. 8388607)
+ 717 compressed objects within 8 object streams
+ 249 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
