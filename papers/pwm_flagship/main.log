@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.24)  6 MAR 2026 15:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.24)  6 MAR 2026 17:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -539,26 +539,22 @@ Package hyperref Info: Link coloring ON on input line 20.
 
  [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Overfull \hbox (17.836pt too wide) in paragraph at lines 46--47
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2]
+Overfull \hbox (17.836pt too wide) in paragraph at lines 48--49
  []\OT1/cmr/bx/n/10.95 Why this mat-ters be-yond com-pu-ta-tional imag-ing.[] \
 OT1/cmr/m/n/10.95 Any phys-i-cal mea-sure-ment system---
  []
 
-[2]
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[3]
-Overfull \hbox (8.8615pt too wide) in paragraph at lines 98--99
+[3] [4]
+Overfull \hbox (8.8615pt too wide) in paragraph at lines 100--101
 \OT1/cmr/m/it/10.95 op-er-a-tor norm ($\OMS/cmsy/m/n/10.95 k\OML/cmm/m/it/10.95
  H[]\OMS/cmsy/m/n/10.95 k ^^T \OML/cmm/m/it/10.95 B$\OT1/cmr/m/it/10.95 ) or po
 int-wise non-lin-ear with bounded Lip-s-chitz con-stant ($[]\OT1/cmr/m/n/10.95 
 (^^C[]) \OMS/cmsy/m/n/10.95 ^^T
  []
 
-[4]
-Overfull \hbox (10.4073pt too wide) in paragraph at lines 111--112
+
+Overfull \hbox (10.4073pt too wide) in paragraph at lines 113--114
 \OML/cmm/m/it/10.95 B[]$\OT1/cmr/m/n/10.95 . For non-lin-ear stages, the Lip-s-
 chitz com-po-si-tion bound $\OMS/cmsy/m/n/10.95 k\OML/cmm/m/it/10.95 H\OT1/cmr/
 m/n/10.95 (\OT1/cmr/bx/n/10.95 x\OT1/cmr/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^@ []
@@ -566,37 +562,34 @@ m/n/10.95 (\OT1/cmr/bx/n/10.95 x\OT1/cmr/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^@ []
 5 k ^^T [][] \OML/cmm/m/it/10.95 "[] [][] ^^M[]$
  []
 
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[5] [6] [7] [8]
-Overfull \hbox (3.00143pt too wide) in paragraph at lines 223--224
+[5] [6] [7] [8] [9]
+Overfull \hbox (3.00143pt too wide) in paragraph at lines 225--226
 \OT1/cmr/m/n/10.95 TV/MST-L]; CACTI: $+10\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.9
 5 21 \OMS/cmsy/m/n/10.95 ^^F \OT1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 :\OT1/cmr/
 m/n/10.95 85$dB; SPC: $+7\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 71$/$+10\OML/c
 mm/m/it/10.95 :\OT1/cmr/m/n/10.95 38$dB [FISTA-TV/HATNet]; Lens-
  []
 
-[9]
-Overfull \hbox (7.4027pt too wide) in paragraph at lines 229--230
+
+Overfull \hbox (7.4027pt too wide) in paragraph at lines 231--232
  []\OT1/cmr/bx/n/10.95 Zero-shot gen-er-al-iza-tion.[] \OT1/cmr/m/n/10.95 Hy-pe
 r-pa-ram-e-ters tuned on photon-domain modal-i-ties (CASSI,
  []
 
-
-Overfull \hbox (7.58252pt too wide) in paragraph at lines 234--235
+[10]
+Overfull \hbox (7.58252pt too wide) in paragraph at lines 236--237
  []\OT1/cmr/bx/n/10.95 CASSI real data.[] \OT1/cmr/m/n/10.95 These ex-per-i-men
 ts use phys-i-cal mea-sure-ments from hardware-calibrated
  []
 
-[10] [11]
-Overfull \hbox (9.58536pt too wide) in paragraph at lines 261--262
+[11] [12]
+Overfull \hbox (9.58536pt too wide) in paragraph at lines 263--264
  []\OT1/cmr/bx/n/10.95 Fluorescence mi-croscopy.[] \OT1/cmr/m/n/10.95 Dual-PSF 
 Stokes-shift imaging---excitation and emis-sion wave-
  []
 
 
-Overfull \hbox (51.68683pt too wide) in paragraph at lines 261--262
+Overfull \hbox (51.68683pt too wide) in paragraph at lines 263--264
 \OT1/cmr/m/n/10.95 lengths pro-duce dis-tinct PSF widths---is val-i-dated un-de
 r PSF sigma mis-match of $[0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 1\OML/cmm/m
 /it/10.95 ; \OT1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 3\OML/c
@@ -605,32 +598,32 @@ ML/cmm/m/it/10.95 ; \OT1/cmr/m/n/10.95 1\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95
  0]$pixels
  []
 
-[12] [13] [14] [15] [16]
-Overfull \hbox (0.88287pt too wide) in paragraph at lines 301--302
+[13] [14] [15] [16]
+Overfull \hbox (0.88287pt too wide) in paragraph at lines 303--304
 \OT1/cmr/m/n/10.95 rect-ing mul-ti-ple cou-pled pa-ram-e-ters on a high-dimensi
 onal man-i-fold. Single-parameter
  []
 
 [17] [18]
-Overfull \hbox (1.92677pt too wide) in paragraph at lines 341--342
+Overfull \hbox (1.92677pt too wide) in paragraph at lines 343--344
 \OT1/cmr/m/n/10.95 im-ple-men-ta-tions, real-data val-i-da-tion scripts, and ev
 al-u-a-tion pipelines, is avail-able at [][]$\OT1/cmtt/m/n/10.95 https :
  []
 
-(./methods.tex [19] [20]
+[19] (./methods.tex [20]
 Overfull \hbox (13.1501pt too wide) in paragraph at lines 113--115
 []\OT1/cmr/bx/n/10.95 Plan for-ward. \OT1/cmr/m/n/10.95 The topo-log-i-cal sort
  yields a se-quen-tial ex-e-cu-tion plan $(\OML/cmm/m/it/10.95 v[]; [] ; v[]\OT
 1/cmr/m/n/10.95 )$. 
  []
 
-
+[21]
 Overfull \hbox (2.74835pt too wide) in paragraph at lines 135--143
 \OT1/cmr/m/n/10.95 croscopy (SIM), con-fo-cal, light-sheet, holog-ra-phy, pty-c
 hog-ra-phy, Fourier pty-cho-graphic
  []
 
-[21]
+
 Overfull \hbox (24.96034pt too wide) in paragraph at lines 166--169
 []\OT1/cmr/m/n/10.95 The for-ward model is a lin-ear, spa-tially uni-form opera
 tor---
@@ -642,20 +635,20 @@ Overfull \hbox (1.43315pt too wide) in paragraph at lines 169--174
 form
  []
 
-
+[22]
 Overfull \hbox (11.52202pt too wide) in paragraph at lines 179--183
 []\OT1/cmr/m/n/10.95 Complete phys-i-cal sim-u-la-tion in-clud-ing wave-optical
 
  []
 
-[22]
+[23]
 Overfull \hbox (0.74269pt too wide) in paragraph at lines 262--273
  []\OT1/cmr/bx/n/10.95 TriadReport.[] \OT1/cmr/m/n/10.95 For ev-ery di-ag-no-si
 s, \OT1/cmr/m/sc/10.95 pwm \OT1/cmr/m/n/10.95 pro-duces a \OT1/cmr/m/sc/10.95 T
 ri-adReport\OT1/cmr/m/n/10.95 : a Pydantic-validated
  []
 
-[23]
+[24]
 Overfull \hbox (7.78598pt too wide) in paragraph at lines 297--307
  []\OT1/cmr/bx/n/10.95 PlanAgent.[] \OT1/cmr/m/n/10.95 The or-ches-tra-tor agen
 t. Given a user prompt or a struc-tured \OT1/cmtt/m/n/10.95 ExperimentSpec\OT1/
@@ -668,7 +661,7 @@ Overfull \hbox (31.57191pt too wide) in paragraph at lines 319--325
 l source. The out-put \OT1/cmtt/m/n/10.95 RecoverabilityReport
  []
 
-[24]
+[25]
 Overfull \hbox (4.29388pt too wide) in paragraph at lines 361--372
  []\OT1/cmr/bx/n/10.95 Support classes.[] \OT1/cmr/m/n/10.95 The re-main-ing co
 m-po-nents in-clude: \OT1/cmtt/m/n/10.95 AssetManager \OT1/cmr/m/n/10.95 (file 
@@ -682,7 +675,7 @@ OT1/cmr/m/n/10.95 (auto-detects modal-ity from up-loaded data), \OT1/cmtt/m/n/1
 0.95 PreflightChecker
  []
 
-[25]
+
 Overfull \hbox (78.8836pt too wide) in paragraph at lines 384--394
 \OT1/cmr/m/n/10.95 cor-rec-tion meth-ods), \OT1/cmtt/m/n/10.95 compression[]db.
 yaml \OT1/cmr/m/n/10.95 (re-cov-er-abil-ity ta-bles with prove-nance), \OT1/cmt
@@ -696,78 +689,78 @@ yaml \OT1/cmr/m/n/10.95 (prim-i-tive op-er-a-tor meta-data), \OT1/cmtt/m/n/10.9
 5 dataset[]registry.yaml
  []
 
-[26] [27] [28] [29]
+[26] [27] [28] [29] [30]
 Overfull \hbox (2.61734pt too wide) in paragraph at lines 620--635
  []\OT1/cmr/bx/n/10.95 Controlled hard-ware ex-per-i-ment pro-to-col.[] \OT1/cm
 r/m/n/10.95 The software-perturbation pro-to-col above
  []
 
-[30] [31] [32]) [33] (./main.bbl [34] [35] [36] [37]) [38]
-<figures/fig1_overview.pdf, id=500, 531.32437pt x 269.20576pt>
+[31] [32] [33]) (./main.bbl [34] [35] [36] [37] [38]) [39]
+<figures/fig1_overview.pdf, id=503, 531.32437pt x 269.20576pt>
 File: figures/fig1_overview.pdf Graphic file (type pdf)
 <use figures/fig1_overview.pdf>
-Package pdftex.def Info: figures/fig1_overview.pdf  used on input line 365.
+Package pdftex.def Info: figures/fig1_overview.pdf  used on input line 367.
 (pdftex.def)             Requested size: 433.33589pt x 219.5589pt.
-<figures/fig2_operatorgraph.pdf, id=501, 427.78806pt x 209.76141pt>
+<figures/fig2_operatorgraph.pdf, id=504, 427.78806pt x 209.76141pt>
 File: figures/fig2_operatorgraph.pdf Graphic file (type pdf)
 <use figures/fig2_operatorgraph.pdf>
-Package pdftex.def Info: figures/fig2_operatorgraph.pdf  used on input line 373
+Package pdftex.def Info: figures/fig2_operatorgraph.pdf  used on input line 375
 .
 (pdftex.def)             Requested size: 433.33589pt x 212.48148pt.
-<figures/fig3_triad.pdf, id=502, 425.18762pt x 311.86287pt>
+<figures/fig3_triad.pdf, id=505, 425.18762pt x 311.86287pt>
 File: figures/fig3_triad.pdf Graphic file (type pdf)
 <use figures/fig3_triad.pdf>
-Package pdftex.def Info: figures/fig3_triad.pdf  used on input line 381.
+Package pdftex.def Info: figures/fig3_triad.pdf  used on input line 383.
 (pdftex.def)             Requested size: 433.33589pt x 317.85797pt.
-<figures/fig4_correction_bar.pdf, id=503, 520.74359pt x 289.551pt>
+<figures/fig4_correction_bar.pdf, id=506, 520.74359pt x 289.551pt>
 File: figures/fig4_correction_bar.pdf Graphic file (type pdf)
 <use figures/fig4_correction_bar.pdf>
-Package pdftex.def Info: figures/fig4_correction_bar.pdf  used on input line 38
-9.
+Package pdftex.def Info: figures/fig4_correction_bar.pdf  used on input line 39
+1.
 (pdftex.def)             Requested size: 433.33589pt x 240.95906pt.
-<figures/fig6_zeroshot.pdf, id=504, 517.00905pt x 315.93889pt>
+<figures/fig6_zeroshot.pdf, id=507, 517.00905pt x 315.93889pt>
 File: figures/fig6_zeroshot.pdf Graphic file (type pdf)
 <use figures/fig6_zeroshot.pdf>
-Package pdftex.def Info: figures/fig6_zeroshot.pdf  used on input line 390.
+Package pdftex.def Info: figures/fig6_zeroshot.pdf  used on input line 392.
 (pdftex.def)             Requested size: 368.33815pt x 225.0895pt.
 
 
-LaTeX Warning: Float too large for page by 50.21826pt on input line 395.
+LaTeX Warning: Float too large for page by 50.21826pt on input line 397.
 
-<figures/fig5_deepdive.pdf, id=505, 453.01776pt x 279.23903pt>
+<figures/fig5_deepdive.pdf, id=508, 453.01776pt x 279.23903pt>
 File: figures/fig5_deepdive.pdf Graphic file (type pdf)
 <use figures/fig5_deepdive.pdf>
-Package pdftex.def Info: figures/fig5_deepdive.pdf  used on input line 400.
+Package pdftex.def Info: figures/fig5_deepdive.pdf  used on input line 402.
 (pdftex.def)             Requested size: 398.66821pt x 245.74388pt.
-<figures/fig8_visual_comparison.pdf, id=506, 517.48447pt x 420.4188pt>
+<figures/fig8_visual_comparison.pdf, id=509, 517.48447pt x 420.4188pt>
 File: figures/fig8_visual_comparison.pdf Graphic file (type pdf)
 <use figures/fig8_visual_comparison.pdf>
 Package pdftex.def Info: figures/fig8_visual_comparison.pdf  used on input line
- 401.
+ 403.
 (pdftex.def)             Requested size: 398.66821pt x 323.89667pt.
-<figures/fig7_hardware.pdf, id=507, 456.4725pt x 397.3199pt>
+<figures/fig7_hardware.pdf, id=510, 456.4725pt x 397.3199pt>
 File: figures/fig7_hardware.pdf Graphic file (type pdf)
 <use figures/fig7_hardware.pdf>
-Package pdftex.def Info: figures/fig7_hardware.pdf  used on input line 412.
+Package pdftex.def Info: figures/fig7_hardware.pdf  used on input line 414.
 (pdftex.def)             Requested size: 433.33589pt x 377.17894pt.
-<figures/fig9_basis_growth.pdf, id=508, 394.51991pt x 206.12709pt>
+<figures/fig9_basis_growth.pdf, id=511, 394.51991pt x 206.12709pt>
 File: figures/fig9_basis_growth.pdf Graphic file (type pdf)
 <use figures/fig9_basis_growth.pdf>
-Package pdftex.def Info: figures/fig9_basis_growth.pdf  used on input line 420.
+Package pdftex.def Info: figures/fig9_basis_growth.pdf  used on input line 422.
 
 (pdftex.def)             Requested size: 368.33815pt x 192.4542pt.
 
-Overfull \hbox (49.87233pt too wide) in paragraph at lines 428--445
+Overfull \hbox (49.87233pt too wide) in paragraph at lines 430--447
  [][] 
  []
 
-[39
+[40
 
- <./figures/fig1_overview.pdf>] [40 <./figures/fig2_operatorgraph.pdf>]
-[41 <./figures/fig3_triad.pdf>] [42 <./figures/fig4_correction_bar.pdf> <./figu
-res/fig6_zeroshot.pdf>] [43 <./figures/fig5_deepdive.pdf> <./figures/fig8_visua
-l_comparison.pdf>] [44 <./figures/fig7_hardware.pdf>] [45 <./figures/fig9_basis
-_growth.pdf>] [46
+ <./figures/fig1_overview.pdf>] [41 <./figures/fig2_operatorgraph.pdf>]
+[42 <./figures/fig3_triad.pdf>] [43 <./figures/fig4_correction_bar.pdf> <./figu
+res/fig6_zeroshot.pdf>] [44 <./figures/fig5_deepdive.pdf> <./figures/fig8_visua
+l_comparison.pdf>] [45 <./figures/fig7_hardware.pdf>] [46 <./figures/fig9_basis
+_growth.pdf>] [47
 
 ] (./main.aux)
  ***********
@@ -782,13 +775,13 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 15207 strings out of 475662
- 250365 string characters out of 5784442
- 1943975 words of memory out of 5000000
+ 15208 strings out of 475662
+ 250372 string characters out of 5784442
+ 1942975 words of memory out of 5000000
  36913 multiletter control sequences out of 15000+600000
  577197 words of font info for 107 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 74i,14n,82p,2486b,652s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 74i,14n,82p,2925b,656s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/spiritai/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1095.
 600pk> </home/spiritai/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm0
 600.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.
@@ -817,10 +810,10 @@ onts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
 /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/sh
 are/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (46 pages, 1472662 bytes).
+Output written on main.pdf (47 pages, 1474594 bytes).
 PDF statistics:
- 932 PDF objects out of 1000 (max. 8388607)
- 724 compressed objects within 8 object streams
- 250 named destinations out of 1000 (max. 500000)
+ 935 PDF objects out of 1000 (max. 8388607)
+ 726 compressed objects within 8 object streams
+ 251 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
