@@ -78,12 +78,12 @@ def load_json(path):
 # FIGURE 1: PWM Overview (schematic pipeline)
 # ═════════════════════════════════════════════════════════════════════════════
 def fig1_overview():
-    fig, ax = plt.subplots(figsize=(DOUBLE_COL, 2.8))
+    fig, ax = plt.subplots(figsize=(DOUBLE_COL, 3.6))
     ax.set_xlim(0, 10)
-    ax.set_ylim(0, 3)
+    ax.set_ylim(-0.9, 3.2)
     ax.axis('off')
 
-    # Pipeline stages
+    # Pipeline stages (main row)
     stages = [
         (0.5, 1.5, 'a', 'Imaging\nSystem', COLORS['blue']),
         (2.3, 1.5, 'b', 'OperatorGraph\nCompilation', COLORS['green']),
@@ -113,22 +113,75 @@ def fig1_overview():
 
     # Gate labels below diagnosis (spaced to avoid overlap)
     gate_labels = [
-        (2.8, 0.35, 'G1: Recoverability', COLORS['gate1']),
-        (4.1, 0.35, 'G2: Carrier Budget', COLORS['gate2']),
-        (5.4, 0.35, 'G3: Mismatch', COLORS['gate3']),
+        (2.8, 0.45, 'G1: Recoverability', COLORS['gate1']),
+        (4.1, 0.45, 'G2: Carrier Budget', COLORS['gate2']),
+        (5.4, 0.45, 'G3: Mismatch', COLORS['gate3']),
     ]
     for x, y, text, color in gate_labels:
         ax.text(x, y, text, ha='center', va='center',
                 fontsize=6, color=color, fontweight='bold')
 
     # TriadReport label
-    ax.text(5.0, 2.7, 'TriadReport', ha='center', va='center',
+    ax.text(5.0, 2.85, 'TriadReport', ha='center', va='center',
             fontsize=7, fontstyle='italic', color=COLORS['gray'],
             bbox=dict(boxstyle='round,pad=0.2', facecolor='#f0f0f0',
                       edgecolor=COLORS['gray'], linewidth=0.5))
-    ax.annotate('', xy=(5.0, 2.4), xytext=(4.1, 2.05),
+    ax.annotate('', xy=(5.0, 2.55), xytext=(4.1, 2.05),
                 arrowprops=dict(arrowstyle='->', color=COLORS['gray'],
                                lw=0.8, ls='--'))
+
+    # ── Panel f: 11 Universal Primitives strip (bottom) ──
+    ax.text(-0.15, -0.15, 'f', fontsize=9, fontweight='bold', color='black')
+
+    primitives = ['P', 'C', 'M', 'R', r'$\Lambda$', r'$\Pi$',
+                  'F', r'$\Sigma$', 'S', 'W', 'D']
+    prim_colors = [
+        COLORS['blue'],    # P  propagation
+        COLORS['blue'],    # C  convolution
+        COLORS['green'],   # M  mask/modulate
+        COLORS['orange'],  # R  scatter
+        COLORS['orange'],  # Lambda  nonlinear
+        COLORS['purple'],  # Pi  project
+        COLORS['purple'],  # F  Fourier
+        COLORS['red'],     # Sigma  sum
+        COLORS['red'],     # S  sample
+        COLORS['red'],     # W  disperse
+        COLORS['gray'],    # D  detect
+    ]
+    n_prim = len(primitives)
+    strip_x0 = 0.2
+    strip_w = 5.8
+    box_w = strip_w / n_prim - 0.06
+    prim_y = -0.55
+
+    for i, (sym, pc) in enumerate(zip(primitives, prim_colors)):
+        bx = strip_x0 + i * (strip_w / n_prim)
+        pbox = FancyBboxPatch((bx, prim_y - 0.22), box_w, 0.44,
+                              boxstyle="round,pad=0.04",
+                              facecolor=pc, alpha=0.12,
+                              edgecolor=pc, linewidth=0.8)
+        ax.add_patch(pbox)
+        ax.text(bx + box_w / 2, prim_y, sym, ha='center', va='center',
+                fontsize=7, fontweight='bold', color=pc)
+
+    # Arrow from primitives strip up to OperatorGraph box
+    ax.annotate('', xy=(2.3, 0.95), xytext=(3.0, -0.1),
+                arrowprops=dict(arrowstyle='->', color=COLORS['green'],
+                               lw=1.2, ls='--', mutation_scale=10))
+
+    # "Auto-compose any modality" label to the right of the strip
+    ax.text(6.6, -0.55, 'Auto-compose\nany modality', ha='left', va='center',
+            fontsize=7, fontweight='bold', color=COLORS['green'],
+            bbox=dict(boxstyle='round,pad=0.15', facecolor=COLORS['green'],
+                      alpha=0.08, edgecolor=COLORS['green'], linewidth=0.8))
+    # Arrow from label to strip
+    ax.annotate('', xy=(6.1, -0.55), xytext=(6.55, -0.55),
+                arrowprops=dict(arrowstyle='->', color=COLORS['green'],
+                               lw=1.0, mutation_scale=10))
+
+    # "11 Universal Primitives" title above strip
+    ax.text(3.1, -0.05, '11 Universal Primitives', ha='center', va='center',
+            fontsize=7, fontstyle='italic', color='#333333')
 
     fig.tight_layout(pad=0.3)
     fig.savefig(FIGDIR / 'fig1_overview.pdf', bbox_inches='tight')

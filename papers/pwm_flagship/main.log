@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.24)  6 MAR 2026 15:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.24)  6 MAR 2026 15:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -703,11 +703,11 @@ r/m/n/10.95 The software-perturbation pro-to-col above
  []
 
 [30] [31] [32]) [33] (./main.bbl [34] [35] [36] [37]) [38]
-<figures/fig1_overview.pdf, id=500, 531.32437pt x 211.38976pt>
+<figures/fig1_overview.pdf, id=500, 531.32437pt x 269.20576pt>
 File: figures/fig1_overview.pdf Graphic file (type pdf)
 <use figures/fig1_overview.pdf>
 Package pdftex.def Info: figures/fig1_overview.pdf  used on input line 365.
-(pdftex.def)             Requested size: 433.33589pt x 172.40529pt.
+(pdftex.def)             Requested size: 433.33589pt x 219.5589pt.
 <figures/fig2_operatorgraph.pdf, id=501, 427.78806pt x 209.76141pt>
 File: figures/fig2_operatorgraph.pdf Graphic file (type pdf)
 <use figures/fig2_operatorgraph.pdf>
@@ -763,23 +763,27 @@ Overfull \hbox (49.87233pt too wide) in paragraph at lines 428--445
 
 [39
 
- <./figures/fig1_overview.pdf> <./figures/fig2_operatorgraph.pdf>] [40 <./figur
-es/fig3_triad.pdf>] [41 <./figures/fig4_correction_bar.pdf> <./figures/fig6_zer
-oshot.pdf>] [42 <./figures/fig5_deepdive.pdf> <./figures/fig8_visual_comparison
-.pdf>] [43 <./figures/fig7_hardware.pdf>] [44 <./figures/fig9_basis_growth.pdf>
-] [45
+ <./figures/fig1_overview.pdf>] [40 <./figures/fig2_operatorgraph.pdf>]
+[41 <./figures/fig3_triad.pdf>] [42 <./figures/fig4_correction_bar.pdf> <./figu
+res/fig6_zeroshot.pdf>] [43 <./figures/fig5_deepdive.pdf> <./figures/fig8_visua
+l_comparison.pdf>] [44 <./figures/fig7_hardware.pdf>] [45 <./figures/fig9_basis
+_growth.pdf>] [46
 
 ] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 15206 strings out of 475662
- 250358 string characters out of 5784442
+ 15207 strings out of 475662
+ 250365 string characters out of 5784442
  1943975 words of memory out of 5000000
  36913 multiletter control sequences out of 15000+600000
  577197 words of font info for 107 fonts, out of 8000000 for 9000
@@ -813,10 +817,10 @@ onts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
 /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/sh
 are/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (45 pages, 1464209 bytes).
+Output written on main.pdf (46 pages, 1472662 bytes).
 PDF statistics:
- 921 PDF objects out of 1000 (max. 8388607)
- 717 compressed objects within 8 object streams
- 249 named destinations out of 1000 (max. 500000)
+ 932 PDF objects out of 1000 (max. 8388607)
+ 724 compressed objects within 8 object streams
+ 250 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
