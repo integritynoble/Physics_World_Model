@@ -417,8 +417,7 @@ def fig3_triad():
     names = list(recovery_ratios.keys())
     vals = list(recovery_ratios.values())
     y_pos = np.arange(len(names))
-    colors = [COLORS['gate3'] if v < 0.5 else COLORS['sc_iii']
-              for v in vals]
+    colors = [COLORS['sc_iii'] for _ in vals]
 
     ax_c.barh(y_pos, vals, color=colors, alpha=0.7, edgecolor='white',
               height=0.6)
