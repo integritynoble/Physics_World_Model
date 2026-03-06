@@ -164,8 +164,8 @@ def fig1_overview():
         ax.text(bx + box_w / 2, prim_y, sym, ha='center', va='center',
                 fontsize=7, fontweight='bold', color=pc)
 
-    # Arrow from primitives strip up to OperatorGraph box
-    ax.annotate('', xy=(2.3, 0.95), xytext=(3.0, -0.1),
+    # Arrow from primitives strip up to OperatorGraph box (routed left of G1)
+    ax.annotate('', xy=(2.3, 0.95), xytext=(1.8, -0.1),
                 arrowprops=dict(arrowstyle='->', color=COLORS['green'],
                                lw=1.2, ls='--', mutation_scale=10))
 
