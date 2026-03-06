@@ -356,22 +356,16 @@ def fig3_triad():
     modalities = ['CASSI', 'CACTI', 'SPC', 'Lensless', 'Fluor.',
                   'Comp.\nHolo.', 'Ptycho.', 'Cryo-EM',
                   'MRI', 'CT', 'CBCT', 'US']
-    # Gate 3 dominates all 12 modalities - create heatmap data
-    # Rows = modalities, Cols = [G1, G2, G3]
-    heatmap_data = np.array([
-        [0.20, 0.10, 0.70],  # CASSI
-        [0.05, 0.05, 0.90],  # CACTI
-        [0.10, 0.05, 0.85],  # SPC
-        [0.20, 0.10, 0.70],  # Lensless
-        [0.10, 0.10, 0.80],  # Fluorescence
-        [0.20, 0.10, 0.70],  # Comp. Holography
-        [0.15, 0.05, 0.80],  # Ptychography
-        [0.10, 0.05, 0.85],  # Cryo-EM
-        [0.05, 0.02, 0.93],  # MRI
-        [0.15, 0.10, 0.75],  # CT
-        [0.15, 0.05, 0.80],  # CBCT
-        [0.15, 0.10, 0.75],  # Ultrasound
-    ])
+
+    # Gate 3 correction gain (dB) from Table S1 — real experimental data
+    # G1/G2 do not bind under standard operating conditions (Tables S12-S13)
+    g3_gain = [0.76, 10.21, 7.71, 3.55, 8.35, 1.03,
+               7.09, 2.34, 11.20, 10.68, 1.62, 13.94]
+
+    # Binary gate binding: G3 is dominant in all 14 configs under standard
+    # conditions; G1/G2 bind only at extreme compression/photon starvation
+    heatmap_data = np.zeros((len(modalities), 3))
+    heatmap_data[:, 2] = 1.0  # G3 dominant for all
 
     from matplotlib.colors import LinearSegmentedColormap
     cmap_g3 = LinearSegmentedColormap.from_list('g3',
@@ -383,15 +377,16 @@ def fig3_triad():
     ax_b.set_xticklabels(['G1', 'G2', 'G3'], fontsize=7)
     ax_b.set_yticks(range(len(modalities)))
     ax_b.set_yticklabels(modalities, fontsize=6)
-    ax_b.set_title('Gate dominance', fontsize=8, pad=4)
+    ax_b.set_title('Gate binding\n(standard conditions)', fontsize=7, pad=4)
 
-    # Add text annotations
+    # Annotate: G3 shows actual correction gain; G1/G2 show "—"
     for i in range(len(modalities)):
-        for j in range(3):
-            val = heatmap_data[i, j]
-            color = 'white' if val > 0.5 else 'black'
-            ax_b.text(j, i, f'{val:.2f}', ha='center', va='center',
-                      fontsize=5, color=color)
+        for j in range(2):  # G1, G2
+            ax_b.text(j, i, '—', ha='center', va='center',
+                      fontsize=6, color='#999999')
+        # G3: show actual dB gain from Table S1
+        ax_b.text(2, i, f'+{g3_gain[i]:.1f}', ha='center', va='center',
+                  fontsize=5, color='white', fontweight='bold')
 
     # Panel c: Recovery ratio distribution
     ax_c = fig.add_subplot(gs[2])
@@ -902,7 +897,7 @@ if __name__ == '__main__':
     fig3_triad()
     fig4_correction_bar()
     fig5_deepdive()
-    fig6_zeroshot()
+    # fig6_zeroshot()  # removed: zero-shot data was not experimentally validated
     fig7_hardware()
 
     print()

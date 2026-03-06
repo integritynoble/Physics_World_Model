@@ -227,8 +227,8 @@ Extended Data Table~1 (Supplementary Table~S1) summarizes the oracle correction 
 \paragraph{Modality deep dives.}
 In CASSI, a 5-parameter mismatch~\cite{yang2026inversenet} collapses all solvers to ${\sim}21$\,dB regardless of ideal performance ($24$--$35$\,dB); oracle recovery varies by solver ($\recoveryratio_{\mathrm{III}} = 0$--$0.57$; Supplementary Table~S2), confirming that multi-parameter mismatches are harder to correct than isolated shifts (\cref{fig:deepdive_visual}a--b). In CACTI, EfficientSCI~\cite{wang2023efficientsci} drops by $20.58$\,dB, yet GAP-TV achieves 100\% autonomous recovery of the oracle ceiling (Supplementary Table~S9)---the solver with the highest ideal-condition performance is also the most sensitive to operator mismatch, highlighting the complementarity of solver quality and model fidelity. SPC gain drift is corrected to 86--92\% of the oracle ceiling (Table~S9). Consistent with the lifecycle prediction, \gatethree{} is the residual bottleneck in all tested configurations---well-designed instruments operating above the Gate~1 and Gate~2 floors (Supplementary Tables~S12--S13).
 
-\paragraph{Zero-shot generalization.}
-Hyperparameters tuned on photon-domain modalities (CASSI, CACTI, SPC) transfer without modification to coherent-photon, spin, and X-ray domains, with comparable correction gains (\cref{fig:correction_zeroshot}), confirming carrier-agnostic operation enabled by the OperatorGraph abstraction.
+\paragraph{Carrier-agnostic operation.}
+The OperatorGraph abstraction ensures that the correction pipeline is structurally identical across carrier families: the same grid-search calibration code applies to optical-photon mask shifts, X-ray detector offsets, acoustic speed-of-sound errors, electron defocus, and nuclear-spin coil sensitivity drift, with only the mismatch parameterization changing. This architectural carrier-agnosticism is reflected in the comparable correction gains across all five families (\cref{fig:correction_zeroshot}).
 
 \subsection*{Hardware validation}
 
@@ -384,17 +384,15 @@ The Physics World Models pipeline. \textbf{a},~A computational imaging system is
 \centering
 \includegraphics[width=\textwidth]{figures/fig3_triad.pdf}
 \caption{\textbf{Triad Decomposition structure and gate binding.}
-\textbf{a},~Decision tree for the \triad{}: each imaging failure is routed through \gateone{}, \gatetwo{}, and \gatethree{} to produce a \triadreport{}. \textbf{b},~Gate binding heatmap across 14 correction configurations (12 distinct modalities, 5 carrier families). Red indicates \gatethree{} as the residual bottleneck (all 14/14 configurations---consistent with the lifecycle prediction for well-designed instruments), blue indicates \gateone{}, and amber indicates \gatetwo{}. \textbf{c},~Recovery ratio $\recoveryratio$ distribution across all 14 correction configurations, demonstrating that Gate~3 is the residual bottleneck across optical-photon, X-ray-photon, electron, nuclear-spin, and acoustic-wave carriers where Gates~1 and~2 have been optimized by design.}
+\textbf{a},~Decision tree for the \triad{}: each imaging failure is routed through \gateone{}, \gatetwo{}, and \gatethree{} to produce a \triadreport{}. \textbf{b},~Gate binding under standard operating conditions (adequate sampling geometry, sufficient carrier budget). Gate~3 is the residual bottleneck in all 14 tested configurations (12 modalities, 5 carrier families); numbers show the correction gain $\Delta$PSNR (dB) from Supplementary Table~S1. Gates~1 and~2 (``---'') do not bind under standard conditions; they impose irrecoverable limits only at extreme compression or photon starvation (Supplementary Tables~S12--S13). \textbf{c},~Recovery ratio $\recoveryratio$ distribution across all 14 correction configurations, showing that autonomous calibration recovers a substantial fraction of the oracle correction ceiling across all five carrier families.}
 \label{fig:triad}
 \end{figure}
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\textwidth]{figures/fig4_correction_bar.pdf}\\[6pt]
-\includegraphics[width=0.85\textwidth]{figures/fig6_zeroshot.pdf}
-\caption{\textbf{Cross-modality mismatch correction: the centerpiece experiment.}
-\textbf{a},~PSNR across the 4-Scenario Protocol for all 12 validated modalities, grouped by carrier family: optical photons (CASSI, CACTI, SPC, lensless, compressive holography, fluorescence microscopy), X-ray photons (CT, CBCT), electrons (ptychography, cryo-EM), nuclear spins (MRI), and acoustic waves (ultrasound). For each modality, four bars show: Scenario~I (ideal, ceiling), Scenario~II (mismatched, floor), Scenario~III (oracle correction ceiling), and Scenario~IV (Corrected: ESPIRiT for MRI, ePIE for ptychography, grid-search for all others). Error bars show 95\% bootstrap CIs over test scenes. The gap between Scenario~I and~II is the mismatch-induced degradation; the gap between Scenario~II and~IV is the autonomous recovery. In 10 of 12 modalities, a simple solver on the corrected operator (Scenario~IV) outperforms the best available solver on the mismatched operator (Scenario~II), demonstrating that calibration beats solver upgrades.
-\textbf{b},~Zero-shot generalization: hyperparameters tuned on photon-domain modalities (CASSI, CACTI, SPC) transfer without modification to coherent-photon, spin, X-ray, electron, and acoustic domains, with comparable correction gains ($< 0.5$\,dB difference). Dark bars: modality-specific tuning; light bars: zero-shot transfer.}
+\includegraphics[width=\textwidth]{figures/fig4_correction_bar.pdf}
+\caption{\textbf{Gate~3 correction gain across 12 validated modalities (5 carrier families).}
+Oracle correction ceiling $\Delta\mathrm{PSNR} = \mathrm{PSNR}_{\mathrm{III}} - \mathrm{PSNR}_{\mathrm{II}}$ (Supplementary Table~S1) for each modality, grouped by carrier family: optical photons (CASSI, CACTI, SPC, lensless, compressive holography, fluorescence microscopy), X-ray photons (CT, CBCT), electrons (ptychography, cryo-EM), nuclear spins (MRI), and acoustic waves (ultrasound). Gains range from $+0.76$\,dB (CASSI/GAP-TV, multi-parameter mismatch) to $+13.94$\,dB (ultrasound, $\Delta c{=}200$\,m/s), confirming that Gate~3 correction delivers substantial quality recovery across all five carrier families. Autonomous calibration achieves 82--100\% of the oracle ceiling for low-dimensional mismatch (Supplementary Table~S9).}
 \label{fig:correction_zeroshot}
 \end{figure}
 
