@@ -309,16 +309,31 @@ The framework has well-defined limitations that inform its scope of applicabilit
 \end{itemize}
 
 \paragraph{Falsifiable predictions.}
-The framework generates concrete, testable predictions:
+The Triad framework generates testable predictions across all three gates---including regime transitions that test the decomposition itself, not just individual gate effects:
+
 \begin{enumerate}
+%% Gate 1 dominance
+\item[\textit{Gate~1}] \textit{dominance} (information deficiency binds):
+\item \textbf{SPC at $<5\%$ compression:} Gate~1 should dominate---correcting illumination non-uniformity should yield $<1$\,dB gain because the measurement matrix lacks sufficient rank to recover the signal. \emph{Confirmed}: information-deficiency loss reaches $-7.1$\,dB at $5\%$ compression (Supplementary Table~S12), matching the $+7.7$\,dB Gate~3 correction ceiling and defining the cross-over threshold.
+\item \textbf{Lensless at PSF blur $\sigma > 2$\,px:} Gate~1 loss should exceed the Gate~3 correction ceiling ($+3.6$\,dB), making forward-model refinement futile regardless of calibration accuracy. \emph{Confirmed}: $-11.1$\,dB at $\sigma{=}3$\,px (Supplementary Table~S12).
+%% Gate 2 dominance
+\item[\textit{Gate~2}] \textit{dominance} (carrier noise binds):
+\item \textbf{MRI at additive noise $\sigma > 1\%$:} Gate~2 should dominate---coil sensitivity correction should be ineffective because Fourier encoding concentrates signal in a few k-space samples that are disproportionately corrupted. \emph{Confirmed}: $-11.7$\,dB loss at $\sigma{=}0.01$ (Supplementary Table~S13), matching the $+11.2$\,dB Gate~3 ceiling and defining one of the sharpest cross-over thresholds in the framework.
+\item \textbf{Fluorescence at $<10$ peak photons:} Shot-noise floor should produce $>4$\,dB loss, reducing the effective Gate~3 correction margin. \emph{Confirmed}: $-6.1$\,dB at 5 photons (\cref{fig:triad}b).
+%% Gate 3 dominance
+\item[\textit{Gate~3}] \textit{dominance} (operator mismatch binds):
 \item \textbf{SIM:} Gate~3 should dominate when pattern phase error exceeds $0.05$\,rad. Predicted correction: $+3$--$8$\,dB.
 \item \textbf{OCT:} Dispersion mismatch should produce $+2$--$5$\,dB correction gain via the Disperse primitive ($W$).
-\item \textbf{Electron ptychography:} Position errors exceeding $1/10$ of the probe diameter should trigger Gate~3 dominance. This prediction is \emph{confirmed} by real 4D-STEM validation: $+5$ to $+16$\,dB correction on SrTiO$_3$ data (Supplementary Note~15).
-\item \textbf{Cryo-EM:} CTF defocus mismatch of $>200$\,nm should shift the FSC$_{0.143}$ resolution threshold by $>0.5$\,\AA{}. Our simulation confirms $1.1$--$3.6$\,dB degradation at $200$--$1000$\,nm defocus error.
-\item \textbf{Ultrasound:} Speed-of-sound mismatch of $>100$\,m/s should produce $>1$\,mm geometric distortion in B-mode images at clinical imaging depths. Our 75-angle compound PW-DAS on real PICMUS data confirms monotonic degradation of $8.2$\,dB across $\Delta c = 10$--$200$\,m/s, with SoS calibration recovering within $2$\,m/s of nominal.
-\item \textbf{CBCT:} Geometric calibration drift of $>5$\,pixels should produce cupping artifacts with $>3$\,dB degradation, consistent with the mechanical tolerance specifications of AAPM TG-142~\cite{klein2009tg142} and TG-66~\cite{mutic2003tg66}. Our FBP simulation on real CT images confirms $2.3$\,dB mean loss at $5$-pixel detector offset with $80\%$ calibration recovery.
+\item \textbf{Ultrasound:} SoS mismatch $>100$\,m/s should produce monotonic B-mode degradation. \emph{Confirmed}: $8.2$\,dB across $\Delta c = 10$--$200$\,m/s on real PICMUS data, with calibration within $2$\,m/s of nominal.
+\item \textbf{Electron ptychography:} Position errors $>1/10$ probe diameter should trigger Gate~3 dominance. \emph{Confirmed}: $+5$ to $+16$\,dB on real SrTiO$_3$ data (Supplementary Note~15).
+%% Regime transitions
+\item[\textit{Cross-}] \textit{over predictions} (regime transitions):
+\item \textbf{SPC G1$\leftrightarrow$G3 cross-over at ${\sim}5\%$ compression:} Below this threshold, adding measurements yields larger PSNR gains than correcting the forward model; above it, Gate~3 correction dominates. Testable by sweeping compression ratio while simultaneously applying gain-drift mismatch.
+\item \textbf{MRI G2$\leftrightarrow$G3 cross-over at $\sigma \approx 1\%$:} The sharpest transition in the framework---MRI switches from G3-dominated ($\sigma{<}0.01$, correction gains $+11.2$\,dB) to G2-dominated ($\sigma{>}0.01$, noise loss $>11.7$\,dB) over a single order of magnitude.
+\item \textbf{CT: pure Gate~3 regime.} CT should remain Gate~3--dominated even at extreme operating conditions (5 angles, 100 photons), because the many-angle sinogram provides sufficient redundancy that Gates~1--2 never bind. \emph{Confirmed}: G1 loss $= -4.3$\,dB and G2 loss $= -3.8$\,dB at extreme versus G3 gain $= +10.7$\,dB (Supplementary Tables~S12--S13).
+\item \textbf{Ultrasound G2 immunity:} Compound PW-DAS should remain Gate~2--immune at up to $50\%$ additive RF noise due to $\sqrt{N_{\mathrm{angles}}}$ spatial averaging across 75 steering angles. \emph{Confirmed}: $0.0$\,dB G2 degradation at $50\%$ noise (\cref{fig:triad}b).
 \end{enumerate}
-\noindent These predictions are falsifiable: if any modality shows Gate~1 or Gate~2 dominance under the stated conditions, the framework would require revision. Three of six predictions are now confirmed by simulation or hardware data. Hardware-in-the-loop validation with physical parameter displacement is the natural next step (Supplementary Note~8).
+\noindent These twelve predictions span all three gates and their transitions. They are falsifiable: if a modality shows a different dominant gate under the specified conditions, or if a cross-over threshold differs by more than one order of magnitude, the decomposition would require revision. Eight of twelve are confirmed by simulation or hardware data; the remaining four (SIM, OCT, SPC cross-over, MRI cross-over) are directly testable by any laboratory with the relevant instruments.
 
 
 %% ═══════════════════════════════════════════════════════════════════

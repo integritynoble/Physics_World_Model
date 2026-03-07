@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.24)  7 MAR 2026 19:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.2.24)  7 MAR 2026 20:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -608,12 +608,19 @@ onal man-i-fold. Single-parameter
  []
 
 [17] [18]
-Overfull \hbox (1.92677pt too wide) in paragraph at lines 345--346
+Overfull \hbox (7.72339pt too wide) in paragraph at lines 332--333
+\OT1/cmr/m/n/10.95 MRI switches from G3-dominated ($\OML/cmm/m/it/10.95 ^^[[]\O
+T1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 01$, cor-rec-tion gai
+ns $+11\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 2$dB) to G2-dominated
+ []
+
+[19]
+Overfull \hbox (1.92677pt too wide) in paragraph at lines 360--361
 \OT1/cmr/m/n/10.95 im-ple-men-ta-tions, real-data val-i-da-tion scripts, and ev
 al-u-a-tion pipelines, is avail-able at [][]$\OT1/cmtt/m/n/10.95 https :
  []
 
-(./methods.tex [19] [20]
+(./methods.tex [20] [21]
 Overfull \hbox (13.1501pt too wide) in paragraph at lines 113--115
 []\OT1/cmr/bx/n/10.95 Plan for-ward. \OT1/cmr/m/n/10.95 The topo-log-i-cal sort
  yields a se-quen-tial ex-e-cu-tion plan $(\OML/cmm/m/it/10.95 v[]; [] ; v[]\OT
@@ -626,7 +633,7 @@ Overfull \hbox (2.74835pt too wide) in paragraph at lines 134--142
 hog-ra-phy, Fourier pty-cho-graphic
  []
 
-[21]
+[22]
 Overfull \hbox (24.96034pt too wide) in paragraph at lines 165--168
 []\OT1/cmr/m/n/10.95 The for-ward model is a lin-ear, spa-tially uni-form opera
 tor---
@@ -644,7 +651,7 @@ Overfull \hbox (11.52202pt too wide) in paragraph at lines 178--182
 
  []
 
-[22] [23]
+[23] [24]
 Overfull \hbox (0.74269pt too wide) in paragraph at lines 261--272
  []\OT1/cmr/bx/n/10.95 TriadReport.[] \OT1/cmr/m/n/10.95 For ev-ery di-ag-no-si
 s, \OT1/cmr/m/sc/10.95 pwm \OT1/cmr/m/n/10.95 pro-duces a \OT1/cmr/m/sc/10.95 T
@@ -658,13 +665,13 @@ t. Given a user prompt or a struc-tured \OT1/cmtt/m/n/10.95 ExperimentSpec\OT1/
 cmr/m/n/10.95 ,
  []
 
-[24]
+[25]
 Overfull \hbox (31.57191pt too wide) in paragraph at lines 318--324
 \OT1/cmr/m/n/10.95 en-try in-cludes prove-nance meta-data cit-ing the orig-i-na
 l source. The out-put \OT1/cmtt/m/n/10.95 RecoverabilityReport
  []
 
-[25]
+[26]
 Overfull \hbox (4.29388pt too wide) in paragraph at lines 360--371
  []\OT1/cmr/bx/n/10.95 Support classes.[] \OT1/cmr/m/n/10.95 The re-main-ing co
 m-po-nents in-clude: \OT1/cmtt/m/n/10.95 AssetManager \OT1/cmr/m/n/10.95 (file 
@@ -692,50 +699,50 @@ yaml \OT1/cmr/m/n/10.95 (prim-i-tive op-er-a-tor meta-data), \OT1/cmtt/m/n/10.9
 5 dataset[]registry.yaml
  []
 
-[26] [27] [28] [29]
+[27] [28] [29] [30]
 Overfull \hbox (2.61734pt too wide) in paragraph at lines 619--634
  []\OT1/cmr/bx/n/10.95 Controlled hard-ware ex-per-i-ment pro-to-col.[] \OT1/cm
 r/m/n/10.95 The software-perturbation pro-to-col above
  []
 
-[30] [31] [32] [33]) (./main.bbl [34] [35] [36] [37]) [38]
-<figures/fig1_overview.pdf, id=499, 531.32437pt x 269.20576pt>
+[31] [32] [33] [34]) (./main.bbl [35] [36] [37] [38]) [39]
+<figures/fig1_overview.pdf, id=509, 531.32437pt x 269.20576pt>
 File: figures/fig1_overview.pdf Graphic file (type pdf)
 <use figures/fig1_overview.pdf>
-Package pdftex.def Info: figures/fig1_overview.pdf  used on input line 369.
+Package pdftex.def Info: figures/fig1_overview.pdf  used on input line 384.
 (pdftex.def)             Requested size: 433.33589pt x 219.5589pt.
-<figures/fig2_operatorgraph.pdf, id=500, 454.96687pt x 349.94258pt>
+<figures/fig2_operatorgraph.pdf, id=510, 454.96687pt x 349.94258pt>
 File: figures/fig2_operatorgraph.pdf Graphic file (type pdf)
 <use figures/fig2_operatorgraph.pdf>
-Package pdftex.def Info: figures/fig2_operatorgraph.pdf  used on input line 377
+Package pdftex.def Info: figures/fig2_operatorgraph.pdf  used on input line 392
 .
 (pdftex.def)             Requested size: 433.33589pt x 333.32462pt.
-<figures/fig3_triad.pdf, id=501, 418.00064pt x 311.86287pt>
+<figures/fig3_triad.pdf, id=511, 418.00064pt x 311.86287pt>
 File: figures/fig3_triad.pdf Graphic file (type pdf)
 <use figures/fig3_triad.pdf>
-Package pdftex.def Info: figures/fig3_triad.pdf  used on input line 385.
+Package pdftex.def Info: figures/fig3_triad.pdf  used on input line 400.
 (pdftex.def)             Requested size: 433.33589pt x 323.32564pt.
-<figures/fig4_scenario_protocol.pdf, id=502, 449.22667pt x 319.998pt>
+<figures/fig4_scenario_protocol.pdf, id=512, 449.22667pt x 319.998pt>
 File: figures/fig4_scenario_protocol.pdf Graphic file (type pdf)
 <use figures/fig4_scenario_protocol.pdf>
 Package pdftex.def Info: figures/fig4_scenario_protocol.pdf  used on input line
- 393.
+ 408.
 (pdftex.def)             Requested size: 433.33589pt x 308.67894pt.
-<figures/fig5_hardware.pdf, id=503, 456.4725pt x 397.3199pt>
+<figures/fig5_hardware.pdf, id=513, 456.4725pt x 397.3199pt>
 File: figures/fig5_hardware.pdf Graphic file (type pdf)
 <use figures/fig5_hardware.pdf>
-Package pdftex.def Info: figures/fig5_hardware.pdf  used on input line 401.
+Package pdftex.def Info: figures/fig5_hardware.pdf  used on input line 416.
 (pdftex.def)             Requested size: 433.33589pt x 377.17894pt.
- [39
+ [40
 
- <./figures/fig1_overview.pdf>] [40 <./figures/fig2_operatorgraph.pdf>] [41 <./
-figures/fig3_triad.pdf>] [42 <./figures/fig4_scenario_protocol.pdf>] [43 <./fig
+ <./figures/fig1_overview.pdf>] [41 <./figures/fig2_operatorgraph.pdf>] [42 <./
+figures/fig3_triad.pdf>] [43 <./figures/fig4_scenario_protocol.pdf>] [44 <./fig
 ures/fig5_hardware.pdf>]
-Overfull \hbox (49.87233pt too wide) in paragraph at lines 415--432
+Overfull \hbox (49.87233pt too wide) in paragraph at lines 430--447
  [] 
  []
 
-[44
+[45
 
 ] (./main.aux)
  ***********
@@ -746,8 +753,8 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 15168 strings out of 475662
- 249114 string characters out of 5784442
+ 15175 strings out of 475662
+ 249163 string characters out of 5784442
  1942975 words of memory out of 5000000
  36879 multiletter control sequences out of 15000+600000
  576851 words of font info for 106 fonts, out of 8000000 for 9000
@@ -780,10 +787,10 @@ cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmt
 t9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam1
 0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10
 .pfb>
-Output written on main.pdf (44 pages, 623041 bytes).
+Output written on main.pdf (45 pages, 626598 bytes).
 PDF statistics:
- 810 PDF objects out of 1000 (max. 8388607)
- 650 compressed objects within 7 object streams
- 245 named destinations out of 1000 (max. 500000)
+ 821 PDF objects out of 1000 (max. 8388607)
+ 660 compressed objects within 7 object streams
+ 252 named destinations out of 1000 (max. 500000)
  26 words of extra memory for PDF output out of 10000 (max. 10000000)
 
