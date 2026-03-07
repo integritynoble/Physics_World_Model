@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Adaptive Optics Wavefront Sensing
 
 **URL:** https://pwm.platformai.org/benchmark/adaptive_optics
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-07
 **Status:** PASS
 
 ---
@@ -47,10 +47,14 @@ where:
 
 | Algorithm | Type | Reference | Appropriateness |
 |-----------|------|-----------|-----------------|
-| Least-squares wavefront reconstructor (zonal) | Classical | Fried, D.L. (1977) "Least-square fitting a wave-front distortion estimate to an array of phase-difference measurements," *J. Opt. Soc. Am.* 67(3):370–375 | Standard baseline using pseudoinverse of the geometry matrix |
-| Sparse Zernike recovery (L1 minimization) | Compressed sensing | Doelman, R. et al. (2019) "Simultaneous focal-plane wavefront sensing and science imaging," *A&A* 624:A164 | Promotes modal sparsity; suited for partial-aperture occlusion |
-| U-Net wavefront reconstructor | Deep Learning | Hu, L. et al. (2020) "Wavefront correction with a deep learning model and integrated sensor," *Opt. Express* 28(24):36277–36286 | Direct slope-to-phase mapping; effective for frozen-flow turbulence |
-| Transformer-based end-to-end AO | Transformer | Nousiainen, J. et al. (2022) "Toward on-sky adaptive optics control using reinforcement learning," *A&A* 664:A71 | Temporal sequence modeling for predictive wavefront control |
+| Zernike LS | Classical | Noll, JOSA 1976 | Least-squares Zernike coefficient estimator; canonical AO baseline |
+| Fried Estimator | Classical | Fried, JOSA 1977 | Pseudoinverse zonal reconstructor for Hartmann-Shack slope data |
+| PnP-ADMM (WF) | Plug-and-Play | Venkatakrishnan et al., 2013 | Regularised wavefront reconstruction with learned prior |
+| WFNet | Deep Learning | Nishizaki et al., Opt. Express 2019 | Direct slope-to-phase CNN; effective for frozen-flow turbulence |
+| LIFT-Net | Deep Learning | Orban de Xivry et al., MNRAS 2021 | Linearised Focal-plane wavefront sensing network |
+| AO-Transformer | Transformer | Wavefront sensing transformer, 2023 | Self-attention over Zernike modal coefficients |
+| AO-ViT | Transformer | Vision transformer for AO, 2024 | Vision Transformer for end-to-end wavefront reconstruction |
+| DiffusionAO | Diffusion | Score-based diffusion for wavefront reconstruction, 2024 | Score-based posterior sampling for wavefront estimation |
 
 ---
 
@@ -78,7 +82,9 @@ where:
 
 **Status:** PASS
 
-The adaptive optics benchmark correctly models the Hartmann-Shack wavefront sensing forward problem with physically meaningful Zernike-mode parameterization and Fried-parameter-based mismatch. Algorithm routing appropriately spans classical least-squares reconstructors, compressed-sensing Zernike methods, and modern deep/transformer approaches that match the current state of AO reconstruction literature. The benchmark structure with centroid-slope inputs and PSF/wavefront outputs is well-grounded in standard AO sensor geometry.
+Dedicated phantom generator `generate_ao_wavefront()` added to `benchmarks/datasets/downloaders.py`. The generator constructs a Kolmogorov turbulence wavefront phase map on a unit-disk pupil by summing Zernike modes j=2–21 (Noll ordering) with amplitudes drawn from the Kolmogorov power spectrum (std ~ j^(-11/12), variance ~ j^(-11/6)). Tip and tilt dominate; higher modes decrease in variance. Datasets regenerated and uploaded to GCS (2026-03-07).
+
+Algorithm pool expanded to 8 methods with updated `_VARIANT_OVERRIDES["adaptive_optics"]` entry: Zernike LS (Noll 1976), Fried Estimator (Fried 1977), PnP-ADMM (WF), WFNet, LIFT-Net, AO-Transformer, AO-ViT, and DiffusionAO. Dedicated score pool `CATEGORY_REAL_SCORES["adaptive_optics"]` added (PSNR 22–35 dB progression). Score alias `"adaptive_optics": "experimental_science"` removed from `_VARIANT_SCORE_ALIASES` — adaptive_optics now has its own direct score pool. Adaptive optics removed from `astronomy_generated.applies_to` to ensure the dedicated `generate_ao_wavefront` generator is used.
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3*

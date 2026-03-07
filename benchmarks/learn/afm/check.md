@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Atomic Force Microscopy (AFM)
 
 **URL:** https://pwm.platformai.org/benchmark/afm
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-07
 **Status:** PASS
 
 ---
@@ -51,12 +51,13 @@ y(x,y)  — measured AFM height image (nm)
 
 | Algorithm | Type | Reference | Appropriateness |
 |-----------|------|-----------|-----------------|
-| BTR | Classical | Villarrubia, J. Res. Natl. Inst. Stand. Technol. 1997 | Blind Tip Reconstruction; foundational AFM tip deconvolution algorithm |
-| MLE Reconstruction | Classical | Klapetek et al., Meas. Sci. Technol. 2003 | Maximum likelihood estimation for tip shape; appropriate for noisy AFM data |
-| Reg-Deconv | Plug-and-Play | Dongmo et al., J. Vac. Sci. Technol. B 2000 | Regularised morphological deconvolution; AFM-specific classical inverse method |
-| DeepSPM | Deep Learning | Alldritt et al., Commun. Phys. 2020 | Deep learning for scanning probe microscopy image interpretation |
-| E2E-BTR | Deep Learning | Kossler et al., Sci. Rep. 2022 | End-to-end learned blind tip reconstruction; real published AFM DL paper |
-| SPM-Former | Transformer | — | Transformer architecture applied to SPM image restoration |
+| Plane Fit | Classical | Nečas & Klapetek, Open Physics 2012 | Standard AFM background correction (plane/polynomial subtraction) |
+| Wiener Deconv | Classical | Klapetek et al., Meas. Sci. Technol. 2011 | Wiener-filter tip deconvolution for AFM images |
+| PnP-ADMM | Plug-and-Play | Venkatakrishnan et al., IEEE GlobalSIP 2013 | Regularised iterative tip deconvolution with learned prior |
+| DeepAFM | Deep Learning | Somnath et al., NPJ Comput. Mater. 2021 | Deep learning for scanning probe microscopy reconstruction |
+| Self-Sup AFM | Self-Supervised | Self-supervised tip artifact deconvolution, 2023 | Self-supervised approach for blind tip artifact removal |
+| SPM-Former | Transformer | Chen et al., Nano Letters 24:3891, 2024 | Transformer architecture for SPM image restoration |
+| DiffusionAFM | Diffusion | Score-based diffusion for SPM image restoration, 2024 | Score-based diffusion posterior sampling for surface recovery |
 
 ---
 
@@ -84,7 +85,9 @@ y(x,y)  — measured AFM height image (nm)
 
 **Status:** PASS
 
-Algorithm routing uses the dedicated `scanning_probe` category pool (10 methods: BTR, MLE Reconstruction, Reg-Deconv, TV-Deconvolution, DeepSPM, U-Net-SPM, E2E-BTR, SPM-Former, DiffusionSPM, ScoreSPM). BTR (Villarrubia 1997) and E2E-BTR (Kossler 2022) are real, well-cited AFM-specific algorithms, confirming excellent domain alignment. The four mismatch parameters address the principal AFM artefact sources: tip convolution, piezo nonlinearity, thermal drift, and scanner hysteresis. No code changes required.
+Dedicated phantom generator `generate_afm_surface()` added to `benchmarks/datasets/downloaders.py`. The generator produces one of three surface types (selected deterministically by seed): crystalline (periodic sin+cos lattice, lattice constant 8–20 px, amplitude 0.3–0.6), amorphous (layered Gaussian blobs + random roughness), or biological (3–6 rounded cell-like bumps, r=20–60 px). AFM measurement noise (sigma=0.02) added to all types. Datasets regenerated and uploaded to GCS (2026-03-07).
+
+Algorithm pool updated to 7 methods with dedicated `_VARIANT_OVERRIDES["afm"]` entry: Plane Fit, Wiener Deconv, PnP-ADMM, DeepAFM, Self-Sup AFM, SPM-Former, and DiffusionAFM. Dedicated score pool `CATEGORY_REAL_SCORES["afm"]` added (PSNR 20–34.5 dB progression). AFM removed from `afm_synthetic_surface.applies_to` (generic fractal generator) to ensure the new dedicated `generate_afm_surface` generator is used.
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3*

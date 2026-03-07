@@ -228,6 +228,7 @@ def _resolve_ground_truth(
             generate_diffraction_pattern, generate_elemental_map,
             generate_ndt_phantom, generate_velocity_model,
             generate_ae_source_map, generate_sam_phantom,
+            generate_thermography_phantom, generate_ao_wavefront, generate_afm_surface,
         )
 
         # Look up registry entries for this modality
@@ -256,6 +257,9 @@ def _resolve_ground_truth(
                     "generate_velocity_model": generate_velocity_model,
                     "generate_ae_source_map": generate_ae_source_map,
                     "generate_sam_phantom": generate_sam_phantom,
+                    "generate_thermography_phantom": generate_thermography_phantom,
+                    "generate_ao_wavefront": generate_ao_wavefront,
+                    "generate_afm_surface": generate_afm_surface,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -737,6 +741,7 @@ def _load_scenes_from_generator(
             generate_diffraction_pattern, generate_elemental_map,
             generate_ndt_phantom, generate_velocity_model,
             generate_ae_source_map, generate_sam_phantom,
+            generate_thermography_phantom, generate_ao_wavefront, generate_afm_surface,
         )
     except ImportError:
         return []
@@ -755,6 +760,11 @@ def _load_scenes_from_generator(
         "generate_elemental_map": generate_elemental_map,
         "generate_ndt_phantom": generate_ndt_phantom,
         "generate_velocity_model": generate_velocity_model,
+        "generate_ae_source_map": generate_ae_source_map,
+        "generate_sam_phantom": generate_sam_phantom,
+        "generate_thermography_phantom": generate_thermography_phantom,
+        "generate_ao_wavefront": generate_ao_wavefront,
+        "generate_afm_surface": generate_afm_surface,
     }
 
     gen_fn = gen_map.get(generator_name)

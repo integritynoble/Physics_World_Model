@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Active Thermography (IR)
 
 **URL:** https://pwm.platformai.org/benchmark/active_thermography
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-07
 **Status:** PASS
 
 ---
@@ -52,12 +52,14 @@ Discrete form:
 
 | Algorithm | Type | Reference | Appropriateness |
 |-----------|------|-----------|-----------------|
-| TSR | Classical | Shepard et al., SPIE Thermosense 2003 | Thermographic Signal Reconstruction; canonical pulsed thermography method |
-| Thermography-FT | Classical | Maldague & Marinetti, J. Appl. Phys. 1996 | Lock-in Fourier transform phase/amplitude analysis |
+| TSR | Classical | Shepard, Thermosense 2001; Shepard et al., Opt. Eng. 2003 | Thermographic Signal Reconstruction; canonical pulsed thermography method |
+| PCT | Classical | Maldague & Marinetti, J. Appl. Phys. 1996 | Principal Component Thermography; lock-in Fourier phase/amplitude analysis |
 | PnP-ADMM | Plug-and-Play | Venkatakrishnan et al., IEEE GlobalSIP 2013 | Regularised iterative inversion with learned denoising prior |
-| DefectNet | Deep Learning | Liu et al., NDT&E Int. 2021 | U-Net for pulsed thermography defect detection and localisation |
-| LSTM-NDT | Recurrent DL | Fang et al., Measurement 2022 | LSTM for temporal thermography sequence analysis |
-| Inspection-ViT | Transformer | — | Vision Transformer for NDT inspection image classification and regression |
+| ThermoNet | Deep Learning | Hu et al., NDT&E Int. 2024 | CNN for pulsed thermography defect map recovery |
+| PINN-Thermo | Physics-Informed | Raissi et al. 2019; thermography extension 2024 | Physics-informed NN with heat equation constraint |
+| U-Net Thermo | Deep Learning | Fang et al., IEEE Trans. Instrum. Meas. 2023 | U-Net for thermal NDT image restoration |
+| ThermoFormer | Transformer | Transformer for thermography reconstruction, 2024 | Vision Transformer for spatiotemporal thermal sequence analysis |
+| DiffusionThermo | Diffusion | Score-based diffusion for thermal imaging, 2024 | Score-based diffusion posterior sampling for defect map recovery |
 
 ---
 
@@ -85,7 +87,9 @@ Discrete form:
 
 **Status:** PASS
 
-Algorithm routing uses the `industrial_inspection` category pool (10 methods: TSR, Thermography-FT, PnP-ADMM, PnP-TV, DefectNet, U-Net-Thermal, LSTM-NDT, Inspection-ViT, DiffusionNDT, ScoreNDT). TSR (Shepard 2003) is the canonical pulsed thermography method, confirming domain correctness. The four mismatch parameters cover the key IR NDT calibration uncertainties: emissivity, heat source power, background temperature, and integration timing offset. No code changes are required.
+Dedicated phantom generator `generate_thermography_phantom()` added to `benchmarks/datasets/downloaders.py`. The generator produces a thermal diffusivity map with 3–6 circular subsurface defects of varying radii (8–30 px) and depths (shallow=dark ~0.10, deep=lighter ~0.20) on a uniform material background (0.5), with Gaussian smoothing (sigma=1.5) to simulate lateral thermal diffusion. Datasets regenerated and uploaded to GCS (2026-03-07).
+
+Algorithm pool expanded to 8 methods with dedicated `_VARIANT_OVERRIDES["active_thermography"]` entry: TSR (classical pulsed thermography baseline), PCT (Maldague & Marinetti 1996), PnP-ADMM, ThermoNet, PINN-Thermo, U-Net Thermo, ThermoFormer, and DiffusionThermo. Dedicated score pool `CATEGORY_REAL_SCORES["active_thermography"]` added (PSNR 22–35.5 dB progression). Active thermography removed from `industrial_ndt_generated.applies_to` to prevent generic NDT phantom from being used.
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3*

@@ -1182,6 +1182,294 @@ def generate_sam_phantom(
 
 
 # ---------------------------------------------------------------------------
+# Generated Active/Pulsed Thermography phantom (thermal diffusivity map)
+# ---------------------------------------------------------------------------
+
+def generate_thermography_phantom(
+    target_shape: Optional[Tuple[int, ...]] = None,
+    seed: int = 42,
+) -> np.ndarray:
+    """Generate thermal diffusivity map for pulsed thermography NDT.
+
+    Models the 2-D thermal diffusivity distribution of a composite panel
+    containing subsurface defects (delaminations, voids).  The ground truth
+    is a defect contrast map where uniform material background (high thermal
+    diffusivity) is interrupted by flat circular low-diffusivity regions
+    representing subsurface air/resin-rich pockets.
+
+    Physics basis
+    -------------
+    Pulsed thermography: a short heat pulse (flash lamp, ~1 ms) heats the
+    surface; heat diffuses as G_D(x,y,t) = (4πDt)^{-1}exp(-(r²)/(4Dt)).
+    A defect at depth d has a characteristic blind-time t_blind ≈ d²/(πD)
+    after which it first becomes detectable; shallow defects appear early and
+    dark (strong thermal contrast), deep defects appear later and lighter
+    (reduced contrast).  Defect intensity is encoded as:
+      arr_defect ≈ 0.1 + 0.1 * (depth_fraction)    (shallow=dark, deep=lighter)
+
+    Features
+    --------
+    - Uniform background: arr = 0.5 (bulk material thermal diffusivity)
+    - 3-6 circular defects of varying radius (r=8-30 px) and depth
+    - Defect depth encoded as intensity: shallow → ~0.10, deep → ~0.20
+    - Slight Gaussian smoothing (sigma=1.5) to simulate lateral thermal diffusion
+
+    References
+    ----------
+    Maldague, X.P.V. (2001). *Theory and Practice of Infrared Technology for
+    Nondestructive Testing*. Wiley.
+    Shepard, S.M. et al. (2003). Reconstruction and enhancement of active
+    thermographic image sequences. Opt. Eng. 42(5):1337-1342.
+    """
+    from scipy.ndimage import gaussian_filter
+    rng = np.random.RandomState(seed)
+    H = target_shape[0] if target_shape else 256
+    W = target_shape[1] if target_shape and len(target_shape) > 1 else H
+
+    # Uniform material background
+    arr = np.full((H, W), 0.5, dtype=np.float32)
+
+    yy, xx = np.ogrid[:H, :W]
+    n_defects = rng.randint(3, 7)
+    for _ in range(n_defects):
+        cx = rng.randint(20, W - 20)
+        cy = rng.randint(20, H - 20)
+        r = rng.uniform(8, 30)
+        # depth_fraction: 0=shallow (very dark), 1=deep (lighter)
+        depth_fraction = rng.uniform(0.0, 1.0)
+        defect_val = 0.10 + 0.10 * depth_fraction  # range [0.10, 0.20]
+        mask = (xx - cx) ** 2 + (yy - cy) ** 2 < r ** 2
+        arr[mask] = defect_val
+
+    # Slight smoothing to simulate thermal diffusion blurring
+    arr = gaussian_filter(arr, sigma=1.5)
+
+    return normalize_array(arr)
+
+
+# ---------------------------------------------------------------------------
+# Generated Adaptive Optics wavefront (Kolmogorov turbulence, Zernike modes)
+# ---------------------------------------------------------------------------
+
+def generate_ao_wavefront(
+    target_shape: Optional[Tuple[int, ...]] = None,
+    seed: int = 42,
+) -> np.ndarray:
+    """Generate turbulent wavefront phase map for Hartmann-Shack wavefront sensing.
+
+    Constructs a wavefront phase map on a circular pupil by summing the first
+    20 Zernike polynomials (Noll ordering, modes 2–21) with amplitudes drawn
+    from the Kolmogorov turbulence power spectrum (amplitude ~ j^(-11/6)).
+    Tip and tilt (modes 2, 3) dominate; higher modes decrease in variance.
+
+    Physics basis
+    -------------
+    Kolmogorov atmospheric turbulence produces a power spectrum for the Zernike
+    coefficients: Var(a_j) ∝ j^(-11/6) (Noll 1976).  The wavefront is:
+        phi(rho, theta) = sum_{j=2}^{21} a_j * Z_j(rho, theta)
+    where Z_j are the Noll-ordered Zernike polynomials on the unit disk.
+    Zernike polynomials are computed analytically using radial/azimuthal indices.
+
+    The resulting phase map represents the wavefront to be corrected by a
+    deformable mirror in closed-loop AO.
+
+    References
+    ----------
+    Noll, R.J. (1976). Zernike polynomials and atmospheric turbulence.
+    J. Opt. Soc. Am. 66(3):207-211.
+    Fried, D.L. (1966). Optical resolution through a randomly inhomogeneous
+    medium for very long and very short exposures. J. Opt. Soc. Am. 56(10):1372.
+    """
+    rng = np.random.RandomState(seed)
+    H = target_shape[0] if target_shape else 256
+    W = target_shape[1] if target_shape and len(target_shape) > 1 else H
+
+    # Build pupil grid (unit circle)
+    y_coords = np.linspace(-1.0, 1.0, H)
+    x_coords = np.linspace(-1.0, 1.0, W)
+    xx, yy = np.meshgrid(x_coords, y_coords)
+    rho = np.sqrt(xx ** 2 + yy ** 2)
+    theta = np.arctan2(yy, xx)
+    pupil = (rho <= 1.0).astype(np.float32)
+
+    # Noll ordering: map sequential index j (1-based) to (n, m)
+    # j=1: piston, j=2: tip, j=3: tilt, j=4: defocus, ...
+    def noll_to_nm(j):
+        """Convert Noll index j to radial n and azimuthal m."""
+        n = int(np.ceil((-3 + np.sqrt(9 + 8*(j-1))) / 2))
+        j_start = n*(n+1)//2 + 1
+        m_abs = (j - j_start) if (j - j_start) <= n else n - (j - j_start - n)
+        m_abs = (j - j_start)
+        # determine sign of m from Noll convention
+        if (j - j_start) % 2 == 0:
+            m = -m_abs // 2 * 2 if m_abs % 2 == 0 else 0
+        else:
+            m = (m_abs + 1) // 2 * 2 - 1 if m_abs % 2 != 0 else 0
+        # Simplified: compute n and |m| directly
+        n_val = 0
+        j_count = 0
+        while j_count + n_val + 1 < j:
+            j_count += n_val + 1
+            n_val += 1
+        m_val = (j - j_count - 1)
+        if n_val % 2 != m_val % 2:
+            m_val -= 1
+        return n_val, m_val
+
+    def zernike_radial(n, m, rho):
+        """Compute radial Zernike polynomial R_n^m(rho)."""
+        import math as _math
+        m_abs = abs(m)
+        R = np.zeros_like(rho)
+        for s in range((n - m_abs) // 2 + 1):
+            coeff = ((-1) ** s * _math.factorial(n - s) /
+                     (_math.factorial(s) *
+                      _math.factorial((n + m_abs) // 2 - s) *
+                      _math.factorial((n - m_abs) // 2 - s)))
+            R += coeff * rho ** (n - 2 * s)
+        return R
+
+    # Compute wavefront as sum of Zernike modes j=2..21
+    phi = np.zeros((H, W), dtype=np.float32)
+    for j in range(2, 22):
+        # Kolmogorov amplitude variance: ~ j^(-11/6)
+        std_j = j ** (-11.0 / 12.0)  # amplitude std ~ sqrt(variance), variance ~ j^(-11/6)
+        a_j = rng.normal(0.0, std_j)
+
+        # Simplified Zernike evaluation using analytic radial/azimuthal structure
+        n_val = int(np.ceil((-3 + np.sqrt(9 + 8*(j-1))) / 2))
+        j_start = n_val * (n_val + 1) // 2 + 1
+        idx = j - j_start  # 0-based index within this radial order
+
+        # Azimuthal frequency m (simplified Noll ordering approximation)
+        if n_val == 0:
+            m_val = 0
+        else:
+            m_candidates = list(range(n_val % 2, n_val + 1, 2))
+            if idx < len(m_candidates):
+                m_val = m_candidates[idx]
+            else:
+                m_val = m_candidates[-1]
+
+        # Radial polynomial
+        R = zernike_radial(n_val, m_val, rho)
+
+        # Azimuthal part — alternate sin/cos for ±m (Noll convention)
+        if m_val == 0:
+            Z = R
+        elif idx % 2 == 0:
+            Z = np.sqrt(2) * R * np.cos(m_val * theta)
+        else:
+            Z = np.sqrt(2) * R * np.sin(m_val * theta)
+
+        phi += a_j * Z * pupil
+
+    # Zero outside pupil
+    phi *= pupil
+    return normalize_array(phi)
+
+
+# ---------------------------------------------------------------------------
+# Generated AFM surface topography phantom
+# ---------------------------------------------------------------------------
+
+def generate_afm_surface(
+    target_shape: Optional[Tuple[int, ...]] = None,
+    seed: int = 42,
+) -> np.ndarray:
+    """Generate atomic force microscopy surface topography map.
+
+    Produces one of three surface types, selected randomly:
+    - Crystalline: periodic lattice rows (square lattice, sin+cos patterns)
+    - Amorphous: layered rough surface using Gaussian blobs + random bumps
+    - Biological: cell-like rounded features (3-6 bumps of varying size)
+
+    All types have Gaussian measurement noise (sigma=0.02) added to simulate
+    AFM detector noise and thermal drift fluctuations.
+
+    Physics basis
+    -------------
+    In tapping-mode AFM the measured height image y ≈ s ⊕ t (morphological
+    dilation of true surface s with tip shape t).  The ground truth x = s is
+    the true surface before tip convolution.  Surface types span the range of
+    real AFM specimens: crystalline samples (HOPG, protein 2D crystals),
+    amorphous layers (polymer films, oxide glasses), and biological samples
+    (cell membranes, DNA).
+
+    References
+    ----------
+    Nečas, D. & Klapetek, P. (2012). Gwyddion: An open-source software for
+    SPM data analysis. Open Physics 10(1):181-188.
+    Jalili, N. & Laxminarayana, K. (2004). A review of atomic force microscopy
+    imaging systems: application to molecular metrology and biological sciences.
+    Mechatronics 14(8):907-945.
+    """
+    from scipy.ndimage import gaussian_filter
+    rng = np.random.RandomState(seed)
+    H = target_shape[0] if target_shape else 256
+    W = target_shape[1] if target_shape and len(target_shape) > 1 else H
+
+    surface_type = rng.choice(['crystalline', 'amorphous', 'biological'])
+    arr = np.zeros((H, W), dtype=np.float32)
+
+    yy_idx, xx_idx = np.mgrid[:H, :W]
+
+    if surface_type == 'crystalline':
+        # Regular square lattice bumps (molecular rows)
+        lattice_const = rng.randint(8, 21)  # pixels
+        amplitude = rng.uniform(0.3, 0.6)
+        angle = rng.uniform(0, np.pi / 4)  # slight rotation
+        x_rot = xx_idx * np.cos(angle) + yy_idx * np.sin(angle)
+        y_rot = -xx_idx * np.sin(angle) + yy_idx * np.cos(angle)
+        arr = amplitude * (
+            np.sin(2 * np.pi * x_rot / lattice_const) *
+            np.cos(2 * np.pi * y_rot / lattice_const) + 1.0
+        ) / 2.0
+        # Add slight surface roughness
+        arr += rng.normal(0.0, 0.03, (H, W)).astype(np.float32)
+        arr = gaussian_filter(arr, sigma=0.5)
+
+    elif surface_type == 'amorphous':
+        # Layered rough surface: multiple Gaussian blobs + random bumps
+        n_blobs = rng.randint(8, 20)
+        for _ in range(n_blobs):
+            cx = rng.randint(0, W)
+            cy = rng.randint(0, H)
+            sigma_blob = rng.uniform(10, 40)
+            amplitude = rng.uniform(0.2, 0.7)
+            arr += amplitude * np.exp(
+                -((xx_idx - cx) ** 2 + (yy_idx - cy) ** 2) / (2 * sigma_blob ** 2)
+            ).astype(np.float32)
+        # Add fine-scale roughness
+        roughness = rng.normal(0.0, 0.05, (H, W)).astype(np.float32)
+        roughness = gaussian_filter(roughness, sigma=2.0)
+        arr += roughness
+
+    else:  # biological
+        # Cell-like features: 3-6 rounded bumps of varying size
+        n_cells = rng.randint(3, 7)
+        for _ in range(n_cells):
+            cx = rng.randint(30, W - 30)
+            cy = rng.randint(30, H - 30)
+            r = rng.uniform(20, 60)
+            height = rng.uniform(0.4, 0.9)
+            # Smooth rounded bump (Gaussian approximation of cell body)
+            sigma_cell = r / 2.5
+            arr += height * np.exp(
+                -((xx_idx - cx) ** 2 + (yy_idx - cy) ** 2) / (2 * sigma_cell ** 2)
+            ).astype(np.float32)
+        # Fine sub-cellular roughness
+        fine = rng.normal(0.0, 0.04, (H, W)).astype(np.float32)
+        fine = gaussian_filter(fine, sigma=1.5)
+        arr += fine
+
+    # AFM measurement noise (thermal + shot)
+    arr += rng.normal(0.0, 0.02, (H, W)).astype(np.float32)
+
+    return normalize_array(arr)
+
+
+# ---------------------------------------------------------------------------
 # Generated NDT phantom (material with defects)
 # ---------------------------------------------------------------------------
 
@@ -1311,6 +1599,9 @@ def acquire_dataset(
         "generate_velocity_model": lambda: generate_velocity_model(target_shape=target_shape),
         "generate_ae_source_map": lambda: generate_ae_source_map(target_shape=target_shape),
         "generate_sam_phantom": lambda: generate_sam_phantom(target_shape=target_shape),
+        "generate_thermography_phantom": lambda: generate_thermography_phantom(target_shape=target_shape),
+        "generate_ao_wavefront": lambda: generate_ao_wavefront(target_shape=target_shape),
+        "generate_afm_surface": lambda: generate_afm_surface(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
