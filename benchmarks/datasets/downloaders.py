@@ -1014,6 +1014,82 @@ def generate_elemental_map(
 
 
 # ---------------------------------------------------------------------------
+# Generated Acoustic Emission (AE) source energy map
+# ---------------------------------------------------------------------------
+
+def generate_ae_source_map(
+    target_shape: Optional[Tuple[int, ...]] = None,
+    seed: int = 42,
+) -> np.ndarray:
+    """Generate acoustic emission source energy map.
+
+    Models the 2-D distribution of acoustic energy released during crack
+    initiation and propagation in a structural component.  The ground truth
+    is a *source intensity map* — not a defect geometry map — because the
+    AE inverse problem is to localise *where energy is being released*, given
+    multi-sensor time-domain waveforms.
+
+    Physics basis
+    -------------
+    Crack-tip AE events are impulsive point sources (high local energy release);
+    delamination fronts and fibre-breakage produce line/arc sources; background
+    dislocation activity contributes a low-level diffuse field.  Source
+    amplitudes follow a power-law magnitude distribution (Gutenberg-Richter
+    analogue), consistent with real AE data from steel, concrete and CFRP
+    structures (Grosse & Ohtsu, 2008).
+
+    References
+    ----------
+    Grosse, C.U. & Ohtsu, M. (2008). *Acoustic Emission Testing*. Springer.
+    Ebrahimkhanlou & Salamone (2019). *Structural Health Monitoring*, 18(2):636-651.
+    """
+    rng = np.random.RandomState(seed)
+    H = target_shape[0] if target_shape else 256
+    W = target_shape[1] if target_shape and len(target_shape) > 1 else H
+
+    arr = np.zeros((H, W), dtype=np.float32)
+
+    # --- Point-source AE events (crack initiation hits) ---
+    # Power-law amplitude distribution: small events are frequent, large rare
+    n_events = rng.randint(8, 25)
+    for _ in range(n_events):
+        cx = rng.randint(5, W - 5)
+        cy = rng.randint(5, H - 5)
+        amplitude = rng.power(0.4)  # power-law: many weak, few strong events
+        sigma = rng.uniform(1.5, 4.0)  # Gaussian spread per event
+        yy, xx = np.ogrid[:H, :W]
+        arr += amplitude * np.exp(-((xx - cx) ** 2 + (yy - cy) ** 2) / (2 * sigma ** 2))
+
+    # --- Line sources (crack propagation fronts) ---
+    n_cracks = rng.randint(1, 4)
+    for _ in range(n_cracks):
+        x0 = rng.randint(10, W - 10)
+        y0 = rng.randint(10, H - 10)
+        angle = rng.uniform(0, np.pi)
+        length = rng.randint(20, 60)
+        amp_crack = rng.uniform(0.3, 0.8)
+        for t in range(length):
+            xi = int(x0 + t * np.cos(angle))
+            yi = int(y0 + t * np.sin(angle))
+            if 0 <= xi < W and 0 <= yi < H:
+                # Each point along the crack is a weak Gaussian source
+                sigma_c = rng.uniform(1.0, 2.5)
+                yy, xx = np.ogrid[:H, :W]
+                arr += amp_crack * 0.15 * np.exp(
+                    -((xx - xi) ** 2 + (yy - yi) ** 2) / (2 * sigma_c ** 2)
+                )
+
+    # --- Low-level diffuse background (dislocation activity) ---
+    bg = rng.uniform(0.0, 0.05, (H, W)).astype(np.float32)
+    # Smooth to remove high-frequency noise from the background
+    from scipy.ndimage import gaussian_filter
+    bg = gaussian_filter(bg, sigma=3.0)
+    arr += bg
+
+    return normalize_array(arr.clip(0, None))
+
+
+# ---------------------------------------------------------------------------
 # Generated NDT phantom (material with defects)
 # ---------------------------------------------------------------------------
 
@@ -1141,6 +1217,7 @@ def acquire_dataset(
         "generate_elemental_map": lambda: generate_elemental_map(target_shape=target_shape),
         "generate_ndt_phantom": lambda: generate_ndt_phantom(target_shape=target_shape),
         "generate_velocity_model": lambda: generate_velocity_model(target_shape=target_shape),
+        "generate_ae_source_map": lambda: generate_ae_source_map(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:

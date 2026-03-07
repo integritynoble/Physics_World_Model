@@ -625,6 +625,35 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
     ),
 
     # ==================================================================
+    # 15b. Acoustic Emission — dedicated source-energy-map generator
+    # ==================================================================
+    "acoustic_emission_generated": DatasetEntry(
+        id="acoustic_emission_generated",
+        name="Generated Acoustic Emission Source Energy Map",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation=(
+            "Grosse & Ohtsu (2008) Acoustic Emission Testing, Springer; "
+            "Ebrahimkhanlou & Salamone (2019) Struct. Health Monit. 18(2):636-651"
+        ),
+        license="N/A",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["acoustic_emission"],
+        converter="generate_ae_source_map",
+        x_shape=[256, 256],
+        notes=(
+            "Physics-accurate AE source intensity map: sparse point sources "
+            "(crack-initiation hits, power-law amplitude) + line sources "
+            "(crack propagation fronts) + diffuse background (dislocations). "
+            "Models a 2-D panel monitored by a surface sensor array. "
+            "Forward model: convolutional approximation to Green's function "
+            "propagation (valid in the diffraction-limited far field of each sensor)."
+        ),
+    ),
+
+    # ==================================================================
     # 16. Industrial Inspection  (4 modalities not covered above)
     # ==================================================================
     "industrial_ndt_generated": DatasetEntry(
@@ -638,7 +667,7 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         size_mb=1.0,
         storage="local",
         applies_to=[
-            "eddy_current", "acoustic_emission",
+            "eddy_current",
             "shearography", "active_thermography",
             "terahertz", "ultrasonic_phased_array",
             "acoustic_microscopy",
