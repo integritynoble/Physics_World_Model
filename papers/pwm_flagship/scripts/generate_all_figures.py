@@ -282,7 +282,7 @@ def fig2_operatorgraph():
     basis_n = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
                29, 30, 31, 32, 33, 34, 35, 40, 50, 60, 70, 80, 90,
-               100, 110, 120, 130, 140, 150, 160, 168]
+               100, 110, 120, 130, 140, 150, 160, 170]
     basis_k = [1, 2, 4, 5, 6, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9,
                9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10, 10,
                10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
@@ -291,14 +291,14 @@ def fig2_operatorgraph():
     ax_c.plot(basis_n, basis_k, '-o', color=COLORS['blue'], markersize=2,
               linewidth=1.2, label='Primitives required')
     ax_c.axhline(y=11, color='#999', linestyle='--', linewidth=0.5)
-    ax_c.fill_between([35, 168], 0, 13, color=COLORS['green'], alpha=0.06)
+    ax_c.fill_between([35, 170], 0, 13, color=COLORS['green'], alpha=0.06)
     ax_c.set_xlabel('Registered modalities $N$', fontsize=7)
     ax_c.set_ylabel('Distinct primitives $K$', fontsize=7)
     ax_c.set_xlim(0, 175)
     ax_c.set_ylim(0, 13)
     ax_c.text(105, 12.2, 'Saturated at $K{=}11$', ha='center', fontsize=5.5,
               color=COLORS['green'], fontstyle='italic')
-    ax_c.text(168, 11.5, '$N{=}168$', ha='center', fontsize=5, color=COLORS['blue'])
+    ax_c.text(170, 11.5, '$N{=}170$', ha='center', fontsize=5, color=COLORS['blue'])
     ax_c.spines['top'].set_visible(False)
     ax_c.spines['right'].set_visible(False)
 
@@ -309,7 +309,7 @@ def fig2_operatorgraph():
               transform=ax_d.transAxes)
 
     stats = [
-        ('168', 'Registered\nmodalities'),
+        ('170', 'Registered\nmodalities'),
         ('12', 'End-to-end\ncorrection'),
         ('5', 'Physical\ncarriers'),
         ('11', 'Universal\nprimitives'),
@@ -384,14 +384,14 @@ def fig3_triad():
                   'Comp.\nHolo.', 'Ptycho.', 'Cryo-EM',
                   'MRI', 'CT', 'CBCT', 'US']
 
-    # Gate 1: ΔPSNR at extreme compression (Table S12, 7 modalities tested)
+    # Gate 1: ΔPSNR at extreme compression (Table S12)
     # None = not tested for that modality
-    g1_data = [+1.3, -5.3, -13.9, -18.7, None, None,
-               -5.1, None, -4.9, -4.3, None, None]
+    g1_data = [+1.3, -5.3, -13.9, -18.7, -9.1, None,
+               -5.1, -1.0, -4.9, -4.3, -0.8, -2.2]
 
-    # Gate 2: ΔPSNR at extreme noise (Table S13, 7 modalities tested)
-    g2_data = [-7.6, -14.3, -14.4, -27.3, None, None,
-               -3.8, None, -17.7, -3.8, None, None]
+    # Gate 2: ΔPSNR at extreme noise (Table S13)
+    g2_data = [-7.6, -14.3, -14.4, -27.3, -6.1, -7.3,
+               -3.8, -0.4, -17.7, -3.8, -2.4, 0.0]
 
     # Gate 3: ΔPSNR correction gain at standard mismatch (Table S1, all 12)
     g3_data = [+0.76, +10.21, +7.71, +3.55, +8.35, +1.03,

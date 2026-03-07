@@ -1,0 +1,307 @@
+{
+  "Fluorescence": {
+    "modality": "Fluorescence",
+    "psnr_nominal": 15.32,
+    "g1_parameter": "PSF_sigma (px)",
+    "g1_sweep": [
+      {
+        "sigma": 3.0,
+        "psnr": 14.93,
+        "delta": -0.39
+      },
+      {
+        "sigma": 5.0,
+        "psnr": 14.0,
+        "delta": -1.32
+      },
+      {
+        "sigma": 8.0,
+        "psnr": 11.59,
+        "delta": -3.73
+      },
+      {
+        "sigma": 12.0,
+        "psnr": 8.12,
+        "delta": -7.2
+      },
+      {
+        "sigma": 15.0,
+        "psnr": 6.23,
+        "delta": -9.09
+      }
+    ],
+    "g1_extreme_delta": -9.09,
+    "g2_parameter": "peak_photons",
+    "g2_sweep": [
+      {
+        "photons": 500,
+        "psnr": 15.25,
+        "delta": -0.07
+      },
+      {
+        "photons": 100,
+        "psnr": 14.69,
+        "delta": -0.62
+      },
+      {
+        "photons": 50,
+        "psnr": 14.19,
+        "delta": -1.12
+      },
+      {
+        "photons": 10,
+        "psnr": 11.35,
+        "delta": -3.97
+      },
+      {
+        "photons": 5,
+        "psnr": 9.18,
+        "delta": -6.14
+      }
+    ],
+    "g2_extreme_delta": -6.14,
+    "compute_time_s": 4.4
+  },
+  "Cryo-EM": {
+    "modality": "Cryo-EM",
+    "psnr_nominal": 7.04,
+    "g1_parameter": "B_factor (\u00c5\u00b2)",
+    "g1_sweep": [
+      {
+        "B_factor": 5.0,
+        "psnr": 6.99,
+        "delta": -0.05
+      },
+      {
+        "B_factor": 10.0,
+        "psnr": 6.93,
+        "delta": -0.1
+      },
+      {
+        "B_factor": 20.0,
+        "psnr": 6.86,
+        "delta": -0.18
+      },
+      {
+        "B_factor": 50.0,
+        "psnr": 6.72,
+        "delta": -0.32
+      },
+      {
+        "B_factor": 200.0,
+        "psnr": 6.02,
+        "delta": -1.01
+      }
+    ],
+    "g1_extreme_delta": -1.01,
+    "g2_parameter": "noise_sigma",
+    "g2_sweep": [
+      {
+        "noise_sigma": 0.1,
+        "psnr": 7.03,
+        "delta": -0.0
+      },
+      {
+        "noise_sigma": 0.2,
+        "psnr": 7.02,
+        "delta": -0.02
+      },
+      {
+        "noise_sigma": 0.5,
+        "psnr": 6.94,
+        "delta": -0.09
+      },
+      {
+        "noise_sigma": 0.8,
+        "psnr": 6.75,
+        "delta": -0.29
+      },
+      {
+        "noise_sigma": 1.0,
+        "psnr": 6.62,
+        "delta": -0.42
+      }
+    ],
+    "g2_extreme_delta": -0.42,
+    "compute_time_s": 0.1
+  },
+  "CBCT": {
+    "modality": "CBCT",
+    "psnr_nominal": 8.96,
+    "g1_parameter": "n_angles",
+    "g1_sweep": [
+      {
+        "n_angles": 180,
+        "psnr": 8.96,
+        "delta": -0.0
+      },
+      {
+        "n_angles": 90,
+        "psnr": 8.96,
+        "delta": -0.0
+      },
+      {
+        "n_angles": 30,
+        "psnr": 8.92,
+        "delta": -0.04
+      },
+      {
+        "n_angles": 10,
+        "psnr": 8.67,
+        "delta": -0.29
+      },
+      {
+        "n_angles": 5,
+        "psnr": 8.16,
+        "delta": -0.8
+      }
+    ],
+    "g1_extreme_delta": -0.8,
+    "g2_parameter": "photon_count",
+    "g2_sweep": [
+      {
+        "photons": 100000,
+        "psnr": 8.96,
+        "delta": -0.0
+      },
+      {
+        "photons": 10000,
+        "psnr": 8.95,
+        "delta": -0.0
+      },
+      {
+        "photons": 1000,
+        "psnr": 8.92,
+        "delta": -0.03
+      },
+      {
+        "photons": 100,
+        "psnr": 8.65,
+        "delta": -0.31
+      },
+      {
+        "photons": 10,
+        "psnr": 6.6,
+        "delta": -2.36
+      }
+    ],
+    "g2_extreme_delta": -2.36,
+    "compute_time_s": 3.7
+  },
+  "Comp. Holography": {
+    "modality": "Comp. Holography",
+    "psnr_nominal": 7.11,
+    "g1_parameter": "n_depths",
+    "g1_sweep": [
+      {
+        "n_depths": 3,
+        "psnr": 9.58,
+        "delta": 2.47
+      },
+      {
+        "n_depths": 2,
+        "psnr": 11.43,
+        "delta": 4.32
+      },
+      {
+        "n_depths": 1,
+        "psnr": 9.86,
+        "delta": 2.75
+      }
+    ],
+    "g1_extreme_delta": 2.75,
+    "g2_parameter": "noise_std",
+    "g2_sweep": [
+      {
+        "noise_std": 0.02,
+        "psnr": 7.09,
+        "delta": -0.02
+      },
+      {
+        "noise_std": 0.05,
+        "psnr": 6.92,
+        "delta": -0.19
+      },
+      {
+        "noise_std": 0.1,
+        "psnr": 6.43,
+        "delta": -0.68
+      },
+      {
+        "noise_std": 0.3,
+        "psnr": 2.92,
+        "delta": -4.19
+      },
+      {
+        "noise_std": 0.5,
+        "psnr": -0.23,
+        "delta": -7.34
+      }
+    ],
+    "g2_extreme_delta": -7.34,
+    "compute_time_s": 0.1
+  },
+  "Ultrasound": {
+    "modality": "Ultrasound",
+    "psnr_nominal": 100.0,
+    "g1_parameter": "n_angles",
+    "g1_sweep": [
+      {
+        "n_angles": 37,
+        "psnr": 32.27,
+        "delta": -67.73
+      },
+      {
+        "n_angles": 15,
+        "psnr": 27.31,
+        "delta": -72.69
+      },
+      {
+        "n_angles": 7,
+        "psnr": 24.12,
+        "delta": -75.88
+      },
+      {
+        "n_angles": 3,
+        "psnr": 21.1,
+        "delta": -78.9
+      },
+      {
+        "n_angles": 1,
+        "psnr": 19.0,
+        "delta": -81.0
+      }
+    ],
+    "g1_extreme_delta": -81.0,
+    "g2_parameter": "RF_noise_fraction",
+    "g2_sweep": [
+      {
+        "noise_frac": 0.01,
+        "psnr": 72.29,
+        "delta": -27.71
+      },
+      {
+        "noise_frac": 0.05,
+        "psnr": 58.27,
+        "delta": -41.73
+      },
+      {
+        "noise_frac": 0.1,
+        "psnr": 52.17,
+        "delta": -47.83
+      },
+      {
+        "noise_frac": 0.3,
+        "psnr": 42.87,
+        "delta": -57.13
+      },
+      {
+        "noise_frac": 0.5,
+        "psnr": 38.67,
+        "delta": -61.33
+      }
+    ],
+    "g2_extreme_delta": -61.33,
+    "compute_time_s": 22.0
+  }
+}
