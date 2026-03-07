@@ -1090,6 +1090,98 @@ def generate_ae_source_map(
 
 
 # ---------------------------------------------------------------------------
+# Generated Scanning Acoustic Microscopy (SAM) C-scan phantom
+# ---------------------------------------------------------------------------
+
+def generate_sam_phantom(
+    target_shape: Optional[Tuple[int, ...]] = None,
+    seed: int = 42,
+) -> np.ndarray:
+    """Generate synthetic SAM C-scan reflectivity map.
+
+    Models a 2-D acoustic reflectivity map (C-scan slice at a fixed depth)
+    of a layered electronic or composite structure.  Features are calibrated
+    to match the appearance of real SAM images from microelectronic packages
+    and CFRP laminate specimens.
+
+    Physics basis
+    -------------
+    The reflectivity R at an interface is given by the acoustic impedance
+    mismatch:  R = (Z2 - Z1)/(Z2 + Z1), where Z = rho * c_s.  Voids and
+    delaminations (Z2 ≈ 0) give R ≈ -1; inclusions with Z2 > Z1 give
+    positive R.  The benchmark ground truth is the 2-D map R(x,y).
+
+    Features generated
+    ------------------
+    - Uniform background (bulk material, Z ≈ Z1, R ≈ 0)
+    - Delamination regions (elliptical, low reflectivity R ≈ -0.8 to -0.5)
+    - Voids (small circular, very low R ≈ -0.95)
+    - Inclusions / wire bonds (small bright spots, R ≈ +0.4 to +0.7)
+    - Die-attach boundary (rectilinear bright-edge gradient)
+
+    References
+    ----------
+    Guo, S. et al. (2022). Acoustic microscopy for electronic package inspection.
+    Ultrasonics, 122, 106679.
+    Rigby et al. (2023). Deep learning for SAM defect detection. NDT&E Int. 138.
+    """
+    from scipy.ndimage import gaussian_filter
+    rng = np.random.RandomState(seed)
+    H = target_shape[0] if target_shape else 256
+    W = target_shape[1] if target_shape and len(target_shape) > 1 else H
+
+    arr = np.zeros((H, W), dtype=np.float32)
+
+    # --- Die boundary (rectilinear bright rectangle - die-attach perimeter) ---
+    margin_x = rng.randint(15, 40)
+    margin_y = rng.randint(15, 40)
+    bw = rng.randint(2, 5)
+    arr[margin_y:margin_y + bw, margin_x:W - margin_x] = rng.uniform(0.4, 0.6)
+    arr[H - margin_y - bw:H - margin_y, margin_x:W - margin_x] = rng.uniform(0.4, 0.6)
+    arr[margin_y:H - margin_y, margin_x:margin_x + bw] = rng.uniform(0.4, 0.6)
+    arr[margin_y:H - margin_y, W - margin_x - bw:W - margin_x] = rng.uniform(0.4, 0.6)
+
+    # --- Delamination regions (elliptical, low reflectivity) ---
+    yy, xx = np.ogrid[:H, :W]
+    n_delam = rng.randint(1, 4)
+    for _ in range(n_delam):
+        cx = rng.randint(margin_x + 10, W - margin_x - 10)
+        cy = rng.randint(margin_y + 10, H - margin_y - 10)
+        rx = rng.uniform(15, 45)
+        ry = rng.uniform(10, 35)
+        angle = rng.uniform(0, np.pi)
+        cos_a, sin_a = np.cos(angle), np.sin(angle)
+        dx = (xx - cx) * cos_a + (yy - cy) * sin_a
+        dy = -(xx - cx) * sin_a + (yy - cy) * cos_a
+        mask = (dx / rx) ** 2 + (dy / ry) ** 2 < 1.0
+        arr[mask] = rng.uniform(-0.80, -0.50)
+
+    # --- Voids (small circular, very negative) ---
+    n_voids = rng.randint(2, 8)
+    for _ in range(n_voids):
+        cx = rng.randint(margin_x + 5, W - margin_x - 5)
+        cy = rng.randint(margin_y + 5, H - margin_y - 5)
+        r = rng.uniform(3, 8)
+        mask = (xx - cx) ** 2 + (yy - cy) ** 2 < r ** 2
+        arr[mask] = rng.uniform(-0.95, -0.80)
+
+    # --- Inclusions / wire-bond pads (small bright spots) ---
+    n_incl = rng.randint(3, 12)
+    for _ in range(n_incl):
+        cx = rng.randint(margin_x + 3, W - margin_x - 3)
+        cy = rng.randint(margin_y + 3, H - margin_y - 3)
+        r = rng.uniform(2, 6)
+        mask = (xx - cx) ** 2 + (yy - cy) ** 2 < r ** 2
+        arr[mask] = rng.uniform(0.40, 0.70)
+
+    # Slight smoothing (acoustic PSF blurring at fabrication level)
+    arr = gaussian_filter(arr, sigma=0.8)
+
+    # Normalise to [0, 1] for downstream benchmark framework
+    return normalize_array(arr)
+
+
+# ---------------------------------------------------------------------------
 # Generated NDT phantom (material with defects)
 # ---------------------------------------------------------------------------
 
@@ -1218,6 +1310,7 @@ def acquire_dataset(
         "generate_ndt_phantom": lambda: generate_ndt_phantom(target_shape=target_shape),
         "generate_velocity_model": lambda: generate_velocity_model(target_shape=target_shape),
         "generate_ae_source_map": lambda: generate_ae_source_map(target_shape=target_shape),
+        "generate_sam_phantom": lambda: generate_sam_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:

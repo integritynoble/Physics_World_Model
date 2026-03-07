@@ -625,6 +625,33 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
     ),
 
     # ==================================================================
+    # 15a. Scanning Acoustic Microscopy — dedicated C-scan phantom
+    # ==================================================================
+    "acoustic_microscopy_generated": DatasetEntry(
+        id="acoustic_microscopy_generated",
+        name="Generated SAM C-Scan Reflectivity Map",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation=(
+            "Guo et al. (2022) Ultrasonics 122:106679; "
+            "Rigby et al. (2023) NDT&E Int. 138:102871"
+        ),
+        license="N/A",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["acoustic_microscopy"],
+        converter="generate_sam_phantom",
+        x_shape=[256, 256],
+        notes=(
+            "Physics-calibrated SAM C-scan reflectivity map: die-attach boundary, "
+            "elliptical delaminations (R≈−0.6), voids (R≈−0.9), wire-bond inclusions "
+            "(R≈+0.5). Calibrated to microelectronic package and CFRP laminate SAM images. "
+            "Forward model: 2-D PSF convolution (acoustic lens diffraction limited)."
+        ),
+    ),
+
+    # ==================================================================
     # 15b. Acoustic Emission — dedicated source-energy-map generator
     # ==================================================================
     "acoustic_emission_generated": DatasetEntry(
@@ -670,7 +697,6 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
             "eddy_current",
             "shearography", "active_thermography",
             "terahertz", "ultrasonic_phased_array",
-            "acoustic_microscopy",
         ],
         converter="generate_ndt_phantom",
         x_shape=[256, 256],

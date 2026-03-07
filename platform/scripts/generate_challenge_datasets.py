@@ -226,7 +226,8 @@ def _resolve_ground_truth(
             generate_oct_phantom, generate_smlm_phantom, generate_depth_map,
             generate_test_scene, generate_star_field, generate_resolution_target,
             generate_diffraction_pattern, generate_elemental_map,
-            generate_ndt_phantom, generate_velocity_model, generate_ae_source_map,
+            generate_ndt_phantom, generate_velocity_model,
+            generate_ae_source_map, generate_sam_phantom,
         )
 
         # Look up registry entries for this modality
@@ -254,6 +255,7 @@ def _resolve_ground_truth(
                     "generate_ndt_phantom": generate_ndt_phantom,
                     "generate_velocity_model": generate_velocity_model,
                     "generate_ae_source_map": generate_ae_source_map,
+                    "generate_sam_phantom": generate_sam_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -733,7 +735,8 @@ def _load_scenes_from_generator(
             generate_oct_phantom, generate_smlm_phantom, generate_depth_map,
             generate_test_scene, generate_star_field, generate_resolution_target,
             generate_diffraction_pattern, generate_elemental_map,
-            generate_ndt_phantom, generate_velocity_model, generate_ae_source_map,
+            generate_ndt_phantom, generate_velocity_model,
+            generate_ae_source_map, generate_sam_phantom,
         )
     except ImportError:
         return []
