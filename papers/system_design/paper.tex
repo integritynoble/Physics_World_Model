@@ -1,0 +1,667 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---- Packages ----
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{lineno}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage[hidelinks,colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
+\usepackage{microtype}
+
+% ---- Page style ----
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\thepage}
+\linenumbers
+
+% ---- Section formatting (Nature-like) ----
+\titleformat{\section}{\large\bfseries}{\thesection}{0em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection}{0em}{}
+\titlespacing*{\section}{0pt}{18pt}{6pt}
+\titlespacing*{\subsection}{0pt}{12pt}{4pt}
+\titlespacing*{\subsubsection}{0pt}{8pt}{2pt}
+
+% ---- Caption formatting ----
+\captionsetup{font=small, labelfont=bf, labelsep=pipe, justification=justified}
+
+% ---- Paragraph style ----
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% ---- Custom commands ----
+\newcommand{\tna}{\text{TNA}}
+\newcommand{\rmin}{r_{\min}}
+\newcommand{\rtarget}{r_{\text{target}}}
+\newcommand{\rcomfort}{r_{\text{comfort}}}
+\newcommand{\natsup}[1]{\textsuperscript{#1}}
+
+% ---- Metadata ----
+\title{\vspace{-1.5cm}\textbf{Purpose-conditioned system-solver selection\\across 168 computational imaging modalities}}
+\author{
+  Chengshuai Shi\textsuperscript{1,*}\\[6pt]
+  \small\textsuperscript{1}Department of Electrical and Computer Engineering, University of Arizona, Tucson, AZ 85721, USA.\\
+  \small\textsuperscript{*}Correspondence: chengshuaishi@arizona.edu
+}
+\date{}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+
+% ================================================================
+%  ABSTRACT
+% ================================================================
+\begin{abstract}
+\noindent
+Existing computational imaging benchmarks rank algorithms within a single modality but cannot answer the cross-modality question practitioners face: given application constraints on resolution, speed, budget and sample handling, which imaging system and solver should I use? Here we introduce PWM-SyS, a benchmark that evaluates 168 imaging systems --- spanning photon, X-ray, electron, acoustic and radiofrequency carriers --- against user-defined task queries. The framework pairs a neutral descriptor catalog of hardware and solver properties with Task-Normalized Adequacy (TNA), a scoring method that rates each system relative to task requirements rather than absolute capability. A three-stage protocol --- feasibility gate, Pareto ranking and preference weighting --- separates hard constraint satisfaction from multi-objective trade-off analysis. Across three pilot studies we show that PWM-SyS reproduces expert-consensus choices while surfacing non-obvious alternatives, and we provide an open interactive platform for community use.
+\end{abstract}
+
+\vspace{12pt}
+\hrule
+\vspace{12pt}
+
+% ================================================================
+%  INTRODUCTION
+% ================================================================
+\section*{Introduction}
+
+Computational imaging recovers information that a detector cannot measure directly by coupling a physical encoding step with a computational reconstruction algorithm\cite{barbastathis2019,bertero1998}. The past decade has seen transformative progress in reconstruction quality: deep-learning solvers now routinely exceed 38\,dB peak signal-to-noise ratio (PSNR) on challenging inverse problems spanning compressed sensing\cite{yuan2021,llull2013}, medical imaging\cite{adler2018,hammernik2018}, cryo-electron microscopy\cite{zhong2021} and optical microscopy\cite{gustafsson2000,betzig2006}. Community benchmarks --- fastMRI\cite{zbontar2018}, the AAPM Low-Dose CT Grand Challenge\cite{mccollough2017}, the Single Molecule Localization Microscopy challenge\cite{sage2019} and modality-specific datasets --- have been instrumental in driving this progress by standardizing evaluation protocols and enabling reproducible comparison.
+
+These benchmarks share a common structure: fix the imaging system and its forward model, then rank reconstruction algorithms on a held-out test set. This answers the question \emph{which algorithm wins on this dataset?}\ but leaves unanswered a harder question that practitioners face daily:
+
+\begin{quote}
+\itshape
+Given my application requirements --- spatial resolution, temporal resolution, budget, operator expertise, sample constraints --- which imaging system and reconstruction solver should I deploy?
+\end{quote}
+
+This system-level question differs fundamentally from algorithm benchmarking because it requires reasoning \emph{across} modalities, not within a single one. A computed tomography (CT) system achieving 40\,dB PSNR at \$2\,M capital cost with specialist operation may be inferior to an ultrasound system at 34\,dB, \$30\,K and technician-level operation --- if the task is clinical screening rather than high-resolution anatomical study. The answer depends on the purpose.
+
+Currently, cross-modality comparison relies on informal sources: review articles\cite{ongie2020,liang2020}, textbook chapters\cite{goodman2005,prince2006} and expert intuition. No standardized, quantitative framework exists for purpose-conditioned system selection across the full diversity of computational imaging. This gap has practical consequences. Researchers default to familiar modalities when superior alternatives exist for their specific constraints\cite{mccann2017}. Hospital procurement committees evaluate imaging systems using ad hoc checklists rather than systematic multi-criteria analysis\cite{marsh2016}. And the community lacks a common language to study what makes one system-solver combination preferable to another for a given task.
+
+Multi-criteria decision analysis (MCDA) methods have been applied in healthcare technology assessment\cite{marsh2016,thokala2016}, where frameworks such as EVIDEM\cite{goetghebeur2012} and PAPRIKA\cite{hansen2008} structure preference elicitation. However, these general-purpose tools lack the domain-specific knowledge --- forward model physics, solver benchmarks, sample compatibility constraints --- needed for computational imaging system selection. Meanwhile, physics-aware benchmarks\cite{antun2020} evaluate algorithmic robustness to model mismatch but do not extend to cross-modality hardware--solver trade-offs.
+
+Here we present PWM-SyS (Physics World Model --- System-to-Solver), a benchmark designed to bridge this gap (Fig.~1). PWM-SyS makes three contributions. First, we provide a \textbf{system descriptor catalog} containing neutral, verifiable hardware and solver properties for 168 imaging modalities across 19 application categories and 5 carrier families. Second, we introduce \textbf{Task-Normalized Adequacy (TNA)}, a scoring framework that evaluates system-solver pairs relative to task requirements across eight dimensions, preventing the distortions that arise from absolute capability ranking. Third, we define a \textbf{three-stage evaluation protocol} --- feasibility gate, Pareto ranking and preference weighting --- that cleanly separates hard constraint satisfaction from multi-objective optimization. PWM-SyS is implemented as an open web platform with natural-language querying, interactive recommendation and integrated physics simulation.
+
+
+% ================================================================
+%  RESULTS
+% ================================================================
+\section*{Results}
+
+\subsection*{A catalog of 168 imaging system descriptors}
+
+We assembled a structured catalog of 168 computational imaging systems by integrating three data sources: the Physics World Model (PWM) modality catalog\cite{shi2026}, which provides forward model specifications using an 11-primitive operator representation; the PWM algorithm catalog, which contains reconstruction benchmarks for 1,367 algorithms; and a curated hardware specification table compiled from manufacturer datasheets and published system descriptions (Fig.~2a, Extended Data Table~1).
+
+The 168 systems span 19 application categories --- from medical imaging (37 systems) and optical microscopy (24) to electron microscopy (11), remote sensing (11) and quantum imaging (3) --- and employ 5 carrier families: photon (72 systems), X-ray (20), electron (14), acoustic (12) and radiofrequency/spin (19), with additional systems using ions, gamma rays, neutrons and mechanical probes (Fig.~2b). Capital costs range from \$500 (light-field camera) to \$1\,B (gravitational-wave interferometer). Spatial resolutions span twelve orders of magnitude, from 0.01\,pm (electron diffraction) to 100\,km (radio interferometry).
+
+Each descriptor contains five groups of properties: physical chain (carrier, encoding, detector, modulation), acquisition parameters (shots per datacube, frame rate, resolution, dimensionality), solver performance (best method, PSNR, SSIM, latency, algorithm type coverage), operational requirements (cost, operator skill level, solver compute) and sample compatibility (contact, destructive, in-vivo). Additionally, four modality-specific mismatch parameters capture calibration sensitivity.
+
+A critical design principle is \textbf{value neutrality}: the catalog records only documented facts, not subjective quality scores. Every field is traceable to a published source. This separation between data (Layer~A) and evaluation (Layer~B) ensures that the catalog remains useful under different evaluation criteria.
+
+
+\subsection*{Task-Normalized Adequacy scoring}
+
+Standard benchmarks rank systems by absolute metrics such as PSNR, which implicitly assumes that higher is always better and that scores are commensurable across modalities. This creates two distortions: a system with 100\,nm resolution receives a higher spatial score than one with 10\,\textmu m, even if the task requires only 50\,\textmu m; and a 36\,dB PSNR on MRI and 36\,dB on cryo-EM appear equivalent despite representing fundamentally different reconstruction difficulties.
+
+TNA addresses both problems by scoring each system relative to user-specified task requirements (Fig.~3a). For each of eight adequacy dimensions $d$, TNA maps a system's capability to a $[0,\,10]$ scale using three reference points defined by the task query:
+%
+\begin{equation}
+\tna_d = \begin{cases}
+  0 & \text{if } v < \rmin \quad\text{(infeasible)}\\[4pt]
+  5\,\dfrac{v - \rmin}{\rtarget - \rmin} & \text{if } \rmin \le v < \rtarget \\[8pt]
+  5 + 5\,\dfrac{v - \rtarget}{\rcomfort - \rtarget} & \text{if } \rtarget \le v < \rcomfort \\[8pt]
+  10 & \text{if } v \ge \rcomfort \quad\text{(adequate with margin)}
+\end{cases}
+\label{eq:tna}
+\end{equation}
+%
+where $\rmin$ is the hard floor (system must meet this), $\rtarget$ is the desired specification and $\rcomfort$ is the comfortable margin beyond which diminishing returns apply. Systems that vastly exceed requirements score the same as those that comfortably meet them, because overkill is not rewarded --- a key property that prevents expensive high-end systems from dominating recommendations for modest tasks.
+
+The eight dimensions (Fig.~3b) are: acquisition feasibility (D1), temporal adequacy (D2), spatial adequacy (D3), observable sufficiency (D4), output recovery quality (D5), budget feasibility (D6), deployment burden (D7) and sample compatibility (D8). For D5, scores are \textbf{modality-normalized}: a system's PSNR is evaluated relative to the best and worst known results for that specific modality in the algorithm catalog, rather than on an absolute scale. This ensures fair comparison between inherently easy and inherently difficult inverse problems.
+
+
+\subsection*{Three-stage evaluation protocol}
+
+The evaluation protocol separates three logically distinct operations (Fig.~4).
+
+\textbf{Stage~1: Feasibility gate.} Each task query defines hard constraints --- budget ceiling, minimum resolution, required frame rate, acquisition mode, sample handling restrictions. A system that violates any hard constraint is rejected with a diagnostic indicating which constraint(s) failed. This binary gate ensures that infeasible systems never appear in rankings regardless of their other merits.
+
+\textbf{Stage~2: Pareto ranking.} Among feasible systems, we identify the Pareto frontier: the set of systems for which no other feasible system is equal or better on all eight TNA dimensions and strictly better on at least one. This stage requires no scalar aggregation or weight specification, preserving the multi-objective nature of the decision. In our experiments, the Pareto set typically contained 4--12 systems (Extended Data Fig.~1), a manageable number for human review.
+
+\textbf{Stage~3: Preference weighting.} When the Pareto set is large or the user has clear priorities, optional application-specific weights produce a scalar preference score:
+\begin{equation}
+S_{\text{pref}} = \sum_{d=1}^{8} w_d \cdot \tna_d(\text{system},\,\text{task})
+\label{eq:pref}
+\end{equation}
+Weights are user-specified or drawn from predefined application profiles. Critically, weighted scores serve only as tie-breakers within the Pareto set --- they never override Pareto dominance.
+
+
+\subsection*{Pilot studies}
+
+We evaluated all 168 systems against three application profiles representing distinct use cases (Fig.~5).
+
+\textbf{Clinical screening.}
+A hospital seeks an imaging system for emergency triage, requiring: budget $\le$\,\$500\,K, operator skill $\le$\,technician, in-vivo capability, non-contact measurement and reconstruction latency $\le$\,10\,s. Of 168 systems, 41 pass the feasibility gate. The Pareto frontier contains 8 systems, with B-mode ultrasound ranking first in preference-weighted score owing to real-time operation, low cost (\$30\,K) and technician-level workflow. CT appears on the frontier but ranks lower because of higher cost and the requirement for radiological expertise. Non-obvious alternatives include optical coherence tomography (OCT), which is Pareto-optimal owing to high spatial resolution at moderate cost (Fig.~5a).
+
+\textbf{High-speed research.}
+A combustion laboratory needs to capture a non-repeatable transient event requiring: single-shot acquisition, $\ge$\,10 million frames per second (Mfps), budget $\le$\,\$50\,K, non-contact and offline reconstruction within 60\,s. This highly constrained query reduces 168 systems to 3 candidates. Only coded aperture compressive temporal imaging (CACTI)\cite{llull2013} passes all constraints; compressed ultrafast photography (CUP)\cite{gao2014} fails on budget (\$80\,K) and streak cameras fail on both budget and single-shot 2D capability. Among solvers for CACTI, EfficientSCI\cite{wang2023} provides the best quality--speed trade-off (33.1\,dB, 2.1\,s), whereas DiffusionSCI\cite{meng2023} achieves higher quality (35.8\,dB) but violates the latency constraint at 180\,s (Fig.~5b).
+
+\textbf{Industrial non-destructive testing (NDT).}
+A manufacturer requires defect detection in composite panels: non-destructive, non-contact, operator $\le$\,technician, budget $\le$\,\$50\,K, throughput $\ge$\,1\,part per minute. Twelve systems are feasible; 4 are Pareto-optimal. Active thermography\cite{maldague2001} ranks first, combining full-field infrared capture with fast reconstruction (\$30\,K, 2\,s per inspection). Shearography and eddy current testing are Pareto-optimal alternatives offering different resolution--cost--depth trade-offs (Fig.~5c).
+
+These pilot studies illustrate three properties of PWM-SyS. First, the feasibility gate provides dramatic dimensionality reduction (168~$\to$~3 in the high-speed case), focusing analysis on viable options. Second, Pareto ranking identifies non-obvious alternatives that differ from conventional modality-centric reasoning. Third, integrating solver selection with system selection reveals cases where the best algorithm is infeasible and a different solver changes the recommendation.
+
+
+\subsection*{Interactive platform}
+
+PWM-SyS is deployed as a web platform at \texttt{pwm.platformai.org} (Fig.~6). Users interact through three interfaces: a natural-language query interface in SpecLab that accepts requirements in plain English and returns ranked recommendations with 8-dimension adequacy profiles; a browsable system catalog at \texttt{/benchmark/system-design} with sortable tables for all 168 systems organized by category; and per-modality benchmark pages where each system's descriptor is linked to its reconstruction leaderboard and challenge datasets. The recommendation pipeline completes in under 100\,ms, enabling real-time exploration of constraint sensitivity.
+
+
+% ================================================================
+%  DISCUSSION
+% ================================================================
+\section*{Discussion}
+
+PWM-SyS introduces purpose-conditioned evaluation to computational imaging --- a field where benchmarking has historically been algorithm-centric. Three aspects of the framework merit discussion.
+
+\textbf{Task-relative scoring.}
+By anchoring scores to user-specified requirements rather than absolute capability, TNA avoids the distortions inherent in universal rankings. A cryo-EM system and an ultrasound system occupy different regions of the capability space; asking which is ``better'' without specifying a task is meaningless\cite{hand2006}. TNA formalizes this intuition and makes the dependence on task specification explicit. This design parallels the shift from absolute to relative fitness evaluation in evolutionary optimization\cite{deb2002} and from universal to task-specific evaluation in machine learning\cite{raji2021}.
+
+\textbf{Separation of concerns.}
+The three-layer architecture (descriptor, protocol, visualization) and three-stage protocol (gate, Pareto, preference) provide clean separation between data, evaluation logic and presentation. Adding a new modality requires only a descriptor; adding a new evaluation criterion requires only a new TNA dimension; changing the user interface has no effect on evaluation results. This modularity makes the framework extensible by the community, similar to how modular benchmark designs in genomics\cite{mangul2019} and natural-language processing\cite{wang2018glue} have outlived their original implementations.
+
+\textbf{Comparison with existing approaches.}
+The closest relatives of PWM-SyS are MCDA frameworks in health technology assessment\cite{marsh2016,thokala2016,goetghebeur2012,hansen2008}, imaging system comparison reviews\cite{ongie2020,liang2020} and reconstruction benchmarks\cite{zbontar2018,mccollough2017,sage2019}. PWM-SyS differs from MCDA tools by embedding domain-specific physics knowledge directly into the evaluation dimensions, and from reconstruction benchmarks by evaluating across rather than within modalities (Extended Data Table~2). To our knowledge, no existing framework provides structured, purpose-conditioned system-solver evaluation across the full scope of computational imaging.
+
+\textbf{Limitations.}
+The catalog currently relies on published specifications and PWM benchmark results on synthetic data. For modalities where empirical benchmark data is sparse, D5 scores may be less well calibrated. The TNA reference points ($\rmin$, $\rtarget$, $\rcomfort$) are derived from task specifications; poorly specified tasks yield less discriminative evaluations. Future versions will incorporate empirically measured robustness scores using PWM's mismatch perturbation framework\cite{shi2026}, expand solver operating-point data through systematic latency profiling on standardized hardware, and add community contribution mechanisms for system descriptors, task queries and real-world validation case studies.
+
+\textbf{Broader impact.}
+PWM-SyS complements the flagship PWM framework\cite{shi2026}, whose 11-primitive basis and 3-gate decomposition provide the theoretical foundation for system descriptors. Together they establish a unified framework spanning from physics-based forward modeling to purpose-conditioned system selection. We anticipate that PWM-SyS will be most immediately useful for imaging system designers evaluating hardware--algorithm trade-offs, procurement committees selecting clinical or industrial imaging equipment, and researchers exploring unfamiliar modalities outside their domain expertise.
+
+
+% ================================================================
+%  ONLINE METHODS
+% ================================================================
+\section*{Online Methods}
+
+\subsection*{System descriptor generation}
+
+System descriptors were generated by merging three data sources. (1)~The PWM Modality Catalog (168 entries) provides carrier type, forward model directed acyclic graph (DAG) specification using an 11-primitive operator algebra\cite{shi2026}, mismatch parameters, category classification and display names. (2)~The PWM Algorithm Catalog (1,367 entries, 592 unique algorithms) provides reconstruction benchmark results (PSNR, SSIM) organized by modality-specific variant overrides, carrier-based routing and category-level algorithm pools. Algorithms are classified into seven types: classical, compressed sensing, deep learning, diffusion, physics-informed, plug-and-play and transformer. (3)~A hardware lookup table (168 entries) provides per-modality specifications: shots per datacube, maximum frame rate (Hz), spatial resolution (\textmu m), output dimensionality, capital cost (k\,USD), operator skill level (4-tier ordinal: untrained, technician, expert, specialist) and solver computation latency (s). Hardware values were compiled from instrument manufacturer datasheets, published system descriptions and, where necessary, expert estimates with conservative bounds.
+
+The generation script merges these sources into a unified JSON catalog (297\,KB, 168 entries). Each entry is keyed by a unique modality identifier (for example, \texttt{cacti}, \texttt{cryo\_em}, \texttt{oct}) and contains 32 fields organized into five groups.
+
+
+\subsection*{Feasibility gate}
+
+The feasibility gate implements binary constraint checking across nine constraint types: budget ceiling (capital cost $\le$ threshold), spatial resolution (system resolution $\le$ required resolution), temporal resolution (frame rate $\ge$ required rate), acquisition mode (single-shot if required), contact mode (non-contact if required), in-vivo capability, operator skill ceiling (4-tier ordinal comparison), non-destructive measurement and reconstruction latency. Each constraint is evaluated independently; a system passes only if all applicable constraints are satisfied. Failed constraints are recorded with diagnostic messages indicating the binding constraint and the margin of failure.
+
+
+\subsection*{TNA computation}
+
+For each of eight adequacy dimensions, TNA maps a system's measured capability to a $[0,\,10]$ score using piecewise linear interpolation with three task-defined reference points, as described in Equation~(\ref{eq:tna}). For ``lower is better'' dimensions (cost, resolution), the mapping is inverted: lower values receive higher scores. For D5 (output recovery quality), the system's best PSNR is first modality-normalized to a $[0,\,1]$ scale using the minimum and maximum PSNR values across all algorithms benchmarked on that modality in the PWM algorithm catalog, then mapped to the $[0,\,10]$ TNA scale relative to the task's quality requirement.
+
+
+\subsection*{Pareto ranking}
+
+Given $n$ feasible systems with 8-dimensional TNA score vectors, Pareto dominance is computed by pairwise comparison in $O(n^2)$ time. System $\mathbf{a}$ dominates system $\mathbf{b}$ if and only if $a_d \ge b_d$ for all $d \in \{1,\ldots,8\}$ and $a_d > b_d$ for at least one~$d$. A system is Pareto-optimal if no other feasible system dominates it. For the full 168-system catalog, Pareto ranking completes in under 10\,ms on a single CPU core.
+
+
+\subsection*{Preference weighting}
+
+Optional preference scores are computed as described in Equation~(\ref{eq:pref}), where weights $w_d \ge 0$ sum to~1. Predefined profiles assign weights reflecting common application priorities: clinical screening ($w_6 = 0.25$, $w_7 = 0.25$, $w_8 = 0.20$, others uniform), research ($w_3 = 0.25$, $w_5 = 0.30$, others uniform) and industrial ($w_1 = 0.20$, $w_2 = 0.20$, $w_6 = 0.20$, $w_7 = 0.20$, others uniform). Users can override weights interactively.
+
+
+\subsection*{Natural-language query parsing}
+
+The SpecLab integration detects system-level queries using keyword matching against a curated lexicon (for example, ``which system,'' ``best imaging for,'' ``recommend,'' ``under \$X,'' ``single-shot''). Detected constraints are extracted via regular expression patterns for budget amounts (currency symbol + number), resolution values (number + unit), frame rate requirements (number + fps/Hz) and qualitative flags (non-contact, in-vivo, non-destructive, operator skill). Parsed constraints are assembled into a structured query object and passed to the recommendation pipeline.
+
+
+\subsection*{Platform architecture}
+
+PWM-SyS is implemented in Python~3.11 using the FastAPI web framework with Jinja2 templates and HTMX for interactive updates. The system catalog is loaded into memory at startup from JSON. The recommendation endpoint accepts HTTP POST requests with natural-language queries, executes constraint extraction, feasibility gating, TNA scoring and Pareto ranking, and returns formatted results containing feasibility tables, 8-dimension adequacy profiles, solver operating-point comparisons and physics simulation controls. The full pipeline executes in under 100\,ms. The platform is deployed on Google Cloud Platform with PostgreSQL for user management and Nginx as a reverse proxy.
+
+
+\subsection*{Statistics and reproducibility}
+
+All TNA scores are deterministic functions of system descriptors and task queries; no random sampling is involved in the evaluation protocol. Pareto ranking is a deterministic set operation. PSNR and SSIM values in the algorithm catalog are computed on standardized benchmark datasets using standard definitions (PSNR = $10\log_{10}(\text{MAX}^2/\text{MSE})$; SSIM per Wang~\emph{et~al.}\cite{wang2004}). The pilot study results are fully reproducible by submitting the specified task queries to the platform.
+
+
+% ================================================================
+%  DATA / CODE AVAILABILITY
+% ================================================================
+\section*{Data Availability}
+
+The system descriptor catalog (\texttt{system\_catalog.json}, 168 entries) and all benchmark data are available at \url{https://pwm.platformai.org/benchmark/system-design} under a Creative Commons Attribution 4.0 International licence.
+
+\section*{Code Availability}
+
+Source code for PWM-SyS is available in the Physics World Model repository at \url{https://github.com/Shi-Labs/Physics-World-Model}. Key components: catalog generation (\texttt{generate\_system\_catalog.py}), recommendation engine (\texttt{system\_recommender.py}), and SpecLab integration (\texttt{spec\_chat.py}). The code is released under the MIT licence.
+
+\section*{Acknowledgements}
+
+[To be completed before submission.]
+
+\section*{Author Contributions}
+
+C.S.\ conceived the project, designed the TNA framework and evaluation protocol, curated the system descriptor catalog, implemented the platform and wrote the manuscript.
+
+\section*{Competing Interests}
+
+The author declares no competing interests.
+
+
+% ================================================================
+%  REFERENCES
+% ================================================================
+\begingroup
+\renewcommand{\section}[2]{}
+\bibliographystyle{naturemag}
+\begin{thebibliography}{45}
+
+\bibitem{barbastathis2019}
+Barbastathis, G., Ozcan, A. \& Situ, G.
+On the use of deep learning for computational imaging.
+\textit{Optica} \textbf{6}, 921--943 (2019).
+
+\bibitem{bertero1998}
+Bertero, M. \& Boccacci, P.
+\textit{Introduction to Inverse Problems in Imaging}
+(IOP Publishing, 1998).
+
+\bibitem{yuan2021}
+Yuan, X. \textit{et~al.}
+Snapshot compressive imaging: theory, algorithms, and applications.
+\textit{IEEE Trans. Pattern Anal. Mach. Intell.} \textbf{44}, 2191--2212 (2021).
+
+\bibitem{llull2013}
+Llull, P. \textit{et~al.}
+Coded aperture compressive temporal imaging.
+\textit{Opt. Express} \textbf{21}, 10526--10545 (2013).
+
+\bibitem{adler2018}
+Adler, J. \& \"Oktem, O.
+Learned primal-dual reconstruction.
+\textit{IEEE Trans. Med. Imaging} \textbf{37}, 1322--1332 (2018).
+
+\bibitem{hammernik2018}
+Hammernik, K. \textit{et~al.}
+Learning a variational network for reconstruction of accelerated MRI data.
+\textit{Magn. Reson. Med.} \textbf{79}, 3055--3071 (2018).
+
+\bibitem{zhong2021}
+Zhong, E.~D. \textit{et~al.}
+CryoDRGN: reconstruction of heterogeneous cryo-EM structures using neural networks.
+\textit{Nat. Methods} \textbf{18}, 176--185 (2021).
+
+\bibitem{gustafsson2000}
+Gustafsson, M.~G.~L.
+Surpassing the lateral resolution limit by a factor of two using structured illumination microscopy.
+\textit{J. Microsc.} \textbf{198}, 82--87 (2000).
+
+\bibitem{betzig2006}
+Betzig, E. \textit{et~al.}
+Imaging intracellular fluorescent proteins at nanometer resolution.
+\textit{Science} \textbf{313}, 1642--1645 (2006).
+
+\bibitem{zbontar2018}
+Zbontar, J. \textit{et~al.}
+fastMRI: an open dataset and benchmarks for accelerated MRI.
+Preprint at \url{https://arxiv.org/abs/1811.08839} (2018).
+
+\bibitem{mccollough2017}
+McCollough, C.~H. \textit{et~al.}
+Low-dose CT for the detection and classification of metastatic liver lesions: results of the 2016 Low Dose CT Grand Challenge.
+\textit{Med. Phys.} \textbf{44}, e339--e352 (2017).
+
+\bibitem{sage2019}
+Sage, D. \textit{et~al.}
+Super-resolution fight club: assessment of 2D and 3D single-molecule localization microscopy software.
+\textit{Nat. Methods} \textbf{16}, 387--395 (2019).
+
+\bibitem{ongie2020}
+Ongie, G. \textit{et~al.}
+Deep learning techniques for inverse problems in imaging.
+\textit{IEEE J. Sel. Areas Inf. Theory} \textbf{1}, 39--56 (2020).
+
+\bibitem{liang2020}
+Liang, J.
+Punching holes in light: recent progress in single-shot coded-aperture optical imaging.
+\textit{Rep. Prog. Phys.} \textbf{83}, 116101 (2020).
+
+\bibitem{goodman2005}
+Goodman, J.~W.
+\textit{Introduction to Fourier Optics}
+(Roberts \& Company, 2005).
+
+\bibitem{prince2006}
+Prince, J.~L. \& Links, J.~M.
+\textit{Medical Imaging Signals and Systems}
+(Pearson, 2006).
+
+\bibitem{mccann2017}
+McCann, M.~T., Jin, K.~H. \& Unser, M.
+Convolutional neural networks for inverse problems in imaging: a review.
+\textit{IEEE Signal Process. Mag.} \textbf{34}, 85--95 (2017).
+
+\bibitem{marsh2016}
+Marsh, K. \textit{et~al.}
+Multiple criteria decision analysis for health care decision making --- emerging good practices: report~2 of the ISPOR MCDA Emerging Good Practices Task Force.
+\textit{Value Health} \textbf{19}, 125--137 (2016).
+
+\bibitem{thokala2016}
+Thokala, P. \textit{et~al.}
+Multiple criteria decision analysis for health care decision making --- an introduction: report~1 of the ISPOR MCDA Emerging Good Practices Task Force.
+\textit{Value Health} \textbf{19}, 1--13 (2016).
+
+\bibitem{goetghebeur2012}
+Goetghebeur, M.~M. \textit{et~al.}
+Advancing the EVIDEM framework: facilitating development and review of health technology assessments.
+\textit{Int. J. Technol. Assess. Health Care} \textbf{28}, 63--70 (2012).
+
+\bibitem{hansen2008}
+Hansen, P. \& Ombler, F.
+A new method for scoring additive multi-attribute value models using pairwise rankings of alternatives.
+\textit{J. Multi-Criteria Decis. Anal.} \textbf{15}, 87--107 (2008).
+
+\bibitem{antun2020}
+Antun, V. \textit{et~al.}
+On instabilities of deep learning in image reconstruction and the potential costs of AI.
+\textit{Proc. Natl Acad. Sci. USA} \textbf{117}, 30088--30098 (2020).
+
+\bibitem{shi2026}
+Shi, C.
+Eleven primitives and three gates: the universal structure of computational imaging.
+Preprint (2026).
+
+\bibitem{gao2014}
+Gao, L. \textit{et~al.}
+Single-shot compressed ultrafast photography at one hundred billion frames per second.
+\textit{Nature} \textbf{516}, 74--77 (2014).
+
+\bibitem{wang2023}
+Wang, Z. \textit{et~al.}
+EfficientSCI: densely connected network with space-time factorization for large-scale video snapshot compressive imaging.
+In \textit{Proc. CVPR}, 18477--18486 (2023).
+
+\bibitem{meng2023}
+Meng, Z. \textit{et~al.}
+DiffusionSCI: generative diffusion model for snapshot compressive imaging.
+Preprint at \url{https://arxiv.org/abs/2311.11725} (2023).
+
+\bibitem{maldague2001}
+Maldague, X.~P.~V.
+\textit{Theory and Practice of Infrared Technology for Nondestructive Testing}
+(Wiley, 2001).
+
+\bibitem{hand2006}
+Hand, D.~J.
+Classifier technology and the illusion of progress.
+\textit{Stat. Sci.} \textbf{21}, 1--14 (2006).
+
+\bibitem{deb2002}
+Deb, K. \textit{et~al.}
+A fast and elitist multiobjective genetic algorithm: NSGA-II.
+\textit{IEEE Trans. Evol. Comput.} \textbf{6}, 182--197 (2002).
+
+\bibitem{raji2021}
+Raji, I.~D. \textit{et~al.}
+AI and the everything in the whole wide world benchmark.
+In \textit{Proc. NeurIPS Datasets and Benchmarks Track} (2021).
+
+\bibitem{mangul2019}
+Mangul, S. \textit{et~al.}
+Systematic benchmarking of omics computational tools.
+\textit{Nat. Commun.} \textbf{10}, 1393 (2019).
+
+\bibitem{wang2018glue}
+Wang, A. \textit{et~al.}
+GLUE: a multi-task benchmark and analysis platform for natural language understanding.
+Preprint at \url{https://arxiv.org/abs/1804.07461} (2018).
+
+\bibitem{wang2004}
+Wang, Z. \textit{et~al.}
+Image quality assessment: from error visibility to structural similarity.
+\textit{IEEE Trans. Image Process.} \textbf{13}, 600--612 (2004).
+
+\bibitem{lustig2007}
+Lustig, M., Donoho, D. \& Pauly, J.~M.
+Sparse MRI: the application of compressed sensing for rapid MR imaging.
+\textit{Magn. Reson. Med.} \textbf{58}, 1182--1195 (2007).
+
+\bibitem{candes2008}
+Cand\`es, E.~J. \& Wakin, M.~B.
+An introduction to compressive sampling.
+\textit{IEEE Signal Process. Mag.} \textbf{25}, 21--30 (2008).
+
+\bibitem{duarte2008}
+Duarte, M. \textit{et~al.}
+Single-pixel imaging via compressive sampling.
+\textit{IEEE Signal Process. Mag.} \textbf{25}, 83--91 (2008).
+
+\bibitem{wagadarikar2008}
+Wagadarikar, A. \textit{et~al.}
+Single disperser design for coded aperture snapshot spectral imaging.
+\textit{Appl. Opt.} \textbf{47}, B44--B51 (2008).
+
+\bibitem{mait2018}
+Mait, J.~N., Euliss, G.~W. \& Athale, R.~A.
+Computational imaging.
+\textit{Adv. Opt. Photon.} \textbf{10}, 409--483 (2018).
+
+\bibitem{bostan2020}
+Bostan, E. \textit{et~al.}
+Deep phase decoder: self-calibrating phase microscopy with an untrained deep neural network.
+\textit{Optica} \textbf{7}, 559--562 (2020).
+
+\bibitem{ulyanov2020}
+Ulyanov, D., Vedaldi, A. \& Lempitsky, V.
+Deep image prior.
+\textit{Int. J. Comput. Vis.} \textbf{128}, 1867--1888 (2020).
+
+\bibitem{romano2017}
+Romano, Y., Elad, M. \& Milanfar, P.
+The little engine that could: regularization by denoising (RED).
+\textit{SIAM J. Imaging Sci.} \textbf{10}, 1804--1844 (2017).
+
+\bibitem{venkatakrishnan2013}
+Venkatakrishnan, S.~V., Bouman, C.~A. \& Wohlberg, B.
+Plug-and-play priors for model based reconstruction.
+In \textit{Proc. IEEE GlobalSIP}, 945--948 (2013).
+
+\bibitem{sun2020}
+Sun, J. \textit{et~al.}
+Block coordinate regularization by denoising.
+\textit{IEEE Trans. Comput. Imaging} \textbf{6}, 908--921 (2020).
+
+\bibitem{agustsson2017}
+Agustsson, E. \& Timofte, R.
+NTIRE 2017 challenge on single image super-resolution: dataset and study.
+In \textit{Proc. CVPR Workshops} (2017).
+
+\bibitem{tian2020}
+Tian, C. \textit{et~al.}
+Deep learning on image denoising: an overview.
+\textit{Neural Netw.} \textbf{131}, 251--275 (2020).
+
+\end{thebibliography}
+\endgroup
+
+
+% ================================================================
+%  FIGURE LEGENDS (for figure placeholders)
+% ================================================================
+\clearpage
+\section*{Figure Legends}
+
+\textbf{Figure~1 $|$ PWM-SyS overview.}
+\textbf{a}, Conventional imaging benchmarks fix the system and rank algorithms (left). PWM-SyS evaluates both system and solver jointly against task requirements (right).
+\textbf{b}, Three-layer architecture: Layer~A (system descriptor catalog) provides neutral facts; Layer~B (evaluation protocol) applies TNA scoring and Pareto ranking; Layer~C (interactive platform) enables natural-language querying and simulation.
+\textbf{c}, Workflow: the user specifies a task query with requirements and constraints, PWM-SyS filters infeasible systems, scores feasible ones across eight TNA dimensions, identifies the Pareto frontier, and returns ranked recommendations.
+
+\bigskip
+
+\textbf{Figure~2 $|$ System descriptor catalog.}
+\textbf{a}, Each of 168 system descriptors contains five property groups: physical chain, acquisition, solver, operations and sample compatibility. Example shown for CACTI.
+\textbf{b}, Distribution of 168 systems across 5 carrier families and 19 application categories. Bar chart shows category counts; pie chart shows carrier distribution.
+\textbf{c}, Scatter plot of capital cost versus best PSNR for all 168 systems, coloured by carrier type.
+
+\bigskip
+
+\textbf{Figure~3 $|$ Task-Normalized Adequacy scoring.}
+\textbf{a}, TNA maps system capability to a $[0,\,10]$ scale relative to three task-defined reference points ($\rmin$, $\rtarget$, $\rcomfort$), shown for a ``higher is better'' dimension.
+\textbf{b}, The eight TNA dimensions, grouped by function.
+\textbf{c}, Radar charts comparing TNA profiles of three representative systems evaluated against a clinical screening task.
+
+\bigskip
+
+\textbf{Figure~4 $|$ Three-stage evaluation protocol.}
+\textbf{a}, Stage~1 (feasibility gate): 168 systems filtered by hard constraints; example shows clinical screening reducing candidates from 168 to 41.
+\textbf{b}, Stage~2 (Pareto ranking): feasible systems ranked by Pareto dominance in 8-dimensional TNA space.
+\textbf{c}, Stage~3 (preference weighting): application-specific weights produce a scalar score for final ranking within the Pareto set.
+
+\bigskip
+
+\textbf{Figure~5 $|$ Pilot study results.}
+\textbf{a}, Clinical screening: 41/168 feasible, 8 Pareto-optimal. Heatmap shows TNA scores for the top 5 systems.
+\textbf{b}, High-speed research: 3/168 candidates, only CACTI passes. Solver comparison shows EfficientSCI as the recommended solver.
+\textbf{c}, Industrial NDT: 12/168 feasible, 4 Pareto-optimal. Active thermography ranks first.
+
+\bigskip
+
+\textbf{Figure~6 $|$ Interactive platform.}
+\textbf{a}, SpecLab natural-language interface: user enters a query and receives ranked system recommendations with adequacy profiles.
+\textbf{b}, System design catalog page showing sortable tables organized by category.
+\textbf{c}, Per-modality benchmark page linking system descriptor to reconstruction leaderboard.
+Screenshots from \texttt{pwm.platformai.org}.
+
+
+% ================================================================
+%  EXTENDED DATA
+% ================================================================
+\clearpage
+\section*{Extended Data}
+
+\subsection*{Extended Data Table~1: System descriptor schema}
+
+\begin{small}
+\begin{tabularx}{\textwidth}{l l X l}
+\toprule
+\textbf{Field} & \textbf{Type} & \textbf{Description} & \textbf{Example (CACTI)} \\
+\midrule
+id & string & Unique modality identifier & cacti \\
+display\_name & string & Human-readable name & CACTI \\
+category & string & Application category & compressive \\
+carrier & string & Physical carrier & photon \\
+shots\_per\_datacube & integer & Acquisitions per datacube & 1 \\
+max\_fps\_hz & float & Maximum frame rate & $1.0\times10^8$ \\
+spatial\_resolution\_um & float & Spatial resolution (\textmu m) & 10.0 \\
+output\_dims & string & Output dimensionality & 3D (x,y,t) \\
+capital\_cost\_k\_usd & float & Capital cost (k\,USD) & 15 \\
+operator\_skill & string & Required operator level & technician \\
+best\_method & string & Best reconstruction algorithm & EfficientSCI \\
+best\_psnr\_db & float & Best PSNR on PWM benchmark & 38.6 \\
+best\_ssim & float & Best SSIM & 0.961 \\
+solver\_latency\_s & float & Reconstruction latency & 2.1 \\
+contact\_required & boolean & Requires sample contact & false \\
+destructive & boolean & Destroys sample & false \\
+in\_vivo & boolean & Compatible with living samples & false \\
+observable & string & Measured physical quantity & intensity(x,y,t) \\
+num\_algorithms & integer & Algorithms in catalog & 8 \\
+\bottomrule
+\end{tabularx}
+\end{small}
+
+\bigskip
+
+\subsection*{Extended Data Table~2: Comparison with existing evaluation frameworks}
+
+\begin{small}
+\begin{tabularx}{\textwidth}{l c c c c c c}
+\toprule
+\textbf{Framework} & \textbf{Scope} & \textbf{Cross-mod.} & \textbf{Task-cond.} & \textbf{Sys+Solver} & \textbf{Filtering} & \textbf{Interactive} \\
+\midrule
+fastMRI\cite{zbontar2018} & MRI & No & No & No & No & No \\
+AAPM CT\cite{mccollough2017} & CT & No & No & No & No & No \\
+SMLM\cite{sage2019} & SMLM & No & No & No & No & No \\
+EVIDEM\cite{goetghebeur2012} & Health & Yes & Yes & No & No & Partial \\
+PAPRIKA\cite{hansen2008} & General & Yes & Yes & No & No & Yes \\
+\textbf{PWM-SyS} & \textbf{168 mod.} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} \\
+\bottomrule
+\end{tabularx}
+\end{small}
+
+\bigskip
+
+\subsection*{Extended Data Table~3: Category summary statistics}
+
+\begin{small}
+\begin{tabular}{l r r r r}
+\toprule
+\textbf{Category} & \textbf{Count} & \textbf{Avg PSNR (dB)} & \textbf{Avg Cost (k\,USD)} & \textbf{Single-shot (\%)} \\
+\midrule
+Astronomy & 4 & 30.4 & 126{,}762 & 25 \\
+Coherent & 5 & 35.1 & 96 & 60 \\
+Compressive & 4 & 38.6 & 34 & 100 \\
+Comp.\ Photography & 5 & 35.8 & 2 & 80 \\
+Depth Imaging & 5 & 35.4 & 16 & 60 \\
+Electron Microscopy & 11 & 33.2 & 1{,}609 & 27 \\
+Experimental Science & 11 & 32.9 & 106{,}511 & 18 \\
+Industrial Inspection & 10 & 35.6 & 75 & 40 \\
+Medical & 37 & 37.5 & 1{,}054 & 30 \\
+Microscopy & 24 & 36.8 & 216 & 42 \\
+Multi-Modal Fusion & 6 & 34.2 & 2{,}183 & 17 \\
+Neural Rendering & 2 & 35.9 & 1 & 100 \\
+Quantum & 3 & 29.6 & 103 & 33 \\
+Remote Sensing & 11 & 34.3 & 14{,}052 & 36 \\
+Scanning Probe & 4 & 32.5 & 142 & 0 \\
+Scientific Instr. & 12 & 32.8 & 18{,}208 & 17 \\
+Spectroscopy & 8 & 33.0 & 312 & 38 \\
+Ultrafast & 4 & 32.9 & 125{,}145 & 75 \\
+\bottomrule
+\end{tabular}
+\end{small}
+
+\bigskip
+
+\subsection*{Extended Data Table~4: Carrier distribution}
+
+\begin{small}
+\begin{tabularx}{\textwidth}{l r X}
+\toprule
+\textbf{Carrier} & \textbf{Count} & \textbf{Representative systems} \\
+\midrule
+Photon & 72 & CACTI, CASSI, confocal, SIM, PALM/STORM, OCT, light-field \\
+X-ray & 20 & CT, mammography, angiography, SAXS, XFEL, micro-CT \\
+Electron & 14 & SEM, TEM, cryo-EM, EELS, electron holography, cryo-ET \\
+Acoustic & 12 & B-mode ultrasound, SAM, acoustic emission, sonar, PAT \\
+Spin/RF & 10 & MRI, fMRI, ASL-MRI, CEST-MRI, MR spectroscopy \\
+RF & 9 & SAR, InSAR, GPR, radio astronomy, EHT \\
+Ion & 4 & Atom probe, DESI, MALDI-MSI, SIMS \\
+Gamma & 4 & PET, SPECT, PET/CT, PET/MR \\
+Other & 23 & IR thermography, neutron, proton, magnetic, mechanical \\
+\bottomrule
+\end{tabularx}
+\end{small}
+
+\vfill
+
+\noindent\rule{\textwidth}{0.4pt}\\
+\small\textit{Reporting Summary.} Further information on research design is available in the Nature Portfolio Reporting Summary linked to this article.
+
+\end{document}
