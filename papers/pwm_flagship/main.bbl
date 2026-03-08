@@ -163,22 +163,21 @@ Lishun Wang, Miao Cao, and Xin Yuan.
 \newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
   and Pattern Recognition (CVPR)}, pages 18477--18486, 2023{\natexlab{a}}.
 
-\bibitem[Liebgott et~al.(2016)Liebgott, Rodriguez-Molares, Cervenansky, Jensen,
-  and Bernard]{liebgott2016picmus}
-Herv{\'e} Liebgott, Alfonso Rodriguez-Molares, Fran{\c{c}}oise Cervenansky,
-  J{\o}rgen~Arendt Jensen, and Olivier Bernard.
-\newblock Plane-wave imaging challenge in medical ultrasound.
-\newblock In \emph{Proc. IEEE International Ultrasonics Symposium (IUS)}, pages
-  1--4, 2016.
-\newblock \doi{10.1109/ULTSYM.2016.7728908}.
+\bibitem[Antipa et~al.(2018)Antipa, Kuo, Heckel, Mildenhall, Bostan, Ng, and
+  Waller]{Antipa2018}
+Nick Antipa, Grace Kuo, Reinhard Heckel, Ben Mildenhall, Emrah Bostan, Ren Ng,
+  and Laura Waller.
+\newblock {DiffuserCam}: lensless single-exposure 3{D} imaging.
+\newblock \emph{Optica}, 5\penalty0 (1):\penalty0 1--9, 2018.
+\newblock \doi{10.1364/OPTICA.5.000001}.
+\newblock DiffuserCam DLMD dataset: HuggingFace
+  bezzam/DiffuserCam-Lensless-Mirflickr-Dataset.
 
-\bibitem[Khan et~al.(2023)Khan, Huh, Bhatt, Hossain, and Bhatt]{khan2020deepus}
-Saif Khan, Jaeyoung Huh, Manish Bhatt, Md.~Murad Hossain, and Arun Bhatt.
-\newblock A deep learning framework for ultrasound image formation and image
-  quality assessment.
-\newblock \emph{IEEE Transactions on Ultrasonics, Ferroelectrics, and Frequency
-  Control}, 70\penalty0 (9):\penalty0 972--984, 2023.
-\newblock DeepUS dataset: \url{https://zenodo.org/doi/10.5281/zenodo.7986407}.
+\bibitem[Brady et~al.(2009)Brady, Choi, Marks, Horisaki, and
+  Lim]{brady2009compressive}
+David~J. Brady, Kerkil Choi, Daniel~L. Marks, Ryoichi Horisaki, and Sehoon Lim.
+\newblock Compressive holography.
+\newblock \emph{Optics Express}, 17\penalty0 (15):\penalty0 13040--13049, 2009.
 
 \bibitem[Leuschner et~al.(2021)Leuschner, Schmidt, Baguer, and
   Maa{\ss}]{leuschner2021lodopab}
@@ -206,21 +205,22 @@ Alexander Meaney, Andreas Hauptmann, and Samuli Siltanen.
   (1):\penalty0 1--28, 2024.
 \newblock \doi{10.3934/ammc.2024001}.
 
-\bibitem[Brady et~al.(2009)Brady, Choi, Marks, Horisaki, and
-  Lim]{brady2009compressive}
-David~J. Brady, Kerkil Choi, Daniel~L. Marks, Ryoichi Horisaki, and Sehoon Lim.
-\newblock Compressive holography.
-\newblock \emph{Optics Express}, 17\penalty0 (15):\penalty0 13040--13049, 2009.
+\bibitem[Liebgott et~al.(2016)Liebgott, Rodriguez-Molares, Cervenansky, Jensen,
+  and Bernard]{liebgott2016picmus}
+Herv{\'e} Liebgott, Alfonso Rodriguez-Molares, Fran{\c{c}}oise Cervenansky,
+  J{\o}rgen~Arendt Jensen, and Olivier Bernard.
+\newblock Plane-wave imaging challenge in medical ultrasound.
+\newblock In \emph{Proc. IEEE International Ultrasonics Symposium (IUS)}, pages
+  1--4, 2016.
+\newblock \doi{10.1109/ULTSYM.2016.7728908}.
 
-\bibitem[Antipa et~al.(2018)Antipa, Kuo, Heckel, Mildenhall, Bostan, Ng, and
-  Waller]{Antipa2018}
-Nick Antipa, Grace Kuo, Reinhard Heckel, Ben Mildenhall, Emrah Bostan, Ren Ng,
-  and Laura Waller.
-\newblock {DiffuserCam}: lensless single-exposure 3{D} imaging.
-\newblock \emph{Optica}, 5\penalty0 (1):\penalty0 1--9, 2018.
-\newblock \doi{10.1364/OPTICA.5.000001}.
-\newblock DiffuserCam DLMD dataset: HuggingFace
-  bezzam/DiffuserCam-Lensless-Mirflickr-Dataset.
+\bibitem[Khan et~al.(2023)Khan, Huh, Bhatt, Hossain, and Bhatt]{khan2020deepus}
+Saif Khan, Jaeyoung Huh, Manish Bhatt, Md.~Murad Hossain, and Arun Bhatt.
+\newblock A deep learning framework for ultrasound image formation and image
+  quality assessment.
+\newblock \emph{IEEE Transactions on Ultrasonics, Ferroelectrics, and Frequency
+  Control}, 70\penalty0 (9):\penalty0 972--984, 2023.
+\newblock DeepUS dataset: \url{https://zenodo.org/doi/10.5281/zenodo.7986407}.
 
 \bibitem[Wang et~al.(2023{\natexlab{b}})Wang, Fu, Du, Gao, Huang, Liu, Chandak,
   Liu, Van~Katwyk, Deac, et~al.]{wang2023scientific}
