@@ -211,10 +211,10 @@ tractable (\eg{}, for Gaussian random projections in SPC).
 
 \paragraph{Gate~2 (Carrier Budget).}
 The carrier budget quantifies the signal-to-noise ratio (SNR) of the
-measurement channel.  The \texttt{PhotonAgent} consumes the
-\texttt{photon\_db.yaml} registry (624 lines) which stores, per modality,
+measurement channel.  The photon-budget module consumes the
+\texttt{photon\_db.yaml} registry which stores, per modality,
 a deterministic photon model parameterized by source power, quantum
-efficiency, exposure time, and detector characteristics.  The agent
+efficiency, exposure time, and detector characteristics.  It
 classifies the noise regime into one of three categories:
 \emph{shot-limited} (Poisson-dominated, SNR $\propto \sqrt{N_{\text{photon}}}$),
 \emph{read-limited} (Gaussian read noise dominates, SNR $\propto
@@ -227,7 +227,7 @@ regime classification, per-element photon count, and a feasibility verdict
 \paragraph{Gate~3 (Operator Mismatch).}
 Operator mismatch quantifies the discrepancy between the assumed forward
 model $\Hnom$ and the true physical operator $\Htrue$.  The
-\texttt{MismatchAgent} consults \texttt{mismatch\_db.yaml} (797 lines)
+mismatch scoring module consults \texttt{mismatch\_db.yaml}
 which catalogs, for each modality, the set of mismatch parameters
 (spatial shifts, rotational offsets, dispersion errors, PSF deviations,
 coil sensitivity errors, center-of-rotation offsets, \etc{}), their
@@ -287,87 +287,16 @@ calibration fully closes the mismatch gap.
 \subsection*{Agent System Architecture}
 \label{sec:methods:agents}
 
-The PWM agent system comprises 6 specialist agents, 1 optional hybrid agent,
-and 8 support classes totalling 10,545 lines of Python.  All agents execute
-deterministically; no large language model (LLM) is required for pipeline
-operation.
-
-\paragraph{PlanAgent.}
-The orchestrator agent.  Given a user prompt or a structured
-\texttt{ExperimentSpec}, PlanAgent parses the intent (\texttt{simulate},
-\texttt{operator\_correction}, or \texttt{auto}), maps the requested
-modality to its canonical key via the \texttt{modalities.yaml} registry
-(which contains 170 modality entries across 23 categories with keywords, forward model
-equations, and default solvers), builds an \texttt{ImagingSystem} contract,
-and dispatches to the appropriate sub-agents.  When the mode is
-\texttt{auto}, PlanAgent inspects the available data and operator
-specification to determine whether simulation or operator correction is
-more appropriate.
-
-\paragraph{PhotonAgent.}
-Computes SNR feasibility deterministically from the
-\texttt{photon\_db.yaml} registry.  For each modality and photon-level
-tier (\texttt{bright}, \texttt{standard}, \texttt{low\_light}), the agent
-evaluates the photon budget by combining source power, quantum efficiency,
-exposure time, and noise model parameters.  The output
-\texttt{PhotonReport} is a strict Pydantic model containing
-\texttt{noise\_regime} (enum), \texttt{snr\_db} (float),
-\texttt{feasibility} (enum), and \texttt{per\_element\_photons} (float).
-
-\paragraph{RecoverabilityAgent.}
-A table-driven agent that consults \texttt{compression\_db.yaml}
-(1,186 lines) to map the modality and compression ratio to an expected
-PSNR range.  Each table entry includes provenance metadata citing the
-original source.  The output \texttt{RecoverabilityReport} contains
-\texttt{compression\_ratio}, \texttt{psnr\_prediction},
-\texttt{feasibility}, and \texttt{null\_space\_dim} where available.
-
-\paragraph{MismatchAgent.}
-Scores the mismatch severity for a given imaging configuration using
-\texttt{mismatch\_db.yaml} (797 lines).  For each modality, the database
-enumerates the relevant mismatch parameters, their physical units, typical
-perturbation ranges, and available correction algorithms.  The output
-\texttt{MismatchReport} includes \texttt{severity} (float, 0--1),
-\texttt{correction\_method} (string), \texttt{expected\_gain\_db}
-(float), and \texttt{dominant\_parameter} (string).
-
-\paragraph{AnalysisAgent.}
-The bottleneck classifier.  It receives reports from the Photon,
-Recoverability, and Mismatch agents, computes the gate costs
-(\cref{eq:cost_mismatch,eq:cost_noise,eq:cost_recover}), identifies the
-dominant gate, and generates actionable suggestions.  The AnalysisAgent
-also computes the recovery ratio $\recoveryratio$ and its bootstrap
-confidence interval.
-
-\paragraph{AgentNegotiator.}
-Implements a cross-agent veto protocol.  Before reconstruction is
-authorized, the negotiator inspects all three upstream reports and applies
-three veto conditions: (1)~low photon budget combined with aggressive
-compression ($C_{\text{noise}}$ and $C_{\text{recover}}$ both large);
-(2)~severe mismatch (severity $> 0.7$) without a planned correction step;
-(3)~joint probability below the floor threshold ($p_{\text{joint}} <
-0.15$), indicating that all three subsystems are simultaneously marginal.
-When any veto fires, reconstruction halts with an actionable explanation
-and suggested remediation.
-
-\paragraph{HybridAgent.}
-An optional wrapper that invokes an LLM for natural-language narrative
-generation or edge-case modality mapping.  All quantitative decisions
-remain on the deterministic code path; the HybridAgent is never required
-for pipeline operation.
-
-\paragraph{Support classes.}
-The remaining components include: \texttt{AssetManager} (file I/O and
-caching for large arrays), \texttt{ContinuityChecker} (verifies
-that sequential pipeline outputs are dimensionally consistent),
-\texttt{SystemDiscern} (auto-detects modality from uploaded data),
-\texttt{PreflightChecker} (validates the complete experiment configuration
-before execution), \texttt{WhatIfPrecomputer} (evaluates counterfactual
-what-if scenarios), \texttt{SelfImprovement} (logs diagnostic events for
-future registry refinement), \texttt{PhysicsStageVisualizer} (generates
-intermediate visualizations at each pipeline stage), and
-\texttt{UPWMI} (Universal Physics World Model Interface, the top-level
-entry point that wires all agents together).
+The three gates are implemented as a deterministic scoring pipeline:
+an orchestrator maps the user request to a modality from the registry,
+then dispatches three parallel scoring modules---one per gate---whose
+reports are fused by a bottleneck classifier that identifies the dominant
+gate and by a negotiator that enforces cross-gate veto rules
+(e.g., rejecting reconstruction when photon starvation coincides with
+aggressive compression).  All quantitative decisions are deterministic;
+an LLM is used only as an optional fallback for natural-language modality
+mapping and is never on the scoring path.  The full agent architecture
+and ablation studies are described in a companion paper.
 
 \paragraph{Contract system.}
 Inter-agent communication uses 25 Pydantic v2 contract models.  All
@@ -768,8 +697,8 @@ $N_{\text{scene}}$ is the number of test scenes.  Uncertainty in the RMSE
 is estimated via bootstrap ($B = 1{,}000$).
 
 \paragraph{Ablation significance.}
-Ablation studies (removal of PhotonAgent, RecoverabilityAgent,
-MismatchAgent, or RunBundle discipline) are evaluated by comparing the
+Ablation studies (removal of the photon-budget, recoverability, or
+mismatch scoring module, or RunBundle discipline) are evaluated by comparing the
 full-pipeline PSNR against each ablated variant.  We report the PSNR
 difference $\Delta\psnr$ per modality and verify that each component
 contributes $\geq 0.5$\,dB across all validated modalities, establishing

@@ -408,15 +408,15 @@ Hidden adds: textile, particles, thin_struct, cam_shake (hard)
 
 ## Mismatch Parameters
 
-| Parameter        | Range           | Dev (mild)  | Hidden (severe) |
-|------------------|-----------------|-------------|-----------------|
-| `mask_dx`        | [0.2, 0.8] px  | 0.35        | 0.65            |
-| `mask_dy`        | [0.1, 0.5] px  | 0.20        | 0.40            |
-| `mask_rotation`  | [0.0, 0.3] deg | 0.08        | 0.22            |
-| `mask_blur`      | [0.0, 0.5] px  | 0.10        | 0.35            |
-| `clock_offset`   | [-0.1, 0.1]    | -0.03       | 0.08            |
-| `gain_drift`     | [0.95, 1.05]   | 0.98        | 1.04            |
-| `offset_drift`   | [-0.02, 0.02]  | -0.01       | 0.015           |
+| Parameter        | Range              | Dev (mild)  | Hidden (severe) |
+|------------------|--------------------|-------------|-----------------|
+| `mask_dx`        | [-0.5, 0.5] px    | 0.20        | 0.35            |
+| `mask_dy`        | [-0.3, 0.3] px    | 0.10        | 0.20            |
+| `mask_rotation`  | [-0.2, 0.2] deg   | 0.08        | 0.15            |
+| `mask_blur`      | [0.0, 0.3] px     | 0.10        | 0.15            |
+| `clock_offset`   | [-0.1, 0.1]       | -0.03       | 0.05            |
+| `gain_drift`     | [0.95, 1.05]      | 0.98        | 1.03            |
+| `offset_drift`   | [-0.02, 0.02]     | -0.008      | 0.012           |
 
 ## Scoring
 
@@ -497,7 +497,7 @@ Measurements can be shared to registered users (not publicly indexed).
 Per sample: `y` (512,512), `H_ideal` (512,512,T). No ground truth.
 
 Content: moderate motion, normal lighting, limited occlusion, mild camera shake.
-Mismatch: mild (mask_dx=0.35, gain_drift=0.98, etc.)
+Mismatch: mild (mask_dx=0.20, gain_drift=0.98, etc.)
 """
 
 HIDDEN_README = """\
@@ -534,7 +534,7 @@ T ∈ {8, 16, 32}. Strongest mismatch. Never leaves PWM servers.
 ~60-70% hard stress tests + ~30-40% plausible scenes for fairness.
 
 Per sample: `y`, `H_ideal`, `x_true` (512,512,T). True mismatch stored.
-Mismatch: severe (mask_dx=0.65, mask_blur=0.35, gain_drift=1.04, etc.)
+Mismatch: severe (mask_dx=0.35, mask_blur=0.15, gain_drift=1.03, etc.)
 """
 
 

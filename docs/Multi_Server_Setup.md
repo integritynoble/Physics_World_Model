@@ -13,7 +13,8 @@ This guide explains how to set up new servers to run PWM benchmark experiments i
        │  datasets/cacti/      1.6G │     │    ELP-Unfolding/  │
        │  datasets/spc_kronecker/   │     │    MST-HDNet/      │
        │  datasets/ct/        ~40MB │     │    DRUNet/         │
-       │  challenge-data/v1.0/ 5.2G │     │    EfficientSCI/   │
+       │  datasets/cbct/       GCS  │     │    EfficientSCI/   │
+       │  challenge-data/v1.0/ 5.2G │     │                    │
        └──────────┬─────────────────┘     │    HATNet-SPI/      │
                   │                       │    ... (17 GB)      │
      ┌────────────┼─────────────┐         └─────────┬──────────┘
@@ -106,6 +107,7 @@ pip install numpy scipy h5py matplotlib
 ./scripts/setup_benchmark_data.sh sd_cassi         # Server B: SD-CASSI
 ./scripts/setup_benchmark_data.sh spc_kronecker    # Server C: SPC Kronecker
 ./scripts/setup_benchmark_data.sh ct               # Server D: CT
+./scripts/setup_benchmark_data.sh cbct             # Server E: CBCT (3D cone-beam, data stays on GCS)
 
 # Or download just the challenge HDF5 files (smaller, no preview images)
 ./scripts/setup_benchmark_data.sh --challenge cacti
@@ -317,8 +319,11 @@ CT reconstruction uses CPU-based algorithms (FBP, TV-ADMM, PnP-ADMM) and deep le
 | B | SD-CASSI | `./scripts/setup_benchmark_data.sh sd_cassi` | `python3 scripts/run_cassi_experiment.py` | `modal run scripts/modal_run_elp.py` |
 | C | SPC | `./scripts/setup_benchmark_data.sh spc_kronecker` | `python3 scripts/run_spc_experiment.py` | `modal run scripts/modal_run_elp.py` |
 | D | CT | `./scripts/setup_benchmark_data.sh ct` | `python3 scripts/run_ct_experiment.py` | `modal run scripts/modal_run_ct.py` |
+| E | CBCT | `./scripts/setup_benchmark_data.sh cbct` | `python3 scripts/run_cbct_experiment.py` | `modal run scripts/modal_run_cbct.py` |
 
 > **Server D (CT) first-time setup:** The CT data download fetches ~40 MB from GCS plus ~1.5 GB from Zenodo (LoDoPaB-CT public-tier ground truth). The Zenodo download only happens once and is skipped on subsequent runs.
+
+> **Server E (CBCT) note:** CBCT challenge HDF5 files (256³ 3D volumes) are stored on GCS and streamed on demand — they are NOT downloaded locally to minimize memory and disk usage. The `setup_benchmark_data.sh cbct` command downloads only the lightweight metadata/spec files.
 
 ---
 

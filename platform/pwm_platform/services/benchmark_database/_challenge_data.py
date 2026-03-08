@@ -250,13 +250,13 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 {"method": "PnP-FFDNet",     "psnr": 23.41, "ssim": 0.772},
             ],
             # Scenario IV (Blind Cal): grid search + L-BFGS-B calibration
-            # Scores are placeholders — update after running benchmarks
+            # Benchmark run 2026-03-01, public tier (20 samples, 256×256×8)
             "scenario_iv": [
-                {"method": "ELP-Unfolding",  "psnr": 0.0, "ssim": 0.0},
-                {"method": "EfficientSCI",   "psnr": 0.0, "ssim": 0.0},
-                {"method": "HiSViT-9",       "psnr": 0.0, "ssim": 0.0},
-                {"method": "GAP-TV",         "psnr": 0.0, "ssim": 0.0},
-                {"method": "PnP-FFDNet",     "psnr": 0.0, "ssim": 0.0},
+                {"method": "ELP-Unfolding",  "psnr": 16.57, "ssim": 0.356},
+                {"method": "GAP-TV",         "psnr": 16.84, "ssim": 0.343},
+                {"method": "HiSViT-9",       "psnr": 16.52, "ssim": 0.350},
+                {"method": "EfficientSCI",   "psnr": 16.15, "ssim": 0.357},
+                {"method": "PnP-FFDNet",     "psnr": 12.37, "ssim": 0.264},
             ],
         },
     },
@@ -584,6 +584,112 @@ CHALLENGE_CONFIG: dict[str, dict] = {
                 {"method": "DuDoTrans",            "psnr": 35.42, "ssim": 0.948},
                 {"method": "DOLCE",                "psnr": 36.80, "ssim": 0.961},
             ],
+        },
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    #  CBCT — 3-D Cone-Beam CT (256³ volumes)
+    #  Public: 10 real open-access CBCT/CT datasets (AAPM, LIDC, CBCTLiTS, MMDental, etc.)
+    #  Dev:    20 procedural phantoms (10 anatomy-inspired recipes × 2 seeds)
+    #  Hidden: 20 adversarial phantoms (10 extreme recipes × 2 seeds)
+    #  Geometry: SID=600mm, SDD=1200mm, 512×512 detector, 256³ volume
+    #  Noise: Beer-Lambert + Poisson + readout Gaussian
+    #  Data stored on GCS — NOT downloaded locally.
+    # ══════════════════════════════════════════════════════════════════════════
+
+    "cbct": {
+        "scoring": {
+            "psnr_weight": 0.40,
+            "ssim_weight": 0.40,
+            "consistency_weight": 0.20,
+            "formula_display": "0.4 × PSNR_norm + 0.4 × SSIM + 0.2 × (1 − ‖y − Ĥx̂‖/‖y‖)",
+        },
+        "spec_ranges": [
+            {"name": "source_offset_x",  "min": -2.0,  "max": 2.0,  "unit": "mm"},
+            {"name": "source_offset_z",  "min": -1.5,  "max": 1.5,  "unit": "mm"},
+            {"name": "detector_tilt",    "min": -0.5,  "max": 0.5,  "unit": "deg"},
+            {"name": "detector_shift_u", "min": -3.0,  "max": 3.0,  "unit": "px"},
+            {"name": "beam_hardening",   "min":  0.0,  "max": 0.15, "unit": ""},
+            {"name": "scatter_fraction", "min":  0.0,  "max": 0.10, "unit": ""},
+        ],
+        "noise_model": "poisson_gaussian",
+        "noise_params": {"I0": 50000, "sigma_readout": 10.0},
+        "scenes": list(range(10)),
+        "scene_count": 10,
+        "tier_scene_counts": {"public": 10, "dev": 20, "hidden": 20},
+        "tiers": {
+            "public": {
+                "true_spec": {
+                    "source_offset_x":  0.80,
+                    "source_offset_z":  0.50,
+                    "detector_tilt":    0.15,
+                    "detector_shift_u": 1.20,
+                    "beam_hardening":   0.06,
+                    "scatter_fraction": 0.04,
+                },
+                "seed": 2000,
+                "visible_data": ["y", "H_ideal", "spec_ranges", "x_true", "true_spec"],
+                "introduction": {
+                    "summary": "Full-access tier: 10 real CBCT/CT volumes from AAPM, LIDC-IDRI, CBCTLiTS, MMDental, CTooth+, 2DeteCT, HTC, Walnut CT, CQ500, DM4CT.",
+                    "what_you_get": "Cone-beam projections (y), ideal geometry (H), spec ranges, ground truth volume (x_true), and true mismatch spec.",
+                    "how_to_use": "Load cbct_challenge_public.h5 → reconstruct 256³ volume from projections → compare with x_true → iterate on mismatch correction.",
+                    "what_to_submit": "Reconstructed volumes (x_hat) and corrected mismatch spec as HDF5.",
+                },
+                "preview_image": {"scene_idx": 0, "image_key": "gt", "alt": "AAPM abdomen CT slice", "caption": "Real CBCT volume (AAPM Low-Dose CT) — Ground truth visible in Public tier"},
+            },
+            "dev": {
+                "true_spec": {
+                    "source_offset_x":  0.50,
+                    "source_offset_z":  0.30,
+                    "detector_tilt":    0.10,
+                    "detector_shift_u": 0.80,
+                    "beam_hardening":   0.04,
+                    "scatter_fraction": 0.03,
+                },
+                "seed": 8000,
+                "visible_data": ["y", "H_ideal", "spec_ranges"],
+                "introduction": {
+                    "summary": "Blind evaluation: 20 procedural 256³ phantoms (anatomy-inspired, based on CQ500/AAPM/CBCTLiTS/MMDental characteristics).",
+                    "what_you_get": "Cone-beam projections (y), ideal geometry (H), and spec ranges. No ground truth.",
+                    "how_to_use": "Apply your pipeline from Public tier. Self-check via consistency metric. Ground truth scored server-side.",
+                    "what_to_submit": "Reconstructed volumes and corrected mismatch spec. Scored server-side.",
+                },
+                "preview_image": {"scene_idx": 0, "image_key": "measurement_II", "alt": "Cone-beam projection", "caption": "Cone-beam projection only (no ground truth in Dev tier)"},
+            },
+            "hidden": {
+                "true_spec": {
+                    "source_offset_x":  1.50,
+                    "source_offset_z":  1.00,
+                    "detector_tilt":    0.35,
+                    "detector_shift_u": 2.20,
+                    "beam_hardening":   0.12,
+                    "scatter_fraction": 0.08,
+                },
+                "seed": 9500,
+                "visible_data": [],
+                "introduction": {
+                    "summary": "Fully blind: 20 adversarial 256³ phantoms (extreme complexity: TPMS, reaction-diffusion, multi-metal, depth-6 vascular trees). Strongest mismatch.",
+                    "what_you_get": "No data download. Algorithm runs server-side on hidden projections.",
+                    "how_to_use": "Package algorithm as Docker container / Python script accepting projections + geometry, outputting reconstructed volume + corrected spec.",
+                    "what_to_submit": "Containerized algorithm. Scored server-side against adversarial phantoms.",
+                },
+                "preview_image": None,
+            },
+        },
+        "data_source": "datasets/benchmark/cbct/",
+        "data_format": "hdf5",
+        "signal_shape": [256, 256, 256],
+        "tier_data_sources": {
+            "public": {"gcs_key": "challenge-data/v1.0/cbct_challenge_public.h5",  "path": "datasets/benchmark/cbct/public/cbct_challenge_public.h5",  "format": "hdf5", "type": "real"},
+            "dev":    {"gcs_key": "challenge-data/v1.0/cbct_challenge_dev.h5",     "path": "datasets/benchmark/cbct/dev/cbct_challenge_dev.h5",        "format": "hdf5", "type": "procedural"},
+            "hidden": {"gcs_key": "challenge-data/v1.0/cbct_challenge_hidden.h5",  "path": "datasets/benchmark/cbct/hidden/cbct_challenge_hidden.h5",  "format": "hdf5", "type": "procedural_adversarial"},
+        },
+        # No baselines yet — CBCT benchmark is newly added.
+        # Baselines will be populated after running FDK + iterative methods.
+        "baselines": {
+            "scenario_i":   [],
+            "scenario_ii":  [],
+            "scenario_iii": [],
         },
     },
 }

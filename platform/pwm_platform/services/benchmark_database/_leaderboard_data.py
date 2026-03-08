@@ -42,9 +42,9 @@ LEADERBOARD_DATA: dict[str, dict[str, list[dict]]] = {
     # ══════════════════════════════════════════════════════════════════════════
     #  CACTI — Competition results (6 CACTI scenes, 20 samples, 5 algorithms)
     #  Dataset v3.0: paper's exact affine_transform warp, peak_photon=10000
-    #  Public: Scenario IV (Blind Cal) — grid search + L-BFGS-B calibration
-    #  Dev/Hidden: pending procedural tier evaluation
-    #  Benchmark run 2026-03-01, ELP-Unfolding on Modal A10G, rest local
+    #  Public: Scenario IV (Blind Cal) — hybrid accumulated grid search
+    #  Dev/Hidden: pending (512×512×8, ~2h calibration per tier)
+    #  Benchmark run 2026-03-02, improved blind calibration (hybrid mask)
     # ══════════════════════════════════════════════════════════════════════════
 
     "cacti": {
@@ -61,11 +61,11 @@ LEADERBOARD_DATA: dict[str, dict[str, list[dict]]] = {
             {"rank": 6, "method": "GAP-TV",         "psnr": 26.02, "ssim": 0.892, "score": 0.630, "dataset": "6-scene simulation, T=8, Cr=8", "source": "GAP-TV (Signal Processing 2016)"},
         ],
         "challenge": [
-            {"rank": 1, "method": "EfficientSCI + blind cal",         "public_score": 0.740, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.247, "details": {"public": {"psnr": 27.71, "ssim": 0.930, "consistency": 0.993}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (blind cal, public tier)"},
-            {"rank": 2, "method": "HiSViT-9 + blind cal",             "public_score": 0.740, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.247, "details": {"public": {"psnr": 27.62, "ssim": 0.934, "consistency": 0.993}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (blind cal, public tier)"},
-            {"rank": 3, "method": "ELP-Unfolding + blind cal",        "public_score": 0.725, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.242, "details": {"public": {"psnr": 29.34, "ssim": 0.926, "consistency": 0.816}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (Modal A10G, blind cal)"},
-            {"rank": 4, "method": "GAP-TV + blind cal",               "public_score": 0.631, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.210, "details": {"public": {"psnr": 24.40, "ssim": 0.764, "consistency": 1.000}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (blind cal, public tier)"},
-            {"rank": 5, "method": "PnP-DnCNN + blind cal",            "public_score": 0.617, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.206, "details": {"public": {"psnr": 23.41, "ssim": 0.772, "consistency": 0.981}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (blind cal, public tier)"},
+            {"rank": 1, "method": "ELP-Unfolding + blind cal",        "public_score": 0.572, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.191, "details": {"public": {"psnr": 23.06, "ssim": 0.672, "consistency": 0.977}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (blind cal, improved hybrid grid search)"},
+            {"rank": 2, "method": "EfficientSCI + blind cal",         "public_score": 0.567, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.189, "details": {"public": {"psnr": 22.65, "ssim": 0.676, "consistency": 0.974}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (blind cal, improved hybrid grid search)"},
+            {"rank": 3, "method": "HiSViT-9 + blind cal",             "public_score": 0.565, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.188, "details": {"public": {"psnr": 22.58, "ssim": 0.673, "consistency": 0.974}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (blind cal, improved hybrid grid search)"},
+            {"rank": 4, "method": "GAP-TV + blind cal",               "public_score": 0.522, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.174, "details": {"public": {"psnr": 21.79, "ssim": 0.590, "consistency": 0.977}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (blind cal, improved hybrid grid search)"},
+            {"rank": 5, "method": "PnP-FFDNet + blind cal",           "public_score": 0.446, "dev_score": 0.000, "hidden_score": 0.000, "overall_score": 0.149, "details": {"public": {"psnr": 17.37, "ssim": 0.542, "consistency": 0.987}, "dev": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}, "hidden": {"psnr": 0.0, "ssim": 0.0, "consistency": 0.0}}, "source": "InverseNet Scenario IV (blind cal, improved hybrid grid search)"},
         ],
     },
 

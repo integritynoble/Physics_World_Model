@@ -32,7 +32,7 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BENCHMARK_DIR="${REPO_ROOT}/datasets/benchmark"
 
 # Available benchmark datasets
-DATASETS=(sd_cassi cacti spc_kronecker ct)
+DATASETS=(sd_cassi cacti spc_kronecker ct cbct)
 
 usage() {
     echo "Usage: $0 [OPTIONS] [DATASET...]"
@@ -50,6 +50,7 @@ usage() {
     echo "  $0                     # Download all datasets (source + challenge)"
     echo "  $0 sd_cassi cacti      # Download specific datasets"
     echo "  $0 ct                  # Download CT dataset (+ 2× LoDoPaB-CT zips from Zenodo, ~3 GB)"
+    echo "  $0 cbct                # Download CBCT challenge HDF5 files from GCS (3D cone-beam, 256³)"
     echo "  $0 --challenge         # Download only challenge HDF5 files"
     echo "  $0 --challenge ct      # Download only CT challenge HDF5 files"
     echo ""

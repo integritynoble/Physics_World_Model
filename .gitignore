@@ -99,3 +99,6 @@ Thumbs.db
 # Private co-author strategy (local + GCS only, not public)
 papers/pwm_flagship/thoughts/
 papers/pwm_flagship/contribution_packages/
+
+# Pitch deck - confidential
+pitch_deck/

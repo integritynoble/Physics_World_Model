@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Modal GPU Runner — ELP-Unfolding on all 3 InverseNet Scenarios.
+"""Modal GPU Runner — ELP-Unfolding on all 4 InverseNet Scenarios.
 
 Runs ELP-Unfolding (ECCV 2022, 565M params, ~9 GB VRAM) on a remote A10G GPU
 since it cannot fit on a local 6 GB card.
@@ -8,10 +8,12 @@ Scenarios:
   I   (Ideal):    clean y from ground truth + nominal mask
   II  (Baseline): corrupted y + nominal mask (no correction)
   III (Oracle):   corrupted y + true_spec correction
+  IV  (Blind):    corrupted y + estimated spec (accumulated grid search)
 
 Usage:
     modal run scripts/modal_elp_unfolding.py
     modal run scripts/modal_elp_unfolding.py --scenario ideal
+    modal run scripts/modal_elp_unfolding.py --scenario blind
     modal run scripts/modal_elp_unfolding.py --samples 5  # quick test
 """
 from __future__ import annotations
@@ -183,6 +185,171 @@ def compute_composite(psnr, ssim_val, consistency):
     return 0.4 * psnr_norm + 0.4 * ssim_val + 0.2 * consistency
 
 
+# ── Blind calibration (runs on CPU inside the container) ─────────────────────
+
+def blind_calibrate(samples, spec_ranges, inner_iters=20):
+    """Estimate mismatch parameters from data alone (no oracle).
+
+    Takes ALL calibration samples and accumulates residual across them at each
+    grid point (following the InverseNet paper's key insight). Uses sequential
+    sweeps for rotation and blur.
+
+    Phases:
+      1. Coarse 2D grid over (dx, dy) — 13×9 = 117 points
+      2. Fine 2D grid around best — 5×5 = 25 points
+      3. 1D sweep for rotation — 7 points
+      4. 1D sweep for blur — 5 points
+      5. Analytical gain/offset estimation
+
+    Args:
+        samples: List of dicts with 'y' and 'mask' keys.
+        spec_ranges: List of spec range dicts from dataset.
+        inner_iters: GAP-TV iterations per evaluation.
+
+    Returns:
+        Estimated spec dict with 7 parameters.
+    """
+    from pwm_core.recon.cacti_solvers import solve_cacti
+
+    range_map = {s["name"]: (s["min"], s["max"]) for s in spec_ranges}
+
+    dx_min, dx_max = range_map["mask_dx"]
+    dy_min, dy_max = range_map["mask_dy"]
+    rot_min, rot_max = range_map.get("mask_rotation", (0, 0.3))
+    blur_min, blur_max = range_map.get("mask_blur", (0, 0.5))
+
+    N = len(samples)
+    ys = [s["y"] for s in samples]
+    masks = [s["mask"] for s in samples]
+
+    def accumulated_residual(dx, dy, rot, blur):
+        """Reconstruct each sample and sum residual across all.
+
+        Always uses binarized mask to match the forward model used during
+        data generation (measurements were produced with binary masks).
+        """
+        total = 0.0
+        for y, mask in zip(ys, masks):
+            mm = binarize_mask(apply_mismatch(mask, dx, dy, rot, blur))
+            x_hat = solve_cacti(y.astype(np.float32), mm.astype(np.float32),
+                                method="gap_tv", device="cpu",
+                                iterations=inner_iters, tv_iter=3)
+            y_pred = np.sum(mm * x_hat, axis=2)
+            total += float(np.sum((y - y_pred) ** 2))
+        return total
+
+    # ── Phase 1: Coarse 2D grid over (dx, dy) ──
+    n_dx, n_dy = 13, 9
+    dxs = np.linspace(dx_min, dx_max, n_dx)
+    dys = np.linspace(dy_min, dy_max, n_dy)
+    dx_step = dxs[1] - dxs[0] if n_dx > 1 else 0.1
+    dy_step = dys[1] - dys[0] if n_dy > 1 else 0.1
+    print(f"    Phase 1: Coarse grid {n_dx}x{n_dy} = {n_dx*n_dy} pts x {N} samples "
+          f"(dx=[{dx_min:.2f},{dx_max:.2f}], dy=[{dy_min:.2f},{dy_max:.2f}])")
+
+    best_res, best_dx, best_dy = 1e18, 0.0, 0.0
+    for i_dx, dx in enumerate(dxs):
+        for dy in dys:
+            res = accumulated_residual(dx, dy, 0, 0)
+            if res < best_res:
+                best_res, best_dx, best_dy = res, dx, dy
+        print(f"      row {i_dx+1}/{n_dx} done (dx={dx:.3f})")
+
+    print(f"    Phase 1 best: dx={best_dx:.3f} dy={best_dy:.3f} res={best_res:.1f}")
+
+    # ── Phase 2: Fine 2D grid around best ──
+    fine_dxs = np.linspace(best_dx - dx_step, best_dx + dx_step, 5)
+    fine_dys = np.linspace(best_dy - dy_step, best_dy + dy_step, 5)
+    fine_dxs = np.clip(fine_dxs, dx_min, dx_max)
+    fine_dys = np.clip(fine_dys, dy_min, dy_max)
+    print(f"    Phase 2: Fine grid 5x5 = 25 pts x {N} samples "
+          f"(dx=[{fine_dxs[0]:.3f},{fine_dxs[-1]:.3f}], "
+          f"dy=[{fine_dys[0]:.3f},{fine_dys[-1]:.3f}])")
+
+    for dx in fine_dxs:
+        for dy in fine_dys:
+            res = accumulated_residual(dx, dy, 0, 0)
+            if res < best_res:
+                best_res, best_dx, best_dy = res, dx, dy
+
+    print(f"    Phase 2 best: dx={best_dx:.4f} dy={best_dy:.4f} res={best_res:.1f}")
+
+    # ── Phase 3: 1D sweep for rotation ──
+    best_rot = 0.0
+    rots = np.linspace(rot_min, rot_max, 7)
+    print(f"    Phase 3: Rotation sweep {len(rots)} pts x {N} samples "
+          f"(rot=[{rot_min:.3f},{rot_max:.3f}])")
+
+    for rot in rots:
+        res = accumulated_residual(best_dx, best_dy, rot, 0)
+        if res < best_res:
+            best_res, best_rot = res, rot
+
+    if best_rot >= rot_max - 1e-6 or (best_rot <= rot_min + 1e-6 and rot_min > 0):
+        print(f"    Phase 3: rot={best_rot:.4f} at boundary → using 0.0")
+        best_rot = 0.0
+        best_res = accumulated_residual(best_dx, best_dy, 0, 0)
+    else:
+        print(f"    Phase 3 best: rot={best_rot:.4f} res={best_res:.1f}")
+
+    # ── Phase 4: 1D sweep for blur ──
+    best_blur = 0.0
+    blurs = np.linspace(blur_min, blur_max, 5)
+    print(f"    Phase 4: Blur sweep {len(blurs)} pts x {N} samples "
+          f"(blur=[{blur_min:.3f},{blur_max:.3f}])")
+
+    for blur in blurs:
+        res = accumulated_residual(best_dx, best_dy, best_rot, blur)
+        if res < best_res:
+            best_res, best_blur = res, blur
+
+    if best_blur >= blur_max - 1e-6:
+        print(f"    Phase 4: blur={best_blur:.4f} at boundary → using 0.0")
+        best_blur = 0.0
+    else:
+        print(f"    Phase 4 best: blur={best_blur:.4f} res={best_res:.1f}")
+
+    # ── Phase 5: Analytical gain/offset ──
+    sum_yHx = 0.0
+    sum_HxHx = 0.0
+    Hx_list = []
+    for y, mask in zip(ys, masks):
+        mm = binarize_mask(apply_mismatch(mask, best_dx, best_dy, best_rot, best_blur))
+        x_hat = solve_cacti(y.astype(np.float32), mm.astype(np.float32),
+                            method="gap_tv", device="cpu",
+                            iterations=inner_iters, tv_iter=3)
+        Hx = np.sum(mm * x_hat, axis=2)
+        sum_yHx += float(np.sum(y * Hx))
+        sum_HxHx += float(np.sum(Hx * Hx))
+        Hx_list.append(Hx)
+
+    gain = sum_yHx / max(sum_HxHx, 1e-10)
+
+    sum_y_minus_gHx = 0.0
+    n_pixels = 0
+    for y, Hx in zip(ys, Hx_list):
+        sum_y_minus_gHx += float(np.sum(y - gain * Hx))
+        n_pixels += y.size
+    offset = sum_y_minus_gHx / max(n_pixels, 1)
+
+    if not (0.92 <= gain <= 1.08):
+        print(f"    Phase 5: gain={gain:.4f} out of range → clamping to 1.0")
+        gain = 1.0
+        offset = 0.0
+    else:
+        print(f"    Phase 5: gain={gain:.4f}  offset={offset:.6f}")
+
+    return {
+        "mask_dx": round(float(best_dx), 6),
+        "mask_dy": round(float(best_dy), 6),
+        "mask_rotation": round(float(best_rot), 6),
+        "mask_blur": round(float(best_blur), 6),
+        "clock_offset": 0.0,
+        "gain_drift": round(float(gain), 6),
+        "offset_drift": round(float(offset), 6),
+    }
+
+
 # ── InverseNet paper reference values ────────────────────────────────────────
 PAPER_BASELINES = {
     "scenario_ii": {"psnr": 26.50, "ssim": 0.910},
@@ -206,12 +373,12 @@ def run_elp_benchmark(
     max_samples: int = 0,
     scenario: str = "all",
 ):
-    """Run ELP-Unfolding on all 3 InverseNet scenarios.
+    """Run ELP-Unfolding on all 4 InverseNet scenarios.
 
     Args:
         tier: Dataset tier (public, dev, hidden).
         max_samples: Limit samples (0 = all).
-        scenario: Which scenario(s) to run (all, ideal, baseline, oracle).
+        scenario: Which scenario(s) to run (all, ideal, baseline, oracle, blind).
     """
     import h5py
     import torch
@@ -254,12 +421,13 @@ def run_elp_benchmark(
                 "mask": grp["H_ideal"][:].astype(np.float64),
                 "x_true": grp["x_true"][:].astype(np.float64) if "x_true" in grp else None,
                 "true_spec": json.loads(grp.attrs["true_spec"]) if "true_spec" in grp.attrs else None,
+                "spec_ranges": json.loads(grp.attrs["spec_ranges"]) if "spec_ranges" in grp.attrs else None,
                 "metadata": json.loads(grp.attrs.get("metadata", "{}")),
             })
     print(f"  Loaded {len(samples)} samples (shape: {samples[0]['mask'].shape})")
 
     # Determine which scenarios to run
-    run_scenarios = ["ideal", "baseline", "oracle"] if scenario == "all" else [scenario]
+    run_scenarios = ["ideal", "baseline", "oracle", "blind"] if scenario == "all" else [scenario]
     all_results = {}
 
     # ── Scenario I (Ideal): clean y, nominal mask ─────────────────────
@@ -386,6 +554,73 @@ def run_elp_benchmark(
               f"Cons={avg['consistency']:.4f}  Score={avg['composite']:.4f}  "
               f"({dt_total:.1f}s total)")
 
+    # ── Scenario IV (Blind): calibrate + reconstruct ───────────────────
+    if "blind" in run_scenarios:
+        print(f"\n{'='*78}")
+        print(f"  Scenario IV (Blind Cal) — ELP-Unfolding")
+        print(f"{'='*78}")
+
+        # Calibrate on first N samples (CPU GAP-TV, batch mode)
+        max_cal = 6
+        n_cal = min(max_cal, len(samples))
+        print(f"\n  --- Blind Calibration ({n_cal} samples, GAP-TV on CPU) ---")
+
+        t_cal_start = time.time()
+        cal_batch = samples[:n_cal]
+        est_spec = blind_calibrate(cal_batch, samples[0]["spec_ranges"])
+        dt_cal = time.time() - t_cal_start
+
+        # Print calibration summary
+        ts = samples[0]["true_spec"]
+        if ts:
+            print(f"\n  --- Calibration Summary ({dt_cal:.1f}s) ---")
+            print(f"  {'Param':<18s}  {'Estimated':>10s}  {'True':>10s}  {'Error':>10s}")
+            print(f"  {'-'*52}")
+            for k in ["mask_dx", "mask_dy", "mask_rotation", "mask_blur",
+                       "gain_drift", "offset_drift"]:
+                est = est_spec[k]
+                true = ts[k]
+                print(f"  {k:<18s}  {est:>10.4f}  {true:>10.4f}  {abs(est-true):>10.4f}")
+
+        # Reconstruct with estimated spec on GPU
+        print(f"\n  --- Reconstruction with estimated spec (GPU) ---")
+        scores = []
+        t_total = time.time()
+        for i, s in enumerate(samples):
+            mask_corrected = apply_mismatch(
+                s["mask"], est_spec["mask_dx"], est_spec["mask_dy"],
+                est_spec["mask_rotation"], est_spec["mask_blur"],
+            )
+            mask_bin = binarize_mask(mask_corrected).astype(np.float32)
+            gain = est_spec["gain_drift"]
+            offset = est_spec["offset_drift"]
+            y_corrected = ((s["y"] - offset) / max(abs(gain), 1e-6)).astype(np.float32)
+
+            t0 = time.time()
+            x_hat = elp_reconstruct(y_corrected, mask_bin, model, device)
+            dt = time.time() - t0
+
+            psnr = compute_psnr(s["x_true"], x_hat)
+            ssim_val = compute_ssim(s["x_true"], x_hat)
+            cons = compute_consistency(s["y"], x_hat, mask_corrected, gain, offset)
+            comp = compute_composite(psnr, ssim_val, cons)
+
+            scene = s["metadata"].get("scene", s["key"])
+            print(f"    [{i+1:2d}/{len(samples)}] {scene:<14s}  "
+                  f"PSNR={psnr:6.2f}  SSIM={ssim_val:.4f}  Cons={cons:.4f}  "
+                  f"Score={comp:.4f}  ({dt:.1f}s)")
+            scores.append({"psnr": psnr, "ssim": ssim_val,
+                           "consistency": cons, "composite": comp})
+
+        dt_total = time.time() - t_total
+        avg = {k: float(np.mean([s[k] for s in scores]))
+               for k in ("psnr", "ssim", "consistency", "composite")}
+        avg["total_time"] = dt_total + dt_cal
+        all_results["blind"] = avg
+        print(f"\n    AVG: PSNR={avg['psnr']:.2f} dB  SSIM={avg['ssim']:.4f}  "
+              f"Cons={avg['consistency']:.4f}  Score={avg['composite']:.4f}  "
+              f"({avg['total_time']:.1f}s total incl. calibration)")
+
     # ── Final summary table ───────────────────────────────────────────
     print(f"\n\n{'#'*78}")
     print(f"#  ELP-UNFOLDING BENCHMARK — FINAL RESULTS")
@@ -403,8 +638,9 @@ def run_elp_benchmark(
         "ideal":    "I   (Ideal)",
         "baseline": "II  (Baseline)",
         "oracle":   "III (Oracle)",
+        "blind":    "IV  (Blind Cal)",
     }
-    for sc_key in ["ideal", "baseline", "oracle"]:
+    for sc_key in ["ideal", "baseline", "oracle", "blind"]:
         if sc_key not in all_results:
             continue
         avg = all_results[sc_key]
@@ -448,7 +684,7 @@ def main(
     Args:
         tier: Dataset tier (public, dev, hidden).
         samples: Max samples to process (0 = all).
-        scenario: Which scenario(s) (all, ideal, baseline, oracle).
+        scenario: Which scenario(s) (all, ideal, baseline, oracle, blind).
     """
     print(f"Launching ELP-Unfolding benchmark on Modal A10G GPU...")
     print(f"  Tier: {tier}")

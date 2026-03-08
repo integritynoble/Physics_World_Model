@@ -40,11 +40,141 @@ def _require_torch():
 
 
 # ============================================================================
-# Model components
+# Original HDNet architecture (caiyuanhao1998/MST benchmark)
+# Matches pretrained weights from HDNet.pth
 # ============================================================================
+
+def _default_conv(in_channels, out_channels, kernel_size, bias=True):
+    return nn.Conv2d(
+        in_channels, out_channels, kernel_size,
+        padding=(kernel_size // 2), bias=bias)
 
 
 if HAS_TORCH:
+
+    class _OrigResBlock(nn.Module):
+        """ResBlock from original HDNet: Conv-ReLU-Conv + residual."""
+
+        def __init__(self, n_feats=64, kernel_size=3):
+            super().__init__()
+            self.body = nn.Sequential(
+                _default_conv(n_feats, n_feats, kernel_size, bias=True),
+                nn.ReLU(True),
+                _default_conv(n_feats, n_feats, kernel_size, bias=True),
+            )
+
+        def forward(self, x):
+            return self.body(x) + x
+
+    class _DSC(nn.Module):
+        """Depthwise Separable Convolution subspace for EFF."""
+
+        def __init__(self, nin: int):
+            super().__init__()
+            self.conv_dws = nn.Conv2d(nin, nin, 1, 1, 0, groups=nin)
+            self.bn_dws = nn.BatchNorm2d(nin, momentum=0.9)
+            self.relu_dws = nn.ReLU(inplace=False)
+            self.maxpool = nn.MaxPool2d(kernel_size=3, stride=1, padding=1)
+            self.conv_point = nn.Conv2d(nin, 1, 1, 1, 0, groups=1)
+            self.bn_point = nn.BatchNorm2d(1, momentum=0.9)
+            self.relu_point = nn.ReLU(inplace=False)
+            self.softmax = nn.Softmax(dim=2)
+
+        def forward(self, x):
+            out = self.relu_dws(self.bn_dws(self.conv_dws(x)))
+            out = self.maxpool(out)
+            out = self.relu_point(self.bn_point(self.conv_point(out)))
+            m, n, p, q = out.shape
+            out = self.softmax(out.view(m, n, -1)).view(m, n, p, q)
+            out = out.expand_as(x)
+            return torch.mul(out, x) + x
+
+    class _EFF(nn.Module):
+        """Efficient Feature Filtering module."""
+
+        def __init__(self, nin: int, nout: int, num_splits: int):
+            super().__init__()
+            self.num_splits = num_splits
+            self.subspaces = nn.ModuleList(
+                [_DSC(nin // num_splits) for _ in range(num_splits)]
+            )
+
+        def forward(self, x):
+            sub_feat = torch.chunk(x, self.num_splits, dim=1)
+            out = [self.subspaces[i](sub_feat[i]) for i in range(self.num_splits)]
+            return torch.cat(out, dim=1)
+
+    class _SDL_attention(nn.Module):
+        """Spatial-spectral Dual-branch attention (SDL)."""
+
+        def __init__(self, inplanes, planes):
+            super().__init__()
+            self.inter_planes = planes // 2
+            self.conv_q_right = nn.Conv2d(inplanes, 1, 1, bias=False)
+            self.conv_v_right = nn.Conv2d(inplanes, self.inter_planes, 1, bias=False)
+            self.conv_up = nn.Conv2d(self.inter_planes, planes, 1, bias=False)
+            self.softmax_right = nn.Softmax(dim=2)
+            self.sigmoid = nn.Sigmoid()
+            self.conv_q_left = nn.Conv2d(inplanes, self.inter_planes, 1, bias=False)
+            self.avg_pool = nn.AdaptiveAvgPool2d(1)
+            self.conv_v_left = nn.Conv2d(inplanes, self.inter_planes, 1, bias=False)
+            self.softmax_left = nn.Softmax(dim=2)
+
+        def spatial_attention(self, x):
+            input_x = self.conv_v_right(x)
+            b, c, h, w = input_x.size()
+            input_x = input_x.view(b, c, h * w)
+            context_mask = self.conv_q_right(x).view(b, 1, h * w)
+            context_mask = self.softmax_right(context_mask)
+            context = torch.matmul(input_x, context_mask.transpose(1, 2))
+            context = self.conv_up(context.unsqueeze(-1))
+            return x * self.sigmoid(context)
+
+        def spectral_attention(self, x):
+            g_x = self.conv_q_left(x)
+            b, c, h, w = g_x.size()
+            avg_x = self.avg_pool(g_x).view(b, c, 1).permute(0, 2, 1)
+            theta_x = self.conv_v_left(x).view(b, self.inter_planes, h * w)
+            context = torch.matmul(avg_x, theta_x)
+            context = self.softmax_left(context).view(b, 1, h, w)
+            return x * self.sigmoid(context)
+
+        def forward(self, x):
+            return self.spatial_attention(x) + self.spectral_attention(x)
+
+    class HDNetOriginal(nn.Module):
+        """Original HDNet from caiyuanhao1998/MST benchmark.
+
+        Architecture: head(Conv 28→64) → body(16 ResBlocks + SDL + EFF +
+        15 ResBlocks + Conv) → tail(Conv 64→28). Input is 28-channel
+        shift_back of measurement (no mask concatenation).
+        """
+
+        def __init__(self, in_ch=28, out_ch=28):
+            super().__init__()
+            n_feats = 64
+            # head
+            self.head = nn.Sequential(_default_conv(in_ch, n_feats, 3))
+            # body: 16 ResBlocks + SDL + EFF + 15 ResBlocks + Conv
+            m_body = [_OrigResBlock(n_feats) for _ in range(16)]
+            m_body.append(_SDL_attention(n_feats, n_feats))
+            m_body.append(_EFF(n_feats, n_feats, 4))
+            m_body.extend([_OrigResBlock(n_feats) for _ in range(15)])
+            m_body.append(_default_conv(n_feats, n_feats, 3))
+            self.body = nn.Sequential(*m_body)
+            # tail
+            self.tail = nn.Sequential(_default_conv(n_feats, out_ch, 3))
+
+        def forward(self, x, input_mask=None):
+            x = self.head(x)
+            res = self.body(x)
+            res += x
+            return self.tail(res)
+
+
+# ============================================================================
+# Our reimplemented HDNet (encoder-decoder with dual-domain blocks)
+# ============================================================================
 
     class ChannelAttention(nn.Module):
         """Squeeze-excitation style channel attention.
@@ -318,7 +448,8 @@ def _find_weights(weights_path: Optional[str]) -> Optional[str]:
 
     Checks:
     1. Direct path if given.
-    2. {pkg_root}/weights/hdnet/hdnet.pth
+    2. {pkg_top}/weights/hdnet/hdnet.pth  (pwm_core/weights/...)
+    3. {pkg_root}/weights/hdnet/hdnet.pth (pwm_core/pwm_core/weights/...)
 
     Returns:
         Resolved path string, or None if not found.
@@ -328,13 +459,23 @@ def _find_weights(weights_path: Optional[str]) -> Optional[str]:
         if p.exists():
             return str(p)
 
-    # Search relative to this package
+    # Search relative to this package (two levels up for pkg_top)
     pkg_root = Path(__file__).resolve().parent.parent
-    candidate = pkg_root / "weights" / "hdnet" / "hdnet.pth"
-    if candidate.exists():
-        return str(candidate)
+    pkg_top = pkg_root.parent
+    for base in [pkg_top, pkg_root]:
+        candidate = base / "weights" / "hdnet" / "hdnet.pth"
+        if candidate.exists():
+            return str(candidate)
 
     return None
+
+
+def _is_original_checkpoint(state_dict: dict) -> bool:
+    """Detect if checkpoint matches original HDNet architecture (28-ch input)."""
+    if "head.0.weight" in state_dict:
+        w = state_dict["head.0.weight"]
+        return w.shape[1] == 28  # Original: Conv2d(28, 64, 3)
+    return False
 
 
 def hdnet_recon_cassi(
@@ -348,6 +489,10 @@ def hdnet_recon_cassi(
     n_blocks: int = 4,
 ) -> np.ndarray:
     """Reconstruct CASSI hyperspectral cube using HDNet.
+
+    Auto-detects whether checkpoint matches original HDNet (28-ch input,
+    flat ResNet+SDL+EFF) or our reimplemented HDNet (56-ch input,
+    encoder-decoder with dual-domain blocks).
 
     Args:
         meas_2d: 2D measurement [H, W_ext] where W_ext = W + (nC-1)*step.
@@ -371,11 +516,11 @@ def hdnet_recon_cassi(
 
     H, W = mask_3d.shape[:2]
 
-    # Build model
-    model = HDNet(dim=dim, n_blocks=n_blocks, nC=nC).to(device)
-
-    # Load pretrained weights if available
+    # Load checkpoint to detect architecture
     resolved = _find_weights(weights_path)
+    state_dict = None
+    use_original = False
+
     if resolved is not None:
         checkpoint = torch.load(resolved, map_location=device, weights_only=False)
         if isinstance(checkpoint, dict) and "state_dict" in checkpoint:
@@ -385,54 +530,78 @@ def hdnet_recon_cassi(
             }
         else:
             state_dict = checkpoint
-        model.load_state_dict(state_dict, strict=False)
+        use_original = _is_original_checkpoint(state_dict)
+
+    if use_original:
+        # Original HDNet: 28-ch input (shift_back only, no mask)
+        model = HDNetOriginal(in_ch=nC, out_ch=nC).to(device)
+        model.load_state_dict(state_dict, strict=True)
+        model.eval()
+
+        # Prepare shift_back input: [1, nC, H, W]
+        if shift_back_meas_torch is not None:
+            meas_t = torch.from_numpy(meas_2d.copy()).unsqueeze(0).float().to(device)
+            x_init = shift_back_meas_torch(meas_t, step=step, nC=nC)
+            x_init = x_init / nC * 2
+        else:
+            x_init_np = np.zeros((H, W, nC), dtype=np.float32)
+            for i in range(nC):
+                x_init_np[:, :, i] = meas_2d[:, step * i:step * i + W]
+            x_init_np = x_init_np / nC * 2
+            x_init = (
+                torch.from_numpy(x_init_np.transpose(2, 0, 1).copy())
+                .unsqueeze(0).float().to(device)
+            )
+
+        with torch.no_grad():
+            recon = model(x_init)
+
+        recon = recon.squeeze(0).permute(1, 2, 0).cpu().numpy()
+        return np.clip(recon, 0, 1).astype(np.float32)
+
     else:
-        warnings.warn(
-            "HDNet: no pretrained weights found; using random initialization. "
-            "Results will be poor without training.",
-            stacklevel=2,
+        # Our reimplemented HDNet: 56-ch input (init + mask)
+        model = HDNet(dim=dim, n_blocks=n_blocks, nC=nC).to(device)
+
+        if state_dict is not None:
+            model.load_state_dict(state_dict, strict=False)
+        else:
+            warnings.warn(
+                "HDNet: no pretrained weights found; using random initialization. "
+                "Results will be poor without training.",
+                stacklevel=2,
+            )
+
+        model.eval()
+
+        # Prepare mask: [H, W, nC] -> [1, nC, H, W]
+        mask_3d_t = (
+            torch.from_numpy(mask_3d.transpose(2, 0, 1).copy())
+            .unsqueeze(0).float().to(device)
         )
 
-    model.eval()
+        # Prepare initial estimate from measurement via shift_back
+        if shift_back_meas_torch is not None:
+            meas_t = torch.from_numpy(meas_2d.copy()).unsqueeze(0).float().to(device)
+            x_init = shift_back_meas_torch(meas_t, step=step, nC=nC)
+            x_init = x_init / nC * 2
+        else:
+            x_init_np = np.zeros((H, W, nC), dtype=np.float32)
+            for i in range(nC):
+                x_init_np[:, :, i] = meas_2d[:, step * i:step * i + W]
+            x_init_np = x_init_np / nC * 2
+            x_init = (
+                torch.from_numpy(x_init_np.transpose(2, 0, 1).copy())
+                .unsqueeze(0).float().to(device)
+            )
 
-    # Prepare mask: [H, W, nC] -> [1, nC, H, W]
-    mask_3d_t = (
-        torch.from_numpy(mask_3d.transpose(2, 0, 1).copy())
-        .unsqueeze(0)
-        .float()
-        .to(device)
-    )
+        model_input = torch.cat([x_init, mask_3d_t], dim=1)
 
-    # Prepare initial estimate from measurement via shift_back
-    if shift_back_meas_torch is not None:
-        meas_t = (
-            torch.from_numpy(meas_2d.copy()).unsqueeze(0).float().to(device)
-        )
-        x_init = shift_back_meas_torch(meas_t, step=step, nC=nC)
-        x_init = x_init / nC * 2  # Scaling consistent with MST
-    else:
-        # Fallback: naive per-band extraction (no dispersion correction)
-        x_init_np = np.zeros((H, W, nC), dtype=np.float32)
-        for i in range(nC):
-            x_init_np[:, :, i] = meas_2d[:, step * i : step * i + W]
-        x_init_np = x_init_np / nC * 2
-        x_init = (
-            torch.from_numpy(x_init_np.transpose(2, 0, 1).copy())
-            .unsqueeze(0)
-            .float()
-            .to(device)
-        )
+        with torch.no_grad():
+            recon = model(model_input)
 
-    # Concatenate init + mask -> [B, nC*2, H, W]
-    model_input = torch.cat([x_init, mask_3d_t], dim=1)
-
-    # Forward pass
-    with torch.no_grad():
-        recon = model(model_input)
-
-    # Convert to numpy [H, W, nC]
-    recon = recon.squeeze(0).permute(1, 2, 0).cpu().numpy()
-    return np.clip(recon, 0, 1).astype(np.float32)
+        recon = recon.squeeze(0).permute(1, 2, 0).cpu().numpy()
+        return np.clip(recon, 0, 1).astype(np.float32)
 
 
 def hdnet_train_quick(

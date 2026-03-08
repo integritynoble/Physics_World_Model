@@ -13,8 +13,7 @@ from pathlib import Path
 
 import h5py
 import numpy as np
-from scipy.ndimage import shift, rotate, gaussian_filter
-from scipy.optimize import minimize
+from scipy.ndimage import affine_transform, gaussian_filter
 from skimage.metrics import structural_similarity as ssim
 
 # Add pwm_core to path
@@ -26,82 +25,184 @@ DATA_DIR = Path(__file__).resolve().parent
 
 
 def apply_mismatch(mask, dx, dy, rot, blur):
-    """Apply mismatch to mask (shift, rotate, blur)."""
+    """Apply spatial mismatch using the paper's exact affine_transform.
+
+    Matches validate_cacti_inversenet.py:129-146 exactly: single affine
+    combining shift + rotation around image center.
+    """
     H, W, T = mask.shape
-    out = np.empty_like(mask)
+    out = np.zeros_like(mask)
+    cx, cy = W / 2.0, H / 2.0
+    th = np.radians(rot)
+    cos_t, sin_t = np.cos(th), np.sin(th)
     for t in range(T):
-        m = mask[:, :, t]
-        if abs(dx) > 1e-6 or abs(dy) > 1e-6:
-            m = shift(m, [dy, dx], order=1, mode='nearest')
-        if abs(rot) > 1e-6:
-            m = rotate(m, rot, reshape=False, order=1, mode='nearest')
-        if blur > 1e-6:
-            m = gaussian_filter(m, sigma=blur)
-        out[:, :, t] = m
-    return out
+        mat = np.array([
+            [cos_t,  sin_t, -cx * cos_t - cy * sin_t + cx + dx],
+            [-sin_t, cos_t,  cx * sin_t - cy * cos_t + cy + dy],
+        ])
+        inv = np.linalg.inv(np.vstack([mat, [0, 0, 1]]))[:2, :]
+        frame = affine_transform(mask[:, :, t], inv[:2, :2], offset=inv[:2, 2], cval=0)
+        if blur > 0:
+            frame = gaussian_filter(frame, sigma=blur)
+        out[:, :, t] = frame
+    return out.astype(np.float32)
 
 
-def grid_search_spec(y, mask, spec_ranges, inner_iters=20):
-    """Grid search + L-BFGS-B for spec calibration."""
+def binarize_mask(mask):
+    return (mask > 0.5).astype(np.float64)
+
+
+def grid_search_spec(samples, spec_ranges, inner_iters=20):
+    """Accumulated-residual grid search for spec calibration.
+
+    Takes ALL calibration samples and accumulates residual across them at each
+    grid point (following the InverseNet paper). Uses sequential 1D sweeps
+    for rotation and blur after finding best (dx, dy).
+
+    Phases:
+      1. Coarse 2D grid over (dx, dy) — 13×9 = 117 points
+      2. Fine 2D grid around best — 5×5 = 25 points
+      3. 1D sweep for rotation — 7 points
+      4. 1D sweep for blur — 5 points
+      5. Analytical gain/offset estimation
+
+    Args:
+        samples: List of dicts with 'y' and 'mask' keys.
+        spec_ranges: List of spec range dicts from dataset.
+        inner_iters: GAP-TV iterations per evaluation.
+
+    Returns:
+        Estimated spec dict with 7 parameters.
+    """
     range_map = {s["name"]: (s["min"], s["max"]) for s in spec_ranges}
 
     dx_min, dx_max = range_map["mask_dx"]
     dy_min, dy_max = range_map["mask_dy"]
+    rot_min, rot_max = range_map.get("mask_rotation", (0, 0.3))
     blur_min, blur_max = range_map.get("mask_blur", (0, 0.3))
 
-    # Coarse grid search over dx, dy
-    n_dx, n_dy = 11, 7
-    best_res, best_dx, best_dy = 1e18, 0.0, 0.0
+    N = len(samples)
+    ys = [s["y"] for s in samples]
+    masks = [s["mask"] for s in samples]
+
+    def accumulated_residual(dx, dy, rot, blur):
+        """Reconstruct each sample and sum residual across all.
+
+        Always uses binarized mask to match the forward model used during
+        data generation (measurements were produced with binary masks).
+        """
+        total = 0.0
+        for y, mask in zip(ys, masks):
+            mm = binarize_mask(apply_mismatch(mask, dx, dy, rot, blur))
+            x_hat = gap_tv_cacti(y, mm, iterations=inner_iters, tv_iter=3)
+            y_pred = np.sum(mm * x_hat, axis=2)
+            total += float(np.sum((y - y_pred) ** 2))
+        return total
+
+    # ── Phase 1: Coarse 2D grid over (dx, dy) ──
+    n_dx, n_dy = 13, 9
     dxs = np.linspace(dx_min, dx_max, n_dx)
     dys = np.linspace(dy_min, dy_max, n_dy)
+    dx_step = dxs[1] - dxs[0] if n_dx > 1 else 0.1
+    dy_step = dys[1] - dys[0] if n_dy > 1 else 0.1
+    print(f"  Phase 1: Coarse grid {n_dx}x{n_dy} = {n_dx*n_dy} pts x {N} samples "
+          f"(dx=[{dx_min:.2f},{dx_max:.2f}], dy=[{dy_min:.2f},{dy_max:.2f}])")
 
-    print(f"  Grid search: {n_dx}x{n_dy} = {n_dx*n_dy} points")
-    for dx in dxs:
+    best_res, best_dx, best_dy = 1e18, 0.0, 0.0
+    for i_dx, dx in enumerate(dxs):
         for dy in dys:
-            mm = apply_mismatch(mask, dx, dy, 0, 0)
-            x_hat = gap_tv_cacti(y, mm, iterations=inner_iters)
-            res = np.sum((y - np.sum(mm * x_hat, axis=2))**2)
+            res = accumulated_residual(dx, dy, 0, 0)
+            if res < best_res:
+                best_res, best_dx, best_dy = res, dx, dy
+        print(f"    row {i_dx+1}/{n_dx} done (dx={dx:.3f})")
+
+    print(f"  Phase 1 best: dx={best_dx:.3f} dy={best_dy:.3f} res={best_res:.1f}")
+
+    # ── Phase 2: Fine 2D grid around best ──
+    fine_dxs = np.linspace(best_dx - dx_step, best_dx + dx_step, 5)
+    fine_dys = np.linspace(best_dy - dy_step, best_dy + dy_step, 5)
+    fine_dxs = np.clip(fine_dxs, dx_min, dx_max)
+    fine_dys = np.clip(fine_dys, dy_min, dy_max)
+    print(f"  Phase 2: Fine grid 5x5 = 25 pts x {N} samples "
+          f"(dx=[{fine_dxs[0]:.3f},{fine_dxs[-1]:.3f}], "
+          f"dy=[{fine_dys[0]:.3f},{fine_dys[-1]:.3f}])")
+
+    for dx in fine_dxs:
+        for dy in fine_dys:
+            res = accumulated_residual(dx, dy, 0, 0)
             if res < best_res:
                 best_res, best_dx, best_dy = res, dx, dy
 
-    print(f"  Grid best: dx={best_dx:.2f} dy={best_dy:.2f} res={best_res:.2f}")
+    print(f"  Phase 2 best: dx={best_dx:.4f} dy={best_dy:.4f} res={best_res:.1f}")
 
-    # L-BFGS-B refinement over [dx, dy, rot, blur]
-    rot_min, rot_max = range_map.get("mask_rotation", (-0.2, 0.2))
-    x0 = [best_dx, best_dy, 0.0, (blur_min + blur_max) / 2]
-    bounds = [(dx_min, dx_max), (dy_min, dy_max),
-              (rot_min, rot_max), (blur_min, blur_max)]
+    # ── Phase 3: 1D sweep for rotation ──
+    best_rot = 0.0
+    rots = np.linspace(rot_min, rot_max, 7)
+    print(f"  Phase 3: Rotation sweep {len(rots)} pts x {N} samples "
+          f"(rot=[{rot_min:.3f},{rot_max:.3f}])")
 
-    eval_count = [0]
-    def objective(params):
-        eval_count[0] += 1
-        dx, dy, rot, blur = params
-        mm = apply_mismatch(mask, dx, dy, rot, blur)
-        x_hat = gap_tv_cacti(y, mm, iterations=inner_iters)
-        res = np.sum((y - np.sum(mm * x_hat, axis=2))**2)
-        if eval_count[0] % 5 == 0:
-            print(f"    refine {eval_count[0]}: [{dx:.4f}, {dy:.4f}, {rot:.4f}, {blur:.4f}] res={res:.2f}")
-        return res
+    for rot in rots:
+        res = accumulated_residual(best_dx, best_dy, rot, 0)
+        if res < best_res:
+            best_res, best_rot = res, rot
 
-    result = minimize(objective, x0, method='L-BFGS-B', bounds=bounds,
-                      options={'maxfun': 80, 'ftol': 1e-4})
-    dx, dy, rot, blur = result.x
+    if best_rot >= rot_max - 1e-6 or (best_rot <= rot_min + 1e-6 and rot_min > 0):
+        print(f"  Phase 3: rot={best_rot:.4f} at boundary → using 0.0")
+        best_rot = 0.0
+        best_res = accumulated_residual(best_dx, best_dy, 0, 0)
+    else:
+        print(f"  Phase 3 best: rot={best_rot:.4f} res={best_res:.1f}")
 
-    # Estimate gain and offset analytically
-    mm = apply_mismatch(mask, dx, dy, rot, blur)
-    x_hat = gap_tv_cacti(y, mm, iterations=inner_iters)
-    Hx = np.sum(mm * x_hat, axis=2)
-    gain = np.sum(y * Hx) / max(np.sum(Hx * Hx), 1e-10)
-    offset = np.mean(y - gain * Hx)
+    # ── Phase 4: 1D sweep for blur ──
+    best_blur = 0.0
+    blurs = np.linspace(blur_min, blur_max, 5)
+    print(f"  Phase 4: Blur sweep {len(blurs)} pts x {N} samples "
+          f"(blur=[{blur_min:.3f},{blur_max:.3f}])")
 
-    print(f"  Refined: dx={dx:.4f} dy={dy:.4f} rot={rot:.4f} blur={blur:.4f} "
-          f"({eval_count[0]} evals)")
+    for blur in blurs:
+        res = accumulated_residual(best_dx, best_dy, best_rot, blur)
+        if res < best_res:
+            best_res, best_blur = res, blur
+
+    if best_blur >= blur_max - 1e-6:
+        print(f"  Phase 4: blur={best_blur:.4f} at boundary → using 0.0")
+        best_blur = 0.0
+    else:
+        print(f"  Phase 4 best: blur={best_blur:.4f} res={best_res:.1f}")
+
+    # ── Phase 5: Analytical gain/offset ──
+    sum_yHx = 0.0
+    sum_HxHx = 0.0
+    Hx_list = []
+    for y, mask in zip(ys, masks):
+        mm = binarize_mask(apply_mismatch(mask, best_dx, best_dy, best_rot, best_blur))
+        x_hat = gap_tv_cacti(y, mm, iterations=inner_iters, tv_iter=3)
+        Hx = np.sum(mm * x_hat, axis=2)
+        sum_yHx += float(np.sum(y * Hx))
+        sum_HxHx += float(np.sum(Hx * Hx))
+        Hx_list.append(Hx)
+
+    gain = sum_yHx / max(sum_HxHx, 1e-10)
+
+    sum_y_minus_gHx = 0.0
+    n_pixels = 0
+    for y, Hx in zip(ys, Hx_list):
+        sum_y_minus_gHx += float(np.sum(y - gain * Hx))
+        n_pixels += y.size
+    offset = sum_y_minus_gHx / max(n_pixels, 1)
+
+    if not (0.92 <= gain <= 1.08):
+        print(f"  Phase 5: gain={gain:.4f} out of range → clamping to 1.0")
+        gain = 1.0
+        offset = 0.0
+    else:
+        print(f"  Phase 5: gain={gain:.4f}  offset={offset:.6f}")
 
     return {
-        "mask_dx": round(float(dx), 6),
-        "mask_dy": round(float(dy), 6),
-        "mask_rotation": round(float(rot), 6),
-        "mask_blur": round(float(blur), 6),
+        "mask_dx": round(float(best_dx), 6),
+        "mask_dy": round(float(best_dy), 6),
+        "mask_rotation": round(float(best_rot), 6),
+        "mask_blur": round(float(best_blur), 6),
         "clock_offset": 0.0,
         "gain_drift": round(float(gain), 6),
         "offset_drift": round(float(offset), 6),
@@ -165,18 +266,12 @@ def run_tier(tier, method="gap_tv", cal_samples=3, final_iters=100):
     n = len(samples)
     print(f"  {n} samples loaded")
 
-    # Step 1: Calibrate
-    print(f"\n--- Calibration ({cal_samples} samples) ---")
-    specs = []
-    for i in range(min(cal_samples, n)):
-        s = samples[i]
-        print(f"\nCalibrating on {s['key']}...")
-        spec = grid_search_spec(s["y"], s["mask"], s["spec_ranges"])
-        specs.append(spec)
-        print(f"  -> {spec}")
-
-    avg_spec = {k: round(float(np.mean([sp[k] for sp in specs])), 6) for k in specs[0]}
-    print(f"\nAveraged spec: {avg_spec}")
+    # Step 1: Calibrate (batch mode — accumulated residual across samples)
+    n_cal = min(cal_samples, n)
+    print(f"\n--- Calibration ({n_cal} samples, batch mode) ---")
+    cal_batch = samples[:n_cal]
+    avg_spec = grid_search_spec(cal_batch, samples[0]["spec_ranges"])
+    print(f"\nEstimated spec: {avg_spec}")
     if samples[0].get("true_spec"):
         print(f"True spec:     {samples[0]['true_spec']}")
 
@@ -186,10 +281,10 @@ def run_tier(tier, method="gap_tv", cal_samples=3, final_iters=100):
 
     for i, s in enumerate(samples):
         H, W, T = s["mask"].shape
-        mask_corrected = apply_mismatch(
+        mask_corrected = binarize_mask(apply_mismatch(
             s["mask"], avg_spec["mask_dx"], avg_spec["mask_dy"],
             avg_spec["mask_rotation"], avg_spec["mask_blur"],
-        )
+        ))
         gain = avg_spec["gain_drift"]
         offset = avg_spec["offset_drift"]
         y_corrected = (s["y"] - offset) / max(abs(gain), 1e-6)
