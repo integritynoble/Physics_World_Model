@@ -9,35 +9,41 @@
         <p class="text-sm text-gray-500">Interactive Spec Builder for Imaging System Design</p>
     </div>
 
-    <!-- Introduction — Two Usage Modes -->
+    <!-- Introduction — Three Usage Modes -->
     <div class="bg-white shadow rounded-lg px-6 py-5 space-y-4">
         <h2 class="text-lg font-semibold text-gray-900">SpecLab</h2>
         <p class="text-sm text-gray-600 leading-relaxed">
-            Design any imaging system using natural language. Supports all 168 modalities &mdash; from
-            <strong>CASSI</strong> and <strong>MRI</strong> to <strong>NeRF</strong> and
-            <strong>electron microscopy</strong>. Two usage modes:
+            Design, compare, and simulate any imaging system using natural language. Supports all 168 modalities &mdash; from
+            <strong>CACTI</strong> and <strong>MRI</strong> to <strong>NeRF</strong> and
+            <strong>cryo-EM</strong>. Three unified workflows:
         </p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {# ── Mode 1: Simulation ── #}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {# ── Mode 1: Prompt → Spec → Simulate (now includes system recommendation) ── #}
             <div class="rounded-lg border-2 border-indigo-200 bg-indigo-50/30 px-4 py-3 space-y-2">
                 <div class="flex items-center gap-2">
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-indigo-100 text-indigo-800">Mode 1</span>
                     <h3 class="text-sm font-bold text-indigo-900">Prompt &rarr; Spec &rarr; Simulate</h3>
                 </div>
-                <p class="text-xs text-indigo-700">Design a system from scratch using natural language, then run synthetic benchmark simulations.</p>
+                <p class="text-xs text-indigo-700">
+                    <strong>Design</strong> a system, <strong>compare</strong> across 168 modalities, or <strong>recommend</strong> the best system+solver for your task.
+                </p>
                 <div class="space-y-1">
                     <div class="flex items-start gap-2 text-xs">
-                        <span class="text-indigo-500 font-bold mt-0.5">1</span>
-                        <span class="text-indigo-800"><strong>Describe:</strong> &ldquo;Design a CT scanner with 360 projections&rdquo;</span>
+                        <span class="text-indigo-500 font-bold mt-0.5">a</span>
+                        <span class="text-indigo-800"><strong>System retrieval:</strong> &ldquo;Which imaging system for NDT under $50k?&rdquo;</span>
                     </div>
                     <div class="flex items-start gap-2 text-xs">
-                        <span class="text-indigo-500 font-bold mt-0.5">2</span>
-                        <span class="text-indigo-800"><strong>Refine:</strong> Adjust noise, mismatch, forward-model primitives</span>
+                        <span class="text-indigo-500 font-bold mt-0.5">b</span>
+                        <span class="text-indigo-800"><strong>Solver recommendation:</strong> &ldquo;Best algorithm for CACTI at &lt;10s latency?&rdquo;</span>
                     </div>
                     <div class="flex items-start gap-2 text-xs">
-                        <span class="text-green-600 font-bold mt-0.5">3</span>
-                        <span class="text-green-800"><strong>Simulate:</strong> Click <span class="px-1.5 py-0.5 bg-green-600 text-white rounded text-[10px] font-semibold">Run Simulation</span> for benchmark results</span>
+                        <span class="text-indigo-500 font-bold mt-0.5">c</span>
+                        <span class="text-indigo-800"><strong>Co-design:</strong> &ldquo;Design a single-shot system for retinal imaging&rdquo;</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs">
+                        <span class="text-green-600 font-bold mt-0.5">&rarr;</span>
+                        <span class="text-green-800"><strong>Simulate:</strong> Run physics benchmark on recommended system</span>
                     </div>
                 </div>
             </div>
@@ -46,33 +52,52 @@
             <div class="rounded-lg border-2 border-amber-200 bg-amber-50/30 px-4 py-3 space-y-2">
                 <div class="flex items-center gap-2">
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800">Mode 2</span>
-                    <h3 class="text-sm font-bold text-amber-900">Dataset+Prompt &rarr; Spec &rarr; Reconstruct</h3>
+                    <h3 class="text-sm font-bold text-amber-900">Data &rarr; Spec &rarr; Reconstruct</h3>
                 </div>
-                <p class="text-xs text-amber-700">Upload your own measurement data, describe it in natural language, build a matched spec, then reconstruct.</p>
+                <p class="text-xs text-amber-700">Upload your measurement data, build a matched spec, then reconstruct with the best solver.</p>
                 <div class="space-y-1">
                     <div class="flex items-start gap-2 text-xs">
                         <span class="text-amber-500 font-bold mt-0.5">1</span>
-                        <span class="text-amber-800"><strong>Upload:</strong> Click <span class="px-1.5 py-0.5 bg-amber-600 text-white rounded text-[10px] font-semibold">Upload Dataset</span> (.npy, .mat, .h5, .npz)</span>
+                        <span class="text-amber-800"><strong>Upload:</strong> .npy, .mat, .h5, .npz</span>
                     </div>
                     <div class="flex items-start gap-2 text-xs">
                         <span class="text-amber-500 font-bold mt-0.5">2</span>
-                        <span class="text-amber-800"><strong>Prompt:</strong> &ldquo;This is MRI k-space data with 4x undersampling&rdquo;</span>
+                        <span class="text-amber-800"><strong>Describe:</strong> &ldquo;MRI k-space, 4x undersampling&rdquo;</span>
                     </div>
                     <div class="flex items-start gap-2 text-xs">
-                        <span class="text-amber-500 font-bold mt-0.5">3</span>
-                        <span class="text-amber-800"><strong>Refine:</strong> Correct mismatch parameters to match your system</span>
+                        <span class="text-amber-600 font-bold mt-0.5">3</span>
+                        <span class="text-amber-900"><strong>Reconstruct</strong> with best PWM solver</span>
+                    </div>
+                </div>
+            </div>
+
+            {# ── Mode 3: System Catalog Browser ── #}
+            <div class="rounded-lg border-2 border-emerald-200 bg-emerald-50/30 px-4 py-3 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">Catalog</span>
+                    <h3 class="text-sm font-bold text-emerald-900">168-System Catalog</h3>
+                </div>
+                <p class="text-xs text-emerald-700">Browse all imaging systems with hardware specs, costs, solver benchmarks, and adequacy profiles.</p>
+                <div class="space-y-1">
+                    <div class="flex items-start gap-2 text-xs">
+                        <span class="text-emerald-500 font-bold mt-0.5">&bull;</span>
+                        <span class="text-emerald-800">19 categories, 26 carrier types</span>
                     </div>
                     <div class="flex items-start gap-2 text-xs">
-                        <span class="text-amber-600 font-bold mt-0.5">4</span>
-                        <span class="text-amber-900"><strong>Reconstruct:</strong> Click <span class="px-1.5 py-0.5 bg-amber-600 text-white rounded text-[10px] font-semibold">Reconstruct from Dataset</span></span>
+                        <span class="text-emerald-500 font-bold mt-0.5">&bull;</span>
+                        <span class="text-emerald-800">1,367 algorithms with PSNR/SSIM benchmarks</span>
+                    </div>
+                    <div class="flex items-start gap-2 text-xs">
+                        <span class="text-emerald-500 font-bold mt-0.5">&bull;</span>
+                        <span class="text-emerald-800">Feasibility gates + Pareto ranking</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <p class="text-xs text-gray-400">
-            All 168 imaging modalities supported &mdash; each with modality-specific physics simulations.
-            Download example datasets below to try Mode 2.
+            All 168 imaging modalities with system descriptors, solver benchmarks, and cost data.
+            Powered by the PWM-SyS System-to-Solver Co-Design Benchmark.
         </p>
     </div>
 

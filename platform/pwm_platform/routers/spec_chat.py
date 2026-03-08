@@ -43,6 +43,10 @@ from pwm_platform.services.spec_chat_prompts import (
     parse_spec_from_response,
 )
 from pwm_platform.services.spec_simulator import run_spec_simulation
+from pwm_platform.services.system_recommender import (
+    parse_system_query,
+    recommend,
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/spec-chat", tags=["Spec Chat"])
@@ -89,6 +93,38 @@ def _detect_variant_from_spec(spec: dict) -> str | None:
 templates = Jinja2Templates(directory="pwm_platform/templates")
 
 
+@router.post("/system-recommend", response_class=HTMLResponse)
+async def system_recommend(
+    request: Request,
+    message: str = Form(...),
+    session_id: str = Form(""),
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Run system recommendation from a natural language query (requires login)."""
+    from pwm_platform.services.system_recommender import TaskQuery
+
+    query = parse_system_query(message)
+    if query is None:
+        query = TaskQuery(purpose=message)
+
+    try:
+        result = recommend(query)
+    except Exception as exc:
+        logger.error("System recommendation error: %s", exc, exc_info=True)
+        return HTMLResponse(
+            '<div class="flex justify-start"><div class="px-4 py-2 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">'
+            f"Recommendation failed: {type(exc).__name__}: {exc}</div></div>",
+            status_code=200,
+        )
+
+    return templates.TemplateResponse("_spec_system_result.html", {
+        "request": request,
+        "result": result,
+        "session_id": session_id,
+    })
+
+
 @router.post("/{variant_key}", response_class=HTMLResponse)
 async def chat_message(
     request: Request,
@@ -100,6 +136,22 @@ async def chat_message(
     db: AsyncSession = Depends(get_db),
 ):
     """Process a user chat message and return an HTMX partial (requires login)."""
+    # Check if this is a system-level query → route to recommender
+    sys_query = parse_system_query(message)
+    if sys_query is not None and input_mode != "upload_spec":
+        try:
+            result = recommend(sys_query)
+            # Also show user message bubble + system result
+            return templates.TemplateResponse("_spec_system_result.html", {
+                "request": request,
+                "result": result,
+                "session_id": session_id,
+                "user_message": message,
+            })
+        except Exception as exc:
+            logger.warning("System recommendation fallback to spec chat: %s", exc)
+            # Fall through to regular spec chat
+
     variant = get_variant(variant_key)
     if variant is None:
         raise HTTPException(status_code=404, detail="Variant not found")

@@ -360,6 +360,40 @@ def _generate_finetune_examples(entry: dict) -> list[dict]:
     return examples[:5]  # cap at 5 per modality
 
 
+def _get_system_catalog_stats() -> dict:
+    """Load system catalog summary stats for the benchmark page."""
+    import json as _json
+    catalog_path = Path(__file__).resolve().parent.parent / "static" / "benchmark-data" / "system_catalog.json"
+    try:
+        with open(catalog_path) as f:
+            catalog = _json.load(f)
+    except Exception:
+        return {"total": 0, "categories": 0, "algorithms": 0, "avg_psnr": 0}
+
+    cats = set()
+    total_algos = 0
+    psnr_sum = 0
+    for v in catalog.values():
+        cats.add(v.get("category", ""))
+        total_algos += v.get("num_algorithms_in_catalog", 0)
+        psnr_sum += v.get("best_psnr_db", 0)
+
+    # Top 5 most affordable feasible systems
+    affordable = sorted(catalog.values(), key=lambda x: x.get("capital_cost_k_usd", 9999))[:5]
+    top_psnr = sorted(catalog.values(), key=lambda x: x.get("best_psnr_db", 0), reverse=True)[:5]
+
+    return {
+        "total": len(catalog),
+        "categories": len(cats),
+        "algorithms": total_algos,
+        "avg_psnr": round(psnr_sum / max(len(catalog), 1), 1),
+        "affordable": [{"name": s.get("display_name", ""), "cost_k": s.get("capital_cost_k_usd", 0),
+                        "id": s.get("id", "")} for s in affordable],
+        "top_psnr": [{"name": s.get("display_name", ""), "psnr": s.get("best_psnr_db", 0),
+                      "method": s.get("best_method", ""), "id": s.get("id", "")} for s in top_psnr],
+    }
+
+
 def _build_sidebar_data() -> dict:
     """Build sidebar context: categories with modalities + primitives.
 
@@ -660,6 +694,9 @@ async def datasets_page(
             "leaderboard": lb,
         })
 
+    # ── System Design Benchmark summary stats
+    sys_catalog_stats = _get_system_catalog_stats()
+
     return templates.TemplateResponse("datasets.html", {
         "request": request,
         "user": user,
@@ -667,6 +704,39 @@ async def datasets_page(
         "category_labels": category_labels,
         "total_variants": total_variants,
         "featured": featured,
+        "sys_catalog_stats": sys_catalog_stats,
+    })
+
+
+@router.get("/benchmark/system-design", response_class=HTMLResponse)
+async def system_design_page(
+    request: Request,
+    user: Optional[User] = Depends(get_optional_user),
+):
+    """System Design Benchmark (PWM-SyS) — cross-modality system comparison."""
+    import json as _json
+
+    catalog_path = Path(__file__).resolve().parent.parent / "static" / "benchmark-data" / "system_catalog.json"
+    try:
+        with open(catalog_path) as f:
+            catalog = _json.load(f)
+    except Exception:
+        catalog = {}
+
+    # Group by category
+    from collections import OrderedDict
+    grouped: dict[str, list[dict]] = OrderedDict()
+    for sys_id, sys_data in sorted(catalog.items(), key=lambda x: (x[1].get("category", ""), x[0])):
+        cat = sys_data.get("category", "other")
+        grouped.setdefault(cat, []).append(sys_data)
+
+    return templates.TemplateResponse("system_design.html", {
+        "request": request,
+        "user": user,
+        "catalog": catalog,
+        "grouped": grouped,
+        "total_systems": len(catalog),
+        "total_categories": len(grouped),
     })
 
 

@@ -1,0 +1,185 @@
+<!-- System Recommendation Result — PWM-SyS -->
+<!-- Displayed in SpecLab chat after a system-level query -->
+
+<div class="flex justify-start mb-4">
+  <div class="max-w-4xl w-full bg-white border border-emerald-200 rounded-xl shadow-sm overflow-hidden">
+
+    <!-- Header -->
+    <div class="px-5 py-3 bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-emerald-100">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+            System Recommendation
+          </span>
+          <span class="text-xs text-gray-500">{{ result.feasible_count }} feasible / {{ result.total_systems }} total</span>
+        </div>
+        {% if result.pareto_count > 0 %}
+        <span class="text-xs text-teal-600 font-medium">{{ result.pareto_count }} Pareto-optimal</span>
+        {% endif %}
+      </div>
+      {% if result.query.purpose %}
+      <p class="mt-1 text-sm text-gray-600 line-clamp-2">{{ result.query.purpose }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Hard Constraints Summary -->
+    {% if result.query.hard_constraints %}
+    <div class="px-5 py-2 bg-gray-50 border-b border-gray-100">
+      <div class="flex flex-wrap gap-2">
+        <span class="text-xs text-gray-500 font-medium">Constraints:</span>
+        {% for key, val in result.query.hard_constraints.items() %}
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-amber-50 text-amber-700 border border-amber-200">
+          {{ key }}: {{ val }}
+        </span>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Feasible Systems Table -->
+    {% set feasible = result.results|selectattr("feasibility", "equalto", "PASS")|list %}
+    {% if feasible %}
+    <div class="px-5 py-3">
+      <h4 class="text-sm font-semibold text-gray-700 mb-2">Recommended Systems</h4>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-xs">
+          <thead>
+            <tr class="border-b border-gray-200">
+              <th class="text-left py-1.5 pr-3 text-gray-500 font-medium">#</th>
+              <th class="text-left py-1.5 pr-3 text-gray-500 font-medium">System</th>
+              <th class="text-center py-1.5 px-1 text-gray-500 font-medium" title="Acquisition Feasibility">D1</th>
+              <th class="text-center py-1.5 px-1 text-gray-500 font-medium" title="Temporal Adequacy">D2</th>
+              <th class="text-center py-1.5 px-1 text-gray-500 font-medium" title="Spatial Adequacy">D3</th>
+              <th class="text-center py-1.5 px-1 text-gray-500 font-medium" title="Observable Sufficiency">D4</th>
+              <th class="text-center py-1.5 px-1 text-gray-500 font-medium" title="Output Recovery">D5</th>
+              <th class="text-center py-1.5 px-1 text-gray-500 font-medium" title="Budget Feasibility">D6</th>
+              <th class="text-center py-1.5 px-1 text-gray-500 font-medium" title="Deployment Burden">D7</th>
+              <th class="text-center py-1.5 px-1 text-gray-500 font-medium" title="Sample Compatibility">D8</th>
+              <th class="text-left py-1.5 pl-2 text-gray-500 font-medium">Best Solver</th>
+              <th class="text-left py-1.5 pl-2 text-gray-500 font-medium">Hardware</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for sys in feasible %}
+            <tr class="border-b border-gray-100 {{ 'bg-emerald-50/50' if sys.pareto_optimal else '' }}">
+              <td class="py-1.5 pr-3">
+                <span class="text-gray-400">{{ sys.preference_rank }}</span>
+                {% if sys.pareto_optimal %}
+                <span class="ml-0.5 text-emerald-500" title="Pareto-optimal">★</span>
+                {% endif %}
+              </td>
+              <td class="py-1.5 pr-3 font-medium text-gray-800">
+                <a href="/benchmark/{{ sys.system_id }}" class="hover:text-indigo-600 hover:underline">{{ sys.display_name }}</a>
+                <span class="ml-1 text-gray-400 text-[10px]">{{ sys.category }}</span>
+              </td>
+              {% set d = sys.scores.to_dict() %}
+              {% for dim in ["D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8"] %}
+              {% set v = d[dim] %}
+              <td class="py-1.5 px-1 text-center font-mono
+                {{ 'text-emerald-700 bg-emerald-50' if v >= 8 else
+                   ('text-amber-700 bg-amber-50' if v >= 5 else
+                    'text-red-700 bg-red-50') }}">
+                {{ v }}
+              </td>
+              {% endfor %}
+              <td class="py-1.5 pl-2 text-gray-600">{{ sys.recommended_solver }}</td>
+              <td class="py-1.5 pl-2 text-gray-400">{{ sys.hardware_summary }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Radar Chart (CSS-only approximation) -->
+    {% if feasible|length >= 1 %}
+    <div class="px-5 py-3 border-t border-gray-100">
+      <h4 class="text-sm font-semibold text-gray-700 mb-2">Top System Adequacy Profile</h4>
+      {% set top = feasible[0] %}
+      {% set td = top.scores.to_dict() %}
+      <div class="flex gap-1 items-end h-24">
+        {% for dim_name, dim_label in [("D1","Acq"), ("D2","Time"), ("D3","Res"), ("D4","Obs"), ("D5","Rec"), ("D6","Cost"), ("D7","Deploy"), ("D8","Sample")] %}
+        {% set v = td[dim_name] %}
+        <div class="flex-1 flex flex-col items-center gap-0.5">
+          <div class="w-full rounded-t text-[9px] text-center text-white font-medium flex items-end justify-center
+            {{ 'bg-emerald-500' if v >= 8 else ('bg-amber-500' if v >= 5 else 'bg-red-400') }}"
+            style="height: {{ (v / 10 * 100)|int }}%">
+            {{ v }}
+          </div>
+          <span class="text-[9px] text-gray-400">{{ dim_label }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      <p class="mt-1.5 text-xs text-gray-500">
+        <span class="font-medium text-gray-700">{{ top.display_name }}</span> —
+        {{ top.recommended_solver }} · {{ top.hardware_summary }}
+      </p>
+    </div>
+    {% endif %}
+
+    <!-- Solver Operating Points -->
+    {% if result.solver_operating_points %}
+    <div class="px-5 py-3 border-t border-gray-100">
+      <h4 class="text-sm font-semibold text-gray-700 mb-2">Solver Operating Points ({{ feasible[0].display_name if feasible else "Top System" }})</h4>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+        {% for pt in result.solver_operating_points %}
+        <div class="p-2 rounded-lg bg-gray-50 border border-gray-200">
+          <div class="text-[10px] text-gray-500 font-medium">{{ pt.latency_label }}</div>
+          <div class="text-sm font-semibold text-gray-800">{{ pt.solver }}</div>
+          <div class="text-xs text-gray-600">~{{ pt.psnr_estimate }} dB</div>
+          <div class="text-[10px] text-gray-400 mt-0.5">{{ pt.robustness_note }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    <!-- Infeasible Systems -->
+    {% set infeasible = result.results|selectattr("feasibility", "equalto", "FAIL")|list %}
+    {% if infeasible %}
+    <div class="px-5 py-3 border-t border-gray-100">
+      <details class="text-xs">
+        <summary class="cursor-pointer text-gray-500 font-medium hover:text-gray-700">
+          {{ infeasible|length }} system{{ "s" if infeasible|length > 1 else "" }} failed feasibility gate
+        </summary>
+        <div class="mt-2 space-y-1">
+          {% for sys in infeasible[:10] %}
+          <div class="flex items-center gap-2 text-gray-400">
+            <span class="text-red-400">✗</span>
+            <span class="font-medium text-gray-600">{{ sys.display_name }}</span>
+            <span>— {{ sys.fail_reasons|join("; ") }}</span>
+          </div>
+          {% endfor %}
+          {% if infeasible|length > 10 %}
+          <div class="text-gray-400 pl-5">... and {{ infeasible|length - 10 }} more</div>
+          {% endif %}
+        </div>
+      </details>
+    </div>
+    {% endif %}
+
+    <!-- Simulate Top System Button -->
+    {% if feasible %}
+    <div class="px-5 py-3 border-t border-gray-100 bg-gray-50 flex items-center gap-3">
+      <form hx-post="/api/v1/spec-chat/{{ feasible[0].system_id }}/simulate"
+            hx-target="#chat-log" hx-swap="beforeend"
+            hx-indicator="#chat-spinner"
+            class="inline">
+        <input type="hidden" name="session_id" value="{{ session_id }}">
+        <input type="hidden" name="spec_json" value='{}'>
+        <button type="submit"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-700 transition-colors shadow-sm">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          Simulate {{ feasible[0].display_name }}
+        </button>
+      </form>
+      <span class="text-xs text-gray-400">Run physics simulation with {{ feasible[0].recommended_solver }}</span>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
