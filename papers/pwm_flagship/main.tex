@@ -382,8 +382,11 @@ Correspondence and requests for materials should be addressed to C.Y.\ (\texttt{
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=\textwidth]{figures/fig1_overview.pdf}
-\caption{\textbf{PWM overview.}
-The Physics World Models pipeline. \textbf{a},~A computational imaging system is provided as input. \textbf{b},~The system is compiled into an \opg{} DAG over the 11 universal primitives. \textbf{c},~The \triad{} diagnostic agents evaluate each gate and produce a \triadreport{}. \textbf{d},~Based on the dominant gate, targeted intervention is applied: calibration for Gate~3, acquisition redesign for Gate~1, or source/detector improvement for Gate~2. \textbf{e},~The original solver is re-run with the corrected operator, recovering reconstruction quality without retraining. \textbf{f},~The 11 universal primitives ($P$, $C$, $M$, $R$, $\Lambda$, $\Pi$, $F$, $\Sigma$, $S$, $W$, $D$) form a finite, complete alphabet: any imaging modality---existing or yet to be invented---can be auto-composed as a typed DAG over this basis, enabling automatic forward-model design without manual physics derivation.}
+\caption{\textbf{The universal grammar of computational imaging.}
+\textbf{a},~The 11 physically typed primitives, grouped by role: generation ($P$), encoding ($C$, $M$, $R$, $\Lambda$, $\Pi$), transform ($F$, $\Sigma$), and detection ($S$, $W$, $D$). Each primitive carries a typed signature (e.g., $P$: source $\to$ field; $D$: field $\to$ measurement), forming a finite, complete alphabet.
+\textbf{b},~Three modalities---CASSI, MRI, and CT---composed as typed DAGs over the same 11 primitives. Different modalities are different ``sentences'' in the same language; any modality, existing or future, can be auto-composed from this basis.
+\textbf{c},~The three gates overlaid on a single DAG. Gate~1 (information deficiency, blue) acts at the sampling and encoding nodes; Gate~2 (carrier budget, orange) acts along the source-to-detector photon path; Gate~3 (operator mismatch, red) marks the discrepancy between assumed and true parameters at individual primitive nodes. The gates diagnose \emph{where} on the graph a reconstruction failure originates.
+\textbf{d},~Grammar in action: the dominant gate is identified on the DAG (here Gate~3 at the mask node), the offending primitive is corrected, and the existing solver recovers reconstruction quality without retraining.}
 \label{fig:overview}
 \end{figure}
 
