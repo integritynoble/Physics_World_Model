@@ -305,7 +305,7 @@ designated Phase~3/4 additions with planned validation.
                   r r r r}
 \caption{Oracle correction ceiling summary.  $\Delta$PSNR is the
 improvement from Scenario~II (mismatch) to Scenario~III (oracle: true operator applied to mismatched data).
-For modalities with low-dimensional mismatch (Matrix, CT, Lensless, MRI, Ptychography), autonomous correction achieves near-oracle performance (Sc.~IV $\approx$ Sc.~III); for CASSI and CACTI with multi-parameter mismatch, the gap between Sc.~IV and Sc.~III is reported in Table~S9. CASSI correction results use GAP-TV as the reconstruction solver.
+For modalities with low-dimensional mismatch (Matrix, CT, Lensless imaging, MRI, Electron ptychography), autonomous correction achieves near-oracle performance (Sc.~IV $\approx$ Sc.~III); for CASSI and CACTI with multi-parameter mismatch, the gap between Sc.~IV and Sc.~III is reported in Table~S9. CASSI correction results use GAP-TV as the reconstruction solver.
 Scenario~I (ideal) PSNR values are available in the RunBundle manifests in the code repository.}
 \label{tab:correction_params} \\
 \toprule
@@ -340,7 +340,7 @@ CACTI\footnote{CACTI uses GAP-TV as the reconstruction solver for Table~S1 consi
   & 8-param mismatch
   & 15.81 & 26.01 & +10.21
   & --- \\
-Lensless
+Lensless imaging
   & psf\_shift
   & 23.48 & 27.03 & +3.55
   & 0.0089 \\
@@ -392,7 +392,7 @@ SPC\footnote{$N{=}5$ phantoms ($32{\times}32$; puncta, filaments, nuclei, membra
   & illum\_sigma
   & 14.40 & 15.46 & +1.06
   & 0.2\,px \\
-Lensless\footnote{$N{=}5$ phantoms ($64{\times}64$; puncta, filaments, nuclei, membranes, mixed). PSF sigma error $\Delta\sigma{=}3.0$\,px (worst case; true $\sigma{=}3.0$\,px). Calibration: forward-model fit on known checkerboard target. Calibrated $\sigma{=}3.12$\,px; recovery $\rho{=}1.00$.}
+Lensless imaging\footnote{$N{=}5$ phantoms ($64{\times}64$; puncta, filaments, nuclei, membranes, mixed). PSF sigma error $\Delta\sigma{=}3.0$\,px (worst case; true $\sigma{=}3.0$\,px). Calibration: forward-model fit on known checkerboard target. Calibrated $\sigma{=}3.12$\,px; recovery $\rho{=}1.00$.}
   & psf\_sigma
   & 18.90 & 25.92 & +7.02
   & 0.1\,px \\
@@ -555,7 +555,7 @@ available.  All 12 modalities have full Scenarios~I--IV correction validated.}
 1  & CASSI                & Optical (inc.) & 24.34 & 34.2  & Validated & GAP-TV \\
 2  & CACTI                & Optical (inc.) & 35.39 & 33.4  & Validated & EfficientSCI \\
 3  & SPC                  & Optical (inc.) & 28.06 & 31.0  & Validated & FISTA-TV \\
-4  & Lensless             & Optical (inc.) & 27.03 & 28.5  & Validated & Richardson--Lucy \\
+4  & Lensless imaging     & Optical (inc.) & 27.03 & 28.5  & Validated & Richardson--Lucy \\
 5  & Fluorescence         & Optical (inc.) & 30.63 & 30.1  & Validated & Richardson--Lucy \\
 %% Optical photon — coherent (1)
 6  & Comp.\ Holography    & Optical (coh.) &  7.67 & 32.7  & Validated & FISTA-TV \\
@@ -687,7 +687,7 @@ CASSI (Alg~1)    & Optical (inc.)  &   500 &    300 &  +0.54 &    6.5 \\
 CASSI (Alg~2)    & Optical (inc.)  &  2000 &   3200 &  +0.76 &    0.9 \\
 CACTI            & Optical (inc.)  &  1000 &    180 & +10.21 &  204.2 \\
 SPC              & Optical (inc.)  &   200 &     15 &  +7.71 & 1850.4 \\
-Lensless         & Optical (inc.)  &   300 &     45 &  +3.55 &  284.0 \\
+Lensless imaging & Optical (inc.)  &   300 &     45 &  +3.55 &  284.0 \\
 Fluorescence     & Optical (inc.)  &   300 &     45 &  +2.60 &  208.0 \\
 \multicolumn{6}{l}{\textit{Optical photon — coherent}} \\
 Comp.\ Holography & Optical (coh.) &   200 &     60 &  +0.80 &   48.0 \\
@@ -1087,9 +1087,9 @@ MRI & Sampling rate
   & 28.8 \scriptsize{(25\%)} & 25.1 \scriptsize{(10\%)} & 24.3 \scriptsize{(5\%)} & 23.9 \scriptsize{(2\%)} & --- \\
 CT & Projection angles
   & 22.1 \scriptsize{(180)} & 22.0 \scriptsize{(90)} & 21.2 \scriptsize{(30)} & 20.7 \scriptsize{(10)} & 17.8 \scriptsize{(5)} \\
-Lensless & Blur $\sigma$ (px)
+Lensless imaging & Blur $\sigma$ (px)
   & 36.6 \scriptsize{(1)} & 25.5 \scriptsize{(3)} & 23.1 \scriptsize{(5)} & 20.5 \scriptsize{(10)} & 17.9 \scriptsize{(20)} \\
-Ptychography & Scan positions
+Electron ptychography & Scan positions
   & 15.0 \scriptsize{(16)} & 12.4 \scriptsize{(9)} & 12.0 \scriptsize{(4)} & 9.9 \scriptsize{(1)} & --- \\
 \bottomrule
 \end{tabular}
@@ -1097,8 +1097,8 @@ Ptychography & Scan positions
 
 \noindent\textbf{Key observations.}
 \begin{itemize}
-  \item \textbf{SPC} and \textbf{Lensless} show the most dramatic Gate~1 collapse.
-    SPC PSNR drops $13.9$\,dB from $25$\% to $1$\% CS ratio; lensless drops
+  \item \textbf{SPC} and \textbf{Lensless imaging} show the most dramatic Gate~1 collapse.
+    SPC PSNR drops $13.9$\,dB from $25$\% to $1$\% CS ratio; lensless imaging drops
     $18.7$\,dB as the PSF blur widens from $\sigma{=}1$ to $\sigma{=}20$\,px.
     In both cases the loss is irrecoverable: no solver can reconstruct
     information that was never measured.
@@ -1151,9 +1151,9 @@ MRI & $\sigma$ (frac.)
   & 28.8 \scriptsize{(0)} & 17.1 \scriptsize{(.01)} & \textbf{12.8} \scriptsize{(.05)} & \textbf{12.1} \scriptsize{(.1)} & \textbf{11.0} \scriptsize{(.3)} \\
 CT & Photon count
   & 22.1 \scriptsize{(100k)} & 21.9 \scriptsize{(10k)} & 21.0 \scriptsize{(1k)} & 18.3 \scriptsize{(100)} & --- \\
-Lensless & Photon count
+Lensless imaging & Photon count
   & 40.9 \scriptsize{(10k)} & 32.8 \scriptsize{(1k)} & 23.1 \scriptsize{(100)} & \textbf{13.6} \scriptsize{(10)} & --- \\
-Ptychography & Photon count
+Electron ptychography & Photon count
   & 13.5 \scriptsize{(10k)} & \textbf{10.3} \scriptsize{(1k)} & \textbf{10.0} \scriptsize{(100)} & \textbf{9.7} \scriptsize{(10)} & --- \\
 \bottomrule
 \end{tabular}
@@ -1169,7 +1169,7 @@ Ptychography & Photon count
     Fourier encoding concentrates signal energy in a few k-space samples,
     so additive noise corrupts the information-dense center region
     disproportionately.
-  \item \textbf{Lensless} imaging shows the widest Gate~2 dynamic range:
+  \item \textbf{Lensless imaging} shows the widest Gate~2 dynamic range:
     $40.9$\,dB at 10,000 photons to $13.6$\,dB at 10 photons, a $27.3$\,dB
     span. This reflects the well-conditioned forward operator (diffuser PSF),
     which faithfully propagates both signal and noise.
@@ -1468,7 +1468,7 @@ mismatch of comparable magnitude to the perturbation applied.
 \section{Supplementary Note 10: Calibration Method Comparison}
 \label{sec:calibration_comparison}
 
-Existing calibration methods are modality-specific: ESPIRiT~\cite{uecker2014espirit} auto-calibrates coil sensitivities for parallel MRI; entropy-based center-of-rotation autofocus corrects geometric errors in CT; blind position correction in ePIE~\cite{maiden2009ptychography} self-calibrates probe positions in ptychography. Each achieves high recovery within its target modality but requires domain-specific algorithm design and cannot transfer across modalities.
+Existing calibration methods are modality-specific: ESPIRiT~\cite{uecker2014espirit} auto-calibrates coil sensitivities for parallel MRI; entropy-based center-of-rotation autofocus corrects geometric errors in CT; blind position correction in ePIE~\cite{maiden2009ptychography} self-calibrates probe positions in electron ptychography. Each achieves high recovery within its target modality but requires domain-specific algorithm design and cannot transfer across modalities.
 
 \paragraph{Quantitative comparison: ESPIRiT vs.\ PWM on multi-coil MRI.}
 To ground this comparison empirically, we evaluate four conditions on a synthetic brain phantom (8~coils, $256 \times 256$, $4\times$ acceleration, CG-SENSE with $\ell_1$-wavelet regularization $\lambda = 10^{-3}$ and 30 iterations, 5\% multiplicative coil sensitivity mismatch).  Note: this experiment uses a structurally complex brain phantom, yielding a lower Sc.~I baseline (34.98\,dB) than the Shepp-Logan phantom used in Note~10 (52.11\,dB); the difference reflects phantom complexity, not solver disagreement.
@@ -1524,7 +1524,7 @@ Mismatch & Sc.~I (dB) & Sc.~II (dB) & Sc.~III (dB) & Sc.~IV (dB) & Gain (dB) \\
 \noindent At the clinically realistic 3--5\% mismatch range, the correction recovers $+1.75$ to $+7.14$\,dB (mean $+4.45$\,dB). At 5\% mismatch---matching the single-coil experiment configuration---multi-coil correction recovers $+7.14$\,dB versus $+48.25$\,dB in the single-coil case. This difference arises because multi-coil redundancy already provides partial robustness: each coil sees a different sensitivity perturbation, and the SENSE combination averages out some mismatch error. Even so, $+7.14$\,dB at 5\% (and $+3.3$\,dB at 10--15\%) represents a $2\times$--$5\times$ reduction in MSE---clinically meaningful for reducing parallel imaging artifacts. The 2\% result ($-0.68$\,dB) reflects the coarse grid search resolution at small mismatch levels; finer search grids or gradient refinement would close this gap.
 
 \paragraph{Recommended Scenario~IV for MRI: ESPIRiT+PWM.}
-For clinical MRI where sufficient calibration data is available (autocalibration signal $\geq 48$ ACS lines), we recommend using ESPIRiT~\cite{uecker2014espirit} as the Scenario~IV calibration method rather than the generic beam-search. ESPIRiT estimates coil sensitivity maps directly from the central $k$-space ACS region without requiring a separate calibration scan, achieving 85--95\% of the oracle correction ceiling (see Supplementary Note~S14, Table~\ref{tab:espirit_extended}). The PWM beam-search correction (Table~\ref{tab:mri_realistic}) is the appropriate fallback in data-limited regimes ($< 32$ ACS lines) where ESPIRiT degrades catastrophically ($-9.29$\,dB at 24 ACS lines). The two methods are therefore complementary: ESPIRiT provides high-recovery calibration when ACS data is adequate; PWM provides robust correction when it is not. This exemplifies a broader PWM principle: adopt the best available domain-specific calibration method (ESPIRiT for MRI, ePIE for ptychography, CTFFIND for cryo-EM) as the Sc.~IV algorithm when it exists, and fall back to the modality-agnostic grid-search for modalities without an established standard.
+For clinical MRI where sufficient calibration data is available (autocalibration signal $\geq 48$ ACS lines), we recommend using ESPIRiT~\cite{uecker2014espirit} as the Scenario~IV calibration method rather than the generic beam-search. ESPIRiT estimates coil sensitivity maps directly from the central $k$-space ACS region without requiring a separate calibration scan, achieving 85--95\% of the oracle correction ceiling (see Supplementary Note~S14, Table~\ref{tab:espirit_extended}). The PWM beam-search correction (Table~\ref{tab:mri_realistic}) is the appropriate fallback in data-limited regimes ($< 32$ ACS lines) where ESPIRiT degrades catastrophically ($-9.29$\,dB at 24 ACS lines). The two methods are therefore complementary: ESPIRiT provides high-recovery calibration when ACS data is adequate; PWM provides robust correction when it is not. This exemplifies a broader PWM principle: adopt the best available domain-specific calibration method (ESPIRiT for MRI, ePIE for electron ptychography, CTFFIND for cryo-EM) as the Sc.~IV algorithm when it exists, and fall back to the modality-agnostic grid-search for modalities without an established standard.
 
 
 %% ============================================================
@@ -1545,7 +1545,7 @@ A key question is how PWM's modality-agnostic correction compares with establish
 \midrule
 MRI (multi-coil) & ESPIRiT~\cite{uecker2014espirit} (auto-cal.\ maps from ACS) & Beam search over coil scale/phase & 85--95\%$^a$ & 20--65\%$^b$ & 1 vs.\ 7+ \\
 \addlinespace
-Ptychography & ePIE blind position correction~\cite{maiden2009ptychography} & Grid search over $(dx, dy)$ & 70--90\%$^c$ & 60--85\% & 1 vs.\ 7+ \\
+Electron ptychography & ePIE blind position correction~\cite{maiden2009ptychography} & Grid search over $(dx, dy)$ & 70--90\%$^c$ & 60--85\% & 1 vs.\ 7+ \\
 \addlinespace
 CT & Auto-focus CoR detection (cross-correlation) & Grid search over CoR offset & 95--100\%$^d$ & 100\% & 1 vs.\ 7+ \\
 \addlinespace
@@ -1722,7 +1722,7 @@ We exhibit a witness modality for each primitive:
   \item \textbf{Detect} ($D$): Ptychography requires $|{\cdot}|^2$ detection
     (intensity-square-law family).  No linear primitive can implement
     the nonlinear magnitude-squared operation.
-    Removing $D$: ptychography $e_{\mathrm{img}} > 1.0$.
+    Removing $D$: electron ptychography $e_{\mathrm{img}} > 1.0$.
   \item \textbf{Sample} ($S$): Compressed MRI requires sub-sampling on an index
     set $\Omega \subsetneq \{1,\ldots,n\}$.  While $M$ with a binary mask
     achieves the same effect in the spatial domain, $S$ operates in $k$-space
@@ -1759,9 +1759,9 @@ number of nodes in any $\varepsilon$-approximate DAG for $H$, we find:
 \begin{itemize}
   \item $\kappa = 2$: THz-TDS (simplest: single interaction + detection).
   \item $\kappa = 3$: SPC, ghost imaging, light field (single encoding + detection + readout).
-  \item $\kappa = 4$: CT, MRI, ptychography, lensless (typical: source + interaction + encoding + detection).
+  \item $\kappa = 4$: CT, MRI, electron ptychography, lensless imaging (typical: source + interaction + encoding + detection).
   \item $\kappa = 5$: CASSI, holography, phase-contrast X-ray (multiple interactions or complex readout).
-  \item $\kappa = 6$: Cone-beam CT (3D geometry adds a projection stage).
+  \item $\kappa = 6$: CBCT (3D geometry adds a projection stage).
 \end{itemize}
 
 \noindent The median is $\kappa = 4$, well below the theoretical bound
@@ -1923,11 +1923,11 @@ The T2w contrast shows an initial paradoxical improvement at low perturbation le
 This behaviour is analogous to the CASSI finding where real hardware has pre-existing calibration imperfections.
 Autonomous sensitivity re-estimation from the data achieves 100\% recovery across all volumes.
 
-Importantly, the effect size for MRI ($< 1$\,dB at R=2 with 4 coils) is substantially smaller than for other modalities (CASSI, CACTI, CT, ptychography), which is physically consistent: R=2 acceleration with 4 coils provides $2\times$ coil redundancy, making the SENSE encoding well-conditioned.
+Importantly, the effect size for MRI ($< 1$\,dB at R=2 with 4 coils) is substantially smaller than for other modalities (CASSI, CACTI, CT, electron ptychography), which is physically consistent: R=2 acceleration with 4 coils provides $2\times$ coil redundancy, making the SENSE encoding well-conditioned.
 At higher acceleration factors (R=4 with 8 coils), the simulation experiments in Supplementary Note~S13 show much larger degradation ($1.75$--$7.14$\,dB), confirming that Gate~3 severity scales with the condition number of the encoding matrix.
 
 \vspace{1em}
-\noindent\textbf{Summary.} Supplementary Note~S15 validates that Gate~3 is the residual bottleneck across 5 modalities spanning 4 carrier families---optical photons (CASSI, CACTI), X-ray photons (CT), electrons (ptychography), and nuclear spins (MRI)---all well-designed instruments operating above their Gate~1 and Gate~2 floors. The mismatch signal is monotonic and scene-independent in all cases, with 100\% recovery via autonomous or oracle calibration. The only modality with sub-dB degradation (MRI at R=2) is explained by the inherent robustness of over-determined coil encoding.
+\noindent\textbf{Summary.} Supplementary Note~S15 validates that Gate~3 is the residual bottleneck across 5 modalities spanning 4 carrier families---optical photons (CASSI, CACTI), X-ray photons (CT), electrons (electron ptychography), and nuclear spins (MRI)---all well-designed instruments operating above their Gate~1 and Gate~2 floors. The mismatch signal is monotonic and scene-independent in all cases, with 100\% recovery via autonomous or oracle calibration. The only modality with sub-dB degradation (MRI at R=2) is explained by the inherent robustness of over-determined coil encoding.
 
 
 %% ============================================================
@@ -1983,7 +1983,7 @@ CASSI (MST-L)     & 0.46 & $[0.38,\, 0.54]$ & 10 \\
 CACTI             & 1.00 & $[0.97,\, 1.00]$ & 6 \\
 SPC (FISTA-TV)    & 0.86 & $[0.81,\, 0.91]$ & 11 \\
 SPC (HATNet)      & 0.92 & $[0.87,\, 0.96]$ & 11 \\
-Lensless          & 0.78 & $[0.71,\, 0.85]$ & 8 \\
+Lensless imaging  & 0.78 & $[0.71,\, 0.85]$ & 8 \\
 Ptychography      & 0.88 & $[0.82,\, 0.94]$ & 6 \\
 CT                & 1.00 & $[0.99,\, 1.00]$ & 5 \\
 MRI ($4\times$)   & 0.91 & $[0.84,\, 0.97]$ & 9 \\
