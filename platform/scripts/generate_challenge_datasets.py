@@ -119,6 +119,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # The steady-state diffusion equation acts as a spatial low-pass filter (Green's
     # function convolution).  PSF runner approximates the diffusion blurring kernel.
     "bioluminescence_tomo": "psf",
+    # Brachytherapy Imaging: multi-view X-ray Radon projection of I-125 seeds in tissue.
+    # Use radon runner since the forward model is Radon-transform based.
+    "brachytherapy_img": "radon",
 }
 
 
@@ -242,6 +245,7 @@ def _resolve_ground_truth(
             generate_thermography_phantom, generate_ao_wavefront, generate_afm_surface,
             generate_angiography_vessel_phantom, generate_asl_perfusion_phantom,
             generate_apt_composition_map, generate_blt_source_phantom,
+            generate_brachytherapy_seed_phantom,
         )
 
         # Look up registry entries for this modality
@@ -277,6 +281,7 @@ def _resolve_ground_truth(
                     "generate_asl_perfusion_phantom": generate_asl_perfusion_phantom,
                     "generate_apt_composition_map": generate_apt_composition_map,
                     "generate_blt_source_phantom": generate_blt_source_phantom,
+                    "generate_brachytherapy_seed_phantom": generate_brachytherapy_seed_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -761,6 +766,7 @@ def _load_scenes_from_generator(
             generate_thermography_phantom, generate_ao_wavefront, generate_afm_surface,
             generate_angiography_vessel_phantom, generate_asl_perfusion_phantom,
             generate_apt_composition_map, generate_blt_source_phantom,
+            generate_brachytherapy_seed_phantom,
         )
     except ImportError:
         return []
@@ -788,6 +794,7 @@ def _load_scenes_from_generator(
         "generate_asl_perfusion_phantom": generate_asl_perfusion_phantom,
         "generate_apt_composition_map": generate_apt_composition_map,
         "generate_blt_source_phantom": generate_blt_source_phantom,
+        "generate_brachytherapy_seed_phantom": generate_brachytherapy_seed_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

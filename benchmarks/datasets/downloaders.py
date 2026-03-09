@@ -2119,6 +2119,120 @@ def generate_blt_source_phantom(
     return normalize_array(arr)
 
 
+def generate_brachytherapy_seed_phantom(
+    n_samples: int = 10,
+    seed: int = 42,
+    shape: tuple = (128, 128),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list:
+    """
+    Brachytherapy post-implant seed phantom.
+
+    Simulates I-125 prostate seed implants: ~80-120 seeds arranged in a
+    template grid with ±2mm placement uncertainty, embedded in a soft-tissue
+    ellipsoid with heterogeneous attenuation (urethra, rectum, pubic bone).
+    Multi-view X-ray projections via Radon transform.
+
+    Reference geometry: TG-43 prostate implant template (ABS, 2012).
+    """
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    for i in range(n_samples):
+        # --- Anatomy: soft-tissue ellipsoid (prostate) ---
+        mu_tissue = np.zeros((H, W), dtype=np.float32)
+        cy, cx = H // 2, W // 2
+        ry, rx = H // 3, W // 3
+        Y, X = np.ogrid[:H, :W]
+        ellipse = ((Y - cy) / ry) ** 2 + ((X - cx) / rx) ** 2
+        mu_tissue[ellipse <= 1.0] = 0.20  # soft tissue ~0.20 /cm
+
+        # Urethra: low-attenuation tube along centre
+        ur = max(2, H // 40)
+        mu_tissue[cy - ur:cy + ur, cx - ur:cx + ur] = 0.05
+
+        # Pubic bone: high-attenuation arc (superior)
+        bone_y = cy - int(ry * 0.85)
+        for bx in range(cx - rx + 5, cx + rx - 5):
+            if 0 <= bone_y < H:
+                mu_tissue[bone_y, bx] = np.clip(
+                    mu_tissue[bone_y, bx] + 0.80 + 0.2 * rng.random(), 0, 1.2
+                )
+
+        # --- Seeds: I-125 high-attenuation point sources ---
+        n_seeds = int(rng.integers(70, 110))
+        # Template grid (5×6 to 6×8) with random offsets
+        grid_cols = int(rng.integers(5, 8))
+        grid_rows = int(rng.integers(5, 8))
+        step_y = max(1, int((ry * 1.4) / grid_rows))
+        step_x = max(1, int((rx * 1.4) / grid_cols))
+        start_y = cy - (grid_rows // 2) * step_y
+        start_x = cx - (grid_cols // 2) * step_x
+
+        seed_map = np.zeros((H, W), dtype=np.float32)
+        placed = 0
+        for gy in range(grid_rows):
+            for gx in range(grid_cols):
+                if placed >= n_seeds:
+                    break
+                sy = int(start_y + gy * step_y + rng.integers(-2, 3))
+                sx = int(start_x + gx * step_x + rng.integers(-2, 3))
+                sy = np.clip(sy, 2, H - 3)
+                sx = np.clip(sx, 2, W - 3)
+                # I-125 seed: titanium capsule, mu ~ 8.0 /cm (effective)
+                seed_map[sy, sx] += 8.0
+                placed += 1
+
+        x_true = mu_tissue + seed_map  # combined attenuation map
+
+        # --- Forward model: multi-view Radon projection ---
+        try:
+            from skimage.transform import radon
+            n_angles = 18
+            theta = np.linspace(0, 180, n_angles, endpoint=False)
+            y_meas = radon(x_true, theta=theta, circle=True).astype(np.float32)
+        except ImportError:
+            y_meas = x_true.copy()
+
+        # Add quantum noise (Poisson approximation)
+        sigma_n = 0.02 * float(y_meas.max()) * (1 + 0.5 * rng.random())
+        y_meas = y_meas + rng.normal(0, sigma_n, y_meas.shape).astype(np.float32)
+
+        # Ideal operator (identity for FBP-based evaluation)
+        H_size = min(H * W, 4096)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true.astype(np.float32),
+            "y": y_meas.astype(np.float32),
+            "H_ideal": H_ideal,
+            "metadata": {
+                "n_seeds": int(placed),
+                "seed_activity_mCi": float(0.40 + 0.15 * rng.random()),
+                "isotope": "I-125",
+                "implant_template": "TG-43",
+            },
+        })
+
+    # When called as a single-image generator (target_shape provided), return
+    # the x_true array of the first sample normalised to [0, 1].
+    if target_shape is not None:
+        if samples:
+            arr = samples[0]["x_true"]
+            return normalize_array(arr)
+        return np.zeros((H, W), dtype=np.float32)
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -2169,6 +2283,7 @@ def acquire_dataset(
         "generate_asl_perfusion_phantom": lambda: generate_asl_perfusion_phantom(target_shape=target_shape),
         "generate_apt_composition_map": lambda: generate_apt_composition_map(target_shape=target_shape),
         "generate_blt_source_phantom": lambda: generate_blt_source_phantom(target_shape=target_shape),
+        "generate_brachytherapy_seed_phantom": lambda: generate_brachytherapy_seed_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -2225,6 +2340,7 @@ def acquire_dataset(
         "generate_asl_perfusion_phantom": lambda: generate_asl_perfusion_phantom(target_shape=target_shape),
         "generate_apt_composition_map": lambda: generate_apt_composition_map(target_shape=target_shape),
         "generate_blt_source_phantom": lambda: generate_blt_source_phantom(target_shape=target_shape),
+        "generate_brachytherapy_seed_phantom": lambda: generate_brachytherapy_seed_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)

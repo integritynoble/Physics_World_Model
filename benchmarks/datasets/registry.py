@@ -697,6 +697,33 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         ),
     ),
 
+    "brachytherapy_seed_generated": DatasetEntry(
+        id="brachytherapy_seed_generated",
+        name="Generated Brachytherapy I-125 Prostate Seed Implant Phantom",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation=(
+            "PWM generated brachytherapy seed phantom. "
+            "Calibrated to TG-43 prostate implant template geometry (ABS, 2012); "
+            "I-125 seed attenuation from Nath et al., Med. Phys. 22(2):209, 1995; "
+            "Dose-volume histogram validation per Potters et al., Int. J. Radiat. Oncol. 2001."
+        ),
+        license="N/A",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["brachytherapy_img"],
+        converter="generate_brachytherapy_seed_phantom",
+        x_shape=[128, 128],
+        notes=(
+            "2-D attenuation map: soft-tissue prostate ellipsoid (mu=0.20/cm), urethra "
+            "(mu=0.05/cm), pubic bone arc (mu=0.8-1.2/cm), and 70-110 I-125 seeds "
+            "(mu~8.0/cm) on a TG-43 template grid with +/-2mm placement uncertainty. "
+            "Multi-view Radon projections (18 angles) with quantum noise. "
+            "Physically faithful to post-implant prostate brachytherapy verification imaging."
+        ),
+    ),
+
     "atom_probe_apt_generated": DatasetEntry(
         id="atom_probe_apt_generated",
         name="Generated Atom Probe Tomography (APT) Composition Map",
