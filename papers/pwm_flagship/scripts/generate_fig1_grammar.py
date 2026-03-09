@@ -229,14 +229,14 @@ def main(output_path: Path):
             ha="left", va="center", color="#999999", style="italic",
             linespacing=1.1, zorder=1)
 
-    # --- Divider in b ---
-    b_div_y = left_cy - 1.20
+    # --- Divider in b (below last CASSI node with clear gap) ---
+    b_div_y = dag_y_top - (len(dag_prims) - 1) * dag_sp - nh / 2 - 0.35
     ax.plot([b_left + 0.25, b_left + w_b - 0.25], [b_div_y, b_div_y],
             color="#AAAAAA", linewidth=0.8, linestyle="--", zorder=1)
 
     # --- Bottom DAG (new design): M → F → S → D ---
     new_prims = ["M", "F", "S", "D"]
-    new_y_top = b_div_y - 0.40
+    new_y_top = b_div_y - 0.50
     new_sp = 0.48
     for i, p in enumerate(new_prims):
         y = new_y_top - i * new_sp
