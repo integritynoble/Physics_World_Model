@@ -27,12 +27,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: ism_beads_dataset
+  dataset_url: https://doi.org/10.1038/s41592-018-0291-9
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: ''
-  license: ''
+  citation: Castello, M. et al. (2019) Image scanning microscopy with ISM, Nature
+    Methods 16:175
+  license: Research use
 mismatch_params:
 - name: Detector element offset
   nominal: 0.0
@@ -61,6 +62,14 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  ism_dl:
+    name: ISM-Reassignment-Net
+    module: pwm_core.recon.ism_solvers
+    function: ism_dl_recon
+    params: 8M
+    gpu: true
+    reference: Castello, M. et al. (2019) Image scanning microscopy ISM, Nature Methods
+      16:175
 metrics:
   names:
   - psnr

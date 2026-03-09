@@ -36,7 +36,8 @@ data_source:
   dataset_url: https://www.sdms.afrl.af.mil/index.php?collection=mstar
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Ross et al., Standard SAR ATR Evaluation Experiments using the MSTAR Public Release Data Set, SPIE 1998
+  citation: Ross et al., Standard SAR ATR Evaluation Experiments using the MSTAR Public
+    Release Data Set, SPIE 1998
   license: Public domain (US Government)
 mismatch_params: []
 solvers:
@@ -47,6 +48,21 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: SAR-DL (PolSF)
+    module: pwm_core.recon.sar_solvers
+    function: sar_dl_recon
+    params: 20M
+    gpu: true
+    reference: Schwartz, E. et al. (2022) Deep-learning-based SAR despeckling, ISPRS
+      J.
+  famous_dl:
+    name: SAR-CNN
+    module: pwm_core.recon.sar_solvers
+    function: sar_cnn_recon
+    params: 12M
+    gpu: true
+    reference: Wang, P. et al. (2017) SAR image despeckling with CNN, IEEE GRSL
 metrics:
   names:
   - psnr
@@ -58,7 +74,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Ross et al., Standard SAR ATR Evaluation Experiments using the MSTAR Public Release Data Set, SPIE 1998
+    reference: Ross et al., Standard SAR ATR Evaluation Experiments using the MSTAR
+      Public Release Data Set, SPIE 1998
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / sar_graph_v2

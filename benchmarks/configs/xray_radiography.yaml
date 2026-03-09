@@ -36,7 +36,8 @@ data_source:
   dataset_url: https://nihcc.app.box.com/v/ChestXray-NIHCC
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: 'Wang et al., ChestX-ray8: Hospital-scale Chest X-ray Database and Benchmarks, CVPR 2017'
+  citation: 'Wang et al., ChestX-ray8: Hospital-scale Chest X-ray Database and Benchmarks,
+    CVPR 2017'
   license: CC0 1.0
 mismatch_params:
 - name: Scatter fraction
@@ -65,6 +66,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: CheXNet
+    module: pwm_core.recon.xray_solvers
+    function: chexnet_recon
+    params: 121M
+    gpu: true
+    reference: 'Rajpurkar, P. et al. (2017) CheXNet: Radiologist-level pneumonia detection,
+      NIPS ML4H'
+  famous_dl:
+    name: X-ray UNet
+    module: pwm_core.recon.xray_solvers
+    function: xray_unet_recon
+    params: 31M
+    gpu: true
+    reference: Litjens, G. et al. (2017) Survey of DL in medical image analysis, Med.
+      Image Anal. 42
 metrics:
   names:
   - psnr
@@ -76,7 +93,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: 'Wang et al., ChestX-ray8: Hospital-scale Chest X-ray Database and Benchmarks, CVPR 2017'
+    reference: 'Wang et al., ChestX-ray8: Hospital-scale Chest X-ray Database and
+      Benchmarks, CVPR 2017'
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / xray_radiography_graph_v2

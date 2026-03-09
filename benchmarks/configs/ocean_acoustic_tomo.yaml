@@ -24,12 +24,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: woce_hydrographic_dataset
+  dataset_url: https://www.ncei.noaa.gov/products/world-ocean-atlas
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Munk, W. et al. (1995) Ocean Acoustic Tomography, Cambridge University
+    Press
+  license: Public domain (NOAA)
 mismatch_params:
 - name: Sound speed profile error
   nominal: 0.0
@@ -70,6 +71,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  oat_dl:
+    name: OAT-Net
+    module: pwm_core.recon.oat_solvers
+    function: oat_dl_recon
+    params: 10M
+    gpu: true
+    reference: Bianco, M.J. et al. (2019) ML for ocean acoustics, J. Acoust. Soc.
+      Am. 146(3)
 metrics:
   names:
   - psnr

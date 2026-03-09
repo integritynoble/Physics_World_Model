@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: libs_geochemistry_dataset
+  dataset_url: https://pubs.er.usgs.gov/publication/ofr20111241
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Clegg, S.M. et al. (2009) Multivariate analysis of remote LIBS spectra,
+    Spectrochim. Acta B
+  license: Public domain (USGS)
 mismatch_params:
 - name: Laser energy fluctuation
   nominal: 0.0
@@ -71,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  libs_dl:
+    name: LIBS-CNN
+    module: pwm_core.recon.libs_solvers
+    function: libs_cnn_recon
+    params: 5M
+    gpu: true
+    reference: El Haddad, J. et al. (2021) DL for LIBS chemical imaging, Spectrochim.
+      Acta Part B 175
 metrics:
   names:
   - psnr

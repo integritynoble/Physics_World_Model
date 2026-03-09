@@ -24,12 +24,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: desi_msi_brain
+  dataset_url: https://metaspace2020.eu/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: 'Alexandrov, T. et al. (2019) METASPACE 2020: community knowledge base,
+    Nature Methods'
+  license: CC-BY-4.0
 mismatch_params:
 - name: Laser fluence drift
   nominal: 1.0
@@ -70,6 +71,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  msi_dl:
+    name: MSI-UNet
+    module: pwm_core.recon.msi_solvers
+    function: msi_unet_recon
+    params: 15M
+    gpu: true
+    reference: Inglese, P. et al. (2021) DL for MALDI MSI tissue classification, Anal.
+      Chem. 93(18)
 metrics:
   names:
   - psnr

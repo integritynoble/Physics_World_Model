@@ -72,6 +72,13 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  insar_dl:
+    name: InSAR-Net
+    module: pwm_core.recon.insar_solvers
+    function: insar_dl_recon
+    params: 15M
+    gpu: true
+    reference: Sica, F. et al. (2019) InSAR phase unwrapping with DL, IEEE GRSL
 metrics:
   names:
   - psnr

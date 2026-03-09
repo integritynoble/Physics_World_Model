@@ -68,6 +68,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  cle_dl:
+    name: CLE-Net (CARE)
+    module: pwm_core.recon.cle_solvers
+    function: cle_care_recon
+    params: 15M
+    gpu: true
+    reference: Weigert, M. et al. (2018) CARE for confocal microscopy, Nature Methods
+      15:1090
 metrics:
   names:
   - psnr

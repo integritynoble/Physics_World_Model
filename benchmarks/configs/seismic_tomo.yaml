@@ -24,12 +24,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: iris_iris_seismic
+  dataset_url: https://ds.iris.edu/ds/nodes/dmc/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Bensen, G.D. et al. (2007) Processing seismic ambient noise data, Geophys.
+    J. Int. 169(3)
+  license: CC-BY-4.0 (IRIS DMC)
 mismatch_params:
 - name: Velocity model error
   nominal: 5000.0
@@ -70,6 +71,13 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  seismic_dl:
+    name: SeisInversion-Net
+    module: pwm_core.recon.seismic_solvers
+    function: seismic_dl_recon
+    params: 15M
+    gpu: true
+    reference: Li, S. et al. (2020) DL for seismic inversion, IEEE TGRS 58(9)
 metrics:
   names:
   - psnr

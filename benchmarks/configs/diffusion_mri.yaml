@@ -40,7 +40,8 @@ data_source:
   dataset_url: https://db.humanconnectome.org/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: 'Van Essen et al., The WU-Minn Human Connectome Project: An overview, NeuroImage 2013'
+  citation: 'Van Essen et al., The WU-Minn Human Connectome Project: An overview,
+    NeuroImage 2013'
   license: HCP Open Access Data Use Terms
 mismatch_params: []
 solvers:
@@ -51,6 +52,20 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: q-DL (qDiffusion)
+    module: pwm_core.recon.dmri_solvers
+    function: q_dl_recon
+    params: 18M
+    gpu: true
+    reference: Golkov, V. et al. (2016) q-space deep learning, IEEE TMI 35(5)
+  famous_dl:
+    name: SHORE-Net
+    module: pwm_core.recon.dmri_solvers
+    function: shore_net_recon
+    params: 12M
+    gpu: false
+    reference: 'Fick, R.H.J. et al. (2016) MAPL: PGSE dMRI beyond DTI, NeuroImage'
 metrics:
   names:
   - psnr
@@ -62,7 +77,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: 'Van Essen et al., The WU-Minn Human Connectome Project: An overview, NeuroImage 2013'
+    reference: 'Van Essen et al., The WU-Minn Human Connectome Project: An overview,
+      NeuroImage 2013'
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / diffusion_mri_graph_v2

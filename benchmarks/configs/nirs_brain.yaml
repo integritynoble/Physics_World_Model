@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: fnirs_mental_workload
+  dataset_url: https://doi.org/10.1038/s41597-022-01231-7
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Li, Z. et al. (2022) A large fNIRS dataset for mental workload estimation,
+    Nature Scientific Data
+  license: CC-BY-4.0
 mismatch_params:
 - name: Source-detector coupling
   nominal: 1.0
@@ -71,6 +72,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  nirs_dl:
+    name: fNIRS-Net
+    module: pwm_core.recon.nirs_solvers
+    function: nirs_dl_recon
+    params: 8M
+    gpu: false
+    reference: Hussain, I. et al. (2023) DL for fNIRS mental workload, J. Neural Eng.
+      20(3)
 metrics:
   names:
   - psnr

@@ -26,12 +26,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: spectral_ct_phantom
+  dataset_url: https://doi.org/10.1118/1.4863345
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Schlomka, J.P. et al. (2008) Experimental feasibility of spectral CT with
+    photon-counting detectors, Phys. Med. Biol.
+  license: Research use
 mismatch_params:
 - name: Energy threshold calibration
   nominal: 0.0
@@ -72,6 +73,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  spectral_ct_dl:
+    name: SpectralCT-Net
+    module: pwm_core.recon.spectral_ct_solvers
+    function: spectral_ct_dl_recon
+    params: 20M
+    gpu: true
+    reference: Clark, D.P. & Badea, C.T. (2022) DL-based spectral CT material decomposition,
+      Med. Phys.
 metrics:
   names:
   - psnr

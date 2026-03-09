@@ -66,6 +66,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  oc_dl:
+    name: OC-Net
+    module: pwm_core.recon.ocean_color_solvers
+    function: oc_net_recon
+    params: 10M
+    gpu: true
+    reference: Chen, S. et al. (2021) DL ocean color remote sensing, Remote Sens.
+      Environ. 264
 metrics:
   names:
   - psnr

@@ -25,12 +25,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: cxidb_sfx_dataset
+  dataset_url: https://cxidb.org/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Maia, F.R.N.C. (2012) CXIDB data bank, Nature Methods 9:854
+  license: CC0 (CXIDB)
 mismatch_params:
 - name: Hit rate
   nominal: 10.0
@@ -71,6 +71,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  sfx_dl:
+    name: SFX-Net
+    module: pwm_core.recon.sfx_solvers
+    function: sfx_dl_recon
+    params: 15M
+    gpu: true
+    reference: Nashed, Y.S.G. et al. (2021) DL for XFEL SFX phasing, npj Comput. Mater.
+      7:115
 metrics:
   names:
   - psnr

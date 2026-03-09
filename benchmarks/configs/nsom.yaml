@@ -74,6 +74,14 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  nsom_dl:
+    name: NSOM-Net
+    module: pwm_core.recon.nsom_solvers
+    function: nsom_dl_recon
+    params: 5M
+    gpu: true
+    reference: Park, J. et al. (2020) DL for near-field optical microscopy, Optica
+      7(11)
 metrics:
   names:
   - psnr

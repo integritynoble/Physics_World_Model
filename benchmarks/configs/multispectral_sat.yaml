@@ -72,6 +72,13 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  ms_dl:
+    name: MS-Pansharpening-DL
+    module: pwm_core.recon.multispectral_solvers
+    function: ms_pan_dl_recon
+    params: 15M
+    gpu: true
+    reference: Yang, J. et al. (2017) Pansharpening via deep residual learning, GRSS
 metrics:
   names:
   - psnr

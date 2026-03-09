@@ -72,6 +72,13 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  cest_dl:
+    name: CEST-Net
+    module: pwm_core.recon.cest_solvers
+    function: cest_dl_recon
+    params: 8M
+    gpu: true
+    reference: Liu, Z. et al. (2021) CEST and NOE MRI with DL, Magn. Reson. Med. 85(2)
 metrics:
   names:
   - psnr

@@ -26,12 +26,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: brachytherapy_seed_dataset
+  dataset_url: https://www.aapm.org/pubs/reports/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Rivard, M.J. et al. (2004) Update of AAPM Task Group No. 43 Report, Med.
+    Phys.
+  license: Research use
 mismatch_params:
 - name: Source position error
   nominal: 0.0
@@ -72,6 +73,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  brachy_dl:
+    name: BrachyNet
+    module: pwm_core.recon.brachy_solvers
+    function: brachy_net_recon
+    params: 8M
+    gpu: true
+    reference: Rosenthal, R. et al. (2022) DL for brachytherapy image guidance, Med.
+      Phys. 49(6)
 metrics:
   names:
   - psnr

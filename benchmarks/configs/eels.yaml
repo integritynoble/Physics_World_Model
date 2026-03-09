@@ -43,6 +43,28 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: EELS-Net
+    module: pwm_core.recon.eels_solvers
+    function: eels_net_recon
+    params: 8M
+    gpu: true
+    reference: Shao, Y. et al. (2021) Deep learning for EELS, Ultramicroscopy 226
+  famous_dl:
+    name: MLLS-EELS
+    module: pwm_core.recon.eels_solvers
+    function: mlls_eels_recon
+    params: '0'
+    gpu: false
+    reference: Verbeeck, J. & Van Aert, S. (2004) Model based quantification of EELS,
+      Ultramicroscopy
+  eels_dl:
+    name: EELS-Net
+    module: pwm_core.recon.eels_solvers
+    function: eels_dl_recon
+    params: 8M
+    gpu: true
+    reference: Shao, Y. et al. (2021) DL for EELS, Ultramicroscopy 226
 metrics:
   names:
   - psnr

@@ -71,6 +71,14 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  stm_dl:
+    name: STM-Net
+    module: pwm_core.recon.stm_solvers
+    function: stm_dl_recon
+    params: 6M
+    gpu: true
+    reference: Ziatdinov, M. et al. (2021) DL for atomic-level STM, Nat. Mach. Intell.
+      3:269
 metrics:
   names:
   - psnr

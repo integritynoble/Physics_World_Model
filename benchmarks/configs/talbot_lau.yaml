@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: talbot_lau_grating_ct
+  dataset_url: https://doi.org/10.1038/nphys967
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Pfeiffer, F. et al. (2008) Hard-X-ray dark-field imaging, Nature Physics
+    4:949
+  license: Research use
 mismatch_params:
 - name: Grating alignment (rotation)
   nominal: 0.0
@@ -71,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  talbot_dl:
+    name: Talbot-Net
+    module: pwm_core.recon.xray_grating_solvers
+    function: talbot_dl_recon
+    params: 12M
+    gpu: true
+    reference: Guo, X. et al. (2022) DL for Talbot-Lau grating X-ray CT, Phys. Med.
+      Biol. 67(6)
 metrics:
   names:
   - psnr

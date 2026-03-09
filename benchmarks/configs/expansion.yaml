@@ -27,12 +27,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: exm_neuron_dataset
+  dataset_url: https://www.biorxiv.org/content/10.1101/289132
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: ''
-  license: ''
+  citation: Chen, F. et al. (2015) Expansion microscopy, Science 347:543
+  license: Research use
 mismatch_params:
 - name: Expansion factor
   nominal: 4.0
@@ -67,6 +67,14 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  exm_dl:
+    name: EXpansionNet
+    module: pwm_core.recon.expansion_solvers
+    function: expansion_dl_recon
+    params: 12M
+    gpu: true
+    reference: Weigert, M. et al. (2018) CARE for fluorescence microscopy, Nature
+      Methods 15:1090
 metrics:
   names:
   - psnr

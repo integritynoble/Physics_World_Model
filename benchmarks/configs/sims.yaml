@@ -24,12 +24,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: sims_isotope_mapping
+  dataset_url: https://doi.org/10.1002/jms.1375
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Benninghoven, A. et al. (2007) Secondary Ion Mass Spectrometry, J. Mass
+    Spectrom.
+  license: Research use
 mismatch_params:
 - name: Mass calibration drift
   nominal: 0.0
@@ -70,6 +71,13 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  sims_dl:
+    name: SIMS-Net
+    module: pwm_core.recon.sims_solvers
+    function: sims_dl_recon
+    params: 7M
+    gpu: true
+    reference: Chauton, M.S. et al. (2023) DL for SIMS metabolomics, Anal. Chem. 95(6)
 metrics:
   names:
   - psnr

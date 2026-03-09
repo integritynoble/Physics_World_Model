@@ -33,7 +33,8 @@ data_source:
   dataset_url: https://www.nexusformat.org/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Kockelmann et al., Energy-selective neutron transmission imaging, Nuclear Instruments and Methods 2007
+  citation: Kockelmann et al., Energy-selective neutron transmission imaging, Nuclear
+    Instruments and Methods 2007
   license: CC-BY-4.0
 mismatch_params: []
 solvers:
@@ -44,6 +45,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: NeuTomo-DL
+    module: pwm_core.recon.neutron_tomo_solvers
+    function: neutomo_dl_recon
+    params: 15M
+    gpu: true
+    reference: Tötzke, C. et al. (2021) DL for neutron tomography reconstruction,
+      Sci. Rep. 11:15776
+  famous_dl:
+    name: GRIDREC-Neutron
+    module: pwm_core.recon.neutron_tomo_solvers
+    function: gridrec_neutron_recon
+    params: '0'
+    gpu: false
+    reference: Marone, F. & Stampanoni, M. (2012) Regridded FBP for neutron CT, J.
+      Synchrotron Rad.
 metrics:
   names:
   - psnr
@@ -55,7 +72,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Kockelmann et al., Energy-selective neutron transmission imaging, Nuclear Instruments and Methods 2007
+    reference: Kockelmann et al., Energy-selective neutron transmission imaging, Nuclear
+      Instruments and Methods 2007
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / neutron_tomo_graph_v2

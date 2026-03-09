@@ -51,6 +51,21 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: UDoppler-Net
+    module: pwm_core.recon.doppler_solvers
+    function: udoppler_net_recon
+    params: 12M
+    gpu: true
+    reference: Demené, C. et al. (2015) Spatiotemporal clutter filtering for functional
+      ultrasound, IEEE TMI
+  famous_dl:
+    name: Doppler CFAR
+    module: pwm_core.recon.doppler_solvers
+    function: doppler_cfar_recon
+    params: '0'
+    gpu: false
+    reference: Jensen, J.A. (1996) Estimation of Blood Velocities, Cambridge
 metrics:
   names:
   - psnr

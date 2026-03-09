@@ -24,12 +24,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: ssmi_brightness_temperature
+  dataset_url: https://nsidc.org/data/nsidc-0001
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Cavalieri, D.J. et al. (1996) DMSP SSM/I-SSMIS Passive Microwave Data,
+    NSIDC
+  license: Public domain (NASA/NSIDC)
 mismatch_params:
 - name: Antenna beam width error
   nominal: 0.0
@@ -70,6 +71,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  pm_dl:
+    name: PM-Net
+    module: pwm_core.recon.passive_mw_solvers
+    function: pm_dl_recon
+    params: 15M
+    gpu: true
+    reference: Ebtehaj, A. & Kummerow, C. (2021) DL precipitation retrieval, J. Atmos.
+      Sci. 78(1)
 metrics:
   names:
   - psnr

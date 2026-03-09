@@ -40,7 +40,8 @@ data_source:
   dataset_url: https://cs.nyu.edu/~fergus/datasets/nyu_depth_v2.html
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Silberman et al., Indoor Segmentation and Support Inference from RGBD Images, ECCV 2012
+  citation: Silberman et al., Indoor Segmentation and Support Inference from RGBD
+    Images, ECCV 2012
   license: Research use
 mismatch_params: []
 solvers:
@@ -51,6 +52,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: ToF-Net
+    module: pwm_core.recon.tof_solvers
+    function: tof_dl_recon
+    params: 12M
+    gpu: true
+    reference: Agresti, G. et al. (2019) Unsupervised domain adaptation for ToF depth
+      completion, ICCV Workshop
+  famous_dl:
+    name: ToF-MPI Deconv
+    module: pwm_core.recon.tof_solvers
+    function: tof_mpi_deconv
+    params: '0'
+    gpu: false
+    reference: Gutierrez, O. et al. (2019) Practical calibration of actuated multi-beam
+      ToF, CVPR
 metrics:
   names:
   - psnr
@@ -62,7 +79,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Silberman et al., Indoor Segmentation and Support Inference from RGBD Images, ECCV 2012
+    reference: Silberman et al., Indoor Segmentation and Support Inference from RGBD
+      Images, ECCV 2012
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / tof_camera_graph_v2

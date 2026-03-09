@@ -27,12 +27,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: sasbdb_proteins
+  dataset_url: https://www.sasbdb.org/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: 'Valentini, E. et al. (2015) SASBDB: A repository for biological SAXS
+    data, Nucleic Acids Res.'
+  license: CC-BY-4.0
 mismatch_params:
 - name: Sample-detector distance
   nominal: 1000.0
@@ -73,6 +74,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  saxs_dl:
+    name: SAXS-VAE
+    module: pwm_core.recon.saxs_solvers
+    function: saxs_vae_recon
+    params: 10M
+    gpu: true
+    reference: Archibald, R. et al. (2020) DL for SAXS analysis, J. Synchrotron Rad.
+      27(1)
 metrics:
   names:
   - psnr

@@ -1,8 +1,8 @@
 # Comprehensive 6-Point Check — PET-CT Fusion
 
 **URL:** https://pwm.platformai.org/benchmark/pet_ct
-**Check Date:** 2026-03-06
-**Status:** PASS
+**Check Date:** 2026-03-09
+**Status:** NEEDS_WORK
 
 ---
 
@@ -45,49 +45,66 @@ Fusion: Recover (lambda, mu) jointly or use CT mu for PET attenuation correction
 - `x_true: (H, W, 2)` — co-registered ground truth with channel 0 = PET activity map (Bq/mL, normalized) and channel 1 = CT attenuation map (HU, normalized); or presented as separate (H, W) images for activity and anatomy
 - `y: (N_angles, N_bins, 2)` — dual sinogram with PET coincidence counts and CT projection measurements; in benchmark simplified to reconstructed PET + CT image pair with calibration mismatch
 
+**Public datasets:**
+- TCIA Head-Neck-PET-CT (cancerimagingarchive.net) — multi-institution head-and-neck cancer PET-CT; widely cited; CC-BY-3.0; DOI minted; open access
+- AutoPET Challenge 2022/2023 dataset (grand-challenge.org) — whole-body FDG PET-CT with lesion segmentation; open community standard
+- TCIA QIN-HEADNECK (cancerimagingarchive.net) — longitudinal PET-CT for treatment response in head-and-neck squamous cell carcinoma
+
 ---
 
 ## 3. Reconstruction Methods & Leaderboard
 
 | Algorithm | Type | Reference | Appropriateness |
 |-----------|------|-----------|-----------------|
-| MLAA | Classical | Rezaei et al., IEEE TMI 2012 | High — Maximum Likelihood Activity and Attenuation estimation is the standard joint PET-CT reconstruction algorithm; handles TOF data and simultaneous mu/lambda recovery |
-| MR-Guided (CT-Guided) | PnP | Ehrhardt et al., SIAM J. Imaging Sci. 2015 | High — structural guidance from CT anatomy as a plug-and-play prior for PET reconstruction; directly applicable to PET-CT joint recovery |
-| FBSEM-Net | Deep Learning | Mehranian & Reader, IEEE TMI 2020 | High — unrolled OSEM with learned network priors specifically developed for PET image reconstruction with anatomical side information |
-| CrossModal-ViT | Vision Transformer | Cross-modal attention transformer, 2024 | Good — cross-attention between PET sinogram features and CT image features enables joint structural/functional reconstruction |
+| MLAA | Classical | Rezaei et al., IEEE TMI 31:2101 (2012) | Mandatory baseline — Maximum Likelihood Activity and Attenuation estimation; the standard joint PET-CT reconstruction algorithm; handles TOF data and simultaneous mu/lambda recovery |
+| CT-Guided OSEM | Classical | Chang, Phys. Med. Biol. 23:615 (1978) + OSEM | Required classical — OSEM with CT-based attenuation correction; current clinical standard for quantitative PET-CT reconstruction |
+| Ehrhardt Joint Reconstruction | PnP | Ehrhardt et al., SIAM J. Imaging Sci. 8:2488 (2015) | Structural guidance from CT anatomy as plug-and-play prior for PET reconstruction; directly applicable to PET-CT joint recovery |
+| FBSEM-Net | Deep Learning | Mehranian & Reader, IEEE TMI 40:328 (2020) | Required DL baseline — unrolled OSEM with learned network priors specifically for PET reconstruction with anatomical side information |
+| PPMF-Net | Deep Learning | Li et al., Med. Image Anal. 95:103166 (2024) | Vision transformer with cross-modal attention between PET and CT for joint functional-anatomical analysis |
+| CrossModal-ViT | Vision Transformer | Cross-modal attention transformer, 2024 | Cross-attention between PET sinogram features and CT image features for joint structural/functional reconstruction |
+
+**ACTION REQUIRED:** Source TCIA Head-Neck-PET-CT dataset (cancerimagingarchive.net, CC-BY-3.0). Register MLAA (Rezaei et al. 2012) as mandatory classical baseline and CT-Guided OSEM as required second classical baseline in YAML. Register FBSEM-Net as required DL baseline in YAML.
 
 ---
 
 ## 4. Literature & State of the Art (2024–2025)
 
-1. **Rezaei, A. et al.** "ML-reconstruction of Fully 3D PET from Emission Sinograms and a Single Transmission Scan." *IEEE Transactions on Medical Imaging* 31(11):2101–2113, 2012. — Established MLAA as the reference joint activity-attenuation reconstruction algorithm for PET-CT.
-
-2. **Mehranian, A. & Reader, A.J.** "Model-Based Deep Learning PET Image Reconstruction Using Forward-Model Corrected Data." *IEEE Transactions on Medical Imaging* 40(1):328–340, 2020. — FBSEM-Net demonstrates that embedding the PET forward model in network architecture significantly outperforms post-processing approaches.
-
-3. **Li, T. et al.** "PPMF-Net: Prior-Guided PET-CT Multi-modal Fusion Network for Tumor Segmentation and Activity Quantification." *Medical Image Analysis* 95:103166, 2024. — Vision transformer architecture with cross-modal attention between PET and CT for joint functional-anatomical analysis.
-
-4. **Zhang, X. et al.** "Diffusion Model-Based PET Image Reconstruction with CT Structural Prior." *IEEE Transactions on Medical Imaging* 43(8):2891–2903, 2024. — Score-based diffusion model conditioned on CT images for PET reconstruction; achieves state-of-the-art noise suppression while preserving lesion quantification.
+1. **Rezaei, A. et al. (2012)** "ML-reconstruction of Fully 3D PET from Emission Sinograms and a Single Transmission Scan," *IEEE TMI* 31(11):2101–2113 — established MLAA as the reference joint activity-attenuation reconstruction algorithm for PET-CT.
+2. **Mehranian, A. & Reader, A.J. (2020)** "Model-Based Deep Learning PET Image Reconstruction Using Forward-Model Corrected Data," *IEEE TMI* 40(1):328–340 — FBSEM-Net demonstrates that embedding the PET forward model in network architecture significantly outperforms post-processing approaches.
+3. **Li, T. et al. (2024)** "PPMF-Net: Prior-Guided PET-CT Multi-modal Fusion Network for Tumor Segmentation and Activity Quantification," *Medical Image Analysis* 95:103166 — vision transformer with cross-modal attention between PET and CT.
+4. **Zhang, X. et al. (2024)** "Diffusion Model-Based PET Image Reconstruction with CT Structural Prior," *IEEE TMI* 43(8):2891–2903 — score-based diffusion conditioned on CT images for PET reconstruction; state-of-the-art noise suppression while preserving lesion quantification.
 
 ---
 
 ## 5. Local Dataset & GCS Status
 
-- **GCS bucket:** `pwm-benchmark-datasets`
-- **Challenge HDF5 paths:**
-  - `gs://pwm-benchmark-datasets/challenge-data/v1.0/pet_ct_challenge_public.h5`
-  - `gs://pwm-benchmark-datasets/challenge-data/v1.0/pet_ct_challenge_dev.h5`
-  - `gs://pwm-benchmark-datasets/challenge-data/v1.0/pet_ct_challenge_hidden.h5`
-- **Gallery images:** `gs://pwm-benchmark-datasets/img/benchmark_gallery/pet_ct/`
-- **Local cache:** `/tmp/pwm_challenge_cache/pet_ct_challenge_public.h5` (on-demand)
-- **Generator:** synthetic phantom uses geometric body models with realistic FDG uptake patterns (lesions, organs) and co-registered CT anatomy with noise and attenuation-correction mismatch
+**No challenge data ingested.** Challenge data to be sourced from TCIA Head-Neck-PET-CT and stored on GCS.
+
+**Recommended public data sources:**
+- TCIA Head-Neck-PET-CT (cancerimagingarchive.net, CC-BY-3.0, DOI minted) — multi-institution PET-CT; widely cited in fusion reconstruction literature
+- AutoPET Challenge 2022/2023 (grand-challenge.org) — whole-body FDG PET-CT; open community standard
+- TCIA QIN-HEADNECK (cancerimagingarchive.net) — longitudinal PET-CT for treatment response
+
+**GCS datasets (planned):**
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/pet_ct_challenge_public.h5`
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/pet_ct_challenge_dev.h5`
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/pet_ct_challenge_hidden.h5`
+
+**Gallery images:** To be served from `gs://pwm-benchmark-datasets/img/benchmark_gallery/pet_ct/`.
 
 ---
 
 ## 6. Comprehensive Assessment
 
-**Status:** PASS
+**Status:** NEEDS_WORK
 
-The PET-CT benchmark correctly captures the dual-modality fusion problem. The algorithm pool (MLAA, MR-Guided/CT-Guided, FBSEM-Net, CrossModal-ViT) directly maps to the major paradigms in joint PET-CT reconstruction: simultaneous MAP estimation, structural priors from CT, deep-unrolled OSEM, and cross-modal transformers. The benchmark's focus on calibration mismatch (attenuation correction errors, motion) is the most clinically significant challenge in PET-CT. PSNR/SSIM on the activity map is a valid primary metric, supplemented by quantitative uptake accuracy (SUV bias). The multi-modal fusion algorithm pool shared with PET-MR is appropriate since both modalities solve structurally identical joint reconstruction problems.
+The PET-CT benchmark correctly captures the dual-modality fusion problem with physically accurate forward models for both CT (Beer-Lambert attenuation) and PET (Poisson coincidence counting with ACF). The algorithm pool (MLAA, CT-Guided OSEM, Ehrhardt joint reconstruction, FBSEM-Net, PPMF-Net, CrossModal-ViT) directly maps to the major paradigms in joint PET-CT reconstruction: simultaneous MAP estimation, structural priors from CT, deep-unrolled OSEM, and cross-modal transformers. The benchmark's focus on calibration mismatch (attenuation correction errors, motion) is the most clinically significant challenge in PET-CT. No challenge data has been ingested. TCIA Head-Neck-PET-CT (widely cited, DOI minted, CC-BY-3.0) is the preferred public dataset.
+
+**Outstanding items:**
+1. No challenge data — source TCIA Head-Neck-PET-CT (cancerimagingarchive.net, CC-BY-3.0).
+2. Register MLAA (Rezaei et al. 2012, IEEE TMI 31:2101) as mandatory classical baseline in YAML.
+3. Register CT-Guided OSEM as required second classical baseline in YAML.
+4. Register FBSEM-Net (Mehranian & Reader 2020) as required DL baseline in YAML.
 
 ---
-*Comprehensive 6-point check by deep-check pipeline v3*
+*Comprehensive 6-point check by deep-check pipeline v4*

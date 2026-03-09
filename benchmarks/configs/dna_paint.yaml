@@ -25,12 +25,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: smlm_challenge_2016
+  dataset_url: http://bigwww.epfl.ch/smlm/challenge2016/
   fallback: generated
   synthetic_generator: spectral_scene
-  citation: ''
-  license: ''
+  citation: Sage, D. et al. (2019) Super-resolution fight club, Nature Methods 16:387
+  license: CC-BY-4.0
 mismatch_params:
 - name: Binding on-rate
   nominal: 0.0
@@ -71,6 +71,13 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  dna_paint_dl:
+    name: DECODE-PAINT
+    module: pwm_core.recon.smlm_solvers
+    function: decode_smlm_recon
+    params: 4M
+    gpu: true
+    reference: Speiser, A. et al. (2021) DL for dense SMLM, Nature Methods 18:1090
 metrics:
   names:
   - psnr

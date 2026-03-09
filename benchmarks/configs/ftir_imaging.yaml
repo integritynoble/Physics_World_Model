@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: ftir_cancer_tissue
+  dataset_url: https://zenodo.org/record/5559857
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Bassan, P. et al. (2012) FTIR microscopy of biological cells, Analyst,
+    RSC
+  license: CC-BY-4.0
 mismatch_params:
 - name: Wavenumber calibration
   nominal: 0.0
@@ -71,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  ftir_dl:
+    name: FTIR-UNet
+    module: pwm_core.recon.ftir_solvers
+    function: ftir_unet_recon
+    params: 12M
+    gpu: true
+    reference: 'Trevisan, J. et al. (2012) FTIR microscopy; DL: Cui, C. et al. (2022)
+      Anal. Chem.'
 metrics:
   names:
   - psnr

@@ -25,12 +25,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: pdb_structure_factors
+  dataset_url: https://www.rcsb.org/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Berman, H.M. et al. (2000) The Protein Data Bank, Nucleic Acids Res. 28:235
+  license: CC0 (PDB open access)
 mismatch_params:
 - name: Crystal orientation error
   nominal: 0.0
@@ -71,6 +71,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  xtal_dl:
+    name: AlphaFold-SF
+    module: pwm_core.recon.xtal_solvers
+    function: alphafold_sf_recon
+    params: 93M
+    gpu: true
+    reference: Jumper, J. et al. (2021) Highly accurate protein structure prediction,
+      Nature 596:583
 metrics:
   names:
   - psnr

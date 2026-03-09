@@ -73,6 +73,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  petmr_dl:
+    name: PET-MR-DeepJoint
+    module: pwm_core.recon.petmr_solvers
+    function: petmr_dl_recon
+    params: 30M
+    gpu: true
+    reference: Mehranian, A. et al. (2020) DL-based estimation of PET activity from
+      MRI, J. Nucl. Med.
 metrics:
   names:
   - psnr

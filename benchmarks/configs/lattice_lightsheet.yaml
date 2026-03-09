@@ -27,12 +27,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: llsm_cell_dataset
+  dataset_url: https://downloads.openmicroscopy.org/images/
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: ''
-  license: ''
+  citation: Chen, B.C. et al. (2014) Lattice light-sheet microscopy, Science 346:1257998
+  license: CC-BY-4.0 (OpenMicroscopy)
 mismatch_params:
 - name: Lattice period error
   nominal: 0.0
@@ -73,6 +73,14 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  llsm_dl:
+    name: LLSM-CARE
+    module: pwm_core.recon.llsm_solvers
+    function: llsm_care_recon
+    params: 15M
+    gpu: true
+    reference: Weigert, M. et al. (2018) Content-aware restoration for lattice light-sheet,
+      Nature Methods 15:1090
 metrics:
   names:
   - psnr

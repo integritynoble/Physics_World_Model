@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: quantum_radar_dataset
+  dataset_url: https://doi.org/10.1126/science.1169738
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Lloyd, S. (2008) Enhanced Sensitivity of Photodetection via Quantum Illumination,
+    Science 321:1463
+  license: Research use
 mismatch_params:
 - name: Entanglement quality (concurrence)
   nominal: 1.0
@@ -71,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  qi_dl:
+    name: QI-DL
+    module: pwm_core.recon.quantum_solvers
+    function: qi_dl_recon
+    params: 5M
+    gpu: true
+    reference: Zhuang, Q. & Zhang, Z. (2022) DL for quantum illumination, Phys. Rev.
+      X Quantum 3(4)
 metrics:
   names:
   - psnr

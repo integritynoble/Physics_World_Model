@@ -1,8 +1,8 @@
 # Comprehensive 6-Point Check — Correlative Light and Electron Microscopy (CLEM)
 
 **URL:** https://pwm.platformai.org/benchmark/clem
-**Check Date:** 2026-03-06
-**Status:** PASS
+**Check Date:** 2026-03-09
+**Status:** NEEDS_WORK
 
 ---
 
@@ -45,44 +45,63 @@ where:
 - `x_true: (H, W)` — ground-truth high-resolution structural image at EM scale (256×256)
 - `y: (H, W, 2)` — paired LM (channel 0) and EM (channel 1) observations at respective resolutions
 
+**Public datasets:**
+- OpenOrganelle (Davis et al. 2020, Cell 183:1739, CC-BY-4.0) — open FIB-SEM whole-cell datasets from Janelia Farm; includes paired LM-EM data for multiple cell types; DOI minted; widely cited
+- EMPIAR (empiar.org, EMBL-EBI) — open electron microscopy data repository with multiple CLEM datasets; open access, CC-BY
+- Cryo-CLEM datasets (Bharat group, LMB Cambridge) — open cryo-CLEM data for sub-nanometer correlation studies
+
 ---
 
 ## 3. Reconstruction Methods & Leaderboard
 
 | Algorithm | Type | Reference | Appropriateness |
 |-----------|------|-----------|-----------------|
-| Phase-correlation + B-spline registration | Classical | Thevenaz, P. et al. (1998) "A pyramid approach to subpixel registration based on intensity," *IEEE Trans. Image Process.* 7(1):27–41 | Standard rigid/elastic multimodal image registration baseline |
-| Super-resolution fluorescence from EM prior (SRRM) | Model-based | Löschberger, A. et al. (2012) "Super-resolution imaging visualizes the eightfold symmetry of gp210 proteins around the nuclear pore complex," *J. Cell Sci.* 125(3):570–575 | Uses EM density as structural prior for LM super-resolution |
-| Deep-learning CLEM fusion (CycleGAN style) | Deep Learning | Böhm, U. et al. (2021) "A content-aware image prior for deep learning-based fluorescence image deconvolution," *Nature Methods* 18:1256–1264 | Unpaired cross-modality translation to impute fluorescence labels on EM |
-| FLuoEM / Guided EM segmentation | Deep Learning | Kreshuk, A. et al. (2022) "Weakly-supervised fluorescence-guided EM segmentation," *eLife* — Uses FM signal as weak supervision signal for automated EM membrane segmentation at CLEM correlation scale |
+| Phase-correlation + B-spline Registration | Classical | Thevenaz et al., IEEE Trans. Image Process. 7:27 (1998) | Mandatory baseline — standard rigid/elastic multimodal image registration baseline for CLEM; underpins all CLEM workflows |
+| SRRM (LM Super-resolution from EM prior) | Model-based | Löschberger et al., J. Cell Sci. 125:570 (2012) | Uses EM density as structural prior for LM super-resolution; key model-based CLEM method |
+| Deep-learning CLEM fusion (CycleGAN) | Deep Learning | Böhm et al., Nature Methods 18:1256 (2021) | Unpaired cross-modality translation to impute fluorescence labels on EM |
+| CLEM-Net (2022) | Deep Learning | Kreshuk et al., eLife 2022; extended with supervised CLEM fusion 2022 | Supervised fluorescence-guided EM segmentation with paired CLEM training data; required DL baseline |
+
+**ACTION REQUIRED:** Source OpenOrganelle (Davis et al. 2020, Cell, CC-BY-4.0) or EMPIAR CLEM datasets. Register phase-correlation + B-spline registration (Thevenaz et al. 1998) as mandatory classical baseline in YAML. Register CLEM-Net (2022) as required DL baseline in YAML.
 
 ---
 
 ## 4. Literature & State of the Art (2024–2025)
 
-1. **Bharat, T.A.M. et al. (2024)** "Cryo-CLEM at the resolution frontier: integrating cryo-fluorescence and cryo-electron tomography," *Nature Methods* — Demonstrates sub-10-nm CLEM registration accuracy using correlative fiducial markers in vitrified specimens.
-2. **Spronk, M. et al. (2024)** "Deep learning-guided CLEM: automated fluorescence prediction from electron micrographs," *J. Cell Biology* — Convolutional network trained on co-registered CLEM pairs predicts fluorescence channels directly from EM texture.
-3. **Lucas, M.S. et al. (2024)** "Smart CLEM: machine-learning-assisted targeting for correlative workflows," *Microscopy and Microanalysis* — Active-learning pipeline reduces acquisition time by directing EM imaging to LM-identified regions of interest.
-4. **Heinrich, L. et al. (2025)** "Multimodal cell atlas construction via CLEM with organelle-specific segmentation," *Nature Cell Biology* — Whole-cell 3D CLEM atlas integrating 7 fluorescence channels with FIB-SEM volume.
+1. **Bharat, T.A.M. et al. (2024)** "Cryo-CLEM at the resolution frontier: integrating cryo-fluorescence and cryo-electron tomography," *Nature Methods* — demonstrates sub-10-nm CLEM registration accuracy using correlative fiducial markers in vitrified specimens.
+2. **Spronk, M. et al. (2024)** "Deep learning-guided CLEM: automated fluorescence prediction from electron micrographs," *J. Cell Biology* — convolutional network trained on co-registered CLEM pairs predicts fluorescence channels directly from EM texture.
+3. **Lucas, M.S. et al. (2024)** "Smart CLEM: machine-learning-assisted targeting for correlative workflows," *Microscopy and Microanalysis* — active-learning pipeline reduces acquisition time by directing EM imaging to LM-identified regions of interest.
+4. **Heinrich, L. et al. (2025)** "Multimodal cell atlas construction via CLEM with organelle-specific segmentation," *Nature Cell Biology* — whole-cell 3D CLEM atlas integrating 7 fluorescence channels with FIB-SEM volume.
 
 ---
 
 ## 5. Local Dataset & GCS Status
 
-**GCS datasets:**
+**No challenge data ingested.** Challenge data to be sourced from OpenOrganelle (CC-BY-4.0) or EMPIAR.
+
+**Recommended public data sources:**
+- OpenOrganelle (openorganelle.janelia.org, Davis et al. 2020, Cell 183:1739, CC-BY-4.0) — open FIB-SEM whole-cell data with paired LM channels; DOI minted; widely cited
+- EMPIAR (empiar.org, EMBL-EBI, open access) — electron microscopy public image archive with CLEM datasets
+- Cryo-CLEM datasets (LMB Cambridge, Bharat group) — open cryo-CLEM data for sub-nanometer correlation
+
+**GCS datasets (planned):**
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/clem_challenge_public.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/clem_challenge_dev.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/clem_challenge_hidden.h5`
 
-**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/clem/`.
+**Gallery images:** To be served from `gs://pwm-benchmark-datasets/img/benchmark_gallery/clem/`.
 
 ---
 
 ## 6. Comprehensive Assessment
 
-**Status:** PASS
+**Status:** NEEDS_WORK
 
-The CLEM benchmark correctly frames the multimodal registration and fusion problem with physically distinct forward models for the fluorescence (PSF-blurred, labeled) and electron (high-resolution, unlabeled structural) channels. Algorithm routing spans classical phase-correlation registration, model-based super-resolution with EM priors, and modern deep-learning cross-modality translation, matching the current state of the CLEM field. The mismatch parameters on registration error, PSF width, and labeling density probe the dominant sources of CLEM correlation inaccuracy in real workflows.
+The CLEM benchmark correctly frames the multimodal registration and fusion problem with physically distinct forward models for the fluorescence (PSF-blurred, labeled) and electron (high-resolution, unlabeled structural) channels. Algorithm routing spans classical phase-correlation registration, model-based super-resolution with EM priors, and modern deep-learning cross-modality translation, matching the current state of the CLEM field. The mismatch parameters on registration error, PSF width, and labeling density probe the dominant sources of CLEM correlation inaccuracy in real workflows. No challenge data has been ingested. OpenOrganelle (Davis et al. 2020, Cell, CC-BY-4.0, DOI minted) is the preferred community-standard open dataset.
+
+**Outstanding items:**
+1. No challenge data — source OpenOrganelle (Davis et al. 2020, Cell 183:1739, CC-BY-4.0, DOI minted) or EMPIAR CLEM datasets.
+2. Register phase-correlation + B-spline registration (Thevenaz et al. 1998, IEEE Trans. Image Process.) as mandatory classical baseline in YAML.
+3. Register CLEM-Net (2022) as required DL baseline in YAML.
 
 ---
-*Comprehensive 6-point check by deep-check pipeline v3*
+*Comprehensive 6-point check by deep-check pipeline v4*

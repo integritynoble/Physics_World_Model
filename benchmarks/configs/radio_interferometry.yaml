@@ -72,6 +72,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  ri_dl:
+    name: R2D2 (interferometry)
+    module: pwm_core.recon.radio_interf_solvers
+    function: r2d2_recon
+    params: 20M
+    gpu: true
+    reference: Aghabiglou, A. et al. (2024) R2D2 model for radio interferometric imaging,
+      ApJS
 metrics:
   names:
   - psnr

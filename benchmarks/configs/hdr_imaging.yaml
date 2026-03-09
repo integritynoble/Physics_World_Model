@@ -66,6 +66,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  hdr_dl:
+    name: HDR-Net
+    module: pwm_core.recon.hdr_solvers
+    function: hdr_net_recon
+    params: 18M
+    gpu: true
+    reference: Eilertsen, G. et al. (2017) HDR image reconstruction from single exposures,
+      ACM TOG 36(6)
 metrics:
   names:
   - psnr

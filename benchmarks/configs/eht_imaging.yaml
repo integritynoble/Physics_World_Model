@@ -72,6 +72,13 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  eht_dl:
+    name: EHT-PRIMO
+    module: pwm_core.recon.eht_solvers
+    function: eht_dl_recon
+    params: 15M
+    gpu: true
+    reference: Medeiros, L. et al. (2023) DL image reconstruction for EHT, ApJL 947(1)
 metrics:
   names:
   - psnr

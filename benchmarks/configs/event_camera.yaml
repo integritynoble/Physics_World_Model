@@ -72,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  event_dl:
+    name: E2VID+
+    module: pwm_core.recon.event_solvers
+    function: e2vid_plus_recon
+    params: 10M
+    gpu: true
+    reference: Rebecq, H. et al. (2021) High speed and high dynamic range video with
+      events, IEEE TPAMI 43(6)
 metrics:
   names:
   - psnr

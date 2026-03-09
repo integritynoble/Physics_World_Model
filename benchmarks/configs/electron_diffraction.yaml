@@ -35,8 +35,8 @@ data_source:
   dataset_url: https://github.com/py4dstem/py4DSTEM_tutorials
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: 'Savitzky et al., py4DSTEM: A Software Package for Four-Dimensional Scanning Transmission Electron Microscopy,
-    Microscopy and Microanalysis 2021'
+  citation: 'Savitzky et al., py4DSTEM: A Software Package for Four-Dimensional Scanning
+    Transmission Electron Microscopy, Microscopy and Microanalysis 2021'
   license: GPL-3.0
 mismatch_params: []
 solvers:
@@ -47,6 +47,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: ED-Net
+    module: pwm_core.recon.ed_solvers
+    function: ed_net_recon
+    params: 10M
+    gpu: true
+    reference: Zuo, J.M. et al. (2022) DL for electron diffraction, Microsc. Microanal.
+      28(1)
+  famous_dl:
+    name: CRISP-ED
+    module: pwm_core.recon.ed_solvers
+    function: crisp_ed_recon
+    params: '0'
+    gpu: false
+    reference: Zou, X. et al. (1993) Crystal structure determination from electron
+      diffraction, Acta Cryst.
 metrics:
   names:
   - psnr
@@ -58,8 +74,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: 'Savitzky et al., py4DSTEM: A Software Package for Four-Dimensional Scanning Transmission Electron Microscopy,
-      Microscopy and Microanalysis 2021'
+    reference: 'Savitzky et al., py4DSTEM: A Software Package for Four-Dimensional
+      Scanning Transmission Electron Microscopy, Microscopy and Microanalysis 2021'
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / electron_diffraction_graph_v2

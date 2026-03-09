@@ -68,6 +68,13 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  coded_dl:
+    name: FlowNet-Coded
+    module: pwm_core.recon.coded_exp_solvers
+    function: flownet_coded_recon
+    params: 38M
+    gpu: true
+    reference: Jin, M. et al. (2018) Noise2Noise learning for coded exposure, CVPR
 metrics:
   names:
   - psnr

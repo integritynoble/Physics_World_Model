@@ -72,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  clean_dl:
+    name: RadioAST-DL
+    module: pwm_core.recon.radio_astro_solvers
+    function: radio_dl_recon
+    params: 15M
+    gpu: true
+    reference: Connor, L. & van Leeuwen, J. (2018) Applying DL to fast radio burst
+      classification, AJ 156(6)
 metrics:
   names:
   - psnr

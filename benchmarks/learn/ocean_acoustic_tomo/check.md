@@ -1,8 +1,8 @@
 # Comprehensive 6-Point Check — Ocean Acoustic Tomography
 
 **URL:** https://pwm.platformai.org/benchmark/ocean_acoustic_tomo
-**Check Date:** 2026-03-06
-**Status:** PASS
+**Check Date:** 2026-03-09
+**Status:** NEEDS_WORK
 
 ---
 
@@ -46,49 +46,64 @@ Matrix form:  delta_t = A * delta_s + n
 - `x_true: (H, W)` — 2D sound-speed anomaly field delta_c(x,z) in m/s on a range-depth grid (typically 64×64 or 128×128 pixels spanning hundreds of km horizontally and 0–5 km depth)
 - `y: (N_rays,)` — vector of travel-time perturbations delta_t in milliseconds for N_rays source-receiver pairs, typically 20–200 rays depending on array geometry
 
+**Public datasets:**
+- WHOI ACOBAR/ACOU Arctic dataset (PANGAEA, Sagen et al.) — open access OAT travel-time measurements from Arctic Ocean mooring arrays
+- SWELLEX-96 experiment data (swellex96.ucsd.edu, open access) — shallow-water acoustic propagation dataset widely used for ocean acoustic inversion benchmarks
+- Argo float hydrography (argo.ucsd.edu) — 4000+ active profiling floats providing co-located sound-speed climatology for OAT validation
+
 ---
 
 ## 3. Reconstruction Methods & Leaderboard
 
 | Algorithm | Type | Reference | Appropriateness |
 |-----------|------|-----------|-----------------|
-| Tikhonov | Classical | Tikhonov, Doklady Akad. Nauk 1963; Munk & Wunsch, Deep-Sea Res. 1979 | High — regularized least-squares inversion is the standard approach for travel-time tomography and directly handles the under-determined ray-coverage geometry |
-| PnP-RED | PnP | Romano et al., IEEE TIP 2017 | Good — regularization by denoising with a learned prior is well-suited for structured ocean temperature fields with mesoscale correlations |
-| ResUNet | Deep Learning | Residual U-Net baseline | Good — data-driven end-to-end inversion from simulated ray-coverage patterns; effective when trained on realistic ocean variability ensembles |
-| ExpFormer | Vision Transformer | Experimental science transformer, 2024 | Good — attention mechanism can learn the non-local mapping from irregular ray measurements to spatially correlated ocean fields |
+| Matched Field Processing (MFP) | Classical | Baggeroer et al., IEEE J. Ocean. Eng. 18:401 (1993) | Mandatory baseline — cross-correlation of observed travel times with replica wavefield database; THE fundamental OAT inversion method; community standard since Munk & Wunsch 1979 |
+| Tikhonov Modal Inversion | Classical | Munk & Wunsch, Deep-Sea Res. 26:123 (1979); Tikhonov 1963 | Regularized least-squares inversion with empirical orthogonal function (EOF) ocean prior; foundational OAT algorithm |
+| PnP-RED | PnP | Romano et al., IEEE TIP 2017 | Regularization-by-denoising with a learned prior well-suited for structured ocean temperature fields with mesoscale correlations |
+| ResUNet | Deep Learning | Residual U-Net baseline | Data-driven end-to-end inversion from simulated ray-coverage patterns; effective when trained on realistic ocean variability ensembles |
+| ExpFormer | Vision Transformer | Experimental science transformer, 2024 | Attention mechanism can learn the non-local mapping from irregular ray measurements to spatially correlated ocean fields |
+
+**ACTION REQUIRED:** Source WHOI/SWELLEX-96 acoustic travel-time dataset. Register Matched Field Processing (Baggeroer et al. 1993) as mandatory classical baseline in YAML.
 
 ---
 
 ## 4. Literature & State of the Art (2024–2025)
 
 1. **Munk, W. & Wunsch, C.** "Ocean Acoustic Tomography: A Scheme for Large Scale Monitoring." *Deep-Sea Research* 26(2):123–161, 1979. — Foundational paper establishing the eigenray travel-time inversion framework for basin-scale ocean thermometry.
-
-2. **Huang, Y. et al.** "Physics-Informed Deep Learning for Ocean Acoustic Tomography." *Journal of Geophysical Research: Oceans* 129(3):e2023JC020142, 2024. — Demonstrates PINN-based travel-time inversion embedding ray equations as a physical constraint, achieving sub-0.3 m/s RMS errors in 1000-km-scale domains.
-
-3. **Li, Z. et al.** "Neural Operator Methods for Ocean Sound Speed Field Reconstruction from Sparse Acoustic Measurements." *IEEE Transactions on Geoscience and Remote Sensing* 62:4208714, 2024. — Fourier neural operator applied to OAT, learning the full inversion operator from simulated travel times; shows strong generalization to unseen mesoscale patterns.
-
-4. **Bianco, M.J. & Gerstoft, P.** "Dictionary Learning for Sound Speed Profile Reconstruction in Ocean Acoustics." *JASA Express Letters* 5(2):026001, 2025. — Sparse coding over a learned dictionary of empirical orthogonal functions from Argo float profiles, combined with transformer-based priors for travel-time inversion.
+2. **Huang, Y. et al. (2024)** "Physics-Informed Deep Learning for Ocean Acoustic Tomography," *Journal of Geophysical Research: Oceans* 129(3):e2023JC020142 — PINN-based travel-time inversion embedding ray equations as a physical constraint, achieving sub-0.3 m/s RMS errors in 1000-km-scale domains.
+3. **Li, Z. et al. (2024)** "Neural Operator Methods for Ocean Sound Speed Field Reconstruction from Sparse Acoustic Measurements," *IEEE Transactions on Geoscience and Remote Sensing* 62:4208714 — Fourier neural operator applied to OAT with strong generalization to unseen mesoscale patterns.
+4. **Bianco, M.J. & Gerstoft, P. (2025)** "Dictionary Learning for Sound Speed Profile Reconstruction in Ocean Acoustics," *JASA Express Letters* 5(2):026001 — Sparse coding over a learned dictionary of empirical orthogonal functions from Argo float profiles, combined with transformer-based priors for travel-time inversion.
 
 ---
 
 ## 5. Local Dataset & GCS Status
 
-- **GCS bucket:** `pwm-benchmark-datasets`
-- **Challenge HDF5 paths:**
-  - `gs://pwm-benchmark-datasets/challenge-data/v1.0/ocean_acoustic_tomo_challenge_public.h5`
-  - `gs://pwm-benchmark-datasets/challenge-data/v1.0/ocean_acoustic_tomo_challenge_dev.h5`
-  - `gs://pwm-benchmark-datasets/challenge-data/v1.0/ocean_acoustic_tomo_challenge_hidden.h5`
-- **Gallery images:** `gs://pwm-benchmark-datasets/img/benchmark_gallery/ocean_acoustic_tomo/`
-- **Local cache:** `/tmp/pwm_challenge_cache/ocean_acoustic_tomo_challenge_public.h5` (populated on demand via GCS proxy)
-- **Generator:** phantom uses synthetic mesoscale temperature anomalies (Gaussian eddies + random ocean modes) as ground truth
+**No challenge data ingested.** Challenge data to be sourced from WHOI/SWELLEX-96 and stored on GCS.
+
+**Recommended public data sources:**
+- WHOI ACOBAR/ACOU Arctic dataset (PANGAEA, open access) — moored OAT travel-time measurement records
+- SWELLEX-96 experiment data (swellex96.ucsd.edu, open access) — shallow-water acoustic propagation benchmark
+- Argo climatological profiles (argo.ucsd.edu) — sound-speed climatology for forward model validation
+
+**GCS datasets (planned):**
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/ocean_acoustic_tomo_challenge_public.h5`
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/ocean_acoustic_tomo_challenge_dev.h5`
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/ocean_acoustic_tomo_challenge_hidden.h5`
+
+**Gallery images:** To be served from `gs://pwm-benchmark-datasets/img/benchmark_gallery/ocean_acoustic_tomo/`.
 
 ---
 
 ## 6. Comprehensive Assessment
 
-**Status:** PASS
+**Status:** NEEDS_WORK
 
-The ocean acoustic tomography benchmark correctly models the linearized travel-time inverse problem. The algorithm pool (Tikhonov, PnP-RED, ResUNet, ExpFormer) spans classical Tikhonov regularization — the gold standard for OAT since Munk & Wunsch 1979 — through modern learned inversion methods. The physics are sound: travel-time integrals along eigenrays produce the standard observable in OAT, and the Radon-like integral structure makes this a well-posed linear inverse problem amenable to all selected solvers. The benchmark provides a meaningful test of algorithms' ability to recover structured ocean temperature anomaly fields from sparse and irregular acoustic ray coverage, with Gaussian noise on travel times reflecting realistic clock-error and ambient-noise conditions.
+The ocean acoustic tomography benchmark correctly models the linearized travel-time inverse problem. The algorithm pool (Matched Field Processing, Tikhonov modal inversion, PnP-RED, ResUNet, ExpFormer) spans the classical Munk & Wunsch 1979 framework through modern learned inversion methods. The physics are sound: travel-time integrals along eigenrays produce the standard observable in OAT, and the Radon-like integral structure makes this a well-posed linear inverse problem amenable to all selected solvers. No challenge data has been ingested. WHOI/SWELLEX-96 acoustic datasets must be sourced.
+
+**Outstanding items:**
+1. No challenge data — source WHOI/SWELLEX-96 or Argo-constrained OAT datasets.
+2. Register Matched Field Processing (Baggeroer et al. 1993, IEEE J. Ocean. Eng. 18:401) as mandatory classical baseline in YAML.
+3. Register Tikhonov modal inversion (Munk & Wunsch 1979) as required second classical baseline in YAML.
 
 ---
-*Comprehensive 6-point check by deep-check pipeline v3*
+*Comprehensive 6-point check by deep-check pipeline v4*

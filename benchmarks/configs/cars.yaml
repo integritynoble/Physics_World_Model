@@ -66,6 +66,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  cars_dl:
+    name: CARS-DeepSpec
+    module: pwm_core.recon.cars_solvers
+    function: cars_dl_recon
+    params: 8M
+    gpu: true
+    reference: 'Manifold, B. et al. (2021) Denoising CARS microscopy with DL, Light:
+      Sci. & Appl. 10:98'
 metrics:
   names:
   - psnr

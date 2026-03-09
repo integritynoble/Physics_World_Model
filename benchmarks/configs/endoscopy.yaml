@@ -43,8 +43,8 @@ data_source:
   dataset_url: https://datasets.simula.no/hyper-kvasir/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Borgli et al., HyperKvasir, a comprehensive multi-class image and video dataset for gastrointestinal endoscopy,
-    Scientific Data 2020
+  citation: Borgli et al., HyperKvasir, a comprehensive multi-class image and video
+    dataset for gastrointestinal endoscopy, Scientific Data 2020
   license: CC-BY-4.0
 mismatch_params: []
 solvers:
@@ -55,6 +55,21 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: EndoMapper-Net
+    module: pwm_core.recon.endoscopy_solvers
+    function: endomapper_recon
+    params: 20M
+    gpu: true
+    reference: Ozyoruk, K.B. et al. (2021) EndoMapper, Nat. Mach. Intel. 3
+  famous_dl:
+    name: AF-SfMLearner
+    module: pwm_core.recon.endoscopy_solvers
+    function: af_sfm_learner_recon
+    params: 15M
+    gpu: true
+    reference: Shao, S. et al. (2022) Self-supervised depth estimation in endoscopy,
+      MICCAI 2022
 metrics:
   names:
   - psnr
@@ -66,8 +81,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Borgli et al., HyperKvasir, a comprehensive multi-class image and video dataset for gastrointestinal endoscopy,
-      Scientific Data 2020
+    reference: Borgli et al., HyperKvasir, a comprehensive multi-class image and video
+      dataset for gastrointestinal endoscopy, Scientific Data 2020
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / endoscopy_graph_v2

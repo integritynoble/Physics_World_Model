@@ -72,6 +72,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  hyper_dl:
+    name: SST-USRNet
+    module: pwm_core.recon.hyper_solvers
+    function: sst_usrnet_recon
+    params: 20M
+    gpu: true
+    reference: He, W. et al. (2022) Hyperspectral super-resolution with SST, IEEE
+      TGRS
 metrics:
   names:
   - psnr

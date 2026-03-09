@@ -26,12 +26,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: epid_portal_dataset
+  dataset_url: https://www.aapm.org/pubs/reports/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Greer, P.B. & van Doorn, T. (2000) Evaluation of a radiographic phantom
+    for EPID, Med. Phys.
+  license: Research use
 mismatch_params:
 - name: Isocenter shift
   nominal: 0.0
@@ -72,6 +73,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  portal_dl:
+    name: PortalDL
+    module: pwm_core.recon.portal_solvers
+    function: portal_dl_recon
+    params: 14M
+    gpu: true
+    reference: Du, W. et al. (2022) DL for portal imaging artifact correction, Med.
+      Phys. 49(8)
 metrics:
   names:
   - psnr

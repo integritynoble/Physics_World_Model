@@ -27,12 +27,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: mvtec_ad
+  dataset_url: https://www.mvtec.com/company/research/datasets/mvtec-ad
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: ''
-  license: ''
+  citation: 'Bergmann, P. et al. (2019) MVTec AD: Comprehensive Real-World Dataset,
+    CVPR'
+  license: CC-BY-NC 4.0 (MVTec)
 mismatch_params:
 - name: Focus distance error
   nominal: 0.0
@@ -73,6 +74,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  mv_dl:
+    name: PatchCore
+    module: pwm_core.recon.machine_vision_solvers
+    function: patchcore_recon
+    params: 25M
+    gpu: true
+    reference: Roth, K. et al. (2022) Towards total recall in industrial anomaly detection,
+      CVPR
 metrics:
   names:
   - psnr

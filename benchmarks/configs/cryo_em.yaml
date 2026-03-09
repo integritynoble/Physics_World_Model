@@ -74,6 +74,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  relion_dl:
+    name: CryoDRGN
+    module: pwm_core.recon.cryoem_solvers
+    function: cryodrgn_recon
+    params: 5M
+    gpu: true
+    reference: 'Zhong, E.D. et al. (2021) CryoDRGN: reconstruction of heterogeneous
+      cryo-EM, Nature Methods 18:176'
 metrics:
   names:
   - psnr

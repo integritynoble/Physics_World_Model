@@ -38,7 +38,8 @@ data_source:
   dataset_url: https://otc.duke.edu/technology/xcat/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Segars et al., 4D XCAT phantom for multimodality imaging research, Medical Physics 2010
+  citation: Segars et al., 4D XCAT phantom for multimodality imaging research, Medical
+    Physics 2010
   license: Research license (Duke)
 mismatch_params: []
 solvers:
@@ -49,6 +50,21 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: FluoroNet
+    module: pwm_core.recon.fluoro_solvers
+    function: fluoro_net_recon
+    params: 14M
+    gpu: true
+    reference: Gu, J. et al. (2022) DL fluoroscopy denoising, Med. Image Anal. 75
+  famous_dl:
+    name: X-ray CNN
+    module: pwm_core.recon.fluoro_solvers
+    function: xray_cnn_recon
+    params: 10M
+    gpu: true
+    reference: Cheng, C.T. et al. (2021) A scalable physician-level AI for chest X-ray,
+      NPJ Digital Med.
 metrics:
   names:
   - psnr
@@ -60,7 +76,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Segars et al., 4D XCAT phantom for multimodality imaging research, Medical Physics 2010
+    reference: Segars et al., 4D XCAT phantom for multimodality imaging research,
+      Medical Physics 2010
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / fluoroscopy_graph_v2

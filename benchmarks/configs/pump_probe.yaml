@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: tr_xds_dataset
+  dataset_url: https://www.esrf.eu/home/UsersAndScience/Experiments/MX/How_to_use_our_beamlines/ID09.html
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Cammarata, M. et al. (2008) Impulsive solvent heating probed by time-resolved
+    X-ray diffraction, J. Chem. Phys.
+  license: Research use
 mismatch_params:
 - name: Time-zero drift
   nominal: 0.0
@@ -71,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  pp_dl:
+    name: PumpProbe-Net
+    module: pwm_core.recon.pump_probe_solvers
+    function: pump_probe_dl_recon
+    params: 8M
+    gpu: true
+    reference: Yessenov, M. et al. (2022) DL for femtosecond pump-probe spectroscopy,
+      Nat. Photon. 16
 metrics:
   names:
   - psnr

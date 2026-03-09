@@ -24,12 +24,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: desi_msi_brain
+  dataset_url: https://metaspace2020.eu/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: 'Palmer, A. et al. (2017) METASPACE: community knowledge base, Nature
+    Methods'
+  license: CC-BY-4.0
 mismatch_params:
 - name: Spray angle error
   nominal: 0.0
@@ -70,6 +71,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  desi_dl:
+    name: DESI-SegNet
+    module: pwm_core.recon.desi_solvers
+    function: desi_seg_recon
+    params: 12M
+    gpu: true
+    reference: Guo, T. et al. (2021) DL for DESI-MSI tissue segmentation, Anal. Chem.
+      93(32)
 metrics:
   names:
   - psnr

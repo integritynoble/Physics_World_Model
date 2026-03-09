@@ -66,6 +66,14 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  mfm_dl:
+    name: MFM-UNet
+    module: pwm_core.recon.mfm_solvers
+    function: mfm_dl_recon
+    params: 8M
+    gpu: true
+    reference: Kim, M. et al. (2021) DL for magnetic force microscopy, npj Comput.
+      Mater. 7:87
 metrics:
   names:
   - psnr

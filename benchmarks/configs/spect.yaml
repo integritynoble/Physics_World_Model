@@ -39,7 +39,8 @@ data_source:
   dataset_url: http://noodle.med.yale.edu/zubal/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Zubal et al., Computerized three-dimensional segmented human anatomy, Medical Physics 1994
+  citation: Zubal et al., Computerized three-dimensional segmented human anatomy,
+    Medical Physics 1994
   license: Research use
 mismatch_params:
 - name: Collimator response error
@@ -68,6 +69,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: SPECT-DL (OSEM+)
+    module: pwm_core.recon.spect_solvers
+    function: spect_dl_recon
+    params: 20M
+    gpu: true
+    reference: Shiri, I. et al. (2020) Deep-JASC DL SPECT, Eur. J. Nucl. Med. Mol.
+      Imaging
+  famous_dl:
+    name: SPECT-UNet
+    module: pwm_core.recon.spect_solvers
+    function: spect_unet_recon
+    params: 31M
+    gpu: true
+    reference: Kim, K. et al. (2018) Penalized PET reconstruction using DL, IEEE TMI
+      37(6)
 metrics:
   names:
   - psnr
@@ -79,7 +96,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Zubal et al., Computerized three-dimensional segmented human anatomy, Medical Physics 1994
+    reference: Zubal et al., Computerized three-dimensional segmented human anatomy,
+      Medical Physics 1994
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / spect_graph_v2

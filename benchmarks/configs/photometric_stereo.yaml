@@ -27,12 +27,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: diligent_benchmark
+  dataset_url: https://sites.google.com/site/photometricstereodata/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Shi, B. et al. (2016) Benchmark Dataset and Evaluation for Photometric
+    Stereo, TPAMI 38(2)
+  license: Research use
 mismatch_params:
 - name: Light direction error
   nominal: 0.0
@@ -73,6 +74,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  ps_dl:
+    name: PS-FCN
+    module: pwm_core.recon.ps_solvers
+    function: ps_fcn_recon
+    params: 15M
+    gpu: true
+    reference: 'Chen, G. et al. (2019) PS-FCN: Flexible learning for photometric stereo,
+      IEEE TIP 29'
 metrics:
   names:
   - psnr

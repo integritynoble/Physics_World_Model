@@ -24,12 +24,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: openfwi_dataset
+  dataset_url: https://openfwi-lanl.github.io/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: 'Deng, C. et al. (2022) OpenFWI: Large-scale multi-structural benchmark
+    datasets, NeurIPS'
+  license: CC-BY-4.0
 mismatch_params:
 - name: Starting velocity model error
   nominal: 0.0
@@ -70,6 +71,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  fwi_dl:
+    name: InversionNet
+    module: pwm_core.recon.fwi_solvers
+    function: inversion_net_recon
+    params: 15M
+    gpu: true
+    reference: 'Wu, Y. & Lin, Y. (2019) InversionNet: Accurate and efficient seismic
+      waveform inversion, IEEE TGRS'
 metrics:
   names:
   - psnr

@@ -25,12 +25,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: single_pixel_dataset
+  dataset_url: https://doi.org/10.1038/s41377-019-0182-6
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Zhang, Z. et al. (2019) Entanglement-based ghost imaging, Optica 6(11)
+  license: Research use
 mismatch_params:
 - name: Bucket detector efficiency
   nominal: 1.0
@@ -71,6 +71,13 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  gi_dl:
+    name: GI-Net
+    module: pwm_core.recon.gi_solvers
+    function: gi_net_recon
+    params: 6M
+    gpu: true
+    reference: Lyu, M. et al. (2017) DL computational ghost imaging, Sci. Rep. 7:17865
 metrics:
   names:
   - psnr

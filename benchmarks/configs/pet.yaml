@@ -37,7 +37,8 @@ data_source:
   dataset_url: https://brainweb.bic.mni.mcgill.ca/brainweb/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: 'Cocosco et al., BrainWeb: Online Interface to a 3D MRI Simulated Brain Database, NeuroImage 1997'
+  citation: 'Cocosco et al., BrainWeb: Online Interface to a 3D MRI Simulated Brain
+    Database, NeuroImage 1997'
   license: Research use
 mismatch_params:
 - name: Attenuation map error
@@ -78,6 +79,21 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: NeuroLF-PET
+    module: pwm_core.recon.pet_solvers
+    function: neurolF_pet_recon
+    params: 30M
+    gpu: true
+    reference: 'Häggström, I. et al. (2019) DeepPET: DL for PET reconstruction, Med.
+      Image Anal. 58'
+  famous_dl:
+    name: PET-DL (U-Net)
+    module: pwm_core.recon.pet_solvers
+    function: pet_unet_recon
+    params: 31M
+    gpu: true
+    reference: Gong, K. et al. (2019) PET image reconstruction with DL, IEEE TMI 38(9)
 metrics:
   names:
   - psnr
@@ -89,7 +105,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: 'Cocosco et al., BrainWeb: Online Interface to a 3D MRI Simulated Brain Database, NeuroImage 1997'
+    reference: 'Cocosco et al., BrainWeb: Online Interface to a 3D MRI Simulated Brain
+      Database, NeuroImage 1997'
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / pet_graph_v2

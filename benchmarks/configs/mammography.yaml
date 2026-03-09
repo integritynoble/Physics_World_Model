@@ -38,8 +38,8 @@ data_source:
   dataset_url: https://wiki.cancerimagingarchive.net/display/Public/CBIS-DDSM
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Lee et al., A curated mammography data set for use in computer-aided detection and diagnosis research, Scientific
-    Data 2017
+  citation: Lee et al., A curated mammography data set for use in computer-aided detection
+    and diagnosis research, Scientific Data 2017
   license: CC-BY-3.0
 mismatch_params: []
 solvers:
@@ -50,6 +50,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: MammoNet (GatorTron)
+    module: pwm_core.recon.mammo_solvers
+    function: mammo_net_recon
+    params: 85M
+    gpu: true
+    reference: Shen, L. et al. (2021) Deep learning for mass detection in mammography,
+      NPJ Digital Med.
+  famous_dl:
+    name: Mammo-ResNet
+    module: pwm_core.recon.mammo_solvers
+    function: mammo_resnet_recon
+    params: 25M
+    gpu: true
+    reference: Wu, N. et al. (2019) Deep neural networks improve radiologists performance
+      in breast cancer screening, RSNA
 metrics:
   names:
   - psnr
@@ -61,8 +77,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Lee et al., A curated mammography data set for use in computer-aided detection and diagnosis research, Scientific
-      Data 2017
+    reference: Lee et al., A curated mammography data set for use in computer-aided
+      detection and diagnosis research, Scientific Data 2017
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / mammography_graph_v2

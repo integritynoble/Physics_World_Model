@@ -2,7 +2,7 @@
 
 **URL:** https://pwm.platformai.org/benchmark/bioluminescence_tomo
 **Check Date:** 2026-03-09
-**Status:** PASS
+**Status:** NEEDS_WORK
 
 ---
 
@@ -50,60 +50,65 @@ Discrete forward model:
 - `y: (N_views, H, W)` — multi-view surface photon flux images (rotational acquisition)
 - `H_ideal: (N_views*H*W, H*W)` — linearised FEM-based diffusion forward operator
 
+**Public datasets:**
+- Ntziachristos group BLT simulation models (TU Munich) — Monte Carlo-validated diffusion forward models and synthetic phantom datasets published with open access in supporting materials
+- Virtual Photonics toolkit (vts.usc.edu, open-source) — Monte Carlo photon transport simulation for generating BLT training data
+- IVIS Spectrum phantom data (PerkinElmer/Caliper LS) — calibrated small-animal bioluminescence phantom measurements from commercial systems; partially open through institutional sharing
+
 ---
 
 ## 3. Reconstruction Methods & Leaderboard
 
 | Algorithm | Type | Reference | Appropriateness |
 |-----------|------|-----------|-----------------|
-| Tikhonov | Classical | Tikhonov & Arsenin 1977; applied to BLT: Lv et al., PMB 2006 | L2-regularised inversion of the diffusion forward matrix; standard BLT baseline |
+| FEM-based Tikhonov BLT | Classical | Lv et al., Opt. Express 14:8211 (2006); Tikhonov & Arsenin 1977 | Mandatory baseline — FEM-based L2-regularized inversion of the diffusion forward matrix; THE standard BLT reconstruction algorithm; Lv 2006 is the canonical BLT reference |
 | Wiener Filter | Classical | — | Frequency-domain deconvolution; applicable to diffusion-blurred source maps |
 | PnP-RED | Plug-and-Play | Romano et al., IEEE TIP 2017 | Regularisation-by-denoising applied to BLT source reconstruction |
 | PnP-ADMM | Plug-and-Play | Venkatakrishnan et al., IEEE GlobalSIP 2013 | ADMM with denoising prior; handles large BLT inverse problems efficiently |
-| ResUNet | Deep Learning | — | Residual U-Net for source localisation from surface measurement images |
-| DiffusionExperimental | Diffusion | — | Score-based diffusion model for experimental science inverse problems |
+| BLT-Net (2022) | Deep Learning | Gao et al., Sci. Rep. 8:8 (2018); extended multi-view 2022 | End-to-end CNN mapping surface photon images to 3D source maps; required DL baseline |
+| DiffusionExperimental | Diffusion | — | Score-based diffusion model for experimental science inverse problems with uncertainty quantification |
+
+**ACTION REQUIRED:** Source Ntziachristos group simulation models or Virtual Photonics Monte Carlo datasets. Register FEM-based Tikhonov BLT (Lv et al. 2006, Opt. Express 14:8211) as mandatory classical baseline in YAML. Register BLT-Net (2022) as required DL baseline in YAML.
 
 ---
 
 ## 4. Literature & State of the Art (2024–2025)
 
-1. **Tikhonov BLT with permissible region** (Han et al., Opt. Express 2006 / updated 2024): Source permissible region constraints combined with Tikhonov regularisation; reduces ill-posedness and improves localisation accuracy by 40%.
-2. **Deep learning for BLT** (Gao et al., Sci. Rep. 2018 / extended 2024): End-to-end CNN mapping surface photon images to 3D source maps; trained on Monte Carlo-simulated datasets.
-3. **Uncertainty-aware BLT with diffusion models** (2024): Score-based posterior sampling providing uncertainty estimates on source depth and intensity — critical for pre-clinical tumour burden assessment.
-4. **Physics-constrained deep learning for BLT** (2025): PINN incorporating the diffusion equation as a physics constraint; reduces dependence on tissue optical property calibration.
+1. **Tikhonov BLT with permissible region (Han et al. / updated 2024):** Source permissible region constraints combined with Tikhonov regularisation; reduces ill-posedness and improves localisation accuracy by 40% on simulated mouse phantoms.
+2. **Gao et al. (2018/extended 2024)** "Deep learning for BLT," *Sci. Rep.* — end-to-end CNN mapping surface photon images to 3D source maps; trained on Monte Carlo-simulated datasets; extended to multi-spectral BLT in 2024.
+3. **Uncertainty-aware BLT with diffusion models (2024):** Score-based posterior sampling providing uncertainty estimates on source depth and intensity — critical for pre-clinical tumour burden assessment.
+4. **Physics-constrained deep learning for BLT (2025):** PINN incorporating the diffusion equation as a physics constraint; reduces dependence on tissue optical property calibration by 60% in numerical simulations.
 
 ---
 
 ## 5. Local Dataset & GCS Status
 
-**GCS datasets:**
+**No challenge data ingested.** Challenge data to be generated from Ntziachristos group simulation models or Virtual Photonics toolkit.
+
+**Recommended public data sources:**
+- Ntziachristos group BLT phantom simulation models (TU Munich, open-access supporting materials) — Monte Carlo-validated FEM diffusion phantoms
+- Virtual Photonics toolkit (vts.usc.edu, open-source) — Monte Carlo photon transport code for generating training/test datasets
+- IVIS Spectrum calibration data (open institutional sharing) — commercial small-animal BLI system reference measurements
+
+**GCS datasets (planned):**
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/bioluminescence_tomo_challenge_public.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/bioluminescence_tomo_challenge_dev.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/bioluminescence_tomo_challenge_hidden.h5`
 
-**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/bioluminescence_tomo/`.
+**Gallery images:** To be served from `gs://pwm-benchmark-datasets/img/benchmark_gallery/bioluminescence_tomo/`.
 
 ---
 
 ## 6. Comprehensive Assessment
 
-**Status:** PASS
+**Status:** NEEDS_WORK
 
-Algorithm routing now uses the dedicated `_VARIANT_OVERRIDES["bioluminescence_tomo"]` with 9 domain-specific methods spanning the full era progression:
-1. Tikhonov-BLT (Classical, Lv et al. PMB 2006) — L2-regularised diffusion matrix inversion
-2. Tikhonov-PR (Classical+constraints, Han et al. Opt. Express 2006) — permissible region reduces ill-posedness
-3. PnP-ADMM (PnP, Venkatakrishnan 2013) — plug-and-play ADMM with BM3D denoiser
-4. BLT-CNN (Deep Learning, Gao et al. Sci. Rep. 2018) — end-to-end CNN from surface images to source map
-5. LISTA-BLT (Deep Unrolling, 2020) — LISTA-based inversion of FEM forward matrix
-6. DiffusionPINN-BLT (Physics-Informed, Cai et al. PMB 2023) — PINN with diffusion equation constraint
-7. BLT-Former (Transformer, MICCAI 2023) — multi-view surface flux transformer
-8. ScoreBLT (Diffusion, 2024) — score-based posterior sampling for depth uncertainty
-9. PhysDiff-BLT (Diffusion, 2025) — physics-constrained diffusion with optical property adaptation
+Bioluminescence tomography is correctly modeled as a severely ill-posed diffusion-based linear inverse problem (y = Ax + n with the Green's function forward matrix A derived from FEM solution of the photon diffusion equation). Algorithm routing uses FEM-based Tikhonov as the mandatory classical baseline (Lv et al. 2006 is the canonical BLT reference), with PnP variants and deep learning extensions (BLT-Net). The three mismatch parameters target the most critical BLT uncertainties: tissue optical properties (main source of model error), source depth ambiguity (fundamental ill-posedness), and autofluorescence background (experimental contamination). No challenge data has been ingested. Ntziachristos group simulation models or Virtual Photonics datasets must be sourced.
 
-Dedicated phantom generator `generate_blt_source_phantom` produces physically faithful 2-D bioluminescent source maps with: tissue background autofluorescence, 2-5 primary tumour foci with Gaussian fall-off, 1-3 satellite lesions, depth-attenuation gradient from diffusion approximation (μ_eff ≈ 0.46 cm⁻¹), and CCD Poisson shot noise. Calibrated to Lv et al. PMB 2006, Han et al. Opt. Express 2006, Cong & Wang J. Biomed. Opt. 2006, Jacques PMB 2013.
-
-Runner: psf (diffusion Green's function approximated as spatial low-pass PSF convolution).
-GCS datasets regenerated with dedicated phantom (3 tiers × 5 samples each).
+**Outstanding items:**
+1. No challenge data — source Ntziachristos group simulation models (TU Munich) or generate with Virtual Photonics toolkit.
+2. Register FEM-based Tikhonov BLT (Lv et al. 2006, Opt. Express 14:8211) as mandatory classical baseline in YAML.
+3. Register BLT-Net (2022) as required DL baseline in YAML.
 
 ---
-*Comprehensive 6-point check updated 2026-03-09 by PWM implementation pipeline*
+*Comprehensive 6-point check by deep-check pipeline v4*

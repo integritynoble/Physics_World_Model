@@ -66,6 +66,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  polsar_dl:
+    name: PolSAR-Net
+    module: pwm_core.recon.polsar_solvers
+    function: polsar_dl_recon
+    params: 18M
+    gpu: true
+    reference: Xie, W. et al. (2022) DL for PolSAR image classification, IEEE TGRS
+      60
 metrics:
   names:
   - psnr

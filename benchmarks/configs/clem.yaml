@@ -27,12 +27,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: clem_yeast_dataset
+  dataset_url: https://www.ebi.ac.uk/empiar/EMPIAR-10094/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Bharat, T.A.M. et al. (2018) CLEM of HIV-1 budding, Nature Methods 15:621
+  license: CC0 (EMPIAR)
 mismatch_params:
 - name: Registration error (LM to EM)
   nominal: 0.0
@@ -67,6 +67,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  clem_dl:
+    name: CLEM-Net
+    module: pwm_core.recon.clem_solvers
+    function: clem_dl_recon
+    params: 20M
+    gpu: true
+    reference: Spiers, H. et al. (2021) Citizen science-based training for DL CLEM,
+      Nat. Commun. 12:5764
 metrics:
   names:
   - psnr

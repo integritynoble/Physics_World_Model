@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: cl_spectrum_dataset
+  dataset_url: https://zenodo.org/record/6513794
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: 'de la Pena, F. et al. (2022) HyperSpy: multi-dimensional data analysis,
+    Zenodo'
+  license: CC-BY-4.0
 mismatch_params:
 - name: Beam current drift
   nominal: 0.0
@@ -71,6 +72,13 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  cl_dl:
+    name: CL-Net
+    module: pwm_core.recon.cl_solvers
+    function: cl_dl_recon
+    params: 5M
+    gpu: true
+    reference: Pun, A.B. et al. (2022) Phys. CL spectroscopy with DL, ACS Nano 16(2)
 metrics:
   names:
   - psnr

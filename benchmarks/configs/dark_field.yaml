@@ -27,12 +27,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: talbot_darkfield_dataset
+  dataset_url: https://doi.org/10.1038/nphys967
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: ''
-  license: ''
+  citation: Pfeiffer, F. et al. (2008) Hard-X-ray dark-field imaging, Nature Physics
+    4:949
+  license: Research use
 mismatch_params:
 - name: Condenser NA vs objective NA ratio
   nominal: 1.2
@@ -67,6 +68,13 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  df_unet:
+    name: DF-UNet
+    module: pwm_core.recon.darkfield_solvers
+    function: df_unet_recon
+    params: 31M
+    gpu: true
+    reference: Wolfer, T. et al. (2021) DL for dark-field X-ray CT, Sci. Rep. 11:5005
 metrics:
   names:
   - psnr

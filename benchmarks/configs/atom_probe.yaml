@@ -24,12 +24,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: apt_steel_dataset
+  dataset_url: https://www.apmworkbench.com/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Miller, M.K. & Forbes, R. (2014) Atom-Probe Tomography, Springer
+  license: Research use
 mismatch_params:
 - name: Flight path error
   nominal: 0.0
@@ -70,6 +70,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  apt_dl:
+    name: APT-Net
+    module: pwm_core.recon.apt_solvers
+    function: apt_net_recon
+    params: 6M
+    gpu: true
+    reference: Haley, D. et al. (2020) Prospects for atom-by-atom analysis, npj Comput.
+      Mater. 6:149
 metrics:
   names:
   - psnr

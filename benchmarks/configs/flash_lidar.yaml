@@ -71,6 +71,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  flash_dl:
+    name: FlashLiDAR-Net
+    module: pwm_core.recon.lidar_solvers
+    function: flash_lidar_dl_recon
+    params: 12M
+    gpu: true
+    reference: Gutierrez-Barragan, D. et al. (2022) EfficientLPS for flash LiDAR,
+      CVPR
 metrics:
   names:
   - psnr

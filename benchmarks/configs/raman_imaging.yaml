@@ -72,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  raman_dl:
+    name: RamanNet
+    module: pwm_core.recon.raman_solvers
+    function: raman_dl_recon
+    params: 8M
+    gpu: true
+    reference: Ho, C.S. et al. (2019) DL for rapid Raman microspectroscopy, Nature
+      Comms 10:4927
 metrics:
   names:
   - psnr

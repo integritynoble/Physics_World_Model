@@ -24,12 +24,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: icat_isis_neutron
+  dataset_url: https://www.isis.stfc.ac.uk/Pages/Neutron-Diffraction.aspx
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Kisi, E.H. & Howard, C.J. (2008) Applications of Neutron Powder Diffraction,
+    Oxford
+  license: CC-BY-4.0 (ISIS open data)
 mismatch_params:
 - name: Wavelength calibration
   nominal: 0.0
@@ -70,6 +71,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  nd_dl:
+    name: NeutronDiff-Net
+    module: pwm_core.recon.neutron_diff_solvers
+    function: nd_dl_recon
+    params: 8M
+    gpu: true
+    reference: Schroers, T. et al. (2022) ML for neutron diffraction, npj Comput.
+      Mater. 8:1
 metrics:
   names:
   - psnr

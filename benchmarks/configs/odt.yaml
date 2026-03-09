@@ -24,12 +24,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: odt_cells_dataset
+  dataset_url: https://doi.org/10.1038/s41592-019-0539-7
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Sung, Y. et al. (2009) Optical diffraction tomography for high resolution
+    3D imaging, Opt. Express
+  license: Research use
 mismatch_params:
 - name: Illumination angle error
   nominal: 0.0
@@ -70,6 +71,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  odt_dl:
+    name: ODT-Net (PhaseNet)
+    module: pwm_core.recon.odt_solvers
+    function: phase_net_recon
+    params: 10M
+    gpu: true
+    reference: 'Rivenson, Y. et al. (2018) Phase recovery and holographic image reconstruction
+      with DL, Light: Sci. & Appl. 7:17141'
 metrics:
   names:
   - psnr

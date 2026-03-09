@@ -24,12 +24,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: sam_defect_dataset
+  dataset_url: https://www.ndt.net/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Briggs, A. & Kolosov, O. (2010) Acoustic Microscopy, 2nd ed., Oxford
+  license: Research use
 mismatch_params:
 - name: Coupling medium speed
   nominal: 1480.0
@@ -70,6 +70,13 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  saft_dl:
+    name: SAFT-DL
+    module: pwm_core.recon.acoustic_solvers
+    function: saft_dl_recon
+    params: 5M
+    gpu: true
+    reference: Zhang, C. et al. (2021) DL ultrasonic imaging, Ultrasonics 116
 metrics:
   names:
   - psnr

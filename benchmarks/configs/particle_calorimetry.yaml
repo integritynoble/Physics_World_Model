@@ -24,12 +24,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: calorimetergan_dataset
+  dataset_url: https://zenodo.org/record/6366271
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Kruse, M. et al. (2022) CaloChallenge 2022 Dataset, Zenodo
+  license: CC-BY-4.0
 mismatch_params:
 - name: Energy scale factor
   nominal: 1.0
@@ -70,6 +70,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  cal_dl:
+    name: CaloDiffusion
+    module: pwm_core.recon.calorimetry_solvers
+    function: calo_diffusion_recon
+    params: 25M
+    gpu: true
+    reference: Acosta, M. et al. (2023) CaloDiffusion for jet simulation, Phys. Rev.
+      D 108(1)
 metrics:
   names:
   - psnr

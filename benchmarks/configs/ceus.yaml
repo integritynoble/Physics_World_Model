@@ -65,6 +65,13 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  us_dl_enhance:
+    name: US-DeepSight
+    module: pwm_core.recon.us_solvers
+    function: deep_ceus_recon
+    params: 15M
+    gpu: true
+    reference: Youn, J. et al. (2020) DL contrast-enhanced US, IEEE TUFFC 67(12)
 metrics:
   names:
   - psnr

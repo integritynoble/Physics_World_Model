@@ -66,6 +66,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  asl_dl:
+    name: ASL-Net
+    module: pwm_core.recon.asl_solvers
+    function: asl_dl_recon
+    params: 10M
+    gpu: true
+    reference: Guo, J. et al. (2020) Squeeze-and-excitation for ASL reconstruction,
+      Magn. Reson. Med.
 metrics:
   names:
   - psnr

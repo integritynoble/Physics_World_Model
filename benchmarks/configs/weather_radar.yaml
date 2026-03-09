@@ -71,6 +71,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  weather_dl:
+    name: NowcastNet
+    module: pwm_core.recon.weather_solvers
+    function: nowcastnet_recon
+    params: 50M
+    gpu: true
+    reference: Zhang, Y. et al. (2023) Skilful nowcasting of extreme precipitation
+      with NowcastNet, Nature 619:526
 metrics:
   names:
   - psnr

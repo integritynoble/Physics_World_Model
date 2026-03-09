@@ -67,6 +67,13 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  dbt_dl:
+    name: DBT-DL
+    module: pwm_core.recon.dbt_solvers
+    function: dbt_unet_recon
+    params: 31M
+    gpu: true
+    reference: Wu, N. et al. (2021) DL for DBT reconstruction, MICCAI 2021
 metrics:
   names:
   - psnr

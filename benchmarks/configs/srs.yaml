@@ -66,6 +66,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  srs_dl:
+    name: SRS-DeepSpec
+    module: pwm_core.recon.srs_solvers
+    function: srs_dl_recon
+    params: 8M
+    gpu: true
+    reference: 'Manifold, B. et al. (2021) DL for SRS microscopy, Light: Sci. & Appl.
+      10:98'
 metrics:
   names:
   - psnr

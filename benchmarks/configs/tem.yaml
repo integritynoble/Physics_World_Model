@@ -40,7 +40,8 @@ data_source:
   dataset_url: https://www.ebi.ac.uk/empiar/EMPIAR-10028/
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: Campbell et al., Movies of ice-embedded particles enhance resolution in electron cryo-microscopy, Structure 2012
+  citation: Campbell et al., Movies of ice-embedded particles enhance resolution in
+    electron cryo-microscopy, Structure 2012
   license: CC0 1.0
 mismatch_params: []
 solvers:
@@ -51,6 +52,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: TEM-DL (ePIE-Net)
+    module: pwm_core.recon.tem_solvers
+    function: epie_net_recon
+    params: 15M
+    gpu: true
+    reference: Chen, Z. et al. (2021) Electron ptychography achieves atomic-resolution
+      limits, Science 372:6544
+  famous_dl:
+    name: TEM-UNet
+    module: pwm_core.recon.tem_solvers
+    function: tem_unet_recon
+    params: 31M
+    gpu: true
+    reference: Madsen, J. et al. (2018) DL approach for local structures in STEM images,
+      Adv. Theory Simul.
 metrics:
   names:
   - psnr
@@ -62,8 +79,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Campbell et al., Movies of ice-embedded particles enhance resolution in electron cryo-microscopy, Structure
-      2012
+    reference: Campbell et al., Movies of ice-embedded particles enhance resolution
+      in electron cryo-microscopy, Structure 2012
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / tem_graph_v2

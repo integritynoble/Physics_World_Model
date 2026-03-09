@@ -41,8 +41,8 @@ data_source:
   dataset_url: http://bigwww.epfl.ch/smlm/challenge2016/datasets/
   fallback: generated
   synthetic_generator: spectral_scene
-  citation: 'Sage et al., Super-resolution fight club: assessment of 2D and 3D single-molecule localization microscopy software,
-    Nature Methods 2019'
+  citation: 'Sage et al., Super-resolution fight club: assessment of 2D and 3D single-molecule
+    localization microscopy software, Nature Methods 2019'
   license: CC-BY-4.0
 mismatch_params:
 - name: Drift rate (x, y)
@@ -77,6 +77,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: DECODE-SMLM
+    module: pwm_core.recon.smlm_solvers
+    function: decode_smlm_recon
+    params: 4M
+    gpu: true
+    reference: Speiser, A. et al. (2021) Deep learning enables fast and dense SMLM,
+      Nature Methods 18:1090
+  famous_dl:
+    name: DeepSTORM
+    module: pwm_core.recon.smlm_solvers
+    function: deep_storm_recon
+    params: 2M
+    gpu: true
+    reference: 'Nehme, E. et al. (2018) Deep-STORM: super-resolution microscopy, Optica
+      5(4)'
 metrics:
   names:
   - psnr
@@ -88,8 +104,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: 'Sage et al., Super-resolution fight club: assessment of 2D and 3D single-molecule localization microscopy
-      software, Nature Methods 2019'
+    reference: 'Sage et al., Super-resolution fight club: assessment of 2D and 3D
+      single-molecule localization microscopy software, Nature Methods 2019'
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / palm_storm_graph_v2

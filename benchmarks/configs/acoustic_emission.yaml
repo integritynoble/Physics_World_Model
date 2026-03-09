@@ -24,12 +24,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: ae_waveform_database
+  dataset_url: https://www.ndt.net/article/ewgae2016/papers/tu3b2.pdf
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Grosse, C. & Ohtsu, M. (2008) Acoustic Emission Testing, Springer
+  license: Research use
 mismatch_params:
 - name: Source location error
   nominal: 0.0
@@ -70,6 +70,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  dl_localizer:
+    name: DeepAE-Net
+    module: pwm_core.recon.acoustic_solvers
+    function: deepae_localize
+    params: 8M
+    gpu: true
+    reference: Ebrahimkhanlou, A. & Salamone, S. (2019) AE source localization with
+      DL, IEEE Access
 metrics:
   names:
   - psnr

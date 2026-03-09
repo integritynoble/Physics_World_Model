@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: shg_collagen_dataset
+  dataset_url: https://doi.org/10.1371/journal.pone.0022783
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Cicchi, R. et al. (2010) Multidimensional non-linear imaging of collagen,
+    J. Biomed. Opt.
+  license: CC-BY-4.0 (PLoS)
 mismatch_params:
 - name: Phase matching error
   nominal: 0.0
@@ -65,6 +66,13 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  shg_dl:
+    name: SHG-CARE
+    module: pwm_core.recon.shg_solvers
+    function: shg_care_recon
+    params: 15M
+    gpu: true
+    reference: Weigert, M. et al. (2018) CARE for SHG imaging, Nature Methods 15:1090
 metrics:
   names:
   - psnr

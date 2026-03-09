@@ -72,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  edx_dl:
+    name: EDX-Net
+    module: pwm_core.recon.edx_solvers
+    function: edx_dl_recon
+    params: 8M
+    gpu: true
+    reference: Tietz, C. et al. (2021) DL for EDS spectrum imaging, Ultramicroscopy
+      231
 metrics:
   names:
   - psnr

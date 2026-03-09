@@ -44,6 +44,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: ProtonRecon-Net
+    module: pwm_core.recon.proton_solvers
+    function: proton_dl_recon
+    params: 12M
+    gpu: true
+    reference: Mevenkamp, N. et al. (2021) DL for proton CT reconstruction, Med. Phys.
+      48(6)
+  famous_dl:
+    name: FBP-Proton
+    module: pwm_core.recon.proton_solvers
+    function: fbp_proton_recon
+    params: '0'
+    gpu: false
+    reference: Hanson, K.M. et al. (1981) Proton computed tomography, IEEE Trans.
+      Nucl. Sci.
 metrics:
   names:
   - psnr

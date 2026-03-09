@@ -27,12 +27,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: openorganelle_fibsem
+  dataset_url: https://openorganelle.janelia.org/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Xu, C.S. et al. (2021) An open-access volume EM dataset, Cell 184(6)
+  license: CC-BY-4.0 (OpenOrganelle)
 mismatch_params:
 - name: Slice thickness variation
   nominal: 0.0
@@ -73,6 +73,14 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  fibsem_dl:
+    name: FIB-SEM-Net
+    module: pwm_core.recon.fibsem_solvers
+    function: fibsem_dl_recon
+    params: 20M
+    gpu: true
+    reference: Heinrich, L. et al. (2021) Whole-cell organelle segmentation in volume
+      EM, Nature 599:141
 metrics:
   names:
   - psnr

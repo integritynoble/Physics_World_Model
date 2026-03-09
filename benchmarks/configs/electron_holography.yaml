@@ -47,6 +47,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: EH-Net
+    module: pwm_core.recon.eh_solvers
+    function: eh_net_recon
+    params: 8M
+    gpu: true
+    reference: Tamate, M. et al. (2022) DL for electron holography, Ultramicroscopy
+      232
+  famous_dl:
+    name: Phase-Sideband
+    module: pwm_core.recon.eh_solvers
+    function: phase_sideband_recon
+    params: '0'
+    gpu: false
+    reference: Gabor, D. (1949) Microscopy by reconstructed wave-fronts, Proc. R.
+      Soc. London A
 metrics:
   names:
   - psnr

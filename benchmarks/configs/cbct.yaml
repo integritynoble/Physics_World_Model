@@ -49,6 +49,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: FDK-DL
+    module: pwm_core.recon.cbct_solvers
+    function: fdk_dl_recon
+    params: 30M
+    gpu: true
+    reference: Chen, H. et al. (2017) Low-dose CT with residual encoder-decoder CNN,
+      IEEE TMI
+  famous_dl:
+    name: CBCT-UNet
+    module: pwm_core.recon.cbct_solvers
+    function: cbct_unet_recon
+    params: 31M
+    gpu: true
+    reference: Jin, K.H. et al. (2017) Deep convolutional network for inverse problems,
+      IEEE TIP
 metrics:
   names:
   - psnr

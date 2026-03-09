@@ -24,12 +24,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: thz_spectroscopy_database
+  dataset_url: https://doi.org/10.1364/OE.15.015099
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Jeon, T.I. & Grischkowsky, D. (1997) Nature of Conduction in Doped Silicon,
+    PRL 78:1106
+  license: Research use
 mismatch_params:
 - name: Pulse chirp
   nominal: 0.0
@@ -70,6 +71,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  thz_dl:
+    name: THz-Net
+    module: pwm_core.recon.thz_solvers
+    function: thz_dl_recon
+    params: 12M
+    gpu: true
+    reference: Yin, X. et al. (2023) DL for THz spectral reconstruction, Opt. Express
+      31(10)
 metrics:
   names:
   - psnr

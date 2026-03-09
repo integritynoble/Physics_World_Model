@@ -44,6 +44,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: SonarSR-Net
+    module: pwm_core.recon.sonar_solvers
+    function: sonar_dl_recon
+    params: 15M
+    gpu: true
+    reference: Valdenegro-Toro, M. (2021) Underwater object detection in sonar, IEEE
+      RAL 6(2)
+  famous_dl:
+    name: Sonar-CNN
+    module: pwm_core.recon.sonar_solvers
+    function: sonar_cnn_recon
+    params: 10M
+    gpu: true
+    reference: Fallon, M.F. et al. (2010) Sonar-based underwater mapping, J. Field
+      Robotics
 metrics:
   names:
   - psnr

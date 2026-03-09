@@ -40,7 +40,8 @@ data_source:
   dataset_url: https://github.com/Benny0323/XCAD
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Ma et al., Self-supervised Vessel Segmentation via Adversarial Learning, ICCV 2021
+  citation: Ma et al., Self-supervised Vessel Segmentation via Adversarial Learning,
+    ICCV 2021
   license: MIT
 mismatch_params: []
 solvers:
@@ -51,6 +52,20 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: DSA-Net
+    module: pwm_core.recon.angio_solvers
+    function: dsa_net_recon
+    params: 25M
+    gpu: true
+    reference: Shit, S. et al. (2021) clDice vessel segmentation, CVPR
+  famous_dl:
+    name: VesselSegNet
+    module: pwm_core.recon.angio_solvers
+    function: vessel_segnet_recon
+    params: 20M
+    gpu: true
+    reference: Moccia, S. et al. (2018) Blood vessel segmentation, IEEE TBME
 metrics:
   names:
   - psnr
@@ -62,7 +77,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Ma et al., Self-supervised Vessel Segmentation via Adversarial Learning, ICCV 2021
+    reference: Ma et al., Self-supervised Vessel Segmentation via Adversarial Learning,
+      ICCV 2021
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / angiography_graph_v2

@@ -47,8 +47,8 @@ data_source:
   dataset_url: http://web4.cs.ucl.ac.uk/research/vis/toast/download.html
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Schweiger and Arridge, The Toast++ software suite for forward and inverse modeling in optical tomography, J. Biomed.
-    Optics 2014
+  citation: Schweiger and Arridge, The Toast++ software suite for forward and inverse
+    modeling in optical tomography, J. Biomed. Optics 2014
   license: LGPL-2.1
 mismatch_params: []
 solvers:
@@ -66,6 +66,14 @@ solvers:
     params: '0'
     gpu: false
     reference: Schweiger & Arridge 2005, PMB
+  dot_dl:
+    name: DOT-Net
+    module: pwm_core.recon.dot_solvers
+    function: dot_net_recon
+    params: 8M
+    gpu: true
+    reference: Yoo, J. et al. (2020) Deep learning diffuse optical tomography, Opt.
+      Lett. 45(20)
 metrics:
   names:
   - psnr
@@ -78,8 +86,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Schweiger and Arridge, The Toast++ software suite for forward and inverse modeling in optical tomography, J.
-      Biomed. Optics 2014
+    reference: Schweiger and Arridge, The Toast++ software suite for forward and inverse
+      modeling in optical tomography, J. Biomed. Optics 2014
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / dot_graph_v1

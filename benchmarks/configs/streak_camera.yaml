@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: scam_ultrafast_dataset
+  dataset_url: https://doi.org/10.1038/nature14005
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Gao, L. et al. (2014) Single-shot compressed ultrafast photography at
+    10^10 fps, Nature 516:74
+  license: Research use
 mismatch_params:
 - name: Sweep nonlinearity
   nominal: 0.0
@@ -71,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  streak_dl:
+    name: StreakNet
+    module: pwm_core.recon.streak_solvers
+    function: streak_dl_recon
+    params: 10M
+    gpu: true
+    reference: Zhu, L. et al. (2022) DL for compressed ultrafast photography, Opt.
+      Lett.
 metrics:
   names:
   - psnr

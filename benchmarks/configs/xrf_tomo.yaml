@@ -73,6 +73,13 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  xrft_dl:
+    name: XRFT-Net
+    module: pwm_core.recon.xrf_solvers
+    function: xrft_dl_recon
+    params: 12M
+    gpu: true
+    reference: Shi, X. et al. (2022) DL for XRF tomography, J. Synchrotron Rad. 29(3)
 metrics:
   names:
   - psnr

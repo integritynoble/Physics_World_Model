@@ -41,8 +41,8 @@ data_source:
   dataset_url: https://observatory.brain-map.org/visualcoding
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: de Vries et al., A large-scale standardized physiological survey reveals functional organization of the mouse
-    visual cortex, Nature Neuroscience 2020
+  citation: de Vries et al., A large-scale standardized physiological survey reveals
+    functional organization of the mouse visual cortex, Nature Neuroscience 2020
   license: Allen Institute Terms of Use
 mismatch_params:
 - name: Scattering coeff
@@ -77,6 +77,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: 2P-Net (CARE)
+    module: pwm_core.recon.two_photon_solvers
+    function: two_photon_care_recon
+    params: 15M
+    gpu: true
+    reference: Weigert, M. et al. (2018) Content-aware image restoration, Nature Methods
+      15:1090
+  famous_dl:
+    name: 2P-DeepInterp
+    module: pwm_core.recon.two_photon_solvers
+    function: deep_interp_recon
+    params: 10M
+    gpu: true
+    reference: Lecoq, J. et al. (2021) Removing independent noise in systems neuroscience
+      using DeepInterpolation, Nature Methods 18:1401
 metrics:
   names:
   - psnr
@@ -88,8 +104,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: de Vries et al., A large-scale standardized physiological survey reveals functional organization of the mouse
-      visual cortex, Nature Neuroscience 2020
+    reference: de Vries et al., A large-scale standardized physiological survey reveals
+      functional organization of the mouse visual cortex, Nature Neuroscience 2020
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / two_photon_graph_v2

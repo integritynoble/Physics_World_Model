@@ -50,6 +50,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: MRE-Net
+    module: pwm_core.recon.elastography_solvers
+    function: mre_dl_recon
+    params: 12M
+    gpu: true
+    reference: Waddington, D.E.J. et al. (2023) DL for MR elastography, Med. Image
+      Anal. 83
+  famous_dl:
+    name: NLSI-Solver
+    module: pwm_core.recon.elastography_solvers
+    function: nlsi_solver
+    params: '0'
+    gpu: false
+    reference: Van Houten, E.E.W. et al. (1999) Three-dimensional MRE, Magn. Reson.
+      Med.
 metrics:
   names:
   - psnr

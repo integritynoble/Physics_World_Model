@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: sdo_aia_dataset
+  dataset_url: https://sdo.gsfc.nasa.gov/data/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Lemen, J.R. et al. (2012) The AIA on the Solar Dynamics Observatory, Sol.
+    Phys. 275:17
+  license: Public domain (NASA/SDO)
 mismatch_params:
 - name: PSF degradation (mirror aging)
   nominal: 0.0
@@ -71,6 +72,13 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  solar_dl:
+    name: SolarNet
+    module: pwm_core.recon.solar_solvers
+    function: solar_dl_recon
+    params: 20M
+    gpu: true
+    reference: Galvez, R. et al. (2019) DL for solar flare prediction, ApJS 242(1)
 metrics:
   names:
   - psnr

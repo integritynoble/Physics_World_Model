@@ -41,7 +41,8 @@ data_source:
   dataset_url: https://abberior.com/sted-microscopy/
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: Hell and Wichmann, Breaking the diffraction resolution limit by stimulated emission, Optics Letters 1994
+  citation: Hell and Wichmann, Breaking the diffraction resolution limit by stimulated
+    emission, Optics Letters 1994
   license: Research use
 mismatch_params:
 - name: Depletion beam alignment
@@ -70,6 +71,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: STED-Net (CARE)
+    module: pwm_core.recon.sted_solvers
+    function: sted_care_recon
+    params: 15M
+    gpu: true
+    reference: Weigert, M. et al. (2018) Content-aware image restoration, Nature Methods
+      15:1090
+  famous_dl:
+    name: RCAN-STED
+    module: pwm_core.recon.sted_solvers
+    function: rcan_sted_recon
+    params: 16M
+    gpu: true
+    reference: Chen, J. et al. (2021) Three-dimensional residual channel attention
+      for STED, Nature Methods 18:678
 metrics:
   names:
   - psnr
@@ -81,7 +98,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Hell and Wichmann, Breaking the diffraction resolution limit by stimulated emission, Optics Letters 1994
+    reference: Hell and Wichmann, Breaking the diffraction resolution limit by stimulated
+      emission, Optics Letters 1994
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / sted_graph_v2

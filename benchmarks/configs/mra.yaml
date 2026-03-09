@@ -66,6 +66,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  mra_dl:
+    name: MRA-VesselNet
+    module: pwm_core.recon.mra_solvers
+    function: mra_vessel_net
+    params: 20M
+    gpu: true
+    reference: Livne, M. et al. (2019) DL framework for vessel segmentation in MRA,
+      Front. Neurosci.
 metrics:
   names:
   - psnr

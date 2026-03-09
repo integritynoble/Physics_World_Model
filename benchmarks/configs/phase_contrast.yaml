@@ -27,12 +27,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: phase_contrast_cells
+  dataset_url: https://bbbc.broadinstitute.org/BBBC004
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: ''
-  license: ''
+  citation: Ljosa, V. et al. (2012) BBBC annotated high-throughput microscopy image
+    sets, Nature Methods
+  license: CC0
 mismatch_params:
 - name: Phase ring alignment
   nominal: 0.0
@@ -67,6 +68,14 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  pc_dl:
+    name: PhaseNet
+    module: pwm_core.recon.phase_contrast_solvers
+    function: phase_net_recon
+    params: 10M
+    gpu: true
+    reference: 'Rivenson, Y. et al. (2018) Phase recovery with DL, Light: Sci. & Appl.
+      7:17141'
 metrics:
   names:
   - psnr

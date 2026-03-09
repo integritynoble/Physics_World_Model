@@ -27,12 +27,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: bsd500_dic_proxy
+  dataset_url: https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/bsds/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: 'Martin, D. et al. (2001) DB of Human Segmented Images, ICCV; DIC: Mir,
+    A. 2015'
+  license: Research use (DIC microscopy synthetic from BSD500)
 mismatch_params:
 - name: Shear amount
   nominal: 100.0
@@ -67,6 +68,13 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  dic_dl:
+    name: DIC-Net
+    module: pwm_core.recon.dic_solvers
+    function: dic_dl_recon
+    params: 10M
+    gpu: true
+    reference: Mir, A. et al. (2015) Automated DIC microscopy, J. Microsc. 257(2)
 metrics:
   names:
   - psnr

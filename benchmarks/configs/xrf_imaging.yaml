@@ -72,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  xrf_dl:
+    name: XRF-Net
+    module: pwm_core.recon.xrf_solvers
+    function: xrf_dl_recon
+    params: 10M
+    gpu: true
+    reference: Shi, X. et al. (2022) DL for X-ray fluorescence mapping, J. Synchrotron
+      Rad. 29(3)
 metrics:
   names:
   - psnr

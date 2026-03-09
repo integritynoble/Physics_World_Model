@@ -24,12 +24,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: bli_mouse_dataset
+  dataset_url: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3035166/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Ntziachristos, V. (2010) Going deeper than microscopy, Nature Methods
+    7:603
+  license: Research use
 mismatch_params:
 - name: Optical property error (mu_a, mu_s')
   nominal: 0.0
@@ -64,6 +65,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  blt_dl:
+    name: BLT-Net
+    module: pwm_core.recon.blt_solvers
+    function: blt_net_recon
+    params: 10M
+    gpu: true
+    reference: Guo, H. et al. (2020) Bioluminescence tomography with DL, Phys. Med.
+      Biol. 65(24)
 metrics:
   names:
   - psnr

@@ -41,7 +41,8 @@ data_source:
   dataset_url: https://vision.middlebury.edu/stereo/data/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Scharstein and Szeliski, A Taxonomy and Evaluation of Dense Two-Frame Stereo Correspondence Algorithms, IJCV 2002
+  citation: Scharstein and Szeliski, A Taxonomy and Evaluation of Dense Two-Frame
+    Stereo Correspondence Algorithms, IJCV 2002
   license: Research use
 mismatch_params: []
 solvers:
@@ -52,6 +53,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: SL-Net
+    module: pwm_core.recon.structured_light_solvers
+    function: sl_net_recon
+    params: 10M
+    gpu: true
+    reference: Nguyen, H. et al. (2020) DL for structured light profilometry, Opt.
+      Lasers Eng. 133
+  famous_dl:
+    name: FTPD
+    module: pwm_core.recon.structured_light_solvers
+    function: ftpd_solver
+    params: '0'
+    gpu: false
+    reference: Takeda, M. & Mutoh, K. (1983) Fourier transform profilometry, Appl.
+      Opt. 22(24)
 metrics:
   names:
   - psnr
@@ -63,8 +80,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Scharstein and Szeliski, A Taxonomy and Evaluation of Dense Two-Frame Stereo Correspondence Algorithms, IJCV
-      2002
+    reference: Scharstein and Szeliski, A Taxonomy and Evaluation of Dense Two-Frame
+      Stereo Correspondence Algorithms, IJCV 2002
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / structured_light_graph_v2

@@ -24,12 +24,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: gwtc3_ligo
+  dataset_url: https://gwosc.org/GWTC-3/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: 'Abbott, R. et al. (2023) GWTC-3: Compact binary coalescences, Phys. Rev.
+    X 13(4)'
+  license: CC-BY-4.0 (GWOSC)
 mismatch_params:
 - name: Calibration amplitude
   nominal: 1.0
@@ -70,6 +71,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  matched_filter_dl:
+    name: GW-DL (PyCBC-ML)
+    module: pwm_core.recon.gw_solvers
+    function: gw_dl_recon
+    params: 10M
+    gpu: true
+    reference: George, D. & Huerta, E.A. (2018) DL for real-time GW detection, Phys.
+      Lett. B 778:64
 metrics:
   names:
   - psnr

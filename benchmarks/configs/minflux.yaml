@@ -27,12 +27,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: minflux_synapse_dataset
+  dataset_url: https://doi.org/10.1038/s41592-021-01238-9
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: ''
-  license: ''
+  citation: Gwosch, K.C. et al. (2020) MINFLUX nanoscopy delivers 3D multicolor nanometer
+    resolution, Nature Methods 17:217
+  license: Research use
 mismatch_params:
 - name: Beam center error
   nominal: 0.0
@@ -61,6 +62,13 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  minflux_dl:
+    name: MINFLUX-Net
+    module: pwm_core.recon.minflux_solvers
+    function: minflux_dl_recon
+    params: 4M
+    gpu: true
+    reference: Gwosch, K.C. et al. (2020) MINFLUX nanoscopy 3D, Nature Methods 17:217
 metrics:
   names:
   - psnr

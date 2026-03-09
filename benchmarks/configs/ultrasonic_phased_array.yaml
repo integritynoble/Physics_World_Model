@@ -24,12 +24,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: tofd_weld_inspection
+  dataset_url: https://www.asnt.org/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Drinkwater, B.W. & Wilcox, P.D. (2006) Ultrasonic arrays for NDT, NDT&E
+    International
+  license: Research use
 mismatch_params:
 - name: Element pitch error
   nominal: 0.0
@@ -70,6 +71,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  upa_dl:
+    name: TFM-DL
+    module: pwm_core.recon.upa_solvers
+    function: tfm_dl_recon
+    params: 10M
+    gpu: true
+    reference: Roberts, R.A. et al. (2023) DL for ultrasonic phased array imaging,
+      NDT&E Int. 133
 metrics:
   names:
   - psnr

@@ -49,6 +49,20 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: DXA-Net
+    module: pwm_core.recon.dexa_solvers
+    function: dxa_net_recon
+    params: 11M
+    gpu: true
+    reference: Yasaka, K. et al. (2020) CT for bone density via DL, Radiology 295(1)
+  famous_dl:
+    name: DEXA-UNet
+    module: pwm_core.recon.dexa_solvers
+    function: dexa_unet_recon
+    params: 31M
+    gpu: true
+    reference: Genant, H.K. et al. (2008) DEXA bone density, Osteoporos. Int.
 metrics:
   names:
   - psnr

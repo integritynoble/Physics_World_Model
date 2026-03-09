@@ -27,12 +27,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: lucky_astro_dataset
+  dataset_url: https://www.astromatic.net/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: 'Law, N.M. et al. (2006) Lucky imaging: high angular resolution from the
+    ground, A&A 446'
+  license: Research use
 mismatch_params:
 - name: Fried parameter (r0)
   nominal: 15.0
@@ -73,6 +74,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  lucky_dl:
+    name: Lucky-DL
+    module: pwm_core.recon.lucky_solvers
+    function: lucky_dl_recon
+    params: 8M
+    gpu: true
+    reference: Guo, S. et al. (2020) DL for astronomical lucky imaging, Opt. Lett.
+      45(20)
 metrics:
   names:
   - psnr

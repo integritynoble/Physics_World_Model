@@ -68,6 +68,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  spectct_dl:
+    name: SPECT-CT-Net
+    module: pwm_core.recon.spectct_solvers
+    function: spectct_dl_recon
+    params: 25M
+    gpu: true
+    reference: Onofrey, J.A. et al. (2019) Generalizable multi-site training for DL
+      MRI segmentation, Med. Image Anal.
 metrics:
   names:
   - psnr

@@ -79,6 +79,14 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  cryo_et_dl:
+    name: CryoCARE
+    module: pwm_core.recon.cryoet_solvers
+    function: cryocare_recon
+    params: 10M
+    gpu: true
+    reference: Buchholz, T.O. et al. (2019) Content-aware image restoration for cryo-EM,
+      Methods Enzymol.
 metrics:
   names:
   - psnr

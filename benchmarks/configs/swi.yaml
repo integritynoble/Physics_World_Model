@@ -66,6 +66,13 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  swi_dl:
+    name: SWI-Net
+    module: pwm_core.recon.swi_solvers
+    function: swi_dl_recon
+    params: 12M
+    gpu: true
+    reference: Menze, B.H. et al. (2021) DL for SWI vein segmentation, IEEE TMI
 metrics:
   names:
   - psnr

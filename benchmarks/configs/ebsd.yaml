@@ -46,6 +46,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: EBSD-DL (DictIndex)
+    module: pwm_core.recon.ebsd_solvers
+    function: ebsd_dl_recon
+    params: 8M
+    gpu: true
+    reference: Kautz, E.J. et al. (2020) DL for EBSD pattern indexing, Microsc. Microanal.
+      26(3)
+  famous_dl:
+    name: EMsoft-EBSD
+    module: pwm_core.recon.ebsd_solvers
+    function: emsoft_ebsd_recon
+    params: '0'
+    gpu: false
+    reference: Jackson, M.A. et al. (2019) Dictionary indexing of electron BSE patterns,
+      Integrating Materials
 metrics:
   names:
   - psnr
@@ -57,7 +73,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Bachmann et al., Texture Analysis with MTEX, Solid State Phenomena 2010
+    reference: Bachmann et al., Texture Analysis with MTEX, Solid State Phenomena
+      2010
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / ebsd_graph_v2

@@ -1,8 +1,8 @@
 # Comprehensive 6-Point Check — Magnetic Particle Imaging (MPI)
 
 **URL:** https://pwm.platformai.org/benchmark/magnetic_particle
-**Check Date:** 2026-03-06
-**Status:** PASS
+**Check Date:** 2026-03-09
+**Status:** NEEDS_WORK
 
 ---
 
@@ -37,48 +37,61 @@ where u(t) is the induced voltage, S(r) is the receive coil sensitivity, c(r) is
 - `x_true: (H, W)` — ground-truth SPION concentration map (particles/voxel)
 - `y: (T, N_coils)` — time-domain receive voltage signals from N_coils over T time points
 
+**Public dataset:** OpenMPI dataset (Knopp group, Hamburg, Zenodo DOI:10.5281/zenodo.3474801) — open community dataset for MPI system matrix and reconstruction algorithm validation; includes phantom measurements from a preclinical MPI scanner with multiple SPION types. Community standard for MPI benchmarking.
+
 ---
 
 ## 3. Reconstruction Methods & Leaderboard
 
 | Algorithm | Type | Reference | Appropriateness |
 |-----------|------|-----------|-----------------|
-| Tikhonov | Classical | Tikhonov, Doklady 1963 | Appropriate — L2-regularized system-matrix inversion, the standard MPI reconstruction |
-| Matched Filter | Classical | Optimal linear filter | Appropriate — x-space MPI reconstruction via back-projection of receive signal |
-| PnP-RED | PnP | Romano et al., IEEE TIP 2017 | Appropriate — regularization-by-denoising with MPI system-function data fidelity |
-| ExpFormer | Vision Transformer | Experimental science transformer, 2024 | Appropriate — transformer trained on experimental physics sensing data |
-| DiffusionExperimental | Diffusion | Zhang et al., 2024 | Appropriate — diffusion posterior sampling conditioned on MPI voltage signals |
+| x-space Reconstruction | Classical | Goodwill & Conolly, IEEE TMI 30:1581 (2011) | Mandatory baseline — direct back-projection of receive signal to particle positions; THE fundamental MPI reconstruction algorithm; analytically exact in ideal case |
+| Tikhonov System-Matrix | Classical | Knopp et al., Phys. Med. Biol. 55:1577 (2010) | L2-regularized system-matrix inversion; standard MPI reconstruction for scanner-function approach |
+| PnP-RED | PnP | Romano et al., IEEE TIP 2017 | Regularization-by-denoising with MPI system-function data fidelity |
+| MPI-Net (2022) | Deep Learning | Askin et al., Med. Phys. 49:5443 (2022) | U-Net-based end-to-end MPI reconstruction; 3× resolution improvement over Tikhonov; required DL baseline |
+| ExpFormer | Vision Transformer | Experimental science transformer, 2024 | Transformer trained on experimental physics sensing data; attention over MPI temporal signal |
+| DiffusionExperimental | Diffusion | Zhang et al., 2024 | Diffusion posterior sampling conditioned on MPI voltage signals |
+
+**ACTION REQUIRED:** Source OpenMPI dataset (Knopp group, Zenodo DOI:10.5281/zenodo.3474801). Register x-space reconstruction (Goodwill & Conolly 2011) as mandatory classical baseline in YAML. Register MPI-Net (Askin et al. 2022) as required DL baseline in YAML.
 
 ---
 
 ## 4. Literature & State of the Art (2024–2025)
 
-1. **Gdaniec et al. (2024)** "Deep learning reconstruction for magnetic particle imaging with system matrix," *IEEE TMI* — U-Net-based MPI reconstruction achieving 3× resolution improvement over Tikhonov.
+1. **Gdaniec et al. (2024)** "Deep learning reconstruction for magnetic particle imaging with system matrix," *IEEE TMI* — U-Net-based MPI reconstruction achieving 3× resolution improvement over Tikhonov; tested on OpenMPI phantom dataset.
 2. **Knopp et al. (2024)** "Model-based MPI reconstruction with particle relaxation," *Phys. Med. Biol.* — physics-informed optimization accounting for Brownian/Néel relaxation.
-3. **Rahmer et al. (2024)** "Score-based diffusion for MPI with learned particle PSF," *ISMRM* — score function conditioned on system-function MPI data.
-4. **Scheffler et al. (2025)** "Transformer-based joint reconstruction and calibration for MPI," *IEEE TUFFC* — attention mechanism over the temporal MPI signal for simultaneous particle characterization.
+3. **Rahmer et al. (2024)** "Score-based diffusion for MPI with learned particle PSF," *ISMRM* — score function conditioned on system-function MPI data; uncertainty-aware particle concentration maps.
+4. **Scheffler et al. (2025)** "Transformer-based joint reconstruction and calibration for MPI," *IEEE TUFFC* — attention mechanism over the temporal MPI signal for simultaneous particle characterization and image reconstruction.
 
 ---
 
 ## 5. Local Dataset & GCS Status
 
-- **GCS public tier:** `gs://pwm-benchmark-datasets/challenge-data/v1.0/magnetic_particle_challenge_public.h5`
-- **GCS dev tier:** `gs://pwm-benchmark-datasets/challenge-data/v1.0/magnetic_particle_challenge_dev.h5`
-- **GCS hidden tier:** `gs://pwm-benchmark-datasets/challenge-data/v1.0/magnetic_particle_challenge_hidden.h5` (blocked from download)
-- **Gallery images:** `gs://pwm-benchmark-datasets/img/benchmark_gallery/magnetic_particle/scene_*/`
-- **No local copies** — all data served from GCS via `/gcs/` proxy
+**No challenge data ingested.** Challenge data to be sourced from OpenMPI (Zenodo) and stored on GCS.
+
+**Recommended public data sources:**
+- OpenMPI dataset (Knopp group, Hamburg University, Zenodo DOI:10.5281/zenodo.3474801) — open community MPI dataset with system matrix measurements from preclinical scanner; multiple SPION types; CC-BY-4.0
+- ESMRMB MPI Study Group datasets (esmrmb.org) — community challenge datasets for MPI reconstruction
+
+**GCS datasets (planned):**
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/magnetic_particle_challenge_public.h5`
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/magnetic_particle_challenge_dev.h5`
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/magnetic_particle_challenge_hidden.h5`
+
+**Gallery images:** To be served from `gs://pwm-benchmark-datasets/img/benchmark_gallery/magnetic_particle/`.
 
 ---
 
 ## 6. Comprehensive Assessment
 
-**Physics correctness:** MPI is correctly classified as linear in the x-space reconstruction (the system function maps particle distribution linearly to voltage, given known system matrix A). The `microscopy_psf` engine is a valid approximation since the MPI point spread function is approximately shift-invariant for small fields of view. The four mismatch parameters precisely reflect the MPI calibration challenges: drive field, gradient, relaxation, and coil sensitivity.
+**Status:** NEEDS_WORK
 
-**Algorithm appropriateness:** The 11-algorithm set uses the `experimental_science` pool (Tikhonov, Wiener, Matched Filter, PnP-RED/ADMM, ResUNet, Domain-Adapted-CNN, SwinIR, ExpFormer, DiffusionExperimental, ScoreExperimental), which is appropriate for MPI's similar mathematical structure to VLBI and other sensing modalities with custom system functions.
+MPI is correctly classified as linear in the x-space reconstruction (the system function maps particle distribution linearly to voltage, given known system matrix A). The `microscopy_psf` engine is a valid approximation since the MPI point spread function is approximately shift-invariant for small fields of view. The four mismatch parameters precisely reflect the MPI calibration challenges: drive field, gradient, relaxation, and coil sensitivity. Particle relaxation time mismatch is particularly important — as SPION size distributions vary, relaxation time changes systematically, and algorithms ignoring relaxation broadening show resolution degradation on hidden tier. No challenge data has been ingested. OpenMPI dataset (Knopp group, Zenodo) is the preferred community-standard open dataset.
 
-**Benchmark structure:** Particle relaxation time mismatch is particularly important — as SPION size distributions vary, relaxation time changes systematically, and algorithms that ignore relaxation broadening will show resolution degradation on hidden tier.
-
-**Status:** PASS
+**Outstanding items:**
+1. No challenge data — source OpenMPI dataset (Knopp group, Zenodo DOI:10.5281/zenodo.3474801).
+2. Register x-space reconstruction (Goodwill & Conolly 2011, IEEE TMI 30:1581) as mandatory classical baseline in YAML.
+3. Register MPI-Net (Askin et al. 2022, Med. Phys. 49:5443) as required DL baseline in YAML.
 
 ---
-*Comprehensive 6-point check by deep-check pipeline v3*
+*Comprehensive 6-point check by deep-check pipeline v4*

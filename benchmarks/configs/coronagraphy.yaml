@@ -25,12 +25,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: sphere_coronagraph_dataset
+  dataset_url: http://sphere.osug.fr/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: 'Beuzit, J.L. et al. (2019) SPHERE: The Exoplanet Imager, A&A 631:A155'
+  license: ESO Public data (CC-BY)
 mismatch_params:
 - name: Coronagraph mask centering
   nominal: 0.0
@@ -71,6 +71,13 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  speckle_null_dl:
+    name: DL-SpeckleNull
+    module: pwm_core.recon.coronagraph_solvers
+    function: dl_speckle_null
+    params: 5M
+    gpu: true
+    reference: Sun, H. et al. (2023) DL for coronagraph speckle, AJ 165(5)
 metrics:
   names:
   - psnr

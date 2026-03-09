@@ -40,8 +40,8 @@ data_source:
   dataset_url: https://github.com/pycroscopy/AICrystallographer
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Ziatdinov et al., Deep Learning of Atomically Resolved Scanning Transmission Electron Microscopy Images, ACS Nano
-    2017
+  citation: Ziatdinov et al., Deep Learning of Atomically Resolved Scanning Transmission
+    Electron Microscopy Images, ACS Nano 2017
   license: MIT
 mismatch_params: []
 solvers:
@@ -52,6 +52,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: STEM-DL (AtomSegNet)
+    module: pwm_core.recon.stem_solvers
+    function: atom_seg_net_recon
+    params: 10M
+    gpu: true
+    reference: 'Wu, X. et al. (2021) AtomSegNet: DL networks for atom detection in
+      STEM, npj Comput. Mater. 7:175'
+  famous_dl:
+    name: STEM-UNet
+    module: pwm_core.recon.stem_solvers
+    function: stem_unet_recon
+    params: 31M
+    gpu: true
+    reference: Madsen, J. et al. (2018) A deep learning approach to identify local
+      structures in atomic scale images, Adv. Theory Simul.
 metrics:
   names:
   - psnr
@@ -63,8 +79,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Ziatdinov et al., Deep Learning of Atomically Resolved Scanning Transmission Electron Microscopy Images, ACS
-      Nano 2017
+    reference: Ziatdinov et al., Deep Learning of Atomically Resolved Scanning Transmission
+      Electron Microscopy Images, ACS Nano 2017
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / stem_graph_v2

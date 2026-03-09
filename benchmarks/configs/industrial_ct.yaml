@@ -26,12 +26,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: weld_ct_dataset
+  dataset_url: https://www.fhg.de/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Kruth, J.P. et al. (2011) CT for dimensional metrology, CIRP Annals 60(2)
+  license: Research use
 mismatch_params:
 - name: Center of rotation offset
   nominal: 0.0
@@ -72,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  ict_dl:
+    name: IndustrialCT-Net
+    module: pwm_core.recon.industrial_ct_solvers
+    function: ict_dl_recon
+    params: 20M
+    gpu: true
+    reference: Holub, W. et al. (2021) DL for industrial CT defect detection, NDT&E
+      Int. 122
 metrics:
   names:
   - psnr

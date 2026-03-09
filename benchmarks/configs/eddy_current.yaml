@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: ect_defect_dataset
+  dataset_url: https://www.ndt.net/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Sophian, A. et al. (2001) A feature extraction technique based on PCA
+    for eddy current NDT, NDT&E Int.
+  license: Research use
 mismatch_params:
 - name: Liftoff distance
   nominal: 0.0
@@ -71,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  ec_dl:
+    name: ECT-Net
+    module: pwm_core.recon.ec_solvers
+    function: ec_net_recon
+    params: 5M
+    gpu: false
+    reference: Miorelli, R. et al. (2020) DL for eddy current NDT, NDT&E International
+      116
 metrics:
   names:
   - psnr

@@ -24,12 +24,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: thermal_bridge_dataset
+  dataset_url: https://www.ndt.net/article/ewgae2016/papers/tu3b2.pdf
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Maierhofer, C. et al. (2014) Thermographic defect characterisation, NDT&E
+    Int.
+  license: Research use
 mismatch_params:
 - name: Emissivity error
   nominal: 0.95
@@ -70,6 +71,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  pulsed_phase_tv:
+    name: Pulsed-Phase TV
+    module: pwm_core.recon.thermal_solvers
+    function: pulsed_phase_tv
+    params: '0'
+    gpu: false
+    reference: Maldague, X. & Marinetti, S. (1996) Pulse phase thermography, J. Appl.
+      Phys. 79(5)
 metrics:
   names:
   - psnr

@@ -71,6 +71,14 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  afm_dl:
+    name: AFM-UNet
+    module: pwm_core.recon.afm_solvers
+    function: afm_unet_recon
+    params: 8M
+    gpu: true
+    reference: Cherukara, M.J. et al. (2020) AI-enabled high-res, real-time imaging,
+      npj Comput. Mater. 6:203
 metrics:
   names:
   - psnr

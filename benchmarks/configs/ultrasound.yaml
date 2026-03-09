@@ -37,7 +37,8 @@ data_source:
   dataset_url: https://www.creatis.insa-lyon.fr/Challenge/IEEE_IUS_2016/download.html
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: Liebgott et al., Plane-Wave Imaging Challenge in Medical Ultrasound, IEEE IUS 2016
+  citation: Liebgott et al., Plane-Wave Imaging Challenge in Medical Ultrasound, IEEE
+    IUS 2016
   license: Research use
 mismatch_params:
 - name: Speed of sound
@@ -72,6 +73,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: US-UNet (DeepUS)
+    module: pwm_core.recon.us_solvers
+    function: deep_us_recon
+    params: 20M
+    gpu: true
+    reference: Perdios, D. et al. (2018) DL-based image reconstruction for ultrasound
+      imaging, IEEE IUS
+  famous_dl:
+    name: US-CNN
+    module: pwm_core.recon.us_solvers
+    function: us_cnn_recon
+    params: 10M
+    gpu: true
+    reference: Hyun, D. et al. (2019) Deep learning for ultrasound image reconstruction,
+      IEEE TUFFC
 metrics:
   names:
   - psnr
@@ -83,7 +100,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: Liebgott et al., Plane-Wave Imaging Challenge in Medical Ultrasound, IEEE IUS 2016
+    reference: Liebgott et al., Plane-Wave Imaging Challenge in Medical Ultrasound,
+      IEEE IUS 2016
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / ultrasound_graph_v2

@@ -65,6 +65,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  ivus_dl:
+    name: IVUS-Net
+    module: pwm_core.recon.ivus_solvers
+    function: ivus_net_recon
+    params: 12M
+    gpu: true
+    reference: Yang, J. et al. (2021) IVUS tissue characterization with DL, Med. Image
+      Anal. 71
 metrics:
   names:
   - psnr

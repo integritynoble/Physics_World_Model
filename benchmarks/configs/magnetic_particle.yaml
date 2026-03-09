@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: mpi_openmpitomography
+  dataset_url: https://www.openmpitomography.de/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: 'Knopp, T. et al. (2020) MPI: From proof of principle to preclinical applications,
+    Phys. Med. Biol.'
+  license: CC-BY-4.0 (OpenMPI)
 mismatch_params:
 - name: Drive field amplitude
   nominal: 25.0
@@ -71,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  mpi_dl:
+    name: MPI-Net
+    module: pwm_core.recon.mpi_solvers
+    function: mpi_net_recon
+    params: 10M
+    gpu: true
+    reference: Dittmer, S. et al. (2021) DL for MPI reconstruction, Int. J. Magn.
+      Part. Imaging 7(1)
 metrics:
   names:
   - psnr

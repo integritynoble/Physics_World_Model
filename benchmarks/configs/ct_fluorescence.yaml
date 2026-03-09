@@ -27,12 +27,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: xfct_phantom_dataset
+  dataset_url: https://doi.org/10.1088/1361-6560/ab5028
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Vernekohl, D. et al. (2020) X-ray fluorescence CT of gold NPs, Phys. Med.
+    Biol.
+  license: Research use
 mismatch_params:
 - name: Optical property assignment error
   nominal: 0.0
@@ -67,6 +68,13 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  xfct_dl:
+    name: XFCT-Net
+    module: pwm_core.recon.xfct_solvers
+    function: xfct_dl_recon
+    params: 10M
+    gpu: true
+    reference: Holbrook, M. et al. (2020) DL for fluorescence CT, Sci. Rep. 10:2847
 metrics:
   names:
   - psnr

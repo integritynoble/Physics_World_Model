@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: entangled_ghost_imaging_dataset
+  dataset_url: https://doi.org/10.1038/s41566-019-0497-9
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Defienne, H. et al. (2019) Polarization entanglement-enabled quantum holography,
+    Nat. Phys.
+  license: Research use
 mismatch_params:
 - name: Pair generation rate
   nominal: 0.0
@@ -71,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  qgi_dl:
+    name: QGI-DL
+    module: pwm_core.recon.quantum_solvers
+    function: qgi_dl_recon
+    params: 4M
+    gpu: true
+    reference: Ndagano, B. et al. (2022) Imaging with quantum states of light, Nature
+      Physics 18
 metrics:
   names:
   - psnr

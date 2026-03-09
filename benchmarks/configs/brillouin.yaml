@@ -66,6 +66,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  brillouin_dl:
+    name: Brillouin-Net
+    module: pwm_core.recon.brillouin_solvers
+    function: brillouin_dl_recon
+    params: 6M
+    gpu: true
+    reference: 'Shu, X. et al. (2022) Video-rate Brillouin imaging, Light: Sci. &
+      Appl. 11:204'
 metrics:
   names:
   - psnr

@@ -40,7 +40,8 @@ data_source:
   dataset_url: https://imed.nimte.ac.cn/dataofrose.html
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: 'Ma et al., ROSE: A Retinal OCT-Angiography Vessel Segmentation Dataset, IEEE TMI 2021'
+  citation: 'Ma et al., ROSE: A Retinal OCT-Angiography Vessel Segmentation Dataset,
+    IEEE TMI 2021'
   license: Research use
 mismatch_params: []
 solvers:
@@ -51,6 +52,21 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: OCTA-Net
+    module: pwm_core.recon.octa_solvers
+    function: octa_net_recon
+    params: 20M
+    gpu: true
+    reference: Li, M. et al. (2020) IPN-V2 for retinal vessel segmentation in OCTA,
+      AAAI
+  famous_dl:
+    name: OCTA-FF
+    module: pwm_core.recon.octa_solvers
+    function: octa_ff_recon
+    params: 12M
+    gpu: true
+    reference: 'Ma, Y. et al. (2020) OCTA-500: A retinal dataset for OCTA, IEEE TMI'
 metrics:
   names:
   - psnr
@@ -62,7 +78,8 @@ expected_psnr_range: null
 source_attribution:
   ground_truth:
     type: web
-    reference: 'Ma et al., ROSE: A Retinal OCT-Angiography Vessel Segmentation Dataset, IEEE TMI 2021'
+    reference: 'Ma et al., ROSE: A Retinal OCT-Angiography Vessel Segmentation Dataset,
+      IEEE TMI 2021'
   forward_model:
     type: registry
     reference: pwm graph_templates.yaml / octa_graph_v2

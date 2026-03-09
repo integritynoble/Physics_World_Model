@@ -27,12 +27,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: cxidb_waxs_dataset
+  dataset_url: https://cxidb.org/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Maia, F.R.N.C. (2012) The Coherent X-ray Imaging Data Bank, Nature Methods
+    9:854
+  license: CC0 (CXIDB)
 mismatch_params:
 - name: Detector distance error
   nominal: 0.0
@@ -73,6 +74,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  waxs_dl:
+    name: WAXS-Net
+    module: pwm_core.recon.saxs_solvers
+    function: waxs_dl_recon
+    params: 8M
+    gpu: true
+    reference: Archibald, R. et al. (2020) DL for X-ray scattering, J. Synchrotron
+      Rad. 27(1)
 metrics:
   names:
   - psnr

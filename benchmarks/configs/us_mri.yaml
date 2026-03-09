@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: musculoskeletal_ultrasound_mri
+  dataset_url: https://doi.org/10.1016/j.media.2021.102143
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Knobe, M. et al. (2022) Ultrasound-MRI co-registration for musculoskeletal
+    imaging, Med. Image Anal.
+  license: Research use
 mismatch_params:
 - name: Registration error (deformable)
   nominal: 0.0
@@ -65,6 +66,13 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  us_mri_dl:
+    name: US-MRI-Net
+    module: pwm_core.recon.us_mri_solvers
+    function: us_mri_dl_recon
+    params: 20M
+    gpu: true
+    reference: Zhu, B. et al. (2018) Image reconstruction by DL, Nature 555:487
 metrics:
   names:
   - psnr

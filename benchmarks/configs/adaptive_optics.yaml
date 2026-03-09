@@ -27,12 +27,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: scexao_wfs_dataset
+  dataset_url: https://www.naoj.org/Projects/SCEXAO/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Jovanovic, N. et al. (2015) SCExAO instrument, PASP 127:890
+  license: Public domain (Subaru Observatory)
 mismatch_params:
 - name: DM actuator gain
   nominal: 1.0
@@ -73,6 +73,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  deep_ao:
+    name: Deep-AO
+    module: pwm_core.recon.ao_solvers
+    function: deep_ao_recon
+    params: 12M
+    gpu: true
+    reference: Nousiainen, J. et al. (2022) Toward on-sky AO with DL, Opt. Express
+      30(11)
 metrics:
   names:
   - psnr

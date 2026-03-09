@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: cup_ultrafast_dataset
+  dataset_url: https://doi.org/10.1038/s41586-018-0710-1
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Liang, J. et al. (2018) Single-shot real-time video recording, Nature
+    556:543
+  license: Research use
 mismatch_params:
 - name: DMD encoding error
   nominal: 0.0
@@ -65,6 +66,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  e2e_cup:
+    name: E2E-CUP
+    module: pwm_core.recon.cup_solvers
+    function: e2e_cup_recon
+    params: 18M
+    gpu: true
+    reference: Zeng, T. et al. (2021) E2E compressed ultrafast photography, Optica
+      8(6)
 metrics:
   names:
   - psnr

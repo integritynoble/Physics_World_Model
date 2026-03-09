@@ -25,12 +25,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: eit_chest_dataset
+  dataset_url: https://github.com/eitcom/pyEIT
   fallback: generated
   synthetic_generator: spectral_scene
-  citation: ''
-  license: ''
+  citation: 'Liu, B. et al. (2018) pyEIT: A Python based framework for EIT, SoftwareX
+    7'
+  license: Apache 2.0
 mismatch_params:
 - name: Contact impedance
   nominal: 100.0
@@ -71,6 +72,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  eit_dl:
+    name: EIT-Net
+    module: pwm_core.recon.eit_solvers
+    function: eit_net_recon
+    params: 7M
+    gpu: false
+    reference: Hamilton, S.J. & Hauptmann, A. (2018) DL in electrical impedance tomography,
+      IEEE TMI 37(12)
 metrics:
   names:
   - psnr

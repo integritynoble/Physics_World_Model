@@ -72,6 +72,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  mre_dl:
+    name: MRE-Net
+    module: pwm_core.recon.mre_solvers
+    function: mre_dl_recon
+    params: 12M
+    gpu: true
+    reference: Waddington, D.E.J. et al. (2023) DL for MR elastography, Med. Image
+      Anal. 83
 metrics:
   names:
   - psnr

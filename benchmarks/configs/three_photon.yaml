@@ -27,12 +27,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: 3p_brain_dataset
+  dataset_url: https://doi.org/10.1038/s41592-021-01239-8
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: ''
-  license: ''
+  citation: Ouzounov, D.G. et al. (2017) In vivo three-photon imaging of activity
+    of GCaMP6-labeled neurons, Nature Methods 14:388
+  license: Research use
 mismatch_params:
 - name: Scattering coeff
   nominal: 15.0
@@ -67,6 +68,14 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  3p_dl:
+    name: 3P-Net (CARE)
+    module: pwm_core.recon.three_photon_solvers
+    function: three_photon_care_recon
+    params: 15M
+    gpu: true
+    reference: Weigert, M. et al. (2018) CARE for 3P deep tissue imaging, Nature Methods
+      15:1090
 metrics:
   names:
   - psnr

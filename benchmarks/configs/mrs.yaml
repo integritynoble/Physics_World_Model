@@ -52,6 +52,22 @@ solvers:
     params: '0'
     gpu: false
     reference: ''
+  best_quality:
+    name: MRS-Net
+    module: pwm_core.recon.mrs_solvers
+    function: mrs_net_recon
+    params: 8M
+    gpu: true
+    reference: Lee, H.H. & Kim, H. (2019) Intact metabolite spectrum mining by DL
+      in MRS, Magn. Reson. Med. 82(1)
+  famous_dl:
+    name: HLSVD-MRS
+    module: pwm_core.recon.mrs_solvers
+    function: hlsvd_mrs_recon
+    params: '0'
+    gpu: false
+    reference: Pijnappel, W.W.F. et al. (1992) SVD-based quantification of MRS signals,
+      J. Magn. Reson.
 metrics:
   names:
   - psnr

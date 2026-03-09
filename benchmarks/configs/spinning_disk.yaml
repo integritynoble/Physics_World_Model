@@ -27,12 +27,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: bbbc039_cells
+  dataset_url: https://bbbc.broadinstitute.org/BBBC039
   fallback: generated
   synthetic_generator: cell_phantom
-  citation: ''
-  license: ''
+  citation: Caicedo, J.C. et al. (2019) Nucleus segmentation across imaging experiments,
+    Nature Methods 16:1247
+  license: CC0
 mismatch_params:
 - name: Pinhole crosstalk
   nominal: 0.0
@@ -67,6 +68,14 @@ solvers:
     params: 2M
     gpu: true
     reference: Weigert et al. 2018
+  sd_dl:
+    name: SD-CARE
+    module: pwm_core.recon.spinning_disk_solvers
+    function: sd_care_recon
+    params: 15M
+    gpu: true
+    reference: Weigert, M. et al. (2018) CARE for spinning disk confocal, Nature Methods
+      15:1090
 metrics:
   names:
   - psnr

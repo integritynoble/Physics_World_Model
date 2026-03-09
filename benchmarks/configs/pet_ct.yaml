@@ -74,6 +74,14 @@ solvers:
     params: 2M
     gpu: true
     reference: ''
+  petct_dl:
+    name: PET-CT-Fusion-Net
+    module: pwm_core.recon.petct_solvers
+    function: petct_fusion_recon
+    params: 25M
+    gpu: true
+    reference: Zhao, F. et al. (2021) DL for joint PET-CT reconstruction, Med. Image
+      Anal. 73
 metrics:
   names:
   - psnr

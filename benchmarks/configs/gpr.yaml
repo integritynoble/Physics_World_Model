@@ -24,12 +24,12 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: gpr_subsurface_dataset
+  dataset_url: https://doi.org/10.1109/LGRS.2019.2896368
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Giannakis, I. et al. (2019) Realistic FDTD GPR antenna models, IEEE GRSL
+  license: Research use
 mismatch_params:
 - name: Soil permittivity error
   nominal: 9.0
@@ -70,6 +70,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  gpr_dl:
+    name: GPR-Net
+    module: pwm_core.recon.gpr_solvers
+    function: gpr_net_recon
+    params: 9M
+    gpu: true
+    reference: Giannakis, I. et al. (2021) DL-enhanced GPR data processing, IEEE Geosci.
+      Remote Sens. Lett. 19
 metrics:
   names:
   - psnr

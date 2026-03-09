@@ -26,12 +26,13 @@ data_source:
   - experimental
   - synthetic_web
   - generated
-  dataset_id: ''
-  dataset_url: ''
+  dataset_id: proton_ct_phantom
+  dataset_url: https://www.ptcog.ch/
   fallback: generated
   synthetic_generator: shepp_logan
-  citation: ''
-  license: ''
+  citation: Johnson, R.P. (2018) Review of medical radiography and tomography with
+    proton beams, Rep. Prog. Phys.
+  license: Research use
 mismatch_params:
 - name: Range uncertainty
   nominal: 0.0
@@ -72,6 +73,14 @@ solvers:
     params: 5M
     gpu: true
     reference: ''
+  proton_therapy_dl:
+    name: ProtonTherapy-Net
+    module: pwm_core.recon.proton_therapy_solvers
+    function: proton_therapy_dl_recon
+    params: 15M
+    gpu: true
+    reference: Meyer, P. et al. (2019) DL for proton CT image reconstruction, Med.
+      Phys. 46(8)
 metrics:
   names:
   - psnr
