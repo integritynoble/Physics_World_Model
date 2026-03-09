@@ -3624,6 +3624,160 @@ def generate_cryo_et_phantom(
     return samples
 
 
+def generate_ct_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list:
+    """Generate synthetic X-ray CT Shepp-Logan-style phantom with Poisson sinogram noise.
+
+    Simulates fan-beam / parallel-beam CT acquisition:
+      - x_true: 64×64 float32 Shepp-Logan-style phantom.  A large oval body outline
+        (ellipse) plus inner ellipses representing organs (liver, lung regions, bone
+        cortex), normalised to [0, 1] representing linear attenuation coefficients.
+      - y: Sinogram via Radon transform (128 angles from 0 to π).  Beer-Lambert law
+        applied with I₀=1e5 photons, Poisson noise added, then log-normalised to [0, 1].
+      - H_ideal: identity (the Radon operator is implicit in the acquisition model).
+      - metadata: dict with keys "modality", "n_angles", "detector_pixels",
+        "source_to_detector_mm".
+
+    Uses scipy.ndimage's Radon transform when available; falls back to a simple
+    column-sum forward projection loop for environments without skimage/scipy.special.
+
+    Reference: Shepp & Logan, "The Fourier reconstruction of a head section",
+    IEEE Trans. Nucl. Sci. 1974.
+    """
+    import numpy as np
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    n_angles = 128
+    I0 = 1e5  # photon count for Beer-Lambert noise
+
+    samples = []
+
+    for i in range(n_samples):
+        # ── Build Shepp-Logan-style phantom ───────────────────────────────
+        x_true = np.zeros((H, W), dtype=np.float32)
+        Y, X = np.ogrid[:H, :W]
+        cy, cx = H / 2.0, W / 2.0
+
+        # Large body ellipse (outer boundary)
+        ry_body = H * 0.45
+        rx_body = W * 0.37
+        body = ((Y - cy) / ry_body) ** 2 + ((X - cx) / rx_body) ** 2 <= 1.0
+        x_true[body] = 0.20 + float(rng.uniform(-0.02, 0.02))
+
+        # Skull / cortical bone shell (thin ring just inside body)
+        ry_sk = ry_body * 0.92
+        rx_sk = rx_body * 0.92
+        skull_out = ((Y - cy) / ry_body) ** 2 + ((X - cx) / rx_body) ** 2 <= 1.0
+        skull_in  = ((Y - cy) / ry_sk)   ** 2 + ((X - cx) / rx_sk)   ** 2 <= 1.0
+        shell = skull_out & ~skull_in
+        x_true[shell] = 0.50 + float(rng.uniform(-0.03, 0.03))
+
+        # Liver-like region (large, upper-right)
+        liver_cy = cy - H * 0.05 + float(rng.uniform(-H * 0.03, H * 0.03))
+        liver_cx = cx + W * 0.12 + float(rng.uniform(-W * 0.03, W * 0.03))
+        ry_l = H * 0.22 + float(rng.uniform(-H * 0.02, H * 0.02))
+        rx_l = W * 0.18 + float(rng.uniform(-W * 0.02, W * 0.02))
+        liver = ((Y - liver_cy) / ry_l) ** 2 + ((X - liver_cx) / rx_l) ** 2 <= 1.0
+        liver &= skull_in
+        x_true[liver] = 0.35 + float(rng.uniform(-0.02, 0.02))
+
+        # Lung-left (low attenuation — air-filled)
+        lung_l_cy = cy + float(rng.uniform(-H * 0.02, H * 0.02))
+        lung_l_cx = cx - W * 0.20 + float(rng.uniform(-W * 0.02, W * 0.02))
+        ry_ll = H * 0.18 + float(rng.uniform(-H * 0.02, H * 0.02))
+        rx_ll = W * 0.12 + float(rng.uniform(-W * 0.01, W * 0.01))
+        lung_l = ((Y - lung_l_cy) / ry_ll) ** 2 + ((X - lung_l_cx) / rx_ll) ** 2 <= 1.0
+        lung_l &= skull_in
+        x_true[lung_l] = 0.05 + float(rng.uniform(-0.01, 0.01))
+
+        # Lung-right
+        lung_r_cy = cy + float(rng.uniform(-H * 0.02, H * 0.02))
+        lung_r_cx = cx + W * 0.18 + float(rng.uniform(-W * 0.02, W * 0.02))
+        ry_lr = H * 0.17 + float(rng.uniform(-H * 0.02, H * 0.02))
+        rx_lr = W * 0.11 + float(rng.uniform(-W * 0.01, W * 0.01))
+        lung_r = ((Y - lung_r_cy) / ry_lr) ** 2 + ((X - lung_r_cx) / rx_lr) ** 2 <= 1.0
+        lung_r &= skull_in
+        x_true[lung_r] = 0.05 + float(rng.uniform(-0.01, 0.01))
+
+        # Spine / vertebral bone (small, high attenuation, centre-posterior)
+        spine_cy = cy + H * 0.28 + float(rng.uniform(-H * 0.02, H * 0.02))
+        spine_cx = cx + float(rng.uniform(-W * 0.01, W * 0.01))
+        ry_sp = H * 0.06
+        rx_sp = W * 0.05
+        spine = ((Y - spine_cy) / ry_sp) ** 2 + ((X - spine_cx) / rx_sp) ** 2 <= 1.0
+        spine &= skull_in
+        x_true[spine] = 0.65 + float(rng.uniform(-0.03, 0.03))
+
+        # Normalise to [0, 1]
+        x_min, x_max = float(x_true.min()), float(x_true.max())
+        if x_max > x_min:
+            x_true = (x_true - x_min) / (x_max - x_min)
+        x_true = x_true.astype(np.float32)
+
+        # ── Radon / sinogram forward model ───────────────────────────────
+        angles_deg = np.linspace(0.0, 180.0, n_angles, endpoint=False)
+        detector_pixels = max(H, W)
+
+        try:
+            from skimage.transform import radon
+            sinogram = radon(x_true.astype(np.float64), theta=angles_deg, circle=True)
+            # sinogram shape: (detector_pixels_skimage, n_angles)
+        except ImportError:
+            # Fallback: simple parallel-beam forward projection via rotation
+            from scipy.ndimage import rotate as ndrotate
+            sinogram = np.zeros((detector_pixels, n_angles), dtype=np.float64)
+            pad = (detector_pixels - H) // 2
+            for j, ang in enumerate(angles_deg):
+                rot = ndrotate(x_true.astype(np.float64), -ang, reshape=False, order=1)
+                proj = rot.sum(axis=0)
+                if len(proj) < detector_pixels:
+                    sinogram[:len(proj), j] = proj
+                else:
+                    sinogram[:, j] = proj[:detector_pixels]
+
+        # Beer-Lambert: I = I0 * exp(-sinogram); add Poisson noise
+        sinogram_float = sinogram.astype(np.float64)
+        intensity = I0 * np.exp(-sinogram_float)
+        noisy = rng.poisson(np.maximum(intensity, 1)).astype(np.float64)
+
+        # Log back to line-integral domain
+        log_sino = -np.log(np.maximum(noisy, 1) / I0)
+
+        # Normalise measurement to [0, 1]
+        y_min, y_max = float(log_sino.min()), float(log_sino.max())
+        if y_max > y_min:
+            log_sino = (log_sino - y_min) / (y_max - y_min)
+        y_meas = log_sino.astype(np.float32)
+
+        # H_ideal: identity (Radon operator is implicit)
+        H_size = min(H * W, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y_meas,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "ct",
+                "n_angles": n_angles,
+                "detector_pixels": detector_pixels,
+                "source_to_detector_mm": 1000.0,
+            },
+        })
+
+    return samples
+
+
 def generate_confocal_3d_phantom(
     n_samples: int = 10,
     seed: int = 42,
@@ -3793,6 +3947,7 @@ def acquire_dataset(
         "generate_coronagraphy_phantom": lambda: generate_coronagraphy_phantom(target_shape=target_shape),
         "generate_cryo_em_phantom": generate_cryo_em_phantom,
         "generate_cryo_et_phantom": generate_cryo_et_phantom,
+        "generate_ct_phantom": generate_ct_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -3865,6 +4020,7 @@ def acquire_dataset(
         "generate_coronagraphy_phantom": lambda: generate_coronagraphy_phantom(target_shape=target_shape),
         "generate_cryo_em_phantom": lambda: generate_cryo_em_phantom(),
         "generate_cryo_et_phantom": lambda: generate_cryo_et_phantom(),
+        "generate_ct_phantom": lambda: generate_ct_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

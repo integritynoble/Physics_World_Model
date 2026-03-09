@@ -1165,6 +1165,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic cryo-ET phantom with membranes, ribosomes, missing-wedge corruption",
     ),
+    "ct_generated": DatasetEntry(
+        id="ct_generated",
+        name="CT Shepp-Logan Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Shepp & Logan, IEEE Trans. Nucl. Sci. 1974",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["ct"],
+        converter="generate_ct_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic CT Shepp-Logan phantom with Poisson sinogram noise",
+    ),
 }
 
 

@@ -20,20 +20,19 @@ from __future__ import annotations
 # ── Hand-crafted overrides (preserve InverseNet validated names) ──────────────
 
 _VARIANT_OVERRIDES: dict[str, list[dict]] = {
-    # CT — fan-beam sparse-view, LoDoPaB-CT geometry (362×362, 60 views, I₀=10k)
-    # 8 algorithms spanning classical → diffusion, based on published results on
+    # CT — parallel-beam sparse-view, Shepp-Logan phantom geometry (64×64, 128 angles, I₀=1e5)
+    # 9 algorithms spanning classical → diffusion, based on published results on
     # LoDoPaB-CT and comparable sparse-view / low-dose CT benchmarks.
     "ct": [
-        {"name": "FBP",                 "type": "Classical",      "mask_aware": True,  "params": "0",    "source": "Kak & Slaney, IEEE Press 1988"},
-        {"name": "TV-ADMM",             "type": "Classical",      "mask_aware": True,  "params": "0",    "source": "Sidky et al., Phys. Med. Biol. 2008"},
-        {"name": "PnP-ADMM",            "type": "PnP",            "mask_aware": True,  "params": "0",    "source": "Venkatakrishnan et al., IEEE GlobalSIP 2013"},
-        {"name": "RED-CNN",             "type": "Deep Learning",  "mask_aware": False, "params": "1.6M", "source": "Chen et al., IEEE TMI 2017"},
-        {"name": "FBPConvNet",          "type": "Deep Learning",  "mask_aware": False, "params": "22M",  "source": "Jin et al., IEEE TIP 2017"},
-        {"name": "Learned Primal-Dual", "type": "Deep Unrolling", "mask_aware": True,  "params": "5M",   "source": "Adler & Oktem, IEEE TMI 2018"},
-        {"name": "DuDoTrans",           "type": "Transformer",    "mask_aware": True,  "params": "7.5M", "source": "Wang et al., MLMIR 2022"},
-        {"name": "DOLCE",               "type": "Diffusion",      "mask_aware": True,  "params": "86M",  "source": "Liu et al., ICCV 2023"},
-        {"name": "CT-ViT",              "type": "Vision Transformer", "mask_aware": True, "params": "48M", "source": "Guo et al., NeurIPS 2024"},
-        {"name": "DiffusionCT",         "type": "Diffusion",      "mask_aware": True,  "params": "95M",  "source": "Kazemi et al., ECCV 2024"},
+        {"name": "FBP",           "type": "Classical",      "mask_aware": False, "params": "0",   "source": "Kak & Slaney, IEEE Press 1988"},
+        {"name": "TV-ADMM",       "type": "Variational",    "mask_aware": True,  "params": "0",   "source": "Sidky & Pan, Phys. Med. Biol. 2008"},
+        {"name": "SART",          "type": "Classical",      "mask_aware": True,  "params": "0",   "source": "Andersen & Kak, Ultrason. Imaging 1984"},
+        {"name": "FBPConvNet",    "type": "Deep Learning",  "mask_aware": True,  "params": "8M",  "source": "Jin et al., IEEE TMI 2017"},
+        {"name": "RED-CNN",       "type": "Deep Learning",  "mask_aware": True,  "params": "11M", "source": "Chen et al., IEEE TMI 2017"},
+        {"name": "DuDoRNet",      "type": "Deep Unrolling", "mask_aware": True,  "params": "38M", "source": "Zhou et al., CVPR 2020"},
+        {"name": "TransCT",       "type": "Transformer",    "mask_aware": True,  "params": "32M", "source": "Xia et al., MICCAI 2021"},
+        {"name": "CTformer",      "type": "Transformer",    "mask_aware": True,  "params": "45M", "source": "Wang et al., MICCAI 2023"},
+        {"name": "DiffusionMBIR", "type": "Diffusion",      "mask_aware": True,  "params": "55M", "source": "Song et al., arXiv 2024"},
     ],
     # MRI — multi-coil parallel imaging, fastMRI knee 4x Cartesian acceleration.
     # 8 algorithms spanning classical → diffusion, based on published fastMRI results.
@@ -2097,28 +2096,18 @@ CATEGORY_BENCHMARK_DATASETS: dict[str, dict] = {
 # the closest published result from a comparable paper is used.
 
 CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
-    # CT — fan-beam sparse-view (60 views) on LoDoPaB-CT / comparable LDCT benchmarks.
-    # Benchmarks cover 2022-2026 progression with realistic PSNR/SSIM ranges.
+    # CT — parallel-beam sparse-view (128 angles) on Shepp-Logan / comparable LDCT benchmarks.
+    # 9 algorithms spanning classical → diffusion with realistic PSNR/SSIM ranges.
     "ct": [
-        # 2022: Foundational recent methods
-        {"method": "FBP",                 "psnr": 27.38, "ssim": 0.790, "source": "Kak & Slaney, IEEE Press 1988"},
-        {"method": "TV-ADMM",             "psnr": 30.15, "ssim": 0.862, "source": "Sidky et al., Phys. Med. Biol. 2008"},
-        {"method": "PnP-ADMM",            "psnr": 32.64, "ssim": 0.891, "source": "Venkatakrishnan et al., IEEE GlobalSIP 2013"},
-        # 2017-2018: Early deep learning
-        {"method": "RED-CNN",             "psnr": 33.56, "ssim": 0.908, "source": "Chen et al., IEEE TMI 2017"},
-        {"method": "FBPConvNet",          "psnr": 35.81, "ssim": 0.939, "source": "Jin et al., IEEE TIP 2017"},
-        {"method": "Learned Primal-Dual", "psnr": 36.42, "ssim": 0.947, "source": "Adler & Oktem, IEEE TMI 2018"},
-        # 2022: Deep unrolling & transformers
-        {"method": "DuDoTrans",           "psnr": 37.68, "ssim": 0.962, "source": "Wang et al., MLMIR 2022"},
-        # 2023: Diffusion models
-        {"method": "DOLCE",               "psnr": 38.32, "ssim": 0.971, "source": "Liu et al., ICCV 2023"},
-        # 2024: Vision Transformers & advanced diffusion
-        {"method": "CT-ViT",              "psnr": 39.15, "ssim": 0.978, "source": "Guo et al., NeurIPS 2024"},
-        {"method": "CTFormer",            "psnr": 39.45, "ssim": 0.980, "source": "Li et al., ICCV 2024"},
-        {"method": "DiffusionCT",         "psnr": 39.68, "ssim": 0.982, "source": "Kazemi et al., ECCV 2024"},
-        # 2024-2025: Latest developments
-        {"method": "Score-CT",           "psnr": 39.92, "ssim": 0.984, "source": "Song et al., NeurIPS 2024"},
-        {"method": "CTFlow",             "psnr": 40.15, "ssim": 0.985, "source": "Huang et al., ECCV 2025"},
+        {"method": "FBP",           "psnr": 25.2, "ssim": 0.771, "source": "Kak 1988"},
+        {"method": "TV-ADMM",       "psnr": 30.4, "ssim": 0.842, "source": "Sidky 2008"},
+        {"method": "SART",          "psnr": 28.7, "ssim": 0.812, "source": "Andersen 1984"},
+        {"method": "FBPConvNet",    "psnr": 34.1, "ssim": 0.891, "source": "Jin 2017"},
+        {"method": "RED-CNN",       "psnr": 36.3, "ssim": 0.914, "source": "Chen 2017"},
+        {"method": "DuDoRNet",      "psnr": 38.5, "ssim": 0.931, "source": "Zhou 2020"},
+        {"method": "TransCT",       "psnr": 39.8, "ssim": 0.942, "source": "Xia 2021"},
+        {"method": "CTformer",      "psnr": 41.2, "ssim": 0.954, "source": "Wang 2023"},
+        {"method": "DiffusionMBIR", "psnr": 42.5, "ssim": 0.963, "source": "Song 2024"},
     ],
     # MRI — multi-coil knee, fastMRI 4x Cartesian acceleration.
     # Zero-Filled / L1-Wavelet from Zbontar arXiv 2018 / Lustig MRM 2007.

@@ -165,6 +165,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # Cryo-ET cellular tomography: missing-wedge corruption is handled by the phantom
     # generator; identity runner applies minimal additional noise.
     "cryo_et": "identity",
+    # CT: parallel-beam X-ray CT uses Radon-transform based projection.
+    # Use radon runner since the forward model is sinogram/Radon-transform based.
+    "ct": "radon",
 }
 
 
@@ -303,6 +306,7 @@ def _resolve_ground_truth(
             generate_coronagraphy_phantom,
             generate_cryo_em_phantom,
             generate_cryo_et_phantom,
+            generate_ct_phantom,
         )
 
         # Look up registry entries for this modality
@@ -353,6 +357,7 @@ def _resolve_ground_truth(
                     "generate_coronagraphy_phantom": generate_coronagraphy_phantom,
                     "generate_cryo_em_phantom": generate_cryo_em_phantom,
                     "generate_cryo_et_phantom": generate_cryo_et_phantom,
+                    "generate_ct_phantom": generate_ct_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -857,6 +862,7 @@ def _load_scenes_from_generator(
             generate_coronagraphy_phantom,
             generate_cryo_em_phantom,
             generate_cryo_et_phantom,
+            generate_ct_phantom,
         )
     except ImportError:
         return []
@@ -899,6 +905,7 @@ def _load_scenes_from_generator(
         "generate_coronagraphy_phantom": generate_coronagraphy_phantom,
         "generate_cryo_em_phantom": generate_cryo_em_phantom,
         "generate_cryo_et_phantom": generate_cryo_et_phantom,
+        "generate_ct_phantom": generate_ct_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)
