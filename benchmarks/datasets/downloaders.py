@@ -3778,6 +3778,115 @@ def generate_ct_phantom(
     return samples
 
 
+def generate_ct_fluorescence_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list:
+    """Generate synthetic X-ray Fluorescence CT (XRF-CT) phantom.
+
+    Simulates X-ray fluorescence computed tomography:
+      - x_true: 64×64 float32 map of fluorescent marker distribution
+        (e.g., gold nanoparticles or iodine K-edge) — ellipsoidal clusters of
+        high-fluorescence regions on a low background, normalised to [0, 1].
+      - y: Corrupted measurement — Poisson noise (lambda=50 counts) plus
+        Compton scatter background (uniform ~5 counts), normalised to [0, 1].
+      - H_ideal: identity (the fluorescence emission / detection operator is
+        implicit in the acquisition model).
+      - metadata: dict with keys "modality", "fluorescent_element",
+        "excitation_keV", "pixel_size_um".
+
+    Reference: Larsson et al., "A framework for quantitative X-ray fluorescence
+    CT reconstruction", Phys. Med. Biol. 65 (2020).
+    """
+    import numpy as np
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+
+    # XRF-CT element and energy parameters (varied per sample for diversity)
+    _elements = ["Au", "I", "Gd", "Ba"]
+    _excitation_keV = {"Au": 80.7, "I": 33.2, "Gd": 50.2, "Ba": 37.4}
+    _pixel_size_um = 50.0
+
+    samples = []
+
+    for i in range(n_samples):
+        element = _elements[i % len(_elements)]
+
+        # ── Build fluorescent marker distribution ────────────────────────
+        x_true = np.zeros((H, W), dtype=np.float32)
+        Y, X = np.ogrid[:H, :W]
+        cy, cx = H / 2.0, W / 2.0
+
+        # Low uniform tissue background
+        background_level = float(rng.uniform(0.02, 0.06))
+        x_true[:, :] = background_level
+
+        # 2–4 ellipsoidal clusters of high fluorescence
+        n_clusters = int(rng.integers(2, 5))
+        for _ in range(n_clusters):
+            # Random cluster centre (within inner 60% of FOV)
+            c_y = cy + float(rng.uniform(-H * 0.25, H * 0.25))
+            c_x = cx + float(rng.uniform(-W * 0.25, W * 0.25))
+            ry = float(rng.uniform(H * 0.06, H * 0.18))
+            rx = float(rng.uniform(W * 0.06, W * 0.18))
+            amplitude = float(rng.uniform(0.6, 1.0))
+            mask = ((Y - c_y) / ry) ** 2 + ((X - c_x) / rx) ** 2 <= 1.0
+            x_true[mask] = np.maximum(x_true[mask], amplitude)
+
+        # Normalise to [0, 1]
+        x_min, x_max = float(x_true.min()), float(x_true.max())
+        if x_max > x_min:
+            x_true = (x_true - x_min) / (x_max - x_min)
+        x_true = x_true.astype(np.float32)
+
+        # ── Forward model: fluorescence emission with noise ───────────────
+        # Scale to expected photon counts (lambda ~ 50 at peak)
+        expected_counts = x_true * 50.0
+
+        # Poisson noise on signal
+        signal_noisy = rng.poisson(np.maximum(expected_counts, 1e-6)).astype(np.float32)
+
+        # Compton scatter background: uniform ~5 counts
+        compton_bg = float(rng.uniform(4.0, 6.0))
+        scatter = rng.poisson(
+            np.full((H, W), compton_bg, dtype=np.float64)
+        ).astype(np.float32)
+
+        y_raw = signal_noisy + scatter
+
+        # Normalise measurement to [0, 1]
+        y_min, y_max = float(y_raw.min()), float(y_raw.max())
+        if y_max > y_min:
+            y_raw = (y_raw - y_min) / (y_max - y_min)
+        y_meas = y_raw.astype(np.float32)
+
+        # H_ideal: identity
+        H_size = min(H * W, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y_meas,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "ct_fluorescence",
+                "fluorescent_element": element,
+                "excitation_keV": _excitation_keV[element],
+                "pixel_size_um": _pixel_size_um,
+            },
+        })
+
+    return samples
+
+
 def generate_confocal_3d_phantom(
     n_samples: int = 10,
     seed: int = 42,
@@ -3948,6 +4057,7 @@ def acquire_dataset(
         "generate_cryo_em_phantom": generate_cryo_em_phantom,
         "generate_cryo_et_phantom": generate_cryo_et_phantom,
         "generate_ct_phantom": generate_ct_phantom,
+        "generate_ct_fluorescence_phantom": generate_ct_fluorescence_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -4021,6 +4131,7 @@ def acquire_dataset(
         "generate_cryo_em_phantom": lambda: generate_cryo_em_phantom(),
         "generate_cryo_et_phantom": lambda: generate_cryo_et_phantom(),
         "generate_ct_phantom": lambda: generate_ct_phantom(),
+        "generate_ct_fluorescence_phantom": lambda: generate_ct_fluorescence_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

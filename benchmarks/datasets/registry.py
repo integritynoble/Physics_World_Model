@@ -1180,6 +1180,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic CT Shepp-Logan phantom with Poisson sinogram noise",
     ),
+    "ct_fluorescence_generated": DatasetEntry(
+        id="ct_fluorescence_generated",
+        name="X-ray Fluorescence CT Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Larsson et al., Phys. Med. Biol. 2020",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["ct_fluorescence"],
+        converter="generate_ct_fluorescence_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic XRF-CT phantom with fluorescent marker clusters and Compton background",
+    ),
 }
 
 

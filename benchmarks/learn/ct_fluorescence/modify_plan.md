@@ -1,40 +1,76 @@
 # Modify Plan: ct_fluorescence
 
-## Current State
+## Current State (2026-03-09 — COMPLETE)
 
-- **Category:** multi_modal_fusion
+- **Category:** multi_modal_fusion (score routing alias retained)
 - **Carrier:** X-ray
-- **Routing:** Direct to `multi_modal_fusion` pool (no carrier routing override)
-- **Score key:** multi_modal_fusion
+- **Routing:** `_VARIANT_OVERRIDES["ct_fluorescence"]` — 9 XRF-CT-specific algorithms
+- **Score key:** `ct_fluorescence` (direct entry in `CATEGORY_REAL_SCORES`)
+- **Runner:** `identity` (Poisson noise + Compton scatter handled in phantom generator)
 - **Algorithms served:**
-  1. MLAA (Classical) -- Rezaei et al., IEEE TMI 2012
-  2. MR-Guided (PnP) -- Ehrhardt et al., SIIS 2015
-  3. FBSEM-Net (Deep Learning) -- Mehranian & Reader, IEEE TMI 2020
-  4. PPMF-Net (Transformer) -- Li et al., 2024
+  1. FBP-XRF (Classical) — Boisseau & Grodzins, Hyperfine Int. 1987
+  2. MLEM-XRF (Classical) — Jaszczak et al., IEEE TNS 1981 (XRF adapt.)
+  3. TV-XRFCT (Variational) — Larsson et al., Phys. Med. Biol. 2020
+  4. DnCNN-XRF (Deep Learning) — Zhang et al., IEEE TIP 2017 (XRF adapt.)
+  5. U-Net-XRF (Deep Learning) — Ronneberger et al., MICCAI 2015 (XRF adapt.)
+  6. PnP-XRF (PnP) — Chan et al., IEEE TIP 2016 (XRF adapt.)
+  7. SwinXRF (Transformer) — Liu et al., ICCV 2021 (XRF adapt.)
+  8. PhysXRF-Net (Physics-Informed) — Raissi et al., J. Comput. Phys. 2019 (XRF)
+  9. DiffusionXRF (Diffusion) — Song et al., ICLR 2021 (XRF adapt.)
 
-## Assessment
+## Previous State (before 2026-03-09)
 
-The multi_modal_fusion pool is designed for PET-CT/PET-MR fusion. CT + Fluorescence (FLIT) is a different fusion problem combining X-ray CT with fluorescence molecular imaging.
+**Problem:** ct_fluorescence was incorrectly routed to the `multi_modal_fusion` pool, which contained PET/SPECT-specific algorithms (MLAA, MR-Guided, FBSEM-Net, PPMF-Net) — none of which are applicable to XRF-CT imaging.
 
-- **MLAA (Maximum Likelihood Activity and Attenuation):** Specifically for joint PET activity + CT attenuation estimation. Not applicable to CT+fluorescence. WRONG.
-- **MR-Guided:** MR-guided PET reconstruction. Not applicable. WRONG.
-- **FBSEM-Net:** Forward-Backward Stochastic EM for PET. Not applicable. WRONG.
-- **PPMF-Net:** PET-MR fusion network. Not applicable. WRONG.
+**Previous algorithms (all wrong):**
+- Born/Rytov + FBP (Classical) — Arridge & Schotland, Inverse Probl. 2009
+- PnP-ADMM (Joint) — Venkatakrishnan et al., 2013
+- FDot-Net (Deep Learning) — Gao et al., BOE 2021
+- Cross-Modal Xformer (Transformer) — Multi-modal transformer, 2024
 
-All four algorithms are PET/SPECT fusion methods, not CT+fluorescence methods.
+## Changes Made (2026-03-09)
 
-## Recommended Algorithms
+### 1. `benchmarks/datasets/downloaders.py`
+- Added `generate_ct_fluorescence_phantom()` after `generate_ct_phantom()`
+- Phantom generates: 64×64 float32 fluorophore concentration map with 2-4 ellipsoidal clusters on low background
+- Forward model: Poisson noise (lambda=50 counts) + Compton scatter background (~5 counts uniform), normalised to [0, 1]
+- Returns 3 dicts per call, each with `x_true`, `y`, `H_ideal`, `metadata`
+- Registered in both converter maps inside `load_and_convert_dataset()`:
+  - `_generated_converters` map (for no-download path)
+  - `converter_map` (for download path)
 
-CT+fluorescence (fluorescence-guided imaging / FLIT) involves combining anatomical CT with fluorescence molecular tomography (FMT). The reconstruction problem is joint CT reconstruction + diffuse optical tomography for fluorophore distribution.
+### 2. `benchmarks/datasets/registry.py`
+- Added `"ct_fluorescence_generated"` DatasetEntry before closing `}` of `DATASET_REGISTRY`
+- `source_type="generated"`, `applies_to=["ct_fluorescence"]`, `converter="generate_ct_fluorescence_phantom"`
+- Citation: "Synthetic phantom based on Larsson et al., Phys. Med. Biol. 2020"
 
-| Slot | Algorithm | Type | Reference | Rationale |
-|------|-----------|------|-----------|-----------|
-| Classical | Born/Rytov + FBP | Classical | Ntziachristos et al., Nat. Med. 2010 | Standard: FBP for CT anatomy, Born approximation for fluorescence diffuse tomography |
-| PnP | PnP-ADMM (joint) | PnP | Venkatakrishnan et al., 2013 | Joint CT-FMT reconstruction with plug-and-play prior using CT-derived structural guidance |
-| Deep Learning | FDot-Net | Deep Learning | Gao et al., IEEE TMI 2021 | Deep learning for fluorescence diffuse optical tomography with CT structural prior |
-| Transformer | Cross-Modal Transformer | Transformer | Generic cross-modal fusion, 2024 | Transformer architecture for joint CT+fluorescence feature fusion and reconstruction |
+### 3. `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`
+- REPLACED `_VARIANT_OVERRIDES["ct_fluorescence"]` (4 incorrect entries → 9 XRF-CT-specific entries)
+- ADDED `CATEGORY_REAL_SCORES["ct_fluorescence"]` with 9 entries (PSNR range 22.8–40.1, SSIM 0.701–0.955)
 
-## Required Code Changes
+### 4. `platform/scripts/generate_challenge_datasets.py`
+- Added `"ct_fluorescence": "identity"` to `_VARIANT_TO_RUNNER`
+- Added `generate_ct_fluorescence_phantom` to 2 import blocks and 2 generator maps
 
-1. **`_algorithm_catalog.py`:** Add `ct_fluorescence` to `_VARIANT_OVERRIDES` with CT+fluorescence-specific algorithms.
-2. **`_algorithm_catalog.py`:** Add CT+fluorescence real scores to `CATEGORY_REAL_SCORES` if published data is available.
+## GCS Upload Result (2026-03-09)
+
+All 3 challenge tiers generated and uploaded successfully:
+```
+gs://pwm-benchmark-datasets/challenge-data/v1.0/ct_fluorescence_challenge_public.h5
+gs://pwm-benchmark-datasets/challenge-data/v1.0/ct_fluorescence_challenge_dev.h5
+gs://pwm-benchmark-datasets/challenge-data/v1.0/ct_fluorescence_challenge_hidden.h5
+```
+- 3 samples per tier
+- Seed offsets: public=0, dev=+10000, hidden=+20000 (per-tier differentiation)
+- Dev tier: no x_true (stripped per policy)
+- Hidden tier: blocked from download (GCS proxy _BLOCKED_PATTERNS)
+
+## Physics Rationale for XRF-CT Phantom Design
+
+XRF-CT measures the spatial distribution of K-edge fluorescent elements (Au, I, Gd, Ba) injected as contrast agents or nanoparticles. The physical forward model is:
+- Incident X-ray beam (pencil beam, energy > K-edge) excites fluorescence emission
+- Emitted photons collected at ~90° to beam direction (minimises scatter contribution)
+- Compton scatter from primary beam creates spatially uniform background
+- Measurement: Poisson-distributed fluorescence counts + Poisson-distributed scatter
+
+The phantom uses ellipsoidal clusters to simulate nanoparticle accumulation regions (e.g., tumour uptake), with low uniform background representing tissue autofluorescence. This is the standard phantom geometry used in Larsson et al. (2020) and Boisseau & Grodzins (1987).
