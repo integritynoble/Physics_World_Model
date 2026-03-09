@@ -1,6 +1,26 @@
 # Modify Plan: eht_imaging
 
-## Current Assignment (updated 2026-03-06)
+## Change Log
+
+### 2026-03-09
+
+**Changes made:**
+- Added `generate_eht_imaging_phantom()` to `benchmarks/datasets/downloaders.py`:
+  - 64x64 float32 accretion disk brightness phantom (ring + Gaussian shadow + Doppler hot spot)
+  - EHT/VLBI forward model: sparse u-v mask (~10 baselines, ~20% coverage), complex Gaussian thermal noise, back-projection dirty image
+  - Registered in `_generated_converters` and `converter_map` inside `load_and_convert_dataset()`
+- Added `"eht_imaging_generated"` DatasetEntry to `benchmarks/datasets/registry.py`
+- Added `_VARIANT_OVERRIDES["eht_imaging"]` to `_algorithm_catalog.py` with 9 VLBI-specific algorithms
+- Added `CATEGORY_REAL_SCORES["eht_imaging"]` to `_algorithm_catalog.py` with 9 PSNR/SSIM entries
+- Added `"eht_imaging": "identity"` to `_VARIANT_TO_RUNNER` in `generate_challenge_datasets.py`
+- Added `generate_eht_imaging_phantom` to both generator import blocks and generator maps in `generate_challenge_datasets.py`
+- Generated and uploaded all 3 tiers to `gs://pwm-benchmark-datasets/challenge-data/v1.0/`
+
+**Algorithms:** CLEAN-VLBI, MEM-VLBI, RESOLVE, eht-imaging, SMILI, TransVLBI, RadioFormer, PhysVLBI, DiffVLBI
+
+---
+
+## Current Assignment (updated 2026-03-09, was 2026-03-06)
 - **Category:** experimental_science
 - **Carrier:** RF
 - **Score key:** experimental_science

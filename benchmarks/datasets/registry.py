@@ -1405,6 +1405,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic EELS phantom for benchmarking chemical map reconstruction algorithms",
     ),
+    "eht_imaging_generated": DatasetEntry(
+        id="eht_imaging_generated",
+        name="EHT Black Hole Imaging Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic EHT/VLBI phantom with accretion disk brightness distribution and sparse u-v coverage",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["eht_imaging"],
+        converter="generate_eht_imaging_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic EHT phantom for benchmarking sparse interferometric image reconstruction",
+    ),
 }
 
 

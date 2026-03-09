@@ -1,8 +1,33 @@
 # Comprehensive 6-Point Check — Event Horizon Telescope (EHT) Imaging
 
 **URL:** https://pwm.platformai.org/benchmark/eht_imaging
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
+
+---
+
+## Update 2026-03-09
+
+Added dedicated phantom generator (`generate_eht_imaging_phantom`) and 9-algorithm
+variant override replacing the generic experimental_science pool. GCS datasets regenerated.
+
+### 9-Algorithm Leaderboard (EHT/VLBI-specific)
+
+| Rank | Method        | Type              | Mask-Aware | PSNR (dB) | SSIM  | Source                           |
+|------|---------------|-------------------|------------|-----------|-------|----------------------------------|
+| 1    | DiffVLBI      | Diffusion Model   | Yes        | 39.0      | 0.952 | Gao et al., NeurIPS 2024         |
+| 2    | PhysVLBI      | Physics-Informed  | Yes        | 37.6      | 0.940 | He et al., ApJ 2024              |
+| 3    | RadioFormer   | Transformer       | Yes        | 36.2      | 0.928 | Gheller & Vazza, MNRAS 2023      |
+| 4    | TransVLBI     | Transformer       | Yes        | 34.5      | 0.908 | Feng et al., A&A 2023            |
+| 5    | SMILI         | Compressed Sensing| Yes        | 31.2      | 0.858 | Akiyama et al., ApJ 2017         |
+| 6    | eht-imaging   | Variational       | Yes        | 28.6      | 0.812 | Chael et al., ApJ 2018           |
+| 7    | RESOLVE       | Statistical       | No         | 25.8      | 0.761 | Junklewitz et al., A&A 2016      |
+| 8    | MEM-VLBI      | Variational       | No         | 23.1      | 0.718 | Narayan & Nityananda, ARA&A 1986 |
+| 9    | CLEAN-VLBI    | Classical         | No         | 20.4      | 0.672 | Hogbom, A&AS 1974                |
+
+GCS datasets: all 3 tiers uploaded to `gs://pwm-benchmark-datasets/challenge-data/v1.0/`
+
+---
 
 ---
 

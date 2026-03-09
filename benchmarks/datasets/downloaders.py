@@ -5604,6 +5604,149 @@ def generate_eels_phantom(
     return samples
 
 
+def generate_eht_imaging_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Event Horizon Telescope (EHT) / VLBI black hole imaging phantom.
+
+    Creates a 64x64 float32 radio brightness map simulating accretion disk
+    emission around a black hole:
+      - Bright ring structure at radius ~15-25 pixels from center
+      - Dark photon ring depression in the center (Gaussian shadow)
+      - Bright hot spot on one side (Doppler boosting from relativistic motion)
+
+    Applies EHT/VLBI forward model:
+      - Sparse Fourier sampling with ~10 baseline pairs (u-v plane mask
+        covering ~20% of spatial frequencies)
+      - Thermal noise: complex Gaussian on visibilities
+      - Dirty image reconstruction via back-projection (inverse FFT of
+        sparsely sampled visibilities)
+
+    x_true: 64x64 float32, normalized [0,1] — ground truth brightness.
+    y: 64x64 float32 — dirty image / back-projected reconstruction.
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, n_baselines, uv_coverage_fraction,
+              wavelength_mm, target.
+
+    References: Hogbom, A&AS 1974; Event Horizon Telescope Collaboration,
+                ApJL 2019; Chael et al., ApJ 2018.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    wavelength_mm = 1.3       # EHT observing wavelength (230 GHz)
+    n_baselines = 10          # ~10 baseline pairs for EHT array
+    uv_coverage_fraction = 0.20  # sparse u-v coverage (~20%)
+
+    for i in range(n_samples):
+        # --- Ground truth brightness distribution ---
+        yy, xx = np.mgrid[0:H, 0:W]
+        cy, cx = H / 2.0, W / 2.0
+
+        # Distance from center
+        r = np.sqrt((yy - cy) ** 2 + (xx - cx) ** 2).astype(np.float32)
+
+        # Accretion disk ring: Gaussian annulus centered at radius ~20 px
+        ring_radius = float(rng.uniform(15.0, 25.0))
+        ring_width = float(rng.uniform(3.0, 6.0))
+        ring = np.exp(-0.5 * ((r - ring_radius) / ring_width) ** 2).astype(np.float32)
+
+        # Central shadow (photon ring depression): Gaussian hole at center
+        shadow_sigma = float(rng.uniform(5.0, 9.0))
+        shadow = np.exp(-0.5 * (r / shadow_sigma) ** 2).astype(np.float32)
+        # Suppress ring inside shadow radius
+        x_true = ring * (1.0 - 0.85 * shadow)
+
+        # Doppler-boosted hot spot: bright blob on one side of the ring
+        hotspot_angle = float(rng.uniform(0.0, 2.0 * np.pi))
+        hotspot_r = ring_radius
+        hotspot_cx = cx + hotspot_r * np.cos(hotspot_angle)
+        hotspot_cy = cy + hotspot_r * np.sin(hotspot_angle)
+        hotspot_sigma = float(rng.uniform(2.0, 5.0))
+        hotspot_dist = np.sqrt((yy - hotspot_cy) ** 2 + (xx - hotspot_cx) ** 2)
+        hotspot = float(rng.uniform(0.4, 0.8)) * np.exp(
+            -0.5 * (hotspot_dist / hotspot_sigma) ** 2
+        ).astype(np.float32)
+        x_true = x_true + hotspot
+
+        # Normalize to [0, 1]
+        x_max = float(x_true.max())
+        if x_max > 0:
+            x_true = (x_true / x_max).astype(np.float32)
+        else:
+            x_true = x_true.astype(np.float32)
+
+        # --- EHT/VLBI forward model ---
+        # 1. Compute full 2D FFT of the brightness distribution
+        vis_full = np.fft.fft2(x_true)
+
+        # 2. Build sparse u-v mask: ~20% coverage via n_baselines random baselines
+        uv_mask = np.zeros((H, W), dtype=bool)
+        for _ in range(n_baselines):
+            # Random baseline orientation and length (in Fourier pixels)
+            angle = float(rng.uniform(0, np.pi))
+            max_len = min(H, W) // 2
+            length = int(rng.integers(3, max_len))
+            # Rasterize baseline as a line through Fourier space (and conjugate)
+            for t in range(-length, length + 1):
+                u = int(round(cx + t * np.cos(angle))) % W
+                v = int(round(cy + t * np.sin(angle))) % H
+                uv_mask[v, u] = True
+                # Hermitian conjugate
+                uv_mask[(H - v) % H, (W - u) % W] = True
+
+        # 3. Apply mask + thermal noise on visibilities
+        thermal_noise_std = float(rng.uniform(0.02, 0.08))
+        noise_real = rng.standard_normal((H, W)).astype(np.float32) * thermal_noise_std
+        noise_imag = rng.standard_normal((H, W)).astype(np.float32) * thermal_noise_std
+        noise_complex = noise_real + 1j * noise_imag
+
+        vis_sparse = np.zeros((H, W), dtype=np.complex64)
+        vis_sparse[uv_mask] = (vis_full[uv_mask] + noise_complex[uv_mask]).astype(np.complex64)
+
+        # 4. Dirty image: back-projection via inverse FFT of sparse visibilities
+        dirty = np.real(np.fft.ifft2(vis_sparse)).astype(np.float32)
+
+        # 5. Normalize dirty image to [0, 1]
+        d_min = float(dirty.min())
+        d_max = float(dirty.max())
+        if d_max > d_min:
+            y = ((dirty - d_min) / (d_max - d_min)).astype(np.float32)
+        else:
+            y = np.zeros((H, W), dtype=np.float32)
+
+        actual_coverage = float(uv_mask.sum()) / float(H * W)
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "eht_imaging",
+                "n_baselines": n_baselines,
+                "uv_coverage_fraction": round(actual_coverage, 3),
+                "wavelength_mm": wavelength_mm,
+                "target": "M87*" if i % 2 == 0 else "SgrA*",
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -5686,6 +5829,7 @@ def acquire_dataset(
         "generate_eddy_current_phantom": generate_eddy_current_phantom,
         "generate_edx_mapping_phantom": generate_edx_mapping_phantom,
         "generate_eels_phantom": generate_eels_phantom,
+        "generate_eht_imaging_phantom": generate_eht_imaging_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -5774,6 +5918,7 @@ def acquire_dataset(
         "generate_eddy_current_phantom": lambda: generate_eddy_current_phantom(),
         "generate_edx_mapping_phantom": lambda: generate_edx_mapping_phantom(),
         "generate_eels_phantom": lambda: generate_eels_phantom(),
+        "generate_eht_imaging_phantom": lambda: generate_eht_imaging_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)
