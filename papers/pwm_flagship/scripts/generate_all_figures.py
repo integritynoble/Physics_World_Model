@@ -198,47 +198,71 @@ def fig2_operatorgraph():
     gs = gridspec.GridSpec(2, 2, width_ratios=[1.2, 1.2], height_ratios=[1.0, 0.8],
                            wspace=0.3, hspace=0.45)
 
-    # Panel a: The 11 universal primitives – grouped by role (was panel d)
+    # Panel a: The 11 universal primitives – 2-column layout with group boxes
     ax_a = fig.add_subplot(gs[0, 0])
-    ax_a.set_xlim(0, 4.5)
+    ax_a.set_xlim(0, 5.0)
     ax_a.set_ylim(0, 5.5)
     ax_a.axis('off')
     ax_a.text(0.0, 5.3, 'a', fontsize=10, fontweight='bold')
 
-    # Role groups: (role_name, role_color, [(symbol, description), ...])
-    prim_groups = [
-        ('Generation', '#2B5A8C', '#CADCF0',
-         [('P', 'source \u2192 field')]),
-        ('Encoding', '#5A3D8C', '#D4C8EC',
-         [('C', 'coded aperture'), ('M', 'modulation'),
-          ('R', 'rotation / Radon'), ('\u039B', 'dispersion'),
-          ('\u03A0', 'phase')]),
-        ('Transform', '#8C6D2B', '#F2E0B0',
-         [('F', 'Fourier'), ('\u03A3', 'integration')]),
-        ('Detection', '#8C3A35', '#F2C4C0',
-         [('S', 'sampling'), ('W', 'weighting'),
-          ('D', 'field \u2192 meas.')]),
+    # 2-column layout: left (Generation + Encoding), right (Transform + Detection)
+    # Each group gets a rounded background box
+    prim_cols = [
+        # Column 0 (left)
+        [
+            ('Generation', '#2B5A8C', '#CADCF0', '#E8F0F8',
+             [('P', 'source \u2192 field')]),
+            ('Encoding', '#5A3D8C', '#D4C8EC', '#EDE4F5',
+             [('C', 'coded aperture'), ('M', 'modulation'),
+              ('R', 'rotation / Radon'), ('\u039B', 'dispersion'),
+              ('\u03A0', 'phase')]),
+        ],
+        # Column 1 (right)
+        [
+            ('Transform', '#8C6D2B', '#F2E0B0', '#F9F2E0',
+             [('F', 'Fourier'), ('\u03A3', 'integration')]),
+            ('Detection', '#8C3A35', '#F2C4C0', '#FAE8E6',
+             [('S', 'sampling'), ('W', 'weighting'),
+              ('D', 'field \u2192 meas.')]),
+        ],
     ]
 
-    y_cur = 5.0
-    for role_name, role_tcol, role_fill, prims in prim_groups:
-        # Role header
-        ax_a.text(0.15, y_cur, role_name, fontsize=6.5, fontweight='bold',
-                  color=role_tcol, va='center')
-        for sym, desc in prims:
-            y_cur -= 0.30
-            # Symbol box
-            sym_box = FancyBboxPatch(
-                (0.15, y_cur - 0.12), 0.35, 0.24,
-                boxstyle="round,pad=0.03", facecolor=role_fill,
-                edgecolor=role_tcol, linewidth=0.5)
-            ax_a.add_patch(sym_box)
-            ax_a.text(0.325, y_cur, sym, ha='center', va='center',
-                      fontsize=7, fontweight='bold', color=role_tcol)
-            # Description
-            ax_a.text(0.65, y_cur, desc, ha='left', va='center',
-                      fontsize=5.5, color='#555555')
-        y_cur -= 0.35  # gap between groups
+    col_x = [0.1, 2.6]   # left edge of each column
+    col_w = 2.3           # column width
+    row_sp = 0.32         # spacing between primitive rows
+    grp_pad = 0.12        # padding inside group box
+
+    for ci, col_groups in enumerate(prim_cols):
+        cx = col_x[ci]
+        y_cur = 5.05
+        for role_name, role_tcol, role_fill, role_bg, prims in col_groups:
+            n_rows = len(prims)
+            grp_h = 0.32 + n_rows * row_sp + grp_pad  # header + rows + padding
+            # Group background box
+            grp_box = FancyBboxPatch(
+                (cx, y_cur - grp_h), col_w, grp_h,
+                boxstyle="round,pad=0.06", facecolor=role_bg,
+                edgecolor=role_tcol, linewidth=0.6, alpha=0.7, zorder=0)
+            ax_a.add_patch(grp_box)
+            # Role header (centered in box)
+            ax_a.text(cx + col_w / 2, y_cur - 0.18, role_name,
+                      fontsize=7, fontweight='bold', color=role_tcol,
+                      ha='center', va='center', zorder=1)
+            # Primitive rows
+            for j, (sym, desc) in enumerate(prims):
+                py = y_cur - 0.42 - j * row_sp
+                # Symbol box
+                sym_box = FancyBboxPatch(
+                    (cx + 0.12, py - 0.12), 0.38, 0.24,
+                    boxstyle="round,pad=0.03", facecolor=role_fill,
+                    edgecolor=role_tcol, linewidth=0.6, zorder=1)
+                ax_a.add_patch(sym_box)
+                ax_a.text(cx + 0.31, py, sym, ha='center', va='center',
+                          fontsize=7.5, fontweight='bold', color=role_tcol, zorder=2)
+                # Description
+                ax_a.text(cx + 0.62, py, desc, ha='left', va='center',
+                          fontsize=6, color='#444444', zorder=1)
+            y_cur -= grp_h + 0.15  # gap between groups
 
     # Panel b: Example OperatorGraph DAGs (was panel a)
     ax_b = fig.add_subplot(gs[0, 1])
