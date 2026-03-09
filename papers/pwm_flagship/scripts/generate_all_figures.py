@@ -194,80 +194,79 @@ def fig1_overview():
 # FIGURE 2: OperatorGraph IR and Physics Fidelity Ladder
 # ═════════════════════════════════════════════════════════════════════════════
 def fig2_operatorgraph():
-    fig = plt.figure(figsize=(DOUBLE_COL, 5.5))
-    gs = gridspec.GridSpec(2, 2, width_ratios=[1.2, 1.2], height_ratios=[1.0, 0.8],
-                           wspace=0.3, hspace=0.45)
+    fig = plt.figure(figsize=(DOUBLE_COL, 6.5))
+    gs = gridspec.GridSpec(2, 3, width_ratios=[1.0, 1.0, 1.0],
+                           height_ratios=[0.55, 1.0],
+                           wspace=0.25, hspace=0.50)
 
-    # Panel a: The 11 universal primitives – 2-column layout with group boxes
-    ax_a = fig.add_subplot(gs[0, 0])
-    ax_a.set_xlim(0, 5.0)
-    ax_a.set_ylim(0, 5.5)
+    # Panel a: The 11 universal primitives – full-width top row, horizontal layout
+    ax_a = fig.add_subplot(gs[0, :])  # span all 3 columns
+    ax_a.set_xlim(0, 14)
+    ax_a.set_ylim(0, 2.0)
     ax_a.axis('off')
-    ax_a.text(0.0, 5.3, 'a', fontsize=10, fontweight='bold')
+    ax_a.text(0.0, 1.85, 'a', fontsize=10, fontweight='bold')
 
-    # 2-column layout: left (Generation + Encoding), right (Transform + Detection)
-    # Each group gets a rounded background box
-    prim_cols = [
-        # Column 0 (left)
-        [
-            ('Generation', '#2B5A8C', '#CADCF0', '#E8F0F8',
-             [('P', 'Propagate')]),
-            ('Encoding', '#5A3D8C', '#D4C8EC', '#EDE4F5',
-             [('M', 'Modulate'),
-              ('\u03A0', 'Project'),
-              ('C', 'Convolve'),
-              ('R', 'Scatter'),
-              ('\u039B', 'Transform')]),
-        ],
-        # Column 1 (right)
-        [
-            ('Transform', '#8C6D2B', '#F2E0B0', '#F9F2E0',
-             [('F', 'Encode'), ('\u03A3', 'Accumulate')]),
-            ('Detection', '#8C3A35', '#F2C4C0', '#FAE8E6',
-             [('S', 'Sample'), ('W', 'Disperse'),
-              ('D', 'Detect')]),
-        ],
+    # 4 role groups, each with primitives arranged horizontally
+    prim_groups_a = [
+        ('Generation', '#2B5A8C', '#CADCF0', '#E8F0F8',
+         [('P', 'Propagate')]),
+        ('Encoding', '#5A3D8C', '#D4C8EC', '#EDE4F5',
+         [('M', 'Modulate'), ('\u03A0', 'Project'),
+          ('C', 'Convolve'), ('R', 'Scatter'),
+          ('\u039B', 'Transform')]),
+        ('Transform', '#8C6D2B', '#F2E0B0', '#F9F2E0',
+         [('F', 'Encode'), ('\u03A3', 'Accumulate')]),
+        ('Detection', '#8C3A35', '#F2C4C0', '#FAE8E6',
+         [('S', 'Sample'), ('W', 'Disperse'),
+          ('D', 'Detect')]),
     ]
 
-    col_x = [0.1, 2.6]   # left edge of each column
-    col_w = 2.3           # column width
-    row_sp = 0.32         # spacing between primitive rows
-    grp_pad = 0.12        # padding inside group box
+    # Each primitive cell: symbol box + label, ~1.2 units wide
+    cell_w = 1.15
+    gap_between_groups = 0.30
+    box_h = 1.15
+    box_y = 0.30
+    header_y = box_y + box_h + 0.18
 
-    for ci, col_groups in enumerate(prim_cols):
-        cx = col_x[ci]
-        y_cur = 5.05
-        for role_name, role_tcol, role_fill, role_bg, prims in col_groups:
-            n_rows = len(prims)
-            grp_h = 0.32 + n_rows * row_sp + grp_pad  # header + rows + padding
-            # Group background box
-            grp_box = FancyBboxPatch(
-                (cx, y_cur - grp_h), col_w, grp_h,
-                boxstyle="round,pad=0.06", facecolor=role_bg,
-                edgecolor=role_tcol, linewidth=0.6, alpha=0.7, zorder=0)
-            ax_a.add_patch(grp_box)
-            # Role header (centered in box)
-            ax_a.text(cx + col_w / 2, y_cur - 0.18, role_name,
-                      fontsize=7, fontweight='bold', color=role_tcol,
-                      ha='center', va='center', zorder=1)
-            # Primitive rows
-            for j, (sym, desc) in enumerate(prims):
-                py = y_cur - 0.42 - j * row_sp
-                # Symbol box
-                sym_box = FancyBboxPatch(
-                    (cx + 0.12, py - 0.12), 0.38, 0.24,
-                    boxstyle="round,pad=0.03", facecolor=role_fill,
-                    edgecolor=role_tcol, linewidth=0.6, zorder=1)
-                ax_a.add_patch(sym_box)
-                ax_a.text(cx + 0.31, py, sym, ha='center', va='center',
-                          fontsize=7.5, fontweight='bold', color=role_tcol, zorder=2)
-                # Description
-                ax_a.text(cx + 0.62, py, desc, ha='left', va='center',
-                          fontsize=6, color='#444444', zorder=1)
-            y_cur -= grp_h + 0.15  # gap between groups
+    # Compute total width to center everything
+    total_w = sum(len(prims) * cell_w + 0.24 for _, _, _, _, prims in prim_groups_a)
+    total_w += gap_between_groups * (len(prim_groups_a) - 1)
+    x_offset = (14.0 - total_w) / 2
 
-    # Panel b: Example OperatorGraph DAGs (was panel a)
-    ax_b = fig.add_subplot(gs[0, 1])
+    cursor_x = x_offset
+    for gi, (role_name, role_tcol, role_fill, role_bg, prims) in enumerate(prim_groups_a):
+        n = len(prims)
+        gw = n * cell_w + 0.24
+        # Background box
+        grp_box = FancyBboxPatch(
+            (cursor_x, box_y), gw, box_h,
+            boxstyle="round,pad=0.06", facecolor=role_bg,
+            edgecolor=role_tcol, linewidth=0.8, alpha=0.7, zorder=0)
+        ax_a.add_patch(grp_box)
+        # Role header above box
+        ax_a.text(cursor_x + gw / 2, header_y, role_name,
+                  fontsize=8, fontweight='bold', color=role_tcol,
+                  ha='center', va='center', zorder=1)
+        # Primitives arranged horizontally
+        for j, (sym, desc) in enumerate(prims):
+            px = cursor_x + 0.12 + j * cell_w + cell_w / 2
+            py = box_y + box_h / 2 + 0.10
+            # Symbol circle/box
+            sym_box = FancyBboxPatch(
+                (px - 0.20, py - 0.15), 0.40, 0.30,
+                boxstyle="round,pad=0.04", facecolor=role_fill,
+                edgecolor=role_tcol, linewidth=0.7, zorder=1)
+            ax_a.add_patch(sym_box)
+            ax_a.text(px, py, sym, ha='center', va='center',
+                      fontsize=8.5, fontweight='bold', color=role_tcol, zorder=2)
+            # Label below symbol
+            ax_a.text(px, py - 0.38, desc, ha='center', va='center',
+                      fontsize=5.5, color='#444444', zorder=1)
+
+        cursor_x += gw + gap_between_groups
+
+    # Panel b: Example OperatorGraph DAGs
+    ax_b = fig.add_subplot(gs[1, 0])
     ax_b.set_xlim(0, 4)
     ax_b.set_ylim(0, 5.5)
     ax_b.axis('off')
@@ -306,7 +305,7 @@ def fig2_operatorgraph():
                                               lw=0.6, mutation_scale=8))
 
     # Panel c: Physics Fidelity Ladder (was panel b)
-    ax_c = fig.add_subplot(gs[1, 0])
+    ax_c = fig.add_subplot(gs[1, 1])
     ax_c.set_xlim(0, 4)
     ax_c.set_ylim(0, 5.5)
     ax_c.axis('off')
@@ -342,7 +341,7 @@ def fig2_operatorgraph():
               fontsize=6, color='#555555', rotation=90)
 
     # Panel d: Basis-growth saturation curve (was panel c)
-    ax_d = fig.add_subplot(gs[1, 1])
+    ax_d = fig.add_subplot(gs[1, 2])
     ax_d.text(-0.12, 1.05, 'd', fontsize=10, fontweight='bold',
               transform=ax_d.transAxes)
 
