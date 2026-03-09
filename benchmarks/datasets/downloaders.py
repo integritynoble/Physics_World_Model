@@ -4355,6 +4355,104 @@ def generate_desi_phantom(
     return samples
 
 
+def generate_dic_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    DIC (Differential Interference Contrast) microscopy phase phantom.
+
+    Simulates the optical path difference (OPD) map of a biological cell and
+    the corresponding DIC intensity measurement.
+
+    x_true: 64x64 float32 phase image (optical path difference map) —
+            nucleus (central ellipse, OPD ~0.8), cytoplasm (outer ellipse,
+            OPD ~0.3-0.5), background ~0.0; normalized to [0, 1].
+    y: DIC measurement: DIC converts phase gradients to intensity —
+       shear gradient in x-direction [1, -1] kernel convolution, offset 0.5,
+       Gaussian noise (sigma=0.05), clipped to [0, 1].
+    H_ideal: identity matrix.
+    metadata: dict with keys modality, shear_direction_deg, shear_amount_px,
+              bias_retardance_rad.
+
+    Reference: Mehta & Sheppard, Nat. Photonics 2009.
+    """
+    import numpy as np
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    for i in range(n_samples):
+        Y_grid, X_grid = np.mgrid[:H, :W]
+        cy = H / 2.0
+        cx = W / 2.0
+
+        # Nucleus: central ellipse with high OPD (~0.8)
+        nuc_ry = float(rng.uniform(H * 0.10, H * 0.18))
+        nuc_rx = float(rng.uniform(W * 0.10, W * 0.18))
+        nuc_cy = cy + float(rng.uniform(-H * 0.05, H * 0.05))
+        nuc_cx = cx + float(rng.uniform(-W * 0.05, W * 0.05))
+        nuc_opd = float(rng.uniform(0.75, 0.85))
+        nucleus_mask = ((Y_grid - nuc_cy) / nuc_ry) ** 2 + ((X_grid - nuc_cx) / nuc_rx) ** 2 <= 1.0
+
+        # Cytoplasm: outer ellipse with moderate OPD (~0.3-0.5)
+        cyt_ry = float(rng.uniform(H * 0.22, H * 0.35))
+        cyt_rx = float(rng.uniform(W * 0.22, W * 0.35))
+        cyt_opd = float(rng.uniform(0.3, 0.5))
+        cytoplasm_mask = ((Y_grid - cy) / cyt_ry) ** 2 + ((X_grid - cx) / cyt_rx) ** 2 <= 1.0
+
+        # Build OPD map: background 0, cytoplasm, nucleus
+        x_true = np.zeros((H, W), dtype=np.float32)
+        x_true[cytoplasm_mask] = cyt_opd
+        x_true[nucleus_mask] = nuc_opd
+
+        # Normalize to [0, 1]
+        xmax = x_true.max()
+        if xmax > 0:
+            x_true = x_true / xmax
+        x_true = x_true.astype(np.float32)
+
+        # DIC forward model: apply shear gradient in x-direction
+        # DIC shear kernel [1, -1] along x-axis (finite difference)
+        dic_grad = np.zeros((H, W), dtype=np.float32)
+        dic_grad[:, :-1] = x_true[:, 1:] - x_true[:, :-1]
+        # Shift to intensity: offset 0.5 so gradient=0 → intensity=0.5
+        y = dic_grad + 0.5
+        # Add Gaussian noise
+        noise = rng.normal(0.0, 0.05, size=(H, W)).astype(np.float32)
+        y = (y + noise).astype(np.float32)
+        y = np.clip(y, 0.0, 1.0)
+
+        H_size = min(H * W, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        shear_direction_deg = 0.0  # x-direction shear
+        shear_amount_px = 1.0
+        bias_retardance_rad = float(rng.uniform(0.4, 0.6))  # ~pi/2 ± small
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "dic",
+                "shear_direction_deg": shear_direction_deg,
+                "shear_amount_px": shear_amount_px,
+                "bias_retardance_rad": bias_retardance_rad,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -4427,6 +4525,7 @@ def acquire_dataset(
         "generate_dark_field_phantom": lambda: generate_dark_field_phantom(target_shape=target_shape),
         "generate_dexa_phantom": lambda: generate_dexa_phantom(target_shape=target_shape),
         "generate_desi_phantom": lambda: generate_desi_phantom(target_shape=target_shape),
+        "generate_dic_phantom": lambda: generate_dic_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -4505,6 +4604,7 @@ def acquire_dataset(
         "generate_dark_field_phantom": lambda: generate_dark_field_phantom(target_shape=target_shape),
         "generate_dexa_phantom": lambda: generate_dexa_phantom(target_shape=target_shape),
         "generate_desi_phantom": lambda: generate_desi_phantom(target_shape=target_shape),
+        "generate_dic_phantom": lambda: generate_dic_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)

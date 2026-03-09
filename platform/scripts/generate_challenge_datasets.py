@@ -181,6 +181,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # multiplicative lognormal + Gaussian noisy measurement of lipid/metabolite spatial
     # distribution; identity runner applies the noise model defined in the phantom generator.
     "desi": "identity",
+    # DIC: Differential Interference Contrast microscopy — y is the gradient-based intensity
+    # measurement from the DIC shear kernel; identity runner applies minimal additional noise.
+    "dic": "identity",
 }
 
 
@@ -325,6 +328,7 @@ def _resolve_ground_truth(
             generate_dark_field_phantom,
             generate_dexa_phantom,
             generate_desi_phantom,
+            generate_dic_phantom,
         )
 
         # Look up registry entries for this modality
@@ -381,6 +385,7 @@ def _resolve_ground_truth(
                     "generate_dark_field_phantom": generate_dark_field_phantom,
                     "generate_dexa_phantom": generate_dexa_phantom,
                     "generate_desi_phantom": generate_desi_phantom,
+                    "generate_dic_phantom": generate_dic_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -891,6 +896,7 @@ def _load_scenes_from_generator(
             generate_dark_field_phantom,
             generate_dexa_phantom,
             generate_desi_phantom,
+            generate_dic_phantom,
         )
     except ImportError:
         return []
@@ -939,6 +945,7 @@ def _load_scenes_from_generator(
         "generate_dark_field_phantom": generate_dark_field_phantom,
         "generate_dexa_phantom": generate_dexa_phantom,
         "generate_desi_phantom": generate_desi_phantom,
+        "generate_dic_phantom": generate_dic_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

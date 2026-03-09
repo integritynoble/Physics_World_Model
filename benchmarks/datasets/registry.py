@@ -1255,6 +1255,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic DEXA phantom with bone mineral density and soft tissue regions",
     ),
+    "dic_generated": DatasetEntry(
+        id="dic_generated",
+        name="DIC Microscopy Phase Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Mehta & Sheppard, Nat. Photonics 2009",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["dic"],
+        converter="generate_dic_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic DIC phase phantom with cell nucleus, cytoplasm, differential gradient imaging",
+    ),
 }
 
 
