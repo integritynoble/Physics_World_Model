@@ -125,6 +125,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # Brillouin Microscopy: VIPA spectrometer — y is already the spectral measurement,
     # not a CT sinogram or k-space undersampling.  Identity runner applies minimal noise.
     "brillouin": "identity",
+    # CARS Microscopy: CARS signal with NRB — y is the measured CARS intensity,
+    # reconstruction recovers Im[chi^(3)].  Identity runner applies minimal noise.
+    "cars": "identity",
 }
 
 
@@ -250,6 +253,7 @@ def _resolve_ground_truth(
             generate_apt_composition_map, generate_blt_source_phantom,
             generate_brachytherapy_seed_phantom,
             generate_brillouin_vipa_phantom,
+            generate_cars_raman_phantom,
         )
 
         # Look up registry entries for this modality
@@ -287,6 +291,7 @@ def _resolve_ground_truth(
                     "generate_blt_source_phantom": generate_blt_source_phantom,
                     "generate_brachytherapy_seed_phantom": generate_brachytherapy_seed_phantom,
                     "generate_brillouin_vipa_phantom": generate_brillouin_vipa_phantom,
+                    "generate_cars_raman_phantom": generate_cars_raman_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -778,6 +783,7 @@ def _load_scenes_from_generator(
             generate_apt_composition_map, generate_blt_source_phantom,
             generate_brachytherapy_seed_phantom,
             generate_brillouin_vipa_phantom,
+            generate_cars_raman_phantom,
         )
     except ImportError:
         return []

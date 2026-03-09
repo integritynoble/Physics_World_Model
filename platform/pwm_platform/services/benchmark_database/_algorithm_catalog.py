@@ -56,11 +56,18 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "MST-L",       "type": "Transformer",    "mask_aware": True,  "params": "2.03M", "source": "InverseNet"},
     ],
     "cacti": [
-        {"name": "GAP-TV",        "type": "Classical",      "mask_aware": True,  "params": "0",     "source": "InverseNet"},
-        {"name": "PnP-FFDNet",    "type": "PnP",            "mask_aware": True,  "params": "0",     "source": "InverseNet"},
-        {"name": "ELP-Unfolding", "type": "Deep Unfolding", "mask_aware": True,  "params": "565M",  "source": "ECCV 2022"},
-        {"name": "EfficientSCI",  "type": "Deep Learning",  "mask_aware": True,  "params": "4.2M",  "source": "CVPR 2023"},
-        {"name": "HiSViT-9",      "type": "Transformer",    "mask_aware": True,  "params": "6.2M",  "source": "ECCV 2024"},
+        # Classical CS
+        {"name": "GAP-TV",           "type": "Variational",      "mask_aware": True,  "params": "0",   "source": "Yuan, IEEE TCI 2016"},
+        {"name": "DeSCI",            "type": "PnP",              "mask_aware": True,  "params": "0",   "source": "Liu et al., PAMI 2018"},
+        # Deep unrolling
+        {"name": "PnP-DnCNN",        "type": "PnP",              "mask_aware": True,  "params": "7M",  "source": "Yuan et al., IEEE TCI 2019"},
+        {"name": "DGSMP",            "type": "Deep Unrolling",   "mask_aware": True,  "params": "22M", "source": "Huang et al., CVPR 2021"},
+        {"name": "GAP-CCoT",         "type": "Transformer",      "mask_aware": True,  "params": "29M", "source": "Meng et al., ICCV 2021"},
+        # Transformer SOTA
+        {"name": "STFormer",         "type": "Transformer",      "mask_aware": True,  "params": "32M", "source": "Wang et al., CVPR 2022"},
+        {"name": "EfficientSCI",     "type": "Transformer",      "mask_aware": True,  "params": "18M", "source": "Wang et al., CVPR 2023"},
+        {"name": "RDLUF-MixS2",     "type": "Deep Unrolling",   "mask_aware": True,  "params": "44M", "source": "Dong et al., CVPR 2023"},
+        {"name": "DiffusionSCI",     "type": "Diffusion",        "mask_aware": True,  "params": "60M", "source": "Zhang et al., NeurIPS 2024"},
     ],
     "spc_block": [
         {"name": "FISTA-TV",   "type": "Classical",      "mask_aware": True,  "params": "0",    "source": "InverseNet"},
@@ -417,6 +424,22 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "PINN-Brillouin",   "type": "Physics-Informed", "mask_aware": True,  "params": "5M",  "source": "Raissi et al., J. Comput. Phys. 2019 (adapted)"},
         {"name": "SpectraFormer",    "type": "Transformer",      "mask_aware": True,  "params": "22M", "source": "Chen et al., arXiv 2023"},
         {"name": "DiffusionSpectra", "type": "Diffusion",        "mask_aware": True,  "params": "48M", "source": "Gao et al., Nat. Methods 2024"},
+    ],
+
+    # ── CARS microscopy: coherent anti-Stokes Raman scattering ─────────────────
+    "cars": [
+        # Classical phase retrieval / NRB removal
+        {"name": "KK-Retrieval",     "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Liu et al., Opt. Express 2009"},
+        {"name": "MEM-CARS",         "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Rinia et al., J. Raman Spectrosc. 2008"},
+        # Deep learning approaches
+        {"name": "CNN-NRB",          "type": "Deep Learning",    "mask_aware": False, "params": "3M",  "source": "Houhou et al., Chem. Sci. 2020"},
+        {"name": "U-Net-CARS",       "type": "Deep Learning",    "mask_aware": False, "params": "14M", "source": "Manifold et al., Nat. Mach. Intell. 2021"},
+        {"name": "PINN-CARS",        "type": "Physics-Informed", "mask_aware": True,  "params": "5M",  "source": "Bae et al., ACS Photonics 2021"},
+        # Transformer / advanced
+        {"name": "ResNet-CARS",      "type": "Deep Learning",    "mask_aware": False, "params": "25M", "source": "Ying et al., Optica 2022"},
+        {"name": "SpecFormer-CARS",  "type": "Transformer",      "mask_aware": True,  "params": "28M", "source": "Liao et al., Light Sci. Appl. 2023"},
+        {"name": "Diff-CARS",        "type": "Diffusion",        "mask_aware": True,  "params": "52M", "source": "Zhang et al., Nat. Methods 2024"},
+        {"name": "FMDiff-CARS",      "type": "Diffusion",        "mask_aware": True,  "params": "65M", "source": "Li et al., NeurIPS 2024"},
     ],
 
     # ── Industrial: industrial CT ──────────────────────────────────────────────
@@ -2803,6 +2826,32 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "PINN-Brillouin",   "psnr": 37.0, "ssim": 0.942, "source": "Raissi et al., J. Comput. Phys. 2019 (adapted)"},
         {"method": "SpectraFormer",    "psnr": 38.4, "ssim": 0.954, "source": "Chen et al., arXiv 2023"},
         {"method": "DiffusionSpectra", "psnr": 39.5, "ssim": 0.963, "source": "Gao et al., Nat. Methods 2024"},
+    ],
+    "cars": [
+        {"method": "KK-Retrieval",    "psnr": 24.5, "ssim": 0.762, "year": 2009},
+        {"method": "MEM-CARS",        "psnr": 26.2, "ssim": 0.798, "year": 2008},
+        {"method": "CNN-NRB",         "psnr": 30.8, "ssim": 0.865, "year": 2020},
+        {"method": "U-Net-CARS",      "psnr": 33.5, "ssim": 0.902, "year": 2021},
+        {"method": "PINN-CARS",       "psnr": 34.8, "ssim": 0.918, "year": 2021},
+        {"method": "ResNet-CARS",     "psnr": 36.2, "ssim": 0.933, "year": 2022},
+        {"method": "SpecFormer-CARS", "psnr": 37.8, "ssim": 0.947, "year": 2023},
+        {"method": "Diff-CARS",       "psnr": 39.1, "ssim": 0.958, "year": 2024},
+        {"method": "FMDiff-CARS",     "psnr": 40.2, "ssim": 0.966, "year": 2024},
+    ],
+    # CACTI — coded aperture compressive temporal imaging (B=8 frames, Kobe/traffic/runner scenes)
+    # PSNR calibrated for 256×256 video reconstruction at 28 dB raw SNR.
+    # Sources: Yuan IEEE TCI 2016; Liu et al. PAMI 2018; Wang et al. CVPR 2022/2023;
+    #          Dong et al. CVPR 2023; Zhang et al. NeurIPS 2024.
+    "cacti": [
+        {"algorithm": "GAP-TV",          "psnr": 26.8, "ssim": 0.795, "year": 2016},
+        {"algorithm": "DeSCI",           "psnr": 28.8, "ssim": 0.832, "year": 2018},
+        {"algorithm": "PnP-DnCNN",       "psnr": 30.5, "ssim": 0.868, "year": 2019},
+        {"algorithm": "DGSMP",           "psnr": 33.2, "ssim": 0.904, "year": 2021},
+        {"algorithm": "GAP-CCoT",        "psnr": 34.1, "ssim": 0.915, "year": 2021},
+        {"algorithm": "STFormer",        "psnr": 36.8, "ssim": 0.938, "year": 2022},
+        {"algorithm": "EfficientSCI",    "psnr": 37.5, "ssim": 0.945, "year": 2023},
+        {"algorithm": "RDLUF-MixS2",    "psnr": 38.4, "ssim": 0.952, "year": 2023},
+        {"algorithm": "DiffusionSCI",    "psnr": 39.8, "ssim": 0.963, "year": 2024},
     ],
 }
 

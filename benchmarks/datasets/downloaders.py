@@ -2341,6 +2341,177 @@ def generate_brillouin_vipa_phantom(
     return samples
 
 
+def generate_cars_raman_phantom(
+    n_samples: int = 10,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    CARS (Coherent Anti-Stokes Raman Scattering) microscopy phantom.
+
+    Simulates hyperspectral CARS images of biological cells with lipid droplets
+    (CH2 resonance ~2845 cm-1) and protein-rich regions (amide I ~1655 cm-1).
+    Forward model: coherent superposition of resonant signal and non-resonant
+    background (NRB). Reconstruction recovers Im[chi^(3)] (pure Raman spectrum).
+
+    Reference: Cheng & Xie, J. Phys. Chem. B 2004; Camp & Cicerone, Nat. Photon. 2015.
+    """
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    N_wn = 32  # wavenumber channels
+
+    for i in range(n_samples):
+        # --- Ground truth: Im[chi^3] chemical maps ---
+        # Baseline: water/buffer ~0
+        chi_im = np.zeros((H, W), dtype=np.float32)
+
+        # Lipid droplets (CH2 at 2845 cm-1): high CARS signal
+        n_lipid = int(rng.integers(3, 8))
+        for _ in range(n_lipid):
+            cy = int(rng.integers(H // 6, 5 * H // 6))
+            cx = int(rng.integers(W // 6, 5 * W // 6))
+            r = int(rng.integers(3, 10))
+            Y, X = np.ogrid[:H, :W]
+            mask = ((Y - cy) ** 2 + (X - cx) ** 2) <= r ** 2
+            chi_im[mask] = float(rng.uniform(0.7, 1.0))
+
+        # Protein-rich cytoplasm
+        n_cells = int(rng.integers(2, 5))
+        for _ in range(n_cells):
+            cy = int(rng.integers(H // 4, 3 * H // 4))
+            cx = int(rng.integers(W // 4, 3 * W // 4))
+            ry = int(rng.integers(H // 6, H // 3))
+            rx = int(rng.integers(W // 6, W // 3))
+            Y, X = np.ogrid[:H, :W]
+            cell_mask = ((Y - cy) / ry) ** 2 + ((X - cx) / rx) ** 2 <= 1.0
+            chi_im[cell_mask] = np.maximum(chi_im[cell_mask], float(rng.uniform(0.2, 0.5)))
+
+        chi_im = gaussian_filter(chi_im, sigma=0.8).astype(np.float32)
+        x_true = chi_im
+
+        # --- Forward model: CARS signal with NRB ---
+        # NRB (non-resonant background) is spatially uniform
+        A_NRB = float(rng.uniform(0.3, 0.8))  # NRB amplitude
+        # CARS = |chi_r + chi_NRB|^2 = chi_r^2 + 2*chi_r*chi_NRB + chi_NRB^2
+        y_cars = chi_im ** 2 + 2 * A_NRB * chi_im + A_NRB ** 2
+
+        # Shot noise
+        sigma_n = 0.02 * float(y_cars.max()) * (1 + rng.random() * 0.5)
+        y_meas = (y_cars + rng.normal(0, sigma_n, y_cars.shape)).astype(np.float32)
+
+        H_size = min(H * W, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y_meas,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "n_lipid_droplets": int(n_lipid),
+                "n_cells": int(n_cells),
+                "A_NRB": float(A_NRB),
+                "wavenumber_cm1": 2845,
+            },
+        })
+
+    return samples
+
+
+def generate_cacti_video_phantom(
+    n_samples: int = 10,
+    seed: int = 42,
+    shape: tuple = (128, 128),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list:
+    """
+    CACTI coded aperture compressive temporal imaging phantom.
+
+    Simulates B=8 frame high-speed video encoded into a single coded snapshot.
+    Dynamic scene: moving discs/bars simulating fast fluid flow or oscillating
+    mechanical components. Binary coded aperture mask (50% fill factor).
+
+    Reference: Llull et al., Optica 2015; Qiao et al., Nat. Photonics 2020.
+    """
+    import numpy as np
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    B = 8  # frames per shot
+
+    for i in range(n_samples):
+        # --- Binary coded aperture mask ---
+        mask = rng.integers(0, 2, size=(H, W), dtype=np.float32)
+
+        # --- Ground truth video: B frames of dynamic scene ---
+        x_true = np.zeros((H, W, B), dtype=np.float32)
+
+        # Static background
+        background = rng.uniform(0.1, 0.4, (H, W)).astype(np.float32)
+
+        # Moving objects (discs/bars)
+        n_objects = int(rng.integers(2, 6))
+        for _ in range(n_objects):
+            oy0 = int(rng.integers(H // 5, 4 * H // 5))
+            ox0 = int(rng.integers(W // 5, 4 * W // 5))
+            r = int(rng.integers(5, 20))
+            vy = float(rng.uniform(-3, 3))  # pixels/frame
+            vx = float(rng.uniform(-3, 3))
+            intensity = float(rng.uniform(0.6, 1.0))
+
+            Y, X = np.ogrid[:H, :W]
+            for t in range(B):
+                cy = int(np.clip(oy0 + vy * t, r, H - r - 1))
+                cx = int(np.clip(ox0 + vx * t, r, W - r - 1))
+                disc = ((Y - cy) ** 2 + (X - cx) ** 2) <= r ** 2
+                x_true[:, :, t] += disc * intensity
+
+        x_true = np.clip(x_true + background[:, :, None], 0, 1).astype(np.float32)
+
+        # --- Forward model: coded snapshot measurement ---
+        y = np.zeros((H, W), dtype=np.float32)
+        for t in range(B):
+            y += mask * x_true[:, :, t]
+        y /= B  # normalize
+
+        # Add read noise
+        sigma = 0.01 * (1 + 0.5 * rng.random())
+        y = (y + rng.normal(0, sigma, y.shape)).astype(np.float32)
+
+        # Ideal operator (mask-based linear measurement)
+        H_size = min(H * W, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true[:, :, 0],  # store first frame as 2D for eval
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "n_frames": B,
+                "fill_factor": float(mask.mean()),
+                "n_objects": int(n_objects),
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -2393,6 +2564,8 @@ def acquire_dataset(
         "generate_blt_source_phantom": lambda: generate_blt_source_phantom(target_shape=target_shape),
         "generate_brachytherapy_seed_phantom": lambda: generate_brachytherapy_seed_phantom(target_shape=target_shape),
         "generate_brillouin_vipa_phantom": lambda: generate_brillouin_vipa_phantom(target_shape=target_shape),
+        "generate_cars_raman_phantom": lambda: generate_cars_raman_phantom(target_shape=target_shape),
+        "generate_cacti_video_phantom": lambda: generate_cacti_video_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -2451,6 +2624,8 @@ def acquire_dataset(
         "generate_blt_source_phantom": lambda: generate_blt_source_phantom(target_shape=target_shape),
         "generate_brachytherapy_seed_phantom": lambda: generate_brachytherapy_seed_phantom(target_shape=target_shape),
         "generate_brillouin_vipa_phantom": lambda: generate_brillouin_vipa_phantom(target_shape=target_shape),
+        "generate_cars_raman_phantom": lambda: generate_cars_raman_phantom(target_shape=target_shape),
+        "generate_cacti_video_phantom": lambda: generate_cacti_video_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)

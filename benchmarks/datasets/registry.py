@@ -108,6 +108,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[512, 217, 204],
         mat_key="salinas_corrected",
     ),
+    "cacti_video_generated": DatasetEntry(
+        id="cacti_video_generated",
+        name="CACTI Video Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Llull et al., Optica 2015",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["cacti"],
+        converter="generate_cacti_video_phantom",
+        x_shape=[128, 128],
+        notes="Synthetic CACTI coded aperture compressive video phantom (B=8 frames, moving objects)",
+    ),
 
     # ==================================================================
     # 2. Microscopy  (26 modalities)
@@ -952,6 +967,23 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         converter="generate_test_scene",
         x_shape=[256, 256],
         notes="Simplified electromagnetic shower energy deposition",
+    ),
+
+    # CARS microscopy — coherent anti-Stokes Raman scattering phantom
+    "cars_raman_generated": DatasetEntry(
+        id="cars_raman_generated",
+        name="CARS Raman Microscopy (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Camp & Cicerone, Nat. Photon. 2015",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["cars"],
+        converter="generate_cars_raman_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic CARS hyperspectral cell phantom with lipid droplets and NRB background",
     ),
 }
 
