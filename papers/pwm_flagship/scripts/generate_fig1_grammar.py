@@ -115,6 +115,9 @@ def main(output_path: Path):
     row3_y = 1.8        # bottom row centre
     row3_h = 2.4        # bottom row height
 
+    # Right-margin x for the c→d routing arrow
+    margin_x = 19.5
+
     # ════════════════════════════════════════════════════════════════════════
     # a – Any Imaging System
     # ════════════════════════════════════════════════════════════════════════
@@ -133,33 +136,36 @@ def main(output_path: Path):
                 style="italic", zorder=1)
 
     # ════════════════════════════════════════════════════════════════════════
-    # b – Compose: OperatorGraph  (DAG only, no primitive ribbon)
+    # b – Compose: OperatorGraph  (wider box, better spacing)
     # ════════════════════════════════════════════════════════════════════════
-    s2_x, s2_w = 6.8, 3.2
+    s2_x, s2_w = 6.5, 3.6
     draw_stage_box(ax, s2_x, row1_y, s2_w, row1_h, C_STAGE2, "#C0B0D8")
 
     ax.text(s2_x - s2_w / 2 + 0.15, row1_y + row1_h / 2 - 0.15, "b",
             fontsize=16, fontweight="bold", color=C_TEXT, va="top", zorder=1)
-    ax.text(s2_x, row1_y + row1_h / 2 - 0.45, "Compose:\nOperatorGraph",
-            fontsize=12, ha="center", va="top", color=C_ENC_T,
-            fontweight="bold", linespacing=1.2, zorder=1)
+    ax.text(s2_x + 0.15, row1_y + row1_h / 2 - 0.20,
+            "Compose:\nOperatorGraph",
+            fontsize=10, ha="center", va="top", color=C_ENC_T,
+            fontweight="bold", linespacing=1.15, zorder=1)
 
-    # DAG: P → C → W → S → D  (CASSI: Propagate, Convolve, Disperse, Sample, Detect)
+    # DAG: P → C → W → S → D  (CASSI example)
     dag_prims = ["P", "C", "W", "S", "D"]
-    dag_y_top = row1_y + 0.50
-    dag_sp = 0.48
-    nw, nh = 0.58, 0.32
+    dag_y_top = row1_y + 0.10
+    dag_sp = 0.40
+    nw, nh = 0.52, 0.28
+    dag_cx = s2_x - 0.25
     for i, p in enumerate(dag_prims):
         y = dag_y_top - i * dag_sp
         fill, tcol = PRIM_COLOR_MAP[p]
-        draw_node(ax, s2_x, y, p, fill, width=nw, height=nh,
-                  fontsize=11, text_color=tcol, edgecolor=tcol,
+        draw_node(ax, dag_cx, y, p, fill, width=nw, height=nh,
+                  fontsize=10, text_color=tcol, edgecolor=tcol,
                   linewidth=0.6, shadow=True)
         if i > 0:
-            draw_small_arrow(ax, s2_x, dag_y_top - (i - 1) * dag_sp - nh / 2 - 0.02,
-                             s2_x, y + nh / 2 + 0.02, color=C_ARROW)
+            draw_small_arrow(ax, dag_cx,
+                             dag_y_top - (i - 1) * dag_sp - nh / 2 - 0.02,
+                             dag_cx, y + nh / 2 + 0.02, color=C_ARROW)
 
-    ax.text(s2_x + 0.55, dag_y_top, "e.g. CASSI", fontsize=7.5,
+    ax.text(dag_cx + 0.50, dag_y_top, "e.g. CASSI", fontsize=7,
             ha="left", va="center", color="#999999", style="italic", zorder=1)
 
     # Arrow: a → b
@@ -205,9 +211,9 @@ def main(output_path: Path):
                    s3_x - s3_w / 2 - 0.1, row1_y, color="#C0B080")
 
     # ════════════════════════════════════════════════════════════════════════
-    # f – The 11 Universal Primitives (full-width, middle row)
+    # f – The 11 Universal Primitives (narrower, leaves right margin clear)
     # ════════════════════════════════════════════════════════════════════════
-    sf_x, sf_w = 10.0, 19.5
+    sf_x, sf_w = 9.0, 17.0
     draw_stage_box(ax, sf_x, row2_y, sf_w, row2_h, C_STAGEF, "#DDDDDD")
 
     ax.text(sf_x - sf_w / 2 + 0.25, row2_y + row2_h / 2 - 0.15, "f",
@@ -234,7 +240,7 @@ def main(output_path: Path):
           ("D", "Detect")]),
     ]
 
-    group_x_positions = [1.5, 6.0, 12.5, 16.5]
+    group_x_positions = [1.5, 5.5, 11.0, 15.0]
     grp_header_y = row2_y + 0.55
     py_start = row2_y + 0.20
     py_sp = 0.35
@@ -292,10 +298,16 @@ def main(output_path: Path):
         ax.text(cx, cy - 0.20, cdesc, fontsize=9, ha="center",
                 va="center", color="#555555", linespacing=1.2, zorder=2)
 
-    # Arrow: c → d (diagonal)
-    draw_big_arrow(ax, s3_x - 1.5, row1_y - row1_h / 2 - 0.15,
-                   s4_x + 1.5, row3_y + row3_h / 2 + 0.15,
-                   color="#CC9999")
+    # Arrow: c → d  (routed along right margin, bypassing panel f)
+    c_right = s3_x + s3_w / 2
+    d_right = s4_x + s4_w / 2
+    arr_col = "#CC9999"
+    # L-shaped path: c right → margin → down → d right (line only, no arrowhead)
+    ax.plot([c_right + 0.15, margin_x, margin_x],
+            [row1_y, row1_y, row3_y],
+            color=arr_col, linewidth=2.5, solid_capstyle="round", zorder=5)
+    # Final horizontal segment with arrowhead
+    draw_big_arrow(ax, margin_x, row3_y, d_right + 0.15, row3_y, color=arr_col)
 
     # ════════════════════════════════════════════════════════════════════════
     # e – Recover
