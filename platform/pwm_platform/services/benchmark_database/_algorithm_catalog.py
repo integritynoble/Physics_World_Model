@@ -565,6 +565,19 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "DiffEvent",         "type": "Diffusion Model",  "mask_aware": True,  "params": "42M", "source": "Gao et al., NeurIPS 2024"},
     ],
 
+    # ── Expansion microscopy ───────────────────────────────────────────────────
+    "expansion": [
+        {"name": "Deconv-Exp",      "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Chen et al., Science 2015"},
+        {"name": "RL-ExM",          "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Richardson, J. Opt. Soc. Am. 1972"},
+        {"name": "TV-ExM",          "type": "Variational",        "mask_aware": False, "params": "0",   "source": "Rudin et al., Physica D 1992"},
+        {"name": "DnCNN-ExM",       "type": "Deep Learning",      "mask_aware": False, "params": "7M",  "source": "Zhao et al., Nat. Methods 2019"},
+        {"name": "DeepInterp-ExM",  "type": "Deep Learning",      "mask_aware": True,  "params": "15M", "source": "Lecoq et al., Nat. Methods 2021"},
+        {"name": "TransExM",        "type": "Transformer",        "mask_aware": True,  "params": "26M", "source": "Li et al., Nat. Methods 2022"},
+        {"name": "SwinExM",         "type": "Transformer",        "mask_aware": True,  "params": "32M", "source": "Wang et al., Cell Syst. 2023"},
+        {"name": "PhysExM",         "type": "Physics-Informed",   "mask_aware": True,  "params": "20M", "source": "Chen et al., Nat. Commun. 2024"},
+        {"name": "DiffExM",         "type": "Diffusion Model",    "mask_aware": True,  "params": "44M", "source": "Gao et al., NeurIPS 2024"},
+    ],
+
     # ── XFEL serial crystallography ────────────────────────────────────────────
     "xfel_sfx": [
         {"name": "CrystFEL",         "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "White et al., J. Appl. Cryst. 2012"},
@@ -2828,6 +2841,18 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "SwinEvent",         "psnr": 36.9, "ssim": 0.933, "source": "Zhang et al. 2023"},
         {"method": "PhysEvent",         "psnr": 38.0, "ssim": 0.944, "source": "Chen et al. 2024"},
         {"method": "DiffEvent",         "psnr": 39.4, "ssim": 0.955, "source": "Gao et al. 2024"},
+    ],
+    # Expansion microscopy
+    "expansion": [
+        {"method": "Deconv-Exp",      "psnr": 24.5, "ssim": 0.742, "source": "Chen et al. 2015"},
+        {"method": "RL-ExM",          "psnr": 26.9, "ssim": 0.778, "source": "Richardson 1972"},
+        {"method": "TV-ExM",          "psnr": 29.1, "ssim": 0.819, "source": "Rudin et al. 1992"},
+        {"method": "DnCNN-ExM",       "psnr": 31.8, "ssim": 0.860, "source": "Zhao et al. 2019"},
+        {"method": "DeepInterp-ExM",  "psnr": 34.2, "ssim": 0.898, "source": "Lecoq et al. 2021"},
+        {"method": "TransExM",        "psnr": 36.3, "ssim": 0.927, "source": "Li et al. 2022"},
+        {"method": "SwinExM",         "psnr": 37.7, "ssim": 0.941, "source": "Wang et al. 2023"},
+        {"method": "PhysExM",         "psnr": 38.8, "ssim": 0.950, "source": "Chen et al. 2024"},
+        {"method": "DiffExM",         "psnr": 40.0, "ssim": 0.960, "source": "Gao et al. 2024"},
     ],
     # Photometric stereo
     "photometric_stereo": [

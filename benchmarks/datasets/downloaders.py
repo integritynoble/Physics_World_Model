@@ -6740,6 +6740,165 @@ def generate_event_camera_phantom(
     return samples
 
 
+def generate_expansion_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Expansion microscopy phantom for super-resolution reconstruction benchmarks.
+
+    Creates a 64x64 float32 super-resolution biological structure (post-expansion)
+    simulating a neuronal dendrite segment with spine protrusions, dendritic shaft,
+    and synaptic vesicle clusters.
+
+    Applies expansion microscopy forward model:
+      - Physical expansion factor 4x
+      - Optical resolution limit: Gaussian PSF sigma ~1.5 px at diffraction limit
+        before expansion = sigma ~0.38 px at expanded scale
+      - Gel distortion: random smooth deformation field ~2-5 px displacement at
+        original scale
+      - Poisson noise
+
+    x_true: 64x64 float32, normalized [0,1] — super-resolution structure (post-expansion).
+    y: 64x64 float32 — observed expansion microscopy image (with gel distortion and PSF).
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, expansion_factor, psf_sigma_nm, gel_distortion_nm.
+
+    References: Chen et al., Science 2015 (ExM original);
+                Zhao et al., Nat. Methods 2019;
+                Li et al., Nat. Methods 2022.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter, map_coordinates
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    expansion_factor = 4.0
+    psf_sigma_expanded = 0.38   # px at expanded scale
+    gel_displacements_nm = [2.0, 3.5, 5.0]
+
+    for i in range(n_samples):
+        sample_seed = seed + i * 1000
+        rng_s = np.random.default_rng(sample_seed)
+
+        yy, xx = np.mgrid[0:H, 0:W]
+        yy_f = yy.astype(np.float32) / H
+        xx_f = xx.astype(np.float32) / W
+
+        # --- Ground truth: neuronal dendrite segment ---
+        x_true = np.zeros((H, W), dtype=np.float32)
+
+        # Dendritic shaft: curved line through image (~0.5-0.7 intensity)
+        shaft_y_center = float(rng_s.uniform(0.35, 0.65))
+        shaft_curve_amp = float(rng_s.uniform(0.02, 0.06))
+        shaft_curve_freq = float(rng_s.uniform(1.0, 2.5))
+        shaft_width = float(rng_s.uniform(0.04, 0.08))
+        shaft_y = shaft_y_center + shaft_curve_amp * np.sin(2 * np.pi * shaft_curve_freq * xx_f)
+        shaft_intensity = float(rng_s.uniform(0.50, 0.70))
+        shaft_mask = np.abs(yy_f - shaft_y) < shaft_width
+        x_true = np.where(shaft_mask, shaft_intensity, x_true)
+
+        # Spine protrusions: short protrusions from shaft (0.8-1.0 intensity)
+        n_spines = int(rng_s.integers(4, 9))
+        for _ in range(n_spines):
+            spine_x = float(rng_s.uniform(0.05, 0.95))
+            spine_dir = rng_s.integers(0, 2)  # 0=up, 1=down
+            spine_len = float(rng_s.uniform(0.05, 0.12))
+            spine_width = float(rng_s.uniform(0.015, 0.035))
+            spine_intensity = float(rng_s.uniform(0.80, 1.00))
+            # spine head position
+            spine_base_y = shaft_y_center + shaft_curve_amp * np.sin(
+                2 * np.pi * shaft_curve_freq * spine_x)
+            spine_tip_y = (spine_base_y - spine_len if spine_dir == 0
+                           else spine_base_y + spine_len)
+            # Draw spine as line segment + head bulge
+            t_vals = np.linspace(0.0, 1.0, 30)
+            for t in t_vals:
+                seg_y = spine_base_y + t * (spine_tip_y - spine_base_y)
+                seg_x = spine_x
+                dist = np.sqrt((yy_f - seg_y) ** 2 + (xx_f - seg_x) ** 2)
+                x_true = np.where(dist < spine_width, spine_intensity, x_true)
+            # Spine head: small bulge at tip
+            head_radius = float(rng_s.uniform(0.02, 0.04))
+            dist_head = np.sqrt((yy_f - spine_tip_y) ** 2 + (xx_f - spine_x) ** 2)
+            x_true = np.where(dist_head < head_radius, spine_intensity, x_true)
+
+        # Synaptic vesicle clusters: small bright puncta (~1.0 intensity)
+        n_clusters = int(rng_s.integers(3, 7))
+        for _ in range(n_clusters):
+            vc_x = float(rng_s.uniform(0.05, 0.95))
+            vc_y = shaft_y_center + shaft_curve_amp * np.sin(
+                2 * np.pi * shaft_curve_freq * vc_x)
+            vc_y += float(rng_s.uniform(-0.05, 0.05))
+            n_vesicles = int(rng_s.integers(2, 5))
+            for _ in range(n_vesicles):
+                vx = vc_x + float(rng_s.uniform(-0.025, 0.025))
+                vy = vc_y + float(rng_s.uniform(-0.025, 0.025))
+                vr = float(rng_s.uniform(0.005, 0.012))
+                dist_v = np.sqrt((yy_f - vy) ** 2 + (xx_f - vx) ** 2)
+                x_true = np.where(dist_v < vr, 1.0, x_true)
+
+        x_true = np.clip(x_true, 0.0, 1.0).astype(np.float32)
+
+        # --- Forward model: expansion microscopy ---
+        # 1. Gel distortion: smooth random deformation field
+        gel_disp_nm = gel_displacements_nm[i % len(gel_displacements_nm)]
+        # displacement in pixels (at expanded scale)
+        disp_px = gel_disp_nm / expansion_factor
+        smooth_sigma = float(rng_s.uniform(5.0, 10.0))
+        disp_y_raw = rng_s.standard_normal((H, W)).astype(np.float32)
+        disp_x_raw = rng_s.standard_normal((H, W)).astype(np.float32)
+        disp_y = gaussian_filter(disp_y_raw, sigma=smooth_sigma) * disp_px
+        disp_x = gaussian_filter(disp_x_raw, sigma=smooth_sigma) * disp_px
+
+        coords_y = yy.astype(np.float64) + disp_y
+        coords_x = xx.astype(np.float64) + disp_x
+        coords_y = np.clip(coords_y, 0, H - 1)
+        coords_x = np.clip(coords_x, 0, W - 1)
+        x_distorted = map_coordinates(
+            x_true.astype(np.float64), [coords_y, coords_x], order=1, mode='nearest'
+        ).astype(np.float32)
+
+        # 2. PSF blur: Gaussian at expanded scale
+        psf_sigma = psf_sigma_expanded * (H / 64.0)
+        x_blurred = gaussian_filter(x_distorted, sigma=psf_sigma).astype(np.float32)
+
+        # 3. Poisson noise
+        photon_scale = float(rng_s.uniform(200.0, 500.0))
+        x_photons = x_blurred * photon_scale
+        x_noisy = rng_s.poisson(lam=np.maximum(x_photons, 0.0)).astype(np.float32)
+        y_max = x_noisy.max()
+        if y_max > 0:
+            y = (x_noisy / y_max).astype(np.float32)
+        else:
+            y = x_noisy
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "expansion",
+                "expansion_factor": expansion_factor,
+                "psf_sigma_nm": psf_sigma_expanded * expansion_factor * 100.0,
+                "gel_distortion_nm": gel_disp_nm,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -6830,6 +6989,7 @@ def acquire_dataset(
         "generate_endoscopy_phantom": generate_endoscopy_phantom,
         "generate_entangled_photon_phantom": generate_entangled_photon_phantom,
         "generate_event_camera_phantom": generate_event_camera_phantom,
+        "generate_expansion_phantom": generate_expansion_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -6926,6 +7086,7 @@ def acquire_dataset(
         "generate_endoscopy_phantom": lambda: generate_endoscopy_phantom(),
         "generate_entangled_photon_phantom": lambda: generate_entangled_photon_phantom(),
         "generate_event_camera_phantom": lambda: generate_event_camera_phantom(),
+        "generate_expansion_phantom": lambda: generate_expansion_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

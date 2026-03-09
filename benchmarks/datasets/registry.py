@@ -1525,6 +1525,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic event camera phantom for benchmarking intensity reconstruction from event streams",
     ),
+    "expansion_generated": DatasetEntry(
+        id="expansion_generated",
+        name="Expansion Microscopy Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic expansion microscopy phantom with neuronal structures, gel distortion, and PSF model",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["expansion"],
+        converter="generate_expansion_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic expansion microscopy phantom for benchmarking super-resolution reconstruction algorithms",
+    ),
 }
 
 

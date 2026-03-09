@@ -244,6 +244,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # Event camera: log-intensity gradient, contrast-threshold event model, and event count
     # accumulation are handled by the phantom generator; identity runner applies no additional degradation.
     "event_camera": "identity",
+    # Expansion microscopy: gel distortion, PSF blur, and Poisson noise are handled by the
+    # phantom generator; identity runner applies no additional degradation.
+    "expansion": "identity",
 }
 
 
@@ -405,6 +408,7 @@ def _resolve_ground_truth(
             generate_endoscopy_phantom,
             generate_entangled_photon_phantom,
             generate_event_camera_phantom,
+            generate_expansion_phantom,
         )
 
         # Look up registry entries for this modality
@@ -478,6 +482,7 @@ def _resolve_ground_truth(
                     "generate_endoscopy_phantom": generate_endoscopy_phantom,
                     "generate_entangled_photon_phantom": generate_entangled_photon_phantom,
                     "generate_event_camera_phantom": generate_event_camera_phantom,
+                    "generate_expansion_phantom": generate_expansion_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -1006,6 +1011,7 @@ def _load_scenes_from_generator(
             generate_endoscopy_phantom,
             generate_entangled_photon_phantom,
             generate_event_camera_phantom,
+            generate_expansion_phantom,
         )
     except ImportError:
         return []
@@ -1072,6 +1078,7 @@ def _load_scenes_from_generator(
         "generate_endoscopy_phantom": generate_endoscopy_phantom,
         "generate_entangled_photon_phantom": generate_entangled_photon_phantom,
         "generate_event_camera_phantom": generate_event_camera_phantom,
+        "generate_expansion_phantom": generate_expansion_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)
