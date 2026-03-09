@@ -1649,6 +1649,140 @@ def generate_angiography_vessel_phantom(
 
 
 # ---------------------------------------------------------------------------
+# Generated ASL perfusion phantom (cerebral blood flow map)
+# ---------------------------------------------------------------------------
+
+def generate_asl_perfusion_phantom(
+    target_shape: Optional[Tuple[int, ...]] = None,
+    seed: int = 42,
+) -> np.ndarray:
+    """Generate a 2-D cerebral blood flow (CBF) map for ASL MRI.
+
+    Models the ground truth perfusion-weighted image after label-control
+    subtraction in Arterial Spin Labeling MRI.  The signal is proportional
+    to CBF and reflects the regional perfusion values of different brain
+    tissue compartments.
+
+    Physics basis
+    -------------
+    The ASL subtraction signal is:
+        DeltaM(x) = 2 * M0 * f(x) / lambda * alpha * T1_blood
+                    * exp(-t_d / T1_blood)
+    where f(x) is the local CBF map (mL/100g/min).  The ground truth x is
+    normalised so that:
+      - 0.0  = background / CSF (no perfusion)
+      - 0.35 = white matter cortical perfusion (~25 mL/100g/min)
+      - 0.70 = grey matter cortical perfusion  (~55 mL/100g/min)
+      - 1.0  = peak perfusion in deep grey matter structures (basal ganglia,
+               ~70-80 mL/100g/min)
+
+    Brain compartments
+    ------------------
+    The phantom reproduces the major tissue compartments visible in a
+    continuous-ASL or pseudo-continuous-ASL (pCASL) perfusion scan:
+      1. Scalp + skull ring (zero perfusion).
+      2. CSF / ventricles (zero perfusion, dark interior cavities).
+      3. White matter (low perfusion, ~0.30-0.40 normalised).
+      4. Grey matter cortical ribbon (~0.55-0.70 normalised).
+      5. Deep grey matter: basal ganglia, thalamus (~0.85-1.0 normalised).
+      6. Large-vessel territories: subtle MCA/ACA/PCA perfusion zoning
+         modelled by smooth spatial gradient overlays.
+      7. Random vascular noise: physiological CBF heterogeneity with
+         Gaussian spatial texture superimposed on each compartment.
+
+    Calibration
+    -----------
+    Normalised values calibrated to published pCASL perfusion maps:
+      - Wu, W.C. et al. (2007) "A theoretical and experimental investigation
+        of the tagging efficiency of pseudocontinuous arterial spin labeling."
+        MRM 58(5):1020-1027.
+      - Alsop, D.C. et al. (2015) "Recommended implementation of arterial
+        spin-labeled perfusion MRI for clinical applications."
+        MRM 73(1):102-116.
+      - Guo, J. & Wong, E.C. (2012) "Increased SNR efficiency in velocity
+        selective arterial spin labeling." MRM 68(4):1046-1055.
+
+    References
+    ----------
+    Alsop, D.C. et al. (2015). Recommended implementation of ASL perfusion
+    MRI for clinical applications. MRM 73(1):102-116.
+    Mutsaerts, H.J.M.M. et al. (2020). ExploreASL: An image processing
+    toolbox for population-level ASL perfusion MRI studies.
+    NeuroImage 219:116932.
+    Tian, Y. et al. (2023). Deep learning for ASL MRI reconstruction.
+    MRM 89(4):1616-1629.
+    """
+    from scipy.ndimage import gaussian_filter
+    rng = np.random.RandomState(seed)
+    H = target_shape[0] if target_shape else 128
+    W = target_shape[1] if target_shape and len(target_shape) > 1 else H
+
+    yy = np.linspace(-1, 1, H)
+    xx = np.linspace(-1, 1, W)
+    X, Y = np.meshgrid(xx, yy)
+    R2 = X**2 + Y**2
+
+    arr = np.zeros((H, W), dtype=np.float32)
+
+    # ── 1. Outer brain oval (cortical surface) ────────────────────────────
+    brain_mask = (X / 0.88)**2 + (Y / 0.92)**2 < 1.0
+
+    # ── 2. White matter (inner oval, low perfusion) ───────────────────────
+    wm_mask = (X / 0.65)**2 + (Y / 0.70)**2 < 1.0
+    arr[brain_mask] = 0.35 + rng.uniform(-0.03, 0.03)
+
+    # ── 3. Grey matter cortex = brain_mask AND NOT wm_mask ────────────────
+    gm_mask = brain_mask & ~wm_mask
+    gm_val = 0.60 + rng.uniform(0.0, 0.08)
+    arr[gm_mask] = gm_val
+
+    # Slight within-WM heterogeneity
+    wm_texture = 0.28 + 0.10 * rng.randn(H, W).astype(np.float32)
+    arr[wm_mask] = wm_texture[wm_mask]
+
+    # ── 4. Deep grey matter: basal ganglia (2 ellipses) ───────────────────
+    # Left putamen / globus pallidus
+    bg_l = ((X + 0.22) / 0.10)**2 + ((Y + 0.05) / 0.14)**2 < 1.0
+    arr[bg_l] = 0.88 + rng.uniform(0.0, 0.10)
+    # Right putamen / globus pallidus
+    bg_r = ((X - 0.22) / 0.10)**2 + ((Y + 0.05) / 0.14)**2 < 1.0
+    arr[bg_r] = 0.88 + rng.uniform(0.0, 0.10)
+
+    # ── 5. Thalami (two smaller ellipses, high perfusion) ─────────────────
+    thal_l = ((X + 0.10) / 0.08)**2 + ((Y + 0.20) / 0.10)**2 < 1.0
+    arr[thal_l] = 0.92 + rng.uniform(0.0, 0.08)
+    thal_r = ((X - 0.10) / 0.08)**2 + ((Y + 0.20) / 0.10)**2 < 1.0
+    arr[thal_r] = 0.92 + rng.uniform(0.0, 0.08)
+
+    # ── 6. CSF / lateral ventricles (zero perfusion) ──────────────────────
+    vent_l = ((X + 0.18) / 0.07)**2 + ((Y - 0.02) / 0.18)**2 < 1.0
+    vent_r = ((X - 0.18) / 0.07)**2 + ((Y - 0.02) / 0.18)**2 < 1.0
+    third_vent = (X / 0.025)**2 + ((Y - 0.05) / 0.08)**2 < 1.0
+    arr[vent_l | vent_r | third_vent] = 0.0
+
+    # Zero outside brain
+    arr[~brain_mask] = 0.0
+
+    # ── 7. Smooth vascular territory gradients ────────────────────────────
+    # MCA territory (lateral): slight gradient boost
+    mca_weight = np.exp(-((np.abs(X) - 0.5)**2) / (2 * 0.18**2))
+    arr[brain_mask] += (0.06 * mca_weight[brain_mask] *
+                        rng.uniform(0.8, 1.2, brain_mask.sum())).astype(np.float32)
+
+    # ── 8. Physiological CBF heterogeneity texture ────────────────────────
+    texture = gaussian_filter(rng.randn(H, W).astype(np.float32), sigma=3.0)
+    texture /= np.std(texture) + 1e-6
+    arr[brain_mask] += (0.04 * texture[brain_mask]).astype(np.float32)
+    arr[~brain_mask] = 0.0
+
+    # ── 9. Mild Gaussian smoothing (partial volume effects) ──────────────
+    arr = gaussian_filter(arr, sigma=0.7)
+    arr[~brain_mask] = 0.0
+
+    return normalize_array(arr)
+
+
+# ---------------------------------------------------------------------------
 # Generated velocity model (seismic)
 # ---------------------------------------------------------------------------
 

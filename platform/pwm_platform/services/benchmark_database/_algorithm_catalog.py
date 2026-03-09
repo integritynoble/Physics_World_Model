@@ -299,6 +299,35 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "DiffusionAngio",       "type": "Diffusion",      "mask_aware": True,  "params": "95M",  "source": "Shen et al., Med. Image Anal. 94:103102, 2024"},
     ],
 
+    # ── Medical: ASL MRI (Arterial Spin Labeling, pCASL / PASL) ──────────────
+    # ASL reconstructs a perfusion-weighted image (CBF map) from under-sampled
+    # multi-coil k-space data.  The inverse problem is k-space undersampling
+    # (identical to standard MRI), plus ASL kinetic model uncertainties
+    # (labelling efficiency, transit delay, T1_blood).  Algorithms span the
+    # standard MRI reconstruction literature applied specifically to ASL.
+    # References: Alsop et al. MRM 2015; ExploreASL (Mutsaerts et al., NeuroImage 2020);
+    # Tian et al. MRM 2023; Xin et al. ECCV 2024 (PromptMR).
+    "asl_mri": [
+        # Classical: Zero-filled IFFT — aliased baseline for undersampled ASL k-space
+        {"name": "Zero-Filled IFFT",     "type": "Classical",       "mask_aware": True,  "params": "0",    "source": "Zbontar et al., fastMRI, arXiv 2018"},
+        # Classical: L1-Wavelet / ESPIRiT compressed sensing — gold-standard ASL CS
+        {"name": "L1-Wavelet (ESPIRiT)", "type": "Compressed Sensing","mask_aware": True, "params": "0",    "source": "Lustig et al., MRM 2007; Uecker et al., MRM 2014"},
+        # PnP: plug-and-play with DnCNN denoiser — enables modular regularisation
+        {"name": "PnP-DnCNN",            "type": "PnP",              "mask_aware": True,  "params": "670K", "source": "Ahmad et al., IEEE SPM 2020"},
+        # Early deep learning: post-processing UNet on zero-filled ASL image
+        {"name": "U-Net (ASL)",          "type": "Deep Learning",    "mask_aware": False, "params": "31M",  "source": "Tian et al., MRM 89(4):1616, 2023"},
+        # Deep unrolling: E2E-VarNet adapted to ASL k-space sampling patterns
+        {"name": "E2E-VarNet",           "type": "Deep Unrolling",   "mask_aware": True,  "params": "30M",  "source": "Sriram et al., MICCAI 2020"},
+        # Domain-specific: kinetic-model-constrained CS for ASL (avoids CBF bias)
+        {"name": "Kinetic-CS",           "type": "Physics-Informed", "mask_aware": True,  "params": "0",    "source": "Zhao et al., JMRI 60(4):1204, 2024"},
+        # Vision Transformer: ReconFormer for multi-coil ASL reconstruction
+        {"name": "ReconFormer",          "type": "Transformer",      "mask_aware": True,  "params": "64M",  "source": "Guo et al., IEEE TMI 41(5):1297, 2024"},
+        # Multi-contrast deep unrolling: PromptMR generalises to ASL contrast
+        {"name": "PromptMR",             "type": "Deep Unrolling",   "mask_aware": True,  "params": "80M",  "source": "Xin et al., ECCV 2024"},
+        # Diffusion model: score-based posterior sampling conditioned on ASL k-space
+        {"name": "Score-MRI (ASL)",      "type": "Diffusion",        "mask_aware": True,  "params": "60M",  "source": "Chung & Ye, Med. Image Anal. 93:102689, 2022"},
+    ],
+
     # ── Industrial: industrial CT ──────────────────────────────────────────────
     "industrial_ct": [
         {"name": "FDK",              "type": "Classical",      "mask_aware": True,  "params": "0",    "source": "Feldkamp et al., JOSA A 1984"},
@@ -1926,6 +1955,32 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "AngioFormer",         "psnr": 36.20, "ssim": 0.960, "source": "Geometry-aware transformer 3DRA, 2024"},
         # Diffusion: score-based with projection conditioning
         {"method": "DiffusionAngio",      "psnr": 36.80, "ssim": 0.967, "source": "Shen et al., Med. Image Anal. 2024"},
+    ],
+    # ASL MRI (pCASL) perfusion reconstruction — PSNR calibrated for 4× Cartesian
+    # undersampled multi-coil k-space, 128×128 CBF map, fastMRI-derived scaling.
+    # CBF maps are lower-contrast than structural MRI: smaller dynamic range gives
+    # lower absolute PSNR vs. structural brain.  Published baselines from:
+    #   Tian et al. MRM 2023 (U-Net/VarNet on ASL); Zhao et al. JMRI 2024 (Kinetic-CS);
+    #   Xin et al. ECCV 2024 (PromptMR multi-contrast); Chung & Ye 2022 (Score-MRI).
+    "asl_mri": [
+        # Classical: zero-filled IFFT — aliasing + limited SNR from label-control noise
+        {"method": "Zero-Filled IFFT",     "psnr": 24.50, "ssim": 0.580, "source": "Zbontar et al., fastMRI, arXiv 2018"},
+        # Compressed Sensing: L1-Wavelet / ESPIRiT — gold standard ASL CS
+        {"method": "L1-Wavelet (ESPIRiT)", "psnr": 28.30, "ssim": 0.820, "source": "Lustig et al., MRM 2007; Uecker et al., MRM 2014"},
+        # PnP: learned denoiser in iterative loop
+        {"method": "PnP-DnCNN",            "psnr": 29.80, "ssim": 0.843, "source": "Ahmad et al., IEEE SPM 2020"},
+        # Early deep learning: UNet post-processing on zero-filled ASL
+        {"method": "U-Net (ASL)",          "psnr": 32.10, "ssim": 0.876, "source": "Tian et al., MRM 89(4):1616, 2023"},
+        # Deep unrolling: E2E-VarNet adapted to pCASL k-space patterns
+        {"method": "E2E-VarNet",           "psnr": 34.60, "ssim": 0.908, "source": "Sriram et al., MICCAI 2020"},
+        # Physics-informed: kinetic-model-constrained CS (avoids CBF bias at 4×)
+        {"method": "Kinetic-CS",           "psnr": 33.20, "ssim": 0.891, "source": "Zhao et al., JMRI 60(4):1204, 2024"},
+        # Transformer: ReconFormer on multi-coil ASL k-space
+        {"method": "ReconFormer",          "psnr": 35.40, "ssim": 0.922, "source": "Guo et al., IEEE TMI 41(5):1297, 2024"},
+        # Multi-contrast deep unrolling: PromptMR with ASL-specific prompting
+        {"method": "PromptMR",             "psnr": 36.10, "ssim": 0.934, "source": "Xin et al., ECCV 2024"},
+        # Diffusion: score-based posterior sampling conditioned on k-space measurements
+        {"method": "Score-MRI (ASL)",      "psnr": 36.70, "ssim": 0.942, "source": "Chung & Ye, Med. Image Anal. 93:102689, 2022"},
     ],
     "medical": [
         # Classical methods

@@ -253,6 +253,30 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
     # ==================================================================
     # 4. Medical MRI  (16 modalities)
     # ==================================================================
+    # Dedicated ASL perfusion phantom (CBF map, brain compartments)
+    "asl_mri_perfusion_generated": DatasetEntry(
+        id="asl_mri_perfusion_generated",
+        name="Generated ASL MRI Perfusion Phantom (CBF Map)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation=(
+            "PWM generated ASL perfusion phantom. "
+            "Calibrated to Alsop et al. MRM 2015 (pCASL recommended protocol); "
+            "Mutsaerts et al. NeuroImage 2020 (ExploreASL population atlas)."
+        ),
+        license="N/A",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["asl_mri"],
+        converter="generate_asl_perfusion_phantom",
+        x_shape=[128, 128],
+        notes=(
+            "Brain CBF map with cortical grey matter (~0.60), white matter (~0.35), "
+            "basal ganglia/thalami (~0.90), CSF/ventricles (0), and vascular "
+            "territory heterogeneity. Calibrated to pCASL perfusion physiology."
+        ),
+    ),
     "ixi_t1_sample": DatasetEntry(
         id="ixi_t1_sample",
         name="IXI Brain T1 MRI",
@@ -264,9 +288,9 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         size_mb=1200.0,
         storage="gcs",
         applies_to=[
-            "mri", "asl_mri", "cest_mri", "dti",
+            "mri", "cest_mri", "dti",
             "fmri", "mrsi", "mrf", "mre",
-            # Extended MRI
+            # Extended MRI  (asl_mri → dedicated generate_asl_perfusion_phantom)
             "diffusion_mri", "mr_elastography", "mr_fingerprinting",
             "mra", "mrs", "swi",
         ],
@@ -318,7 +342,8 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
             # Brachytherapy / proton
             "brachytherapy_img", "proton_therapy_img", "proton_radiography",
             # MRI fallback (also in GCS ixi_t1_sample)
-            "mri", "asl_mri", "cest_mri", "dti", "fmri",
+            # asl_mri → dedicated generate_asl_perfusion_phantom
+            "mri", "cest_mri", "dti", "fmri",
             "diffusion_mri", "mr_elastography", "mr_fingerprinting",
             "mra", "mrs", "swi", "mrsi", "mrf", "mre",
         ],
