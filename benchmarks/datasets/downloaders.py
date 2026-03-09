@@ -4849,6 +4849,136 @@ def generate_dna_paint_phantom(
     return samples
 
 
+def generate_doppler_ultrasound_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Doppler ultrasound flow phantom with parabolic Poiseuille flow and speckle noise.
+
+    Creates a 64x64 float32 blood flow velocity map: background tissue (velocity ~0),
+    vessel lumen with parabolic Poiseuille flow profile (v_max ~0.5-1.0 m/s), vessel
+    wall boundaries.
+
+    Applies Doppler ultrasound forward model: Doppler frequency shift proportional to
+    flow velocity, multiplicative Rayleigh speckle noise, simulates aliasing at the
+    Nyquist limit.
+
+    x_true: 64x64 float32, normalized [0,1] — blood flow velocity map.
+    y: 64x64 float32 — noisy Doppler measurement with speckle.
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, prf_hz, beam_angle_deg, vessel_diameter_mm.
+
+    Reference: Evans & McDicken, Doppler Ultrasound, 2nd ed., 2000.
+    """
+    import numpy as np
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    # Doppler acquisition parameters
+    prf_hz = 5000.0           # Pulse repetition frequency (Hz)
+    beam_angle_deg = 60.0     # Beam-to-flow angle (degrees)
+    cos_theta = float(np.cos(np.deg2rad(beam_angle_deg)))
+
+    for i in range(n_samples):
+        # --- Ground truth velocity map (Poiseuille parabolic flow in vessel) ---
+        x_true = np.zeros((H, W), dtype=np.float32)
+
+        # Vessel parameters: random centre, orientation, and radius
+        cx = float(rng.uniform(0.25 * W, 0.75 * W))
+        cy = float(rng.uniform(0.25 * H, 0.75 * H))
+        vessel_radius_px = float(rng.uniform(0.08 * min(H, W), 0.18 * min(H, W)))
+        vessel_diameter_mm = vessel_radius_px * 0.3  # ~0.3 mm/pixel typical
+        v_max = float(rng.uniform(0.5, 1.0))          # peak velocity m/s
+
+        # Vessel orientation angle
+        angle_deg = float(rng.uniform(0.0, 360.0))
+        angle_rad = np.deg2rad(angle_deg)
+        cos_a = float(np.cos(angle_rad))
+        sin_a = float(np.sin(angle_rad))
+
+        Y_grid, X_grid = np.mgrid[:H, :W]
+        # Distance from vessel centreline (rotated coordinate)
+        dx = X_grid.astype(np.float32) - cx
+        dy = Y_grid.astype(np.float32) - cy
+        r_perp = np.abs(-dx * sin_a + dy * cos_a)  # perpendicular distance to axis
+
+        # Parabolic Poiseuille profile: v(r) = v_max * (1 - (r/R)^2) inside vessel
+        inside = r_perp < vessel_radius_px
+        v_profile = np.where(
+            inside,
+            v_max * (1.0 - (r_perp / vessel_radius_px) ** 2),
+            0.0,
+        ).astype(np.float32)
+
+        # Vessel wall: thin ring with slightly elevated velocity (~0.05 m/s)
+        wall = (r_perp >= vessel_radius_px) & (r_perp < vessel_radius_px + 1.5)
+        v_profile[wall] = float(rng.uniform(0.02, 0.06))
+
+        # Normalize velocity map to [0, 1]
+        if v_profile.max() > 0:
+            x_true = (v_profile / v_profile.max()).astype(np.float32)
+        else:
+            x_true = v_profile
+
+        # --- Doppler forward model ---
+        # Doppler frequency shift: f_d = 2 * v * cos(theta) * f0 / c
+        # Represent as normalized Doppler signal proportional to velocity
+        doppler_signal = x_true * cos_theta  # Doppler-weighted velocity projection
+
+        # Nyquist aliasing: wrap aliased velocities (v > v_nyquist maps to negative)
+        v_nyquist = 0.7  # normalized Nyquist limit
+        doppler_signal = np.where(
+            doppler_signal > v_nyquist,
+            doppler_signal - 2.0 * v_nyquist,
+            doppler_signal,
+        ).astype(np.float32)
+
+        # Multiplicative Rayleigh speckle noise (tissue echoes)
+        sigma_rayleigh = float(rng.uniform(0.05, 0.15))
+        speckle = rng.rayleigh(sigma_rayleigh, size=(H, W)).astype(np.float32)
+        # Speckle is higher in tissue (background) regions
+        background_mask = (~inside).astype(np.float32)
+        y_raw = doppler_signal + background_mask * speckle * 0.3 + speckle * 0.1
+
+        # Add small additive Gaussian noise (thermal/electronic)
+        noise_std = float(rng.uniform(0.01, 0.04))
+        y_raw = y_raw + rng.standard_normal((H, W)).astype(np.float32) * noise_std
+
+        # Normalize y to [0, 1]
+        y_min = float(y_raw.min())
+        y_max = float(y_raw.max())
+        if y_max > y_min:
+            y = ((y_raw - y_min) / (y_max - y_min)).astype(np.float32)
+        else:
+            y = np.zeros((H, W), dtype=np.float32)
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "doppler_ultrasound",
+                "prf_hz": prf_hz,
+                "beam_angle_deg": beam_angle_deg,
+                "vessel_diameter_mm": round(vessel_diameter_mm, 2),
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -4925,6 +5055,7 @@ def acquire_dataset(
         "generate_diffusion_mri_phantom": generate_diffusion_mri_phantom,
         "generate_digital_breast_tomo_phantom": generate_digital_breast_tomo_phantom,
         "generate_dna_paint_phantom": generate_dna_paint_phantom,
+        "generate_doppler_ultrasound_phantom": generate_doppler_ultrasound_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -5007,6 +5138,7 @@ def acquire_dataset(
         "generate_diffusion_mri_phantom": lambda: generate_diffusion_mri_phantom(),
         "generate_digital_breast_tomo_phantom": lambda: generate_digital_breast_tomo_phantom(),
         "generate_dna_paint_phantom": lambda: generate_dna_paint_phantom(),
+        "generate_doppler_ultrasound_phantom": lambda: generate_doppler_ultrasound_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

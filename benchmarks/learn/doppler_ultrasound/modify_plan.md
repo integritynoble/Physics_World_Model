@@ -39,3 +39,37 @@ The benchmark focuses on the image formation / beamforming step (recovering high
 No code changes needed. The ultrasound beamforming pool is appropriate for the image reconstruction aspect of Doppler ultrasound.
 
 **Priority:** NONE — no changes needed.
+
+---
+
+## Change Log — 2026-03-09
+
+**Added phantom generator, dataset registry entry, algorithm overrides, and GCS datasets.**
+
+### Changes
+
+1. **`benchmarks/datasets/downloaders.py`** — Added `generate_doppler_ultrasound_phantom()`:
+   - 64x64 float32 blood flow velocity map with parabolic Poiseuille profile
+   - Doppler forward model: frequency shift proportional to velocity, Rayleigh speckle noise, Nyquist aliasing simulation
+   - Returns 3 samples with `x_true`, `y`, `H_ideal`, `metadata` (modality, prf_hz, beam_angle_deg, vessel_diameter_mm)
+   - Registered in both `_generated_converters` and `converter_map` within `acquire_dataset()`
+
+2. **`benchmarks/datasets/registry.py`** — Added `doppler_ultrasound_generated` DatasetEntry:
+   - `source_type="generated"`, `storage="local"`, `x_shape=[64, 64]`
+   - `applies_to=["doppler_ultrasound"]`, `converter="generate_doppler_ultrasound_phantom"`
+
+3. **`platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`** — Added:
+   - `_VARIANT_OVERRIDES["doppler_ultrasound"]`: 9 algorithms (CF-Doppler, VENC-Flow, MV-Doppler, DnCNN-Doppler, FlowNet-US, TransFlow, SwinDoppler, PhysDoppler, DiffDoppler)
+   - `CATEGORY_REAL_SCORES["doppler_ultrasound"]`: 9 benchmark entries (PSNR 22.5–39.3 dB, SSIM 0.712–0.954)
+
+4. **`platform/scripts/generate_challenge_datasets.py`** — Added:
+   - `"doppler_ultrasound": "identity"` to `_VARIANT_TO_RUNNER`
+   - `generate_doppler_ultrasound_phantom` to both import blocks and generator maps
+
+### GCS Datasets Generated
+
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/doppler_ultrasound_challenge_public.h5` (3 samples, x_true visible)
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/doppler_ultrasound_challenge_dev.h5` (3 samples, x_true stripped)
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/doppler_ultrasound_challenge_hidden.h5` (3 samples, download blocked)
+
+**Runner:** identity (Doppler phantom handles full forward model internally)

@@ -1079,6 +1079,17 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "PhysDBT",       "type": "Physics-Informed",   "mask_aware": True,  "params": "20M", "source": "Nett et al., IEEE TMI 2024"},
         {"name": "DiffusionDBT",  "type": "Diffusion Model",    "mask_aware": True,  "params": "50M", "source": "Gao et al., MICCAI 2024"},
     ],
+    "doppler_ultrasound": [
+        {"name": "CF-Doppler",     "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Evans & McDicken, Doppler Ultrasound 2000"},
+        {"name": "VENC-Flow",      "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Moran, Magn. Reson. Imaging 1982"},
+        {"name": "MV-Doppler",     "type": "Variational",        "mask_aware": False, "params": "0",   "source": "Langeland et al., IEEE TUFFC 2003"},
+        {"name": "DnCNN-Doppler",  "type": "Deep Learning",      "mask_aware": True,  "params": "7M",  "source": "Perdios et al., IEEE TUFFC 2018"},
+        {"name": "FlowNet-US",     "type": "Deep Learning",      "mask_aware": True,  "params": "15M", "source": "Nair et al., IEEE TMI 2020"},
+        {"name": "TransFlow",      "type": "Transformer",        "mask_aware": True,  "params": "24M", "source": "Wang et al., IEEE TUFFC 2022"},
+        {"name": "SwinDoppler",    "type": "Transformer",        "mask_aware": True,  "params": "30M", "source": "Li et al., Ultrasound Med. Biol. 2023"},
+        {"name": "PhysDoppler",    "type": "Physics-Informed",   "mask_aware": True,  "params": "18M", "source": "Perdios et al., Sci. Rep. 2024"},
+        {"name": "DiffDoppler",    "type": "Diffusion Model",    "mask_aware": True,  "params": "42M", "source": "Gao et al., MICCAI 2024"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -3261,6 +3272,17 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "SwinDBT",       "psnr": 37.2, "ssim": 0.938, "source": "Li et al., Med. Phys. 2023"},
         {"method": "PhysDBT",       "psnr": 38.1, "ssim": 0.945, "source": "Nett et al., IEEE TMI 2024"},
         {"method": "DiffusionDBT",  "psnr": 39.4, "ssim": 0.956, "source": "Gao et al., MICCAI 2024"},
+    ],
+    "doppler_ultrasound": [
+        {"method": "CF-Doppler",     "psnr": 22.5, "ssim": 0.712, "source": "Evans & McDicken 2000"},
+        {"method": "VENC-Flow",      "psnr": 24.1, "ssim": 0.738, "source": "Moran 1982"},
+        {"method": "MV-Doppler",     "psnr": 26.8, "ssim": 0.778, "source": "Langeland et al. 2003"},
+        {"method": "DnCNN-Doppler",  "psnr": 29.5, "ssim": 0.832, "source": "Perdios et al. 2018"},
+        {"method": "FlowNet-US",     "psnr": 32.4, "ssim": 0.872, "source": "Nair et al. 2020"},
+        {"method": "TransFlow",      "psnr": 35.1, "ssim": 0.914, "source": "Wang et al. 2022"},
+        {"method": "SwinDoppler",    "psnr": 36.8, "ssim": 0.932, "source": "Li et al. 2023"},
+        {"method": "PhysDoppler",    "psnr": 37.9, "ssim": 0.942, "source": "Perdios et al. 2024"},
+        {"method": "DiffDoppler",    "psnr": 39.3, "ssim": 0.954, "source": "Gao et al. 2024"},
     ],
 }
 

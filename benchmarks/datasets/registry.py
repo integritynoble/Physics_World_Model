@@ -1315,6 +1315,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic DNA-PAINT phantom for benchmarking super-resolution reconstruction",
     ),
+    "doppler_ultrasound_generated": DatasetEntry(
+        id="doppler_ultrasound_generated",
+        name="Doppler Ultrasound Flow Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic Doppler ultrasound phantom with parabolic flow and speckle noise",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["doppler_ultrasound"],
+        converter="generate_doppler_ultrasound_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic Doppler US phantom for benchmarking flow velocity reconstruction",
+    ),
 }
 
 

@@ -195,6 +195,10 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # widefield diffraction-limited accumulation image; identity runner applies
     # minimal additional noise to the phantom's blinking accumulation.
     "dna_paint": "identity",
+    # Doppler Ultrasound: Doppler frequency shift + speckle noise forward model —
+    # y is the noisy Doppler measurement; identity runner applies minimal additional
+    # noise to the phantom's speckle-corrupted Doppler signal.
+    "doppler_ultrasound": "identity",
 }
 
 
@@ -343,6 +347,7 @@ def _resolve_ground_truth(
             generate_diffusion_mri_phantom,
             generate_digital_breast_tomo_phantom,
             generate_dna_paint_phantom,
+            generate_doppler_ultrasound_phantom,
         )
 
         # Look up registry entries for this modality
@@ -403,6 +408,7 @@ def _resolve_ground_truth(
                     "generate_diffusion_mri_phantom": generate_diffusion_mri_phantom,
                     "generate_digital_breast_tomo_phantom": generate_digital_breast_tomo_phantom,
                     "generate_dna_paint_phantom": generate_dna_paint_phantom,
+                    "generate_doppler_ultrasound_phantom": generate_doppler_ultrasound_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -917,6 +923,7 @@ def _load_scenes_from_generator(
             generate_diffusion_mri_phantom,
             generate_digital_breast_tomo_phantom,
             generate_dna_paint_phantom,
+            generate_doppler_ultrasound_phantom,
         )
     except ImportError:
         return []
@@ -969,6 +976,7 @@ def _load_scenes_from_generator(
         "generate_diffusion_mri_phantom": generate_diffusion_mri_phantom,
         "generate_digital_breast_tomo_phantom": generate_digital_breast_tomo_phantom,
         "generate_dna_paint_phantom": generate_dna_paint_phantom,
+        "generate_doppler_ultrasound_phantom": generate_doppler_ultrasound_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)
