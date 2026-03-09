@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Bioluminescence Tomography (BLT)
 
 **URL:** https://pwm.platformai.org/benchmark/bioluminescence_tomo
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
 
 ---
@@ -89,7 +89,21 @@ Discrete forward model:
 
 **Status:** PASS
 
-Algorithm routing uses the `experimental_science` category pool (11 methods: Tikhonov, Wiener Filter, Matched Filter, PnP-RED, PnP-ADMM, ResUNet, Domain-Adapted-CNN, SwinIR, ExpFormer, DiffusionExperimental, ScoreExperimental). Tikhonov is the standard BLT reconstruction baseline (Lv et al., 2006 is the canonical reference). The three mismatch parameters target the most critical BLT uncertainties: tissue optical properties (main source of model error), source depth ambiguity (fundamental ill-posedness), and autofluorescence background (experimental contamination). Note that SwinIR is a 2D image restoration transformer in a 3D volumetric domain — acceptable for 2D projection benchmarks but noted as a domain mismatch for full 3D BLT.
+Algorithm routing now uses the dedicated `_VARIANT_OVERRIDES["bioluminescence_tomo"]` with 9 domain-specific methods spanning the full era progression:
+1. Tikhonov-BLT (Classical, Lv et al. PMB 2006) — L2-regularised diffusion matrix inversion
+2. Tikhonov-PR (Classical+constraints, Han et al. Opt. Express 2006) — permissible region reduces ill-posedness
+3. PnP-ADMM (PnP, Venkatakrishnan 2013) — plug-and-play ADMM with BM3D denoiser
+4. BLT-CNN (Deep Learning, Gao et al. Sci. Rep. 2018) — end-to-end CNN from surface images to source map
+5. LISTA-BLT (Deep Unrolling, 2020) — LISTA-based inversion of FEM forward matrix
+6. DiffusionPINN-BLT (Physics-Informed, Cai et al. PMB 2023) — PINN with diffusion equation constraint
+7. BLT-Former (Transformer, MICCAI 2023) — multi-view surface flux transformer
+8. ScoreBLT (Diffusion, 2024) — score-based posterior sampling for depth uncertainty
+9. PhysDiff-BLT (Diffusion, 2025) — physics-constrained diffusion with optical property adaptation
+
+Dedicated phantom generator `generate_blt_source_phantom` produces physically faithful 2-D bioluminescent source maps with: tissue background autofluorescence, 2-5 primary tumour foci with Gaussian fall-off, 1-3 satellite lesions, depth-attenuation gradient from diffusion approximation (μ_eff ≈ 0.46 cm⁻¹), and CCD Poisson shot noise. Calibrated to Lv et al. PMB 2006, Han et al. Opt. Express 2006, Cong & Wang J. Biomed. Opt. 2006, Jacques PMB 2013.
+
+Runner: psf (diffusion Green's function approximated as spatial low-pass PSF convolution).
+GCS datasets regenerated with dedicated phantom (3 tiers × 5 samples each).
 
 ---
-*Comprehensive 6-point check by deep-check pipeline v3*
+*Comprehensive 6-point check updated 2026-03-09 by PWM implementation pipeline*

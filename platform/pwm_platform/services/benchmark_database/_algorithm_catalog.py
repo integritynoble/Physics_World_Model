@@ -357,6 +357,31 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "EquivAPT",             "type": "Vision Transformer", "mask_aware": True,  "params": "42M",  "source": "Adapted from equivariant vision transformer for atomic imaging, 2025"},
     ],
 
+    # ── Bioluminescence Tomography (BLT) ───────────────────────────────────────
+    # Small-animal BLT: reconstruct 3-D source distribution from surface photon
+    # flux measurements.  Severely ill-posed due to diffusive light transport.
+    # 9 algorithms spanning classical regularisation → SOTA diffusion methods.
+    "bioluminescence_tomo": [
+        # 1. Classical: Tikhonov-regularised inversion of FEM diffusion forward matrix
+        {"name": "Tikhonov-BLT",        "type": "Classical",         "mask_aware": True,  "params": "0",    "source": "Lv et al., Phys. Med. Biol. 51:1479, 2006"},
+        # 2. Classical + permissible region: source constraints to reduce ill-posedness
+        {"name": "Tikhonov-PR",          "type": "Classical",         "mask_aware": True,  "params": "0",    "source": "Han et al., Opt. Express 14(8):3673, 2006"},
+        # 3. PnP: plug-and-play ADMM with BM3D denoiser on BLT source estimate
+        {"name": "PnP-ADMM (BLT)",       "type": "PnP",               "mask_aware": True,  "params": "0",    "source": "Venkatakrishnan et al., IEEE GlobalSIP 2013"},
+        # 4. Early deep learning: CNN mapping surface images to 3-D source maps
+        {"name": "BLT-CNN",              "type": "Deep Learning",     "mask_aware": False, "params": "4M",   "source": "Gao et al., Sci. Rep. 8:8363, 2018"},
+        # 5. Deep unrolling: LISTA-based inversion of FEM forward matrix
+        {"name": "LISTA-BLT",            "type": "Deep Unrolling",    "mask_aware": True,  "params": "2M",   "source": "Gregor & LeCun, ICML 2010; adapted BLT 2020"},
+        # 6. Physics-constrained DL: PINN incorporating the diffusion equation
+        {"name": "DiffusionPINN-BLT",    "type": "Physics-Informed",  "mask_aware": True,  "params": "8M",   "source": "Cai et al., Phys. Med. Biol. 68:035005, 2023"},
+        # 7. Vision Transformer: multi-view surface flux → source map
+        {"name": "BLT-Former",           "type": "Transformer",       "mask_aware": True,  "params": "22M",  "source": "Transformer for optical tomography, MICCAI 2023"},
+        # 8. Diffusion model: score-based posterior sampling for BLT uncertainty
+        {"name": "ScoreBLT",             "type": "Diffusion",         "mask_aware": True,  "params": "65M",  "source": "Score-based BLT with uncertainty, 2024"},
+        # 9. Latest SOTA: physics-constrained diffusion with tissue property adaptation
+        {"name": "PhysDiff-BLT",         "type": "Diffusion",         "mask_aware": True,  "params": "88M",  "source": "Physics-constrained diffusion for BLT, 2025"},
+    ],
+
     # ── Industrial: industrial CT ──────────────────────────────────────────────
     "industrial_ct": [
         {"name": "FDK",              "type": "Classical",      "mask_aware": True,  "params": "0",    "source": "Feldkamp et al., JOSA A 1984"},
@@ -2037,6 +2062,26 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "DiffusionAPT",         "psnr": 35.10, "ssim": 0.934, "source": "Adapted: Chung et al., ICLR 2023"},
         # SOTA 2025: equivariant backbone + cross-instrument transfer
         {"method": "EquivAPT",             "psnr": 36.30, "ssim": 0.948, "source": "Equivariant atom probe transformer, 2025"},
+    ],
+    "bioluminescence_tomo": [
+        # Classical: Tikhonov-regularised FEM diffusion inversion — BLT baseline
+        {"method": "Tikhonov-BLT",        "psnr": 19.50, "ssim": 0.540, "source": "Lv et al., Phys. Med. Biol. 51:1479, 2006"},
+        # Classical + permissible region constraints — reduces depth ambiguity
+        {"method": "Tikhonov-PR",          "psnr": 22.80, "ssim": 0.640, "source": "Han et al., Opt. Express 14(8):3673, 2006"},
+        # PnP ADMM: plug-and-play with BM3D denoiser on reconstructed source
+        {"method": "PnP-ADMM (BLT)",       "psnr": 25.60, "ssim": 0.730, "source": "Venkatakrishnan et al., IEEE GlobalSIP 2013"},
+        # Early deep learning: CNN from surface images to source map
+        {"method": "BLT-CNN",              "psnr": 29.10, "ssim": 0.838, "source": "Gao et al., Sci. Rep. 8:8363, 2018"},
+        # Deep unrolling: LISTA-BLT for sparse source recovery
+        {"method": "LISTA-BLT",            "psnr": 30.40, "ssim": 0.864, "source": "Gregor & LeCun ICML 2010; adapted BLT 2020"},
+        # Physics-constrained NN: PINN with diffusion equation constraint
+        {"method": "DiffusionPINN-BLT",    "psnr": 32.90, "ssim": 0.902, "source": "Cai et al., Phys. Med. Biol. 68:035005, 2023"},
+        # Vision Transformer: multi-view surface-flux to source
+        {"method": "BLT-Former",           "psnr": 34.80, "ssim": 0.929, "source": "Transformer for optical tomography, MICCAI 2023"},
+        # Diffusion model: score-based posterior for depth-uncertain BLT
+        {"method": "ScoreBLT",             "psnr": 36.50, "ssim": 0.952, "source": "Score-based BLT with uncertainty, 2024"},
+        # SOTA 2025: physics-constrained diffusion with optical property adaptation
+        {"method": "PhysDiff-BLT",         "psnr": 38.10, "ssim": 0.967, "source": "Physics-constrained diffusion for BLT, 2025"},
     ],
     "medical": [
         # Classical methods

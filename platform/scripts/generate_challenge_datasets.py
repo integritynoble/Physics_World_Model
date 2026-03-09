@@ -115,6 +115,10 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # trajectory.  We approximate this with a PSF-based convolution (detector blur)
     # plus Poisson noise; the dedicated phantom handles microstructure.
     "atom_probe": "psf",
+    # Bioluminescence Tomography: photon diffusion in tissue maps source -> surface flux.
+    # The steady-state diffusion equation acts as a spatial low-pass filter (Green's
+    # function convolution).  PSF runner approximates the diffusion blurring kernel.
+    "bioluminescence_tomo": "psf",
 }
 
 
@@ -237,7 +241,7 @@ def _resolve_ground_truth(
             generate_ae_source_map, generate_sam_phantom,
             generate_thermography_phantom, generate_ao_wavefront, generate_afm_surface,
             generate_angiography_vessel_phantom, generate_asl_perfusion_phantom,
-            generate_apt_composition_map,
+            generate_apt_composition_map, generate_blt_source_phantom,
         )
 
         # Look up registry entries for this modality
@@ -272,6 +276,7 @@ def _resolve_ground_truth(
                     "generate_angiography_vessel_phantom": generate_angiography_vessel_phantom,
                     "generate_asl_perfusion_phantom": generate_asl_perfusion_phantom,
                     "generate_apt_composition_map": generate_apt_composition_map,
+                    "generate_blt_source_phantom": generate_blt_source_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -755,7 +760,7 @@ def _load_scenes_from_generator(
             generate_ae_source_map, generate_sam_phantom,
             generate_thermography_phantom, generate_ao_wavefront, generate_afm_surface,
             generate_angiography_vessel_phantom, generate_asl_perfusion_phantom,
-            generate_apt_composition_map,
+            generate_apt_composition_map, generate_blt_source_phantom,
         )
     except ImportError:
         return []
@@ -782,6 +787,7 @@ def _load_scenes_from_generator(
         "generate_angiography_vessel_phantom": generate_angiography_vessel_phantom,
         "generate_asl_perfusion_phantom": generate_asl_perfusion_phantom,
         "generate_apt_composition_map": generate_apt_composition_map,
+        "generate_blt_source_phantom": generate_blt_source_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

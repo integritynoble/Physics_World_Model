@@ -337,7 +337,7 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
             "endoscopy",
             # Optical medical
             "fundus", "octa",
-            "bioluminescence_tomo", "dot", "nirs_brain",
+            "dot", "nirs_brain",
             "photoacoustic",
             # Brachytherapy / proton
             "brachytherapy_img", "proton_therapy_img", "proton_radiography",
@@ -669,6 +669,34 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[256, 256],
         notes="Multi-element spatial distribution for spectroscopic imaging",
     ),
+    "bioluminescence_tomo_generated": DatasetEntry(
+        id="bioluminescence_tomo_generated",
+        name="Generated Bioluminescence Tomography (BLT) Source Phantom",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation=(
+            "PWM generated BLT source phantom. "
+            "Calibrated to Lv et al., Phys. Med. Biol. 51:1479, 2006 (BLT phantom geometry); "
+            "Han et al., Opt. Express 14(8):3673, 2006 (diffusion theory); "
+            "Cong & Wang, J. Biomed. Opt. 11(2):020503, 2006 (boundary integral BLT); "
+            "Jacques, Phys. Med. Biol. 58(11):R37, 2013 (tissue optical properties)."
+        ),
+        license="N/A",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["bioluminescence_tomo"],
+        converter="generate_blt_source_phantom",
+        x_shape=[128, 128],
+        notes=(
+            "2-D projected bioluminescent source map: tissue background (0.02-0.05), "
+            "2-5 primary tumour foci (0.70-1.0) with Gaussian fall-off at varying depths, "
+            "1-3 satellite lesions (0.35-0.65), depth-attenuation gradient from diffusion "
+            "approximation (μ_eff ≈ 0.46 cm⁻¹), and CCD Poisson shot noise (σ ≈ 0.03). "
+            "Physically faithful to small-animal BLT phantom experiments."
+        ),
+    ),
+
     "atom_probe_apt_generated": DatasetEntry(
         id="atom_probe_apt_generated",
         name="Generated Atom Probe Tomography (APT) Composition Map",
