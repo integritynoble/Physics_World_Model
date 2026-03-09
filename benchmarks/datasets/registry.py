@@ -1120,6 +1120,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[128, 128],
         notes="Synthetic CLE colonic crypt phantom with fibre bundle honeycomb artefacts",
     ),
+    "coronagraphy_generated": DatasetEntry(
+        id="coronagraphy_generated",
+        name="Coronagraphic Exoplanet Detection Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Soummer et al., ApJ 2012",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["coronagraphy"],
+        converter="generate_coronagraphy_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic coronagraphic focal-plane phantom with stellar speckles and planet companions",
+    ),
 }
 
 

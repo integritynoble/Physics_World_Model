@@ -3193,6 +3193,94 @@ def generate_confocal_endomicroscopy_phantom(
     return samples
 
 
+def generate_coronagraphy_phantom(
+    n_samples: int = 10,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Coronagraphic direct imaging phantom for exoplanet detection.
+
+    Simulates post-coronagraph focal plane images with residual stellar
+    speckle halo and faint point-like planet companions. Reconstruction:
+    detect/recover planet signal from the speckle background using
+    ADI-based PSF subtraction.
+
+    Reference: Marois et al., Science 2008; Soummer et al., ApJ 2012 (KLIP).
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    for i in range(n_samples):
+        cy, cx = H // 2, W // 2
+
+        # Stellar speckle halo (radially decaying, quasi-random speckles)
+        Y, X = np.ogrid[:H, :W]
+        r = np.sqrt((Y - cy) ** 2 + (X - cx) ** 2).astype(np.float32)
+        r[cy, cx] = 0.01
+
+        # Halo envelope: 1/r^2 decay from IWA (inner working angle)
+        iwa = max(3, H // 12)
+        halo = np.where(r > iwa, 1.0 / (r ** 2 + 1e-3), 0.0).astype(np.float32)
+        halo_max = halo.max()
+        if halo_max > 0:
+            halo /= halo_max
+
+        # Add speckle pattern (correlated noise)
+        speckle_scale = float(rng.uniform(0.3, 0.8))
+        speckle = rng.exponential(speckle_scale, (H, W)).astype(np.float32)
+        speckle = gaussian_filter(speckle, sigma=float(rng.uniform(1.5, 3.0)))
+        speckle *= halo
+
+        # Planet signals (1-3 point sources at contrast ~1e-4 to 1e-3)
+        n_planets = int(rng.integers(1, 4))
+        planet_map = np.zeros((H, W), dtype=np.float32)
+        planet_contrast = float(rng.uniform(1e-4, 1e-3))
+
+        for _ in range(n_planets):
+            sep = float(rng.uniform(iwa * 1.5, min(H, W) // 2 - 5))
+            pa = float(rng.uniform(0, 2 * np.pi))
+            py = int(cy + sep * np.sin(pa))
+            px = int(cx + sep * np.cos(pa))
+            if 0 <= py < H and 0 <= px < W:
+                planet_map[py, px] = planet_contrast
+
+        # Gaussian PSF for planet (diffraction-limited)
+        planet_psf = gaussian_filter(planet_map, sigma=1.5)
+        x_true = planet_psf / planet_contrast  # normalised planet position map
+
+        # Measurement: speckles + planet
+        y_meas = (speckle + planet_psf + rng.normal(0, 0.01, (H, W))).astype(np.float32)
+        y_meas = np.clip(y_meas, 0, None)
+
+        H_size = min(H * W, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true.astype(np.float32),
+            "y": y_meas,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "n_planets": int(n_planets),
+                "planet_contrast": float(planet_contrast),
+                "iwa_pixels": int(iwa),
+                "speckle_scale": float(speckle_scale),
+            },
+        })
+
+    return samples
+
+
 def generate_confocal_livecell_phantom(
     n_samples: int = 10,
     seed: int = 42,
@@ -3455,6 +3543,7 @@ def acquire_dataset(
         "generate_confocal_3d_phantom": lambda: generate_confocal_3d_phantom(target_shape=target_shape),
         "generate_confocal_endomicroscopy_phantom": lambda: generate_confocal_endomicroscopy_phantom(target_shape=target_shape),
         "generate_confocal_livecell_phantom": lambda: generate_confocal_livecell_phantom(target_shape=target_shape),
+        "generate_coronagraphy_phantom": lambda: generate_coronagraphy_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -3524,6 +3613,7 @@ def acquire_dataset(
         "generate_confocal_3d_phantom": lambda: generate_confocal_3d_phantom(target_shape=target_shape),
         "generate_confocal_endomicroscopy_phantom": lambda: generate_confocal_endomicroscopy_phantom(target_shape=target_shape),
         "generate_confocal_livecell_phantom": lambda: generate_confocal_livecell_phantom(target_shape=target_shape),
+        "generate_coronagraphy_phantom": lambda: generate_coronagraphy_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)

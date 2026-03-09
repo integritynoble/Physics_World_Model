@@ -155,6 +155,10 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # Confocal live-cell: low-dose fluorescence time-lapse denoising — y is the Poisson/Gaussian
     # noisy measurement; identity runner applies minimal noise.
     "confocal_livecell": "identity",
+    # Coronagraphy: post-coronagraph focal-plane image with residual stellar speckles.
+    # Reconstruction recovers the planet signal from the speckle background.
+    # Identity runner applies minimal noise; phantom handles the full forward model.
+    "coronagraphy": "identity",
 }
 
 
@@ -290,6 +294,7 @@ def _resolve_ground_truth(
             generate_confocal_3d_phantom,
             generate_confocal_endomicroscopy_phantom,
             generate_confocal_livecell_phantom,
+            generate_coronagraphy_phantom,
         )
 
         # Look up registry entries for this modality
@@ -337,6 +342,7 @@ def _resolve_ground_truth(
                     "generate_confocal_3d_phantom": generate_confocal_3d_phantom,
                     "generate_confocal_endomicroscopy_phantom": generate_confocal_endomicroscopy_phantom,
                     "generate_confocal_livecell_phantom": generate_confocal_livecell_phantom,
+                    "generate_coronagraphy_phantom": generate_coronagraphy_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -838,6 +844,7 @@ def _load_scenes_from_generator(
             generate_confocal_3d_phantom,
             generate_confocal_endomicroscopy_phantom,
             generate_confocal_livecell_phantom,
+            generate_coronagraphy_phantom,
         )
     except ImportError:
         return []
@@ -877,6 +884,7 @@ def _load_scenes_from_generator(
         "generate_confocal_3d_phantom": generate_confocal_3d_phantom,
         "generate_confocal_endomicroscopy_phantom": generate_confocal_endomicroscopy_phantom,
         "generate_confocal_livecell_phantom": generate_confocal_livecell_phantom,
+        "generate_coronagraphy_phantom": generate_coronagraphy_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)
