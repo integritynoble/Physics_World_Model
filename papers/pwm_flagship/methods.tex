@@ -528,6 +528,22 @@ compression ratios: 10\%, 25\%, and 50\%
 exponential gain drift ($g_i = \exp(-\alpha \cdot i)$) on the measurement matrix.  The default solver
 is FISTA-TV with total-variation regularization.
 
+\paragraph{Lensless imaging configuration.}
+Lensless cameras replace conventional optics with a diffuser placed directly
+on the sensor, making the forward model a 2D convolution with the measured
+point-spread function (PSF).  The object is a $64 \times 64$ image
+convolved with a Gaussian PSF of width $\sigma = 2.0$\,px.  Mismatch is
+parameterized as PSF width error
+$\Delta\sigma \in \{0.5, 1.0, 2.0, 3.0\}$\,px, simulating an error in
+the assumed pinhole-to-sensor distance.  Five structurally diverse phantoms
+are used ($N{=}5$).  The default solver is FISTA-TV (80 iterations).
+Calibration uses forward-model fitting on a known reference target:
+$\sigma_{\mathrm{cal}} = \mathrm{argmin}_\sigma \|y_{\mathrm{cal}} -
+h_\sigma * x_{\mathrm{cal}}\|^2$.
+\textit{Real-data validation.}
+Five DiffuserCam DLMD Mirflickr scenes~\cite{Antipa2018} are used to
+corroborate simulation results on physical photographic content.
+
 \paragraph{Compressive holography configuration.}
 Multi-depth inline holography encodes a $(4 \times 64 \times 64)$ 3D
 object into a single $(64 \times 64)$ hologram via Fresnel propagation at
@@ -568,6 +584,17 @@ along the detector axis by $\Delta s \in \{2, 5, 10, 20\}$\,pixels.  The
 default solver is filtered backprojection (FBP) with Shepp--Logan filter.
 Calibration uses grid search over 21 offset candidates in $[-25, 25]$\,px,
 selecting the value that maximizes reconstruction PSNR.
+
+\paragraph{Ptychography configuration.}
+Electron ptychography uses 4D-STEM data: a focused probe is scanned across
+a $128 \times 128$ grid, recording a convergent-beam electron diffraction
+(CBED) pattern at each position (300\,kV, SrTiO$_3$ [001] from
+Zenodo~5113449).  The forward model is Fresnel near-field propagation of
+the exit wave through the specimen.  Mismatch is parameterized as probe
+position jitter $\Delta p \in \{0.5, 1.0, 2.0, 4.0\}$\,px, simulating
+scan-coil hysteresis or sample drift.  The default solver is integrated
+centre-of-mass (iCoM) phase retrieval.  Calibration uses ePIE blind
+position correction~\cite{maiden2009ptychography}.
 
 \paragraph{Cryo-EM configuration.}
 Cryo-EM imaging is modeled as contrast transfer function (CTF) filtering
