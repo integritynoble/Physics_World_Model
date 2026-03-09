@@ -177,6 +177,10 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # Dark-field: sparse sub-wavelength particle scattering — y is Poisson+Gaussian noisy
     # measurement; identity runner applies the noise model defined in the phantom generator.
     "dark_field": "identity",
+    # DESI-MSI: desorption electrospray ionization mass spectrometry imaging — y is the
+    # multiplicative lognormal + Gaussian noisy measurement of lipid/metabolite spatial
+    # distribution; identity runner applies the noise model defined in the phantom generator.
+    "desi": "identity",
 }
 
 
@@ -319,6 +323,7 @@ def _resolve_ground_truth(
             generate_ct_fluorescence_phantom,
             generate_cup_phantom,
             generate_dark_field_phantom,
+            generate_desi_phantom,
         )
 
         # Look up registry entries for this modality
@@ -373,6 +378,7 @@ def _resolve_ground_truth(
                     "generate_ct_fluorescence_phantom": generate_ct_fluorescence_phantom,
                     "generate_cup_phantom": generate_cup_phantom,
                     "generate_dark_field_phantom": generate_dark_field_phantom,
+                    "generate_desi_phantom": generate_desi_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -881,6 +887,7 @@ def _load_scenes_from_generator(
             generate_ct_fluorescence_phantom,
             generate_cup_phantom,
             generate_dark_field_phantom,
+            generate_desi_phantom,
         )
     except ImportError:
         return []
@@ -927,6 +934,7 @@ def _load_scenes_from_generator(
         "generate_ct_fluorescence_phantom": generate_ct_fluorescence_phantom,
         "generate_cup_phantom": generate_cup_phantom,
         "generate_dark_field_phantom": generate_dark_field_phantom,
+        "generate_desi_phantom": generate_desi_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

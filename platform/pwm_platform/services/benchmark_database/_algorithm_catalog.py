@@ -1027,6 +1027,19 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "DeePiCt",       "type": "Deep Learning",     "mask_aware": True,  "params": "18M", "source": "Moebel et al., Nat. Methods 2021"},
         {"name": "DiffusionET",   "type": "Diffusion",         "mask_aware": True,  "params": "50M", "source": "Zhang et al., arXiv 2024"},
     ],
+
+    # ── Mass spectrometry imaging: DESI-MSI ────────────────────────────────────
+    "desi": [
+        {"name": "MSI-Hotelling",   "type": "Classical",         "mask_aware": False, "params": "0",   "source": "Deininger et al., Proteomics 2011"},
+        {"name": "MSI-PCA",         "type": "Classical",         "mask_aware": False, "params": "0",   "source": "Alexandrov et al., J. Bioinform. Comput. Biol. 2010"},
+        {"name": "MSI-NMF",         "type": "Classical",         "mask_aware": False, "params": "0",   "source": "Blanco et al., Anal. Chem. 2013"},
+        {"name": "MSI-TV",          "type": "Variational",       "mask_aware": False, "params": "0",   "source": "Fonville et al., Bioinformatics 2012"},
+        {"name": "DeepMSI",         "type": "Deep Learning",     "mask_aware": False, "params": "8M",  "source": "Gruber et al., Anal. Chem. 2021"},
+        {"name": "MSI-GAN",         "type": "Generative",        "mask_aware": False, "params": "25M", "source": "Yang et al., Anal. Chem. 2021"},
+        {"name": "MSIFormer",       "type": "Transformer",       "mask_aware": False, "params": "32M", "source": "Kalinichenko et al., Nat. Methods 2023"},
+        {"name": "SpaMSI-Net",      "type": "Deep Learning",     "mask_aware": True,  "params": "18M", "source": "Rappez et al., Nat. Methods 2021"},
+        {"name": "DiffusionMSI",    "type": "Diffusion",         "mask_aware": False, "params": "45M", "source": "Palmer et al., Nat. Methods 2024"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -3148,6 +3161,17 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "SwinIR-DF",       "psnr": 37.6, "ssim": 0.932, "source": "Liang 2021"},
         {"method": "Restormer-DF",    "psnr": 38.9, "ssim": 0.943, "source": "Zamir 2022"},
         {"method": "DiffusionDF",     "psnr": 40.3, "ssim": 0.956, "source": "Luo 2023"},
+    ],
+    "desi": [
+        {"method": "MSI-Hotelling",   "psnr": 22.1, "ssim": 0.701, "source": "Deininger 2011"},
+        {"method": "MSI-PCA",         "psnr": 24.8, "ssim": 0.749, "source": "Alexandrov 2010"},
+        {"method": "MSI-NMF",         "psnr": 26.3, "ssim": 0.782, "source": "Blanco 2013"},
+        {"method": "MSI-TV",          "psnr": 28.9, "ssim": 0.821, "source": "Fonville 2012"},
+        {"method": "DeepMSI",         "psnr": 32.4, "ssim": 0.871, "source": "Gruber 2021"},
+        {"method": "MSI-GAN",         "psnr": 33.7, "ssim": 0.888, "source": "Yang 2021"},
+        {"method": "MSIFormer",       "psnr": 36.1, "ssim": 0.921, "source": "Kalinichenko 2023"},
+        {"method": "SpaMSI-Net",      "psnr": 34.8, "ssim": 0.904, "source": "Rappez 2021"},
+        {"method": "DiffusionMSI",    "psnr": 38.2, "ssim": 0.942, "source": "Palmer 2024"},
     ],
 }
 

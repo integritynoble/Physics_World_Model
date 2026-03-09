@@ -1225,6 +1225,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic dark-field phantom with sparse sub-wavelength particle scattering",
     ),
+    "desi_generated": DatasetEntry(
+        id="desi_generated",
+        name="DESI-MSI Lipid Distribution Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Takats et al., Science 2004",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["desi"],
+        converter="generate_desi_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic DESI-MSI phantom with tissue region lipid/metabolite distributions",
+    ),
 }
 
 

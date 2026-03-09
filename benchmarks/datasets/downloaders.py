@@ -4159,6 +4159,92 @@ def generate_dark_field_phantom(
     return samples
 
 
+def generate_desi_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    DESI (Desorption Electrospray Ionization) mass spectrometry imaging phantom.
+
+    Simulates lipid/metabolite spatial distribution in tissue sections.
+    x_true: 64x64 float32 image of lipid/metabolite spatial distribution —
+            ellipsoidal tissue regions with distinct chemical compositions
+            (background ~0.1, regions ~0.6-1.0).
+    y: Noisy MSI measurement: multiplicative lognormal noise (sigma=0.15)
+       + Gaussian noise (sigma=0.05), clipped to [0, 1].
+    H_ideal: identity matrix.
+    metadata: dict with keys modality, mass_range_da, spatial_resolution_um, ion_mode.
+
+    Reference: Takats et al., Science 2004 (DESI ionization).
+    """
+    import numpy as np
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    for i in range(n_samples):
+        # Background with low lipid/metabolite signal (~0.1)
+        x_true = np.full((H, W), 0.1, dtype=np.float32)
+
+        Y_grid, X_grid = np.mgrid[:H, :W]
+        cy_center = H / 2.0
+        cx_center = W / 2.0
+
+        # 2-4 ellipsoidal tissue regions with distinct chemical compositions
+        n_regions = int(rng.integers(2, 5))
+        for _ in range(n_regions):
+            # Random center offset from image center
+            cy = cy_center + float(rng.uniform(-H * 0.25, H * 0.25))
+            cx = cx_center + float(rng.uniform(-W * 0.25, W * 0.25))
+            # Ellipse semi-axes
+            ry = float(rng.uniform(H * 0.08, H * 0.25))
+            rx = float(rng.uniform(W * 0.08, W * 0.25))
+            # Intensity in range 0.6-1.0
+            intensity = float(rng.uniform(0.6, 1.0))
+            # Ellipsoidal mask
+            ellipse = ((Y_grid - cy) / ry) ** 2 + ((X_grid - cx) / rx) ** 2
+            mask = ellipse <= 1.0
+            x_true[mask] = np.maximum(x_true[mask], intensity)
+
+        x_true = x_true.astype(np.float32)
+
+        # Noisy MSI measurement: multiplicative lognormal + additive Gaussian
+        lognormal_noise = rng.lognormal(mean=0.0, sigma=0.15, size=(H, W)).astype(np.float32)
+        gaussian_noise = rng.normal(0.0, 0.05, size=(H, W)).astype(np.float32)
+        y = (x_true * lognormal_noise + gaussian_noise).astype(np.float32)
+        y = np.clip(y, 0.0, 1.0)
+
+        H_size = min(H * W, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        # Realistic metadata for DESI-MSI
+        mass_range_da = [float(rng.uniform(50, 200)), float(rng.uniform(800, 1200))]
+        spatial_resolution_um = float(rng.uniform(50, 200))
+        ion_mode = rng.choice(["positive", "negative"])
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "desi",
+                "mass_range_da": mass_range_da,
+                "spatial_resolution_um": spatial_resolution_um,
+                "ion_mode": str(ion_mode),
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -4229,6 +4315,7 @@ def acquire_dataset(
         "generate_ct_fluorescence_phantom": generate_ct_fluorescence_phantom,
         "generate_cup_phantom": generate_cup_phantom,
         "generate_dark_field_phantom": lambda: generate_dark_field_phantom(target_shape=target_shape),
+        "generate_desi_phantom": lambda: generate_desi_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -4305,6 +4392,7 @@ def acquire_dataset(
         "generate_ct_fluorescence_phantom": lambda: generate_ct_fluorescence_phantom(),
         "generate_cup_phantom": lambda: generate_cup_phantom(),
         "generate_dark_field_phantom": lambda: generate_dark_field_phantom(target_shape=target_shape),
+        "generate_desi_phantom": lambda: generate_desi_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)
