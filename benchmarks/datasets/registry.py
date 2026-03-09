@@ -1075,6 +1075,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[128, 128],
         notes="Synthetic flutter shutter coded exposure phantom for motion deblurring",
     ),
+    "confocal_3d_generated": DatasetEntry(
+        id="confocal_3d_generated",
+        name="Confocal 3D Cell Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Conchello & Lichtman, Nat. Methods 2005",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["confocal_3d"],
+        converter="generate_confocal_3d_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic 3D confocal cell phantom with nucleus, mitochondria, actin filaments",
+    ),
 }
 
 

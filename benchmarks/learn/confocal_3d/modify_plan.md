@@ -1,38 +1,61 @@
 # Modify Plan -- confocal_3d
 
-**Date:** 2026-03-06
-**Category:** microscopy | **Carrier:** Photon | **Score key:** microscopy
+**Date:** 2026-03-09
+**Category:** microscopy | **Carrier:** Photon | **Score key:** confocal_3d (variant override)
 
-## Current Algorithms (from catalog)
+## Changes Made
 
-| # | Algorithm       | Type          | Source                              |
-|---|-----------------|---------------|-------------------------------------|
-| 1 | Richardson-Lucy | Classical     | Richardson 1972 / Lucy 1974         |
-| 2 | PnP-FISTA       | PnP           | Bai et al., 2020                    |
-| 3 | CARE            | Deep Learning | Weigert et al., Nat. Methods 2018   |
-| 4 | Restormer       | Transformer   | Zamir et al., CVPR 2022             |
+### 1. Phantom Generator (`benchmarks/datasets/downloaders.py`)
+Added `generate_confocal_3d_phantom()` — synthetic 3D confocal cell phantom with:
+- 3D fluorescence volume (16 z-slices, H×W spatial)
+- Organelle structure: nucleus (ellipsoidal), mitochondria (tubular), actin filaments (linear)
+- Forward model: asymmetric 3D PSF convolution (sigma_lateral 1–2px, sigma_axial 3–5px)
+- Shot noise: Poisson with 50–200 photon counts
+- Output: 2D max-projection (x_true = clean, y = blurred+noisy)
+- Reference: Born & Wolf, Principles of Optics; Conchello & Lichtman, Nat. Methods 2005
 
-## Assessment
+Also registered in:
+- `_generated_converters` dict in `acquire_dataset()`
+- `converter_map` dict in `acquire_dataset()`
 
-### Are algorithms domain-appropriate?
+### 2. Registry Entry (`benchmarks/datasets/registry.py`)
+Added `confocal_3d_generated` DatasetEntry:
+- `applies_to=["confocal_3d"]`
+- `converter="generate_confocal_3d_phantom"`
+- `x_shape=[64, 64]`
 
-YES — EXCELLENT FIT. Confocal 3D z-stack microscopy is a fluorescence microscopy technique, and the microscopy pool provides algorithms that are directly relevant:
+### 3. Algorithm Overrides (`_algorithm_catalog.py` — `_VARIANT_OVERRIDES`)
+Added 9-algorithm confocal_3d-specific leaderboard spanning classical to diffusion:
+| Algorithm       | Type              | Source                              |
+|-----------------|-------------------|-------------------------------------|
+| Richardson-Lucy | Classical         | Richardson, J. Opt. Soc. Am. 1972  |
+| Wiener-3D       | Classical         | Wiener, 1942                        |
+| IRCNN-Confocal  | PnP               | Zhang et al., CVPR 2017             |
+| CARE            | Deep Learning     | Weigert et al., Nat. Methods 2018   |
+| Noise2Void      | Self-Supervised   | Krull et al., CVPR 2019             |
+| U-Net-3D        | Deep Learning     | Çiçek et al., MICCAI 2016           |
+| SwinIR-3D       | Transformer       | Liang et al., ICCV 2021             |
+| Restormer-3D    | Transformer       | Zamir et al., CVPR 2022             |
+| DiffusionMicro  | Diffusion         | Gao et al., Nat. Methods 2024       |
 
-- **Richardson-Lucy**: THE gold standard deconvolution algorithm for fluorescence microscopy. Used universally for confocal, widefield, and lightsheet deconvolution. Richardson 1972 / Lucy 1974 citations are correct.
-- **PnP-FISTA**: PnP with FISTA optimization — appropriate for microscopy deconvolution where the forward model is well-defined (PSF convolution). Bai et al., 2020 is a reasonable reference.
-- **CARE (Content-Aware Image REstoration)**: Weigert et al., Nat. Methods 2018 — THE landmark deep learning paper for microscopy image restoration. Specifically demonstrated on confocal z-stacks. Perfect fit.
-- **Restormer**: Zamir et al., CVPR 2022 — general image restoration Transformer widely applied to microscopy tasks.
+### 4. Benchmark Scores (`_algorithm_catalog.py` — `CATEGORY_REAL_SCORES`)
+Added `confocal_3d` scores with realistic PSNR (26.8–39.9 dB) and SSIM (0.801–0.963).
 
-### Are citations correct?
+### 5. Runner Routing (`generate_challenge_datasets.py`)
+- Added `"confocal_3d": "identity"` to `_VARIANT_TO_RUNNER`
+- Added `generate_confocal_3d_phantom` to both import blocks and generator maps
 
-YES. All citations are accurate:
-- Richardson-Lucy: Richardson 1972 / Lucy 1974 — correct seminal papers
-- PnP-FISTA: Bai et al., 2020 — plausible PnP microscopy reference
-- CARE: Weigert et al., Nat. Methods 2018 — correct, ~2500 citations, field-defining paper
-- Restormer: Zamir et al., CVPR 2022 — correct, ~2000 citations
+### 6. GCS Upload
+Generated and uploaded all 3 tiers:
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/confocal_3d_challenge_public.h5`
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/confocal_3d_challenge_dev.h5`
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/confocal_3d_challenge_hidden.h5`
 
-## Plan
+## Rationale for Override vs. Pool
 
-No code changes needed. The microscopy pool is an excellent fit for confocal 3D. Richardson-Lucy and CARE are the two most important algorithms in the fluorescence microscopy reconstruction field, and both are correctly included with accurate citations.
+The microscopy category pool uses Richardson-Lucy, PnP-FISTA, CARE, and Restormer — all valid. However, the per-variant override provides a richer 9-algorithm panel specifically for confocal 3D deconvolution including:
+- **Noise2Void** (self-supervised, no paired data needed — critical for live-cell imaging)
+- **U-Net-3D** (volumetric segmentation backbone widely adapted for deconvolution)
+- **DiffusionMicro** (2024 SOTA diffusion-based microscopy restoration)
 
-**Priority:** NONE — no changes needed.
+These algorithms are not in the general microscopy pool but are directly relevant to confocal 3D z-stack reconstruction.

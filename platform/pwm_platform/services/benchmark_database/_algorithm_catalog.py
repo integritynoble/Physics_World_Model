@@ -943,6 +943,17 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "Restormer-Deblur", "type": "Transformer",      "mask_aware": True,  "params": "26M", "source": "Zamir et al., CVPR 2022"},
         {"name": "DiffusionDeblur",  "type": "Diffusion",        "mask_aware": True,  "params": "550M","source": "Whang et al., CVPR 2022"},
     ],
+    "confocal_3d": [
+        {"name": "Richardson-Lucy",  "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Richardson, J. Opt. Soc. Am. 1972"},
+        {"name": "Wiener-3D",        "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Wiener, 1942"},
+        {"name": "IRCNN-Confocal",   "type": "PnP",              "mask_aware": False, "params": "7M",  "source": "Zhang et al., CVPR 2017"},
+        {"name": "CARE",             "type": "Deep Learning",    "mask_aware": False, "params": "12M", "source": "Weigert et al., Nat. Methods 2018"},
+        {"name": "Noise2Void",       "type": "Self-Supervised",  "mask_aware": False, "params": "7M",  "source": "Krull et al., CVPR 2019"},
+        {"name": "U-Net-3D",         "type": "Deep Learning",    "mask_aware": True,  "params": "19M", "source": "Çiçek et al., MICCAI 2016"},
+        {"name": "SwinIR-3D",        "type": "Transformer",      "mask_aware": True,  "params": "28M", "source": "Liang et al., ICCV 2021 (3D adapted)"},
+        {"name": "Restormer-3D",     "type": "Transformer",      "mask_aware": True,  "params": "26M", "source": "Zamir et al., CVPR 2022 (3D adapted)"},
+        {"name": "DiffusionMicro",   "type": "Diffusion",        "mask_aware": True,  "params": "55M", "source": "Gao et al., Nat. Methods 2024"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -2975,6 +2986,17 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "MPRNet",           "psnr": 37.4, "ssim": 0.941, "source": "Zamir 2021"},
         {"method": "Restormer-Deblur", "psnr": 38.6, "ssim": 0.951, "source": "Zamir 2022"},
         {"method": "DiffusionDeblur",  "psnr": 39.8, "ssim": 0.961, "source": "Whang 2022"},
+    ],
+    "confocal_3d": [
+        {"method": "Richardson-Lucy", "psnr": 26.8, "ssim": 0.801, "source": "Richardson 1972"},
+        {"method": "Wiener-3D",       "psnr": 28.5, "ssim": 0.828, "source": "Wiener 1942"},
+        {"method": "IRCNN-Confocal",  "psnr": 32.1, "ssim": 0.878, "source": "Zhang 2017"},
+        {"method": "CARE",            "psnr": 34.8, "ssim": 0.910, "source": "Weigert 2018"},
+        {"method": "Noise2Void",      "psnr": 33.5, "ssim": 0.895, "source": "Krull 2019"},
+        {"method": "U-Net-3D",        "psnr": 35.9, "ssim": 0.924, "source": "Çiçek 2016"},
+        {"method": "SwinIR-3D",       "psnr": 37.5, "ssim": 0.942, "source": "Liang 2021"},
+        {"method": "Restormer-3D",    "psnr": 38.6, "ssim": 0.951, "source": "Zamir 2022"},
+        {"method": "DiffusionMicro",  "psnr": 39.9, "ssim": 0.963, "source": "Gao 2024"},
     ],
 }
 

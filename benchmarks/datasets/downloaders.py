@@ -3108,6 +3108,109 @@ def generate_coded_exposure_phantom(
     return samples
 
 
+def generate_confocal_3d_phantom(
+    n_samples: int = 10,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    Confocal 3D microscopy phantom for optical sectioning deconvolution.
+
+    Generates fluorescent cell phantoms with organelles (nucleus, mitochondria,
+    actin filaments) in 3D. Forward model: convolution with asymmetric 3D PSF
+    (lateral FWHM ~200 nm, axial FWHM ~600 nm at 63×/1.4NA, 488nm).
+    Returns 2D max-projection for benchmark evaluation.
+
+    Reference: Born & Wolf, Principles of Optics; Conchello & Lichtman, Nat. Methods 2005.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+    Z = 16  # z-slices
+
+    for i in range(n_samples):
+        # 3D fluorescence volume
+        vol = np.zeros((Z, H, W), dtype=np.float32)
+
+        cy, cx, cz = H // 2, W // 2, Z // 2
+
+        # Nucleus (bright, spherical)
+        ry, rx, rz = H // 5, W // 5, Z // 3
+        for z in range(Z):
+            Y, X = np.ogrid[:H, :W]
+            nuc = ((Y-cy)/ry)**2 + ((X-cx)/rx)**2 + ((z-cz)/rz)**2 <= 1.0
+            vol[z][nuc] = float(rng.uniform(0.6, 0.9))
+
+        # Mitochondria network (tubular)
+        n_mito = int(rng.integers(4, 8))
+        for _ in range(n_mito):
+            mz = int(rng.integers(Z // 4, 3 * Z // 4))
+            my = int(rng.integers(cy - ry, cy + ry))
+            mx = int(rng.integers(cx - rx, cx + rx))
+            length = int(rng.integers(8, 20))
+            angle = float(rng.uniform(0, np.pi))
+            for t in range(length):
+                gy = int(my + t * np.cos(angle))
+                gx = int(mx + t * np.sin(angle))
+                if 0 <= gy < H and 0 <= gx < W:
+                    vol[mz, gy, gx] = float(rng.uniform(0.4, 0.7))
+
+        # Actin filaments (thin, bright)
+        n_actin = int(rng.integers(3, 6))
+        for _ in range(n_actin):
+            az = int(rng.integers(0, Z))
+            ay0 = int(rng.integers(0, H))
+            ax0 = int(rng.integers(0, W))
+            angle = float(rng.uniform(0, np.pi))
+            for t in range(W // 2):
+                gy = int(ay0 + t * np.cos(angle))
+                gx = int(ax0 + t * np.sin(angle))
+                if 0 <= gy < H and 0 <= gx < W:
+                    vol[az, gy, gx] = float(rng.uniform(0.7, 1.0))
+
+        # Ground truth: max projection
+        x_true = vol.max(axis=0).astype(np.float32)
+
+        # Forward model: 3D PSF convolution (asymmetric)
+        sigma_lat = float(rng.uniform(1.0, 2.0))  # lateral
+        sigma_ax = float(rng.uniform(3.0, 5.0))   # axial (worse)
+        vol_blurred = gaussian_filter(vol, sigma=[sigma_ax, sigma_lat, sigma_lat])
+
+        # Shot noise
+        photon_count = float(rng.uniform(50, 200))
+        vol_counts = vol_blurred * photon_count
+        vol_noisy = rng.poisson(np.maximum(vol_counts, 0)).astype(np.float32) / photon_count
+
+        # Max projection of blurred+noisy volume
+        y_meas = vol_noisy.max(axis=0).astype(np.float32)
+
+        H_size = min(H * W, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y_meas,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "n_z_slices": Z,
+                "sigma_lateral": float(sigma_lat),
+                "sigma_axial": float(sigma_ax),
+                "photon_count": float(photon_count),
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -3168,6 +3271,7 @@ def acquire_dataset(
         "generate_ceus_phantom": lambda: generate_ceus_phantom(target_shape=target_shape),
         "generate_clem_phantom": lambda: generate_clem_phantom(target_shape=target_shape),
         "generate_coded_exposure_phantom": lambda: generate_coded_exposure_phantom(target_shape=target_shape),
+        "generate_confocal_3d_phantom": lambda: generate_confocal_3d_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -3234,6 +3338,7 @@ def acquire_dataset(
         "generate_ceus_phantom": lambda: generate_ceus_phantom(target_shape=target_shape),
         "generate_clem_phantom": lambda: generate_clem_phantom(target_shape=target_shape),
         "generate_coded_exposure_phantom": lambda: generate_coded_exposure_phantom(target_shape=target_shape),
+        "generate_confocal_3d_phantom": lambda: generate_confocal_3d_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)

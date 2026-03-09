@@ -146,6 +146,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # Coded exposure: flutter shutter deconvolution — y is the coded-blurred measurement,
     # x_true is the sharp ground truth frame; identity runner applies minimal noise.
     "coded_exposure": "identity",
+    # Confocal 3D: optical sectioning deconvolution — y is the blurred+noisy max-projection,
+    # x_true is the ground truth max-projection; identity runner applies minimal noise.
+    "confocal_3d": "identity",
 }
 
 
@@ -278,6 +281,7 @@ def _resolve_ground_truth(
             generate_ceus_phantom,
             generate_clem_phantom,
             generate_coded_exposure_phantom,
+            generate_confocal_3d_phantom,
         )
 
         # Look up registry entries for this modality
@@ -322,6 +326,7 @@ def _resolve_ground_truth(
                     "generate_ceus_phantom": generate_ceus_phantom,
                     "generate_clem_phantom": generate_clem_phantom,
                     "generate_coded_exposure_phantom": generate_coded_exposure_phantom,
+                    "generate_confocal_3d_phantom": generate_confocal_3d_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -820,6 +825,7 @@ def _load_scenes_from_generator(
             generate_ceus_phantom,
             generate_clem_phantom,
             generate_coded_exposure_phantom,
+            generate_confocal_3d_phantom,
         )
     except ImportError:
         return []
@@ -856,6 +862,7 @@ def _load_scenes_from_generator(
         "generate_ceus_phantom": generate_ceus_phantom,
         "generate_clem_phantom": generate_clem_phantom,
         "generate_coded_exposure_phantom": generate_coded_exposure_phantom,
+        "generate_confocal_3d_phantom": generate_confocal_3d_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)
