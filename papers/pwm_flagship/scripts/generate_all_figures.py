@@ -206,14 +206,14 @@ def fig2_operatorgraph():
     ax_a.text(0, 5.3, 'a', fontsize=10, fontweight='bold')
 
     dags = {
-        'CASSI': [('Source', 0.7, 4.5), ('Mask', 0.7, 3.5),
-                  ('Dispersion', 0.7, 2.5), ('Sensor', 0.7, 1.5),
-                  ('Noise', 0.7, 0.5)],
-        'MRI': [('Source', 2.0, 4.5), ('Coil\nSens.', 2.0, 3.5),
-                ('Fourier', 2.0, 2.5), ('Undersample', 2.0, 1.5),
-                ('Noise', 2.0, 0.5)],
-        'CT': [('Source', 3.3, 4.5), ('Radon', 3.3, 3.5),
-               ('Detector', 3.3, 2.5), ('Noise', 3.3, 1.5)],
+        'CASSI': [('P  Source', 0.7, 4.5), ('C  Mask', 0.7, 3.5),
+                  ('\u039B  Dispersion', 0.7, 2.5), ('S  Sensor', 0.7, 1.5),
+                  ('D  Noise', 0.7, 0.5)],
+        'MRI': [('P  Source', 2.0, 4.5), ('W  Coil\n     Sens.', 2.0, 3.5),
+                ('F  Fourier', 2.0, 2.5), ('S  Undersample', 2.0, 1.5),
+                ('D  Noise', 2.0, 0.5)],
+        'CT': [('P  Source', 3.3, 4.5), ('R  Radon', 3.3, 3.5),
+               ('\u03A3  Detector', 3.3, 2.5), ('D  Noise', 3.3, 1.5)],
     }
 
     dag_colors = {'CASSI': COLORS['blue'], 'MRI': COLORS['purple'],
@@ -302,26 +302,47 @@ def fig2_operatorgraph():
     ax_c.spines['top'].set_visible(False)
     ax_c.spines['right'].set_visible(False)
 
-    # Panel d: Summary stats
+    # Panel d: The 11 universal primitives – grouped by role
     ax_d = fig.add_subplot(gs[1, 1])
+    ax_d.set_xlim(0, 4.5)
+    ax_d.set_ylim(0, 4.8)
     ax_d.axis('off')
-    ax_d.text(0, 0.95, 'd', fontsize=10, fontweight='bold',
-              transform=ax_d.transAxes)
+    ax_d.text(0.0, 4.6, 'd', fontsize=10, fontweight='bold')
 
-    stats = [
-        ('170', 'Registered\nmodalities'),
-        ('12', 'End-to-end\ncorrection'),
-        ('5', 'Physical\ncarriers'),
-        ('11', 'Universal\nprimitives'),
+    # Role groups: (role_name, role_color, [(symbol, description), ...])
+    prim_groups = [
+        ('Generation', '#2B5A8C', '#CADCF0',
+         [('P', 'source \u2192 field')]),
+        ('Encoding', '#5A3D8C', '#D4C8EC',
+         [('C', 'coded aperture'), ('M', 'modulation'),
+          ('R', 'rotation / Radon'), ('\u039B', 'dispersion'),
+          ('\u03A0', 'phase')]),
+        ('Transform', '#8C6D2B', '#F2E0B0',
+         [('F', 'Fourier'), ('\u03A3', 'integration')]),
+        ('Detection', '#8C3A35', '#F2C4C0',
+         [('S', 'sampling'), ('W', 'weighting'),
+          ('D', 'field \u2192 meas.')]),
     ]
 
-    for i, (num, label) in enumerate(stats):
-        y = 0.85 - i * 0.23
-        ax_d.text(0.3, y, num, ha='center', va='center',
-                  fontsize=16, fontweight='bold', color=COLORS['blue'],
-                  transform=ax_d.transAxes)
-        ax_d.text(0.65, y, label, ha='left', va='center',
-                  fontsize=6, color='#333333', transform=ax_d.transAxes)
+    y_cur = 4.25
+    for role_name, role_tcol, role_fill, prims in prim_groups:
+        # Role header
+        ax_d.text(0.15, y_cur, role_name, fontsize=6.5, fontweight='bold',
+                  color=role_tcol, va='center')
+        for sym, desc in prims:
+            y_cur -= 0.30
+            # Symbol box
+            sym_box = FancyBboxPatch(
+                (0.15, y_cur - 0.12), 0.35, 0.24,
+                boxstyle="round,pad=0.03", facecolor=role_fill,
+                edgecolor=role_tcol, linewidth=0.5)
+            ax_d.add_patch(sym_box)
+            ax_d.text(0.325, y_cur, sym, ha='center', va='center',
+                      fontsize=7, fontweight='bold', color=role_tcol)
+            # Description
+            ax_d.text(0.65, y_cur, desc, ha='left', va='center',
+                      fontsize=5.5, color='#555555')
+        y_cur -= 0.35  # gap between groups
 
     fig.tight_layout(pad=0.5)
     fig.savefig(FIGDIR / 'fig2_operatorgraph.pdf', bbox_inches='tight')
