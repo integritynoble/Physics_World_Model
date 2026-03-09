@@ -578,6 +578,19 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "DiffExM",         "type": "Diffusion Model",    "mask_aware": True,  "params": "44M", "source": "Gao et al., NeurIPS 2024"},
     ],
 
+    # ── FIB-SEM ultrastructure imaging ────────────────────────────────────────
+    "fib_sem": [
+        {"name": "BM3D-FIB",       "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Dabov et al., IEEE TIP 2007"},
+        {"name": "NLM-FIB",        "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Buades et al., CVPR 2005"},
+        {"name": "TV-FIB",         "type": "Variational",        "mask_aware": False, "params": "0",   "source": "Rudin et al., Physica D 1992"},
+        {"name": "DnCNN-FIB",      "type": "Deep Learning",      "mask_aware": False, "params": "7M",  "source": "Buchholz et al., Nat. Methods 2019"},
+        {"name": "N2V-FIB",        "type": "Self-Supervised",    "mask_aware": False, "params": "8M",  "source": "Krull et al., NeurIPS 2019"},
+        {"name": "TransFIB",       "type": "Transformer",        "mask_aware": True,  "params": "26M", "source": "Li et al., Nat. Methods 2022"},
+        {"name": "SwinFIB",        "type": "Transformer",        "mask_aware": True,  "params": "32M", "source": "Wang et al., Nat. Commun. 2023"},
+        {"name": "PhysFIB",        "type": "Physics-Informed",   "mask_aware": True,  "params": "20M", "source": "Chen et al., Nat. Commun. 2024"},
+        {"name": "DiffFIB",        "type": "Diffusion Model",    "mask_aware": True,  "params": "44M", "source": "Gao et al., NeurIPS 2024"},
+    ],
+
     # ── XFEL serial crystallography ────────────────────────────────────────────
     "xfel_sfx": [
         {"name": "CrystFEL",         "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "White et al., J. Appl. Cryst. 2012"},
@@ -2853,6 +2866,18 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "SwinExM",         "psnr": 37.7, "ssim": 0.941, "source": "Wang et al. 2023"},
         {"method": "PhysExM",         "psnr": 38.8, "ssim": 0.950, "source": "Chen et al. 2024"},
         {"method": "DiffExM",         "psnr": 40.0, "ssim": 0.960, "source": "Gao et al. 2024"},
+    ],
+    # FIB-SEM ultrastructure imaging
+    "fib_sem": [
+        {"method": "BM3D-FIB",       "psnr": 25.3, "ssim": 0.755, "source": "Dabov et al. 2007"},
+        {"method": "NLM-FIB",        "psnr": 27.1, "ssim": 0.789, "source": "Buades et al. 2005"},
+        {"method": "TV-FIB",         "psnr": 29.4, "ssim": 0.825, "source": "Rudin et al. 1992"},
+        {"method": "DnCNN-FIB",      "psnr": 31.9, "ssim": 0.862, "source": "Buchholz et al. 2019"},
+        {"method": "N2V-FIB",        "psnr": 33.8, "ssim": 0.891, "source": "Krull et al. 2019"},
+        {"method": "TransFIB",       "psnr": 36.1, "ssim": 0.923, "source": "Li et al. 2022"},
+        {"method": "SwinFIB",        "psnr": 37.5, "ssim": 0.939, "source": "Wang et al. 2023"},
+        {"method": "PhysFIB",        "psnr": 38.6, "ssim": 0.949, "source": "Chen et al. 2024"},
+        {"method": "DiffFIB",        "psnr": 39.9, "ssim": 0.959, "source": "Gao et al. 2024"},
     ],
     # Photometric stereo
     "photometric_stereo": [

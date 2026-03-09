@@ -1,5 +1,24 @@
 # Modify Plan: fib_sem
 
+## Change Log
+
+### 2026-03-09
+
+- Added `generate_fib_sem_phantom` to `benchmarks/datasets/downloaders.py`:
+  simulates mitochondria (dark matrix ~0.1-0.3, bright cristae ~0.8-1.0),
+  ER network (tubular, ~0.6-0.7), and cytoplasm background (~0.4-0.5).
+  Forward model: curtaining artifacts (vertical stripes +-5%), multiplicative
+  Gamma-distributed speckle noise, and Gaussian detector blur (sigma ~0.5 px).
+- Added `fib_sem_generated` DatasetEntry to `benchmarks/datasets/registry.py`.
+- Added `_VARIANT_OVERRIDES["fib_sem"]` to `_algorithm_catalog.py` with
+  9 algorithms: BM3D-FIB, NLM-FIB, TV-FIB, DnCNN-FIB, N2V-FIB, TransFIB,
+  SwinFIB, PhysFIB, DiffFIB (Classical through Diffusion Model).
+- Added `CATEGORY_REAL_SCORES["fib_sem"]` with 9 benchmark score entries.
+- Added `"fib_sem": "identity"` to `_VARIANT_TO_RUNNER` in
+  `generate_challenge_datasets.py`; registered generator in both maps.
+- Generated and uploaded 3 HDF5 tiers to GCS:
+  `challenge-data/v1.0/fib_sem_challenge_{public,dev,hidden}.h5`
+
 ## Current Assignment
 - **Category:** electron_microscopy
 - **Carrier:** Electron

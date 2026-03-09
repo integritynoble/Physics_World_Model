@@ -247,6 +247,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # Expansion microscopy: gel distortion, PSF blur, and Poisson noise are handled by the
     # phantom generator; identity runner applies no additional degradation.
     "expansion": "identity",
+    # FIB-SEM: curtaining, speckle, and detector blur are handled by the phantom generator;
+    # identity runner applies no additional degradation.
+    "fib_sem": "identity",
 }
 
 
@@ -409,6 +412,7 @@ def _resolve_ground_truth(
             generate_entangled_photon_phantom,
             generate_event_camera_phantom,
             generate_expansion_phantom,
+            generate_fib_sem_phantom,
         )
 
         # Look up registry entries for this modality
@@ -483,6 +487,7 @@ def _resolve_ground_truth(
                     "generate_entangled_photon_phantom": generate_entangled_photon_phantom,
                     "generate_event_camera_phantom": generate_event_camera_phantom,
                     "generate_expansion_phantom": generate_expansion_phantom,
+                    "generate_fib_sem_phantom": generate_fib_sem_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -1012,6 +1017,7 @@ def _load_scenes_from_generator(
             generate_entangled_photon_phantom,
             generate_event_camera_phantom,
             generate_expansion_phantom,
+            generate_fib_sem_phantom,
         )
     except ImportError:
         return []
@@ -1079,6 +1085,7 @@ def _load_scenes_from_generator(
         "generate_entangled_photon_phantom": generate_entangled_photon_phantom,
         "generate_event_camera_phantom": generate_event_camera_phantom,
         "generate_expansion_phantom": generate_expansion_phantom,
+        "generate_fib_sem_phantom": generate_fib_sem_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

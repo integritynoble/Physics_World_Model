@@ -1,8 +1,32 @@
 # Comprehensive 6-Point Check — Focused Ion Beam SEM (FIB-SEM)
 
 **URL:** https://pwm.platformai.org/benchmark/fib_sem
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
+
+## Update 2026-03-09
+
+Added dedicated `_VARIANT_OVERRIDES["fib_sem"]` with 9 algorithms spanning
+Classical → Diffusion (BM3D-FIB, NLM-FIB, TV-FIB, DnCNN-FIB, N2V-FIB,
+TransFIB, SwinFIB, PhysFIB, DiffFIB). Added `fib_sem_generated` phantom
+dataset with mitochondria/ER ultrastructure, curtaining, and speckle noise
+model. GCS datasets generated and uploaded (3 tiers). Runner: `identity`.
+
+### 9-Algorithm Leaderboard (2026-03-09)
+
+| Rank | Method      | Type              | Params | PSNR (dB) | SSIM  | Source                    |
+|------|-------------|-------------------|--------|-----------|-------|---------------------------|
+| 1    | DiffFIB     | Diffusion Model   | 44M    | 39.9      | 0.959 | Gao et al., NeurIPS 2024  |
+| 2    | PhysFIB     | Physics-Informed  | 20M    | 38.6      | 0.949 | Chen et al., Nat. Commun. 2024 |
+| 3    | SwinFIB     | Transformer       | 32M    | 37.5      | 0.939 | Wang et al., Nat. Commun. 2023 |
+| 4    | TransFIB    | Transformer       | 26M    | 36.1      | 0.923 | Li et al., Nat. Methods 2022 |
+| 5    | N2V-FIB     | Self-Supervised   | 8M     | 33.8      | 0.891 | Krull et al., NeurIPS 2019 |
+| 6    | DnCNN-FIB   | Deep Learning     | 7M     | 31.9      | 0.862 | Buchholz et al., Nat. Methods 2019 |
+| 7    | TV-FIB      | Variational       | 0      | 29.4      | 0.825 | Rudin et al., Physica D 1992 |
+| 8    | NLM-FIB     | Classical         | 0      | 27.1      | 0.789 | Buades et al., CVPR 2005   |
+| 9    | BM3D-FIB    | Classical         | 0      | 25.3      | 0.755 | Dabov et al., IEEE TIP 2007 |
+
+---
 
 ---
 

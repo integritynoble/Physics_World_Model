@@ -6899,6 +6899,168 @@ def generate_expansion_phantom(
     return samples
 
 
+def generate_fib_sem_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    FIB-SEM ultrastructure phantom for image restoration benchmarks.
+
+    Creates a 64x64 float32 ultrastructural 3D biological tissue slice
+    (single 2D cross-section) simulating mitochondria (ellipsoidal, dark
+    matrix ~0.1-0.3, bright cristae membranes ~0.8-1.0), ER network
+    (tubular, ~0.6-0.7), and cytoplasm background (~0.4-0.5).
+
+    Applies FIB-SEM forward model:
+      - Electron beam secondary emission: multiplicative speckle noise
+        (Gamma-distributed)
+      - Curtaining artifacts from FIB milling: vertical stripes of
+        +-5% intensity variation
+      - Gaussian detector blur (sigma ~0.5 px)
+
+    x_true: 64x64 float32, normalized [0,1] — ideal ultrastructural slice.
+    y: 64x64 float32 — FIB-SEM image with curtaining, speckle, and blur.
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, voxel_size_nm, beam_current_pa,
+              dwell_time_us.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    beam_currents_pa = [200.0, 400.0, 800.0]
+    dwell_times_us = [1.0, 2.0, 4.0]
+
+    for i in range(n_samples):
+        sample_seed = seed + i * 1000
+        rng_s = np.random.default_rng(sample_seed)
+
+        yy, xx = np.mgrid[0:H, 0:W]
+        yy_f = yy.astype(np.float32) / H
+        xx_f = xx.astype(np.float32) / W
+
+        # --- Ground truth: ultrastructural tissue slice ---
+        # Cytoplasm background
+        x_true = np.full((H, W), 0.45, dtype=np.float32)
+
+        # ER network: 2-4 tubular structures
+        n_tubes = int(rng_s.integers(2, 5))
+        for _ in range(n_tubes):
+            tube_x0 = float(rng_s.uniform(0.0, 0.5))
+            tube_y0 = float(rng_s.uniform(0.1, 0.9))
+            tube_x1 = float(rng_s.uniform(0.5, 1.0))
+            tube_y1 = float(rng_s.uniform(0.1, 0.9))
+            tube_width = float(rng_s.uniform(0.02, 0.05))
+            tube_intensity = float(rng_s.uniform(0.60, 0.70))
+            # Parametric distance from line segment
+            dx = tube_x1 - tube_x0
+            dy = tube_y1 - tube_y0
+            seg_len_sq = dx * dx + dy * dy
+            if seg_len_sq < 1e-8:
+                continue
+            t_proj = np.clip(
+                ((xx_f - tube_x0) * dx + (yy_f - tube_y0) * dy) / seg_len_sq,
+                0.0, 1.0,
+            )
+            closest_x = tube_x0 + t_proj * dx
+            closest_y = tube_y0 + t_proj * dy
+            dist_tube = np.sqrt((xx_f - closest_x) ** 2 + (yy_f - closest_y) ** 2)
+            x_true = np.where(dist_tube < tube_width, tube_intensity, x_true)
+
+        # Mitochondria: 3-6 ellipsoidal organelles with dark matrix and bright cristae
+        n_mito = int(rng_s.integers(3, 7))
+        for _ in range(n_mito):
+            mx = float(rng_s.uniform(0.1, 0.9))
+            my = float(rng_s.uniform(0.1, 0.9))
+            ra = float(rng_s.uniform(0.06, 0.14))   # semi-axis x
+            rb = float(rng_s.uniform(0.04, 0.09))   # semi-axis y
+            angle = float(rng_s.uniform(0.0, np.pi))
+            cos_a = np.cos(angle)
+            sin_a = np.sin(angle)
+            dx_m = (xx_f - mx) * cos_a + (yy_f - my) * sin_a
+            dy_m = -(xx_f - mx) * sin_a + (yy_f - my) * cos_a
+            ellipse_dist = (dx_m / ra) ** 2 + (dy_m / rb) ** 2
+
+            # Dark matrix interior (~0.1-0.3)
+            matrix_intensity = float(rng_s.uniform(0.10, 0.30))
+            x_true = np.where(ellipse_dist < 1.0, matrix_intensity, x_true)
+
+            # Bright cristae membranes: inner shell (~0.8-1.0)
+            cristae_intensity = float(rng_s.uniform(0.80, 1.00))
+            shell_thickness = float(rng_s.uniform(0.15, 0.25))
+            cristae_mask = (ellipse_dist >= (1.0 - shell_thickness)) & (ellipse_dist < 1.0)
+            x_true = np.where(cristae_mask, cristae_intensity, x_true)
+
+            # Outer mitochondrial membrane: thin bright ring
+            outer_membrane_intensity = float(rng_s.uniform(0.85, 1.00))
+            membrane_width = 0.05
+            membrane_mask = (ellipse_dist >= 1.0) & (ellipse_dist < (1.0 + membrane_width))
+            x_true = np.where(membrane_mask, outer_membrane_intensity, x_true)
+
+        # Clip to [0, 1]
+        x_true = np.clip(x_true, 0.0, 1.0).astype(np.float32)
+
+        # --- FIB-SEM forward model ---
+        # 1. Curtaining artifacts: vertical stripes from FIB milling (+-5%)
+        n_curtains = int(rng_s.integers(3, 8))
+        curtain_img = np.ones((H, W), dtype=np.float32)
+        for _ in range(n_curtains):
+            stripe_col = int(rng_s.integers(0, W))
+            stripe_width_px = int(rng_s.integers(1, 4))
+            stripe_amp = float(rng_s.uniform(-0.05, 0.05))
+            col_start = max(0, stripe_col - stripe_width_px // 2)
+            col_end = min(W, col_start + stripe_width_px)
+            curtain_img[:, col_start:col_end] += stripe_amp
+        y_curtained = (x_true * curtain_img).astype(np.float32)
+
+        # 2. Multiplicative speckle noise: Gamma-distributed secondary emission
+        speckle_shape = float(rng_s.uniform(8.0, 20.0))
+        speckle = rng_s.gamma(
+            shape=speckle_shape,
+            scale=1.0 / speckle_shape,
+            size=(H, W),
+        ).astype(np.float32)
+        y_speckle = (y_curtained * speckle).astype(np.float32)
+
+        # 3. Gaussian detector blur (sigma ~0.5 px)
+        detector_sigma = 0.5 * (H / 64.0)
+        y_blurred = gaussian_filter(y_speckle, sigma=detector_sigma).astype(np.float32)
+
+        # Normalize y to [0, 1]
+        y_min = y_blurred.min()
+        y_max = y_blurred.max()
+        if y_max > y_min:
+            y = ((y_blurred - y_min) / (y_max - y_min)).astype(np.float32)
+        else:
+            y = y_blurred
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "fib_sem",
+                "voxel_size_nm": 8.0,
+                "beam_current_pa": beam_currents_pa[i % len(beam_currents_pa)],
+                "dwell_time_us": dwell_times_us[i % len(dwell_times_us)],
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -6990,6 +7152,7 @@ def acquire_dataset(
         "generate_entangled_photon_phantom": generate_entangled_photon_phantom,
         "generate_event_camera_phantom": generate_event_camera_phantom,
         "generate_expansion_phantom": generate_expansion_phantom,
+        "generate_fib_sem_phantom": generate_fib_sem_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -7087,6 +7250,7 @@ def acquire_dataset(
         "generate_entangled_photon_phantom": lambda: generate_entangled_photon_phantom(),
         "generate_event_camera_phantom": lambda: generate_event_camera_phantom(),
         "generate_expansion_phantom": lambda: generate_expansion_phantom(),
+        "generate_fib_sem_phantom": lambda: generate_fib_sem_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

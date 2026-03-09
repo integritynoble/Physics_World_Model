@@ -1540,6 +1540,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic expansion microscopy phantom for benchmarking super-resolution reconstruction algorithms",
     ),
+    "fib_sem_generated": DatasetEntry(
+        id="fib_sem_generated",
+        name="FIB-SEM Ultrastructure Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic FIB-SEM phantom with mitochondria/ER ultrastructure, curtaining, and speckle noise model",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["fib_sem"],
+        converter="generate_fib_sem_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic FIB-SEM phantom for benchmarking ultrastructure image restoration algorithms",
+    ),
 }
 
 
