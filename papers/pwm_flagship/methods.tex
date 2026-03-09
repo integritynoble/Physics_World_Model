@@ -576,16 +576,19 @@ characteristic arc artifacts in the reconstruction.  The default solver
 is filtered back-projection (FBP)~\cite{feldkamp1984practical} with a Ram-Lak filter, supplemented
 by iterative SART for comparison.
 
-\paragraph{CT detector offset configuration.}
-Parallel-beam CT is simulated with 360 projection angles over $[0, \pi)$
-and 128 detector elements.  The object is a $128 \times 128$ Shepp--Logan
-phantom.  Detector offset mismatch is simulated by shifting the sinogram
-along the detector axis by $\Delta s \in \{2, 5, 10, 20\}$\,pixels.  The
-default solver is filtered backprojection (FBP) with Shepp--Logan filter.
-Calibration uses grid search over 21 offset candidates in $[-25, 25]$\,px,
-selecting the value that maximizes reconstruction PSNR.
+\paragraph{CBCT configuration.}
+Cone-beam CT (CBCT) detector offset validation uses five real images---three
+LoDoPaB-CT patient slices~\cite{leuschner2021lodopab}, one FIPS walnut
+micro-CT central slice~\cite{hamalainen2015fips}, and one HTC\,2022
+sample~\cite{meaney2022htc}---all resized to $128 \times 128$ with
+360-angle parallel-beam projections.  Detector offset mismatch is simulated
+by shifting the sinogram along the detector axis by
+$\Delta s \in \{2, 5, 10, 15, 20\}$\,pixels.  The default solver is
+filtered backprojection (FBP) with Shepp--Logan filter.  Calibration uses
+grid search over 51 offset candidates in $[-25, 25]$\,px, selecting the
+value that maximizes reconstruction PSNR.
 
-\paragraph{Ptychography configuration.}
+\paragraph{Electron ptychography configuration.}
 Electron ptychography uses 4D-STEM data: a focused probe is scanned across
 a $128 \times 128$ grid, recording a convergent-beam electron diffraction
 (CBED) pattern at each position (300\,kV, SrTiO$_3$ [001] from
