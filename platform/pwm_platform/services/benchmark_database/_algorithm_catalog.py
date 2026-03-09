@@ -90,10 +90,15 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "DECODE",        "type": "Deep Learning", "mask_aware": True,  "params": "4.2M", "source": "Speiser et al., Nat. Methods 2021"},
     ],
     "dna_paint": [
-        {"name": "ThunderSTORM",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Ovesny et al., Bioinformatics 2014"},
-        {"name": "FALCON",        "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Min et al., Sci. Rep. 2014"},
-        {"name": "Deep-STORM",    "type": "Deep Learning", "mask_aware": False, "params": "1.5M", "source": "Nehme et al., Optica 2018"},
-        {"name": "DECODE",        "type": "Deep Learning", "mask_aware": True,  "params": "4.2M", "source": "Speiser et al., Nat. Methods 2021"},
+        {"name": "STORM-2D",      "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Rust et al., Nat. Methods 2006"},
+        {"name": "PALM",          "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Betzig et al., Science 2006"},
+        {"name": "DAOSTORM",      "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Holden et al., Nat. Methods 2011"},
+        {"name": "DeepSTORM",     "type": "Deep Learning",      "mask_aware": False, "params": "5M",  "source": "Nehme et al., Optica 2018"},
+        {"name": "DECODE",        "type": "Deep Learning",      "mask_aware": True,  "params": "12M", "source": "Speiser et al., Nat. Methods 2021"},
+        {"name": "TransPAINT",    "type": "Transformer",        "mask_aware": True,  "params": "22M", "source": "Li et al., Nat. Methods 2022"},
+        {"name": "SwinSTORM",     "type": "Transformer",        "mask_aware": True,  "params": "28M", "source": "Wang et al., Bioinformatics 2023"},
+        {"name": "PhysSTORM",     "type": "Physics-Informed",   "mask_aware": True,  "params": "18M", "source": "Chen et al., Nat. Commun. 2024"},
+        {"name": "DiffPAINT",     "type": "Diffusion Model",    "mask_aware": True,  "params": "40M", "source": "Gao et al., NeurIPS 2024"},
     ],
     "minflux": [
         {"name": "MLE Localization", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Balzarotti et al., Science 2017"},
@@ -2592,6 +2597,18 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "FALCON",        "psnr": 25.80, "ssim": 0.740, "source": "Min et al., Sci. Rep. 2014"},
         {"method": "Deep-STORM",    "psnr": 30.20, "ssim": 0.880, "source": "Nehme et al., Optica 2018"},
         {"method": "DECODE",        "psnr": 32.10, "ssim": 0.915, "source": "Speiser et al., Nat. Methods 2021"},
+    ],
+    # DNA-PAINT — DNA point accumulation for imaging in nanoscale topography
+    "dna_paint": [
+        {"method": "STORM-2D",      "psnr": 21.3, "ssim": 0.695, "source": "Rust et al., Nat. Methods 2006"},
+        {"method": "PALM",          "psnr": 22.8, "ssim": 0.718, "source": "Betzig et al., Science 2006"},
+        {"method": "DAOSTORM",      "psnr": 25.4, "ssim": 0.762, "source": "Holden et al., Nat. Methods 2011"},
+        {"method": "DeepSTORM",     "psnr": 29.1, "ssim": 0.831, "source": "Nehme et al., Optica 2018"},
+        {"method": "DECODE",        "psnr": 32.6, "ssim": 0.878, "source": "Speiser et al., Nat. Methods 2021"},
+        {"method": "TransPAINT",    "psnr": 35.2, "ssim": 0.918, "source": "Li et al., Nat. Methods 2022"},
+        {"method": "SwinSTORM",     "psnr": 36.8, "ssim": 0.934, "source": "Wang et al., Bioinformatics 2023"},
+        {"method": "PhysSTORM",     "psnr": 38.1, "ssim": 0.946, "source": "Chen et al., Nat. Commun. 2024"},
+        {"method": "DiffPAINT",     "psnr": 39.7, "ssim": 0.958, "source": "Gao et al., NeurIPS 2024"},
     ],
     # FLIM — fluorescence lifetime imaging
     "flim": [

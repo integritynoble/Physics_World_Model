@@ -1300,6 +1300,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic DBT phantom for benchmarking limited-angle reconstruction algorithms",
     ),
+    "dna_paint_generated": DatasetEntry(
+        id="dna_paint_generated",
+        name="DNA-PAINT Super-Resolution Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic DNA-PAINT phantom with stochastic blinking and PSF model",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["dna_paint"],
+        converter="generate_dna_paint_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic DNA-PAINT phantom for benchmarking super-resolution reconstruction",
+    ),
 }
 
 

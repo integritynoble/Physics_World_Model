@@ -191,6 +191,10 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # ±25°) with Poisson noise and FBP back-projection.  Radon runner matches the
     # limited-angle tomosynthesis forward model.
     "digital_breast_tomo": "radon",
+    # DNA-PAINT: stochastic blinking forward model with Gaussian PSF — y is the
+    # widefield diffraction-limited accumulation image; identity runner applies
+    # minimal additional noise to the phantom's blinking accumulation.
+    "dna_paint": "identity",
 }
 
 
@@ -338,6 +342,7 @@ def _resolve_ground_truth(
             generate_dic_phantom,
             generate_diffusion_mri_phantom,
             generate_digital_breast_tomo_phantom,
+            generate_dna_paint_phantom,
         )
 
         # Look up registry entries for this modality
@@ -397,6 +402,7 @@ def _resolve_ground_truth(
                     "generate_dic_phantom": generate_dic_phantom,
                     "generate_diffusion_mri_phantom": generate_diffusion_mri_phantom,
                     "generate_digital_breast_tomo_phantom": generate_digital_breast_tomo_phantom,
+                    "generate_dna_paint_phantom": generate_dna_paint_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -910,6 +916,7 @@ def _load_scenes_from_generator(
             generate_dic_phantom,
             generate_diffusion_mri_phantom,
             generate_digital_breast_tomo_phantom,
+            generate_dna_paint_phantom,
         )
     except ImportError:
         return []
@@ -961,6 +968,7 @@ def _load_scenes_from_generator(
         "generate_dic_phantom": generate_dic_phantom,
         "generate_diffusion_mri_phantom": generate_diffusion_mri_phantom,
         "generate_digital_breast_tomo_phantom": generate_digital_breast_tomo_phantom,
+        "generate_dna_paint_phantom": generate_dna_paint_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

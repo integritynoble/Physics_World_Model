@@ -4717,6 +4717,138 @@ def generate_digital_breast_tomo_phantom(
     return samples
 
 
+def generate_dna_paint_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    DNA-PAINT super-resolution phantom with stochastic blinking and PSF model.
+
+    Creates a 64×64 float32 DNA-PAINT super-resolution target: sparse emitter
+    positions arranged in DNA nanostructure patterns (DNA origami grid with
+    5-20 nm spacing, represented as point spread functions at sub-pixel emitter
+    locations).
+
+    Applies stochastic blinking forward model: Poisson-sampled photon counts per
+    blinking event, Gaussian PSF (sigma ~1.5 pixels at diffraction limit),
+    accumulated over multiple frames with random on/off blinking states.
+
+    x_true: 64×64 float32, normalized [0,1] — ground truth emitter density map.
+    y: 64×64 float32 — widefield diffraction-limited accumulation image.
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with keys modality, n_frames, photons_per_blinking, psf_sigma_px.
+
+    Reference: Jungmann et al., Nat. Methods 2014; Schnitzbauer et al., Nat. Protocols 2017.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    n_frames = 200
+    psf_sigma_px = 1.5
+    photons_per_blinking = 300
+    # DNA-PAINT docking strand density: fraction of pixels with emitters
+    emitter_density = 0.015
+
+    for i in range(n_samples):
+        # --- Ground truth emitter density map (DNA origami grid pattern) ---
+        x_true = np.zeros((H, W), dtype=np.float32)
+
+        # DNA origami grid: place clusters of emitters in a regular grid
+        # Grid spacing ~8-12 pixels (representing 5-20 nm at typical SR scales)
+        grid_spacing = int(rng.integers(8, 13))
+        cluster_radius = float(rng.uniform(1.0, 2.5))
+
+        Y_grid, X_grid = np.mgrid[:H, :W]
+
+        # Number of emitters drawn from a Poisson process at each grid node
+        n_emitters_total = max(1, int(rng.poisson(emitter_density * H * W)))
+
+        for _ in range(n_emitters_total):
+            # Sub-pixel emitter location within the grid
+            ey = float(rng.uniform(cluster_radius, H - cluster_radius))
+            ex = float(rng.uniform(cluster_radius, W - cluster_radius))
+            # Snap to nearest grid node with small random offset (~DNA origami jitter)
+            ey_node = round(ey / grid_spacing) * grid_spacing
+            ex_node = round(ex / grid_spacing) * grid_spacing
+            jitter_y = float(rng.normal(0, 0.5))
+            jitter_x = float(rng.normal(0, 0.5))
+            ey_final = float(np.clip(ey_node + jitter_y, 0, H - 1))
+            ex_final = float(np.clip(ex_node + jitter_x, 0, W - 1))
+
+            # Add emitter as a delta at integer pixel (sub-pixel accuracy encoded in density)
+            iy = int(round(ey_final))
+            ix = int(round(ex_final))
+            if 0 <= iy < H and 0 <= ix < W:
+                x_true[iy, ix] += 1.0
+
+        # Normalize emitter density map to [0, 1]
+        if x_true.max() > 0:
+            x_true = x_true / x_true.max()
+
+        # --- Stochastic blinking forward model ---
+        # Accumulate photon counts over n_frames with random on/off blinking
+        accumulated = np.zeros((H, W), dtype=np.float64)
+        emitter_positions = np.argwhere(x_true > 0.01)
+
+        # Per-emitter blinking probability (imager strand binding kinetics)
+        k_on = float(rng.uniform(0.05, 0.15))   # binding rate per frame
+        k_off = float(rng.uniform(0.7, 0.9))    # unbinding rate per frame
+
+        for _frame in range(n_frames):
+            frame_image = np.zeros((H, W), dtype=np.float64)
+            for pos in emitter_positions:
+                iy, ix = int(pos[0]), int(pos[1])
+                # Stochastic blinking: on-state determined by binding kinetics
+                if rng.random() < k_on:
+                    # Poisson-sampled photon count for this blinking event
+                    n_photons = int(rng.poisson(photons_per_blinking * float(x_true[iy, ix])))
+                    if n_photons > 0:
+                        # Place photons as a delta, PSF applied after accumulation
+                        frame_image[iy, ix] += n_photons
+            # Add Poisson background noise (camera dark counts + autofluorescence)
+            bg_level = float(rng.uniform(2.0, 8.0))
+            frame_image += rng.poisson(bg_level, size=(H, W)).astype(np.float64)
+            accumulated += frame_image
+
+        # Apply Gaussian PSF (diffraction-limited widefield accumulation)
+        y_raw = gaussian_filter(accumulated, sigma=psf_sigma_px)
+
+        # Normalize y to [0, 1]
+        y_min = y_raw.min()
+        y_max = y_raw.max()
+        if y_max > y_min:
+            y = ((y_raw - y_min) / (y_max - y_min)).astype(np.float32)
+        else:
+            y = np.zeros((H, W), dtype=np.float32)
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "dna_paint",
+                "n_frames": n_frames,
+                "photons_per_blinking": photons_per_blinking,
+                "psf_sigma_px": psf_sigma_px,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -4792,6 +4924,7 @@ def acquire_dataset(
         "generate_dic_phantom": lambda: generate_dic_phantom(target_shape=target_shape),
         "generate_diffusion_mri_phantom": generate_diffusion_mri_phantom,
         "generate_digital_breast_tomo_phantom": generate_digital_breast_tomo_phantom,
+        "generate_dna_paint_phantom": generate_dna_paint_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -4873,6 +5006,7 @@ def acquire_dataset(
         "generate_dic_phantom": lambda: generate_dic_phantom(target_shape=target_shape),
         "generate_diffusion_mri_phantom": lambda: generate_diffusion_mri_phantom(),
         "generate_digital_breast_tomo_phantom": lambda: generate_digital_breast_tomo_phantom(),
+        "generate_dna_paint_phantom": lambda: generate_dna_paint_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)
