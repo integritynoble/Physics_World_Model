@@ -1,8 +1,8 @@
 # Comprehensive 6-Point Check — Confocal Laser Endomicroscopy
 
 **URL:** https://pwm.platformai.org/benchmark/confocal_endomicroscopy
-**Check Date:** 2026-03-06
-**Status:** PASS (with note on algorithm routing)
+**Check Date:** 2026-03-09
+**Status:** PASS
 
 ---
 

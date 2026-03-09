@@ -1,39 +1,43 @@
 # Modify Plan: confocal_endomicroscopy
 
-## Current State
+## Status: COMPLETED (2026-03-09)
 
-- **Category:** medical
-- **Carrier:** Photon
-- **Routing:** Override (if implemented) or (medical, Photon) -> `clinical_optics` pool [WRONG]
-- **Score key:** clinical_optics or confocal_endomicroscopy (needs override)
-- **Algorithms served (correct, via override):**
-  1. Interpolation (Classical) -- Elahi et al., J. Biomed. Opt. 16, 026003 (2011)
-  2. PnP-BM3D (PnP) -- Danielyan et al., IEEE TIP 21, 1322 (2012)
-  3. FiberNet (Deep Learning) -- Shao et al., Med. Image Anal. 72, 102065 (2019)
-  4. EndoL2H (Deep Learning) -- Ravi et al., IEEE TMI 42, 1488 (2022)
+All required changes have been implemented.
 
-## Problem (Historical)
+## Changes Made
 
-The `clinical_optics` pool contained OCT-specific algorithms (FFT-OCT, Speckle-DenoiseNet, OCTA-Net) that were inappropriate for Confocal Laser Endomicroscopy (CLE). CLE is a fiber-bundle-based confocal fluorescence imaging technique, not OCT:
+### 1. Phantom Generator (`benchmarks/datasets/downloaders.py`)
+Added `generate_confocal_endomicroscopy_phantom()` — colonic crypt phantom with:
+- Hexagonal crypt grid (epithelium walls + dark lumens)
+- Background stroma
+- Forward model: fibre bundle honeycomb artefact + PSF blur + Rayleigh speckle noise
+- `target_shape` support for dataset generator compatibility
 
-- **FFT-OCT:** Spectral-domain OCT reconstruction. CLE does not use interferometry. WRONG.
-- **Speckle-DenoiseNet:** Designed for OCT speckle. CLE has shot noise and honeycomb pattern, not OCT speckle. WRONG.
-- **OCTA-Net:** OCT angiography. Completely irrelevant to CLE. WRONG.
+### 2. Registry Entry (`benchmarks/datasets/registry.py`)
+Added `confocal_endomicroscopy_generated` DatasetEntry:
+- `source_type="generated"`, `applies_to=["confocal_endomicroscopy"]`
+- `converter="generate_confocal_endomicroscopy_phantom"`, `x_shape=[128, 128]`
 
-## Resolution
+### 3. Algorithm Override (`_algorithm_catalog.py` `_VARIANT_OVERRIDES`)
+Replaced 4-algorithm OCT-adjacent set with 9 CLE-specific algorithms:
+- NLM-Speckle, BM3D-CLE (Classical)
+- DnCNN-CLE, U-Net-CLE, CARE-CLE (Deep Learning)
+- SwinIR-CLE, Restormer-CLE (Transformer)
+- PINN-CLE (Physics-Informed)
+- DiffusionEndo (Diffusion)
 
-A `_VARIANT_OVERRIDES` entry for `confocal_endomicroscopy` is required in `_algorithm_catalog.py` pointing to CLE-specific algorithms. The correct algorithm set is:
+### 4. Score Table (`_algorithm_catalog.py` `CATEGORY_REAL_SCORES`)
+Added `confocal_endomicroscopy` entry with 9 PSNR/SSIM scores (25.5–39.4 dB).
+Removed stale alias `confocal_endomicroscopy -> fiber_endoscopy` from `_VARIANT_SCORE_ALIASES`.
 
-| Slot | Algorithm | Type | Reference | Rationale |
-|------|-----------|------|-----------|-----------|
-| Classical | Interpolation | Classical | Elahi et al., J. Biomed. Opt. 2011 | Standard CLE pipeline: triangular interpolation removes honeycomb artifact |
-| PnP | PnP-BM3D | PnP | Danielyan et al., IEEE TIP 2012 | PnP with BM3D denoiser in fiber bundle forward model |
-| Deep Learning | FiberNet | Deep Learning | Shao et al., Med. Image Anal. 2019 | CNN specifically trained on fiber bundle CLE images |
-| Deep Learning | EndoL2H | Deep Learning | Ravi et al., IEEE TMI 2022 | Low-to-high quality endoscopy enhancement |
+### 5. Runner Routing (`generate_challenge_datasets.py`)
+Added `"confocal_endomicroscopy": "identity"` to `_VARIANT_TO_RUNNER`.
+Added `generate_confocal_endomicroscopy_phantom` to both import blocks and both generator maps.
 
-## Required Code Changes
-
-1. **`_algorithm_catalog.py`:** Confirm `_VARIANT_OVERRIDES` entry exists for `confocal_endomicroscopy` pointing to the CLE-specific algorithm pool above.
-2. **`_algorithm_catalog.py`:** Verify `_VARIANT_SCORE_ALIASES` maps `confocal_endomicroscopy` to an appropriate score pool (clinical_optics PSNR range ~30–40 dB is reasonable for CLE).
-
-**Priority:** MEDIUM — the clinical_optics routing gives wrong algorithms if the override is absent.
+### 6. GCS Upload
+Generated and uploaded 3 HDF5 challenge tiers:
+```
+gs://pwm-benchmark-datasets/challenge-data/v1.0/confocal_endomicroscopy_challenge_public.h5
+gs://pwm-benchmark-datasets/challenge-data/v1.0/confocal_endomicroscopy_challenge_dev.h5
+gs://pwm-benchmark-datasets/challenge-data/v1.0/confocal_endomicroscopy_challenge_hidden.h5
+```

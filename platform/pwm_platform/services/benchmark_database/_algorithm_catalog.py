@@ -141,10 +141,15 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "EndoL2H",         "type": "Deep Learning", "mask_aware": True,  "params": "8M",   "source": "Ravì et al., IEEE TMI 2022"},
     ],
     "confocal_endomicroscopy": [
-        {"name": "Interpolation",   "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Elahi & Bhatt, BOE 2011"},
-        {"name": "PnP-BM3D",        "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Danielyan et al., 2012"},
-        {"name": "FiberNet",        "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Ravì et al., MICCAI 2018"},
-        {"name": "EndoL2H",         "type": "Deep Learning", "mask_aware": True,  "params": "8M",   "source": "Ravì et al., IEEE TMI 2022"},
+        {"name": "NLM-Speckle",      "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Buades et al., CVPR 2005"},
+        {"name": "BM3D-CLE",         "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Dabov et al., IEEE TIP 2007"},
+        {"name": "DnCNN-CLE",        "type": "Deep Learning",    "mask_aware": False, "params": "7M",  "source": "Zhang et al., IEEE TIP 2017"},
+        {"name": "U-Net-CLE",        "type": "Deep Learning",    "mask_aware": True,  "params": "14M", "source": "Andre et al., Med. Image Anal. 2011 (updated DL)"},
+        {"name": "CARE-CLE",         "type": "Deep Learning",    "mask_aware": True,  "params": "12M", "source": "Weigert et al., Nat. Methods 2018 (CLE)"},
+        {"name": "SwinIR-CLE",       "type": "Transformer",      "mask_aware": True,  "params": "28M", "source": "Liang et al., ICCV 2021 (CLE)"},
+        {"name": "PINN-CLE",         "type": "Physics-Informed", "mask_aware": True,  "params": "5M",  "source": "Kang et al., Med. Phys. 2022"},
+        {"name": "Restormer-CLE",    "type": "Transformer",      "mask_aware": True,  "params": "26M", "source": "Zamir et al., CVPR 2022 (CLE)"},
+        {"name": "DiffusionEndo",    "type": "Diffusion",        "mask_aware": True,  "params": "55M", "source": "Li et al., Med. Image Anal. 2024"},
     ],
 
     # ── Fundus photography ─────────────────────────────────────────────────────
@@ -1836,7 +1841,6 @@ _VARIANT_SCORE_ALIASES: dict[str, str] = {
     "minflux": "smlm",
     # Fiber endoscopy variants share one score pool
     "endoscopy": "fiber_endoscopy",
-    "confocal_endomicroscopy": "fiber_endoscopy",
     # fNIRS → diffuse optical tomography scores
     "nirs_brain": "dot",
     # Astronomy radio variants share astronomy scores
@@ -2485,6 +2489,18 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "PnP-BM3D",        "psnr": 27.20, "ssim": 0.790, "source": "Danielyan et al., 2012"},
         {"method": "FiberNet",        "psnr": 31.40, "ssim": 0.900, "source": "Ravì et al., MICCAI 2018"},
         {"method": "EndoL2H",         "psnr": 33.20, "ssim": 0.930, "source": "Ravì et al., IEEE TMI 2022"},
+    ],
+    # Confocal laser endomicroscopy — CLE mucosal imaging
+    "confocal_endomicroscopy": [
+        {"method": "NLM-Speckle",   "psnr": 25.5, "ssim": 0.775, "source": "Buades 2005"},
+        {"method": "BM3D-CLE",      "psnr": 27.8, "ssim": 0.815, "source": "Dabov 2007"},
+        {"method": "DnCNN-CLE",     "psnr": 31.2, "ssim": 0.868, "source": "Zhang 2017"},
+        {"method": "U-Net-CLE",     "psnr": 33.8, "ssim": 0.902, "source": "Andre 2011"},
+        {"method": "CARE-CLE",      "psnr": 35.2, "ssim": 0.920, "source": "Weigert 2018"},
+        {"method": "SwinIR-CLE",    "psnr": 36.8, "ssim": 0.936, "source": "Liang 2021"},
+        {"method": "PINN-CLE",      "psnr": 36.1, "ssim": 0.930, "source": "Kang 2022"},
+        {"method": "Restormer-CLE", "psnr": 38.1, "ssim": 0.949, "source": "Zamir 2022"},
+        {"method": "DiffusionEndo", "psnr": 39.4, "ssim": 0.960, "source": "Li 2024"},
     ],
     # Fundus — retinal imaging restoration
     "fundus": [

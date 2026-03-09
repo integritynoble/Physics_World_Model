@@ -1090,6 +1090,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic 3D confocal cell phantom with nucleus, mitochondria, actin filaments",
     ),
+    "confocal_endomicroscopy_generated": DatasetEntry(
+        id="confocal_endomicroscopy_generated",
+        name="Confocal Endomicroscopy Crypt Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Kiesslich et al., Gastroenterology 2004",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["confocal_endomicroscopy"],
+        converter="generate_confocal_endomicroscopy_phantom",
+        x_shape=[128, 128],
+        notes="Synthetic CLE colonic crypt phantom with fibre bundle honeycomb artefacts",
+    ),
 }
 
 

@@ -3108,6 +3108,91 @@ def generate_coded_exposure_phantom(
     return samples
 
 
+def generate_confocal_endomicroscopy_phantom(
+    n_samples: int = 10,
+    seed: int = 42,
+    shape: tuple = (128, 128),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Confocal laser endomicroscopy (CLE) phantom.
+
+    Simulates CLE images of colonic mucosa with crypt architecture. Models
+    fibre bundle honeycomb artefacts, speckle noise, and limited depth of
+    field. Reconstruction target: clean cellular-resolution mucosal image.
+
+    Reference: Kiesslich et al., Gastroenterology 2004; Andre et al., Med. Image Anal. 2011.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    for i in range(n_samples):
+        # Ground truth: colonic crypt architecture
+        x_true = np.zeros((H, W), dtype=np.float32)
+
+        # Regular crypt grid (hexagonal-ish arrangement)
+        crypt_spacing = int(rng.integers(14, 22))
+        crypt_radius = int(rng.integers(4, 7))
+        lumen_radius = max(1, crypt_radius - 2)
+
+        for cy in range(crypt_radius, H - crypt_radius, crypt_spacing):
+            for cx_idx, cx in enumerate(range(crypt_radius, W - crypt_radius, crypt_spacing)):
+                offset = (crypt_spacing // 2) if (cy // crypt_spacing) % 2 else 0
+                cx_off = min(cx + offset, W - crypt_radius - 1)
+                Y, X = np.ogrid[:H, :W]
+                # Crypt wall (bright epithelium)
+                crypt = ((Y - cy)**2 + (X - cx_off)**2) <= crypt_radius**2
+                lumen = ((Y - cy)**2 + (X - cx_off)**2) <= lumen_radius**2
+                x_true[crypt & ~lumen] = float(rng.uniform(0.6, 0.9))
+                # Lumen: dark
+                x_true[lumen] = float(rng.uniform(0.02, 0.08))
+
+        # Background stroma
+        stroma = x_true == 0
+        x_true[stroma] = float(rng.uniform(0.15, 0.3))
+        x_true = np.clip(x_true, 0, 1).astype(np.float32)
+
+        # Forward model: fibre bundle honeycomb + speckle + blur
+        # Honeycomb artefact: regular dark grid
+        fibre_period = int(rng.integers(6, 10))
+        y_meas = x_true.copy()
+        for fy in range(0, H, fibre_period):
+            y_meas[fy, :] *= float(rng.uniform(0.3, 0.6))
+        for fx in range(0, W, fibre_period):
+            y_meas[:, fx] *= float(rng.uniform(0.3, 0.6))
+
+        # PSF blur
+        y_meas = gaussian_filter(y_meas, sigma=float(rng.uniform(0.8, 1.5)))
+
+        # Speckle noise
+        speckle = rng.rayleigh(0.08, (H, W)).astype(np.float32)
+        y_meas = np.clip(y_meas + speckle, 0, 1).astype(np.float32)
+
+        H_size = min(H * W, 4096)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y_meas,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "crypt_spacing": int(crypt_spacing),
+                "fibre_period": int(fibre_period),
+            },
+        })
+
+    return samples
+
+
 def generate_confocal_3d_phantom(
     n_samples: int = 10,
     seed: int = 42,
@@ -3272,6 +3357,7 @@ def acquire_dataset(
         "generate_clem_phantom": lambda: generate_clem_phantom(target_shape=target_shape),
         "generate_coded_exposure_phantom": lambda: generate_coded_exposure_phantom(target_shape=target_shape),
         "generate_confocal_3d_phantom": lambda: generate_confocal_3d_phantom(target_shape=target_shape),
+        "generate_confocal_endomicroscopy_phantom": lambda: generate_confocal_endomicroscopy_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -3339,6 +3425,7 @@ def acquire_dataset(
         "generate_clem_phantom": lambda: generate_clem_phantom(target_shape=target_shape),
         "generate_coded_exposure_phantom": lambda: generate_coded_exposure_phantom(target_shape=target_shape),
         "generate_confocal_3d_phantom": lambda: generate_confocal_3d_phantom(target_shape=target_shape),
+        "generate_confocal_endomicroscopy_phantom": lambda: generate_confocal_endomicroscopy_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)
