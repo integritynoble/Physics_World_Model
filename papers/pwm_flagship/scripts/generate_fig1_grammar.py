@@ -142,10 +142,10 @@ def main(output_path: Path):
             fontsize=9, ha="center", va="top", color=C_ENC_T,
             fontweight="bold", linespacing=1.15, zorder=1)
 
-    # DAG: P → C → W → S → D
+    # DAG: P → C → W → S → D  (with visible gaps between blocks)
     dag_prims = ["P", "C", "W", "S", "D"]
-    dag_y_top = row1_y + 0.0
-    dag_sp = 0.36
+    dag_y_top = row1_y + 0.15
+    dag_sp = 0.42
     nw, nh = 0.48, 0.26
     dag_cx = s2_x - 0.15
     for i, p in enumerate(dag_prims):
@@ -163,9 +163,9 @@ def main(output_path: Path):
             ha="left", va="center", color="#999999", style="italic",
             linespacing=1.1, zorder=1)
 
-    # Subtitle: mention 11 primitives between title and DAG
+    # Subtitle: reference 11 primitives in Fig. 2a
     ax.text(s2_x, row1_y + row1_h / 2 - 0.72,
-            "(11 universal primitives)",
+            "(11 primitives; Fig. 2a)",
             fontsize=7, ha="center", va="top", color="#888888",
             style="italic", zorder=1)
 

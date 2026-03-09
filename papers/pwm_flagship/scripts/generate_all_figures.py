@@ -267,40 +267,46 @@ def fig2_operatorgraph():
 
     # Panel b: Example OperatorGraph DAGs
     ax_b = fig.add_subplot(gs[1, 0])
-    ax_b.set_xlim(0, 4)
+    ax_b.set_xlim(0, 5.2)
     ax_b.set_ylim(0, 5.5)
     ax_b.axis('off')
     ax_b.text(0, 5.3, 'b', fontsize=10, fontweight='bold')
 
     dags = {
-        'CASSI': [('P  Propagate', 0.7, 4.5), ('C  Convolve', 0.7, 3.5),
-                  ('W  Disperse', 0.7, 2.5), ('S  Sample', 0.7, 1.5),
-                  ('D  Detect', 0.7, 0.5)],
-        'MRI': [('P  Propagate', 2.0, 4.5), ('M  Modulate', 2.0, 3.5),
-                ('F  Encode', 2.0, 2.5), ('S  Sample', 2.0, 1.5),
-                ('D  Detect', 2.0, 0.5)],
-        'CT': [('P  Propagate', 3.3, 4.5), ('\u03A0  Project', 3.3, 3.5),
-               ('\u03A3  Accumulate', 3.3, 2.5), ('D  Detect', 3.3, 1.5)],
+        'CASSI': [('P', 'Propagate', 0.9, 4.5), ('C', 'Convolve', 0.9, 3.5),
+                  ('W', 'Disperse', 0.9, 2.5), ('S', 'Sample', 0.9, 1.5),
+                  ('D', 'Detect', 0.9, 0.5)],
+        'MRI': [('P', 'Propagate', 2.5, 4.5), ('M', 'Modulate', 2.5, 3.5),
+                ('F', 'Encode', 2.5, 2.5), ('S', 'Sample', 2.5, 1.5),
+                ('D', 'Detect', 2.5, 0.5)],
+        'CT': [('P', 'Propagate', 4.1, 4.5), ('\u03A0', 'Project', 4.1, 3.5),
+               ('\u03A3', 'Accumulate', 4.1, 2.5), ('D', 'Detect', 4.1, 1.5)],
     }
 
     dag_colors = {'CASSI': COLORS['blue'], 'MRI': COLORS['purple'],
                   'CT': COLORS['red']}
+    box_w_b = 1.3
+    box_h_b = 0.65
 
     for name, nodes in dags.items():
         color = dag_colors[name]
-        ax_b.text(nodes[0][1], 5.1, name, ha='center', fontsize=7,
+        ax_b.text(nodes[0][2], 5.1, name, ha='center', fontsize=7,
                   fontweight='bold', color=color)
-        for i, (label, x, y) in enumerate(nodes):
-            box = FancyBboxPatch((x - 0.4, y - 0.3), 0.8, 0.6,
+        for i, (sym, desc, x, y) in enumerate(nodes):
+            box = FancyBboxPatch((x - box_w_b / 2, y - box_h_b / 2),
+                                 box_w_b, box_h_b,
                                  boxstyle="round,pad=0.05",
                                  facecolor=color, alpha=0.12,
                                  edgecolor=color, linewidth=0.8)
             ax_b.add_patch(box)
-            ax_b.text(x, y, label, ha='center', va='center',
-                      fontsize=5, color=color)
+            # Symbol (bold) and name on separate lines inside box
+            ax_b.text(x, y + 0.10, sym, ha='center', va='center',
+                      fontsize=6, fontweight='bold', color=color)
+            ax_b.text(x, y - 0.12, desc, ha='center', va='center',
+                      fontsize=4.5, color=color)
             if i < len(nodes) - 1:
-                ax_b.annotate('', xy=(x, y - 0.35),
-                              xytext=(x, nodes[i+1][2] + 0.35),
+                ax_b.annotate('', xy=(x, y - 0.38),
+                              xytext=(x, nodes[i+1][3] + 0.38),
                               arrowprops=dict(arrowstyle='<-', color=color,
                                               lw=0.6, mutation_scale=8))
 
