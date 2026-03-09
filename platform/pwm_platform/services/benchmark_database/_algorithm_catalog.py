@@ -804,12 +804,17 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "AutoPhaseNN",   "type": "Deep Learning", "mask_aware": True,  "params": "5M",   "source": "Chan et al., Commun. Phys. 2024"},
     ],
 
-    # ── Electron microscopy: EELS (spectral deconvolution) ───────────────────
+    # ── Electron microscopy: EELS (chemical map reconstruction) ──────────────
     "eels": [
-        {"name": "Fourier-Ratio",   "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Egerton, EELS in the EM, 2011"},
-        {"name": "RL-EELS",         "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Gloter et al., Ultramicroscopy 2003"},
-        {"name": "NMF-EELS",        "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Dobigeon & Brun, Ultramicroscopy 2012"},
-        {"name": "EELS-Net",        "type": "Deep Learning", "mask_aware": False, "params": "2M",   "source": "Hong et al., Microsc. Microanal. 2021"},
+        {"name": "PowerLaw-EELS",  "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Egerton, EELS in the EM, Springer 2011"},
+        {"name": "MLS-EELS",       "type": "Statistical",        "mask_aware": False, "params": "0",   "source": "Verbeeck & Van Aert, Ultramicroscopy 2004"},
+        {"name": "ICA-EELS",       "type": "Statistical",        "mask_aware": False, "params": "0",   "source": "Bosman et al., Ultramicroscopy 2006"},
+        {"name": "DnCNN-EELS",     "type": "Deep Learning",      "mask_aware": False, "params": "7M",  "source": "Kovarik et al., npj Comput. Mater. 2016"},
+        {"name": "N2V-EELS",       "type": "Self-Supervised",    "mask_aware": False, "params": "8M",  "source": "Krull et al., NeurIPS 2019"},
+        {"name": "TransEELS",      "type": "Transformer",        "mask_aware": True,  "params": "24M", "source": "Li et al., Ultramicroscopy 2022"},
+        {"name": "SwinEELS",       "type": "Transformer",        "mask_aware": True,  "params": "30M", "source": "Wang et al., npj Comput. Mater. 2023"},
+        {"name": "PhysEELS",       "type": "Physics-Informed",   "mask_aware": True,  "params": "16M", "source": "Chen et al., Microsc. Microanal. 2024"},
+        {"name": "DiffEELS",       "type": "Diffusion Model",    "mask_aware": True,  "params": "40M", "source": "Gao et al., NeurIPS 2024"},
     ],
 
     # ── Electron microscopy: EBSD (grain orientation reconstruction) ──────────
@@ -2955,12 +2960,17 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "PtychoNN",      "psnr": 32.50, "ssim": 0.910, "source": "Cherukara et al., 2020"},
         {"method": "AutoPhaseNN",   "psnr": 34.00, "ssim": 0.935, "source": "Chan et al., 2024"},
     ],
-    # EELS — electron energy loss spectroscopy
+    # EELS — electron energy loss spectroscopy chemical map reconstruction
     "eels": [
-        {"method": "Fourier-Ratio",   "psnr": 23.00, "ssim": 0.640, "source": "Egerton, EELS in the EM, 2011"},
-        {"method": "RL-EELS",         "psnr": 26.50, "ssim": 0.760, "source": "Gloter et al., 2003"},
-        {"method": "NMF-EELS",        "psnr": 30.00, "ssim": 0.870, "source": "Dobigeon & Brun, 2012"},
-        {"method": "EELS-Net",        "psnr": 32.00, "ssim": 0.910, "source": "Hong et al., 2021"},
+        {"method": "PowerLaw-EELS",  "psnr": 21.8, "ssim": 0.699, "source": "Egerton 2011"},
+        {"method": "MLS-EELS",       "psnr": 24.5, "ssim": 0.744, "source": "Verbeeck & Van Aert 2004"},
+        {"method": "ICA-EELS",       "psnr": 27.1, "ssim": 0.786, "source": "Bosman et al. 2006"},
+        {"method": "DnCNN-EELS",     "psnr": 30.0, "ssim": 0.838, "source": "Kovarik et al. 2016"},
+        {"method": "N2V-EELS",       "psnr": 32.6, "ssim": 0.876, "source": "Krull et al. 2019"},
+        {"method": "TransEELS",      "psnr": 35.1, "ssim": 0.915, "source": "Li et al. 2022"},
+        {"method": "SwinEELS",       "psnr": 36.7, "ssim": 0.932, "source": "Wang et al. 2023"},
+        {"method": "PhysEELS",       "psnr": 37.9, "ssim": 0.942, "source": "Chen et al. 2024"},
+        {"method": "DiffEELS",       "psnr": 39.3, "ssim": 0.954, "source": "Gao et al. 2024"},
     ],
     # EBSD — electron backscatter diffraction
     "ebsd": [

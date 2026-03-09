@@ -215,6 +215,10 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # are handled by the phantom generator; identity runner applies minimal
     # additional noise to the phantom's count map.
     "edx_mapping": "identity",
+    # EELS: Poisson shot noise and multiple-scattering convolution are handled
+    # by the phantom generator; identity runner applies minimal additional noise
+    # to the phantom's chemical phase map.
+    "eels": "identity",
 }
 
 
@@ -367,6 +371,7 @@ def _resolve_ground_truth(
             generate_dot_phantom,
             generate_ebsd_phantom,
             generate_eddy_current_phantom,
+            generate_eels_phantom,
         )
 
         # Look up registry entries for this modality
@@ -431,6 +436,7 @@ def _resolve_ground_truth(
                     "generate_dot_phantom": generate_dot_phantom,
                     "generate_ebsd_phantom": generate_ebsd_phantom,
                     "generate_eddy_current_phantom": generate_eddy_current_phantom,
+                    "generate_eels_phantom": generate_eels_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -950,6 +956,7 @@ def _load_scenes_from_generator(
             generate_ebsd_phantom,
             generate_eddy_current_phantom,
             generate_edx_mapping_phantom,
+            generate_eels_phantom,
         )
     except ImportError:
         return []
@@ -1007,6 +1014,7 @@ def _load_scenes_from_generator(
         "generate_ebsd_phantom": generate_ebsd_phantom,
         "generate_eddy_current_phantom": generate_eddy_current_phantom,
         "generate_edx_mapping_phantom": generate_edx_mapping_phantom,
+        "generate_eels_phantom": generate_eels_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

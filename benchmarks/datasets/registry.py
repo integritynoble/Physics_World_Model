@@ -1390,6 +1390,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic EDX phantom for benchmarking elemental map denoising/reconstruction algorithms",
     ),
+    "eels_generated": DatasetEntry(
+        id="eels_generated",
+        name="EELS Chemical Map Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic EELS phantom with chemical phase distributions and Poisson/multiple-scattering noise",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["eels"],
+        converter="generate_eels_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic EELS phantom for benchmarking chemical map reconstruction algorithms",
+    ),
 }
 
 

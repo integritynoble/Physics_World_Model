@@ -5487,6 +5487,123 @@ def generate_edx_mapping_phantom(
     return samples
 
 
+def generate_eels_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Electron Energy Loss Spectroscopy (EELS) chemical phase map phantom.
+
+    Creates a 64x64 float32 elemental/oxidation-state map simulating a TEM
+    sample with distinct chemical phases:
+      - MnO2 regions: characteristic EELS edge at ~640 eV, normalized intensity 0.9
+      - MnO regions: intermediate oxidation state, intensity 0.6
+      - Metallic Mn background: intensity 0.1-0.2
+
+    Applies EELS forward model:
+      - Poisson-dominated shot noise at low beam current (~200-500 counts/pixel)
+      - Multiple scattering convolution: Gaussian blur sigma~0.5 px
+      - Plural scattering background subtraction artifacts: smooth polynomial baseline
+
+    x_true: 64x64 float32, normalized [0,1] — chemical phase map.
+    y: 64x64 float32 — noisy EELS elemental map.
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, energy_loss_ev, beam_current_pa,
+              energy_resolution_ev.
+
+    References: Egerton, EELS in the Electron Microscope, Springer 2011;
+                Verbeeck & Van Aert, Ultramicroscopy 2004.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    energy_loss_ev = 640.0      # Mn L2,3 edge
+    energy_resolution_ev = 0.8  # typical cold-FEG resolution
+
+    for i in range(n_samples):
+        # --- Ground truth chemical phase map ---
+        # Metallic Mn background: 0.1-0.2
+        mn_bg_level = float(rng.uniform(0.1, 0.2))
+        x_true = np.full((H, W), mn_bg_level, dtype=np.float32)
+
+        # MnO2 regions (~640 eV edge): organic-shaped regions, intensity 0.9
+        mno2_noise = rng.standard_normal((H, W)).astype(np.float32)
+        mno2_smooth = gaussian_filter(mno2_noise, sigma=float(rng.uniform(5.0, 9.0)))
+        mno2_threshold = float(np.percentile(mno2_smooth, 75))  # top 25% area
+        mno2_mask = mno2_smooth >= mno2_threshold
+        x_true[mno2_mask] = 0.9
+
+        # MnO regions (intermediate oxidation): patchy regions, intensity 0.6
+        mno_noise = rng.standard_normal((H, W)).astype(np.float32)
+        mno_smooth = gaussian_filter(mno_noise, sigma=float(rng.uniform(4.0, 7.0)))
+        mno_threshold = float(np.percentile(mno_smooth, 65))  # top 35% area
+        mno_mask = (mno_smooth >= mno_threshold) & (~mno2_mask)
+        x_true[mno_mask] = 0.6
+
+        # Clip to [0, 1]
+        x_true = np.clip(x_true, 0.0, 1.0)
+
+        # --- EELS forward model ---
+        # Scale to count space: 200-500 counts/pixel for max intensity
+        beam_current_pa = float(rng.uniform(200.0, 500.0))
+        count_map = x_true * beam_current_pa
+
+        # Plural scattering background: smooth polynomial baseline (artifact)
+        yy, xx = np.mgrid[0:H, 0:W]
+        # Normalize coordinates to [0, 1]
+        yn = yy / max(H - 1, 1)
+        xn = xx / max(W - 1, 1)
+        # Low-order polynomial baseline (simulates plural scattering background)
+        a0 = float(rng.uniform(5.0, 15.0))
+        a1 = float(rng.uniform(-5.0, 5.0))
+        a2 = float(rng.uniform(-5.0, 5.0))
+        baseline = (a0 + a1 * xn + a2 * yn).astype(np.float32)
+        count_map_with_bkg = count_map + baseline
+
+        # Multiple scattering convolution: Gaussian blur sigma~0.5 px
+        sigma_ms = float(rng.uniform(0.4, 0.7))
+        blurred = gaussian_filter(count_map_with_bkg, sigma=sigma_ms)
+
+        # Poisson-dominated shot noise (low beam current regime)
+        lambda_map = np.maximum(blurred, 0.0)
+        y_counts = rng.poisson(lambda_map).astype(np.float32)
+
+        # Normalize y to [0, 1]
+        y_min = float(y_counts.min())
+        y_max = float(y_counts.max())
+        if y_max > y_min:
+            y = ((y_counts - y_min) / (y_max - y_min)).astype(np.float32)
+        else:
+            y = np.zeros((H, W), dtype=np.float32)
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "eels",
+                "energy_loss_ev": energy_loss_ev,
+                "beam_current_pa": beam_current_pa,
+                "energy_resolution_ev": energy_resolution_ev,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -5568,6 +5685,7 @@ def acquire_dataset(
         "generate_ebsd_phantom": generate_ebsd_phantom,
         "generate_eddy_current_phantom": generate_eddy_current_phantom,
         "generate_edx_mapping_phantom": generate_edx_mapping_phantom,
+        "generate_eels_phantom": generate_eels_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -5655,6 +5773,7 @@ def acquire_dataset(
         "generate_ebsd_phantom": lambda: generate_ebsd_phantom(),
         "generate_eddy_current_phantom": lambda: generate_eddy_current_phantom(),
         "generate_edx_mapping_phantom": lambda: generate_edx_mapping_phantom(),
+        "generate_eels_phantom": lambda: generate_eels_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)
