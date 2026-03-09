@@ -1465,6 +1465,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic electron holography phantom for benchmarking phase reconstruction algorithms",
     ),
+    "electron_tomography_generated": DatasetEntry(
+        id="electron_tomography_generated",
+        name="Electron Tomography Reconstruction Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic ET phantom with macromolecular density blobs, limited-angle tilt series, and missing wedge",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["electron_tomography"],
+        converter="generate_electron_tomography_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic ET phantom for benchmarking missing-wedge compensation reconstruction algorithms",
+    ),
 }
 
 

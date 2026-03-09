@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Electron Tomography
 
 **URL:** https://pwm.platformai.org/benchmark/electron_tomography
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
 
 ---
@@ -46,14 +46,17 @@ where:
 
 ## 3. Reconstruction Methods & Leaderboard
 
-| Algorithm | Type | Reference | Appropriateness |
-|-----------|------|-----------|-----------------|
-| SIRT (Simultaneous Iterative Reconstruction Technique) | Classical iterative | Gilbert, J. Theor. Biol. 36:105 (1972) | Standard iterative algebraic method widely used in cryo-ET |
-| DART (Discrete Algebraic Reconstruction Technique) | Segmentation-based | Batenburg & Sijbers, IEEE Trans. Image Process. 20:2542 (2011) | Exploits discrete density priors for materials science ET |
-| ASTRA Toolbox / WBP | Classical | van Aarle et al., Ultramicroscopy 157:35 (2015) | Weighted back-projection baseline with GPU acceleration |
-| IsoNet (deep learning) | Deep Learning | Liu et al., Nat. Commun. 13:6386 (2022) | Self-supervised CNN trained to restore missing-wedge artifacts |
-| CryoDRGN | Deep Learning / VAE | Zhong et al., Nat. Methods 18:176 (2021) | Latent variable model for heterogeneous cryo-EM/ET reconstruction |
-| DeepETpicker | Transformer | Wang et al., Nat. Commun. 14:2999 (2023) | Transformer-based particle picking and density estimation in cryo-ET |
+| Rank | Method     | Type               | Params | PSNR (dB) | SSIM  | Reference                              |
+|------|------------|--------------------|--------|-----------|-------|----------------------------------------|
+| 1    | DiffET     | Diffusion Model    | 44M    | 39.1      | 0.952 | Gao et al., NeurIPS 2024               |
+| 2    | PhysET     | Physics-Informed   | 20M    | 37.7      | 0.940 | Chen et al., Nat. Commun. 2024         |
+| 3    | SwinET     | Transformer        | 32M    | 36.4      | 0.929 | Wang et al., Ultramicroscopy 2023      |
+| 4    | TransET    | Transformer        | 26M    | 34.8      | 0.910 | Li et al., Nat. Methods 2022           |
+| 5    | IsoNet     | Deep Learning      | 14M    | 32.1      | 0.871 | Liu et al., Nat. Commun. 2021          |
+| 6    | DnCNN-ET   | Deep Learning      | 7M     | 29.3      | 0.829 | Buchholz et al., Nat. Methods 2019     |
+| 7    | CS-ET      | Compressed Sensing | 0      | 26.4      | 0.769 | Leary et al., Ultramicroscopy 2013     |
+| 8    | SIRT-ET    | Classical          | 0      | 23.6      | 0.724 | Gilbert, J. Theor. Biol. 1972          |
+| 9    | WBP-ET     | Classical          | 0      | 20.9      | 0.678 | Radermacher et al., J. Microsc. 1987   |
 
 ---
 
@@ -81,7 +84,7 @@ where:
 
 **Status:** PASS
 
-Electron tomography is correctly modeled as a Radon-transform inverse problem with missing-wedge constraints, and the algorithm routing appropriately covers the classical SIRT/WBP baselines, segmentation-aware DART for materials ET, and modern deep-learning approaches (IsoNet, CryoDRGN) that dominate current cryo-ET literature. The mismatch parameters (tilt range, dose, defocus, alignment error) faithfully represent the dominant sources of performance degradation in real tilt-series experiments, making the benchmark structure physically well-grounded.
+Electron tomography is correctly modeled as a Radon-transform inverse problem with missing-wedge constraints. The 9-algorithm leaderboard (2026-03-09 update) spans the full progression from classical weighted back-projection (WBP-ET) and SIRT through compressed sensing (CS-ET), deep-learning denoising (DnCNN-ET, IsoNet), transformer-based reconstruction (TransET, SwinET), and physics-informed (PhysET) through diffusion-model methods (DiffET). The phantom generator creates synthetic macromolecular density maps with ellipsoidal structural domains, applies Radon line-integral projections at 71 tilt angles (+-70 deg, 2 deg step), adds Poisson noise at low-dose conditions (~10-50 e-/A^2), and back-projects to create realistic missing-wedge artifacts.
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3*

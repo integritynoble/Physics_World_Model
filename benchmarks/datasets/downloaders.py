@@ -6132,6 +6132,169 @@ def generate_electron_holography_phantom(
     return samples
 
 
+def generate_electron_tomography_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Electron tomography phantom for missing-wedge reconstruction benchmarks.
+
+    Creates a 64x64 float32 3D density map (rendered as a 2D slice):
+      - Simulates a biological macromolecular complex or nanoparticle with
+        multiple structural domains (ellipsoidal density blobs at different
+        heights/depths within the specimen)
+
+    Applies electron tomography forward model:
+      - Limited-angle tilt series (+-70 deg with 2 deg step = 71 tilts)
+      - Radon-based projections for each tilt angle
+      - Poisson electron noise (low-dose regime ~10-50 e-/A^2)
+      - Back-projection reconstruction with missing wedge artifact
+        visible as elongation/streaks along beam direction
+
+    x_true: 64x64 float32, normalized [0,1] — ground truth density slice.
+    y: 64x64 float32 — back-projected reconstruction with missing wedge.
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, tilt_range_deg, tilt_step_deg,
+              dose_electrons_per_ang2.
+
+    References: Radermacher et al., J. Microsc. 1987;
+                Gilbert, J. Theor. Biol. 1972;
+                Leary et al., Ultramicroscopy 2013.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    tilt_range_deg = 70.0
+    tilt_step_deg = 2.0
+    tilt_angles_deg = np.arange(-tilt_range_deg, tilt_range_deg + tilt_step_deg, tilt_step_deg)
+    n_tilts = len(tilt_angles_deg)
+
+    for i in range(n_samples):
+        # --- Ground truth: 3D density map rendered as a 2D slice ---
+        yy, xx = np.mgrid[0:H, 0:W]
+
+        # Background density (cellular matrix, low-level uniform)
+        background_level = float(rng.uniform(0.02, 0.08))
+        density = np.full((H, W), background_level, dtype=np.float32)
+
+        # Multiple ellipsoidal structural domains (macromolecular subunits)
+        n_domains = int(rng.integers(2, 6))
+        for _ in range(n_domains):
+            cx_d = float(rng.uniform(0.15 * W, 0.85 * W))
+            cy_d = float(rng.uniform(0.15 * H, 0.85 * H))
+            # Ellipsoidal semi-axes
+            a = float(rng.uniform(3.0, 10.0))  # x semi-axis (pixels)
+            b = float(rng.uniform(3.0, 10.0))  # y semi-axis (pixels)
+            # Random orientation angle
+            theta = float(rng.uniform(0.0, np.pi))
+            cos_t = np.cos(theta)
+            sin_t = np.sin(theta)
+            dx = (xx - cx_d).astype(np.float32)
+            dy = (yy - cy_d).astype(np.float32)
+            # Rotated ellipse coordinate
+            u = cos_t * dx + sin_t * dy
+            v = -sin_t * dx + cos_t * dy
+            ellipse_mask = ((u / a) ** 2 + (v / b) ** 2).astype(np.float32)
+            peak_density = float(rng.uniform(0.4, 1.0))
+            domain_blob = peak_density * np.exp(-2.0 * ellipse_mask).astype(np.float32)
+            density = np.maximum(density, domain_blob)
+
+        # Smooth slightly (physical diffuse scattering)
+        sigma_smooth = float(rng.uniform(0.5, 1.2))
+        density = gaussian_filter(density, sigma=sigma_smooth).astype(np.float32)
+
+        # Normalize x_true to [0, 1]
+        d_min = float(density.min())
+        d_max = float(density.max())
+        if d_max > d_min:
+            x_true = ((density - d_min) / (d_max - d_min)).astype(np.float32)
+        else:
+            x_true = density.astype(np.float32)
+
+        # --- Forward model: limited-angle tilt series with Radon projections ---
+        # Simulate tilt series using simple line-integral projections
+        tilt_angles_rad = np.deg2rad(tilt_angles_deg)
+
+        # Collect sinogram (projection data)
+        sinogram = np.zeros((n_tilts, W), dtype=np.float32)
+        dose_per_ang2 = float(rng.uniform(10.0, 50.0))  # e-/A^2 (low dose)
+        # Scale factor: assume pixel size ~2 A, so counts per pixel projection
+        counts_scale = dose_per_ang2 * 4.0  # ~4 A^2 per pixel
+
+        for t_idx, angle_rad in enumerate(tilt_angles_rad):
+            cos_a = np.cos(angle_rad)
+            sin_a = np.sin(angle_rad)
+            # Line integrals along tilted direction
+            proj = np.zeros(W, dtype=np.float64)
+            for row in range(H):
+                # Contribution of each row to the projected column positions
+                # Column index after rotation
+                col_float = (
+                    cos_a * (np.arange(W) - W / 2.0)
+                    + sin_a * (row - H / 2.0)
+                    + W / 2.0
+                )
+                col_int = np.round(col_float).astype(np.int32)
+                valid = (col_int >= 0) & (col_int < W)
+                np.add.at(proj, col_int[valid], x_true[row, valid].astype(np.float64))
+            # Add Poisson electron noise
+            proj_counts = np.maximum(proj * counts_scale, 0.0)
+            noisy_proj = rng.poisson(proj_counts).astype(np.float64) / counts_scale
+            sinogram[t_idx] = noisy_proj.astype(np.float32)
+
+        # --- Back-projection reconstruction (creates missing wedge artifact) ---
+        recon = np.zeros((H, W), dtype=np.float64)
+        for t_idx, angle_rad in enumerate(tilt_angles_rad):
+            cos_a = np.cos(angle_rad)
+            sin_a = np.sin(angle_rad)
+            proj_1d = sinogram[t_idx].astype(np.float64)
+            # Back-project each projection line across the image
+            col_float = (
+                cos_a * (xx.astype(np.float64) - W / 2.0)
+                + sin_a * (yy.astype(np.float64) - H / 2.0)
+                + W / 2.0
+            )
+            col_int = np.clip(np.round(col_float).astype(np.int32), 0, W - 1)
+            recon += proj_1d[col_int]
+
+        recon = (recon / n_tilts).astype(np.float32)
+
+        # Normalize y to [0, 1]
+        r_min = float(recon.min())
+        r_max = float(recon.max())
+        if r_max > r_min:
+            y = ((recon - r_min) / (r_max - r_min)).astype(np.float32)
+        else:
+            y = np.zeros((H, W), dtype=np.float32)
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "electron_tomography",
+                "tilt_range_deg": tilt_range_deg,
+                "tilt_step_deg": tilt_step_deg,
+                "dose_electrons_per_ang2": dose_per_ang2,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -6218,6 +6381,7 @@ def acquire_dataset(
         "generate_elastography_phantom": generate_elastography_phantom,
         "generate_electron_diffraction_phantom": generate_electron_diffraction_phantom,
         "generate_electron_holography_phantom": generate_electron_holography_phantom,
+        "generate_electron_tomography_phantom": generate_electron_tomography_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -6310,6 +6474,7 @@ def acquire_dataset(
         "generate_elastography_phantom": lambda: generate_elastography_phantom(),
         "generate_electron_diffraction_phantom": lambda: generate_electron_diffraction_phantom(),
         "generate_electron_holography_phantom": lambda: generate_electron_holography_phantom(),
+        "generate_electron_tomography_phantom": lambda: generate_electron_tomography_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)
