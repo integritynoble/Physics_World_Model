@@ -15,3 +15,14 @@
 ## Verdict
 
 PASS. Category is `electron_microscopy` (correct for cryo-ET unlike cryo_em which had scientific_instrumentation). Routing works correctly. No code changes required.
+
+## 2026-03-09 Changes
+
+- Added `generate_cryo_et_phantom()` to `benchmarks/datasets/downloaders.py`: simulates 2D slice of a cellular tomogram (64×64 float32) with membranes (ellipsoidal shells), ribosomes (small discs), and mitochondria (larger ellipsoids); missing-wedge corruption in Fourier space (±60° from vertical); Gaussian noise sigma=0.05.
+- Registered `generate_cryo_et_phantom` in `_generated_converters` and `converter_map` within `load_and_convert_dataset()`.
+- Added `cryo_et_generated` DatasetEntry to `benchmarks/datasets/registry.py`.
+- Added `"cryo_et"` to `_VARIANT_OVERRIDES` in `_algorithm_catalog.py` with 9 algorithms: WBP, SART-ET, IMOD, IsoNet, DeepDeWedge, CryoSeg, ETFormer, DeePiCt, DiffusionET.
+- Added `"cryo_et"` scores to `CATEGORY_REAL_SCORES` in `_algorithm_catalog.py` with PSNR/SSIM for all 9 methods.
+- Added `"cryo_et": "identity"` to `_VARIANT_TO_RUNNER` in `generate_challenge_datasets.py`.
+- Added `generate_cryo_et_phantom` to all generator maps and import lists in `generate_challenge_datasets.py`.
+- Generated and uploaded 3 GCS challenge tiers: public, dev, hidden at `gs://pwm-benchmark-datasets/challenge-data/v1.0/cryo_et_challenge_{tier}.h5`.

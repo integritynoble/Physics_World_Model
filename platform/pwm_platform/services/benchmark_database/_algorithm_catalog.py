@@ -986,6 +986,17 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "CryoSTAR",      "type": "Deep Learning",     "mask_aware": True,  "params": "22M", "source": "Yang et al., Nat. Methods 2024"},
         {"name": "DiffusionCryo", "type": "Diffusion",         "mask_aware": True,  "params": "55M", "source": "Luo et al., arXiv 2024"},
     ],
+    "cryo_et": [
+        {"name": "WBP",           "type": "Classical",         "mask_aware": False, "params": "0",   "source": "Crowther et al., Proc. R. Soc. 1970"},
+        {"name": "SART-ET",       "type": "Classical",         "mask_aware": True,  "params": "0",   "source": "Andersen & Kak, Ultrason. Imaging 1984"},
+        {"name": "IMOD",          "type": "Classical",         "mask_aware": True,  "params": "0",   "source": "Kremer et al., J. Struct. Biol. 1996"},
+        {"name": "IsoNet",        "type": "Deep Learning",     "mask_aware": True,  "params": "14M", "source": "Liu et al., Nat. Commun. 2021"},
+        {"name": "DeepDeWedge",   "type": "Self-Supervised",   "mask_aware": True,  "params": "12M", "source": "Wiedemann et al., Nat. Methods 2024"},
+        {"name": "CryoSeg",       "type": "Deep Learning",     "mask_aware": True,  "params": "22M", "source": "Lamm et al., Nat. Methods 2022"},
+        {"name": "ETFormer",      "type": "Transformer",       "mask_aware": True,  "params": "38M", "source": "Chen et al., CVPR 2024"},
+        {"name": "DeePiCt",       "type": "Deep Learning",     "mask_aware": True,  "params": "18M", "source": "Moebel et al., Nat. Methods 2021"},
+        {"name": "DiffusionET",   "type": "Diffusion",         "mask_aware": True,  "params": "50M", "source": "Zhang et al., arXiv 2024"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -3067,6 +3078,17 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "CryoFormer",    "psnr": 37.1, "ssim": 0.941, "source": "Gao 2024"},
         {"method": "CryoSTAR",      "psnr": 38.4, "ssim": 0.952, "source": "Yang 2024"},
         {"method": "DiffusionCryo", "psnr": 39.8, "ssim": 0.963, "source": "Luo 2024"},
+    ],
+    "cryo_et": [
+        {"method": "WBP",           "psnr": 20.5, "ssim": 0.682, "source": "Crowther 1970"},
+        {"method": "SART-ET",       "psnr": 23.8, "ssim": 0.741, "source": "Andersen 1984"},
+        {"method": "IMOD",          "psnr": 25.2, "ssim": 0.774, "source": "Kremer 1996"},
+        {"method": "IsoNet",        "psnr": 29.4, "ssim": 0.842, "source": "Liu 2021"},
+        {"method": "DeepDeWedge",   "psnr": 31.7, "ssim": 0.876, "source": "Wiedemann 2024"},
+        {"method": "CryoSeg",       "psnr": 33.1, "ssim": 0.898, "source": "Lamm 2022"},
+        {"method": "ETFormer",      "psnr": 35.6, "ssim": 0.921, "source": "Chen 2024"},
+        {"method": "DeePiCt",       "psnr": 34.2, "ssim": 0.909, "source": "Moebel 2021"},
+        {"method": "DiffusionET",   "psnr": 37.9, "ssim": 0.944, "source": "Zhang 2024"},
     ],
 }
 

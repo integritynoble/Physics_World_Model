@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Cryo-Electron Tomography (Cryo-ET)
 
 **URL:** https://pwm.platformai.org/benchmark/cryo_et
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
 
 ---
@@ -91,6 +91,18 @@ Missing wedge:
 **Status:** PASS
 
 Algorithm routing: `cryo_et` has `category: electron_microscopy` and is in `_CRYO_EM_VARIANTS`, so it correctly gets the electron microscopy pool (12 methods: Direct Methods, RELION 1.0, cryoSPARC, RELION 3.0, cryoDRGN, CryoAI, cryoDRGN2, CryoTransformer, CryoTransformer++, CryoFold, DiffusionCryoEM, ScoreCryoEM). RELION (Scheres 2012) and cryoSPARC (Punjani 2017) are world-standard cryo-ET tools with correct citations. The five mismatch parameters (tilt axis offset, tilt angle accuracy, dose shrinkage, CTF per-tilt, missing wedge) are physically grounded in cryo-ET practice. No code changes are required.
+
+---
+
+## 2026-03-09 Update
+
+Status: PASS
+Date: 2026-03-09
+Checks:
+  - Phantom generator: generate_cryo_et_phantom (missing-wedge model)
+  - Algorithm overrides: 9 (WBP→DiffusionET)
+  - GCS datasets: 3 tiers uploaded
+  - Syntax: validated
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3*

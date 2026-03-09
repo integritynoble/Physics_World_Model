@@ -3506,6 +3506,124 @@ def generate_cryo_em_phantom(
     return samples
 
 
+def generate_cryo_et_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list:
+    """Generate synthetic cryo-electron tomography (cellular tomography) phantom.
+
+    Simulates a 2D slice of a cellular tomogram with missing-wedge corruption.
+    Ground truth contains membranes (ellipsoidal shells), ribosomes (small discs),
+    and mitochondria (larger ellipsoids).
+
+    Forward model:
+      - Take Fourier transform of x_true
+      - Zero out angular wedge ±60° from vertical (missing wedge)
+      - Add Gaussian noise (sigma ~0.05)
+
+    Reference: Bharat & Bharat, Resolving macromolecular structures from
+    electron cryo-tomography data using subtomogram averaging in RELION,
+    Nat. Methods 2015.
+    """
+    import numpy as np
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    for i in range(n_samples):
+        # --- Ground truth: 2D slice of a cellular tomogram ---
+        x_true = np.zeros((H, W), dtype=np.float32)
+        cy, cx = H // 2, W // 2
+        Y, X = np.ogrid[:H, :W]
+
+        # Membranes: ellipsoidal shells (thin ring regions)
+        n_membranes = int(rng.integers(2, 5))
+        for _ in range(n_membranes):
+            m_cy = int(rng.integers(H // 4, 3 * H // 4))
+            m_cx = int(rng.integers(W // 4, 3 * W // 4))
+            ry = float(rng.uniform(H // 8, H // 4))
+            rx = float(rng.uniform(W // 8, W // 4))
+            dist = ((Y - m_cy) / ry) ** 2 + ((X - m_cx) / rx) ** 2
+            shell = (dist >= 0.75) & (dist <= 1.0)
+            x_true[shell] = float(rng.uniform(0.6, 0.9))
+
+        # Ribosomes: small dense discs
+        n_ribosomes = int(rng.integers(5, 12))
+        for _ in range(n_ribosomes):
+            r_cy = int(rng.integers(0, H))
+            r_cx = int(rng.integers(0, W))
+            r_rad = float(rng.uniform(1.5, 3.5))
+            disc = np.sqrt((Y - r_cy) ** 2 + (X - r_cx) ** 2)
+            x_true[disc <= r_rad] = float(rng.uniform(0.7, 1.0))
+
+        # Mitochondria: larger ellipsoids
+        n_mito = int(rng.integers(1, 3))
+        for _ in range(n_mito):
+            m_cy = int(rng.integers(H // 5, 4 * H // 5))
+            m_cx = int(rng.integers(W // 5, 4 * W // 5))
+            ry = float(rng.uniform(H // 6, H // 3))
+            rx = float(rng.uniform(W // 10, W // 6))
+            ellipse = ((Y - m_cy) / ry) ** 2 + ((X - m_cx) / rx) ** 2
+            x_true[ellipse <= 1.0] = float(rng.uniform(0.3, 0.6))
+
+        # Normalise ground truth to [0, 1]
+        x_min, x_max = float(x_true.min()), float(x_true.max())
+        if x_max > x_min:
+            x_true = (x_true - x_min) / (x_max - x_min)
+        x_true = x_true.astype(np.float32)
+
+        # --- Missing-wedge corruption in Fourier space ---
+        X_fft = np.fft.fftshift(np.fft.fft2(x_true))
+
+        # Build missing-wedge mask: zero out ±60° from vertical axis
+        # Vertical axis: ky direction; missing wedge spans |kx/ky| > tan(60°)
+        fy = np.fft.fftshift(np.fft.fftfreq(H)).astype(np.float32)
+        fx = np.fft.fftshift(np.fft.fftfreq(W)).astype(np.float32)
+        FX, FY = np.meshgrid(fx, fy)
+        # Missing wedge: angles within 60° of horizontal (i.e., |FY| < |FX| * tan(30°))
+        missing_wedge_angle_deg = 60.0
+        threshold = np.tan(np.deg2rad(90.0 - missing_wedge_angle_deg))
+        missing_mask = np.abs(FY) < np.abs(FX) * threshold
+        X_fft[missing_mask] = 0.0
+
+        y_meas = np.real(np.fft.ifft2(np.fft.ifftshift(X_fft))).astype(np.float32)
+
+        # Add Gaussian noise
+        noise_sigma = 0.05
+        y_meas += rng.normal(0.0, noise_sigma, size=(H, W)).astype(np.float32)
+
+        # Normalise measurement to [0, 1]
+        y_min, y_max = float(y_meas.min()), float(y_meas.max())
+        if y_max > y_min:
+            y_meas = (y_meas - y_min) / (y_max - y_min)
+        y_meas = y_meas.astype(np.float32)
+
+        H_size = min(H * W, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y_meas,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "cryo_et",
+                "tilt_range_deg": 60.0,
+                "missing_wedge_deg": missing_wedge_angle_deg,
+                "pixel_size_A": 10.0,
+            },
+        })
+
+    return samples
+
+
 def generate_confocal_3d_phantom(
     n_samples: int = 10,
     seed: int = 42,
@@ -3674,6 +3792,7 @@ def acquire_dataset(
         "generate_confocal_livecell_phantom": lambda: generate_confocal_livecell_phantom(target_shape=target_shape),
         "generate_coronagraphy_phantom": lambda: generate_coronagraphy_phantom(target_shape=target_shape),
         "generate_cryo_em_phantom": generate_cryo_em_phantom,
+        "generate_cryo_et_phantom": generate_cryo_et_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -3745,6 +3864,7 @@ def acquire_dataset(
         "generate_confocal_livecell_phantom": lambda: generate_confocal_livecell_phantom(target_shape=target_shape),
         "generate_coronagraphy_phantom": lambda: generate_coronagraphy_phantom(target_shape=target_shape),
         "generate_cryo_em_phantom": lambda: generate_cryo_em_phantom(),
+        "generate_cryo_et_phantom": lambda: generate_cryo_et_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

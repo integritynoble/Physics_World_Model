@@ -162,6 +162,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # Cryo-EM single-particle: CTF corruption and low-dose Poisson noise are handled
     # by the phantom generator; identity runner applies minimal additional noise.
     "cryo_em": "identity",
+    # Cryo-ET cellular tomography: missing-wedge corruption is handled by the phantom
+    # generator; identity runner applies minimal additional noise.
+    "cryo_et": "identity",
 }
 
 
@@ -299,6 +302,7 @@ def _resolve_ground_truth(
             generate_confocal_livecell_phantom,
             generate_coronagraphy_phantom,
             generate_cryo_em_phantom,
+            generate_cryo_et_phantom,
         )
 
         # Look up registry entries for this modality
@@ -348,6 +352,7 @@ def _resolve_ground_truth(
                     "generate_confocal_livecell_phantom": generate_confocal_livecell_phantom,
                     "generate_coronagraphy_phantom": generate_coronagraphy_phantom,
                     "generate_cryo_em_phantom": generate_cryo_em_phantom,
+                    "generate_cryo_et_phantom": generate_cryo_et_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -851,6 +856,7 @@ def _load_scenes_from_generator(
             generate_confocal_livecell_phantom,
             generate_coronagraphy_phantom,
             generate_cryo_em_phantom,
+            generate_cryo_et_phantom,
         )
     except ImportError:
         return []
@@ -892,6 +898,7 @@ def _load_scenes_from_generator(
         "generate_confocal_livecell_phantom": generate_confocal_livecell_phantom,
         "generate_coronagraphy_phantom": generate_coronagraphy_phantom,
         "generate_cryo_em_phantom": generate_cryo_em_phantom,
+        "generate_cryo_et_phantom": generate_cryo_et_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

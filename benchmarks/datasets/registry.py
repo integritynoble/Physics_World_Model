@@ -1150,6 +1150,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic cryo-EM single-particle phantom with CTF corruption and low-dose noise",
     ),
+    "cryo_et_generated": DatasetEntry(
+        id="cryo_et_generated",
+        name="Cryo-ET Cellular Tomogram Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Bharat & Bharat, Nat. Methods 2015",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["cryo_et"],
+        converter="generate_cryo_et_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic cryo-ET phantom with membranes, ribosomes, missing-wedge corruption",
+    ),
 }
 
 
