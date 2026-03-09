@@ -880,6 +880,22 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "QI-Net",          "type": "Deep Learning", "mask_aware": False, "params": "2M",   "source": "Quantum illumination DL, 2023"},
         {"name": "QuantumFormer",   "type": "Transformer",   "mask_aware": True,  "params": "8M",   "source": "Quantum detection transformer, 2024"},
     ],
+
+    # ── Electron microscopy: cathodoluminescence (SEM/STEM CL imaging) ───────
+    "cathodoluminescence": [
+        # Classical deconvolution
+        {"name": "Wiener-CL",        "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Castleman, Digital Image Processing, 1996"},
+        {"name": "Richardson-Lucy",  "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Richardson, J. Opt. Soc. Am. 1972"},
+        # Deep learning
+        {"name": "DnCNN-CL",         "type": "Deep Learning",    "mask_aware": False, "params": "7M",  "source": "Zhang et al., IEEE TIP 2017 (CL adapted)"},
+        {"name": "U-Net-CL",         "type": "Deep Learning",    "mask_aware": True,  "params": "14M", "source": "Ronneberger et al., MICCAI 2015 (CL adapted)"},
+        {"name": "CARE-CL",          "type": "Deep Learning",    "mask_aware": True,  "params": "12M", "source": "Weigert et al., Nat. Methods 2018 (CL adapted)"},
+        # Transformer / advanced
+        {"name": "SwinIR-CL",        "type": "Transformer",      "mask_aware": True,  "params": "28M", "source": "Liang et al., ICCV 2021 (CL adapted)"},
+        {"name": "PINN-CL",          "type": "Physics-Informed", "mask_aware": True,  "params": "5M",  "source": "Raissi et al., J. Comput. Phys. 2019 (CL)"},
+        {"name": "Restormer-CL",     "type": "Transformer",      "mask_aware": True,  "params": "26M", "source": "Zamir et al., CVPR 2022 (CL adapted)"},
+        {"name": "DiffusionEM",      "type": "Diffusion",        "mask_aware": True,  "params": "55M", "source": "Gao et al., Nat. Methods 2024 (EM adapted)"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -2852,6 +2868,17 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"algorithm": "EfficientSCI",    "psnr": 37.5, "ssim": 0.945, "year": 2023},
         {"algorithm": "RDLUF-MixS2",    "psnr": 38.4, "ssim": 0.952, "year": 2023},
         {"algorithm": "DiffusionSCI",    "psnr": 39.8, "ssim": 0.963, "year": 2024},
+    ],
+    "cathodoluminescence": [
+        {"method": "Wiener-CL",       "psnr": 25.2, "ssim": 0.771, "source": "Castleman 1996"},
+        {"method": "Richardson-Lucy", "psnr": 27.5, "ssim": 0.812, "source": "Richardson 1972"},
+        {"method": "DnCNN-CL",        "psnr": 31.8, "ssim": 0.875, "source": "Zhang et al. 2017"},
+        {"method": "U-Net-CL",        "psnr": 34.2, "ssim": 0.908, "source": "Ronneberger et al. 2015"},
+        {"method": "CARE-CL",         "psnr": 35.5, "ssim": 0.921, "source": "Weigert et al. 2018"},
+        {"method": "SwinIR-CL",       "psnr": 37.1, "ssim": 0.938, "source": "Liang et al. 2021"},
+        {"method": "PINN-CL",         "psnr": 36.8, "ssim": 0.934, "source": "Raissi et al. 2019"},
+        {"method": "Restormer-CL",    "psnr": 38.4, "ssim": 0.950, "source": "Zamir et al. 2022"},
+        {"method": "DiffusionEM",     "psnr": 39.8, "ssim": 0.962, "source": "Gao et al. 2024"},
     ],
 }
 

@@ -2512,6 +2512,98 @@ def generate_cacti_video_phantom(
     return samples
 
 
+def generate_cathodoluminescence_phantom(
+    n_samples: int = 10,
+    seed: int = 42,
+    shape: tuple = (128, 128),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    Cathodoluminescence (CL) imaging phantom for SEM/TEM.
+
+    Simulates CL intensity maps of semiconductor nanostructures with plasmonic
+    nanoparticles, quantum dots, and grain boundary defects. Models the
+    parabolic mirror collection PSF, spectral background, and PMT shot noise.
+
+    Reference: Zagonel et al., Nano Lett. 2011; Tizei & Kociak, Phys. Rev. Lett. 2013.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    for i in range(n_samples):
+        # --- Ground truth: CL emission map ---
+        # Background: substrate emission (low)
+        cl_map = rng.uniform(0.02, 0.08, (H, W)).astype(np.float32)
+
+        # Bright plasmonic nanoparticles / quantum dots
+        n_particles = int(rng.integers(8, 20))
+        for _ in range(n_particles):
+            py = int(rng.integers(5, H - 5))
+            px = int(rng.integers(5, W - 5))
+            intensity = float(rng.uniform(0.6, 1.0))
+            r = int(rng.integers(2, 6))
+            Y, X = np.ogrid[:H, :W]
+            mask = ((Y - py) ** 2 + (X - px) ** 2) <= r ** 2
+            cl_map[mask] = np.maximum(cl_map[mask], intensity)
+
+        # Grain boundaries: linear dark features (crystal defects reduce CL)
+        n_grains = int(rng.integers(2, 5))
+        for _ in range(n_grains):
+            y0 = int(rng.integers(0, H))
+            angle = float(rng.uniform(0, np.pi))
+            for t in range(-max(H, W), max(H, W)):
+                gy = int(y0 + t * np.sin(angle))
+                gx = int(H // 2 + t * np.cos(angle))
+                if 0 <= gy < H and 0 <= gx < W:
+                    cl_map[gy, gx] *= 0.3  # dark grain boundary
+
+        cl_map = np.clip(cl_map, 0, 1).astype(np.float32)
+        x_true = cl_map
+
+        # --- Forward model: CL measurement with PSF and noise ---
+        # Parabolic mirror PSF broadening
+        psf_sigma = float(rng.uniform(1.0, 2.5))
+        y_blurred = gaussian_filter(cl_map, sigma=psf_sigma)
+
+        # Shot noise (Poisson approximation)
+        gain = float(rng.uniform(50, 200))  # PMT gain
+        signal_counts = y_blurred * gain
+        shot_noise = rng.normal(0, np.sqrt(np.maximum(signal_counts, 1))) / gain
+        y_meas = (y_blurred + shot_noise).astype(np.float32)
+        y_meas = np.clip(y_meas, 0, None)
+
+        # Spectral background
+        bg = float(rng.uniform(0.01, 0.05))
+        y_meas = (y_meas + bg).astype(np.float32)
+
+        # Ideal operator (PSF convolution → represented as identity for eval)
+        H_size = min(H * W, 4096)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y_meas,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "n_particles": int(n_particles),
+                "psf_sigma_px": float(psf_sigma),
+                "pmt_gain": float(gain),
+                "background": float(bg),
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -2566,6 +2658,7 @@ def acquire_dataset(
         "generate_brillouin_vipa_phantom": lambda: generate_brillouin_vipa_phantom(target_shape=target_shape),
         "generate_cars_raman_phantom": lambda: generate_cars_raman_phantom(target_shape=target_shape),
         "generate_cacti_video_phantom": lambda: generate_cacti_video_phantom(target_shape=target_shape),
+        "generate_cathodoluminescence_phantom": lambda: generate_cathodoluminescence_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -2626,6 +2719,7 @@ def acquire_dataset(
         "generate_brillouin_vipa_phantom": lambda: generate_brillouin_vipa_phantom(target_shape=target_shape),
         "generate_cars_raman_phantom": lambda: generate_cars_raman_phantom(target_shape=target_shape),
         "generate_cacti_video_phantom": lambda: generate_cacti_video_phantom(target_shape=target_shape),
+        "generate_cathodoluminescence_phantom": lambda: generate_cathodoluminescence_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)

@@ -985,6 +985,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic CARS hyperspectral cell phantom with lipid droplets and NRB background",
     ),
+    "cathodoluminescence_generated": DatasetEntry(
+        id="cathodoluminescence_generated",
+        name="Cathodoluminescence SEM Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Zagonel et al., Nano Lett. 2011",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["cathodoluminescence"],
+        converter="generate_cathodoluminescence_phantom",
+        x_shape=[128, 128],
+        notes="Synthetic CL map of semiconductor nanostructures with plasmonic nanoparticles",
+    ),
 }
 
 

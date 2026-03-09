@@ -128,6 +128,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # CARS Microscopy: CARS signal with NRB — y is the measured CARS intensity,
     # reconstruction recovers Im[chi^(3)].  Identity runner applies minimal noise.
     "cars": "identity",
+    # Cathodoluminescence: CL intensity map with PSF broadening and PMT shot noise.
+    # y is the blurred/noisy measurement; identity runner applies minimal noise.
+    "cathodoluminescence": "identity",
 }
 
 
@@ -254,6 +257,7 @@ def _resolve_ground_truth(
             generate_brachytherapy_seed_phantom,
             generate_brillouin_vipa_phantom,
             generate_cars_raman_phantom,
+            generate_cathodoluminescence_phantom,
         )
 
         # Look up registry entries for this modality
@@ -292,6 +296,7 @@ def _resolve_ground_truth(
                     "generate_brachytherapy_seed_phantom": generate_brachytherapy_seed_phantom,
                     "generate_brillouin_vipa_phantom": generate_brillouin_vipa_phantom,
                     "generate_cars_raman_phantom": generate_cars_raman_phantom,
+                    "generate_cathodoluminescence_phantom": generate_cathodoluminescence_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -784,6 +789,7 @@ def _load_scenes_from_generator(
             generate_brachytherapy_seed_phantom,
             generate_brillouin_vipa_phantom,
             generate_cars_raman_phantom,
+            generate_cathodoluminescence_phantom,
         )
     except ImportError:
         return []
@@ -813,6 +819,8 @@ def _load_scenes_from_generator(
         "generate_blt_source_phantom": generate_blt_source_phantom,
         "generate_brachytherapy_seed_phantom": generate_brachytherapy_seed_phantom,
         "generate_brillouin_vipa_phantom": generate_brillouin_vipa_phantom,
+        "generate_cars_raman_phantom": generate_cars_raman_phantom,
+        "generate_cathodoluminescence_phantom": generate_cathodoluminescence_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)
