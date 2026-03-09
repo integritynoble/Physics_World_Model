@@ -110,14 +110,18 @@ def main(output_path: Path):
     ax.set_facecolor("white")
 
     # ── Vertical layout ─────────────────────────────────────────────────
-    y_top = 7.2       # top-row centre (existing instruments)
-    y_bot = 2.6       # bottom-row centre (design new)
-    h_top = 4.4       # top-row panel height
-    h_bot = 3.8       # bottom-row panel height
+    # All panels share the same top edge
+    panel_top = 9.2   # top edge of all panels (a,b,c,d,e,f)
 
-    # Left panels span full height
-    left_cy = 5.0
-    left_h = 8.4      # spans from 0.8 to 9.2
+    h_top = 4.4       # top-row panel height (c,d,e)
+    h_bot = 3.8       # bottom-row panel height (f, output)
+    y_top = panel_top - h_top / 2     # top-row centre
+    y_bot = 2.6       # bottom-row centre
+
+    # Left panels span full height (from bottom of f to panel_top)
+    left_bot = y_bot - h_bot / 2
+    left_h = panel_top - left_bot
+    left_cy = left_bot + left_h / 2
 
     # ── Horizontal layout (wider gaps for arrows) ─────────────────────
     margin = 0.20
@@ -230,13 +234,14 @@ def main(output_path: Path):
             linespacing=1.1, zorder=1)
 
     # --- Divider in b (below last CASSI node with clear gap) ---
-    b_div_y = dag_y_top - (len(dag_prims) - 1) * dag_sp - nh / 2 - 0.35
+    last_cassi_y = dag_y_top - (len(dag_prims) - 1) * dag_sp
+    b_div_y = last_cassi_y - nh / 2 - 0.50
     ax.plot([b_left + 0.25, b_left + w_b - 0.25], [b_div_y, b_div_y],
             color="#AAAAAA", linewidth=0.8, linestyle="--", zorder=1)
 
     # --- Bottom DAG (new design): M → F → S → D ---
     new_prims = ["M", "F", "S", "D"]
-    new_y_top = b_div_y - 0.50
+    new_y_top = b_div_y - 0.55
     new_sp = 0.48
     for i, p in enumerate(new_prims):
         y = new_y_top - i * new_sp
