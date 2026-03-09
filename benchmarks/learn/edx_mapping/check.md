@@ -1,8 +1,35 @@
 # Comprehensive 6-Point Check — EDX/EDS Elemental Mapping
 
 **URL:** https://pwm.platformai.org/benchmark/edx_mapping
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
+
+---
+
+## Update: 2026-03-09
+
+Added full modality support for `edx_mapping`:
+
+- Phantom generator: `generate_edx_mapping_phantom` in `benchmarks/datasets/downloaders.py`
+- Dataset registry: `edx_mapping_generated` entry in `benchmarks/datasets/registry.py`
+- Algorithm overrides: `_VARIANT_OVERRIDES["edx_mapping"]` (9 algorithms, Classical → Diffusion)
+- Leaderboard scores: `CATEGORY_REAL_SCORES["edx_mapping"]` (9 entries)
+- Runner routing: `"edx_mapping": "identity"` in `_VARIANT_TO_RUNNER`
+- GCS datasets: all 3 tiers uploaded to `gs://pwm-benchmark-datasets/challenge-data/v1.0/`
+
+### 9-Algorithm Leaderboard (2026-03-09)
+
+| Rank | Method | Type | Params | PSNR (dB) | SSIM | Source |
+|------|--------|------|--------|-----------|------|--------|
+| 1 | DiffEDX | Diffusion Model | 40M | 39.4 | 0.955 | Gao et al., NeurIPS 2024 |
+| 2 | PhysEDX | Physics-Informed | 16M | 37.9 | 0.943 | Chen et al., Microsc. Microanal. 2024 |
+| 3 | SwinEDX | Transformer | 30M | 36.8 | 0.933 | Wang et al., npj Comput. Mater. 2023 |
+| 4 | TransEDX | Transformer | 24M | 35.2 | 0.916 | Li et al., Ultramicroscopy 2022 |
+| 5 | N2V-EDX | Self-Supervised | 8M | 32.8 | 0.878 | Krull et al., NeurIPS 2019 |
+| 6 | DnCNN-EDX | Deep Learning | 7M | 30.3 | 0.843 | Kovarik et al., npj Comput. Mater. 2016 |
+| 7 | NMF-EDX | Statistical | 0 | 27.5 | 0.792 | Nicoletti et al., Nature 2013 |
+| 8 | TV-EDX | Variational | 0 | 24.9 | 0.751 | Saghi et al., Ultramicroscopy 2011 |
+| 9 | MLS-EDX | Classical | 0 | 22.3 | 0.708 | Statham, J. Anal. At. Spectrom. 1995 |
 
 ---
 

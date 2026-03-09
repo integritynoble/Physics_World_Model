@@ -5358,6 +5358,135 @@ def generate_eddy_current_phantom(
     return samples
 
 
+def generate_edx_mapping_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Energy-Dispersive X-ray (EDX/EDS) elemental mapping phantom.
+
+    Creates a 64x64 float32 elemental distribution map simulating a
+    multi-phase material with distinct compositional regions:
+      - Fe-rich phase: occupies ~40% area, intensity 0.8-1.0
+      - Si-rich inclusions: scattered circular regions, intensity 0.3-0.5
+      - Al matrix background: intensity 0.1-0.2
+
+    Applies EDX forward model:
+      - Poisson counting statistics (low-count regime, ~100-500 counts/pixel)
+      - X-ray background (Bremsstrahlung): smooth low-level ~10-30 counts
+      - Peak overlap blurring: Gaussian blur simulating detector energy resolution
+
+    x_true: 64x64 float32, normalized [0,1] — ground truth elemental map.
+    y: 64x64 float32 — noisy EDX count map (normalized).
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, element, beam_energy_kv, acquisition_time_s,
+              n_counts_per_pixel.
+
+    References: Statham, J. Anal. At. Spectrom. 1995;
+                Nicoletti et al., Nature 2013.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    beam_energy_kv = 15.0
+    acquisition_time_s = 60.0
+    element = "Fe"
+
+    for i in range(n_samples):
+        # --- Ground truth elemental distribution map ---
+        # Al matrix background: 0.1-0.2
+        al_level = float(rng.uniform(0.1, 0.2))
+        x_true = np.full((H, W), al_level, dtype=np.float32)
+
+        # Fe-rich phase: ~40% area as contiguous region(s)
+        fe_intensity = float(rng.uniform(0.8, 1.0))
+        # Use a threshold on smooth noise to create organic-looking Fe phase
+        fe_noise = rng.standard_normal((H, W)).astype(np.float32)
+        fe_smooth = gaussian_filter(fe_noise, sigma=float(rng.uniform(6.0, 10.0)))
+        fe_threshold = float(np.percentile(fe_smooth, 60))  # top 40% area
+        fe_mask = fe_smooth >= fe_threshold
+        x_true[fe_mask] = fe_intensity
+
+        # Si-rich inclusions: scattered circular regions, 0.3-0.5
+        n_inclusions = int(rng.integers(3, 8))
+        for _ in range(n_inclusions):
+            cx = int(rng.integers(4, W - 4))
+            cy = int(rng.integers(4, H - 4))
+            r = int(rng.integers(2, 6))
+            si_intensity = float(rng.uniform(0.3, 0.5))
+            yy, xx = np.ogrid[:H, :W]
+            mask = ((xx - cx) ** 2 + (yy - cy) ** 2) <= r ** 2
+            x_true[mask] = si_intensity
+
+        # Clip to [0, 1]
+        x_true = np.clip(x_true, 0.0, 1.0)
+
+        # --- EDX forward model ---
+        # Scale to count space: 100-500 counts/pixel for the maximum intensity
+        peak_counts = float(rng.uniform(100.0, 500.0))
+        count_map = x_true * peak_counts
+
+        # X-ray background (Bremsstrahlung): smooth low-level 10-30 counts
+        bkg_level = float(rng.uniform(10.0, 30.0))
+        bkg_noise = rng.standard_normal((H, W)).astype(np.float32)
+        bkg_smooth = gaussian_filter(bkg_noise, sigma=float(rng.uniform(8.0, 14.0)))
+        # Normalize Bremsstrahlung background to [0.5, 1.5] * bkg_level
+        bkg_min = float(bkg_smooth.min())
+        bkg_max = float(bkg_smooth.max())
+        if bkg_max > bkg_min:
+            bkg_map = bkg_level * (0.5 + (bkg_smooth - bkg_min) / (bkg_max - bkg_min))
+        else:
+            bkg_map = np.full((H, W), bkg_level, dtype=np.float32)
+
+        count_map_with_bkg = count_map + bkg_map.astype(np.float32)
+
+        # Peak overlap blurring: Gaussian blur simulating detector energy resolution
+        sigma_overlap = float(rng.uniform(0.5, 1.5))
+        blurred = gaussian_filter(count_map_with_bkg, sigma=sigma_overlap)
+
+        # Poisson counting statistics (low-count regime)
+        lambda_map = np.maximum(blurred, 0.0)
+        y_counts = rng.poisson(lambda_map).astype(np.float32)
+
+        # Normalize y to [0, 1]
+        y_min = float(y_counts.min())
+        y_max = float(y_counts.max())
+        if y_max > y_min:
+            y = ((y_counts - y_min) / (y_max - y_min)).astype(np.float32)
+        else:
+            y = np.zeros((H, W), dtype=np.float32)
+
+        n_counts_per_pixel = int(round(float(np.mean(y_counts))))
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "edx_mapping",
+                "element": element,
+                "beam_energy_kv": beam_energy_kv,
+                "acquisition_time_s": acquisition_time_s,
+                "n_counts_per_pixel": n_counts_per_pixel,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -5438,6 +5567,7 @@ def acquire_dataset(
         "generate_dot_phantom": generate_dot_phantom,
         "generate_ebsd_phantom": generate_ebsd_phantom,
         "generate_eddy_current_phantom": generate_eddy_current_phantom,
+        "generate_edx_mapping_phantom": generate_edx_mapping_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -5524,6 +5654,7 @@ def acquire_dataset(
         "generate_dot_phantom": lambda: generate_dot_phantom(),
         "generate_ebsd_phantom": lambda: generate_ebsd_phantom(),
         "generate_eddy_current_phantom": lambda: generate_eddy_current_phantom(),
+        "generate_edx_mapping_phantom": lambda: generate_edx_mapping_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

@@ -1375,6 +1375,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic eddy current phantom for benchmarking defect reconstruction algorithms",
     ),
+    "edx_mapping_generated": DatasetEntry(
+        id="edx_mapping_generated",
+        name="EDX Elemental Mapping Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic EDX elemental map phantom with Poisson counting statistics and X-ray background",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["edx_mapping"],
+        converter="generate_edx_mapping_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic EDX phantom for benchmarking elemental map denoising/reconstruction algorithms",
+    ),
 }
 
 

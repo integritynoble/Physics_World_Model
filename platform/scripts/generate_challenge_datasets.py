@@ -211,6 +211,10 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # (blurred gradient of conductivity map + Gaussian noise); identity runner
     # applies minimal additional noise to the phantom's impedance signal map.
     "eddy_current": "identity",
+    # EDX mapping: Poisson counting statistics and X-ray background (Bremsstrahlung)
+    # are handled by the phantom generator; identity runner applies minimal
+    # additional noise to the phantom's count map.
+    "edx_mapping": "identity",
 }
 
 
@@ -945,6 +949,7 @@ def _load_scenes_from_generator(
             generate_dot_phantom,
             generate_ebsd_phantom,
             generate_eddy_current_phantom,
+            generate_edx_mapping_phantom,
         )
     except ImportError:
         return []
@@ -1001,6 +1006,7 @@ def _load_scenes_from_generator(
         "generate_dot_phantom": generate_dot_phantom,
         "generate_ebsd_phantom": generate_ebsd_phantom,
         "generate_eddy_current_phantom": generate_eddy_current_phantom,
+        "generate_edx_mapping_phantom": generate_edx_mapping_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

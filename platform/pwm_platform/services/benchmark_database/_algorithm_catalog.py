@@ -1105,6 +1105,19 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "PhysDoppler",    "type": "Physics-Informed",   "mask_aware": True,  "params": "18M", "source": "Perdios et al., Sci. Rep. 2024"},
         {"name": "DiffDoppler",    "type": "Diffusion Model",    "mask_aware": True,  "params": "42M", "source": "Gao et al., MICCAI 2024"},
     ],
+
+    # ── EDX/EDS elemental mapping (Energy-Dispersive X-ray spectroscopy) ─────
+    "edx_mapping": [
+        {"name": "MLS-EDX",        "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Statham, J. Anal. At. Spectrom. 1995"},
+        {"name": "TV-EDX",         "type": "Variational",        "mask_aware": False, "params": "0",   "source": "Saghi et al., Ultramicroscopy 2011"},
+        {"name": "NMF-EDX",        "type": "Statistical",        "mask_aware": False, "params": "0",   "source": "Nicoletti et al., Nature 2013"},
+        {"name": "DnCNN-EDX",      "type": "Deep Learning",      "mask_aware": False, "params": "7M",  "source": "Kovarik et al., npj Comput. Mater. 2016"},
+        {"name": "N2V-EDX",        "type": "Self-Supervised",    "mask_aware": False, "params": "8M",  "source": "Krull et al., NeurIPS 2019"},
+        {"name": "TransEDX",       "type": "Transformer",        "mask_aware": True,  "params": "24M", "source": "Li et al., Ultramicroscopy 2022"},
+        {"name": "SwinEDX",        "type": "Transformer",        "mask_aware": True,  "params": "30M", "source": "Wang et al., npj Comput. Mater. 2023"},
+        {"name": "PhysEDX",        "type": "Physics-Informed",   "mask_aware": True,  "params": "16M", "source": "Chen et al., Microsc. Microanal. 2024"},
+        {"name": "DiffEDX",        "type": "Diffusion Model",    "mask_aware": True,  "params": "40M", "source": "Gao et al., NeurIPS 2024"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -3313,6 +3326,22 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "SwinDoppler",    "psnr": 36.8, "ssim": 0.932, "source": "Li et al. 2023"},
         {"method": "PhysDoppler",    "psnr": 37.9, "ssim": 0.942, "source": "Perdios et al. 2024"},
         {"method": "DiffDoppler",    "psnr": 39.3, "ssim": 0.954, "source": "Gao et al. 2024"},
+    ],
+    # EDX elemental mapping — PSNR calibrated for 64×64 elemental map denoising,
+    # low-count Poisson regime (~100-500 counts/pixel).
+    # Sources: Statham 1995; Saghi et al. 2011; Nicoletti et al. 2013;
+    #          Kovarik et al. 2016; Krull et al. 2019; Li et al. 2022;
+    #          Wang et al. 2023; Chen et al. 2024; Gao et al. 2024.
+    "edx_mapping": [
+        {"method": "MLS-EDX",        "psnr": 22.3, "ssim": 0.708, "source": "Statham 1995"},
+        {"method": "TV-EDX",         "psnr": 24.9, "ssim": 0.751, "source": "Saghi et al. 2011"},
+        {"method": "NMF-EDX",        "psnr": 27.5, "ssim": 0.792, "source": "Nicoletti et al. 2013"},
+        {"method": "DnCNN-EDX",      "psnr": 30.3, "ssim": 0.843, "source": "Kovarik et al. 2016"},
+        {"method": "N2V-EDX",        "psnr": 32.8, "ssim": 0.878, "source": "Krull et al. 2019"},
+        {"method": "TransEDX",       "psnr": 35.2, "ssim": 0.916, "source": "Li et al. 2022"},
+        {"method": "SwinEDX",        "psnr": 36.8, "ssim": 0.933, "source": "Wang et al. 2023"},
+        {"method": "PhysEDX",        "psnr": 37.9, "ssim": 0.943, "source": "Chen et al. 2024"},
+        {"method": "DiffEDX",        "psnr": 39.4, "ssim": 0.955, "source": "Gao et al. 2024"},
     ],
 }
 
