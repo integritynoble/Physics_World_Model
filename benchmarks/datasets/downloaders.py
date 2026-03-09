@@ -7353,6 +7353,152 @@ def generate_flim_phantom(
     return samples
 
 
+def generate_fluoroscopy_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Fluoroscopy X-ray phantom for low-dose X-ray denoising benchmarks.
+
+    Creates a 64x64 float32 X-ray transmission image simulating a thorax/abdomen
+    with bone structures (low transmission 0.1-0.3), soft tissue (0.5-0.7),
+    lung fields (high transmission 0.8-0.95), and a catheter/wire (0.05-0.15).
+
+    Applies fluoroscopy forward model: very low-dose X-ray (Poisson noise dominant,
+    ~100-500 photons/pixel), flat-field correction artifacts (random smooth gain
+    variations +/-10%), electronic readout noise (Gaussian sigma ~5 counts).
+
+    x_true: 64x64 float32, normalized [0,1] — ideal low-noise fluoroscopy frame.
+    y: 64x64 float32 — noisy fluoroscopy frame.
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, dose_mgy, frame_rate_fps, n_photons_per_pixel.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    dose_mgy = 0.5          # typical fluoroscopy dose per frame (mGy)
+    frame_rate_fps = 15.0   # standard fluoroscopy frame rate
+    n_photons_base = 300    # base photons per pixel (100-500 range)
+
+    for i in range(n_samples):
+        sample_seed = seed + i * 1000
+        rng_s = np.random.default_rng(sample_seed)
+
+        yy, xx = np.mgrid[0:H, 0:W]
+        cy = H / 2.0
+        cx = W / 2.0
+
+        # --- Ground truth transmission map (x_true) ---
+
+        # Background: soft tissue transmission (0.6)
+        x_true = np.full((H, W), 0.6, dtype=np.float32)
+
+        # Lung fields: two elliptical high-transmission regions (0.85-0.92)
+        lung_tx = float(rng_s.uniform(0.85, 0.92))
+        # Left lung
+        ll_ry = float(rng_s.uniform(0.22, 0.32)) * H
+        ll_rx = float(rng_s.uniform(0.12, 0.18)) * W
+        ll_cy = cy + float(rng_s.uniform(-0.05, 0.05)) * H
+        ll_cx = cx - float(rng_s.uniform(0.10, 0.18)) * W
+        left_lung = (((yy - ll_cy) / ll_ry) ** 2 + ((xx - ll_cx) / ll_rx) ** 2) <= 1.0
+        x_true[left_lung] = lung_tx
+        # Right lung
+        rl_ry = float(rng_s.uniform(0.22, 0.32)) * H
+        rl_rx = float(rng_s.uniform(0.12, 0.18)) * W
+        rl_cy = cy + float(rng_s.uniform(-0.05, 0.05)) * H
+        rl_cx = cx + float(rng_s.uniform(0.10, 0.18)) * W
+        right_lung = (((yy - rl_cy) / rl_ry) ** 2 + ((xx - rl_cx) / rl_rx) ** 2) <= 1.0
+        x_true[right_lung] = lung_tx
+
+        # Spine: vertical low-transmission stripe (bone, 0.15-0.25)
+        spine_tx = float(rng_s.uniform(0.15, 0.25))
+        spine_w = max(2, int(float(rng_s.uniform(0.03, 0.06)) * W))
+        spine_cx = int(cx + float(rng_s.uniform(-0.03, 0.03)) * W)
+        spine_col_start = max(0, spine_cx - spine_w // 2)
+        spine_col_end = min(W, spine_cx + spine_w // 2)
+        x_true[:, spine_col_start:spine_col_end] = spine_tx
+
+        # Ribs: several curved low-transmission arcs (bone, 0.2-0.3)
+        rib_tx = float(rng_s.uniform(0.20, 0.30))
+        n_ribs = int(rng_s.integers(4, 8))
+        for r in range(n_ribs):
+            rib_row = int(float(r + 0.5) / n_ribs * H)
+            rib_thickness = max(1, int(float(rng_s.uniform(0.015, 0.025)) * H))
+            row_mask = np.abs(yy - rib_row) <= rib_thickness
+            # Only in lateral areas (not covering the spine)
+            lateral = (xx < spine_col_start - 2) | (xx > spine_col_end + 2)
+            x_true[row_mask & lateral] = rib_tx
+
+        # Catheter/wire: thin diagonal dark line (0.08-0.14)
+        cath_tx = float(rng_s.uniform(0.08, 0.14))
+        cath_x0 = float(rng_s.uniform(0.2, 0.4)) * W
+        cath_y0 = float(rng_s.uniform(0.2, 0.4)) * H
+        cath_angle = float(rng_s.uniform(-0.3, 0.3))   # radians from horizontal
+        cath_length = float(rng_s.uniform(0.3, 0.5)) * min(H, W)
+        for t in np.linspace(0, cath_length, int(cath_length * 3)):
+            px = int(round(cath_x0 + t * np.cos(cath_angle)))
+            py = int(round(cath_y0 + t * np.sin(cath_angle)))
+            if 0 <= py < H and 0 <= px < W:
+                x_true[py, px] = cath_tx
+
+        # Smooth lightly to remove sharp artifacts
+        x_true = gaussian_filter(x_true, sigma=0.5).astype(np.float32)
+
+        # Clip to valid transmission range and normalize to [0,1]
+        x_true = np.clip(x_true, 0.05, 0.95)
+        x_true = ((x_true - x_true.min()) / (x_true.max() - x_true.min() + 1e-8)).astype(np.float32)
+
+        # --- Fluoroscopy forward model ---
+        # Sample per-pixel photon count (varies slightly around base)
+        n_photons_per_pixel = int(rng_s.integers(n_photons_base - 100, n_photons_base + 200))
+
+        # Expected photon intensity map
+        I_expected = (x_true * n_photons_per_pixel).astype(np.float64)
+
+        # Flat-field gain variation (smooth multiplicative artifact, +/-10%)
+        gain_map = 1.0 + 0.10 * (gaussian_filter(
+            rng_s.standard_normal((H, W)).astype(np.float64), sigma=float(rng_s.uniform(3.0, 8.0))
+        ))
+
+        # Apply Poisson noise (dominant in low-dose fluoroscopy)
+        I_noisy = rng_s.poisson(np.maximum(I_expected * gain_map, 1e-3)).astype(np.float64)
+
+        # Electronic readout noise (Gaussian, sigma ~5 counts)
+        readout_sigma = float(rng_s.uniform(3.0, 7.0))
+        I_noisy = I_noisy + rng_s.normal(0, readout_sigma, size=(H, W))
+
+        # Flat-field correction (divide by gain map to recover transmission)
+        I_corrected = I_noisy / (gain_map * n_photons_per_pixel + 1e-8)
+        y = np.clip(I_corrected, 0.0, 1.0).astype(np.float32)
+
+        H_ideal = np.eye(H, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "fluoroscopy",
+                "dose_mgy": dose_mgy,
+                "frame_rate_fps": frame_rate_fps,
+                "n_photons_per_pixel": n_photons_per_pixel,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -7447,6 +7593,7 @@ def acquire_dataset(
         "generate_fib_sem_phantom": generate_fib_sem_phantom,
         "generate_flash_lidar_phantom": generate_flash_lidar_phantom,
         "generate_flim_phantom": generate_flim_phantom,
+        "generate_fluoroscopy_phantom": generate_fluoroscopy_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -7547,6 +7694,7 @@ def acquire_dataset(
         "generate_fib_sem_phantom": lambda: generate_fib_sem_phantom(),
         "generate_flash_lidar_phantom": lambda: generate_flash_lidar_phantom(),
         "generate_flim_phantom": lambda: generate_flim_phantom(),
+        "generate_fluoroscopy_phantom": lambda: generate_fluoroscopy_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

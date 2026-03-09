@@ -1585,6 +1585,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic FLIM phantom for benchmarking lifetime map reconstruction algorithms",
     ),
+    "fluoroscopy_generated": DatasetEntry(
+        id="fluoroscopy_generated",
+        name="Fluoroscopy X-ray Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic fluoroscopy phantom with thorax X-ray structures and low-dose Poisson noise model",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["fluoroscopy"],
+        converter="generate_fluoroscopy_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic fluoroscopy phantom for benchmarking low-dose X-ray denoising algorithms",
+    ),
 }
 
 

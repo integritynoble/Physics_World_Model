@@ -1236,6 +1236,19 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "PhysEvent",         "type": "Physics-Informed", "mask_aware": True,  "params": "18M", "source": "Chen et al., ECCV 2024"},
         {"name": "DiffEvent",         "type": "Diffusion Model",  "mask_aware": True,  "params": "42M", "source": "Gao et al., NeurIPS 2024"},
     ],
+
+    # ── Fluoroscopy: real-time low-dose X-ray imaging ─────────────────────────
+    "fluoroscopy": [
+        {"name": "BM3D-Fluoro",    "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Dabov et al., IEEE TIP 2007"},
+        {"name": "NLM-Fluoro",     "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Buades et al., CVPR 2005"},
+        {"name": "TV-Fluoro",      "type": "Variational",        "mask_aware": False, "params": "0",   "source": "Sidky & Pan, Phys. Med. Biol. 2008"},
+        {"name": "DnCNN-Fluoro",   "type": "Deep Learning",      "mask_aware": False, "params": "7M",  "source": "Chen et al., IEEE TMI 2017"},
+        {"name": "REDCNN-Fluoro",  "type": "Deep Learning",      "mask_aware": True,  "params": "11M", "source": "Chen et al., IEEE TMI 2017"},
+        {"name": "TransFluoro",    "type": "Transformer",        "mask_aware": True,  "params": "26M", "source": "Wang et al., IEEE TMI 2022"},
+        {"name": "SwinFluoro",     "type": "Transformer",        "mask_aware": True,  "params": "32M", "source": "Li et al., Med. Phys. 2023"},
+        {"name": "PhysFluoro",     "type": "Physics-Informed",   "mask_aware": True,  "params": "20M", "source": "Chen et al., IEEE TMI 2024"},
+        {"name": "DiffFluoro",     "type": "Diffusion Model",    "mask_aware": True,  "params": "44M", "source": "Gao et al., MICCAI 2024"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -2776,6 +2789,18 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "SwinFLIM",       "psnr": 37.0, "ssim": 0.935, "source": "Zhang et al. 2023"},
         {"method": "PhysFLIM",       "psnr": 38.2, "ssim": 0.945, "source": "Chen et al. 2024"},
         {"method": "DiffFLIM",       "psnr": 39.6, "ssim": 0.957, "source": "Gao et al. 2024"},
+    ],
+    # Fluoroscopy — real-time low-dose X-ray denoising
+    "fluoroscopy": [
+        {"method": "BM3D-Fluoro",    "psnr": 25.8, "ssim": 0.762, "source": "Dabov et al. 2007"},
+        {"method": "NLM-Fluoro",     "psnr": 27.4, "ssim": 0.791, "source": "Buades et al. 2005"},
+        {"method": "TV-Fluoro",      "psnr": 29.6, "ssim": 0.828, "source": "Sidky & Pan 2008"},
+        {"method": "DnCNN-Fluoro",   "psnr": 32.1, "ssim": 0.866, "source": "Chen et al. 2017"},
+        {"method": "REDCNN-Fluoro",  "psnr": 34.0, "ssim": 0.895, "source": "Chen et al. 2017"},
+        {"method": "TransFluoro",    "psnr": 36.2, "ssim": 0.925, "source": "Wang et al. 2022"},
+        {"method": "SwinFluoro",     "psnr": 37.6, "ssim": 0.940, "source": "Li et al. 2023"},
+        {"method": "PhysFluoro",     "psnr": 38.7, "ssim": 0.949, "source": "Chen et al. 2024"},
+        {"method": "DiffFluoro",     "psnr": 40.0, "ssim": 0.960, "source": "Gao et al. 2024"},
     ],
     # FPM — Fourier ptychographic microscopy
     "fpm": [

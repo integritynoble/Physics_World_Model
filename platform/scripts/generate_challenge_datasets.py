@@ -421,6 +421,7 @@ def _resolve_ground_truth(
             generate_fib_sem_phantom,
             generate_flash_lidar_phantom,
             generate_flim_phantom,
+            generate_fluoroscopy_phantom,
         )
 
         # Look up registry entries for this modality
@@ -498,6 +499,7 @@ def _resolve_ground_truth(
                     "generate_fib_sem_phantom": generate_fib_sem_phantom,
                     "generate_flash_lidar_phantom": generate_flash_lidar_phantom,
                     "generate_flim_phantom": generate_flim_phantom,
+                    "generate_fluoroscopy_phantom": generate_fluoroscopy_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -1030,6 +1032,7 @@ def _load_scenes_from_generator(
             generate_fib_sem_phantom,
             generate_flash_lidar_phantom,
             generate_flim_phantom,
+            generate_fluoroscopy_phantom,
         )
     except ImportError:
         return []
@@ -1100,6 +1103,7 @@ def _load_scenes_from_generator(
         "generate_fib_sem_phantom": generate_fib_sem_phantom,
         "generate_flash_lidar_phantom": generate_flash_lidar_phantom,
         "generate_flim_phantom": generate_flim_phantom,
+        "generate_fluoroscopy_phantom": generate_fluoroscopy_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)
