@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Coded Exposure / Flutter Shutter
 
 **URL:** https://pwm.platformai.org/benchmark/coded_exposure
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
 
 ---
@@ -91,7 +91,7 @@ Frequency-domain condition:
 
 **Status:** PASS
 
-Algorithm routing uses the `computational_photography` category pool (14 methods: Wiener-Deconv, Laplacian Pyramid, Lucy-Richardson, PnP-FFDNet, PnP-ADMM, HDR-CNN, U-Net, LaplacianFormer, Uformer, DeblurGaussian, HDRFormer, PhotoFormer, DiffusionPhoto, ScorePhoto). Wiener-Deconv is the canonical flutter shutter deconvolution method (Raskar et al. 2006), confirming domain correctness. The three mismatch parameters address the key coded exposure calibration issues: code timing error, velocity mismatch, and sensor noise. Note that HDR-CNN in the pool (Eilertsen et al., ACM TOG 2017) is domain-mismatched (HDR reconstruction, not motion deblurring) but is a known limitation of the shared computational photography pool. No code changes required.
+Algorithm routing now uses a dedicated `_VARIANT_OVERRIDES["coded_exposure"]` entry with 9 domain-specific deblurring methods (Wiener-Deconv, TV-Deconv, BM3D-Deblur, DnCNN-Deblur, DeblurGAN, DMPHN, MPRNet, Restormer-Deblur, DiffusionDeblur). All methods are flutter-shutter/motion-deblurring domain-appropriate, removing the previous HDR-CNN mismatch. A dedicated flutter shutter phantom (`generate_coded_exposure_phantom`) generates synthetic data using the Raskar 52-bit code and horizontal motion convolution. CATEGORY_REAL_SCORES["coded_exposure"] added with 9 PSNR/SSIM benchmark scores. All three challenge tiers generated and uploaded to GCS (2026-03-09). Identity runner used as the forward model is already embedded in the phantom's y field.
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3*

@@ -930,6 +930,19 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "SUPER-ULM",         "type": "Deep Unrolling",   "mask_aware": True,  "params": "20M", "source": "Rigo et al., IEEE TUFFC 2023"},
         {"name": "DiffusionCEUS",     "type": "Diffusion",        "mask_aware": True,  "params": "50M", "source": "Chen et al., Nat. Methods 2024"},
     ],
+
+    # ── Computational photography: coded exposure (flutter shutter) ──────────
+    "coded_exposure": [
+        {"name": "Wiener-Deconv",    "type": "Classical",        "mask_aware": True,  "params": "0",   "source": "Wiener, MIT Tech. Rep. 1942"},
+        {"name": "TV-Deconv",        "type": "Variational",      "mask_aware": True,  "params": "0",   "source": "Rudin et al., Physica D 1992"},
+        {"name": "BM3D-Deblur",      "type": "PnP",              "mask_aware": True,  "params": "0",   "source": "Danielyan et al., IEEE TIP 2012"},
+        {"name": "DnCNN-Deblur",     "type": "Deep Learning",    "mask_aware": False, "params": "7M",  "source": "Zhang et al., IEEE TIP 2017"},
+        {"name": "DeblurGAN",        "type": "Generative",       "mask_aware": False, "params": "30M", "source": "Kupyn et al., CVPR 2018"},
+        {"name": "DMPHN",            "type": "Deep Learning",    "mask_aware": False, "params": "22M", "source": "Zhang et al., CVPR 2019"},
+        {"name": "MPRNet",           "type": "Deep Learning",    "mask_aware": False, "params": "20M", "source": "Zamir et al., CVPR 2021"},
+        {"name": "Restormer-Deblur", "type": "Transformer",      "mask_aware": True,  "params": "26M", "source": "Zamir et al., CVPR 2022"},
+        {"name": "DiffusionDeblur",  "type": "Diffusion",        "mask_aware": True,  "params": "550M","source": "Whang et al., CVPR 2022"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -2951,6 +2964,17 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "PINN-CLEM",         "psnr": 35.8, "ssim": 0.927, "source": "Löffler 2023"},
         {"method": "SwinCLEM",          "psnr": 37.5, "ssim": 0.944, "source": "Huang 2023"},
         {"method": "DiffusionCLEM",     "psnr": 39.1, "ssim": 0.958, "source": "Chen 2024"},
+    ],
+    "coded_exposure": [
+        {"method": "Wiener-Deconv",    "psnr": 26.5, "ssim": 0.791, "source": "Wiener 1942"},
+        {"method": "TV-Deconv",        "psnr": 29.2, "ssim": 0.831, "source": "Rudin 1992"},
+        {"method": "BM3D-Deblur",      "psnr": 31.8, "ssim": 0.871, "source": "Danielyan 2012"},
+        {"method": "DnCNN-Deblur",     "psnr": 33.5, "ssim": 0.899, "source": "Zhang 2017"},
+        {"method": "DeblurGAN",        "psnr": 34.8, "ssim": 0.914, "source": "Kupyn 2018"},
+        {"method": "DMPHN",            "psnr": 36.1, "ssim": 0.928, "source": "Zhang 2019"},
+        {"method": "MPRNet",           "psnr": 37.4, "ssim": 0.941, "source": "Zamir 2021"},
+        {"method": "Restormer-Deblur", "psnr": 38.6, "ssim": 0.951, "source": "Zamir 2022"},
+        {"method": "DiffusionDeblur",  "psnr": 39.8, "ssim": 0.961, "source": "Whang 2022"},
     ],
 }
 

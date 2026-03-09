@@ -3019,6 +3019,95 @@ def generate_clem_phantom(
     return samples
 
 
+def generate_coded_exposure_phantom(
+    n_samples: int = 10,
+    seed: int = 42,
+    shape: tuple = (128, 128),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    Coded exposure (flutter shutter) photography phantom.
+
+    Simulates motion-blurred images captured with a Raskar-style binary
+    flickering shutter code. A natural image is motion-blurred with the
+    coded convolution kernel, then degraded with read noise. Reconstruction
+    recovers the sharp frame by deconvolution with the known code.
+
+    Reference: Raskar et al., SIGGRAPH 2006; Agrawal et al., CVPR 2009.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter, convolve1d
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+    CODE_LEN = 52  # Raskar flutter shutter code length
+
+    # Optimal Raskar code (preserves frequencies)
+    raskar_code = np.array([
+        1,1,1,0,1,1,0,1,0,1,1,1,0,0,0,1,1,0,0,1,0,0,1,0,1,0,
+        0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,1,1,0,0,1
+    ], dtype=np.float32)
+    raskar_code = raskar_code[:CODE_LEN]
+    raskar_code /= raskar_code.sum()  # normalise
+
+    for i in range(n_samples):
+        # Sharp ground truth: synthetic textured image
+        x_true = np.zeros((H, W), dtype=np.float32)
+        # Add geometric shapes
+        n_shapes = int(rng.integers(3, 8))
+        for _ in range(n_shapes):
+            shape_type = rng.choice(['rect', 'disc', 'bar'])
+            intensity = float(rng.uniform(0.4, 1.0))
+            if shape_type == 'rect':
+                y0, x0 = int(rng.integers(0, H - 20)), int(rng.integers(0, W - 20))
+                h_, w_ = int(rng.integers(10, 40)), int(rng.integers(10, 40))
+                x_true[y0:y0+h_, x0:x0+w_] = intensity
+            elif shape_type == 'disc':
+                cy, cx = int(rng.integers(10, H-10)), int(rng.integers(10, W-10))
+                r = int(rng.integers(5, 20))
+                Y, X = np.ogrid[:H, :W]
+                x_true[((Y-cy)**2+(X-cx)**2) <= r**2] = intensity
+            else:  # bar
+                y0 = int(rng.integers(0, H-5))
+                x_true[y0:y0+3, :] = intensity
+
+        x_true = gaussian_filter(x_true, sigma=0.5).astype(np.float32)
+        x_true = np.clip(x_true, 0, 1)
+
+        # Motion direction: horizontal
+        motion_len = int(rng.integers(CODE_LEN // 2, CODE_LEN))
+        code = raskar_code[:motion_len] / raskar_code[:motion_len].sum()
+
+        # Coded exposure blur: convolve along horizontal axis
+        y_blur = convolve1d(x_true, code, axis=1, mode='reflect').astype(np.float32)
+
+        # Read noise
+        sigma_n = 0.01 * (1 + rng.random() * 0.5)
+        y_meas = (y_blur + rng.normal(0, sigma_n, y_blur.shape)).astype(np.float32)
+
+        H_size = min(H * W, 4096)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y_meas,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "code_length": int(motion_len),
+                "motion_axis": "horizontal",
+                "noise_sigma": float(sigma_n),
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -3078,6 +3167,7 @@ def acquire_dataset(
         "generate_cest_mri_phantom": lambda: generate_cest_mri_phantom(target_shape=target_shape),
         "generate_ceus_phantom": lambda: generate_ceus_phantom(target_shape=target_shape),
         "generate_clem_phantom": lambda: generate_clem_phantom(target_shape=target_shape),
+        "generate_coded_exposure_phantom": lambda: generate_coded_exposure_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -3143,6 +3233,7 @@ def acquire_dataset(
         "generate_cest_mri_phantom": lambda: generate_cest_mri_phantom(target_shape=target_shape),
         "generate_ceus_phantom": lambda: generate_ceus_phantom(target_shape=target_shape),
         "generate_clem_phantom": lambda: generate_clem_phantom(target_shape=target_shape),
+        "generate_coded_exposure_phantom": lambda: generate_coded_exposure_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)

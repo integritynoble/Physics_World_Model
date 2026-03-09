@@ -1060,6 +1060,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[128, 128],
         notes="Synthetic CLEM paired FM+EM cell phantom for super-resolution fusion",
     ),
+    "coded_exposure_generated": DatasetEntry(
+        id="coded_exposure_generated",
+        name="Coded Exposure Flutter Shutter Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Raskar et al., SIGGRAPH 2006",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["coded_exposure"],
+        converter="generate_coded_exposure_phantom",
+        x_shape=[128, 128],
+        notes="Synthetic flutter shutter coded exposure phantom for motion deblurring",
+    ),
 }
 
 
