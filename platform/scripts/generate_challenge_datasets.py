@@ -110,6 +110,11 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     "xray_radiography": "projection",
     # ASL MRI is k-space undersampled MRI, NOT Radon-based (medical category default)
     "asl_mri": "kspace",
+    # Atom Probe Tomography: position-sensitive ToF detector — use PSF runner
+    # The "forward model" maps composition map -> detector hits via electrostatic
+    # trajectory.  We approximate this with a PSF-based convolution (detector blur)
+    # plus Poisson noise; the dedicated phantom handles microstructure.
+    "atom_probe": "psf",
 }
 
 
@@ -232,6 +237,7 @@ def _resolve_ground_truth(
             generate_ae_source_map, generate_sam_phantom,
             generate_thermography_phantom, generate_ao_wavefront, generate_afm_surface,
             generate_angiography_vessel_phantom, generate_asl_perfusion_phantom,
+            generate_apt_composition_map,
         )
 
         # Look up registry entries for this modality
@@ -265,6 +271,7 @@ def _resolve_ground_truth(
                     "generate_afm_surface": generate_afm_surface,
                     "generate_angiography_vessel_phantom": generate_angiography_vessel_phantom,
                     "generate_asl_perfusion_phantom": generate_asl_perfusion_phantom,
+                    "generate_apt_composition_map": generate_apt_composition_map,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -748,6 +755,7 @@ def _load_scenes_from_generator(
             generate_ae_source_map, generate_sam_phantom,
             generate_thermography_phantom, generate_ao_wavefront, generate_afm_surface,
             generate_angiography_vessel_phantom, generate_asl_perfusion_phantom,
+            generate_apt_composition_map,
         )
     except ImportError:
         return []
@@ -773,6 +781,7 @@ def _load_scenes_from_generator(
         "generate_afm_surface": generate_afm_surface,
         "generate_angiography_vessel_phantom": generate_angiography_vessel_phantom,
         "generate_asl_perfusion_phantom": generate_asl_perfusion_phantom,
+        "generate_apt_composition_map": generate_apt_composition_map,
     }
 
     gen_fn = gen_map.get(generator_name)

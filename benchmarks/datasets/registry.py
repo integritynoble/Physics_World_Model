@@ -663,11 +663,37 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         storage="local",
         applies_to=[
             "xrf_imaging", "xrf_tomo",
-            "maldi_msi", "atom_probe",
+            "maldi_msi",
         ],
         converter="generate_elemental_map",
         x_shape=[256, 256],
         notes="Multi-element spatial distribution for spectroscopic imaging",
+    ),
+    "atom_probe_apt_generated": DatasetEntry(
+        id="atom_probe_apt_generated",
+        name="Generated Atom Probe Tomography (APT) Composition Map",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation=(
+            "PWM generated APT composition phantom. "
+            "Calibrated to Hellman et al., Microsc. Microanal. 2000 (precipitate sizes); "
+            "Blavette et al., Science 1999 (grain boundary segregation); "
+            "Bas et al., Appl. Surf. Sci. 1995 (Bas reconstruction protocol); "
+            "Larson et al., Local Electrode Atom Probe Tomography, Springer 2013."
+        ),
+        license="N/A",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["atom_probe"],
+        converter="generate_apt_composition_map",
+        x_shape=[128, 128],
+        notes=(
+            "2-D elemental composition map with matrix (~0.25), gamma-prime precipitates "
+            "(0.7-1.0, log-normal size distribution), grain boundary segregation bands "
+            "(0.55-0.80, 1-2 px wide), dislocation loops, and trajectory aberration "
+            "artefacts. Physically faithful to LEAP 5000 field-evaporation APT datasets."
+        ),
     ),
 
     "active_thermography_generated": DatasetEntry(

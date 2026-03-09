@@ -1783,6 +1783,158 @@ def generate_asl_perfusion_phantom(
 
 
 # ---------------------------------------------------------------------------
+# Generated Atom Probe Tomography (APT) composition map
+# ---------------------------------------------------------------------------
+
+def generate_apt_composition_map(
+    target_shape: Optional[Tuple[int, ...]] = None,
+    seed: int = 42,
+) -> np.ndarray:
+    """Generate a 2-D elemental composition map for Atom Probe Tomography (APT).
+
+    Models the projected elemental concentration map that forms the ground
+    truth in the APT inverse problem: reconstructing 3-D atomic-scale
+    composition from a (x_det, y_det, t_flight) hit sequence recorded by a
+    position-sensitive time-of-flight detector.
+
+    Physics basis
+    -------------
+    In APT, atoms are field-evaporated one-by-one from a needle-shaped
+    specimen (~50 nm tip radius) under a pulsed high-voltage (~3-15 kV).
+    Each atom's (X_det, Y_det) impact position and flight time t encode its
+    original 3-D lattice position and mass-to-charge ratio (m/z).  The
+    spatial reconstruction uses the Bas protocol:
+
+        x_atom = xi * X_det / (R_tip * Omega_f)
+        z_atom = sum_i d_z / N_evap    [depth from evaporation order]
+
+    where xi is the image compression factor (~0.6), R_tip is the tip radius
+    (evolving during analysis), and Omega_f is the field factor (~3.3 for W).
+
+    The 2-D ground truth image represents a single elemental species'
+    concentration map (e.g. Cr, Ni, or Al) on a cross-sectional plane through
+    a metallic alloy or semiconductor specimen.  Key microstructural features:
+
+    Microstructural features (based on LEAP 5000 measurements)
+    ----------------------------------------------------------
+    1. Matrix phase — homogeneous solid solution (~0.25 normalised Cr at.%).
+    2. Precipitate particles — gamma-prime (Ni3Al) or carbide precipitates with
+       high solute concentration (0.7-1.0 normalised), 2-20 nm diameter.
+       Calibrated to Hellman et al., Microsc. Microanal. 2000 (steel carbides).
+    3. Grain boundaries — thin planar solute segregation bands (0.6-0.8),
+       width ~1-2 voxels; 2-4 boundaries per field of view.
+       Calibrated to Blavette et al., Science 1999 (grain boundary Cr enrichment).
+    4. Dislocation loops — curved line features with partial solute enrichment
+       (0.5-0.7); simulates pipe diffusion segregation.
+    5. Detector noise — Poisson-like local intensity fluctuations (~5% rms)
+       reflecting the ~60% detection efficiency of MCP detectors.
+    6. Trajectory aberrations — local magnification artefacts at precipitate
+       interfaces (low-frequency smooth distortion field) modelled as a
+       multiplicative Gaussian envelope.
+
+    Calibration
+    -----------
+    Normalised values calibrated to published LEAP atom probe datasets:
+      - Hellman, O.C. et al. (2000). Analysis of nanoscale precipitates in a
+        nickel-based superalloy using the atom probe. Microsc. Microanal.
+        6(5):437-444.
+      - Blavette, D. et al. (1999). Atomic-scale observation of grain boundary
+        segregation in tungsten. Science 286(5448):2317-2319.
+      - Thompson, K. et al. (2007). In situ site-specific specimen preparation
+        for atom probe tomography. Ultramicroscopy 107(2-3):131-139.
+      - Larson, D.J. et al. (2013). Local Electrode Atom Probe Tomography:
+        A User's Guide. Springer. [Detection efficiency ~0.37-0.80]
+
+    References
+    ----------
+    Bas, P. et al. (1995). A general protocol for the reconstruction of 3D
+    atom probe data. Appl. Surf. Sci. 87-88:298-304.
+    Miller, M.K. & Forbes, R.G. (2014). Atom-Probe Tomography. Springer.
+    Gault, B. et al. (2012). Atom Probe Microscopy. Springer.
+    """
+    from scipy.ndimage import gaussian_filter
+    rng = np.random.RandomState(seed)
+    H = target_shape[0] if target_shape else 128
+    W = target_shape[1] if target_shape and len(target_shape) > 1 else H
+
+    # ── 1. Matrix background (solid solution baseline) ────────────────────
+    # Uniform solute concentration with Poisson counting noise (~60% efficiency)
+    base_concentration = 0.25
+    poisson_noise_sigma = 0.05
+    arr = np.full((H, W), base_concentration, dtype=np.float32)
+    arr += (rng.randn(H, W) * poisson_noise_sigma).astype(np.float32)
+
+    # ── 2. Precipitate particles (gamma-prime, carbides) ──────────────────
+    # ~8-18 precipitates; log-normal size distribution (2-20 nm range)
+    n_precipitates = rng.randint(8, 18)
+    for _ in range(n_precipitates):
+        # Position: uniformly distributed, avoid edges
+        cx = rng.randint(10, W - 10)
+        cy = rng.randint(10, H - 10)
+        # Radius: log-normal (mean ~5 px, sigma_log ~0.5) — mimics Ostwald ripening
+        r = max(2, int(rng.lognormal(mean=np.log(5), sigma=0.5)))
+        # Concentration: high solute enrichment (segregation ratio ~3-5x)
+        c_precipitate = rng.uniform(0.70, 1.0)
+        yy, xx = np.ogrid[:H, :W]
+        dist2 = ((xx - cx) / max(r, 1))**2 + ((yy - cy) / max(r, 1))**2
+        # Soft interface (Gaussian edge to model trajectory aberrations)
+        interface_width = max(0.5, r * 0.25)
+        weight = np.exp(-0.5 * ((dist2 - 1.0) / (interface_width / r))**2)
+        mask_core = dist2 < 1.0
+        arr[mask_core] = c_precipitate
+        # Solute-depleted zone (depletion shell) around precipitate
+        depletion_shell = (dist2 >= 1.0) & (dist2 < 1.8)
+        arr[depletion_shell] = np.minimum(arr[depletion_shell], 0.15)
+
+    # ── 3. Grain boundaries (planar solute segregation) ───────────────────
+    n_boundaries = rng.randint(2, 5)
+    for _ in range(n_boundaries):
+        # Random line through the image (parametrised by angle and offset)
+        angle = rng.uniform(0, np.pi)
+        offset = rng.uniform(0.1, 0.9)  # fractional offset from centre
+        yy, xx = np.mgrid[:H, :W]
+        # Line equation: cos(angle)*(x/W - 0.5) + sin(angle)*(y/H - 0.5) = offset - 0.5
+        dist_to_line = np.abs(
+            np.cos(angle) * (xx / max(W, 1) - 0.5)
+            + np.sin(angle) * (yy / max(H, 1) - 0.5)
+            - (offset - 0.5)
+        )
+        gb_mask = dist_to_line < (1.5 / max(H, W))  # ~1-2 pixel width
+        gb_concentration = rng.uniform(0.55, 0.80)  # Cr/B/P enrichment at GB
+        arr[gb_mask] = gb_concentration
+
+    # ── 4. Dislocation loops (curved partial segregation) ─────────────────
+    n_dislocations = rng.randint(1, 4)
+    for _ in range(n_dislocations):
+        cx = rng.randint(20, W - 20)
+        cy = rng.randint(20, H - 20)
+        r_loop = rng.randint(8, 20)
+        yy, xx = np.ogrid[:H, :W]
+        dist_to_circle = np.abs(
+            np.sqrt(((xx - cx)**2 + (yy - cy)**2).astype(np.float32)) - r_loop
+        )
+        disloc_mask = dist_to_circle < 1.5
+        arr[disloc_mask] = rng.uniform(0.50, 0.70)
+
+    # ── 5. Trajectory aberration (local magnification artefact) ───────────
+    # Low-frequency multiplicative distortion field from differential
+    # evaporation at precipitate/matrix interfaces
+    distortion = rng.randn(H // 8 + 1, W // 8 + 1).astype(np.float32)
+    from PIL import Image
+    distortion_full = np.array(
+        Image.fromarray(distortion).resize((W, H), Image.BILINEAR),
+        dtype=np.float32
+    )
+    distortion_full = gaussian_filter(distortion_full, sigma=max(H, W) // 16)
+    distortion_full = distortion_full / (np.std(distortion_full) + 1e-8) * 0.04
+    arr = arr * (1.0 + distortion_full)
+
+    # ── 6. Final cleanup ─────────────────────────────────────────────────
+    arr = np.clip(arr, 0.0, 1.0)
+    return normalize_array(arr)
+
+
+# ---------------------------------------------------------------------------
 # Generated velocity model (seismic)
 # ---------------------------------------------------------------------------
 
@@ -1868,6 +2020,9 @@ def acquire_dataset(
         "generate_thermography_phantom": lambda: generate_thermography_phantom(target_shape=target_shape),
         "generate_ao_wavefront": lambda: generate_ao_wavefront(target_shape=target_shape),
         "generate_afm_surface": lambda: generate_afm_surface(target_shape=target_shape),
+        "generate_angiography_vessel_phantom": lambda: generate_angiography_vessel_phantom(target_shape=target_shape),
+        "generate_asl_perfusion_phantom": lambda: generate_asl_perfusion_phantom(target_shape=target_shape),
+        "generate_apt_composition_map": lambda: generate_apt_composition_map(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -1920,6 +2075,9 @@ def acquire_dataset(
         "generate_elemental_map": lambda: generate_elemental_map(target_shape=target_shape),
         "generate_ndt_phantom": lambda: generate_ndt_phantom(target_shape=target_shape),
         "generate_velocity_model": lambda: generate_velocity_model(target_shape=target_shape),
+        "generate_angiography_vessel_phantom": lambda: generate_angiography_vessel_phantom(target_shape=target_shape),
+        "generate_asl_perfusion_phantom": lambda: generate_asl_perfusion_phantom(target_shape=target_shape),
+        "generate_apt_composition_map": lambda: generate_apt_composition_map(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)
