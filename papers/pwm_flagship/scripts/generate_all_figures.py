@@ -194,17 +194,17 @@ def fig1_overview():
 # FIGURE 2: OperatorGraph IR and Physics Fidelity Ladder
 # ═════════════════════════════════════════════════════════════════════════════
 def fig2_operatorgraph():
-    fig = plt.figure(figsize=(DOUBLE_COL, 6.5))
+    fig = plt.figure(figsize=(DOUBLE_COL, 7.0))
     gs = gridspec.GridSpec(2, 3, width_ratios=[1.0, 1.0, 1.0],
-                           height_ratios=[0.55, 1.0],
-                           wspace=0.25, hspace=0.50)
+                           height_ratios=[0.50, 1.0],
+                           wspace=0.25, hspace=0.45)
 
     # Panel a: The 11 universal primitives – full-width top row, horizontal layout
     ax_a = fig.add_subplot(gs[0, :])  # span all 3 columns
-    ax_a.set_xlim(0, 14)
-    ax_a.set_ylim(0, 2.0)
+    ax_a.set_xlim(0, 15.5)
+    ax_a.set_ylim(0, 2.6)
     ax_a.axis('off')
-    ax_a.text(0.0, 1.85, 'a', fontsize=10, fontweight='bold')
+    ax_a.text(0.0, 2.40, 'a', fontsize=10, fontweight='bold')
 
     # 4 role groups, each with primitives arranged horizontally
     prim_groups_a = [
@@ -221,47 +221,47 @@ def fig2_operatorgraph():
           ('D', 'Detect')]),
     ]
 
-    # Each primitive cell: symbol box + label, ~1.2 units wide
+    # Each primitive cell: symbol box + label
     cell_w = 1.15
-    gap_between_groups = 0.30
-    box_h = 1.15
-    box_y = 0.30
-    header_y = box_y + box_h + 0.18
+    gap_between_groups = 0.35
+    box_h = 1.55
+    box_y = 0.35
+    header_y = box_y + box_h + 0.20
 
     # Compute total width to center everything
-    total_w = sum(len(prims) * cell_w + 0.24 for _, _, _, _, prims in prim_groups_a)
+    total_w = sum(len(prims) * cell_w + 0.30 for _, _, _, _, prims in prim_groups_a)
     total_w += gap_between_groups * (len(prim_groups_a) - 1)
-    x_offset = (14.0 - total_w) / 2
+    x_offset = (15.5 - total_w) / 2
 
     cursor_x = x_offset
     for gi, (role_name, role_tcol, role_fill, role_bg, prims) in enumerate(prim_groups_a):
         n = len(prims)
-        gw = n * cell_w + 0.24
+        gw = n * cell_w + 0.30
         # Background box
         grp_box = FancyBboxPatch(
             (cursor_x, box_y), gw, box_h,
-            boxstyle="round,pad=0.06", facecolor=role_bg,
-            edgecolor=role_tcol, linewidth=0.8, alpha=0.7, zorder=0)
+            boxstyle="round,pad=0.08", facecolor=role_bg,
+            edgecolor=role_tcol, linewidth=0.9, alpha=0.7, zorder=0)
         ax_a.add_patch(grp_box)
         # Role header above box
         ax_a.text(cursor_x + gw / 2, header_y, role_name,
-                  fontsize=8, fontweight='bold', color=role_tcol,
+                  fontsize=8.5, fontweight='bold', color=role_tcol,
                   ha='center', va='center', zorder=1)
         # Primitives arranged horizontally
         for j, (sym, desc) in enumerate(prims):
-            px = cursor_x + 0.12 + j * cell_w + cell_w / 2
-            py = box_y + box_h / 2 + 0.10
-            # Symbol circle/box
+            px = cursor_x + 0.15 + j * cell_w + cell_w / 2
+            py = box_y + box_h / 2 + 0.15
+            # Symbol box
             sym_box = FancyBboxPatch(
-                (px - 0.20, py - 0.15), 0.40, 0.30,
+                (px - 0.22, py - 0.17), 0.44, 0.34,
                 boxstyle="round,pad=0.04", facecolor=role_fill,
                 edgecolor=role_tcol, linewidth=0.7, zorder=1)
             ax_a.add_patch(sym_box)
             ax_a.text(px, py, sym, ha='center', va='center',
-                      fontsize=8.5, fontweight='bold', color=role_tcol, zorder=2)
+                      fontsize=9, fontweight='bold', color=role_tcol, zorder=2)
             # Label below symbol
-            ax_a.text(px, py - 0.38, desc, ha='center', va='center',
-                      fontsize=5.5, color='#444444', zorder=1)
+            ax_a.text(px, py - 0.45, desc, ha='center', va='center',
+                      fontsize=6, color='#444444', zorder=1)
 
         cursor_x += gw + gap_between_groups
 

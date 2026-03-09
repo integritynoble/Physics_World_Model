@@ -2,10 +2,9 @@
 """
 Generate Figure 1: The Universal Grammar of Computational Imaging.
 
-Layout (3 rows):
-  Row 1:  a (Any system) → b (Compose: OperatorGraph) → c (Diagnose: 3 gates)
-  Row 2:  f (The 11 universal primitives — full-width alphabet table)
-  Row 3:  d (Correct dominant gate) → e (Recover)
+Layout (single row):
+  a (Any system) → b (Compose: OperatorGraph) → c (Diagnose: 3 gates)
+    → d (Correct dominant gate) → e (Recover)
 
 Usage:
     python generate_fig1_grammar.py [--output figures/fig1_overview.pdf]
@@ -101,19 +100,16 @@ def draw_small_arrow(ax, x0, y0, x1, y1, color=C_ARROW, lw=1.0):
 # ── Main figure ─────────────────────────────────────────────────────────────
 
 def main(output_path: Path):
-    fig, ax = plt.subplots(figsize=(18, 9), facecolor="white")
+    fig, ax = plt.subplots(figsize=(18, 5.0), facecolor="white")
     ax.set_xlim(-0.5, 20.5)
-    ax.set_ylim(-0.5, 9.5)
+    ax.set_ylim(-0.5, 5.5)
     ax.axis("off")
     ax.set_facecolor("white")
 
-    # ── Layout: 2 rows ─────────────────────────────────────────────────────
-    # Row 1 (top):  a → b → c → d → e   (pipeline, left to right)
-    # Row 2 (bot):  f                    (11 primitives, full width)
-    row1_y = 7.0        # top row centre
-    row1_h = 3.8        # top row height
-    row2_y = 2.0        # bottom row centre (primitives)
-    row2_h = 3.0        # bottom row height
+    # ── Layout: single row ─────────────────────────────────────────────────
+    # a → b → c → d → e   (pipeline, left to right)
+    row1_y = 2.5        # row centre
+    row1_h = 3.8        # row height
 
     # ════════════════════════════════════════════════════════════════════════
     # a – Any Imaging System
@@ -166,6 +162,12 @@ def main(output_path: Path):
     ax.text(dag_cx + 0.45, dag_y_top, "e.g.\nCASSI", fontsize=6,
             ha="left", va="center", color="#999999", style="italic",
             linespacing=1.1, zorder=1)
+
+    # Subtitle: mention 11 primitives between title and DAG
+    ax.text(s2_x, row1_y + row1_h / 2 - 0.72,
+            "(11 universal primitives)",
+            fontsize=7, ha="center", va="top", color="#888888",
+            style="italic", zorder=1)
 
     # Arrow: a → b
     draw_big_arrow(ax, s1_x + s1_w / 2 + 0.08, row1_y,
@@ -273,50 +275,6 @@ def main(output_path: Path):
     # Arrow: d → e
     draw_big_arrow(ax, s4_x + s4_w / 2 + 0.08, row1_y,
                    s5_x - s5_w / 2 - 0.08, row1_y, color="#88BB88", lw=2.0)
-
-    # ════════════════════════════════════════════════════════════════════════
-    # f – The 11 Universal Primitives (full-width, bottom row)
-    # ════════════════════════════════════════════════════════════════════════
-    sf_x, sf_w = 10.0, 19.5
-    draw_stage_box(ax, sf_x, row2_y, sf_w, row2_h, C_STAGEF, "#DDDDDD")
-
-    ax.text(sf_x - sf_w / 2 + 0.25, row2_y + row2_h / 2 - 0.12, "f",
-            fontsize=14, fontweight="bold", color=C_TEXT, va="top", zorder=1)
-    ax.text(sf_x, row2_y + row2_h / 2 - 0.12,
-            "The 11 Universal Primitives (Alphabet)",
-            fontsize=12, fontweight="bold", color="#555555", va="top",
-            ha="center", zorder=1)
-
-    prim_groups = [
-        ("Generation", C_GEN, C_GEN_T,
-         [("P", "Propagate")]),
-        ("Encoding", C_ENC, C_ENC_T,
-         [("M", "Modulate"),
-          ("\u03A0", "Project"),
-          ("C", "Convolve"),
-          ("R", "Scatter"),
-          ("\u039B", "Transform")]),
-        ("Transform", C_TRN, C_TRN_T,
-         [("F", "Encode"), ("\u03A3", "Accumulate")]),
-        ("Detection", C_DET, C_DET_T,
-         [("S", "Sample"), ("W", "Disperse"),
-          ("D", "Detect")]),
-    ]
-
-    group_x_positions = [1.5, 6.0, 12.5, 17.0]
-    grp_header_y = row2_y + 0.85
-    py_start = row2_y + 0.50
-    py_sp = 0.35
-    for (role_name, role_fill, role_tcol, prims), gx in zip(prim_groups, group_x_positions):
-        ax.text(gx, grp_header_y, role_name, fontsize=9.5, fontweight="bold",
-                color=role_tcol, ha="center", va="center", zorder=1)
-        for j, (sym, desc) in enumerate(prims):
-            py = py_start - j * py_sp
-            draw_node(ax, gx - 0.7, py, sym, role_fill, width=0.38, height=0.26,
-                      fontsize=9, text_color=role_tcol, edgecolor=role_tcol,
-                      linewidth=0.5, shadow=False, zorder=2)
-            ax.text(gx - 0.35, py, desc, fontsize=7.5, ha="left", va="center",
-                    color="#555555", zorder=1)
 
     # ════════════════════════════════════════════════════════════════════════
     # Save
