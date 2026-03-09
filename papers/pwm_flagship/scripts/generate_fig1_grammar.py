@@ -424,8 +424,10 @@ def main(output_path: Path):
                    out_cx - w_out / 2 - 0.08, y_bot,
                    color="#55AA99", lw=2.5)
 
-    # Output box: Optimized System
+    # g – Output box: Optimized System
     draw_stage_box(ax, out_cx, y_bot, w_out, h_bot, C_STAGE5, "#80B080")
+    ax.text(out_cx - w_out / 2 + 0.10, y_bot + h_bot / 2 - 0.18, "g",
+            fontsize=16, fontweight="bold", color=C_TEXT, va="top", zorder=1)
     ax.text(out_cx, y_bot + 0.30, "Optimized\nNew System",
             fontsize=10, ha="center", va="center", color="#2E7D32",
             fontweight="bold", linespacing=1.3, zorder=1)
