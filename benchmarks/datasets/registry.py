@@ -1450,6 +1450,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic electron diffraction phantom for benchmarking structure determination algorithms",
     ),
+    "electron_holography_generated": DatasetEntry(
+        id="electron_holography_generated",
+        name="Electron Holography Phase Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic electron holography phantom with electrostatic potential and off-axis fringe model",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["electron_holography"],
+        converter="generate_electron_holography_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic electron holography phantom for benchmarking phase reconstruction algorithms",
+    ),
 }
 
 

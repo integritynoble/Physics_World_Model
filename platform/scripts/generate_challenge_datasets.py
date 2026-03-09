@@ -229,6 +229,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # dynamic scattering are handled by the phantom generator; identity runner applies
     # no additional degradation.
     "electron_diffraction": "identity",
+    # Electron Holography: off-axis fringe pattern with phase modulation and shot noise
+    # are handled by the phantom generator; identity runner applies no additional degradation.
+    "electron_holography": "identity",
 }
 
 
@@ -385,6 +388,7 @@ def _resolve_ground_truth(
             generate_eht_imaging_phantom,
             generate_elastography_phantom,
             generate_electron_diffraction_phantom,
+            generate_electron_holography_phantom,
         )
 
         # Look up registry entries for this modality
@@ -453,6 +457,7 @@ def _resolve_ground_truth(
                     "generate_eht_imaging_phantom": generate_eht_imaging_phantom,
                     "generate_elastography_phantom": generate_elastography_phantom,
                     "generate_electron_diffraction_phantom": generate_electron_diffraction_phantom,
+                    "generate_electron_holography_phantom": generate_electron_holography_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -976,6 +981,7 @@ def _load_scenes_from_generator(
             generate_eht_imaging_phantom,
             generate_elastography_phantom,
             generate_electron_diffraction_phantom,
+            generate_electron_holography_phantom,
         )
     except ImportError:
         return []
@@ -1037,6 +1043,7 @@ def _load_scenes_from_generator(
         "generate_eht_imaging_phantom": generate_eht_imaging_phantom,
         "generate_elastography_phantom": generate_elastography_phantom,
         "generate_electron_diffraction_phantom": generate_electron_diffraction_phantom,
+        "generate_electron_holography_phantom": generate_electron_holography_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

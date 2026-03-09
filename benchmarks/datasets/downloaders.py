@@ -5981,6 +5981,157 @@ def generate_electron_diffraction_phantom(
     return samples
 
 
+def generate_electron_holography_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Electron holography phantom for phase reconstruction benchmarks.
+
+    Creates a 64x64 float32 electrostatic potential map:
+      - Simulates a nanoparticle/thin film specimen with a central region of
+        higher electrostatic potential (V ~5-15 V, normalized) on a substrate
+        background (V ~0-2 V)
+
+    Applies electron holography forward model:
+      - Off-axis holography produces a fringe pattern
+      - Phase shift (phi = C_E * V_t * t, proportional to potential * thickness)
+        modulates cosine fringes
+      - Shot noise and fringe visibility loss are added
+
+    x_true: 64x64 float32, normalized [0,1] — electrostatic potential map.
+    y: 64x64 float32 — hologram (fringe pattern with noise).
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, fringe_spacing_px, beam_voltage_kv, object_wave_fraction.
+
+    References: Lehmann & Lichte, Microsc. Microanal. 2002;
+                Lichte, Ultramicroscopy 1986;
+                Beleggia et al., Ultramicroscopy 2004.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    beam_voltage_kv = 300.0   # Typical field-emission TEM voltage (kV)
+    # Interaction constant C_E for 300 kV electrons (rad/(V*nm))
+    C_E = 6.526e-3
+
+    for i in range(n_samples):
+        # --- Ground truth: electrostatic potential map ---
+        yy, xx = np.mgrid[0:H, 0:W]
+        cy, cx = H / 2.0, W / 2.0
+
+        # Substrate background potential (low, ~0-2 V normalized)
+        substrate_level = float(rng.uniform(0.05, 0.15))
+        potential = np.full((H, W), substrate_level, dtype=np.float32)
+
+        # Central nanoparticle/thin film region with higher potential (V ~5-15 V)
+        n_particles = int(rng.integers(1, 4))
+        for _ in range(n_particles):
+            px = float(rng.uniform(0.2 * W, 0.8 * W))
+            py = float(rng.uniform(0.2 * H, 0.8 * H))
+            radius = float(rng.uniform(4.0, 10.0))
+            peak_val = float(rng.uniform(0.5, 1.0))  # normalized peak potential
+            r_particle = np.sqrt((yy - py) ** 2 + (xx - px) ** 2).astype(np.float32)
+            # Smooth potential distribution within the particle (Gaussian profile)
+            sigma_particle = radius / 2.0
+            particle_contribution = peak_val * np.exp(
+                -(r_particle ** 2) / (2.0 * sigma_particle ** 2)
+            ).astype(np.float32)
+            potential = np.maximum(potential, particle_contribution)
+
+        # Smooth the potential map (physical smoothness of electrostatic potential)
+        sigma_smooth = float(rng.uniform(0.5, 1.5))
+        potential = gaussian_filter(potential, sigma=sigma_smooth).astype(np.float32)
+
+        # Normalize x_true to [0, 1]
+        p_min = float(potential.min())
+        p_max = float(potential.max())
+        if p_max > p_min:
+            x_true = ((potential - p_min) / (p_max - p_min)).astype(np.float32)
+        else:
+            x_true = potential.astype(np.float32)
+
+        # --- Forward model: off-axis holography fringe pattern ---
+        # Phase shift proportional to electrostatic potential * thickness
+        # phi = C_E * V * t; here normalized to [0, pi] range
+        thickness_nm = float(rng.uniform(5.0, 20.0))  # specimen thickness in nm
+        phase_map = C_E * x_true * thickness_nm  # phase shift in radians
+        # Scale phase to realistic range (~0 to pi/2)
+        phase_max = float(phase_map.max())
+        if phase_max > 0:
+            phase_map = phase_map / phase_max * float(rng.uniform(0.3, 1.5))
+
+        # Fringe spacing and carrier frequency for off-axis holography
+        fringe_spacing_px = float(rng.uniform(4.0, 8.0))
+        carrier_freq = 1.0 / fringe_spacing_px  # cycles per pixel
+        # Off-axis tilt angle (45 degrees typical)
+        tilt_angle = float(rng.uniform(30.0, 60.0)) * np.pi / 180.0
+        kx = carrier_freq * np.cos(tilt_angle)
+        ky = carrier_freq * np.sin(tilt_angle)
+
+        # Hologram: interference between object wave and reference wave
+        # I = |R + O|^2 = 1 + mu^2 + 2*mu*cos(2*pi*(kx*x + ky*y) + phase)
+        # where mu is the object wave fraction (visibility)
+        object_wave_fraction = float(rng.uniform(0.3, 0.7))
+        carrier_wave = (
+            2.0 * np.pi * (kx * xx.astype(np.float32) + ky * yy.astype(np.float32))
+        )
+        hologram = (
+            1.0
+            + object_wave_fraction ** 2
+            + 2.0 * object_wave_fraction * np.cos(carrier_wave + phase_map)
+        ).astype(np.float32)
+
+        # Add shot noise (Poisson-distributed, scaled to photon counts)
+        max_counts = float(rng.uniform(1000.0, 5000.0))
+        scaled_holo = (hologram / hologram.max() * max_counts).astype(np.float64)
+        noisy_holo = rng.poisson(np.maximum(scaled_holo, 0.0)).astype(np.float32)
+        noisy_holo = noisy_holo / max_counts
+
+        # Fringe visibility loss: multiply by slowly varying envelope
+        sigma_env = float(rng.uniform(H / 2.0, H))
+        r_center = np.sqrt((yy - cy) ** 2 + (xx - cx) ** 2).astype(np.float32)
+        envelope = np.exp(-(r_center ** 2) / (2.0 * sigma_env ** 2)).astype(np.float32)
+        # Blend with flat envelope so fringes remain visible across the FOV
+        envelope = 0.5 + 0.5 * envelope
+        noisy_holo = (noisy_holo * envelope).astype(np.float32)
+
+        # Normalize y to [0, 1]
+        y_min = float(noisy_holo.min())
+        y_max = float(noisy_holo.max())
+        if y_max > y_min:
+            y = ((noisy_holo - y_min) / (y_max - y_min)).astype(np.float32)
+        else:
+            y = np.zeros((H, W), dtype=np.float32)
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "electron_holography",
+                "fringe_spacing_px": fringe_spacing_px,
+                "beam_voltage_kv": beam_voltage_kv,
+                "object_wave_fraction": object_wave_fraction,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -6066,6 +6217,7 @@ def acquire_dataset(
         "generate_eht_imaging_phantom": generate_eht_imaging_phantom,
         "generate_elastography_phantom": generate_elastography_phantom,
         "generate_electron_diffraction_phantom": generate_electron_diffraction_phantom,
+        "generate_electron_holography_phantom": generate_electron_holography_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -6157,6 +6309,7 @@ def acquire_dataset(
         "generate_eht_imaging_phantom": lambda: generate_eht_imaging_phantom(),
         "generate_elastography_phantom": lambda: generate_elastography_phantom(),
         "generate_electron_diffraction_phantom": lambda: generate_electron_diffraction_phantom(),
+        "generate_electron_holography_phantom": lambda: generate_electron_holography_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)
