@@ -3193,6 +3193,102 @@ def generate_confocal_endomicroscopy_phantom(
     return samples
 
 
+def generate_confocal_livecell_phantom(
+    n_samples: int = 10,
+    seed: int = 42,
+    shape: tuple = (128, 128),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Confocal live-cell imaging phantom for denoising benchmarks.
+
+    Simulates fluorescence images of living cells with dynamic organelles
+    (mitochondria, endosomes) and cytoskeletal structures. Models low-dose
+    acquisition noise (Poisson shot noise + Gaussian read noise) typical of
+    live-cell imaging to minimise phototoxicity.
+
+    Reference: Weigert et al., Nat. Methods 2018 (CARE); Krull et al., CVPR 2019 (Noise2Void).
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    for i in range(n_samples):
+        # Ground truth: clean fluorescence image
+        x_true = np.zeros((H, W), dtype=np.float32)
+
+        # Cell boundary
+        cy, cx = H // 2 + int(rng.integers(-10, 10)), W // 2 + int(rng.integers(-10, 10))
+        ry, rx = H // 3 + int(rng.integers(-5, 5)), W // 3 + int(rng.integers(-5, 5))
+        Y, X = np.ogrid[:H, :W]
+        cell = ((Y - cy) / ry) ** 2 + ((X - cx) / rx) ** 2 <= 1.0
+
+        # Cytoplasm
+        x_true[cell] = float(rng.uniform(0.1, 0.25))
+
+        # Dynamic organelles: mitochondria (tubular, bright)
+        n_mito = int(rng.integers(5, 12))
+        for _ in range(n_mito):
+            my = int(rng.integers(cy - ry, cy + ry))
+            mx = int(rng.integers(cx - rx, cx + rx))
+            mlen = int(rng.integers(5, 15))
+            angle = float(rng.uniform(0, np.pi))
+            mwidth = 1
+            for t in range(-mlen // 2, mlen // 2):
+                gy = int(my + t * np.cos(angle))
+                gx = int(mx + t * np.sin(angle))
+                if 0 <= gy < H and 0 <= gx < W and cell[gy, gx]:
+                    x_true[max(0,gy-mwidth):min(H,gy+mwidth+1),
+                           max(0,gx-mwidth):min(W,gx+mwidth+1)] = float(rng.uniform(0.6, 0.9))
+
+        # Endosomes (small, bright spots)
+        n_endo = int(rng.integers(8, 20))
+        for _ in range(n_endo):
+            ey = int(rng.integers(cy - ry, cy + ry))
+            ex = int(rng.integers(cx - rx, cx + rx))
+            if 0 <= ey < H and 0 <= ex < W and cell[ey, ex]:
+                x_true[ey, ex] = float(rng.uniform(0.7, 1.0))
+
+        # Nucleus
+        nuc = ((Y - cy) / (ry // 2)) ** 2 + ((X - cx) / (rx // 2)) ** 2 <= 1.0
+        x_true[nuc] = float(rng.uniform(0.3, 0.5))
+
+        x_true = gaussian_filter(x_true, sigma=0.5).astype(np.float32)
+        x_true = np.clip(x_true, 0, 1)
+
+        # Forward model: low-dose acquisition noise
+        photon_count = float(rng.uniform(10, 50))  # very low for live-cell
+        signal_counts = x_true * photon_count
+        poisson_noisy = rng.poisson(np.maximum(signal_counts, 0)).astype(np.float32) / photon_count
+        read_noise = float(rng.uniform(0.02, 0.08))
+        y_meas = np.clip(poisson_noisy + rng.normal(0, read_noise, (H, W)), 0, None).astype(np.float32)
+
+        H_size = min(H * W, 4096)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y_meas,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "photon_count": float(photon_count),
+                "read_noise": float(read_noise),
+                "n_mitochondria": int(n_mito),
+                "n_endosomes": int(n_endo),
+            },
+        })
+
+    return samples
+
+
 def generate_confocal_3d_phantom(
     n_samples: int = 10,
     seed: int = 42,
@@ -3358,6 +3454,7 @@ def acquire_dataset(
         "generate_coded_exposure_phantom": lambda: generate_coded_exposure_phantom(target_shape=target_shape),
         "generate_confocal_3d_phantom": lambda: generate_confocal_3d_phantom(target_shape=target_shape),
         "generate_confocal_endomicroscopy_phantom": lambda: generate_confocal_endomicroscopy_phantom(target_shape=target_shape),
+        "generate_confocal_livecell_phantom": lambda: generate_confocal_livecell_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -3426,6 +3523,7 @@ def acquire_dataset(
         "generate_coded_exposure_phantom": lambda: generate_coded_exposure_phantom(target_shape=target_shape),
         "generate_confocal_3d_phantom": lambda: generate_confocal_3d_phantom(target_shape=target_shape),
         "generate_confocal_endomicroscopy_phantom": lambda: generate_confocal_endomicroscopy_phantom(target_shape=target_shape),
+        "generate_confocal_livecell_phantom": lambda: generate_confocal_livecell_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)

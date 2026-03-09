@@ -959,6 +959,17 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "Restormer-3D",     "type": "Transformer",      "mask_aware": True,  "params": "26M", "source": "Zamir et al., CVPR 2022 (3D adapted)"},
         {"name": "DiffusionMicro",   "type": "Diffusion",        "mask_aware": True,  "params": "55M", "source": "Gao et al., Nat. Methods 2024"},
     ],
+    "confocal_livecell": [
+        {"name": "VST-Denoise",      "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Anscombe, Biometrika 1948"},
+        {"name": "NLM-Fluorescence", "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Buades et al., CVPR 2005"},
+        {"name": "CARE",             "type": "Deep Learning",    "mask_aware": False, "params": "12M", "source": "Weigert et al., Nat. Methods 2018"},
+        {"name": "Noise2Void",       "type": "Self-Supervised",  "mask_aware": False, "params": "7M",  "source": "Krull et al., CVPR 2019"},
+        {"name": "Noise2Self",       "type": "Self-Supervised",  "mask_aware": False, "params": "7M",  "source": "Batson & Royer, ICML 2019"},
+        {"name": "PN2V",             "type": "Self-Supervised",  "mask_aware": False, "params": "8M",  "source": "Krull et al., ECCV 2020"},
+        {"name": "SwinIR-LiveCell",  "type": "Transformer",      "mask_aware": True,  "params": "28M", "source": "Liang et al., ICCV 2021 (live-cell)"},
+        {"name": "Restormer-Micro",  "type": "Transformer",      "mask_aware": True,  "params": "26M", "source": "Zamir et al., CVPR 2022 (microscopy)"},
+        {"name": "DiffusionCell",    "type": "Diffusion",        "mask_aware": True,  "params": "55M", "source": "Gao et al., Nat. Methods 2024"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -3013,6 +3024,17 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "SwinIR-3D",       "psnr": 37.5, "ssim": 0.942, "source": "Liang 2021"},
         {"method": "Restormer-3D",    "psnr": 38.6, "ssim": 0.951, "source": "Zamir 2022"},
         {"method": "DiffusionMicro",  "psnr": 39.9, "ssim": 0.963, "source": "Gao 2024"},
+    ],
+    "confocal_livecell": [
+        {"method": "VST-Denoise",      "psnr": 24.2, "ssim": 0.751, "source": "Anscombe 1948"},
+        {"method": "NLM-Fluorescence", "psnr": 26.8, "ssim": 0.795, "source": "Buades 2005"},
+        {"method": "CARE",             "psnr": 33.5, "ssim": 0.891, "source": "Weigert 2018"},
+        {"method": "Noise2Void",       "psnr": 31.8, "ssim": 0.871, "source": "Krull 2019"},
+        {"method": "Noise2Self",       "psnr": 30.5, "ssim": 0.858, "source": "Batson 2019"},
+        {"method": "PN2V",             "psnr": 32.9, "ssim": 0.882, "source": "Krull 2020"},
+        {"method": "SwinIR-LiveCell",  "psnr": 36.2, "ssim": 0.931, "source": "Liang 2021"},
+        {"method": "Restormer-Micro",  "psnr": 37.8, "ssim": 0.946, "source": "Zamir 2022"},
+        {"method": "DiffusionCell",    "psnr": 39.2, "ssim": 0.959, "source": "Gao 2024"},
     ],
 }
 
