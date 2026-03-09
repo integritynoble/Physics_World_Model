@@ -1420,6 +1420,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic EHT phantom for benchmarking sparse interferometric image reconstruction",
     ),
+    "elastography_generated": DatasetEntry(
+        id="elastography_generated",
+        name="Elastography Stiffness Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic elastography phantom with shear modulus inclusions and shear wave displacement model",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["elastography"],
+        converter="generate_elastography_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic elastography phantom for benchmarking tissue stiffness reconstruction algorithms",
+    ),
 }
 
 

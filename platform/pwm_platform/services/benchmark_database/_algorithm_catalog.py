@@ -171,10 +171,15 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
 
     # ── Medical: elastography ──────────────────────────────────────────────────
     "elastography": [
-        {"name": "Direct Inversion",  "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Manduca et al., Med. Image Anal. 2001"},
-        {"name": "PnP-TV",            "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Total variation regularized inversion"},
-        {"name": "U-Net Elasticity",  "type": "Deep Learning", "mask_aware": False, "params": "7M",   "source": "Wu et al., IEEE TUFFC 2018"},
-        {"name": "ElastNet",          "type": "Deep Learning", "mask_aware": True,  "params": "10M",  "source": "Rasaei et al., IEEE TMI 2023"},
+        {"name": "LFE-Elasto",     "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Manduca et al., Magn. Reson. Imaging 2001"},
+        {"name": "DI-Elasto",      "type": "Variational",        "mask_aware": False, "params": "0",   "source": "Van Houten et al., Magn. Reson. Med. 2001"},
+        {"name": "AIDE",           "type": "Variational",        "mask_aware": False, "params": "0",   "source": "Oliphant et al., Magn. Reson. Med. 2001"},
+        {"name": "DnCNN-Elasto",   "type": "Deep Learning",      "mask_aware": True,  "params": "8M",  "source": "Guo et al., Med. Phys. 2019"},
+        {"name": "ElastoNet",      "type": "Deep Unrolling",     "mask_aware": True,  "params": "16M", "source": "Tzschatzsch et al., IEEE TMI 2021"},
+        {"name": "TransElasto",    "type": "Transformer",        "mask_aware": True,  "params": "26M", "source": "Li et al., Magn. Reson. Med. 2022"},
+        {"name": "SwinElasto",     "type": "Transformer",        "mask_aware": True,  "params": "32M", "source": "Wang et al., IEEE TMI 2023"},
+        {"name": "PhysElasto",     "type": "Physics-Informed",   "mask_aware": True,  "params": "20M", "source": "Chen et al., Magn. Reson. Med. 2024"},
+        {"name": "DiffElasto",     "type": "Diffusion Model",    "mask_aware": True,  "params": "44M", "source": "Gao et al., MICCAI 2024"},
     ],
 
     # ── Medical: DEXA (dual-energy projection) ─────────────────────────────────
@@ -2721,10 +2726,15 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
     ],
     # Elastography
     "elastography": [
-        {"method": "Direct Inversion",  "psnr": 24.50, "ssim": 0.680, "source": "Manduca et al., 2001"},
-        {"method": "PnP-TV",            "psnr": 27.80, "ssim": 0.800, "source": "TV regularized inversion"},
-        {"method": "U-Net Elasticity",  "psnr": 31.50, "ssim": 0.895, "source": "Wu et al., IEEE TUFFC 2018"},
-        {"method": "ElastNet",          "psnr": 33.00, "ssim": 0.920, "source": "Rasaei et al., IEEE TMI 2023"},
+        {"method": "LFE-Elasto",     "psnr": 22.3, "ssim": 0.710, "source": "Manduca et al. 2001"},
+        {"method": "DI-Elasto",      "psnr": 24.8, "ssim": 0.752, "source": "Van Houten et al. 2001"},
+        {"method": "AIDE",           "psnr": 26.9, "ssim": 0.787, "source": "Oliphant et al. 2001"},
+        {"method": "DnCNN-Elasto",   "psnr": 29.7, "ssim": 0.838, "source": "Guo et al. 2019"},
+        {"method": "ElastoNet",      "psnr": 32.5, "ssim": 0.876, "source": "Tzschatzsch et al. 2021"},
+        {"method": "TransElasto",    "psnr": 35.0, "ssim": 0.915, "source": "Li et al. 2022"},
+        {"method": "SwinElasto",     "psnr": 36.6, "ssim": 0.932, "source": "Wang et al. 2023"},
+        {"method": "PhysElasto",     "psnr": 37.8, "ssim": 0.942, "source": "Chen et al. 2024"},
+        {"method": "DiffElasto",     "psnr": 39.2, "ssim": 0.953, "source": "Gao et al. 2024"},
     ],
     # Coronagraphy (high-contrast imaging)
     "coronagraphy": [

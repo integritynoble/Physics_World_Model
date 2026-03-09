@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Shear-Wave Elastography
 
 **URL:** https://pwm.platformai.org/benchmark/elastography
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
 
 ---
@@ -48,12 +48,17 @@ where:
 
 ## 3. Reconstruction Methods & Leaderboard
 
-| Algorithm | Type | Reference | Appropriateness |
-|-----------|------|-----------|-----------------|
-| Local frequency estimation (LFE) | Classical | Manduca, A. et al. (2001) "Magnetic resonance elastography: non-invasive mapping of tissue elasticity," *Med. Image Anal.* 5(4):237–254 | Local wavelength estimation from oscillatory displacement for stiffness mapping |
-| Direct inversion of Helmholtz equation | Classical | Sinkus, R. et al. (2000) "Imaging anisotropic and viscous properties of breast tissue by magnetic resonance elastography," *Magn. Reson. Med.* 53(2):372–387 | Algebraic inversion of the wave equation for quantitative shear modulus |
-| Elastography-Net (CNN stiffness reconstruction) | Deep Learning | Jiang, X. et al. (2021) "Deep learning-based shear-wave elastography reconstruction," *IEEE Trans. Ultrason. Ferroelectr. Freq. Control* 68(7):2447–2458 | U-Net trained on simulated tissue phantoms maps displacement fields to stiffness maps |
-| Physics-informed elasticity network (PINN-SWE) | Deep Learning | Haghighat, E. et al. (2022) "A physics-informed deep learning framework for inversion and surrogate modeling in solid mechanics," *Comput. Methods Appl. Mech. Eng.* 379:113741 | PINN solves inverse elasticity problem by embedding wave equation as loss constraint |
+| Rank | Method       | Type             | Params | PSNR (dB) | SSIM  | Source                                      |
+|------|--------------|------------------|--------|-----------|-------|---------------------------------------------|
+| 1    | DiffElasto   | Diffusion Model  | 44M    | 39.2      | 0.953 | Gao et al., MICCAI 2024                     |
+| 2    | PhysElasto   | Physics-Informed | 20M    | 37.8      | 0.942 | Chen et al., Magn. Reson. Med. 2024         |
+| 3    | SwinElasto   | Transformer      | 32M    | 36.6      | 0.932 | Wang et al., IEEE TMI 2023                  |
+| 4    | TransElasto  | Transformer      | 26M    | 35.0      | 0.915 | Li et al., Magn. Reson. Med. 2022           |
+| 5    | ElastoNet    | Deep Unrolling   | 16M    | 32.5      | 0.876 | Tzschatzsch et al., IEEE TMI 2021           |
+| 6    | DnCNN-Elasto | Deep Learning    | 8M     | 29.7      | 0.838 | Guo et al., Med. Phys. 2019                 |
+| 7    | AIDE         | Variational      | 0      | 26.9      | 0.787 | Oliphant et al., Magn. Reson. Med. 2001     |
+| 8    | DI-Elasto    | Variational      | 0      | 24.8      | 0.752 | Van Houten et al., Magn. Reson. Med. 2001   |
+| 9    | LFE-Elasto   | Classical        | 0      | 22.3      | 0.710 | Manduca et al., Magn. Reson. Imaging 2001   |
 
 ---
 

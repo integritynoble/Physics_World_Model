@@ -222,6 +222,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # EHT/VLBI: sparse u-v sampling and thermal noise handled by the phantom
     # generator; identity runner applies no additional degradation.
     "eht_imaging": "identity",
+    # Elastography: shear wave displacement model and noise embedded in phantom;
+    # identity runner applies no additional degradation.
+    "elastography": "identity",
 }
 
 
@@ -376,6 +379,7 @@ def _resolve_ground_truth(
             generate_eddy_current_phantom,
             generate_eels_phantom,
             generate_eht_imaging_phantom,
+            generate_elastography_phantom,
         )
 
         # Look up registry entries for this modality
@@ -442,6 +446,7 @@ def _resolve_ground_truth(
                     "generate_eddy_current_phantom": generate_eddy_current_phantom,
                     "generate_eels_phantom": generate_eels_phantom,
                     "generate_eht_imaging_phantom": generate_eht_imaging_phantom,
+                    "generate_elastography_phantom": generate_elastography_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -963,6 +968,7 @@ def _load_scenes_from_generator(
             generate_edx_mapping_phantom,
             generate_eels_phantom,
             generate_eht_imaging_phantom,
+            generate_elastography_phantom,
         )
     except ImportError:
         return []
@@ -1022,6 +1028,7 @@ def _load_scenes_from_generator(
         "generate_edx_mapping_phantom": generate_edx_mapping_phantom,
         "generate_eels_phantom": generate_eels_phantom,
         "generate_eht_imaging_phantom": generate_eht_imaging_phantom,
+        "generate_elastography_phantom": generate_elastography_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

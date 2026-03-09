@@ -5747,6 +5747,119 @@ def generate_eht_imaging_phantom(
     return samples
 
 
+def generate_elastography_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Elastography stiffness phantom for shear wave imaging benchmarks.
+
+    Creates a 64x64 float32 shear modulus (stiffness) map:
+      - Soft tissue background: G ~ 2-5 kPa
+      - Stiffer circular or elliptical inclusion (tumor): G ~ 20-50 kPa
+
+    Applies elastography forward model:
+      - Simulate tissue displacement field under harmonic shear wave excitation
+      - Displacement magnitude inversely proportional to local stiffness
+      - Add Gaussian noise at SNR ~ 20 dB
+
+    x_true: 64x64 float32, normalized [0,1] — shear modulus (stiffness) map.
+    y: 64x64 float32 — displacement magnitude map (noisy measurement).
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, excitation_freq_hz, stiffness_ratio, snr_db.
+
+    References: Manduca et al., Magn. Reson. Imaging 2001;
+                Muthupillai et al., Science 1995.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    excitation_freq_hz = 100.0  # Typical MRE excitation frequency
+    snr_db = 20.0
+
+    for i in range(n_samples):
+        # --- Ground truth: shear modulus map (kPa) ---
+        yy, xx = np.mgrid[0:H, 0:W]
+        cy, cx = H / 2.0, W / 2.0
+
+        # Soft tissue background stiffness (kPa)
+        G_background = float(rng.uniform(2.0, 5.0))
+        stiffness_map = np.full((H, W), G_background, dtype=np.float32)
+
+        # Stiffer inclusion: random position, size, and ellipticity
+        inc_cy = float(rng.uniform(0.25 * H, 0.75 * H))
+        inc_cx = float(rng.uniform(0.25 * W, 0.75 * W))
+        inc_ry = float(rng.uniform(6.0, 14.0))   # semi-axis y
+        inc_rx = float(rng.uniform(6.0, 14.0))   # semi-axis x
+        G_inclusion = float(rng.uniform(20.0, 50.0))
+
+        dist_ellipse = ((yy - inc_cy) / inc_ry) ** 2 + ((xx - inc_cx) / inc_rx) ** 2
+        inclusion_mask = dist_ellipse <= 1.0
+        stiffness_map[inclusion_mask] = G_inclusion
+
+        # Smooth boundary slightly
+        stiffness_map = gaussian_filter(stiffness_map, sigma=1.0).astype(np.float32)
+
+        stiffness_ratio = float(G_inclusion / G_background)
+
+        # Normalize x_true to [0, 1]
+        s_min = float(stiffness_map.min())
+        s_max = float(stiffness_map.max())
+        if s_max > s_min:
+            x_true = ((stiffness_map - s_min) / (s_max - s_min)).astype(np.float32)
+        else:
+            x_true = stiffness_map.astype(np.float32)
+
+        # --- Forward model: displacement field under harmonic shear wave ---
+        # Displacement magnitude is inversely proportional to local stiffness:
+        #   u(r) ~ A / sqrt(G(r))
+        # (shear wave amplitude decreases in stiffer regions)
+        amplitude = float(rng.uniform(1.0, 2.0))
+        displacement_clean = (amplitude / np.sqrt(stiffness_map)).astype(np.float32)
+
+        # Add Gaussian noise at specified SNR
+        signal_power = float(np.mean(displacement_clean ** 2))
+        noise_power = signal_power / (10.0 ** (snr_db / 10.0))
+        noise_std = float(np.sqrt(noise_power))
+        noise = rng.standard_normal((H, W)).astype(np.float32) * noise_std
+        displacement_noisy = (displacement_clean + noise).astype(np.float32)
+
+        # Normalize y to [0, 1]
+        y_min = float(displacement_noisy.min())
+        y_max = float(displacement_noisy.max())
+        if y_max > y_min:
+            y = ((displacement_noisy - y_min) / (y_max - y_min)).astype(np.float32)
+        else:
+            y = np.zeros((H, W), dtype=np.float32)
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "elastography",
+                "excitation_freq_hz": excitation_freq_hz,
+                "stiffness_ratio": round(stiffness_ratio, 2),
+                "snr_db": snr_db,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -5830,6 +5943,7 @@ def acquire_dataset(
         "generate_edx_mapping_phantom": generate_edx_mapping_phantom,
         "generate_eels_phantom": generate_eels_phantom,
         "generate_eht_imaging_phantom": generate_eht_imaging_phantom,
+        "generate_elastography_phantom": generate_elastography_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -5919,6 +6033,7 @@ def acquire_dataset(
         "generate_edx_mapping_phantom": lambda: generate_edx_mapping_phantom(),
         "generate_eels_phantom": lambda: generate_eels_phantom(),
         "generate_eht_imaging_phantom": lambda: generate_eht_imaging_phantom(),
+        "generate_elastography_phantom": lambda: generate_elastography_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)
