@@ -413,9 +413,13 @@ Correspondence and requests for materials should be addressed to C.Y.\ (\texttt{
 \caption{\textbf{The universal grammar of computational imaging.}
 \textbf{a},~Any computational imaging system---from coded-aperture cameras to cryo-electron microscopes---serves as input.
 \textbf{b},~The system is composed as a typed directed acyclic graph (DAG) over 11 universal primitives (\cref{fig:operatorgraph}); shown here for CASSI as an example.
-\textbf{c},~The \triad{} diagnoses the DAG through three independent gates: information deficiency (Gate~1), carrier budget (Gate~2), and operator mismatch (Gate~3), each producing a quantitative score (\cref{fig:triad}).
+The grammar enables two workflows.
+\emph{Top (existing instruments):}
+\textbf{c},~The \triad{} diagnoses the DAG through three independent gates: information deficiency (Gate~1), carrier budget (Gate~2), and operator mismatch (Gate~3).
 \textbf{d},~Based on the dominant gate, a targeted correction is applied: sampling redesign (Gate~1), source/detector improvement (Gate~2), or operator calibration (Gate~3).
-\textbf{e},~The existing solver is re-run with the corrected operator, recovering $+0.8$ to $+13.9$\,dB reconstruction quality without retraining.
+\textbf{e},~The existing solver is re-run with the corrected operator, recovering $+0.8$ to $+13.9$\,dB without retraining.
+\emph{Bottom (new instruments):}
+\textbf{f},~The same three gates guide the design of a new modality from first principles: Gate~1 determines sampling geometry, Gate~2 guides carrier and source selection, and Gate~3 predicts the calibration accuracy required for a target reconstruction quality.
 Together, the 11 primitives (alphabet) and 3 gates (rules) form a universal grammar for designing, diagnosing, and correcting any imaging system.}
 \label{fig:overview}
 \end{figure}

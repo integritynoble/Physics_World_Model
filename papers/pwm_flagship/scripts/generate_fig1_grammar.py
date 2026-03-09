@@ -2,9 +2,10 @@
 """
 Generate Figure 1: The Universal Grammar of Computational Imaging.
 
-Layout (single row, equal spacing):
-  a (Any system) → b (Compose: OperatorGraph) → c (Diagnose: 3 gates)
-    → d (Correct dominant gate) → e (Recover)
+Layout (two-branch from OperatorGraph):
+  a (Any system) → b (Compose: OperatorGraph)
+      ├─ Top:    c (Diagnose) → d (Correct) → e (Recover)   [existing]
+      └─ Bottom: f (Design: gate-guided new modality)        [new]
 
 Usage:
     python generate_fig1_grammar.py [--output figures/fig1_overview.pdf]
@@ -41,6 +42,7 @@ C_STAGE2 = "#EDE8F5"
 C_STAGE3 = "#FFF3E0"
 C_STAGE4 = "#FCE4EC"
 C_STAGE5 = "#E8F5E9"
+C_STAGE6 = "#E0F2F1"   # Design panel (teal-ish)
 
 C_TEXT  = "#333333"
 C_ARROW = "#777777"
@@ -99,77 +101,97 @@ def draw_small_arrow(ax, x0, y0, x1, y1, color=C_ARROW, lw=1.2):
 # ── Main figure ─────────────────────────────────────────────────────────────
 
 def main(output_path: Path):
-    # Smaller figsize → less downscaling in paper → bigger rendered text
-    # At textwidth=183mm≈7.2", scale factor ≈ 7.2/12 = 0.6
-    fig, ax = plt.subplots(figsize=(12, 7), facecolor="white")
-    ax.set_xlim(0, 16.0)
-    ax.set_ylim(0, 7.0)
+    # figsize (13, 9): scale factor ≈ 7.2/13 = 0.554
+    fig, ax = plt.subplots(figsize=(13, 9), facecolor="white")
+    ax.set_xlim(0, 17.0)
+    ax.set_ylim(0, 10.0)
     ax.axis("off")
     ax.set_facecolor("white")
 
-    # ── Layout: single row with EQUAL gaps ─────────────────────────────────
-    row_y = 3.5         # vertical centre
-    row_h = 5.6         # panel height (taller for more room)
+    # ── Vertical layout ─────────────────────────────────────────────────
+    y_top = 7.0       # top-row centre (existing instruments)
+    y_bot = 2.8       # bottom-row centre (design new)
+    h_top = 4.8       # top-row panel height
+    h_bot = 4.0       # bottom-row panel height
 
-    # Panel widths (a/b need room for text+DAG; c/d for 3 gate boxes)
-    w_a, w_b, w_c, w_d, w_e = 2.0, 3.0, 3.6, 3.6, 1.8
-    total_panels = w_a + w_b + w_c + w_d + w_e
+    # Left panels span full height
+    left_cy = 5.0
+    left_h = 8.4      # spans from 0.8 to 9.2
+
+    # ── Horizontal layout ───────────────────────────────────────────────
     margin = 0.20
-    gap = (16.0 - 2 * margin - total_panels) / 4
 
-    # Compute centres
+    # Left column: a + b
+    w_a = 2.0
+    w_b = 2.8
+    gap_ab = 0.35
+
     a_left = margin
     a_cx = a_left + w_a / 2
-    b_left = a_left + w_a + gap
+    b_left = a_left + w_a + gap_ab
     b_cx = b_left + w_b / 2
-    c_left = b_left + w_b + gap
+    b_right = b_left + w_b
+
+    # Right column starts after b
+    gap_br = 0.50
+    right_start = b_right + gap_br
+
+    # Top row: c, d, e
+    w_c = 3.4
+    w_d = 3.4
+    w_e = 2.0
+    gap_top = 0.30
+    c_left = right_start
     c_cx = c_left + w_c / 2
-    d_left = c_left + w_c + gap
+    d_left = c_left + w_c + gap_top
     d_cx = d_left + w_d / 2
-    e_left = d_left + w_d + gap
+    e_left = d_left + w_d + gap_top
     e_cx = e_left + w_e / 2
 
-    # ════════════════════════════════════════════════════════════════════════
-    # a – Any Imaging System
-    # ════════════════════════════════════════════════════════════════════════
-    draw_stage_box(ax, a_cx, row_y, w_a, row_h, C_STAGE1, "#B0C4DE")
+    # Bottom row: f (full width of right side)
+    w_f = e_left + w_e - right_start
+    f_cx = right_start + w_f / 2
 
-    ax.text(a_left + 0.10, row_y + row_h / 2 - 0.18, "a",
+    # ════════════════════════════════════════════════════════════════════
+    # a – Any Imaging System (spans full height)
+    # ════════════════════════════════════════════════════════════════════
+    draw_stage_box(ax, a_cx, left_cy, w_a, left_h, C_STAGE1, "#B0C4DE")
+
+    ax.text(a_left + 0.10, left_cy + left_h / 2 - 0.18, "a",
             fontsize=16, fontweight="bold", color=C_TEXT, va="top", zorder=1)
-    ax.text(a_cx, row_y + row_h / 2 - 0.65, "Any Imaging\nSystem",
+    ax.text(a_cx, left_cy + left_h / 2 - 0.60, "Any Imaging\nSystem",
             fontsize=12, ha="center", va="top", color="#3B6FA0",
             fontweight="bold", linespacing=1.3, zorder=1)
 
     modalities = ["CASSI", "MRI", "CT", "Cryo-EM", "OCT", "..."]
+    mod_y_start = left_cy + 1.0
     for i, name in enumerate(modalities):
-        ax.text(a_cx, row_y + 0.50 - i * 0.45, name,
+        ax.text(a_cx, mod_y_start - i * 0.50, name,
                 fontsize=10, ha="center", va="center", color="#666666",
                 style="italic", zorder=1)
 
-    # ════════════════════════════════════════════════════════════════════════
-    # b – Compose: OperatorGraph
-    # ════════════════════════════════════════════════════════════════════════
-    draw_stage_box(ax, b_cx, row_y, w_b, row_h, C_STAGE2, "#C0B0D8")
+    # ════════════════════════════════════════════════════════════════════
+    # b – Compose: OperatorGraph (spans full height)
+    # ════════════════════════════════════════════════════════════════════
+    draw_stage_box(ax, b_cx, left_cy, w_b, left_h, C_STAGE2, "#C0B0D8")
 
-    ax.text(b_left + 0.08, row_y + row_h / 2 - 0.18, "b",
+    ax.text(b_left + 0.08, left_cy + left_h / 2 - 0.18, "b",
             fontsize=16, fontweight="bold", color=C_TEXT, va="top", zorder=1)
-    ax.text(b_cx, row_y + row_h / 2 - 0.65,
+    ax.text(b_cx, left_cy + left_h / 2 - 0.60,
             "Compose:\nOperatorGraph",
             fontsize=11, ha="center", va="top", color=C_ENC_T,
             fontweight="bold", linespacing=1.15, zorder=1)
-
-    # Subtitle: reference Fig. 2a
-    ax.text(b_cx, row_y + row_h / 2 - 1.10,
+    ax.text(b_cx, left_cy + left_h / 2 - 1.10,
             "(11 primitives; Fig. 2a)",
             fontsize=8, ha="center", va="top", color="#888888",
             style="italic", zorder=1)
 
     # DAG: P → C → W → S → D
     dag_prims = ["P", "C", "W", "S", "D"]
-    dag_y_top = row_y + 0.60
-    dag_sp = 0.50
-    nw, nh = 0.60, 0.34
-    dag_cx = b_cx - 0.15
+    dag_y_top = left_cy + 0.80
+    dag_sp = 0.52
+    nw, nh = 0.58, 0.32
+    dag_cx = b_cx - 0.10
     for i, p in enumerate(dag_prims):
         y = dag_y_top - i * dag_sp
         fill, tcol = PRIM_COLOR_MAP[p]
@@ -186,19 +208,36 @@ def main(output_path: Path):
             linespacing=1.1, zorder=1)
 
     # Arrow: a → b
-    draw_big_arrow(ax, a_left + w_a + 0.06, row_y,
-                   b_left - 0.06, row_y, color="#9999BB", lw=2.5)
+    draw_big_arrow(ax, a_left + w_a + 0.06, left_cy,
+                   b_left - 0.06, left_cy, color="#9999BB", lw=2.5)
 
-    # ════════════════════════════════════════════════════════════════════════
-    # c – Diagnose: Triad Decomposition
-    # ════════════════════════════════════════════════════════════════════════
-    draw_stage_box(ax, c_cx, row_y, w_c, row_h, C_STAGE3, "#E0C8A0")
+    # ════════════════════════════════════════════════════════════════════
+    # Branch labels + arrows from b
+    # ════════════════════════════════════════════════════════════════════
+    # Top branch arrow: b → c (existing instruments)
+    draw_big_arrow(ax, b_right + 0.06, y_top,
+                   c_left - 0.06, y_top, color="#C0B080", lw=2.5)
+    ax.text((b_right + c_left) / 2, y_top + 0.30,
+            "Existing", fontsize=9, ha="center", va="bottom",
+            color="#888888", style="italic", zorder=6)
 
-    ax.text(c_left + 0.08, row_y + row_h / 2 - 0.18, "c",
+    # Bottom branch arrow: b → f (new instruments)
+    draw_big_arrow(ax, b_right + 0.06, y_bot,
+                   right_start - 0.06, y_bot, color="#66A0A0", lw=2.5)
+    ax.text((b_right + right_start) / 2, y_bot + 0.30,
+            "New", fontsize=9, ha="center", va="bottom",
+            color="#888888", style="italic", zorder=6)
+
+    # ════════════════════════════════════════════════════════════════════
+    # c – Diagnose: Triad Decomposition (top row)
+    # ════════════════════════════════════════════════════════════════════
+    draw_stage_box(ax, c_cx, y_top, w_c, h_top, C_STAGE3, "#E0C8A0")
+
+    ax.text(c_left + 0.08, y_top + h_top / 2 - 0.18, "c",
             fontsize=16, fontweight="bold", color=C_TEXT, va="top", zorder=1)
-    ax.text(c_cx, row_y + row_h / 2 - 0.65,
+    ax.text(c_cx, y_top + h_top / 2 - 0.55,
             "Diagnose:\nTriad Decomposition",
-            fontsize=12, ha="center", va="top", color="#B07020",
+            fontsize=11, ha="center", va="top", color="#B07020",
             fontweight="bold", linespacing=1.15, zorder=1)
 
     gate_data = [
@@ -206,9 +245,9 @@ def main(output_path: Path):
         ("Gate 2", "Carrier\nbudget", C_G2_BG, C_G2),
         ("Gate 3", "Operator\nmismatch", C_G3_BG, C_G3),
     ]
-    gate_sp = 1.20
-    gy = row_y - 0.35
-    gw, gh = 1.05, 1.90
+    gate_sp = 1.05
+    gy = y_top - 0.35
+    gw, gh = 0.95, 1.60
     for k, (gname, gdesc, gbg, gcol) in enumerate(gate_data):
         gx = c_cx + (k - 1) * gate_sp
         gbox = FancyBboxPatch(
@@ -216,25 +255,25 @@ def main(output_path: Path):
             boxstyle="round,pad=0.05", facecolor=gbg,
             edgecolor=gcol, linewidth=1.3, zorder=1)
         ax.add_patch(gbox)
-        ax.text(gx, gy + 0.40, gname, fontsize=12, ha="center",
+        ax.text(gx, gy + 0.35, gname, fontsize=11, ha="center",
                 va="center", color=gcol, fontweight="bold", zorder=2)
-        ax.text(gx, gy - 0.25, gdesc, fontsize=9, ha="center",
+        ax.text(gx, gy - 0.20, gdesc, fontsize=8, ha="center",
                 va="center", color=gcol, linespacing=1.15, zorder=2)
 
-    # Arrow: b → c
-    draw_big_arrow(ax, b_left + w_b + 0.06, row_y,
-                   c_left - 0.06, row_y, color="#C0B080", lw=2.5)
+    # Arrow: c → d
+    draw_big_arrow(ax, c_left + w_c + 0.06, y_top,
+                   d_left - 0.06, y_top, color="#CC9999", lw=2.5)
 
-    # ════════════════════════════════════════════════════════════════════════
-    # d – Correct: targeted intervention
-    # ════════════════════════════════════════════════════════════════════════
-    draw_stage_box(ax, d_cx, row_y, w_d, row_h, C_STAGE4, "#E0B0B0")
+    # ════════════════════════════════════════════════════════════════════
+    # d – Correct: targeted intervention (top row)
+    # ════════════════════════════════════════════════════════════════════
+    draw_stage_box(ax, d_cx, y_top, w_d, h_top, C_STAGE4, "#E0B0B0")
 
-    ax.text(d_left + 0.08, row_y + row_h / 2 - 0.18, "d",
+    ax.text(d_left + 0.08, y_top + h_top / 2 - 0.18, "d",
             fontsize=16, fontweight="bold", color=C_TEXT, va="top", zorder=1)
-    ax.text(d_cx, row_y + row_h / 2 - 0.65,
+    ax.text(d_cx, y_top + h_top / 2 - 0.55,
             "Correct:\ntargeted intervention",
-            fontsize=12, ha="center", va="top", color="#AA4040",
+            fontsize=11, ha="center", va="top", color="#AA4040",
             fontweight="bold", linespacing=1.15, zorder=1)
 
     corr_data = [
@@ -242,9 +281,9 @@ def main(output_path: Path):
         ("Gate 2\ndominant", "Improve\ncarrier", C_G2_BG, C_G2),
         ("Gate 3\ndominant", "Calibrate\noperator", C_G3_BG, C_G3),
     ]
-    corr_sp = 1.20
-    cy = row_y - 0.35
-    cw, ch = 1.05, 1.90
+    corr_sp = 1.05
+    cy = y_top - 0.35
+    cw, ch = 0.95, 1.60
     for k, (clabel, cdesc, cbg, ccol) in enumerate(corr_data):
         cx = d_cx + (k - 1) * corr_sp
         cbox = FancyBboxPatch(
@@ -252,44 +291,96 @@ def main(output_path: Path):
             boxstyle="round,pad=0.05", facecolor=cbg,
             edgecolor=ccol, linewidth=1.0, zorder=1)
         ax.add_patch(cbox)
-        ax.text(cx, cy + 0.40, clabel, fontsize=9.5, ha="center",
+        ax.text(cx, cy + 0.35, clabel, fontsize=9, ha="center",
                 va="center", color=ccol, fontweight="bold",
                 linespacing=1.1, zorder=2)
-        ax.text(cx, cy - 0.30, cdesc, fontsize=9, ha="center",
+        ax.text(cx, cy - 0.25, cdesc, fontsize=8, ha="center",
                 va="center", color="#555555", linespacing=1.1, zorder=2)
 
-    # Arrow: c → d
-    draw_big_arrow(ax, c_left + w_c + 0.06, row_y,
-                   d_left - 0.06, row_y, color="#CC9999", lw=2.5)
+    # Arrow: d → e
+    draw_big_arrow(ax, d_left + w_d + 0.06, y_top,
+                   e_left - 0.06, y_top, color="#88BB88", lw=2.5)
 
-    # ════════════════════════════════════════════════════════════════════════
-    # e – Recover
-    # ════════════════════════════════════════════════════════════════════════
-    draw_stage_box(ax, e_cx, row_y, w_e, row_h, C_STAGE5, "#A0D0A0")
+    # ════════════════════════════════════════════════════════════════════
+    # e – Recover (top row)
+    # ════════════════════════════════════════════════════════════════════
+    draw_stage_box(ax, e_cx, y_top, w_e, h_top, C_STAGE5, "#A0D0A0")
 
-    ax.text(e_left + 0.08, row_y + row_h / 2 - 0.18, "e",
+    ax.text(e_left + 0.08, y_top + h_top / 2 - 0.18, "e",
             fontsize=16, fontweight="bold", color=C_TEXT, va="top", zorder=1)
-    ax.text(e_cx, row_y + row_h / 2 - 0.65, "Recover",
-            fontsize=13, ha="center", va="top", color="#2E7D32",
+    ax.text(e_cx, y_top + h_top / 2 - 0.55, "Recover",
+            fontsize=12, ha="center", va="top", color="#2E7D32",
             fontweight="bold", zorder=1)
 
-    ax.text(e_cx, row_y + 0.45, "Corrected\nReconstruction",
-            fontsize=11, ha="center", va="center", color="#2E7D32",
+    ax.text(e_cx, y_top + 0.30, "Corrected\nReconstruction",
+            fontsize=10, ha="center", va="center", color="#2E7D32",
             fontweight="bold", linespacing=1.3, zorder=1)
-    ax.text(e_cx, row_y - 0.45, "+0.8 to\n+13.9 dB",
-            fontsize=11, ha="center", color="#555555",
+    ax.text(e_cx, y_top - 0.55, "+0.8 to\n+13.9 dB",
+            fontsize=10, ha="center", color="#555555",
             fontweight="bold", linespacing=1.2, zorder=1)
-    ax.text(e_cx, row_y - 1.20, "no retraining",
-            fontsize=9, ha="center", color="#888888",
+    ax.text(e_cx, y_top - 1.25, "no retraining",
+            fontsize=8, ha="center", color="#888888",
             style="italic", zorder=1)
 
-    # Arrow: d → e
-    draw_big_arrow(ax, d_left + w_d + 0.06, row_y,
-                   e_left - 0.06, row_y, color="#88BB88", lw=2.5)
+    # ════════════════════════════════════════════════════════════════════
+    # f – Design: gate-guided new modality (bottom row)
+    # ════════════════════════════════════════════════════════════════════
+    draw_stage_box(ax, f_cx, y_bot, w_f, h_bot, C_STAGE6, "#80B0B0")
 
-    # ════════════════════════════════════════════════════════════════════════
+    ax.text(right_start + 0.10, y_bot + h_bot / 2 - 0.18, "f",
+            fontsize=16, fontweight="bold", color=C_TEXT, va="top", zorder=1)
+    ax.text(f_cx, y_bot + h_bot / 2 - 0.50,
+            "Design: gate-guided new modality",
+            fontsize=12, ha="center", va="top", color="#1A6A6A",
+            fontweight="bold", zorder=1)
+
+    # Three design boxes (gate-guided)
+    design_data = [
+        ("Gate 1", "Sampling\ngeometry",
+         "How many\nmeasurements?", C_G1_BG, C_G1),
+        ("Gate 2", "Carrier &\nsource",
+         "Which carrier?\nSNR budget?", C_G2_BG, C_G2),
+        ("Gate 3", "Calibration\nspec",
+         "What accuracy\nneeded?", C_G3_BG, C_G3),
+    ]
+    # Position the 3 boxes across the panel
+    design_box_w = 2.6
+    design_box_h = 2.4
+    # Compute spacing: 3 boxes within w_f
+    n_boxes = 3
+    total_box_w = n_boxes * design_box_w
+    design_gap = (w_f - total_box_w) / (n_boxes + 1)
+    dy = y_bot - 0.20
+
+    for k, (dgate, dtitle, dquestion, dbg, dcol) in enumerate(design_data):
+        dx = right_start + design_gap + design_box_w / 2 + k * (design_box_w + design_gap)
+        dbox = FancyBboxPatch(
+            (dx - design_box_w / 2, dy - design_box_h / 2),
+            design_box_w, design_box_h,
+            boxstyle="round,pad=0.05", facecolor=dbg,
+            edgecolor=dcol, linewidth=1.2, zorder=1)
+        ax.add_patch(dbox)
+        # Gate label
+        ax.text(dx, dy + 0.70, dgate, fontsize=11, ha="center",
+                va="center", color=dcol, fontweight="bold", zorder=2)
+        # Design action
+        ax.text(dx, dy + 0.15, dtitle, fontsize=10, ha="center",
+                va="center", color="#333333", fontweight="bold",
+                linespacing=1.15, zorder=2)
+        # Guiding question
+        ax.text(dx, dy - 0.55, dquestion, fontsize=8, ha="center",
+                va="center", color="#777777", style="italic",
+                linespacing=1.15, zorder=2)
+
+    # Arrow: f → (output) — small arrow to "New System" text at right
+    output_x = right_start + w_f - 0.30
+    ax.text(output_x, y_bot + h_bot / 2 - 0.50, "Optimized\nSystem",
+            fontsize=9, ha="center", va="top", color="#1A6A6A",
+            fontweight="bold", linespacing=1.15, zorder=1)
+
+    # ════════════════════════════════════════════════════════════════════
     # Save
-    # ════════════════════════════════════════════════════════════════════════
+    # ════════════════════════════════════════════════════════════════════
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(str(output_path), dpi=300, bbox_inches="tight",
                 facecolor="white")
