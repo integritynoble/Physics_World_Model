@@ -195,7 +195,7 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
             # Extended CT/X-ray
             "industrial_ct", "digital_breast_tomo", "mammography",
             "fluoroscopy", "xray_radiography", "xray_ndt",
-            "dexa", "angiography", "ct_fluorescence",
+            "dexa", "ct_fluorescence",  # angiography → dedicated generator
             "talbot_lau", "portal_imaging",
             # Neutron/muon tomography (similar reconstruction)
             "neutron_tomo", "muon_tomo",
@@ -220,13 +220,34 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
             # Extended CT/X-ray (also in GCS lodopab_ct_sample)
             "industrial_ct", "digital_breast_tomo", "mammography",
             "fluoroscopy", "xray_radiography", "xray_ndt",
-            "dexa", "angiography", "ct_fluorescence",
+            "dexa", "ct_fluorescence",  # angiography → dedicated generator
             "talbot_lau", "portal_imaging", "spectral_ct",
             "neutron_tomo", "muon_tomo",
         ],
         converter="convert_nifti_from_zip",
         x_shape=[256, 256],
         notes="20 COVID-19 CT volumes with lung/infection segmentations (NIfTI in ZIP)",
+    ),
+
+    # Dedicated angiography vessel phantom (DSA / 3DRA iodine map)
+    "angiography_vessel_generated": DatasetEntry(
+        id="angiography_vessel_generated",
+        name="Generated X-ray Angiography Vessel Phantom",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="PWM generated vascular tree phantom (fractal bifurcation, Murray's law)",
+        license="N/A",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["angiography"],
+        converter="generate_angiography_vessel_phantom",
+        x_shape=[256, 256],
+        notes=(
+            "Fractal vascular tree with main trunk + 2-order branches; "
+            "iodine concentration map calibrated to DSA/3DRA physics. "
+            "Ref: Shen et al. Med. Image Anal. 2024; Wang et al. IEEE TMI 2024."
+        ),
     ),
 
     # ==================================================================
