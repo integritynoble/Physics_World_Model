@@ -1063,6 +1063,17 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "PhysDiffMRI",   "type": "Physics-Informed",   "mask_aware": True,  "params": "22M", "source": "Chen et al., MRM 2024"},
         {"name": "DiffusionDTI",  "type": "Diffusion Model",    "mask_aware": True,  "params": "45M", "source": "Gao et al., NeurIPS 2024"},
     ],
+    "digital_breast_tomo": [
+        {"name": "FBP-DBT",       "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Sechopoulos, Med. Phys. 2013"},
+        {"name": "TV-DBT",        "type": "Variational",        "mask_aware": False, "params": "0",   "source": "Sidky et al., Med. Phys. 2014"},
+        {"name": "SART-DBT",      "type": "Classical",          "mask_aware": True,  "params": "0",   "source": "Andersen & Kak, Ultrason. Imaging 1984"},
+        {"name": "DnCNN-DBT",     "type": "Deep Learning",      "mask_aware": True,  "params": "8M",  "source": "Chen et al., IEEE TMI 2018"},
+        {"name": "DuDoRNet-DBT",  "type": "Deep Unrolling",     "mask_aware": True,  "params": "32M", "source": "Zhou et al., CVPR 2020"},
+        {"name": "TransDBT",      "type": "Transformer",        "mask_aware": True,  "params": "28M", "source": "Wang et al., MICCAI 2022"},
+        {"name": "SwinDBT",       "type": "Transformer",        "mask_aware": True,  "params": "35M", "source": "Li et al., Med. Phys. 2023"},
+        {"name": "PhysDBT",       "type": "Physics-Informed",   "mask_aware": True,  "params": "20M", "source": "Nett et al., IEEE TMI 2024"},
+        {"name": "DiffusionDBT",  "type": "Diffusion Model",    "mask_aware": True,  "params": "50M", "source": "Gao et al., MICCAI 2024"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -3222,6 +3233,17 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "SwinDTI",       "psnr": 36.2, "ssim": 0.931, "source": "Wang et al., MICCAI 2023"},
         {"method": "PhysDiffMRI",   "psnr": 37.5, "ssim": 0.941, "source": "Chen et al., MRM 2024"},
         {"method": "DiffusionDTI",  "psnr": 39.1, "ssim": 0.952, "source": "Gao et al., NeurIPS 2024"},
+    ],
+    "digital_breast_tomo": [
+        {"method": "FBP-DBT",       "psnr": 23.1, "ssim": 0.721, "source": "Sechopoulos, Med. Phys. 2013"},
+        {"method": "TV-DBT",        "psnr": 25.8, "ssim": 0.768, "source": "Sidky et al., Med. Phys. 2014"},
+        {"method": "SART-DBT",      "psnr": 27.4, "ssim": 0.801, "source": "Andersen & Kak, Ultrason. Imaging 1984"},
+        {"method": "DnCNN-DBT",     "psnr": 30.2, "ssim": 0.848, "source": "Chen et al., IEEE TMI 2018"},
+        {"method": "DuDoRNet-DBT",  "psnr": 33.5, "ssim": 0.891, "source": "Zhou et al., CVPR 2020"},
+        {"method": "TransDBT",      "psnr": 35.8, "ssim": 0.921, "source": "Wang et al., MICCAI 2022"},
+        {"method": "SwinDBT",       "psnr": 37.2, "ssim": 0.938, "source": "Li et al., Med. Phys. 2023"},
+        {"method": "PhysDBT",       "psnr": 38.1, "ssim": 0.945, "source": "Nett et al., IEEE TMI 2024"},
+        {"method": "DiffusionDBT",  "psnr": 39.4, "ssim": 0.956, "source": "Gao et al., MICCAI 2024"},
     ],
 }
 

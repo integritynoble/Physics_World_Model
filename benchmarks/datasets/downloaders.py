@@ -4569,6 +4569,154 @@ def generate_diffusion_mri_phantom(
     return samples
 
 
+def generate_digital_breast_tomo_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    Digital Breast Tomosynthesis (DBT) phantom with adipose tissue, glandular
+    regions, and a small lesion/mass.
+
+    Simulates limited-angle tomosynthesis: projects through 11 angles (-25° to
+    +25°), adds Poisson noise, then back-projects (FBP) to produce y.
+
+    x_true: 64×64 float32 breast phantom normalized to [0, 1] —
+            adipose tissue background (~0.2), glandular regions (~0.6-0.8),
+            small lesion/mass (~1.0).
+    y: 64×64 float32 — FBP reconstruction from limited-angle projections with
+       Poisson noise, exhibiting limited-angle artifacts.
+    H_ideal: 64×64 float32 identity matrix.
+    metadata: dict with keys modality, n_angles, angle_range_deg,
+              dose_reduction_factor.
+
+    Reference: Sechopoulos, Med. Phys. 2013; Sidky et al., Med. Phys. 2014.
+    """
+    import numpy as np
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    n_angles = 11
+    angle_range_deg = 25.0
+    angles_deg = np.linspace(-angle_range_deg, angle_range_deg, n_angles)
+    angles_rad = np.deg2rad(angles_deg)
+
+    for i in range(n_samples):
+        Y_grid, X_grid = np.mgrid[:H, :W]
+        cy = H / 2.0
+        cx = W / 2.0
+
+        # Adipose tissue background (fat, low attenuation ~0.15-0.25)
+        phantom = np.full((H, W), float(rng.uniform(0.15, 0.25)), dtype=np.float32)
+
+        # Breast boundary: semi-ellipse mask
+        breast_ry = float(rng.uniform(H * 0.38, H * 0.46))
+        breast_rx = float(rng.uniform(W * 0.38, W * 0.46))
+        breast_mask = ((Y_grid - cy) / breast_ry) ** 2 + ((X_grid - cx) / breast_rx) ** 2 <= 1.0
+        # Outside breast: air (0.0)
+        phantom[~breast_mask] = 0.0
+
+        # Glandular tissue regions (denser, higher attenuation ~0.55-0.80)
+        n_glands = int(rng.integers(2, 5))
+        for _ in range(n_glands):
+            gy = float(rng.uniform(cy - breast_ry * 0.5, cy + breast_ry * 0.5))
+            gx = float(rng.uniform(cx - breast_rx * 0.5, cx + breast_rx * 0.5))
+            g_ry = float(rng.uniform(H * 0.06, H * 0.14))
+            g_rx = float(rng.uniform(W * 0.06, W * 0.14))
+            g_val = float(rng.uniform(0.55, 0.80))
+            gland_mask = (
+                (((Y_grid - gy) / g_ry) ** 2 + ((X_grid - gx) / g_rx) ** 2 <= 1.0) &
+                breast_mask
+            )
+            phantom[gland_mask] = g_val
+
+        # Small lesion/mass (high attenuation ~0.85-1.0)
+        lesion_y = float(rng.uniform(cy - breast_ry * 0.35, cy + breast_ry * 0.35))
+        lesion_x = float(rng.uniform(cx - breast_rx * 0.35, cx + breast_rx * 0.35))
+        lesion_r = float(rng.uniform(H * 0.025, H * 0.05))
+        lesion_val = float(rng.uniform(0.85, 1.0))
+        lesion_mask = (
+            (Y_grid - lesion_y) ** 2 + (X_grid - lesion_x) ** 2 <= lesion_r ** 2
+        ) & breast_mask
+        phantom[lesion_mask] = lesion_val
+
+        # Normalize to [0, 1]
+        ph_min, ph_max = phantom.min(), phantom.max()
+        if ph_max - ph_min > 0:
+            x_true = (phantom - ph_min) / (ph_max - ph_min)
+        else:
+            x_true = phantom.copy()
+        x_true = x_true.astype(np.float32)
+
+        # Limited-angle tomosynthesis forward model
+        # Simple projection along each angle using shift-and-sum
+        projections = []
+        for theta in angles_rad:
+            # Project: for each row, shift by tan(theta) * (row - cy)
+            proj_image = np.zeros((H, W), dtype=np.float32)
+            for row in range(H):
+                shift = int(round(np.tan(theta) * (row - cy)))
+                shifted_row = np.roll(x_true[row, :], shift)
+                proj_image[row, :] = shifted_row
+            # Sum along rows to get 1D projection, then tile back
+            line_integral = proj_image.sum(axis=0)  # shape (W,)
+            projections.append(line_integral)
+
+        projections = np.array(projections, dtype=np.float32)  # (n_angles, W)
+
+        # Add Poisson noise (dose reduction)
+        dose_factor = float(rng.uniform(0.3, 0.7))
+        I0 = 1e4 * dose_factor
+        projections_noisy = rng.poisson(
+            np.maximum(I0 * (1.0 - projections), 1.0)
+        ).astype(np.float32)
+        projections_noisy = (I0 - projections_noisy) / (I0 + 1e-6)
+        projections_noisy = np.clip(projections_noisy, 0.0, 1.0)
+
+        # Back-projection (FBP approximation): shift back and average
+        backproj = np.zeros((H, W), dtype=np.float32)
+        for k, theta in enumerate(angles_rad):
+            line = projections_noisy[k, :]  # shape (W,)
+            bp_image = np.tile(line, (H, 1))  # broadcast to (H, W)
+            for row in range(H):
+                shift = int(round(np.tan(theta) * (row - cy)))
+                bp_image[row, :] = np.roll(line, -shift)
+            backproj += bp_image
+        backproj /= n_angles
+
+        # Normalize y to [0, 1]
+        y_min, y_max = backproj.min(), backproj.max()
+        if y_max - y_min > 0:
+            y = (backproj - y_min) / (y_max - y_min)
+        else:
+            y = backproj.copy()
+        y = np.clip(y, 0.0, 1.0).astype(np.float32)
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "digital_breast_tomo",
+                "n_angles": n_angles,
+                "angle_range_deg": angle_range_deg,
+                "dose_reduction_factor": dose_factor,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -4643,6 +4791,7 @@ def acquire_dataset(
         "generate_desi_phantom": lambda: generate_desi_phantom(target_shape=target_shape),
         "generate_dic_phantom": lambda: generate_dic_phantom(target_shape=target_shape),
         "generate_diffusion_mri_phantom": generate_diffusion_mri_phantom,
+        "generate_digital_breast_tomo_phantom": generate_digital_breast_tomo_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -4723,6 +4872,7 @@ def acquire_dataset(
         "generate_desi_phantom": lambda: generate_desi_phantom(target_shape=target_shape),
         "generate_dic_phantom": lambda: generate_dic_phantom(target_shape=target_shape),
         "generate_diffusion_mri_phantom": lambda: generate_diffusion_mri_phantom(),
+        "generate_digital_breast_tomo_phantom": lambda: generate_digital_breast_tomo_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

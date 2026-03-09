@@ -1285,6 +1285,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic diffusion MRI phantom for benchmarking DTI reconstruction algorithms",
     ),
+    "digital_breast_tomo_generated": DatasetEntry(
+        id="digital_breast_tomo_generated",
+        name="Digital Breast Tomosynthesis Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic DBT phantom with adipose/glandular tissue and lesion",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["digital_breast_tomo"],
+        converter="generate_digital_breast_tomo_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic DBT phantom for benchmarking limited-angle reconstruction algorithms",
+    ),
 }
 
 

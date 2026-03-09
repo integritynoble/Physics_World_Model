@@ -187,6 +187,10 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # Diffusion MRI: k-space undersampled DTI acquisition — y is the undersampled k-space
     # reconstruction; kspace runner matches the FA map forward model.
     "diffusion_mri": "kspace",
+    # Digital Breast Tomosynthesis: limited-angle Radon-transform projection (11 angles,
+    # ±25°) with Poisson noise and FBP back-projection.  Radon runner matches the
+    # limited-angle tomosynthesis forward model.
+    "digital_breast_tomo": "radon",
 }
 
 
@@ -333,6 +337,7 @@ def _resolve_ground_truth(
             generate_desi_phantom,
             generate_dic_phantom,
             generate_diffusion_mri_phantom,
+            generate_digital_breast_tomo_phantom,
         )
 
         # Look up registry entries for this modality
@@ -391,6 +396,7 @@ def _resolve_ground_truth(
                     "generate_desi_phantom": generate_desi_phantom,
                     "generate_dic_phantom": generate_dic_phantom,
                     "generate_diffusion_mri_phantom": generate_diffusion_mri_phantom,
+                    "generate_digital_breast_tomo_phantom": generate_digital_breast_tomo_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -903,6 +909,7 @@ def _load_scenes_from_generator(
             generate_desi_phantom,
             generate_dic_phantom,
             generate_diffusion_mri_phantom,
+            generate_digital_breast_tomo_phantom,
         )
     except ImportError:
         return []
@@ -953,6 +960,7 @@ def _load_scenes_from_generator(
         "generate_desi_phantom": generate_desi_phantom,
         "generate_dic_phantom": generate_dic_phantom,
         "generate_diffusion_mri_phantom": generate_diffusion_mri_phantom,
+        "generate_digital_breast_tomo_phantom": generate_digital_breast_tomo_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)
