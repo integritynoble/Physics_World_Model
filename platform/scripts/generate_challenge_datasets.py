@@ -203,6 +203,10 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # map absorption coefficient map to boundary flux; identity runner applies
     # minimal additional noise to the phantom's Born-approximation reconstruction.
     "dot": "identity",
+    # EBSD: Kikuchi pattern degradation is handled by the phantom generator
+    # (Voronoi grain boundary blur + Poisson shot noise); identity runner applies
+    # minimal additional noise to the phantom's orientation map.
+    "ebsd": "identity",
 }
 
 
@@ -353,6 +357,7 @@ def _resolve_ground_truth(
             generate_dna_paint_phantom,
             generate_doppler_ultrasound_phantom,
             generate_dot_phantom,
+            generate_ebsd_phantom,
         )
 
         # Look up registry entries for this modality
@@ -415,6 +420,7 @@ def _resolve_ground_truth(
                     "generate_dna_paint_phantom": generate_dna_paint_phantom,
                     "generate_doppler_ultrasound_phantom": generate_doppler_ultrasound_phantom,
                     "generate_dot_phantom": generate_dot_phantom,
+                    "generate_ebsd_phantom": generate_ebsd_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -931,6 +937,7 @@ def _load_scenes_from_generator(
             generate_dna_paint_phantom,
             generate_doppler_ultrasound_phantom,
             generate_dot_phantom,
+            generate_ebsd_phantom,
         )
     except ImportError:
         return []
@@ -985,6 +992,7 @@ def _load_scenes_from_generator(
         "generate_dna_paint_phantom": generate_dna_paint_phantom,
         "generate_doppler_ultrasound_phantom": generate_doppler_ultrasound_phantom,
         "generate_dot_phantom": generate_dot_phantom,
+        "generate_ebsd_phantom": generate_ebsd_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

@@ -1345,6 +1345,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic DOT phantom for benchmarking optical property reconstruction algorithms",
     ),
+    "ebsd_generated": DatasetEntry(
+        id="ebsd_generated",
+        name="EBSD Grain Orientation Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic EBSD phantom with Voronoi polycrystalline microstructure and Kikuchi noise",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["ebsd"],
+        converter="generate_ebsd_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic EBSD phantom for benchmarking grain orientation reconstruction algorithms",
+    ),
 }
 
 

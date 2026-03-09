@@ -5117,6 +5117,125 @@ def generate_dot_phantom(
     return samples
 
 
+def generate_ebsd_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Electron Backscatter Diffraction (EBSD) phantom with polycrystalline microstructure.
+
+    Creates a 64x64 float32 grain orientation map (Euler angle map, single channel)
+    using Voronoi tessellation: ~10-20 grains each assigned a random crystal
+    orientation in [0, 2*pi].
+
+    Applies EBSD forward model: simulates Kikuchi pattern degradation by adding
+    orientation-dependent Gaussian blur (sigma ~1-2 px) at grain boundaries and
+    uniform Poisson-like shot noise (~5% relative).
+
+    x_true: 64x64 float32, normalized [0,1] — grain orientation map.
+    y: 64x64 float32 — noisy/blurred EBSD orientation map.
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, n_grains, step_size_um, accelerating_voltage_kv.
+
+    Reference: Krieger Lassen, N.C., J. Microsc. 1994; Chen et al.,
+    Ultramicroscopy 2015.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    step_size_um = 0.5
+    accelerating_voltage_kv = 20.0
+
+    for i in range(n_samples):
+        n_grains = int(rng.integers(10, 21))
+
+        # --- Voronoi tessellation for grain structure ---
+        # Place grain seeds randomly in the image domain
+        seed_x = rng.uniform(0, W, size=n_grains).astype(np.float32)
+        seed_y = rng.uniform(0, H, size=n_grains).astype(np.float32)
+
+        # Assign random orientation (0 to 2*pi) to each grain
+        orientations = rng.uniform(0.0, 2.0 * np.pi, size=n_grains).astype(np.float32)
+
+        # Build grain label map via nearest-seed (Voronoi)
+        Y_grid, X_grid = np.mgrid[:H, :W]
+        X_grid = X_grid.astype(np.float32)
+        Y_grid = Y_grid.astype(np.float32)
+
+        # Compute distance from each pixel to each grain seed; assign to nearest
+        grain_map = np.zeros((H, W), dtype=np.int32)
+        min_dist = np.full((H, W), np.inf, dtype=np.float32)
+        for g in range(n_grains):
+            dist = np.sqrt((X_grid - seed_x[g]) ** 2 + (Y_grid - seed_y[g]) ** 2)
+            closer = dist < min_dist
+            grain_map[closer] = g
+            min_dist[closer] = dist[closer]
+
+        # Build orientation map: assign each pixel the orientation of its grain
+        orientation_map = orientations[grain_map]  # shape (H, W), float32
+
+        # --- Grain boundary detection (for orientation-dependent blur) ---
+        # Detect boundary pixels: where any 4-connected neighbor has a different grain
+        boundary_mask = np.zeros((H, W), dtype=np.float32)
+        boundary_mask[:-1, :] += (grain_map[:-1, :] != grain_map[1:, :]).astype(np.float32)
+        boundary_mask[1:, :] += (grain_map[:-1, :] != grain_map[1:, :]).astype(np.float32)
+        boundary_mask[:, :-1] += (grain_map[:, :-1] != grain_map[:, 1:]).astype(np.float32)
+        boundary_mask[:, 1:] += (grain_map[:, :-1] != grain_map[:, 1:]).astype(np.float32)
+        boundary_mask = np.clip(boundary_mask, 0.0, 1.0)
+
+        # --- EBSD forward model ---
+        # 1. Orientation-dependent Gaussian blur (sigma ~1-2 px) stronger at boundaries
+        sigma_interior = float(rng.uniform(0.5, 1.0))
+        sigma_boundary = float(rng.uniform(1.0, 2.0))
+
+        # Blend blurred versions: interior blur + extra boundary blur
+        blurred_interior = gaussian_filter(orientation_map, sigma=sigma_interior)
+        blurred_boundary = gaussian_filter(orientation_map, sigma=sigma_boundary)
+        y_raw = (1.0 - boundary_mask) * blurred_interior + boundary_mask * blurred_boundary
+
+        # 2. Poisson-like shot noise (~5% relative)
+        noise_scale = 0.05 * float(np.max(np.abs(y_raw)) + 1e-9)
+        y_raw = y_raw + rng.standard_normal((H, W)).astype(np.float32) * noise_scale
+
+        # --- Normalize x_true and y to [0, 1] ---
+        # x_true: normalize orientation map [0, 2*pi] -> [0, 1]
+        x_true = (orientation_map / (2.0 * np.pi)).astype(np.float32)
+
+        y_min = float(y_raw.min())
+        y_max = float(y_raw.max())
+        if y_max > y_min:
+            y = ((y_raw - y_min) / (y_max - y_min)).astype(np.float32)
+        else:
+            y = np.zeros((H, W), dtype=np.float32)
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "ebsd",
+                "n_grains": n_grains,
+                "step_size_um": step_size_um,
+                "accelerating_voltage_kv": accelerating_voltage_kv,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -5195,6 +5314,7 @@ def acquire_dataset(
         "generate_dna_paint_phantom": generate_dna_paint_phantom,
         "generate_doppler_ultrasound_phantom": generate_doppler_ultrasound_phantom,
         "generate_dot_phantom": generate_dot_phantom,
+        "generate_ebsd_phantom": generate_ebsd_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -5279,6 +5399,7 @@ def acquire_dataset(
         "generate_dna_paint_phantom": lambda: generate_dna_paint_phantom(),
         "generate_doppler_ultrasound_phantom": lambda: generate_doppler_ultrasound_phantom(),
         "generate_dot_phantom": lambda: generate_dot_phantom(),
+        "generate_ebsd_phantom": lambda: generate_ebsd_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)
