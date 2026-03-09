@@ -1,4 +1,4 @@
-\begin{thebibliography}{45}
+\begin{thebibliography}{46}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -148,6 +148,12 @@ Michael Lustig, David Donoho, and John~M. Pauly.
 David~J. Brady.
 \newblock \emph{Optical Imaging and Spectroscopy}.
 \newblock John Wiley \& Sons, 2009.
+
+\bibitem[Bloch(1946)]{bloch1946nuclear}
+Felix Bloch.
+\newblock Nuclear induction.
+\newblock \emph{Physical Review}, 70\penalty0 (7--8):\penalty0 460--474, 1946.
+\newblock \doi{10.1103/PhysRev.70.460}.
 
 \bibitem[Yang(2026{\natexlab{b}})]{yang2026inversenet}
 Chengshuai Yang.
