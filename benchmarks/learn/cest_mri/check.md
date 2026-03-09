@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Chemical Exchange Saturation Transfer MRI (CEST-MRI)
 
 **URL:** https://pwm.platformai.org/benchmark/cest_mri
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
 
 ---

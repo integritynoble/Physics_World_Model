@@ -134,6 +134,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # CBCT: cone-beam CT uses Radon-transform based projection (FDK geometry).
     # Use radon runner since the forward model is Radon-transform based.
     "cbct": "radon",
+    # CEST MRI: z-spectrum acquisition maps APT signal via exchange saturation.
+    # y is the measured z-spectrum slice; identity runner applies minimal noise.
+    "cest_mri": "identity",
 }
 
 
@@ -262,6 +265,7 @@ def _resolve_ground_truth(
             generate_cars_raman_phantom,
             generate_cathodoluminescence_phantom,
             generate_cbct_head_phantom,
+            generate_cest_mri_phantom,
         )
 
         # Look up registry entries for this modality
@@ -302,6 +306,7 @@ def _resolve_ground_truth(
                     "generate_cars_raman_phantom": generate_cars_raman_phantom,
                     "generate_cathodoluminescence_phantom": generate_cathodoluminescence_phantom,
                     "generate_cbct_head_phantom": generate_cbct_head_phantom,
+                    "generate_cest_mri_phantom": generate_cest_mri_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -796,6 +801,7 @@ def _load_scenes_from_generator(
             generate_cars_raman_phantom,
             generate_cathodoluminescence_phantom,
             generate_cbct_head_phantom,
+            generate_cest_mri_phantom,
         )
     except ImportError:
         return []
@@ -828,6 +834,7 @@ def _load_scenes_from_generator(
         "generate_cars_raman_phantom": generate_cars_raman_phantom,
         "generate_cathodoluminescence_phantom": generate_cathodoluminescence_phantom,
         "generate_cbct_head_phantom": generate_cbct_head_phantom,
+        "generate_cest_mri_phantom": generate_cest_mri_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

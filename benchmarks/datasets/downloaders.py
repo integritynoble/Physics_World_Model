@@ -2710,6 +2710,112 @@ def generate_cbct_head_phantom(
     return samples
 
 
+def generate_cest_mri_phantom(
+    n_samples: int = 10,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    CEST MRI (Chemical Exchange Saturation Transfer) phantom.
+
+    Simulates z-spectrum acquisitions across brain tissue with tumour regions.
+    Models the asymmetric magnetisation transfer (MT) asymmetry and amide
+    proton transfer (APT) effect at +3.5 ppm. Reconstruction goal: extract
+    the APT map (proportional to mobile protein concentration / pH).
+
+    Reference: Ward et al., J. Magn. Reson. 2000; Zhou et al., Nat. Med. 2003.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+    N_offsets = 32  # z-spectrum offset points
+
+    for i in range(n_samples):
+        # --- Ground truth: APT map (% signal asymmetry) ---
+        apt_map = np.zeros((H, W), dtype=np.float32)
+
+        # Normal brain: APT ~1.5-2.0%
+        brain_mask = np.zeros((H, W), bool)
+        cy, cx = H // 2, W // 2
+        ry, rx = H // 3, W // 3
+        Y, X = np.ogrid[:H, :W]
+        brain_mask = ((Y - cy) / ry) ** 2 + ((X - cx) / rx) ** 2 <= 1.0
+        apt_map[brain_mask] = float(rng.uniform(1.5, 2.0))
+
+        # Tumour: elevated APT ~3.0-4.5% (high protein content)
+        n_tumours = int(rng.integers(1, 3))
+        for _ in range(n_tumours):
+            ty = int(rng.integers(cy - ry // 2, cy + ry // 2))
+            tx = int(rng.integers(cx - rx // 2, cx + rx // 2))
+            tr = int(rng.integers(5, 12))
+            tumour = ((Y - ty) ** 2 + (X - tx) ** 2) <= tr ** 2
+            apt_map[tumour & brain_mask] = float(rng.uniform(3.0, 4.5))
+
+        # Stroke (low pH): reduced APT ~0.5-1.0%
+        if rng.random() > 0.6:
+            sy = int(rng.integers(cy - ry // 2, cy + ry // 2))
+            sx = int(rng.integers(cx - rx // 2, cx + rx // 2))
+            sr = int(rng.integers(4, 10))
+            stroke = ((Y - sy) ** 2 + (X - sx) ** 2) <= sr ** 2
+            apt_map[stroke & brain_mask] = float(rng.uniform(0.3, 0.9))
+
+        apt_map = gaussian_filter(apt_map, sigma=1.0).astype(np.float32)
+        x_true = apt_map  # percentage APT
+
+        # --- Forward model: z-spectrum ---
+        freq_offsets = np.linspace(-6, 6, N_offsets)  # ppm
+        z_spec = np.ones((H, W, N_offsets), dtype=np.float32)
+
+        for hi in range(H):
+            for wi in range(W):
+                if not brain_mask[hi, wi]:
+                    continue
+                apt_val = apt_map[hi, wi] / 100.0
+                for j, offset in enumerate(freq_offsets):
+                    # Direct water saturation (Lorentzian)
+                    ds = 0.95 * np.exp(-offset ** 2 / (2 * 0.5 ** 2))
+                    # MT asymmetry
+                    mt = 0.03 * np.exp(-np.abs(offset) / 2.0)
+                    # APT at +3.5 ppm
+                    apt_effect = apt_val * np.exp(-(offset - 3.5) ** 2 / (2 * 0.4 ** 2))
+                    z_spec[hi, wi, j] = float(np.clip(1 - ds - mt - apt_effect, 0, 1))
+
+        # Add thermal noise
+        sigma_n = 0.005 * (1 + 0.5 * rng.random())
+        y_meas = (z_spec + rng.normal(0, sigma_n, z_spec.shape)).astype(np.float32)
+        y_meas = np.clip(y_meas, 0, 1)
+
+        # Measurement is the z-spectrum (H x W x N_offsets flattened to H x W for eval)
+        # Store first z-spectrum slice as 2D
+        y_2d = y_meas[:, :, N_offsets // 2]
+
+        H_size = min(H * W, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y_2d,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "n_tumours": int(n_tumours),
+                "n_offsets": int(N_offsets),
+                "freq_range_ppm": [-6.0, 6.0],
+                "noise_sigma": float(sigma_n),
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -2766,6 +2872,7 @@ def acquire_dataset(
         "generate_cacti_video_phantom": lambda: generate_cacti_video_phantom(target_shape=target_shape),
         "generate_cathodoluminescence_phantom": lambda: generate_cathodoluminescence_phantom(target_shape=target_shape),
         "generate_cbct_head_phantom": lambda: generate_cbct_head_phantom(target_shape=target_shape),
+        "generate_cest_mri_phantom": lambda: generate_cest_mri_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -2828,6 +2935,7 @@ def acquire_dataset(
         "generate_cacti_video_phantom": lambda: generate_cacti_video_phantom(target_shape=target_shape),
         "generate_cathodoluminescence_phantom": lambda: generate_cathodoluminescence_phantom(target_shape=target_shape),
         "generate_cbct_head_phantom": lambda: generate_cbct_head_phantom(target_shape=target_shape),
+        "generate_cest_mri_phantom": lambda: generate_cest_mri_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)

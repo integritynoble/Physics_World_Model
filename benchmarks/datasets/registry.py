@@ -1015,6 +1015,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[128, 128],
         notes="Synthetic CBCT dental/maxillofacial phantom with teeth, bone, air cavities, optional metal implant",
     ),
+    "cest_mri_generated": DatasetEntry(
+        id="cest_mri_generated",
+        name="CEST MRI APT Brain Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Zhou et al., Nat. Med. 2003",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["cest_mri"],
+        converter="generate_cest_mri_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic CEST z-spectrum brain phantom with tumour and stroke regions",
+    ),
 }
 
 
