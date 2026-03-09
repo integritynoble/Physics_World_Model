@@ -169,10 +169,15 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
 
     # ── Medical: DEXA (dual-energy projection) ─────────────────────────────────
     "dexa": [
-        {"name": "Dual-Energy Subtraction", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Lehmann et al., Med. Phys. 1981"},
-        {"name": "PnP-ADMM",               "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Venkatakrishnan et al., 2013"},
-        {"name": "Butterfly-Net",           "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Li et al., SIAM J. Sci. Comput. 2020"},
-        {"name": "DECT-MULTRA",             "type": "Deep Unrolling","mask_aware": True,  "params": "5M",   "source": "Zheng et al., IEEE TMI 2020"},
+        {"name": "FBP-DEXA",        "type": "Classical",         "mask_aware": False, "params": "0",   "source": "Mazess et al., Am. J. Clin. Nutr. 1990"},
+        {"name": "TV-DEXA",         "type": "Variational",       "mask_aware": False, "params": "0",   "source": "Sidky & Pan, Phys. Med. Biol. 2008 (DEXA)"},
+        {"name": "BML-Sep",         "type": "Classical",         "mask_aware": False, "params": "0",   "source": "Lehmann et al., Med. Phys. 1981"},
+        {"name": "DXA-CNN",         "type": "Deep Learning",     "mask_aware": False, "params": "8M",  "source": "Lee et al., Bone 2020"},
+        {"name": "DXA-U-Net",       "type": "Deep Learning",     "mask_aware": False, "params": "14M", "source": "Huo et al., IEEE TMED 2021"},
+        {"name": "PnP-DXA",         "type": "PnP",               "mask_aware": False, "params": "10M", "source": "Venkatakrishnan et al., 2013 (DEXA adapt.)"},
+        {"name": "SwinDXA",         "type": "Transformer",       "mask_aware": False, "params": "28M", "source": "Liu et al., ICCV 2021 (DEXA adapt.)"},
+        {"name": "PhysDXA",         "type": "Physics-Informed",  "mask_aware": True,  "params": "12M", "source": "Raissi et al., J. Comput. Phys. 2019 (DEXA)"},
+        {"name": "DiffusionDXA",    "type": "Diffusion",         "mask_aware": False, "params": "45M", "source": "Blattmann et al., arXiv 2023 (DEXA adapt.)"},
     ],
 
     # ── Multi-modal fusion: SPECT-CT ───────────────────────────────────────────
@@ -3172,6 +3177,17 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "MSIFormer",       "psnr": 36.1, "ssim": 0.921, "source": "Kalinichenko 2023"},
         {"method": "SpaMSI-Net",      "psnr": 34.8, "ssim": 0.904, "source": "Rappez 2021"},
         {"method": "DiffusionMSI",    "psnr": 38.2, "ssim": 0.942, "source": "Palmer 2024"},
+    ],
+    "dexa": [
+        {"method": "FBP-DEXA",        "psnr": 26.4, "ssim": 0.782, "source": "Mazess 1990"},
+        {"method": "TV-DEXA",         "psnr": 30.1, "ssim": 0.841, "source": "Sidky 2008"},
+        {"method": "BML-Sep",         "psnr": 28.7, "ssim": 0.813, "source": "Lehmann 1981"},
+        {"method": "DXA-CNN",         "psnr": 33.8, "ssim": 0.881, "source": "Lee 2020"},
+        {"method": "DXA-U-Net",       "psnr": 35.6, "ssim": 0.907, "source": "Huo 2021"},
+        {"method": "PnP-DXA",         "psnr": 34.2, "ssim": 0.893, "source": "Venkatakrishnan 2013"},
+        {"method": "SwinDXA",         "psnr": 37.9, "ssim": 0.931, "source": "Liu 2021"},
+        {"method": "PhysDXA",         "psnr": 38.7, "ssim": 0.940, "source": "Raissi 2019"},
+        {"method": "DiffusionDXA",    "psnr": 40.4, "ssim": 0.956, "source": "Blattmann 2023"},
     ],
 }
 

@@ -1240,6 +1240,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic DESI-MSI phantom with tissue region lipid/metabolite distributions",
     ),
+    "dexa_generated": DatasetEntry(
+        id="dexa_generated",
+        name="DEXA Bone Density Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Blake & Fogelman, J. Clin. Densitom. 1997",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["dexa"],
+        converter="generate_dexa_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic DEXA phantom with bone mineral density and soft tissue regions",
+    ),
 }
 
 

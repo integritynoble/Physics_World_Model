@@ -323,6 +323,7 @@ def _resolve_ground_truth(
             generate_ct_fluorescence_phantom,
             generate_cup_phantom,
             generate_dark_field_phantom,
+            generate_dexa_phantom,
             generate_desi_phantom,
         )
 
@@ -378,6 +379,7 @@ def _resolve_ground_truth(
                     "generate_ct_fluorescence_phantom": generate_ct_fluorescence_phantom,
                     "generate_cup_phantom": generate_cup_phantom,
                     "generate_dark_field_phantom": generate_dark_field_phantom,
+                    "generate_dexa_phantom": generate_dexa_phantom,
                     "generate_desi_phantom": generate_desi_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
@@ -887,6 +889,7 @@ def _load_scenes_from_generator(
             generate_ct_fluorescence_phantom,
             generate_cup_phantom,
             generate_dark_field_phantom,
+            generate_dexa_phantom,
             generate_desi_phantom,
         )
     except ImportError:
@@ -934,6 +937,7 @@ def _load_scenes_from_generator(
         "generate_ct_fluorescence_phantom": generate_ct_fluorescence_phantom,
         "generate_cup_phantom": generate_cup_phantom,
         "generate_dark_field_phantom": generate_dark_field_phantom,
+        "generate_dexa_phantom": generate_dexa_phantom,
         "generate_desi_phantom": generate_desi_phantom,
     }
 

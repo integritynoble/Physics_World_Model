@@ -4159,6 +4159,116 @@ def generate_dark_field_phantom(
     return samples
 
 
+def generate_dexa_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    DEXA (Dual-Energy X-ray Absorptiometry) bone density imaging phantom.
+
+    Simulates bone mineral density (BMD) mapping from dual-energy X-ray
+    measurements using the Beer-Lambert two-component attenuation model.
+    x_true: 64x64 float32 bone mineral density map — central bone region
+            (oval, BMD ~0.8-1.0), surrounding soft tissue (~0.3-0.5),
+            background ~0.05.
+    y: Noisy DEXA measurement: apply Beer-Lambert (2 energy channels combined
+       linearly), add Poisson noise (scale factor 1e4), normalize to [0, 1].
+    H_ideal: identity matrix.
+    metadata: dict with keys modality, low_energy_keV, high_energy_keV,
+              detector_spacing_mm.
+
+    Reference: Blake & Fogelman, J. Clin. Densitom. 1997.
+    """
+    import numpy as np
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    # Mass attenuation coefficients (cm^2/g) at low (~40 keV) and high (~70 keV) energy
+    mu_bone_low = 0.40
+    mu_bone_high = 0.22
+    mu_soft_low = 0.25
+    mu_soft_high = 0.18
+
+    for i in range(n_samples):
+        # Background: very low BMD (~0.05)
+        x_true = np.full((H, W), 0.05, dtype=np.float32)
+
+        Y_grid, X_grid = np.mgrid[:H, :W]
+        cy = H / 2.0 + float(rng.uniform(-H * 0.1, H * 0.1))
+        cx = W / 2.0 + float(rng.uniform(-W * 0.1, W * 0.1))
+
+        # Central bone region (oval, BMD ~0.8-1.0)
+        ry_bone = float(rng.uniform(H * 0.12, H * 0.22))
+        rx_bone = float(rng.uniform(W * 0.10, W * 0.18))
+        bone_bmd = float(rng.uniform(0.8, 1.0))
+        bone_ellipse = ((Y_grid - cy) / ry_bone) ** 2 + ((X_grid - cx) / rx_bone) ** 2
+        bone_mask = bone_ellipse <= 1.0
+        x_true[bone_mask] = bone_bmd
+
+        # Surrounding soft tissue ring (~0.3-0.5)
+        ry_soft = ry_bone * float(rng.uniform(1.5, 2.2))
+        rx_soft = rx_bone * float(rng.uniform(1.5, 2.2))
+        soft_bmd = float(rng.uniform(0.3, 0.5))
+        soft_ellipse = ((Y_grid - cy) / ry_soft) ** 2 + ((X_grid - cx) / rx_soft) ** 2
+        soft_mask = (soft_ellipse <= 1.0) & (~bone_mask)
+        x_true[soft_mask] = soft_bmd
+
+        x_true = np.clip(x_true, 0.0, 1.0).astype(np.float32)
+
+        # Compute soft tissue thickness map (complement of BMD)
+        soft_tissue = np.where(bone_mask, 0.2, np.where(soft_mask, 0.6, 0.1)).astype(np.float32)
+
+        # Beer-Lambert forward model: two energy channels combined linearly
+        # p = mu_bone * x_bone + mu_soft * x_soft (projected attenuation)
+        attn_low = (mu_bone_low * x_true + mu_soft_low * soft_tissue).astype(np.float32)
+        attn_high = (mu_bone_high * x_true + mu_soft_high * soft_tissue).astype(np.float32)
+
+        # Poisson noise with scale factor 1e4
+        scale = 1e4
+        counts_low = rng.poisson(scale * np.exp(-attn_low).astype(np.float64)).astype(np.float32)
+        counts_high = rng.poisson(scale * np.exp(-attn_high).astype(np.float64)).astype(np.float32)
+
+        # Linear combination of two energy channels
+        y_combined = 0.6 * counts_low + 0.4 * counts_high
+
+        # Normalize to [0, 1]
+        y_min, y_max = float(y_combined.min()), float(y_combined.max())
+        if y_max - y_min > 1e-8:
+            y = ((y_combined - y_min) / (y_max - y_min)).astype(np.float32)
+        else:
+            y = np.zeros((H, W), dtype=np.float32)
+
+        H_size = min(H * W, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        low_energy_keV = float(rng.uniform(38.0, 42.0))
+        high_energy_keV = float(rng.uniform(68.0, 75.0))
+        detector_spacing_mm = float(rng.uniform(0.5, 1.5))
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "dexa",
+                "low_energy_keV": low_energy_keV,
+                "high_energy_keV": high_energy_keV,
+                "detector_spacing_mm": detector_spacing_mm,
+            },
+        })
+
+    return samples
+
+
 def generate_desi_phantom(
     n_samples: int = 3,
     seed: int = 42,
@@ -4315,6 +4425,7 @@ def acquire_dataset(
         "generate_ct_fluorescence_phantom": generate_ct_fluorescence_phantom,
         "generate_cup_phantom": generate_cup_phantom,
         "generate_dark_field_phantom": lambda: generate_dark_field_phantom(target_shape=target_shape),
+        "generate_dexa_phantom": lambda: generate_dexa_phantom(target_shape=target_shape),
         "generate_desi_phantom": lambda: generate_desi_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
@@ -4392,6 +4503,7 @@ def acquire_dataset(
         "generate_ct_fluorescence_phantom": lambda: generate_ct_fluorescence_phantom(),
         "generate_cup_phantom": lambda: generate_cup_phantom(),
         "generate_dark_field_phantom": lambda: generate_dark_field_phantom(target_shape=target_shape),
+        "generate_dexa_phantom": lambda: generate_dexa_phantom(target_shape=target_shape),
         "generate_desi_phantom": lambda: generate_desi_phantom(target_shape=target_shape),
     }
 
