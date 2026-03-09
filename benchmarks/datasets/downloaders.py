@@ -5236,6 +5236,128 @@ def generate_ebsd_phantom(
     return samples
 
 
+def generate_eddy_current_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Eddy Current Non-Destructive Testing (NDT) phantom with conductivity defects.
+
+    Creates a 64x64 float32 conductivity map: conductive metal plate background
+    (sigma ~10^6 S/m), surface defects/cracks (sigma ~0, voids), and corrosion
+    regions (sigma reduced by 50-80%).
+
+    Applies eddy current forward model: electromagnetic induction produces
+    impedance change signals proportional to defect geometry; simulated as a
+    blurred derivative of the conductivity map plus Gaussian noise.
+
+    x_true: 64x64 float32, normalized [0,1] — defect map.
+    y: 64x64 float32 — eddy current signal map.
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, frequency_khz, lift_off_mm, material.
+
+    Reference: Bowler, J. Appl. Phys. 1994; Sabbagh et al., IEEE Trans. Magn. 2010.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    frequency_khz = 100.0
+    lift_off_mm = 1.0
+    material = "aluminum"
+
+    for i in range(n_samples):
+        # --- Conductivity map (sigma normalized, 1.0 = bulk metal) ---
+        conductivity = np.ones((H, W), dtype=np.float32)
+
+        # Surface cracks / voids: sigma ~ 0
+        n_cracks = int(rng.integers(2, 6))
+        for _ in range(n_cracks):
+            cx = int(rng.integers(5, W - 5))
+            cy = int(rng.integers(5, H - 5))
+            length = int(rng.integers(4, 12))
+            width = int(rng.integers(1, 3))
+            # Randomly oriented crack (horizontal or vertical)
+            if rng.random() > 0.5:
+                x0 = max(0, cx - length // 2)
+                x1 = min(W, cx + length // 2)
+                y0 = max(0, cy - width // 2)
+                y1 = min(H, cy + width // 2)
+            else:
+                x0 = max(0, cx - width // 2)
+                x1 = min(W, cx + width // 2)
+                y0 = max(0, cy - length // 2)
+                y1 = min(H, cy + length // 2)
+            conductivity[y0:y1, x0:x1] = 0.0
+
+        # Corrosion regions: sigma reduced by 50-80%
+        n_corrosion = int(rng.integers(1, 4))
+        for _ in range(n_corrosion):
+            cx = int(rng.integers(8, W - 8))
+            cy = int(rng.integers(8, H - 8))
+            r = int(rng.integers(4, 10))
+            reduction = float(rng.uniform(0.5, 0.8))
+            yy, xx = np.ogrid[:H, :W]
+            mask = ((xx - cx) ** 2 + (yy - cy) ** 2) <= r ** 2
+            conductivity[mask] = np.minimum(conductivity[mask], 1.0 - reduction)
+
+        # --- Eddy current forward model ---
+        # Impedance change signal ~ blurred spatial derivative of conductivity
+        # (defect edges produce the largest eddy current perturbation)
+        grad_y = np.gradient(conductivity, axis=0).astype(np.float32)
+        grad_x = np.gradient(conductivity, axis=1).astype(np.float32)
+        gradient_magnitude = np.sqrt(grad_y ** 2 + grad_x ** 2)
+
+        # Blur to simulate sensor spatial resolution (lift-off effect)
+        sigma_blur = float(rng.uniform(1.0, 2.5))
+        y_raw = gaussian_filter(gradient_magnitude, sigma=sigma_blur)
+
+        # Add Gaussian noise (~3% relative)
+        noise_scale = 0.03 * float(np.max(np.abs(y_raw)) + 1e-9)
+        y_raw = y_raw + rng.standard_normal((H, W)).astype(np.float32) * noise_scale
+
+        # --- Normalize x_true (defect map): invert conductivity so defects = 1 ---
+        x_true = (1.0 - conductivity).astype(np.float32)  # defects are high
+        x_min = float(x_true.min())
+        x_max = float(x_true.max())
+        if x_max > x_min:
+            x_true = ((x_true - x_min) / (x_max - x_min)).astype(np.float32)
+
+        # Normalize y to [0, 1]
+        y_min = float(y_raw.min())
+        y_max = float(y_raw.max())
+        if y_max > y_min:
+            y = ((y_raw - y_min) / (y_max - y_min)).astype(np.float32)
+        else:
+            y = np.zeros((H, W), dtype=np.float32)
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "eddy_current",
+                "frequency_khz": frequency_khz,
+                "lift_off_mm": lift_off_mm,
+                "material": material,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -5315,6 +5437,7 @@ def acquire_dataset(
         "generate_doppler_ultrasound_phantom": generate_doppler_ultrasound_phantom,
         "generate_dot_phantom": generate_dot_phantom,
         "generate_ebsd_phantom": generate_ebsd_phantom,
+        "generate_eddy_current_phantom": generate_eddy_current_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -5400,6 +5523,7 @@ def acquire_dataset(
         "generate_doppler_ultrasound_phantom": lambda: generate_doppler_ultrasound_phantom(),
         "generate_dot_phantom": lambda: generate_dot_phantom(),
         "generate_ebsd_phantom": lambda: generate_ebsd_phantom(),
+        "generate_eddy_current_phantom": lambda: generate_eddy_current_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

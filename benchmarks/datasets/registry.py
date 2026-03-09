@@ -1360,6 +1360,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic EBSD phantom for benchmarking grain orientation reconstruction algorithms",
     ),
+    "eddy_current_generated": DatasetEntry(
+        id="eddy_current_generated",
+        name="Eddy Current NDT Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic eddy current NDT phantom with conductivity defects and electromagnetic forward model",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["eddy_current"],
+        converter="generate_eddy_current_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic eddy current phantom for benchmarking defect reconstruction algorithms",
+    ),
 }
 
 
