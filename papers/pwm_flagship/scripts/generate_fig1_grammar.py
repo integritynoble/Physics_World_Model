@@ -20,57 +20,76 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+import matplotlib.patheffects as pe
 import numpy as np
 
+# ── Global style ────────────────────────────────────────────────────────────
 
-# ── Colour palette ──────────────────────────────────────────────────────────
+plt.rcParams.update({
+    "font.family": "sans-serif",
+    "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
+    "mathtext.fontset": "dejavusans",
+})
 
-# Primitive role colours (soft, Nature-style)
-C_GEN   = "#B8D4F0"   # generation  – soft blue
-C_ENC   = "#C8B8E8"   # encoding    – soft purple
-C_TRN   = "#F0D8A0"   # transform   – soft gold
-C_DET   = "#F0B8B8"   # detection   – soft red
+# ── Colour palette (Nature-style muted tones) ──────────────────────────────
+
+# Primitive role colours
+C_GEN = "#CADCF0"   # generation  – soft blue
+C_ENC = "#D4C8EC"   # encoding    – soft lavender
+C_TRN = "#F2E0B0"   # transform   – soft gold
+C_DET = "#F2C4C0"   # detection   – soft coral
+
+# Darker accent for text inside nodes by role
+C_GEN_T = "#2B5A8C"
+C_ENC_T = "#5A3D8C"
+C_TRN_T = "#8C6D2B"
+C_DET_T = "#8C3A35"
 
 # Gate colours
-C_G1 = "#4A90D9"  # blue   – information deficiency
-C_G2 = "#E8963E"  # orange – carrier budget
-C_G3 = "#D94A4A"  # red    – operator mismatch
+C_G1 = "#3B7DD8"  # blue   – information deficiency
+C_G2 = "#D98C2B"  # amber  – carrier budget
+C_G3 = "#CC4444"  # red    – operator mismatch
+
+C_G1_BG = "#D6E5F7"
+C_G2_BG = "#F7E8D0"
+C_G3_BG = "#F7D6D6"
 
 # Neutral
-C_BG    = "#FAFAFA"
-C_TEXT  = "#2C2C2C"
-C_ARROW = "#666666"
-C_CORRECT = "#5BAA6A"  # green for correction
+C_TEXT   = "#333333"
+C_ARROW  = "#777777"
+C_EDGE   = "#AAAAAA"
+C_CORRECT = "#4CAF78"
+C_PANEL_BG = "#F7F8FA"
+
+PRIM_COLOR_MAP = {
+    "P": (C_GEN, C_GEN_T),
+    "C": (C_ENC, C_ENC_T), "M": (C_ENC, C_ENC_T), "R": (C_ENC, C_ENC_T),
+    "\u039B": (C_ENC, C_ENC_T), "\u03A0": (C_ENC, C_ENC_T),
+    "F": (C_TRN, C_TRN_T), "\u03A3": (C_TRN, C_TRN_T),
+    "S": (C_DET, C_DET_T), "W": (C_DET, C_DET_T), "D": (C_DET, C_DET_T),
+}
 
 
 # ── Helper functions ────────────────────────────────────────────────────────
 
-def _primitive_color(prim):
-    """Return fill colour for a primitive symbol."""
-    role_map = {
-        "P": C_GEN,
-        "C": C_ENC, "M": C_ENC, "R": C_ENC,
-        "\u039B": C_ENC, "\u03A0": C_ENC,
-        "F": C_TRN, "\u03A3": C_TRN,
-        "S": C_DET, "W": C_DET, "D": C_DET,
-    }
-    return role_map.get(prim, "#DDDDDD")
-
-
-def draw_node(ax, x, y, label, color, width=0.7, height=0.38,
-              fontsize=10, edgecolor="#888888", linewidth=0.8,
-              text_color=C_TEXT, bold=False):
+def draw_node(ax, x, y, label, fill, width=0.7, height=0.40,
+              fontsize=11, edgecolor=C_EDGE, linewidth=0.8,
+              text_color=C_TEXT, bold=True, shadow=False, zorder=2):
     """Draw a rounded-rectangle node with centred label."""
     box = FancyBboxPatch(
         (x - width / 2, y - height / 2), width, height,
-        boxstyle="round,pad=0.05",
-        facecolor=color, edgecolor=edgecolor, linewidth=linewidth,
-        zorder=2,
+        boxstyle="round,pad=0.06", facecolor=fill,
+        edgecolor=edgecolor, linewidth=linewidth, zorder=zorder,
     )
+    if shadow:
+        box.set_path_effects([
+            pe.withSimplePatchShadow(offset=(1.2, -1.2), shadow_rgbFace="#cccccc",
+                                     alpha=0.25),
+        ])
     ax.add_patch(box)
     weight = "bold" if bold else "normal"
     ax.text(x, y, label, ha="center", va="center",
-            fontsize=fontsize, color=text_color, weight=weight, zorder=3)
+            fontsize=fontsize, color=text_color, weight=weight, zorder=zorder + 1)
     return box
 
 
@@ -78,292 +97,338 @@ def draw_arrow(ax, x0, y0, x1, y1, color=C_ARROW, linewidth=1.0,
                style="-|>", mutation_scale=10):
     """Draw a simple arrow between two points."""
     arrow = FancyArrowPatch(
-        (x0, y0), (x1, y1),
-        arrowstyle=style, color=color,
-        linewidth=linewidth, mutation_scale=mutation_scale,
-        zorder=1,
+        (x0, y0), (x1, y1), arrowstyle=style, color=color,
+        linewidth=linewidth, mutation_scale=mutation_scale, zorder=1,
     )
     ax.add_patch(arrow)
 
 
-def draw_dag_chain(ax, x_start, y_top, primitives, colors, spacing=0.55,
-                   node_w=0.7, node_h=0.38, fontsize=10, arrow_color=C_ARROW):
-    """Draw a vertical chain of primitive nodes with arrows."""
+def draw_thick_arrow(ax, x0, y0, x1, y1, color=C_ARROW):
+    """Draw a thick chevron arrow for major transitions."""
+    arrow = FancyArrowPatch(
+        (x0, y0), (x1, y1),
+        arrowstyle="-|>", color=color,
+        linewidth=2.0, mutation_scale=16, zorder=5,
+    )
+    ax.add_patch(arrow)
+
+
+def draw_dag_vertical(ax, x_center, y_top, primitives, spacing=0.58,
+                      node_w=0.62, node_h=0.34, fontsize=10):
+    """Draw a vertical chain of primitive nodes with arrows. Uses role colours."""
     positions = []
-    for i, (prim, col) in enumerate(zip(primitives, colors)):
+    for i, prim in enumerate(primitives):
         y = y_top - i * spacing
-        draw_node(ax, x_start, y, prim, col, width=node_w, height=node_h,
-                  fontsize=fontsize)
-        positions.append((x_start, y))
+        fill, tcol = PRIM_COLOR_MAP.get(prim, (C_EDGE, C_TEXT))
+        draw_node(ax, x_center, y, prim, fill, width=node_w, height=node_h,
+                  fontsize=fontsize, text_color=tcol, shadow=True)
+        positions.append((x_center, y))
         if i > 0:
-            draw_arrow(ax, x_start, positions[i - 1][1] - node_h / 2 - 0.02,
-                       x_start, y + node_h / 2 + 0.02,
-                       color=arrow_color)
+            draw_arrow(ax, x_center, positions[i - 1][1] - node_h / 2 - 0.02,
+                       x_center, y + node_h / 2 + 0.02, color=C_ARROW)
     return positions
+
+
+def panel_bg(ax, color=C_PANEL_BG):
+    """Add subtle panel background."""
+    ax.set_facecolor(color)
+    for spine in ax.spines.values():
+        spine.set_visible(False)
 
 
 # ── Panel A: The 11 primitives grouped by role ──────────────────────────────
 
 def panel_a(ax):
-    """Draw the 11 primitives grouped by physical role."""
-    ax.set_xlim(-0.5, 6.5)
-    ax.set_ylim(-0.3, 4.5)
+    ax.set_xlim(-0.3, 7.0)
+    ax.set_ylim(-0.6, 4.5)
     ax.axis("off")
-    ax.text(0.0, 4.2, "a", fontsize=16, fontweight="bold",
-            transform=ax.transData)
+    panel_bg(ax)
 
-    # Group definitions: (label, primitives, colour, type_sig)
+    ax.text(-0.1, 4.25, "a", fontsize=18, fontweight="bold", color=C_TEXT)
+    ax.text(0.35, 4.25, "11 Universal Primitives", fontsize=11,
+            fontweight="bold", color="#555555", va="center")
+
     groups = [
-        ("Generation",  [("P", "source \u2192 field")],
-         C_GEN),
-        ("Encoding",    [("C", "aperture"), ("M", "modulation"),
-                         ("R", "rotation"), ("\u039B", "dispersion"),
-                         ("\u03A0", "phase")],
-         C_ENC),
-        ("Transform",   [("F", "Fourier"), ("\u03A3", "integration")],
-         C_TRN),
-        ("Detection",   [("S", "sampling"), ("W", "weighting"),
-                         ("D", "field \u2192 meas.")],
-         C_DET),
+        ("Generation", [("P", "source \u2192 field")], C_GEN, C_GEN_T),
+        ("Encoding",   [("C", "aperture"), ("M", "modulation"),
+                        ("R", "rotation"), ("\u039B", "dispersion"),
+                        ("\u03A0", "phase")], C_ENC, C_ENC_T),
+        ("Transform",  [("F", "Fourier"), ("\u03A3", "integration")], C_TRN, C_TRN_T),
+        ("Detection",  [("S", "sampling"), ("W", "weighting"),
+                        ("D", "field \u2192 meas.")], C_DET, C_DET_T),
     ]
 
-    y_pos = 3.6
-    for group_label, prims, color in groups:
-        # Group header
-        ax.text(0.1, y_pos + 0.05, group_label, fontsize=9, fontweight="bold",
-                color="#555555", va="center")
-        # Primitive boxes in a row
-        x = 1.6
+    y = 3.55
+    for group_label, prims, fill, tcol in groups:
+        # Group background band
+        band_w = 0.85 * len(prims) + 0.6
+        band = FancyBboxPatch(
+            (1.15, y - 0.30), band_w, 0.60,
+            boxstyle="round,pad=0.08", facecolor=fill, alpha=0.25,
+            edgecolor="none", zorder=0,
+        )
+        ax.add_patch(band)
+
+        # Group label
+        ax.text(0.05, y, group_label, fontsize=9, fontweight="bold",
+                color="#666666", va="center")
+
+        # Primitives
+        x = 1.55
         for sym, sig in prims:
-            draw_node(ax, x, y_pos, sym, color, width=0.52, height=0.34,
-                      fontsize=11, bold=True)
-            ax.text(x, y_pos - 0.28, sig, fontsize=6.5, ha="center",
-                    va="top", color="#777777", style="italic")
+            draw_node(ax, x, y, sym, fill, width=0.52, height=0.38,
+                      fontsize=12, text_color=tcol, edgecolor=tcol,
+                      linewidth=0.6, shadow=True)
+            ax.text(x, y - 0.32, sig, fontsize=6.5, ha="center",
+                    va="top", color="#888888", style="italic")
             x += 0.85
-        y_pos -= 1.0
+
+        y -= 1.05
 
 
 # ── Panel B: Three modalities as DAGs ───────────────────────────────────────
 
 def panel_b(ax):
-    """Draw CASSI, MRI, CT as typed DAGs over the 11 primitives."""
-    ax.set_xlim(-0.5, 5.5)
-    ax.set_ylim(-0.5, 4.5)
+    ax.set_xlim(-0.3, 5.8)
+    ax.set_ylim(-0.6, 4.5)
     ax.axis("off")
-    ax.text(-0.3, 4.2, "b", fontsize=16, fontweight="bold")
+    panel_bg(ax)
 
-    # CASSI chain: P → C → Λ → S → D
-    cassi_prims = ["P", "C", "\u039B", "S", "D"]
-    cassi_cols  = [C_GEN, C_ENC, C_ENC, C_DET, C_DET]
-    ax.text(0.7, 4.0, "CASSI", fontsize=10, fontweight="bold",
-            ha="center", color="#4A6FA5")
-    draw_dag_chain(ax, 0.7, 3.5, cassi_prims, cassi_cols,
-                   spacing=0.52, node_w=0.58, node_h=0.32, fontsize=9)
+    ax.text(-0.1, 4.25, "b", fontsize=18, fontweight="bold", color=C_TEXT)
+    ax.text(0.35, 4.25, "Same alphabet, different wiring", fontsize=11,
+            fontweight="bold", color="#555555", va="center")
 
-    # MRI chain: P → W → F → S → D
-    mri_prims = ["P", "W", "F", "S", "D"]
-    mri_cols  = [C_GEN, C_DET, C_TRN, C_DET, C_DET]
-    ax.text(2.5, 4.0, "MRI", fontsize=10, fontweight="bold",
-            ha="center", color="#8B5E3C")
-    draw_dag_chain(ax, 2.5, 3.5, mri_prims, mri_cols,
-                   spacing=0.52, node_w=0.58, node_h=0.32, fontsize=9)
+    # Modality title colours
+    title_cols = {"CASSI": "#3B6FA0", "MRI": "#7B5030", "CT": "#A04030"}
+    chains = {
+        "CASSI": ["P", "C", "\u039B", "S", "D"],
+        "MRI":   ["P", "W", "F", "S", "D"],
+        "CT":    ["P", "R", "\u03A3", "S", "D"],
+    }
 
-    # CT chain: P → R → Σ → S → D
-    ct_prims = ["P", "R", "\u03A3", "S", "D"]
-    ct_cols  = [C_GEN, C_ENC, C_TRN, C_DET, C_DET]
-    ax.text(4.3, 4.0, "CT", fontsize=10, fontweight="bold",
-            ha="center", color="#B8463E")
-    draw_dag_chain(ax, 4.3, 3.5, ct_prims, ct_cols,
-                   spacing=0.52, node_w=0.58, node_h=0.32, fontsize=9)
+    x_positions = [0.8, 2.6, 4.4]
+    for (name, prims), xc in zip(chains.items(), x_positions):
+        ax.text(xc, 3.85, name, fontsize=11, fontweight="bold",
+                ha="center", color=title_cols[name])
+        draw_dag_vertical(ax, xc, 3.4, prims, spacing=0.56,
+                          node_w=0.56, node_h=0.33, fontsize=10)
 
-    # Annotation
-    ax.text(2.5, -0.25,
-            "Same alphabet, different wiring",
-            fontsize=8, ha="center", color="#888888", style="italic")
+    # Bracket annotation at bottom
+    ax.annotate("", xy=(0.4, -0.30), xytext=(5.0, -0.30),
+                arrowprops=dict(arrowstyle="-", color="#BBBBBB", lw=0.8))
+    ax.text(2.7, -0.48, "Any modality = a DAG over the same 11 primitives",
+            fontsize=7.5, ha="center", color="#999999", style="italic")
 
 
 # ── Panel C: 3 gates overlaid on a DAG ─────────────────────────────────────
 
 def panel_c(ax):
-    """Draw a CASSI DAG (horizontal) with the 3 gates highlighted."""
-    ax.set_xlim(-0.5, 11.5)
-    ax.set_ylim(-0.8, 2.8)
+    ax.set_xlim(-0.8, 11.5)
+    ax.set_ylim(-0.6, 3.0)
     ax.axis("off")
-    ax.text(-0.3, 2.5, "c", fontsize=16, fontweight="bold")
+    panel_bg(ax, "#FAFBFD")
 
-    # Horizontal CASSI DAG
+    ax.text(-0.5, 2.7, "c", fontsize=18, fontweight="bold", color=C_TEXT)
+    ax.text(-0.0, 2.7, "Three gates on the OperatorGraph",
+            fontsize=11, fontweight="bold", color="#555555", va="center")
+
+    # Horizontal CASSI DAG — larger, centred
     prims = ["P", "C", "\u039B", "S", "D"]
-    cols  = [C_GEN, C_ENC, C_ENC, C_DET, C_DET]
-    node_w, node_h = 0.7, 0.42
-    gap = 1.6
-    x_start = 1.5
+    node_w, node_h = 0.82, 0.50
+    gap = 1.8
+    x0 = 1.8
     y_mid = 1.2
     positions = []
-    for i, (p, c) in enumerate(zip(prims, cols)):
-        x = x_start + i * gap
-        draw_node(ax, x, y_mid, p, c, width=node_w, height=node_h,
-                  fontsize=12, bold=True)
+    for i, p in enumerate(prims):
+        x = x0 + i * gap
+        fill, tcol = PRIM_COLOR_MAP[p]
+        draw_node(ax, x, y_mid, p, fill, width=node_w, height=node_h,
+                  fontsize=14, text_color=tcol, edgecolor=tcol,
+                  linewidth=0.8, shadow=True)
         positions.append((x, y_mid))
         if i > 0:
-            draw_arrow(ax, positions[i - 1][0] + node_w / 2 + 0.04, y_mid,
-                       x - node_w / 2 - 0.04, y_mid)
+            draw_arrow(ax, positions[i - 1][0] + node_w / 2 + 0.06, y_mid,
+                       x - node_w / 2 - 0.06, y_mid,
+                       color=C_ARROW, linewidth=1.2, mutation_scale=12)
 
-    # Gate 2: Carrier budget – spans entire P→D path (below)
-    g2_left = positions[0][0] - node_w / 2 - 0.15
-    g2_right = positions[4][0] + node_w / 2 + 0.15
-    rect2 = mpatches.FancyBboxPatch(
-        (g2_left, y_mid - node_h / 2 - 0.45), g2_right - g2_left, 0.35,
-        boxstyle="round,pad=0.06", facecolor=C_G2, alpha=0.15,
-        edgecolor=C_G2, linewidth=1.5, linestyle="--", zorder=0)
-    ax.add_patch(rect2)
-    ax.text((g2_left + g2_right) / 2, y_mid - node_h / 2 - 0.28,
-            "Gate 2: Carrier budget (source \u2192 detector photon path)",
-            fontsize=8.5, ha="center", va="center", color=C_G2,
-            fontweight="bold")
+    # ── Gate 3: Operator mismatch (at C node) ──
+    g3x = positions[1][0]
+    # Highlight ring around C
+    ring3 = mpatches.FancyBboxPatch(
+        (g3x - node_w / 2 - 0.10, y_mid - node_h / 2 - 0.10),
+        node_w + 0.20, node_h + 0.20,
+        boxstyle="round,pad=0.06", facecolor="none",
+        edgecolor=C_G3, linewidth=2.5, linestyle="-", zorder=4,
+    )
+    ax.add_patch(ring3)
+    # Label box above
+    lbl3 = FancyBboxPatch(
+        (g3x - 0.85, y_mid + node_h / 2 + 0.25), 1.70, 0.55,
+        boxstyle="round,pad=0.08", facecolor=C_G3_BG,
+        edgecolor=C_G3, linewidth=1.2, zorder=3,
+    )
+    ax.add_patch(lbl3)
+    ax.text(g3x, y_mid + node_h / 2 + 0.52,
+            "Gate 3\nOperator mismatch", fontsize=8.5, ha="center",
+            va="center", color=C_G3, fontweight="bold", linespacing=1.3,
+            zorder=4)
+    # Connector
+    draw_arrow(ax, g3x, y_mid + node_h / 2 + 0.25,
+               g3x, y_mid + node_h / 2 + 0.12,
+               color=C_G3, linewidth=1.2, style="-|>", mutation_scale=8)
 
-    # Gate 1: Information deficiency – spans S node (above)
-    g1_x = positions[3][0]
-    rect1 = mpatches.FancyBboxPatch(
-        (g1_x - 0.55, y_mid + node_h / 2 + 0.10), 1.1, 0.45,
-        boxstyle="round,pad=0.06", facecolor=C_G1, alpha=0.15,
-        edgecolor=C_G1, linewidth=1.5, linestyle="--", zorder=0)
-    ax.add_patch(rect1)
-    ax.text(g1_x, y_mid + node_h / 2 + 0.32,
-            "Gate 1: Information\ndeficiency",
-            fontsize=8, ha="center", va="center", color=C_G1,
-            fontweight="bold", linespacing=1.2)
-    # Connector line from gate label to node
-    draw_arrow(ax, g1_x, y_mid + node_h / 2 + 0.10,
-               g1_x, y_mid + node_h / 2 + 0.02,
-               color=C_G1, linewidth=1.0, style="-|>", mutation_scale=8)
+    # ── Gate 1: Information deficiency (at S node) ──
+    g1x = positions[3][0]
+    ring1 = mpatches.FancyBboxPatch(
+        (g1x - node_w / 2 - 0.10, y_mid - node_h / 2 - 0.10),
+        node_w + 0.20, node_h + 0.20,
+        boxstyle="round,pad=0.06", facecolor="none",
+        edgecolor=C_G1, linewidth=2.5, linestyle="-", zorder=4,
+    )
+    ax.add_patch(ring1)
+    lbl1 = FancyBboxPatch(
+        (g1x - 0.90, y_mid + node_h / 2 + 0.25), 1.80, 0.55,
+        boxstyle="round,pad=0.08", facecolor=C_G1_BG,
+        edgecolor=C_G1, linewidth=1.2, zorder=3,
+    )
+    ax.add_patch(lbl1)
+    ax.text(g1x, y_mid + node_h / 2 + 0.52,
+            "Gate 1\nInformation deficiency", fontsize=8.5, ha="center",
+            va="center", color=C_G1, fontweight="bold", linespacing=1.3,
+            zorder=4)
+    draw_arrow(ax, g1x, y_mid + node_h / 2 + 0.25,
+               g1x, y_mid + node_h / 2 + 0.12,
+               color=C_G1, linewidth=1.2, style="-|>", mutation_scale=8)
 
-    # Gate 3: Mismatch – highlights C node specifically (above)
-    g3_x = positions[1][0]
-    rect3 = mpatches.FancyBboxPatch(
-        (g3_x - 0.55, y_mid + node_h / 2 + 0.10), 1.1, 0.45,
-        boxstyle="round,pad=0.06", facecolor=C_G3, alpha=0.15,
-        edgecolor=C_G3, linewidth=1.5, linestyle="--", zorder=0)
-    ax.add_patch(rect3)
-    ax.text(g3_x, y_mid + node_h / 2 + 0.32,
-            "Gate 3: Operator\nmismatch",
-            fontsize=8, ha="center", va="center", color=C_G3,
-            fontweight="bold", linespacing=1.2)
-    draw_arrow(ax, g3_x, y_mid + node_h / 2 + 0.10,
-               g3_x, y_mid + node_h / 2 + 0.02,
-               color=C_G3, linewidth=1.0, style="-|>", mutation_scale=8)
-
-    # Label: CASSI example
-    ax.text(x_start - 1.0, y_mid, "CASSI\nexample",
-            fontsize=8.5, ha="center", va="center", color="#888888",
-            style="italic", linespacing=1.3)
-
-    # Caption
-    ax.text(5.5, -0.55,
-            "Gates diagnose where on the DAG a reconstruction failure originates",
-            fontsize=8.5, ha="center", color="#888888", style="italic")
+    # ── Gate 2: Carrier budget (spans full path, below) ──
+    g2_left = positions[0][0] - node_w / 2 - 0.18
+    g2_right = positions[4][0] + node_w / 2 + 0.18
+    g2_band = FancyBboxPatch(
+        (g2_left, y_mid - node_h / 2 - 0.55),
+        g2_right - g2_left, 0.38,
+        boxstyle="round,pad=0.08", facecolor=C_G2_BG,
+        edgecolor=C_G2, linewidth=1.2, zorder=0,
+    )
+    ax.add_patch(g2_band)
+    ax.text((g2_left + g2_right) / 2, y_mid - node_h / 2 - 0.36,
+            "Gate 2: Carrier budget  (source \u2192 detector photon path)",
+            fontsize=9, ha="center", va="center", color=C_G2,
+            fontweight="bold", zorder=1)
 
 
 # ── Panel D: Grammar in action ──────────────────────────────────────────────
 
 def panel_d(ax):
-    """Show diagnose → correct → recover in a compact strip."""
-    ax.set_xlim(-0.5, 10.5)
-    ax.set_ylim(-0.5, 2.0)
+    ax.set_xlim(-0.5, 11.5)
+    ax.set_ylim(-0.3, 2.2)
     ax.axis("off")
-    ax.text(-0.3, 1.75, "d", fontsize=16, fontweight="bold")
+    panel_bg(ax, "#FAFBFD")
 
-    # Step 1: Diagnose – mini DAG with Gate 3 highlighted
-    ax.text(1.2, 1.55, "Diagnose", fontsize=9, fontweight="bold",
-            ha="center", color=C_TEXT)
-    mini_prims = ["P", "C", "S", "D"]
-    mini_cols  = [C_GEN, C_ENC, C_DET, C_DET]
-    # Horizontal mini-chain
-    x_start = 0.0
-    node_w, node_h = 0.45, 0.30
-    gap = 0.65
-    for i, (p, c) in enumerate(zip(mini_prims, mini_cols)):
-        x = x_start + i * gap
-        ec = C_G3 if p == "C" else "#888888"
-        lw = 2.5 if p == "C" else 0.8
-        draw_node(ax, x, 0.9, p, c, width=node_w, height=node_h,
-                  fontsize=8, edgecolor=ec, linewidth=lw)
+    ax.text(-0.3, 1.95, "d", fontsize=18, fontweight="bold", color=C_TEXT)
+    ax.text(0.15, 1.95, "Grammar in action", fontsize=11,
+            fontweight="bold", color="#555555", va="center")
+
+    # Shared parameters
+    mini = ["P", "C", "S", "D"]
+    nw, nh = 0.50, 0.34
+    gap = 0.72
+
+    # ── Step 1: Diagnose ──
+    s1_x0 = 0.3
+    ax.text(s1_x0 + 1.05, 1.60, "1. Diagnose", fontsize=10,
+            fontweight="bold", ha="center", color=C_TEXT)
+    for i, p in enumerate(mini):
+        x = s1_x0 + i * gap
+        fill, tcol = PRIM_COLOR_MAP[p]
+        ec = C_G3 if p == "C" else C_EDGE
+        lw = 2.8 if p == "C" else 0.8
+        draw_node(ax, x, 0.95, p, fill, width=nw, height=nh,
+                  fontsize=10, text_color=tcol, edgecolor=ec,
+                  linewidth=lw, shadow=True)
         if i > 0:
-            draw_arrow(ax, x_start + (i - 1) * gap + node_w / 2 + 0.03, 0.9,
-                       x - node_w / 2 - 0.03, 0.9)
-    # Gate 3 label
-    ax.annotate("Gate 3", xy=(x_start + gap, 0.9 + node_h / 2 + 0.02),
-                xytext=(x_start + gap, 1.35),
-                fontsize=7, color=C_G3, fontweight="bold", ha="center",
-                arrowprops=dict(arrowstyle="-|>", color=C_G3, lw=1.0))
-    ax.text(1.2, 0.35, "dominant gate\nidentified",
-            fontsize=6.5, ha="center", color="#888888", style="italic",
-            linespacing=1.3)
+            draw_arrow(ax, s1_x0 + (i - 1) * gap + nw / 2 + 0.04, 0.95,
+                       x - nw / 2 - 0.04, 0.95)
+    # Gate 3 callout
+    cx = s1_x0 + gap  # C node x
+    ax.annotate("Gate 3", xy=(cx, 0.95 + nh / 2 + 0.03),
+                xytext=(cx, 1.42),
+                fontsize=8, color=C_G3, fontweight="bold", ha="center",
+                arrowprops=dict(arrowstyle="-|>", color=C_G3, lw=1.2))
+    ax.text(s1_x0 + 1.05, 0.45, "dominant gate identified",
+            fontsize=7, ha="center", color="#999999", style="italic")
 
-    # Arrow between steps
-    draw_arrow(ax, 2.8, 0.9, 3.5, 0.9, color=C_ARROW, linewidth=1.2,
-               mutation_scale=12)
+    # ── Big arrow 1→2 ──
+    draw_thick_arrow(ax, s1_x0 + 3 * gap + nw / 2 + 0.25, 0.95,
+                     s1_x0 + 3 * gap + nw / 2 + 0.95, 0.95, color="#AAAAAA")
 
-    # Step 2: Correct – C node gets corrected
-    ax.text(5.0, 1.55, "Correct", fontsize=9, fontweight="bold",
-            ha="center", color=C_TEXT)
-    x_start2 = 3.8
-    for i, (p, c) in enumerate(zip(mini_prims, mini_cols)):
-        x = x_start2 + i * gap
+    # ── Step 2: Correct ──
+    s2_x0 = 4.2
+    ax.text(s2_x0 + 1.05, 1.60, "2. Correct", fontsize=10,
+            fontweight="bold", ha="center", color=C_TEXT)
+    for i, p in enumerate(mini):
+        x = s2_x0 + i * gap
         if p == "C":
-            # Corrected node – green border
-            draw_node(ax, x, 0.9, "C\u2713", C_CORRECT, width=node_w,
-                      height=node_h, fontsize=8, edgecolor="#3D8B4F",
-                      linewidth=2.0, text_color="white", bold=True)
+            draw_node(ax, x, 0.95, "C*", C_CORRECT, width=nw,
+                      height=nh, fontsize=10, edgecolor="#3A8E58",
+                      linewidth=2.2, text_color="white", shadow=True)
         else:
-            draw_node(ax, x, 0.9, p, c, width=node_w, height=node_h,
-                      fontsize=8)
+            fill, tcol = PRIM_COLOR_MAP[p]
+            draw_node(ax, x, 0.95, p, fill, width=nw, height=nh,
+                      fontsize=10, text_color=tcol, shadow=True)
         if i > 0:
-            draw_arrow(ax, x_start2 + (i - 1) * gap + node_w / 2 + 0.03, 0.9,
-                       x - node_w / 2 - 0.03, 0.9)
-    ax.text(5.0, 0.35, "offending primitive\ncorrected",
-            fontsize=6.5, ha="center", color="#888888", style="italic",
-            linespacing=1.3)
+            draw_arrow(ax, s2_x0 + (i - 1) * gap + nw / 2 + 0.04, 0.95,
+                       x - nw / 2 - 0.04, 0.95)
+    ax.text(s2_x0 + 1.05, 0.45, "offending primitive corrected",
+            fontsize=7, ha="center", color="#999999", style="italic")
 
-    # Arrow between steps
-    draw_arrow(ax, 6.5, 0.9, 7.2, 0.9, color=C_ARROW, linewidth=1.2,
-               mutation_scale=12)
+    # ── Big arrow 2→3 ──
+    draw_thick_arrow(ax, s2_x0 + 3 * gap + nw / 2 + 0.25, 0.95,
+                     s2_x0 + 3 * gap + nw / 2 + 0.95, 0.95, color="#AAAAAA")
 
-    # Step 3: Recover – result box
-    draw_node(ax, 8.5, 0.9, "Corrected\nReconstruction", "#D5E8D4",
-              width=2.0, height=0.55, fontsize=8.5,
-              edgecolor=C_CORRECT, linewidth=1.5, bold=True)
-    ax.text(8.5, 0.35, "no retraining\nrequired",
-            fontsize=6.5, ha="center", color="#888888", style="italic",
-            linespacing=1.3)
+    # ── Step 3: Recover ──
+    rx = 9.5
+    ax.text(rx, 1.60, "3. Recover", fontsize=10,
+            fontweight="bold", ha="center", color=C_TEXT)
+    draw_node(ax, rx, 0.95, "Corrected\nReconstruction",
+              "#DBEEDD", width=2.0, height=0.60, fontsize=10,
+              edgecolor=C_CORRECT, linewidth=1.8, text_color="#2A6B3F",
+              shadow=True)
+    ax.text(rx, 0.45, "no retraining required",
+            fontsize=7, ha="center", color="#999999", style="italic")
 
 
 # ── Main composition ────────────────────────────────────────────────────────
 
 def main(output_path: Path):
-    fig = plt.figure(figsize=(14, 12), facecolor="white")
+    fig = plt.figure(figsize=(15, 13), facecolor="white")
 
-    # Layout: 3 rows — top: a + b, middle: c (full width), bottom: d (full width)
-    gs = fig.add_gridspec(3, 2, height_ratios=[1.2, 0.9, 0.55],
-                          hspace=0.35, wspace=0.25,
-                          left=0.04, right=0.96, top=0.96, bottom=0.04)
+    gs = fig.add_gridspec(3, 2, height_ratios=[1.1, 0.75, 0.50],
+                          hspace=0.22, wspace=0.18,
+                          left=0.03, right=0.97, top=0.97, bottom=0.03)
 
     ax_a = fig.add_subplot(gs[0, 0])
     ax_b = fig.add_subplot(gs[0, 1])
-    ax_c = fig.add_subplot(gs[1, :])   # full width for gate overlay
-    ax_d = fig.add_subplot(gs[2, :])   # full width for correction strip
+    ax_c = fig.add_subplot(gs[1, :])
+    ax_d = fig.add_subplot(gs[2, :])
 
     panel_a(ax_a)
     panel_b(ax_b)
     panel_c(ax_c)
     panel_d(ax_d)
 
-    # Save
+    # Thin separator lines between rows
+    for row_frac in [0.62, 0.345]:
+        fig.add_artist(plt.Line2D(
+            [0.05, 0.95], [row_frac, row_frac],
+            transform=fig.transFigure, color="#E0E0E0",
+            linewidth=0.6, zorder=0,
+        ))
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(str(output_path), dpi=300, bbox_inches="tight",
                 facecolor="white")
     print(f"Saved: {output_path}")
 
-    # Also save PNG for preview
     png_path = output_path.with_suffix(".png")
     fig.savefig(str(png_path), dpi=200, bbox_inches="tight",
                 facecolor="white")
