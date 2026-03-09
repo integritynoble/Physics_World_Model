@@ -2914,6 +2914,111 @@ def generate_ceus_phantom(
     return samples
 
 
+def generate_clem_phantom(
+    n_samples: int = 10,
+    seed: int = 42,
+    shape: tuple = (128, 128),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    CLEM (Correlative Light and Electron Microscopy) phantom.
+
+    Generates paired FM+EM image pairs of cellular structures. FM image:
+    sparse fluorescent spots (proteins of interest) with diffraction-limited
+    PSF. EM image: dense ultrastructural detail of the same region with
+    organelles, membranes, and vesicles. The reconstruction challenge is
+    multi-modal image fusion and super-resolution from FM guided by EM.
+
+    Reference: Bharat et al., Nat. Methods 2018; Hurbain & Sachse, Biol. Cell 2011.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    for i in range(n_samples):
+        # --- EM image: ultrastructural detail (ground truth) ---
+        em_img = rng.uniform(0.15, 0.35, (H, W)).astype(np.float32)
+
+        # Cell membrane
+        cy, cx = H // 2, W // 2
+        ry, rx = H // 3, W // 3
+        Y, X = np.ogrid[:H, :W]
+        cell = ((Y - cy) / ry) ** 2 + ((X - cx) / rx) ** 2
+        mem_thick = 2
+        membrane = (cell <= 1.0) & (cell >= (1.0 - mem_thick / min(ry, rx)) ** 2)
+        em_img[membrane] = 0.85
+
+        # Organelles: mitochondria (elongated, dark matrix + bright cristae)
+        n_mito = int(rng.integers(3, 7))
+        for _ in range(n_mito):
+            my = int(rng.integers(cy - ry // 2, cy + ry // 2))
+            mx = int(rng.integers(cx - rx // 2, cx + rx // 2))
+            ml = int(rng.integers(10, 20))
+            mw = int(rng.integers(4, 8))
+            angle = float(rng.uniform(0, np.pi))
+            for t in range(-ml // 2, ml // 2):
+                gy = int(my + t * np.sin(angle))
+                gx = int(mx + t * np.cos(angle))
+                for dy in range(-mw // 2, mw // 2):
+                    for dx in range(-mw // 2, mw // 2):
+                        ny, nx = gy + dy, gx + dx
+                        if 0 <= ny < H and 0 <= nx < W:
+                            em_img[ny, nx] = 0.25  # mito matrix
+
+        # Vesicles (dense, round)
+        n_vesicles = int(rng.integers(5, 15))
+        for _ in range(n_vesicles):
+            vy = int(rng.integers(cy - ry, cy + ry))
+            vx = int(rng.integers(cx - rx, cx + rx))
+            vr = int(rng.integers(2, 5))
+            vesicle = ((Y - vy) ** 2 + (X - vx) ** 2) <= vr ** 2
+            em_img[vesicle] = 0.85
+
+        em_img = np.clip(em_img, 0, 1).astype(np.float32)
+        x_true = em_img  # EM is the target (ground truth structure)
+
+        # --- FM image: fluorescence of labelled proteins (y measurement) ---
+        fm_img = np.zeros((H, W), dtype=np.float32)
+
+        # Fluorescent labels co-localise with some vesicles
+        n_labels = int(rng.integers(3, 8))
+        for _ in range(n_labels):
+            ly = int(rng.integers(cy - ry // 2, cy + ry // 2))
+            lx = int(rng.integers(cx - rx // 2, cx + rx // 2))
+            fm_img[ly, lx] = float(rng.uniform(0.7, 1.0))
+
+        # Diffraction-limited PSF broadening (FM ~250nm / pixel ~10nm → sigma~25px at EM scale)
+        fm_blur = gaussian_filter(fm_img, sigma=float(rng.uniform(3.0, 6.0)))
+        # FM noise
+        fm_noise = rng.normal(0, 0.03, (H, W)).astype(np.float32)
+        y_meas = np.clip(fm_blur + fm_noise, 0, 1).astype(np.float32)
+
+        H_size = min(H * W, 4096)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y_meas,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "n_mitochondria": int(n_mito),
+                "n_vesicles": int(n_vesicles),
+                "n_labels": int(n_labels),
+                "fm_psf_sigma": float(rng.uniform(3.0, 6.0)),
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -2972,6 +3077,7 @@ def acquire_dataset(
         "generate_cbct_head_phantom": lambda: generate_cbct_head_phantom(target_shape=target_shape),
         "generate_cest_mri_phantom": lambda: generate_cest_mri_phantom(target_shape=target_shape),
         "generate_ceus_phantom": lambda: generate_ceus_phantom(target_shape=target_shape),
+        "generate_clem_phantom": lambda: generate_clem_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -3036,6 +3142,7 @@ def acquire_dataset(
         "generate_cbct_head_phantom": lambda: generate_cbct_head_phantom(target_shape=target_shape),
         "generate_cest_mri_phantom": lambda: generate_cest_mri_phantom(target_shape=target_shape),
         "generate_ceus_phantom": lambda: generate_ceus_phantom(target_shape=target_shape),
+        "generate_clem_phantom": lambda: generate_clem_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)

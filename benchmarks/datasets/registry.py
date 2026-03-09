@@ -1045,6 +1045,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[128, 128],
         notes="Synthetic CEUS liver vasculature phantom with microbubble perfusion and speckle noise",
     ),
+    "clem_generated": DatasetEntry(
+        id="clem_generated",
+        name="CLEM FM+EM Paired Cell Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Bharat et al., Nat. Methods 2018",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["clem"],
+        converter="generate_clem_phantom",
+        x_shape=[128, 128],
+        notes="Synthetic CLEM paired FM+EM cell phantom for super-resolution fusion",
+    ),
 }
 
 

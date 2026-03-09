@@ -140,6 +140,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # CEUS: microbubble contrast-enhanced ultrasound — y is the combined B-mode +
     # contrast measurement; identity runner applies minimal noise.
     "ceus": "identity",
+    # CLEM: correlative light and electron microscopy — y is the FM fluorescence image,
+    # x_true is the EM ultrastructural image; identity runner applies minimal noise.
+    "clem": "identity",
 }
 
 
@@ -270,6 +273,7 @@ def _resolve_ground_truth(
             generate_cbct_head_phantom,
             generate_cest_mri_phantom,
             generate_ceus_phantom,
+            generate_clem_phantom,
         )
 
         # Look up registry entries for this modality
@@ -312,6 +316,7 @@ def _resolve_ground_truth(
                     "generate_cbct_head_phantom": generate_cbct_head_phantom,
                     "generate_cest_mri_phantom": generate_cest_mri_phantom,
                     "generate_ceus_phantom": generate_ceus_phantom,
+                    "generate_clem_phantom": generate_clem_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -808,6 +813,7 @@ def _load_scenes_from_generator(
             generate_cbct_head_phantom,
             generate_cest_mri_phantom,
             generate_ceus_phantom,
+            generate_clem_phantom,
         )
     except ImportError:
         return []
@@ -842,6 +848,7 @@ def _load_scenes_from_generator(
         "generate_cbct_head_phantom": generate_cbct_head_phantom,
         "generate_cest_mri_phantom": generate_cest_mri_phantom,
         "generate_ceus_phantom": generate_ceus_phantom,
+        "generate_clem_phantom": generate_clem_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)
