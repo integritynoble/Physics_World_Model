@@ -528,98 +528,6 @@ compression ratios: 10\%, 25\%, and 50\%
 exponential gain drift ($g_i = \exp(-\alpha \cdot i)$) on the measurement matrix.  The default solver
 is FISTA-TV with total-variation regularization.
 
-\paragraph{MRI configuration.}
-Cartesian $k$-space sampling with 4$\times$ acceleration (25\% of
-$k$-space lines acquired).  Mismatch is parameterized as a 5\% multiplicative
-error in the coil sensitivity maps used for parallel imaging reconstruction.
-The default solver is CG-SENSE~\cite{pruessmann1999sense} with $\ell_1$-wavelet regularization ($\lambda = 10^{-3}$, 30 iterations).
-\textit{Scenario~IV calibration (ESPIRiT-adopted).}
-For MRI, Scenario~IV adopts ESPIRiT~\cite{uecker2014espirit} as the calibration method: coil sensitivity maps are estimated directly from the central $k$-space autocalibration signal (ACS) region via eigenvalue decomposition of the calibration matrix, then used in the CG-SENSE reconstruction.  When ACS data is sufficient ($\geq 48$ lines), ESPIRiT achieves 85--95\% of the oracle correction ceiling.  For data-limited regimes ($< 32$ ACS lines) where ESPIRiT degrades, the fallback is a grid search over per-coil amplitude and phase scaling (beam-search); this fallback is also the Sc.~IV method for all modalities without an established specialist calibration algorithm (CASSI, CACTI, compressive holography, ultrasound).  The protocol evaluates three conditions---Sc.~I (true maps), Sc.~II (5\% mismatched maps), and Sc.~IV (ESPIRiT-calibrated maps)---on the same CG-SENSE solver to isolate calibration quality from solver design.
-
-\paragraph{CT configuration.}
-Fan-beam geometry with 180 projections over $180^\circ$.  Mismatch is
-modeled as a center-of-rotation (CoR) offset, which produces
-characteristic arc artifacts in the reconstruction.  The default solver
-is filtered back-projection (FBP)~\cite{feldkamp1984practical} with a Ram-Lak filter, supplemented
-by iterative SART for comparison.
-
-
-\paragraph{Controlled hardware experiment protocol.}
-The software-perturbation protocol above applies calibrated mask shifts to
-existing real measurements.  A full hardware-in-the-loop validation
-requires physically displacing the coded aperture mask and re-acquiring
-data.  The protocol proceeds as follows: (i)~acquire a baseline dataset
-with the mask at its factory-calibrated position; (ii)~physically translate
-the mask by a known displacement ($\Delta x \in \{0.25, 0.5, 1.0\}$\,px
-equivalent, verified by micrometer stage) and re-acquire under identical
-illumination; (iii)~reconstruct both datasets with the factory mask
-specification and compute the PSNR degradation and measurement residual;
-(iv)~apply \pwm{} autonomous calibration and measure recovery.  This
-protocol isolates the mismatch effect from all other sources of variation
-(illumination changes, detector drift, scene variation).  Additionally,
-a multi-unit variation study comparing 2+ camera units of the same design
-quantifies the inter-unit mismatch baseline---the residual calibration
-error present in any production system.
-
-\paragraph{Clinical CT phantom configuration.}
-For clinical translation, \pwm{} is evaluated on CT quality assurance
-using the ACR CT accreditation phantom (Gammex 464).
-The phantom contains inserts of known attenuation (bone ${\sim}955$\,HU,
-air ${\sim}{-}1000$\,HU, acrylic ${\sim}121$\,HU, polyethylene
-${\sim}{-}96$\,HU) and geometric targets for measuring spatial
-resolution, slice thickness, and low-contrast detectability.  Mismatch
-is parameterized as center-of-rotation offset ($\Delta r$, mm), beam
-hardening coefficient drift ($\Delta \mu$, \%), and detector gain
-variation ($\Delta g$, \%).  Ten ACR-aligned metrics are computed
-automatically: CT number accuracy for five materials (water, bone, air,
-acrylic, polyethylene), geometric accuracy ($\pm 2$\,mm tolerance),
-slice thickness ($\pm 1.5$\,mm), uniformity ($\leq 5$\,HU), noise
-standard deviation, and spatial resolution ($\geq 5$\,lp/cm).
-
-\paragraph{Clinical MRI validation configuration.}
-For MRI clinical validation, \pwm{} processes multi-coil $k$-space data
-from public datasets (fastMRI~\cite{zbontar2018fastmri}).  Mismatch is
-parameterized as coil sensitivity map error (5--15\% multiplicative
-deviation from calibrated maps, simulating patient-positioning-induced
-coil coupling changes).  The default solver is CG-SENSE with $\ell_1$-wavelet
-regularization at $4\times$ acceleration.  Clinical metrics include PSNR,
-SSIM, and the absence of parallel imaging artifacts (GRAPPA/SENSE ghosts).
-
-\paragraph{Ultrasound configuration.}
-Pulse-echo B-mode imaging is simulated with a 64-element linear array,
-5\,MHz center frequency, element pitch $0.3$\,mm, sampling rate 100\,MHz
-with 1024 time samples, and speed of sound (SoS) $c = 1540$\,m/s.  The
-tissue phantom is a $128 \times 128$ reflectivity map with
-Rayleigh-distributed speckle, point scatterers, and anechoic cyst regions.
-Frequency-dependent attenuation follows
-$\alpha(f) = 0.5\,\text{dB\,cm}^{-1}\text{MHz}^{-1}$.  Mismatch is
-parameterized as SoS error $\Delta c \in \{50, 100, 200, 400\}$\,m/s,
-perturbing time-of-flight calculations.  The default solver is delay-and-sum
-(DAS) beamforming (operator adjoint).  Calibration uses grid search over
-21 SoS candidates in $[1440, 1640]$\,m/s, selecting the value that
-maximizes reconstruction PSNR.
-
-\paragraph{Cryo-EM configuration.}
-Cryo-EM imaging is modeled as contrast transfer function (CTF) filtering
-of a 2D projected potential ($128 \times 128$, pixel size $0.1$\,nm).  The
-CTF is parameterized by defocus $\Delta f = -2000$\,nm, spherical aberration
-$C_s = 2.0$\,mm, electron wavelength $\lambda = 0.00251$\,nm (300\,kV),
-with a B-factor envelope ($B = 2$\,nm$^2$) and ice-thickness attenuation
-(mean free path $350$\,nm, thickness $50$\,nm).  Mismatch is parameterized
-as defocus error $\Delta(\Delta f) \in \{100, 200, 500, 1000\}$\,nm.  The
-default solver is Wiener filtering with SNR\,$= 50$.  Calibration uses grid
-search over 51 defocus values in $[-3000, -500]$\,nm, selecting the value
-that maximizes reconstruction PSNR.
-
-\paragraph{CT detector offset configuration.}
-Parallel-beam CT is simulated with 360 projection angles over $[0, \pi)$
-and 128 detector elements.  The object is a $128 \times 128$ Shepp--Logan
-phantom.  Detector offset mismatch is simulated by shifting the sinogram
-along the detector axis by $\Delta s \in \{2, 5, 10, 20\}$\,pixels.  The
-default solver is filtered backprojection (FBP) with Shepp--Logan filter.
-Calibration uses grid search over 21 offset candidates in $[-25, 25]$\,px,
-selecting the value that maximizes reconstruction PSNR.
-
 \paragraph{Compressive holography configuration.}
 Multi-depth inline holography encodes a $(4 \times 64 \times 64)$ 3D
 object into a single $(64 \times 64)$ hologram via Fresnel propagation at
@@ -644,6 +552,75 @@ and emission PSFs.  The default solver is Richardson--Lucy (80 iterations).
 Calibration uses a $9 \times 9$ grid search over
 $(\sigma_{\mathrm{ex}}, \sigma_{\mathrm{em}})$ centered at the nominal
 values, selecting the pair that minimizes the measurement residual.
+
+\paragraph{CT configuration.}
+Fan-beam geometry with 180 projections over $180^\circ$.  Mismatch is
+modeled as a center-of-rotation (CoR) offset, which produces
+characteristic arc artifacts in the reconstruction.  The default solver
+is filtered back-projection (FBP)~\cite{feldkamp1984practical} with a Ram-Lak filter, supplemented
+by iterative SART for comparison.
+
+\paragraph{CT detector offset configuration.}
+Parallel-beam CT is simulated with 360 projection angles over $[0, \pi)$
+and 128 detector elements.  The object is a $128 \times 128$ Shepp--Logan
+phantom.  Detector offset mismatch is simulated by shifting the sinogram
+along the detector axis by $\Delta s \in \{2, 5, 10, 20\}$\,pixels.  The
+default solver is filtered backprojection (FBP) with Shepp--Logan filter.
+Calibration uses grid search over 21 offset candidates in $[-25, 25]$\,px,
+selecting the value that maximizes reconstruction PSNR.
+
+\paragraph{Cryo-EM configuration.}
+Cryo-EM imaging is modeled as contrast transfer function (CTF) filtering
+of a 2D projected potential ($128 \times 128$, pixel size $0.1$\,nm).  The
+CTF is parameterized by defocus $\Delta f = -2000$\,nm, spherical aberration
+$C_s = 2.0$\,mm, electron wavelength $\lambda = 0.00251$\,nm (300\,kV),
+with a B-factor envelope ($B = 2$\,nm$^2$) and ice-thickness attenuation
+(mean free path $350$\,nm, thickness $50$\,nm).  Mismatch is parameterized
+as defocus error $\Delta(\Delta f) \in \{100, 200, 500, 1000\}$\,nm.  The
+default solver is Wiener filtering with SNR\,$= 50$.  Calibration uses grid
+search over 51 defocus values in $[-3000, -500]$\,nm, selecting the value
+that maximizes reconstruction PSNR.
+
+\paragraph{MRI configuration.}
+Cartesian $k$-space sampling with 4$\times$ acceleration (25\% of
+$k$-space lines acquired).  Mismatch is parameterized as a 5\% multiplicative
+error in the coil sensitivity maps used for parallel imaging reconstruction.
+The default solver is CG-SENSE~\cite{pruessmann1999sense} with $\ell_1$-wavelet regularization ($\lambda = 10^{-3}$, 30 iterations).
+\textit{Scenario~IV calibration (ESPIRiT-adopted).}
+For MRI, Scenario~IV adopts ESPIRiT~\cite{uecker2014espirit} as the calibration method: coil sensitivity maps are estimated directly from the central $k$-space autocalibration signal (ACS) region via eigenvalue decomposition of the calibration matrix, then used in the CG-SENSE reconstruction.  When ACS data is sufficient ($\geq 48$ lines), ESPIRiT achieves 85--95\% of the oracle correction ceiling.  For data-limited regimes ($< 32$ ACS lines) where ESPIRiT degrades, the fallback is a grid search over per-coil amplitude and phase scaling (beam-search); this fallback is also the Sc.~IV method for all modalities without an established specialist calibration algorithm (CASSI, CACTI, compressive holography, ultrasound).  The protocol evaluates three conditions---Sc.~I (true maps), Sc.~II (5\% mismatched maps), and Sc.~IV (ESPIRiT-calibrated maps)---on the same CG-SENSE solver to isolate calibration quality from solver design.
+
+\paragraph{Ultrasound configuration.}
+Pulse-echo B-mode imaging is simulated with a 64-element linear array,
+5\,MHz center frequency, element pitch $0.3$\,mm, sampling rate 100\,MHz
+with 1024 time samples, and speed of sound (SoS) $c = 1540$\,m/s.  The
+tissue phantom is a $128 \times 128$ reflectivity map with
+Rayleigh-distributed speckle, point scatterers, and anechoic cyst regions.
+Frequency-dependent attenuation follows
+$\alpha(f) = 0.5\,\text{dB\,cm}^{-1}\text{MHz}^{-1}$.  Mismatch is
+parameterized as SoS error $\Delta c \in \{50, 100, 200, 400\}$\,m/s,
+perturbing time-of-flight calculations.  The default solver is delay-and-sum
+(DAS) beamforming (operator adjoint).  Calibration uses grid search over
+21 SoS candidates in $[1440, 1640]$\,m/s, selecting the value that
+maximizes reconstruction PSNR.
+
+\paragraph{Controlled hardware experiment protocol.}
+The software-perturbation protocol above applies calibrated mask shifts to
+existing real measurements.  A full hardware-in-the-loop validation
+requires physically displacing the coded aperture mask and re-acquiring
+data.  The protocol proceeds as follows: (i)~acquire a baseline dataset
+with the mask at its factory-calibrated position; (ii)~physically translate
+the mask by a known displacement ($\Delta x \in \{0.25, 0.5, 1.0\}$\,px
+equivalent, verified by micrometer stage) and re-acquire under identical
+illumination; (iii)~reconstruct both datasets with the factory mask
+specification and compute the PSNR degradation and measurement residual;
+(iv)~apply \pwm{} autonomous calibration and measure recovery.  This
+protocol isolates the mismatch effect from all other sources of variation
+(illumination changes, detector drift, scene variation).  Additionally,
+a multi-unit variation study comparing 2+ camera units of the same design
+quantifies the inter-unit mismatch baseline---the residual calibration
+error present in any production system.  Clinical CT phantom validation
+(ACR Gammex 464) and clinical MRI validation (fastMRI~\cite{zbontar2018fastmri})
+configurations are detailed in Supplementary Note~S25.
 
 \paragraph{Real experimental data.}
 Three of the five multi-phantom modalities are validated on real
