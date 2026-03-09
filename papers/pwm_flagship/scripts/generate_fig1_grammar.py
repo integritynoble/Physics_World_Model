@@ -101,15 +101,15 @@ def draw_small_arrow(ax, x0, y0, x1, y1, color=C_ARROW, lw=1.2):
 def main(output_path: Path):
     # Smaller figsize → less downscaling in paper → bigger rendered text
     # At textwidth=183mm≈7.2", scale factor ≈ 7.2/12 = 0.6
-    fig, ax = plt.subplots(figsize=(12, 6), facecolor="white")
+    fig, ax = plt.subplots(figsize=(12, 7), facecolor="white")
     ax.set_xlim(0, 16.0)
-    ax.set_ylim(0, 6.2)
+    ax.set_ylim(0, 7.0)
     ax.axis("off")
     ax.set_facecolor("white")
 
     # ── Layout: single row with EQUAL gaps ─────────────────────────────────
-    row_y = 3.1         # vertical centre
-    row_h = 4.8         # panel height
+    row_y = 3.5         # vertical centre
+    row_h = 5.6         # panel height (taller for more room)
 
     # Panel widths (a/e wider to fit text, c/d wider for gate spacing)
     w_a, w_b, w_c, w_d, w_e = 1.7, 2.0, 4.0, 4.0, 2.1
@@ -134,16 +134,16 @@ def main(output_path: Path):
     # ════════════════════════════════════════════════════════════════════════
     draw_stage_box(ax, a_cx, row_y, w_a, row_h, C_STAGE1, "#B0C4DE")
 
-    ax.text(a_left + 0.10, row_y + row_h / 2 - 0.15, "a",
+    ax.text(a_left + 0.10, row_y + row_h / 2 - 0.18, "a",
             fontsize=16, fontweight="bold", color=C_TEXT, va="top", zorder=1)
-    ax.text(a_cx, row_y + row_h / 2 - 0.50, "Any Imaging\nSystem",
+    ax.text(a_cx, row_y + row_h / 2 - 0.65, "Any Imaging\nSystem",
             fontsize=12, ha="center", va="top", color="#3B6FA0",
-            fontweight="bold", linespacing=1.2, zorder=1)
+            fontweight="bold", linespacing=1.3, zorder=1)
 
     modalities = ["CASSI", "MRI", "CT", "Cryo-EM", "OCT", "..."]
     for i, name in enumerate(modalities):
-        ax.text(a_cx, row_y + 0.20 - i * 0.40, name,
-                fontsize=11, ha="center", va="center", color="#666666",
+        ax.text(a_cx, row_y + 0.50 - i * 0.45, name,
+                fontsize=10, ha="center", va="center", color="#666666",
                 style="italic", zorder=1)
 
     # ════════════════════════════════════════════════════════════════════════
@@ -151,23 +151,23 @@ def main(output_path: Path):
     # ════════════════════════════════════════════════════════════════════════
     draw_stage_box(ax, b_cx, row_y, w_b, row_h, C_STAGE2, "#C0B0D8")
 
-    ax.text(b_left + 0.08, row_y + row_h / 2 - 0.15, "b",
+    ax.text(b_left + 0.08, row_y + row_h / 2 - 0.18, "b",
             fontsize=16, fontweight="bold", color=C_TEXT, va="top", zorder=1)
-    ax.text(b_cx, row_y + row_h / 2 - 0.50,
+    ax.text(b_cx, row_y + row_h / 2 - 0.65,
             "Compose:\nOperatorGraph",
             fontsize=11, ha="center", va="top", color=C_ENC_T,
             fontweight="bold", linespacing=1.15, zorder=1)
 
     # Subtitle: reference Fig. 2a
-    ax.text(b_cx, row_y + row_h / 2 - 0.90,
-            "(11 primitives;\nFig. 2a)",
+    ax.text(b_cx, row_y + row_h / 2 - 1.10,
+            "(11 primitives; Fig. 2a)",
             fontsize=8, ha="center", va="top", color="#888888",
-            style="italic", linespacing=1.1, zorder=1)
+            style="italic", zorder=1)
 
     # DAG: P → C → W → S → D
     dag_prims = ["P", "C", "W", "S", "D"]
-    dag_y_top = row_y + 0.30
-    dag_sp = 0.50
+    dag_y_top = row_y + 0.50
+    dag_sp = 0.52
     nw, nh = 0.55, 0.32
     dag_cx = b_cx - 0.10
     for i, p in enumerate(dag_prims):
@@ -194,9 +194,9 @@ def main(output_path: Path):
     # ════════════════════════════════════════════════════════════════════════
     draw_stage_box(ax, c_cx, row_y, w_c, row_h, C_STAGE3, "#E0C8A0")
 
-    ax.text(c_left + 0.08, row_y + row_h / 2 - 0.15, "c",
+    ax.text(c_left + 0.08, row_y + row_h / 2 - 0.18, "c",
             fontsize=16, fontweight="bold", color=C_TEXT, va="top", zorder=1)
-    ax.text(c_cx, row_y + row_h / 2 - 0.50,
+    ax.text(c_cx, row_y + row_h / 2 - 0.65,
             "Diagnose:\nTriad Decomposition",
             fontsize=12, ha="center", va="top", color="#B07020",
             fontweight="bold", linespacing=1.15, zorder=1)
@@ -207,8 +207,8 @@ def main(output_path: Path):
         ("Gate 3", "Operator\nmismatch", C_G3_BG, C_G3),
     ]
     gate_sp = 1.30
-    gy = row_y - 0.20
-    gw, gh = 0.95, 1.50
+    gy = row_y - 0.35
+    gw, gh = 1.05, 1.90
     for k, (gname, gdesc, gbg, gcol) in enumerate(gate_data):
         gx = c_cx + (k - 1) * gate_sp
         gbox = FancyBboxPatch(
@@ -216,9 +216,9 @@ def main(output_path: Path):
             boxstyle="round,pad=0.05", facecolor=gbg,
             edgecolor=gcol, linewidth=1.3, zorder=1)
         ax.add_patch(gbox)
-        ax.text(gx, gy + 0.30, gname, fontsize=12, ha="center",
+        ax.text(gx, gy + 0.40, gname, fontsize=12, ha="center",
                 va="center", color=gcol, fontweight="bold", zorder=2)
-        ax.text(gx, gy - 0.22, gdesc, fontsize=9, ha="center",
+        ax.text(gx, gy - 0.25, gdesc, fontsize=9, ha="center",
                 va="center", color=gcol, linespacing=1.15, zorder=2)
 
     # Arrow: b → c
@@ -230,9 +230,9 @@ def main(output_path: Path):
     # ════════════════════════════════════════════════════════════════════════
     draw_stage_box(ax, d_cx, row_y, w_d, row_h, C_STAGE4, "#E0B0B0")
 
-    ax.text(d_left + 0.08, row_y + row_h / 2 - 0.15, "d",
+    ax.text(d_left + 0.08, row_y + row_h / 2 - 0.18, "d",
             fontsize=16, fontweight="bold", color=C_TEXT, va="top", zorder=1)
-    ax.text(d_cx, row_y + row_h / 2 - 0.50,
+    ax.text(d_cx, row_y + row_h / 2 - 0.65,
             "Correct:\ntargeted intervention",
             fontsize=12, ha="center", va="top", color="#AA4040",
             fontweight="bold", linespacing=1.15, zorder=1)
@@ -243,8 +243,8 @@ def main(output_path: Path):
         ("Gate 3\ndominant", "Calibrate\noperator", C_G3_BG, C_G3),
     ]
     corr_sp = 1.30
-    cy = row_y - 0.20
-    cw, ch = 0.95, 1.50
+    cy = row_y - 0.35
+    cw, ch = 1.05, 1.90
     for k, (clabel, cdesc, cbg, ccol) in enumerate(corr_data):
         cx = d_cx + (k - 1) * corr_sp
         cbox = FancyBboxPatch(
@@ -252,10 +252,10 @@ def main(output_path: Path):
             boxstyle="round,pad=0.05", facecolor=cbg,
             edgecolor=ccol, linewidth=1.0, zorder=1)
         ax.add_patch(cbox)
-        ax.text(cx, cy + 0.30, clabel, fontsize=9.5, ha="center",
+        ax.text(cx, cy + 0.40, clabel, fontsize=9.5, ha="center",
                 va="center", color=ccol, fontweight="bold",
                 linespacing=1.1, zorder=2)
-        ax.text(cx, cy - 0.28, cdesc, fontsize=9, ha="center",
+        ax.text(cx, cy - 0.30, cdesc, fontsize=9, ha="center",
                 va="center", color="#555555", linespacing=1.1, zorder=2)
 
     # Arrow: c → d
@@ -267,19 +267,19 @@ def main(output_path: Path):
     # ════════════════════════════════════════════════════════════════════════
     draw_stage_box(ax, e_cx, row_y, w_e, row_h, C_STAGE5, "#A0D0A0")
 
-    ax.text(e_left + 0.08, row_y + row_h / 2 - 0.15, "e",
+    ax.text(e_left + 0.08, row_y + row_h / 2 - 0.18, "e",
             fontsize=16, fontweight="bold", color=C_TEXT, va="top", zorder=1)
-    ax.text(e_cx, row_y + row_h / 2 - 0.50, "Recover",
+    ax.text(e_cx, row_y + row_h / 2 - 0.65, "Recover",
             fontsize=13, ha="center", va="top", color="#2E7D32",
             fontweight="bold", zorder=1)
 
-    ax.text(e_cx, row_y + 0.25, "Corrected\nReconstruction",
+    ax.text(e_cx, row_y + 0.45, "Corrected\nReconstruction",
             fontsize=11, ha="center", va="center", color="#2E7D32",
             fontweight="bold", linespacing=1.3, zorder=1)
-    ax.text(e_cx, row_y - 0.55, "+0.8 to\n+13.9 dB",
+    ax.text(e_cx, row_y - 0.45, "+0.8 to\n+13.9 dB",
             fontsize=11, ha="center", color="#555555",
             fontweight="bold", linespacing=1.2, zorder=1)
-    ax.text(e_cx, row_y - 1.15, "no retraining",
+    ax.text(e_cx, row_y - 1.20, "no retraining",
             fontsize=9, ha="center", color="#888888",
             style="italic", zorder=1)
 
