@@ -3990,6 +3990,92 @@ def generate_confocal_3d_phantom(
     return samples
 
 
+def generate_cup_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    Compressed Ultrafast Photography (CUP) phantom for single-shot femtosecond imaging.
+
+    Simulates a dynamic scene of a light pulse propagating through a scene.
+    x_true: 64x64 float32 image with a Gaussian intensity profile moving across the frame.
+    y: Compressed measurement via random binary mask (50% compression) summed along
+       temporal dimension, with added Gaussian noise (sigma=0.05).
+    H_ideal: identity matrix.
+    metadata: dict with modality, temporal_frames, compression_ratio, frame_rate_fps.
+
+    Reference: Gao et al., Nature 2014 (single-shot compressed ultrafast photography).
+    """
+    import numpy as np
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+    T = 10  # temporal frames
+    compression_ratio = 0.5
+
+    for i in range(n_samples):
+        # Dynamic scene: Gaussian light pulse propagating across the frame
+        x_true = np.zeros((H, W), dtype=np.float32)
+
+        # Pulse position moves from left to right across the frame
+        pulse_center_x = int(rng.integers(W // 4, 3 * W // 4))
+        pulse_center_y = int(rng.integers(H // 4, 3 * H // 4))
+        sigma_pulse = float(rng.uniform(H / 12, H / 6))
+
+        Y, X = np.ogrid[:H, :W]
+        # Final frame: Gaussian intensity profile at the pulse center
+        x_true = np.exp(
+            -((Y - pulse_center_y) ** 2 + (X - pulse_center_x) ** 2) / (2 * sigma_pulse ** 2)
+        ).astype(np.float32)
+
+        # Simulate T temporal frames of the pulse propagating left to right
+        speed_x = float(rng.uniform(W / (2 * T), W / T))
+        speed_y = float(rng.uniform(-H / (4 * T), H / (4 * T)))
+
+        frames = []
+        for t in range(T):
+            cx = pulse_center_x - speed_x * (T - 1 - t)
+            cy = pulse_center_y - speed_y * (T - 1 - t)
+            frame = np.exp(
+                -((Y - cy) ** 2 + (X - cx) ** 2) / (2 * sigma_pulse ** 2)
+            ).astype(np.float32)
+            frames.append(frame)
+
+        # Compressed measurement: random binary mask (50% compression) summed over time
+        mask = (rng.random((T, H, W)) < compression_ratio).astype(np.float32)
+        video = np.stack(frames, axis=0)  # (T, H, W)
+        compressed = (video * mask).sum(axis=0).astype(np.float32)
+
+        # Add Gaussian noise
+        noise = rng.normal(0, 0.05, size=(H, W)).astype(np.float32)
+        y = (compressed + noise).astype(np.float32)
+
+        H_size = min(H * W, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "cup",
+                "temporal_frames": T,
+                "compression_ratio": compression_ratio,
+                "frame_rate_fps": 1.0e13,  # 10 trillion fps (femtosecond scale)
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -4058,6 +4144,7 @@ def acquire_dataset(
         "generate_cryo_et_phantom": generate_cryo_et_phantom,
         "generate_ct_phantom": generate_ct_phantom,
         "generate_ct_fluorescence_phantom": generate_ct_fluorescence_phantom,
+        "generate_cup_phantom": generate_cup_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -4132,6 +4219,7 @@ def acquire_dataset(
         "generate_cryo_et_phantom": lambda: generate_cryo_et_phantom(),
         "generate_ct_phantom": lambda: generate_ct_phantom(),
         "generate_ct_fluorescence_phantom": lambda: generate_ct_fluorescence_phantom(),
+        "generate_cup_phantom": lambda: generate_cup_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

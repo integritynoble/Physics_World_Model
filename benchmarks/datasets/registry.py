@@ -1195,6 +1195,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic XRF-CT phantom with fluorescent marker clusters and Compton background",
     ),
+    "cup_generated": DatasetEntry(
+        id="cup_generated",
+        name="CUP Ultrafast Photography Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Gao et al., Nature 2014",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["cup"],
+        converter="generate_cup_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic CUP phantom with light pulse propagation and compressed measurement",
+    ),
 }
 
 

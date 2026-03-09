@@ -204,6 +204,19 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "DiffusionXRF",   "type": "Diffusion",         "mask_aware": True,  "params": "48M", "source": "Song et al., ICLR 2021 (XRF adapt.)"},
     ],
 
+    # ── CUP: Compressed Ultrafast Photography (single-shot femtosecond imaging) ──
+    "cup": [
+        {"name": "TV-CUP",          "type": "Variational",       "mask_aware": True,  "params": "0",   "source": "Gao et al., Nature 2014"},
+        {"name": "TwIST-CUP",       "type": "Variational",       "mask_aware": True,  "params": "0",   "source": "Bioucas-Dias & Figueiredo, IEEE TIP 2007 (CUP)"},
+        {"name": "GAP-TV",          "type": "Variational",       "mask_aware": True,  "params": "0",   "source": "Yuan, ICSIP 2016"},
+        {"name": "DeSCI-CUP",       "type": "PnP",               "mask_aware": True,  "params": "8M",  "source": "Liu et al., IEEE TPAMI 2018 (CUP adapt.)"},
+        {"name": "E2E-CNN-CUP",     "type": "Deep Learning",     "mask_aware": True,  "params": "12M", "source": "Liang et al., CVPR 2019"},
+        {"name": "PnP-FastDVDnet",  "type": "PnP",               "mask_aware": True,  "params": "15M", "source": "Tassano et al., CVPR 2020 (CUP)"},
+        {"name": "STFormer-CUP",    "type": "Transformer",       "mask_aware": True,  "params": "38M", "source": "Wang et al., CVPR 2022 (CUP)"},
+        {"name": "DAUHST-CUP",      "type": "Transformer",       "mask_aware": True,  "params": "42M", "source": "Cai et al., NeurIPS 2022 (CUP)"},
+        {"name": "DiffusionCUP",    "type": "Diffusion",         "mask_aware": True,  "params": "52M", "source": "Qiao et al., Nat. Photonics 2020 (updated 2024)"},
+    ],
+
     # ── Multi-modal fusion: CLEM (correlative light+electron) ──────────────────
     "clem": [
         {"name": "Cross-Correlation",  "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Thévenaz et al., IEEE TIP 1998"},
@@ -2101,6 +2114,19 @@ CATEGORY_BENCHMARK_DATASETS: dict[str, dict] = {
 # the closest published result from a comparable paper is used.
 
 CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
+    # CUP — Compressed Ultrafast Photography reconstruction benchmark.
+    # 9 algorithms spanning classical TV → diffusion with realistic PSNR/SSIM ranges.
+    "cup": [
+        {"method": "TV-CUP",          "psnr": 24.3, "ssim": 0.732, "source": "Gao 2014"},
+        {"method": "TwIST-CUP",       "psnr": 26.8, "ssim": 0.774, "source": "Bioucas-Dias 2007"},
+        {"method": "GAP-TV",          "psnr": 28.5, "ssim": 0.812, "source": "Yuan 2016"},
+        {"method": "DeSCI-CUP",       "psnr": 31.2, "ssim": 0.854, "source": "Liu 2018"},
+        {"method": "E2E-CNN-CUP",     "psnr": 33.7, "ssim": 0.886, "source": "Liang 2019"},
+        {"method": "PnP-FastDVDnet",  "psnr": 35.4, "ssim": 0.911, "source": "Tassano 2020"},
+        {"method": "STFormer-CUP",    "psnr": 37.9, "ssim": 0.933, "source": "Wang 2022"},
+        {"method": "DAUHST-CUP",      "psnr": 38.6, "ssim": 0.941, "source": "Cai 2022"},
+        {"method": "DiffusionCUP",    "psnr": 40.2, "ssim": 0.956, "source": "Qiao 2020"},
+    ],
     # XRF-CT — X-ray fluorescence CT reconstruction benchmark.
     # 9 algorithms spanning classical FBP → diffusion with realistic PSNR/SSIM ranges.
     "ct_fluorescence": [

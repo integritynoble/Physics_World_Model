@@ -171,6 +171,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # XRF-CT: X-ray fluorescence CT — y is the Poisson-noisy fluorescence emission map
     # with Compton scatter background; identity runner applies minimal additional noise.
     "ct_fluorescence": "identity",
+    # CUP: Compressed Ultrafast Photography — y is the compressed temporal measurement,
+    # x_true is the dynamic scene frame; identity runner applies minimal additional noise.
+    "cup": "identity",
 }
 
 
@@ -311,6 +314,7 @@ def _resolve_ground_truth(
             generate_cryo_et_phantom,
             generate_ct_phantom,
             generate_ct_fluorescence_phantom,
+            generate_cup_phantom,
         )
 
         # Look up registry entries for this modality
@@ -363,6 +367,7 @@ def _resolve_ground_truth(
                     "generate_cryo_et_phantom": generate_cryo_et_phantom,
                     "generate_ct_phantom": generate_ct_phantom,
                     "generate_ct_fluorescence_phantom": generate_ct_fluorescence_phantom,
+                    "generate_cup_phantom": generate_cup_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -869,6 +874,7 @@ def _load_scenes_from_generator(
             generate_cryo_et_phantom,
             generate_ct_phantom,
             generate_ct_fluorescence_phantom,
+            generate_cup_phantom,
         )
     except ImportError:
         return []
@@ -913,6 +919,7 @@ def _load_scenes_from_generator(
         "generate_cryo_et_phantom": generate_cryo_et_phantom,
         "generate_ct_phantom": generate_ct_phantom,
         "generate_ct_fluorescence_phantom": generate_ct_fluorescence_phantom,
+        "generate_cup_phantom": generate_cup_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)
