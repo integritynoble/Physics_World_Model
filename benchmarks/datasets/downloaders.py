@@ -2816,6 +2816,104 @@ def generate_cest_mri_phantom(
     return samples
 
 
+def generate_ceus_phantom(
+    n_samples: int = 10,
+    seed: int = 42,
+    shape: tuple = (128, 128),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    Contrast-Enhanced Ultrasound (CEUS) microbubble phantom.
+
+    Simulates B-mode + contrast mode ultrasound of liver vasculature with
+    microbubble perfusion. Models the nonlinear harmonic response of
+    microbubbles and speckle noise from tissue background. Reconstruction
+    goal: super-resolved vessel map from multiple bubble frames (ULM).
+
+    Reference: Errico et al., Nature 2015 (ULM); Lowerison et al., Nat. Commun. 2022.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    for i in range(n_samples):
+        # --- Ground truth: vessel perfusion map ---
+        vessel_map = np.zeros((H, W), dtype=np.float32)
+
+        # Main portal vein (large vessel)
+        portal_y = H // 2 + int(rng.integers(-10, 10))
+        vessel_w = int(rng.integers(4, 10))
+        vessel_map[portal_y - vessel_w:portal_y + vessel_w, W // 4:3 * W // 4] = 1.0
+
+        # Branching hepatic vessels
+        n_branches = int(rng.integers(3, 7))
+        for b in range(n_branches):
+            bx_start = W // 4 + b * (W // (2 * n_branches))
+            by = portal_y + int(rng.integers(-H // 4, H // 4))
+            bw = max(1, vessel_w // 2)
+            length = int(rng.integers(H // 6, H // 3))
+            direction = rng.choice([-1, 1])
+            for t in range(length):
+                gy = by + direction * t
+                gx = bx_start + int(rng.integers(-2, 3))
+                if 0 <= gy < H and 0 <= gx < W:
+                    vessel_map[max(0, gy - bw):min(H, gy + bw),
+                               max(0, gx - bw):min(W, gx + bw)] = 0.8
+
+        vessel_map = np.clip(vessel_map, 0, 1).astype(np.float32)
+        x_true = vessel_map
+
+        # --- Tissue background: ultrasound speckle ---
+        tissue = rng.rayleigh(0.3, (H, W)).astype(np.float32)
+        liver_mask = np.ones((H, W), bool)  # assume full FOV is liver
+        tissue *= liver_mask
+
+        # --- Microbubble contrast: nonlinear harmonic signal ---
+        # Bubbles produce bright, sparse signals along vessels
+        mb_signal = np.zeros((H, W), dtype=np.float32)
+        n_bubbles = int(rng.integers(50, 150))
+        for _ in range(n_bubbles):
+            # Sample bubble position weighted by vessel probability
+            flat_vessel = vessel_map.ravel()
+            if flat_vessel.sum() > 0:
+                probs = flat_vessel / flat_vessel.sum()
+                idx = rng.choice(len(probs), p=probs)
+            else:
+                idx = rng.integers(H * W)
+            by, bx = divmod(int(idx), W)
+            mb_signal[by, bx] += float(rng.uniform(0.5, 1.0))
+
+        mb_signal = gaussian_filter(mb_signal, sigma=1.5)
+
+        # Combined CEUS measurement
+        y_meas = (tissue + 2.0 * mb_signal + rng.normal(0, 0.05, (H, W))).astype(np.float32)
+        y_meas = np.clip(y_meas, 0, None)
+
+        H_size = min(H * W, 4096)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y_meas,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "n_branches": int(n_branches),
+                "n_bubbles": int(n_bubbles),
+                "contrast_agent": "SonoVue",
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -2873,6 +2971,7 @@ def acquire_dataset(
         "generate_cathodoluminescence_phantom": lambda: generate_cathodoluminescence_phantom(target_shape=target_shape),
         "generate_cbct_head_phantom": lambda: generate_cbct_head_phantom(target_shape=target_shape),
         "generate_cest_mri_phantom": lambda: generate_cest_mri_phantom(target_shape=target_shape),
+        "generate_ceus_phantom": lambda: generate_ceus_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -2936,6 +3035,7 @@ def acquire_dataset(
         "generate_cathodoluminescence_phantom": lambda: generate_cathodoluminescence_phantom(target_shape=target_shape),
         "generate_cbct_head_phantom": lambda: generate_cbct_head_phantom(target_shape=target_shape),
         "generate_cest_mri_phantom": lambda: generate_cest_mri_phantom(target_shape=target_shape),
+        "generate_ceus_phantom": lambda: generate_ceus_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)

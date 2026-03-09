@@ -137,6 +137,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # CEST MRI: z-spectrum acquisition maps APT signal via exchange saturation.
     # y is the measured z-spectrum slice; identity runner applies minimal noise.
     "cest_mri": "identity",
+    # CEUS: microbubble contrast-enhanced ultrasound — y is the combined B-mode +
+    # contrast measurement; identity runner applies minimal noise.
+    "ceus": "identity",
 }
 
 
@@ -266,6 +269,7 @@ def _resolve_ground_truth(
             generate_cathodoluminescence_phantom,
             generate_cbct_head_phantom,
             generate_cest_mri_phantom,
+            generate_ceus_phantom,
         )
 
         # Look up registry entries for this modality
@@ -307,6 +311,7 @@ def _resolve_ground_truth(
                     "generate_cathodoluminescence_phantom": generate_cathodoluminescence_phantom,
                     "generate_cbct_head_phantom": generate_cbct_head_phantom,
                     "generate_cest_mri_phantom": generate_cest_mri_phantom,
+                    "generate_ceus_phantom": generate_ceus_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -802,6 +807,7 @@ def _load_scenes_from_generator(
             generate_cathodoluminescence_phantom,
             generate_cbct_head_phantom,
             generate_cest_mri_phantom,
+            generate_ceus_phantom,
         )
     except ImportError:
         return []
@@ -835,6 +841,7 @@ def _load_scenes_from_generator(
         "generate_cathodoluminescence_phantom": generate_cathodoluminescence_phantom,
         "generate_cbct_head_phantom": generate_cbct_head_phantom,
         "generate_cest_mri_phantom": generate_cest_mri_phantom,
+        "generate_ceus_phantom": generate_ceus_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

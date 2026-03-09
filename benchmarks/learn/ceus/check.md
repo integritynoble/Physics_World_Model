@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Contrast-Enhanced Ultrasound (CEUS)
 
 **URL:** https://pwm.platformai.org/benchmark/ceus
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
 
 ---

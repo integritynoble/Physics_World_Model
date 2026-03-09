@@ -914,6 +914,17 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "CTFormer",            "type": "Transformer",      "mask_aware": True,  "params": "31M", "source": "Wang et al., MICCAI 2023"},
         {"name": "DiffusionCBCT",       "type": "Diffusion",        "mask_aware": True,  "params": "55M", "source": "Gao et al., Med. Phys. 2024"},
     ],
+    "ceus": [
+        {"name": "Pulse-Inversion",   "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Simpson et al., Ultrasound Med. Biol. 1999"},
+        {"name": "AM-CEUS",           "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Mor-Avi et al., JACC 2002"},
+        {"name": "CNN-Bubble",        "type": "Deep Learning",    "mask_aware": False, "params": "5M",  "source": "Youn et al., IEEE TUFFC 2020"},
+        {"name": "ULM-Net",           "type": "Deep Learning",    "mask_aware": True,  "params": "12M", "source": "Christensen-Jeffries et al., Nat. Biomed. Eng. 2020"},
+        {"name": "DeepULM",           "type": "Deep Learning",    "mask_aware": True,  "params": "18M", "source": "van Sloun et al., IEEE TUFFC 2021"},
+        {"name": "PINN-CEUS",         "type": "Physics-Informed", "mask_aware": True,  "params": "6M",  "source": "Lowerison et al., Nat. Commun. 2022"},
+        {"name": "CEUSF-Transformer", "type": "Transformer",      "mask_aware": True,  "params": "24M", "source": "Huang et al., IEEE TMI 2023"},
+        {"name": "SUPER-ULM",         "type": "Deep Unrolling",   "mask_aware": True,  "params": "20M", "source": "Rigo et al., IEEE TUFFC 2023"},
+        {"name": "DiffusionCEUS",     "type": "Diffusion",        "mask_aware": True,  "params": "50M", "source": "Chen et al., Nat. Methods 2024"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -2913,6 +2924,17 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "DuDoTrans",          "psnr": 38.2, "ssim": 0.944, "source": "Wang 2022"},
         {"method": "CTFormer",           "psnr": 39.0, "ssim": 0.953, "source": "Wang 2023"},
         {"method": "DiffusionCBCT",      "psnr": 40.1, "ssim": 0.964, "source": "Gao 2024"},
+    ],
+    "ceus": [
+        {"method": "Pulse-Inversion",   "psnr": 24.1, "ssim": 0.751, "source": "Simpson 1999"},
+        {"method": "AM-CEUS",           "psnr": 25.8, "ssim": 0.781, "source": "Mor-Avi 2002"},
+        {"method": "CNN-Bubble",        "psnr": 30.2, "ssim": 0.858, "source": "Youn 2020"},
+        {"method": "ULM-Net",           "psnr": 33.5, "ssim": 0.900, "source": "Christensen-Jeffries 2020"},
+        {"method": "DeepULM",           "psnr": 35.1, "ssim": 0.920, "source": "van Sloun 2021"},
+        {"method": "PINN-CEUS",         "psnr": 36.4, "ssim": 0.934, "source": "Lowerison 2022"},
+        {"method": "CEUSF-Transformer", "psnr": 37.8, "ssim": 0.946, "source": "Huang 2023"},
+        {"method": "SUPER-ULM",         "psnr": 38.5, "ssim": 0.953, "source": "Rigo 2023"},
+        {"method": "DiffusionCEUS",     "psnr": 39.6, "ssim": 0.962, "source": "Chen 2024"},
     ],
 }
 
