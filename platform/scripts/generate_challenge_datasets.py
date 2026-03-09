@@ -235,6 +235,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # Electron Tomography: limited-angle tilt series and back-projection with missing wedge
     # are handled by the phantom generator; identity runner applies no additional degradation.
     "electron_tomography": "identity",
+    # Endoscopy: vignetting, specular highlights, compression noise, and motion blur are
+    # handled by the phantom generator; identity runner applies no additional degradation.
+    "endoscopy": "identity",
 }
 
 
@@ -393,6 +396,7 @@ def _resolve_ground_truth(
             generate_electron_diffraction_phantom,
             generate_electron_holography_phantom,
             generate_electron_tomography_phantom,
+            generate_endoscopy_phantom,
         )
 
         # Look up registry entries for this modality
@@ -463,6 +467,7 @@ def _resolve_ground_truth(
                     "generate_electron_diffraction_phantom": generate_electron_diffraction_phantom,
                     "generate_electron_holography_phantom": generate_electron_holography_phantom,
                     "generate_electron_tomography_phantom": generate_electron_tomography_phantom,
+                    "generate_endoscopy_phantom": generate_endoscopy_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -988,6 +993,7 @@ def _load_scenes_from_generator(
             generate_electron_diffraction_phantom,
             generate_electron_holography_phantom,
             generate_electron_tomography_phantom,
+            generate_endoscopy_phantom,
         )
     except ImportError:
         return []
@@ -1051,6 +1057,7 @@ def _load_scenes_from_generator(
         "generate_electron_diffraction_phantom": generate_electron_diffraction_phantom,
         "generate_electron_holography_phantom": generate_electron_holography_phantom,
         "generate_electron_tomography_phantom": generate_electron_tomography_phantom,
+        "generate_endoscopy_phantom": generate_endoscopy_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

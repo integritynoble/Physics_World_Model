@@ -6295,6 +6295,195 @@ def generate_electron_tomography_phantom(
     return samples
 
 
+def generate_endoscopy_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Endoscopy tissue image phantom for image enhancement and restoration benchmarks.
+
+    Creates a 64x64 float32 tissue surface image simulating colorectal/gastric mucosa:
+      - Tubular tissue structure pattern (ridges and crypts visible as periodic texture)
+      - Blood vessels visible as branching darker lines
+      - Small polyp/lesion feature (slightly elevated, reddish intensity)
+
+    Applies endoscope forward model:
+      - Vignetting (radial darkening toward edges)
+      - Specular highlight (bright spot from endoscope illumination)
+      - JPEG-like compression noise
+      - Motion blur from scope movement
+
+    x_true: 64x64 float32, normalized [0,1] — clean tissue image.
+    y: 64x64 float32 — degraded endoscopy image (vignetting + highlights + noise).
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, scope_type, illumination_type, tissue_type.
+
+    References: Gonzalez & Woods, Digital Image Processing 2002;
+                Zuiderveld, Graphics Gems IV 1994;
+                Ozyoruk et al., Med. Image Anal. 2021.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    scope_types = ["colonoscope", "gastroscope", "bronchoscope"]
+    tissue_types = ["colorectal_mucosa", "gastric_mucosa", "bronchial_mucosa"]
+    illumination_types = ["white_light", "narrow_band", "blue_laser"]
+
+    for i in range(n_samples):
+        sample_seed = seed + i * 1000
+        rng_s = np.random.default_rng(sample_seed)
+
+        yy, xx = np.mgrid[0:H, 0:W]
+        yy_f = yy.astype(np.float32)
+        xx_f = xx.astype(np.float32)
+
+        # --- Ground truth: mucosal tissue surface ---
+        # Base mucosa color (pinkish-red tissue background)
+        base_intensity = float(rng_s.uniform(0.45, 0.65))
+        tissue = np.full((H, W), base_intensity, dtype=np.float32)
+
+        # Tubular crypt/ridge periodic texture (glandular openings)
+        freq_x = float(rng_s.uniform(0.12, 0.22))
+        freq_y = float(rng_s.uniform(0.10, 0.18))
+        phase_x = float(rng_s.uniform(0.0, 2.0 * np.pi))
+        phase_y = float(rng_s.uniform(0.0, 2.0 * np.pi))
+        texture_amp = float(rng_s.uniform(0.06, 0.12))
+        crypt_pattern = (
+            np.cos(2.0 * np.pi * freq_x * xx_f / W + phase_x) *
+            np.cos(2.0 * np.pi * freq_y * yy_f / H + phase_y)
+        ).astype(np.float32)
+        tissue = tissue + texture_amp * crypt_pattern
+
+        # Add second harmonic for richer crypt texture
+        freq2_x = freq_x * 2.0
+        freq2_y = freq_y * 2.0
+        texture_amp2 = texture_amp * 0.4
+        crypt_pattern2 = (
+            np.cos(2.0 * np.pi * freq2_x * xx_f / W + phase_x * 1.3) *
+            np.cos(2.0 * np.pi * freq2_y * yy_f / H + phase_y * 0.9)
+        ).astype(np.float32)
+        tissue = tissue + texture_amp2 * crypt_pattern2
+
+        # Blood vessels: branching darker lines
+        n_vessels = int(rng_s.integers(2, 5))
+        for _ in range(n_vessels):
+            # Random starting point and direction
+            start_x = float(rng_s.uniform(0.0, W))
+            start_y = float(rng_s.uniform(0.0, H))
+            angle = float(rng_s.uniform(0.0, np.pi))
+            length = float(rng_s.uniform(0.2, 0.6)) * max(H, W)
+            width = float(rng_s.uniform(0.8, 2.5))
+            # Parametric vessel line
+            t_vals = np.linspace(0.0, length, 200)
+            vx = start_x + t_vals * np.cos(angle)
+            vy = start_y + t_vals * np.sin(angle)
+            # Add curvature (sinusoidal deviation)
+            curve_amp = float(rng_s.uniform(2.0, 6.0))
+            curve_freq = float(rng_s.uniform(0.02, 0.06))
+            vx = vx + curve_amp * np.sin(curve_freq * t_vals)
+            # Distance from each pixel to vessel centerline
+            dist_sq = (
+                (xx_f[:, :, np.newaxis] - vx[np.newaxis, np.newaxis, :]) ** 2 +
+                (yy_f[:, :, np.newaxis] - vy[np.newaxis, np.newaxis, :]) ** 2
+            )
+            min_dist = np.sqrt(dist_sq.min(axis=2))
+            vessel_mask = np.exp(-0.5 * (min_dist / width) ** 2).astype(np.float32)
+            vessel_depth = float(rng_s.uniform(0.08, 0.18))
+            tissue = tissue - vessel_depth * vessel_mask
+
+        # Polyp/lesion: slightly elevated, higher intensity (reddish)
+        polyp_cx = float(rng_s.uniform(0.25 * W, 0.75 * W))
+        polyp_cy = float(rng_s.uniform(0.25 * H, 0.75 * H))
+        polyp_r = float(rng_s.uniform(4.0, 9.0))
+        polyp_dist = np.sqrt(
+            (xx_f - polyp_cx) ** 2 + (yy_f - polyp_cy) ** 2
+        ).astype(np.float32)
+        polyp_mask = np.exp(-0.5 * (polyp_dist / polyp_r) ** 2).astype(np.float32)
+        polyp_intensity = float(rng_s.uniform(0.10, 0.20))
+        tissue = tissue + polyp_intensity * polyp_mask
+
+        # Smooth slightly to simulate optical blur of endoscope lens
+        sigma_opt = float(rng_s.uniform(0.3, 0.8))
+        tissue = gaussian_filter(tissue, sigma=sigma_opt).astype(np.float32)
+
+        # Normalize x_true to [0, 1]
+        t_min = float(tissue.min())
+        t_max = float(tissue.max())
+        if t_max > t_min:
+            x_true = ((tissue - t_min) / (t_max - t_min)).astype(np.float32)
+        else:
+            x_true = tissue.astype(np.float32)
+
+        # --- Forward model: endoscope degradation ---
+        y = x_true.copy()
+
+        # 1. Vignetting: radial darkening toward edges
+        cx_v = W / 2.0
+        cy_v = H / 2.0
+        r_max = np.sqrt(cx_v ** 2 + cy_v ** 2)
+        r_dist = np.sqrt(
+            (xx_f - cx_v) ** 2 + (yy_f - cy_v) ** 2
+        ).astype(np.float32)
+        vignette_strength = float(rng_s.uniform(0.35, 0.60))
+        vignette_map = (1.0 - vignette_strength * (r_dist / r_max) ** 2).astype(np.float32)
+        vignette_map = np.clip(vignette_map, 0.1, 1.0)
+        y = y * vignette_map
+
+        # 2. Specular highlight: bright spot from endoscope illumination
+        spec_cx = float(rng_s.uniform(0.3 * W, 0.7 * W))
+        spec_cy = float(rng_s.uniform(0.3 * H, 0.7 * H))
+        spec_r = float(rng_s.uniform(3.0, 8.0))
+        spec_intensity = float(rng_s.uniform(0.3, 0.6))
+        spec_dist = np.sqrt(
+            (xx_f - spec_cx) ** 2 + (yy_f - spec_cy) ** 2
+        ).astype(np.float32)
+        spec_mask = np.exp(-0.5 * (spec_dist / spec_r) ** 2).astype(np.float32)
+        y = np.minimum(y + spec_intensity * spec_mask, 1.0).astype(np.float32)
+
+        # 3. JPEG-like compression noise: quantization noise
+        jpeg_levels = int(rng_s.integers(16, 48))  # fewer levels = more compression
+        y_quantized = (np.floor(y * jpeg_levels) / jpeg_levels).astype(np.float32)
+        quant_noise_amp = float(rng_s.uniform(0.005, 0.020))
+        quant_noise = rng_s.standard_normal((H, W)).astype(np.float32) * quant_noise_amp
+        y = np.clip(y_quantized + quant_noise, 0.0, 1.0).astype(np.float32)
+
+        # 4. Motion blur: Gaussian blur simulating scope movement
+        motion_sigma = float(rng_s.uniform(0.4, 1.2))
+        y = gaussian_filter(y, sigma=motion_sigma).astype(np.float32)
+        y = np.clip(y, 0.0, 1.0)
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        scope_type = scope_types[i % len(scope_types)]
+        tissue_type = tissue_types[i % len(tissue_types)]
+        illumination_type = illumination_types[i % len(illumination_types)]
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "endoscopy",
+                "scope_type": scope_type,
+                "illumination_type": illumination_type,
+                "tissue_type": tissue_type,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -6382,6 +6571,7 @@ def acquire_dataset(
         "generate_electron_diffraction_phantom": generate_electron_diffraction_phantom,
         "generate_electron_holography_phantom": generate_electron_holography_phantom,
         "generate_electron_tomography_phantom": generate_electron_tomography_phantom,
+        "generate_endoscopy_phantom": generate_endoscopy_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -6475,6 +6665,7 @@ def acquire_dataset(
         "generate_electron_diffraction_phantom": lambda: generate_electron_diffraction_phantom(),
         "generate_electron_holography_phantom": lambda: generate_electron_holography_phantom(),
         "generate_electron_tomography_phantom": lambda: generate_electron_tomography_phantom(),
+        "generate_endoscopy_phantom": lambda: generate_endoscopy_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

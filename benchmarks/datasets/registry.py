@@ -1480,6 +1480,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic ET phantom for benchmarking missing-wedge compensation reconstruction algorithms",
     ),
+    "endoscopy_generated": DatasetEntry(
+        id="endoscopy_generated",
+        name="Endoscopy Tissue Image Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic endoscopy phantom with mucosal texture, vignetting, and specular highlight model",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["endoscopy"],
+        converter="generate_endoscopy_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic endoscopy phantom for benchmarking image enhancement and restoration algorithms",
+    ),
 }
 
 

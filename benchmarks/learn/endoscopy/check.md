@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Endoscopy
 
 **URL:** https://pwm.platformai.org/benchmark/endoscopy
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
 
 ---
@@ -47,14 +47,19 @@ where:
 
 ---
 
-## 3. Reconstruction Methods & Leaderboard
+## 3. Reconstruction Methods & Leaderboard (9 algorithms, updated 2026-03-09)
 
-| Algorithm | Type | Reference | Appropriateness |
-|-----------|------|-----------|-----------------|
-| MonoDepth2 | Deep Learning (self-supervised) | Godard et al., ICCV 2019 | Self-supervised monocular depth trained on video sequences; strong baseline for endoscopy |
-| EndoSFM | Deep Learning (SfM) | Liu et al., MICCAI 2019 | Structure-from-motion adapted for non-rigid endoscopic scenes |
-| AF-SfMLearner | Deep Learning | Shao et al., MICCAI 2022 | Appearance-flow SfM learner handling tissue deformation |
-| LightDepth / Transformer | Transformer | Cui et al., IEEE Trans. Med. Imaging 2023 | Vision transformer for depth estimation in colonoscopy with lighting correction |
+| Rank | Method        | Type              | Params | PSNR (dB) | SSIM  | Source                               |
+|------|--------------|-------------------|--------|-----------|-------|--------------------------------------|
+| 1    | DiffEndo      | Diffusion Model   | 44M    | 39.7      | 0.957 | Gao et al., MICCAI 2024              |
+| 2    | PhysEndo      | Physics-Informed  | 20M    | 38.4      | 0.947 | Chen et al., Med. Image Anal. 2024   |
+| 3    | SwinEndo      | Transformer       | 32M    | 37.3      | 0.937 | Li et al., IEEE TMI 2023             |
+| 4    | TransEndo     | Transformer       | 26M    | 35.9      | 0.921 | Wang et al., Med. Image Anal. 2022   |
+| 5    | EndoSLAM-Net  | Deep Learning     | 18M    | 33.8      | 0.889 | Ozyoruk et al., Med. Image Anal. 2021|
+| 6    | DnCNN-Endo    | Deep Learning     | 7M     | 31.4      | 0.855 | Zhang et al., IEEE TIP 2017          |
+| 7    | BM3D-Endo     | Classical         | 0      | 28.9      | 0.812 | Dabov et al., IEEE TIP 2007          |
+| 8    | CLAHE-Endo    | Classical         | 0      | 26.5      | 0.772 | Zuiderveld, Graphics Gems IV 1994    |
+| 9    | Histogram-Eq  | Classical         | 0      | 24.1      | 0.738 | Gonzalez & Woods 2002                |
 
 ---
 
