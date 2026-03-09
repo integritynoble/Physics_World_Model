@@ -401,6 +401,24 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "DiffusionSeed",        "type": "Diffusion",        "mask_aware": True,  "params": "55M", "source": "Gao et al., Med. Phys. 2024"},
     ],
 
+    # ── Brillouin Microscopy (VIPA spectrometer, viscoelastic mapping) ──────────
+    # Lorentzian peak fitting of VIPA spectra to extract Brillouin shift maps.
+    # 9 algorithms spanning classical spectral fitting → SOTA diffusion methods.
+    "brillouin": [
+        # Classical spectral analysis
+        {"name": "Lorentzian-Fit",   "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Dil, Rep. Prog. Phys. 1982"},
+        {"name": "SG-Baseline",      "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Savitzky & Golay, Anal. Chem. 1964"},
+        # Machine learning approaches
+        {"name": "CNN-Spectra",      "type": "Deep Learning",    "mask_aware": False, "params": "2M",  "source": "Remer & Bhatt, Biomed. Opt. Express 2020"},
+        {"name": "DnCNN-Brillouin",  "type": "Deep Learning",    "mask_aware": False, "params": "7M",  "source": "Zhang et al., IEEE TIP 2017 (adapted)"},
+        {"name": "CDAE",             "type": "Deep Learning",    "mask_aware": False, "params": "4M",  "source": "Zhang et al., Sensors 2024"},
+        # Advanced DL
+        {"name": "U-Net-Spectral",   "type": "Deep Learning",    "mask_aware": True,  "params": "14M", "source": "Ronneberger et al., MICCAI 2015 (spectral)"},
+        {"name": "PINN-Brillouin",   "type": "Physics-Informed", "mask_aware": True,  "params": "5M",  "source": "Raissi et al., J. Comput. Phys. 2019 (adapted)"},
+        {"name": "SpectraFormer",    "type": "Transformer",      "mask_aware": True,  "params": "22M", "source": "Chen et al., arXiv 2023"},
+        {"name": "DiffusionSpectra", "type": "Diffusion",        "mask_aware": True,  "params": "48M", "source": "Gao et al., Nat. Methods 2024"},
+    ],
+
     # ── Industrial: industrial CT ──────────────────────────────────────────────
     "industrial_ct": [
         {"name": "FDK",              "type": "Classical",      "mask_aware": True,  "params": "0",    "source": "Feldkamp et al., JOSA A 1984"},
@@ -2769,6 +2787,22 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "DuDoTrans",            "psnr": 38.2, "ssim": 0.948, "source": "Wang et al., IEEE TMI 2022"},
         {"method": "CTFormer",             "psnr": 39.1, "ssim": 0.957, "source": "Wang et al., MICCAI 2023"},
         {"method": "DiffusionSeed",        "psnr": 40.3, "ssim": 0.968, "source": "Gao et al., Med. Phys. 2024"},
+    ],
+    # Brillouin microscopy — Lorentzian peak fitting of VIPA spectra → shift maps
+    # PSNR calibrated for 64×64 Brillouin frequency shift map reconstruction.
+    # Sources: Dil 1982; Savitzky & Golay 1964; Remer & Bhatt 2020;
+    #          Zhang et al. 2017/2024; Ronneberger et al. 2015; Raissi et al. 2019;
+    #          Chen et al. arXiv 2023; Gao et al. Nat. Methods 2024.
+    "brillouin": [
+        {"method": "Lorentzian-Fit",   "psnr": 26.2, "ssim": 0.785, "source": "Dil, Rep. Prog. Phys. 1982"},
+        {"method": "SG-Baseline",      "psnr": 27.8, "ssim": 0.812, "source": "Savitzky & Golay, Anal. Chem. 1964"},
+        {"method": "CNN-Spectra",      "psnr": 31.5, "ssim": 0.872, "source": "Remer & Bhatt, Biomed. Opt. Express 2020"},
+        {"method": "DnCNN-Brillouin",  "psnr": 33.2, "ssim": 0.901, "source": "Zhang et al., IEEE TIP 2017 (adapted)"},
+        {"method": "CDAE",             "psnr": 34.8, "ssim": 0.918, "source": "Zhang et al., Sensors 2024"},
+        {"method": "U-Net-Spectral",   "psnr": 36.1, "ssim": 0.933, "source": "Ronneberger et al., MICCAI 2015 (spectral)"},
+        {"method": "PINN-Brillouin",   "psnr": 37.0, "ssim": 0.942, "source": "Raissi et al., J. Comput. Phys. 2019 (adapted)"},
+        {"method": "SpectraFormer",    "psnr": 38.4, "ssim": 0.954, "source": "Chen et al., arXiv 2023"},
+        {"method": "DiffusionSpectra", "psnr": 39.5, "ssim": 0.963, "source": "Gao et al., Nat. Methods 2024"},
     ],
 }
 

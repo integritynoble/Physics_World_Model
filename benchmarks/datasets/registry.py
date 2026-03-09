@@ -920,6 +920,24 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
     # ==================================================================
     # 19. Particle Physics  (1 modality)
     # ==================================================================
+
+    # Brillouin microscopy — VIPA spectrometer phantom for viscoelastic mapping
+    "brillouin_vipa_generated": DatasetEntry(
+        id="brillouin_vipa_generated",
+        name="Brillouin VIPA Spectral Maps (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Prevedel et al., Nat. Methods 2019",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["brillouin"],
+        converter="generate_brillouin_vipa_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic VIPA Brillouin spectral maps of biological cell monolayers (Lorentzian peak model)",
+    ),
+
     "calorimeter_generated": DatasetEntry(
         id="calorimeter_generated",
         name="Generated Calorimeter Shower",

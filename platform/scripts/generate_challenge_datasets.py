@@ -122,6 +122,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # Brachytherapy Imaging: multi-view X-ray Radon projection of I-125 seeds in tissue.
     # Use radon runner since the forward model is Radon-transform based.
     "brachytherapy_img": "radon",
+    # Brillouin Microscopy: VIPA spectrometer — y is already the spectral measurement,
+    # not a CT sinogram or k-space undersampling.  Identity runner applies minimal noise.
+    "brillouin": "identity",
 }
 
 
@@ -246,6 +249,7 @@ def _resolve_ground_truth(
             generate_angiography_vessel_phantom, generate_asl_perfusion_phantom,
             generate_apt_composition_map, generate_blt_source_phantom,
             generate_brachytherapy_seed_phantom,
+            generate_brillouin_vipa_phantom,
         )
 
         # Look up registry entries for this modality
@@ -282,10 +286,16 @@ def _resolve_ground_truth(
                     "generate_apt_composition_map": generate_apt_composition_map,
                     "generate_blt_source_phantom": generate_blt_source_phantom,
                     "generate_brachytherapy_seed_phantom": generate_brachytherapy_seed_phantom,
+                    "generate_brillouin_vipa_phantom": generate_brillouin_vipa_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
-                    arr = gen_fn(target_shape=target, seed=seed)
+                    result = gen_fn(target_shape=target, seed=seed)
+                    # Some generators return list[dict]; extract x_true from first sample
+                    if isinstance(result, list):
+                        arr = result[0]["x_true"] if result else np.zeros(target, dtype=np.float32)
+                    else:
+                        arr = result
                     return _crop_or_resize_2d(arr.astype(np.float64), signal_shape)
 
     except ImportError:
@@ -767,6 +777,7 @@ def _load_scenes_from_generator(
             generate_angiography_vessel_phantom, generate_asl_perfusion_phantom,
             generate_apt_composition_map, generate_blt_source_phantom,
             generate_brachytherapy_seed_phantom,
+            generate_brillouin_vipa_phantom,
         )
     except ImportError:
         return []
@@ -795,6 +806,7 @@ def _load_scenes_from_generator(
         "generate_apt_composition_map": generate_apt_composition_map,
         "generate_blt_source_phantom": generate_blt_source_phantom,
         "generate_brachytherapy_seed_phantom": generate_brachytherapy_seed_phantom,
+        "generate_brillouin_vipa_phantom": generate_brillouin_vipa_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)
@@ -805,7 +817,12 @@ def _load_scenes_from_generator(
     target = tuple(signal_shape[:2])
     scenes = []
     for i in range(max_scenes):
-        arr = gen_fn(target_shape=target, seed=seed + i)
+        result = gen_fn(target_shape=target, seed=seed + i)
+        # Some generators return list[dict]; extract x_true from first sample
+        if isinstance(result, list):
+            arr = result[0]["x_true"] if result else np.zeros(target, dtype=np.float32)
+        else:
+            arr = result
         arr = arr.astype(np.float64)
         arr = _crop_or_resize_2d(arr, signal_shape)
         if arr.max() > 0:
@@ -1202,6 +1219,12 @@ def _apply_forward_model(
         return _forward_dual_energy(x)
     elif runner_type == "projection":
         return _forward_projection(x)
+    elif runner_type == "identity":
+        # Identity forward model: y = x + small Gaussian noise, H_ideal = I
+        H_size = min(x.size, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+        noise = rng.standard_normal(x.shape).astype(np.float32) * 0.01
+        return (x + noise).astype(np.float32), H_ideal
     else:
         # Default: PSF-based
         return _forward_psf(x, sigma=2.0)

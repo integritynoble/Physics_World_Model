@@ -2233,6 +2233,114 @@ def generate_brachytherapy_seed_phantom(
     return samples
 
 
+def generate_brillouin_vipa_phantom(
+    n_samples: int = 10,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list:
+    """
+    Brillouin VIPA spectrometer phantom for viscoelastic mapping.
+
+    Generates spatially-resolved Brillouin shift maps of biological samples
+    (cell monolayers/tissue sections) with realistic VIPA spectral signatures.
+    Forward model: Lorentzian peak at Ω_B(x,y) with elastic leakage background.
+
+    Reference: Prevedel et al., Nat. Methods 2019; Antonacci & Braakman 2022.
+    """
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    N_freq = 64  # spectral channels
+
+    for i in range(n_samples):
+        # --- Ground truth: Brillouin shift map (GHz) ---
+        # Background: culture medium ~5.1 GHz
+        shift_map = np.full((H, W), 5.1, dtype=np.float32)
+
+        # Cell bodies: higher shift ~5.5-6.0 GHz (stiffer cytoplasm)
+        n_cells = int(rng.integers(4, 10))
+        for _ in range(n_cells):
+            cy = int(rng.integers(H // 5, 4 * H // 5))
+            cx = int(rng.integers(W // 5, 4 * W // 5))
+            r = int(rng.integers(max(2, H // 10), max(3, H // 5)))
+            Y, X = np.ogrid[:H, :W]
+            mask = ((Y - cy) ** 2 + (X - cx) ** 2) <= r ** 2
+            shift_map[mask] = float(rng.uniform(5.5, 6.2))
+            # Nucleus: even stiffer ~6.5-7.0 GHz
+            r_nuc = max(2, r // 3)
+            nuc_mask = ((Y - cy) ** 2 + (X - cx) ** 2) <= r_nuc ** 2
+            shift_map[nuc_mask] = float(rng.uniform(6.5, 7.2))
+
+        # Smooth transitions
+        shift_map = gaussian_filter(shift_map, sigma=1.5).astype(np.float32)
+        x_true = shift_map  # GHz map
+
+        # --- Forward model: VIPA spectra ---
+        # Frequency axis: centred at 0, ±20 GHz range
+        freq_axis = np.linspace(-20, 20, N_freq, dtype=np.float32)
+        gamma_B = 0.8  # Brillouin linewidth (GHz, typical for biological samples)
+        gamma_R = 0.1  # elastic peak width (instrument-limited)
+
+        spectra = np.zeros((H, W, N_freq), dtype=np.float32)
+        I_B = 0.05  # Brillouin peak intensity (relative to elastic)
+        I_R = 1.0   # elastic peak intensity
+
+        for hy in range(H):
+            for hx in range(W):
+                omega_b = shift_map[hy, hx]
+                # Anti-Stokes and Stokes Brillouin peaks (Lorentzian)
+                peak_as = I_B * (gamma_B / 2 / np.pi) / ((freq_axis - omega_b) ** 2 + (gamma_B / 2) ** 2)
+                peak_s  = I_B * (gamma_B / 2 / np.pi) / ((freq_axis + omega_b) ** 2 + (gamma_B / 2) ** 2)
+                # Elastic leakage
+                elastic_leak = 0.02 * I_R * (gamma_R / 2 / np.pi) / (freq_axis ** 2 + (gamma_R / 2) ** 2)
+                spectra[hy, hx] = peak_as + peak_s + elastic_leak
+
+        # Shot noise
+        max_signal = float(spectra.max())
+        if max_signal > 0:
+            noise_level = 0.005 * max_signal * (1 + 0.5 * rng.random())
+            y_meas = (spectra + rng.normal(0, noise_level, spectra.shape)).astype(np.float32)
+        else:
+            y_meas = spectra.copy()
+
+        # Ideal operator (identity — spectral fitting extracts shift)
+        H_size = min(H * W, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        # Normalise x_true to [0,1] for compatibility with generic pipeline
+        x_min = float(x_true.min())
+        x_max = float(x_true.max())
+        if x_max > x_min:
+            x_norm = (x_true - x_min) / (x_max - x_min)
+        else:
+            x_norm = np.zeros_like(x_true)
+
+        samples.append({
+            "x_true": x_norm,
+            "y": y_meas,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "n_cells": int(n_cells),
+                "freq_range_GHz": [-20.0, 20.0],
+                "laser_nm": 532,
+                "gamma_B_GHz": float(gamma_B),
+                "shift_min_GHz": x_min,
+                "shift_max_GHz": x_max,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -2284,6 +2392,7 @@ def acquire_dataset(
         "generate_apt_composition_map": lambda: generate_apt_composition_map(target_shape=target_shape),
         "generate_blt_source_phantom": lambda: generate_blt_source_phantom(target_shape=target_shape),
         "generate_brachytherapy_seed_phantom": lambda: generate_brachytherapy_seed_phantom(target_shape=target_shape),
+        "generate_brillouin_vipa_phantom": lambda: generate_brillouin_vipa_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -2341,6 +2450,7 @@ def acquire_dataset(
         "generate_apt_composition_map": lambda: generate_apt_composition_map(target_shape=target_shape),
         "generate_blt_source_phantom": lambda: generate_blt_source_phantom(target_shape=target_shape),
         "generate_brachytherapy_seed_phantom": lambda: generate_brachytherapy_seed_phantom(target_shape=target_shape),
+        "generate_brillouin_vipa_phantom": lambda: generate_brillouin_vipa_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)
