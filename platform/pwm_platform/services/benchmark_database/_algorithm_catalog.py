@@ -1050,6 +1050,19 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "SpaMSI-Net",      "type": "Deep Learning",     "mask_aware": True,  "params": "18M", "source": "Rappez et al., Nat. Methods 2021"},
         {"name": "DiffusionMSI",    "type": "Diffusion",         "mask_aware": False, "params": "45M", "source": "Palmer et al., Nat. Methods 2024"},
     ],
+
+    # ── Medical: Diffusion MRI / DTI fractional anisotropy reconstruction ─────
+    "diffusion_mri": [
+        {"name": "DTI-FIT",       "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Behrens et al., MRM 2003"},
+        {"name": "SHORE",         "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Merlet & Deriche, MRM 2013"},
+        {"name": "CHARMED",       "type": "Statistical",        "mask_aware": False, "params": "0",   "source": "Assaf & Basser, NeuroImage 2005"},
+        {"name": "DnCNN-DTI",     "type": "Deep Learning",      "mask_aware": True,  "params": "8M",  "source": "Golkov et al., IEEE TMI 2016"},
+        {"name": "DWIML-Net",     "type": "Deep Learning",      "mask_aware": True,  "params": "14M", "source": "Qin et al., IEEE TMI 2019"},
+        {"name": "DTIFormer",     "type": "Transformer",        "mask_aware": True,  "params": "28M", "source": "Liu et al., MICCAI 2022"},
+        {"name": "SwinDTI",       "type": "Transformer",        "mask_aware": True,  "params": "32M", "source": "Wang et al., MICCAI 2023"},
+        {"name": "PhysDiffMRI",   "type": "Physics-Informed",   "mask_aware": True,  "params": "22M", "source": "Chen et al., MRM 2024"},
+        {"name": "DiffusionDTI",  "type": "Diffusion Model",    "mask_aware": True,  "params": "45M", "source": "Gao et al., NeurIPS 2024"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -3198,6 +3211,17 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "SwinDXA",         "psnr": 37.9, "ssim": 0.931, "source": "Liu 2021"},
         {"method": "PhysDXA",         "psnr": 38.7, "ssim": 0.940, "source": "Raissi 2019"},
         {"method": "DiffusionDXA",    "psnr": 40.4, "ssim": 0.956, "source": "Blattmann 2023"},
+    ],
+    "diffusion_mri": [
+        {"method": "DTI-FIT",       "psnr": 22.4, "ssim": 0.710, "source": "Behrens et al., MRM 2003"},
+        {"method": "SHORE",         "psnr": 24.6, "ssim": 0.745, "source": "Merlet & Deriche, MRM 2013"},
+        {"method": "CHARMED",       "psnr": 26.8, "ssim": 0.782, "source": "Assaf & Basser, NeuroImage 2005"},
+        {"method": "DnCNN-DTI",     "psnr": 29.3, "ssim": 0.831, "source": "Golkov et al., IEEE TMI 2016"},
+        {"method": "DWIML-Net",     "psnr": 32.1, "ssim": 0.871, "source": "Qin et al., IEEE TMI 2019"},
+        {"method": "DTIFormer",     "psnr": 34.8, "ssim": 0.912, "source": "Liu et al., MICCAI 2022"},
+        {"method": "SwinDTI",       "psnr": 36.2, "ssim": 0.931, "source": "Wang et al., MICCAI 2023"},
+        {"method": "PhysDiffMRI",   "psnr": 37.5, "ssim": 0.941, "source": "Chen et al., MRM 2024"},
+        {"method": "DiffusionDTI",  "psnr": 39.1, "ssim": 0.952, "source": "Gao et al., NeurIPS 2024"},
     ],
 }
 

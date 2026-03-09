@@ -4453,6 +4453,122 @@ def generate_dic_phantom(
     return samples
 
 
+def generate_diffusion_mri_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    Diffusion MRI DTI fractional anisotropy (FA) map phantom.
+
+    Simulates a DTI FA map with white matter fiber tracts (FA ~0.7-0.9)
+    and gray matter regions (FA ~0.1-0.3), with k-space undersampling
+    forward model.
+
+    x_true: 64x64 float32 FA map normalized to [0, 1] —
+            white matter tracts (high FA ~0.7-0.9), gray matter (low FA ~0.1-0.3),
+            background ~0.0.
+    y: undersampled k-space reconstruction — every 4th k-space line sampled,
+       complex Gaussian noise added in k-space, inverse FFT taken.
+    H_ideal: 64x64 float32 identity matrix.
+    metadata: dict with keys modality, acceleration_factor, acquisition_scheme.
+
+    Reference: Behrens et al., MRM 2003; Merlet & Deriche, MRM 2013.
+    """
+    import numpy as np
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    for i in range(n_samples):
+        Y_grid, X_grid = np.mgrid[:H, :W]
+        cy = H / 2.0
+        cx = W / 2.0
+
+        # Build FA map: background ~0 (CSF / outside brain)
+        fa_map = np.zeros((H, W), dtype=np.float32)
+
+        # Gray matter: outer ellipse (FA ~0.1-0.3)
+        gm_ry = float(rng.uniform(H * 0.30, H * 0.42))
+        gm_rx = float(rng.uniform(W * 0.30, W * 0.42))
+        gm_fa = float(rng.uniform(0.10, 0.30))
+        gm_mask = ((Y_grid - cy) / gm_ry) ** 2 + ((X_grid - cx) / gm_rx) ** 2 <= 1.0
+        fa_map[gm_mask] = gm_fa
+
+        # White matter corpus callosum: horizontal band (FA ~0.7-0.9)
+        cc_height = float(rng.uniform(H * 0.08, H * 0.14))
+        cc_width = float(rng.uniform(W * 0.45, W * 0.65))
+        cc_cy = cy + float(rng.uniform(-H * 0.05, H * 0.05))
+        cc_fa = float(rng.uniform(0.70, 0.90))
+        cc_mask = (
+            (np.abs(Y_grid - cc_cy) < cc_height / 2.0) &
+            (np.abs(X_grid - cx) < cc_width / 2.0)
+        )
+        fa_map[cc_mask] = cc_fa
+
+        # White matter corticospinal tract: vertical band (FA ~0.65-0.85)
+        cst_width = float(rng.uniform(W * 0.06, W * 0.10))
+        cst_cx = cx + float(rng.uniform(-W * 0.10, W * 0.10))
+        cst_height = float(rng.uniform(H * 0.40, H * 0.55))
+        cst_fa = float(rng.uniform(0.65, 0.85))
+        cst_mask = (
+            (np.abs(X_grid - cst_cx) < cst_width / 2.0) &
+            (np.abs(Y_grid - cy) < cst_height / 2.0)
+        )
+        fa_map[cst_mask] = cst_fa
+
+        # Normalize to [0, 1]
+        fa_max = fa_map.max()
+        if fa_max > 0:
+            x_true = fa_map / fa_max
+        else:
+            x_true = fa_map.copy()
+        x_true = x_true.astype(np.float32)
+
+        # k-space undersampling forward model
+        # Sample every 4th line in k-space (acceleration factor = 4)
+        acceleration_factor = 4
+        kspace = np.fft.fft2(x_true.astype(np.complex64))
+        kspace_undersampled = np.zeros_like(kspace)
+        kspace_undersampled[::acceleration_factor, :] = kspace[::acceleration_factor, :]
+
+        # Add complex Gaussian noise in k-space
+        noise_std = float(rng.uniform(0.01, 0.03)) * np.abs(kspace).max()
+        noise_real = rng.normal(0.0, noise_std, size=kspace.shape).astype(np.float32)
+        noise_imag = rng.normal(0.0, noise_std, size=kspace.shape).astype(np.float32)
+        kspace_undersampled += (noise_real + 1j * noise_imag)
+
+        # Inverse FFT to get undersampled reconstruction
+        y_complex = np.fft.ifft2(kspace_undersampled)
+        y = np.abs(y_complex).astype(np.float32)
+        y_max = y.max()
+        if y_max > 0:
+            y = y / y_max
+        y = np.clip(y, 0.0, 1.0)
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "diffusion_mri",
+                "acceleration_factor": acceleration_factor,
+                "acquisition_scheme": "DTI",
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -4526,6 +4642,7 @@ def acquire_dataset(
         "generate_dexa_phantom": lambda: generate_dexa_phantom(target_shape=target_shape),
         "generate_desi_phantom": lambda: generate_desi_phantom(target_shape=target_shape),
         "generate_dic_phantom": lambda: generate_dic_phantom(target_shape=target_shape),
+        "generate_diffusion_mri_phantom": generate_diffusion_mri_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -4605,6 +4722,7 @@ def acquire_dataset(
         "generate_dexa_phantom": lambda: generate_dexa_phantom(target_shape=target_shape),
         "generate_desi_phantom": lambda: generate_desi_phantom(target_shape=target_shape),
         "generate_dic_phantom": lambda: generate_dic_phantom(target_shape=target_shape),
+        "generate_diffusion_mri_phantom": lambda: generate_diffusion_mri_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

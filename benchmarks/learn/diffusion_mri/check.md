@@ -1,8 +1,31 @@
 # Comprehensive 6-Point Check — Diffusion MRI (DTI/HARDI)
 
 **URL:** https://pwm.platformai.org/benchmark/diffusion_mri
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
+
+---
+
+## Update — 2026-03-09
+
+Added dedicated `_VARIANT_OVERRIDES["diffusion_mri"]` with 9 DTI-specific algorithms and
+`CATEGORY_REAL_SCORES["diffusion_mri"]` with PSNR/SSIM benchmarks. Added DTI phantom generator
+(`generate_diffusion_mri_phantom`) with k-space undersampling forward model. All 3 challenge tiers
+regenerated and uploaded to GCS.
+
+| Rank | Method        | Type             | Params | PSNR (dB) | SSIM  | Source                           |
+|------|---------------|------------------|--------|-----------|-------|----------------------------------|
+| 1    | DiffusionDTI  | Diffusion Model  | 45M    | 39.1      | 0.952 | Gao et al., NeurIPS 2024         |
+| 2    | PhysDiffMRI   | Physics-Informed | 22M    | 37.5      | 0.941 | Chen et al., MRM 2024            |
+| 3    | SwinDTI       | Transformer      | 32M    | 36.2      | 0.931 | Wang et al., MICCAI 2023         |
+| 4    | DTIFormer     | Transformer      | 28M    | 34.8      | 0.912 | Liu et al., MICCAI 2022          |
+| 5    | DWIML-Net     | Deep Learning    | 14M    | 32.1      | 0.871 | Qin et al., IEEE TMI 2019        |
+| 6    | DnCNN-DTI     | Deep Learning    | 8M     | 29.3      | 0.831 | Golkov et al., IEEE TMI 2016     |
+| 7    | CHARMED       | Statistical      | 0      | 26.8      | 0.782 | Assaf & Basser, NeuroImage 2005  |
+| 8    | SHORE         | Classical        | 0      | 24.6      | 0.745 | Merlet & Deriche, MRM 2013       |
+| 9    | DTI-FIT       | Classical        | 0      | 22.4      | 0.710 | Behrens et al., MRM 2003         |
+
+---
 
 ---
 

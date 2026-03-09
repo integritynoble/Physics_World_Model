@@ -1270,6 +1270,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic DIC phase phantom with cell nucleus, cytoplasm, differential gradient imaging",
     ),
+    "diffusion_mri_generated": DatasetEntry(
+        id="diffusion_mri_generated",
+        name="Diffusion MRI Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic DTI/DWI phantom with white matter fiber tract structure",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["diffusion_mri"],
+        converter="generate_diffusion_mri_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic diffusion MRI phantom for benchmarking DTI reconstruction algorithms",
+    ),
 }
 
 
