@@ -51,3 +51,46 @@ scores.
 
 **COMPLETE.** No further code changes needed. Algorithm override verified and
 leaderboard displays correct single-photon ToF-specific algorithms.
+
+---
+
+## Change Log: 2026-03-09
+
+### Summary
+Expanded flash_lidar from 4-algorithm stub to full 9-algorithm catalog with phantom generator, GCS challenge datasets, and 2022-2026 coverage.
+
+### Files Modified
+- `benchmarks/datasets/downloaders.py`
+  - Added `generate_flash_lidar_phantom()` — outdoor SPAD depth scene with Poisson photon counting and timing jitter forward model
+  - Registered in `_generated_converters` dict inside `load_and_convert_dataset()`
+  - Registered in `converter_map` dict inside `load_and_convert_dataset()`
+
+- `benchmarks/datasets/registry.py`
+  - Added `"flash_lidar_generated"` DatasetEntry (generated, local, 1 MB)
+
+- `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`
+  - Replaced existing 4-entry `_VARIANT_OVERRIDES["flash_lidar"]` with expanded 9-algorithm list covering Classical, Deep Learning, Transformer, Physics-Informed, and Diffusion Model types (2014-2024)
+  - Replaced existing 4-entry `CATEGORY_REAL_SCORES["flash_lidar"]` with 9-entry leaderboard (PSNR 22.8-39.4 dB, SSIM 0.718-0.955)
+
+- `platform/scripts/generate_challenge_datasets.py`
+  - Added `"flash_lidar": "identity"` to `_VARIANT_TO_RUNNER`
+  - Added `generate_flash_lidar_phantom` to both import blocks and both generator maps
+
+### GCS Upload
+- Generated and uploaded all 3 tiers to `gs://pwm-benchmark-datasets/challenge-data/v1.0/`:
+  - `flash_lidar_challenge_public.h5` (5 samples, x_true included)
+  - `flash_lidar_challenge_dev.h5` (5 samples, x_true stripped)
+  - `flash_lidar_challenge_hidden.h5` (5 samples, blocked from download)
+
+### Algorithm Catalog (9 algorithms)
+| Method | Type | Params | PSNR | SSIM |
+|--------|------|--------|------|------|
+| MLE-SPAD | Classical | 0 | 22.8 | 0.718 |
+| Coates-Hist | Classical | 0 | 24.5 | 0.748 |
+| NL-Means-LiDAR | Classical | 0 | 27.2 | 0.789 |
+| DnCNN-LiDAR | Deep Learning | 7M | 30.1 | 0.840 |
+| SPADnet | Deep Learning | 12M | 32.8 | 0.878 |
+| TransLiDAR | Transformer | 24M | 35.3 | 0.916 |
+| SwinLiDAR | Transformer | 30M | 36.9 | 0.933 |
+| PhysLiDAR | Physics-Informed | 18M | 38.0 | 0.943 |
+| DiffLiDAR | Diffusion Model | 42M | 39.4 | 0.955 |

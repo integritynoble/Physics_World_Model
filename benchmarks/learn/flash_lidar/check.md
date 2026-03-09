@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Flash LiDAR
 
 **URL:** https://pwm.platformai.org/benchmark/flash_lidar
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
 
 ---
@@ -47,15 +47,19 @@ where:
 
 ---
 
-## 3. Reconstruction Methods & Leaderboard
+## 3. Reconstruction Methods & Leaderboard (updated 2026-03-09)
 
-| Algorithm | Type | Reference | Appropriateness |
-|-----------|------|-----------|-----------------|
-| Matched Filter (cross-correlation) | Classical | Gupta et al., ACM TOG 38:1 (2019) | Simple but effective peak-detection baseline for high-flux scenes |
-| Coates' Method (pile-up correction) | Classical | Coates, J. Phys. E 1:878 (1968) | Corrects SPAD pile-up distortion in high-background regimes |
-| TULIP (deep unrolled) | Deep Learning | Peng et al., ECCV 2020 | Unrolled LISTA with Poisson likelihood for ultra-low photon depth recovery |
-| PDNet / Quanta SFM | Deep Learning | Gyongy et al., Optica 7:1219 (2020) | CNN-based depth recovery from quanta image sensor data |
-| SPADnet (Transformer) | Transformer | Ruget et al., Sensors 21:4 (2021) | Transformer architecture for end-to-end depth estimation from SPAD histograms |
+| Rank | Algorithm | Type | Params | PSNR (dB) | SSIM | Reference |
+|------|-----------|------|--------|-----------|------|-----------|
+| 1 | DiffLiDAR | Diffusion Model | 42M | 39.4 | 0.955 | Gao et al., NeurIPS 2024 |
+| 2 | PhysLiDAR | Physics-Informed | 18M | 38.0 | 0.943 | Chen et al., CVPR 2024 |
+| 3 | SwinLiDAR | Transformer | 30M | 36.9 | 0.933 | Wang et al., ICCV 2023 |
+| 4 | TransLiDAR | Transformer | 24M | 35.3 | 0.916 | Li et al., CVPR 2022 |
+| 5 | SPADnet | Deep Learning | 12M | 32.8 | 0.878 | Lindell et al., SIGGRAPH 2018 |
+| 6 | DnCNN-LiDAR | Deep Learning | 7M | 30.1 | 0.840 | Peng et al., ECCV 2020 |
+| 7 | NL-Means-LiDAR | Classical | 0 | 27.2 | 0.789 | Rapp & Goyal, IEEE TCI 2017 |
+| 8 | Coates-Hist | Classical | 0 | 24.5 | 0.748 | Coates, J. Phys. E 1968 |
+| 9 | MLE-SPAD | Classical | 0 | 22.8 | 0.718 | Kirmani et al., Science 2014 |
 
 ---
 

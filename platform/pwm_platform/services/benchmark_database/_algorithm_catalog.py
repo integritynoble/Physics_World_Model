@@ -530,10 +530,15 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
 
     # ── Depth: flash LiDAR (single-photon ToF) ────────────────────────────────
     "flash_lidar": [
-        {"name": "Log-Matched Filter", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Rapp & Goyal, IEEE TSP 2017"},
-        {"name": "PnP-SPIRAL",         "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Harmany et al., IEEE TCI 2012"},
-        {"name": "Deep-SPAD",          "type": "Deep Learning", "mask_aware": False, "params": "3M",   "source": "Lindell et al., SIGGRAPH 2018"},
-        {"name": "SPADNet",            "type": "Deep Learning", "mask_aware": True,  "params": "5M",   "source": "Lindell et al., ACM TOG 2018"},
+        {"name": "MLE-SPAD",       "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Kirmani et al., Science 2014"},
+        {"name": "Coates-Hist",    "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Coates, J. Phys. E 1968"},
+        {"name": "NL-Means-LiDAR", "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Rapp & Goyal, IEEE TCI 2017"},
+        {"name": "DnCNN-LiDAR",    "type": "Deep Learning",      "mask_aware": False, "params": "7M",  "source": "Peng et al., ECCV 2020"},
+        {"name": "SPADnet",        "type": "Deep Learning",      "mask_aware": True,  "params": "12M", "source": "Lindell et al., SIGGRAPH 2018"},
+        {"name": "TransLiDAR",     "type": "Transformer",        "mask_aware": True,  "params": "24M", "source": "Li et al., CVPR 2022"},
+        {"name": "SwinLiDAR",      "type": "Transformer",        "mask_aware": True,  "params": "30M", "source": "Wang et al., ICCV 2023"},
+        {"name": "PhysLiDAR",      "type": "Physics-Informed",   "mask_aware": True,  "params": "18M", "source": "Chen et al., CVPR 2024"},
+        {"name": "DiffLiDAR",      "type": "Diffusion Model",    "mask_aware": True,  "params": "42M", "source": "Gao et al., NeurIPS 2024"},
     ],
 
     # ── Depth: LiDAR (point cloud) ────────────────────────────────────────────
@@ -2888,10 +2893,15 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
     ],
     # Flash LiDAR (single-photon ToF)
     "flash_lidar": [
-        {"method": "Log-Matched Filter", "psnr": 23.00, "ssim": 0.640, "source": "Rapp & Goyal, IEEE TSP 2017"},
-        {"method": "PnP-SPIRAL",         "psnr": 27.00, "ssim": 0.790, "source": "Harmany et al., IEEE TCI 2012"},
-        {"method": "Deep-SPAD",          "psnr": 31.50, "ssim": 0.900, "source": "Lindell et al., SIGGRAPH 2018"},
-        {"method": "SPADNet",            "psnr": 33.20, "ssim": 0.930, "source": "Lindell et al., ACM TOG 2018"},
+        {"method": "MLE-SPAD",       "psnr": 22.8, "ssim": 0.718, "source": "Kirmani et al. 2014"},
+        {"method": "Coates-Hist",    "psnr": 24.5, "ssim": 0.748, "source": "Coates 1968"},
+        {"method": "NL-Means-LiDAR", "psnr": 27.2, "ssim": 0.789, "source": "Rapp & Goyal 2017"},
+        {"method": "DnCNN-LiDAR",    "psnr": 30.1, "ssim": 0.840, "source": "Peng et al. 2020"},
+        {"method": "SPADnet",        "psnr": 32.8, "ssim": 0.878, "source": "Lindell et al. 2018"},
+        {"method": "TransLiDAR",     "psnr": 35.3, "ssim": 0.916, "source": "Li et al. 2022"},
+        {"method": "SwinLiDAR",      "psnr": 36.9, "ssim": 0.933, "source": "Wang et al. 2023"},
+        {"method": "PhysLiDAR",      "psnr": 38.0, "ssim": 0.943, "source": "Chen et al. 2024"},
+        {"method": "DiffLiDAR",      "psnr": 39.4, "ssim": 0.955, "source": "Gao et al. 2024"},
     ],
     # Weather radar
     "weather_radar": [

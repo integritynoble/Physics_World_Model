@@ -7061,6 +7061,141 @@ def generate_fib_sem_phantom(
     return samples
 
 
+def generate_flash_lidar_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Flash LiDAR depth phantom for photon-sparse depth reconstruction benchmarks.
+
+    Creates a 64x64 float32 depth map simulating an outdoor scene with:
+      - Ground plane (depth ~5-10 m)
+      - Foreground objects: vehicles/pedestrians (depth ~2-5 m, rectangular patches)
+      - Background building facades (depth ~10-20 m)
+
+    Applies flash LiDAR forward model: sparse single-photon avalanche diode
+    (SPAD) detection with Poisson-distributed photon returns (signal: ~5-50
+    photons at range-dependent rate, background: ~10 photons), per-pixel
+    time-of-flight histogram with Gaussian timing jitter (sigma ~0.1 ns =
+    ~1.5 cm range precision), and depth reconstruction from histogram peak.
+
+    x_true: 64x64 float32, normalized [0,1] — ground truth depth map.
+    y: 64x64 float32 — noisy depth map from photon counting.
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, max_range_m, timing_jitter_ns,
+              mean_signal_photons.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    max_range_m = 20.0
+    timing_jitter_ns = 0.1   # sigma ~0.1 ns ≈ 1.5 cm range precision
+
+    for i in range(n_samples):
+        sample_seed = seed + i * 1000
+        rng_s = np.random.default_rng(sample_seed)
+
+        yy, xx = np.mgrid[0:H, 0:W]
+        yy_f = yy.astype(np.float32) / H
+        xx_f = xx.astype(np.float32) / W
+
+        # --- Ground truth depth map (in metres, then normalised to [0,1]) ---
+
+        # Ground plane: depth gradient 5–10 m across the lower portion
+        ground_depth_near = float(rng_s.uniform(5.0, 7.0))
+        ground_depth_far  = float(rng_s.uniform(7.0, 10.0))
+        depth_m = (ground_depth_near + yy_f * (ground_depth_far - ground_depth_near)).astype(np.float32)
+
+        # Background building facades: upper portion 10–20 m
+        facade_depth = float(rng_s.uniform(10.0, 20.0))
+        sky_row = float(rng_s.uniform(0.25, 0.50))  # horizon
+        depth_m = np.where(yy_f < sky_row, facade_depth, depth_m)
+
+        # Foreground objects: 2–5 rectangular patches (vehicles / pedestrians)
+        n_objects = int(rng_s.integers(2, 6))
+        for _ in range(n_objects):
+            obj_x0 = float(rng_s.uniform(0.0, 0.7))
+            obj_y0 = float(rng_s.uniform(sky_row, 0.9))
+            obj_w  = float(rng_s.uniform(0.05, 0.20))
+            obj_h  = float(rng_s.uniform(0.05, 0.25))
+            obj_depth = float(rng_s.uniform(2.0, 5.0))
+            mask_obj = (
+                (xx_f >= obj_x0) & (xx_f < obj_x0 + obj_w) &
+                (yy_f >= obj_y0) & (yy_f < obj_y0 + obj_h)
+            )
+            depth_m = np.where(mask_obj, obj_depth, depth_m)
+
+        # Clip to valid range and normalise to [0, 1]
+        depth_m = np.clip(depth_m, 0.0, max_range_m)
+        x_true = (depth_m / max_range_m).astype(np.float32)
+
+        # --- Flash LiDAR forward model (SPAD photon counting + ToF histogram) ---
+        # Range-dependent signal photon rate: 5–50 photons
+        # Closer objects (smaller depth) return more photons.
+        signal_rate = np.clip(50.0 - 45.0 * x_true, 5.0, 50.0).astype(np.float32)
+        mean_signal_photons = float(signal_rate.mean())
+
+        # Background photon rate: ~10 photons (uniform)
+        bg_rate = 10.0
+
+        # Poisson-draw signal and background photon counts
+        signal_photons = rng_s.poisson(signal_rate).astype(np.float32)
+        bg_photons     = rng_s.poisson(np.full((H, W), bg_rate)).astype(np.float32)
+
+        # Timing jitter on depth estimate: Gaussian noise (sigma in normalised units)
+        # 0.1 ns @ 3e8 m/s → 1.5 cm → normalised: 0.015 / 20 = 7.5e-4
+        jitter_sigma_norm = (timing_jitter_ns * 1e-9 * 3e8 / 2.0) / max_range_m
+        depth_jitter = rng_s.normal(0.0, jitter_sigma_norm, size=(H, W)).astype(np.float32)
+
+        # Reconstruct depth from histogram peak: signal shifts peak, background adds noise
+        # Weight of signal vs total photons determines peak accuracy
+        total_photons = signal_photons + bg_photons
+        # Avoid division by zero
+        safe_total = np.where(total_photons > 0, total_photons, 1.0).astype(np.float32)
+        # Noise on reconstructed depth proportional to background / signal ratio
+        bg_noise_scale = (bg_photons / safe_total).astype(np.float32)
+        y_noisy = x_true + depth_jitter + rng_s.normal(0.0, 1.0, size=(H, W)).astype(np.float32) * bg_noise_scale * 0.05
+
+        # Light Gaussian smoothing (detector PSF / beam divergence)
+        psf_sigma = 0.4 * (H / 64.0)
+        y_smooth = gaussian_filter(y_noisy, sigma=psf_sigma).astype(np.float32)
+
+        # Normalise y to [0, 1]
+        y_min = y_smooth.min()
+        y_max = y_smooth.max()
+        if y_max > y_min:
+            y = ((y_smooth - y_min) / (y_max - y_min)).astype(np.float32)
+        else:
+            y = y_smooth.copy()
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "flash_lidar",
+                "max_range_m": max_range_m,
+                "timing_jitter_ns": timing_jitter_ns,
+                "mean_signal_photons": mean_signal_photons,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -7153,6 +7288,7 @@ def acquire_dataset(
         "generate_event_camera_phantom": generate_event_camera_phantom,
         "generate_expansion_phantom": generate_expansion_phantom,
         "generate_fib_sem_phantom": generate_fib_sem_phantom,
+        "generate_flash_lidar_phantom": generate_flash_lidar_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -7251,6 +7387,7 @@ def acquire_dataset(
         "generate_event_camera_phantom": lambda: generate_event_camera_phantom(),
         "generate_expansion_phantom": lambda: generate_expansion_phantom(),
         "generate_fib_sem_phantom": lambda: generate_fib_sem_phantom(),
+        "generate_flash_lidar_phantom": lambda: generate_flash_lidar_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

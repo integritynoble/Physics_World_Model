@@ -1555,6 +1555,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic FIB-SEM phantom for benchmarking ultrastructure image restoration algorithms",
     ),
+    "flash_lidar_generated": DatasetEntry(
+        id="flash_lidar_generated",
+        name="Flash LiDAR Depth Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic flash LiDAR phantom with SPAD photon counting and timing jitter depth model",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["flash_lidar"],
+        converter="generate_flash_lidar_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic flash LiDAR phantom for benchmarking photon-sparse depth reconstruction algorithms",
+    ),
 }
 
 

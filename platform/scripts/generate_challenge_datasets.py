@@ -250,6 +250,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # FIB-SEM: curtaining, speckle, and detector blur are handled by the phantom generator;
     # identity runner applies no additional degradation.
     "fib_sem": "identity",
+    # Flash LiDAR: SPAD photon counting, timing jitter, and histogram peak reconstruction
+    # are handled by the phantom generator; identity runner applies no additional degradation.
+    "flash_lidar": "identity",
 }
 
 
@@ -413,6 +416,7 @@ def _resolve_ground_truth(
             generate_event_camera_phantom,
             generate_expansion_phantom,
             generate_fib_sem_phantom,
+            generate_flash_lidar_phantom,
         )
 
         # Look up registry entries for this modality
@@ -488,6 +492,7 @@ def _resolve_ground_truth(
                     "generate_event_camera_phantom": generate_event_camera_phantom,
                     "generate_expansion_phantom": generate_expansion_phantom,
                     "generate_fib_sem_phantom": generate_fib_sem_phantom,
+                    "generate_flash_lidar_phantom": generate_flash_lidar_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -1018,6 +1023,7 @@ def _load_scenes_from_generator(
             generate_event_camera_phantom,
             generate_expansion_phantom,
             generate_fib_sem_phantom,
+            generate_flash_lidar_phantom,
         )
     except ImportError:
         return []
@@ -1086,6 +1092,7 @@ def _load_scenes_from_generator(
         "generate_event_camera_phantom": generate_event_camera_phantom,
         "generate_expansion_phantom": generate_expansion_phantom,
         "generate_fib_sem_phantom": generate_fib_sem_phantom,
+        "generate_flash_lidar_phantom": generate_flash_lidar_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)
