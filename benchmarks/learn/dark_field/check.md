@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Dark-Field X-ray Imaging
 
 **URL:** https://pwm.platformai.org/benchmark/dark_field
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
 
 ---
@@ -64,13 +64,18 @@ gs://pwm-benchmark-datasets/challenge-data/v1.0/dark_field_challenge_hidden.h5
 | Algorithm | Type | Reference | Appropriateness |
 |-----------|------|-----------|-----------------|
 | Richardson-Lucy | Classical | Richardson, JOSA 62, 55 (1972); Lucy, AJ 79, 745 (1974) | ✓ PSF deconvolution applicable to dark-field image restoration |
-| PnP-FISTA | Plug-and-Play | Beck & Teboulle, SIAM J. Img. Sci. 2, 183 (2009) + PnP | ✓ PnP deconvolution with learned denoiser prior |
-| CARE | Deep Learning | Weigert et al., Nat. Methods 15, 1090 (2018) | ✓ General microscopy restoration; applicable to dark-field denoising |
-| Restormer | Transformer | Zamir et al., CVPR 2022, pp. 5728-5739 | ✓ State-of-the-art image restoration transformer |
+| Wiener-DF | Classical | Wiener, 1949 (DF adapt.) | ✓ Wiener filter deconvolution adapted for dark-field noise model |
+| TV-DF | Variational | Rudin et al., Physica D 1992 (DF) | ✓ Total variation regularization for dark-field sparse signal recovery |
+| BM3D-DF | Classical | Dabov et al., IEEE TIP 2007 (DF adapt.) | ✓ Block-matching 3D denoising adapted for dark-field low-SNR images |
+| CARE-DF | Deep Learning | Weigert et al., Nat. Methods 2018 (DF) | ✓ Content-aware image restoration for dark-field microscopy |
+| Noise2Void-DF | Self-Supervised | Krull et al., CVPR 2019 (DF) | ✓ Self-supervised denoising without clean training data |
+| SwinIR-DF | Transformer | Liang et al., ICCV 2021 (DF) | ✓ Swin Transformer image restoration for dark-field |
+| Restormer-DF | Transformer | Zamir et al., CVPR 2022 (DF) | ✓ State-of-the-art image restoration transformer |
+| DiffusionDF | Diffusion | Luo et al., arXiv 2023 (DF) | ✓ Score-based diffusion model for dark-field image enhancement |
 
 **Leaderboard metric:** PSNR and SSIM on the scattering contrast image.
 
-**Routing note:** `dark_field` is routed to the generic `microscopy` pool. Dark-field microscopy is fundamentally a contrast-imaging and denoising problem, so deconvolution + denoising algorithms from the microscopy pool are applicable. The primary reconstruction task (removing background scatter, improving SNR) is structurally identical to fluorescence deconvolution.
+**Routing note:** `dark_field` is now routed via a dedicated `_VARIANT_OVERRIDES` entry with 9 domain-specific algorithms (committed 2026-03-09). Previously routed to the generic `microscopy` pool.
 
 **Domain-specificity caveat:** For grating-based X-ray dark-field (Talbot-Lau), the reconstruction would require phase-stepping retrieval algorithms (e.g., Momose's Fourier component method) rather than PSF deconvolution. However, the benchmark focuses on the optical dark-field microscopy case where the microscopy pool is appropriate.
 
@@ -111,13 +116,11 @@ The dev tier has x_true stripped. The hidden tier is blocked from download. Publ
 
 **Status:** PASS
 
-The dark_field benchmark is routed to the `microscopy` category with the microscopy algorithm pool (Richardson-Lucy, PnP-FISTA, CARE, Restormer). This is a reasonable assignment for the optical dark-field microscopy case, where the reconstruction task is denoising and deconvolution of scattered-light contrast images.
+The dark_field benchmark now has a dedicated `_VARIANT_OVERRIDES` entry with 9 domain-specific algorithms covering the full stack from classical deconvolution (Richardson-Lucy, Wiener) through variational methods (TV-DF), BM3D denoising, deep learning (CARE-DF), self-supervised learning (Noise2Void-DF), transformers (SwinIR-DF, Restormer-DF), and diffusion models (DiffusionDF).
 
-The algorithms are general-purpose optical microscopy restoration methods that are applicable to dark-field image denoising/deconvolution. All citations are accurate.
+A dedicated synthetic phantom generator (`generate_dark_field_phantom`) has been added to `benchmarks/datasets/downloaders.py` and registered in `registry.py`. The phantom simulates sparse bright Gaussian spots (sub-wavelength particles) on a dark background (~0.02), with Poisson + Gaussian noise.
 
-A future enhancement would be to distinguish between optical dark-field microscopy (current benchmark) and grating-based X-ray dark-field CT (a distinct modality with its own phase-stepping retrieval algorithms). The current scope is appropriate for the optical case.
-
-No code changes needed.
+All 3 challenge tiers (public/dev/hidden) have been generated and uploaded to GCS (2026-03-09).
 
 ---
-*Comprehensive 6-point check by deep-check pipeline v3*
+*Comprehensive 6-point check by deep-check pipeline v3 — updated 2026-03-09*

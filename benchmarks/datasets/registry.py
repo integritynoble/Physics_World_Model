@@ -1210,6 +1210,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic CUP phantom with light pulse propagation and compressed measurement",
     ),
+    "dark_field_generated": DatasetEntry(
+        id="dark_field_generated",
+        name="Dark-Field Microscopy Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Siedentopf & Zsigmondy, Ann. Physik 1902",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["dark_field"],
+        converter="generate_dark_field_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic dark-field phantom with sparse sub-wavelength particle scattering",
+    ),
 }
 
 

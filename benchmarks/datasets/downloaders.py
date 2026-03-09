@@ -4076,6 +4076,89 @@ def generate_cup_phantom(
     return samples
 
 
+def generate_dark_field_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    Dark-field microscopy phantom for DIC/dark-field optical microscopy.
+
+    Simulates scattered light from sub-wavelength particles: sparse bright spots
+    on a dark background, as seen in dark-field optical microscopy.
+    x_true: 64x64 float32 image with sparse Gaussian spots (intensity 0.8-1.0)
+            on a dark background (~0.02).
+    y: Noisy dark-field measurement: Poisson noise (scale 100) + Gaussian noise (sigma=0.02).
+    H_ideal: identity matrix.
+    metadata: dict with modality, particle_size_nm, wavelength_nm, NA.
+
+    Reference: Siedentopf & Zsigmondy, Ann. Physik 1902 (dark-field illumination).
+    """
+    import numpy as np
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    for i in range(n_samples):
+        # Dark background (~0.02 intensity)
+        x_true = np.full((H, W), 0.02, dtype=np.float32)
+
+        # Sparse bright spots: 5-15 sub-wavelength particles
+        n_particles = int(rng.integers(5, 16))
+        Y_grid, X_grid = np.ogrid[:H, :W]
+
+        for _ in range(n_particles):
+            # Random particle position
+            cy = float(rng.uniform(0, H))
+            cx = float(rng.uniform(0, W))
+            # Small Gaussian spot (~1-2 pixel sigma to simulate sub-wavelength)
+            sigma_spot = float(rng.uniform(0.8, 2.0))
+            # Intensity between 0.8 and 1.0
+            intensity = float(rng.uniform(0.8, 1.0))
+            spot = intensity * np.exp(
+                -((Y_grid - cy) ** 2 + (X_grid - cx) ** 2) / (2 * sigma_spot ** 2)
+            ).astype(np.float32)
+            x_true = np.maximum(x_true, spot)
+
+        x_true = x_true.astype(np.float32)
+
+        # Noisy dark-field measurement: Poisson + Gaussian noise
+        # Scale by 100, apply Poisson, divide by 100
+        scaled = x_true * 100.0
+        poisson_noisy = rng.poisson(scaled).astype(np.float32) / 100.0
+        gaussian_noise = rng.normal(0, 0.02, size=(H, W)).astype(np.float32)
+        y = (poisson_noisy + gaussian_noise).astype(np.float32)
+
+        H_size = min(H * W, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        # Realistic metadata for dark-field microscopy
+        particle_size_nm = float(rng.uniform(50, 200))
+        wavelength_nm = float(rng.choice([488, 532, 561, 647]))
+        NA = float(rng.uniform(0.8, 1.4))
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "dark_field",
+                "particle_size_nm": particle_size_nm,
+                "wavelength_nm": wavelength_nm,
+                "NA": NA,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -4145,6 +4228,7 @@ def acquire_dataset(
         "generate_ct_phantom": generate_ct_phantom,
         "generate_ct_fluorescence_phantom": generate_ct_fluorescence_phantom,
         "generate_cup_phantom": generate_cup_phantom,
+        "generate_dark_field_phantom": lambda: generate_dark_field_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -4220,6 +4304,7 @@ def acquire_dataset(
         "generate_ct_phantom": lambda: generate_ct_phantom(),
         "generate_ct_fluorescence_phantom": lambda: generate_ct_fluorescence_phantom(),
         "generate_cup_phantom": lambda: generate_cup_phantom(),
+        "generate_dark_field_phantom": lambda: generate_dark_field_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)

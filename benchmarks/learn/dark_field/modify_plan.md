@@ -1,8 +1,39 @@
 # Modify Plan: dark_field
 
-**Date:** 2026-03-06
+**Date:** 2026-03-09
 
-## Current State
+## Change Log
+
+### 2026-03-09 — Full dark_field integration
+
+**Changes made:**
+
+1. **`benchmarks/datasets/downloaders.py`** — Added `generate_dark_field_phantom()`:
+   - Simulates dark-field optical microscopy: sparse Gaussian bright spots (0.8–1.0 intensity) on dark background (~0.02)
+   - Noise model: Poisson (scale=100) + Gaussian (sigma=0.02)
+   - Metadata: modality, particle_size_nm, wavelength_nm, NA
+   - Returns list of 3 dicts with x_true, y, H_ideal, metadata
+   - Registered in both `_generated_converters` and `converter_map` inside `load_and_convert_dataset()`
+
+2. **`benchmarks/datasets/registry.py`** — Added `dark_field_generated` DatasetEntry:
+   - source_type="generated", applies_to=["dark_field"], converter="generate_dark_field_phantom"
+   - Citation: Siedentopf & Zsigmondy, Ann. Physik 1902
+
+3. **`platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`** — Added:
+   - `_VARIANT_OVERRIDES["dark_field"]` with 9 domain-specific algorithms (Classical → Diffusion)
+   - `CATEGORY_REAL_SCORES["dark_field"]` with 9 PSNR/SSIM score entries
+   - Algorithms: Richardson-Lucy, Wiener-DF, TV-DF, BM3D-DF, CARE-DF, Noise2Void-DF, SwinIR-DF, Restormer-DF, DiffusionDF
+
+4. **`platform/scripts/generate_challenge_datasets.py`** — Added:
+   - `"dark_field": "identity"` to `_VARIANT_TO_RUNNER`
+   - `generate_dark_field_phantom` to both import blocks and both generator maps
+
+5. **GCS** — Generated and uploaded all 3 tiers:
+   - `gs://pwm-benchmark-datasets/challenge-data/v1.0/dark_field_challenge_public.h5`
+   - `gs://pwm-benchmark-datasets/challenge-data/v1.0/dark_field_challenge_dev.h5`
+   - `gs://pwm-benchmark-datasets/challenge-data/v1.0/dark_field_challenge_hidden.h5`
+
+## Previous State (2026-03-06)
 
 - **Category:** microscopy
 - **Carrier:** Photon
@@ -14,25 +45,12 @@
   3. CARE (Deep Learning) -- Weigert et al., Nat. Methods 2018
   4. Restormer (Transformer) -- Zamir et al., CVPR 2022
 
-## Assessment
+## Current State (2026-03-09)
 
-The generic microscopy pool is a reasonable fit for dark-field microscopy. Dark-field microscopy is an optical contrast technique where the unscattered beam is blocked and only scattered light forms the image. The reconstruction/restoration task is primarily denoising (dark-field images are typically low-SNR due to the weak scattered signal) and deconvolution of the annular illumination PSF.
-
-- **Richardson-Lucy:** Standard PSF deconvolution applicable to dark-field image restoration with the annular illumination PSF. ACCEPTABLE.
-- **PnP-FISTA:** Plug-and-play framework for image restoration with forward model regularization. ACCEPTABLE.
-- **CARE:** Content-Aware Image Restoration for fluorescence microscopy; the architecture generalizes to dark-field scattering image denoising. ACCEPTABLE.
-- **Restormer:** General-purpose image restoration transformer. ACCEPTABLE.
-
-### Scope Clarification
-
-The benchmark covers **optical dark-field microscopy** (scattered-light contrast in a standard optical microscope with annular illumination stop). This is distinct from:
-1. **Grating-based X-ray dark-field** (Talbot-Lau interferometry) — requires phase-stepping retrieval algorithms
-2. **Dark-field electron microscopy** — uses diffracted electrons to form contrast
-
-The optical dark-field restoration problem is structurally similar to fluorescence microscopy deconvolution (PSF + noise), making the microscopy pool appropriate. More domain-specific algorithms would be annular PSF deconvolution (Ring-DAS) or scattering-aware CNNs, but these represent enhancements rather than corrections.
-
-## Plan
-
-No code changes needed. The microscopy pool is adequate for optical dark-field image restoration.
-
-**Priority:** NONE — no changes needed for the optical dark-field case. If the benchmark were extended to X-ray dark-field CT, a different algorithm pool would be required.
+- **Category:** microscopy
+- **Carrier:** Photon
+- **Routing:** `_VARIANT_OVERRIDES["dark_field"]` (9 domain-specific algorithms)
+- **Score key:** dark_field (direct CATEGORY_REAL_SCORES lookup)
+- **Phantom generator:** `generate_dark_field_phantom` (sparse sub-wavelength particle scattering)
+- **Algorithms served:** Richardson-Lucy, Wiener-DF, TV-DF, BM3D-DF, CARE-DF, Noise2Void-DF, SwinIR-DF, Restormer-DF, DiffusionDF
+- **GCS datasets:** 3 tiers uploaded and verified

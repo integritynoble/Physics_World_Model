@@ -174,6 +174,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # CUP: Compressed Ultrafast Photography — y is the compressed temporal measurement,
     # x_true is the dynamic scene frame; identity runner applies minimal additional noise.
     "cup": "identity",
+    # Dark-field: sparse sub-wavelength particle scattering — y is Poisson+Gaussian noisy
+    # measurement; identity runner applies the noise model defined in the phantom generator.
+    "dark_field": "identity",
 }
 
 
@@ -315,6 +318,7 @@ def _resolve_ground_truth(
             generate_ct_phantom,
             generate_ct_fluorescence_phantom,
             generate_cup_phantom,
+            generate_dark_field_phantom,
         )
 
         # Look up registry entries for this modality
@@ -368,6 +372,7 @@ def _resolve_ground_truth(
                     "generate_ct_phantom": generate_ct_phantom,
                     "generate_ct_fluorescence_phantom": generate_ct_fluorescence_phantom,
                     "generate_cup_phantom": generate_cup_phantom,
+                    "generate_dark_field_phantom": generate_dark_field_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -875,6 +880,7 @@ def _load_scenes_from_generator(
             generate_ct_phantom,
             generate_ct_fluorescence_phantom,
             generate_cup_phantom,
+            generate_dark_field_phantom,
         )
     except ImportError:
         return []
@@ -920,6 +926,7 @@ def _load_scenes_from_generator(
         "generate_ct_phantom": generate_ct_phantom,
         "generate_ct_fluorescence_phantom": generate_ct_fluorescence_phantom,
         "generate_cup_phantom": generate_cup_phantom,
+        "generate_dark_field_phantom": generate_dark_field_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

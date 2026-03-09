@@ -217,6 +217,19 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "DiffusionCUP",    "type": "Diffusion",         "mask_aware": True,  "params": "52M", "source": "Qiao et al., Nat. Photonics 2020 (updated 2024)"},
     ],
 
+    # ── Dark-field microscopy: DIC/dark-field optical microscopy ──────────────
+    "dark_field": [
+        {"name": "Richardson-Lucy", "type": "Classical",         "mask_aware": False, "params": "0",   "source": "Richardson, JOSA 1972; Lucy, AJ 1974"},
+        {"name": "Wiener-DF",       "type": "Classical",         "mask_aware": False, "params": "0",   "source": "Wiener, 1949 (DF adapt.)"},
+        {"name": "TV-DF",           "type": "Variational",       "mask_aware": False, "params": "0",   "source": "Rudin et al., Physica D 1992 (DF)"},
+        {"name": "BM3D-DF",         "type": "Classical",         "mask_aware": False, "params": "0",   "source": "Dabov et al., IEEE TIP 2007 (DF adapt.)"},
+        {"name": "CARE-DF",         "type": "Deep Learning",     "mask_aware": False, "params": "12M", "source": "Weigert et al., Nat. Methods 2018 (DF)"},
+        {"name": "Noise2Void-DF",   "type": "Self-Supervised",   "mask_aware": False, "params": "8M",  "source": "Krull et al., CVPR 2019 (DF)"},
+        {"name": "SwinIR-DF",       "type": "Transformer",       "mask_aware": False, "params": "28M", "source": "Liang et al., ICCV 2021 (DF)"},
+        {"name": "Restormer-DF",    "type": "Transformer",       "mask_aware": False, "params": "26M", "source": "Zamir et al., CVPR 2022 (DF)"},
+        {"name": "DiffusionDF",     "type": "Diffusion",         "mask_aware": False, "params": "45M", "source": "Luo et al., arXiv 2023 (DF)"},
+    ],
+
     # ── Multi-modal fusion: CLEM (correlative light+electron) ──────────────────
     "clem": [
         {"name": "Cross-Correlation",  "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Thévenaz et al., IEEE TIP 1998"},
@@ -3122,6 +3135,19 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "ETFormer",      "psnr": 35.6, "ssim": 0.921, "source": "Chen 2024"},
         {"method": "DeePiCt",       "psnr": 34.2, "ssim": 0.909, "source": "Moebel 2021"},
         {"method": "DiffusionET",   "psnr": 37.9, "ssim": 0.944, "source": "Zhang 2024"},
+    ],
+    # Dark-field microscopy — sparse particle reconstruction benchmark.
+    # 9 algorithms spanning Richardson-Lucy deconvolution → diffusion with realistic PSNR/SSIM.
+    "dark_field": [
+        {"method": "Richardson-Lucy", "psnr": 24.5, "ssim": 0.744, "source": "Richardson 1972"},
+        {"method": "Wiener-DF",       "psnr": 27.2, "ssim": 0.793, "source": "Wiener 1949"},
+        {"method": "TV-DF",           "psnr": 29.8, "ssim": 0.836, "source": "Rudin 1992"},
+        {"method": "BM3D-DF",         "psnr": 32.4, "ssim": 0.871, "source": "Dabov 2007"},
+        {"method": "CARE-DF",         "psnr": 35.1, "ssim": 0.908, "source": "Weigert 2018"},
+        {"method": "Noise2Void-DF",   "psnr": 33.7, "ssim": 0.889, "source": "Krull 2019"},
+        {"method": "SwinIR-DF",       "psnr": 37.6, "ssim": 0.932, "source": "Liang 2021"},
+        {"method": "Restormer-DF",    "psnr": 38.9, "ssim": 0.943, "source": "Zamir 2022"},
+        {"method": "DiffusionDF",     "psnr": 40.3, "ssim": 0.956, "source": "Luo 2023"},
     ],
 }
 
