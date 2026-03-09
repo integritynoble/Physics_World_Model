@@ -198,12 +198,54 @@ def fig2_operatorgraph():
     gs = gridspec.GridSpec(2, 2, width_ratios=[1.2, 1.2], height_ratios=[1.0, 0.8],
                            wspace=0.3, hspace=0.45)
 
-    # Panel a: Example OperatorGraph DAGs
+    # Panel a: The 11 universal primitives – grouped by role (was panel d)
     ax_a = fig.add_subplot(gs[0, 0])
-    ax_a.set_xlim(0, 4)
+    ax_a.set_xlim(0, 4.5)
     ax_a.set_ylim(0, 5.5)
     ax_a.axis('off')
-    ax_a.text(0, 5.3, 'a', fontsize=10, fontweight='bold')
+    ax_a.text(0.0, 5.3, 'a', fontsize=10, fontweight='bold')
+
+    # Role groups: (role_name, role_color, [(symbol, description), ...])
+    prim_groups = [
+        ('Generation', '#2B5A8C', '#CADCF0',
+         [('P', 'source \u2192 field')]),
+        ('Encoding', '#5A3D8C', '#D4C8EC',
+         [('C', 'coded aperture'), ('M', 'modulation'),
+          ('R', 'rotation / Radon'), ('\u039B', 'dispersion'),
+          ('\u03A0', 'phase')]),
+        ('Transform', '#8C6D2B', '#F2E0B0',
+         [('F', 'Fourier'), ('\u03A3', 'integration')]),
+        ('Detection', '#8C3A35', '#F2C4C0',
+         [('S', 'sampling'), ('W', 'weighting'),
+          ('D', 'field \u2192 meas.')]),
+    ]
+
+    y_cur = 5.0
+    for role_name, role_tcol, role_fill, prims in prim_groups:
+        # Role header
+        ax_a.text(0.15, y_cur, role_name, fontsize=6.5, fontweight='bold',
+                  color=role_tcol, va='center')
+        for sym, desc in prims:
+            y_cur -= 0.30
+            # Symbol box
+            sym_box = FancyBboxPatch(
+                (0.15, y_cur - 0.12), 0.35, 0.24,
+                boxstyle="round,pad=0.03", facecolor=role_fill,
+                edgecolor=role_tcol, linewidth=0.5)
+            ax_a.add_patch(sym_box)
+            ax_a.text(0.325, y_cur, sym, ha='center', va='center',
+                      fontsize=7, fontweight='bold', color=role_tcol)
+            # Description
+            ax_a.text(0.65, y_cur, desc, ha='left', va='center',
+                      fontsize=5.5, color='#555555')
+        y_cur -= 0.35  # gap between groups
+
+    # Panel b: Example OperatorGraph DAGs (was panel a)
+    ax_b = fig.add_subplot(gs[0, 1])
+    ax_b.set_xlim(0, 4)
+    ax_b.set_ylim(0, 5.5)
+    ax_b.axis('off')
+    ax_b.text(0, 5.3, 'b', fontsize=10, fontweight='bold')
 
     dags = {
         'CASSI': [('P  Source', 0.7, 4.5), ('C  Mask', 0.7, 3.5),
@@ -221,28 +263,28 @@ def fig2_operatorgraph():
 
     for name, nodes in dags.items():
         color = dag_colors[name]
-        ax_a.text(nodes[0][1], 5.1, name, ha='center', fontsize=7,
+        ax_b.text(nodes[0][1], 5.1, name, ha='center', fontsize=7,
                   fontweight='bold', color=color)
         for i, (label, x, y) in enumerate(nodes):
             box = FancyBboxPatch((x - 0.4, y - 0.3), 0.8, 0.6,
                                  boxstyle="round,pad=0.05",
                                  facecolor=color, alpha=0.12,
                                  edgecolor=color, linewidth=0.8)
-            ax_a.add_patch(box)
-            ax_a.text(x, y, label, ha='center', va='center',
+            ax_b.add_patch(box)
+            ax_b.text(x, y, label, ha='center', va='center',
                       fontsize=5, color=color)
             if i < len(nodes) - 1:
-                ax_a.annotate('', xy=(x, y - 0.35),
+                ax_b.annotate('', xy=(x, y - 0.35),
                               xytext=(x, nodes[i+1][2] + 0.35),
                               arrowprops=dict(arrowstyle='<-', color=color,
                                               lw=0.6, mutation_scale=8))
 
-    # Panel b: Physics Fidelity Ladder — uniform wide boxes, text fully inside
-    ax_b = fig.add_subplot(gs[0, 1])
-    ax_b.set_xlim(0, 4)
-    ax_b.set_ylim(0, 5.5)
-    ax_b.axis('off')
-    ax_b.text(0, 5.3, 'b', fontsize=10, fontweight='bold')
+    # Panel c: Physics Fidelity Ladder (was panel b)
+    ax_c = fig.add_subplot(gs[1, 0])
+    ax_c.set_xlim(0, 4)
+    ax_c.set_ylim(0, 5.5)
+    ax_c.axis('off')
+    ax_c.text(0, 5.3, 'c', fontsize=10, fontweight='bold')
 
     tiers = [
         (4, 'Tier 4', 'Full-wave / stochastic', '#8B0000', 0.3),
@@ -261,22 +303,22 @@ def fig2_operatorgraph():
                              boxstyle="round,pad=0.05",
                              facecolor=color, alpha=alpha * 0.5,
                              edgecolor=color, linewidth=1.0)
-        ax_b.add_patch(box)
-        ax_b.text(x_center, y + 0.17, name, ha='center', va='center',
+        ax_c.add_patch(box)
+        ax_c.text(x_center, y + 0.17, name, ha='center', va='center',
                   fontsize=7, fontweight='bold', color=color)
-        ax_b.text(x_center, y - 0.17, desc, ha='center', va='center',
+        ax_c.text(x_center, y - 0.17, desc, ha='center', va='center',
                   fontsize=6, color=color)
 
-    ax_b.annotate('', xy=(3.6, 5.0), xytext=(3.6, 1.0),
+    ax_c.annotate('', xy=(3.6, 5.0), xytext=(3.6, 1.0),
                   arrowprops=dict(arrowstyle='->', color='#555555',
                                   lw=1.2, mutation_scale=12))
-    ax_b.text(3.76, 3.0, 'Fidelity', ha='left', va='center',
+    ax_c.text(3.76, 3.0, 'Fidelity', ha='left', va='center',
               fontsize=6, color='#555555', rotation=90)
 
-    # Panel c: Basis-growth saturation curve
-    ax_c = fig.add_subplot(gs[1, 0])
-    ax_c.text(-0.12, 1.05, 'c', fontsize=10, fontweight='bold',
-              transform=ax_c.transAxes)
+    # Panel d: Basis-growth saturation curve (was panel c)
+    ax_d = fig.add_subplot(gs[1, 1])
+    ax_d.text(-0.12, 1.05, 'd', fontsize=10, fontweight='bold',
+              transform=ax_d.transAxes)
 
     # Staircase data: N (modalities registered) vs K (primitives needed)
     basis_n = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
@@ -288,61 +330,19 @@ def fig2_operatorgraph():
                10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
                11, 11, 11, 11, 11, 11, 11, 11]
 
-    ax_c.plot(basis_n, basis_k, '-o', color=COLORS['blue'], markersize=2,
+    ax_d.plot(basis_n, basis_k, '-o', color=COLORS['blue'], markersize=2,
               linewidth=1.2, label='Primitives required')
-    ax_c.axhline(y=11, color='#999', linestyle='--', linewidth=0.5)
-    ax_c.fill_between([35, 170], 0, 13, color=COLORS['green'], alpha=0.06)
-    ax_c.set_xlabel('Registered modalities $N$', fontsize=7)
-    ax_c.set_ylabel('Distinct primitives $K$', fontsize=7)
-    ax_c.set_xlim(0, 175)
-    ax_c.set_ylim(0, 13)
-    ax_c.text(105, 12.2, 'Saturated at $K{=}11$', ha='center', fontsize=5.5,
+    ax_d.axhline(y=11, color='#999', linestyle='--', linewidth=0.5)
+    ax_d.fill_between([35, 170], 0, 13, color=COLORS['green'], alpha=0.06)
+    ax_d.set_xlabel('Registered modalities $N$', fontsize=7)
+    ax_d.set_ylabel('Distinct primitives $K$', fontsize=7)
+    ax_d.set_xlim(0, 175)
+    ax_d.set_ylim(0, 13)
+    ax_d.text(105, 12.2, 'Saturated at $K{=}11$', ha='center', fontsize=5.5,
               color=COLORS['green'], fontstyle='italic')
-    ax_c.text(170, 11.5, '$N{=}170$', ha='center', fontsize=5, color=COLORS['blue'])
-    ax_c.spines['top'].set_visible(False)
-    ax_c.spines['right'].set_visible(False)
-
-    # Panel d: The 11 universal primitives – grouped by role
-    ax_d = fig.add_subplot(gs[1, 1])
-    ax_d.set_xlim(0, 4.5)
-    ax_d.set_ylim(0, 4.8)
-    ax_d.axis('off')
-    ax_d.text(0.0, 4.6, 'd', fontsize=10, fontweight='bold')
-
-    # Role groups: (role_name, role_color, [(symbol, description), ...])
-    prim_groups = [
-        ('Generation', '#2B5A8C', '#CADCF0',
-         [('P', 'source \u2192 field')]),
-        ('Encoding', '#5A3D8C', '#D4C8EC',
-         [('C', 'coded aperture'), ('M', 'modulation'),
-          ('R', 'rotation / Radon'), ('\u039B', 'dispersion'),
-          ('\u03A0', 'phase')]),
-        ('Transform', '#8C6D2B', '#F2E0B0',
-         [('F', 'Fourier'), ('\u03A3', 'integration')]),
-        ('Detection', '#8C3A35', '#F2C4C0',
-         [('S', 'sampling'), ('W', 'weighting'),
-          ('D', 'field \u2192 meas.')]),
-    ]
-
-    y_cur = 4.25
-    for role_name, role_tcol, role_fill, prims in prim_groups:
-        # Role header
-        ax_d.text(0.15, y_cur, role_name, fontsize=6.5, fontweight='bold',
-                  color=role_tcol, va='center')
-        for sym, desc in prims:
-            y_cur -= 0.30
-            # Symbol box
-            sym_box = FancyBboxPatch(
-                (0.15, y_cur - 0.12), 0.35, 0.24,
-                boxstyle="round,pad=0.03", facecolor=role_fill,
-                edgecolor=role_tcol, linewidth=0.5)
-            ax_d.add_patch(sym_box)
-            ax_d.text(0.325, y_cur, sym, ha='center', va='center',
-                      fontsize=7, fontweight='bold', color=role_tcol)
-            # Description
-            ax_d.text(0.65, y_cur, desc, ha='left', va='center',
-                      fontsize=5.5, color='#555555')
-        y_cur -= 0.35  # gap between groups
+    ax_d.text(170, 11.5, '$N{=}170$', ha='center', fontsize=5, color=COLORS['blue'])
+    ax_d.spines['top'].set_visible(False)
+    ax_d.spines['right'].set_visible(False)
 
     fig.tight_layout(pad=0.5)
     fig.savefig(FIGDIR / 'fig2_operatorgraph.pdf', bbox_inches='tight')
