@@ -225,6 +225,10 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # Elastography: shear wave displacement model and noise embedded in phantom;
     # identity runner applies no additional degradation.
     "elastography": "identity",
+    # Electron Diffraction: Debye-Scherrer ring pattern with Poisson shot noise and
+    # dynamic scattering are handled by the phantom generator; identity runner applies
+    # no additional degradation.
+    "electron_diffraction": "identity",
 }
 
 
@@ -380,6 +384,7 @@ def _resolve_ground_truth(
             generate_eels_phantom,
             generate_eht_imaging_phantom,
             generate_elastography_phantom,
+            generate_electron_diffraction_phantom,
         )
 
         # Look up registry entries for this modality
@@ -447,6 +452,7 @@ def _resolve_ground_truth(
                     "generate_eels_phantom": generate_eels_phantom,
                     "generate_eht_imaging_phantom": generate_eht_imaging_phantom,
                     "generate_elastography_phantom": generate_elastography_phantom,
+                    "generate_electron_diffraction_phantom": generate_electron_diffraction_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -969,6 +975,7 @@ def _load_scenes_from_generator(
             generate_eels_phantom,
             generate_eht_imaging_phantom,
             generate_elastography_phantom,
+            generate_electron_diffraction_phantom,
         )
     except ImportError:
         return []
@@ -1029,6 +1036,7 @@ def _load_scenes_from_generator(
         "generate_eels_phantom": generate_eels_phantom,
         "generate_eht_imaging_phantom": generate_eht_imaging_phantom,
         "generate_elastography_phantom": generate_elastography_phantom,
+        "generate_electron_diffraction_phantom": generate_electron_diffraction_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

@@ -1435,6 +1435,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic elastography phantom for benchmarking tissue stiffness reconstruction algorithms",
     ),
+    "electron_diffraction_generated": DatasetEntry(
+        id="electron_diffraction_generated",
+        name="Electron Diffraction Pattern Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic electron diffraction phantom with Debye-Scherrer rings and dynamic scattering noise",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["electron_diffraction"],
+        converter="generate_electron_diffraction_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic electron diffraction phantom for benchmarking structure determination algorithms",
+    ),
 }
 
 

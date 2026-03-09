@@ -5860,6 +5860,127 @@ def generate_elastography_phantom(
     return samples
 
 
+def generate_electron_diffraction_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Electron diffraction pattern phantom for structure determination benchmarks.
+
+    Creates a 64x64 float32 electron diffraction pattern:
+      - Simulates a polycrystalline crystal structure with diffraction spots
+        arranged on concentric Debye-Scherrer rings
+      - Each ring corresponds to a crystal plane spacing (d-spacing)
+      - Lorentzian peak profiles with varying intensities based on structure factor
+
+    Applies forward model:
+      - Poisson-dominated shot noise (electron beam current)
+      - Dynamic scattering (multiply scattered intensities by 1.2x for inner reflections)
+      - Inelastic background (smooth Gaussian falloff from center)
+
+    x_true: 64x64 float32, normalized [0,1] — ideal diffraction pattern.
+    y: 64x64 float32 — noisy observed diffraction pattern.
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, accelerating_voltage_kv, camera_length_mm, n_rings.
+
+    References: Hauptman & Karle, Nobel Prize 1985;
+                Kolb et al., Ultramicroscopy 2007;
+                Shi et al., eLife 2013.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    accelerating_voltage_kv = 200.0  # Typical TEM accelerating voltage
+    camera_length_mm = 100.0         # Camera length in mm
+
+    for i in range(n_samples):
+        # --- Ground truth: ideal diffraction pattern with Debye-Scherrer rings ---
+        yy, xx = np.mgrid[0:H, 0:W]
+        cy, cx = H / 2.0, W / 2.0
+        r = np.sqrt((yy - cy) ** 2 + (xx - cx) ** 2).astype(np.float32)
+
+        # Define crystal plane spacings (d-spacings) for a polycrystalline FCC-like structure
+        n_rings = int(rng.integers(4, 7))
+        # Ring radii in pixels (inner to outer), corresponding to different (hkl) reflections
+        ring_radii = np.sort(rng.uniform(4.0, H / 2.0 - 3.0, size=n_rings)).astype(np.float32)
+        # Structure factor intensities (inner reflections generally stronger)
+        ring_intensities = (1.0 / (np.arange(1, n_rings + 1, dtype=np.float32) ** 0.7))
+        ring_intensities *= rng.uniform(0.8, 1.2, size=n_rings).astype(np.float32)
+
+        # Lorentzian peak width (FWHM in pixels)
+        gamma = float(rng.uniform(0.8, 2.0))
+
+        # Build ideal diffraction pattern from Lorentzian rings
+        diffraction_pattern = np.zeros((H, W), dtype=np.float32)
+        for j, (r0, I0) in enumerate(zip(ring_radii, ring_intensities)):
+            lorentzian = I0 / (1.0 + ((r - r0) / gamma) ** 2)
+            # Dynamic scattering: multiply inner reflections (first half) by 1.2x
+            if j < n_rings // 2:
+                lorentzian *= 1.2
+            diffraction_pattern += lorentzian
+
+        # Add central beam (transmitted beam)
+        central_intensity = float(rng.uniform(2.0, 5.0))
+        diffraction_pattern += central_intensity / (1.0 + (r / 1.5) ** 2)
+
+        # Normalize x_true to [0, 1]
+        p_min = float(diffraction_pattern.min())
+        p_max = float(diffraction_pattern.max())
+        if p_max > p_min:
+            x_true = ((diffraction_pattern - p_min) / (p_max - p_min)).astype(np.float32)
+        else:
+            x_true = diffraction_pattern.astype(np.float32)
+
+        # --- Forward model: observed diffraction pattern ---
+        # Scale to realistic photon counts for Poisson noise
+        max_counts = float(rng.uniform(500.0, 2000.0))
+        scaled = (x_true * max_counts).astype(np.float64)
+
+        # Poisson shot noise (dominant noise source in electron diffraction)
+        noisy = rng.poisson(np.maximum(scaled, 0.0)).astype(np.float32)
+
+        # Inelastic scattering background: smooth Gaussian falloff from center
+        background_level = float(rng.uniform(0.02, 0.08))
+        sigma_bg = float(rng.uniform(H / 3.0, H / 1.5))
+        background = background_level * np.exp(-(r ** 2) / (2.0 * sigma_bg ** 2)).astype(np.float32)
+        noisy = noisy / max_counts + background
+
+        # Normalize y to [0, 1]
+        y_min = float(noisy.min())
+        y_max = float(noisy.max())
+        if y_max > y_min:
+            y = ((noisy - y_min) / (y_max - y_min)).astype(np.float32)
+        else:
+            y = np.zeros((H, W), dtype=np.float32)
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "electron_diffraction",
+                "accelerating_voltage_kv": accelerating_voltage_kv,
+                "camera_length_mm": camera_length_mm,
+                "n_rings": n_rings,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -5944,6 +6065,7 @@ def acquire_dataset(
         "generate_eels_phantom": generate_eels_phantom,
         "generate_eht_imaging_phantom": generate_eht_imaging_phantom,
         "generate_elastography_phantom": generate_elastography_phantom,
+        "generate_electron_diffraction_phantom": generate_electron_diffraction_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -6034,6 +6156,7 @@ def acquire_dataset(
         "generate_eels_phantom": lambda: generate_eels_phantom(),
         "generate_eht_imaging_phantom": lambda: generate_eht_imaging_phantom(),
         "generate_elastography_phantom": lambda: generate_elastography_phantom(),
+        "generate_electron_diffraction_phantom": lambda: generate_electron_diffraction_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)
