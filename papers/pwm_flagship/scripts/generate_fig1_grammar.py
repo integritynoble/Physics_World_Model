@@ -207,12 +207,13 @@ def main(output_path: Path):
             fontsize=8, ha="center", va="top", color="#888888",
             style="italic", zorder=1)
 
-    # DAG: P → C → W → S → D
-    dag_prims = ["P", "C", "W", "S", "D"]
-    dag_y_top = left_cy + 0.80
-    dag_sp = 0.52
+    # --- Top DAG (existing): P → C → W → S → D ---
     nw, nh = 0.58, 0.32
     dag_cx = b_cx - 0.10
+
+    dag_prims = ["P", "C", "W", "S", "D"]
+    dag_y_top = left_cy + 0.80
+    dag_sp = 0.50
     for i, p in enumerate(dag_prims):
         y = dag_y_top - i * dag_sp
         fill, tcol = PRIM_COLOR_MAP[p]
@@ -228,10 +229,29 @@ def main(output_path: Path):
             ha="left", va="center", color="#999999", style="italic",
             linespacing=1.1, zorder=1)
 
-    # Bottom of b: design text
-    ax.text(b_cx, left_cy - 2.60, "Select primitives\n& parameters",
-            fontsize=8, ha="center", va="top", color="#777777",
-            style="italic", linespacing=1.2, zorder=1)
+    # --- Divider in b ---
+    b_div_y = left_cy - 1.20
+    ax.plot([b_left + 0.25, b_left + w_b - 0.25], [b_div_y, b_div_y],
+            color="#AAAAAA", linewidth=0.8, linestyle="--", zorder=1)
+
+    # --- Bottom DAG (new design): M → F → S → D ---
+    new_prims = ["M", "F", "S", "D"]
+    new_y_top = b_div_y - 0.40
+    new_sp = 0.48
+    for i, p in enumerate(new_prims):
+        y = new_y_top - i * new_sp
+        fill, tcol = PRIM_COLOR_MAP[p]
+        draw_node(ax, dag_cx, y, p, fill, width=nw, height=nh,
+                  fontsize=12, text_color=tcol, edgecolor=tcol,
+                  linewidth=0.7, shadow=True)
+        if i > 0:
+            draw_small_arrow(ax, dag_cx,
+                             new_y_top - (i - 1) * new_sp - nh / 2 - 0.02,
+                             dag_cx, y + nh / 2 + 0.02, color=C_ARROW)
+
+    ax.text(dag_cx + 0.50, new_y_top, "e.g. new\nMRI variant", fontsize=8,
+            ha="left", va="center", color="#1A6A6A", style="italic",
+            linespacing=1.1, zorder=1)
 
     # Arrow: a → b
     draw_big_arrow(ax, a_left + w_a + 0.08, left_cy,
