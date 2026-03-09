@@ -407,7 +407,7 @@ def fig3_triad():
 
     # Gate 1: ΔPSNR at extreme compression (Table S12)
     # None = not tested for that modality
-    g1_data = [+1.3, -5.3, -13.9, -18.7, -9.1, None,
+    g1_data = [+1.3, -5.3, -13.9, -18.7, -9.1, +2.8,
                -5.1, -1.0, -4.9, -4.3, -0.8, -2.2]
 
     # Gate 2: ΔPSNR at extreme noise (Table S13)

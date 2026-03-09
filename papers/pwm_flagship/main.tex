@@ -384,10 +384,11 @@ Correspondence and requests for materials should be addressed to C.Y.\ (\texttt{
 \includegraphics[width=\textwidth]{figures/fig1_overview.pdf}
 \caption{\textbf{The universal grammar of computational imaging.}
 \textbf{a},~Any computational imaging system---from coded-aperture cameras to cryo-electron microscopes---serves as input.
-\textbf{b},~The system is composed as a typed directed acyclic graph (DAG) over exactly 11 universal primitives (\cref{fig:operatorgraph}); the compact ribbon shows the full alphabet.
+\textbf{b},~The system is composed as a typed directed acyclic graph (DAG) over 11 universal primitives (\cref{fig:operatorgraph}); shown here for CASSI as an example.
 \textbf{c},~The \triad{} diagnoses the DAG through three independent gates: information deficiency (Gate~1), carrier budget (Gate~2), and operator mismatch (Gate~3), each producing a quantitative score (\cref{fig:triad}).
 \textbf{d},~Based on the dominant gate, a targeted correction is applied: sampling redesign (Gate~1), source/detector improvement (Gate~2), or operator calibration (Gate~3).
 \textbf{e},~The existing solver is re-run with the corrected operator, recovering $+0.8$ to $+13.9$\,dB reconstruction quality without retraining.
+\textbf{f},~The 11 universal primitives grouped by physical role---generation ($P$), encoding ($C$, $M$, $R$, $\Lambda$, $\Pi$), transform ($F$, $\Sigma$), and detection ($S$, $W$, $D$)---constitute the complete alphabet from which every imaging modality is composed.
 Together, the 11 primitives (alphabet) and 3 gates (rules) form a universal grammar for designing, diagnosing, and correcting any imaging system.}
 \label{fig:overview}
 \end{figure}
@@ -404,7 +405,7 @@ Together, the 11 primitives (alphabet) and 3 gates (rules) form a universal gram
 \centering
 \includegraphics[width=\textwidth]{figures/fig3_triad.pdf}
 \caption{\textbf{Triad Decomposition: all three gates validated with real data.}
-\textbf{a},~Decision tree for the \triad{}: each imaging failure is routed through \gateone{}, \gatetwo{}, and \gatethree{} to produce a \triadreport{}. \textbf{b},~Three-gate degradation and correction heatmap. \emph{G1}~(blue): $\Delta$PSNR under extreme compression (Table~S12; 7~modalities tested). \emph{G2}~(amber): $\Delta$PSNR under extreme noise (Table~S13; 7~modalities tested). \emph{G3}~(green): correction gain $\Delta$PSNR under standard mismatch conditions (Table~S1; all 12~modalities). G1/G2~degrade at extreme conditions confirming they are real failure modes; G3~dominates under standard deployment because Gates~1 and~2 were already optimized at design time. ``n.t.'' = not tested. \textbf{c},~Recovery ratio $\recoveryratio$ distribution across all 12 validated modalities, showing that autonomous calibration recovers a substantial fraction of the oracle correction ceiling across all five carrier families.}
+\textbf{a},~Decision tree for the \triad{}: each imaging failure is routed through \gateone{}, \gatetwo{}, and \gatethree{} to produce a \triadreport{}. \textbf{b},~Three-gate degradation and correction heatmap. \emph{G1}~(blue): $\Delta$PSNR under extreme compression (Table~S12; all 12~modalities). \emph{G2}~(amber): $\Delta$PSNR under extreme noise (Table~S13; all 12~modalities). \emph{G3}~(green): correction gain $\Delta$PSNR under standard mismatch conditions (Table~S1; all 12~modalities). G1/G2~degrade at extreme conditions confirming they are real failure modes; G3~dominates under standard deployment because Gates~1 and~2 were already optimized at design time. \textbf{c},~Recovery ratio $\recoveryratio$ distribution across all 12 validated modalities, showing that autonomous calibration recovers a substantial fraction of the oracle correction ceiling across all five carrier families.}
 \label{fig:triad}
 \end{figure}
 
