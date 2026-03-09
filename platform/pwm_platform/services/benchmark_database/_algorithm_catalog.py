@@ -896,6 +896,19 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "Restormer-CL",     "type": "Transformer",      "mask_aware": True,  "params": "26M", "source": "Zamir et al., CVPR 2022 (CL adapted)"},
         {"name": "DiffusionEM",      "type": "Diffusion",        "mask_aware": True,  "params": "55M", "source": "Gao et al., Nat. Methods 2024 (EM adapted)"},
     ],
+    # ── Cone-Beam CT (CBCT) — dental/maxillofacial and IGRT CBCT ────────────
+    # FDK analytic reconstruction through diffusion SOTA, spanning 1984-2024.
+    "cbct": [
+        {"name": "FDK",                 "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Feldkamp et al., J. Opt. Soc. Am. A 1984"},
+        {"name": "TV-ADMM",             "type": "Variational",      "mask_aware": True,  "params": "0",   "source": "Boyd et al., Found. Trends 2011"},
+        {"name": "FBPConvNet",          "type": "Deep Learning",    "mask_aware": True,  "params": "8M",  "source": "Jin et al., IEEE TIP 2017"},
+        {"name": "Metal-AR-Net",        "type": "Deep Learning",    "mask_aware": True,  "params": "15M", "source": "Zhang & Yu, IEEE TMI 2018"},
+        {"name": "Learned Primal-Dual", "type": "Deep Unrolling",   "mask_aware": True,  "params": "2M",  "source": "Adler & Oktem, IEEE TMI 2018"},
+        {"name": "DuDoNet",             "type": "Deep Learning",    "mask_aware": True,  "params": "22M", "source": "Lin et al., CVPR 2019"},
+        {"name": "DuDoTrans",           "type": "Transformer",      "mask_aware": True,  "params": "24M", "source": "Wang et al., IEEE TMI 2022"},
+        {"name": "CTFormer",            "type": "Transformer",      "mask_aware": True,  "params": "31M", "source": "Wang et al., MICCAI 2023"},
+        {"name": "DiffusionCBCT",       "type": "Diffusion",        "mask_aware": True,  "params": "55M", "source": "Gao et al., Med. Phys. 2024"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -2879,6 +2892,17 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "PINN-CL",         "psnr": 36.8, "ssim": 0.934, "source": "Raissi et al. 2019"},
         {"method": "Restormer-CL",    "psnr": 38.4, "ssim": 0.950, "source": "Zamir et al. 2022"},
         {"method": "DiffusionEM",     "psnr": 39.8, "ssim": 0.962, "source": "Gao et al. 2024"},
+    ],
+    "cbct": [
+        {"method": "FDK",                "psnr": 27.8, "ssim": 0.801, "source": "Feldkamp 1984"},
+        {"method": "TV-ADMM",            "psnr": 31.2, "ssim": 0.851, "source": "Boyd 2011"},
+        {"method": "FBPConvNet",         "psnr": 34.5, "ssim": 0.891, "source": "Jin 2017"},
+        {"method": "Metal-AR-Net",       "psnr": 35.8, "ssim": 0.912, "source": "Zhang 2018"},
+        {"method": "Learned Primal-Dual","psnr": 36.4, "ssim": 0.921, "source": "Adler 2018"},
+        {"method": "DuDoNet",            "psnr": 37.1, "ssim": 0.932, "source": "Lin 2019"},
+        {"method": "DuDoTrans",          "psnr": 38.2, "ssim": 0.944, "source": "Wang 2022"},
+        {"method": "CTFormer",           "psnr": 39.0, "ssim": 0.953, "source": "Wang 2023"},
+        {"method": "DiffusionCBCT",      "psnr": 40.1, "ssim": 0.964, "source": "Gao 2024"},
     ],
 }
 

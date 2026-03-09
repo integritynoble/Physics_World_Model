@@ -1000,6 +1000,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[128, 128],
         notes="Synthetic CL map of semiconductor nanostructures with plasmonic nanoparticles",
     ),
+    "cbct_head_generated": DatasetEntry(
+        id="cbct_head_generated",
+        name="CBCT Head/Dental Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Feldkamp et al., J. Opt. Soc. Am. A 1984",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["cbct"],
+        converter="generate_cbct_head_phantom",
+        x_shape=[128, 128],
+        notes="Synthetic CBCT dental/maxillofacial phantom with teeth, bone, air cavities, optional metal implant",
+    ),
 }
 
 

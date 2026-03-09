@@ -2604,6 +2604,112 @@ def generate_cathodoluminescence_phantom(
     return samples
 
 
+def generate_cbct_head_phantom(
+    n_samples: int = 10,
+    seed: int = 42,
+    shape: tuple = (128, 128),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list[dict]:
+    """
+    Cone-Beam CT (CBCT) head/dental phantom.
+
+    Simulates CBCT measurements of dental/maxillofacial anatomy: teeth (high
+    attenuation), mandible/maxilla bone, soft tissue, air cavities. Forward
+    model: 2D fan-beam Radon projection (proxy for CBCT slice). Artefacts:
+    metal implant streaks, beam hardening, scatter.
+
+    Reference: Feldkamp et al., J. Opt. Soc. Am. A 1984; Miracle & Mukherji,
+    AJNR 2009.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    for i in range(n_samples):
+        mu = np.zeros((H, W), dtype=np.float32)
+
+        # Soft tissue oval (head)
+        cy, cx = H // 2, W // 2
+        ry, rx = int(H * 0.42), int(W * 0.38)
+        Y, X = np.ogrid[:H, :W]
+        head = ((Y - cy) / ry) ** 2 + ((X - cx) / rx) ** 2 <= 1.0
+        mu[head] = 0.20
+
+        # Skull bone ring
+        skull_thick = max(3, H // 20)
+        skull_outer = ((Y - cy) / ry) ** 2 + ((X - cx) / rx) ** 2 <= 1.0
+        skull_inner_ry = ry - skull_thick
+        skull_inner_rx = rx - skull_thick
+        skull_inner = ((Y - cy) / skull_inner_ry) ** 2 + ((X - cx) / skull_inner_rx) ** 2 <= 1.0
+        mu[skull_outer & ~skull_inner] = 0.60
+
+        # Air cavities (sinuses)
+        n_cavities = int(rng.integers(2, 5))
+        for _ in range(n_cavities):
+            cvy = int(rng.integers(cy - ry // 2, cy + ry // 3))
+            cvx = int(rng.integers(cx - rx // 2, cx + rx // 2))
+            rv = int(rng.integers(4, 12))
+            cavity = ((Y - cvy) ** 2 + (X - cvx) ** 2) <= rv ** 2
+            mu[cavity & head] = 0.0  # air
+
+        # Teeth (high attenuation)
+        n_teeth = int(rng.integers(4, 8))
+        teeth_y = cy + int(ry * 0.35)
+        for t in range(n_teeth):
+            tx = cx - int(rx * 0.5) + t * (rx // (n_teeth - 1))
+            tooth_r = max(2, H // 30)
+            tooth = ((Y - teeth_y) ** 2 + (X - tx) ** 2) <= tooth_r ** 2
+            mu[tooth] = 1.80  # enamel
+
+        # Metal implant (occasional)
+        has_implant = rng.random() > 0.5
+        if has_implant:
+            impl_y = teeth_y + int(rng.integers(-3, 4))
+            impl_x = cx + int(rng.integers(-rx // 3, rx // 3))
+            impl_r = max(2, H // 40)
+            impl = ((Y - impl_y) ** 2 + (X - impl_x) ** 2) <= impl_r ** 2
+            mu[impl] = 4.50  # titanium implant
+
+        mu = np.clip(mu, 0, None).astype(np.float32)
+        x_true = mu
+
+        # Forward: Radon projection
+        try:
+            from skimage.transform import radon
+            n_angles = 36
+            theta = np.linspace(0, 180, n_angles, endpoint=False)
+            y_proj = radon(mu, theta=theta, circle=True).astype(np.float32)
+        except ImportError:
+            y_proj = mu.copy()
+
+        sigma_n = 0.015 * float(y_proj.max()) * (1 + 0.3 * rng.random())
+        y_meas = (y_proj + rng.normal(0, sigma_n, y_proj.shape)).astype(np.float32)
+
+        H_size = min(H * W, 4096)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y_meas,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "n_teeth": int(n_teeth),
+                "n_cavities": int(n_cavities),
+                "has_implant": bool(has_implant),
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -2659,6 +2765,7 @@ def acquire_dataset(
         "generate_cars_raman_phantom": lambda: generate_cars_raman_phantom(target_shape=target_shape),
         "generate_cacti_video_phantom": lambda: generate_cacti_video_phantom(target_shape=target_shape),
         "generate_cathodoluminescence_phantom": lambda: generate_cathodoluminescence_phantom(target_shape=target_shape),
+        "generate_cbct_head_phantom": lambda: generate_cbct_head_phantom(target_shape=target_shape),
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -2720,6 +2827,7 @@ def acquire_dataset(
         "generate_cars_raman_phantom": lambda: generate_cars_raman_phantom(target_shape=target_shape),
         "generate_cacti_video_phantom": lambda: generate_cacti_video_phantom(target_shape=target_shape),
         "generate_cathodoluminescence_phantom": lambda: generate_cathodoluminescence_phantom(target_shape=target_shape),
+        "generate_cbct_head_phantom": lambda: generate_cbct_head_phantom(target_shape=target_shape),
     }
 
     convert_fn = converter_map.get(entry.converter)

@@ -131,6 +131,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # Cathodoluminescence: CL intensity map with PSF broadening and PMT shot noise.
     # y is the blurred/noisy measurement; identity runner applies minimal noise.
     "cathodoluminescence": "identity",
+    # CBCT: cone-beam CT uses Radon-transform based projection (FDK geometry).
+    # Use radon runner since the forward model is Radon-transform based.
+    "cbct": "radon",
 }
 
 
@@ -258,6 +261,7 @@ def _resolve_ground_truth(
             generate_brillouin_vipa_phantom,
             generate_cars_raman_phantom,
             generate_cathodoluminescence_phantom,
+            generate_cbct_head_phantom,
         )
 
         # Look up registry entries for this modality
@@ -297,6 +301,7 @@ def _resolve_ground_truth(
                     "generate_brillouin_vipa_phantom": generate_brillouin_vipa_phantom,
                     "generate_cars_raman_phantom": generate_cars_raman_phantom,
                     "generate_cathodoluminescence_phantom": generate_cathodoluminescence_phantom,
+                    "generate_cbct_head_phantom": generate_cbct_head_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -790,6 +795,7 @@ def _load_scenes_from_generator(
             generate_brillouin_vipa_phantom,
             generate_cars_raman_phantom,
             generate_cathodoluminescence_phantom,
+            generate_cbct_head_phantom,
         )
     except ImportError:
         return []
@@ -821,6 +827,7 @@ def _load_scenes_from_generator(
         "generate_brillouin_vipa_phantom": generate_brillouin_vipa_phantom,
         "generate_cars_raman_phantom": generate_cars_raman_phantom,
         "generate_cathodoluminescence_phantom": generate_cathodoluminescence_phantom,
+        "generate_cbct_head_phantom": generate_cbct_head_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

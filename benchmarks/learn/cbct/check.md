@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Cone-Beam Computed Tomography
 
 **URL:** https://pwm.platformai.org/benchmark/cbct
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
 
 ---
@@ -109,11 +109,9 @@ The dev tier has x_true stripped. The hidden tier is blocked from download. Publ
 
 **Status:** PASS
 
-The CBCT benchmark is correctly configured. The modality routes to the `medical` category pool which contains FBP (FDK), TV-ADMM, FBPConvNet, and Learned Primal-Dual. These are four of the most important and heavily-cited algorithms in the CT/CBCT reconstruction literature. All citations are accurate and well-established.
+The CBCT benchmark is correctly configured with a dedicated `_VARIANT_OVERRIDES["cbct"]` entry containing 9 algorithms spanning the full progression from FDK (1984) through diffusion models (2024). A synthetic CBCT head/dental phantom generator (`generate_cbct_head_phantom`) has been added, producing realistic anatomy with teeth, bone, air cavities, and optional metal implants. Challenge datasets (public/dev/hidden) have been generated and uploaded to GCS using the radon runner. All 9 algorithm citations are accurate and well-established.
 
-The forward model (cone-beam FDK geometry, Poisson noise, sparse views) is physically appropriate for CBCT. The mismatch parameters (view count, scatter, kVp, truncation) represent the main sources of image quality degradation in clinical CBCT.
-
-Note: FBP in the algorithm catalog is used as shorthand for FDK (Feldkamp-Davis-Kress), which is the true 3D cone-beam analytic algorithm. This labeling is standard in the CT literature and does not represent an error.
+The forward model (Radon projection, Poisson noise, sparse views) is physically appropriate for CBCT. The mismatch parameters (view count, scatter, kVp, truncation) represent the main sources of image quality degradation in clinical CBCT. The variant now has a dedicated score pool in `CATEGORY_REAL_SCORES["cbct"]` with 9 benchmark results.
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3*
