@@ -4979,6 +4979,144 @@ def generate_doppler_ultrasound_phantom(
     return samples
 
 
+def generate_dot_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Diffuse Optical Tomography phantom with absorption coefficient inclusions.
+
+    Creates a 64x64 float32 optical property map (absorption coefficient mu_a):
+    heterogeneous tissue background (mu_a ~0.01-0.02 mm^-1) and one or two
+    tumor inclusions (mu_a ~0.05-0.10 mm^-1).
+
+    Applies diffuse optical forward model: Born approximation with 4
+    source-detector pairs around the boundary, adds Gaussian measurement
+    noise (~3% relative).
+
+    x_true: 64x64 float32, normalized [0,1] — absorption coefficient map.
+    y: 64x64 float32 — DOT reconstruction from boundary measurements.
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, n_sources, n_detectors, wavelength_nm.
+
+    Reference: Arridge, S.R., Inverse Problems 1999; Schweiger et al.,
+    J. Biomed. Opt. 2005.
+    """
+    import numpy as np
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    n_sources = 4
+    n_detectors = 4
+    wavelength_nm = 785.0
+
+    # Reduced scattering coefficient (background tissue, mm^-1)
+    mu_s_prime = 1.0
+
+    # Diffusion coefficient D = 1 / (3 * mu_s_prime)
+    D = 1.0 / (3.0 * mu_s_prime)
+
+    for i in range(n_samples):
+        # --- Ground truth absorption map (mu_a in mm^-1) ---
+        mu_a_bg = float(rng.uniform(0.01, 0.02))
+        mu_a_map = np.full((H, W), mu_a_bg, dtype=np.float32)
+
+        n_inclusions = rng.integers(1, 3)  # 1 or 2 tumor inclusions
+        for _ in range(n_inclusions):
+            # Tumor center (avoid edges)
+            cx = float(rng.uniform(0.2 * W, 0.8 * W))
+            cy = float(rng.uniform(0.2 * H, 0.8 * H))
+            radius_px = float(rng.uniform(0.06 * min(H, W), 0.15 * min(H, W)))
+            mu_a_tumor = float(rng.uniform(0.05, 0.10))
+
+            Y_grid, X_grid = np.mgrid[:H, :W]
+            dist = np.sqrt((X_grid - cx) ** 2 + (Y_grid - cy) ** 2).astype(np.float32)
+            inclusion_mask = dist < radius_px
+            mu_a_map[inclusion_mask] = mu_a_tumor
+
+        # --- Born approximation forward model ---
+        # Place n_sources equidistant source positions along left/top boundary
+        # and n_detectors equidistant detector positions along right/bottom boundary.
+        # Approximate Green's function: G(r, r_s) ~ exp(-mu_eff * |r - r_s|) / (4*pi*D*|r-r_s|)
+        # Measurement: delta_phi = integral over volume of G(r_s, r) * delta_mu_a(r) * G(r, r_d) dV
+
+        # Source positions: evenly spaced along left edge (x=0)
+        src_positions = [(0.0, (j + 0.5) * H / n_sources) for j in range(n_sources)]
+        # Detector positions: evenly spaced along right edge (x=W-1)
+        det_positions = [(float(W - 1), (j + 0.5) * H / n_detectors) for j in range(n_detectors)]
+
+        Y_grid, X_grid = np.mgrid[:H, :W]
+        X_grid = X_grid.astype(np.float32)
+        Y_grid = Y_grid.astype(np.float32)
+
+        delta_mu_a = (mu_a_map - mu_a_bg).astype(np.float32)
+
+        # Effective attenuation coefficient for background
+        mu_eff_bg = float(np.sqrt(3.0 * mu_a_bg * mu_s_prime))
+
+        # Accumulate Born-approximation boundary measurements into a sensitivity map
+        sensitivity_map = np.zeros((H, W), dtype=np.float32)
+        for sx, sy in src_positions:
+            r_src = np.sqrt((X_grid - sx) ** 2 + (Y_grid - sy) ** 2) + 1e-6
+            G_src = np.exp(-mu_eff_bg * r_src) / (4.0 * np.pi * D * r_src)
+            for dx, dy in det_positions:
+                r_det = np.sqrt((X_grid - dx) ** 2 + (Y_grid - dy) ** 2) + 1e-6
+                G_det = np.exp(-mu_eff_bg * r_det) / (4.0 * np.pi * D * r_det)
+                # Sensitivity (weight) for this source-detector pair at each voxel
+                W_sd = G_src * G_det
+                sensitivity_map += W_sd
+
+        # Born approximation reconstruction: weight delta_mu_a by sensitivity
+        recon = delta_mu_a * sensitivity_map
+
+        # Add ~3% relative Gaussian noise
+        noise_scale = 0.03 * (float(np.max(np.abs(recon))) + 1e-9)
+        recon = recon + rng.standard_normal((H, W)).astype(np.float32) * noise_scale
+
+        # Back-project to get DOT image estimate (add background component)
+        y_raw = recon + mu_a_bg
+
+        # Normalize x_true and y to [0, 1]
+        mu_a_min = float(mu_a_map.min())
+        mu_a_max = float(mu_a_map.max())
+        if mu_a_max > mu_a_min:
+            x_true = ((mu_a_map - mu_a_min) / (mu_a_max - mu_a_min)).astype(np.float32)
+        else:
+            x_true = np.zeros((H, W), dtype=np.float32)
+
+        y_min = float(y_raw.min())
+        y_max = float(y_raw.max())
+        if y_max > y_min:
+            y = ((y_raw - y_min) / (y_max - y_min)).astype(np.float32)
+        else:
+            y = np.zeros((H, W), dtype=np.float32)
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "dot",
+                "n_sources": n_sources,
+                "n_detectors": n_detectors,
+                "wavelength_nm": wavelength_nm,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -5056,6 +5194,7 @@ def acquire_dataset(
         "generate_digital_breast_tomo_phantom": generate_digital_breast_tomo_phantom,
         "generate_dna_paint_phantom": generate_dna_paint_phantom,
         "generate_doppler_ultrasound_phantom": generate_doppler_ultrasound_phantom,
+        "generate_dot_phantom": generate_dot_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -5139,6 +5278,7 @@ def acquire_dataset(
         "generate_digital_breast_tomo_phantom": lambda: generate_digital_breast_tomo_phantom(),
         "generate_dna_paint_phantom": lambda: generate_dna_paint_phantom(),
         "generate_doppler_ultrasound_phantom": lambda: generate_doppler_ultrasound_phantom(),
+        "generate_dot_phantom": lambda: generate_dot_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

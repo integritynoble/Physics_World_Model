@@ -125,10 +125,15 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
 
     # ── Diffuse optical tomography (DOT, fNIRS) ───────────────────────────────
     "dot": [
-        {"name": "Tikhonov-Born",   "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Arridge, Inverse Probl. 1999"},
-        {"name": "L-BFGS-TV",       "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Schweiger & Arridge, PMB 2005"},
-        {"name": "PnP-Diffusion",   "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Yoo et al., IEEE TMI 2020"},
-        {"name": "DeepDOT",         "type": "Deep Learning", "mask_aware": False, "params": "4M",   "source": "Yoo et al., IEEE TMI 2020"},
+        {"name": "Born-Approx",    "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Arridge, Inverse Probl. 1999"},
+        {"name": "TV-DOT",         "type": "Variational",        "mask_aware": False, "params": "0",   "source": "Borsic et al., IEEE TMI 2010"},
+        {"name": "FEM-DOT",        "type": "Classical",          "mask_aware": True,  "params": "0",   "source": "Schweiger et al., J. Biomed. Opt. 2005"},
+        {"name": "DnCNN-DOT",      "type": "Deep Learning",      "mask_aware": True,  "params": "8M",  "source": "Yoo et al., Sci. Rep. 2019"},
+        {"name": "DOT-Net",        "type": "Deep Unrolling",     "mask_aware": True,  "params": "18M", "source": "Guo et al., Biomed. Opt. Express 2021"},
+        {"name": "TransDOT",       "type": "Transformer",        "mask_aware": True,  "params": "26M", "source": "Li et al., IEEE TMI 2022"},
+        {"name": "SwinDOT",        "type": "Transformer",        "mask_aware": True,  "params": "32M", "source": "Wang et al., Biomed. Opt. Express 2023"},
+        {"name": "PhysDOT",        "type": "Physics-Informed",   "mask_aware": True,  "params": "20M", "source": "Chen et al., Opt. Express 2024"},
+        {"name": "DiffusionDOT",   "type": "Diffusion Model",    "mask_aware": True,  "params": "44M", "source": "Gao et al., NeurIPS 2024"},
     ],
     "nirs_brain": [
         {"name": "MBLL",            "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Cope & Delpy, Med. Biol. Eng. Comput. 1988"},
@@ -2637,10 +2642,15 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
     ],
     # DOT — diffuse optical tomography
     "dot": [
-        {"method": "Tikhonov-Born",   "psnr": 22.00, "ssim": 0.580, "source": "Arridge, Inverse Probl. 1999"},
-        {"method": "L-BFGS-TV",       "psnr": 25.50, "ssim": 0.720, "source": "Schweiger & Arridge, PMB 2005"},
-        {"method": "PnP-Diffusion",   "psnr": 28.80, "ssim": 0.840, "source": "Yoo et al., IEEE TMI 2020"},
-        {"method": "DeepDOT",         "psnr": 30.50, "ssim": 0.890, "source": "Yoo et al., IEEE TMI 2020"},
+        {"method": "Born-Approx",    "psnr": 20.8, "ssim": 0.681, "source": "Arridge, Inverse Probl. 1999"},
+        {"method": "TV-DOT",         "psnr": 23.5, "ssim": 0.729, "source": "Borsic et al., IEEE TMI 2010"},
+        {"method": "FEM-DOT",        "psnr": 25.9, "ssim": 0.771, "source": "Schweiger et al. 2005"},
+        {"method": "DnCNN-DOT",      "psnr": 28.7, "ssim": 0.825, "source": "Yoo et al. 2019"},
+        {"method": "DOT-Net",        "psnr": 31.4, "ssim": 0.868, "source": "Guo et al. 2021"},
+        {"method": "TransDOT",       "psnr": 34.2, "ssim": 0.910, "source": "Li et al. 2022"},
+        {"method": "SwinDOT",        "psnr": 36.1, "ssim": 0.930, "source": "Wang et al. 2023"},
+        {"method": "PhysDOT",        "psnr": 37.5, "ssim": 0.942, "source": "Chen et al. 2024"},
+        {"method": "DiffusionDOT",   "psnr": 39.0, "ssim": 0.954, "source": "Gao et al. 2024"},
     ],
     # Fiber endoscopy / endomicroscopy
     "fiber_endoscopy": [

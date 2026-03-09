@@ -199,6 +199,10 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # y is the noisy Doppler measurement; identity runner applies minimal additional
     # noise to the phantom's speckle-corrupted Doppler signal.
     "doppler_ultrasound": "identity",
+    # DOT: diffuse optical tomography — Born approximation boundary measurements
+    # map absorption coefficient map to boundary flux; identity runner applies
+    # minimal additional noise to the phantom's Born-approximation reconstruction.
+    "dot": "identity",
 }
 
 
@@ -348,6 +352,7 @@ def _resolve_ground_truth(
             generate_digital_breast_tomo_phantom,
             generate_dna_paint_phantom,
             generate_doppler_ultrasound_phantom,
+            generate_dot_phantom,
         )
 
         # Look up registry entries for this modality
@@ -409,6 +414,7 @@ def _resolve_ground_truth(
                     "generate_digital_breast_tomo_phantom": generate_digital_breast_tomo_phantom,
                     "generate_dna_paint_phantom": generate_dna_paint_phantom,
                     "generate_doppler_ultrasound_phantom": generate_doppler_ultrasound_phantom,
+                    "generate_dot_phantom": generate_dot_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -924,6 +930,7 @@ def _load_scenes_from_generator(
             generate_digital_breast_tomo_phantom,
             generate_dna_paint_phantom,
             generate_doppler_ultrasound_phantom,
+            generate_dot_phantom,
         )
     except ImportError:
         return []
@@ -977,6 +984,7 @@ def _load_scenes_from_generator(
         "generate_digital_breast_tomo_phantom": generate_digital_breast_tomo_phantom,
         "generate_dna_paint_phantom": generate_dna_paint_phantom,
         "generate_doppler_ultrasound_phantom": generate_doppler_ultrasound_phantom,
+        "generate_dot_phantom": generate_dot_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)
