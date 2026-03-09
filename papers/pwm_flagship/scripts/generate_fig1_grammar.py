@@ -111,8 +111,8 @@ def main(output_path: Path):
     row_y = 3.5         # vertical centre
     row_h = 5.6         # panel height (taller for more room)
 
-    # Panel widths (a/e wider to fit text, c/d wider for gate spacing)
-    w_a, w_b, w_c, w_d, w_e = 1.7, 2.0, 4.0, 4.0, 2.1
+    # Panel widths (a/b need room for text+DAG; c/d for 3 gate boxes)
+    w_a, w_b, w_c, w_d, w_e = 2.0, 3.0, 3.6, 3.6, 1.8
     total_panels = w_a + w_b + w_c + w_d + w_e
     margin = 0.20
     gap = (16.0 - 2 * margin - total_panels) / 4
@@ -166,10 +166,10 @@ def main(output_path: Path):
 
     # DAG: P → C → W → S → D
     dag_prims = ["P", "C", "W", "S", "D"]
-    dag_y_top = row_y + 0.50
-    dag_sp = 0.52
-    nw, nh = 0.55, 0.32
-    dag_cx = b_cx - 0.10
+    dag_y_top = row_y + 0.60
+    dag_sp = 0.50
+    nw, nh = 0.60, 0.34
+    dag_cx = b_cx - 0.15
     for i, p in enumerate(dag_prims):
         y = dag_y_top - i * dag_sp
         fill, tcol = PRIM_COLOR_MAP[p]
@@ -206,7 +206,7 @@ def main(output_path: Path):
         ("Gate 2", "Carrier\nbudget", C_G2_BG, C_G2),
         ("Gate 3", "Operator\nmismatch", C_G3_BG, C_G3),
     ]
-    gate_sp = 1.30
+    gate_sp = 1.20
     gy = row_y - 0.35
     gw, gh = 1.05, 1.90
     for k, (gname, gdesc, gbg, gcol) in enumerate(gate_data):
@@ -242,7 +242,7 @@ def main(output_path: Path):
         ("Gate 2\ndominant", "Improve\ncarrier", C_G2_BG, C_G2),
         ("Gate 3\ndominant", "Calibrate\noperator", C_G3_BG, C_G3),
     ]
-    corr_sp = 1.30
+    corr_sp = 1.20
     cy = row_y - 0.35
     cw, ch = 1.05, 1.90
     for k, (clabel, cdesc, cbg, ccol) in enumerate(corr_data):
