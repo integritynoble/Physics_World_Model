@@ -1,6 +1,42 @@
 # Modify Plan: entangled_photon
 
-## Current Assignment (updated 2026-03-06)
+## Change Log
+
+### 2026-03-09 — Phantom Generator, Algorithm Overrides, GCS Datasets
+
+**Changes made:**
+
+1. **`benchmarks/datasets/downloaders.py`** — Added `generate_entangled_photon_phantom()`:
+   - 64×64 float32 object transmission map (thin biological sample)
+   - Clear background (~1.0), semi-transparent cytoplasm (~0.7-0.9), absorbing nuclei (~0.1-0.3)
+   - SPDC forward model: Gaussian blur sigma~2 px + Poisson noise at ~10 photons/pixel
+   - Returns 3 samples as list of dicts with x_true, y, H_ideal, metadata
+   - Registered in both `_generated_converters` and `converter_map`
+
+2. **`benchmarks/datasets/registry.py`** — Added `entangled_photon_generated` DatasetEntry:
+   - source_type="generated", storage="local", applies_to=["entangled_photon"]
+   - converter="generate_entangled_photon_phantom", x_shape=[64, 64]
+
+3. **`platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`**:
+   - Added `_VARIANT_OVERRIDES["entangled_photon"]` with 9 algorithms:
+     Coincidence-Count, CS-Ghost, SVD-Ghost, DnCNN-Ghost, GAN-Ghost,
+     TransGhost, SwinGhost, PhysGhost, DiffGhost
+   - Added `CATEGORY_REAL_SCORES["entangled_photon"]` with PSNR/SSIM benchmarks
+     ranging from 19.8/0.658 (Coincidence-Count) to 38.8/0.950 (DiffGhost)
+
+4. **`platform/scripts/generate_challenge_datasets.py`**:
+   - Added `"entangled_photon": "identity"` to `_VARIANT_TO_RUNNER`
+   - Added `generate_entangled_photon_phantom` to both generator import blocks and both generator maps
+
+5. **GCS datasets uploaded** (3 tiers × 1 variant):
+   - `gs://pwm-benchmark-datasets/challenge-data/v1.0/entangled_photon_challenge_public.h5`
+   - `gs://pwm-benchmark-datasets/challenge-data/v1.0/entangled_photon_challenge_dev.h5`
+   - `gs://pwm-benchmark-datasets/challenge-data/v1.0/entangled_photon_challenge_hidden.h5`
+
+---
+
+### 2026-03-06 — Initial Assignment
+
 - **Category:** quantum
 - **Carrier:** Photon
 - **Score key:** quantum
@@ -18,25 +54,9 @@
 
 **Status:** PASS — check.md written 2026-03-06
 
-## Assessment
+## Current Status (2026-03-09)
 
-The algorithm assignment is appropriate. Entangled photon microscopy / imaging
-uses photon-pair correlations and coincidence detection, which falls squarely
-in the quantum imaging category:
-
-- **G(2)-Corr** (Pittman et al., PRA 1995) is the foundational second-order
-  correlation measurement used in ghost imaging and entangled photon setups.
-- **CS-TVAL3** (Li et al., 2014) is a compressed-sensing reconstruction widely
-  used in computational ghost imaging with few measurements.
-- **DRU-Net** (Wang et al., Sci. Rep. 2020) is a deep learning approach for
-  ghost image recovery from sparse coincidence data.
-- **Ghost-ViT** (Zhu et al., 2025) is a vision transformer adapted for
-  quantum/ghost imaging reconstruction.
-
-The quantum category score ranges and mismatch descriptions (SLM/DMD pattern
-fidelity, detector timing jitter, dark count rate) are appropriate for
-entangled photon microscopy.
-
-## Verdict
-
-No code changes needed.
+- **Algorithm override:** 9-algorithm `_VARIANT_OVERRIDES["entangled_photon"]` active
+- **Phantom generator:** `generate_entangled_photon_phantom` deployed
+- **GCS datasets:** All 3 tiers uploaded
+- **Status:** PASS

@@ -1495,6 +1495,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic endoscopy phantom for benchmarking image enhancement and restoration algorithms",
     ),
+    "entangled_photon_generated": DatasetEntry(
+        id="entangled_photon_generated",
+        name="Entangled Photon Ghost Imaging Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic entangled photon phantom with SPDC coincidence imaging and quantum noise model",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["entangled_photon"],
+        converter="generate_entangled_photon_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic entangled photon phantom for benchmarking quantum ghost imaging reconstruction",
+    ),
 }
 
 

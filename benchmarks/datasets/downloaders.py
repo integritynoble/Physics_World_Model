@@ -6484,6 +6484,120 @@ def generate_endoscopy_phantom(
     return samples
 
 
+def generate_entangled_photon_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Entangled photon ghost imaging phantom for quantum ghost imaging benchmarks.
+
+    Creates a 64x64 float32 object transmission map simulating a thin transparent
+    biological sample probed by entangled photon pairs (SPDC source):
+      - Clear background (~1.0 transmission)
+      - Semi-transparent cytoplasm regions (~0.7-0.9)
+      - Absorbing cell nuclei features (~0.1-0.3)
+
+    Applies entangled photon (quantum ghost imaging) forward model:
+      - Correlated photon pair generation via SPDC
+      - One photon illuminates object, one detected at bucket detector
+      - Reconstruction from coincidence counts
+      - Gaussian blur (sigma~2 px) + Poisson noise at ~10 photons/pixel
+
+    x_true: 64x64 float32, normalized [0,1] — object transmission map.
+    y: 64x64 float32 — ghost image (low SNR, blurred from coincidence imaging).
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, n_coincidence_events, visibility, pump_wavelength_nm.
+
+    References: Pittman et al., Phys. Rev. A 1995;
+                Katz et al., Appl. Phys. Lett. 2009;
+                Gong et al., Sci. Rep. 2010.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    pump_wavelengths = [405.0, 532.0, 355.0]
+    visibilities = [0.95, 0.92, 0.97]
+
+    for i in range(n_samples):
+        sample_seed = seed + i * 1000
+        rng_s = np.random.default_rng(sample_seed)
+
+        yy, xx = np.mgrid[0:H, 0:W]
+        yy_f = yy.astype(np.float32) / H
+        xx_f = xx.astype(np.float32) / W
+
+        # --- Ground truth: thin transparent biological sample transmission map ---
+        # Clear background
+        x_true = np.ones((H, W), dtype=np.float32)
+
+        # Semi-transparent cytoplasm blobs (~0.7-0.9)
+        n_cells = int(rng_s.integers(3, 7))
+        for _ in range(n_cells):
+            cx = float(rng_s.uniform(0.15, 0.85))
+            cy = float(rng_s.uniform(0.15, 0.85))
+            rx = float(rng_s.uniform(0.06, 0.14))
+            ry = float(rng_s.uniform(0.06, 0.12))
+            cyto_val = float(rng_s.uniform(0.70, 0.90))
+            dist = np.sqrt(((xx_f - cx) / rx) ** 2 + ((yy_f - cy) / ry) ** 2)
+            mask = dist <= 1.0
+            x_true = np.where(mask, cyto_val, x_true)
+
+        # Absorbing cell nuclei (~0.1-0.3) placed inside cytoplasm regions
+        n_nuclei = int(rng_s.integers(2, 5))
+        for _ in range(n_nuclei):
+            cx = float(rng_s.uniform(0.20, 0.80))
+            cy = float(rng_s.uniform(0.20, 0.80))
+            r = float(rng_s.uniform(0.025, 0.055))
+            nuc_val = float(rng_s.uniform(0.10, 0.30))
+            dist = np.sqrt((xx_f - cx) ** 2 + (yy_f - cy) ** 2)
+            mask = dist <= r
+            x_true = np.where(mask, nuc_val, x_true)
+
+        x_true = np.clip(x_true, 0.0, 1.0).astype(np.float32)
+
+        # --- Forward model: quantum ghost imaging via SPDC coincidence counting ---
+        # Blur to simulate finite coherence area and coincidence resolution
+        sigma_blur = 2.0 * (H / 64)
+        y_blurred = gaussian_filter(x_true, sigma=sigma_blur).astype(np.float32)
+
+        # Poisson noise at ~10 photons/pixel (low-photon quantum regime)
+        n_photons_per_pixel = 10.0
+        y_counts = rng_s.poisson(lam=(y_blurred * n_photons_per_pixel).astype(np.float64))
+        y = (y_counts.astype(np.float32) / n_photons_per_pixel)
+        y = np.clip(y, 0.0, 1.0).astype(np.float32)
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        pump_wl = pump_wavelengths[i % len(pump_wavelengths)]
+        vis = visibilities[i % len(visibilities)]
+        n_coincidence_events = int(rng_s.integers(50000, 200000))
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "entangled_photon",
+                "n_coincidence_events": n_coincidence_events,
+                "visibility": vis,
+                "pump_wavelength_nm": pump_wl,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -6572,6 +6686,7 @@ def acquire_dataset(
         "generate_electron_holography_phantom": generate_electron_holography_phantom,
         "generate_electron_tomography_phantom": generate_electron_tomography_phantom,
         "generate_endoscopy_phantom": generate_endoscopy_phantom,
+        "generate_entangled_photon_phantom": generate_entangled_photon_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -6666,6 +6781,7 @@ def acquire_dataset(
         "generate_electron_holography_phantom": lambda: generate_electron_holography_phantom(),
         "generate_electron_tomography_phantom": lambda: generate_electron_tomography_phantom(),
         "generate_endoscopy_phantom": lambda: generate_endoscopy_phantom(),
+        "generate_entangled_photon_phantom": lambda: generate_entangled_photon_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

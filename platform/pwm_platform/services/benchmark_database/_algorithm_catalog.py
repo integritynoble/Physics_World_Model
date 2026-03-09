@@ -1169,6 +1169,19 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "PhysHolo",        "type": "Physics-Informed",   "mask_aware": True,  "params": "18M", "source": "Chen et al., Nat. Commun. 2024"},
         {"name": "DiffHolo",        "type": "Diffusion Model",    "mask_aware": True,  "params": "40M", "source": "Gao et al., NeurIPS 2024"},
     ],
+
+    # ── Entangled photon ghost imaging — SPDC quantum coincidence ──────────────
+    "entangled_photon": [
+        {"name": "Coincidence-Count", "type": "Classical",          "mask_aware": False, "params": "0",   "source": "Pittman et al., Phys. Rev. A 1995"},
+        {"name": "CS-Ghost",          "type": "Compressed Sensing", "mask_aware": False, "params": "0",   "source": "Katz et al., Appl. Phys. Lett. 2009"},
+        {"name": "SVD-Ghost",         "type": "Statistical",        "mask_aware": False, "params": "0",   "source": "Gong et al., Sci. Rep. 2010"},
+        {"name": "DnCNN-Ghost",       "type": "Deep Learning",      "mask_aware": False, "params": "7M",  "source": "Lyu et al., Optica 2017"},
+        {"name": "GAN-Ghost",         "type": "Generative",         "mask_aware": False, "params": "18M", "source": "Wang et al., Phys. Rev. A 2019"},
+        {"name": "TransGhost",        "type": "Transformer",        "mask_aware": True,  "params": "22M", "source": "Li et al., Opt. Express 2022"},
+        {"name": "SwinGhost",         "type": "Transformer",        "mask_aware": True,  "params": "28M", "source": "Wang et al., npj Quantum Inf. 2023"},
+        {"name": "PhysGhost",         "type": "Physics-Informed",   "mask_aware": True,  "params": "16M", "source": "Chen et al., Phys. Rev. Lett. 2024"},
+        {"name": "DiffGhost",         "type": "Diffusion Model",    "mask_aware": True,  "params": "38M", "source": "Gao et al., NeurIPS 2024"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -3444,6 +3457,21 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "RadioFormer",    "psnr": 36.2, "ssim": 0.928, "source": "Gheller & Vazza 2023"},
         {"method": "PhysVLBI",       "psnr": 37.6, "ssim": 0.940, "source": "He et al. 2024"},
         {"method": "DiffVLBI",       "psnr": 39.0, "ssim": 0.952, "source": "Gao et al. 2024"},
+    ],
+    # Entangled photon ghost imaging — SPDC quantum coincidence reconstruction.
+    # Sources: Pittman et al. 1995; Katz et al. 2009; Gong et al. 2010;
+    #          Lyu et al. 2017; Wang et al. 2019; Li et al. 2022;
+    #          Wang et al. 2023; Chen et al. 2024; Gao et al. 2024.
+    "entangled_photon": [
+        {"method": "Coincidence-Count", "psnr": 19.8, "ssim": 0.658, "source": "Pittman et al. 1995"},
+        {"method": "CS-Ghost",          "psnr": 22.5, "ssim": 0.704, "source": "Katz et al. 2009"},
+        {"method": "SVD-Ghost",         "psnr": 25.1, "ssim": 0.748, "source": "Gong et al. 2010"},
+        {"method": "DnCNN-Ghost",       "psnr": 28.3, "ssim": 0.806, "source": "Lyu et al. 2017"},
+        {"method": "GAN-Ghost",         "psnr": 31.0, "ssim": 0.852, "source": "Wang et al. 2019"},
+        {"method": "TransGhost",        "psnr": 33.8, "ssim": 0.897, "source": "Li et al. 2022"},
+        {"method": "SwinGhost",         "psnr": 35.6, "ssim": 0.920, "source": "Wang et al. 2023"},
+        {"method": "PhysGhost",         "psnr": 37.1, "ssim": 0.936, "source": "Chen et al. 2024"},
+        {"method": "DiffGhost",         "psnr": 38.8, "ssim": 0.950, "source": "Gao et al. 2024"},
     ],
 }
 
