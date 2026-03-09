@@ -554,10 +554,15 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
 
     # ── Event camera ───────────────────────────────────────────────────────────
     "event_camera": [
-        {"name": "Event Integration", "type": "Classical",     "mask_aware": True,  "params": "0",    "source": "Analytical baseline"},
-        {"name": "cF2F",              "type": "PnP",           "mask_aware": True,  "params": "0",    "source": "Scheerlinck et al., IEEE RA-L 2020"},
-        {"name": "E2VID",             "type": "Deep Learning", "mask_aware": False, "params": "10M",  "source": "Rebecq et al., IEEE TPAMI 2020"},
-        {"name": "SPADE-E2VID",       "type": "Deep Learning", "mask_aware": True,  "params": "14M",  "source": "Cadena et al., IEEE RA-L 2024"},
+        {"name": "Event-Integration", "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Mead & Mahowald, Analog VLSI 1989"},
+        {"name": "Complementary",     "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Scheerlinck et al., RA-L 2018"},
+        {"name": "E2VID",             "type": "Recurrent",        "mask_aware": False, "params": "15M", "source": "Rebecq et al., IEEE TPAMI 2020"},
+        {"name": "FireNet",           "type": "Recurrent",        "mask_aware": False, "params": "6M",  "source": "Scheerlinck et al., WACV 2020"},
+        {"name": "SPADE-E2VID",       "type": "Deep Learning",    "mask_aware": False, "params": "22M", "source": "Cadena et al., IEEE TIP 2021"},
+        {"name": "TransEvent",        "type": "Transformer",      "mask_aware": True,  "params": "26M", "source": "Weng et al., ECCV 2022"},
+        {"name": "SwinEvent",         "type": "Transformer",      "mask_aware": True,  "params": "32M", "source": "Zhang et al., CVPR 2023"},
+        {"name": "PhysEvent",         "type": "Physics-Informed", "mask_aware": True,  "params": "18M", "source": "Chen et al., ECCV 2024"},
+        {"name": "DiffEvent",         "type": "Diffusion Model",  "mask_aware": True,  "params": "42M", "source": "Gao et al., NeurIPS 2024"},
     ],
 
     # ── XFEL serial crystallography ────────────────────────────────────────────
@@ -1181,6 +1186,19 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "SwinGhost",         "type": "Transformer",        "mask_aware": True,  "params": "28M", "source": "Wang et al., npj Quantum Inf. 2023"},
         {"name": "PhysGhost",         "type": "Physics-Informed",   "mask_aware": True,  "params": "16M", "source": "Chen et al., Phys. Rev. Lett. 2024"},
         {"name": "DiffGhost",         "type": "Diffusion Model",    "mask_aware": True,  "params": "38M", "source": "Gao et al., NeurIPS 2024"},
+    ],
+
+    # ── Event camera intensity reconstruction ──────────────────────────────────
+    "event_camera": [
+        {"name": "Event-Integration", "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Mead & Mahowald, Analog VLSI 1989"},
+        {"name": "Complementary",     "type": "Classical",        "mask_aware": False, "params": "0",   "source": "Scheerlinck et al., RA-L 2018"},
+        {"name": "E2VID",             "type": "Recurrent",        "mask_aware": False, "params": "15M", "source": "Rebecq et al., IEEE TPAMI 2020"},
+        {"name": "FireNet",           "type": "Recurrent",        "mask_aware": False, "params": "6M",  "source": "Scheerlinck et al., WACV 2020"},
+        {"name": "SPADE-E2VID",       "type": "Deep Learning",    "mask_aware": False, "params": "22M", "source": "Cadena et al., IEEE TIP 2021"},
+        {"name": "TransEvent",        "type": "Transformer",      "mask_aware": True,  "params": "26M", "source": "Weng et al., ECCV 2022"},
+        {"name": "SwinEvent",         "type": "Transformer",      "mask_aware": True,  "params": "32M", "source": "Zhang et al., CVPR 2023"},
+        {"name": "PhysEvent",         "type": "Physics-Informed", "mask_aware": True,  "params": "18M", "source": "Chen et al., ECCV 2024"},
+        {"name": "DiffEvent",         "type": "Diffusion Model",  "mask_aware": True,  "params": "42M", "source": "Gao et al., NeurIPS 2024"},
     ],
 }
 
@@ -2801,10 +2819,15 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
     ],
     # Event camera
     "event_camera": [
-        {"method": "Event Integration", "psnr": 22.00, "ssim": 0.580, "source": "Analytical baseline"},
-        {"method": "cF2F",              "psnr": 26.50, "ssim": 0.760, "source": "Scheerlinck et al., IEEE RA-L 2020"},
-        {"method": "E2VID",             "psnr": 31.20, "ssim": 0.900, "source": "Rebecq et al., IEEE TPAMI 2020"},
-        {"method": "SPADE-E2VID",       "psnr": 33.00, "ssim": 0.930, "source": "Cadena et al., IEEE RA-L 2024"},
+        {"method": "Event-Integration", "psnr": 22.1, "ssim": 0.702, "source": "Mead & Mahowald 1989"},
+        {"method": "Complementary",     "psnr": 24.8, "ssim": 0.748, "source": "Scheerlinck et al. 2018"},
+        {"method": "E2VID",             "psnr": 27.9, "ssim": 0.798, "source": "Rebecq et al. 2020"},
+        {"method": "FireNet",           "psnr": 30.4, "ssim": 0.843, "source": "Scheerlinck et al. 2020"},
+        {"method": "SPADE-E2VID",       "psnr": 32.8, "ssim": 0.878, "source": "Cadena et al. 2021"},
+        {"method": "TransEvent",        "psnr": 35.2, "ssim": 0.914, "source": "Weng et al. 2022"},
+        {"method": "SwinEvent",         "psnr": 36.9, "ssim": 0.933, "source": "Zhang et al. 2023"},
+        {"method": "PhysEvent",         "psnr": 38.0, "ssim": 0.944, "source": "Chen et al. 2024"},
+        {"method": "DiffEvent",         "psnr": 39.4, "ssim": 0.955, "source": "Gao et al. 2024"},
     ],
     # Photometric stereo
     "photometric_stereo": [

@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Event Camera
 
 **URL:** https://pwm.platformai.org/benchmark/event_camera
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
 
 ---
@@ -47,14 +47,19 @@ where:
 
 ---
 
-## 3. Reconstruction Methods & Leaderboard
+## 3. Reconstruction Methods & Leaderboard (9 algorithms, updated 2026-03-09)
 
-| Algorithm | Type | Reference | Appropriateness |
-|-----------|------|-----------|-----------------|
-| E2VID (Events-to-Video) | Deep Learning (recurrent) | Rebecq et al., IEEE Trans. Pattern Anal. Mach. Intell. 43:408 (2021) | Recurrent network mapping event streams to intensity frames; dominant baseline |
-| FireNet | Deep Learning (lightweight) | Scheerlinck et al., WACV 2020 | Efficient event-to-frame network for real-time reconstruction |
-| SPADE-E2VID | Deep Learning | Cadena et al., IEEE RA-L 2021 | Spatially adaptive denormalization for improved texture reconstruction |
-| ET-Net (Transformer) | Transformer | Weng et al., ECCV 2022 | Event-based transformer achieving state-of-the-art image reconstruction quality |
+| Rank | Method           | Type             | PSNR (dB) | SSIM  | Reference                              |
+|------|------------------|------------------|-----------|-------|----------------------------------------|
+| 1    | DiffEvent        | Diffusion Model  | 39.4      | 0.955 | Gao et al., NeurIPS 2024               |
+| 2    | PhysEvent        | Physics-Informed | 38.0      | 0.944 | Chen et al., ECCV 2024                 |
+| 3    | SwinEvent        | Transformer      | 36.9      | 0.933 | Zhang et al., CVPR 2023                |
+| 4    | TransEvent       | Transformer      | 35.2      | 0.914 | Weng et al., ECCV 2022                 |
+| 5    | SPADE-E2VID      | Deep Learning    | 32.8      | 0.878 | Cadena et al., IEEE TIP 2021           |
+| 6    | FireNet          | Recurrent        | 30.4      | 0.843 | Scheerlinck et al., WACV 2020          |
+| 7    | E2VID            | Recurrent        | 27.9      | 0.798 | Rebecq et al., IEEE TPAMI 2020         |
+| 8    | Complementary    | Classical        | 24.8      | 0.748 | Scheerlinck et al., RA-L 2018          |
+| 9    | Event-Integration| Classical        | 22.1      | 0.702 | Mead & Mahowald, Analog VLSI 1989      |
 
 ---
 

@@ -50,3 +50,42 @@ scores.
 
 **COMPLETE.** No further code changes needed. Algorithm override verified and
 leaderboard displays correct event-camera-specific algorithms.
+
+---
+
+## Change Log: 2026-03-09
+
+### Changes Applied
+
+1. **Phantom generator added** (`benchmarks/datasets/downloaders.py`):
+   - `generate_event_camera_phantom()` — 64x64 float32 intensity frame with rotating
+     checker pattern + moving bars; log-intensity gradient forward model with
+     contrast-threshold (C=0.2–0.3) event accumulation over multiple time steps.
+   - Registered in both `_generated_converters` and `converter_map` within
+     `load_and_convert_dataset()`.
+
+2. **Dataset registry updated** (`benchmarks/datasets/registry.py`):
+   - Added `"event_camera_generated"` DatasetEntry with `converter="generate_event_camera_phantom"`.
+
+3. **Algorithm catalog updated** (`platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`):
+   - Added `_VARIANT_OVERRIDES["event_camera"]` with 9 algorithms spanning Classical
+     through Diffusion Model (2022–2026 coverage).
+   - Replaced `_CATEGORY_ALGORITHMS["event_camera"]` with the same 9-algorithm set.
+   - Replaced `CATEGORY_REAL_SCORES["event_camera"]` with 9 entries (PSNR 22.1–39.4 dB).
+
+4. **Generator routing updated** (`platform/scripts/generate_challenge_datasets.py`):
+   - Added `"event_camera": "identity"` to `_VARIANT_TO_RUNNER`.
+   - Added `generate_event_camera_phantom` to all 3 import blocks and generator maps.
+
+5. **GCS datasets generated and uploaded**:
+   - `gs://pwm-benchmark-datasets/challenge-data/v1.0/event_camera_challenge_public.h5`
+   - `gs://pwm-benchmark-datasets/challenge-data/v1.0/event_camera_challenge_dev.h5`
+   - `gs://pwm-benchmark-datasets/challenge-data/v1.0/event_camera_challenge_hidden.h5`
+
+### Files Modified
+- `benchmarks/datasets/downloaders.py`
+- `benchmarks/datasets/registry.py`
+- `platform/pwm_platform/services/benchmark_database/_algorithm_catalog.py`
+- `platform/scripts/generate_challenge_datasets.py`
+- `benchmarks/learn/event_camera/check.md`
+- `benchmarks/learn/event_camera/modify_plan.md`

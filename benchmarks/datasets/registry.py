@@ -1510,6 +1510,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic entangled photon phantom for benchmarking quantum ghost imaging reconstruction",
     ),
+    "event_camera_generated": DatasetEntry(
+        id="event_camera_generated",
+        name="Event Camera Intensity Reconstruction Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic event camera phantom with log-intensity gradient and contrast-threshold event model",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["event_camera"],
+        converter="generate_event_camera_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic event camera phantom for benchmarking intensity reconstruction from event streams",
+    ),
 }
 
 

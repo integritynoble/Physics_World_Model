@@ -6598,6 +6598,148 @@ def generate_entangled_photon_phantom(
     return samples
 
 
+def generate_event_camera_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Event camera intensity reconstruction phantom for event-based vision benchmarks.
+
+    Creates a 64x64 float32 intensity frame simulating a scene with moving edges
+    (rotating checker pattern or moving bars) that event cameras respond to via
+    log-intensity changes.
+
+    Applies event camera forward model:
+      - Compute log-intensity gradient (spatial derivative)
+      - Threshold at ±C (contrast threshold ~0.2-0.3) generating sparse
+        positive/negative event maps
+      - Accumulate event frames into an event count map (asynchronous-to-synchronous
+        conversion)
+
+    x_true: 64x64 float32, normalized [0,1] — ground truth intensity frame.
+    y: 64x64 float32 — event count map (accumulated events, normalized).
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, contrast_threshold, temporal_resolution_us, n_events.
+
+    References: Mead & Mahowald, Analog VLSI 1989;
+                Scheerlinck et al., RA-L 2018;
+                Rebecq et al., IEEE TPAMI 2020.
+    """
+    import numpy as np
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    contrast_thresholds = [0.20, 0.25, 0.30]
+    temporal_resolutions_us = [100, 50, 200]
+
+    for i in range(n_samples):
+        sample_seed = seed + i * 1000
+        rng_s = np.random.default_rng(sample_seed)
+
+        yy, xx = np.mgrid[0:H, 0:W]
+        yy_f = yy.astype(np.float32) / H
+        xx_f = xx.astype(np.float32) / W
+
+        # --- Ground truth: intensity frame with moving-edge structure ---
+        # Rotating checker pattern with random rotation angle
+        angle = float(rng_s.uniform(0.0, np.pi))
+        freq_x = float(rng_s.choice([4, 6, 8]))
+        freq_y = float(rng_s.choice([4, 6, 8]))
+        xr = xx_f * np.cos(angle) - yy_f * np.sin(angle)
+        yr = xx_f * np.sin(angle) + yy_f * np.cos(angle)
+        checker = np.sign(np.sin(2 * np.pi * freq_x * xr) * np.sin(2 * np.pi * freq_y * yr))
+        x_true = (checker + 1.0) / 2.0  # map {-1,+1} -> {0,1}
+
+        # Add soft bar features (motion blur bands simulating moving bars)
+        n_bars = int(rng_s.integers(2, 5))
+        for _ in range(n_bars):
+            bar_pos = float(rng_s.uniform(0.1, 0.9))
+            bar_width = float(rng_s.uniform(0.03, 0.08))
+            bar_val = float(rng_s.uniform(0.3, 0.7))
+            bar_orient = rng_s.integers(0, 2)  # 0=horizontal, 1=vertical
+            if bar_orient == 0:
+                mask = np.abs(yy_f - bar_pos) < bar_width
+            else:
+                mask = np.abs(xx_f - bar_pos) < bar_width
+            x_true = np.where(mask, bar_val, x_true)
+
+        x_true = np.clip(x_true, 0.0, 1.0).astype(np.float32)
+
+        # --- Forward model: event camera log-intensity gradient + thresholding ---
+        C = contrast_thresholds[i % len(contrast_thresholds)]
+
+        # Compute log-intensity (add small epsilon to avoid log(0))
+        epsilon = 1e-3
+        log_intensity = np.log(x_true + epsilon).astype(np.float32)
+
+        # Spatial gradient (simulates temporal gradient under motion)
+        grad_x = np.gradient(log_intensity, axis=1)
+        grad_y = np.gradient(log_intensity, axis=0)
+        log_grad = np.sqrt(grad_x ** 2 + grad_y ** 2).astype(np.float32)
+
+        # Threshold to generate sparse positive/negative event maps
+        pos_events = (log_grad > C).astype(np.float32)   # positive events (ON)
+        neg_events = (log_grad < -C).astype(np.float32)  # negative events (OFF)
+
+        # Accumulate events into event count map
+        n_time_steps = int(rng_s.integers(8, 20))
+        event_count_map = np.zeros((H, W), dtype=np.float32)
+        for t in range(n_time_steps):
+            phase_shift = t * (2 * np.pi / n_time_steps)
+            xr_t = (xx_f * np.cos(angle + phase_shift) -
+                    yy_f * np.sin(angle + phase_shift))
+            yr_t = (xx_f * np.sin(angle + phase_shift) +
+                    yy_f * np.cos(angle + phase_shift))
+            frame_t = (np.sign(np.sin(2 * np.pi * freq_x * xr_t) *
+                               np.sin(2 * np.pi * freq_y * yr_t)) + 1.0) / 2.0
+            frame_t = np.clip(frame_t, 0.0, 1.0).astype(np.float32)
+            log_t = np.log(frame_t + epsilon)
+            log_t_prev = np.log(x_true + epsilon)
+            diff = log_t - log_t_prev
+            fired = (np.abs(diff) > C).astype(np.float32)
+            event_count_map += fired
+
+        # Add small Poisson-like noise to event count map
+        noise_scale = float(rng_s.uniform(0.05, 0.15))
+        noise = rng_s.poisson(lam=(noise_scale * n_time_steps),
+                              size=(H, W)).astype(np.float32)
+        event_count_map += noise
+
+        # Normalize y to [0,1]
+        ec_max = event_count_map.max()
+        if ec_max > 0:
+            y = (event_count_map / ec_max).astype(np.float32)
+        else:
+            y = event_count_map.astype(np.float32)
+
+        n_events = int((event_count_map > 0).sum())
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "event_camera",
+                "contrast_threshold": C,
+                "temporal_resolution_us": temporal_resolutions_us[i % len(temporal_resolutions_us)],
+                "n_events": n_events,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -6687,6 +6829,7 @@ def acquire_dataset(
         "generate_electron_tomography_phantom": generate_electron_tomography_phantom,
         "generate_endoscopy_phantom": generate_endoscopy_phantom,
         "generate_entangled_photon_phantom": generate_entangled_photon_phantom,
+        "generate_event_camera_phantom": generate_event_camera_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -6782,6 +6925,7 @@ def acquire_dataset(
         "generate_electron_tomography_phantom": lambda: generate_electron_tomography_phantom(),
         "generate_endoscopy_phantom": lambda: generate_endoscopy_phantom(),
         "generate_entangled_photon_phantom": lambda: generate_entangled_photon_phantom(),
+        "generate_event_camera_phantom": lambda: generate_event_camera_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)
