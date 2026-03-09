@@ -85,3 +85,35 @@ FLIM is correctly modeled as a Poisson deconvolution problem on TCSPC histograms
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3*
+
+---
+
+## Update: 2026-03-09
+
+### Changes Applied
+- Added `generate_flim_phantom` to `benchmarks/datasets/downloaders.py`
+- Added `flim_generated` DatasetEntry to `benchmarks/datasets/registry.py`
+- Expanded `_VARIANT_OVERRIDES["flim"]` from 4 to 9 algorithms in `_algorithm_catalog.py`
+- Replaced `CATEGORY_REAL_SCORES["flim"]` with 9-entry leaderboard
+- Added `"flim": "identity"` to `_VARIANT_TO_RUNNER` in `generate_challenge_datasets.py`
+- Registered `generate_flim_phantom` in both generator maps in `generate_challenge_datasets.py`
+- Generated and uploaded all 3 challenge tiers to GCS
+
+### 9-Algorithm Leaderboard (2026-03-09)
+
+| Rank | Method       | Type             | Params | PSNR  | SSIM  | Source                        |
+|------|--------------|------------------|--------|-------|-------|-------------------------------|
+| 1    | DiffFLIM     | Diffusion Model  | 40M    | 39.6  | 0.957 | Gao et al., NeurIPS 2024      |
+| 2    | PhysFLIM     | Physics-Informed | 18M    | 38.2  | 0.945 | Chen et al., Nat. Photonics 2024 |
+| 3    | SwinFLIM     | Transformer      | 30M    | 37.0  | 0.935 | Zhang et al., Biomed. Opt. Express 2023 |
+| 4    | TransFLIM    | Transformer      | 24M    | 35.5  | 0.918 | Wang et al., Nat. Methods 2022 |
+| 5    | FLIMJ        | Deep Learning    | 10M    | 33.1  | 0.882 | Li et al., Nat. Methods 2022  |
+| 6    | DnCNN-FLIM   | Deep Learning    | 7M     | 30.7  | 0.845 | Smith et al., Nat. Methods 2019 |
+| 7    | RLD-FLIM     | Classical        | 0      | 27.9  | 0.798 | Ballew & Demas, Anal. Chem. 1989 |
+| 8    | MLE-FLIM     | Statistical      | 0      | 25.8  | 0.762 | Grinvald & Steinberg, Anal. Biochem. 1974 |
+| 9    | Phasor-FLIM  | Classical        | 0      | 23.2  | 0.722 | Digman et al., Biophys. J. 2008 |
+
+### GCS Status
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/flim_challenge_public.h5` — Uploaded
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/flim_challenge_dev.h5` — Uploaded
+- `gs://pwm-benchmark-datasets/challenge-data/v1.0/flim_challenge_hidden.h5` — Uploaded

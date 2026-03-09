@@ -253,6 +253,9 @@ _VARIANT_TO_RUNNER: dict[str, str] = {
     # Flash LiDAR: SPAD photon counting, timing jitter, and histogram peak reconstruction
     # are handled by the phantom generator; identity runner applies no additional degradation.
     "flash_lidar": "identity",
+    # FLIM: TCSPC exponential decay with Gaussian IRF and Poisson photon statistics are
+    # handled by the phantom generator; identity runner applies no additional degradation.
+    "flim": "identity",
 }
 
 
@@ -417,6 +420,7 @@ def _resolve_ground_truth(
             generate_expansion_phantom,
             generate_fib_sem_phantom,
             generate_flash_lidar_phantom,
+            generate_flim_phantom,
         )
 
         # Look up registry entries for this modality
@@ -493,6 +497,7 @@ def _resolve_ground_truth(
                     "generate_expansion_phantom": generate_expansion_phantom,
                     "generate_fib_sem_phantom": generate_fib_sem_phantom,
                     "generate_flash_lidar_phantom": generate_flash_lidar_phantom,
+                    "generate_flim_phantom": generate_flim_phantom,
                 }
                 gen_fn = _GENERATOR_MAP.get(entry.converter)
                 if gen_fn:
@@ -1024,6 +1029,7 @@ def _load_scenes_from_generator(
             generate_expansion_phantom,
             generate_fib_sem_phantom,
             generate_flash_lidar_phantom,
+            generate_flim_phantom,
         )
     except ImportError:
         return []
@@ -1093,6 +1099,7 @@ def _load_scenes_from_generator(
         "generate_expansion_phantom": generate_expansion_phantom,
         "generate_fib_sem_phantom": generate_fib_sem_phantom,
         "generate_flash_lidar_phantom": generate_flash_lidar_phantom,
+        "generate_flim_phantom": generate_flim_phantom,
     }
 
     gen_fn = gen_map.get(generator_name)

@@ -7196,6 +7196,163 @@ def generate_flash_lidar_phantom(
     return samples
 
 
+def generate_flim_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape=None,
+) -> list[dict]:
+    """
+    Fluorescence Lifetime Imaging Microscopy (FLIM) phantom for lifetime map
+    reconstruction benchmarks.
+
+    Creates a 64x64 float32 fluorescence lifetime map simulating a cell with:
+      - Nucleus region: lifetime tau ~1.5 ns, normalized to 0.4
+      - Cytoplasm: lifetime tau ~2.5 ns, normalized to 0.7
+      - Mitochondria puncta: lifetime tau ~0.8 ns, normalized to 0.2
+
+    Applies FLIM forward model: time-correlated single photon counting (TCSPC)
+    exponential decay convolved with instrument response function (Gaussian IRF
+    sigma ~0.2 ns), Poisson photon statistics (~50-200 photons per pixel),
+    lifetime reconstruction via phasor analysis (apparent lifetime per pixel).
+
+    x_true: 64x64 float32, normalized [0,1] — ground truth lifetime map.
+    y: 64x64 float32 — noisy lifetime estimate from phasor/fitting.
+    H_ideal: np.eye(64, dtype=np.float32).
+    metadata: dict with modality, laser_rep_rate_mhz, irf_sigma_ns,
+              mean_photons_per_pixel.
+    """
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    laser_rep_rate_mhz = 80.0       # 80 MHz repetition rate (12.5 ns period)
+    irf_sigma_ns = 0.2              # Gaussian IRF sigma in nanoseconds
+    tau_nucleus_ns = 1.5            # Nucleus lifetime (ns)
+    tau_cytoplasm_ns = 2.5          # Cytoplasm lifetime (ns)
+    tau_mito_ns = 0.8               # Mitochondria lifetime (ns)
+
+    # Normalised lifetime values for ground-truth map [0,1]
+    tau_nucleus_norm = 0.4
+    tau_cytoplasm_norm = 0.7
+    tau_mito_norm = 0.2
+
+    for i in range(n_samples):
+        sample_seed = seed + i * 1000
+        rng_s = np.random.default_rng(sample_seed)
+
+        yy, xx = np.mgrid[0:H, 0:W]
+        cy = H / 2.0
+        cx = W / 2.0
+
+        # --- Ground truth lifetime map ---
+
+        # Background cytoplasm: tau ~2.5 ns
+        lifetime_map = np.full((H, W), tau_cytoplasm_norm, dtype=np.float32)
+
+        # Elliptical nucleus: centred, with random offset and size variation
+        nuc_ry = float(rng_s.uniform(0.18, 0.28)) * H
+        nuc_rx = float(rng_s.uniform(0.18, 0.28)) * W
+        nuc_cy = cy + float(rng_s.uniform(-0.05, 0.05)) * H
+        nuc_cx = cx + float(rng_s.uniform(-0.05, 0.05)) * W
+        nucleus_mask = (((yy - nuc_cy) / nuc_ry) ** 2 + ((xx - nuc_cx) / nuc_rx) ** 2) <= 1.0
+        lifetime_map[nucleus_mask] = tau_nucleus_norm
+
+        # Mitochondria puncta: small bright spots in the cytoplasm region
+        n_mito = int(rng_s.integers(8, 20))
+        for _ in range(n_mito):
+            # Place in cytoplasm (outside nucleus)
+            for _attempt in range(20):
+                my = float(rng_s.uniform(0.1, 0.9)) * H
+                mx = float(rng_s.uniform(0.1, 0.9)) * W
+                in_nuc = (((my - nuc_cy) / nuc_ry) ** 2 + ((mx - nuc_cx) / nuc_rx) ** 2) <= 1.0
+                if not in_nuc:
+                    break
+            mr = float(rng_s.uniform(1.5, 3.5))
+            mito_mask = (((yy - my) ** 2 + (xx - mx) ** 2) <= mr ** 2)
+            lifetime_map[mito_mask] = tau_mito_norm
+
+        x_true = np.clip(lifetime_map, 0.0, 1.0).astype(np.float32)
+
+        # --- FLIM forward model: TCSPC with Gaussian IRF and Poisson statistics ---
+
+        # Map normalised lifetime back to nanoseconds for phasor computation
+        tau_ns_map = (
+            tau_mito_ns +
+            (tau_cytoplasm_ns - tau_mito_ns) * x_true  # linear mapping of [0.2, 0.7]
+        ).astype(np.float32)
+        # Correct for actual tau values at nucleus:
+        # x_true=0.4 -> tau_nucleus=1.5, x_true=0.7 -> tau_cytoplasm=2.5, x_true=0.2 -> tau_mito=0.8
+        tau_ns_map = (0.8 + (2.5 - 0.8) * x_true).astype(np.float32)
+
+        # Angular frequency for phasor (omega = 2*pi*f_rep)
+        omega = 2.0 * np.pi * laser_rep_rate_mhz * 1e6 * 1e-9  # rad/ns
+
+        # Phasor components (g, s) for mono-exponential lifetime + Gaussian IRF
+        omega_tau = omega * tau_ns_map
+        phasor_g_true = 1.0 / (1.0 + omega_tau ** 2)
+        phasor_s_true = omega_tau / (1.0 + omega_tau ** 2)
+
+        # Photon counts: Poisson-distributed, 50-200 photons/pixel
+        mean_photons = rng_s.uniform(50.0, 200.0, size=(H, W)).astype(np.float32)
+        n_photons = rng_s.poisson(mean_photons).astype(np.float32)
+        mean_photons_per_pixel = float(mean_photons.mean())
+
+        # Poisson noise on phasor components (photon shot noise)
+        # Variance of phasor ~ 1 / (2 * N_photons)
+        safe_n = np.where(n_photons > 0, n_photons, 1.0).astype(np.float32)
+        phasor_noise_std = (1.0 / np.sqrt(2.0 * safe_n)).astype(np.float32)
+        phasor_g_noisy = phasor_g_true + rng_s.normal(0.0, 1.0, size=(H, W)).astype(np.float32) * phasor_noise_std
+        phasor_s_noisy = phasor_s_true + rng_s.normal(0.0, 1.0, size=(H, W)).astype(np.float32) * phasor_noise_std
+
+        # IRF correction: Gaussian IRF shifts phasor; apply phase correction
+        irf_phase = omega * irf_sigma_ns ** 2 * omega  # Gaussian IRF phase shift
+        irf_mod = float(np.exp(-0.5 * (omega * irf_sigma_ns) ** 2))
+        phasor_g_corr = (phasor_g_noisy / irf_mod).astype(np.float32)
+        phasor_s_corr = (phasor_s_noisy / irf_mod).astype(np.float32)
+
+        # Recover apparent lifetime from phasor (phase lifetime)
+        # tau_phi = s / (omega * g), clipped for stability
+        safe_g = np.where(np.abs(phasor_g_corr) > 1e-4, phasor_g_corr, 1e-4 * np.sign(phasor_g_corr + 1e-8))
+        tau_apparent_ns = np.clip(phasor_s_corr / (omega * safe_g), tau_mito_ns * 0.5, tau_cytoplasm_ns * 1.5).astype(np.float32)
+
+        # Light Gaussian smoothing (spatial IRF PSF)
+        psf_sigma = 0.5 * (H / 64.0)
+        tau_smoothed = gaussian_filter(tau_apparent_ns, sigma=psf_sigma).astype(np.float32)
+
+        # Normalise to [0, 1]
+        y_min = tau_smoothed.min()
+        y_max = tau_smoothed.max()
+        if y_max > y_min:
+            y = ((tau_smoothed - y_min) / (y_max - y_min)).astype(np.float32)
+        else:
+            y = tau_smoothed.copy()
+
+        H_ideal = np.eye(64, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "flim",
+                "laser_rep_rate_mhz": laser_rep_rate_mhz,
+                "irf_sigma_ns": irf_sigma_ns,
+                "mean_photons_per_pixel": mean_photons_per_pixel,
+            },
+        })
+
+    return samples
+
+
 # ---------------------------------------------------------------------------
 # High-level: download + convert a registry entry
 # ---------------------------------------------------------------------------
@@ -7289,6 +7446,7 @@ def acquire_dataset(
         "generate_expansion_phantom": generate_expansion_phantom,
         "generate_fib_sem_phantom": generate_fib_sem_phantom,
         "generate_flash_lidar_phantom": generate_flash_lidar_phantom,
+        "generate_flim_phantom": generate_flim_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -7388,6 +7546,7 @@ def acquire_dataset(
         "generate_expansion_phantom": lambda: generate_expansion_phantom(),
         "generate_fib_sem_phantom": lambda: generate_fib_sem_phantom(),
         "generate_flash_lidar_phantom": lambda: generate_flash_lidar_phantom(),
+        "generate_flim_phantom": lambda: generate_flim_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

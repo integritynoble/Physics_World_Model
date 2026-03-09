@@ -1570,6 +1570,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic flash LiDAR phantom for benchmarking photon-sparse depth reconstruction algorithms",
     ),
+    "flim_generated": DatasetEntry(
+        id="flim_generated",
+        name="FLIM Fluorescence Lifetime Phantom Dataset",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic FLIM phantom with cellular lifetime distributions and TCSPC photon counting model",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["flim"],
+        converter="generate_flim_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic FLIM phantom for benchmarking lifetime map reconstruction algorithms",
+    ),
 }
 
 
