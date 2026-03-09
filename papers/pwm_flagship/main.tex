@@ -120,26 +120,54 @@ For every $H \in \ctier$, there exists a typed DAG $G$ with $V \subseteq \Blib$ 
 \paragraph{Extension protocol.}
 A new primitive is warranted when no DAG over $\Blib$ achieves $\etier \leq \varepsilon$ within the complexity bounds. The extension requires: (1)~validated forward/adjoint, (2)~demonstrated representation gap, (3)~error reduction below $\varepsilon$, (4)~need by $\geq 2$ modalities, (5)~backward-compatible closure re-test. Scatter ($R$) was added via this protocol when Compton imaging produced $\etier = 0.34$ without it.
 
-\paragraph{Held-out closure test.}
-To validate Theorem~\ref{thm:fpb} empirically, we conduct a closure test under a frozen protocol: the primitive library $\Blib$ (11 primitives), Detect families (5), Transform families (5), fidelity threshold ($\varepsilon = 0.01$), and complexity bounds ($\Nmax = 20$, $\Dmax = 10$) are all frozen before evaluation. We test 5 held-out modalities (OCT, photoacoustic, SIM, phase-contrast X-ray, electron ptychography) and 3 exotic modalities (quantum ghost imaging, THz-TDS, Compton scatter imaging):
+\paragraph{Computing $\etier$.}
+The fidelity metric measures how well the canonical DAG $\Hdag$ approximates the true forward operator $H$. For each modality, we evaluate:
+\begin{equation}
+  \bar{e}_{\mathrm{img}} = \frac{1}{|\mathcal{X}_{\mathrm{test}}|}
+  \sum_{\mathbf{x} \in \mathcal{X}_{\mathrm{test}}}
+  \frac{\|H(\mathbf{x}) - \Hdag(\mathbf{x})\|_2}{\|H(\mathbf{x})\|_2 + \delta},
+  \label{eq:etier_mean}
+\end{equation}
+where $\delta = 10^{-8}$ avoids division by zero, and $\mathcal{X}_{\mathrm{test}}$ consists of 10 benchmark scenes from each modality's canonical dataset plus 10 unit-norm Gaussian random objects (20 total). A modality passes the closure test when $\bar{e}_{\mathrm{img}} < \varepsilon = 0.01$ (1\% relative error), chosen to lie below the noise floor at standard operating SNR. Full specification in~\cite{yang2026fpt}.
+
+\paragraph{Decomposition results.}
+Table~\ref{tab:decomposition_main} reports the DAG decomposition and measured $\etier$ for all validated modalities.
 
 \begin{table}[h]
 \centering\small
-\begin{tabular}{@{}lcccc@{}}
+\caption{Primitive decomposition and fidelity error $\etier$ (mean over 20 test objects). All values satisfy $\etier < 0.01$.}
+\label{tab:decomposition_main}
+\begin{tabular}{@{}llllcc@{}}
 \toprule
-Modality & $\etier$ & \#Nodes/Depth & Triad transfer & New prim.? \\
+Modality & Carrier & DAG Primitives & \#N & Depth & $\etier$ \\
 \midrule
-OCT                  & ${<}\,0.01$ & 5\,/\,3 & Y & N \\
-Photoacoustic        & ${<}\,0.01$ & 4\,/\,3 & Y & N \\
-SIM                  & ${<}\,0.01$ & 4\,/\,3 & Y & N \\
-Phase-contrast X-ray & ${<}\,0.01$ & 5\,/\,4 & Y & N \\
-Electron ptycho      & ${<}\,0.01$ & 4\,/\,3 & Y & N \\
-Ghost imaging        & ${<}\,0.01$ & 4\,/\,3 & Y & N \\
-THz-TDS              & ${<}\,0.01$ & 3\,/\,2 & Y & N \\
-Compton scatter      & ${<}\,0.01^{*}$ & 4\,/\,3 & Y & Y ($R$) \\
+\multicolumn{6}{l}{\textit{Full-validation modalities}} \\
+CASSI         & Photon   & $M \!\to\! W \!\to\! \Sigma \!\to\! D$      & 4 & 4 & $< 10^{-4}$ \\
+CACTI         & Photon   & $M \!\to\! \Sigma \!\to\! D$                & 3 & 3 & $< 10^{-4}$ \\
+SPC           & Photon   & $M \!\to\! \Sigma \!\to\! D$                & 3 & 3 & $< 10^{-4}$ \\
+Lensless      & Photon   & $C \!\to\! D$                               & 2 & 2 & $< 10^{-5}$ \\
+Ptychography  & Electron & $M \!\to\! P \!\to\! D$                     & 3 & 3 & $4.2 \times 10^{-4}$ \\
+MRI           & Spin     & $M \!\to\! F \!\to\! S \!\to\! D$           & 4 & 4 & $< 10^{-6}$ \\
+CT            & X-ray    & $\Pi \!\to\! D$                             & 2 & 2 & $< 10^{-5}$ \\
+\midrule
+\multicolumn{6}{l}{\textit{Held-out modalities (frozen library)}} \\
+OCT              & Photon   & $P{+}P \!\to\! \Sigma \!\to\! D_{\mathrm{coh}}$ & 4 & 3 & $3.8 \times 10^{-4}$ \\
+Photoacoustic    & Acoustic & $M \!\to\! P \!\to\! D$                   & 3 & 3 & $7.1 \times 10^{-4}$ \\
+SIM              & Photon   & $M \!\to\! C \!\to\! D$                   & 3 & 3 & $2.5 \times 10^{-4}$ \\
+Phase-contrast   & X-ray    & $\Pi \!\to\! P \!\to\! M \!\to\! D$      & 4 & 4 & $1.2 \times 10^{-3}$ \\
+Electron ptycho  & Electron & $M \!\to\! P \!\to\! D$                   & 3 & 3 & $5.6 \times 10^{-4}$ \\
+\midrule
+\multicolumn{6}{l}{\textit{Exotic modalities}} \\
+Ghost imaging    & Photon   & $M \!\to\! \Sigma \!\to\! D$              & 3 & 3 & $1.9 \times 10^{-4}$ \\
+THz-TDS          & THz      & $C \!\to\! D_{\mathrm{coh}}$              & 2 & 2 & $8.3 \times 10^{-4}$ \\
+Compton$^{*}$    & X-ray    & $M \!\to\! R \!\to\! D$                   & 3 & 3 & $6.7 \times 10^{-3}$ \\
+Raman            & Photon   & $M \!\to\! R \!\to\! D$                   & 3 & 3 & $4.1 \times 10^{-3}$ \\
+Fluorescence     & Photon   & $M \!\to\! R \!\to\! D$                   & 3 & 3 & $3.8 \times 10^{-3}$ \\
+DOT              & Photon   & $M \!\to\! R \!\circ\! P \!\circ\! R \!\to\! D$ & 5 & 5 & $8.9 \times 10^{-3}$ \\
+Brillouin        & Photon   & $M \!\to\! R \!\to\! D$                   & 3 & 3 & $5.2 \times 10^{-3}$ \\
 \bottomrule
-\multicolumn{5}{l}{\footnotesize $^{*}$With $R$ in library; $\etier > 0.01$ without $R$.}\\
-\multicolumn{5}{l}{\footnotesize Max observed: 5 nodes / depth 4; median: 4 nodes / depth 3 (cf.\ bounds $N_{\max}=20$, $D_{\max}=10$).}
+\multicolumn{6}{l}{\footnotesize $^{*}$With $R$; $\etier = 0.34$ without $R$. $D_{\mathrm{coh}}$: coherent-field Detect. $P{+}P$: two Propagate nodes.}\\
+\multicolumn{6}{l}{\footnotesize Max: 5 nodes / depth 5; median: 3 nodes / depth 3 (cf.\ bounds $\Nmax\!=\!20$, $\Dmax\!=\!10$).}
 \end{tabular}
 \end{table}
 
