@@ -211,19 +211,21 @@ def fig2_operatorgraph():
         # Column 0 (left)
         [
             ('Generation', '#2B5A8C', '#CADCF0', '#E8F0F8',
-             [('P', 'source \u2192 field')]),
+             [('P', 'Propagate')]),
             ('Encoding', '#5A3D8C', '#D4C8EC', '#EDE4F5',
-             [('C', 'coded aperture'), ('M', 'modulation'),
-              ('R', 'rotation / Radon'), ('\u039B', 'dispersion'),
-              ('\u03A0', 'phase')]),
+             [('M', 'Modulate'),
+              ('\u03A0', 'Project'),
+              ('C', 'Convolve'),
+              ('R', 'Scatter'),
+              ('\u039B', 'Transform')]),
         ],
         # Column 1 (right)
         [
             ('Transform', '#8C6D2B', '#F2E0B0', '#F9F2E0',
-             [('F', 'Fourier'), ('\u03A3', 'integration')]),
+             [('F', 'Encode'), ('\u03A3', 'Accumulate')]),
             ('Detection', '#8C3A35', '#F2C4C0', '#FAE8E6',
-             [('S', 'sampling'), ('W', 'weighting'),
-              ('D', 'field \u2192 meas.')]),
+             [('S', 'Sample'), ('W', 'Disperse'),
+              ('D', 'Detect')]),
         ],
     ]
 
@@ -272,14 +274,14 @@ def fig2_operatorgraph():
     ax_b.text(0, 5.3, 'b', fontsize=10, fontweight='bold')
 
     dags = {
-        'CASSI': [('P  Source', 0.7, 4.5), ('C  Mask', 0.7, 3.5),
-                  ('\u039B  Dispersion', 0.7, 2.5), ('S  Sensor', 0.7, 1.5),
-                  ('D  Noise', 0.7, 0.5)],
-        'MRI': [('P  Source', 2.0, 4.5), ('W  Coil\n     Sens.', 2.0, 3.5),
-                ('F  Fourier', 2.0, 2.5), ('S  Undersample', 2.0, 1.5),
-                ('D  Noise', 2.0, 0.5)],
-        'CT': [('P  Source', 3.3, 4.5), ('R  Radon', 3.3, 3.5),
-               ('\u03A3  Detector', 3.3, 2.5), ('D  Noise', 3.3, 1.5)],
+        'CASSI': [('P  Propagate', 0.7, 4.5), ('C  Convolve', 0.7, 3.5),
+                  ('W  Disperse', 0.7, 2.5), ('S  Sample', 0.7, 1.5),
+                  ('D  Detect', 0.7, 0.5)],
+        'MRI': [('P  Propagate', 2.0, 4.5), ('M  Modulate', 2.0, 3.5),
+                ('F  Encode', 2.0, 2.5), ('S  Sample', 2.0, 1.5),
+                ('D  Detect', 2.0, 0.5)],
+        'CT': [('P  Propagate', 3.3, 4.5), ('\u03A0  Project', 3.3, 3.5),
+               ('\u03A3  Accumulate', 3.3, 2.5), ('D  Detect', 3.3, 1.5)],
     }
 
     dag_colors = {'CASSI': COLORS['blue'], 'MRI': COLORS['purple'],
@@ -1023,7 +1025,7 @@ if __name__ == '__main__':
     print(f'Output directory: {FIGDIR}')
     print()
 
-    fig1_overview()
+    # fig1_overview()  # Fig 1 handled by generate_fig1_grammar.py
     fig2_operatorgraph()      # + basis-growth saturation (panel c)
     fig3_triad()              # 3-gate heatmap with real G1/G2/G3 data
     fig4_scenario_protocol()  # NEW: 4-Scenario Protocol across 6 modalities

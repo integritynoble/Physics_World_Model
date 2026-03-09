@@ -144,8 +144,8 @@ def main(output_path: Path):
             fontsize=12, ha="center", va="top", color=C_ENC_T,
             fontweight="bold", linespacing=1.2, zorder=1)
 
-    # DAG: P → C → Λ → S → D
-    dag_prims = ["P", "C", "\u039B", "S", "D"]
+    # DAG: P → C → W → S → D  (CASSI: Propagate, Convolve, Disperse, Sample, Detect)
+    dag_prims = ["P", "C", "W", "S", "D"]
     dag_y_top = row1_y + 0.50
     dag_sp = 0.48
     nw, nh = 0.58, 0.32
@@ -220,16 +220,18 @@ def main(output_path: Path):
     # Layout: 4 role groups arranged horizontally
     prim_groups = [
         ("Generation", C_GEN, C_GEN_T,
-         [("P", "source \u2192 field")]),
+         [("P", "Propagate")]),
         ("Encoding", C_ENC, C_ENC_T,
-         [("C", "coded aperture"), ("M", "modulation"),
-          ("R", "rotation / Radon"), ("\u039B", "wavelength dispersion"),
-          ("\u03A0", "phase encoding")]),
+         [("M", "Modulate"),
+          ("\u03A0", "Project"),
+          ("C", "Convolve"),
+          ("R", "Scatter"),
+          ("\u039B", "Transform")]),
         ("Transform", C_TRN, C_TRN_T,
-         [("F", "Fourier transform"), ("\u03A3", "integration / summation")]),
+         [("F", "Encode"), ("\u03A3", "Accumulate")]),
         ("Detection", C_DET, C_DET_T,
-         [("S", "sampling / subsampling"), ("W", "weighting / sensitivity"),
-          ("D", "field \u2192 measurement")]),
+         [("S", "Sample"), ("W", "Disperse"),
+          ("D", "Detect")]),
     ]
 
     group_x_positions = [1.5, 6.0, 12.5, 16.5]
