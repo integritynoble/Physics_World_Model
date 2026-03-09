@@ -3377,6 +3377,135 @@ def generate_confocal_livecell_phantom(
     return samples
 
 
+def generate_cryo_em_phantom(
+    n_samples: int = 3,
+    seed: int = 42,
+    shape: tuple = (64, 64),
+    target_shape: Optional[Tuple[int, ...]] = None,
+) -> list:
+    """Generate synthetic single-particle cryo-EM phantom.
+
+    Simulates 2D projections of protein structures with CTF corruption and
+    low-dose Poisson noise. Ground truth is a 2D projection of an ellipsoidal
+    protein model with internal density variations.
+
+    Forward model:
+      - Apply contrast transfer function (CTF) in Fourier space
+      - Add Poisson noise at ~10 electrons/Angstrom^2
+
+    Reference: Frank, Three-Dimensional Electron Microscopy of Macromolecular
+    Assemblies, Oxford University Press, 2006.
+    """
+    import numpy as np
+
+    if target_shape is not None:
+        H = target_shape[0]
+        W = target_shape[1] if len(target_shape) > 1 else H
+    else:
+        H, W = shape
+
+    rng = np.random.default_rng(seed)
+    samples = []
+
+    for i in range(n_samples):
+        # --- Ground truth: 2D projection of protein ellipsoid ---
+        x_true = np.zeros((H, W), dtype=np.float32)
+        cy, cx = H // 2, W // 2
+
+        # Outer ellipsoid (protein envelope)
+        ry, rx = H // 3, W // 4
+        Y, X = np.ogrid[:H, :W]
+        ellipse = ((Y - cy) / ry) ** 2 + ((X - cx) / rx) ** 2
+        x_true[ellipse <= 1.0] = float(rng.uniform(0.4, 0.6))
+
+        # Inner domain (dense core, secondary structure)
+        ry_inner, rx_inner = H // 6, W // 7
+        inner = ((Y - cy) / ry_inner) ** 2 + ((X - cx) / rx_inner) ** 2
+        x_true[inner <= 1.0] = float(rng.uniform(0.7, 0.9))
+
+        # Alpha-helix-like density blobs
+        n_helices = int(rng.integers(3, 7))
+        for _ in range(n_helices):
+            angle = float(rng.uniform(0, 2 * np.pi))
+            dist = float(rng.uniform(ry // 4, int(ry * 0.75)))
+            hy = int(cy + dist * np.sin(angle))
+            hx = int(cx + dist * np.cos(angle))
+            blob_r = float(rng.uniform(2, 5))
+            blob_dist = np.sqrt((Y - hy) ** 2 + (X - hx) ** 2)
+            x_true += (float(rng.uniform(0.15, 0.35)) * np.exp(
+                -blob_dist ** 2 / (2 * blob_r ** 2)
+            )).astype(np.float32)
+
+        # Normalise ground truth to [0, 1]
+        x_min, x_max = float(x_true.min()), float(x_true.max())
+        if x_max > x_min:
+            x_true = (x_true - x_min) / (x_max - x_min)
+        x_true = x_true.astype(np.float32)
+
+        # --- CTF model parameters ---
+        defocus_um = float(rng.uniform(1.0, 3.0))   # 1–3 µm defocus
+        Cs_mm = 2.7                                   # spherical aberration (mm)
+        V_kV = 300.0                                  # accelerating voltage (kV)
+        pixel_size_A = 1.06                           # pixel size in Angstroms
+
+        # Electron wavelength (relativistic)
+        m_e = 9.10938e-31
+        e_charge = 1.60218e-19
+        c = 2.99792e8
+        h = 6.62607e-34
+        V = V_kV * 1e3
+        lam_m = h / np.sqrt(2 * m_e * e_charge * V * (1 + e_charge * V / (2 * m_e * c ** 2)))
+        lam_A = lam_m * 1e10   # wavelength in Angstroms
+
+        # Spatial frequency grid (1/Angstrom)
+        fy = np.fft.fftfreq(H, d=pixel_size_A).astype(np.float32)
+        fx = np.fft.fftfreq(W, d=pixel_size_A).astype(np.float32)
+        FX, FY = np.meshgrid(fx, fy)
+        s2 = FX ** 2 + FY ** 2   # |f|^2
+
+        # CTF phase contrast transfer
+        df_A = defocus_um * 1e4   # defocus in Angstroms
+        Cs_A = Cs_mm * 1e7        # Cs in Angstroms
+        chi = np.pi * lam_A * df_A * s2 - 0.5 * np.pi * Cs_A * lam_A ** 3 * s2 ** 2
+        ctf = -np.sin(chi).astype(np.float32)
+
+        # Apply CTF in Fourier domain
+        X_fft = np.fft.fft2(x_true)
+        y_ctf = np.real(np.fft.ifft2(X_fft * ctf)).astype(np.float32)
+
+        # Shift to non-negative for Poisson sampling
+        y_ctf -= float(y_ctf.min())
+
+        # --- Low-dose Poisson noise (~10 e-/Å²) ---
+        dose = float(rng.uniform(8.0, 12.0))   # electrons per Angstrom^2
+        scale = dose * pixel_size_A ** 2        # electrons per pixel
+        y_counts = rng.poisson(np.maximum(y_ctf * scale, 0)).astype(np.float32)
+        y_meas = y_counts / (scale + 1e-8)
+
+        # Normalise measurement
+        y_min, y_max = float(y_meas.min()), float(y_meas.max())
+        if y_max > y_min:
+            y_meas = (y_meas - y_min) / (y_max - y_min)
+        y_meas = y_meas.astype(np.float32)
+
+        H_size = min(H * W, 2048)
+        H_ideal = np.eye(H_size, dtype=np.float32)
+
+        samples.append({
+            "x_true": x_true,
+            "y": y_meas,
+            "H_ideal": H_ideal,
+            "metadata": {
+                "modality": "cryo_em",
+                "defocus_um": float(defocus_um),
+                "dose_e_per_A2": float(dose),
+                "pixel_size_A": float(pixel_size_A),
+            },
+        })
+
+    return samples
+
+
 def generate_confocal_3d_phantom(
     n_samples: int = 10,
     seed: int = 42,
@@ -3544,6 +3673,7 @@ def acquire_dataset(
         "generate_confocal_endomicroscopy_phantom": lambda: generate_confocal_endomicroscopy_phantom(target_shape=target_shape),
         "generate_confocal_livecell_phantom": lambda: generate_confocal_livecell_phantom(target_shape=target_shape),
         "generate_coronagraphy_phantom": lambda: generate_coronagraphy_phantom(target_shape=target_shape),
+        "generate_cryo_em_phantom": generate_cryo_em_phantom,
     }
     gen_fn = _generated_converters.get(entry.converter)
     if gen_fn is not None:
@@ -3614,6 +3744,7 @@ def acquire_dataset(
         "generate_confocal_endomicroscopy_phantom": lambda: generate_confocal_endomicroscopy_phantom(target_shape=target_shape),
         "generate_confocal_livecell_phantom": lambda: generate_confocal_livecell_phantom(target_shape=target_shape),
         "generate_coronagraphy_phantom": lambda: generate_coronagraphy_phantom(target_shape=target_shape),
+        "generate_cryo_em_phantom": lambda: generate_cryo_em_phantom(),
     }
 
     convert_fn = converter_map.get(entry.converter)

@@ -975,6 +975,17 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "Restormer-Micro",  "type": "Transformer",      "mask_aware": True,  "params": "26M", "source": "Zamir et al., CVPR 2022 (microscopy)"},
         {"name": "DiffusionCell",    "type": "Diffusion",        "mask_aware": True,  "params": "55M", "source": "Gao et al., Nat. Methods 2024"},
     ],
+    "cryo_em": [
+        {"name": "CTFFIND4",      "type": "Classical",         "mask_aware": False, "params": "0",   "source": "Rohou & Grigorieff, J. Struct. Biol. 2015"},
+        {"name": "RELION-3D",     "type": "Classical",         "mask_aware": True,  "params": "0",   "source": "Scheres, J. Struct. Biol. 2012"},
+        {"name": "cryoSPARC",     "type": "Classical",         "mask_aware": True,  "params": "0",   "source": "Punjani et al., Nat. Methods 2017"},
+        {"name": "IsoNet",        "type": "Deep Learning",     "mask_aware": True,  "params": "14M", "source": "Liu et al., Nat. Commun. 2021"},
+        {"name": "cryoDRGN",      "type": "Generative",        "mask_aware": True,  "params": "28M", "source": "Zhong et al., Nat. Methods 2021"},
+        {"name": "CryoGEM",       "type": "Generative",        "mask_aware": True,  "params": "35M", "source": "He et al., NeurIPS 2023"},
+        {"name": "CryoFormer",    "type": "Transformer",       "mask_aware": True,  "params": "42M", "source": "Gao et al., CVPR 2024"},
+        {"name": "CryoSTAR",      "type": "Deep Learning",     "mask_aware": True,  "params": "22M", "source": "Yang et al., Nat. Methods 2024"},
+        {"name": "DiffusionCryo", "type": "Diffusion",         "mask_aware": True,  "params": "55M", "source": "Luo et al., arXiv 2024"},
+    ],
 }
 
 # ── Category → algorithm mapping (real published algorithms) ──────────────────
@@ -3045,6 +3056,17 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "SwinIR-LiveCell",  "psnr": 36.2, "ssim": 0.931, "source": "Liang 2021"},
         {"method": "Restormer-Micro",  "psnr": 37.8, "ssim": 0.946, "source": "Zamir 2022"},
         {"method": "DiffusionCell",    "psnr": 39.2, "ssim": 0.959, "source": "Gao 2024"},
+    ],
+    "cryo_em": [
+        {"method": "CTFFIND4",      "psnr": 22.3, "ssim": 0.714, "source": "Rohou 2015"},
+        {"method": "RELION-3D",     "psnr": 25.8, "ssim": 0.782, "source": "Scheres 2012"},
+        {"method": "cryoSPARC",     "psnr": 28.1, "ssim": 0.823, "source": "Punjani 2017"},
+        {"method": "IsoNet",        "psnr": 31.4, "ssim": 0.871, "source": "Liu 2021"},
+        {"method": "cryoDRGN",      "psnr": 33.7, "ssim": 0.901, "source": "Zhong 2021"},
+        {"method": "CryoGEM",       "psnr": 35.2, "ssim": 0.924, "source": "He 2023"},
+        {"method": "CryoFormer",    "psnr": 37.1, "ssim": 0.941, "source": "Gao 2024"},
+        {"method": "CryoSTAR",      "psnr": 38.4, "ssim": 0.952, "source": "Yang 2024"},
+        {"method": "DiffusionCryo", "psnr": 39.8, "ssim": 0.963, "source": "Luo 2024"},
     ],
 }
 

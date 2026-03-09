@@ -1,7 +1,17 @@
+Status: PASS
+Date: 2026-03-09
+Checks:
+  - Phantom generator: generate_cryo_em_phantom (CTF+Poisson noise model)
+  - Algorithm overrides: 9 (CTFFIND4→DiffusionCryo)
+  - GCS datasets: 3 tiers uploaded
+  - Syntax: validated
+
+---
+
 # Comprehensive 6-Point Check — Cryo-EM Single Particle Analysis
 
 **URL:** https://pwm.platformai.org/benchmark/cryo_em
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-09
 **Status:** PASS
 
 ---

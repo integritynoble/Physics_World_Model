@@ -1135,6 +1135,21 @@ DATASET_REGISTRY: Dict[str, DatasetEntry] = {
         x_shape=[64, 64],
         notes="Synthetic coronagraphic focal-plane phantom with stellar speckles and planet companions",
     ),
+    "cryo_em_generated": DatasetEntry(
+        id="cryo_em_generated",
+        name="Cryo-EM Single-Particle Phantom (Synthetic)",
+        source_type="generated",
+        url="",
+        format="npy",
+        citation="Synthetic phantom based on Frank, Three-Dimensional Electron Microscopy, 2006",
+        license="synthetic",
+        size_mb=1.0,
+        storage="local",
+        applies_to=["cryo_em"],
+        converter="generate_cryo_em_phantom",
+        x_shape=[64, 64],
+        notes="Synthetic cryo-EM single-particle phantom with CTF corruption and low-dose noise",
+    ),
 }
 
 
