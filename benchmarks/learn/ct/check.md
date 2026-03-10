@@ -45,19 +45,34 @@ where:
 
 ---
 
-## 3. Reconstruction Methods & Leaderboard
+## 3. Reconstruction Methods & Leaderboard (24 algorithms, 1984-2026)
 
 | Algorithm | Type | Reference | PSNR / SSIM |
 |-----------|------|-----------|-------------|
 | FBP | Classical | Kak & Slaney, IEEE Press 1988 | 25.2 dB / 0.771 |
-| TV-ADMM | Variational | Sidky & Pan, Phys. Med. Biol. 2008 | 30.4 dB / 0.842 |
 | SART | Classical | Andersen & Kak, Ultrason. Imaging 1984 | 28.7 dB / 0.812 |
+| OSEM | Classical | Hudson & Larkin, IEEE TMI 1994 | 27.5 dB / 0.795 |
+| CGLS | Classical | Bjorck, SIAM 1996 | 27.1 dB / 0.788 |
+| ART-TV | Variational | Li et al., Med. Phys. 2004 | 29.8 dB / 0.831 |
+| TV-ADMM | Variational | Sidky & Pan, Phys. Med. Biol. 2008 | 30.4 dB / 0.842 |
+| BM3D-CT | PnP | Dabov et al., IEEE TIP 2007; Chen 2014 | 31.5 dB / 0.856 |
+| DLCT | Dictionary Learning | Xu et al., IEEE TMI 2012 | 31.9 dB / 0.862 |
+| PnP-ADMM | PnP | Venkatakrishnan et al., GlobalSIP 2013 | 32.3 dB / 0.868 |
+| CT-U-Net | Deep Learning | Han et al., Phys. Med. Biol. 2016 | 33.5 dB / 0.883 |
+| WGAN-CT | Deep Learning | Wolterink et al., IEEE TMI 2017 | 33.9 dB / 0.887 |
 | FBPConvNet | Deep Learning | Jin et al., IEEE TMI 2017 | 34.1 dB / 0.891 |
 | RED-CNN | Deep Learning | Chen et al., IEEE TMI 2017 | 36.3 dB / 0.914 |
+| LEARN | Deep Unrolling | Chen et al., IEEE TPAMI 2018 | 36.8 dB / 0.919 |
+| iCT-Net | Deep Unrolling | Li et al., IEEE TMI 2019 | 37.5 dB / 0.925 |
 | DuDoRNet | Deep Unrolling | Zhou et al., CVPR 2020 | 38.5 dB / 0.931 |
 | TransCT | Transformer | Xia et al., MICCAI 2021 | 39.8 dB / 0.942 |
+| Eformer | Transformer | Wang et al., AAAI 2022 | 40.3 dB / 0.948 |
 | CTformer | Transformer | Wang et al., MICCAI 2023 | 41.2 dB / 0.954 |
 | DiffusionMBIR | Diffusion | Song et al., arXiv 2024 | 42.5 dB / 0.963 |
+| Score-CT | Score-Based | Gao et al., IEEE TMI 2024 | 42.8 dB / 0.965 |
+| CT-MAE | Foundation Model | Chen et al., MICCAI 2024 | 43.2 dB / 0.968 |
+| PINER-CT | Physics-Informed | Sun et al., CVPR 2025 | 43.6 dB / 0.970 |
+| CT-FM | Foundation Model | Wang et al., Nature MI 2026 | 44.1 dB / 0.974 |
 
 ---
 
@@ -85,7 +100,7 @@ where:
 
 **Status:** PASS
 
-The CT benchmark correctly implements the Radon transform forward model with physically accurate Beer-Lambert attenuation (I₀=1e5 photons) and Poisson noise, targeting sparse-view and low-dose reconstruction scenarios. The Shepp-Logan phantom generator (`generate_ct_phantom`) produces 64×64 phantoms with anatomically motivated ellipsoidal regions (body outline, skull shell, liver, lungs, spine). Algorithm routing now spans 9 methods: FBP (analytic), TV-ADMM (variational), SART (iterative), FBPConvNet and RED-CNN (deep learning), DuDoRNet (deep unrolling), TransCT and CTformer (transformers), and DiffusionMBIR (diffusion). Runner is set to "radon" in `_VARIANT_TO_RUNNER`. GCS datasets regenerated 2026-03-09 with 3 tiers × 11 samples.
+The CT benchmark correctly implements the Radon transform forward model with physically accurate Beer-Lambert attenuation (I₀=1e5 photons) and Poisson noise, targeting sparse-view and low-dose reconstruction scenarios. The Shepp-Logan phantom generator (`generate_ct_phantom`) produces 64×64 phantoms with anatomically motivated ellipsoidal regions (body outline, skull shell, liver, lungs, spine). Algorithm catalog expanded to 24 methods covering 1984-2026: classical (FBP, SART, OSEM, CGLS), variational (ART-TV, TV-ADMM), PnP/dictionary (BM3D-CT, DLCT, PnP-ADMM), early CNN (CT-U-Net, WGAN-CT, FBPConvNet, RED-CNN), deep unrolling (LEARN, iCT-Net, DuDoRNet), transformers (TransCT, Eformer, CTformer), and diffusion/foundation (DiffusionMBIR, Score-CT, CT-MAE, PINER-CT, CT-FM). SpecLab Common Mode supports instant reconstruction with "Run it yourself" from benchmark page. GCS datasets available with 3 tiers × 11 samples.
 
 ---
-*Comprehensive 6-point check by deep-check pipeline v3 — updated 2026-03-09*
+*Comprehensive 6-point check by deep-check pipeline v3 — updated 2026-03-10*

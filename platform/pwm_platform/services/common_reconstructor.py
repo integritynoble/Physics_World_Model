@@ -78,16 +78,46 @@ def _load_sample(h5_path: Path, sample_idx: int = 0) -> dict:
     return data
 
 
+def _to_2d_display(arr: np.ndarray) -> np.ndarray:
+    """Reduce an arbitrary-shaped array to a 2D (H, W) or (H, W, 3) image for display.
+
+    Handles: 1D vectors, 2D images, 3D cubes (spectral, temporal, multi-channel),
+    and 4D+ tensors by collapsing extra dimensions.
+    """
+    arr = np.squeeze(arr)
+
+    if arr.ndim == 1:
+        side = int(np.ceil(np.sqrt(arr.size)))
+        padded = np.zeros(side * side)
+        padded[:arr.size] = arr
+        return padded.reshape(side, side)
+
+    if arr.ndim == 2:
+        return arr
+
+    if arr.ndim == 3:
+        # Channel-first: (C, H, W) → (H, W, C)
+        if arr.shape[0] <= 4 and arr.shape[1] > 4 and arr.shape[2] > 4:
+            arr = np.moveaxis(arr, 0, -1)
+        c = arr.shape[-1]
+        if c == 1:
+            return arr[:, :, 0]
+        if c == 3:
+            return arr  # RGB
+        # Multi-channel (e.g. 28-band spectral): take mean across channels
+        return np.mean(arr, axis=-1)
+
+    # 4D+: collapse all but last two spatial dims
+    while arr.ndim > 2:
+        arr = np.mean(arr, axis=0)
+    return arr
+
+
 def _numpy_to_png_b64(arr: np.ndarray) -> str:
-    """Convert a 2D numpy array to base64-encoded PNG."""
+    """Convert an arbitrary numpy array to base64-encoded PNG."""
     from PIL import Image
 
-    # Normalize to [0, 255]
-    arr = np.squeeze(arr)
-    if arr.ndim == 3 and arr.shape[-1] == 1:
-        arr = arr[:, :, 0]
-    if arr.ndim == 3 and arr.shape[0] in (1, 3):
-        arr = np.moveaxis(arr, 0, -1)
+    arr = _to_2d_display(arr)
 
     arr_f = arr.astype(np.float64)
     lo, hi = np.percentile(arr_f, [1, 99])
@@ -96,15 +126,20 @@ def _numpy_to_png_b64(arr: np.ndarray) -> str:
     else:
         arr_f = np.clip(arr_f, 0, 1)
 
-    img = Image.fromarray((arr_f * 255).astype(np.uint8))
+    if arr_f.ndim == 3 and arr_f.shape[-1] == 3:
+        img = Image.fromarray((arr_f * 255).astype(np.uint8), mode="RGB")
+    else:
+        img = Image.fromarray((arr_f * 255).astype(np.uint8), mode="L")
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     return base64.b64encode(buf.getvalue()).decode("ascii")
 
 
 def _compute_psnr(x_true: np.ndarray, x_recon: np.ndarray) -> float:
-    x_true_f = x_true.astype(np.float64)
-    x_recon_f = x_recon.astype(np.float64)
+    x_true_f = _to_2d_display(x_true).astype(np.float64)
+    x_recon_f = _to_2d_display(x_recon).astype(np.float64)
+    if x_true_f.shape != x_recon_f.shape:
+        return 0.0
     mse = np.mean((x_true_f - x_recon_f) ** 2)
     if mse < 1e-12:
         return 60.0
@@ -117,13 +152,17 @@ def _compute_psnr(x_true: np.ndarray, x_recon: np.ndarray) -> float:
 def _compute_ssim(x_true: np.ndarray, x_recon: np.ndarray) -> float:
     try:
         from skimage.metrics import structural_similarity
-        x_true_f = x_true.astype(np.float64).squeeze()
-        x_recon_f = x_recon.astype(np.float64).squeeze()
+        x_true_f = _to_2d_display(x_true).astype(np.float64)
+        x_recon_f = _to_2d_display(x_recon).astype(np.float64)
+        if x_true_f.shape != x_recon_f.shape:
+            return 0.0
         dr = x_true_f.max() - x_true_f.min()
         if dr < 1e-12:
             dr = 1.0
-        return float(structural_similarity(x_true_f, x_recon_f, data_range=dr))
-    except ImportError:
+        mc = x_true_f.ndim == 3 and x_true_f.shape[-1] == 3
+        return float(structural_similarity(x_true_f, x_recon_f, data_range=dr,
+                                           channel_axis=2 if mc else None))
+    except (ImportError, ValueError):
         return 0.0
 
 
@@ -160,11 +199,8 @@ def _run_classical_recon(
         except np.linalg.LinAlgError:
             pass
 
-    # Fallback: return measurement resized as pseudo-reconstruction
-    side = int(np.sqrt(y.size))
-    if side * side != y.size:
-        side = max(y.shape[-2:]) if y.ndim >= 2 else 64
-    return y.reshape(y.shape[:2]) if y.ndim >= 2 else y.flatten()[:side * side].reshape(side, side)
+    # Fallback: return measurement reduced to 2D as pseudo-reconstruction
+    return _to_2d_display(y)
 
 
 async def run_common_reconstruction(
