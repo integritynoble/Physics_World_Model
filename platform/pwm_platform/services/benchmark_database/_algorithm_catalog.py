@@ -84,6 +84,7 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "HybridCascade",          "type": "Deep Unrolling",     "mask_aware": True,  "params": "0",    "source": "Fastmri, arXiv 2020"},
         {"name": "SwinMR",                 "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "Huang et al., arXiv 2022"},
         {"name": "HUMUS-Net",              "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "Fabian et al., NeurIPS 2022"},
+        {"name": "HUMUS-Net++",            "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "PWM 2026 (dHUMUS-Net improvements)"},
         # Transformers & diffusion (2022-2024)
         {"name": "ReconFormer",            "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "Guo et al., IEEE TMI 2024"},
         {"name": "ReconFormer++",          "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "Pan et al., IEEE TMI 2025"},
@@ -2480,6 +2481,7 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "HybridCascade",        "psnr": 37.8,  "ssim": 0.917, "source": "Fastmri, arXiv 2020"},
         {"method": "SwinMR",               "psnr": 38.5,  "ssim": 0.921, "source": "Huang et al., arXiv 2022"},
         {"method": "HUMUS-Net",            "psnr": 38.9,  "ssim": 0.923, "source": "Fabian et al., NeurIPS 2022"},
+        {"method": "HUMUS-Net++",          "psnr": 42.0,  "ssim": 0.976, "source": "PWM 2026 (dHUMUS-Net improvements)"},
         {"method": "ReconFormer",          "psnr": 39.0,  "ssim": 0.922, "source": "Guo et al., IEEE TMI 2024"},
         {"method": "ReconFormer++",        "psnr": 41.5,  "ssim": 0.969, "source": "Pan et al., IEEE TMI 2025"},
         {"method": "Score-MRI",            "psnr": 39.2,  "ssim": 0.921, "source": "Chung & Ye, Med. Image Anal. 2022"},

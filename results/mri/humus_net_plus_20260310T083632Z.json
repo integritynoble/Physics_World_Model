@@ -1,0 +1,122 @@
+{
+  "timestamp": "20260310T083632Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "fbp",
+    "inr_dc",
+    "humus_net_plus"
+  ],
+  "gpu": "T4",
+  "method": "HUMUS-Net++",
+  "improvements": [
+    "Radon-domain DC per unrolled stage (n_stages=3: 100+100+50 steps)",
+    "Dynamic stage weights via learnable log_w[s] (dHUMUS-Net analogue)",
+    "SIREN INR coordinate head (continuous image representation)",
+    "Joint MSE + differentiable SSIM pre-training loss (\u03b1=0.5)",
+    "Progressive LR warm-restart: 3e-4\u21921e-4, 1e-4\u21923e-5, 3e-5\u21921e-5"
+  ],
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "fbp",
+      "psnr_db": 15.4911,
+      "ssim": 0.3077,
+      "consistency": 0.7164,
+      "score": 0.3212,
+      "time_s": 1.77
+    },
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "inr_dc",
+      "psnr_db": 26.5331,
+      "ssim": 0.4892,
+      "consistency": 0.9078,
+      "score": 0.5426,
+      "time_s": 15.5
+    },
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "humus_net_plus",
+      "psnr_db": 27.0111,
+      "ssim": 0.6616,
+      "consistency": 0.9254,
+      "score": 0.6198,
+      "time_s": 21.14
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "fbp",
+      "psnr_db": 16.7569,
+      "ssim": 0.3347,
+      "consistency": 0.7162,
+      "score": 0.3447,
+      "time_s": 0.09
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "inr_dc",
+      "psnr_db": 27.8808,
+      "ssim": 0.5028,
+      "consistency": 0.9109,
+      "score": 0.5621,
+      "time_s": 12.49
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "humus_net_plus",
+      "psnr_db": 28.1235,
+      "ssim": 0.6779,
+      "consistency": 0.9374,
+      "score": 0.6399,
+      "time_s": 20.32
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "fbp",
+      "psnr_db": 16.2897,
+      "ssim": 0.324,
+      "consistency": 0.7151,
+      "score": 0.3355,
+      "time_s": 0.1
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "inr_dc",
+      "psnr_db": 26.076,
+      "ssim": 0.4256,
+      "consistency": 0.9144,
+      "score": 0.5139,
+      "time_s": 12.29
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "humus_net_plus",
+      "psnr_db": 27.8853,
+      "ssim": 0.6782,
+      "consistency": 0.9322,
+      "score": 0.6366,
+      "time_s": 19.68
+    }
+  ]
+}
