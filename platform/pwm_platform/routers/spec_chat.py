@@ -125,6 +125,69 @@ async def system_recommend(
     })
 
 
+# ── Common-mode reconstruction endpoint ──────────────────────────────────
+# MUST be registered before /{variant_key} to avoid route shadowing.
+
+
+@router.post("/reconstruct-common", response_class=HTMLResponse)
+async def reconstruct_common(
+    request: Request,
+    modality: str = Form(...),
+    algorithm: str = Form(...),
+    measurement_file: Optional[UploadFile] = File(None),
+    matrix_file: Optional[UploadFile] = File(None),
+):
+    """Run common-mode reconstruction (no login required for standard data)."""
+    import numpy as np
+
+    from pwm_platform.services.common_reconstructor import run_common_reconstruction
+
+    # Parse user uploads if provided
+    user_measurement = None
+    user_matrix = None
+
+    if measurement_file and measurement_file.filename:
+        try:
+            content = await measurement_file.read()
+            import io as _io
+            user_measurement = np.load(_io.BytesIO(content))
+        except Exception as exc:
+            logger.warning("Failed to load measurement file: %s", exc)
+            return HTMLResponse(
+                '<div class="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">'
+                f'Failed to load measurement file: {exc}</div>',
+                status_code=200,
+            )
+
+    if matrix_file and matrix_file.filename:
+        try:
+            content = await matrix_file.read()
+            import io as _io
+            user_matrix = np.load(_io.BytesIO(content))
+        except Exception as exc:
+            logger.warning("Failed to load matrix file: %s", exc)
+
+    try:
+        result = await run_common_reconstruction(
+            variant_key=modality,
+            algorithm_name=algorithm,
+            user_measurement=user_measurement,
+            user_matrix=user_matrix,
+        )
+    except Exception as exc:
+        logger.error("Common reconstruction error: %s", exc, exc_info=True)
+        return HTMLResponse(
+            '<div class="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">'
+            f'Reconstruction failed: {type(exc).__name__}: {exc}</div>',
+            status_code=200,
+        )
+
+    return templates.TemplateResponse("_spec_common_result.html", {
+        "request": request,
+        "result": result,
+    })
+
+
 @router.post("/{variant_key}", response_class=HTMLResponse)
 async def chat_message(
     request: Request,
@@ -689,3 +752,27 @@ async def download_example_dataset(key: str, role: str):
         media_type="application/octet-stream",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+# ── Algorithm list endpoint (HTMX) ──────────────────────────────────────
+
+
+@router.get("/algorithms/{variant_key}", response_class=HTMLResponse)
+async def get_variant_algorithms(variant_key: str):
+    """Return algorithm <option> tags for a variant (HTMX population)."""
+    from pwm_platform.services.benchmark_database import get_variant
+    from pwm_platform.services.benchmark_database._algorithm_catalog import get_algorithms
+
+    variant = get_variant(variant_key)
+    if variant is None:
+        return HTMLResponse('<option value="">Unknown modality</option>')
+
+    category = variant.get("category", "compressive")
+    algos = get_algorithms(variant_key, category)
+    options = "".join(
+        f'<option value="{a["name"]}">{a["name"]} ({a["type"]})</option>'
+        for a in algos
+    )
+    return HTMLResponse(options or '<option value="">No algorithms available</option>')
+
+

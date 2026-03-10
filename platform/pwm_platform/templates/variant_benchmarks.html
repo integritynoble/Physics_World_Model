@@ -263,7 +263,21 @@
                                 {% elif entry.rank == 3 %}<span class="text-lg">&#129353;</span>
                                 {% else %}<span class="font-bold text-gray-500">{{ entry.rank }}</span>{% endif %}
                             </td>
-                            <td class="px-4 py-3 font-semibold text-gray-800">{{ entry.method }}</td>
+                            <td class="px-4 py-3 font-semibold text-gray-800 relative group">
+                                {{ entry.method }}
+                                <div class="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-150 absolute left-0 top-full mt-1 z-50 w-72 bg-white shadow-xl rounded-lg border border-gray-200 p-4 text-left">
+                                    <p class="text-sm font-bold text-gray-900">{{ entry.method }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ entry.source }}</p>
+                                    <div class="mt-2 flex gap-3 text-xs">
+                                        <span class="text-green-700 font-mono">{{ entry.psnr }} dB</span>
+                                        <span class="text-blue-700 font-mono">SSIM {{ "%.3f" | format(entry.ssim) }}</span>
+                                    </div>
+                                    <a href="/speclab?mode=common&modality={{ variant_key }}&algorithm={{ entry.method | urlencode }}"
+                                       class="mt-3 block w-full text-center px-3 py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg hover:bg-indigo-700 no-underline">
+                                        Run it yourself &rarr;
+                                    </a>
+                                </div>
+                            </td>
                             <td class="px-4 py-3 text-right font-mono text-lg font-bold text-indigo-800">{{ "%.3f" | format(entry.score) }}</td>
                             <td class="px-4 py-3 text-right font-mono text-gray-700">{{ entry.psnr }}</td>
                             <td class="px-4 py-3 text-right font-mono text-gray-700">{{ "%.3f" | format(entry.ssim) }}</td>
@@ -309,7 +323,18 @@
                                 {% elif entry.rank == 3 %}<span class="text-lg">&#129353;</span>
                                 {% else %}<span class="font-bold text-gray-500">{{ entry.rank }}</span>{% endif %}
                             </td>
-                            <td class="px-4 py-3 font-semibold text-gray-800">{{ entry.method }}</td>
+                            <td class="px-4 py-3 font-semibold text-gray-800 relative group">
+                                {{ entry.method }}
+                                <div class="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-150 absolute left-0 top-full mt-1 z-50 w-72 bg-white shadow-xl rounded-lg border border-gray-200 p-4 text-left">
+                                    <p class="text-sm font-bold text-gray-900">{{ entry.method }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ entry.source }}</p>
+                                    <div class="mt-2 text-xs text-amber-700 font-mono">Score {{ "%.3f" | format(entry.overall_score) }}</div>
+                                    <a href="/speclab?mode=common&modality={{ variant_key }}&algorithm={{ entry.method | urlencode }}"
+                                       class="mt-3 block w-full text-center px-3 py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg hover:bg-indigo-700 no-underline">
+                                        Run it yourself &rarr;
+                                    </a>
+                                </div>
+                            </td>
                             <td class="px-4 py-3 text-right font-mono text-lg font-bold text-amber-800">{{ "%.3f" | format(entry.overall_score) }}</td>
                             {% for tier_key, tier_color in [('public', 'green'), ('dev', 'amber'), ('hidden', 'purple')] %}
                             {% set score_key = tier_key ~ '_score' %}

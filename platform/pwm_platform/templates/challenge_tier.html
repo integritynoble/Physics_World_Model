@@ -103,12 +103,12 @@
                 <h3 class="text-sm font-semibold text-gray-700 text-center">Reconstruction</h3>
                 <div class="space-y-2">
                     <div>
-                        <img src="{{ data_preview.base_url }}/recon_I_view1.png" alt="Recon {{ data_preview.view1_label }}"
+                        <img src="{{ data_preview.recon_base_url }}/recon_I_view1.png" alt="Recon {{ data_preview.view1_label }}"
                              loading="lazy" class="w-full rounded-lg border-2 border-green-200">
                         <p class="text-xs text-gray-500 text-center mt-1">{{ data_preview.view1_label }}</p>
                     </div>
                     <div>
-                        <img src="{{ data_preview.base_url }}/recon_I_view2.png" alt="Recon {{ data_preview.view2_label }}"
+                        <img src="{{ data_preview.recon_base_url }}/recon_I_view2.png" alt="Recon {{ data_preview.view2_label }}"
                              loading="lazy" class="w-full rounded-lg border-2 border-green-200">
                         <p class="text-xs text-gray-500 text-center mt-1">{{ data_preview.view2_label }}</p>
                     </div>
@@ -140,12 +140,12 @@
                 <h3 class="text-sm font-semibold text-gray-700 text-center">Reconstruction</h3>
                 <div class="space-y-2">
                     <div>
-                        <img src="{{ data_preview.base_url }}/recon_I_view1.png" alt="Recon {{ data_preview.view1_label }}"
+                        <img src="{{ data_preview.recon_base_url }}/recon_I_view1.png" alt="Recon {{ data_preview.view1_label }}"
                              loading="lazy" class="w-full rounded-lg border-2 border-amber-200">
                         <p class="text-xs text-gray-500 text-center mt-1">{{ data_preview.view1_label }}</p>
                     </div>
                     <div>
-                        <img src="{{ data_preview.base_url }}/recon_I_view2.png" alt="Recon {{ data_preview.view2_label }}"
+                        <img src="{{ data_preview.recon_base_url }}/recon_I_view2.png" alt="Recon {{ data_preview.view2_label }}"
                              loading="lazy" class="w-full rounded-lg border-2 border-amber-200">
                         <p class="text-xs text-gray-500 text-center mt-1">{{ data_preview.view2_label }}</p>
                     </div>
@@ -179,7 +179,7 @@
                      class="w-full rounded-lg border-2 border-indigo-300">
                 {% else %}
                 <h3 class="text-sm font-semibold text-gray-700 text-center">Reconstruction</h3>
-                <img src="{{ data_preview.base_url }}/recon_I.png" alt="Reconstruction"
+                <img src="{{ data_preview.recon_base_url }}/recon_I.png" alt="Reconstruction"
                      loading="lazy"
                      class="w-full rounded-lg border-2 border-green-200">
                 {% endif %}
@@ -212,7 +212,7 @@
                      class="w-full rounded-lg border-2 border-indigo-300">
                 {% else %}
                 <h3 class="text-sm font-semibold text-gray-700 text-center">Reconstruction</h3>
-                <img src="{{ data_preview.base_url }}/recon_I.png" alt="Baseline reconstruction"
+                <img src="{{ data_preview.recon_base_url }}/recon_I.png" alt="Baseline reconstruction"
                      loading="lazy"
                      class="w-full rounded-lg border-2 border-amber-200">
                 {% endif %}
