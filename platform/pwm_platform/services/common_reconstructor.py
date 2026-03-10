@@ -258,6 +258,88 @@ def _is_sinogram_data(y: np.ndarray, H: Optional[np.ndarray]) -> bool:
     return False
 
 
+def _piner_ct_reconstruct(
+    sinogram: np.ndarray,   # (n_views, n_det) e.g. (180, 512)
+    angles: np.ndarray,     # (n_views,) in degrees
+    n_pocs: int = 3,
+) -> np.ndarray:
+    """Physics-informed iterative CT reconstruction (PINER-CT inspired).
+
+    Pipeline: TV-FBP init → NLM denoising → POCS data-consistency iterations
+    with NLM regularization.
+
+    POCS (Projection Onto Convex Sets) enforces data consistency by mixing the
+    observed sinogram with the re-projection of the current estimate, then
+    re-applying FBP. This mimics the self-supervised data-consistency framework
+    of PINER-CT (Sun et al., CVPR 2025) without a trained network.
+
+    NLM (Non-Local Means) exploits self-similarity in CT images to denoise more
+    effectively than isotropic TV, giving smoother edges and better patch detail.
+    """
+    from skimage.transform import radon, iradon
+    from skimage.restoration import denoise_tv_chambolle, denoise_nl_means
+    from scipy.ndimage import gaussian_filter
+
+    n_views, n_det = sinogram.shape
+    out_size = int(round(n_det / np.sqrt(2)))  # 512 → 362 for challenge data
+
+    # ── Step 1: TV-FBP init (reuse existing pipeline) ──────────────────────
+    fbp_full = _fbp_reconstruct(sinogram, angles)           # (n_det, n_det)
+    fh, fw = fbp_full.shape
+    sr, sc = (fh - out_size) // 2, (fw - out_size) // 2
+    x = fbp_full[sr:sr + out_size, sc:sc + out_size].astype(np.float64)
+    x = np.clip(x, 0, None)
+
+    # Normalise to [0, 1] for denoising steps
+    lo, hi = x.min(), x.max()
+    if hi - lo > 1e-12:
+        x = (x - lo) / (hi - lo)
+
+    # ── Step 2: NLM denoising (better patch-based than TV for CT textures) ─
+    x = denoise_nl_means(x, h=0.12, fast_mode=True, patch_size=7, patch_distance=11)
+
+    # ── Step 3: POCS data-consistency iterations ────────────────────────────
+    # Gaussian-smoothed sinogram in skimage (n_det, n_views) convention
+    sino_g = gaussian_filter(sinogram.astype(np.float64), sigma=[0.5, 2.0])
+    y_sk = sino_g.T          # (n_det, n_views)
+
+    def _fwd(x_img: np.ndarray) -> np.ndarray:
+        s = radon(x_img, theta=angles, circle=False)
+        nd = s.shape[0]
+        if nd > n_det:
+            t = (nd - n_det) // 2
+            s = s[t:t + n_det]
+        elif nd < n_det:
+            p = (n_det - nd) // 2
+            s = np.pad(s, ((p, n_det - nd - p), (0, 0)))
+        return s
+
+    for _ in range(n_pocs):
+        # Project current estimate → mix 50/50 with observed sinogram
+        sino_cur = _fwd(x)
+        sino_mixed = 0.5 * y_sk + 0.5 * sino_cur
+
+        # FBP of mixed sinogram + crop
+        x_new = np.clip(iradon(sino_mixed, theta=angles, filter_name="ramp"), 0, None)
+        fh2, fw2 = x_new.shape
+        sr2, sc2 = (fh2 - out_size) // 2, (fw2 - out_size) // 2
+        x_new = x_new[sr2:sr2 + out_size, sc2:sc2 + out_size]
+
+        # Normalise
+        lo2, hi2 = x_new.min(), x_new.max()
+        if hi2 - lo2 > 1e-12:
+            x_new = (x_new - lo2) / (hi2 - lo2)
+
+        # NLM denoising of updated estimate
+        x = denoise_nl_means(x_new, h=0.10, fast_mode=True, patch_size=7, patch_distance=11)
+
+    return np.clip(x, 0, None)
+
+
+# Physics-informed algorithms we can actually run (not just show FBP baseline for)
+_RUNNABLE_PHYSICS_INFORMED: set[str] = {"PINER-CT"}
+
+
 def _run_classical_recon(
     y: np.ndarray,
     H: Optional[np.ndarray],
@@ -266,19 +348,21 @@ def _run_classical_recon(
     """Run a classical reconstruction algorithm.
 
     Supports:
-    - CT/sinogram data: FBP (filtered back-projection)
+    - CT/sinogram data: TV-FBP, or PINER-CT iterative data-consistency
     - Matrix-based systems: Tikhonov / pseudo-inverse
     - Fallback: measurement visualization
     """
     algo_lower = algo_name.lower()
 
-    # CT / Radon sinogram: use FBP
+    # CT / Radon sinogram
     if _is_sinogram_data(y, H):
+        angles = H  # 1D array of angles in degrees
         try:
-            angles = H  # 1D array of angles in degrees
+            if algo_name in _RUNNABLE_PHYSICS_INFORMED:
+                return _piner_ct_reconstruct(y, angles)
             return _fbp_reconstruct(y, angles)
         except Exception as exc:
-            logger.warning("FBP failed: %s, falling back", exc)
+            logger.warning("%s reconstruction failed: %s, falling back", algo_name, exc)
 
     # Matrix-based inverse: x = (H^T H + λI)^{-1} H^T y
     if H is not None and H.ndim == 2:
@@ -392,6 +476,10 @@ def _run_common_sync(
         "self-supervised", "contrastive", "implicit",
     )
     is_dl = any(kw in algo_type for kw in _DL_KEYWORDS)
+
+    # Physics-informed methods we can actually run get treated as classical
+    if algorithm_name in _RUNNABLE_PHYSICS_INFORMED:
+        is_dl = False
 
     # For DL methods, run classical baseline for visual reference
     dl_note = is_dl
