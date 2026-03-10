@@ -98,12 +98,21 @@ where:
 
 ## 5. Local Dataset & GCS Status
 
-**GCS datasets:**
+**Benchmark datasets (NEW — k-space Fourier forward model, M4Raw real multi-coil):**
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/mri/public/mri_challenge_public.h5` (12 samples)
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/mri/dev/mri_challenge_dev.h5` (20 samples)
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/mri/hidden/mri_challenge_hidden.h5` (20 samples)
+- Local: `datasets/benchmark/mri/{public,dev,hidden}/`
+- Source: M4Raw (Lyu et al., Scientific Data 2023) — 3 patients, T1+T2, 4-coil, 256×256
+- Forward model: y = U_Omega * kspace + n (Cartesian k-space undersampling)
+- CPU baseline: Zero-Filled IFFT — public avg ~22 dB / 0.78 SSIM
+
+**Legacy datasets (Radon+Poisson forward model):**
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/mri_challenge_public.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/mri_challenge_dev.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/mri_challenge_hidden.h5`
 
-**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/mri/`.
+**Gallery images:** Served from local static at `static/img/benchmark_gallery/mri/`.
 
 ---
 
