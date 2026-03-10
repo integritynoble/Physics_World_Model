@@ -1,0 +1,4 @@
+tier,scene,scene_name,algo,psnr_db,ssim,consistency,score,time_s
+public,sample_00,scene_00,humus_net_v2,30.8248,0.8493,0.9197,0.7319,27.71
+public,sample_01,scene_01,humus_net_v2,32.2104,0.855,0.9295,0.75,21.81
+public,sample_02,scene_02,humus_net_v2,31.6793,0.8634,0.9209,0.7463,21.95
