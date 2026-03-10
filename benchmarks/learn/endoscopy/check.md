@@ -74,12 +74,31 @@ where:
 
 ## 5. Local Dataset & GCS Status
 
-**GCS datasets:**
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/endoscopy_challenge_public.h5`
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/endoscopy_challenge_dev.h5`
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/endoscopy_challenge_hidden.h5`
+**Local benchmark dataset:** `datasets/benchmark/endoscopy/`
+- `generate_dataset.py` -- full pipeline: phantom generation, forward model, CPU reconstruction, HDF5 + gallery
+- `public/` -- 12 samples (4 normal mucosa + 4 vessel-rich + 4 fold/rugae), mean PSNR=15.35 dB, SSIM=0.297
+- `dev/` -- 20 samples (augmented + polyps, wider mismatch), mean PSNR=13.70 dB, SSIM=0.266
+- `hidden/` -- 20 samples (adversarial + ulcers + extreme degradations), mean PSNR=10.60 dB, SSIM=0.175
 
-**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/endoscopy/`.
+**Forward model:** `y = V(r) * D[H * x] + specular + noise`
+- D = barrel distortion (Brown-Conrady, k1 up to 0.3)
+- V(r) = cos^4 vignetting (strength up to 0.6)
+- H = Gaussian blur PSF (sigma up to 4.0 px)
+- specular = bright highlight spots (fraction up to 0.15)
+- noise = Gaussian sensor noise (sigma up to 0.08)
+
+**CPU reconstruction:** Specular clip + inverse barrel distortion + vignetting compensation + Wiener deconvolution + TV denoise
+
+**HDF5 fields per sample:** x_true (256,256), image_ideal (256,256), image_measured (256,256), reconstruction (256,256)
+
+**GCS datasets:**
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/endoscopy/endoscopy_challenge_public.h5`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/endoscopy/endoscopy_challenge_dev.h5`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/endoscopy/endoscopy_challenge_hidden.h5`
+
+**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/endoscopy/` (4 scenes, 6 images each).
+
+**Generated:** 2026-03-10
 
 ---
 
