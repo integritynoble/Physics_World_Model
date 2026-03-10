@@ -277,14 +277,16 @@ def _run_common_sync(
 
     # Run reconstruction
     algo_type = algo_info.get("type", "").lower()
-    is_dl = any(kw in algo_type for kw in ("deep", "transformer", "diffusion", "gan"))
+    _DL_KEYWORDS = (
+        "deep", "transformer", "diffusion", "gan", "score",
+        "foundation", "physics-informed", "neural", "autoencoder",
+        "self-supervised", "contrastive", "implicit",
+    )
+    is_dl = any(kw in algo_type for kw in _DL_KEYWORDS)
 
     if is_dl:
         # DL methods: show expected score from catalog, return measurement as placeholder
         x_recon = y.copy()
-        if x_recon.ndim >= 2:
-            # Just use the measurement visualization
-            pass
         dl_note = True
     else:
         x_recon = _run_classical_recon(y, H, algorithm_name)
