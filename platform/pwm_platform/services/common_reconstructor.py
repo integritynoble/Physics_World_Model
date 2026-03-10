@@ -282,6 +282,15 @@ def _run_classical_recon(
     return _to_2d_display(y)
 
 
+def _pick_baseline_name(y: np.ndarray, H: Optional[np.ndarray]) -> str:
+    """Return the name of the classical baseline used for DL method illustration."""
+    if _is_sinogram_data(y, H):
+        return "FBP"
+    if H is not None and H.ndim == 2:
+        return "Tikhonov"
+    return "Zero-Filled"
+
+
 async def run_common_reconstruction(
     variant_key: str,
     algorithm_name: str,
@@ -363,20 +372,17 @@ def _run_common_sync(
     )
     is_dl = any(kw in algo_type for kw in _DL_KEYWORDS)
 
-    if is_dl:
-        # DL methods: show expected score from catalog, return measurement as placeholder
-        x_recon = y.copy()
-        dl_note = True
-    else:
-        x_recon = _run_classical_recon(y, H, algorithm_name)
-        dl_note = False
+    # For DL methods, run classical baseline for visual reference
+    dl_note = is_dl
+    x_recon = _run_classical_recon(y, H, algorithm_name if not is_dl else "FBP")
+    baseline_method = None if not is_dl else _pick_baseline_name(y, H)
 
     runtime_ms = (time.perf_counter() - t0) * 1000
 
-    # Compute metrics
+    # Compute metrics (for classical methods and for baseline of DL methods)
     psnr_val = None
     ssim_val = None
-    if has_gt and x_true is not None and not dl_note:
+    if has_gt and x_true is not None:
         # Align x_recon shape to x_true if needed
         if x_recon.shape != x_true.shape:
             try:
@@ -420,6 +426,7 @@ def _run_common_sync(
         "runtime_ms": round(runtime_ms, 1),
         "measurement_image": _numpy_to_png_b64(y),
         "reconstructed_image": _numpy_to_png_b64(x_recon),
+        "baseline_method": baseline_method,
         "psnr": round(psnr_val, 2) if psnr_val is not None else None,
         "ssim": round(ssim_val, 4) if ssim_val is not None else None,
         "is_dl_placeholder": dl_note,

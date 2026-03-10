@@ -13,13 +13,14 @@
     <!-- DL method notice -->
     <div class="bg-amber-50 border border-amber-200 rounded-lg p-3">
         <p class="text-sm text-amber-800">
-            <strong>{{ result.algorithm_name }}</strong> is a deep-learning method that requires GPU inference.
+            <strong>{{ result.algorithm_name }}</strong> is a deep-learning method requiring GPU inference.
             {% if result.expected_psnr %}
-            Expected performance on this benchmark: <strong>{{ result.expected_psnr }} dB</strong> PSNR
-            {% if result.expected_ssim %}, <strong>{{ result.expected_ssim }}</strong> SSIM{% endif %}.
+            Expected benchmark performance: <strong>{{ result.expected_psnr }} dB</strong> PSNR
+            {% if result.expected_ssim %}, <strong>{{ result.expected_ssim }}</strong> SSIM{% endif %}
+            {% if result.psnr %} vs. {{ result.baseline_method }} baseline {{ result.psnr }} dB shown below{% endif %}.
             {% endif %}
         </p>
-        <p class="text-xs text-amber-600 mt-1">GPU reconstruction coming soon. Try a classical method for instant results.</p>
+        <p class="text-xs text-amber-600 mt-1">GPU inference coming soon. Classical baseline shown for reference.</p>
     </div>
     {% endif %}
 
@@ -37,28 +38,48 @@
             <img src="data:image/png;base64,{{ result.measurement_image }}"
                  alt="Measurement" class="w-full rounded border border-gray-200" />
         </div>
-        {% if not result.is_dl_placeholder %}
         <div class="text-center">
-            <p class="text-xs font-medium text-gray-600 mb-1">Reconstruction</p>
+            <p class="text-xs font-medium text-gray-600 mb-1">
+                {% if result.is_dl_placeholder and result.baseline_method %}
+                    {{ result.baseline_method }} Baseline
+                {% else %}
+                    Reconstruction
+                {% endif %}
+            </p>
             <img src="data:image/png;base64,{{ result.reconstructed_image }}"
                  alt="Reconstruction" class="w-full rounded border border-gray-200" />
         </div>
-        {% endif %}
     </div>
 
     <!-- Metrics -->
-    {% if result.psnr is not none or result.ssim is not none %}
-    <div class="flex gap-4 justify-center">
+    {% if result.psnr is not none or result.ssim is not none or result.expected_psnr is not none %}
+    <div class="flex gap-4 justify-center flex-wrap">
         {% if result.psnr is not none %}
         <div class="bg-green-50 border border-green-200 rounded-lg px-4 py-2 text-center">
-            <p class="text-xs text-green-600 font-medium">PSNR</p>
+            <p class="text-xs text-green-600 font-medium">
+                {% if result.is_dl_placeholder %}Baseline PSNR{% else %}PSNR{% endif %}
+            </p>
             <p class="text-lg font-bold text-green-800 font-mono">{{ result.psnr }} dB</p>
         </div>
         {% endif %}
         {% if result.ssim is not none %}
         <div class="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 text-center">
-            <p class="text-xs text-blue-600 font-medium">SSIM</p>
+            <p class="text-xs text-blue-600 font-medium">
+                {% if result.is_dl_placeholder %}Baseline SSIM{% else %}SSIM{% endif %}
+            </p>
             <p class="text-lg font-bold text-blue-800 font-mono">{{ result.ssim }}</p>
+        </div>
+        {% endif %}
+        {% if result.is_dl_placeholder and result.expected_psnr is not none %}
+        <div class="bg-indigo-50 border border-indigo-200 rounded-lg px-4 py-2 text-center">
+            <p class="text-xs text-indigo-600 font-medium">Expected PSNR</p>
+            <p class="text-lg font-bold text-indigo-800 font-mono">{{ result.expected_psnr }} dB</p>
+        </div>
+        {% endif %}
+        {% if result.is_dl_placeholder and result.expected_ssim is not none %}
+        <div class="bg-purple-50 border border-purple-200 rounded-lg px-4 py-2 text-center">
+            <p class="text-xs text-purple-600 font-medium">Expected SSIM</p>
+            <p class="text-lg font-bold text-purple-800 font-mono">{{ result.expected_ssim }}</p>
         </div>
         {% endif %}
     </div>
