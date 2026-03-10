@@ -1,0 +1,10 @@
+tier,scene,scene_name,algo,psnr_db,ssim,consistency,score,time_s
+public,sample_00,scene_00,hybrid_cascade_plus,30.813,0.8585,0.9998,0.6875,25.94
+public,sample_01,scene_01,hybrid_cascade_plus,32.3903,0.8869,0.9998,0.7199,22.45
+public,sample_02,scene_02,hybrid_cascade_plus,31.9547,0.8879,0.9998,0.7145,22.6
+dev,sample_00,scene_00,hybrid_cascade_plus,nan,nan,0.9998,nan,26.44
+dev,sample_01,scene_01,hybrid_cascade_plus,nan,nan,0.9998,nan,22.67
+dev,sample_02,scene_02,hybrid_cascade_plus,nan,nan,0.9998,nan,22.82
+hidden,sample_00,scene_00,hybrid_cascade_plus,31.5543,0.8504,0.9998,0.6942,26.48
+hidden,sample_01,scene_01,hybrid_cascade_plus,31.6924,0.8544,0.9998,0.6976,22.17
+hidden,sample_02,scene_02,hybrid_cascade_plus,31.9137,0.871,0.9998,0.7072,22.38

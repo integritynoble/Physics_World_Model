@@ -1,0 +1,4 @@
+tier,scene,scene_name,algo,psnr_db,ssim,consistency,score,time_s
+public,sample_00,scene_00,unet_plus,13.1018,0.3214,0.2207,0.2037,65.52
+public,sample_01,scene_01,unet_plus,14.3179,0.3382,0.2209,0.2226,61.75
+public,sample_02,scene_02,unet_plus,13.8821,0.3311,0.225,0.2163,61.9

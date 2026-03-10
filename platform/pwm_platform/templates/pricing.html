@@ -297,7 +297,7 @@ function toggleBilling() {
 async function subscribe(planTier) {
     const period = isYearly ? 'yearly' : 'monthly';
     try {
-        const resp = await fetch(`/api/v1/billing/checkout/stripe?plan_tier=${planTier}&period=${period}`, {
+        const resp = await fetch(`/api/v1/subscription/checkout/stripe?plan_tier=${planTier}&period=${period}`, {
             method: 'POST',
             credentials: 'same-origin',
         });
@@ -314,7 +314,7 @@ async function subscribe(planTier) {
 
 async function buyWechatPack(packKey) {
     try {
-        const resp = await fetch(`/api/v1/billing/checkout/wechat?pack_key=${packKey}`, {
+        const resp = await fetch(`/api/v1/subscription/checkout/wechat?pack_key=${packKey}`, {
             method: 'POST',
             credentials: 'same-origin',
         });

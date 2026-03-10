@@ -1,0 +1,10 @@
+tier,scene,scene_name,algo,psnr_db,ssim,consistency,score,time_s
+public,sample_00,scene_00,score_mri_v8,28.9749,0.8611,0.921,0.7184,17.13
+public,sample_01,scene_01,score_mri_v8,30.224,0.8819,0.9226,0.7395,16.49
+public,sample_02,scene_02,score_mri_v8,29.8206,0.8876,0.9251,0.7383,16.71
+dev,sample_00,scene_00,score_mri_v8,nan,nan,0.9228,nan,17.35
+dev,sample_01,scene_01,score_mri_v8,nan,nan,0.9421,nan,16.35
+dev,sample_02,scene_02,score_mri_v8,nan,nan,0.9286,nan,16.35
+hidden,sample_00,scene_00,score_mri_v8,29.516,0.8744,0.9223,0.7294,16.93
+hidden,sample_01,scene_01,score_mri_v8,29.7213,0.8826,0.9294,0.7361,16.31
+hidden,sample_02,scene_02,score_mri_v8,30.0168,0.882,0.896,0.7322,16.5

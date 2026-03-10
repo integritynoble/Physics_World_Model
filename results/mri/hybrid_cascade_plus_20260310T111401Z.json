@@ -1,0 +1,54 @@
+{
+  "timestamp": "20260310T111401Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "hybrid_cascade_plus"
+  ],
+  "gpu": "T4",
+  "algorithm": "HybridCascade++ (MICCAI 2021 + TMI 2025 adapted)",
+  "phases": {
+    "p0": "SIRT+TV 200 iters warm start",
+    "p1": "SIREN(384/6) pre-train 120 steps (0.4*MSE+0.6*SSIM)",
+    "p2": "4-stage MSE DC (150+150+100+100, SSIM anchor stages 3-4)",
+    "p3": "freq blend SIREN_LF+SIRT_HF alpha=0.25",
+    "p4": "DRUNet final sigma=0.003 keep-if-better"
+  },
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "hybrid_cascade_plus",
+      "psnr_db": 30.346,
+      "ssim": 0.8525,
+      "consistency": 0.9998,
+      "score": 0.6789,
+      "time_s": 24.93
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "hybrid_cascade_plus",
+      "psnr_db": 31.9221,
+      "ssim": 0.8751,
+      "consistency": 0.9998,
+      "score": 0.7089,
+      "time_s": 21.78
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "hybrid_cascade_plus",
+      "psnr_db": 31.4441,
+      "ssim": 0.8964,
+      "consistency": 0.9998,
+      "score": 0.7111,
+      "time_s": 21.92
+    }
+  ]
+}

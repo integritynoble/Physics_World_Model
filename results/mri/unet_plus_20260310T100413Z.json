@@ -1,0 +1,55 @@
+{
+  "timestamp": "20260310T100413Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "unet_plus"
+  ],
+  "gpu": "T4",
+  "method": "U-Net++",
+  "key_innovation": "Deeper SIRT+TV (300 iters) + 5-stage 720-step Poisson NLL DC cascade",
+  "improvements": [
+    "Deeper SIRT+TV: 300 iters (vs v2's 200) \u2014 lower DC residual at warm-start (0.745 vs 0.800)",
+    "5-stage cascade: 720 total steps (vs v2's 4 stages / 500 steps)",
+    "Tighter TV annealing: lam 0.02\u21920.001 (vs v2's 0.002 end)",
+    "Dynamic stage weights (learnable softplus scale per stage)",
+    "Proven SIREN 384/6: same architecture as v2 for reliable pre-training"
+  ],
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "unet_plus",
+      "psnr_db": 28.7137,
+      "ssim": 0.7336,
+      "consistency": 0.9216,
+      "score": 0.6649,
+      "time_s": 36.2
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "unet_plus",
+      "psnr_db": 30.1313,
+      "ssim": 0.7512,
+      "consistency": 0.9322,
+      "score": 0.6882,
+      "time_s": 31.96
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "unet_plus",
+      "psnr_db": 29.5506,
+      "ssim": 0.7543,
+      "consistency": 0.93,
+      "score": 0.6832,
+      "time_s": 32.28
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "timestamp": "20260310T110434Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "hybrid_cascade_plus"
+  ],
+  "gpu": "T4",
+  "algorithm": "HybridCascade++ (MICCAI 2021 + TMI 2025 adapted)",
+  "phases": {
+    "p0": "FBP \u2192 FISTA-Wavelet 600 iters",
+    "p1": "DPS-DED-SASC 80 iters (sigma 0.020\u21920.005)",
+    "p2": "SIREN pre-train 100 iters (0.4*MSE+0.6*SSIM)",
+    "p3": "4-stage MSE DC (400 steps, DPS residual anchor)",
+    "p4": "freq blend SIREN_LF+DPS_HF alpha=0.30",
+    "p5": "DRUNet final sigma=0.004"
+  },
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "hybrid_cascade_plus",
+      "psnr_db": 28.6403,
+      "ssim": 0.7535,
+      "consistency": 0.9998,
+      "score": 0.6166,
+      "time_s": 27.29
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "hybrid_cascade_plus",
+      "psnr_db": 30.1784,
+      "ssim": 0.7651,
+      "consistency": 0.9998,
+      "score": 0.6417,
+      "time_s": 23.67
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "hybrid_cascade_plus",
+      "psnr_db": 29.7823,
+      "ssim": 0.7775,
+      "consistency": 0.9998,
+      "score": 0.6414,
+      "time_s": 23.71
+    }
+  ]
+}

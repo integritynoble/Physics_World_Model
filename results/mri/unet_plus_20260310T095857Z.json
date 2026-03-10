@@ -1,0 +1,57 @@
+{
+  "timestamp": "20260310T095857Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "unet_plus"
+  ],
+  "gpu": "T4",
+  "method": "U-Net++",
+  "key_innovation": "Wide sequential SIREN (512 hidden, 8 layers) with 300 SIRT iters + 5-stage 720-step Poisson NLL DC",
+  "improvements": [
+    "Wider SIREN: hidden=512, 8 layers (vs HUMUS-v2's 384/6) \u2014 77% more params per layer",
+    "Deeper SIRT+TV: 300 iters (vs v2's 200) \u2014 stronger physical warm-start",
+    "Poisson NLL DC: correct noise model \u2192 natural regularization",
+    "5-stage cascade: 720 total steps (vs v2's 4 stages / 500 steps)",
+    "Joint MSE+SSIM pre-training (150 steps) from SIRT+TV",
+    "Annealed TV: lam 0.02\u21920.001 (tighter end than v2's 0.002)",
+    "Dynamic stage weights (learnable softplus scale, dHUMUS-Net analogue)"
+  ],
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "unet_plus",
+      "psnr_db": 13.1018,
+      "ssim": 0.3214,
+      "consistency": 0.2207,
+      "score": 0.2037,
+      "time_s": 65.52
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "unet_plus",
+      "psnr_db": 14.3179,
+      "ssim": 0.3382,
+      "consistency": 0.2209,
+      "score": 0.2226,
+      "time_s": 61.75
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "unet_plus",
+      "psnr_db": 13.8821,
+      "ssim": 0.3311,
+      "consistency": 0.225,
+      "score": 0.2163,
+      "time_s": 61.9
+    }
+  ]
+}

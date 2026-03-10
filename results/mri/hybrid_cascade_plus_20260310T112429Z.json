@@ -1,0 +1,122 @@
+{
+  "timestamp": "20260310T112429Z",
+  "variant": "mri",
+  "tiers": [
+    "public",
+    "dev",
+    "hidden"
+  ],
+  "algos": [
+    "hybrid_cascade_plus"
+  ],
+  "gpu": "T4",
+  "algorithm": "HybridCascade++ (MICCAI 2021 + TMI 2025 adapted)",
+  "phases": {
+    "p0": "SIRT+TV 200 iters warm start",
+    "p1": "SIREN(384/6) pre-train 120 steps (0.4*MSE+0.6*SSIM)",
+    "p2": "4-stage MSE DC (150+150+100+100, SSIM anchor stages 3-4)",
+    "p3": "freq blend SIREN_LF+SIRT_HF alpha=0.25",
+    "p4": "DRUNet final sigma=0.003 keep-if-better"
+  },
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "hybrid_cascade_plus",
+      "psnr_db": 30.813,
+      "ssim": 0.8585,
+      "consistency": 0.9998,
+      "score": 0.6875,
+      "time_s": 25.94
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "hybrid_cascade_plus",
+      "psnr_db": 32.3903,
+      "ssim": 0.8869,
+      "consistency": 0.9998,
+      "score": 0.7199,
+      "time_s": 22.45
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "hybrid_cascade_plus",
+      "psnr_db": 31.9547,
+      "ssim": 0.8879,
+      "consistency": 0.9998,
+      "score": 0.7145,
+      "time_s": 22.6
+    },
+    {
+      "tier": "dev",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "hybrid_cascade_plus",
+      "psnr_db": NaN,
+      "ssim": NaN,
+      "consistency": 0.9998,
+      "score": NaN,
+      "time_s": 26.44
+    },
+    {
+      "tier": "dev",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "hybrid_cascade_plus",
+      "psnr_db": NaN,
+      "ssim": NaN,
+      "consistency": 0.9998,
+      "score": NaN,
+      "time_s": 22.67
+    },
+    {
+      "tier": "dev",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "hybrid_cascade_plus",
+      "psnr_db": NaN,
+      "ssim": NaN,
+      "consistency": 0.9998,
+      "score": NaN,
+      "time_s": 22.82
+    },
+    {
+      "tier": "hidden",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "hybrid_cascade_plus",
+      "psnr_db": 31.5543,
+      "ssim": 0.8504,
+      "consistency": 0.9998,
+      "score": 0.6942,
+      "time_s": 26.48
+    },
+    {
+      "tier": "hidden",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "hybrid_cascade_plus",
+      "psnr_db": 31.6924,
+      "ssim": 0.8544,
+      "consistency": 0.9998,
+      "score": 0.6976,
+      "time_s": 22.17
+    },
+    {
+      "tier": "hidden",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "hybrid_cascade_plus",
+      "psnr_db": 31.9137,
+      "ssim": 0.871,
+      "consistency": 0.9998,
+      "score": 0.7072,
+      "time_s": 22.38
+    }
+  ]
+}

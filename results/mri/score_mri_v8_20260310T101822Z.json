@@ -1,0 +1,53 @@
+{
+  "timestamp": "20260310T101822Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "score_mri_v8"
+  ],
+  "gpu": "T4",
+  "algorithm": "ADMM-FRSGM v8 (Hou et al. IEEE TNNLS 2025 adapted)",
+  "phases": {
+    "p0": "SIRT+TV 300 iters",
+    "p1": "FISTA-Wavelet 400 iters lam=0.002->0.0001",
+    "p2": "ADMM-FRSGM 100 iters DED(DRUNetx2)+SASC(angular-Laplacian)",
+    "p3": "DRUNet sigma=0.004 keep-if-better"
+  },
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "score_mri_v8",
+      "psnr_db": 29.9977,
+      "ssim": 0.8568,
+      "consistency": 0.9201,
+      "score": 0.7267,
+      "time_s": 22.78
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "score_mri_v8",
+      "psnr_db": 31.6189,
+      "ssim": 0.8854,
+      "consistency": 0.924,
+      "score": 0.7551,
+      "time_s": 22.27
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "score_mri_v8",
+      "psnr_db": 31.023,
+      "ssim": 0.8861,
+      "consistency": 0.9215,
+      "score": 0.749,
+      "time_s": 22.26
+    }
+  ]
+}

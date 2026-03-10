@@ -1,0 +1,58 @@
+{
+  "timestamp": "20260310T095154Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "unet_plus"
+  ],
+  "gpu": "T4",
+  "method": "U-Net++",
+  "key_innovation": "Residual SIREN (U-Net++ dense skip connections) with Poisson NLL DC",
+  "improvements": [
+    "Residual SIREN: 4 ResBlocks (skip addition) + dense softmax aggregation",
+    "Wider network: hidden=512 (vs 384) \u2014 77% more capacity per layer",
+    "Deeper SIRT+TV: 300 iters (vs v2's 200) \u2014 stronger warm-start",
+    "Poisson NLL DC: correct noise model \u2192 natural regularization",
+    "5-stage cascade: 700 total steps (vs v2's 4 stages / 500 steps)",
+    "Joint MSE+SSIM pre-training (150 steps)",
+    "Annealed TV: lam 0.02\u21920.001 (tighter than v2's 0.002)",
+    "Dynamic stage weights (dHUMUS-Net / U-Net++ scale-adaptive analogue)"
+  ],
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "unet_plus",
+      "psnr_db": 14.0052,
+      "ssim": 0.2036,
+      "consistency": 0.8728,
+      "score": 0.296,
+      "time_s": 77.64
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "unet_plus",
+      "psnr_db": 15.4681,
+      "ssim": 0.3315,
+      "consistency": 0.8963,
+      "score": 0.3665,
+      "time_s": 74.21
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "unet_plus",
+      "psnr_db": 13.4383,
+      "ssim": 0.1684,
+      "consistency": 0.8411,
+      "score": 0.27,
+      "time_s": 74.4
+    }
+  ]
+}

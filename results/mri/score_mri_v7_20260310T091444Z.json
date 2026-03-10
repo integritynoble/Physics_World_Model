@@ -1,0 +1,86 @@
+{
+  "timestamp": "20260310T091444Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "score_mri_v7",
+    "score_mri_sirt_tv"
+  ],
+  "gpu": "T4",
+  "algorithm": "FISTA-Wavelet+DPS-DRUNet v7",
+  "phases": {
+    "p1": "FISTA-Wavelet n=600 lam=0.002->0.00015",
+    "p2": "DPS-DRUNet n=80 sigma=0.020->0.005 alpha=0.15",
+    "p3": "DRUNet sigma=0.007 keep-if-better"
+  },
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "score_mri_v7",
+      "psnr_db": 28.4103,
+      "ssim": 0.8558,
+      "consistency": 0.9183,
+      "score": 0.7101,
+      "time_s": 15.28
+    },
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "score_mri_sirt_tv",
+      "psnr_db": 30.464,
+      "ssim": 0.8721,
+      "consistency": 0.9206,
+      "score": 0.7376,
+      "time_s": 6.67
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "score_mri_v7",
+      "psnr_db": 29.8782,
+      "ssim": 0.8761,
+      "consistency": 0.9207,
+      "score": 0.7334,
+      "time_s": 14.32
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "score_mri_sirt_tv",
+      "psnr_db": 32.0934,
+      "ssim": 0.8986,
+      "consistency": 0.9239,
+      "score": 0.7652,
+      "time_s": 6.69
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "score_mri_v7",
+      "psnr_db": 29.5693,
+      "ssim": 0.8829,
+      "consistency": 0.927,
+      "score": 0.7343,
+      "time_s": 14.35
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "score_mri_sirt_tv",
+      "psnr_db": 31.5133,
+      "ssim": 0.9002,
+      "consistency": 0.9204,
+      "score": 0.7593,
+      "time_s": 6.71
+    }
+  ]
+}

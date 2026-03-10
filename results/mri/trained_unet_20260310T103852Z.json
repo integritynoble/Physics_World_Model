@@ -1,0 +1,51 @@
+{
+  "timestamp": "20260310T103852Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "trained_unet"
+  ],
+  "gpu": "T4",
+  "method": "Trained U-Net",
+  "key_innovation": "Trained on 2000 synthetic Radon+Poisson phantoms \u2014 learned prior breaks SIREN TTO ceiling",
+  "architecture": "Residual U-Net: 4-level [16,32,64,128] channels, ~1.1M params, skip-cat decoder",
+  "training": "60 epochs, batch=16, Adam lr=3e-4\u21921e-5 cosine, MSE+SSIM loss, augment: H/V flip",
+  "inference": "FBP \u2192 U-Net \u2192 freq-blend with SIRT+TV (150 iters)",
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "trained_unet",
+      "psnr_db": 21.2397,
+      "ssim": 0.7023,
+      "consistency": 0.8678,
+      "score": 0.5669,
+      "time_s": 2.32
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "trained_unet",
+      "psnr_db": 20.9331,
+      "ssim": 0.7374,
+      "consistency": 0.8611,
+      "score": 0.5765,
+      "time_s": 2.12
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "trained_unet",
+      "psnr_db": 21.1369,
+      "ssim": 0.7324,
+      "consistency": 0.8689,
+      "score": 0.5781,
+      "time_s": 2.14
+    }
+  ]
+}

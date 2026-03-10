@@ -1,0 +1,4 @@
+tier,scene,scene_name,algo,psnr_db,ssim,consistency,score,time_s
+public,sample_00,scene_00,hybrid_cascade_plus,30.346,0.8525,0.9998,0.6789,24.93
+public,sample_01,scene_01,hybrid_cascade_plus,31.9221,0.8751,0.9998,0.7089,21.78
+public,sample_02,scene_02,hybrid_cascade_plus,31.4441,0.8964,0.9998,0.7111,21.92

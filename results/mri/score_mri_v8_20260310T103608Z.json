@@ -1,0 +1,87 @@
+{
+  "timestamp": "20260310T103608Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "score_mri_v7",
+    "score_mri_v8"
+  ],
+  "gpu": "T4",
+  "algorithm": "ADMM-FRSGM v8 (Hou et al. IEEE TNNLS 2025 adapted)",
+  "phases": {
+    "p0": "SIRT+TV 300 iters",
+    "p1": "FISTA-Wavelet 400 iters lam=0.002->0.0001",
+    "p2": "ADMM-FRSGM 100 iters DED(DRUNetx2)+SASC(angular-Laplacian)",
+    "p3": "DRUNet sigma=0.004 keep-if-better"
+  },
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "score_mri_v7",
+      "psnr_db": 28.4103,
+      "ssim": 0.8558,
+      "consistency": 0.9183,
+      "score": 0.7101,
+      "time_s": 15.33
+    },
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "score_mri_v8",
+      "psnr_db": 28.9749,
+      "ssim": 0.8611,
+      "consistency": 0.921,
+      "score": 0.7184,
+      "time_s": 16.72
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "score_mri_v7",
+      "psnr_db": 29.8782,
+      "ssim": 0.8761,
+      "consistency": 0.9207,
+      "score": 0.7334,
+      "time_s": 14.39
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "score_mri_v8",
+      "psnr_db": 30.224,
+      "ssim": 0.8819,
+      "consistency": 0.9226,
+      "score": 0.7395,
+      "time_s": 16.64
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "score_mri_v7",
+      "psnr_db": 29.5693,
+      "ssim": 0.8829,
+      "consistency": 0.927,
+      "score": 0.7343,
+      "time_s": 14.43
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "score_mri_v8",
+      "psnr_db": 29.8206,
+      "ssim": 0.8876,
+      "consistency": 0.9251,
+      "score": 0.7383,
+      "time_s": 17.0
+    }
+  ]
+}
