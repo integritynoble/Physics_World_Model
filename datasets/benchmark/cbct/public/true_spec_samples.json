@@ -1,0 +1,92 @@
+{
+  "sample_00": {
+    "n_views": 256,
+    "recipe": "head_cranial",
+    "beam_hardening": 0.0389,
+    "scatter_fraction": 0.038,
+    "detector_shift_u": -0.6808,
+    "source_offset_x": 0.048,
+    "detector_tilt": 0.0034
+  },
+  "sample_01": {
+    "n_views": 256,
+    "recipe": "torso_thorax",
+    "beam_hardening": 0.0327,
+    "scatter_fraction": 0.0141,
+    "detector_shift_u": -0.878,
+    "source_offset_x": 0.6534,
+    "detector_tilt": 0.1186
+  },
+  "sample_02": {
+    "n_views": 256,
+    "recipe": "abdomen_organs",
+    "beam_hardening": 0.0571,
+    "scatter_fraction": 0.0194,
+    "detector_shift_u": 0.8212,
+    "source_offset_x": 0.497,
+    "detector_tilt": -0.1277
+  },
+  "sample_03": {
+    "n_views": 256,
+    "recipe": "extremity_bone",
+    "beam_hardening": 0.0575,
+    "scatter_fraction": 0.0353,
+    "detector_shift_u": -0.9369,
+    "source_offset_x": 0.2139,
+    "detector_tilt": -0.0574
+  },
+  "sample_04": {
+    "n_views": 256,
+    "recipe": "dental_arch",
+    "beam_hardening": 0.0471,
+    "scatter_fraction": 0.0399,
+    "detector_shift_u": 0.1622,
+    "source_offset_x": 0.1649,
+    "detector_tilt": -0.0333
+  },
+  "sample_05": {
+    "n_views": 256,
+    "recipe": "pelvis_hip",
+    "beam_hardening": 0.0266,
+    "scatter_fraction": 0.025,
+    "detector_shift_u": -1.1854,
+    "source_offset_x": 0.2805,
+    "detector_tilt": -0.1263
+  },
+  "sample_06": {
+    "n_views": 256,
+    "recipe": "shoulder_complex",
+    "beam_hardening": 0.0191,
+    "scatter_fraction": 0.035,
+    "detector_shift_u": 0.8277,
+    "source_offset_x": 0.399,
+    "detector_tilt": 0.1163
+  },
+  "sample_07": {
+    "n_views": 256,
+    "recipe": "knee_joint",
+    "beam_hardening": 0.0473,
+    "scatter_fraction": 0.032,
+    "detector_shift_u": -0.3721,
+    "source_offset_x": 0.3742,
+    "detector_tilt": -0.0373
+  },
+  "sample_08": {
+    "n_views": 256,
+    "recipe": "spine_segment",
+    "beam_hardening": 0.0389,
+    "scatter_fraction": 0.0233,
+    "detector_shift_u": 0.1402,
+    "source_offset_x": -0.5788,
+    "detector_tilt": -0.0396
+  },
+  "sample_09": {
+    "n_views": 256,
+    "recipe": "hand_wrist",
+    "beam_hardening": 0.0365,
+    "scatter_fraction": 0.0387,
+    "detector_shift_u": -0.7848,
+    "source_offset_x": 0.5872,
+    "detector_tilt": 0.1337
+  }
+}
