@@ -135,35 +135,106 @@ def _numpy_to_png_b64(arr: np.ndarray) -> str:
     return base64.b64encode(buf.getvalue()).decode("ascii")
 
 
+def _normalize_01(arr: np.ndarray) -> np.ndarray:
+    """Normalize array to [0, 1] range for scale-invariant metric computation."""
+    arr = arr.astype(np.float64)
+    lo, hi = arr.min(), arr.max()
+    if hi - lo > 1e-12:
+        return (arr - lo) / (hi - lo)
+    return arr - lo
+
+
 def _compute_psnr(x_true: np.ndarray, x_recon: np.ndarray) -> float:
-    x_true_f = _to_2d_display(x_true).astype(np.float64)
-    x_recon_f = _to_2d_display(x_recon).astype(np.float64)
-    if x_true_f.shape != x_recon_f.shape:
+    xt = _normalize_01(_to_2d_display(x_true))
+    xr = _normalize_01(_to_2d_display(x_recon))
+    if xt.shape != xr.shape:
         return 0.0
-    mse = np.mean((x_true_f - x_recon_f) ** 2)
+    mse = np.mean((xt - xr) ** 2)
     if mse < 1e-12:
         return 60.0
-    data_range = x_true_f.max() - x_true_f.min()
-    if data_range < 1e-12:
-        data_range = 1.0
-    return float(10 * np.log10(data_range ** 2 / mse))
+    return float(10 * np.log10(1.0 / mse))
 
 
 def _compute_ssim(x_true: np.ndarray, x_recon: np.ndarray) -> float:
     try:
         from skimage.metrics import structural_similarity
-        x_true_f = _to_2d_display(x_true).astype(np.float64)
-        x_recon_f = _to_2d_display(x_recon).astype(np.float64)
-        if x_true_f.shape != x_recon_f.shape:
+        xt = _normalize_01(_to_2d_display(x_true))
+        xr = _normalize_01(_to_2d_display(x_recon))
+        if xt.shape != xr.shape:
             return 0.0
-        dr = x_true_f.max() - x_true_f.min()
-        if dr < 1e-12:
-            dr = 1.0
-        mc = x_true_f.ndim == 3 and x_true_f.shape[-1] == 3
-        return float(structural_similarity(x_true_f, x_recon_f, data_range=dr,
+        mc = xt.ndim == 3 and xt.shape[-1] == 3
+        return float(structural_similarity(xt, xr, data_range=1.0,
                                            channel_axis=2 if mc else None))
     except (ImportError, ValueError):
         return 0.0
+
+
+def _fbp_reconstruct(sinogram: np.ndarray, angles: np.ndarray) -> np.ndarray:
+    """Filtered back-projection for CT sinogram data.
+
+    Uses skimage.transform.iradon which matches the rotation-based forward model
+    used to generate challenge datasets: rotate(x, -θ).sum(axis=0).
+
+    Parameters
+    ----------
+    sinogram : (N_views, N_detectors) sinogram
+    angles : (N_views,) projection angles in degrees
+
+    Returns
+    -------
+    (N_detectors, N_detectors) reconstructed image
+    """
+    try:
+        from skimage.transform import iradon
+        # iradon expects (n_detectors, n_angles); our sinogram is (n_angles, n_detectors)
+        # Use 'hamming' filter for better noise robustness vs pure ramp filter
+        recon = iradon(sinogram.T, theta=angles, filter_name="hamming", interpolation="linear")
+        return np.clip(recon, 0, None)
+    except ImportError:
+        pass
+
+    # Fallback: manual ramp-filter + trigonometric back-projection
+    from scipy.fft import fft, ifft, fftfreq
+
+    n_views, n_det = sinogram.shape
+    output_size = n_det
+
+    pad_len = max(64, int(2 ** np.ceil(np.log2(2 * n_det))))
+    padded_sino = np.zeros((n_views, pad_len))
+    padded_sino[:, :n_det] = sinogram
+
+    freqs = fftfreq(pad_len)
+    ramp = np.abs(freqs) * 2
+    filtered = np.real(ifft(fft(padded_sino, axis=1) * ramp[np.newaxis, :], axis=1))[:, :n_det]
+
+    recon = np.zeros((output_size, output_size))
+    center = output_size / 2.0
+    y_coords, x_coords = np.mgrid[:output_size, :output_size] - center
+
+    for i, theta_deg in enumerate(angles):
+        theta_rad = np.deg2rad(theta_deg)
+        t = x_coords * np.cos(theta_rad) + y_coords * np.sin(theta_rad)
+        t_idx = t + n_det / 2.0
+        t_floor = np.floor(t_idx).astype(int)
+        t_frac = t_idx - t_floor
+        valid = (t_floor >= 0) & (t_floor < n_det - 1)
+        t_floor_c = np.clip(t_floor, 0, n_det - 2)
+        recon += valid * (
+            filtered[i, t_floor_c] * (1 - t_frac) +
+            filtered[i, t_floor_c + 1] * t_frac
+        )
+
+    recon *= np.pi / (2 * n_views)
+    return np.clip(recon, 0, None)
+
+
+def _is_sinogram_data(y: np.ndarray, H: Optional[np.ndarray]) -> bool:
+    """Detect if the data is a CT sinogram (angles stored in H_ideal as 1D array)."""
+    if H is not None and H.ndim == 1 and y.ndim == 2:
+        # H is 1D array of angles, y is (n_views, n_detectors) sinogram
+        if H.shape[0] == y.shape[0] and y.shape[1] > y.shape[0] * 0.5:
+            return True
+    return False
 
 
 def _run_classical_recon(
@@ -173,17 +244,26 @@ def _run_classical_recon(
 ) -> np.ndarray:
     """Run a classical reconstruction algorithm.
 
-    For MVP: Tikhonov / pseudo-inverse for matrix-based systems,
-    filtered back-projection style for others.
+    Supports:
+    - CT/sinogram data: FBP (filtered back-projection)
+    - Matrix-based systems: Tikhonov / pseudo-inverse
+    - Fallback: measurement visualization
     """
     algo_lower = algo_name.lower()
 
+    # CT / Radon sinogram: use FBP
+    if _is_sinogram_data(y, H):
+        try:
+            angles = H  # 1D array of angles in degrees
+            return _fbp_reconstruct(y, angles)
+        except Exception as exc:
+            logger.warning("FBP failed: %s, falling back", exc)
+
+    # Matrix-based inverse: x = (H^T H + λI)^{-1} H^T y
     if H is not None and H.ndim == 2:
-        # Matrix-based inverse: x = (H^T H + λI)^{-1} H^T y
         y_flat = y.flatten()
         m, n = H.shape
         if y_flat.shape[0] != m:
-            # Truncate/pad
             y_flat = y_flat[:m] if y_flat.shape[0] > m else np.pad(y_flat, (0, m - y_flat.shape[0]))
 
         lam = 1e-3 if "tikhonov" in algo_lower else 1e-4
@@ -191,7 +271,6 @@ def _run_classical_recon(
             HtH = H.T @ H
             Hty = H.T @ y_flat
             x_recon = np.linalg.solve(HtH + lam * np.eye(n), Hty)
-            # Reshape to square image
             side = int(np.sqrt(n))
             if side * side == n:
                 x_recon = x_recon.reshape(side, side)
@@ -298,16 +377,24 @@ def _run_common_sync(
     psnr_val = None
     ssim_val = None
     if has_gt and x_true is not None and not dl_note:
-        # Resize x_recon to match x_true if needed
+        # Align x_recon shape to x_true if needed
         if x_recon.shape != x_true.shape:
             try:
-                from PIL import Image
-                img_recon = Image.fromarray(
-                    ((x_recon - x_recon.min()) / max(x_recon.max() - x_recon.min(), 1e-8) * 255).astype(np.uint8)
-                )
                 target_shape = x_true.shape[-2:] if x_true.ndim >= 2 else x_true.shape
-                img_recon = img_recon.resize((target_shape[1], target_shape[0]), Image.BILINEAR)
-                x_recon = np.array(img_recon).astype(np.float64) / 255.0 * (x_true.max() - x_true.min()) + x_true.min()
+                out_h, out_w = target_shape
+                rh, rw = x_recon.shape[:2]
+                # Prefer center-crop (avoids quantization artifacts from PIL resize)
+                if x_recon.ndim == 2 and rh >= out_h and rw >= out_w:
+                    s_r = (rh - out_h) // 2
+                    s_c = (rw - out_w) // 2
+                    x_recon = x_recon[s_r:s_r + out_h, s_c:s_c + out_w]
+                else:
+                    from PIL import Image
+                    img_recon = Image.fromarray(
+                        ((x_recon - x_recon.min()) / max(x_recon.max() - x_recon.min(), 1e-8) * 255).astype(np.uint8)
+                    )
+                    img_recon = img_recon.resize((out_w, out_h), Image.BILINEAR)
+                    x_recon = np.array(img_recon).astype(np.float64) / 255.0 * (x_true.max() - x_true.min()) + x_true.min()
             except Exception:
                 pass
         if x_recon.shape == x_true.shape:
