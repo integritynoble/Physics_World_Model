@@ -53,6 +53,9 @@ dependencies = [
 
     # GCS signed URLs
     "google-cloud-storage>=2.14.0",
+
+    # Payments
+    "stripe>=10.0.0",
 ]
 
 [project.optional-dependencies]

@@ -172,7 +172,7 @@ async def create_stripe_checkout(
         session = stripe.checkout.Session.create(
             payment_method_types=["card"],
             line_items=[{"price": price_id, "quantity": 1}],
-            mode="subscription" if period == "monthly" else "payment",
+            mode="subscription",
             metadata={
                 "orderId": order.order_id,
                 "userId": str(user.id),
@@ -183,7 +183,7 @@ async def create_stripe_checkout(
             cancel_url=settings.STRIPE_CANCEL_URL,
             customer_email=user.email,
         )
-    except stripe.error.StripeError as e:
+    except stripe.StripeError as e:
         logger.error("Stripe checkout error: %s", e)
         raise HTTPException(502, f"Payment provider error: {e.user_message}")
 
@@ -217,7 +217,7 @@ async def stripe_webhook(
         event = stripe.Webhook.construct_event(
             payload, stripe_signature, settings.STRIPE_WEBHOOK_SECRET
         )
-    except (ValueError, stripe.error.SignatureVerificationError) as e:
+    except (ValueError, stripe.SignatureVerificationError) as e:
         logger.warning("Stripe webhook signature failed: %s", e)
         raise HTTPException(400, "Invalid signature")
 
