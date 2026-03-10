@@ -1,0 +1,55 @@
+{
+  "timestamp": "20260310T100946Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "unet_plus"
+  ],
+  "gpu": "T4",
+  "method": "U-Net++",
+  "key_innovation": "5-stage 620-step Poisson NLL DC cascade (v2 schedule + 1 extra refinement stage)",
+  "improvements": [
+    "5-stage cascade: 620 total steps (vs v2's 4 stages / 500 steps)",
+    "Extra refinement stage: 120 steps at lr=1e-5\u21923e-6 (fine-grained final polish)",
+    "Dynamic stage weights (learnable softplus scale per stage)",
+    "200-iter SIRT warm-start (same as v2 \u2014 300-iter over-smoothing hurts -2 dB PSNR)",
+    "Proven SIREN 384/6: same architecture as v2 for reliable 26-29 dB pre-training"
+  ],
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "unet_plus",
+      "psnr_db": 30.7207,
+      "ssim": 0.8429,
+      "consistency": 0.9202,
+      "score": 0.7284,
+      "time_s": 30.91
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "unet_plus",
+      "psnr_db": 32.0291,
+      "ssim": 0.8444,
+      "consistency": 0.9291,
+      "score": 0.7439,
+      "time_s": 26.76
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "unet_plus",
+      "psnr_db": 31.6185,
+      "ssim": 0.8612,
+      "consistency": 0.9226,
+      "score": 0.7452,
+      "time_s": 26.9
+    }
+  ]
+}

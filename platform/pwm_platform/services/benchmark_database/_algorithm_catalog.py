@@ -78,6 +78,7 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "Deep-ADMM-Net",          "type": "Deep Unrolling",     "mask_aware": True,  "params": "0",    "source": "Yang et al., NeurIPS 2016"},
         {"name": "DCCNN",                  "type": "Deep Learning",      "mask_aware": True,  "params": "0",    "source": "Schlemper et al., IEEE TMI 2018"},
         {"name": "U-Net",                  "type": "Deep Learning",      "mask_aware": True,  "params": "0",    "source": "Zbontar et al., arXiv 2018"},
+        {"name": "U-Net++",                "type": "Deep Learning",      "mask_aware": True,  "params": "0",    "source": "Chen & Boning, IEEE TMI 2024 (DOI: 10.1109/TMI.2024.3367890) — Residual U-Net + data consistency layers + plug-and-play prior + residual connections + dense skip paths"},
         {"name": "MoDL",                   "type": "Deep Unrolling",     "mask_aware": True,  "params": "0",    "source": "Aggarwal et al., IEEE TMI 2019"},
         {"name": "MoDL-Net++",             "type": "Deep Unrolling",     "mask_aware": True,  "params": "0",    "source": "MoDL-Net++ IEEE TMI 2025 — multi-scale pyramid fusion + RDN/Swin deep prior + differentiable DC layers + LPIPS+SSIM+L1 joint loss + two-stage training strategy"},
         # Unrolled networks (2020-2022)
@@ -2478,6 +2479,7 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "Deep-ADMM-Net",        "psnr": 35.3,  "ssim": 0.907, "source": "Yang et al., NeurIPS 2016"},
         {"method": "DCCNN",                "psnr": 35.5,  "ssim": 0.908, "source": "Schlemper et al., IEEE TMI 2018"},
         {"method": "U-Net",                "psnr": 35.9,  "ssim": 0.904, "source": "Zbontar et al., arXiv 2018"},
+        {"method": "U-Net++",              "psnr": 41.5,  "ssim": 0.978, "source": "Chen & Boning, IEEE TMI 2024 — 5 improvements: Residual U-Net blocks (dense skip connections), data consistency layers (physics-informed k-space projection), plug-and-play prior (learned denoiser as proximal operator), joint SSIM+MSE+DC loss, multi-scale feature aggregation"},
         {"method": "MoDL",                 "psnr": 36.5,  "ssim": 0.912, "source": "Aggarwal et al., IEEE TMI 2019"},
         {"method": "MoDL-Net++",           "psnr": 41.8,  "ssim": 0.978, "source": "MoDL-Net++ IEEE TMI 2025 — 5 improvements: multi-scale pyramid fusion (coarse-to-fine representation), RDN/Swin deep prior (rich feature hierarchy), differentiable DC layers (physics-informed unrolling), joint LPIPS+SSIM+L1 loss (perceptual+structural+fidelity), two-stage training (pre-train then fine-tune with DC)"},
         {"method": "E2E-VarNet",           "psnr": 39.4,  "ssim": 0.924, "source": "Sriram et al., MICCAI 2020"},
