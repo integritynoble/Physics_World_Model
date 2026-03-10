@@ -70,12 +70,41 @@ where:
 
 ## 5. Local Dataset & GCS Status
 
-**GCS datasets:**
+**Challenge HDF5 (original):**
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/ultrasound_challenge_public.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/ultrasound_challenge_dev.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/ultrasound_challenge_hidden.h5`
 
+**Benchmark dataset (full, with images and specs) — uploaded 2026-03-10:**
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/ultrasound/public/ultrasound_challenge_public.h5`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/ultrasound/dev/ultrasound_challenge_dev.h5`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/ultrasound/hidden/ultrasound_challenge_hidden.h5`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/ultrasound/public/spec.json`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/ultrasound/public/true_spec.json`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/ultrasound/dev/spec.json`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/ultrasound/hidden/spec.json`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/ultrasound/public/images/` (12 samples)
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/ultrasound/dev/images/` (20 samples)
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/ultrasound/hidden/images/` (20 samples)
+
+**Local dataset:** `datasets/benchmark/ultrasound/` (generate_dataset.py + 3 tiers)
+
+**Forward model:** PSF convolution + Rayleigh speckle + Gaussian noise + log-compression
+- `x_true` (256, 256) float32 — tissue reflectivity
+- `bmode_ideal` (256, 256) float32 — clean B-mode (log-compressed [0,1])
+- `bmode_measured` (256, 256) float32 — noisy B-mode with speckle
+- `psf` (K, K) float32 — Gaussian PSF used
+
+**Mismatch parameters:**
+- `speed_of_sound_error_pct`: 0–3% (public), 0–5% (dev), 0–8% (hidden)
+- `attenuation_dB_cm_MHz`: 0.3–0.7 (public), 0.3–0.9 (dev), 0.3–1.2 (hidden)
+- `speckle_density`: 10–25 (public), 8–35 (dev), 5–50 (hidden)
+- `snr_db`: 30–40 dB (public), 25–38 dB (dev), 20–35 dB (hidden)
+
+**CPU reconstruction baseline:** Wiener deconvolution — avg PSNR ~12 dB, avg SSIM ~0.01
+
 **Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/ultrasound/`.
+Local gallery at `platform/pwm_platform/static/img/benchmark_gallery/ultrasound/scene_{00,01,02,03}/`.
 
 ---
 
