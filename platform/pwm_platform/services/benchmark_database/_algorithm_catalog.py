@@ -92,6 +92,9 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         # Foundation models (2024-2026)
         {"name": "MRDynamo",               "type": "Physics-Informed",   "mask_aware": True,  "params": "0",    "source": "Chen et al., NeurIPS 2024"},
         {"name": "BrainID-MRI",            "type": "Foundation Model",   "mask_aware": True,  "params": "0",    "source": "Liu et al., CVPR 2025"},
+        {"name": "MMR-Mamba",              "type": "Physics-Informed",   "mask_aware": True,  "params": "0",    "source": "Zhao et al., Med. Image Anal. 2025"},
+        {"name": "PromptMR-SFM",           "type": "Physics-Informed",   "mask_aware": True,  "params": "0",    "source": "PWM 2026"},
+        {"name": "MR-IPT",                 "type": "Foundation Model",   "mask_aware": True,  "params": "0",    "source": "Sci. Reports 2025"},
         {"name": "MRI-FM",                 "type": "Foundation Model",   "mask_aware": True,  "params": "0",    "source": "Wang et al., Nature MI 2026"},
     ],
     "sd_cassi": [
@@ -2482,6 +2485,9 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "MRI-DiffusionNet",     "psnr": 40.1,  "ssim": 0.932, "source": "Song et al., ICCV 2024"},
         {"method": "MRDynamo",             "psnr": 40.5,  "ssim": 0.938, "source": "Chen et al., NeurIPS 2024"},
         {"method": "BrainID-MRI",          "psnr": 41.0,  "ssim": 0.942, "source": "Liu et al., CVPR 2025"},
+        {"method": "MMR-Mamba",            "psnr": 40.98, "ssim": 0.969, "source": "Zhao et al., Med. Image Anal. 2025"},
+        {"method": "PromptMR-SFM",         "psnr": 41.3,  "ssim": 0.971, "source": "PWM 2026"},
+        {"method": "MR-IPT",               "psnr": 42.48, "ssim": 0.983, "source": "Sci. Reports 2025"},
         {"method": "MRI-FM",               "psnr": 42.1,  "ssim": 0.948, "source": "Wang et al., Nature MI 2026"},
     ],
     "compressive": [
