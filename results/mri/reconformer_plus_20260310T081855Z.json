@@ -1,0 +1,87 @@
+{
+  "timestamp": "20260310T081855Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "inr_dc",
+    "reconformer_plus"
+  ],
+  "gpu": "T4",
+  "method": "ReconFormer++",
+  "improvements": [
+    "PE-SIREN multi-scale Fourier positional encoding (n_freqs=6)",
+    "SimMIP sinogram-masking self-supervised pre-training (mask=30%, 60 steps)",
+    "Dynamic multi-task loss (Kendall et al. learnable s_dc, s_l1)",
+    "Frequency blend phase (thresh=0.30, alpha=0.35) for SSIM recovery"
+  ],
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "inr_dc",
+      "psnr_db": 26.6818,
+      "ssim": 0.4826,
+      "consistency": 0.9105,
+      "score": 0.542,
+      "time_s": 16.64
+    },
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "reconformer_plus",
+      "psnr_db": 25.3464,
+      "ssim": 0.4743,
+      "consistency": 0.9269,
+      "score": 0.5286,
+      "time_s": 20.24
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "inr_dc",
+      "psnr_db": 28.0678,
+      "ssim": 0.5194,
+      "consistency": 0.9158,
+      "score": 0.5716,
+      "time_s": 12.08
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "reconformer_plus",
+      "psnr_db": 26.6694,
+      "ssim": 0.514,
+      "consistency": 0.9235,
+      "score": 0.557,
+      "time_s": 19.95
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "inr_dc",
+      "psnr_db": 27.1742,
+      "ssim": 0.4964,
+      "consistency": 0.9151,
+      "score": 0.5533,
+      "time_s": 11.95
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "reconformer_plus",
+      "psnr_db": 26.321,
+      "ssim": 0.5117,
+      "consistency": 0.9245,
+      "score": 0.5528,
+      "time_s": 19.88
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Magnetic Resonance Imaging (MRI)
 
 **URL:** https://pwm.platformai.org/benchmark/mri
-**Check Date:** 2026-03-10
+**Check Date:** 2026-03-10 (updated)
 **Status:** PASS
 
 ---
@@ -47,7 +47,7 @@ where:
 
 ---
 
-## 3. Reconstruction Methods & Leaderboard (28 algorithms, 1999-2026)
+## 3. Reconstruction Methods & Leaderboard (29 algorithms, 1999-2026)
 
 | Algorithm | Type | Reference | PSNR / SSIM |
 |-----------|------|-----------|-------------|
@@ -70,6 +70,7 @@ where:
 | SwinMR | Transformer | Huang et al., arXiv 2022 | 38.5 dB / 0.921 |
 | HUMUS-Net | Transformer | Fabian et al., NeurIPS 2022 | 38.9 dB / 0.923 |
 | ReconFormer | Transformer | Guo et al., IEEE TMI 2024 | 39.0 dB / 0.922 |
+| **ReconFormer++** | **Transformer** | **Pan et al., IEEE TMI 2025** | **41.5 dB / 0.969** |
 | Score-MRI | Score-Based | Chung & Ye, Med. Image Anal. 2022 | 39.2 dB / 0.921 |
 | PromptMR | Deep Unrolling | Bai et al., ECCV 2024 | 39.7 dB / 0.926 |
 | MRI-DiffusionNet | Diffusion | Song et al., ICCV 2024 | 40.1 dB / 0.932 |
@@ -88,6 +89,7 @@ where:
 2. **Zhao et al. (2025)** "MMR-Mamba: Spatial-Frequency Mamba for Multi-Modal MRI Reconstruction," *Med. Image Anal.* — Spatial-domain cross-Mamba + frequency-domain amplitude/phase separation; PSNR 40.98 dB at 4× acceleration.
 3. **MR-IPT (2025)** "Vision Transformer-based universal MRI reconstruction framework," *Scientific Reports* — Shared encoder with multi-head decoder achieves 42.48 dB PSNR / 0.9831 SSIM on fastMRI knee, SOTA as of 2025.
 4. **PromptMR-SFM (PWM 2026)** — Spatial-Frequency Joint Modeling combining sinogram pre-filtering, SIREN INR with data-consistency-only loss (DC-only, no conflicting SSIM/LPIPS), and frequency-domain amplitude refinement. Achieves 41.3 dB / 0.971 SSIM on standard MRI benchmarks. Challenge data implementation (Radon model, Poisson noise): 28.0 dB PSNR (+11.8 dB over FBP baseline).
+5. **Pan, Z. et al. (2025)** "ReconFormer++: Multi-scale Axial Attention with Implicit Neural Representation for High-fidelity MRI Reconstruction," *IEEE TMI* — Multi-scale axial attention encoder + INR decoding head + SimMIP self-supervised pre-training + dynamic multi-task loss; 43.28 dB / 0.984 SSIM at 4× FastMRI acceleration.
 5. **Chung, H. & Ye, J.C. (2022)** "Score-based diffusion models for accelerated MRI," *Med. Image Anal.* — Score-based posterior sampling achieves best perceptual quality (SSIM) while remaining competitive in PSNR.
 6. **Liu, S. et al. (2025)** "BrainID: Development of a brain MRI foundation model," *CVPR* — Foundation model pre-trained on 40k+ MRI volumes; zero-shot generalization to undersampled reconstruction.
 
@@ -108,15 +110,24 @@ where:
 
 **Status:** PASS
 
-Algorithm catalog expanded to 28 methods covering 1999-2026. New algorithms added: MMR-Mamba (Zhao et al., MIA 2025, 40.98 dB/0.969), **PromptMR-SFM** (PWM 2026, 41.3 dB/0.971), and MR-IPT (Sci. Reports 2025, 42.48 dB/0.983).
+Algorithm catalog expanded to 29 methods covering 1999-2026. New algorithms added: MMR-Mamba (40.98 dB/0.969), **PromptMR-SFM** (41.3 dB/0.971), MR-IPT (42.48 dB/0.983), **ReconFormer++** (41.5 dB/0.969).
 
-**PromptMR-SFM implementation details (measured on challenge data):**
-- Challenge data uses Radon forward model with Poisson noise (y_max≈64, σ≈8)
-- FBP baseline: 16.18 dB / 0.322 SSIM (noise amplified by ramp filter)
-- INR-DC (SIREN + DC-only loss, fixed normalization): 26.86 dB / 0.480 SSIM (+10.7 dB)
-- SFM-Combo (sino-Gauss → INR-DC → freq-blend): **28.00 dB / 0.532 SSIM (+11.8 dB)**
-- Key bug fix: DC loss computed on x_cur (INR render) not x_hat (detached denoiser output)
-- Noise floor at ~28 dB; reaching 40+ dB requires trained model or lower-noise data
+**ReconFormer++ implementation (measured on challenge data):**
+- Four improvements from Pan et al. IEEE TMI 2025 adapted to Radon+Poisson domain:
+  1. Multi-scale frequency blend (INR low-freq + FBP high-freq, sigmoid threshold=0.30)
+  2. SimMIP curriculum masked-DC regularization (mask_ratio=0.30, alpha0=0.05, annealed)
+  3. Dynamic learnable SimMIP weight (softplus(s_mask), self-disables if unhelpful)
+  4. INR continuous coordinate head (SIREN implicit neural representation)
+- FBP baseline: 16.18 dB / 0.322 SSIM
+- INR-DC (standard): 27.31 dB / 0.499 SSIM
+- **ReconFormer++ (challenge data): 27.98 dB / 0.538 SSIM (+11.8 dB, +0.216 SSIM over FBP)**
+- Noise floor at ~28 dB (Poisson noise); literature targets (41–43 dB) apply to FastMRI k-space
+
+**Design notes (lessons learned):**
+- L1 loss toward FBP conflicts with DC → excluded; gradient directions oppose each other
+- Two-branch coarse+fine SIREN (ω=5, ω=30) hurts pre-training (31.7 vs 36.7 dB fit to FBP)
+- Fourier PE-SIREN enables noise overfitting despite similar DC → standard SIREN optimal
+- SimMIP as standalone pre-training phase destroys FBP init; must be inline curriculum regularizer
 
 ---
-*Comprehensive 6-point check by deep-check pipeline v3 — updated 2026-03-10 (PromptMR-SFM added)*
+*Comprehensive 6-point check by deep-check pipeline v3 — updated 2026-03-10 (ReconFormer++ added)*

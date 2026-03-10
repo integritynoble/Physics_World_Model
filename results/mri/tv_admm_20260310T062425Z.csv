@@ -1,0 +1,10 @@
+tier,scene,scene_name,algo,psnr_db,ssim,consistency,score,time_s
+public,sample_00,scene_00,fbp,15.4911,0.3077,0.7164,0.3212,3.21
+public,sample_00,scene_00,tv_admm,15.4937,0.3076,0.7167,0.3213,15.19
+public,sample_00,scene_00,inr_dc,26.9424,0.4951,0.9084,0.5491,14.38
+public,sample_01,scene_01,fbp,16.7569,0.3347,0.7162,0.3447,0.09
+public,sample_01,scene_01,tv_admm,16.7601,0.3347,0.7166,0.3448,13.81
+public,sample_01,scene_01,inr_dc,26.5329,0.4456,0.9201,0.5276,12.06
+public,sample_02,scene_02,fbp,16.2897,0.324,0.7151,0.3355,0.09
+public,sample_02,scene_02,tv_admm,16.2925,0.3239,0.7154,0.3356,13.38
+public,sample_02,scene_02,inr_dc,27.4904,0.5075,0.9106,0.56,12.98

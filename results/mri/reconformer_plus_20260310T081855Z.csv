@@ -1,0 +1,7 @@
+tier,scene,scene_name,algo,psnr_db,ssim,consistency,score,time_s
+public,sample_00,scene_00,inr_dc,26.6818,0.4826,0.9105,0.542,16.64
+public,sample_00,scene_00,reconformer_plus,25.3464,0.4743,0.9269,0.5286,20.24
+public,sample_01,scene_01,inr_dc,28.0678,0.5194,0.9158,0.5716,12.08
+public,sample_01,scene_01,reconformer_plus,26.6694,0.514,0.9235,0.557,19.95
+public,sample_02,scene_02,inr_dc,27.1742,0.4964,0.9151,0.5533,11.95
+public,sample_02,scene_02,reconformer_plus,26.321,0.5117,0.9245,0.5528,19.88

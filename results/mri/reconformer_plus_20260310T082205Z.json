@@ -1,0 +1,53 @@
+{
+  "timestamp": "20260310T082205Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "reconformer_plus"
+  ],
+  "gpu": "T4",
+  "method": "ReconFormer++",
+  "improvements": [
+    "PE-SIREN multi-scale Fourier positional encoding (n_freqs=6)",
+    "SimMIP sinogram-masking self-supervised pre-training (mask=30%, 60 steps)",
+    "Dynamic multi-task loss (Kendall et al. learnable s_dc, s_l1)",
+    "Frequency blend phase (thresh=0.30, alpha=0.35) for SSIM recovery"
+  ],
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "reconformer_plus",
+      "psnr_db": 27.6096,
+      "ssim": 0.5365,
+      "consistency": 0.9159,
+      "score": 0.5739,
+      "time_s": 33.2
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "reconformer_plus",
+      "psnr_db": 28.0661,
+      "ssim": 0.522,
+      "consistency": 0.9121,
+      "score": 0.5719,
+      "time_s": 20.24
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "reconformer_plus",
+      "psnr_db": 28.2525,
+      "ssim": 0.5564,
+      "consistency": 0.9176,
+      "score": 0.5886,
+      "time_s": 20.49
+    }
+  ]
+}

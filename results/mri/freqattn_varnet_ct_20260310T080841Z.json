@@ -1,0 +1,68 @@
+{
+  "timestamp": "20260310T080841Z",
+  "variant": "mri",
+  "algorithm": "FreqAttn-VarNet-CT",
+  "gpu": "T4",
+  "config": {
+    "n_cascades": 8,
+    "base_ch": 32,
+    "n_epochs": 400,
+    "n_train": 150,
+    "batch_size": 8
+  },
+  "improvements": [
+    "Spectral attention at U-Net bottleneck (freq-domain differentiation)",
+    "Mask-conditioned DC: learnable alpha per cascade",
+    "GPU FBP initialisation (ramp filter + GPU backprojection)",
+    "Combined L1 + SSIM + frequency amplitude loss"
+  ],
+  "baseline_psnr_fbp": "~16 dB",
+  "baseline_psnr_sfm": "~28 dB",
+  "tiers": [
+    {
+      "tier": "public",
+      "samples": [
+        {
+          "tier": "public",
+          "sample": "sample_00",
+          "scene": "scene_00",
+          "psnr_db": 22.6735,
+          "ssim": 0.4985,
+          "psnr_fbp": 22.9159,
+          "ssim_fbp": 0.5459,
+          "psnr_gain": -0.2424,
+          "time_s": 1.294
+        },
+        {
+          "tier": "public",
+          "sample": "sample_01",
+          "scene": "scene_01",
+          "psnr_db": 24.5039,
+          "ssim": 0.5089,
+          "psnr_fbp": 24.7402,
+          "ssim_fbp": 0.5566,
+          "psnr_gain": -0.2363,
+          "time_s": 0.08
+        },
+        {
+          "tier": "public",
+          "sample": "sample_02",
+          "scene": "scene_02",
+          "psnr_db": 24.1822,
+          "ssim": 0.5096,
+          "psnr_fbp": 24.395,
+          "ssim_fbp": 0.5577,
+          "psnr_gain": -0.2128,
+          "time_s": 0.051
+        }
+      ],
+      "mean_psnr": 23.7865,
+      "mean_ssim": 0.5057,
+      "mean_fbp_psnr": 24.017,
+      "pass_psnr": false,
+      "pass_ssim": false,
+      "n_cascades": 8,
+      "base_ch": 32
+    }
+  ]
+}

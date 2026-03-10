@@ -1,0 +1,119 @@
+{
+  "timestamp": "20260310T062425Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "fbp",
+    "tv_admm",
+    "inr_dc"
+  ],
+  "gpu": "T4",
+  "bug_fixes": [
+    "Fixed DC normalization: use y_scale not adaptive cur_scale",
+    "Replaced DRUNet with TV-ADMM (appropriate for Radon artifacts)",
+    "INR uses DC-only loss (no conflicting SSIM/LPIPS)"
+  ],
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "fbp",
+      "psnr_db": 15.4911,
+      "ssim": 0.3077,
+      "consistency": 0.7164,
+      "score": 0.3212,
+      "time_s": 3.21
+    },
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "tv_admm",
+      "psnr_db": 15.4937,
+      "ssim": 0.3076,
+      "consistency": 0.7167,
+      "score": 0.3213,
+      "time_s": 15.19
+    },
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "inr_dc",
+      "psnr_db": 26.9424,
+      "ssim": 0.4951,
+      "consistency": 0.9084,
+      "score": 0.5491,
+      "time_s": 14.38
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "fbp",
+      "psnr_db": 16.7569,
+      "ssim": 0.3347,
+      "consistency": 0.7162,
+      "score": 0.3447,
+      "time_s": 0.09
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "tv_admm",
+      "psnr_db": 16.7601,
+      "ssim": 0.3347,
+      "consistency": 0.7166,
+      "score": 0.3448,
+      "time_s": 13.81
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "inr_dc",
+      "psnr_db": 26.5329,
+      "ssim": 0.4456,
+      "consistency": 0.9201,
+      "score": 0.5276,
+      "time_s": 12.06
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "fbp",
+      "psnr_db": 16.2897,
+      "ssim": 0.324,
+      "consistency": 0.7151,
+      "score": 0.3355,
+      "time_s": 0.09
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "tv_admm",
+      "psnr_db": 16.2925,
+      "ssim": 0.3239,
+      "consistency": 0.7154,
+      "score": 0.3356,
+      "time_s": 13.38
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "inr_dc",
+      "psnr_db": 27.4904,
+      "ssim": 0.5075,
+      "consistency": 0.9106,
+      "score": 0.56,
+      "time_s": 12.98
+    }
+  ]
+}

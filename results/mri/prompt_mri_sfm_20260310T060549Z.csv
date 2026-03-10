@@ -1,0 +1,10 @@
+tier,scene,scene_name,algo,psnr_db,ssim,consistency,score,time_s
+public,sample_00,scene_00,fbp,15.4911,0.3077,0.7164,0.3212,1.14
+public,sample_00,scene_00,pnp_drunet,15.7668,0.2268,0.7398,0.2964,4.95
+public,sample_00,scene_00,prompt_mri_sfm,10.7267,0.235,0.1966,0.1406,89.04
+public,sample_01,scene_01,fbp,16.7569,0.3347,0.7162,0.3447,0.1
+public,sample_01,scene_01,pnp_drunet,17.0868,0.2673,0.7424,0.3263,3.53
+public,sample_01,scene_01,prompt_mri_sfm,11.9382,0.2374,0.1993,0.1542,87.48
+public,sample_02,scene_02,fbp,16.2897,0.324,0.7151,0.3355,0.09
+public,sample_02,scene_02,pnp_drunet,16.6245,0.2585,0.7386,0.3173,3.64
+public,sample_02,scene_02,prompt_mri_sfm,11.5807,0.2408,0.201,0.1523,101.06

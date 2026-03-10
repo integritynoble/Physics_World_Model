@@ -1,0 +1,52 @@
+{
+  "timestamp": "20260310T062432Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "score_mri_dps"
+  ],
+  "gpu": "T4",
+  "improvements": [
+    "FBP crop fix",
+    "FBP scale calibration",
+    "SIRT with D_R normalisation",
+    "DRUNet annealed score prior (\u03c3_max=0.05)"
+  ],
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "score_mri_dps",
+      "psnr_db": 16.1793,
+      "ssim": 0.6709,
+      "consistency": 0.8914,
+      "score": 0.5085,
+      "time_s": 2.74
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "score_mri_dps",
+      "psnr_db": 17.3345,
+      "ssim": 0.692,
+      "consistency": 0.9038,
+      "score": 0.5309,
+      "time_s": 0.77
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "score_mri_dps",
+      "psnr_db": 16.8447,
+      "ssim": 0.6936,
+      "consistency": 0.901,
+      "score": 0.5261,
+      "time_s": 0.77
+    }
+  ]
+}

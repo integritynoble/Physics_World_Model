@@ -1,0 +1,4 @@
+tier,scene,scene_name,algo,psnr_db,ssim,consistency,score,time_s
+public,sample_00,scene_00,score_mri_inr,15.5381,0.2932,0.7242,0.3175,30.95
+public,sample_01,scene_01,score_mri_inr,16.7322,0.3141,0.7282,0.3386,28.14
+public,sample_02,scene_02,score_mri_inr,16.3205,0.3065,0.7232,0.3304,27.26

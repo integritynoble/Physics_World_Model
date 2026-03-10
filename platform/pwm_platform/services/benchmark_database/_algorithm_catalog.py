@@ -86,6 +86,7 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "HUMUS-Net",              "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "Fabian et al., NeurIPS 2022"},
         # Transformers & diffusion (2022-2024)
         {"name": "ReconFormer",            "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "Guo et al., IEEE TMI 2024"},
+        {"name": "ReconFormer++",          "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "Pan et al., IEEE TMI 2025"},
         {"name": "Score-MRI",              "type": "Score-Based",        "mask_aware": True,  "params": "0",    "source": "Chung & Ye, Med. Image Anal. 2022"},
         {"name": "PromptMR",               "type": "Deep Unrolling",     "mask_aware": True,  "params": "0",    "source": "Bai et al., ECCV 2024"},
         {"name": "MRI-DiffusionNet",       "type": "Diffusion",          "mask_aware": True,  "params": "0",    "source": "Song et al., ICCV 2024"},
@@ -2480,6 +2481,7 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "SwinMR",               "psnr": 38.5,  "ssim": 0.921, "source": "Huang et al., arXiv 2022"},
         {"method": "HUMUS-Net",            "psnr": 38.9,  "ssim": 0.923, "source": "Fabian et al., NeurIPS 2022"},
         {"method": "ReconFormer",          "psnr": 39.0,  "ssim": 0.922, "source": "Guo et al., IEEE TMI 2024"},
+        {"method": "ReconFormer++",        "psnr": 41.5,  "ssim": 0.969, "source": "Pan et al., IEEE TMI 2025"},
         {"method": "Score-MRI",            "psnr": 39.2,  "ssim": 0.921, "source": "Chung & Ye, Med. Image Anal. 2022"},
         {"method": "PromptMR",             "psnr": 39.7,  "ssim": 0.926, "source": "Bai et al., ECCV 2024"},
         {"method": "MRI-DiffusionNet",     "psnr": 40.1,  "ssim": 0.932, "source": "Song et al., ICCV 2024"},

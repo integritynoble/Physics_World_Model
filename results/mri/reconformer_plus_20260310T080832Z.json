@@ -1,0 +1,87 @@
+{
+  "timestamp": "20260310T080832Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "fbp",
+    "reconformer_plus"
+  ],
+  "gpu": "T4",
+  "method": "ReconFormer++",
+  "improvements": [
+    "PE-SIREN multi-scale Fourier positional encoding (n_freqs=6)",
+    "SimMIP sinogram-masking self-supervised pre-training (mask=30%, 60 steps)",
+    "Dynamic multi-task loss (Kendall et al. learnable s_dc, s_l1)",
+    "Frequency blend phase (thresh=0.30, alpha=0.35) for SSIM recovery"
+  ],
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "fbp",
+      "psnr_db": 15.4911,
+      "ssim": 0.3077,
+      "consistency": 0.7164,
+      "score": 0.3212,
+      "time_s": 1.43
+    },
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "reconformer_plus",
+      "psnr_db": 16.735,
+      "ssim": 0.1429,
+      "consistency": 0.8175,
+      "score": 0.288,
+      "time_s": 18.71
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "fbp",
+      "psnr_db": 16.7569,
+      "ssim": 0.3347,
+      "consistency": 0.7162,
+      "score": 0.3447,
+      "time_s": 0.09
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "reconformer_plus",
+      "psnr_db": 16.5082,
+      "ssim": 0.1679,
+      "consistency": 0.6876,
+      "score": 0.2698,
+      "time_s": 15.82
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "fbp",
+      "psnr_db": 16.2897,
+      "ssim": 0.324,
+      "consistency": 0.7151,
+      "score": 0.3355,
+      "time_s": 0.09
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "reconformer_plus",
+      "psnr_db": 17.6294,
+      "ssim": 0.1761,
+      "consistency": 0.7617,
+      "score": 0.2991,
+      "time_s": 16.13
+    }
+  ]
+}

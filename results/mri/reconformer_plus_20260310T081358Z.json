@@ -1,0 +1,121 @@
+{
+  "timestamp": "20260310T081358Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "fbp",
+    "inr_dc",
+    "reconformer_plus"
+  ],
+  "gpu": "T4",
+  "method": "ReconFormer++",
+  "improvements": [
+    "PE-SIREN multi-scale Fourier positional encoding (n_freqs=6)",
+    "SimMIP sinogram-masking self-supervised pre-training (mask=30%, 60 steps)",
+    "Dynamic multi-task loss (Kendall et al. learnable s_dc, s_l1)",
+    "Frequency blend phase (thresh=0.30, alpha=0.35) for SSIM recovery"
+  ],
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "fbp",
+      "psnr_db": 15.4911,
+      "ssim": 0.3077,
+      "consistency": 0.7164,
+      "score": 0.3212,
+      "time_s": 1.68
+    },
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "inr_dc",
+      "psnr_db": 26.9058,
+      "ssim": 0.4773,
+      "consistency": 0.91,
+      "score": 0.542,
+      "time_s": 14.37
+    },
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "reconformer_plus",
+      "psnr_db": 19.209,
+      "ssim": 0.2742,
+      "consistency": 0.9294,
+      "score": 0.3876,
+      "time_s": 19.3
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "fbp",
+      "psnr_db": 16.7569,
+      "ssim": 0.3347,
+      "consistency": 0.7162,
+      "score": 0.3447,
+      "time_s": 0.08
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "inr_dc",
+      "psnr_db": 27.8763,
+      "ssim": 0.4846,
+      "consistency": 0.9147,
+      "score": 0.5555,
+      "time_s": 13.02
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "reconformer_plus",
+      "psnr_db": 19.7186,
+      "ssim": 0.2576,
+      "consistency": 0.9411,
+      "score": 0.3884,
+      "time_s": 19.27
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "fbp",
+      "psnr_db": 16.2897,
+      "ssim": 0.324,
+      "consistency": 0.7151,
+      "score": 0.3355,
+      "time_s": 0.07
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "inr_dc",
+      "psnr_db": 27.2633,
+      "ssim": 0.4892,
+      "consistency": 0.9052,
+      "score": 0.5493,
+      "time_s": 11.53
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "reconformer_plus",
+      "psnr_db": 19.5901,
+      "ssim": 0.2684,
+      "consistency": 0.9359,
+      "score": 0.3904,
+      "time_s": 17.56
+    }
+  ]
+}
