@@ -69,12 +69,29 @@ A-scan reconstruction: r(z) = FT{I_D(k)} (after reference subtraction and resamp
 
 ## 5. Local Dataset & GCS Status
 
-**GCS datasets:**
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/oct_challenge_public.h5`
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/oct_challenge_dev.h5`
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/oct_challenge_hidden.h5`
+**Local benchmark dataset:** `datasets/benchmark/oct/` (generated 2026-03-10)
+- Generator: `datasets/benchmark/oct/generate_dataset.py`
+- Public: 12 samples (4 normal retina + 4 pathological + 4 anterior segment)
+- Dev: 20 samples (augmented, medium mismatch)
+- Hidden: 20 samples (adversarial, wide mismatch)
+- Forward model: axial PSF convolution + speckle noise (Rayleigh) + depth roll-off + motion artifacts
+- Mismatch params: `speckle_snr_db`, `axial_psf_fwhm_um`, `motion_artifact_px`, `signal_rolloff_db`
+- HDF5 per sample: `x_true (256,256)`, `bscan_ideal (256,256)`, `bscan_measured (256,256)`
+- CPU reconstruction: median filtering + bilateral denoising (speckle reduction)
+- Baseline metrics: public avg PSNR=22.33 dB / SSIM=0.9390, dev avg PSNR=20.40 dB / SSIM=0.9059, hidden avg PSNR=19.15 dB / SSIM=0.8711
 
-**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/oct/`.
+**GCS datasets:**
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/oct/oct_challenge_public.h5`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/oct/oct_challenge_dev.h5`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/oct/oct_challenge_hidden.h5`
+
+**Gallery images (4 scenes, 24 PNGs):** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/oct/`.
+- `scene_00`: normal retina (6 images: gt, measurement_I, measurement_II, recon_I, recon_II, recon_III)
+- `scene_01`: drusen pathology
+- `scene_02`: anterior segment
+- `scene_03`: foveal retina
+
+**Local gallery:** `platform/pwm_platform/static/img/benchmark_gallery/oct/scene_{00,01,02,03}/`
 
 ---
 
