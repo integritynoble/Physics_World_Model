@@ -1,0 +1,56 @@
+{
+  "timestamp": "20260310T093344Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "modl_net_plus"
+  ],
+  "gpu": "T4",
+  "method": "MoDL-Net++",
+  "key_innovation": "Residual SIREN DC: starts from SIRT+TV (~31 dB), learns correction only",
+  "improvements": [
+    "Residual SIREN: x_cur = clamp(x_sirt + tanh(siren)*max_corr, 0, 1)",
+    "Zero-init warm-up (30 steps): correction starts near 0 \u2192 DC from ~31 dB",
+    "Annealed correction scale: 0.20\u21920.15\u21920.10\u21920.08\u21920.05 (coarse-to-fine)",
+    "MSE DC loss (35\u00d7 better convergence than Poisson NLL)",
+    "Frequency-filtered correction: HF damped at 0.4 above freq=0.35",
+    "SIRT+TV 300 iters, 5-stage DC (480 total steps)"
+  ],
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "modl_net_plus",
+      "psnr_db": 29.8005,
+      "ssim": 0.8294,
+      "consistency": 0.9209,
+      "score": 0.7139,
+      "time_s": 24.44
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "modl_net_plus",
+      "psnr_db": 31.3975,
+      "ssim": 0.8589,
+      "consistency": 0.924,
+      "score": 0.7423,
+      "time_s": 20.49
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "modl_net_plus",
+      "psnr_db": 30.8023,
+      "ssim": 0.8562,
+      "consistency": 0.924,
+      "score": 0.7353,
+      "time_s": 20.63
+    }
+  ]
+}

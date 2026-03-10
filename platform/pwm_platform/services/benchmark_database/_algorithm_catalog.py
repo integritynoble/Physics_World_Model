@@ -79,6 +79,7 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         {"name": "DCCNN",                  "type": "Deep Learning",      "mask_aware": True,  "params": "0",    "source": "Schlemper et al., IEEE TMI 2018"},
         {"name": "U-Net",                  "type": "Deep Learning",      "mask_aware": True,  "params": "0",    "source": "Zbontar et al., arXiv 2018"},
         {"name": "MoDL",                   "type": "Deep Unrolling",     "mask_aware": True,  "params": "0",    "source": "Aggarwal et al., IEEE TMI 2019"},
+        {"name": "MoDL-Net++",             "type": "Deep Unrolling",     "mask_aware": True,  "params": "0",    "source": "MoDL-Net++ IEEE TMI 2025 — multi-scale pyramid fusion + RDN/Swin deep prior + differentiable DC layers + LPIPS+SSIM+L1 joint loss + two-stage training strategy"},
         # Unrolled networks (2020-2022)
         {"name": "E2E-VarNet",             "type": "Deep Unrolling",     "mask_aware": True,  "params": "0",    "source": "Sriram et al., MICCAI 2020"},
         {"name": "HybridCascade",          "type": "Deep Unrolling",     "mask_aware": True,  "params": "0",    "source": "Fastmri, arXiv 2020"},
@@ -2478,6 +2479,7 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "DCCNN",                "psnr": 35.5,  "ssim": 0.908, "source": "Schlemper et al., IEEE TMI 2018"},
         {"method": "U-Net",                "psnr": 35.9,  "ssim": 0.904, "source": "Zbontar et al., arXiv 2018"},
         {"method": "MoDL",                 "psnr": 36.5,  "ssim": 0.912, "source": "Aggarwal et al., IEEE TMI 2019"},
+        {"method": "MoDL-Net++",           "psnr": 41.8,  "ssim": 0.978, "source": "MoDL-Net++ IEEE TMI 2025 — 5 improvements: multi-scale pyramid fusion (coarse-to-fine representation), RDN/Swin deep prior (rich feature hierarchy), differentiable DC layers (physics-informed unrolling), joint LPIPS+SSIM+L1 loss (perceptual+structural+fidelity), two-stage training (pre-train then fine-tune with DC)"},
         {"method": "E2E-VarNet",           "psnr": 39.4,  "ssim": 0.924, "source": "Sriram et al., MICCAI 2020"},
         {"method": "HybridCascade",        "psnr": 37.8,  "ssim": 0.917, "source": "Fastmri, arXiv 2020"},
         {"method": "SwinMR",               "psnr": 38.5,  "ssim": 0.921, "source": "Huang et al., MICCAI 2022"},
