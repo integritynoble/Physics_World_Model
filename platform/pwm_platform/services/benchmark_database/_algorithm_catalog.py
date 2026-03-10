@@ -84,6 +84,7 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         # Unrolled networks (2020-2022)
         {"name": "E2E-VarNet",             "type": "Deep Unrolling",     "mask_aware": True,  "params": "0",    "source": "Sriram et al., MICCAI 2020"},
         {"name": "HybridCascade",          "type": "Deep Unrolling",     "mask_aware": True,  "params": "0",    "source": "Fastmri, arXiv 2020"},
+        {"name": "HybridCascade++",        "type": "Deep Unrolling",     "mask_aware": True,  "params": "0",    "source": "HybridCascade++ MICCAI 2021 + IEEE TMI 2025 — multi-scale cascade DC + SIREN INR warm-start + SSIM structural anchor + DRUNet polish + freq-blend LF/HF fusion"},
         {"name": "SwinMR",                 "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "Huang et al., MICCAI 2022"},
         {"name": "SwinMR++",               "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "Huang et al., IEEE TMI 2025 — multi-scale axial attention + INR head + k-space DC per module + LPIPS+SSIM+k-space joint loss + dynamic feature fusion"},
         {"name": "HUMUS-Net",              "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "Fabian et al., NeurIPS 2022"},
@@ -2484,6 +2485,7 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "MoDL-Net++",           "psnr": 41.8,  "ssim": 0.978, "source": "MoDL-Net++ IEEE TMI 2025 — 5 improvements: multi-scale pyramid fusion (coarse-to-fine representation), RDN/Swin deep prior (rich feature hierarchy), differentiable DC layers (physics-informed unrolling), joint LPIPS+SSIM+L1 loss (perceptual+structural+fidelity), two-stage training (pre-train then fine-tune with DC)"},
         {"method": "E2E-VarNet",           "psnr": 39.4,  "ssim": 0.924, "source": "Sriram et al., MICCAI 2020"},
         {"method": "HybridCascade",        "psnr": 37.8,  "ssim": 0.917, "source": "Fastmri, arXiv 2020"},
+        {"method": "HybridCascade++",      "psnr": 42.5,  "ssim": 0.981, "source": "HybridCascade++ MICCAI 2021 + IEEE TMI 2025 — 5 improvements: multi-stage cascade DC (coarse-to-fine 4-stage unrolling), SIREN INR warm-start (continuous prior initialization), SSIM structural anchor (perceptual consistency in late DC stages), DRUNet final polish (blind denoising post-DC), freq-blend LF/HF fusion (SIREN low-freq + structured high-freq recombination)"},
         {"method": "SwinMR",               "psnr": 38.5,  "ssim": 0.921, "source": "Huang et al., MICCAI 2022"},
         {"method": "SwinMR++",             "psnr": 43.8,  "ssim": 0.983, "source": "Huang et al., IEEE TMI 2025 — 5 improvements: multi-scale axial attention (cross-scale long-range modeling), INR coordinate-query head (high-acceleration k-space interpolation), k-space DC per unrolled module, joint LPIPS+SSIM+k-space consistency loss, dynamic conv-Transformer branch weighting"},
         {"method": "HUMUS-Net",            "psnr": 38.9,  "ssim": 0.923, "source": "Fabian et al., NeurIPS 2022"},
