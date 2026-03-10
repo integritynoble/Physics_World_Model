@@ -1,0 +1,4 @@
+tier,scene,scene_name,algo,psnr_db,ssim,consistency,score,time_s
+public,sample_00,scene_00,swinmr_plus,29.695,0.7947,0.9274,0.7003,33.27
+public,sample_01,scene_01,swinmr_plus,31.0964,0.8733,0.9155,0.7434,27.73
+public,sample_02,scene_02,swinmr_plus,30.9522,0.8762,0.921,0.7442,28.01

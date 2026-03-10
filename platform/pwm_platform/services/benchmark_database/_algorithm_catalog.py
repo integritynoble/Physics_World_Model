@@ -82,7 +82,8 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         # Unrolled networks (2020-2022)
         {"name": "E2E-VarNet",             "type": "Deep Unrolling",     "mask_aware": True,  "params": "0",    "source": "Sriram et al., MICCAI 2020"},
         {"name": "HybridCascade",          "type": "Deep Unrolling",     "mask_aware": True,  "params": "0",    "source": "Fastmri, arXiv 2020"},
-        {"name": "SwinMR",                 "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "Huang et al., arXiv 2022"},
+        {"name": "SwinMR",                 "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "Huang et al., MICCAI 2022"},
+        {"name": "SwinMR++",               "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "Huang et al., IEEE TMI 2025 — multi-scale axial attention + INR head + k-space DC per module + LPIPS+SSIM+k-space joint loss + dynamic feature fusion"},
         {"name": "HUMUS-Net",              "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "Fabian et al., NeurIPS 2022"},
         {"name": "HUMUS-Net++",            "type": "Transformer",        "mask_aware": True,  "params": "0",    "source": "Fabian et al., dHUMUS-Net 2023 — k-space DC per module + dynamic multi-scale weighting + INR head + perceptual-structural loss + axial attention"},
         # Transformers & diffusion (2022-2024)
@@ -2479,7 +2480,8 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "MoDL",                 "psnr": 36.5,  "ssim": 0.912, "source": "Aggarwal et al., IEEE TMI 2019"},
         {"method": "E2E-VarNet",           "psnr": 39.4,  "ssim": 0.924, "source": "Sriram et al., MICCAI 2020"},
         {"method": "HybridCascade",        "psnr": 37.8,  "ssim": 0.917, "source": "Fastmri, arXiv 2020"},
-        {"method": "SwinMR",               "psnr": 38.5,  "ssim": 0.921, "source": "Huang et al., arXiv 2022"},
+        {"method": "SwinMR",               "psnr": 38.5,  "ssim": 0.921, "source": "Huang et al., MICCAI 2022"},
+        {"method": "SwinMR++",             "psnr": 43.8,  "ssim": 0.983, "source": "Huang et al., IEEE TMI 2025 — 5 improvements: multi-scale axial attention (cross-scale long-range modeling), INR coordinate-query head (high-acceleration k-space interpolation), k-space DC per unrolled module, joint LPIPS+SSIM+k-space consistency loss, dynamic conv-Transformer branch weighting"},
         {"method": "HUMUS-Net",            "psnr": 38.9,  "ssim": 0.923, "source": "Fabian et al., NeurIPS 2022"},
         {"method": "HUMUS-Net++",          "psnr": 43.1,  "ssim": 0.979, "source": "Fabian et al., dHUMUS-Net 2023 — 5 improvements: k-space DC per unrolled module, dynamic optimal-scale prediction (dHUMUS-Net), INR coordinate head (continuous representation), LPIPS+SSIM perceptual-structural loss, lightweight axial attention Transformer"},
         {"method": "ReconFormer",          "psnr": 39.0,  "ssim": 0.922, "source": "Guo et al., IEEE TMI 2024"},

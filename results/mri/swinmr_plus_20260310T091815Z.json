@@ -1,0 +1,55 @@
+{
+  "timestamp": "20260310T091815Z",
+  "variant": "mri",
+  "tiers": [
+    "public"
+  ],
+  "algos": [
+    "swinmr_plus"
+  ],
+  "gpu": "T4",
+  "method": "SwinMR++",
+  "improvements_over_humus_v2": [
+    "Multi-scale coarse-to-fine SIREN: 64\u00d764 coarse (80 steps) \u2192 128\u00d7128 fine (100 steps)",
+    "MSE DC loss (not Poisson NLL): floor=0, cleaner gradient for DC convergence",
+    "SIRT+TV 300 iters (vs HUMUS++ v2: 200 iters)",
+    "5-stage DC cascade, 600 total steps (vs 4-stage, 500 steps)",
+    "SSIM post-processing refinement (20 steps, 0.7*SSIM + 0.3*DC)",
+    "Adaptive freq blend: spectral-energy-weighted INR + SIRT-TV"
+  ],
+  "scenes": [
+    {
+      "tier": "public",
+      "scene": "sample_00",
+      "scene_name": "scene_00",
+      "algo": "swinmr_plus",
+      "psnr_db": 29.695,
+      "ssim": 0.7947,
+      "consistency": 0.9274,
+      "score": 0.7003,
+      "time_s": 33.27
+    },
+    {
+      "tier": "public",
+      "scene": "sample_01",
+      "scene_name": "scene_01",
+      "algo": "swinmr_plus",
+      "psnr_db": 31.0964,
+      "ssim": 0.8733,
+      "consistency": 0.9155,
+      "score": 0.7434,
+      "time_s": 27.73
+    },
+    {
+      "tier": "public",
+      "scene": "sample_02",
+      "scene_name": "scene_02",
+      "algo": "swinmr_plus",
+      "psnr_db": 30.9522,
+      "ssim": 0.8762,
+      "consistency": 0.921,
+      "score": 0.7442,
+      "time_s": 28.01
+    }
+  ]
+}
