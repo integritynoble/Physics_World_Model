@@ -64,7 +64,7 @@ class Settings(BaseSettings):
     # ── Stripe (credit card payments) ─────────────────────────────────
     STRIPE_API_KEY: str = ""                     # sk_live_... or sk_test_...
     STRIPE_WEBHOOK_SECRET: str = ""              # whsec_...
-    STRIPE_SUCCESS_URL: str = "https://pwm.platformai.org/billing?status=success"
+    STRIPE_SUCCESS_URL: str = "https://pwm.platformai.org/subscription?status=success"
     STRIPE_CANCEL_URL: str = "https://pwm.platformai.org/pricing?status=cancelled"
 
     # Stripe Price IDs for each plan (created in Stripe Dashboard)
@@ -83,7 +83,7 @@ class Settings(BaseSettings):
     WECHAT_CERT_SERIAL_NO: str = ""
     WECHAT_PUBLIC_KEY: str = ""
     WECHAT_PUBLIC_KEY_ID: str = ""
-    WECHAT_NOTIFY_URL: str = "https://pwm.platformai.org/api/v1/billing/wechat-webhook"
+    WECHAT_NOTIFY_URL: str = "https://pwm.platformai.org/api/v1/subscription/webhook/wechat"
     WECHAT_PAY_EXCHANGE_RATE: float = 7.1        # USD→CNY fallback rate
 
     # ── Pydantic-settings config ─────────────────────────────────────────

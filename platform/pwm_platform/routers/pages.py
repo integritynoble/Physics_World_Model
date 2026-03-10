@@ -558,14 +558,14 @@ async def pricing_page(
     })
 
 
-@router.get("/billing", response_class=HTMLResponse)
-async def billing_page(
+@router.get("/subscription", response_class=HTMLResponse)
+async def subscription_page(
     request: Request,
     status: str = "",
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """User billing dashboard — credits, transactions, payments."""
+    """User subscription dashboard — credits, transactions, payments."""
     from pwm_platform.services.billing_service import BillingService
 
     svc = BillingService(db)
@@ -574,7 +574,7 @@ async def billing_page(
     transactions = await svc.get_transaction_history(user.id, limit=20)
     payments = await svc.get_payment_history(user.id, limit=20)
 
-    return templates.TemplateResponse("billing.html", {
+    return templates.TemplateResponse("subscription.html", {
         "request": request,
         "user": user,
         "status": status,

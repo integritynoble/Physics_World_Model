@@ -1,16 +1,16 @@
 """
-PWM Billing Router — subscription management, Stripe + WeChat Pay integration.
+PWM Subscription Router — subscription management, Stripe + WeChat Pay integration.
 
 Endpoints:
-  GET  /api/v1/billing/balance          — current credit balance
-  GET  /api/v1/billing/transactions     — credit transaction history
-  GET  /api/v1/billing/payments         — payment order history
-  POST /api/v1/billing/checkout/stripe  — create Stripe checkout session
-  POST /api/v1/billing/checkout/wechat  — create WeChat Pay order
-  POST /api/v1/billing/webhook/stripe   — Stripe payment webhook
-  POST /api/v1/billing/webhook/wechat   — WeChat payment webhook
-  POST /api/v1/billing/cancel           — cancel Stripe subscription
-  POST /api/v1/billing/purchase-overage — purchase extra run/report credits
+  GET  /api/v1/subscription/balance          — current credit balance
+  GET  /api/v1/subscription/transactions     — credit transaction history
+  GET  /api/v1/subscription/payments         — payment order history
+  POST /api/v1/subscription/checkout/stripe  — create Stripe checkout session
+  POST /api/v1/subscription/checkout/wechat  — create WeChat Pay order
+  POST /api/v1/subscription/webhook/stripe   — Stripe payment webhook
+  POST /api/v1/subscription/webhook/wechat   — WeChat payment webhook
+  POST /api/v1/subscription/cancel           — cancel Stripe subscription
+  POST /api/v1/subscription/purchase-overage — purchase extra run/report credits
 
 Adapted from CompareGPT's payment operate_view.py.
 """
@@ -42,7 +42,7 @@ from pwm_platform.services.billing_service import (
 )
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/v1/billing", tags=["billing"])
+router = APIRouter(prefix="/api/v1/subscription", tags=["subscription"])
 
 
 # ── Stripe price map (plan_tier + period → Stripe Price ID) ──────────
