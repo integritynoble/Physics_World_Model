@@ -394,6 +394,31 @@ def _get_system_catalog_stats() -> dict:
     }
 
 
+_grouped_variants_cache: dict | None = None
+
+
+def _build_grouped_variants() -> dict[str, list[dict]]:
+    """Build category → variants mapping for Common Mode modality picker.
+
+    Cached after first call.
+    """
+    global _grouped_variants_cache
+    if _grouped_variants_cache is not None:
+        return _grouped_variants_cache
+
+    from pwm_platform.services.benchmark_database import VARIANT_DATABASE
+
+    groups: dict[str, list[dict]] = {}
+    for vk, v in sorted(VARIANT_DATABASE.items()):
+        cat = v.get("category", "other")
+        groups.setdefault(cat, []).append({
+            "variant_key": vk,
+            "display_name": v.get("display_name", vk),
+        })
+    _grouped_variants_cache = groups
+    return _grouped_variants_cache
+
+
 def _build_sidebar_data() -> dict:
     """Build sidebar context: categories with modalities + primitives.
 
@@ -504,9 +529,68 @@ async def dashboard_redirect():
     return RedirectResponse("/speclab", status_code=301)
 
 
+# ── Pricing & Billing pages ──────────────────────────────────────────────
+
+
+@router.get("/pricing", response_class=HTMLResponse)
+async def pricing_page(
+    request: Request,
+    status: str = "",
+    user: Optional[User] = Depends(get_optional_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Subscription pricing page with Stripe + WeChat payment options."""
+    from pwm_platform.services.billing_service import BillingService, PLANS, WECHAT_CREDIT_PACKS
+
+    current_plan = "free"
+    if user:
+        svc = BillingService(db)
+        balance = await svc.get_account_balance(user.id)
+        current_plan = balance["plan_tier"]
+
+    return templates.TemplateResponse("pricing.html", {
+        "request": request,
+        "user": user,
+        "status": status,
+        "current_plan": current_plan,
+        "plans": PLANS,
+        "wechat_packs": WECHAT_CREDIT_PACKS,
+    })
+
+
+@router.get("/billing", response_class=HTMLResponse)
+async def billing_page(
+    request: Request,
+    status: str = "",
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """User billing dashboard — credits, transactions, payments."""
+    from pwm_platform.services.billing_service import BillingService
+
+    svc = BillingService(db)
+    balance = await svc.get_account_balance(user.id)
+    plan_info = svc.get_plan_info(balance["plan_tier"])
+    transactions = await svc.get_transaction_history(user.id, limit=20)
+    payments = await svc.get_payment_history(user.id, limit=20)
+
+    return templates.TemplateResponse("billing.html", {
+        "request": request,
+        "user": user,
+        "status": status,
+        "balance": balance,
+        "plan_features": plan_info.get("features", []),
+        "transactions": transactions,
+        "payments": payments,
+    })
+
+
 @router.get("/speclab", response_class=HTMLResponse)
 async def speclab(
     request: Request,
+    mode: str = "common",
+    modality: str = "",
+    algorithm: str = "",
     user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db),
 ):
@@ -531,6 +615,22 @@ async def speclab(
         from pwm_platform.services.gemini_client import list_user_sessions
         chat_sessions = await list_user_sessions(db, user.id, variant_key="sd_cassi")
 
+    # Build grouped_variants for Common Mode modality picker
+    grouped_variants = _build_grouped_variants()
+
+    # Pre-populate algorithm list if modality is specified
+    preselect_algorithms = []
+    if modality:
+        from pwm_platform.services.benchmark_database import get_variant as _get_v
+        from pwm_platform.services.benchmark_database._algorithm_catalog import get_algorithms
+
+        v = _get_v(modality)
+        if v:
+            cat = v.get("category", "compressive")
+            preselect_algorithms = get_algorithms(modality, cat)
+
+    speclab_mode = mode if mode in ("common", "advanced") else "common"
+
     return templates.TemplateResponse("speclab.html", {
         "request": request,
         "user": user,
@@ -539,6 +639,11 @@ async def speclab(
         "chat_sessions": chat_sessions,
         "sessions": chat_sessions,
         "current_session_id": "",
+        "speclab_mode": speclab_mode,
+        "grouped_variants": grouped_variants,
+        "preselect_modality": modality,
+        "preselect_algorithm": algorithm,
+        "preselect_algorithms": preselect_algorithms,
         **sidebar_data,
     })
 
@@ -682,15 +787,13 @@ async def datasets_page(
         entry = VARIANT_DATABASE.get(fk)
         if entry is None:
             continue
-        benchmarks = entry.get("benchmarks", [])
-        challenge = next((b for b in benchmarks if b.get("is_challenge")), None)
-        ds = challenge.get("benchmark_dataset") if challenge else None
-        lb = challenge.get("leaderboard", [])[:3] if challenge else []
+        # Use standard (normal) leaderboard — shows PSNR/SSIM under ideal conditions
+        normal_lb = entry.get("normal_leaderboard") or []
+        lb = normal_lb[:3]
         featured.append({
             "variant_key": fk,
             "display_name": entry["display_name"],
             "category": category_labels.get(entry.get("category", ""), entry.get("category", "")),
-            "benchmark_dataset": ds,
             "leaderboard": lb,
         })
 
@@ -983,6 +1086,15 @@ async def challenge_tier_page(
         scene_idx = scene_idx_shared
         gallery_dir = shared_gallery_dir
         base = f"/static/img/benchmark_gallery/{gallery_key}/scene_{scene_idx:02d}"
+    # Determine recon base URL: if tier-specific dir lacks recon images, fall back to shared
+    recon_base = base
+    if gallery_dir != shared_gallery_dir:
+        has_recon = any(gallery_dir.glob("recon_*.png"))
+        if not has_recon:
+            # Fall back to shared scene directory for recon images
+            shared_scene_dir = gallery_base / f"scene_{scene_idx:02d}"
+            if shared_scene_dir.is_dir() and any(shared_scene_dir.glob("recon_*.png")):
+                recon_base = f"/static/img/benchmark_gallery/{gallery_key}/scene_{scene_idx:02d}"
     # Only show data preview for public and dev tiers (hidden has no visible data)
     data_preview = None
     if tier_name in ("public", "dev") and gallery_dir.is_dir() and (gallery_dir / "gt.png").exists():
@@ -994,12 +1106,14 @@ async def challenge_tier_page(
                 "view2_label": labels[1],
                 "scene_idx": scene_idx,
                 "base_url": base,
+                "recon_base_url": recon_base,
             }
         else:
             data_preview = {
                 "is_multi": False,
                 "scene_idx": scene_idx,
                 "base_url": base,
+                "recon_base_url": recon_base,
             }
         # Check for best-algorithm reconstruction image
         # Try tier-specific dir first (algorithms_dev/), then shared (algorithms/)

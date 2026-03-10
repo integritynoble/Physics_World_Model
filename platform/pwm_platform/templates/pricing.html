@@ -1,0 +1,348 @@
+{% extends "base.html" %}
+{% block title %}Pricing — PWM Reference Cloud{% endblock %}
+
+{% block content %}
+<div class="space-y-12">
+
+    <!-- Hero -->
+    <div class="text-center">
+        <h1 class="text-3xl font-bold text-gray-900">PWM Reference Cloud</h1>
+        <p class="mt-2 text-lg text-gray-500">Trusted reconstruction, benchmark-aligned validation, and official PWM reports</p>
+        {% if status == 'cancelled' %}
+        <div class="mt-4 inline-flex items-center px-4 py-2 rounded-md bg-yellow-50 text-yellow-800 text-sm">
+            Payment was cancelled. You can try again anytime.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Billing toggle -->
+    <div class="flex justify-center items-center space-x-4">
+        <span id="label-monthly" class="text-sm font-medium text-indigo-600">Monthly</span>
+        <button id="billing-toggle" onclick="toggleBilling()" class="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition-colors">
+            <span id="toggle-dot" class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-1"></span>
+        </button>
+        <span id="label-yearly" class="text-sm font-medium text-gray-400">Yearly <span class="text-green-600 text-xs">(save ~17%)</span></span>
+    </div>
+
+    <!-- Plan cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- Free -->
+        <div class="bg-white rounded-lg shadow border border-gray-200 p-6 flex flex-col">
+            <h3 class="text-lg font-semibold text-gray-900">Community</h3>
+            <p class="text-sm text-gray-500 mt-1">Students & first-time users</p>
+            <div class="mt-4">
+                <span class="text-3xl font-bold text-gray-900">$0</span>
+                <span class="text-gray-500">/month</span>
+            </div>
+            <ul class="mt-6 space-y-2 text-sm text-gray-600 flex-1">
+                <li>3 reference runs / month</li>
+                <li>Small datasets only</li>
+                <li>Standard methods</li>
+                <li>Basic output preview</li>
+                <li>Public queue</li>
+                <li class="text-gray-400">No validation reports</li>
+                <li class="text-gray-400 italic text-xs">"For research preview only" watermark</li>
+            </ul>
+            {% if user %}
+                {% if current_plan == 'free' %}
+                <div class="mt-6 text-center text-sm text-gray-500 font-medium py-2 border border-gray-300 rounded-md">Current Plan</div>
+                {% else %}
+                <div class="mt-6 text-center text-sm text-gray-400 py-2">Included by default</div>
+                {% endif %}
+            {% else %}
+            <a href="/signup" class="mt-6 block text-center px-4 py-2 border border-indigo-600 text-indigo-600 rounded-md hover:bg-indigo-50 text-sm font-medium">
+                Get Started Free
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- Researcher -->
+        <div class="bg-white rounded-lg shadow border border-gray-200 p-6 flex flex-col">
+            <h3 class="text-lg font-semibold text-gray-900">Researcher</h3>
+            <p class="text-sm text-gray-500 mt-1">PhD students & postdocs</p>
+            <div class="mt-4">
+                <span class="text-3xl font-bold text-gray-900 price-monthly">$49</span>
+                <span class="text-3xl font-bold text-gray-900 price-yearly hidden">$490</span>
+                <span class="text-gray-500 price-monthly">/month</span>
+                <span class="text-gray-500 price-yearly hidden">/year</span>
+            </div>
+            <ul class="mt-6 space-y-2 text-sm text-gray-600 flex-1">
+                <li>20 reference runs / month</li>
+                <li>Small–medium datasets</li>
+                <li>Leaderboard-backed methods</li>
+                <li>Downloadable reconstructions</li>
+                <li class="font-medium text-indigo-600">5 PWM validation reports / month</li>
+                <li>Run history & reproducibility logs</li>
+                <li>Priority queue</li>
+            </ul>
+            {% if user %}
+            <button onclick="subscribe('researcher')" class="mt-6 w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm font-medium {% if current_plan == 'researcher' %}opacity-50 cursor-not-allowed{% endif %}"
+                {% if current_plan == 'researcher' %}disabled{% endif %}>
+                {% if current_plan == 'researcher' %}Current Plan{% else %}Subscribe{% endif %}
+            </button>
+            {% else %}
+            <a href="/login" class="mt-6 block text-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm font-medium">
+                Sign in to Subscribe
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- Pro Lab (recommended) -->
+        <div class="bg-white rounded-lg shadow-lg border-2 border-indigo-500 p-6 flex flex-col relative">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                RECOMMENDED
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900">Pro Lab</h3>
+            <p class="text-sm text-gray-500 mt-1">Active labs & startups</p>
+            <div class="mt-4">
+                <span class="text-3xl font-bold text-gray-900 price-monthly">$199</span>
+                <span class="text-3xl font-bold text-gray-900 price-yearly hidden">$1,990</span>
+                <span class="text-gray-500 price-monthly">/month</span>
+                <span class="text-gray-500 price-yearly hidden">/year</span>
+            </div>
+            <ul class="mt-6 space-y-2 text-sm text-gray-600 flex-1">
+                <li>100 reference runs / month</li>
+                <li>Large dataset support</li>
+                <li>Batch jobs</li>
+                <li class="font-medium text-indigo-600">25 PWM validation reports / month</li>
+                <li>Method comparison mode</li>
+                <li>Benchmark comparison tables</li>
+                <li>Calibration & failure-diagnosis summary</li>
+                <li>API access</li>
+                <li>Exportable PDF / CSV / JSON reports</li>
+                <li>Faster queue / priority support</li>
+            </ul>
+            {% if user %}
+            <button onclick="subscribe('pro')" class="mt-6 w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm font-medium {% if current_plan == 'pro' %}opacity-50 cursor-not-allowed{% endif %}"
+                {% if current_plan == 'pro' %}disabled{% endif %}>
+                {% if current_plan == 'pro' %}Current Plan{% else %}Subscribe{% endif %}
+            </button>
+            {% else %}
+            <a href="/login" class="mt-6 block text-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm font-medium">
+                Sign in to Subscribe
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- Team -->
+        <div class="bg-white rounded-lg shadow border border-gray-200 p-6 flex flex-col">
+            <h3 class="text-lg font-semibold text-gray-900">Team</h3>
+            <p class="text-sm text-gray-500 mt-1">Lab groups & imaging startups</p>
+            <div class="mt-4">
+                <span class="text-3xl font-bold text-gray-900 price-monthly">$799</span>
+                <span class="text-3xl font-bold text-gray-900 price-yearly hidden">$7,990</span>
+                <span class="text-gray-500 price-monthly">/month</span>
+                <span class="text-gray-500 price-yearly hidden">/year</span>
+            </div>
+            <ul class="mt-6 space-y-2 text-sm text-gray-600 flex-1">
+                <li>500 reference runs / month</li>
+                <li>5–10 seats</li>
+                <li>Shared workspace & project folders</li>
+                <li class="font-medium text-indigo-600">100 PWM validation reports / month</li>
+                <li>Private datasets</li>
+                <li>Role-based access</li>
+                <li>API + integration support</li>
+                <li>Higher compute priority</li>
+                <li>Benchmark submission tools</li>
+                <li>White-label report option</li>
+            </ul>
+            {% if user %}
+            <button onclick="subscribe('team')" class="mt-6 w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm font-medium {% if current_plan == 'team' %}opacity-50 cursor-not-allowed{% endif %}"
+                {% if current_plan == 'team' %}disabled{% endif %}>
+                {% if current_plan == 'team' %}Current Plan{% else %}Subscribe{% endif %}
+            </button>
+            {% else %}
+            <a href="/login" class="mt-6 block text-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm font-medium">
+                Sign in to Subscribe
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Enterprise CTA -->
+    <div class="bg-gray-900 rounded-lg p-8 text-center text-white">
+        <h3 class="text-2xl font-bold">Enterprise</h3>
+        <p class="mt-2 text-gray-300">For hardware vendors, hospitals, and industrial imaging teams</p>
+        <p class="mt-1 text-sm text-gray-400">$15,000 – $100,000+ / year &mdash; Private deployment, custom SLAs, unlimited reports</p>
+        <a href="mailto:enterprise@pwm.platformai.org" class="mt-4 inline-block px-6 py-3 bg-white text-gray-900 rounded-md font-medium hover:bg-gray-100">
+            Contact Sales
+        </a>
+    </div>
+
+    <!-- WeChat Credit Packs section -->
+    <div class="mt-12">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold text-gray-900">WeChat Pay Credit Packs (微信支付充值包)</h2>
+            <p class="mt-2 text-gray-500">One-time purchase — same credits as subscription tiers, pay with WeChat</p>
+            <p class="mt-1 text-sm text-gray-400">Credits are valid for the specified period. No auto-renewal — buy when you need.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for pack_key, pack in wechat_packs.items() %}
+            <div class="bg-white rounded-lg shadow border border-green-200 p-5">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h4 class="font-semibold text-gray-900">{{ pack.display_name }}</h4>
+                        <p class="text-sm text-gray-500">{{ pack.display_name_zh }}</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-lg font-bold text-green-600">&yen;{{ pack.price_cny }}</div>
+                        <div class="text-xs text-gray-400">${{ pack.price_usd }} USD</div>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-center space-x-4 text-sm text-gray-600">
+                    <span>{{ pack.run_credits }} runs</span>
+                    <span>{{ pack.report_credits }} reports</span>
+                    <span>{{ pack.validity_days }} days</span>
+                </div>
+                {% if user %}
+                <button onclick="buyWechatPack('{{ pack_key }}')"
+                    class="mt-3 w-full px-3 py-1.5 bg-green-600 text-white rounded text-sm hover:bg-green-700">
+                    Buy with WeChat Pay
+                </button>
+                {% else %}
+                <a href="/login" class="mt-3 block text-center px-3 py-1.5 border border-green-600 text-green-600 rounded text-sm hover:bg-green-50">
+                    Sign in to Purchase
+                </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Overage pricing -->
+    <div class="mt-12 bg-gray-50 rounded-lg p-8">
+        <h2 class="text-xl font-bold text-gray-900 text-center mb-6">Add-on Credits</h2>
+        <p class="text-center text-sm text-gray-500 mb-6">Need more runs or reports? Purchase additional credits without upgrading your plan.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+                <h3 class="font-semibold text-gray-700 mb-3">Extra Reference Runs</h3>
+                <table class="w-full text-sm">
+                    <tr class="border-b"><td class="py-2 text-gray-600">Small run</td><td class="text-right font-medium">$3</td></tr>
+                    <tr class="border-b"><td class="py-2 text-gray-600">Medium run</td><td class="text-right font-medium">$10</td></tr>
+                    <tr><td class="py-2 text-gray-600">Large run</td><td class="text-right font-medium">$25–$100</td></tr>
+                </table>
+            </div>
+            <div>
+                <h3 class="font-semibold text-gray-700 mb-3">Extra Validation Reports</h3>
+                <table class="w-full text-sm">
+                    <tr class="border-b"><td class="py-2 text-gray-600">Standard PWM report</td><td class="text-right font-medium">$25</td></tr>
+                    <tr class="border-b"><td class="py-2 text-gray-600">Advanced benchmark report</td><td class="text-right font-medium">$75</td></tr>
+                    <tr><td class="py-2 text-gray-600">Enterprise signed report</td><td class="text-right font-medium">$250+</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- What you're paying for -->
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="text-center">
+            <div class="text-2xl mb-2">A</div>
+            <h3 class="font-semibold text-gray-900">Reference Reconstruction</h3>
+            <p class="text-sm text-gray-500 mt-1">Trusted runs of PWM's benchmark-standard pipeline</p>
+        </div>
+        <div class="text-center">
+            <div class="text-2xl mb-2">B</div>
+            <h3 class="font-semibold text-gray-900">Validation Report</h3>
+            <p class="text-sm text-gray-500 mt-1">TNA score, method comparison, failure-mode hints, reproducibility ID</p>
+        </div>
+        <div class="text-center">
+            <div class="text-2xl mb-2">C</div>
+            <h3 class="font-semibold text-gray-900">Decision Support</h3>
+            <p class="text-sm text-gray-500 mt-1">Is my system working? How do I compare to reference?</p>
+        </div>
+        <div class="text-center">
+            <div class="text-2xl mb-2">D</div>
+            <h3 class="font-semibold text-gray-900">Workflow Convenience</h3>
+            <p class="text-sm text-gray-500 mt-1">No Docker, CUDA, cluster setup, or repo debugging</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+let isYearly = false;
+
+function toggleBilling() {
+    isYearly = !isYearly;
+    const dot = document.getElementById('toggle-dot');
+    const monthLabel = document.getElementById('label-monthly');
+    const yearLabel = document.getElementById('label-yearly');
+
+    if (isYearly) {
+        dot.classList.remove('translate-x-1');
+        dot.classList.add('translate-x-6');
+        document.getElementById('billing-toggle').classList.add('bg-indigo-600');
+        document.getElementById('billing-toggle').classList.remove('bg-gray-200');
+        monthLabel.classList.remove('text-indigo-600');
+        monthLabel.classList.add('text-gray-400');
+        yearLabel.classList.remove('text-gray-400');
+        yearLabel.classList.add('text-indigo-600');
+    } else {
+        dot.classList.add('translate-x-1');
+        dot.classList.remove('translate-x-6');
+        document.getElementById('billing-toggle').classList.remove('bg-indigo-600');
+        document.getElementById('billing-toggle').classList.add('bg-gray-200');
+        monthLabel.classList.add('text-indigo-600');
+        monthLabel.classList.remove('text-gray-400');
+        yearLabel.classList.add('text-gray-400');
+        yearLabel.classList.remove('text-indigo-600');
+    }
+
+    document.querySelectorAll('.price-monthly').forEach(el => el.classList.toggle('hidden', isYearly));
+    document.querySelectorAll('.price-yearly').forEach(el => el.classList.toggle('hidden', !isYearly));
+}
+
+async function subscribe(planTier) {
+    const period = isYearly ? 'yearly' : 'monthly';
+    try {
+        const resp = await fetch(`/api/v1/billing/checkout/stripe?plan_tier=${planTier}&period=${period}`, {
+            method: 'POST',
+            credentials: 'same-origin',
+        });
+        const data = await resp.json();
+        if (data.success && data.checkout_url) {
+            window.location.href = data.checkout_url;
+        } else {
+            alert(data.detail || 'Failed to create checkout session');
+        }
+    } catch (e) {
+        alert('Payment error: ' + e.message);
+    }
+}
+
+async function buyWechatPack(packKey) {
+    try {
+        const resp = await fetch(`/api/v1/billing/checkout/wechat?pack_key=${packKey}`, {
+            method: 'POST',
+            credentials: 'same-origin',
+        });
+        const data = await resp.json();
+        if (data.success) {
+            if (data.qr_code_url) {
+                // Show QR code in a modal for the user to scan
+                const qr = document.createElement('div');
+                qr.innerHTML = `
+                    <div style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;display:flex;align-items:center;justify-content:center" onclick="this.remove()">
+                        <div style="background:white;padding:2rem;border-radius:1rem;text-align:center;max-width:400px" onclick="event.stopPropagation()">
+                            <h3 style="font-size:1.25rem;font-weight:bold;margin-bottom:0.5rem">${data.pack.name_zh}</h3>
+                            <p style="color:#666;font-size:0.875rem">&yen;${data.pack.price_cny} | ${data.pack.run_credits} runs + ${data.pack.report_credits} reports | ${data.pack.validity_days} days</p>
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data.qr_code_url)}" style="margin:1rem auto;display:block" alt="WeChat Pay QR">
+                            <p style="color:#999;font-size:0.75rem">Scan with WeChat to pay. Credits will be added automatically.</p>
+                            <button onclick="this.parentElement.parentElement.remove()" style="margin-top:1rem;padding:0.5rem 1rem;background:#eee;border-radius:0.5rem;cursor:pointer">Close</button>
+                        </div>
+                    </div>`;
+                document.body.appendChild(qr);
+            } else if (data.manual_payment) {
+                alert('WeChat Pay is being configured. Order created: ' + data.order_id + '. Contact support for manual payment.');
+            }
+        } else {
+            alert(data.detail || 'Failed to create WeChat Pay order');
+        }
+    } catch (e) {
+        alert('Payment error: ' + e.message);
+    }
+}
+</script>
+{% endblock %}

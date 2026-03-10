@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block title %}Billing — PWM Reference Cloud{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+    {% if status == 'success' %}
+    <div class="bg-green-50 border border-green-200 rounded-md p-4 text-green-800 text-sm">
+        Payment successful! Your credits have been provisioned.
+    </div>
+    {% endif %}
+
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-gray-900">Billing & Credits</h1>
+        <a href="/pricing" class="text-sm text-indigo-600 hover:underline">View Plans &rarr;</a>
+    </div>
+
+    <!-- Current Plan Card -->
+    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900">{{ balance.plan_display_name }} Plan</h2>
+                <p class="text-sm text-gray-500 mt-1">
+                    Status:
+                    {% if balance.payment_status == 'active' %}
+                    <span class="text-green-600 font-medium">Active</span>
+                    {% elif balance.payment_status == 'cancelled' %}
+                    <span class="text-yellow-600 font-medium">Cancelled (credits remain until period end)</span>
+                    {% elif balance.payment_status == 'expired' %}
+                    <span class="text-red-600 font-medium">Expired</span>
+                    {% else %}
+                    <span class="text-gray-600 font-medium">Free Tier</span>
+                    {% endif %}
+                </p>
+                {% if balance.credits_expire_at %}
+                <p class="text-xs text-gray-400 mt-1">Credits expire: {{ balance.credits_expire_at[:10] }}</p>
+                {% endif %}
+            </div>
+            <div class="flex space-x-3">
+                {% if balance.payment_status == 'active' and balance.subscription_id %}
+                <form hx-post="/api/v1/billing/cancel" hx-confirm="Are you sure you want to cancel your subscription?" hx-swap="none">
+                    <button type="submit" class="px-3 py-1.5 text-sm border border-red-300 text-red-600 rounded hover:bg-red-50">Cancel</button>
+                </form>
+                {% endif %}
+                <a href="/pricing" class="px-3 py-1.5 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                    {% if balance.plan_tier == 'free' %}Upgrade{% else %}Change Plan{% endif %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credit Balances -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <!-- Run Credits -->
+        <div class="bg-white rounded-lg shadow border border-gray-200 p-5">
+            <p class="text-sm text-gray-500">Run Credits</p>
+            <p class="text-3xl font-bold text-indigo-600 mt-1">{{ balance.run_credits }}</p>
+            {% if balance.overage_run_credits > 0 %}
+            <p class="text-xs text-gray-400 mt-1">+ {{ balance.overage_run_credits }} overage</p>
+            {% endif %}
+            <p class="text-xs text-gray-400 mt-2">Monthly allowance from plan</p>
+        </div>
+
+        <!-- Report Credits -->
+        <div class="bg-white rounded-lg shadow border border-gray-200 p-5">
+            <p class="text-sm text-gray-500">Report Credits</p>
+            <p class="text-3xl font-bold text-indigo-600 mt-1">{{ balance.report_credits }}</p>
+            {% if balance.overage_report_credits > 0 %}
+            <p class="text-xs text-gray-400 mt-1">+ {{ balance.overage_report_credits }} overage</p>
+            {% endif %}
+            <p class="text-xs text-gray-400 mt-2">PWM validation reports</p>
+        </div>
+
+        <!-- Legacy Credits -->
+        <div class="bg-white rounded-lg shadow border border-gray-200 p-5">
+            <p class="text-sm text-gray-500">Challenge Credits</p>
+            <p class="text-3xl font-bold text-gray-700 mt-1">{{ "%.0f"|format(balance.legacy_credit_balance) }}</p>
+            <p class="text-xs text-gray-400 mt-2">For hidden tier submissions (10/eval)</p>
+        </div>
+
+        <!-- Quick Buy -->
+        <div class="bg-gray-50 rounded-lg shadow border border-dashed border-gray-300 p-5 flex flex-col items-center justify-center">
+            <p class="text-sm text-gray-500 mb-2">Need more?</p>
+            <a href="/pricing#add-on-credits" class="px-3 py-1.5 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700">Buy Credits</a>
+        </div>
+    </div>
+
+    <!-- Plan Features -->
+    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+        <h3 class="text-md font-semibold text-gray-900 mb-3">Your Plan Features</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {% for feature in plan_features %}
+            <div class="flex items-start space-x-2 text-sm text-gray-600">
+                <span class="text-green-500 mt-0.5">&#10003;</span>
+                <span>{{ feature }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Transaction History -->
+    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+        <h3 class="text-md font-semibold text-gray-900 mb-4">Recent Transactions</h3>
+        {% if transactions %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-left text-gray-500 border-b">
+                        <th class="pb-2 pr-4">Date</th>
+                        <th class="pb-2 pr-4">Type</th>
+                        <th class="pb-2 pr-4">Description</th>
+                        <th class="pb-2 pr-4 text-right">Amount</th>
+                        <th class="pb-2 text-right">Remaining</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for txn in transactions %}
+                    <tr class="border-b border-gray-100">
+                        <td class="py-2 pr-4 text-gray-400 text-xs">{{ txn.created_at[:10] if txn.created_at else '—' }}</td>
+                        <td class="py-2 pr-4">
+                            {% if txn.type == 'consume' %}
+                            <span class="text-red-600">Consume</span>
+                            {% elif txn.type == 'provision' %}
+                            <span class="text-green-600">Provision</span>
+                            {% elif txn.type == 'purchase' %}
+                            <span class="text-blue-600">Purchase</span>
+                            {% else %}
+                            <span class="text-gray-600">{{ txn.type }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-2 pr-4 text-gray-600">{{ txn.description }}</td>
+                        <td class="py-2 pr-4 text-right font-medium {% if txn.amount < 0 %}text-red-600{% else %}text-green-600{% endif %}">
+                            {{ '%+.0f' | format(txn.amount) }}
+                        </td>
+                        <td class="py-2 text-right text-gray-400 text-xs">
+                            {{ txn.remaining_runs }}R / {{ txn.remaining_reports }}P
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-sm text-gray-400">No transactions yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Payment History -->
+    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+        <h3 class="text-md font-semibold text-gray-900 mb-4">Payment History</h3>
+        {% if payments %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-left text-gray-500 border-b">
+                        <th class="pb-2 pr-4">Date</th>
+                        <th class="pb-2 pr-4">Type</th>
+                        <th class="pb-2 pr-4">Plan</th>
+                        <th class="pb-2 pr-4">Method</th>
+                        <th class="pb-2 pr-4 text-right">Amount</th>
+                        <th class="pb-2 text-right">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pmt in payments %}
+                    <tr class="border-b border-gray-100">
+                        <td class="py-2 pr-4 text-gray-400 text-xs">{{ pmt.created_at[:10] if pmt.created_at else '—' }}</td>
+                        <td class="py-2 pr-4 text-gray-600">{{ pmt.type }}</td>
+                        <td class="py-2 pr-4 text-gray-600">{{ pmt.plan }}</td>
+                        <td class="py-2 pr-4 text-gray-600">{{ pmt.payment_method }}</td>
+                        <td class="py-2 pr-4 text-right font-medium">${{ "%.2f"|format(pmt.amount_usd) }}</td>
+                        <td class="py-2 text-right">
+                            {% if pmt.status == 'completed' %}
+                            <span class="text-green-600 text-xs font-medium">Completed</span>
+                            {% elif pmt.status == 'pending' %}
+                            <span class="text-yellow-600 text-xs font-medium">Pending</span>
+                            {% else %}
+                            <span class="text-gray-400 text-xs">{{ pmt.status }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-sm text-gray-400">No payments yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

@@ -23,7 +23,9 @@
                     <a href="/benchmark/system-design" class="text-sm font-medium text-gray-700 hover:text-indigo-600">System Design</a>
                 </div>
                 <div class="flex items-center space-x-4">
+                    <a href="/pricing" class="text-sm font-medium text-gray-700 hover:text-indigo-600">Pricing</a>
                     {% if user %}
+                        <a href="/billing" class="text-sm text-gray-700 hover:text-indigo-600">Billing</a>
                         <span class="text-sm text-gray-600">{{ user.username }}</span>
                         {% if user.role in ['admin', 'reviewer'] %}
                         <a href="/bootstrap/review" class="text-sm text-gray-700 hover:text-indigo-600">Review</a>

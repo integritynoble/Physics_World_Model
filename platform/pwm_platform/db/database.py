@@ -72,6 +72,22 @@ async def init_db() -> None:
             "ALTER TABLE challenge_submissions ADD COLUMN IF NOT EXISTS credit_cost DOUBLE PRECISION DEFAULT 0.0"
         ))
 
+        # Idempotent migration: billing tables (credit_accounts, etc.)
+        # The tables are created by Base.metadata.create_all above;
+        # here we just add any columns that may be missing on existing installs.
+        for col_def in [
+            "ALTER TABLE credit_accounts ADD COLUMN IF NOT EXISTS overage_run_credits INTEGER DEFAULT 0",
+            "ALTER TABLE credit_accounts ADD COLUMN IF NOT EXISTS overage_report_credits INTEGER DEFAULT 0",
+            "ALTER TABLE credit_accounts ADD COLUMN IF NOT EXISTS legacy_credit_balance DOUBLE PRECISION DEFAULT 100.0",
+            "ALTER TABLE credit_accounts ADD COLUMN IF NOT EXISTS credits_expire_at TIMESTAMPTZ",
+            "ALTER TABLE payment_orders ADD COLUMN IF NOT EXISTS amount_cny DOUBLE PRECISION DEFAULT 0.0",
+            "ALTER TABLE payment_orders ADD COLUMN IF NOT EXISTS credit_amount INTEGER",
+        ]:
+            try:
+                await conn.execute(text(col_def))
+            except Exception:
+                pass  # table may not exist yet on first run
+
         # Ensure platformaigpt@gmail.com is admin
         await conn.execute(text(
             "UPDATE users SET role = 'admin' WHERE email = 'platformaigpt@gmail.com' AND role != 'admin'"

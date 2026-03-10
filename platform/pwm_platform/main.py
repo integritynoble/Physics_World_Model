@@ -22,6 +22,7 @@ from pwm_platform.config import settings
 from pwm_platform.db.database import init_db
 from pwm_platform.routers import (
     auth_router,
+    billing_router,
     bootstrap_router,
     datasets_router,
     gcs_proxy_router,
@@ -87,6 +88,7 @@ app.mount("/static", StaticFiles(directory="pwm_platform/static"), name="static"
 # ── Register routers ────────────────────────────────────────────────────
 
 app.include_router(auth_router)
+app.include_router(billing_router)
 app.include_router(runs_router)
 app.include_router(datasets_router)
 app.include_router(modalities_router)

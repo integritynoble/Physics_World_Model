@@ -306,6 +306,127 @@ class SpecChatSession(Base):
     user = relationship("User")
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+#  Billing / Subscriptions / Credits
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class CreditAccount(Base):
+    """
+    User's credit account — tracks subscription tier, run/report credits,
+    overage balances, and expiry (for WeChat credit packs).
+    Adapted from CompareGPT's PaymentPointsManagement model.
+    """
+
+    __tablename__ = "credit_accounts"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False, index=True)
+
+    # Subscription state
+    plan_tier = Column(String(30), default="free", nullable=False)  # free/researcher/pro/team/enterprise
+    payment_status = Column(String(30), default="free", index=True)  # free/active/cancelled/expired
+    subscription_id = Column(String(255), nullable=True)  # Stripe subscription ID
+
+    # Monthly plan credits (reset on renewal)
+    run_credits = Column(Integer, default=3, nullable=False)
+    report_credits = Column(Integer, default=0, nullable=False)
+
+    # Overage / add-on credits (purchased separately, never reset)
+    overage_run_credits = Column(Integer, default=0, nullable=False)
+    overage_report_credits = Column(Integer, default=0, nullable=False)
+
+    # For WeChat credit packs: credits expire after validity period
+    credits_expire_at = Column(DateTime(timezone=True), nullable=True)
+
+    # Legacy compatibility — maps to User.credit_balance for hidden tier
+    legacy_credit_balance = Column(Float, default=100.0)
+
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+    updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
+
+    # Relationships
+    user = relationship("User", backref="credit_account", uselist=False)
+
+
+class CreditTransaction(Base):
+    """
+    Immutable ledger of credit changes — consumption, provisioning, purchases.
+    Adapted from CompareGPT's PaymentConsumption model.
+    """
+
+    __tablename__ = "credit_transactions"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    transaction_id = Column(String(64), unique=True, nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+
+    transaction_type = Column(String(30), nullable=False)   # consume / provision / purchase / refund
+    credit_kind = Column(String(20), nullable=False)         # run / report / legacy / plan
+    amount = Column(Float, nullable=False)                   # positive=add, negative=deduct
+    description = Column(String(500), default="")
+
+    # Snapshot of remaining credits after this transaction
+    remaining_run_credits = Column(Integer, default=0)
+    remaining_report_credits = Column(Integer, default=0)
+
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+
+
+class Subscription(Base):
+    """
+    Subscription record — tracks Stripe or WeChat payment lifecycle.
+    """
+
+    __tablename__ = "subscriptions"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    plan_tier = Column(String(30), nullable=False)
+    billing_period = Column(String(20), nullable=False)  # monthly / yearly / one_time
+    payment_method = Column(String(30), nullable=False)  # stripe / wechat / manual
+
+    # Stripe-specific
+    stripe_subscription_id = Column(String(255), nullable=True)
+    stripe_customer_id = Column(String(255), nullable=True)
+
+    # State
+    status = Column(String(30), default="pending", index=True)  # pending/active/cancelled/expired
+    started_at = Column(DateTime(timezone=True), nullable=True)
+    expires_at = Column(DateTime(timezone=True), nullable=True)
+    cancelled_at = Column(DateTime(timezone=True), nullable=True)
+
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+    updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
+
+
+class PaymentOrder(Base):
+    """
+    Payment order — created before redirect to Stripe/WeChat, completed on webhook.
+    Adapted from CompareGPT's PaymentOrder model.
+    """
+
+    __tablename__ = "payment_orders"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    order_id = Column(String(64), unique=True, nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+
+    order_type = Column(String(30), nullable=False)   # subscription / credit_pack / overage_run / overage_report
+    plan_tier = Column(String(30), default="free")
+    pack_key = Column(String(50), nullable=True)       # WeChat credit pack key
+    amount_usd = Column(Float, default=0.0)
+    amount_cny = Column(Float, default=0.0)
+    credit_amount = Column(Integer, nullable=True)     # for overage purchases
+
+    payment_method = Column(String(30), nullable=False)  # stripe / wechat
+    payment_ref = Column(String(255), nullable=True)     # Stripe session ID or WeChat order ID
+    status = Column(String(30), default="pending", index=True)  # pending / completed / failed / refunded
+
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+
+
 class ModalityBasics(Base):
     """Structured knowledge about an imaging modality (for bootstrap engine)."""
 

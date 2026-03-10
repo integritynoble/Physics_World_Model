@@ -61,6 +61,31 @@ class Settings(BaseSettings):
     BIGQUERY_PROJECT: str = ""
     BIGQUERY_DATASET: str = "pwm_analytics"
 
+    # ── Stripe (credit card payments) ─────────────────────────────────
+    STRIPE_API_KEY: str = ""                     # sk_live_... or sk_test_...
+    STRIPE_WEBHOOK_SECRET: str = ""              # whsec_...
+    STRIPE_SUCCESS_URL: str = "https://pwm.platformai.org/billing?status=success"
+    STRIPE_CANCEL_URL: str = "https://pwm.platformai.org/pricing?status=cancelled"
+
+    # Stripe Price IDs for each plan (created in Stripe Dashboard)
+    STRIPE_PRICE_RESEARCHER_MONTHLY: str = ""    # price_...
+    STRIPE_PRICE_RESEARCHER_YEARLY: str = ""
+    STRIPE_PRICE_PRO_MONTHLY: str = ""
+    STRIPE_PRICE_PRO_YEARLY: str = ""
+    STRIPE_PRICE_TEAM_MONTHLY: str = ""
+    STRIPE_PRICE_TEAM_YEARLY: str = ""
+
+    # ── WeChat Pay (one-time credit packs) ────────────────────────────
+    WECHAT_MCHID: str = ""                       # merchant ID
+    WECHAT_APPID: str = ""
+    WECHAT_APIV3_KEY: str = ""
+    WECHAT_PRIVATE_KEY: str = ""                  # RSA private key (PEM)
+    WECHAT_CERT_SERIAL_NO: str = ""
+    WECHAT_PUBLIC_KEY: str = ""
+    WECHAT_PUBLIC_KEY_ID: str = ""
+    WECHAT_NOTIFY_URL: str = "https://pwm.platformai.org/api/v1/billing/wechat-webhook"
+    WECHAT_PAY_EXCHANGE_RATE: float = 7.1        # USD→CNY fallback rate
+
     # ── Pydantic-settings config ─────────────────────────────────────────
     model_config = SettingsConfigDict(
         env_file=os.path.join(_PLATFORM_DIR, ".env"),
