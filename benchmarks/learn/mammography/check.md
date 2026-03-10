@@ -89,22 +89,50 @@ gs://pwm-benchmark-datasets/challenge-data/v1.0/mammography_challenge_hidden.h5
 
 ## 5. Local Dataset & GCS Status
 
-**No local files.** All challenge data is stored on GCS.
+**Local benchmark dataset: BUILT (2026-03-10)**
 
+Generator: `datasets/benchmark/mammography/generate_dataset.py`
+
+Forward model: Beer-Lambert X-ray attenuation (2D projection, not tomographic)
+- `y_i = I_0 * exp(-mu(x,E) * breast_thickness) + scatter + noise`
+- Poisson quantum noise, scatter background, detector blur PSF
+- Mismatch: dose_mGy, scatter_fraction, detector_blur_sigma, breast_thickness_cm
+
+Phantoms (256x256 attenuation maps):
+- Adipose (mu=0.15), fibroglandular (mu=0.40), masses (mu=0.50), calcifications (mu=1.20)
+- Cooper's ligaments, skin layer, Perlin-noise tissue texture
+- Public: 12 samples (4 fatty + 4 dense + 4 lesion), Dev: 20 augmented, Hidden: 20 adversarial
+
+HDF5 per sample: x_true (256,256), projection_ideal (256,256), projection_measured (256,256), reconstruction (256,256)
+
+Baseline reconstruction: Wiener filter + TV denoising
+- Public tier: Mean PSNR=22.67 dB, Mean SSIM=0.856
+- Dev tier: Mean PSNR=20.91 dB, Mean SSIM=0.837
+- Hidden tier: Mean PSNR=22.98 dB, Mean SSIM=0.822
+
+Local files:
 ```
-GCS: gs://pwm-benchmark-datasets/challenge-data/v1.0/mammography_challenge_public.h5
-GCS: gs://pwm-benchmark-datasets/challenge-data/v1.0/mammography_challenge_dev.h5
-GCS: gs://pwm-benchmark-datasets/challenge-data/v1.0/mammography_challenge_hidden.h5
+datasets/benchmark/mammography/
++-- generate_dataset.py     # Full generator (run to rebuild)
++-- README.md               # Documentation
++-- public/                 # 12 samples (HDF5 + images)
++-- dev/                    # 20 samples (HDF5 + images)
++-- hidden/                 # 20 samples (HDF5 + images)
 ```
 
-Gallery images served from:
+GCS (uploaded 2026-03-10):
 ```
-GCS: gs://pwm-benchmark-datasets/img/benchmark_gallery/mammography/
+gs://pwm-benchmark-datasets/datasets/Benchmark/mammography/    (full dataset, 39.1 MiB)
+gs://pwm-benchmark-datasets/img/benchmark_gallery/mammography/  (24 gallery images)
+```
+
+Gallery images (4 scenes x 6 images):
+```
+platform/pwm_platform/static/img/benchmark_gallery/mammography/scene_0{0,1,2,3}/
+  gt.png, measurement_I.png, measurement_II.png, recon_I.png, recon_II.png, recon_III.png
 ```
 
 Public reference datasets: VinDr-Mammo (5000 exams, Scientific Data 2023), CBIS-DDSM (Lee et al., Scientific Data 2017), INbreast (Moreira et al., 2012).
-
-The dev tier has x_true stripped. The hidden tier is blocked from download. Public tier is downloadable.
 
 ---
 
