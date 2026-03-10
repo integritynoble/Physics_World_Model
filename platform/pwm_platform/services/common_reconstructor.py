@@ -401,6 +401,7 @@ async def run_common_reconstruction(
     algorithm_name: str,
     user_measurement: Optional[np.ndarray] = None,
     user_matrix: Optional[np.ndarray] = None,
+    sample_index: int = 0,
 ) -> dict:
     """Run a single algorithm on standard benchmark or user data.
 
@@ -412,7 +413,7 @@ async def run_common_reconstruction(
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(
         None, _run_common_sync,
-        variant_key, algorithm_name, user_measurement, user_matrix,
+        variant_key, algorithm_name, user_measurement, user_matrix, sample_index,
     )
 
 
@@ -421,6 +422,7 @@ def _run_common_sync(
     algorithm_name: str,
     user_measurement: Optional[np.ndarray],
     user_matrix: Optional[np.ndarray],
+    sample_index: int = 0,
 ) -> dict:
     """Synchronous common-mode reconstruction."""
     t0 = time.perf_counter()
@@ -453,7 +455,7 @@ def _run_common_sync(
         # Download from GCS
         try:
             h5_path = _ensure_challenge_h5(variant_key, "public")
-            sample = _load_sample(h5_path)
+            sample = _load_sample(h5_path, sample_idx=sample_index)
             y = sample.get("y")
             x_true = sample.get("x_true")
             H = sample.get("H_ideal")

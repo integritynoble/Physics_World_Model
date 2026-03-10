@@ -1,80 +1,163 @@
-{# Common Mode — select modality + algorithm → instant reconstruction #}
-<div class="bg-white shadow rounded-lg p-6 space-y-6">
-    <div>
-        <h2 class="text-lg font-bold text-gray-900">Reconstruction</h2>
-        <p class="text-sm text-gray-500">Select a modality and algorithm to run reconstruction on standard benchmark data.</p>
+{# Common Mode — chatbox + dropdown selectors + dataset picker → instant reconstruction #}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+    {# ══ Main Panel (2/3 width) ══ #}
+    <div class="lg:col-span-2 space-y-4">
+
+        {# ── AI Chat Assistant ── #}
+        <div class="bg-white shadow rounded-lg p-5 space-y-3">
+            <div>
+                <h2 class="text-lg font-bold text-gray-900">AI Reconstruction Assistant</h2>
+                <p class="text-xs text-gray-500">Describe what you want to reconstruct and the AI will select the modality and algorithm for you.</p>
+            </div>
+
+            {# Chat log #}
+            <div id="common-chat-log" class="min-h-[60px] max-h-[200px] overflow-y-auto space-y-2 text-sm">
+                <div class="flex justify-start">
+                    <div class="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 text-xs max-w-[85%]">
+                        Hi! Describe an imaging modality and algorithm (e.g. "CASSI with MST-L" or "CT reconstruction using FBP") and I'll set things up for you.
+                    </div>
+                </div>
+            </div>
+
+            {# Chat input #}
+            <div class="flex gap-2">
+                <input type="text" id="common-chat-input"
+                       placeholder="e.g. &quot;CASSI with GAP-TV&quot; or &quot;reconstruct MRI&quot;..."
+                       class="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm py-2 px-3"
+                       onkeydown="if(event.key==='Enter'){event.preventDefault();sendCommonChat()}" />
+                <button type="button" onclick="sendCommonChat()"
+                        id="common-chat-send"
+                        class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors whitespace-nowrap">
+                    Send
+                </button>
+            </div>
+        </div>
+
+        {# ── Manual Selectors + Reconstruct ── #}
+        <div class="bg-white shadow rounded-lg p-5 space-y-5">
+            <div>
+                <h2 class="text-lg font-bold text-gray-900">Reconstruction</h2>
+                <p class="text-sm text-gray-500">Select a modality and algorithm, or use the AI assistant above.</p>
+            </div>
+
+            <form id="common-form" class="space-y-5" enctype="multipart/form-data">
+                {# Modality + Algorithm selectors #}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="common-modality" class="block text-sm font-medium text-gray-700 mb-1">Imaging Modality</label>
+                        <select id="common-modality" name="modality"
+                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm py-2 px-3">
+                            {% for cat, variants in grouped_variants.items() %}
+                            <optgroup label="{{ cat | replace('_', ' ') | title }}">
+                                {% for v in variants %}
+                                <option value="{{ v.variant_key }}" {% if v.variant_key == preselect_modality %}selected{% endif %}>
+                                    {{ v.display_name }}
+                                </option>
+                                {% endfor %}
+                            </optgroup>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="common-algorithm" class="block text-sm font-medium text-gray-700 mb-1">Algorithm</label>
+                        <select id="common-algorithm" name="algorithm"
+                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm py-2 px-3">
+                            {% if preselect_algorithms %}
+                            {% for a in preselect_algorithms %}
+                            <option value="{{ a.name }}" {% if a.name == preselect_algorithm %}selected{% endif %}>
+                                {{ a.name }} ({{ a.type }})
+                            </option>
+                            {% endfor %}
+                            {% else %}
+                            <option value="">Select a modality first</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+
+                {# Hidden sample_index field #}
+                <input type="hidden" id="common-sample-index" name="sample_index" value="0" />
+
+                {# Optional upload #}
+                <details class="border border-gray-200 rounded-lg p-3">
+                    <summary class="text-sm font-medium text-indigo-600 cursor-pointer select-none">Use your own data instead</summary>
+                    <div class="mt-3 space-y-2">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Measurement data (.npy, .mat, .h5, .npz)</label>
+                            <input type="file" name="measurement_file" accept=".npy,.mat,.h5,.npz"
+                                   class="block w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Sensing matrix (optional)</label>
+                            <input type="file" name="matrix_file" accept=".npy,.mat,.h5,.npz"
+                                   class="block w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-gray-50 file:text-gray-600 hover:file:bg-gray-100" />
+                        </div>
+                    </div>
+                </details>
+
+                {# Reconstruct button #}
+                <button type="button" id="common-reconstruct-btn"
+                        class="w-full px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors text-sm">
+                    Reconstruct
+                </button>
+
+                {# Loading spinner #}
+                <div id="common-spinner" class="hidden flex items-center justify-center gap-2 py-4">
+                    <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                    <span class="text-sm text-gray-500">Running reconstruction...</span>
+                </div>
+            </form>
+
+            {# Result area #}
+            <div id="common-result"></div>
+        </div>
     </div>
 
-    <form id="common-form" class="space-y-5" enctype="multipart/form-data">
-        <!-- Modality + Algorithm selectors -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {# ══ Sidebar — Dataset Picker (1/3 width) ══ #}
+    <div class="lg:col-span-1">
+        <div class="bg-white shadow rounded-lg p-5 space-y-4 sticky top-4">
             <div>
-                <label for="common-modality" class="block text-sm font-medium text-gray-700 mb-1">Imaging Modality</label>
-                <select id="common-modality" name="modality"
-                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm py-2 px-3">
-                    {% for cat, variants in grouped_variants.items() %}
-                    <optgroup label="{{ cat | replace('_', ' ') | title }}">
-                        {% for v in variants %}
-                        <option value="{{ v.variant_key }}" {% if v.variant_key == preselect_modality %}selected{% endif %}>
-                            {{ v.display_name }}
-                        </option>
-                        {% endfor %}
-                    </optgroup>
-                    {% endfor %}
-                </select>
+                <h3 class="text-sm font-bold text-gray-900">Benchmark Data</h3>
+                <p class="text-xs text-gray-500">Choose a sample from the benchmark dataset for the selected modality.</p>
             </div>
-            <div>
-                <label for="common-algorithm" class="block text-sm font-medium text-gray-700 mb-1">Algorithm</label>
-                <select id="common-algorithm" name="algorithm"
-                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm py-2 px-3">
-                    {% if preselect_algorithms %}
-                    {% for a in preselect_algorithms %}
-                    <option value="{{ a.name }}" {% if a.name == preselect_algorithm %}selected{% endif %}>
-                        {{ a.name }} ({{ a.type }})
-                    </option>
-                    {% endfor %}
-                    {% else %}
-                    <option value="">Select a modality first</option>
-                    {% endif %}
-                </select>
+
+            <div id="sample-list" class="space-y-2">
+                <button type="button" onclick="selectSample(0)" data-idx="0"
+                        class="sample-btn w-full text-left px-3 py-2.5 rounded-lg border-2 border-indigo-500 bg-indigo-50 text-sm transition-colors">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-indigo-800">Sample 1</span>
+                        <span class="text-xs text-indigo-500 font-mono">Default</span>
+                    </div>
+                </button>
+                <button type="button" onclick="selectSample(1)" data-idx="1"
+                        class="sample-btn w-full text-left px-3 py-2.5 rounded-lg border-2 border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 text-sm transition-colors">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-gray-700">Sample 2</span>
+                        <span class="text-xs text-gray-400 font-mono">sample_01</span>
+                    </div>
+                </button>
+                <button type="button" onclick="selectSample(2)" data-idx="2"
+                        class="sample-btn w-full text-left px-3 py-2.5 rounded-lg border-2 border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 text-sm transition-colors">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-gray-700">Sample 3</span>
+                        <span class="text-xs text-gray-400 font-mono">sample_02</span>
+                    </div>
+                </button>
+            </div>
+
+            <div class="pt-2 border-t border-gray-100">
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    Each modality has benchmark data from
+                    <a href="https://github.com/integritynoble/Physics_World_Model" target="_blank" class="text-indigo-500 hover:underline">PWM datasets</a>.
+                    Select a sample above, or upload your own data in the main panel.
+                </p>
             </div>
         </div>
-
-        <!-- Optional upload -->
-        <details class="border border-gray-200 rounded-lg p-3">
-            <summary class="text-sm font-medium text-indigo-600 cursor-pointer select-none">Use your own data instead</summary>
-            <div class="mt-3 space-y-2">
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Measurement data (.npy, .mat, .h5, .npz)</label>
-                    <input type="file" name="measurement_file" accept=".npy,.mat,.h5,.npz"
-                           class="block w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Sensing matrix (optional)</label>
-                    <input type="file" name="matrix_file" accept=".npy,.mat,.h5,.npz"
-                           class="block w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-gray-50 file:text-gray-600 hover:file:bg-gray-100" />
-                </div>
-            </div>
-        </details>
-
-        <!-- Reconstruct button -->
-        <button type="button" id="common-reconstruct-btn"
-                class="w-full px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors text-sm">
-            Reconstruct
-        </button>
-
-        <!-- Loading spinner -->
-        <div id="common-spinner" class="hidden flex items-center justify-center gap-2 py-4">
-            <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-            </svg>
-            <span class="text-sm text-gray-500">Running reconstruction...</span>
-        </div>
-    </form>
-
-    <!-- Result area -->
-    <div id="common-result"></div>
+    </div>
 </div>
 
 <script>
@@ -84,8 +167,10 @@
     var reconstructBtn = document.getElementById('common-reconstruct-btn');
     var spinner = document.getElementById('common-spinner');
     var resultDiv = document.getElementById('common-result');
+    var sampleIndexEl = document.getElementById('common-sample-index');
+    var currentSampleIndex = 0;
 
-    // Fetch algorithms when modality changes
+    // ── Fetch algorithms when modality changes ──
     if (modalityEl) {
         modalityEl.addEventListener('change', function() {
             var vk = this.value;
@@ -93,10 +178,22 @@
             fetch('/api/v1/spec-chat/algorithms/' + encodeURIComponent(vk))
                 .then(function(r) { return r.text(); })
                 .then(function(html) { algorithmEl.innerHTML = html; });
+            // Also refresh sample list
+            refreshSamples(vk);
         });
+        // Trigger initial algorithm + sample load
+        if (modalityEl.value) {
+            fetch('/api/v1/spec-chat/algorithms/' + encodeURIComponent(modalityEl.value))
+                .then(function(r) { return r.text(); })
+                .then(function(html) {
+                    if (algorithmEl.options.length <= 1 && algorithmEl.options[0] && algorithmEl.options[0].value === '') {
+                        algorithmEl.innerHTML = html;
+                    }
+                });
+        }
     }
 
-    // Reconstruct button
+    // ── Reconstruct button ──
     if (reconstructBtn) {
         reconstructBtn.addEventListener('click', function() {
             var form = document.getElementById('common-form');
@@ -125,5 +222,126 @@
             });
         });
     }
+
+    // ── Sample selector ──
+    window.selectSample = function(idx) {
+        currentSampleIndex = idx;
+        sampleIndexEl.value = idx;
+        // Update button styles
+        document.querySelectorAll('.sample-btn').forEach(function(btn) {
+            var btnIdx = parseInt(btn.getAttribute('data-idx'));
+            if (btnIdx === idx) {
+                btn.className = 'sample-btn w-full text-left px-3 py-2.5 rounded-lg border-2 border-indigo-500 bg-indigo-50 text-sm transition-colors';
+                btn.querySelector('span:first-child').className = 'font-medium text-indigo-800';
+            } else {
+                btn.className = 'sample-btn w-full text-left px-3 py-2.5 rounded-lg border-2 border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 text-sm transition-colors';
+                btn.querySelector('span:first-child').className = 'font-medium text-gray-700';
+            }
+        });
+    };
+
+    // ── Refresh sample list when modality changes ──
+    window.refreshSamples = function(variantKey) {
+        fetch('/api/v1/spec-chat/samples/' + encodeURIComponent(variantKey))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var container = document.getElementById('sample-list');
+                var html = '';
+                data.samples.forEach(function(s, i) {
+                    var isActive = (i === 0);
+                    var btnClass = isActive
+                        ? 'sample-btn w-full text-left px-3 py-2.5 rounded-lg border-2 border-indigo-500 bg-indigo-50 text-sm transition-colors'
+                        : 'sample-btn w-full text-left px-3 py-2.5 rounded-lg border-2 border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 text-sm transition-colors';
+                    var textClass = isActive ? 'font-medium text-indigo-800' : 'font-medium text-gray-700';
+                    var tagClass = isActive ? 'text-xs text-indigo-500 font-mono' : 'text-xs text-gray-400 font-mono';
+                    var tagText = isActive ? 'Default' : s.key;
+                    html += '<button type="button" onclick="selectSample(' + s.index + ')" data-idx="' + s.index + '" '
+                         +  'class="' + btnClass + '">'
+                         +  '<div class="flex items-center justify-between">'
+                         +  '<span class="' + textClass + '">' + s.label + '</span>'
+                         +  '<span class="' + tagClass + '">' + tagText + '</span>'
+                         +  '</div></button>';
+                });
+                container.innerHTML = html;
+                selectSample(0);
+            })
+            .catch(function() {});
+    };
+
+    // ── Chat assistant ──
+    window.sendCommonChat = function() {
+        var input = document.getElementById('common-chat-input');
+        var msg = input.value.trim();
+        if (!msg) return;
+
+        var chatLog = document.getElementById('common-chat-log');
+        var sendBtn = document.getElementById('common-chat-send');
+
+        // Show user message
+        chatLog.innerHTML += '<div class="flex justify-end">'
+            + '<div class="px-3 py-2 rounded-lg bg-indigo-600 text-white text-xs max-w-[85%]">'
+            + msg.replace(/</g, '&lt;') + '</div></div>';
+        chatLog.scrollTop = chatLog.scrollHeight;
+        input.value = '';
+        sendBtn.disabled = true;
+        sendBtn.textContent = 'Thinking...';
+
+        var formData = new FormData();
+        formData.append('message', msg);
+
+        fetch('/api/v1/spec-chat/common-chat', { method: 'POST', body: formData })
+            .then(function(r) { return r.text(); })
+            .then(function(text) {
+                var data;
+                try { data = JSON.parse(text); } catch(e) { data = { explanation: text }; }
+
+                var explanation = data.explanation || 'Done.';
+
+                // Show assistant response
+                chatLog.innerHTML += '<div class="flex justify-start">'
+                    + '<div class="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 text-xs max-w-[85%]">'
+                    + explanation.replace(/</g, '&lt;') + '</div></div>';
+                chatLog.scrollTop = chatLog.scrollHeight;
+
+                // Set dropdown values if we got a valid match
+                if (data.variant_key) {
+                    // Set modality dropdown
+                    var modEl = document.getElementById('common-modality');
+                    for (var i = 0; i < modEl.options.length; i++) {
+                        if (modEl.options[i].value === data.variant_key) {
+                            modEl.selectedIndex = i;
+                            break;
+                        }
+                    }
+                    // Fetch and set algorithms
+                    fetch('/api/v1/spec-chat/algorithms/' + encodeURIComponent(data.variant_key))
+                        .then(function(r) { return r.text(); })
+                        .then(function(html) {
+                            algorithmEl.innerHTML = html;
+                            // Set the algorithm if specified
+                            if (data.algorithm_name) {
+                                for (var j = 0; j < algorithmEl.options.length; j++) {
+                                    if (algorithmEl.options[j].value === data.algorithm_name) {
+                                        algorithmEl.selectedIndex = j;
+                                        break;
+                                    }
+                                }
+                            }
+                        });
+                    // Refresh samples
+                    refreshSamples(data.variant_key);
+                }
+            })
+            .catch(function(err) {
+                chatLog.innerHTML += '<div class="flex justify-start">'
+                    + '<div class="px-3 py-2 rounded-lg bg-red-50 text-red-700 text-xs max-w-[85%]">'
+                    + 'Error: ' + err.message + '</div></div>';
+                chatLog.scrollTop = chatLog.scrollHeight;
+            })
+            .finally(function() {
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Send';
+            });
+    };
 })();
 </script>

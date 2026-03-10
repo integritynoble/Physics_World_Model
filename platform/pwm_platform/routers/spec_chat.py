@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
@@ -125,6 +126,112 @@ async def system_recommend(
     })
 
 
+# ── Common-mode chat endpoint (LLM-assisted modality/algorithm selection) ──
+
+
+@router.post("/common-chat", response_class=HTMLResponse)
+async def common_chat(
+    request: Request,
+    message: str = Form(...),
+):
+    """Interpret a natural-language prompt to select modality + algorithm.
+
+    No login required.  Uses Gemini 2.5 Flash to map free-text descriptions
+    to a ``variant_key`` and ``algorithm_name`` from the existing catalogs.
+    Returns a JSON payload that the frontend JS uses to set the dropdowns.
+    """
+    from pwm_platform.services.benchmark_database import VARIANT_DATABASE
+    from pwm_platform.services.benchmark_database._algorithm_catalog import get_algorithms
+
+    # Build a compact catalog string for the system prompt
+    variant_entries = []
+    for vk, v in sorted(VARIANT_DATABASE.items()):
+        cat = v.get("category", "compressive")
+        algos = get_algorithms(vk, cat)
+        algo_names = [a["name"] for a in algos[:8]]  # top 8 algorithms
+        algo_str = ", ".join(algo_names) if algo_names else "N/A"
+        variant_entries.append(
+            f"- {vk}: {v.get('display_name', vk)} | algorithms: [{algo_str}]"
+        )
+    variants_str = "\n".join(variant_entries[:120])  # cap for context
+
+    system_prompt = (
+        "You are a reconstruction assistant for the Physics World Model (PWM) platform.\n"
+        "The user will describe an imaging modality and/or reconstruction algorithm.\n"
+        "Your job is to match their description to the best variant_key and algorithm_name "
+        "from the catalogs below.\n\n"
+        "## Available Modalities (variant_key: display_name | algorithms)\n"
+        f"{variants_str}\n\n"
+        "## Instructions\n"
+        "1. Match the user's modality description to the closest variant_key.\n"
+        "2. If the user mentions an algorithm name, match it to one from that modality's "
+        "algorithm list above. Use the EXACT algorithm name from the catalog.\n"
+        "3. If the user does not specify an algorithm, pick the best classical algorithm "
+        "for that modality (e.g. FBP for CT, GAP-TV for CASSI, Tikhonov for SPC).\n"
+        "4. Respond with ONLY a JSON object, no markdown fences, no explanation:\n"
+        '   {"variant_key": "...", "algorithm_name": "...", "explanation": "brief 1-line reason"}\n'
+        "5. If you cannot determine the modality, set variant_key to \"\" and explain in explanation.\n"
+        "6. The algorithm_name MUST be one that exists in the modality's algorithm list."
+    )
+
+    history = [{"role": "user", "content": message}]
+
+    try:
+        response_text = await call_gemini(system_prompt, history)
+    except Exception as exc:
+        logger.error("Common-chat Gemini error: %s", exc, exc_info=True)
+        return HTMLResponse(json.dumps({
+            "variant_key": "",
+            "algorithm_name": "",
+            "explanation": f"AI service error: {type(exc).__name__}",
+        }), status_code=200)
+
+    # Parse JSON from response (strip markdown fences if present)
+    cleaned = re.sub(r"```(?:json)?\s*", "", response_text).strip().rstrip("`")
+    try:
+        parsed = json.loads(cleaned)
+    except (json.JSONDecodeError, TypeError):
+        logger.warning("Failed to parse common-chat response: %s", response_text[:200])
+        parsed = {
+            "variant_key": "",
+            "algorithm_name": "",
+            "explanation": response_text[:200],
+        }
+
+    # Validate variant_key exists
+    vk = parsed.get("variant_key", "")
+    if vk and vk not in VARIANT_DATABASE:
+        # Fuzzy match
+        vk_lower = vk.lower()
+        for k in VARIANT_DATABASE:
+            if k.lower() == vk_lower or vk_lower in k.lower():
+                parsed["variant_key"] = k
+                break
+
+    # If we have a valid variant_key, get the algorithm list
+    algo_options = ""
+    vk = parsed.get("variant_key", "")
+    if vk and vk in VARIANT_DATABASE:
+        v = VARIANT_DATABASE[vk]
+        category = v.get("category", "compressive")
+        algos = get_algorithms(vk, category)
+        algo_options = json.dumps([a["name"] for a in algos])
+        # Validate algorithm_name
+        algo_name = parsed.get("algorithm_name", "")
+        algo_names = [a["name"] for a in algos]
+        if algo_name and algo_name not in algo_names:
+            # Fuzzy match
+            al = algo_name.lower()
+            match = next((a for a in algo_names if a.lower() == al), None)
+            if match is None:
+                match = next((a for a in algo_names if al in a.lower()), None)
+            if match:
+                parsed["algorithm_name"] = match
+
+    parsed["algo_options"] = algo_options
+    return HTMLResponse(json.dumps(parsed), status_code=200)
+
+
 # ── Common-mode reconstruction endpoint ──────────────────────────────────
 # MUST be registered before /{variant_key} to avoid route shadowing.
 
@@ -134,6 +241,7 @@ async def reconstruct_common(
     request: Request,
     modality: str = Form(...),
     algorithm: str = Form(...),
+    sample_index: int = Form(0),
     measurement_file: Optional[UploadFile] = File(None),
     matrix_file: Optional[UploadFile] = File(None),
 ):
@@ -173,6 +281,7 @@ async def reconstruct_common(
             algorithm_name=algorithm,
             user_measurement=user_measurement,
             user_matrix=user_matrix,
+            sample_index=sample_index,
         )
     except Exception as exc:
         logger.error("Common reconstruction error: %s", exc, exc_info=True)
@@ -774,5 +883,34 @@ async def get_variant_algorithms(variant_key: str):
         for a in algos
     )
     return HTMLResponse(options or '<option value="">No algorithms available</option>')
+
+
+@router.get("/samples/{variant_key}")
+async def get_variant_samples(variant_key: str):
+    """Return available sample indices for a variant's benchmark data.
+
+    Checks the GCS challenge HDF5 file for available sample keys.
+    Returns JSON: {"samples": [{"index": 0, "label": "Sample 1"}, ...]}
+    """
+    from fastapi.responses import JSONResponse
+    from pwm_platform.services.common_reconstructor import _ensure_challenge_h5
+
+    try:
+        h5_path = _ensure_challenge_h5(variant_key, "public")
+        import h5py
+        with h5py.File(h5_path, "r") as f:
+            sample_keys = sorted([k for k in f.keys() if k.startswith("sample_")])
+        samples = []
+        for i, sk in enumerate(sample_keys[:3]):  # Cap at 3
+            samples.append({"index": i, "label": f"Sample {i + 1}", "key": sk})
+        if not samples:
+            samples = [{"index": 0, "label": "Sample 1", "key": "sample_00"}]
+        return JSONResponse({"samples": samples})
+    except Exception:
+        return JSONResponse({"samples": [
+            {"index": 0, "label": "Sample 1", "key": "sample_00"},
+            {"index": 1, "label": "Sample 2", "key": "sample_01"},
+            {"index": 2, "label": "Sample 3", "key": "sample_02"},
+        ]})
 
 
