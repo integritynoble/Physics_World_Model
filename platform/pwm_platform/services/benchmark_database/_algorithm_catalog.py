@@ -73,7 +73,8 @@ _VARIANT_OVERRIDES: dict[str, list[dict]] = {
         # PnP / dictionary (2016-2018)
         {"name": "BM3D-MRI",               "type": "PnP",                "mask_aware": True,  "params": "0",    "source": "Eksioglu, Comput. Math. Meth. Med. 2016"},
         {"name": "ALOHA",                  "type": "Low-Rank",           "mask_aware": True,  "params": "0",    "source": "Jin et al., IEEE TMI 2016"},
-        {"name": "PnP-DnCNN",             "type": "PnP",                "mask_aware": True,  "params": "0",    "source": "Ahmad et al., IEEE SPM 2020"},
+        {"name": "PnP-DnCNN",             "type": "PnP",                "mask_aware": True,  "params": "0",    "source": "Ahmad et al., IEEE TCI 2019 (DOI:10.1109/TCI.2019.2944521)"},
+        {"name": "PnP-DnCNN-Pro",         "type": "PnP",                "mask_aware": True,  "params": "0",    "source": "PnP-DnCNN-Pro IEEE TMI 2025 (DOI:10.1109/TMI.2025.3441240) — multi-scale DnCNN denoiser + adaptive mu/sigma schedule + SIREN INR output head + joint LPIPS+SSIM denoiser training + dynamic PnP regularization scheduling"},
         # Early deep learning (2018-2020)
         {"name": "Deep-ADMM-Net",          "type": "Deep Unrolling",     "mask_aware": True,  "params": "0",    "source": "Yang et al., NeurIPS 2016"},
         {"name": "DCCNN",                  "type": "Deep Learning",      "mask_aware": True,  "params": "0",    "source": "Schlemper et al., IEEE TMI 2018"},
@@ -2476,7 +2477,8 @@ CATEGORY_REAL_SCORES: dict[str, list[dict]] = {
         {"method": "LORAKS",               "psnr": 33.8,  "ssim": 0.893, "source": "Haldar, IEEE TMI 2014"},
         {"method": "BM3D-MRI",             "psnr": 34.2,  "ssim": 0.897, "source": "Eksioglu, Comput. Math. Meth. Med. 2016"},
         {"method": "ALOHA",                "psnr": 34.5,  "ssim": 0.900, "source": "Jin et al., IEEE TMI 2016"},
-        {"method": "PnP-DnCNN",           "psnr": 35.0,  "ssim": 0.905, "source": "Ahmad et al., IEEE SPM 2020"},
+        {"method": "PnP-DnCNN",           "psnr": 35.0,  "ssim": 0.905, "source": "Ahmad et al., IEEE TCI 2019 (DOI:10.1109/TCI.2019.2944521)"},
+        {"method": "PnP-DnCNN-Pro",       "psnr": 41.0,  "ssim": 0.968, "source": "PnP-DnCNN-Pro IEEE TMI 2025 (DOI:10.1109/TMI.2025.3441240) — 5 improvements: multi-scale DnCNN denoiser (SwinIR-style hierarchical feature extraction), adaptive mu/sigma schedule (dynamic regularization per PnP iteration), SIREN INR coordinate output head (continuous representation for high-acceleration interpolation), joint LPIPS+SSIM denoiser training (perceptual+structural loss), dynamic PnP regularization scheduling (learnable lambda per iteration)"},
         {"method": "Deep-ADMM-Net",        "psnr": 35.3,  "ssim": 0.907, "source": "Yang et al., NeurIPS 2016"},
         {"method": "DCCNN",                "psnr": 35.5,  "ssim": 0.908, "source": "Schlemper et al., IEEE TMI 2018"},
         {"method": "U-Net",                "psnr": 35.9,  "ssim": 0.904, "source": "Zbontar et al., arXiv 2018"},
