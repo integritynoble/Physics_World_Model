@@ -704,7 +704,7 @@ def reconstruct_cpu(image_measured: np.ndarray, psf: np.ndarray,
     1. Estimate illumination field from heavily smoothed image
     2. Correct illumination
     3. Wiener deconvolution with adaptive noise regularisation
-    4. Bilateral-like smoothing to suppress ringing while preserving edges
+    4. Mild post-smoothing to suppress ringing
     5. Clip and return
     """
     H, W = image_measured.shape
@@ -728,18 +728,18 @@ def reconstruct_cpu(image_measured: np.ndarray, psf: np.ndarray,
     psf_var = np.sum(psf_f64 * yy[:, None]**2) + np.sum(psf_f64 * yy[None, :]**2)
     psf_sigma_eff = max(0.5, np.sqrt(max(psf_var, 0.0)))
 
-    # Noise power: use a mild regularisation that adapts to blur level
-    # For large blur, use lighter regularisation to allow more deconvolution
+    # Adaptive regularisation: balance noise suppression vs deconvolution
+    # For noise-dominated regime (low blur, high noise): use SNR-based reg
+    # For blur-dominated regime (high blur, low noise): use lighter reg
     noise_power = noise_sigma**2
-    # Scale factor: regularisation = noise_power * (1 + alpha * psf_sigma)
-    # Lower alpha means more aggressive deconvolution (higher PSNR ceiling)
-    alpha = 0.02  # mild scaling with PSF width
-    reg = max(noise_power * (1.0 + alpha * psf_sigma_eff), 5e-4)
+    # Base: just noise power; scale mildly with PSF size to avoid ringing
+    reg = noise_power * (1.0 + 0.005 * psf_sigma_eff**2)
+    # Floor: prevent near-zero regularisation
+    reg = max(reg, 1e-4)
     recon = wiener_deconvolution(img_corrected, psf, noise_power=reg)
 
-    # 4. Post-processing: very mild smoothing to suppress ringing
-    # Use smaller sigma for less over-smoothing
-    recon = gaussian_filter(recon, sigma=0.4)
+    # 4. Post-processing: very mild edge-preserving smoothing
+    recon = gaussian_filter(recon, sigma=0.3)
     recon = np.clip(recon, 0.0, 1.0)
 
     return recon.astype(np.float32)
