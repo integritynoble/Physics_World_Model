@@ -3705,3 +3705,58 @@ def classify_solver(algo_type: str) -> str:
         return "transformer"
     # Deep unrolling, hybrid, recurrent — all map to "deep"
     return "deep"
+
+
+def resolve_algorithm(
+    variant_key: str,
+    category: str,
+    algorithm_name: str,
+) -> dict | None:
+    """Look up an algorithm by name within a variant's algorithm catalog.
+
+    This is the SINGLE validation point that all paths (common mode, advanced
+    mode, benchmark, dataset reconstruction) should use to confirm that an
+    algorithm name exists and to retrieve its metadata.
+
+    Parameters
+    ----------
+    variant_key : str
+        The imaging modality variant key (e.g. ``"sd_cassi"``, ``"ct"``).
+    category : str
+        The modality category (e.g. ``"compressive"``, ``"medical"``).
+    algorithm_name : str
+        The algorithm name to look up (e.g. ``"FBP"``, ``"MST-L"``).
+
+    Returns
+    -------
+    dict | None
+        Algorithm metadata dict if found (exact or fuzzy match), None otherwise.
+    """
+    algos = get_algorithms(variant_key, category)
+    # Exact match
+    for a in algos:
+        if a["name"] == algorithm_name:
+            return dict(a)
+    # Case-insensitive match
+    al = algorithm_name.lower()
+    for a in algos:
+        if a["name"].lower() == al:
+            return dict(a)
+    # Substring match (e.g. "FBP" matches "FBP-UNet")
+    for a in algos:
+        if al in a["name"].lower() or a["name"].lower() in al:
+            return dict(a)
+    return None
+
+
+def get_best_classical(variant_key: str, category: str) -> dict | None:
+    """Return the best classical algorithm for a variant.
+
+    Used as the default when no specific algorithm is requested.
+    All reconstruction paths should call this instead of hardcoding names.
+    """
+    algos = get_algorithms(variant_key, category)
+    for a in algos:
+        if classify_solver(a.get("type", "")) == "classical":
+            return dict(a)
+    return algos[0] if algos else None

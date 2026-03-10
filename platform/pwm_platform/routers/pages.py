@@ -621,8 +621,7 @@ async def speclab(
     # Pre-populate algorithm list if modality is specified
     preselect_algorithms = []
     if modality:
-        from pwm_platform.services.benchmark_database import get_variant as _get_v
-        from pwm_platform.services.benchmark_database._algorithm_catalog import get_algorithms
+        from pwm_platform.services.benchmark_database import get_algorithms, get_variant as _get_v
 
         v = _get_v(modality)
         if v:

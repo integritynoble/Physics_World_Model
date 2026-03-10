@@ -335,54 +335,53 @@ def _select_best_method(
     category_module: str,
     config: dict | None,
 ) -> tuple[str, str, list[dict], str]:
-    """Select the best reconstruction method from benchmark results.
+    """Select the best reconstruction method from the central algorithm catalog.
+
+    All algorithm selection goes through ``_algorithm_catalog.get_algorithms()``
+    to ensure consistency with the SpecLab dropdowns, benchmark leaderboards,
+    and the common-mode reconstruction page.
 
     Returns (solver_name, method_type, methods_considered, rationale).
     """
-    from pwm_platform.services.category_runners._baselines import (
-        _classify_solver,
-        _PSNR_RANGES,
-    )
+    from pwm_platform.services.benchmark_database import get_algorithms, get_variant
+    from pwm_platform.services.benchmark_database._algorithm_catalog import classify_solver
+
+    # Resolve category from variant database (authoritative source)
+    v = get_variant(variant_key)
+    category = v.get("category", "compressive") if v else "compressive"
+
+    # Get algorithms from the SAME catalog used by SpecLab and benchmarks
+    algos = get_algorithms(variant_key, category)
 
     methods = []
+    for a in algos:
+        solver_class = classify_solver(a.get("type", ""))
+        methods.append({
+            "name": a["name"],
+            "display_name": a["name"],
+            "method_type": solver_class,
+            "algo_type": a.get("type", ""),
+            "source": a.get("source", ""),
+        })
 
-    # Get solvers from config
-    if config and "solvers" in config:
-        solvers = config["solvers"]
-        for solver in solvers:
-            name = solver.get("name", solver.get("key", "unknown"))
-            mtype = _classify_solver(name)
-            methods.append({
-                "name": name,
-                "display_name": solver.get("display_name", name),
-                "method_type": mtype,
-            })
-
-    # If no solvers in config, generate defaults by category
     if not methods:
-        cat_ranges = _PSNR_RANGES.get(category_module, (25, 31, 29, 35, 32, 38))
         methods = [
-            {"name": "pseudo_inverse", "display_name": "Pseudo-Inverse", "method_type": "classical"},
-            {"name": "fista_tv", "display_name": "FISTA-TV", "method_type": "classical"},
-            {"name": "pnp_admm", "display_name": "PnP-ADMM", "method_type": "pnp"},
+            {"name": "Tikhonov", "display_name": "Tikhonov", "method_type": "classical",
+             "algo_type": "Classical", "source": "Analytical baseline"},
         ]
 
     # Sort by method_type priority: deep > pnp > classical
-    type_priority = {"deep": 0, "pnp": 1, "classical": 2}
-    methods.sort(key=lambda m: type_priority.get(m["method_type"], 3))
-
-    best = methods[0] if methods else {
-        "name": "pseudo_inverse",
-        "display_name": "Pseudo-Inverse",
-        "method_type": "classical",
-    }
+    # (for dataset mode we want the best available classical method since
+    # we can only run classical algorithms server-side)
+    type_priority = {"classical": 0, "pnp": 1, "deep": 2, "transformer": 3}
+    classical_methods = [m for m in methods if m["method_type"] == "classical"]
+    best = classical_methods[0] if classical_methods else methods[0]
 
     rationale = (
-        f"Selected **{best['display_name']}** ({best['method_type']}) as the best "
-        f"available method for {category_module.replace('_', ' ')} reconstruction. "
-        f"This is based on PWM benchmark performance rankings where "
-        f"{best['method_type']} methods typically achieve the highest PSNR "
-        f"on standard test datasets."
+        f"Selected **{best['display_name']}** ({best['algo_type']}) as the best "
+        f"runnable method for {category.replace('_', ' ')} reconstruction. "
+        f"Algorithm source: {best.get('source', 'N/A')}. "
+        f"All {len(methods)} algorithms from the PWM catalog were considered."
     )
 
     return best["name"], best["method_type"], methods, rationale

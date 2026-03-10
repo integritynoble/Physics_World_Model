@@ -136,6 +136,14 @@ def get_challenge_config(variant_key: str) -> dict | None:
     return CHALLENGE_CONFIG.get(variant_key)
 
 
+# Re-export algorithm resolution helpers so all callers can use a single import path
+from ._algorithm_catalog import (  # noqa: E402
+    get_algorithms,
+    get_best_classical,
+    resolve_algorithm,
+)
+
+
 _gallery_cache: dict | None = None
 _gallery_cache_ts: float = 0.0
 _GALLERY_TTL: float = 3600.0  # 1 hour

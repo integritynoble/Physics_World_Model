@@ -427,23 +427,25 @@ def _run_common_sync(
     """Synchronous common-mode reconstruction."""
     t0 = time.perf_counter()
 
-    # Look up algorithm info
-    from pwm_platform.services.benchmark_database import get_variant
-    from pwm_platform.services.benchmark_database._algorithm_catalog import get_algorithms
+    # Look up algorithm info — all algorithm resolution goes through the
+    # central _algorithm_catalog to ensure consistency with dropdowns,
+    # benchmark leaderboards, and advanced mode.
+    from pwm_platform.services.benchmark_database import (
+        get_variant,
+        resolve_algorithm,
+        get_algorithms,
+    )
 
     variant = get_variant(variant_key)
     if variant is None:
         raise ValueError(f"Unknown variant: {variant_key}")
 
     category = variant.get("category", "compressive")
-    algos = get_algorithms(variant_key, category)
-    algo_info = next((a for a in algos if a["name"] == algorithm_name), None)
+    algo_info = resolve_algorithm(variant_key, category, algorithm_name)
     if algo_info is None:
-        # Fuzzy match
-        algo_info = next(
-            (a for a in algos if a["name"].lower() == algorithm_name.lower()),
-            algos[0] if algos else {"name": algorithm_name, "type": "Unknown", "source": ""},
-        )
+        # Final fallback: first algorithm in catalog for this variant
+        algos = get_algorithms(variant_key, category)
+        algo_info = algos[0] if algos else {"name": algorithm_name, "type": "Unknown", "source": ""}
 
     # Load data
     has_gt = False

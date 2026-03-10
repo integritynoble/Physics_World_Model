@@ -140,8 +140,7 @@ async def common_chat(
     to a ``variant_key`` and ``algorithm_name`` from the existing catalogs.
     Returns a JSON payload that the frontend JS uses to set the dropdowns.
     """
-    from pwm_platform.services.benchmark_database import VARIANT_DATABASE
-    from pwm_platform.services.benchmark_database._algorithm_catalog import get_algorithms
+    from pwm_platform.services.benchmark_database import VARIANT_DATABASE, get_algorithms, resolve_algorithm
 
     # Build a compact catalog string for the system prompt
     variant_entries = []
@@ -208,7 +207,7 @@ async def common_chat(
                 parsed["variant_key"] = k
                 break
 
-    # If we have a valid variant_key, get the algorithm list
+    # If we have a valid variant_key, get the algorithm list from the central catalog
     algo_options = ""
     vk = parsed.get("variant_key", "")
     if vk and vk in VARIANT_DATABASE:
@@ -216,17 +215,15 @@ async def common_chat(
         category = v.get("category", "compressive")
         algos = get_algorithms(vk, category)
         algo_options = json.dumps([a["name"] for a in algos])
-        # Validate algorithm_name
+        # Validate algorithm_name via central resolve_algorithm()
         algo_name = parsed.get("algorithm_name", "")
-        algo_names = [a["name"] for a in algos]
-        if algo_name and algo_name not in algo_names:
-            # Fuzzy match
-            al = algo_name.lower()
-            match = next((a for a in algo_names if a.lower() == al), None)
-            if match is None:
-                match = next((a for a in algo_names if al in a.lower()), None)
-            if match:
-                parsed["algorithm_name"] = match
+        if algo_name:
+            resolved = resolve_algorithm(vk, category, algo_name)
+            if resolved:
+                parsed["algorithm_name"] = resolved["name"]
+            else:
+                # No match found — use first classical algorithm
+                parsed["algorithm_name"] = algos[0]["name"] if algos else ""
 
     parsed["algo_options"] = algo_options
     return HTMLResponse(json.dumps(parsed), status_code=200)
@@ -868,9 +865,13 @@ async def download_example_dataset(key: str, role: str):
 
 @router.get("/algorithms/{variant_key}", response_class=HTMLResponse)
 async def get_variant_algorithms(variant_key: str):
-    """Return algorithm <option> tags for a variant (HTMX population)."""
-    from pwm_platform.services.benchmark_database import get_variant
-    from pwm_platform.services.benchmark_database._algorithm_catalog import get_algorithms
+    """Return algorithm <option> tags for a variant (HTMX population).
+
+    Uses the central ``get_algorithms()`` from the benchmark database
+    package — same source as common-chat, dataset reconstruction, and
+    leaderboard generation.
+    """
+    from pwm_platform.services.benchmark_database import get_algorithms, get_variant
 
     variant = get_variant(variant_key)
     if variant is None:
