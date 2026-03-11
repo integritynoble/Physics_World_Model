@@ -512,7 +512,7 @@ def epie_reconstruct(
     positions: np.ndarray,
     probe_init: np.ndarray,
     obj_shape: tuple[int, int],
-    n_iterations: int = 200,
+    n_iterations: int = 50,
     alpha: float = 1.0,
     beta: float = 0.8,
 ) -> tuple[np.ndarray, np.ndarray]:
@@ -636,8 +636,8 @@ def compute_psnr(gt: np.ndarray, recon: np.ndarray) -> float:
     return float(10 * np.log10(data_range ** 2 / mse))
 
 
-def compute_ssim(gt: np.ndarray, recon: np.ndarray) -> float:
-    """Structural similarity between two real-valued images."""
+def compute_ssim(gt: np.ndarray, recon: np.ndarray, win_size: int = 7) -> float:
+    """Windowed structural similarity (mean SSIM over local patches)."""
     gt64 = gt.astype(np.float64)
     recon64 = recon.astype(np.float64)
     data_range = gt64.max() - gt64.min()
@@ -645,14 +645,30 @@ def compute_ssim(gt: np.ndarray, recon: np.ndarray) -> float:
         return 0.0
     c1 = (0.01 * data_range) ** 2
     c2 = (0.03 * data_range) ** 2
-    mu_x = gt64.mean()
-    mu_y = recon64.mean()
-    var_x = gt64.var()
-    var_y = recon64.var()
-    cov_xy = np.mean((gt64 - mu_x) * (recon64 - mu_y))
-    ssim = ((2 * mu_x * mu_y + c1) * (2 * cov_xy + c2)) / \
-           ((mu_x ** 2 + mu_y ** 2 + c1) * (var_x + var_y + c2))
-    return float(ssim)
+
+    # Use uniform window for local statistics
+    from scipy.ndimage import uniform_filter
+    mu_x = uniform_filter(gt64, win_size)
+    mu_y = uniform_filter(recon64, win_size)
+    mu_x2 = uniform_filter(gt64 ** 2, win_size)
+    mu_y2 = uniform_filter(recon64 ** 2, win_size)
+    mu_xy = uniform_filter(gt64 * recon64, win_size)
+
+    var_x = mu_x2 - mu_x ** 2
+    var_y = mu_y2 - mu_y ** 2
+    cov_xy = mu_xy - mu_x * mu_y
+
+    # Clamp negative variances from numerical precision
+    var_x = np.maximum(var_x, 0)
+    var_y = np.maximum(var_y, 0)
+
+    num = (2 * mu_x * mu_y + c1) * (2 * cov_xy + c2)
+    den = (mu_x ** 2 + mu_y ** 2 + c1) * (var_x + var_y + c2)
+    ssim_map = num / den
+
+    # Crop borders
+    pad = win_size // 2
+    return float(ssim_map[pad:-pad, pad:-pad].mean())
 
 
 # -- Image helpers ----------------------------------------------------------
@@ -792,7 +808,7 @@ def generate_tier(
             obj_recon, _ = epie_reconstruct(
                 y, scan_positions.astype(np.float32),
                 probe_init, (IMAGE_SIZE, IMAGE_SIZE),
-                n_iterations=200, alpha=1.0, beta=0.8,
+                n_iterations=50, alpha=1.0, beta=0.8,
             )
 
             # Reconstruct amplitude and normalize to [0, 1]

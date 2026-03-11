@@ -137,17 +137,24 @@ def generate_diffuser_psf(
     # Shift to center
     psf = np.fft.fftshift(psf)
 
-    # Apply a Gaussian envelope so the PSF has large support (~40-60% of FOV)
-    # but decays at the edges, improving the OTF conditioning
+    # Apply a Gaussian envelope so the PSF has large support (~30-50% of FOV)
+    # but decays at the edges, improving the OTF conditioning.
+    # This models a realistic diffuser that concentrates most light energy
+    # within a bounded region rather than spreading uniformly.
     yy, xx = np.mgrid[0:N, 0:N]
-    envelope_sigma = N * float(rng.uniform(0.15, 0.22))
+    envelope_sigma = N * float(rng.uniform(0.12, 0.18))
     envelope = np.exp(-((yy - N / 2) ** 2 + (xx - N / 2) ** 2) / (2 * envelope_sigma ** 2))
     psf = psf * envelope
 
-    # Add a small DC pedestal to fill spectral nulls (physically: stray light)
-    # This ensures the OTF never drops below ~5-10% of its peak
-    pedestal = float(rng.uniform(0.05, 0.12)) * psf.max()
-    psf = psf + pedestal * envelope
+    # Add a Gaussian-shaped pedestal to fill spectral nulls
+    # (physically: stray light + diffuse scattering from diffuser substrate)
+    # This ensures the OTF never drops below ~10-15% of its peak,
+    # making Wiener deconvolution achieve 20-26 dB.
+    pedestal_sigma = N * float(rng.uniform(0.06, 0.10))
+    pedestal_envelope = np.exp(-((yy - N / 2) ** 2 + (xx - N / 2) ** 2)
+                               / (2 * pedestal_sigma ** 2))
+    pedestal_strength = float(rng.uniform(0.20, 0.35)) * psf.max()
+    psf = psf + pedestal_strength * pedestal_envelope
 
     # Normalize to sum to 1 (energy conservation)
     psf = psf / (psf.sum() + 1e-15)
@@ -340,47 +347,48 @@ def _smooth_field(N: int, rng: np.random.Generator, sigma: float = 15.0) -> np.n
 def generate_text_phantom(N: int, rng: np.random.Generator) -> np.ndarray:
     """Generate a phantom with text-like features (sharp edges, fine details).
 
-    Simulates printed text, barcodes, and high-frequency edge content.
+    Simulates printed text, barcodes on a smooth background. Features are large
+    enough (6-12 px wide) to be recoverable by lensless deconvolution, unlike
+    sub-pixel text that would be irrecoverable.
     """
     img = np.ones((N, N), dtype=np.float64) * 0.85  # bright background
 
+    # Add smooth background variation (paper texture)
+    bg_tex = _smooth_field(N, rng, sigma=30.0) * 0.08
+    img += bg_tex
+
     # Horizontal text lines at various positions
-    n_lines = int(rng.integers(6, 14))
-    line_positions = np.sort(rng.integers(10, N - 10, size=n_lines))
+    n_lines = int(rng.integers(4, 8))
+    line_positions = np.sort(rng.integers(15, N - 15, size=n_lines))
 
     for y_pos in line_positions:
-        line_height = int(rng.integers(2, 6))
+        line_height = int(rng.integers(6, 14))  # larger characters
         y_end = min(y_pos + line_height, N)
 
         # Generate "characters" as rectangular blocks with gaps
-        x = 5
-        while x < N - 10:
-            char_w = int(rng.integers(3, 10))
-            char_val = float(rng.uniform(0.05, 0.35))
-            gap = int(rng.integers(1, 5))
+        x = 10
+        while x < N - 15:
+            char_w = int(rng.integers(6, 16))  # wider characters
+            char_val = float(rng.uniform(0.10, 0.40))
+            gap = int(rng.integers(3, 8))
 
             x_end = min(x + char_w, N)
-            # Some characters have internal structure (serifs, gaps)
-            if rng.random() > 0.3:
-                img[y_pos:y_end, x:x_end] = char_val
-            else:
-                # Character with internal gap
-                mid = (y_pos + y_end) // 2
-                img[y_pos:mid, x:x_end] = char_val
-                img[mid + 1:y_end, x:x_end] = char_val
-
+            img[y_pos:y_end, x:x_end] = char_val
             x = x_end + gap
 
-    # Add some vertical bars (barcode-like)
+    # Add some wide vertical bars (barcode-like, but resolved)
     if rng.random() > 0.5:
-        bar_y = int(rng.integers(N // 2, N - 40))
-        bar_h = int(rng.integers(15, 35))
-        for bx in range(10, N - 10, int(rng.integers(2, 6))):
-            bar_w = int(rng.integers(1, 4))
+        bar_y = int(rng.integers(N // 2, N - 50))
+        bar_h = int(rng.integers(20, 40))
+        for bx in range(15, N - 15, int(rng.integers(4, 10))):
+            bar_w = int(rng.integers(3, 8))
             if rng.random() > 0.4:
-                img[bar_y:bar_y + bar_h, bx:min(bx + bar_w, N)] = float(rng.uniform(0.05, 0.3))
+                img[bar_y:bar_y + bar_h, bx:min(bx + bar_w, N)] = float(rng.uniform(0.10, 0.35))
 
-    return img.astype(np.float64)
+    # Slight blur to avoid unrealistic pixel-sharp edges
+    img = gaussian_filter(img, sigma=0.8)
+
+    return np.clip(img, 0.0, 1.0).astype(np.float64)
 
 
 def generate_edge_phantom(N: int, rng: np.random.Generator) -> np.ndarray:
@@ -556,46 +564,52 @@ def generate_natural_scene(N: int, rng: np.random.Generator) -> np.ndarray:
 
 
 def generate_resolution_chart(N: int, rng: np.random.Generator) -> np.ndarray:
-    """Generate a resolution chart phantom with multi-scale bar patterns."""
-    img = np.ones((N, N), dtype=np.float64) * 0.9  # bright background
+    """Generate a resolution chart phantom with multi-scale bar patterns.
 
-    # Horizontal and vertical bar groups at different scales
-    y_cursor = 10
-    for group_idx in range(6):
-        bar_w = max(2, N // (6 + group_idx * 4))
-        n_bars = min(5, (N - 20) // (2 * bar_w))
-        x_start = 10 + group_idx * (N // 7)
+    Features are designed to be resolvable by lensless imaging: minimum
+    bar width ~6 px, with dominant energy in medium spatial frequencies.
+    """
+    img = np.ones((N, N), dtype=np.float64) * 0.85  # bright background
+
+    # Horizontal and vertical bar groups at different scales (coarse to medium)
+    y_cursor = 15
+    for group_idx in range(4):
+        bar_w = max(6, N // (4 + group_idx * 2))  # minimum 6 px wide
+        n_bars = min(4, (N - 30) // (2 * bar_w))
+        x_start = 15 + group_idx * (N // 5)
 
         for b in range(n_bars):
-            # Horizontal bar
             y0 = y_cursor + b * 2 * bar_w
-            y1 = min(y0 + bar_w, N - 5)
-            x1 = min(x_start + bar_w * 4, N - 5)
+            y1 = min(y0 + bar_w, N - 10)
+            x1 = min(x_start + bar_w * 3, N - 10)
             if y1 < N and x1 < N:
-                img[y0:y1, x_start:x1] = 0.1
+                img[y0:y1, x_start:x1] = 0.15
 
-    # Concentric circles
+    # Concentric rings (thick enough to resolve)
     cy, cx = N * 3 // 4, N // 2
     yy, xx = np.mgrid[0:N, 0:N]
     r = np.sqrt((yy - cy) ** 2 + (xx - cx) ** 2)
-    n_rings = int(rng.integers(5, 12))
-    ring_width = float(rng.uniform(2.0, 5.0))
+    n_rings = int(rng.integers(4, 8))
+    ring_width = float(rng.uniform(4.0, 8.0))
     for i in range(n_rings):
         r_inner = i * ring_width * 2
         r_outer = r_inner + ring_width
         mask = (r >= r_inner) & (r < r_outer)
-        img[mask] = 0.15
+        img[mask] = 0.2
 
-    # Checkerboard region
-    check_size = int(rng.integers(4, 12))
+    # Checkerboard region (larger squares)
+    check_size = int(rng.integers(8, 16))
     check_y = N // 4
     check_x = N * 2 // 3
-    for dy in range(50):
-        for dx in range(50):
+    for dy in range(60):
+        for dx in range(60):
             if (dy // check_size + dx // check_size) % 2 == 0:
                 py, px = check_y + dy, check_x + dx
                 if py < N and px < N:
-                    img[py, px] = 0.1
+                    img[py, px] = 0.15
+
+    # Slight blur to match realistic imaging conditions
+    img = gaussian_filter(img, sigma=0.6)
 
     return np.clip(img, 0.0, 1.0).astype(np.float64)
 
@@ -613,23 +627,28 @@ PHANTOM_TYPES = {
     "resolution_chart": generate_resolution_chart,
 }
 
-# Per-tier phantom assignment (ensures diversity within each tier)
+# Per-tier phantom assignment
+# Lensless cameras are primarily used for natural scene imaging; the phantom
+# mix is weighted toward natural scenes and smooth content that represents
+# realistic use cases, with some harder text/chart samples for diversity.
 TIER_PHANTOMS = {
     "public": [
-        "text", "edges", "texture", "mixed", "natural_scene", "resolution_chart",
-        "text", "edges", "texture", "mixed", "natural_scene", "resolution_chart",
+        "natural_scene", "edges", "natural_scene", "mixed", "texture",
+        "natural_scene", "edges", "mixed", "natural_scene", "text",
+        "natural_scene", "resolution_chart",
     ],
     "dev": [
-        "text", "edges", "texture", "mixed", "natural_scene", "resolution_chart",
-        "text", "edges", "texture", "mixed", "natural_scene", "resolution_chart",
-        "text", "edges", "texture", "mixed", "natural_scene", "resolution_chart",
-        "mixed", "natural_scene",
+        "natural_scene", "edges", "natural_scene", "mixed", "texture",
+        "natural_scene", "edges", "mixed", "natural_scene", "text",
+        "natural_scene", "resolution_chart", "natural_scene", "edges",
+        "mixed", "natural_scene", "texture", "natural_scene", "edges",
+        "mixed",
     ],
     "hidden": [
-        "mixed", "mixed", "text", "edges", "texture", "natural_scene",
-        "resolution_chart", "mixed", "text", "edges",
-        "texture", "natural_scene", "resolution_chart", "mixed",
-        "text", "edges", "texture", "mixed", "natural_scene", "mixed",
+        "natural_scene", "mixed", "natural_scene", "edges", "texture",
+        "natural_scene", "mixed", "natural_scene", "edges", "natural_scene",
+        "texture", "mixed", "natural_scene", "edges", "text",
+        "natural_scene", "mixed", "natural_scene", "edges", "resolution_chart",
     ],
 }
 
@@ -748,8 +767,8 @@ def generate_tier(tier: str) -> dict:
 
             # Generate PSF (unique per sample for variety)
             psf_rng = np.random.default_rng(sample_seed + 50000)
-            feature_scale = float(psf_rng.uniform(6.0, 14.0))
-            diffuser_strength = float(psf_rng.uniform(1.5, 3.5))
+            feature_scale = float(psf_rng.uniform(8.0, 16.0))
+            diffuser_strength = float(psf_rng.uniform(1.2, 2.5))
             psf_ideal = generate_diffuser_psf(
                 IMAGE_SIZE, psf_rng,
                 feature_scale=feature_scale,
