@@ -1,6 +1,6 @@
 # Benchmark Dataset State Tracker
 
-Last updated: 2026-03-11T01:00Z
+Last updated: 2026-03-11T03:00Z
 
 ## Status Legend
 - **Dataset**: creating public, dev and hidden dataset
@@ -29,12 +29,12 @@ Last updated: 2026-03-11T01:00Z
 | Modality | Dataset | Benchmark | Notes |
 |----------|---------|-----------|-------|
 | palm_storm | done | done | SMLM Poisson+PSF+readout, 12/20/20, Gaussian fitting ~31 dB |
-| sted | pending | pending | STED microscopy |
-| sim | pending | pending | Structured illumination |
-| confocal_3d | pending | pending | 3D confocal |
-| lightsheet | pending | pending | Light-sheet fluorescence |
-| two_photon | pending | pending | Two-photon microscopy |
-| cryo_em | pending | pending | Cryo-electron microscopy |
+| sted | done | done | STED depletion PSF+Poisson, 12/20/20, RL deconv baseline |
+| sim | done | done | Patterned illumination 9-frame, 12/20/20, Wiener SIM recon |
+| confocal_3d | done | done | Confocal PSF+pinhole+out-of-focus, 12/20/20, RL deconv |
+| lightsheet | done | done | Sheet profile+scatter+stripe, 12/20/20, RL deconv |
+| two_photon | done | done | 2P PSF+depth attenuation, 12/20/20, depth-corrected RL |
+| cryo_em | done | done | CTF+extreme noise, 12/20/20, Wiener CTF ~17 dB |
 | sem | pending | pending | Scanning electron microscopy |
 | tem | pending | pending | Transmission electron microscopy |
 | widefield | pending | pending | Widefield fluorescence |

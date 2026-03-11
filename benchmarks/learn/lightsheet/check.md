@@ -1,7 +1,7 @@
 # Comprehensive 6-Point Check — Light-Sheet Fluorescence Microscopy
 
 **URL:** https://pwm.platformai.org/benchmark/lightsheet
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-11
 **Status:** PASS
 
 ---
@@ -10,37 +10,53 @@
 
 **Modality:** Light-Sheet Fluorescence Microscopy (LSFM / SPIM)
 
-**Physical principle:** A thin sheet of laser light illuminates only a single plane of the specimen, exciting fluorophores in that plane while keeping out-of-focus regions dark. The orthogonal detection objective collects the emitted fluorescence, achieving optical sectioning with reduced phototoxicity compared to confocal microscopy. Single-objective variants (SCAPE, oblique-plane microscopy) use the same selective-plane principle with a single lens.
+**Physical principle:** A thin sheet of laser light illuminates only a single plane of the specimen, exciting fluorophores in that plane while keeping out-of-focus regions dark. The orthogonal detection objective collects the emitted fluorescence, achieving optical sectioning with reduced phototoxicity compared to confocal microscopy.
 
 **Forward model:**
 ```
-y(x, y, z) = [h_det ⊗ (I_sheet · f(x))](x, y, z) + η
+y = Poisson(PSF_det * (S(z) * x) + scatter + bg) + readout_noise
 
 where:
-  f(x)      — 3D fluorophore distribution (ground truth)
-  I_sheet   — illumination sheet intensity profile (Gaussian beam waist)
-  h_det     — detection PSF of the collection objective
-  ⊗         — 3D convolution
-  η         — Poisson shot noise + Gaussian read noise
+  x          -- 2D fluorescence ground truth (cleared tissue / embryo section)
+  S(z)       -- light-sheet illumination profile (Gaussian beam with z-dependent
+                waist; non-uniform across FOV -> striping artifacts at edges)
+  PSF_det    -- detection PSF (widefield-like Gaussian, sigma ~2-3 px)
+  scatter    -- tissue scattering (depth-dependent exponential attenuation)
+  bg         -- out-of-focus background fluorescence + scatter-induced background
+  readout    -- sCMOS Gaussian readout noise (std ~3-8 electrons)
 ```
 
-**Inverse problem:** Recover the 3D fluorophore distribution f(x) from one or more fluorescence image planes y, compensating for the detection PSF and uneven sheet illumination (deconvolution / destriping).
+**Inverse problem:** Recover the fluorescence distribution x from the noisy, blurred, stripe-corrupted measurement y, compensating for detection PSF, non-uniform sheet illumination, tissue scattering, and Poisson-Gaussian noise.
 
 ---
 
 ## 2. Mismatch Parameters & Benchmark Structure
 
-**Spec notation:** P(laser sheet) → F(fluorescent sample) → D(sCMOS camera)
+**Spec notation:** P(laser sheet) -> F(fluorescent sample) -> D(sCMOS camera)
 
 **Key mismatch parameters:**
-- `psf_sigma_xy`: lateral PSF width (diffraction-limited); nominal 0.15 µm, perturbed 0.20–0.25 µm
-- `psf_sigma_z`: axial PSF width (sheet thickness); nominal 0.8 µm, perturbed 1.2–2.0 µm
-- `sheet_tilt_deg`: tilt of illumination sheet relative to detection focal plane; nominal 0°, perturbed ±2°
-- `bg_level`: out-of-focus background fluorescence fraction; nominal 0.02, perturbed 0.08–0.15
+- `sheet_thickness`: light-sheet waist sigma in pixels (3.0-8.0); controls axial sectioning
+- `sheet_uniformity`: beam uniformity across FOV (0.5-1.0); lower = more striping
+- `scattering_coeff`: tissue scattering attenuation per pixel (0.01-0.10)
+- `noise_level`: peak photon count for Poisson noise (100-2000)
+
+**Dataset tiers:**
+| Tier   | Samples | Seed Offset | Difficulty |
+|--------|---------|-------------|------------|
+| Public | 12      | 0           | Moderate   |
+| Dev    | 20      | 10000       | Medium     |
+| Hidden | 20      | 20000       | Hard       |
 
 **Dataset format:**
-- `x_true: (256, 256)` — 2D fluorescence slice (or max-projection of 3D volume), arbitrary units
-- `y: (256, 256)` — observed blurred/noisy image from simulated sCMOS detector
+- `x_true: (256, 256) float32` -- ground truth fluorescence, normalized to [0, 1]
+- `y: (256, 256) float32` -- noisy light-sheet measurement (photon counts)
+- `H_ideal: (256, 256) float32` -- noiseless ideal image (for reference)
+
+**Phantom types:**
+- Sparse fluorescent nuclei (40-120 round bright spots)
+- Vasculature networks (branching tubular structures with bifurcations)
+- Developing organ structures (layered tissue with curved boundaries)
+- Combined tissue sections (nuclei + vasculature + organ layers)
 
 ---
 
@@ -48,30 +64,42 @@ where:
 
 | Algorithm | Type | Reference | Appropriateness |
 |-----------|------|-----------|-----------------|
-| Richardson-Lucy Deconvolution | Classical | Richardson (1972) *J. Opt. Soc. Am.* 62:55; Lucy (1974) *AJ* 79:745 | Standard iterative PSF deconvolution for fluorescence microscopy |
-| TV-regularized deconvolution | Variational | Dey et al. (2006) *Microsc. Res. Tech.* 69:260–266 | Total-variation prior suppresses noise while preserving sharp fluorescent structures |
-| Noise2Void | Self-supervised DL | Krull et al. (2019) *CVPR* 19:2129–2137 | Self-supervised denoising requiring no paired clean data, ideal for microscopy |
-| CARE / Content-Aware Image Restoration | Deep Learning | Weigert et al. (2018) *Nature Methods* 15:1090–1097 | U-Net trained on paired low/high-SNR light-sheet images; benchmark standard |
+| Stripe removal + Richardson-Lucy | Classical (CPU baseline) | Richardson (1972); Lucy (1974) | Fourier notch destriping + iterative Poisson ML deconvolution |
+| TV-regularized deconvolution | Variational | Dey et al. (2006) *Microsc. Res. Tech.* 69:260-266 | TV prior preserves sharp fluorescent structures |
+| Noise2Void | Self-supervised DL | Krull et al. (2019) *CVPR* | Self-supervised denoising, no paired data needed |
+| CARE | Deep Learning | Weigert et al. (2018) *Nature Methods* 15:1090-1097 | U-Net for paired low/high-SNR light-sheet data |
+
+**CPU Baseline Results (Stripe removal + Richardson-Lucy, 30 iterations):**
+| Tier   | Mean PSNR (dB) | Mean SSIM |
+|--------|----------------|-----------|
+| Public | 23.04          | 0.540     |
+| Dev    | 23.22          | 0.541     |
+| Hidden | 22.58          | 0.526     |
 
 ---
 
-## 4. Literature & State of the Art (2024–2025)
+## 4. Literature & State of the Art (2024-2025)
 
-1. **Chen et al. (2024)** "Computational aberration correction for light-sheet microscopy with deep learning," *Nature Communications* — demonstrated neural-network correction of spatially varying PSFs in SPIM, improving volumetric resolution by 2×.
-2. **Shi et al. (2024)** "Self-supervised deconvolution for fluorescence microscopy," *Bioinformatics* — introduced a self-supervised framework combining blind deconvolution with noise modeling for light-sheet data.
-3. **Zhao et al. (2025)** "Diffusion-based restoration for 3D fluorescence microscopy," *Medical Image Analysis* — applied score-based diffusion models to joint denoising and deblurring in light-sheet volumes.
-4. **Liu et al. (2024)** "Transformer-based 3D super-resolution for light-sheet fluorescence microscopy," *IEEE Trans. Medical Imaging* — swin-transformer architecture achieves state-of-the-art isotropic reconstruction from anisotropic LSFM stacks.
+1. **Chen et al. (2024)** "Computational aberration correction for light-sheet microscopy with deep learning," *Nature Communications* -- neural-network correction of spatially varying PSFs in SPIM, 2x volumetric resolution improvement.
+2. **Shi et al. (2024)** "Self-supervised deconvolution for fluorescence microscopy," *Bioinformatics* -- self-supervised framework combining blind deconvolution with noise modeling for light-sheet data.
+3. **Zhao et al. (2025)** "Diffusion-based restoration for 3D fluorescence microscopy," *Medical Image Analysis* -- score-based diffusion models for joint denoising and deblurring.
+4. **Liu et al. (2024)** "Transformer-based 3D super-resolution for light-sheet fluorescence microscopy," *IEEE Trans. Medical Imaging* -- swin-transformer for isotropic reconstruction from anisotropic LSFM stacks.
 
 ---
 
 ## 5. Local Dataset & GCS Status
 
-**GCS datasets:**
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/lightsheet_challenge_public.h5`
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/lightsheet_challenge_dev.h5`
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/lightsheet_challenge_hidden.h5`
+**Local dataset:**
+- `datasets/benchmark/lightsheet/generate_dataset.py` -- generator script
+- `datasets/benchmark/lightsheet/{public,dev,hidden}/lightsheet_challenge_{tier}.h5`
 
-**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/lightsheet/`.
+**GCS datasets:**
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/lightsheet/public/lightsheet_challenge_public.h5` (8.5 MB)
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/lightsheet/dev/lightsheet_challenge_dev.h5` (14.0 MB)
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/lightsheet/hidden/lightsheet_challenge_hidden.h5` (13.9 MB)
+
+**Gallery images:** `platform/pwm_platform/static/img/benchmark_gallery/lightsheet/scene_{00-03}/`
+- Each scene: gt.png, measurement_I.png, measurement_II.png, recon_I.png, recon_II.png
 
 ---
 
@@ -79,7 +107,7 @@ where:
 
 **Status:** PASS
 
-Light-sheet fluorescence microscopy is well-modelled as a linear convolution with a spatially-varying PSF followed by Poisson-Gaussian noise, making it a canonical deconvolution benchmark. The algorithm routing (Richardson-Lucy → TV deconvolution → CARE → diffusion) correctly spans classical iterative, variational, supervised, and generative methods applicable to this modality. The mismatch parameters (PSF width, sheet tilt, background) reflect the dominant experimental sources of model error in real LSFM systems.
+The light-sheet fluorescence microscopy benchmark faithfully implements the LSFM forward model: Gaussian beam sheet illumination with non-uniform thickness (causing stripe artifacts), widefield detection PSF convolution, depth-dependent tissue scattering, and Poisson-Gaussian noise. The four phantom types (nuclei, vasculature, organ layers, combined) represent realistic cleared tissue / embryo section content. The CPU baseline (Fourier destriping + Richardson-Lucy deconvolution) achieves 22-23 dB PSNR, consistent with the expected 22-28 dB range and leaving headroom for advanced algorithms. Mismatch difficulty increases appropriately from public to hidden tier.
 
 ---
-*Comprehensive 6-point check by deep-check pipeline v3*
+*Comprehensive 6-point check by deep-check pipeline v3 -- updated 2026-03-11 with benchmark results*
