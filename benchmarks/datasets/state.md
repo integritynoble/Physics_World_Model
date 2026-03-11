@@ -79,10 +79,10 @@ Values: `done` / `in-progress` / `pending`
 | Modality | 1) Dataset | 2) Benchmark | 3) Algorithms | 4) SpecLab | Notes |
 |----------|-----------|-------------|--------------|-----------|-------|
 | pet_ct | done | done | pending | pending | Combined PET/CT, 12/20/20, joint Radon+attenuation |
-| pet_mr | pending | pending | pending | pending | Combined PET/MRI |
+| pet_mr | done | pending | pending | pending | Combined PET/MRI, 12/20/20, MR k-space+PET Radon |
 | spect_ct | done | pending | pending | pending | Combined SPECT/CT, 6/20/20, SPECT+CT attenuation |
-| spectral_ct | pending | pending | pending | pending | Spectral/dual-energy CT |
-| industrial_ct | pending | pending | pending | pending | Industrial CT |
+| spectral_ct | done | pending | pending | pending | Dual-energy CT, 12/20/20, material decomposition |
+| industrial_ct | done | pending | pending | pending | Industrial CT, 12/20/20, beam hardening+metal artifacts |
 
 ## Priority 6 — Remaining Modalities
 
