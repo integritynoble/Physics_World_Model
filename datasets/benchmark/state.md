@@ -1,6 +1,6 @@
 # Benchmark Dataset State Tracker
 
-Last updated: 2026-03-11T05:00Z
+Last updated: 2026-03-11T06:30Z
 
 ## Status Legend
 - **Dataset**: creating public, dev and hidden dataset
@@ -46,13 +46,13 @@ Last updated: 2026-03-11T05:00Z
 |----------|---------|-----------|-------|
 | holography | done | done | Angular spectrum propagation+interference, 12/20/20 |
 | ptychography | done | done | ePIE phase retrieval, 12/20/20 |
-| lensless | pending | pending | Lensless imaging |
+| lensless | done | done | Coded aperture Wiener deconv, 12/20/20 |
 | nerf | pending | pending | Neural radiance fields |
-| gaussian_splatting | pending | pending | 3D Gaussian splatting |
-| phase_retrieval | pending | pending | Phase retrieval |
-| fpm | pending | pending | Fourier ptychographic microscopy |
-| odt | pending | pending | Optical diffraction tomography |
-| ghost_imaging | pending | pending | Computational ghost imaging |
+| gaussian_splatting | done | done | 3DGS alpha-blending, 12/20/20 |
+| phase_retrieval | in-progress | pending | GS alternating projection |
+| fpm | in-progress | pending | Fourier ptychographic microscopy |
+| odt | in-progress | pending | Optical diffraction tomography |
+| ghost_imaging | in-progress | pending | Computational ghost imaging |
 
 ## Priority 4 — Spectroscopy & Remote Sensing
 
