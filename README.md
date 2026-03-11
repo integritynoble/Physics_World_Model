@@ -49,6 +49,7 @@ PWM is designed to be:
 **Data & Benchmarks**
 - [Modality Coverage](#modality-coverage) — 64-modality catalog
 - [Benchmark Results](#benchmark-results-26-modalities-with-psnr-table) — PSNR/SSIM tables
+- [Datasets & Model Weights](DATA.md) — **all heavy data is stored in GCS** (`gs://pwm-benchmark-datasets/`); see DATA.md for download instructions
 
 **Clinical Medical Physics**
 - [CT QC Copilot](#ct-qc-copilot) — metric-first QA for diagnostic CT
