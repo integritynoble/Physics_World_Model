@@ -1,6 +1,6 @@
 # Benchmark Dataset State Tracker
 
-Last updated: 2026-03-11T03:00Z
+Last updated: 2026-03-11T05:00Z
 
 ## Status Legend
 - **Dataset**: creating public, dev and hidden dataset
@@ -35,17 +35,17 @@ Last updated: 2026-03-11T03:00Z
 | lightsheet | done | done | Sheet profile+scatter+stripe, 12/20/20, RL deconv |
 | two_photon | done | done | 2P PSF+depth attenuation, 12/20/20, depth-corrected RL |
 | cryo_em | done | done | CTF+extreme noise, 12/20/20, Wiener CTF ~17 dB |
-| sem | pending | pending | Scanning electron microscopy |
-| tem | pending | pending | Transmission electron microscopy |
-| widefield | pending | pending | Widefield fluorescence |
-| photoacoustic | pending | pending | Photoacoustic imaging |
+| sem | done | done | BSE/SE yield+charging, 12/20/20, NLM denoising ~26 dB |
+| tem | done | done | CTF+Beer-Lambert, 12/20/20, Wiener CTF ~19 dB |
+| widefield | done | done | Widefield PSF+haze+autofluor, 12/20/20, RL ~27 dB |
+| photoacoustic | done | done | Limited-angle Radon+UBP, 12/20/20, UBP baseline |
 
 ## Priority 3 — Computational & Advanced
 
 | Modality | Dataset | Benchmark | Notes |
 |----------|---------|-----------|-------|
-| holography | pending | pending | Digital holography |
-| ptychography | pending | pending | Ptychographic imaging |
+| holography | done | done | Angular spectrum propagation+interference, 12/20/20 |
+| ptychography | done | done | ePIE phase retrieval, 12/20/20 |
 | lensless | pending | pending | Lensless imaging |
 | nerf | pending | pending | Neural radiance fields |
 | gaussian_splatting | pending | pending | 3D Gaussian splatting |
