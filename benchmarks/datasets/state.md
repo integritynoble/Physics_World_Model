@@ -1,6 +1,6 @@
 # Benchmark Dataset State Tracker
 
-Last updated: 2026-03-11T14:00Z
+Last updated: 2026-03-11T16:00Z
 
 ## Status Legend
 
@@ -56,31 +56,31 @@ Values: `done` / `in-progress` / `pending`
 | ptychography | done | done | pending | pending | ePIE phase retrieval, 12/20/20 |
 | lensless | done | done | pending | pending | Coded aperture Wiener deconv, 12/20/20 |
 | gaussian_splatting | done | done | pending | pending | 3DGS alpha-blending, 12/20/20 |
-| phase_retrieval | done | in-progress | pending | pending | GS alternating projection, 12/20/20 |
-| fpm | done | in-progress | pending | pending | Fourier ptychographic microscopy, 12/20/20 |
-| odt | done | in-progress | pending | pending | Optical diffraction tomography, 12/20/20 |
-| ghost_imaging | done | in-progress | pending | pending | Computational ghost imaging, 12/20/20 |
+| phase_retrieval | done | done | pending | pending | GS alternating projection, 12/20/20 |
+| fpm | done | done | pending | pending | Fourier ptychographic microscopy, 12/20/20 |
+| odt | done | done | pending | pending | Optical diffraction tomography, 12/20/20 |
+| ghost_imaging | done | done | pending | pending | Computational ghost imaging, 12/20/20 |
 | nerf | pending | pending | pending | pending | Neural radiance fields — complex scene generation |
 
 ## Priority 4 — Spectroscopy & Remote Sensing
 
 | Modality | 1) Dataset | 2) Benchmark | 3) Algorithms | 4) SpecLab | Notes |
 |----------|-----------|-------------|--------------|-----------|-------|
-| raman_imaging | done | in-progress | pending | pending | Raman spectroscopy, 12/20/20 |
-| ftir_imaging | done | in-progress | pending | pending | FTIR imaging, 12/20/20 |
-| sar | done | in-progress | pending | pending | SAR, 12/20/20, Lee+MF baseline ~15 dB |
-| lidar | done | in-progress | pending | pending | LiDAR, 12/20/20, bilateral+range ~12 dB |
-| hyperspectral_remote | done | in-progress | pending | pending | Hyperspectral, 12/20/20, ATCOR+Wiener ~21 dB |
-| insar | done | in-progress | pending | pending | InSAR, 12/20/20, Goldstein unwrap ~18 dB |
+| raman_imaging | done | done | pending | pending | Raman spectroscopy, 12/20/20 |
+| ftir_imaging | done | done | pending | pending | FTIR imaging, 12/20/20 |
+| sar | done | done | pending | pending | SAR, 12/20/20, Lee+MF baseline ~15 dB |
+| lidar | done | done | pending | pending | LiDAR, 12/20/20, bilateral+range ~12 dB |
+| hyperspectral_remote | done | done | pending | pending | Hyperspectral, 12/20/20, ATCOR+Wiener ~21 dB |
+| insar | done | done | pending | pending | InSAR, 12/20/20, Goldstein unwrap ~18 dB |
 | multispectral_sat | pending | pending | pending | pending | Multispectral satellite imaging |
 
 ## Priority 5 — Nuclear & Particle / Multimodality
 
 | Modality | 1) Dataset | 2) Benchmark | 3) Algorithms | 4) SpecLab | Notes |
 |----------|-----------|-------------|--------------|-----------|-------|
-| pet_ct | done | pending | pending | pending | Combined PET/CT, 12/20/20, just generated |
+| pet_ct | done | done | pending | pending | Combined PET/CT, 12/20/20, joint Radon+attenuation |
 | pet_mr | pending | pending | pending | pending | Combined PET/MRI |
-| spect_ct | pending | pending | pending | pending | Combined SPECT/CT |
+| spect_ct | done | pending | pending | pending | Combined SPECT/CT, 6/20/20, SPECT+CT attenuation |
 | spectral_ct | pending | pending | pending | pending | Spectral/dual-energy CT |
 | industrial_ct | pending | pending | pending | pending | Industrial CT |
 
