@@ -92,16 +92,25 @@ Per-phantom-type breakdown (public):
 
 ## 5. Local Dataset & GCS Status
 
-**GCS datasets:**
+**Local benchmark dataset:** `/datasets/benchmark/spect/` (generate_dataset.py + public/dev/hidden tiers)
+
+**GCS datasets (Benchmark):**
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/spect/spect_challenge_public.h5` (7.1 MB, 12 samples)
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/spect/spect_challenge_dev.h5` (19.0 MB, 20 samples, no x_true)
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/spect/spect_challenge_hidden.h5` (21.0 MB, 20 samples)
+
+**GCS challenge data (legacy path):**
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/spect_challenge_public.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/spect_challenge_dev.h5`
 - `gs://pwm-benchmark-datasets/challenge-data/v1.0/spect_challenge_hidden.h5`
 
-**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/spect/`.
-- 4 scenes (scene_00 to scene_03) with gt, measurement, and reconstruction PNGs
-- Uploaded 2026-03-10
+**Gallery images:** `gs://pwm-benchmark-datasets/img/benchmark_gallery/spect/`
+- 4 scenes (scene_00 to scene_03): cardiac, brain, bone, cardiac-variant
+- Files: gt.png, measurement_I.png, measurement_II.png, recon_I.png, recon_II.png
+- Generated and uploaded 2026-03-10
 
-**Dataset sizes:** public 7.1 MB, dev 21 MB, hidden 21 MB
+**Per-sample images:** `gs://pwm-benchmark-datasets/datasets/Benchmark/spect/public/images/`
+- 12 sample directories with gt.png, measurement.png, measurement_noisy.png, recon.png, overview.png, spec.json
 
 ---
 
@@ -113,7 +122,7 @@ Algorithm routing correctly assigns OSEM, FBP+attenuation-correction, TV-MLEM, a
 
 FBP baseline achieves 30.0 dB PSNR and 0.94 SSIM on the public tier, confirming the benchmark difficulty is appropriate (above 25 dB threshold, room for improvement). The per-phantom-type variation (brain ~27 dB, cardiac ~30 dB, bone ~34 dB) reflects realistic differences in phantom complexity. Mismatch in mu_map_scale, CDR FWHM, scatter_fraction, and rotation_radius tests generalisation across realistic system imperfections.
 
-All three challenge tiers generated and uploaded to GCS (2026-03-10). Dev tier has no x_true; hidden tier is download-blocked.
+All three challenge tiers generated locally at `datasets/benchmark/spect/` and uploaded to GCS at `gs://pwm-benchmark-datasets/datasets/Benchmark/spect/` (2026-03-10). Dev tier has no x_true; hidden tier is download-blocked. Gallery images uploaded to GCS for platform display.
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3.1 (updated 2026-03-10)*
