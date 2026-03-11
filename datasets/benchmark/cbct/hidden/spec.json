@@ -1,38 +1,22 @@
-[
-  {
-    "name": "source_offset_x",
-    "min": -2.0,
-    "max": 2.0,
-    "unit": "mm"
+{
+  "scatter_fraction": {
+    "min": 0.3,
+    "max": 0.6,
+    "unit": ""
   },
-  {
-    "name": "source_offset_z",
-    "min": -1.5,
-    "max": 1.5,
-    "unit": "mm"
+  "truncation_fov_factor": {
+    "min": 0.7,
+    "max": 1.0,
+    "unit": ""
   },
-  {
-    "name": "detector_tilt",
-    "min": -0.5,
-    "max": 0.5,
-    "unit": "deg"
+  "ring_artifact_amplitude": {
+    "min": 0.0,
+    "max": 0.05,
+    "unit": ""
   },
-  {
-    "name": "detector_shift_u",
-    "min": -3.0,
+  "rotation_offset_deg": {
+    "min": 0.0,
     "max": 3.0,
-    "unit": "px"
-  },
-  {
-    "name": "beam_hardening",
-    "min": 0.0,
-    "max": 0.15,
-    "unit": ""
-  },
-  {
-    "name": "scatter_fraction",
-    "min": 0.0,
-    "max": 0.10,
-    "unit": ""
+    "unit": "degrees"
   }
-]
+}

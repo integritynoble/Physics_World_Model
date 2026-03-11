@@ -1,8 +1,142 @@
 {
-  "source_offset_x": 1.50,
-  "source_offset_z": 1.00,
-  "detector_tilt": 0.35,
-  "detector_shift_u": 2.20,
-  "beam_hardening": 0.12,
-  "scatter_fraction": 0.08
+  "sample_00": {
+    "scatter_fraction": 0.34130099655077606,
+    "truncation_fov_factor": 0.892100647628453,
+    "ring_artifact_amplitude": 0.0305384142411365,
+    "rotation_offset_deg": 1.4544070750160107,
+    "n_views": 200
+  },
+  "sample_01": {
+    "scatter_fraction": 0.5518131164403117,
+    "truncation_fov_factor": 0.7547705128084874,
+    "ring_artifact_amplitude": 0.007211524226114036,
+    "rotation_offset_deg": 0.0456411156258999,
+    "n_views": 149
+  },
+  "sample_02": {
+    "scatter_fraction": 0.5376218466093522,
+    "truncation_fov_factor": 0.9418379458885258,
+    "ring_artifact_amplitude": 0.028759189252287556,
+    "rotation_offset_deg": 1.8667809329849594,
+    "n_views": 182
+  },
+  "sample_03": {
+    "scatter_fraction": 0.583947084042692,
+    "truncation_fov_factor": 0.7616972934158533,
+    "ring_artifact_amplitude": 0.022539055257956617,
+    "rotation_offset_deg": 1.3910812712768457,
+    "n_views": 148
+  },
+  "sample_04": {
+    "scatter_fraction": 0.5120973174372891,
+    "truncation_fov_factor": 0.7738694614256196,
+    "ring_artifact_amplitude": 0.018202428819860773,
+    "rotation_offset_deg": 2.026643569343275,
+    "n_views": 135
+  },
+  "sample_05": {
+    "scatter_fraction": 0.35456736815342016,
+    "truncation_fov_factor": 0.9554379770704898,
+    "ring_artifact_amplitude": 0.007417256049025495,
+    "rotation_offset_deg": 0.46508753921392276,
+    "n_views": 134
+  },
+  "sample_06": {
+    "scatter_fraction": 0.5940397327881477,
+    "truncation_fov_factor": 0.7449486121453402,
+    "ring_artifact_amplitude": 0.03687139478824751,
+    "rotation_offset_deg": 2.36308869219736,
+    "n_views": 234
+  },
+  "sample_07": {
+    "scatter_fraction": 0.4912806347014642,
+    "truncation_fov_factor": 0.9907029699988068,
+    "ring_artifact_amplitude": 0.04325046389994877,
+    "rotation_offset_deg": 0.7501301342326788,
+    "n_views": 145
+  },
+  "sample_08": {
+    "scatter_fraction": 0.5236070189847437,
+    "truncation_fov_factor": 0.7452597485365312,
+    "ring_artifact_amplitude": 0.01981015228300841,
+    "rotation_offset_deg": 2.198561734094702,
+    "n_views": 236
+  },
+  "sample_09": {
+    "scatter_fraction": 0.5912585302582649,
+    "truncation_fov_factor": 0.9619206227198738,
+    "ring_artifact_amplitude": 0.0393345251010997,
+    "rotation_offset_deg": 1.798272022784408,
+    "n_views": 217
+  },
+  "sample_10": {
+    "scatter_fraction": 0.3635675476312397,
+    "truncation_fov_factor": 0.8430647745547375,
+    "ring_artifact_amplitude": 0.021002516059707106,
+    "rotation_offset_deg": 2.028803248775227,
+    "n_views": 199
+  },
+  "sample_11": {
+    "scatter_fraction": 0.3092929512889915,
+    "truncation_fov_factor": 0.7581932998318502,
+    "ring_artifact_amplitude": 0.013674251763107083,
+    "rotation_offset_deg": 2.7076237632418048,
+    "n_views": 183
+  },
+  "sample_12": {
+    "scatter_fraction": 0.5353231422892399,
+    "truncation_fov_factor": 0.7304992774573664,
+    "ring_artifact_amplitude": 0.01342320539969304,
+    "rotation_offset_deg": 2.6680442508785305,
+    "n_views": 151
+  },
+  "sample_13": {
+    "scatter_fraction": 0.4125700053277284,
+    "truncation_fov_factor": 0.704731637970575,
+    "ring_artifact_amplitude": 0.016431256366379345,
+    "rotation_offset_deg": 0.02987500866276238,
+    "n_views": 130
+  },
+  "sample_14": {
+    "scatter_fraction": 0.5709277393624632,
+    "truncation_fov_factor": 0.7187764510166518,
+    "ring_artifact_amplitude": 0.046964360484305495,
+    "rotation_offset_deg": 0.9381107138951357,
+    "n_views": 199
+  },
+  "sample_15": {
+    "scatter_fraction": 0.5791275623637064,
+    "truncation_fov_factor": 0.7480702997435802,
+    "ring_artifact_amplitude": 0.00864100237730569,
+    "rotation_offset_deg": 2.2289885833851732,
+    "n_views": 140
+  },
+  "sample_16": {
+    "scatter_fraction": 0.4373697407021233,
+    "truncation_fov_factor": 0.7480963056006734,
+    "ring_artifact_amplitude": 0.010355179181124347,
+    "rotation_offset_deg": 1.2355273901877935,
+    "n_views": 182
+  },
+  "sample_17": {
+    "scatter_fraction": 0.4396383516898622,
+    "truncation_fov_factor": 0.9606386116090553,
+    "ring_artifact_amplitude": 0.015098810759916231,
+    "rotation_offset_deg": 0.9074819186526176,
+    "n_views": 186
+  },
+  "sample_18": {
+    "scatter_fraction": 0.5067051782885582,
+    "truncation_fov_factor": 0.9711606453741379,
+    "ring_artifact_amplitude": 0.018969308212728922,
+    "rotation_offset_deg": 2.3596934620442185,
+    "n_views": 161
+  },
+  "sample_19": {
+    "scatter_fraction": 0.5528237580302467,
+    "truncation_fov_factor": 0.8939115784283962,
+    "ring_artifact_amplitude": 0.028197546614477806,
+    "rotation_offset_deg": 0.5326638161594635,
+    "n_views": 236
+  }
 }

@@ -42,19 +42,18 @@ where:
 - n: effective Gaussian noise after log-linearization (variance sigma^2 = 1/y_raw)
 
 **Calibration parameters that vary across samples:**
-- `n_views`: projection angles in [60, 360] (sparse-to-full)
-- `kVp`: tube voltage in [80, 120] kV (affects contrast and noise)
-- `scatter_fraction`: scatter-to-primary ratio in [0.1, 0.5] (clinical range: 0.2–0.4)
-- `source_to_iso_distance`: SID in [500, 1000] mm
-- `truncation_margin`: fraction of FOV truncated in [0, 0.2]
+- `scatter_fraction`: scatter-to-primary ratio in [0.2, 0.6] (CBCT scatter is higher than fan-beam CT)
+- `truncation_fov_factor`: fraction of FOV captured in [0.7, 1.0] (1.0 = no truncation)
+- `ring_artifact_amplitude`: detector gain non-uniformity in [0, 0.05] (causes ring artifacts in FBP)
+- `rotation_offset_deg`: rotation centre misalignment in [0, 3] degrees
 
-**Dataset format:** HDF5 with keys `y_meas` (sparse sinogram), `x_true` (3D CT volume, public tier only), `theta` (geometry parameters), and `metadata` (anatomy type: dental, thorax, head).
+**Dataset format:** HDF5 with per-sample groups containing keys `x_true` (256x256 ground truth phantom), `sinogram_ideal` (N_views x 363 noiseless sinogram), `sinogram_measured` (N_views x 363 noisy sinogram), `angles_nominal` (N_views projection angles). Attributes: `metadata` (JSON with anatomy type), `spec_ranges` (JSON with parameter ranges), `true_spec` (JSON with exact parameter values).
 
 GCS paths:
 ```
-gs://pwm-benchmark-datasets/challenge-data/v1.0/cbct_challenge_public.h5
-gs://pwm-benchmark-datasets/challenge-data/v1.0/cbct_challenge_dev.h5
-gs://pwm-benchmark-datasets/challenge-data/v1.0/cbct_challenge_hidden.h5
+gs://pwm-benchmark-datasets/datasets/Benchmark/cbct/cbct_challenge_public.h5
+gs://pwm-benchmark-datasets/datasets/Benchmark/cbct/cbct_challenge_dev.h5
+gs://pwm-benchmark-datasets/datasets/Benchmark/cbct/cbct_challenge_hidden.h5
 ```
 
 ---
@@ -88,17 +87,46 @@ gs://pwm-benchmark-datasets/challenge-data/v1.0/cbct_challenge_hidden.h5
 
 ## 5. Local Dataset & GCS Status
 
-**No local files.** All challenge data is stored on GCS.
+**Generator:** `datasets/benchmark/cbct/generate_dataset.py`
+- Uses `skimage.transform.radon` for fast parallel-beam projection (cone-beam 2D approximation)
+- Beer-Lambert noise model: Poisson(I0=5000) + readout N(0, 3.0^2)
+- 4 phantom types: dental_panoramic, head_axial, dental_mixed, head_lower (procedural 256x256)
+- Mismatch parameters: scatter_fraction, truncation_fov_factor, ring_artifact_amplitude, rotation_offset_deg
 
+**Tier structure:**
+
+| Tier | Samples | Views | Seeds | Adversarial | HDF5 Size |
+|------|---------|-------|-------|-------------|-----------|
+| Public | 12 | 180 | 2000+i | No | 5.2 MB |
+| Dev | 20 | 180 | 8000+i | No (diversity augmentation) | 11.0 MB |
+| Hidden | 20 | 120-240 | 9000+i | Yes (metal, implants, lesions, calcifications) | 11.0 MB |
+
+**HDF5 keys per sample:** `x_true` [256,256], `sinogram_ideal` [N_views,363], `sinogram_measured` [N_views,363], `angles_nominal` [N_views,]
+**HDF5 attrs:** `metadata` (JSON), `spec_ranges` (JSON), `true_spec` (JSON)
+
+**Local files (code only, no HDF5 or images committed):**
 ```
-GCS: gs://pwm-benchmark-datasets/challenge-data/v1.0/cbct_challenge_public.h5
-GCS: gs://pwm-benchmark-datasets/challenge-data/v1.0/cbct_challenge_dev.h5
-GCS: gs://pwm-benchmark-datasets/challenge-data/v1.0/cbct_challenge_hidden.h5
+datasets/benchmark/cbct/generate_dataset.py    # Generator script
+datasets/benchmark/cbct/README.md              # Dataset overview
+datasets/benchmark/cbct/public/spec.json       # Public tier spec ranges
+datasets/benchmark/cbct/public/true_spec.json  # Public tier true parameters
+datasets/benchmark/cbct/dev/spec.json          # Dev tier spec ranges
+datasets/benchmark/cbct/dev/true_spec.json     # Dev tier true parameters
+datasets/benchmark/cbct/hidden/spec.json       # Hidden tier spec ranges
+datasets/benchmark/cbct/hidden/true_spec.json  # Hidden tier true parameters
+datasets/benchmark/cbct/{public,dev,hidden}/README.md  # Tier READMEs
 ```
 
-Gallery images served from:
+**GCS challenge data:**
 ```
-GCS: gs://pwm-benchmark-datasets/img/benchmark_gallery/cbct/
+gs://pwm-benchmark-datasets/datasets/Benchmark/cbct/cbct_challenge_public.h5
+gs://pwm-benchmark-datasets/datasets/Benchmark/cbct/cbct_challenge_dev.h5
+gs://pwm-benchmark-datasets/datasets/Benchmark/cbct/cbct_challenge_hidden.h5
+```
+
+**GCS gallery images (60 PNGs, 5 per sample x 12 public samples):**
+```
+gs://pwm-benchmark-datasets/img/benchmark_gallery/cbct/
 ```
 
 The dev tier has x_true stripped. The hidden tier is blocked from download. Public tier is downloadable.

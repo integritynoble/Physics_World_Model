@@ -1,341 +1,780 @@
 #!/usr/bin/env python3
-"""Generate CBCT benchmark challenge datasets.
+"""Generate the CBCT (Cone-Beam CT) benchmark dataset.
 
-Pipeline per sample:
-  1. Generate 3D procedural phantom (256^3) using simulate_phantoms.py
-  2. Extract central axial slice as x_true (256x256)
-  3. Radon-project the central slice to get sinogram_ideal
-  4. Apply mismatch: beam hardening, scatter, noise, detector shift
-  5. Package into HDF5 with generic schema (y, H_ideal, x_true)
+Follows the exact same structure as the CT benchmark dataset.
+Uses skimage.transform.radon for fast projection (fan-beam approximation).
 
-Tiers:
-  - public:  10 samples, dev recipes (seeds 100-109), mild mismatch
-  - dev:     20 samples, dev recipes (seeds 8000-8019), medium mismatch
-  - hidden:  20 samples, hidden recipes (seeds 9000-9019), severe mismatch
+Tiers: Public 12 samples, Dev 20 samples, Hidden 20 samples.
+Ground truth: 256x256 dental/head phantoms.
+Mismatch: scatter_fraction, truncation_fov_factor, ring_artifact_amplitude,
+          rotation_offset_deg.
 
-Geometry (from README):
-  SID = 600 mm, SDD = 1200 mm, detector 512x512 @ 0.8mm pitch
-  Volume: 256^3 @ 0.5mm voxel → 128mm FOV
+Usage:
+    cd datasets/benchmark/cbct
+    python3 generate_dataset_v2.py
 """
-
 from __future__ import annotations
 
 import json
-import sys
-import time
+import shutil
 from pathlib import Path
 
 import h5py
 import numpy as np
-from scipy.ndimage import gaussian_filter
+from PIL import Image
+from scipy.ndimage import gaussian_filter, zoom
+from skimage.transform import radon, iradon
 
-# Local imports
-sys.path.insert(0, str(Path(__file__).parent))
-from simulate_phantoms import (
-    generate_cbct_phantom,
-    DEV_NVIEWS,
-    HIDDEN_NVIEWS,
-)
+BENCHMARK_DIR = Path(__file__).resolve().parent
 
-# ── Geometry ─────────────────────────────────────────────────────────────────
-SID = 600.0       # mm, source to isocenter
-SDD = 1200.0      # mm, source to detector
-DET_PITCH = 0.8   # mm, detector pixel pitch
-N_DET = 512        # detector pixels (we use central row for 2D sinogram)
-VOX_SIZE = 0.5    # mm, isotropic voxel size
-VOL_SIZE = 256    # voxels per axis
+# -- Geometry -----------------------------------------------------------------
 
-# Noise model
-I0_PHOTONS = 5000  # incident photon count per ray (sparse-dose CBCT)
-SIGMA_READOUT = 3.0  # detector readout noise (electrons)
+IMAGE_SIZE = 256
+N_VIEWS = 180
+I0 = 5000.0
+SIGMA_RO = 3.0
+MU_SCALE = 0.045
 
+# -- Attenuation coefficients -------------------------------------------------
 
-def radon_project(image: np.ndarray, angles_deg: np.ndarray) -> np.ndarray:
-    """Radon transform of 2D image at given angles.
+MU_AIR = 0.00
+MU_FAT = 0.18
+MU_SOFT = 0.25
+MU_MUSCLE = 0.28
+MU_CARTILAGE = 0.30
+MU_DENTIN = 0.55
+MU_BONE = 0.65
+MU_ENAMEL = 0.85
+MU_METAL = 1.00
 
-    Returns sinogram (n_views, n_det) where n_det = ceil(sqrt(2) * max_dim).
-    Uses rotation-based projection matching skimage.transform.radon.
-    """
-    try:
-        from skimage.transform import radon
-        sino = radon(image, theta=angles_deg, circle=False)
-        # radon returns (n_det, n_angles) → transpose to (n_angles, n_det)
-        return sino.T
-    except ImportError:
-        pass
+# -- Mismatch spec ranges per tier --------------------------------------------
 
-    # Fallback: manual rotation-based projection
-    from scipy.ndimage import rotate
-    H, W = image.shape
-    diag = int(np.ceil(np.sqrt(H**2 + W**2)))
-    pad_h = (diag - H) // 2
-    pad_w = (diag - W) // 2
-    padded = np.pad(image, ((pad_h, diag - H - pad_h), (pad_w, diag - W - pad_w)))
-
-    sino = np.zeros((len(angles_deg), diag), dtype=np.float64)
-    for i, theta in enumerate(angles_deg):
-        rotated = rotate(padded, -theta, reshape=False, order=1)
-        sino[i] = rotated.sum(axis=0)
-    return sino
+SPEC = {
+    "public": {
+        "scatter_fraction": {"min": 0.20, "max": 0.35, "unit": ""},
+        "truncation_fov_factor": {"min": 0.85, "max": 1.00, "unit": ""},
+        "ring_artifact_amplitude": {"min": 0.00, "max": 0.02, "unit": ""},
+        "rotation_offset_deg": {"min": 0.00, "max": 1.00, "unit": "degrees"},
+    },
+    "dev": {
+        "scatter_fraction": {"min": 0.25, "max": 0.45, "unit": ""},
+        "truncation_fov_factor": {"min": 0.78, "max": 1.00, "unit": ""},
+        "ring_artifact_amplitude": {"min": 0.00, "max": 0.03, "unit": ""},
+        "rotation_offset_deg": {"min": 0.00, "max": 2.00, "unit": "degrees"},
+    },
+    "hidden": {
+        "scatter_fraction": {"min": 0.30, "max": 0.60, "unit": ""},
+        "truncation_fov_factor": {"min": 0.70, "max": 1.00, "unit": ""},
+        "ring_artifact_amplitude": {"min": 0.00, "max": 0.05, "unit": ""},
+        "rotation_offset_deg": {"min": 0.00, "max": 3.00, "unit": "degrees"},
+    },
+}
 
 
-def apply_beam_hardening(sino: np.ndarray, beta: float) -> np.ndarray:
-    """Simulate beam hardening: log-domain sinogram becomes nonlinear.
+# =============================================================================
+# Fast Radon projection using skimage
+# =============================================================================
 
-    Polychromatic beam: measured = -log(integral[S(E) exp(-mu(E)*L) dE])
-    Approximated as: measured ≈ sino - beta * sino^2
-    """
-    if beta < 1e-6:
+
+def radon_project(image, angles_deg):
+    """Radon transform using skimage (fast). Returns (n_views, n_det)."""
+    sino = radon(image.astype(np.float64), theta=angles_deg, circle=False)
+    # radon returns (n_det, n_angles), transpose to (n_angles, n_det)
+    return sino.T.astype(np.float32)
+
+
+# =============================================================================
+# CBCT-specific mismatch effects
+# =============================================================================
+
+
+def apply_scatter(sino, scatter_fraction, rng):
+    """Add smooth scatter background."""
+    if scatter_fraction < 1e-6:
         return sino
-    return sino - beta * sino**2
+    mean_signal = max(float(sino.mean()), 1e-8)
+    scatter_base = gaussian_filter(sino.astype(np.float64), sigma=[3.0, 8.0])
+    scatter_norm = scatter_base / max(float(scatter_base.max()), 1e-8)
+    scatter = scatter_fraction * mean_signal * scatter_norm
+    return (sino + scatter).astype(np.float32)
 
 
-def apply_scatter(sino: np.ndarray, fraction: float, rng: np.random.Generator) -> np.ndarray:
-    """Add smooth scatter background to sinogram."""
-    if fraction < 1e-6:
+def apply_truncation(sino, fov_factor):
+    """Simulate FOV truncation."""
+    if fov_factor >= 0.999:
         return sino
-    # Scatter is smooth, low-frequency signal proportional to total flux
-    mean_signal = sino.mean()
-    scatter_base = gaussian_filter(sino, sigma=[3.0, 8.0])
-    scatter = fraction * mean_signal * (scatter_base / max(scatter_base.max(), 1e-8))
-    return sino + scatter
+    n_det = sino.shape[1]
+    active_det = int(n_det * fov_factor)
+    pad = (n_det - active_det) // 2
+    mask = np.ones(n_det, dtype=np.float32)
+    if pad > 0:
+        ramp = np.linspace(0.0, 1.0, max(pad, 2))
+        mask[:pad] = ramp
+        mask[-pad:] = ramp[::-1]
+    return sino * mask[np.newaxis, :]
 
 
-def apply_detector_shift(sino: np.ndarray, shift_px: float) -> np.ndarray:
-    """Shift sinogram along detector axis by fractional pixels."""
-    if abs(shift_px) < 0.01:
+def apply_ring_artifact(sino, amplitude, rng):
+    """Simulate ring artifacts."""
+    if amplitude < 1e-6:
         return sino
-    from scipy.ndimage import shift as nd_shift
-    return nd_shift(sino, [0, shift_px], order=1, mode='nearest')
+    n_det = sino.shape[1]
+    gain_offset = rng.normal(0.0, amplitude, size=n_det).astype(np.float32)
+    gain_offset = gaussian_filter(gain_offset, sigma=1.5).astype(np.float32)
+    return sino + gain_offset[np.newaxis, :]
 
 
-def apply_noise(sino: np.ndarray, I0: float, sigma_readout: float,
-                rng: np.random.Generator) -> np.ndarray:
-    """Apply Poisson + Gaussian noise to log-domain sinogram.
+def apply_mismatch(x, angles_deg, scatter_fraction, truncation_fov_factor,
+                   ring_artifact_amplitude, rotation_offset_deg, rng,
+                   i0=I0, sigma_ro=SIGMA_RO):
+    """Apply all four CBCT mismatch effects + noise."""
+    # 1. Re-project with rotation offset
+    shifted_angles = angles_deg + rotation_offset_deg
+    p_geo = radon_project(x, shifted_angles)
 
-    Model: measured = -log(Poisson(I0 * exp(-sino)) + N(0, sigma)) / I0_equiv
-    """
-    # Convert to transmission domain
-    transmission = np.exp(-np.clip(sino, 0, 20))
-    # Poisson photon counting
-    counts = rng.poisson(I0 * transmission).astype(np.float64)
-    # Readout noise
-    counts += rng.normal(0, sigma_readout, counts.shape)
-    counts = np.maximum(counts, 0.5)  # avoid log(0)
-    # Back to log domain
-    noisy = -np.log(counts / I0)
-    return noisy
+    # 2. Scale to physical nepers
+    p_phys = p_geo * MU_SCALE
+
+    # 3. Add scatter
+    p_scatter = apply_scatter(p_phys, scatter_fraction, rng)
+
+    # 4. Truncation
+    p_trunc = apply_truncation(p_scatter, truncation_fov_factor)
+
+    # 5. Ring artifacts
+    p_ring = apply_ring_artifact(p_trunc, ring_artifact_amplitude, rng)
+
+    # 6. Noise (Beer-Lambert + Poisson + readout)
+    p_clamped = np.clip(p_ring, 0.0, 20.0)
+    i_expect = i0 * np.exp(-p_clamped)
+    i_noisy = rng.poisson(np.maximum(i_expect, 1e-3)).astype(np.float64)
+    i_noisy += rng.normal(0.0, sigma_ro, i_noisy.shape)
+    i_noisy = np.maximum(i_noisy, 1.0)
+
+    return (-np.log(i_noisy / i0)).astype(np.float32)
 
 
-def generate_tier(
-    tier: str,
-    n_samples: int,
-    base_seed: int,
-    mode: str,
-    nviews_list: list[int] | None,
-    mismatch: dict,
-    out_dir: Path,
-):
-    """Generate one tier of CBCT challenge data."""
-    out_dir.mkdir(parents=True, exist_ok=True)
-    h5_path = out_dir / f"cbct_challenge_{tier}.h5"
-    img_dir = out_dir / "images"
-    img_dir.mkdir(exist_ok=True)
+# =============================================================================
+# Dental / head phantom generators (2D, 256x256)
+# =============================================================================
 
-    print(f"\n{'='*60}")
-    print(f"Generating CBCT {tier} tier: {n_samples} samples")
-    print(f"  Mode: {mode}, base_seed: {base_seed}")
-    print(f"  Mismatch: {mismatch}")
-    print(f"  Output: {h5_path}")
+
+def _grid(shape):
+    h, w = shape
+    yy = (np.arange(h) - h / 2.0) / (h / 2.0)
+    xx = (np.arange(w) - w / 2.0) / (w / 2.0)
+    return np.meshgrid(yy, xx, indexing="ij")
+
+
+def _ellipse(yy, xx, cy, cx, ry, rx, angle_deg=0.0):
+    t = np.deg2rad(angle_deg)
+    cos_t, sin_t = np.cos(t), np.sin(t)
+    dy, dx = yy - cy, xx - cx
+    yr = cos_t * dy + sin_t * dx
+    xr = -sin_t * dy + cos_t * dx
+    return ((yr / max(ry, 1e-6))**2 + (xr / max(rx, 1e-6))**2 <= 1.0).astype(np.float32)
+
+
+def _soft_ellipse(yy, xx, cy, cx, ry, rx, angle_deg=0.0, sigma=2.0):
+    return gaussian_filter(_ellipse(yy, xx, cy, cx, ry, rx, angle_deg), sigma=sigma)
+
+
+def _ring_shape(yy, xx, cy, cx, r0, thickness):
+    r = np.sqrt((yy - cy)**2 + (xx - cx)**2)
+    return np.exp(-((r - r0)**2) / (2 * thickness**2)).astype(np.float32)
+
+
+def _fbm(shape, rng, octaves=4, persistence=0.55, base_sigma=6.0):
+    h, w = shape
+    out = np.zeros((h, w), dtype=np.float32)
+    amp, total, sigma = 1.0, 0.0, base_sigma
+    for _ in range(octaves):
+        n = rng.standard_normal((h, w)).astype(np.float32)
+        out += amp * gaussian_filter(n, sigma=sigma)
+        total += amp
+        amp *= persistence
+        sigma *= 2.0
+    out /= max(total, 1e-6)
+    out -= out.min()
+    out /= max(out.max(), 1e-6)
+    return out
+
+
+def _dental_panoramic(rng, shape):
+    """Dental panoramic: mandible, teeth, tongue, airway."""
+    yy, xx = _grid(shape)
+    x = np.zeros(shape, dtype=np.float32)
+
+    face_ry = rng.uniform(0.72, 0.85)
+    face_rx = rng.uniform(0.60, 0.72)
+    face = _soft_ellipse(yy, xx, 0.0, 0.0, face_ry, face_rx, sigma=3.0)
+    x += MU_SOFT * (face > 0.3)
+
+    fat_ry = face_ry - rng.uniform(0.04, 0.08)
+    fat_rx = face_rx - rng.uniform(0.03, 0.06)
+    inner = _soft_ellipse(yy, xx, 0.0, 0.0, fat_ry, fat_rx, sigma=2.5)
+    fat_r = np.clip(face - inner, 0.0, 1.0)
+    x += (MU_FAT - MU_SOFT) * (fat_r > 0.2)
+
+    mand_r0 = rng.uniform(0.38, 0.48)
+    mand_thick = rng.uniform(0.03, 0.06)
+    ring = _ring_shape(yy, xx, rng.uniform(0.05, 0.15), 0.0, mand_r0, mand_thick)
+    ant_mask = (yy < rng.uniform(0.25, 0.40)).astype(np.float32)
+    x = np.where((ring * ant_mask) > 0.3, MU_BONE + rng.uniform(-0.05, 0.05), x)
+
+    for sign in [+1, -1]:
+        rc = sign * rng.uniform(0.35, 0.48)
+        rm = _soft_ellipse(yy, xx, rng.uniform(0.10, 0.30), rc,
+                           rng.uniform(0.15, 0.25), rng.uniform(0.04, 0.07),
+                           angle_deg=sign * rng.uniform(-15, 15), sigma=2.0)
+        x = np.where(rm > 0.4, MU_BONE + rng.uniform(-0.05, 0.05), x)
+
+    n_teeth = rng.integers(8, 17)
+    arch_angles = np.linspace(-2.2, 2.2, n_teeth)
+    for ang in arch_angles:
+        if abs(ang) > 1.5:
+            t_cy = rng.uniform(0.12, 0.30)
+            t_cx = np.sign(ang) * rng.uniform(0.28, 0.42)
+        else:
+            t_cy = mand_r0 * 0.85 * np.sin(ang) * 0.35 + rng.uniform(-0.02, 0.10)
+            t_cx = mand_r0 * 0.85 * np.cos(ang) * 0.85 + rng.uniform(-0.02, 0.02)
+
+        er = rng.uniform(0.018, 0.032)
+        em = _soft_ellipse(yy, xx, t_cy, t_cx, er, er * rng.uniform(0.8, 1.2), sigma=1.0)
+        x = np.where(em > 0.4, MU_ENAMEL + rng.uniform(-0.05, 0.05), x)
+        dr = er * rng.uniform(0.5, 0.7)
+        dm = _soft_ellipse(yy, xx, t_cy, t_cx, dr, dr * rng.uniform(0.8, 1.2), sigma=0.8)
+        x = np.where(dm > 0.5, MU_DENTIN + rng.uniform(-0.03, 0.03), x)
+        pr = dr * rng.uniform(0.3, 0.5)
+        pm = _soft_ellipse(yy, xx, t_cy, t_cx, pr, pr, sigma=0.5)
+        x = np.where(pm > 0.5, MU_SOFT * rng.uniform(0.8, 1.2), x)
+
+    tm = _soft_ellipse(yy, xx, rng.uniform(-0.10, 0.05), rng.uniform(-0.03, 0.03),
+                       rng.uniform(0.12, 0.20), rng.uniform(0.15, 0.25), sigma=4.0)
+    x = np.where(tm > 0.4, MU_MUSCLE + rng.uniform(-0.02, 0.02), x)
+
+    am = _soft_ellipse(yy, xx, rng.uniform(0.25, 0.45), rng.uniform(-0.03, 0.03),
+                       rng.uniform(0.06, 0.12), rng.uniform(0.05, 0.10), sigma=2.0)
+    x = np.where(am > 0.45, MU_AIR + rng.uniform(0.01, 0.03), x)
+
+    tx = _fbm(shape, rng, octaves=4, base_sigma=10.0)
+    face_m = (face > 0.3).astype(np.float32)
+    x = np.clip(x + 0.015 * (tx - 0.5) * face_m, 0.0, 1.0)
+    return np.clip(x, 0.0, 1.0).astype(np.float32)
+
+
+def _head_axial(rng, shape):
+    """Head axial: skull, brain, ventricles, sinuses."""
+    yy, xx = _grid(shape)
+    x = np.zeros(shape, dtype=np.float32)
+
+    scalp_ry = rng.uniform(0.72, 0.85)
+    scalp_rx = rng.uniform(0.62, 0.75)
+    scalp = _soft_ellipse(yy, xx, rng.uniform(-0.03, 0.03), 0.0, scalp_ry, scalp_rx, sigma=3.0)
+    x += MU_SOFT * (scalp > 0.3)
+
+    skull_thick = rng.uniform(0.03, 0.06)
+    skull_outer = _soft_ellipse(yy, xx, 0.0, 0.0, scalp_ry - 0.02, scalp_rx - 0.02, sigma=2.0)
+    skull_inner = _soft_ellipse(yy, xx, 0.0, 0.0,
+                                scalp_ry - 0.02 - skull_thick,
+                                scalp_rx - 0.02 - skull_thick, sigma=2.0)
+    skull_ring = np.clip(skull_outer - skull_inner, 0.0, 1.0)
+    x = np.where(skull_ring > 0.3, MU_BONE + rng.uniform(-0.05, 0.08), x)
+
+    brain_ry = scalp_ry - 0.02 - skull_thick - 0.02
+    brain_rx = scalp_rx - 0.02 - skull_thick - 0.02
+    brain = _soft_ellipse(yy, xx, 0.0, 0.0, brain_ry, brain_rx, sigma=3.0)
+    gm_val = MU_SOFT + rng.uniform(0.00, 0.03)
+    x = np.where((brain > 0.3) & (x < MU_BONE * 0.5), gm_val, x)
+
+    wm_ry = brain_ry * rng.uniform(0.65, 0.80)
+    wm_rx = brain_rx * rng.uniform(0.65, 0.80)
+    wm = _soft_ellipse(yy, xx, 0.0, 0.0, wm_ry, wm_rx, sigma=4.0)
+    x = np.where((wm > 0.4) & (x < MU_BONE * 0.5), MU_SOFT - rng.uniform(0.01, 0.03), x)
+
+    for sign in [+1, -1]:
+        vm = _soft_ellipse(yy, xx, rng.uniform(-0.05, 0.05), sign * rng.uniform(0.06, 0.14),
+                           rng.uniform(0.04, 0.08), rng.uniform(0.06, 0.12),
+                           angle_deg=sign * rng.uniform(-10, 10), sigma=2.0)
+        x = np.where(vm > 0.45, MU_AIR + rng.uniform(0.04, 0.08), x)
+
+    fm = _soft_ellipse(yy, xx, 0.0, 0.0, brain_ry * 0.95, rng.uniform(0.005, 0.012), sigma=1.0)
+    x = np.where(fm > 0.5, MU_CARTILAGE + rng.uniform(-0.02, 0.02), x)
+
+    if rng.random() < 0.6:
+        for sign in [+1, -1]:
+            sm = _soft_ellipse(yy, xx, rng.uniform(-0.50, -0.35), sign * rng.uniform(0.04, 0.14),
+                               rng.uniform(0.04, 0.08), rng.uniform(0.03, 0.06), sigma=2.0)
+            x = np.where(sm > 0.45, MU_AIR + rng.uniform(0.01, 0.03), x)
+
+    for sign in [+1, -1]:
+        if rng.random() < 0.5:
+            mm = _soft_ellipse(yy, xx, rng.uniform(0.30, 0.50), sign * rng.uniform(0.30, 0.50),
+                               rng.uniform(0.03, 0.07), rng.uniform(0.02, 0.05), sigma=1.5)
+            x = np.where(mm > 0.45, MU_AIR + rng.uniform(0.02, 0.05), x)
+
+    tx = _fbm(shape, rng, octaves=5, base_sigma=8.0)
+    brain_m = (brain > 0.3).astype(np.float32)
+    x = np.clip(x + 0.012 * (tx - 0.5) * brain_m, 0.0, 1.0)
+    return np.clip(x, 0.0, 1.0).astype(np.float32)
+
+
+def _dental_mixed(rng, shape):
+    """Mixed dental: maxilla + mandible + sinuses."""
+    yy, xx = _grid(shape)
+    x = np.zeros(shape, dtype=np.float32)
+
+    face_ry = rng.uniform(0.74, 0.88)
+    face_rx = rng.uniform(0.62, 0.78)
+    face = _soft_ellipse(yy, xx, 0.0, 0.0, face_ry, face_rx, sigma=3.0)
+    x += MU_SOFT * (face > 0.3)
+    fat_ry = face_ry - rng.uniform(0.04, 0.07)
+    fat_rx = face_rx - rng.uniform(0.03, 0.05)
+    inner = _soft_ellipse(yy, xx, 0.0, 0.0, fat_ry, fat_rx, sigma=2.5)
+    x += (MU_FAT - MU_SOFT) * (np.clip(face - inner, 0, 1) > 0.2)
+
+    max_r0 = rng.uniform(0.30, 0.40)
+    ring = _ring_shape(yy, xx, rng.uniform(-0.15, -0.05), 0.0, max_r0, rng.uniform(0.03, 0.05))
+    x = np.where((ring * (yy < rng.uniform(0.10, 0.25))) > 0.3, MU_BONE + rng.uniform(-0.04, 0.04), x)
+
+    mand_r0 = rng.uniform(0.35, 0.45)
+    ring2 = _ring_shape(yy, xx, rng.uniform(0.10, 0.20), 0.0, mand_r0, rng.uniform(0.03, 0.06))
+    x = np.where((ring2 * (yy < rng.uniform(0.35, 0.50))) > 0.3, MU_BONE + rng.uniform(-0.04, 0.05), x)
+
+    for i in range(rng.integers(6, 11)):
+        ang = -1.8 + i * 3.6 / max(rng.integers(6, 11) - 1, 1)
+        t_cy = -0.08 + max_r0 * 0.7 * np.sin(ang) * 0.3 + rng.uniform(-0.02, 0.02)
+        t_cx = max_r0 * 0.7 * np.cos(ang) * 0.7 + rng.uniform(-0.02, 0.02)
+        er = rng.uniform(0.015, 0.028)
+        em = _soft_ellipse(yy, xx, t_cy, t_cx, er, er * rng.uniform(0.8, 1.2), sigma=0.8)
+        x = np.where(em > 0.4, MU_ENAMEL + rng.uniform(-0.05, 0.05), x)
+
+    for i in range(rng.integers(6, 11)):
+        ang = -1.8 + i * 3.6 / max(rng.integers(6, 11) - 1, 1)
+        t_cy = 0.12 + mand_r0 * 0.65 * np.sin(ang) * 0.3 + rng.uniform(-0.02, 0.02)
+        t_cx = mand_r0 * 0.65 * np.cos(ang) * 0.7 + rng.uniform(-0.02, 0.02)
+        er = rng.uniform(0.015, 0.028)
+        em = _soft_ellipse(yy, xx, t_cy, t_cx, er, er * rng.uniform(0.8, 1.2), sigma=0.8)
+        x = np.where(em > 0.4, MU_ENAMEL + rng.uniform(-0.05, 0.05), x)
+
+    for sign in [+1, -1]:
+        sm = _soft_ellipse(yy, xx, rng.uniform(-0.30, -0.15), sign * rng.uniform(0.12, 0.28),
+                           rng.uniform(0.06, 0.12), rng.uniform(0.05, 0.10), sigma=2.5)
+        x = np.where(sm > 0.45, MU_AIR + rng.uniform(0.01, 0.03), x)
+
+    nm = _soft_ellipse(yy, xx, rng.uniform(-0.25, -0.10), 0.0,
+                       rng.uniform(0.04, 0.08), rng.uniform(0.08, 0.15), sigma=2.0)
+    x = np.where(nm > 0.45, MU_AIR + rng.uniform(0.01, 0.03), x)
+
+    tm = _soft_ellipse(yy, xx, rng.uniform(0.0, 0.10), 0.0,
+                       rng.uniform(0.10, 0.16), rng.uniform(0.12, 0.20), sigma=3.5)
+    x = np.where(tm > 0.4, MU_MUSCLE + rng.uniform(-0.02, 0.02), x)
+
+    am = _soft_ellipse(yy, xx, rng.uniform(0.30, 0.50), 0.0,
+                       rng.uniform(0.05, 0.10), rng.uniform(0.04, 0.08), sigma=2.0)
+    x = np.where(am > 0.45, MU_AIR + rng.uniform(0.01, 0.02), x)
+
+    tx = _fbm(shape, rng, octaves=4, base_sigma=10.0)
+    x = np.clip(x + 0.012 * (tx - 0.5) * (face > 0.3).astype(np.float32), 0.0, 1.0)
+    return np.clip(x, 0.0, 1.0).astype(np.float32)
+
+
+def _head_lower(rng, shape):
+    """Head lower: skull base, petrous bones, TMJ, cervical spine."""
+    yy, xx = _grid(shape)
+    x = np.zeros(shape, dtype=np.float32)
+
+    head_ry = rng.uniform(0.70, 0.84)
+    head_rx = rng.uniform(0.58, 0.72)
+    head = _soft_ellipse(yy, xx, 0.0, 0.0, head_ry, head_rx, sigma=3.0)
+    x += MU_SOFT * (head > 0.3)
+
+    skull_thick = rng.uniform(0.04, 0.07)
+    skull_outer = _soft_ellipse(yy, xx, 0.0, 0.0, head_ry - 0.02, head_rx - 0.02, sigma=2.0)
+    skull_inner = _soft_ellipse(yy, xx, 0.0, 0.0,
+                                head_ry - 0.02 - skull_thick,
+                                head_rx - 0.02 - skull_thick, sigma=2.0)
+    x = np.where(np.clip(skull_outer - skull_inner, 0, 1) > 0.3, MU_BONE + rng.uniform(-0.03, 0.08), x)
+
+    for sign in [+1, -1]:
+        pm = _soft_ellipse(yy, xx, rng.uniform(0.15, 0.35), sign * rng.uniform(0.25, 0.40),
+                           rng.uniform(0.06, 0.10), rng.uniform(0.04, 0.07),
+                           angle_deg=sign * rng.uniform(20, 45), sigma=2.0)
+        x = np.where(pm > 0.4, MU_BONE + rng.uniform(0.05, 0.15), x)
+
+    for sign in [+1, -1]:
+        tm = _soft_ellipse(yy, xx, rng.uniform(-0.05, 0.15), sign * rng.uniform(0.38, 0.52),
+                           rng.uniform(0.03, 0.06), rng.uniform(0.03, 0.06), sigma=1.5)
+        x = np.where(tm > 0.45, MU_BONE + rng.uniform(-0.05, 0.05), x)
+
+    bm = _soft_ellipse(yy, xx, rng.uniform(0.10, 0.25), 0.0,
+                       rng.uniform(0.15, 0.25), rng.uniform(0.12, 0.20), sigma=3.0)
+    x = np.where((bm > 0.4) & (x < MU_BONE * 0.5), MU_SOFT + rng.uniform(-0.02, 0.02), x)
+
+    sm = _soft_ellipse(yy, xx, rng.uniform(0.05, 0.20), rng.uniform(-0.03, 0.03),
+                       rng.uniform(0.04, 0.08), rng.uniform(0.05, 0.10), sigma=2.0)
+    x = np.where(sm > 0.45, MU_AIR + rng.uniform(0.01, 0.03), x)
+
+    sp_cy = rng.uniform(0.40, 0.55)
+    spine = _soft_ellipse(yy, xx, sp_cy, 0.0, rng.uniform(0.04, 0.06), rng.uniform(0.03, 0.05), sigma=1.5)
+    x = np.where(spine > 0.45, MU_BONE + rng.uniform(-0.03, 0.06), x)
+
+    am = _soft_ellipse(yy, xx, rng.uniform(0.20, 0.38), 0.0,
+                       rng.uniform(0.04, 0.08), rng.uniform(0.04, 0.08), sigma=2.0)
+    x = np.where(am > 0.45, MU_AIR + rng.uniform(0.01, 0.03), x)
+
+    tx = _fbm(shape, rng, octaves=4, base_sigma=10.0)
+    x = np.clip(x + 0.012 * (tx - 0.5) * (head > 0.3).astype(np.float32), 0.0, 1.0)
+    return np.clip(x, 0.0, 1.0).astype(np.float32)
+
+
+_SCENE_BUILDERS = [_dental_panoramic, _head_axial, _dental_mixed, _head_lower]
+_SCENE_NAMES = ["dental_panoramic", "head_axial", "dental_mixed", "head_lower"]
+
+
+# -- Adversarial modifications ------------------------------------------------
+
+def _dental_with_metal(rng, shape):
+    x = _dental_panoramic(rng, shape)
+    yy, xx = _grid(shape)
+    for _ in range(rng.integers(1, 5)):
+        mm = _soft_ellipse(yy, xx, rng.uniform(-0.15, 0.25), rng.uniform(-0.40, 0.40),
+                           rng.uniform(0.015, 0.035), rng.uniform(0.015, 0.035),
+                           angle_deg=rng.uniform(0, 180), sigma=0.8)
+        x = np.where(mm > 0.4, MU_METAL * rng.uniform(0.85, 1.0), x)
+    return np.clip(x, 0.0, 1.0).astype(np.float32)
+
+
+def _head_with_implant(rng, shape):
+    x = _head_axial(rng, shape)
+    yy, xx = _grid(shape)
+    for _ in range(rng.integers(1, 4)):
+        ang = rng.uniform(0, 360)
+        dist = rng.uniform(0.50, 0.68)
+        im = _soft_ellipse(yy, xx, dist * np.sin(np.deg2rad(ang)), dist * np.cos(np.deg2rad(ang)),
+                           rng.uniform(0.01, 0.04), rng.uniform(0.01, 0.04),
+                           angle_deg=rng.uniform(0, 180), sigma=0.7)
+        x = np.where(im > 0.4, MU_METAL * rng.uniform(0.80, 1.0), x)
+    for _ in range(rng.integers(3, 10)):
+        sigma_c = rng.uniform(0.003, 0.010)
+        r2 = (yy - rng.uniform(-0.40, 0.40))**2 + (xx - rng.uniform(-0.40, 0.40))**2
+        x = np.clip(x + rng.uniform(0.30, 0.60) * np.exp(-r2 / (2 * sigma_c**2)), 0.0, 1.0)
+    return np.clip(x, 0.0, 1.0).astype(np.float32)
+
+
+def _apply_low_contrast_lesion(x, rng):
+    yy, xx = _grid(x.shape)
+    for _ in range(rng.integers(3, 8)):
+        lr = rng.uniform(0.02, 0.05)
+        lm = _soft_ellipse(yy, xx, rng.uniform(-0.40, 0.40), rng.uniform(-0.40, 0.40),
+                           lr, lr * rng.uniform(0.8, 1.3), sigma=2.0)
+        x = np.clip(x + rng.choice([-1, +1]) * rng.uniform(0.02, 0.05) * (lm > 0.45), 0.0, 1.0)
+    return x
+
+
+def _apply_calcification(x, rng):
+    yy, xx = _grid(x.shape)
+    for _ in range(rng.integers(5, 15)):
+        sigma_c = rng.uniform(0.003, 0.008)
+        r2 = (yy - rng.uniform(-0.45, 0.45))**2 + (xx - rng.uniform(-0.45, 0.45))**2
+        x = np.clip(x + rng.uniform(0.30, 0.65) * np.exp(-r2 / (2 * sigma_c**2)), 0.0, 1.0)
+    return x
+
+
+_ADVERSARIAL_FNS = [
+    (0.30, lambda x, rng: _dental_with_metal(rng, x.shape)),
+    (0.25, lambda x, rng: _head_with_implant(rng, x.shape)),
+    (0.25, _apply_low_contrast_lesion),
+    (0.20, _apply_calcification),
+]
+
+
+def generate_cbct_phantom(seed, mode="public", shape=(IMAGE_SIZE, IMAGE_SIZE)):
+    """Generate a 2D dental/head CBCT phantom."""
+    rng = np.random.default_rng(seed)
+    scene_idx = seed % len(_SCENE_BUILDERS)
+    x = _SCENE_BUILDERS[scene_idx](rng, shape)
+    scene_name = _SCENE_NAMES[scene_idx]
+
+    if mode == "hidden":
+        probs = [p for p, _ in _ADVERSARIAL_FNS]
+        adv_fn = _ADVERSARIAL_FNS[rng.choice(len(_ADVERSARIAL_FNS), p=probs)][1]
+        x = adv_fn(x.copy(), rng)
+        scene_name = f"{scene_name}_adversarial"
+
+    return np.clip(x, 0.0, 1.0).astype(np.float32), scene_name
+
+
+def _augment_diversity(x, rng, mode="dev"):
+    from scipy.ndimage import rotate as nd_rotate
+    angle = float(rng.uniform(15.0, 345.0)) if mode == "dev" else float(rng.uniform(10.0, 350.0))
+    x = nd_rotate(x, angle, reshape=False, mode="constant", cval=0.0)
+    if rng.random() < 0.85:
+        x = np.fliplr(x)
+    if rng.random() < 0.70:
+        x = np.flipud(x)
+    lo, hi = (0.60, 1.40) if mode == "dev" else (0.55, 1.45)
+    zoom_f = float(rng.uniform(lo, hi))
+    x_z = zoom(x, zoom_f, order=1)
+    sz = IMAGE_SIZE
+    if zoom_f >= 1.0:
+        zh, zw = x_z.shape
+        y0, x0 = (zh - sz) // 2, (zw - sz) // 2
+        x = np.ascontiguousarray(x_z[y0:y0 + sz, x0:x0 + sz])
+    else:
+        zh, zw = x_z.shape
+        pad = np.zeros((sz, sz), dtype=np.float32)
+        pad[(sz - zh) // 2:(sz - zh) // 2 + zh, (sz - zw) // 2:(sz - zw) // 2 + zw] = x_z
+        x = pad
+    return np.clip(x, 0.0, 1.0).astype(np.float32)
+
+
+# =============================================================================
+# Image helpers
+# =============================================================================
+
+
+def _norm(a):
+    lo, hi = float(a.min()), float(a.max())
+    return (a - lo) / (hi - lo + 1e-8)
+
+
+def _save_png(arr, path):
+    Image.fromarray(np.clip(_norm(arr) * 255, 0, 255).astype(np.uint8), "L").save(str(path))
+
+
+def _save_overview(x_true, sino_ideal, sino_meas, path):
+    th, tw = 128, 128
+    def _r(a):
+        pil = Image.fromarray(np.clip(_norm(a) * 255, 0, 255).astype(np.uint8), "L")
+        return np.array(pil.resize((tw, th), Image.LANCZOS)) / 255.0
+    ov = np.zeros((th, 3 * tw), dtype=np.float32)
+    ov[:, 0:tw] = _r(x_true)
+    ov[:, tw:2*tw] = _r(sino_ideal)
+    ov[:, 2*tw:3*tw] = _r(sino_meas)
+    _save_png(ov, path)
+
+
+# =============================================================================
+# Dataset tier generator
+# =============================================================================
+
+
+def sample_mismatch(rng, spec):
+    return {k: float(rng.uniform(v["min"], v["max"])) for k, v in spec.items()}
+
+
+def generate_tier(tier, phantoms, base_seed, n_views_range, source_label="synthetic"):
+    """Generate one tier matching CT benchmark structure exactly."""
+    spec_ranges = SPEC[tier]
+    tier_dir = BENCHMARK_DIR / tier
+    images_dir = tier_dir / "images"
+    if tier_dir.exists():
+        shutil.rmtree(tier_dir)
+    images_dir.mkdir(parents=True, exist_ok=True)
+
+    h5_path = tier_dir / f"cbct_challenge_{tier}.h5"
+    rng = np.random.default_rng(base_seed)
+    rows, true_specs = [], {}
 
     with h5py.File(h5_path, "w") as f:
-        f.attrs["description"] = f"PWM CBCT benchmark — {tier} tier (procedural phantoms, cone-beam geometry)"
+        f.attrs["description"] = f"PWM CBCT benchmark -- {tier} tier (cone-beam, dental/head phantoms)"
+        f.attrs["spec_ranges"] = json.dumps(spec_ranges)
         f.attrs["geometry"] = json.dumps({
-            "SID_mm": SID, "SDD_mm": SDD, "det_pitch_mm": DET_PITCH,
-            "n_det": N_DET, "vol_size": VOL_SIZE, "vox_size_mm": VOX_SIZE,
-            "I0_photons": I0_PHOTONS, "sigma_readout": SIGMA_READOUT,
+            "image_size": IMAGE_SIZE, "n_views_default": N_VIEWS,
+            "I0": I0, "sigma_readout": SIGMA_RO, "mu_scale": MU_SCALE,
         })
-        f.attrs["runner_type"] = "ct_fanbeam"
-        f.attrs["tier"] = tier
-        f.attrs["variant"] = "cbct"
-        f.attrs["version"] = "1.0"
+        f.attrs["source"] = source_label
 
-        spec_data = {}
+        for idx, (scene_name, x_true) in enumerate(phantoms):
+            key = f"sample_{idx:02d}"
+            n_views = int(rng.integers(n_views_range[0], n_views_range[1] + 1))
+            # Use degrees for skimage radon
+            angles_deg = np.linspace(0, 180, n_views, endpoint=False).astype(np.float64)
+            angles_rad = np.deg2rad(angles_deg).astype(np.float32)
 
-        for i in range(n_samples):
-            seed = base_seed + i
-            rng = np.random.default_rng(seed + 50000)  # separate from phantom rng
+            mis = sample_mismatch(rng, spec_ranges)
+            true_specs[key] = {**mis, "n_views": n_views}
 
-            # Number of views
-            if nviews_list and i < len(nviews_list):
-                n_views = nviews_list[i]
-            else:
-                n_views = 256
+            # Ideal sinogram
+            sino_ideal = radon_project(x_true, angles_deg) * MU_SCALE
 
-            t0 = time.time()
+            # Measured sinogram (mismatch + noise)
+            sino_meas = apply_mismatch(
+                x_true, angles_deg,
+                scatter_fraction=mis["scatter_fraction"],
+                truncation_fov_factor=mis["truncation_fov_factor"],
+                ring_artifact_amplitude=mis["ring_artifact_amplitude"],
+                rotation_offset_deg=mis["rotation_offset_deg"],
+                rng=rng,
+            )
 
-            # 1. Generate 3D phantom
-            try:
-                mu_3d, recipe = generate_cbct_phantom(seed=seed, mode=mode, shape=(VOL_SIZE, VOL_SIZE, VOL_SIZE))
-            except Exception as e:
-                print(f"  [{i+1:2d}/{n_samples}] PHANTOM FAILED (seed={seed}): {e}")
-                # Fallback: use simple Shepp-Logan-like phantom
-                mu_3d = _fallback_phantom(seed, (VOL_SIZE, VOL_SIZE, VOL_SIZE))
-                recipe = "fallback"
+            grp = f.create_group(key)
+            grp.create_dataset("x_true", data=x_true, compression="gzip")
+            grp.create_dataset("sinogram_ideal", data=sino_ideal, compression="gzip")
+            grp.create_dataset("sinogram_measured", data=sino_meas, compression="gzip")
+            grp.create_dataset("angles_nominal", data=angles_rad)
+            grp.attrs["metadata"] = json.dumps({
+                "scene": scene_name, "shape": list(x_true.shape),
+                "n_views": n_views, "source": source_label,
+            })
+            grp.attrs["spec_ranges"] = json.dumps(spec_ranges)
+            grp.attrs["true_spec"] = json.dumps({**mis, "n_views": n_views})
 
-            t_phantom = time.time() - t0
+            sample_dir = images_dir / f"sample_{idx:02d}_{scene_name}"
+            sample_dir.mkdir(parents=True, exist_ok=True)
+            _save_png(x_true, sample_dir / "ground_truth.png")
+            _save_png(sino_ideal, sample_dir / "sinogram_ideal.png")
+            _save_png(sino_meas, sample_dir / "sinogram_measured.png")
+            _save_overview(x_true, sino_ideal, sino_meas, sample_dir / "overview.png")
+            with open(sample_dir / "spec.json", "w") as sf:
+                json.dump({"scene": scene_name, "spec_ranges": spec_ranges,
+                           "true_spec": mis, "n_views": n_views}, sf, indent=2)
 
-            # 2. Extract central axial slice
-            x_true = mu_3d[VOL_SIZE // 2].astype(np.float64)
+            rows.append((key, scene_name, x_true.shape, n_views, mis))
+            print(f"  [{tier}] {key} {scene_name}  views={n_views}  "
+                  f"scatter={mis['scatter_fraction']:.3f} "
+                  f"trunc={mis['truncation_fov_factor']:.3f} "
+                  f"ring={mis['ring_artifact_amplitude']:.4f} "
+                  f"rot_off={mis['rotation_offset_deg']:.3f}")
 
-            # 3. Radon projection
-            angles_deg = np.linspace(0, 360 * (1 - 1/n_views), n_views, endpoint=False)
-            sinogram_ideal = radon_project(x_true, angles_deg)
+    with open(tier_dir / "spec.json", "w") as sf:
+        json.dump(spec_ranges, sf, indent=2)
+    with open(tier_dir / "true_spec.json", "w") as tf:
+        json.dump(true_specs, tf, indent=2)
 
-            # 4. Apply mismatch
-            bh = mismatch["beam_hardening"] * rng.uniform(0.3, 1.0)
-            sf = mismatch["scatter_fraction"] * rng.uniform(0.3, 1.0)
-            ds = mismatch["detector_shift_u"] * rng.uniform(-1, 1)
-            so_x = mismatch["source_offset_x"] * rng.uniform(-1, 1)
-            dt = mismatch["detector_tilt"] * rng.uniform(-1, 1)
-
-            sinogram = sinogram_ideal.copy()
-            sinogram = apply_beam_hardening(sinogram, bh)
-            sinogram = apply_scatter(sinogram, sf, rng)
-            sinogram = apply_detector_shift(sinogram, ds)
-            sinogram = apply_noise(sinogram, I0_PHOTONS, SIGMA_READOUT, rng)
-
-            t_total = time.time() - t0
-
-            # 5. Store in H5
-            grp = f.create_group(f"sample_{i:02d}")
-            grp.create_dataset("y", data=sinogram.astype(np.float32))
-            grp.create_dataset("H_ideal", data=angles_deg.astype(np.float64))
-            grp.create_dataset("x_true", data=x_true.astype(np.float32))
-            grp.create_dataset("sinogram_ideal", data=sinogram_ideal.astype(np.float32))
-
-            # Store per-sample spec
-            spec_data[f"sample_{i:02d}"] = {
-                "n_views": int(n_views),
-                "recipe": recipe,
-                "beam_hardening": round(float(bh), 4),
-                "scatter_fraction": round(float(sf), 4),
-                "detector_shift_u": round(float(ds), 4),
-                "source_offset_x": round(float(so_x), 4),
-                "detector_tilt": round(float(dt), 4),
-            }
-
-            # 6. Save preview images
-            _save_preview(x_true, img_dir / f"sample_{i:02d}_x_true.png")
-            _save_preview(sinogram, img_dir / f"sample_{i:02d}_y.png")
-            _save_preview(sinogram_ideal, img_dir / f"sample_{i:02d}_sinogram_ideal.png")
-
-            # Also save 3 orthogonal slices of the 3D phantom
-            D = VOL_SIZE
-            _save_preview(mu_3d[D//2], img_dir / f"sample_{i:02d}_axial.png")
-            _save_preview(mu_3d[:, D//2, :], img_dir / f"sample_{i:02d}_coronal.png")
-            _save_preview(mu_3d[:, :, D//2], img_dir / f"sample_{i:02d}_sagittal.png")
-
-            print(f"  [{i+1:2d}/{n_samples}] {recipe:22s} views={n_views:3d} "
-                  f"phantom={t_phantom:.0f}s total={t_total:.0f}s "
-                  f"sino={sinogram.shape}")
-
-    # Write per-sample true_spec
-    spec_path = out_dir / "true_spec_samples.json"
-    with open(spec_path, "w") as fp:
-        json.dump(spec_data, fp, indent=2)
-
-    size_mb = h5_path.stat().st_size / 1024 / 1024
-    n_images = len(list(img_dir.glob("*.png")))
-    print(f"\n  Done: {h5_path.name} ({size_mb:.1f} MB), {n_images} images")
-    return h5_path
+    _write_tier_readme(tier, tier_dir, rows)
+    print(f"  [{tier}] HDF5 -> {h5_path.name}")
 
 
-def _fallback_phantom(seed: int, shape: tuple) -> np.ndarray:
-    """Simple ellipsoid phantom as fallback."""
-    rng = np.random.default_rng(seed)
-    D, H, W = shape
-    zz, yy, xx = np.mgrid[0:D, 0:H, 0:W].astype(np.float32)
-    cz, cy, cx = D/2, H/2, W/2
-
-    mu = np.zeros(shape, dtype=np.float32)
-    # Outer ellipsoid (soft tissue)
-    r = np.sqrt(((zz-cz)/(D*0.4))**2 + ((yy-cy)/(H*0.45))**2 + ((xx-cx)/(W*0.4))**2)
-    mu[r < 1.0] = 0.25
-
-    # Inner structures
-    for _ in range(5):
-        off = rng.uniform(-0.2, 0.2, 3) * np.array([D, H, W])
-        radii = rng.uniform(0.05, 0.15, 3) * np.array([D, H, W])
-        val = rng.uniform(0.1, 0.8)
-        r2 = np.sqrt(((zz-cz-off[0])/max(radii[0],1))**2 +
-                      ((yy-cy-off[1])/max(radii[1],1))**2 +
-                      ((xx-cx-off[2])/max(radii[2],1))**2)
-        mu[r2 < 1.0] = val
-
-    return np.clip(mu, 0, 1)
-
-
-def _save_preview(arr: np.ndarray, path: Path):
-    """Save array as grayscale PNG."""
-    from PIL import Image
-    arr_f = arr.astype(np.float64)
-    lo, hi = np.percentile(arr_f, [1, 99])
-    if hi - lo > 1e-8:
-        arr_f = np.clip((arr_f - lo) / (hi - lo), 0, 1)
+def _write_tier_readme(tier, tier_dir, rows):
+    spec = SPEC[tier]
+    param_desc = {
+        "scatter_fraction": "Scatter-to-primary ratio",
+        "truncation_fov_factor": "FOV truncation factor",
+        "ring_artifact_amplitude": "Ring artifact amplitude",
+        "rotation_offset_deg": "Rotation centre offset",
+    }
+    if tier == "public":
+        source = "Synthetic dental/head CBCT phantoms (12 samples)"
+        access = "Full (GT + true spec + ideal sinogram)"
+    elif tier == "dev":
+        source = "Synthetic dental/head CBCT phantoms with augmentation (20 samples)"
+        access = "Blind (measured sinogram + spec ranges only)"
     else:
-        arr_f = np.clip(arr_f, 0, 1)
-    img = Image.fromarray((arr_f * 255).astype(np.uint8), "L")
-    img.save(path, format="PNG")
+        source = "Adversarial dental/head CBCT phantoms (20 samples)"
+        access = "Server-only"
+
+    lines = [f"# CBCT {tier.capitalize()} Tier\n\n",
+             f"**Source:** {source}\n\n**Access:** {access}\n\n",
+             "## Mismatch Parameters\n\n| Parameter | Description | Range |\n|-----------|-------------|-------|\n"]
+    for k, v in spec.items():
+        lines.append(f"| `{k}` | {param_desc[k]} | [{v['min']}, {v['max']}] {v.get('unit', '')} |\n")
+    lines += ["\n## Samples\n\n| Sample | Scene | Views | Scatter | Truncation | Ring | Rot Offset |\n",
+              "|--------|-------|-------|---------|------------|------|------------|\n"]
+    for key, scene, shape, n_views, mis in rows:
+        lines.append(f"| {key} | {scene} | {n_views} | {mis['scatter_fraction']:.3f}"
+                     f" | {mis['truncation_fov_factor']:.3f} | {mis['ring_artifact_amplitude']:.4f}"
+                     f" | {mis['rotation_offset_deg']:.3f} |\n")
+    lines += [f"\n## HDF5 Keys\n\n| Key | Shape | Description |\n|-----|-------|-------------|\n",
+              f"| `x_true` | ({IMAGE_SIZE}, {IMAGE_SIZE}) | Ground-truth attenuation |\n",
+              "| `sinogram_ideal` | (n_views, n_det) | Ideal sinogram (nepers) |\n",
+              "| `sinogram_measured` | (n_views, n_det) | Measured sinogram (mismatch + noise) |\n",
+              "| `angles_nominal` | (n_views,) | Projection angles [rad] |\n"]
+    with open(tier_dir / "README.md", "w") as f:
+        f.writelines(lines)
+
+
+def _write_top_readme():
+    txt = """# CBCT -- Cone-Beam Computed Tomography
+
+## Overview
+
+Cone-Beam CT benchmark with dental/head phantoms and CBCT-specific mismatch.
+
+## Forward Model
+
+Radon projection (parallel-beam approximation of cone-beam in 2D) + Beer-Lambert
+noise model: Poisson(I0=5000) + readout N(0, 3.0^2).
+
+## Mismatch Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `scatter_fraction` | Scatter-to-primary ratio (0.2-0.6) |
+| `truncation_fov_factor` | FOV truncation (0.7-1.0) |
+| `ring_artifact_amplitude` | Detector non-uniformity (0-0.05) |
+| `rotation_offset_deg` | Rotation centre misalignment (0-3 deg) |
+
+## Phantom Types
+
+| Type | Anatomy |
+|------|---------|
+| dental_panoramic | Mandible, teeth, tongue, airway |
+| head_axial | Skull, brain, ventricles, sinuses |
+| dental_mixed | Maxilla + mandible, teeth, sinuses |
+| head_lower | Skull base, petrous bones, TMJ |
+
+## Tiers
+
+| Tier | Samples | Views | Mismatch |
+|------|---------|-------|----------|
+| Public | 12 | 180 | Mild |
+| Dev | 20 | 180 | Medium |
+| Hidden | 20 | 120-240 | Severe + adversarial |
+
+## References
+
+- Feldkamp, Davis & Kress (1984) JOSA A 1:612-619.
+- PWM Benchmark: https://pwm.platformai.org/benchmark/cbct
+"""
+    with open(BENCHMARK_DIR / "README.md", "w") as f:
+        f.write(txt)
 
 
 def main():
-    base_dir = Path(__file__).parent
+    import time
+    print("CBCT Benchmark Dataset Generator (dental/head, skimage radon)")
+    print("=" * 68)
+    print(f"Output: {BENCHMARK_DIR}\n")
+    t0 = time.time()
 
-    # Mismatch parameters (from true_spec.json files)
-    mismatch_public = {
-        "source_offset_x": 0.80, "source_offset_z": 0.50,
-        "detector_tilt": 0.15, "detector_shift_u": 1.20,
-        "beam_hardening": 0.06, "scatter_fraction": 0.04,
-    }
-    mismatch_dev = {
-        "source_offset_x": 0.50, "source_offset_z": 0.30,
-        "detector_tilt": 0.10, "detector_shift_u": 0.80,
-        "beam_hardening": 0.04, "scatter_fraction": 0.03,
-    }
-    mismatch_hidden = {
-        "source_offset_x": 1.50, "source_offset_z": 1.00,
-        "detector_tilt": 0.35, "detector_shift_u": 2.20,
-        "beam_hardening": 0.12, "scatter_fraction": 0.08,
-    }
+    shape = (IMAGE_SIZE, IMAGE_SIZE)
 
-    # Public: 10 samples, dev recipes with unique seeds, mild mismatch, 256 views
-    public_nviews = [256] * 10
-    generate_tier(
-        tier="public", n_samples=10, base_seed=100, mode="dev",
-        nviews_list=public_nviews, mismatch=mismatch_public,
-        out_dir=base_dir / "public",
-    )
+    print("Generating public tier (12 samples, 180 views)...")
+    public_phantoms = []
+    for i in range(12):
+        x, scene = generate_cbct_phantom(seed=2000 + i, mode="public", shape=shape)
+        public_phantoms.append((f"cbct_pub_{i:02d}_{scene}", x))
+    generate_tier("public", public_phantoms, base_seed=2000, n_views_range=(N_VIEWS, N_VIEWS),
+                  source_label="synthetic_dental_head_cbct")
 
-    # Dev: 20 samples, dev recipes, medium mismatch, variable views
-    generate_tier(
-        tier="dev", n_samples=20, base_seed=8000, mode="dev",
-        nviews_list=DEV_NVIEWS, mismatch=mismatch_dev,
-        out_dir=base_dir / "dev",
-    )
+    print("\nGenerating dev tier (20 samples, 180 views, diversity aug)...")
+    dev_phantoms = []
+    rng_dev = np.random.default_rng(6666)
+    for i in range(20):
+        x, scene = generate_cbct_phantom(seed=8000 + i, mode="dev", shape=shape)
+        x_aug = _augment_diversity(x, rng_dev, mode="dev")
+        dev_phantoms.append((f"cbct_dev_{i:02d}_{scene}", x_aug))
+    generate_tier("dev", dev_phantoms, base_seed=8000, n_views_range=(N_VIEWS, N_VIEWS),
+                  source_label="synthetic_dental_head_cbct_augmented")
 
-    # Hidden: 20 samples, hidden recipes, severe mismatch, sparser views
-    generate_tier(
-        tier="hidden", n_samples=20, base_seed=9000, mode="hidden",
-        nviews_list=HIDDEN_NVIEWS, mismatch=mismatch_hidden,
-        out_dir=base_dir / "hidden",
-    )
+    print("\nGenerating hidden tier (20 samples, 120-240 views, adversarial)...")
+    hidden_phantoms = []
+    rng_hid = np.random.default_rng(9999)
+    for i in range(20):
+        x, scene = generate_cbct_phantom(seed=9000 + i, mode="hidden", shape=shape)
+        x_aug = _augment_diversity(x, rng_hid, mode="hidden")
+        hidden_phantoms.append((f"cbct_hid_{i:02d}_{scene}", x_aug))
+    generate_tier("hidden", hidden_phantoms, base_seed=9000, n_views_range=(120, 240),
+                  source_label="synthetic_dental_head_cbct_adversarial")
 
-    print(f"\n{'='*60}")
-    print("CBCT dataset generation complete!")
-    print(f"  Public:  {base_dir / 'public'}")
-    print(f"  Dev:     {base_dir / 'dev'}")
-    print(f"  Hidden:  {base_dir / 'hidden'}")
+    _write_top_readme()
+    elapsed = time.time() - t0
+    print(f"\n{'=' * 68}")
+    print(f"Done -- CBCT benchmark ready at {BENCHMARK_DIR}")
+    print(f"Total time: {elapsed:.0f}s")
+    print("=" * 68)
 
 
 if __name__ == "__main__":
