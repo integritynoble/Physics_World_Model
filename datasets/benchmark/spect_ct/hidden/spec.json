@@ -1,0 +1,22 @@
+{
+  "ct_registration_shift": {
+    "min": -5,
+    "max": 5,
+    "unit": "pixels"
+  },
+  "hu_to_mu_scale": {
+    "min": 0.88,
+    "max": 1.12,
+    "unit": "relative"
+  },
+  "scatter_fraction": {
+    "min": 0.05,
+    "max": 0.35,
+    "unit": ""
+  },
+  "collimator_blur": {
+    "min": 1.0,
+    "max": 6.0,
+    "unit": "pixels FWHM"
+  }
+}

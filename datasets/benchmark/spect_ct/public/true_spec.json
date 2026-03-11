@@ -1,0 +1,74 @@
+{
+  "sample_00": {
+    "ct_registration_shift": 1,
+    "hu_to_mu_scale": 0.9861872028258322,
+    "scatter_fraction": 0.10409735239361947,
+    "collimator_blur": 2.0247914532927935
+  },
+  "sample_01": {
+    "ct_registration_shift": 0,
+    "hu_to_mu_scale": 0.9861098369016906,
+    "scatter_fraction": 0.1456308209997515,
+    "collimator_blur": 2.642341327838842
+  },
+  "sample_02": {
+    "ct_registration_shift": 0,
+    "hu_to_mu_scale": 1.0148895118441374,
+    "scatter_fraction": 0.19146229574654838,
+    "collimator_blur": 2.522344484078138
+  },
+  "sample_03": {
+    "ct_registration_shift": 0,
+    "hu_to_mu_scale": 1.0175333909313364,
+    "scatter_fraction": 0.11566671344837196,
+    "collimator_blur": 2.471224712200667
+  },
+  "sample_04": {
+    "ct_registration_shift": 0,
+    "hu_to_mu_scale": 0.9813682662166608,
+    "scatter_fraction": 0.19773200329621585,
+    "collimator_blur": 2.365611726647689
+  },
+  "sample_05": {
+    "ct_registration_shift": -1,
+    "hu_to_mu_scale": 0.9852345514041588,
+    "scatter_fraction": 0.14185981502766676,
+    "collimator_blur": 3.1971265761756342
+  },
+  "sample_06": {
+    "ct_registration_shift": 0,
+    "hu_to_mu_scale": 0.9850964639918547,
+    "scatter_fraction": 0.13418935196114473,
+    "collimator_blur": 3.4372570143007257
+  },
+  "sample_07": {
+    "ct_registration_shift": 0,
+    "hu_to_mu_scale": 1.0264131413017896,
+    "scatter_fraction": 0.15658641281475008,
+    "collimator_blur": 3.2847875352866636
+  },
+  "sample_08": {
+    "ct_registration_shift": 1,
+    "hu_to_mu_scale": 0.9759392220344882,
+    "scatter_fraction": 0.16974445037041408,
+    "collimator_blur": 3.1560307043385727
+  },
+  "sample_09": {
+    "ct_registration_shift": -1,
+    "hu_to_mu_scale": 0.9985095499871697,
+    "scatter_fraction": 0.16480263248781257,
+    "collimator_blur": 3.3241841946346167
+  },
+  "sample_10": {
+    "ct_registration_shift": -1,
+    "hu_to_mu_scale": 1.0246450272825196,
+    "scatter_fraction": 0.1949502802957278,
+    "collimator_blur": 2.630916925618445
+  },
+  "sample_11": {
+    "ct_registration_shift": -1,
+    "hu_to_mu_scale": 0.9813588933622669,
+    "scatter_fraction": 0.1902974788181849,
+    "collimator_blur": 3.2416127734088613
+  }
+}

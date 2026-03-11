@@ -126,6 +126,7 @@ def camera_orbit_poses(
         cam_pos = np.array([cam_x, cam_y, cam_z])
 
         # Look-at matrix: camera looks at origin
+        # forward = unit vector from camera toward origin (into the scene)
         forward = -cam_pos / (np.linalg.norm(cam_pos) + 1e-12)
         world_up = np.array([0.0, 0.0, 1.0])
         right = np.cross(forward, world_up)
@@ -136,8 +137,9 @@ def camera_orbit_poses(
         up = np.cross(right, forward)
         up /= np.linalg.norm(up) + 1e-12
 
-        # Rotation: world-to-camera
-        R = np.stack([right, up, -forward], axis=0)  # (3, 3)
+        # Rotation: world-to-camera (OpenCV convention: z forward into scene)
+        # Camera axes: x=right, y=-up (image y points down), z=forward
+        R = np.stack([right, -up, forward], axis=0)  # (3, 3)
         t = -R @ cam_pos  # (3,)
 
         poses.append((R, t.reshape(3, 1)))
@@ -284,6 +286,7 @@ def render_gaussians(
     """Render a set of 3D Gaussians from a given camera pose.
 
     Uses front-to-back alpha compositing (depth-sorted).
+    Optimised with per-Gaussian bounding-box culling (3-sigma radius).
     Returns (H, W, 3) float64 RGB image in [0, 1].
     """
     if bg_color is None:
@@ -299,35 +302,44 @@ def render_gaussians(
     # Sort front-to-back (increasing z)
     projections.sort(key=lambda p: p[0])
 
-    # Create pixel coordinate grids
-    yy, xx = np.mgrid[0:H, 0:W]
-    xx = xx.astype(np.float64)
-    yy = yy.astype(np.float64)
-
-    # Alpha compositing (front-to-back)
+    # Alpha compositing (front-to-back) with bounding-box optimisation
     image = np.zeros((H, W, 3), dtype=np.float64)
     T = np.ones((H, W), dtype=np.float64)  # accumulated transmittance
 
     for z, mu_2d, Sigma_2d, alpha, color in projections:
-        # Check if the Gaussian centre is roughly in the image
-        if (mu_2d[0] < -100 or mu_2d[0] > W + 100 or
-                mu_2d[1] < -100 or mu_2d[1] > H + 100):
+        # Compute 3-sigma bounding box from covariance eigenvalues
+        sx = np.sqrt(max(Sigma_2d[0, 0], 0.5))
+        sy = np.sqrt(max(Sigma_2d[1, 1], 0.5))
+        radius = 3.0 * max(sx, sy)
+
+        # Pixel-space bounding box
+        x_lo = max(0, int(mu_2d[0] - radius))
+        x_hi = min(W, int(mu_2d[0] + radius) + 1)
+        y_lo = max(0, int(mu_2d[1] - radius))
+        y_hi = min(H, int(mu_2d[1] + radius) + 1)
+
+        if x_lo >= x_hi or y_lo >= y_hi:
             continue
 
-        # Evaluate 2D Gaussian
-        G = eval_gaussian_2d(xx, yy, mu_2d, Sigma_2d)
+        # Evaluate 2D Gaussian only in the bounding box
+        yy_loc, xx_loc = np.mgrid[y_lo:y_hi, x_lo:x_hi]
+        xx_f = xx_loc.astype(np.float64)
+        yy_f = yy_loc.astype(np.float64)
+        G_loc = eval_gaussian_2d(xx_f, yy_f, mu_2d, Sigma_2d)
 
         # Weight = opacity * Gaussian response
-        weight = alpha * G
+        weight = alpha * G_loc
+        T_loc = T[y_lo:y_hi, x_lo:x_hi]
 
         # Accumulate colour: C += T * weight * color
+        tw = T_loc * weight
         for c in range(3):
-            image[:, :, c] += T * weight * color[c]
+            image[y_lo:y_hi, x_lo:x_hi, c] += tw * color[c]
 
         # Update transmittance
-        T *= (1.0 - weight)
-        T = np.clip(T, 0.0, 1.0)
+        T[y_lo:y_hi, x_lo:x_hi] = T_loc * (1.0 - weight)
 
+    T = np.clip(T, 0.0, 1.0)
     # Background
     for c in range(3):
         image[:, :, c] += T * bg_color[c]

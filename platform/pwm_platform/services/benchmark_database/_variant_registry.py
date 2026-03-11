@@ -1239,6 +1239,109 @@ VARIANT_REGISTRY: dict[str, dict] = {
             {"name": "detector_efficiency", "symbol": "\u0394\u03b5", "description": "Detector efficiency error (%)", "nominal": 0, "perturbed": 3.0},
         ],
     },
+    # ══════════════════════════════════════════════════════════════════════════
+    #  MULTIMODALITY  (5 variants)
+    # ══════════════════════════════════════════════════════════════════════════
+
+    "pet_ct": {
+        "display_name": "PET/CT",
+        "full_name": "Positron Emission Tomography / Computed Tomography",
+        "parent_modality": "pet_ct",
+        "category": "medical",
+        "spec_notation": "R(θ) → D(μ_ct) → Π(LOR) → D(g, η)",
+        "spec_dag": [
+            {"primitive": "R", "params": "θ", "label": "Radon Transform"},
+            {"primitive": "D", "params": "μ_ct", "label": "CT Attenuation Map"},
+            {"primitive": "Pi", "params": "LOR", "label": "PET Line of Response"},
+            {"primitive": "D", "params": "g, η", "label": "Detector + Noise"},
+        ],
+        "mismatch_params": [
+            {"name": "ct_registration_shift", "symbol": "Δs", "description": "CT-PET registration error (pixels)", "nominal": 0, "perturbed": 4.0},
+            {"name": "hu_to_mu_scale", "symbol": "Δμ", "description": "HU-to-μ calibration error (%)", "nominal": 0, "perturbed": 10.0},
+            {"name": "scatter_fraction", "symbol": "f_s", "description": "Scatter fraction", "nominal": 0, "perturbed": 0.15},
+        ],
+    },
+
+    "pet_mr": {
+        "display_name": "PET/MR",
+        "full_name": "Positron Emission Tomography / Magnetic Resonance",
+        "parent_modality": "pet_mr",
+        "category": "medical",
+        "spec_notation": "F(k) → S(coil) → D(μ_mr) → R(θ) → D(g, η)",
+        "spec_dag": [
+            {"primitive": "F", "params": "k", "label": "MR k-Space (FFT)"},
+            {"primitive": "S", "params": "coil", "label": "Coil Sensitivities"},
+            {"primitive": "D", "params": "μ_mr", "label": "MR-Based Attenuation"},
+            {"primitive": "R", "params": "θ", "label": "PET Radon Transform"},
+            {"primitive": "D", "params": "g, η", "label": "Detector + Noise"},
+        ],
+        "mismatch_params": [
+            {"name": "mr_attenuation_error", "symbol": "Δμ_mr", "description": "MR attenuation estimation error (%)", "nominal": 0, "perturbed": 25.0},
+            {"name": "motion_shift", "symbol": "Δs", "description": "Inter-modality motion (pixels)", "nominal": 0, "perturbed": 6.0},
+            {"name": "b0_inhomogeneity", "symbol": "ΔB0", "description": "B0 inhomogeneity (Hz)", "nominal": 0, "perturbed": 40.0},
+            {"name": "pet_scatter_fraction", "symbol": "f_s", "description": "PET scatter fraction", "nominal": 0, "perturbed": 0.25},
+        ],
+    },
+
+    "spect_ct": {
+        "display_name": "SPECT/CT",
+        "full_name": "Single Photon Emission CT / Computed Tomography",
+        "parent_modality": "spect_ct",
+        "category": "medical",
+        "spec_notation": "R(θ) → D(μ_ct) → H(coll) → D(g, η)",
+        "spec_dag": [
+            {"primitive": "R", "params": "θ", "label": "Radon Transform"},
+            {"primitive": "D", "params": "μ_ct", "label": "CT Attenuation Map"},
+            {"primitive": "H", "params": "coll", "label": "Collimator PSF"},
+            {"primitive": "D", "params": "g, η", "label": "Detector + Noise"},
+        ],
+        "mismatch_params": [
+            {"name": "ct_registration_shift", "symbol": "Δs", "description": "CT-SPECT registration error (pixels)", "nominal": 0, "perturbed": 5.0},
+            {"name": "hu_to_mu_scale", "symbol": "Δμ", "description": "HU-to-μ calibration error (%)", "nominal": 0, "perturbed": 12.0},
+            {"name": "scatter_fraction", "symbol": "f_s", "description": "Scatter fraction", "nominal": 0, "perturbed": 0.35},
+            {"name": "collimator_blur", "symbol": "σ_c", "description": "Collimator blur FWHM (pixels)", "nominal": 2.5, "perturbed": 6.0},
+        ],
+    },
+
+    "spectral_ct": {
+        "display_name": "Spectral CT",
+        "full_name": "Dual-Energy / Spectral Computed Tomography",
+        "parent_modality": "spectral_ct",
+        "category": "medical",
+        "spec_notation": "R(θ) → A(E_low, E_high) → Σ_mat → D(g, η)",
+        "spec_dag": [
+            {"primitive": "R", "params": "θ", "label": "Radon Transform"},
+            {"primitive": "A", "params": "E_low, E_high", "label": "Energy-Dependent Attenuation"},
+            {"primitive": "Sigma", "params": "mat", "label": "Material Decomposition"},
+            {"primitive": "D", "params": "g, η", "label": "Detector + Noise"},
+        ],
+        "mismatch_params": [
+            {"name": "energy_calibration_error", "symbol": "ΔE", "description": "Energy calibration error (keV)", "nominal": 0, "perturbed": 4.0},
+            {"name": "scatter_fraction", "symbol": "f_s", "description": "Scatter fraction", "nominal": 0, "perturbed": 0.20},
+            {"name": "detector_crosstalk", "symbol": "ε_xt", "description": "Cross-energy detector leakage", "nominal": 0, "perturbed": 0.10},
+            {"name": "beam_hardening", "symbol": "β_bh", "description": "Beam hardening coefficient", "nominal": 0, "perturbed": 0.20},
+        ],
+    },
+
+    "industrial_ct": {
+        "display_name": "Industrial CT",
+        "full_name": "Industrial Computed Tomography",
+        "parent_modality": "industrial_ct",
+        "category": "medical",
+        "spec_notation": "R(θ) → B(poly) → S(scatter) → D(g, η)",
+        "spec_dag": [
+            {"primitive": "R", "params": "θ", "label": "Radon Transform"},
+            {"primitive": "B", "params": "poly", "label": "Beam Hardening (Polychromatic)"},
+            {"primitive": "S", "params": "scatter", "label": "Scatter Contribution"},
+            {"primitive": "D", "params": "g, η", "label": "Detector + Noise"},
+        ],
+        "mismatch_params": [
+            {"name": "beam_hardening_order", "symbol": "β_bh", "description": "Beam hardening polynomial coefficient", "nominal": 0, "perturbed": 0.5},
+            {"name": "scatter_fraction", "symbol": "f_s", "description": "Scatter fraction", "nominal": 0, "perturbed": 0.15},
+            {"name": "source_blur", "symbol": "σ_src", "description": "Source focal spot blur (pixels)", "nominal": 0, "perturbed": 3.0},
+            {"name": "detector_efficiency", "symbol": "η_det", "description": "Detector efficiency variation", "nominal": 1.0, "perturbed": 0.85},
+        ],
+    },
 }
 
 # fmt: on
