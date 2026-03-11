@@ -11,11 +11,16 @@ Last updated: 2026-03-11 — 168/168 modalities with datasets, 168 with YAML con
 Reference leaderboard: https://pwm.platformai.org/benchmark
 Total algorithms on leaderboard: 1,367 across 168 modalities
 
+## New Status Columns
+- **Pub/Dev/Hid**: sample counts per tier (target: pub>=10, dev>=20, hid>=20)
+- **Public Source**: standard dataset used for public tier ground truth
+- **Source Verified**: whether public source reviewed as widely-accepted (done/pending)
+
 ## Quick Status Table
 
-| Modality | Dataset | Tested | Best PSNR | YAML Algos | Leaderboard Ref | Speclab |
-|----------|---------|--------|-----------|------------|-----------------|---------|
-| acoustic_emission | done | 1 | 20.2 dB | 3 | — | pending |
+| Modality | Dataset | Pub | Dev | Hid | Public Source | Source Verified | Tested | Best PSNR | YAML Algos | Leaderboard Ref | Speclab |
+|----------|---------|-----|-----|-----|---------------|-----------------|--------|-----------|------------|-----------------|---------|
+| acoustic_emission | done | 2 | 30.64 dB | 4 | — | done |
 | acoustic_microscopy | done | 1 | 10.0 dB | 3 | — | pending |
 | active_thermography | done | 1 | 6.5 dB | 3 | — | pending |
 | adaptive_optics | done | 1 | 100.0 dB | 3 | — | pending |
@@ -245,9 +250,10 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 20.21 | 0.0741 | 0.00 | benchmark run |
-| 2 | Adjoint | traditional | pending | — | — | — | YAML config |
-| 3 | PnP-ADMM | deep_learning | pending | — | — | — | YAML config |
-| 4 | DeepAE-Net | deep_learning | pending | — | — | — | YAML config |
+| 2 | TV-Denoising (CPU) | classical | **done** | 30.64 | 0.8565 | 0.15 | CPU algorithm test 2026-03-11 |
+| 3 | Adjoint | traditional | pending | — | — | — | YAML config |
+| 4 | PnP-ADMM | deep_learning | pending | — | — | — | YAML config |
+| 5 | DeepAE-Net | deep_learning | pending | — | — | — | YAML config |
 
 #### adaptive_optics — Adaptive Optics (AO) Imaging
 

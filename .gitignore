@@ -66,6 +66,8 @@ datasets/
 !benchmarks/datasets/
 benchmarks/datasets/__pycache__/
 !datasets/benchmark/state.md
+!datasets/benchmark/*.py
+!datasets/benchmark/*.json
 runs/
 
 # Heavy datasets (stored in GCS, not GitHub)
