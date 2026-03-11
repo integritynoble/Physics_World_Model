@@ -1,107 +1,117 @@
-# Comprehensive 6-Point Check — Structured Illumination Microscopy
+# SIM (Structured Illumination Microscopy) Benchmark Dataset
 
-**URL:** https://pwm.platformai.org/benchmark/sim
-**Check Date:** 2026-03-06
-**Status:** PASS
+**Generated:** 2026-03-11
+**Generator:** `datasets/benchmark/sim/generate_dataset.py`
 
 ---
 
-## 1. Physics & Forward Model
+## Dataset Summary
 
-**Modality:** Structured Illumination Microscopy (SIM)
+| Tier | Samples | Seed Offset | Mean PSNR (baseline) | Mean SSIM (baseline) |
+|------|---------|-------------|---------------------|---------------------|
+| Public | 12 | 0 | ~24.0 dB | ~0.37 |
+| Dev | 20 | 10000 | ~23.3 dB | ~0.26 |
+| Hidden | 20 | 20000 | ~24.2 dB | ~0.28 |
 
-**Physical principle:** SIM achieves super-resolution (2× beyond the diffraction limit) by illuminating the sample with spatially structured (sinusoidal) light patterns at multiple orientations and phases. The sinusoidal illumination creates Moiré fringes that shift high spatial-frequency sample information (normally outside the microscope's passband) into the detectable frequency band. By acquiring multiple images at different orientations (typically 3) and phases (typically 3–5 each), and then reconstructing in the frequency domain, the effective optical transfer function (OTF) support is expanded 2-fold in lateral extent, doubling the lateral resolution from ~200 nm to ~100 nm.
+## Forward Model
 
-**Forward model:**
+SIM uses patterned sinusoidal illumination to extend the spatial frequency support of a
+fluorescence microscope beyond the diffraction limit (2x lateral resolution improvement).
+
 ```
-I_k(r) = [S · (1 + m·cos(k_ill·r + φ_k))] * [h(r) ⊗ F(r)] + n_k
+For each orientation theta in {0, 60, 120} degrees and phase phi_k in {0, 2pi/3, 4pi/3}:
+    I_k(r) = 1 + m * cos(2*pi*f*r_hat + phi_k)       -- illumination pattern
+    y_k    = Poisson(PSF * (I_k * x_true) * N + bg)   -- shot noise
+           + Normal(0, sigma_readout)                   -- readout noise
 
-where:
-  I_k(r)         — acquired image k (orientation θ, phase φ_k)
-  S              — illumination power
-  m              — modulation depth (contrast) of illumination pattern
-  k_ill          — illumination spatial frequency vector (pattern period ~ λ/2NA)
-  h(r)           — microscope point spread function
-  F(r)           — sample fluorophore distribution (what we recover)
-  ⊗              — convolution
-  n_k            — Poisson shot noise + camera read noise
-
-Frequency domain: Ĩ_k(q) = Ĝ(q) · [F̃(q) + m/2 · F̃(q ± k_ill)] + Ñ_k
+Measurement: y = mean(y_0, y_1, ..., y_8)              -- average of 9 raw frames
 ```
 
-**Inverse problem:** From 3×N_φ raw SIM images, recover the super-resolved fluorescence image F(r) with 2× lateral resolution improvement over widefield; requires separation of frequency components and OTF-weighted recombination.
+### Parameters
+- Image size: 256 x 256, pixel size: 50 nm
+- PSF sigma: 2.5 px (Gaussian approximation)
+- 3 orientations x 3 phases = 9 raw SIM frames
+- Nominal pattern frequency: 0.15 cycles/pixel
+- Background: 5 photons/pixel
+- Readout noise: 2 electrons std
 
----
+## Mismatch Parameters
 
-## 2. Mismatch Parameters & Benchmark Structure
+| Parameter | Public Range | Dev Range | Hidden Range | Unit |
+|-----------|-------------|-----------|--------------|------|
+| `pattern_frequency_error` | [-0.05, 0.05] | [-0.08, 0.08] | [-0.12, 0.12] | fraction |
+| `modulation_depth` | [0.7, 1.0] | [0.5, 1.0] | [0.3, 0.9] | -- |
+| `phase_error_deg` | [-3, 3] | [-5, 5] | [-8, 8] | degrees |
+| `noise_level` | [500, 2000] | [300, 2000] | [200, 1500] | photons |
 
-**Spec notation:** P(structured laser illumination, 3 orientations × N_φ phases) → F(fluorescence emission convolved with PSF) → D(sCMOS/EMCCD camera)
+## Phantoms
 
-**Key mismatch parameters:**
-- `modulation_depth`: illumination contrast m; nominal m=1.0 (perfect modulation), perturbed to m=0.7 (reduced by sample scattering)
-- `phase_step_error`: error in illumination phase steps; nominal 0°, perturbed to ±5° deviation from 120°
-- `illumination_pattern_angle`: orientation angle accuracy; nominal exact at 0°, 60°, 120°, perturbed to ±2° misalignment
-- `photon_count`: mean photons per raw image; nominal 1000 photons/µm², perturbed to 200 photons/µm² (Poisson regime)
+Three types of biological structures characteristic of fluorescence microscopy:
 
-**Dataset format:**
-- `x_true: (H, W)` — super-resolved fluorescence image F(r) at 2× resolution (e.g., 512×512 representing 256×256 widefield FOV)
-- `y: (N_orient × N_phase, H/2, W/2)` — N_orient × N_phase raw SIM frames at widefield detector resolution
+1. **Actin filaments** -- thin curved lines forming a cytoskeletal mesh with occasional branching (12-25 filaments, thickness 0.8-1.8 px)
+2. **Mitochondrial networks** -- elongated tubular organelles with frequent branching and merging (8-18 tubules, thickness 1.5-3.0 px)
+3. **Microtubules** -- relatively straight filaments radiating from a centrosomal organizing center (15-30 filaments, thickness 0.7-1.5 px)
 
----
+## CPU Baseline
 
-## 3. Reconstruction Methods & Leaderboard
+Wiener-filtered SIM reconstruction (simplified Gustafsson 2000 algorithm):
+1. Phase-stepping separation of 3 frequency components per orientation
+2. Frequency shift of separated components to correct positions
+3. Wiener deconvolution for OTF compensation
+4. Butterworth apodization to suppress ringing
+5. Inverse FFT and post-processing
 
-| Algorithm | Type | Reference | Appropriateness |
-|-----------|------|-----------|-----------------|
-| Gustafsson SIM reconstruction | Classical | Gustafsson, J. Microscopy 198, 82–87 (2000) | Foundational frequency-domain SIM reconstruction with Wiener regularization |
-| fairSIM | Classical | Müller et al., Nature Communications 7, 10980 (2016) | Open-source Java/ImageJ implementation of frequency-domain SIM; widely used |
-| OpenSIM | Classical | Lal et al., IEEE Trans. Computational Imaging 2, 269–281 (2016) | Richardson-Lucy-based iterative SIM reconstruction with positivity constraint |
-| deep-STORM / CARE-SIM | Deep Learning | Weigert et al., Nature Methods 15, 1090–1097 (2018) | Content-aware image restoration (CARE) network for SIM denoising and reconstruction |
-| SIMformer | Transformer | Qiao et al., Nature Machine Intelligence 5, 414–425 (2023) | Transformer network for blind SIM reconstruction without known pattern parameters |
-| rSIM (robust SIM) | Optimization | Zhao et al., Optics Express 26, 14530 (2018) | Robust SIM estimation of pattern parameters + image jointly; handles pattern distortions |
+Expected PSNR: 20-27 dB (varies with noise level and mismatch severity).
 
----
+## HDF5 Structure
 
-## 4. Literature & State of the Art (2024–2025)
+```
+sim_challenge_{tier}.h5
+  /sample_00/
+    x_true                (256, 256) float32  -- ground truth fluorophore distribution [0, 1]
+    y                     (256, 256) float32  -- averaged measurement (mean of 9 frames)
+    raw_frames            (9, 256, 256) float32  -- all 9 raw SIM frames
+    H_ideal               (256, 256) float32  -- noiseless widefield (PSF * x_true)
+    reconstruction_baseline (256, 256) float32  -- Wiener SIM baseline reconstruction
+    attrs:
+      metadata            -- JSON: scene name, shape, n_raw_frames, psnr/ssim baseline
+      true_spec           -- JSON: actual mismatch parameters
+      spec_ranges         -- JSON: tier mismatch ranges
+  /sample_01/
+    ...
+```
 
-1. **Li et al. (2024)** "Physics-informed deep learning for structured illumination microscopy reconstruction," *Nature Methods* — end-to-end differentiable SIM that jointly estimates illumination patterns and reconstructs images.
-2. **Qiao et al. (2024)** "Evaluation of deep learning methods for SIM reconstruction: robustness under experimental perturbations," *Light: Science & Applications* — systematic benchmark of 8 DL methods vs. fairSIM across noise levels and pattern errors.
-3. **Markwirth et al. (2025)** "Single-frame blind SIM reconstruction via generative diffusion priors," *Optica* — diffusion model enabling SIM reconstruction from single captured frames with unknown patterns.
-4. **Cnossen et al. (2024)** "Self-supervised SIM reconstruction using sparsity of fluorescence images," *IEEE Trans. Computational Imaging* — self-supervised approach removing the need for paired ground-truth training data.
+## GCS Paths
 
----
+```
+gs://pwm-benchmark-datasets/datasets/Benchmark/sim/public/sim_challenge_public.h5   (32 MiB)
+gs://pwm-benchmark-datasets/datasets/Benchmark/sim/dev/sim_challenge_dev.h5          (54 MiB)
+gs://pwm-benchmark-datasets/datasets/Benchmark/sim/hidden/sim_challenge_hidden.h5    (54 MiB)
+```
 
-## 5. Local Dataset & GCS Status
+## Gallery
 
-**GCS datasets:**
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/sim_challenge_public.h5`
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/sim_challenge_dev.h5`
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/sim_challenge_hidden.h5`
+4 gallery scenes at:
+```
+platform/pwm_platform/static/img/benchmark_gallery/sim/scene_00/  -- actin filaments
+platform/pwm_platform/static/img/benchmark_gallery/sim/scene_01/  -- mitochondrial network
+platform/pwm_platform/static/img/benchmark_gallery/sim/scene_02/  -- microtubules
+platform/pwm_platform/static/img/benchmark_gallery/sim/scene_03/  -- actin filaments
+```
 
-**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/sim/`.
+Each scene contains: gt.png, measurement_I.png (averaged), measurement_II.png (single raw frame), recon_I.png (Wiener baseline), recon_II.png (|GT - recon| error map).
 
----
+## Reading Example
 
-## 6. Comprehensive Assessment
+```python
+import h5py, json, numpy as np
 
-**Status:** PASS
-
-Structured Illumination Microscopy has a rigorous frequency-domain forward model based on Moiré pattern generation and OTF extension. Algorithm routing correctly spans the foundational Gustafsson/fairSIM reconstruction, iterative OpenSIM, deep learning approaches (CARE, SIMformer), and optimization-based robust SIM. The four mismatch parameters (modulation depth, phase step error, pattern angle, photon count) accurately represent the key experimental perturbations that degrade SIM reconstruction quality in practice.
-
----
-*Comprehensive 6-point check by deep-check pipeline v3*
-
----
-
-## GPU Server Algorithm Test Results
-
-**Test Date:** 2026-03-11T05:45:34
-**Test Tier:** public (sample_00)
-**GPU:** NVIDIA GeForce GTX 1660 Ti, CUDA 12.4, PyTorch 2.6.0
-
-| Solver | PSNR (dB) | SSIM | Time (s) | Status |
-|--------|-----------|------|----------|--------|
-| precomputed_baseline | 21.58 | 0.1863 | 0.00 | PASS |
-| wiener_sim | 6.16 | 0.0174 | 0.26 | PASS |
-
-*Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+with h5py.File("sim_challenge_public.h5", "r") as f:
+    grp = f["sample_00"]
+    x_true     = grp["x_true"][:]              # (256, 256) float32
+    y          = grp["y"][:]                    # (256, 256) float32 -- averaged SIM measurement
+    raw_frames = grp["raw_frames"][:]           # (9, 256, 256) float32 -- 9 raw SIM frames
+    H_ideal    = grp["H_ideal"][:]             # (256, 256) float32 -- noiseless widefield
+    spec       = json.loads(grp.attrs["spec_ranges"])
+    true_spec  = json.loads(grp.attrs["true_spec"])
+```

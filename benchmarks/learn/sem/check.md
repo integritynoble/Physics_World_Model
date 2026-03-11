@@ -118,17 +118,3 @@ sample_XX/
 3. **Baseline quality:** Mean PSNR ~22-28 dB across tiers (target range achieved).
 4. **Data integrity:** All HDF5 files load correctly with expected shapes and dtypes.
 5. **GCS upload:** All three tier HDF5 files uploaded to `gs://pwm-benchmark-datasets/datasets/Benchmark/sem/`.
-
----
-
-## GPU Server Algorithm Test Results
-
-**Test Date:** 2026-03-11T05:45:34
-**Test Tier:** public (sample_00)
-**GPU:** NVIDIA GeForce GTX 1660 Ti, CUDA 12.4, PyTorch 2.6.0
-
-| Solver | PSNR (dB) | SSIM | Time (s) | Status |
-|--------|-----------|------|----------|--------|
-| precomputed_baseline | 15.75 | 0.7926 | 0.00 | PASS |
-
-*Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
