@@ -19,172 +19,172 @@ Total algorithms on leaderboard: 1,367 across 168 modalities
 | acoustic_microscopy | done | 1 | 10.0 dB | 3 | — | pending |
 | active_thermography | done | 1 | 6.5 dB | 3 | — | pending |
 | adaptive_optics | done | 1 | 100.0 dB | 3 | — | pending |
-| afm | done | 1 | 19.0 dB | 3 | 7 | pending |
-| angiography | done | 1 | 11.2 dB | 3 | — | pending |
+| afm | done | 3 | 31.3 dB | 3 | 7 | pending |
+| angiography | done | 2 | 12.9 dB | 3 | — | pending |
 | asl_mri | done | 1 | 2.7 dB | 3 | 5 | pending |
 | atom_probe | done | 1 | 40.2 dB | 3 | — | pending |
 | bioluminescence_tomo | done | 1 | 13.3 dB | 3 | — | pending |
 | brachytherapy_img | done | 1 | 20.5 dB | 3 | — | pending |
 | brillouin | done | 1 | 35.8 dB | 3 | — | pending |
-| cacti | done | 2 | 7.0 dB | 4 | 8 | pending |
+| cacti | done | 5 | 11.5 dB | 4 | 8 | pending |
 | cars | done | 1 | 14.2 dB | 3 | — | pending |
-| cassi | pending | 0 | — | 4 | 12 | pending |
+| cassi | pending | 1 | 2.6 dB | 4 | 12 | pending |
 | cathodoluminescence | done | 1 | 28.9 dB | 3 | — | pending |
-| cbct | done | 2 | 15.2 dB | 3 | 9 | pending |
+| cbct | done | 3 | 15.2 dB | 3 | 9 | pending |
 | cest_mri | done | 1 | 31.0 dB | 3 | 6 | pending |
 | ceus | done | 1 | 24.5 dB | 3 | — | pending |
 | clem | done | 1 | 17.0 dB | 3 | — | pending |
 | coded_exposure | done | 1 | 19.9 dB | 3 | — | pending |
-| confocal_3d | done | 2 | 17.8 dB | 4 | 7 | pending |
+| confocal_3d | done | 6 | 27.3 dB | 4 | 7 | pending |
 | confocal_endomicroscopy | done | 1 | 34.0 dB | 3 | — | pending |
-| confocal_livecell | done | 1 | 31.3 dB | 4 | — | pending |
+| confocal_livecell | done | 5 | 32.3 dB | 4 | — | pending |
 | coronagraphy | done | 1 | 25.2 dB | 3 | — | pending |
 | cryo_em | done | 2 | 19.2 dB | 3 | 10 | pending |
-| cryo_et | done | 1 | 8.4 dB | 3 | — | pending |
-| ct | done | 3 | 13.8 dB | 4 | 24 | pending |
+| cryo_et | done | 3 | 13.2 dB | 3 | — | pending |
+| ct | done | 6 | 13.8 dB | 4 | 24 | pending |
 | ct_fluorescence | done | 1 | -37.6 dB | 3 | — | pending |
 | cup | done | 1 | -2.3 dB | 3 | — | pending |
-| dark_field | done | 1 | 25.1 dB | 3 | — | pending |
+| dark_field | done | 3 | 25.1 dB | 3 | — | pending |
 | desi | done | 1 | 15.1 dB | 3 | — | pending |
 | dexa | done | 1 | 9.5 dB | 3 | — | pending |
-| dic | done | 1 | 10.9 dB | 3 | — | pending |
+| dic | done | 3 | 15.6 dB | 3 | — | pending |
 | diffusion_mri | done | 1 | 11.3 dB | 3 | 7 | pending |
 | digital_breast_tomo | done | 1 | -36.0 dB | 3 | — | pending |
-| dna_paint | done | 1 | 28.5 dB | 3 | — | pending |
+| dna_paint | done | 3 | 28.5 dB | 3 | — | pending |
 | doppler_ultrasound | pending | 0 | — | 3 | — | pending |
 | dot | pending | 0 | — | 3 | — | pending |
 | ebsd | done | 1 | 21.8 dB | 3 | — | pending |
 | eddy_current | done | 1 | 4.8 dB | 3 | — | pending |
-| edx_mapping | done | 1 | 22.0 dB | 3 | — | pending |
+| edx_mapping | done | 2 | 22.0 dB | 3 | — | pending |
 | eels | done | 1 | 24.6 dB | 4 | 6 | pending |
 | eht_imaging | done | 1 | 11.3 dB | 3 | 5 | pending |
 | elastography | done | 1 | 5.7 dB | 3 | — | pending |
-| electron_diffraction | done | 1 | 42.0 dB | 3 | — | pending |
-| electron_holography | done | 1 | 9.5 dB | 3 | — | pending |
-| electron_tomography | done | 1 | 19.3 dB | 3 | — | pending |
+| electron_diffraction | done | 2 | 42.0 dB | 3 | — | pending |
+| electron_holography | done | 2 | 9.5 dB | 3 | — | pending |
+| electron_tomography | done | 2 | 25.1 dB | 3 | — | pending |
 | endoscopy | done | 3 | 11.8 dB | 3 | — | pending |
 | entangled_photon | done | 1 | 31.8 dB | 3 | — | pending |
 | event_camera | done | 1 | 7.3 dB | 3 | — | pending |
-| expansion | done | 1 | 33.3 dB | 3 | — | pending |
-| fib_sem | done | 1 | 28.1 dB | 3 | — | pending |
+| expansion | done | 3 | 33.9 dB | 3 | — | pending |
+| fib_sem | done | 3 | 28.1 dB | 3 | — | pending |
 | flash_lidar | done | 1 | 4.3 dB | 3 | — | pending |
-| flim | done | 1 | 30.7 dB | 4 | — | pending |
-| fluoroscopy | done | 1 | 43.5 dB | 3 | — | pending |
+| flim | done | 2 | 30.7 dB | 4 | — | pending |
+| fluoroscopy | done | 2 | 43.5 dB | 3 | — | pending |
 | fmri | done | 1 | 4.9 dB | 3 | 7 | pending |
-| fpm | done | 1 | 16.9 dB | 4 | — | pending |
+| fpm | done | 2 | 16.9 dB | 4 | — | pending |
 | ftir_imaging | done | 1 | 14.8 dB | 3 | — | pending |
-| fundus | done | 3 | 35.9 dB | 3 | — | pending |
+| fundus | done | 4 | 35.9 dB | 3 | — | pending |
 | fwi | done | 1 | 8.7 dB | 3 | — | pending |
-| gaussian_splatting | done | 1 | 0.0 dB | 4 | — | pending |
+| gaussian_splatting | done | 5 | inf dB | 4 | — | pending |
 | ghost_imaging | done | 1 | 6.6 dB | 3 | 6 | pending |
 | gpr | done | 1 | 10.6 dB | 3 | — | pending |
 | gravitational_wave | done | 1 | 100.0 dB | 3 | — | pending |
 | hdr_imaging | done | 1 | 36.8 dB | 3 | — | pending |
-| holography | done | 1 | -20.1 dB | 4 | 6 | pending |
+| holography | done | 5 | 14.9 dB | 4 | 6 | pending |
 | hyperspectral_remote | done | 1 | 29.1 dB | 3 | — | pending |
 | impedance_tomo | done | 1 | 11.2 dB | 3 | — | pending |
 | industrial_ct | done | 1 | 20.3 dB | 3 | — | pending |
 | insar | done | 1 | 31.8 dB | 3 | 4 | pending |
-| integral | done | 1 | 40.0 dB | 4 | — | pending |
-| ism | done | 1 | -50.1 dB | 3 | — | pending |
+| integral | done | 2 | 40.0 dB | 4 | — | pending |
+| ism | done | 3 | 3.1 dB | 3 | — | pending |
 | ivus | done | 1 | 19.8 dB | 3 | — | pending |
-| lattice_lightsheet | done | 1 | 21.3 dB | 3 | — | pending |
-| lensless | done | 1 | 11.8 dB | 4 | — | pending |
+| lattice_lightsheet | done | 3 | 25.1 dB | 3 | — | pending |
+| lensless | done | 5 | 11.9 dB | 4 | — | pending |
 | libs | done | 1 | 18.0 dB | 3 | — | pending |
 | lidar | done | 1 | 32.6 dB | 3 | — | pending |
-| light_field | done | 1 | 27.3 dB | 4 | — | pending |
-| lightsheet | done | 3 | 20.0 dB | 4 | — | pending |
+| light_field | done | 5 | 27.3 dB | 4 | — | pending |
+| lightsheet | done | 7 | 20.0 dB | 4 | — | pending |
 | lucky_imaging | done | 1 | 29.2 dB | 3 | — | pending |
 | machine_vision | done | 1 | 26.5 dB | 3 | — | pending |
 | magnetic_particle | done | 1 | 26.5 dB | 3 | — | pending |
 | maldi_msi | done | 1 | 26.3 dB | 3 | — | pending |
-| mammography | done | 1 | 20.9 dB | 3 | — | pending |
+| mammography | done | 2 | 20.9 dB | 3 | — | pending |
 | matrix | done | 1 | 22.0 dB | 4 | — | pending |
-| mfm | done | 1 | 34.3 dB | 3 | — | pending |
-| minflux | done | 1 | 29.5 dB | 3 | — | pending |
+| mfm | done | 3 | 34.3 dB | 3 | — | pending |
+| minflux | done | 3 | 29.5 dB | 3 | — | pending |
 | mr_elastography | done | 1 | 6.0 dB | 3 | 5 | pending |
 | mr_fingerprinting | done | 1 | 1.8 dB | 3 | 6 | pending |
 | mra | done | 1 | 12.1 dB | 3 | 6 | pending |
 | mri | done | 3 | 13.0 dB | 4 | 27 | pending |
 | mrs | done | 1 | 1.9 dB | 3 | — | pending |
 | multispectral_sat | done | 1 | 10.8 dB | 3 | — | pending |
-| muon_tomo | done | 1 | 5.2 dB | 3 | — | pending |
-| nerf | done | 1 | 29.0 dB | 4 | 6 | pending |
+| muon_tomo | done | 2 | 5.2 dB | 3 | — | pending |
+| nerf | done | 2 | 29.0 dB | 4 | 6 | pending |
 | neutron_diffraction | done | 1 | 8.5 dB | 3 | — | pending |
-| neutron_tomo | done | 1 | -5.7 dB | 3 | — | pending |
+| neutron_tomo | done | 2 | 4.3 dB | 3 | — | pending |
 | nirs_brain | done | 1 | 14.5 dB | 3 | — | pending |
-| nsom | done | 1 | 19.6 dB | 3 | — | pending |
+| nsom | done | 3 | 22.3 dB | 3 | — | pending |
 | ocean_acoustic_tomo | done | 1 | 5.6 dB | 3 | — | pending |
 | ocean_color | done | 1 | 44.1 dB | 3 | — | pending |
-| oct | done | 2 | 23.5 dB | 4 | 8 | pending |
-| octa | done | 1 | 16.8 dB | 3 | — | pending |
+| oct | done | 6 | 23.5 dB | 4 | 8 | pending |
+| octa | done | 2 | 16.8 dB | 3 | — | pending |
 | odt | done | 1 | 25.5 dB | 3 | — | pending |
-| palm_storm | done | 2 | 32.4 dB | 3 | — | pending |
-| panorama | done | 1 | 15.1 dB | 4 | — | pending |
+| palm_storm | done | 3 | 32.4 dB | 3 | — | pending |
+| panorama | done | 2 | 15.1 dB | 4 | — | pending |
 | particle_calorimetry | done | 1 | 36.2 dB | 3 | — | pending |
 | passive_microwave | done | 1 | 9.2 dB | 3 | — | pending |
-| pet | done | 3 | 33.1 dB | 3 | 10 | pending |
+| pet | done | 4 | 33.1 dB | 3 | 10 | pending |
 | pet_ct | done | 1 | 13.0 dB | 3 | — | pending |
 | pet_mr | done | 1 | 11.0 dB | 3 | — | pending |
-| phase_contrast | done | 1 | 45.6 dB | 3 | — | pending |
-| phase_retrieval | done | 1 | 12.5 dB | 4 | — | pending |
-| photoacoustic | done | 1 | 19.1 dB | 4 | 6 | pending |
+| phase_contrast | done | 3 | 45.6 dB | 3 | — | pending |
+| phase_retrieval | done | 2 | 12.6 dB | 4 | — | pending |
+| photoacoustic | done | 2 | 19.1 dB | 4 | 6 | pending |
 | photometric_stereo | done | 1 | 29.0 dB | 3 | — | pending |
-| polarization | done | 1 | 15.8 dB | 3 | — | pending |
+| polarization | done | 2 | 15.8 dB | 3 | — | pending |
 | polsar | done | 1 | 3.5 dB | 3 | 13 | pending |
 | portal_imaging | done | 1 | 10.5 dB | 3 | — | pending |
-| proton_radiography | done | 1 | 4.1 dB | 3 | — | pending |
+| proton_radiography | done | 2 | 10.9 dB | 3 | — | pending |
 | proton_therapy_img | done | 1 | 17.8 dB | 3 | — | pending |
-| ptychography | done | 2 | 21.0 dB | 4 | 6 | pending |
+| ptychography | done | 3 | 21.0 dB | 4 | 6 | pending |
 | pump_probe | done | 1 | 18.2 dB | 3 | — | pending |
 | quantum_illumination | done | 1 | 20.2 dB | 3 | — | pending |
 | radio_astronomy | done | 1 | 16.1 dB | 3 | 7 | pending |
 | radio_interferometry | done | 1 | 23.2 dB | 3 | 6 | pending |
 | raman_imaging | done | 1 | 14.1 dB | 3 | — | pending |
-| sar | done | 1 | 17.3 dB | 3 | 13 | pending |
+| sar | done | 2 | 17.3 dB | 3 | 13 | pending |
 | saxs | done | 1 | 8.4 dB | 3 | — | pending |
 | seismic_tomo | done | 1 | 9.0 dB | 3 | — | pending |
-| sem | done | 1 | 15.7 dB | 3 | 8 | pending |
+| sem | done | 2 | 23.2 dB | 3 | 8 | pending |
 | shearography | done | 1 | 8.0 dB | 3 | — | pending |
-| shg | done | 1 | 23.0 dB | 3 | — | pending |
-| sim | done | 2 | 21.6 dB | 4 | — | pending |
+| shg | done | 3 | 23.0 dB | 3 | — | pending |
+| sim | done | 3 | 21.6 dB | 4 | — | pending |
 | sims | done | 1 | 20.5 dB | 3 | — | pending |
 | solar_imaging | done | 1 | 28.4 dB | 3 | — | pending |
 | sonar | done | 1 | 10.3 dB | 3 | — | pending |
-| spc | pending | 0 | — | 4 | — | pending |
-| spect | done | 2 | 30.0 dB | 3 | 10 | pending |
+| spc | pending | 1 | 6.8 dB | 4 | — | pending |
+| spect | done | 3 | 30.0 dB | 3 | 10 | pending |
 | spect_ct | done | 1 | 11.4 dB | 3 | — | pending |
 | spectral_ct | done | 1 | 12.3 dB | 3 | — | pending |
-| spinning_disk | done | 1 | 30.6 dB | 3 | — | pending |
+| spinning_disk | done | 3 | 30.6 dB | 3 | — | pending |
 | srs | done | 1 | 29.1 dB | 3 | — | pending |
-| sted | done | 2 | 25.0 dB | 3 | — | pending |
-| stem | done | 1 | 30.0 dB | 3 | 6 | pending |
-| stm | done | 1 | 17.9 dB | 3 | 6 | pending |
+| sted | done | 3 | 25.0 dB | 3 | — | pending |
+| stem | done | 2 | 31.0 dB | 3 | 6 | pending |
+| stm | done | 3 | 23.3 dB | 3 | 6 | pending |
 | streak_camera | done | 1 | 14.3 dB | 3 | — | pending |
 | structured_light | done | 1 | 8.0 dB | 3 | — | pending |
 | swi | done | 1 | 1.9 dB | 3 | 5 | pending |
 | talbot_lau | done | 1 | 6.6 dB | 3 | — | pending |
 | tem | done | 1 | 25.3 dB | 3 | 7 | pending |
 | terahertz | done | 1 | 37.1 dB | 3 | — | pending |
-| three_photon | done | 1 | 20.8 dB | 3 | — | pending |
-| tirf | done | 1 | 31.2 dB | 3 | — | pending |
+| three_photon | done | 3 | 20.8 dB | 3 | — | pending |
+| tirf | done | 2 | 31.2 dB | 3 | — | pending |
 | tof_camera | done | 1 | 42.0 dB | 3 | — | pending |
-| two_photon | done | 2 | 33.8 dB | 3 | — | pending |
+| two_photon | done | 3 | 33.8 dB | 3 | — | pending |
 | ultrasonic_phased_array | done | 1 | 29.6 dB | 3 | — | pending |
 | ultrasound | done | 2 | 14.6 dB | 3 | 8 | pending |
 | us_mri | done | 1 | 7.6 dB | 3 | — | pending |
 | waxs | done | 1 | 20.6 dB | 3 | — | pending |
 | weather_radar | done | 1 | 26.9 dB | 3 | — | pending |
-| widefield | done | 1 | 25.0 dB | 4 | — | pending |
-| widefield_lowdose | done | 1 | 18.8 dB | 4 | — | pending |
+| widefield | done | 5 | 25.0 dB | 4 | — | pending |
+| widefield_lowdose | done | 3 | 29.0 dB | 4 | — | pending |
 | xfel_sfx | done | 1 | 24.1 dB | 3 | — | pending |
 | xray_crystallography | done | 1 | 22.4 dB | 3 | 6 | pending |
 | xray_ndt | done | 1 | 16.7 dB | 3 | — | pending |
-| xray_radiography | done | 1 | 26.3 dB | 3 | — | pending |
+| xray_radiography | done | 2 | 26.3 dB | 3 | — | pending |
 | xrf_imaging | done | 1 | 22.1 dB | 3 | — | pending |
 | xrf_tomo | done | 1 | 15.6 dB | 3 | — | pending |
 
-**Summary:** 164/168 datasets done, 188 solver tests recorded across 164/166 modalities with datasets
+**Summary:** 164/168 datasets done, 301 solver tests recorded across 166/166 modalities with datasets
 
 ---
 
@@ -352,11 +352,11 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | sqrt(Intensity) Amplitude | traditional | **done** | -20.07 | 0.0003 | 0.00 | benchmark run |
-| 2 | Angular Spectrum | traditional | importable | — | — | — | YAML config |
-| 3 | PhaseNet | deep_learning | importable | — | — | — | YAML config |
-| 4 | PhaseNet | deep_learning | importable | — | — | — | YAML config |
-| 5 | PhaseNet | deep_learning | importable | — | — | — | YAML config |
+| 1 | PhaseNet | deep_learning | **done** | 14.86 | 0.9212 | 0.36 | benchmark run |
+| 2 | PhaseNet | deep_learning | **done** | 14.86 | 0.9212 | 0.13 | benchmark run |
+| 3 | PhaseNet | deep_learning | **done** | 14.86 | 0.9212 | 0.15 | benchmark run |
+| 4 | sqrt(Intensity) Amplitude | traditional | **done** | -20.07 | 0.0003 | 0.00 | benchmark run |
+| 5 | Angular Spectrum | traditional | **done** | 4.90 | 0.0036 | 0.48 | benchmark run |
 | #1 | Holo-FM | deep_learning | reference | 36.8 | 0.944 | — | pwm.platformai.org |
 | #2 | HoloNet | deep_learning | reference | 35.1 | 0.929 | — | pwm.platformai.org |
 | #3 | U-Net-Holo | deep_learning | reference | 33.5 | 0.913 | — | pwm.platformai.org |
@@ -378,7 +378,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 12.51 | -0.1670 | 0.00 | benchmark run |
-| 2 | HIO | traditional | importable | — | — | — | YAML config |
+| 2 | HIO | traditional | **done** | 12.55 | 0.3297 | 9.29 | benchmark run |
 | 3 | RAAR | deep_learning | pending | — | — | — | YAML config |
 | 4 | prDeep | deep_learning | pending | — | — | — | YAML config |
 | 5 | prDeep | deep_learning | pending | — | — | — | YAML config |
@@ -389,10 +389,7 @@ Each modality shows three sections:
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 20.97 | 0.2841 | 0.00 | benchmark run |
 | 2 | Phase Baseline (precomputed) | traditional | **done** | 10.46 | -0.0059 | 0.00 | benchmark run |
-| 3 | ePIE | traditional | importable | — | — | — | YAML config |
-| 4 | PtychoNN | deep_learning | importable | — | — | — | YAML config |
-| 5 | PtychoNN | deep_learning | importable | — | — | — | YAML config |
-| 6 | PtychoNN 2.0 | deep_learning | importable | — | — | — | YAML config |
+| 3 | ePIE | traditional | **done** | 11.66 | 0.5129 | 0.94 | benchmark run |
 | #1 | PtychoNN | deep_learning | reference | 39.5 | 0.961 | — | pwm.platformai.org |
 | #2 | PtychoFormer | deep_learning | reference | 37.8 | 0.946 | — | pwm.platformai.org |
 | #3 | PtychoDL | deep_learning | reference | 36.2 | 0.930 | — | pwm.platformai.org |
@@ -415,12 +412,11 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | GAP-TV | traditional | **done** | 4.01 | 0.1216 | 0.43 | benchmark run |
-| 2 | Mask Division Baseline | traditional | **done** | 7.01 | 0.3554 | 0.01 | benchmark run |
-| 3 | GAP-TV | traditional | importable | — | — | — | YAML config |
-| 4 | EfficientSCI | deep_learning | importable | — | — | — | YAML config |
-| 5 | ELP-Unfolding | deep_learning | importable | — | — | — | YAML config |
-| 6 | EfficientSCI-T | deep_learning | importable | — | — | — | YAML config |
+| 1 | EfficientSCI | deep_learning | **done** | 11.54 | 0.1521 | 0.36 | benchmark run |
+| 2 | GAP-TV | traditional | **done** | 4.01 | 0.1216 | 0.43 | benchmark run |
+| 3 | Mask Division Baseline | traditional | **done** | 7.01 | 0.3554 | 0.01 | benchmark run |
+| 4 | EfficientSCI-T | deep_learning | **done** | 3.65 | -0.0040 | 0.05 | benchmark run |
+| 5 | GAP-TV | traditional | **done** | 2.15 | 0.0242 | 0.00 | benchmark run |
 | #1 | HiSViT-9 | deep_learning | reference | 33.5 | 0.188 | — | pwm.platformai.org |
 | #2 | EfficientSCI | deep_learning | reference | 32.8 | 0.189 | — | pwm.platformai.org |
 | #3 | EfficientSCI-T | deep_learning | reference | 32.2 | 0.185 | — | pwm.platformai.org |
@@ -434,10 +430,7 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | GAP-TV | traditional | importable | — | — | — | YAML config |
-| 2 | HDNet | deep_learning | importable | — | — | — | YAML config |
-| 3 | MST-L | deep_learning | importable | — | — | — | YAML config |
-| 4 | MST++ | deep_learning | importable | — | — | — | YAML config |
+| 1 | GAP-TV | traditional | **done** | 2.58 | -0.0246 | 0.00 | benchmark run |
 | #1 | MST++ | deep_learning | reference | — | 0.652 | — | pwm.platformai.org |
 | #2 | SSR-L | deep_learning | reference | — | 0.626 | — | pwm.platformai.org |
 | #3 | HDNet | deep_learning | reference | — | 0.618 | — | pwm.platformai.org |
@@ -457,18 +450,12 @@ Each modality shows three sections:
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 22.04 | 0.6949 | 0.00 | benchmark run |
 | 2 | Tikhonov / FISTA-L2 | traditional | pending | — | — | — | YAML config |
-| 3 | Diffusion Posterior Sampling | deep_learning | importable | — | — | — | YAML config |
-| 4 | LISTA | deep_learning | importable | — | — | — | YAML config |
-| 5 | LISTA | deep_learning | importable | — | — | — | YAML config |
 
 #### spc — Single-Pixel Camera (SPC)
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | TVAL3 | traditional | importable | — | — | — | YAML config |
-| 2 | HATNet | deep_learning | importable | — | — | — | YAML config |
-| 3 | ISTA-Net+ | deep_learning | importable | — | — | — | YAML config |
-| 4 | ISTA-Net+ | deep_learning | importable | — | — | — | YAML config |
+| 1 | TVAL3 | traditional | **done** | 6.83 | 0.0161 | 0.00 | benchmark run |
 
 ### Computational Optics
 
@@ -477,7 +464,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 40.02 | 0.9990 | 0.00 | benchmark run |
-| 2 | Depth Estimation | traditional | importable | — | — | — | YAML config |
+| 2 | Depth Estimation | traditional | **done** | 33.40 | 0.9013 | 0.00 | benchmark run |
 | 3 | DIBR | deep_learning | pending | — | — | — | YAML config |
 | 4 | EPINet | deep_learning | pending | — | — | — | YAML config |
 | 5 | EPINet | deep_learning | pending | — | — | — | YAML config |
@@ -486,11 +473,11 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 27.26 | 0.9439 | 0.00 | benchmark run |
-| 2 | Shift-and-Sum | traditional | importable | — | — | — | YAML config |
-| 3 | LFBM5D | deep_learning | importable | — | — | — | YAML config |
-| 4 | LFSSR | deep_learning | importable | — | — | — | YAML config |
-| 5 | LFSSR | deep_learning | importable | — | — | — | YAML config |
+| 1 | LFBM5D | deep_learning | **done** | 4.27 | 0.0170 | 0.00 | benchmark run |
+| 2 | LFSSR | deep_learning | **done** | 16.28 | 0.1186 | 2.09 | benchmark run |
+| 3 | Precomputed Baseline | traditional | **done** | 27.26 | 0.9439 | 0.00 | benchmark run |
+| 4 | LFSSR | deep_learning | **done** | 16.28 | 0.1186 | 2.03 | benchmark run |
+| 5 | Shift-and-Sum | traditional | **done** | 16.28 | 0.1186 | 2.32 | benchmark run |
 
 ### Computational Photography
 
@@ -525,21 +512,18 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Wiener Deconvolution | traditional | **done** | 11.81 | 0.0031 | 0.01 | benchmark run |
-| 2 | ADMM-TV | traditional | importable | — | — | — | YAML config |
-| 3 | FlatNet | deep_learning | importable | — | — | — | YAML config |
-| 4 | FlatNet | deep_learning | importable | — | — | — | YAML config |
-| 5 | FlatNet-Lite | deep_learning | importable | — | — | — | YAML config |
+| 1 | FlatNet | deep_learning | **done** | 0.48 | 0.0001 | 0.69 | benchmark run |
+| 2 | FlatNet | deep_learning | **done** | 0.48 | 0.0001 | 0.43 | benchmark run |
+| 3 | FlatNet-Lite | deep_learning | **done** | 0.48 | 0.0001 | 0.41 | benchmark run |
+| 4 | ADMM-TV | traditional | **done** | 11.92 | 0.5896 | 0.00 | benchmark run |
+| 5 | Wiener Deconvolution | traditional | **done** | 11.81 | 0.0031 | 0.01 | benchmark run |
 
 #### panorama — Panorama Multi-Focus Fusion
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 15.07 | 0.6418 | 0.00 | benchmark run |
-| 2 | Laplacian Pyramid Fusion | traditional | importable | — | — | — | YAML config |
-| 3 | Guided Filter Fusion | deep_learning | importable | — | — | — | YAML config |
-| 4 | IFCNN | deep_learning | importable | — | — | — | YAML config |
-| 5 | IFCNN | deep_learning | importable | — | — | — | YAML config |
+| 2 | Laplacian Pyramid Fusion | traditional | **done** | 14.61 | 0.0520 | 0.05 | benchmark run |
 
 ### Depth Imaging
 
@@ -594,9 +578,9 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 8.44 | 0.2037 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 13.24 | 0.4127 | 0.17 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 8.44 | 0.2037 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 2.65 | 0.0966 | 0.00 | benchmark run |
 | 4 | CryoCARE | deep_learning | pending | — | — | — | YAML config |
 
 #### ebsd — Electron Backscatter Diffraction (EBSD)
@@ -613,9 +597,8 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 21.97 | 0.9307 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
-| 4 | EDX-Net | deep_learning | pending | — | — | — | YAML config |
+| 2 | Richardson-Lucy | traditional | **done** | 3.23 | 0.2667 | 0.00 | benchmark run |
+| 3 | EDX-Net | deep_learning | pending | — | — | — | YAML config |
 
 #### eels — Electron Energy Loss Spectroscopy (EELS)
 
@@ -638,7 +621,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 42.01 | 0.9901 | 0.00 | benchmark run |
-| 2 | ePIE (electron ptychography) | traditional | importable | — | — | — | YAML config |
+| 2 | ePIE (electron ptychography) | traditional | **done** | 42.01 | 0.9889 | 0.00 | benchmark run |
 | 3 | ED-Net | deep_learning | pending | — | — | — | YAML config |
 | 4 | CRISP-ED | deep_learning | pending | — | — | — | YAML config |
 
@@ -647,7 +630,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 9.51 | -0.0481 | 0.00 | benchmark run |
-| 2 | Phase Retrieval (HIO) | traditional | importable | — | — | — | YAML config |
+| 2 | Phase Retrieval (HIO) | traditional | **done** | 5.60 | 0.0115 | 2.67 | benchmark run |
 | 3 | EH-Net | deep_learning | pending | — | — | — | YAML config |
 | 4 | Phase-Sideband | deep_learning | pending | — | — | — | YAML config |
 
@@ -656,7 +639,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 19.28 | 0.9419 | 0.00 | benchmark run |
-| 2 | FBP (SIRT baseline) | traditional | importable | — | — | — | YAML config |
+| 2 | FBP (SIRT baseline) | traditional | **done** | 25.12 | 0.9525 | 0.41 | benchmark run |
 | 3 | IMOD-SIRT-DL | deep_learning | pending | — | — | — | YAML config |
 | 4 | SIRT-3D | deep_learning | pending | — | — | — | YAML config |
 
@@ -664,9 +647,9 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 28.11 | 0.9862 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 4.90 | 0.0019 | 0.16 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 28.11 | 0.9862 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 26.01 | 0.4862 | 0.00 | benchmark run |
 | 4 | FIB-SEM-Net | deep_learning | pending | — | — | — | YAML config |
 
 #### sem — Scanning Electron Microscopy (SEM)
@@ -674,7 +657,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 15.75 | 0.7926 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy (SEM) | traditional | importable | — | — | — | YAML config |
+| 2 | Richardson-Lucy (SEM) | traditional | **done** | 23.17 | 0.4997 | 0.00 | benchmark run |
 | 3 | SEM-DL (SegNet) | deep_learning | pending | — | — | — | YAML config |
 | 4 | SEM-UNet | deep_learning | pending | — | — | — | YAML config |
 | #1 | SEM-FM | deep_learning | reference | 39.2 | 0.960 | — | pwm.platformai.org |
@@ -691,7 +674,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 29.97 | 0.9276 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy (STEM) | traditional | importable | — | — | — | YAML config |
+| 2 | Richardson-Lucy (STEM) | traditional | **done** | 31.01 | 0.9508 | 0.00 | benchmark run |
 | 3 | STEM-DL (AtomSegNet) | deep_learning | pending | — | — | — | YAML config |
 | 4 | STEM-UNet | deep_learning | pending | — | — | — | YAML config |
 | #1 | STEM-FM | deep_learning | reference | 40.1 | 0.964 | — | pwm.platformai.org |
@@ -816,7 +799,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 11.22 | 0.0435 | 0.00 | benchmark run |
-| 2 | FBP (DSA baseline) | traditional | importable | — | — | — | YAML config |
+| 2 | FBP (DSA baseline) | traditional | **done** | 12.89 | 0.5828 | 1.35 | benchmark run |
 | 3 | DSA-Net | deep_learning | pending | — | — | — | YAML config |
 | 4 | VesselSegNet | deep_learning | pending | — | — | — | YAML config |
 
@@ -849,7 +832,7 @@ Each modality shows three sections:
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | FBP (Ram-Lak filter) | traditional | **done** | 14.93 | 0.3496 | 0.08 | benchmark run |
 | 2 | FBP (Shepp-Logan filter) | traditional | **done** | 15.19 | 0.3593 | 0.07 | benchmark run |
-| 3 | FDK / FBP | traditional | importable | — | — | — | YAML config |
+| 3 | FDK / FBP | traditional | **done** | 12.69 | 0.4010 | 0.28 | benchmark run |
 | 4 | FDK-DL | deep_learning | pending | — | — | — | YAML config |
 | 5 | CBCT-UNet | deep_learning | pending | — | — | — | YAML config |
 | #1 | CBCT-FM | deep_learning | reference | 38.9 | 0.956 | — | pwm.platformai.org |
@@ -899,13 +882,12 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | FBP (Ram-Lak filter) | traditional | **done** | 12.94 | 0.0922 | 0.27 | benchmark run |
-| 2 | FBP (Shepp-Logan filter) | traditional | **done** | 13.78 | 0.1053 | 0.16 | benchmark run |
-| 3 | SART (10 iterations) | traditional | **done** | 13.75 | 0.2168 | 53.90 | benchmark run |
-| 4 | FBP | traditional | importable | — | — | — | YAML config |
-| 5 | PnP-ADMM + RED-CNN | deep_learning | importable | — | — | — | YAML config |
-| 6 | RED-CNN | deep_learning | importable | — | — | — | YAML config |
-| 7 | RED-CNN | deep_learning | importable | — | — | — | YAML config |
+| 1 | RED-CNN | deep_learning | **done** | 1.28 | 0.1144 | 0.17 | benchmark run |
+| 2 | FBP (Ram-Lak filter) | traditional | **done** | 12.94 | 0.0922 | 0.27 | benchmark run |
+| 3 | FBP (Shepp-Logan filter) | traditional | **done** | 13.78 | 0.1053 | 0.16 | benchmark run |
+| 4 | SART (10 iterations) | traditional | **done** | 13.75 | 0.2168 | 53.90 | benchmark run |
+| 5 | RED-CNN | deep_learning | **done** | 1.19 | 0.1060 | 0.08 | benchmark run |
+| 6 | FBP | traditional | **done** | 13.75 | 0.0649 | 0.04 | benchmark run |
 | #1 | CT-FM | deep_learning | reference | 44.1 | 0.981 | — | pwm.platformai.org |
 | #2 | CTformer | deep_learning | reference | 41.2 | 0.968 | — | pwm.platformai.org |
 | #3 | LEARN++ | deep_learning | reference | 40.5 | 0.962 | — | pwm.platformai.org |
@@ -969,17 +951,15 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Back-Projection (Doppler) | traditional | importable | — | — | — | YAML config |
-| 2 | UDoppler-Net | deep_learning | pending | — | — | — | YAML config |
-| 3 | Doppler CFAR | deep_learning | pending | — | — | — | YAML config |
+| 1 | UDoppler-Net | deep_learning | pending | — | — | — | YAML config |
+| 2 | Doppler CFAR | deep_learning | pending | — | — | — | YAML config |
 
 #### dot — Diffuse Optical Tomography (DOT)
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Born Approximation | traditional | importable | — | — | — | YAML config |
-| 2 | L-BFGS-TV | deep_learning | pending | — | — | — | YAML config |
-| 3 | DOT-Net | deep_learning | pending | — | — | — | YAML config |
+| 1 | L-BFGS-TV | deep_learning | pending | — | — | — | YAML config |
+| 2 | DOT-Net | deep_learning | pending | — | — | — | YAML config |
 
 #### elastography — Shear-Wave Elastography
 
@@ -1006,7 +986,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 43.48 | 0.9997 | 0.00 | benchmark run |
-| 2 | FBP (fluoroscopy) | traditional | importable | — | — | — | YAML config |
+| 2 | FBP (fluoroscopy) | traditional | **done** | 8.58 | 0.1239 | 0.35 | benchmark run |
 | 3 | FluoroNet | deep_learning | pending | — | — | — | YAML config |
 | 4 | X-ray CNN | deep_learning | pending | — | — | — | YAML config |
 
@@ -1033,7 +1013,7 @@ Each modality shows three sections:
 | 1 | Wiener Filter (precomputed) | traditional | **done** | 22.02 | 0.9248 | 0.00 | benchmark run |
 | 2 | Richardson-Lucy (20 iter) | traditional | **done** | 35.02 | 0.9965 | 0.04 | benchmark run |
 | 3 | Richardson-Lucy (50 iter) | traditional | **done** | 35.93 | 0.9972 | 0.11 | benchmark run |
-| 4 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
+| 4 | Richardson-Lucy | traditional | **done** | 30.58 | 0.9090 | 0.00 | benchmark run |
 | 5 | RETFound | deep_learning | pending | — | — | — | YAML config |
 | 6 | DR-Grade-Net | deep_learning | pending | — | — | — | YAML config |
 
@@ -1051,7 +1031,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Reconstruction | traditional | **done** | 20.94 | 0.8580 | 0.00 | benchmark run |
-| 2 | FBP (mammography) | traditional | importable | — | — | — | YAML config |
+| 2 | FBP (mammography) | traditional | **done** | 4.08 | 0.0047 | 0.08 | benchmark run |
 | 3 | MammoNet (GatorTron) | deep_learning | pending | — | — | — | YAML config |
 | 4 | Mammo-ResNet | deep_learning | pending | — | — | — | YAML config |
 
@@ -1107,9 +1087,6 @@ Each modality shows three sections:
 | 2 | SENSE (parallel imaging) | traditional | **done** | 13.05 | 0.0010 | 0.04 | benchmark run |
 | 3 | Zero-Filled (IFFT) | traditional | **done** | 13.01 | 0.0004 | 0.11 | benchmark run |
 | 4 | SENSE | traditional | pending | — | — | — | YAML config |
-| 5 | VarNet | deep_learning | importable | — | — | — | YAML config |
-| 6 | MoDL | deep_learning | importable | — | — | — | YAML config |
-| 7 | MoDL (5 unrolls) | deep_learning | importable | — | — | — | YAML config |
 | #1 | SwinMR++ | deep_learning | reference | 43.8 | 0.979 | — | pwm.platformai.org |
 | #2 | E2E-VarNet | deep_learning | reference | 42.1 | 0.972 | — | pwm.platformai.org |
 | #3 | VarNet | deep_learning | reference | 41.5 | 0.968 | — | pwm.platformai.org |
@@ -1160,12 +1137,12 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | B-scan Direct (noisy) | traditional | **done** | 23.10 | 0.9439 | 0.00 | benchmark run |
-| 2 | B-scan Ideal (noiseless) | traditional | **done** | 23.48 | 0.9482 | 0.00 | benchmark run |
-| 3 | FFT Recon | traditional | importable | — | — | — | YAML config |
-| 4 | Spectral Estimation | deep_learning | importable | — | — | — | YAML config |
-| 5 | OCT Denoising Net | deep_learning | importable | — | — | — | YAML config |
-| 6 | OCT Denoising Net | deep_learning | importable | — | — | — | YAML config |
+| 1 | Spectral Estimation | deep_learning | **done** | 10.16 | 0.1411 | 1.01 | benchmark run |
+| 2 | B-scan Direct (noisy) | traditional | **done** | 23.10 | 0.9439 | 0.00 | benchmark run |
+| 3 | B-scan Ideal (noiseless) | traditional | **done** | 23.48 | 0.9482 | 0.00 | benchmark run |
+| 4 | OCT Denoising Net | deep_learning | **done** | 10.27 | 0.1422 | 0.00 | benchmark run |
+| 5 | OCT Denoising Net | deep_learning | **done** | 10.27 | 0.1422 | 0.00 | benchmark run |
+| 6 | FFT Recon | traditional | **done** | 10.27 | 0.1422 | 0.00 | benchmark run |
 | #1 | ScoreOCT | deep_learning | reference | 38.0 | 0.959 | — | pwm.platformai.org |
 | #2 | OCT-FM | deep_learning | reference | 36.8 | 0.948 | — | pwm.platformai.org |
 | #3 | OCT-Transformer | deep_learning | reference | 35.4 | 0.935 | — | pwm.platformai.org |
@@ -1180,7 +1157,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 16.78 | 0.4326 | 0.00 | benchmark run |
-| 2 | FFT Recon (OCTA) | traditional | importable | — | — | — | YAML config |
+| 2 | FFT Recon (OCTA) | traditional | **done** | 13.33 | 0.0566 | 0.00 | benchmark run |
 | 3 | OCTA-Net | deep_learning | pending | — | — | — | YAML config |
 | 4 | OCTA-FF | deep_learning | pending | — | — | — | YAML config |
 
@@ -1191,7 +1168,7 @@ Each modality shows three sections:
 | 1 | FBP (Ram-Lak filter) | traditional | **done** | 9.29 | 0.1813 | 0.09 | benchmark run |
 | 2 | FBP (Shepp-Logan filter) | traditional | **done** | 11.86 | 0.2681 | 0.07 | benchmark run |
 | 3 | FBP (precomputed) | traditional | **done** | 33.09 | 0.9325 | 0.00 | benchmark run |
-| 4 | FBP (emission tomography) | traditional | importable | — | — | — | YAML config |
+| 4 | FBP (emission tomography) | traditional | **done** | 15.42 | 0.0116 | 0.07 | benchmark run |
 | 5 | NeuroLF-PET | deep_learning | pending | — | — | — | YAML config |
 | 6 | PET-DL (U-Net) | deep_learning | pending | — | — | — | YAML config |
 | #1 | NeuroLF-PET | deep_learning | reference | 39.2 | 0.962 | — | pwm.platformai.org |
@@ -1210,7 +1187,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 19.11 | 0.2490 | 0.00 | benchmark run |
-| 2 | Back Projection | traditional | importable | — | — | — | YAML config |
+| 2 | Back Projection | traditional | **done** | 18.55 | 0.3658 | 0.00 | benchmark run |
 | 3 | Time Reversal | deep_learning | pending | — | — | — | YAML config |
 | 4 | Deep-PAT | deep_learning | pending | — | — | — | YAML config |
 | 5 | Deep-PAT | deep_learning | pending | — | — | — | YAML config |
@@ -1245,7 +1222,7 @@ Each modality shows three sections:
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | FBP (Ram-Lak filter) | traditional | **done** | -6.54 | 0.0101 | 0.06 | benchmark run |
 | 2 | FBP (precomputed) | traditional | **done** | 30.03 | 0.9523 | 0.00 | benchmark run |
-| 3 | FBP (emission tomography) | traditional | importable | — | — | — | YAML config |
+| 3 | FBP (emission tomography) | traditional | **done** | 10.77 | 0.0669 | 0.36 | benchmark run |
 | 4 | SPECT-DL (OSEM+) | deep_learning | pending | — | — | — | YAML config |
 | 5 | SPECT-UNet | deep_learning | pending | — | — | — | YAML config |
 | #1 | SPECT-FM | deep_learning | reference | 37.5 | 0.951 | — | pwm.platformai.org |
@@ -1305,7 +1282,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 26.31 | 0.9844 | 0.00 | benchmark run |
-| 2 | FBP (X-ray radiography) | traditional | importable | — | — | — | YAML config |
+| 2 | FBP (X-ray radiography) | traditional | **done** | 4.54 | -0.0019 | 0.06 | benchmark run |
 | 3 | CheXNet | deep_learning | pending | — | — | — | YAML config |
 | 4 | X-ray UNet | deep_learning | pending | — | — | — | YAML config |
 
@@ -1315,12 +1292,12 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 17.83 | 0.0530 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy (20 iter) | traditional | **done** | -26.42 | 0.0000 | 0.04 | benchmark run |
-| 3 | 3D Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 4 | 3D CARE | deep_learning | importable | — | — | — | YAML config |
-| 5 | CARE-3D | deep_learning | importable | — | — | — | YAML config |
-| 6 | CARE-3D (slice-wise) | deep_learning | importable | — | — | — | YAML config |
+| 1 | 3D CARE | deep_learning | **done** | 0.07 | 0.0043 | 0.57 | benchmark run |
+| 2 | CARE-3D | deep_learning | **done** | 0.07 | 0.0043 | 0.41 | benchmark run |
+| 3 | Precomputed Baseline | traditional | **done** | 17.83 | 0.0530 | 0.00 | benchmark run |
+| 4 | Richardson-Lucy (20 iter) | traditional | **done** | -26.42 | 0.0000 | 0.04 | benchmark run |
+| 5 | CARE-3D (slice-wise) | deep_learning | **done** | 27.27 | 0.8317 | 0.39 | benchmark run |
+| 6 | 3D Richardson-Lucy | traditional | **done** | 0.29 | 0.0042 | 0.00 | benchmark run |
 | #1 | CARE-3D | deep_learning | reference | 38.2 | 0.954 | — | pwm.platformai.org |
 | #2 | CARE-3D (slice-wise) | deep_learning | reference | 36.5 | 0.939 | — | pwm.platformai.org |
 | #3 | 3D CARE | deep_learning | reference | 35.0 | 0.924 | — | pwm.platformai.org |
@@ -1333,46 +1310,46 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 31.34 | 0.9870 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
-| 4 | CARE | deep_learning | importable | — | — | — | YAML config |
-| 5 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 13.92 | 0.3589 | 0.15 | benchmark run |
+| 2 | CARE | deep_learning | **done** | 14.61 | 0.2807 | 0.15 | benchmark run |
+| 3 | Precomputed Baseline | traditional | **done** | 31.34 | 0.9870 | 0.00 | benchmark run |
+| 4 | CARE | deep_learning | **done** | 15.59 | 0.2430 | 0.14 | benchmark run |
+| 5 | Richardson-Lucy | traditional | **done** | 32.28 | 0.8670 | 0.00 | benchmark run |
 
 #### dark_field — Dark-Field Microscopy
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 25.11 | 0.9781 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 10.46 | 0.6101 | 0.14 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 25.11 | 0.9781 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 20.62 | 0.7815 | 0.00 | benchmark run |
 | 4 | DF-UNet | traditional | pending | — | — | — | YAML config |
 
 #### dic — Differential Interference Contrast (DIC)
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 10.86 | -0.3388 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 15.03 | 0.3956 | 0.16 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 10.86 | -0.3388 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 15.62 | 0.3801 | 0.00 | benchmark run |
 | 4 | DIC-Net | deep_learning | pending | — | — | — | YAML config |
 
 #### dna_paint — DNA-PAINT Super-Resolution
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 28.53 | 0.3552 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 27.79 | 0.1984 | 0.17 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 28.53 | 0.3552 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 22.86 | 0.0260 | 0.00 | benchmark run |
 | 4 | DECODE-PAINT | deep_learning | pending | — | — | — | YAML config |
 
 #### expansion — Expansion Microscopy (ExM)
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 33.33 | 0.9823 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 15.93 | 0.6087 | 0.15 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 33.33 | 0.9823 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 33.89 | 0.6181 | 0.00 | benchmark run |
 | 4 | EXpansionNet | deep_learning | pending | — | — | — | YAML config |
 
 #### flim — Fluorescence Lifetime Imaging (FLIM)
@@ -1380,17 +1357,16 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 30.74 | 0.9901 | 0.00 | benchmark run |
-| 2 | Phasor Analysis | traditional | importable | — | — | — | YAML config |
-| 3 | MLE Fit | deep_learning | importable | — | — | — | YAML config |
+| 2 | Phasor Analysis | traditional | **done** | 1.24 | 0.0555 | 0.01 | benchmark run |
+| 3 | FLIMNet | deep_learning | pending | — | — | — | YAML config |
 | 4 | FLIMNet | deep_learning | pending | — | — | — | YAML config |
-| 5 | FLIMNet | deep_learning | pending | — | — | — | YAML config |
 
 #### fpm — Fourier Ptychographic Microscopy (FPM)
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 16.94 | 0.7943 | 0.00 | benchmark run |
-| 2 | Sequential Phase Retrieval | traditional | importable | — | — | — | YAML config |
+| 2 | Sequential Phase Retrieval | traditional | **done** | 5.21 | 0.0237 | 0.00 | benchmark run |
 | 3 | Gradient Descent FPM | deep_learning | pending | — | — | — | YAML config |
 | 4 | Fourier Ptychnet | deep_learning | pending | — | — | — | YAML config |
 | 5 | Fourier Ptychnet | deep_learning | pending | — | — | — | YAML config |
@@ -1399,39 +1375,39 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | -50.06 | 0.0000 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 0.51 | 0.0286 | 0.21 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | -50.06 | 0.0000 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 3.07 | 0.1516 | 0.00 | benchmark run |
 | 4 | ISM-Reassignment-Net | deep_learning | pending | — | — | — | YAML config |
 
 #### lattice_lightsheet — Lattice Light-Sheet Microscopy
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 21.33 | 0.7759 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 14.45 | 0.7656 | 0.18 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 21.33 | 0.7759 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 25.11 | 0.3079 | 0.00 | benchmark run |
 | 4 | LLSM-CARE | deep_learning | pending | — | — | — | YAML config |
 
 #### lightsheet — Light-Sheet Fluorescence Microscopy (LSFM)
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Fourier Notch Filter | traditional | **done** | -28.21 | 0.0000 | 0.00 | benchmark run |
-| 2 | Precomputed Baseline | traditional | **done** | 20.03 | 0.0553 | 0.00 | benchmark run |
-| 3 | Richardson-Lucy (20 iter) | traditional | **done** | -33.41 | 0.0000 | 0.05 | benchmark run |
-| 4 | Fourier Notch Filter | traditional | importable | — | — | — | YAML config |
-| 5 | VSNR | deep_learning | importable | — | — | — | YAML config |
-| 6 | DeStripe | deep_learning | importable | — | — | — | YAML config |
-| 7 | DeStripe | deep_learning | importable | — | — | — | YAML config |
+| 1 | VSNR | deep_learning | **done** | 0.22 | 0.0043 | 0.07 | benchmark run |
+| 2 | DeStripe | deep_learning | **done** | 0.21 | 0.0045 | 16.92 | benchmark run |
+| 3 | Fourier Notch Filter | traditional | **done** | -28.21 | 0.0000 | 0.00 | benchmark run |
+| 4 | Precomputed Baseline | traditional | **done** | 20.03 | 0.0553 | 0.00 | benchmark run |
+| 5 | Richardson-Lucy (20 iter) | traditional | **done** | -33.41 | 0.0000 | 0.05 | benchmark run |
+| 6 | DeStripe | deep_learning | **done** | 0.21 | 0.0045 | 17.85 | benchmark run |
+| 7 | Fourier Notch Filter | traditional | **done** | 0.21 | 0.0045 | 0.50 | benchmark run |
 
 #### minflux — MINFLUX Nanoscopy
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 29.52 | 0.4336 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 29.21 | 0.7051 | 0.35 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 29.52 | 0.4336 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 29.50 | 0.7052 | 0.00 | benchmark run |
 | 4 | MINFLUX-Net | deep_learning | pending | — | — | — | YAML config |
 
 #### palm_storm — PALM/STORM Single-Molecule Localization
@@ -1440,7 +1416,7 @@ Each modality shows three sections:
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 32.42 | 0.6094 | 0.00 | benchmark run |
 | 2 | Richardson-Lucy (20 iter) | traditional | **done** | 32.42 | 0.5904 | 0.04 | benchmark run |
-| 3 | Richardson-Lucy (STORM/PALM) | traditional | importable | — | — | — | YAML config |
+| 3 | Richardson-Lucy (STORM/PALM) | traditional | **done** | 0.03 | 0.0005 | 0.00 | benchmark run |
 | 4 | DECODE-SMLM | deep_learning | pending | — | — | — | YAML config |
 | 5 | DeepSTORM | deep_learning | pending | — | — | — | YAML config |
 
@@ -1448,9 +1424,9 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 45.56 | 0.9991 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 8.10 | 0.3458 | 0.24 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 45.56 | 0.9991 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 8.10 | 0.3458 | 0.00 | benchmark run |
 | 4 | PhaseNet | deep_learning | pending | — | — | — | YAML config |
 
 #### polarization — Polarization Microscopy
@@ -1458,7 +1434,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 15.83 | 0.6265 | 0.00 | benchmark run |
-| 2 | PnP-HQS | traditional | importable | — | — | — | YAML config |
+| 2 | PnP-HQS | traditional | **done** | 8.42 | 0.0892 | 0.00 | benchmark run |
 | 3 | PolarNet | deep_learning | pending | — | — | — | YAML config |
 | 4 | Stokes-NN | deep_learning | pending | — | — | — | YAML config |
 
@@ -1466,9 +1442,9 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 23.03 | 0.7974 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 17.20 | 0.1742 | 0.48 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 23.03 | 0.7974 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 22.30 | 0.5919 | 0.00 | benchmark run |
 | 4 | SHG-CARE | deep_learning | pending | — | — | — | YAML config |
 
 #### sim — Structured Illumination Microscopy (SIM)
@@ -1476,19 +1452,16 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 21.58 | 0.1863 | 0.00 | benchmark run |
-| 2 | Wiener SIM Reconstruction | traditional | **done** | 6.16 | 0.0174 | 0.26 | benchmark run |
-| 3 | Wiener-SIM | traditional | importable | — | — | — | YAML config |
-| 4 | HiFi-SIM | deep_learning | importable | — | — | — | YAML config |
-| 5 | DL-SIM | deep_learning | importable | — | — | — | YAML config |
-| 6 | DL-SIM | deep_learning | importable | — | — | — | YAML config |
+| 2 | Wiener-SIM | traditional | **done** | 0.08 | 0.0056 | 0.00 | benchmark run |
+| 3 | Wiener SIM Reconstruction | traditional | **done** | 6.16 | 0.0174 | 0.26 | benchmark run |
 
 #### spinning_disk — Spinning Disk Confocal Microscopy
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 30.61 | 0.9835 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 14.23 | 0.3440 | 0.47 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 30.61 | 0.9835 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 29.47 | 0.7581 | 0.00 | benchmark run |
 | 4 | SD-CARE | deep_learning | pending | — | — | — | YAML config |
 
 #### sted — STED Microscopy
@@ -1497,7 +1470,7 @@ Each modality shows three sections:
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 24.98 | 0.8484 | 0.00 | benchmark run |
 | 2 | Richardson-Lucy (20 iter) | traditional | **done** | -38.33 | 0.0000 | 0.04 | benchmark run |
-| 3 | Richardson-Lucy (STED) | traditional | importable | — | — | — | YAML config |
+| 3 | Richardson-Lucy (STED) | traditional | **done** | 0.26 | 0.0017 | 0.00 | benchmark run |
 | 4 | STED-Net (CARE) | deep_learning | pending | — | — | — | YAML config |
 | 5 | RCAN-STED | deep_learning | pending | — | — | — | YAML config |
 
@@ -1505,9 +1478,9 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 20.80 | 0.8419 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 14.53 | 0.3513 | 0.45 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 20.80 | 0.8419 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 14.65 | 0.3353 | 0.00 | benchmark run |
 | 4 | 3P-Net (CARE) | deep_learning | pending | — | — | — | YAML config |
 
 #### tirf — TIRF Microscopy
@@ -1515,7 +1488,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 31.24 | 0.6216 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy (TIRF) | traditional | importable | — | — | — | YAML config |
+| 2 | Richardson-Lucy (TIRF) | traditional | **done** | 27.72 | 0.1106 | 0.00 | benchmark run |
 | 3 | TIRF-Net (CARE) | deep_learning | pending | — | — | — | YAML config |
 | 4 | TIRF-SRRF | deep_learning | pending | — | — | — | YAML config |
 
@@ -1525,7 +1498,7 @@ Each modality shows three sections:
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 33.76 | 0.9867 | 0.00 | benchmark run |
 | 2 | Richardson-Lucy (20 iter) | traditional | **done** | -46.98 | 0.0000 | 0.04 | benchmark run |
-| 3 | Richardson-Lucy (2P) | traditional | importable | — | — | — | YAML config |
+| 3 | Richardson-Lucy (2P) | traditional | **done** | 0.94 | 0.0073 | 0.00 | benchmark run |
 | 4 | 2P-Net (CARE) | deep_learning | pending | — | — | — | YAML config |
 | 5 | 2P-DeepInterp | deep_learning | pending | — | — | — | YAML config |
 
@@ -1533,19 +1506,19 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 24.98 | 0.9091 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
-| 4 | CARE | deep_learning | importable | — | — | — | YAML config |
-| 5 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 14.45 | 0.7656 | 0.47 | benchmark run |
+| 2 | CARE | deep_learning | **done** | 14.45 | 0.7656 | 0.31 | benchmark run |
+| 3 | Precomputed Baseline | traditional | **done** | 24.98 | 0.9091 | 0.00 | benchmark run |
+| 4 | CARE | deep_learning | **done** | 14.45 | 0.7656 | 0.42 | benchmark run |
+| 5 | Richardson-Lucy | traditional | **done** | 24.08 | 0.2696 | 0.00 | benchmark run |
 
 #### widefield_lowdose — Low-Dose Widefield Microscopy
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 18.84 | 0.6755 | 0.00 | benchmark run |
-| 2 | BM3D + RL | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 12.63 | 0.5013 | 0.29 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 18.84 | 0.6755 | 0.00 | benchmark run |
+| 3 | BM3D + RL | traditional | **done** | 28.96 | 0.9402 | 0.00 | benchmark run |
 | 4 | Noise2Void | deep_learning | pending | — | — | — | YAML config |
 | 5 | Noise2Void | deep_learning | pending | — | — | — | YAML config |
 
@@ -1611,21 +1584,18 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Direct Render Baseline | traditional | **done** | 0.00 | 0.0000 | 0.00 | benchmark run |
-| 2 | EWA Splatting | traditional | importable | — | — | — | YAML config |
-| 3 | 3DGS (full) | deep_learning | importable | — | — | — | YAML config |
-| 4 | NeRF (baseline comparison) | deep_learning | importable | — | — | — | YAML config |
-| 5 | 3DGS (compact) | deep_learning | importable | — | — | — | YAML config |
+| 1 | 3DGS (full) | deep_learning | **done** | inf | 1.0000 | 0.00 | benchmark run |
+| 2 | Direct Render Baseline | traditional | **done** | 0.00 | 0.0000 | 0.00 | benchmark run |
+| 3 | NeRF (baseline comparison) | deep_learning | **done** | inf | 1.0000 | 240.44 | benchmark run |
+| 4 | 3DGS (compact) | deep_learning | **done** | inf | 1.0000 | 0.00 | benchmark run |
+| 5 | EWA Splatting | traditional | **done** | inf | 1.0000 | 0.00 | benchmark run |
 
 #### nerf — Neural Radiance Fields (NeRF)
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 28.99 | 0.9913 | 0.00 | benchmark run |
-| 2 | SfM + MVS | traditional | importable | — | — | — | YAML config |
-| 3 | Mip-NeRF 360 | deep_learning | importable | — | — | — | YAML config |
-| 4 | NeRF (original MLP) | deep_learning | importable | — | — | — | YAML config |
-| 5 | Instant-NGP | deep_learning | importable | — | — | — | YAML config |
+| 2 | SfM + MVS | traditional | **done** | 21.37 | 0.8758 | 210.61 | benchmark run |
 | #1 | NeRFactor2 | deep_learning | reference | 35.9 | 0.938 | — | pwm.platformai.org |
 | #2 | Instant-NGP | deep_learning | reference | 34.5 | 0.924 | — | pwm.platformai.org |
 | #3 | 3D Gaussian Splatting | deep_learning | reference | 33.2 | 0.910 | — | pwm.platformai.org |
@@ -1770,7 +1740,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 17.31 | 0.7046 | 0.00 | benchmark run |
-| 2 | FBP (SAR backprojection) | traditional | importable | — | — | — | YAML config |
+| 2 | FBP (SAR backprojection) | traditional | **done** | 13.56 | 0.2879 | 0.16 | benchmark run |
 | 3 | SAR-DL (PolSF) | deep_learning | pending | — | — | — | YAML config |
 | 4 | SAR-CNN | deep_learning | pending | — | — | — | YAML config |
 | #1 | DiffusionSAR | deep_learning | reference | 35.4 | 0.938 | — | pwm.platformai.org |
@@ -1811,9 +1781,9 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 19.01 | 0.8537 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 15.58 | 0.3770 | 1.41 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 19.01 | 0.8537 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 31.32 | 0.7815 | 0.00 | benchmark run |
 | 4 | AFM-UNet | deep_learning | pending | — | — | — | YAML config |
 | #1 | AFM-FM | deep_learning | reference | 38.5 | 0.955 | — | pwm.platformai.org |
 | #2 | AFM-UNet | deep_learning | reference | 36.8 | 0.940 | — | pwm.platformai.org |
@@ -1827,27 +1797,27 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 34.33 | 0.2871 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 5.06 | 0.0008 | 0.46 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 34.33 | 0.2871 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 9.52 | 0.3740 | 0.00 | benchmark run |
 | 4 | MFM-UNet | deep_learning | pending | — | — | — | YAML config |
 
 #### nsom — Near-field Scanning Optical Microscopy (NSOM)
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 19.63 | 0.7328 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 17.68 | 0.7562 | 0.31 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 19.63 | 0.7328 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 22.28 | 0.2438 | 0.00 | benchmark run |
 | 4 | NSOM-Net | deep_learning | pending | — | — | — | YAML config |
 
 #### stm — Scanning Tunneling Microscopy (STM)
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | Precomputed Baseline | traditional | **done** | 17.89 | 0.8025 | 0.00 | benchmark run |
-| 2 | Richardson-Lucy | traditional | importable | — | — | — | YAML config |
-| 3 | CARE | deep_learning | importable | — | — | — | YAML config |
+| 1 | CARE | deep_learning | **done** | 6.96 | 0.0000 | 0.45 | benchmark run |
+| 2 | Precomputed Baseline | traditional | **done** | 17.89 | 0.8025 | 0.00 | benchmark run |
+| 3 | Richardson-Lucy | traditional | **done** | 23.28 | 0.9600 | 0.00 | benchmark run |
 | 4 | STM-Net | deep_learning | pending | — | — | — | YAML config |
 | #1 | STM-FM | deep_learning | reference | 41.5 | 0.967 | — | pwm.platformai.org |
 | #2 | STM-UNet | deep_learning | reference | 39.8 | 0.953 | — | pwm.platformai.org |
@@ -1910,7 +1880,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 5.17 | -0.0128 | 0.00 | benchmark run |
-| 2 | FBP (muon tomography) | traditional | importable | — | — | — | YAML config |
+| 2 | FBP (muon tomography) | traditional | **done** | 3.15 | 0.0019 | 0.16 | benchmark run |
 | 3 | POCA-DL | deep_learning | pending | — | — | — | YAML config |
 | 4 | EM-POCA | deep_learning | pending | — | — | — | YAML config |
 
@@ -1928,7 +1898,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | -5.66 | 0.0503 | 0.00 | benchmark run |
-| 2 | FBP (neutron tomography) | traditional | importable | — | — | — | YAML config |
+| 2 | FBP (neutron tomography) | traditional | **done** | 4.35 | 0.0210 | 0.09 | benchmark run |
 | 3 | NeuTomo-DL | deep_learning | pending | — | — | — | YAML config |
 | 4 | GRIDREC-Neutron | deep_learning | pending | — | — | — | YAML config |
 
@@ -1937,7 +1907,7 @@ Each modality shows three sections:
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
 | 1 | Precomputed Baseline | traditional | **done** | 4.11 | -0.0000 | 0.00 | benchmark run |
-| 2 | FBP (proton radiography) | traditional | importable | — | — | — | YAML config |
+| 2 | FBP (proton radiography) | traditional | **done** | 10.85 | 0.0397 | 0.06 | benchmark run |
 | 3 | ProtonRecon-Net | deep_learning | pending | — | — | — | YAML config |
 | 4 | FBP-Proton | deep_learning | pending | — | — | — | YAML config |
 

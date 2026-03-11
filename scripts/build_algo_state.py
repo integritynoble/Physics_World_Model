@@ -186,18 +186,22 @@ for cat, mod_ids in sorted(categories.items()):
             psnr = sr.get("psnr_db")
             ssim = sr.get("ssim")
             t = sr.get("exec_time_sec")
-            name = GENERIC_KEY_NAMES.get(sk, sk.replace("_", " ").title())
+            # Prefer stored algorithm_name, then generic key lookup, then titlecase
+            name = (sr.get("algorithm_name")
+                    or GENERIC_KEY_NAMES.get(sk)
+                    or sk.replace("_", " ").title())
 
-            if psnr is not None:
-                status_str = "**done**"
-                psnr_str = f"{psnr:.2f}"
-                ssim_str = f"{ssim:.4f}" if ssim is not None else "—"
-                t_str = f"{t:.2f}" if t is not None else "0.00"
-                algo_type = "traditional"
-            else:
-                status_str = "no result"
-                psnr_str = ssim_str = t_str = "—"
-                algo_type = "—"
+            if psnr is None:
+                # Skip entries with no PSNR — they show in YAML section as pending
+                continue
+
+            status_str = "**done**"
+            psnr_str = f"{psnr:.2f}"
+            ssim_str = f"{ssim:.4f}" if ssim is not None else "—"
+            t_str = f"{t:.2f}" if t is not None else "0.00"
+            # Infer type from solver key name
+            dl_keys = {"famous_dl", "best_quality", "small_gpu"}
+            algo_type = "deep_learning" if sk in dl_keys else "traditional"
 
             lines.append(f"| {row_num} | {name} | {algo_type} | {status_str} | {psnr_str} | {ssim_str} | {t_str} | benchmark run |")
             row_num += 1

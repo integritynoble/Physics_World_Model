@@ -36,6 +36,34 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 13.748335331922885,
+          "ssim": 0.06489981889544098,
+          "exec_time_sec": 0.03999638557434082,
+          "algorithm_name": "FBP"
+        },
+        "best_quality": {
+          "status": "error: pnp_admm() missing 2 required positional arguments: 'x_shape' and 'denoiser'",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-ADMM + RED-CNN"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 1.2809037856976482,
+          "ssim": 0.11439164926175546,
+          "exec_time_sec": 0.16758370399475098,
+          "algorithm_name": "RED-CNN"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": 1.1870836388050385,
+          "ssim": 0.10599774593786179,
+          "exec_time_sec": 0.07727980613708496,
+          "algorithm_name": "RED-CNN"
         }
       }
     },
@@ -72,6 +100,27 @@
             256,
             256
           ]
+        },
+        "best_quality": {
+          "status": "returned_none: The size of tensor a (262144) must match the size of tensor b (256) at non-singl",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.28099656105041504,
+          "algorithm_name": "VarNet"
+        },
+        "famous_dl": {
+          "status": "returned_none: Expected 3D (unbatched) or 4D (batched) input to conv2d, but got input of size: ",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.053000450134277344,
+          "algorithm_name": "MoDL"
+        },
+        "small_gpu": {
+          "status": "returned_none: Expected 3D (unbatched) or 4D (batched) input to conv2d, but got input of size: ",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.0309908390045166,
+          "algorithm_name": "MoDL (5 unrolls)"
         }
       }
     },
@@ -108,6 +157,13 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 15.423556593838217,
+          "ssim": 0.011643635488049928,
+          "exec_time_sec": 0.07115554809570312,
+          "algorithm_name": "FBP (emission tomography)"
         }
       }
     },
@@ -134,6 +190,13 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 10.773700589735864,
+          "ssim": 0.0668759230245052,
+          "exec_time_sec": 0.3582158088684082,
+          "algorithm_name": "FBP (emission tomography)"
         }
       }
     },
@@ -186,6 +249,34 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 10.26959655588925,
+          "ssim": 0.1421858295095457,
+          "exec_time_sec": 0.0016736984252929688,
+          "algorithm_name": "FFT Recon"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 10.162713275652983,
+          "ssim": 0.1411042750302528,
+          "exec_time_sec": 1.0082919597625732,
+          "algorithm_name": "Spectral Estimation"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 10.26959655588925,
+          "ssim": 0.1421858295095457,
+          "exec_time_sec": 0.0019969940185546875,
+          "algorithm_name": "OCT Denoising Net"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": 10.26959655588925,
+          "ssim": 0.1421858295095457,
+          "exec_time_sec": 0.0009987354278564453,
+          "algorithm_name": "OCT Denoising Net"
         }
       }
     },
@@ -202,6 +293,13 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 4.0791729177538825,
+          "ssim": 0.004691223456085463,
+          "exec_time_sec": 0.0769956111907959,
+          "algorithm_name": "FBP (mammography)"
         }
       }
     },
@@ -238,6 +336,13 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 30.58349500122415,
+          "ssim": 0.9089676312942505,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
         }
       }
     },
@@ -332,6 +437,13 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 12.691660320145296,
+          "ssim": 0.40098410095539333,
+          "exec_time_sec": 0.28409504890441895,
+          "algorithm_name": "FDK / FBP"
         }
       }
     },
@@ -550,6 +662,13 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 23.168982670432435,
+          "ssim": 0.4996949358801498,
+          "exec_time_sec": 0.0009996891021728516,
+          "algorithm_name": "Richardson-Lucy (SEM)"
         }
       }
     },
@@ -582,6 +701,34 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 24.083987562740386,
+          "ssim": 0.2696145677452199,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 14.454541483456197,
+          "ssim": 0.7655676670058902,
+          "exec_time_sec": 0.4743983745574951,
+          "algorithm_name": "CARE"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 14.454541483456197,
+          "ssim": 0.7655676670058902,
+          "exec_time_sec": 0.31383180618286133,
+          "algorithm_name": "CARE"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": 14.454541483456197,
+          "ssim": 0.7655676670058902,
+          "exec_time_sec": 0.42447328567504883,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -608,6 +755,34 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 0.2876835728946811,
+          "ssim": 0.004188230676417901,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "3D Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 0.06894222051891898,
+          "ssim": 0.00434641260822257,
+          "exec_time_sec": 0.5708086490631104,
+          "algorithm_name": "3D CARE"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 0.06894222051891898,
+          "ssim": 0.00434641260822257,
+          "exec_time_sec": 0.4083538055419922,
+          "algorithm_name": "CARE-3D"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": 27.26595609693866,
+          "ssim": 0.8317365565363387,
+          "exec_time_sec": 0.39399147033691406,
+          "algorithm_name": "CARE-3D (slice-wise)"
         }
       }
     },
@@ -644,6 +819,34 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 0.21184292146874398,
+          "ssim": 0.00447916500873887,
+          "exec_time_sec": 0.49680352210998535,
+          "algorithm_name": "Fourier Notch Filter"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 0.22157917559905105,
+          "ssim": 0.004342782136630367,
+          "exec_time_sec": 0.06564879417419434,
+          "algorithm_name": "VSNR"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 0.21184292146874398,
+          "ssim": 0.00447916500873887,
+          "exec_time_sec": 16.920243740081787,
+          "algorithm_name": "DeStripe"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": 0.21191250270680217,
+          "ssim": 0.004476782354642433,
+          "exec_time_sec": 17.84980344772339,
+          "algorithm_name": "DeStripe"
         }
       }
     },
@@ -670,6 +873,13 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 0.034399932220957614,
+          "ssim": 0.00046348324620704807,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy (STORM/PALM)"
         }
       }
     },
@@ -696,6 +906,34 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 0.08130763624119784,
+          "ssim": 0.00561818047576095,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Wiener-SIM"
+        },
+        "best_quality": {
+          "status": "error: not enough values to unpack (expected 3, got 2)",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.0010385513305664062,
+          "algorithm_name": "HiFi-SIM"
+        },
+        "famous_dl": {
+          "status": "returned_none: Expected raw_images shape (9, H, W), got (256, 256)",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "DL-SIM"
+        },
+        "small_gpu": {
+          "status": "returned_none: Expected raw_images shape (9, H, W), got (256, 256)",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.000995635986328125,
+          "algorithm_name": "DL-SIM"
         }
       }
     },
@@ -722,6 +960,13 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 0.2590018370859295,
+          "ssim": 0.0017378388927599372,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy (STED)"
         }
       }
     },
@@ -748,6 +993,13 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 0.9426385100017315,
+          "ssim": 0.007257133807668298,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy (2P)"
         }
       }
     },
@@ -792,6 +1044,34 @@
             256,
             8
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 2.1457156761973306,
+          "ssim": 0.02415400795685117,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "GAP-TV"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 11.535601848943323,
+          "ssim": 0.1521417876976411,
+          "exec_time_sec": 0.3615434169769287,
+          "algorithm_name": "EfficientSCI"
+        },
+        "famous_dl": {
+          "status": "returned_none: Given groups=1, weight of size [32, 16, 3, 3], expected input[1, 10, 256, 256] t",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.6423394680023193,
+          "algorithm_name": "ELP-Unfolding"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": 3.64552149630152,
+          "ssim": -0.0040465821471862,
+          "exec_time_sec": 0.0545194149017334,
+          "algorithm_name": "EfficientSCI-T"
         }
       }
     },
@@ -808,6 +1088,34 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 4.90337873275766,
+          "ssim": 0.0035870624949398936,
+          "exec_time_sec": 0.47923922538757324,
+          "algorithm_name": "Angular Spectrum"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 14.861106736159455,
+          "ssim": 0.9212380719585763,
+          "exec_time_sec": 0.35811328887939453,
+          "algorithm_name": "PhaseNet"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 14.861106736159455,
+          "ssim": 0.9212380719585763,
+          "exec_time_sec": 0.13260221481323242,
+          "algorithm_name": "PhaseNet"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": 14.861106736159455,
+          "ssim": 0.9212380719585763,
+          "exec_time_sec": 0.1538095474243164,
+          "algorithm_name": "PhaseNet"
         }
       }
     },
@@ -834,6 +1142,34 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 11.656619341872979,
+          "ssim": 0.5129476958286667,
+          "exec_time_sec": 0.9389185905456543,
+          "algorithm_name": "ePIE"
+        },
+        "best_quality": {
+          "status": "returned_none: ptychonn_reconstruct() missing 2 required positional arguments: 'positions' and ",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PtychoNN"
+        },
+        "famous_dl": {
+          "status": "returned_none: ptychonn_reconstruct() missing 2 required positional arguments: 'positions' and ",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.0010075569152832031,
+          "algorithm_name": "PtychoNN"
+        },
+        "small_gpu": {
+          "status": "returned_none: ptychonn_reconstruct() missing 2 required positional arguments: 'positions' and ",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.001001119613647461,
+          "algorithm_name": "PtychoNN 2.0"
         }
       }
     },
@@ -850,6 +1186,34 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 11.919693671686177,
+          "ssim": 0.5896232497321442,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "ADMM-TV"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 0.47990301361762133,
+          "ssim": 6.115895935711069e-05,
+          "exec_time_sec": 0.692887544631958,
+          "algorithm_name": "FlatNet"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 0.4799387379751433,
+          "ssim": 6.197320676367326e-05,
+          "exec_time_sec": 0.4282844066619873,
+          "algorithm_name": "FlatNet"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": 0.47990301361762133,
+          "ssim": 6.115895935711069e-05,
+          "exec_time_sec": 0.4059760570526123,
+          "algorithm_name": "FlatNet-Lite"
         }
       }
     },
@@ -867,6 +1231,34 @@
             256,
             3
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": Infinity,
+          "ssim": 1.0,
+          "exec_time_sec": 0.0010025501251220703,
+          "algorithm_name": "EWA Splatting"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": Infinity,
+          "ssim": 1.0,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "3DGS (full)"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": Infinity,
+          "ssim": 1.0,
+          "exec_time_sec": 240.43860149383545,
+          "algorithm_name": "NeRF (baseline comparison)"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": Infinity,
+          "ssim": 1.0,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "3DGS (compact)"
         }
       }
     },
@@ -883,6 +1275,13 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 5.208544783527332,
+          "ssim": 0.023674962064387378,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Sequential Phase Retrieval"
         }
       }
     },
@@ -915,6 +1314,13 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 12.553480208592378,
+          "ssim": 0.3296867524783251,
+          "exec_time_sec": 9.287993907928467,
+          "algorithm_name": "HIO"
         }
       }
     },
@@ -964,6 +1370,13 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 13.564999862325493,
+          "ssim": 0.2878537380034089,
+          "exec_time_sec": 0.1629929542541504,
+          "algorithm_name": "FBP (SAR backprojection)"
         }
       }
     },
@@ -1013,6 +1426,13 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 18.548146423734387,
+          "ssim": 0.36582742745337754,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Back Projection"
         }
       }
     },
@@ -1029,6 +1449,34 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 16.279714327157436,
+          "ssim": 0.11857092950624389,
+          "exec_time_sec": 2.3158257007598877,
+          "algorithm_name": "Shift-and-Sum"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 4.274861771365662,
+          "ssim": 0.01698091116584773,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "LFBM5D"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 16.279714327157436,
+          "ssim": 0.11857092950624389,
+          "exec_time_sec": 2.0853476524353027,
+          "algorithm_name": "LFSSR"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": 16.279714327157436,
+          "ssim": 0.11857092950624389,
+          "exec_time_sec": 2.028348922729492,
+          "algorithm_name": "LFSSR"
         }
       }
     },
@@ -1109,6 +1557,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 31.32054304272039,
+          "ssim": 0.7815238726163897,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 15.580462619946154,
+          "ssim": 0.376966030063719,
+          "exec_time_sec": 1.413447380065918,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -1125,6 +1587,13 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 12.888772122456007,
+          "ssim": 0.5828047543860039,
+          "exec_time_sec": 1.3494582176208496,
+          "algorithm_name": "FBP (DSA baseline)"
         }
       }
     },
@@ -1319,6 +1788,34 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 32.27915742385556,
+          "ssim": 0.8670372922985633,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 13.921767765737696,
+          "ssim": 0.3589261263796737,
+          "exec_time_sec": 0.15399432182312012,
+          "algorithm_name": "CARE"
+        },
+        "famous_dl": {
+          "status": "completed",
+          "psnr_db": 14.609999938669176,
+          "ssim": 0.2806615571960429,
+          "exec_time_sec": 0.15499305725097656,
+          "algorithm_name": "CARE"
+        },
+        "small_gpu": {
+          "status": "completed",
+          "psnr_db": 15.58825978738939,
+          "ssim": 0.24297514361700054,
+          "exec_time_sec": 0.14133501052856445,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -1351,6 +1848,20 @@
             64,
             64
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 2.6516662842421175,
+          "ssim": 0.09657222399571769,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 13.237059509101583,
+          "ssim": 0.4127055068755736,
+          "exec_time_sec": 0.16974329948425293,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -1400,6 +1911,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 20.620072524112665,
+          "ssim": 0.7815166259242061,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 10.464271672678008,
+          "ssim": 0.610058183650599,
+          "exec_time_sec": 0.13899874687194824,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -1449,6 +1974,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 15.616523509338439,
+          "ssim": 0.3801189972992913,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 15.025854277245696,
+          "ssim": 0.39557159092883987,
+          "exec_time_sec": 0.1620340347290039,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -1481,6 +2020,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 22.862298536209057,
+          "ssim": 0.02595053574650878,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 27.794882851953275,
+          "ssim": 0.1983681988293689,
+          "exec_time_sec": 0.16611480712890625,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -1530,6 +2083,20 @@
             128,
             3
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 3.227618450246365,
+          "ssim": 0.2667249016273388,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "returned_none: Padding size should be less than the corresponding input dimension, but got: pad",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.2701761722564697,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -1578,6 +2145,13 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 42.008709985061216,
+          "ssim": 0.9888860070715025,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "ePIE (electron ptychography)"
         }
       }
     },
@@ -1594,6 +2168,13 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 5.59831630083084,
+          "ssim": 0.01147805100894565,
+          "exec_time_sec": 2.666698694229126,
+          "algorithm_name": "Phase Retrieval (HIO)"
         }
       }
     },
@@ -1610,6 +2191,13 @@
             64,
             64
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 25.11706519654973,
+          "ssim": 0.9525257895803622,
+          "exec_time_sec": 0.41098856925964355,
+          "algorithm_name": "FBP (SIRT baseline)"
         }
       }
     },
@@ -1658,6 +2246,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 33.889152659814904,
+          "ssim": 0.6181434870534119,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 15.933409948609825,
+          "ssim": 0.6087067348911316,
+          "exec_time_sec": 0.15305471420288086,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -1674,6 +2276,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 26.0117564424394,
+          "ssim": 0.4861780767802332,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 4.898084900566747,
+          "ssim": 0.0018976765329824677,
+          "exec_time_sec": 0.15999722480773926,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -1706,6 +2322,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 1.237243528568501,
+          "ssim": 0.055506749777205704,
+          "exec_time_sec": 0.0069980621337890625,
+          "algorithm_name": "Phasor Analysis"
+        },
+        "best_quality": {
+          "status": "error: 'dict' object has no attribute 'astype'",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.001997709274291992,
+          "algorithm_name": "MLE Fit"
         }
       }
     },
@@ -1722,6 +2352,13 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 8.5771453900147,
+          "ssim": 0.12387103014202162,
+          "exec_time_sec": 0.3473396301269531,
+          "algorithm_name": "FBP (fluoroscopy)"
         }
       }
     },
@@ -1868,6 +2505,13 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 33.399143339002705,
+          "ssim": 0.9013129889672721,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Depth Estimation"
         }
       }
     },
@@ -1884,6 +2528,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 3.065674036085352,
+          "ssim": 0.1515699290888293,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 0.5111064392023632,
+          "ssim": 0.028594066539321932,
+          "exec_time_sec": 0.2080848217010498,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -1916,6 +2574,20 @@
             256,
             256
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 25.110925625795172,
+          "ssim": 0.30787937368198787,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 14.454541483456197,
+          "ssim": 0.7655676670058902,
+          "exec_time_sec": 0.1849980354309082,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -2030,6 +2702,27 @@
             64,
             64
           ]
+        },
+        "best_quality": {
+          "status": "returned_none: diffusion_posterior_sample() missing 2 required positional arguments: 'forward_f",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Diffusion Posterior Sampling"
+        },
+        "famous_dl": {
+          "status": "returned_none: lista_reconstruct() missing 1 required positional argument: 'measurement_matrix'",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "LISTA"
+        },
+        "small_gpu": {
+          "status": "returned_none: lista_reconstruct() missing 1 required positional argument: 'measurement_matrix'",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "LISTA"
         }
       }
     },
@@ -2046,6 +2739,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 9.518251027383725,
+          "ssim": 0.3740105173863129,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 5.055726444081484,
+          "ssim": 0.0007562386356531714,
+          "exec_time_sec": 0.4591856002807617,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -2062,6 +2769,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 29.496399042697607,
+          "ssim": 0.7052464681539612,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 29.211166510527242,
+          "ssim": 0.7051000775439222,
+          "exec_time_sec": 0.3481123447418213,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -2078,6 +2799,13 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 3.1475422237475854,
+          "ssim": 0.0018748757250815595,
+          "exec_time_sec": 0.1563718318939209,
+          "algorithm_name": "FBP (muon tomography)"
         }
       }
     },
@@ -2095,6 +2823,34 @@
             128,
             3
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 21.367726163627772,
+          "ssim": 0.8758116189805962,
+          "exec_time_sec": 210.614506483078,
+          "algorithm_name": "SfM + MVS"
+        },
+        "best_quality": {
+          "status": "skipped_slow_optimizer",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": null,
+          "algorithm_name": "Mip-NeRF 360"
+        },
+        "famous_dl": {
+          "status": "skipped_slow_optimizer",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": null,
+          "algorithm_name": "NeRF (original MLP)"
+        },
+        "small_gpu": {
+          "status": "skipped_slow_optimizer",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": null,
+          "algorithm_name": "Instant-NGP"
         }
       }
     },
@@ -2127,6 +2883,13 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 4.347946985642771,
+          "ssim": 0.020956610502438834,
+          "exec_time_sec": 0.09088253974914551,
+          "algorithm_name": "FBP (neutron tomography)"
         }
       }
     },
@@ -2159,6 +2922,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 22.277645305880704,
+          "ssim": 0.2438119367724471,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 17.68135903465633,
+          "ssim": 0.7562004820846618,
+          "exec_time_sec": 0.30732059478759766,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -2208,6 +2985,13 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 13.333649341928789,
+          "ssim": 0.056625880636278464,
+          "exec_time_sec": 0.0009958744049072266,
+          "algorithm_name": "FFT Recon (OCTA)"
         }
       }
     },
@@ -2224,6 +3008,34 @@
             256,
             512
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 14.605869123549901,
+          "ssim": 0.0520273838453001,
+          "exec_time_sec": 0.04999184608459473,
+          "algorithm_name": "Laplacian Pyramid Fusion"
+        },
+        "best_quality": {
+          "status": "error: sequence argument must have length equal to input rank",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.003000020980834961,
+          "algorithm_name": "Guided Filter Fusion"
+        },
+        "famous_dl": {
+          "status": "returned_none: not enough values to unpack (expected 2, got 1)",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "IFCNN"
+        },
+        "small_gpu": {
+          "status": "returned_none: not enough values to unpack (expected 2, got 1)",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "IFCNN"
         }
       }
     },
@@ -2272,6 +3084,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 8.099602453547948,
+          "ssim": 0.34584775894481834,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 8.099602453547948,
+          "ssim": 0.34584775894481834,
+          "exec_time_sec": 0.24104738235473633,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -2304,6 +3130,13 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 8.424766007179464,
+          "ssim": 0.08921144984048862,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "PnP-HQS"
         }
       }
     },
@@ -2352,6 +3185,13 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 10.853308087967902,
+          "ssim": 0.03969204760452908,
+          "exec_time_sec": 0.058997154235839844,
+          "algorithm_name": "FBP (proton radiography)"
         }
       }
     },
@@ -2514,6 +3354,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 22.301805140439587,
+          "ssim": 0.5918597558448709,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 17.19742072510818,
+          "ssim": 0.17421678556984854,
+          "exec_time_sec": 0.47852182388305664,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -2579,6 +3433,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 29.474708146209604,
+          "ssim": 0.7580914458530752,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 14.229743469124275,
+          "ssim": 0.3439650198277219,
+          "exec_time_sec": 0.4656100273132324,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -2612,6 +3480,13 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 31.007320411628744,
+          "ssim": 0.9508197817894375,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy (STEM)"
         }
       }
     },
@@ -2628,6 +3503,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 23.283725758824197,
+          "ssim": 0.9600180131762427,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 6.955728365297813,
+          "ssim": 1.3672781799683699e-05,
+          "exec_time_sec": 0.44667959213256836,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -2708,6 +3597,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 14.646104832298217,
+          "ssim": 0.3353296250263337,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 14.528932358960391,
+          "ssim": 0.3513048218070628,
+          "exec_time_sec": 0.44649291038513184,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -2724,6 +3627,13 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 27.718660963405107,
+          "ssim": 0.11062745557553832,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "Richardson-Lucy (TIRF)"
         }
       }
     },
@@ -2820,6 +3730,20 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 28.95819942533189,
+          "ssim": 0.9401878608106361,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "BM3D + RL"
+        },
+        "best_quality": {
+          "status": "completed",
+          "psnr_db": 12.628163870208995,
+          "ssim": 0.5013054514575153,
+          "exec_time_sec": 0.28841662406921387,
+          "algorithm_name": "CARE"
         }
       }
     },
@@ -2884,6 +3808,13 @@
             128,
             128
           ]
+        },
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 4.535718237860264,
+          "ssim": -0.0019350148372196774,
+          "exec_time_sec": 0.05758357048034668,
+          "algorithm_name": "FBP (X-ray radiography)"
         }
       }
     },
@@ -2918,6 +3849,92 @@
             64,
             3
           ]
+        }
+      }
+    },
+    "cassi": {
+      "solvers": {
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 2.5809943970020632,
+          "ssim": -0.024601180194979082,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "GAP-TV"
+        },
+        "best_quality": {
+          "status": "returned_none: axes don't match array",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.11700034141540527,
+          "algorithm_name": "HDNet"
+        },
+        "famous_dl": {
+          "status": "returned_none: invalid load key, '/'.",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.20100140571594238,
+          "algorithm_name": "MST-L"
+        },
+        "small_gpu": {
+          "status": "returned_none: invalid load key, '/'.",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.2443540096282959,
+          "algorithm_name": "MST++"
+        }
+      }
+    },
+    "doppler_ultrasound": {
+      "solvers": {
+        "traditional_cpu": {
+          "status": "no_dataset",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": null,
+          "algorithm_name": "Back-Projection (Doppler)"
+        }
+      }
+    },
+    "dot": {
+      "solvers": {
+        "traditional_cpu": {
+          "status": "no_dataset",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": null,
+          "algorithm_name": "Born Approximation"
+        }
+      }
+    },
+    "spc": {
+      "solvers": {
+        "traditional_cpu": {
+          "status": "completed",
+          "psnr_db": 6.825462366794945,
+          "ssim": 0.01609708166876089,
+          "exec_time_sec": 0.0,
+          "algorithm_name": "TVAL3"
+        },
+        "best_quality": {
+          "status": "returned_none: mat1 and mat2 shapes cannot be multiplied (49x272 and 102x1024)",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.24799799919128418,
+          "algorithm_name": "HATNet"
+        },
+        "famous_dl": {
+          "status": "returned_none: mat1 and mat2 shapes cannot be multiplied (49x272 and 102x1024)",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.06799864768981934,
+          "algorithm_name": "ISTA-Net+"
+        },
+        "small_gpu": {
+          "status": "returned_none: mat1 and mat2 shapes cannot be multiplied (49x272 and 102x1024)",
+          "psnr_db": null,
+          "ssim": null,
+          "exec_time_sec": 0.06799793243408203,
+          "algorithm_name": "ISTA-Net+"
         }
       }
     }
