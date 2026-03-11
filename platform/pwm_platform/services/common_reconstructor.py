@@ -2,6 +2,14 @@
 
 Loads benchmark data from GCS, maps algorithm name → reconstruction runner,
 and returns results (images + metrics).
+
+Supports ALL modality types via category-aware dispatch:
+- CT/CBCT/PET/SPECT (sinogram → FBP / MLEM)
+- MRI/fMRI (k-space → iFFT + RSS)
+- Microscopy (blurred → Richardson-Lucy / Wiener)
+- Denoising (noisy → NLM + TV)
+- Phase retrieval (hologram → angular spectrum back-propagation)
+- Compressive (y = Hx → Tikhonov)
 """
 
 from __future__ import annotations
@@ -18,12 +26,24 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 GCS_BUCKET = "pwm-benchmark-datasets"
-GCS_PREFIX = "challenge-data/v1.0"
 CACHE_DIR = Path("/tmp/pwm_challenge_cache")
+
+# GCS path templates — tried in order, first match wins
+_GCS_PATH_TEMPLATES = [
+    "datasets/Benchmark/{variant}/{tier}",  # Canonical path
+    "challenge-data/v1.0",                   # Legacy (deprecated)
+]
+
+
+# ── GCS / HDF5 loading ──────────────────────────────────────────────────
 
 
 def _ensure_challenge_h5(variant: str, tier: str = "public") -> Path:
-    """Download challenge HDF5 from GCS (cached locally)."""
+    """Download challenge HDF5 from GCS (cached locally).
+
+    Tries the canonical ``datasets/Benchmark/`` path first, then falls back
+    to the deprecated ``challenge-data/v1.0/`` path.
+    """
     cache = CACHE_DIR
     cache.mkdir(parents=True, exist_ok=True)
     filename = f"{variant}_challenge_{tier}.h5"
@@ -31,65 +51,253 @@ def _ensure_challenge_h5(variant: str, tier: str = "public") -> Path:
     if local_path.exists() and local_path.stat().st_size > 0:
         return local_path
 
-    gcs_key = f"{GCS_PREFIX}/{filename}"
     try:
         from google.cloud import storage as gcs_storage
-        client = gcs_storage.Client()
-        bucket = client.bucket(GCS_BUCKET)
-        blob = bucket.blob(gcs_key)
-        if not blob.exists():
-            raise RuntimeError(f"GCS object not found: gs://{GCS_BUCKET}/{gcs_key}")
-        blob.download_to_filename(str(local_path))
-        return local_path
     except ImportError:
         raise RuntimeError("google-cloud-storage not installed")
-    except Exception as e:
-        if local_path.exists() and local_path.stat().st_size == 0:
-            local_path.unlink()
-        raise RuntimeError(f"Failed to download {filename}: {e}")
+
+    client = gcs_storage.Client()
+    bucket = client.bucket(GCS_BUCKET)
+
+    errors: list[str] = []
+    for template in _GCS_PATH_TEMPLATES:
+        prefix = template.format(variant=variant, tier=tier)
+        gcs_key = f"{prefix}/{filename}"
+        try:
+            blob = bucket.blob(gcs_key)
+            if blob.exists():
+                blob.download_to_filename(str(local_path))
+                logger.info("Downloaded %s from gs://%s/%s", filename, GCS_BUCKET, gcs_key)
+                return local_path
+        except Exception as e:
+            errors.append(f"{gcs_key}: {e}")
+
+    if local_path.exists() and local_path.stat().st_size == 0:
+        local_path.unlink()
+    raise RuntimeError(
+        f"Cannot find {filename} in GCS. Tried: "
+        + ("; ".join(errors) if errors else "all paths returned not found")
+    )
 
 
-def _load_sample(h5_path: Path, sample_idx: int = 0) -> dict:
+# Modality-specific HDF5 key mappings — standard keys are y, x_true, H_ideal.
+# Some modalities use different names for their measurement / metadata arrays.
+_MODALITY_KEY_MAP: dict[str, dict[str, list[str]]] = {
+    # CT family: sinogram + angles
+    "ct": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
+    "cbct": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
+    "mammography": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
+    "industrial_ct": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
+    "spectral_ct": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
+    "xray_radiography": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
+    "fluoroscopy": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
+    "angiography": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
+    "digital_breast_tomo": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
+    "ct_fluorescence": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
+    "brachytherapy_img": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
+    "portal_imaging": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
+    "proton_therapy_img": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
+    "xray_ndt": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_nominal", "angles"]},
+    # Nuclear imaging: sinogram + angles + mu_map
+    "pet": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"], "mu_map": ["attenuation_map", "mu_map"]},
+    "spect": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"], "mu_map": ["attenuation_map", "mu_map"]},
+    "pet_ct": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
+    "pet_mr": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
+    "spect_ct": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
+    "muon_tomo": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
+    "neutron_tomo": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
+    "proton_radiography": {"y": ["sinogram_measured", "sinogram", "y"], "angles": ["angles_deg", "angles_nominal", "angles"]},
+    # MRI family: kspace + mask + coil_maps
+    "mri": {"y": ["kspace_undersampled", "kspace", "y"], "mask": ["mask"], "coil_maps": ["coil_maps"], "kspace_full": ["kspace_full"]},
+    "fmri": {"y": ["kspace_undersampled", "kspace", "y"], "mask": ["mask"], "coil_maps": ["coil_maps"]},
+    "diffusion_mri": {"y": ["kspace_undersampled", "kspace", "y"], "mask": ["mask"], "coil_maps": ["coil_maps"]},
+    "mrs": {"y": ["kspace_undersampled", "kspace", "y"], "mask": ["mask"]},
+    "mra": {"y": ["kspace_undersampled", "kspace", "y"], "mask": ["mask"]},
+    "mr_elastography": {"y": ["kspace_undersampled", "kspace", "y"], "mask": ["mask"]},
+    "mr_fingerprinting": {"y": ["kspace_undersampled", "kspace", "y"]},
+    "swi": {"y": ["kspace_undersampled", "kspace", "y"], "mask": ["mask"]},
+    "asl_mri": {"y": ["kspace_undersampled", "kspace", "y"], "mask": ["mask"]},
+    "cest_mri": {"y": ["kspace_undersampled", "kspace", "y"], "mask": ["mask"]},
+    # Ultrasound: bmode_measured
+    "ultrasound": {"y": ["bmode_measured", "y"], "psf": ["psf"]},
+    "doppler_ultrasound": {"y": ["bmode_measured", "y"]},
+    "elastography": {"y": ["bmode_measured", "y"]},
+    "ceus": {"y": ["bmode_measured", "y"]},
+    "ivus": {"y": ["bmode_measured", "y"]},
+    # OCT: bscan_measured
+    "oct": {"y": ["bscan_measured", "y"]},
+    "octa": {"y": ["bscan_measured", "y"]},
+    # Fundus: image_measured
+    "fundus": {"y": ["image_measured", "y"]},
+    "endoscopy": {"y": ["image_measured", "y"]},
+}
+
+# Modality sets for reconstruction routing
+_SINOGRAM_MODALITIES: set[str] = {
+    "ct", "cbct", "pet", "spect", "mammography", "industrial_ct", "spectral_ct",
+    "pet_ct", "pet_mr", "spect_ct", "muon_tomo", "neutron_tomo",
+    "xray_radiography", "fluoroscopy", "angiography", "digital_breast_tomo",
+    "ct_fluorescence", "brachytherapy_img", "portal_imaging", "proton_therapy_img",
+    "proton_radiography", "dexa", "xray_ndt",
+}
+
+_MRI_MODALITIES: set[str] = {
+    "mri", "fmri", "diffusion_mri", "mrs", "mra", "mr_elastography",
+    "mr_fingerprinting", "swi", "asl_mri", "cest_mri",
+}
+
+_MICROSCOPY_MODALITIES: set[str] = {
+    "widefield", "widefield_lowdose", "confocal_3d", "confocal_livecell",
+    "lightsheet", "two_photon", "three_photon", "sted", "tirf",
+    "spinning_disk", "lattice_lightsheet", "ism", "sim", "shg",
+    "expansion", "confocal_endomicroscopy", "dark_field",
+}
+
+_PHASE_RETRIEVAL_MODALITIES: set[str] = {
+    "holography", "phase_retrieval", "phase_contrast", "fpm",
+    "ptychography", "electron_holography", "electron_diffraction",
+    "talbot_lau", "shearography", "adaptive_optics",
+}
+
+_DENOISING_MODALITIES: set[str] = {
+    "sem", "tem", "stem", "ebsd", "eels", "oct", "octa", "fundus",
+    "endoscopy", "ultrasound", "doppler_ultrasound", "elastography",
+    "photoacoustic", "fluoroscopy", "sar", "sonar", "lidar",
+    "afm", "stm", "nsom", "mfm",
+    "flim", "coded_exposure", "hdr_imaging",
+    "confocal_endomicroscopy", "ceus", "ivus",
+    "fib_sem", "flash_lidar",
+    "tof_camera", "structured_light",
+    "event_camera", "streak_camera",
+    "weather_radar", "passive_microwave",
+    "active_thermography", "eddy_current",
+    "acoustic_emission", "acoustic_microscopy",
+    "coronagraphy", "solar_imaging",
+    "eht_imaging", "radio_astronomy", "radio_interferometry",
+    "raman_imaging", "ftir_imaging", "srs", "cars", "libs", "sims",
+    "brillouin", "desi", "maldi_msi",
+    "cathodoluminescence", "edx_mapping",
+    "machine_vision", "lucky_imaging",
+    "photometric_stereo", "dic",
+}
+
+
+def _load_sample(h5_path: Path, sample_idx: int = 0, variant_key: str = "") -> dict:
     """Load a single sample from challenge HDF5.
 
-    Returns dict with keys: y (measurement), x_true (ground truth, if present),
-    H_ideal (forward model, if present).
+    Handles modality-specific HDF5 key names (sinogram_measured,
+    kspace_undersampled, etc.) and maps them to standard keys.
+
+    Returns dict with possible keys:
+        y, x_true, H_ideal, angles, mask, coil_maps, mu_map, psf,
+        kspace_full, reconstruction_baseline, x_true_phase
     """
     import h5py
 
-    data = {}
+    data: dict = {}
     with h5py.File(h5_path, "r") as f:
         sample_key = f"sample_{sample_idx:02d}"
         if sample_key not in f:
-            # Try first available sample
             samples = [k for k in f.keys() if k.startswith("sample_")]
             if not samples:
                 raise ValueError(f"No samples in {h5_path}")
             sample_key = sorted(samples)[0]
 
         grp = f[sample_key]
-        if "y" in grp:
-            data["y"] = np.array(grp["y"])
-        if "x_true" in grp:
+        available = set(grp.keys())
+        key_map = _MODALITY_KEY_MAP.get(variant_key, {})
+
+        # y (measurement) — modality-specific keys first, then standard,
+        # then generic fallback for *_measured patterns
+        y_candidates = key_map.get("y", []) + ["y"]
+        for k in y_candidates:
+            if k in available:
+                data["y"] = np.array(grp[k])
+                break
+        if "y" not in data:
+            # Generic fallback: look for *_measured or *_noisy keys
+            for k in sorted(available):
+                if k.endswith("_measured") or k.endswith("_noisy"):
+                    data["y"] = np.array(grp[k])
+                    break
+
+        # x_true (ground truth)
+        if "x_true" in available:
             data["x_true"] = np.array(grp["x_true"])
-        if "H_ideal" in grp:
+        elif "x_true_amplitude" in available:
+            data["x_true"] = np.array(grp["x_true_amplitude"])
+            if "x_true_phase" in available:
+                data["x_true_phase"] = np.array(grp["x_true_phase"])
+
+        # H_ideal (forward model operator)
+        if "H_ideal" in available:
             data["H_ideal"] = np.array(grp["H_ideal"])
+        elif "H_ideal_real" in available and "H_ideal_imag" in available:
+            data["H_ideal"] = (
+                np.array(grp["H_ideal_real"]) + 1j * np.array(grp["H_ideal_imag"])
+            )
+
+        # angles (for sinogram data)
+        for k in key_map.get("angles", []) + ["angles", "angles_nominal", "angles_deg"]:
+            if k in available:
+                data["angles"] = np.array(grp[k])
+                break
+
+        # mask (MRI undersampling)
+        for k in key_map.get("mask", []) + ["mask"]:
+            if k in available:
+                data["mask"] = np.array(grp[k])
+                break
+
+        # coil_maps (multi-coil MRI)
+        for k in key_map.get("coil_maps", []) + ["coil_maps"]:
+            if k in available:
+                data["coil_maps"] = np.array(grp[k])
+                break
+
+        # mu_map (PET attenuation)
+        for k in key_map.get("mu_map", []) + ["mu_map", "attenuation_map"]:
+            if k in available:
+                data["mu_map"] = np.array(grp[k])
+                break
+
+        # kspace_full (MRI reference)
+        for k in key_map.get("kspace_full", []) + ["kspace_full"]:
+            if k in available:
+                data["kspace_full"] = np.array(grp[k])
+                break
+
+        # PSF (if stored)
+        for psf_key in ["psf", "psf_lateral", "psf_axial"]:
+            if psf_key in available:
+                data["psf"] = np.array(grp[psf_key])
+                break
+
+        # reconstruction_baseline (pre-computed baseline)
+        if "reconstruction_baseline" in available:
+            data["reconstruction_baseline"] = np.array(grp["reconstruction_baseline"])
 
     return data
 
 
-def _to_2d_display(arr: np.ndarray) -> np.ndarray:
-    """Reduce an arbitrary-shaped array to a 2D (H, W) or (H, W, 3) image for display.
+# ── Display / metrics utilities ──────────────────────────────────────────
 
-    Handles: 1D vectors, 2D images, 3D cubes (spectral, temporal, multi-channel),
-    and 4D+ tensors by collapsing extra dimensions.
+
+def _to_2d_display(arr: np.ndarray) -> np.ndarray:
+    """Reduce an arbitrary-shaped array to 2D (H,W) or (H,W,3) for display.
+
+    Handles complex arrays, 1D vectors, 2D images, 3D cubes, and 4D+ tensors.
     """
+    # Complex → magnitude
+    if np.iscomplexobj(arr):
+        arr = np.abs(arr)
+
     arr = np.squeeze(arr)
 
     if arr.ndim == 1:
         side = int(np.ceil(np.sqrt(arr.size)))
         padded = np.zeros(side * side)
-        padded[:arr.size] = arr
+        padded[: arr.size] = arr
         return padded.reshape(side, side)
 
     if arr.ndim == 2:
@@ -104,7 +312,6 @@ def _to_2d_display(arr: np.ndarray) -> np.ndarray:
             return arr[:, :, 0]
         if c == 3:
             return arr  # RGB
-        # Multi-channel (e.g. 28-band spectral): take mean across channels
         return np.mean(arr, axis=-1)
 
     # 4D+: collapse all but last two spatial dims
@@ -137,6 +344,8 @@ def _numpy_to_png_b64(arr: np.ndarray) -> str:
 
 def _normalize_01(arr: np.ndarray) -> np.ndarray:
     """Normalize array to [0, 1] range for scale-invariant metric computation."""
+    if np.iscomplexobj(arr):
+        arr = np.abs(arr)
     arr = arr.astype(np.float64)
     lo, hi = arr.min(), arr.max()
     if hi - lo > 1e-12:
@@ -158,52 +367,50 @@ def _compute_psnr(x_true: np.ndarray, x_recon: np.ndarray) -> float:
 def _compute_ssim(x_true: np.ndarray, x_recon: np.ndarray) -> float:
     try:
         from skimage.metrics import structural_similarity
+
         xt = _normalize_01(_to_2d_display(x_true))
         xr = _normalize_01(_to_2d_display(x_recon))
         if xt.shape != xr.shape:
             return 0.0
         mc = xt.ndim == 3 and xt.shape[-1] == 3
-        return float(structural_similarity(xt, xr, data_range=1.0,
-                                           channel_axis=2 if mc else None))
+        return float(
+            structural_similarity(
+                xt, xr, data_range=1.0, channel_axis=2 if mc else None
+            )
+        )
     except (ImportError, ValueError):
         return 0.0
+
+
+# ── Reconstruction algorithms ────────────────────────────────────────────
+
+
+def _make_gaussian_psf(size: int, sigma: float) -> np.ndarray:
+    """Create a normalized 2D Gaussian PSF kernel."""
+    ax = np.arange(size) - size // 2
+    xx, yy = np.meshgrid(ax, ax)
+    psf = np.exp(-(xx ** 2 + yy ** 2) / (2 * sigma ** 2))
+    return psf / psf.sum()
 
 
 def _fbp_reconstruct(sinogram: np.ndarray, angles: np.ndarray) -> np.ndarray:
     """Filtered back-projection for CT sinogram data.
 
     Pipeline: sinogram Gaussian denoising → ramp-filter FBP → TV post-processing.
-    This TV-FBP pipeline gives ~+5.6 dB over plain hamming-FBP on challenge data.
-
-    Uses skimage.transform.iradon which matches the rotation-based forward model
-    used to generate challenge datasets: rotate(x, -θ).sum(axis=0).
-
-    Parameters
-    ----------
-    sinogram : (N_views, N_detectors) sinogram
-    angles : (N_views,) projection angles in degrees
-
-    Returns
-    -------
-    (N_detectors, N_detectors) reconstructed image
     """
     try:
-        from skimage.transform import iradon
-        from skimage.restoration import denoise_tv_chambolle
         from scipy.ndimage import gaussian_filter
+        from skimage.restoration import denoise_tv_chambolle
+        from skimage.transform import iradon
 
-        # Step 1: Denoise sinogram — smooth along detector axis (sigma=2.0) but
-        # preserve angular resolution (sigma=0.5) to avoid blurring projections.
-        sino_denoised = gaussian_filter(sinogram.astype(np.float64), sigma=[0.5, 2.0])
-
-        # Step 2: Ramp-filter FBP — ramp gives sharper edges than hamming after
-        # sinogram pre-smoothing has already suppressed high-frequency noise.
-        # iradon expects (n_detectors, n_angles).
-        recon = iradon(sino_denoised.T, theta=angles, filter_name="ramp", interpolation="linear")
+        sino_denoised = gaussian_filter(
+            sinogram.astype(np.float64), sigma=[0.5, 2.0]
+        )
+        recon = iradon(
+            sino_denoised.T, theta=angles, filter_name="ramp", interpolation="linear"
+        )
         recon = np.clip(recon, 0, None)
 
-        # Step 3: TV post-processing — removes residual streaking artifacts.
-        # Normalise to [0,1] for TV, then scale back.
         lo, hi = recon.min(), recon.max()
         if hi - lo > 1e-12:
             recon_norm = (recon - lo) / (hi - lo)
@@ -215,7 +422,7 @@ def _fbp_reconstruct(sinogram: np.ndarray, angles: np.ndarray) -> np.ndarray:
         pass
 
     # Fallback: manual ramp-filter + trigonometric back-projection
-    from scipy.fft import fft, ifft, fftfreq
+    from scipy.fft import fft, fftfreq, ifft
 
     n_views, n_det = sinogram.shape
     output_size = n_det
@@ -226,7 +433,9 @@ def _fbp_reconstruct(sinogram: np.ndarray, angles: np.ndarray) -> np.ndarray:
 
     freqs = fftfreq(pad_len)
     ramp = np.abs(freqs) * 2
-    filtered = np.real(ifft(fft(padded_sino, axis=1) * ramp[np.newaxis, :], axis=1))[:, :n_det]
+    filtered = np.real(
+        ifft(fft(padded_sino, axis=1) * ramp[np.newaxis, :], axis=1)
+    )[:, :n_det]
 
     recon = np.zeros((output_size, output_size))
     center = output_size / 2.0
@@ -241,8 +450,8 @@ def _fbp_reconstruct(sinogram: np.ndarray, angles: np.ndarray) -> np.ndarray:
         valid = (t_floor >= 0) & (t_floor < n_det - 1)
         t_floor_c = np.clip(t_floor, 0, n_det - 2)
         recon += valid * (
-            filtered[i, t_floor_c] * (1 - t_frac) +
-            filtered[i, t_floor_c + 1] * t_frac
+            filtered[i, t_floor_c] * (1 - t_frac)
+            + filtered[i, t_floor_c + 1] * t_frac
         )
 
     recon *= np.pi / (2 * n_views)
@@ -252,148 +461,476 @@ def _fbp_reconstruct(sinogram: np.ndarray, angles: np.ndarray) -> np.ndarray:
 def _is_sinogram_data(y: np.ndarray, H: Optional[np.ndarray]) -> bool:
     """Detect if the data is a CT sinogram (angles stored in H_ideal as 1D array)."""
     if H is not None and H.ndim == 1 and y.ndim == 2:
-        # H is 1D array of angles, y is (n_views, n_detectors) sinogram
         if H.shape[0] == y.shape[0] and y.shape[1] > y.shape[0] * 0.5:
             return True
     return False
 
 
 def _piner_ct_reconstruct(
-    sinogram: np.ndarray,   # (n_views, n_det) e.g. (180, 512)
-    angles: np.ndarray,     # (n_views,) in degrees
+    sinogram: np.ndarray,
+    angles: np.ndarray,
     n_pocs: int = 3,
 ) -> np.ndarray:
     """Physics-informed iterative CT reconstruction (PINER-CT inspired).
 
-    Pipeline: TV-FBP init → NLM denoising → POCS data-consistency iterations
-    with NLM regularization.
-
-    POCS (Projection Onto Convex Sets) enforces data consistency by mixing the
-    observed sinogram with the re-projection of the current estimate, then
-    re-applying FBP. This mimics the self-supervised data-consistency framework
-    of PINER-CT (Sun et al., CVPR 2025) without a trained network.
-
-    NLM (Non-Local Means) exploits self-similarity in CT images to denoise more
-    effectively than isotropic TV, giving smoother edges and better patch detail.
+    Pipeline: TV-FBP init → NLM denoising → POCS data-consistency iterations.
     """
-    from skimage.transform import radon, iradon
-    from skimage.restoration import denoise_tv_chambolle, denoise_nl_means
     from scipy.ndimage import gaussian_filter
+    from skimage.restoration import denoise_nl_means
+    from skimage.transform import iradon, radon
 
     n_views, n_det = sinogram.shape
-    out_size = int(round(n_det / np.sqrt(2)))  # 512 → 362 for challenge data
+    out_size = int(round(n_det / np.sqrt(2)))
 
-    # ── Step 1: TV-FBP init (reuse existing pipeline) ──────────────────────
-    fbp_full = _fbp_reconstruct(sinogram, angles)           # (n_det, n_det)
+    fbp_full = _fbp_reconstruct(sinogram, angles)
     fh, fw = fbp_full.shape
     sr, sc = (fh - out_size) // 2, (fw - out_size) // 2
-    x = fbp_full[sr:sr + out_size, sc:sc + out_size].astype(np.float64)
+    x = fbp_full[sr : sr + out_size, sc : sc + out_size].astype(np.float64)
     x = np.clip(x, 0, None)
 
-    # Normalise to [0, 1] for denoising steps
     lo, hi = x.min(), x.max()
     if hi - lo > 1e-12:
         x = (x - lo) / (hi - lo)
 
-    # ── Step 2: NLM denoising (better patch-based than TV for CT textures) ─
     x = denoise_nl_means(x, h=0.12, fast_mode=True, patch_size=7, patch_distance=11)
 
-    # ── Step 3: POCS data-consistency iterations ────────────────────────────
-    # Gaussian-smoothed sinogram in skimage (n_det, n_views) convention
     sino_g = gaussian_filter(sinogram.astype(np.float64), sigma=[0.5, 2.0])
-    y_sk = sino_g.T          # (n_det, n_views)
+    y_sk = sino_g.T
 
     def _fwd(x_img: np.ndarray) -> np.ndarray:
         s = radon(x_img, theta=angles, circle=False)
         nd = s.shape[0]
         if nd > n_det:
             t = (nd - n_det) // 2
-            s = s[t:t + n_det]
+            s = s[t : t + n_det]
         elif nd < n_det:
             p = (n_det - nd) // 2
             s = np.pad(s, ((p, n_det - nd - p), (0, 0)))
         return s
 
     for _ in range(n_pocs):
-        # Project current estimate → mix 50/50 with observed sinogram
         sino_cur = _fwd(x)
         sino_mixed = 0.5 * y_sk + 0.5 * sino_cur
 
-        # FBP of mixed sinogram + crop
         x_new = np.clip(iradon(sino_mixed, theta=angles, filter_name="ramp"), 0, None)
         fh2, fw2 = x_new.shape
         sr2, sc2 = (fh2 - out_size) // 2, (fw2 - out_size) // 2
-        x_new = x_new[sr2:sr2 + out_size, sc2:sc2 + out_size]
+        x_new = x_new[sr2 : sr2 + out_size, sc2 : sc2 + out_size]
 
-        # Normalise
         lo2, hi2 = x_new.min(), x_new.max()
         if hi2 - lo2 > 1e-12:
             x_new = (x_new - lo2) / (hi2 - lo2)
 
-        # NLM denoising of updated estimate
-        x = denoise_nl_means(x_new, h=0.10, fast_mode=True, patch_size=7, patch_distance=11)
+        x = denoise_nl_means(
+            x_new, h=0.10, fast_mode=True, patch_size=7, patch_distance=11
+        )
 
     return np.clip(x, 0, None)
 
 
-# Physics-informed algorithms we can actually run (not just show FBP baseline for)
-_RUNNABLE_PHYSICS_INFORMED: set[str] = {"PINER-CT"}
-
-
-def _run_classical_recon(
-    y: np.ndarray,
-    H: Optional[np.ndarray],
-    algo_name: str,
-) -> np.ndarray:
-    """Run a classical reconstruction algorithm.
+def _mri_reconstruct(data: dict, algo_name: str = "") -> np.ndarray:
+    """MRI reconstruction from undersampled k-space data.
 
     Supports:
-    - CT/sinogram data: TV-FBP, or PINER-CT iterative data-consistency
-    - Matrix-based systems: Tikhonov / pseudo-inverse
-    - Fallback: measurement visualization
+    - Zero-filled iFFT + RSS (root-sum-of-squares) for multi-coil
+    - Optional TV post-processing for CS algorithms
+    """
+    y = data["y"]  # (n_coils, H, W) complex or (H, W) complex
+    algo_lower = algo_name.lower()
+
+    if np.iscomplexobj(y):
+        if y.ndim == 3:
+            # Multi-coil: iFFT each coil → RSS
+            coil_imgs = np.fft.ifftshift(
+                np.fft.ifft2(np.fft.ifftshift(y, axes=(-2, -1)), axes=(-2, -1)),
+                axes=(-2, -1),
+            )
+            recon = np.sqrt(np.sum(np.abs(coil_imgs) ** 2, axis=0))
+        elif y.ndim == 2:
+            recon = np.abs(np.fft.ifftshift(np.fft.ifft2(np.fft.ifftshift(y))))
+        else:
+            recon = np.abs(y)
+    else:
+        # Not complex — may already be image-domain
+        recon = _to_2d_display(y)
+
+    # TV post-processing for CS/regularized algorithms
+    if any(kw in algo_lower for kw in ("tv", "l1", "wavelet", "sparse", "admm")):
+        try:
+            from skimage.restoration import denoise_tv_chambolle
+
+            lo, hi = recon.min(), recon.max()
+            if hi - lo > 1e-12:
+                rn = (recon - lo) / (hi - lo)
+                rn = denoise_tv_chambolle(rn, weight=0.03, max_num_iter=200)
+                recon = rn * (hi - lo) + lo
+        except ImportError:
+            pass
+
+    return np.clip(recon, 0, None)
+
+
+def _deconv_reconstruct(
+    y: np.ndarray, algo_name: str = "", psf_kernel: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    """Richardson-Lucy / Wiener deconvolution for microscopy and blurred images.
+
+    Used for widefield, confocal, lightsheet, STED, TIRF, ultrasound, etc.
+    If ``psf_kernel`` is provided (e.g., from HDF5 data), it is used directly;
+    otherwise a Gaussian PSF is estimated.
+    """
+    from scipy.ndimage import gaussian_filter
+
+    algo_lower = algo_name.lower()
+
+    y_f = _to_2d_display(y).astype(np.float64)
+    lo, hi = y_f.min(), y_f.max()
+    if hi - lo < 1e-12:
+        return y_f
+    y_n = (y_f - lo) / (hi - lo)
+
+    # Use provided PSF or estimate Gaussian
+    psf_sigma = 2.0
+    if psf_kernel is not None:
+        psf = _to_2d_display(psf_kernel).astype(np.float64)
+        psf_sum = psf.sum()
+        if psf_sum > 1e-12:
+            psf = psf / psf_sum
+        else:
+            psf = _make_gaussian_psf(11, psf_sigma)
+    else:
+        psf = None  # will be created per-algorithm
+
+    if "wiener" in algo_lower:
+        from scipy.fft import fft2, ifft2
+
+        use_psf = psf if psf is not None else _make_gaussian_psf(21, psf_sigma)
+        # Pad PSF to image size
+        psf_padded = np.zeros_like(y_n)
+        ph, pw = use_psf.shape
+        sh = max(0, y_n.shape[0] // 2 - ph // 2)
+        sw = max(0, y_n.shape[1] // 2 - pw // 2)
+        cph = min(ph, y_n.shape[0])
+        cpw = min(pw, y_n.shape[1])
+        psf_padded[sh : sh + cph, sw : sw + cpw] = use_psf[:cph, :cpw]
+        psf_padded = np.roll(psf_padded, -(y_n.shape[0] // 2), axis=0)
+        psf_padded = np.roll(psf_padded, -(y_n.shape[1] // 2), axis=1)
+
+        Y = fft2(y_n)
+        H = fft2(psf_padded)
+        K = 0.01
+        X = Y * np.conj(H) / (np.abs(H) ** 2 + K)
+        recon = np.real(ifft2(X))
+        return np.clip(recon, 0, 1) * (hi - lo) + lo
+
+    # Default: Richardson-Lucy deconvolution
+    try:
+        from skimage.restoration import richardson_lucy
+
+        use_psf = psf if psf is not None else _make_gaussian_psf(11, psf_sigma)
+        y_pos = np.clip(y_n, 1e-6, None)
+        n_iter = 50 if "richardson" in algo_lower or "rl" in algo_lower else 30
+        recon = richardson_lucy(y_pos, use_psf, num_iter=n_iter, clip=True)
+        return np.clip(recon, 0, 1) * (hi - lo) + lo
+    except ImportError:
+        pass
+
+    # Fallback: unsharp masking
+    blurred = gaussian_filter(y_n, sigma=psf_sigma)
+    recon = y_n + 0.5 * (y_n - blurred)
+    return np.clip(recon, 0, 1) * (hi - lo) + lo
+
+
+def _denoise_reconstruct(y: np.ndarray, algo_name: str = "") -> np.ndarray:
+    """Denoise a noisy/degraded image using NLM, TV, or combined pipeline.
+
+    Used for SEM, TEM, OCT, fundus, ultrasound, SAR, and many other modalities
+    where the measurement is in image domain but degraded by noise/artifacts.
     """
     algo_lower = algo_name.lower()
 
-    # CT / Radon sinogram
-    if _is_sinogram_data(y, H):
-        angles = H  # 1D array of angles in degrees
-        try:
-            if algo_name in _RUNNABLE_PHYSICS_INFORMED:
-                return _piner_ct_reconstruct(y, angles)
-            return _fbp_reconstruct(y, angles)
-        except Exception as exc:
-            logger.warning("%s reconstruction failed: %s, falling back", algo_name, exc)
+    y_f = _to_2d_display(y).astype(np.float64)
+    lo, hi = y_f.min(), y_f.max()
+    if hi - lo < 1e-12:
+        return y_f
+    y_n = (y_f - lo) / (hi - lo)
 
-    # Matrix-based inverse: x = (H^T H + λI)^{-1} H^T y
-    if H is not None and H.ndim == 2:
-        y_flat = y.flatten()
-        m, n = H.shape
-        if y_flat.shape[0] != m:
-            y_flat = y_flat[:m] if y_flat.shape[0] > m else np.pad(y_flat, (0, m - y_flat.shape[0]))
-
-        lam = 1e-3 if "tikhonov" in algo_lower else 1e-4
+    if "tv" in algo_lower and "nlm" not in algo_lower:
         try:
-            HtH = H.T @ H
-            Hty = H.T @ y_flat
-            x_recon = np.linalg.solve(HtH + lam * np.eye(n), Hty)
-            side = int(np.sqrt(n))
-            if side * side == n:
-                x_recon = x_recon.reshape(side, side)
-            return x_recon
-        except np.linalg.LinAlgError:
+            from skimage.restoration import denoise_tv_chambolle
+
+            recon = denoise_tv_chambolle(y_n, weight=0.08, max_num_iter=200)
+            return np.clip(recon, 0, 1) * (hi - lo) + lo
+        except ImportError:
             pass
 
-    # Fallback: return measurement reduced to 2D as pseudo-reconstruction
-    return _to_2d_display(y)
+    if "nlm" in algo_lower or "non-local" in algo_lower:
+        try:
+            from skimage.restoration import denoise_nl_means
+
+            recon = denoise_nl_means(
+                y_n, h=0.08, fast_mode=True, patch_size=7, patch_distance=11
+            )
+            return np.clip(recon, 0, 1) * (hi - lo) + lo
+        except ImportError:
+            pass
+
+    if "bm3d" in algo_lower or "bm4d" in algo_lower:
+        # BM3D not in standard sklearn — use strong NLM as substitute
+        try:
+            from skimage.restoration import denoise_nl_means
+
+            recon = denoise_nl_means(
+                y_n, h=0.06, fast_mode=True, patch_size=7, patch_distance=13
+            )
+            return np.clip(recon, 0, 1) * (hi - lo) + lo
+        except ImportError:
+            pass
+
+    if any(kw in algo_lower for kw in ("wiener", "deconv", "richardson", "rl")):
+        # Redirect to deconvolution
+        return _deconv_reconstruct(y, algo_name)
+
+    # Default: NLM + light TV
+    try:
+        from skimage.restoration import denoise_nl_means, denoise_tv_chambolle
+
+        recon = denoise_nl_means(
+            y_n, h=0.08, fast_mode=True, patch_size=5, patch_distance=11
+        )
+        recon = denoise_tv_chambolle(recon, weight=0.02, max_num_iter=100)
+        return np.clip(recon, 0, 1) * (hi - lo) + lo
+    except ImportError:
+        from scipy.ndimage import gaussian_filter
+
+        recon = gaussian_filter(y_n, sigma=1.0)
+        return np.clip(recon, 0, 1) * (hi - lo) + lo
 
 
-def _pick_baseline_name(y: np.ndarray, H: Optional[np.ndarray]) -> str:
+def _phase_retrieval_reconstruct(data: dict, algo_name: str = "") -> np.ndarray:
+    """Phase retrieval for holography / coherent imaging.
+
+    Uses angular spectrum back-propagation when H_ideal (propagation kernel) is
+    available, otherwise falls back to Gerchberg-Saxton iterations.
+    """
+    from scipy.fft import fft2, ifft2
+
+    y = data["y"]  # Hologram intensity
+    H = data.get("H_ideal")  # Angular spectrum kernel (complex)
+
+    y_f = np.abs(y.astype(np.float64))
+
+    if H is not None and np.iscomplexobj(H):
+        # Angular spectrum back-propagation: conj(H) * FFT(E_field)
+        E_ref = np.sqrt(np.clip(y_f, 0, None))
+        E_fft = fft2(E_ref)
+        E_obj = ifft2(E_fft * np.conj(H))
+        return np.abs(E_obj)
+
+    algo_lower = algo_name.lower()
+    if any(kw in algo_lower for kw in ("gerchberg", "gs", "hio", "error reduction")):
+        # Gerchberg-Saxton with non-negativity constraint
+        amplitude = np.sqrt(np.clip(y_f, 0, None))
+        x = amplitude.copy()
+        for _ in range(50):
+            X = fft2(x)
+            # Replace magnitude with measured amplitude in Fourier domain
+            mag = np.abs(X)
+            mag = np.clip(mag, 1e-10, None)
+            X = X / mag * amplitude
+            x = np.real(ifft2(X))
+            x = np.clip(x, 0, None)  # Non-negativity constraint
+        return x
+
+    # Fallback: sqrt of intensity (approximate field amplitude)
+    return np.sqrt(np.clip(y_f, 0, None))
+
+
+def _compressive_reconstruct(
+    y: np.ndarray, H: np.ndarray, algo_name: str = ""
+) -> np.ndarray:
+    """Compressive sensing reconstruction: y = Hx → solve for x.
+
+    Supports Tikhonov regularization and pseudo-inverse.
+    """
+    algo_lower = algo_name.lower()
+
+    y_flat = y.flatten()
+    m, n = H.shape
+    if y_flat.shape[0] != m:
+        y_flat = (
+            y_flat[:m]
+            if y_flat.shape[0] > m
+            else np.pad(y_flat, (0, m - y_flat.shape[0]))
+        )
+
+    lam = 1e-3 if "tikhonov" in algo_lower else 1e-4
+    try:
+        HtH = H.T @ H
+        Hty = H.T @ y_flat
+        x_recon = np.linalg.solve(HtH + lam * np.eye(n), Hty)
+        side = int(np.sqrt(n))
+        if side * side == n:
+            x_recon = x_recon.reshape(side, side)
+        return x_recon
+    except np.linalg.LinAlgError:
+        return _to_2d_display(y)
+
+
+# ── Reconstruction dispatch ──────────────────────────────────────────────
+
+# Physics-informed algorithms we can actually run
+_RUNNABLE_PHYSICS_INFORMED: set[str] = {"PINER-CT"}
+
+
+def _detect_recon_type(
+    data: dict, variant_key: str, category: str
+) -> str:
+    """Determine the reconstruction type from data content and modality info.
+
+    Returns one of: sinogram, mri, deconvolution, denoise, phase_retrieval,
+    matrix_inverse, fallback.
+    """
+    y = data.get("y")
+    H = data.get("H_ideal")
+    angles = data.get("angles")
+
+    # 1. Explicit modality routing (most reliable)
+    if variant_key in _SINOGRAM_MODALITIES:
+        return "sinogram"
+    if variant_key in _MRI_MODALITIES:
+        return "mri"
+    if variant_key in _MICROSCOPY_MODALITIES:
+        return "deconvolution"
+    if variant_key in _PHASE_RETRIEVAL_MODALITIES:
+        return "phase_retrieval"
+    if variant_key in _DENOISING_MODALITIES:
+        return "denoise"
+
+    # 2. Data-driven detection
+    if y is not None:
+        # Has angles → sinogram data
+        if angles is not None and y.ndim == 2:
+            return "sinogram"
+        # Complex data → likely k-space (MRI)
+        if np.iscomplexobj(y):
+            return "mri"
+        # Has complex H_ideal → holography
+        if H is not None and np.iscomplexobj(H):
+            return "phase_retrieval"
+        # Has 2D matrix H_ideal → compressive sensing
+        if H is not None and H.ndim == 2 and not np.iscomplexobj(H):
+            return "matrix_inverse"
+        # 1D H_ideal (angles) → sinogram
+        if H is not None and H.ndim == 1:
+            return "sinogram"
+
+    # 3. Category-based fallback
+    cat_lower = category.lower() if category else ""
+    if "microscopy" in cat_lower:
+        return "deconvolution"
+    if "coherent" in cat_lower:
+        return "phase_retrieval"
+    if "compressive" in cat_lower:
+        return "matrix_inverse"
+    if "particle" in cat_lower:
+        return "sinogram"
+
+    # 4. Default: denoise (safest — preserves image content)
+    return "denoise"
+
+
+def _dispatch_reconstruction(
+    data: dict,
+    variant_key: str,
+    category: str,
+    algo_name: str,
+) -> np.ndarray:
+    """Route to the appropriate reconstruction method based on data and modality.
+
+    This is the central dispatch function that replaces the old
+    ``_run_classical_recon`` for all modality types.
+    """
+    recon_type = _detect_recon_type(data, variant_key, category)
+    y = data.get("y")
+    H = data.get("H_ideal")
+    angles = data.get("angles")
+
+    if y is None:
+        raise ValueError("No measurement data found")
+
+    psf_kernel = data.get("psf")
+
+    # Upgrade denoise → deconvolution if PSF data is available
+    if recon_type == "denoise" and psf_kernel is not None:
+        recon_type = "deconvolution"
+
+    try:
+        if recon_type == "sinogram":
+            # Sinogram → FBP / PINER-CT
+            if angles is not None:
+                angle_arr = angles
+            elif H is not None and H.ndim == 1:
+                angle_arr = H
+            else:
+                # Generate default angles
+                n_views = y.shape[0]
+                angle_arr = np.linspace(0, 180, n_views, endpoint=False)
+
+            # Convert radians → degrees if needed
+            if angle_arr.max() < 2 * np.pi + 0.1 and angle_arr.max() > 0.1:
+                angle_arr = np.degrees(angle_arr)
+
+            if algo_name in _RUNNABLE_PHYSICS_INFORMED:
+                return _piner_ct_reconstruct(y, angle_arr)
+            return _fbp_reconstruct(y, angle_arr)
+
+        if recon_type == "mri":
+            return _mri_reconstruct(data, algo_name)
+
+        if recon_type == "deconvolution":
+            return _deconv_reconstruct(y, algo_name, psf_kernel=psf_kernel)
+
+        if recon_type == "phase_retrieval":
+            return _phase_retrieval_reconstruct(data, algo_name)
+
+        if recon_type == "matrix_inverse":
+            if H is not None and H.ndim == 2:
+                return _compressive_reconstruct(y, H, algo_name)
+
+        # Default: denoise
+        return _denoise_reconstruct(y, algo_name)
+
+    except Exception as exc:
+        logger.warning(
+            "Reconstruction (%s, %s) failed: %s — falling back to denoise",
+            recon_type, algo_name, exc,
+        )
+        try:
+            return _denoise_reconstruct(y, "")
+        except Exception:
+            return _to_2d_display(y)
+
+
+def _pick_baseline_name(
+    data: dict,
+    variant_key: str = "",
+    category: str = "",
+) -> str:
     """Return the name of the classical baseline used for DL method illustration."""
-    if _is_sinogram_data(y, H):
-        return "FBP"
-    if H is not None and H.ndim == 2:
-        return "Tikhonov"
-    return "Zero-Filled"
+    recon_type = _detect_recon_type(data, variant_key, category)
+    _BASELINE_NAMES = {
+        "sinogram": "FBP",
+        "mri": "Zero-Filled iFFT",
+        "deconvolution": "Richardson-Lucy",
+        "denoise": "NLM+TV",
+        "phase_retrieval": "Angular Spectrum",
+        "matrix_inverse": "Tikhonov",
+    }
+    return _BASELINE_NAMES.get(recon_type, "Classical Baseline")
+
+
+# ── Main entry points ────────────────────────────────────────────────────
 
 
 async def run_common_reconstruction(
@@ -412,8 +949,13 @@ async def run_common_reconstruction(
 
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(
-        None, _run_common_sync,
-        variant_key, algorithm_name, user_measurement, user_matrix, sample_index,
+        None,
+        _run_common_sync,
+        variant_key,
+        algorithm_name,
+        user_measurement,
+        user_matrix,
+        sample_index,
     )
 
 
@@ -427,13 +969,10 @@ def _run_common_sync(
     """Synchronous common-mode reconstruction."""
     t0 = time.perf_counter()
 
-    # Look up algorithm info — all algorithm resolution goes through the
-    # central _algorithm_catalog to ensure consistency with dropdowns,
-    # benchmark leaderboards, and advanced mode.
     from pwm_platform.services.benchmark_database import (
+        get_algorithms,
         get_variant,
         resolve_algorithm,
-        get_algorithms,
     )
 
     variant = get_variant(variant_key)
@@ -443,41 +982,56 @@ def _run_common_sync(
     category = variant.get("category", "compressive")
     algo_info = resolve_algorithm(variant_key, category, algorithm_name)
     if algo_info is None:
-        # Final fallback: first algorithm in catalog for this variant
         algos = get_algorithms(variant_key, category)
-        algo_info = algos[0] if algos else {"name": algorithm_name, "type": "Unknown", "source": ""}
+        algo_info = (
+            algos[0]
+            if algos
+            else {"name": algorithm_name, "type": "Unknown", "source": ""}
+        )
 
     # Load data
     has_gt = False
     if user_measurement is not None:
-        y = user_measurement
-        H = user_matrix
-        x_true = None
+        sample_data: dict = {"y": user_measurement}
+        if user_matrix is not None:
+            sample_data["H_ideal"] = user_matrix
     else:
-        # Download from GCS
         try:
             h5_path = _ensure_challenge_h5(variant_key, "public")
-            sample = _load_sample(h5_path, sample_idx=sample_index)
-            y = sample.get("y")
-            x_true = sample.get("x_true")
-            H = sample.get("H_ideal")
-            has_gt = x_true is not None
+            sample_data = _load_sample(
+                h5_path, sample_idx=sample_index, variant_key=variant_key
+            )
         except Exception as exc:
-            logger.warning("Cannot load challenge data for %s: %s", variant_key, exc)
+            logger.warning(
+                "Cannot load challenge data for %s: %s", variant_key, exc
+            )
             raise ValueError(
                 f"No benchmark data available for {variant_key}. "
                 "Upload your own measurement data instead."
             )
 
+    y = sample_data.get("y")
+    x_true = sample_data.get("x_true")
+    has_gt = x_true is not None
+
     if y is None:
         raise ValueError("No measurement data found")
 
-    # Run reconstruction
+    # Detect DL methods
     algo_type = algo_info.get("type", "").lower()
     _DL_KEYWORDS = (
-        "deep", "transformer", "diffusion", "gan", "score",
-        "foundation", "physics-informed", "neural", "autoencoder",
-        "self-supervised", "contrastive", "implicit",
+        "deep",
+        "transformer",
+        "diffusion",
+        "gan",
+        "score",
+        "foundation",
+        "physics-informed",
+        "neural",
+        "autoencoder",
+        "self-supervised",
+        "contrastive",
+        "implicit",
     )
     is_dl = any(kw in algo_type for kw in _DL_KEYWORDS)
 
@@ -485,40 +1039,57 @@ def _run_common_sync(
     if algorithm_name in _RUNNABLE_PHYSICS_INFORMED:
         is_dl = False
 
-    # For DL methods, run classical baseline for visual reference
+    # Run reconstruction via central dispatch
     dl_note = is_dl
-    x_recon = _run_classical_recon(y, H, algorithm_name if not is_dl else "FBP")
-    baseline_method = None if not is_dl else _pick_baseline_name(y, H)
+    effective_algo = algorithm_name if not is_dl else ""
+    x_recon = _dispatch_reconstruction(
+        sample_data, variant_key, category, effective_algo
+    )
+    baseline_method = (
+        None if not is_dl else _pick_baseline_name(sample_data, variant_key, category)
+    )
 
     runtime_ms = (time.perf_counter() - t0) * 1000
 
-    # Compute metrics (for classical methods and for baseline of DL methods)
+    # Compute metrics
     psnr_val = None
     ssim_val = None
     if has_gt and x_true is not None:
         # Align x_recon shape to x_true if needed
-        if x_recon.shape != x_true.shape:
+        x_recon_2d = _to_2d_display(x_recon)
+        x_true_2d = _to_2d_display(x_true)
+
+        if x_recon_2d.shape != x_true_2d.shape:
             try:
-                target_shape = x_true.shape[-2:] if x_true.ndim >= 2 else x_true.shape
-                out_h, out_w = target_shape
-                rh, rw = x_recon.shape[:2]
-                # Prefer center-crop (avoids quantization artifacts from PIL resize)
-                if x_recon.ndim == 2 and rh >= out_h and rw >= out_w:
+                out_h, out_w = x_true_2d.shape[:2]
+                rh, rw = x_recon_2d.shape[:2]
+                # Prefer center-crop
+                if x_recon_2d.ndim == 2 and rh >= out_h and rw >= out_w:
                     s_r = (rh - out_h) // 2
                     s_c = (rw - out_w) // 2
-                    x_recon = x_recon[s_r:s_r + out_h, s_c:s_c + out_w]
+                    x_recon_2d = x_recon_2d[s_r : s_r + out_h, s_c : s_c + out_w]
                 else:
                     from PIL import Image
-                    img_recon = Image.fromarray(
-                        ((x_recon - x_recon.min()) / max(x_recon.max() - x_recon.min(), 1e-8) * 255).astype(np.uint8)
+
+                    img_r = Image.fromarray(
+                        (
+                            (x_recon_2d - x_recon_2d.min())
+                            / max(x_recon_2d.max() - x_recon_2d.min(), 1e-8)
+                            * 255
+                        ).astype(np.uint8)
                     )
-                    img_recon = img_recon.resize((out_w, out_h), Image.BILINEAR)
-                    x_recon = np.array(img_recon).astype(np.float64) / 255.0 * (x_true.max() - x_true.min()) + x_true.min()
+                    img_r = img_r.resize((out_w, out_h), Image.BILINEAR)
+                    x_recon_2d = (
+                        np.array(img_r).astype(np.float64) / 255.0
+                        * (x_true_2d.max() - x_true_2d.min())
+                        + x_true_2d.min()
+                    )
+                x_recon = x_recon_2d
             except Exception:
                 pass
-        if x_recon.shape == x_true.shape:
-            psnr_val = _compute_psnr(x_true, x_recon)
-            ssim_val = _compute_ssim(x_true, x_recon)
+
+        psnr_val = _compute_psnr(x_true, x_recon)
+        ssim_val = _compute_ssim(x_true, x_recon)
 
     # If DL method, get expected scores from leaderboard
     expected_psnr = None
