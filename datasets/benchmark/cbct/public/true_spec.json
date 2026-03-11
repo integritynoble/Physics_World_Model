@@ -1,8 +1,110 @@
 {
-  "source_offset_x": 0.80,
-  "source_offset_z": 0.50,
-  "detector_tilt": 0.15,
-  "detector_shift_u": 1.20,
-  "beam_hardening": 0.06,
-  "scatter_fraction": 0.04
+  "sample_00": {
+    "source_offset_x": -1.3491801622194606,
+    "source_offset_z": 0.7643426329540497,
+    "detector_tilt": 0.06340184864777731,
+    "detector_shift_u": -1.6484135137874494,
+    "beam_hardening": 0.03412617846231595,
+    "scatter_fraction": 0.012199298153686335,
+    "photon_count_I0": 8000.0
+  },
+  "sample_01": {
+    "source_offset_x": 1.5252302039066485,
+    "source_offset_z": 1.4391108099537475,
+    "detector_tilt": 0.36458248447924557,
+    "detector_shift_u": 2.0284331270111178,
+    "beam_hardening": 0.0909790357768232,
+    "scatter_fraction": 0.06887855888389804,
+    "photon_count_I0": 8000.0
+  },
+  "sample_02": {
+    "source_offset_x": 0.1664389927963157,
+    "source_offset_z": -0.7334732211775813,
+    "detector_tilt": -0.36079148716704434,
+    "detector_shift_u": -1.696674481239736,
+    "beam_hardening": 0.031387776466292615,
+    "scatter_fraction": 0.06548498934791637,
+    "photon_count_I0": 8000.0
+  },
+  "sample_03": {
+    "source_offset_x": -1.4021234664751052,
+    "source_offset_z": 1.1766467955414992,
+    "detector_tilt": 0.08316564233726553,
+    "detector_shift_u": 2.398441052780523,
+    "beam_hardening": 0.03489054908272776,
+    "scatter_fraction": 0.01187390205326908,
+    "photon_count_I0": 8000.0
+  },
+  "sample_04": {
+    "source_offset_x": -0.2507120814020105,
+    "source_offset_z": 0.7679207701764375,
+    "detector_tilt": 0.48869138632186726,
+    "detector_shift_u": 2.5751828820161897,
+    "beam_hardening": 0.01029990909860914,
+    "scatter_fraction": 0.01862860185373471,
+    "photon_count_I0": 8000.0
+  },
+  "sample_05": {
+    "source_offset_x": -0.7825987440106537,
+    "source_offset_z": 0.6789065229272717,
+    "detector_tilt": 0.46352201630880907,
+    "detector_shift_u": 0.46050617311018893,
+    "beam_hardening": 0.01878454913032215,
+    "scatter_fraction": 0.0566507597224662,
+    "photon_count_I0": 8000.0
+  },
+  "sample_06": {
+    "source_offset_x": 1.515782337900132,
+    "source_offset_z": 0.6000702736877721,
+    "detector_tilt": -0.19177144451353678,
+    "detector_shift_u": -0.4154785428116403,
+    "beam_hardening": 0.04350211933446986,
+    "scatter_fraction": 0.06282305489474439,
+    "photon_count_I0": 8000.0
+  },
+  "sample_07": {
+    "source_offset_x": 0.9168090730189626,
+    "source_offset_z": -0.4848584813787178,
+    "detector_tilt": 0.035249670602811256,
+    "detector_shift_u": -2.4376717259346217,
+    "beam_hardening": 0.07243696724693735,
+    "scatter_fraction": 0.01820980161920703,
+    "photon_count_I0": 8000.0
+  },
+  "sample_08": {
+    "source_offset_x": 0.8042594358504078,
+    "source_offset_z": 1.2800919241472184,
+    "detector_tilt": -0.4372024395138069,
+    "detector_shift_u": 0.42254921448941785,
+    "beam_hardening": 0.05971550583304619,
+    "scatter_fraction": 0.02064707317132524,
+    "photon_count_I0": 8000.0
+  },
+  "sample_09": {
+    "source_offset_x": 1.4090122906977198,
+    "source_offset_z": -0.9836424571961034,
+    "detector_tilt": 0.06163844404049357,
+    "detector_shift_u": -2.016036647880126,
+    "beam_hardening": 0.06030127456890924,
+    "scatter_fraction": 0.06030136899595061,
+    "photon_count_I0": 8000.0
+  },
+  "sample_10": {
+    "source_offset_x": 1.9709299236875157,
+    "source_offset_z": -0.8933175415612831,
+    "detector_tilt": 0.32649139836554164,
+    "detector_shift_u": 1.1530267908363854,
+    "beam_hardening": 0.00044657557621158306,
+    "scatter_fraction": 0.03544044954943639,
+    "photon_count_I0": 8000.0
+  },
+  "sample_11": {
+    "source_offset_x": 1.5044536947565934,
+    "source_offset_z": -0.6669089585204806,
+    "detector_tilt": 0.006359849003780171,
+    "detector_shift_u": -1.2420265064791787,
+    "beam_hardening": 0.09547692387215762,
+    "scatter_fraction": 0.042523157346783746,
+    "photon_count_I0": 8000.0
+  }
 }
