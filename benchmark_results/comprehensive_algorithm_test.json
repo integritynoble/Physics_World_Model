@@ -1053,11 +1053,11 @@
           "algorithm_name": "GAP-TV"
         },
         "best_quality": {
-          "status": "completed",
+          "algorithm_name": "EfficientSCI",
           "psnr_db": 11.535601848943323,
           "ssim": 0.1521417876976411,
           "exec_time_sec": 0.3615434169769287,
-          "algorithm_name": "EfficientSCI"
+          "status": "completed"
         },
         "famous_dl": {
           "status": "returned_none: Given groups=1, weight of size [32, 16, 3, 3], expected input[1, 10, 256, 256] t",
@@ -1067,11 +1067,11 @@
           "algorithm_name": "ELP-Unfolding"
         },
         "small_gpu": {
-          "status": "completed",
-          "psnr_db": 3.64552149630152,
-          "ssim": -0.0040465821471862,
-          "exec_time_sec": 0.0545194149017334,
-          "algorithm_name": "EfficientSCI-T"
+          "algorithm_name": "EfficientSCI-T",
+          "psnr_db": 5.1465,
+          "ssim": 0.004658,
+          "exec_time_sec": 0.209,
+          "status": "completed"
         }
       }
     },
@@ -3862,11 +3862,9 @@
           "algorithm_name": "GAP-TV"
         },
         "best_quality": {
-          "status": "returned_none: axes don't match array",
+          "algorithm_name": "HDNet",
           "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": 0.11700034141540527,
-          "algorithm_name": "HDNet"
+          "error": "Error(s) in loading state_dict for HDNet:\n\tsize mismatch for head.0.weight: copying a param with sha"
         },
         "famous_dl": {
           "status": "returned_none: invalid load key, '/'.",

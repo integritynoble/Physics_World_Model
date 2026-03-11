@@ -113,6 +113,8 @@ Thumbs.db
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+*_arxiv_submission*.zip
+arxiv_submission*.zip
 
 # Private co-author strategy (local + GCS only, not public)
 papers/pwm_flagship/thoughts/
