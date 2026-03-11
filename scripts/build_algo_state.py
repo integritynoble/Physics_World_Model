@@ -88,7 +88,7 @@ for mod_id, data in all_mods.items():
 lines = []
 lines.append("# Benchmark Algorithm Test State")
 lines.append("")
-lines.append("Last updated: 2026-03-11 — 166 modalities with datasets, 168 with YAML configs")
+lines.append("Last updated: 2026-03-11 — 168/168 modalities with datasets, 168 with YAML configs")
 lines.append("")
 lines.append("## Legend")
 lines.append("- `done (X.XX dB)`: tested, PSNR/SSIM recorded in benchmark run")

@@ -1,6 +1,6 @@
 # Benchmark Algorithm Test State
 
-Last updated: 2026-03-11 — 166 modalities with datasets, 168 with YAML configs
+Last updated: 2026-03-11 — 168/168 modalities with datasets, 168 with YAML configs
 
 ## Legend
 - `done (X.XX dB)`: tested, PSNR/SSIM recorded in benchmark run
@@ -11,7 +11,7 @@ Last updated: 2026-03-11 — 166 modalities with datasets, 168 with YAML configs
 Reference leaderboard: https://pwm.platformai.org/benchmark
 Total algorithms on leaderboard: 1,367 across 168 modalities
 
-## Priority 1 — Core Medical & Imaging
+## Quick Status Table
 
 | Modality | Dataset | Tested | Best PSNR | YAML Algos | Leaderboard Ref | Speclab |
 |----------|---------|--------|-----------|------------|-----------------|---------|
