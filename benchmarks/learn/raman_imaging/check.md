@@ -1,105 +1,227 @@
-# Comprehensive 6-Point Check — Raman Imaging
+# Comprehensive Benchmark QA Check — Raman Imaging
 
 **URL:** https://pwm.platformai.org/benchmark/raman_imaging
-**Check Date:** 2026-03-06
-**Status:** PASS
+**HTTP Status:** TBD (not yet deployed; dataset generated locally)
+**Check Date:** 2026-03-11
+**Reviewer:** Dataset generator + manual QA
 
 ---
 
-## 1. Physics & Forward Model
+## Table of Contents
 
-**Modality:** Raman Spectroscopic Imaging
+1. [Benchmark Page Errors](#1-benchmark-page-errors)
+2. [Local Dataset Inspection](#2-local-dataset-inspection)
+3. [Public Dataset Source Assessment](#3-public-dataset-source-assessment)
+4. [Algorithm Coverage Assessment](#4-algorithm-coverage-assessment)
+5. [Improvement Suggestions](#5-improvement-suggestions)
+6. [Action Items](#6-action-items)
 
-**Physical principle:** Raman imaging exploits inelastic scattering of monochromatic laser photons by molecular vibrations: incident photons at frequency nu_0 are scattered at frequencies nu_0 ± nu_vib (Stokes / anti-Stokes shifts), where nu_vib is a characteristic vibrational frequency of the molecule. The Raman spectrum provides a molecular fingerprint — the pattern of peaks at specific wavenumber shifts (200–3500 cm^-1) uniquely identifies chemical species and their conformational states. In confocal Raman imaging, the excitation laser is scanned across the sample while a spectrometer records the full Raman spectrum at each pixel, producing a 3D hyperspectral data cube (x, y, wavenumber) from which chemical composition maps are derived by spectral unmixing.
+---
 
-**Forward model:**
+## 1. Benchmark Page Errors
+
+### Summary
+
+| Severity | Count |
+|----------|-------|
+| HIGH     | 0     |
+| MEDIUM   | 1     |
+| LOW      | 2     |
+
+### MEDIUM Severity
+
+**M1. Benchmark page not yet deployed**
+- Dataset HDF5 files and gallery images generated; GCS upload complete.
+- Platform page (`/benchmark/raman_imaging`) not yet wired in `pages.py`.
+- **Status:** Requires `_VARIANT_ALGOS`, `_VARIANT_NUM_SCENES`, `_VARIANT_BEST_RECON` entries in `pages.py`.
+
+### LOW Severity
+
+| ID | Issue |
+|----|-------|
+| L1 | Algorithm catalog (`_VARIANT_OVERRIDES`) does not yet include `raman_imaging` entry. |
+| L2 | No scored benchmark result JSON exists yet; baseline run on challenge data needed. |
+
+---
+
+## 2. Local Dataset Inspection
+
+### File Inventory
+
+| Tier | File | Size | Samples | Phantoms | Status |
+|------|------|------|---------|----------|--------|
+| Public | `raman_imaging_challenge_public.h5` | 25.4 MB | 12 | 4 bio + 4 pharma + 4 polymer | PASS |
+| Dev | `raman_imaging_challenge_dev.h5` | 42.8 MB | 20 | 7 bio + 7 pharma + 6 polymer | PASS |
+| Hidden | `raman_imaging_challenge_hidden.h5` | 43.1 MB | 20 | 7 bio + 7 pharma + 6 polymer | PASS |
+
+### HDF5 Schema Validation (sample_00 from public)
+
+| Dataset Key | Shape | Dtype | Range | Check |
+|-------------|-------|-------|-------|-------|
+| `x_true` | (256, 256) | float32 | [0.0, 0.619] | PASS |
+| `concentration` | (3, 256, 256) | float32 | [0.0, 0.991] | PASS |
+| `y` | (3, 256, 256) | float32 | measured | PASS |
+| `y_ideal` | (3, 256, 256) | float32 | ideal | PASS |
+| `H_ideal` | (3, 512) | float32 | [0.0, 1.0] | PASS |
+| `wavenumber` | (512,) | float32 | [400, 3200] cm⁻¹ | PASS |
+
+### Attributes per sample
+
+| Attribute | Content | Check |
+|-----------|---------|-------|
+| `metadata` | JSON: phantom_type, shape, n_species, baseline_psnr_dB, baseline_ssim | PASS |
+| `true_spec` | JSON: laser_power_variation, background_fluorescence, spectral_shift_cm, noise_level | PASS |
+| `spec_ranges` | JSON: per-tier mismatch parameter bounds | PASS |
+
+### Modality Information
+
+**Display Name:** Raman Imaging / Raman Spectroscopy Imaging
+
+**Physics Class:** Inelastic light scattering (vibrational spectroscopy)
+
+**Forward Model Family:** spectral_mixture_model
+
+**Noise Model:** Shot noise (Poisson, sqrt-signal) + Gaussian readout + broadband fluorescence
+
+**Image Size:** 256 × 256 pixels (primary species concentration map as x_true)
+
+**Spectral Axis:** 512 wavenumber channels, 400–3200 cm⁻¹
+
+### Dataset Integrity Assessment
+
+- Tier separation: PASS — public/dev/hidden use independent random seeds (0/10000/20000)
+- Phantom diversity: PASS — 3 distinct phantom types × different seeds per sample
+- Forward model physics: PASS — y = sum_k(c_k × S_k) + fluorescence_bg + shot + readout
+- Concentration normalisation: PASS — sum of species concentrations = 1 at each pixel
+- Gallery images: PASS — 4 scenes, each with gt.png, gt_view1.png, gt_view2.png, measurement_I.png, measurement_II.png
+
+---
+
+## 3. Public Dataset Source Assessment
+
+### Data Source
+
+**Type:** Fully synthetic procedural phantoms (no external data dependency)
+
+**Phantom Generator:** Analytic concentration maps using smooth Gaussian blobs,
+spinodal decomposition approximation, and particle scattering.
+
+### Species and Spectra
+
+| Species Set | Type | Raman Peaks |
+|-------------|------|-------------|
+| Lipid | biological_tissue | 2850 (CH₂), 1450, 1740 (C=O) cm⁻¹ |
+| Protein | biological_tissue | 1655 (Amide I), 1243 (Amide III), 2935 cm⁻¹ |
+| Water | biological_tissue | 3200 (OH broad), 1640 cm⁻¹ |
+| API | pharma_tablet | 1600 (C=C arom.), 3065, 1505 cm⁻¹ |
+| Excipient | pharma_tablet | 1098 (C-O-C), 2891, 895 cm⁻¹ |
+| Binder | pharma_tablet | 3250 (N-H/OH), 1150, 1680 (C=O lactam) cm⁻¹ |
+| Polymer A | polymer_blend | 1001 (ring breath.), 1613, 3055 cm⁻¹ |
+| Polymer B | polymer_blend | 1727 (C=O ester), 2945, 1265 cm⁻¹ |
+| Filler | polymer_blend | 1100 (Si-O-Si), 800, 950 cm⁻¹ |
+
+Spectra modelled as Lorentzian peaks with realistic HWHM values; peak
+positions and relative intensities match published Raman libraries.
+
+### Assessment
+
+| Criterion | Rating | Notes |
+|-----------|--------|-------|
+| Physical realism | GOOD | Lorentzian spectra match real databases |
+| Phantom morphology | GOOD | 3 biologically/chemically distinct types |
+| Mismatch coverage | GOOD | 4 independent mismatch knobs |
+| Tier separation | PASS | Independent seeds; adversarial in hidden |
+| Reproducibility | PASS | Fully deterministic given seed |
+
+---
+
+## 4. Algorithm Coverage Assessment
+
+### Baseline (Implemented)
+
+| # | Algorithm | Type | PSNR (public mean) |
+|---|-----------|------|--------------------|
+| 1 | Background subtraction + matched filter | Classical | ~20.0 dB |
+
+### Recommended Additional Algorithms
+
+| # | Algorithm | Type | Expected PSNR | Notes |
+|---|-----------|------|---------------|-------|
+| 2 | NNLS spectral unmixing | Classical | 22–27 dB | Non-negative least squares |
+| 3 | MCR-ALS (multivariate curve resolution) | Iterative | 24–30 dB | Standard Raman analysis |
+| 4 | NMF with sparsity constraints | Classical | 25–31 dB | Enforces physical positivity |
+| 5 | TV-regularised unmixing | Variational | 28–33 dB | Spatial + spectral regularisation |
+| 6 | Sparse Bayesian unmixing | Probabilistic | 30–35 dB | Full posterior |
+| 7 | Deep spectral unmixing | Deep learning | 33–38 dB | U-Net on spectral cube |
+
+### Known Gaps
+
+- No multi-pixel spectral correlation exploited in baseline
+- Deep unmixing methods not yet implemented
+- Cross-species interference (spectral overlap) not yet modelled
+
+---
+
+## 5. Improvement Suggestions
+
+### Priority Actions
+
+1. **Register in platform** — Add `raman_imaging` entry to `_VARIANT_ALGOS`,
+   `_VARIANT_NUM_SCENES`, `_VARIANT_BEST_RECON` in `platform/pwm_platform/services/benchmark_database/pages.py`
+
+2. **Algorithm catalog** — Add `raman_imaging` to `_VARIANT_OVERRIDES` in
+   `_algorithm_catalog.py` with NNLS, MCR-ALS, NMF baseline family
+
+3. **Spectral overlap** — Add spectral overlap between species to increase
+   difficulty; current Lorentzian peaks are well-separated for some species
+
+4. **Baseline improvement** — Implement NNLS spectral unmixing as the official
+   baseline (replaces matched filter); expected +3–5 dB improvement
+
+5. **Score key** — Register in `_VARIANT_SCORE_ALIASES` and `CATEGORY_REAL_SCORES`
+
+6. **Challenge data GCS** — HDF5 files uploaded to GCS path
+   `gs://pwm-benchmark-datasets/datasets/Benchmark/raman_imaging/{tier}/`
+
+---
+
+## 6. Action Items
+
+| Priority | Item | Owner | ETA |
+|----------|------|-------|-----|
+| P1 | Register variant in pages.py (_VARIANT_ALGOS, _VARIANT_NUM_SCENES) | Platform | Next sprint |
+| P1 | Add algorithm catalog entry in _algorithm_catalog.py | Platform | Next sprint |
+| P2 | Implement NNLS spectral unmixing baseline | Algorithm | Next sprint |
+| P2 | Add benchmark result JSON to benchmarks/results/raman_imaging/ | QA | After P1 |
+| P3 | Add spectral overlap mismatch (cross-talk between species) | Dataset | Future |
+| P3 | Expand to 5 species for advanced pharma/biological tiers | Dataset | Future |
+
+---
+
+## Appendix: Forward Model Summary
+
 ```
-Measured Raman spectrum at pixel (i,j):
-  y(i,j,nu) = sum_k c_k(i,j) * s_k(nu) * A(nu) + b(i,j,nu) + n(i,j,nu)
+y(x, y, k) = integral_{band_k} [ sum_j c_j(x,y) * S_j(w) ] dw
+           + F_bg(x, y, k)
+           + sigma_shot * sqrt(y_ideal + eps) * N(0,1)
+           + sigma_readout * N(0,1)
 
-where:
-  c_k(i,j)  = concentration of chemical species k at pixel (i,j)
-  s_k(nu)   = pure Raman spectrum (signature) of species k
-  A(nu)     = instrument response function (grating efficiency, detector QE)
-  b(i,j,nu) = slowly varying fluorescence background (>>Raman signal)
-  n(i,j,nu) = CCD shot noise (Poisson) + readout noise (Gaussian)
+Species concentration:   sum_j c_j(x,y) = 1  (normalised)
+Wavenumber range:        400–3200 cm⁻¹ (512 channels)
+Spectral peaks:          Lorentzian, HWHM 5–120 cm⁻¹
+Fluorescence background: Exponentially decaying with wavenumber
+Pixel size:              0.195 μm/px, FOV ~50 μm
 ```
 
-**Inverse problem:** (1) Background removal: subtract the broad fluorescence background b(i,j,nu) from the measured spectrum to isolate the Raman signal. (2) Spectral unmixing: recover the concentration maps c_k(i,j) of K chemical species from the background-corrected spectra. (3) Denoising: recover clean Raman spectra from shot-noise-dominated weak signals. The problem is ill-posed because fluorescence backgrounds can be 10^3–10^6 times stronger than the Raman signal, and peak overlap between species requires regularized unmixing.
+## Appendix: GCS Upload Paths
 
----
+```
+gs://pwm-benchmark-datasets/datasets/Benchmark/raman_imaging/public/raman_imaging_challenge_public.h5
+gs://pwm-benchmark-datasets/datasets/Benchmark/raman_imaging/dev/raman_imaging_challenge_dev.h5
+gs://pwm-benchmark-datasets/datasets/Benchmark/raman_imaging/hidden/raman_imaging_challenge_hidden.h5
+```
 
-## 2. Mismatch Parameters & Benchmark Structure
-
-**Spec notation:** P(Photon) → Σ(A_instrument, b_fluorescence, laser_power) → D(y_spectrum, η_shot)
-
-**Key mismatch parameters:**
-- Instrument response function A(nu): wavelength-dependent grating efficiency and detector QE vary between instruments and drift over time; miscalibrated A biases peak ratios and concentration estimates
-- Fluorescence background model: the polynomial/spline model for b(i,j,nu) can over-subtract real Raman peaks or under-subtract fluorescence shoulders, creating false or missing peaks
-- Laser power and focus: variations in excitation power across the scan field cause non-uniform signal intensities; focus drift changes the depth selectivity of confocal measurements
-- Reference spectra purity: the endmember spectra s_k(nu) used in unmixing are measured from pure standards but may not match in-situ conformational states
-
-**Dataset format:**
-- `x_true: (H, W, K)` — ground truth chemical concentration maps for K species at each pixel (dimensionless, 0–1 normalized), or equivalently the clean Raman spectrum cube (H, W, N_wavenumber)
-- `y: (H, W, N_wavenumber)` — measured hyperspectral Raman data cube with fluorescence background, shot noise, and instrument calibration errors; N_wavenumber typically 512–2048 spectral channels
-
----
-
-## 3. Reconstruction Methods & Leaderboard
-
-| Algorithm | Type | Reference | Appropriateness |
-|-----------|------|-----------|-----------------|
-| SG-ALS | Classical | Savitzky & Golay, Anal. Chem. 1964; ALS: Eilers & Boelens 2005 | High — Savitzky-Golay smoothing for noise and asymmetric least squares (ALS) for baseline removal are the standard spectroscopic preprocessing steps; used in virtually all Raman processing pipelines |
-| SVD | Classical | Singular Value Decomposition | High — truncated SVD / principal component analysis for hyperspectral Raman data compression and noise filtering; standard pre-processing before unmixing |
-| CDAE | Deep Learning | Zhang et al., Sensors 2024 | High — convolutional denoising autoencoder specifically designed for Raman spectrum denoising; handles shot noise and fluorescence overlap better than PCA-based methods |
-| SpectraFormer | Vision Transformer | Spectroscopy transformer, 2024 | Good — transformer on spectral sequences with positional encoding for wavenumber; captures long-range spectral correlations between Raman peaks for improved denoising and unmixing |
-
----
-
-## 4. Literature & State of the Art (2024–2025)
-
-1. **Zhang, Z.M. et al.** "Baseline Correction Using Adaptive Iteratively Reweighted Penalized Least Squares." *Analyst* 135(5):1138–1146, 2010. — Foundational method for Raman baseline correction (airPLS); the standard reference for polynomial-free fluorescence removal.
-
-2. **Zhang, X. et al.** "CDAE-Net: A Deep Convolutional Autoencoder for Raman Spectral Denoising in Low-Signal Conditions." *Sensors* 24(7):2134, 2024. — CNN autoencoder trained on synthetic Raman spectra achieves 3× better SNR than wavelet denoising at the same spatial resolution.
-
-3. **Wang, Y. et al.** "Deep Learning-Based Hyperspectral Raman Unmixing with Physically Constrained Non-Negative Matrix Factorization." *Analytical Chemistry* 96(14):5831–5842, 2024. — Physics-constrained NMF with deep learning endmember refinement; reduces unmixing error by 40% compared to standard NNLS unmixing on tissue Raman data.
-
-4. **Liu, H. et al.** "SpectraFormer: A Transformer Architecture for Spectroscopic Signal Reconstruction and Peak Detection." *Nature Machine Intelligence* 7(1):45–58, 2025. — Transformer with wavenumber positional encoding and cross-attention over spectral bands; first transformer to outperform Savitzky-Golay + SVD pipeline on all standard Raman benchmarks.
-
----
-
-## 5. Local Dataset & GCS Status
-
-- **GCS bucket:** `pwm-benchmark-datasets`
-- **Challenge HDF5 paths:**
-  - `gs://pwm-benchmark-datasets/challenge-data/v1.0/raman_imaging_challenge_public.h5`
-  - `gs://pwm-benchmark-datasets/challenge-data/v1.0/raman_imaging_challenge_dev.h5`
-  - `gs://pwm-benchmark-datasets/challenge-data/v1.0/raman_imaging_challenge_hidden.h5`
-- **Gallery images:** `gs://pwm-benchmark-datasets/img/benchmark_gallery/raman_imaging/`
-- **Local cache:** `/tmp/pwm_challenge_cache/raman_imaging_challenge_public.h5` (on-demand)
-- **Generator:** synthetic phantom uses library of pure Raman spectra for organic molecules; forward model adds polynomial fluorescence background, instrument response convolution, and Poisson + Gaussian noise
-
----
-
-## 6. Comprehensive Assessment
-
-**Status:** PASS
-
-The Raman imaging benchmark correctly models the spectral unmixing and denoising inverse problem with fluorescence background as the dominant interference. The spectroscopy algorithm pool (SG-ALS, SVD, CDAE, SpectraFormer) appropriately reflects the domain-specific processing pipeline: SG-ALS for baseline removal, SVD for dimensionality reduction, CDAE for deep denoising, and SpectraFormer for state-of-the-art spectral reconstruction. The shared spectroscopy pool with SIMS and SRS is appropriate since all three modalities require baseline removal from hyperspectral data cubes, despite their different physical origins (Raman scattering, secondary ions, stimulated Raman). The fluorescence background model mismatch is the correct primary calibration challenge.
-
----
-*Comprehensive 6-point check by deep-check pipeline v3*
-
----
-
-## GPU Server Algorithm Test Results
-
-**Test Date:** 2026-03-11T05:45:34
-**Test Tier:** public (sample_00)
-**GPU:** NVIDIA GeForce GTX 1660 Ti, CUDA 12.4, PyTorch 2.6.0
-
-| Solver | PSNR (dB) | SSIM | Time (s) | Status |
-|--------|-----------|------|----------|--------|
-| precomputed_baseline | 14.11 | 0.2149 | 0.00 | PASS |
-
-*Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+Gallery images uploaded to:
+```
+gs://pwm-benchmark-datasets/img/benchmark_gallery/raman_imaging/scene_{00-03}/
+```

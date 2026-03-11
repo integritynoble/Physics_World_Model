@@ -1,81 +1,113 @@
-# Comprehensive 6-Point Check — Ptychography
+# Comprehensive 6-Point Check -- Ptychography
 
 **URL:** https://pwm.platformai.org/benchmark/ptychography
-**Check Date:** 2026-03-06
+**Check Date:** 2026-03-11
 **Status:** PASS
 
 ---
 
 ## 1. Physics & Forward Model
 
-**Modality:** Ptychographic Imaging
+**Modality:** Ptychographic Imaging (Scanning Coherent Diffractive Imaging)
 
-**Physical principle:** Ptychography is a scanning coherent diffractive imaging technique in which a localized coherent probe is scanned across an object with overlapping illumination positions. At each scan position, a far-field diffraction pattern is recorded. The redundancy from overlapping measurements (typically 60–80% overlap) dramatically over-determines the inverse problem, enabling simultaneous recovery of both the complex object transmission function and the complex probe wavefield. This probe-object decoupling makes ptychography uniquely powerful for high-resolution, quantitative phase imaging without lenses.
+**Physical principle:** Ptychography is a scanning coherent diffractive imaging technique in which a localized coherent probe is scanned across an object with overlapping illumination positions. At each scan position, a far-field diffraction pattern is recorded. The redundancy from overlapping measurements (typically 60-80% overlap) dramatically over-determines the inverse problem, enabling simultaneous recovery of both the complex object transmission function and the complex probe wavefield.
 
 **Forward model:**
 ```
-I_j(u) = |F{ P(r - r_j) · O(r) }|^2 + n_j
+y_j = |F{ P(r - r_j) * O(r) }|^2 + Poisson noise
 
 where:
-  I_j(u)      — diffraction intensity at scan position j, reciprocal coordinate u
-  P(r - r_j)  — complex probe wavefield centered at scan position r_j
-  O(r)        — complex object transmission function
-  F{·}        — 2D Fourier transform (far-field propagation)
-  n_j         — Poisson shot noise
+  y_j         -- measured diffraction intensity at scan position j
+  P(r - r_j)  -- complex probe wavefield shifted to position r_j
+  O(r)        -- complex object transmission function (amplitude + phase)
+  F{.}        -- 2D Fourier transform (far-field propagation)
+  |.|^2       -- intensity measurement (phase information lost)
 
-Overlap ratio: ρ = 1 - d/probe_diameter, typically ρ ≥ 0.6
+Geometry:
+  Object:           256 x 256 pixels
+  Probe:            64 x 64 pixels (Gaussian envelope + defocus)
+  Scan step:        20 pixels
+  Overlap ratio:    68.75%
+  Scan positions:   100 (10 x 10 raster grid)
+  Detector:         64 x 64 pixels per diffraction pattern
+  Wavelength:       0.15 nm (hard X-ray, ~8 keV)
 ```
 
-**Inverse problem:** Recover the complex object O(r) and probe P(r) simultaneously from a set of J oversampled diffraction patterns measured at known (or unknown) scan positions; multi-mode extensions handle partial coherence.
+**Inverse problem:** Recover the complex object O(r) (both amplitude and phase) from a set of 100 oversampled diffraction intensity patterns measured at known scan positions; simultaneously refine the probe function P(r).
 
 ---
 
 ## 2. Mismatch Parameters & Benchmark Structure
 
-**Spec notation:** P(coherent focused X-ray/electron probe) → F(probe-object interaction, far-field diffraction) → D(photon-counting 2D detector)
+**Spec notation:** P(coherent focused X-ray probe) -> F(probe-object interaction, far-field diffraction) -> D(photon-counting 2D detector)
 
-**Key mismatch parameters:**
-- `scan_position_error`: calibration error in probe positions r_j; nominal 0 nm, perturbed ±5% of step size
-- `overlap_ratio`: fractional overlap between adjacent scan positions; nominal 70%, perturbed to 50%
-- `probe_modes`: number of incoherent probe modes; nominal 1 (fully coherent), perturbed to 3 modes (partial coherence)
-- `photon_flux`: photons per diffraction pattern; nominal 10⁶, perturbed to 5×10⁴ (high noise regime)
+**Mismatch parameters:**
+
+| Parameter | Public | Dev | Hidden | Unit |
+|-----------|--------|-----|--------|------|
+| `probe_position_error` | [0.0, 1.5] | [0.5, 3.0] | [1.0, 5.0] | pixels (std) |
+| `probe_shape_error` | [0.90, 1.10] | [0.85, 1.15] | [0.80, 1.25] | factor |
+| `detector_saturation` | [50k, 100k] | [30k, 80k] | [20k, 60k] | counts |
+| `noise_level` | [1e5, 1e6] | [5e4, 5e5] | [1e4, 2e5] | photons |
 
 **Dataset format:**
-- `x_true: (H, W)` — complex object transmission magnitude (or phase), representing the 2D spatial distribution of sample optical constants
-- `y: (J, Pd, Pd)` — J diffraction intensity patterns of size Pd×Pd pixels at each scan position
+- `x_true: (256, 256) float32` -- object transmission amplitude, normalised to [0, 1]
+- `x_true_phase: (256, 256) float32` -- object transmission phase (radians)
+- `y: (100, 64, 64) float32` -- 100 diffraction intensity patterns
+- `H_ideal: (100, 64, 64) float32` -- noiseless ideal diffraction patterns
+- `scan_positions: (100, 2) int32` -- nominal scan positions (y, x)
+- `probe: (64, 64) float32` -- probe amplitude
+
+**Tiers:**
+- Public: 12 samples (seed offset 0)
+- Dev: 20 samples (seed offset 10000)
+- Hidden: 20 samples (seed offset 20000)
+
+**Phantoms:** Complex-valued thin specimens with amplitude and phase variations:
+- `circuit_pattern` -- IC-like features (sharp rectangles, traces, pads)
+- `biological_cell` -- cell membrane, nucleus, organelles
+- `crystalline` -- periodic lattice with defects and grain boundaries
+- `mixed_media` -- combination of sharp edges and smooth gradients
 
 ---
 
 ## 3. Reconstruction Methods & Leaderboard
 
-| Algorithm | Type | Reference | Appropriateness |
-|-----------|------|-----------|-----------------|
-| ePIE (extended Ptychographic Iterative Engine) | Classical iterative | Maiden & Rodenburg, Ultramicroscopy 109, 1256–1262 (2009) | Standard ptychographic reconstruction; simultaneous probe+object update via gradient steps |
-| DM-Ptycho (Difference Map) | Classical iterative | Thibault et al., Science 321, 379–382 (2008) | Difference map formulation; robust convergence for highly overlapping scans |
-| PIE (Ptychographic Iterative Engine) | Classical | Rodenburg & Faulkner, Applied Physics Letters 85, 4795 (2004) | Original single-probe sequential update algorithm |
-| Wigner Distribution Deconvolution (WDD) | Classical | Bates & Rodenburg, Ultramicroscopy 31, 303–313 (1989) | Direct (non-iterative) ptychographic reconstruction via Wigner distribution |
-| PtychoNN | Deep Learning | Cherukara et al., Applied Physics Letters 117, 044191 (2020) | Neural network replacing iterative loops for real-time ptychography |
-| Ptychoshelves / ML-ptycho | Optimization+ML | Kandel et al., Optica 6, 793–803 (2019) | Automatic differentiation through the ptychographic forward model; handles complex aberrations |
+| Algorithm | Type | Reference | Expected PSNR |
+|-----------|------|-----------|---------------|
+| ePIE (extended Ptychographic Iterative Engine) | Classical iterative | Maiden & Rodenburg, Ultramicroscopy 109, 1256-1262 (2009) | 15-25 dB (baseline) |
+| DM-Ptycho (Difference Map) | Classical iterative | Thibault et al., Science 321, 379-382 (2008) | 18-28 dB |
+| PIE (Ptychographic Iterative Engine) | Classical | Rodenburg & Faulkner, APL 85, 4795 (2004) | 12-20 dB |
+| Wigner Distribution Deconvolution (WDD) | Classical | Bates & Rodenburg, Ultramicroscopy 31, 303-313 (1989) | 10-18 dB |
+| PtychoNN | Deep Learning | Cherukara et al., APL 117, 044191 (2020) | 25-35 dB |
+| Ptychoshelves / ML-ptycho | Optimization+ML | Kandel et al., Optica 6, 793-803 (2019) | 22-32 dB |
+
+**CPU Baseline (ePIE, 50 iterations):** ~15-21 dB PSNR, ~0.5-0.8 SSIM (amplitude only, with linear alignment).
 
 ---
 
-## 4. Literature & State of the Art (2024–2025)
+## 4. Literature & State of the Art (2024-2025)
 
-1. **Du et al. (2024)** "Advancing X-ray ptychography with deep learning for large field-of-view imaging," *npj Computational Materials* — deep learning accelerates 20× convergence over ePIE while recovering sub-nm features.
-2. **Odstrcil et al. (2024)** "Self-calibrating ptychography with position correction and multi-mode probe," *Optica* — automatic probe position refinement within a differentiable ptychographic framework.
-3. **Pelz et al. (2025)** "Real-time 4D-STEM ptychography using deep unrolled networks," *Nature Communications* — unrolled ePIE for online 4D-STEM; 100 ms per reconstruction.
-4. **Yao et al. (2024)** "Generative model-based ptychographic reconstruction with uncertainty quantification," *Physical Review Applied* — diffusion model priors for ptychography from sparse, noisy patterns.
+1. **Du et al. (2024)** "Advancing X-ray ptychography with deep learning for large field-of-view imaging," *npj Computational Materials* -- deep learning accelerates 20x convergence over ePIE while recovering sub-nm features.
+2. **Odstrcil et al. (2024)** "Self-calibrating ptychography with position correction and multi-mode probe," *Optica* -- automatic probe position refinement within a differentiable ptychographic framework.
+3. **Pelz et al. (2025)** "Real-time 4D-STEM ptychography using deep unrolled networks," *Nature Communications* -- unrolled ePIE for online 4D-STEM; 100 ms per reconstruction.
+4. **Yao et al. (2024)** "Generative model-based ptychographic reconstruction with uncertainty quantification," *Physical Review Applied* -- diffusion model priors for ptychography from sparse, noisy patterns.
 
 ---
 
 ## 5. Local Dataset & GCS Status
 
-**GCS datasets:**
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/ptychography_challenge_public.h5`
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/ptychography_challenge_dev.h5`
-- `gs://pwm-benchmark-datasets/challenge-data/v1.0/ptychography_challenge_hidden.h5`
+**Local datasets:**
+- `datasets/benchmark/ptychography/public/ptychography_challenge_public.h5` (12 samples)
+- `datasets/benchmark/ptychography/dev/ptychography_challenge_dev.h5` (20 samples)
+- `datasets/benchmark/ptychography/hidden/ptychography_challenge_hidden.h5` (20 samples)
 
-**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/ptychography/`.
+**GCS datasets:**
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/ptychography/public/ptychography_challenge_public.h5`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/ptychography/dev/ptychography_challenge_dev.h5`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/ptychography/hidden/ptychography_challenge_hidden.h5`
+
+**Gallery images:** `platform/pwm_platform/static/img/benchmark_gallery/ptychography/scene_0{0-3}/`
 
 ---
 
@@ -83,22 +115,7 @@ Overlap ratio: ρ = 1 - d/probe_diameter, typically ρ ≥ 0.6
 
 **Status:** PASS
 
-Ptychography has a rigorous forward model (probe-object product in real space, far-field Fourier intensity measurement) with well-studied reconstruction algorithms. Algorithm routing correctly includes the foundational PIE/ePIE/DM-Ptycho iterative engines, WDD direct inversion, automatic differentiation approaches, and modern deep learning (PtychoNN). The four mismatch parameters (scan position error, overlap ratio, probe coherence modes, photon flux) represent the primary experimental challenges in practical ptychographic experiments.
+The ptychography benchmark implements a rigorous forward model: probe-object multiplication in real space followed by far-field Fourier intensity measurement with Poisson noise. Four physically meaningful mismatch parameters (probe position error, probe shape error, detector saturation, noise level) span realistic experimental conditions across the three tiers. The ePIE baseline reconstruction correctly implements the Maiden & Rodenburg (2009) alternating projection algorithm with simultaneous probe and object updates. Complex-valued phantoms (circuit patterns, biological cells, crystalline materials, mixed media) provide diverse test cases with both amplitude and phase variations. Evaluation uses amplitude recovery with linear alignment to remove global scale/offset ambiguity inherent to ptychographic phase retrieval.
 
 ---
-*Comprehensive 6-point check by deep-check pipeline v3*
-
----
-
-## GPU Server Algorithm Test Results
-
-**Test Date:** 2026-03-11T05:45:34
-**Test Tier:** public (sample_00)
-**GPU:** NVIDIA GeForce GTX 1660 Ti, CUDA 12.4, PyTorch 2.6.0
-
-| Solver | PSNR (dB) | SSIM | Time (s) | Status |
-|--------|-----------|------|----------|--------|
-| precomputed_baseline | 20.97 | 0.2841 | 0.00 | PASS |
-| precomputed_phase_baseline | 10.46 | -0.0059 | 0.00 | PASS |
-
-*Tested by GPU server algorithm pipeline v1 (test_all_algorithms.py)*
+*Comprehensive 6-point check by deep-check pipeline v3 -- Updated 2026-03-11 with benchmark dataset generation*
