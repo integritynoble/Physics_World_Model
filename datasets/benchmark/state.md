@@ -1,6 +1,6 @@
 # Benchmark Dataset State Tracker
 
-Last updated: 2026-03-10T20:30Z
+Last updated: 2026-03-11T01:00Z
 
 ## Status Legend
 - **Dataset**: creating public, dev and hidden dataset
@@ -13,22 +13,22 @@ Last updated: 2026-03-10T20:30Z
 |----------|---------|-----------|-------|
 | ct | done | done | LoDoPaB-CT, fan-beam Radon, 11/20/20 |
 | mri | done | done | M4Raw k-space Fourier, 12/20/20, ZF-IFFT baseline |
-| pet | pending | pending | Positron emission tomography |
-| ultrasound | pending | pending | B-mode ultrasound imaging |
-| oct | pending | pending | Optical coherence tomography |
-| mammography | pending | pending | X-ray mammography |
-| cbct | pending | pending | Cone-beam CT |
-| spect | pending | pending | Single-photon emission CT |
-| fundus | pending | pending | Fundus imaging |
-| endoscopy | pending | pending | Endoscopic imaging |
-| fmri | pending | pending | Functional MRI |
-| diffusion_mri | pending | pending | Diffusion-weighted MRI |
+| pet | done | done | Radon+Poisson+attenuation, 12/20/20, FBP baseline ~35 dB |
+| ultrasound | done | done | PSF+speckle+attenuation, 12/20/20, Wiener baseline |
+| oct | done | done | Retinal B-scan, PSF+speckle+rolloff, 12/20/20, median baseline ~22 dB |
+| mammography | done | done | Beer-Lambert+Poisson+scatter, 12/20/20, Wiener+TV ~22 dB |
+| cbct | done | done | Cone-beam CT, FDK recon, 10/20/20 |
+| spect | done | done | Radon+attenuation+Poisson+scatter, 12/20/20, FBP baseline |
+| fundus | done | done | Defocus PSF+illumination+Poisson-Gaussian, 12/20/20 |
+| endoscopy | done | done | Barrel distortion+vignetting, 12/20/20, Wiener ~15 dB |
+| fmri | done | done | BOLD+k-space undersampling, 12/20/20, ZF-IFFT baseline |
+| diffusion_mri | done | done | ADC contrast, k-space undersampling, 12/20/20 |
 
 ## Priority 2 — Microscopy & Optical
 
 | Modality | Dataset | Benchmark | Notes |
 |----------|---------|-----------|-------|
-| palm_storm | pending | pending | SMLM super-resolution |
+| palm_storm | done | done | SMLM Poisson+PSF+readout, 12/20/20, Gaussian fitting ~31 dB |
 | sted | pending | pending | STED microscopy |
 | sim | pending | pending | Structured illumination |
 | confocal_3d | pending | pending | 3D confocal |
