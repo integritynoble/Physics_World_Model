@@ -1,53 +1,54 @@
 # Comprehensive 6-Point Check — Endoscopy
 
 **URL:** https://pwm.platformai.org/benchmark/endoscopy
-**Check Date:** 2026-03-09
+**Check Date:** 2026-03-10
 **Status:** PASS
 
 ---
 
 ## 1. Physics & Forward Model
 
-**Modality:** Fiber Bundle Endoscopy (Monocular Depth & Scene Reconstruction)
+**Modality:** Fiber Bundle Endoscopy (Tissue Reflectance Imaging)
 
-**Physical principle:** An endoscope illuminates tissue with a white-light source and captures reflected radiance through a fiber bundle or CMOS chip at the distal tip. The image formation follows the standard pinhole camera model modulated by tissue reflectance (Lambertian + specular components), and depth is encoded implicitly in perspective projection, defocus blur, and shading gradients. Fiber-bundle endoscopes additionally impose a honeycomb sampling pattern on the image, requiring interpolation before depth estimation.
+**Physical principle:** An endoscope illuminates tissue with an LED light source and captures reflected radiance through a fiber bundle or CMOS chip at the distal tip. The image formation follows a Lambertian + specular reflectance model, with fiber-bundle point-spread-function blur, LED illumination falloff, cos^4 vignetting, specular highlights from wet mucosa, Poisson-Gaussian sensor noise, and gamma correction.
 
 **Forward model:**
 ```
-I(u,v) = (1/d²) · ρ(u,v) · (n̂ · l̂) + s(u,v) + η
+y = G(V(PSF_fiber * (L * x)) + specular + noise)
 
 where:
-  I(u,v)      — observed pixel intensity at image coordinates (u,v)
-  d           — source-to-surface distance
-  ρ(u,v)      — tissue albedo (Lambertian reflectance)
-  n̂           — surface normal at the corresponding 3D point
-  l̂           — unit illumination direction
-  s(u,v)      — specular highlight term (Cook-Torrance BRDF)
-  η           — sensor noise (Gaussian read noise + Poisson shot noise)
-  D(u,v)      — depth map to recover from I(u,v)
+  x_true          — 2D tissue surface reflectance (256x256), range [0, 1]
+  L               — LED illumination falloff (center-bright, edge-dim)
+  PSF_fiber       — Gaussian fiber-bundle point spread function
+  V(r)            — radial vignetting (cos^4 falloff)
+  specular        — bright specular highlight spots (wet mucosa)
+  noise           — Poisson-Gaussian sensor noise
+  G               — gamma correction (gamma = 2.2)
 ```
 
-**Inverse problem:** Recover the dense per-pixel depth map D(u,v) and/or 3D surface reconstruction from a single monocular endoscopic frame or short video sequence.
+**Inverse problem:** Recover the tissue reflectance map x_true from a single gamma-corrected, noisy, vignetted, blurred endoscopic frame y.
 
 ---
 
 ## 2. Mismatch Parameters & Benchmark Structure
 
-**Spec notation:** P(white light) → F(tissue surface) → D(CMOS/fiber bundle)
+**Spec notation:** P(LED white light) -> F(tissue surface) -> D(fiber bundle/CMOS)
 
 **Key mismatch parameters:**
-- `illumination_distance`: working distance of light source; nominal 10 mm, perturbed 5 mm (overexposure)
-- `specular_weight`: contribution of specular highlights; nominal 0.1, perturbed 0.4 (heavy specularities)
-- `fiber_bundle_sampling`: fiber density (pixels/mm²); nominal 30,000 fibers, perturbed 10,000 (coarser sampling)
-- `tissue_albedo_bias`: mean tissue reflectance; nominal 0.25, perturbed 0.15 (darker tissue, e.g., colon vs. stomach)
+- `fiber_blur_sigma`: fiber bundle PSF sigma; public 0.5-1.5 px, hidden 0.5-4.0 px
+- `illumination_decay`: LED illumination falloff; public 0.3-0.8, hidden 0.3-0.95
+- `vignette_strength`: cos^4 edge darkening; public 0.1-0.3, hidden 0.1-0.6
+- `specular_intensity`: specular highlight intensity; public 0-0.3, hidden 0-0.8
+- `noise_level`: Poisson-Gaussian noise level; public 0.005-0.02, hidden 0.005-0.08
 
 **Dataset format:**
-- `x_true: (H, W)` — ground-truth depth map in mm, range [5, 100] mm
-- `y: (H, W, 3)` — RGB endoscopic frame (possibly with fiber-bundle mask)
+- `x_true: (256, 256)` — ground-truth tissue reflectance, range [0, 1]
+- `y: (256, 256)` — gamma-corrected degraded measurement
+- `H_ideal: (K, K)` — fiber bundle PSF kernel
 
 ---
 
-## 3. Reconstruction Methods & Leaderboard (9 algorithms, updated 2026-03-09)
+## 3. Reconstruction Methods & Leaderboard (10 algorithms, updated 2026-03-10)
 
 | Rank | Method        | Type              | Params | PSNR (dB) | SSIM  | Source                               |
 |------|--------------|-------------------|--------|-----------|-------|--------------------------------------|
@@ -57,18 +58,19 @@ where:
 | 4    | TransEndo     | Transformer       | 26M    | 35.9      | 0.921 | Wang et al., Med. Image Anal. 2022   |
 | 5    | EndoSLAM-Net  | Deep Learning     | 18M    | 33.8      | 0.889 | Ozyoruk et al., Med. Image Anal. 2021|
 | 6    | DnCNN-Endo    | Deep Learning     | 7M     | 31.4      | 0.855 | Zhang et al., IEEE TIP 2017          |
-| 7    | BM3D-Endo     | Classical         | 0      | 28.9      | 0.812 | Dabov et al., IEEE TIP 2007          |
-| 8    | CLAHE-Endo    | Classical         | 0      | 26.5      | 0.772 | Zuiderveld, Graphics Gems IV 1994    |
-| 9    | Histogram-Eq  | Classical         | 0      | 24.1      | 0.738 | Gonzalez & Woods 2002                |
+| 7    | Wiener+TV     | CPU Baseline      | 0      | 30.7      | 0.927 | This benchmark (inv-gamma + flat-field + Wiener + TV) |
+| 8    | BM3D-Endo     | Classical         | 0      | 28.9      | 0.812 | Dabov et al., IEEE TIP 2007          |
+| 9    | CLAHE-Endo    | Classical         | 0      | 26.5      | 0.772 | Zuiderveld, Graphics Gems IV 1994    |
+| 10   | Histogram-Eq  | Classical         | 0      | 24.1      | 0.738 | Gonzalez & Woods 2002                |
 
 ---
 
-## 4. Literature & State of the Art (2024–2025)
+## 4. Literature & State of the Art (2024-2025)
 
-1. **Wang et al. (2024)** "EndoDAC: Efficient Adapting Foundation Model for Self-Supervised Depth Estimation from Any Endoscopic Camera," *MICCAI 2024* — adapter-based fine-tuning of large vision models for endoscopic depth with minimal labeled data.
-2. **Zhao et al. (2024)** "Generalized Endoscopic Reconstruction via Geometry-Aware Diffusion Models," *CVPR 2024* — diffusion-prior model for consistent 3D reconstruction across endoscope types.
-3. **Cui et al. (2023)** "Surgical-DINO: Adapter Learning of Foundation Models for Depth Estimation in Endoscopic Surgery," *arXiv 2023* — demonstrates DINOv2 adapters outperforming task-specific models on EndoSLAM dataset.
-4. **Huang et al. (2024)** "Self-supervised Monocular Depth Estimation for Gastrointestinal Endoscopy," *Med. Image Anal.* — comprehensive benchmark of self-supervised methods across colonoscopy, gastroscopy, and capsule endoscopy.
+1. **Wang et al. (2024)** "EndoDAC: Efficient Adapting Foundation Model for Self-Supervised Depth Estimation from Any Endoscopic Camera," *MICCAI 2024* -- adapter-based fine-tuning of large vision models for endoscopic depth with minimal labeled data.
+2. **Zhao et al. (2024)** "Generalized Endoscopic Reconstruction via Geometry-Aware Diffusion Models," *CVPR 2024* -- diffusion-prior model for consistent 3D reconstruction across endoscope types.
+3. **Cui et al. (2023)** "Surgical-DINO: Adapter Learning of Foundation Models for Depth Estimation in Endoscopic Surgery," *arXiv 2023* -- demonstrates DINOv2 adapters outperforming task-specific models on EndoSLAM dataset.
+4. **Huang et al. (2024)** "Self-supervised Monocular Depth Estimation for Gastrointestinal Endoscopy," *Med. Image Anal.* -- comprehensive benchmark of self-supervised methods across colonoscopy, gastroscopy, and capsule endoscopy.
 
 ---
 
@@ -76,27 +78,28 @@ where:
 
 **Local benchmark dataset:** `datasets/benchmark/endoscopy/`
 - `generate_dataset.py` -- full pipeline: phantom generation, forward model, CPU reconstruction, HDF5 + gallery
-- `public/` -- 12 samples (4 normal mucosa + 4 vessel-rich + 4 fold/rugae), mean PSNR=15.35 dB, SSIM=0.297
-- `dev/` -- 20 samples (augmented + polyps, wider mismatch), mean PSNR=13.70 dB, SSIM=0.266
-- `hidden/` -- 20 samples (adversarial + ulcers + extreme degradations), mean PSNR=10.60 dB, SSIM=0.175
+- `public/` -- 12 samples (4 esophageal + 4 gastric + 4 colonic), mean PSNR=30.69 dB, SSIM=0.927
+- `dev/` -- 20 samples (augmented + polyps, wider mismatch), mean PSNR=30.25 dB, SSIM=0.899
+- `hidden/` -- 20 samples (adversarial + ulcers + extreme degradations), mean PSNR=23.63 dB, SSIM=0.784
 
-**Forward model:** `y = V(r) * D[H * x] + specular + noise`
-- D = barrel distortion (Brown-Conrady, k1 up to 0.3)
+**Forward model:** `y = G(V(PSF_fiber * (L * x)) + specular + noise)`
+- L = LED illumination falloff (decay up to 0.95)
+- PSF_fiber = Gaussian fiber-bundle PSF (sigma up to 4.0 px)
 - V(r) = cos^4 vignetting (strength up to 0.6)
-- H = Gaussian blur PSF (sigma up to 4.0 px)
-- specular = bright highlight spots (fraction up to 0.15)
-- noise = Gaussian sensor noise (sigma up to 0.08)
+- specular = bright highlight spots (intensity up to 0.8)
+- noise = Poisson-Gaussian sensor noise (level up to 0.08)
+- G = gamma correction (gamma = 2.2)
 
-**CPU reconstruction:** Specular clip + inverse barrel distortion + vignetting compensation + Wiener deconvolution + TV denoise
+**CPU reconstruction:** Inverse gamma + specular clip + flat-field correction + Wiener deconvolution + TV denoise
 
-**HDF5 fields per sample:** x_true (256,256), image_ideal (256,256), image_measured (256,256), reconstruction (256,256)
+**HDF5 fields per sample:** x_true (256,256), y (256,256), H_ideal (K,K), reconstruction (256,256)
 
 **GCS datasets:**
-- `gs://pwm-benchmark-datasets/datasets/Benchmark/endoscopy/endoscopy_challenge_public.h5`
-- `gs://pwm-benchmark-datasets/datasets/Benchmark/endoscopy/endoscopy_challenge_dev.h5`
-- `gs://pwm-benchmark-datasets/datasets/Benchmark/endoscopy/endoscopy_challenge_hidden.h5`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/endoscopy/public/endoscopy_challenge_public.h5`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/endoscopy/dev/endoscopy_challenge_dev.h5`
+- `gs://pwm-benchmark-datasets/datasets/Benchmark/endoscopy/hidden/endoscopy_challenge_hidden.h5`
 
-**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/endoscopy/` (4 scenes, 6 images each).
+**Gallery images:** Served from GCS at `gs://pwm-benchmark-datasets/img/benchmark_gallery/endoscopy/` (4 scenes, 5 images each).
 
 **Generated:** 2026-03-10
 
@@ -106,7 +109,7 @@ where:
 
 **Status:** PASS
 
-Endoscopy depth estimation is well-posed as a monocular inverse problem under a Lambertian + specular reflectance model, and the algorithm routing correctly emphasizes self-supervised learning approaches (MonoDepth2, EndoSFM) that dominate this domain due to the scarcity of ground-truth depth annotations in clinical settings. The mismatch parameters capturing illumination distance, specular highlights, fiber-bundle sampling density, and tissue albedo variation represent the principal sources of distribution shift between training and deployment environments. The benchmark structure is appropriate for evaluating robustness to these clinically relevant perturbations.
+Endoscopy tissue reflectance imaging is well-posed as a monocular inverse problem under a Lambertian + specular reflectance model with fiber-bundle PSF blur, LED illumination falloff, cos^4 vignetting, Poisson-Gaussian noise, and gamma correction. The mismatch parameters (fiber_blur_sigma, illumination_decay, vignette_strength, specular_intensity, noise_level) represent the principal sources of distribution shift between training and deployment environments. The CPU baseline reconstruction (inverse gamma + flat-field correction + Wiener deconvolution + TV denoising) achieves 30.69 dB / 0.927 SSIM on the public tier, providing a strong reference for learned methods. The benchmark structure with progressively harder tiers (public 30.7 dB -> dev 30.3 dB -> hidden 23.6 dB) is appropriate for evaluating robustness to clinically relevant perturbations.
 
 ---
 *Comprehensive 6-point check by deep-check pipeline v3*
