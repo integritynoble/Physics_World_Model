@@ -135,7 +135,7 @@ _MODALITY_KEY_MAP: dict[str, dict[str, list[str]]] = {
 # Modality sets for reconstruction routing
 _SINOGRAM_MODALITIES: set[str] = {
     "ct", "cbct", "pet", "spect", "mammography", "industrial_ct", "spectral_ct",
-    "pet_mr", "spect_ct", "muon_tomo", "neutron_tomo",
+    "pet_ct", "pet_mr", "spect_ct", "muon_tomo", "neutron_tomo",
     "xray_radiography", "fluoroscopy", "angiography", "digital_breast_tomo",
     "ct_fluorescence", "brachytherapy_img", "portal_imaging", "proton_therapy_img",
     "proton_radiography", "dexa", "xray_ndt",
