@@ -28,7 +28,7 @@ Total algorithms on leaderboard: 1,367 across 168 modalities
 | brillouin | done | 1 | 35.8 dB | 3 | — | pending |
 | cacti | done | 5 | 11.5 dB | 4 | 8 | pending |
 | cars | done | 1 | 14.2 dB | 3 | — | pending |
-| cassi | pending | 1 | 2.6 dB | 4 | 12 | pending |
+| cassi | done | 1 | 2.6 dB | 4 | 12 | pending |
 | cathodoluminescence | done | 1 | 28.9 dB | 3 | — | pending |
 | cbct | done | 3 | 15.2 dB | 3 | 9 | pending |
 | cest_mri | done | 1 | 31.0 dB | 3 | 6 | pending |
@@ -51,8 +51,8 @@ Total algorithms on leaderboard: 1,367 across 168 modalities
 | diffusion_mri | done | 1 | 11.3 dB | 3 | 7 | pending |
 | digital_breast_tomo | done | 1 | -36.0 dB | 3 | — | pending |
 | dna_paint | done | 3 | 28.5 dB | 3 | — | pending |
-| doppler_ultrasound | pending | 0 | — | 3 | — | pending |
-| dot | pending | 0 | — | 3 | — | pending |
+| doppler_ultrasound | done | 3 | 17.6 dB | 3 | — | pending |
+| dot | done | 3 | 7.0 dB | 3 | — | pending |
 | ebsd | done | 1 | 21.8 dB | 3 | — | pending |
 | eddy_current | done | 1 | 4.8 dB | 3 | — | pending |
 | edx_mapping | done | 2 | 22.0 dB | 3 | — | pending |
@@ -151,7 +151,7 @@ Total algorithms on leaderboard: 1,367 across 168 modalities
 | sims | done | 1 | 20.5 dB | 3 | — | pending |
 | solar_imaging | done | 1 | 28.4 dB | 3 | — | pending |
 | sonar | done | 1 | 10.3 dB | 3 | — | pending |
-| spc | pending | 1 | 6.8 dB | 4 | — | pending |
+| spc | done | 1 | 6.8 dB | 4 | — | pending |
 | spect | done | 3 | 30.0 dB | 3 | 10 | pending |
 | spect_ct | done | 1 | 11.4 dB | 3 | — | pending |
 | spectral_ct | done | 1 | 12.3 dB | 3 | — | pending |
@@ -184,7 +184,7 @@ Total algorithms on leaderboard: 1,367 across 168 modalities
 | xrf_imaging | done | 1 | 22.1 dB | 3 | — | pending |
 | xrf_tomo | done | 1 | 15.6 dB | 3 | — | pending |
 
-**Summary:** 164/168 datasets done, 301 solver tests recorded across 166/166 modalities with datasets
+**Summary:** 168/168 datasets done, 307 solver tests recorded across 168/166 modalities with datasets
 
 ---
 
@@ -951,15 +951,23 @@ Each modality shows three sections:
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | UDoppler-Net | deep_learning | pending | — | — | — | YAML config |
-| 2 | Doppler CFAR | deep_learning | pending | — | — | — | YAML config |
+| 1 | Autocorrelation Doppler Estimator | traditional | **done** | 3.37 | 0.0000 | 0.00 | benchmark run |
+| 2 | Clutter-Filtered Autocorrelation | traditional | **done** | 0.20 | -0.0019 | 0.00 | benchmark run |
+| 3 | Doppler Baseline (precomputed) | traditional | **done** | 17.57 | 0.0064 | 0.00 | benchmark run |
+| 4 | Back-Projection (Doppler) | traditional | importable | — | — | — | YAML config |
+| 5 | UDoppler-Net | deep_learning | pending | — | — | — | YAML config |
+| 6 | Doppler CFAR | deep_learning | pending | — | — | — | YAML config |
 
 #### dot — Diffuse Optical Tomography (DOT)
 
 | # | Algorithm | Type | Status | PSNR (dB) | SSIM | Time(s) | Source |
 |---|-----------|------|--------|-----------|------|---------|--------|
-| 1 | L-BFGS-TV | deep_learning | pending | — | — | — | YAML config |
-| 2 | DOT-Net | deep_learning | pending | — | — | — | YAML config |
+| 1 | Born Approximation Backprojection | traditional | **done** | 4.70 | -0.0078 | 0.00 | benchmark run |
+| 2 | DOT Baseline (precomputed) | traditional | **done** | 7.04 | 0.0193 | 0.00 | benchmark run |
+| 3 | Tikhonov-Regularized DOT | traditional | **done** | 2.37 | -0.0033 | 0.10 | benchmark run |
+| 4 | Born Approximation | traditional | importable | — | — | — | YAML config |
+| 5 | L-BFGS-TV | deep_learning | pending | — | — | — | YAML config |
+| 6 | DOT-Net | deep_learning | pending | — | — | — | YAML config |
 
 #### elastography — Shear-Wave Elastography
 

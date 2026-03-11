@@ -1024,6 +1024,7 @@ _ALL_PRECOMPUTED = [
     "three_photon", "tirf", "tof_camera", "ultrasonic_phased_array", "us_mri",
     "waxs", "weather_radar", "widefield_lowdose", "xfel_sfx", "xray_crystallography",
     "xray_ndt", "xray_radiography", "xrf_imaging", "xrf_tomo",
+    "doppler_ultrasound", "dot",
 ]
 MODALITY_TESTS["light_field"] = ("Light Field (shift-add)", test_light_field)
 for _mod in _ALL_PRECOMPUTED:

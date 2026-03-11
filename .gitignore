@@ -65,6 +65,7 @@ checkpoint/
 datasets/
 !benchmarks/datasets/
 benchmarks/datasets/__pycache__/
+!datasets/benchmark/state.md
 runs/
 
 # Heavy datasets (stored in GCS, not GitHub)

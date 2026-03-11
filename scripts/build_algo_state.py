@@ -113,8 +113,10 @@ for mod_id in sorted(all_mods.keys()):
     data = all_mods[mod_id]
     solvers = data.get("solvers", {}) or {}
 
-    # Dataset status
-    bench_dir = ROOT / "datasets" / "benchmark" / mod_id
+    # Dataset status (handle aliases: cassi->sd_cassi, spc->spc_kronecker)
+    MOD_DATASET_ALIAS = {"cassi": "sd_cassi", "spc": "spc_kronecker"}
+    dataset_id = MOD_DATASET_ALIAS.get(mod_id, mod_id)
+    bench_dir = ROOT / "datasets" / "benchmark" / dataset_id
     pub_dir = bench_dir / "public"
     has_h5 = bool(list(pub_dir.glob("*.h5"))) if pub_dir.exists() else \
               bool(list(bench_dir.glob("*_public*.h5"))) if bench_dir.exists() else False

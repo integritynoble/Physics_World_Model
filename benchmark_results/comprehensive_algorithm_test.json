@@ -3886,25 +3886,55 @@
     },
     "doppler_ultrasound": {
       "solvers": {
-        "traditional_cpu": {
-          "status": "no_dataset",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": null,
-          "algorithm_name": "Back-Projection (Doppler)"
+        "autocorrelation_estimator": {
+          "algorithm_name": "Autocorrelation Doppler Estimator",
+          "psnr_db": 3.3733,
+          "ssim": 4.3e-05,
+          "exec_time_sec": 0.002,
+          "status": "done"
+        },
+        "clutter_filtered": {
+          "algorithm_name": "Clutter-Filtered Autocorrelation",
+          "psnr_db": 0.1981,
+          "ssim": -0.001897,
+          "exec_time_sec": 0.002,
+          "status": "done"
+        },
+        "precomputed_baseline": {
+          "algorithm_name": "Doppler Baseline (precomputed)",
+          "psnr_db": 17.5675,
+          "ssim": 0.006449,
+          "exec_time_sec": 0.0,
+          "status": "done"
         }
-      }
+      },
+      "dataset_available": true
     },
     "dot": {
       "solvers": {
-        "traditional_cpu": {
-          "status": "no_dataset",
-          "psnr_db": null,
-          "ssim": null,
-          "exec_time_sec": null,
-          "algorithm_name": "Born Approximation"
+        "born_backprojection": {
+          "algorithm_name": "Born Approximation Backprojection",
+          "psnr_db": 4.7008,
+          "ssim": -0.007846,
+          "exec_time_sec": 0.0,
+          "status": "done"
+        },
+        "tikhonov": {
+          "algorithm_name": "Tikhonov-Regularized DOT",
+          "psnr_db": 2.3685,
+          "ssim": -0.003331,
+          "exec_time_sec": 0.096,
+          "status": "done"
+        },
+        "precomputed_baseline": {
+          "algorithm_name": "DOT Baseline (precomputed)",
+          "psnr_db": 7.0366,
+          "ssim": 0.019292,
+          "exec_time_sec": 0.0,
+          "status": "done"
         }
-      }
+      },
+      "dataset_available": true
     },
     "spc": {
       "solvers": {
